@@ -1,0 +1,59 @@
+[poc-coedicao] http://localhost:1239/?room=minuta-demo&user=Maria  (ws://localhost:1239/<sala>)
+17:57:50.486 ambas conectadas; presença em A = 2
+17:57:50.800 A→B: "MINUTA — Decisão sobre a drenagem do lote 2 (km 12–14)." chegou em 248 ms (inclui o tempo de digitação dos 56 caracteres)
+17:57:50.815 A→B 1 token "§A": 15 ms
+17:57:50.826 A→B 1 token "§B": 11 ms
+17:57:50.839 A→B 1 token "§C": 13 ms
+17:57:50.852 A→B 1 token "§D": 12 ms
+17:57:50.869 A→B 1 token "§E": 17 ms
+17:57:51.213 B→A: chegou em 284 ms
+17:57:51.518 convergiu: true | texto final: "MINUTA — Decisão sobre a drenagem do lote 2 (km 12–14). §A§B§C§D§E Encaminhamento: sondagem complementar até 10/10."
+17:57:51.542 servidor /status: {"minuta-demo":{"conns":2,"updates":115,"textLength":115,"awareness":2}}
+17:57:51.970 captura salva em teste-2-abas.png
+17:57:51.970 RESULTADO: OK — todas as amostras < 1 s (máx 284 ms)
+{
+  "samples": [
+    {
+      "dir": "A→B",
+      "chars": 56,
+      "ms": 248
+    },
+    {
+      "dir": "A→B (2 chars)",
+      "chars": 2,
+      "ms": 15
+    },
+    {
+      "dir": "A→B (2 chars)",
+      "chars": 2,
+      "ms": 11
+    },
+    {
+      "dir": "A→B (2 chars)",
+      "chars": 2,
+      "ms": 13
+    },
+    {
+      "dir": "A→B (2 chars)",
+      "chars": 2,
+      "ms": 12
+    },
+    {
+      "dir": "A→B (2 chars)",
+      "chars": 2,
+      "ms": 17
+    },
+    {
+      "dir": "B→A",
+      "chars": 49,
+      "ms": 284
+    }
+  ],
+  "presence": {
+    "A": 2,
+    "B": 2
+  },
+  "ok": true,
+  "converged": true,
+  "finalText": "MINUTA — Decisão sobre a drenagem do lote 2 (km 12–14). §A§B§C§D§E Encaminhamento: sondagem complementar até 10/10."
+}

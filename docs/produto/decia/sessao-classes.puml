@@ -1,0 +1,365 @@
+@startuml DECIA_Sessao_Classes
+title DECIA — Classes da sessão (TAXONOMIA §5) + extensões propostas (Mesa, Minuta Coletiva, fases, ritmo)\nEstereótipo <<proposta>> = ainda não está na TAXONOMIA; demais = TAXONOMIA.md §5.1–5.18
+!pragma layout smetana
+skinparam backgroundColor #FFFFFF
+skinparam class {
+  BackgroundColor #F4F2EF
+  BorderColor #4A4852
+  ArrowColor #4A4852
+  HeaderBackgroundColor #E4DEF0
+}
+skinparam class<<proposta>> {
+  BackgroundColor #FFF3DC
+  HeaderBackgroundColor #F6D58C
+  BorderColor #E39B12
+}
+skinparam class<<enum>> {
+  BackgroundColor #FFFFFF
+  HeaderBackgroundColor #DCE8F5
+}
+skinparam packageStyle rectangle
+hide empty methods
+
+package "Sessão (TAXONOMIA §5.1–5.2)" {
+  class DeciaSession {
+    +id: UUID
+    +topic: String(300)
+    +objective: String(200) <<proposta>>
+    +description: Text
+    +adminUserId: UUID
+    +createdByUserId: UUID
+    +companyId, departmentId: UUID
+    +accessMode: SessionAccess
+    +accessClass: AccessClass <<proposta>>
+    +status: SessionStatus
+    +phase: DeliberationPhase <<proposta>>
+    +phaseMode: PhaseMode <<proposta>>
+    +aiMode: AiMode
+    +linkedProjectId: UUID
+    +planAxisId: UUID
+    +scheduledAt: Instant <<proposta>>
+    +startedAt, closedAt, archivedAt: Instant
+    +reopenCount: int <<proposta>>
+    +progressPct: int <<proposta>>
+    +messageTtlDays: int
+    +archiveMediaId: UUID
+    +indexedInMemory: boolean
+    .. +messageCount, participantCount ..
+  }
+  class SessionParticipant {
+    +sessionId, userId: UUID
+    +role: ParticipantRole
+    +joinedAt, leftAt: Instant
+    +addedBy, removedBy, removeReason
+    +canReplyDivergence: boolean
+    +lastReadAt: Instant
+    +handRaisedAt: Instant <<proposta>>
+    +mutedUntil: Instant <<proposta>>
+    +spokeInPhaseJson <<proposta>>
+  }
+  class SessionPhaseLog <<proposta>> {
+    +sessionId: UUID
+    +fromPhase, toPhase: DeliberationPhase
+    +byActorKind: HUMANO | IA
+    +actorId: UUID
+    +reason: String
+    +at: Instant
+  }
+  class SessionTimer <<proposta>> {
+    +sessionId: UUID
+    +kind: FASE | TURNO | VOTACAO
+    +targetId: UUID
+    +endsAt: Instant
+    +setBy: UUID
+  }
+  enum SessionStatus <<enum>> {
+    RASCUNHO
+    AGENDADA
+    ABERTA
+    CONVERGINDO
+    DECISAO_PROPOSTA
+    EM_REVISAO
+    VALIDADA
+    DEVOLVIDA
+    REABERTA
+    ENCERRADA
+    ARQUIVADA
+    CANCELADA
+  }
+  enum DeliberationPhase <<enum>> {
+    CONTEXTO
+    DIVERGIR
+    ESCLARECER
+    CONVERGIR
+    DECIDIR
+  }
+  enum ParticipantRole <<enum>> {
+    ADMIN (moderador)
+    RELATOR <<proposta>>
+    MEMBRO
+    OBSERVADOR
+    IA
+  }
+  enum SessionAccess <<enum>> {
+    FECHADA
+    DEPARTAMENTO
+    EMPRESA
+  }
+}
+
+package "Mensagens e análise da IA (§5.3–5.10)" {
+  class SessionMessage {
+    +id: TIMEUUID
+    +sessionId, authorId: UUID
+    +authorKind: HUMANO | IA | SISTEMA
+    +bodyMd: Text
+    +replyToMessageId: UUID
+    +sentAt, editedAt: Instant
+    +attachmentsJson
+    +classificationId: UUID
+    +similarityHash: String
+    +phase: DeliberationPhase <<proposta>>
+    +pinned: boolean <<proposta>>
+    +offTopic: boolean <<proposta>>
+  }
+  class MessageClassification {
+    +label: MessageClass
+    +confidence: BigDecimal
+    +hasEvidence: boolean
+    +evidenceRefsJson
+    +linkedTaskId, linkedProjectId: UUID
+    +optionId: UUID <<proposta>>
+    +criterionId: UUID <<proposta>>
+    +toulminRole: ToulminRole <<proposta>>
+    +confirmedByUserId: UUID
+  }
+  class MessageAttachment {
+    +targetType: TASK | PROJECT | PLAN | SCENARIO | ARTIFACT | EVIDENCE
+    +targetId: UUID
+    +snapshotJson
+    +usedInDecision: boolean
+  }
+  class Divergence {
+    +originMessageId: UUID
+    +detectedByAi: boolean
+    +summary: Text
+    +partiesJson
+    +status: ABERTA | EM_RESPOSTA | RESOLVIDA | SEM_CONSENSO
+    +resolvedByReplyId, resolvedAt
+  }
+  class DivergenceReply {
+    +divergenceId, authorId, messageId: UUID
+    +resolves: boolean
+  }
+  class AiQuestion {
+    +kind: RISCO | PONTO_CRITICO | ESCLARECIMENTO
+    +questionText: Text
+    +basisMessageIds
+    +status: ABERTA | RESPONDIDA | IGNORADA
+    +answeredWithEvidence: boolean
+    +citationsJson
+  }
+  class AnalyticalSummary {
+    +versionNumber: int
+    +argumentsJson, consensusJson, divergencesJson
+    +risksJson, attentionPointsJson
+    +recommendationsJson
+    +evaluationCriteriaJson
+    +complianceResultId: UUID
+    +status: RASCUNHO | PUBLICADO
+    +live: boolean <<proposta>>
+  }
+  class SummaryScenario {
+    +name, description
+    +advantagesJson, disadvantagesJson
+    +criteriaScoresJson
+    +linkedProjectScenarioId: UUID
+  }
+  enum MessageClass <<enum>> {
+    ARGUMENTO
+    DIVERGENCIA
+    RISCO
+    CONSENSO
+    PERGUNTA
+    RUIDO
+    EVIDENCIA <<proposta>>
+    PROPOSTA <<proposta>>
+  }
+  enum ToulminRole <<enum>> {
+    ALEGACAO
+    DADO
+    GARANTIA
+    APOIO
+    QUALIFICADOR
+    REFUTACAO
+  }
+}
+
+package "Mesa do DECIA (proposta)" {
+  class DecisionOption <<proposta>> {
+    +sessionId: UUID
+    +title: String
+    +description: Text
+    +proposedBy: UUID (user ou IA)
+    +status: EM_DISCUSSAO | RETIRADA | ESCOLHIDA | DESCARTADA
+    +consentJson {userId: APOIO|ABSTENCAO|OBJECAO}
+    +scenarioId: UUID (SummaryScenario)
+    +projectScenarioId: UUID (RF31)
+    +sortOrder: int
+  }
+  class DecisionCriterion <<proposta>> {
+    +sessionId: UUID
+    +name: String
+    +weight: int
+    +source: PLANO_ANUAL | CHECKLIST_RF32 | GRUPO | IA
+    +planAxisId: UUID
+  }
+  class OptionCriterionScore <<proposta>> {
+    +optionId, criterionId: UUID
+    +score: 1..5
+    +evidenceMessageIds
+    +setBy: IA | userId
+  }
+  class SessionBoardItem <<proposta>> {
+    +sessionId: UUID
+    +refType: MESSAGE | TASK | ARTIFACT | QUESTION | DIVERGENCE | NOTE
+    +refId: UUID
+    +optionId, criterionId: UUID (nulos = estacionamento)
+    +x, y, scale, rotation, layer (visão livre)
+    +pinned, dimmed: boolean
+  }
+}
+
+package "Minuta Coletiva (proposta — coedição)" {
+  class SessionDocument <<proposta>> {
+    +sessionId: UUID
+    +title: String
+    +kind: MINUTA | ATA | CHECKLIST
+    +crdtDocId: String
+    +readOnly: boolean
+    +lockedSectionsJson
+    +maxEditors: int (padrão 10)
+    +externalAiAllowed: boolean (false se RESTRITO/SIGILOSO)
+    +linkedTaskId: UUID
+    +version: int
+  }
+  class DocumentSection <<proposta>> {
+    +documentId: UUID
+    +anchor: String
+    +title: String
+    +assigneeId: UUID
+    +status: ABERTA | EM_REDACAO | REVISAO | FECHADA
+  }
+  class DocumentSnapshot <<proposta>> {
+    +documentId: UUID
+    +version: int
+    +stateMediaId: UUID (S3, update Yjs)
+    +contentMd: Text
+    +authorsJson
+    +reason: MANUAL | FASE | DECISAO | PERIODICO
+    +at: Instant
+  }
+  class DocumentComment <<proposta>> {
+    +documentId: UUID
+    +anchorJson (relative position CRDT)
+    +authorId: UUID
+    +bodyMd: Text
+    +kind: COMENTARIO | SUGESTAO
+    +status: ABERTO | ACEITO | REJEITADO | RESOLVIDO
+    +messageId: UUID (eco no chat)
+  }
+}
+
+package "Decisão, revisão e rastro (§5.11–5.15)" {
+  class FinalDecision {
+    +summaryId: UUID
+    +decisionText, rationale: Text
+    +chosenScenarioId: UUID
+    +chosenOptionId: UUID <<proposta>>
+    +proposedByAi: boolean
+    +status: PROPOSTA | EM_REVISAO | VALIDADA | DEVOLVIDA | SUBSTITUIDA
+    +reviewId, resultingTaskId: UUID
+    +stampJson {kind, date, reviewerName}
+    +citationsJson
+  }
+  class DecisionReview {
+    +reviewerId: UUID
+    +outcome: VALIDADA | DEVOLVIDA
+    +reason: Text
+    +reviewedAt, notifiedGroupAt
+  }
+  class ReopenRequest {
+    +decisionId: UUID
+    +requestedBy: IA | user
+    +justification: Text (≥ 20)
+    +status: PENDENTE | ACEITA | RECUSADA
+    +votesJson
+    +votingDeadlineAt: Instant
+  }
+  class SessionArtifact {
+    +kind: RELATORIO | ATA | CHECKLIST | RESUMO_PDF
+    +title, contentMd
+    +mediaObjectId: UUID
+    +convertedTaskId: UUID
+  }
+  class DecisionTraceNode {
+    +nodeType: TraceNodeType
+    +refId: UUID
+    +classLabel: MessageClass
+    +actorId: UUID
+    +snapshotJson
+  }
+  class DecisionTraceEdge {
+    +fromNodeId, toNodeId: UUID
+    +relation: ORIGINOU | CLASSIFICOU | RESPONDEU | RESUMIU | DECIDIU | REVISOU | TRANSFORMOU_EM | ANEXOU | VERIFICOU | EDITOU <<proposta>>
+  }
+  class Meeting {
+    +sessionId, projectId: UUID
+    +source: GRAVACAO_NAVEGADOR | ARQUIVO | TRANSCRICAO_COLADA
+    +status: GRAVANDO | TRANSCREVENDO | ATA_PROPOSTA | CONFIRMADA | CONTESTADA
+    +minutesTaskId: UUID
+    +ratificationDeadlineAt: Instant
+  }
+}
+
+DeciaSession "1" *-- "2..*" SessionParticipant
+DeciaSession "1" *-- "*" SessionMessage
+DeciaSession "1" *-- "*" SessionPhaseLog
+DeciaSession "1" o-- "*" SessionTimer
+DeciaSession --> SessionStatus
+DeciaSession --> DeliberationPhase
+SessionParticipant --> ParticipantRole
+DeciaSession --> SessionAccess
+SessionMessage "1" -- "0..1" MessageClassification
+SessionMessage "1" *-- "0..5" MessageAttachment
+MessageClassification --> MessageClass
+MessageClassification --> ToulminRole
+SessionMessage "1" <-- "0..1" Divergence : originMessageId
+Divergence "1" *-- "*" DivergenceReply
+DeciaSession "1" *-- "*" AiQuestion
+DeciaSession "1" *-- "1..*" AnalyticalSummary
+AnalyticalSummary "1" *-- "2..*" SummaryScenario
+DeciaSession "1" *-- "*" DecisionOption
+DeciaSession "1" *-- "*" DecisionCriterion
+DecisionOption "1" *-- "*" OptionCriterionScore
+DecisionCriterion "1" -- "*" OptionCriterionScore
+DeciaSession "1" *-- "*" SessionBoardItem
+SessionBoardItem --> "0..1" DecisionOption
+SessionBoardItem --> "0..1" DecisionCriterion
+MessageClassification --> "0..1" DecisionOption
+DecisionOption --> "0..1" SummaryScenario
+DeciaSession "1" *-- "0..1" SessionDocument
+SessionDocument "1" *-- "*" DocumentSection
+SessionDocument "1" *-- "*" DocumentSnapshot
+SessionDocument "1" *-- "*" DocumentComment
+AnalyticalSummary "1" <-- "0..*" FinalDecision
+FinalDecision "1" -- "0..1" DecisionReview
+FinalDecision "1" -- "0..1" ReopenRequest
+FinalDecision --> "0..1" DecisionOption : chosenOptionId
+DeciaSession "1" *-- "*" SessionArtifact
+DeciaSession "1" *-- "*" DecisionTraceNode
+DecisionTraceNode "1" -- "*" DecisionTraceEdge
+DeciaSession "1" o-- "*" Meeting
+SessionDocument ..> SessionArtifact : vira ATA/RELATORIO ao validar
+SessionDocument ..> DecisionTraceNode : toda edição → nó EDITOU (proposta)
+@enduml

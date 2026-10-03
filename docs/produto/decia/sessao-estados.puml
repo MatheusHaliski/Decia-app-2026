@@ -1,0 +1,100 @@
+@startuml DECIA_Sessao_Estados
+title DECIA — Máquina de estados da sessão (proposta de novo enum SessionStatus)\nFonte: TAXONOMIA §5.1 (PROPOSTA·ATIVA·EM_RESUMO·EM_DECISAO·EM_REVISAO·REABERTA·ENCERRADA·ARQUIVADA) reconciliada com RF4–RF17, RF29, RF37
+!pragma layout smetana
+skinparam backgroundColor #FFFFFF
+skinparam state {
+  BackgroundColor #F4F2EF
+  BorderColor #4A4852
+  ArrowColor #4A4852
+  FontColor #1B1F26
+}
+skinparam state<<ia>> {
+  BackgroundColor #FFF3DC
+  BorderColor #E39B12
+}
+skinparam state<<humano>> {
+  BackgroundColor #E6F0FA
+  BorderColor #1B4F8A
+}
+skinparam state<<terminal>> {
+  BackgroundColor #E9E7E2
+  BorderColor #8A8782
+}
+
+[*] --> RASCUNHO : grupo propõe (RF5)\nou "Abrir sessão DECIA" no projeto (RF29.CA01)
+
+state RASCUNHO <<humano>> : equivale a PROPOSTA (TAXONOMIA)\ntema, objetivo (1 frase), acesso, aiMode editáveis (RF4)\nadmin aceita/recusa (RF5)
+state AGENDADA <<humano>> : [proposta] scheduledAt + convites\nIA prepara contexto: tarefas do projeto,\nprecedentes RF33, pauta sugerida
+state CANCELADA <<terminal>> : [proposta] recusa (Q-26) ou\ncancelamento de AGENDADA, com motivo
+
+RASCUNHO --> AGENDADA : admin aceita e marca data (RF5)
+RASCUNHO --> ABERTA : admin inicia já (RF5, ≥ 2 humanos)
+RASCUNHO --> CANCELADA : admin recusa com motivo
+AGENDADA --> ABERTA : admin inicia (ou início automático\nem scheduledAt se ≥ 2 presentes)
+AGENDADA --> CANCELADA : admin cancela / 7 dias sem início
+
+state ABERTA <<humano>> {
+  state "Fase (DeliberationPhase)" as FASES {
+    [*] --> CONTEXTO
+    CONTEXTO : obrigatória · IA abre com objetivo,\nanexos do projeto e precedentes (RF33.CA03)
+    DIVERGIR : sugerida · todos se manifestam\n(rodada tipo grupo nominal)
+    ESCLARECER : condicional · divergências (RF8/RF10)\ne perguntas críticas (RF16) abertas
+    CONVERGIR : sugerida · IA agrupa opções,\nrodada de consentimento/objeções
+    DECIDIR : obrigatória · admin aciona "Gerar resumo"
+    CONTEXTO --> DIVERGIR : IA/admin avança
+    DIVERGIR --> ESCLARECER : divergência ou pergunta aberta
+    DIVERGIR --> CONVERGIR : sem pendência
+    ESCLARECER --> CONVERGIR : divergências RESOLVIDAS/SEM_CONSENSO\ne perguntas RESPONDIDAS/IGNORADAS
+    CONVERGIR --> ESCLARECER : nova divergência (volta)
+    CONVERGIR --> DECIDIR : admin (ou IA sugere ≥ N% convergência)
+  }
+}
+note right of ABERTA
+  Equivale a ATIVA (TAXONOMIA). Mensagens (RF6), classificação (RF7),
+  divergências/perguntas (RF8/RF10/RF16), participantes (RF9),
+  anexos do acervo (RF29.CA03), Ata Viva (RF37), Mesa e Minuta.
+  Fases guiam, não bloqueiam (phaseMode GUIADO | LIVRE | ESTRITO).
+  Inatividade 7 d → IA sugere convergir; admin pode encerrar (RF17.CA02).
+end note
+
+ABERTA --> CONVERGINDO : DECIDIR → "Gerar resumo" (RF11)
+state CONVERGINDO <<ia>> : equivale a EM_RESUMO · IA gera AnalyticalSummary\n(≥ 2 cenários, critérios, citações)\nchat em leitura; admin revisa e publica
+CONVERGINDO --> ABERTA : IA indisponível (RF43.CA01)\nou admin devolve o rascunho ao grupo
+CONVERGINDO --> DECISAO_PROPOSTA : resumo PUBLICADO →\nFinalDecision PROPOSTA (RF12.CA01)
+
+state DECISAO_PROPOSTA <<ia>> : equivale a EM_DECISAO · texto, justificativa,\ncenário escolhido; admin edita (RF12.CA03)\nou pede nova proposta (RF12.CA04)
+DECISAO_PROPOSTA --> EM_REVISAO : admin encaminha ao revisor (RF12.CA02)
+DECISAO_PROPOSTA --> ABERTA : admin reabre a deliberação\n(resumo marcado desatualizado)
+
+state EM_REVISAO <<humano>> : revisor = adminUserId (CHEFE/ADMIN)\nchat somente leitura · prazo 5 dias úteis (proposta)\nfila "Decisões pendentes" (RF28.CA06)
+EM_REVISAO --> VALIDADA : outcome VALIDADA (RF15.CA02)
+EM_REVISAO --> DEVOLVIDA : outcome DEVOLVIDA + motivo (RF15.CA03)
+
+state VALIDADA <<humano>> : carimbo VALIDADO (RF38.CA06)\ntarefa ATA_REGISTRO em APROVAÇÃO (RF29.CA05)\nprojeto → APROVADO · +15 DP × qualidade (RF42)\nartefatos RELATÓRIO/ATA/CHECKLIST (RF13)
+VALIDADA --> ENCERRADA : automático após artefatos\n(ou admin encerra) — RF17.CA01
+
+state DEVOLVIDA <<humano>> : carimbo DEVOLVIDO + motivo fixado\nIA cria ReopenRequest justificado (RF14.CA01)\nvotação do grupo até votingDeadlineAt (48 h)
+DEVOLVIDA --> REABERTA : ReopenRequest ACEITA\n(admin ou maioria simples, RF14.CA02)
+DEVOLVIDA --> ENCERRADA : ReopenRequest RECUSADA →\nadmin encerra com motivo (RF17.CA02)
+
+state REABERTA <<humano>> : mesmo comportamento de ABERTA\nreopenCount++ · fase volta a ESCLARECER\nmotivo da devolução fixado no topo (RF14.CA05)
+REABERTA --> CONVERGINDO : novo ciclo RF11 → RF12 → RF15\n(decisão DEVOLVIDA → SUBSTITUIDA)
+REABERTA --> ENCERRADA : admin encerra sem decisão (motivo)
+
+ABERTA --> ENCERRADA : admin encerra sem decisão (motivo obrigatório)\n409 REVISAO_PENDENTE se há decisão EM_REVISAO (Q-19)
+
+state ENCERRADA <<terminal>> : closedAt · leitura · +2 DP presença (RF42)\nMinuta Coletiva vira somente leitura
+ENCERRADA --> ARQUIVADA : AFTER_COMMIT: export JSON+PDF → S3,\nSessionArchive, INDEXAR_MEMORIA (RF17.CA03, RF33.CA01)
+state ARQUIVADA <<terminal>> : navegável após TTL do Cassandra (RF29.CA06)\nhistórico base do Dossiê (RF36)
+ARQUIVADA --> [*]
+CANCELADA --> [*]
+
+legend right
+  |= Cor |= Quem conduz |
+  |<#E6F0FA> azul | pessoa (CHEFE/EMPREGADO/EMPRESA) |
+  |<#FFF3DC> âmbar | IA (faísca ✦), sempre com confirmação humana |
+  |<#E9E7E2> cinza | terminal |
+  Estados novos em relação à TAXONOMIA §5.1: AGENDADA, CANCELADA, VALIDADA, DEVOLVIDA (proposta).
+  Renomeações: PROPOSTA→RASCUNHO, ATIVA→ABERTA, EM_RESUMO→CONVERGINDO, EM_DECISAO→DECISAO_PROPOSTA.
+endlegend
+@enduml

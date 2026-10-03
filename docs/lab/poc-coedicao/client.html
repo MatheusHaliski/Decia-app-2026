@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PoC coedição — Minuta Coletiva (Yjs + y-websocket)</title>
+<!-- Sem bundler: os módulos vêm de /vendor/<pacote> (node_modules servidos pelo server.mjs com a condição "browser"). -->
+<script type="importmap">
+{ "imports": {
+  "yjs": "/vendor/yjs",
+  "y-websocket": "/vendor/y-websocket",
+  "y-protocols/": "/vendor/y-protocols/",
+  "lib0/": "/vendor/lib0/"
+} }
+</script>
+<style>
+  :root { --ink:#1B1F26; --muted:#5A6069; --line:#D8D4C8; --surface:#fff; --ground:#F3F1EA; --primary:#1B4F8A; --spark:#C78810;
+    --c-vermelho:#D1343A; --c-amarelo:#CA840A; --c-verde:#2E9D5B; --c-azul:#2F79C0; --c-marrom:#8B5E34; --c-laranja:#E8751C; }
+  body { margin:0; font: 14px/1.5 "Public Sans", system-ui, sans-serif; color:var(--ink); background:var(--ground); }
+  header { display:flex; gap:12px; align-items:center; padding:10px 16px; background:var(--surface); border-bottom:1px solid var(--line); }
+  header h1 { font: 600 17px Georgia, serif; margin:0; }
+  #status { font: 11px ui-monospace, monospace; padding:2px 8px; border-radius:999px; border:1px solid var(--line); }
+  #status[data-ok="true"] { border-color:var(--c-verde); color:var(--c-verde); }
+  #presence { display:flex; gap:4px; margin-left:auto; }
+  .av { width:26px; height:26px; border-radius:50%; display:grid; place-items:center; color:#fff; font: 700 10px ui-monospace, monospace; border:2px solid var(--surface); }
+  main { max-width:860px; margin:16px auto; padding:0 16px; display:grid; gap:12px; }
+  .doc { position:relative; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:24px 28px; min-height:360px; }
+  #editor { min-height:300px; outline:none; white-space:pre-wrap; font: 15px/1.6 Georgia, serif; }
+  #editor:empty::before { content:"Comece a minuta…"; color:var(--muted); }
+  .cursor { position:absolute; width:2px; pointer-events:none; }
+  .cursor::after { content:attr(data-name); position:absolute; top:-18px; left:-1px; font: 600 10px system-ui; color:#fff; background:inherit; padding:1px 5px; border-radius:3px; white-space:nowrap; }
+  .meta { font-size:12px; color:var(--muted); display:flex; gap:16px; flex-wrap:wrap; }
+  .meta code { font: 11px ui-monospace, monospace; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Minuta Coletiva · PoC</h1>
+  <span id="status" data-ok="false">conectando…</span>
+  <span id="me" class="meta"></span>
+  <div id="presence" aria-label="presença"></div>
+</header>
+<main>
+  <div class="doc">
+    <div id="editor" contenteditable="true" spellcheck="false" aria-label="minuta coletiva"></div>
+    <div id="cursors"></div>
+  </div>
+  <p class="meta">
+    <span>sala <code id="room"></code></span>
+    <span>clientID <code id="cid"></code></span>
+    <span>updates recebidos <code id="updates">0</code></span>
+    <span>última latência remota→local <code id="lat">—</code></span>
+  </p>
+</main>
+<script type="module">
+import * as Y from 'yjs';
+import { WebsocketProvider } from 'y-websocket';
+
+const q = new URLSearchParams(location.search);
+const room = q.get('room') || 'minuta-demo';
+const user = q.get('user') || 'Anônimo';
+const colors = { vermelho:'#D1343A', amarelo:'#CA840A', verde:'#2E9D5B', azul:'#2F79C0', marrom:'#8B5E34', laranja:'#E8751C' };
+const colorName = q.get('cor') || Object.keys(colors)[Math.floor(Math.random()*6)];
+const color = colors[colorName] || colors.azul;
+
+const doc = new Y.Doc();
+const wsUrl = (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host;
+const provider = new WebsocketProvider(wsUrl, room, doc);
+const ytext = doc.getText('minuta');
+const awareness = provider.awareness;
+awareness.setLocalStateField('user', { name: user, color, colorName });
+
+const $ = (id) => document.getElementById(id);
+$('room').textContent = room; $('cid').textContent = doc.clientID;
+$('me').textContent = `você: ${user} (${colorName})`;
+provider.on('status', (e) => { $('status').textContent = e.status; $('status').dataset.ok = String(e.status === 'connected'); });
+provider.on('sync', (s) => { if (s) $('status').textContent = 'connected · sync'; });
+
+/* ---------- ligação textarea/contenteditable ⇄ Y.Text (texto plano; diff mínimo por prefixo/sufixo) ---------- */
+const editor = $('editor');
+let applyingRemote = false;
+let updates = 0;
+
+function render() {
+  const sel = getCaret();
+  editor.textContent = ytext.toString();
+  if (sel != null) setCaret(sel);
+}
+function getCaret() {
+  const s = window.getSelection();
+  if (!s || s.rangeCount === 0 || !editor.contains(s.anchorNode)) return null;
+  const r = s.getRangeAt(0).cloneRange(); r.selectNodeContents(editor); r.setEnd(s.anchorNode, s.anchorOffset);
+  return r.toString().length;
+}
+function setCaret(pos) {
+  const node = editor.firstChild; if (!node) return;
+  const s = window.getSelection(); const r = document.createRange();
+  const p = Math.min(pos, node.textContent.length); r.setStart(node, p); r.collapse(true); s.removeAllRanges(); s.addRange(r);
+}
+editor.addEventListener('input', () => {
+  if (applyingRemote) return;
+  const before = ytext.toString(), after = editor.textContent;
+  let i = 0; while (i < before.length && i < after.length && before[i] === after[i]) i++;
+  let j = 0; while (j < before.length - i && j < after.length - i && before[before.length-1-j] === after[after.length-1-j]) j++;
+  doc.transact(() => {
+    if (before.length - i - j > 0) ytext.delete(i, before.length - i - j);
+    if (after.length - i - j > 0) ytext.insert(i, after.slice(i, after.length - j));
+  }, 'local');
+  publishCursor();
+});
+ytext.observe((ev, tr) => {
+  if (tr.origin === 'local') return;
+  applyingRemote = true; render(); applyingRemote = false;
+  updates++; $('updates').textContent = updates;
+  // latência: quem digita grava Date.now() no awareness (campo typedAt); aqui comparamos ao recebimento do update
+  const states = [...awareness.getStates().values()];
+  const t = Math.max(0, ...states.map(s => s.typedAt || 0));
+  if (t) $('lat').textContent = (Date.now() - t) + ' ms';
+  window.__lastRemoteUpdateAt = Date.now();
+});
+document.addEventListener('selectionchange', publishCursor);
+function publishCursor() {
+  const pos = getCaret(); if (pos == null) return;
+  awareness.setLocalStateField('cursor', { pos, typedAt: Date.now() });
+  awareness.setLocalStateField('typedAt', Date.now());
+}
+
+/* ---------- presença: avatares + cursores coloridos ---------- */
+function drawPresence() {
+  const pres = $('presence'); pres.innerHTML = '';
+  const curs = $('cursors'); curs.innerHTML = '';
+  for (const [cid, st] of awareness.getStates()) {
+    if (!st.user) continue;
+    const a = document.createElement('span'); a.className = 'av'; a.style.background = st.user.color;
+    a.title = `${st.user.name} · ${st.user.colorName}`; a.textContent = st.user.name.slice(0, 2).toUpperCase(); pres.appendChild(a);
+    if (cid !== doc.clientID && st.cursor) {
+      const rect = caretRect(st.cursor.pos);
+      if (rect) { const c = document.createElement('span'); c.className = 'cursor'; c.dataset.name = st.user.name; c.style.background = st.user.color;
+        c.style.left = rect.left + 'px'; c.style.top = rect.top + 'px'; c.style.height = rect.height + 'px'; curs.appendChild(c); }
+    }
+  }
+  window.__presenceCount = awareness.getStates().size;
+}
+function caretRect(pos) {
+  const node = editor.firstChild; const docEl = editor.parentElement.getBoundingClientRect();
+  if (!node) { const r = editor.getBoundingClientRect(); return { left: r.left - docEl.left, top: r.top - docEl.top, height: 22 }; }
+  const r = document.createRange(); const p = Math.min(pos, node.textContent.length); r.setStart(node, p); r.collapse(true);
+  const rr = r.getClientRects()[0] || editor.getBoundingClientRect();
+  return { left: rr.left - docEl.left, top: rr.top - docEl.top, height: rr.height || 22 };
+}
+awareness.on('change', drawPresence);
+provider.on('sync', () => { render(); drawPresence(); });
+window.__poc = { doc, ytext, provider, awareness };
+</script>
+</body>
+</html>
