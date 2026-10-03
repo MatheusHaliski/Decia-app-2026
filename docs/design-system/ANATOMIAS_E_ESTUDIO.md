@@ -853,3 +853,65 @@ Casos de teste (= `card-art.test.ts:6-45` adaptados; `vitest`):
 - Estúdio: `OptionStrip` com `role="group"` + rótulo; tiles com `aria-pressed`; layouts bloqueados com `aria-disabled` e motivo (`background-studio.tsx:195-198`); tabs dos segmentos com setas; prévia `role="img"` com rótulo "prévia no feed/ampliada" (`piece-art-editor.tsx:149`); `aria-live` para "N de 2 destaques" (= `:108`).
 - Movimento: `prefers-reduced-motion` e `data-reduce-motion` desligam pulso, malha e faísca; o card já aparece "montado" (= Blocos com reduzir movimento, `scheme-anatomies.tsx:426`).
 - i18n: `labelKey` em pt-BR/en/es para layouts, estilos, skins e tooltips (como os `tr()` de `scheme-anatomies.tsx:14-26`).
+
+---
+
+## 6. (E) Lacunas e decisões
+
+O que o board **não** define, com opções e recomendação. As perguntas (P-nn) são numeradas aqui e podem entrar em `DECISOES.md` a partir de **Q-48** (a última é Q-47).
+
+| # | Lacuna | Opções | Recomendação |
+|---|---|---|---|
+| P-01 | **Lista de tipos**: o card RF20 lista 13 tipos (`board › RF20` Etapa 3, inclui E-MAIL e PROTOCOLO); `board › Identidade §1` lista 11 (sem E-MAIL/PROTOCOLO); `TAXONOMIA §13` tem 15 (+ CRONOGRAMA, ESTUDO_TECNICO_PRELIMINAR). | (a) 13 do RF20; (b) 15 da taxonomia; (c) 13 + os dois derivados como *subtipos* de DOCUMENTO/PLANILHA. | **(b)**: CRONOGRAMA e ETP nascem do RF34/RF43 e precisam de glifo próprio (já existem na família `--type-*`, `DESIGN_SYSTEM §2.3`). Confirmar os 2 glifos a mais. |
+| P-02 | **Catálogo de layouts**: o board só pede "thumbnail automático ou capa manual/IA; skin; pré-visualização" (`board › RF20` Etapa 5) e "capa-mosaico + barra de fases" (`board › RF5`). Os 6+6 layouts de §5.1 são proposta. | (a) só PAGINA/LINHA + MOSAICO/COMPACTO na v1; (b) catálogo completo; (c) completo, mas os de seção B atrás de feature flag. | **(c)**: entregar A + prévia na Sprint da Etapa 5; B (GRADE, PRANCHA, LINHA_TEMPO, KANBAN_MINI, PAINEL_METRICAS) quando RF34/RF43 existirem. |
+| P-03 | **Arte nas faixas do projeto**: a v1 diz "não há faixas" no projeto; esta v2 propõe faixas também no projeto (§5). | (a) só capa; (b) faixas + capa. | **(b)**, para que Mural/Vitrine/grade mostrem a mesma arte; custo zero porque o passe-partout é CSS. |
+| P-04 | **Cor do container manual × borda do departamento**: a borda de 2 px na cor do departamento (`RF38.CA09`) e uma cor de container livre podem brigar. | (a) container livre, borda sempre do departamento; (b) container limitado a 5 amostras + nativa; (c) container livre, borda do departamento vira um filete de 4 px no topo. | **(b)** na v1 (como `BOX_SWATCHES`, `background-studio.tsx:133`); `<input type="color">` livre só para skins compradas. |
+| P-05 | **Terminal e Monograma como estilos**: não estão no board; vêm da v1 (Monograma) e da substituição do LEGO (Terminal). | manter / cortar. | manter os dois: Monograma já tem prancha; Terminal é o único estilo escuro "de matéria" e substitui a função dos Blocos. |
+| P-06 | **Hype do autor no card**: `board › RF45 §3` diz "pode aparecer, opcionalmente". Quem decide — o autor (preferência) ou quem monta o card (destaque)? | (a) só preferência global do autor; (b) global + por card. | **(a)**: a preferência `HypeVisibility` já resolve; o destaque `authorHype` do Estúdio só *oculta* quando a preferência permite mostrar. |
+| P-07 | **Limiar de "Modelo consolidado"** (= Clássica do armário, 30 usos). O board não define. | 5 · 10 · 20 reutilizações; ou chancela obrigatória. | **10 reutilizações** (RF23.CA04 conta reutilizações; 30 é número de moda); e nunca por valor envolvido, como a v18 decidiu "o uso ganha a moldura, não o preço" (`v18:~1183`). |
+| P-08 | **Limite de destaques decorativos** (= 3 efeitos no FAI, `piece-art.ts:58`). | 2 · 3 · sem limite. | **2** (carimbo + movimento); a arte do WS é mais sóbria que a da moda. |
+| P-09 | **Soma topo+base**: 2,6 (v1, `tokens.css:109`) × 2,9 (v19, `v19:132`). | manter 2,6 / adotar 2,9. | manter **2,6** (mídia 3:2 é mais baixa que 4:5, sobra menos altura) e registrar como decisão. |
+| P-10 | **Gradiente livre** (ângulo e stops como `gradientCss`, `card-art.ts:50-59`) ou só presets? | livre / presets. | presets na v1 (`marca`, `dept`, `spark`); livre entra com skins compradas. |
+| P-11 | **`CoverMode` unificado** (Q-41 em aberto): tarefa AUTO/MANUAL/IA × projeto MOSAICO/FOTO/IA. | unificar em `AUTO · MANUAL · IA` (AUTO = thumbnail na tarefa, mosaico no projeto) / manter dois enums. | **unificar**; `CAPA_FOTO` exige `MANUAL|IA`. |
+| P-12 | **Lacre na zona `PHASE_BAR`** (nova) para projeto concluído e chancelado. | criar / usar COVER_CORNER. | criar: é o único lugar onde "modelo oficial" lê como conclusão de ciclo. |
+| P-13 | **Prévia idêntica ao feed**: no FAI a igualdade medida é de layout, não de pixels (~5 % de pixels diferem, `CARDS_ARTE.md:115`). Aceitar o mesmo critério? | layout / pixel. | **layout** (largura, altura, faixas, posição de 12 elementos), com teste Playwright como `verify-card-art.mjs`. |
+| P-14 | **Sugestão automática de layout/estilo por processo e natureza** (§5.2) é IA ou regra? | regra local / IA. | regra local determinística na v1 (sem custo de inferência; sem ✦); IA só para a arte gerada. |
+| P-15 | **Densidade por usuário, não por card** (⟲ `layoutDensity` do FAI, `Scheme.java:126-127`). | por usuário / por card. | por usuário (RF3): cards da mesma grade sempre com a mesma altura. |
+| P-16 | **Painel de métricas "só dono/departamento"**: quem mais pode ver SPI/CPI? Chefe de outro departamento? Empresa? | dono + dept / + empresa / todos. | dono + responsáveis + chefe do departamento + EMPRESA (dashboards RF28.CA06); os demais caem em `MOSAICO`. |
+| P-17 | **Nome "Estúdio de Arte do Card" × "editor de arte de fundo"** (título do card `board › RF11` do WS). | — | usar "Estúdio do card" na UI; "arte de fundo" só como rótulo do segmento Fundo. |
+| P-18 | **Textura blueprint em tema `blueprint`**: redundante (fundo do app já é blueprint). | desabilitar / permitir. | no tema `blueprint`, a textura blueprint vira "papel" automaticamente (como o tema `contraste` zera a arte). |
+
+### Perguntas para o dono (resumo numerado)
+
+1. (P-01) Valem os 15 tipos da taxonomia (com CRONOGRAMA e ESTUDO_TECNICO_PRELIMINAR) ou os 13 do card RF20?
+2. (P-02) O catálogo de layouts de §5.1 entra inteiro na Etapa 5 ou só os de seção A, com os de seção B atrás de flag?
+3. (P-03) O card de projeto recebe arte nas faixas (passe-partout) como o look do FAI, ou só na capa como diz a v1?
+4. (P-04) Cor do container: amostras fixas + nativa da skin na v1, e cor livre só para skins compradas?
+5. (P-05) Mantemos Terminal (substituto dos Blocos) e Monograma como estilos de fundo?
+6. (P-06) "Autor com Hype 640" no card obedece só à preferência do autor (PÚBLICO/EMPRESA/SÓ EU)?
+7. (P-07) Limiar do nível "Modelo consolidado": 10 reutilizações?
+8. (P-08) Limite de 2 destaques decorativos (carimbo + movimento) por card?
+9. (P-09) Soma topo+base fica em 2,6 × `--card-x` (v1) e não 2,9 (FAI v19)?
+10. (P-10) Gradientes só por preset na v1?
+11. (P-11) Unificar `CoverMode` em AUTO · MANUAL · IA para tarefa e projeto (fecha a Q-41)?
+12. (P-12) Criar a zona de lacre `PHASE_BAR` para projeto concluído e chancelado?
+13. (P-13) Critério de "prévia idêntica": igualdade de layout (não de pixels), medida por Playwright?
+14. (P-14) Sugestão de layout/estilo por processo e natureza como regra local, sem IA?
+15. (P-15) Densidade compacta/confortável é preferência do usuário (RF3), nunca atributo do card?
+16. (P-16) Quem vê o Painel de métricas além do dono: responsáveis, chefe do departamento e EMPRESA?
+17. (P-17) Nome na UI: "Estúdio do card"?
+18. (P-18) No tema Blueprint a textura blueprint cai para papel automaticamente?
+19. (Q-44, reiterada) Qual numeração de RF vale — a dos títulos ou a dos CAs? Este documento cita os CAs como escritos nos corpos.
+20. (Q-45, reiterada) O logo oficial ainda não está no repositório; o monograma/brasão da empresa no cabeçalho dos cards usa placeholder.
+
+---
+
+## 7. Fontes consultadas
+
+**FAI (`tcc-2026-fashion-ai-backend`)** — 25 arquivos, lidos por completo: `fai-domain/.../model/{WardrobeItem,Scheme,SchemeItem,DnaScheme,DnaSchemeItem,SchemeGrouping,Seal,SealBond}.java` (8) e enums `SchemeSlot, SealTier, SchemeStatus, SchemeOrigin, DnaCell, SealBondStatus, SealBondBasis, SealBondOrigin, SealStatus, Visibility, CreationMode, DisplayMode, ContainerOrigin, BackgroundAnimation, NarrativeType, GroupingType, AvailabilityStatus`; `fai-application/.../view/Views.java` (records `PieceView`, `SchemeItemView`, `SchemeView`); `lib/api/types.ts`; `docs/anatomias/anatomias_card_v17_1.html`, `anatomias_card_v18.html`, `anatomias_card_v19.html`, `anatomia_cards_DNA_v4_1.html`, `RF11_MOSAICO_EXEMPLO.jpg`; `components/scheme-anatomies.tsx`, `background-studio.tsx`, `piece-art-editor.tsx`, `scheme-card.tsx`, `dna-card.tsx`, `piece-card.tsx`, `card-header.tsx`; `lib/card-art.ts`, `lib/card-art.test.ts`, `lib/piece-art.ts`, `lib/skins.ts`; telas que exibem os cards (`app/(site)/(app)/{feed,closet,search}/page.tsx`, `components/lookbook-tabs.tsx`, `components/showcase/showcase-tabs.tsx`, `components/scheme-builder.tsx`, `components/dna-builder.tsx`, `app/(site)/(app)/brands/[slug]/page.tsx`); `markdowns/02-rf-reestruturados-e-criterios-aceite.md` (RF4, RF5, RF6, RF11, RF13, RF15, RF19, RF20/RF21, RF23, RF31); `docs/checklist/CARDS_ARTE_RF11_2026-09-27.md`.
+
+**Work Station** — `docs/arquitetura/TAXONOMIA.md` (§2, §3, §13), `docs/design-system/ANATOMIA_CARDS.md`, `DESIGN_SYSTEM.md`, `tokens.css`, `components.css`, `anatomias/lib/cards.mjs`, `docs/DECISOES.md` (Q-08…Q-47).
+
+**Board Trello (dump `board2.md`)** — cards: Work Station (objetivos), Mapa de equivalência, Identidade visual e estética, Chancelas, RF5 (CAs RF21.*), RF19 (CAs RF26.*), RF20 (CAs RF20.*), RF21/RF22 (Mesa), RF23, RF27, RF28, RF29, RF30, RF38, RF39, RF40, RF41, RF44, RF45.
+
+Contagem de citações distintas no corpo (arquivo:linha ou board › card/CA): ver o relatório de entrega; aproximadamente 190 referências a linhas do FAI e 70 a cards/CAs do board.
