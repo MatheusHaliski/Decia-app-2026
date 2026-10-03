@@ -427,7 +427,7 @@ sequenceDiagram
   OS-->>S: hits da aba PROJETOS + counts por índice
   S-->>C: 200 {tabs: {PROJETOS 12, TAREFAS 31, PESSOAS 2, EMPRESAS 1, CHEFES_DE_DEPARTAMENTO 1}, items}
   C-->>NX: 200
-  NX-->>U: 5 abas com contadores e filtros; resultados de outra empresa só se PUBLICA (CA04)
+  NX-->>U: 5 abas com contadores e filtros — resultados de outra empresa só se PUBLICA (CA04)
 
   U->>NX: "projetos parecidos com este" no projeto P1 (CA05)
   NX->>C: POST /api/search/similar {type PROJECT, id P1}

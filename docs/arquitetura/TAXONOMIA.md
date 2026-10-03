@@ -271,7 +271,7 @@ id · groupingId · targetType (PROJECT · TASK) · targetId · addedAt.
 id · sessionId · userId · role `ParticipantRole` (ADMIN · MEMBRO · OBSERVADOR · IA) · joinedAt · leftAt · addedBy · removedBy · removeReason · canReplyDivergence (RF10) · lastReadAt.
 
 ### 5.3 `SessionMessage` — Cassandra `messages_by_session` (partição sessionId, cluster `sentAt`, TTL) + índice MySQL `session_messages_idx` (id, sessionId, authorId, sentAt, classificationId)
-id (TIMEUUID) · sessionId · authorId · authorKind (HUMANO · IA) · bodyMd · replyToMessageId · sentAt · editedAt · deleted · attachmentsJson (ids) · classificationId · similarityHash (anti-repetição RF42) · correlationId.
+id (TIMEUUID) · sessionId · authorId · authorKind (HUMANO · IA · SISTEMA) · bodyMd · replyToMessageId · sentAt · editedAt · deleted · attachmentsJson (ids) · classificationId · similarityHash (anti-repetição RF42) · correlationId.
 
 ### 5.4 `MessageClassification` — `message_classifications` (RF7)
 id · messageId · sessionId · label `MessageClass` (ARGUMENTO · DIVERGENCIA · RISCO · CONSENSO · PERGUNTA · RUIDO) · confidence · hasEvidence (cita tarefa/fonte, RF42) · evidenceRefsJson · linkedTaskId / linkedProjectId (RF29) · rationale · aiInferenceId · confirmedByUserId (correção humana) · at.
@@ -383,7 +383,7 @@ Alvo polimórfico `TargetType`: TASK · PROJECT · PLAN · KIT · PROJECT_TASK �
 ### 8.5 `Remix` — `remixes` — id · actorId · sourceType · sourceId · resultType · resultId · modelOfferId · ledgerEntryId · at.
 ### 8.6 `Follow` — `follows` — id · followerId · targetType (USER · DEPARTMENT · COMPANY) · targetId · status · at. Único.
 ### 8.7 `MuralEntry` — `mural_entries` (+ Cassandra `timeline_by_user`) — id · companyId · departmentId · kind (COMPARTILHAMENTO · DECISAO_VALIDADA · PROJETO_PUBLICADO · RECONHECIMENTO · META · DESTAQUE · IMPULSO) · targetType · targetId · actorId · boostUntil · at.
-### 8.8 `Notification` — Cassandra `notifications_by_user` (TTL) + `notifications` — id · recipientId · actorId · type `NotificationType` · category (SOCIAL · DECIA · PRAZO · CHANCELA · PONTOS · SISTEMA) · resourceType · resourceId · title · body · payloadJson · groupKey (agrupamento por hora) · read · readAt · deliveredChannels.
+### 8.8 `Notification` — Cassandra `notifications_by_user` (TTL) + `notifications` — id · recipientId · actorId · type `NotificationType` (SESSAO_PROPOSTA · SESSAO_INICIADA · PARTICIPANTE_ADICIONADO · PARTICIPANTE_REMOVIDO · DIVERGENCIA_DETECTADA · PERGUNTA_IA · RESUMO_PUBLICADO · DECISAO_PROPOSTA · DECISAO_VALIDADA · DECISAO_DEVOLVIDA · REABERTURA · ARTEFATO · PRAZO_PROXIMO · PRAZO_VENCIDO · REACAO · COMENTARIO · MENCAO · REMIX · CHANCELA_ESTADO · INDICACAO · BENEFICIO · PONTOS · META · RECONHECIMENTO · TAREFA_DO_DIA · TRANSICAO · SISTEMA) · category (SOCIAL · DECIA · PRAZO · CHANCELA · PONTOS · SISTEMA) · resourceType · resourceId · title · body · payloadJson · groupKey (agrupamento por hora) · read · readAt · deliveredChannels.
 ### 8.9 `TimelineEvent` — Cassandra `timeline_by_user` — userId · at (cluster desc) · eventType · targetType · targetId · payloadJson.
 
 ---
@@ -412,7 +412,7 @@ id · userId · scoreDate · score (0–1000) · bandCode · blocksJson {produca
 ## 10. IA do sistema (RF7, RF11, RF30, RF33, RF34, RF43)
 
 ### 10.1 `AiInferenceLog` (= FAI) — `ai_inference_log`
-id · userId · departmentId · capability `AiCapability` (CLASSIFICAR_MENSAGEM · DETECTAR_DIVERGENCIA · FORMULAR_PERGUNTA · RESUMO_ANALITICO · DECISAO_FINAL · ARTEFATO · PREENCHER_TAREFA · COMPOR_PROJETO · AUTOPILOT_PROJETO · AUTOPILOT_TAREFAS · SIMULAR_CENARIO · CONFORMIDADE · MEMORIA_BUSCA · EXTRAIR_DESENHO · EXTRAIR_DOCUMENTO · TRANSCREVER · ATA_VIVA · SUGERIR_CHANCELA · AVALIAR_POLITICA · TAREFA_DO_DIA · HSE · HYPE_PERFIL · INSIGHT · DOSSIE · THUMBNAIL · CAPA_IA) · hostRf · provider (CLAUDE · GEMINI · LOCAL) · model · mode (ECONOMIA · AVANCADO) · latencyMs · inputTokens · outputTokens · estimatedCostUsd · result (OK · FALLBACK · ERRO · BLOQUEADO_SIGILO) · fallbackUsed · maskedFields · inputSummaryJson · outputSummary · confidence · reviewedBy · reviewedAt · quotaSource (MENSAL · CREDITO · PONTOS) · correlationId · createdAt.
+id · userId · departmentId · capability `AiCapability` (ABRIR_SESSAO · CLASSIFICAR_MENSAGEM · DETECTAR_DIVERGENCIA · FORMULAR_PERGUNTA · RESUMO_ANALITICO · DECISAO_FINAL · ARTEFATO · PREENCHER_TAREFA · COMPOR_PROJETO · AUTOPILOT_PROJETO · AUTOPILOT_TAREFAS · SIMULAR_CENARIO · CONFORMIDADE · MEMORIA_BUSCA · EXTRAIR_DESENHO · EXTRAIR_DOCUMENTO · TRANSCREVER · ATA_VIVA · SUGERIR_CHANCELA · AVALIAR_POLITICA · TAREFA_DO_DIA · HSE · HYPE_PERFIL · INSIGHT · DOSSIE · THUMBNAIL · CAPA_IA) · hostRf · provider (CLAUDE · GEMINI · LOCAL) · model · mode (ECONOMIA · AVANCADO) · latencyMs · inputTokens · outputTokens · estimatedCostUsd · result (OK · FALLBACK · ERRO · BLOQUEADO_SIGILO) · fallbackUsed · maskedFields · inputSummaryJson · outputSummary · confidence · reviewedBy · reviewedAt · quotaSource (MENSAL · CREDITO · PONTOS) · correlationId · createdAt.
 
 ### 10.2 `AiQuota` — Redis (`quota:{scope}:{id}:{month}`) + `ai_quotas` — scope (USER · DEPARTMENT) · scopeId · monthKey · monthlyLimit · consumed · purchasedCredits · resetAt.
 ### 10.3 `AiProviderCircuitState` — Redis — provider · state (CLOSED · OPEN · HALF_OPEN) · failures · openedAt.
@@ -441,7 +441,7 @@ id · subjectType (EMPREGADO · GESTAO) · subjectUserId · groupingId · reques
 
 ### 12.1 `AuditLog` (= FAI) — `audit_log` — id · actorId · action · resourceType · resourceId · result · ip · userAgent · correlationId · metadataJson (sanitizado) · at.
 ### 12.2 `DomainEventOutbox` — `domain_events` — id · aggregateType · aggregateId · eventType · payloadJson · occurredAt · publishedAt · attempts. Observer AFTER_COMMIT.
-### 12.3 `PipelineJob` (= FAI) — `pipeline_jobs` — id · type (THUMBNAIL · OCR · ANTIVIRUS · SYNC_EXTERNO · INDEXAR_MEMORIA · EXPORT_PDF · TRANSCRICAO · RECALC_HYPE · RECALC_RANKING · RECALC_METRICS) · targetType · targetId · status (PENDENTE · RODANDO · OK · FALHA · REPROCESSAR) · attempts · lastError · scheduledAt · finishedAt.
+### 12.3 `PipelineJob` (= FAI) — `pipeline_jobs` — id · type (THUMBNAIL · OCR · ANTIVIRUS · SYNC_EXTERNO · INDEXAR_MEMORIA · EXPORT_PDF · TRANSCRICAO · RECALC_HYPE · RECALC_RANKING · RECALC_METRICS · PERGUNTA_ADIADA) · targetType · targetId · status (PENDENTE · RODANDO · OK · FALHA · REPROCESSAR) · attempts · lastError · scheduledAt · finishedAt.
 ### 12.4 `FeatureFlag` — `feature_flags` — key · enabled · scope · rolloutJson. Flags obrigatórias: `redis.enabled`, `cassandra.enabled`, `opensearch.enabled`, `storage.s3`, `ai.provider.claude`, `ai.provider.gemini`, `ai.local.only`.
 ### 12.5 `MediaObject` — S3/MinIO + `media_objects` — id · bucket · key · mimeType · sizeBytes · sha256 · ownerId · accessClass · variantsJson (thumb, preview) · createdAt.
 ### 12.6 `DataExportRequest` (= FAI, LGPD) — `data_export_requests` — id · userId · status · mediaId · requestedAt · completedAt.
