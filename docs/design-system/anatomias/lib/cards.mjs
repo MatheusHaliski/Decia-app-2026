@@ -161,7 +161,7 @@ function tarefaAmpliado(d, { W = 420 } = {}) {
   const tl = wrap(d.title, 34, 2); parts.push(lines(ix, y + 16, tl, 24, { fam: 'serif', size: 20, weight: 600 })); const titleY = y; y += tl.length * 24 + 6;
   parts.push(rect(ix, y, 24, 24, { fill: `${TASK_TYPE_TOKEN(d.type)}-soft`, rx: 6 }) + iconAt(typeIcon(d), ix + 3, y + 3, 18, v(typeTok(d))) + text(ix + 30, y + 16, `${d.category} · ${d.type.replace('_', ' ')} · ${d.ext?.toUpperCase() ?? ''}`, { fam: 'mono', size: 10, weight: 600, fill: 'muted', upper: true, tracking: '.06em' }));
   const t1 = stateTag(ix + iw - 118, y + 2, d.state ?? 'disponivel'); parts.push(t1.svg); y += 32;
-  const sl = wrap(d.summary, 70, 3); parts.push(lines(ix, y + 11, sl, 15, { fam: 'sans', size: 12, fill: 'ink' })); const sumY = y; y += sl.length * 15 + 10;
+  const sl = wrap(d.summary, 56, 3); parts.push(lines(ix, y + 11, sl, 15, { fam: 'sans', size: 12, fill: 'ink' })); const sumY = y; y += sl.length * 15 + 10;
   // grade de metadados
   const meta = [['Prazo', d.due + ' · 2026', 'relogio'], ['Prazo legal', '20 OUT (Lei 14.133, art. 18)', 'balanca'], ['Acesso', d.access, 'cadeado'], ['Situação do documento', d.docSit, 'formulario'], ['Esforço', d.effort, 'cronograma'], ['Origem', 'Interna · vinculado (Drive)', 'link']];
   const colW = iw / 2; const metaY = y;
