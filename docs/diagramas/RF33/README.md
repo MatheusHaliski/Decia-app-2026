@@ -4,14 +4,14 @@
 
 **Critérios de aceite cobertos:** RF33.CA01 · RF33.CA02 · RF33.CA03 · RF33.CA04 · RF33.CA05 · RF33.CA06
 
-> Contextos da TAXONOMIA: **10. IA do sistema** (`InstitutionalMemoryDocument` no índice OpenSearch `wai-memory`, `Citation` valor embutido, `MemoryQuery`, `AiInferenceLog` capability `MEMORIA_BUSCA`), **5. DECIA** (`DeciaSession.indexedInMemory`, `AiQuestion.citationsJson`, `AnalyticalSummary.recommendationsJson[].citations`, `FinalDecision.citationsJson`, `SessionArtifact`), **12. Plataforma** (`DomainEventOutbox`, `PipelineJob INDEXAR_MEMORIA`, `FeatureFlag opensearch.enabled`). Base do **objetivo 3**: recomendação sem fonte é marcada **"sem precedente"**; indexação é assíncrona (`AFTER_COMMIT`) e nunca bloqueia a operação de negócio. Conteúdo `RESTRITO`/`SIGILOSO` nunca vai a IA externa: indexa só metadados ou usa embedding local.
+> Contextos da TAXONOMIA: **10. IA do sistema** (`InstitutionalMemoryDocument` no índice OpenSearch `ws-memory`, `Citation` valor embutido, `MemoryQuery`, `AiInferenceLog` capability `MEMORIA_BUSCA`), **5. DECIA** (`DeciaSession.indexedInMemory`, `AiQuestion.citationsJson`, `AnalyticalSummary.recommendationsJson[].citations`, `FinalDecision.citationsJson`, `SessionArtifact`), **12. Plataforma** (`DomainEventOutbox`, `PipelineJob INDEXAR_MEMORIA`, `FeatureFlag opensearch.enabled`). Base do **objetivo 3**: recomendação sem fonte é marcada **"sem precedente"**; indexação é assíncrona (`AFTER_COMMIT`) e nunca bloqueia a operação de negócio. Conteúdo `RESTRITO`/`SIGILOSO` nunca vai a IA externa: indexa só metadados ou usa embedding local.
 
 ## 1. Diagrama de classes
 
 ```mermaid
 classDiagram
   direction LR
-  namespace wai-domain {
+  namespace ws-domain {
     class InstitutionalMemoryDocument {
       <<entity>>
       +String docId
@@ -146,7 +146,7 @@ classDiagram
       REPROCESSAR
     }
   }
-  namespace wai-application {
+  namespace ws-application {
     class MemoryService {
       <<service>>
       +index(sourceType, sourceId) InstitutionalMemoryDocument
@@ -188,7 +188,7 @@ classDiagram
       +onTaskPublishedAsModel(event) void
     }
   }
-  namespace wai-web {
+  namespace ws-web {
     class MemoryController {
       <<controller>>
       +query(body)
@@ -196,10 +196,10 @@ classDiagram
       +similar(projectId)
     }
   }
-  namespace wai-infrastructure {
+  namespace ws-infrastructure {
     class OpenSearchIndexAdapter {
       <<adapter>>
-      índice wai-memory dense_vector
+      índice ws-memory dense_vector
     }
     class GeminiEmbeddingAdapter {
       <<adapter>>
@@ -245,7 +245,7 @@ classDiagram
   LocalEmbeddingAdapter ..|> EmbeddingPort
   ClaudeAdapter ..|> AiProviderPort
   OutboxPublisher ..> DomainEventOutbox : publica
-  note for InstitutionalMemoryDocument "OpenSearch índice wai-memory · metadados empresa, departamento, categoria, exercício, autor, data (CA01)"
+  note for InstitutionalMemoryDocument "OpenSearch índice ws-memory · metadados empresa, departamento, categoria, exercício, autor, data (CA01)"
   note for Citation "valor embutido · lista vazia = sem precedente (CA03)"
   note for PipelineJob "tabela pipeline_jobs · falha não bloqueia a operação de negócio (CA06)"
 ```
@@ -266,12 +266,12 @@ flowchart TD
     W2["Recomendação com chip baseado em: sessão X, projeto Y · ou etiqueta sem precedente"]
     W3["Mapa ou grade por departamento, categoria e exercício · projetos semelhantes a este"]
   end
-  subgraph L3["wai-application"]
+  subgraph L3["ws-application"]
     S1["Commit da operação de negócio"]
     S2["Outbox AFTER_COMMIT: MemoryIndexingListener cria PipelineJob INDEXAR_MEMORIA PENDENTE"]
     S3{"accessClass RESTRITO ou SIGILOSO?"}
     S4["Monta InstitutionalMemoryDocument com metadados e texto"]
-    S5["SearchIndexPort.upsert wai-memory · DeciaSession.indexedInMemory = true · job OK"]
+    S5["SearchIndexPort.upsert ws-memory · DeciaSession.indexedInMemory = true · job OK"]
     S6["Job FALHA ou REPROCESSAR · lastError · AiInferenceLog result ERRO · negócio segue intacto"]
     S7{"Pergunta vazia?"}
     S8["AccessPolicy.visibilityFilter: empresa, departamento, visibility, perfil"]
@@ -295,7 +295,7 @@ flowchart TD
   end
   subgraph L5["Persistência"]
     D1[("MySQL: domain_events · pipeline_jobs · decia_sessions · ai_inference_log")]
-    D2[("OpenSearch: wai-memory")]
+    D2[("OpenSearch: ws-memory")]
     D3[("MySQL: memory_queries · ai_questions · analytical_summaries · final_decisions")]
     D4[("Redis: cache de facetas do explorador")]
     D5[("MySQL: vw_decisions_with_sources · metric_snapshots")]
@@ -334,8 +334,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant NX as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant OS as OpenSearch
@@ -357,7 +357,7 @@ sequenceDiagram
     S->>AI: EmbeddingPort externo (GeminiEmbeddingAdapter)
   end
   AI-->>S: dense_vector
-  S->>OS: PUT wai-memory/_doc (sourceType SESSAO, empresa, departamento, categoria, exercício, autor, data, visibility)
+  S->>OS: PUT ws-memory/_doc (sourceType SESSAO, empresa, departamento, categoria, exercício, autor, data, visibility)
   alt OpenSearch indisponível
     OS-->>S: erro
     S->>DB: UPDATE pipeline_jobs SET status = REPROCESSAR, attempts+1, lastError · INSERT ai_inference_log (result ERRO)
@@ -375,7 +375,7 @@ sequenceDiagram
   else ok
     S->>AI: embed(text)
     AI-->>S: vetor
-    S->>OS: kNN wai-memory com filtros (companyId, visibility, departamento, perfil)
+    S->>OS: kNN ws-memory com filtros (companyId, visibility, departamento, perfil)
     OS-->>S: hits (excerpt, score, sourceType, sourceId)
     S->>AI: answerWithCitations(question, hits)
     AI-->>S: resposta + Citation[] ✦
@@ -425,7 +425,7 @@ stateDiagram-v2
   direction LR
   [*] --> PENDENTE : evento AFTER_COMMIT (SessionClosed, ArtifactGenerated, DecisionValidated, ProjectCompleted, TaskPublishedAsModel)
   PENDENTE --> RODANDO : worker pega o job
-  RODANDO --> OK : documento indexado em wai-memory (CA01)
+  RODANDO --> OK : documento indexado em ws-memory (CA01)
   RODANDO --> FALHA : erro não recuperável (ex. fonte apagada)
   RODANDO --> REPROCESSAR : OpenSearch ou embedding indisponível (CA06)
   REPROCESSAR --> RODANDO : retry com backoff (attempts+1)
@@ -455,12 +455,12 @@ flowchart LR
     P4["app/admin/dashboard · indicador objetivo 3"]
     UI1["components/ui: CitationChip · NoPrecedentBadge · MemoryResultCard · FacetMap"]
   end
-  subgraph WEB["wai-web (REST · br.gov.pr.secid.workai.web)"]
+  subgraph WEB["ws-web (REST · br.gov.pr.secid.workstation.web)"]
     direction TB
     C1["MemoryController"]
     C2["SessionAiController (RF8, RF11, RF16)"]
   end
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     direction TB
     S1["MemoryService"]
     S2["MemoryIndexingListener (AFTER_COMMIT)"]
@@ -470,15 +470,15 @@ flowchart LR
     PT2["EmbeddingPort"]
     PT3["AiProviderPort"]
   end
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     direction TB
     E1["InstitutionalMemoryDocument · Citation · MemoryQuery"]
     E2["DeciaSession · SessionArtifact · FinalDecision · AiQuestion · AnalyticalSummary · ProjectScheme · TaskItem"]
     E3["PipelineJob · DomainEventOutbox · AiInferenceLog · MetricSnapshot"]
   end
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     direction TB
-    I1["search-opensearch: OpenSearchIndexAdapter (wai-memory, dense_vector)"]
+    I1["search-opensearch: OpenSearchIndexAdapter (ws-memory, dense_vector)"]
     I2["ai-providers: GeminiEmbeddingAdapter · LocalEmbeddingAdapter · ClaudeAdapter"]
     I3["persistence-mysql: MemoryQuery/PipelineJob/AiInferenceLog repositories · vw_decisions_with_sources"]
     I4["cache-redis: facetas do explorador"]
@@ -519,7 +519,7 @@ flowchart LR
 
 | CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
 |---|---|
-| RF33.CA01 | Classes `InstitutionalMemoryDocument` (metadados empresa, departamento, categoria, exercício, autor, indexedAt, embedding), `MemorySourceType`, `MemoryIndexingListener.on*`, `DeciaSession.indexedInMemory`; atividades `U1 → S1 → S2 → S3 → A1/A2 → S4 → S5`; sequência bloco «CA01 e CA06» (PUT wai-memory/_doc); transições `PENDENTE → RODANDO → OK`; componentes `search-opensearch`, `MemoryIndexingListener` |
+| RF33.CA01 | Classes `InstitutionalMemoryDocument` (metadados empresa, departamento, categoria, exercício, autor, indexedAt, embedding), `MemorySourceType`, `MemoryIndexingListener.on*`, `DeciaSession.indexedInMemory`; atividades `U1 → S1 → S2 → S3 → A1/A2 → S4 → S5`; sequência bloco «CA01 e CA06» (PUT ws-memory/_doc); transições `PENDENTE → RODANDO → OK`; componentes `search-opensearch`, `MemoryIndexingListener` |
 | RF33.CA02 | Classes `MemoryService.query`, `Citation` (excerpt, url, score), `MemoryQuery`, `AccessPolicy.visibilityFilter`, `AiEngine.answerWithCitations`; atividades `U2 → S7 → S8 → A5 → S9 → A3 → S10 → W1` (422 VALIDACAO, 403 ACESSO_NEGADO ao abrir fonte); sequência bloco «CA02»; nota do estado `OK`; componentes `app/memory`, `MemoryResultCard`, `MemoryController` |
 | RF33.CA03 | Classes `MemoryService.retrieveForSession`, `AiEngine.recommendWithSources`, `AiQuestion.citationsJson`, `AnalyticalSummary.recommendationsJson[].citations`, `FinalDecision.citationsJson`, nota de `Citation` (vazio = sem precedente); atividades `U3 → S11 → S12 → S13/S14 → W2`; sequência bloco «CA03»; componentes `CitationChip`, `NoPrecedentBadge`, `SessionAiController` |
 | RF33.CA04 | Classes `MemoryService.explore/similarProjects`, `SearchIndexPort.aggregate`; atividades `U4 → S15 → D2/D4 → W3`; sequência bloco «CA04 e CA05» (aggregate + cache Redis); componentes `app/memory/explore`, `FacetMap`, `cache-redis` |

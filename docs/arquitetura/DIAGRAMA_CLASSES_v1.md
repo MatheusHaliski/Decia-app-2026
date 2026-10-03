@@ -1,6 +1,6 @@
-# Diagrama de classes v1 — núcleo do Work AI / DECIA
+# Diagrama de classes v1 — núcleo do Work Station / DECIA
 
-Entidades centrais pedidas na sessão inicial: **Tarefa**, **ProjectScheme**, **ProjectTask**, **Plano Anual**, **Chancela / Vínculo / Benefício**, **DecisionTrace**, **DeciaPointsLedger**, mais a **sessão DECIA** que as liga. Atributos completos em [`TAXONOMIA.md`](TAXONOMIA.md); aqui só os que explicam as relações. Diagramas por RF em [`../diagramas/`](../diagramas/).
+Entidades centrais pedidas na sessão inicial: **Tarefa**, **ProjectScheme**, **ProjectTask**, **Plano Anual**, **Chancela / Vínculo / Benefício**, **DecisionTrace**, **DeciaPointsLedger**, **UserPreferences**, mais a **sessão DECIA** que as liga. Atributos completos em [`TAXONOMIA.md`](TAXONOMIA.md); aqui só os que explicam as relações. Diagramas por RF em [`../diagramas/`](../diagramas/).
 
 ## 1. Acervo, projetos e planejamento (Tarefa = peça · Esquema de Projeto = look · Plano Anual = DNA)
 
@@ -16,6 +16,17 @@ classDiagram
     +UUID companyId
     +UUID departmentId
     +HypeVisibility hypeVisibility
+  }
+  class UserPreferences {
+    <<entity>> RF3 RF38
+    +ThemeMode theme
+    +UiLanguage language
+    +DeskSkin deskSkin
+    +String defaultCardSkin
+    +boolean reduceMotion
+    +int wipLimit
+    +AiMode aiModeDefault
+    +JSON notificationPrefsJson
   }
   class Department {
     <<entity>>
@@ -114,6 +125,7 @@ classDiagram
     +ProcessTag processTag
   }
 
+  User "1" --> "1" UserPreferences
   User "1" --> "*" TaskItem : owner
   Department "1" --> "*" TaskItem
   TaskItem "1" --> "*" TaskAttachment
@@ -354,7 +366,7 @@ classDiagram
     +Instant validTo
   }
   class StoreItem {
-    <<entity>> Loja Work AI
+    <<entity>> Loja Work Station
     +StoreItemKind kind
     +int pricePoints
   }
@@ -458,7 +470,7 @@ classDiagram
 
 | Camada | Classes |
 |---|---|
-| `wai-domain` | todas as `<<entity>>` acima, enums, `*Repository` |
-| `wai-application` | `AcervoService`, `TaskCreatorService`, `ProjectComposerService`, `ProjectDeskService`, `PlanService`, `GroupingService`, `DeciaSessionService`, `MessageService`, `ClassificationService`, `SummaryService`, `DecisionService`, `DecisionTraceService`, `DeciaBridgeService`, `SealService`, `SealPolicyEvaluator`, `BenefitService`, `CounterService`, `DeciaPointsService`, `StoreService`, `DailyTaskService`, `HypeScoreService`, `AiEngine`, `Guard`, `DomainEvents`; portas `AiProviderPort`, `MediaStoragePort`, `SearchIndexPort`, `EmbeddingPort`, `TimelineProjectionPort`, `NotificationProjectionPort`, `MessageStorePort`, `CounterStorePort`, `RateLimitPort`, `TokenIssuerPort`, `ExternalDocPort`, `AntivirusPort`, `OcrPort`, `CadReaderPort`, `TranscriptionPort`, `EmailSenderPort` |
-| `wai-infrastructure` | `Mysql*Adapter`, `Cassandra*Adapter`, `OpenSearch*Adapter`, `Redis*Adapter`, `S3MediaStorage`, `ClaudeProvider`, `GeminiProvider`, `LocalEngine`, `GoogleWorkspaceAdapter`, `Microsoft365Adapter`, `EProtocoloAdapter` |
-| `wai-web` | `AuthController`, `AccountController`, `TaskController`, `ProjectController`, `PlanController`, `GroupingController`, `DeciaSessionController`, `MessageController`, `DecisionController`, `SealController`, `BenefitController`, `CounterController`, `PointsController`, `StoreController`, `DailyTaskController`, `HypeController`, `InsightsController`, `AdminController` |
+| `ws-domain` | todas as `<<entity>>` acima, enums, `*Repository` |
+| `ws-application` | `AcervoService`, `TaskCreatorService`, `ProjectComposerService`, `ProjectDeskService`, `PlanService`, `GroupingService`, `DeciaSessionService`, `MessageService`, `ClassificationService`, `SummaryService`, `DecisionService`, `DecisionTraceService`, `DeciaBridgeService`, `SealService`, `SealPolicyEvaluator`, `BenefitService`, `CounterService`, `DeciaPointsService`, `StoreService`, `DailyTaskService`, `HypeScoreService`, `AiEngine`, `Guard`, `DomainEvents`; portas `AiProviderPort`, `MediaStoragePort`, `SearchIndexPort`, `EmbeddingPort`, `TimelineProjectionPort`, `NotificationProjectionPort`, `MessageStorePort`, `CounterStorePort`, `RateLimitPort`, `TokenIssuerPort`, `ExternalDocPort`, `AntivirusPort`, `OcrPort`, `CadReaderPort`, `TranscriptionPort`, `EmailSenderPort` |
+| `ws-infrastructure` | `Mysql*Adapter`, `Cassandra*Adapter`, `OpenSearch*Adapter`, `Redis*Adapter`, `S3MediaStorage`, `ClaudeProvider`, `GeminiProvider`, `LocalEngine`, `GoogleWorkspaceAdapter`, `Microsoft365Adapter`, `EProtocoloAdapter` |
+| `ws-web` | `AuthController`, `AccountController`, `TaskController`, `ProjectController`, `PlanController`, `GroupingController`, `DeciaSessionController`, `MessageController`, `DecisionController`, `SealController`, `BenefitController`, `CounterController`, `PointsController`, `StoreController`, `DailyTaskController`, `HypeController`, `InsightsController`, `AdminController` |

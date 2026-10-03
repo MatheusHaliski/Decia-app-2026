@@ -11,7 +11,7 @@
 ```mermaid
 classDiagram
   direction LR
-  namespace wai-domain {
+  namespace ws-domain {
     class ProjectScheme {
       <<entity>>
       +UUID id
@@ -155,7 +155,7 @@ classDiagram
       MEMORIA_BUSCA
     }
   }
-  namespace wai-application {
+  namespace ws-application {
     class AutopilotService {
       <<service>>
       +analyzeDemand(actorId, demandText, documentTaskId) DemandAnalysis
@@ -197,7 +197,7 @@ classDiagram
       +evict(draftId) void
     }
   }
-  namespace wai-web {
+  namespace ws-web {
     class AutopilotController {
       <<controller>>
       +analyze(body)
@@ -208,7 +208,7 @@ classDiagram
       +openSession(draftId)
     }
   }
-  namespace wai-infrastructure {
+  namespace ws-infrastructure {
     class ClaudeAdapter {
       <<adapter>>
     }
@@ -221,7 +221,7 @@ classDiagram
     }
     class OpenSearchIndexAdapter {
       <<adapter>>
-      índice wai-memory
+      índice ws-memory
     }
     class RedisDraftCache {
       <<adapter>>
@@ -278,7 +278,7 @@ flowchart TD
     W2["Mesa RF22 com cartões rascunho, faísca ✦ e créditos aos modelos usados"]
     W3["Card do projeto com faísca ✦ e origem AUTOPILOTO"]
   end
-  subgraph L3["wai-application"]
+  subgraph L3["ws-application"]
     S1{"Demanda vazia ou DOCUMENTO inacessível?"}
     S2{"accessClass RESTRITO ou SIGILOSO?"}
     S3{"Chave de IA e cota disponíveis?"}
@@ -303,7 +303,7 @@ flowchart TD
   subgraph L5["Persistência"]
     D1[("Redis: autopilot draft TTL · quota de IA")]
     D2[("MySQL: seal_bonds · project_schemes (modelos) · tasks")]
-    D3[("OpenSearch: wai-memory kNN")]
+    D3[("OpenSearch: ws-memory kNN")]
     D4[("MySQL: project_schemes · project_tasks · project_task_dependencies · tasks · remixes · ai_inference_log")]
     D5[("MySQL: decia_sessions")]
   end
@@ -337,8 +337,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant NX as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant OS as OpenSearch
@@ -370,7 +370,7 @@ sequenceDiagram
   NX->>C: POST /api/autopilot/propose {analysis}
   C->>S: AutopilotService.proposeScheme(actorId, analysis)
   S->>DB: SELECT seal_bonds APROVADA targetType PROJECT (empresa, departamento) + project_schemes modelo
-  S->>OS: kNN wai-memory (MemoryService.similarProjects, filtros visibilidade e empresa)
+  S->>OS: kNN ws-memory (MemoryService.similarProjects, filtros visibilidade e empresa)
   OS-->>S: projetos semelhantes com score
   S->>AI: composeScheme(analysis, modelos, semelhantes, histórico de responsáveis)
   AI-->>S: fases, tarefas (tipo e categoria), dependências, responsáveis, prazos, créditos ✦
@@ -456,12 +456,12 @@ flowchart LR
     P2["app/projects/[id]/desk · Mesa de Trabalho em modo rascunho (RF22)"]
     UI1["components/ui: DeskCanvas · DraftTaskCard ✦ · FallbackBanner · ModelCreditChip"]
   end
-  subgraph WEB["wai-web (REST · br.gov.pr.secid.workai.web)"]
+  subgraph WEB["ws-web (REST · br.gov.pr.secid.workstation.web)"]
     direction TB
     C1["AutopilotController"]
     C2["ProjectDeciaController (RF29)"]
   end
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     direction TB
     S1["AutopilotService"]
     S2["MemoryService (RF33)"]
@@ -472,17 +472,17 @@ flowchart LR
     PT3["SearchIndexPort"]
     PT4["DraftCachePort"]
   end
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     direction TB
     E1["ProjectScheme · ProjectTask · ProjectTaskDependency · TaskItem"]
     E2["SealBond · Remix · AiInferenceLog · InstitutionalMemoryDocument"]
     E3["SchemeOrigin · CreationMode · ProjectPhase · AiCapability"]
   end
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     direction TB
     I1["persistence-mysql: ProjectScheme/ProjectTask/SealBond/Remix/AiInferenceLog repositories"]
     I2["cache-redis: RedisDraftCache · AiQuota"]
-    I3["search-opensearch: OpenSearchIndexAdapter (wai-memory)"]
+    I3["search-opensearch: OpenSearchIndexAdapter (ws-memory)"]
     I4["ai-providers: ClaudeAdapter · GeminiAdapter · LocalAutopilotEngine · AiProviderCircuitState"]
     I5["platform: DomainEventOutbox · FeatureFlag ai.local.only"]
   end
@@ -521,7 +521,7 @@ flowchart LR
 | CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
 |---|---|
 | RF30.CA01 | Classes `AutopilotService.analyzeDemand`, `AiEngine.extractDemand`, `TaskItem` (DOCUMENTO de entrada, `accessClass`); atividades `U1 → S1 → S2/S3 → S4 → A1` (422 VALIDACAO, 403 ACESSO_NEGADO); sequência bloco «CA01» (`POST /api/autopilot/analyze`); transição `[*] → Analisada`; componente `app/autopilot`, `AutopilotController.analyze` |
-| RF30.CA02 | Classes `SealBond APROVADA` (modelos chancelados), `MemoryService.similarProjects`, `AiEngine.composeScheme`, `Remix` (crédito), `ProjectTaskDependency`, `ProjectTask.responsibleId/dueAt`; atividades `S5 → S6 → A2 → S7`; sequência bloco «CA02 e CA03» (SELECT seal_bonds, kNN wai-memory, composeScheme ✦); transição `Analisada → Proposta`; componentes `MemoryService`, `search-opensearch`, `ModelCreditChip` |
+| RF30.CA02 | Classes `SealBond APROVADA` (modelos chancelados), `MemoryService.similarProjects`, `AiEngine.composeScheme`, `Remix` (crédito), `ProjectTaskDependency`, `ProjectTask.responsibleId/dueAt`; atividades `S5 → S6 → A2 → S7`; sequência bloco «CA02 e CA03» (SELECT seal_bonds, kNN ws-memory, composeScheme ✦); transição `Analisada → Proposta`; componentes `MemoryService`, `search-opensearch`, `ModelCreditChip` |
 | RF30.CA03 | Classes `DraftCachePort`, `RedisDraftCache`, `AutopilotService.updateDraft/discard`; atividades `S8 → W2 → U2 → U3 → S9` (nada no MySQL); sequência bloco «CA02 e CA03» (`SET autopilot:draft` TTL, `PATCH /api/autopilot/drafts/{id}`); estados voláteis `Proposta → Ajustada → Descartada/Expirada`; componentes `DeskCanvas`, `DraftTaskCard`, `cache-redis` |
 | RF30.CA04 | Classes `ProjectScheme.origin = AUTOPILOTO`, `creationMode = COM_IA`, `aiGenerated`, `aiInferenceId`, `AiInferenceLog` (modelo, custo, latência, `inputSummaryJson` com modelos de referência); atividades `U4 → S10 → S11 → S12 → W3`; sequência bloco «CA04» (INSERT project_schemes, remixes, ai_inference_log; 409 RASCUNHO_EXPIRADO); transição `Draft → RASCUNHO` e nota; componente `persistence-mysql` |
 | RF30.CA05 | Classes `LocalAutopilotEngine ..|> AiProviderPort`, `AiInferenceLog.fallbackUsed/result FALLBACK`, `AiEngine.isExternalAvailable`; atividades `S2/S3 → A3 → W1` (sem chave ou cota, ou RESTRITO/SIGILOSO); sequência bloco «CA01» alt «sem chave de IA ou cota esgotada»; nota do estado `Draft`; componentes `FallbackBanner`, `ai-providers`, `FeatureFlag ai.local.only` |

@@ -1,4 +1,4 @@
-// Glifos próprios do Work AI / DECIA — 24×24, traço 1.8, pontas e junções arredondadas, cor = currentColor.
+// Glifos próprios do Work Station / DECIA — 24×24, traço 1.8, pontas e junções arredondadas, cor = currentColor.
 // Nunca emoji do sistema (RF38.CA01). Cada entrada: { nome, grupo, paths: [ 'd' | { d, fill?:true, sw?:n } ] }.
 // Os mesmos dados alimentam: icones/*.svg (um por glifo), o sprite inline do index.html e as anatomias em SVG.
 
@@ -118,8 +118,8 @@ export function iconSvg(name) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="${ic.nome}"><title>${ic.nome}</title>${iconInner(name)}</svg>\n`;
 }
 
-/** Sprite <symbol> para o index.html (use="#wai-<nome>"). */
+/** Sprite <symbol> para o index.html (use="#ws-<nome>"). */
 export function iconSprite() {
   return `<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">` +
-    Object.keys(ICONS).map((n) => `<symbol id="wai-${n}" viewBox="0 0 24 24">${iconInner(n)}</symbol>`).join('') + `</svg>`;
+    Object.keys(ICONS).map((n) => `<symbol id="ws-${n}" viewBox="0 0 24 24">${iconInner(n)}</symbol>`).join('') + `</svg>`;
 }

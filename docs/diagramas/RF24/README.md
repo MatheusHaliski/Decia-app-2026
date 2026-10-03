@@ -10,7 +10,7 @@ O **Plano Anual** (`AnnualPlan`, = DNA de Estilo) é o conjunto de **6 eixos est
 classDiagram
 direction LR
 
-namespace wai_domain_planejamento {
+namespace ws_domain_planejamento {
   class AnnualPlan {
     <<entity>>
     +id: UUID
@@ -60,7 +60,7 @@ namespace wai_domain_planejamento {
   }
 }
 
-namespace wai_domain_projetos {
+namespace ws_domain_projetos {
   class ProjectScheme {
     <<entity>>
     +id: UUID
@@ -91,7 +91,7 @@ namespace wai_domain_projetos {
   }
 }
 
-namespace wai_domain_decia_ia {
+namespace ws_domain_decia_ia {
   class DeciaSession {
     <<entity>>
     +id: UUID
@@ -117,7 +117,7 @@ namespace wai_domain_decia_ia {
   }
 }
 
-namespace wai_domain_social_chancela {
+namespace ws_domain_social_chancela {
   class Reaction {
     <<entity>>
     +targetType: TargetType PLAN
@@ -148,7 +148,7 @@ namespace wai_domain_social_chancela {
   }
 }
 
-namespace wai_domain_enums {
+namespace ws_domain_enums {
   class PlanScope {
     <<enum>>
     EMPRESA
@@ -183,7 +183,7 @@ namespace wai_domain_enums {
   }
 }
 
-namespace wai_application {
+namespace ws_application {
   class PlanService {
     <<service>>
     +create(userId, PlanForm com 6 eixos) AnnualPlan
@@ -231,7 +231,7 @@ namespace wai_application {
   }
 }
 
-namespace wai_web {
+namespace ws_web {
   class PlanController {
     <<controller>>
     +POST_api_plans(PlanForm)
@@ -245,7 +245,7 @@ namespace wai_web {
   }
 }
 
-namespace wai_infrastructure {
+namespace ws_infrastructure {
   class RedisCacheAdapter {
     <<adapter>>
   }
@@ -319,7 +319,7 @@ flowchart TD
     W5["Capa, visibilidade e barra de interações RF26 + lacre de chancela"]
   end
 
-  subgraph LA["wai-application"]
+  subgraph LA["ws-application"]
     A1["PlanService.create → validateSixAxes"]
     A2{"Exatamente 6 eixos nomeados?"}
     A3["422 EIXOS_INVALIDOS"]
@@ -382,8 +382,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant NX as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant R as Redis
@@ -507,12 +507,12 @@ flowchart LR
     F2["components/ui: AxisGrid 6 células, AxisCard com meta/indicador/cor/risco, ProjectDragDrop, DeriveButton, CompareColumns, PlanCover, InteractionBar RF26, SealWax"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     C1["PlanController — /api/plans, /axes/{id}/projects, /derive, /compare, /publish, /projects-without-axis"]
     C2["InteractionController RF26 — /api/interactions/PLAN/{id}/*"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["PlanService"]
     S2["RiskAggregationService"]
     S3["SocialService RF26"]
@@ -523,14 +523,14 @@ flowchart LR
     P3["MediaStoragePort"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["AnnualPlan · PlanAxis · PlanAxisProject"]
     D2["ProjectScheme · ComplianceResult · ProjectScenario"]
     D3["DeciaSession · AnalyticalSummary · Insight · AiInferenceLog"]
     D4["Reaction · Comment · SavedItem · Share · SealBond"]
   end
 
-  subgraph INFRA["wai-infrastructure/*"]
+  subgraph INFRA["ws-infrastructure/*"]
     I1[("persistence-mysql: annual_plans, plan_axes, plan_axis_projects, project_schemes, compliance_results, project_scenarios, insights, reactions, comments, saved_items, shares, seal_bonds")]
     I2[("cache-redis: agregados por eixo")]
     I3[("search-opensearch: índice de planos para Buscar RF27")]

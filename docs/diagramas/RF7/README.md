@@ -21,7 +21,7 @@
 classDiagram
   direction LR
 
-  namespace wai_domain {
+  namespace ws_domain {
     class SessionMessage {
       <<entity>>
       +id: TIMEUUID
@@ -124,7 +124,7 @@ classDiagram
     }
   }
 
-  namespace wai_application {
+  namespace ws_application {
     class ClassificationService {
       <<service>>
       +onMessageSent(event MessageSent) void
@@ -171,7 +171,7 @@ classDiagram
     }
   }
 
-  namespace wai_web {
+  namespace ws_web {
     class MessageController {
       <<controller>>
       +classification(sessionId, messageId) ClassificationView
@@ -179,7 +179,7 @@ classDiagram
     }
   }
 
-  namespace wai_infrastructure {
+  namespace ws_infrastructure {
     class ClaudeProviderAdapter {
       <<adapter>>
       +model: String
@@ -232,7 +232,7 @@ classDiagram
 
 ## 2. Diagrama de atividades
 
-Raias: Participante (autor/admin, só na confirmação) · Web/BFF · `wai-application` · IA (AiEngine) · Persistência. O gatilho é o evento `MessageSent` do RF6, não uma ação humana.
+Raias: Participante (autor/admin, só na confirmação) · Web/BFF · `ws-application` · IA (AiEngine) · Persistência. O gatilho é o evento `MessageSent` do RF6, não uma ação humana.
 
 ```mermaid
 flowchart TD
@@ -248,7 +248,7 @@ flowchart TD
     B2["POST /api/decia/sessions/{id}/messages/{msgId}/classification/confirm {label}"]
   end
 
-  subgraph L3["wai-application — ClassificationService"]
+  subgraph L3["ws-application — ClassificationService"]
     C0(["Evento MessageSent (AFTER_COMMIT do RF6)"]) --> C1{"authorKind HUMANO e não repetida?"}
     C1 -->|não| C2["Marca RUIDO ou ignora (não pontua)"]
     C1 -->|sim| C3["Monta contexto: tema, últimas N mensagens, anexos citados"]
@@ -318,7 +318,7 @@ Caminho feliz (primário responde), `alt` de fallback em cadeia (CA02), `alt` de
 sequenceDiagram
   autonumber
   participant DE as DomainEvents (AFTER_COMMIT)
-  participant CL as ClassificationService (wai-application)
+  participant CL as ClassificationService (ws-application)
   participant CS as Cassandra
   participant R as Redis
   participant AI as AiEngine
@@ -328,7 +328,7 @@ sequenceDiagram
   participant DB as Repository/MySQL
   participant N as Next.js (App Router) /decia/[id]
   actor U as Usuário (autor ou admin)
-  participant C as MessageController (wai-web)
+  participant C as MessageController (ws-web)
 
   DE->>CL: MessageSent(sessionId, messageId, authorId, localOnly, correlationId)
   CL->>CS: SELECT messages_by_session (mensagem + últimas 20 do contexto)
@@ -439,12 +439,12 @@ flowchart LR
     FE3["lib/decia/useSessionStream.ts (MessageClassified)"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     W1["MessageController /api/decia/sessions/{id}/messages/{msgId}/classification · /confirm"]
     W2["SessionStreamController (SSE)"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["ClassificationService (listener MessageSent)"]
     S2["AiEngine (Strategy + Chain, PiiMasker, log)"]
     S3["DecisionTraceService"]
@@ -452,13 +452,13 @@ flowchart LR
     P2["MessageStorePort · DecisionTracePort · DomainEventPublisherPort · RealtimePublisherPort"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["SessionMessage · MessageClassification · AiInferenceLog · AiQuota · AiProviderCircuitState · DecisionTraceNode · DecisionTraceEdge"]
     D2["MessageClass · AiCapability · AiMode · AccessClassification · TraceNodeType"]
     D3["MessageClassificationRepository · AiInferenceLogRepository · DecisionTraceNodeRepository"]
   end
 
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     I1["ai-providers (ClaudeProviderAdapter, GeminiProviderAdapter, LocalEngineAdapter: regras + embeddings locais)"]
     I2["cache-redis (RedisCircuitBreaker, RedisAiQuota, RedisRealtimePublisher)"]
     I3["persistence-mysql (message_classifications, ai_inference_log, decision_trace_nodes/edges, domain_events)"]
@@ -500,7 +500,7 @@ flowchart LR
   I3 --> MY
   I4 --> CA
   I2 --> RD
-  BOOT["wai-bootstrap (chaves de API, timeouts, limiares do circuit breaker, cota mensal padrão)"] -.-> INFRA
+  BOOT["ws-bootstrap (chaves de API, timeouts, limiares do circuit breaker, cota mensal padrão)"] -.-> INFRA
 ```
 
 ## 6. Rastreabilidade

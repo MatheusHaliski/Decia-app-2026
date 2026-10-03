@@ -1,5 +1,5 @@
-# RF42 — Acumular DECIA Points por participação de qualidade no chat DECIA e usá-los em compras dentro do app (Loja Work AI: modelos do Balcão, créditos de IA, capas/skins, impulsos, kits)
-**HU:** HU42 · **Sprint (board Work Station):** Product Backlog (não priorizado — pós-Sprint 4) · **Equivalente FAI:** RF30 FAI Points + RF41 FAI Points em jogos e criações (ledger idempotente, regras em banco, tetos, cupons) · **Aba/rota:** DECIA Points (`/points`: saldo, extrato, regras), Loja Work AI (`/store`)
+# RF42 — Acumular DECIA Points por participação de qualidade no chat DECIA e usá-los em compras dentro do app (Loja Work Station: modelos do Balcão, créditos de IA, capas/skins, impulsos, kits)
+**HU:** HU42 · **Sprint (board Work Station):** Product Backlog (não priorizado — pós-Sprint 4) · **Equivalente FAI:** RF30 FAI Points + RF41 FAI Points em jogos e criações (ledger idempotente, regras em banco, tetos, cupons) · **Aba/rota:** DECIA Points (`/points`: saldo, extrato, regras), Loja Work Station (`/store`)
 **Critérios de aceite cobertos:** RF42.CA01 · RF42.CA02 · RF42.CA03 · RF42.CA04 · RF42.CA05 · RF42.CA06 · RF42.CA07 · RF42.CA08 · RF42.CA09 · RF42.CA10
 
 > Contexto Balcão & Loja & DECIA Points (bounded context 7). Entidade central: `DeciaPointsLedgerEntry` (status CONFIRMADO | SUSPENSO | ESTORNADO), **append-only e idempotente** (`idempotencyKey = eventCode + refId + userId`). Regras vêm de `DeciaPointsRule` versionada com vigência; o lançamento guarda `ruleVersionId`, logo alterar a regra não altera o passado. Gastos passam por `StoreService` (débito atômico + entrega) e `AiCreditLedgerEntry` (cota comprada consumida antes da mensal). `AntiFraudService` suspende lançamentos para revisão do chefe. Nenhum campo de moeda real (RF42.CA10).
@@ -329,7 +329,7 @@ flowchart TD
     I2["Emite DomainEvent pontuável (eventCode, refId, userId, sessionId, occurredAt)"]
   end
 
-  subgraph L_app["wai-application · DeciaPointsService · StoreService · AntiFraudService"]
+  subgraph L_app["ws-application · DeciaPointsService · StoreService · AntiFraudService"]
     S1["award: idempotencyKey = eventCode + refId + userId"]
     S2{"idempotencyKey já existe?"}
     S3["RulesRepository.activeRule(eventCode, occurredAt) → pontos, tetos, oncePerRef, ruleVersionId"]
@@ -420,8 +420,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant N as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant R as Redis
@@ -452,7 +452,7 @@ sequenceDiagram
     EV-->>DB: notifications (+5 DP, motivo, sessão)
   end
 
-  Note over U,EV: Gasto — compra na Loja Work AI
+  Note over U,EV: Gasto — compra na Loja Work Station
   U->>N: Comprar Créditos de IA (50 DP)
   N->>C: POST /store/purchases (itemId, Idempotency-Key k)
   C->>S: StoreService.purchase(buyer, itemId, k)
@@ -530,17 +530,17 @@ stateDiagram-v2
 ```mermaid
 flowchart LR
   subgraph FE["Frontend Next.js"]
-    FE1["app/points (saldo, extrato paginado, regras em linguagem simples, gráfico mensal) · app/store (Loja Work AI) · app/profile (perfil deliberativo: DP por evento e sessão) · app/admin e app/companies (dashboard: DP por departamento, custo de IA comprado, regras e revisão de suspensos)"]
+    FE1["app/points (saldo, extrato paginado, regras em linguagem simples, gráfico mensal) · app/store (Loja Work Station) · app/profile (perfil deliberativo: DP por evento e sessão) · app/admin e app/companies (dashboard: DP por departamento, custo de IA comprado, regras e revisão de suspensos)"]
     FE2["components/ui · PointsChip (ficha DP com faísca ✦) · LedgerTable · RulesPlainText · MonthlyChart · StoreItemCard · QuotaSourceBadge · ReviewQueue"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     C1["PointsController"]
     C2["StoreController"]
     C3["AdminRulesController (ADMIN/EMPRESA edita regras com vigência)"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["DeciaPointsService"]
     S2["StoreService"]
     S3["AntiFraudService"]
@@ -550,13 +550,13 @@ flowchart LR
     P1["RulesRepository"]
   end
 
-  subgraph DOM["wai-domain · br.gov.pr.secid.workai"]
+  subgraph DOM["ws-domain · br.gov.pr.secid.workstation"]
     D1["DeciaPointsLedgerEntry · DeciaPointsRule · PointsDonation"]
     D2["StoreItem · StorePurchase · AiCreditLedgerEntry · AiQuota · UserSkin · MuralEntry"]
     D3["MessageClassification · SessionMessage.similarityHash · Reaction · DeliberativeProfile · User.testAccount · Company.pointsPolicyJson"]
   end
 
-  subgraph INFRA["wai-infrastructure/*"]
+  subgraph INFRA["ws-infrastructure/*"]
     I1["persistence-mysql · decia_points_ledger, decia_points_rules, store_items, store_purchases, ai_credit_ledger, points_donations"]
     I2["cache-redis · saldo por usuário · contadores de teto · quota mensal · locks de idempotência"]
     I3["persistence-cassandra · notifications_by_user"]

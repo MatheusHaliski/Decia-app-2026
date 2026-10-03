@@ -1,6 +1,8 @@
-# Taxonomia de entidades — Work AI / DECIA (v1)
+# Taxonomia de entidades — Work Station / DECIA (v1)
 
-> Fonte de verdade dos requisitos: board Trello **Work Station** (ex-"Decisão com Inteligência Artificial - DECIA - SECIDPR"), listas *Work AI + DECIA*, *Requisitos Funcionais* (RF1–RF45) e *Product Backlog* (HU1–HU45).
+> **Nome do produto:** **Work Station** (os cards do board ainda citam o nome antigo "Work AI"; leia-os como Work Station). Prefixo dos módulos: `ws-`.
+
+> Fonte de verdade dos requisitos: board Trello **Work Station** (ex-"Decisão com Inteligência Artificial - DECIA - SECIDPR"), listas *Work Station + DECIA*, *Requisitos Funcionais* (RF1–RF45) e *Product Backlog* (HU1–HU45).
 > Esqueleto reaproveitado do **Fashion AI (FAI)** (`matheushaliski/tcc-2026-fashion-ai-backend`, módulo `fai-domain`). Cada entidade indica a equivalente no FAI e o RF que a origina.
 > Convenções: identificadores `UUID` (BINARY(16) no MySQL), auditoria herdada de `AuditableEntity` (`createdAt`, `updatedAt`, `createdBy`, `updatedBy`) e, quando houver concorrência, `VersionedAuditableEntity` (`@Version version`). Campos `*Json` são colunas `JSON` do MySQL 8. Campos sensíveis (LGPD) usam o conversor `AesGcmStringConverter`.
 
@@ -21,7 +23,7 @@
 | 11 | **Transição & Memória** | HandoffDossier, HandoffItem, SessionArchive | RF36, RF17, RF33 | MySQL + S3 + OpenSearch |
 | 12 | **Plataforma** | AuditLog, DomainEvent (outbox), PipelineJob, FeatureFlag, MediaObject, DataExportRequest, Theme/Skin (UserSkin) | transversal, RF38 | MySQL + S3 |
 
-Mapa de equivalência FAI → Work AI (card "Mapa de equivalência"): Tarefa = peça (WardrobeItem) · Esquema de Projeto = look (Scheme) · ProjectTask = SchemeItem · Plano Anual = DNA (DnaScheme) · Chancela = selo (Seal) · VínculoChancela = SealBond · Benefício/Resgate = Promotion/PromotionRedemption/CouponRight · DECIA Points = FAI Points · Tarefa do Dia = Look do Dia (DailyLook) · DECIA = Copilot · Kit de Processo = Cápsula · Agrupamento = SchemeGrouping.
+Mapa de equivalência FAI → Work Station (card "Mapa de equivalência"): Tarefa = peça (WardrobeItem) · Esquema de Projeto = look (Scheme) · ProjectTask = SchemeItem · Plano Anual = DNA (DnaScheme) · Chancela = selo (Seal) · VínculoChancela = SealBond · Benefício/Resgate = Promotion/PromotionRedemption/CouponRight · DECIA Points = FAI Points · Tarefa do Dia = Look do Dia (DailyLook) · DECIA = Copilot · Kit de Processo = Cápsula · Agrupamento = SchemeGrouping.
 
 ---
 
@@ -358,7 +360,7 @@ id · userId · delta (±) · eventCode `PointsEvent` (ARGUMENTO_EVIDENCIA · CO
 ### 7.3 `DeciaPointsRule` — `decia_points_rules` (RF42.CA02, versionada)
 id · eventCode · points · dailyCap · weeklyCap · perSessionCap · oncePerRef · multiplierSource · validFrom · validTo · active · editedBy · description.
 
-### 7.4 `StoreItem` — Loja Work AI — `store_items`
+### 7.4 `StoreItem` — Loja Work Station — `store_items`
 id · kind `StoreItemKind` (MODELO_BALCAO · CREDITOS_IA · SKIN_MESA · MOLDURA_CARD · CAPA_IA_LOTE · IMPULSO_MURAL · SESSAO_IA_AVANCADA · KIT_CHANCELADO · CERTIFICADO_PERSONALIZADO) · refId · title · pricePoints · stock · availableFrom/Until · companyId · active.
 
 ### 7.5 `StorePurchase` — `store_purchases` (RF42.CA04)
@@ -422,7 +424,7 @@ id · userId · departmentId · capability `AiCapability` (ABRIR_SESSAO · CLASS
 ### 10.7 `MetricSnapshot` (= FAI) — `metric_snapshots` — id · metricCode · scope `MetricScope` (GLOBAL · EMPRESA · DEPARTAMENTO · USUARIO) · scopeId · periodStart · periodEnd · value · valuesJson · computedAt.
 ### 10.8 `ExtractionResult` — RF34 — `extraction_results` — id · taskId · kind (QUANTITATIVOS · ITENS_PRAZOS · ESTRUTURAL) · rowsJson [{item, unit, qty, area, volume, confidence}] · layersJson · derivedTaskId (PLANILHA/CRONOGRAMA) · status · aiInferenceId.
 ### 10.9 `ExtractionCorrection` — `extraction_corrections` (RF34.CA04) — id · extractionId · rowIndex · field · oldValue · newValue · userId · departmentId · at.
-### 10.10 `InstitutionalMemoryDocument` — OpenSearch índice `wai-memory` (RF33) — docId · sourceType (SESSAO · ARTEFATO · DECISAO · PROJETO · TAREFA · DOCUMENTO) · sourceId · companyId · departmentId · category · exerciseYear · authorId · title · text · embedding (dense_vector) · visibility · accessClass · indexedAt.
+### 10.10 `InstitutionalMemoryDocument` — OpenSearch índice `ws-memory` (RF33) — docId · sourceType (SESSAO · ARTEFATO · DECISAO · PROJETO · TAREFA · DOCUMENTO) · sourceId · companyId · departmentId · category · exerciseYear · authorId · title · text · embedding (dense_vector) · visibility · accessClass · indexedAt.
 ### 10.11 `Citation` — valor embutido em respostas/resumos — sourceType · sourceId · excerpt · url · score. "Sem precedente" quando vazio (RF33.CA03).
 ### 10.12 `MemoryQuery` — `memory_queries` — id · userId · queryText · filtersJson · resultsJson · aiInferenceId · at.
 
@@ -501,6 +503,23 @@ id · subjectType (EMPREGADO · GESTAO) · subjectUserId · groupingId · reques
 | FollowTargetType | USER · DEPARTMENT · COMPANY |
 | MuralKind | COMPARTILHAMENTO · DECISAO_VALIDADA · PROJETO_PUBLICADO · RECONHECIMENTO · META · DESTAQUE · IMPULSO |
 | ShareChannel | MURAL · SESSAO_DECIA · LINK_EXTERNO |
+| MeetingStatus | GRAVANDO · TRANSCREVENDO · ATA_PROPOSTA · CONFIRMADA · CONTESTADA |
+| MeetingSource | GRAVACAO_NAVEGADOR · ARQUIVO · TRANSCRICAO_COLADA |
+| SealStatus | ATIVA · PAUSADA · ENCERRADA |
+| PolicyMode | AUTO · REVISAO |
+| SealBondOrigin | SUGESTAO_IA · POLITICA · INDICACAO · CURADORIA · MANUAL |
+| OfferStatus | ATIVA · RETIRADA · ESGOTADA |
+| Shelf | COMUNIDADE · CHANCELADO |
+| LedgerStatus | CONFIRMADO · SUSPENSO · ESTORNADO |
+| PurchaseStatus | CONCLUIDA · FALHA · ESTORNADA |
+| AiProvider | CLAUDE · GEMINI · LOCAL |
+| InferenceResult | OK · FALLBACK · ERRO · BLOQUEADO_SIGILO |
+| CircuitState | CLOSED · OPEN · HALF_OPEN |
+| InsightScope | ACERVO · PERFIL · EQUIPE · PROJETO |
+| SheetStatus | PROPOSTA · ACEITA · DESCARTADA |
+| IgnoredReason | NAO_VERIFICADO · AUTO_INTERACAO · ANTIFRAUDE |
+| StudioStatus | ORIGINAL · ENDIREITADA · RECORTADA · SEM_FUNDO · OCR |
+| CoverMode / ProjectCoverMode | AUTO · MANUAL · IA / MOSAICO · FOTO · IA (unificação em aberto, Q-41) |
 
 ## 14. Pendências de modelagem (ver `docs/DECISOES.md`)
 - Os cards RF1–RF18 do board não têm critérios de aceite escritos (só as HUs). A taxonomia do DECIA (seção 5) foi derivada das HUs + RF29/RF42/RF43; confirmar CAs antes da Sprint 1.

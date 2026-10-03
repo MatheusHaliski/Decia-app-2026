@@ -11,7 +11,7 @@
 ```mermaid
 classDiagram
   direction LR
-  namespace wai-domain {
+  namespace ws-domain {
     class TaskItem {
       <<entity>>
       +UUID id
@@ -132,7 +132,7 @@ classDiagram
       EXTRAIR_DOCUMENTO
     }
   }
-  namespace wai-application {
+  namespace ws-application {
     class ExtractionService {
       <<service>>
       +extractQuantities(actorId, taskId) ExtractionResult
@@ -171,7 +171,7 @@ classDiagram
       +extractText(bytes) String
     }
   }
-  namespace wai-web {
+  namespace ws-web {
     class ExtractionController {
       <<controller>>
       +extract(taskId, kind)
@@ -181,7 +181,7 @@ classDiagram
       +capture(taskId, image)
     }
   }
-  namespace wai-infrastructure {
+  namespace ws-infrastructure {
     class DxfCadReaderAdapter {
       <<adapter>>
       dwg e dxf
@@ -257,7 +257,7 @@ flowchart TD
     W3["Nova tarefa com faísca ✦ vinculada à origem, no mesmo projeto"]
     W4["Viewer3D (glTF) com ferramentas de medição"]
   end
-  subgraph L3["wai-application"]
+  subgraph L3["ws-application"]
     S1{"Ator pode editar a tarefa e anexo antivirusStatus LIMPO?"}
     S2{"mimeType suportado por CadReaderPort ou OCR?"}
     S3["MediaStoragePort.get · CadReaderPort.readLayers → layersJson (ESTRUTURAL)"]
@@ -326,8 +326,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant NX as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant S3 as S3
@@ -441,11 +441,11 @@ flowchart LR
     P2["app/tasks/[id]/viewer/page.tsx · Viewer3D (three.js, glTF)"]
     UI1["components/ui: ExtractionTable (confiança por linha, edição) · DeriveButton · FallbackBanner · MeasureTool"]
   end
-  subgraph WEB["wai-web (REST · br.gov.pr.secid.workai.web)"]
+  subgraph WEB["ws-web (REST · br.gov.pr.secid.workstation.web)"]
     direction TB
     C1["ExtractionController"]
   end
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     direction TB
     S1["ExtractionService"]
     S2["TaskService (RF20)"]
@@ -455,12 +455,12 @@ flowchart LR
     PT3["MediaStoragePort"]
     PT4["AiProviderPort"]
   end
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     direction TB
     E1["TaskItem · TaskAttachment · MediaObject · Evidence · ProjectTask"]
     E2["ExtractionResult · ExtractionCorrection · AiInferenceLog · PipelineJob"]
   end
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     direction TB
     I1["storage-s3: S3MediaStorageAdapter (get, put, presign)"]
     I2["ai-providers: ClaudeAdapter · GeminiAdapter · LocalStructuralEngine"]

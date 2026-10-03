@@ -10,7 +10,7 @@ Dois fluxos sobre a mesma ligação `ProjectTask ↔ TaskItem`: (1) **Extrair** 
 classDiagram
 direction LR
 
-namespace wai_domain_acervo {
+namespace ws_domain_acervo {
   class TaskItem {
     <<entity>>
     +id: UUID
@@ -67,7 +67,7 @@ namespace wai_domain_acervo {
   }
 }
 
-namespace wai_domain_projetos {
+namespace ws_domain_projetos {
   class ProjectScheme {
     <<entity>>
     +id: UUID
@@ -96,7 +96,7 @@ namespace wai_domain_projetos {
   }
 }
 
-namespace wai_domain_plataforma_social {
+namespace ws_domain_plataforma_social {
   class MediaObject {
     <<entity>>
     +id: UUID
@@ -135,7 +135,7 @@ namespace wai_domain_plataforma_social {
   }
 }
 
-namespace wai_domain_enums {
+namespace ws_domain_enums {
   class SourceKind {
     <<enum>>
     ARQUIVO
@@ -174,7 +174,7 @@ namespace wai_domain_enums {
   }
 }
 
-namespace wai_application {
+namespace ws_application {
   class AcervoService {
     <<service>>
     +extractToAcervo(userId, projectId, projectTaskId) TaskItem
@@ -206,7 +206,7 @@ namespace wai_application {
   }
 }
 
-namespace wai_web {
+namespace ws_web {
   class ProjectController {
     <<controller>>
     +POST_api_projects_id_tasks_ptId_extract()
@@ -218,7 +218,7 @@ namespace wai_web {
   }
 }
 
-namespace wai_infrastructure {
+namespace ws_infrastructure {
   class OpenSearchIndexAdapter {
     <<adapter>>
   }
@@ -281,7 +281,7 @@ flowchart TD
     W7["Card da original mostra reutilizada N vezes"]
   end
 
-  subgraph LA["wai-application"]
+  subgraph LA["ws-application"]
     A1["AcervoService.canExtract"]
     A2{"Projeto visível e tarefa não PRIVADA?"}
     A3["403 ACESSO_NEGADO"]
@@ -338,8 +338,8 @@ sequenceDiagram
   actor U as Usuário (eu)
   actor O as Dono original
   participant NX as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant DB as Repository/MySQL
   participant OS as OpenSearch
   participant CS as Cassandra
@@ -434,12 +434,12 @@ flowchart LR
     F3["components/ui: TaskCard, RemovedByAuthorCard snapshot, ReuseCounter, CreditBadge"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     C1["ProjectController — POST /api/projects/{id}/tasks/{ptId}/extract, GET /api/projects/{id}"]
     C2["TaskController — DELETE /api/tasks/{id}"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["AcervoService RF41"]
     S2["ProjectComposerService RF21"]
     S3["SocialService RF26"]
@@ -448,13 +448,13 @@ flowchart LR
     P2["MediaStoragePort"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["TaskItem · TaskAttachment · TaskStateLog · TaskSnapshot"]
     D2["ProjectScheme · ProjectTask · ProjectTaskDependency"]
     D3["MediaObject · Notification · DeliberativeProfile · DomainEventOutbox"]
   end
 
-  subgraph INFRA["wai-infrastructure/*"]
+  subgraph INFRA["ws-infrastructure/*"]
     I1[("persistence-mysql: tasks, task_attachments, task_state_log, project_tasks, deliberative_profiles, domain_events")]
     I2[("storage-s3: MediaObjects compartilhados por referência")]
     I3[("search-opensearch: índice de tarefas")]

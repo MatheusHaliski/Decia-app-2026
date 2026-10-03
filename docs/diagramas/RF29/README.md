@@ -11,7 +11,7 @@
 ```mermaid
 classDiagram
   direction LR
-  namespace wai-domain {
+  namespace ws-domain {
     class DeciaSession {
       <<entity>>
       +UUID id
@@ -220,7 +220,7 @@ classDiagram
       ATA_VIVA
     }
   }
-  namespace wai-application {
+  namespace ws-application {
     class DeciaBridgeService {
       <<service>>
       +openSessionFromProject(actorId, projectId) DeciaSession
@@ -263,7 +263,7 @@ classDiagram
       +put(bytes, mimeType, accessClass) MediaObject
     }
   }
-  namespace wai-web {
+  namespace ws-web {
     class ProjectDeciaController {
       <<controller>>
       +openSession(projectId)
@@ -283,7 +283,7 @@ classDiagram
       +exportTrace(taskId, format)
     }
   }
-  namespace wai-infrastructure {
+  namespace ws-infrastructure {
     class DecisionTraceJpaRepository {
       <<adapter>>
     }
@@ -368,7 +368,7 @@ flowchart TD
     W2["Fio de decisão: linha vertical, nós coloridos por classificação, carimbo VALIDADO ou DEVOLVIDO"]
     W3["Link para a mensagem original, mesmo em sessão ENCERRADA (RF17)"]
   end
-  subgraph L3["wai-application"]
+  subgraph L3["ws-application"]
     S1{"Projeto já tem sessão ativa?"}
     S2["DeciaSession topic = objective · participantes = responsáveis + chefe do departamento · linkedProjectId"]
     S3["ProjectService.changeStatus EM_DECISAO · nó PROJETO → aresta ORIGINOU → nó sessão"]
@@ -449,8 +449,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant NX as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant CS as Cassandra
@@ -581,13 +581,13 @@ flowchart LR
     P4["app/admin/dashboard/page.tsx · indicador objetivo 1"]
     UI1["components/ui: DecisionThread (fio de decisão) · AttachmentChip · StampBadge VALIDADO/DEVOLVIDO · ToTaskButton"]
   end
-  subgraph WEB["wai-web (REST · br.gov.pr.secid.workai.web)"]
+  subgraph WEB["ws-web (REST · br.gov.pr.secid.workstation.web)"]
     direction TB
     C1["ProjectDeciaController"]
     C2["SessionBridgeController"]
     C3["TaskTraceController"]
   end
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     direction TB
     S1["DeciaBridgeService"]
     S2["DecisionTraceService"]
@@ -596,14 +596,14 @@ flowchart LR
     PT1["AiProviderPort"]
     PT2["MediaStoragePort"]
   end
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     direction TB
     E1["DeciaSession · SessionParticipant · SessionMessage · MessageAttachment · MessageClassification"]
     E2["AnalyticalSummary · FinalDecision · DecisionReview · SessionArtifact"]
     E3["DecisionTraceNode · DecisionTraceEdge · TraceNodeType"]
     E4["ProjectScheme · ProjectTask · TaskItem"]
   end
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     direction TB
     I1["persistence-mysql: DecisionTraceJpaRepository · FinalDecision/MessageAttachment repositories"]
     I2["persistence-cassandra: CassandraMessageStore (messages_by_session) · CassandraTraceMirror (trace_by_entity)"]
@@ -658,7 +658,7 @@ flowchart LR
 | RF29.CA05 | Classes `FinalDecision.resultingTaskId`, `FinalDecision.stampJson`, `DecisionReview.outcome/reason`, `DeciaBridgeService.onDecisionReviewed`; atividades `U5 → S10 → S11/S12 → S13`; sequência bloco «CA05» (ATA_REGISTRO em APROVACAO, stamp VALIDADO, projeto APROVADO); transições `revisao → APROVADO` e `revisao → DEVOLVIDO`; componente `StampBadge` |
 | RF29.CA06 | Classes `DecisionTraceService.threadFor`, `DecisionTraceNode.classLabel/actorId/at`, `ProjectTask.decisionTraceNodeId`; atividades `U7 → S15 → W2 → W3` (link à mensagem original mesmo com sessão ENCERRADA); sequência bloco «CA06 e CA07» (`GET /api/tasks/{id}/trace`); componentes `DecisionThread`, `app/tasks/[id]`, `app/projects/[id]` |
 | RF29.CA07 | Classes `DecisionTraceNode`/`DecisionTraceEdge` (append-only, nota), `CassandraTraceMirror`, `DecisionTraceService.export`, `MediaStoragePort`, `DecisionTraceNode.snapshotJson`; atividades `U8 → S16 → D5/D4`, `S15` (snapshot RF23); sequência bloco «CA06 e CA07» (`GET .../trace/export?format=pdf`, S3, audit_log); componentes `S3TraceExportAdapter`, `persistence-cassandra` |
-| RF29.CA08 | Classes `AnalyticalSummary.recommendationsJson` ({affectedTaskIds, affectedProjectIds, planAxisId}), `DeciaBridgeService.enrichSummaryWithTargets`, `DeciaSession.planAxisId`; atividades `A5 → S17 → D4`; componente `AnalyticalSummary` em `wai-domain E2` |
+| RF29.CA08 | Classes `AnalyticalSummary.recommendationsJson` ({affectedTaskIds, affectedProjectIds, planAxisId}), `DeciaBridgeService.enrichSummaryWithTargets`, `DeciaSession.planAxisId`; atividades `A5 → S17 → D4`; componente `AnalyticalSummary` em `ws-domain E2` |
 | RF29.CA09 | Classe `DecisionTraceService.completenessIndicator`; atividades `U9 → S18 → D6` (`vw_decisions_with_trace`, `metric_snapshots`); nota do estado `CONCLUIDO`; componentes `app/admin/dashboard`, `platform: vw_decisions_with_trace` |
 
 > Dúvidas de modelagem registradas em `docs/DECISOES.md`: nome do enum da aresta (`relation`) não existe na TAXONOMIA (listado como nota); `409 SESSAO_JA_VINCULADA` e as rotas REST são propostas; `TaskService`/`ProjectService` (RF20/RF21) são dependências assumidas.

@@ -21,7 +21,7 @@
 classDiagram
   direction LR
 
-  namespace wai_domain {
+  namespace ws_domain {
     class DeciaSession {
       <<entity>>
       +id: UUID
@@ -108,7 +108,7 @@ classDiagram
     }
   }
 
-  namespace wai_application {
+  namespace ws_application {
     class ParticipantService {
       <<service>>
       +add(current CurrentUser, sessionId, cmd AddParticipantCommand) ParticipantView
@@ -142,7 +142,7 @@ classDiagram
     }
   }
 
-  namespace wai_web {
+  namespace ws_web {
     class DeciaSessionController {
       <<controller>>
       +participants(sessionId, page) Page~ParticipantView~
@@ -157,7 +157,7 @@ classDiagram
     }
   }
 
-  namespace wai_infrastructure {
+  namespace ws_infrastructure {
     class CassandraNotificationProjector {
       <<adapter>>
     }
@@ -195,7 +195,7 @@ classDiagram
 
 ## 2. Diagrama de atividades
 
-Raias: Administrador da sessão · Participante afetado · Web/BFF · `wai-application` · Persistência (o RF9 não usa o AiEngine).
+Raias: Administrador da sessão · Participante afetado · Web/BFF · `ws-application` · Persistência (o RF9 não usa o AiEngine).
 
 ```mermaid
 flowchart TD
@@ -220,7 +220,7 @@ flowchart TD
     B5["SSE ParticipantAdded/Removed → lista e presença online"]
   end
 
-  subgraph L3["wai-application — ParticipantService"]
+  subgraph L3["ws-application — ParticipantService"]
     C1{"É adminUserId ou Role ADMIN?"}
     C1 -->|não| E403["403 ACESSO_NEGADO"]
     C1 -->|sim| C2{"Sessão ATIVA ou REABERTA?"}
@@ -288,8 +288,8 @@ sequenceDiagram
   actor A as Administrador da sessão
   actor P as Participante afetado
   participant N as Next.js (App Router) /decia/[id]/participants
-  participant C as DeciaSessionController (wai-web)
-  participant S as ParticipantService (wai-application)
+  participant C as DeciaSessionController (ws-web)
+  participant S as ParticipantService (ws-application)
   participant DB as Repository/MySQL
   participant CS as Cassandra
   participant R as Redis
@@ -407,27 +407,27 @@ flowchart LR
     FE3["lib/decia/useSessionStream.ts (ParticipantAdded/Removed/RoleChanged)"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     W1["DeciaSessionController /api/decia/sessions/{id}/participants · /{userId} · /candidates"]
     W2["SessionStreamController (SSE, encerra conexão do removido)"]
     W3["SecurityConfig (JWT) · CurrentUserResolver · CorrelationIdFilter"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["ParticipantService"]
     S2["Guard.requireSessionAdmin"]
     S3["MessageService.postSystemMessage"]
     P1["NotificationPort · RealtimePublisherPort · DomainEventPublisherPort"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["DeciaSession · SessionParticipant · User · Notification · AuditLog"]
     D2["ParticipantRole · SessionAccess · SessionStatus · AccountStatus"]
     D3["SessionAccessPolicy (inScope, participantsEditable)"]
     D4["SessionParticipantRepository · DeciaSessionRepository · UserRepository"]
   end
 
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     I1["persistence-mysql (session_participants, decia_sessions, users, audit_log, domain_events)"]
     I2["persistence-cassandra (messages_by_session mensagem de sistema, notifications_by_user)"]
     I3["cache-redis (RedisRealtimePublisher pub/sub, presença online)"]
@@ -459,7 +459,7 @@ flowchart LR
   I1 --> MY
   I2 --> CA
   I3 --> RD
-  BOOT["wai-bootstrap (flags cassandra.enabled, redis.enabled; paginação 50)"] -.-> INFRA
+  BOOT["ws-bootstrap (flags cassandra.enabled, redis.enabled; paginação 50)"] -.-> INFRA
 ```
 
 ## 6. Rastreabilidade

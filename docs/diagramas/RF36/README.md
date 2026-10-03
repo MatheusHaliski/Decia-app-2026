@@ -11,7 +11,7 @@
 ```mermaid
 classDiagram
   direction LR
-  namespace wai-domain {
+  namespace ws-domain {
     class HandoffDossier {
       <<entity>>
       +UUID id
@@ -154,7 +154,7 @@ classDiagram
       REVIEW
     }
   }
-  namespace wai-application {
+  namespace ws-application {
     class HandoffService {
       <<service>>
       +generate(actorId, subjectType, subjectId, reason) HandoffDossier
@@ -201,7 +201,7 @@ classDiagram
       +render(template, content) bytes
     }
   }
-  namespace wai-web {
+  namespace ws-web {
     class HandoffController {
       <<controller>>
       +generate(body)
@@ -211,7 +211,7 @@ classDiagram
       +get(dossierId)
     }
   }
-  namespace wai-infrastructure {
+  namespace ws-infrastructure {
     class HandoffJpaRepository {
       <<adapter>>
     }
@@ -284,7 +284,7 @@ flowchart TD
     W3["Tarefas e projetos exibem novo responsável e anterior"]
     W4["Mensagem de sistema na sessão e notificação RF9"]
   end
-  subgraph L3["wai-application"]
+  subgraph L3["ws-application"]
     S1{"Ator é CHEFE do departamento ou EMPRESA?"}
     S2{"Já existe dossiê não TRANSFERIDO para o mesmo sujeito?"}
     S3["compileContent: projetos abertos por fase, tarefas pendentes e bloqueadas com prazos, sessões ATIVA, decisões EM_REVISAO, contatos e fornecedores citados"]
@@ -360,8 +360,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant NX as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant CS as Cassandra
@@ -479,11 +479,11 @@ flowchart LR
     P4["app/companies/[slug]/groupings/[id] · encerrar gestão (RF25.CA05)"]
     UI1["components/ui: HandoffSummary (por fase) · ConsentDialog · SuccessorPicker · ResponsibleBadge (atual e anterior)"]
   end
-  subgraph WEB["wai-web (REST · br.gov.pr.secid.workai.web)"]
+  subgraph WEB["ws-web (REST · br.gov.pr.secid.workstation.web)"]
     direction TB
     C1["HandoffController"]
   end
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     direction TB
     S1["HandoffService"]
     S2["DeciaBridgeService (RF29, RF9)"]
@@ -495,13 +495,13 @@ flowchart LR
     PT2["MediaStoragePort"]
     PT3["PdfRenderPort"]
   end
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     direction TB
     E1["HandoffDossier · HandoffItem · Grouping"]
     E2["TaskItem · ProjectScheme · ProjectTask · DeciaSession · SessionParticipant · FinalDecision"]
     E3["DepartmentMembership · DecisionTraceNode · MediaObject · AiInferenceLog"]
   end
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     direction TB
     I1["persistence-mysql: HandoffJpaRepository e repositórios dos alvos"]
     I2["storage-s3: S3MediaStorageAdapter (PDF)"]

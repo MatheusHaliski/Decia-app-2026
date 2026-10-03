@@ -2,7 +2,7 @@
 **HU:** HU20 · **Sprint (board Work Station):** 4 · **Equivalente FAI:** RF4 Adicionar peça (foto → IA pré-preenche → formulário com taxonomia oficial → "Mais detalhes" → Closet) + RF11 Background Studio + buscador web de marcas · **Aba/rota:** Criar Tarefa (`/tasks/new`; também pela folha "+ Criar" e pelo botão "Cadastrar nova tarefa" do Criador de Projetos, RF21)
 **Critérios de aceite cobertos:** RF20.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 · CA15
 
-A **tarefa** (`TaskItem`) é a unidade mínima do Work AI (= peça de roupa). O Criador de Tarefas tem **5 etapas**: (1) **Fonte** — Arquivo · Colar · Google Workspace · Microsoft 365 · E-mail · Link · Protocolo · Foto/scanner · Texto com IA; (2) **Detecção por IA** (`TaskDetectionService` → AiEngine `PREENCHER_TAREFA`); (3) **Dados da tarefa** (taxonomia oficial, prazo legal via `DeadlineService`, órgão via busca web); (4) **Mais detalhes** (chancelas sugeridas RF39, visibilidade, estado inicial, situação do documento, protocolo, guarda, Balcão RF40, tags, dependências, vínculo a projeto/fase); (5) **Arte do card** (thumbnail assíncrono RF38). Antivírus (`AntivirusPort`), OCR (`OcrPort`) e thumbnail rodam como `PipelineJob` após o commit; o resultado entra no **Acervo de Tarefas (RF41)**.
+A **tarefa** (`TaskItem`) é a unidade mínima do Work Station (= peça de roupa). O Criador de Tarefas tem **5 etapas**: (1) **Fonte** — Arquivo · Colar · Google Workspace · Microsoft 365 · E-mail · Link · Protocolo · Foto/scanner · Texto com IA; (2) **Detecção por IA** (`TaskDetectionService` → AiEngine `PREENCHER_TAREFA`); (3) **Dados da tarefa** (taxonomia oficial, prazo legal via `DeadlineService`, órgão via busca web); (4) **Mais detalhes** (chancelas sugeridas RF39, visibilidade, estado inicial, situação do documento, protocolo, guarda, Balcão RF40, tags, dependências, vínculo a projeto/fase); (5) **Arte do card** (thumbnail assíncrono RF38). Antivírus (`AntivirusPort`), OCR (`OcrPort`) e thumbnail rodam como `PipelineJob` após o commit; o resultado entra no **Acervo de Tarefas (RF41)**.
 
 | Fonte (etapa 1) | `SourceKind` | `TaskType` resultante | Porta / adaptador |
 |---|---|---|---|
@@ -22,7 +22,7 @@ A **tarefa** (`TaskItem`) é a unidade mínima do Work AI (= peça de roupa). O 
 classDiagram
 direction LR
 
-namespace wai_domain_acervo {
+namespace ws_domain_acervo {
   class TaskItem {
     <<entity>>
     +id: UUID
@@ -136,7 +136,7 @@ namespace wai_domain_acervo {
   }
 }
 
-namespace wai_domain_projetos {
+namespace ws_domain_projetos {
   class ProjectTask {
     <<entity>>
     +id: UUID
@@ -149,7 +149,7 @@ namespace wai_domain_projetos {
   }
 }
 
-namespace wai_domain_chancelas_balcao {
+namespace ws_domain_chancelas_balcao {
   class SealBond {
     <<entity>>
     +id: UUID
@@ -174,7 +174,7 @@ namespace wai_domain_chancelas_balcao {
   }
 }
 
-namespace wai_domain_plataforma {
+namespace ws_domain_plataforma {
   class MediaObject {
     <<entity>>
     +id: UUID
@@ -210,7 +210,7 @@ namespace wai_domain_plataforma {
   }
 }
 
-namespace wai_domain_enums {
+namespace ws_domain_enums {
   class TaskType {
     <<enum>>
     TEXTO_MANUAL
@@ -310,7 +310,7 @@ namespace wai_domain_enums {
   }
 }
 
-namespace wai_application {
+namespace ws_application {
   class TaskCreatorService {
     <<service>>
     +receiveSource(userId, SourceInput) SourceReceipt
@@ -390,7 +390,7 @@ namespace wai_application {
   }
 }
 
-namespace wai_web {
+namespace ws_web {
   class TaskController {
     <<controller>>
     +POST_api_tasks_sources(multipart ou ref)
@@ -412,7 +412,7 @@ namespace wai_web {
   }
 }
 
-namespace wai_infrastructure {
+namespace ws_infrastructure {
   class S3StorageAdapter {
     <<adapter>>
   }
@@ -522,7 +522,7 @@ flowchart TD
     W6["Card aparece no Acervo RF41 e, se indicado, no projeto/fase RF21"]
   end
 
-  subgraph LA["wai-application"]
+  subgraph LA["ws-application"]
     A1["TaskCreatorService.receiveSource"]
     A2{"Formato aceito e dentro do limite 50 MB / zip 200 MB?"}
     A3["422 VALIDACAO: formato ou tamanho não aceito"]
@@ -625,8 +625,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant NX as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant OS as OpenSearch
@@ -782,7 +782,7 @@ flowchart LR
     F4["Modal reutilizado pelo Criador de Projetos RF21"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     C1["TaskController — /api/tasks, /sources, /detect, /batch/confirm"]
     C2["DeadlineController — /api/legal-deadlines/compute"]
     C3["OrgEntityController — /api/org-entities/search"]
@@ -790,7 +790,7 @@ flowchart LR
     C5["EmailInboundController — /api/inbound/email"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["TaskCreatorService"]
     S2["TaskDetectionService"]
     S3["DeadlineService"]
@@ -807,13 +807,13 @@ flowchart LR
     P7["SearchIndexPort"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["TaskItem · TaskAttachment · TaskVersion · LegalDeadlineRule · OrgEntity · Evidence"]
     D2["ProjectTask · SealBond · ModelOffer"]
     D3["MediaObject · PipelineJob · AiInferenceLog · DomainEventOutbox"]
   end
 
-  subgraph INFRA["wai-infrastructure/*"]
+  subgraph INFRA["ws-infrastructure/*"]
     I1[("persistence-mysql: tasks, task_attachments, task_versions, legal_deadline_rules, org_entities, project_tasks, seal_bonds, model_offers, pipeline_jobs, ai_inference_log")]
     I2[("storage-s3: S3StorageAdapter — originais, thumbnails, snapshots")]
     I3[("search-opensearch: OpenSearchIndexAdapter — índice de tarefas + texto OCR")]

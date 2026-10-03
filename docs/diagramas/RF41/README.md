@@ -354,7 +354,7 @@ flowchart TD
     W11["Card âmbar a 3 dias, vermelho vencido, ícone ⚖ (RF38.CA05)"]
   end
 
-  subgraph L_app["wai-application · AcervoService · TaskStateMachine · LegalDeadlineScheduler"]
+  subgraph L_app["ws-application · AcervoService · TaskStateMachine · LegalDeadlineScheduler"]
     S1["AcervoService.list: filtra por ownerId, sub-filtro e filtros · ordena (recentes, mais usadas, menos usadas, nome, prazo, valor) · pagina 20"]
     S2["AcervoService.counters por sub-filtro (cache)"]
     S3["AcervoService.detail: agrega TaskAttachment, TaskVersion, ProjectTask em uso, DecisionTraceNode, SealBond, Reaction/Comment, TaskStateLog"]
@@ -431,8 +431,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant N as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant DB as Repository/MySQL
   participant OS as OpenSearch
   participant R as Redis
@@ -565,12 +565,12 @@ flowchart LR
     FE2["components/ui · TaskCard (RF38) · StateTag · DeadlineBadge ⚖ · SubFilterTabs com contadores · Skeleton · EmptyState · RetryBanner · QuickActions · PhaseSelect (RF21) · Viewers (pdf, xlsx, imagem, dwg/dxf 2D, ifc/glb 3D) · EvidenceUploader"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     C1["TaskController"]
     C2["EvidenceController"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["AcervoService"]
     S2["TaskStateMachine"]
     S3["LegalDeadlineScheduler"]
@@ -579,12 +579,12 @@ flowchart LR
     P2["StoragePort"]
   end
 
-  subgraph DOM["wai-domain · br.gov.pr.secid.workai"]
+  subgraph DOM["ws-domain · br.gov.pr.secid.workstation"]
     D1["TaskItem · TaskStateLog · TaskAttachment · TaskVersion · LegalDeadlineRule · OrgEntity · Evidence"]
     D2["ProjectTask · FinalDecision · SavedItem · SealBond · DecisionTraceNode"]
   end
 
-  subgraph INFRA["wai-infrastructure/*"]
+  subgraph INFRA["ws-infrastructure/*"]
     I1["persistence-mysql · tasks, task_state_log, task_attachments, task_versions, evidences, legal_deadline_rules"]
     I2["search-opensearch · índice tasks (texto, filtros, ordenação) · ocrTextRef"]
     I3["cache-redis · contadores por sub-filtro · visão de lista"]

@@ -11,7 +11,7 @@
 ```mermaid
 classDiagram
   direction LR
-  namespace wai-domain {
+  namespace ws-domain {
     class ProjectScenario {
       <<entity>>
       +UUID id
@@ -138,7 +138,7 @@ classDiagram
       ENCERRAMENTO
     }
   }
-  namespace wai-application {
+  namespace ws-application {
     class ScenarioService {
       <<service>>
       +create(actorId, projectId, name, variables) ProjectScenario
@@ -172,7 +172,7 @@ classDiagram
       +complete(prompt, mode, accessClass) AiResult
     }
   }
-  namespace wai-web {
+  namespace ws-web {
     class ScenarioController {
       <<controller>>
       +create(projectId, body)
@@ -183,7 +183,7 @@ classDiagram
       +share(scenarioId, sessionId)
     }
   }
-  namespace wai-infrastructure {
+  namespace ws-infrastructure {
     class LocalCpmEngine {
       <<adapter>>
       CPM + PERT local
@@ -251,7 +251,7 @@ flowchart TD
     W3["Projeto original inalterado · variante listada em Cenários"]
     W4["Histórico RF22 mostra nova versão com reason = cenário aplicado"]
   end
-  subgraph L3["wai-application"]
+  subgraph L3["ws-application"]
     S1{"Ator é dono ou responsável do projeto?"}
     S2{"Ao menos uma variável e deltas válidos?"}
     S3["ProjectScenario RASCUNHO com variablesJson"]
@@ -316,8 +316,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant NX as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant CS as Cassandra
@@ -429,11 +429,11 @@ flowchart LR
     P3["app/decia/[sessionId] · anexo SCENARIO inline (RF29)"]
     UI1["components/ui: ScenarioForm · ImpactReport ✦ · ScenarioCompare (3 colunas) · TimelineGantt · RiskByPhase"]
   end
-  subgraph WEB["wai-web (REST · br.gov.pr.secid.workai.web)"]
+  subgraph WEB["ws-web (REST · br.gov.pr.secid.workstation.web)"]
     direction TB
     C1["ScenarioController"]
   end
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     direction TB
     S1["ScenarioService"]
     S2["ComplianceService (RF32)"]
@@ -442,12 +442,12 @@ flowchart LR
     PT1["SchedulePort"]
     PT2["AiProviderPort"]
   end
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     direction TB
     E1["ProjectScenario · ProjectScheme · ProjectTask · ProjectTaskDependency · ProjectVersion"]
     E2["ComplianceResult · SummaryScenario · FinalDecision · MessageAttachment · AiInferenceLog"]
   end
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     direction TB
     I1["persistence-mysql: ProjectScenarioJpaRepository · ProjectVersionJpaRepository"]
     I2["persistence-cassandra: CassandraMessageStore"]

@@ -1,4 +1,4 @@
-# Registro de decisões e dúvidas — Work AI / DECIA
+# Registro de decisões e dúvidas — Work Station / DECIA
 
 Formato: **D-nn** decisão tomada (com justificativa) · **Q-nn** dúvida aberta para o time/PO (resposta esperada antes de codificar o RF).
 
@@ -7,7 +7,7 @@ Formato: **D-nn** decisão tomada (com justificativa) · **Q-nn** dúvida aberta
 | # | Data | Decisão | Justificativa |
 |---|---|---|---|
 | D-01 | 2026-10-03 | Backend em **Java 21 LTS + Spring Boot 3.5.x** (não 4.x) | 3.5 é a linha estável com Spring Security 6.5, springdoc 2.x e Resilience4j maduros; Java 25 só quando Testcontainers/JaCoCo/SpotBugs tiverem suporte comprovado. |
-| D-02 | 2026-10-03 | Módulos Maven `wai-domain`, `wai-application`, `wai-infrastructure/*`, `wai-web`, `wai-bootstrap`; pacote raiz `br.gov.pr.secid.workai` | Espelho 1:1 do FAI (`fai-*`), facilitando reaproveitar código de auth, AiEngine, eventos, Guard. |
+| D-02 | 2026-10-03 | Módulos Maven `ws-domain`, `ws-application`, `ws-infrastructure/*`, `ws-web`, `ws-bootstrap`; pacote raiz `br.gov.pr.secid.workstation` | Espelho 1:1 do FAI (`fai-*`), facilitando reaproveitar código de auth, AiEngine, eventos, Guard. |
 | D-03 | 2026-10-03 | Diagramas em **Mermaid** (não PlantUML como no FAI), um `README.md` por RF com 5 diagramas | Renderiza no GitHub sem build; validação automatizada com `mermaid-cli`. PlantUML pode ser exportado depois se o TDE exigir PNG. |
 | D-04 | 2026-10-03 | Identificadores `UUID` (BINARY(16)); auditoria `AuditableEntity`/`VersionedAuditableEntity`; JSON do MySQL 8 para campos `*Json` | Igual ao FAI; evita enumerar colunas voláteis (políticas, decomposições de score). |
 | D-05 | 2026-10-03 | Mensagens da sessão em **Cassandra** (`messages_by_session`, TTL por sessão) com índice leve em MySQL; `DecisionTrace` em MySQL (fonte de verdade) com espelho append-only em Cassandra | Mensageria é append-only e volumosa; o rastro precisa de integridade transacional com tarefas/decisões (objetivo 1) e exportação para auditoria. |
@@ -35,7 +35,7 @@ Formato: **D-nn** decisão tomada (com justificativa) · **Q-nn** dúvida aberta
 | Q-10 | RF37 | Provedor de transcrição (Whisper local vs. API externa) e política de retenção de áudio padrão (sugestão: apagar após transcrição). | TranscriptionPort, LGPD |
 | Q-11 | RF42 | Valores da tabela de pontos são os do card (5/3/8/4/6/15/2/2/3/5)? Expiração padrão 12 meses? | Seed `decia_points_rules` |
 | Q-12 | RF43/RF44/RF45 | Pesos iniciais de HSE/Hype/ranking são os do board; confirmar se a EMPRESA pode editá-los já na v1 ou se ficam fixos até RF28 estar pronto. | `hse_weights`, `ranking_weights` |
-| Q-13 | Geral | Board renomeado para **Work Station**: o nome do produto continua **Work AI** com centro **DECIA**? | Nomes em docs/UI |
+| Q-13 | Geral | Board renomeado para **Work Station**: o nome do produto continua **Work Station** com centro **DECIA**? | Nomes em docs/UI |
 | Q-14 | RF4–RF18 | Rotas do DECIA e do admin não existem no board; diagramas usam `/decia/[sessionId]` (+ `/summary`, `/decision`, `/decision/review`, `/artifacts`, `/archive`) e `/admin/dashboard`, API sob `/api/decia/sessions/{id}/...`. Confirmar. | Frontend RF4–RF18 |
 | Q-15 | RF12 | Proposta de decisão nasce automaticamente ao publicar o resumo (listener AFTER_COMMIT) **e** por ação manual do administrador. A IA deve propor sempre ou só sob demanda? | DecisionService |
 | Q-16 | RF14 | Quem decide a reabertura: administrador, com fallback "maioria simples ao fim do prazo" (`votingDeadlineAt`). Confirmar regra e prazo padrão. | ReopenRequest |
@@ -57,4 +57,12 @@ Formato: **D-nn** decisão tomada (com justificativa) · **Q-nn** dúvida aberta
 | Q-32 | RF24 | Derivar só de plano EMPRESA PUBLICADO (422 DERIVACAO_INVALIDA) e copiar eixos sem vínculos de projeto; projeto já em outro eixo do mesmo plano → 409 PROJETO_JA_NO_PLANO ou mover automaticamente? "REPROGRAMADO" = presente nos dois exercícios com ano alterado. | PlanService |
 | Q-33 | RF25 | Item já em agrupamento do mesmo tipo → 409 AGRUPAMENTO_MESMO_TIPO ou substituir? Tarefas só via `GroupingItem` (sem ponteiros desnormalizados em `TaskItem`)? Encerrar GESTÃO gera dossiê sem sucessor e notifica o chefe (sucessor definido no RF36). | GroupingService |
 | Q-34 | RF26 | Curtir é toggle idempotente; reações qualitativas 1 por tipo/ator/alvo; remix de alvo não-PUBLICA → 422 REMIX_SOMENTE_PUBLICO; chefe que pode excluir comentário é o do departamento do **alvo**. Confirmar. | SocialService |
-| Q-35 | RF27 | Índices OpenSearch `wai-projects`, `wai-tasks`, `wai-people`, `wai-orgs` (+ `wai-memory`); aba CHEFES filtra `Department.headUserId` (fonte de verdade do papel); "Seguindo" por fan-out para `timeline_by_user` com backfill ao seguir (vs fan-in na leitura). Decidir antes de implementar. | SearchService, MuralService |
+| Q-35 | RF27 | Índices OpenSearch `ws-projects`, `ws-tasks`, `ws-people`, `ws-orgs` (+ `ws-memory`); aba CHEFES filtra `Department.headUserId` (fonte de verdade do papel); "Seguindo" por fan-out para `timeline_by_user` com backfill ao seguir (vs fan-in na leitura). Decidir antes de implementar. | SearchService, MuralService |
+| Q-36 | RF40/RF41 | `TaskState.OFERECIDA` conflita com "mantendo o estado de trabalho original" (RF40.CA01): modelado como etiqueta derivada de `offeredInCounter=true` + `ModelOffer ATIVA`, preservando `state`. Remover OFERECIDA do enum? | TaskStateMachine |
+| Q-37 | RF40/RF42 | "Débito e crédito no mesmo lançamento" = 2 linhas no ledger (COMPRA_LOJA no comprador, VENDA_BALCAO no autor) na mesma transação, `counterpartyUserId` cruzado, mesmo `correlationId`, chaves `k:debit`/`k:credit`. Alternativa: 1 linha com dois deltas. | DeciaPointsService |
+| Q-38 | RF37 | Sem consentimento de algum participante a gravação é bloqueada (409 CONSENTIMENTO_PENDENTE) e só transcrição colada é aceita; 48 h sem contestação ⇒ ata CONFIRMADA (ratificação tácita). Confirmar. | MeetingService |
+| Q-39 | RF41 | Transições extras para fechar a máquina: CONCLUIDA→EM_USO (retrabalho), ARQUIVADA→DISPONIVEL (restaurar), MODELO_PUBLICO→DISPONIVEL (chancela revogada), DISPONIVEL⇄BLOQUEADA fora de projeto. Confirmar. | TaskStateMachine |
+| Q-40 | RF44 | `DailyTask` sem feedback ao virar o dia = "Expirada": vira valor de `DailyFeedback` ou flag derivada? | DailyTaskService |
+| Q-41 | RF38 | `CoverMode` divergente entre tarefa (AUTO·MANUAL·IA) e projeto (MOSAICO·FOTO·IA): unificar ou manter `CoverMode` e `ProjectCoverMode`? | CardArtService |
+| Q-42 | Geral | Códigos de erro propostos fora dos CAs: 409 CONSENTIMENTO_PENDENTE, 409 COTA_ESGOTADA, 403 SKIN_NAO_ADQUIRIDA, 409 VINCULO_DUPLICADO, 409 OFERTA_INDISPONIVEL, 409 LICENCA_NAO_PERMITE, 422 TRANSICAO_INVALIDA, 409 DECISAO_VINCULADA, 503 BUSCA_INDISPONIVEL, 409 LIMITE_DOACAO, 422 MOTIVO_OBRIGATORIO, 409 FEEDBACK_JA_REGISTRADO, 429 LIMITE_EMISSOR_MES. Ratificar o catálogo de `code`. | GlobalExceptionHandler |
+| Q-43 | Geral | O brief atualizado cita um "prompt de esqueleto (segunda mensagem desta sessão)" com tokens, componentes, ícones, artes de fundo, shell do app e **RF23** para a etapa (b). Essa mensagem não chegou nesta sessão: o design system foi derivado do card "Identidade visual" + RF38. Reenviar o prompt para alinhar antes da etapa (b). | Design system, etapa (b) |

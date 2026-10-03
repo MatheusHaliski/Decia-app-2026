@@ -21,7 +21,7 @@
 classDiagram
   direction LR
 
-  namespace wai_domain {
+  namespace ws_domain {
     class User {
       <<entity>>
       +id: UUID
@@ -121,7 +121,7 @@ classDiagram
     }
   }
 
-  namespace wai_application {
+  namespace ws_application {
     class AccountService {
       <<service>>
       +me(current CurrentUser) MeView
@@ -162,7 +162,7 @@ classDiagram
     }
   }
 
-  namespace wai_web {
+  namespace ws_web {
     class AccountController {
       <<controller>>
       +me() MeView
@@ -176,7 +176,7 @@ classDiagram
     }
   }
 
-  namespace wai_infrastructure {
+  namespace ws_infrastructure {
     class S3MediaStorage {
       <<adapter>>
       +bucket: String
@@ -216,7 +216,7 @@ classDiagram
 
 ## 2. Diagrama de atividades
 
-Raias: Usuário · Web/BFF · `wai-application` · Persistência (o RF3 não usa o AiEngine). Três sub-fluxos: dados pessoais, troca de e-mail e preferências/avatar.
+Raias: Usuário · Web/BFF · `ws-application` · Persistência (o RF3 não usa o AiEngine). Três sub-fluxos: dados pessoais, troca de e-mail e preferências/avatar.
 
 ```mermaid
 flowchart TD
@@ -236,7 +236,7 @@ flowchart TD
     B4["POST /api/me/avatar multipart"]
   end
 
-  subgraph L3["wai-application — AccountService / PreferencesService"]
+  subgraph L3["ws-application — AccountService / PreferencesService"]
     C1{"Campos válidos?"}
     C1 -->|username alterado| E422a["422 USERNAME_IMUTAVEL"]
     C1 -->|inválido| E422["422 VALIDACAO (details por campo)"]
@@ -292,9 +292,9 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant N as Next.js (App Router) /profile/edit + /settings/preferences
-  participant C as AccountController (wai-web)
-  participant A as AccountService (wai-application)
-  participant P as PreferencesService (wai-application)
+  participant C as AccountController (ws-web)
+  participant A as AccountService (ws-application)
+  participant P as PreferencesService (ws-application)
   participant DB as Repository/MySQL
   participant S3 as S3
   participant OS as OpenSearch
@@ -399,12 +399,12 @@ flowchart LR
     FE4["lib/auth/session.tsx (refreshMe após salvar)"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     W1["AccountController /api/me · /api/me/email · /api/me/privacy · /api/me/avatar · /api/me/cover · /api/me/preferences"]
     W2["SecurityConfig (JWT) · CurrentUserResolver · multipart limits"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["AccountService"]
     S2["PreferencesService"]
     S3["IdentityService.reauthenticate"]
@@ -412,13 +412,13 @@ flowchart LR
     P2["SearchIndexPort · EmailSenderPort · DomainEventPublisherPort"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["User · UserPreferences · MediaObject · PipelineJob · AuditLog"]
     D2["ThemeMode · UiLanguage · DeskSkin · AiMode · HypeVisibility"]
     D3["UserRepository · UserPreferencesRepository · MediaObjectRepository"]
   end
 
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     I1["persistence-mysql (users, user_preferences, media_objects, pipeline_jobs, audit_log)"]
     I2["storage-s3 (S3MediaStorage: avatars/, covers/)"]
     I3["search-opensearch (OpenSearchPeopleIndexer)"]
@@ -454,7 +454,7 @@ flowchart LR
   I2 --> S3B
   I3 --> OSB
   I4 --> X1
-  BOOT["wai-bootstrap (flags storage.s3, opensearch.enabled)"] -.-> INFRA
+  BOOT["ws-bootstrap (flags storage.s3, opensearch.enabled)"] -.-> INFRA
 ```
 
 ## 6. Rastreabilidade

@@ -289,7 +289,7 @@ flowchart TD
     B7["Carimbo DEVOLVIDO (vermelho) com o motivo"]
   end
 
-  subgraph L3["wai-application (DecisionService)"]
+  subgraph L3["ws-application (DecisionService)"]
     C1{"actor = adminUserId?"}
     C2{"decision.status = EM_REVISAO?"}
     C3{"outcome = DEVOLVIDA e reason vazio?"}
@@ -365,8 +365,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário (admin da sessão — CHEFE/ADMIN)
   participant FE as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant DB as Repository/MySQL
   participant CS as Cassandra
   participant OS as OpenSearch
@@ -405,7 +405,7 @@ sequenceDiagram
     S->>DB: INSERT decia_points_ledger (+15 × m, DECISAO_VALIDADA, idempotencyKey) por contribuinte
     EV-->>S: MuralService: INSERT mural_entries (DECISAO_VALIDADA)
     EV-->>S: ArtifactService.onDecisionValidated (RF13)
-    S->>OS: index wai-memory {sourceType DECISAO, sourceId, text}
+    S->>OS: index ws-memory {sourceType DECISAO, sourceId, text}
   end
 
   alt RF15.CA03 — revisor DEVOLVE com motivo
@@ -483,12 +483,12 @@ flowchart LR
     FE3["components/ui/ReviewPanel · DecisionThread (fio de decisão) · StampBadge · ReasonTextarea"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     W1["DecisionReviewController (REST /api/decia/sessions/{id}/decisions/{did}/review)"]
     W2["SessionAccessGuard (adminUserId; perfil CHEFE/ADMIN)"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["DecisionService.review"]
     S2["TaskCreationService (RF20/RF29)"]
     S3["ProjectStatusService (RF21)"]
@@ -502,7 +502,7 @@ flowchart LR
     P3["DomainEventPublisher (outbox)"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["FinalDecision · DecisionReview"]
     D2["TaskItem · ProjectTask · ProjectScheme"]
     D3["DecisionTraceNode · DecisionTraceEdge · AuditLog"]
@@ -510,10 +510,10 @@ flowchart LR
     D5["Enums: DecisionStatus · ReviewOutcome · ProjectStatus · ProjectPhase · PointsEvent"]
   end
 
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     I1["persistence-mysql: FinalDecisionRepository (@Version), DecisionReviewRepository, TaskItemRepository, ProjectTaskRepository, ProjectSchemeRepository, DecisionTraceRepository, DeciaPointsLedgerRepository, MuralEntryRepository, AuditLogRepository, PipelineJobRepository"]
     I2["persistence-cassandra: NotificationFeedAdapter, CassandraMessageAdapter"]
-    I3["search-opensearch: OpenSearchMemoryAdapter (wai-memory)"]
+    I3["search-opensearch: OpenSearchMemoryAdapter (ws-memory)"]
     I4["cache-redis: PointsBalanceCache"]
     I5["platform: NotificationAdapter, OutboxRelay, PipelineJobRunner"]
   end

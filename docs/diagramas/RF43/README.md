@@ -388,7 +388,7 @@ classDiagram
   MetricCalculator ..> MetricSnapshot
 
   note for AiEngine "Strategy + Chain of Responsibility · timeout e retry por provedor · nada vira decisão, chancela, ranking ou projeto sem confirmação humana"
-  note for FeasibilityService "wai-domain · determinístico e testável · funciona sem chave externa (RF43.CA11) · documentado em METRICAS_GESTAO.md"
+  note for FeasibilityService "ws-domain · determinístico e testável · funciona sem chave externa (RF43.CA11) · documentado em METRICAS_GESTAO.md"
   note for MetricCalculator "um serviço de domínio por métrica do catálogo A–D · fórmula, fonte e proxy (RF43.CA13)"
   note for AiProviderCircuitState "Redis · nomes AiProvider, InferenceResult, CircuitState, InsightScope, SheetStatus, MetricDomain a confirmar"
 ```
@@ -419,7 +419,7 @@ flowchart TD
     W6["GET /admin/ai/dashboard: custo e latência por função e departamento, taxa de fallback, taxa de aceitação, cotas, alertas de custo"]
   end
 
-  subgraph L_app["wai-application · AutopilotService · FeasibilityService · InsightService · RankingService"]
+  subgraph L_app["ws-application · AutopilotService · FeasibilityService · InsightService · RankingService"]
     S1["AutopilotService.suggestProjects: candidatos de eixos do plano sem projeto, lacunas por processo, decisões sem projeto, metas, histórico (RF33)"]
     S2["FeasibilityService (determinístico): PERT O/M/P por tarefa · CPM caminho crítico e folgas · Monte Carlo 1000 execuções → pOnTime · custo paramétrico + análogo P10/P50/P90 · matriz P×I top 5 · ROI/payback/VPL · WBS · RACI · SMART · score 0–100"]
     S3["Persiste FeasibilitySheet PROPOSTA (≤5) com assumptionsJson e unknownsJson"]
@@ -436,7 +436,7 @@ flowchart TD
     S14["Projeto em execução: evm(PV, EV, AC, CPI, SPI, EAC, ETC, VAC, TCPI) + caminho crítico + burndown/fluxo cumulativo · alerta SPI menor que 0,9 há 2 semanas → recomendação + link Simulador (RF31)"]
     E1["422 MOTIVO_OBRIGATORIO"]
     E2["403 ACESSO_NEGADO"]
-    E3["409 COTA_ESGOTADA → Loja Work AI"]
+    E3["409 COTA_ESGOTADA → Loja Work Station"]
   end
 
   subgraph L_ai["IA (AiEngine) · Strategy + Chain"]
@@ -459,7 +459,7 @@ flowchart TD
     D2["MySQL insights · metric_definitions · metric_snapshots · ranking_entries · ranking_weights · Redis rankings"]
     D3["Redis quota:scope:id:mês · circuit:provider · MySQL ai_quotas · ai_credit_ledger"]
     D4["MySQL ai_inference_log · feature_flags · audit_log (pesos editados com vigência)"]
-    D5["OpenSearch wai-memory (projetos semelhantes, citações RF33)"]
+    D5["OpenSearch ws-memory (projetos semelhantes, citações RF33)"]
   end
 
   U1 --> W1 --> S1 --> D5
@@ -515,8 +515,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant N as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant OS as OpenSearch
@@ -528,14 +528,14 @@ sequenceDiagram
   N->>C: POST /autopilot/projects
   C->>S: AutopilotService.suggestProjects(userId, 5)
   S->>DB: SELECT plan_axes sem projeto · final_decisions sem projeto · collective_goals · metric_snapshots
-  S->>OS: kNN wai-memory (projetos e planilhas semelhantes, RF33) → citações
+  S->>OS: kNN ws-memory (projetos e planilhas semelhantes, RF33) → citações
   S->>S: FeasibilityService: PERT, CPM, Monte Carlo 1000 runs, custo P10/P50/P90, EVM histórico, matriz P×I, ROI/VPL, WBS, RACI, score
   S->>DB: INSERT feasibility_sheets (PROPOSTA ×5, assumptionsJson, unknownsJson)
   S->>AI: run(AUTOPILOT_PROJETO, números das fichas, accessClass INTERNO, ECONOMIA)
   AI->>R: GET quota:USER:id:mês (créditos comprados antes da mensal)
   alt sem cota nem créditos
     AI-->>S: QuotaExceeded
-    S-->>N: 409 COTA_ESGOTADA (atalho para a Loja Work AI)
+    S-->>N: 409 COTA_ESGOTADA (atalho para a Loja Work Station)
   else accessClass RESTRITO ou SIGILOSO em alguma fonte
     AI->>AI: LocalEngine redige (sem saída externa) · result BLOQUEADO_SIGILO
     AI->>DB: INSERT ai_inference_log (provider LOCAL, maskedFields)
@@ -640,34 +640,34 @@ flowchart LR
     FE2["components/ui · AiSpark ✦ + tooltip (modelo, data, revisor) · FallbackBanner · FeasibilityCard · ScoreBreakdown · RiskMatrix · EvmPanel · RankingTable + ExplainMe · InsufficientDataState · OneClickAction"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     C1["InsightController"]
     C2["RankingController"]
     C3["AutopilotController"]
     C4["AdminAiController"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["AiEngine (Strategy + Chain) · guardPrivacy · guardQuota · CircuitBreaker"]
     S2["InsightService"]
     S3["RankingService"]
     S4["AutopilotService"]
     S5["SessionService (RF7–RF16) · modo ECONOMIA/AVANCADO · citações RF33"]
     P1["AiProviderPort"]
-    P2["SearchPort (wai-memory)"]
+    P2["SearchPort (ws-memory)"]
   end
 
-  subgraph DOM["wai-domain · br.gov.pr.secid.workai"]
+  subgraph DOM["ws-domain · br.gov.pr.secid.workstation"]
     D1["FeasibilityService (PERT, CPM, Monte Carlo, EVM, custo, risco, ROI, WBS, RACI, SMART)"]
     D2["MetricCalculator por métrica A–D (METRICAS_GESTAO.md)"]
     D3["AiInferenceLog · AiQuota · AiProviderCircuitState · FeatureFlag · Insight · FeasibilitySheet · MetricDefinition · MetricSnapshot · RankingEntry · RankingWeights · Citation"]
   end
 
-  subgraph INFRA["wai-infrastructure/*"]
+  subgraph INFRA["ws-infrastructure/*"]
     I1["ai-providers · ClaudeAdapter · GeminiAdapter · LocalEngine (regras, embeddings locais, heurísticas de PM) · PII masker"]
     I2["cache-redis · quota por usuário/departamento · circuit state · rankings"]
     I3["persistence-mysql · ai_inference_log, ai_quotas, insights, feasibility_sheets, metric_definitions, metric_snapshots, ranking_entries, ranking_weights, feature_flags"]
-    I4["search-opensearch · índice wai-memory (dense_vector)"]
+    I4["search-opensearch · índice ws-memory (dense_vector)"]
     I5["platform · FeatureFlag (ai.provider.claude, ai.provider.gemini, ai.local.only) · DomainEventOutbox · PipelineJob RECALC_RANKING · AuditLog · scheduler de insights"]
   end
 
@@ -717,13 +717,13 @@ flowchart LR
 | RF43.CA03 | Classes `Insight` (scope ACERVO, metricRefsJson, actionsJson, severity), `InsightService.acervo/applyAction`; atividades U5, W4, S9 (Score 0–100 com decomposição, paradas, duplicadas, fantasma, lacunas, modelos recomendados, ações 1 clique); componentes `ScoreBreakdown`, `OneClickAction`, `app/insights`. |
 | RF43.CA04 | Classes `InsightService.perfil(userId, consent)`, `Insight.scope PERFIL`; atividades S10 → E2 (403 só o dono), S12 (comparação anonimizada, resumo profissional só com consentimento); componente `InsightController.GET insights_perfil`. |
 | RF43.CA05 | Classes `RankingEntry` (dimension, position, explanationJson), `RankingWeights` (weightsJson, criteriaPublicText, validFrom, editedBy), `User.rankingOptOut`, enum `RankingDimension` (7 dimensões), `RankingService.compute/explain/updateWeights`; atividade S13 (volume bruto nunca é critério); sequência msgs 43–49 (explain-me, opt-out); componentes `RankingTable + ExplainMe`, `PipelineJob RECALC_RANKING`, `AuditLog` (pesos com vigência). |
-| RF43.CA06 | Classes `DeciaSession.aiMode`, enum `AiMode`, `Citation`, `AiEngine.guardQuota` (créditos → cota → DECIA Points), `AiQuota`; atividade I4 (modo AVANCADO debita cota ou DP com aviso) e E3; componentes `SessionService · modo ECONOMIA/AVANCADO · citações RF33`, `search-opensearch · wai-memory`. |
+| RF43.CA06 | Classes `DeciaSession.aiMode`, enum `AiMode`, `Citation`, `AiEngine.guardQuota` (créditos → cota → DECIA Points), `AiQuota`; atividade I4 (modo AVANCADO debita cota ou DP com aviso) e E3; componentes `SessionService · modo ECONOMIA/AVANCADO · citações RF33`, `search-opensearch · ws-memory`. |
 | RF43.CA07 | Classes `AutopilotService.tasksFrom`, `TaskItem` (state RASCUNHO, sourceKind AUTOPILOT, aiGenerated), `AiCapability.AUTOPILOT_TAREFAS`; relação `AutopilotService → AiEngine (AUTOPILOT_TAREFAS)`; componente `AutopilotController.POST autopilot_tasks` — nada vira DISPONIVEL sem revisão (RF20/RF41). |
 | RF43.CA08 | Classes `FeasibilitySheet` (costJson P10/P50/P90, timeJson PERT/CPM, deadlineJson Monte Carlo 1000, viabilityScoreJson, risksJson top 5, wbsJson, raciJson, assumptionsJson, unknownsJson), `FeasibilityService` (7 métodos), `AutopilotService.suggestProjects(max5)`; atividades S1, S2, S3, W2, U2; sequência msgs 1–7 e 27–29 (até 5 fichas ordenadas); transição `[*] → PROPOSTA`; componentes `FeasibilityCard`, `RiskMatrix`. |
 | RF43.CA09 | Classes `ProjectScheme.evmJson/criticalPathJson`, `ProjectTask` (plannedValue, earnedValue, actualCost, isCritical, slackDays), `FeasibilityService.evm/cpm`; atividade S14 (EVM PV, EV, AC, CPI, SPI, EAC, ETC, VAC, TCPI, burndown, alerta SPI menor que 0,9 há 2 semanas → Simulador RF31); componentes `EvmPanel`, `AutopilotController.GET projects_id_evm`. |
 | RF43.CA10 | Classes `FeasibilitySheet.status/discardReason/resultingProjectId/resultingTaskId`, `AutopilotService.accept/discard`, `ProjectScheme.origin AUTOPILOTO`, `TaskItem ESTUDO_TECNICO_PRELIMINAR`; atividades U3, W3, S4 → S5/S6, S7 → E1 (422 MOTIVO_OBRIGATORIO), S8; sequência msgs 30–42; transições `PROPOSTA → ACEITA / DESCARTADA` e nota. |
-| RF43.CA11 | Nota de `FeasibilityService` (determinístico, sem chave externa), `LocalEngine`; atividades I1 → I10 (flag desabilitada ou sem provedor → motor local, redação simplificada com aviso); sequência msgs 12–14 e 19–21; componentes `wai-domain · FeasibilityService`, `MetricCalculator`, `FeatureFlag ai.local.only`. |
+| RF43.CA11 | Nota de `FeasibilityService` (determinístico, sem chave externa), `LocalEngine`; atividades I1 → I10 (flag desabilitada ou sem provedor → motor local, redação simplificada com aviso); sequência msgs 12–14 e 19–21; componentes `ws-domain · FeasibilityService`, `MetricCalculator`, `FeatureFlag ai.local.only`. |
 | RF43.CA12 | Classes `AiInferenceLog` (estimatedCostUsd, latencyMs, capability, departmentId, fallbackUsed, quotaSource), `AiQuota`, `FeasibilitySheet.status` (taxa de aceitação), `AdminAiController`; atividades U6, W6; componente `app/admin/ai`. |
-| RF43.CA13 | Classes `MetricDefinition` (code, domain, formula, sourceDescription, proxyNote, unit, minSamples), `MetricSnapshot`, `MetricCalculator`, `Insight.metricRefsJson`; atividades S12 (fórmula, fonte, proxy) e I11 (redige só sobre números calculados, cita métrica e valor); nota de `MetricCalculator`; componente `wai-domain · MetricCalculator por métrica A–D (METRICAS_GESTAO.md)`. |
+| RF43.CA13 | Classes `MetricDefinition` (code, domain, formula, sourceDescription, proxyNote, unit, minSamples), `MetricSnapshot`, `MetricCalculator`, `Insight.metricRefsJson`; atividades S12 (fórmula, fonte, proxy) e I11 (redige só sobre números calculados, cita métrica e valor); nota de `MetricCalculator`; componente `ws-domain · MetricCalculator por métrica A–D (METRICAS_GESTAO.md)`. |
 | RF43.CA14 | Classes `InsightService.equipe(departmentId, viewer)`, `Insight.scope EQUIPE`, `MetricDefinition.minSamples`; atividades S10 (CHEFE/EMPRESA) → E2, S11 (pesquisas D: mínimo 5 respondentes), S12 (benchmarks internos anonimizados, tendência, recomendações acionáveis); componente `InsightController.GET insights_equipe`. |
 | RF43.CA15 | Classe `MetricDefinition.minSamples` (A/B: 3 projetos ou sinais); atividades S11 → W5 (tela explica o que falta coletar em vez de números vazios); componente `InsufficientDataState`. |

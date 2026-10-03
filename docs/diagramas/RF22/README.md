@@ -17,7 +17,7 @@ Três visões do **mesmo** `ProjectScheme`: **Quadro** (kanban por `ProjectPhase
 classDiagram
 direction LR
 
-namespace wai_domain_projetos {
+namespace ws_domain_projetos {
   class ProjectScheme {
     <<entity>>
     +id: UUID
@@ -81,7 +81,7 @@ namespace wai_domain_projetos {
   }
 }
 
-namespace wai_domain_social_decia {
+namespace ws_domain_social_decia {
   class Comment {
     <<entity>>
     +id: UUID
@@ -124,7 +124,7 @@ namespace wai_domain_social_decia {
   }
 }
 
-namespace wai_domain_plataforma {
+namespace ws_domain_plataforma {
   class Department {
     <<entity>>
     +id: UUID
@@ -165,7 +165,7 @@ namespace wai_domain_plataforma {
   }
 }
 
-namespace wai_domain_enums {
+namespace ws_domain_enums {
   class ProjectStatus {
     <<enum>>
     RASCUNHO
@@ -202,7 +202,7 @@ namespace wai_domain_enums {
   }
 }
 
-namespace wai_application {
+namespace ws_application {
   class ProjectDeskService {
     <<service>>
     +load(viewerId, projectId, view) DeskState
@@ -249,7 +249,7 @@ namespace wai_application {
   }
 }
 
-namespace wai_web {
+namespace ws_web {
   class ProjectDeskController {
     <<controller>>
     +GET_api_projects_id_desk(view)
@@ -274,7 +274,7 @@ namespace wai_web {
   }
 }
 
-namespace wai_infrastructure {
+namespace ws_infrastructure {
   class RedisPubSubAdapter {
     <<adapter>>
   }
@@ -357,7 +357,7 @@ flowchart TD
     W7["Aguarda job e oferece link de download"]
   end
 
-  subgraph LA["wai-application"]
+  subgraph LA["ws-application"]
     A1["ProjectDeskService.load"]
     A2{"canEdit? dono, responsável de tarefa ou chefe do departamento"}
     A3{"status CONCLUIDO ou ARQUIVADO?"}
@@ -434,8 +434,8 @@ sequenceDiagram
   actor U as Usuário A
   actor B as Usuário B
   participant NX as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant DB as Repository/MySQL
   participant CS as Cassandra
   participant R as Redis
@@ -575,7 +575,7 @@ flowchart LR
     F4["Realtime client: WebSocket com fallback polling 3 s, toast CONFLITO_ULTIMO_VENCE"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     C1["ProjectDeskController — /api/projects/{id}/desk, /tasks/{ptId}, /canvas, /desk/skin, /reopen, /export"]
     C2["ProjectVersionController — /versions, /compare, /restore"]
     C3["DeskRealtimeController — /ws/desk/{id}, /changes?since"]
@@ -583,7 +583,7 @@ flowchart LR
     C5["JobController — /api/jobs/{id}"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["ProjectDeskService"]
     S2["ProjectVersionService"]
     S3["SocialService RF26"]
@@ -593,13 +593,13 @@ flowchart LR
     P3["PdfRenderPort"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["ProjectScheme · ProjectTask · ProjectTaskDependency · ProjectVersion"]
     D2["Comment PROJECT_TASK · Notification · DecisionTraceNode · DecisionTraceEdge · DeciaSession"]
     D3["Department · UserSkin · TaskAttachment · MediaObject · PipelineJob · AuditLog"]
   end
 
-  subgraph INFRA["wai-infrastructure/*"]
+  subgraph INFRA["ws-infrastructure/*"]
     I1[("persistence-mysql: project_schemes, project_tasks, project_task_dependencies, project_versions, comments, audit_log, pipeline_jobs, user_skins")]
     I2[("cache-redis: RedisPubSubAdapter — canal desk:{projectId}, presença")]
     I3[("persistence-cassandra: trace_by_entity leitura do fio de decisão, notifications_by_user")]

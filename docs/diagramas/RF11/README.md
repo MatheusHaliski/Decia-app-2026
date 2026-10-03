@@ -8,7 +8,7 @@
 |---|---|
 | **RF11.CA01** | Dado sessão ATIVA ou REABERTA com mensagens classificadas (RF7), quando o administrador aciona "Gerar resumo" (ou a IA sugere ao detectar convergência), então a sessão passa a EM_RESUMO e a IA (capability RESUMO_ANALITICO) cria `AnalyticalSummary` RASCUNHO com `argumentsJson`, `consensusJson`, `divergencesJson` (RF8/RF10, inclusive SEM_CONSENSO), `risksJson`, `attentionPointsJson` (perguntas IGNORADAS do RF16) e `recommendationsJson`. |
 | **RF11.CA02** | Dado o resumo gerado, então contém **≥ 2 `SummaryScenario`** (name, description, `advantagesJson`, `disadvantagesJson`, `criteriaScoresJson`) e `evaluationCriteriaJson` explicita os critérios usados pela IA; um cenário pode apontar `linkedProjectScenarioId` (Simulador RF31.CA04) e o `complianceResultId` do Espelho (RF32.CA05) entra no resumo. |
-| **RF11.CA03** | Dado cada recomendação, então traz `citations[]` (`Citation`: sourceType, sourceId, excerpt, url, score) obtidas por busca semântica em `wai-memory` (RF33.CA03 — "baseado em: sessão X, projeto Y") ou a marca **"sem precedente"**, e lista `affectedTaskIds`, `affectedProjectIds` e `planAxisId` (RF29.CA08). |
+| **RF11.CA03** | Dado cada recomendação, então traz `citations[]` (`Citation`: sourceType, sourceId, excerpt, url, score) obtidas por busca semântica em `ws-memory` (RF33.CA03 — "baseado em: sessão X, projeto Y") ou a marca **"sem precedente"**, e lista `affectedTaskIds`, `affectedProjectIds` e `planAxisId` (RF29.CA08). |
 | **RF11.CA04** | Dado o RASCUNHO, quando o administrador publica, então `status = PUBLICADO`, `versionNumber` incrementa a cada regeneração, o grupo recebe `Notification` (DECIA), o rastro ganha nó RESUMO com arestas RESUMIU a partir das mensagens-base, e os `MessageAttachment` usados ficam `usedInDecision = true` → evento AFTER_COMMIT credita **+6 DP** (`ARTEFATO_USADO`) ao autor do anexo (RF42). A sessão segue para EM_DECISAO (RF12). |
 | **RF11.CA05** | Dado mensagens/anexos com `accessClass` RESTRITO ou SIGILOSO, quando o resumo é gerado, então esses trechos **não vão ao provedor externo** (mascarados ou processados no motor local), registrado em `ai_inference_log` com `maskedFields` / `result = BLOQUEADO_SIGILO`. |
 | **RF11.CA06** | Dado provedor de IA indisponível (circuit OPEN) ou cota esgotada → `503 IA_INDISPONIVEL` / `429 COTA_EXCEDIDA` e a sessão volta a ATIVA; sessão sem mensagens classificadas → `422 VALIDACAO`; não-admin → `403 ACESSO_NEGADO`; sessão fora de ATIVA/REABERTA → `409 SESSAO_NAO_ATIVA`. |
@@ -222,7 +222,7 @@ classDiagram
   }
   class OpenSearchMemoryAdapter {
     <<adapter>>
-    índice wai-memory
+    índice ws-memory
   }
   class AiEngineAdapter {
     <<adapter>>
@@ -265,7 +265,7 @@ classDiagram
   note for AnalyticalSummary "tabela analytical_summaries — status RASCUNHO, PUBLICADO .. recommendationsJson = [{text, affectedTaskIds, affectedProjectIds, planAxisId, citations[]}] .."
   note for SummaryScenario "tabela summary_scenarios — mesmo formato do impactReportJson do RF31"
   note for Citation "valor embutido — vazio = marca 'sem precedente' (RF33.CA03)"
-  note for InstitutionalMemoryDocument "OpenSearch wai-memory (dense_vector) .. +4 campos .."
+  note for InstitutionalMemoryDocument "OpenSearch ws-memory (dense_vector) .. +4 campos .."
 ```
 
 ## 2. Diagrama de atividades
@@ -294,7 +294,7 @@ flowchart TD
     B9["Renderiza abas: Argumentos · Consensos · Divergências · Riscos · Atenção · Recomendações · Cenários"]
   end
 
-  subgraph L3["wai-application (SummaryService)"]
+  subgraph L3["ws-application (SummaryService)"]
     C1{"actor = adminUserId?"}
     C2{"status em ATIVA ou REABERTA?"}
     C3{"há mensagens classificadas?"}
@@ -325,7 +325,7 @@ flowchart TD
   subgraph L5["Persistência"]
     E1[("Cassandra messages_by_session")]
     E2[("MySQL message_classifications · divergences · ai_questions · compliance_results")]
-    E3[("OpenSearch wai-memory")]
+    E3[("OpenSearch ws-memory")]
     E4[("MySQL analytical_summaries · summary_scenarios")]
     E5[("MySQL decision_trace_nodes/edges · domain_events")]
   end
@@ -367,8 +367,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário (admin da sessão)
   participant FE as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant CS as Cassandra
@@ -385,7 +385,7 @@ sequenceDiagram
     S->>CS: SELECT messages_by_session (sessionId) — bodyMd, attachmentsJson
     S->>DB: SELECT message_classifications, divergences, ai_questions, compliance_results, project_scenarios
     S->>S: maskSensitive(accessClass RESTRITO/SIGILOSO)
-    S->>OS: kNN wai-memory (tema + argumentos, filtros empresa/departamento/visibilidade)
+    S->>OS: kNN ws-memory (tema + argumentos, filtros empresa/departamento/visibilidade)
     OS-->>S: top-k InstitutionalMemoryDocument → Citation[]
     S->>AI: summarize(context, citations, aiMode)
     AI-->>S: SummaryDraft {arguments, consensus, divergences, risks, attentionPoints, recommendations[], scenarios[2..n], evaluationCriteria}
@@ -476,12 +476,12 @@ flowchart LR
     FE2["components/ui/SummaryTabs · ScenarioCard · CitationChip · CriteriaTable"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     W1["SummaryController (REST /api/decia/sessions/{id}/summaries)"]
     W2["SessionAccessGuard (adminUserId)"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["SummaryService"]
     S2["SessionLifecycleService"]
     S3["DecisionTraceService"]
@@ -493,17 +493,17 @@ flowchart LR
     P5["DomainEventPublisher (outbox)"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["AnalyticalSummary · SummaryScenario · Citation"]
     D2["DeciaSession · MessageClassification · Divergence · AiQuestion · MessageAttachment"]
     D3["ComplianceResult · ProjectScenario (leitura)"]
     D4["Enums: SessionStatus · MessageClass · AiCapability · AiMode"]
   end
 
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     I1["persistence-mysql: AnalyticalSummaryRepository, SummaryScenarioRepository, MessageClassificationRepository, DivergenceRepository, AiQuestionRepository, ComplianceResultRepository, ProjectScenarioRepository, DecisionTraceRepository, DomainEventOutboxRepository"]
     I2["persistence-cassandra: CassandraMessageAdapter"]
-    I3["search-opensearch: OpenSearchMemoryAdapter (wai-memory, kNN)"]
+    I3["search-opensearch: OpenSearchMemoryAdapter (ws-memory, kNN)"]
     I4["cache-redis: AiQuotaAdapter, CircuitStateAdapter"]
     I5["ai-providers: AiEngineAdapter (Strategy + Chain of Responsibility, mascaramento LGPD, ai_inference_log)"]
     I6["platform: NotificationAdapter, OutboxRelay, AuditLogAdapter"]

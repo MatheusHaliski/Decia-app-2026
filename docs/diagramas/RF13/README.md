@@ -211,7 +211,7 @@ classDiagram
   }
   class S3MediaAdapter {
     <<adapter>>
-    bucket wai-artifacts
+    bucket ws-artifacts
   }
   class PipelineJobRunner {
     <<adapter>>
@@ -219,7 +219,7 @@ classDiagram
   }
   class OpenSearchMemoryAdapter {
     <<adapter>>
-    índice wai-memory
+    índice ws-memory
   }
 
   DeciaSession "1" --> "*" SessionArtifact : artefatos
@@ -282,7 +282,7 @@ flowchart TD
     B8["Mostra contentMd renderizado enquanto PDF não está pronto"]
   end
 
-  subgraph L3["wai-application (ArtifactService)"]
+  subgraph L3["ws-application (ArtifactService)"]
     C0["Listener DecisionValidated / SummaryPublished (AFTER_COMMIT)"]
     C1["Monta contexto: tema, participantes, classificações, divergências, decisão, revisor, citações"]
     C2["Para cada kind em RELATORIO, ATA, CHECKLIST"]
@@ -307,8 +307,8 @@ flowchart TD
 
   subgraph L5["Persistência"]
     E1[("MySQL session_artifacts · pipeline_jobs · decision_trace_nodes/edges")]
-    E2[("S3 wai-artifacts (PDF) + MySQL media_objects")]
-    E3[("OpenSearch wai-memory")]
+    E2[("S3 ws-artifacts (PDF) + MySQL media_objects")]
+    E3[("OpenSearch ws-memory")]
     E4[("Cassandra notifications_by_user + MySQL notifications")]
     E5[("MySQL tasks")]
   end
@@ -318,7 +318,7 @@ flowchart TD
     F2{"render OK?"}
     F3["status OK"]
     F4["status REPROCESSAR (retry com backoff) — contentMd permanece legível"]
-    F5["INDEXAR_MEMORIA: embedding → wai-memory (sourceType ARTEFATO)"]
+    F5["INDEXAR_MEMORIA: embedding → ws-memory (sourceType ARTEFATO)"]
   end
 
   A0 --> C0 --> C1 --> C2 --> C3 --> D1 --> D2 --> D3 --> C4 --> E1
@@ -352,8 +352,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário (participante)
   participant FE as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant CS as Cassandra
@@ -380,10 +380,10 @@ sequenceDiagram
     Note over S,S3: PipelineJobRunner (assíncrono)
     S->>DB: UPDATE pipeline_jobs SET status = RODANDO
     S->>S: PdfRenderPort.render(contentMd)
-    S->>S3: PUT wai-artifacts/{sessionId}/{artifactId}.pdf
+    S->>S3: PUT ws-artifacts/{sessionId}/{artifactId}.pdf
     S3-->>S: etag, sha256
     S->>DB: INSERT media_objects + UPDATE session_artifacts SET mediaObjectId
-    S->>OS: index wai-memory {sourceType ARTEFATO, sourceId, text, embedding}
+    S->>OS: index ws-memory {sourceType ARTEFATO, sourceId, text, embedding}
     S->>DB: UPDATE pipeline_jobs SET status = OK
 
     U->>FE: Abre notificação → aba Artefatos
@@ -433,7 +433,7 @@ stateDiagram-v2
   [*] --> PENDENTE : ArtifactService agenda EXPORT_PDF / INDEXAR_MEMORIA — RF13.CA01
   PENDENTE --> RODANDO : PipelineJobRunner pega o job
   RODANDO --> OK : PDF em S3 e mediaObjectId preenchido — RF13.CA02
-  RODANDO --> OK : documento indexado em wai-memory — RF13.CA06
+  RODANDO --> OK : documento indexado em ws-memory — RF13.CA06
   RODANDO --> REPROCESSAR : erro de render, S3 ou OpenSearch (attempts + 1, lastError)
   REPROCESSAR --> RODANDO : retry com backoff exponencial
   REPROCESSAR --> FALHA : attempts ≥ limite
@@ -460,12 +460,12 @@ flowchart LR
     FE2["components/ui/ArtifactCard · MarkdownViewer · ToTaskButton · NotificationBell"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     W1["ArtifactController (REST /api/decia/sessions/{id}/artifacts)"]
     W2["SessionAccessGuard (participante / adminUserId)"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["ArtifactService (+ listeners DecisionValidated, SummaryPublished)"]
     S2["TaskCreationService (RF20/RF29)"]
     S3["DecisionTraceService"]
@@ -477,18 +477,18 @@ flowchart LR
     P6["PipelineJobScheduler"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["SessionArtifact · MediaObject · PipelineJob"]
     D2["FinalDecision · AnalyticalSummary · DeciaSession (leitura)"]
     D3["TaskItem · DecisionTraceNode · DecisionTraceEdge"]
     D4["Enums: ArtifactKind · PipelineJobType · PipelineJobStatus · TaskType · SourceKind"]
   end
 
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     I1["persistence-mysql: SessionArtifactRepository, PipelineJobRepository, MediaObjectRepository, TaskItemRepository, DecisionTraceRepository, NotificationRepository"]
     I2["persistence-cassandra: NotificationFeedAdapter (notifications_by_user), CassandraMessageAdapter"]
-    I3["storage-s3: S3MediaAdapter (bucket wai-artifacts, URL assinada)"]
-    I4["search-opensearch: OpenSearchMemoryAdapter (wai-memory)"]
+    I3["storage-s3: S3MediaAdapter (bucket ws-artifacts, URL assinada)"]
+    I4["search-opensearch: OpenSearchMemoryAdapter (ws-memory)"]
     I5["ai-providers: AiEngineAdapter (ARTEFATO, ai_inference_log)"]
     I6["platform: PipelineJobRunner, PdfRenderAdapter, NotificationAdapter, OutboxRelay"]
   end

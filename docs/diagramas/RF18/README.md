@@ -1,5 +1,5 @@
 # RF18 — Exibir indicadores analíticos sobre uso do sistema do DECIA
-**HU:** HU18 · **Sprint (board Work Station):** 3 · **Equivalente FAI:** aba **Gestão (admin) — Dashboard, usuários, moderação, sistema** do FAI → Gestão (+ painel IA do sistema) no Work AI (Mapa de equivalência, grupo "Gestão") · **Aba/rota:** Gestão › "Indicadores DECIA" (`/admin/dashboard`; rota a confirmar) — também consumido pelo dashboard do emissor EMPRESA/CHEFE (RF28.CA06)
+**HU:** HU18 · **Sprint (board Work Station):** 3 · **Equivalente FAI:** aba **Gestão (admin) — Dashboard, usuários, moderação, sistema** do FAI → Gestão (+ painel IA do sistema) no Work Station (Mapa de equivalência, grupo "Gestão") · **Aba/rota:** Gestão › "Indicadores DECIA" (`/admin/dashboard`; rota a confirmar) — também consumido pelo dashboard do emissor EMPRESA/CHEFE (RF28.CA06)
 **Critérios de aceite cobertos:** RF18.CA01 · RF18.CA02 · RF18.CA03 · RF18.CA04 · RF18.CA05 · RF18.CA06 (RF1–RF18 não têm CAs no board: derivados da HU18 + RF29.CA09, RF33.CA05, RF42.CA08, RF43.CA13, RF45.CA10 e marcados "CA a confirmar")
 
 > **HU18** — COMO administrador do sistema POSSO visualizar indicadores analíticos sobre o uso do DECIA PARA acompanhar a adoção e o desempenho do sistema e subsidiar decisões de melhoria.
@@ -233,7 +233,7 @@ classDiagram
   }
   class S3MediaAdapter {
     <<adapter>>
-    bucket wai-exports
+    bucket ws-exports
   }
 
   MetricSnapshot "*" --> "1" MetricDefinition : metricCode
@@ -296,7 +296,7 @@ flowchart TD
     B8["URL guarda os filtros (searchParams)"]
   end
 
-  subgraph L3["wai-application (AnalyticsService — Facade)"]
+  subgraph L3["ws-application (AnalyticsService — Facade)"]
     C1{"perfil ADMIN, EMPRESA ou CHEFE?"}
     C2["scopeFor(actor): GLOBAL · EMPRESA · DEPARTAMENTO (restringe filtros)"]
     C3{"from ≤ to?"}
@@ -306,7 +306,7 @@ flowchart TD
     C7["UsageIndicatorPort: CALL sp_admin_kpis + SELECT vw_decisions_with_trace, vw_decisions_with_sources"]
     C8["MetricCatalogService.applyMinSamples → valor ou 'amostra insuficiente'"]
     C9["Monta KpiBoard (só contagens e proporções, sem nomes nem mensagens)"]
-    C10["Gera CSV/JSON dos snapshots filtrados → S3 wai-exports"]
+    C10["Gera CSV/JSON dos snapshots filtrados → S3 ws-exports"]
     C11["AuditLog KPI_EXPORTED (filtros, correlationId)"]
   end
 
@@ -322,7 +322,7 @@ flowchart TD
     E1[("MySQL metric_definitions · metric_snapshots")]
     E2[("MySQL views/procedures: vw_sessions_by_period · vw_decisions_with_trace · vw_decisions_with_sources · sp_admin_kpis · sp_timeseries")]
     E3[("Redis kpi cache")]
-    E4[("S3 wai-exports + MySQL media_objects · audit_log")]
+    E4[("S3 ws-exports + MySQL media_objects · audit_log")]
   end
 
   A0 --> B1 --> C1
@@ -356,8 +356,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário (ADMIN)
   participant FE as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant DB as Repository/MySQL
   participant RD as Redis
   participant S3 as S3
@@ -392,7 +392,7 @@ sequenceDiagram
     FE->>C: GET /api/admin/decia/export?format=csv&from&to&departmentId
     C->>S: AnalyticsService.export(actor, filters, CSV)
     S->>DB: SELECT metric_snapshots filtrados
-    S->>S3: PUT wai-exports/kpis-{from}-{to}.csv
+    S->>S3: PUT ws-exports/kpis-{from}-{to}.csv
     S->>DB: INSERT media_objects + audit_log (KPI_EXPORTED, filtros, correlationId)
     S-->>C: 302 URL assinada
     C-->>FE: 302
@@ -466,12 +466,12 @@ flowchart LR
     FE3["components/ui/KpiTile · ObjectiveCard (fórmula/fonte) · TimeseriesChart · FilterBar · ExportButton"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     W1["AdminAnalyticsController (REST /api/admin/decia/kpis, /timeseries, /objectives, /export)"]
     W2["RoleGuard (ADMIN · EMPRESA · CHEFE) + escopo por perfil"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["AnalyticsService (Facade)"]
     S2["MetricCatalogService (MetricDefinition, minSamples)"]
     S3["Scheduler materializeDaily (00:10)"]
@@ -482,17 +482,17 @@ flowchart LR
     P5["DomainEventPublisher (outbox) — SessionArchived"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["MetricDefinition · MetricSnapshot"]
     D2["DeciaSession · FinalDecision · DecisionReview · ProjectScheme · DecisionTraceNode · MessageClassification · Divergence · AiQuestion · ReopenRequest · DeciaPointsLedgerEntry · AiInferenceLog (leitura agregada)"]
     D3["AuditLog"]
     D4["Enums: MetricDomain · MetricScope · SessionStatus · DecisionStatus"]
   end
 
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     I1["persistence-mysql: MySqlUsageIndicatorAdapter (CALL sp_admin_kpis, sp_timeseries; SELECT vw_sessions_by_period, vw_decisions_with_trace, vw_decisions_with_sources), MetricSnapshotRepository, MetricDefinitionRepository, AuditLogRepository — Flyway cria views/procedures"]
     I2["cache-redis: RedisCacheAdapter (kpi:{scope}:{id}:{from}:{to}, TTL 300s)"]
-    I3["storage-s3: S3MediaAdapter (bucket wai-exports)"]
+    I3["storage-s3: S3MediaAdapter (bucket ws-exports)"]
     I4["platform: SchedulerAdapter, OutboxRelay, AuditLogAdapter"]
   end
 

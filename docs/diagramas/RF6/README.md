@@ -21,7 +21,7 @@
 classDiagram
   direction LR
 
-  namespace wai_domain {
+  namespace ws_domain {
     class DeciaSession {
       <<entity>>
       +id: UUID
@@ -97,7 +97,7 @@ classDiagram
     }
   }
 
-  namespace wai_application {
+  namespace ws_application {
     class MessageService {
       <<service>>
       +send(current CurrentUser, sessionId, cmd SendMessageCommand) MessageView
@@ -135,7 +135,7 @@ classDiagram
     }
   }
 
-  namespace wai_web {
+  namespace ws_web {
     class MessageController {
       <<controller>>
       +send(sessionId, cmd SendMessageCommand) MessageView
@@ -150,7 +150,7 @@ classDiagram
     }
   }
 
-  namespace wai_infrastructure {
+  namespace ws_infrastructure {
     class CassandraMessageStore {
       <<adapter>>
       +table: String
@@ -193,7 +193,7 @@ classDiagram
 
 ## 2. Diagrama de atividades
 
-Raias: Participante · Web/BFF · `wai-application` · Persistência · IA (AiEngine) só como destino do evento (a classificação é o RF7).
+Raias: Participante · Web/BFF · `ws-application` · Persistência · IA (AiEngine) só como destino do evento (a classificação é o RF7).
 
 ```mermaid
 flowchart TD
@@ -210,7 +210,7 @@ flowchart TD
     B3["SSE /api/decia/sessions/{id}/stream recebe MessageSent e insere no fim da lista"]
   end
 
-  subgraph L3["wai-application — MessageService"]
+  subgraph L3["ws-application — MessageService"]
     C1{"Participante ativo e role MEMBRO/ADMIN?"}
     C1 -->|não| E403["403 ACESSO_NEGADO"]
     C1 -->|sim| C2{"Sessão ATIVA ou REABERTA?"}
@@ -264,8 +264,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário (participante MEMBRO)
   participant N as Next.js (App Router) /decia/[id]
-  participant C as MessageController (wai-web)
-  participant S as MessageService (wai-application)
+  participant C as MessageController (ws-web)
+  participant S as MessageService (ws-application)
   participant CS as Cassandra
   participant DB as Repository/MySQL
   participant R as Redis
@@ -368,13 +368,13 @@ flowchart LR
     FE4["lib/decia/useSessionStream.ts (reconexão, cursor)"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     W1["MessageController /api/decia/sessions/{id}/messages · /{messageId} · /read"]
     W2["SessionStreamController /api/decia/sessions/{id}/stream (SSE)"]
     W3["SecurityConfig (JWT) · IdempotencyKeyFilter · CorrelationIdFilter"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["MessageService"]
     S2["AttachmentResolver (visibilidade + accessClass)"]
     S3["Guard.requireActiveParticipant"]
@@ -382,13 +382,13 @@ flowchart LR
     P2["RealtimePublisherPort · DomainEventPublisherPort · NotificationPort"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["DeciaSession · SessionParticipant · SessionMessage · MessageAttachment · TaskItem"]
     D2["SessionStatus · ParticipantRole · AccessClassification"]
     D3["DeciaSessionRepository · SessionParticipantRepository · TaskItemRepository"]
   end
 
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     I1["persistence-cassandra (CassandraMessageStore: messages_by_session, notifications_by_user)"]
     I2["persistence-mysql (session_messages_idx, message_attachments, decia_sessions, domain_events, audit_log)"]
     I3["cache-redis (RedisRealtimePublisher pub/sub decia.session.*)"]
@@ -422,7 +422,7 @@ flowchart LR
   I1 --> CA
   I2 --> MY
   I3 --> RD
-  BOOT["wai-bootstrap (flags cassandra.enabled, redis.enabled; TTL padrão; limites de mensagem)"] -.-> INFRA
+  BOOT["ws-bootstrap (flags cassandra.enabled, redis.enabled; TTL padrão; limites de mensagem)"] -.-> INFRA
 ```
 
 ## 6. Rastreabilidade

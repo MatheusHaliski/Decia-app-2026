@@ -236,7 +236,7 @@ flowchart TD
     B8["Banner: decisão devolvida + motivo + placar de votos"]
   end
 
-  subgraph L3["wai-application (ReopenService)"]
+  subgraph L3["ws-application (ReopenService)"]
     C0["Listener DecisionReturned (AFTER_COMMIT)"]
     C1{"já existe ReopenRequest PENDENTE para a decisão?"}
     C2["AiEnginePort.draftReopenJustification (motivo → o que rediscutir)"]
@@ -307,8 +307,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário (membro / admin)
   participant FE as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant CS as Cassandra
@@ -425,12 +425,12 @@ flowchart LR
     FE2["components/ui/ReopenBanner · VoteButtons · DecideReopenDialog"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     W1["ReopenController (REST /api/decia/sessions/{id}/reopen-requests)"]
     W2["SessionAccessGuard (MEMBRO ativo / adminUserId)"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["ReopenService (+ listener DecisionReturned, timer closeExpired)"]
     S2["SessionLifecycleService"]
     S3["DecisionService.supersede"]
@@ -441,14 +441,14 @@ flowchart LR
     P4["DomainEventPublisher (outbox)"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["ReopenRequest"]
     D2["FinalDecision · DecisionReview · DeciaSession · SessionParticipant"]
     D3["DecisionTraceNode · DecisionTraceEdge"]
     D4["Enums: ReopenStatus · SessionStatus · DecisionStatus"]
   end
 
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     I1["persistence-mysql: ReopenRequestRepository, FinalDecisionRepository, DecisionReviewRepository, DeciaSessionRepository, SessionParticipantRepository, DecisionTraceRepository, DomainEventOutboxRepository, AuditLogRepository"]
     I2["persistence-cassandra: CassandraMessageAdapter, NotificationFeedAdapter"]
     I3["ai-providers: AiEngineAdapter (justificativa, ai_inference_log)"]

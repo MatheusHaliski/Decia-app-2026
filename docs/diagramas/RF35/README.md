@@ -11,7 +11,7 @@
 ```mermaid
 classDiagram
   direction LR
-  namespace wai-domain {
+  namespace ws-domain {
     class CollectiveGoal {
       <<entity>>
       +UUID id
@@ -151,7 +151,7 @@ classDiagram
       REACAO_QUALIDADE
     }
   }
-  namespace wai-application {
+  namespace ws-application {
     class GoalService {
       <<service>>
       +create(issuerId, form) CollectiveGoal
@@ -186,7 +186,7 @@ classDiagram
       +requireIssuer(user) void
     }
   }
-  namespace wai-web {
+  namespace ws-web {
     class GoalController {
       <<controller>>
       +create(body)
@@ -206,7 +206,7 @@ classDiagram
       +listByUser(userId)
     }
   }
-  namespace wai-infrastructure {
+  namespace ws-infrastructure {
     class GoalJpaRepository {
       <<adapter>>
     }
@@ -278,7 +278,7 @@ flowchart TD
     W3["Medalhas no perfil e no Mural"]
     W4["Perfil: metas cumpridas, destaques, reconhecimentos e DECIA Points por origem"]
   end
-  subgraph L3["wai-application"]
+  subgraph L3["ws-application"]
     S1{"Ator é EMPRESA ou CHEFE?"}
     S2{"Critério mensurável e esforço acima do mínimo da empresa?"}
     S3["CollectiveGoal ABERTA · MuralEntry META · AuditLog GOAL_CREATED"]
@@ -347,8 +347,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant NX as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant DB as Repository/MySQL
   participant CS as Cassandra
   participant R as Redis
@@ -476,13 +476,13 @@ flowchart LR
     P5["app/mural · barra de meta, destaques, medalhas (RF27)"]
     UI1["components/ui: GoalProgressBar · HighlightCard (critérios visíveis) · MedalBadge · PointsByOriginChart"]
   end
-  subgraph WEB["wai-web (REST · br.gov.pr.secid.workai.web)"]
+  subgraph WEB["ws-web (REST · br.gov.pr.secid.workstation.web)"]
     direction TB
     C1["GoalController"]
     C2["HighlightController"]
     C3["RecognitionController"]
   end
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     direction TB
     S1["GoalService"]
     S2["HighlightService"]
@@ -491,13 +491,13 @@ flowchart LR
     S5["DeliberativeProfileService (RF19)"]
     S6["AccessPolicy"]
   end
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     direction TB
     E1["CollectiveGoal · GoalParticipant · Highlight"]
     E2["Recognition · DeciaPointsLedgerEntry · DeciaPointsRule"]
     E3["MetricSnapshot · MuralEntry · DeliberativeProfile · AuditLog"]
   end
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     direction TB
     I1["persistence-mysql: Goal/Highlight/Recognition/Ledger repositories"]
     I2["cache-redis: RedisPointsBalanceCache"]

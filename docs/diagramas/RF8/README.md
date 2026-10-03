@@ -21,7 +21,7 @@
 classDiagram
   direction LR
 
-  namespace wai_domain {
+  namespace ws_domain {
     class Divergence {
       <<entity>>
       +id: UUID
@@ -127,7 +127,7 @@ classDiagram
     }
   }
 
-  namespace wai_application {
+  namespace ws_application {
     class DivergenceService {
       <<service>>
       +onMessageClassified(event MessageClassified) void
@@ -174,7 +174,7 @@ classDiagram
     }
   }
 
-  namespace wai_web {
+  namespace ws_web {
     class DeciaSessionController {
       <<controller>>
       +divergences(sessionId, status) List~DivergenceView~
@@ -183,7 +183,7 @@ classDiagram
     }
   }
 
-  namespace wai_infrastructure {
+  namespace ws_infrastructure {
     class CassandraNotificationProjector {
       <<adapter>>
     }
@@ -239,7 +239,7 @@ classDiagram
 
 ## 2. Diagrama de atividades
 
-Raias: Grupo/Administrador · Web/BFF · `wai-application` · IA (AiEngine) · Persistência. Gatilho: `MessageClassified` (RF7).
+Raias: Grupo/Administrador · Web/BFF · `ws-application` · IA (AiEngine) · Persistência. Gatilho: `MessageClassified` (RF7).
 
 ```mermaid
 flowchart TD
@@ -257,7 +257,7 @@ flowchart TD
     B3["POST /api/decia/sessions/{id}/questions/{qid}/ignore"]
   end
 
-  subgraph L3["wai-application — DivergenceService / AiQuestionService"]
+  subgraph L3["ws-application — DivergenceService / AiQuestionService"]
     C0(["Evento MessageClassified (RF7)"]) --> C1{"label?"}
     C1 -->|DIVERGENCIA conf ≥ 0,6| C2{"Autores distintos e não há Divergence ABERTA para as mesmas partes/base?"}
     C2 -->|não| C3["Ignora (dedupe)"]
@@ -291,7 +291,7 @@ flowchart TD
     D1[("MySQL: divergences, ai_questions, ai_inference_log, decision_trace_nodes/edges, notifications, audit_log, domain_events")]
     D2[("Cassandra: messages_by_session (mensagens IA), notifications_by_user, trace_by_entity")]
     D3[("Redis: pub/sub da sessão · AiQuota · circuit breaker")]
-    D4[("OpenSearch: wai-memory (citações)")]
+    D4[("OpenSearch: ws-memory (citações)")]
   end
 
   C4 --> I1
@@ -327,8 +327,8 @@ Caminho feliz da divergência (CA01, CA02) e da pergunta (CA03), `alt` de dedupe
 sequenceDiagram
   autonumber
   participant DE as DomainEvents (AFTER_COMMIT)
-  participant DV as DivergenceService (wai-application)
-  participant AQ as AiQuestionService (wai-application)
+  participant DV as DivergenceService (ws-application)
+  participant AQ as AiQuestionService (ws-application)
   participant AI as AiEngine
   participant OS as OpenSearch
   participant DB as Repository/MySQL
@@ -336,7 +336,7 @@ sequenceDiagram
   participant R as Redis
   participant N as Next.js (App Router) /decia/[id]
   actor U as Usuário (grupo / admin)
-  participant C as DeciaSessionController (wai-web)
+  participant C as DeciaSessionController (ws-web)
 
   DE->>DV: MessageClassified(sessionId, messageId, label=DIVERGENCIA, confidence 0.82)
   DV->>DB: SELECT divergences WHERE session_id AND status=ABERTA (mesmas partes/base?)
@@ -366,7 +366,7 @@ sequenceDiagram
   alt já há 3 perguntas ABERTAS (CA04)
     AQ->>DB: INSERT pipeline_jobs (PERGUNTA_ADIADA) → reprocessa quando uma pergunta fechar
   else há vaga (CA03)
-    AQ->>OS: kNN wai-memory (tema + mensagem) → citações institucionais (RF33.CA03)
+    AQ->>OS: kNN ws-memory (tema + mensagem) → citações institucionais (RF33.CA03)
     OS-->>AQ: até 3 Citation (ou vazio → "sem precedente")
     AQ->>AI: text(FORMULAR_PERGUNTA, basisMessages, citations)
     AI-->>AQ: AiOutcome {kind=RISCO, questionText} (ai_inference_log)
@@ -443,12 +443,12 @@ flowchart LR
     FE3["lib/decia/useSessionStream.ts (DivergenceDetected, AiQuestionAsked)"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     W1["DeciaSessionController /api/decia/sessions/{id}/divergences · /questions · /questions/{qid}/ignore"]
     W2["SessionStreamController (SSE) · NotificationController /api/me/notifications"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["DivergenceService (listener MessageClassified)"]
     S2["AiQuestionService (listener MessageClassified, fila de 3)"]
     S3["AiEngine (DETECTAR_DIVERGENCIA, FORMULAR_PERGUNTA)"]
@@ -457,15 +457,15 @@ flowchart LR
     P2["RealtimePublisherPort · DecisionTracePort · DomainEventPublisherPort"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["Divergence · DivergenceReply · AiQuestion · MessageClassification · SessionMessage · Notification · DecisionTraceNode/Edge · AiInferenceLog"]
     D2["MessageClass · AiCapability · NotificationType · TraceNodeType"]
     D3["DivergenceRepository · AiQuestionRepository · SessionParticipantRepository"]
   end
 
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     I1["ai-providers (ClaudeProviderAdapter, GeminiProviderAdapter, LocalEngineAdapter: ContrastDetector + templates)"]
-    I2["search-opensearch (OpenSearchMemoryAdapter índice wai-memory)"]
+    I2["search-opensearch (OpenSearchMemoryAdapter índice ws-memory)"]
     I3["persistence-mysql (divergences, ai_questions, notifications, decision_trace_*, ai_inference_log, domain_events, audit_log)"]
     I4["persistence-cassandra (messages_by_session, notifications_by_user, trace_by_entity)"]
     I5["cache-redis (RedisRealtimePublisher, RedisAiQuota, RedisCircuitBreaker)"]
@@ -514,7 +514,7 @@ flowchart LR
   I4 --> CA
   I5 --> RD
   I2 --> OSB
-  BOOT["wai-bootstrap (limiar de confiança 0,6, máx. 3 perguntas abertas, flags ai.provider.*, opensearch.enabled)"] -.-> INFRA
+  BOOT["ws-bootstrap (limiar de confiança 0,6, máx. 3 perguntas abertas, flags ai.provider.*, opensearch.enabled)"] -.-> INFRA
 ```
 
 ## 6. Rastreabilidade

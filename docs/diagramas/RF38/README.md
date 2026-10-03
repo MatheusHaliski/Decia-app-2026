@@ -1,4 +1,4 @@
-# RF38 — Aplicar a identidade visual do Work AI — ícones por tipo de tarefa, thumbnails automáticos, capa-mosaico de projeto, fio de decisão, lacres, etiquetas de estado, temas e skins da Mesa
+# RF38 — Aplicar a identidade visual do Work Station — ícones por tipo de tarefa, thumbnails automáticos, capa-mosaico de projeto, fio de decisão, lacres, etiquetas de estado, temas e skins da Mesa
 **HU:** HU38 · **Sprint (board Work Station):** Product Backlog (não priorizado — pós-Sprint 4) · **Equivalente FAI:** anatomia dos cards (v17), anatomia do DNA, Background Studio (RF11), skins de card, temas (RF23 preferências) · **Aba/rota:** transversal (design system em `components/ui`); capa manual/IA em `/tasks/[id]` e `/projects/[id]`; temas e skins em `/settings/preferences`
 **Critérios de aceite cobertos:** RF38.CA01 · RF38.CA02 · RF38.CA03 · RF38.CA04 · RF38.CA05 · RF38.CA06 · RF38.CA07 · RF38.CA08 · RF38.CA09 · RF38.CA10
 
@@ -391,7 +391,7 @@ flowchart TD
     W10["Thumbnail placeholder (skeleton com glifo do tipo) enquanto o job roda"]
   end
 
-  subgraph L_app["wai-application · ThumbnailService · CardArtService · PreferencesService"]
+  subgraph L_app["ws-application · ThumbnailService · CardArtService · PreferencesService"]
     A1["Evento TaskCreated ou TaskAttachmentReady → ThumbnailService.schedule → PipelineJob THUMBNAIL"]
     A2{"Estratégia por tipo e formato?"}
     A3["DOCUMENTO: primeira página estilizada"]
@@ -409,7 +409,7 @@ flowchart TD
     A15["coverMode IA · coverUrl · aiGenerated true · aiInferenceId (faísca ✦)"]
     A16["PreferencesService.update: valida skin possuída (UserSkin ou PADRAO)"]
     E1["422 VALIDACAO (mime inválido, arquivo grande, infectado)"]
-    E2["409 COTA_ESGOTADA → atalho para a Loja Work AI"]
+    E2["409 COTA_ESGOTADA → atalho para a Loja Work Station"]
     E3["403 SKIN_NAO_ADQUIRIDA"]
   end
 
@@ -479,8 +479,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant N as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant S3 as S3
@@ -590,13 +590,13 @@ flowchart LR
     FE3["tokens · cores por TaskType, cores por MessageClass, temas CLARO/ESCURO/ALTO_CONTRASTE/BLUEPRINT, prefers-reduced-motion"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     C1["TaskController (cover)"]
     C2["ProjectController (cover, icon)"]
     C3["PreferencesController"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["ThumbnailService + ThumbnailStrategy (FirstPage, MiniChart, CadSilhouette, Monogram, FaviconCapture)"]
     S2["CardArtService (mosaico, anel, lacre, carimbo)"]
     S3["PreferencesService"]
@@ -604,14 +604,14 @@ flowchart LR
     P1["StoragePort"]
   end
 
-  subgraph DOM["wai-domain · br.gov.pr.secid.workai"]
+  subgraph DOM["ws-domain · br.gov.pr.secid.workstation"]
     D1["TaskItem · TaskVersion · ProjectScheme · ProjectTask"]
     D2["UserPreferences · UserSkin"]
     D3["PipelineJob · MediaObject · AiInferenceLog"]
     D4["Seal · SealBond · Recognition · FinalDecision · DecisionTraceNode · Department · Company"]
   end
 
-  subgraph INFRA["wai-infrastructure/*"]
+  subgraph INFRA["ws-infrastructure/*"]
     I1["persistence-mysql"]
     I2["storage-s3 · variantes thumb/preview/cover"]
     I3["cache-redis · cache de cards e preferências"]

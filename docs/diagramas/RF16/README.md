@@ -207,7 +207,7 @@ classDiagram
   }
   class OpenSearchMemoryAdapter {
     <<adapter>>
-    índice wai-memory
+    índice ws-memory
   }
   class AiEngineAdapter {
     <<adapter>>
@@ -271,7 +271,7 @@ flowchart TD
     B7["Aviso: cite uma fonte para encerrar a pergunta"]
   end
 
-  subgraph L3["wai-application (AiQuestionService)"]
+  subgraph L3["ws-application (AiQuestionService)"]
     C0["Listener MessageClassified (AFTER_COMMIT)"]
     C1{"session.status em ATIVA ou REABERTA?"}
     C2{"aiMode ECONOMIA: contador de mensagens atingiu N?"}
@@ -307,7 +307,7 @@ flowchart TD
   subgraph L5["Persistência"]
     E1[("MySQL ai_questions · message_classifications · compliance_results · plan_axes")]
     E2[("Cassandra messages_by_session · notifications_by_user")]
-    E3[("OpenSearch wai-memory")]
+    E3[("OpenSearch ws-memory")]
     E4[("MySQL decision_trace_nodes/edges · domain_events · decia_points_ledger")]
   end
 
@@ -360,8 +360,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário (participante / admin)
   participant FE as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant CS as Cassandra
@@ -377,7 +377,7 @@ sequenceDiagram
     S->>AI: detectCriticalPoint(context)
     AI-->>S: QuestionDraft {questionText, basisMessageIds, kind PONTO_CRITICO, confidence}
     S->>DB: SELECT ai_questions ABERTA → similaridade do questionText ≤ 90 %
-    S->>OS: kNN wai-memory (questionText, filtros empresa/departamento)
+    S->>OS: kNN ws-memory (questionText, filtros empresa/departamento)
     OS-->>S: Citation[] (ou vazio → "sem precedente")
     S->>DB: INSERT ai_inference_log (FORMULAR_PERGUNTA)
     S->>DB: INSERT ai_questions (PONTO_CRITICO, ABERTA, basisMessageIds, citationsJson)
@@ -471,13 +471,13 @@ flowchart LR
     FE2["components/ui/AiQuestionCard · PinnedQuestions · ReplyComposer (RF6) · CitationChip"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     W1["AiQuestionController (REST /api/decia/sessions/{id}/questions)"]
     W2["SessionMessageController (RF6 — resposta via replyToMessageId)"]
     W3["SessionAccessGuard (participante / adminUserId)"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["AiQuestionService (+ listeners MessageClassified, MessageSent)"]
     S2["SessionMessageService (RF6)"]
     S3["DecisionTraceService"]
@@ -490,7 +490,7 @@ flowchart LR
     P5["DomainEventPublisher (outbox)"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["AiQuestion · Citation"]
     D2["SessionMessage · MessageClassification · DeciaSession"]
     D3["ComplianceResult · PlanAxis · LegalDeadlineRule (leitura)"]
@@ -498,10 +498,10 @@ flowchart LR
     D5["Enums: QuestionKind · QuestionStatus · MessageClass · SessionStatus · PointsEvent"]
   end
 
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     I1["persistence-mysql: AiQuestionRepository, MessageClassificationRepository, ComplianceResultRepository, PlanAxisRepository, DecisionTraceRepository, DeciaPointsLedgerRepository, DomainEventOutboxRepository"]
     I2["persistence-cassandra: CassandraMessageAdapter, NotificationFeedAdapter"]
-    I3["search-opensearch: OpenSearchMemoryAdapter (wai-memory)"]
+    I3["search-opensearch: OpenSearchMemoryAdapter (ws-memory)"]
     I4["cache-redis: AiQuotaAdapter, CircuitStateAdapter, contador de mensagens por sessão (modo ECONOMIA)"]
     I5["ai-providers: AiEngineAdapter (FORMULAR_PERGUNTA, ai_inference_log)"]
     I6["platform: NotificationAdapter, OutboxRelay"]

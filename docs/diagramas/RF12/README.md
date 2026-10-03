@@ -240,7 +240,7 @@ flowchart TD
     B8["Composer do chat em modo somente leitura"]
   end
 
-  subgraph L3["wai-application (DecisionService)"]
+  subgraph L3["ws-application (DecisionService)"]
     C0["Listener SummaryPublished (AFTER_COMMIT): propose automático"]
     C1{"status = EM_DECISAO e há resumo PUBLICADO?"}
     C2["Carrega resumo, cenários e citações"]
@@ -306,8 +306,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário (admin da sessão)
   participant FE as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant EV as DomainEvents (AFTER_COMMIT)
@@ -414,12 +414,12 @@ flowchart LR
     FE2["components/ui/DecisionProposalCard · ScenarioPicker · CitationChip · SubmitReviewButton"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     W1["DecisionController (REST /api/decia/sessions/{id}/decisions)"]
     W2["SessionAccessGuard (adminUserId)"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["DecisionService (+ listener SummaryPublished)"]
     S2["SessionLifecycleService"]
     S3["DecisionTraceService"]
@@ -428,14 +428,14 @@ flowchart LR
     P3["DomainEventPublisher (outbox)"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["FinalDecision · Citation"]
     D2["AnalyticalSummary · SummaryScenario · DeciaSession (leitura)"]
     D3["DecisionTraceNode · DecisionTraceEdge"]
     D4["Enums: DecisionStatus · SessionStatus · TraceRelation · AiCapability"]
   end
 
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     I1["persistence-mysql: FinalDecisionRepository, AnalyticalSummaryRepository, SummaryScenarioRepository, DeciaSessionRepository, DecisionTraceRepository, DomainEventOutboxRepository, AuditLogRepository"]
     I2["ai-providers: AiEngineAdapter (DECISAO_FINAL, fallback, ai_inference_log)"]
     I3["cache-redis: AiQuotaAdapter, CircuitStateAdapter"]

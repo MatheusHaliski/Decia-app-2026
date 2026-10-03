@@ -19,7 +19,7 @@ Alvo polimórfico `TargetType` (TASK · PROJECT · PLAN — além de KIT, PROJEC
 classDiagram
 direction LR
 
-namespace wai_domain_social {
+namespace ws_domain_social {
   class Reaction {
     <<entity>>
     +id: UUID
@@ -100,7 +100,7 @@ namespace wai_domain_social {
   }
 }
 
-namespace wai_domain_alvos {
+namespace ws_domain_alvos {
   class TaskItem {
     <<entity>>
     +id: UUID
@@ -164,7 +164,7 @@ namespace wai_domain_alvos {
   }
 }
 
-namespace wai_domain_enums {
+namespace ws_domain_enums {
   class TargetType {
     <<enum>>
     TASK
@@ -198,7 +198,7 @@ namespace wai_domain_enums {
   }
 }
 
-namespace wai_application {
+namespace ws_application {
   class SocialService {
     <<service>>
     +toggleLike(actorId, type, id) Reaction
@@ -241,7 +241,7 @@ namespace wai_application {
   }
 }
 
-namespace wai_web {
+namespace ws_web {
   class InteractionController {
     <<controller>>
     +POST_api_interactions_type_id_reactions(body)
@@ -257,7 +257,7 @@ namespace wai_web {
   }
 }
 
-namespace wai_infrastructure {
+namespace ws_infrastructure {
   class RedisCounterAdapter {
     <<adapter>>
   }
@@ -326,7 +326,7 @@ flowchart TD
     W4["Autor original vê remixado por N pessoas"]
   end
 
-  subgraph LA["wai-application"]
+  subgraph LA["ws-application"]
     A1["SocialService.checkVisibility"]
     A2{"PRIVADA e ator não é dono? DEPARTAMENTO e ator não é membro? EMPRESA e outra empresa?"}
     A3["403 ACESSO_NEGADO"]
@@ -404,8 +404,8 @@ sequenceDiagram
   actor U as Usuário
   actor O as Dono do item
   participant NX as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant DB as Repository/MySQL
   participant R as Redis
   participant CS as Cassandra
@@ -556,12 +556,12 @@ flowchart LR
     F3["app/s/[token] — página pública do link externo com imagem exportada"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     C1["InteractionController — /api/interactions/{type}/{id}/reactions|comments|saves|shares|remixes|counters"]
     C2["PublicShareController — /s/{externalToken}"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["SocialService"]
     S2["MuralService RF27"]
     S3["DeciaSessionService RF29"]
@@ -571,13 +571,13 @@ flowchart LR
     P2["MediaStoragePort"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["Reaction · Comment · SavedItem · Share · Remix"]
     D2["TaskItem · ProjectScheme · AnnualPlan contadores e visibilidade · MessageAttachment · MuralEntry"]
     D3["Notification · DeliberativeProfile · Department · DepartmentMembership · DomainEventOutbox"]
   end
 
-  subgraph INFRA["wai-infrastructure/*"]
+  subgraph INFRA["ws-infrastructure/*"]
     I1[("persistence-mysql: reactions, comments, saved_items, shares, remixes, mural_entries, message_attachments, tasks, project_schemes, annual_plans, deliberative_profiles")]
     I2[("cache-redis: RedisCounterAdapter counters:{type}:{id}:*")]
     I3[("persistence-cassandra: notifications_by_user TTL, timeline_by_user")]

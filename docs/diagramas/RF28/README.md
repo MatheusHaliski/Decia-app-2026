@@ -11,7 +11,7 @@
 ```mermaid
 classDiagram
   direction LR
-  namespace wai-domain {
+  namespace ws-domain {
     class User {
       <<entity>>
       +UUID id
@@ -156,7 +156,7 @@ classDiagram
       AMBOS
     }
   }
-  namespace wai-application {
+  namespace ws-application {
     class InstitutionalService {
       <<service>>
       +approveProfile(adminId, userId, decision, note) ApprovalRequest
@@ -189,7 +189,7 @@ classDiagram
       +requireIssuer(user) void
     }
   }
-  namespace wai-web {
+  namespace ws-web {
     class CompanyController {
       <<controller>>
       +getCompanyPage(slug)
@@ -216,7 +216,7 @@ classDiagram
       +dashboard(period, deptId)
     }
   }
-  namespace wai-infrastructure {
+  namespace ws-infrastructure {
     class CompanyJpaRepository {
       <<adapter>>
     }
@@ -299,7 +299,7 @@ flowchart TD
     W2["Sub-abas: Sobre · Departamentos · Programas · Plano Anual · Chancelas · Benefícios · Destaques · Pessoas"]
     W3["Filtros de período e departamento"]
   end
-  subgraph L3["wai-application"]
+  subgraph L3["ws-application"]
     S1{"Perfil EMPRESA ou CHEFE?"}
     S2["User.status = PENDING_VALIDATION e ApprovalRequest PENDENTE"]
     S3["User.status = ACTIVE (EMPREGADO)"]
@@ -371,8 +371,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant NX as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant DB as Repository/MySQL
   participant R as Redis
   participant EV as DomainEvents (AFTER_COMMIT)
@@ -495,7 +495,7 @@ flowchart LR
     P5["app/issuer/dashboard/page.tsx"]
     UI1["components/ui: DepartmentBadge (monograma + cor) · MedalBadge · RoleGate"]
   end
-  subgraph WEB["wai-web (REST · br.gov.pr.secid.workai.web)"]
+  subgraph WEB["ws-web (REST · br.gov.pr.secid.workstation.web)"]
     direction TB
     C1["CompanyController"]
     C2["AdminApprovalController"]
@@ -503,7 +503,7 @@ flowchart LR
     C4["RecognitionController"]
     C5["IssuerDashboardController"]
   end
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     direction TB
     S1["InstitutionalService"]
     S2["CuratorService"]
@@ -511,13 +511,13 @@ flowchart LR
     S4["HandoffService (RF36)"]
     S5["AccessPolicy"]
   end
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     direction TB
     E1["User · Company · Department · DepartmentMembership"]
     E2["CuratorAppointment · ApprovalRequest · Recognition · Follow"]
     E3["ProfileType · Role · AccountStatus · DeptRole · CuratorScope"]
   end
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     direction TB
     I1["persistence-mysql: Company/Department/ApprovalRequest/AuditLog JpaRepository"]
     I2["cache-redis: RedisMetricsCache (métricas públicas, dashboard)"]

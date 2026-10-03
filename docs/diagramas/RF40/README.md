@@ -1,5 +1,5 @@
 # RF40 — Oferecer tarefas, projetos e kits como modelos no Balcão de Modelos (marketplace interno em DECIA Points, sem dinheiro) e reutilizá-los com crédito ao autor
-**HU:** HU40 · **Sprint (board Work Station):** Product Backlog (não priorizado — pós-Sprint 4) · **Equivalente FAI:** estado "À venda" da peça (RF4.CA8 / RF31), sub-aba "Peças à venda" do perfil, Arara do Desapego do Meu Quarto e o remix · **Aba/rota:** Balcão de Modelos (`/models`, também acessível pela Loja Work AI), sub-aba "Meus modelos oferecidos" no perfil (RF19)
+**HU:** HU40 · **Sprint (board Work Station):** Product Backlog (não priorizado — pós-Sprint 4) · **Equivalente FAI:** estado "À venda" da peça (RF4.CA8 / RF31), sub-aba "Peças à venda" do perfil, Arara do Desapego do Meu Quarto e o remix · **Aba/rota:** Balcão de Modelos (`/models`, também acessível pela Loja Work Station), sub-aba "Meus modelos oferecidos" no perfil (RF19)
 **Critérios de aceite cobertos:** RF40.CA01 · RF40.CA02 · RF40.CA03 · RF40.CA04 · RF40.CA05 · RF40.CA06 · RF40.CA07 · RF40.CA08
 
 > Contexto Balcão & Loja & DECIA Points (bounded context 7). Entidade central: `ModelOffer` (status ATIVA → RETIRADA | ESGOTADA) sobre um alvo `TASK | PROJECT | KIT`. A oferta liga `TaskItem.offeredInCounter = true` (etiqueta `OFERECIDA`) sem destruir o estado de trabalho. O remix é uma **transferência** no ledger de DECIA Points (`DeciaPointsService`: débito do comprador + crédito do autor na mesma transação, `counterpartyUserId`, `idempotencyKey`), registrada em `Remix`. Não existe moeda real nem gateway (RF40.CA08).
@@ -299,7 +299,7 @@ flowchart TD
     W7["GET /me/model-offers"]
   end
 
-  subgraph L_app["wai-application · CounterService · DeciaPointsService · AcervoService · TaskStateMachine"]
+  subgraph L_app["ws-application · CounterService · DeciaPointsService · AcervoService · TaskStateMachine"]
     S1{"Ator é dono do alvo e alvo não é RASCUNHO?"}
     S2{"availableUntil maior que availableFrom e pricePoints maior ou igual a 0?"}
     S3["Cria ModelOffer ATIVA · shelf COMUNIDADE (CHANCELADO se SealBond APROVADA) · offeredInCounter true · TaskStateMachine.markOffered (etiqueta OFERECIDA, estado de trabalho preservado) · task_state_log"]
@@ -380,8 +380,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant N as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant DB as Repository/MySQL
   participant OS as OpenSearch
   participant R as Redis
@@ -490,11 +490,11 @@ flowchart LR
     FE2["components/ui · ModelCard (preço em ficha DP, licença, etiqueta repasse, estrela chancelado) · OfferDialog · LicenseBadge · BalanceHint (atalho para o DECIA)"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     C1["ModelOfferController"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["CounterService"]
     S2["DeciaPointsService (RF42) · transfer idempotente"]
     S3["AcervoService (RF41) · cópia por licença"]
@@ -502,14 +502,14 @@ flowchart LR
     S5["SealService (RF39) · nominate"]
   end
 
-  subgraph DOM["wai-domain · br.gov.pr.secid.workai"]
+  subgraph DOM["ws-domain · br.gov.pr.secid.workstation"]
     D1["ModelOffer · Remix"]
     D2["DeciaPointsLedgerEntry"]
     D3["TaskItem · ProjectScheme · ProcessKit · KitItem · ProjectTask · TaskStateLog"]
     D4["SealBond · StoreItem"]
   end
 
-  subgraph INFRA["wai-infrastructure/*"]
+  subgraph INFRA["ws-infrastructure/*"]
     I1["persistence-mysql · model_offers, remixes, decia_points_ledger, tasks, project_schemes, process_kits"]
     I2["search-opensearch · índice de ofertas (filtros e ordenação)"]
     I3["cache-redis · saldo por usuário · lock de idempotência · contadores"]

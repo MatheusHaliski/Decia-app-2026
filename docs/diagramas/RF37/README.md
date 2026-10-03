@@ -376,7 +376,7 @@ flowchart TD
     W7["POST /meetings/id/ratify ou /contest"]
   end
 
-  subgraph L_app["wai-application · MeetingService"]
+  subgraph L_app["ws-application · MeetingService"]
     A1{"Ator é participante da sessão ou membro do projeto?"}
     A2["Cria Meeting status GRAVANDO ou TRANSCREVENDO"]
     A3{"Todos os participantes presentes consentiram?"}
@@ -459,8 +459,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant N as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant CS as Cassandra
@@ -576,11 +576,11 @@ flowchart LR
     FE2["components/ui · AudioRecorder · ConsentSheet · AtaPreview (tarefa + encaminhamentos) · DecisionThread (fio)"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     C1["MeetingController"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["MeetingService"]
     S2["AcervoService (RF41)"]
     S3["TaskStateMachine"]
@@ -590,13 +590,13 @@ flowchart LR
     P2["StoragePort"]
   end
 
-  subgraph DOM["wai-domain · br.gov.pr.secid.workai"]
+  subgraph DOM["ws-domain · br.gov.pr.secid.workstation"]
     D1["Meeting · MeetingTranscript · RecordingConsent"]
     D2["TaskItem · ProjectTask · ProjectTaskDependency"]
     D3["SessionMessage · MessageAttachment · DecisionTraceNode · DecisionTraceEdge"]
   end
 
-  subgraph INFRA["wai-infrastructure/*"]
+  subgraph INFRA["ws-infrastructure/*"]
     I1["persistence-mysql · meetings, meeting_transcripts, recording_consents, tasks, project_tasks, pipeline_jobs"]
     I2["persistence-cassandra · messages_by_session, notifications_by_user"]
     I3["storage-s3 · MediaObject áudio (TTL por política)"]

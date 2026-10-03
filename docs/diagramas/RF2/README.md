@@ -8,7 +8,7 @@
 
 | CA | Enunciado (Dado / Quando / Então) |
 |---|---|
-| **RF2.CA01** (CA a confirmar) | Dado `identifier` (username ou e-mail) e senha, quando faço login, então a senha é conferida contra o hash **Argon2id** (`PasswordHasherPort.matches`, com re-hash transparente se os parâmetros mudaram) e recebo um **access JWT** (15 min; claims `user_id`, `sid`=familyId, `role`, `profile_type`) e um **refresh token** opaco (30 d se "lembrar-me", 24 h se não) guardado como hash no **Redis** (`refresh:{familyId}`) com espelho em `refresh_tokens`; o BFF devolve o refresh só em cookie HttpOnly + Secure + SameSite=Strict (`wai_rt`). |
+| **RF2.CA01** (CA a confirmar) | Dado `identifier` (username ou e-mail) e senha, quando faço login, então a senha é conferida contra o hash **Argon2id** (`PasswordHasherPort.matches`, com re-hash transparente se os parâmetros mudaram) e recebo um **access JWT** (15 min; claims `user_id`, `sid`=familyId, `role`, `profile_type`) e um **refresh token** opaco (30 d se "lembrar-me", 24 h se não) guardado como hash no **Redis** (`refresh:{familyId}`) com espelho em `refresh_tokens`; o BFF devolve o refresh só em cookie HttpOnly + Secure + SameSite=Strict (`ws_rt`). |
 | **RF2.CA02** (CA a confirmar) | Dado credenciais erradas ou usuário inexistente, então `401 CREDENCIAIS_INVALIDAS` com a mesma mensagem e tempo (sem enumerar contas); conta `SUSPENDED`/`DELETION_SCHEDULED` → `403 CONTA_INDISPONIVEL`; `PENDING_EMAIL_VERIFICATION` entra com aviso; `twoFactorEnabled` → `401 DOIS_FATORES_NECESSARIO` até informar o código. |
 | **RF2.CA03** (CA a confirmar) | Dado o botão "Entrar com conta institucional", então o fluxo **OAuth2/OIDC Authorization Code + PKCE** (Google Workspace ou Microsoft 365 / Entra ID) valida o `id_token` (assinatura JWKS, `iss`, `aud`, `nonce`, `exp`), vincula `oidcSubject`/`oidcIssuer` ao `User` existente de mesmo `emailHash` (ou cria conta `ACTIVE`, `passwordHash` nulo, `emailVerified` true) e emite a mesma sessão do CA01. |
 | **RF2.CA04** (CA a confirmar) | Dado um refresh token válido, quando o BFF chama `/api/auth/refresh`, então ocorre **rotação**: novo token da mesma família, o anterior fica `revokedAt`/`rotatedFromId`; reuso de um token já rotacionado **revoga a família inteira** e responde `401 SESSAO_INVALIDA` (detecção de roubo). |
@@ -21,7 +21,7 @@
 classDiagram
   direction LR
 
-  namespace wai_domain {
+  namespace ws_domain {
     class User {
       <<entity>>
       +id: UUID
@@ -75,7 +75,7 @@ classDiagram
     }
   }
 
-  namespace wai_application {
+  namespace ws_application {
     class IdentityService {
       <<service>>
       +login(cmd LoginCommand, ip, userAgent) Session
@@ -133,7 +133,7 @@ classDiagram
     }
   }
 
-  namespace wai_web {
+  namespace ws_web {
     class AuthController {
       <<controller>>
       +login(cmd LoginCommand) Session
@@ -162,7 +162,7 @@ classDiagram
     }
   }
 
-  namespace wai_infrastructure {
+  namespace ws_infrastructure {
     class RedisRefreshTokenStore {
       <<adapter>>
       +keyPrefix: String
@@ -201,7 +201,7 @@ classDiagram
 
 ## 2. Diagrama de atividades
 
-Raias: Usuário · Web/BFF · `wai-application` · Persistência · Provedor OIDC externo. Cobre login local, login institucional (OIDC) e renovação com rotação.
+Raias: Usuário · Web/BFF · `ws-application` · Persistência · Provedor OIDC externo. Cobre login local, login institucional (OIDC) e renovação com rotação.
 
 ```mermaid
 flowchart TD
@@ -217,11 +217,11 @@ flowchart TD
     B1["POST /bff/auth/login → POST /api/auth/login (IP assinado)"]
     B2["Gera state, nonce e PKCE; redireciona para o provedor"]
     B3["Callback /bff/auth/oidc/callback → POST /api/auth/oidc/exchange"]
-    B4["Guarda wai_rt (HttpOnly, Secure, SameSite=Strict, path /bff/auth) e access token em memória"]
+    B4["Guarda ws_rt (HttpOnly, Secure, SameSite=Strict, path /bff/auth) e access token em memória"]
     B5["Ao abrir o app ou expirar o access: POST /bff/auth/refresh"]
   end
 
-  subgraph L3["wai-application — IdentityService"]
+  subgraph L3["ws-application — IdentityService"]
     C1{"Rate limit por IP e identifier ok?"}
     C1 -->|não| E429["429 MUITAS_TENTATIVAS"]
     C1 -->|sim| C2{"Usuário existe e Argon2id confere?"}
@@ -280,8 +280,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant N as Next.js (App Router) /login + /bff/auth
-  participant C as AuthController (wai-web)
-  participant S as IdentityService (wai-application)
+  participant C as AuthController (ws-web)
+  participant S as IdentityService (ws-application)
   participant H as Argon2PasswordHasher
   participant J as JwtTokenIssuer
   participant R as Redis
@@ -315,7 +315,7 @@ sequenceDiagram
       S->>DE: publish UserLoggedIn → AuditLog LOGIN_OK
       S-->>C: Session (accessToken, refreshToken, familyId, user, warnings)
       C-->>N: 200
-      N-->>U: cookie HttpOnly wai_rt + access token em memória → área pessoal
+      N-->>U: cookie HttpOnly ws_rt + access token em memória → área pessoal
     end
   end
 
@@ -333,7 +333,7 @@ sequenceDiagram
   end
 
   U->>N: reabre o app (access expirado)
-  N->>C: POST /bff/auth/refresh (cookie wai_rt) → POST /api/auth/refresh
+  N->>C: POST /bff/auth/refresh (cookie ws_rt) → POST /api/auth/refresh
   C->>S: refresh(rawRefresh, ip, userAgent)
   S->>R: HGET refresh por tokenHash
   alt token já rotacionado ou revogado (CA04)
@@ -346,7 +346,7 @@ sequenceDiagram
     S->>R: novo tokenHash na família, antigo revokedAt + rotatedFromId
     S->>J: issueAccessToken(user, familyId)
     S-->>C: Session renovada
-    C-->>N: 200 + novo cookie wai_rt
+    C-->>N: 200 + novo cookie ws_rt
   end
 
   U->>N: Sair
@@ -402,7 +402,7 @@ flowchart LR
     FE5["middleware.ts (rotas protegidas)"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     W1["AuthController /api/auth/login · /refresh · /logout · /sessions · /oidc/exchange"]
     W2["SecurityConfig (resource server JWT) · SessionActiveFilter · AuthRateLimitFilter"]
     W3["JwtTokenIssuer (adapter TokenIssuerPort)"]
@@ -410,20 +410,20 @@ flowchart LR
     W5["CurrentUserResolver · AuditAuthenticationEntryPoint"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["IdentityService"]
     S2["Guard · CurrentUser · RequestActor"]
     P1["TokenIssuerPort · PasswordHasherPort · RefreshTokenStorePort"]
     P2["OidcClientPort · RateLimitPort · DomainEventPublisherPort"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["User · RefreshToken · AuditLog"]
     D2["AccountStatus · Role · ProfileType"]
     D3["UserRepository · RefreshTokenRepository"]
   end
 
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     I1["persistence-mysql (users, refresh_tokens espelho, audit_log)"]
     I2["cache-redis (RedisRefreshTokenStore, RedisRateLimiter, oidc state)"]
     I3["platform (SpringOidcClientAdapter, OutboxEventPublisher, AuditLogWriter)"]
@@ -462,7 +462,7 @@ flowchart LR
   D3 --> I1
   I1 --> MY
   I2 --> RD
-  BOOT["wai-bootstrap (application.yml: jwt.issuer, access-ttl 15 min, refresh-ttl, oidc.providers)"] -.-> WEB
+  BOOT["ws-bootstrap (application.yml: jwt.issuer, access-ttl 15 min, refresh-ttl, oidc.providers)"] -.-> WEB
   BOOT -.-> INFRA
 ```
 

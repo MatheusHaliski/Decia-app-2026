@@ -11,7 +11,7 @@
 ```mermaid
 classDiagram
   direction LR
-  namespace wai-domain {
+  namespace ws-domain {
     class ComplianceChecklist {
       <<entity>>
       +UUID id
@@ -131,7 +131,7 @@ classDiagram
       ENCERRAMENTO
     }
   }
-  namespace wai-application {
+  namespace ws-application {
     class ComplianceService {
       <<service>>
       +createChecklist(issuerId, form) ComplianceChecklist
@@ -167,7 +167,7 @@ classDiagram
       +crossDeterministic(tasks, items) List~ItemMatch~
     }
   }
-  namespace wai-web {
+  namespace ws-web {
     class ComplianceChecklistController {
       <<controller>>
       +create(body)
@@ -181,7 +181,7 @@ classDiagram
       +changePhase(projectId, body)
     }
   }
-  namespace wai-infrastructure {
+  namespace ws-infrastructure {
     class LocalComplianceEngine {
       <<adapter>>
       cruzamento determinístico
@@ -247,7 +247,7 @@ flowchart TD
     W3["Aviso de bloqueio com itens pendentes e campo de justificativa"]
     W4["Modo leitura: sem Criar tarefa faltante nem edição"]
   end
-  subgraph L3["wai-application"]
+  subgraph L3["ws-application"]
     S1{"Ator é EMPRESA ou CHEFE?"}
     S2{"mustPrecedeItemId sem ciclo e fase esperada válida?"}
     S3["Salva ComplianceChecklist e ComplianceItem (version+1)"]
@@ -317,8 +317,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant NX as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant CS as Cassandra
@@ -445,12 +445,12 @@ flowchart LR
     P3["app/projects/[id] · card com ConformitySeal %"]
     UI1["components/ui: ChecklistItemRow (✅ ⚠️ ⛔) · ConformitySeal · OverrideDialog · CreateMissingTaskButton"]
   end
-  subgraph WEB["wai-web (REST · br.gov.pr.secid.workai.web)"]
+  subgraph WEB["ws-web (REST · br.gov.pr.secid.workstation.web)"]
     direction TB
     C1["MirrorController"]
     C2["ComplianceChecklistController"]
   end
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     direction TB
     S1["ComplianceService"]
     S2["TaskService (RF20)"]
@@ -460,13 +460,13 @@ flowchart LR
     PT1["RuleEnginePort"]
     PT2["AiProviderPort"]
   end
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     direction TB
     E1["ComplianceChecklist · ComplianceItem · ComplianceResult"]
     E2["ProjectScheme · ProjectTask · TaskItem.checklistItemId"]
     E3["AnalyticalSummary · DecisionTraceNode · AiInferenceLog · AuditLog"]
   end
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     direction TB
     I1["persistence-mysql: ComplianceJpaRepository · ProjectScheme/Task repositories"]
     I2["persistence-cassandra: CassandraTraceMirror"]

@@ -1,4 +1,4 @@
-// Work AI / DECIA — fonte de verdade dos tokens de design (v1).
+// Work Station / DECIA — fonte de verdade dos tokens de design (v1).
 // Daqui saem: docs/design-system/tokens.css, a tabela de contraste do DESIGN_SYSTEM.md e os <style> dos SVGs.
 // Regra: toda cor "-ink" é derivada matematicamente até cumprir ≥ 4,5:1 (texto) contra surface, surface-2 e o próprio
 // "-soft" (fundo da etiqueta). Toda cor "fill" (glifo, borda, nó) cumpre ≥ 3:1 contra surface (WCAG 1.4.11).
@@ -253,7 +253,7 @@ export function emitTokensCss() {
 
   const themeBlock = (theme, sel) => block(sel, resolveTheme(theme), `\n  color-scheme: ${THEMES[theme].scheme};`);
   let css = `/* ============================================================================================
-   Work AI / DECIA — tokens de design v1 (RF38). GERADO por docs/design-system/anatomias/gerar.mjs a partir de
+   Work Station / DECIA — tokens de design v1 (RF38). GERADO por docs/design-system/anatomias/gerar.mjs a partir de
    anatomias/lib/tokens.mjs — não editar à mão. Temas via <html data-theme="claro|escuro|contraste|blueprint">;
    sem data-theme (ou "auto") segue prefers-color-scheme. Toda cor "-ink" tem ≥ 4,5:1 (≥ 7:1 no alto contraste) sobre
    surface, surface-2 e o "-soft" correspondente; toda cor cheia tem ≥ 3:1 sobre surface. Tabela em DESIGN_SYSTEM.md §2.9.

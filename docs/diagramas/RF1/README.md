@@ -17,13 +17,13 @@
 
 ## 1. Diagrama de classes
 
-Entidades de `docs/arquitetura/TAXONOMIA.md` §1 (Identidade & Acesso) e §12 (Plataforma); serviços e portas sugeridos para `wai-application`, adaptadores em `wai-web`/`wai-infrastructure`.
+Entidades de `docs/arquitetura/TAXONOMIA.md` §1 (Identidade & Acesso) e §12 (Plataforma); serviços e portas sugeridos para `ws-application`, adaptadores em `ws-web`/`ws-infrastructure`.
 
 ```mermaid
 classDiagram
   direction LR
 
-  namespace wai_domain {
+  namespace ws_domain {
     class User {
       <<entity>>
       +id: UUID
@@ -102,7 +102,7 @@ classDiagram
     }
   }
 
-  namespace wai_application {
+  namespace ws_application {
     class IdentityService {
       <<service>>
       +register(cmd RegisterCommand, ip, userAgent) Session
@@ -141,7 +141,7 @@ classDiagram
     }
   }
 
-  namespace wai_web {
+  namespace ws_web {
     class AuthController {
       <<controller>>
       +register(cmd RegisterCommand) Session
@@ -162,7 +162,7 @@ classDiagram
     }
   }
 
-  namespace wai_infrastructure {
+  namespace ws_infrastructure {
     class RedisRefreshTokenStore {
       <<adapter>>
       +keyPrefix: String
@@ -207,7 +207,7 @@ classDiagram
 
 ## 2. Diagrama de atividades
 
-Raias: Visitante · Web/BFF · `wai-application` · Persistência (o RF1 não usa o AiEngine).
+Raias: Visitante · Web/BFF · `ws-application` · Persistência (o RF1 não usa o AiEngine).
 
 ```mermaid
 flowchart TD
@@ -225,7 +225,7 @@ flowchart TD
     B14["POST /api/auth/email-verification com Bearer"]
   end
 
-  subgraph L3["wai-application — IdentityService"]
+  subgraph L3["ws-application — IdentityService"]
     C1{"Rate limit por IP ok?"}
     C1 -->|não| E429["429 LIMITE_ENVIOS"]
     C1 -->|sim| C2{"Campos válidos? (e-mail, username normalizado e não reservado, política de senha)"}
@@ -280,8 +280,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário (visitante)
   participant N as Next.js (App Router) /register + /bff/auth
-  participant C as AuthController (wai-web)
-  participant S as IdentityService (wai-application)
+  participant C as AuthController (ws-web)
+  participant S as IdentityService (ws-application)
   participant H as Argon2PasswordHasher
   participant DB as Repository/MySQL
   participant R as Redis
@@ -314,7 +314,7 @@ sequenceDiagram
       S->>DE: publish UserRegistered(userId, correlationId)
       S-->>C: Session (accessToken 15 min, refreshToken, user, status)
       C-->>N: 201 Created
-      N-->>U: cookie HttpOnly wai_rt + redireciona /verify-email
+      N-->>U: cookie HttpOnly ws_rt + redireciona /verify-email
       DE->>DE: AFTER_COMMIT → EmailSenderPort.sendVerificationCode + AuditLog USER_REGISTERED
     end
   end
@@ -374,26 +374,26 @@ flowchart LR
     FE4["components/ui (Form, Input, PasswordStrength, Toast)"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     W1["AuthController /api/auth/register · /email-verification · /username-suggestions"]
     W2["SecurityConfig · AuthRateLimitFilter · CorrelationIdFilter"]
     W3["Argon2PasswordHasher (adapter PasswordHasherPort)"]
     W4["JwtTokenIssuer (adapter TokenIssuerPort)"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["IdentityService"]
     P1["PasswordHasherPort · TokenIssuerPort · RefreshTokenStorePort"]
     P2["EmailSenderPort · RateLimitPort · DomainEventPublisherPort"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["User · UserPreferences · RefreshToken · ApprovalRequest · AuditLog"]
     D2["ProfileType · Role · AccountStatus"]
     D3["UserRepository · UserPreferencesRepository · ApprovalRequestRepository"]
   end
 
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     I1["persistence-mysql (JPA + Flyway: users, user_preferences, refresh_tokens, approval_requests, audit_log)"]
     I2["cache-redis (RedisRefreshTokenStore, RedisRateLimiter)"]
     I3["platform (OutboxEventPublisher, SmtpEmailSender, AuditLogWriter)"]
@@ -425,7 +425,7 @@ flowchart LR
   I1 --> MY
   I2 --> RD
   I3 --> X1
-  BOOT["wai-bootstrap (Spring Boot, application.yml, flags)"] -.-> WEB
+  BOOT["ws-bootstrap (Spring Boot, application.yml, flags)"] -.-> WEB
   BOOT -.-> INFRA
 ```
 

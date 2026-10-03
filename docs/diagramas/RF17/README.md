@@ -9,7 +9,7 @@
 | **RF17.CA01** | Dado sessão EM_REVISAO com `FinalDecision` VALIDADA (ou DEVOLVIDA com `ReopenRequest` RECUSADA), quando o administrador da sessão aciona "Encerrar sessão", então `status = ENCERRADA`, `closedAt` preenchido, o chat fica somente leitura (RF6 → `409 SESSAO_NAO_ATIVA`) e os participantes recebem `Notification` (DECIA). |
 | **RF17.CA02** | Dado sessão ATIVA/REABERTA **sem decisão**, quando o admin tenta encerrar, então o motivo é obrigatório (`422 VALIDACAO` sem motivo) e a sessão encerra "sem decisão" (flag em `analyticsSnapshotJson`); não-admin → `403 ACESSO_NEGADO`; sessão já ENCERRADA/ARQUIVADA → `409 SESSAO_JA_ENCERRADA`; decisão EM_REVISAO pendente → `409 REVISAO_PENDENTE`. |
 | **RF17.CA03** | Dado ENCERRADA, quando `SessionClosed` dispara AFTER_COMMIT, então `SessionLifecycleService` exporta mensagens (Cassandra), classificações, divergências, perguntas, resumo, decisão, revisão e artefatos para **JSON + PDF** em S3 (`MediaObject`), cria `SessionArchive` (`exportMediaId`, `messageCount`, `checksum` SHA-256, `analyticsSnapshotJson`) e a sessão passa a ARQUIVADA com `archiveMediaId`/`archivedAt`. |
-| **RF17.CA04** | Dado o arquivo criado, então `PipelineJob` INDEXAR_MEMORIA indexa a sessão em `wai-memory` (`InstitutionalMemoryDocument.sourceType = SESSAO`, metadados empresa/departamento/categoria/exercício/autor/data) e marca `indexedInMemory = true` (RF33.CA01); falha de indexação **não bloqueia** o encerramento e fica em `ai_inference_log` (RF33.CA06). |
+| **RF17.CA04** | Dado o arquivo criado, então `PipelineJob` INDEXAR_MEMORIA indexa a sessão em `ws-memory` (`InstitutionalMemoryDocument.sourceType = SESSAO`, metadados empresa/departamento/categoria/exercício/autor/data) e marca `indexedInMemory = true` (RF33.CA01); falha de indexação **não bloqueia** o encerramento e fica em `ai_inference_log` (RF33.CA06). |
 | **RF17.CA05** | Dado ENCERRADA com resumo PUBLICADO, então cada participante presente (`leftAt` nulo, ≥ 1 mensagem) recebe **+2 DP** (`PRESENCA_ENCERRADA`, idempotente, RF42.CA01) e `analyticsSnapshotJson` (mensagens por classe, divergências resolvidas/abertas, perguntas respondidas, tempo até decisão, fontes citadas) alimenta `MetricSnapshot` (RF18). |
 | **RF17.CA06** | Dado sessão ARQUIVADA, então o histórico permanece navegável a partir do rastro (RF29.CA06) e da aba Histórico mesmo após o TTL do Cassandra (`messageTtlDays`), lido do export em S3; `DeciaSession.archiveMediaId` e o `SessionArchive` são imutáveis (`audit_log`). |
 
@@ -226,11 +226,11 @@ classDiagram
   }
   class S3MediaAdapter {
     <<adapter>>
-    bucket wai-archives
+    bucket ws-archives
   }
   class OpenSearchMemoryAdapter {
     <<adapter>>
-    índice wai-memory
+    índice ws-memory
   }
   class PipelineJobRunner {
     <<adapter>>
@@ -296,7 +296,7 @@ flowchart TD
     B6["GET /api/decia/sessions/{id}/archive → 302 URL assinada S3"]
   end
 
-  subgraph L3["wai-application (SessionLifecycleService)"]
+  subgraph L3["ws-application (SessionLifecycleService)"]
     C1{"actor = adminUserId?"}
     C2{"status em ENCERRADA ou ARQUIVADA?"}
     C3{"há FinalDecision EM_REVISAO?"}
@@ -316,7 +316,7 @@ flowchart TD
   end
 
   subgraph L4["IA (AiEngine) / Jobs"]
-    D1["INDEXAR_MEMORIA: embedding do histórico → wai-memory (sourceType SESSAO)"]
+    D1["INDEXAR_MEMORIA: embedding do histórico → ws-memory (sourceType SESSAO)"]
     D2{"indexou?"}
     D3["indexedInMemory = true"]
     D4["REPROCESSAR + ai_inference_log (falha não bloqueia)"]
@@ -325,8 +325,8 @@ flowchart TD
   subgraph L5["Persistência"]
     E1[("MySQL decia_sessions · final_decisions · reopen_requests · audit_log · domain_events")]
     E2[("Cassandra messages_by_session")]
-    E3[("S3 wai-archives + MySQL media_objects · session_archives")]
-    E4[("OpenSearch wai-memory")]
+    E3[("S3 ws-archives + MySQL media_objects · session_archives")]
+    E4[("OpenSearch ws-memory")]
     E5[("MySQL decia_points_ledger · metric_snapshots · pipeline_jobs")]
   end
 
@@ -374,8 +374,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário (admin da sessão)
   participant FE as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant DB as Repository/MySQL
   participant CS as Cassandra
   participant OS as OpenSearch
@@ -404,14 +404,14 @@ sequenceDiagram
     S->>DB: SELECT message_classifications, divergences, divergence_replies, ai_questions, analytical_summaries, summary_scenarios, final_decisions, decision_reviews, session_artifacts, decision_trace
     S->>S: serializa JSON canônico + SHA-256 + buildAnalyticsSnapshot
     S->>S: PdfRenderPort.render(histórico)
-    S->>S3: PUT wai-archives/{sessionId}/history.json + history.pdf
+    S->>S3: PUT ws-archives/{sessionId}/history.json + history.pdf
     S3-->>S: etag
     S->>DB: INSERT media_objects (2) + INSERT session_archives (exportMediaId, messageCount, checksum, analyticsSnapshotJson)
     S->>DB: UPDATE decia_sessions SET status = ARQUIVADA, archivedAt, archiveMediaId
     S->>DB: INSERT pipeline_jobs (INDEXAR_MEMORIA, targetType SESSAO) + domain_events (SessionArchived)
     EV-->>S: AnalyticsService.onSessionArchived → INSERT metric_snapshots (mensagens por classe, divergências, tempo até decisão, fontes citadas)
     Note over S,OS: PipelineJobRunner (assíncrono)
-    S->>OS: index wai-memory {sourceType SESSAO, sourceId, companyId, departmentId, exerciseYear, text, embedding}
+    S->>OS: index ws-memory {sourceType SESSAO, sourceId, companyId, departmentId, exerciseYear, text, embedding}
     OS-->>S: 201
     S->>DB: UPDATE decia_sessions SET indexedInMemory = true + UPDATE pipeline_jobs SET status = OK
     U->>FE: Abre aba Histórico
@@ -436,7 +436,7 @@ sequenceDiagram
     S->>DB: SELECT decia_sessions (adminUserId ≠ actor ou status ENCERRADA/ARQUIVADA)
     S-->>C: 403 ACESSO_NEGADO ou 409 SESSAO_JA_ENCERRADA
   else RF17.CA04 — OpenSearch indisponível
-    S->>OS: index wai-memory
+    S->>OS: index ws-memory
     OS-->>S: erro
     S->>DB: UPDATE pipeline_jobs SET status = REPROCESSAR, attempts + 1 + INSERT ai_inference_log (MEMORIA_BUSCA, result ERRO)
     Note over S,DB: sessão continua ARQUIVADA — indexedInMemory = false até o retry
@@ -487,12 +487,12 @@ flowchart LR
     FE3["components/ui/CloseSessionDialog · SessionStatusBadge · ArchiveViewer"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     W1["SessionLifecycleController (REST /api/decia/sessions/{id}/close, /archive)"]
     W2["SessionAccessGuard (adminUserId / participante para leitura)"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["SessionLifecycleService (+ listener SessionClosed)"]
     S2["DeciaPointsService (listener AFTER_COMMIT)"]
     S3["AnalyticsService (listener SessionArchived, RF18)"]
@@ -505,18 +505,18 @@ flowchart LR
     P7["DomainEventPublisher (outbox)"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["DeciaSession · SessionArchive · MediaObject · PipelineJob"]
     D2["FinalDecision · ReopenRequest · AnalyticalSummary · SessionArtifact · SessionParticipant (leitura)"]
     D3["DeciaPointsLedgerEntry · MetricSnapshot · AuditLog"]
     D4["Enums: SessionStatus · PipelineJobType · PipelineJobStatus · PointsEvent"]
   end
 
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     I1["persistence-mysql: DeciaSessionRepository (@Version), SessionArchiveRepository, MediaObjectRepository, PipelineJobRepository, DeciaPointsLedgerRepository, MetricSnapshotRepository, AuditLogRepository, DomainEventOutboxRepository"]
     I2["persistence-cassandra: CassandraMessageAdapter (stream completo), NotificationFeedAdapter"]
-    I3["storage-s3: S3MediaAdapter (bucket wai-archives, URL assinada)"]
-    I4["search-opensearch: OpenSearchMemoryAdapter (wai-memory, sourceType SESSAO)"]
+    I3["storage-s3: S3MediaAdapter (bucket ws-archives, URL assinada)"]
+    I4["search-opensearch: OpenSearchMemoryAdapter (ws-memory, sourceType SESSAO)"]
     I5["ai-providers: EmbeddingAdapter (MEMORIA_BUSCA, ai_inference_log)"]
     I6["platform: PipelineJobRunner, PdfRenderAdapter, NotificationAdapter, OutboxRelay"]
   end

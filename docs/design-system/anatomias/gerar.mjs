@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Gerador do design system Work AI / DECIA: tokens.css, ícones SVG, anatomias SVG (variações × temas), tabela de
+// Gerador do design system Work Station / DECIA: tokens.css, ícones SVG, anatomias SVG (variações × temas), tabela de
 // contraste (DESIGN_SYSTEM.md) e galeria estática (index.html). Sem dependências. Uso: node docs/design-system/anatomias/gerar.mjs
 import { writeFileSync, mkdirSync, readFileSync, existsSync, readdirSync, unlinkSync } from 'node:fs';
 import { dirname, join } from 'node:path';

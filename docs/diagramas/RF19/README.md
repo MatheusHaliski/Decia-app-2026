@@ -1,4 +1,4 @@
-# RF19 — Exibir o perfil do usuário (Portfólio de trabalho) com tudo o que ele criou no Work AI, em sub-abas, incluindo o perfil deliberativo gerado pela IA
+# RF19 — Exibir o perfil do usuário (Portfólio de trabalho) com tudo o que ele criou no Work Station, em sub-abas, incluindo o perfil deliberativo gerado pela IA
 **HU:** HU19 · **Sprint (board Work Station):** 4 · **Equivalente FAI:** RF6 Perfil Lookbook (+ RF17 perfil de outros) · **Aba/rota:** Meu perfil (`/profile`), perfil de outros em `/u/[username]`
 **Critérios de aceite cobertos:** RF19.CA01 · RF19.CA02 · RF19.CA03 · RF19.CA04 · RF19.CA05 · RF19.CA06 · RF19.CA07
 
@@ -28,7 +28,7 @@ O perfil é o **registro de tudo que o empregado produziu desde que entrou no si
 classDiagram
 direction LR
 
-namespace wai_domain_identidade {
+namespace ws_domain_identidade {
   class User {
     <<entity>>
     +id: UUID
@@ -72,7 +72,7 @@ namespace wai_domain_identidade {
   }
 }
 
-namespace wai_domain_portfolio {
+namespace ws_domain_portfolio {
   class TaskItem {
     <<entity>>
     +id: UUID
@@ -184,7 +184,7 @@ namespace wai_domain_portfolio {
   }
 }
 
-namespace wai_domain_reputacao {
+namespace ws_domain_reputacao {
   class DailyTask {
     <<entity>>
     +id: UUID
@@ -250,7 +250,7 @@ namespace wai_domain_reputacao {
   }
 }
 
-namespace wai_domain_enums {
+namespace ws_domain_enums {
   class ProfileType {
     <<enum>>
     EMPREGADO
@@ -285,7 +285,7 @@ namespace wai_domain_enums {
   }
 }
 
-namespace wai_application {
+namespace ws_application {
   class ProfileService {
     <<service>>
     +loadHeader(viewerId, username) ProfileHeader
@@ -322,7 +322,7 @@ namespace wai_application {
   }
 }
 
-namespace wai_web {
+namespace ws_web {
   class ProfileController {
     <<controller>>
     +GET_api_profile_me()
@@ -332,7 +332,7 @@ namespace wai_web {
   }
 }
 
-namespace wai_infrastructure {
+namespace ws_infrastructure {
   class RedisCacheAdapter {
     <<adapter>>
   }
@@ -405,7 +405,7 @@ flowchart TD
     W5["Renderiza gráfico de linha mensal e ▲▼"]
   end
 
-  subgraph LA["wai-application"]
+  subgraph LA["ws-application"]
     A1["ProfileService.loadHeader"]
     A2{"viewer == dono?"}
     A3["Sub-abas 1–15"]
@@ -478,8 +478,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant NX as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant R as Redis
@@ -580,12 +580,12 @@ flowchart LR
     F4["i18n next-intl pt-BR / en / es · layout responsivo"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     C1["ProfileController"]
     C2["DailyTaskController"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["ProfileService"]
     S2["DailyTaskService"]
     S3["ReputationService"]
@@ -594,13 +594,13 @@ flowchart LR
     P1["CachePort"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["User · Company · Department · UserPreferences"]
     D2["TaskItem · ProjectScheme · AnnualPlan · Grouping · SavedItem · Follow · ProcessKit · ModelOffer · Recognition · SealBond · DeciaPointsLedgerEntry · FinalDecision · DecisionTraceNode"]
     D3["DailyTask · WeekPlan · EfficiencyScoreSnapshot · ProfileHypeScore · HypeBand · DeliberativeProfile"]
   end
 
-  subgraph INFRA["wai-infrastructure/*"]
+  subgraph INFRA["ws-infrastructure/*"]
     I1[("persistence-mysql: users, tasks, project_schemes, annual_plans, groupings, saved_items, daily_tasks, hse_snapshots, profile_hype_scores, deliberative_profiles")]
     I2[("cache-redis: counters do perfil, hype do dia, rankings")]
     I3["ai-providers: AiEngine TAREFA_DO_DIA, HSE, HYPE_PERFIL, INSIGHT"]

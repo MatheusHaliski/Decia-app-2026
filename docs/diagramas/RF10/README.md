@@ -292,7 +292,7 @@ flowchart TD
     B8["Atualiza painel: continua EM_RESPOSTA"]
   end
 
-  subgraph L3["wai-application (DivergenceService)"]
+  subgraph L3["ws-application (DivergenceService)"]
     C1{"actor = adminUserId?"}
     C2{"session.status em ATIVA ou REABERTA?"}
     C3{"divergence.status em ABERTA ou EM_RESPOSTA?"}
@@ -368,8 +368,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário (admin / participante)
   participant FE as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant CS as Cassandra
@@ -464,12 +464,12 @@ flowchart LR
     FE2["components/ui/DivergenceCard · ReplyComposer · EnableReplyDialog"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     W1["DivergenceController (REST /api/decia/sessions/{id}/divergences)"]
     W2["SessionAccessGuard (adminUserId, canReplyDivergence)"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["DivergenceService"]
     S2["DecisionTraceService"]
     S3["DeciaPointsService (listener AFTER_COMMIT)"]
@@ -479,14 +479,14 @@ flowchart LR
     P4["DomainEventPublisher (outbox)"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["Divergence · DivergenceReply · SessionParticipant"]
     D2["DecisionTraceNode · DecisionTraceEdge"]
     D3["DeciaPointsLedgerEntry · DeciaPointsRule"]
     D4["Enums: DivergenceStatus · SessionStatus · PointsEvent"]
   end
 
-  subgraph INFRA["wai-infrastructure"]
+  subgraph INFRA["ws-infrastructure"]
     I1["persistence-mysql: DivergenceRepository, DivergenceReplyRepository, SessionParticipantRepository, DecisionTraceRepository, DeciaPointsLedgerRepository, DomainEventOutboxRepository"]
     I2["persistence-cassandra: CassandraMessageAdapter (messages_by_session)"]
     I3["ai-providers: AiEngineAdapter (Strategy + Chain of Responsibility, circuit breaker, ai_inference_log)"]

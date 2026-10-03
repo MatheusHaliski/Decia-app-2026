@@ -17,7 +17,7 @@ O **Agrupamento** (`Grouping`, = SchemeGrouping do FAI) organiza projetos e tare
 classDiagram
 direction LR
 
-namespace wai_domain_planejamento {
+namespace ws_domain_planejamento {
   class Grouping {
     <<entity>>
     +id: UUID
@@ -45,7 +45,7 @@ namespace wai_domain_planejamento {
   }
 }
 
-namespace wai_domain_projetos_acervo {
+namespace ws_domain_projetos_acervo {
   class ProjectScheme {
     <<entity>>
     +id: UUID
@@ -72,7 +72,7 @@ namespace wai_domain_projetos_acervo {
   }
 }
 
-namespace wai_domain_identidade_decia {
+namespace ws_domain_identidade_decia {
   class User {
     <<entity>>
     +id: UUID
@@ -109,7 +109,7 @@ namespace wai_domain_identidade_decia {
   }
 }
 
-namespace wai_domain_transicao {
+namespace ws_domain_transicao {
   class HandoffDossier {
     <<entity>>
     +id: UUID
@@ -142,7 +142,7 @@ namespace wai_domain_transicao {
   }
 }
 
-namespace wai_domain_enums {
+namespace ws_domain_enums {
   class GroupingType {
     <<enum>>
     PROGRAMA
@@ -169,7 +169,7 @@ namespace wai_domain_enums {
   }
 }
 
-namespace wai_application {
+namespace ws_application {
   class GroupingService {
     <<service>>
     +create(userId, GroupingForm) Grouping
@@ -203,7 +203,7 @@ namespace wai_application {
   }
 }
 
-namespace wai_web {
+namespace ws_web {
   class GroupingController {
     <<controller>>
     +POST_api_groupings(GroupingForm)
@@ -216,7 +216,7 @@ namespace wai_web {
   }
 }
 
-namespace wai_infrastructure {
+namespace ws_infrastructure {
   class OpenSearchIndexAdapter {
     <<adapter>>
   }
@@ -288,7 +288,7 @@ flowchart TD
     W5["Aviso: dossiê de transição gerado, link para RF36"]
   end
 
-  subgraph LA["wai-application"]
+  subgraph LA["ws-application"]
     A1["GroupingService.create → canCreate"]
     A2{"Perfil pode criar este tipo? EMPRESA/CHEFE qualquer, EMPREGADO só FRENTE"}
     A3["403 ACESSO_NEGADO"]
@@ -345,8 +345,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário (CHEFE)
   participant NX as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant CS as Cassandra
@@ -462,12 +462,12 @@ flowchart LR
     F4["components/ui: GroupingCard, GroupingForm tipo/período/capa, ItemPicker projeto ou tarefa, ProgressRing, DecisionTimeline, CloseManagementDialog"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     C1["GroupingController — /api/groupings, /items, /close, /api/companies/{slug}/groupings, /api/departments/{id}/groupings"]
     C2["SearchController RF27 — /api/search inclui agrupamentos"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["GroupingService"]
     S2["HandoffService RF36"]
     S3["DecisionTraceService RF29"]
@@ -477,14 +477,14 @@ flowchart LR
     P2["MediaStoragePort"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["Grouping · GroupingItem"]
     D2["ProjectScheme · TaskItem · ProjectTask"]
     D3["HandoffDossier · HandoffItem · Notification · DecisionTraceNode · DeciaSession"]
     D4["User · Company · Department"]
   end
 
-  subgraph INFRA["wai-infrastructure/*"]
+  subgraph INFRA["ws-infrastructure/*"]
     I1[("persistence-mysql: groupings, grouping_items, project_schemes, handoff_dossiers, handoff_items, ai_inference_log")]
     I2[("persistence-cassandra: trace_by_entity, notifications_by_user")]
     I3[("search-opensearch: índice de agrupamentos")]

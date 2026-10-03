@@ -424,7 +424,7 @@ flowchart TD
     W8["Minhas Chancelas › Recusadas (aplicar depois)"]
   end
 
-  subgraph L_app["wai-application · SealService · SealPolicyEvaluator · BenefitService"]
+  subgraph L_app["ws-application · SealService · SealPolicyEvaluator · BenefitService"]
     S1{"Ator é EMPRESA, CHEFE ou CURADOR nomeado?"}
     S2{"availableUntil maior que availableFrom?"}
     S3["Cria Seal (ATIVA) + SealPolicy v1 · audit_log"]
@@ -540,8 +540,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant N as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant R as Redis
@@ -680,13 +680,13 @@ flowchart LR
     FE2["components/ui · SealCreator · SealWax (lacre) · PolicyBuilder (critérios + AUTO/REVISAO) · ReviewQueue · BenefitCard · CertificateQR"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     C1["SealController"]
     C2["SealBondController"]
     C3["BenefitController"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["SealService"]
     S2["SealPolicyEvaluator"]
     S3["BenefitService"]
@@ -697,14 +697,14 @@ flowchart LR
     P1["StoragePort"]
   end
 
-  subgraph DOM["wai-domain · br.gov.pr.secid.workai"]
+  subgraph DOM["ws-domain · br.gov.pr.secid.workstation"]
     D1["Seal · SealPolicy · SealBond · SealProposal"]
     D2["Benefit · BenefitRedemption"]
     D3["CuratorAppointment · Highlight · AiCreditLedgerEntry · DeciaPointsLedgerEntry"]
     D4["TaskItem · ProjectScheme · AnnualPlan · ModelOffer"]
   end
 
-  subgraph INFRA["wai-infrastructure/*"]
+  subgraph INFRA["ws-infrastructure/*"]
     I1["persistence-mysql · seals, seal_policies, seal_bonds, seal_proposals, benefits, benefit_redemptions"]
     I2["cache-redis · lock de resgate · cache de métricas do emissor"]
     I3["storage-s3 · arte do lacre · certificado PDF com QR"]

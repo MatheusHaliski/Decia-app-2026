@@ -20,7 +20,7 @@ O **Esquema de Projeto** (`ProjectScheme`, = look) é a composição ordenada de
 classDiagram
 direction LR
 
-namespace wai_domain_projetos {
+namespace ws_domain_projetos {
   class ProjectScheme {
     <<entity>>
     +id: UUID
@@ -106,7 +106,7 @@ namespace wai_domain_projetos {
   }
 }
 
-namespace wai_domain_acervo {
+namespace ws_domain_acervo {
   class TaskItem {
     <<entity>>
     +id: UUID
@@ -138,7 +138,7 @@ namespace wai_domain_acervo {
   }
 }
 
-namespace wai_domain_outros {
+namespace ws_domain_outros {
   class SealBond {
     <<entity>>
     +id: UUID
@@ -194,7 +194,7 @@ namespace wai_domain_outros {
   }
 }
 
-namespace wai_domain_enums {
+namespace ws_domain_enums {
   class ProjectPhase {
     <<enum>>
     DEMANDA
@@ -252,7 +252,7 @@ namespace wai_domain_enums {
   }
 }
 
-namespace wai_application {
+namespace ws_application {
   class ProjectComposerService {
     <<service>>
     +openComposer(userId) ComposerState
@@ -305,7 +305,7 @@ namespace wai_application {
   }
 }
 
-namespace wai_web {
+namespace ws_web {
   class ProjectController {
     <<controller>>
     +GET_api_projects_composer()
@@ -319,7 +319,7 @@ namespace wai_web {
   }
 }
 
-namespace wai_infrastructure {
+namespace ws_infrastructure {
   class ClaudeGeminiAdapter {
     <<adapter>>
   }
@@ -404,7 +404,7 @@ flowchart TD
     W7["Recupera rascunho na próxima abertura"]
   end
 
-  subgraph LA["wai-application"]
+  subgraph LA["ws-application"]
     A1["AcervoService.countAvailable"]
     A2{"≥ 2 tarefas DISPONIVEIS?"}
     A3["AcervoService.listCompatible: só meu Acervo + compartilhadas com permissão, PHASE_BY_CATEGORY, thumbnail, tipo, categoria, estado, prazo; BLOQUEADA/ARQUIVADA desabilitadas com motivo"]
@@ -488,8 +488,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant NX as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant OS as OpenSearch
@@ -657,13 +657,13 @@ flowchart LR
     F4["Autosave hook: debounce + PUT drafts"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     C1["ProjectController — /api/projects, /composer, /drafts, /ai-compose, /from-model, /validate-dependencies, /publish, /decia-session"]
     C2["AcervoController — /api/acervo/tasks?phase=&q="]
     C3["TaskController RF20 — /api/tasks"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["ProjectComposerService"]
     S2["AcervoService RF41"]
     S3["TaskCreatorService RF20"]
@@ -675,14 +675,14 @@ flowchart LR
     P2["SearchIndexPort"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["ProjectScheme · ProjectTask · ProjectTaskDependency · ProcessKit · KitItem"]
     D2["TaskItem · TaskStateLog · SealBond · Remix · PlanAxis · Grouping"]
     D3["MuralEntry · DeciaSession · AiInferenceLog · DomainEventOutbox"]
     D4["PHASE_BY_CATEGORY · CPM caminho crítico · validação de ciclos"]
   end
 
-  subgraph INFRA["wai-infrastructure/*"]
+  subgraph INFRA["ws-infrastructure/*"]
     I1[("persistence-mysql: project_schemes, project_tasks, project_task_dependencies, tasks, task_state_log, seal_bonds, remixes, mural_entries, decia_sessions, ai_inference_log")]
     I2[("storage-s3: foto do projeto, capa tratada no Estúdio")]
     I3[("search-opensearch: índice de projetos ao publicar")]

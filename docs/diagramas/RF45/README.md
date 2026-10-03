@@ -308,7 +308,7 @@ classDiagram
   HypeScoreService ..> AuditLog
 
   note for ProfileHypeScore "tabela profile_hype_scores · único (userId, scoreDate) · blocksJson producao 25, reconhecimentoSocial 25, participacaoDecia 25, eficienciaImpacto 15, reconhecimentosChancelas 10"
-  note for HypeCalculator "wai-domain · determinístico e testável (média bayesiana, decaimento 180 d, normalização, antifraude) · METRICAS_GESTAO.md seção Hype do Perfil"
+  note for HypeCalculator "ws-domain · determinístico e testável (média bayesiana, decaimento 180 d, normalização, antifraude) · METRICAS_GESTAO.md seção Hype do Perfil"
   note for HypeBand "tabela hype_bands · 0–199 Iniciante · 200–399 Contribuinte · 400–599 Referência · 600–799 Líder de prática · 800–1000 Lenda do departamento"
   note for IgnoredReason "nome do enum a confirmar · TAXONOMIA só lista valores em HypeIgnoredEvent.reason"
 ```
@@ -347,7 +347,7 @@ flowchart TD
     D4["MySQL ai_inference_log · audit_log (política editada) · companies.hypePolicyJson · metric_snapshots"]
   end
 
-  subgraph L_app["wai-application · HypeScoreService"]
+  subgraph L_app["ws-application · HypeScoreService"]
     S1{"Já existe ProfileHypeScore (userId, scoreDate)?"}
     S2["Coleta eventos do usuário (produção, interações recebidas, DECIA, eficiência, reconhecimentos) + pesos vigentes (weightsVersion) + priors do departamento"]
     S3{"Para cada interação recebida: autor verificado? não é auto-interação? não marcada pelo antifraude (RF42)?"}
@@ -365,7 +365,7 @@ flowchart TD
     X1(["Retorna o score do dia (idempotente)"])
   end
 
-  subgraph L_dom["wai-domain · HypeCalculator"]
+  subgraph L_dom["ws-domain · HypeCalculator"]
     H1["decay: peso × 0,5^(dias ÷ 180) para todos os eventos (nunca zera)"]
     H2["bayesianMean por bloco: puxa para a média do departamento quando a amostra é pequena · flag amostra pequena"]
     H3["blocks: produção 25 · reconhecimento social 25 · participação DECIA 25 · eficiência e impacto 15 · reconhecimentos e chancelas 10 (tier PROJETO/PLANO mais, Excelência x2)"]
@@ -417,8 +417,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant N as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant R as Redis
@@ -552,14 +552,14 @@ flowchart LR
     FE2["components/ui · HypeBadge (score + faixa) · BlockBreakdown · HypeHistoryChart · TopEventsList · IgnoredEventsTable · SmallSampleHint · AiSpark ✦ · HypeHistogram"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     C1["HypeController"]
     C2["PreferencesController"]
     C3["CompanyPolicyController"]
     C4["DashboardController"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["HypeScoreService"]
     S2["AntiFraudService (RF42)"]
     S3["RankingService (RF43) · HYPE_PERFIL"]
@@ -567,13 +567,13 @@ flowchart LR
     S5["PreferencesService (RF3)"]
   end
 
-  subgraph DOM["wai-domain · br.gov.pr.secid.workai"]
+  subgraph DOM["ws-domain · br.gov.pr.secid.workstation"]
     D1["HypeCalculator (bayesianMean, decay 180 d, normalizePercentile, reputationWeight cap 3x, blocks, band) — testes unitários"]
     D2["ProfileHypeScore · HypeBand · HypeIgnoredEvent · User.hypeVisibility · Company.hypePolicyJson · RankingEntry"]
     D3["Fontes: Reaction (actorHypeAtTime) · Comment · SavedItem · Share · Remix · DeciaPointsLedgerEntry · DeliberativeProfile · EfficiencyScoreSnapshot · SealBond/Seal · Recognition · Highlight · TaskItem · ProjectScheme"]
   end
 
-  subgraph INFRA["wai-infrastructure/*"]
+  subgraph INFRA["ws-infrastructure/*"]
     I1["persistence-mysql · profile_hype_scores, hype_bands, hype_ignored_events, companies, ranking_entries"]
     I2["cache-redis · lock diário · ranking HYPE_PERFIL · cache do badge"]
     I3["ai-providers · ClaudeAdapter · GeminiAdapter · LocalEngine"]
@@ -620,5 +620,5 @@ flowchart LR
 | RF45.CA06 | Classes `User.hypeVisibility`, enum `HypeVisibility` (PUBLICO, EMPRESA, SO_EU padrão), `HypeScoreService.visibleTo`, `PreferencesController`; atividades U2, W2, U3, W3, S8, S9, S10 → E1 (403 / campo omitido); sequência msgs 27–36; máquina de estados `User.hypeVisibility`; componentes `HypeBadge`, `app/settings/preferences`. |
 | RF45.CA07 | Classes `Company.hypePolicyJson`, `HypeBand.name/min/max`, `ProfileHypeScore.weightsVersion`, `HypeScoreService.updatePolicy`, `CompanyPolicyController`, `AuditLog`; atividades U4, W4, S11 → E2 (422), W6 (página pública); sequência msgs 37–42 (weightsVersion+1, validFrom futuro, audit_log, meses passados não recalculados); nota da máquina de estados `Band`; componente `app/hype/how-it-works`. |
 | RF45.CA08 | Classes `RankingEntry` (dimension HYPE_PERFIL), `User.rankingOptOut`, `RankingService.compute`; atividade S7 (exclui opt-out, nunca expõe número de quem é SÓ EU); sequência msgs 17–19 (ranking sem o número de quem é SO_EU); nota da máquina de estados `Vis`; componentes `RankingService (RF43) · HYPE_PERFIL`, `cache-redis · ranking HYPE_PERFIL`. |
-| RF45.CA09 | Classe `HypeCalculator` em `wai-domain` (bayesianMean, decay, normalizePercentile, reputationWeight, blocks, band) com nota (determinístico, testável, METRICAS_GESTAO.md seção Hype do Perfil); lane L_dom (H1–H5); atividade I1 (IA só redige); componente `wai-domain · HypeCalculator — testes unitários`. |
+| RF45.CA09 | Classe `HypeCalculator` em `ws-domain` (bayesianMean, decay, normalizePercentile, reputationWeight, blocks, band) com nota (determinístico, testável, METRICAS_GESTAO.md seção Hype do Perfil); lane L_dom (H1–H5); atividade I1 (IA só redige); componente `ws-domain · HypeCalculator — testes unitários`. |
 | RF45.CA10 | Classes `DashboardController.GET dashboard_hype_distribution`, `MetricSnapshot`; atividades U5, W5, S12 (histograma anonimizado por departamento, evolução média, nunca lista nominal de quem ocultou); componentes `HypeHistogram`, `app/admin e app/companies (dashboard)`. |

@@ -269,8 +269,8 @@ classDiagram
 
   note for DailyTask "tabela daily_tasks · único (userId, taskDate) · hsePredictedJson e hseRealizedJson com total e components[]"
   note for HseWeights "tabela hse_weights · eficiencia 20, eficacia 20, valor 15, pontualidade 15, qualidade 15, impactoEquipe 10, foco 5 · mudar pesos não recalcula dias passados"
-  note for PriorityIndexCalculator "wai-domain · determinístico e testável · METRICAS_GESTAO.md"
-  note for HseCalculator "wai-domain · Drucker, SAFe/WSJF, EVM, Lean/PDCA, Goldratt, Little's Law"
+  note for PriorityIndexCalculator "ws-domain · determinístico e testável · METRICAS_GESTAO.md"
+  note for HseCalculator "ws-domain · Drucker, SAFe/WSJF, EVM, Lean/PDCA, Goldratt, Little's Law"
 ```
 
 ## 2. Diagrama de atividades
@@ -304,7 +304,7 @@ flowchart TD
     W6["Notificação diária 8h (fuso do usuário, opt-in em user_preferences) com a Tarefa do Dia (i18n)"]
   end
 
-  subgraph L_app["wai-application · DailyTaskService"]
+  subgraph L_app["ws-application · DailyTaskService"]
     S1{"Já existe DailyTask (userId, hoje)?"}
     S2["Candidatas: tarefas DISPONIVEL ou EM_USO do usuário"]
     S3{"Há candidatas?"}
@@ -326,7 +326,7 @@ flowchart TD
     X1(["Estado vazio: nenhuma tarefa disponível"])
   end
 
-  subgraph L_dom["wai-domain · PriorityIndexCalculator · HseCalculator"]
+  subgraph L_dom["ws-domain · PriorityIndexCalculator · HseCalculator"]
     P1["Eisenhower: urgência (dias até prazo/prazo legal) × importância (eixo do plano, decisão DECIA pendente, chancela pedida)"]
     P2["WSJF = custo do atraso (valor envolvido + risco de prazo legal + tarefas de colegas desbloqueadas) ÷ porte P/M/G"]
     P3["Folga no CPM: tarefas no caminho crítico sobem · MoSCoW Must/Should · Pareto 20/80"]
@@ -403,8 +403,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant N as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant R as Redis
@@ -526,11 +526,11 @@ flowchart LR
     FE2["components/ui · ProtocolTicket (ficha de protocolo) · PriorityBreakdown · HseGauge + ComponentBars · FeedbackButtons (CONCLUÍ · ADIEI · BLOQUEADA · DELEGUEI) · WeekBoard (drag) · StreakBadge · AiSpark ✦"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     C1["DailyTaskController"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["DailyTaskService"]
     S2["TaskStateMachine (RF41)"]
     S3["AiEngine (RF43) · TAREFA_DO_DIA · HSE"]
@@ -538,13 +538,13 @@ flowchart LR
     P2["NotificationPort"]
   end
 
-  subgraph DOM["wai-domain · br.gov.pr.secid.workai"]
+  subgraph DOM["ws-domain · br.gov.pr.secid.workstation"]
     D1["PriorityIndexCalculator (Eisenhower, WSJF, CPM, MoSCoW, Pareto, WIP/Little's Law)"]
     D2["HseCalculator (7 componentes, HseWeights versionado)"]
     D3["DailyTask · WeekPlan · WeekPlanDay · HseWeights · EfficiencyScoreSnapshot · TaskItem · ProjectTask · ProjectTaskDependency · UserPreferences"]
   end
 
-  subgraph INFRA["wai-infrastructure/*"]
+  subgraph INFRA["ws-infrastructure/*"]
     I1["persistence-mysql · daily_tasks, week_plans, week_plan_days, hse_weights, hse_snapshots, tasks, project_tasks"]
     I2["cache-redis · lock diário · cache da ficha"]
     I3["ai-providers · ClaudeAdapter · GeminiAdapter · LocalEngine (redação simplificada)"]
@@ -588,6 +588,6 @@ flowchart LR
 | RF44.CA05 | Classes `UserPreferences.wipLimit` (padrão 3), `PriorityIndexCalculator.wipAdvice`, `HseCalculator.foco`; atividades S4 → S5 (prioriza concluir EM_USO, explica com Little's Law); sequência msgs 8–9. |
 | RF44.CA06 | Classes `WeekPlan` (streak, closingHse, recommendation), `WeekPlanDay` (sortOrder, meetingsJson, loadPct), `CalendarPort`, `DailyTaskService.weekPlan/reorder/closeFriday`; atividades U9, W4, S14 (prazos legais, reuniões, carga até 80%, reordenar persiste, sexta); sequência msgs 37–42; componentes `WeekBoard (drag)`, `StreakBadge`, `Google Workspace Calendar · Microsoft 365 Calendar`. |
 | RF44.CA07 | Classes `DailyTaskService.history`, `EfficiencyScoreSnapshot.movingAvg7`; atividades U10, W5, S15 (30 dias, previsto × realizado, média móvel 7 d, gráfico de componentes); componentes `app/profile (histórico 30 d)`, `ComponentBars`. |
-| RF44.CA08 | Classes `HseWeights` (companyId, version, weightsJson, validFrom), `EfficiencyScoreSnapshot.weightsVersion`, `PriorityIndexCalculator` e `HseCalculator` em `wai-domain`; notas das classes (determinístico, testável, METRICAS_GESTAO.md, mudar pesos não recalcula dias passados); lane L_dom; componentes `wai-domain · PriorityIndexCalculator`, `HseCalculator (HseWeights versionado)`. |
+| RF44.CA08 | Classes `HseWeights` (companyId, version, weightsJson, validFrom), `EfficiencyScoreSnapshot.weightsVersion`, `PriorityIndexCalculator` e `HseCalculator` em `ws-domain`; notas das classes (determinístico, testável, METRICAS_GESTAO.md, mudar pesos não recalcula dias passados); lane L_dom; componentes `ws-domain · PriorityIndexCalculator`, `HseCalculator (HseWeights versionado)`. |
 | RF44.CA09 | Classes `DailyTask.suggestedByAi/aiInferenceId`, `AiInferenceLog`, `AiCapability` TAREFA_DO_DIA e HSE; atividades I1 → I2 (✦) / I3 (motor local, números inalterados), I4; sequência msgs 11–13; componentes `AiSpark ✦`, `LocalEngine (redação simplificada)`. |
 | RF44.CA10 | Classes `UserPreferences.notificationPrefsJson (dailyTaskAt 08:00)/timezone`, `Notification`, `NotificationPort`; atividade W6 (notificação 8h no fuso, opt-in, i18n); componentes `platform · scheduler 8h por fuso`, `persistence-cassandra · notifications_by_user`, `i18n`. |

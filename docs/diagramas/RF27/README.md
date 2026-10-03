@@ -6,12 +6,12 @@
 
 | Aba de Buscar | Índice OpenSearch | Entidade | Filtros |
 |---|---|---|---|
-| PROJETOS | `wai-projects` | `ProjectScheme` | fase, departamento, exercício, chancelado, prazo |
-| TAREFAS | `wai-tasks` (+ texto OCR) | `TaskItem`, `TaskAttachment.ocrTextRef` | categoria, tipo, departamento, chancelado, prazo |
-| PESSOAS | `wai-people` | `User` (EMPREGADO) | departamento, empresa |
-| EMPRESAS | `wai-orgs` | `Company` | — |
-| CHEFES DE DEPARTAMENTO | `wai-people` (profileType CHEFE_DEPARTAMENTO) | `User`, `Department.headUserId` | empresa, departamento |
-| semântica (opcional) | `wai-memory` kNN | `InstitutionalMemoryDocument` | sourceType PROJETO/TAREFA |
+| PROJETOS | `ws-projects` | `ProjectScheme` | fase, departamento, exercício, chancelado, prazo |
+| TAREFAS | `ws-tasks` (+ texto OCR) | `TaskItem`, `TaskAttachment.ocrTextRef` | categoria, tipo, departamento, chancelado, prazo |
+| PESSOAS | `ws-people` | `User` (EMPREGADO) | departamento, empresa |
+| EMPRESAS | `ws-orgs` | `Company` | — |
+| CHEFES DE DEPARTAMENTO | `ws-people` (profileType CHEFE_DEPARTAMENTO) | `User`, `Department.headUserId` | empresa, departamento |
+| semântica (opcional) | `ws-memory` kNN | `InstitutionalMemoryDocument` | sourceType PROJETO/TAREFA |
 
 ## 1. Diagrama de classes
 
@@ -19,7 +19,7 @@
 classDiagram
 direction LR
 
-namespace wai_domain_social_descoberta {
+namespace ws_domain_social_descoberta {
   class MuralEntry {
     <<entity>>
     +id: UUID
@@ -58,7 +58,7 @@ namespace wai_domain_social_descoberta {
   }
 }
 
-namespace wai_domain_alvos {
+namespace ws_domain_alvos {
   class ProjectScheme {
     <<entity>>
     +id: UUID
@@ -135,7 +135,7 @@ namespace wai_domain_alvos {
   }
 }
 
-namespace wai_domain_enums {
+namespace ws_domain_enums {
   class MuralKind {
     <<enum>>
     COMPARTILHAMENTO
@@ -174,7 +174,7 @@ namespace wai_domain_enums {
   }
 }
 
-namespace wai_application {
+namespace ws_application {
   class MuralService {
     <<service>>
     +companyFeed(viewerId, filters, page 20) Page~MuralEntry~
@@ -201,7 +201,7 @@ namespace wai_application {
     <<port>>
     +msearch(query, indices, filters) SearchResult
     +count(query, indices, filters) Map~SearchTab, long~
-    +knn(index wai-memory, vector, filters) List~Hit~
+    +knn(index ws-memory, vector, filters) List~Hit~
   }
   class TimelinePort {
     <<port>>
@@ -215,7 +215,7 @@ namespace wai_application {
   }
 }
 
-namespace wai_web {
+namespace ws_web {
   class MuralController {
     <<controller>>
     +GET_api_mural(tab, departmentId, kind, page)
@@ -235,7 +235,7 @@ namespace wai_web {
   }
 }
 
-namespace wai_infrastructure {
+namespace ws_infrastructure {
   class OpenSearchIndexAdapter {
     <<adapter>>
   }
@@ -287,7 +287,7 @@ ClaudeGeminiAdapter ..> AiEngine
 
 note for MuralEntry "tabela mural_entries + Cassandra timeline_by_user · páginas de 20 (CA01) · ações RF26 inline (CA02)"
 note for Follow "tabela follows · único followerId + targetType + targetId (CA06)"
-note for SearchService "índices wai-projects, wai-tasks com texto OCR, wai-people, wai-orgs — 5 abas com contadores (CA03) · visibilityFilter: outra empresa só PUBLICA (CA04) · similar via wai-memory kNN (CA05)"
+note for SearchService "índices ws-projects, ws-tasks com texto OCR, ws-people, ws-orgs — 5 abas com contadores (CA03) · visibilityFilter: outra empresa só PUBLICA (CA04) · similar via ws-memory kNN (CA05)"
 ```
 
 ## 2. Diagrama de atividades
@@ -315,14 +315,14 @@ flowchart TD
     W9["Botão Seguir alterna estado"]
   end
 
-  subgraph LA["wai-application"]
+  subgraph LA["ws-application"]
     A1{"Sub-aba"}
     A2["MuralService.companyFeed: MuralEntry da minha empresa, filtros departamento e tipo, ordem cronológica, cache por página"]
     A3["MuralService.showcase: projetos com sealIdsJson ou MODELO_PUBLICO, capa grande, remixar"]
     A4["MuralService.following: Follow ATIVO → timeline_by_user"]
     A5["SearchService.search → visibilityFilter: PUBLICA, EMPRESA se mesma empresa, DEPARTAMENTO se membro, PRIVADA se dono; outra empresa só PUBLICA"]
-    A6["SearchIndexPort.msearch em wai-projects, wai-tasks com OCR, wai-people, wai-orgs + count por aba"]
-    A7["SearchService.similar: AiEngine.embed → knn em wai-memory com o mesmo visibilityFilter"]
+    A6["SearchIndexPort.msearch em ws-projects, ws-tasks com OCR, ws-people, ws-orgs + count por aba"]
+    A7["SearchService.similar: AiEngine.embed → knn em ws-memory com o mesmo visibilityFilter"]
     A8["SocialService.follow → validateUnique"]
     A9{"Já segue?"}
     A10["409 JA_SEGUE ou idempotente: mantém ATIVO"]
@@ -337,8 +337,8 @@ flowchart TD
   subgraph LP["Persistência"]
     P1[("MySQL: mural_entries, project_schemes, tasks · Redis: cache de páginas do feed")]
     P2[("Cassandra: timeline_by_user")]
-    P3[("OpenSearch: wai-projects, wai-tasks, wai-people, wai-orgs")]
-    P4[("OpenSearch: wai-memory dense_vector")]
+    P3[("OpenSearch: ws-projects, ws-tasks, ws-people, ws-orgs")]
+    P4[("OpenSearch: ws-memory dense_vector")]
     P5[("MySQL: follows")]
   end
 
@@ -372,8 +372,8 @@ sequenceDiagram
   autonumber
   actor U as Usuário
   participant NX as Next.js (App Router)
-  participant C as Controller (wai-web)
-  participant S as Service (wai-application)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant CS as Cassandra
@@ -423,7 +423,7 @@ sequenceDiagram
   NX->>C: GET /api/search?q=pavimentacao&tab=PROJETOS&fase=ELABORACAO&page=1
   C->>S: SearchService.search(viewerId, q, PROJETOS, filters, 1)
   S->>S: visibilityFilter(viewer) = PUBLICA + EMPRESA (minha empresa) + DEPARTAMENTO (minhas lotações) + PRIVADA (ownerId = eu) (CA04)
-  S->>OS: msearch wai-projects, wai-tasks (title, descriptionMd, tags, ocrText), wai-people, wai-orgs com filtros de visibilidade e perfil
+  S->>OS: msearch ws-projects, ws-tasks (title, descriptionMd, tags, ocrText), ws-people, ws-orgs com filtros de visibilidade e perfil
   OS-->>S: hits da aba PROJETOS + counts por índice
   S-->>C: 200 {tabs: {PROJETOS 12, TAREFAS 31, PESSOAS 2, EMPRESAS 1, CHEFES_DE_DEPARTAMENTO 1}, items}
   C-->>NX: 200
@@ -434,7 +434,7 @@ sequenceDiagram
   C->>S: SearchService.similar(viewerId, PROJECT, P1)
   S->>AI: embed(título + objetivo + descrição de P1) MEMORIA_BUSCA
   AI-->>S: vector
-  S->>OS: knn wai-memory (dense_vector) filtros sourceType PROJETO, visibilityFilter, accessClass não SIGILOSO
+  S->>OS: knn ws-memory (dense_vector) filtros sourceType PROJETO, visibilityFilter, accessClass não SIGILOSO
   OS-->>S: top 10 InstitutionalMemoryDocument
   S-->>C: 200 projetos parecidos com score
   C-->>NX: 200
@@ -500,14 +500,14 @@ flowchart LR
     F3["components/ui: FeedCard, ShowcaseCard capa grande + remixar, FeedSkeleton, EmptyStateIllustrated, RetryButton, InfiniteScroll 20, FeedFilters departamento/tipo, SearchBox, SearchTabs com contadores, SearchFilters, SimilarProjectsButton, FollowButton, InteractionBar RF26"]
   end
 
-  subgraph WEB["wai-web"]
+  subgraph WEB["ws-web"]
     C1["MuralController — /api/mural, /showcase, /following"]
     C2["SearchController — /api/search, /counts, /similar"]
     C3["FollowController — /api/follows"]
     C4["InteractionController RF26"]
   end
 
-  subgraph APP["wai-application"]
+  subgraph APP["ws-application"]
     S1["MuralService"]
     S2["SearchService"]
     S3["SocialService RF26"]
@@ -517,16 +517,16 @@ flowchart LR
     P3["CachePort"]
   end
 
-  subgraph DOM["wai-domain"]
+  subgraph DOM["ws-domain"]
     D1["MuralEntry · TimelineEvent · Follow"]
     D2["ProjectScheme · TaskItem · TaskAttachment · User · Company · Department · Recognition"]
     D3["InstitutionalMemoryDocument RF33"]
   end
 
-  subgraph INFRA["wai-infrastructure/*"]
+  subgraph INFRA["ws-infrastructure/*"]
     I1[("persistence-mysql: mural_entries, follows, project_schemes, tasks, users, companies, departments")]
     I2[("persistence-cassandra: CassandraTimelineAdapter timeline_by_user")]
-    I3[("search-opensearch: OpenSearchIndexAdapter — wai-projects, wai-tasks + OCR, wai-people, wai-orgs, wai-memory kNN")]
+    I3[("search-opensearch: OpenSearchIndexAdapter — ws-projects, ws-tasks + OCR, ws-people, ws-orgs, ws-memory kNN")]
     I4[("cache-redis: páginas do feed, contadores")]
     I5["ai-providers: ClaudeGeminiAdapter — embeddings MEMORIA_BUSCA"]
     I6["platform: outbox AFTER_COMMIT FollowCreated, fan-out de MuralEntry"]
@@ -572,7 +572,7 @@ flowchart LR
 |---|---|
 | RF27.CA01 | `MuralEntry` (nota páginas de 20), `MuralService.companyFeed/showcase/following`, `CachePort`, `TimelinePort` · Atividades `U1 → W1 (skeleton) → A1 → A2/A3/A4 → W2 (não) → W3 tentar de novo`, `W4 (sim) → W5 estado vazio`, `W6 → U2 → W7 próxima página` · Sequência `GET /api/mural?…&size=20` com `alt falha de infraestrutura → 503 … tentar de novo` e `alt lista vazia → estado vazio ilustrado` · Nota de *MuralEntry* · Componentes `FeedSkeleton`, `EmptyStateIllustrated`, `RetryButton`, `InfiniteScroll 20`, `cache-redis` |
 | RF27.CA02 | `Reaction ..> MuralEntry : ações RF26 inline`, `SocialService` · Atividades `W6 → U3 → A12` · Sequência "20 cards com ações do RF26 inline" · Transição `PUBLICADA` (nota) · Componentes `InteractionBar RF26`, `InteractionController RF26` |
-| RF27.CA03 | `SearchService.search`, `SearchIndexPort.msearch/count`, enum `SearchTab`, `TaskAttachment.ocrTextRef`, tabela de índices do cabeçalho · Atividades `U4 → A5 → A6 → P3 → W8` · Sequência `GET /api/search?q=…&tab=PROJETOS` → `msearch wai-projects, wai-tasks (title, descriptionMd, tags, ocrText), wai-people, wai-orgs` → `{tabs: {PROJETOS 12, TAREFAS 31, …}}` · Componentes `SearchBox`, `SearchTabs com contadores`, `SearchFilters`, `search-opensearch` |
+| RF27.CA03 | `SearchService.search`, `SearchIndexPort.msearch/count`, enum `SearchTab`, `TaskAttachment.ocrTextRef`, tabela de índices do cabeçalho · Atividades `U4 → A5 → A6 → P3 → W8` · Sequência `GET /api/search?q=…&tab=PROJETOS` → `msearch ws-projects, ws-tasks (title, descriptionMd, tags, ocrText), ws-people, ws-orgs` → `{tabs: {PROJETOS 12, TAREFAS 31, …}}` · Componentes `SearchBox`, `SearchTabs com contadores`, `SearchFilters`, `search-opensearch` |
 | RF27.CA04 | `SearchService.visibilityFilter` (nota outra empresa só PUBLICA), enum `Visibility`, `User.profileType`, `Department.headUserId` (aba CHEFES) · Atividades `A5` · Sequência `visibilityFilter(viewer) = PUBLICA + EMPRESA (minha empresa) + …` e "resultados de outra empresa só se PUBLICA" |
-| RF27.CA05 | `InstitutionalMemoryDocument` (embedding dense_vector), `SearchService.similar`, `SearchIndexPort.knn`, `AiEngine.embed` · Atividades `U5 → A7 → I1 → P4 → W8` · Sequência `POST /api/search/similar {PROJECT, P1}` → `embed(…) MEMORIA_BUSCA` → `knn wai-memory … accessClass não SIGILOSO` · Componentes `SimilarProjectsButton`, `wai-memory kNN`, `ai-providers embeddings`, `Claude / Gemini embeddings` |
+| RF27.CA05 | `InstitutionalMemoryDocument` (embedding dense_vector), `SearchService.similar`, `SearchIndexPort.knn`, `AiEngine.embed` · Atividades `U5 → A7 → I1 → P4 → W8` · Sequência `POST /api/search/similar {PROJECT, P1}` → `embed(…) MEMORIA_BUSCA` → `knn ws-memory … accessClass não SIGILOSO` · Componentes `SimilarProjectsButton`, `ws-memory kNN`, `ai-providers embeddings`, `Claude / Gemini embeddings` |
 | RF27.CA06 | `Follow` (nota índice único), enums `FollowTargetType`, `FollowStatus`, `SocialService.follow/unfollow`, `MuralService.fanOut`, `TimelineEvent` · Atividades `U6 → A8 → A9 → A10 / A11 → P5 → W9` · Sequência `POST /api/follows {DEPARTMENT, CPOE}` → `alt já segue → idempotente` / `INSERT follows (ATIVO)` → `DELETE /api/follows/DEPARTMENT/CPOE` → `status REMOVIDO`, nota de fan-out · Máquina *Follow* (NAO_SEGUE → ATIVO → REMOVIDO → ATIVO) · Componentes `FollowButton`, `FollowController`, `persistence-cassandra timeline_by_user` |
