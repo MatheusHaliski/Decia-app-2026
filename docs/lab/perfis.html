@@ -218,7 +218,7 @@ const PERSONAL_TABS = [
 /* Alterações por perfil nas 15 sub-abas (§7.d) */
 const PERSONAL_OVERRIDES = {
   empresa: { 5: { off: 'objetivo 2 é por pessoa' }, 15: { off: 'objetivo 2 é por pessoa' }, 9: { off: 'conta institucional (P-09)' }, 13: { off: 'não acumula DP (P-10)' }, 14: { off: 'índice por pessoa (RF45)' },
-    6: { rename: 'Plano Anual oficial', pub: true }, 11: { rename: 'Modelos oficiais', pub: true }, 12: { rename: 'Emitidos (reconhecimentos e chancelas)', pub: true } },
+    6: { rename: 'Plano Anual oficial', pub: true, desc: 'único plano oficial da empresa; chefes/empregados derivam (RF24.CA04)' }, 11: { rename: 'Modelos oficiais', pub: true, desc: 'tarefas/projetos/kits chancelados na prateleira Chancelados do Balcão (RF39.CA11)' }, 12: { rename: 'Emitidos (reconhecimentos e chancelas)', pub: true, desc: 'reconhecimentos e chancelas concedidos pela empresa (RF28.CA05)' } },
   chefe: { 12: { rename: 'Meus Reconhecimentos e Chancelas · Emitidos' } },
 };
 /* Página da empresa (RF28, board2.md:553) e do departamento (board2.md:556). */
@@ -306,7 +306,7 @@ function renderTabs(p) {
   sec.innerHTML = `<h2 class="type-h2">${p.person ? 'Perfil pessoal' : 'Perfil da conta'} — sub-abas do RF19 <span class="type-caption">${self ? 'visão do dono (self)' : 'visão de terceiro: sub-abas 6–15 omitidas pela API (RF19.CA02)'}</span></h2>
     <div class="lab-tabs" role="tablist">${tabs.map((t, i) => `<span class="lab-tab" role="tab" aria-selected="${i === 0}" data-hidden="${!!t.hidden}"><small>${t.n}</small>${t.label}</span>`).join('')}</div>
     <div class="lab-grid">${tabs.map((t) => `<article class="lab-tabcard" data-hidden="${!!t.hidden}"><h3><small class="type-label">${t.n}</small>${t.label} ${t.hidden ? TAG.O : (self ? TAG.E : TAG.V)}${t.o.rename || t.o.off ? TAG.P : ''}</h3>
-      <p>${t.o.off ? 'Some: ' + t.o.off : t.desc}</p><div class="ws-skeleton ws-skeleton--text"></div><div class="ws-skeleton ws-skeleton--text short"></div>
+      <p>${t.o.off ? 'Some: ' + t.o.off : (t.o.desc || t.desc)}</p><div class="ws-skeleton ws-skeleton--text"></div><div class="ws-skeleton ws-skeleton--text short"></div>
       <code>${t.ep}${t.isSelf ? ' · requireOwner' : ' · canView'}</code><span class="type-caption">${t.rf}${t.isSelf ? ' · só o dono' : ' · todos'}</span></article>`).join('')}</div>`;
 }
 
