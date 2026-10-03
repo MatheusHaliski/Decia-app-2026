@@ -493,6 +493,14 @@ id · subjectType (EMPREGADO · GESTAO) · subjectUserId · groupingId · reques
 | RecognitionSource | MANUAL · META · BENEFICIO |
 | HandoffStatus | GERADO · AGUARDANDO_SUCESSOR · TRANSFERIDO · RECUSADO · CANCELADO |
 | HandoffReason | SAIDA · TRANSFERENCIA · FIM_GESTAO · TROCA_CHEFE |
+| PlanStatus | RASCUNHO · PUBLICADO · ENCERRADO |
+| RiskLevel | BAIXO · MEDIO · ALTO |
+| CompareBucket (RF24.CA05) | NOVO · CONCLUIDO · REPROGRAMADO · MANTIDO |
+| GroupingStatus | ATIVO · ENCERRADO |
+| FollowStatus | ATIVO · REMOVIDO |
+| FollowTargetType | USER · DEPARTMENT · COMPANY |
+| MuralKind | COMPARTILHAMENTO · DECISAO_VALIDADA · PROJETO_PUBLICADO · RECONHECIMENTO · META · DESTAQUE · IMPULSO |
+| ShareChannel | MURAL · SESSAO_DECIA · LINK_EXTERNO |
 
 ## 14. Pendências de modelagem (ver `docs/DECISOES.md`)
 - Os cards RF1–RF18 do board não têm critérios de aceite escritos (só as HUs). A taxonomia do DECIA (seção 5) foi derivada das HUs + RF29/RF42/RF43; confirmar CAs antes da Sprint 1.

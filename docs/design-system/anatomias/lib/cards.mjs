@@ -326,7 +326,7 @@ function projetoHero(p, { W = 600 } = {}) {
   const tl = wrap(p.title, 24, 2); s += lines(tx, 58, tl, 24, { fam: 'serif', size: 20, weight: 600 });
   s += lines(tx, 58 + tl.length * 24 + 4, wrap(p.objective, 46, 2), 15, { fam: 'sans', size: 11.5, fill: 'muted' });
   const ry = 150; s += monogram(tx, ry, 22, p.dept.mono, p.dept.tok) + text(tx + 28, ry + 15.5, `${p.dept.acr} · ${p.tasks} tarefas · ${p.people} pessoas`, { fam: 'sans', size: 11, weight: 600 });
-  s += phaseBar(tx, ry + 32, 200, p.phase, { h: 6, label: false }) + text(tx + 208, ry + 38, `${['DEMANDA','PLANEJAMENTO','ELABORAÇÃO','ANÁLISE','APROVAÇÃO','EXECUÇÃO','ENCERRAMENTO'][p.phase]} ${p.phase + 1}/7`, { fam: 'mono', size: 8.5, weight: 600, fill: 'primary-ink', tracking: '.04em' });
+  s += phaseBar(tx, ry + 32, 160, p.phase, { h: 6, label: false }) + text(tx + 168, ry + 38, `${['DEMANDA','PLANEJAMENTO','ELABORAÇÃO','ANÁLISE','APROVAÇÃO','EXECUÇÃO','ENCERRAMENTO'][p.phase]} ${p.phase + 1}/7`, { fam: 'mono', size: 8.5, weight: 600, fill: 'primary-ink', tracking: '.04em' });
   s += rect(tx, H - 46, 118, 32, { fill: 'primary', rx: 16 }) + text(tx + 59, H - 25.5, 'Ver projeto', { fam: 'sans', size: 12, weight: 600, fill: 'on-primary', anchor: 'middle' });
   const cnt = counters(0, 0, p.counters, { size: 13, gap: 10 }); s += g({ transform: `translate(${W - pad - cnt.w} ${H - 44})` }, cnt.svg);
   s += seal(W - 28, 28, 18, { kind: 'gold', ribbon: true, letter: 'S' });
