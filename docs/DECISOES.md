@@ -36,3 +36,10 @@ Formato: **D-nn** decisão tomada (com justificativa) · **Q-nn** dúvida aberta
 | Q-11 | RF42 | Valores da tabela de pontos são os do card (5/3/8/4/6/15/2/2/3/5)? Expiração padrão 12 meses? | Seed `decia_points_rules` |
 | Q-12 | RF43/RF44/RF45 | Pesos iniciais de HSE/Hype/ranking são os do board; confirmar se a EMPRESA pode editá-los já na v1 ou se ficam fixos até RF28 estar pronto. | `hse_weights`, `ranking_weights` |
 | Q-13 | Geral | Board renomeado para **Work Station**: o nome do produto continua **Work AI** com centro **DECIA**? | Nomes em docs/UI |
+| Q-14 | RF4–RF18 | Rotas do DECIA e do admin não existem no board; diagramas usam `/decia/[sessionId]` (+ `/summary`, `/decision`, `/decision/review`, `/artifacts`, `/archive`) e `/admin/dashboard`, API sob `/api/decia/sessions/{id}/...`. Confirmar. | Frontend RF4–RF18 |
+| Q-15 | RF12 | Proposta de decisão nasce automaticamente ao publicar o resumo (listener AFTER_COMMIT) **e** por ação manual do administrador. A IA deve propor sempre ou só sob demanda? | DecisionService |
+| Q-16 | RF14 | Quem decide a reabertura: administrador, com fallback "maioria simples ao fim do prazo" (`votingDeadlineAt`). Confirmar regra e prazo padrão. | ReopenRequest |
+| Q-17 | RF15 | Revisor = `DeciaSession.adminUserId`; o ADMIN global também pode revisar qualquer sessão? Ao validar/devolver, o projeto vinculado vai a APROVADO/DEVOLVIDO além da tarefa ATA_REGISTRO (RF29.CA05). | Guard, ProjectStatus |
+| Q-18 | RF8/RF16 | Distinção por `AiQuestion.kind` (RISCO = RF8, PONTO_CRITICO = RF16); teto de 3 perguntas abertas por sessão e dedupe > 90 % são valores provisórios. | AiQuestionService |
+| Q-19 | RF17 | Encerrar sem decisão é permitido com motivo obrigatório; `409 REVISAO_PENDENTE` se há decisão EM_REVISAO. Confirmar. | SessionLifecycleService |
+| Q-20 | RF11/RF42 | `MessageAttachment.usedInDecision` (+6 DP ao autor) é marcado na publicação do resumo ou só quando a decisão é VALIDADA? | DeciaPointsService |

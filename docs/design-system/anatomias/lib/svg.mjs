@@ -203,10 +203,10 @@ export function mosaic(x, y, w, h, tiles, { gap = 2 } = {}) {
  */
 export function anatomy({ theme, kicker, title, card, layout, note }) {
   const side = layout ?? (card.w > 420 ? 'baixo' : 'lado');
-  const pad = 24, legendW = side === 'lado' ? 320 : card.w, lh = 14;
+  const pad = 24, legendW = side === 'lado' ? 372 : card.w, lh = 14;
   const legendLines = []; // {x, y, segs}
   for (const [k, t, d] of card.legend) {
-    const ls = wrap(`${t} — ${d}`, side === 'lado' ? 58 : Math.floor(card.w / 5.6), 6);
+    const ls = wrap(`${t} — ${d}`, side === 'lado' ? 54 : Math.floor(card.w / 6.6), 7);
     legendLines.push({ k, ls });
   }
   const legendH = legendLines.reduce((a, l) => a + l.ls.length * lh + 6, 0);

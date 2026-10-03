@@ -301,7 +301,7 @@ id · sessionId · summaryId · decisionText · rationale · chosenScenarioId ·
 id · decisionId · reviewerId (admin da sessão) · outcome (VALIDADA · DEVOLVIDA) · reason (obrigatório se DEVOLVIDA) · reviewedAt · notifiedGroupAt.
 
 ### 5.13 `ReopenRequest` — `reopen_requests` (RF14)
-id · sessionId · decisionId · requestedBy (IA ou user) · justification · status (PENDENTE · ACEITA · RECUSADA) · votesJson · decidedAt.
+id · sessionId · decisionId · requestedBy (IA ou user) · justification (≥ 20 caracteres) · status (PENDENTE · ACEITA · RECUSADA) · votesJson · votingDeadlineAt · decidedBy · decidedAt. Regra: 1 pedido PENDENTE por decisão.
 
 ### 5.14 `SessionArtifact` — artefatos automáticos (RF13) — `session_artifacts`
 id · sessionId · kind (RELATORIO · ATA · CHECKLIST · RESUMO_PDF) · title · mediaObjectId · contentMd · generatedAt · aiInferenceId · notifiedAt · convertedTaskId (RF29).
@@ -419,7 +419,7 @@ id · userId · departmentId · capability `AiCapability` (CLASSIFICAR_MENSAGEM 
 ### 10.4 `Insight` — `insights` (RF43 §2–4) — id · scope (ACERVO · PERFIL · EQUIPE · PROJETO) · scopeId · kind · title · bodyMd · metricRefsJson [{metricCode, value, formula, source, proxy}] · actionsJson (1 clique) · severity · aiInferenceId · dismissedAt · generatedAt.
 ### 10.5 `FeasibilitySheet` — Ficha de Viabilidade (RF43 §7) — `feasibility_sheets` — id · candidateTitle · demandRef · costJson {p10,p50,p90, wbsBudget} · timeJson {pert, cpm, leadCycle} · deadlineJson {monteCarloRuns 1000, pOnTime, milestones} · viabilityScoreJson {total, tecnica, juridica, orcamentaria, prazo, risco, roi, payback, vpl, alinhamentoPlano, smart} · risksJson (top 5 P×I) · wbsJson · raciJson · assumptionsJson · unknownsJson · status (PROPOSTA · ACEITA · DESCARTADA) · discardReason · resultingProjectId · resultingTaskId (ESTUDO_TECNICO_PRELIMINAR) · aiInferenceId.
 ### 10.6 `MetricDefinition` — catálogo (RF43 §8, `METRICAS_GESTAO.md`) — `metric_definitions` — code · domain (INOVACAO · TI · PROJETOS · EQUIPES · DECIA · PONTOS) · name · formula · sourceDescription · proxyNote · unit · minSamples.
-### 10.7 `MetricSnapshot` (= FAI) — `metric_snapshots` — id · metricCode · scope · scopeId · periodStart · periodEnd · value · valuesJson · computedAt.
+### 10.7 `MetricSnapshot` (= FAI) — `metric_snapshots` — id · metricCode · scope `MetricScope` (GLOBAL · EMPRESA · DEPARTAMENTO · USUARIO) · scopeId · periodStart · periodEnd · value · valuesJson · computedAt.
 ### 10.8 `ExtractionResult` — RF34 — `extraction_results` — id · taskId · kind (QUANTITATIVOS · ITENS_PRAZOS · ESTRUTURAL) · rowsJson [{item, unit, qty, area, volume, confidence}] · layersJson · derivedTaskId (PLANILHA/CRONOGRAMA) · status · aiInferenceId.
 ### 10.9 `ExtractionCorrection` — `extraction_corrections` (RF34.CA04) — id · extractionId · rowIndex · field · oldValue · newValue · userId · departmentId · at.
 ### 10.10 `InstitutionalMemoryDocument` — OpenSearch índice `wai-memory` (RF33) — docId · sourceType (SESSAO · ARTEFATO · DECISAO · PROJETO · TAREFA · DOCUMENTO) · sourceId · companyId · departmentId · category · exerciseYear · authorId · title · text · embedding (dense_vector) · visibility · accessClass · indexedAt.
@@ -433,7 +433,7 @@ id · userId · departmentId · capability `AiCapability` (CLASSIFICAR_MENSAGEM 
 ### 11.1 `HandoffDossier` — Dossiê de Transição — `handoff_dossiers`
 id · subjectType (EMPREGADO · GESTAO) · subjectUserId · groupingId · requestedBy · reason (SAIDA · TRANSFERENCIA · FIM_GESTAO · TROCA_CHEFE) · generatedAt · contentJson {openProjectsByPhase, pendingTasks, blockedTasks, activeSessions, pendingReviews, contacts, contextSummaries[]} · documentTaskId (DOCUMENTO PDF) · transitionProjectId · successorUserId · successorAcceptedAt · status (GERADO · AGUARDANDO_SUCESSOR · TRANSFERIDO) · consentForPrivateItems · aiInferenceId.
 ### 11.2 `HandoffItem` — `handoff_items` — id · dossierId · targetType (TASK · PROJECT · SESSION · REVIEW) · targetId · previousResponsibleId · newResponsibleId · transferredAt · note.
-### 11.3 `SessionArchive` — histórico salvo (RF17) — `session_archives` + S3 — id · sessionId · exportMediaId (JSON+PDF) · messageCount · checksum · archivedAt · analyticsSnapshotJson.
+### 11.3 `SessionArchive` — histórico salvo (RF17) — `session_archives` + S3 — id · sessionId · exportJsonMediaId · exportPdfMediaId · messageCount · checksum (SHA-256) · archivedAt · closedWithoutDecision (bool) · closeReason · analyticsSnapshotJson.
 
 ---
 
@@ -441,7 +441,7 @@ id · subjectType (EMPREGADO · GESTAO) · subjectUserId · groupingId · reques
 
 ### 12.1 `AuditLog` (= FAI) — `audit_log` — id · actorId · action · resourceType · resourceId · result · ip · userAgent · correlationId · metadataJson (sanitizado) · at.
 ### 12.2 `DomainEventOutbox` — `domain_events` — id · aggregateType · aggregateId · eventType · payloadJson · occurredAt · publishedAt · attempts. Observer AFTER_COMMIT.
-### 12.3 `PipelineJob` (= FAI) — `pipeline_jobs` — id · type (THUMBNAIL · OCR · ANTIVIRUS · SYNC_EXTERNO · INDEXAR_MEMORIA · EXPORT_PDF · TRANSCRICAO · RECALC_HYPE · RECALC_RANKING) · targetType · targetId · status (PENDENTE · RODANDO · OK · FALHA · REPROCESSAR) · attempts · lastError · scheduledAt · finishedAt.
+### 12.3 `PipelineJob` (= FAI) — `pipeline_jobs` — id · type (THUMBNAIL · OCR · ANTIVIRUS · SYNC_EXTERNO · INDEXAR_MEMORIA · EXPORT_PDF · TRANSCRICAO · RECALC_HYPE · RECALC_RANKING · RECALC_METRICS) · targetType · targetId · status (PENDENTE · RODANDO · OK · FALHA · REPROCESSAR) · attempts · lastError · scheduledAt · finishedAt.
 ### 12.4 `FeatureFlag` — `feature_flags` — key · enabled · scope · rolloutJson. Flags obrigatórias: `redis.enabled`, `cassandra.enabled`, `opensearch.enabled`, `storage.s3`, `ai.provider.claude`, `ai.provider.gemini`, `ai.local.only`.
 ### 12.5 `MediaObject` — S3/MinIO + `media_objects` — id · bucket · key · mimeType · sizeBytes · sha256 · ownerId · accessClass · variantsJson (thumb, preview) · createdAt.
 ### 12.6 `DataExportRequest` (= FAI, LGPD) — `data_export_requests` — id · userId · status · mediaId · requestedAt · completedAt.
@@ -483,6 +483,9 @@ id · subjectType (EMPREGADO · GESTAO) · subjectUserId · groupingId · reques
 | AiMode | ECONOMIA · AVANCADO |
 | ThemeMode | AUTO · CLARO · ESCURO · ALTO_CONTRASTE · BLUEPRINT |
 | DeskSkin | PAPEL · CORTICA · BLUEPRINT · PAPEL_TIMBRADO |
+| MetricScope | GLOBAL · EMPRESA · DEPARTAMENTO · USUARIO |
+| MetricDomain | INOVACAO · TI · PROJETOS · EQUIPES · DECIA · PONTOS |
+| AiQuestionKind | RISCO (RF8) · PONTO_CRITICO (RF16) · ESCLARECIMENTO |
 
 ## 14. Pendências de modelagem (ver `docs/DECISOES.md`)
 - Os cards RF1–RF18 do board não têm critérios de aceite escritos (só as HUs). A taxonomia do DECIA (seção 5) foi derivada das HUs + RF29/RF42/RF43; confirmar CAs antes da Sprint 1.

@@ -96,10 +96,10 @@ function tarefaCompacto(d, { family = 'protocolo', W = 240 } = {}) {
   let svg = s;
   if (state === 'arquivada') svg = `<defs><filter id="${cOut}f"><feColorMatrix type="saturate" values=".35"/></filter></defs>` + g({ style: `opacity:.62;filter:url(#${cOut}f)` }, s);
   const callouts = [{ n: 1, x: 2, y: 2 }, { n: 2, x: W / 2, y: H - 2 }, { n: 3, x: x + cw - 2, y: top + ch - 2 }, { n: 4, x: ix + iw / 2, y: mediaY + mediaH / 2 },
-    { n: 'a', x: ix + 2, y: top + pad + 2 }, { n: 'b', x: ix + 30, y: top + pad + 22 }, { n: 'c', x: ix - 4, y: mediaY + mediaH + 20 }, { n: 'd', x: ix + 2, y: metaY + 10 }, { n: 'e', x: ix + t1.w + 10, y: metaY + 10 },
-    { n: 'f', x: ix + 10, y: y + 10 }, { n: 'g', x: ix + iw - cnt.w / 2, y: y + 10 }];
-  if (d.ai) callouts.push({ n: 'h', x: ix + iw - 8, y: top + pad + 12 });
-  if (d.seal) callouts.push({ n: 'i', x: W - x - 6, y: top + 24 });
+    { n: 'a', x: ix + 2, y: top + pad + 2 }, { n: 'b', x: ix + 34 + tw(d.category, 9, 'mono') + 10, y: top + pad + 7 }, { n: 'c', x: x - 1, y: mediaY + mediaH + 20 }, { n: 'd', x: x - 1, y: metaY + 10 }, { n: 'e', x: ix + t1.w + 10 + (d1.w > 0 ? d1.w : 0) + 4, y: metaY + 10 },
+    { n: 'f', x: x - 1, y: y + 10 }, { n: 'g', x: ix + iw - cnt.w / 2, y: y + 22 }];
+  if (d.ai) callouts.push({ n: 'h', x: ix + iw - 26, y: top + pad + 12 });
+  if (d.seal) callouts.push({ n: 'i', x: W - x - 6, y: top + 32 });
   const legend = [
     [1, 'Superfície externa', `article.card-tarefa: borda 2 px na cor do departamento (${d.dept.acr}, RF38.CA09), raio --card-r-out e overflow:hidden que recorta a arte. Rascunho = borda tracejada.`],
     [2, 'Área artística', `família "${family}": fundo + composição só nas quatro faixas (--card-x = 12 px; topo/base ${top}/${bottom} px). aria-hidden, pointer-events:none.`],
