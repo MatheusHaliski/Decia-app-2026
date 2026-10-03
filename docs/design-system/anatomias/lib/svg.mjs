@@ -33,7 +33,7 @@ export function wrap(str, maxChars, maxLines = 2) {
     if ((cur + ' ' + w).trim().length > maxChars && cur) { lines.push(cur); cur = w; } else cur = (cur + ' ' + w).trim();
   }
   if (cur) lines.push(cur);
-  if (lines.length > maxLines) { const keep = lines.slice(0, maxLines); keep[maxLines - 1] = keep[maxLines - 1].replace(/\s*\S*$/, '') + '…'; return keep; }
+  if (lines.length > maxLines) { const keep = lines.slice(0, maxLines); const last = keep[maxLines - 1]; const cut = last.includes(' ') ? last.replace(/\s*\S*$/, '') : last.slice(0, Math.max(3, maxChars - 1)); keep[maxLines - 1] = cut + '…'; return keep; }
   return lines;
 }
 export const lines = (x, y, arr, lh, opts) => arr.map((s, i) => text(x, y + i * lh, s, opts)).join('');
@@ -80,7 +80,7 @@ export function tag(x, y, label, { tok = 'primary', ink, soft, h = 20, icon, das
   const softT = soft ?? (tok === 'neutral' ? 'surface-2' : `${tok}-soft`);
   const fillT = tok === 'neutral' ? 'line-soft' : tok;
   const size = 10, padX = 8, iconW = icon ? 14 : 0, dotW = pulse ? 10 : 0;
-  const w = padX * 2 + iconW + dotW + tw(label, size, 'mono') + 1;
+  const w = padX * 2 + iconW + dotW + tw(label, size, 'mono') + 1 + (star ? 14 : 0);
   let out = rect(x, y, w, h, { fill: filled ? fillT : softT, stroke: fillT, sw: 1, dash: dashed ? '3 2.5' : undefined, rx: h / 2 });
   let cx = x + padX;
   if (pulse) { out += circle(cx + 3, y + h / 2, 3, { fill: fillT }) + circle(cx + 3, y + h / 2, 5.5, { fill: 'none', stroke: fillT, sw: 1, op: .55 }) + `<circle cx="${cx + 3}" cy="${y + h / 2}" r="5.5" style="fill:none;stroke:${v(fillT)};stroke-width:1"><animate attributeName="r" values="4;8" dur="1.8s" repeatCount="indefinite"/><animate attributeName="opacity" values=".6;0" dur="1.8s" repeatCount="indefinite"/></circle>`; cx += dotW; }

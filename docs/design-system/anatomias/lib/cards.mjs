@@ -54,7 +54,8 @@ function statusTag(x, y, status, { h = 20 } = {}) {
 function tarefaCompacto(d, { family = 'protocolo', W = 240 } = {}) {
   const [top, bottom] = STRIPS[family]; const x = 12, pad = 10, cw = W - 2 * x, iw = cw - 2 * pad, mediaH = Math.round(iw * 2 / 3);
   const state = d.state ?? 'disponivel';
-  const extraLine = ['em-uso', 'bloqueada', 'oferecida'].includes(state) ? 16 : 0;
+  const dueW = 8 + 14 + tw(d.due, 10, 'mono') + 8; const stW = stateTag(0, 0, state).w; const dueWrap = stW + 6 + dueW > (W - 2 * 12 - 2 * 10);
+  const extraLine = (['em-uso', 'bloqueada', 'oferecida'].includes(state) ? 16 : 0) + (dueWrap ? 22 : 0);
   const ch = pad + 24 + 6 + mediaH + 8 + 34 + 8 + 20 + extraLine + 10 + 20 + pad; const H = top + ch + bottom;
   const cOut = id('o'), cCont = id('c');
   const dashed = state === 'rascunho';
@@ -83,7 +84,7 @@ function tarefaCompacto(d, { family = 'protocolo', W = 240 } = {}) {
   // título
   const tl = wrap(d.title, 27, 2); s += lines(ix, y + 12, tl, 17, { fam: 'serif', size: 14, weight: 600, fill: state === 'rascunho' ? 'muted' : 'ink' }); y += 34 + 8;
   // etiqueta de estado + prazo
-  const t1 = stateTag(ix, y, state); s += t1.svg; const d1 = due(ix + t1.w + 6, y, d.due, { kind: d.dueKind, legal: d.legal }); if (ix + t1.w + 6 + d1.w <= ix + iw) s += d1.svg; const metaY = y; y += 20;
+  const t1 = stateTag(ix, y, state); s += t1.svg; const d1 = due(dueWrap ? ix : ix + t1.w + 6, dueWrap ? y + 22 : y, d.due, { kind: d.dueKind, legal: d.legal }); s += d1.svg; const metaY = y; y += 20 + (dueWrap ? 22 : 0);
   if (state === 'em-uso') s += text(ix, y + 11, `no projeto ${d.usedIn}`, { fam: 'sans', size: 9.5, fill: 'class-argumento-ink', italic: true });
   if (state === 'bloqueada') s += text(ix, y + 11, `aguarda ${d.blockedBy ?? 'parecer jurídico (Ana C.)'}`, { fam: 'sans', size: 9.5, fill: 'class-divergencia-ink', italic: true });
   if (state === 'oferecida') s += iconAt('ficha-dp', ix, y + 1, 12, v('spark')) + text(ix + 15, y + 11, `${d.price ?? 40} DP · licença: atribuição`, { fam: 'mono', size: 9, weight: 600, fill: 'type-link-ink' });
@@ -96,7 +97,7 @@ function tarefaCompacto(d, { family = 'protocolo', W = 240 } = {}) {
   let svg = s;
   if (state === 'arquivada') svg = `<defs><filter id="${cOut}f"><feColorMatrix type="saturate" values=".35"/></filter></defs>` + g({ style: `opacity:.62;filter:url(#${cOut}f)` }, s);
   const callouts = [{ n: 1, x: 2, y: 2 }, { n: 2, x: W / 2, y: H - 2 }, { n: 3, x: x + cw - 2, y: top + ch - 2 }, { n: 4, x: ix + iw / 2, y: mediaY + mediaH / 2 },
-    { n: 'a', x: ix + 2, y: top + pad + 2 }, { n: 'b', x: ix + 34 + tw(d.category, 9, 'mono') + 10, y: top + pad + 7 }, { n: 'c', x: x - 1, y: mediaY + mediaH + 20 }, { n: 'd', x: x - 1, y: metaY + 10 }, { n: 'e', x: ix + t1.w + 10 + (d1.w > 0 ? d1.w : 0) + 4, y: metaY + 10 },
+    { n: 'a', x: ix + 2, y: top + pad + 2 }, { n: 'b', x: ix + 34 + tw(d.category, 9, 'mono') + 10, y: top + pad + 7 }, { n: 'c', x: x - 1, y: mediaY + mediaH + 20 }, { n: 'd', x: x - 1, y: metaY + 10 }, { n: 'e', x: dueWrap ? ix + d1.w + 10 : ix + t1.w + 10 + d1.w + 4, y: dueWrap ? metaY + 32 : metaY + 10 },
     { n: 'f', x: x - 1, y: y + 10 }, { n: 'g', x: ix + iw - cnt.w / 2, y: y + 22 }];
   if (d.ai) callouts.push({ n: 'h', x: ix + iw - 26, y: top + pad + 12 });
   if (d.seal) callouts.push({ n: 'i', x: W - x - 6, y: top + 32 });
@@ -153,8 +154,9 @@ function tarefaAmpliado(d, { W = 420 } = {}) {
   const parts = []; let y = top + pad; const ix = x + pad;
   // cabeçalho dono
   parts.push(avatar(ix + 12, y + 12, 12, d.owner.ini) + text(ix + 30, y + 10, `@matheus.haliski · ${d.dept.acr}`, { fam: 'sans', size: 11, weight: 600 }) + text(ix + 30, y + 22, `recebido em 28/09/2026 · protocolo ${d.protocolo}`, { fam: 'sans', size: 10, fill: 'muted' }));
-  if (d.ai) parts.push(spark(ix + iw - 10, y + 12, 16, { glow: true }) + text(ix + iw - 22, y + 16, 'gerado por IA em 01/10 · revisado por Maria H.', { fam: 'sans', size: 9, fill: 'spark-ink', anchor: 'end' }));
-  const headY = y; y += 30 + 10;
+  const headY = y; y += 30 + 6;
+  if (d.ai) { parts.push(spark(ix + 8, y + 7, 14, { glow: true }) + text(ix + 20, y + 11, 'gerado por IA em 01/10/2026 · revisado por Maria H. (RF38.CA04)', { fam: 'sans', size: 10, fill: 'spark-ink' })); y += 18; }
+  y += 4;
   parts.push(thumbArt(ix, y, iw, mediaH, { type: d.type, ext: d.ext, tok: TASK_TYPE_TOKEN(d.type), cid: id('m') }) + rect(ix, y, iw, mediaH, { fill: 'none', stroke: 'line-soft', sw: .8 })); const mediaY = y; y += mediaH + 14;
   const tl = wrap(d.title, 34, 2); parts.push(lines(ix, y + 16, tl, 24, { fam: 'serif', size: 20, weight: 600 })); const titleY = y; y += tl.length * 24 + 6;
   parts.push(rect(ix, y, 24, 24, { fill: `${TASK_TYPE_TOKEN(d.type)}-soft`, rx: 6 }) + iconAt(typeIcon(d), ix + 3, y + 3, 18, v(typeTok(d))) + text(ix + 30, y + 16, `${d.category} · ${d.type.replace('_', ' ')} · ${d.ext?.toUpperCase() ?? ''}`, { fam: 'mono', size: 10, weight: 600, fill: 'muted', upper: true, tracking: '.06em' }));
@@ -166,8 +168,8 @@ function tarefaAmpliado(d, { W = 420 } = {}) {
   meta.forEach(([k, val, ic], i) => { const cx = ix + (i % 2) * colW, cy = y + Math.floor(i / 2) * 34; parts.push(iconAt(ic, cx, cy + 2, 14, v('muted')) + text(cx + 20, cy + 9, k, { fam: 'mono', size: 8.5, weight: 600, fill: 'muted', upper: true, tracking: '.07em' }) + text(cx + 20, cy + 23, val, { fam: 'sans', size: 11.5, weight: 500 })); });
   y += 3 * 34 + 4;
   // ação principal + alternativa
-  parts.push(rect(ix, y, 170, 36, { fill: 'primary', rx: 18 }) + iconAt('criar-projeto', ix + 14, y + 9, 18, v('on-primary')) + text(ix + 40, y + 22.5, 'Adicionar ao projeto', { fam: 'sans', size: 12.5, weight: 600, fill: 'on-primary' }));
-  parts.push(text(ix + 182, y + 22, 'ou anexar numa sessão DECIA', { fam: 'sans', size: 11.5, weight: 600, fill: 'primary-ink', extra: 'text-decoration:underline' })); const actY = y; y += 36 + 14;
+  parts.push(rect(ix, y, 196, 36, { fill: 'primary', rx: 18 }) + iconAt('criar-projeto', ix + 14, y + 9, 18, v('on-primary')) + text(ix + 40, y + 22.5, 'Adicionar ao projeto', { fam: 'sans', size: 12.5, weight: 600, fill: 'on-primary' }));
+  parts.push(text(ix + 208, y + 22, 'ou anexar numa sessão DECIA', { fam: 'sans', size: 11.5, weight: 600, fill: 'primary-ink', extra: 'text-decoration:underline' })); const actY = y; y += 36 + 14;
   // linha de interações
   parts.push(line(ix, y - 7, ix + iw, y - 7, { stroke: 'line-soft', sw: 1 }));
   const inter = [['curtir', 12], ['comentar', 3], ['compartilhar', 1], ['remixar', 1], null, ['util', 4], ['bem-fundamentado', 2], ['conforme', 1]]; let cx = ix;
@@ -176,7 +178,7 @@ function tarefaAmpliado(d, { W = 420 } = {}) {
   const ch = y - top; const H = top + ch + bottom;
   let s = `<defs>${clipRect(cOut, 0, 0, W, H, 14)}</defs>` + rect(0, 0, W, H, { fill: 'surface', stroke: d.dept.tok, sw: 2, rx: 14 }) + familyArt('protocolo', W, H, { x, top, bottom, d, cid: cOut }) + rect(x, top, cw, ch, { fill: 'surface', rx: 10, extra: 'filter:drop-shadow(0 2px 6px rgba(0,0,0,.12))' }) + parts.join('');
   if (d.seal) s += seal(W - x - 2, top + 4, 18, { kind: 'gold', letter: 'S' });
-  return { svg: s, w: W, h: H, callouts: [{ n: 1, x: 2, y: 2 }, { n: 2, x: W / 2, y: H - 2 }, { n: 3, x: x + cw - 2, y: top + ch - 2 }, { n: 4, x: ix + iw / 2, y: mediaY + mediaH / 2 }, { n: 'a', x: ix, y: headY }, { n: 'b', x: ix - 4, y: titleY + 10 }, { n: 'c', x: ix - 4, y: sumY + 8 }, { n: 'd', x: ix - 4, y: metaY + 12 }, { n: 'e', x: ix - 4, y: actY + 18 }, { n: 'f', x: ix - 4, y: intY + 10 }, { n: 'g', x: ix + iw - 118 + t1.w / 2, y: titleY + tl.length * 24 + 30 }, ...(d.ai ? [{ n: 'h', x: ix + iw - 10, y: headY + 30 }] : []), ...(d.seal ? [{ n: 'i', x: W - x - 2, y: top + 26 }] : [])],
+  return { svg: s, w: W, h: H, callouts: [{ n: 1, x: 2, y: 2 }, { n: 2, x: W / 2, y: H - 2 }, { n: 3, x: x + cw - 2, y: top + ch - 2 }, { n: 4, x: ix + iw / 2, y: mediaY + mediaH / 2 }, { n: 'a', x: ix, y: headY }, { n: 'b', x: x - 1, y: titleY + 10 }, { n: 'c', x: x - 1, y: sumY + 8 }, { n: 'd', x: x - 1, y: metaY + 12 }, { n: 'e', x: x - 1, y: actY + 18 }, { n: 'f', x: x - 1, y: intY + 10 }, { n: 'g', x: ix + iw - 118 + t1.w / 2, y: titleY + tl.length * 24 + 30 }, ...(d.ai ? [{ n: 'h', x: ix + iw - 12, y: headY + 44 }] : []), ...(d.seal ? [{ n: 'i', x: W - x - 2, y: top + 26 }] : [])],
     legend: [
       [1, 'Superfície externa', 'mesma família da grade (a arte acompanha a peça para o detalhe), --card-x-lg = 20 px, raio 14.'],
       [2, 'Área artística', 'faixas de 20/22 px: a mesma composição, maior; vidro fosco com desfoque só aqui (nunca na grade).'],
@@ -207,9 +209,9 @@ function tarefaAnexo(d, { W = 360 } = {}) {
   s += thumbArt(26, cy + 8, 66, 44, { type: d.type, ext: d.ext, tok: TASK_TYPE_TOKEN(d.type), cid: id('a') }) + rect(26, cy + 8, 66, 44, { fill: 'none', stroke: 'line-soft', sw: .8, rx: 2 });
   s += iconAt(typeIcon(d), 100, cy + 9, 14, v(typeTok(d))) + text(118, cy + 20, wrap(d.title, 28, 1)[0], { fam: 'serif', size: 12.5, weight: 600 });
   s += text(100, cy + 36, `${d.category} · PDF · Disponível · ${d.dept.acr}`, { fam: 'sans', size: 9.5, fill: 'muted' });
-  s += rect(100, cy + 42, 128, 14, { fill: 'spark-soft', rx: 7 }) + iconAt('ficha-dp', 104, cy + 43, 12, v('spark')) + text(119, cy + 52.5, 'usado na decisão · +6 DP', { fam: 'mono', size: 8, weight: 700, fill: 'spark-ink', upper: true, tracking: '.04em' });
+  s += rect(100, cy + 42, 160, 14, { fill: 'spark-soft', rx: 7 }) + iconAt('ficha-dp', 104, cy + 43, 12, v('spark')) + text(119, cy + 52.5, 'usado na decisão · +6 DP', { fam: 'mono', size: 8, weight: 700, fill: 'spark-ink', upper: true, tracking: '.04em' });
   s += iconAt('chevron', W - 36, cy + 22, 16, v('muted'));
-  return { svg: s, w: W, h: H, callouts: [{ n: 1, x: 2, y: 2 }, { n: 3, x: W - 16, y: cy + chH }, { n: 4, x: 59, y: cy + 30 }, { n: 'a', x: 4, y: H / 2 }, { n: 'b', x: W - 118 + t.w / 2, y: 34 }, { n: 'c', x: 100, y: cy + 9 }, { n: 'd', x: 164, y: cy + 56 }],
+  return { svg: s, w: W, h: H, callouts: [{ n: 1, x: 2, y: 2 }, { n: 3, x: W - 16, y: cy + chH }, { n: 4, x: 59, y: cy + 30 }, { n: 'a', x: 4, y: H / 2 }, { n: 'b', x: W - 118 + t.w / 2, y: 34 }, { n: 'c', x: 100, y: cy + 9 }, { n: 'd', x: 268, y: cy + 49 }],
     legend: [
       [1, 'Bolha da mensagem', 'SessionMessage no DECIA; raio 12, fundo --surface; autor, hora e papel.'],
       [3, 'Chip da tarefa (container)', 'MessageAttachment targetType=TASK: card em miniatura de 60 px dentro da bolha; clique abre o Ampliado em modal, sem sair da sessão (RF29.CA03, até 5 anexos).'],
@@ -251,7 +253,7 @@ function projetoMosaico(p, { W = 260, cover = 'mosaico' } = {}) {
   const x = 0, pad = 12, cw = W, iw = cw - 2 * pad, coverH = Math.round(iw * 2 / 3);
   const status = p.status ?? 'publicado'; const dashed = status === 'rascunho'; const faded = status === 'arquivado';
   const extra = ['em-decisao', 'devolvido'].includes(status) ? 18 : 0;
-  const H = pad + coverH + 12 + 40 + 8 + 24 + 8 + 28 + 8 + 16 + extra + 8 + 20 + pad;
+  const H = pad + coverH + 12 + 40 + 8 + 24 + 8 + 28 + 8 + 16 + 14 + extra + 8 + 16 + 22 + pad;
   const cOut = id('p');
   let s = `<defs>${clipRect(cOut, 0, 0, W, H, 12)}<filter id="${cOut}f"><feColorMatrix type="saturate" values=".35"/></filter></defs>`;
   s += rect(0, 0, W, H, { fill: 'surface', stroke: dashed ? 'line-soft' : p.dept.tok, sw: dashed ? 1.5 : 2.5, dash: dashed ? '6 4' : undefined, rx: 12, extra: 'filter:drop-shadow(0 1px 3px rgba(0,0,0,.10))' });
@@ -263,8 +265,8 @@ function projetoMosaico(p, { W = 260, cover = 'mosaico' } = {}) {
   else s += mosaic(ix, y, iw, coverH, p.tiles);
   s += rect(ix, y, iw, coverH, { fill: 'none', stroke: 'line-soft', sw: .8, rx: 6 });
   if (cover !== 'vazia') s += ring(ix + iw - 24, y + coverH - 24, 15, (p.phase + 1) / 7, { label: `${p.phase + 1}/7` });
-  if (status === 'aprovado' || status === 'concluido') s += stamp(ix + 8, y + coverH - 56, 'Validado', { tok: 'class-consenso', sub: '02/10/2026 · Ana Costa (chefe UTS)', angle: -8, w: 150, h: 42 });
-  if (status === 'devolvido') s += stamp(ix + 8, y + coverH - 56, 'Devolvido', { tok: 'class-risco', sub: '02/10/2026 · Ana Costa (chefe UTS)', angle: -8, w: 150, h: 42 });
+  if (status === 'aprovado' || status === 'concluido') s += stamp(ix + 4, y + coverH - 56, 'Validado', { tok: 'class-consenso', sub: '02/10/2026 · Ana Costa (chefe UTS)', angle: -8, w: 176, h: 42 });
+  if (status === 'devolvido') s += stamp(ix + 4, y + coverH - 56, 'Devolvido', { tok: 'class-risco', sub: '02/10/2026 · Ana Costa (chefe UTS)', angle: -8, w: 176, h: 42 });
   const coverY = y; y += coverH + 12;
   // título
   const tl = wrap(dashed ? 'Sem título (rascunho salvo automaticamente)' : p.title, 28, 2); s += lines(ix, y + 14, tl, 19, { fam: 'serif', size: 16, weight: 600, fill: dashed ? 'muted' : 'ink' }); const titleY = y; y += 40 + 8;
@@ -275,18 +277,18 @@ function projetoMosaico(p, { W = 260, cover = 'mosaico' } = {}) {
   s += phaseBar(ix, y, iw, dashed ? 0 : p.phase, { done: !dashed }); const phaseY = y; y += 28 + 8;
   // marco + n tarefas · n pessoas
   s += iconAt('marco', ix, y, 13, v('muted')) + text(ix + 17, y + 10.5, dashed ? 'sem marco' : p.milestone, { fam: 'mono', size: 9.5, weight: 600, fill: 'ink' });
-  s += text(ix + iw, y + 10.5, `${dashed ? 0 : p.tasks} tarefas · ${dashed ? 1 : p.people} pessoas`, { fam: 'sans', size: 10, fill: 'muted', anchor: 'end' }); const milY = y; y += 16;
+  const milY = y; y += 16; s += iconAt('pessoas', ix, y, 13, v('muted')) + text(ix + 17, y + 10.5, `${dashed ? 0 : p.tasks} tarefas · ${dashed ? 1 : p.people} pessoas`, { fam: 'sans', size: 10, fill: 'muted' }); y += 14;
   if (status === 'em-decisao') { s += node(ix + 6, y + 9, 'divergencia', 4.5) + `<circle cx="${ix + 6}" cy="${y + 9}" r="6" style="fill:none;stroke:${v('class-divergencia')};stroke-width:1"><animate attributeName="r" values="5;10" dur="1.8s" repeatCount="indefinite"/><animate attributeName="opacity" values=".7;0" dur="1.8s" repeatCount="indefinite"/></circle>` + text(ix + 17, y + 12.5, 'sessão DECIA ativa · divergência aberta há 3 h', { fam: 'sans', size: 9.5, fill: 'class-divergencia-ink' }); }
   if (status === 'devolvido') s += iconAt('devolver-decisao', ix, y + 1, 12, v('class-risco-ink')) + text(ix + 16, y + 12.5, 'motivo: falta o parecer jurídico do convênio', { fam: 'sans', size: 9.5, fill: 'class-risco-ink', italic: true });
   y += extra + 8;
   // último evento DECIA + contadores
   s += iconAt('abrir-decia', ix, y + 3, 13, v(dashed ? 'faint' : 'class-consenso'));
   s += text(ix + 17, y + 13.5, dashed ? 'nenhum evento DECIA' : p.lastEvent, { fam: 'sans', size: 10, fill: dashed ? 'faint' : 'class-consenso-ink' });
-  const cnt = counters(0, 0, p.counters, { size: 12, gap: 8 }); if (!dashed) s += g({ transform: `translate(${ix + iw - cnt.w} ${y + 4})` }, cnt.svg); const evY = y;
+  const cnt = counters(0, 0, p.counters, { size: 12, gap: 8 }); const evY = y; y += 18; if (!dashed) s += g({ transform: `translate(${ix} ${y + 2})` }, cnt.svg);
   if (p.seal) s += seal(W - 8, 8, 16, { kind: 'gold', ribbon: p.seal === 'excelencia', letter: 'S' }) + (p.seal2 ? seal(W - 8, 46, 13, { kind: 'navy', letter: p.dept.mono[0] }) : '');
   if (p.ai) s += spark(ix + iw - 10, coverY + 10, 14, { glow: true });
   let svg = s; if (faded) svg = `<defs><filter id="${cOut}f"><feColorMatrix type="saturate" values=".35"/></filter></defs>` + g({ style: `opacity:.62;filter:url(#${cOut}f)` }, s);
-  const callouts = [{ n: 1, x: 2, y: 2 }, { n: 3, x: 2, y: H - 2 }, { n: 4, x: ix + 10, y: coverY + 10 }, { n: 5, x: ix + iw - 24, y: coverY + coverH - 24 - 24 }, { n: 'a', x: ix - 4, y: titleY + 10 }, { n: 'b', x: ix + 11, y: deptY + 26 }, { n: 'c', x: ix + iw - 110 + stg.w / 2, y: deptY + 24 }, { n: 'd', x: ix + iw / 2, y: phaseY - 2 }, { n: 'e', x: ix - 4, y: milY + 7 }, { n: 'f', x: ix + iw - 14, y: milY + 7 }, { n: 'g', x: ix - 4, y: evY + 8 }, { n: 'h', x: ix + iw - cnt.w / 2, y: evY + 22 }];
+  const callouts = [{ n: 1, x: 2, y: 2 }, { n: 3, x: 2, y: H - 2 }, { n: 4, x: ix + 10, y: coverY + 10 }, { n: 5, x: ix + iw - 24, y: coverY + coverH - 24 - 24 }, { n: 'a', x: -1, y: titleY + 10 }, { n: 'b', x: -1, y: deptY + 11 }, { n: 'c', x: ix + iw - 110 + stg.w / 2, y: deptY + 24 }, { n: 'd', x: ix + iw / 2, y: phaseY - 2 }, { n: 'e', x: -1, y: milY + 7 }, { n: 'f', x: -1, y: milY + 23 }, { n: 'g', x: -1, y: evY + 8 }, { n: 'h', x: -1, y: evY + 28 }];
   if (p.seal) callouts.push({ n: 'i', x: W - 8, y: 30 }); if (p.ai) callouts.push({ n: 'j', x: ix + iw - 10, y: coverY + 30 });
   if (['aprovado', 'devolvido', 'concluido'].includes(status)) callouts.push({ n: 'k', x: ix + 86, y: coverY + coverH - 10 });
   if (status === 'em-decisao' || status === 'devolvido') callouts.push({ n: 'l', x: ix + iw / 2, y: milY + 27 });
@@ -320,15 +322,15 @@ function projetoHero(p, { W = 600 } = {}) {
   let s = `<defs>${clipRect(cid, 0, 0, W, H, 16)}</defs>` + rect(0, 0, W, H, { fill: 'surface', stroke: p.dept.tok, sw: 2.5, rx: 16, extra: 'filter:drop-shadow(0 4px 12px rgba(0,0,0,.12))' });
   s += g({ 'clip-path': `url(#${cid})` }, rect(0, 0, W, H, { fill: 'primary-soft', op: .5 }) + rect(300, 0, W - 300, H, { fill: 'surface' }));
   s += mosaic(pad, (H - mh) / 2, mw, mh, p.tiles) + rect(pad, (H - mh) / 2, mw, mh, { fill: 'none', stroke: 'line-soft', sw: .8, rx: 8 }) + ring(pad + mw - 26, (H - mh) / 2 + mh - 26, 17, (p.phase + 1) / 7, { label: `${p.phase + 1}/7` });
-  const tx = 316; s += text(tx, 32, 'VITRINE · DESTAQUE DO MÊS · OUTUBRO 2026', { fam: 'mono', size: 9, weight: 600, fill: 'muted', tracking: '.08em' });
-  const tl = wrap(p.title, 28, 2); s += lines(tx, 60, tl, 26, { fam: 'serif', size: 22, weight: 600 });
-  s += lines(tx, 60 + tl.length * 26 + 4, wrap(p.objective, 52, 2), 15, { fam: 'sans', size: 11.5, fill: 'muted' });
+  const tx = 316; s += text(tx, 32, 'VITRINE · DESTAQUE DO MÊS', { fam: 'mono', size: 9, weight: 600, fill: 'muted', tracking: '.08em' });
+  const tl = wrap(p.title, 24, 2); s += lines(tx, 58, tl, 24, { fam: 'serif', size: 20, weight: 600 });
+  s += lines(tx, 58 + tl.length * 24 + 4, wrap(p.objective, 46, 2), 15, { fam: 'sans', size: 11.5, fill: 'muted' });
   const ry = 150; s += monogram(tx, ry, 22, p.dept.mono, p.dept.tok) + text(tx + 28, ry + 15.5, `${p.dept.acr} · ${p.tasks} tarefas · ${p.people} pessoas`, { fam: 'sans', size: 11, weight: 600 });
-  s += phaseBar(tx, ry + 36, 200, p.phase, { h: 6 });
-  s += rect(tx, H - 50, 118, 32, { fill: 'primary', rx: 16 }) + text(tx + 59, H - 29.5, 'Ver projeto', { fam: 'sans', size: 12, weight: 600, fill: 'on-primary', anchor: 'middle' });
+  s += phaseBar(tx, ry + 32, 200, p.phase, { h: 6, label: false }) + text(tx + 208, ry + 38, `${['DEMANDA','PLANEJAMENTO','ELABORAÇÃO','ANÁLISE','APROVAÇÃO','EXECUÇÃO','ENCERRAMENTO'][p.phase]} ${p.phase + 1}/7`, { fam: 'mono', size: 8.5, weight: 600, fill: 'primary-ink', tracking: '.04em' });
+  s += rect(tx, H - 46, 118, 32, { fill: 'primary', rx: 16 }) + text(tx + 59, H - 25.5, 'Ver projeto', { fam: 'sans', size: 12, weight: 600, fill: 'on-primary', anchor: 'middle' });
   const cnt = counters(0, 0, p.counters, { size: 13, gap: 10 }); s += g({ transform: `translate(${W - pad - cnt.w} ${H - 44})` }, cnt.svg);
-  s += seal(W - 30, 30, 20, { kind: 'gold', ribbon: true, letter: 'S' });
-  return { svg: s, w: W, h: H, callouts: [{ n: 1, x: 2, y: 2 }, { n: 2, x: 150, y: H - 2 }, { n: 3, x: 300, y: 2 }, { n: 4, x: pad + 12, y: (H - mh) / 2 + 12 }, { n: 5, x: pad + mw - 26, y: (H - mh) / 2 + mh - 54 }, { n: 'a', x: tx - 6, y: 52 }, { n: 'b', x: tx - 6, y: ry + 11 }, { n: 'd', x: tx + 100, y: ry + 30 }, { n: 'e', x: tx - 6, y: H - 34 }, { n: 'h', x: W - pad - cnt.w / 2, y: H - 20 }, { n: 'i', x: W - 30, y: 58 }],
+  s += seal(W - 28, 28, 18, { kind: 'gold', ribbon: true, letter: 'S' });
+  return { svg: s, w: W, h: H, callouts: [{ n: 1, x: 2, y: 2 }, { n: 2, x: 150, y: H - 2 }, { n: 3, x: 300, y: 2 }, { n: 4, x: pad + 12, y: (H - mh) / 2 + 12 }, { n: 5, x: pad + mw - 26, y: (H - mh) / 2 + mh - 54 }, { n: 'a', x: tx - 6, y: 50 }, { n: 'b', x: tx - 6, y: ry + 11 }, { n: 'd', x: tx - 6, y: ry + 35 }, { n: 'e', x: tx - 6, y: H - 30 }, { n: 'h', x: W - pad - cnt.w / 2, y: H - 14 }, { n: 'i', x: W - 28, y: 56 }],
     legend: [
       [1, 'Superfície externa', 'hero horizontal 600 × 250 (celular: empilha capa sobre texto), raio 16, borda do departamento, --shadow-2.'],
       [2, 'Área artística', 'lado da capa recebe tinta --primary-soft a 50 % (a "aura" da Vitrine); no alto contraste some.'],

@@ -98,7 +98,7 @@ id · userId · requestedProfile · evidenceJson · status (PENDENTE·APROVADO·
 | effortSize | `EffortSize` | P · M · G + estimatedHours (= size) |
 | amountInvolved | BigDecimal | R$ (= price), 0 se não se aplica |
 | origin | `TaskOrigin` | INTERNA · ORGAO_EXTERNO · FORNECEDOR · CIDADAO (= market) |
-| sourceKind | `SourceKind` | ARQUIVO · COLAR · GOOGLE · MICROSOFT · EMAIL · LINK · PROTOCOLO · FOTO · TEXTO_IA · EXTRAIDA_DE_PROJETO · REMIX · DECIA · AUTOPILOT · ATA_VIVA · DOSSIE |
+| sourceKind | `SourceKind` | ARQUIVO · COLAR · GOOGLE · MICROSOFT · EMAIL · LINK · PROTOCOLO · FOTO · TEXTO_IA · EXTRAIDA_DE_PROJETO · REMIX · DECIA · AUTOPILOT · ATA_VIVA · DOSSIE · EXTRACAO (RF34) |
 | sourceRef | String | id do Drive/OneDrive, URL, nº de protocolo, messageId do e-mail |
 | linkMode | `LinkMode` | VINCULADO · COPIADO (RF20.CA07) |
 | orgEntityId | UUID → OrgEntity | órgão/fornecedor (= brand) |
@@ -431,7 +431,7 @@ id · userId · departmentId · capability `AiCapability` (CLASSIFICAR_MENSAGEM 
 ## 11. Transição & Memória (RF36, RF17)
 
 ### 11.1 `HandoffDossier` — Dossiê de Transição — `handoff_dossiers`
-id · subjectType (EMPREGADO · GESTAO) · subjectUserId · groupingId · requestedBy · reason (SAIDA · TRANSFERENCIA · FIM_GESTAO · TROCA_CHEFE) · generatedAt · contentJson {openProjectsByPhase, pendingTasks, blockedTasks, activeSessions, pendingReviews, contacts, contextSummaries[]} · documentTaskId (DOCUMENTO PDF) · transitionProjectId · successorUserId · successorAcceptedAt · status (GERADO · AGUARDANDO_SUCESSOR · TRANSFERIDO) · consentForPrivateItems · aiInferenceId.
+id · subjectType (EMPREGADO · GESTAO) · subjectUserId · groupingId · requestedBy · reason (SAIDA · TRANSFERENCIA · FIM_GESTAO · TROCA_CHEFE) · generatedAt · contentJson {openProjectsByPhase, pendingTasks, blockedTasks, activeSessions, pendingReviews, contacts, contextSummaries[]} · documentTaskId (DOCUMENTO PDF) · transitionProjectId · successorUserId · successorAcceptedAt · status `HandoffStatus` · consentForPrivateItems · aiInferenceId.
 ### 11.2 `HandoffItem` — `handoff_items` — id · dossierId · targetType (TASK · PROJECT · SESSION · REVIEW) · targetId · previousResponsibleId · newResponsibleId · transferredAt · note.
 ### 11.3 `SessionArchive` — histórico salvo (RF17) — `session_archives` + S3 — id · sessionId · exportJsonMediaId · exportPdfMediaId · messageCount · checksum (SHA-256) · archivedAt · closedWithoutDecision (bool) · closeReason · analyticsSnapshotJson.
 
@@ -486,6 +486,13 @@ id · subjectType (EMPREGADO · GESTAO) · subjectUserId · groupingId · reques
 | MetricScope | GLOBAL · EMPRESA · DEPARTAMENTO · USUARIO |
 | MetricDomain | INOVACAO · TI · PROJETOS · EQUIPES · DECIA · PONTOS |
 | AiQuestionKind | RISCO (RF8) · PONTO_CRITICO (RF16) · ESCLARECIMENTO |
+| ExtractionStatus | PROCESSANDO · PRONTA · REVISADA · CONVERTIDA · FALHA |
+| MemorySourceType | SESSAO · ARTEFATO · DECISAO · PROJETO · TAREFA · DOCUMENTO |
+| PipelineJobStatus | PENDENTE · RODANDO · OK · FALHA · REPROCESSAR |
+| GoalStatus | ABERTA · ATINGIDA · EXPIRADA |
+| RecognitionSource | MANUAL · META · BENEFICIO |
+| HandoffStatus | GERADO · AGUARDANDO_SUCESSOR · TRANSFERIDO · RECUSADO · CANCELADO |
+| HandoffReason | SAIDA · TRANSFERENCIA · FIM_GESTAO · TROCA_CHEFE |
 
 ## 14. Pendências de modelagem (ver `docs/DECISOES.md`)
 - Os cards RF1–RF18 do board não têm critérios de aceite escritos (só as HUs). A taxonomia do DECIA (seção 5) foi derivada das HUs + RF29/RF42/RF43; confirmar CAs antes da Sprint 1.
