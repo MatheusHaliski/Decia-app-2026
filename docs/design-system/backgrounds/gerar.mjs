@@ -49,7 +49,7 @@ export const PLACEHOLDERS = {
     `<pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="${CREAM}" stroke-opacity=".12" stroke-width="1"/></pattern>`),
   'grade-minima': () => svg('grade-minima',
     `<rect width="${W}" height="${H}" fill="${V('surface-1', '#FFFFFF')}"/><rect width="${W}" height="${H}" fill="url(#dots)"/>`,
-    `<pattern id="dots" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="16" cy="16" r="1.5" fill="${INK}" fill-opacity=".18"/></pattern>`),
+    `<pattern id="dots" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="16" cy="16" r="1.75" fill="${INK}" fill-opacity=".30"/></pattern>`),
 };
 
 mkdirSync(join(here, 'placeholders'), { recursive: true });

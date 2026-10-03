@@ -10,7 +10,8 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { execFileSync } from 'node:child_process';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const CHROME = process.argv.find((a) => a.startsWith('--chrome='))?.slice(9) || process.env.CHROME || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+// headless_shell (headless "antigo") captura exatamente a viewport; o chrome --headless=new reserva ~80 px de barra na janela.
+const CHROME = process.argv.find((a) => a.startsWith('--chrome='))?.slice(9) || process.env.CHROME || '/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell';
 const TW = 320, TH = 180;
 
 // catálogo: regex sobre backgrounds.ts (sem compilador TS nesta etapa)
@@ -36,7 +37,7 @@ img{width:${TW}px;height:${TH}px;object-fit:cover;display:block}
 <body>${src ? `<img src="${pathToFileURL(src).href}" alt="">` : '<div class="none">&gt;_ sem arte</div>'}</body></html>`;
   writeFileSync(tmp, html);
   const out = join(here, 'thumbs', e.thumb);
-  execFileSync(CHROME, ['--headless=new', '--no-sandbox', '--disable-gpu', '--hide-scrollbars', `--window-size=${TW},${TH}`, `--screenshot=${out}`, pathToFileURL(tmp).href], { stdio: 'ignore' });
+  execFileSync(CHROME, [...(CHROME.includes('headless_shell') ? [] : ['--headless=new']), '--no-sandbox', '--disable-gpu', '--hide-scrollbars', `--window-size=${TW},${TH}`, `--screenshot=${out}`, pathToFileURL(tmp).href], { stdio: 'ignore' });
   n++; console.log(`  ${e.id} → thumbs/${e.thumb}`);
 }
 rmSync(tmp, { force: true });
