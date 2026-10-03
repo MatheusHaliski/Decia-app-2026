@@ -488,3 +488,145 @@ id · subjectType (EMPREGADO · GESTAO) · subjectUserId · groupingId · reques
 - Os cards RF1–RF18 do board não têm critérios de aceite escritos (só as HUs). A taxonomia do DECIA (seção 5) foi derivada das HUs + RF29/RF42/RF43; confirmar CAs antes da Sprint 1.
 - "Grupo da conversa" (HU5) foi modelado como `SessionParticipant` com `role MEMBRO`; não existe entidade `Group` separada. Confirmar.
 - Avatar 3D fora de escopo (card "Ideias"); "persona profissional" pode virar campo `jobTitle` + `DeliberativeProfile`.
+
+## 15. Visão ER consolidada (relacionamentos entre contextos)
+
+```mermaid
+erDiagram
+  COMPANY ||--o{ DEPARTMENT : possui
+  COMPANY ||--o{ USER : emprega
+  DEPARTMENT ||--o{ DEPARTMENT_MEMBERSHIP : lotacoes
+  USER ||--o{ DEPARTMENT_MEMBERSHIP : historico
+  DEPARTMENT ||--o{ CURATOR_APPOINTMENT : curadores
+  USER ||--|| USER_PREFERENCES : tem
+  USER ||--o{ REFRESH_TOKEN : sessoes
+
+  USER ||--o{ TASK_ITEM : cria
+  DEPARTMENT ||--o{ TASK_ITEM : origem
+  TASK_ITEM ||--o{ TASK_ATTACHMENT : anexos
+  TASK_ITEM ||--o{ TASK_VERSION : versoes_vinculadas
+  TASK_ITEM ||--o{ TASK_STATE_LOG : transicoes
+  TASK_ITEM }o--o| LEGAL_DEADLINE_RULE : prazo_legal
+  TASK_ITEM }o--o| ORG_ENTITY : orgao_fornecedor
+  TASK_ITEM }o--o| TASK_ITEM : original_remix_extraida
+  EVIDENCE }o--o| TASK_ITEM : vinculada
+
+  USER ||--o{ PROJECT_SCHEME : cria
+  PROJECT_SCHEME ||--o{ PROJECT_TASK : compoe
+  PROJECT_TASK }o--o| TASK_ITEM : referencia_ou_snapshot
+  PROJECT_SCHEME ||--o{ PROJECT_TASK_DEPENDENCY : dependencias
+  PROJECT_SCHEME ||--o{ PROJECT_VERSION : historico
+  PROJECT_SCHEME ||--o{ PROJECT_SCENARIO : cenarios
+  PROJECT_SCHEME ||--o{ COMPLIANCE_RESULT : espelho
+  COMPLIANCE_CHECKLIST ||--o{ COMPLIANCE_ITEM : itens
+  COMPLIANCE_CHECKLIST ||--o{ COMPLIANCE_RESULT : avaliacoes
+  PROCESS_KIT ||--o{ KIT_ITEM : itens
+  KIT_ITEM }o--|| TASK_ITEM : tarefa
+
+  ANNUAL_PLAN ||--|{ PLAN_AXIS : seis_eixos
+  PLAN_AXIS ||--o{ PLAN_AXIS_PROJECT : vincula
+  PLAN_AXIS_PROJECT }o--|| PROJECT_SCHEME : projeto
+  ANNUAL_PLAN }o--o| ANNUAL_PLAN : derivado_de
+  GROUPING ||--o{ GROUPING_ITEM : agrupa
+  GROUPING_ITEM }o--o| PROJECT_SCHEME : projeto
+  GROUPING_ITEM }o--o| TASK_ITEM : tarefa
+  GROUPING }o--o| HANDOFF_DOSSIER : encerra_gestao
+
+  DECIA_SESSION ||--o{ SESSION_PARTICIPANT : participantes
+  DECIA_SESSION ||--o{ SESSION_MESSAGE : mensagens
+  SESSION_MESSAGE ||--o| MESSAGE_CLASSIFICATION : classificada
+  SESSION_MESSAGE ||--o{ MESSAGE_ATTACHMENT : anexos_do_acervo
+  DECIA_SESSION ||--o{ DIVERGENCE : divergencias
+  DIVERGENCE ||--o{ DIVERGENCE_REPLY : respostas
+  DECIA_SESSION ||--o{ AI_QUESTION : perguntas
+  DECIA_SESSION ||--o{ ANALYTICAL_SUMMARY : resumos
+  ANALYTICAL_SUMMARY ||--o{ SUMMARY_SCENARIO : cenarios
+  ANALYTICAL_SUMMARY ||--o| FINAL_DECISION : decisao
+  FINAL_DECISION ||--o| DECISION_REVIEW : revisao
+  FINAL_DECISION ||--o{ REOPEN_REQUEST : reaberturas
+  FINAL_DECISION }o--o| TASK_ITEM : ata_registro_resultante
+  DECIA_SESSION ||--o{ SESSION_ARTIFACT : artefatos
+  DECIA_SESSION ||--o| SESSION_ARCHIVE : historico
+  DECIA_SESSION }o--o| PROJECT_SCHEME : aberta_a_partir_de
+  DECIA_SESSION ||--o{ DECISION_TRACE_NODE : rastro
+  DECISION_TRACE_NODE ||--o{ DECISION_TRACE_EDGE : arestas
+  DECIA_SESSION ||--o{ MEETING : reunioes
+  MEETING ||--o| MEETING_TRANSCRIPT : transcricao
+  MEETING ||--o{ RECORDING_CONSENT : consentimentos
+
+  SEAL ||--|| SEAL_POLICY : politica
+  SEAL ||--o{ SEAL_BOND : vinculos
+  SEAL_BOND }o--o| TASK_ITEM : alvo
+  SEAL_BOND }o--o| PROJECT_SCHEME : alvo
+  SEAL_BOND }o--o| ANNUAL_PLAN : alvo
+  SEAL ||--o{ BENEFIT : habilita
+  BENEFIT ||--o{ BENEFIT_REDEMPTION : resgates
+  BENEFIT_REDEMPTION }o--|| SEAL_BOND : exige_aprovada
+  USER ||--o{ RECOGNITION : recebe
+
+  USER ||--o{ MODEL_OFFER : oferece
+  USER ||--o{ DECIA_POINTS_LEDGER_ENTRY : extrato
+  DECIA_POINTS_RULE ||--o{ DECIA_POINTS_LEDGER_ENTRY : regra_versionada
+  STORE_ITEM ||--o{ STORE_PURCHASE : compras
+  STORE_PURCHASE ||--|| DECIA_POINTS_LEDGER_ENTRY : debito
+  USER ||--o{ AI_CREDIT_LEDGER_ENTRY : cota_ia
+
+  USER ||--o{ REACTION : reage
+  USER ||--o{ COMMENT : comenta
+  USER ||--o{ SAVED_ITEM : salva
+  USER ||--o{ SHARE : compartilha
+  USER ||--o{ REMIX : remixa
+  USER ||--o{ FOLLOW : segue
+  USER ||--o{ NOTIFICATION : recebe
+
+  USER ||--o{ DAILY_TASK : tarefa_do_dia
+  DAILY_TASK }o--|| TASK_ITEM : tarefa
+  USER ||--o{ WEEK_PLAN : semana
+  WEEK_PLAN ||--|{ WEEK_PLAN_DAY : dias
+  USER ||--o{ PROFILE_HYPE_SCORE : hype
+  USER ||--o{ DELIBERATIVE_PROFILE : perfil_deliberativo
+  USER ||--o{ RANKING_ENTRY : posicoes
+  COLLECTIVE_GOAL ||--o{ GOAL_PARTICIPANT : participantes
+
+  USER ||--o{ AI_INFERENCE_LOG : inferencias
+  TASK_ITEM ||--o{ EXTRACTION_RESULT : extracoes
+  EXTRACTION_RESULT ||--o{ EXTRACTION_CORRECTION : correcoes
+  FEASIBILITY_SHEET }o--o| PROJECT_SCHEME : projeto_resultante
+  HANDOFF_DOSSIER ||--o{ HANDOFF_ITEM : itens_transferidos
+```
+
+## 16. Matriz entidade × RF (onde cada entidade nasce e quem a lê)
+
+| Entidade | Nasce em | Lida/alterada em |
+|---|---|---|
+| User, UserPreferences, RefreshToken | RF1, RF2, RF3 | todos |
+| Company, Department, DepartmentMembership, CuratorAppointment, ApprovalRequest | RF28 | RF19, RF24, RF25, RF35, RF39 |
+| TaskItem, TaskAttachment, TaskVersion, TaskStateLog, LegalDeadlineRule, OrgEntity, Evidence | RF20, RF41 | RF21–RF23, RF29, RF34, RF40, RF44 |
+| ProjectScheme, ProjectTask, ProjectTaskDependency, ProjectVersion | RF21, RF22 | RF23, RF24, RF25, RF29–RF32, RF43 |
+| ProjectScenario | RF31 | RF11, RF29 |
+| ComplianceChecklist, ComplianceItem, ComplianceResult | RF32 | RF11, RF39, RF45 |
+| ProcessKit, KitItem | RF21 | RF40, RF43 |
+| AnnualPlan, PlanAxis, PlanAxisProject | RF24 | RF11, RF21, RF39, RF44 |
+| Grouping, GroupingItem | RF25 | RF19, RF28, RF36 |
+| DeciaSession, SessionParticipant | RF4, RF5, RF9 | RF6–RF17, RF29 |
+| SessionMessage, MessageClassification, MessageAttachment | RF6, RF7, RF29 | RF8, RF11, RF42 |
+| Divergence, DivergenceReply, AiQuestion | RF8, RF10, RF16 | RF11, RF42 |
+| AnalyticalSummary, SummaryScenario | RF11 | RF12, RF31, RF33 |
+| FinalDecision, DecisionReview, ReopenRequest | RF12, RF14, RF15 | RF29, RF42 |
+| SessionArtifact | RF13 | RF29, RF33 |
+| DecisionTraceNode, DecisionTraceEdge | RF29 | RF22, RF38, RF41, RF45 |
+| SessionArchive | RF17 | RF18, RF33 |
+| Meeting, MeetingTranscript, RecordingConsent | RF37 | RF29, RF42 |
+| Seal, SealPolicy, SealBond, SealProposal | RF39 | RF20, RF21, RF28, RF40, RF45 |
+| Benefit, BenefitRedemption, Recognition | RF39, RF35, RF28 | RF19, RF42 |
+| ModelOffer | RF40 | RF19, RF21, RF42 |
+| DeciaPointsLedgerEntry, DeciaPointsRule, StoreItem, StorePurchase, AiCreditLedgerEntry, PointsDonation | RF42 | RF19, RF35, RF39, RF40, RF43, RF45 |
+| Reaction, Comment, SavedItem, Share, Remix, Follow, MuralEntry, Notification, TimelineEvent | RF26, RF27 | RF19, RF39, RF45 |
+| CollectiveGoal, GoalParticipant, Highlight | RF35 | RF27, RF39 |
+| DailyTask, WeekPlan, WeekPlanDay, HseWeights, EfficiencyScoreSnapshot | RF44 | RF19, RF43, RF45 |
+| ProfileHypeScore, HypeBand, HypeIgnoredEvent, DeliberativeProfile, RankingEntry, RankingWeights | RF45, RF43 | RF19, RF28 |
+| AiInferenceLog, AiQuota, Insight, FeasibilitySheet, MetricDefinition, MetricSnapshot | RF43 (e todo RF com IA) | RF18, RF28 |
+| ExtractionResult, ExtractionCorrection | RF34 | RF20, RF21 |
+| InstitutionalMemoryDocument, Citation, MemoryQuery | RF33 | RF8, RF11, RF16, RF27, RF30 |
+| HandoffDossier, HandoffItem | RF36 | RF25, RF28 |
+| AuditLog, DomainEventOutbox, PipelineJob, FeatureFlag, MediaObject, DataExportRequest, UserSkin | transversal | RF18, RF38, RF42 |
