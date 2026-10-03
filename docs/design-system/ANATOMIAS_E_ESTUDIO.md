@@ -501,3 +501,355 @@ DailyTask "0..*" --> "1" TaskItem
 ```
 
 Fontes do diagrama: atributos de `TAXONOMIA §2.1, §3.1–3.3, §4, §6, §8`; cardinalidade mínima de `ProjectTask` (1 em DEMANDA + 1 em outra fase) de `RF21.CA05`; `taskId` nulo com snapshot de `RF23.CA03`; ligações com `Seal`/`SealBond` de `board › Chancelas §1` (espelho de `Seal.java:19-23` e `SealBond.java:22-26`); `cardArtJson`/`cardLayout` são **proposta** (§5.7). ⟲ `DIAGRAMA_CLASSES_v1.md` não tinha `cardArtJson` nem a ligação `Remix → DeciaPointsLedgerEntry`.
+
+---
+
+## 4. (C) Anatomia de cards
+
+### 4.1 Mapeamento FAI → Work Station, anatomia por anatomia
+
+A tabela cobre **cada** entrada de `SCHEME_ANATOMIES` (seções A e B, `components/scheme-anatomies.tsx:12-27`), `PIECE_ANATOMIES` (`:83-86`), as famílias v2 da peça (`lib/piece-art.ts:9,52-54`) e o DNA (`components/dna-card.tsx:33-53`). "Equivalente" usa os ids de layout propostos em §5.1 (tarefa: `PAGINA · GRADE · PRANCHA · MENSAGEM · FICHA · LINHA`; projeto: `MOSAICO · LINHA_TEMPO · KANBAN_MINI · PAINEL_METRICAS · CAPA_FOTO · COMPACTO`).
+
+#### Look (`SCHEME_ANATOMIES`) → projeto
+
+| FAI (id · seção · zona do selo) | O que faz no FAI (fonte) | Equivalente WS | O que muda | O que sai |
+|---|---|---|---|---|
+| `LISTA_VERTICAL` · A · TITLE_ROW + pieceRows (`:14,36`) | foto + título + uma linha por peça com miniatura, nome, marca·tamanho·cor, preço, selo por peça (`scheme-card.tsx:191-199`; `v18:~497-527`) | **`MOSAICO`** com lista de tarefas abaixo (padrão) | capa = mosaico 2×3 (não a foto); cada linha = thumb 32 px + glifo do tipo + título + categoria·fase + prazo; lacre por tarefa no fim da linha (`RF21.CA09`) | preço por linha → valor só no total; marca → órgão só no detalhe |
+| `GRADE_PECAS` · A · TITLE_ROW + célula (`:15,37`) | mosaico 3+N das peças abaixo da foto, legenda nome·marca·preço por célula (`scheme-card.tsx:188-190`) | **`MOSAICO`** (a capa já é a grade) | o mosaico sobe para a área da mídia e ganha o anel de progresso (`RF38.CA03`); legenda por célula = glifo + ext | a foto hero (não há "foto do look") |
+| `HERO_LISTA` · A · TITLE_ROW (`:16,38`) | foto grande à esquerda, até 4 peças à direita (`scheme-card.tsx:181-186`) | **hero da Vitrine** (`ANATOMIA_CARDS §5`, `projeto-hero-vitrine`) + `LINHA` do Mural | capa 16:9 à esquerda, objetivo + barra de fases larga à direita | lista lateral de peças (vira "n tarefas · n pessoas") |
+| `PASSARELA` · B · COVER_CORNER (`:17,39`) | trilho ordenado por curtidas, holofotes proporcionais (`:183-209`) | **Vitrine** (destaque do mês, `RF35`, `board › RF27` "capa grande e remixar") — *contexto*, não layout | o destaque é curadoria/algoritmo com critérios visíveis (`Highlight.algorithmScoreJson`), não votação | ordenar por curtidas; holofotes; plateia |
+| `ETIQUETA` · B · TITLE_ROW (`:18,40`) | etiquetas de papel com foto, marca, tamanho, material, preço; "Clássica do armário" (`:216-238`) | **`FICHA`** (tarefa) / ficha DP no **Balcão** (projeto) | a "etiqueta" é a ficha de protocolo: nº, categoria, situação, prazo legal; no Balcão, preço em DP + licença | preço em destaque tipográfico; cuidados de lavagem |
+| `RAIO_X` · B · COVER_CORNER (`:19,41`) | pinos numerados sobre a foto, material·cor, peça-âncora (`:240-258`) | **`PRANCHA`** (tarefa DESENHO_TECNICO/MAPA) e **`LINHA_TEMPO`** (projeto: a "âncora" é o caminho crítico) | legenda numerada = itens extraídos (`RF34`, `ExtractionResult.rowsJson`); varredura única ao entrar (mantida, só no ampliado) | pinos sobre foto; material/cor |
+| `BENTO` · B · META_BLOCK (`:20,42`) | bloco grande + 3 menores, troca de destaque sem mudar altura (`:260-286`) | **`MOSAICO`** com célula destacada (toque numa célula a leva ao destaque — **proposta**, mesma regra de altura fixa) | o "look completo" inicial vira "capa do projeto"; células = tarefas | dados de preço por bloco |
+| `ESPECTRO` · B · TITLE_ROW (`:21,43`) | faixa de cor proporcional à área estimada (`:288-312`; `AREA_WEIGHT :117`) | **barra de 7 fases** com largura proporcional ao nº de tarefas por fase (`KANBAN_MINI`) | a proporção é contada, não estimada; nome da fase sempre em texto | cor; "harmonia" |
+| `CUSTO_POR_USO` · B · HEADER · só dono (`:22,44,99`) | preço ÷ usos, meta R$ 20, melhor/pior (`:314-340`) | **`PAINEL_METRICAS`** (SPI, CPI, conformidade, reutilizações) — só dono/departamento (`effectiveAnatomy`, §5.1) | fórmulas do EVM (`RF43.CA09`), não custo por uso; "Só você vê" mantido | meta em R$ por uso |
+| `SILHUETA_PROPORCAO` · B · TITLE_ROW (`:23,45`; `SILHOUETTES :90`) | manequim pintado, família declarada (`:342-368`) | **`LINHA_TEMPO`** (a forma do projeto é o cronograma; "família" = tipo de caminho crítico, **proposta**: curto/longo/paralelo) | — | manequim, família de silhueta |
+| `HYPE_FOCUS` · B · HEADER (`:24,46`) | medidor da peça em alta, global × esta (`:373-398`; faixas `hypeStatus :154`) | **`PAINEL_METRICAS`** (card) + Hype do autor (cabeçalho) | medidores com 4 faixas de status mantidos (`DESIGN_SYSTEM §2.3` cores de status); "em formação" quando amostra pequena (`RF45.CA02`) | hype por tarefa |
+| `CARTELA_SAZONAL` · B · COVER_CORNER · exige `season` (`:25,47,100`) | arte da estação, peças que conversam com a paleta (`:400-421`) | **descartada** (§1.3). A regra "layout que exige dado → cai no padrão" **fica** em `effectiveLayout` | — | tudo |
+| `LEGO` · B · STUDS (`:26,48`) | card em blocos, pinos como selo (`:423-441`; `SealStuds` `scheme-card.tsx:55-65`) | **descartada**; a função "outra matéria" vai para o estilo **Terminal** e as texturas (§5.3) | — | tudo (inclusive a zona STUDS) |
+
+#### Peça (`PIECE_ANATOMIES` + famílias v2) → tarefa
+
+| FAI (id · zona do selo) | O que faz (fonte) | Equivalente WS | O que muda | O que sai |
+|---|---|---|---|---|
+| `PECA_AMPLIADO` · META_BLOCK (`:51,84`) · família `classic` (`piece-art.ts:9,52`) | foto 4:5 + nome + marca; selo na linha "categoria · marca · sexo · selos" (`piece-card.tsx:95-97`) | **`PAGINA`** (padrão) · zona META_BLOCK | mídia 3:2 com selo da extensão; linha secundária = categoria · departamento · formato | sexo; preço (só "à venda" → ficha DP) |
+| `PASSARELA` · COVER_CORNER (`:52`) · família `runway` | luz proporcional às curtidas (`v18:~770`) | — (contexto Vitrine) | — | tudo |
+| `ETIQUETA` · HEADER (`:53`) | etiqueta de preço; nível por uso (`v18:~780`) | **`FICHA`** · zona HEADER (ao lado do nº de protocolo) | nível "Modelo consolidado" por `reuseCount` (P-07) | preço, "Clássica do armário" |
+| `RAIO_X` · COVER_CORNER (`:54`) · família `xray` | ficha técnica (material, cor, tamanho, usos, curtidas) (`v18:~790`) | **`PRANCHA`** · zona COVER_CORNER (canto oposto ao carimbo da prancha) | legenda = quantitativos extraídos; "FL. 01 · ESC. 1:500 · protocolo" (`cards.mjs:33`) | sinais vitais, bpm (já removidos na v18) |
+| `BENTO` · META_BLOCK (`:55`) · família `bento` | foto + 3 blocos de dado (preço, usos, curtidas) (`v18:~800`) | **`GRADE`** (planilha) · zona META_BLOCK | blocos = 3 números da planilha (linhas, total, última atualização) ou mini-gráfico | preço |
+| `ESPECTRO` · TITLE_ROW (`:56`) | cor da peça + combinações pela roda (`v18:~805`) | — (sem cor por tarefa). A função "o que combina com isto" vira **"tarefas relacionadas"** no detalhe (Memória Institucional, `RF27.CA05`) | — | tudo |
+| `CUSTO_POR_USO` · HEADER (`:57`) | preço ÷ usos por peça (`v18:~810`) | **`FICHA`** com "custo por reutilização" só para o dono quando `amountInvolved > 0` (**proposta**) | — | meta R$ 20 |
+| `LEGO` · STUDS (`:58`) · família `blocks` | peça em blocos, placa "30 usos" (`v18:~815`) | descartada | — | tudo |
+| família `seasonal` (`piece-art.ts:9`) | guirlanda/janela por estação (`v19 §5`) | descartada; texturas de papelaria no lugar | — | tudo |
+
+#### Famílias de arte v1 do WS (`ANATOMIA_CARDS §4`) → esta v2
+
+⟲ **corrige v1.** A v1 chama de "família de arte" cinco composições (Protocolo, Carimbo, Pasta, Blueprint, Monograma) que misturam dois eixos que o FAI separa: o **layout** (anatomia: o que o container mostra; `layoutAnatomy`) e o **estilo/arte** (`ArtKind` do fundo; `card-art.ts:12`) + a **composição das faixas** (`template.family`, `piece-art.ts:9`). Nesta v2: Protocolo → **estilo** `textura:papel` + layout `FICHA`; Carimbo → **destaque** (carimbo é um elemento da zona de estado, não um fundo); Pasta → composição das faixas com ênfase no topo (22/10) do layout `PAGINA` para o tipo PASTA; Blueprint → **estilo** `textura:blueprint` + layout `PRANCHA` (ênfase na base 10/22); Monograma → **estilo** `monograma` (fundo com as iniciais, `ArtKind` novo, §5.3). As cinco pranchas SVG existentes continuam válidas como exemplos de *combinações*.
+
+#### DNA (`DNA_LAYOUTS` + `DNA_NARRATIVES`) → Plano Anual (mapeamento resumido; o card do plano é documento à parte)
+
+| FAI (`dna-card.tsx`) | Equivalente WS | Observação |
+|---|---|---|
+| A1 `AMPLIADO`, A2 `GRADE`, A3 `HORIZONTAL`, A4 `LATERAL` (`:33-38`; `DNA_v4:372-499`) | card de plano: lista de eixos (A1), grade 2×3 de eixos (A2), fileira (A3), hero + lista lateral clicável (A4) | mesma lógica "cada célula é um esquema inteiro" (`DnaSchemeItem.java:18`) → cada célula é um **eixo com os seus projetos** |
+| B1 `TIMELINE` (`:40`) | **`LINHA_TEMPO`** do projeto / linha do exercício no plano | — |
+| B2 `MOMENTOS_MARCANTES` (`:41`; `milestone` `DnaSchemeItem.java:49-51`) | Destaques do mês (`RF35`) como capa do plano | marco = `Highlight` |
+| B3 `PRIMEIRA_VEZ` (`:42`) | — | sem função de trabalho (descartada) |
+| B4 `CAPSULA_VERSATILIDADE` (`:43`; `DNA_v4:~640-671`) | **Kit de Processo** (`TAXONOMIA §3.10`): "N tarefas-base → M projetos", fator de reutilização | tradução direta: cápsula = kit (`board › Mapa §1`) |
+| B5 `POR_OCASIAO` (`:44`) | agrupamento por **processo** (uma fileira por `ProcessTag`) | — |
+| B6 `MOOD_BOARD` (`:45`; arquétipo no núcleo) | — | arquétipo de estilo não tem análogo; o "núcleo" seria o objetivo do plano (**proposta**, baixa prioridade) |
+| B7 `PALETA_DOMINANTE` · B8 `HARMONIA_CROMATICA` (`:46-47`) | **composição por natureza** (barra proporcional Técnica/Jurídica/Financeira…) | cor → natureza |
+| B9 `MARCAS_FAVORITAS` (`:48`; regra transversal de logos `DNA_v4:549`) | **órgãos/fornecedores mais presentes** (ranking com logo tratado) | regra transversal mantida: contar por `orgEntityId`, desempate por categoria estrutural (ETP/TR/Projeto básico) — **proposta** |
+| B10 `HYPE_FOCUS` (`:49`) | Painel de métricas do plano (SPI médio dos projetos, conformidade) | — |
+| B11 `CARTELA_SAZONAL` (`:50`, ownArt) · B12 `LEGO` (`:51`, ownArt; "narrativa ou acabamento?" `DNA_v4:1089`) | descartadas | a decisão em aberto da DNA_v4 (forma × conteúdo) é resolvida aqui separando **layout** de **estilo** (§5) |
+
+### 4.2 Zonas de cada card
+
+Numeração de camadas igual à v1 (`ANATOMIA_CARDS §1`: 1 superfície externa · 2 área artística · 3 container · 4 mídia · 5 efeitos), que já espelha a v19 (`v19:102-118`). Dentro do container, as **zonas de conteúdo** são estas (nomes usados nas tabelas de §2 e §3 e nos wireframes):
+
+| Zona | Card de tarefa | Card de projeto | Fonte |
+|---|---|---|---|
+| `TOPO` — toggles de estado | ⭐ favorito (só dono) · etiqueta de estado (`TaskState`) · ⛔/cadeado quando BLOQUEADA | ⭐ · etiqueta de status (`ProjectStatus`) · ⛔ pendente de conformidade | RF6.CA11 "no topo, os toggles de estado" (`02-rf.md:210`); `RF38.CA05`; `RF32.CA04`; `piece-card.tsx:65-70` (flags sobre a mídia) |
+| `CAB` — cabeçalho | glifo do tipo (chip 24 px, cor da família) · título (serif, 2 linhas, link) · categoria em mono · departamento · formato · ✦ | emoji/ícone · título · departamento (monograma + sigla na cor) · ✦ | `board › Identidade §7-8`; `card-header.tsx:18-35` (avatar 24 px + @usuário como contrato); `ANATOMIA_CARDS §3,§5` |
+| `MIDIA` — thumbnail / capa | thumbnail 3:2 com selo da extensão; aviso "processando"; carimbo CONCLUÍDA sobre a mídia | capa-mosaico 2×3 + anel de progresso, ou foto, ou IA (✦); carimbo VALIDADO/DEVOLVIDO | `RF38.CA02/CA03`; `ANATOMIA_CARDS §1` camada 4; `v19:109` ("cinco fundos") |
+| `META` — metadados | prazo (⚖ legal; âmbar/vermelho) · responsável (avatar iniciais + nome) · porte · valor (> 0) · classificação de acesso (texto) · chips processo/natureza · extras por estado | próximo marco · "n tarefas · n pessoas" · exercício · conformidade % · último evento DECIA (cor da classe) | `board › Identidade §7-8`; `RF41.CA04`; `scheme-card.tsx:201` (`c-chips`) |
+| `FASES` — barra de 7 fases | só quando a tarefa está em projeto: a fase dela destacada (mini) | barra DEMANDA→ENCERRAMENTO com a atual em aro e **nome em texto**; no Kanban mini, contagem por fase | `board › Identidade §8`; `DESIGN_SYSTEM §3` (`PhaseBar`) |
+| `SELO` — zona do lacre (= `SealZone`) | lacre 36 px (22 sm) na zona definida pelo layout (§4.3); lugar reservado **invisível no feed**, visível só na prévia do Estúdio | idem; lacres herdados das tarefas em tamanho 22 | `scheme-card.tsx:38-53` (`SealSlot` reserva o espaço); `piece-card.tsx:100-101` ("no feed, o espaço só aparece quando há selo"); `RF39.CA11` |
+| `FAISCA` — ✦ | 14 px, canto do cabeçalho; anima só enquanto gera; tooltip de transparência | idem | `RF38.CA04/CA10`; `DESIGN_SYSTEM §3` (`Spark`) |
+| `RODAPE` — social | curtir · comentar · salvar · compartilhar com contagem; remixar e as 4 reações só no detalhe, numa linha só; salvar isolado à direita | idem + "remixar" visível na Vitrine | `v19 §11` (`:~141-153` do extrato; arquivo `v19:228` "padrões de rede social"); `RF26.CA02/CA07`; `CARDS_ARTE.md:21-22` |
+| `DET` — só no detalhe | resumo 3 linhas, metadados agrupados, transparência da IA, ação principal única ("Adicionar ao projeto" / "Transformar em tarefa"), versões, fio de decisão, "Por que isto existe?" | ficha completa, lista por fase, linha do tempo, chancelas do projeto, decisões | `ANATOMIA_CARDS §3` (Ampliado); `v19:73` ("Detalhe: dono × visitante": ação principal única + alternativa como texto-link); `RF41.CA03`; `RF29.CA06` |
+
+**Ordem de leitura** (⟲ complementa v1): tarefa = glifo+categoria → mídia → título → estado/prazo → responsável → social (deriva de `v18:~507` "Ordem de leitura da peça: foto → nome → marca → … → selos → ações", trocando marca por categoria). Projeto = capa → título → fases → marco → social.
+
+**Decorativo × interativo** (mantido da v19:118 e v1): arte, aura, carimbo, lacre e faísca não recebem clique nem foco; a mídia abre o detalhe mas fica fora da ordem de Tab (o título é o link, `piece-card.tsx:88-90`); lacre, faísca e prazo têm `aria-label` + tooltip.
+
+### 4.3 Zona do lacre por layout (= `SEAL_PLACEMENT`)
+
+Espelha `SEAL_PLACEMENT`/`PIECE_SEAL_PLACEMENT` (`scheme-anatomies.tsx:33-61`): cada layout declara `zone`, `source` ("anatomia" = escrita na prancha; "derivada" = deduzida da estrutura) e, no projeto, `taskRows` (= `pieceRows`: lacre por tarefa nas linhas). ⟲ **corrige v1**, que fixava o lacre "no canto do card" para tudo (`board › Identidade §5`) sem zona por layout.
+
+| Layout | Zona | Fonte | Descrição |
+|---|---|---|---|
+| tarefa `PAGINA` | `META_BLOCK` | anatomia | linha "categoria · departamento · formato · lacres" (= `PECA_AMPLIADO`, `:51`) |
+| tarefa `GRADE` | `META_BLOCK` | derivada | bloco de números (= `BENTO` peça, `:55`) |
+| tarefa `PRANCHA` | `COVER_CORNER` | derivada | canto superior direito da prancha, oposto ao carimbo de legenda (= `RAIO_X` peça, `:54`) |
+| tarefa `MENSAGEM` | `HEADER` | derivada | ao lado do remetente (**proposta**) |
+| tarefa `FICHA` | `HEADER` | derivada | ao lado do nº de protocolo (= `ETIQUETA` peça, `:53`) |
+| tarefa `LINHA` | `TITLE_ROW` | anatomia | fim da linha, antes das ações (= `LISTA_VERTICAL` linhas, `:36`) |
+| projeto `MOSAICO` | `COVER_CORNER` + `taskRows` | anatomia | canto superior direito da capa; lacre 22 px por tarefa nas linhas (= `GRADE_PECAS`/`LISTA_VERTICAL`, `:36-37`) |
+| projeto `LINHA_TEMPO` | `TITLE_ROW` | derivada | linha do título, antes do marco (= `SILHUETA_PROPORCAO`, `:45`) |
+| projeto `KANBAN_MINI` | `HEADER` | derivada | cabeçalho, ao lado da sigla do departamento (= `CUSTO_POR_USO`/`HYPE_FOCUS`, `:44,46`) |
+| projeto `PAINEL_METRICAS` | `HEADER` | derivada | ao lado do medidor principal (= `HYPE_FOCUS`, `:46`) |
+| projeto `CAPA_FOTO` | `COVER_CORNER` | derivada | canto da foto (= `PASSARELA`/`CARTELA_SAZONAL`, `:39,47`) |
+| projeto `COMPACTO` | `TITLE_ROW` | anatomia | linha título + marco (= compacto do look, `scheme-card.tsx:140-146`) |
+| **`PHASE_BAR`** (zona nova, **proposta**) | — | — | lacre no fim da barra de fases quando o projeto está CONCLUÍDO e chancelado ("modelo oficial"), substituindo o `STUDS` descartado |
+
+Tamanhos: lacre 36 px no card, 22 px "sm" nas linhas e no anexo (`--card-seal`, `--card-seal-sm` em `tokens.css:124-125`), como `SealSlot` 44/36/28/22/20 px (`scheme-card.tsx:42,142,184,189,197`). Tooltip = emissor, critério (`SealBondBasis`), validade; lacre partido/esmaecido para recusada/caducada (`board › Chancelas §6`).
+
+### 4.4 Tamanhos e densidades
+
+| Tamanho | Largura / proporção | Onde | Equivalente FAI |
+|---|---|---|---|
+| **Compacto** (grade) | 240 px (`--card-x` = `clamp(10px, 5cqi, 16px)`), mídia 3:2 | Acervo, Busca, Perfil, Balcão, grade de projetos | compacto 240–360 px (`v18:~460`, controle "Largura"); card ≈ 220 px na grade (`v19:132`) |
+| **Padrão** (feed) | 320–360 px, mídia 3:2 / capa 2×3 | Mural (coluna única no celular) | ampliado do feed (`v18:483` "Densidades") |
+| **Destaque** (hero) | largura total, capa 16:9 | Vitrine, Destaques do mês | `HERO_LISTA` + "Passarela" como contexto |
+| **Detalhe** (ampliado) | modal ou página; faixas `--card-x-lg` = `clamp(16px, 3cqi, 28px)` | `/tasks/[id]`, `/projects/[id]` | detalhe (`v19:131-134`: laterais 31 px, topo+base 45+45 no desktop) |
+| **Linha** | 100 % × 64 px de thumb | listas densas, Mural, fila de revisão | compacto de lista (`scheme-card.tsx:164-175`) |
+| **Mini** | 32 px thumb, 1 linha | `SelectList` do Criador, slot da PhaseBar, Mesa | `piece2-sm` da lista lateral (`scheme-card.tsx:184`) |
+| **Anexo** | 66×44 thumb | mensagem do DECIA | — |
+
+**Soma topo + base.** ⟲ A v1 fixa `--card-k-sum: 2.6` (`tokens.css:109`); a v19 mede **2,9 × --pc-x** (`v19:132`) e os checklists confirmam que a soma constante é o que garante cards da mesma linha com a mesma altura (`CARDS_ARTE.md:34-35`). Manter 2,6 é aceitável desde que **toda** composição respeite a mesma soma; recomenda-se registrar o valor como decisão (P-09) e verificar no lab (`anatomias.html` usa 2,6).
+
+**Densidade** (preferência do usuário, `data-density="compacta"`, `tokens.css:1638`): *confortável* (padrão) · *compacta* (raio 6 px, `--card-pad` 8 px, controles 36/44). A densidade **não** muda o layout nem a arte; muda padding, raio e tipografia (`DESIGN_SYSTEM §1`). O FAI tem `layoutDensity` por esquema (`Scheme.java:126-127`) — ⟲ no WS a densidade é **do usuário**, não do card (RF3 preferências), evitando cards de alturas diferentes na mesma grade.
+
+### 4.5 Estados visuais (resumo; detalhe em `ANATOMIA_CARDS §3.1/§5.1`)
+
+Mantidos da v1, com dois acréscimos: **"processando"** na mídia (OCR/antivírus/thumbnail pendente, `RF20.CA12`) — equivalente ao "3D processando" do FAI (`v19 §10`), barra indeterminada sem porcentagem inventada; e **"vinculado · sincronizado há N"** para `linkMode = VINCULADO` (`RF20.CA07`). Estados obrigatórios antes do feed, como a seção D da v18 (`v18:804`): carregando (skeleton), erro ("tentar de novo", `RF41.CA01`), privado, removido pelo autor (`RF23.CA03`), sem thumbnail (glifo grande + "sem prévia"), texto longo (2 linhas + reticências), mídia difícil (documento escaneado torto → Estúdio de Documento).
+
+### 4.6 Contextos de exibição
+
+| Contexto | Tamanho / layout forçado | Particularidades | Fonte |
+|---|---|---|---|
+| **Acervo de Tarefas** (`/tasks`) | compacto, grade; `effectiveLayout` do card | contadores por sub-filtro; skeleton; vazio ilustrado; ações rápidas no menu ⋯ (favoritar, duplicar, levar ao projeto, compartilhar na sessão, pedir chancela, oferecer no Balcão, arquivar) | `RF41.CA01`, `RF41.CA07`; = Closet (`closet/page.tsx:56` grade de `PieceCard`) |
+| **SelectList do Criador** (por fase) | mini | só tarefas do meu Acervo (+ compartilhadas), compatíveis com a fase; BLOQUEADA/ARQUIVADA desabilitadas com motivo em itálico; "Cadastrar nova tarefa" abre RF20 em modal | `RF21.CA03`, `RF21.CA07`; = `PieceCard selectable` no `scheme-builder.tsx:213` |
+| **Mural** (`/mural`) | linha (projeto/tarefa) com avatar do ator + verbo; padrão no celular | ações do RF26 inline; 20 por página | `RF27.CA01/CA02`; = feed (`feed/page.tsx:38`) |
+| **Vitrine** | destaque (hero 16:9) | projetos chancelados e modelos públicos; "remixar" em destaque | `board › RF27` sub-aba 2; `RF35` |
+| **Busca** (`/search`) | compacto | 5 abas com contadores; respeita visibilidade | `RF27.CA03/CA04`; = `search/page.tsx:97-98` |
+| **Perfil** (sub-abas Acervo, Projetos, Salvos…) | compacto | só itens com visibilidade compatível; "Levar ao meu acervo" | `RF19.CA02`, `RF41.CA08`; = `lookbook-tabs.tsx:71-123` |
+| **Balcão** (`/models`) | compacto + ficha DP (preço em pontos, licença, etiqueta "repasse") | duas prateleiras (chancelados × comunidade) | `RF40.CA02/CA05` |
+| **Anexo no DECIA** | anexo 66×44 | borda na cor da classificação da mensagem; "abrir" se tiver permissão; ≤ 5 por mensagem | `RF29.CA03`; `TAXONOMIA §5.5` |
+| **Tarefa do Dia** | ficha de protocolo (topo do perfil, Acervo e Mesa) | índice de prioridade decomposto + HSE previsto; botões CONCLUÍ / ADIEI / BLOQUEADA / DELEGUEI | `RF44.CA01/CA03`; `board › Identidade §12` |
+| **Prévia no Estúdio** | compacto **idêntico ao do feed** (mesma largura de coluna) + ampliado | única diferença permitida: o lugar reservado do lacre fica visível | `piece-art-editor.tsx:148-155` ("a prévia é o PRÓPRIO PieceCard do feed"); `v19:193-204` |
+| **Mesa** | post-it (papel colorido, pino, rotação ±3°) | sobre skin papel/cortiça/blueprint | `RF22.CA03`; `ANATOMIA_CARDS §5` |
+
+---
+
+## 5. (D) Estúdio de Arte do Card (RF38 · `board › RF20` Etapa 5 · `board › RF11`)
+
+O Estúdio é o equivalente do Background Studio (RF11) e do Editor da arte do card da peça (v2). No FAI a arte é resolvida em três eixos independentes: **anatomia/layout** (o que o container mostra — `layoutAnatomy`, `effectiveAnatomy`), **arte do fundo** (`ArtKind`, resolvida por `resolveCardArt`) e **container/skin** (`containerColorOf` + `inkOn` + `CARD_SKINS`), mais os **efeitos** da v2 (`ArtEffects`). Regra central mantida: *a arte ocupa só as quatro faixas entre a borda externa e o container, como um passe-partout; o container fica sempre por cima e legível; a mídia nunca recebe arte* (`card-art.ts:5-11`; `piece-card.tsx:35-37`; `v19:134`). ⟲ **corrige v1** em um ponto: a v1 diz que "no card de projeto a arte é a própria capa (não há faixas)" (`ANATOMIA_CARDS §1`); no FAI o look **tem** faixas (`scheme-stage` → `CardArtLayer` atrás do `scheme-container`, `scheme-card.tsx:162-163`) e a capa é só mídia. Aqui o projeto também recebe faixas, para que a Vitrine e o Mural mostrem a mesma arte da grade.
+
+### 5.1 Catálogo de layouts (= `SCHEME_ANATOMIES`/`PIECE_ANATOMIES`)
+
+Campos de cada entrada: `id`, `labelKey` (i18n, como os `get label()` de `scheme-anatomies.tsx:14-26`), `section` (A = base, sempre disponível; B = exige dado), `ownArt` (traz composição própria nas faixas e desliga o segmento Fundo, como `hasOwnArt`, `:87` e `background-studio.tsx:177-181`), quando usar, campos exibidos, zona do lacre, fallback.
+
+#### Tarefa
+
+| id | labelKey | Seção | Quando usar | Campos exibidos (além do contrato §4.2) | Zona do lacre | Fallback (`effectiveLayout`) |
+|---|---|---|---|---|---|---|
+| `PAGINA` | `cardLayout.pagina` | A | padrão; DOCUMENTO, TEXTO_*, FORMULARIO, LINK, IMAGEM_* | mídia = 1ª página/captura; categoria · dept · ext; prazo; responsável | META_BLOCK | — (é o fallback de todos) |
+| `GRADE` | `cardLayout.grade` | B · ownArt | PLANILHA, PLANILHA_ORCAMENTARIA, CRONOGRAMA; ou tarefa com `ExtractionResult` | mídia = mini-gráfico; 3 blocos de número (linhas · total R$ · atualizado em); faixas com grade quadriculada | META_BLOCK | sem dados tabulares → `PAGINA` |
+| `PRANCHA` | `cardLayout.prancha` | B · ownArt | DESENHO_TECNICO, MAPA_GEORREFERENCIA | mídia = silhueta do desenho em papel blueprint; legenda de prancha "FL. 01 · ESC. · protocolo"; itens extraídos numerados (≤ 4) | COVER_CORNER | tipo ≠ desenho/mapa → `PAGINA` |
+| `MENSAGEM` | `cardLayout.mensagem` | B | EMAIL; mensagens do Teams/Gmail | remetente (avatar) · assunto (= título) · data · nº de anexos · thread referenciada | HEADER | tipo ≠ EMAIL → `PAGINA` |
+| `FICHA` | `cardLayout.ficha` | B | PROTOCOLO, ATA_REGISTRO, PORTARIA, OFICIO com `protocolNumber` | nº de protocolo em mono (grande), situação do documento, prazo legal ⚖ com base, órgão de origem; carimbo discreto da situação | HEADER | sem `protocolNumber` → `PAGINA` |
+| `LINHA` | `cardLayout.linha` | A (forçado pelo contexto) | listas densas, Mural, fila de revisão, Dossiê | thumb 64 · glifo · título · categoria · estado · prazo · responsável · ações | TITLE_ROW | — |
+
+#### Projeto
+
+| id | labelKey | Seção | Quando usar | Campos exibidos | Zona do lacre | Fallback |
+|---|---|---|---|---|---|---|
+| `MOSAICO` | `cardLayout.mosaico` | A | padrão | capa 2×3 + anel; barra de fases; marco; n tarefas · n pessoas; último evento DECIA | COVER_CORNER + taskRows | — |
+| `LINHA_TEMPO` | `cardLayout.linhaTempo` | B · ownArt | projetos com ≥ 2 tarefas com prazo | barras por tarefa (Gantt mínimo), caminho crítico em destaque, hoje marcado, dependências como ligações; faixas com régua de datas | TITLE_ROW | < 2 prazos → `MOSAICO` |
+| `KANBAN_MINI` | `cardLayout.kanbanMini` | B | projetos em execução, ≥ 2 fases preenchidas | 7 colunas com contagem e mini-thumbs (≤ 3 por coluna), fase atual em aro | HEADER | < 2 fases → `MOSAICO` |
+| `PAINEL_METRICAS` | `cardLayout.painelMetricas` | B · só dono/departamento | projetos com `evmJson` | medidor SPI, CPI, conformidade %, reutilizações, HSE médio da equipe; faixas de status 0–29/30–49/50–69/70–100 | HEADER | sem `evmJson` **ou** viewer sem permissão → `MOSAICO` (= `CUSTO_POR_USO` só para o dono, `scheme-anatomies.tsx:99`) |
+| `CAPA_FOTO` | `cardLayout.capaFoto` | B | `coverMode` FOTO ou IA | foto/ilustração 3:2 com ✦ quando IA; barra de fases sobre a base da foto | COVER_CORNER | sem `coverUrl` → `MOSAICO` |
+| `COMPACTO` | `cardLayout.compacto` | A (forçado pelo contexto) | listas, DNA-like, anexo | mosaico 64 px · título · fase atual · marco · assinatura do layout (§5.1.1) | TITLE_ROW | — |
+
+#### 5.1.1 Assinatura no compacto (= `CompactSignature`, `scheme-anatomies.tsx:443-461`)
+
+No compacto, uma linha abaixo do título mostra "o que o layout tem de único": `LINHA_TEMPO` → mini-régua com o caminho crítico; `KANBAN_MINI` → 7 pontos com contagem; `PAINEL_METRICAS` → medidor SPI pequeno + "só você vê"; `CAPA_FOTO` → nada (a capa já é a assinatura); `MOSAICO` → 4 mini-thumbs (= 4 miniaturas das peças, `v18:526` "Assinatura no compacto"). Tarefa: `GRADE` → sparkline; `PRANCHA` → "FL. · ESC."; `FICHA` → nº de protocolo; `MENSAGEM` → remetente.
+
+#### 5.1.2 Função `effectiveLayout` (= `effectiveAnatomy`, `scheme-anatomies.tsx:93-102`)
+
+```ts
+export function effectiveLayout(card: { kind: "task" | "project"; layout?: string | null; type?: string; protocolNumber?: string | null;
+  hasTabularData?: boolean; coverUrl?: string | null; dueCount?: number; phasesFilled?: number; hasEvm?: boolean; viewer?: { canEdit: boolean; sameDepartment: boolean } }, context?: "list" | "attachment" | "mini"): string {
+  if (context === "list" || context === "attachment" || context === "mini") return card.kind === "task" ? "LINHA" : "COMPACTO";
+  const a = card.layout ?? (card.kind === "task" ? "PAGINA" : "MOSAICO");
+  if (card.kind === "task") {
+    if (a === "GRADE" && !card.hasTabularData) return "PAGINA";
+    if (a === "PRANCHA" && !["DESENHO_TECNICO", "MAPA_GEORREFERENCIA"].includes(card.type ?? "")) return "PAGINA";
+    if (a === "MENSAGEM" && card.type !== "EMAIL") return "PAGINA";
+    if (a === "FICHA" && !card.protocolNumber) return "PAGINA";
+    return a;
+  }
+  if (a === "LINHA_TEMPO" && (card.dueCount ?? 0) < 2) return "MOSAICO";
+  if (a === "KANBAN_MINI" && (card.phasesFilled ?? 0) < 2) return "MOSAICO";
+  if (a === "PAINEL_METRICAS" && (!card.hasEvm || !(card.viewer?.canEdit || card.viewer?.sameDepartment))) return "MOSAICO";
+  if (a === "CAPA_FOTO" && !card.coverUrl) return "MOSAICO";
+  return a;
+}
+```
+
+No Estúdio, o layout que exige dado aparece **desabilitado com a explicação** quando o dado falta (= `CARTELA_SAZONAL` bloqueada sem estação, `background-studio.tsx:194-198`, e o `role="switch"` desabilitado "com a explicação", `v18:~700`).
+
+### 5.2 Sugestão automática (= Direção recomendada, `background-studio.tsx:82,101,173`)
+
+A IA/regra sugere layout + estilo a partir de `type`, `category`, `processTags`, `natureTags` (= `styles`/`occasions` → `/api/backgrounds/recommendations`): DESENHO_TECNICO → `PRANCHA` + textura blueprint; ATA_REGISTRO/PORTARIA → `FICHA` + papel + carimbo; PLANILHA → `GRADE` + papel quadriculado; EMAIL → `MENSAGEM` + cor sólida; projeto de OBRA → `MOSAICO` + blueprint; projeto JURIDICO → `MOSAICO` + papel timbrado. Botão "Aplicar sugerida" (= "Aplicar recomendada", `:101`). A sugestão carrega ✦ e log em `ai_inference_log` quando vier de IA (`RF38.CA04`). **Proposta**; o board só diz "skin do card; pré-visualização" (`board › RF20` Etapa 5).
+
+### 5.3 Estilos / artes do fundo (= `ArtKind`, `card-art.ts:12`)
+
+| `ArtKind` WS | Equivalente FAI | O que é | Dados no config | Observações |
+|---|---|---|---|---|
+| `none` | `none` (`:42`) | sem arte: faixas na cor da superfície | — | padrão |
+| `color` | `color` | cor sólida das faixas | `fundo.color` (#RRGGBB, catálogo = 8 cores de departamento + 6 neutras) | `inkOn` decide a tinta das faixas |
+| `gradient` | `gradient` + `gradientPresetId` (`:82-83`) | gradiente da marca: `--primary-gradient` (135°, #123A66→#1B4F8A→#2F7BC4, `DESIGN_SYSTEM §2.2`) ou gradiente departamento→primária | `fundo.gradientPresetId` (`marca`, `dept`, `spark`) | catálogo fixo; sem gradiente livre na v1 (P-10) |
+| `mesh` | `aura` (`:93-104`) — função "padrão animado identitário" | **malha de nós**: o fio de decisão como padrão (nós coloridos pelas classes RF7 ligados por linhas finas) | `fundo.meshPresetId` (`argumento`, `consenso`, `misto`), `density` 1–3 | SVG gerado, sem GIF; no detalhe pode animar (§5.6) |
+| `terminal` | `LEGO` (função "card feito de outra matéria") | fundo escuro com grade de caracteres mono e prompt `>` no rodapé da faixa; tinta clara | `fundo.terminalTheme` (`verde`, `âmbar`, `azul`) | substitui Blocos; respeita contraste 4,5:1 |
+| `texture` | `material` (`:106`) | papel (pautado + picote), cortiça, blueprint (grade + cantoneiras), papel timbrado | `fundo.texture` (`papel` · `cortica` · `blueprint` · `timbrado`) | as mesmas skins da Mesa (`--skin-*`, `DESIGN_SYSTEM §2.8`); PNG/SVG leves, sem foto |
+| `monograma` | família `classic`/Monograma v1 | iniciais do título em serif gigante sobre a cor da categoria, nas faixas | `fundo.monogram` (auto) | **proposta** (vem da v1 §4) |
+| `mosaic` | `mosaic` (`:100`) — função "mosaico automático" | mosaico automático dos thumbnails (projeto) ou das páginas (tarefa PASTA) **nas faixas**, esmaecido | `fundo.mosaic: true` | diferente da capa-mosaico (mídia); aqui é passe-partout |
+| `ai` | `ai` (`:92`; `aiArt.url`, `background-studio.tsx:87-94`) | ilustração flat do tema gerada por IA, com ✦ e prompt gravado | `fundo.aiArt {url, prompt, generatedAt, inferenceId}` | `RF11.CA03` do FAI (≤ 30 s ou andamento); sem IA → galeria (`:122`) |
+| `upload` | `upload` (`:92,97`) | imagem enviada, validada e recortada para o formato | `fundo.uploadUrl` | `RF11.CA04` do FAI (valida formato e proporção) |
+
+**Precedência** (= `resolveLayers`, `card-art.ts:75-108`): camada base `color → gradient → texture/terminal/monograma` (a última escolhida vence); camada de imagem `ai/upload → mesh → mosaic` (a de cima vence). Layouts com `ownArt` (GRADE, PRANCHA, LINHA_TEMPO) sobrepõem a camada de imagem e desligam o segmento Fundo com a explicação (= `background-studio.tsx:183`). Descartados: `seasonal`, `aura`, `aura_material` (§1.3).
+
+### 5.4 Skins e cor do container (= `CARD_SKINS` + `containerColorOf` + `inkOn`)
+
+| Skin WS | Equivalente FAI (`lib/skins.ts:2-14`) | bg · ink · accent · border · radius · titleWeight | Tom |
+|---|---|---|---|
+| `timbrado` (padrão) | `atelier` (#FFFFFF, raio 14, peso 500) | `--surface` · `--ink` · `--primary` · `--line-soft` · 10 · 600 | claro |
+| `protocolo` | `index` (mono, borda forte) | #FBFAF6 · #1B1F26 · `--primary` · `--ink` · 4 · 600 (título em mono) | claro |
+| `carimbo` | `stub` (raio 2, borda escura) | #FBF7EF · #2A241C · `--type-ata-registro` · #2A241C · 2 · 700 | claro |
+| `blueprint` | `show_notes` (escuro) | #0F3260 · #EAF2FF · #FFD166 · rgba(255,255,255,.22) · 4 · 600 | escuro |
+| `noturno` | `atelier_terracotta`/`luxury_glass_warm` (escuros) | #1C1F24 · #ECEAE4 · #8DBFF2 · rgba(255,255,255,.18) · 10 · 500 | escuro |
+| `contraste` | — | #000 · #FFF · #FFFF00 · #FFF · 0 · 700 | forçado pelo tema `contraste` |
+
+Mecânica mantida do FAI: a skin vira CSS variables no `article` (`skinStyle`, `lib/skins.ts:28-33`); skins escuras trocam os tokens internos (`DARK_TOKENS`, `:19-20`) para manter AA em qualquer tema do app; **cor do container** = manual (hex válido) senão a nativa da skin (`containerColorOf`, `card-art.ts:111-114`); **tinta** = `inkOn(hex)` por luminância (0,299 R + 0,587 G + 0,114 B > 140 → tinta escura `#1A1714`, senão clara `#F5F2EC`; `card-art.ts:116-119`) — no WS os dois valores viram `--ink` e `--on-dark` do tema, e a mesma função alimenta `surfaceToneStyle` (`lib/skins.ts:22-26`) para os tokens secundários. Paleta de container = 7 amostras (`BOX_SWATCHES`, `background-studio.tsx:133`) → no WS: `--surface`, `--surface-2`, papel #FBF7EF, blueprint #0F3260, grafite #1C1F24, mais o `<input type="color">` livre (`:141`). Acabamento `solid | frosted` (vidro fosco sem desfoque no compacto, com desfoque no ampliado — `CARDS_ARTE.md:40`; `piece-art.ts:30`). Skins compradas na Loja ficam em `UserSkin` (`TAXONOMIA §12.7`); 403 `SKIN_NAO_ADQUIRIDA` (Q-42).
+
+### 5.5 Segmentos do Estúdio (redesenho)
+
+FAI: `Cor · Aura & Material · Layout & Estilo · Container` (`ART_SEGMENTS`, `background-studio.tsx:22-23`), cada grupo de opções em `OptionStrip` (grade/linha, nunca rolagem lateral escondendo opções, `:30-42`). WS: **Fundo · Layout · Container · Destaques**.
+
+| Segmento | Controles | Campo gravado | Equivalente FAI |
+|---|---|---|---|
+| **Fundo** | cor (bolinhas) · gradiente (3 tiles) · textura (4 tiles) · malha de nós (3 tiles + densidade) · terminal (3) · monograma (switch) · mosaico automático (switch) · arte com IA (prompt ≤ 300 + "Gerar" / "Galeria" sem IA) · enviar imagem · "Sem arte" | `fundo.*` | `ColorPanel` (`:51-73`) + `AuraMaterialPanel` (`:75-130`) fundidos |
+| **Layout** | tiles do catálogo §5.1 com `SealZoneDiagram` (mini-maquete 60×90 com o ponto do lacre, `scheme-anatomies.tsx:63-81`), seção A/B, ✦ "traz arte própria", desabilitado com motivo; texto "Lacre neste layout: …"; **Skin** (tiles com a tipografia da skin, `SkinPicker :146-158`) | `layout`, `container.skin` | segmento "Layout & Estilo" (`:189-214`) |
+| **Container** | cor (nativa da skin · 5 amostras · livre) · sólido/vidro · (tarefa) "fundo da área da mídia" = Estúdio de Documento | `container.{color,style}` | `ContainerColor` (`:132-144`) + etapa Superfície interna (`piece-art-editor.tsx:132-144`) |
+| **Destaques** | **Lacre**: mostrar lugar reservado na prévia; zona (só leitura, vem do layout) · **Faísca**: mostrar ✦ (obrigatório quando `aiGenerated`; só se pode *ocultar o tooltip estendido*, nunca a faísca — `RF38.CA04`) · **Barra de fases**: compacta/com nomes (projeto) · **Carimbo** de estado/decisão: canto/centro · **Hype do autor**: mostrar (respeita `HypeVisibility`) · **Movimento**: nenhum/pulso/malha animada (só ampliado) | `destaques.*`, `motion` | efeitos v2 (`piece-art-editor.tsx:106-128`: aura, contorno, brilho, vidro, relevo, textura, colagem, partículas, movimento) com limite de 3 (`EFFECT_LIMIT`, `piece-art.ts:58`) → no WS o limite é **2 destaques decorativos** (carimbo e movimento contam; lacre, faísca e barra não contam porque são informação) — **proposta** |
+
+Prévia ao lado = o próprio card do feed na largura de uma coluna + o ampliado (`piece-art-editor.tsx:148-155`). Rascunho local: Cancelar sem gravar, Restaurar padrão só no rascunho, Aplicar grava com `baseRev` e recebe 409 se outra janela aplicou antes (`piece-art-editor.tsx:205-220`; `CARDS_ARTE.md:41-42`).
+
+### 5.6 Movimento
+
+Regras herdadas e mantidas: **feed estático** (0 animações no compacto; o vídeo/GIF vira pôster) e movimento só no ampliado, com a opção ligada, pausado fora da tela (`IntersectionObserver`, `data-inview`) e desligado por `prefers-reduced-motion` **ou** pela preferência do app (`CARDS_ARTE.md:36-37`; `v19:189`; `useInViewOnce`, `scheme-anatomies.tsx:128-139`). No WS, `data-reduce-motion="true"` (`tokens.css:1639`) e `RF38.CA10`. Catálogo (= `motionOf`, `card-art.ts:19-21`: snow/petals/leaves/shimmer → descartados): `none` · `pulse` (pulso suave do contorno, EM_USO/EM_DECISÃO, `--dur-pulse` 1,8 s) · `thread` (a malha de nós "costura" uma vez ao entrar, 0,9 s, como a entrada única da Passarela `v18:~600`) · `spark` (faísca girando só enquanto a IA gera, `--dur-spark`). Confete da decisão validada é evento, não configuração (`RF38.CA10`). Só a animação sem fundo ganha um "palco discreto" (= `MOTION_BASE`, `card-art.ts:67-73`): `pulse` sem cor → faixas em `--surface-2`.
+
+### 5.7 Persistência
+
+**Onde.** Coluna JSON `card_art_json` em `tasks` e em `project_schemes` (**proposta**), como `wardrobe_items.background_config_json` (`WardrobeItem.java:197-199`) e `schemes.studio_config_json` (`Scheme.java:117-118`); colunas planas `card_skin` (já existe, `TAXONOMIA §2.1`) e `card_layout` (nova) "para busca e renderização rápida" (`Scheme.java:32-33`). Entregue à API dentro do view como `cardArt: Map` (= `background` em `PieceView`/`SchemeView`, `Views.java:49,187`), com os campos planos mesclados (`putIfAbsent`, `Views.java:201-206`). Endpoint `PUT /api/tasks/{id}/card-art` e `PUT /api/projects/{id}/card-art` (só dono; `baseRev` → 409) (= `PUT /api/pieces/{id}/background`, `v19:204`).
+
+**Schema (`CardArtConfig` v1)** — equivalente a `BgConfig` (`background-studio.tsx:12`) + `PieceArt` v2 (`piece-art.ts:25-32`):
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CardArtConfig",
+  "type": "object",
+  "required": ["v"],
+  "properties": {
+    "v": { "const": 1 },
+    "rev": { "type": "integer", "minimum": 0, "description": "revisão para concorrência otimista (baseRev → 409)" },
+    "layout": { "type": "string", "enum": ["PAGINA", "GRADE", "PRANCHA", "MENSAGEM", "FICHA", "LINHA", "MOSAICO", "LINHA_TEMPO", "KANBAN_MINI", "PAINEL_METRICAS", "CAPA_FOTO", "COMPACTO"] },
+    "composition": { "type": "object", "properties": { "emphasis": { "enum": ["balanced", "top", "bottom"] } } },
+    "fundo": {
+      "type": "object",
+      "properties": {
+        "color": { "type": ["string", "null"], "pattern": "^#[0-9A-Fa-f]{6}$" },
+        "gradientPresetId": { "type": ["string", "null"], "enum": ["marca", "dept", "spark", null] },
+        "texture": { "type": ["string", "null"], "enum": ["papel", "cortica", "blueprint", "timbrado", null] },
+        "terminalTheme": { "type": ["string", "null"], "enum": ["verde", "ambar", "azul", null] },
+        "monogram": { "type": "boolean" },
+        "meshPresetId": { "type": ["string", "null"], "enum": ["argumento", "consenso", "misto", null] },
+        "meshDensity": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "mosaic": { "type": "boolean" },
+        "aiArt": { "type": ["object", "null"], "required": ["url"], "properties": { "url": { "type": "string" }, "prompt": { "type": "string", "maxLength": 300 }, "generatedAt": { "type": "string", "format": "date-time" }, "inferenceId": { "type": "string" } } },
+        "uploadUrl": { "type": ["string", "null"] },
+        "posterUrl": { "type": ["string", "null"] }
+      }
+    },
+    "container": {
+      "type": "object",
+      "properties": {
+        "skin": { "type": "string", "enum": ["timbrado", "protocolo", "carimbo", "blueprint", "noturno", "contraste"] },
+        "color": { "type": ["string", "null"], "pattern": "^#[0-9A-Fa-f]{6}$" },
+        "style": { "enum": ["solid", "frosted"] }
+      }
+    },
+    "destaques": {
+      "type": "object",
+      "properties": {
+        "sealPlaceholder": { "type": "boolean" },
+        "sparkTooltip": { "enum": ["curto", "completo"] },
+        "phaseBar": { "enum": ["compacta", "nomes"] },
+        "stamp": { "enum": ["canto", "centro", "oculto"] },
+        "authorHype": { "type": "boolean" }
+      }
+    },
+    "motion": { "enum": ["none", "pulse", "thread"] }
+  },
+  "additionalProperties": true
+}
+```
+
+Leitura tolerante como `readPieceArt` (`piece-art.ts:103-131`): configs sem `v` são lidos como v1 com padrões (`PAGINA`/`MOSAICO`, skin `timbrado`, sem fundo, sem movimento) e **só regravados quando a pessoa aplica**; valores desconhecidos caem no padrão (`oneOf`, `:69`); `color` inválido → `null`.
+
+**Função `resolveCardArt` (WS)** — mesma assinatura e mesma ideia de camadas (`card-art.ts:63-108`):
+
+```ts
+export type ArtKind = "none" | "color" | "gradient" | "texture" | "terminal" | "monograma" | "mesh" | "mosaic" | "ai" | "upload";
+export interface CardArt { kind: ArtKind; base?: string; image?: string; svg?: string; label: string; presetId?: string; motion?: "pulse" | "thread" | null; ink: string; }
+export function resolveCardArt(cfg: CardArtConfig | null | undefined, ctx: { layoutOwnArt: boolean; dept?: string; initials?: string; tiles?: string[]; themeDark: boolean }): CardArt
+```
+
+Casos de teste (= `card-art.test.ts:6-45` adaptados; `vitest`):
+
+| # | Entrada | Esperado |
+|---|---|---|
+| 1 | `{}` | `kind: "none"`, `motion: null`, `ink` = tinta do tema |
+| 2 | `{ fundo: { color: "#1B4F8A" } }` | `kind: "color"`, `base: "#1B4F8A"`, `ink: "#F5F2EC"` (luminância ≤ 140) |
+| 3 | `{ fundo: { color: "#F3F1EA" } }` | `ink: "#1A1714"` |
+| 4 | `{ fundo: { color: "#123", gradientPresetId: "marca" } }` | `kind: "gradient"` (gradiente vence a cor), `label` cita "marca"; cor inválida ignorada |
+| 5 | `{ fundo: { texture: "blueprint" } }` | `kind: "texture"`, `image` = asset do blueprint, `ink` clara |
+| 6 | `{ fundo: { color: "#FFFFFF", terminalTheme: "verde" } }` | `kind: "terminal"` (terminal vence cor), `ink` clara |
+| 7 | `{ fundo: { monogram: true } }`, `ctx.initials = "PT"` | `kind: "monograma"`, `svg` contém "PT" |
+| 8 | `{ fundo: { meshPresetId: "consenso", meshDensity: 2 } }` | `kind: "mesh"`, `svg` com nós na cor `--class-consenso`; `presetId: "consenso"` |
+| 9 | `{ fundo: { meshPresetId: "misto", aiArt: { url: "/art/x.png" } } }` | `kind: "ai"` (arte com IA vence a malha), `image: "/art/x.png"` |
+| 10 | `{ fundo: { uploadUrl: "/up/a b.png" } }` | `kind: "upload"`, `image` com o caminho codificado (`"/up/a%20b.png"`, = `media()`, `card-art.ts:60-61`) |
+| 11 | `{ fundo: { mosaic: true } }`, `ctx.tiles = []` | `kind: "none"` (mosaico sem thumbnails não existe) |
+| 12 | `{ fundo: { mosaic: true } }`, `ctx.tiles = [a,b,c]` | `kind: "mosaic"`, `svg`/`image` com 3 tiles esmaecidos |
+| 13 | `{ fundo: { aiArt: {url} } }`, `ctx.layoutOwnArt = true` | `kind: "none"` + `label` "arte própria do layout" (layout com arte própria sobrepõe) |
+| 14 | `{ motion: "pulse" }` | `kind: "color"`, `base` = palco discreto (`--surface-2`), `motion: "pulse"` (= `MOTION_BASE`) |
+| 15 | `{ fundo: { color: "#1B4F8A" }, motion: "thread" }` | `kind: "color"`, `motion: "thread"` |
+| 16 | `{ motion: "snow" }` (valor do FAI) | `motion: null` (= `motionOf("FOGOS") → null`) |
+| 17 | `{ v: 2 }` (versão futura) ou `{ v: "x" }` | lido como v1 com padrões; nada lança |
+| 18 | `ctx.themeDark = true` + `{ fundo: { texture: "papel" } }` | `image` = variante escura do papel; `ink` clara |
+| 19 | `{ fundo: { color: "#000000" } }` com tema `contraste` | `kind: "color"`, `base: "#000000"`, `ink: "#FFFFFF"`; nenhum gradiente/textura é aplicado no tema contraste (sobrescrita do tema) |
+| 20 | `containerColorOf("blueprint", null)` / `containerColorOf("x", "#ABCDEF")` / `containerColorOf("x", "red")` | `#0F3260` / `#ABCDEF` / cor da skin padrão (`timbrado`) |
+
+### 5.8 Acessibilidade do card e do Estúdio
+
+- Texto ≥ 4,5:1 sobre o container em todas as skins e temas (7:1 no `contraste`); glifos, bordas, lacre e foco ≥ 3:1 — a tabela de 732 pares do design system cobre skins × temas (`DESIGN_SYSTEM §2.9`); a arte das faixas é decorativa e **não precisa** de contraste, mas a tinta do rodapé/cabeçalho que cai sobre as faixas usa `inkOn` (como `--card-ink` em `scheme-card.tsx:135`).
+- Nome do estado, da fase, da classificação e da cor sempre em texto (`--*-nome`, `DESIGN_SYSTEM §2.3`; `RF38.CA05`).
+- Arte `aria-hidden` + `pointer-events:none` + 0 focáveis (`v19:118`, verificado em `CARDS_ARTE.md:107`); lacre/faísca/prazo com `aria-label`; ações com contagem no nome acessível e `aria-pressed` (`v19:~49`).
+- Tema `contraste`: sem sombras, sem gradientes nem texturas (o `resolveCardArt` devolve `color` preto/branco), lacre em contorno, faísca amarela #FFFF00.
+- `forced-colors`: bordas por `CanvasText`, arte oculta.
+- Estúdio: `OptionStrip` com `role="group"` + rótulo; tiles com `aria-pressed`; layouts bloqueados com `aria-disabled` e motivo (`background-studio.tsx:195-198`); tabs dos segmentos com setas; prévia `role="img"` com rótulo "prévia no feed/ampliada" (`piece-art-editor.tsx:149`); `aria-live` para "N de 2 destaques" (= `:108`).
+- Movimento: `prefers-reduced-motion` e `data-reduce-motion` desligam pulso, malha e faísca; o card já aparece "montado" (= Blocos com reduzir movimento, `scheme-anatomies.tsx:426`).
+- i18n: `labelKey` em pt-BR/en/es para layouts, estilos, skins e tooltips (como os `tr()` de `scheme-anatomies.tsx:14-26`).

@@ -20,7 +20,7 @@ skinparam class<<enum>> {
 skinparam packageStyle rectangle
 hide empty methods
 
-package "Sessão (TAXONOMIA §5.1–5.2)" {
+package "Sessão (TAXONOMIA §5, itens 1 e 2)" {
   class DeciaSession {
     +id: UUID
     +topic: String(300)
@@ -107,7 +107,7 @@ package "Sessão (TAXONOMIA §5.1–5.2)" {
   }
 }
 
-package "Mensagens e análise da IA (§5.3–5.10)" {
+package "Mensagens e análise da IA (§5, itens 3 a 10)" {
   class SessionMessage {
     +id: TIMEUUID
     +sessionId, authorId: UUID
@@ -270,7 +270,7 @@ package "Minuta Coletiva (proposta — coedição)" {
   }
 }
 
-package "Decisão, revisão e rastro (§5.11–5.15)" {
+package "Decisão, revisão e rastro (§5, itens 11 a 15)" {
   class FinalDecision {
     +summaryId: UUID
     +decisionText, rationale: Text

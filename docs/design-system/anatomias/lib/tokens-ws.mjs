@@ -5,39 +5,38 @@
 // docs/design-system/TOKENS.md (entre <!-- tokens-ws:inicio --> e <!-- tokens-ws:fim -->). Sai com código 1 se algum par
 // reprovar. Uso: node docs/design-system/anatomias/lib/tokens-ws.mjs
 //
-// ATENÇÃO: todo hex marcado "provisório" foi lido da DESCRIÇÃO do logo (o PNG do Trello não pôde ser baixado nesta
-// sessão). Calibrar com o PNG oficial: basta trocar os valores em BRAND/NODES e rodar o script — as derivações (-ink,
-// -soft, on-*, contraste) acompanham.
+// Hex de marca e dos nós medidos por amostragem (PIL) em public/brand/work-station-logo.png (1448×1086). Para recalibrar
+// basta trocar os valores em BRAND/NODES e rodar o script — as derivações (-ink, -soft, on-*, contraste) acompanham.
 import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { contrast, ensure, lighten, mix, hexToRgb } from './cor.mjs';
 
 /* ------------------------------------------------------------------------------------------------
- * 1. Marca (lida do logo) — provisório, calibrar com o PNG
+ * 1. Marca (medida no PNG oficial)
  * ------------------------------------------------------------------------------------------------ */
 export const BRAND = {
-  ink: ['#17171C', 'preto-monitor'],          // carcaça do monitor e anel externo
-  cream: ['#F4ECD8', 'creme'],                 // prompt `>_` e disco central
-  'orange-500': ['#F28C28', 'laranja-malha'],  // linhas da malha de rede
-  'orange-600': ['#D9701A', 'laranja-escuro'], // sombra do disco / hover
-  'orange-700': ['#B35612', 'laranja-queimado'],// borda inferior clay / active
+  ink: ['#242525', 'preto-monitor'],          // carcaça do monitor e anel externo (base #212223, tela #47443C, brilho #666362)
+  cream: ['#F1DEC0', 'creme'],                 // prompt `>_` e disco central (claro #FDF2D7, sombra #D6B892)
+  'orange-500': ['#F28222', 'laranja-malha'],  // campo da malha (#F28222/#F9923C) e linhas (#F78D42)
+  'orange-600': ['#E06A1B', 'laranja-escuro'], // escurecido: hover, 2º stop do disco
+  'orange-700': ['#AB2C16', 'vermelho-tijolo'],// anel interno do logo: borda inferior clay / active
 };
-/** Nós categóricos da malha (ordem = ordem no logo, sentido horário a partir do topo — provisório). */
+/** Nós categóricos da malha (medidos no PNG). */
 export const NODES = {
-  red: ['#D6453A', 'vermelho'],
-  yellow: ['#E8B931', 'amarelo'],
-  green: ['#3BA55D', 'verde'],
-  blue: ['#3C7BD6', 'azul'],
-  brown: ['#8B5A2B', 'marrom'],
-  orange: ['#F28C28', 'laranja'],
+  red: ['#FC4E2B', 'vermelho'],
+  yellow: ['#F6B507', 'amarelo'],
+  green: ['#7DC549', 'verde'],
+  blue: ['#019FF4', 'azul'],
+  brown: ['#8B4628', 'marrom'],
+  orange: ['#FCB809', 'laranja-dourado'],
 };
 /** Semânticos: cada um aponta para uma base (nó do logo ou cor própria) + nome em texto. */
 export const SEMANTIC = {
-  success: ['#3BA55D', 'verde'], warning: ['#E8B931', 'amarelo'], danger: ['#D6453A', 'vermelho'], info: ['#3C7BD6', 'azul'],
+  success: ['#7DC549', 'verde'], warning: ['#F6B507', 'amarelo'], danger: ['#FC4E2B', 'vermelho'], info: ['#019FF4', 'azul'],
   'ai-spark': ['#E39B12', 'âmbar'],
-  'msg-argument': ['#3C7BD6', 'azul'], 'msg-divergence': ['#F28C28', 'laranja'], 'msg-risk': ['#D6453A', 'vermelho'],
-  'msg-consensus': ['#3BA55D', 'verde'], 'msg-question': ['#7B4FC6', 'roxo'],
+  'msg-argument': ['#019FF4', 'azul'], 'msg-divergence': ['#F28222', 'laranja'], 'msg-risk': ['#FC4E2B', 'vermelho'],
+  'msg-consensus': ['#7DC549', 'verde'], 'msg-question': ['#7B4FC6', 'roxo'],
 };
 
 /* ------------------------------------------------------------------------------------------------
@@ -45,27 +44,27 @@ export const SEMANTIC = {
  * ------------------------------------------------------------------------------------------------ */
 export const THEMES = {
   claro: {
-    'glyph-rim': 'transparent', 'glyph-shine': 'rgba(255,255,255,.22)', 'glyph-screen': '#2A2A33',
+    'glyph-rim': 'transparent', 'glyph-shine': 'rgba(102,99,98,.55)', 'glyph-screen': '#47443C',
     label: 'Claro', scheme: 'light', dir: 'darker', textMin: 4.5, softMix: 0.14,
-    surface: { 0: '#F6F0E1', 1: '#FFFFFF', 2: '#F3ECDC', 3: '#E7DEC8' }, container: '#FFFFFF',
-    text: '#17171C', 'text-muted': '#5B5852', 'text-faint': '#6B675F',
-    border: '#D8CFB8', 'border-strong': '#17171C', focus: '#B35612',
-    accent: '#D9701A', 'accent-strong': '#B35612', 'accent-nome': 'laranja',
-    'scrim-tint': 'rgba(23,23,28,.35)', 'glass-bg': 'rgba(255,255,255,.55)', 'glass-border': 'rgba(23,23,28,.12)',
-    'shadow-clay': 'inset 0 1px 0 rgba(255,255,255,.65), inset 0 -2px 3px rgba(23,23,28,.10), 0 1px 2px rgba(23,23,28,.08), 0 10px 24px -14px rgba(23,23,28,.28)',
-    'shadow-1': '0 1px 2px rgba(23,23,28,.08), 0 2px 6px -2px rgba(23,23,28,.10)',
-    'shadow-2': '0 1px 2px rgba(23,23,28,.08), 0 10px 28px -14px rgba(23,23,28,.22)',
+    surface: { 0: '#F7EEDC', 1: '#FFFFFF', 2: '#F6EBD6', 3: '#E9DAB9' }, container: '#FFFFFF',
+    text: '#242525', 'text-muted': '#5C5A55', 'text-faint': '#6B6861',
+    border: '#D6C6A4', 'border-strong': '#242525', focus: '#AB2C16',
+    accent: '#E06A1B', 'accent-strong': '#AB2C16', 'accent-nome': 'laranja',
+    'scrim-tint': 'rgba(36,37,37,.35)', 'glass-bg': 'rgba(255,255,255,.55)', 'glass-border': 'rgba(36,37,37,.12)',
+    'shadow-clay': 'inset 0 1px 0 rgba(253,242,215,.9), inset 0 -2px 3px rgba(214,184,146,.45), 0 1px 2px rgba(36,37,37,.08), 0 10px 24px -14px rgba(36,37,37,.28)',
+    'shadow-1': '0 1px 2px rgba(36,37,37,.08), 0 2px 6px -2px rgba(36,37,37,.10)',
+    'shadow-2': '0 1px 2px rgba(36,37,37,.08), 0 10px 28px -14px rgba(36,37,37,.22)',
     'body-font': 'var(--ws-font-body)',
   },
   escuro: {
-    'glyph-rim': 'rgba(244,236,216,.55)', 'glyph-shine': 'rgba(244,236,216,.22)', 'glyph-screen': '#2E2E38',
+    'glyph-rim': 'rgba(241,222,192,.55)', 'glyph-shine': 'rgba(102,99,98,.7)', 'glyph-screen': '#47443C',
     label: 'Escuro', scheme: 'dark', dir: 'lighter', textMin: 4.5, softMix: 0.24,
-    surface: { 0: '#121216', 1: '#1B1B21', 2: '#24242B', 3: '#2E2E36' }, container: '#1B1B21',
-    text: '#F4ECD8', 'text-muted': '#B9B2A3', 'text-faint': '#A39C8E',
-    border: '#3A3A44', 'border-strong': '#CFC6B0', focus: '#F6A24A',
-    accent: '#F28C28', 'accent-strong': '#F6A24A', 'accent-nome': 'laranja',
-    'scrim-tint': 'rgba(23,23,28,.55)', 'glass-bg': 'rgba(27,27,33,.62)', 'glass-border': 'rgba(244,236,216,.14)',
-    'shadow-clay': 'inset 0 1px 0 rgba(244,236,216,.14), inset 0 -2px 3px rgba(0,0,0,.45), 0 1px 2px rgba(0,0,0,.4), 0 12px 28px -14px rgba(0,0,0,.7)',
+    surface: { 0: '#151616', 1: '#1E1F1F', 2: '#272828', 3: '#313232' }, container: '#1E1F1F',
+    text: '#F1DEC0', 'text-muted': '#B8AC95', 'text-faint': '#A39780',
+    border: '#3C3D3C', 'border-strong': '#CBBB9C', focus: '#F9923C',
+    accent: '#F28222', 'accent-strong': '#F9923C', 'accent-nome': 'laranja',
+    'scrim-tint': 'rgba(36,37,37,.55)', 'glass-bg': 'rgba(30,31,31,.62)', 'glass-border': 'rgba(241,222,192,.14)',
+    'shadow-clay': 'inset 0 1px 0 rgba(102,99,98,.6), inset 0 -2px 3px rgba(0,0,0,.45), 0 1px 2px rgba(0,0,0,.4), 0 12px 28px -14px rgba(0,0,0,.7)',
     'shadow-1': '0 1px 2px rgba(0,0,0,.4), 0 2px 6px -2px rgba(0,0,0,.5)',
     'shadow-2': '0 1px 2px rgba(0,0,0,.45), 0 10px 28px -14px rgba(0,0,0,.7)',
     'body-font': 'var(--ws-font-body)',
@@ -82,16 +81,16 @@ export const THEMES = {
     'body-font': 'var(--ws-font-body)',
   },
   terminal: {
-    'glyph-rim': 'rgba(242,140,40,.75)', 'glyph-shine': 'rgba(242,140,40,.28)', 'glyph-screen': '#2B2B33',
+    'glyph-rim': 'rgba(242,130,34,.75)', 'glyph-shine': 'rgba(242,130,34,.28)', 'glyph-screen': '#47443C',
     label: 'Terminal', scheme: 'dark', dir: 'lighter', textMin: 4.5, softMix: 0.22,
-    surface: { 0: '#17171C', 1: '#1C1C22', 2: '#23232A', 3: '#2B2B33' }, container: '#1C1C22',
-    text: '#F4ECD8', 'text-muted': '#CDBD9C', 'text-faint': '#B5A685',
-    border: '#3B3426', 'border-strong': '#F28C28', focus: '#F28C28',
-    accent: '#F28C28', 'accent-strong': '#F6A24A', 'accent-nome': 'laranja',
-    'scrim-tint': 'rgba(23,23,28,.55)', 'glass-bg': 'rgba(23,23,28,.70)', 'glass-border': 'rgba(242,140,40,.28)',
-    'shadow-clay': 'inset 0 1px 0 rgba(242,140,40,.22), inset 0 -2px 3px rgba(0,0,0,.5), 0 0 0 1px rgba(242,140,40,.18), 0 12px 28px -14px rgba(0,0,0,.8)',
-    'shadow-1': '0 0 0 1px rgba(242,140,40,.14)',
-    'shadow-2': '0 0 0 1px rgba(242,140,40,.18), 0 10px 28px -14px rgba(0,0,0,.8)',
+    surface: { 0: '#242525', 1: '#2A2B2B', 2: '#313232', 3: '#393A3A' }, container: '#2A2B2B',
+    text: '#F1DEC0', 'text-muted': '#CDBB97', 'text-faint': '#B8A682',
+    border: '#47443C', 'border-strong': '#F28222', focus: '#F28222',
+    accent: '#F28222', 'accent-strong': '#F9923C', 'accent-nome': 'laranja',
+    'scrim-tint': 'rgba(36,37,37,.55)', 'glass-bg': 'rgba(36,37,37,.70)', 'glass-border': 'rgba(242,130,34,.28)',
+    'shadow-clay': 'inset 0 1px 0 rgba(242,130,34,.22), inset 0 -2px 3px rgba(0,0,0,.5), 0 0 0 1px rgba(242,130,34,.18), 0 12px 28px -14px rgba(0,0,0,.8)',
+    'shadow-1': '0 0 0 1px rgba(242,130,34,.14)',
+    'shadow-2': '0 0 0 1px rgba(242,130,34,.18), 0 10px 28px -14px rgba(0,0,0,.8)',
     'body-font': 'var(--ws-font-mono)',
   },
 };
@@ -149,6 +148,7 @@ export function resolveTheme(theme) {
   for (const [k, [hex, nome]] of Object.entries(BRAND)) { o[k] = hex; o[`${k}-nome`] = `"${nome}"`; }
   o['gradient-brand'] = hc ? `radial-gradient(circle, ${t.accent}, ${t.accent})`
     : `radial-gradient(circle at 38% 32%, ${BRAND['orange-500'][0]} 0%, ${BRAND['orange-600'][0]} 58%, ${BRAND['orange-700'][0]} 100%)`;
+  o['gradient-field'] = hc ? t.accent : `radial-gradient(circle at 50% 50%, ${BRAND['orange-500'][0]} 0%, #F9923C 60%, ${BRAND['orange-600'][0]} 100%)`;
   o['gradient-mesh'] = hc ? '#000000'
     : `radial-gradient(circle at 22% 28%, ${rgba(BRAND['orange-500'][0], .38)} 0, transparent 38%), radial-gradient(circle at 78% 70%, ${rgba(BRAND['orange-600'][0], .30)} 0, transparent 42%), repeating-linear-gradient(60deg, ${rgba(BRAND['orange-500'][0], .10)} 0 1px, transparent 1px 28px), repeating-linear-gradient(-60deg, ${rgba(BRAND['orange-500'][0], .10)} 0 1px, transparent 1px 28px), ${BRAND.ink[0]}`;
   // superfícies e neutros
@@ -251,7 +251,7 @@ export function emitCss() {
   let css = `/* ============================================================================================
    Work Station — tokens de design v2, namespace --ws-* (briefing do dono do produto). GERADO por
    docs/design-system/anatomias/lib/tokens-ws.mjs — não editar à mão. Paleta derivada do logo (monitor clay preto,
-   prompt >_ creme, disco creme, malha laranja, nós multicoloridos); hex PROVISÓRIOS até calibrar com o PNG oficial.
+   prompt >_ creme, disco creme, malha laranja, nós multicoloridos); hex medidos em public/brand/work-station-logo.png.
    Temas: <html data-theme="claro|escuro|contraste|terminal">; sem data-theme (ou "auto") segue prefers-color-scheme.
    Toda cor "-ink" tem ≥ 4,5:1 (≥ 7:1 no alto contraste) sobre surface-1, surface-2 e o "-soft"; toda cor cheia ≥ 3:1
    sobre surface-1; "on-*" ≥ 4,5:1 sobre a cor cheia. Tabela em TOKENS.md. Mapa de migração (tokens.css → --ws-*) idem.

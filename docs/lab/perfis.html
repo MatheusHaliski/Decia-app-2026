@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Abas por perfil — wireframe</title>
+<meta name="description" content="Wireframe estático do shell do Work Station (sidebar + top bar) e das abas de cada perfil: Empregado, Empresa, Chefe de departamento, Curador e Admin. Fonte: docs/produto/ABAS_POR_PERFIL.md.">
+<link rel="stylesheet" href="../design-system/tokens.css">
+<link rel="stylesheet" href="../design-system/components.css">
+<style>
+/* Layout do laboratório (prefixo lab-): só variáveis dos tokens, nenhum hex. */
+.lab-controls { display: flex; flex-wrap: wrap; gap: .75rem 1.25rem; align-items: center; padding: .6rem 1rem; background: var(--surface-2); border-bottom: 1px dashed var(--line-soft); font-size: var(--text-body-sm); }
+.lab-controls .type-label { color: var(--muted); margin-right: .25rem; }
+.lab-controls [role="radiogroup"] { display: inline-flex; gap: .25rem; flex-wrap: wrap; }
+.lab-shell { display: grid; grid-template-columns: var(--control-sidebar) 1fr; min-height: calc(100dvh - 56px); }
+@media (max-width: 1023px) { .lab-shell { grid-template-columns: 1fr; } }
+.lab-main { padding: 1.25rem 1.5rem 5rem; display: grid; gap: 1.25rem; align-content: start; max-width: 1180px; }
+@media (max-width: 640px) { .lab-main { padding: 1rem 16px 5rem; } }
+.lab-header { display: grid; grid-template-columns: auto 1fr auto; gap: 1rem; align-items: center; padding: 1rem 1.25rem; background: var(--surface); border: 1px solid var(--line-soft); border-radius: var(--radius-lg); position: relative; overflow: hidden; }
+.lab-header::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 6px; background: var(--primary-gradient); }
+.lab-header .ws-avatar { width: 64px; height: 64px; font-size: 20px; }
+.lab-header .ws-monogram { width: 64px; height: 64px; font-size: 26px; border-radius: 12px; }
+.lab-header h1 { margin: 0; }
+.lab-header .lab-sub { color: var(--muted); display: flex; flex-wrap: wrap; gap: .4rem .75rem; align-items: center; margin-top: .25rem; }
+.lab-counters { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: .6rem; }
+.lab-counters div { display: grid; }
+.lab-counters b { font-family: var(--font-data); font-size: var(--text-h3); }
+.lab-counters span { font-size: var(--text-caption); color: var(--muted); }
+.lab-actions { display: grid; gap: .4rem; justify-items: end; }
+@media (max-width: 640px) { .lab-header { grid-template-columns: auto 1fr; } .lab-actions { grid-column: 1 / -1; justify-items: start; grid-auto-flow: column; } }
+.lab-hype { display: inline-flex; align-items: center; gap: .4rem; padding: .25rem .6rem; border-radius: var(--radius-pill); background: var(--spark-soft); color: var(--spark-ink); font-family: var(--font-data); font-weight: 700; font-size: 12px; }
+.lab-tabs { display: flex; flex-wrap: wrap; gap: .35rem; border-bottom: 1px solid var(--line-soft); padding-bottom: .5rem; }
+.lab-tab { display: inline-flex; align-items: center; gap: .35rem; min-height: var(--control-sm); padding: 0 .75rem; border-radius: var(--radius-pill); border: 1.5px solid transparent; background: transparent; color: var(--ink); font: inherit; font-size: var(--text-body-sm); font-weight: 600; cursor: default; }
+.lab-tab[aria-selected="true"] { background: var(--primary-soft); color: var(--primary-ink); border-color: var(--primary); }
+.lab-tab[data-hidden="true"] { opacity: .38; text-decoration: line-through; }
+.lab-tab small { font-family: var(--font-data); font-weight: 500; color: var(--muted); font-size: 10px; }
+.lab-section { display: grid; gap: .75rem; }
+.lab-section > h2 { margin: 0; display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.lab-note { font-size: var(--text-caption); color: var(--muted); margin: 0; }
+.lab-grid { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+.lab-tabcard { display: grid; gap: .45rem; padding: .8rem .9rem; background: var(--surface); border: 1px solid var(--line-soft); border-radius: var(--radius-md); position: relative; }
+.lab-tabcard[data-hidden="true"] { opacity: .45; border-style: dashed; }
+.lab-tabcard h3 { margin: 0; font-size: var(--text-title); font-family: var(--font-editorial); display: flex; gap: .4rem; align-items: center; flex-wrap: wrap; }
+.lab-tabcard p { margin: 0; font-size: var(--text-body-sm); color: var(--muted); }
+.lab-tabcard code { font-family: var(--font-data); font-size: 10px; color: var(--primary-ink); word-break: break-all; }
+.lab-tabcard .ws-skeleton { animation: none; }
+.lab-badges { display: flex; gap: .3rem; flex-wrap: wrap; }
+.lab-kpis { display: grid; gap: .6rem; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+.lab-kpi { padding: .7rem .8rem; background: var(--surface); border: 1px solid var(--line-soft); border-radius: var(--radius-md); }
+.lab-kpi span { font-size: var(--text-caption); color: var(--muted); display: block; }
+.lab-kpi b { font-family: var(--font-data); font-size: var(--text-h2); }
+.lab-foot { font-size: var(--text-caption); color: var(--muted); border-top: 1px dashed var(--line-soft); padding-top: .75rem; }
+.ws-nav__link { cursor: default; }
+.ws-nav__link[data-write="true"]::after { content: "E"; margin-left: auto; font-family: var(--font-data); font-size: 9px; font-weight: 700; color: var(--secondary-ink); background: var(--secondary-soft); border-radius: var(--radius-pill); padding: 0 .35rem; }
+.ws-nav__link[data-write="true"] .ws-nav__badge { margin-left: .4rem; }
+.ws-bottomnav a { display: grid; justify-items: center; gap: 2px; padding: .4rem 0; font-size: 10px; text-decoration: none; color: var(--muted); }
+.ws-bottomnav a[aria-current="page"] { color: var(--primary-ink); font-weight: 700; }
+.ws-bottomnav .lab-plus { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-gradient); color: var(--on-primary); display: grid; place-items: center; margin-top: -14px; }
+.lab-topbtn { display: inline-grid; place-items: center; width: var(--control-md); height: var(--control-md); border-radius: 50%; position: relative; color: var(--ink); }
+.lab-topbtn .ws-nav__badge { position: absolute; top: 2px; right: 0; margin: 0; }
+</style>
+</head>
+<body>
+<a href="#conteudo" class="sr-only">Pular para o conteúdo</a>
+
+<div class="lab-controls" aria-label="Controles do laboratório">
+  <span class="type-label">Perfil</span>
+  <div role="radiogroup" aria-label="Perfil" id="ctl-perfil"></div>
+  <span class="type-label">Visão</span>
+  <div role="radiogroup" aria-label="Visão" id="ctl-visao"></div>
+  <span class="type-label">Tema</span>
+  <div role="radiogroup" aria-label="Tema" id="ctl-tema"></div>
+  <span class="type-caption" style="margin-left:auto">Fonte: <code>docs/produto/ABAS_POR_PERFIL.md</code> · legenda: <span class="ws-tag" data-status="aprovado">E</span> edita · <span class="ws-tag">V</span> vê · <span class="ws-tag" data-state="arquivada">oculta</span> · <span class="ws-tag" data-state="modelo-publico">proposta</span></span>
+</div>
+
+<header class="ws-topbar">
+  <span class="ws-topbar__brand"><i aria-hidden="true"></i>Work Station</span>
+  <div class="ws-topbar__search" role="search"><svg class="ws-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Buscar projetos, tarefas, pessoas…</span></div>
+  <div class="ws-topbar__right">
+    <span class="lab-topbtn" title="Mensagens (RF46, proposta)"><svg class="ws-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/></svg></span>
+    <span class="lab-topbtn" title="Notificações"><svg class="ws-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="ws-nav__badge">3</span></span>
+    <span class="ws-avatar" id="top-avatar" style="width:32px;height:32px;font-size:11px">MH</span>
+  </div>
+</header>
+
+<div class="lab-shell">
+  <nav class="ws-sidebar" aria-label="Menu lateral" id="sidebar"></nav>
+  <main id="conteudo" class="lab-main" tabindex="-1">
+    <section class="lab-header" id="header"></section>
+    <section class="lab-section" id="tabs-section"></section>
+    <section class="lab-section" id="inst-section" hidden></section>
+    <section class="lab-section" id="manage-section" hidden></section>
+    <p class="lab-foot" id="foot"></p>
+  </main>
+</div>
+
+<nav class="ws-bottomnav side-nav-box" aria-label="Barra inferior" id="bottomnav"></nav>
+
+<script>
+/* ------------------------------------------------------------------------------------------------
+   Dados do wireframe — espelham as matrizes A–E de docs/produto/ABAS_POR_PERFIL.md.
+   write: aparece com a etiqueta E (edita); hidden: só aparece na visão "próprio"; badge: contagem; prop: proposta.
+   ------------------------------------------------------------------------------------------------ */
+const ICON = {
+  mural: '<path d="M4 5h16v14H4z"/><path d="M4 10h16M9 10v9"/>', search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  memory: '<path d="M5 4h11l3 3v13H5z"/><path d="M8 12h8M8 16h8M8 8h4"/>', org: '<path d="M3 21h18M5 21V8l7-4 7 4v13"/><path d="M9 21v-6h6v6"/>',
+  counter: '<path d="M3 9h18l-2 11H5z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/>', profile: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  tasks: '<path d="M4 4h16v16H4z"/><path d="m8 12 2.5 2.5L16 9"/>', attach: '<path d="m8 12 6-6a3 3 0 0 1 4 4l-8 8a5 5 0 0 1-7-7l7-7"/>',
+  desk: '<path d="M3 7h18v10H3z"/><path d="M7 21h10M12 17v4"/>', mirror: '<path d="M12 3v18M4 7l8 2 8-2M4 17l8-2 8 2"/>',
+  sim: '<path d="M4 19 10 9l4 6 2-3 4 7z"/>', create: '<path d="M12 5v14M5 12h14"/>', project: '<path d="M4 6h7l2 2h7v10H4z"/>',
+  plan: '<path d="M4 4h16v16H4z"/><path d="M4 10h16M4 16h16M12 4v16"/>', autopilot: '<path d="M12 3 4 20h16z"/><path d="M12 11v4"/>',
+  decia: '<path d="M4 5h16v10H9l-5 4z"/><path d="M8 9h8M8 12h5"/>', insights: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  goals: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>', points: '<circle cx="12" cy="12" r="8"/><path d="M12 8v8M9 10h6M9 14h6"/>',
+  star: '<path d="m12 3 2.7 5.6 6.1.8-4.5 4.3 1.2 6L12 16.8 6.5 19.7l1.2-6L3.2 9.4l6.1-.8z"/>', gift: '<path d="M4 10h16v10H4zM2 7h20v3H2zM12 7v13"/>',
+  dash: '<path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/>', team: '<circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M2 20a6 6 0 0 1 12 0M10 20a6 6 0 0 1 12 0"/>',
+  seal: '<circle cx="12" cy="10" r="6"/><path d="m9 15-1 6 4-2 4 2-1-6"/>', review: '<path d="M5 4h14v16H5z"/><path d="m8 12 2.5 2.5L16 9"/>',
+  policy: '<path d="M6 3h12v18H6z"/><path d="M9 8h6M9 12h6M9 16h4"/>', handoff: '<path d="M4 12h12l-3-3M20 12H8l3 3"/>',
+  admin: '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>', curate: '<path d="M4 7h16M4 12h10M4 17h16"/><circle cx="18" cy="12" r="2"/>',
+  people: '<circle cx="12" cy="7" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/>', ann: '<path d="M3 11v2l10 4V7zM13 9a3 3 0 0 1 0 6M18 8v8"/>',
+};
+const ico = (k) => `<svg class="ws-icon" viewBox="0 0 24 24" aria-hidden="true">${ICON[k] || ICON.tasks}</svg>`;
+
+const DISCOVER = (extra = []) => ({ label: 'Descobrir', items: [
+  { l: 'Mural', i: 'mural', rf: 'RF27' }, { l: 'Buscar', i: 'search', rf: 'RF27' }, { l: 'Memória Institucional', i: 'memory', rf: 'RF33' },
+  { l: 'Empresas & Departamentos', i: 'org', rf: 'RF28' }, { l: 'Balcão de Modelos', i: 'counter', rf: 'RF40', ...extra[0] },
+  { l: 'Mensagens', i: 'decia', rf: 'RF46', prop: true },
+] });
+const WORK = (opts = {}) => ({ label: 'Meu trabalho', items: [
+  { l: opts.profileLabel || 'Meu perfil', i: 'profile', rf: 'RF19', write: true, current: true },
+  { l: 'Acervo de Tarefas', i: 'tasks', rf: 'RF41', write: true }, { l: 'Anexos & Evidências', i: 'attach', rf: 'RF41', write: true },
+  ...(opts.noDaily ? [] : [{ l: 'Tarefa do Dia', i: 'star', rf: 'RF44', write: true }]),
+  { l: 'Mesa de Trabalho', i: 'desk', rf: 'RF22', write: true }, { l: 'Espelho de Conformidade', i: 'mirror', rf: 'RF32' }, { l: 'Simulador de Cenários', i: 'sim', rf: 'RF31' },
+] });
+const CREATE = (opts = {}) => ({ label: 'Criar', items: [
+  { l: 'Criar Tarefa', i: 'create', rf: 'RF20', write: true }, { l: 'Criar Projeto', i: 'project', rf: 'RF21', write: true },
+  { l: opts.planLabel || 'Plano Anual / Trilha', i: 'plan', rf: 'RF24', write: true }, { l: 'Autopilot', i: 'autopilot', rf: 'RF30/43', write: true },
+  { l: 'DECIA', i: 'decia', rf: 'RF4–17', write: true }, { l: opts.insightsLabel || 'Insights', i: 'insights', rf: 'RF43' },
+] });
+const PLAY = (opts = {}) => ({ label: 'Jogar e ganhar', items: [
+  { l: 'Metas coletivas', i: 'goals', rf: 'RF35', write: !!opts.issuer },
+  { l: opts.pointsLabel || 'DECIA Points + Loja', i: 'points', rf: 'RF42', write: !opts.company },
+  { l: 'Destaques', i: 'star', rf: 'RF35', write: !!opts.issuer || !!opts.curator },
+  { l: 'Benefícios & Reconhecimentos', i: 'gift', rf: 'RF39/35', write: !!opts.issuer },
+] });
+
+const PROFILES = {
+  empregado: {
+    label: 'Empregado', fai: 'PESSOAL', person: true, avatar: 'MH', name: 'Marina Hauer', sub: ['Analista de Projetos', 'Secretaria das Cidades', 'SECID-UTS'],
+    counters: [['42', 'tarefas'], ['9', 'projetos'], ['6', 'decisões'], ['58', 'seguidores'], ['1 240', 'DECIA Points']], hype: { score: 640, band: 'Líder de prática', vis: 'EMPRESA' },
+    sidebar: [DISCOVER([{ write: true }]), WORK(), CREATE(), PLAY()],
+    actions: { self: ['Editar perfil', 'Preferências'], other: ['Seguir', 'Mensagem (RF46)'] },
+  },
+  empresa: {
+    label: 'Empresa', fai: 'MARCA', person: false, avatar: 'SC', name: 'Secretaria das Cidades', sub: ['Perfil institucional · validado pelo ADMIN', 'secid.pr.gov.br', '5 departamentos'],
+    counters: [['128', 'projetos publicados'], ['37', 'modelos oficiais'], ['54', 'decisões validadas'], ['412', 'seguidores']], hype: null,
+    sidebar: [DISCOVER([{ write: true }]), WORK({ profileLabel: 'Página da empresa', noDaily: true }), CREATE({ planLabel: 'Plano Anual oficial', insightsLabel: 'Insights (empresa)' }), PLAY({ issuer: true, company: true, pointsLabel: 'DECIA Points (regras)' }),
+      { label: 'Gestão', items: [
+        { l: 'Dashboard do emissor', i: 'dash', rf: 'RF28.CA06', write: true }, { l: 'Departamentos & chefes', i: 'org', rf: 'RF28.CA02', write: true, prop: true },
+        { l: 'Pessoas & lotações', i: 'people', rf: 'RF28.CA02', write: true }, { l: 'Chancelas & políticas', i: 'seal', rf: 'RF39', write: true, badge: 4 },
+        { l: 'Benefícios', i: 'gift', rf: 'RF39.CA09', write: true }, { l: 'Políticas da empresa', i: 'policy', rf: 'RF42/44/43/45/37', write: true, prop: true },
+        { l: 'Comunicados', i: 'ann', rf: 'RF28', write: true, prop: true }, { l: 'Dossiês de transição', i: 'handoff', rf: 'RF36', write: true },
+      ] }],
+    actions: { self: ['Editar empresa', 'Dashboard do emissor', 'Nova chancela'], other: ['Seguir', 'Derivar plano anual'] },
+  },
+  chefe: {
+    label: 'Chefe de departamento', fai: 'CELEBRIDADE', person: true, avatar: 'RL', name: 'Rafael Lemos', sub: ['Chefe de departamento · SECID-UTS', 'Secretaria das Cidades', 'também chefia CPOE'],
+    counters: [['61', 'tarefas'], ['17', 'projetos'], ['22', 'decisões'], ['134', 'seguidores'], ['3 980', 'DECIA Points']], hype: { score: 780, band: 'Líder de prática', vis: 'PÚBLICO' },
+    sidebar: [DISCOVER([{ write: true }]), WORK(), CREATE({ insightsLabel: 'Insights (+ Equipe)' }), PLAY({ issuer: true }),
+      { label: 'Gestão', items: [
+        { l: 'Dashboard do emissor', i: 'dash', rf: 'RF28.CA06' }, { l: 'Minha equipe', i: 'team', rf: 'RF9/RF10/RF28', write: true, prop: true },
+        { l: 'Fila de chancelas', i: 'seal', rf: 'RF39.CA04', write: true, badge: 7 }, { l: 'Decisões em revisão', i: 'review', rf: 'RF15', write: true, badge: 2 },
+        { l: 'Chancelas do departamento', i: 'seal', rf: 'RF39.CA01', write: true }, { l: 'Reconhecimentos', i: 'gift', rf: 'RF28.CA05', write: true },
+        { l: 'Insights da Equipe', i: 'insights', rf: 'RF43.CA14' }, { l: 'Dossiês de transição', i: 'handoff', rf: 'RF36', write: true },
+      ] }],
+    actions: { self: ['Editar perfil', 'Meu departamento →', 'Nova chancela'], other: ['Seguir', 'Ver departamento SECID-UTS'] },
+  },
+  curador: {
+    label: 'Curador', fai: '— (papel contextual)', person: true, avatar: 'JP', name: 'Juliana Prado', sub: ['Engenheira civil', 'Secretaria das Cidades', 'SECID-UTS'], tag: 'Curadora · SECID-UTS (fila + premiação)',
+    counters: [['55', 'tarefas'], ['12', 'projetos'], ['14', 'decisões'], ['71', 'seguidores'], ['2 110', 'DECIA Points']], hype: { score: 520, band: 'Referência', vis: 'SÓ EU' },
+    sidebar: [DISCOVER([{ write: true }]), WORK(), CREATE(), PLAY({ curator: true }),
+      { label: 'Gestão', items: [
+        { l: 'Curadoria', i: 'curate', rf: 'RF28.CA03', write: true, prop: true, badge: 5 }, { l: 'Fila de revisão', i: 'review', rf: 'RF39.CA04', write: true, badge: 3 },
+        { l: 'Premiação & Destaques', i: 'star', rf: 'RF35.CA03/RF39.CA05', write: true }, { l: 'Indicações & propostas', i: 'seal', rf: 'RF39.CA06', write: true, badge: 2 },
+      ] }],
+    actions: { self: ['Editar perfil', 'Preferências'], other: ['Seguir', 'Mensagem (RF46)'] },
+  },
+  admin: {
+    label: 'Admin', fai: 'ADMIN', person: true, avatar: 'AD', name: 'Administração do sistema', sub: ['role = ADMIN sobre conta EMPREGADO', 'criada pelo bootstrap (RF28.CA01)'],
+    counters: [['3', 'aprovações pendentes'], ['2 311', 'usuários'], ['18', 'alertas IA']], hype: null,
+    sidebar: [DISCOVER([{}]), WORK(), CREATE(), PLAY(),
+      { label: 'Gestão (admin)', items: [
+        { l: 'Dashboard', i: 'dash', rf: 'RF18', write: true }, { l: 'Aprovações EMPRESA/CHEFE', i: 'review', rf: 'RF28.CA01', write: true, badge: 3 },
+        { l: 'Usuários', i: 'people', rf: 'RF18', write: true }, { l: 'Moderação', i: 'policy', rf: 'RF18', write: true },
+        { l: 'IA do sistema', i: 'autopilot', rf: 'RF43.CA12', write: true }, { l: 'Auditoria', i: 'memory', rf: 'RNF' }, { l: 'Sistema (backups, jobs)', i: 'admin', rf: 'RF18', write: true },
+      ] }],
+    actions: { self: ['Editar perfil', 'Ir para /admin'], other: ['Seguir'] },
+  },
+};
+
+/* 15 sub-abas do RF19 (board › RF19; docs/diagramas/RF19/README.md:9-26). self: só o dono. */
+const PERSONAL_TABS = [
+  { n: 1, l: 'Acervo de Tarefas', rf: 'RF41', ep: 'GET …/profile/tabs/acervo', desc: 'grade de tarefas visíveis; filtros estado/categoria/tipo' },
+  { n: 2, l: 'Meus Projetos', rf: 'RF21/22', ep: 'GET …/tabs/projetos?fase=&estado=', desc: 'esquemas de projeto; favoritos, publicados, rascunhos, arquivados' },
+  { n: 3, l: 'Programas & Agrupamentos', rf: 'RF25', ep: 'GET /api/users/{id}/groupings', desc: 'sub-abas Buscar · Insights (como Eras/Coleções no FAI)' },
+  { n: 4, l: 'Decisões', rf: 'RF29', ep: 'GET …/tabs/decisoes', desc: 'decisões validadas em que participou, com o fio de decisão' },
+  { n: 5, l: 'Perfil deliberativo (resumo)', rf: 'RF43', ep: 'GET …/tabs/deliberativo', desc: 'medalhas e indicadores públicos escolhidos pelo dono' },
+  { n: 6, l: 'Meus Planos Anuais / Trilhas', rf: 'RF24', self: true, ep: 'GET /api/me/plans', desc: 'trilha pessoal derivada do plano oficial' },
+  { n: 7, l: 'Projetos salvos', rf: 'RF26', self: true, ep: 'GET /api/me/saved?type=PROJECT', desc: 'favoritos' },
+  { n: 8, l: 'Tarefas salvas', rf: 'RF26', self: true, ep: 'GET /api/me/saved?type=TASK', desc: 'favoritos' },
+  { n: 9, l: 'Tarefa do Dia', rf: 'RF44', self: true, ep: 'GET /api/me/daily-task', desc: 'CONCLUÍ · ADIEI · BLOQUEADA · DELEGUEI; HSE previsto × realizado; semana planejada' },
+  { n: 10, l: 'Kits de Processo', rf: 'RF21', self: true, ep: 'GET /api/me/kits', desc: 'conjuntos mínimos reutilizáveis' },
+  { n: 11, l: 'Meus modelos oferecidos', rf: 'RF40', self: true, ep: 'GET /api/me/models', desc: 'visualizações, remixes, DP recebidos; retirar oferta' },
+  { n: 12, l: 'Meus Reconhecimentos e Chancelas', rf: 'RF35/39', self: true, ep: 'GET /api/me/recognitions', desc: 'medalhas recebidas e vínculos de chancela' },
+  { n: 13, l: 'DECIA Points', rf: 'RF42', self: true, ep: 'GET /api/me/points', desc: 'saldo, extrato, regras, Loja' },
+  { n: 14, l: 'Hype Score do Perfil', rf: 'RF45', self: true, ep: 'GET /api/me/profile/hype', desc: '0–1000, faixa, decomposição, PÚBLICO / EMPRESA / SÓ EU' },
+  { n: 15, l: 'Perfil deliberativo (completo)', rf: 'RF43', self: true, ep: 'GET /api/me/deliberative-profile', desc: 'clareza, evidências, consistência, completude, reutilização; insights da IA' },
+];
+/* Alterações por perfil nas 15 sub-abas (§7.d) */
+const PERSONAL_OVERRIDES = {
+  empresa: { 5: { off: 'objetivo 2 é por pessoa' }, 15: { off: 'objetivo 2 é por pessoa' }, 9: { off: 'conta institucional (P-09)' }, 13: { off: 'não acumula DP (P-10)' }, 14: { off: 'índice por pessoa (RF45)' },
+    6: { rename: 'Plano Anual oficial', pub: true }, 11: { rename: 'Modelos oficiais', pub: true }, 12: { rename: 'Emitidos (reconhecimentos e chancelas)', pub: true } },
+  chefe: { 12: { rename: 'Meus Reconhecimentos e Chancelas · Emitidos' } },
+};
+/* Página da empresa (RF28, board2.md:553) e do departamento (board2.md:556). */
+const COMPANY_TABS = [
+  { l: 'Sobre', rf: 'RF28.CA04', ep: 'GET /api/companies/{slug}', w: ['empresa'] },
+  { l: 'Departamentos', rf: 'RF28.CA02', ep: 'POST …/departments · requireRole(EMPRESA)', w: ['empresa'] },
+  { l: 'Programas', rf: 'RF25', ep: 'GET …/groupings?type=PROGRAMA', w: ['empresa'] },
+  { l: 'Plano Anual oficial', rf: 'RF24.CA04', ep: 'POST /api/plans/{id}/derive', w: ['empresa'] },
+  { l: 'Chancelas e modelos oficiais', rf: 'RF39', ep: 'POST /api/seals · requireIssuer', w: ['empresa'] },
+  { l: 'Benefícios', rf: 'RF39.CA09', ep: 'POST /api/benefits/{id}/redeem', w: ['empresa'] },
+  { l: 'Destaques', rf: 'RF35.CA03', ep: 'POST /api/highlights/{id}/curate', w: ['empresa', 'chefe', 'curador'] },
+  { l: 'Pessoas', rf: 'RF28.CA02', ep: 'POST /api/departments/{id}/members', w: ['empresa', 'chefe'] },
+  { l: 'Comunicados', rf: 'RF28 (P-06)', ep: 'POST …/announcements · requireIssuer', w: ['empresa', 'chefe'], prop: true },
+  { l: 'Gestão', rf: '§7.c', ep: 'PUT …/policies/* · requireRole(EMPRESA)', w: ['empresa'], own: true, prop: true },
+];
+const DEPT_TABS = [
+  { l: 'Sobre', rf: 'RF28', ep: 'GET /api/departments/{slug}', w: ['chefe', 'empresa'] },
+  { l: 'Projetos do departamento', rf: 'RF28', ep: 'GET …/projects?fase=', w: ['chefe'] },
+  { l: 'Sessões DECIA', rf: 'RF28 §3', ep: 'GET …/sessions?status=', w: ['chefe'] },
+  { l: 'Chancelas e fila de revisão', rf: 'RF39', ep: 'GET /api/seal-bonds/review-queue?dept= · requireIssuerOrCurator', w: ['chefe', 'curador'] },
+  { l: 'Reconhecimentos emitidos', rf: 'RF35.CA04', ep: 'POST /api/recognitions · requireIssuer', w: ['chefe'] },
+  { l: 'Equipe (com curadores)', rf: 'RF28', ep: 'GET …/team', w: [] },
+  { l: 'Minha equipe (gestão)', rf: 'RF9/RF10/RF28 (P-08)', ep: 'GET …/team/manage · requireDeptHead', w: ['chefe'], own: true, prop: true },
+  { l: 'Dashboard do emissor', rf: 'RF28.CA06', ep: 'GET /api/issuer/dashboard?dept=', w: ['chefe'], own: true },
+  { l: 'Insights da Equipe', rf: 'RF43.CA14', ep: 'GET /api/insights/team?dept=', w: ['chefe'], own: true },
+];
+const TEAM_BLOCKS = [
+  ['Lista e lotação', 'RF9 · RF28.CA02/CA03', 'adicionar/remover, transferir, nomear curador'],
+  ['Carga e balanceamento', 'RF43 §8-D', 'WIP × limite, utilização ≤ 80 %, bus factor'],
+  ['Atribuir tarefa/projeto', 'RF10', 'responsável + prazo; aceite/recusa'],
+  ['Tarefa do Dia agregada', 'RF44 · RF45.CA10', 'CONCLUÍ/ADIEI/BLOQUEADA/DELEGUEI por dia; HSE médio (sem nominal)'],
+  ['Pendências e prazos', 'RF28.CA06 · RF41.CA04', 'bloqueadas, prazos legais, SPI < 0,9'],
+  ['Fila de chancelas e revisões', 'RF39.CA04 · RF15 · RF42.CA07', 'vínculos, decisões, lançamentos suspensos'],
+  ['Insights da Equipe', 'RF43.CA14', 'pesquisas anônimas ≥ 5'],
+  ['Reconhecimentos emitidos', 'RF28.CA05 · RF35.CA06', 'limite mensal'],
+  ['Dossiês de transição', 'RF36', 'saída, transferência, sucessor'],
+];
+const NOT_SEEN = ['Hype SÓ EU (RF45.CA06/CA08/CA10)', 'perfil deliberativo completo (RF43.CA04)', 'HSE nominal (RF44.CA07)', 'saldo DP individual (RF42.CA08)', 'itens PRIVADOS (RF36.CA05)', 'e-mail/telefone (AES)'];
+
+const THEMES = [['claro', 'Claro'], ['escuro', 'Escuro'], ['contraste', 'Alto contraste'], ['blueprint', 'Blueprint']];
+const state = { perfil: 'empregado', visao: 'proprio', tema: 'claro' };
+const q = new URLSearchParams(location.search);
+if (PROFILES[q.get('perfil')]) state.perfil = q.get('perfil');
+if (['proprio', 'terceiro'].includes(q.get('visao'))) state.visao = q.get('visao');
+if (THEMES.some(([t]) => t === q.get('tema'))) state.tema = q.get('tema');
+
+const tag = (txt, attrs = '') => `<span class="ws-tag" ${attrs}>${txt}</span>`;
+const TAG = { E: tag('E', 'data-status="aprovado" title="editável"'), V: tag('V', 'title="visível"'), O: tag('oculta', 'data-state="arquivada"'), P: tag('proposta', 'data-state="modelo-publico"') };
+
+function radios(el, name, opts, cur, on) {
+  el.innerHTML = opts.map(([v, l]) => `<button type="button" class="ws-btn ws-btn--sm ${v === cur ? 'ws-btn--primary' : ''}" role="radio" aria-checked="${v === cur}" data-v="${v}">${l}</button>`).join('');
+  el.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => on(b.dataset.v)));
+}
+
+function renderSidebar(p) {
+  const sb = document.getElementById('sidebar');
+  sb.innerHTML = p.sidebar.map((g) => `<section><p class="ws-nav__group">${g.label}</p>${g.items.map((it) => `<a class="ws-nav__link" href="#" aria-current="${it.current ? 'page' : 'false'}" data-write="${!!it.write}" title="${it.rf}">${ico(it.i)}<span class="ws-nav__label">${it.l}${it.prop ? ' ✦' : ''}</span>${it.badge ? `<span class="ws-nav__badge">${it.badge}</span>` : ''}</a>`).join('')}</section>`).join('')
+    + `<p class="lab-note" style="padding:0 .6rem">✦ = proposta · E = edita · badge = pendências</p>`;
+  const bn = document.getElementById('bottomnav');
+  const items = state.perfil === 'empresa' ? ['Mural', 'Buscar', '+', 'Acervo', 'Empresa'] : ['Mural', 'Buscar', '+', 'Acervo', 'Perfil'];
+  bn.innerHTML = items.map((l, i) => l === '+' ? `<a href="#"><span class="lab-plus">${ico('create')}</span><span>Criar</span></a>` : `<a href="#" aria-current="${i === 4 ? 'page' : 'false'}">${ico(['mural', 'search', '', 'tasks', 'profile'][i])}<span>${l}</span></a>`).join('');
+}
+
+function renderHeader(p) {
+  const self = state.visao === 'proprio';
+  const avatar = p.person ? `<span class="ws-avatar" aria-hidden="true">${p.avatar}</span>` : `<span class="ws-monogram" style="--d: var(--dept-gralha-azul)" aria-hidden="true">${p.avatar}</span>`;
+  let hype = '';
+  if (p.hype) {
+    const show = self || p.hype.vis === 'PÚBLICO' || p.hype.vis === 'EMPRESA';
+    hype = show ? `<span class="lab-hype" title="Hype Score do Perfil (RF45) · visibilidade ${p.hype.vis}">✦ Hype ${p.hype.score} · ${p.hype.band}</span>` : `<span class="lab-hype" style="opacity:.5">Hype oculto (SÓ EU)</span>`;
+  }
+  const kind = p.person ? '' : ' · ' + tag('Perfil institucional', 'data-status="publicado"');
+  document.getElementById('top-avatar').textContent = p.avatar;
+  document.getElementById('header').innerHTML = `${avatar}<div><h1 class="type-h1">${p.name}${p.tag ? ' ' + tag(p.tag, 'data-state="modelo-publico"') : ''}</h1>
+    <div class="lab-sub type-body-sm">${p.sub.map((s) => `<span>${s}</span>`).join('<span aria-hidden="true">·</span>')}${kind} ${hype}</div>
+    <div class="lab-counters">${p.counters.filter(([, l]) => self || !/DECIA Points/.test(l)).map(([n, l]) => `<div><b>${n}</b><span>${l}</span></div>`).join('')}</div></div>
+    <div class="lab-actions">${(self ? p.actions.self : p.actions.other).map((a, i) => `<span class="ws-btn ws-btn--sm ${i === 0 ? 'ws-btn--primary' : ''}">${a}</span>`).join('')}<span class="type-caption">= FAI ${p.fai}</span></div>`;
+}
+
+function renderTabs(p) {
+  const self = state.visao === 'proprio';
+  const ov = PERSONAL_OVERRIDES[state.perfil] || {};
+  const sec = document.getElementById('tabs-section');
+  const tabs = PERSONAL_TABS.map((t) => { const o = ov[t.n] || {}; const isSelf = t.self && !o.pub; const hidden = o.off || (isSelf && !self); return { ...t, o, hidden, label: o.rename || t.l, isSelf }; });
+  sec.innerHTML = `<h2 class="type-h2">${p.person ? 'Perfil pessoal' : 'Perfil da conta'} — sub-abas do RF19 <span class="type-caption">${self ? 'visão do dono (self)' : 'visão de terceiro: sub-abas 6–15 omitidas pela API (RF19.CA02)'}</span></h2>
+    <div class="lab-tabs" role="tablist">${tabs.map((t, i) => `<span class="lab-tab" role="tab" aria-selected="${i === 0}" data-hidden="${!!t.hidden}"><small>${t.n}</small>${t.label}</span>`).join('')}</div>
+    <div class="lab-grid">${tabs.map((t) => `<article class="lab-tabcard" data-hidden="${!!t.hidden}"><h3><small class="type-label">${t.n}</small>${t.label} ${t.hidden ? TAG.O : (self ? TAG.E : TAG.V)}${t.o.rename || t.o.off ? TAG.P : ''}</h3>
+      <p>${t.o.off ? 'Some: ' + t.o.off : t.desc}</p><div class="ws-skeleton ws-skeleton--text"></div><div class="ws-skeleton ws-skeleton--text short"></div>
+      <code>${t.ep}${t.isSelf ? ' · requireOwner' : ' · canView'}</code><span class="type-caption">${t.rf}${t.isSelf ? ' · só o dono' : ' · todos'}</span></article>`).join('')}</div>`;
+}
+
+function renderInstitutional(p) {
+  const sec = document.getElementById('inst-section'); const self = state.visao === 'proprio';
+  const role = state.perfil;
+  if (role === 'empregado' || role === 'admin') { sec.hidden = true; return; }
+  sec.hidden = false;
+  const list = role === 'empresa' ? COMPANY_TABS : DEPT_TABS;
+  const title = role === 'empresa' ? 'Página da empresa · /companies/secid (RF28, Matriz C)' : `Página do departamento · /departments/secid-uts (RF28, Matriz D) — ${role === 'chefe' ? 'o chefe administra' : 'curadora opera fila e premiação em nome do chefe'}`;
+  const cards = list.map((t) => {
+    const can = t.w.includes(role) && self; const hidden = t.own && !(self && (role === 'empresa' || role === 'chefe'));
+    return { ...t, can, hidden };
+  });
+  sec.innerHTML = `<h2 class="type-h2">${title}</h2>
+    <div class="lab-tabs" role="tablist">${cards.map((t, i) => `<span class="lab-tab" role="tab" aria-selected="${i === 0}" data-hidden="${t.hidden}">${t.l}${t.prop ? ' ✦' : ''}</span>`).join('')}</div>
+    <div class="lab-grid">${cards.map((t) => `<article class="lab-tabcard" data-hidden="${t.hidden}"><h3>${t.l} ${t.hidden ? TAG.O : (t.can ? TAG.E : TAG.V)}${t.prop ? TAG.P : ''}</h3>
+      <div class="ws-skeleton ws-skeleton--text"></div><code>${t.ep}</code><span class="type-caption">${t.rf}</span></article>`).join('')}</div>`;
+}
+
+function renderManage(p) {
+  const sec = document.getElementById('manage-section'); const self = state.visao === 'proprio';
+  const role = state.perfil;
+  if (!self || !['chefe', 'empresa', 'curador', 'admin'].includes(role)) { sec.hidden = true; return; }
+  sec.hidden = false;
+  if (role === 'chefe') {
+    sec.innerHTML = `<h2 class="type-h2">Minha equipe — modo gestão ${TAG.P} <span class="type-caption">§7.b · só o chefe (requireDeptHead); EMPRESA em leitura</span></h2>
+      <div class="lab-kpis"><div class="lab-kpi"><span>pessoas</span><b>14</b></div><div class="lab-kpi"><span>WIP acima do limite</span><b>3</b></div><div class="lab-kpi"><span>prazos em risco</span><b>5</b></div><div class="lab-kpi"><span>fila de chancelas</span><b>7</b></div><div class="lab-kpi"><span>HSE médio (7 d)</span><b>71</b></div><div class="lab-kpi"><span>CONCLUÍ hoje</span><b>9/14</b></div></div>
+      <div class="lab-grid">${TEAM_BLOCKS.map(([l, rf, d]) => `<article class="lab-tabcard"><h3>${l} ${TAG.E}</h3><p>${d}</p><div class="ws-skeleton ws-skeleton--text"></div><span class="type-caption">${rf}</span></article>`).join('')}</div>
+      <p class="lab-note"><b>O chefe não vê:</b> ${NOT_SEEN.join(' · ')}.</p>`;
+  } else if (role === 'empresa') {
+    const items = ['Departamentos & chefes', 'Pessoas & lotações', 'Chancelas & políticas de concessão', 'Benefícios', 'Plano Anual oficial', 'Programas', 'Políticas (DP · HSE · Ranking · Hype · Gravação · Reconhecimentos/mês)', 'Dashboard do emissor', 'Insights da empresa', 'Dossiês', 'Comunicados'];
+    sec.innerHTML = `<h2 class="type-h2">Gestão da empresa ${TAG.P} <span class="type-caption">§7.c · só a dona (requireRole(EMPRESA) + requireOwner); negado no serviço</span></h2>
+      <div class="lab-kpis"><div class="lab-kpi"><span>projetos por fase</span><b>128</b></div><div class="lab-kpi"><span>prazos em risco</span><b>11</b></div><div class="lab-kpi"><span>decisões em revisão</span><b>4</b></div><div class="lab-kpi"><span>fila de chancelas</span><b>9</b></div><div class="lab-kpi"><span>custo de IA (mês)</span><b>R$ 0</b></div><div class="lab-kpi"><span>benefícios resgatados</span><b>63</b></div></div>
+      <div class="lab-grid">${items.map((l) => `<article class="lab-tabcard"><h3>${l} ${TAG.E}</h3><div class="ws-skeleton ws-skeleton--text"></div><div class="ws-skeleton ws-skeleton--text short"></div></article>`).join('')}</div>`;
+  } else if (role === 'curador') {
+    const items = [['Fila de revisão (3)', 'RF39.CA04 · scope FILA_REVISAO', 'aprovar/rejeitar em nome do chefe'], ['Premiação & Destaques', 'RF35.CA03 · RF39.CA05 · scope PREMIACAO', 'triagem dos destaques; Chancela de Excelência'], ['Indicações recebidas (2)', 'RF39.CA06', 'não revisa a própria indicação (P-20)'], ['Propostas de chancela', 'RF39.CA06', 'recomendar criar/recusar — a criação é do chefe (P-07)'], ['Sugeridos ao chefe (Balcão)', 'RF40.CA07 (P-19)', 'pré-seleção de modelos da comunidade'], ['Métricas da curadoria', 'RF39.CA11', 'revisados, tempo médio, taxa de aprovação']];
+    sec.innerHTML = `<h2 class="type-h2">Curadoria ${TAG.P} <span class="type-caption">§7.e · requireCurator(dept, scope); não cria chancelas nem vê Dashboard/Insights da equipe</span></h2>
+      <div class="lab-grid">${items.map(([l, rf, d]) => `<article class="lab-tabcard"><h3>${l} ${TAG.E}</h3><p>${d}</p><div class="ws-skeleton ws-skeleton--text"></div><span class="type-caption">${rf}</span></article>`).join('')}</div>`;
+  } else {
+    const items = [['Dashboard', 'RF18 · GET /api/admin/dashboard'], ['Aprovações EMPRESA/CHEFE (3)', 'RF28.CA01 · POST /api/admin/approvals/{userId}'], ['Usuários', 'status · papel'], ['Moderação', 'RF18'], ['IA do sistema', 'RF43.CA12 · custo, latência, fallback, cotas'], ['Auditoria', 'audit_log'], ['Sistema', 'backups · jobs · recalibração do Hype']];
+    sec.innerHTML = `<h2 class="type-h2">Admin · /admin <span class="type-caption">requireAdmin; o admin não vê sub-abas 9/13/14/15 de terceiros (P-05)</span></h2>
+      <div class="lab-grid">${items.map(([l, rf]) => `<article class="lab-tabcard"><h3>${l} ${TAG.E}</h3><div class="ws-skeleton ws-skeleton--text"></div><span class="type-caption">${rf}</span></article>`).join('')}</div>`;
+  }
+}
+
+function render() {
+  const p = PROFILES[state.perfil];
+  document.documentElement.dataset.theme = state.tema;
+  radios(document.getElementById('ctl-perfil'), 'perfil', Object.entries(PROFILES).map(([k, v]) => [k, v.label]), state.perfil, (v) => { state.perfil = v; render(); });
+  radios(document.getElementById('ctl-visao'), 'visao', [['proprio', 'Próprio perfil'], ['terceiro', 'Como terceiro']], state.visao, (v) => { state.visao = v; render(); });
+  radios(document.getElementById('ctl-tema'), 'tema', THEMES, state.tema, (v) => { state.tema = v; render(); });
+  renderSidebar(p); renderHeader(p); renderTabs(p); renderInstitutional(p); renderManage(p);
+  document.getElementById('foot').textContent = `perfis.html?perfil=${state.perfil}&visao=${state.visao}&tema=${state.tema} · wireframe estático; nenhum dado real. Fontes e regras em docs/produto/ABAS_POR_PERFIL.md.`;
+  try { history.replaceState(null, '', `?perfil=${state.perfil}&visao=${state.visao}&tema=${state.tema}`); } catch (e) { /* file:// */ }
+}
+render();
+</script>
+</body>
+</html>

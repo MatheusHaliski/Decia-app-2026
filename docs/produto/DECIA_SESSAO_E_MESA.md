@@ -185,3 +185,160 @@ Nome e metáfora: "Mesa de Trabalho" já é a RF22 (quadro/linha do tempo/canvas
 - **Ata Viva** (RF37.CA04): a ata publicada na sessão distribui seus trechos classificados nas colunas correspondentes.
 
 ---
+
+## D. Coedição — "Minuta Coletiva" (Documento da Sessão)
+
+### D.1 Por que um esquema colaborativo dedicado
+
+O board já prevê três textos coletivos sem dizer como são escritos a muitas mãos: a **ata** (RF13 artefato ATA; RF37 Ata Viva "participantes recebem notificação para ratificar ou contestar em 48 h", dump l.690), o **resumo analítico** editado pelo admin (RF11) e a **decisão final** editada antes do encaminhamento (RF12.CA03). Hoje a edição colaborativa só existe na Mesa de Trabalho com "último-vence com aviso" em até 3 s (RF22.CA04, dump l.459), o que não serve para texto. **(proposta)** Um único esquema, a **Minuta Coletiva** (`SessionDocument`, kind MINUTA · ATA · CHECKLIST), nasce com a sessão (seções pré-criadas pela IA a partir do objetivo), acompanha as fases e, ao final, **é** o conteúdo da ATA/RELATÓRIO (RF13) e da tarefa ATA_REGISTRO (RF29.CA05). Nome na UI: "Minuta" (jargão da repartição: texto ainda não oficial); vira "Ata" no carimbo.
+
+### D.2 Anatomia
+
+| Elemento | Comportamento | Referência aproveitada |
+|---|---|---|
+| **Presença** | cursores e seleções com a cor de cada pessoa; avatares no topo; lista "editando agora / lendo"; a **cor vem da paleta de nós do logo** (tokens `--node-1..n`, a definir quando o PNG do logo estiver no repo — Q-45; fallback `--dept-*`), nunca de cor aleatória; o nome acompanha o cursor (daltonismo, identidade §11). | Google Docs, Figma multiplayer [REF-GDOCS, REF-FIGMA]; Yjs awareness [REF-YJS]. |
+| **Seções atribuídas** | cada `DocumentSection` tem responsável (RELATOR atribui, §E.1), status ABERTA → EM_REDAÇÃO → REVISÃO → FECHADA; seção fechada só reabre pelo relator/chefe. Modelo padrão: Contexto · Opções consideradas · Argumentos e evidências · Divergências e como foram tratadas · Riscos · Decisão proposta · Encaminhamentos (o quê/quem/quando). | Notion blocks com dono [REF-NOTION]; RF37.CA02 estrutura da ata. |
+| **Comentários ancorados** | âncora por posição relativa CRDT (sobrevive a edições); comentário pode "ecoar no chat" (cria `SessionMessage` com `replyTo`) para entrar na classificação RF7; resolver = status RESOLVIDO. | Google Docs comments; Yjs `RelativePosition` [REF-YJS]. |
+| **Sugestões** | modo "sugerir" (inserção/remoção marcadas) para OBSERVADORES e para qualquer um em seção que não é sua; aceitar/rejeitar = relator ou dono da seção; sugestão aceita gera nó EDITOU no rastro com autor original. | Google Docs suggesting mode [REF-GDOCS]; Loop [REF-LOOP]. |
+| **Versões** | `DocumentSnapshot` a cada mudança de fase, a cada publicação de resumo/decisão, manual ("nomear versão") e periódica (5 min com mudanças); diff legível entre versões; restaurar = nova versão (nunca apaga). | Google Docs named versions; RF22.CA02 versões com diff. |
+| **Bloqueio de trechos** | seção FECHADA ou "citação de decisão" = somente leitura (`lockedSectionsJson`); tentativa de editar mostra motivo. | Loop/Word "restrict editing". |
+| **IA com faísca ✦** | ações por seção: "resumir esta seção", "listar evidências citadas no chat", "redigir a partir da Mesa (opção X)", "verificar conformidade (RF32)"; o texto da IA entra **como sugestão**, nunca como edição direta; tooltip "gerado por IA em…" (RF38.CA04). | FigJam Jambot, Notion AI, Loop Copilot [REF-FIGJAM, REF-NOTION, REF-LOOP]; RF43 §1 autoridade humana. |
+| **Ligação com o chat/Mesa** | arrastar mensagem/cartão para a Minuta cria citação com link ao original (nó `ANEXOU`); a Minuta mostra à margem a classe da mensagem citada. | Slack canvas "add from message" [REF-SLACK]. |
+
+### D.3 Regras (proposta)
+
+1. **Decisão VALIDADA ⇒ Minuta somente leitura** (`readOnly = true`); correções posteriores só por **errata** (nova `SessionArtifact` ATA com referência), nunca editando o texto carimbado (coerente com rastro imutável RF29.CA07 e com "tarefas vinculadas a decisões validadas não podem ser excluídas", RF41.CA05).
+2. **Classificação de acesso** (`accessClass`, herdada da tarefa mais restrita anexada ou definida pelo chefe — RF20 PÚBLICO/INTERNO/RESTRITO/SIGILOSO): RESTRITO/SIGILOSO **limita a entrada** (só participantes nomeados, sem link externo, sem OBSERVADOR de outro departamento) e **bloqueia IA externa** (`externalAiAllowed = false` → só motor local, RF43.CA02; as ações ✦ da Minuta ficam desabilitadas com aviso); transcrição de reunião (RF37) nessas sessões só por transcrição colada.
+3. **Toda edição no rastro e auditoria**: o CRDT guarda autoria por operação; a cada snapshot grava-se `DecisionTraceNode` tipo ARTEFATO (relação `EDITOU`, nova) com `authorsJson` e diff; `audit_log` com `correlationId` em mudanças de status de seção, bloqueio, restauração e aceite de sugestão (ARQUITETURA §3.3).
+4. **Limite de editores e latência**: `maxEditors` = 10 simultâneos (os demais entram em modo sugestão/comentário; sessões ≥ 10 pessoas usam RELATOR + seções atribuídas); **latência alvo ≤ 300 ms** entre a edição e a sua exibição nos outros clientes (p95, mesma região), medida em `ws_doc_latency` e exposta no painel RF43.CA12; acima de 1 s por 30 s o cliente mostra "sincronizando" e bloqueia novas sessões de edição.
+5. **Offline/ reconexão**: edições locais ficam em IndexedDB e mesclam ao reconectar (CRDT garante convergência); se a Minuta ficou `readOnly` nesse meio-tempo, as edições pendentes viram **sugestões**.
+6. **Google/Microsoft vinculados** (RF20 fontes; RF41.CA03 versões): a Minuta pode ser **exportada** como Docs/Word (tarefa DOCUMENTO vinculada) ao fechar; **importar/ligar** um Docs/Word existente é somente leitura espelhada (sem coedição bidirecional na v1 — ver §D.4 e QS-12).
+
+### D.4 Resumo do comparativo técnico (detalhe e PoC em `COEDICAO_TECNICA.md`, do outro agente)
+
+| Tema | Opções | Leitura resumida | Recomendação de base (a validar no PoC) |
+|---|---|---|---|
+| **Modelo de consistência** | **Yjs** (CRDT, Y.Text/Y.Map/Y.Array, awareness, `RelativePosition`, bindings ProseMirror/Tiptap, y-indexeddb) · **Automerge** (CRDT JSON, núcleo Rust/WASM, `automerge-repo`, histórico completo por mudança) · **OT** (ShareDB/Google Docs: servidor central transforma operações, exige ordem total) [REF-YJS, REF-AUTOMERGE, REF-OT] | OT é maduro para texto, mas precisa de servidor autoritativo e é frágil em offline/multi-servidor; Yjs é o mais usado em editores web (Tiptap, BlockNote, Notion-likes), com awareness pronto e footprint pequeno; Automerge tem histórico por operação mais explícito (bom para auditoria), binários maiores e ecossistema de editores menor. | **Yjs** para a Minuta (texto rico + comentários + awareness); a auditoria "por edição" vem dos snapshots + `UndoManager`/`Y.Snapshot` com `gc=false` nas sessões RESTRITO/SIGILOSO. Automerge fica como alternativa se o PoC mostrar que a auditoria por operação é obrigatória para o TCE. |
+| **Transporte / servidor** | **WebSocket/STOMP no Spring** (mesmo processo `ws-web`, `spring-messaging`, broker relay Redis) · **Hocuspocus** (servidor Yjs em Node, extensões de auth/persistência/Redis, webhooks) · **y-websocket** próprio em Node · SSE já previsto para o chat (Q-27) | STOMP no Spring mantém um só backend, mas obriga a reimplementar o protocolo de sync do Yjs em Java (existe `y-crdt` em Rust com bindings, não Java); Hocuspocus resolve sync/awareness/persistência/escala horizontal (Redis) com pouco código, ao custo de um serviço Node a mais (já há Next.js no stack). | **Hocuspocus** como serviço `ws-collab` (Node) atrás do BFF, autenticado por JWT curto emitido pelo `ws-web`, com webhook `onStoreDocument` → `ws-web` grava `DocumentSnapshot`; chat continua em SSE/Redis pub/sub. Se a equipe quiser 100 % Java: STOMP + `y-crdt` via JNI/WASM é a opção B. |
+| **Presença** | Yjs awareness (efêmero, não persiste) sobre Redis pub/sub (Hocuspocus Redis extension) ou chave `presence:{sessionId}` com TTL 30 s | Awareness já resolve cursor/seleção/nome/cor; a presença do **chat/card** ("online") precisa de Redis com TTL para funcionar sem o editor aberto. | Awareness para o editor; `presence:{sessionId}:{userId}` TTL 30 s em Redis para card/painel (heartbeat 10 s). |
+| **Snapshots e persistência** | estado Yjs binário em **S3** (`stateMediaId`) + metadados em **MySQL** (`document_snapshots`) + updates incrementais em **Cassandra** (`doc_updates_by_document`, TTL até o próximo snapshot) | Segue a persistência poliglota do ARQUITETURA §3.2: MySQL fonte de verdade, Cassandra append-only volumoso, S3 binários. | Snapshot a cada 5 min com mudanças/fase/decisão; compactar updates no snapshot; exportar Markdown (`contentMd`) junto para busca (OpenSearch) e Memória (RF33). |
+| **Offline** | y-indexeddb (cliente) + fila de updates; reconexão com sync protocol | Simples com Yjs; precisa de regra para `readOnly` mudado durante o offline (§D.3-5). | Habilitar y-indexeddb só para participantes MEMBRO/RELATOR; OBSERVADOR não armazena localmente (dados RESTRITO). |
+| **Google/Microsoft vinculados** | Docs/Word como **origem somente leitura** (espelho por versão, RF41.CA03) ou **exportação** ao fechar; coedição real dentro do Docs/Word exigiria usar as APIs de colaboração deles (não há CRDT compartilhado) | Coedição bidirecional é inviável na v1 (conflito de modelos). | Exportar ao fechar; "abrir no Docs" como link; ver QS-12. |
+| **Escala e custo** | 1 documento por sessão, ≤ 10 editores, dezenas de leitores | Hocuspocus com Redis escala horizontalmente; para a SECID (centenas de usuários) um pod basta. | Começar com 1 instância + Redis; medir `ws_doc_latency`. |
+
+---
+
+## E. Papéis, ritmo e moeda
+
+### E.1 Papéis por estado
+
+`ParticipantRole` hoje: ADMIN · MEMBRO · OBSERVADOR · IA (TAX §5.2). (proposta) acrescentar **RELATOR** (quem conduz a Minuta; o chefe pode delegar a um MEMBRO ou CURADOR); "moderador" = ADMIN da sessão. Mapeamento DACI/RAPID [REF-DACI, REF-RAPID]: Driver = moderador · Approver/Decide = revisor (RF15) · Contributors/Input = membros · Informed = observadores + Mural · Recommend = IA + relator.
+
+| Estado | Moderador (ADMIN) | Relator | Participante (MEMBRO) | Observador | IA facilitadora |
+|---|---|---|---|---|---|
+| RASCUNHO / AGENDADA | define tema/objetivo/acesso, convida, agenda, recusa | nomeado pelo moderador; prepara seções da Minuta | aceita convite, lê pauta | — | sugere tema, pauta, precedentes, critérios |
+| ABERTA / REABERTA | avança/volta fase, turnos, mão levantada, silenciar, fixar, estacionar, add/remove (RF9), habilita resposta a divergência (RF10) | atribui seções, aceita sugestões, fecha seções, pede "redigir a partir da Mesa" | mensagens, anexos, posições, responde divergência/pergunta, edita sua seção, levanta a mão | lê, comenta/sugere na Minuta, **não** envia mensagem (RF6.CA02 derivado), não conta para consenso | abre fases, classifica, detecta divergências, pergunta, convida quem falta, alerta fuga do tema, mantém Resumo vivo, propõe opções/critérios/notas |
+| CONVERGINDO | revisa e publica/devolve resumo | consolida Minuta com o resumo | lê; comenta na Minuta | lê | gera resumo (RF11) |
+| DECISAO_PROPOSTA | edita/encaminha decisão (RF12) | fecha seção "Decisão proposta" | objeção final (rodada de consentimento) | — | propõe decisão (RF12) e verifica citações |
+| EM_REVISAO | (se também revisor) valida/devolve — ver QS-03 | — | lê | lê | entrega fio + checklist de revisão |
+| VALIDADA / DEVOLVIDA | encerra / decide reabertura | errata (VALIDADA) ou reabre seções (DEVOLVIDA) | vota reabertura | — | cria ReopenRequest justificado (RF14), gera artefatos (RF13) |
+| ENCERRADA / ARQUIVADA | exporta | — | "Transformar em tarefa", lê | lê | indexa na Memória (RF33) |
+
+### E.2 Ritmo e moderação (proposta; inspirações: Slack huddles "raise hand", FigJam/Miro timer e voting, Liberating Structures, Loomio prazos [REF-SLACK, REF-FIGJAM, REF-MIRO, REF-LS, REF-LOOMIO])
+
+- **Turnos**: modo "em turnos" ativado pelo moderador (sugerido pela IA quando ≥ 10 participantes ou ≥ 60 msgs/10 min): só quem está "com a palavra" envia mensagem; os demais usam **mão levantada** (`handRaisedAt`, fila visível no painel); a IA sugere a ordem (quem ainda não falou primeiro). Mensagens fora do turno viram rascunho para enviar depois (não se perdem).
+- **Tempo por fase** (`SessionTimer kind FASE`): opcional, visível na Faixa de Objetivo; ao vencer, a IA resume e sugere avançar — nunca avança sozinha.
+- **Silenciar** (`mutedUntil`): apenas o moderador, com motivo registrado e visível ao silenciado; máximo 30 min; auditado (segurança psicológica e abuso — RF42.CA07 antifraude usa o mesmo registro).
+- **Fixar** (`pinned`): até 5 mensagens fixadas (objetivo, critérios, pergunta crítica, decisão proposta); fixadas aparecem na Faixa como chips.
+- **Estacionamento**: itens fora do tema; a IA propõe "virar nova sessão" quando ≥ 10 itens ou quando o chefe pede; itens estacionados não pontuam DP (RF42 "fora do tema").
+- **Rodadas** (≥ 10 pessoas): 1-2-4-Todos [REF-LS] como sugestão da IA em Divergir (sub-grupos como threads por opção, 5 min cada, depois síntese ✦); **Delphi anônimo** opcional em temas sensíveis (autor oculto até o fim da rodada; o rastro guarda a autoria — QS-06).
+- **Reunião síncrona** (RF37 Ata Viva): botão "Nova reunião" na Faixa; a transcrição classificada entra como mensagens IA/SISTEMA atribuídas aos falantes com consentimento (RF37.CA05).
+
+### E.3 DECIA Points e Hype na sessão — sem incentivar volume
+
+Fontes: tabela do RF42 (dump l.779–790; só eventos confirmados pela IA; "não geram pontos: ruído, fora do tema, repetidas > 90 %"); RF43.CA05 "volume bruto de mensagens nunca é critério"; RF42.CA07 antifraude; objetivo 2 (clareza, evidências, consistência).
+
+Mantido como está: +5 argumento com evidência (teto 10/dia/sessão) · +3 consenso confirmado · +8 divergência resolvida · +4 pergunta respondida com evidência · +6 artefato usado · +15 × qualidade decisão validada · +2 presença em sessão encerrada.
+
+Propostas (todas via `decia_points_rules` versionada, RF42.CA02):
+1. **Teto por sessão e por pessoa** (ex.: 40 DP antes da decisão) — impede farming por repetição de argumentos levemente diferentes; o multiplicador da decisão validada continua ilimitado porque depende do resultado.
+2. **+5 "mudei de posição com evidência"**: quando a IA confirma que uma pessoa trocou a posição numa opção **citando evidência** (consistência ≠ teimosia; é o sinal mais raro e valioso de deliberação) — marcado só pela IA, auditável.
+3. **+6 relator** por Minuta fechada com todas as seções FECHADAS e ≥ 1 sugestão aceita de outra pessoa.
+4. **+3 "esclarecimento aceito"**: resposta a pergunta de outro participante marcada como "me ajudou" pelo autor da pergunta (1 por pergunta).
+5. **Nada por**: levantar a mão, enviar mensagem, reagir, estar online, número de edições na Minuta, cartões movidos na Mesa.
+6. **Hype da sessão** (indicador do card, derivado — D-12): % de membros manifestados, divergências resolvidas ÷ abertas (Lencioni proxy, RF43 §8-D), % de mensagens com evidência, tempo até a decisão vs. mediana do departamento, rastro completo. Mostrado como texto + mini-barras; **nunca** como ranking de pessoas dentro da sessão. Alimenta o Hype Score do Perfil (RF45) só pela dimensão "DECIA" com os mesmos eventos pontuados.
+7. **Antifraude específico**: mensagens com similaridade > 90 % entre si ou com o Resumo vivo não pontuam (já no RF42); reações cruzadas entre 2 pessoas em < 1 min repetidas ficam suspensas (RF42.CA07); DP da sessão só se consolida em ENCERRADA (lançamentos ficam "pendentes" no extrato até lá — evita pontuar sessão abandonada, ver QS-10).
+
+---
+
+## F. Mudanças propostas no board e perguntas ao dono
+
+### F.1 Mudanças propostas (numeradas)
+
+1. **Recriar os cards RF4–RF17 da sessão** (hoje sem card RF, só nas listas Sprint 1–3 — `RENUMERACAO.md`, Q-44) com os CAs derivados em `docs/diagramas/RF4..RF17` como ponto de partida.
+2. **RF4 (tema/acesso)**: acrescentar CA "objetivo em 1 frase obrigatório (≤ 200 caracteres), exibido na Faixa de Objetivo em todas as telas da sessão"; CA "classificação de acesso da sessão (PÚBLICO…SIGILOSO) herda a mais restrita dos anexos e limita IA externa (RF43.CA02)"; CA "`phaseMode` GUIADO/LIVRE/ESTRITO, padrão GUIADO; ESTRITO imposto pela política da EMPRESA".
+3. **RF5 (iniciar)**: novo estado **AGENDADA** com `scheduledAt`, convites, lembretes 24 h/1 h, pauta ✦; CA "recusa → CANCELADA com motivo" (resolve Q-26); atualizar os `stateDiagram` de RF4/RF5/RF12/RF14/RF15/RF17 §4 e ARQUITETURA §5.2 para a enum nova (§A.1).
+4. **RF6 (mensagens)**: CA "mensagem carrega `phase`, pode ser fixada (≤ 5) e marcada fora do tema (estacionamento)"; CA "modo em turnos/mão levantada quando ativado pelo admin"; CA "latência de entrega p95 ≤ 300 ms na mesma região".
+5. **RF7 (classificar)**: acrescentar classes **EVIDENCIA** e **PROPOSTA** (opção) ao `MessageClass`; CA "classificação liga a mensagem a `optionId`/`criterionId` da Mesa e aceita papel Toulmin opcional"; CA "autor ou admin corrige a classe (Q-28) e a correção treina a próxima".
+6. **RF8/RF16 (divergências e perguntas)**: CA "pergunta PONTO_CRITICO aberta impede sair de ESCLARECER em modo ESTRITO; em GUIADO só avisa"; CA "aviso de fuga do tema é privado ao autor antes de qualquer sinal público".
+7. **RF9 (participantes)**: papel **RELATOR**; `handRaisedAt`, `mutedUntil` (máx. 30 min, motivo, auditado); OBSERVADOR não conta para consenso nem para "quem falta se manifestar".
+8. **RF10 (responder divergência)**: CA "objeção na rodada de consentimento cria `Divergence` ligada à opção".
+9. **RF11 (resumo)**: CA "Resumo vivo: versão RASCUNHO regenerada a cada N mensagens ou K minutos em ABERTA (custo em modo ECONOMIA), publicada só pelo admin"; CA "critérios e notas do resumo vêm da matriz opções × critérios da Mesa quando existir".
+10. **RF12 (decisão)**: `chosenOptionId`; CA "rodada de consentimento final (objeção registrada) antes de encaminhar"; prazo de 3 dias úteis com lembrete.
+11. **RF13 (artefatos)**: CA "ATA/RELATÓRIO são gerados a partir da Minuta Coletiva quando ela existe; a IA só preenche seções vazias".
+12. **RF14 (reabertura)**: estado de sessão **DEVOLVIDA** com votação de 48 h; REABERTA volta à fase ESCLARECER com motivo fixado; `reopenCount ≥ 3` → IA sugere encerrar/dividir.
+13. **RF15 (revisão)**: estado **VALIDADA** (curto) com encerramento automático após artefatos; prazo de revisão 5 dias úteis, lembrete no 3º, escalonamento à EMPRESA no 10º; checklist de revisão ✦ (conformidade, fontes, projeto vinculado).
+14. **RF17 (encerrar)**: CA "Minuta vira somente leitura; DP pendentes da sessão consolidam"; CA "CANCELADA não vai à Memória".
+15. **Novo RF — Fases de deliberação**: `DeliberationPhase` (Contexto · Divergir · Esclarecer · Convergir · Decidir), `SessionPhaseLog`, critérios de saída sugeridos pela IA, PercentBar determinística (§B.5) em `METRICAS_GESTAO.md`.
+16. **Novo RF — Mesa do DECIA**: `DecisionOption`, `DecisionCriterion`, `OptionCriterionScore`, `SessionBoardItem`; visões por opção (padrão), matriz, linha do tempo, por fase (se projeto); estacionamento; indicador de consenso; vista em lista acessível obrigatória (WCAG 2.5.7).
+17. **Novo RF — Minuta Coletiva (coedição)**: `SessionDocument`, `DocumentSection`, `DocumentSnapshot`, `DocumentComment`; regras §D.3; latência ≤ 300 ms; ≤ 10 editores; IA só como sugestão.
+18. **RF22 (Mesa de Trabalho)**: CA04 "último-vence em 3 s" passa a valer só para posição/estrutura; texto de comentários e descrições usa o mesmo mecanismo CRDT da Minuta (ou fica explícito que não é coedição de texto); CA novo "diff sugerido pela decisão validada → `ProjectVersion`".
+19. **RF29 (ponte)**: CA02 ampliado (opção escolhida → tarefas; opções descartadas → "alternativas consideradas" no snapshot); CA novo "arrastar do Acervo para a Mesa cria mensagem com anexo ligada à opção"; relação `EDITOU` no `DecisionTrace`.
+20. **RF37 (Ata Viva)**: CA "trechos da ata distribuídos nas colunas da Mesa e nas seções da Minuta"; sessões RESTRITO/SIGILOSO só aceitam transcrição colada.
+21. **RF42 (DECIA Points)**: linhas novas da tabela (§E.3: teto por sessão, +5 mudança de posição com evidência, +6 relator, +3 esclarecimento aceito) e regra "DP da sessão consolidam em ENCERRADA".
+22. **RF38 (identidade)**: componentes **PercentBar**, **ObjectiveBand**, **SessionCard**, **BoardColumn/ConsensusMeter**, **PresenceCursor** (cores de nó do logo); etiquetas de estado para os 12 valores da enum.
+23. **TAXONOMIA §5**: aplicar o diagrama de classes `decia/sessao-classes.puml` (campos marcados `<<proposta>>`), renomear `SessionStatus` e registrar D-nn correspondente em `DECISOES.md`.
+
+### F.2 Perguntas ao dono (QS = sessão; sugerido incorporar a `DECISOES.md` após Q-47)
+
+1. **QS-01** Numeração: os RFs da sessão voltam a ter cards (RF4–RF17 antigos) ou ganham números novos? Este documento usa os ids dos CAs (Q-44).
+2. **QS-02** A enum nova (`RASCUNHO … CANCELADA`, 12 valores) é aceita, ou preferem manter os 8 nomes da TAXONOMIA e tratar AGENDADA/VALIDADA/DEVOLVIDA como flags?
+3. **QS-03** Moderador e revisor são a mesma pessoa (chefe do departamento)? Se sim, aceitam a regra "quem moderou **e** redigiu a decisão não pode ser o único revisor" (segunda assinatura da EMPRESA ou outro chefe) para temas RESTRITO/valor alto? (Q-03/Q-17)
+4. **QS-04** Fases: `phaseMode` GUIADO como padrão e ESTRITO só por política da EMPRESA — ok? Quais temas exigem ESTRITO (classificação, valor envolvido, processo Licitação)?
+5. **QS-05** Prazos propostos (revisão 5 dias úteis, encaminhamento 3, votação 48 h, inatividade 7/30 dias, AGENDADA 7 dias) — confirmar ou parametrizar por EMPRESA?
+6. **QS-06** Rodada **anônima** (Delphi) é desejável no setor público? O rastro guardaria a autoria (auditável), só a UI ocultaria até o fim da rodada.
+7. **QS-07** Mesa por opção como padrão e matriz opções × critérios na fase Convergir — aceitam notas 1–5 geradas pela IA (✦, editáveis) ou a nota deve ser sempre humana?
+8. **QS-08** Quem define os critérios de decisão: só o chefe, o grupo (com peso) ou derivados do plano anual/checklist (RF24/RF32) por padrão?
+9. **QS-09** Minuta Coletiva: aceitam um serviço Node (`ws-collab`/Hocuspocus) ao lado do Spring, ou a coedição precisa ser 100 % Java? (decide a opção A/B do §D.4; depende do PoC em `COEDICAO_TECNICA.md`)
+10. **QS-10** DP da sessão consolidam só em ENCERRADA (pendentes no extrato até lá) — ok? E o teto por sessão (40 DP antes da decisão)?
+11. **QS-11** Observador: pode comentar/sugerir na Minuta mas não enviar mensagem — confirmam? Curador pode ser RELATOR?
+12. **QS-12** Documentos Google/Microsoft: só exportar ao fechar e espelhar como leitura (v1) — ou é requisito coeditar dentro do Docs/Word?
+13. **QS-13** Cores de presença "de nó do logo": precisamos do PNG oficial do logo (Q-45) para derivar os tokens `--node-*`; até lá usar `--dept-*`?
+14. **QS-14** Encerramento automático após VALIDADA (quando os 3 artefatos existem ou 24 h) — ou o chefe deve encerrar manualmente sempre (HU17 "administrador encerra")?
+
+---
+
+## Anexo R — Referências externas e o que foi aproveitado
+
+| Id | Referência | Aproveitado em |
+|---|---|---|
+| REF-IBIS | Kunz & Rittel, *Issues as Elements of Information Systems* (1970); Conklin, gIBIS/Compendium (questão → posição → argumento) | A.5, C.1 (por opção), Mapa L3 |
+| REF-TOULMIN | Toulmin, *The Uses of Argument* (1958): alegação, dado, garantia, apoio, qualificador, refutação | `toulminRole` (classes), Mapa L3, F.1-5 |
+| REF-KIALO | Kialo: árvore pró/contra por tese com votos de impacto | indicador de consenso por opção, Mapa L3 |
+| REF-LOOMIO | Loomio: proposta com prazo, posições concordo/abstenho/discordo/bloqueio, resultado registrado | rodada de consentimento, `votingDeadlineAt`, DEVOLVIDA |
+| REF-SOC | Sociocracia / consentimento (objeção argumentada; "bom o suficiente por ora, seguro o bastante para tentar") | fase Convergir, objeção → divergência |
+| REF-DELPHI | Método Delphi (RAND, anos 1950): rodadas anônimas com feedback controlado | rodada anônima opcional (QS-06), IA como "feedback controlado" |
+| REF-NGT | Técnica de Grupo Nominal (Delbecq & Van de Ven, 1971): geração silenciosa → rodada → esclarecimento → votação | fase Divergir sem divergências formais, Esclarecer, consentimento |
+| REF-DD | Double Diamond (Design Council, 2005): descobrir/definir/desenvolver/entregar | Divergir/Convergir, PercentBar por marcos |
+| REF-LS | Liberating Structures (Lipmanowicz & McCandless): 1-2-4-Todos, Min Specs, TRIZ | rodadas ≥ 10 pessoas, critérios mínimos |
+| REF-DACI | DACI (Intuit/Atlassian): Driver, Approver, Contributors, Informed | papéis E.1 |
+| REF-RAPID | RAPID (Bain): Recommend, Agree, Perform, Input, Decide | revisor único = Decide; IA/relator = Recommend |
+| REF-GDOCS | Google Docs: modo sugestão, comentários ancorados, histórico de versões nomeadas, OT | D.2 sugestões/versões/comentários; D.4 OT |
+| REF-NOTION | Notion: blocos com dono, visões board/tabela/linha do tempo do mesmo banco, IA por bloco | seções atribuídas, Mesa como projeções dos mesmos dados |
+| REF-FIGMA / REF-FIGJAM | Figma multiplayer (cursores nomeados), FigJam (timer, votação, carimbos, seções, Jambot) | presença, timer de fase, votação por opção, IA por seção |
+| REF-MIRO | Miro: frames, votação, timer, estacionamento ("parking lot") | estacionamento, frames = colunas por opção |
+| REF-SLACK | Slack: huddles (mão levantada), canvas (adicionar a partir de mensagem), threads, fixar | mão levantada, citação chat → Minuta, threads por opção, fixar |
+| REF-LOOP | Microsoft Loop: componentes portáveis, páginas coeditadas, Copilot em página | Minuta como componente que vira ATA/tarefa; IA como sugestão |
+| REF-YJS | Yjs (Kleppmann et al. / Jahns): CRDT, awareness, RelativePosition, y-websocket, y-indexeddb; Hocuspocus (Tiptap) | D.4 modelo, transporte, presença, offline |
+| REF-AUTOMERGE | Automerge (Kleppmann): CRDT JSON, automerge-repo, histórico por mudança | D.4 alternativa para auditoria por operação |
+| REF-OT | Operational Transformation (Ellis & Gibbs 1989; Google Docs/ShareDB) | D.4 por que não OT |

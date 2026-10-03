@@ -14,8 +14,8 @@ const SW = 1.75;
 const V = (name, fb) => `var(--ws-${name}, ${fb})`;
 const INK = V('ink', BRAND.ink[0]), CREAM = V('cream', BRAND.cream[0]);
 const NODE = (k) => V(`node-${k}`, NODES[k][0]);
-const SCREEN = V('glyph-screen', '#2A2A33');
-const SHINE = V('glyph-shine', 'rgba(255,255,255,.22)');
+const SCREEN = V('glyph-screen', '#47443C');
+const SHINE = V('glyph-shine', 'rgba(102,99,98,.55)');
 const RIM = V('glyph-rim', 'transparent');
 
 /* ---------------- primitivas ---------------- */
@@ -345,7 +345,7 @@ ${STYLE.replace(/<\/?style>/g, '')}
 <section><h2>Outline (${Object.keys(GLYPHS).length})</h2><p class="lead">Traço 1,75 · currentColor · nós como detalhe.</p><div class="grid">${outl}</div></section>
 <section><h2>Clay (${Object.keys(GLYPHS).length})</h2><p class="lead">Carcaça <code>--ws-ink</code>, brilho superior, aro nos temas escuros, detalhes creme.</p><div class="grid">${clay}</div></section>
 <section><h2>WS Moji (${Object.keys(MOJI).length}) — clay</h2><p class="lead">Rostos de monitor em <code>--ws-font-mono</code>. "carregando" pisca o cursor; desliga com <code>prefers-reduced-motion</code>.</p><div class="grid">${moji}</div></section>
-<section><h2>WS Moji — outline</h2><div class="grid">${mojiO}</div><p class="note">Paleta provisória (derivada da descrição do logo) — calibrar com o PNG oficial. Ver TOKENS.md.</p></section>
+<section><h2>WS Moji — outline</h2><div class="grid">${mojiO}</div><p class="note">Paleta medida no logo oficial (public/brand/work-station-logo.png). Ver TOKENS.md.</p></section>
 </main>
 <script>
 (function(){
