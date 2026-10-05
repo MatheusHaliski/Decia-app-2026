@@ -54,6 +54,22 @@ class MigrationVersionsTest {
     }
 
     @Test
+    void baselineDoDominioBaseEhAV2() throws Exception {
+        // Q-76 / D-23: o baseline real (users, user_preferences, refresh_tokens, audit_log, ai_inference_log, feature_flags,
+        // domain_events, media_objects) entra como V2; a V1 nunca é editada
+        assertThat(versions().get("2")).containsExactly("V2__baseline_dominio_base.sql");
+    }
+
+    @Test
+    void aindaNaoExistemMigrationsJava() throws Exception {
+        // Toda migration até aqui é SQL puro. Quando a primeira migration Java entrar (BaseJavaMigration), troque esta
+        // asserção por uma lista explícita das versões Java esperadas — nunca a apague em silêncio.
+        List<String> javaMigrations = versions().values().stream().flatMap(List::stream)
+                .filter(f -> f.endsWith(".class")).toList();
+        assertThat(javaMigrations).isEmpty();
+    }
+
+    @Test
     void normalizacaoDeVersaoTrataZerosESeparadores() {
         // V1_0, V1.0 e V1 são a mesma versão para o Flyway — e para este teste
         for (String name : List.of("V1_0__a.sql", "V1.0__b.sql", "V1__c.class")) {
