@@ -1,0 +1,82 @@
+# Ambiente local do Work Station / DECIA. Só o MySQL é obrigatório:
+#   cp .env.example .env          # preencha WS_DB_PASSWORD (o compose e a API leem daqui; não há senha padrão)
+#   docker compose -f docker-compose.dev.yml up -d mysql
+# Serviços opcionais (perfis): redis, cassandra, opensearch, minio
+#   docker compose -f docker-compose.dev.yml --profile redis --profile cassandra up -d
+# Todas as portas ficam presas em 127.0.0.1: credenciais de desenvolvimento não podem ir para a rede.
+services:
+  mysql:
+    # 8.4 LTS, o mesmo alvo de produção (ARQUITETURA §3.2) e do WorkStationApplicationIT (Testcontainers)
+    image: mysql:8.4
+    container_name: ws-mysql
+    environment:
+      MYSQL_DATABASE: ${WS_DB_NAME:-workstation}
+      MYSQL_USER: ${WS_DB_USER:-workstation}
+      MYSQL_PASSWORD: ${WS_DB_PASSWORD:?defina WS_DB_PASSWORD no .env (cp .env.example .env)}
+      MYSQL_ROOT_PASSWORD: ${WS_DB_ROOT_PASSWORD:?defina WS_DB_ROOT_PASSWORD no .env (cp .env.example .env)}
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci --default-time-zone=+00:00
+    ports:
+      - "127.0.0.1:${WS_DB_PORT:-3306}:3306"
+    volumes:
+      - ws-mysql:/var/lib/mysql
+    healthcheck:
+      # mysqladmin ping responde 0 com o servidor no ar mesmo sem credenciais: nenhuma senha na linha de comando
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 --protocol=TCP --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: ws-redis
+    profiles: ["redis"]
+    command: ["redis-server", "--requirepass", "${WS_REDIS_PASSWORD:?defina WS_REDIS_PASSWORD no .env}"]
+    ports:
+      - "127.0.0.1:${WS_REDIS_PORT:-6379}:6379"
+
+  cassandra:
+    image: cassandra:4.1
+    container_name: ws-cassandra
+    profiles: ["cassandra"]
+    environment:
+      CASSANDRA_CLUSTER_NAME: workstation
+      CASSANDRA_DC: datacenter1
+      CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
+      MAX_HEAP_SIZE: 1G
+      HEAP_NEWSIZE: 200M
+    ports:
+      - "127.0.0.1:${WS_CASSANDRA_PORT:-9042}:9042"
+    volumes:
+      - ws-cassandra:/var/lib/cassandra
+
+  opensearch:
+    # mesma linha 2.19.x da produção; segurança desligada só aqui (porta local)
+    image: opensearchproject/opensearch:2.19.6
+    container_name: ws-opensearch
+    profiles: ["opensearch"]
+    environment:
+      discovery.type: single-node
+      DISABLE_SECURITY_PLUGIN: "true"
+      DISABLE_INSTALL_DEMO_CONFIG: "true"
+      OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
+    ports:
+      - "127.0.0.1:${WS_OPENSEARCH_PORT:-9200}:9200"
+
+  minio:
+    image: minio/minio:latest
+    container_name: ws-minio
+    profiles: ["minio"]
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${WS_S3_ACCESS_KEY_ID:?defina WS_S3_ACCESS_KEY_ID no .env}
+      MINIO_ROOT_PASSWORD: ${WS_S3_SECRET_ACCESS_KEY:?defina WS_S3_SECRET_ACCESS_KEY no .env}
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    volumes:
+      - ws-minio:/data
+
+volumes:
+  ws-mysql:
+  ws-cassandra:
+  ws-minio:

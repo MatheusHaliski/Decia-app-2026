@@ -1,0 +1,37 @@
+# syntax=docker/dockerfile:1
+# Backend Spring Boot 4 do Work Station / DECIA (bytecode Java 21, JVM 25 LTS em runtime).
+#   docker build -f Dockerfile.backend -t work-station-api .
+#   docker run --env-file .env -p 8080:8080 work-station-api
+# Variáveis: ver .env.example (só nomes) e docs/seguranca/SEGURANCA.md. Nenhum segredo entra na imagem.
+FROM maven:3-eclipse-temurin-25 AS build
+WORKDIR /src
+COPY pom.xml .
+COPY config config
+COPY ws-domain ws-domain
+COPY ws-application ws-application
+COPY ws-infrastructure ws-infrastructure
+COPY ws-web ws-web
+COPY ws-bootstrap ws-bootstrap
+# javac 25 compilando com --release 21 (maven.compiler.release no pom); testes e análises rodam no CI, não aqui
+RUN mvn -B -ntp -q -DskipTests -Dcheckstyle.skip -Dspotbugs.skip -Djacoco.skip package
+
+# Ubuntu LTS fixo (noble) para o nome dos pacotes não mudar entre builds
+FROM eclipse-temurin:25-jre-noble
+# curl só para o HEALTHCHECK (a imagem jre não traz)
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+RUN useradd --system --uid 10001 --create-home ws && mkdir -p /app/data/media && chown -R ws /app
+WORKDIR /app
+COPY --from=build /src/ws-bootstrap/target/ws-bootstrap-*.jar app.jar
+ENV JAVA_OPTS="-XX:MaxRAMPercentage=75 -XX:+ExitOnOutOfMemoryError" \
+    SPRING_PROFILES_ACTIVE=prod \
+    WS_STORAGE_LOCAL_DIR=/app/data/media \
+    WS_API_DOCS_ENABLED=false \
+    WS_MANAGEMENT_EXPOSURE=health
+USER ws
+EXPOSE 8080
+# start-period cobre a subida da JVM + Flyway em banco grande; /actuator/health é a única rota pública do Actuator
+HEALTHCHECK --interval=30s --timeout=5s --start-period=120s --retries=3 \
+    CMD curl -fsS http://127.0.0.1:8080/actuator/health || exit 1
+ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar /app/app.jar"]

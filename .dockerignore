@@ -1,0 +1,32 @@
+# Nada de segredo, chave ou dependência local entra no contexto de build
+.env
+.env.*
+keys/
+*.pem
+*.p12
+*.jks
+*.key
+
+# frontend e artefatos (a imagem do backend não precisa deles)
+node_modules/
+.next/
+out/
+coverage/
+public/
+app/
+components/
+lib/
+styles/
+scripts/
+docs/
+markdowns/
+test-utils/
+
+# build local e IDE
+**/target/
+.git/
+.github/
+.idea/
+.vscode/
+.claude/
+*.log

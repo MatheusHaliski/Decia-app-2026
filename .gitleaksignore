@@ -1,0 +1,4 @@
+# Falsos positivos do gitleaks conferidos à mão. Regra: uma linha por achado, no formato
+#   <commit>:<arquivo>:<regra>:<linha>
+# com um comentário acima dizendo POR QUE não é segredo (ex.: fixture de teste gerada na hora, identificador que
+# parece chave). Nunca ignore um segredo real: troque-o e reescreva o histórico. Vazio por enquanto.
