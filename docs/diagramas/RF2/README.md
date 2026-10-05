@@ -1,19 +1,21 @@
 # RF2 — Autenticar usuário na plataforma com credenciais de acesso
-**HU:** HU2 · **Sprint (board Work Station):** 1 · **Equivalente FAI:** RF2 Autenticação (`AuthController /api/auth/login|refresh|logout|sessions`, `IdentityService.login/refresh/revokeFamily`, `JwtTokenIssuer`, `RefreshToken` por `familyId`, BFF `/bff/auth` com cookie HttpOnly) · **Aba/rota:** `/login` (BFF `/bff/auth/login`, `/bff/auth/refresh`, `/bff/auth/logout`, `/bff/auth/oidc/[provider]`) — rota sugerida
-**Critérios de aceite cobertos:** RF2.CA01 … RF2.CA06 (RF1–RF18 não têm CAs no board: derivados da HU2 e marcados "CA a confirmar")
+**HU:** HU2 · **Sprint (board Work Station):** 1 (card "SPRINT 1 — Cadastro, autenticação, perfil e abertura de sessão") · **Equivalente FAI:** RF2 Login (`AuthController POST /api/auth/login|refresh|logout`, `IdentityService.login/refresh`, família de refresh em Redis) · **Aba/rota:** `/login` (BFF `app/bff/auth/login` → `POST /api/auth/login`), `/login/institucional` (`POST /api/auth/oidc/login`), `/forgot-password` (`POST /api/auth/password-reset/request|confirm`); todas as rotas autenticadas passam pelo `SessionActiveFilter`
+**Critérios de aceite cobertos:** RF2.CA01 … RF2.CA06 (corpo do card vazio → derivados do título + HU2, todos "(CA a confirmar)") · RF2.CA07 … RF2.CA14 (§7, controles de segurança D-14) — regra: o título do card define o RF; CAs alinhados ao código real do Bloco 3 (`AuthController`, `IdentityService`, `AuthRateLimitFilter`, `HashBulkhead`, `SessionActiveFilter`, `JwtTokenIssuer`, `OidcService`, `PasswordResetService`)
 
 > **HU2** — COMO usuário cadastrado no sistema POSSO autenticar-me na plataforma com minhas credenciais de acesso PARA acessar minha área pessoal de forma segura.
+
+Classes **(real)** existem em `origin/main` (Bloco 3, PR #16); **(planejado)**: `RedisSessionStore` (hoje `InMemorySessionStore` + espelho JPA `refresh_tokens`, Q-85), `GET/DELETE /api/auth/sessions` (Q-89; `IdentityService.activeSessions` já existe), PKCE/`state` do OIDC no BFF e cookie `ws_rt` (Bloco 4, Q-85), conferência TOTP do 2FA (Q-83), SMTP real (Q-84), `PolicyGateFilter` (D-16). Números adotados: D-25 (TTLs), D-26 (Argon2id e bulkhead), D-27 (cadastro sem oráculo).
 
 ## Critérios de aceite derivados da HU2 (todos "CA a confirmar")
 
 | CA | Enunciado (Dado / Quando / Então) |
 |---|---|
-| **RF2.CA01** (CA a confirmar) | Dado `identifier` (username ou e-mail) e senha, quando faço login, então a senha é conferida contra o hash **Argon2id** (`PasswordHasherPort.matches`, com re-hash transparente se os parâmetros mudaram) e recebo um **access JWT** (15 min; claims `user_id`, `sid`=familyId, `role`, `profile_type`) e um **refresh token** opaco (30 d se "lembrar-me", 24 h se não) guardado como hash no **Redis** (`refresh:{familyId}`) com espelho em `refresh_tokens`; o BFF devolve o refresh só em cookie HttpOnly + Secure + SameSite=Strict (`ws_rt`). |
-| **RF2.CA02** (CA a confirmar — **corrigido no Bloco 3, Q-82**) | Dado credenciais erradas, usuário inexistente **ou conta bloqueada por tentativas (mesmo com a senha certa)**, então a resposta é **idêntica**: `401 CREDENCIAIS_INVALIDAS`, mesma mensagem, sem `details` (conta inexistente avalia um hash falso). **Só depois da senha certa e fora do bloqueio**: conta `SUSPENDED`/`ANONYMIZED` → `403 CONTA_INDISPONIVEL`; `twoFactorEnabled` → `401 DOIS_FATORES_NECESSARIO` (`details.twoFactorRequired=true`; conferência TOTP é a Q-83). `DELETION_SCHEDULED` **entra com aviso** (para cancelar a exclusão, D-18); `PENDING_EMAIL_VERIFICATION` não tem sessão antes de confirmar o código. Implementado em `IdentityService.login`; testes `IdentityServiceTest`. |
-| **RF2.CA03** (CA a confirmar) | Dado o botão "Entrar com conta institucional", então o fluxo **OAuth2/OIDC Authorization Code + PKCE** (Google Workspace ou Microsoft 365 / Entra ID) valida o `id_token` (assinatura JWKS, `iss`, `aud`, `nonce`, `exp`), vincula `oidcSubject`/`oidcIssuer` ao `User` existente de mesmo `emailHash` (ou cria conta `ACTIVE`, `passwordHash` nulo, `emailVerified` true) e emite a mesma sessão do CA01. |
-| **RF2.CA04** (CA a confirmar) | Dado um refresh token válido, quando o BFF chama `/api/auth/refresh`, então ocorre **rotação**: novo token da mesma família, o anterior fica `revokedAt`/`rotatedFromId`; reuso de um token já rotacionado **revoga a família inteira** e responde `401 SESSAO_INVALIDA` (detecção de roubo). |
-| **RF2.CA05** (CA a confirmar) | Dado o usuário autenticado, então `logout` revoga a família; `GET /api/auth/sessions` lista dispositivos (deviceName, IP, lastUsedAt, atual) e `DELETE /api/auth/sessions/{familyId}` revoga outra sessão; trocar a senha encerra todas as outras famílias. `SessionActiveFilter` recusa access tokens cuja família foi revogada (`sid`). |
-| **RF2.CA06** (CA a confirmar) | Dado tentativas repetidas, então há limite por IP e por `identifier` (`429 MUITAS_TENTATIVAS`), `AuditLog LOGIN_OK / LOGIN_FALHA / REFRESH_REUSO / LOGOUT` com `correlationId` e sem senha, e `User.lastLoginAt` é atualizado; todas as mensagens são i18n (pt-BR/en/es). |
+| **RF2.CA01** (CA a confirmar) | Dado `identifier` (username ou e-mail) e `password`, quando faço `POST /api/auth/login`, então a senha é conferida contra o hash **Argon2id** (`PasswordHasher.matches`, re-hash transparente por `needsRehash`) e recebo `Session {accessToken RS256 15 min (D-25; claims iss, aud, sub, sid=familyId, role, profile_type, username, jti), tokenType Bearer, expiresIn, refreshToken opaco, refreshExpiresAt, family, user, warnings}`; o refresh (30 d se `rememberMe`, 24 h se não — `SessionPolicy`) é guardado só como SHA-256 (`RefreshRecord.tokenHash`) com espelho em `refresh_tokens`; o BFF devolve o refresh **só** no cookie `ws_rt` (HttpOnly, Secure, SameSite=Strict). |
+| **RF2.CA02** (CA a confirmar) | Dado conta inexistente, senha errada ou conta bloqueada, então `401 CREDENCIAIS_INVALIDAS` com a mesma mensagem e tempo (hash falso `dummyHash`); conta `SUSPENDED`/`ANONYMIZED` (`AccountStatus.blocksLogin`) → `403 CONTA_INDISPONIVEL` **depois** da senha certa; `PENDING_VALIDATION` e `DELETION_SCHEDULED` entram com `warnings` (Q-82; `PENDING_EMAIL_VERIFICATION` só tem sessão após confirmar o código, D-27); `twoFactorEnabled` → `401 DOIS_FATORES_NECESSARIO {twoFactorRequired}` (conferência TOTP é a Q-83). |
+| **RF2.CA03** (CA a confirmar) | Dado "Entrar com conta institucional", então o front faz OIDC Authorization Code + PKCE e envia `POST /api/auth/oidc/login {idToken, nonce}`; `OidcService` exige `ws.oidc.enabled` (`404 OIDC_DESLIGADO`), `IdTokenVerifier` (Nimbus) valida assinatura JWKS, `iss`, `aud`, `nonce`, `exp` (`401 OIDC_TOKEN_INVALIDO`); `OidcAccountLinker` vincula `oidcSubject/oidcIssuer` ao `User` de mesmo `emailHash` só com `email_verified=true` (`401 OIDC_EMAIL_NAO_VERIFICADO`, `AuditLog OIDC_LINK_RECUSADO`) ou cria conta `ACTIVE` sem senha; emite a mesma `Session` (`AuditLog OIDC_LOGIN`). |
+| **RF2.CA04** (CA a confirmar) | Dado um refresh válido, quando o BFF chama `POST /api/auth/refresh`, então ocorre **rotação**: novo token da mesma `familyId`, o anterior recebe `revokedAt`/`rotatedFromHash`; reuso de token já rotacionado **revoga a família inteira**, grava `AuditLog REFRESH_REUSO` e responde `401 SESSAO_INVALIDA`; expirado ou desconhecido → `401 SESSAO_INVALIDA`; conta que passou a `blocksLogin()` → família revogada. |
+| **RF2.CA05** (CA a confirmar) | Dado o usuário autenticado, então `POST /api/auth/logout` revoga a família (`AuditLog LOGOUT`); `PUT /api/auth/password` exige a senha atual (mesmo bloqueio do login), grava `PASSWORD_CHANGED` e revoga as **outras** famílias (`SESSIONS_REVOKED`); o `SessionActiveFilter` recusa a cada requisição access tokens cuja família foi revogada (`sid` → `401 SESSAO_ENCERRADA`). `GET /api/auth/sessions` e `DELETE /api/auth/sessions/{familyId}` são **planejados** (aba Sessões do RF3 §7). |
+| **RF2.CA06** (CA a confirmar) | Dado tentativas repetidas, então há limite por IP (`AuthRateLimitFilter`) e por conta (`RateLimitPort` `login-fail`), `AuditLog LOGIN_OK / LOGIN_FALHA / LOGIN_BLOQUEADO_TENTATIVAS / REFRESH_REUSO / LOGOUT` com `correlationId`, e-mail mascarado e sem senha ou token; `User.lastLoginAt` é atualizado; mensagens i18n (pt-BR/en/es). Redefinição por e-mail: `POST /api/auth/password-reset/request` (resposta igual exista ou não a conta, 5/h por pessoa) e `/confirm {token, newPassword}` (`422 LINK_INVALIDO`), que tira a conta do bloqueio. |
 
 ## 1. Diagrama de classes
 
@@ -21,372 +23,475 @@
 classDiagram
   direction LR
 
-  namespace ws_domain {
-    class User {
-      <<entity>>
-      +id: UUID
-      +username: String
-      +emailHash: String
-      +emailVerified: boolean
-      +passwordHash: String
-      +oidcSubject: String
-      +oidcIssuer: String
-      +profileType: ProfileType
-      +role: Role
-      +status: AccountStatus
-      +twoFactorEnabled: boolean
-      +lastLoginAt: Instant
-    }
-    class RefreshToken {
-      <<entity>>
-      +tokenHash: String
-      +familyId: UUID
-      +userId: UUID
-      +expiresAt: Instant
-      +revokedAt: Instant
-      +rotatedFromId: UUID
-      +createdIp: String
-      +userAgent: String
-      +deviceName: String
-      +lastUsedAt: Instant
-      +persistent: boolean
-    }
-    class AuditLog {
-      <<entity>>
-      +actorId: UUID
-      +action: String
-      +result: String
-      +ip: String
-      +userAgent: String
-      +correlationId: String
-    }
-    class AccountStatus {
-      <<enum>>
-      PENDING_EMAIL_VERIFICATION
-      PENDING_VALIDATION
-      ACTIVE
-      SUSPENDED
-      DELETION_SCHEDULED
-    }
-    class Role {
-      <<enum>>
-      USER
-      ADMIN
-    }
+  class AuthController {
+    <<controller>>
+    +login(LoginRequest, RequestContext) Session
+    +refresh(RefreshRequest, RequestContext) Session
+    +logout(CurrentUser, RequestContext) void
+    +changePassword(CurrentUser, ChangePasswordRequest, RequestContext) ResponseEntity
+  }
+  class OidcController {
+    <<controller>>
+    +login(OidcLoginRequest, RequestContext) Session
+  }
+  class PasswordResetController {
+    <<controller>>
+    +request(RequestBodyDto, RequestContext) Map
+    +confirm(ConfirmBodyDto, RequestContext) void
+  }
+  class IdentityService {
+    <<service>>
+    -String dummyHash
+    +login(LoginCommand, RequestContext) Session
+    +refresh(rawRefresh, RequestContext) Session
+    +logout(CurrentUser, RequestContext) void
+    +changePassword(CurrentUser, current, next, RequestContext) void
+    +openSession(User, persistent, deviceName, RequestContext) Session
+    +sessionActive(familyId) boolean
+    -issue(User, family, rotatedFromHash, persistent, deviceName, ctx) Session
+  }
+  class OidcService {
+    <<service>>
+    +enabled() boolean
+    +login(idToken, nonce, deviceName, RequestContext) Session
+  }
+  class OidcAccountLinker {
+    <<service>>
+    +linkOrCreate(claims, RequestContext) User
+  }
+  class PasswordResetService {
+    <<service>>
+    +request(email, RequestContext) void
+    +confirm(token, newPassword, confirmPassword, RequestContext) void
+  }
+  class SessionPolicy {
+    <<value>>
+    +Duration refreshTtl
+    +Duration refreshShortTtl
+    +int maxLoginFailures
+    +Duration lockWindow
+  }
+  class Session {
+    <<value>>
+    +String accessToken
+    +String tokenType
+    +long expiresIn
+    +String refreshToken
+    +Instant refreshExpiresAt
+    +UUID family
+    +UserView user
+    +List warnings
+  }
+  class RefreshRecord {
+    <<value>>
+    +String tokenHash
+    +UUID familyId
+    +UUID userId
+    +Instant createdAt
+    +Instant expiresAt
+    +Instant revokedAt
+    +String rotatedFromHash
+    +boolean persistent
+    +String deviceName
+  }
+  class CurrentUser {
+    <<value>>
+    +UUID id
+    +Role role
+    +UUID familyId
+  }
+  class RateLimitPort {
+    <<port>>
+    +tryAcquire(owner, bucket, limit, window) boolean
+    +status(owner, bucket, limit, window) QuotaStatus
+    +release(owner, bucket) void
+    +reset(owner, bucket) void
+  }
+  class SessionStorePort {
+    <<port>>
+    +save(RefreshRecord) void
+    +find(tokenHash) Optional
+    +revoke(tokenHash, at) void
+    +revokeFamily(familyId, at) void
+    +familyActive(familyId, now) boolean
+  }
+  class RefreshTokenMirrorPort {
+    <<port>>
+    +saved(RefreshRecord, ctx) void
+    +revoked(tokenHash, at) void
+    +familyRevoked(familyId, at) void
+  }
+  class TokenIssuerPort {
+    <<port>>
+    +issueAccessToken(User, familyId) String
+    +accessTokenTtl() Duration
+  }
+  class IdTokenVerifier {
+    <<port>>
+    +verify(idToken, nonce) Claims
+  }
+  class PasswordHasher {
+    <<port>>
+    +matches(raw, encoded) boolean
+    +needsRehash(encoded) boolean
+  }
+  class AuditLogPort {
+    <<port>>
+    +record(AuditEvent) void
+  }
+  class JwtTokenIssuer {
+    <<adapter>>
+    +enabled() boolean
+  }
+  class JwtKeys {
+    <<config>>
+    RS256 PEM WS_JWT_PRIVATE_KEY_PATH / PUBLIC
+  }
+  class SessionActiveFilter {
+    <<filter>>
+    após BearerTokenAuthenticationFilter
+  }
+  class AuthRateLimitFilter {
+    <<filter>>
+    +RULES por método e rota
+  }
+  class HashBulkhead {
+    <<component>>
+    +tryAcquire(waitMillis) boolean
+    +release() void
+  }
+  class ClientIpResolver {
+    <<component>>
+    +resolve(request) String
+  }
+  class InMemorySessionStore {
+    <<adapter>>
+  }
+  class RedisSessionStore {
+    <<adapter>>
+    planejado
+  }
+  class JpaIdentityAdapters {
+    <<adapter>>
+    RefreshTokenEntity espelho
+  }
+  class NimbusIdTokenVerifier {
+    <<adapter>>
+  }
+  class Argon2PasswordHasher {
+    <<adapter>>
+  }
+  class RedisRateLimit {
+    <<adapter>>
+    Lua INCR+EXPIRE
+  }
+  class InMemoryRateLimit {
+    <<adapter>>
   }
 
-  namespace ws_application {
-    class IdentityService {
-      <<service>>
-      +login(cmd LoginCommand, ip, userAgent) Session
-      +loginOidc(cmd OidcExchangeCommand, ip, userAgent) Session
-      +refresh(rawRefresh, ip, userAgent) Session
-      +logout(current CurrentUser, familyId) void
-      +sessions(current CurrentUser, currentFamily) List~SessionView~
-      +revokeSession(current CurrentUser, familyId) void
-      +revokeOtherSessions(userId, keepFamily) int
-      +sessionActive(familyId) boolean
-      -issue(user, familyId, rotatedFrom, persistent, ip, userAgent, deviceName) Session
-      -revokeFamily(familyId) void
-    }
-    class Session {
-      <<value>>
-      +accessToken: String
-      +expiresInSeconds: long
-      +refreshToken: String
-      +refreshExpiresAt: Instant
-      +familyId: UUID
-      +user: UserCard
-      +status: String
-      +warnings: List~String~
-    }
-    class PasswordHasherPort {
-      <<port>>
-      +matches(raw, encoded) boolean
-      +needsRehash(encoded) boolean
-    }
-    class TokenIssuerPort {
-      <<port>>
-      +issueAccessToken(user, familyId) String
-      +accessTokenTtl() Duration
-    }
-    class RefreshTokenStorePort {
-      <<port>>
-      +save(token RefreshToken) void
-      +findByTokenHash(hash) RefreshToken
-      +findByFamily(familyId) List~RefreshToken~
-      +revokeFamily(familyId, at) int
-    }
-    class OidcClientPort {
-      <<port>>
-      +authorizationUrl(provider, state, nonce, pkceChallenge) String
-      +exchangeCode(provider, code, pkceVerifier) OidcTokens
-      +validateIdToken(provider, idToken, nonce) OidcIdentity
-    }
-    class RateLimitPort {
-      <<port>>
-      +tryAcquire(key, limit, window) boolean
-    }
-    class DomainEventPublisherPort {
-      <<port>>
-      +publish(event DomainEvent) void
-    }
+  class User {
+    <<entity>>
+    +UUID id
+    +String username
+    +String emailHash
+    +String passwordHash
+    +String oidcSubject
+    +String oidcIssuer
+    +AccountStatus status
+    +boolean twoFactorEnabled
+    +Instant lastLoginAt
   }
-
-  namespace ws_web {
-    class AuthController {
-      <<controller>>
-      +login(cmd LoginCommand) Session
-      +oidcAuthorize(provider) RedirectView
-      +oidcExchange(body OidcExchangeRequest) Session
-      +refresh(body RefreshRequest) Session
-      +logout() void
-      +sessions() List~SessionView~
-      +revokeSession(familyId) void
-      +revokeOthers() Map
-    }
-    class JwtTokenIssuer {
-      <<adapter>>
-      +issuer: String
-      +ttl: Duration
-    }
-    class Argon2PasswordHasher {
-      <<adapter>>
-    }
-    class SessionActiveFilter {
-      <<adapter>>
-      +doFilter(request, response) void
-    }
-    class AuthRateLimitFilter {
-      <<adapter>>
-    }
+  class RefreshToken {
+    <<entity>>
+    +String tokenHash
+    +UUID familyId
+    +UUID userId
+    +Instant expiresAt
+    +Instant revokedAt
+    +UUID rotatedFromId
+    +String createdIp
+    +String userAgent
+    +String deviceName
+    +boolean persistent
   }
-
-  namespace ws_infrastructure {
-    class RedisRefreshTokenStore {
-      <<adapter>>
-      +keyPrefix: String
-    }
-    class SpringOidcClientAdapter {
-      <<adapter>>
-      +providers: Map
-    }
-    class RedisRateLimiter {
-      <<adapter>>
-    }
+  class VerificationCode {
+    <<entity>>
+    +VerificationPurpose purpose
+    +String codeHash
+    +int attempts
+  }
+  class AccountStatus {
+    <<enum>>
+    PENDING_EMAIL_VERIFICATION
+    PENDING_VALIDATION
+    ACTIVE
+    SUSPENDED
+    DELETION_SCHEDULED
+    ANONYMIZED
+    +blocksLogin() boolean
+  }
+  class AuthCodes {
+    <<catalog>>
+    CREDENCIAIS_INVALIDAS 401
+    CONTA_INDISPONIVEL 403
+    DOIS_FATORES_NECESSARIO 401
+    MUITAS_TENTATIVAS 429
+    SESSAO_INVALIDA 401
+    SESSAO_ENCERRADA 401
+    SENHA_ATUAL_INCORRETA 422
+    LINK_INVALIDO 422
+    OIDC_DESLIGADO 404
+    OIDC_TOKEN_INVALIDO 401
+    OIDC_EMAIL_NAO_VERIFICADO 401
+    AUTENTICACAO_INDISPONIVEL 503
   }
 
   AuthController --> IdentityService
-  SessionActiveFilter --> IdentityService : sessionActive(sid)
-  IdentityService --> PasswordHasherPort
-  IdentityService --> TokenIssuerPort
-  IdentityService --> RefreshTokenStorePort
-  IdentityService --> OidcClientPort
+  OidcController --> OidcService
+  PasswordResetController --> PasswordResetService
+  OidcService --> IdTokenVerifier
+  OidcService --> OidcAccountLinker
+  OidcService --> IdentityService : openSession
+  PasswordResetService --> IdentityService : revoga famílias
+  PasswordResetService --> RateLimitPort
+  IdentityService --> SessionPolicy
   IdentityService --> RateLimitPort
-  IdentityService --> DomainEventPublisherPort
-  IdentityService ..> Session : devolve
-  JwtTokenIssuer ..|> TokenIssuerPort
-  Argon2PasswordHasher ..|> PasswordHasherPort
-  RedisRefreshTokenStore ..|> RefreshTokenStorePort
-  SpringOidcClientAdapter ..|> OidcClientPort
-  RedisRateLimiter ..|> RateLimitPort
-  User "1" --> "*" RefreshToken : familias de sessao
+  IdentityService --> SessionStorePort
+  IdentityService --> RefreshTokenMirrorPort
+  IdentityService --> TokenIssuerPort
+  IdentityService --> PasswordHasher
+  IdentityService --> AuditLogPort
+  IdentityService ..> Session
+  IdentityService ..> RefreshRecord
+  SessionActiveFilter --> SessionStorePort : familyActive(sid)
+  AuthRateLimitFilter --> ClientIpResolver
+  AuthRateLimitFilter --> HashBulkhead
+  AuthRateLimitFilter --> RateLimitPort
+  TokenIssuerPort <|.. JwtTokenIssuer
+  JwtTokenIssuer --> JwtKeys
+  SessionStorePort <|.. InMemorySessionStore
+  SessionStorePort <|.. RedisSessionStore
+  RefreshTokenMirrorPort <|.. JpaIdentityAdapters
+  IdTokenVerifier <|.. NimbusIdTokenVerifier
+  PasswordHasher <|.. Argon2PasswordHasher
+  RateLimitPort <|.. RedisRateLimit
+  RateLimitPort <|.. InMemoryRateLimit
+  User "1" --> "0..*" RefreshToken : refresh_tokens CASCADE
+  User "1" --> "0..*" VerificationCode : PASSWORD_RESET
   User --> AccountStatus
-  User --> Role
-  AuditLog ..> User : actorId
-
-  note for RefreshToken "Redis hash refresh por familyId (TTL = expiresAt) + espelho MySQL refresh_tokens; só o hash SHA-256 do token é guardado"
-  note for User "tabela users · .. +20 campos .. · passwordHash nulo quando o login é só OIDC"
+  RefreshRecord ..> RefreshToken : espelho
+  note for IdentityService "login: findByIdentifier → tryAcquire(login-fail, 5, 15 min) ANTES do hash → matches → release → blocksLogin → needsRehash → 2FA → reset → LOGIN_OK → openSession"
 ```
 
 ## 2. Diagrama de atividades
 
-Raias: Usuário · Web/BFF · `ws-application` · Persistência · Provedor OIDC externo. Cobre login local, login institucional (OIDC) e renovação com rotação.
-
 ```mermaid
 flowchart TD
-  subgraph L1["Ator humano — Usuário cadastrado"]
-    A1(["Abre /login"]) --> A2{"Como entrar?"}
-    A2 -->|usuário e senha| A3["Informa identifier, senha, lembrar-me"]
-    A2 -->|conta institucional| A4["Clica em Entrar com Google Workspace ou Microsoft 365"]
-    A9["Autentica no provedor e consente"]
-    A20(["Área pessoal carregada"])
+  subgraph ATOR["Usuário cadastrado"]
+    A1["Abre /login e informa identifier + senha (ou clica Entrar com conta institucional)"]
+    A2["Recarrega a página: BFF renova pelo cookie ws_rt"]
+  end
+  subgraph FE["Next.js (App Router) · BFF app/bff/auth"]
+    F1["POST /bff/auth/login → POST /api/auth/login (X-Correlation-Id, X-Ws-Client-Ip/Ts/Sig)"]
+    F2["Grava refresh em ws_rt (HttpOnly, Secure, SameSite=Strict) e access só em memória"]
+    F3["POST /api/auth/refresh com o cookie"]
+    F4["Fluxo OIDC PKCE no IdP → POST /api/auth/oidc/login {idToken, nonce}"]
+  end
+  subgraph WEB["ws-web"]
+    W1["CorrelationIdFilter"]
+    W2["AuthRateLimitFilter: ClientIpResolver (HMAC do BFF › X-Real-IP › TCP, IPv6 /64) → balde IP+método+rota (login 30/10 min)"]
+    W3{"Dentro do limite por IP?"}
+    W4{"HashBulkhead.tryAcquire 2 s?"}
+    W5["AuthController.login / refresh · OidcController.login"]
+    W6["SecurityConfig: rotas PUBLIC_POST sem token · demais exigem JWT + SessionActiveFilter"]
+    E429["429 MUITAS_TENTATIVAS + Retry-After"]
+    E503["503 AUTENTICACAO_OCUPADA + Retry-After"]
+    E401["401 CREDENCIAIS_INVALIDAS (mesma mensagem e tempo)"]
+    E403["403 CONTA_INDISPONIVEL"]
+    E2FA["401 DOIS_FATORES_NECESSARIO"]
+    E401S["401 SESSAO_INVALIDA / SESSAO_ENCERRADA"]
+    E503J["503 AUTENTICACAO_INDISPONIVEL (sem chave RS256)"]
+  end
+  subgraph APP["ws-application · IdentityService"]
+    S1["findByIdentifier: e-mail → emailHash · username → normalize"]
+    S2{"usuário existe?"}
+    S3["matches(password, dummyHash) · LOGIN_FALHA usuario_inexistente"]
+    S4{"rateLimit.tryAcquire(userId, login-fail, 5, 15 min)?"}
+    S5["LOGIN_BLOQUEADO_TENTATIVAS {resetAt} · sem calcular hash"]
+    S6{"Argon2 matches?"}
+    S7["LOGIN_FALHA senha (a reserva fica)"]
+    S8["rateLimit.release · status.blocksLogin()?"]
+    S9["needsRehash → hash novo · twoFactorEnabled?"]
+    S10["rateLimit.reset · lastLoginAt · LOGIN_OK"]
+    S11["openSession → issue: RefreshRecord(sha256, familyId, TTL por rememberMe) · SessionStorePort.save · mirror.saved · issueAccessToken(sid)"]
+    R1["refresh: find(sha256) · revokedAt != null → revokeFamily + REFRESH_REUSO · expirado → SESSAO_INVALIDA · revoke(antigo) → issue(mesma família)"]
+    O1["OidcService: enabled? → IdTokenVerifier.verify(iss, aud, nonce, exp) → OidcAccountLinker (email_verified) → openSession · OIDC_LOGIN"]
+  end
+  subgraph PERS["Persistência"]
+    P1[("MySQL: users (lastLoginAt, passwordHash rehash), refresh_tokens (espelho), audit_log")]
+    P2[("Redis: RateLimitPort Lua INCR+EXPIRE · RedisSessionStore (planejado) · hoje InMemorySessionStore")]
+    P3["JwtKeys: PEM RS256 (WS_JWT_PRIVATE_KEY_PATH)"]
   end
 
-  subgraph L2["Web / BFF (Next.js App Router)"]
-    B1["POST /bff/auth/login → POST /api/auth/login (IP assinado)"]
-    B2["Gera state, nonce e PKCE; redireciona para o provedor"]
-    B3["Callback /bff/auth/oidc/callback → POST /api/auth/oidc/exchange"]
-    B4["Guarda ws_rt (HttpOnly, Secure, SameSite=Strict, path /bff/auth) e access token em memória"]
-    B5["Ao abrir o app ou expirar o access: POST /bff/auth/refresh"]
-  end
-
-  subgraph L3["ws-application — IdentityService"]
-    C1{"Rate limit por IP e identifier ok?"}
-    C1 -->|não| E429["429 MUITAS_TENTATIVAS"]
-    C1 -->|sim| C2{"Usuário existe e Argon2id confere?"}
-    C2 -->|não| E401["401 CREDENCIAIS_INVALIDAS (mesma mensagem e tempo)"]
-    C2 -->|sim| C3{"status permite login?"}
-    C3 -->|SUSPENDED ou DELETION_SCHEDULED| E403["403 CONTA_INDISPONIVEL"]
-    C3 -->|sim| C4{"twoFactorEnabled sem código?"}
-    C4 -->|sim| E2FA["401 DOIS_FATORES_NECESSARIO (envia código)"]
-    C4 -->|não| C5["needsRehash? refaz o hash Argon2id"]
-    C5 --> C6["Emite sessão: access JWT 15 min + RefreshToken (familyId nova)"]
-    C10["Valida id_token (JWKS, iss, aud, nonce, exp)"]
-    C10 --> C11{"User com oidcSubject+oidcIssuer?"}
-    C11 -->|sim| C6
-    C11 -->|não| C12{"User com mesmo emailHash?"}
-    C12 -->|sim| C13["Vincula oidcSubject/oidcIssuer ao User"]
-    C12 -->|não| C14["Cria User ACTIVE, passwordHash nulo, emailVerified=true"]
-    C13 --> C6
-    C14 --> C6
-    C6 --> C7["lastLoginAt=now · publica UserLoggedIn (AFTER_COMMIT) → AuditLog LOGIN_OK"]
-    C15["refresh(rawRefresh)"] --> C16{"tokenHash existe, não expirou e não revogado?"}
-    C16 -->|revogado ou rotacionado| C17["Revoga a família inteira · AuditLog REFRESH_REUSO"]
-    C17 --> E401b["401 SESSAO_INVALIDA"]
-    C16 -->|não existe ou expirado| E401b
-    C16 -->|sim| C18["Rotação: novo token da mesma família, antigo revokedAt + rotatedFromId"]
-  end
-
-  subgraph L5["Persistência"]
-    D1[("MySQL: users, refresh_tokens (espelho), audit_log")]
-    D2[("Redis: refresh por familyId · rate limit · oidc state/nonce")]
-  end
-
-  subgraph L6["Provedor OIDC externo"]
-    X1["Google Workspace / Microsoft Entra ID (authorize, token, JWKS)"]
-  end
-
-  A3 --> B1 --> C1
-  A4 --> B2 --> X1 --> A9 --> B3 --> C10
-  B2 --> D2
-  C6 --> D2
-  C7 --> D1
-  C7 --> B4 --> A20
-  B5 --> C15
-  C18 --> D2
-  C18 --> B4
-
-  classDef erro fill:#fde2e2,stroke:#c0392b,color:#7b1d1d;
-  class E429,E401,E403,E2FA,E401b erro;
+  A1 --> F1 --> W1 --> W2 --> W3
+  W3 -->|"não"| E429
+  W3 -->|"sim"| W4
+  W4 -->|"não"| E503
+  W4 -->|"sim"| W5 --> S1 --> S2
+  S2 -->|"não"| S3 --> E401
+  S2 -->|"sim"| S4
+  S4 -->|"não"| S5 --> E401
+  S4 -->|"sim"| S6
+  S6 -->|"não"| S7 --> E401
+  S6 -->|"sim"| S8
+  S8 -->|"sim"| E403
+  S8 -->|"não"| S9
+  S9 -->|"sim"| E2FA
+  S9 -->|"não"| S10 --> S11 --> F2
+  S11 --> P2
+  S11 --> P1
+  S11 --> P3
+  S11 -->|"JwtTokenIssuer desabilitado"| E503J
+  A1 --> F4 --> W1
+  W5 --> O1 --> S11
+  A2 --> F3 --> W1
+  W5 --> R1
+  R1 -->|"reuso ou expirado"| E401S
+  R1 -->|"ok"| S11
+  W2 --> P2
+  F2 --> W6
 ```
 
 ## 3. Diagrama de sequência
-
-Caminho feliz do login local, refresh com rotação e os `alt` de erro (CA02, CA04); o login OIDC aparece em `opt`.
 
 ```mermaid
 sequenceDiagram
   autonumber
   actor U as Usuário
-  participant N as Next.js (App Router) /login + /bff/auth
-  participant C as AuthController (ws-web)
-  participant S as IdentityService (ws-application)
-  participant H as Argon2PasswordHasher
-  participant J as JwtTokenIssuer
-  participant R as Redis
-  participant DB as Repository/MySQL
-  participant DE as DomainEvents (AFTER_COMMIT)
-  participant IDP as Provedor OIDC (Google / Microsoft)
+  participant N as Next.js (App Router)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
+  participant R as Repository/MySQL
+  participant RD as Redis
+  participant AU as AuditLogPort
 
-  U->>N: identifier + senha (+ lembrar-me)
-  N->>C: POST /bff/auth/login → POST /api/auth/login (X-Wai-Client-Ip assinado)
-  C->>S: login(LoginCommand, ip, userAgent)
-  S->>R: rateLimit.tryAcquire("login", ip + identifier)
-  alt limite estourado (CA06)
-    S-->>C: 429 MUITAS_TENTATIVAS
-    C-->>N: 429
-  else dentro do limite
-    S->>DB: findByUsernameOrEmailHash(identifier)
-    S->>H: matches(senha, passwordHash)
-    alt senha errada ou usuário inexistente (CA02)
-      S->>DE: publish LoginFailed → AuditLog LOGIN_FALHA
-      S-->>C: 401 CREDENCIAIS_INVALIDAS
-      C-->>N: 401 (mesma mensagem, mesmo tempo)
-    else status SUSPENDED ou DELETION_SCHEDULED (CA02)
+  U->>N: identifier + senha em /login
+  N->>C: POST /api/auth/login (X-Correlation-Id, X-Ws-Client-Ip assinado)
+  Note over C: CorrelationIdFilter → AuthRateLimitFilter 30/10 min por IP → HashBulkhead (503 se sem vaga em 2 s)
+  C->>S: IdentityService.login(LoginCommand, ctx)
+  S->>R: findByEmailHash ou findByUsername
+  alt usuário inexistente
+    S->>S: hasher.matches(password, dummyHash) (mesmo custo)
+    S->>AU: record(LOGIN_FALHA, usuario_inexistente)
+    S-->>C: 401 CREDENCIAIS_INVALIDAS
+    C-->>N: 401
+  else conta bloqueada (5 falhas em 15 min)
+    S->>RD: tryAcquire(userId, login-fail, 5, 15 min) = false
+    S->>AU: record(LOGIN_BLOQUEADO_TENTATIVAS, resetAt)
+    S-->>C: 401 CREDENCIAIS_INVALIDAS (sem calcular hash)
+    C-->>N: 401
+  else senha errada
+    S->>RD: tryAcquire = true (reserva)
+    S->>S: Argon2PasswordHasher.matches = false
+    S->>AU: record(LOGIN_FALHA, senha)
+    S-->>C: 401 CREDENCIAIS_INVALIDAS (reserva fica)
+    C-->>N: 401
+  else senha certa
+    S->>RD: tryAcquire = true
+    S->>S: Argon2PasswordHasher.matches = true
+    S->>RD: release(userId, login-fail)
+    alt status.blocksLogin() (SUSPENDED ou ANONYMIZED)
+      S->>AU: record(LOGIN_FALHA, conta_indisponivel)
       S-->>C: 403 CONTA_INDISPONIVEL
-    else credenciais ok (CA01)
-      opt needsRehash(passwordHash)
-        S->>H: hash(senha) e grava o novo hash
-      end
-      S->>J: issueAccessToken(user, familyId) → JWT 15 min (sid, role, profile_type)
-      S->>R: HSET refresh por familyId (tokenHash, expiresAt 30 d ou 24 h)
-      S->>DB: INSERT refresh_tokens (espelho) + UPDATE users.last_login_at
-      S->>DE: publish UserLoggedIn → AuditLog LOGIN_OK
-      S-->>C: Session (accessToken, refreshToken, familyId, user, warnings)
-      C-->>N: 200
-      N-->>U: cookie HttpOnly ws_rt + access token em memória → área pessoal
+      C-->>N: 403
+    else twoFactorEnabled
+      S-->>C: 401 DOIS_FATORES_NECESSARIO {twoFactorRequired}
+      C-->>N: 401 (tela do código, Q-83)
+    else ok
+      S->>S: needsRehash → passwordHash novo
+      S->>RD: reset(userId, login-fail)
+      S->>R: save(user.lastLoginAt)
+      S->>AU: record(LOGIN_OK, maskEmail, rememberMe)
+      S->>S: openSession → issue(RefreshRecord sha256, familyId novo, TTL 30 d ou 24 h)
+      S->>RD: SessionStorePort.save(RefreshRecord)
+      S->>R: RefreshTokenMirrorPort.saved → refresh_tokens
+      S->>S: JwtTokenIssuer.issueAccessToken(user, family) RS256 (sub, sid, role, profile_type)
+      S-->>C: Session {accessToken, refreshToken, family, user, warnings}
+      C-->>N: 200 Session
+      N-->>U: cookie ws_rt + access em memória → shell do app
     end
   end
 
-  opt Login institucional OIDC (CA03)
-    U->>N: Entrar com conta institucional
-    N->>R: salva state, nonce, pkceVerifier (TTL 10 min)
-    N->>IDP: redirect authorize (code, PKCE S256, scope openid email profile)
-    IDP-->>N: callback com code + state
-    N->>C: POST /api/auth/oidc/exchange (provider, code, pkceVerifier, nonce)
-    C->>S: loginOidc(cmd, ip, userAgent)
-    S->>IDP: token endpoint (code → id_token) e JWKS
-    S->>S: valida iss, aud, nonce, exp, assinatura
-    S->>DB: findByOidcSubjectAndIssuer ou findByEmailHash → vincula ou cria User ACTIVE
-    S-->>N: Session (mesmo formato do CA01)
-  end
-
-  U->>N: reabre o app (access expirado)
-  N->>C: POST /bff/auth/refresh (cookie ws_rt) → POST /api/auth/refresh
-  C->>S: refresh(rawRefresh, ip, userAgent)
-  S->>R: HGET refresh por tokenHash
-  alt token já rotacionado ou revogado (CA04)
-    S->>R: revokeFamily(familyId)
-    S->>DB: UPDATE refresh_tokens SET revoked_at (família)
-    S->>DE: publish RefreshReuseDetected → AuditLog REFRESH_REUSO
+  Note over U,AU: Renovação (BFF, ao recarregar ou access vencido)
+  N->>C: POST /api/auth/refresh {refreshToken do cookie}
+  C->>S: IdentityService.refresh(raw, ctx)
+  S->>RD: SessionStorePort.find(sha256(raw))
+  alt token já rotacionado (reuso)
+    S->>RD: revokeFamily(familyId)
+    S->>R: mirror.familyRevoked
+    S->>AU: record(REFRESH_REUSO, NEGADO)
     S-->>C: 401 SESSAO_INVALIDA
-    C-->>N: 401 → limpa cookie e volta ao /login
-  else token válido (CA04)
-    S->>R: novo tokenHash na família, antigo revokedAt + rotatedFromId
-    S->>J: issueAccessToken(user, familyId)
-    S-->>C: Session renovada
-    C-->>N: 200 + novo cookie ws_rt
+    C-->>N: 401 → /login
+  else token válido
+    S->>RD: revoke(tokenHash antigo)
+    S->>R: mirror.revoked
+    S->>S: issue(mesma família, rotatedFromHash)
+    S-->>C: Session nova
+    C-->>N: 200 (cookie ws_rt rotacionado)
   end
 
-  U->>N: Sair
-  N->>C: POST /bff/auth/logout → POST /api/auth/logout
-  C->>S: logout(currentUser, sid)
-  S->>R: revokeFamily(sid)
-  S->>DE: publish UserLoggedOut → AuditLog LOGOUT
-  C-->>N: 204 → apaga cookie
+  Note over U,AU: Toda requisição autenticada
+  N->>C: GET /api/... Authorization Bearer access
+  Note over C: BearerTokenAuthenticationFilter (RS256, iss, aud, exp) → SessionActiveFilter.sessionActive(sid)
+  alt família revogada
+    C-->>N: 401 SESSAO_ENCERRADA
+  else ativa
+    C-->>N: 200 (CurrentUserArgumentResolver injeta CurrentUser)
+  end
 ```
 
 ## 4. Máquina de estados
 
-O RF2 não tem estados próprios na `TAXONOMIA`; usa o ciclo da **família de `RefreshToken`** (a sessão de autenticação), derivado dos campos `expiresAt`, `revokedAt` e `rotatedFromId`. O `User.status` só condiciona a entrada (`ACTIVE`/`PENDING_*` entram; `SUSPENDED`/`DELETION_SCHEDULED` não).
+Entidade central: a **família de refresh** (`RefreshRecord`/`refresh_tokens`, TAXONOMIA §1.3, estados derivados de `revokedAt`/`rotatedFromHash`/`expiresAt` — não há enum) e, abaixo, o **balde de bloqueio por conta** (`RateLimitPort` `login-fail`). `User.status` é o do RF1 §4.
 
 ```mermaid
 stateDiagram-v2
   direction LR
-  [*] --> ATIVO : login ou loginOidc emite a família (RF2.CA01 / CA03)
-  state "ATIVO (token corrente da família)" as ATIVO
-  state "ROTACIONADO (revokedAt + rotatedFromId)" as ROTACIONADO
-  state "REVOGADO (família inteira)" as REVOGADO
-  state "EXPIRADO (expiresAt passou)" as EXPIRADO
-
-  ATIVO --> ROTACIONADO : refresh válido gera o próximo token (CA04)
-  ROTACIONADO --> ATIVO : o novo token passa a ser o corrente
-  ATIVO --> EXPIRADO : 30 d (lembrar-me) ou 24 h sem uso
-  ATIVO --> REVOGADO : logout ou DELETE /api/auth/sessions (CA05)
-  ATIVO --> REVOGADO : troca de senha encerra as outras famílias (CA05)
-  ROTACIONADO --> REVOGADO : reuso do token antigo revoga a família (CA04)
-  REVOGADO --> [*]
-  EXPIRADO --> [*]
-
-  note right of ROTACIONADO
-    Um token rotacionado nunca volta a valer.
-    Reusá-lo é sinal de roubo e derruba a família
-    (401 SESSAO_INVALIDA + AuditLog REFRESH_REUSO).
+  state "Família de refresh" as FAM {
+    state "ATIVA (token corrente)" as ATIVA
+    state "ROTACIONADA (token antigo com revokedAt, família viva)" as ROT
+    state "REVOGADA (família inteira)" as REV
+    state "EXPIRADA" as EXP
+    [*] --> ATIVA : login, confirmEmail ou OIDC → openSession (familyId novo)
+    ATIVA --> ROT : POST /api/auth/refresh válido → revoke(antigo) + issue(novo, rotatedFromHash)
+    ROT --> ATIVA : o novo token passa a ser o corrente
+    ROT --> REV : reuso do token antigo → revokeFamily + REFRESH_REUSO + 401 SESSAO_INVALIDA
+    ATIVA --> REV : logout · changePassword (outras famílias, SESSIONS_REVOKED) · status.blocksLogin() · password-reset confirm
+    ATIVA --> EXP : expiresAt vencido (30 d persistente, 24 h sessão) → 401 SESSAO_INVALIDA
+    REV --> [*]
+    EXP --> [*]
+  }
+  state "Bloqueio por conta (login-fail)" as LOCK {
+    state "Livre" as LIVRE
+    state "Contando (n de 5 em 15 min)" as CONT
+    state "Bloqueada" as BLOQ
+    [*] --> LIVRE
+    LIVRE --> CONT : tryAcquire antes do hash (reserva 1)
+    CONT --> LIVRE : senha certa → release e reset
+    CONT --> CONT : senha errada (reserva fica)
+    CONT --> BLOQ : 5ª reserva na janela
+    BLOQ --> BLOQ : qualquer tentativa → 401 genérico sem hash · LOGIN_BLOQUEADO_TENTATIVAS
+    BLOQ --> LIVRE : janela de 15 min vence · redefinição de senha por e-mail (reset)
+  }
+  note right of REV
+    SessionActiveFilter recusa o access
+    da família revogada em toda requisição
+    (401 SESSAO_ENCERRADA), antes do TTL.
   end note
-  note right of ATIVO
-    SessionActiveFilter confere o claim sid do JWT
-    contra a família no Redis a cada requisição.
+  note right of BLOQ
+    Mesmo balde para PUT /api/auth/password,
+    PATCH /api/me/sensitive e POST /api/me/deletion:
+    6º erro → 429 MUITAS_TENTATIVAS + Retry-After.
   end note
 ```
 
@@ -394,128 +499,104 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js (App Router)"]
-    FE1["app/(auth)/login/page.tsx"]
-    FE2["app/bff/auth/[action]/route.ts (login, refresh, logout)"]
-    FE3["app/bff/auth/oidc/[provider]/route.ts (authorize + callback)"]
-    FE4["lib/auth/session.tsx (access token em memória, refreshMe)"]
-    FE5["middleware.ts (rotas protegidas)"]
+  subgraph FE["Frontend · Next.js 15 App Router"]
+    PG["app/(auth)/login · login/institucional · forgot-password"]
+    UI["packages/ui: Input, Button, Banner (warnings), Toast, Dialog (2FA)"]
+    BFF["app/bff/auth/* · cookie ws_rt · access em memória · X-Correlation-Id · HMAC EDGE_PROXY_SECRET → X-Ws-Client-Ip/Ts/Sig"]
+    MW["middleware.ts: CSP nonce, HSTS, frame-ancestors none"]
+    PG --> UI
+    PG --> BFF
   end
-
-  subgraph WEB["ws-web"]
-    W1["AuthController /api/auth/login · /refresh · /logout · /sessions · /oidc/exchange"]
-    W2["SecurityConfig (resource server JWT) · SessionActiveFilter · AuthRateLimitFilter"]
-    W3["JwtTokenIssuer (adapter TokenIssuerPort)"]
-    W4["Argon2PasswordHasher (adapter PasswordHasherPort)"]
-    W5["CurrentUserResolver · AuditAuthenticationEntryPoint"]
+  subgraph WSWEB["ws-web"]
+    CIF["CorrelationIdFilter"]
+    ARL["AuthRateLimitFilter (@Order antes do Spring Security) · ClientIpResolver · HashBulkhead"]
+    SEC["SecurityConfig: STATELESS, oauth2ResourceServer JWT, PUBLIC_POST, jwtAuthenticationConverter role→ROLE_*"]
+    SAF["SessionActiveFilter (após BearerTokenAuthenticationFilter)"]
+    CUR["CurrentUserArgumentResolver → CurrentUser, RequestContext"]
+    AC["AuthController · OidcController · PasswordResetController"]
+    JWT["JwtConfig + JwtKeys + JwtTokenIssuer (RS256)"]
+    NIM["NimbusIdTokenVerifier + OidcConfig"]
+    A2["Argon2PasswordHasher"]
+    GEH["GlobalExceptionHandler · ApiErrorAuthenticationEntryPoint · ApiErrorAccessDeniedHandler"]
   end
-
-  subgraph APP["ws-application"]
-    S1["IdentityService"]
-    S2["Guard · CurrentUser · RequestActor"]
-    P1["TokenIssuerPort · PasswordHasherPort · RefreshTokenStorePort"]
-    P2["OidcClientPort · RateLimitPort · DomainEventPublisherPort"]
+  subgraph WSAPP["ws-application · identity"]
+    IS["IdentityService (login, refresh, logout, changePassword, openSession, sessionActive)"]
+    OS["OidcService + OidcAccountLinker + OidcProperties"]
+    PR["PasswordResetService"]
+    SP["SessionPolicy · AuthCodes · AuditActions · Guard"]
+    PORTS["ports: RateLimitPort · SessionStorePort · RefreshTokenMirrorPort · TokenIssuerPort · IdTokenVerifier · PasswordHasher · UserRepositoryPort · AuditLogPort · MailPort"]
+    IS --> PORTS
+    OS --> IS
+    PR --> IS
+    IS --> SP
   end
-
-  subgraph DOM["ws-domain"]
-    D1["User · RefreshToken · AuditLog"]
-    D2["AccountStatus · Role · ProfileType"]
-    D3["UserRepository · RefreshTokenRepository"]
+  subgraph WSDOM["ws-domain"]
+    DOM["identity: User · AccountStatus.blocksLogin · Role · ProfileType · VerificationPurpose"]
   end
-
   subgraph INFRA["ws-infrastructure"]
-    I1["persistence-mysql (users, refresh_tokens espelho, audit_log)"]
-    I2["cache-redis (RedisRefreshTokenStore, RedisRateLimiter, oidc state)"]
-    I3["platform (SpringOidcClientAdapter, OutboxEventPublisher, AuditLogWriter)"]
+    MY["persistence-mysql: JpaIdentityAdapters (RefreshTokenEntity espelho, UserEntity, VerificationCodeEntity), JpaAuditLog, AesGcmStringConverter, V3"]
+    RDS["cache-redis: RedisRateLimit (Lua) · RedisSessionStore (planejado, flag redis.enabled)"]
+    MEM["InMemoryRateLimit · InMemorySessionStore (padrão sem Redis)"]
+    PLT["platform: MailPort (redefinição de senha)"]
+  end
+  subgraph EXT["Externos"]
+    IDP["IdP institucional OIDC (Google Workspace / Entra ID) · JWKS"]
+    DB[("MySQL 8.4 TLS")]
+    RD[("Redis 7")]
   end
 
-  subgraph EXT["Serviços externos"]
-    X1["Google Workspace (OIDC)"]
-    X2["Microsoft 365 / Entra ID (OIDC)"]
-  end
-
-  MY[("MySQL 8")]
-  RD[("Redis")]
-
-  FE1 --> FE2
-  FE1 --> FE3
-  FE4 --> FE2
-  FE5 -.-> FE4
-  FE2 -->|HTTPS/JSON| W1
-  FE3 -->|HTTPS/JSON| W1
-  FE3 -->|redirect| X1
-  FE3 -->|redirect| X2
-  W2 -.-> W1
-  W1 --> S1
-  S1 --> S2
-  S1 --> P1
-  S1 --> P2
-  S1 --> D1
-  S1 --> D3
-  W3 -.->|implementa| P1
-  W4 -.->|implementa| P1
-  I2 -.->|implementa| P1
-  I2 -.->|implementa| P2
-  I3 -.->|implementa| P2
-  I3 -->|token + JWKS| X1
-  I3 -->|token + JWKS| X2
-  D3 --> I1
-  I1 --> MY
-  I2 --> RD
-  BOOT["ws-bootstrap (application.yml: jwt.issuer, access-ttl 15 min, refresh-ttl, oidc.providers)"] -.-> WEB
-  BOOT -.-> INFRA
+  BFF -->|"REST JSON"| CIF --> ARL --> SEC --> SAF --> CUR --> AC
+  AC --> IS
+  AC --> OS
+  AC --> PR
+  AC --> GEH
+  JWT -.implementa TokenIssuerPort.-> PORTS
+  NIM -.implementa IdTokenVerifier.-> PORTS
+  A2 -.implementa PasswordHasher.-> PORTS
+  MY -.implementa.-> PORTS
+  RDS -.implementa.-> PORTS
+  MEM -.implementa.-> PORTS
+  PLT -.implementa.-> PORTS
+  IS --> DOM
+  MY --> DB
+  RDS --> RD
+  PG -->|"Authorization Code + PKCE"| IDP
+  NIM -->|"JWKS"| IDP
+  SEC --> JWT
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) |
-|---|---|---|---|---|---|
-| RF2.CA01 | `IdentityService.login/issue`, `Session`, `TokenIssuerPort`/`JwtTokenIssuer`, `RefreshTokenStorePort`/`RedisRefreshTokenStore`, `RefreshToken` | `A3`, `B1`, `C2`, `C5`, `C6`, `B4` | 2–3, 8–9, 17–22 | `[*] → ATIVO` | `FE1`, `FE2`, `FE4`, `W1`, `W3`, `W4`, `I2` |
-| RF2.CA02 | `AccountStatus`, `User.twoFactorEnabled`, `PasswordHasherPort.matches` | `C2` → `E401`, `C3` → `E403`, `C4` → `E2FA` | 10–15 (`401 CREDENCIAIS_INVALIDAS`, `403 CONTA_INDISPONIVEL`) | — | `W1`, `S1`, `W5 AuditAuthenticationEntryPoint` |
-| RF2.CA03 | `OidcClientPort`/`SpringOidcClientAdapter`, `User.oidcSubject/oidcIssuer`, `IdentityService.loginOidc` | `A4`, `B2`, `B3`, `X1`, `C10`–`C14` | 25–34 (`opt Login institucional OIDC`) | `[*] → ATIVO` (via loginOidc) | `FE3`, `I3`, `X1`, `X2` |
-| RF2.CA04 | `RefreshToken.rotatedFromId/revokedAt`, `IdentityService.refresh/revokeFamily`, `RefreshTokenStorePort.revokeFamily` | `B5`, `C15`–`C18`, `E401b` | 35–48 (refresh, reuso → revoga família) | `ATIVO → ROTACIONADO → ATIVO`, `ROTACIONADO → REVOGADO` | `FE2 refresh`, `I2`, `I1 refresh_tokens` |
-| RF2.CA05 | `IdentityService.logout/sessions/revokeSession/revokeOtherSessions/sessionActive`, `SessionActiveFilter`, `RefreshToken.deviceName/lastUsedAt` | (logout em §3) | 49–53 | `ATIVO → REVOGADO` (logout, DELETE sessions, troca de senha) | `W1 /sessions`, `W2 SessionActiveFilter` |
-| RF2.CA06 | `RateLimitPort`/`RedisRateLimiter`, `AuthRateLimitFilter`, `AuditLog`, `User.lastLoginAt`, `DomainEventPublisherPort` | `C1` → `E429`, `C7`, `C17` | 4–6, 11, 19–20, 43 | — | `W2 AuthRateLimitFilter`, `I2`, `I3 AuditLogWriter` |
-| RF2.CA07 (CA a confirmar, D-14) | `IdentityService.login` (hash falso para conta inexistente), `PasswordHasherPort.matches` | `C2` → `E401`; `C3` → `E403` e `C4` → `E2FA` só depois de `C2` = sim | 9–15 (`403`/`2FA` só após a senha certa) | — | `S1` · SEG §2 `F1`–`F13`, §3 15–27 |
-| RF2.CA08 (CA a confirmar, D-14) | `RateLimitPort.tryAcquire/release/reset` (`login-fail`, 5, 15 min), `RedisRateLimiter` (Lua) | `C1` (reserva por `identifier` antes de `C2`) → `E429`/`E401` | 4–6 (antes de 9) | — | `I2` · SEG §4 bloco 1 (`Livre`→`Contando`→`Bloqueada`), §3 19–25 |
-| RF2.CA09 (CA a confirmar, D-14) | `IdentityService.passwordMatchesWithLockout/changePassword/reauthenticate` | — (reconferência: RF3) | — | `ATIVO → REVOGADO` (troca de senha) | `W1` · SEG §3 nota após 38 |
-| RF2.CA10 (CA a confirmar, D-14) | `AuthRateLimitFilter.RULES`, `ClientIpResolver` | `B1` (IP assinado), `C1` → `E429` | 2, 4–6 | — | `W2 AuthRateLimitFilter`, `FE2` · SEG §1 `AuthRateLimitFilter`/`Rule`, §3 3–9 |
-| RF2.CA11 (CA a confirmar, D-14) | `HashBulkhead` | `C1` → `C2` (vaga antes do hash) | 9 | — | `W2` · SEG §2 `D5`–`D6` → `E503`, §3 10–12 |
-| RF2.CA12 (CA a confirmar, D-14) | `IdentityService.loginOidc`, `OidcClientPort.validateIdToken` (`email_verified`) | `C12` → `C13` só com `email_verified` | 31–33 | `[*] → ATIVO` (via loginOidc) | `I3 SpringOidcClientAdapter`, `X1`, `X2` |
-| RF2.CA13 (CA a confirmar, D-14) | `JwtTokenIssuer.ttl` (Q-49), `SessionActiveFilter` | `C6` | 17, 44 | nota de `ATIVO` | `W3`, `BOOT access-ttl` · SEG §1 nota de `JwtTokenIssuer` |
-| RF2.CA14 (CA a confirmar, D-14) | `AuditLog` (`LOGIN_OK`, `LOGIN_FALHA`, `LOGIN_BLOQUEADO_TENTATIVAS`, `REFRESH_REUSO`), `IdentityService.maskEmail` | `C7`, `C17` | 11, 20, 43 | `ROTACIONADO → REVOGADO` | `I3 AuditLogWriter` · SEG §3 17, 21, 23, 33, 47 |
+| CA | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) | Situação |
+|---|---|---|---|---|---|---|
+| RF2.CA01 | `IdentityService.login/openSession/issue`, `SessionPolicy`, `RefreshRecord`, `JwtTokenIssuer`, `Session` | `S1`→`S10`→`S11`→`F2` | 4–5, 27–38 | `[*]`→`ATIVA` | `AC`, `IS`, `JWT`, `BFF` (`ws_rt`) | real |
+| RF2.CA02 | `IdentityService.dummyHash`, `AccountStatus.blocksLogin`, `AuthCodes` | `S2`→`S3`→`E401`, `S6`→`S7`→`E401`, `S8`→`E403`, `S9`→`E2FA` | 6–9, 15–19, 22–26 | nota de `BLOQ` | `IS`, `GEH` | real (TOTP: Q-83) |
+| RF2.CA03 | `OidcController`, `OidcService`, `IdTokenVerifier`/`NimbusIdTokenVerifier`, `OidcAccountLinker` | `F4`→`O1`→`S11` | — (mesma emissão 32–38) | `[*]`→`ATIVA` | `OS`, `NIM`, `IDP` | real (`OidcTest`, `OidcWebTest`) |
+| RF2.CA04 | `IdentityService.refresh`, `SessionStorePort.revoke/revokeFamily`, `RefreshTokenMirrorPort` | `A2`→`F3`→`R1`→`E401S`/`S11` | 39–52 | `ATIVA`→`ROT`→`ATIVA`, `ROT`→`REV`, `ATIVA`→`EXP` | `IS`, `RDS`/`MEM`, `MY` | real |
+| RF2.CA05 | `IdentityService.logout/changePassword/revokeOtherSessions/activeSessions/sessionActive`, `SessionActiveFilter`, `CurrentUser` | `W6` | 53–58 | `ATIVA`→`REV` | `SAF`, `CUR`, `AC` | real; `GET/DELETE /api/auth/sessions` planejado (Q-89) |
+| RF2.CA06 | `AuthRateLimitFilter`, `RateLimitPort`, `AuditActions`, `PasswordResetService` (`clearLockout`), `Masking` | `W2`→`E429`, `S5`, `S7`, `S10` | 3, 8, 12–13, 17, 30, 44 | `LOCK` inteiro | `ARL`, `RDS`, `PR`, `PLT` | real |
+| RF2.CA07 | `IdentityService.login` (ordem das checagens), `dummyHash` | `S3`, `S5`, `S7`, `S8`→`E403`, `S9`→`E2FA` | 6–26 | nota de `BLOQ` | `IS` | real (§7) |
+| RF2.CA08 | `RateLimitPort.tryAcquire/release/reset`, `RedisRateLimit` (Lua), `SessionPolicy.maxLoginFailures/lockWindow` | `S4`→`S5`, `S8`, `S10` | 11, 16, 21, 29 | `LIVRE`→`CONT`→`BLOQ`→`LIVRE` | `RDS`, `MEM` | real |
+| RF2.CA09 | `IdentityService.changePassword`, `AccountService.updateSensitive/requestDeletion` | — | — | nota de `BLOQ` | `AC`, `IS` | real (mesmo balde) |
+| RF2.CA10 | `AuthRateLimitFilter.RULES`, `ClientIpResolver` | `W2`→`W3`→`E429` | 3 | — | `ARL`, `BFF` | real |
+| RF2.CA11 | `HashBulkhead` | `W4`→`E503` | 3 | — | `ARL` | real |
+| RF2.CA12 | `OidcAccountLinker` (`email_verified`), `AuthCodes.OIDC_EMAIL_NAO_VERIFICADO` | `O1` | — | — | `OS`, `NIM` | real |
+| RF2.CA13 | `JwtTokenIssuer`, `JwtKeys`, `SessionActiveFilter`, BFF `ws_rt` | `F2`, `W6`, `E503J` | 35–38, 53–58 | nota de `REV` | `JWT`, `SAF`, `BFF`, `MW` | real (D-24, D-25) |
+| RF2.CA14 | `AuditActions.LOGIN_OK/LOGIN_FALHA/LOGIN_BLOQUEADO_TENTATIVAS/REFRESH_REUSO/LOGOUT`, `AuditEvent`, `Masking` | `S3`, `S5`, `S7`, `S10`, `R1` | 7, 12, 17, 23, 30, 44 | — | `MY` (`audit_log` RESTRICT), `CIF` | real |
 
 ## 7. Controles de segurança (D-14)
 
-Herdados do RF49 do FAI pela **D-14**; diagramas das camadas de defesa e rastreabilidade RN/CA em [`../SEG/README.md`](../SEG/README.md). Todos "(CA a confirmar)": a Q-48 decide se virarão CAs deste RF ou um RNF do board. Onde um CA abaixo diverge do CA01–CA06, vale o de baixo.
+Herdados do RF49 do FAI pela **D-14**; camadas de defesa e rastreabilidade RN/CA → bloco → classe em [`../SEG/README.md`](../SEG/README.md). Todos "(CA a confirmar)" até a Q-48. Onde um CA abaixo refina o CA01–CA06, vale o de baixo. Coluna **Código**: o que já existe em `origin/main` (Bloco 3, PR #16).
 
-**Implementação (Bloco 3, PR sec-b3)** — classes reais e testes; os nomes do §1–§6 que divergem (`PasswordHasherPort` → `PasswordHasher`,
-`RedisRateLimiter` → `RedisRateLimit`, `TokenIssuerPort`/`JwtTokenIssuer` iguais, `RefreshTokenStorePort` → `SessionStorePort`, `OidcClientPort` → `IdTokenVerifier` + `OidcAccountLinker`) seguem o código:
-
-| CA | Classe(s) | Teste(s) | Observação |
-|---|---|---|---|
-| CA01 | `IdentityService.login/openSession`, `JwtTokenIssuer` (`sub`, `sid`, `role`, `profile_type`, `username`, `jti`; TTL 15 min), `SessionPolicy` (30 d / 24 h), `RefreshTokenMirrorPort` → `refresh_tokens` | `IdentityServiceTest.loginCertoZeraOBloqueioRefazHashAntigoEAbreSessao`, `.semLembrarMeORefreshDura24hEComLembrarMe30d`, `JwtKeysAndIssuerTest` | refresh volta no corpo **só para o BFF**; o cookie `ws_rt` é o Bloco 4. `user_id` virou `sub`. |
-| CA02 / CA07 | `IdentityService.login` (hash falso, `CREDENCIAIS_INVALIDAS` único, `CONTA_INDISPONIVEL`/`DOIS_FATORES_NECESSARIO` só após a senha) | `IdentityServiceTest.contaInexistenteSenhaErradaEContaBloqueadaRespondemOMesmo401`, `.contaIndisponivelEDoisFatoresSoAparecemDepoisDaSenhaCertaEForaDoBloqueio` | Q-82 (DELETION_SCHEDULED entra), Q-83 (TOTP) |
-| CA03 / CA12 | `OidcAccountLinker.link`, `NimbusIdTokenVerifier`, `OidcService`, `OidcController` (`POST /api/auth/oidc/login`, flag `ws.oidc.enabled`) | `OidcTest`, `OidcWebTest` | PKCE/`state` no BFF — Q-85 |
-| CA04 | `IdentityService.refresh` (rotação; reuso → `revokeFamily` + `REFRESH_REUSO` + `401 SESSAO_INVALIDA`), `SessionStorePort` (`InMemorySessionStore`), `RefreshRecord` | `IdentityServiceTest.refreshRotacionaEReusoDoTokenAntigoRevogaAFamiliaInteira`, `AuthControllerWebTest.refreshEPublicoELogoutExigeTokenComSidVivo` | Redis para sessões: Q-85 |
-| CA05 | `IdentityService.logout/revokeOtherSessions/activeSessions`, `SessionActiveFilter` (`401 SESSAO_ENCERRADA`), `changePassword` encerra as outras famílias | `SessionActiveFilterTest`, `IdentityServiceTest.trocaDeSenhaEncerraAsOutrasSessoesEValidaASenhaNova`, `MeControllerWebTest.sidRevogadoRecebe401SessaoEncerrada` | `GET/DELETE /api/auth/sessions`: Q-89 |
-| CA06 / CA14 | `AuditEvent` (saneamento), `AuditActions`, `JpaAuditLog`; `AuthRateLimitFilter` (IP) + `IdentityService` (conta); `users.last_login_at` | `AuditEventTest`, `IdentityServiceTest.auditoriaNuncaContemSenhaNemToken` | i18n das mensagens: front (Bloco 4) |
-| CA08 | `IdentityService.LOGIN_FAIL_BUCKET` (reserva → hash → `release`/`reset`), `RateLimitPort`, `InMemoryRateLimit`, `RedisRateLimit` (Lua), `PasswordResetService.confirm` → `clearLockout` | `IdentityServiceTest.quarentaPedidosParalelosComSenhaErradaAvaliamNoMaximoCincoHashes`, `InMemoryRateLimitTest`, `RedisRateLimitIT` | D-26/Q-88: bloqueada não calcula hash |
-| CA09 | `IdentityService.passwordMatchesWithLockout/reauthenticate/changePassword`, `AccountService.updateSensitive/requestDeletion` | `IdentityServiceTest.sextoChuteDaSenhaAtualNaTrocaRecebe429ComRetryAfter`, `AccountServiceTest.dadosSensiveisExigemSenhaAtualNoMesmoBloqueioDoLogin` | — |
-| CA10 | `AuthRateLimitFilter.RULES` (`@Order(-102)`), `RequestPaths`, `ClientIpResolver` | `AuthRateLimitFilterTest`, `ClientIpResolverTest`, `AuthControllerWebTest.limitePorIpAntesDaSegurancaTrigesimoPrimeiroLoginDa429` | — |
-| CA11 | `HashBulkhead` (+ `AuthRateLimitFilter` nas rotas `hashes=true`) | `AuthRateLimitFilterTest.hashesSimultaneosAcimaDoTetoRecebem503`, `AuthControllerWebTest.sessentaLoginsParalelosNuncaDao500` | — |
-| CA13 | `JwtKeys` (caminho **ou** PEM, D-24), `JwtConfig`, `JwtTokenIssuer`, `SessionActiveFilter` | `JwtKeysAndIssuerTest`, `SessionActiveFilterTest` | access só em memória / `ws_rt`: Bloco 4 |
-
-| CA | Enunciado (Dado / Quando / Então) | Bloco do brief |
+| CA | Enunciado (Dado / Quando / Então) | Código |
 |---|---|---|
-| **RF2.CA07** (CA a confirmar) | **Login sem oráculo.** Dado conta inexistente, senha errada ou conta bloqueada (mesmo com a senha certa), então a resposta é a mesma `401 CREDENCIAIS_INVALIDAS`, com o mesmo tempo (conta inexistente avalia um hash falso). `403 CONTA_INDISPONIVEL` (SUSPENDED/DELETION_SCHEDULED) e `401 DOIS_FATORES_NECESSARIO` só aparecem **depois da senha certa e fora do bloqueio** — corrige o CA02, que não dizia o momento. | 3 |
-| **RF2.CA08** (CA a confirmar) | **Bloqueio por conta.** Dado 5 tentativas em 15 min, então a tentativa é reservada de forma **atômica antes do hash** (`RateLimitPort.tryAcquire`, INCR+EXPIRE em Lua no Redis); a senha é sempre conferida (mesmo tempo); senha errada deixa a reserva; senha certa faz `release` e o login completo `reset`; a redefinição de senha por e-mail tira a conta do bloqueio. Teste: 40 pedidos paralelos com senha errada avaliam no máximo 5 hashes. | 3 |
-| **RF2.CA09** (CA a confirmar) | **Reconferência de senha.** Dado troca de senha, dados sensíveis, exclusão de conta ou qualquer *step-up* que peça a senha atual, então o mesmo balde `login-fail` vale e o 6º erro recebe `429 MUITAS_TENTATIVAS` com `Retry-After` (uma sessão roubada não testa senhas sem limite). | 3 |
-| **RF2.CA10** (CA a confirmar) | **Limite por IP + método + rota** (`AuthRateLimitFilter`, antes do Spring Security): `POST /api/auth/login` 30/10 min · `register` 10/h · `refresh` 120/10 min · `password-reset/request` 10/h · `password-reset/confirm` 20/h · `PUT /api/auth/password` 20/h · `PATCH /api/me/sensitive` 30/h · `POST /api/me/deletion` 10/h · disponibilidade de username 120 e sugestões 60/10 min · envios do cadastro 40/h (mais as rotas de OIDC, 2FA e código). IP = assinado pelo BFF (`X-Ws-Client-Ip`/`X-Ws-Proxy-Ts`/`X-Ws-Proxy-Sig`, HMAC-SHA256 com `EDGE_PROXY_SECRET`, 60 s) › `X-Real-IP` › TCP; **nunca** `X-Forwarded-For`; IPv6 por /64. O 31º login em 10 min recebe `429 MUITAS_TENTATIVAS` + `Retry-After`. | 3 |
-| **RF2.CA11** (CA a confirmar) | **Bulkhead de hashes.** Dado um pico de logins, então o `HashBulkhead` (permits = `max(1, min(max(2, núcleos), poolDoBanco/2))`, espera 2 s) devolve `503 AUTENTICACAO_OCUPADA` + `Retry-After` ao excedente, sem esgotar o pool do banco; 60 logins paralelos geram zero HTTP 500. | 3 |
-| **RF2.CA12** (CA a confirmar) | **OIDC.** Dado o `id_token` válido (PKCE, `state`, `nonce`, `iss`, `aud`, `exp`), então ele só é **vinculado a uma conta existente** de mesmo `emailHash` se o IdP marcar `email_verified=true` (Q-30); sem isso, não vincula (evita takeover). | 3 |
-| **RF2.CA13** (CA a confirmar) | **Tokens.** O access JWT é RS256 com `iss`, `aud` e `sid`; **TTL em aberto na Q-49** (10 min na ARQUITETURA, 15 min neste README e no FAI — até a resposta vale 15). O `SessionActiveFilter` recusa token de família revogada (`sid`). Refresh só no cookie `ws_rt`; access só em memória (teste falha se aparecer em `localStorage`/`sessionStorage`). | 3, 4 |
-| **RF2.CA14** (CA a confirmar) | **Auditoria.** Eventos `LOGIN_OK`, `LOGIN_FALHA` (motivo: usuario_inexistente, senha, 2fa), `LOGIN_BLOQUEADO_TENTATIVAS` (com `resetAt`) e `REFRESH_REUSO`, todos com `correlationId`, e-mail mascarado (`maskEmail`) e sem senha, token ou código — amplia o CA06. | 1, 3 |
-
+| **RF2.CA07** (CA a confirmar) | **Login sem oráculo.** Dado conta inexistente, senha errada ou conta bloqueada (mesmo com a senha certa), então a resposta é a mesma `401 CREDENCIAIS_INVALIDAS`, com o mesmo tempo (conta inexistente avalia `dummyHash`). `403 CONTA_INDISPONIVEL` (`blocksLogin`: SUSPENDED/ANONYMIZED) e `401 DOIS_FATORES_NECESSARIO` só aparecem **depois da senha certa e fora do bloqueio**. | `IdentityService.login`, `IdentityServiceTest` |
+| **RF2.CA08** (CA a confirmar) | **Bloqueio por conta.** Dado 5 tentativas em 15 min (`SessionPolicy`), então a tentativa é reservada **atomicamente antes do hash** (`RateLimitPort.tryAcquire`, INCR+EXPIRE em Lua no `RedisRateLimit`); bloqueada → nem o hash é calculado; senha errada deixa a reserva; senha certa faz `release` e o login completo `reset`; a redefinição por e-mail tira a conta do bloqueio. 40 pedidos paralelos com senha errada avaliam no máximo 5 hashes. | `RateLimitPort`, `RedisRateLimit`, `InMemoryRateLimit`, `RedisRateLimitIT`, `InMemoryRateLimitTest` |
+| **RF2.CA09** (CA a confirmar) | **Reconferência de senha.** Dado troca de senha (`PUT /api/auth/password`), dados sensíveis (`PATCH /api/me/sensitive`) ou exclusão (`POST /api/me/deletion`), então o mesmo balde `login-fail` vale e o 6º erro recebe `429 MUITAS_TENTATIVAS` + `Retry-After`. | `IdentityService.changePassword`, `AccountService`, `AccountServiceTest` |
+| **RF2.CA10** (CA a confirmar) | **Limite por IP + método + rota** (`AuthRateLimitFilter`, antes do Spring Security): `POST /api/auth/login` 30/10 min · `register` 10/h · `refresh` 120/10 min · `password-reset/request` 10/h · `password-reset/confirm` 20/h · `PUT /api/auth/password` 20/h · `oidc/login` 30/10 min · `two-factor/verify` 20/10 min · `email-verification/*` · `username-suggestions` 60/10 min · `uploads` 40/h. IP = `X-Ws-Client-Ip` assinado (HMAC-SHA256 `EDGE_PROXY_SECRET`, `X-Ws-Proxy-Ts` 60 s) › `X-Real-IP` › TCP; **nunca** `X-Forwarded-For`; IPv6 por /64. | `AuthRateLimitFilter.RULES`, `ClientIpResolver`, `RequestPaths`, `AuthRateLimitFilterTest`, `ClientIpResolverTest` |
+| **RF2.CA11** (CA a confirmar) | **Bulkhead de hashes.** Dado um pico de logins, então o `HashBulkhead` (`Semaphore` justo, permits = `max(1, min(max(2, núcleos), pool/2))`, espera `ws.security.auth-hash-wait-ms` = 2 s) devolve `503 AUTENTICACAO_OCUPADA` + `Retry-After` ao excedente; 60 logins paralelos geram zero HTTP 500. | `HashBulkhead`, regras com `hashes=true` |
+| **RF2.CA12** (CA a confirmar) | **OIDC.** Dado o `id_token` válido (PKCE, `state`, `nonce`, `iss`, `aud`, `exp`), então ele só é **vinculado a conta existente** de mesmo `emailHash` se o IdP marcar `email_verified=true`; sem isso `401 OIDC_EMAIL_NAO_VERIFICADO` e `AuditLog OIDC_LINK_RECUSADO` (evita takeover). Instância sem OIDC → `404 OIDC_DESLIGADO`. | `OidcService`, `OidcAccountLinker`, `NimbusIdTokenVerifier`, `OidcTest` |
+| **RF2.CA13** (CA a confirmar) | **Tokens.** Access JWT RS256 com `iss`, `aud`, `sub`, `sid`, `role`, `profile_type`, `username`, `jti`; TTL **15 min** (`WS_JWT_ACCESS_TTL_MINUTES`, D-25 — padrão da Q-49); chaves por caminho **ou** conteúdo PEM (`JwtKeys`, D-24); sem chave privada configurada → `503 AUTENTICACAO_INDISPONIVEL` (nunca token sem assinatura). `SessionActiveFilter` recusa token de família revogada. Refresh só no cookie `ws_rt`; access só em memória (teste do front falha se aparecer em `localStorage`/`sessionStorage`). | `JwtTokenIssuer`, `JwtKeys`, `JwtKeysAndIssuerTest`, `SessionActiveFilter`, `SessionActiveFilterTest` |
+| **RF2.CA14** (CA a confirmar) | **Auditoria.** Eventos `LOGIN_OK`, `LOGIN_FALHA` (`reason` usuario_inexistente · senha · conta_indisponivel · 2fa), `LOGIN_BLOQUEADO_TENTATIVAS` (`resetAt`), `REFRESH_REUSO`, `LOGOUT`, `PASSWORD_CHANGED`, `SESSIONS_REVOKED`, `OIDC_LOGIN`, todos com `correlationId`, e-mail mascarado e sem senha, token ou código. | `AuditActions`, `AuditEvent`, `JpaAuditLog`, `AuditEventTest` |
 
 Tela/aba: `/login` (esqueleto em `app/(auth)/login/page.tsx`) · `/password-reset` (esqueleto em `app/(auth)/password-reset/page.tsx`)

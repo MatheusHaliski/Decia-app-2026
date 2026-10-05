@@ -1,19 +1,21 @@
 # RF3 — Editar informações pessoais e preferências do perfil do usuário
-**HU:** HU3 · **Sprint (board Work Station):** 1 · **Equivalente FAI:** RF3 Preferências e conta (`AccountService`, `PreferencesService`, `user_preferences`, `MediaService` para avatar/capa; temas e skins do RF23 FAI) · **Aba/rota:** Meu perfil → Editar (`/profile/edit`) e **`/settings`** com abas na URL (`?tab=conta|aparencia|privacidade|dados|sessoes|termos`, §7; substitui `/settings/preferences`) — rotas sugeridas; a aba *Meu perfil* é `/profile` (RF19)
-**Critérios de aceite cobertos:** RF3.CA01 … RF3.CA06 (RF1–RF18 não têm CAs no board: derivados da HU3 e marcados "CA a confirmar") · RF3.CA07–CA24 (§7, configurações e direitos do titular — o "RF23" do FAI, Q-46 —, D-15…D-21, "CA a confirmar")
+**HU:** HU3 · **Sprint (board Work Station):** 1 (card "SPRINT 1 — Cadastro, autenticação, perfil e abertura de sessão"; o shell + preferências é a fase (b) da ARQUITETURA §6, D-11) · **Equivalente FAI:** RF3 Editar perfil (`UserController PATCH /api/me`, `UserPreferences`) + o "RF23" Configurações/LGPD do FAI (Q-46) · **Aba/rota:** `/settings` com abas na URL `?tab=conta|aparencia|privacidade|dados|sessoes|termos|validacao` (ABAS_POR_PERFIL §9); API `GET|PATCH /api/me`, `PATCH /api/me/sensitive`, `GET|PUT /api/me/preferences`, `POST|DELETE /api/me/deletion`
+**Critérios de aceite cobertos:** RF3.CA01 … RF3.CA06 (corpo do card vazio → derivados do título + HU3, todos "(CA a confirmar)") · RF3.CA07 … RF3.CA24 (§7, configurações e direitos do titular, D-15…D-21) — regra: o título do card define o RF; CAs alinhados ao código real do Bloco 3 (`MeController`, `AccountService`, `UserPreferences`, `Guard.requireNotDeletionScheduled`)
 
 > **HU3** — COMO usuário autenticado no sistema POSSO editar minhas informações pessoais e preferências de perfil PARA manter meus dados atualizados e personalizar minha experiência na plataforma.
+
+Classes **(real)** existem em `origin/main` (Bloco 3, PR #16); **(planejado)**: `UserConsent`/`ConsentEvent`/`ConsentChecks`, `DataExportRequest`/`DataExportWorker`, `DataSubjectRequest`, `PersonalDataRegistry`, `AccountAnonymizationJob`, upload de avatar (`PendingUpload`/`MediaObject`, D-22), `GET/DELETE /api/auth/sessions`, `PolicyGateFilter`.
 
 ## Critérios de aceite derivados da HU3 (todos "CA a confirmar")
 
 | CA | Enunciado (Dado / Quando / Então) |
 |---|---|
-| **RF3.CA01** (CA a confirmar) | Dado o usuário autenticado, quando edito `fullName`, `displayName`, `jobTitle` (cargo), `bio`, `phone`, `avatarUrl`, `coverUrl`, então os campos são validados (tamanhos da TAXONOMIA, telefone E.164) e salvos via `PATCH /api/me`; `username` é **imutável após a verificação** (`422 USERNAME_IMUTAVEL`); erros voltam como `422 VALIDACAO` com `details` por campo. |
-| **RF3.CA02** (CA a confirmar — **ajustado no Bloco 3**) | Dado a troca de e-mail/telefone (`PATCH /api/me/sensitive`), então é exigida a **senha atual** no mesmo bloqueio do login (`401 REAUTENTICACAO_FALHOU`; 6º erro → `429 MUITAS_TENTATIVAS` + `Retry-After`), o `emailHash` deve ser único (`409 EMAIL_EM_USO` — aceitável: a pessoa já está autenticada), `emailVerified` volta a `false` e um novo código é enviado. **Divergência a confirmar:** hoje o e-mail novo passa a valer imediatamente para login (não há coluna de "e-mail pendente" no V2); manter o antigo até confirmar exige V4. OIDC recente como reautenticação: Q-85. |
-| **RF3.CA03** (CA a confirmar) | Dado a tela de preferências, quando altero `theme` (`ThemeMode` AUTO·CLARO·ESCURO·ALTO_CONTRASTE·BLUEPRINT), `language` (`UiLanguage` PT_BR·EN·ES), `density`, `fontScale`, `reduceMotion`, `deskSkin` (`DeskSkin`), `defaultCardSkin`, `timezone`, `wipLimit`, `aiModeDefault` (ECONOMIA·AVANCADO) e `notificationPrefsJson` (inclui `dailyTaskAt` 08:00, RF44.CA10), então elas são aplicadas **imediatamente** no cliente (sem recarregar) e persistidas em `user_preferences` (`PUT /api/me/preferences`), respeitando RF38.CA08. |
-| **RF3.CA04** (CA a confirmar) | Dado as opções de privacidade, quando altero `hypeVisibility` (PUBLICO·EMPRESA·SO_EU, RF45.CA06) e `rankingOptOut` (RF43.CA05), então a mudança vale na próxima leitura do perfil/ranking e fica em `AuditLog PRIVACY_CHANGED`. |
-| **RF3.CA05** (CA a confirmar) | Dado o upload de avatar ou capa, então o arquivo (≤ 5 MB, mime detectado pelo conteúdo: png/jpg/webp) vira `MediaObject` no S3/MinIO com `accessClass PUBLICO`, um `PipelineJob THUMBNAIL` gera as variantes de forma assíncrona e o `User.avatarUrl`/`coverUrl` aponta para a variante; o anterior é removido quando substituído. |
-| **RF3.CA06** (CA a confirmar) | Dado qualquer alteração de perfil, então ela gera `AuditLog PROFILE_UPDATED` (sem valores sensíveis, com `correlationId`) e o evento `UserProfileUpdated` (AFTER_COMMIT) reindexa a pessoa na busca (OpenSearch, RF27) e invalida o cache do cabeçalho do perfil (RF19); campos LGPD (`email`, `phone`) permanecem cifrados com `AesGcmStringConverter`. |
+| **RF3.CA01** (CA a confirmar) | Dado o usuário autenticado (`CurrentUser`), quando edito `fullName` (3–160), `displayName` (≤ 80), `jobTitle` (≤ 120), `bio` (≤ 1000), `avatarUrl`/`coverUrl` (`https://` ou caminho interno) por `PATCH /api/me`, então `AccountService.update` valida e salva com lock otimista (`User.version`); `username` é imutável (`422 USERNAME_IMUTAVEL`); erros voltam como `422 VALIDACAO details.fields`; conta `DELETION_SCHEDULED` → `Guard.requireNotDeletionScheduled` (`403 EXCLUSAO_AGENDADA`, D-18). |
+| **RF3.CA02** (CA a confirmar) | Dado a troca de e-mail ou telefone (`PATCH /api/me/sensitive {currentPassword, email, phone}`), então `IdentityService.reauthenticate` reconfere a senha atual com o **mesmo bloqueio do login** (`login-fail`, 6º erro → `429 MUITAS_TENTATIVAS` + `Retry-After`; errada → `401 REAUTENTICACAO_FALHOU`; `422 SENHA_ATUAL_INCORRETA` é só da troca de senha), o `emailHash` novo deve ser único (`409 EMAIL_EM_USO`), `emailVerified` volta a `false`, `RegistrationService.resendVerification` envia o código ao e-mail novo e `AuditLog SENSITIVE_DATA_UPDATED` grava os campos alterados com e-mail mascarado. |
+| **RF3.CA03** (CA a confirmar) | Dado a aba Aparência, quando altero `theme` (`ThemeMode` AUTO·CLARO·ESCURO·ALTO_CONTRASTE·BLUEPRINT), `language` (PT_BR·EN·ES), `density`, `fontScale`, `reduceMotion`, `deskSkin` (`DeskSkin`), `defaultCardSkin`, `timezone`, `wipLimit`, `aiModeDefault` (ECONOMIA·AVANCADO), `notificationPrefsJson` (inclui `dailyTaskAt`, RF44.CA10) e `dashboardLayoutJson`, então o cliente aplica **na hora** (`data-theme`, i18n) e persiste por `PUT /api/me/preferences` (`AccountService.updatePreferences`, `AuditLog PREFERENCES_UPDATED`); `GET /api/me/preferences` devolve os padrões quando ainda não há linha. |
+| **RF3.CA04** (CA a confirmar) | Dado a aba Privacidade, quando altero `hypeVisibility` (PUBLICO·EMPRESA·SO_EU, padrão SO_EU, RF45.CA06) e `rankingOptOut` (RF43.CA05) no mesmo `PATCH /api/me`, então valor inválido → `422 details.fields.hypeVisibility`, a mudança vale na próxima leitura do perfil/ranking e fica em `AuditLog PROFILE_UPDATED` (campos alterados, sem valores pessoais). |
+| **RF3.CA05** (CA a confirmar) | Dado o upload de avatar ou capa (**planejado**, D-22), então o arquivo (≤ 5 MB, mime por magic bytes png/jpg/webp, reencode sem EXIF) vira `PendingUpload` → `MediaObject` com `accessClass PUBLIC`, `PipelineJob THUMBNAIL` gera as variantes e `avatarUrl`/`coverUrl` apontam para a variante; o anterior é removido quando substituído. |
+| **RF3.CA06** (CA a confirmar) | Dado qualquer alteração de perfil, então `AuditLog PROFILE_UPDATED`/`PREFERENCES_UPDATED` com `correlationId` e, após o commit, o evento `UserProfileUpdated` (**planejado**) reindexa a pessoa no OpenSearch `ws-people` (RF17/RF27) e invalida o cache do cabeçalho do perfil (RF6/RF16); `GET /api/users/{id}` devolve o `UserView` público de terceiros (sem e-mail/telefone, `Guard.ownerOrAdmin` para os campos privados). |
 
 ## 1. Diagrama de classes
 
@@ -21,370 +23,425 @@
 classDiagram
   direction LR
 
-  namespace ws_domain {
-    class User {
-      <<entity>>
-      +id: UUID
-      +username: String
-      +fullName: String
-      +displayName: String
-      +email: String
-      +emailHash: String
-      +emailVerified: boolean
-      +phone: String
-      +jobTitle: String
-      +avatarUrl: String
-      +coverUrl: String
-      +bio: String
-      +hypeVisibility: HypeVisibility
-      +rankingOptOut: boolean
-      +status: AccountStatus
-    }
-    class UserPreferences {
-      <<entity>>
-      +id: UUID
-      +userId: UUID
-      +theme: ThemeMode
-      +language: UiLanguage
-      +density: String
-      +fontScale: BigDecimal
-      +reduceMotion: boolean
-      +deskSkin: DeskSkin
-      +defaultCardSkin: String
-      +notificationPrefsJson: String
-      +timezone: String
-      +wipLimit: int
-      +dashboardLayoutJson: String
-      +aiModeDefault: AiMode
-    }
-    class MediaObject {
-      <<entity>>
-      +id: UUID
-      +bucket: String
-      +key: String
-      +mimeType: String
-      +sizeBytes: long
-      +sha256: String
-      +ownerId: UUID
-      +accessClass: AccessClassification
-      +variantsJson: String
-    }
-    class PipelineJob {
-      <<entity>>
-      +id: UUID
-      +type: String
-      +targetType: String
-      +targetId: UUID
-      +status: String
-      +attempts: int
-    }
-    class AuditLog {
-      <<entity>>
-      +actorId: UUID
-      +action: String
-      +resourceType: String
-      +resourceId: UUID
-      +metadataJson: String
-      +correlationId: String
-    }
-    class ThemeMode {
-      <<enum>>
-      AUTO
-      CLARO
-      ESCURO
-      ALTO_CONTRASTE
-      BLUEPRINT
-    }
-    class UiLanguage {
-      <<enum>>
-      PT_BR
-      EN
-      ES
-    }
-    class DeskSkin {
-      <<enum>>
-      PAPEL
-      CORTICA
-      BLUEPRINT
-      PAPEL_TIMBRADO
-    }
-    class AiMode {
-      <<enum>>
-      ECONOMIA
-      AVANCADO
-    }
-    class HypeVisibility {
-      <<enum>>
-      PUBLICO
-      EMPRESA
-      SO_EU
-    }
+  class MeController {
+    <<controller>>
+    +me(CurrentUser) UserView
+    +profile(CurrentUser, UUID id) UserView
+    +update(CurrentUser, ProfileRequest, ctx) UserView
+    +sensitive(CurrentUser, SensitiveRequest, ctx) UserView
+    +requestDeletion(CurrentUser, DeletionBody, ctx) DeletionReceipt
+    +cancelDeletion(CurrentUser, ctx) DeletionReceipt
+    +preferences(CurrentUser) UserPreferences
+    +updatePreferences(CurrentUser, PreferencesRequest, ctx) UserPreferences
+  }
+  class AccountService {
+    <<service>>
+    +DELETION_GRACE = 30 d
+    +me(CurrentUser) UserView
+    +profile(CurrentUser, userId) UserView
+    +update(CurrentUser, ProfileUpdate, ctx) UserView
+    +updateSensitive(CurrentUser, SensitiveUpdate, ctx) UserView
+    +requestDeletion(CurrentUser, DeletionRequest, ctx) DeletionReceipt
+    +cancelDeletion(CurrentUser, ctx) DeletionReceipt
+    +preferences(CurrentUser) UserPreferences
+    +updatePreferences(CurrentUser, UserPreferences, ctx) UserPreferences
+  }
+  class ProfileUpdate {
+    <<value>>
+    +String fullName
+    +String displayName
+    +String jobTitle
+    +String bio
+    +String avatarUrl
+    +String coverUrl
+    +String hypeVisibility
+    +Boolean rankingOptOut
+  }
+  class SensitiveUpdate {
+    <<value>>
+    +String currentPassword
+    +String email
+    +String phone
+  }
+  class UserView {
+    <<value>>
+    +UUID id
+    +String username
+    +String fullName
+    +String displayName
+    +String email
+    +boolean emailVerified
+    +ProfileType profileType
+    +AccountStatus status
+    +String jobTitle
+    +String avatarUrl
+  }
+  class Guard {
+    <<service>>
+    +requireRole(CurrentUser, Role) void
+    +ownerOrAdmin(CurrentUser, ownerId) void
+    +requireNotDeletionScheduled(User) void
+  }
+  class RegistrationService {
+    <<service>>
+    +resendVerification(email, ctx) void
+  }
+  class IdentityService {
+    <<service>>
+    +passwordMatchesWithLockout(User, raw, ctx) boolean
+  }
+  class UserRepositoryPort {
+    <<port>>
+    +findById(id) Optional
+    +existsByEmailHash(hash) boolean
+    +save(User) User
+  }
+  class UserPreferencesRepositoryPort {
+    <<port>>
+    +find(userId) Optional
+    +save(UserPreferences) UserPreferences
+  }
+  class RateLimitPort {
+    <<port>>
+    +tryAcquire(owner, bucket, limit, window) boolean
+  }
+  class AuditLogPort {
+    <<port>>
+    +record(AuditEvent) void
+  }
+  class MediaStoragePort {
+    <<port>>
+    planejado D-22
+  }
+  class ConsentService {
+    <<service>>
+    planejado D-17
+  }
+  class DataExportService {
+    <<service>>
+    planejado D-20
+  }
+  class PersonalDataRegistry {
+    <<service>>
+    planejado D-18
   }
 
-  namespace ws_application {
-    class AccountService {
-      <<service>>
-      +me(current CurrentUser) MeView
-      +updateProfile(current CurrentUser, cmd ProfileUpdateCommand) MeView
-      +changeEmail(current CurrentUser, newEmail, reauth ReauthProof) void
-      +updatePrivacy(current CurrentUser, cmd PrivacyCommand) MeView
-      +uploadAvatar(current CurrentUser, bytes, mime) MediaView
-      +uploadCover(current CurrentUser, bytes, mime) MediaView
-    }
-    class PreferencesService {
-      <<service>>
-      +get(current CurrentUser) UserPreferences
-      +update(current CurrentUser, cmd PreferencesCommand) UserPreferences
-      +defaults(userId) UserPreferences
-    }
-    class IdentityService {
-      <<service>>
-      +reauthenticate(userId, password) void
-      +resendEmailVerification(current CurrentUser) void
-    }
-    class MediaStoragePort {
-      <<port>>
-      +put(bucket, key, bytes, mime) MediaObject
-      +delete(bucket, key) void
-      +publicUrl(key) String
-    }
-    class JobQueuePort {
-      <<port>>
-      +enqueue(job PipelineJob) void
-    }
-    class SearchIndexPort {
-      <<port>>
-      +indexPerson(user User) void
-    }
-    class DomainEventPublisherPort {
-      <<port>>
-      +publish(event DomainEvent) void
-    }
+  class User {
+    <<entity>>
+    +UUID id
+    +String username
+    +String fullName
+    +String displayName
+    +String email
+    +String emailHash
+    +boolean emailVerified
+    +String phone
+    +String jobTitle
+    +String avatarUrl
+    +String coverUrl
+    +String bio
+    +HypeVisibility hypeVisibility
+    +boolean rankingOptOut
+    +AccountStatus status
+    +Instant deletionRequestedAt
+    +Instant deletionScheduledAt
+    +String deletionReason
+    +long version
+  }
+  class UserPreferences {
+    <<entity>>
+    +UUID userId
+    +String theme
+    +String language
+    +String density
+    +BigDecimal fontScale
+    +boolean reduceMotion
+    +String deskSkin
+    +String defaultCardSkin
+    +String notificationPrefsJson
+    +String timezone
+    +int wipLimit
+    +String dashboardLayoutJson
+    +String aiModeDefault
+    +long version
+  }
+  class UserConsent {
+    <<entity>>
+    +ConsentPurpose purpose
+    +boolean granted
+    +String policyVersion
+  }
+  class DataExportRequest {
+    <<entity>>
+    +ExportStatus status
+    +String fileKey
+    +Instant expiresAt
+  }
+  class DataSubjectRequest {
+    <<entity>>
+    +DsrKind kind
+    +DsrStatus status
+    +Instant dueAt
+  }
+  class MediaObject {
+    <<entity>>
+    +String objectKey
+    +String mimeType
+    +String accessClass
+    +JSON variantsJson
+  }
+  class ThemeMode {
+    <<enum>>
+    AUTO
+    CLARO
+    ESCURO
+    ALTO_CONTRASTE
+    BLUEPRINT
+  }
+  class UiLanguage {
+    <<enum>>
+    PT_BR
+    EN
+    ES
+  }
+  class DeskSkin {
+    <<enum>>
+    PAPEL
+    CORTICA
+    BLUEPRINT
+    PAPEL_TIMBRADO
+  }
+  class HypeVisibility {
+    <<enum>>
+    PUBLICO
+    EMPRESA
+    SO_EU
+  }
+  class AiMode {
+    <<enum>>
+    ECONOMIA
+    AVANCADO
+  }
+  class AccountStatus {
+    <<enum>>
+    PENDING_EMAIL_VERIFICATION
+    PENDING_VALIDATION
+    ACTIVE
+    SUSPENDED
+    DELETION_SCHEDULED
+    ANONYMIZED
   }
 
-  namespace ws_web {
-    class AccountController {
-      <<controller>>
-      +me() MeView
-      +updateProfile(cmd ProfileUpdateCommand) MeView
-      +changeEmail(body EmailChangeRequest) void
-      +updatePrivacy(cmd PrivacyCommand) MeView
-      +uploadAvatar(file MultipartFile) MediaView
-      +uploadCover(file MultipartFile) MediaView
-      +preferences() UserPreferences
-      +updatePreferences(cmd PreferencesCommand) UserPreferences
-    }
-  }
-
-  namespace ws_infrastructure {
-    class S3MediaStorage {
-      <<adapter>>
-      +bucket: String
-    }
-    class OpenSearchPeopleIndexer {
-      <<adapter>>
-    }
-    class MysqlJobQueue {
-      <<adapter>>
-    }
-  }
-
-  AccountController --> AccountService
-  AccountController --> PreferencesService
-  AccountService --> IdentityService : reauthenticate
-  AccountService --> MediaStoragePort
-  AccountService --> JobQueuePort
-  AccountService --> DomainEventPublisherPort
-  PreferencesService --> DomainEventPublisherPort
-  S3MediaStorage ..|> MediaStoragePort
-  OpenSearchPeopleIndexer ..|> SearchIndexPort
-  MysqlJobQueue ..|> JobQueuePort
-  User "1" --> "1" UserPreferences : preferences
-  User "1" --> "0..2" MediaObject : avatar e capa
-  MediaObject "1" --> "*" PipelineJob : THUMBNAIL
-  UserPreferences --> ThemeMode
-  UserPreferences --> UiLanguage
-  UserPreferences --> DeskSkin
-  UserPreferences --> AiMode
+  MeController --> AccountService
+  AccountService --> Guard
+  AccountService --> RegistrationService : reenvia código ao e-mail novo
+  AccountService --> IdentityService : reconfere senha com bloqueio
+  AccountService --> UserRepositoryPort
+  AccountService --> UserPreferencesRepositoryPort
+  AccountService --> RateLimitPort
+  AccountService --> AuditLogPort
+  AccountService ..> ProfileUpdate
+  AccountService ..> SensitiveUpdate
+  AccountService ..> UserView
+  AccountService ..> MediaStoragePort
+  User "1" --> "1" UserPreferences : user_preferences CASCADE
+  User "1" --> "0..*" UserConsent : planejado
+  User "1" --> "0..*" DataExportRequest : planejado
+  User "1" --> "0..*" DataSubjectRequest : planejado
+  User "1" --> "0..*" MediaObject : media_objects CASCADE
   User --> HypeVisibility
-  AuditLog ..> User : PROFILE_UPDATED
-
-  note for User "tabela users · .. +16 campos .. · username imutável após verificação; email e phone cifrados (AesGcmStringConverter)"
-  note for UserPreferences "tabela user_preferences (RF3, RF38.CA08); notificationPrefsJson inclui dailyTaskAt 08:00 (RF44.CA10)"
-  note for PipelineJob "type THUMBNAIL · status PENDENTE · RODANDO · OK · FALHA · REPROCESSAR"
+  User --> AccountStatus
+  UserPreferences ..> ThemeMode : theme
+  UserPreferences ..> UiLanguage : language
+  UserPreferences ..> DeskSkin : deskSkin
+  UserPreferences ..> AiMode : aiModeDefault
+  ConsentService --> UserConsent
+  DataExportService --> DataExportRequest
+  DataExportService --> PersonalDataRegistry
+  note for UserPreferences "No código os enums viajam como String com padrões AUTO, PT_BR, NORMAL, 1.0, PAPEL, America/Sao_Paulo, 3, ECONOMIA (UserPreferences.java). Enums da TAXONOMIA §13."
+  note for User "+15 campos (passwordHash, oidc*, role, companyId, departmentId, verified, twoFactorEnabled, accountOrigin, fixtureKey, termsVersion, privacyVersion, anonymizedAt, lastLoginAt...). Campos sensíveis cifrados: email_enc, phone_enc."
 ```
 
 ## 2. Diagrama de atividades
 
-Raias: Usuário · Web/BFF · `ws-application` · Persistência (o RF3 não usa o AiEngine). Três sub-fluxos: dados pessoais, troca de e-mail e preferências/avatar.
-
 ```mermaid
 flowchart TD
-  subgraph L1["Ator humano — Usuário autenticado"]
-    A1(["Abre Meu perfil → Editar"]) --> A2{"O que editar?"}
-    A2 -->|dados pessoais| A3["Altera nome, cargo, bio, telefone"]
-    A2 -->|e-mail| A4["Informa novo e-mail e senha atual"]
-    A2 -->|preferências| A5["Muda tema, idioma, densidade, fonte, skin da Mesa, fuso, WIP, modo de IA, notificações"]
-    A2 -->|avatar ou capa| A6["Seleciona imagem (png, jpg, webp até 5 MB)"]
-    A20(["Perfil atualizado"])
+  subgraph ATOR["Usuário autenticado"]
+    A1["Abre /settings?tab=conta e edita nome, cargo, bio, avatar"]
+    A2["Aba Privacidade: hypeVisibility, rankingOptOut"]
+    A3["Aba Conta: trocar e-mail ou telefone (pede a senha atual)"]
+    A4["Aba Aparência: tema, idioma, densidade, skin da Mesa, WIP, modo IA"]
+  end
+  subgraph FE["Next.js (App Router) · BFF"]
+    F1["Tabs com aba na URL · formulário com erro por campo (422 details.fields)"]
+    F2["PATCH /bff/me → PATCH /api/me"]
+    F3["PATCH /api/me/sensitive"]
+    F4["PUT /api/me/preferences · aplica data-theme e locale na hora (optimistic)"]
+    F5["Toast de sucesso · Banner se DELETION_SCHEDULED"]
+  end
+  subgraph WEB["ws-web"]
+    W1["CorrelationIdFilter → JWT (SecurityConfig) → SessionActiveFilter → CurrentUserArgumentResolver"]
+    W2["AuthRateLimitFilter: PATCH /api/me/sensitive 30/h · POST /api/me/deletion 10/h (hashes=true)"]
+    W3["MeController.update / sensitive / updatePreferences"]
+    E401["401 NAO_AUTENTICADO / SESSAO_ENCERRADA"]
+    E422["422 VALIDACAO details.fields"]
+    E422U["422 USERNAME_IMUTAVEL"]
+    E401R["401 REAUTENTICACAO_FALHOU"]
+    E429["429 MUITAS_TENTATIVAS + Retry-After"]
+    E409E["409 EMAIL_EM_USO"]
+    E403D["403 EXCLUSAO_AGENDADA"]
+  end
+  subgraph APP["ws-application · AccountService"]
+    S1["findById(current.id) · Guard.requireNotDeletionScheduled"]
+    S2{"DELETION_SCHEDULED?"}
+    S3["Valida tamanhos (fullName 3–160, displayName 80, jobTitle 120, bio 1000, URLs https) e HypeVisibility"]
+    S4{"Campos ok?"}
+    S5["save(User) lock otimista · AuditLog PROFILE_UPDATED {fields}"]
+    T1["IdentityService: tryAcquire(login-fail) → Argon2 matches senha atual"]
+    T2{"bloqueado / senha errada?"}
+    T3{"e-mail novo já existe (emailHash)?"}
+    T4["email/phone cifrados · emailVerified=false · resendVerification · AuditLog SENSITIVE_DATA_UPDATED"]
+    P1["updatePreferences: valida enums (ThemeMode, UiLanguage, DeskSkin, AiMode), wipLimit ≥ 1, fontScale · save · AuditLog PREFERENCES_UPDATED"]
+    EV["(planejado) UserProfileUpdated AFTER_COMMIT → reindexa ws-people · invalida cache do cabeçalho"]
+  end
+  subgraph PERS["Persistência"]
+    D1[("MySQL: users (email_enc, phone_enc, hype_visibility, ranking_opt_out), user_preferences, audit_log")]
+    D2[("Redis: balde login-fail (RateLimitPort)")]
+    D3[("OpenSearch ws-people · Redis cache perfil (planejado)")]
+    D4["MailPort: código ao e-mail novo"]
   end
 
-  subgraph L2["Web / BFF (Next.js App Router)"]
-    B1["PATCH /api/me (Bearer)"]
-    B2["PATCH /api/me/email (Bearer + senha atual)"]
-    B3["Aplica tema/idioma no cliente na hora (data-theme, next-intl) e PUT /api/me/preferences"]
-    B4["POST /api/me/avatar multipart"]
-  end
-
-  subgraph L3["ws-application — AccountService / PreferencesService"]
-    C1{"Campos válidos?"}
-    C1 -->|username alterado| E422a["422 USERNAME_IMUTAVEL"]
-    C1 -->|inválido| E422["422 VALIDACAO (details por campo)"]
-    C1 -->|sim| C2["Atualiza User (fullName, displayName, jobTitle, bio, phone cifrado)"]
-    C2 --> C9["AuditLog PROFILE_UPDATED + publica UserProfileUpdated (AFTER_COMMIT)"]
-    C3{"Reautenticação confere?"}
-    C3 -->|não| E401["401 REAUTENTICACAO_NECESSARIA"]
-    C3 -->|sim| C4{"emailHash livre?"}
-    C4 -->|não| E409["409 EMAIL_EM_USO"]
-    C4 -->|sim| C5["Grava e-mail pendente cifrado, emailVerified=false, envia código"]
-    C5 --> C9
-    C6{"Valores dentro dos enums e limites?"}
-    C6 -->|não| E422
-    C6 -->|sim| C7["Upsert UserPreferences"]
-    C7 --> C9
-    C8{"Mime detectado é imagem e tamanho ok?"}
-    C8 -->|não| E422b["422 ARQUIVO_INVALIDO"]
-    C8 -->|sim| C10["MediaObject no S3 (accessClass PUBLICO) + PipelineJob THUMBNAIL"]
-    C10 --> C11["User.avatarUrl ou coverUrl → variante; apaga a mídia anterior"]
-    C11 --> C9
-  end
-
-  subgraph L5["Persistência"]
-    D1[("MySQL: users, user_preferences, media_objects, pipeline_jobs, audit_log, domain_events")]
-    D2[("S3/MinIO: avatars/, covers/ (+ variantes thumb/preview)")]
-    D3[("OpenSearch: índice de pessoas (RF27)")]
-    D4["EmailSenderPort → código de verificação do novo e-mail"]
-  end
-
-  A3 --> B1 --> C1
-  A4 --> B2 --> C3
-  A5 --> B3 --> C6
-  A6 --> B4 --> C8
-  C2 --> D1
-  C5 --> D1
-  C5 --> D4
-  C7 --> D1
-  C10 --> D2
-  C10 --> D1
-  C9 --> D3
-  C9 --> A20
-
-  classDef erro fill:#fde2e2,stroke:#c0392b,color:#7b1d1d;
-  class E422,E422a,E422b,E401,E409 erro;
+  A1 --> F1 --> F2 --> W1 --> W3 --> S1 --> S2
+  A2 --> F2
+  W1 -->|"sem token ou família revogada"| E401
+  S2 -->|"sim"| E403D
+  S2 -->|"não"| S3 --> S4
+  S4 -->|"não"| E422
+  S3 -->|"username no corpo"| E422U
+  S4 -->|"sim"| S5 --> F5
+  S5 --> D1
+  S5 --> EV --> D3
+  A3 --> F3 --> W2 --> W1
+  W2 -->|"excedeu IP"| E429
+  W3 --> T1 --> T2
+  T1 --> D2
+  T2 -->|"6º erro"| E429
+  T2 -->|"senha errada"| E401R
+  T2 -->|"ok"| T3
+  T3 -->|"sim"| E409E
+  T3 -->|"não"| T4 --> D1
+  T4 --> D4
+  T4 --> F5
+  A4 --> F4 --> W1
+  W3 --> P1 --> D1
+  P1 --> F5
 ```
 
 ## 3. Diagrama de sequência
-
-Caminho feliz das preferências e do avatar, com os `alt` de erro do CA01 (username imutável) e do CA02 (reautenticação / e-mail em uso).
 
 ```mermaid
 sequenceDiagram
   autonumber
   actor U as Usuário
-  participant N as Next.js (App Router) /profile/edit + /settings/preferences
-  participant C as AccountController (ws-web)
-  participant A as AccountService (ws-application)
-  participant P as PreferencesService (ws-application)
-  participant DB as Repository/MySQL
-  participant S3 as S3
+  participant N as Next.js (App Router)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
+  participant R as Repository/MySQL
+  participant RD as Redis
   participant OS as OpenSearch
-  participant DE as DomainEvents (AFTER_COMMIT)
+  participant AU as AuditLogPort
+  participant EV as DomainEvents (AFTER_COMMIT)
 
-  U->>N: edita nome, cargo, bio, telefone
-  N->>C: PATCH /api/me (Bearer)
-  C->>A: updateProfile(currentUser, ProfileUpdateCommand)
-  alt tentou mudar username após verificação (CA01)
-    A-->>C: 422 USERNAME_IMUTAVEL
-    C-->>N: 422 details.username
-  else campos válidos (CA01)
-    A->>DB: UPDATE users SET full_name, display_name, job_title, bio, phone (AES-GCM)
-    A->>DE: publish UserProfileUpdated(userId, changedFields, correlationId)
-    A-->>C: 200 MeView
-    C-->>N: 200
-    N-->>U: cabeçalho do perfil atualizado
-    DE->>DB: AFTER_COMMIT → INSERT audit_log PROFILE_UPDATED (sem valores sensíveis) (CA06)
-    DE->>OS: AFTER_COMMIT → reindexa pessoa (nome, cargo, departamento) (CA06)
+  U->>N: edita nome, cargo, bio, privacidade em /settings
+  N->>C: PATCH /api/me {fullName, displayName, jobTitle, bio, avatarUrl, coverUrl, hypeVisibility, rankingOptOut}
+  Note over C: JWT RS256 → SessionActiveFilter(sid) → CurrentUserArgumentResolver
+  C->>S: AccountService.update(current, ProfileUpdate, ctx)
+  S->>R: findById(current.id)
+  S->>S: Guard.requireNotDeletionScheduled(user)
+  alt conta com exclusão agendada
+    S-->>C: 403 EXCLUSAO_AGENDADA (Guard.requireNotDeletionScheduled, D-18)
+    C-->>N: 403
+  else campo inválido
+    S-->>C: 422 VALIDACAO details.fields (fullName, bio, hypeVisibility...)
+    C-->>N: 422 (erro por campo, i18n)
+  else ok
+    S->>R: save(user) com version (lock otimista)
+    S->>AU: record(PROFILE_UPDATED, OK, fields alterados)
+    S-->>C: UserView
+    C-->>N: 200 UserView
+    EV-->>OS: (planejado) UserProfileUpdated → reindexa ws-people
+    EV-->>RD: (planejado) DEL profile:header:{userId}
+    N-->>U: Toast "Perfil atualizado"
   end
 
-  U->>N: troca o e-mail (novo e-mail + senha atual)
-  N->>C: PATCH /api/me/email
-  C->>A: changeEmail(currentUser, newEmail, reauth)
-  A->>A: IdentityService.reauthenticate(userId, senha) → Argon2id
-  alt senha atual errada (CA02)
-    A-->>C: 401 REAUTENTICACAO_NECESSARIA
-  else emailHash já existe (CA02)
-    A->>DB: existsByEmailHash(newHash)
-    A-->>C: 409 EMAIL_EM_USO
-  else ok (CA02)
-    A->>DB: UPDATE users SET email (AES), email_hash, email_verified=0 + INSERT verification_codes
-    A->>DE: publish EmailChangeRequested → EmailSenderPort envia código
-    A-->>C: 202 Accepted
-    C-->>N: 202 → tela de confirmação do código
+  U->>N: troca de e-mail com a senha atual
+  N->>C: PATCH /api/me/sensitive {currentPassword, email, phone}
+  Note over C: AuthRateLimitFilter 30/h por IP, hashes=true (HashBulkhead)
+  C->>S: AccountService.updateSensitive(current, SensitiveUpdate, ctx)
+  S->>RD: tryAcquire(userId, login-fail, 5, 15 min)
+  alt bloqueado (6º erro)
+    S-->>C: 429 MUITAS_TENTATIVAS + Retry-After
+    C-->>N: 429
+  else senha atual errada
+    S->>S: Argon2PasswordHasher.matches = false (reserva fica)
+    S-->>C: 401 REAUTENTICACAO_FALHOU
+    C-->>N: 401
+  else e-mail já usado por outra conta
+    S->>R: existsByEmailHash(hash novo) = true
+    S-->>C: 409 EMAIL_EM_USO
+    C-->>N: 409
+  else ok
+    S->>R: save(user email_enc, email_hash, emailVerified=false, phone_enc)
+    S->>S: RegistrationService.resendVerification(email novo) → MailPort
+    S->>AU: record(SENSITIVE_DATA_UPDATED, fields, maskEmail)
+    S-->>C: UserView
+    C-->>N: 200 (aviso: confirme o e-mail novo)
   end
 
-  U->>N: muda tema para ESCURO, idioma EN, deskSkin BLUEPRINT, wipLimit 4
-  N->>N: aplica na hora (data-theme, locale) (CA03)
-  N->>C: PUT /api/me/preferences
-  C->>P: update(currentUser, PreferencesCommand)
-  P->>P: valida enums ThemeMode, UiLanguage, DeskSkin, AiMode e limites
-  P->>DB: UPSERT user_preferences
-  P->>DE: publish PreferencesUpdated → AuditLog PREFERENCES_UPDATED
-  P-->>C: 200 UserPreferences
-  C-->>N: 200
-
-  U->>N: envia nova foto de perfil
-  N->>C: POST /api/me/avatar (multipart)
-  C->>A: uploadAvatar(currentUser, bytes, mime)
-  A->>A: detecta mime pelo conteúdo e confere tamanho (CA05)
-  A->>S3: put avatars/{userId}/{sha256}.webp (accessClass PUBLICO)
-  A->>DB: INSERT media_objects + INSERT pipeline_jobs (THUMBNAIL, PENDENTE)
-  A->>DB: UPDATE users SET avatar_url
-  A->>S3: delete avatar anterior (se houver)
-  A-->>C: 201 MediaView (url, variantes pendentes)
-  C-->>N: 201
-  N-->>U: avatar novo (placeholder até o thumbnail ficar OK)
+  U->>N: muda tema para ESCURO e idioma para EN
+  N->>N: aplica data-theme e locale imediatamente
+  N->>C: PUT /api/me/preferences {theme, language, density, fontScale, reduceMotion, deskSkin, timezone, wipLimit, aiModeDefault, notificationPrefsJson}
+  C->>S: AccountService.updatePreferences(current, prefs, ctx)
+  alt valor fora do enum ou wipLimit inválido
+    S-->>C: 422 VALIDACAO details.fields
+    C-->>N: 422 (desfaz a aplicação otimista)
+  else ok
+    S->>R: save(user_preferences) version
+    S->>AU: record(PREFERENCES_UPDATED)
+    S-->>C: UserPreferences
+    C-->>N: 200 UserPreferences
+  end
 ```
 
 ## 4. Máquina de estados
 
-O RF3 não cria estados próprios; a entidade afetada é o **`User`** (verificação do e-mail dentro de `ACTIVE`) e o **`PipelineJob THUMBNAIL`** do avatar/capa (`MediaObject`). Os dois ciclos aparecem como estados compostos.
+Entidade central: **`User.status`** (`AccountStatus`) no recorte do RF3 — a edição só é permitida fora de `DELETION_SCHEDULED`/`ANONYMIZED`; o pedido de exclusão (CA19–CA21) e a exportação (CA14–CA15) têm as máquinas completas em §7.3. `UserPreferences` não tem estados próprios.
 
 ```mermaid
 stateDiagram-v2
   direction LR
+  state "ACTIVE (edição liberada)" as ACT
+  state "PENDING_EMAIL_VERIFICATION" as PEV
+  state "PENDING_VALIDATION (edição liberada, ações de emissor bloqueadas)" as PV
+  state "DELETION_SCHEDULED (403 EXCLUSAO_AGENDADA em PATCH /api/me)" as DEL
+  state "ANONYMIZED" as ANO
 
-  state "User ACTIVE — verificação do e-mail (RF3.CA02)" as USER_ACTIVE {
-    [*] --> EMAIL_VERIFICADO
-    EMAIL_VERIFICADO --> EMAIL_PENDENTE_REVERIFICACAO : PATCH /api/me/email com reautenticação
-    EMAIL_PENDENTE_REVERIFICACAO --> EMAIL_VERIFICADO : código do novo e-mail confere
-    EMAIL_PENDENTE_REVERIFICACAO --> EMAIL_VERIFICADO : titular cancela a troca (mantém o antigo)
-  }
-
-  state "PipelineJob THUMBNAIL do avatar/capa (RF3.CA05)" as JOB {
-    [*] --> PENDENTE
-    PENDENTE --> RODANDO : worker pega o job
-    RODANDO --> OK : variantes thumb e preview gravadas em variantsJson
-    RODANDO --> FALHA : erro de decodificação ou S3
-    FALHA --> REPROCESSAR : attempts menor que 3
-    REPROCESSAR --> RODANDO : nova tentativa com backoff
-    FALHA --> [*] : attempts esgotados (avatar fica com a imagem original)
-    OK --> [*]
-  }
-
-  note right of USER_ACTIVE
-    Enquanto EMAIL_PENDENTE_REVERIFICACAO,
-    o e-mail antigo continua válido para login (RF2)
-    e o novo só passa a valer após o código.
+  [*] --> PEV : cadastro (RF1)
+  PEV --> ACT : confirmEmail (EMPREGADO)
+  PEV --> PV : confirmEmail (EMPRESA ou CHEFE)
+  PV --> ACT : ApprovalRequest APROVADO (RF28)
+  ACT --> ACT : PATCH /api/me · PATCH /api/me/sensitive · PUT /api/me/preferences (sempre permitidos)
+  ACT --> PEV : PATCH /api/me/sensitive troca o e-mail → emailVerified=false (status mantido, warning no login)
+  ACT --> DEL : POST /api/me/deletion com senha atual (bloqueio login-fail) · ACCOUNT_DELETION_REQUESTED · deletionScheduledAt = +30 d
+  PEV --> DEL : POST /api/me/deletion
+  DEL --> ACT : DELETE /api/me/deletion dentro do prazo · ACCOUNT_DELETION_CANCELLED
+  DEL --> PEV : cancelamento com e-mail não confirmado
+  DEL --> ANO : AccountAnonymizationJob (planejado, D-18)
+  ANO --> [*]
+  note right of DEL
+    Preferências e leitura continuam.
+    Escrita de perfil: Guard.requireNotDeletionScheduled.
+    Exportar e cancelar continuam liberados (D-18).
   end note
 ```
 
@@ -392,175 +449,148 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js (App Router)"]
-    FE1["app/(app)/profile/edit/page.tsx"]
-    FE2["app/(app)/settings/preferences/page.tsx"]
-    FE3["components/ui (ThemeProvider data-theme, LocaleSwitcher, AvatarUploader, Form)"]
-    FE4["lib/auth/session.tsx (refreshMe após salvar)"]
+  subgraph FE["Frontend · Next.js 15 App Router"]
+    PG["app/(shell)/settings · ?tab=conta|aparencia|privacidade|dados|sessoes|termos|validacao"]
+    UI["packages/ui: Tabs, Input, Textarea, Select, Switch, Button, Avatar, Banner, Dialog, Toast"]
+    TH["data-theme (claro · escuro · contraste · blueprint) + lib/i18n (pt-BR/en/es) aplicados na hora"]
+    BFF["app/bff/me/* · cookie ws_rt → Authorization Bearer · X-Correlation-Id"]
+    PG --> UI
+    PG --> TH
+    PG --> BFF
   end
-
-  subgraph WEB["ws-web"]
-    W1["AccountController /api/me · /api/me/email · /api/me/privacy · /api/me/avatar · /api/me/cover · /api/me/preferences"]
-    W2["SecurityConfig (JWT) · CurrentUserResolver · multipart limits"]
+  subgraph WSWEB["ws-web"]
+    SEC["SecurityConfig (anyRequest hasAnyRole USER, ADMIN) · SessionActiveFilter · CurrentUserArgumentResolver"]
+    ARL["AuthRateLimitFilter (PATCH /api/me/sensitive, POST /api/me/deletion) + HashBulkhead"]
+    MC["MeController"]
+    GEH["GlobalExceptionHandler"]
   end
-
-  subgraph APP["ws-application"]
-    S1["AccountService"]
-    S2["PreferencesService"]
-    S3["IdentityService.reauthenticate"]
-    P1["MediaStoragePort · JobQueuePort"]
-    P2["SearchIndexPort · EmailSenderPort · DomainEventPublisherPort"]
+  subgraph WSAPP["ws-application"]
+    AS["account.AccountService"]
+    GD["security.Guard"]
+    IS["identity.IdentityService (reconferência) · RegistrationService (reenvio)"]
+    PORTS["ports: UserRepositoryPort · UserPreferencesRepositoryPort · RateLimitPort · AuditLogPort · MailPort · MediaStoragePort (planejado)"]
+    LG["lgpd (planejado): ConsentService · ConsentChecks · DataExportService · PersonalDataRegistry · DataSubjectRequestService"]
+    AS --> GD
+    AS --> IS
+    AS --> PORTS
   end
-
-  subgraph DOM["ws-domain"]
-    D1["User · UserPreferences · MediaObject · PipelineJob · AuditLog"]
-    D2["ThemeMode · UiLanguage · DeskSkin · AiMode · HypeVisibility"]
-    D3["UserRepository · UserPreferencesRepository · MediaObjectRepository"]
+  subgraph WSDOM["ws-domain"]
+    DOM["identity: User · UserPreferences · HypeVisibility · AccountStatus · ProfileType"]
   end
-
   subgraph INFRA["ws-infrastructure"]
-    I1["persistence-mysql (users, user_preferences, media_objects, pipeline_jobs, audit_log)"]
-    I2["storage-s3 (S3MediaStorage: avatars/, covers/)"]
-    I3["search-opensearch (OpenSearchPeopleIndexer)"]
-    I4["platform (MysqlJobQueue + ThumbnailWorker, OutboxEventPublisher, SmtpEmailSender)"]
+    MY["persistence-mysql: UserEntity, UserPreferencesEntity, JpaIdentityAdapters, JpaAuditLog, AesGcmStringConverter"]
+    RDS["cache-redis: RedisRateLimit · cache do cabeçalho do perfil (planejado)"]
+    OSE["search-opensearch: índice ws-people (planejado, RF17/RF27)"]
+    S3["storage-s3: avatar/capa via PendingUpload → MediaObject (planejado, D-22) · restricted/users/{id}/exports (planejado, D-20)"]
+    PLT["platform: MailPort (código do e-mail novo)"]
+  end
+  subgraph BOOT["ws-bootstrap"]
+    JOBS["schedulers (planejado): AccountAnonymizationJob · ExportExpiryJob · PendingUploadCleanupJob (ShedLock)"]
   end
 
-  MY[("MySQL 8")]
-  S3B[("S3 / MinIO")]
-  OSB[("OpenSearch")]
-  X1["SMTP / Google Workspace (e-mail de verificação)"]
-
-  FE1 --> W1
-  FE2 --> W1
-  FE1 --> FE3
-  FE2 --> FE3
-  FE1 --> FE4
-  W2 -.-> W1
-  W1 --> S1
-  W1 --> S2
-  S1 --> S3
-  S1 --> P1
-  S1 --> P2
-  S2 --> P2
-  S1 --> D1
-  S2 --> D1
-  S1 --> D3
-  I2 -.->|implementa| P1
-  I4 -.->|implementa| P1
-  I3 -.->|implementa| P2
-  I4 -.->|implementa| P2
-  D3 --> I1
-  I1 --> MY
-  I2 --> S3B
-  I3 --> OSB
-  I4 --> X1
-  BOOT["ws-bootstrap (flags storage.s3, opensearch.enabled)"] -.-> INFRA
+  BFF -->|"REST JSON"| ARL --> SEC --> MC --> AS
+  MC --> GEH
+  MY -.implementa.-> PORTS
+  RDS -.implementa.-> PORTS
+  PLT -.implementa.-> PORTS
+  S3 -.implementa.-> PORTS
+  AS --> DOM
+  AS -.-> LG
+  MY --> DB[("MySQL 8.4")]
+  RDS --> RD[("Redis 7")]
+  OSE --> OSX[("OpenSearch 2.19")]
+  S3 --> MINIO[("S3 / MinIO")]
+  JOBS --> MY
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) |
-|---|---|---|---|---|---|
-| RF3.CA01 | `AccountService.updateProfile`, `User.fullName/displayName/jobTitle/bio/phone`, `User.username` (imutável) | `A3`, `B1`, `C1` → `E422a`/`E422`, `C2` | 1–9 (`PATCH /api/me`, `422 USERNAME_IMUTAVEL`) | — | `FE1`, `W1 /api/me`, `S1` |
-| RF3.CA02 | `AccountService.changeEmail`, `IdentityService.reauthenticate`, `User.email/emailHash/emailVerified` | `A4`, `B2`, `C3` → `E401`, `C4` → `E409`, `C5` | 12–21 | `EMAIL_VERIFICADO → EMAIL_PENDENTE_REVERIFICACAO → EMAIL_VERIFICADO` | `W1 /api/me/email`, `S3`, `I4 SmtpEmailSender`, `X1` |
-| RF3.CA03 | `PreferencesService.update`, `UserPreferences.*`, `ThemeMode`, `UiLanguage`, `DeskSkin`, `AiMode` | `A5`, `B3`, `C6`, `C7` | 22–29 (`PUT /api/me/preferences`) | — | `FE2`, `FE3 ThemeProvider`, `W1 /api/me/preferences`, `S2`, `I1 user_preferences` |
-| RF3.CA04 | `AccountService.updatePrivacy`, `User.hypeVisibility`, `User.rankingOptOut`, `HypeVisibility`, `AuditLog` | `C2`, `C9` (PRIVACY_CHANGED) | 7, 10 (AuditLog) | — | `W1 /api/me/privacy`, `I4 OutboxEventPublisher` |
-| RF3.CA05 | `AccountService.uploadAvatar/uploadCover`, `MediaObject`, `PipelineJob THUMBNAIL`, `MediaStoragePort`, `JobQueuePort` | `A6`, `B4`, `C8` → `E422b`, `C10`, `C11` | 30–39 | `PENDENTE → RODANDO → OK / FALHA → REPROCESSAR` | `FE3 AvatarUploader`, `W1 /api/me/avatar`, `I2 storage-s3`, `I4 ThumbnailWorker` |
-| RF3.CA06 | `AuditLog`, `DomainEventPublisherPort`, `SearchIndexPort`/`OpenSearchPeopleIndexer`, `User.email/phone` (AES) | `C9`, `D3` | 8, 10–11 (AFTER_COMMIT → audit_log, reindexa) | — | `I3 search-opensearch`, `I4 OutboxEventPublisher`, `I1` |
-| RF3.CA07 (CA a confirmar, D-11) | `SettingsPage` com `Tabs` (aba na URL) | — | — | — | `app/(app)/settings/page.tsx` (substitui `FE2`), `Tabs` de `packages/ui` |
-| RF3.CA08 (CA a confirmar, D-14) | `IdentityService.reauthenticate` com bloqueio (SEG RN49.03), `AccountService.changeEmail` (código ao novo + aviso ao antigo), `changePassword` (revoga outras famílias, RF2.CA05) | `C3` → `E401` ganha `429 MUITAS_TENTATIVAS` | 15–17 | `EMAIL_VERIFICADO → EMAIL_PENDENTE_REVERIFICACAO` | `W1 /api/me/email`, `PUT /api/auth/password` |
-| RF3.CA09 (CA a confirmar) | `AccountService.updatePrivacy` (`hypeVisibility` padrão SO_EU, `rankingOptOut`), `AuditLog PRIVACY_CHANGED` | `C2`, `C9` | 7, 10 | — | `W1 /api/me/privacy`, `Switch` |
-| RF3.CA10 (CA a confirmar, D-17) | `UserConsent`, `ConsentPurpose`, `ConsentService.list/set` (`GET/PUT /api/me/consents/{purpose}`) | §7 passo "interruptor nunca pré-marcado" | — | — | `W1 /api/me/consents`, `Switch` |
-| RF3.CA11 (CA a confirmar, D-17) | `ConsentEvent` (append-only), `AuditLog CONSENT_GRANTED/CONSENT_REVOKED` | — | — | — | `I1 consent_events` |
-| RF3.CA12 (CA a confirmar, D-17) | `ConsentChecks` (mapa finalidade → checagem), `ConsentCoverageTest` | — | — | — | CI (`mvn verify`) |
-| RF3.CA13 (CA a confirmar, D-18) | `PersonalDataRegistry` (`GET /api/me/data-map`) | — | — | — | aba Seus dados → "Quais dados temos" |
-| RF3.CA14 (CA a confirmar, D-20) | `DataExportRequest`, `ExportStatus`, `PipelineJob DATA_EXPORT`, `ExportService.request/list` (3/dia) | — | — | §7.3 bloco 1 `REQUESTED → PROCESSING → READY → EXPIRED \| FAILED` | `W1 /api/me/exports`, `I4 MysqlJobQueue` + `DataExportWorker` |
-| RF3.CA15 (CA a confirmar, D-20) | `ExportService.download` (`OwnMedia`, `restricted/users/{id}/exports/`, `410 EXPORTACAO_EXPIRADA`), `expiresAt +7 d` | — | — | `READY → EXPIRED` | `I2 storage-s3 restricted/`, `Notification` |
-| RF3.CA16 (CA a confirmar, D-18) | `PersonalDataRegistry.exportSection` (conteúdo da exportação) | — | — | `PROCESSING` | `DataExportWorker` |
-| RF3.CA17 (CA a confirmar, D-18) | `PersonalDataRegistryCoverageTest` (entidade com coluna de pessoa fora do registro quebra o CI) | — | — | — | CI |
-| RF3.CA18 (CA a confirmar) | `DataSubjectRequest`, `DsrKind/DsrTarget/DsrStatus`, `DsrService.open` (`POST /api/me/requests`), `AuditLog DSR_OPENED` | — | — | — | aba Seus dados → "Outros direitos", `WS_LEGAL_DPO_CONTACT` |
-| RF3.CA19 (CA a confirmar, D-18) | `AccountService.requestDeletion/cancelDeletion` (reconferência com bloqueio), `User.deletionScheduledAt`, `AuditLog ACCOUNT_DELETION_REQUESTED/CANCELLED` | — | — | §7.3 bloco 2 `ACTIVE → DELETION_SCHEDULED → ACTIVE` | `W1 /api/me/deletion`, `Dialog` com o que fica e o que sai |
-| RF3.CA20 (CA a confirmar, D-18) | `Guard.requireNotDeletionScheduled` (`403 EXCLUSAO_AGENDADA`), `Banner` no login, perfil oculto | — | — | `DELETION_SCHEDULED` (nota) | `Banner` de `packages/ui`, `W2` |
-| RF3.CA21 (CA a confirmar, D-18) | `AccountAnonymizationJob` (`@Scheduled` + lock), `AnonymizationJobScheduledTest`, `AccountAnonymizationIT` (MySQL, Cassandra, OpenSearch, S3), `AuditLog ACCOUNT_DELETION_COMPLETED` | — | — | §7.3 bloco 2 `DELETION_SCHEDULED → ANONYMIZED` | `I4 platform` (job), `I1`, `I2`, `I3`, Cassandra |
-| RF3.CA22 (CA a confirmar, D-15) | `PolicyAcceptance` (aba Termos e políticas: `GET /api/me/policies`), RF2.CA05 (aba Sessões) | — | — | — | `W1 /api/me/policies`, RF2 `/api/auth/sessions` |
-| RF3.CA23 (CA a confirmar, D-11) | padrões de interface LGPD (`Switch`, `Dialog`, `Banner` com foco visível, `reduceMotion`) | — | — | — | `packages/ui` |
-| RF3.CA24 (CA a confirmar, D-21) | tipos TS gerados do OpenAPI (`openapi-typescript`), `ContractDriftTest` no CI | — | — | — | CI (`npm run api:types -- --check`) |
+| CA | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) | Situação |
+|---|---|---|---|---|---|---|
+| RF3.CA01 | `MeController.update`, `AccountService.update`, `ProfileUpdate`, `Guard.requireNotDeletionScheduled`, `User.version` | `S1`→`S5`, `E422`, `E422U`, `E403D` | 2–17 | `ACT`→`ACT`, nota de `DEL` | `MC`, `AS`, `GD`, `UI` | real (Bloco 3, main) |
+| RF3.CA02 | `AccountService.updateSensitive`, `SensitiveUpdate`, `IdentityService` (bloqueio), `RegistrationService.resendVerification`, `AesGcmStringConverter` | `A3`→`T1`→`T4`, `E429`, `E401R`, `E409E` | 21–38 | `ACT`→`PEV` (e-mail novo) | `ARL`, `AS`, `IS`, `PLT`, `MY` | real |
+| RF3.CA03 | `UserPreferences`, `AccountService.updatePreferences/preferences`, `ThemeMode`, `UiLanguage`, `DeskSkin`, `AiMode` | `A4`→`F4`→`P1` | 39–48 | — | `TH`, `MC`, `MY` (`user_preferences` CASCADE) | real |
+| RF3.CA04 | `ProfileUpdate.hypeVisibility/rankingOptOut`, `HypeVisibility` | `A2`→`F2`→`S3`→`S5` | 2–16 | — | `AS`, `UI` (`Switch`) | real (`AuditLog PROFILE_UPDATED`) |
+| RF3.CA05 | `MediaStoragePort`, `MediaObject`, `PendingUpload`, `PipelineJob THUMBNAIL` | — | — | — | `S3`, `JOBS` | planejado (D-22) |
+| RF3.CA06 | `AuditLogPort`, `AuditActions.PROFILE_UPDATED/PREFERENCES_UPDATED`, `UserView`, evento `UserProfileUpdated` | `S5`→`EV`→`D3` | 14, 18–19 | — | `OSE`, `RDS`, `MC.profile` | auditoria real; evento e índice planejados |
+| RF3.CA07 | `Tabs` (`packages/ui`) | `F1` | — | — | `PG`, `UI` | planejado (§7) |
+| RF3.CA08 | `AccountService.updateSensitive`, balde `login-fail` | `T1`→`T2` | 25–38 | — | `ARL`, `IS` | real; aviso ao e-mail antigo planejado |
+| RF3.CA09 | `User.hypeVisibility/rankingOptOut` | `S3`→`S5` | 14 | — | `AS` | real (grava `PROFILE_UPDATED`, não `PRIVACY_CHANGED`) |
+| RF3.CA10 | `UserConsent`, `ConsentPurpose`, `ConsentService` | — | — | — | `LG` | planejado (D-17, Q-67) |
+| RF3.CA11 | `ConsentEvent` | — | — | — | `LG`, `MY` | planejado |
+| RF3.CA12 | `ConsentChecks`, `ConsentCoverageTest` | — | — | — | `LG` | planejado |
+| RF3.CA13 | `PersonalDataRegistry`, `GET /api/me/data-map` | — | — | — | `LG` | planejado (D-18) |
+| RF3.CA14 | `DataExportRequest`, `DataExportService`, `PipelineJob DATA_EXPORT` | — | — | §7.3 bloco 1 | `LG`, `S3`, `JOBS` | planejado (D-20) |
+| RF3.CA15 | `DataExportRequest.fileKey/expiresAt`, `OwnMedia` | — | — | `READY`→`EXPIRED` | `S3` | planejado |
+| RF3.CA16 | `PersonalDataRegistry.exportSection` | — | — | — | `LG` | planejado |
+| RF3.CA17 | `PersonalDataRegistryCoverageTest` | — | — | — | `LG` | planejado |
+| RF3.CA18 | `DataSubjectRequest`, `DsrKind`, `DsrStatus` | — | — | — | `LG` | planejado (Q-71) |
+| RF3.CA19 | `AccountService.requestDeletion`, `DeletionRequest`, `DeletionReceipt`, `DELETION_GRACE` | — | — | `ACT`→`DEL`, §7.3 bloco 2 | `MC`, `AS`, `ARL` (10/h) | real (409 `EXCLUSAO_AGENDADA` se já agendada) |
+| RF3.CA20 | `Guard.requireNotDeletionScheduled`, `Session.warnings` | `S2`→`E403D` | 7–8 | nota de `DEL` | `GD`, `UI` (`Banner`) | real (`403 EXCLUSAO_AGENDADA` em `PATCH /api/me`; demais rotas de conteúdo quando existirem) |
+| RF3.CA21 | `AccountAnonymizationJob`, `AccountStatus.ANONYMIZED` | — | — | `DEL`→`ANO` | `JOBS` | planejado (D-18) |
+| RF3.CA22 | `GET /api/auth/sessions`, `GET /api/me/policies` | — | — | — | `PG` (abas Sessões e Termos) | planejado |
+| RF3.CA23 | padrões LGPD de interface (`packages/ui`) | `F1` | — | — | `UI` | planejado |
+| RF3.CA24 | `openapi-typescript` → `lib/api/types.gen.ts` | — | — | — | `BFF` | planejado (D-21) |
 
 ## 7. Configurações e direitos do titular — `/settings` (CA a confirmar, D-15…D-21; o "RF23" do FAI, Q-46)
 
-Bloco **C** do brief `PROMPT_DECIA_CADASTRO_LGPD`: a tela de configurações é o **ponto de cumprimento** da LGPD
-(FAI `padroes-interface-lgpd.html`, RF3.CA01–CA24 do FAI adaptados). Entidades em `TAXONOMIA.md` §1.12–1.14, §12.6 e
-§12.9 (**proposta**). Os diagramas §1–§5 não foram reescritos: a rota `/settings/preferences` (`FE2`) vira a aba
-Aparência de `/settings`, e os dois blocos de estados novos estão em §7.3. Defeitos do FAI evitados aqui: exclusão que
-nunca conclui (1), consentimentos não respeitados e histórico sobrescrito (6), front lendo campos que o back não manda
-(7), exportação síncrona com nome `.zip` e JSON dentro (8).
+Bloco **C** de `docs/produto/CADASTRO_E_LGPD.md`: a tela de configurações é o **ponto de cumprimento** da LGPD. Entidades em `TAXONOMIA.md` §1.12–1.14, §12.6 e §12.9 (**proposta**). O que já existe no Bloco 3: abas Conta (`PATCH /api/me`, `PATCH /api/me/sensitive`), Aparência (`PUT /api/me/preferences`), Privacidade sem consentimentos (`hypeVisibility`, `rankingOptOut`) e o pedido/cancelamento de exclusão (`POST|DELETE /api/me/deletion`, `DeletionReceipt`). O resto é **planejado**. Defeitos do FAI evitados: exclusão que nunca conclui (1), consentimentos não respeitados e histórico sobrescrito (6), front lendo campos que o back não manda (7), exportação síncrona com nome `.zip` e JSON dentro (8).
 
 ### 7.1 Abas (`Tabs`, aba atual na URL `?tab=`)
 
-| Aba | O que tem | CAs |
-|---|---|---|
-| **Conta** | RF3.CA01 e CA02 (correção, art. 18 III); troca de e-mail com senha atual e bloqueio; troca de senha encerra as outras sessões | CA08 |
-| **Aparência** | RF3.CA03 aplicada na hora e persistida | CA03 |
-| **Privacidade** | `hypeVisibility` (padrão SO_EU, RF45.CA06), `rankingOptOut` (RF43.CA05) e os **consentimentos** | CA09–CA12 |
-| **Seus dados** | "Quais dados temos" (transparência), exportação, outros direitos (revisão art. 20, oposição, informação sobre compartilhamento), encerramento da conta | CA13–CA21 |
-| **Sessões** | RF2.CA05: lista e revogação | CA22 |
-| **Termos e políticas** | versões aceitas, datas, canal e links para `/termos` e `/privacidade` | CA22 |
-| **Validação** (só EMPRESA/CHEFE pendentes) | central de validação do RF28.CA11 | RF28 |
+| Aba | O que tem | CAs | Código |
+|---|---|---|---|
+| **Conta** | RF3.CA01 e CA02 (correção, art. 18 III); troca de e-mail com senha atual e bloqueio; troca de senha (`PUT /api/auth/password`) encerra as outras sessões | CA08 | real |
+| **Aparência** | RF3.CA03 aplicada na hora e persistida | CA03 | real |
+| **Privacidade** | `hypeVisibility` (padrão SO_EU), `rankingOptOut` e os **consentimentos** | CA09–CA12 | parcial |
+| **Seus dados** | "Quais dados temos", exportação, outros direitos (art. 20, oposição, compartilhamento), encerramento da conta | CA13–CA21 | exclusão real; resto planejado |
+| **Sessões** | RF2.CA05: lista e revogação por dispositivo | CA22 | planejado |
+| **Termos e políticas** | versões aceitas, datas, canal e links para `/termos` e `/privacidade` | CA22 | planejado (D-15/D-16) |
+| **Validação** (só EMPRESA/CHEFE pendentes) | central de validação do RF28.CA11 | RF28 | planejado (D-19) |
 
 ### 7.2 Critérios de aceite (RF3.CA07–CA24)
 
 | CA | Enunciado (Dado / Quando / Então) |
 |---|---|
 | **RF3.CA07** (CA a confirmar) | Dado `/settings`, então as abas usam `Tabs` de `packages/ui` com a aba atual na URL (`?tab=conta`), navegáveis por teclado; nenhuma aba contém HTML/CSS solto (D-11). |
-| **RF3.CA08** (CA a confirmar) | Dado a troca de e-mail, então ela exige a **senha atual com o bloqueio** da SEG RN49.03 (6º erro → `429 MUITAS_TENTATIVAS` + `Retry-After`), envia um código ao e-mail novo e um **aviso ao antigo**; a troca de senha encerra as outras sessões (RF2.CA05). Refina o CA02. |
-| **RF3.CA09** (CA a confirmar) | Dado a aba Privacidade, então `hypeVisibility` nasce `SO_EU` e `rankingOptOut` `false`; alterar grava `AuditLog PRIVACY_CHANGED` e vale na próxima leitura (refina o CA04). |
-| **RF3.CA10** (CA a confirmar, Q-67) | Dado os consentimentos, então existem só para **finalidades opcionais** (`ConsentPurpose` proposto: `RESUMO_PROFISSIONAL_IA`, RF43.CA04; `GRAVACAO_REUNIOES_PADRAO`, preferência — o consentimento por reunião continua no RF37); cada uma mostra `title`, `description`, `legalBasis`, `article`, `sensitive`, `grantedAt`, `revokedAt` e `policyVersion` (campos **iguais** aos do OpenAPI, CA24); **nunca vem marcada**; revogar tem o mesmo esforço que conceder (`PUT /api/me/consents/{purpose} {granted}`). |
-| **RF3.CA11** (CA a confirmar) | Dado conceder ou revogar, então grava-se uma linha em `consent_events` (append-only) e o estado em `user_consents`, mais `AuditLog CONSENT_GRANTED` ou `CONSENT_REVOKED`; o histórico aparece na própria aba. |
-| **RF3.CA12** (CA a confirmar) | Dado o enum `ConsentPurpose`, então cada valor tem um **ponto de verificação registrado** em `ConsentChecks` (mapa finalidade → método que o serviço chama antes do tratamento); `ConsentCoverageTest` falha o CI para finalidade sem checagem, e finalidade sem uso **não aparece** na tela. |
-| **RF3.CA13** (CA a confirmar) | Dado "Quais dados temos" (art. 9º; art. 18 I e II), então a página lista, por categoria, finalidade, base legal, retenção e com quem é compartilhada (provedores de IA com mascaramento, Google Workspace, Microsoft 365), tudo vindo do `PersonalDataRegistry` (`GET /api/me/data-map`) — o mesmo registro que a exportação usa. |
-| **RF3.CA14** (CA a confirmar) | Dado "Exportar meus dados", então `POST /api/me/exports` cria `DataExportRequest REQUESTED` e enfileira `PipelineJob DATA_EXPORT` (assíncrona); limite **3 por dia por pessoa** (`429 LIMITE_EXPORTACOES`); estados `REQUESTED → PROCESSING → READY → EXPIRED \| FAILED`; `GET /api/me/exports` lista com `requestedAt` e `expiresAt`. |
-| **RF3.CA15** (CA a confirmar) | Dado a exportação pronta, então o arquivo tem nome e tipo corretos (`.json` + `application/json`, ou um ZIP de verdade), sai no idioma da pessoa, fica em `restricted/users/{userId}/exports/`, só o dono baixa (`OwnMedia`, `403` para os outros), o link expira em **7 dias** (`410 EXPORTACAO_EXPIRADA`) e há notificação quando fica pronta. |
-| **RF3.CA16** (CA a confirmar) | Dado o conteúdo, então inclui perfil, preferências, aceites, consentimentos e histórico; sessões, lotações e nomeações; tarefas e projetos de autoria própria e **as próprias mensagens** do DECIA (nunca as de outras pessoas); decisões de que participou, pontos, reconhecimentos; inferências de IA sobre a pessoa e a auditoria sobre ela. |
-| **RF3.CA17** (CA a confirmar) | Dado uma entidade com coluna de pessoa (`userId`, `authorId`, `actorId`, `ownerId`, `recipientId`…), então ela está no `PersonalDataRegistry` ou em `EXCLUDED_WITH_REASON`; `PersonalDataRegistryCoverageTest` falha o CI para entidade nova sem classificação. |
-| **RF3.CA18** (CA a confirmar, Q-71) | Dado "Outros direitos", então a pessoa pode abrir `DataSubjectRequest` de **revisão de decisão automatizada** (art. 20: HSE, ranking, Hype ou classificação por IA, com `targetId`), **oposição** e **informação sobre compartilhamento**; cada pedido tem prazo (`dueAt`), status, encarregado responsável e `AuditLog DSR_OPENED`; o canal do encarregado (`WS_LEGAL_DPO_CONTACT`) aparece na aba. Correção é pela aba Conta. |
-| **RF3.CA19** (CA a confirmar, Q-68) | Dado "Encerrar minha conta", então o pedido exige a **senha atual com bloqueio**, e **antes de confirmar** o `Dialog` mostra o que será anonimizado e o que fica guardado e por quê (documentos públicos com guarda legal: atas, decisões validadas, `DecisionTrace`, chancelas emitidas, ledger; e os aceites — art. 16 e tabela de temporalidade); a conta vai a `DELETION_SCHEDULED` por 30 dias, cancelável; `AuditLog ACCOUNT_DELETION_REQUESTED` / `ACCOUNT_DELETION_CANCELLED`. |
-| **RF3.CA20** (CA a confirmar) | Dado `DELETION_SCHEDULED`, então o login mostra um `Banner` com a data e o botão de cancelar, criar conteúdo recebe `403 EXCLUSAO_AGENDADA` e o perfil fica oculto (busca, rankings, Mural). |
-| **RF3.CA21** (CA a confirmar) | Dado o prazo vencido, então o `AccountAnonymizationJob` roda por `@Scheduled` com **lock** (ShedLock) que impede execução dupla em várias réplicas; **teste 1** prova que o método está agendado; **teste 2** (Testcontainers) prova que ele anonimiza os dados pessoais no MySQL, apaga arquivos e documentos de `restricted/`, limpa as projeções no Cassandra e no OpenSearch, revoga as sessões e grava `ACCOUNT_DELETION_COMPLETED`, mantendo `policy_acceptances`, `consent_events` e os documentos públicos. |
-| **RF3.CA22** (CA a confirmar) | Dado as abas Sessões e Termos e políticas, então a primeira reaproveita RF2.CA05 e a segunda mostra, por documento, a versão aceita, a data, o canal e o link para a versão vigente (`GET /api/me/policies`). |
-| **RF3.CA23** (CA a confirmar) | Dado qualquer controle da tela, então valem os padrões LGPD: privacidade por padrão, aceitar e recusar com o **mesmo destaque**, nenhum texto que constranja quem recusa, foco visível, navegação por teclado e `reduceMotion` respeitado. |
-| **RF3.CA24** (CA a confirmar) | Dado o contrato front/back, então os tipos TypeScript do front são **gerados do OpenAPI** (springdoc → `openapi-typescript`) e o CI falha se o arquivo gerado divergir do commitado ou se o front ler um campo que o back não declara (defeito 7 do FAI). |
-
-### 7.2.1 Implementação (Bloco 3, PR sec-b3) — o que já existe de RF3
-
-| CA | Classe(s) | Teste(s) | Observação |
-|---|---|---|---|
-| CA01 / CA06 | `AccountService.me/profile/update` (422 por campo; `username` não é editável), `MeController` (`GET/PATCH /api/me`, `GET /api/users/{id}`), `Guard.ownerOrAdmin` (403 `ACESSO_NEGADO`), `AuditActions.PROFILE_UPDATED` | `AccountServiceTest.perfilPorIdSoParaODonoOuAdmin`, `.atualizaCamposNaoSensiveisComValidacaoEAuditoria`, `MeControllerWebTest` (401 e 403 em **todos** os endpoints) | evento `UserProfileUpdated`/reindexação: RF27 |
-| CA02 / CA08 | `AccountService.updateSensitive` → `IdentityService.reauthenticate` (mesmo `login-fail`) | `AccountServiceTest.dadosSensiveisExigemSenhaAtualNoMesmoBloqueioDoLogin` | aviso ao e-mail antigo: Q-84 |
-| CA03 | `AccountService.preferences/updatePreferences` (valores validados contra os CHECKs do V2), `MeController` (`GET/PUT /api/me/preferences`) | `AccountServiceTest.preferenciasNascemComOsPadroesDoV2ESaoValidadas` | aplicação imediata no cliente: Bloco 4 |
-| CA04 / CA09 | `AccountService.update` (`hypeVisibility`, `rankingOptOut`) | idem CA01 | auditoria sai como `PROFILE_UPDATED` com os nomes dos campos (não há `PRIVACY_CHANGED` separado ainda) |
-| CA19 / CA20 | `AccountService.requestDeletion/cancelDeletion` (`DELETION_SCHEDULED`, `deletion_scheduled_at = +30 d`, outras sessões encerradas), `Guard.requireNotDeletionScheduled` (`403 EXCLUSAO_AGENDADA` no `PATCH /api/me`), `MeController` (`POST/DELETE /api/me/deletion`) | `AccountServiceTest.exclusaoAgendaTrintaDiasBloqueiaEdicaoECancelaVoltandoAoStatus`, `GuardTest` | `AccountAnonymizationJob`, `Dialog` prévio e perfil oculto: bloco LGPD C / Bloco 4 |
+| **RF3.CA08** (CA a confirmar) | Dado a troca de e-mail, então ela exige a **senha atual com o bloqueio** `login-fail` (`IdentityService.reauthenticate`: errada → `401 REAUTENTICACAO_FALHOU`, 6º erro → `429 MUITAS_TENTATIVAS` + `Retry-After`; **real**), envia o código ao e-mail novo (**real**, `resendVerification`) e um **aviso ao antigo** (planejado, Q-84); hoje o e-mail novo vale de imediato para login (sem coluna de e-mail pendente — divergência a confirmar); a troca de senha encerra as outras sessões (`SESSIONS_REVOKED`, real). |
+| **RF3.CA09** (CA a confirmar) | Dado a aba Privacidade, então `hypeVisibility` nasce `SO_EU` e `rankingOptOut` `false`; alterar grava `AuditLog PROFILE_UPDATED` com os campos alterados (**real**; o nome `PRIVACY_CHANGED` do plano não existe em `AuditActions`) e vale na próxima leitura. |
+| **RF3.CA10** (CA a confirmar, Q-67) | Dado os consentimentos, então existem só para **finalidades opcionais** (`ConsentPurpose`: `RESUMO_PROFISSIONAL_IA`, RF43.CA04; `GRAVACAO_REUNIOES_PADRAO`); cada uma mostra `title`, `description`, `legalBasis`, `article`, `sensitive`, `grantedAt`, `revokedAt`, `policyVersion` (iguais ao OpenAPI, CA24); **nunca vem marcada**; revogar tem o mesmo esforço que conceder (`PUT /api/me/consents/{purpose} {granted}`). |
+| **RF3.CA11** (CA a confirmar) | Dado conceder ou revogar, então grava-se `consent_events` (append-only) e o estado em `user_consents`, mais `AuditLog CONSENT_GRANTED` ou `CONSENT_REVOKED`; o histórico aparece na aba. |
+| **RF3.CA12** (CA a confirmar) | Dado o enum `ConsentPurpose`, então cada valor tem um **ponto de verificação** em `ConsentChecks`; `ConsentCoverageTest` falha o CI para finalidade sem checagem, e finalidade sem uso **não aparece** na tela. |
+| **RF3.CA13** (CA a confirmar) | Dado "Quais dados temos" (art. 9º; art. 18 I e II), então a página lista, por categoria, finalidade, base legal, retenção e compartilhamento (IA mascarada, Google Workspace, Microsoft 365), tudo vindo do `PersonalDataRegistry` (`GET /api/me/data-map`). |
+| **RF3.CA14** (CA a confirmar) | Dado "Exportar meus dados", então `POST /api/me/exports` cria `DataExportRequest REQUESTED` e enfileira `PipelineJob DATA_EXPORT`; limite **3 por dia por pessoa** (`RateLimitPort`, `429 LIMITE_EXPORTACOES`); `GET /api/me/exports` lista com `requestedAt` e `expiresAt`. |
+| **RF3.CA15** (CA a confirmar) | Dado a exportação pronta, então o arquivo tem nome e tipo corretos (`.json` + `application/json`, ou ZIP real), sai no idioma da pessoa, fica em `restricted/users/{userId}/exports/`, só o dono baixa (`OwnMedia`, `403`), expira em **7 dias** (`410 EXPORTACAO_EXPIRADA`) e há notificação quando pronta. |
+| **RF3.CA16** (CA a confirmar) | Dado o conteúdo, então inclui perfil, preferências, aceites, consentimentos; sessões, lotações; tarefas e projetos próprios e **as próprias mensagens** do DECIA; decisões, pontos, reconhecimentos; inferências de IA e auditoria sobre a pessoa. |
+| **RF3.CA17** (CA a confirmar) | Dado uma entidade com coluna de pessoa, então ela está no `PersonalDataRegistry` ou em `EXCLUDED_WITH_REASON`; `PersonalDataRegistryCoverageTest` falha o CI para entidade nova sem classificação. |
+| **RF3.CA18** (CA a confirmar, Q-71) | Dado "Outros direitos", então a pessoa abre `DataSubjectRequest` de **revisão de decisão automatizada** (art. 20: HSE, ranking, Hype, classificação IA), **oposição** e **informação sobre compartilhamento**; cada pedido tem `dueAt`, status, encarregado e `AuditLog DSR_OPENED`; o canal (`WS_LEGAL_DPO_CONTACT`) aparece na aba. |
+| **RF3.CA19** (CA a confirmar, Q-68) | Dado "Encerrar minha conta", então o pedido exige a **senha atual com bloqueio** (**real**: `POST /api/me/deletion {currentPassword, reason}`, `AuditLog ACCOUNT_DELETION_REQUESTED`, `deletionScheduledAt = +30 d`, `DeletionReceipt.cancelable`); antes de confirmar, o `Dialog` mostra o que será anonimizado e o que fica (planejado); já agendada → `409 EXCLUSAO_AGENDADA`. |
+| **RF3.CA20** (CA a confirmar) | Dado `DELETION_SCHEDULED`, então o login devolve `warnings` com a data (**real**), o `Banner` mostra a data e o botão cancelar (`DELETE /api/me/deletion`, **real**, `ACCOUNT_DELETION_CANCELLED`; sem agendamento → `409 EXCLUSAO_NAO_AGENDADA`), editar o perfil recebe `403 EXCLUSAO_AGENDADA` (`Guard.requireNotDeletionScheduled`, **real**) e criar conteúdo receberá o mesmo `403` quando as rotas existirem (D-18); o pedido também encerra as outras sessões. |
+| **RF3.CA21** (CA a confirmar) | Dado o prazo vencido, então o `AccountAnonymizationJob` roda por `@Scheduled` com **lock** (ShedLock); teste 1 prova o agendamento; teste 2 (Testcontainers) prova a anonimização no MySQL, S3 `restricted/`, Cassandra e OpenSearch, a revogação das sessões e `ACCOUNT_DELETION_COMPLETED`, mantendo `policy_acceptances`, `consent_events` e documentos públicos. |
+| **RF3.CA22** (CA a confirmar) | Dado as abas Sessões e Termos e políticas, então a primeira lista `refresh_tokens` por família (`deviceName`, `createdIp`, `lastUsedAt`, atual) com revogação, e a segunda mostra por documento a versão aceita, data, canal e link para a vigente (`GET /api/me/policies`). |
+| **RF3.CA23** (CA a confirmar) | Dado qualquer controle, então valem os padrões LGPD: privacidade por padrão, aceitar e recusar com o **mesmo destaque**, sem texto que constranja quem recusa, foco visível, teclado e `reduceMotion`. |
+| **RF3.CA24** (CA a confirmar) | Dado o contrato front/back, então os tipos TypeScript são **gerados do OpenAPI** (springdoc → `openapi-typescript`) e o CI falha se o gerado divergir do commitado ou se o front ler um campo que o back não declara (D-21). |
 
 ### 7.3 Máquinas de estado novas
 
-**Bloco 1 — `DataExportRequest.status` (`ExportStatus`)**
+**Bloco 1 — `DataExportRequest.status` (`ExportStatus`, planejado D-20)**
 
 ```mermaid
 stateDiagram-v2
   direction LR
-  state "REQUESTED" as REQUESTED
-  state "PROCESSING" as PROCESSING
+  state "REQUESTED" as REQ
+  state "PROCESSING" as PROC
   state "READY" as READY
-  state "EXPIRED" as EXPIRED
-  state "FAILED" as FAILED
+  state "EXPIRED" as EXP
+  state "FAILED" as FAIL
 
-  [*] --> REQUESTED : POST /api/me/exports · 3 por dia (429 LIMITE_EXPORTACOES) · PipelineJob DATA_EXPORT enfileirado
-  REQUESTED --> PROCESSING : worker pega o job · monta JSON pelo PersonalDataRegistry no idioma da pessoa
-  PROCESSING --> READY : arquivo em restricted/users/{userId}/exports/ · expiresAt = now + 7 d · Notification
-  PROCESSING --> FAILED : erro (attempts esgotados) · failureReason · a pessoa pode pedir de novo
-  READY --> EXPIRED : expiresAt vencido · job apaga o arquivo · download responde 410 EXPORTACAO_EXPIRADA
-  EXPIRED --> [*]
-  FAILED --> [*]
-
+  [*] --> REQ : POST /api/me/exports · 3 por dia (429 LIMITE_EXPORTACOES) · PipelineJob DATA_EXPORT enfileirado
+  REQ --> PROC : DataExportWorker pega o job · monta JSON pelo PersonalDataRegistry no idioma da pessoa
+  PROC --> READY : arquivo em restricted/users/{userId}/exports/ · expiresAt = now + 7 d · Notification
+  PROC --> FAIL : erro (attempts esgotados) · failureReason · a pessoa pode pedir de novo
+  READY --> EXP : ExportExpiryJob apaga o arquivo · download responde 410 EXPORTACAO_EXPIRADA
+  EXP --> [*]
+  FAIL --> [*]
   note right of READY
     GET /api/me/exports/{id}/download
     só pelo dono (OwnMedia, 403 para os outros)
@@ -568,39 +598,35 @@ stateDiagram-v2
   end note
 ```
 
-**Bloco 2 — `User.status` no encerramento da conta (`AccountStatus`, D-18)**
+**Bloco 2 — `User.status` no encerramento da conta (`AccountStatus`, D-18; pedido e cancelamento reais)**
 
 ```mermaid
 stateDiagram-v2
   direction LR
-  state "ACTIVE" as ACTIVE
-  state "DELETION_SCHEDULED (30 d, cancelável)" as DELETION_SCHEDULED
-  state "ANONYMIZED" as ANONYMIZED
+  state "ACTIVE" as ACT
+  state "DELETION_SCHEDULED (30 d, cancelável)" as DEL
+  state "ANONYMIZED" as ANO
 
-  ACTIVE --> DELETION_SCHEDULED : POST /api/me/deletion com senha atual (bloqueio 429) · Dialog mostra o que fica e o que sai · ACCOUNT_DELETION_REQUESTED
-  DELETION_SCHEDULED --> ACTIVE : DELETE /api/me/deletion dentro do prazo · ACCOUNT_DELETION_CANCELLED
-  DELETION_SCHEDULED --> ANONYMIZED : AccountAnonymizationJob (@Scheduled + lock) após deletionScheduledAt · ACCOUNT_DELETION_COMPLETED
-  ANONYMIZED --> [*]
-
-  note right of DELETION_SCHEDULED
-    Login com Banner · perfil oculto
-    criar conteúdo: 403 EXCLUSAO_AGENDADA
+  ACT --> DEL : POST /api/me/deletion com senha atual (bloqueio 429) · ACCOUNT_DELETION_REQUESTED · DeletionReceipt
+  DEL --> ACT : DELETE /api/me/deletion dentro do prazo · ACCOUNT_DELETION_CANCELLED (volta a PENDING_EMAIL_VERIFICATION se o e-mail não estava confirmado)
+  DEL --> DEL : POST /api/me/deletion de novo → 409 EXCLUSAO_AGENDADA
+  DEL --> ANO : AccountAnonymizationJob (@Scheduled + ShedLock) após deletionScheduledAt · ACCOUNT_DELETION_COMPLETED (planejado)
+  ANO --> [*]
+  note right of DEL
+    Login com warning e Banner · perfil oculto
+    PATCH /api/me e criar conteúdo: 403 EXCLUSAO_AGENDADA (Guard, D-18)
+    POST /api/me/deletion repetido: 409 EXCLUSAO_AGENDADA
     exportar e cancelar continuam liberados
   end note
-  note right of ANONYMIZED
+  note right of ANO
     MySQL: nome, username, e-mail, telefone, foto, bio, cargo anonimizados · senha invalidada
-    S3: apaga restricted/ da pessoa (documentos, exportações) e avatar
-    Cassandra e OpenSearch: projeções por pessoa removidas · sessões revogadas
+    S3: apaga restricted/ da pessoa e avatar
+    Cassandra e OpenSearch: projeções removidas · sessões revogadas (blocksLogin)
     Ficam: policy_acceptances, consent_events, atas, decisões validadas,
     DecisionTrace, chancelas emitidas, ledger (guarda legal, art. 16)
   end note
 ```
 
-Endpoints propostos da aba Seus dados: `GET /api/me/data-map` · `POST|GET /api/me/exports` ·
-`GET /api/me/exports/{id}/download` · `POST|GET /api/me/requests` (DataSubjectRequest) · `POST|DELETE /api/me/deletion`
-· `GET /api/me/policies` · `GET|PUT /api/me/consents/{purpose}`. Jobs agendados: `AccountAnonymizationJob` (diário),
-`ExportExpiryJob` (horário), ambos com `@Scheduled`, lock e teste de agendamento.
-
-
+Endpoints propostos da aba Seus dados: `GET /api/me/data-map` · `POST|GET /api/me/exports` · `GET /api/me/exports/{id}/download` · `POST|GET /api/me/requests` · `GET /api/me/policies` · `GET|PUT /api/me/consents/{purpose}`. Já existentes: `POST|DELETE /api/me/deletion`. Jobs agendados (planejado): `AccountAnonymizationJob` (diário), `ExportExpiryJob` (horário), ambos com `@Scheduled`, lock e teste de agendamento.
 
 Tela/aba: `/settings` (esqueleto em `app/(shell)/settings/page.tsx`)

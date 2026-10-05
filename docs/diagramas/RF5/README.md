@@ -1,211 +1,201 @@
 # RF5 — Utilizar o criador de projetos, escolhendo em cada fase do projeto as unidades de tarefa, em modo manual ou com IA
-**HU:** HU5 · **Sprint (board Work Station):** lista *Requisitos Funcionais* (sem sprint atribuída) · **Equivalente FAI:** RF5 Criar esquema (aba "Criar Look": slots por tipo com uma peça de cada, selects alimentados pelo Closet, modo Manual / Com IA, título, ocasião, estilo, orientação livre, foto opcional, capa = composição das peças, selos vindos das peças, pré-visualização do card, cadastrar nova peça inline, mínimo de 2 peças) · **Aba/rota:** Criar Projeto (`/projects/new`)
-**Critérios de aceite cobertos:** RF21.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 — **corpo do card = antigo RF21** (o card RF5 traz os CAs escritos como RF21.CA01–14; são citados aqui como estão no board, ver `RENUMERACAO.md`)
+**HU:** HU5 · **Sprint (board Work Station):** lista *Requisitos Funcionais* sem sprint atribuída (o card "SPRINT 1" cita "RF5 Iniciar sessão", escopo antigo — `RENUMERACAO.md`; fase (e) da ARQUITETURA §6) · **Equivalente FAI:** RF5 Criar esquema (aba "Criar Look": slots por tipo com uma peça de cada, selects alimentados pelo Closet, modo Manual / Com IA, título, ocasião, estilo, orientação livre, foto opcional, capa = composição das peças, selos vindos das peças, pré-visualização do card, cadastrar nova peça inline, mínimo de 2 peças) · **Aba/rota:** Criar Projeto (`/projects/new`; folha "+ Criar"); API `POST /api/projects`, `PUT /api/projects/draft`, `GET /api/me/tasks?phase=&q=` (selects), `POST /api/projects/compose-ai`, `POST /api/projects/from-model/{id}`, `POST /api/projects/{id}/publish`, `POST /api/projects/{id}/decia-session` (RF29)
+**Critérios de aceite cobertos:** RF21.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 — **corpo do card = antigo RF21** (o card RF5 traz os CAs escritos como RF21.CA01–14 e são citados como estão no board; ver `RENUMERACAO.md`). Todas as classes do RF são **(planejado)**; transversais reais do Bloco 1–3: `SecurityConfig`, `SessionActiveFilter`, `Guard`, `CorrelationIdFilter`, `AuditLogPort`, `RedisAdaptersConfig`, `AiProvidersConfig`.
 
 > **HU5** — COMO usuário logado dentro do sistema WS POSSO acessar a aba criar novo projeto PARA criar um esquema de projeto único e personalizado conforme as diretrizes de minha equipe de trabalho.
 
-O **Esquema de Projeto** (`ProjectScheme`, = look) é a composição ordenada de tarefas (`TaskItem`, = peças) em **7 fases** (`ProjectPhase`: DEMANDA · PLANEJAMENTO · ELABORAÇÃO · ANÁLISE · APROVAÇÃO · EXECUÇÃO · ENCERRAMENTO). Cada fase tem um **select múltiplo pesquisável** cujo conteúdo são as **unidades de tarefa do Acervo** do usuário (RF6/RF41) **compatíveis com a fase** (mapa `PHASE_BY_CATEGORY`, equivalente ao `SLOT_BY_CATEGORY` do FAI). Cada tarefa selecionada vira um `ProjectTask` (fase, ordem, responsável, prazo) e as dependências viram `ProjectTaskDependency` (sem ciclos). O compositor funciona em modo **Manual** ou **Com IA** (AiEngine `COMPOR_PROJETO` devolve 3 propostas usando só tarefas do Acervo), aceita "Criar a partir de modelo" (Kit / modelo chancelado, com `Remix` e crédito), abre o criador de tarefas (RF4, corpo RF20) em modal e mantém **autosave** do rascunho em `ProjectScheme.autosaveDraftJson`.
-
-| Categoria (`TaskCategory`) | Fase(s) compatível(is) — `PHASE_BY_CATEGORY` |
-|---|---|
-| OFICIO_MEMORANDO, PROTOCOLO (tipo) | DEMANDA |
-| ETP, TERMO_REFERENCIA, CRONOGRAMA | PLANEJAMENTO |
-| PROJETO_BASICO_EXECUTIVO, PLANILHA_ORCAMENTARIA, PARECER_TECNICO, MAPA_GEORREFERENCIA | ELABORAÇÃO · ANÁLISE |
-| ATA, PORTARIA_RESOLUCAO, LICENCA_ANUENCIA | APROVAÇÃO |
-| CONTRATO_CONVENIO, VISTORIA_RELATORIO_FOTOGRAFICO | EXECUÇÃO |
-| Relatório final (DOCUMENTO em ENCERRAMENTO) | ENCERRAMENTO |
-| OUTRO, FORMULARIO | qualquer fase |
+O **Esquema de Projeto** (`ProjectScheme`, TAXONOMIA §3.1) é a composição ordenada de tarefas (`ProjectTask`) por **7 fases** (`ProjectPhase`: DEMANDA · PLANEJAMENTO · ELABORAÇÃO · ANÁLISE · APROVAÇÃO · EXECUÇÃO · ENCERRAMENTO). Os selects de cada fase listam **somente as unidades de tarefa do Acervo do usuário** (RF6/RF41) compatíveis com a fase (mapa categoria → fase, `PhaseCompatibility`, como `SLOT_BY_CATEGORY` do FAI): Ofício/Protocolo → DEMANDA; ETP/TR/Cronograma → PLANEJAMENTO; Projeto básico/Planilha/Parecer → ELABORAÇÃO/ANÁLISE; Ata/Portaria → APROVAÇÃO; Contrato/Vistoria → EXECUÇÃO; Relatório final → ENCERRAMENTO; OUTRO em qualquer fase. Layout: **Acervo filtrável** (esquerda) · **slots por fase** (centro, `SelectList` + arrastar) · **Ficha do projeto** (direita: título, emoji, objetivo, processo ≤ 2, natureza ≤ 2, departamento, exercício, programa RF25, eixo RF24, prioridade, visibilidade herdada do perfil RF3, **Manual / Com IA**, orientação livre, foto, chancelas vindas das tarefas RF39, pré-visualização com capa-mosaico e `PhaseBar` RF38).
 
 ## 1. Diagrama de classes
 
 ```mermaid
 classDiagram
-direction LR
+  direction LR
 
-namespace ws_domain_projetos {
+  class ProjectController {
+    <<controller>>
+    +create(CreateProjectRequest, CurrentUser, ctx) ProjectView
+    +saveDraft(DraftRequest, CurrentUser) void
+    +loadDraft(CurrentUser) DraftView
+    +composeWithAi(ComposeRequest, CurrentUser, ctx) List~ProjectProposal~
+    +fromModel(modelId, CurrentUser, ctx) DraftView
+    +publish(id, CurrentUser, ctx) ProjectView
+    +openDeciaSession(id, CurrentUser, ctx) SessionView
+  }
+  class AcervoController {
+    <<controller>>
+    +listMine(phase, q, filters, CurrentUser) Page~TaskOption~
+  }
+  class ProjectCompositionService {
+    <<service>>
+    +create(CreateProjectCommand, CurrentUser, ctx) ProjectScheme
+    +validateMinimum(slots) void
+    +resolveDefaults(ProjectTask) void
+    +applySealsFromTasks(ProjectScheme) void
+    +publish(id, CurrentUser, ctx) ProjectScheme
+  }
+  class PhaseCompatibility {
+    <<service>>
+    +phasesFor(TaskCategory) Set~ProjectPhase~
+    +optionsFor(ownerId, phase, q) List~TaskOption~
+  }
+  class DependencyGraph {
+    <<service>>
+    +addDependency(pred, succ, type, lag) void
+    +assertNoCycle() void
+    +assertDatesConsistent() void
+    +criticalPath() List~UUID~
+  }
+  class ProjectAutopilotService {
+    <<service>>
+    +compose(ComposeCommand) List~ProjectProposal~
+  }
+  class DraftService {
+    <<service>>
+    +save(ownerId, DraftJson) void
+    +load(ownerId) Optional~DraftJson~
+    +clear(ownerId) void
+  }
+  class ModelImportService {
+    <<service>>
+    +fromModel(modelId, CurrentUser) DraftJson
+  }
+  class DeciaBridgeService {
+    <<service>>
+    +openSessionFromProject(projectId, CurrentUser) DeciaSession
+  }
+  class MosaicService {
+    <<service>>
+    +buildMosaic(ProjectScheme) JSON
+  }
+  class TaskStateMachine {
+    <<service>>
+    +transition(TaskItem, TaskState, actor, reason) TaskStateLog
+  }
+  class AiEngine {
+    <<service>>
+    +run(AiRequest) AiResponse
+    capability COMPOR_PROJETO
+  }
+  class ProjectRepositoryPort {
+    <<port>>
+    +save(ProjectScheme) ProjectScheme
+  }
+  class TaskRepositoryPort {
+    <<port>>
+    +findMine(ownerId, filters) Page
+    +findSharedWithMe(userId) List
+  }
+  class DraftStorePort {
+    <<port>>
+    +put(key, json, ttl) void
+    +get(key) Optional
+  }
+  class MuralPort {
+    <<port>>
+    +publish(MuralEntry) void
+  }
+
   class ProjectScheme {
     <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +companyId: UUID
-    +departmentId: UUID
-    +title: String
-    +emoji: String
-    +iconId: String
-    +objective: String 1 frase
-    +descriptionMd: String
-    +processTags: Set~ProcessTag~ max 2
-    +natureTags: Set~NatureTag~ max 2
-    +creationMode: CreationMode
-    +origin: SchemeOrigin
-    +originalProjectId: UUID
-    +sourceSessionId: UUID
-    +aiOrientation: String
-    +status: ProjectStatus
-    +currentPhase: ProjectPhase
-    +priority: Priority
-    +visibility: Visibility herdada do perfil
-    +exerciseYear: int
-    +programGroupingId: UUID
-    +planAxisId: UUID
-    +coverMode: CoverMode
-    +coverUrl: String
-    +mosaicJson: JSON
-    +criticalPathJson: JSON
-    +nextMilestoneAt: LocalDate
-    +aiGenerated: boolean
-    +aiInferenceId: UUID
-    +sealIdsJson: JSON
-    +autosaveDraftJson: JSON
-    +version: long
-    .. +12 campos ..
+    +UUID id
+    +UUID ownerId
+    +UUID companyId
+    +UUID departmentId
+    +String title
+    +String emoji
+    +String objective
+    +Set~ProcessTag~ processTags
+    +Set~NatureTag~ natureTags
+    +CreationMode creationMode
+    +SchemeOrigin origin
+    +UUID originalProjectId
+    +UUID sourceSessionId
+    +String aiOrientation
+    +ProjectStatus status
+    +ProjectPhase currentPhase
+    +Priority priority
+    +Visibility visibility
+    +int exerciseYear
+    +UUID programGroupingId
+    +UUID planAxisId
+    +CoverMode coverMode
+    +String coverUrl
+    +JSON mosaicJson
+    +JSON criticalPathJson
+    +boolean aiGenerated
+    +UUID aiInferenceId
+    +JSON sealIdsJson
+    +JSON autosaveDraftJson
+    +long version
   }
   class ProjectTask {
     <<entity>>
-    +id: UUID
-    +projectId: UUID
-    +taskId: UUID
-    +phase: ProjectPhase
-    +sortOrder: int
-    +responsibleId: UUID padrão dono da tarefa
-    +dueAt: LocalDate padrão prazo da tarefa
-    +startAt: LocalDate
-    +estimatedHours: BigDecimal
-    +pertOptimistic: BigDecimal
-    +pertMostLikely: BigDecimal
-    +pertPessimistic: BigDecimal
-    +isCritical: boolean
-    +slackDays: int
-    +moscow: String MUST SHOULD COULD WONT
-    +snapshotJson: JSON
+    +UUID id
+    +UUID projectId
+    +UUID taskId
+    +ProjectPhase phase
+    +int sortOrder
+    +UUID responsibleId
+    +LocalDate dueAt
+    +LocalDate startAt
+    +BigDecimal estimatedHours
+    +boolean isCritical
+    +int slackDays
+    +JSON snapshotJson
   }
   class ProjectTaskDependency {
     <<entity>>
-    +id: UUID
-    +projectId: UUID
-    +predecessorProjectTaskId: UUID
-    +successorProjectTaskId: UUID
-    +type: String FS SS FF SF
-    +lagDays: int
+    +UUID projectId
+    +UUID predecessorProjectTaskId
+    +UUID successorProjectTaskId
+    +String type
+    +int lagDays
+  }
+  class TaskItem {
+    <<entity>>
+    +UUID id
+    +UUID ownerId
+    +String title
+    +TaskType type
+    +TaskCategory category
+    +TaskState state
+    +Visibility visibility
+    +LocalDate dueAt
+    +UUID responsibleId
+    +String thumbnailUrl
+    +JSON sealIdsJson
+    +int projectUsageCount
+  }
+  class SealBond {
+    <<entity>>
+    +UUID sealId
+    +String targetType
+    +UUID targetId
+    +SealBondStatus status
   }
   class ProcessKit {
     <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +name: String
-    +processTag: ProcessTag
-    +sealIdsJson: JSON
-    +remixCount: int
+    +String name
+    +ProcessTag processTag
   }
   class KitItem {
     <<entity>>
-    +id: UUID
-    +kitId: UUID
-    +taskId: UUID
-    +phase: ProjectPhase
-    +sortOrder: int
-    +optional: boolean
-  }
-}
-
-namespace ws_domain_acervo {
-  class TaskItem {
-    <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +title: String
-    +type: TaskType
-    +category: TaskCategory
-    +state: TaskState
-    +visibility: Visibility
-    +dueAt: LocalDate
-    +thumbnailUrl: String
-    +sealIdsJson: JSON
-    +originalTaskId: UUID
-    +blockReason: String
-    +projectUsageCount: int
-    .. +45 campos ..
-  }
-  class TaskStateLog {
-    <<entity>>
-    +id: UUID
-    +taskId: UUID
-    +fromState: TaskState
-    +toState: TaskState
-    +actorId: UUID
-    +reason: String
-    +projectId: UUID
-    +correlationId: String
-    +at: Instant
-  }
-}
-
-namespace ws_domain_outros {
-  class SealBond {
-    <<entity>>
-    +id: UUID
-    +sealId: UUID
-    +targetType: String TASK ou PROJECT
-    +targetId: UUID
-    +basis: SealBondBasis
-    +status: SealBondStatus
-    +confidence: BigDecimal
-  }
-  class PlanAxis {
-    <<entity>>
-    +id: UUID
-    +planId: UUID
-    +position: int 1 a 6
-    +name: String
-  }
-  class Grouping {
-    <<entity>>
-    +id: UUID
-    +type: GroupingType PROGRAMA
-    +label: String
-  }
-  class Remix {
-    <<entity>>
-    +id: UUID
-    +actorId: UUID
-    +sourceType: String
-    +sourceId: UUID
-    +resultType: String
-    +resultId: UUID
-    +modelOfferId: UUID
-  }
-  class MuralEntry {
-    <<entity>>
-    +id: UUID
-    +kind: String PROJETO_PUBLICADO
-    +targetType: TargetType PROJECT
-    +targetId: UUID
+    +UUID taskId
+    +ProjectPhase phase
+    +boolean optional
   }
   class DeciaSession {
     <<entity>>
-    +id: UUID
-    +topic: String = objective
-    +linkedProjectId: UUID
-    +status: SessionStatus
+    +String topic
+    +UUID linkedProjectId
+    +SessionStatus status
   }
   class AiInferenceLog {
     <<entity>>
-    +id: UUID
-    +capability: AiCapability COMPOR_PROJETO
-    +result: InferenceResult
-  }
-}
-
-namespace ws_domain_enums {
-  class ProjectPhase {
-    <<enum>>
-    DEMANDA
-    PLANEJAMENTO
-    ELABORACAO
-    ANALISE
-    APROVACAO
-    EXECUCAO
-    ENCERRAMENTO
+    +AiCapability capability
+    +String hostRf
+    +InferenceResult result
   }
   class ProjectStatus {
     <<enum>>
@@ -218,10 +208,15 @@ namespace ws_domain_enums {
     ARQUIVADO
     DEVOLVIDO
   }
-  class CreationMode {
+  class ProjectPhase {
     <<enum>>
-    MANUAL
-    COM_IA
+    DEMANDA
+    PLANEJAMENTO
+    ELABORACAO
+    ANALISE
+    APROVACAO
+    EXECUCAO
+    ENCERRAMENTO
   }
   class SchemeOrigin {
     <<enum>>
@@ -234,245 +229,121 @@ namespace ws_domain_enums {
     DOSSIE
     ATA_VIVA
   }
-  class TaskState {
+  class CreationMode {
     <<enum>>
-    RASCUNHO
-    DISPONIVEL
-    EM_USO
-    BLOQUEADA
-    CONCLUIDA
-    ARQUIVADA
-    MODELO_PUBLICO
-    OFERECIDA
+    MANUAL
+    COM_IA
   }
-}
 
-namespace ws_application {
-  class ProjectComposerService {
-    <<service>>
-    +openComposer(userId) ComposerState
-    +autosave(userId, draftId, DraftJson) ProjectScheme
-    +listPhaseOptions(userId, phase, query) List~TaskOption~
-    +compose(userId, ProjectForm) ProjectScheme
-    +composeWithAi(userId, processTags, natureTags, orientation) List~Proposal~
-    +fromModel(userId, modelId ou kitId) ComposerState
-    +validateMinimum(selections) 422 FASES_MINIMAS
-    +validateDependencies(deps, dueDates) 422 DEPENDENCIA_CICLICA ou PRAZO_ANTERIOR_PREDECESSORA
-    +criticalPath(tasks, deps) List~UUID~
-    +publish(projectId) ProjectScheme
-    +openDeciaSession(projectId) DeciaSession
-  }
-  class AcervoService {
-    <<service>>
-    +countAvailable(userId) int
-    +listCompatible(userId, phase, filters) List~TaskItem~
-    +markInUse(taskIds, projectId, correlationId)
-  }
-  class TaskCreatorService {
-    <<service>>
-    +save(userId, TaskForm) TaskItem
-  }
-  class SealService {
-    <<service>>
-    +inheritFromTasks(taskIds) List~SealBond~
-    +suggestForProject(projectId, issuerIds) List~SealBond~
-  }
-  class MuralService {
-    <<service>>
-    +publishProject(projectId) MuralEntry
-  }
-  class DeciaSessionService {
-    <<service>>
-    +openFromProject(projectId) DeciaSession
-  }
-  class AiEngine {
-    <<service>>
-    +infer(capability, input, mode) AiResult
-  }
-  class MediaStoragePort {
-    <<port>>
-    +put(stream) MediaObject
-    +studio(mediaId, ops) MediaObject
-  }
-  class SearchIndexPort {
-    <<port>>
-    +indexProject(ProjectScheme)
-  }
-}
-
-namespace ws_web {
-  class ProjectController {
-    <<controller>>
-    +GET_api_projects_composer()
-    +PUT_api_projects_drafts_id(DraftJson)
-    +GET_api_acervo_tasks(phase, q, filters)
-    +POST_api_projects_ai_compose(body)
-    +POST_api_projects(ProjectForm)
-    +POST_api_projects_from_model(modelId)
-    +POST_api_projects_id_publish()
-    +POST_api_projects_id_decia_session()
-  }
-}
-
-namespace ws_infrastructure {
-  class ClaudeGeminiAdapter {
-    <<adapter>>
-  }
-  class S3StorageAdapter {
-    <<adapter>>
-  }
-  class OpenSearchIndexAdapter {
-    <<adapter>>
-  }
-}
-
-ProjectScheme "1" --> "*" ProjectTask : tarefas por fase
-ProjectScheme "1" --> "*" ProjectTaskDependency : grafo sem ciclos
-ProjectScheme "*" --> "0..1" PlanAxis : planAxisId
-ProjectScheme "*" --> "0..1" Grouping : programGroupingId
-ProjectScheme "*" --> "0..1" ProjectScheme : originalProjectId remix ou modelo
-ProjectScheme "1" --> "*" SealBond : targetId quando PROJECT
-ProjectScheme "1" --> "0..1" MuralEntry : publicação
-ProjectScheme "1" --> "0..1" DeciaSession : linkedProjectId
-ProjectScheme "*" --> "0..1" AiInferenceLog : aiInferenceId
-ProjectTask "*" --> "0..1" TaskItem : taskId
-ProjectTaskDependency "*" --> "1" ProjectTask : predecessor
-ProjectTaskDependency "*" --> "1" ProjectTask : successor
-ProcessKit "1" --> "*" KitItem
-KitItem "*" --> "1" TaskItem
-TaskItem "1" --> "*" TaskStateLog : DISPONIVEL para EM_USO
-TaskItem "1" --> "*" SealBond : chancela vem da tarefa
-Remix "*" --> "1" ProjectScheme : resultId
-ProjectScheme --> ProjectStatus
-ProjectScheme --> ProjectPhase : currentPhase
-ProjectScheme --> CreationMode
-ProjectScheme --> SchemeOrigin
-ProjectTask --> ProjectPhase
-TaskItem --> TaskState
-
-ProjectController ..> ProjectComposerService
-ProjectController ..> AcervoService
-ProjectController ..> TaskCreatorService : modal Cadastrar nova tarefa RF4
-ProjectComposerService ..> AcervoService
-ProjectComposerService ..> SealService
-ProjectComposerService ..> MuralService
-ProjectComposerService ..> DeciaSessionService
-ProjectComposerService ..> AiEngine : COMPOR_PROJETO 3 propostas
-ProjectComposerService ..> MediaStoragePort : foto do projeto
-ProjectComposerService ..> SearchIndexPort
-ClaudeGeminiAdapter ..> AiEngine
-S3StorageAdapter ..|> MediaStoragePort
-OpenSearchIndexAdapter ..|> SearchIndexPort
-
-note for ProjectScheme "tabela project_schemes · mínimo 1 tarefa em DEMANDA + 1 em outra fase (CA04, CA05) · autosaveDraftJson sem ProjectTask persistido não gera EM_USO (CA14) · creationMode MANUAL ou COM_IA"
-note for ProjectTask "tabela project_tasks · responsibleId padrão = dono da tarefa, dueAt padrão = prazo da tarefa (CA04)"
-note for ProjectTaskDependency "tabela project_task_dependencies · ciclo ou prazo anterior à predecessora = 422 (CA08)"
-note for AcervoService "listCompatible filtra por PHASE_BY_CATEGORY e devolve BLOQUEADA/ARQUIVADA desabilitadas com motivo (CA03)"
+  ProjectController --> ProjectCompositionService
+  ProjectController --> ProjectAutopilotService
+  ProjectController --> DraftService
+  ProjectController --> ModelImportService
+  ProjectController --> DeciaBridgeService
+  AcervoController --> PhaseCompatibility
+  ProjectCompositionService --> PhaseCompatibility
+  ProjectCompositionService --> DependencyGraph
+  ProjectCompositionService --> MosaicService
+  ProjectCompositionService --> TaskStateMachine
+  ProjectCompositionService --> ProjectRepositoryPort
+  ProjectCompositionService --> MuralPort
+  PhaseCompatibility --> TaskRepositoryPort
+  ProjectAutopilotService --> AiEngine
+  ProjectAutopilotService --> TaskRepositoryPort
+  DraftService --> DraftStorePort
+  ProjectScheme "1" *-- "2..*" ProjectTask
+  ProjectScheme "1" *-- "0..*" ProjectTaskDependency
+  ProjectTask "0..*" --> "0..1" TaskItem : taskId (nulo se removida)
+  ProjectScheme "0..*" --> "0..1" ProjectScheme : originalProjectId (modelo/remix)
+  ProjectScheme "1" --> "0..1" DeciaSession : linkedProjectId (RF29)
+  ProjectScheme "0..*" --> "0..1" AiInferenceLog
+  TaskItem "1" --> "0..*" SealBond : chancela vem da tarefa
+  ProcessKit "1" *-- "1..*" KitItem
+  KitItem "0..*" --> "1" TaskItem
+  ProjectScheme --> ProjectStatus
+  ProjectScheme --> ProjectPhase
+  ProjectScheme --> SchemeOrigin
+  ProjectScheme --> CreationMode
+  ProjectTask --> ProjectPhase
+  note for ProjectScheme "+14 campos (descriptionMd, iconId, exerciseGroupingId, managementGroupingId, deskSkin, deskBackgroundJson, conformityPercent, hasBlockingPending, evmJson, nextMilestoneAt, lastDeciaEvent*, offeredInCounter, contadores sociais). ProjectTask: +12 (PERT O/M/P, EVM, moscow, canvas*, stickyColor, decisionTraceNodeId, removedByAuthor)."
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph LU["Usuário"]
-    U1["Abre /projects/new"]
-    U2["Escolhe modo: Manual, Com IA ou Criar a partir de modelo"]
-    U3["Abre o select de uma fase, pesquisa e seleciona unidades de tarefa; ou arrasta do Acervo"]
-    U4["Cadastrar nova tarefa dentro do select"]
-    U5["Define dependências A antes de B, prazos e responsáveis"]
-    U6["Preenche ficha: título, emoji, objetivo, processo, natureza, departamento, exercício, programa, eixo, prioridade, orientação para a IA, foto"]
-    U7["Salvar"]
-    U8["Sai sem salvar"]
-    U9["Publicar no Mural"]
-    U10["Abrir sessão DECIA sobre este projeto"]
-    U11["Escolhe 1 das 3 propostas e edita"]
+  subgraph ATOR["Empregado autenticado"]
+    A1["Abre /projects/new"]
+    A2["Preenche a ficha: título, objetivo, processo (≥1), natureza, departamento, exercício, programa, eixo, prioridade"]
+    A3["Modo Manual: escolhe tarefas nos selects de cada fase (ou arrasta do Acervo)"]
+    A4["Modo Com IA: confirma processo, natureza e orientação livre"]
+    A5["Define dependências (A antes de B) e prazos"]
+    A6["Salva · opcional: Publicar no Mural · Abrir sessão DECIA"]
+  end
+  subgraph FE["Next.js (App Router) · BFF"]
+    F1["GET /api/me/tasks?state=DISPONIVEL → conta tarefas"]
+    F2{"≥ 2 tarefas DISPONÍVEIS?"}
+    F3["EmptyState: orienta Criar Tarefa (RF4) com atalho"]
+    F4["Compositor: Acervo filtrável · 7 SelectList por fase · Ficha · PhaseBar + Mosaic (prévia)"]
+    F5["SelectList.onCreateNew → RF4 em modal → tarefa volta selecionada na fase"]
+    F6["Autosave a cada 10 s: PUT /api/projects/draft (Redis) · recupera ao reabrir"]
+    F7["POST /api/projects/compose-ai → 3 propostas (fases, dependências, justificativa ✦) → escolhe e edita"]
+    F8["POST /api/projects/from-model/{id} → selects pré-preenchidos com cópias/remixes"]
+    F9["POST /api/projects"]
+  end
+  subgraph WEB["ws-web"]
+    W1["JWT + SessionActiveFilter + Guard.requireCanCreate"]
+    W2["ProjectController · AcervoController"]
+    E422["422 VALIDACAO (título, ≥1 processo, mínimo 1 DEMANDA + 1 outra fase)"]
+    E422C["422 CICLO_DEPENDENCIA / PRAZO_ANTERIOR_PREDECESSORA"]
+    E403["403 ACESSO_NEGADO (tarefa de terceiro sem permissão de uso)"]
+    E409["409 COTA_ESGOTADA (IA)"]
+  end
+  subgraph APP["ws-application"]
+    S1["PhaseCompatibility.optionsFor: só tarefas do meu Acervo + compartilhadas com permissão · filtro categoria→fase · BLOQUEADA/ARQUIVADA desabilitadas com motivo"]
+    S2["ProjectCompositionService.validateMinimum: DEMANDA + outra fase · título · ≥1 processo"]
+    S3{"válido?"}
+    S4["DependencyGraph: assertNoCycle · assertDatesConsistent · criticalPath"]
+    S5{"grafo ok?"}
+    S6["resolveDefaults: responsável = dono da tarefa · prazo = prazo da tarefa · ordem por fase"]
+    S7["applySealsFromTasks: chancelas APROVADAS das tarefas → sealIdsJson · IA sugere tier PROJETO do mesmo emissor"]
+    S8["coverMode: FOTO (Estúdio endireitar/recortar) ou MOSAICO (MosaicService)"]
+    S9["save ProjectScheme RASCUNHO, origin CRIAR_PROJETO (ou AUTOPILOTO se integral da IA) · visibilidade herdada do perfil"]
+    S10["TaskStateMachine: tarefas selecionadas DISPONIVEL → EM_USO (TaskStateLog com projectId) · projectUsageCount++"]
+    S11["AuditLog PROJECT_CREATED · DraftService.clear"]
+    S12["publish: status PUBLICADO · MuralPort (RF27) · recebe interações (RF18/RF19)"]
+    S13["DeciaBridgeService: sessão tema = objetivo, participantes = responsáveis + chefe, tarefas anexadas · projeto EM_DECISAO (RF29)"]
+    IA1["ProjectAutopilotService: AiEngine COMPOR_PROJETO só com tarefas do Acervo, respeitando orientação (materiais, prazos, departamento) · AiInferenceLog"]
+    M1["ModelImportService: modelo público/chancelado ou Kit → cópias/remixes com crédito (RF26/RF40) · trocar cada uma pelo equivalente do Acervo"]
+  end
+  subgraph PERS["Persistência"]
+    P1[("MySQL: project_schemes, project_tasks, project_task_dependencies, tasks (state), task_state_log, seal_bonds, decia_sessions, audit_log, ai_inference_log")]
+    P2[("Redis: draft:project:{userId} TTL 7 d · AiQuota")]
+    P3[("S3: foto/capa do projeto · mosaico")]
+    P4[("OpenSearch ws-projects (ao publicar)")]
   end
 
-  subgraph LW["Web / BFF (Next.js App Router)"]
-    W1["Compositor: Acervo filtrável à esquerda, 7 selects de fase ao centro, ficha à direita"]
-    W2["Orientação: cadastre tarefas primeiro, atalho para /tasks/new"]
-    W3["Modal RF4 (criador de tarefas); ao salvar a tarefa volta já selecionada na fase"]
-    W4["Autosave a cada alteração: PUT /api/projects/drafts/{id}"]
-    W5["Pré-visualização do card: capa mosaico + barra de 7 fases + chancelas + caminho crítico"]
-    W6["Campos destacados com 422"]
-    W7["Recupera rascunho na próxima abertura"]
-  end
-
-  subgraph LA["ws-application"]
-    A1["AcervoService.countAvailable"]
-    A2{"≥ 2 tarefas DISPONIVEIS?"}
-    A3["AcervoService.listCompatible: só meu Acervo + compartilhadas com permissão, PHASE_BY_CATEGORY, thumbnail, tipo, categoria, estado, prazo; BLOQUEADA/ARQUIVADA desabilitadas com motivo"]
-    A4["ProjectComposerService.validateDependencies"]
-    A5{"Ciclo?"}
-    A6["422 DEPENDENCIA_CICLICA"]
-    A7{"Prazo do sucessor anterior ao da predecessora?"}
-    A8["422 PRAZO_ANTERIOR_PREDECESSORA"]
-    A9["criticalPath CPM → criticalPathJson"]
-    A10["SealService.inheritFromTasks: chancelas do projeto vêm das tarefas; sugere tier PROJETO do mesmo emissor"]
-    A11["ProjectComposerService.compose → validateMinimum"]
-    A12{"≥ 1 tarefa em DEMANDA e ≥ 1 em outra fase, título e ≥ 1 processo?"}
-    A13["422 FASES_MINIMAS: indica o mínimo exigido"]
-    A14{"Foto enviada?"}
-    A15["Capa = mosaico das tarefas, coverMode MOSAICO"]
-    A16["MediaStoragePort.studio endireitar/recortar, coverMode FOTO"]
-    A17["Persiste ProjectScheme origin CRIAR_PROJETO ou AUTOPILOTO, creationMode, ProjectTasks, dependências; visibilidade herdada do perfil"]
-    A18["AcervoService.markInUse: tarefas DISPONIVEL → EM_USO + TaskStateLog com projectId"]
-    A19["ProjectComposerService.fromModel: cópias/remixes das tarefas com Remix e crédito ao autor; cada uma trocável pelo equivalente do meu Acervo"]
-    A20["ProjectComposerService.autosave → autosaveDraftJson; sem ProjectTask persistido, sem EM_USO"]
-    A21["MuralService.publishProject → status PUBLICADO, MuralEntry, SearchIndexPort"]
-    A22["DeciaSessionService.openFromProject: tema = objetivo, participantes = responsáveis + chefe, tarefas anexadas; projeto → EM_DECISAO"]
-  end
-
-  subgraph LI["IA (AiEngine)"]
-    I1["COMPOR_PROJETO: 3 esquemas distintos só com tarefas do meu Acervo, respeitando orientação, materiais, prazos e departamento; fases, dependências e justificativa"]
-  end
-
-  subgraph LP["Persistência"]
-    P1[("MySQL: tasks do Acervo")]
-    P2[("MySQL: project_schemes autosaveDraftJson")]
-    P3[("MySQL: project_schemes, project_tasks, project_task_dependencies, task_state_log, seal_bonds, remixes")]
-    P4[("MySQL: ai_inference_log")]
-    P5[("S3: foto do projeto tratada")]
-    P6[("MySQL: mural_entries · OpenSearch: índice de projetos")]
-    P7[("MySQL: decia_sessions, session_participants, message_attachments")]
-  end
-
-  U1 --> A1 --> P1
-  A1 --> A2
-  A2 -->|"não"| W2
-  A2 -->|"sim"| W1 --> U2
-  U2 -->|"Manual"| U3
-  U2 -->|"Com IA"| I1
-  U2 -->|"Modelo ou Kit"| A19 --> U3
-  I1 --> P4
-  I1 --> U11 --> U3
-  U3 --> A3 --> P1
-  A3 --> U5
-  U3 --> U4 --> W3 --> U3
-  U5 --> A4 --> A5
-  A5 -->|"sim"| A6 --> W6
-  A5 -->|"não"| A7
-  A7 -->|"sim"| A8 --> W6
-  A7 -->|"não"| A9 --> A10 --> W5
-  W5 --> U6
-  U3 --> W4 --> A20 --> P2
-  U6 --> W4
-  U6 --> U7 --> A11 --> A12
-  A12 -->|"não"| A13 --> W6 --> U3
-  A12 -->|"sim"| A14
-  A14 -->|"não"| A15 --> A17
-  A14 -->|"sim"| A16 --> P5 --> A17
-  A17 --> P3
-  A17 --> A18 --> P3
-  A17 --> U9 --> A21 --> P6
-  A17 --> U10 --> A22 --> P7
-  U8 --> W4
-  U8 -.-> W7
-
-  classDef err fill:#ffe3e3,stroke:#c0392b,color:#5a1a12
-  classDef warn fill:#fff4d6,stroke:#b7791f,color:#5a3b06
-  class A6,A8,A13 err
-  class W2 warn
+  A1 --> F1 --> F2
+  F2 -->|"não"| F3
+  F2 -->|"sim"| F4 --> A2
+  F4 --> S1
+  A2 --> A3 --> F5
+  A2 --> A4 --> F7 --> IA1 --> P2
+  IA1 -->|"sem cota"| E409
+  F4 --> F6 --> P2
+  F4 --> F8 --> M1
+  A3 --> A5 --> A6 --> F9 --> W1 --> W2 --> S2 --> S3
+  W1 -->|"tarefa alheia"| E403
+  S3 -->|"não"| E422
+  S3 -->|"sim"| S4 --> S5
+  S5 -->|"não"| E422C
+  S5 -->|"sim"| S6 --> S7 --> S8 --> S9 --> S10 --> S11
+  S8 --> P3
+  S9 --> P1
+  S10 --> P1
+  S11 --> P2
+  A6 -->|"Publicar"| S12 --> P4
+  A6 -->|"Abrir sessão DECIA"| S13 --> P1
 ```
 
 ## 3. Diagrama de sequência
@@ -481,163 +352,139 @@ flowchart TD
 sequenceDiagram
   autonumber
   actor U as Usuário
-  participant NX as Next.js (App Router)
+  participant N as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
   participant AI as AiEngine
-  participant DB as Repository/MySQL
+  participant R as Repository/MySQL
+  participant RD as Redis
   participant OS as OpenSearch
-  participant DE as DomainEvents (AFTER_COMMIT)
+  participant EV as DomainEvents (AFTER_COMMIT)
 
-  U->>NX: abre /projects/new
-  NX->>C: GET /api/projects/composer
-  C->>S: ProjectComposerService.openComposer(userId)
-  S->>DB: COUNT tasks WHERE ownerId AND state = DISPONIVEL
-  alt menos de 2 tarefas DISPONIVEIS
-    S-->>C: 200 {composerEnabled: false, hint: CADASTRE_TAREFAS, shortcut: /tasks/new}
-    C-->>NX: 200
-    NX-->>U: orientação com atalho para o criador de tarefas RF4 (CA02)
-  else 2 ou mais
-    S->>DB: SELECT project_schemes WHERE ownerId AND autosaveDraftJson IS NOT NULL
-    S-->>C: 200 {composerEnabled: true, draft recuperado ou vazio}
-    C-->>NX: 200
-    NX-->>U: Acervo à esquerda, 7 selects vazios ou com o rascunho, ficha à direita (CA01, CA14)
+  U->>N: abre /projects/new
+  N->>C: GET /api/me/tasks?state=DISPONIVEL&size=1
+  C->>S: PhaseCompatibility.optionsFor(ownerId)
+  S->>R: count tasks DISPONIVEL do dono
+  alt menos de 2 tarefas
+    S-->>C: total < 2
+    C-->>N: 200 {total}
+    N-->>U: EmptyState com atalho para Criar Tarefa (RF4)
+  else compositor
+    C-->>N: 200 opções
+    N-->>U: Acervo filtrável · 7 selects vazios · ficha
   end
 
-  U->>NX: abre o select da fase PLANEJAMENTO e digita "ETP"
-  NX->>C: GET /api/acervo/tasks?phase=PLANEJAMENTO&q=ETP
-  C->>S: AcervoService.listCompatible(userId, PLANEJAMENTO, q)
-  S->>DB: tasks WHERE ownerId OR sharedWith AND category IN PHASE_BY_CATEGORY[PLANEJAMENTO] AND title LIKE
-  DB-->>S: lista com thumbnail, tipo, categoria, estado, prazo
-  S-->>C: 200 opções — BLOQUEADA/ARQUIVADA com disabled = true e disabledReason (CA03)
-  C-->>NX: 200
+  U->>N: abre o select da fase PLANEJAMENTO
+  N->>C: GET /api/me/tasks?phase=PLANEJAMENTO&q=
+  C->>S: PhaseCompatibility.optionsFor(ownerId, phase, q)
+  S->>R: tasks do dono + compartilhadas com permissão, categoria compatível
+  S-->>C: TaskOption {thumb, tipo, categoria, estado, prazo, disabledReason}
+  C-->>N: 200 (BLOQUEADA/ARQUIVADA desabilitadas com motivo)
 
-  U->>NX: Cadastrar nova tarefa dentro do select (CA07)
-  NX->>C: POST /api/tasks (modal RF4)
-  C->>S: TaskCreatorService.save(userId, form)
-  S->>DB: INSERT tasks (state DISPONIVEL)
-  S-->>C: 201 TaskItem
-  C-->>NX: 201
-  NX-->>U: tarefa já selecionada na fase PLANEJAMENTO
-
-  loop a cada alteração no compositor
-    NX->>C: PUT /api/projects/drafts/{draftId} {selections, deps, sheet}
-    C->>S: ProjectComposerService.autosave
-    S->>DB: UPSERT project_schemes SET autosaveDraftJson, status RASCUNHO (sem project_tasks, sem EM_USO)
-    S-->>C: 204
+  loop a cada 10 s ou ao sair do campo
+    N->>C: PUT /api/projects/draft {slots, ficha}
+    C->>S: DraftService.save
+    S->>RD: SET draft:project:{userId} TTL 7 d
   end
 
-  opt modo Com IA (CA06)
-    U->>NX: confirma processo LICITACAO, natureza TECNICA e orientação "pavimentação com FINISA, 90 dias"
-    NX->>C: POST /api/projects/ai-compose {processTags, natureTags, orientation}
-    C->>S: ProjectComposerService.composeWithAi
-    S->>DB: tasks DISPONIVEIS do Acervo do usuário
-    S->>AI: infer(COMPOR_PROJETO, {acervo, orientação, departamento}, mode)
-    AI-->>S: 3 propostas {fases preenchidas, dependências, justificativa}
-    S->>DB: INSERT ai_inference_log (capability COMPOR_PROJETO)
-    S-->>C: 200 propostas
-    C-->>NX: 200
-    NX-->>U: escolhe 1 e edita (origem AUTOPILOTO se integralmente da IA)
+  opt modo Com IA
+    U->>N: confirma processo, natureza, orientação
+    N->>C: POST /api/projects/compose-ai
+    C->>S: ProjectAutopilotService.compose
+    S->>R: tarefas do Acervo (DISPONIVEL)
+    S->>AI: run(COMPOR_PROJETO, hostRf RF5, orientação, lista de tarefas)
+    AI->>RD: AiQuota.tryConsume
+    alt cota esgotada
+      AI-->>S: 409 COTA_ESGOTADA
+      S-->>C: 409 (link para a Loja)
+      C-->>N: 409
+    else ok
+      AI->>R: insert ai_inference_log
+      AI-->>S: 3 propostas (fases, dependências, justificativa)
+      S-->>C: List ProjectProposal
+      C-->>N: 200 (escolhe, edita, continua)
+    end
   end
 
-  U->>NX: define A antes de B e prazo de B anterior ao de A
-  NX->>C: POST /api/projects/validate-dependencies {deps, dueDates}
-  C->>S: ProjectComposerService.validateDependencies
-  alt ciclo ou prazo inválido (CA08)
-    S-->>C: 422 DEPENDENCIA_CICLICA ou 422 PRAZO_ANTERIOR_PREDECESSORA {details, correlationId}
-    C-->>NX: 422
-    NX-->>U: aresta destacada com o motivo
-  else válido
-    S->>S: criticalPath CPM
-    S-->>C: 200 {criticalPath: [ids]}
-    C-->>NX: 200
-    NX-->>U: caminho crítico na pré-visualização e chancelas das tarefas em "Chancelas do projeto" (CA09)
+  U->>N: define dependências e prazos, salva
+  N->>C: POST /api/projects {ficha, slots, dependencies, coverMode, foto}
+  C->>S: ProjectCompositionService.create(cmd, currentUser, ctx)
+  S->>S: validateMinimum (DEMANDA + outra fase, título, ≥1 processo)
+  alt só DEMANDA ou nenhuma tarefa
+    S-->>C: 422 VALIDACAO details.slots "mínimo 1 em DEMANDA + 1 em outra fase"
+    C-->>N: 422
+  else ciclo ou prazo anterior à predecessora
+    S->>S: DependencyGraph.assertNoCycle / assertDatesConsistent
+    S-->>C: 422 CICLO_DEPENDENCIA ou PRAZO_ANTERIOR_PREDECESSORA
+    C-->>N: 422
+  else tarefa de terceiro sem permissão
+    S-->>C: 403 ACESSO_NEGADO
+    C-->>N: 403
+  else ok
+    S->>S: resolveDefaults (responsável = dono da tarefa, prazo = prazo da tarefa) · criticalPath
+    S->>S: applySealsFromTasks (chancela vem da tarefa, RF39) · MosaicService (sem foto)
+    S->>R: insert project_schemes (RASCUNHO, origin CRIAR_PROJETO ou AUTOPILOTO, visibility herdada)
+    S->>R: insert project_tasks + project_task_dependencies
+    S->>R: TaskStateMachine DISPONIVEL → EM_USO + task_state_log(projectId)
+    S->>R: insert audit_log PROJECT_CREATED
+    S-->>C: ProjectView
+    C-->>N: 201 ProjectView
+    EV->>RD: DEL draft:project:{userId}
+    EV->>OS: index ws-projects (se não PRIVADA)
+    N-->>U: ProjectCard com capa-mosaico e PhaseBar
   end
 
-  U->>NX: Salvar
-  NX->>C: POST /api/projects {ProjectForm}
-  C->>S: ProjectComposerService.compose(userId, form)
-  S->>S: validateMinimum: 1 em DEMANDA + 1 em outra fase, título, ≥1 processo
-  alt sem tarefa ou só DEMANDA (CA05)
-    S-->>C: 422 FASES_MINIMAS {details: [{field: phases, code: MINIMO_DEMANDA_MAIS_UMA}]}
-    C-->>NX: 422
-    NX-->>U: indica o mínimo exigido
-  else válido (CA04)
-    S->>DB: UPDATE project_schemes SET title, objective, origin CRIAR_PROJETO, creationMode, visibility herdada do perfil, autosaveDraftJson NULL
-    S->>DB: INSERT project_tasks (phase, sortOrder, responsibleId = dono da tarefa, dueAt = prazo da tarefa)
-    S->>DB: INSERT project_task_dependencies
-    S->>DB: UPDATE tasks SET state EM_USO WHERE id IN selecionadas
-    S->>DB: INSERT task_state_log (DISPONIVEL → EM_USO, projectId, correlationId)
-    S->>DB: UPDATE project_schemes SET coverMode MOSAICO, mosaicJson (sem foto, CA10)
-    S->>DE: publish ProjectCreated
-    S-->>C: 201 ProjectScheme
-    C-->>NX: 201
-    NX-->>U: card do projeto com capa mosaico e barra de fases
+  opt abrir sessão DECIA (RF29)
+    U->>N: "Abrir sessão DECIA sobre este projeto"
+    N->>C: POST /api/projects/{id}/decia-session
+    C->>S: DeciaBridgeService.openSessionFromProject
+    S->>R: insert decia_sessions (topic = objective, linkedProjectId) + session_participants (responsáveis + chefe)
+    S->>R: update project_schemes.status = EM_DECISAO
+    S-->>C: SessionView
+    C-->>N: 201 → /decia/{sessionId}
   end
-  DE->>S: SealService.suggestForProject (chancela tier PROJETO do mesmo emissor, CA09)
-  DE->>AI: infer(SUGERIR_CHANCELA, {projeto, chancelas das tarefas})
-
-  U->>NX: Publicar no Mural (CA11)
-  NX->>C: POST /api/projects/{id}/publish
-  C->>S: ProjectComposerService.publish
-  S->>DB: UPDATE project_schemes SET status PUBLICADO
-  S->>DB: INSERT mural_entries (kind PROJETO_PUBLICADO)
-  S->>OS: indexProject respeitando visibility
-  S-->>C: 200
-  C-->>NX: 200
-
-  U->>NX: Abrir sessão DECIA sobre este projeto (CA12)
-  NX->>C: POST /api/projects/{id}/decia-session
-  C->>S: DeciaSessionService.openFromProject
-  S->>DB: INSERT decia_sessions (topic = objective, linkedProjectId)
-  S->>DB: INSERT session_participants (responsáveis + chefe do departamento)
-  S->>DB: INSERT message_attachments (tarefas do projeto)
-  S->>DB: UPDATE project_schemes SET status EM_DECISAO
-  S-->>C: 201 DeciaSession
-  C-->>NX: 201
-  NX-->>U: redireciona para a sessão (RF29)
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: **`ProjectScheme.status`** (enum `ProjectStatus`). O RF5 cobre o nascimento do esquema: rascunho de autosave (RASCUNHO com `autosaveDraftJson` e **sem** `ProjectTask`), esquema salvo (RASCUNHO com `ProjectTask`s e tarefas EM_USO), publicação (PUBLICADO, CA11) e abertura de sessão (EM_DECISAO, CA12). Os demais estados pertencem ao RF22/RF29 e aparecem para contexto.
+Entidade central: **`ProjectScheme.status`** (`ProjectStatus`, TAXONOMIA §3.1/§13), com `ProjectStatusStateMachine`. O criador cria em `RASCUNHO`; `PUBLICADO` (CA11) e `EM_DECISAO` (CA12) nascem daqui; os demais são do RF22 (edição), RF15 (decisão validada) e RF8/RF12 (conclusão). O rascunho de autosave (CA14) **não** é um estado: é `autosaveDraftJson`/Redis antes de existir a entidade.
 
 ```mermaid
 stateDiagram-v2
-  state "RASCUNHO — autosave" as RASC_AUTO
-  state "RASCUNHO — salvo" as RASC_SALVO
-  [*] --> RASC_AUTO : primeira alteração no compositor, PUT drafts
-  RASC_AUTO --> RASC_AUTO : autosave a cada alteração
-  RASC_AUTO --> [*] : descartar rascunho
-  RASC_AUTO --> RASC_SALVO : POST projects válido, ProjectTasks persistidos, tarefas EM_USO
-  RASC_SALVO --> RASC_SALVO : editar no RF22, nova ProjectVersion
-  RASC_SALVO --> PUBLICADO : publicar no Mural, MuralEntry, índice OpenSearch
-  RASC_SALVO --> EM_DECISAO : abrir sessão DECIA sobre este projeto
-  PUBLICADO --> EM_DECISAO : abrir sessão DECIA
-  EM_DECISAO --> APROVADO : FinalDecision VALIDADA pelo chefe, RF29
-  EM_DECISAO --> DEVOLVIDO : FinalDecision DEVOLVIDA com motivo
-  DEVOLVIDO --> EM_DECISAO : sessão reaberta
-  DEVOLVIDO --> RASC_SALVO : ajustar o esquema
-  APROVADO --> EM_EXECUCAO : primeira ProjectTask em EXECUCAO iniciada
-  EM_EXECUCAO --> CONCLUIDO : todas as ProjectTasks concluídas
-  CONCLUIDO --> ARQUIVADO : arquivar
-  PUBLICADO --> ARQUIVADO : arquivar
-  ARQUIVADO --> [*]
-  note right of RASC_AUTO
-    autosaveDraftJson preenchido, nenhum ProjectTask.
-    Não gera EM_USO nas tarefas (CA14).
-    Recuperado na próxima abertura do compositor.
+  direction LR
+  state "RASCUNHO" as RAS
+  state "PUBLICADO" as PUB
+  state "EM_DECISAO" as DEC
+  state "APROVADO" as APR
+  state "DEVOLVIDO" as DEV
+  state "EM_EXECUCAO" as EXE
+  state "CONCLUIDO" as CON
+  state "ARQUIVADO" as ARQ
+
+  [*] --> RAS : POST /api/projects válido (CA04) · tarefas → EM_USO · origin CRIAR_PROJETO | AUTOPILOTO | MODELO
+  RAS --> RAS : edição na Mesa (RF22) gera ProjectVersion
+  RAS --> PUB : Publicar no Mural (CA11) · MuralEntry PROJETO_PUBLICADO · respeita visibility
+  RAS --> DEC : Abrir sessão DECIA (CA12, RF29.CA01) · DeciaSession linkedProjectId
+  PUB --> DEC : Abrir sessão DECIA a partir do publicado
+  DEC --> APR : FinalDecision VALIDADA (RF15) · tarefa ATA_REGISTRO em APROVACAO
+  DEC --> DEV : FinalDecision DEVOLVIDA (RF14/RF15)
+  DEV --> DEC : sessão REABERTA
+  DEV --> RAS : dono retoma a edição
+  APR --> EXE : primeira ProjectTask em EXECUCAO iniciada
+  PUB --> EXE : início da execução sem sessão
+  EXE --> CON : última ProjectTask concluída (RF8.CA05)
+  CON --> ARQ : arquivar
+  RAS --> ARQ : descartar
+  PUB --> ARQ : arquivar
+  ARQ --> RAS : reabrir com justificativa (RF22.CA06)
+  ARQ --> [*]
+  note right of RAS
+    Autosave (CA14) vive em Redis/autosaveDraftJson
+    antes do POST e não gera EM_USO nas tarefas.
   end note
-  note right of RASC_SALVO
-    Exige 1 tarefa em DEMANDA + 1 em outra fase (CA04, CA05).
-    creationMode MANUAL ou COM_IA; origin CRIAR_PROJETO ou AUTOPILOTO
-    quando veio integralmente da IA (CA06).
-    Tarefas selecionadas passam a EM_USO com TaskStateLog (RF41).
-  end note
-  note left of EM_DECISAO
-    Sessão nasce com tema = objetivo,
-    participantes = responsáveis + chefe,
-    tarefas anexadas (CA12, RF29).
+  note right of CON
+    CONCLUIDO e ARQUIVADO bloqueiam edição
+    (409 PROJETO_BLOQUEADO, RF22.CA06).
   end note
 ```
 
@@ -645,102 +492,80 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js"]
-    F1["app/projects/new — compositor 3 colunas, seletor Manual / Com IA / Modelo"]
-    F2["components/ui: AcervoPanel com filtros e busca, PhaseSelect x7 multi pesquisável, DragDropTask, DependencyEditor, ProjectSheet, AiComposePanel 3 propostas, ModelPicker Kit/modelo, CardPreview mosaico + barra de fases + chancelas, CriticalPathPreview"]
-    F3["Modal TaskCreator RF4 devolve a tarefa selecionada"]
-    F4["Autosave hook: debounce + PUT drafts"]
+  subgraph FE["Frontend · Next.js 15 App Router"]
+    PG["app/(shell)/projects/new · 3 colunas (Acervo · slots por fase · Ficha)"]
+    UI["packages/ui: SelectList (phase, onCreateNew), PhaseBar (slots), Mosaic, ProjectCard (prévia), TaskCard compact, Seal, Spark ✦, Input/Select, Dialog (RF4 em modal), EmptyState"]
+    SN["SidebarNav › + Criar · TopBar"]
+    BFF["app/bff/projects/* · app/bff/me/tasks"]
+    PG --> UI
+    PG --> BFF
+    SN --> PG
+  end
+  subgraph WSWEB["ws-web"]
+    SEC["SecurityConfig · SessionActiveFilter · CurrentUserArgumentResolver"]
+    PC["ProjectController · AcervoController"]
+    GEH["GlobalExceptionHandler"]
+  end
+  subgraph WSAPP["ws-application"]
+    PRJ["projects: ProjectCompositionService · PhaseCompatibility · DependencyGraph (CPM) · DraftService · ModelImportService · MosaicService · ProjectStatusStateMachine"]
+    ACV["acervo: TaskStateMachine (EM_USO) · TaskRepositoryPort"]
+    AIE["ai: AiEngine COMPOR_PROJETO · ProjectAutopilotService · AiQuota"]
+    DEC["decia: DeciaBridgeService (RF29)"]
+    SEAL["seals: chancela vem da tarefa · sugestão tier PROJETO"]
+    SOC["social: MuralPort · Remix (crédito ao autor, RF26/RF40)"]
+    PORTS["ports: ProjectRepositoryPort · TaskRepositoryPort · DraftStorePort · MuralPort · SearchIndexPort · MediaStoragePort · AuditLogPort"]
+    EVT["events: ProjectCreated · ProjectPublished (AFTER_COMMIT)"]
+    PRJ --> ACV
+    PRJ --> AIE
+    PRJ --> DEC
+    PRJ --> SEAL
+    PRJ --> SOC
+    PRJ --> PORTS
+    PRJ --> EVT
+  end
+  subgraph WSDOM["ws-domain"]
+    DOM["projects: ProjectScheme · ProjectTask · ProjectTaskDependency · ProcessKit · KitItem · enums ProjectStatus/ProjectPhase/SchemeOrigin/CreationMode · acervo: TaskItem · TaskStateLog"]
+  end
+  subgraph INFRA["ws-infrastructure"]
+    MY["persistence-mysql: Jpa*Repository · Flyway V__rf5_projects (planejado)"]
+    RDS["cache-redis (RedisAdaptersConfig, flag redis.enabled): DraftStorePort draft:project:{userId} · AiQuota"]
+    OSE["search-opensearch: ws-projects"]
+    S3["storage-s3: foto do projeto · mosaico"]
+    AIP["ai-providers: Claude → Gemini → LocalEngine"]
   end
 
-  subgraph WEB["ws-web"]
-    C1["ProjectController — /api/projects, /composer, /drafts, /ai-compose, /from-model, /validate-dependencies, /publish, /decia-session"]
-    C2["AcervoController — /api/acervo/tasks?phase=&q="]
-    C3["TaskController RF4 — /api/tasks"]
-  end
-
-  subgraph APP["ws-application"]
-    S1["ProjectComposerService"]
-    S2["AcervoService RF41"]
-    S3["TaskCreatorService RF4"]
-    S4["SealService RF39"]
-    S5["MuralService RF27"]
-    S6["DeciaSessionService RF29"]
-    S7["AiEngine"]
-    P1["MediaStoragePort"]
-    P2["SearchIndexPort"]
-  end
-
-  subgraph DOM["ws-domain"]
-    D1["ProjectScheme · ProjectTask · ProjectTaskDependency · ProcessKit · KitItem"]
-    D2["TaskItem · TaskStateLog · SealBond · Remix · PlanAxis · Grouping"]
-    D3["MuralEntry · DeciaSession · AiInferenceLog · DomainEventOutbox"]
-    D4["PHASE_BY_CATEGORY · CPM caminho crítico · validação de ciclos"]
-  end
-
-  subgraph INFRA["ws-infrastructure/*"]
-    I1[("persistence-mysql: project_schemes, project_tasks, project_task_dependencies, tasks, task_state_log, seal_bonds, remixes, mural_entries, decia_sessions, ai_inference_log")]
-    I2[("storage-s3: foto do projeto, capa tratada no Estúdio")]
-    I3[("search-opensearch: índice de projetos ao publicar")]
-    I4["ai-providers: ClaudeGeminiAdapter — COMPOR_PROJETO, SUGERIR_CHANCELA, CAPA_IA"]
-    I5["platform: outbox AFTER_COMMIT, PipelineJob"]
-  end
-
-  subgraph EXT["Serviços externos"]
-    E1(("Claude / Gemini"))
-  end
-
-  F1 --- F2
-  F1 --- F3
-  F1 --- F4
-  F1 -->|"HTTPS/JSON"| C1
-  F2 -->|"HTTPS/JSON"| C2
-  F3 -->|"HTTPS/JSON"| C3
-  C1 --> S1
-  C2 --> S2
-  C3 --> S3
-  S1 --> S2
-  S1 --> S4
-  S1 --> S5
-  S1 --> S6
-  S1 --> S7
-  S1 --> P1
-  S1 --> P2
-  S4 --> S7
-  S1 --> D1
-  S1 --> D4
-  S2 --> D2
-  S5 --> D3
-  S6 --> D3
-  D1 --> I1
-  D2 --> I1
-  D3 --> I1
-  D3 --> I5
-  P1 --> I2
-  P2 --> I3
-  S7 --> I4
-  I4 -.-> E1
+  BFF -->|"REST JSON"| SEC --> PC --> PRJ
+  PC --> GEH
+  MY -.implementa.-> PORTS
+  RDS -.implementa.-> PORTS
+  OSE -.implementa.-> PORTS
+  S3 -.implementa.-> PORTS
+  AIP -.implementa.-> AIE
+  PRJ --> DOM
+  MY --> DB[("MySQL 8.4")]
+  RDS --> RD[("Redis 7")]
+  OSE --> OSX[("OpenSearch 2.19")]
+  S3 --> MINIO[("S3 / MinIO")]
+  AIP --> CL["Claude · Gemini"]
 ```
 
 ## 6. Rastreabilidade
 
-Os ids dos CAs são os do corpo do card RF5 (corpo do card = antigo RF21).
-
-| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
-|---|---|
-| RF21.CA01 | `ProjectComposerService.openComposer`, `AcervoService.countAvailable` · Atividades `U1 → A1 → A2 (sim) → W1` · Sequência `GET /api/projects/composer` → `else 2 ou mais` → "Acervo à esquerda, 7 selects vazios, ficha à direita" · Componentes `AcervoPanel`, `PhaseSelect x7`, `ProjectSheet` |
-| RF21.CA02 | Atividades `A2 (não) → W2` (orientação + atalho /tasks/new) · Sequência `alt menos de 2 tarefas DISPONIVEIS` → `{composerEnabled: false, hint: CADASTRE_TAREFAS}` |
-| RF21.CA03 | `AcervoService.listCompatible` (nota PHASE_BY_CATEGORY, desabilitadas com motivo), tabela `PHASE_BY_CATEGORY` do cabeçalho, enum `TaskState` · Atividades `U3 → A3 → P1` · Sequência `GET /api/acervo/tasks?phase=PLANEJAMENTO&q=ETP` → "BLOQUEADA/ARQUIVADA com disabled e disabledReason" · Componentes `AcervoController`, `PhaseSelect` |
-| RF21.CA04 | Classes `ProjectScheme` (origin CRIAR_PROJETO, creationMode, visibility herdada), `ProjectTask` (nota responsibleId/dueAt padrão), `TaskStateLog`, `AcervoService.markInUse` · Atividades `U7 → A11 → A12 (sim) → A17 → A18 → P3` · Sequência `else válido (CA04)`: UPDATE project_schemes, INSERT project_tasks, UPDATE tasks EM_USO, INSERT task_state_log · Transição `RASC_AUTO → RASC_SALVO` e nota |
-| RF21.CA05 | `ProjectComposerService.validateMinimum` · Atividades `A12 (não) → A13 422 FASES_MINIMAS → W6` · Sequência `alt sem tarefa ou só DEMANDA` → `422 FASES_MINIMAS` · Nota do estado RASC_SALVO |
-| RF21.CA06 | `ProjectComposerService.composeWithAi`, `AiEngine` (COMPOR_PROJETO), `AiInferenceLog`, enums `CreationMode.COM_IA`, `SchemeOrigin.AUTOPILOTO` · Atividades `U2 (Com IA) → I1 → P4 → U11` · Sequência `opt modo Com IA`: `POST /api/projects/ai-compose` → 3 propostas → INSERT ai_inference_log · Componentes `AiComposePanel`, `ai-providers` |
-| RF21.CA07 | `TaskCreatorService.save`, `ProjectController ..> TaskCreatorService` · Atividades `U4 → W3 → U3` · Sequência "Cadastrar nova tarefa dentro do select" → `POST /api/tasks (modal RF4)` → "já selecionada na fase" · Componentes `Modal TaskCreator RF4`, `TaskController RF4` |
-| RF21.CA08 | Classes `ProjectTaskDependency` (nota 422), `ProjectComposerService.validateDependencies/criticalPath`, `ProjectScheme.criticalPathJson`, `ProjectTask.isCritical/slackDays` · Atividades `U5 → A4 → A5/A6 → A7/A8 → A9` · Sequência `POST /api/projects/validate-dependencies` → `alt ciclo ou prazo inválido` / `else válido` (criticalPath CPM) · Componentes `DependencyEditor`, `CriticalPathPreview`, `D4` |
-| RF21.CA09 | Classes `SealBond` (TASK ou PROJECT), `TaskItem.sealIdsJson`, `ProjectScheme.sealIdsJson`, `SealService.inheritFromTasks/suggestForProject` · Atividades `A10` · Sequência "chancelas das tarefas em Chancelas do projeto" e `DE->>S: SealService.suggestForProject` · Componente `SealService RF39` |
-| RF21.CA10 | `ProjectScheme.coverMode/coverUrl/mosaicJson`, `MediaStoragePort.studio` · Atividades `A14 → A15` (mosaico) / `A14 → A16 → P5` (foto tratada) · Sequência `UPDATE project_schemes SET coverMode MOSAICO, mosaicJson` · Componentes `CardPreview`, `storage-s3` |
-| RF21.CA11 | `ProjectComposerService.publish`, `MuralService.publishProject`, `MuralEntry`, `SearchIndexPort` · Atividades `U9 → A21 → P6` · Sequência `POST /api/projects/{id}/publish` → status PUBLICADO, INSERT mural_entries, indexProject respeitando visibility · Transição `RASC_SALVO → PUBLICADO` · Componentes `MuralService RF27`, `search-opensearch` |
-| RF21.CA12 | `DeciaSessionService.openFromProject`, `DeciaSession` (topic = objective, linkedProjectId) · Atividades `U10 → A22 → P7` · Sequência `POST /api/projects/{id}/decia-session` → decia_sessions, session_participants, message_attachments, status EM_DECISAO · Transição `RASC_SALVO/PUBLICADO → EM_DECISAO` e nota · Componente `DeciaSessionService RF29` |
-| RF21.CA13 | Classes `ProcessKit`, `KitItem`, `Remix`, `ProjectScheme.originalProjectId`, enum `SchemeOrigin.MODELO/REMIX`, `ProjectComposerService.fromModel` · Atividades `U2 (Modelo ou Kit) → A19 → U3` · Componentes `ModelPicker Kit/modelo`, `ProjectController /from-model` |
-| RF21.CA14 | `ProjectScheme.autosaveDraftJson`, `ProjectComposerService.autosave` · Atividades `U3/U6 → W4 → A20 → P2`, `U8 → W4`, `W7` (recupera) · Sequência `loop a cada alteração` → `PUT /api/projects/drafts/{draftId}` (sem project_tasks, sem EM_USO) e `SELECT ... autosaveDraftJson IS NOT NULL` na abertura · Estado `RASC_AUTO` + nota · Componente `Autosave hook` |
-
+| CA (card RF5, escrito como RF21) | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) | Situação |
+|---|---|---|---|---|---|---|
+| RF21.CA01 | `PhaseCompatibility.optionsFor`, `TaskRepositoryPort.findMine` | `A1`→`F1`→`F2`→`F4` | 1–9 | — | `PG`, `UI` (`SelectList`, `PhaseBar`) | planejado |
+| RF21.CA02 | `PhaseCompatibility` (contagem), `EmptyState` | `F2`→`F3` | 5–7 | — | `UI` (`EmptyState`) | planejado |
+| RF21.CA03 | `PhaseCompatibility.phasesFor/optionsFor`, `TaskOption.disabledReason`, `TaskRepositoryPort.findSharedWithMe` | `S1` | 10–14 | — | `ACV`, `UI` (`SelectList`) | planejado |
+| RF21.CA04 | `ProjectCompositionService.create/resolveDefaults`, `ProjectTask`, `TaskStateMachine`, `SchemeOrigin.CRIAR_PROJETO` | `S2`→`S6`→`S9`→`S10`→`S11` | 33–34, 44–52 | `[*]`→`RAS`, `TaskState` DISPONIVEL→EM_USO | `PRJ`, `ACV`, `MY` | planejado |
+| RF21.CA05 | `ProjectCompositionService.validateMinimum` | `S2`→`S3`→`E422` | 35–37 | — | `GEH` | planejado |
+| RF21.CA06 | `ProjectAutopilotService`, `AiEngine` (COMPOR_PROJETO), `AiInferenceLog`, `SchemeOrigin.AUTOPILOTO` | `A4`→`F7`→`IA1`, `E409` | 19–32 | `[*]`→`RAS` (origin AUTOPILOTO) | `AIE`, `AIP`, `RDS` (cota) | planejado |
+| RF21.CA07 | `SelectList.onCreateNew`, `TaskCreationService` (RF4) | `F5` | — | — | `UI` (`Dialog` com RF4) | planejado |
+| RF21.CA08 | `DependencyGraph.assertNoCycle/assertDatesConsistent/criticalPath`, `ProjectTaskDependency`, `ProjectScheme.criticalPathJson` | `A5`→`S4`→`S5`→`E422C` | 38–40, 44 | — | `PRJ` (CPM) | planejado |
+| RF21.CA09 | `ProjectCompositionService.applySealsFromTasks`, `SealBond`, `ProjectScheme.sealIdsJson` | `S7` | 45 | — | `SEAL`, `UI` (`Seal`) | planejado (RF39) |
+| RF21.CA10 | `MosaicService`, `ProjectScheme.coverMode/coverUrl/mosaicJson` | `S8` | 45 | — | `UI` (`Mosaic`), `S3` | planejado (RF38) |
+| RF21.CA11 | `ProjectCompositionService.publish`, `MuralPort`, `ProjectStatus.PUBLICADO` | `A6`→`S12` | 53 | `RAS`→`PUB` | `SOC`, `OSE` | planejado (RF27, RF18/RF19) |
+| RF21.CA12 | `DeciaBridgeService.openSessionFromProject`, `DeciaSession.linkedProjectId`, `ProjectStatus.EM_DECISAO` | `A6`→`S13` | 56–62 | `RAS`→`DEC`, `PUB`→`DEC` | `DEC` | planejado (RF29) |
+| RF21.CA13 | `ModelImportService.fromModel`, `ProcessKit`, `KitItem`, `SchemeOrigin.MODELO`, `Remix` | `F8`→`M1` | — | `[*]`→`RAS` (origin MODELO) | `SOC`, `PRJ` | planejado (RF26/RF40) |
+| RF21.CA14 | `DraftService`, `DraftStorePort`, `ProjectScheme.autosaveDraftJson` | `F6`, `S11` | 15–18, 52 | nota de `RAS` | `RDS` (`draft:project:{userId}`) | planejado |
 
 Tela/aba: `/projects/new` (esqueleto em `app/(shell)/projects/new/page.tsx`)

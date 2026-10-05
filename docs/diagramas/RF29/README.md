@@ -1,445 +1,398 @@
 # RF29 — Integrar o DECIA ao Criador de Projetos — compartilhar tarefas/artefatos na sessão, abrir sessão a partir de um projeto, transformar argumentos/divergências/decisões em tarefas e manter o Rastro de Decisão
+**HU:** HU29 · **Sprint (board Work Station):** Sprint 4 (comprometido) · **Equivalente FAI:** RF10 Copilot (origem COPILOT nos esquemas), aqui elevado a **hub do app** · **Aba/rota:** botão **Abrir sessão DECIA** no projeto (`/projects/[id]`, Mesa `/desk`), sessão (`/decia/[sessionId]`: composer com anexos do acervo, ação "Transformar em tarefa", "Criar projeto a partir desta sessão"), painel **Por que isto existe?** em `/tasks/[id]` e `/projects/[id]`, indicador em `/admin/dashboard` (RF18)
+**Critérios de aceite cobertos:** RF29.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 (corpo do card, inalterado) — regra: o **título do card** define o RF e o corpo traz os próprios CAs. A sessão em si (tema, mensagens, classificação, resumo, decisão, revisão) está em `docs/produto/DECIA_SESSAO_E_MESA.md` e nos PlantUML `docs/produto/decia/*.puml`; aqui só a **ponte** com o Criador de Projetos e o **Rastro de Decisão**.
 
-**HU:** HU29 · **Sprint (board Work Station):** 4 · **Equivalente FAI:** RF10 Copilot (origem COPILOT nos esquemas) — aqui elevado a **hub do app** · **Aba/rota:** sessão DECIA (`/decia/[sessionId]`), projeto (`/projects/[id]`, painel "Por que isto existe?"), tarefa (`/tasks/[id]`) — rotas a confirmar (o card não as fixa)
-
-**Critérios de aceite cobertos:** RF29.CA01 · RF29.CA02 · RF29.CA03 · RF29.CA04 · RF29.CA05 · RF29.CA06 · RF29.CA07 · RF29.CA08 · RF29.CA09
-
-> Contextos da TAXONOMIA: **5. DECIA** (`DeciaSession`, `SessionParticipant`, `SessionMessage`, `MessageClassification`, `MessageAttachment`, `AnalyticalSummary`, `FinalDecision`, `DecisionReview`, `SessionArtifact`, `DecisionTraceNode`, `DecisionTraceEdge`), **3. Criador de Projetos** (`ProjectScheme`, `ProjectTask`) e **2. Acervo** (`TaskItem`). O Rastro de Decisão é um grafo **append-only**: nós em `decision_trace_nodes` (MySQL) com espelho Cassandra `trace_by_entity`; arestas em `decision_trace_edges`. Visual: **fio de decisão** (RF38.CA07) — nós coloridos pela `MessageClass` (ARGUMENTO azul · DIVERGENCIA laranja · RISCO vermelho · CONSENSO verde · PERGUNTA roxo) e carimbo **VALIDADO** / **DEVOLVIDO** (`FinalDecision.stampJson`).
+O **Rastro de Decisão** (`DecisionTrace`) é um grafo append-only — `DecisionTraceNode` (MENSAGEM · CLASSIFICACAO · DIVERGENCIA · PERGUNTA · RESUMO · CENARIO · DECISAO · REVISAO · TAREFA · PROJETO · ARTEFATO · ATA_VIVA · CONFORMIDADE) e `DecisionTraceEdge` (ORIGINOU · CLASSIFICOU · RESPONDEU · RESUMIU · DECIDIU · REVISOU · TRANSFORMOU_EM · ANEXOU · VERIFICOU) — gravado no MySQL e espelhado em Cassandra `trace_by_entity` (flag `cassandra.enabled`). Renderiza-se como o **fio de decisão** (`DecisionThread`, RF38.CA07): linha vertical, nós coloridos por `classLabel` (ARGUMENTO azul · DIVERGENCIA laranja · RISCO vermelho · CONSENSO verde · PERGUNTA roxo), carimbo VALIDADO/DEVOLVIDO no fim (`Stamp`). Imutável: nenhuma API de UPDATE/DELETE; exclusão de tarefa mantém o nó via `snapshotJson` (RF23).
 
 ## 1. Diagrama de classes
 
 ```mermaid
 classDiagram
-  direction LR
-  namespace ws-domain {
-    class DeciaSession {
-      <<entity>>
-      +UUID id
-      +String topic
-      +UUID adminUserId
-      +UUID companyId
-      +UUID departmentId
-      +SessionAccess accessMode
-      +SessionStatus status
-      +UUID linkedProjectId
-      +UUID planAxisId
-      +boolean indexedInMemory
-    }
-    class SessionParticipant {
-      <<entity>>
-      +UUID id
-      +UUID sessionId
-      +UUID userId
-      +ParticipantRole role
-      +UUID addedBy
-    }
-    class SessionMessage {
-      <<entity>>
-      +TIMEUUID id
-      +UUID sessionId
-      +UUID authorId
-      +String authorKind
-      +String bodyMd
-      +Instant sentAt
-      +JSON attachmentsJson
-      +UUID classificationId
-      +String correlationId
-    }
-    class MessageAttachment {
-      <<entity>>
-      +UUID id
-      +UUID messageId
-      +String targetType
-      +UUID targetId
-      +JSON snapshotJson
-      +boolean usedInDecision
-    }
-    class MessageClassification {
-      <<entity>>
-      +UUID id
-      +UUID messageId
-      +MessageClass label
-      +BigDecimal confidence
-      +boolean hasEvidence
-      +UUID linkedTaskId
-      +UUID linkedProjectId
-      +String rationale
-      +UUID aiInferenceId
-    }
-    class AnalyticalSummary {
-      <<entity>>
-      +UUID id
-      +UUID sessionId
-      +int versionNumber
-      +JSON recommendationsJson
-      +UUID complianceResultId
-      +String status
-    }
-    class FinalDecision {
-      <<entity>>
-      +UUID id
-      +UUID sessionId
-      +UUID summaryId
-      +String decisionText
-      +UUID chosenScenarioId
-      +DecisionStatus status
-      +UUID reviewId
-      +UUID resultingTaskId
-      +JSON stampJson
-      +JSON citationsJson
-    }
-    class DecisionReview {
-      <<entity>>
-      +UUID id
-      +UUID decisionId
-      +UUID reviewerId
-      +String outcome
-      +String reason
-      +Instant reviewedAt
-    }
-    class SessionArtifact {
-      <<entity>>
-      +UUID id
-      +UUID sessionId
-      +String kind
-      +String title
-      +UUID mediaObjectId
-      +UUID convertedTaskId
-    }
-    class DecisionTraceNode {
-      <<entity>>
-      +UUID id
-      +UUID sessionId
-      +TraceNodeType nodeType
-      +UUID refId
-      +String label
-      +String classLabel
-      +UUID actorId
-      +Instant at
-      +JSON snapshotJson
-    }
-    class DecisionTraceEdge {
-      <<entity>>
-      +UUID id
-      +UUID fromNodeId
-      +UUID toNodeId
-      +String relation
-      +Instant at
-    }
-    class ProjectScheme {
-      <<entity>>
-      +UUID id
-      +UUID ownerId
-      +UUID departmentId
-      +String title
-      +String objective
-      +SchemeOrigin origin
-      +UUID sourceSessionId
-      +ProjectStatus status
-      +ProjectPhase currentPhase
-      +UUID planAxisId
-      +Instant lastDeciaEventAt
-      +String lastDeciaEventLabel
-    }
-    class ProjectTask {
-      <<entity>>
-      +UUID id
-      +UUID projectId
-      +UUID taskId
-      +ProjectPhase phase
-      +UUID responsibleId
-      +JSON snapshotJson
-      +boolean removedByAuthor
-      +UUID decisionTraceNodeId
-    }
-    class TaskItem {
-      <<entity>>
-      +UUID id
-      +UUID ownerId
-      +String title
-      +TaskType type
-      +TaskCategory category
-      +SourceKind sourceKind
-      +String sourceRef
-      +TaskState state
-      +UUID sourceProjectId
-    }
-    class TraceNodeType {
-      <<enum>>
-      MENSAGEM
-      CLASSIFICACAO
-      DIVERGENCIA
-      PERGUNTA
-      RESUMO
-      CENARIO
-      DECISAO
-      REVISAO
-      TAREFA
-      PROJETO
-      ARTEFATO
-      ATA_VIVA
-      CONFORMIDADE
-    }
-    class MessageClass {
-      <<enum>>
-      ARGUMENTO
-      DIVERGENCIA
-      RISCO
-      CONSENSO
-      PERGUNTA
-      RUIDO
-    }
-    class DecisionStatus {
-      <<enum>>
-      PROPOSTA
-      EM_REVISAO
-      VALIDADA
-      DEVOLVIDA
-      SUBSTITUIDA
-    }
-    class ProjectStatus {
-      <<enum>>
-      RASCUNHO
-      PUBLICADO
-      EM_DECISAO
-      APROVADO
-      EM_EXECUCAO
-      CONCLUIDO
-      ARQUIVADO
-      DEVOLVIDO
-    }
-    class SchemeOrigin {
-      <<enum>>
-      CRIAR_PROJETO
-      DECIA
-      REMIX
-      AUTOPILOTO
-      MODELO
-      CENARIO
-      DOSSIE
-      ATA_VIVA
-    }
+direction LR
+
+namespace ws_domain_decia {
+  class DeciaSession {
+    <<entity>>
+    +id: UUID
+    +topic: String
+    +adminUserId: UUID
+    +createdByUserId: UUID
+    +companyId: UUID
+    +departmentId: UUID
+    +accessMode: SessionAccess
+    +status: SessionStatus
+    +aiMode: AiMode
+    +linkedProjectId: UUID
+    +planAxisId: UUID
+    +startedAt: Instant
+    +closedAt: Instant
+    .. +6 campos ..
   }
-  namespace ws-application {
-    class DeciaBridgeService {
-      <<service>>
-      +openSessionFromProject(actorId, projectId) DeciaSession
-      +createProjectFromSession(actorId, sessionId) ProjectScheme
-      +attachToMessage(actorId, sessionId, draft, targetRefs) SessionMessage
-      +toTaskPrefill(actorId, messageId) TaskPrefillForm
-      +transformMessageIntoTask(actorId, messageId, taskForm, projectId) TaskItem
-      +onDecisionReviewed(decisionId) TaskItem
-      +enrichSummaryWithTargets(summaryId) AnalyticalSummary
-    }
-    class DecisionTraceService {
-      <<service>>
-      +appendNode(sessionId, type, refId, label, classLabel, actorId, snapshot) DecisionTraceNode
-      +appendEdge(fromId, toId, relation) DecisionTraceEdge
-      +threadFor(targetType, targetId) DecisionThreadView
-      +export(targetType, targetId, format) MediaObject
-      +completenessIndicator(period, deptId) BigDecimal
-    }
-    class TaskService {
-      <<service>>
-      +create(ownerId, form) TaskItem
-    }
-    class ProjectService {
-      <<service>>
-      +create(ownerId, form) ProjectScheme
-      +changeStatus(projectId, status, reason) ProjectScheme
-    }
-    class AiEngine {
-      <<service>>
-      +classifyMessage(message, attachments) MessageClassification
-      +suggestPhase(messageText, project) ProjectPhase
-      +composeFromSession(session, artifacts, decisions) ProjectDraft
-    }
-    class AiProviderPort {
-      <<port>>
-      +complete(prompt, mode, accessClass) AiResult
-    }
-    class MediaStoragePort {
-      <<port>>
-      +put(bytes, mimeType, accessClass) MediaObject
-    }
+  class SessionParticipant {
+    <<entity>>
+    +sessionId: UUID
+    +userId: UUID
+    +role: ParticipantRole
   }
-  namespace ws-web {
-    class ProjectDeciaController {
-      <<controller>>
-      +openSession(projectId)
-      +trace(projectId)
-      +exportTrace(projectId, format)
-    }
-    class SessionBridgeController {
-      <<controller>>
-      +postMessage(sessionId, body, attachments)
-      +toTaskPrefill(messageId)
-      +transformIntoTask(messageId, form)
-      +createProject(sessionId)
-    }
-    class TaskTraceController {
-      <<controller>>
-      +trace(taskId)
-      +exportTrace(taskId, format)
-    }
+  class SessionMessage {
+    <<entity>>
+    +id: TIMEUUID
+    +sessionId: UUID
+    +authorId: UUID
+    +authorKind: String
+    +bodyMd: String
+    +attachmentsJson: JSON
+    +classificationId: UUID
+    +sentAt: Instant
+    +correlationId: String
   }
-  namespace ws-infrastructure {
-    class DecisionTraceJpaRepository {
-      <<adapter>>
-    }
-    class CassandraTraceMirror {
-      <<adapter>>
-      trace_by_entity
-    }
-    class CassandraMessageStore {
-      <<adapter>>
-      messages_by_session
-    }
-    class S3TraceExportAdapter {
-      <<adapter>>
-    }
+  class MessageAttachment {
+    <<entity>>
+    +id: UUID
+    +messageId: UUID
+    +targetType: String
+    +targetId: UUID
+    +snapshotJson: JSON
+    +usedInDecision: boolean
   }
-  DeciaSession --> ProjectScheme : linkedProjectId
-  ProjectScheme --> DeciaSession : sourceSessionId
-  DeciaSession "1" --> "*" SessionParticipant
-  DeciaSession "1" --> "*" SessionMessage
-  SessionMessage "1" --> "0..5" MessageAttachment : anexos do acervo
-  SessionMessage "1" --> "1" MessageClassification
-  MessageClassification --> TaskItem : linkedTaskId
-  MessageClassification --> ProjectScheme : linkedProjectId
-  MessageClassification --> MessageClass
-  DeciaSession "1" --> "*" AnalyticalSummary
-  FinalDecision --> AnalyticalSummary : summaryId
-  FinalDecision --> DecisionReview : reviewId
-  FinalDecision --> TaskItem : resultingTaskId ATA_REGISTRO
-  FinalDecision --> DecisionStatus
-  SessionArtifact --> TaskItem : convertedTaskId
-  DecisionTraceNode "1" --> "*" DecisionTraceEdge : fromNodeId
-  DecisionTraceNode "1" --> "*" DecisionTraceEdge : toNodeId
-  DecisionTraceNode --> TraceNodeType
-  ProjectTask --> DecisionTraceNode : decisionTraceNodeId
-  ProjectScheme "1" --> "*" ProjectTask
-  ProjectTask --> TaskItem : taskId ou snapshotJson
-  ProjectScheme --> ProjectStatus
-  ProjectScheme --> SchemeOrigin
-  DeciaBridgeService ..> DeciaSession
-  DeciaBridgeService ..> MessageAttachment
-  DeciaBridgeService ..> FinalDecision
-  DeciaBridgeService ..> TaskService : RF20
-  DeciaBridgeService ..> ProjectService : RF21
-  DeciaBridgeService ..> DecisionTraceService : todo vínculo gera nó e aresta
-  DeciaBridgeService ..> AiEngine
-  AiEngine ..> AiProviderPort
-  DecisionTraceService ..> DecisionTraceNode
-  DecisionTraceService ..> DecisionTraceEdge
-  DecisionTraceService ..> MediaStoragePort : export PDF e JSON
-  ProjectDeciaController ..> DeciaBridgeService
-  ProjectDeciaController ..> DecisionTraceService
-  SessionBridgeController ..> DeciaBridgeService
-  TaskTraceController ..> DecisionTraceService
-  DecisionTraceJpaRepository ..> DecisionTraceNode : MySQL
-  CassandraTraceMirror ..> DecisionTraceNode : espelho append-only
-  CassandraMessageStore ..> SessionMessage : partição sessionId
-  S3TraceExportAdapter ..|> MediaStoragePort
-  note for DecisionTraceEdge "relation ORIGINOU · CLASSIFICOU · RESPONDEU · RESUMIU · DECIDIU · REVISOU · TRANSFORMOU_EM · ANEXOU · VERIFICOU · imutável"
-  note for FinalDecision "stampJson {kind VALIDADO ou DEVOLVIDO, date, reviewerName}"
-  note for DeciaSession "tabela decia_sessions · .. +9 campos .."
-  note for ProjectScheme "tabela project_schemes · .. +30 campos .."
-  note for TaskItem "tabela tasks · .. +40 campos .."
+  class MessageClassification {
+    <<entity>>
+    +messageId: UUID
+    +label: MessageClass
+    +confidence: BigDecimal
+    +hasEvidence: boolean
+    +linkedTaskId: UUID
+    +linkedProjectId: UUID
+    +aiInferenceId: UUID
+  }
+  class AnalyticalSummary {
+    <<entity>>
+    +sessionId: UUID
+    +recommendationsJson: JSON
+    +complianceResultId: UUID
+    +status: String
+  }
+  class FinalDecision {
+    <<entity>>
+    +id: UUID
+    +sessionId: UUID
+    +summaryId: UUID
+    +decisionText: String
+    +chosenScenarioId: UUID
+    +status: DecisionStatus
+    +reviewId: UUID
+    +resultingTaskId: UUID
+    +stampJson: JSON
+  }
+  class DecisionReview {
+    <<entity>>
+    +decisionId: UUID
+    +reviewerId: UUID
+    +outcome: String
+    +reason: String
+    +reviewedAt: Instant
+  }
+  class SessionArtifact {
+    <<entity>>
+    +sessionId: UUID
+    +kind: String
+    +contentMd: String
+    +convertedTaskId: UUID
+  }
+  class DecisionTraceNode {
+    <<entity>>
+    +id: UUID
+    +sessionId: UUID
+    +nodeType: TraceNodeType
+    +refId: UUID
+    +label: String
+    +classLabel: MessageClass
+    +actorId: UUID
+    +at: Instant
+    +snapshotJson: JSON
+  }
+  class DecisionTraceEdge {
+    <<entity>>
+    +id: UUID
+    +fromNodeId: UUID
+    +toNodeId: UUID
+    +relation: TraceRelation
+    +at: Instant
+  }
+  class TraceNodeType {
+    <<enum>>
+    MENSAGEM
+    CLASSIFICACAO
+    DIVERGENCIA
+    PERGUNTA
+    RESUMO
+    CENARIO
+    DECISAO
+    REVISAO
+    TAREFA
+    PROJETO
+    ARTEFATO
+    ATA_VIVA
+    CONFORMIDADE
+  }
+  class TraceRelation {
+    <<enum>>
+    ORIGINOU
+    CLASSIFICOU
+    RESPONDEU
+    RESUMIU
+    DECIDIU
+    REVISOU
+    TRANSFORMOU_EM
+    ANEXOU
+    VERIFICOU
+  }
+  class DecisionStatus {
+    <<enum>>
+    PROPOSTA
+    EM_REVISAO
+    VALIDADA
+    DEVOLVIDA
+    SUBSTITUIDA
+  }
+}
+
+namespace ws_domain_projects_acervo {
+  class ProjectScheme {
+    <<entity>>
+    +id: UUID
+    +title: String
+    +objective: String
+    +origin: SchemeOrigin
+    +sourceSessionId: UUID
+    +status: ProjectStatus
+    +currentPhase: ProjectPhase
+    +planAxisId: UUID
+    +lastDeciaEventAt: Instant
+    .. +30 campos ..
+  }
+  class ProjectTask {
+    <<entity>>
+    +projectId: UUID
+    +taskId: UUID
+    +phase: ProjectPhase
+    +snapshotJson: JSON
+    +decisionTraceNodeId: UUID
+  }
+  class TaskItem {
+    <<entity>>
+    +id: UUID
+    +title: String
+    +type: TaskType
+    +sourceKind: SourceKind
+    +state: TaskState
+    .. +50 campos ..
+  }
+}
+
+namespace ws_application {
+  class DeciaBridgeService {
+    <<service>>
+    +openSessionFromProject(actor, projectId) DeciaSession
+    +createProjectFromSession(actor, sessionId) ProjectScheme
+    +attachToMessage(actor, sessionId, draft, attachments) SessionMessage
+    +transformMessageIntoTask(actor, sessionId, messageId, TaskForm) TaskItem
+    +onDecisionReviewed(DecisionReviewed) TaskItem
+  }
+  class DecisionTraceService {
+    <<service>>
+    +append(node, edgeFrom, relation) DecisionTraceNode
+    +thread(targetType, targetId) List~DecisionTraceNode~
+    +export(sessionId, format) MediaObject
+  }
+  class DeciaSessionService {
+    <<service>>
+    +create(topic, participants, linkedProjectId) DeciaSession
+  }
+  class SummaryService {
+    <<service>>
+    +generate(sessionId) AnalyticalSummary
+  }
+  class MetricCalculator {
+    <<service>>
+    +decisionsWithTrace(scope, period) MetricSnapshot
+  }
+  class Guard {
+    <<service>>
+    +requireOwner(actor, ownerId)
+    +requireParticipant(actor, sessionId)
+    +requireSessionAdmin(actor, sessionId)
+  }
+  class AiEngine {
+    <<service>>
+    +run(AiRequest) AiResponse
+  }
+  class TracePort {
+    <<port>>
+    +mirror(DecisionTraceNode)
+  }
+  class MessagePort {
+    <<port>>
+    +append(SessionMessage)
+  }
+  class StoragePort {
+    <<port>>
+    +put(key, bytes)
+  }
+  class DomainEvents {
+    <<service>>
+    +publish(event)
+  }
+}
+
+namespace ws_web {
+  class DeciaBridgeController {
+    <<controller>>
+    +POST_api_projects_id_decia_session()
+    +POST_api_decia_sessions_id_project()
+    +POST_api_decia_sessions_id_messages(body, attachments)
+    +POST_api_decia_sessions_id_messages_mid_to_task(TaskForm)
+    +GET_api_trace(targetType, targetId)
+    +GET_api_decia_sessions_id_trace_export(format)
+  }
+}
+
+namespace ws_infrastructure {
+  class CassandraTraceAdapter {
+    <<adapter>>
+  }
+  class CassandraMessageAdapter {
+    <<adapter>>
+  }
+  class S3StorageAdapter {
+    <<adapter>>
+  }
+}
+
+DeciaSession "0..1" --> "0..1" ProjectScheme : linkedProjectId
+ProjectScheme "0..*" --> "0..1" DeciaSession : sourceSessionId
+DeciaSession "1" o-- "0..*" SessionParticipant
+DeciaSession "1" o-- "0..*" SessionMessage
+SessionMessage "1" o-- "0..5" MessageAttachment
+SessionMessage "1" --> "0..1" MessageClassification
+DeciaSession "1" o-- "0..*" AnalyticalSummary
+AnalyticalSummary "1" --> "0..1" FinalDecision
+FinalDecision "1" --> "0..1" DecisionReview
+FinalDecision "0..1" --> "0..1" TaskItem : resultingTaskId ATA_REGISTRO
+SessionArtifact "0..1" --> "0..1" TaskItem : convertedTaskId
+DeciaSession "1" o-- "0..*" DecisionTraceNode
+DecisionTraceNode "1" o-- "0..*" DecisionTraceEdge : from
+DecisionTraceNode ..> SessionMessage : refId
+DecisionTraceNode ..> TaskItem : refId
+DecisionTraceNode ..> ProjectScheme : refId
+ProjectTask "0..*" --> "0..1" DecisionTraceNode : decisionTraceNodeId
+ProjectScheme "1" *-- "0..*" ProjectTask
+DeciaBridgeController --> DeciaBridgeService
+DeciaBridgeController --> DecisionTraceService
+DeciaBridgeService --> DeciaSessionService
+DeciaBridgeService --> DecisionTraceService
+DeciaBridgeService --> Guard
+DeciaBridgeService --> MessagePort
+DeciaBridgeService --> DomainEvents
+DeciaBridgeService --> AiEngine : fases sugeridas
+DecisionTraceService --> TracePort
+DecisionTraceService --> StoragePort
+SummaryService ..> AnalyticalSummary : recommendationsJson com tarefas e eixo
+MetricCalculator ..> DecisionTraceNode : vw_decisions_with_trace
+CassandraTraceAdapter ..|> TracePort
+CassandraMessageAdapter ..|> MessagePort
+S3StorageAdapter ..|> StoragePort
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph L1["Ator humano"]
-    U1["Dono ou responsável clica Abrir sessão DECIA no projeto"]
-    U2["Participante escreve mensagem e anexa itens do acervo (busca rápida ou arrastar)"]
-    U3["Participante clica Transformar em tarefa numa mensagem classificada"]
-    U4["Participante revisa formulário RF20 pré-preenchido e salva"]
-    U5["Chefe valida ou devolve a decisão final (RF15)"]
-    U6["Participante clica Criar projeto a partir desta sessão"]
-    U7["Qualquer usuário abre tarefa ou projeto e o painel Por que isto existe?"]
-    U8["Auditor exporta o rastro em PDF ou JSON"]
-    U9["ADMIN abre o dashboard RF18"]
+  subgraph ATOR["Ator (dono do projeto · participante · chefe revisor)"]
+    A0([No projeto]) --> A1["Clica Abrir sessão DECIA"]
+    A2([Na sessão]) --> A3{"Ação"}
+    A3 -->|escrever| A4["Mensagem + até 5 anexos do acervo (busca rápida ou arrastar)"]
+    A3 -->|transformar| A5["Transformar em tarefa em mensagem classificada"]
+    A3 -->|criar projeto| A6["Criar projeto a partir desta sessão"]
+    A7([Chefe valida ou devolve a decisão final])
+    A8([Em qualquer tarefa ou projeto]) --> A9["Abre painel Por que isto existe?"]
+    A10["Exporta rastro PDF/JSON"]
   end
-  subgraph L2["Web/BFF (Next.js App Router)"]
-    W1["Anexos inline com thumbnail e ações RF26 · detalhe só com permissão"]
-    W2["Fio de decisão: linha vertical, nós coloridos por classificação, carimbo VALIDADO ou DEVOLVIDO"]
-    W3["Link para a mensagem original, mesmo em sessão ENCERRADA (RF17)"]
+
+  subgraph FE["Next.js / BFF (app/(shell)/projects/[id] · decia/[sessionId] · tasks/[id])"]
+    F1["POST /api/projects/{id}/decia-session"]
+    F2["Composer: AttachmentPicker (TaskCard attachment) · POST /messages"]
+    F3["Formulário do RF20 pré-preenchido (tipo, título, descrição = texto da mensagem, fase sugerida ✦)"]
+    F4["POST /api/decia/sessions/{id}/project"]
+    F5["DecisionThread (fio) + Stamp · navega até a mensagem original"]
+    F6["GET /api/decia/sessions/{id}/trace/export?format=pdf|json"]
   end
-  subgraph L3["ws-application"]
-    S1{"Projeto já tem sessão ativa?"}
-    S2["DeciaSession topic = objective · participantes = responsáveis + chefe do departamento · linkedProjectId"]
-    S3["ProjectService.changeStatus EM_DECISAO · nó PROJETO → aresta ORIGINOU → nó sessão"]
-    S4{"Até 5 anexos e todos acessíveis ao autor?"}
-    S5["SessionMessage + MessageAttachment (snapshotJson) · nó MENSAGEM + arestas ANEXOU"]
-    S6["MessageClassification com linkedTaskId ou linkedProjectId · nó CLASSIFICACAO · aresta CLASSIFICOU"]
-    S7{"label em ARGUMENTO, DIVERGENCIA, RISCO, CONSENSO, PERGUNTA?"}
-    S8["Pré-preenche RF20: tipo TEXTO_MANUAL ou ATA_REGISTRO · título · descrição = texto da mensagem · fase sugerida"]
-    S9["TaskService.create (sourceKind DECIA, sourceRef = messageId) + ProjectTask na fase · nó TAREFA · aresta TRANSFORMOU_EM"]
-    S10{"Decisão VALIDADA?"}
-    S11["Cria TaskItem ATA_REGISTRO na fase APROVACAO do projeto vinculado · stampJson VALIDADO (data, revisor) · projeto APROVADO"]
-    S12["Cria TaskItem ATA_REGISTRO com stampJson DEVOLVIDO e motivo · projeto DEVOLVIDO"]
-    S13["Nós DECISAO e REVISAO · arestas DECIDIU, REVISOU, TRANSFORMOU_EM"]
-    S14["ProjectScheme origin DECIA, sourceSessionId · tarefas a partir de SessionArtifact e FinalDecision nas fases sugeridas"]
-    S15["DecisionTraceService.threadFor: percorre nós e arestas por refId (snapshot preserva tarefa excluída, RF23)"]
-    S16["DecisionTraceService.export → PDF ou JSON · AuditLog TRACE_EXPORTED"]
-    S17["enrichSummaryWithTargets: por recomendação, affectedTaskIds, affectedProjectIds, planAxisId"]
-    S18["completenessIndicator: % projetos CONCLUIDO com decisão VALIDADA em sessão com rastro completo"]
-    E1["409 SESSAO_JA_VINCULADA"]
-    E2["422 VALIDACAO (máx. 5 anexos)"]
-    E3["403 ACESSO_NEGADO (anexo sem permissão)"]
-    E4["422 VALIDACAO (RUIDO não vira tarefa)"]
+
+  subgraph WEB["ws-web · DeciaBridgeController"]
+    W1["JWT · CorrelationIdFilter · rate limit por usuário (mensagens)"]
+    W2["GlobalExceptionHandler"]
   end
-  subgraph L4["IA (AiEngine)"]
-    A1["Recebe tarefas do projeto como contexto da sessão"]
-    A2["Classifica a mensagem (RF7) e liga o argumento à tarefa ou projeto citado ✦"]
-    A3["Sugere a fase do projeto para a nova tarefa ✦"]
-    A4["Compõe esqueleto a partir de artefatos e decisões, fases sugeridas ✦"]
-    A5["Resumo analítico RF11 lista tarefas, projetos e eixo do plano por recomendação ✦"]
+
+  subgraph APP["ws-application · DeciaBridgeService · DecisionTraceService"]
+    P1{"Guard.requireOwner(projeto) ou requireDeptHead?"}
+    P1 -->|não| E1["403 ACESSO_NEGADO"]
+    P1 -->|sim| P2["DeciaSession(topic = objective, participantes = responsáveis + chefe, linkedProjectId) · anexa tarefas como contexto"]
+    P2 --> P3["ProjectScheme.status = EM_DECISAO · DecisionTrace PROJETO → ANEXOU → SESSAO"]
+    P4{"Guard.requireParticipant e sessão ATIVA/REABERTA?"}
+    P4 -->|não| E2["409 SESSAO_NAO_ATIVA ou 403"]
+    P5{"Anexos: até 5 e todos visíveis ao autor?"}
+    P5 -->|mais de 5| E3["422 VALIDACAO details.attachments"]
+    P5 -->|item sem permissão| E4["403 ACESSO_NEGADO"]
+    P5 -->|ok| P6["SessionMessage + MessageAttachment com snapshotJson · DecisionTrace MENSAGEM → ANEXOU → TAREFA/PROJETO"]
+    P7{"Mensagem classificada como ARGUMENTO · DIVERGENCIA · RISCO · CONSENSO · PERGUNTA?"}
+    P7 -->|RUIDO ou sem classificação| E5["409 CLASSIFICACAO_INVALIDA"]
+    P7 -->|sim| P8["TaskItem (TEXTO_MANUAL ou ATA_REGISTRO, sourceKind DECIA) + ProjectTask na fase sugerida · DecisionTrace MENSAGEM → TRANSFORMOU_EM → TAREFA"]
+    P9["ProjectScheme origin DECIA + tarefas dos artefatos (RF13) e das decisões, fases sugeridas pela IA"]
+    P10{"DecisionReview.outcome"}
+    P10 -->|VALIDADA| P11["TaskItem ATA_REGISTRO na fase APROVACAO, stampJson VALIDADO (data, revisor) · projeto APROVADO"]
+    P10 -->|DEVOLVIDA| P12["TaskItem ATA_REGISTRO com carimbo DEVOLVIDO e motivo · projeto DEVOLVIDO"]
+    P13["DecisionTraceService.thread(target): nós + arestas + autores + datas · navegável até a mensagem (mesmo ENCERRADA/ARQUIVADA)"]
+    P14["Export append-only: JSON canônico + PDF (PipelineJob EXPORT_PDF) · checksum"]
+    P15["MetricCalculator: % projetos CONCLUIDO com decisão VALIDADA e rastro completo (objetivo 1)"]
   end
-  subgraph L5["Persistência"]
-    D1[("MySQL: decia_sessions · session_participants · project_schemes · project_tasks · tasks")]
-    D2[("Cassandra: messages_by_session · trace_by_entity")]
-    D3[("MySQL: decision_trace_nodes · decision_trace_edges · message_attachments · message_classifications")]
-    D4[("MySQL: final_decisions · decision_reviews · analytical_summaries · audit_log")]
-    D5[("S3: export PDF ou JSON do rastro")]
-    D6[("MySQL: vw_decisions_with_trace · metric_snapshots")]
+
+  subgraph IA["AiEngine"]
+    I1["CLASSIFICAR_MENSAGEM liga argumento à tarefa/projeto citado (linkedTaskId)"]
+    I2["COMPOR_PROJETO sugere fase da tarefa transformada ✦"]
+    I3["RESUMO_ANALITICO lista por recomendação tarefas, projetos afetados e eixo do plano (RF24)"]
+    I4["AiInferenceLog"]
   end
-  U1 --> S1
-  S1 -->|"sim"| E1
-  S1 -->|"não"| S2 --> A1 --> S3 --> D1
-  S3 --> D3
-  U2 --> S4
-  S4 -->|"mais de 5"| E2
-  S4 -->|"sem permissão"| E3
-  S4 -->|"ok"| S5 --> D2
-  S5 --> D3
-  S5 --> A2 --> S6 --> D3
-  S6 --> W1
-  U3 --> S7
-  S7 -->|"não"| E4
-  S7 -->|"sim"| A3 --> S8 --> U4 --> S9 --> D1
-  S9 --> D3
-  U5 --> S10
-  S10 -->|"VALIDADA"| S11
-  S10 -->|"DEVOLVIDA"| S12
-  S11 --> S13
-  S12 --> S13
-  S13 --> D4
-  S13 --> D3
-  S13 --> D2
-  U6 --> A4 --> S14 --> D1
-  S14 --> D3
-  U7 --> S15 --> D3
-  S15 --> W2 --> W3
-  U8 --> S16 --> D5
-  S16 --> D4
-  A5 --> S17 --> D4
-  U9 --> S18 --> D6
-  classDef err fill:#fde2e2,stroke:#b91c1c,color:#7f1d1d
-  class E1,E2,E3,E4 err
+
+  subgraph DB["Persistência"]
+    D1[("MySQL decia_sessions · session_messages_idx · message_attachments · decision_trace_nodes · decision_trace_edges · tasks · project_tasks")]
+    D2[("Cassandra messages_by_session · trace_by_entity · flag cassandra.enabled")]
+    D3[("S3 exports PDF/JSON · flag storage.s3")]
+    D4[("MySQL view vw_decisions_with_trace · metric_snapshots")]
+  end
+
+  A1 --> F1 --> W1 --> P1
+  P3 --> D1
+  P3 --> D2
+  A4 --> F2 --> W1 --> P4 -->|sim| P5
+  P6 --> D1
+  P6 --> D2
+  P6 --> I1 --> I4
+  A5 --> F3 --> W1 --> P4 --> P7
+  P8 --> I2
+  P8 --> D1
+  A6 --> F4 --> W1 --> P4 --> P9 --> D1
+  A7 --> P10
+  P11 --> D1
+  P12 --> D1
+  A9 --> F5 --> W1 --> P13 --> D1
+  A10 --> F6 --> W1 --> P14 --> D3
+  I3 --> I4
+  P15 --> D4
+  E1 --> W2
+  E2 --> W2
+  E3 --> W2
+  E4 --> W2
+  E5 --> W2
 ```
 
 ## 3. Diagrama de sequência
@@ -447,125 +400,105 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário
-  participant NX as Next.js (App Router)
+  participant U as Usuário
+  participant FE as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
-  participant CS as Cassandra
+  participant CAS as Cassandra
   participant S3 as S3
   participant EV as DomainEvents (AFTER_COMMIT)
 
   Note over U,EV: CA01 — abrir sessão a partir do projeto
-  U->>NX: clica Abrir sessão DECIA em /projects/[id]
-  NX->>C: POST /api/projects/{projectId}/decia-session
-  C->>S: DeciaBridgeService.openSessionFromProject(actorId, projectId)
-  alt projeto já vinculado a sessão ATIVA
-    S-->>C: 409 SESSAO_JA_VINCULADA
-  else ok
-    S->>DB: INSERT decia_sessions (topic = objective, linkedProjectId) · INSERT session_participants (responsáveis + chefe)
-    S->>AI: contexto da sessão = tarefas do projeto (snapshot)
-    S->>DB: UPDATE project_schemes SET status = EM_DECISAO, lastDeciaEventLabel
-    S->>DB: INSERT decision_trace_nodes (PROJETO, MENSAGEM inicial) · INSERT decision_trace_edges (ORIGINOU)
-    S->>CS: INSERT trace_by_entity (espelho)
-    S-)EV: SessionOpenedFromProject
-    EV->>DB: INSERT notifications (participantes) · audit_log
-    S-->>C: 201 DeciaSession
-  end
-
-  Note over U,EV: CA03 e CA04 — anexos do acervo e Transformar em tarefa
-  U->>NX: escreve mensagem e arrasta 2 tarefas e 1 projeto
-  NX->>C: POST /api/sessions/{id}/messages {bodyMd, attachments[3]}
-  C->>S: DeciaBridgeService.attachToMessage(actorId, sessionId, draft, refs)
-  alt mais de 5 anexos
-    S-->>C: 422 VALIDACAO
-  else anexo sem permissão de leitura
+  U->>FE: Abrir sessão DECIA no projeto
+  FE->>C: POST /api/projects/{id}/decia-session
+  C->>S: DeciaBridgeService.openSessionFromProject(actor, id)
+  S->>S: Guard.requireOwner(actor, project.ownerId) ou requireDeptHead
+  alt sem permissão
     S-->>C: 403 ACESSO_NEGADO
   else ok
-    S->>CS: INSERT messages_by_session
-    S->>DB: INSERT message_attachments (snapshotJson) · session_messages_idx
-    S->>DB: INSERT decision_trace_nodes (MENSAGEM) · edges (ANEXOU)
-    S->>AI: classifyMessage(message, attachments)
-    AI-->>S: MessageClassification (ARGUMENTO, linkedTaskId, confidence) ✦
-    S->>DB: INSERT message_classifications · nós CLASSIFICACAO · edge CLASSIFICOU
-    S-->>NX: 201 mensagem com anexos inline
+    S->>DB: insert decia_sessions (topic = objective, linkedProjectId) + session_participants (responsáveis + chefe)
+    S->>DB: update project_schemes status EM_DECISAO, lastDeciaEventAt
+    S->>DB: insert decision_trace_nodes PROJETO, SESSAO + edge ANEXOU
+    S->>EV: SessionOpenedFromProject
+    S-->>C: 201 DeciaSession
   end
-  U->>NX: clica Transformar em tarefa
-  NX->>C: GET /api/messages/{messageId}/to-task
-  C->>S: DeciaBridgeService.toTaskPrefill(actorId, messageId)
-  S->>AI: suggestPhase(messageText, project)
-  AI-->>S: ELABORACAO ✦
-  S-->>NX: 200 formulário RF20 pré-preenchido (TEXTO_MANUAL, título, descrição, fase)
-  U->>NX: confirma
-  NX->>C: POST /api/messages/{messageId}/to-task {taskForm, projectId}
-  C->>S: DeciaBridgeService.transformMessageIntoTask(...)
-  S->>DB: INSERT tasks (sourceKind DECIA, sourceRef = messageId) · INSERT project_tasks (fase)
-  S->>DB: INSERT decision_trace_nodes (TAREFA) · edges (TRANSFORMOU_EM)
-  S->>CS: INSERT trace_by_entity
-  S-)EV: TaskCreatedFromMessage
-  S-->>C: 201 TaskItem
+  EV->>CAS: trace_by_entity (cassandra.enabled)
+  EV->>AI: contexto da sessão = tarefas do projeto (anexos do RF29.CA01)
 
-  Note over U,EV: CA05 — decisão validada ou devolvida vira ATA_REGISTRO automaticamente
-  U->>NX: chefe valida a decisão (RF15)
-  NX->>C: POST /api/decisions/{id}/review {outcome VALIDADA}
-  C->>S: DecisionReview (RF15) → DeciaBridgeService.onDecisionReviewed(decisionId)
-  S->>DB: INSERT tasks (ATA_REGISTRO, fase APROVACAO) · UPDATE final_decisions SET resultingTaskId, stampJson VALIDADO
-  S->>DB: UPDATE project_schemes SET status = APROVADO
-  S->>DB: nós DECISAO e REVISAO · edges DECIDIU, REVISOU, TRANSFORMOU_EM
-  S->>CS: INSERT trace_by_entity
-  S-)EV: DecisionReviewed
-  EV->>DB: INSERT mural_entries (DECISAO_VALIDADA) · notifications
+  Note over U,EV: CA03 + CA04 — mensagem com anexos e Transformar em tarefa
+  U->>FE: escreve mensagem e anexa 2 tarefas
+  FE->>C: POST /api/decia/sessions/{id}/messages {bodyMd, attachments[2]}
+  C->>S: DeciaBridgeService.attachToMessage(actor, id, draft, attachments)
+  S->>S: Guard.requireParticipant + visibilidade de cada anexo
+  alt mais de 5 anexos
+    S-->>C: 422 VALIDACAO details.attachments
+  else ok
+    S->>CAS: insert messages_by_session (TIMEUUID)
+    S->>DB: insert session_messages_idx + message_attachments (snapshotJson)
+    S->>DB: insert decision_trace_nodes MENSAGEM + edge ANEXOU → TAREFA
+    S->>EV: MessageSent
+    S-->>C: 201
+  end
+  EV->>AI: run(CLASSIFICAR_MENSAGEM)
+  AI-->>EV: MessageClassification ARGUMENTO hasEvidence linkedTaskId
+  EV->>DB: insert message_classifications + node CLASSIFICACAO + edge CLASSIFICOU
+  U->>FE: Transformar em tarefa (fase sugerida ✦)
+  FE->>C: POST /api/decia/sessions/{id}/messages/{mid}/to-task (TaskForm)
+  C->>S: DeciaBridgeService.transformMessageIntoTask(actor, id, mid, form)
+  alt classificação RUIDO ou inexistente
+    S-->>C: 409 CLASSIFICACAO_INVALIDA
+  else ok
+    S->>AI: run(COMPOR_PROJETO, sugerir fase)
+    AI-->>S: fase sugerida + AiInferenceLog
+    S->>DB: insert tasks (TEXTO_MANUAL ou ATA_REGISTRO, sourceKind DECIA) + project_tasks (fase) + node TAREFA + edge TRANSFORMOU_EM
+    S-->>C: 201 TaskItem
+  end
 
-  Note over U,EV: CA06 e CA07 — painel Por que isto existe? e exportação
-  U->>NX: abre /tasks/[id] → painel Por que isto existe?
-  NX->>C: GET /api/tasks/{taskId}/trace
-  C->>S: DecisionTraceService.threadFor(TASK, taskId)
-  S->>DB: SELECT nodes, edges por refId (snapshotJson se tarefa excluída)
-  S-->>NX: 200 fio de decisão (mensagens, autores, datas, classificação, decisão, revisor)
-  U->>NX: Exportar PDF
-  NX->>C: GET /api/tasks/{taskId}/trace/export?format=pdf
-  C->>S: DecisionTraceService.export(TASK, taskId, PDF)
-  S->>S3: PUT rastro.pdf (MediaStoragePort)
-  S->>DB: INSERT audit_log (TRACE_EXPORTED)
-  S-->>NX: 200 URL assinada
+  Note over U,EV: CA05 — decisão validada vira tarefa ATA_REGISTRO
+  U->>FE: chefe valida a decisão final (RF15)
+  FE->>C: POST /api/decia/decisions/{did}/review {VALIDADA}
+  C->>S: DecisionReviewService.review → DomainEvents DecisionReviewed
+  S->>EV: DecisionReviewed(VALIDADA)
+  EV->>S: DeciaBridgeService.onDecisionReviewed
+  S->>DB: insert tasks ATA_REGISTRO (fase APROVACAO, stampJson VALIDADO, revisor) + update project_schemes APROVADO + resultingTaskId
+  S->>DB: node DECISAO, REVISAO, TAREFA + edges REVISOU, TRANSFORMOU_EM
+  EV->>CAS: trace_by_entity
+
+  Note over U,EV: CA06 + CA07 — fio de decisão e exportação
+  U->>FE: abre Por que isto existe? na tarefa
+  FE->>C: GET /api/trace?targetType=TASK&targetId=
+  C->>S: DecisionTraceService.thread(TASK, id)
+  S->>DB: nodes + edges + autores + datas (mesmo sessão ENCERRADA)
+  S-->>FE: DecisionThread com links para as mensagens originais
+  U->>FE: exportar rastro
+  FE->>C: GET /api/decia/sessions/{id}/trace/export?format=pdf
+  C->>S: DecisionTraceService.export(id, PDF)
+  S->>S3: put exports/{sessionId}/trace.pdf (PipelineJob EXPORT_PDF)
+  S-->>FE: 202 + link quando pronto (Notification)
 ```
 
 ## 4. Máquina de estados
 
-Entidade central do RF: `ProjectScheme.status` (`ProjectStatus`), dirigida pelo sub-fluxo de `FinalDecision.status` (`DecisionStatus`) dentro de `EM_DECISAO`. O `DecisionTrace` em si não tem estados — é append-only (CA07).
+Entidade central: `FinalDecision.status` (`DecisionStatus`) — é a decisão que fecha o fio e muda o `ProjectStatus` do projeto vinculado (`EM_DECISAO → APROVADO | DEVOLVIDO`). O `DecisionTraceNode` não tem estado: é append-only.
 
 ```mermaid
 stateDiagram-v2
-  direction LR
-  [*] --> RASCUNHO : Criar projeto (RF21) ou Criar a partir da sessão (CA02, origin DECIA)
-  RASCUNHO --> PUBLICADO : publicar
-  RASCUNHO --> EM_DECISAO : Abrir sessão DECIA (CA01)
-  PUBLICADO --> EM_DECISAO : Abrir sessão DECIA (CA01)
-  state EM_DECISAO {
-    [*] --> PROPOSTA
-    PROPOSTA --> EM_REVISAO : IA propõe decisão (RF12), chefe revisa (RF15)
-    EM_REVISAO --> VALIDADA : outcome VALIDADA
-    EM_REVISAO --> DEVOLVIDA : outcome DEVOLVIDA com reason
-    VALIDADA --> SUBSTITUIDA : reabertura (RF14)
-    DEVOLVIDA --> PROPOSTA : nova proposta na sessão
-  }
-  state revisao <<choice>>
-  EM_DECISAO --> revisao
-  revisao --> APROVADO : VALIDADA → ATA_REGISTRO carimbo VALIDADO em APROVACAO (CA05)
-  revisao --> DEVOLVIDO : DEVOLVIDA → ATA_REGISTRO carimbo DEVOLVIDO com motivo (CA05)
-  DEVOLVIDO --> EM_DECISAO : grupo retoma a sessão (RF14)
-  APROVADO --> EM_EXECUCAO : início da execução
-  EM_EXECUCAO --> CONCLUIDO : encerramento
-  CONCLUIDO --> ARQUIVADO : arquivar
-  CONCLUIDO --> [*]
-  note right of EM_DECISAO
-    Toda transição interna gera nós DECISAO e REVISAO
-    e arestas DECIDIU e REVISOU no DecisionTrace
+  [*] --> PROPOSTA: IA propõe a decisão final a partir do resumo (RF12) · nó DECISAO + aresta DECIDIU
+  PROPOSTA --> EM_REVISAO: admin da sessão encaminha ao revisor · projeto continua EM_DECISAO
+  EM_REVISAO --> VALIDADA: DecisionReview VALIDADA → tarefa ATA_REGISTRO em APROVACAO com carimbo VALIDADO · projeto APROVADO (CA05)
+  EM_REVISAO --> DEVOLVIDA: DecisionReview DEVOLVIDA com motivo → tarefa ATA_REGISTRO com carimbo DEVOLVIDO · projeto DEVOLVIDO (CA05)
+  DEVOLVIDA --> SUBSTITUIDA: sessão reaberta (RF14) gera nova decisão PROPOSTA
+  SUBSTITUIDA --> [*]
+  VALIDADA --> [*]
+  note right of VALIDADA
+    Fio completo: MENSAGEM → CLASSIFICACAO → TAREFA → PROJETO → DECISAO → REVISAO.
+    Conta para vw_decisions_with_trace (CA09).
   end note
-  note right of CONCLUIDO
-    Conta no indicador CA09 só se a decisão VALIDADA
-    tiver rastro completo (vw_decisions_with_trace)
+  note left of PROPOSTA
+    Todo nó e aresta são append-only (CA07):
+    reabrir não apaga, substitui.
   end note
 ```
 
@@ -573,95 +506,68 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Next.js (frontend)"]
-    direction TB
-    P1["app/decia/[sessionId]/page.tsx · composer com anexos do acervo"]
-    P2["app/projects/[id]/page.tsx · botão Abrir sessão DECIA · painel Por que isto existe?"]
-    P3["app/tasks/[id]/page.tsx · painel Por que isto existe?"]
-    P4["app/admin/dashboard/page.tsx · indicador objetivo 1"]
-    UI1["components/ui: DecisionThread (fio de decisão) · AttachmentChip · StampBadge VALIDADO/DEVOLVIDO · ToTaskButton"]
+  subgraph FRONT["Frontend Next.js 15"]
+    R1["app/(shell)/projects/[id] (botão Abrir sessão) · decia/[sessionId] (composer, Transformar em tarefa, Criar projeto) · tasks/[id] e projects/[id] (painel Por que isto existe?) · admin/dashboard"]
+    R2["components: AttachmentPicker · TaskCard attachment · DecisionThread · Stamp · Spark ✦ · PhaseBar · Button transformar-tarefa/abrir-decia · Confetti"]
+    BFF["app/bff"]
+    R1 --> R2 --> BFF
   end
-  subgraph WEB["ws-web (REST · br.gov.pr.secid.workstation.web)"]
-    direction TB
-    C1["ProjectDeciaController"]
-    C2["SessionBridgeController"]
-    C3["TaskTraceController"]
+  subgraph WEB["ws-web"]
+    BC["DeciaBridgeController (@Operation RF29.CA01-CA09)"]
+    SEC["SecurityConfig · CorrelationIdFilter · GlobalExceptionHandler (main)"]
   end
-  subgraph APP["ws-application"]
-    direction TB
-    S1["DeciaBridgeService"]
-    S2["DecisionTraceService"]
-    S3["TaskService (RF20) · ProjectService (RF21)"]
-    S4["AiEngine"]
-    PT1["AiProviderPort"]
-    PT2["MediaStoragePort"]
+  subgraph APPL["ws-application"]
+    BS["decia/DeciaBridgeService"]
+    TS["decia/DecisionTraceService (append-only)"]
+    SS["decia/DeciaSessionService · SummaryService · DecisionReviewService"]
+    PS["projects/ProjectService · acervo/TaskService (RF20/RF21)"]
+    MC["metrics/MetricCalculator (vw_decisions_with_trace)"]
+    AIE["ai/AiEngine (CLASSIFICAR_MENSAGEM · COMPOR_PROJETO · RESUMO_ANALITICO)"]
+    GD["security/Guard (sec-b3 + requireParticipant/requireSessionAdmin planejados)"]
+    DE["events/DomainEvents AFTER_COMMIT"]
+    PORTS["ports: MessagePort · TracePort · StoragePort · AiProviderPort"]
   end
   subgraph DOM["ws-domain"]
-    direction TB
-    E1["DeciaSession · SessionParticipant · SessionMessage · MessageAttachment · MessageClassification"]
-    E2["AnalyticalSummary · FinalDecision · DecisionReview · SessionArtifact"]
-    E3["DecisionTraceNode · DecisionTraceEdge · TraceNodeType"]
-    E4["ProjectScheme · ProjectTask · TaskItem"]
+    ENT["DeciaSession · SessionMessage · MessageAttachment · MessageClassification · FinalDecision · DecisionReview · DecisionTraceNode · DecisionTraceEdge · ProjectScheme · ProjectTask · TaskItem (planejado)"]
   end
   subgraph INFRA["ws-infrastructure"]
-    direction TB
-    I1["persistence-mysql: DecisionTraceJpaRepository · FinalDecision/MessageAttachment repositories"]
-    I2["persistence-cassandra: CassandraMessageStore (messages_by_session) · CassandraTraceMirror (trace_by_entity)"]
-    I3["storage-s3: S3TraceExportAdapter (PDF e JSON)"]
-    I4["ai-providers: ClaudeAdapter · GeminiAdapter · circuit breaker"]
-    I5["platform: DomainEventOutbox · AuditLog · Notification · vw_decisions_with_trace"]
+    MY["persistence-mysql decision_trace_* · session_messages_idx · view vw_decisions_with_trace"]
+    CASA["persistence-cassandra messages_by_session · trace_by_entity (flag cassandra.enabled)"]
+    S3A["storage-s3 exports (flag storage.s3)"]
+    AIP["ai-providers (ai-claude · ai-gemini · ai-local)"]
   end
-  subgraph EXT["Serviços externos"]
-    X1(["Claude / Gemini"])
-  end
-  P1 --> C2
-  P2 --> C1
-  P3 --> C3
-  P4 --> C1
-  UI1 -.-> P1
-  UI1 -.-> P2
-  UI1 -.-> P3
-  C1 --> S1
-  C1 --> S2
-  C2 --> S1
-  C3 --> S2
-  S1 --> S2
-  S1 --> S3
-  S1 --> S4
-  S4 -.-> PT1
-  S2 -.-> PT2
-  S1 --> E1
-  S1 --> E2
-  S2 --> E3
-  S3 --> E4
-  S1 --> I1
-  S2 --> I1
-  S1 --> I2
-  S2 --> I2
-  I3 -. implementa .-> PT2
-  I4 -. implementa .-> PT1
-  I4 --> X1
-  S1 --> I5
-  S2 --> I5
-  classDef port stroke-dasharray: 4 3
-  class PT1,PT2 port
+  BFF --> BC --> SEC
+  BC --> BS
+  BC --> TS
+  BS --> SS
+  BS --> PS
+  BS --> TS
+  BS --> GD
+  BS --> DE
+  BS --> AIE
+  DE --> BS
+  DE --> MC
+  TS --> PORTS
+  BS --> PORTS
+  AIE --> PORTS
+  BS --> ENT --> MY --> MYSQL[("MySQL 8")]
+  PORTS --> CASA --> CASS[("Cassandra")]
+  PORTS --> S3A --> S3[("S3 / MinIO")]
+  PORTS --> AIP --> AI["Claude / Gemini / local"]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
-|---|---|
-| RF29.CA01 | Classes `DeciaSession.linkedProjectId`, `DeciaBridgeService.openSessionFromProject`, `ProjectService.changeStatus`; atividades `U1 → S1 → S2 → A1 → S3` (409 SESSAO_JA_VINCULADA); sequência bloco «CA01» (`POST /api/projects/{id}/decia-session`, topic = objective, participantes, EM_DECISAO, nós PROJETO/ORIGINOU); transições `RASCUNHO/PUBLICADO → EM_DECISAO`; componentes `app/projects/[id]`, `ProjectDeciaController` |
-| RF29.CA02 | Classes `ProjectScheme.origin = DECIA`, `ProjectScheme.sourceSessionId`, `AiEngine.composeFromSession`, `SessionArtifact.convertedTaskId`, `DeciaBridgeService.createProjectFromSession`; atividades `U6 → A4 → S14`; transição inicial `[*] → RASCUNHO (origin DECIA)`; componente `SessionBridgeController.createProject` |
-| RF29.CA03 | Classes `SessionMessage 1→0..5 MessageAttachment` (targetType TASK/PROJECT/PLAN, snapshotJson), `DeciaBridgeService.attachToMessage`; atividades `U2 → S4 → S5 → W1` (422 VALIDACAO máx. 5, 403 ACESSO_NEGADO); sequência bloco «CA03 e CA04» (`POST /api/sessions/{id}/messages`, alts 422/403); componentes `AttachmentChip`, `CassandraMessageStore` |
-| RF29.CA04 | Classes `MessageClassification.label`, `MessageClass`, `DeciaBridgeService.toTaskPrefill/transformMessageIntoTask`, `TaskItem.sourceKind = DECIA`, `DecisionTraceEdge.relation = TRANSFORMOU_EM`; atividades `U3 → S7 → A3 → S8 → U4 → S9` (422 para RUIDO); sequência bloco «CA03 e CA04» (`GET/POST /api/messages/{id}/to-task`, suggestPhase ✦); componentes `ToTaskButton`, `TaskService (RF20)` |
-| RF29.CA05 | Classes `FinalDecision.resultingTaskId`, `FinalDecision.stampJson`, `DecisionReview.outcome/reason`, `DeciaBridgeService.onDecisionReviewed`; atividades `U5 → S10 → S11/S12 → S13`; sequência bloco «CA05» (ATA_REGISTRO em APROVACAO, stamp VALIDADO, projeto APROVADO); transições `revisao → APROVADO` e `revisao → DEVOLVIDO`; componente `StampBadge` |
-| RF29.CA06 | Classes `DecisionTraceService.threadFor`, `DecisionTraceNode.classLabel/actorId/at`, `ProjectTask.decisionTraceNodeId`; atividades `U7 → S15 → W2 → W3` (link à mensagem original mesmo com sessão ENCERRADA); sequência bloco «CA06 e CA07» (`GET /api/tasks/{id}/trace`); componentes `DecisionThread`, `app/tasks/[id]`, `app/projects/[id]` |
-| RF29.CA07 | Classes `DecisionTraceNode`/`DecisionTraceEdge` (append-only, nota), `CassandraTraceMirror`, `DecisionTraceService.export`, `MediaStoragePort`, `DecisionTraceNode.snapshotJson`; atividades `U8 → S16 → D5/D4`, `S15` (snapshot RF23); sequência bloco «CA06 e CA07» (`GET .../trace/export?format=pdf`, S3, audit_log); componentes `S3TraceExportAdapter`, `persistence-cassandra` |
-| RF29.CA08 | Classes `AnalyticalSummary.recommendationsJson` ({affectedTaskIds, affectedProjectIds, planAxisId}), `DeciaBridgeService.enrichSummaryWithTargets`, `DeciaSession.planAxisId`; atividades `A5 → S17 → D4`; componente `AnalyticalSummary` em `ws-domain E2` |
-| RF29.CA09 | Classe `DecisionTraceService.completenessIndicator`; atividades `U9 → S18 → D6` (`vw_decisions_with_trace`, `metric_snapshots`); nota do estado `CONCLUIDO`; componentes `app/admin/dashboard`, `platform: vw_decisions_with_trace` |
-
-> Dúvidas de modelagem registradas em `docs/DECISOES.md`: nome do enum da aresta (`relation`) não existe na TAXONOMIA (listado como nota); `409 SESSAO_JA_VINCULADA` e as rotas REST são propostas; `TaskService`/`ProjectService` (RF20/RF21) são dependências assumidas.
-
+| CA | Classe | Passo | Mensagem | Transição | Componente |
+|---|---|---|---|---|---|
+| RF29.CA01 | `DeciaBridgeService.openSessionFromProject`, `DeciaSession.linkedProjectId/topic`, `ProjectStatus EM_DECISAO`, nó PROJETO → ANEXOU → SESSAO | A1 → F1 → P1 (403) → P2 → P3 | 1–12 | `PROPOSTA (projeto EM_DECISAO)` | `BC`, `BS`, `SS` |
+| RF29.CA02 | `DeciaBridgeService.createProjectFromSession`, `SchemeOrigin DECIA`, `ProjectScheme.sourceSessionId`, `SessionArtifact.convertedTaskId` | A6 → F4 → P4 → P9 | — (POST /sessions/{id}/project) | — | `BS`, `PS`, `AIE` |
+| RF29.CA03 | `MessageAttachment` (≤ 5, `snapshotJson`), `DeciaBridgeService.attachToMessage`, `Guard.requireParticipant` | A4 → F2 → P4 → P5 (422/403) → P6 | 13–22 | — | `AttachmentPicker`, `TaskCard attachment`, `CASA` |
+| RF29.CA04 | `DeciaBridgeService.transformMessageIntoTask`, `MessageClassification.label`, `TaskItem sourceKind DECIA`, `ProjectTask.phase`, aresta TRANSFORMOU_EM | A5 → F3 → P7 (409 CLASSIFICACAO_INVALIDA) → P8 → I2 | 23–34 | — | `BS`, `Button transformar-tarefa` |
+| RF29.CA05 | `DeciaBridgeService.onDecisionReviewed`, `FinalDecision.resultingTaskId/stampJson`, `DecisionReview.outcome/reason`, `TaskType ATA_REGISTRO`, fase APROVACAO | A7 → P10 → P11/P12 | 35–41 | `EM_REVISAO → VALIDADA` · `EM_REVISAO → DEVOLVIDA` | `DE`, `Stamp`, `Confetti` |
+| RF29.CA06 | `DecisionTraceService.thread`, `DecisionTraceNode.classLabel/actorId/at`, `DecisionTraceEdge` | A8 → A9 → F5 → P13 | 42–46 | nota de VALIDADA | `DecisionThread`, `TS` |
+| RF29.CA07 | append-only (sem UPDATE/DELETE), `DecisionTraceService.export`, `snapshotJson`, `PipelineJob EXPORT_PDF` | A10 → F6 → P14 | 47–51 | nota de PROPOSTA | `S3A`, `TS` |
+| RF29.CA08 | `AnalyticalSummary.recommendationsJson[].affectedTaskIds/affectedProjectIds/planAxisId`, `SummaryService` | I3 → I4 | — (RF11) | — | `SS`, `AIE` |
+| RF29.CA09 | `MetricCalculator.decisionsWithTrace`, view `vw_decisions_with_trace`, `MetricSnapshot` | P15 → D4 | — (RF18) | nota de VALIDADA | `MC`, `MY`, `admin/dashboard` |
 
 Tela/aba: `/projects/[id]` (esqueleto em `app/(shell)/projects/[id]/page.tsx`) · `/decia` (esqueleto em `app/(shell)/decia/page.tsx`) · `/decia/[sessionId]` (esqueleto em `app/(shell)/decia/[sessionId]/page.tsx`) · `/decia/review` (esqueleto em `app/(shell)/decia/review/page.tsx`) · `/lab/decia` (esqueleto em `app/(shell)/lab/decia/page.tsx`)
