@@ -1,37 +1,27 @@
 [poc-coedicao] http://localhost:1239/?room=minuta-demo&user=Maria  (ws://localhost:1239/<sala>)
-17:57:50.486 ambas conectadas; presença em A = 2
-17:57:50.800 A→B: "MINUTA — Decisão sobre a drenagem do lote 2 (km 12–14)." chegou em 248 ms (inclui o tempo de digitação dos 56 caracteres)
-17:57:50.815 A→B 1 token "§A": 15 ms
-17:57:50.826 A→B 1 token "§B": 11 ms
-17:57:50.839 A→B 1 token "§C": 13 ms
-17:57:50.852 A→B 1 token "§D": 12 ms
-17:57:50.869 A→B 1 token "§E": 17 ms
-17:57:51.213 B→A: chegou em 284 ms
-17:57:51.518 convergiu: true | texto final: "MINUTA — Decisão sobre a drenagem do lote 2 (km 12–14). §A§B§C§D§E Encaminhamento: sondagem complementar até 10/10."
-17:57:51.542 servidor /status: {"minuta-demo":{"conns":2,"updates":115,"textLength":115,"awareness":2}}
-17:57:51.970 captura salva em teste-2-abas.png
-17:57:51.970 RESULTADO: OK — todas as amostras < 1 s (máx 284 ms)
+11:00:42.332 ambas conectadas; presença em A = 2
+11:00:42.692 A→B: "MINUTA — Decisão sobre a drenagem do lote 2 (km 12–14)." chegou em 283 ms (inclui o tempo de digitação dos 56 caracteres)
+11:00:42.702 A→B 1 token "§A": 10 ms
+11:00:42.714 A→B 1 token "§B": 12 ms
+11:00:42.726 A→B 1 token "§C": 11 ms
+11:00:42.737 A→B 1 token "§D": 11 ms
+11:00:42.751 A→B 1 token "§E": 14 ms
+11:00:43.303 concorrente: B→A e A→B chegaram em 430 ms (92 caracteres digitados em paralelo)
+11:00:43.608 convergiu: true | texto final: "PREÂMBULO (inserido por A ao mesmo tempo): MINUTA — Decisão sobre a drenagem do lote 2 (km 12–14). §A§B§C§D§E Encaminhamento: sondagem complementar até 10/10."
+11:00:43.642 servidor /status: {"minuta-demo":{"conns":2,"updates":158,"textLength":158,"awareness":2}}
+11:00:44.177 captura salva em teste-2-abas.png
+11:00:44.177 RESULTADO: OK — todas as amostras < 1 s (máx 430 ms)
 {
   "samples": [
     {
       "dir": "A→B",
       "chars": 56,
-      "ms": 248
+      "ms": 283
     },
     {
       "dir": "A→B (2 chars)",
       "chars": 2,
-      "ms": 15
-    },
-    {
-      "dir": "A→B (2 chars)",
-      "chars": 2,
-      "ms": 11
-    },
-    {
-      "dir": "A→B (2 chars)",
-      "chars": 2,
-      "ms": 13
+      "ms": 10
     },
     {
       "dir": "A→B (2 chars)",
@@ -41,12 +31,22 @@
     {
       "dir": "A→B (2 chars)",
       "chars": 2,
-      "ms": 17
+      "ms": 11
     },
     {
-      "dir": "B→A",
-      "chars": 49,
-      "ms": 284
+      "dir": "A→B (2 chars)",
+      "chars": 2,
+      "ms": 11
+    },
+    {
+      "dir": "A→B (2 chars)",
+      "chars": 2,
+      "ms": 14
+    },
+    {
+      "dir": "B→A ∥ A→B (concorrente)",
+      "chars": 92,
+      "ms": 430
     }
   ],
   "presence": {
@@ -55,5 +55,5 @@
   },
   "ok": true,
   "converged": true,
-  "finalText": "MINUTA — Decisão sobre a drenagem do lote 2 (km 12–14). §A§B§C§D§E Encaminhamento: sondagem complementar até 10/10."
+  "finalText": "PREÂMBULO (inserido por A ao mesmo tempo): MINUTA — Decisão sobre a drenagem do lote 2 (km 12–14). §A§B§C§D§E Encaminhamento: sondagem complementar até 10/10."
 }

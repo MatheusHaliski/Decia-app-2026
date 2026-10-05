@@ -5,7 +5,7 @@
 ## 0. Resumo executivo
 - **Recomendação:** **Yjs (CRDT)** no cliente e no servidor; transporte **WebSocket próprio no Spring Boot** (não STOMP) falando o protocolo y-websocket (`y-protocols` sync + awareness), implementado como adapter da porta **`CollabDocPort`** em `ws-infrastructure/collab-yjs`; **presença (awareness) e fan-out entre instâncias via Redis pub/sub**; **persistência** = snapshot binário do `Y.Doc` no **S3** + metadados/versões no **MySQL** + updates incrementais e eventos no **Cassandra** (append-only, mesmo padrão do rastro de decisão). Editor: TipTap/ProseMirror com `y-prosemirror` (cursores, sugestões e comentários como marks).
 - **Por quê:** CRDT elimina a transformação de operações no servidor (OT exige servidor central com histórico ordenado e é frágil para texto rico); Yjs tem o ecossistema mais maduro (bindings ProseMirror/TipTap/CodeMirror, awareness, `y-indexeddb` para offline) e desempenho superior ao Automerge em documentos de texto; manter o transporte no Spring preserva o modelo de segurança (JWT do RF2, `accessClass`, auditoria, `correlationId`) e evita um terceiro runtime em produção.
-- **PoC:** 2 abas sincronizadas com **11–17 ms por tecla** em localhost (máx. 284 ms para rajada de 49 caracteres digitados um a um), convergência confirmada, presença com cursores coloridos. Meta de produto (≤ 300 ms fim a fim na rede do estado) é folgada: o orçamento de latência é dominado pela rede, não pelo CRDT.
+- **PoC:** 2 abas sincronizadas com **10–14 ms por tecla** em localhost (máx. 430 ms para 92 caracteres digitados em paralelo pelas duas abas, uma no início e outra no fim do texto), convergência confirmada em edição realmente concorrente, presença com cursores coloridos. Lição da PoC: o caret local precisa ser mapeado pelas edições remotas (`Y.RelativePosition`), senão as frases se misturam. Meta de produto (≤ 300 ms fim a fim na rede do estado) é folgada: o orçamento de latência é dominado pela rede, não pelo CRDT.
 - **Riscos principais:** tamanho do histórico Yjs em documentos longevos (mitigado por snapshot + GC), número de editores simultâneos (limite 10 por documento), e a fronteira RESTRITO/SIGILOSO (sala só no backend, sem IA externa, cifragem em repouso).
 
 ## 1. Algoritmo de convergência: Yjs × Automerge × OT
@@ -76,7 +76,7 @@ Decisão proposta: **B por padrão**, **A como opção "abrir no provedor"** ape
 
 | Requisito | Meta | Como medir / garantir |
 |---|---|---|
-| Latência fim a fim (tecla → tela do outro) | **≤ 300 ms p95** na rede do estado (≤ 150 ms em LAN) | PoC: 11–17 ms localhost. Orçamento: RTT rede (50–120 ms) + Redis pub/sub (< 2 ms) + fan-out + render. Métrica `collab_update_latency_ms` (timestamp no awareness, como na PoC) |
+| Latência fim a fim (tecla → tela do outro) | **≤ 300 ms p95** na rede do estado (≤ 150 ms em LAN) | PoC: 10–14 ms localhost. Orçamento: RTT rede (50–120 ms) + Redis pub/sub (< 2 ms) + fan-out + render. Métrica `collab_update_latency_ms` (timestamp no awareness, como na PoC) |
 | Editores simultâneos por documento | **10 editores** (hard limit) + leitores ilimitados via snapshot + SSE | `collab:{docId}:editors` no Redis; o 11º entra como leitor com aviso; `editorLimit` configurável por EMPRESA |
 | Tamanho do documento | ≤ 1 MB de estado Yjs (≈ 200 páginas) | Snapshot + GC; alerta em 512 kB |
 | Disponibilidade | Falha do Redis → instância única continua; falha do compactador → só cresce o log; falha do Cassandra → **escrita bloqueada** (não aceitar updates sem persistir) | Testcontainers nos testes de integração; chaos test de reconexão |

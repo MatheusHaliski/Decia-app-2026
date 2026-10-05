@@ -28,23 +28,29 @@ CHROME=/opt/pw-browsers/chromium-1194/chrome-linux/chrome npm test
 
 ```
 ambas conectadas; presença em A = 2
-A→B: "MINUTA — Decisão sobre a drenagem do lote 2 (km 12–14)." chegou em 248 ms (inclui o tempo de digitação dos 56 caracteres)
-A→B 1 token "§A": 15 ms
-A→B 1 token "§B": 11 ms
-A→B 1 token "§C": 13 ms
-A→B 1 token "§D": 12 ms
-A→B 1 token "§E": 17 ms
-B→A: chegou em 284 ms
-convergiu: true | texto final: "MINUTA — Decisão sobre a drenagem do lote 2 (km 12–14). §A§B§C§D§E Encaminhamento: sondagem complementar até 10/10."
-servidor /status: {"minuta-demo":{"conns":2,"updates":115,"textLength":115,"awareness":2}}
-RESULTADO: OK — todas as amostras < 1 s (máx 284 ms)
+A→B: "MINUTA — Decisão sobre a drenagem do lote 2 (km 12–14)." chegou em 283 ms (inclui o tempo de digitação dos 56 caracteres)
+A→B 1 token "§A": 10 ms
+A→B 1 token "§B": 12 ms
+A→B 1 token "§C": 11 ms
+A→B 1 token "§D": 11 ms
+A→B 1 token "§E": 14 ms
+concorrente: B→A e A→B chegaram em 430 ms (92 caracteres digitados em paralelo)
+convergiu: true | texto final: "PREÂMBULO (inserido por A ao mesmo tempo): MINUTA — Decisão sobre a drenagem do lote 2 (km 12–14). §A§B§C§D§E Encaminhamento: sondagem complementar até 10/10."
+servidor /status: {"minuta-demo":{"conns":2,"updates":158,"textLength":158,"awareness":2}}
+captura salva em teste-2-abas.png
+RESULTADO: OK — todas as amostras < 1 s (máx 430 ms)
 ```
 
-- **Latência por tecla (A→B, localhost): 11–17 ms**; o tempo de 248/284 ms das frases inteiras é dominado pela digitação simulada caractere a caractere (56 e 49 updates), não pelo transporte.
-- Os dois lados convergiram para o mesmo texto após edições concorrentes (Carlos escreveu no fim enquanto o cursor de Maria estava no meio).
+- **Latência por tecla (A→B, localhost): 10–14 ms**; o tempo das frases inteiras (430 ms no passo concorrente) é dominado pela digitação simulada caractere a caractere, não pelo transporte.
+- **Edição realmente concorrente** (passo 3): Maria insere um preâmbulo no **início** enquanto Carlos escreve no **fim**, ao mesmo tempo (`Promise.all`, sem esperar um pelo outro). Os dois lados convergiram para o mesmo texto e cada frase ficou contígua. Esse passo revelou um defeito do cliente da PoC (o caret era restaurado por offset absoluto e "andava para trás" quando chegava texto remoto antes dele, misturando as frases); corrigido mapeando o caret pelo delta do update remoto — no editor real isso é o `Y.RelativePosition` (COEDICAO_TECNICA.md).
 - Presença: cada aba vê 2 estados de awareness (avatar + cursor colorido do outro usuário).
 
 ![captura das 2 abas](teste-2-abas.png)
+
+## Robustez do servidor (revisão)
+- Frame WebSocket vazio, truncado ou de tipo desconhecido fecha **só aquela conexão** (código 1003) e é registrado no log; o processo e as outras salas continuam.
+- `/vendor/<pacote>/<sub>` recusa segmentos `.`/`..` (inclusive codificados, `%2F..%2F`) e só serve o arquivo se o caminho canônico (`realpath`) continuar dentro do pacote escolhido em `node_modules`.
+- `test.mjs` mata o servidor mesmo quando o Chromium não sobe (o `launch` está dentro do `try/finally`), para a porta 1239 não ficar presa.
 
 ## O que a PoC não cobre (fica para o adapter real)
 Persistência (snapshot S3 + metadados MySQL + eventos Cassandra), autenticação do WebSocket (JWT do RF2), limite de editores por documento, RESTRITO/SIGILOSO (sala só no backend interno, sem provedor externo), reconexão com fila offline (`y-indexeddb`) e editor rico com modo revisão (sugestões) — ver `docs/produto/COEDICAO_TECNICA.md`.

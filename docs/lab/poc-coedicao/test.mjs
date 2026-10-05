@@ -12,9 +12,11 @@ const log = (...a) => console.log(new Date().toISOString().slice(11, 23), ...a);
 const server = spawn(process.execPath, ['server.mjs', String(PORT)], { stdio: ['ignore', 'pipe', 'inherit'] });
 await new Promise((r) => server.stdout.on('data', (d) => { process.stdout.write(d); if (String(d).includes('http://')) r(); }));
 
-const browser = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
 const results = { samples: [], presence: {}, ok: false };
+let browser;
 try {
+  // o launch fica dentro do try: se o Chromium não subir, o finally ainda mata o servidor (porta 1239 não fica presa)
+  browser = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
   const ctxA = await browser.newContext({ viewport: { width: 640, height: 520 } });
   const ctxB = await browser.newContext({ viewport: { width: 640, height: 520 } });
   const a = await ctxA.newPage(), b = await ctxB.newPage();
@@ -48,21 +50,29 @@ try {
     log(`A→B 1 token "${marker}": ${ms} ms`);
   }
 
-  // 3) B digita, A recebe (edição concorrente no fim do texto)
+  // 3) edição realmente concorrente: B digita no FIM enquanto A digita no INÍCIO, ao mesmo tempo (Promise.all),
+  //    sem esperar um pelo outro. Mede B→A (inclui a digitação) e, no passo 4, exige que os dois textos convirjam.
   await b.click('#editor');
   await b.keyboard.press('End');
+  await a.click('#editor');
+  await a.keyboard.press('Home');
   const texto2 = ' Encaminhamento: sondagem complementar até 10/10.';
+  const texto3 = 'PREÂMBULO (inserido por A ao mesmo tempo): ';
   const t2 = Date.now();
-  await b.keyboard.type(texto2, { delay: 0 });
-  await a.waitForFunction((t) => document.getElementById('editor').textContent.includes(t), texto2, { timeout: 1000 });
+  await Promise.all([b.keyboard.type(texto2, { delay: 0 }), a.keyboard.type(texto3, { delay: 0 })]);
+  await Promise.all([
+    a.waitForFunction((t) => document.getElementById('editor').textContent.includes(t), texto2, { timeout: 1000 }),
+    b.waitForFunction((t) => document.getElementById('editor').textContent.includes(t), texto3, { timeout: 1000 }),
+  ]);
   const d2 = Date.now() - t2;
-  results.samples.push({ dir: 'B→A', chars: texto2.length, ms: d2 });
-  log(`B→A: chegou em ${d2} ms`);
+  results.samples.push({ dir: 'B→A ∥ A→B (concorrente)', chars: texto2.length + texto3.length, ms: d2 });
+  log(`concorrente: B→A e A→B chegaram em ${d2} ms (${texto2.length + texto3.length} caracteres digitados em paralelo)`);
 
   // 4) convergência: os dois textos são idênticos
   await a.waitForTimeout(300);
   const [ta, tb] = await Promise.all([a.evaluate(() => document.getElementById('editor').textContent), b.evaluate(() => document.getElementById('editor').textContent)]);
-  results.converged = ta === tb; results.finalText = ta;
+  results.converged = ta === tb && ta.includes(texto1.trim()) && ta.includes(texto2.trim()) && ta.includes(texto3.trim());
+  results.finalText = ta;
   log('convergiu:', results.converged, '| texto final:', JSON.stringify(ta));
   results.presence = { A: await a.evaluate(() => window.__presenceCount), B: await b.evaluate(() => window.__presenceCount) };
   const status = await (await fetch(`http://localhost:${PORT}/status`)).json();
@@ -84,7 +94,7 @@ try {
   log(results.ok ? `RESULTADO: OK — todas as amostras < 1 s (máx ${max} ms)` : `RESULTADO: FALHOU (máx ${max} ms, convergiu=${results.converged})`);
   console.log(JSON.stringify(results, null, 2));
 } finally {
-  await browser.close();
+  if (browser) await browser.close();
   server.kill();
 }
 process.exit(results.ok ? 0 : 1);

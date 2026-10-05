@@ -61,19 +61,28 @@ wss.on('connection', (ws, req) => {
   ws.binaryType = 'arraybuffer';
   const controlled = new Set(); // clientIDs de awareness desta conexão
   ws.on('message', (data) => {
-    const dec = decoding.createDecoder(new Uint8Array(data));
-    const enc = encoding.createEncoder();
-    const type = decoding.readVarUint(dec);
-    if (type === MSG_SYNC) {
-      encoding.writeVarUint(enc, MSG_SYNC);
-      syncProtocol.readSyncMessage(dec, enc, room.doc, ws);
-      if (encoding.length(enc) > 1) send(ws, encoding.toUint8Array(enc));
-    } else if (type === MSG_AWARENESS) {
-      const upd = decoding.readVarUint8Array(dec);
-      // registra os clientIDs para limpar quando a conexão cair
-      const d2 = decoding.createDecoder(upd); const n = decoding.readVarUint(d2);
-      for (let i = 0; i < n; i++) { controlled.add(decoding.readVarUint(d2)); decoding.readVarUint(d2); decoding.readVarString(d2); }
-      awarenessProtocol.applyAwarenessUpdate(room.awareness, upd, ws);
+    // Frame vazio, truncado ou fora do protocolo: o erro fica nesta conexão (fecha só ela, 1003 = dado inaceitável),
+    // nunca derruba o processo e as outras salas.
+    try {
+      const dec = decoding.createDecoder(new Uint8Array(data));
+      const enc = encoding.createEncoder();
+      const type = decoding.readVarUint(dec);
+      if (type === MSG_SYNC) {
+        encoding.writeVarUint(enc, MSG_SYNC);
+        syncProtocol.readSyncMessage(dec, enc, room.doc, ws);
+        if (encoding.length(enc) > 1) send(ws, encoding.toUint8Array(enc));
+      } else if (type === MSG_AWARENESS) {
+        const upd = decoding.readVarUint8Array(dec);
+        // registra os clientIDs para limpar quando a conexão cair
+        const d2 = decoding.createDecoder(upd); const n = decoding.readVarUint(d2);
+        for (let i = 0; i < n; i++) { controlled.add(decoding.readVarUint(d2)); decoding.readVarUint(d2); decoding.readVarString(d2); }
+        awarenessProtocol.applyAwarenessUpdate(room.awareness, upd, ws);
+      } else {
+        throw new Error(`tipo de mensagem desconhecido: ${type}`);
+      }
+    } catch (e) {
+      console.warn(`[poc-coedicao] mensagem inválida em "${roomName}": ${e.message}`);
+      ws.close(1003, 'mensagem inválida');
     }
   });
   ws.on('close', () => {
@@ -99,6 +108,9 @@ function resolveVendor(spec) {
   const m = spec.match(/^(@[^/]+\/[^/]+|[^/]+)(?:\/(.*))?$/);
   if (!m) return null;
   const [, pkg, sub] = m;
+  // nenhum segmento pode ser "." / ".." nem conter barra invertida: o pacote e o sub-caminho ficam dentro de node_modules
+  const segments = [...pkg.split('/'), ...(sub ? sub.split('/') : [])];
+  if (segments.some((seg) => seg === '' || seg === '.' || seg === '..' || seg.includes('\\'))) return null;
   const pkgDir = path.join(NODE_MODULES, pkg);
   const pj = JSON.parse(fs.readFileSync(path.join(pkgDir, 'package.json'), 'utf8'));
   const key = sub ? `./${sub}` : '.';
@@ -113,7 +125,14 @@ function resolveVendor(spec) {
   if (!file && sub && fs.existsSync(path.join(pkgDir, sub)) && fs.statSync(path.join(pkgDir, sub)).isFile()) file = `./${sub}`; // import relativo interno (./trait/x.js)
   if (!file && sub && fs.existsSync(path.join(pkgDir, sub + '.js'))) file = `./${sub}.js`;
   if (!file && !sub) file = pj.module || pj.main;
-  return file ? path.join(pkgDir, file) : null;
+  if (!file) return null;
+  // canonicaliza (resolve symlinks e "..") e exige que o arquivo final continue dentro do pacote escolhido
+  const resolved = path.resolve(pkgDir, file);
+  if (!fs.existsSync(resolved)) return null;
+  const realPkgDir = fs.realpathSync(pkgDir);
+  const real = fs.realpathSync(resolved);
+  if (real !== realPkgDir && !real.startsWith(realPkgDir + path.sep)) return null;
+  return real;
 }
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://x');

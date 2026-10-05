@@ -80,10 +80,23 @@ const editor = $('editor');
 let applyingRemote = false;
 let updates = 0;
 
-function render() {
+// Reaplica o texto e MAPEIA o caret local pelo delta remoto: sem isso, um colega inserindo texto antes do meu caret
+// faria meu caret "andar para trás" (offset absoluto) e minhas próximas letras cairiam no meio do texto dele. É o que o
+// editor de verdade faz com Y.RelativePosition (COEDICAO_TECNICA.md); aqui o delta do evento basta.
+function render(delta) {
   const sel = getCaret();
   editor.textContent = ytext.toString();
-  if (sel != null) setCaret(sel);
+  if (sel != null) setCaret(delta ? mapCaret(sel, delta) : sel);
+}
+function mapCaret(pos, delta) {
+  let idx = 0, p = pos;
+  for (const op of delta) {
+    if (idx >= p) break;
+    if (op.retain) idx += op.retain;
+    else if (op.insert) { const len = op.insert.length; if (idx < p) p += len; idx += len; }
+    else if (op.delete) { p -= Math.min(op.delete, p - idx); }
+  }
+  return p;
 }
 function getCaret() {
   const s = window.getSelection();
@@ -109,7 +122,7 @@ editor.addEventListener('input', () => {
 });
 ytext.observe((ev, tr) => {
   if (tr.origin === 'local') return;
-  applyingRemote = true; render(); applyingRemote = false;
+  applyingRemote = true; render(ev.delta); applyingRemote = false;
   updates++; $('updates').textContent = updates;
   // latência: quem digita grava Date.now() no awareness (campo typedAt); aqui comparamos ao recebimento do update
   const states = [...awareness.getStates().values()];
