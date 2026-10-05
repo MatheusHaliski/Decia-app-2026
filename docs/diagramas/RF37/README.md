@@ -1,194 +1,70 @@
 # RF37 — Registrar reuniões com a Ata Viva (transcrição ou gravação → ata como tarefa + tarefas de encaminhamento com responsável e prazo dentro do projeto)
-**HU:** HU37 · **Sprint (board Work Station):** Product Backlog (não priorizado — pós-Sprint 4) · **Equivalente FAI:** RF13 artefatos automáticos (ata) + RF36 foto com manequim (captura do mundo real para dentro do sistema) · **Aba/rota:** ação "Nova reunião" na sessão DECIA ou no projeto (`/meetings/new`)
-**Critérios de aceite cobertos:** RF37.CA01 · RF37.CA02 · RF37.CA03 · RF37.CA04 · RF37.CA05
+**HU:** HU37 · **Sprint (board Work Station):** Product Backlog (não comprometido na Sprint 4) · **Equivalente FAI:** RF13 artefatos automáticos (ata) + RF36 foto com manequim (captura do mundo real para dentro do sistema) · **Aba/rota:** ação **Nova reunião** na sessão DECIA (`/decia/[sessionId]`) ou no projeto (`/projects/[id]`), fluxo em `/meetings/new`, `/meetings/[id]` (gravação, upload, transcrição colada, ata proposta, ratificação)
+**Critérios de aceite cobertos:** RF37.CA01 · CA02 · CA03 · CA04 · CA05 (corpo do card, inalterado) — regra: o **título do card** define o RF e o corpo traz os próprios CAs.
 
-> Contexto DECIA (bounded context 5). Entidade central: `Meeting` (status GRAVANDO → TRANSCREVENDO → ATA_PROPOSTA → CONFIRMADA | CONTESTADA). A ata vira `TaskItem` do tipo `ATA_REGISTRO` com `sourceKind = ATA_VIVA`; cada encaminhamento vira `TaskItem` ligado por `ProjectTaskDependency` à ata. A publicação na sessão reaproveita `SessionMessage` + `MessageAttachment` (RF29) e cria o nó `ATA_VIVA` no `DecisionTrace`. Pontos: `ATA_RATIFICADA` (+3) e `ENCAMINHAMENTO_CUMPRIDO` (+5) via RF42.
+`Meeting` (`sessionId` ou `projectId`, `source` GRAVACAO_NAVEGADOR · ARQUIVO · TRANSCRICAO_COLADA, `status` `MeetingStatus` GRAVANDO · TRANSCREVENDO · ATA_PROPOSTA · CONFIRMADA · CONTESTADA, `audioMediaId`, `minutesTaskId`, `followUpTaskIdsJson`, `ratificationDeadlineAt` 48 h) com `MeetingTranscript` (texto AES-GCM, `segmentsJson` por falante classificado como no RF7) e `RecordingConsent` por participante (LGPD). Áudio vai para `restricted/` (`OwnMedia`), passa por magic bytes e limite por formato, e é **apagado após a transcrição** por padrão (`Company.recordingRetentionPolicy`). A IA (`TRANSCREVER`, `ATA_VIVA`) gera a **ata estruturada** (participantes, pauta, deliberações, encaminhamentos o quê/quem/quando, divergências, pendências); o usuário **confirma antes de persistir**: ata → `TaskItem` ATA_REGISTRO (`sourceKind ATA_VIVA`) no projeto; cada encaminhamento → `TaskItem` com `responsibleId` e `dueAt` + `ProjectTaskDependency` para a ata. A ata é publicada na sessão como mensagem com anexos (RF29) e entra no rastro (nó ATA_VIVA); participantes ratificam ou contestam em 48 h (`Notification`), e ratificação credita DP (`ATA_RATIFICADA`, RF42).
 
 ## 1. Diagrama de classes
 
 ```mermaid
 classDiagram
-  direction LR
+direction LR
 
+namespace ws_domain_decia {
   class Meeting {
     <<entity>>
-    +UUID id
-    +UUID sessionId
-    +UUID projectId
-    +UUID organizerId
-    +String title
-    +Instant startedAt
-    +Instant endedAt
-    +MeetingSource source
-    +UUID audioMediaId
-    +MeetingStatus status
-    +UUID minutesTaskId
-    +List~UUID~ followUpTaskIdsJson
-    +Instant ratificationDeadlineAt
-    +UUID aiInferenceId
+    +id: UUID
+    +sessionId: UUID
+    +projectId: UUID
+    +organizerId: UUID
+    +title: String
+    +startedAt: Instant
+    +endedAt: Instant
+    +source: MeetingSource
+    +audioMediaId: UUID
+    +status: MeetingStatus
+    +minutesTaskId: UUID
+    +followUpTaskIdsJson: JSON
+    +ratificationDeadlineAt: Instant
+    +aiInferenceId: UUID
   }
   class MeetingTranscript {
     <<entity>>
-    +UUID id
-    +UUID meetingId
-    +String text
-    +List~Segment~ segmentsJson
-    +String language
-    +String provider
+    +id: UUID
+    +meetingId: UUID
+    +text: String
+    +segmentsJson: JSON
+    +language: String
+    +provider: String
   }
   class RecordingConsent {
     <<entity>>
-    +UUID id
-    +UUID meetingId
-    +UUID userId
-    +boolean consented
-    +Instant at
-    +String ip
-  }
-  class TaskItem {
-    <<entity>>
-    +UUID id
-    +UUID ownerId
-    +String title
-    +TaskType type
-    +TaskCategory category
-    +SourceKind sourceKind
-    +String sourceRef
-    +UUID responsibleId
-    +LocalDate dueAt
-    +TaskState state
-    +AccessClassification accessClass
-    +boolean aiGenerated
-    +UUID aiInferenceId
-  }
-  class ProjectTask {
-    <<entity>>
-    +UUID id
-    +UUID projectId
-    +UUID taskId
-    +ProjectPhase phase
-    +int sortOrder
-    +UUID responsibleId
-    +LocalDate dueAt
-    +UUID decisionTraceNodeId
-  }
-  class ProjectTaskDependency {
-    <<entity>>
-    +UUID id
-    +UUID projectId
-    +UUID predecessorProjectTaskId
-    +UUID successorProjectTaskId
-    +String type
-    +int lagDays
+    +id: UUID
+    +meetingId: UUID
+    +userId: UUID
+    +consented: boolean
+    +at: Instant
+    +ip: String
   }
   class SessionMessage {
     <<entity>>
-    +TimeUUID id
-    +UUID sessionId
-    +UUID authorId
-    +String authorKind
-    +String bodyMd
-    +Instant sentAt
-    +List~UUID~ attachmentsJson
-    +UUID classificationId
-    +String correlationId
+    +id: TIMEUUID
+    +sessionId: UUID
+    +authorKind: String
+    +bodyMd: String
+    +attachmentsJson: JSON
   }
   class MessageAttachment {
     <<entity>>
-    +UUID id
-    +UUID messageId
-    +String targetType
-    +UUID targetId
-    +String snapshotJson
-    +boolean usedInDecision
-  }
-  class MessageClassification {
-    <<entity>>
-    +UUID id
-    +UUID messageId
-    +MessageClass label
-    +BigDecimal confidence
-    +boolean hasEvidence
-    +UUID linkedTaskId
-    +UUID aiInferenceId
+    +messageId: UUID
+    +targetType: String
+    +targetId: UUID
   }
   class DecisionTraceNode {
     <<entity>>
-    +UUID id
-    +UUID sessionId
-    +TraceNodeType nodeType
-    +UUID refId
-    +String label
-    +String classLabel
-    +UUID actorId
-    +Instant at
+    +nodeType: TraceNodeType
+    +refId: UUID
   }
-  class DecisionTraceEdge {
-    <<entity>>
-    +UUID id
-    +UUID fromNodeId
-    +UUID toNodeId
-    +String relation
-    +Instant at
-  }
-  class Notification {
-    <<entity>>
-    +UUID id
-    +UUID recipientId
-    +NotificationType type
-    +String category
-    +String resourceType
-    +UUID resourceId
-    +String groupKey
-    +boolean read
-  }
-  class PipelineJob {
-    <<entity>>
-    +UUID id
-    +String type
-    +String targetType
-    +UUID targetId
-    +String status
-    +int attempts
-    +String lastError
-  }
-  class MediaObject {
-    <<entity>>
-    +UUID id
-    +String bucket
-    +String key
-    +String mimeType
-    +long sizeBytes
-    +String sha256
-    +AccessClassification accessClass
-  }
-  class AiInferenceLog {
-    <<entity>>
-    +UUID id
-    +AiCapability capability
-    +String provider
-    +String model
-    +String result
-    +boolean fallbackUsed
-    +String maskedFields
-    +String correlationId
-  }
-  class Company {
-    <<entity>>
-    +UUID id
-    +String legalName
-    +String recordingRetentionPolicy
-  }
-  class DeciaPointsLedgerEntry {
-    <<entity>>
-    +UUID id
-    +UUID userId
-    +int delta
-    +PointsEvent eventCode
-    +String idempotencyKey
-    +String status
-  }
-
   class MeetingStatus {
     <<enum>>
     GRAVANDO
@@ -203,253 +79,263 @@ classDiagram
     ARQUIVO
     TRANSCRICAO_COLADA
   }
-  class TaskType {
-    <<enum>>
-    ATA_REGISTRO
-    TEXTO_IA
-    DOCUMENTO
-    ...13 valores
-  }
-  class SourceKind {
-    <<enum>>
-    ATA_VIVA
-    DECIA
-    AUTOPILOT
-    ...11 valores
-  }
-  class MessageClass {
-    <<enum>>
-    ARGUMENTO
-    DIVERGENCIA
-    RISCO
-    CONSENSO
-    PERGUNTA
-    RUIDO
-  }
-  class TraceNodeType {
-    <<enum>>
-    ATA_VIVA
-    MENSAGEM
-    TAREFA
-    DECISAO
-    ...9 valores
-  }
-  class AiCapability {
-    <<enum>>
-    TRANSCREVER
-    ATA_VIVA
-    CLASSIFICAR_MENSAGEM
-    ...24 valores
-  }
-  class PointsEvent {
-    <<enum>>
-    ATA_RATIFICADA
-    ENCAMINHAMENTO_CUMPRIDO
-    ...17 valores
-  }
+}
 
-  class MeetingController {
-    <<controller>>
-    +POST meetings
-    +POST meetings_id_consents
-    +POST meetings_id_audio
-    +POST meetings_id_transcript
-    +GET meetings_id_draft
-    +POST meetings_id_confirm
-    +POST meetings_id_ratify
-    +POST meetings_id_contest
+namespace ws_domain_acervo_projects {
+  class TaskItem {
+    <<entity>>
+    +id: UUID
+    +title: String
+    +type: TaskType
+    +category: TaskCategory
+    +sourceKind: SourceKind
+    +responsibleId: UUID
+    +dueAt: LocalDate
+    +state: TaskState
+    +aiGenerated: boolean
+    .. +45 campos ..
   }
+  class ProjectTask {
+    <<entity>>
+    +projectId: UUID
+    +taskId: UUID
+    +phase: ProjectPhase
+    +responsibleId: UUID
+    +dueAt: LocalDate
+  }
+  class ProjectTaskDependency {
+    <<entity>>
+    +predecessorProjectTaskId: UUID
+    +successorProjectTaskId: UUID
+    +type: String
+  }
+}
+
+namespace ws_domain_platform_identity {
+  class MediaObject {
+    <<entity>>
+    +id: UUID
+    +objectKey: String
+    +mimeType: String
+    +accessClass: String
+    +ownerId: UUID
+  }
+  class Company {
+    <<entity>>
+    +id: UUID
+    +recordingRetentionPolicy: String
+  }
+  class UserConsent {
+    <<entity>>
+    +userId: UUID
+    +purpose: ConsentPurpose
+    +granted: boolean
+  }
+  class DeciaPointsLedgerEntry {
+    <<entity>>
+    +eventCode: PointsEvent
+    +idempotencyKey: String
+  }
+  class PipelineJob {
+    <<entity>>
+    +type: String
+    +status: PipelineJobStatus
+  }
+}
+
+namespace ws_application {
   class MeetingService {
     <<service>>
-    +start(actor, sessionId, projectId, source) Meeting
-    +registerConsent(meetingId, userId, consented, ip) RecordingConsent
-    +attachAudio(meetingId, mediaId) PipelineJob
-    +pasteTranscript(meetingId, text) MeetingTranscript
-    +generateDraft(meetingId) AtaDraft
-    +confirm(meetingId, draft) Meeting
-    +publishInSession(meetingId) SessionMessage
-    +ratify(meetingId, userId) Meeting
-    +contest(meetingId, userId, reason) Meeting
-    +purgeAudio(meetingId) void
+    +start(actor, MeetingForm) Meeting
+    +consent(actor, meetingId, consented) RecordingConsent
+    +uploadAudio(actor, meetingId, media) Meeting
+    +pasteTranscript(actor, meetingId, text) Meeting
+    +proposeMinutes(meetingId) MinutesDraft
+    +confirm(actor, meetingId, MinutesDraft) Meeting
+    +ratify(actor, meetingId) void
+    +contest(actor, meetingId, reason) Meeting
   }
-  class TranscriptionPort {
-    <<port>>
-    +transcribe(mediaId, language) MeetingTranscript
+  class TranscriptionService {
+    <<service>>
+    +transcribe(meetingId, audio) MeetingTranscript
+    +purgeAudio(meetingId, policy)
   }
-  class SpeechToTextAdapter {
-    <<adapter>>
-    +transcribe(mediaId, language) MeetingTranscript
+  class DeciaBridgeService {
+    <<service>>
+    +publishMinutes(sessionId, taskId, followUps) SessionMessage
+  }
+  class TaskService {
+    <<service>>
+    +create(actor, TaskForm) TaskItem
   }
   class AiEngine {
     <<service>>
-    +run(capability, input, accessClass) AiResult
+    +run(AiRequest) AiResponse
   }
-  class AcervoService {
+  class OwnMedia {
     <<service>>
-    +createFromDraft(owner, draftTask) TaskItem
+    +requireAccess(actor, MediaObject)
   }
-  class TaskStateMachine {
+  class UploadGuard {
     <<service>>
-    +transition(taskId, toState, actor, reason) TaskStateLog
+    +checkMagicBytes(bytes)
+    +checkSizeByFormat(format, size)
   }
-  class DecisionTraceService {
+  class Guard {
     <<service>>
-    +appendNode(sessionId, nodeType, refId) DecisionTraceNode
-    +link(fromNodeId, toNodeId, relation) DecisionTraceEdge
+    +requireParticipant(actor, sessionId)
+    +requireOwner(actor, ownerId)
   }
+  class StoragePort {
+    <<port>>
+    +put(restricted, bytes)
+    +delete(key)
+  }
+  class TranscriptionPort {
+    <<port>>
+    +transcribe(audio, language) Segments
+  }
+  class DomainEvents {
+    <<service>>
+    +publish(event)
+  }
+}
 
-  Meeting "1" --> "0..1" MeetingTranscript : transcript
-  Meeting "1" --> "*" RecordingConsent : consents
-  Meeting "1" --> "0..1" TaskItem : minutesTaskId
-  Meeting "1" --> "*" TaskItem : followUpTaskIdsJson
-  Meeting "1" --> "0..1" MediaObject : audioMediaId
-  Meeting --> MeetingStatus : status
-  Meeting --> MeetingSource : source
-  Meeting ..> AiInferenceLog : aiInferenceId
-  Meeting ..> Company : recordingRetentionPolicy
-  TaskItem --> TaskType : type
-  TaskItem --> SourceKind : sourceKind
-  TaskItem "1" --> "*" ProjectTask : taskId
-  ProjectTask "1" --> "*" ProjectTaskDependency : predecessor
-  ProjectTask "1" --> "*" ProjectTaskDependency : successor
-  ProjectTask ..> DecisionTraceNode : decisionTraceNodeId
-  SessionMessage "1" --> "*" MessageAttachment : attachmentsJson
-  SessionMessage "1" --> "0..1" MessageClassification : classificationId
-  MessageClassification --> MessageClass : label
-  DecisionTraceNode --> TraceNodeType : nodeType
-  DecisionTraceNode "1" --> "*" DecisionTraceEdge : fromNodeId
-  PipelineJob ..> Meeting : TRANSCRICAO
-  AiInferenceLog --> AiCapability : capability
-  DeciaPointsLedgerEntry --> PointsEvent : eventCode
-  Notification ..> Meeting : ratificar ou contestar 48 h
+namespace ws_web {
+  class MeetingController {
+    <<controller>>
+    +POST_api_meetings(form)
+    +POST_api_meetings_id_consent(consented)
+    +POST_api_meetings_id_audio(file)
+    +POST_api_meetings_id_transcript(text)
+    +GET_api_meetings_id_minutes()
+    +POST_api_meetings_id_confirm(draft)
+    +POST_api_meetings_id_ratify()
+    +POST_api_meetings_id_contest(reason)
+  }
+}
 
-  MeetingController --> MeetingService
-  MeetingService --> TranscriptionPort
-  TranscriptionPort <|.. SpeechToTextAdapter : implementa
-  MeetingService --> AiEngine : ATA_VIVA
-  MeetingService --> AcervoService
-  MeetingService --> TaskStateMachine
-  MeetingService --> DecisionTraceService
-  MeetingService ..> Meeting
-  MeetingService ..> RecordingConsent
-  MeetingService ..> SessionMessage
-  MeetingService ..> Notification
-  MeetingService ..> DeciaPointsLedgerEntry : via RF42
+namespace ws_infrastructure {
+  class S3StorageAdapter {
+    <<adapter>>
+  }
+  class PlatformTranscriptionAdapter {
+    <<adapter>>
+  }
+  class LocalEngine {
+    <<adapter>>
+  }
+}
 
-  note for Meeting "tabela meetings · audioMediaId apagado após transcrição (política da empresa)"
-  note for MeetingTranscript "tabela meeting_transcripts · text com AesGcmStringConverter · segmentsJson speaker, start, end, classLabel"
-  note for RecordingConsent "tabela recording_consents · RF37.CA05 · 1 linha por participante"
-  note for TaskItem "tabela tasks · +45 campos · ATA_REGISTRO e encaminhamentos com sourceKind ATA_VIVA"
-  note for SessionMessage "Cassandra messages_by_session + índice MySQL session_messages_idx"
-  note for MeetingStatus "nome do enum a confirmar · TAXONOMIA só lista os valores em Meeting.status"
+Meeting "1" --> "0..1" MeetingTranscript
+Meeting "1" o-- "0..*" RecordingConsent
+Meeting "0..1" --> "0..1" MediaObject : audioMediaId apagado apos transcricao
+Meeting "0..1" --> "0..1" TaskItem : minutesTaskId ATA_REGISTRO
+Meeting "1" --> "0..*" TaskItem : followUpTaskIdsJson
+TaskItem "0..*" --> "0..*" ProjectTaskDependency : encaminhamento depende da ata
+ProjectTask "0..*" --> "1" TaskItem
+SessionMessage "1" o-- "0..*" MessageAttachment
+MessageAttachment ..> TaskItem : ata publicada RF29
+DecisionTraceNode ..> Meeting : ATA_VIVA
+Company ..> TranscriptionService : recordingRetentionPolicy
+UserConsent ..> MeetingService : GRAVACAO_REUNIOES_PADRAO preferencia
+Meeting ..> DeciaPointsLedgerEntry : ATA_RATIFICADA ENCAMINHAMENTO_CUMPRIDO
+PipelineJob ..> TranscriptionService : TRANSCRICAO
+MeetingController --> MeetingService
+MeetingService --> TranscriptionService
+MeetingService --> DeciaBridgeService
+MeetingService --> TaskService
+MeetingService --> AiEngine
+MeetingService --> OwnMedia
+MeetingService --> UploadGuard
+MeetingService --> Guard
+MeetingService --> DomainEvents
+TranscriptionService --> TranscriptionPort
+TranscriptionService --> StoragePort
+S3StorageAdapter ..|> StoragePort
+PlatformTranscriptionAdapter ..|> TranscriptionPort
+LocalEngine ..> AiEngine : ata estruturada por regras
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  classDef err fill:#FFE3E3,stroke:#C0392B,color:#5B1A12
-  classDef ai fill:#FFF3D6,stroke:#D68910,color:#5C3B00
-  classDef store fill:#EEF6FF,stroke:#4A4852,color:#1F2937
-
-  subgraph L_user["Ator humano · Organizador e participantes da reunião"]
-    U1["Abre a sessão DECIA ou o projeto e clica em Nova reunião"]
-    U2{"Fonte da reunião?"}
-    U3["Grava áudio no navegador (MediaRecorder)"]
-    U4["Sobe arquivo de áudio ou vídeo"]
-    U5["Cola a transcrição (Teams, Meet)"]
-    U6["Cada participante registra consentimento de gravação"]
-    U7["Revisa a ata proposta: participantes, pauta, deliberações, encaminhamentos, divergências, pendências"]
-    U8{"Confirma a ata e os encaminhamentos?"}
-    U9["Edita responsável, prazo e fase sugerida ou descarta"]
-    U10["Participantes recebem notificação: ratificar ou contestar em 48 h"]
-    U11{"Ratifica ou contesta?"}
+  subgraph ATOR["Ator (organizador · participantes)"]
+    A0([Nova reunião na sessão ou no projeto]) --> A1{"Fonte"}
+    A1 -->|gravar| A2["Grava áudio no navegador"]
+    A1 -->|arquivo| A3["Sobe áudio/vídeo"]
+    A1 -->|colar| A4["Cola transcrição do Teams/Meet"]
+    A5["Cada participante registra consentimento de gravação"]
+    A6["Revisa a ata proposta e os encaminhamentos"]
+    A7{"Confirmar?"}
+    A7 -->|sim| A8["Confirma"]
+    A9([Participante notificado]) --> A10{"Em 48 h"}
+    A10 -->|ratifica| A11["Ratifica"]
+    A10 -->|contesta| A12["Contesta com motivo"]
   end
 
-  subgraph L_web["Web/BFF · Next.js /meetings/new"]
-    W1["POST /meetings (sessionId ou projectId, source)"]
-    W2["POST /meetings/id/consents"]
-    W3["PUT upload para S3 via URL pré-assinada + POST /meetings/id/audio"]
-    W4["POST /meetings/id/transcript"]
-    W5["GET /meetings/id/draft (polling ou SSE)"]
-    W6["POST /meetings/id/confirm (draft editado)"]
-    W7["POST /meetings/id/ratify ou /contest"]
+  subgraph FE["Next.js / BFF (app/(shell)/meetings/new · meetings/[id])"]
+    F1["MeetingForm (vínculo sessão/projeto) · Recorder (MediaRecorder) · Upload · Textarea"]
+    F2["ConsentDialog por participante · POST /consent"]
+    F3["MinutesEditor: participantes, pauta, deliberações, encaminhamentos (o quê, quem, quando), divergências, pendências · Tag por classificação · Spark ✦"]
+    F4["POST /confirm · POST /ratify · POST /contest"]
   end
 
-  subgraph L_app["ws-application · MeetingService"]
-    A1{"Ator é participante da sessão ou membro do projeto?"}
-    A2["Cria Meeting status GRAVANDO ou TRANSCREVENDO"]
-    A3{"Todos os participantes presentes consentiram?"}
-    A4["Bloqueia gravação: só transcrição colada é aceita"]
-    A5["Abre PipelineJob TRANSCRICAO e chama TranscriptionPort"]
-    A6{"accessClass do projeto ou sessão é RESTRITO ou SIGILOSO?"}
-    A7["Monta AtaDraft: tarefa ATA_REGISTRO (fase sugerida) + N encaminhamentos com responsável e prazo + dependências ata → encaminhamento"]
-    A8["Valida draft: título, responsáveis existentes, prazos futuros"]
-    A9["AcervoService cria TaskItem ATA_REGISTRO e encaminhamentos (sourceKind ATA_VIVA, aiGenerated)"]
-    A10["ProjectTask por tarefa + ProjectTaskDependency FS ata → encaminhamento"]
-    A11["Publica SessionMessage (authorKind IA) com MessageAttachment por tarefa"]
-    A12["DecisionTraceService: nó ATA_VIVA + arestas ORIGINOU para as tarefas"]
-    A13["Meeting ATA_PROPOSTA · ratificationDeadlineAt = agora + 48 h · Notification por participante"]
-    A14["purgeAudio: apaga audioMediaId conforme Company.recordingRetentionPolicy (padrão: apagar)"]
-    A15["Meeting CONFIRMADA · evento AtaRatificada (+3 DP ATA_RATIFICADA via RF42)"]
-    A16["Meeting CONTESTADA · motivo registrado · organizador notificado"]
-    E1["403 ACESSO_NEGADO"]
-    E2["422 VALIDACAO (sem fonte, transcrição vazia, prazo no passado, responsável inexistente)"]
-    E3["409 CONSENTIMENTO_PENDENTE"]
+  subgraph WEB["ws-web · MeetingController"]
+    W1["JWT · CorrelationIdFilter · limite de upload por formato"]
+    W2["GlobalExceptionHandler"]
   end
 
-  subgraph L_ai["IA (AiEngine) · capability TRANSCREVER e ATA_VIVA"]
-    I1["TRANSCREVER: áudio → MeetingTranscript com segmentsJson (speaker, start, end)"]
-    I2["ATA_VIVA: transcrição → ata estruturada + classificação dos trechos como no RF7 (ARGUMENTO, DIVERGENCIA, RISCO, CONSENSO, PERGUNTA)"]
-    I3["Motor local apenas (BLOQUEADO_SIGILO para provedor externo) · dados pessoais mascarados"]
-    I4["AiInferenceLog: provider, model, latency, result, fallbackUsed, correlationId"]
+  subgraph APP["ws-application · MeetingService"]
+    P1{"Guard.requireParticipant(sessão) ou requireOwner(projeto)?"}
+    P1 -->|não| E1["403 ACESSO_NEGADO"]
+    P2{"Todos os falantes consentiram?"}
+    P2 -->|não| E2["409 CONSENTIMENTO_PENDENTE"]
+    P3["UploadGuard: magic bytes, limite por formato · OwnMedia → restricted/meetings/"]
+    P4["status GRAVANDO → TRANSCREVENDO · PipelineJob TRANSCRICAO"]
+    P5["TranscriptionService.transcribe → MeetingTranscript (texto AES, segmentos por falante)"]
+    P6{"recordingRetentionPolicy = apagar após transcrição?"}
+    P6 -->|sim, padrão| P7["StoragePort.delete(audio) · audioMediaId = null · AuditLog AUDIO_PURGED"]
+    P6 -->|empresa guarda| P8["Mantém em restricted/ até o prazo"]
+    P9["proposeMinutes: ata estruturada ✦ · status ATA_PROPOSTA · nada persistido no acervo"]
+    P10{"Encaminhamento sem responsável ou prazo?"}
+    P10 -->|sim| E3["422 VALIDACAO details.followUps"]
+    P11["confirm: TaskItem ATA_REGISTRO (sourceKind ATA_VIVA) na fase sugerida + 1 TaskItem por encaminhamento (responsibleId, dueAt) + ProjectTaskDependency ata → encaminhamento · status CONFIRMADA"]
+    P12["DeciaBridgeService.publishMinutes: SessionMessage com anexos + DecisionTrace ATA_VIVA · Notification ratificar/contestar · ratificationDeadlineAt = +48 h"]
+    P13["ratify: DP ATA_RATIFICADA idempotente (RF42) · contest: status CONTESTADA + motivo + Notification ao organizador"]
   end
 
-  subgraph L_db["Persistência"]
-    D1["MySQL meetings · recording_consents · pipeline_jobs"]
-    D2["S3 MediaObject áudio (accessClass herdada)"]
-    D3["MySQL meeting_transcripts (text AES-GCM) · ai_inference_log"]
-    D4["MySQL tasks · project_tasks · project_task_dependencies · task_state_log"]
-    D5["Cassandra messages_by_session + MySQL message_attachments · decision_trace_nodes · decision_trace_edges"]
-    D6["DomainEventOutbox AFTER_COMMIT → notifications_by_user · decia_points_ledger"]
-    D7["S3 delete audioMediaId · audit_log"]
+  subgraph IA["AiEngine (TRANSCREVER · ATA_VIVA)"]
+    I1["Transcrição (quando áudio) via TranscriptionPort"]
+    I2["Ata estruturada + classificação dos trechos como no RF7 (ARGUMENTO · DIVERGENCIA · RISCO · CONSENSO · PERGUNTA)"]
+    I3["Claude → Gemini → LocalEngine (estrutura por regras)"]
+    I4["AiInferenceLog"]
   end
 
-  U1 --> W1 --> A1
-  A1 -- "não" --> E1
-  A1 -- "sim" --> A2 --> D1
-  A2 --> U2
-  U2 -- "GRAVACAO_NAVEGADOR" --> U6 --> W2 --> A3
-  A3 -- "não" --> A4 --> E3
-  A3 -- "sim" --> U3 --> W3
-  U2 -- "ARQUIVO" --> U4 --> W3
-  W3 --> D2 --> A5
-  U2 -- "TRANSCRICAO_COLADA" --> U5 --> W4
-  A5 --> A6
-  W4 --> A6
-  A6 -- "sim" --> I3 --> I2
-  A6 -- "não" --> I1 --> I2
-  I1 --> D3
-  I2 --> I4 --> D3
-  I2 --> A7 --> W5 --> U7 --> U8
-  U8 -- "editar" --> U9 --> U7
-  U8 -- "descartar" --> X1(["Fim: nada persistido no acervo"])
-  U8 -- "confirmar" --> W6 --> A8
-  A8 -- "inválido" --> E2
-  A8 -- "válido" --> A9 --> D4
-  A9 --> A10 --> D4
-  A10 --> A11 --> D5
-  A11 --> A12 --> D5
-  A12 --> A13 --> D6
-  A13 --> A14 --> D7
-  A13 --> U10 --> U11
-  U11 -- "ratifica" --> W7 --> A15 --> D6
-  U11 -- "contesta" --> W7 --> A16 --> D6
-  U11 -- "48 h sem resposta" --> A15
+  subgraph DB["Persistência"]
+    D1[("MySQL meetings · meeting_transcripts (AES) · recording_consents · tasks · project_tasks · project_task_dependencies · pipeline_jobs · audit_log")]
+    D2[("S3 restricted/meetings áudio temporário · flag storage.s3")]
+    D3[("Cassandra messages_by_session · notifications_by_user · trace_by_entity · flag cassandra.enabled")]
+  end
 
-  class E1,E2,E3 err
-  class I1,I2,I3,I4 ai
-  class D1,D2,D3,D4,D5,D6,D7 store
+  A2 --> A5 --> F2 --> W1 --> P2
+  A3 --> A5
+  A4 --> F1 --> W1 --> P1 -->|sim| P9
+  A2 --> F1 --> W1 --> P1 -->|sim| P3 --> P4 --> D2
+  P2 -->|sim| P3
+  P4 --> P5 --> I1 --> I4 --> P6
+  P7 --> D1
+  P8 --> D2
+  P5 --> D1
+  P6 --> P9 --> I2 --> I3 --> I4 --> F3 --> A6 --> A7
+  A8 --> F4 --> W1 --> P10 -->|não| P11 --> D1 --> P12 --> D3
+  P12 --> A9
+  A11 --> F4 --> P13 --> D1
+  A12 --> F4 --> P13
+  E1 --> W2
+  E2 --> W2
+  E3 --> W2
 ```
 
 ## 3. Diagrama de sequência
@@ -457,113 +343,98 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário
-  participant N as Next.js (App Router)
+  participant U as Usuário
+  participant FE as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
-  participant CS as Cassandra
   participant S3 as S3
+  participant CAS as Cassandra
   participant EV as DomainEvents (AFTER_COMMIT)
 
-  U->>N: Nova reunião no projeto P (gravar áudio)
-  N->>C: POST /meetings (projectId, source GRAVACAO_NAVEGADOR)
-  C->>S: MeetingService.start(actor, null, projectId, source)
-  S->>DB: INSERT meetings (status GRAVANDO)
-  S-->>N: 201 Meeting
-  loop para cada participante presente
-    U->>N: Consentimento de gravação
-    N->>C: POST /meetings/id/consents (consented, ip)
-    C->>S: registerConsent
-    S->>DB: INSERT recording_consents
+  U->>FE: Nova reunião na sessão, grava no navegador
+  FE->>C: POST /api/meetings {sessionId, source GRAVACAO_NAVEGADOR}
+  C->>S: MeetingService.start(actor, form)
+  S->>S: Guard.requireParticipant(actor, sessionId)
+  S->>DB: insert meetings (GRAVANDO)
+  S-->>FE: 201 Meeting
+  loop cada participante
+    FE->>C: POST /api/meetings/{id}/consent {consented}
+    C->>S: MeetingService.consent(actor, id, consented)
+    S->>DB: insert recording_consents (userId, at, ip)
   end
-  alt algum participante não consentiu
-    S-->>N: 409 CONSENTIMENTO_PENDENTE (só transcrição colada)
-  else todos consentiram
-    U->>N: Para a gravação
-    N->>S3: PUT áudio (URL pré-assinada, accessClass do projeto)
-    N->>C: POST /meetings/id/audio (mediaId)
-    C->>S: attachAudio(meetingId, mediaId)
-    S->>DB: UPDATE meetings (TRANSCREVENDO, audioMediaId) · INSERT pipeline_jobs TRANSCRICAO
-    S->>AI: run(TRANSCREVER, mediaId, accessClass)
-    alt accessClass RESTRITO ou SIGILOSO
-      AI-->>S: transcrição pelo motor local (result BLOQUEADO_SIGILO para externo)
-    else PUBLICO ou INTERNO
-      AI-->>S: transcrição via provedor (Claude ou Gemini) com PII mascarada
-    end
-    S->>DB: INSERT meeting_transcripts (text AES-GCM, segmentsJson) · INSERT ai_inference_log
-    S->>AI: run(ATA_VIVA, transcript)
-    AI-->>S: ata estruturada + classificação RF7 por trecho + encaminhamentos (o quê, quem, quando)
-    S->>DB: INSERT ai_inference_log · UPDATE meetings (aiInferenceId)
-    S->>S3: DELETE audioMediaId (Company.recordingRetentionPolicy = apagar)
-    N->>C: GET /meetings/id/draft
-    C->>S: generateDraft(meetingId)
-    S-->>N: 200 AtaDraft (tarefa ATA_REGISTRO, fase sugerida, N encaminhamentos, dependências)
-    U->>N: Ajusta responsável e prazo e confirma
-    N->>C: POST /meetings/id/confirm (draft)
-    C->>S: confirm(meetingId, draft)
-    alt prazo no passado ou responsável inexistente
-      S-->>N: 422 VALIDACAO
-    else draft válido
-      S->>DB: INSERT tasks ATA_REGISTRO + encaminhamentos (sourceKind ATA_VIVA, aiGenerated) · project_tasks · project_task_dependencies · task_state_log
-      S->>CS: INSERT messages_by_session (authorKind IA, attachmentsJson)
-      S->>DB: INSERT message_attachments · decision_trace_nodes (ATA_VIVA) · decision_trace_edges (ORIGINOU)
-      S->>DB: UPDATE meetings (ATA_PROPOSTA, minutesTaskId, followUpTaskIdsJson, ratificationDeadlineAt = +48 h)
-      S->>EV: MeetingPublished(meetingId, participantIds)
-      EV-->>CS: notifications_by_user (ratificar ou contestar em 48 h) por participante
-      S-->>N: 200 Meeting ATA_PROPOSTA
-    end
-    U->>N: Ratificar
-    N->>C: POST /meetings/id/ratify
-    C->>S: ratify(meetingId, userId)
-    S->>DB: UPDATE meetings (CONFIRMADA) · audit_log
-    S->>EV: AtaRatificada(meetingId, participantIds)
-    EV-->>DB: decia_points_ledger ATA_RATIFICADA +3 (idempotencyKey, RF42)
+  U->>FE: encerra a gravação e envia
+  FE->>C: POST /api/meetings/{id}/audio (webm)
+  C->>S: MeetingService.uploadAudio(actor, id, media)
+  alt falante sem consentimento
+    S-->>C: 409 CONSENTIMENTO_PENDENTE
+  else ok
+    S->>S: UploadGuard magic bytes + limite por formato
+    S->>S3: put restricted/meetings/{id}.webm
+    S->>DB: update meetings TRANSCREVENDO, audioMediaId · pipeline_jobs TRANSCRICAO
+    S-->>FE: 202
   end
+  S->>AI: run(TRANSCREVER) via TranscriptionPort
+  AI-->>S: segmentos por falante
+  S->>DB: insert meeting_transcripts (text AES-GCM, segmentsJson)
+  alt recordingRetentionPolicy padrão
+    S->>S3: delete áudio
+    S->>DB: audioMediaId = null · audit_log MEETING_AUDIO_PURGED
+  end
+  S->>AI: run(ATA_VIVA, transcrição mascarada)
+  alt provedor indisponível
+    AI-->>S: LocalEngine estrutura por regras · fallbackUsed
+  else ok
+    AI-->>S: ata (participantes, pauta, deliberações, encaminhamentos, divergências, pendências) + classificação RF7 ✦
+  end
+  AI->>DB: insert ai_inference_log
+  S->>DB: update meetings ATA_PROPOSTA (rascunho em cache, nada no acervo)
+  S->>EV: MinutesProposed → Notification ao organizador
+
+  U->>FE: revisa e confirma a ata e 3 encaminhamentos
+  FE->>C: POST /api/meetings/{id}/confirm (MinutesDraft)
+  C->>S: MeetingService.confirm(actor, id, draft)
+  alt encaminhamento sem responsável ou prazo
+    S-->>C: 422 VALIDACAO details.followUps
+  else ok
+    S->>DB: insert tasks ATA_REGISTRO (sourceKind ATA_VIVA, aiGenerated) + project_tasks (fase sugerida)
+    S->>DB: insert tasks por encaminhamento (responsibleId, dueAt) + project_tasks + project_task_dependencies (ata → encaminhamento)
+    S->>DB: update meetings CONFIRMADA, minutesTaskId, followUpTaskIdsJson, ratificationDeadlineAt +48 h
+    S->>EV: MinutesConfirmed
+    S-->>FE: 200
+  end
+  EV->>S: DeciaBridgeService.publishMinutes(sessionId, taskId, followUps)
+  S->>CAS: messages_by_session (authorKind SISTEMA, anexos ata + encaminhamentos)
+  S->>DB: decision_trace_nodes ATA_VIVA + edges ANEXOU
+  EV->>CAS: Notification ARTEFATO ratificar ou contestar em 48 h
+
+  U->>FE: participante ratifica
+  FE->>C: POST /api/meetings/{id}/ratify
+  C->>S: MeetingService.ratify(actor, id)
+  S->>DB: insert decia_points_ledger ATA_RATIFICADA (idempotencyKey ATA+meetingId+userId)
+  S-->>FE: 204
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: `Meeting.status`. A caixa pontilhada mostra o efeito colateral sobre `TaskItem.state` das tarefas geradas (RF41).
+Entidade central: `Meeting.status` (`MeetingStatus`).
 
 ```mermaid
 stateDiagram-v2
-  direction LR
-  [*] --> GRAVANDO : POST /meetings source GRAVACAO_NAVEGADOR e todos consentiram
-  [*] --> TRANSCREVENDO : POST /meetings source ARQUIVO ou TRANSCRICAO_COLADA
-  GRAVANDO --> TRANSCREVENDO : áudio enviado (PipelineJob TRANSCRICAO)
-  GRAVANDO --> [*] : cancelada antes de gravar · consentimento negado
-
-  state TRANSCREVENDO {
-    [*] --> Transcrevendo : TranscriptionPort (ou texto colado)
-    Transcrevendo --> GerandoAta : MeetingTranscript salvo · áudio apagado
-    GerandoAta --> DraftPronto : AiEngine ATA_VIVA ok
-    Transcrevendo --> Falha : erro do provedor
-    Falha --> Transcrevendo : PipelineJob REPROCESSAR (attempts menor que 3)
-  }
-
-  TRANSCREVENDO --> [*] : organizador descarta o draft (nada persistido)
-  TRANSCREVENDO --> ATA_PROPOSTA : organizador confirma · tarefas criadas · mensagem publicada · 48 h iniciadas
-
-  state ATA_PROPOSTA {
-    [*] --> AguardandoRatificacao
-    AguardandoRatificacao --> AguardandoRatificacao : ratificação individual registrada
-  }
-
-  ATA_PROPOSTA --> CONFIRMADA : todos ratificaram ou 48 h sem contestação
-  ATA_PROPOSTA --> CONTESTADA : qualquer participante contesta com motivo
-  CONTESTADA --> TRANSCREVENDO : organizador reabre e regenera a ata
-  CONTESTADA --> [*] : encerrada sem ata oficial
-  CONFIRMADA --> [*]
-
+  [*] --> GRAVANDO: POST /api/meetings com source GRAVACAO_NAVEGADOR ou ARQUIVO (CA01) · consentimentos por participante (CA05)
+  [*] --> TRANSCREVENDO: source TRANSCRICAO_COLADA (sem áudio, CA01)
+  GRAVANDO --> TRANSCREVENDO: áudio enviado para restricted/ · PipelineJob TRANSCRICAO · 409 CONSENTIMENTO_PENDENTE se faltar consentimento
+  TRANSCREVENDO --> ATA_PROPOSTA: MeetingTranscript gravado · áudio apagado por padrão (CA05) · IA gera ata estruturada ✦ (CA02)
+  TRANSCREVENDO --> GRAVANDO: falha de transcrição · usuário reenvia
+  ATA_PROPOSTA --> ATA_PROPOSTA: organizador edita a ata e os encaminhamentos
+  ATA_PROPOSTA --> CONFIRMADA: confirmar → ATA_REGISTRO + tarefas de encaminhamento + dependências (CA03) · publicada na sessão (CA04)
+  CONFIRMADA --> CONTESTADA: participante contesta em 48 h com motivo (CA04)
+  CONTESTADA --> ATA_PROPOSTA: organizador corrige a ata (nova versão da tarefa ATA_REGISTRO)
+  CONFIRMADA --> [*]: prazo de 48 h vence sem contestação · ratificações creditam DP
   note right of CONFIRMADA
-    +3 DP ATA_RATIFICADA para participantes (RF42)
-    +5 DP ENCAMINHAMENTO_CUMPRIDO quando a tarefa de encaminhamento chega a CONCLUIDA
-  end note
-  note left of ATA_PROPOSTA
-    TaskItem gerados nascem RASCUNHO e passam a DISPONIVEL na confirmação
-    (TaskStateMachine, RF41.CA02)
+    Nada é persistido no acervo antes de CONFIRMADA (CA03).
+    Rastro: nó ATA_VIVA ligado à sessão (CA04).
   end note
 ```
 
@@ -571,74 +442,68 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js"]
-    FE1["app/meetings/new · app/sessions/[id] · app/projects/[id]"]
-    FE2["components/ui · AudioRecorder · ConsentSheet · AtaPreview (tarefa + encaminhamentos) · DecisionThread (fio)"]
+  subgraph FRONT["Frontend Next.js 15"]
+    R1["app/(shell)/meetings/new · meetings/[id] · decia/[sessionId] (botão Nova reunião) · projects/[id]"]
+    R2["components: Recorder (MediaRecorder) · Upload · ConsentDialog · MinutesEditor · TaskCard (layout list, variants GERADA_IA) · Tag (MessageClass) · Due · Spark ✦"]
+    BFF["app/bff"]
+    R1 --> R2 --> BFF
   end
-
   subgraph WEB["ws-web"]
-    C1["MeetingController"]
+    MCO["MeetingController (@Operation RF37.CA01-CA05)"]
+    SEC["SecurityConfig · CorrelationIdFilter · GlobalExceptionHandler (main)"]
   end
-
-  subgraph APP["ws-application"]
-    S1["MeetingService"]
-    S2["AcervoService (RF41)"]
-    S3["TaskStateMachine"]
-    S4["DecisionTraceService (RF29)"]
-    S5["AiEngine (RF43)"]
-    P1["TranscriptionPort"]
-    P2["StoragePort"]
+  subgraph APPL["ws-application"]
+    MS["decia/MeetingService"]
+    TRS["decia/TranscriptionService (purge por recordingRetentionPolicy)"]
+    BS["decia/DeciaBridgeService (RF29)"]
+    TS["acervo/TaskService · projects/ProjectService"]
+    DPS["points/DeciaPointsService (ATA_RATIFICADA)"]
+    AIE["ai/AiEngine (TRANSCREVER · ATA_VIVA) · Masking (main)"]
+    OM["security/OwnMedia (restricted/meetings)"]
+    UG["security/UploadGuard"]
+    GD["security/Guard (main)"]
+    AUD["audit/AuditLogPort (main)"]
+    DE["events/DomainEvents AFTER_COMMIT"]
+    PORTS["ports: StoragePort · TranscriptionPort · MessagePort · TracePort · AiProviderPort"]
   end
-
-  subgraph DOM["ws-domain · br.gov.pr.secid.workstation"]
-    D1["Meeting · MeetingTranscript · RecordingConsent"]
-    D2["TaskItem · ProjectTask · ProjectTaskDependency"]
-    D3["SessionMessage · MessageAttachment · DecisionTraceNode · DecisionTraceEdge"]
+  subgraph DOM["ws-domain"]
+    ENT["Meeting · MeetingTranscript (AesGcmStringConverter, main) · RecordingConsent · MeetingStatus · MeetingSource (planejado) · MediaObject (V2)"]
   end
-
-  subgraph INFRA["ws-infrastructure/*"]
-    I1["persistence-mysql · meetings, meeting_transcripts, recording_consents, tasks, project_tasks, pipeline_jobs"]
-    I2["persistence-cassandra · messages_by_session, notifications_by_user"]
-    I3["storage-s3 · MediaObject áudio (TTL por política)"]
-    I4["ai-providers · SpeechToTextAdapter · ClaudeAdapter · GeminiAdapter · LocalEngine"]
-    I5["platform · DomainEventOutbox · PipelineJob worker · AuditLog · i18n"]
+  subgraph INFRA["ws-infrastructure"]
+    MY["persistence-mysql meetings · meeting_transcripts · recording_consents (V__rf37)"]
+    S3A["storage-s3 restricted/meetings (flag storage.s3)"]
+    PLAT["platform: PlatformTranscriptionAdapter (STT) · antivírus hook"]
+    CASA["persistence-cassandra messages · notifications · trace (flag cassandra.enabled)"]
+    AIP["ai-providers ai-claude · ai-gemini · ai-local"]
   end
-
-  subgraph EXT["Serviços externos"]
-    X1["Claude / Gemini"]
-    X2["Microsoft 365 (Teams) · Google Workspace (Meet) — transcrição colada ou importada"]
-  end
-
-  FE1 --> C1
-  FE2 -.-> FE1
-  C1 --> S1
-  S1 --> S2 --> S3
-  S1 --> S4
-  S1 --> S5
-  S1 --> P1
-  S1 --> P2
-  S1 --> D1
-  S2 --> D2
-  S4 --> D3
-  D1 --> I1
-  D2 --> I1
-  D3 --> I2
-  D3 --> I1
-  P2 --> I3
-  P1 --> I4
-  S5 --> I4
-  I4 --> X1
-  I5 --> I2
-  S1 --> I5
-  FE1 -.-> X2
+  BFF --> MCO --> SEC
+  MCO --> MS
+  MS --> TRS
+  MS --> BS
+  MS --> TS
+  MS --> DPS
+  MS --> AIE
+  MS --> OM
+  MS --> UG
+  MS --> GD
+  MS --> AUD
+  MS --> DE
+  TRS --> PORTS
+  BS --> PORTS
+  AIE --> PORTS
+  MS --> ENT --> MY --> MYSQL[("MySQL 8")]
+  PORTS --> S3A --> S3[("S3 / MinIO")]
+  PORTS --> PLAT
+  PORTS --> CASA --> CASS[("Cassandra")]
+  PORTS --> AIP --> AI["Claude / Gemini / local"]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
-|---|---|
-| RF37.CA01 | Classes `Meeting.sessionId`, `Meeting.projectId`, `MeetingSource` (GRAVACAO_NAVEGADOR, ARQUIVO, TRANSCRICAO_COLADA); atividades U1→U2→U3/U4/U5, W1, W3, W4, A1 (403 ACESSO_NEGADO); sequência msgs 1–5 e 11–13; transições `[*] → GRAVANDO` e `[*] → TRANSCREVENDO`; componentes `app/meetings/new`, `AudioRecorder`, `storage-s3`, `Microsoft 365 / Google Workspace`. |
-| RF37.CA02 | Classes `MeetingTranscript.segmentsJson`, `TranscriptionPort`, `SpeechToTextAdapter`, `AiEngine`, `AiCapability` (TRANSCREVER, ATA_VIVA), `MessageClass`; atividades A5, I1, I2, I4, A7; sequência msgs 14–22; estado composto `TRANSCREVENDO` (Transcrevendo → GerandoAta → DraftPronto, Falha → REPROCESSAR); componentes `ai-providers`, `PipelineJob worker`. |
-| RF37.CA03 | Classes `TaskItem` (type ATA_REGISTRO, sourceKind ATA_VIVA, responsibleId, dueAt), `ProjectTask.phase`, `ProjectTaskDependency`, `AcervoService.createFromDraft`, `TaskStateMachine`; atividades U7→U8→U9, W5, W6, A7, A8 (422 VALIDACAO), A9, A10; sequência msgs 24–31; transição `TRANSCREVENDO → ATA_PROPOSTA` (organizador confirma) e nota sobre RASCUNHO → DISPONIVEL; componentes `AtaPreview`, `AcervoService`, `TaskStateMachine`. |
-| RF37.CA04 | Classes `SessionMessage`, `MessageAttachment`, `DecisionTraceNode` (TraceNodeType ATA_VIVA), `DecisionTraceEdge` (ORIGINOU), `Notification`, `Meeting.ratificationDeadlineAt`, `DeciaPointsLedgerEntry` (ATA_RATIFICADA); atividades A11, A12, A13, U10, U11, A15, A16; sequência msgs 32–43; estados `ATA_PROPOSTA` → `CONFIRMADA` / `CONTESTADA` e nota de pontos; componentes `DecisionTraceService`, `persistence-cassandra`, `DomainEventOutbox`, `DecisionThread`. |
-| RF37.CA05 | Classes `RecordingConsent` (consented, at, ip), `Company.recordingRetentionPolicy`, `MediaObject.accessClass`, `MeetingTranscript.text` (AES-GCM), `AiInferenceLog.maskedFields`; atividades U6, W2, A3, A4 (409 CONSENTIMENTO_PENDENTE), A6, I3, A14, D7; sequência msgs 6–10, 17 (motor local) e 23 (DELETE áudio); transição `GRAVANDO → [*]` por consentimento negado e `Transcrevendo → GerandoAta` (áudio apagado); componentes `ConsentSheet`, `storage-s3` (TTL por política), `AuditLog`. |
+| CA | Classe | Passo | Mensagem | Transição | Componente |
+|---|---|---|---|---|---|
+| RF37.CA01 | `Meeting` (sessionId/projectId, `MeetingSource`), `MeetingService.start/uploadAudio/pasteTranscript`, `UploadGuard`, `OwnMedia` | A0 → A1 → A2/A3/A4 → F1 → P1 (403) → P3 → P4 | 1–6, 11–18 | `[*] → GRAVANDO / TRANSCREVENDO` | `Recorder`, `Upload`, `MS`, `S3A` |
+| RF37.CA02 | `TranscriptionService.transcribe`, `MeetingTranscript.segmentsJson` (classLabel RF7), `AiCapability TRANSCREVER/ATA_VIVA`, `MeetingService.proposeMinutes` | P5 → I1 · P9 → I2 → I3 → I4 → F3 | 19–21, 26–31 | `TRANSCREVENDO → ATA_PROPOSTA` | `TRS`, `PLAT`, `AIE`, `MinutesEditor` |
+| RF37.CA03 | `MeetingService.confirm`, `TaskItem ATA_REGISTRO sourceKind ATA_VIVA`, tarefas de encaminhamento (`responsibleId`, `dueAt`), `ProjectTaskDependency`, `minutesTaskId/followUpTaskIdsJson` | A6 → A7 → A8 → F4 → P10 (422) → P11 | 32–40 | `ATA_PROPOSTA → CONFIRMADA` + nota | `TS`, `TaskCard`, `Due` |
+| RF37.CA04 | `DeciaBridgeService.publishMinutes`, `SessionMessage` + `MessageAttachment`, nó `ATA_VIVA`, `Notification`, `ratificationDeadlineAt`, `MeetingService.ratify/contest`, DP `ATA_RATIFICADA` | P12 → A9 → A10 → A11/A12 → P13 | 41–49 | `CONFIRMADA → CONTESTADA → ATA_PROPOSTA` · `CONFIRMADA → [*]` | `BS`, `CASA`, `DPS` |
+| RF37.CA05 | `RecordingConsent`, `MeetingService.consent` (409 CONSENTIMENTO_PENDENTE), `TranscriptionService.purgeAudio`, `Company.recordingRetentionPolicy`, `AuditLog MEETING_AUDIO_PURGED`, `UserConsent GRAVACAO_REUNIOES_PADRAO` | A5 → F2 → P2 (409) · P6 → P7/P8 | 7–10, 13–14, 22–25 | nota de GRAVANDO | `ConsentDialog`, `OM`, `AUD`, `S3A` |
