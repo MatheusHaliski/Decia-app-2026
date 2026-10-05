@@ -1,6 +1,6 @@
 # Anatomia dos cards — esquema de tarefa e esquema de projeto (v1)
 
-> Equivalente ao `docs/anatomias/anatomias_card_v19.html` do FAI (card da peça = **card de tarefa**; card do look = **card de projeto**). Pranchas em [`anatomias/svg/`](anatomias/svg/) (28 variações × 4 temas, geradas por [`anatomias/gerar.mjs`](anatomias/gerar.mjs) a partir de [`anatomias/lib/cards.mjs`](anatomias/lib/cards.mjs)); galeria em [`anatomias/index.html`](anatomias/index.html). As pranchas são **diagramas**, não capturas do produto; cada número é uma camada, cada letra um elemento de conteúdo.
+> Catálogo completo de tipos, **variações** (favorita, atribuída, chancelada, modelo, remix, importada, destaque, conformidade…), visões de edição e contextos em [`ANATOMIAS_E_ESTUDIO.md`](ANATOMIAS_E_ESTUDIO.md) (v3); este documento guarda camadas, dimensões, zonas e famílias de arte e não repete o catálogo. Equivalente ao `docs/anatomias/anatomias_card_v19.html` do FAI (card da peça = **card de tarefa**; card do look = **card de projeto**). Pranchas em [`anatomias/svg/`](anatomias/svg/) (50 variações × 4 temas — 28 de layout/estilo/estado + 22 de variações, visões e esquemas compostos —, geradas por [`anatomias/gerar.mjs`](anatomias/gerar.mjs) a partir de [`anatomias/lib/cards.mjs`](anatomias/lib/cards.mjs)); galeria em [`anatomias/index.html`](anatomias/index.html). As pranchas são **diagramas**, não capturas do produto; cada número é uma camada, cada letra um elemento de conteúdo.
 
 ## 1. Camadas, empilhamento e recorte (iguais nos dois cards)
 | # | Camada | Classe | Regra |
@@ -96,3 +96,15 @@ Elementos (card "Identidade visual" §8): **a** título (serif, 2 linhas) · **b
 
 ## 7. Contrato visual compartilhado (frontend ↔ backend)
 O card lê exatamente estes campos da API (ver TAXONOMIA.md): tarefa → `type, category, state, visibility, dueAt, legalDueAt, responsible{initials,name}, department{acronym,color,monogram}, aiGenerated, aiInferenceId, thumbnailUrl, coverMode, cardSkin, sealIdsJson, counters{likes,comments,saves,shares,remixes}, offeredInCounter, blockReason, projectUsage[]`; projeto → `title, emoji, department, status, currentPhase, mosaicJson, coverUrl, coverMode, nextMilestoneAt, tasksCount, peopleCount, lastDeciaEventLabel/At, aiGenerated, sealIdsJson, counters, conformityPercent, hasBlockingPending`.
+
+## 8. Variações, visões e esquemas compostos (referência)
+As variações não são famílias nem estados: são aparências condicionais disparadas por um atributo/entidade e **coexistem** no mesmo card. O catálogo (gatilho, dado de origem, mudança por layout, ações, contadores, matrizes) está em [`ANATOMIAS_E_ESTUDIO.md`](ANATOMIAS_E_ESTUDIO.md) §2 (tarefa), §4 (projeto), §3.5 (visões Quadro · Linha do tempo · Mesa), §3.7 (Kit · Agrupamento · Plano) e §7.2 (`TaskCardVariant`, `ProjectCardVariant`, `SchemeView`, D-50). Pranchas correspondentes em `anatomias/svg/`:
+
+| Grupo | Pranchas |
+|---|---|
+| Tarefa · variações | `tarefa-var-favorita` · `tarefa-var-atribuida` · `tarefa-var-tarefa-do-dia` · `tarefa-var-chancelada` · `tarefa-var-modelo-balcao` · `tarefa-var-remix` · `tarefa-var-importada` · `tarefa-var-prazo-legal` · `tarefa-var-em-decisao` · `tarefa-var-em-kit-evidencia` · `tarefa-var-duplicada-ia` |
+| Projeto · variações | `projeto-var-destaque` · `projeto-var-favorito` · `projeto-var-modelo-balcao` · `projeto-var-atribuido-conformidade` · `projeto-var-cenario-eixo` · `projeto-var-autopilot-privado` |
+| Projeto · visões (RF22) | `projeto-visao-linha-do-tempo` · `projeto-visao-quadro-por-fase` (a Mesa é `projeto-postit-mesa`, §5) |
+| Esquemas compostos | `projeto-composto-kit` · `projeto-composto-agrupamento` · `projeto-composto-plano` |
+
+Regra de empilhamento: cada variação ativa acrescenta no máximo **uma linha** ao bloco de metadados (glifo próprio + texto) ou **um marcador** em zona fixa (⭐ no cabeçalho, lacre na zona do selo, carimbo sobre a mídia, faixa de destaque sobre a capa, selo de conformidade no canto da capa); a mídia e a altura das linhas de tarefa nunca mudam, e a soma topo+base das faixas continua constante (§2).

@@ -1,312 +1,292 @@
 # RF31 — Simular cenários sobre um Esquema de Projeto (corte de orçamento, atraso, troca de fornecedor, mudança de escopo) antes de enviá-lo à aprovação
+**HU:** HU31 · **Sprint (board Work Station):** Product Backlog (não comprometido na Sprint 4) · **Equivalente FAI:** RF18 Provador 2D (experimentar antes de decidir) · **Aba/rota:** Simulador de Cenários (`/projects/[id]/simulate`, comparação `?compare=a,b,c`), compartilhar na sessão (`/decia/[sessionId]`, RF29)
+**Critérios de aceite cobertos:** RF31.CA01 · CA02 · CA03 · CA04 · CA05 (corpo do card, inalterado) — regra: o **título do card** define o RF e o corpo traz os próprios CAs.
 
-**HU:** HU31 · **Sprint (board Work Station):** Product Backlog (pós-Sprint 4, a priorizar) · **Equivalente FAI:** RF18 Provador 2D (experimentar antes de decidir) · **Aba/rota:** Simulador de Cenários (`/projects/[id]/simulate`)
-
-**Critérios de aceite cobertos:** RF31.CA01 · RF31.CA02 · RF31.CA03 · RF31.CA04 · RF31.CA05
-
-> Contextos da TAXONOMIA: **3. Criador de Projetos** (`ProjectScenario`, `ProjectScheme`, `ProjectTask` com PERT/EVM, `ProjectTaskDependency`, `ProjectVersion.sourceScenarioId`, `ComplianceResult`), **5. DECIA** (`SummaryScenario.linkedProjectScenarioId`, `FinalDecision.chosenScenarioId`, `MessageAttachment targetType SCENARIO`) e **10. IA** (`AiInferenceLog` capability `SIMULAR_CENARIO`). O **motor local** (CPM/PERT) cobre linha do tempo e caminho crítico sem IA externa; a IA externa acrescenta riscos novos e vantagens/desvantagens no formato dos cenários do RF11 (`SummaryScenario`).
+Um `ProjectScenario` guarda as variáveis (`variablesJson`: `budgetDeltaPct`, `scheduleDeltaDays`, `removedTaskIds`, `addedTasksJson`, `responsibleSwaps`, `supplierSwaps`, `scopeChangeText`) e o **relatório de impacto** (`impactReportJson`) no mesmo formato dos cenários do resumo analítico (RF11, `SummaryScenario`). O recálculo de linha do tempo, caminho crítico e risco por fase é **determinístico** (`CriticalPathService`, `RiskMatrixService`, D-12); a IA (`SIMULAR_CENARIO`) só redige vantagens/desvantagens e cruza com o Espelho (RF32). **Salvar** cria uma variante (não altera o original); **aplicar** gera `ProjectVersion` com `sourceScenarioId` (RF22). Compartilhar na sessão cria `MessageAttachment` tipo SCENARIO e `SummaryScenario.linkedProjectScenarioId`.
 
 ## 1. Diagrama de classes
 
 ```mermaid
 classDiagram
-  direction LR
-  namespace ws-domain {
-    class ProjectScenario {
-      <<entity>>
-      +UUID id
-      +UUID projectId
-      +UUID authorId
-      +String name
-      +JSON variablesJson
-      +JSON impactReportJson
-      +JSON recalculatedTimelineJson
-      +JSON riskByPhaseJson
-      +String status
-      +UUID appliedVersionId
-      +UUID sharedInSessionId
-      +UUID aiInferenceId
-    }
-    class ProjectScheme {
-      <<entity>>
-      +UUID id
-      +UUID ownerId
-      +String title
-      +ProjectStatus status
-      +ProjectPhase currentPhase
-      +JSON criticalPathJson
-      +JSON evmJson
-      +LocalDate nextMilestoneAt
-      +BigDecimal conformityPercent
-      +boolean hasBlockingPending
-      +long version
-    }
-    class ProjectTask {
-      <<entity>>
-      +UUID id
-      +UUID projectId
-      +UUID taskId
-      +ProjectPhase phase
-      +UUID responsibleId
-      +LocalDate startAt
-      +LocalDate dueAt
-      +BigDecimal pertOptimistic
-      +BigDecimal pertMostLikely
-      +BigDecimal pertPessimistic
-      +BigDecimal plannedValue
-      +BigDecimal earnedValue
-      +BigDecimal actualCost
-      +boolean isCritical
-      +int slackDays
-    }
-    class ProjectTaskDependency {
-      <<entity>>
-      +UUID id
-      +UUID predecessorProjectTaskId
-      +UUID successorProjectTaskId
-      +String type
-      +int lagDays
-    }
-    class ProjectVersion {
-      <<entity>>
-      +UUID id
-      +UUID projectId
-      +int versionNumber
-      +UUID authorId
-      +JSON diffJson
-      +JSON snapshotJson
-      +String reason
-      +UUID sourceScenarioId
-    }
-    class ComplianceResult {
-      <<entity>>
-      +UUID id
-      +UUID projectId
-      +BigDecimal percent
-      +int blockingCount
-    }
-    class SummaryScenario {
-      <<entity>>
-      +UUID id
-      +UUID summaryId
-      +String name
-      +JSON advantagesJson
-      +JSON disadvantagesJson
-      +JSON criteriaScoresJson
-      +UUID linkedProjectScenarioId
-    }
-    class FinalDecision {
-      <<entity>>
-      +UUID id
-      +UUID sessionId
-      +UUID chosenScenarioId
-      +DecisionStatus status
-    }
-    class MessageAttachment {
-      <<entity>>
-      +UUID id
-      +UUID messageId
-      +String targetType
-      +UUID targetId
-      +JSON snapshotJson
-    }
-    class AiInferenceLog {
-      <<entity>>
-      +UUID id
-      +AiCapability capability
-      +String provider
-      +String result
-      +boolean fallbackUsed
-      +int latencyMs
-      +BigDecimal estimatedCostUsd
-    }
-    class ScenarioStatus {
-      <<enum>>
-      RASCUNHO
-      SALVO
-      APLICADO
-      DESCARTADO
-    }
-    class ProjectPhase {
-      <<enum>>
-      DEMANDA
-      PLANEJAMENTO
-      ELABORACAO
-      ANALISE
-      APROVACAO
-      EXECUCAO
-      ENCERRAMENTO
-    }
+direction LR
+
+namespace ws_domain_projects {
+  class ProjectScheme {
+    <<entity>>
+    +id: UUID
+    +ownerId: UUID
+    +title: String
+    +status: ProjectStatus
+    +currentPhase: ProjectPhase
+    +criticalPathJson: JSON
+    +evmJson: JSON
+    +conformityPercent: BigDecimal
+    +nextMilestoneAt: LocalDate
+    .. +30 campos ..
   }
-  namespace ws-application {
-    class ScenarioService {
-      <<service>>
-      +create(actorId, projectId, name, variables) ProjectScenario
-      +simulate(scenarioId) ProjectScenario
-      +compare(projectId, scenarioIds) ScenarioComparison
-      +save(actorId, scenarioId) ProjectScenario
-      +apply(actorId, scenarioId, expectedVersion) ProjectVersion
-      +discard(actorId, scenarioId) ProjectScenario
-      +shareInSession(actorId, scenarioId, sessionId) MessageAttachment
-    }
-    class ComplianceService {
-      <<service>>
-      +evaluateHypothetical(project, tasksAfterScenario) ComplianceResult
-    }
-    class DeciaBridgeService {
-      <<service>>
-      +attachToMessage(actorId, sessionId, draft, targetRefs) SessionMessage
-    }
-    class AiEngine {
-      <<service>>
-      +impactNarrative(project, timeline, compliance, variables) ImpactReport
-    }
-    class SchedulePort {
-      <<port>>
-      +recalc(tasks, deps, variables) Timeline
-      +criticalPath(tasks, deps) List~UUID~
-      +riskByPhase(timeline) Map
-    }
-    class AiProviderPort {
-      <<port>>
-      +complete(prompt, mode, accessClass) AiResult
-    }
+  class ProjectScenario {
+    <<entity>>
+    +id: UUID
+    +projectId: UUID
+    +authorId: UUID
+    +name: String
+    +variablesJson: JSON
+    +impactReportJson: JSON
+    +recalculatedTimelineJson: JSON
+    +riskByPhaseJson: JSON
+    +status: ScenarioStatus
+    +appliedVersionId: UUID
+    +sharedInSessionId: UUID
+    +aiInferenceId: UUID
   }
-  namespace ws-web {
-    class ScenarioController {
-      <<controller>>
-      +create(projectId, body)
-      +compare(projectId, ids)
-      +save(scenarioId)
-      +apply(scenarioId, ifMatchVersion)
-      +discard(scenarioId)
-      +share(scenarioId, sessionId)
-    }
+  class ProjectVersion {
+    <<entity>>
+    +id: UUID
+    +projectId: UUID
+    +versionNumber: int
+    +authorId: UUID
+    +diffJson: JSON
+    +snapshotJson: JSON
+    +reason: String
+    +sourceScenarioId: UUID
   }
-  namespace ws-infrastructure {
-    class LocalCpmEngine {
-      <<adapter>>
-      CPM + PERT local
-    }
-    class ClaudeAdapter {
-      <<adapter>>
-    }
-    class GeminiAdapter {
-      <<adapter>>
-    }
-    class ProjectScenarioJpaRepository {
-      <<adapter>>
-    }
-    class CassandraMessageStore {
-      <<adapter>>
-    }
+  class ProjectTask {
+    <<entity>>
+    +projectId: UUID
+    +taskId: UUID
+    +phase: ProjectPhase
+    +responsibleId: UUID
+    +dueAt: LocalDate
+    +pertMostLikely: BigDecimal
+    +plannedValue: BigDecimal
+    +isCritical: boolean
+    +slackDays: int
   }
-  ProjectScheme "1" --> "*" ProjectScenario : cenários
-  ProjectScheme "1" --> "*" ProjectTask
-  ProjectScheme "1" --> "*" ProjectTaskDependency
-  ProjectScheme "1" --> "*" ProjectVersion
-  ProjectScenario --> ScenarioStatus : status
-  ProjectScenario --> ProjectVersion : appliedVersionId
-  ProjectVersion --> ProjectScenario : sourceScenarioId
-  ProjectScenario --> AiInferenceLog : aiInferenceId
-  ProjectScenario ..> ComplianceResult : conformidade no impactReportJson
-  SummaryScenario --> ProjectScenario : linkedProjectScenarioId
-  FinalDecision --> SummaryScenario : chosenScenarioId
-  MessageAttachment ..> ProjectScenario : targetType SCENARIO
-  ProjectTask --> ProjectPhase
-  ScenarioService ..> ProjectScenario
-  ScenarioService ..> SchedulePort : prazo e caminho crítico sem IA externa
-  ScenarioService ..> ComplianceService : RF32
-  ScenarioService ..> AiEngine : riscos e vantagens ✦
-  ScenarioService ..> ProjectVersion : apply
-  ScenarioService ..> DeciaBridgeService : compartilhar na sessão
-  AiEngine ..> AiProviderPort
-  ScenarioController ..> ScenarioService
-  LocalCpmEngine ..|> SchedulePort
-  ClaudeAdapter ..|> AiProviderPort
-  GeminiAdapter ..|> AiProviderPort
-  ProjectScenarioJpaRepository ..> ProjectScenario : MySQL
-  CassandraMessageStore ..> MessageAttachment : mensagem com anexo SCENARIO
-  note for ProjectScenario "tabela project_scenarios · variablesJson {budgetDeltaPct, scheduleDeltaDays, removedTaskIds, addedTasksJson, responsibleSwaps, supplierSwaps, scopeChangeText}"
-  note for ProjectScenario "impactReportJson {affectedTasks, newEndDate, newRisks, conformity, pros, cons} no formato do RF11"
-  note for ProjectScheme "tabela project_schemes · .. +30 campos .."
-  note for ProjectTask "tabela project_tasks · .. +15 campos .."
+  class ProjectTaskDependency {
+    <<entity>>
+    +predecessorProjectTaskId: UUID
+    +successorProjectTaskId: UUID
+    +type: String
+    +lagDays: int
+  }
+  class ComplianceResult {
+    <<entity>>
+    +projectId: UUID
+    +percent: BigDecimal
+    +blockingCount: int
+  }
+  class ScenarioStatus {
+    <<enum>>
+    RASCUNHO
+    SALVO
+    APLICADO
+    DESCARTADO
+  }
+}
+
+namespace ws_domain_decia {
+  class SummaryScenario {
+    <<entity>>
+    +summaryId: UUID
+    +name: String
+    +advantagesJson: JSON
+    +disadvantagesJson: JSON
+    +criteriaScoresJson: JSON
+    +linkedProjectScenarioId: UUID
+  }
+  class MessageAttachment {
+    <<entity>>
+    +messageId: UUID
+    +targetType: String
+    +targetId: UUID
+    +snapshotJson: JSON
+  }
+  class FinalDecision {
+    <<entity>>
+    +sessionId: UUID
+    +chosenScenarioId: UUID
+    +status: DecisionStatus
+  }
+  class DecisionTraceNode {
+    <<entity>>
+    +nodeType: TraceNodeType
+    +refId: UUID
+  }
+}
+
+namespace ws_domain_ia {
+  class AiInferenceLog {
+    <<entity>>
+    +capability: AiCapability
+    +provider: AiProvider
+    +result: InferenceResult
+    +fallbackUsed: boolean
+    +correlationId: String
+  }
+}
+
+namespace ws_application {
+  class ScenarioService {
+    <<service>>
+    +create(actor, projectId, ScenarioVariables) ProjectScenario
+    +recalculate(actor, scenarioId) ProjectScenario
+    +compare(actor, ids) CompareView
+    +save(actor, scenarioId) ProjectScenario
+    +apply(actor, scenarioId) ProjectVersion
+    +discard(actor, scenarioId)
+    +shareInSession(actor, scenarioId, sessionId) MessageAttachment
+  }
+  class CriticalPathService {
+    <<service>>
+    +compute(tasks, deps) CriticalPath
+    +shift(timeline, deltaDays) Timeline
+  }
+  class RiskMatrixService {
+    <<service>>
+    +byPhase(project, variables) RiskByPhase
+  }
+  class ComplianceService {
+    <<service>>
+    +evaluate(projectSnapshot) ComplianceResult
+  }
+  class ProjectVersionService {
+    <<service>>
+    +createVersion(projectId, diff, reason, sourceScenarioId) ProjectVersion
+  }
+  class DeciaBridgeService {
+    <<service>>
+    +attachToMessage(actor, sessionId, draft, attachments)
+  }
+  class AiEngine {
+    <<service>>
+    +run(AiRequest) AiResponse
+  }
+  class Guard {
+    <<service>>
+    +requireOwner(actor, ownerId)
+    +requireParticipant(actor, sessionId)
+  }
+  class DomainEvents {
+    <<service>>
+    +publish(event)
+  }
+}
+
+namespace ws_web {
+  class ScenarioController {
+    <<controller>>
+    +POST_api_projects_id_scenarios(variables)
+    +GET_api_projects_id_scenarios_compare(ids)
+    +POST_api_scenarios_id_save()
+    +POST_api_scenarios_id_apply()
+    +DELETE_api_scenarios_id()
+    +POST_api_scenarios_id_share(sessionId)
+  }
+}
+
+namespace ws_infrastructure {
+  class LocalEngine {
+    <<adapter>>
+  }
+  class ClaudeProvider {
+    <<adapter>>
+  }
+}
+
+ProjectScheme "1" o-- "0..*" ProjectScenario
+ProjectScheme "1" *-- "0..*" ProjectTask
+ProjectScheme "1" *-- "0..*" ProjectTaskDependency
+ProjectScheme "1" o-- "0..*" ProjectVersion
+ProjectScenario "0..1" --> "0..1" ProjectVersion : appliedVersionId
+ProjectVersion "0..*" --> "0..1" ProjectScenario : sourceScenarioId
+ProjectScenario ..> ComplianceResult : conformidade do cenario
+SummaryScenario "0..*" --> "0..1" ProjectScenario : linkedProjectScenarioId
+MessageAttachment ..> ProjectScenario : targetType SCENARIO
+FinalDecision ..> SummaryScenario : chosenScenarioId
+DecisionTraceNode ..> ProjectScenario : CENARIO
+ScenarioController --> ScenarioService
+ScenarioService --> CriticalPathService
+ScenarioService --> RiskMatrixService
+ScenarioService --> ComplianceService
+ScenarioService --> ProjectVersionService
+ScenarioService --> DeciaBridgeService
+ScenarioService --> AiEngine
+ScenarioService --> Guard
+ScenarioService --> DomainEvents
+AiEngine ..> AiInferenceLog
+LocalEngine ..> AiEngine : prazo e caminho critico sem IA externa
+ClaudeProvider ..> AiEngine
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph L1["Ator humano"]
-    U1["Dono do projeto abre /projects/[id]/simulate"]
-    U2["Escolhe variáveis: orçamento ±%, prazo ±dias, remover ou adicionar tarefa, trocar responsável ou fornecedor, mudança de escopo (texto)"]
-    U3["Seleciona até 3 cenários para comparar lado a lado"]
-    U4{"Salvar como variante, aplicar ao projeto ou descartar?"}
-    U5["Compartilha o cenário na sessão DECIA"]
-    U6["Grupo decide entre os cenários · chefe valida (RF15)"]
+  subgraph ATOR["Ator (dono do projeto · chefe)"]
+    A0([Abre /projects/id/simulate]) --> A1["Escolhe variáveis: orçamento ±%, prazo ±dias, remover/adicionar tarefa, trocar responsável/fornecedor, mudança de escopo"]
+    A2["Lê o relatório de impacto ✦"]
+    A3{"Ação"}
+    A3 -->|comparar| A4["Seleciona até 3 cenários lado a lado"]
+    A3 -->|salvar| A5["Salvar como variante"]
+    A3 -->|aplicar| A6["Aplicar ao projeto"]
+    A3 -->|compartilhar| A7["Compartilhar na sessão DECIA"]
+    A3 -->|descartar| A8["Descartar"]
   end
-  subgraph L2["Web/BFF (Next.js App Router)"]
-    W1["Relatório de impacto com faísca ✦ ou aviso de cálculo só local"]
-    W2["Comparação em colunas: prazo final, tarefas afetadas, riscos, conformidade, vantagens e desvantagens"]
-    W3["Projeto original inalterado · variante listada em Cenários"]
-    W4["Histórico RF22 mostra nova versão com reason = cenário aplicado"]
+
+  subgraph FE["Next.js / BFF (app/(shell)/projects/[id]/simulate)"]
+    F1["ScenarioForm (Input ±%, Due, SelectList de tarefas, Textarea de escopo)"]
+    F2["POST /api/projects/{id}/scenarios"]
+    F3["ImpactReport: tarefas afetadas, novo prazo final, riscos novos, conformidade, prós/contras · Spark ✦"]
+    F4["GET /scenarios/compare?ids=a,b,c (CompareTable)"]
+    F5["POST /scenarios/{id}/save · /apply · /share · DELETE"]
   end
-  subgraph L3["ws-application"]
-    S1{"Ator é dono ou responsável do projeto?"}
-    S2{"Ao menos uma variável e deltas válidos?"}
-    S3["ProjectScenario RASCUNHO com variablesJson"]
-    S4["SchedulePort.recalc: linha do tempo, caminho crítico, folgas, risco por fase (motor local)"]
-    S5["ComplianceService.evaluateHypothetical sobre as tarefas pós-cenário (RF32)"]
-    S6{"IA externa disponível?"}
-    S7["impactReportJson {affectedTasks, newEndDate, newRisks, conformity, pros, cons} · AiInferenceLog SIMULAR_CENARIO"]
-    S8{"Até 3 ids do mesmo projeto?"}
-    S9["Monta ScenarioComparison lado a lado"]
-    S10["status SALVO (não altera o original)"]
-    S11{"version do projeto igual ao esperado?"}
-    S12["Transação: ProjectVersion (sourceScenarioId, diffJson) · aplica tarefas, prazos, responsáveis · recalcula criticalPathJson e evmJson · status APLICADO, appliedVersionId"]
-    S13["status DESCARTADO"]
-    S14["DeciaBridgeService.attachToMessage targetType SCENARIO · sharedInSessionId · SummaryScenario.linkedProjectScenarioId"]
-    S15["FinalDecision.chosenScenarioId = cenário escolhido · nó CENARIO no rastro (RF29)"]
-    E1["403 ACESSO_NEGADO"]
-    E2["422 VALIDACAO"]
-    E3["422 VALIDACAO (máx. 3 cenários)"]
-    E4["409 VERSAO_CONFLITO"]
+
+  subgraph WEB["ws-web · ScenarioController"]
+    W1["JWT · CorrelationIdFilter"]
+    W2["GlobalExceptionHandler"]
   end
-  subgraph L4["IA (AiEngine)"]
-    A1["impactNarrative ✦: riscos novos, vantagens e desvantagens no formato do RF11"]
-    A2["Sem IA externa: relatório só com prazo, caminho crítico e conformidade (result FALLBACK)"]
+
+  subgraph APP["ws-application · ScenarioService"]
+    P1{"Guard.requireOwner(projeto) ou chefe do departamento?"}
+    P1 -->|não| E1["403 ACESSO_NEGADO"]
+    P2{"Variáveis válidas? (tarefa removida existe, delta numérico)"}
+    P2 -->|não| E2["422 VALIDACAO details.variables"]
+    P3["Clona ProjectTask/Dependency em memória e aplica as variáveis"]
+    P4["CriticalPathService.compute + shift · RiskMatrixService.byPhase (determinístico)"]
+    P5["ComplianceService.evaluate no snapshot do cenário (RF32)"]
+    P6["ProjectScenario RASCUNHO com impactReportJson"]
+    P7{"Mais de 3 ids?"}
+    P7 -->|sim| E3["422 VALIDACAO details.ids"]
+    P8["save: status SALVO (variante, original intacto)"]
+    P9["apply: ProjectVersionService.createVersion(diff, reason, sourceScenarioId) · status APLICADO · ProjectScheme atualizado"]
+    P10{"Guard.requireParticipant(sessão) e sessão ATIVA?"}
+    P10 -->|não| E4["403 ou 409 SESSAO_NAO_ATIVA"]
+    P11["DeciaBridgeService.attachToMessage(SCENARIO) · sharedInSessionId · DecisionTrace CENARIO → ANEXOU"]
+    P12["discard: status DESCARTADO"]
   end
-  subgraph L5["Persistência"]
-    D1[("MySQL: project_scenarios · ai_inference_log")]
-    D2[("MySQL: project_schemes · project_tasks · project_task_dependencies · compliance_results")]
-    D3[("MySQL: project_versions")]
-    D4[("Cassandra: messages_by_session · MySQL: message_attachments · summary_scenarios · final_decisions")]
+
+  subgraph IA["AiEngine (SIMULAR_CENARIO)"]
+    I1["Redige vantagens/desvantagens e riscos novos sobre os números calculados"]
+    I2["Claude → Gemini → LocalEngine (só prazo/caminho crítico, redação simplificada)"]
+    I3["AiInferenceLog (faísca ✦)"]
   end
-  U1 --> S1
-  S1 -->|"não"| E1
-  S1 -->|"sim"| U2 --> S2
-  S2 -->|"não"| E2
-  S2 -->|"sim"| S3 --> D1
-  S3 --> S4 --> D2
-  S4 --> S5 --> S6
-  S6 -->|"sim"| A1 --> S7
-  S6 -->|"não"| A2 --> S7
-  S7 --> D1
-  S7 --> W1 --> U3 --> S8
-  S8 -->|"não"| E3
-  S8 -->|"sim"| S9 --> W2 --> U4
-  U4 -->|"salvar"| S10 --> D1
-  S10 --> W3
-  U4 -->|"aplicar"| S11
-  S11 -->|"não"| E4
-  S11 -->|"sim"| S12 --> D3
-  S12 --> D2
-  S12 --> W4
-  U4 -->|"descartar"| S13 --> D1
-  W3 --> U5 --> S14 --> D4
-  S14 --> U6 --> S15 --> D4
-  classDef err fill:#fde2e2,stroke:#b91c1c,color:#7f1d1d
-  class E1,E2,E3,E4 err
+
+  subgraph DB["Persistência"]
+    D1[("MySQL project_scenarios · project_versions · project_tasks · compliance_results · ai_inference_log")]
+    D2[("Cassandra trace_by_entity · flag cassandra.enabled")]
+  end
+
+  A1 --> F1 --> F2 --> W1 --> P1 -->|sim| P2 -->|sim| P3 --> P4 --> P5 --> I1 --> I2 --> I3 --> P6 --> D1 --> F3 --> A2 --> A3
+  A4 --> F4 --> W1 --> P7 -->|não| D1
+  A5 --> F5 --> W1 --> P1 --> P8 --> D1
+  A6 --> F5 --> W1 --> P1 --> P9 --> D1
+  A7 --> F5 --> W1 --> P10 -->|sim| P11 --> D1
+  P11 --> D2
+  A8 --> F5 --> P12 --> D1
+  E1 --> W2
+  E2 --> W2
+  E3 --> W2
+  E4 --> W2
 ```
 
 ## 3. Diagrama de sequência
@@ -314,107 +294,91 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário
-  participant NX as Next.js (App Router)
+  participant U as Usuário
+  participant FE as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
-  participant CS as Cassandra
+  participant CAS as Cassandra
   participant EV as DomainEvents (AFTER_COMMIT)
 
-  Note over U,EV: CA01, CA02 e CA05 — criar cenário e obter o relatório de impacto
-  U->>NX: define corte de 20% e atraso de 60 dias em /projects/[id]/simulate
-  NX->>C: POST /api/projects/{projectId}/scenarios {name, variables}
-  C->>S: ScenarioService.create(actorId, projectId, name, variables)
-  alt não é dono nem responsável
-    S-->>C: 403 ACESSO_NEGADO
-  else nenhuma variável informada
-    S-->>C: 422 VALIDACAO
+  U->>FE: cria cenário Corte de 15% + atraso 30 dias
+  FE->>C: POST /api/projects/{id}/scenarios {variables}
+  C->>S: ScenarioService.create(actor, projectId, variables)
+  S->>S: Guard.requireOwner(actor, project.ownerId)
+  alt variáveis inválidas
+    S-->>C: 422 VALIDACAO details.variables
   else ok
-    S->>DB: SELECT project_schemes, project_tasks, project_task_dependencies
-    S->>S: SchedulePort.recalc (LocalCpmEngine: PERT, CPM, folgas, risco por fase)
-    S->>S: ComplianceService.evaluateHypothetical (RF32)
-    alt provider externo disponível
-      S->>AI: impactNarrative(project, timeline, compliance, variables)
-      AI-->>S: newRisks, pros, cons ✦ (formato RF11)
-    else sem IA externa (CA05)
-      S->>S: relatório só com prazo, caminho crítico e conformidade · fallbackUsed
+    S->>DB: load project_tasks + dependencies + compliance_results
+    S->>S: CriticalPathService.compute e shift · RiskMatrixService.byPhase
+    S->>S: ComplianceService.evaluate(snapshot do cenário)
+    S->>AI: run(SIMULAR_CENARIO, números calculados)
+    alt sem provedor externo
+      AI-->>S: LocalEngine devolve prazo e caminho crítico, redação simplificada (fallbackUsed)
+    else ok
+      AI-->>S: vantagens, desvantagens, riscos novos ✦
     end
-    S->>DB: INSERT project_scenarios (RASCUNHO, impactReportJson, recalculatedTimelineJson, riskByPhaseJson)
-    S->>DB: INSERT ai_inference_log (SIMULAR_CENARIO, provider, latência, custo)
-    S-->>C: 201 ProjectScenario
-    C-->>NX: relatório de impacto com faísca ✦
+    AI->>DB: insert ai_inference_log
+    S->>DB: insert project_scenarios (RASCUNHO, impactReportJson, riskByPhaseJson)
+    S-->>FE: 201 ProjectScenario + relatório de impacto
   end
 
-  Note over U,EV: CA03 — comparar até 3, salvar variante ou aplicar
-  U->>NX: compara A, B e C
-  NX->>C: GET /api/projects/{projectId}/scenarios/compare?ids=A,B,C
-  C->>S: ScenarioService.compare(projectId, ids)
+  U->>FE: compara 3 cenários
+  FE->>C: GET /api/projects/{id}/scenarios/compare?ids=a,b,c
+  C->>S: ScenarioService.compare(actor, ids)
   alt mais de 3 ids
-    S-->>C: 422 VALIDACAO
+    S-->>C: 422 VALIDACAO details.ids
   else ok
-    S->>DB: SELECT project_scenarios WHERE id IN (...)
-    S-->>NX: 200 ScenarioComparison lado a lado
-  end
-  U->>NX: salva B como variante
-  NX->>C: POST /api/scenarios/{B}/save
-  C->>S: ScenarioService.save(actorId, B)
-  S->>DB: UPDATE project_scenarios SET status = SALVO
-  S-->>NX: 200 (original inalterado)
-  U->>NX: aplica C ao projeto
-  NX->>C: POST /api/scenarios/{C}/apply (If-Match version)
-  C->>S: ScenarioService.apply(actorId, C, expectedVersion)
-  alt projeto mudou desde a simulação
-    S-->>C: 409 VERSAO_CONFLITO
-  else ok
-    S->>DB: INSERT project_versions (sourceScenarioId = C, diffJson, reason)
-    S->>DB: UPDATE project_tasks (prazos, responsáveis, remoções) · UPDATE project_schemes (criticalPathJson, evmJson, version+1)
-    S->>DB: UPDATE project_scenarios SET status = APLICADO, appliedVersionId
-    S-)EV: ScenarioApplied
-    EV->>DB: ComplianceService re-avalia (RF32) · mosaico e capa (RF38)
-    S-->>NX: 200 ProjectVersion
+    S->>DB: select project_scenarios in ids
+    S-->>FE: CompareView lado a lado
   end
 
-  Note over U,EV: CA04 — compartilhar na sessão DECIA e decidir entre cenários
-  U->>NX: compartilha A e B na sessão
-  NX->>C: POST /api/scenarios/{A}/share {sessionId}
-  C->>S: ScenarioService.shareInSession(actorId, A, sessionId)
-  S->>CS: INSERT messages_by_session (mensagem com anexo)
-  S->>DB: INSERT message_attachments (targetType SCENARIO, snapshotJson) · UPDATE project_scenarios SET sharedInSessionId
-  S->>DB: INSERT summary_scenarios (linkedProjectScenarioId) ao gerar o resumo RF11
-  S-)EV: ScenarioShared → nó CENARIO no DecisionTrace (RF29)
-  S-->>NX: 201 anexo inline
-  Note over S,DB: na validação (RF15) FinalDecision.chosenScenarioId referencia o cenário escolhido
+  U->>FE: aplica o cenário B
+  FE->>C: POST /api/scenarios/{id}/apply
+  C->>S: ScenarioService.apply(actor, id)
+  S->>DB: insert project_versions (diff, reason, sourceScenarioId) + update project_tasks + project_scenarios APLICADO
+  S->>EV: ScenarioApplied
+  S-->>FE: 200 ProjectVersion
+  EV->>EV: recalcula evmJson e criticalPathJson do projeto · thumbnail da capa
+
+  U->>FE: compartilha o cenário A na sessão
+  FE->>C: POST /api/scenarios/{id}/share {sessionId}
+  C->>S: ScenarioService.shareInSession(actor, id, sessionId)
+  S->>S: Guard.requireParticipant(actor, sessionId)
+  alt sessão não ativa
+    S-->>C: 409 SESSAO_NAO_ATIVA
+  else ok
+    S->>DB: update sharedInSessionId + insert message_attachments (SCENARIO) + decision_trace_nodes CENARIO
+    S->>CAS: messages_by_session + trace_by_entity
+    S-->>FE: 201
+  end
+  Note over S,DB: decisão final (RF12/RF15) grava FinalDecision.chosenScenarioId → SummaryScenario.linkedProjectScenarioId
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: `ProjectScenario.status`. Compartilhar na sessão (CA04) não muda o status — grava `sharedInSessionId` em qualquer estado não descartado.
+Entidade central: `ProjectScenario.status` (`ScenarioStatus`). O projeto segue `ProjectStatus` (RF22); aplicar um cenário não muda o status do projeto, só cria versão.
 
 ```mermaid
 stateDiagram-v2
-  direction LR
-  [*] --> RASCUNHO : POST /api/projects/{id}/scenarios (CA01) · simulação calculada (CA02)
-  RASCUNHO --> RASCUNHO : recalcular com novas variáveis
-  RASCUNHO --> SALVO : POST scenarios/{id}/save (variante, original intacto)
-  RASCUNHO --> APLICADO : POST scenarios/{id}/apply → ProjectVersion (CA03)
-  SALVO --> APLICADO : POST scenarios/{id}/apply → ProjectVersion (CA03)
-  RASCUNHO --> DESCARTADO : descartar
-  SALVO --> DESCARTADO : descartar
+  [*] --> RASCUNHO: POST /scenarios → recálculo determinístico + relatório ✦ (CA01, CA02)
+  RASCUNHO --> RASCUNHO: edita variáveis e recalcula · compara até 3 (CA03)
+  RASCUNHO --> SALVO: POST /save → variante do projeto, original intacto (CA03)
+  RASCUNHO --> APLICADO: POST /apply → ProjectVersion com sourceScenarioId (CA03)
+  SALVO --> APLICADO: POST /apply
+  SALVO --> SALVO: compartilhado na sessão DECIA (sharedInSessionId, CA04)
+  RASCUNHO --> DESCARTADO: DELETE
+  SALVO --> DESCARTADO: DELETE
   APLICADO --> [*]
   DESCARTADO --> [*]
-  note right of SALVO
-    Pode ser comparado (até 3) e compartilhado
-    na sessão DECIA (sharedInSessionId, CA04)
-  end note
   note right of APLICADO
-    appliedVersionId aponta para project_versions
-    FinalDecision.chosenScenarioId pode referenciá-lo
+    Imutável depois de aplicado: a versão do projeto
+    referencia o cenário (RF22 histórico).
   end note
-  note left of RASCUNHO
-    impactReportJson com faísca ✦ e aiInferenceId
-    ou fallback local sem narrativa (CA05)
+  note right of SALVO
+    A decisão final da sessão referencia o cenário escolhido
+    (FinalDecision.chosenScenarioId, CA04).
   end note
 ```
 
@@ -422,71 +386,57 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Next.js (frontend)"]
-    direction TB
-    P1["app/projects/[id]/simulate/page.tsx"]
-    P2["app/projects/[id]/history · versões (RF22)"]
-    P3["app/decia/[sessionId] · anexo SCENARIO inline (RF29)"]
-    UI1["components/ui: ScenarioForm · ImpactReport ✦ · ScenarioCompare (3 colunas) · TimelineGantt · RiskByPhase"]
+  subgraph FRONT["Frontend Next.js 15"]
+    R1["app/(shell)/projects/[id]/simulate (+ compare)"]
+    R2["components: ScenarioForm · SelectList · Due · ImpactReport · CompareTable · PhaseBar · Spark ✦ · Button abrir-decia"]
+    BFF["app/bff"]
+    R1 --> R2 --> BFF
   end
-  subgraph WEB["ws-web (REST · br.gov.pr.secid.workstation.web)"]
-    direction TB
-    C1["ScenarioController"]
+  subgraph WEB["ws-web"]
+    SC["ScenarioController (@Operation RF31.CA01-CA05)"]
+    SEC["SecurityConfig · CorrelationIdFilter · GlobalExceptionHandler (main)"]
   end
-  subgraph APP["ws-application"]
-    direction TB
-    S1["ScenarioService"]
-    S2["ComplianceService (RF32)"]
-    S3["DeciaBridgeService (RF29)"]
-    S4["AiEngine"]
-    PT1["SchedulePort"]
-    PT2["AiProviderPort"]
+  subgraph APPL["ws-application"]
+    SS["projects/ScenarioService"]
+    CP["metrics/CriticalPathService · RiskMatrixService (determinísticos, METRICAS_GESTAO.md)"]
+    CS["projects/ComplianceService (RF32)"]
+    PV["projects/ProjectVersionService (RF22)"]
+    BS["decia/DeciaBridgeService (RF29)"]
+    AIE["ai/AiEngine (SIMULAR_CENARIO) · AiBudget"]
+    GD["security/Guard (main)"]
+    DE["events/DomainEvents AFTER_COMMIT"]
+    PORTS["ports: AiProviderPort · MessagePort · TracePort"]
   end
   subgraph DOM["ws-domain"]
-    direction TB
-    E1["ProjectScenario · ProjectScheme · ProjectTask · ProjectTaskDependency · ProjectVersion"]
-    E2["ComplianceResult · SummaryScenario · FinalDecision · MessageAttachment · AiInferenceLog"]
+    ENT["ProjectScenario · ScenarioStatus · ProjectVersion · ProjectTask · ProjectTaskDependency · SummaryScenario (planejado) · AiInferenceLog (V2)"]
   end
   subgraph INFRA["ws-infrastructure"]
-    direction TB
-    I1["persistence-mysql: ProjectScenarioJpaRepository · ProjectVersionJpaRepository"]
-    I2["persistence-cassandra: CassandraMessageStore"]
-    I3["ai-providers: LocalCpmEngine · ClaudeAdapter · GeminiAdapter"]
-    I4["platform: DomainEventOutbox"]
+    MY["persistence-mysql project_scenarios · project_versions"]
+    CASA["persistence-cassandra (flag cassandra.enabled)"]
+    AIP["ai-providers ai-claude · ai-gemini · ai-local (LocalEngine cobre prazo/caminho crítico)"]
   end
-  subgraph EXT["Serviços externos"]
-    X1(["Claude / Gemini"])
-  end
-  P1 --> C1
-  P2 -.-> C1
-  P3 -.-> C1
-  UI1 -.-> P1
-  C1 --> S1
-  S1 --> S2
-  S1 --> S3
-  S1 --> S4
-  S1 -.-> PT1
-  S4 -.-> PT2
-  S1 --> E1
-  S1 --> E2
-  S1 --> I1
-  S3 --> I2
-  S1 --> I4
-  I3 -. implementa .-> PT1
-  I3 -. implementa .-> PT2
-  I3 --> X1
-  classDef port stroke-dasharray: 4 3
-  class PT1,PT2 port
+  BFF --> SC --> SEC
+  SC --> SS
+  SS --> CP
+  SS --> CS
+  SS --> PV
+  SS --> BS
+  SS --> AIE
+  SS --> GD
+  SS --> DE
+  AIE --> PORTS
+  BS --> PORTS
+  SS --> ENT --> MY --> MYSQL[("MySQL 8")]
+  PORTS --> CASA --> CASS[("Cassandra")]
+  PORTS --> AIP --> AI["Claude / Gemini / local"]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
-|---|---|
-| RF31.CA01 | Classes `ProjectScenario.variablesJson` (budgetDeltaPct, scheduleDeltaDays, removedTaskIds, addedTasksJson, responsibleSwaps, supplierSwaps, scopeChangeText), `ScenarioService.create`; atividades `U1 → S1 → U2 → S2 → S3` (403 ACESSO_NEGADO, 422 VALIDACAO); sequência bloco «CA01, CA02 e CA05» (`POST /api/projects/{id}/scenarios`); transição `[*] → RASCUNHO`; componentes `ScenarioForm`, `app/projects/[id]/simulate` |
-| RF31.CA02 | Classes `SchedulePort.recalc/criticalPath/riskByPhase`, `ProjectScenario.impactReportJson/recalculatedTimelineJson/riskByPhaseJson`, `ComplianceService.evaluateHypothetical`, `AiEngine.impactNarrative`, `ProjectTask.pert*/isCritical/slackDays`; atividades `S4 → S5 → S6 → A1/A2 → S7 → W1`; sequência bloco «CA01, CA02 e CA05» (recalc, evaluateHypothetical, impactNarrative ✦); componentes `ImpactReport`, `TimelineGantt`, `RiskByPhase`, `LocalCpmEngine` |
-| RF31.CA03 | Classes `ScenarioService.compare/save/apply`, `ProjectVersion.sourceScenarioId`, `ProjectScenario.appliedVersionId`, `ScenarioStatus`; atividades `U3 → S8 → S9 → W2`, `U4 → S10/S11 → S12 → W4` (422 máx. 3, 409 VERSAO_CONFLITO); sequência bloco «CA03»; transições `RASCUNHO/SALVO → APLICADO` e `→ SALVO`; componentes `ScenarioCompare`, `app/projects/[id]/history` |
-| RF31.CA04 | Classes `MessageAttachment targetType SCENARIO`, `ProjectScenario.sharedInSessionId`, `SummaryScenario.linkedProjectScenarioId`, `FinalDecision.chosenScenarioId`, `ScenarioService.shareInSession`, `DeciaBridgeService`; atividades `U5 → S14 → U6 → S15`; sequência bloco «CA04» (nó CENARIO no rastro); nota do estado `SALVO`; componentes `app/decia/[sessionId]`, `CassandraMessageStore` |
-| RF31.CA05 | Classes `AiInferenceLog` (SIMULAR_CENARIO, fallbackUsed), `ProjectScenario.aiInferenceId`, `LocalCpmEngine ..|> SchedulePort`; atividades `S6 → A2 → S7` e `W1` (aviso de cálculo só local); sequência bloco «CA01, CA02 e CA05» alt «sem IA externa»; nota do estado `RASCUNHO`; componente `ai-providers: LocalCpmEngine` |
-
-> Dúvidas para `docs/DECISOES.md`: `ScenarioStatus` não é enum nomeado na TAXONOMIA (status listado inline em `ProjectScenario`); `SchedulePort` e `409 VERSAO_CONFLITO` (optimistic lock por `ProjectScheme.version`) são propostas; quem pode simular um projeto alheio (chefe revisor, RF32.CA06) — aqui só dono/responsável criam cenários.
+| CA | Classe | Passo | Mensagem | Transição | Componente |
+|---|---|---|---|---|---|
+| RF31.CA01 | `ProjectScenario.variablesJson` (budgetDeltaPct, scheduleDeltaDays, removedTaskIds, addedTasksJson, responsibleSwaps, supplierSwaps, scopeChangeText), `ScenarioService.create` | A1 → F1 → F2 → P1 (403) → P2 (422) → P3 | 1–6 | `[*] → RASCUNHO` | `ScenarioForm`, `SC` |
+| RF31.CA02 | `CriticalPathService`, `RiskMatrixService`, `ComplianceService.evaluate`, `impactReportJson` (formato `SummaryScenario`), `AiCapability SIMULAR_CENARIO` | P4 → P5 → I1 → I2 → P6 → F3 | 7–16 | `RASCUNHO` | `CP`, `CS`, `AIE`, `ImpactReport` |
+| RF31.CA03 | `ScenarioService.compare/save/apply`, `ScenarioStatus SALVO/APLICADO`, `ProjectVersion.sourceScenarioId` | A4 → F4 → P7 (422) · A5 → P8 · A6 → P9 | 17–30 | `RASCUNHO → SALVO → APLICADO` | `CompareTable`, `PV` |
+| RF31.CA04 | `ScenarioService.shareInSession`, `MessageAttachment SCENARIO`, `sharedInSessionId`, `SummaryScenario.linkedProjectScenarioId`, `FinalDecision.chosenScenarioId`, nó CENARIO | A7 → F5 → P10 (403/409) → P11 | 31–40 | `SALVO → self (compartilhado)` + nota | `BS`, `CASA` |
+| RF31.CA05 | `AiInferenceLog` (faísca ✦), `LocalEngine` (prazo/caminho crítico sem IA externa) | I2 → I3 | 11–14 | — | `AIP`, `Spark ✦` |
