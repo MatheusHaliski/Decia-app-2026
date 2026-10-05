@@ -1,0 +1,14 @@
+{
+  "app.name": "Work Station",
+  "home.eyebrow": "SECID-PR · Work Station / DECIA",
+  "home.title": "Secure skeleton is up",
+  "home.subtitle": "Block 1: Maven multi-module, baseline security, guard tests and CI gate. Screens arrive with the design system (RF38).",
+  "home.cta.health": "Check API health",
+  "home.cta.docs": "Documentation",
+  "common.loading": "Loading…",
+  "common.retry": "Try again",
+  "error.generic": "Something went wrong on our side. Give code {correlationId} to support.",
+  "error.unauthenticated": "Sign in to continue.",
+  "error.forbidden": "You do not have permission for this action.",
+  "error.notFound": "We could not find what you are looking for."
+}
