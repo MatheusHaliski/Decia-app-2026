@@ -98,5 +98,5 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci --no-fund
-      - name: Mensagens do PR no padrão `tipo(escopo): assunto` (escopo rfNN opcional)
+      - name: "Mensagens do PR no padrão tipo(escopo): assunto (escopo rfNN opcional)"
         run: npx commitlint --from "${{ github.event.pull_request.base.sha }}" --to "${{ github.event.pull_request.head.sha }}" --verbose
