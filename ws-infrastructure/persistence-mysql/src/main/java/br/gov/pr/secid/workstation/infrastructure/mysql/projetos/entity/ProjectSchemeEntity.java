@@ -20,8 +20,9 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code project_schemes} (ProjectScheme — 3 Criador de Projetos; RF21, RF22, RF23, RF24, RF25, RF29, RF30, RF31, RF32, RF43). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code project_schemes} (ProjectScheme — 3 Criador de Projetos; RF21, RF22, RF23, RF24, RF25, RF29,
+ * RF30, RF31, RF32, RF43). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo
+ * mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
  */
 @Entity
 @Table(name = "project_schemes")

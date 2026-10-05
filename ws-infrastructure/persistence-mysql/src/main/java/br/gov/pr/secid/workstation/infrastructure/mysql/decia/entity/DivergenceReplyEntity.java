@@ -8,8 +8,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code divergence_replies} (DivergenceReply — 5 DECIA sessão; RF10, RF42). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code divergence_replies} (DivergenceReply — 5 DECIA sessão; RF10, RF42). Gerada pelo SchemaGenerator a
+ * partir do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como
+ * String; JSON como String.
  */
 @Entity
 @Table(name = "divergence_replies")

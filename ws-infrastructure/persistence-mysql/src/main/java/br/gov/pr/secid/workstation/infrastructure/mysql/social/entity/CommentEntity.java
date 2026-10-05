@@ -11,8 +11,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code comments} (Comment — 7 Social & Descoberta; RF26, RF22, RF27). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code comments} (Comment — 7 Social & Descoberta; RF26, RF22, RF27). Gerada pelo SchemaGenerator a
+ * partir do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como
+ * String; JSON como String.
  */
 @Entity
 @Table(name = "comments")

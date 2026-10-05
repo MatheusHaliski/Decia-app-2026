@@ -62,8 +62,16 @@ class EntityCatalogTest {
                         .as(e.entity() + " migration " + e.migration()).isTrue();
             }
             assertThat(e.attributes()).extracting(AttributeDescriptor::column).doesNotHaveDuplicates();
-            assertThat(e.attributes()).extracting(AttributeDescriptor::column).contains(e.pk());
+            if (e.store().hasMysqlTable()) {
+                assertThat(e.attributes()).extracting(AttributeDescriptor::column).as(e.entity() + " pk").contains(e.pk());
+            }
             assertThat(e.rfs()).isNotEmpty().allMatch(rf -> rf.matches("RF[1-9][0-9]?"));
+            List<String> columns = e.attributes().stream().map(AttributeDescriptor::column).toList();
+            for (String spec : Stream.concat(e.indexes().stream(), e.uniques().stream()).toList()) {
+                for (String col : spec.split(",")) {
+                    assertThat(columns).as(e.entity() + " índice/unicidade usa coluna inexistente: " + spec).contains(col.trim());
+                }
+            }
             assertThat(e.doc()).isNotBlank();
             for (AttributeDescriptor a : e.attributes()) {
                 assertThat(a.description()).as(e.entity() + "." + a.name()).isNotBlank();

@@ -11,8 +11,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code ai_credit_ledger} (AiCreditLedgerEntry — 8 Gamificação; RF42, RF39, RF43). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code ai_credit_ledger} (AiCreditLedgerEntry — 8 Gamificação; RF42, RF39, RF43). Gerada pelo
+ * SchemaGenerator a partir do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para
+ * MySQL; enums como String; JSON como String.
  */
 @Entity
 @Table(name = "ai_credit_ledger")

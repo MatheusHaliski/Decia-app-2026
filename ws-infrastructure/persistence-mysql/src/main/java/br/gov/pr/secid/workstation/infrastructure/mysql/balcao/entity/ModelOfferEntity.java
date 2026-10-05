@@ -16,8 +16,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code model_offers} (ModelOffer — 11 Balcão & Loja; RF40, RF19, RF21, RF42). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code model_offers} (ModelOffer — 11 Balcão & Loja; RF40, RF19, RF21, RF42). Gerada pelo
+ * SchemaGenerator a partir do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para
+ * MySQL; enums como String; JSON como String.
  */
 @Entity
 @Table(name = "model_offers")

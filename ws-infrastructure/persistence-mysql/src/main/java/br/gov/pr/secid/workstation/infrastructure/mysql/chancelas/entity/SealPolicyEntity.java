@@ -11,8 +11,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code seal_policies} (SealPolicy — 9 Chancelas & Vínculos; RF39). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code seal_policies} (SealPolicy — 9 Chancelas & Vínculos; RF39). Gerada pelo SchemaGenerator a partir
+ * do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String;
+ * JSON como String.
  */
 @Entity
 @Table(name = "seal_policies")

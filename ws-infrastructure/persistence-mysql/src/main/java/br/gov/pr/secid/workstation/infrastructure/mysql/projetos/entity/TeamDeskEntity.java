@@ -11,8 +11,9 @@ import jakarta.persistence.Version;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code team_desks} (TeamDesk — 3 Criador de Projetos; RF21, RF22). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code team_desks} (TeamDesk — 3 Criador de Projetos; RF21, RF22). Gerada pelo SchemaGenerator a partir
+ * do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String;
+ * JSON como String.
  */
 @Entity
 @Table(name = "team_desks")

@@ -280,7 +280,7 @@ CREATE TABLE week_plan_days (
         ON DELETE CASCADE ON UPDATE RESTRICT,
     CONSTRAINT fk_week_plan_days__task_id FOREIGN KEY (task_id) REFERENCES tasks (id)
         ON DELETE SET NULL ON UPDATE RESTRICT,
-    INDEX ix_week_plan_days_week_plan_date (week_plan_id, date)
+    INDEX ix_week_plan_days_week_plan_plan_date (week_plan_id, plan_date)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 -- ---------------------------------------------------------------------------------------------------------------

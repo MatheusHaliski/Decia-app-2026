@@ -10,8 +10,9 @@ import jakarta.persistence.Table;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code compliance_checklists} (ComplianceChecklist — 3 Criador de Projetos; RF32, RF11, RF39, RF45). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code compliance_checklists} (ComplianceChecklist — 3 Criador de Projetos; RF32, RF11, RF39, RF45).
+ * Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do
+ * Hibernate para MySQL; enums como String; JSON como String.
  */
 @Entity
 @Table(name = "compliance_checklists")

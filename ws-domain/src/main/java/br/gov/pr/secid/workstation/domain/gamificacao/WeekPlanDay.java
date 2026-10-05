@@ -12,7 +12,7 @@ import java.util.UUID;
 /** Dia do plano semanal (RF44) — TAXONOMIA §9.5. */
 @DomainEntity(context = "8 Gamificação", table = "week_plan_days", rfs = {"RF44"}, migration = 17, audit = Audit.NONE,
         doc = "Dias do plano (filho → CASCADE); tarefa SET NULL.",
-        indexes = {"week_plan_id, date"})
+        indexes = {"week_plan_id, plan_date"})
 public record WeekPlanDay(
         @Attr("identificador") UUID id,
         @Attr(value = "plano", ref = "week_plans", onDelete = OnDelete.CASCADE) UUID weekPlanId,

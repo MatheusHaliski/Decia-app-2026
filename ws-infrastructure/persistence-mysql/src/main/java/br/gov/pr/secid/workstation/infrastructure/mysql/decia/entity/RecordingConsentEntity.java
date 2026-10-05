@@ -8,8 +8,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code recording_consents} (RecordingConsent — 5 DECIA sessão; RF37, RF3). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code recording_consents} (RecordingConsent — 5 DECIA sessão; RF37, RF3). Gerada pelo SchemaGenerator a
+ * partir do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como
+ * String; JSON como String.
  */
 @Entity
 @Table(name = "recording_consents")

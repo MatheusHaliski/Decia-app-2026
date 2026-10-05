@@ -11,8 +11,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code evidences} (Evidence — 2 Acervo de Tarefas; RF41, RF20, RF29). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code evidences} (Evidence — 2 Acervo de Tarefas; RF41, RF20, RF29). Gerada pelo SchemaGenerator a
+ * partir do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como
+ * String; JSON como String.
  */
 @Entity
 @Table(name = "evidences")

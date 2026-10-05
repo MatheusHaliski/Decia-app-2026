@@ -14,8 +14,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code assignments} (Assignment — 12b Mensageria & Atribuição; RF46, RF10, RF18, RF19, RF44). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code assignments} (Assignment — 12b Mensageria & Atribuição; RF46, RF10, RF18, RF19, RF44). Gerada
+ * pelo SchemaGenerator a partir do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate
+ * para MySQL; enums como String; JSON como String.
  */
 @Entity
 @Table(name = "assignments")

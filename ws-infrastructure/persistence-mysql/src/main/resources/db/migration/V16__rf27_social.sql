@@ -192,7 +192,7 @@ CREATE TABLE notifications (
     body                    VARCHAR(1000)   NULL,
     payload_json            JSON            NULL,
     group_key               VARCHAR(120)    NULL,
-    read                    BOOLEAN         NOT NULL DEFAULT FALSE,
+    is_read                 BOOLEAN         NOT NULL DEFAULT FALSE,
     read_at                 TIMESTAMP(6)    NULL,
     delivered_channels_json VARCHAR(255)    NULL,
     created_at              TIMESTAMP(6)    NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -203,8 +203,8 @@ CREATE TABLE notifications (
         ON DELETE SET NULL ON UPDATE RESTRICT,
     CONSTRAINT ck_notifications_type CHECK (type IN ('SESSAO_PROPOSTA', 'SESSAO_INICIADA', 'PARTICIPANTE_ADICIONADO', 'PARTICIPANTE_REMOVIDO', 'DIVERGENCIA_DETECTADA', 'PERGUNTA_IA', 'RESUMO_PUBLICADO', 'DECISAO_PROPOSTA', 'DECISAO_VALIDADA', 'DECISAO_DEVOLVIDA', 'REABERTURA', 'ARTEFATO', 'PRAZO_PROXIMO', 'PRAZO_VENCIDO', 'REACAO', 'COMENTARIO', 'MENCAO', 'REMIX', 'CHANCELA_ESTADO', 'INDICACAO', 'BENEFICIO', 'PONTOS', 'META', 'RECONHECIMENTO', 'TAREFA_DO_DIA', 'TRANSICAO', 'MENSAGEM_DIRETA', 'ATRIBUICAO_PROPOSTA', 'ATRIBUICAO_ACEITA', 'ATRIBUICAO_RECUSADA', 'ATRIBUICAO_DEVOLVIDA', 'TAREFA_REUTILIZADA', 'SISTEMA')),
     CONSTRAINT ck_notifications_category CHECK (category IN ('SOCIAL', 'DECIA', 'PRAZO', 'CHANCELA', 'PONTOS', 'SISTEMA')),
+    INDEX ix_notifications_recipient_is_read_created_at (recipient_id, is_read, created_at),
     INDEX ix_notifications_recipient_read_at (recipient_id, read_at),
-    INDEX ix_notifications_recipient_created_at (recipient_id, created_at),
     INDEX ix_notifications_group_key (group_key)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 

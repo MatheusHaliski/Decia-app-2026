@@ -14,8 +14,9 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code collective_goals} (CollectiveGoal — 8 Gamificação; RF35, RF21, RF27, RF39, RF42). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code collective_goals} (CollectiveGoal — 8 Gamificação; RF35, RF21, RF27, RF39, RF42). Gerada pelo
+ * SchemaGenerator a partir do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para
+ * MySQL; enums como String; JSON como String.
  */
 @Entity
 @Table(name = "collective_goals")

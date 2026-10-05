@@ -12,8 +12,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code policy_acceptances} (PolicyAcceptance — 1 Identidade & Acesso; RF1, RF2, RF3, RF18). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code policy_acceptances} (PolicyAcceptance — 1 Identidade & Acesso; RF1, RF2, RF3, RF18). Gerada pelo
+ * SchemaGenerator a partir do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para
+ * MySQL; enums como String; JSON como String.
  */
 @Entity
 @Table(name = "policy_acceptances")

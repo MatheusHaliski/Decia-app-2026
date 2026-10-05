@@ -11,8 +11,9 @@ import jakarta.persistence.Table;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code task_attachments} (TaskAttachment — 2 Acervo de Tarefas; RF20, RF41, RF34). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code task_attachments} (TaskAttachment — 2 Acervo de Tarefas; RF20, RF41, RF34). Gerada pelo
+ * SchemaGenerator a partir do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para
+ * MySQL; enums como String; JSON como String.
  */
 @Entity
 @Table(name = "task_attachments")

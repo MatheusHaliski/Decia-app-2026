@@ -9,8 +9,9 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code week_plan_days} (WeekPlanDay — 8 Gamificação; RF44). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code week_plan_days} (WeekPlanDay — 8 Gamificação; RF44). Gerada pelo SchemaGenerator a partir do
+ * domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String;
+ * JSON como String.
  */
 @Entity
 @Table(name = "week_plan_days")

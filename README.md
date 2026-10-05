@@ -93,12 +93,44 @@ Frontend na raiz: `app/` (App Router), `components/ui/` (design system — únic
 ## Banco (MySQL 8.4 · Flyway)
 
 Schema 100 % por migration em `ws-infrastructure/persistence-mysql/src/main/resources/db/migration/` (`spring.jpa.hibernate.ddl-auto: none`;
-o Hibernate nunca cria nem altera tabela). `V1__baseline.sql` (só `app_meta`), `V2__baseline_dominio_base.sql` (domínio base) e
-`V3__rf1_rf2_autenticacao.sql` (`verification_codes`) nunca são editadas: mudança = `V4+`. Convenções do V2 (D-23): ids `BINARY(16)` (UUID), enums `VARCHAR` + `CHECK ck_<tabela>_<coluna>`, FK `fk_<tabela>__<coluna>` com
-`ON DELETE` explícito seguindo a política por domínio (dono → `CASCADE`; catálogo institucional e trilhas append-only → `RESTRICT`; `SET NULL` só
-para filho válido sem pai). Toda FK tem uma linha em `ForeignKeyPolicy.POLICY` — a migration e a linha entram no mesmo commit, e
-`ForeignKeyPolicyTest` compara com `INFORMATION_SCHEMA`. Contas sintéticas: `users.account_origin` (REAL · TEST_SEED · DEMO · SYSTEM) com
-`test_account` gerada no banco; nunca pontuam (RF42). Tabela de FKs e controles em [`docs/seguranca/SEGURANCA.md`](docs/seguranca/SEGURANCA.md) §2.
+o Hibernate nunca cria nem altera tabela). Migrations aplicadas nunca são editadas: mudança = versão nova. Convenções do V2 (D-23): ids `BINARY(16)` (UUID),
+enums `VARCHAR` + `CHECK ck_<tabela>_<coluna>`, FK `fk_<tabela>__<coluna>` com `ON DELETE` explícito seguindo a política por domínio (dono → `CASCADE`;
+catálogo institucional, atores e trilhas append-only → `RESTRICT`; `SET NULL` só para filho válido sem pai — D-41). Toda FK tem uma linha em
+`ForeignKeyPolicy.POLICY` e `ForeignKeyPolicyTest` compara com `INFORMATION_SCHEMA`. Contas sintéticas: `users.account_origin` com `test_account` gerada.
+
+| Migration | Contexto (TAXONOMIA) | RFs | Tabelas |
+|---|---|---|---|
+| `V1__baseline.sql` | esqueleto | — | `app_meta` |
+| `V2__baseline_dominio_base.sql` | domínio base (Bloco 2) | RF1–RF3, transversal | `users`, `user_preferences`, `refresh_tokens`, `audit_log`, `ai_inference_log`, `feature_flags`, `domain_events`, `media_objects` |
+| `V3__rf1_rf2_autenticacao.sql` | autenticação (Bloco 3) | RF1, RF2 | `verification_codes` |
+| V4–V9 | reservadas (Bloco 3 / LGPD) | | |
+| `V10__rf28_institucional_lgpd.sql` | 1 Identidade institucional + LGPD | RF28, RF1–RF3 | `companies`, `departments`, `department_memberships`, `curator_appointments`, `verification_policies`, `approval_requests`, `pending_uploads`, `user_empresa_ext`, `user_chefe_ext`, `policy_documents`, `policy_acceptances`, `consent_events`, `user_consents`, `data_subject_requests`, `data_export_requests` (+ FKs `users.company_id/department_id`, `ai_inference_log.department_id`) |
+| `V11__rf41_acervo_tarefas.sql` | 2 Acervo de Tarefas | RF20, RF41 | `org_entities`, `legal_deadline_rules`, `tasks`, `task_attachments`, `task_versions`, `task_state_log`, `evidences` |
+| `V12__rf21_criador_projetos.sql` | 3 Criador de Projetos | RF21, RF22, RF31, RF32 | `project_schemes`, `project_tasks`, `project_task_dependencies`, `project_scenarios`, `project_versions`, `compliance_checklists`, `compliance_items`, `compliance_results`, `process_kits`, `kit_items`, `team_desks`, `desk_notes` |
+| `V13__rf24_planejamento.sql` | 4 Planejamento | RF24, RF25 | `annual_plans`, `plan_axes`, `plan_axis_projects`, `groupings`, `grouping_items` |
+| `V14__rf4_decia_sessao.sql` | 5 DECIA sessão | RF4–RF17, RF37 | `decia_sessions`, `session_participants`, `message_classifications`, `session_messages_idx`, `message_attachments`, `divergences`, `divergence_replies`, `ai_questions`, `analytical_summaries`, `summary_scenarios`, `final_decisions`, `decision_reviews`, `reopen_requests`, `session_artifacts`, `meetings`, `meeting_transcripts`, `recording_consents` |
+| `V15__rf29_rastro_decisao.sql` | 6 Rastro, Memória e Transição | RF29, RF17, RF36 | `decision_trace_nodes`, `decision_trace_edges`, `session_archives`, `handoff_dossiers`, `handoff_items` |
+| `V16__rf27_social.sql` | 7 Social & Descoberta | RF26, RF27, RF15 | `reactions`, `comments`, `saved_items`, `shares`, `remixes`, `follows`, `mural_entries`, `notifications`, `announcements` |
+| `V17__rf42_gamificacao.sql` | 8 Gamificação e DECIA Points | RF42, RF35, RF43–RF45 | `decia_points_rules`, `decia_points_ledger`, `ai_credit_ledger`, `points_donations`, `collective_goals`, `goal_participants`, `highlights`, `recognitions`, `week_plans`, `week_plan_days`, `daily_tasks`, `hse_weights`, `hse_snapshots`, `hype_bands`, `profile_hype_scores`, `hype_ignored_events`, `deliberative_profiles`, `ranking_weights`, `ranking_entries` |
+| `V18__rf39_chancelas.sql` | 9 Chancelas & Vínculos | RF39 | `seals`, `seal_policies`, `seal_bonds`, `seal_proposals`, `benefits`, `benefit_redemptions` |
+| `V19__rf40_balcao_loja.sql` | 11 Balcão & Loja | RF40, RF42 | `model_offers`, `store_items`, `store_purchases`, `user_skins` |
+| `V20__rf46_mensageria_atribuicao.sql` | 12b Mensageria & Atribuição | RF46, RF10 | `direct_conversations`, `direct_conversation_participants`, `assignments` |
+| `V21__rf43_ia_plataforma.sql` | 10 IA do sistema · 12 Plataforma | RF43, RF34, RF33, RF18, RF3 | `ai_quotas`, `insights`, `feasibility_sheets`, `metric_definitions`, `metric_snapshots`, `extraction_results`, `extraction_corrections`, `memory_queries`, `pipeline_jobs` |
+
+As migrations V10–V21, o bloco `GENERATED` da `ForeignKeyPolicy.POLICY` e as entidades JPA (`persistence-mysql/…/mysql/<contexto>/{entity,repository}`)
+são **geradas** a partir dos records de `ws-domain` (`@DomainEntity`/`@Attr`, `DomainCatalog`) pelo `SchemaGenerator` (test-scope), e o catálogo legível
+por máquina fica em [`docs/arquitetura/catalogo-entidades.json`](docs/arquitetura/catalogo-entidades.json) (D-40). Depois de mudar um record:
+
+```bash
+mvn -q -o -pl ws-domain install -DskipTests
+java -cp ws-domain/target/classes:ws-domain/target/test-classes br.gov.pr.secid.workstation.domain.catalog.SchemaGenerator .   # só ANTES do 1º deploy da versão
+mvn -q -pl ws-domain test -Dtest=EntityCatalogTest -Dcatalog.write=true -Dsurefire.failIfNoSpecifiedTests=false                # reescreve o JSON
+```
+
+Migration já aplicada em algum ambiente nunca é regenerada: a mudança vai para `V22+` à mão e o record/catálogo acompanham
+(`CatalogSchemaConsistencyTest` cobra a igualdade colunas × catálogo). Mensagens de sessão/diretas, timeline e trace vivem no Cassandra
+(`messages_by_session`, `messages_by_conversation`, `timeline_by_user`, `notifications_by_user`, `trace_by_entity`), a Memória Institucional no
+OpenSearch (`ws-memory`), cotas/circuit state no Redis — todos descritos no mesmo catálogo com o campo `store`.
 
 ## Testes e gates (`mvn -B -ntp verify` · `npm run lint && npm run typecheck && npm test && npm run build`)
 
@@ -107,7 +139,10 @@ Testes-guarda que falham o build antes do deploy:
 | Teste | Protege contra |
 |---|---|
 | `MigrationVersionsTest` (persistence-mysql) | duas branches com a mesma versão `V<n>__` (SQL e Java, ignora `$`); V1/V2 renomeadas; migration Java entrando sem registro |
-| `ForeignKeyPolicyUnitTest` (persistence-mysql) | FK nova nas migrations SQL sem linha em `ForeignKeyPolicy.POLICY`, sem nome `fk_<tabela>__<coluna>`, sem `ON DELETE`/`ON UPDATE` explícitos, ou `SET FOREIGN_KEY_CHECKS=0` — roda sem Docker |
+| `ForeignKeyPolicyUnitTest` (persistence-mysql) | FK nova nas migrations SQL (`CREATE TABLE` ou `ALTER TABLE … ADD CONSTRAINT`) sem linha em `ForeignKeyPolicy.POLICY`, sem nome `fk_<tabela>__<coluna>`, sem `ON DELETE`/`ON UPDATE` explícitos, ou `SET FOREIGN_KEY_CHECKS=0` — roda sem Docker |
+| `EntityCatalogTest` (ws-domain) | record `@DomainEntity` fora do `DomainCatalog`; `catalogo-entidades.json` desatualizado; SET NULL em coluna NOT NULL; índice com coluna inexistente |
+| `CatalogSchemaConsistencyTest` (persistence-mysql) | coluna no SQL sem atributo no catálogo (ou vice-versa); FK do catálogo ausente/divergente na POLICY; tabela nova sem entidade |
+| `DomainStateMachinesTest` / `EntityInvariantsTest` (ws-domain) | transição de estado fora dos diagramas dos RFs; invariantes dos CAs (≤ 5 envios, motivo obrigatório, consentimento para chancela pública, ≤ 2 etiquetas…) |
 | `ForeignKeyPolicyTest` (persistence-mysql) | Flyway do zero num MySQL 8.4 real: FK no banco fora da política, política sem FK, regra `ON DELETE` divergente; `users.test_account` deixar de ser gerada; CHECK de `account_origin` aceitar valor inválido (Testcontainers; pulado sem Docker) |
 | `IdentityServiceTest` (ws-application) | login com oráculo (401 diferente para conta inexistente/bloqueada), mais de 5 hashes em 40 logins paralelos, reuso de refresh sem revogar a família, 6º chute da senha atual sem 429, senha/token na auditoria |
 | `AuthRateLimitFilterTest` · `ClientIpResolverTest` (ws-web) | 31º login do mesmo IP sem 429, `X-Forwarded-For` forjado abrindo balde novo, IPv6 fora do /64, URI codificada escapando da regra, bulkhead sem 503 |

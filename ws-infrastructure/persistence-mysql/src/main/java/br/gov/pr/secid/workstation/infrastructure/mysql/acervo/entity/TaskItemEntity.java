@@ -24,8 +24,9 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code tasks} (TaskItem — 2 Acervo de Tarefas; RF20, RF41, RF21, RF22, RF23, RF29, RF34, RF40, RF44). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code tasks} (TaskItem — 2 Acervo de Tarefas; RF20, RF41, RF21, RF22, RF23, RF29, RF34, RF40, RF44).
+ * Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do
+ * Hibernate para MySQL; enums como String; JSON como String.
  */
 @Entity
 @Table(name = "tasks")

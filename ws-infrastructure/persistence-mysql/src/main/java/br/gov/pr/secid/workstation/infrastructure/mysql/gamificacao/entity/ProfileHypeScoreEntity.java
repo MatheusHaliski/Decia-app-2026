@@ -10,8 +10,9 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code profile_hype_scores} (ProfileHypeScore — 8 Gamificação; RF45, RF19, RF28, RF43, RF3). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code profile_hype_scores} (ProfileHypeScore — 8 Gamificação; RF45, RF19, RF28, RF43, RF3). Gerada pelo
+ * SchemaGenerator a partir do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para
+ * MySQL; enums como String; JSON como String.
  */
 @Entity
 @Table(name = "profile_hype_scores")

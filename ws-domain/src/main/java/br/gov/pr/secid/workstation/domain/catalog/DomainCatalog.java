@@ -124,6 +124,7 @@ import br.gov.pr.secid.workstation.domain.social.SavedItem;
 import br.gov.pr.secid.workstation.domain.social.Share;
 import br.gov.pr.secid.workstation.domain.social.TimelineEvent;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -136,9 +137,9 @@ import java.util.Set;
  */
 public final class DomainCatalog {
 
-    /** Tabelas que já existem antes do V10 (V1/V2 e Bloco 3) e podem ser referenciadas por qualquer migration. */
+    /** Tabelas que já existem antes do V10 (V1/V2 e V3 do Bloco 3) e podem ser referenciadas por qualquer migration. */
     public static final Set<String> PRE_EXISTING_TABLES = Set.of("app_meta", "users", "user_preferences", "refresh_tokens", "audit_log",
-            "ai_inference_log", "feature_flags", "domain_events", "media_objects");
+            "ai_inference_log", "feature_flags", "domain_events", "media_objects", "verification_codes");
 
     /** Nome do arquivo de cada migration gerada. */
     public static final Map<Integer, String> MIGRATIONS = Map.ofEntries(
@@ -212,7 +213,7 @@ public final class DomainCatalog {
 
     /** Descritores na ordem de {@link #ENTITIES}. */
     public static List<EntityDescriptor> entries() {
-        return ENTRIES;
+        return Collections.unmodifiableList(ENTRIES);
     }
 
     public static EntityDescriptor byTable(String table) {

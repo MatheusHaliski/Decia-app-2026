@@ -11,8 +11,9 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 
 /**
- * Entidade JPA de {@code verification_policies} (VerificationPolicy — 1 Identidade & Acesso; RF28, RF1). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code verification_policies} (VerificationPolicy — 1 Identidade & Acesso; RF28, RF1). Gerada pelo
+ * SchemaGenerator a partir do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para
+ * MySQL; enums como String; JSON como String.
  */
 @Entity
 @Table(name = "verification_policies")

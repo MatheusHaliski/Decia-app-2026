@@ -11,8 +11,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code analytical_summaries} (AnalyticalSummary — 5 DECIA sessão; RF11, RF12, RF29, RF31, RF32, RF33). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code analytical_summaries} (AnalyticalSummary — 5 DECIA sessão; RF11, RF12, RF29, RF31, RF32, RF33).
+ * Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do
+ * Hibernate para MySQL; enums como String; JSON como String.
  */
 @Entity
 @Table(name = "analytical_summaries")

@@ -12,8 +12,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code notifications} (Notification — 7 Social & Descoberta; RF27, RF8, RF13, RF15, RF39, RF42, RF46). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code notifications} (Notification — 7 Social & Descoberta; RF27, RF8, RF13, RF15, RF39, RF42, RF46).
+ * Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do
+ * Hibernate para MySQL; enums como String; JSON como String.
  */
 @Entity
 @Table(name = "notifications")
@@ -55,8 +56,8 @@ public class NotificationEntity {
     @Column(name = "group_key")
     private String groupKey;
 
-    @Column(name = "read", nullable = false)
-    private boolean read;
+    @Column(name = "is_read", nullable = false)
+    private boolean isRead;
 
     @Column(name = "read_at")
     private Instant readAt;
@@ -155,12 +156,12 @@ public class NotificationEntity {
         this.groupKey = groupKey;
     }
 
-    public boolean isRead() {
-        return read;
+    public boolean isIsRead() {
+        return isRead;
     }
 
-    public void setRead(boolean read) {
-        this.read = read;
+    public void setIsRead(boolean isRead) {
+        this.isRead = isRead;
     }
 
     public Instant getReadAt() {

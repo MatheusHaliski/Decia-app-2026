@@ -15,8 +15,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code annual_plans} (AnnualPlan — 4 Planejamento institucional; RF24, RF11, RF21, RF39, RF44). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code annual_plans} (AnnualPlan — 4 Planejamento institucional; RF24, RF11, RF21, RF39, RF44). Gerada
+ * pelo SchemaGenerator a partir do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate
+ * para MySQL; enums como String; JSON como String.
  */
 @Entity
 @Table(name = "annual_plans")

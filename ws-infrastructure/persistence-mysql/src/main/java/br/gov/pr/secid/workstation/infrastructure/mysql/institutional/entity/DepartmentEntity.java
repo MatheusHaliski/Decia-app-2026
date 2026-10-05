@@ -8,8 +8,9 @@ import jakarta.persistence.Version;
 import java.util.UUID;
 
 /**
- * Entidade JPA de {@code departments} (Department — 1 Identidade & Acesso; RF28, RF14, RF19, RF24, RF25, RF35, RF39). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code departments} (Department — 1 Identidade & Acesso; RF28, RF14, RF19, RF24, RF25, RF35, RF39).
+ * Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do
+ * Hibernate para MySQL; enums como String; JSON como String.
  */
 @Entity
 @Table(name = "departments")

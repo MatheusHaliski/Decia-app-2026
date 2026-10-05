@@ -10,8 +10,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 
 /**
- * Entidade JPA de {@code org_entities} (OrgEntity — 2 Acervo de Tarefas; RF20, RF41). Gerada pelo SchemaGenerator a partir do domínio: sem lógica de negócio;
- * UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String; JSON como String.
+ * Entidade JPA de {@code org_entities} (OrgEntity — 2 Acervo de Tarefas; RF20, RF41). Gerada pelo SchemaGenerator a partir
+ * do domínio: sem lógica de negócio; UUID ↔ BINARY(16) pelo mapeamento nativo do Hibernate para MySQL; enums como String;
+ * JSON como String.
  */
 @Entity
 @Table(name = "org_entities")

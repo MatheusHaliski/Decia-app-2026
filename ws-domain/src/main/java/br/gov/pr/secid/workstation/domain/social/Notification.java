@@ -13,7 +13,7 @@ import java.util.UUID;
 @DomainEntity(context = "7 Social & Descoberta", table = "notifications", rfs = {"RF27", "RF8", "RF13", "RF15", "RF39", "RF42", "RF46"}, migration = 16,
         audit = Audit.CREATED, store = Store.MYSQL_CASSANDRA,
         doc = "Notificações do destinatário → CASCADE; ator SET NULL. Índice (recipient, read_at) para a central (RF27).",
-        indexes = {"recipient_id, read_at", "recipient_id, created_at", "group_key"})
+        indexes = {"recipient_id, is_read, created_at", "recipient_id, read_at", "group_key"})
 public record Notification(
         @Attr("identificador") UUID id,
         @Attr(value = "destinatário", ref = "users", onDelete = OnDelete.CASCADE) UUID recipientId,
@@ -26,7 +26,7 @@ public record Notification(
         @Attr(value = "corpo", opt = true, len = 1000) String body,
         @Attr(value = "payload", opt = true) String payloadJson,
         @Attr(value = "chave de agrupamento por hora", opt = true, len = 120) String groupKey,
-        @Attr("lida") boolean read,
+        @Attr(value = "lida", col = "is_read") boolean read,
         @Attr(value = "lida em", opt = true) Instant readAt,
         @Attr(value = "canais entregues (in-app, e-mail…)", opt = true, col = "delivered_channels_json") String deliveredChannels) {
 }
