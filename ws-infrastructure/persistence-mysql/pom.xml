@@ -37,6 +37,13 @@
             <artifactId>mysql-connector-j</artifactId>
         </dependency>
         <dependency>
+            <!-- Boot 4: a autoconfiguração do Jackson 3 (ObjectMapper usado por JpaAuditLog) vive em spring-boot-jackson;
+                 em produção ela chega pelo starter webmvc do ws-web — aqui só os testes de contexto precisam dela -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jackson</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>

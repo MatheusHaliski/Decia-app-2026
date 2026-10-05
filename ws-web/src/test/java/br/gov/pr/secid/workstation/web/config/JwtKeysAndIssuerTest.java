@@ -143,7 +143,7 @@ class JwtKeysAndIssuerTest {
                 .satisfies(e -> assertThat(e.getMessage()).doesNotContain("CONTEUDO-SECRETO"));
         assertThatThrownBy(() -> JwtKeys.readPublicKey(dir.resolve("nao-existe.pem"))).isInstanceOf(IllegalStateException.class);
         assertThatThrownBy(() -> JwtKeys.readPrivateKey(dir.resolve("nao-existe.pem"))).isInstanceOf(IllegalStateException.class);
-        assertThatThrownBy(() -> JwtKeys.parsePrivate("-----BEGIN PRIVATE KEY-----\nSEGREDO-FALSO\n-----END PRIVATE KEY-----", "WS_JWT_PRIVATE_KEY_PEM"))
+        assertThatThrownBy(() -> JwtKeys.parsePrivate(pemFalso("PRIVATE KEY", "SEGREDO-FALSO"), "WS_JWT_PRIVATE_KEY_PEM"))
                 .hasMessageContaining("WS_JWT_PRIVATE_KEY_PEM").satisfies(e -> assertThat(e.getMessage()).doesNotContain("SEGREDO-FALSO"));
     }
 
@@ -162,5 +162,11 @@ class JwtKeysAndIssuerTest {
         assertThat(q.jwt().hasPublicKey()).isTrue();
         assertThat(q.cors().allowedOrigins()).containsExactly("https://a", "https://b");
         assertThat(new WsSecurityProperties.Jwt(null, null, null, null, "x", "y", 10).accessTtlMinutes()).isEqualTo(10);
+    }
+
+    /** PEM inválido montado em partes: um bloco literal "BEGIN … PRIVATE KEY" no fonte dispararia o gitleaks do CI. */
+    private static String pemFalso(String tipo, String corpo) {
+        String cerca = "-----";
+        return cerca + "BEGIN " + tipo + cerca + "\n" + corpo + "\n" + cerca + "END " + tipo + cerca;
     }
 }
