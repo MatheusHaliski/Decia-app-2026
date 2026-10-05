@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>br.gov.pr.secid.workstation</groupId>
+        <artifactId>work-station-api</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>ws-infrastructure</artifactId>
+    <packaging>pom</packaging>
+    <name>ws-infrastructure</name>
+    <description>Adaptadores (Ports &amp; Adapters) — todos opt-in por propriedade ws.*.enabled</description>
+
+    <modules>
+        <module>persistence-mysql</module>
+        <module>persistence-cassandra</module>
+        <module>search-opensearch</module>
+        <module>cache-redis</module>
+        <module>storage-s3</module>
+        <module>ai-providers</module>
+        <module>platform</module>
+    </modules>
+</project>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Exclusões do SpotBugs conferidas à mão. Cada entrada precisa de um motivo. -->
+<FindBugsFilter>
+    <!-- Entidades JPA, records de configuração e DTOs expõem/recebem referências de coleções e datas por desenho do Spring/Hibernate -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    </Match>
+    <!-- Validação de argumentos no construtor (ApiException, records): o "ataque por finalizer" exige subclasses com
+         finalize(), inexistentes aqui e descontinuadas no JDK 18+ (JEP 421) -->
+    <Match>
+        <Bug pattern="CT_CONSTRUCTOR_THROW"/>
+    </Match>
+    <!-- Testes: asserções e fixtures não seguem as regras de produção -->
+    <Match>
+        <Class name="~.*Test$"/>
+    </Match>
+    <Match>
+        <Class name="~.*Test\$.*"/>
+    </Match>
+    <Match>
+        <Class name="~.*IT$"/>
+    </Match>
+</FindBugsFilter>

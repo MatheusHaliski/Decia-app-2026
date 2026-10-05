@@ -1,0 +1,191 @@
+# Work Station / DECIA — configuração da API. Todo valor sensível vem de variável de ambiente (ver .env.example);
+# este arquivo e a documentação citam só o NOME da variável. Perfis: application-dev.yml, application-test.yml,
+# application-prod.yml (SPRING_PROFILES_ACTIVE). Sem perfil, vale só este documento (equivale a dev sem conveniências).
+spring:
+  application:
+    name: work-station-api
+  datasource:
+    # TLS pelo sslMode do Connector/J: PREFERRED usa TLS sempre que o servidor oferece; produção: WS_DB_SSL_MODE=REQUIRED.
+    url: jdbc:mysql://${WS_DB_HOST:localhost}:${WS_DB_PORT:3306}/${WS_DB_NAME:workstation}?sslMode=${WS_DB_SSL_MODE:PREFERRED}&allowPublicKeyRetrieval=${WS_DB_ALLOW_PUBLIC_KEY_RETRIEVAL:false}&serverTimezone=UTC&characterEncoding=UTF-8
+    username: ${WS_DB_USER:workstation}
+    password: ${WS_DB_PASSWORD}             # obrigatória, SEM valor padrão: sem ela a API não sobe (local: .env a partir de .env.example)
+    hikari:
+      maximum-pool-size: ${WS_DB_POOL_SIZE:10}
+      connection-timeout: 10000
+  jpa:
+    hibernate:
+      ddl-auto: none          # o schema é 100% Flyway (V1..Vn)
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc.time_zone: UTC
+  flyway:
+    enabled: true
+    baseline-on-migrate: false
+    validate-on-migrate: true
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 80MB
+  jackson:
+    time-zone: UTC
+    datatype:
+      datetime:
+        write-dates-as-timestamps: false   # Jackson 3 (Boot 4): datas sempre em ISO-8601 (JsonContractTest)
+    deserialization:
+      # Jackson 3 passou a recusar null em campo primitivo e campo desconhecido; o contrato com o front Next.js
+      # continua o do Jackson 2 (null -> false/0, campo a mais ignorado). Travado no JsonContractTest (ws-bootstrap).
+      fail-on-null-for-primitives: false
+      fail-on-unknown-properties: false
+  web:
+    error:
+      include-stacktrace: never            # Boot 4: era server.error.include-stacktrace
+      include-message: never
+      include-exception: false
+  data:
+    redis:
+      host: ${WS_REDIS_HOST:localhost}
+      port: ${WS_REDIS_PORT:6379}
+      username: ${WS_REDIS_USERNAME:}
+      password: ${WS_REDIS_PASSWORD:}
+      ssl:
+        enabled: ${WS_REDIS_SSL:false}
+      timeout: ${WS_REDIS_TIMEOUT_MS:3000}ms
+  cassandra:
+    contact-points: ${WS_CASSANDRA_CONTACT_POINTS:localhost}
+    port: ${WS_CASSANDRA_PORT:9042}
+    local-datacenter: ${WS_CASSANDRA_LOCAL_DATACENTER:datacenter1}
+    keyspace-name: ${WS_CASSANDRA_KEYSPACE:workstation}
+    username: ${WS_CASSANDRA_USERNAME:}
+    password: ${WS_CASSANDRA_PASSWORD:}
+  autoconfigure:
+    # Cassandra só é ligado pelo perfil "cassandra"; sem ele o driver nem tenta conectar.
+    # Nomes do Spring Boot 4 (módulos spring-boot-cassandra / spring-boot-data-cassandra). Atenção: excluir uma classe
+    # que não existe é ignorado em silêncio — o AutoConfigurationExclusionsTest (ws-bootstrap) confere cada nome.
+    exclude:
+      - org.springframework.boot.cassandra.autoconfigure.CassandraAutoConfiguration
+      - org.springframework.boot.data.cassandra.autoconfigure.DataCassandraAutoConfiguration
+      - org.springframework.boot.data.cassandra.autoconfigure.DataCassandraRepositoriesAutoConfiguration
+      - org.springframework.boot.data.cassandra.autoconfigure.DataCassandraReactiveAutoConfiguration
+      - org.springframework.boot.data.cassandra.autoconfigure.DataCassandraReactiveRepositoriesAutoConfiguration
+
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework   # atrás de proxy/CDN
+  error:
+    whitelabel:
+      enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${WS_MANAGEMENT_EXPOSURE:health,info}   # tudo além de /actuator/health exige papel ADMIN (SecurityConfig)
+  endpoint:
+    health:
+      show-details: when_authorized
+      show-components: when_authorized
+      probes:
+        enabled: true
+  health:
+    redis:
+      enabled: ${WS_REDIS_ENABLED:false}
+    cassandra:
+      enabled: ${WS_CASSANDRA_ENABLED:false}
+  metrics:
+    tags:
+      application: work-station-api
+
+springdoc:
+  swagger-ui:
+    enabled: ${WS_API_DOCS_ENABLED:true}   # produção: WS_API_DOCS_ENABLED=false
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+  api-docs:
+    enabled: ${WS_API_DOCS_ENABLED:true}
+    path: /v3/api-docs
+
+logging:
+  level:
+    root: ${WS_LOG_LEVEL:INFO}
+    br.gov.pr.secid.workstation: ${WS_LOG_LEVEL_APP:INFO}
+    org.hibernate.SQL: ${WS_LOG_LEVEL_SQL:WARN}
+
+ws:
+  app:
+    base-url: ${WS_APP_BASE_URL:http://localhost:8080}
+    frontend-url: ${WS_FRONTEND_URL:http://localhost:3000}
+  security:
+    jwt:
+      issuer: ${WS_JWT_ISSUER:work-station}
+      audience: ${WS_JWT_AUDIENCE:work-station-api}
+      # caminhos de arquivo PEM (scripts/keys/generate_jwt_keys.sh grava em ./keys/, fora do git). Vazio = nenhum token aceito.
+      public-key-path: ${WS_JWT_PUBLIC_KEY_PATH:}
+      private-key-path: ${WS_JWT_PRIVATE_KEY_PATH:}
+    cors:
+      allowed-origins: ${WS_CORS_ALLOWED_ORIGINS:http://localhost:3000}
+  secrets:
+    # Nome da variável -> valor. Com enforce=true (prod) qualquer valor vazio derruba o boot (RequiredSecretsGuard).
+    enforce: ${WS_SECRETS_ENFORCE:false}
+    required:
+      "[WS_DB_PASSWORD]": ${WS_DB_PASSWORD:}
+      "[WS_JWT_PRIVATE_KEY_PATH]": ${WS_JWT_PRIVATE_KEY_PATH:}
+      "[WS_JWT_PUBLIC_KEY_PATH]": ${WS_JWT_PUBLIC_KEY_PATH:}
+      "[WS_DATA_ENCRYPTION_KEY]": ${WS_DATA_ENCRYPTION_KEY:}
+  data:
+    encryption-key: ${WS_DATA_ENCRYPTION_KEY:}           # AES-GCM dos campos sensíveis (Bloco 2); base64 de 32 bytes
+  storage:
+    type: ${WS_STORAGE_TYPE:local}                       # local | s3
+    local-dir: ${WS_STORAGE_LOCAL_DIR:./data/media}
+    s3:
+      endpoint: ${WS_S3_ENDPOINT:}
+      region: ${WS_S3_REGION:us-east-1}
+      bucket: ${WS_S3_BUCKET:workstation-media}
+      access-key: ${WS_S3_ACCESS_KEY_ID:}
+      secret-key: ${WS_S3_SECRET_ACCESS_KEY:}
+  redis:
+    enabled: ${WS_REDIS_ENABLED:false}
+  cassandra:
+    enabled: ${WS_CASSANDRA_ENABLED:false}
+  opensearch:
+    enabled: ${WS_OPENSEARCH_ENABLED:false}
+    url: ${WS_OPENSEARCH_URL:http://localhost:9200}
+    username: ${WS_OPENSEARCH_USERNAME:}
+    password: ${WS_OPENSEARCH_PASSWORD:}
+    index-prefix: ws-
+  platform:
+    enabled: ${WS_PLATFORM_ENABLED:false}
+  ai:
+    remote-enabled: ${WS_AI_REMOTE_ENABLED:false}        # false = só o motor local (RF43: RESTRITO/SIGILOSO nunca saem)
+    timeout-seconds: ${WS_AI_REQUEST_TIMEOUT_SECONDS:30}
+    anthropic-api-key: ${WS_ANTHROPIC_API_KEY:}
+    google-ai-api-key: ${WS_GOOGLE_AI_API_KEY:}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: cassandra
+  autoconfigure:
+    exclude:
+ws:
+  cassandra:
+    enabled: true
+management:
+  health:
+    cassandra:
+      enabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: redis
+ws:
+  redis:
+    enabled: true
+management:
+  health:
+    redis:
+      enabled: true

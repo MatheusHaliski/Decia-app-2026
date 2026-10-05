@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>br.gov.pr.secid.workstation</groupId>
+        <artifactId>ws-infrastructure</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>ai-providers</artifactId>
+    <name>ai-providers</name>
+    <description>Provedores de IA (primário → alternativo → motor local) com Resilience4j. Opt-in: ws.ai.remote-enabled</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>br.gov.pr.secid.workstation</groupId>
+            <artifactId>ws-application</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>br.gov.pr.secid.workstation</groupId>
+            <artifactId>platform</artifactId>
+        </dependency>
+        <dependency>
+            <!-- Circuit Breaker + Retry + TimeLimiter por provedor (ARQUITETURA §3, padrões obrigatórios) -->
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-spring-boot4</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <!-- Boot 4: spring-boot-starter-aop virou spring-boot-starter-aspectj (anotações @CircuitBreaker/@Retry do Resilience4j) -->
+            <artifactId>spring-boot-starter-aspectj</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

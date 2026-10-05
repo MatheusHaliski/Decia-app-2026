@@ -1,2 +1,40 @@
-# worktrees de agentes (locais)
+# ---- segredos e chaves (NUNCA versionar) ----
+.env
+.env.*
+!.env.example
+/keys/
+*.pem
+*.p12
+*.jks
+*.key
+
+# ---- backend (Maven) ----
+target/
+*.class
+*.log
+.flattened-pom.xml
+dependency-check-report.*
+
+# ---- frontend (Next.js) ----
+node_modules/
+.next/
+out/
+coverage/
+next-env.d.ts
+*.tsbuildinfo
+.eslintcache
+.stylelintcache
+
+# ---- dados locais ----
+data/
+.cache/
+
+# ---- IDE / SO ----
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# ---- agentes ----
 .claude/worktrees/

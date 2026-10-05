@@ -1,0 +1,10 @@
+# Falsos positivos do gitleaks conferidos à mão. Regra: uma linha por achado, no formato
+#   <commit>:<arquivo>:<regra>:<linha>
+# com um comentário acima dizendo POR QUE não é segredo (ex.: fixture de teste gerada na hora, identificador que
+# parece chave). Nunca ignore um segredo real: troque-o e reescreva o histórico.
+#
+# Fixtures do teste de mascaramento de log (SensitiveDataMaskingConverterTest): strings inventadas "api_key=sk-live-…"
+# e "WS_DATA_ENCRYPTION_KEY=…" que o teste prova serem apagadas do log. Não são credenciais de nada; o arquivo atual
+# usa valores de baixa entropia e estas entradas cobrem só o commit em que nasceram.
+65e11187816a9979d580fc9f61d1b4266a641269:ws-bootstrap/src/test/java/br/gov/pr/secid/workstation/bootstrap/logging/SensitiveDataMaskingConverterTest.java:generic-api-key:22
+65e11187816a9979d580fc9f61d1b4266a641269:ws-bootstrap/src/test/java/br/gov/pr/secid/workstation/bootstrap/logging/SensitiveDataMaskingConverterTest.java:generic-api-key:23

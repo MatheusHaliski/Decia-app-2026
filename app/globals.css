@@ -1,0 +1,19 @@
+/* Estilos globais: Tailwind 4 + tokens do design system DECIA (styles/tokens.css, 4 temas via data-theme).
+   Nenhuma cor literal aqui — só var(--token) (stylelint: color-no-hex / function-disallowed-list). */
+@import "tailwindcss";
+@import "../styles/tokens.css";
+
+html,
+body {
+  min-height: 100%;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--text-body);
+  line-height: var(--text-body--lh);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
