@@ -630,43 +630,43 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 6,
     "title": "Acessar e gerenciar o Perfil Empresarial (Acervo Digital + Projetos Salvos)",
     "hu": "COMO usuário autenticado dentro do sistema POSSO visualizar meu perfil com tudo o que criei (tarefas, projetos, planos, decisões) em sub-abas e o meu perfil deliberativo gerado pela IA PARA acompanhar e mostrar minha produção e minha evolução desde que entrei no sistema.",
-    "summary": "O Perfil Empresarial é o perfil de trabalho do usuário (= Perfil Lookbook do FAI): cabeçalho (avatar, nome, cargo, empresa, departamento, contadores) e as sub-abas que o título do card recorta — Acervo Digital (sub-aba 1 do RF19: TaskItem do dono com os 8 estados do TaskState, RF41) e Projetos (sub-aba 2: ProjectScheme) para todos, mais Projetos salvos / Tarefas salvas (sub-abas 7–8: SavedItem, RF26.CA04) só para o dono. \"Gerenciar\" = ações rápidas do card (favoritar, mudar estado via TaskStateMachine, arquivar, duplicar, levar ao projeto, remover dos salvos). As demais sub-abas da HU6 (planos, decisões, perfil deliberativo) ficam no card RF26 (corpo = antigo RF19) e não são repetidas aqui.",
-    "route": "Meu perfil (/profile, sub-abas ?tab=acervo|projetos|projetos-salvos|tarefas-salvas), perfil de terceiros em /u/[username]; Acervo também em /tasks",
-    "coverage": "RF6.CA01 … RF6.CA06 — todos \"(CA a confirmar)\": o corpo do card RF6 está vazio; os CAs foram derivados do título + HU6 e reaproveitam o já validado em _anterior/RF19 (sub-abas 1–2 e 7–8), RF41 (estados do Acervo) e RF26.CA04 (salvar)",
+    "summary": "O título do card recorta, das 15 sub-abas do perfil (Matriz B), as quatro do Perfil Empresarial: Acervo Digital (= Closet: inventário TaskItem com sub-filtros por TaskState), Projetos (ProjectScheme do dono), Projetos salvos e Tarefas salvas (SavedItem). As demais sub-abas (planos, decisões, perfil deliberativo, pontos…) ficam no RF16 (terceiros) e nos RFs de origem (RF24, RF29, RF42, RF45).",
+    "route": "Meu perfil (/profile, sub-abas ?tab=acervo|projetos|projetos-salvos|tarefas-salvas, Matriz B de ABAS_POR_PERFIL §3), perfil de terceiros /u/[username] (RF16); Acervo também em /tasks (RF41); API GET /api/me (real), GET /api/me/tasks, GET /api/me/projects, GET /api/me/saved?type=, POST /api/tasks/{id}/state",
+    "coverage": "RF6.CA01 … RF6.CA06 — todos \"(CA a confirmar)\": o corpo do card está vazio; os CAs foram derivados do título + HU6 e reaproveitam _anterior/RF19 (sub-abas 1–2 e 7–8), RF41 (estados do Acervo) e RF26.CA04 (salvar). Real: MeController.me, AccountService.me/profile, UserView (Bloco 3); o resto (planejado).",
     "cas": [
       {
         "id": "RF6.CA01",
-        "text": "Dado um usuário autenticado, quando abre /profile, então vê o cabeçalho (avatar, nome, jobTitle, empresa, departamento, contadores de tarefas, projetos e salvos via Redis) e as sub-abas Acervo Digital, Projetos, Projetos salvos e Tarefas salvas; em /u/[username] um terceiro vê só Acervo Digital e Projetos, com itens filtrados por Visibility; sub-aba restrita acessada por terceiro → 403 ACESSO_NEGADO.",
+        "text": "Dado um usuário autenticado, quando abre /profile, então vê o cabeçalho (UserView: avatar, nome, jobTitle, empresa, departamento; contadores de tarefas, projetos e salvos via Redis) e as sub-abas Acervo Digital, Projetos, Projetos salvos e Tarefas salvas; em /u/[username] um terceiro vê só Acervo Digital e Projetos, filtrados por Visibility (RF16); sub-aba reservada ao dono → 403 ACESSO_NEGADO (Guard.ownerOrAdmin).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF6.CA02",
-        "text": "Dado a sub-aba Acervo Digital, então ela lista os TaskItem do dono em grade compacta com sub-filtros por estado (TaskState: RASCUNHO · DISPONIVEL · EM_USO · BLOQUEADA · CONCLUIDA · ARQUIVADA · MODELO_PUBLICO · OFERECIDA) com contadores, filtros por categoria/tipo/processo/natureza, ordenação (recentes, mais usadas, nome, prazo), busca (OpenSearch), paginação de 20 e querystring restaurável; skeleton, estado vazio ilustrado e \"tentar de novo\" em 503 BUSCA_INDISPONIVEL.",
+        "text": "Dado a sub-aba Acervo Digital, então ela lista os TaskItem do dono em grade compacta (TaskCard compact) com sub-filtros por estado (TaskState: RASCUNHO · DISPONIVEL · EM_USO · BLOQUEADA · CONCLUIDA · ARQUIVADA · MODELO_PUBLICO · OFERECIDA) com contadores, filtros por categoria/tipo/processo/natureza, ordenação (recentes, mais usadas, nome, prazo), busca (OpenSearch ws-tasks) e paginação (20); a URL reflete filtros e página.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF6.CA03",
-        "text": "Dado um card do meu Acervo, quando aciono uma ação rápida (favoritar ⭐, mudar estado, arquivar, duplicar, levar ao projeto), então a transição passa por TaskStateMachine e grava TaskStateLog; transição inválida → 422 TRANSICAO_INVALIDA; EM_USO é automático ao entrar em projeto ativo e MODELO_PUBLICO só via chancela/publicação; a etiqueta de estado aparece em texto no topo do card.",
+        "text": "Dado um card do meu Acervo, quando aciono uma ação rápida (favoritar ⭐, mudar estado, arquivar, duplicar, levar ao projeto), então a transição passa por TaskStateMachine e grava TaskStateLog; transição inválida → 422 TRANSICAO_INVALIDA; EM_USO é automático ao entrar em projeto ativo e MODELO_PUBLICO só via chancela/publicação; a etiqueta de estado (Tag) aparece no card.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF6.CA04",
-        "text": "Dado a sub-aba Projetos, então ela lista os ProjectScheme do dono com capa-mosaico, barra de fases, status e currentPhase, filtráveis por status/fase/exercício e paginados; abrir um card leva ao detalhe do projeto (lista por fase, RF7) e, para o dono, à edição (RF8/RF22).",
+        "text": "Dado a sub-aba Projetos, então ela lista os ProjectScheme do dono (ProjectCard mosaic) com capa-mosaico, PhaseBar, status e currentPhase, filtráveis por status/fase/exercício e paginados; abrir um card leva ao detalhe (lista por fase, RF7) e, para o dono, à edição (RF8/RF12/RF22).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF6.CA05",
-        "text": "Dado a sub-aba Projetos salvos ou Tarefas salvas, então ela lista os SavedItem do dono (targetType PROJECT ou TASK) com marcador favorite, respeitando a visibilidade atual do alvo (alvo que ficou PRIVADO aparece como \"indisponível\"); \"Remover dos salvos\" apaga o SavedItem e decrementa savesCount; só o dono acessa (requireOwner).",
+        "text": "Dado a sub-aba Projetos salvos ou Tarefas salvas, então ela lista os SavedItem do dono (targetType PROJECT ou TASK) com marcador favorite, respeitando a visibilidade atual do alvo (alvo que ficou PRIVADA aparece como \"indisponível\"); \"Remover dos salvos\" apaga o SavedItem e decrementa savesCount; só o dono acessa.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF6.CA06",
-        "text": "Dado o perfil de um terceiro, quando vejo seu Acervo Digital, então só aparecem tarefas com visibility compatível (PUBLICA; EMPRESA se mesma empresa; DEPARTAMENTO se membro), nunca PRIVADA; cada card oferece \"Levar ao meu acervo\" (RF7/RF23) e interações sociais (RF19 atual); a API devolve 403 ACESSO_NEGADO para item fora da visibilidade.",
+        "text": "Dado o perfil de um terceiro, quando vejo seu Acervo Digital, então só aparecem tarefas com visibility compatível (AccessPolicy.visibilityFilter: PUBLICA; EMPRESA se mesma empresa; DEPARTAMENTO se membro), nunca PRIVADA; cada card oferece \"Levar ao meu acervo\" (RF7/RF23) e interações sociais (RF18/RF19); item fora da visibilidade → 403 ACESSO_NEGADO.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
@@ -677,43 +677,43 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 7,
     "title": "Abrir um esquema de tarefa a partir da lista de um esquema de projeto",
     "hu": "COMO usuário visualizando um esquema de projeto POSSO clicar em um item da lista de tarefas PARA visualizar detalhes de uma tarefa e então compreender melhor o escopo do projeto.",
-    "summary": "A lista de um Esquema de Projeto (ProjectScheme) é a sequência de ProjectTask por fase (ProjectPhase). Clicar num item abre o detalhe da tarefa (TaskItem, RF41.CA03) no contexto do projeto: além dos dados da tarefa (resumo, anexos com preview via MediaStoragePort.presign, versões TaskVersion, chancelas SealBond, fio de decisão DecisionTraceNode), a folha mostra a fase, a ordem, o responsável e o prazo daquele projeto e as dependências (ProjectTaskDependency) predecessoras/sucessoras. Se a tarefa original foi excluída pelo autor (ProjectTask.taskId nulo, removedByAuthor = true), o detalhe é renderizado a partir do TaskSnapshot em snapshotJson (RF23.CA03). Para tarefas não-PRIVADAS de outras pessoas, a ação principal é \"Levar ao meu acervo\" (cópia EXTRAIDA_DE_PROJETO com crédito, RF23.CA01); para o dono/responsável, \"Editar\" (RF8). O RF7 não altera estado de nenhuma entidade além de viewsCount e da cópia opcional.",
-    "route": "detalhe do projeto /projects/[id] → lista de tarefas por fase → /projects/[id]/tasks/[ptId] (folha de detalhe, URL profunda), com atalho para /tasks/[id] e ação \"Levar ao meu acervo\" (destino: Acervo Digital, RF6/RF41)",
-    "coverage": "RF7.CA01 … RF7.CA06 — todos \"(CA a confirmar)\": o corpo do card RF7 está vazio; os CAs foram derivados do título + HU7 e reaproveitam _anterior/RF23 (snapshot RF23.CA03, \"Levar ao meu acervo\" RF23.CA01/CA05) e RF41.CA03 (detalhe da tarefa)",
+    "summary": "A lista do projeto é a lista de ProjectTask por fase (quadro, linha do tempo ou lista — RF22 §\"Três visões\"); clicar num item abre a folha de detalhe da TaskItem ligada (ProjectTask.taskId) ou, se o autor a excluiu, o TaskSnapshot guardado em ProjectTask.snapshotJson (TAXONOMIA §2.8). O que o viewer vê e pode fazer depende de AccessPolicy (visibilidade da tarefa) e do papel no projeto (dono, responsável, terceiro).",
+    "route": "detalhe do projeto /projects/[id] → lista de tarefas por fase → /projects/[id]/tasks/[ptId] (folha de detalhe com URL profunda), atalho para /tasks/[id], ação \"Levar ao meu acervo\" (destino: Acervo Digital, RF6/RF41); API GET /api/projects/{id}, GET /api/projects/{id}/tasks/{ptId}, POST /api/tasks/{id}/extract (compartilhado com RF23), GET /api/media/{id}/presign",
+    "coverage": "RF7.CA01 … RF7.CA06 — todos \"(CA a confirmar)\": o corpo do card está vazio; os CAs foram derivados do título + HU7 e reaproveitam _anterior/RF23 (snapshot RF23.CA03, \"Levar ao meu acervo\" RF23.CA01/CA05) e RF41.CA03 (detalhe da tarefa). Todas as classes do RF são (planejado); reais só os transversais (SecurityConfig, SessionActiveFilter, Guard, CorrelationIdFilter, AuditLogPort).",
     "cas": [
       {
         "id": "RF7.CA01",
-        "text": "Dado um projeto visível para mim, quando clico num item da lista de tarefas (quadro por fase, linha do tempo ou lista), então abre a folha de detalhe da tarefa com título, tipo, categoria, resumo (3 linhas), estado (TaskState em texto), prazo (⚖ se legal), responsável, anexos com pré-visualização (presign), versões, chancelas, interações e o contexto no projeto: fase, ordem, prazo e responsável do ProjectTask, predecessoras e sucessoras; a URL fica profunda (/projects/[id]/tasks/[ptId]) e compartilhável.",
+        "text": "Dado um projeto visível para mim, quando clico num item da lista de tarefas (quadro por fase, linha do tempo ou lista), então abre a folha de detalhe da tarefa com título, tipo (TypeChip), categoria, resumo (3 linhas), estado (Tag com nome em texto), prazo (Due, ⚖ se legal), responsável, anexos com pré-visualização (GET /api/media/{id}/presign), versões, chancelas (Seal), interações (Counters) e o contexto no projeto (fase, ordem, dependências, caminho crítico, percentComplete); a URL fica /projects/{id}/tasks/{ptId}.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF7.CA02",
-        "text": "Dado um ProjectTask com taskId nulo (tarefa excluída pelo autor), quando o abro, então o detalhe mostra o TaskSnapshot (título, tipo, categoria, thumbnail, resumo, autor, capturedAt) com o aviso \"removida pelo autor\", sem anexos nem ações de cópia/edição; fases e dependências do projeto continuam íntegras.",
+        "text": "Dado um ProjectTask com taskId nulo (tarefa excluída pelo autor, removedByAuthor), quando o abro, então o detalhe mostra o TaskSnapshot (título, tipo, categoria, thumbnail, resumo, ownerName, capturedAt) com o aviso \"removida pelo autor\", sem anexos nem ações de cópia/edição; fases e dependências do projeto continuam íntegras.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF7.CA03",
-        "text": "Dado que a tarefa tem visibility incompatível com o viewer (PRIVADA de outra pessoa, DEPARTAMENTO sem ser membro), quando clico no item, então o card aparece como \"tarefa privada\" (só fase e ordem) e a API responde 403 ACESSO_NEGADO; ProjectTask inexistente no projeto → 404 TAREFA_NAO_ENCONTRADA.",
+        "text": "Dado que a tarefa tem visibility incompatível com o viewer (PRIVADA de outra pessoa, DEPARTAMENTO sem ser membro), quando clico no item, então o card aparece como \"tarefa privada\" (só fase e ordem) e a API responde 403 ACESSO_NEGADO; ProjectTask inexistente no projeto → 404 TAREFA_NAO_ENCONTRADA; projeto fora da minha visibilidade → 403.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF7.CA04",
-        "text": "Dado o detalhe de uma tarefa não-PRIVADA que não é minha, quando aciono \"Levar ao meu acervo\", então nasce uma cópia (sourceKind EXTRAIDA_DE_PROJETO, originalTaskId, sourceProjectId, state DISPONIVEL, visibility PRIVADA, anexos por referência ao mesmo MediaObject), reuseCount da original incrementa e o dono é notificado; ação oculta para PRIVADA (403 na API).",
+        "text": "Dado o detalhe de uma tarefa não-PRIVADA que não é minha, quando aciono \"Levar ao meu acervo\", então nasce uma cópia (sourceKind EXTRAIDA_DE_PROJETO, originalTaskId, sourceProjectId, state DISPONIVEL, visibility PRIVADA, anexos por referência ao mesmo MediaObject), reuseCount da original incrementa e o dono é notificado (Notification TAREFA_REUTILIZADA); ação oculta para PRIVADA (403 na API).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF7.CA05",
-        "text": "Dado que sou o dono da tarefa ou responsável no projeto, então a ação principal é \"Editar\" (abre RF8) e a alternativa \"Abrir no Acervo\" (/tasks/[id]); para os demais a ação principal é \"Levar ao meu acervo\" e as interações sociais (RF19 atual); toda abertura incrementa viewsCount (contador desnormalizado, sem evento).",
+        "text": "Dado que sou o dono da tarefa ou responsável no projeto, então a ação principal é \"Editar\" (abre RF8/RF12) e a alternativa \"Abrir no Acervo\" (/tasks/[id]); para os demais a ação principal é \"Levar ao meu acervo\" e as interações sociais (RF18/RF19); toda abertura incrementa viewsCount (contador desnormalizado, Redis → MySQL em lote).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF7.CA06",
-        "text": "Dado a folha aberta, quando fecho ou uso \"voltar\", então retorno à lista do projeto na mesma fase e posição de rolagem; a folha carrega com skeleton, respeita i18n pt-BR/en/es e layout responsivo (folha lateral no desktop, tela cheia no celular).",
+        "text": "Dado a folha aberta, quando fecho ou uso \"voltar\", então retorno à lista do projeto na mesma fase e posição de rolagem; a folha carrega com Skeleton, respeita i18n pt-BR/en/es e layout responsivo (Sheet lateral no desktop, tela cheia no celular).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
@@ -724,43 +724,43 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 8,
     "title": "Editar arquivos de tarefas ou projetos dentro de meu perfil do Work Station",
     "hu": "COMO usuário do sistema Work Station POSSO editar uma tarefa ou projeto de meu perfil PARA concluir projetos e receber insights de feedback da IA a respeito da qualidade do item.",
-    "summary": "\"Editar arquivos\" cobre três coisas sobre itens do meu perfil (dono ou responsável): (1) os metadados da tarefa (TaskItem, otimista por version) ou do projeto (ProjectScheme, com ProjectVersion quando a mudança é estrutural, RF22); (2) os arquivos em si — substituir/adicionar anexo (TaskAttachment → novo MediaObject no S3, antivírus, OCR e thumbnail por PipelineJob) preservando a versão anterior em TaskVersion (snapshotMediaId, changeSummary), ou editar no provedor quando o item é VINCULADO (Google Workspace / Microsoft 365: o webhook de mudança cria TaskVersion com externalRevisionId); (3) concluir — a transição EM_USO/DISPONIVEL → CONCLUIDA via TaskStateMachine e, quando todas as ProjectTasks estão concluídas, ProjectScheme → CONCLUIDO. Cada salvamento dispara, após o commit, o feedback de qualidade da IA (Insight com scope ACERVO ou PROJETO via AiEngine INSIGHT): completude dos metadados, clareza do título/resumo, prazo coerente, conformidade (RF32) e sugestões acionáveis; accessClass RESTRITO/SIGILOSO nunca vai à IA externa.",
-    "route": "/tasks/[id]/edit (ficha + anexos + versões, a partir do Acervo Digital do perfil RF6) e /projects/[id]/edit (ficha do projeto e arquivos das tarefas pela Mesa, RF22); \"Editar no provedor\" abre Google Docs/Sheets ou Word/Excel online",
-    "coverage": "RF8.CA01 … RF8.CA06 — todos \"(CA a confirmar)\": o corpo do card RF8 está vazio; os CAs foram derivados do título + HU8 e reaproveitam RF20.CA07/CA12 (itens vinculados, PipelineJob), RF41.CA02/CA03 (estados, versões) e RF22.CA02/CA06 (versões de projeto, bloqueio)",
+    "summary": null,
+    "route": "/tasks/[id]/edit (ficha + anexos + versões, a partir do Acervo Digital, RF6) e /projects/[id]/edit (ficha do projeto e arquivos das tarefas pela Mesa, RF22); \"Editar no provedor\" abre Google Docs/Sheets ou Word/Excel online; API PATCH /api/tasks/{id}, POST /api/tasks/{id}/attachments, PUT /api/tasks/{id}/attachments/{attId} (substituir), POST /api/tasks/{id}/link/convert, POST /api/tasks/{id}/complete, PATCH /api/projects/{id}, webhook POST /api/integrations/{provider}/changes",
+    "coverage": "RF8.CA01 … RF8.CA06 — todos \"(CA a confirmar)\": o corpo do card está vazio; os CAs foram derivados do título + HU8 e reaproveitam RF20.CA07/CA12 (itens vinculados, PipelineJob), RF41.CA02/CA03 (estados, versões) e RF22.CA02/CA06 (versões de projeto, bloqueio). O foco deste RF são os arquivos (anexos, versões, provedor externo); a edição dos dados do esquema é o RF12. Todas as classes do RF são (planejado); reais só os transversais (SecurityConfig, SessionActiveFilter, Guard, AuditLogPort, S3StorageConfig, AiProvidersConfig).",
     "cas": [
       {
         "id": "RF8.CA01",
-        "text": "Dado uma tarefa do meu perfil (sou ownerId ou responsibleId), quando edito título, categoria, tags, prazo, descrição ou classificação e salvo com If-Match: version, então o sistema valida como no criador (RF4: 422 VALIDACAO por campo), grava com bloqueio otimista (409 CONFLITO_VERSAO se outra edição venceu), registra AuditLog TASK_UPDATED e reindexa no OpenSearch; quem não é dono nem responsável recebe 403 ACESSO_NEGADO e vê a ficha somente leitura.",
+        "text": "Dado uma tarefa do meu perfil (sou ownerId ou responsibleId), quando edito título, categoria, tags, prazo, descrição ou classificação e salvo com If-Match: version, então o sistema valida como no criador (RF4: 422 VALIDACAO por campo), grava com bloqueio otimista (409 CONFLITO_VERSAO se outra edição venceu), registra AuditLog TASK_UPDATED e reindexa no OpenSearch após o commit; quem não é dono nem responsável → 403 ACESSO_NEGADO.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF8.CA02",
-        "text": "Dado os anexos da tarefa, quando substituo o arquivo principal ou adiciono um novo, então o upload passa por MediaStoragePort + AntivirusPort (422 ARQUIVO_MALICIOSO bloqueia), a versão anterior é preservada como TaskVersion (versionNumber + 1, snapshotMediaId do arquivo antigo, changeSummary), e thumbnail/OCR são reprocessados por PipelineJob após o commit (falha → REPROCESSAR e aviso no card).",
+        "text": "Dado os anexos da tarefa, quando substituo o arquivo principal ou adiciono um novo, então o upload passa por MediaStoragePort + AntivirusPort (422 ARQUIVO_MALICIOSO bloqueia; 415/413 como no RF4), a versão anterior é preservada como TaskVersion (versionNumber + 1, snapshotMediaId do arquivo antigo, changeSummary), e thumbnail/OCR são reprocessados por PipelineJob após o commit (falha → REPROCESSAR, aviso no card).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF8.CA03",
-        "text": "Dado um item linkMode VINCULADO (Google/Microsoft), quando aciono \"Editar no provedor\", então o documento abre no Google Docs/Sheets ou Word/Excel online com o OAuth do usuário; ao receber o webhook de mudança, AcervoService.syncLinkedVersion cria TaskVersion (externalRevisionId, syncedAt) e atualiza o thumbnail; \"Converter em cópia\" chama convertLinkToSnapshot (linkMode COPIADO); OAuth revogado converte automaticamente.",
+        "text": "Dado um item linkMode VINCULADO (Google/Microsoft), quando aciono \"Editar no provedor\", então o documento abre no Google Docs/Sheets ou Word/Excel online com o OAuth do usuário; ao receber o webhook de mudança (ExternalDocPort.watch), AcervoService.syncLinkedVersion cria TaskVersion (externalRevisionId, syncedAt) e atualiza o thumbnail; \"Converter em cópia\" chama convertLinkToSnapshot (linkMode COPIADO, snapshot no S3); token revogado → conversão automática em snapshot com aviso.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF8.CA04",
-        "text": "Dado um projeto do meu perfil, quando edito a ficha (título, objetivo, prazo, programa, eixo) ou os arquivos das suas tarefas pela Mesa (RF22), então mudanças estruturais geram ProjectVersion com diffJson legível e as não-estruturais só atualizam; projeto CONCLUIDO/ARQUIVADO → 409 PROJETO_BLOQUEADO (reabrir exige justificativa); a visibilidade dos arquivos segue a do projeto.",
+        "text": "Dado um projeto do meu perfil, quando edito a ficha (título, objetivo, prazo, programa, eixo) ou os arquivos das suas tarefas pela Mesa (RF22), então mudanças estruturais geram ProjectVersion com diffJson legível e as não-estruturais só atualizam; projeto CONCLUIDO/ARQUIVADO → 409 PROJETO_BLOQUEADO (reabrir exige justificativa); a visibilidade dos arquivos segue a da tarefa dona (AccessPolicy).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF8.CA05",
-        "text": "Dado uma tarefa EM_USO ou DISPONIVEL, quando marco \"Concluir\", então TaskStateMachine leva a CONCLUIDA com TaskStateLog; se era a última ProjectTask pendente de um projeto, ProjectScheme.status passa a CONCLUIDO e percentComplete = 100; transição inválida → 422 TRANSICAO_INVALIDA; BLOQUEADA precisa ser desbloqueada antes.",
+        "text": "Dado uma tarefa EM_USO ou DISPONIVEL, quando marco \"Concluir\" (POST /api/tasks/{id}/complete), então TaskStateMachine leva a CONCLUIDA com TaskStateLog; se era a última ProjectTask pendente de um projeto, ProjectScheme.status passa a CONCLUIDO e percentComplete = 100; transição inválida → 422 TRANSICAO_INVALIDA; BLOQUEADA precisa ser desbloqueada antes.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF8.CA06",
-        "text": "Dado um salvamento bem-sucedido, então após o commit a IA gera um Insight de qualidade (scope ACERVO para tarefa, PROJETO para projeto; metricRefsJson com completude, clareza, prazo, conformidade RF32; actionsJson com correções em 1 clique), exibido com faísca ✦ e \"Por que isto?\", registrado em ai_inference_log (capability INSIGHT); accessClass RESTRITO/SIGILOSO → BLOQUEADO_SIGILO ou IA local; o usuário pode dispensar (dismissedAt); IA indisponível não bloqueia o salvamento.",
+        "text": "Dado um salvamento bem-sucedido, então após o commit a IA gera um Insight de qualidade (scope ACERVO para tarefa, PROJETO para projeto; metricRefsJson com completude, clareza, prazo, conformidade RF32; actionsJson com correções em 1 clique), exibido com faísca ✦ e \"Por que isto?\", registrado em ai_inference_log (capability INSIGHT, hostRf RF8); accessClass RESTRITO/SIGILOSO → LocalEngine; sem cota → sem insight (nunca bloqueia o salvamento).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
@@ -771,37 +771,37 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 9,
     "title": "Permitir que um chefe de departamento possa adicionar ou remover um usuário da sua lista de empregados atuais",
     "hu": "COMO chefe de departamento de uma empresa POSSO adicionar ou remover um usuário de minha lista de empregados ativos PARA melhorar a minha gestão empresarial.",
-    "summary": "A lista de empregados atuais de um departamento é o conjunto de DepartmentMembership vigentes (endedAt nulo) daquele Department; User.departmentId espelha a lotação atual (1 por vez, RF28.CA02). O CHEFE (Department.headUserId, guard requireDeptHead, que também aceita a EMPRESA dona da Company e o ADMIN) adiciona (cria DepartmentMembership MEMBRO e encerra a lotação anterior em outro departamento — transferência), remove (fecha endedAt + reason, zera User.departmentId, revoga CuratorAppointment vigente) e transfere (remove + adiciona na mesma transação, com o chefe de destino ou a EMPRESA). O histórico nunca é apagado; remover avisa o empregado e, se ele tem pendências (tarefas EM_USO como responsável, sessões DECIA ativas, chancelas EM_REVISAO), oferece o Dossiê de Transição (RF36) antes de confirmar. A API da equipe só expõe nome, username, cargo e lotação — nunca email/phone (LGPD). Nenhuma IA neste RF.",
-    "route": "página do departamento /departments/[slug] → aba Equipe, modo \"Minha equipe\" (gestão) só para o chefe (/departments/[slug]/team); atalho Minha equipe no grupo Gestão do menu",
-    "coverage": "RF9.CA01 … RF9.CA06 — todos \"(CA a confirmar)\": o corpo do card RF9 está vazio e o escopo é novo (antes RF9 = participantes da sessão DECIA, preservado em _anterior/RF9); os CAs foram derivados do título + HU9 e reaproveitam RF28.CA02 (lotação 1 por vez com histórico em DepartmentMembership), RF28.CA03 (auditoria do chefe), o guard requireDeptHead e a aba \"Minha equipe\" propostos em docs/produto/ABAS_POR_PERFIL.md §1.2 e §7.b",
+    "summary": null,
+    "route": "página do departamento /departments/[slug] → aba Equipe → modo Minha equipe (gestão) só para o chefe (/departments/[slug]/team?mode=manage); atalho Minha equipe no grupo Gestão do SidebarNav (ABAS_POR_PERFIL §1.2, §7.b); API GET /api/departments/{id}/members, GET /api/departments/{id}/members/history, POST /api/departments/{id}/members, DELETE /api/departments/{id}/members/{userId}, GET /api/departments/{id}/members/{userId}/pending",
+    "coverage": "RF9.CA01 … RF9.CA06 — todos \"(CA a confirmar)\": o corpo do card está vazio e o escopo é novo; os CAs foram derivados do título + HU9 e reaproveitam RF28.CA02 (lotação 1 por vez com histórico em DepartmentMembership), RF28.CA03 (auditoria do chefe), o guard requireDeptHead e a aba \"Minha equipe\" propostos em docs/produto/ABAS_POR_PERFIL.md. Todas as classes do RF são (planejado); reais: Guard.requireRole/ownerOrAdmin, User.companyId/departmentId (colunas sem FK até o RF28, D-23), AuditLogPort, SecurityConfig.",
     "cas": [
       {
         "id": "RF9.CA01",
-        "text": "Dado um CHEFE_DEPARTAMENTO com Department.headUserId == eu (ou EMPRESA dona da Company, ou ADMIN — requireDeptHead), quando abro a aba Equipe no modo Minha equipe, então vejo os DepartmentMembership vigentes (nome, username, jobTitle, roleInDept, startedAt, etiqueta Curador) com busca e paginação (> 50), mais o histórico de lotações encerradas; quem não é chefe não vê o modo gestão no menu e recebe 403 ACESSO_NEGADO na API; a API nunca devolve email/phone.",
+        "text": "Dado um CHEFE_DEPARTAMENTO com Department.headUserId == eu (ou EMPRESA dona da Company, ou ADMIN — Guard.requireDeptHead), quando abro a aba Equipe no modo Minha equipe, então vejo os DepartmentMembership vigentes (nome, username, jobTitle, roleInDept, startedAt, etiqueta Curador) com busca e paginação (> 50), mais o histórico de lotações encerradas; quem não é chefe vê só a lista pública (RF14) e a API de gestão responde 403 ACESSO_NEGADO.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF9.CA02",
-        "text": "Dado o modo gestão, quando adiciono um usuário (busca por nome/username na mesma Company, AccountStatus ACTIVE), então nasce um DepartmentMembership MEMBRO com startedAt, a lotação vigente anterior (em outro departamento) é encerrada com endedAt e reason TRANSFERENCIA e User.departmentId passa a ser o meu departamento; já membro vigente → 409 MEMBRO_DUPLICADO; outra empresa → 422 FORA_DA_EMPRESA; conta não ACTIVE → 422 USUARIO_INATIVO.",
+        "text": "Dado o modo gestão, quando adiciono um usuário (busca por nome/username na mesma Company, AccountStatus ACTIVE), então nasce um DepartmentMembership MEMBRO com startedAt, a lotação vigente anterior (em outro departamento) é encerrada com endedAt e reason TRANSFERENCIA e User.departmentId passa a ser o meu departamento; já membro vigente → 409 MEMBRO_DUPLICADO; usuário de outra empresa, não ACTIVE ou perfil EMPRESA → 422 VALIDACAO.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF9.CA03",
-        "text": "Dado um membro vigente, quando removo informando reason (obrigatório, 422 VALIDACAO), então o DepartmentMembership recebe endedAt e reason (sem apagar), User.departmentId fica nulo, o CuratorAppointment vigente dele é revogado (revokeReason = saída do departamento) e suas tarefas/projetos permanecem com o dono; remover o próprio chefe (headUserId) → 422 CHEFE_NAO_REMOVIVEL (troca de chefe é RF28.CA07).",
+        "text": "Dado um membro vigente, quando removo informando reason (obrigatório, 422 VALIDACAO), então o DepartmentMembership recebe endedAt e reason (sem apagar), User.departmentId fica nulo, o CuratorAppointment vigente dele é revogado (revokeReason = saída do departamento) e suas tarefas/projetos permanecem com o dono; remover o próprio chefe (headUserId) → 409 CHEFE_NAO_REMOVIVEL (trocar o chefe é RF28).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF9.CA04",
-        "text": "Dado que o removido tem pendências (responsável em ProjectTask aberta, TaskItem EM_USO/BLOQUEADA como responsável, SessionParticipant em sessão ATIVA, SealBond EM_REVISAO de que é alvo), quando confirmo a remoção, então o sistema lista as pendências e oferece gerar Dossiê de Transição (HandoffDossier reason TRANSFERENCIA/SAIDA, RF36) ou transferir para outro departamento (remover + adicionar na mesma transação); itens PRIVADOS do empregado nunca entram sem consentimento.",
+        "text": "Dado que o removido tem pendências (responsável em ProjectTask aberta, TaskItem EM_USO/BLOQUEADA como responsável, SessionParticipant em sessão ATIVA, SealBond EM_REVISAO de que é alvo, Assignment ACEITA), quando confirmo a remoção, então o sistema lista as pendências (GET …/pending) e oferece gerar Dossiê de Transição (HandoffDossier reason TRANSFERENCIA/SAIDA, RF36) ou transferir para outro membro; sem escolha, a remoção prossegue e as pendências ficam marcadas \"sem responsável no departamento\".",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF9.CA05",
-        "text": "Dado a inclusão ou remoção, então MemberAdded/MemberRemoved (AFTER_COMMIT) gravam AuditLog MEMBER_ADDED/MEMBER_REMOVED com correlationId, notificam o empregado (Notification category SISTEMA: \"você foi adicionado/removido do departamento X\", com motivo), invalidam o cache Redis de métricas/contadores do departamento e atualizam a aba pública Equipe e a página da empresa (Pessoas).",
+        "text": "Dado a inclusão ou remoção, então MemberAdded/MemberRemoved (AFTER_COMMIT) gravam AuditLog MEMBER_ADDED/MEMBER_REMOVED com correlationId, notificam o empregado (Notification tipo SISTEMA, categoria SISTEMA: \"você foi adicionado/removido do departamento X\", com motivo), invalidam o cache Redis de métricas/contadores do departamento e atualizam a aba pública Equipe e a página da empresa (RF14/RF15).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -818,44 +818,44 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 10,
     "title": "Permitir que o chefe de departamento possa atribuir uma tarefa ou projeto a um usuário",
     "hu": "COMO chefe de departamento POSSO clicar em \"Atribuir tarefa ou projeto\" PARA que um empregado possa visualizar sua lista de tarefas ou projetos pendentes dentro de seu escopo de trabalho.",
-    "summary": "A atribuição usa a entidade Assignment da TAXONOMIA §12b (contexto Mensageria & Atribuição, marcado proposta na taxonomia): targetType AssignmentTargetType (TASK · PROJECT), fromUserId, toUserId, origin AssignmentOrigin (MINHA_EQUIPE · BOTAO_ESQUEMA · CHAT_WS · CHAT_DECIA), status AssignmentStatus (PROPOSTA · ACEITA · RECUSADA · DEVOLVIDA), dueAt, message, reason, previousResponsibleId, traceNodeId, respondedAt. O RF10 é o caso em que fromUserId é o CHEFE (Department.headUserId) e as origens são MINHA_EQUIPE ou BOTAO_ESQUEMA; o RF46 cobre as origens CHAT_WS/CHAT_DECIA e a proposta entre colegas. O responsibleId (TaskItem §2.1 / ProjectTask §3.2) só é escrito no aceite; previousResponsibleId permite a devolução. Rastro: Assignment + AuditLog + TaskStateLog (quando o aceite muda TaskState) + Notification ATRIBUICAO_PROPOSTA · ATRIBUICAO_ACEITA · ATRIBUICAO_RECUSADA · ATRIBUICAO_DEVOLVIDA (já em NotificationType, §8.8).",
-    "route": "página do departamento › Equipe › Minha equipe (gestão) (/departments/[slug]/team?mode=manage, origem MINHA_EQUIPE), ação \"Atribuir\" no card de tarefa (/tasks/[id]) e de projeto (/projects/[id], origem BOTAO_ESQUEMA); lado do atribuído: /me/assignments (\"Atribuídas a mim\") e Tarefa do Dia (RF44); API POST /api/assignments",
-    "coverage": "RF10.CA01 · RF10.CA02 · RF10.CA03 · RF10.CA04 · RF10.CA05 · RF10.CA06 — corpo do card vazio: CAs derivados do título + HU10 + ABAS_POR_PERFIL.md §7.b (bloco 3) e P-02 + RF46.CA03–CA05 (mesma entidade Assignment), marcados (CA a confirmar)",
+    "summary": "A entidade Assignment (TAXONOMIA §12b.4) é compartilhada por três entradas: o chefe em Minha equipe ou no card (este RF, origens MINHA_EQUIPE/BOTAO_ESQUEMA), as ações sociais \"atribuir\"/\"retornar\" de qualquer usuário (RF18, BOTAO_ESQUEMA) e o chat (RF46, CHAT_WS/CHAT_DECIA). O que distingue o RF10 é o papel: Guard.requireDeptHead e o alvo humano precisa ter DepartmentMembership vigente no departamento do chefe.",
+    "route": "página do departamento › Equipe › Minha equipe (gestão) (/departments/[slug]/team?mode=manage, origem MINHA_EQUIPE); ação \"Atribuir\" no card de tarefa (/tasks/[id]) e de projeto (/projects/[id], origem BOTAO_ESQUEMA); lado do atribuído: /me/assignments (\"Atribuídas a mim\") e Tarefa do Dia (RF44); API POST /api/assignments, POST /api/assignments/{id}/accept|refuse|give-back, GET /api/me/assignments, GET /api/departments/{id}/assignments",
+    "coverage": "RF10.CA01 · RF10.CA02 · RF10.CA03 · RF10.CA04 · RF10.CA05 · RF10.CA06 — corpo do card vazio: CAs derivados do título + HU10 + ABAS_POR_PERFIL §7.b (bloco 3 de Minha equipe) + RF46.CA03–CA05 (mesma entidade Assignment), marcados (CA a confirmar). Todas as classes do RF são (planejado); reais: Guard, AuditLogPort, SecurityConfig, SessionActiveFilter.",
     "cas": [
       {
         "id": "RF10.CA01",
-        "text": "Dado um CHEFE (Department.headUserId) em Minha equipe ou num card de tarefa/projeto, quando aciona Atribuir escolhendo pessoa, alvo (TaskItem ou ProjectScheme), prazo opcional e mensagem (≤ 500), então POST /api/assignments cria Assignment com status = PROPOSTA, fromUserId = chefe, toUserId, targetType, targetId, dueAt, message, origin (MINHA_EQUIPE ou BOTAO_ESQUEMA) e previousResponsibleId = responsável atual; AuditLog ASSIGNMENT_CREATED com correlationId.",
-        "note": "",
+        "text": "Dado um CHEFE (Department.headUserId) em Minha equipe ou num card de tarefa/projeto, quando aciona Atribuir escolhendo pessoa, alvo (TaskItem ou ProjectScheme), prazo opcional e mensagem (≤ 500), então POST /api/assignments cria Assignment com status PROPOSTA, fromUserId = chefe, toUserId, targetType, targetId, dueAt, message, origin (MINHA_EQUIPE ou BOTAO_ESQUEMA), previousResponsibleId = responsável atual, e AuditLog ASSIGNMENT_CREATED.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF10.CA02",
-        "text": "Dado o pedido, então o serviço exige AccessPolicy.requireDeptHead do departamento da pessoa: ator que não é chefe → 403 ACESSO_NEGADO; pessoa sem DepartmentMembership vigente no departamento do chefe → 422 VALIDACAO (FORA_DO_DEPARTAMENTO); alvo que o ator não pode ver (Visibility.PRIVADA de terceiro) → 403 ACESSO_NEGADO; alvo em CONCLUIDA/ARQUIVADA (tarefa) ou CONCLUIDO/ARQUIVADO (projeto) → 409 ESTADO_INVALIDO; já existe Assignment PROPOSTA ou ACEITA para o mesmo (targetId, toUserId) → 409 ATRIBUICAO_DUPLICADA.",
-        "note": "",
+        "text": "Dado o pedido, então o serviço exige Guard.requireDeptHead do departamento da pessoa: ator que não é chefe → 403 ACESSO_NEGADO; pessoa sem DepartmentMembership vigente no departamento do chefe → 422 VALIDACAO (FORA_DO_DEPARTAMENTO); alvo que o ator não pode ver (Visibility PRIVADA de terceiro) → 403 ACESSO_NEGADO; alvo em CONCLUIDA/ARQUIVADA (tarefa) ou CONCLUIDO/ARQUIVADO (projeto) → 409 ALVO_ENCERRADO; já existe Assignment PROPOSTA/ACEITA do mesmo alvo para a mesma pessoa → 409 ATRIBUICAO_DUPLICADA.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF10.CA03",
-        "text": "Dado o commit, então o evento AssignmentProposed (AFTER_COMMIT) grava Notification tipo ATRIBUICAO_PROPOSTA, categoria SISTEMA, resourceType = ASSIGNMENT, em notifications_by_user (Cassandra) + espelho MySQL, e TimelineEvent do atribuído; o chefe acompanha o estado no bloco 3 de Minha equipe (GET /api/departments/{id}/assignments).",
-        "note": "",
+        "text": "Dado o commit, então o evento AssignmentProposed (AFTER_COMMIT) grava Notification tipo ATRIBUICAO_PROPOSTA, categoria SISTEMA, resourceType ASSIGNMENT, em notifications_by_user (Cassandra) + espelho MySQL, e TimelineEvent do atribuído; o chefe acompanha o estado no bloco 3 de Minha equipe (GET /api/departments/{id}/assignments, por pessoa).",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF10.CA04",
-        "text": "Dado o atribuído (toUserId), quando aceita (POST /api/assignments/{id}/accept), então status = ACEITA, respondedAt, TaskItem.responsibleId ou ProjectTask.responsibleId (todas as ProjectTask sem responsável, quando PROJECT) recebe toUserId, TaskStateLog é gravado se a tarefa passa de DISPONIVEL para EM_USO (reason ATRIBUICAO_ACEITA) e o chefe recebe ATRIBUICAO_ACEITA; quando recusa (/refuse), então reason é obrigatório (422 MOTIVO_OBRIGATORIO), status = RECUSADA e o chefe recebe ATRIBUICAO_RECUSADA; quem não é toUserId → 403 ACESSO_NEGADO; responder atribuição já respondida → 409 ATRIBUICAO_JA_RESPONDIDA.",
-        "note": "",
+        "text": "Dado o atribuído (toUserId), quando aceita (POST /api/assignments/{id}/accept), então status ACEITA, respondedAt, TaskItem.responsibleId ou ProjectTask.responsibleId (todas as ProjectTask sem responsável, quando PROJECT) recebe toUserId, TaskStateLog é gravado se a tarefa passa de DISPONIVEL para EM_USO (reason ATRIBUICAO_ACEITA) e o chefe recebe ATRIBUICAO_ACEITA; quando recusa (/refuse), reason é obrigatório (422 MOTIVO_OBRIGATORIO), status RECUSADA e o chefe recebe ATRIBUICAO_RECUSADA; outro usuário respondendo → 403 ACESSO_NEGADO; resposta fora de PROPOSTA → 409 ESTADO_INVALIDO.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF10.CA05",
-        "text": "Dado o atribuído, então /me/assignments (AssignmentService.listForMe) lista as atribuições PROPOSTA e ACEITA (filtros: tipo, prazo, quem atribuiu) com o alvo em card LINHA; a Assignment ACEITA entra no priorityIndexJson da Tarefa do Dia (RF44) com o fator \"atribuída pelo chefe\" e no Dossiê de Transição (RF36) como item pendente; o chefe vê, por pessoa, as atribuições abertas em Minha equipe (bloco 2 Carga e bloco 3).",
-        "note": "",
+        "text": "Dado o atribuído, então /me/assignments (AssignmentService.listForMe) lista as atribuições PROPOSTA e ACEITA (filtros: tipo, prazo, quem atribuiu) com o alvo em TaskCard/ProjectCard compacto; a Assignment ACEITA entra no priorityIndexJson da Tarefa do Dia (RF44) com o fator \"atribuída pelo chefe\" e no Dossiê de Transição (RF36) como item pendente; o chefe vê, por pessoa, as atribuições abertas e vencidas (Due).",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF10.CA06",
-        "text": "Dado o atribuído com Assignment ACEITA, quando devolve com motivo (POST /api/assignments/{id}/give-back), então status = DEVOLVIDA, reason obrigatório (422 MOTIVO_OBRIGATORIO), o responsibleId volta a previousResponsibleId, TaskStateLog registra a volta e o chefe recebe ATRIBUICAO_DEVOLVIDA; DELEGUEI da Tarefa do Dia (RF44) e \"Atribuir\" no chat (RF46) chamam o mesmo AssignmentService.propose com origin CHAT_WS/CHAT_DECIA; delegação para pessoa de outro departamento exige aceite do chefe dela (a confirmar).",
-        "note": "",
+        "text": "Dado o atribuído com Assignment ACEITA, quando devolve com motivo (POST /api/assignments/{id}/give-back), então status DEVOLVIDA, reason obrigatório (422 MOTIVO_OBRIGATORIO), o responsibleId volta a previousResponsibleId, TaskStateLog registra a volta e o chefe recebe ATRIBUICAO_DEVOLVIDA; DELEGUEI da Tarefa do Dia (RF44) e \"Atribuir\" no chat (RF46) chamam o mesmo AssignmentService com outra origin.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       }
     ]
@@ -865,44 +865,44 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 11,
     "title": "Utilizar o editor de arte de fundo para personalizar esquemas de tarefas e projetos",
     "hu": "COMO usuário criando um esquema de tarefa ou projeto POSSO utilizar o editor de arte de fundo PARA personalizar background de esquemas de tarefas ou projetos.",
-    "summary": "Na UI o editor chama-se Estúdio do card (\"arte de fundo\" é o rótulo do segmento Fundo, P-17 de ANATOMIAS_E_ESTUDIO.md). Quatro segmentos — Fundo · Layout · Container · Destaques — gravam um único JSON CardArtConfig v1 na coluna cardArtJson (proposta) de tasks e project_schemes, com colunas planas cardSkin (já na TAXONOMIA §2.1) e cardLayout (proposta). A arte ocupa só as quatro faixas (passe-partout) entre a borda e o container; o container fica sempre legível (tinta por inkOn); a mídia nunca recebe arte. O RF reaproveita do RF38 o CardArtService, a capa por IA (AiEngine CAPA_IA, faísca ✦) e UserSkin (403 SKIN_NAO_ADQUIRIDA).",
-    "route": "Estúdio do card dentro de /tasks/[id]/edit (Etapa 5 \"Arte do card\" do criador de tarefas, RF4/RF20) e /projects/[id]/edit; API PUT /api/tasks/{id}/card-art e PUT /api/projects/{id}/card-art",
-    "coverage": "RF11.CA01 · RF11.CA02 · RF11.CA03 · RF11.CA04 · RF11.CA05 · RF11.CA06 — corpo do card vazio: CAs derivados do título + HU11 + RF38.CA02/CA04/CA08/CA10 + docs/design-system/ANATOMIAS_E_ESTUDIO.md §5, marcados (CA a confirmar)",
+    "summary": "O Estúdio de Arte do card grava cardArtJson (CardArtConfig, proposta: v, layout, fundo, container, destaques) na TaskItem (coverMode, cardSkin, coverUrl) ou no ProjectScheme (coverMode MOSAICO/FOTO/IA, coverUrl, mosaicJson). A renderização é determinística (CardArtResolver.resolveCardArt) e a mesma em feed, Mural, Vitrine, Balcão e Mesa. A arte com IA usa o AiEngine capability CAPA_IA sob a governança de accessClass e AiQuota.",
+    "route": "Estúdio do card dentro de /tasks/[id]/edit (etapa 5 \"Arte do card\" do criador, RF4) e /projects/[id]/edit; API PUT /api/tasks/{id}/card-art, PUT /api/projects/{id}/card-art, POST /api/card-art/ai (arte com IA), POST /api/card-art/upload",
+    "coverage": "RF11.CA01 · RF11.CA02 · RF11.CA03 · RF11.CA04 · RF11.CA05 · RF11.CA06 — corpo do card vazio: CAs derivados do título + HU11 + RF38.CA02/CA04/CA08/CA10 + docs/design-system/ANATOMIAS_E_ESTUDIO.md §6 (Estúdio de Arte do card), marcados (CA a confirmar). Todas as classes do RF são (planejado); reais: UserPreferences.defaultCardSkin/reduceMotion (Bloco 3), Guard.ownerOrAdmin, AiProvidersConfig, S3StorageConfig, RedisAdaptersConfig.",
     "cas": [
       {
         "id": "RF11.CA01",
-        "text": "Dado o dono de uma tarefa ou projeto (ownerId), quando abre o Estúdio do card, então vê os segmentos Fundo · Layout · Container · Destaques com prévia ao vivo (card do feed + ampliado); o rascunho é local (Cancelar não grava, Restaurar padrão só no rascunho); Aplicar envia PUT /api/tasks/{id}/card-art ou PUT /api/projects/{id}/card-art com CardArtConfig + baseRev; quem não é dono → 403 ACESSO_NEGADO; rev divergente (outra janela aplicou antes) → 409 REVISAO_DESATUALIZADA; JSON fora do schema → 422 VALIDACAO.",
-        "note": "",
+        "text": "Dado o dono de uma tarefa ou projeto (ownerId), quando abre o Estúdio do card, então vê os segmentos Fundo · Layout · Container · Destaques com prévia ao vivo (card do feed + ampliado); o rascunho é local (Cancelar não grava; Restaurar padrão só no rascunho); Aplicar envia PUT /api/tasks/{id}/card-art ou PUT /api/projects/{id}/card-art com CardArtConfig + baseRev; quem não é dono → 403 ACESSO_NEGADO; rev divergente → 409 REVISAO_DESATUALIZADA; JSON fora do schema → 422 VALIDACAO.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF11.CA02",
-        "text": "Dado o segmento Fundo, então o usuário escolhe cor sólida (catálogo 8 cores de departamento + 6 neutras), gradiente (marca, dept, spark), textura (papel, cortica, blueprint, timbrado), terminal, monograma, malha de nós (argumento, consenso, misto + densidade 1–3), mosaico automático, imagem enviada ou arte com IA; resolveCardArt aplica a precedência (base color → gradient → texture/terminal/monograma; imagem ai/upload → mesh → mosaic); layouts com ownArt (GRADE, PRANCHA, LINHA_TEMPO) desligam o segmento Fundo com a explicação; layouts da seção B ficam desabilitados com motivo quando falta o dado (effectiveLayout).",
-        "note": "",
+        "text": "Dado o segmento Fundo, então o usuário escolhe cor sólida (8 cores de departamento + 6 neutras), gradiente (marca, dept, spark), textura (papel, cortica, blueprint, timbrado), terminal, monograma, malha de nós (argumento, consenso, misto + densidade 1–3), mosaico automático, imagem enviada ou arte com IA; resolveCardArt aplica a precedência (base color → gradient → texture/terminal/monograma; imagem ai/upload → mesh → mosaic); layouts com ownArt (GRADE, PRANCHA, LINHA_TEMPO) desligam o Fundo com explicação; layouts sem dado ficam desabilitados com motivo (effectiveLayout).",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF11.CA03",
-        "text": "Dado o segmento Container, então o usuário escolhe a skin (timbrado padrão, protocolo, carimbo, blueprint, noturno; contraste é forçado pelo tema) e a cor do container (nativa da skin, 5 amostras ou livre); a tinta vem de inkOn(hex) por luminância (0,299 R + 0,587 G + 0,114 B > 140 → #1A1714, senão #F5F2EC) garantindo ≥ 4,5:1; skin premium sem UserSkin (e não PADRAO) → 403 SKIN_NAO_ADQUIRIDA com atalho para a Loja; UserPreferences.defaultCardSkin é o valor inicial.",
-        "note": "",
+        "text": "Dado o segmento Container, então o usuário escolhe a skin (timbrado padrão, protocolo, carimbo, blueprint, noturno; contraste forçado pelo tema) e a cor do container (nativa, 5 amostras ou livre); a tinta vem de inkOn(hex) por luminância (0,299 R + 0,587 G + 0,114 B > 140 → #1A1714, senão #F5F2EC), garantindo ≥ 4,5:1; skin premium sem UserSkin → 403 SKIN_NAO_ADQUIRIDA com atalho para a Loja (RF42); UserPreferences.defaultCardSkin é o valor inicial.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF11.CA04",
-        "text": "Dado \"Arte com IA\" (prompt ≤ 300) no Fundo, então o serviço verifica AiQuota (créditos comprados antes da cota mensal; sem saldo → 409 COTA_ESGOTADA + Loja), accessClass RESTRITO/SIGILOSO → motor local (monograma/paleta, result = BLOQUEADO_SIGILO para externo), senão AiEngine CAPA_IA com tema mascarado; a imagem vai ao S3 (MediaObject) e fundo.aiArt {url, prompt, generatedAt, inferenceId} é gravado com AiInferenceLog; a faísca ✦ é obrigatória (só o tooltip estendido pode ser ocultado, RF38.CA04); resposta ≤ 30 s ou estado \"gerando\" com motion spark; imagem enviada passa por validação (mime real, tamanho, antivírus PipelineJob ANTIVIRUS) → 422 VALIDACAO se inválida.",
-        "note": "",
+        "text": "Dado \"Arte com IA\" (prompt ≤ 300), então o serviço verifica AiQuota (créditos antes da cota mensal; sem saldo → 409 COTA_ESGOTADA + Loja), accessClass RESTRITO/SIGILOSO → LocalEngine (monograma/paleta, result BLOQUEADO_SIGILO para externo), senão AiEngine CAPA_IA com tema mascarado; a imagem vai ao S3 (MediaObject) e fundo.aiArt {url, prompt, generatedAt, inferenceId} é gravado com AiInferenceLog; faísca ✦ obrigatória (RF38.CA04); resposta ≤ 30 s ou estado \"gerando\" com motion spark; imagem enviada passa por MIME real, tamanho e PipelineJob ANTIVIRUS → 422 VALIDACAO se inválida.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF11.CA05",
-        "text": "Dado o segmento Destaques, então o usuário configura lacre (lugar reservado; zona vem do layout), tooltip da faísca (curto/completo), barra de fases (projeto), carimbo de estado/decisão (canto/centro/oculto), Hype do autor (respeita HypeVisibility) e movimento (none, pulse, thread); no máximo 2 destaques decorativos (carimbo e movimento contam) → 422 LIMITE_DESTAQUES; o movimento só roda no card ampliado e é desligado por prefers-reduced-motion ou UserPreferences.reduceMotion (RF38.CA10).",
-        "note": "",
+        "text": "Dado o segmento Destaques, então o usuário configura lacre (lugar reservado), tooltip da faísca (curto/completo), barra de fases (projeto), carimbo de estado/decisão (canto/centro/oculto), Hype do autor (respeita HypeVisibility) e movimento (none, pulse, thread); no máximo 2 destaques decorativos → 422 LIMITE_DESTAQUES; o movimento só roda no card ampliado e é desligado por prefers-reduced-motion ou UserPreferences.reduceMotion (RF38.CA10).",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF11.CA06",
-        "text": "Dado cardArtJson gravado, então a API entrega cardArt no view da tarefa/projeto (campos planos mesclados), a leitura é tolerante (config sem v lê como v1 com padrões PAGINA/MOSAICO + timbrado; valores desconhecidos caem no padrão; color inválido → null); o mesmo resolveCardArt renderiza feed, Mural, Vitrine, Balcão e Mesa; o cache Redis do card é invalidado (DEL card:task:{id} / card:project:{id}) e o evento CardArtChanged dispara CardArtService.rebuildMosaic nos projetos que contêm a tarefa (RF38.CA03).",
-        "note": "",
+        "text": "Dado cardArtJson gravado, então a API entrega cardArt no view da tarefa/projeto, a leitura é tolerante (config sem v lê como v1 com padrões PAGINA/MOSAICO + timbrado; valor desconhecido → padrão; color inválido → null); o mesmo resolveCardArt renderiza feed, Mural, Vitrine, Balcão e Mesa; o cache Redis do card é invalidado (DEL card:task:{id} / card:project:{id}) e CardArtChanged (AFTER_COMMIT) dispara CardArtService.rebuildMosaic nos projetos que contêm a tarefa (RF38.CA03).",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       }
     ]
@@ -912,44 +912,44 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 12,
     "title": "Editar um esquema de tarefa ou projeto de meu perfil",
     "hu": "COMO usuário visualizando um esquema de tarefa ou projeto POSSO editar os dados deste esquema PARA atualizar minha gestão pessoal e empresarial.",
-    "summary": "Edição dos dados do esquema (formulário), em contraste com o RF22 (manipulação na Mesa). Esquema de Tarefa = TaskItem (+ a sua ProjectTask quando dentro de um projeto); Esquema de Projeto = ProjectScheme + ProjectTasks. Regras reaproveitadas do RF22: canEdit = dono OU responsável OU chefe do departamento (403 fora disso); toda alteração estrutural de projeto gera ProjectVersion com diffJson legível; mudança de estado de tarefa gera TaskStateLog; CONCLUIDO/ARQUIVADO bloqueiam (409) e reabrir exige justificativa; autosave do rascunho em ProjectScheme.autosaveDraftJson (RF21.CA14) e, para tarefas, em Redis (proposta).",
-    "route": "Meu perfil (/profile) › sub-abas 1 Acervo de Tarefas e 2 Meus Projetos › card › Editar → /tasks/[id]/edit e /projects/[id]/edit (a Mesa de Trabalho completa — Quadro, Linha do tempo, canvas — é o RF21/RF22)",
-    "coverage": "RF12.CA01 · RF12.CA02 · RF12.CA03 · RF12.CA04 · RF12.CA05 · RF12.CA06 — corpo do card vazio: CAs derivados do título + HU12 + docs/diagramas/RF22/README.md (CA01 permissão, CA02 ProjectVersion, CA04 concorrência, CA06 bloqueio) + RF20.CA07/CA11 + RF21.CA14 (autosave) + RF41.CA02 (TaskStateLog), marcados (CA a confirmar)",
+    "summary": "Este RF cobre a edição dos dados (ficha) da TaskItem e do ProjectScheme: validação igual à do criador (RF4/RF5), lock otimista para tarefa e último-vence com aviso para projeto (RF22.CA04), versões (ProjectVersion, TaskStateLog), autosave e bloqueio de itens encerrados. A edição de arquivos (anexos, versões, provedor externo) é o RF8 e a arte do card é o RF11.",
+    "route": "Meu perfil (/profile) › sub-abas Acervo Digital e Projetos (RF6) › card › Editar → /tasks/[id]/edit e /projects/[id]/edit (a Mesa completa — Quadro, Linha do tempo, canvas — é o RF21/RF22; os arquivos são o RF8); API GET /api/tasks/{id}/edit-form, PATCH /api/tasks/{id}, PATCH /api/projects/{id}, PUT /api/tasks/{id}/draft, POST /api/tasks/{id}/reopen, POST /api/projects/{id}/reopen",
+    "coverage": "RF12.CA01 · RF12.CA02 · RF12.CA03 · RF12.CA04 · RF12.CA05 · RF12.CA06 — corpo do card vazio: CAs derivados do título + HU12 + RF22 (CA01 permissão, CA02 ProjectVersion, CA04 concorrência, CA06 bloqueio) + RF20.CA07/CA11 + RF21.CA14 (autosave) + RF41.CA02 (TaskStateLog), marcados (CA a confirmar). Todas as classes do RF são (planejado); reais: Guard, AuditLogPort, SecurityConfig, SessionActiveFilter, RedisAdaptersConfig.",
     "cas": [
       {
         "id": "RF12.CA01",
-        "text": "Dado o usuário no card de uma tarefa ou projeto do seu perfil, quando aciona Editar, então /tasks/[id]/edit (ou /projects/[id]/edit) carrega o formulário com os dados atuais; tarefa: título, resumo, descrição, tipo, categoria/subcategoria, processTags/natureTags (≤ 2 cada), accessClass, prazo e prazo legal, prioridade, responsável, visibilidade, anexos, notas, Estúdio do card (RF11); projeto: título, emoji, objetivo, descrição, tags, prioridade, exercício, agrupamentos (RF25), eixo do plano (RF24), visibilidade, lista de tarefas por fase com prazo e responsável, orientação para a IA; canEdit = ownerId OU responsibleId (de alguma ProjectTask) OU Department.headUserId; demais → formulário somente leitura e 403 ACESSO_NEGADO na API.",
-        "note": "",
+        "text": "Dado o usuário no card de uma tarefa ou projeto do seu perfil, quando aciona Editar, então /tasks/[id]/edit (ou /projects/[id]/edit) carrega o formulário com os dados atuais; tarefa: título, resumo, descrição, tipo, categoria/subcategoria, processTags/natureTags (≤ 2 cada), accessClass, prazo e prazo legal, prioridade, responsável, visibilidade, notas, Estúdio do card (RF11); projeto: título, emoji, objetivo, descrição, tags, prioridade, exercício, agrupamentos (RF25), eixo do plano (RF24), visibilidade, lista de tarefas por fase com prazo e responsável, orientação para a IA; AccessPolicy.canEdit = ownerId OU responsibleId (de alguma ProjectTask) OU Department.headUserId; demais → somente leitura e 403 ACESSO_NEGADO na API.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF12.CA02",
-        "text": "Dado o envio (PATCH /api/tasks/{id} ou PATCH /api/projects/{id} com If-Match: version), então o serviço valida: título obrigatório ≤ 200, ≤ 2 tags por eixo, categoria compatível com o tipo, prazo legal recalculado por LegalDeadlineRule quando a categoria tem prazo (legalOverrideReason obrigatório para sobrescrever, RF20.CA11), projeto com ≥ 1 tarefa em DEMANDA + 1 em outra fase (RF21.CA05) e sem ciclo de dependências → 422 VALIDACAO; version divergente → 409 CONFLITO_VERSAO para tarefa e último-vence com aviso CONFLITO_ULTIMO_VENCE para projeto (RF22.CA04).",
-        "note": "",
+        "text": "Dado o envio (PATCH /api/tasks/{id} ou PATCH /api/projects/{id} com If-Match: version), então o serviço valida: título ≤ 200, ≤ 2 tags por eixo, categoria compatível com o tipo, prazo legal recalculado por LegalDeadlineRule quando a categoria tem prazo (legalOverrideReason obrigatório para sobrescrever, RF20.CA11), projeto com ≥ 1 tarefa em DEMANDA + 1 em outra fase (RF21.CA05) e sem ciclo de dependências → 422 VALIDACAO; version divergente → 409 CONFLITO_VERSAO para tarefa e último-vence com aviso CONFLITO_ULTIMO_VENCE para projeto (RF22.CA04).",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF12.CA03",
-        "text": "Dado o salvamento, então: projeto com alteração estrutural (tarefa adicionada/removida, fase, prazo, responsável, dependência) grava ProjectVersion (versionNumber + 1, authorId, diffJson legível, snapshotJson); mudanças só de dados descritivos (título, objetivo, tags) também geram versão com reason = DADOS; tarefa com mudança de state grava TaskStateLog (fromState, toState, actorId, reason); tarefa linkMode = VINCULADO (Google/Microsoft) ganha TaskVersion ao sincronizar (RF20.CA07); tudo com AuditLog e correlationId.",
-        "note": "",
+        "text": "Dado o salvamento, então projeto com alteração estrutural (tarefa adicionada/removida, fase, prazo, responsável, dependência) grava ProjectVersion (versionNumber + 1, authorId, diffJson legível, snapshotJson); mudanças só descritivas também geram versão com reason DADOS; tarefa com mudança de state grava TaskStateLog; tudo com AuditLog TASK_UPDATED/PROJECT_UPDATED e correlationId.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF12.CA04",
         "text": "Dado o formulário aberto, então o rascunho é salvo a cada 10 s ou ao sair do campo: projeto em ProjectScheme.autosaveDraftJson (RF21.CA14); tarefa em Redis draft:task:{id}:{userId} com TTL 7 dias (proposta); ao reabrir, o sistema oferece Recuperar rascunho ou Descartar; o rascunho nunca é publicado sem o clique em Salvar.",
-        "note": "",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF12.CA05",
-        "text": "Dado alvo em TaskState CONCLUIDA/ARQUIVADA ou ProjectStatus CONCLUIDO/ARQUIVADO, então toda escrita devolve 409 TAREFA_BLOQUEADA / 409 PROJETO_BLOQUEADO; Reabrir exige justificativa (≥ 10 caracteres, senão 422 VALIDACAO) e gera TaskStateLog/ProjectVersion.reason + AuditLog (REOPEN); tarefa MODELO_PUBLICO ou OFERECIDA (RF40/RF41) não pode mudar visibility/accessClass sem antes retirar a oferta (409 OFERTA_ATIVA).",
-        "note": "",
+        "text": "Dado alvo em TaskState CONCLUIDA/ARQUIVADA ou ProjectStatus CONCLUIDO/ARQUIVADO, então toda escrita devolve 409 TAREFA_BLOQUEADA / 409 PROJETO_BLOQUEADO; Reabrir exige justificativa (≥ 10 caracteres, senão 422 VALIDACAO) e gera TaskStateLog/ProjectVersion.reason REABERTURA + AuditLog TASK_REOPENED/PROJECT_REOPENED; tarefa MODELO_PUBLICO ou OFERECIDA (RF40/RF41) não pode mudar visibility/accessClass sem antes retirar a oferta (409 OFERTA_ATIVA).",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF12.CA06",
-        "text": "Dado o commit, então eventos AFTER_COMMIT: TaskUpdated/ProjectUpdated reindexam o item no OpenSearch (busca RF27), recalculam a capa-mosaico dos projetos que contêm a tarefa (RF38.CA03), invalidam o cache do card (Redis), atualizam ProjectTask.snapshotJson nos projetos de terceiros que referenciam a tarefa (RF23.CA03) e notificam (Notification PRAZO_PROXIMO/SISTEMA) o responsável quando prazo ou responsável mudou; tarefa EM_USO em projeto de outro dono tem mudança de prazo sinalizada no projeto (⛔ hasBlockingPending).",
-        "note": "",
+        "text": "Dado o commit, então eventos AFTER_COMMIT TaskUpdated/ProjectUpdated: reindexam o item no OpenSearch (RF17/RF27), recalculam a capa-mosaico dos projetos que contêm a tarefa (RF38.CA03), invalidam o cache do card (Redis), atualizam ProjectTask.snapshotJson nos projetos de terceiros que referenciam a tarefa (RF23.CA03) e notificam (Notification PRAZO_PROXIMO/SISTEMA) o responsável quando prazo ou responsável mudou; tarefa EM_USO em projeto de outro dono tem mudança de prazo sinalizada no projeto (⛔ hasBlockingPending).",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       }
     ]
@@ -959,44 +959,44 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 13,
     "title": "Utilizar a funcionalidade gerar artefato dentro de esquemas, chats, abas e feed do Work Station",
     "hu": "COMO usuário conectado dentro do Work Station POSSO clicar em gerar artefato dentro de um esquema ou chat DECIA PARA receber um arquivo produzido por IA e alinhado com os objetivos de minha equipe.",
-    "summary": "A TAXONOMIA §5.14 só prevê SessionArtifact (artefato da sessão, gerado automaticamente ao validar a decisão). Este RF propõe ampliá-lo para GeneratedArtifact (tabela generated_artifacts), com origem ArtifactOrigin (ESQUEMA_TAREFA · ESQUEMA_PROJETO · CHAT_DECIA · CHAT_MENSAGERIA · ABA · FEED), pedido explícito do usuário (requestedBy, instruction) e alinhamento com os objetivos da equipe (goalAlignmentJson: eixo do AnnualPlan do departamento e CollectiveGoal abertas). SessionArtifact vira o caso originType = CHAT_DECIA (geração automática do antigo RF13 continua). Tudo o que era do antigo RF13 se mantém: AiEngine capability ARTEFATO, contentMd como fonte e PDF derivado (PipelineJob EXPORT_PDF), INDEXAR_MEMORIA, Notification, Transformar em tarefa e Regerar. Novo: cota de IA (AiQuota, 409 COTA_ESGOTADA), origem/visibilidade e DECIA Points ARTEFATO_USADO quando o artefato é usado numa decisão (RF42).",
-    "route": "botão Gerar artefato ✦ em /tasks/[id], /projects/[id] (e Mesa), /decia/[sessionId] (aba Artefatos), /messages/[conversationId] (RF46), abas /tasks, /search, /insights, /departments/[slug]/team e itens do /mural; lista em /me/artifacts; API POST /api/artifacts",
-    "coverage": "RF13.CA01 · RF13.CA02 · RF13.CA03 · RF13.CA04 · RF13.CA05 · RF13.CA06 — corpo do card vazio: CAs derivados do título + HU13 + docs/diagramas/_anterior/RF13/README.md (RF13.CA01–CA06 da sessão: geração, EXPORT_PDF, notificação, Transformar em tarefa, Regerar, INDEXAR_MEMORIA) + RF42.CA06 (cota) + RF33.CA03 (citações), marcados (CA a confirmar)",
+    "summary": "SessionArtifact (TAXONOMIA §5.14) nasce na sessão DECIA; o título atual do card estende a origem a esquemas (tarefa/projeto), chats (sessão DECIA e mensageria RF46), abas (Acervo, Buscar, Insights, Minha equipe) e feed (Mural). A entidade generalizada é GeneratedArtifact (proposta) com originType/originId, status (ArtifactStatus, proposta) e goalAlignmentJson (objetivos da equipe: PlanAxis, CollectiveGoal). A geração roda pelo AiEngine capability ARTEFATO com citações da Memória Institucional (RF33) e cota (AiQuota, RF42.CA06).",
+    "route": "botão Gerar artefato ✦ em /tasks/[id], /projects/[id] (e Mesa), /decia/[sessionId] (aba Artefatos), /messages/[conversationId] (RF46), abas /tasks, /search, /insights, /departments/[slug]/team e itens do /mural; lista em /me/artifacts; API POST /api/artifacts, GET /api/artifacts/{id}, GET /api/me/artifacts, POST /api/artifacts/{id}/to-task, POST /api/artifacts/{id}/regenerate, GET /api/artifacts/{id}/download",
+    "coverage": "RF13.CA01 · RF13.CA02 · RF13.CA03 · RF13.CA04 · RF13.CA05 · RF13.CA06 — corpo do card vazio: CAs derivados do título + HU13 + docs/diagramas/_anterior/RF13/README.md (RF13.CA01–CA06 da sessão: geração, EXPORT_PDF, notificação, Transformar em tarefa, Regerar, INDEXAR_MEMORIA) + RF42.CA06 (cota) + RF33.CA03 (citações), marcados (CA a confirmar). Todas as classes do RF são (planejado); reais: Guard, AuditLogPort, SecurityConfig, AiProvidersConfig, S3StorageConfig.",
     "cas": [
       {
         "id": "RF13.CA01",
-        "text": "Dado o usuário em um esquema (tarefa/projeto), chat (sessão DECIA ou mensageria RF46), aba (Acervo, Buscar, Insights, Minha equipe) ou item do feed/Mural, quando aciona Gerar artefato ✦, então escolhe o kind compatível com a origem (RELATORIO · ATA · CHECKLIST · RESUMO_PDF · MINUTA_DOCUMENTO · PLANILHA · CRONOGRAMA · APRESENTACAO (propostos)) e uma instrução (≤ 1 000); POST /api/artifacts {originType, originId, kind, instruction} cria GeneratedArtifact (proposta) status = SOLICITADO e devolve 202 {artifactId}; a geração roda em PipelineJob GERAR_ARTEFATO (tipo proposto) com resposta esperada ≤ 30 s; kind incompatível ou instrução vazia → 422 VALIDACAO; origem sem conteúdo (chat vazio, aba sem itens) → 409 SEM_BASE_PARA_ARTEFATO.",
-        "note": "",
+        "text": "Dado o usuário em um esquema (tarefa/projeto), chat (sessão DECIA ou mensageria RF46), aba (Acervo, Buscar, Insights, Minha equipe) ou item do feed/Mural, quando aciona Gerar artefato ✦, então escolhe o kind compatível com a origem (RELATORIO · ATA · CHECKLIST · RESUMO_PDF · MINUTA_DOCUMENTO · PLANILHA · CRONOGRAMA · APRESENTACAO propostos) e uma instrução (≤ 1 000); POST /api/artifacts {originType, originId, kind, instruction} cria GeneratedArtifact SOLICITADO e devolve 202 {artifactId}; a geração roda em PipelineJob GERAR_ARTEFATO (tipo proposto) com resposta esperada ≤ 30 s; kind incompatível ou instrução vazia → 422 VALIDACAO; origem sem conteúdo → 409 SEM_BASE_PARA_ARTEFATO.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF13.CA02",
-        "text": "Dado o job, então o serviço monta o contexto por origem: esquema → TaskItem/ProjectScheme + ProjectTasks + decisões vinculadas (DeciaSession.linkedProjectId); chat → SessionMessages + MessageClassification (ou DirectMessages da DirectConversation, TAXONOMIA §12b, RF46); aba → filtros ativos + itens visíveis; feed → MuralEntry alvo; sempre acrescenta os objetivos da equipe (PlanAxis do AnnualPlan do departamento, CollectiveGoal ABERTAS) em goalAlignmentJson; só entra o que o requerente pode ver (canView); accessClass RESTRITO/SIGILOSO em qualquer item → motor local (result = BLOQUEADO_SIGILO para externo) ou item mascarado.",
-        "note": "",
+        "text": "Dado o job, então ArtifactContextBuilder monta o contexto por origem: esquema → TaskItem/ProjectScheme + ProjectTasks + decisões vinculadas (DeciaSession.linkedProjectId); chat → SessionMessages + MessageClassification (ou DirectMessages de DirectConversation, RF46); aba → filtros ativos + itens visíveis; feed → MuralEntry alvo; sempre acrescenta os objetivos da equipe (PlanAxis do AnnualPlan do departamento, CollectiveGoal ABERTAS) em goalAlignmentJson; só entra o que o requerente pode ver (AccessPolicy.canView); accessClass RESTRITO/SIGILOSO em qualquer item → motor local (BLOQUEADO_SIGILO para externo) ou item mascarado.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF13.CA03",
-        "text": "Dado o contexto, então AiEngine (capability ARTEFATO, hostRf = RF13, inputSummaryJson.originType) gera title + contentMd fundamentado com citações da Memória Institucional (Citation; \"Sem precedente\" quando vazio, RF33.CA03), após AiQuota.tryConsume (créditos comprados antes da cota mensal; sem saldo → 409 COTA_ESGOTADA + Loja); AiInferenceLog registra provider, modo (ECONOMIA/AVANCADO), tokens e quotaSource; o artefato carrega faísca ✦ com tooltip \"gerado por IA em data\" (RF38.CA04); limite de 10 gerações/hora por usuário → 429 LIMITE_GERACAO (proposta).",
-        "note": "",
+        "text": "Dado o contexto, então AiEngine (capability ARTEFATO, hostRf RF13, inputSummaryJson.originType) gera title + contentMd fundamentado com citações da Memória Institucional (Citation; \"Sem precedente\" quando vazio, RF33.CA03), após AiQuota.tryConsume (créditos antes da cota mensal; sem saldo → 409 COTA_ESGOTADA + Loja); AiInferenceLog registra provider, modo (ECONOMIA/AVANCADO), tokens e quotaSource; faísca ✦ com tooltip \"gerado por IA em data\" (RF38.CA04); limite de 10 gerações/hora por usuário → 429 LIMITE_GERACAO (proposta, RateLimitPort).",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF13.CA04",
-        "text": "Dado contentMd salvo (status = GERADO), então PipelineJob EXPORT_PDF (ou XLSX para PLANILHA/CRONOGRAMA) renderiza o arquivo, grava em S3 (MediaObject) e preenche mediaObjectId; PipelineJob INDEXAR_MEMORIA indexa InstitutionalMemoryDocument.sourceType = ARTEFATO; falha de render mantém o contentMd legível e o job vai a REPROCESSAR; falha de indexação não bloqueia (RF33.CA06).",
-        "note": "",
+        "text": "Dado contentMd salvo (GERADO), então PipelineJob EXPORT_PDF (ou XLSX para PLANILHA/CRONOGRAMA) renderiza o arquivo, grava em S3 (MediaObject) e preenche mediaObjectId (PRONTO); PipelineJob INDEXAR_MEMORIA indexa InstitutionalMemoryDocument.sourceType ARTEFATO; falha de render mantém o contentMd legível e o job vai a REPROCESSAR; falha de indexação não bloqueia (RF33.CA06).",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF13.CA05",
-        "text": "Dado o artefato pronto, então Notification tipo ARTEFATO vai ao requerente (e a todos os participantes quando a origem é chat, groupKey = originId); o artefato aparece na origem (painel Artefatos do esquema, aba Artefatos da sessão, mensagem SISTEMA no chat, bloco da aba, comentário do item do feed) e em /me/artifacts; ações: baixar (URL assinada), Transformar em tarefa (TaskItem com sourceKind DECIA se origem for sessão, senão TEXTO_IA; ATA → ATA_REGISTRO, RELATORIO/MINUTA → DOCUMENTO, CHECKLIST → FORMULARIO, PLANILHA → PLANILHA, CRONOGRAMA → CRONOGRAMA; convertedTaskId; repetir → 409 ARTEFATO_JA_CONVERTIDO), Regerar com ajuste (nova linha, anterior preservada, supersedesArtifactId), compartilhar no Mural (RF26.CA05); anexado numa sessão e usado na decisão → MessageAttachment.usedInDecision e DP ARTEFATO_USADO (RF42).",
-        "note": "",
+        "text": "Dado o artefato pronto, então Notification ARTEFATO vai ao requerente (e a todos os participantes quando a origem é chat, groupKey = originId); o artefato aparece na origem (painel Artefatos do esquema, aba Artefatos da sessão, mensagem SISTEMA no chat, bloco da aba, comentário do item do feed) e em /me/artifacts; ações: baixar (URL assinada), Transformar em tarefa (TaskItem com sourceKind DECIA se origem for sessão, senão TEXTO_IA; ATA → ATA_REGISTRO, RELATORIO/MINUTA → DOCUMENTO, CHECKLIST → FORMULARIO, PLANILHA → PLANILHA, CRONOGRAMA → CRONOGRAMA; convertedTaskId; repetir → 409 ARTEFATO_JA_CONVERTIDO), Regerar com ajuste (nova linha, anterior preservada, supersedesArtifactId), compartilhar no Mural (RF26.CA05); anexado numa sessão e usado na decisão → MessageAttachment.usedInDecision e DP ARTEFATO_USADO (RF42).",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF13.CA06",
         "text": "Dado o pedido, então 403 ACESSO_NEGADO quando o requerente não pode ver a origem (não participante da sessão/chat, item PRIVADO de terceiro, aba de gestão sem requireDeptHead); a visibilidade do artefato herda a da origem (Visibility da tarefa/projeto, participantes do chat, dono da aba); artefatos de origem SIGILOSA nunca vão ao Mural nem à Memória pública; AuditLog ARTIFACT_GENERATED com correlationId.",
-        "note": "",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       }
     ]
@@ -1006,44 +1006,44 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 14,
     "title": "Visualizar perfil de um chefe de departamento",
     "hu": "COMO usuário dentro do sistema Work Station POSSO procurar o perfil de um chefe de departamento PARA obter informação relevante ou realizar alguma funcionalidade.",
-    "summary": "O CHEFE é uma pessoa (perfil pessoal com as 15 sub-abas do RF19 em /u/[username]) e o headUserId de um Department. O \"perfil de chefe\" do board é a página institucional do departamento: cabeçalho com sigla, cor, monograma, capa e o chefe (avatar, nome, cargo \"Chefe de {sigla}\"), métricas públicas do período e sub-abas públicas (Sobre · Projetos · Sessões DECIA · Chancelas · Reconhecimentos · Equipe) + sub-abas de gestão só para o chefe/EMPRESA (Minha equipe RF9/RF10, Dashboard do emissor, Insights da Equipe), negadas no serviço e não só ocultas. Este RF é de leitura; a única escrita própria é Seguir (Follow targetType DEPARTMENT). Reaproveita InstitutionalService.publicPage e RedisMetricsCache do RF28.",
-    "route": "página do departamento /departments/[slug] (Matriz D de docs/produto/ABAS_POR_PERFIL.md §5 — é o que o board chama de \"perfil do chefe\"), alcançada pela aba Buscar (RF27), por /companies/[slug] › Departamentos (RF15) ou pelo atalho no perfil pessoal do chefe (/u/[username], RF16/RF19); API GET /api/departments/{slug} + GET /api/departments/{id}/tabs/{tab}",
-    "coverage": "RF14.CA01 · RF14.CA02 · RF14.CA03 · RF14.CA04 · RF14.CA05 · RF14.CA06 — corpo do card vazio: CAs derivados do título + HU14 + RF28.CA02/CA03/CA04/CA06/CA08 (docs/diagramas/RF28/README.md) + RF27.CA06 (seguir) + RF45.CA06/CA10 (Hype) + Matriz D, marcados (CA a confirmar)",
+    "summary": "O \"perfil do chefe\" é a página do departamento (Department, TAXONOMIA §1.5) que ele chefia (headUserId): cabeçalho institucional, sub-abas públicas e ações por papel (AccessPolicy); a conta pessoal do chefe (/u/[username]) é o RF16. Métricas vêm de MetricSnapshot (scope DEPARTAMENTO) e nunca expõem dados nominais de desempenho (RF45.CA10).",
+    "route": "página do departamento /departments/[slug] (Matriz D de ABAS_POR_PERFIL §5 — é o que o board chama de \"perfil do chefe\"), alcançada pela aba Buscar (RF17), por /companies/[slug] › Departamentos (RF15) ou pelo perfil pessoal do chefe (/u/[username], RF16); API GET /api/departments/{slug}, GET /api/departments/{id}/tabs/{tab}, GET /api/departments/{id}/metrics?period=, POST|DELETE /api/follows",
+    "coverage": "RF14.CA01 · RF14.CA02 · RF14.CA03 · RF14.CA04 · RF14.CA05 · RF14.CA06 — corpo do card vazio: CAs derivados do título + HU14 + RF28.CA02/CA03/CA04/CA06/CA08 (docs/diagramas/RF28/README.md) + RF27.CA06 (seguir) + RF45.CA06/CA10 (Hype) + Matriz D, marcados (CA a confirmar). Todas as classes do RF são (planejado); reais: User (companyId/departmentId sem FK até o RF28, D-23), Guard, SecurityConfig.",
     "cas": [
       {
         "id": "RF14.CA01",
         "text": "Dado qualquer usuário (inclusive visitante), quando busca um chefe/departamento (aba Buscar por nome, sigla ou nome do chefe; lista de departamentos da empresa; menção @sigla) e abre /departments/[slug], então vê o cabeçalho: Department.acronym, name, color, monogram, coverUrl, about, chefe (User de headUserId: avatar, fullName, jobTitle → \"Chefe de {acronym}\"), Company (logo + link para RF15), contadores (pessoas com DepartmentMembership vigente, projetos publicados, decisões validadas, chancelas emitidas, seguidores) e botão Seguir; slug inexistente ou active = false → 404 DEPARTAMENTO_NAO_ENCONTRADO.",
-        "note": "",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF14.CA02",
-        "text": "Dado o cabeçalho, então as sub-abas públicas são: Sobre · Projetos do departamento (filtros fase, exercício; canView por item) · Sessões DECIA (abertas/encerradas: membro vê as suas, mesma empresa vê PÚBLICAS/encerradas com resumo, visitante não vê) · Chancelas do departamento (Seal ativas; a fila de revisão só para chefe/curador) · Reconhecimentos emitidos (Recognition com publicOnMural) · Equipe (modo público: nome, cargo, monograma, etiqueta \"Curador\" por CuratorAppointment ativo); tab + filtros + página ficam na URL (RF19.CA03).",
-        "note": "",
+        "text": "Dado o cabeçalho, então as sub-abas públicas são: Sobre · Projetos do departamento (filtros fase, exercício; canView por item) · Sessões DECIA (membro vê as suas, mesma empresa vê PÚBLICAS/encerradas com resumo, visitante não vê) · Chancelas do departamento (Seal ATIVA; a fila de revisão só para chefe/curador) · Reconhecimentos emitidos (Recognition.publicOnMural) · Equipe (modo público: nome, cargo, monograma, etiqueta \"Curador\" por CuratorAppointment ativo); tab + filtros + página ficam na URL.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF14.CA03",
-        "text": "Dado o período selecionado (padrão: exercício corrente), então as métricas públicas (RF28.CA04) são agregadas: projetos publicados, modelos oficiais/chancelas APROVADAS, decisões VALIDADAS, tempo médio até decisão, pessoas; vêm de MetricSnapshot (DEPARTAMENTO) com cache Redis metrics:department:{id}:{period} TTL 300 s; nunca expõem HSE, Hype ou DECIA Points nominais (RF45.CA10) — só histograma anonimizado quando o viewer é chefe.",
-        "note": "",
+        "text": "Dado o período selecionado (padrão: exercício corrente), então as métricas públicas (RF28.CA04) são agregadas: projetos publicados, modelos oficiais/chancelas APROVADAS, decisões VALIDADAS, tempo médio até decisão, pessoas; vêm de MetricSnapshot (DEPARTAMENTO) com cache Redis metrics:department:{id}:{period} TTL 300 s; nunca expõem HSE, Hype ou DECIA Points nominais (RF45.CA10) — só histograma anonimizado quando o viewer é o chefe.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF14.CA04",
-        "text": "Dado o viewer autenticado, quando aciona Seguir, então é criado Follow {followerId, targetType DEPARTMENT, targetId, status ATIVO} (único; repetir é idempotente → 200 com o mesmo registro); Deixar de seguir → status REMOVIDO; os eventos do departamento (projeto publicado, decisão validada, reconhecimento) entram na sub-aba Seguindo do Mural (RF27) e em TimelineEvent do seguidor; visitante anônimo → 401 com convite a entrar.",
-        "note": "",
+        "text": "Dado o viewer autenticado, quando aciona Seguir, então é criado Follow {followerId, targetType DEPARTMENT, targetId, status ATIVO} (único; repetir é idempotente → 200 com o mesmo registro); Deixar de seguir → status REMOVIDO; os eventos do departamento (projeto publicado, decisão validada, reconhecimento) entram na sub-aba Seguindo do Mural (RF27) e em TimelineEvent do seguidor; visitante anônimo → 401 NAO_AUTENTICADO com convite a entrar.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF14.CA05",
-        "text": "Dado o viewer, então as ações disponíveis a partir da página dependem do papel: membro do departamento → \"Pedir chancela\", \"Indicar colega\", \"Propor chancela\" (RF39.CA06), \"Mensagem ao chefe\" (RF46); mesma empresa → \"Levar ao meu acervo\" nos modelos oficiais (RF41.CA08), \"Mensagem\"; chefe (headUserId) e EMPRESA dona → \"Gerir\" (Minha equipe RF9/RF10, Dashboard do emissor RF28.CA06, Insights da Equipe RF43.CA14); link \"Ver perfil pessoal\" abre /u/[username] do chefe (sub-abas 1–5 e Hype conforme hypeVisibility, RF16/RF19).",
-        "note": "",
+        "text": "Dado o viewer, então as ações da página dependem do papel: membro do departamento → \"Pedir chancela\", \"Indicar colega\", \"Propor chancela\" (RF39.CA06), \"Mensagem ao chefe\" (RF46); mesma empresa → \"Levar ao meu acervo\" nos modelos oficiais (RF41.CA08), \"Mensagem\"; chefe (headUserId) e EMPRESA dona → \"Gerir\" (Minha equipe RF9/RF10, Dashboard do emissor RF28.CA06, Insights da Equipe RF43.CA14); link \"Ver perfil pessoal\" abre /u/[username] do chefe (RF16).",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF14.CA06",
-        "text": "Dado o viewer, então a visibilidade por item segue AccessPolicy.visibilityFilter: anônimo/outra empresa → só PUBLICA; mesma empresa → + EMPRESA; membro → + DEPARTAMENTO; sub-abas de gestão → 403 ACESSO_NEGADO no serviço para quem não é headUserId nem Company.ownerUserId (curador com escopo FILA_REVISAO/PREMIACAO vê só a fila/premiação); dados pessoais (email, phone) nunca saem na API da equipe; página em pt-BR/en/es e responsiva (RF19.CA07).",
-        "note": "",
+        "text": "Dado o viewer, então a visibilidade por item segue AccessPolicy.visibilityFilter: anônimo/outra empresa → só PUBLICA; mesma empresa → + EMPRESA; membro → + DEPARTAMENTO; sub-abas de gestão → 403 ACESSO_NEGADO no serviço para quem não é headUserId nem Company.ownerUserId (curador com escopo FILA_REVISAO/PREMIACAO vê só a fila/premiação); dados pessoais (email, phone) nunca saem na API da equipe; página em pt-BR/en/es e responsiva.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       }
     ]
@@ -1053,44 +1053,44 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 15,
     "title": "Visualizar perfil de um empresa ou órgão público/privado",
     "hu": "COMO usuário dentro do sistema Work Station POSSO procurar o perfil de uma empresa ou órgão público/privado PARA obter informação relevante ou realizar alguma funcionalidade.",
-    "summary": "A empresa/órgão é a conta de perfil EMPRESA (User.profileType = EMPRESA) dona de uma Company (ownerUserId; ex.: Secretaria das Cidades). A página institucional mostra cabeçalho (logo, brasão, nome, sobre, site, cor de destaque, contadores institucionais — sem cargo, departamento ou Hype, RF19.CA06/P-04), métricas públicas do período (RF28.CA04) e sub-abas públicas: Sobre · Departamentos (→ RF14) · Programas (RF25) · Plano Anual oficial (RF24) · Chancelas e modelos oficiais (RF39) · Benefícios (RF39.CA09) · Destaques (RF35.CA03) · Pessoas · Comunicados (proposta §7.a); e a aba Gestão só para a dona (negada no serviço). Este RF é de leitura, com duas escritas: Seguir (Follow COMPANY) e, pela dona/chefes, Comunicados — entidade Announcement (proposta). Órgãos externos (fornecedores, órgãos sem conta) são OrgEntity e não têm página; só ficha (dúvida §6).",
-    "route": "página da empresa /companies/[slug] (Matriz C de docs/produto/ABAS_POR_PERFIL.md §4), alcançada pela lista /companies, pela aba Buscar (RF27), pelo cabeçalho de qualquer perfil/departamento ou pela barra inferior (5º destino para EMPRESA e visitante); API GET /api/companies/{slug} + GET /api/companies/{id}/tabs/{tab}",
-    "coverage": "RF15.CA01 · RF15.CA02 · RF15.CA03 · RF15.CA04 · RF15.CA05 · RF15.CA06 — corpo do card vazio: CAs derivados do título + HU15 + RF28.CA01/CA04/CA06/CA08 (docs/diagramas/RF28/README.md) + RF24.CA04 + RF39.CA09/CA11 + RF27.CA06 + Matriz C e §7.a (Comunicados), marcados (CA a confirmar)",
+    "summary": "A página da empresa (Company, TAXONOMIA §1.4; ownerUserId = conta EMPRESA aprovada, RF28.CA01) agrega departamentos (RF14), programas (RF25), plano anual oficial (RF24), chancelas e modelos oficiais (RF39/RF40), benefícios (RF39.CA09), destaques (RF35), pessoas e Comunicados (proposta §7.a). A aba Gestão só existe para Company.ownerUserId e é negada no serviço.",
+    "route": "página da empresa /companies/[slug] (Matriz C de ABAS_POR_PERFIL §4), alcançada pela lista /companies, pela aba Buscar (RF17), pelo cabeçalho de qualquer perfil/departamento ou pela barra inferior (5º destino para EMPRESA e visitante); API GET /api/companies, GET /api/companies/{slug}, GET /api/companies/{id}/tabs/{tab}, GET /api/companies/{id}/metrics?period=&dept=, POST|DELETE /api/follows, POST /api/companies/{id}/announcements (proposta)",
+    "coverage": "RF15.CA01 · RF15.CA02 · RF15.CA03 · RF15.CA04 · RF15.CA05 · RF15.CA06 — corpo do card vazio: CAs derivados do título + HU15 + RF28.CA01/CA04/CA06/CA08 (docs/diagramas/RF28/README.md) + RF24.CA04 + RF39.CA09/CA11 + RF27.CA06 + Matriz C e §7.a (Comunicados), marcados (CA a confirmar). Todas as classes do RF são (planejado); reais: User.profileType EMPRESA, AccountStatus.PENDING_VALIDATION, Guard, SecurityConfig.",
     "cas": [
       {
         "id": "RF15.CA01",
-        "text": "Dado qualquer usuário (inclusive visitante), quando busca uma empresa/órgão (aba Buscar por legalName/sigla, lista /companies, link em perfil ou departamento) e abre /companies/[slug], então vê o cabeçalho: Company.logoUrl, coatOfArmsUrl, legalName, about, websiteUrl, accentColor aplicado como cor de destaque, e contadores institucionais (departamentos ativos, pessoas, projetos publicados, modelos oficiais, decisões validadas, seguidores) — sem cargo, departamento, Hype, Tarefa do Dia ou DP; slug inexistente, Company.status inativo ou dona ainda em PENDING_VALIDATION (RF28.CA01) → 404 EMPRESA_NAO_ENCONTRADA.",
-        "note": "",
+        "text": "Dado qualquer usuário (inclusive visitante), quando busca uma empresa/órgão (Buscar por legalName/sigla, lista /companies, link em perfil ou departamento) e abre /companies/[slug], então vê o cabeçalho: Company.logoUrl, coatOfArmsUrl, legalName, about, websiteUrl, accentColor como cor de destaque, e contadores institucionais (departamentos ativos, pessoas, projetos publicados, modelos oficiais, decisões validadas, seguidores) — sem cargo, departamento, Hype, Tarefa do Dia ou DP; slug inexistente, Company.status inativo ou dona ainda PENDING_VALIDATION → 404 EMPRESA_NAO_ENCONTRADA.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF15.CA02",
-        "text": "Dado o cabeçalho, então as sub-abas públicas são: Sobre · Departamentos (Department ativos com monograma, cor e chefe → /departments/[slug], RF14) · Programas (Grouping tipo PROGRAMA, RF25) · Plano Anual oficial (AnnualPlan scope EMPRESA PUBLICADO com 6 PlanAxis; botão Derivar para mesma empresa, RF24.CA04) · Chancelas e modelos oficiais (Seal ATIVA da empresa + ModelOffer shelf CHANCELADO, RF39.CA11) · Benefícios (Benefit DISPONIVEL, RF39.CA09) · Destaques (Highlight do mês, RF35.CA03) · Pessoas (nomes/cargos públicos por departamento) · Comunicados (proposta); tab + filtros + página na URL (RF19.CA03).",
-        "note": "",
+        "text": "Dado o cabeçalho, então as sub-abas públicas são: Sobre · Departamentos (Department ativos → RF14) · Programas (Grouping PROGRAMA, RF25) · Plano Anual oficial (AnnualPlan scope EMPRESA PUBLICADO com 6 PlanAxis; botão Derivar, RF24.CA04) · Chancelas e modelos oficiais (Seal ATIVA + ModelOffer shelf CHANCELADO, RF39.CA11) · Benefícios (Benefit DISPONIVEL, RF39.CA09) · Destaques (Highlight do mês, RF35.CA03) · Pessoas (nomes/cargos públicos por departamento) · Comunicados (proposta); tab + filtros + página na URL.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF15.CA03",
-        "text": "Dado a sub-aba Comunicados (proposta §7.a), então EMPRESA dona e CHEFES da empresa publicam Announcement {companyId, departmentId?, authorId, title, bodyMd, attachmentsJson, visibility EMPRESA/PUBLICO, pinned, commentsEnabled, publishedAt, archivedAt}; comunicado de chefe sai com o monograma do departamento; colegas da mesma empresa reagem (Reaction) e comentam (Comment, TargetType.COMUNICADO proposto) quando commentsEnabled; fixados ficam no topo; cada publicação entra no Mural (RF27) como MuralEntry.kind = COMUNICADO (proposto) com etiqueta \"Oficial\"; visitante/outra empresa vê só PUBLICO; EMPREGADO/CURADOR que tenta publicar → 403 ACESSO_NEGADO; título vazio → 422 VALIDACAO.",
-        "note": "",
+        "text": "Dado a sub-aba Comunicados (proposta), então EMPRESA dona e CHEFES da empresa publicam Announcement {companyId, departmentId?, authorId, title, bodyMd, attachmentsJson, visibility EMPRESA/PUBLICO, pinned, commentsEnabled, publishedAt, archivedAt}; comunicado de chefe sai com o monograma do departamento; colegas reagem (Reaction) e comentam (Comment, TargetType ANNOUNCEMENT proposto) quando commentsEnabled; fixados ficam no topo; cada publicação entra no Mural como MuralEntry.kind COMUNICADO (proposto) com etiqueta \"Oficial\"; visitante/outra empresa vê só PUBLICO; EMPREGADO/CURADOR que tenta publicar → 403 ACESSO_NEGADO; título vazio → 422 VALIDACAO.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF15.CA04",
-        "text": "Dado o período selecionado (padrão: exercício corrente) e o filtro opcional por departamento, então as métricas públicas (RF28.CA04) — projetos publicados, modelos oficiais, decisões validadas, chancelas emitidas, benefícios resgatados — vêm de MetricSnapshot (scope EMPRESA) com cache Redis metrics:company:{id}:{period} TTL 300 s; nunca dados nominais de desempenho (RF45.CA10).",
-        "note": "",
+        "text": "Dado o período (padrão: exercício corrente) e o filtro opcional por departamento, então as métricas públicas (RF28.CA04) — projetos publicados, modelos oficiais, decisões validadas, chancelas emitidas, benefícios resgatados — vêm de MetricSnapshot (scope EMPRESA) com cache Redis metrics:company:{id}:{period} TTL 300 s; nunca dados nominais de desempenho (RF45.CA10).",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF15.CA05",
-        "text": "Dado o viewer autenticado, então as ações a partir da página são: Seguir (Follow targetType COMPANY, único e idempotente; eventos no Seguindo do Mural, RF27.CA06), Derivar o plano oficial (mesma empresa; plano não PUBLICADO → 422 DERIVACAO_INVALIDA, RF24.CA04), Resgatar benefício (exige SealBond APROVADA → senão 409 CHANCELA_INVALIDA, RF39.CA10), Levar ao meu acervo um modelo oficial (RF41.CA08), Propor chancela (EMPREGADO da empresa, RF39.CA06), Mensagem (RF46), abrir departamento (RF14); visitante anônimo → 401 nas ações.",
-        "note": "",
+        "text": "Dado o viewer autenticado, então as ações são: Seguir (Follow COMPANY, único e idempotente; eventos no Seguindo do Mural, RF27.CA06), Derivar o plano oficial (mesma empresa; plano não PUBLICADO → 422 DERIVACAO_INVALIDA, RF24.CA04), Resgatar benefício (exige SealBond APROVADA → senão 409 CHANCELA_INVALIDA, RF39.CA10), Levar ao meu acervo um modelo oficial (RF41.CA08), Propor chancela (EMPREGADO da empresa, RF39.CA06), Mensagem (RF46), abrir departamento (RF14); visitante anônimo → 401 NAO_AUTENTICADO nas ações.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF15.CA06",
         "text": "Dado o viewer, então a aba Gestão (Departamentos & chefes, Pessoas & lotações, Chancelas & políticas, Benefícios, Plano oficial, Programas, Políticas, Dashboard do emissor, Insights da empresa, Dossiês, Comunicados) só aparece para Company.ownerUserId e é negada no serviço (403 ACESSO_NEGADO) para qualquer outro, inclusive CHEFE e ADMIN em escrita; visibilidade por item segue AccessPolicy.visibilityFilter (anônimo/outra empresa → PUBLICA; mesma empresa → + EMPRESA); cnpj (AES) só para a dona e ADMIN; página em pt-BR/en/es e responsiva.",
-        "note": "",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       }
     ]
@@ -1099,38 +1099,38 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "id": "RF16",
     "n": 16,
     "title": "Visualizar perfil de um usuário comum que é empregado dentro de uma empresa",
-    "hu": "COMO usuário dentro do sistema Work Station POSSO visualizar o perfil de um usuário que trabalha dentro de uma organização PARA realizar alguma funcionalidade.",
-    "summary": "O RF16 é a visão de terceiros do perfil pessoal (RF19 anterior / RF26 atual): quem abre /u/[username] de um EMPREGADO vê o cabeçalho público (avatar, nome, cargo, empresa, departamento, contadores) e apenas as sub-abas 1–5 (Acervo de Tarefas · Meus Projetos · Programas & Agrupamentos · Decisões · Perfil deliberativo resumo); as sub-abas 6–15 são omitidas na lista e respondem 403 ACESSO_NEGADO em chamada direta. Cada item listado passa pelo filtro de visibilidade (PUBLICA sempre · EMPRESA se mesma empresa · DEPARTAMENTO se membro do departamento · PRIVADA nunca). O Hype Score aparece no cabeçalho só conforme User.hypeVisibility (RF45.CA06). O RF16 é somente leitura; a única escrita é o botão Seguir (Follow, RF27.CA06) e as ações sociais inline dos cards (RF18/RF19), que pertencem aos seus RFs. Se o username for de uma conta EMPRESA ou CHEFE, o cabeçalho oferece o atalho para a página institucional (RF15 / RF14).",
-    "route": "perfil de terceiros em /u/[username] (API GET /api/users/{username} e GET /api/users/{username}/tabs/{tab})",
-    "coverage": "RF16.CA01 … RF16.CA06 — corpo do card vazio: CAs derivados do título + HU16 + _anterior/RF19 CA02 (perfil de terceiros) e docs/produto/ABAS_POR_PERFIL.md Matriz B (colunas \"terceiros\"); todos marcados \"(CA a confirmar)\"",
+    "hu": "COMO usuário dentro do sistema Work Station POSSO visualizar o perfil de um usuário que trabalha dentro uma organização PARA realizar alguma funcionalidade.",
+    "summary": "O perfil de terceiros é o mesmo /u/[username] do RF6, mas com viewer != owner: só as sub-abas 1–5 (Acervo Digital, Projetos, Planos, Decisões, Perfil deliberativo público), itens filtrados por AccessPolicy.visibilityFilter, Hype conforme User.hypeVisibility e ações sociais inline (RF18/RF19) + \"Levar ao meu acervo\" (RF7). Contas institucionais (EMPRESA/CHEFE) recebem a etiqueta e o atalho para a página da empresa (RF15) ou do departamento (RF14).",
+    "route": "perfil de terceiros /u/[username] (Matriz B de ABAS_POR_PERFIL §3, colunas \"terceiros\"); API GET /api/users/{username} (real como GET /api/users/{id} → UserView), GET /api/users/{username}/tabs, GET /api/users/{username}/tabs/{tab}, POST|DELETE /api/follows",
+    "coverage": "RF16.CA01 … RF16.CA06 — corpo do card vazio: CAs derivados do título + HU16 + _anterior/RF19 CA02 (perfil de terceiros) e Matriz B (colunas \"terceiros\"); todos marcados \"(CA a confirmar)\". Real (Bloco 3): MeController.profile (GET /api/users/{id}, Guard.ownerOrAdmin para campos privados), AccountService.profile, UserView, User.hypeVisibility; o resto (planejado).",
     "cas": [
       {
         "id": "RF16.CA01",
-        "text": "Dado um usuário autenticado, quando abre /u/{username} de um EMPREGADO, então vê o cabeçalho público: avatar, nome, cargo (jobTitle), empresa, departamento (sigla, cor, monograma), contadores (tarefas, projetos, decisões, seguidores) e o botão Seguir; username inexistente → 404 USUARIO_NAO_ENCONTRADO; conta SUSPENDED/DELETION_SCHEDULED → 404 (não enumera contas).",
+        "text": "Dado um usuário autenticado, quando abre /u/{username} de um EMPREGADO, então vê o cabeçalho público: avatar, nome, cargo (jobTitle), empresa, departamento (sigla, cor, monograma), contadores (tarefas, projetos, decisões, seguidores) e o botão Seguir; username inexistente → 404 USUARIO_NAO_ENCONTRADO; conta SUSPENDED/DELETION_SCHEDULED/ANONYMIZED → 404 (não enumera contas); email/phone nunca saem (UserView público).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF16.CA02",
-        "text": "Dado o perfil de terceiro, quando a API devolve a lista de sub-abas, então só vêm as sub-abas 1–5; as 6–15 são omitidas e uma chamada direta a /tabs/{6..15} responde 403 ACESSO_NEGADO (sem bypass para ADMIN nas sub-abas 9, 13, 14, 15).",
+        "text": "Dado o perfil de terceiro, quando a API devolve a lista de sub-abas, então só vêm as sub-abas 1–5 (Acervo Digital · Projetos · Planos · Decisões · Perfil deliberativo público); as 6–15 (salvos, pontos, Tarefa do Dia, HSE, configurações…) são omitidas e uma chamada direta a /tabs/{6..15} responde 403 ACESSO_NEGADO (sem bypass para ADMIN nas sub-abas 9, 13, 14, 15 — dados de desempenho nominal, RF45.CA10).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF16.CA03",
-        "text": "Dado uma sub-aba 1–4, quando listo os itens, então cada TaskItem, ProjectScheme, Grouping e FinalDecision passa pelo visibilityFilter: PUBLICA sempre; EMPRESA se viewer.companyId == owner.companyId; DEPARTAMENTO se o viewer tem DepartmentMembership vigente no departamento do item; PRIVADA nunca. Contadores do cabeçalho contam só o que o viewer pode ver.",
+        "text": "Dado uma sub-aba 1–4, quando listo os itens, então cada TaskItem, ProjectScheme, AnnualPlan/Grouping e FinalDecision passa pelo visibilityFilter: PUBLICA sempre; EMPRESA se viewer.companyId == owner.companyId; DEPARTAMENTO se o viewer tem DepartmentMembership vigente no departamento do item; PRIVADA nunca; RASCUNHO nunca. Contadores do cabeçalho contam só o que o viewer pode ver.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF16.CA04",
-        "text": "Dado o cabeçalho, quando owner.hypeVisibility é PUBLICO então o Hype Score aparece para todos; EMPRESA só para a mesma empresa; SO_EU nunca — a API não devolve o campo (nem para CHEFE nem para ADMIN). A sub-aba 5 mostra só DeliberativeProfile.publicIndicatorsJson e badgesJson escolhidos pelo dono.",
+        "text": "Dado o cabeçalho, quando owner.hypeVisibility é PUBLICO então o Hype Score (ProfileHypeScore) aparece para todos; EMPRESA só para a mesma empresa; SO_EU nunca — a API não devolve o campo (nem para CHEFE nem para ADMIN). A sub-aba 5 mostra só DeliberativeProfile.publicIndicatorsJson e badgesJson escolhidos pelo dono.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF16.CA05",
-        "text": "Dado uma sub-aba aberta, quando aplico filtros e paginação (?tab=&fase=&categoria=&page=&size=20), então a URL reflete o estado e cada card traz as ações inline do RF18/RF19 (curtir, comentar, salvar, compartilhar, remixar) e, no Acervo, \"Levar ao meu acervo\" (RF7/RF41.CA08) — todas respeitando a visibilidade do item.",
+        "text": "Dado uma sub-aba aberta, quando aplico filtros e paginação (?tab=&fase=&categoria=&page=&size=20), então a URL reflete o estado e cada card traz as ações inline do RF18/RF19 (curtir, comentar, salvar, compartilhar, remixar, atribuir) e, no Acervo, \"Levar ao meu acervo\" (RF7/RF41.CA08) — todas respeitando a visibilidade do item.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -1147,25 +1147,25 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 17,
     "title": "Visualizar esquemas de tarefa & projetos criados por outros usuários na rede social do Work Station, através da aba \"Buscar\"",
     "hu": "COMO usuário autenticado no sistema POSSO visualizar esquemas de tarefa ou projeto criados por outros usuários, chefes ou empresas na aba \"Buscar/Explorar\" PARA me inspirar em outras combinações e ampliar minhas referências de projetos.",
-    "summary": "A aba Buscar é a porta de descoberta de esquemas de terceiros: busca textual (título, descrição, tags, texto OCR dos anexos via TaskAttachment.ocrTextRef) nos índices OpenSearch ws-tasks, ws-projects, ws-people, ws-orgs, devolvendo 5 abas com contadores. Todo resultado passa pelo visibilityFilter do viewer (outra empresa só vê PUBLICA; accessClass SIGILOSO nunca é indexado para terceiros). Ao abrir um resultado o usuário vê o esquema completo em modo leitura (anatomia do card e ficha — docs/design-system/ANATOMIAS_E_ESTUDIO.md §2/§3) com crédito do autor, as ações sociais inline (RF18/RF19), \"Levar ao meu acervo\" (RF7/RF41.CA08) e, para projetos, \"projetos parecidos com este\" (kNN em ws-memory, RF33). A indexação é assíncrona: publicar ou mudar visibilidade emite evento AFTER_COMMIT → PipelineJob INDEXAR_BUSCA (proposta de novo tipo, hoje só existe INDEXAR_MEMORIA).",
-    "route": "Buscar (/search, abas PROJETOS · TAREFAS · PESSOAS · EMPRESAS · CHEFES DE DEPARTAMENTO) e páginas de leitura de esquema de terceiros (/tasks/[id], /projects/[id])",
-    "coverage": "RF17.CA01 … RF17.CA06 — corpo do card vazio: CAs derivados do título + HU17 + RF27 (CA03 busca, CA04 visibilidade, CA05 semântica); todos marcados \"(CA a confirmar)\". O Mural (RF27.CA01/CA02/CA06) continua no RF27.",
+    "summary": "A busca lê os índices OpenSearch ws-tasks, ws-projects, ws-people e ws-orgs (ARQUITETURA §3.2) com o mesmo AccessPolicy.visibilityFilter dos perfis (RF16), devolve 5 abas com contadores e abre o esquema de terceiro em modo leitura com crédito do autor. \"Projetos parecidos\" usa AiEngine capability MEMORIA_BUSCA (embedding) e kNN em ws-memory (RF33), com fallback textual. A indexação é assíncrona (PipelineJob INDEXAR_BUSCA, proposta) a partir dos eventos de publicação/alteração/arquivamento.",
+    "route": "Buscar (/search, abas PROJETOS · TAREFAS · PESSOAS · EMPRESAS · CHEFES DE DEPARTAMENTO) e páginas de leitura de esquema de terceiros (/tasks/[id], /projects/[id]); API GET /api/search?q=&tab=&filters…&page=, GET /api/search/suggestions, GET /api/projects/{id}/similar, GET /api/tasks/{id}, GET /api/projects/{id}",
+    "coverage": "RF17.CA01 … RF17.CA06 — corpo do card vazio: CAs derivados do título + HU17 + RF27 (CA03 busca, CA04 visibilidade, CA05 semântica); todos marcados \"(CA a confirmar)\". O Mural (RF27.CA01/CA02/CA06) continua no RF27. Todas as classes do RF são (planejado); reais: OpenSearchAdaptersConfig (flag opensearch.enabled), AiProvidersConfig, Guard, SecurityConfig.",
     "cas": [
       {
         "id": "RF17.CA01",
-        "text": "Dado um usuário autenticado em /search, quando digita um termo, então o sistema busca em título, descrição, tags e texto OCR (OpenSearch ws-tasks, ws-projects, ws-people, ws-orgs) e devolve 5 abas com contadores (PROJETOS · TAREFAS · PESSOAS · EMPRESAS · CHEFES DE DEPARTAMENTO) em ≤ 1 s p95; termo vazio mostra sugestões (recentes, em alta, chancelados).",
+        "text": "Dado um usuário autenticado em /search, quando digita um termo, então o sistema busca em título, descrição, tags e texto OCR (OpenSearch ws-tasks, ws-projects, ws-people, ws-orgs) e devolve 5 abas com contadores (PROJETOS · TAREFAS · PESSOAS · EMPRESAS · CHEFES DE DEPARTAMENTO) em ≤ 1 s p95; termo vazio mostra sugestões (recentes, em alta, chancelados) via GET /api/search/suggestions.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF17.CA02",
-        "text": "Dado uma aba, quando aplico filtros (categoria, tipo, fase, departamento, exercício, chancelado, prazo) e pagino (20 por página), então a URL reflete q, tab, filtros e page; a tela mostra skeleton ao carregar, estado vazio ilustrado e botão \"tentar de novo\" em erro (503 INDISPONIVEL).",
+        "text": "Dado uma aba, quando aplico filtros (categoria, tipo, fase, departamento, exercício, chancelado, prazo) e pagino (20 por página), então a URL reflete q, tab, filtros e page; a tela mostra Skeleton ao carregar, EmptyState ilustrado e ErrorState com \"tentar de novo\" em erro (503 BUSCA_INDISPONIVEL quando o OpenSearch está fora ou a flag está desligada).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF17.CA03",
-        "text": "Dado os resultados, quando são devolvidos, então só contêm itens que o viewer pode ver: PUBLICA sempre; EMPRESA se mesma empresa; DEPARTAMENTO se membro; PRIVADA só os meus; RASCUNHO nunca aparece para terceiros; accessClass SIGILOSO nunca é indexado e RESTRITO só para o departamento dono. Resultados de outra empresa só se PUBLICA.",
+        "text": "Dado os resultados, quando são devolvidos, então só contêm itens que o viewer pode ver (AccessPolicy.visibilityFilter aplicado como filtro da query): PUBLICA sempre; EMPRESA se mesma empresa; DEPARTAMENTO se membro; PRIVADA só os meus; RASCUNHO nunca aparece para terceiros; accessClass SIGILOSO nunca é indexado e RESTRITO só para o departamento dono. Resultados de outra empresa só se PUBLICA.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -1177,13 +1177,13 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF17.CA05",
-        "text": "Dado um projeto aberto, quando clico em \"projetos parecidos com este\", então o sistema gera o embedding (AiEngine MEMORIA_BUSCA) e faz kNN em ws-memory com o mesmo visibilityFilter, devolvendo até 10 projetos com score e motivo (\"mesmo processo, 4 tarefas em comum\"); sem IA disponível cai para \"mais do mesmo processo/departamento\" (busca textual).",
+        "text": "Dado um projeto aberto, quando clico em \"projetos parecidos com este\", então o sistema gera o embedding (AiEngine MEMORIA_BUSCA) e faz kNN em ws-memory com o mesmo visibilityFilter, devolvendo até 10 projetos com score e motivo (\"mesmo processo, 4 tarefas em comum\"); sem IA disponível cai para \"mais do mesmo processo/departamento\" (busca textual); AiInferenceLog registra a inferência.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF17.CA06",
-        "text": "Dado que um autor publica, altera a visibilidade ou arquiva uma tarefa/projeto, quando a transação é confirmada, então o evento AFTER_COMMIT agenda PipelineJob INDEXAR_BUSCA e o índice reflete a mudança em ≤ 60 s; falha deixa o job REPROCESSAR sem afetar a operação do autor.",
+        "text": "Dado que um autor publica, altera a visibilidade ou arquiva uma tarefa/projeto, quando a transação é confirmada, então o evento AFTER_COMMIT agenda PipelineJob INDEXAR_BUSCA (tipo proposto) e o índice reflete a mudança em ≤ 60 s; falha deixa o job REPROCESSAR sem afetar a operação do autor.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
@@ -1194,43 +1194,43 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 18,
     "title": "Interagir socialmente com tarefas e projetos: curtir, comentar, salvar, compartilhar, remixar, retornar e atribuir",
     "hu": "COMO usuário visualizando um esquema de tarefa ou projeto POSSO utilizar as funcionalidades de rede social do sistema PARA interagir com usuários conectados ou membros de minha equipe, a fim de aumentar minha produtividade e gerar networking.",
-    "summary": "O RF18 é a barra de interações de todo card de tarefa (TaskItem) e projeto (ProjectScheme). As seis interações sociais clássicas (curtir/reagir, comentar, salvar, compartilhar, remixar) são as do antigo RF26, detalhadas no card RF19 (RF26.CA01–09) e não repetidas aqui. Este README modela as duas interações novas, que mudam o fluxo de trabalho e não só a reputação, usando a entidade única Assignment (TAXONOMIA §12b, proposta; mesma entidade de RF10 \"chefe atribui\" e RF46 \"atribuir pelo chat\"):",
-    "route": "ações inline em todo card de tarefa/projeto (Acervo, Projetos, Mural, Buscar, perfil de terceiros, Mesa)",
-    "coverage": "RF18.CA01 … RF18.CA06 — corpo do card vazio: CA01–CA02 remetem aos RF26.CA01–09 citados no card RF19; CA03–CA06 modelam as duas interações novas (\"atribuir\" = RF10/RF46.CA03–CA05 pelo botão do esquema; \"retornar\" = Assignment → DEVOLVIDA com motivo); todos marcados \"(CA a confirmar)\"",
+    "summary": "A barra de interações do card tem sete ações. As cinco sociais (Reaction, Comment, SavedItem, Share, Remix, TAXONOMIA §8) são detalhadas no RF19 (que carrega os RF26.CA01–09 no corpo); aqui elas entram como remissão (CA01–CA02). As duas novas — atribuir e retornar — usam a mesma entidade Assignment do RF10 (chefe) e do RF46 (chat), com origin BOTAO_ESQUEMA e sem exigir papel de chefe: qualquer usuário que vê o item pode atribuí-lo a um colega da mesma empresa.",
+    "route": "ações inline em todo card de tarefa/projeto (Acervo RF6, Projetos, Mural RF27, Buscar RF17, perfil de terceiros RF16, Mesa RF21/RF22); API /api/interactions/{type}/{id}/reactions|comments|saves|shares|remixes|counters (RF19) + POST /api/assignments (origem BOTAO_ESQUEMA), POST /api/assignments/{id}/accept|refuse|give-back (TAXONOMIA §12b, compartilhada com RF10 e RF46)",
+    "coverage": "RF18.CA01 … RF18.CA06 — corpo do card vazio: CA01–CA02 remetem aos RF26.CA01–09 citados no card RF19; CA03–CA06 modelam as duas interações novas do título (\"atribuir\" = Assignment PROPOSTA pelo botão do esquema, \"retornar\" = Assignment → DEVOLVIDA com motivo); todos marcados \"(CA a confirmar)\". Todas as classes do RF são (planejado); reais: Guard, AuditLogPort, SecurityConfig, RedisAdaptersConfig, CassandraAdaptersConfig.",
     "cas": [
       {
         "id": "RF18.CA01",
-        "text": "Dado um card de tarefa ou projeto visível para mim, quando abro a barra de interações, então posso curtir/reagir, comentar, salvar, compartilhar e remixar exatamente como nos RF26.CA01–CA07 (citados no card RF19), com contadores em tempo quase real.",
+        "text": "Dado um card de tarefa ou projeto visível para mim, quando abro a barra de interações (Counters), então posso curtir/reagir, comentar, salvar, compartilhar e remixar exatamente como nos RF26.CA01–CA07 (card RF19), com contadores em tempo quase real (Redis → MySQL em lote).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF18.CA02",
-        "text": "Dado qualquer interação, quando é enviada, então respeita a visibilidade do alvo (RF26.CA08: PRIVADA só dono, DEPARTAMENTO só membros, EMPRESA só mesma empresa → 403 ACESSO_NEGADO) e gera notificação agrupada por hora ao dono (RF26.CA09).",
+        "text": "Dado qualquer interação, quando é enviada, então respeita a visibilidade do alvo (RF26.CA08: PRIVADA só dono, DEPARTAMENTO só membros, EMPRESA só mesma empresa → 403 ACESSO_NEGADO, AccessPolicy.canInteract) e gera notificação agrupada por hora ao dono (RF26.CA09, Notification.groupKey).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF18.CA03",
-        "text": "Dado um usuário que vê a tarefa/projeto, quando clica Atribuir, escolhe um colega da mesma empresa, prazo e nota, então nasce Assignment PROPOSTA (origin BOTAO_ESQUEMA, previousResponsibleId = responsável atual), com AuditLog ASSIGNMENT_CREATED e Notification ATRIBUICAO_PROPOSTA ao destinatário; se o ator é CHEFE e o destinatário membro do seu departamento a origem é MINHA_EQUIPE (RF10); colega de outra empresa → 403 EMPRESA_DIFERENTE; alvo que o ator não pode ver → 403 ACESSO_NEGADO; tarefa ARQUIVADA/CONCLUIDA ou projeto CONCLUIDO/ARQUIVADO → 409 ESTADO_INVALIDO; já existe PROPOSTA/ACEITA para o mesmo alvo e destinatário → 409 ATRIBUICAO_DUPLICADA.",
+        "text": "Dado um usuário que vê a tarefa/projeto, quando clica Atribuir, escolhe um colega da mesma empresa, prazo e nota, então nasce Assignment PROPOSTA (origin BOTAO_ESQUEMA, previousResponsibleId = responsável atual) com AuditLog ASSIGNMENT_CREATED e Notification ATRIBUICAO_PROPOSTA; se o ator é CHEFE e o destinatário membro do seu departamento a origem é MINHA_EQUIPE (RF10); colega de outra empresa → 403 EMPRESA_DIFERENTE; alvo que o ator não pode ver → 403 ACESSO_NEGADO; tarefa ARQUIVADA/CONCLUIDA ou projeto CONCLUIDO/ARQUIVADO → 409 ESTADO_INVALIDO; já existe PROPOSTA/ACEITA para o mesmo alvo e destinatário → 409 ATRIBUICAO_DUPLICADA.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF18.CA04",
-        "text": "Dado uma Assignment PROPOSTA para mim, quando aceito, então ela vai a ACEITA, TaskItem.responsibleId / ProjectTask.responsibleId passam a mim, TaskStateLog registra (DISPONIVEL → EM_USO se era DISPONIVEL), a atribuição entra no índice de prioridade da minha Tarefa do Dia (RF44) e o remetente recebe ATRIBUICAO_ACEITA; quando recuso, informo motivo (reason, sem ele 422 MOTIVO_OBRIGATORIO) e ela vai a RECUSADA com ATRIBUICAO_RECUSADA; só o destinatário responde (403 ACESSO_NEGADO) e resposta repetida é 409 ATRIBUICAO_JA_RESPONDIDA.",
+        "text": "Dado uma Assignment PROPOSTA para mim, quando aceito, então ela vai a ACEITA, TaskItem.responsibleId/ProjectTask.responsibleId passam a mim, TaskStateLog registra (DISPONIVEL → EM_USO se era DISPONIVEL), a atribuição entra no índice de prioridade da minha Tarefa do Dia (RF44) e o remetente recebe ATRIBUICAO_ACEITA; quando recuso, informo motivo (reason, senão 422 MOTIVO_OBRIGATORIO) e ela vai a RECUSADA com ATRIBUICAO_RECUSADA; só o destinatário responde (403 ACESSO_NEGADO) e resposta repetida é 409 ATRIBUICAO_JA_RESPONDIDA.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF18.CA05",
-        "text": "Dado uma Assignment ACEITA minha, quando clico Retornar e informo o motivo (≥ 20 caracteres), então ela vai a DEVOLVIDA, responsibleId volta a previousResponsibleId, TaskStateLog registra com o motivo, AuditLog ASSIGNMENT_RESPONDED grava e o remetente recebe ATRIBUICAO_DEVOLVIDA; o card do remetente mostra carimbo DEVOLVIDO + motivo até ele reatribuir ou retomar; sem Assignment ACEITA para mim → 404 SEM_ATRIBUICAO; motivo curto → 422 MOTIVO_OBRIGATORIO.",
+        "text": "Dado uma Assignment ACEITA minha, quando clico Retornar e informo o motivo (≥ 20 caracteres), então ela vai a DEVOLVIDA, responsibleId volta a previousResponsibleId, TaskStateLog registra com o motivo, AuditLog ASSIGNMENT_RESPONDED grava e o remetente recebe ATRIBUICAO_DEVOLVIDA; o card do remetente mostra Stamp DEVOLVIDO + motivo até ele reatribuir ou retomar; sem Assignment ACEITA para mim → 404 SEM_ATRIBUICAO; motivo curto → 422 MOTIVO_OBRIGATORIO.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF18.CA06",
-        "text": "Dado o card, quando o abro, então vejo o histórico de atribuições e retornos (Assignment por alvo, com quem, quando, status e motivo) ao lado dos contadores sociais; o perfil do destinatário (RF16) mostra a etiqueta \"atribuída por …\" nos itens visíveis; DELEGUEI da Tarefa do Dia (RF44) cria uma nova Assignment PROPOSTA (caminho inverso) — regras completas em RF46.CA03–CA05.",
+        "text": "Dado o card, quando o abro, então vejo o histórico de atribuições e retornos (Assignment por alvo: com quem, quando, status e motivo) ao lado dos contadores sociais; o perfil do destinatário (RF16) mostra a etiqueta \"atribuída por …\" nos itens visíveis; DELEGUEI da Tarefa do Dia (RF44) cria uma nova Assignment PROPOSTA (caminho inverso) — regras completas em RF46.CA03–CA05.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
@@ -1240,10 +1240,10 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "id": "RF19",
     "n": 19,
     "title": "Curtir, comentar, salvar, compartilhar, retornar, atribuir e remixar tarefas, esquemas de projeto e planos anuais (interações sociais)",
-    "hu": "COMO usuário autenticado POSSO curtir, reagir, comentar, salvar, compartilhar e remixar tarefas, esquemas de projeto e planos anuais PARA colaborar, dar retorno de qualidade e reaproveitar o trabalho dos colegas. Ref.: RF26 (equivalente às Interações sociais RF19 do FAI).",
-    "summary": "Alvo polimórfico TargetType (TASK · PROJECT · PLAN — além de KIT, PROJECT_TASK, MESSAGE, RECOGNITION usados por outros RFs). Seis interações, cada uma com sua entidade: curtir (Reaction CURTIR, única por ator e alvo), reagir (Reaction ÚTIL · BEM_FUNDAMENTADO · INOVADOR · CONFORME), comentar (Comment com thread parentCommentId, edição, exclusão pelo autor ou pelo chefe do departamento, menções → Notification), salvar (SavedItem com marcador favorito → sub-abas Tarefas salvas / Projetos salvos), compartilhar (Share em canal MURAL → MuralEntry RF27, SESSAO_DECIA → MessageAttachment RF29, LINK_EXTERNO com externalToken, expiresAt e imagem exportada imageMediaId) e remixar (Remix + cópia com originalTaskId / originalProjectId / derivedFromPlanId e crédito visível). Contadores desnormalizados (likesCount … remixesCount) em tempo quase real via Redis; toda interação respeita a visibilidade do alvo e gera notificação agrupada por hora (Notification.groupKey) ao dono, alimentando o perfil deliberativo (reações BEM_FUNDAMENTADO e CONFORME pesam na métrica de qualidade).",
-    "route": "ações inline em todos os cards (Acervo, Projetos, Planos Anuais, Mural, Buscar, perfil)",
-    "coverage": "RF26.CA01 · RF26.CA02 · RF26.CA03 · RF26.CA04 · RF26.CA05 · RF26.CA06 · RF26.CA07 · RF26.CA08 · RF26.CA09 (citados como estão escritos no card — corpo do card = antigo RF26). As interações retornar e atribuir constam só no título, sem CA no corpo: estão modeladas no RF18 (CA03–CA06) e aqui aparecem apenas como remissão.",
+    "hu": "COMO usuário autenticado POSSO curtir, reagir, comentar, salvar, compartilhar e remixar tarefas, esquemas de projeto e planos anuais PARA colaborar, dar retorno de qualidade e reaproveitar o trabalho dos colegas.",
+    "summary": "Alvos: TargetType TASK · PROJECT · PLAN (TAXONOMIA §8). Entidades: Reaction (CURTIR + 4 reações qualitativas), Comment (thread, menções), SavedItem, Share (MURAL · SESSAO_DECIA · LINK_EXTERNO), Remix (cópia com crédito). Contadores desnormalizados nas entidades-alvo (likesCount … remixesCount) com Redis para tempo quase real; toda interação gera Notification agrupada por hora e alimenta o DeliberativeProfile (objetivo 2).",
+    "route": "ações inline em todos os cards (Acervo RF6, Projetos, Planos Anuais RF24, Mural RF27, Buscar RF17, perfil RF16)",
+    "coverage": "RF26.CA01 · RF26.CA02 · RF26.CA03 · RF26.CA04 · RF26.CA05 · RF26.CA06 · RF26.CA07 · RF26.CA08 · RF26.CA09 — citados como estão escritos no card (corpo do card = antigo RF26, ver RENUMERACAO.md). As interações retornar e atribuir constam só no título, sem CA no corpo: estão modeladas no RF18 (CA03–CA06) e aqui aparecem só como remissão. Todas as classes do RF são (planejado); reais: Guard, AuditLogPort, SecurityConfig, RedisAdaptersConfig, CassandraAdaptersConfig.",
     "cas": [
       {
         "id": "RF26.CA01",
@@ -1306,50 +1306,50 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 20,
     "title": "Utilizar o construtor de projetos do Work Station para compreender se as tarefas de meu acervo são adequadas dentro de meu ambiente empresarial",
     "hu": "COMO usuário autenticado dentro do sistema Work Station POSSO utilizar o construtor de projetos PARA compreender de maneira mais estratégica e funcional se os dados qualitativos ou quantitativos de meu acervo de trabalho constituem projetos sólidos e bem elaborados.",
-    "summary": "O construtor de projetos (RF5 ProjectComposerService) ganha um painel de adequação: antes ou durante a composição, o usuário escolhe um processo (ProcessTag: Licitação, Convênio, Obra…) e o sistema responde \"o meu acervo sustenta um projeto sólido deste processo?\" com três leituras: (1) Score do Acervo 0–100 com decomposição e lacunas por processo (RF43 §2 — InsightService.acervo, Insight scope ACERVO, MetricSnapshot); (2) Espelho de Conformidade hipotético (RF32 — ComplianceService.evaluateHypothetical sobre um projeto-rascunho montado automaticamente com as tarefas compatíveis do meu Acervo via PHASE_BY_CATEGORY, devolvendo % de conformidade, itens OBRIGATORIO_AUSENTE ⛔ e FORA_DE_ORDEM); (3) ações de 1 clique: criar a tarefa faltante (abre o Criador de tarefas, RF4 — corpo deste card), buscar modelo no Balcão (RF40) ou na Buscar (RF17), levar tarefa de colega ao meu acervo (RF7), compor o projeto com o que já existe (RF5) ou abrir sessão DECIA. Números vêm de serviços determinísticos; a IA (AiEngine INSIGHT) só redige a explicação com faísca ✦ e cai para texto-padrão sem perder nenhum número.",
-    "route": "painel Adequação do acervo dentro do Criador de Projetos (/projects/new?painel=adequacao, proposta) e sub-aba Insights › Acervo (/insights/acervo, RF43)",
-    "coverage": "o título define o RF — CAs derivados do título + HU20, numerados RF20.A01 … RF20.A06 e marcados \"(CA a confirmar)\". Corpo do card = criador de tarefas (RF20.CA01–CA15: Fonte · Detecção por IA · Dados · Mais detalhes · Arte do card) — esses CAs são citados abaixo como estão escritos e estão diagramados no RF4 (Criador de tarefas) e em _anterior/RF20; não são modelados aqui.",
+    "summary": "O \"construtor\" aqui é o painel Adequação do acervo do Criador de Projetos (RF5): mede o Score do Acervo (MetricDefinition/MetricSnapshot, RF43.CA03), monta um projeto hipotético com as tarefas compatíveis do Acervo (PhaseCompatibility, como no RF5) e o avalia contra o Espelho de Conformidade (ComplianceChecklist/ComplianceItem, RF32) sem persistir ProjectScheme nem ComplianceResult. A IA só redige a explicação (AiEngine INSIGHT); o resultado vira um Insight (scope ACERVO) com ações de 1 clique e pode abrir o compositor do RF5 pré-preenchido.",
+    "route": "painel Adequação do acervo dentro do Criador de Projetos (/projects/new?painel=adequacao, proposta) e sub-aba Insights › Acervo (/insights/acervo, RF43); API GET /api/insights/acervo/score, POST /api/insights/acervo/evaluate {processTag}, GET /api/insights?scope=ACERVO, POST /api/projects/from-hypothetical",
+    "coverage": "RF20.A01 … RF20.A06 — o título define o RF: CAs derivados do título + HU20, numerados RF20.A01…A06 e marcados \"(CA a confirmar)\". Corpo do card = criador de tarefas (RF20.CA01–CA15: Fonte · Detecção por IA · Dados · Mais detalhes · Arte do card) — esses CAs são citados abaixo como estão escritos e estão diagramados no RF4 (Criador de tarefas) e em _anterior/RF20; não são modelados aqui. Todas as classes do RF são (planejado); reais: Guard, AiProvidersConfig, RedisAdaptersConfig.",
     "cas": [
       {
         "id": "RF20.A01",
-        "text": "Dado um empregado no Criador de Projetos, quando abre o painel Adequação do acervo, então vê o Score do Acervo (0–100) com decomposição (cobertura por processo, tarefas paradas, duplicadas, \"fantasma\" sem anexo, prazos legais em risco, reutilização) e o mapa de lacunas por processo (ProcessTag × categorias esperadas), calculados por InsightService.acervo sobre MetricDefinition/MetricSnapshot (RF43.CA03); acervo com menos de 3 tarefas mostra \"o que coletar\" em vez de números.",
+        "text": "Dado um empregado no Criador de Projetos, quando abre o painel Adequação do acervo, então vê o Score do Acervo (0–100) com decomposição (cobertura por processo, tarefas paradas, duplicadas, \"fantasma\" sem anexo, prazos legais em risco, reutilização) e o mapa de lacunas por processo (ProcessTag × categorias esperadas), calculados por AcervoInsightService sobre MetricDefinition/MetricSnapshot (RF43.CA03); acervo com menos de 3 tarefas mostra \"o que coletar\" em vez de números.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF20.A02",
-        "text": "Dado um processo escolhido (ex.: LICITACAO), quando peço \"avaliar adequação\", então o sistema monta um projeto hipotético com as tarefas compatíveis do meu Acervo (AcervoService.listCompatible + PHASE_BY_CATEGORY, só DISPONIVEL/EM_USO/MODELO_PUBLICO) e roda ComplianceService.evaluateHypothetical contra o checklist ativo da empresa/departamento (RF32.CA01), devolvendo % de conformidade, itens ATENDIDO / RECOMENDADO_AUSENTE / OBRIGATORIO_AUSENTE ⛔ / FORA_DE_ORDEM e qual tarefa satisfaz cada item; nada é persistido como ProjectScheme nem ComplianceResult.",
+        "text": "Dado um processo escolhido (ex.: LICITACAO), quando peço \"avaliar adequação\", então o sistema monta um projeto hipotético com as tarefas compatíveis do meu Acervo (PhaseCompatibility.phasesFor, só DISPONIVEL/EM_USO/MODELO_PUBLICO) e roda ComplianceService.evaluateHypothetical contra o checklist ativo da empresa/departamento (RF32.CA01), devolvendo % de conformidade, itens ATENDIDO / RECOMENDADO_AUSENTE / OBRIGATORIO_AUSENTE ⛔ / FORA_DE_ORDEM e qual tarefa satisfaz cada item; nada é persistido como ProjectScheme nem ComplianceResult.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF20.A03",
-        "text": "Dado o resultado, quando a IA está disponível, então AiEngine INSIGHT redige em até 3 frases por lacuna \"por que isto falta e o que fazer\", citando métrica e valor (faísca ✦, AiInferenceLog); IA indisponível ou accessClass RESTRITO/SIGILOSO → texto-padrão do motor local, com os mesmos números.",
+        "text": "Dado o resultado, quando a IA está disponível, então AiEngine INSIGHT (hostRf RF20) redige em até 3 frases por lacuna \"por que isto falta e o que fazer\", citando métrica e valor (faísca ✦, AiInferenceLog); IA indisponível, sem cota ou accessClass RESTRITO/SIGILOSO → texto-padrão do LocalEngine, com os mesmos números.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF20.A04",
-        "text": "Dado uma lacuna OBRIGATORIO_AUSENTE, quando aciono a ação de 1 clique, então posso: criar a tarefa faltante (abre o Criador de tarefas pré-preenchido com categoria/tipo/fase esperados e checklistItemId, RF4/RF32.CA03), buscar modelo no Balcão (RF40) ou na Buscar (RF17), ou levar ao meu acervo uma tarefa compatível de colega (RF7); a ação fica em Insight.actionsJson e o painel recalcula ao voltar.",
+        "text": "Dado uma lacuna OBRIGATORIO_AUSENTE, quando aciono a ação de 1 clique, então posso: criar a tarefa faltante (abre o RF4 pré-preenchido com categoria/tipo/fase esperados e checklistItemId, RF32.CA03), buscar modelo no Balcão (RF40) ou na Buscar (RF17), ou levar ao meu acervo uma tarefa compatível de colega (RF7); a ação fica em Insight.actionsJson e o painel recalcula ao voltar.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF20.A05",
-        "text": "Dado um resultado com conformidade ≥ limiar do checklist e sem ⛔, quando clico Compor projeto com estas tarefas, então o compositor (RF5) abre com as fases pré-preenchidas pelo projeto hipotético e ProjectScheme nasce RASCUNHO com aiOrientation = processo escolhido; com ⛔ o botão fica disponível com aviso \"projeto nascerá com pendência bloqueante\" (hasBlockingPending) — aviso, não impedimento (RF32.CA04).",
+        "text": "Dado um resultado com conformidade ≥ limiar do checklist e sem ⛔, quando clico Compor projeto com estas tarefas, então o compositor (RF5) abre com as fases pré-preenchidas pelo projeto hipotético e o ProjectScheme nasce RASCUNHO com aiOrientation = processo escolhido; com ⛔ o botão fica disponível com aviso \"projeto nascerá com pendência bloqueante\" (hasBlockingPending) — aviso, não impedimento (RF32.CA04).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF20.A06",
-        "text": "Dado o painel, quando a avaliação termina, então um Insight (scope ACERVO, kind ADEQUACAO_PROCESSO, metricRefsJson, actionsJson, severity) é gravado para o usuário e aparece em Insights › Acervo (RF43) até ser dispensado (dismissedAt) ou até o próximo recálculo; avaliação de acervo de terceiro responde 403 ACESSO_NEGADO (RF43.CA04 \"só o dono\"); checklist inexistente para o processo → 404 CHECKLIST_NAO_ENCONTRADO com sugestão de propor um (RF32).",
+        "text": "Dado o painel, quando a avaliação termina, então um Insight (scope ACERVO, kind ADEQUACAO_PROCESSO, metricRefsJson, actionsJson, severity) é gravado para o usuário e aparece em Insights › Acervo (RF43) até ser dispensado (dismissedAt) ou até o próximo recálculo; avaliação de acervo de terceiro → 403 ACESSO_NEGADO (RF43.CA04 \"só o dono\"); checklist inexistente para o processo → 404 CHECKLIST_NAO_ENCONTRADO com sugestão de propor um (RF32).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF20.CA01",
-        "text": "RF4 — Criador de tarefas (docs/diagramas/RF4/README.md) e docs/diagramas/_anterior/RF20/README.md",
-        "note": "formatos e limite de upload, antivírus · CA02 detecção por IA pré-preenche · CA03 IA sem confiança → formulário vazio · CA04 obrigatórios → Acervo e projeto/fase · CA05 lote/.zip → rascunho por arquivo · CA06 Ctrl+V → TEXTO_MANUAL/PLANILHA/IMAGEM_EDITADA · CA07 vinculado Google/Microsoft sincroniza · CA08 e-mail → tarefa · CA09 protocolo → PROTOCOLO · CA10 busca web de órgão · CA11 prazo legal calculado · CA12 OCR indisponível → job · CA13 chancelas sugeridas · CA14 422 por campo · CA15 Oferecer no Balcão",
+        "text": "—",
+        "note": "… RF20.CA15 (corpo = criador de tarefas",
         "kind": "rastreabilidade"
       }
     ]
@@ -2161,43 +2161,43 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 35,
     "title": "Participar de Metas coletivas, aparecer nos Destaques e receber Reconhecimentos (gamificação ligada ao perfil deliberativo, com DECIA Points como moeda)",
     "hu": null,
-    "summary": "Contextos da TAXONOMIA: 9. Gamificação & Reputação (CollectiveGoal, GoalParticipant, Highlight, DeliberativeProfile), 6. Chancelas & Benefícios (Recognition source MANUAL · META · BENEFICIO, Benefit), 7. DECIA Points (DeciaPointsLedgerEntry eventCode META_ATINGIDA idempotente, DeciaPointsRule), 8. Social (MuralEntry kind META · DESTAQUE · RECONHECIMENTO, Reaction BEM_FUNDAMENTADO/CONFORME), 10/12 (MetricSnapshot, AuditLog). Destaques usam algoritmo transparente (critérios visíveis em algorithmScoreJson), não IA externa. Anti-abuso: minEffortCheck contra critério trivial, limite de reconhecimentos por emissor/mês em Company.pointsPolicyJson, tudo em audit_log.",
-    "route": "Metas coletivas (/goals), Destaques (/highlights), Reconhecimentos (/recognitions)",
-    "coverage": "RF35.CA01 · RF35.CA02 · RF35.CA03 · RF35.CA04 · RF35.CA05 · RF35.CA06",
+    "summary": "CollectiveGoal (criador EMPRESA/CHEFE; criterionJson {metricCode, operator, target} sobre o catálogo MetricDefinition; minEffortCheck anti-trivial; progress 0–1 calculado por MetricCalculator em job agendado e AFTER_COMMIT dos eventos relevantes) com GoalParticipants. Meta ATINGIDA → DeciaPointsLedgerEntry META_ATINGIDA por participante com idempotencyKey (ledgerBatchId) e Recognition source META. Highlight do mês por departamento: algoritmo transparente (algorithmScoreJson com critérios visíveis: reações BEM_FUNDAMENTADO/CONFORME, reutilizações, rastro completo, conformidade) + curadoria do chefe (curatedBy); aparece na Vitrine (RF27) e alimenta a Chancela de Excelência (RF39.CA05). Recognition (= cupom/medalha) emitido manualmente, por meta ou por benefício; limite por emissor/mês (Company.pointsPolicyJson) e tudo em AuditLog.",
+    "route": "Metas coletivas (/goals), Destaques (/highlights), Reconhecimentos (/recognitions), barra de progresso no Mural (/mural), medalhas no perfil (/profile?tab=reconhecimentos, RF26 corpo/RF19)",
+    "coverage": "RF35.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs. A moeda é o DECIA Points (RF42); a HU35 ainda diz \"Pontos de Contribuição\" (nome antigo).",
     "cas": [
       {
         "id": "RF35.CA01",
-        "text": "Classes CollectiveGoal (criterionJson, periodFrom/To, rewardPointsPerParticipant, recognitionTemplateJson, progress), GoalParticipant, GoalService.create/join/recomputeProgress, MuralEntry kind META; atividades U1 → S1 → S2 → S3 → W1, U2 → S4, S5 → S6/S7; sequência bloco «CA01 e CA06» e início do bloco «CA02»; transições [*] → ABERTA → ABERTA; componentes app/goals, GoalProgressBar, GoalProgressScheduler",
+        "text": "CollectiveGoal (criterionJson, period, rewardPointsPerParticipant, recognitionTemplateJson, progress), GoalParticipant, GoalService.create/join/recomputeProgress, MetricCalculator, MuralEntry META",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF35.CA02",
-        "text": "Classes DeciaPointsLedgerEntry (eventCode META_ATINGIDA, idempotencyKey), CollectiveGoal.ledgerBatchId/achievedAt, DeciaPointsService.credit, RecognitionService.issueFromGoal; atividades S6 → S8 → S9 → S10; sequência bloco «CA02» (loop por participante, idempotencyKey único, INCRBY Redis); transição ABERTA → ATINGIDA e nota; componentes DeciaPointsService (RF42), cache-redis",
+        "text": "GoalStatus ATINGIDA, DeciaPointsService.award META_ATINGIDA (idempotencyKey, ledgerBatchId), Recognition source META",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF35.CA03",
-        "text": "Classes Highlight (monthKey, targetType PROJECT/DECISION/USER, algorithmScoreJson, curatedBy, position, publishedAt), HighlightService.compute/curate/publish; atividades S12 → U3 → S13 → U4 → S14 → W2 (A1: sem IA); sequência bloco «CA03»; estado HL (Calculado → Curado → Publicado) e nota (Vitrine, Chancela de Excelência RF39); componentes app/highlights, HighlightCard",
+        "text": "Highlight.algorithmScoreJson/curatedBy/position, HighlightService.computeMonth/curate/publish, MuralEntry DESTAQUE, candidatos RF39.CA05",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF35.CA04",
-        "text": "Classes Recognition (name, medalArtJson, criterion, validUntil, source MANUAL/META/BENEFICIO, publicOnMural), RecognitionService.issue/issueFromGoal/issueFromBenefit, MuralEntry kind RECONHECIMENTO; atividades U5 → S1 → S15 → S16 → W3, S10 → W3; sequência bloco «CA04 e CA06»; componentes app/recognitions, MedalBadge, RecognitionController",
+        "text": "Recognition (name, medalArtJson, criterion, validUntil), RecognitionSource MANUAL/META/BENEFICIO, RecognitionService.issue, MuralEntry RECONHECIMENTO",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF35.CA05",
-        "text": "Classes DeliberativeProfile.badgesJson/publicIndicatorsJson, DeliberativeProfileService.appendGamification; atividades U6 → S17 → W4; sequência bloco «CA05» (metas ATINGIDA, highlights USER, recognitions, ledger por eventCode); componentes app/profile, PointsByOriginChart",
+        "text": "DeliberativeProfile.badgesJson/publicIndicatorsJson, DeciaPointsLedgerEntry.eventCode por origem",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF35.CA06",
-        "text": "Classes CollectiveGoal.minEffortCheck, Company.pointsPolicyJson (mínimo de esforço, limite por emissor/mês), RecognitionService.monthlyCount, AuditLog; atividades S2 → E2 (422 META_TRIVIAL), S15 → E3 (429 LIMITE_EMISSOR_MES), S3/S16 (AuditLog); sequência blocos «CA01 e CA06» e «CA04 e CA06» (alts de anti-abuso, INSERT audit_log); transição [*] → ABERTA condicionada ao anti-abuso; componente platform: AuditLog",
+        "text": "GoalService.checkMinEffort (422 META_TRIVIAL), RecognitionService.checkMonthlyLimit (409 LIMITE_ESGOTADO, Company.pointsPolicyJson), AuditLog GOAL_ACHIEVED/RECOGNITION_ISSUED",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -2208,37 +2208,37 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 36,
     "title": "Gerar o Dossiê de Transição (handoff) quando um empregado muda de departamento, sai ou uma gestão encerra, transferindo projetos, tarefas e pendências com contexto",
     "hu": null,
-    "summary": "Contextos da TAXONOMIA: 11. Transição & Memória (HandoffDossier, HandoffItem), 4. Planejamento (Grouping.handoffDossierId, status ENCERRADO), 2/3 (TaskItem DOCUMENTO PDF com sourceKind DOSSIE, ProjectScheme \"Transição de [nome]\" com origin DOSSIE, ProjectTask.responsibleId/snapshotJson), 5. DECIA (DeciaSession ATIVA, SessionParticipant com addedBy/removedBy, FinalDecision EM_REVISAO, DecisionTraceNode), 1 (DepartmentMembership.endedAt), 10/12 (AiInferenceLog capability DOSSIE, MediaObject, Notification). Itens PRIVADA do empregado só entram com consentForPrivateItems; a saída nunca apaga tarefas usadas por outros (snapshot RF23).",
-    "route": "ação no perfil/departamento (/handoff); gestão em /companies/[slug]/groupings/[id] (RF25.CA05, rota a confirmar)",
-    "coverage": "RF36.CA01 · RF36.CA02 · RF36.CA03 · RF36.CA04 · RF36.CA05",
+    "summary": "HandoffDossier (subjectType EMPREGADO · GESTAO; reason HandoffReason SAIDA · TRANSFERENCIA · FIM_GESTAO · TROCA_CHEFE; status HandoffStatus GERADO · AGUARDANDO_SUCESSOR · TRANSFERIDO · RECUSADO · CANCELADO) compila em contentJson projetos abertos por fase, tarefas pendentes/bloqueadas com prazos, sessões DECIA em andamento, decisões pendentes de revisão, contatos/fornecedores (OrgEntity) citados e um resumo de contexto por projeto redigido pela IA (DOSSIE) sobre dados do sistema. Materializa-se em TaskItem DOCUMENTO (PDF, sourceKind DOSSIE, faísca ✦) e ProjectScheme \"Transição de [nome]\" (origin DOSSIE) com as tarefas de encaminhamento, ligados ao rastro (nó TAREFA/PROJETO). O sucessor aceita → HandoffItems transferem responsibleId (antigo fica previousResponsibleId), sessões ativas notificam a troca de participante (RF9), histórico intacto. Itens PRIVADOS só com consentForPrivateItems; saída nunca apaga tarefas usadas por outros (snapshot RF23).",
+    "route": "ação Gerar dossiê de transição no perfil do empregado visto pelo chefe (/u/[username]), na página do departamento (/departments/[slug]/team) e na GESTAO (/groupings/[id]); lista e detalhe em /handoffs, /handoffs/[id]; aceite do sucessor por notificação",
+    "coverage": "RF36.CA01 · CA02 · CA03 · CA04 · CA05 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs. Gatilhos externos: RF25.CA05 (encerrar GESTAO), RF28.CA07 (troca de chefe), RF9 (chefe remove empregado).",
     "cas": [
       {
         "id": "RF36.CA01",
-        "text": "Classes HandoffDossier (subjectType EMPREGADO/GESTAO, reason, contentJson {openProjectsByPhase, pendingTasks, blockedTasks, activeSessions, pendingReviews, contacts, contextSummaries[]}), Grouping.handoffDossierId, HandoffService.generate/compileContent, AiEngine.contextSummaries; atividades U1 → S1 → S2 → S3 → A1/A2 (403 ACESSO_NEGADO, 409 DOSSIE_EM_ANDAMENTO); sequência bloco «CA01, CA02 e CA05»; transição [*] → GERADO; componentes app/handoff, HandoffSummary, app/companies/[slug]/groupings/[id]",
+        "text": "HandoffService.generateForEmployee/generateForGrouping/collect, HandoffDossier.contentJson (openProjectsByPhase, pendingTasks, blockedTasks, activeSessions, pendingReviews, contacts, contextSummaries), HandoffReason, AiCapability DOSSIE",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF36.CA02",
-        "text": "Classes HandoffDossier.documentTaskId/transitionProjectId/aiInferenceId, TaskItem (DOCUMENTO, sourceKind DOSSIE, aiGenerated), ProjectScheme origin DOSSIE, ProjectTask (encaminhamentos), PdfRenderPort, MediaStoragePort, DecisionTraceService; atividades S6 → S7 → S8 → W1; sequência bloco «CA01, CA02 e CA05» (PUT dossie.pdf, INSERT tasks/project_schemes/decision_trace_nodes); nota do estado GERADO; componentes storage-s3, PdfRenderAdapter, DecisionTraceService (RF29)",
+        "text": "HandoffService.materialize, TaskItem DOCUMENTO sourceKind DOSSIE + aiGenerated, ProjectScheme origin DOSSIE, DecisionTraceNode, PipelineJob EXPORT_PDF",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF36.CA03",
-        "text": "Classes HandoffDossier.successorUserId/successorAcceptedAt, HandoffItem.previousResponsibleId/newResponsibleId/transferredAt, HandoffService.nominateSuccessor/accept, TaskItem.responsibleId, ProjectTask.responsibleId; atividades U3 → S10 → S11 → U4 → S12 → S13 → S16 → W3 (422, 403); sequência bloco «CA03 e CA04»; transições GERADO → AGUARDANDO_SUCESSOR → TRANSFERIDO e nota; componentes SuccessorPicker, ResponsibleBadge",
+        "text": "HandoffDossier.successorUserId/successorAcceptedAt, HandoffService.accept/refuse, TransferService, HandoffItem.previousResponsibleId/newResponsibleId, TaskStateLog",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF36.CA04",
-        "text": "Classes SessionParticipant (leftAt, removedBy, removeReason, addedBy), DeciaBridgeService.swapParticipant, HandoffItem targetType SESSION, CassandraSystemMessageWriter; atividades S13 → S14 → W4 → U5; sequência bloco «CA03 e CA04» (loop por sessão ATIVA, mensagem de sistema, notifications_by_user RF9); transição AGUARDANDO_SUCESSOR → TRANSFERIDO; componentes persistence-cassandra, DeciaBridgeService (RF29, RF9)",
+        "text": "DeciaSessionService.replaceParticipant, SessionParticipant.leftAt/removeReason, Notification PARTICIPANTE_* (RF9), histórico intacto",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF36.CA05",
-        "text": "Classes HandoffDossier.consentForPrivateItems, TaskItem.visibility, ProjectTask.snapshotJson, HandoffService.grantConsent; atividades S4 → S5 → W2 → U2 → S9, S13 → S17; sequência bloco «CA01, CA02 e CA05» (separa PRIVADA, POST .../consent) e nota final do bloco «CA03 e CA04» (snapshot preservado); transição GERADO → GERADO e notas de GERADO/TRANSFERIDO; componente ConsentDialog",
+        "text": "HandoffDossier.consentForPrivateItems, Visibility PRIVADA, ProjectTask.snapshotJson (RF23), nunca DELETE de tarefas usadas por outros",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -2249,37 +2249,37 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 37,
     "title": "Registrar reuniões com a Ata Viva (transcrição ou gravação → ata como tarefa + tarefas de encaminhamento com responsável e prazo dentro do projeto)",
     "hu": null,
-    "summary": "Contexto DECIA (bounded context 5). Entidade central: Meeting (status GRAVANDO → TRANSCREVENDO → ATA_PROPOSTA → CONFIRMADA | CONTESTADA). A ata vira TaskItem do tipo ATA_REGISTRO com sourceKind = ATA_VIVA; cada encaminhamento vira TaskItem ligado por ProjectTaskDependency à ata. A publicação na sessão reaproveita SessionMessage + MessageAttachment (RF29) e cria o nó ATA_VIVA no DecisionTrace. Pontos: ATA_RATIFICADA (+3) e ENCAMINHAMENTO_CUMPRIDO (+5) via RF42.",
-    "route": "ação \"Nova reunião\" na sessão DECIA ou no projeto (/meetings/new)",
-    "coverage": "RF37.CA01 · RF37.CA02 · RF37.CA03 · RF37.CA04 · RF37.CA05",
+    "summary": "Meeting (sessionId ou projectId, source GRAVACAO_NAVEGADOR · ARQUIVO · TRANSCRICAO_COLADA, status MeetingStatus GRAVANDO · TRANSCREVENDO · ATA_PROPOSTA · CONFIRMADA · CONTESTADA, audioMediaId, minutesTaskId, followUpTaskIdsJson, ratificationDeadlineAt 48 h) com MeetingTranscript (texto AES-GCM, segmentsJson por falante classificado como no RF7) e RecordingConsent por participante (LGPD). Áudio vai para restricted/ (OwnMedia), passa por magic bytes e limite por formato, e é apagado após a transcrição por padrão (Company.recordingRetentionPolicy). A IA (TRANSCREVER, ATA_VIVA) gera a ata estruturada (participantes, pauta, deliberações, encaminhamentos o quê/quem/quando, divergências, pendências); o usuário confirma antes de persistir: ata → TaskItem ATA_REGISTRO (sourceKind ATA_VIVA) no projeto; cada encaminhamento → TaskItem com responsibleId e dueAt + ProjectTaskDependency para a ata. A ata é publicada na sessão como mensagem com anexos (RF29) e entra no rastro (nó ATA_VIVA); participantes ratificam ou contestam em 48 h (Notification), e ratificação credita DP (ATA_RATIFICADA, RF42).",
+    "route": "ação Nova reunião na sessão DECIA (/decia/[sessionId]) ou no projeto (/projects/[id]), fluxo em /meetings/new, /meetings/[id] (gravação, upload, transcrição colada, ata proposta, ratificação)",
+    "coverage": "RF37.CA01 · CA02 · CA03 · CA04 · CA05 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs.",
     "cas": [
       {
         "id": "RF37.CA01",
-        "text": "Classes Meeting.sessionId, Meeting.projectId, MeetingSource (GRAVACAO_NAVEGADOR, ARQUIVO, TRANSCRICAO_COLADA); atividades U1→U2→U3/U4/U5, W1, W3, W4, A1 (403 ACESSO_NEGADO); sequência msgs 1–5 e 11–13; transições [] → GRAVANDO e [] → TRANSCREVENDO; componentes app/meetings/new, AudioRecorder, storage-s3, Microsoft 365 / Google Workspace.",
+        "text": "Meeting (sessionId/projectId, MeetingSource), MeetingService.start/uploadAudio/pasteTranscript, UploadGuard, OwnMedia",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF37.CA02",
-        "text": "Classes MeetingTranscript.segmentsJson, TranscriptionPort, SpeechToTextAdapter, AiEngine, AiCapability (TRANSCREVER, ATA_VIVA), MessageClass; atividades A5, I1, I2, I4, A7; sequência msgs 14–22; estado composto TRANSCREVENDO (Transcrevendo → GerandoAta → DraftPronto, Falha → REPROCESSAR); componentes ai-providers, PipelineJob worker.",
+        "text": "TranscriptionService.transcribe, MeetingTranscript.segmentsJson (classLabel RF7), AiCapability TRANSCREVER/ATA_VIVA, MeetingService.proposeMinutes",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF37.CA03",
-        "text": "Classes TaskItem (type ATA_REGISTRO, sourceKind ATA_VIVA, responsibleId, dueAt), ProjectTask.phase, ProjectTaskDependency, AcervoService.createFromDraft, TaskStateMachine; atividades U7→U8→U9, W5, W6, A7, A8 (422 VALIDACAO), A9, A10; sequência msgs 24–31; transição TRANSCREVENDO → ATA_PROPOSTA (organizador confirma) e nota sobre RASCUNHO → DISPONIVEL; componentes AtaPreview, AcervoService, TaskStateMachine.",
+        "text": "MeetingService.confirm, TaskItem ATA_REGISTRO sourceKind ATA_VIVA, tarefas de encaminhamento (responsibleId, dueAt), ProjectTaskDependency, minutesTaskId/followUpTaskIdsJson",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF37.CA04",
-        "text": "Classes SessionMessage, MessageAttachment, DecisionTraceNode (TraceNodeType ATA_VIVA), DecisionTraceEdge (ORIGINOU), Notification, Meeting.ratificationDeadlineAt, DeciaPointsLedgerEntry (ATA_RATIFICADA); atividades A11, A12, A13, U10, U11, A15, A16; sequência msgs 32–43; estados ATA_PROPOSTA → CONFIRMADA / CONTESTADA e nota de pontos; componentes DecisionTraceService, persistence-cassandra, DomainEventOutbox, DecisionThread.",
+        "text": "DeciaBridgeService.publishMinutes, SessionMessage + MessageAttachment, nó ATA_VIVA, Notification, ratificationDeadlineAt, MeetingService.ratify/contest, DP ATA_RATIFICADA",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF37.CA05",
-        "text": "Classes RecordingConsent (consented, at, ip), Company.recordingRetentionPolicy, MediaObject.accessClass, MeetingTranscript.text (AES-GCM), AiInferenceLog.maskedFields; atividades U6, W2, A3, A4 (409 CONSENTIMENTO_PENDENTE), A6, I3, A14, D7; sequência msgs 6–10, 17 (motor local) e 23 (DELETE áudio); transição GRAVANDO → [*] por consentimento negado e Transcrevendo → GerandoAta (áudio apagado); componentes ConsentSheet, storage-s3 (TTL por política), AuditLog.",
+        "text": "RecordingConsent, MeetingService.consent (409 CONSENTIMENTO_PENDENTE), TranscriptionService.purgeAudio, Company.recordingRetentionPolicy, AuditLog MEETING_AUDIO_PURGED, UserConsent GRAVACAO_REUNIOES_PADRAO",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -2288,69 +2288,69 @@ export const RF_CATALOG: readonly RfEntry[] = [
   {
     "id": "RF38",
     "n": 38,
-    "title": "Aplicar a identidade visual do Work Station — ícones por tipo de tarefa, thumbnails automáticos, capa-mosaico de projeto, fio de decisão, lacres, etiquetas de estado, temas e skins da Mesa",
+    "title": "Aplicar a identidade visual do Work AI — ícones por tipo de tarefa, thumbnails automáticos, capa-mosaico de projeto, fio de decisão, lacres, etiquetas de estado, temas e skins da Mesa",
     "hu": null,
-    "summary": "Conceito \"a repartição do futuro\": papelaria pública (carimbo, protocolo, pasta suspensa, clipe, lacre) em flat/duotone; tudo que a IA gerou carrega a faísca âmbar ✦. O RF é majoritariamente frontend (componentes do design system), com três pontos de backend: o thumbnail assíncrono (PipelineJob THUMBNAIL → ThumbnailService), a capa-mosaico recalculada por evento (CardArtService) e a capa por IA (AiEngine CAPA_IA). Preferências visuais vivem em UserPreferences; skins adquiridas em UserSkin.",
-    "route": "transversal (design system em components/ui); capa manual/IA em /tasks/[id] e /projects/[id]; temas e skins em /settings/preferences",
-    "coverage": "RF38.CA01 · RF38.CA02 · RF38.CA03 · RF38.CA04 · RF38.CA05 · RF38.CA06 · RF38.CA07 · RF38.CA08 · RF38.CA09 · RF38.CA10",
+    "summary": "Regra do design system: nenhum HTML/CSS solto nas telas (D-11); todo elemento visual vem de packages/ui com tokens --ws-* e 4 temas via data-theme (claro · escuro · contraste · blueprint). As variações dos cards são flags derivadas dos dados (taskVariants(TaskView, viewer), projectVariants(ProjectView, viewer)), nunca escritas à mão; tipos vêm do OpenAPI (D-21). O backend contribui com: TaskType → glifo/cor (TypeChip), PipelineJob THUMBNAIL assíncrono (TaskItem.thumbnailUrl/coverMode), ProjectScheme.mosaicJson/coverMode (mosaico 2×3 recomputado AFTER_COMMIT), aiGenerated/aiInferenceId/reviewedBy (faísca ✦), TaskState/ProjectStatus (etiquetas com nome em texto), legalDueAt (⚖), SealBond/Seal.artJson (lacre), Recognition.medalArtJson (medalha), FinalDecision.stampJson (carimbo), DecisionTraceNode.classLabel (fio), Department.color/monogram, Company.logoUrl, UserPreferences.theme/deskSkin/reduceMotion, UserSkin (skins compradas, RF42) e CardArtConfig (card_art_json, Estúdio, proposta Q-58).",
+    "route": "transversal — todo card, lista, busca, anexo de mensagem e fio de decisão; preferências em /settings (tema, skin da Mesa, reduceMotion); Estúdio de Arte do card (RF11, /tasks/[id]/art, /projects/[id]/art); galeria /lab/design-system",
+    "coverage": "RF38.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs. Fontes de detalhe: docs/design-system/DESIGN_SYSTEM.md (§2 tokens, §3 catálogo de componentes, §4 glifos), ANATOMIA_CARDS.md, ANATOMIAS_E_ESTUDIO.md v3 (enums TaskCardLayout, ProjectCardLayout, TaskComposition, ProjectComposition, SchemeView, TaskCardVariant, ProjectCardVariant, CardArtConfig), GLYPHS.md, TOKENS.md.",
     "cas": [
       {
         "id": "RF38.CA01",
-        "text": "Enum TaskType (15 valores) e TaskItem.type; atividade W1 (TaskTypeIcon com rótulo textual) e U2; sequência msg 18 (card com TaskTypeIcon); componentes TaskTypeIcon, tokens · cores por TaskType; o mesmo ícone é reutilizado em DecisionThread e anexos de mensagem (W5).",
+        "text": "TaskType → TypeChip, sprite ws-<nome> (16 glifos de tipo), TaskCard em cards/listas/busca/anexos (TaskCardLayout), DecisionThread",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF38.CA02",
-        "text": "Classes ThumbnailService, ThumbnailStrategy + 5 adapters, PipelineJob (THUMBNAIL), MediaObject.variantsJson, TaskItem.thumbnailUrl/coverUrl/coverMode, CoverMode; atividades A1→A2→A3..A7→A8, W10, U3→U4/U5, A11 (422 VALIDACAO), A13 (409 COTA_ESGOTADA), A14, A15; sequência msgs 1–10 e 19–34; máquina de estados PipelineJob THUMBNAIL e TaskItem.coverMode; componentes ThumbnailService, PipelineJob worker, storage-s3, renderers.",
+        "text": "ThumbnailService.onTaskCreatedOrUpdated/render/replaceManual/requestAiCover, PipelineJob THUMBNAIL, TaskItem.thumbnailUrl/coverUrl/coverMode, MediaObject.variantsJson, AiCapability CAPA_IA",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF38.CA03",
-        "text": "Classes ProjectScheme.mosaicJson/coverUrl/coverMode, ProjectCoverMode, ProjectTask.percentComplete/phase, Department.color, CardArtService.rebuildMosaic/phaseRing; atividades A9, A10, W6; sequência msgs 11–15 (TaskThumbnailReady → rebuildMosaic → DEL cache) e 32; nota da máquina de estados (qualquer mudança dispara rebuild); componentes CardArtService, ProjectMosaicCover, PhaseRing.",
+        "text": "MosaicService.recompute, ProjectScheme.mosaicJson/coverMode MOSAICO, ProjectCard layout mosaic, Mosaic, ProgressRing, borda Department.color",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF38.CA04",
-        "text": "Classes TaskItem.aiGenerated/aiInferenceId, ProjectScheme.aiGenerated, AiInferenceLog.createdAt/model/reviewedBy/reviewedAt; atividades U7, I3, A15; sequência msgs 31 e 34 (tooltip gerado por IA em data, revisado por); transição AUTO → IA (faísca ✦); componentes AiSpark ✦.",
+        "text": "Spark (generatedAt, model, reviewedBy), TaskItem.aiGenerated/aiInferenceId, AiInferenceLog.model/createdAt/reviewedBy, variante GERADA_IA",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF38.CA05",
-        "text": "Enum TaskState (8 valores), TaskItem.dueAt/legalDueAt/legalDeadlineRuleId, LegalDeadlineRule; atividades W2 (nome do estado em texto, estilos tracejado/pulso/cadeado/carimbo/esmaecido/estrela) e W3 (âmbar 3 dias, vermelho vencido, ⚖); sequência msg 18; componentes StateTag, DeadlineBadge.",
+        "text": "Tag (nome do estado em texto, estilos por TaskState/ProjectStatus), Due (âmbar ≤ 3 dias, vermelho vencido, ⚖ legalDueAt), variantes PRAZO_LEGAL, BLOQUEADA…",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF38.CA06",
-        "text": "Classes Seal.artJson/issuerKind/excellence, SealBond.status/sealCode, Recognition.medalArtJson, FinalDecision.stampJson/status, DecisionStatus, CardArtService.sealWaxFor/stampFor; atividade W4; sequência msg 18 (SealWax); componentes SealWax, Medal, DecisionStamp.",
+        "text": "Seal.artJson/issuerKind/excellence + SealBond APROVADA → Seal (lacre dourado/azul-marinho), Recognition.medalArtJson → Medal, FinalDecision.stampJson → Stamp (VALIDADO/DEVOLVIDO, data, revisor), variantes CHANCELADA, COM_CARIMBO",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF38.CA07",
-        "text": "Classes DecisionTraceNode.classLabel, DecisionTraceEdge, enum MessageClass com cores; atividade W5; componentes DecisionThread, tokens · cores por MessageClass.",
+        "text": "DecisionTraceNode.classLabel (ARGUMENTO azul · DIVERGENCIA laranja · RISCO vermelho · CONSENSO verde · PERGUNTA roxo) → DecisionThread",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF38.CA08",
-        "text": "Classes UserPreferences.theme/deskSkin/density/fontScale, ThemeMode (inclui BLUEPRINT), DeskSkin (PAPEL, CORTICA, BLUEPRINT, PAPEL_TIMBRADO), UserSkin, PreferencesService, PreferencesController; atividades U6, W7 (menu recolhível responsivo), A16 (403 SKIN_NAO_ADQUIRIDA); sequência msgs 35–41; componentes ThemeProvider, DeskSkin, settings/preferences, cache-redis.",
+        "text": "UserPreferences.theme/deskSkin/reduceMotion (existe no main), ThemeMode (4 temas + AUTO), DeskSkin, UserSkin, ThemeProvider, BackgroundArt, SidebarNav recolhível",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF38.CA09",
-        "text": "Classes Department.monogram/color/acronym, Company.logoUrl/coatOfArmsUrl/accentColor, TaskItem.departmentId, ProjectScheme.departmentId; atividades A10 (borda na cor do departamento) e W6 (DeptMonogram, CompanyLogo); componente DeptMonogram.",
+        "text": "Department.color/monogram, Company.logoUrl/accentColor → Monogram, borda do card na cor do departamento",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF38.CA10",
-        "text": "Classe UserPreferences.reduceMotion; atividade W8 (encaixe animado, confete, faísca animada, empty states; desliga com prefers-reduced-motion); sequência msg 41 (MotionProvider desliga animações); componentes MotionProvider, EmptyState, tokens · prefers-reduced-motion.",
+        "text": "Confetti (decisão validada), encaixe animado (drag para fase, SchemeView BOARD), faísca animada (geração), EmptyState ilustrado, prefers-reduced-motion + UserPreferences.reduceMotion",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -2361,79 +2361,79 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 39,
     "title": "Criar chancelas (EMPRESA / CHEFE DE DEPARTAMENTO) e concedê-las a tarefas, projetos e planos por vínculo sugerido pela IA, por política de critérios ou por premiação; habilitar benefícios resgatáveis",
     "hu": null,
-    "summary": "Contexto Chancelas & Benefícios (bounded context 6). Entidade central: SealBond (SealBondStatus SUGERIDA → ACEITA | EDITADA | RECUSADA → EM_REVISAO → APROVADA | APROVADA_PRIVADA | REJEITADA → REVOGADA | EXPIRADA). Três modos de concessão: vínculo (IA sugere até 3, origin SUGESTAO_IA), política (SealPolicy + SealPolicyEvaluator, modo AUTO ou REVISAO), premiação (Chancela de Excelência, excellence = true, usageLimit + ciclo, por curadoria). A chancela aprovada habilita Benefit → BenefitRedemption (idempotente) e leva o item a MODELO_PUBLICO + prateleira CHANCELADO do Balcão (RF40).",
-    "route": "Minhas Chancelas (/seals), Criador de Chancela (página da empresa/departamento), Benefícios (/benefits)",
-    "coverage": "RF39.CA01 · RF39.CA02 · RF39.CA03 · RF39.CA04 · RF39.CA05 · RF39.CA06 · RF39.CA07 · RF39.CA08 · RF39.CA09 · RF39.CA10 · RF39.CA11 · RF39.CA12",
+    "summary": "Entidades: Seal (emissor EMPRESA|CHEFE, tier TAREFA|PROJETO|PLANO, artJson do lacre, excellence, ciclo availableFrom/Until, usageLimit/usageCount, autoIssued), SealPolicy (mode AUTO|REVISAO, criteriaJson com SealCriterion CONFORMIDADE_MIN · RASTRO_COMPLETO · PRAZO_CUMPRIDO · REACOES_MIN · REUTILIZACOES_MIN · DECISAO_VALIDADA · SEM_PENDENCIA, recertifyEveryDays), SealBond (item × emissor, único; basis MODELO_MATCH · DEPARTAMENTO_MATCH · PLANO_MATCH · DECISAO_MATCH · POLITICA · INDICACAO · PREMIACAO; status SealBondStatus SUGERIDA → ACEITA/EDITADA/RECUSADA → EM_REVISAO → APROVADA/APROVADA_PRIVADA/REJEITADA → REVOGADA/EXPIRADA; authorConsent; aiInferenceId), SealProposal, Benefit (BenefitType), BenefitRedemption (idempotente, QR, ledgerEntryId). Guards D-14: requireIssuerOrCurator (criar/editar/revisar), requireOwner (aceitar/editar/recusar/consentir), EMPREGADO → 403 no criador. Os critérios são calculados pelo sistema (MetricCalculator); a IA (SUGERIR_CHANCELA, AVALIAR_POLITICA) só sugere/justifica. Tudo em AuditLog com correlationId.",
+    "route": "Minhas Chancelas (/seals, sub-aba Recusadas), fila de revisão (/seals/review, CHEFE/CURADOR), Criador de Chancela na página da empresa/departamento (/companies/[slug]/manage, /departments/[slug]), Benefícios (/benefits), curadoria de Excelência (/curation)",
+    "coverage": "RF39.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs. Detalhe no card \"WORK AI — Chancelas\"; a moeda é DECIA Points (RF42).",
     "cas": [
       {
         "id": "RF39.CA01",
-        "text": "Classes Seal.issuerUserId/issuerKind, CuratorAppointment, SealService.requireIssuerOrCurator; atividade S1 → E1 (403 ACESSO_NEGADO) e lane L_issuer; componentes SealCreator (só renderizado para EMPRESA/CHEFE/CURADOR), SealController.",
+        "text": "Guard.requireIssuerOrCurator, SealService.create/update, CuratorAppointment",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF39.CA02",
-        "text": "Classes Seal (name, tier, artJson, iconUrl, availableFrom/Until, usageLimit, excellence), SealPolicy (criteriaJson, mode), enums SealTier, SealCriterion (7 critérios), PolicyMode; atividades M1, M2, W1, S2 → E2 (400 PERIODO_INVALIDO), S3; componentes PolicyBuilder, storage-s3 (arte do lacre).",
+        "text": "Seal (name, tier, artJson, availableFrom/Until, usageLimit, excellence), SealPolicy (mode, criteriaJson com SealCriterion), 400 PERIODO_INVALIDO",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF39.CA03",
-        "text": "Classes SealService.suggest, SealBond (basis MODELO_MATCH/DEPARTAMENTO_MATCH/PLANO_MATCH/DECISAO_MATCH, confidence, justification, origin SUGESTAO_IA), AiCapability SUGERIR_CHANCELA; atividades A1, W2, S4, I1, A2, A3, S6, S7, W8; sequência msgs 1–11; transições [*] → SUGERIDA, SUGERIDA → ACEITA/EDITADA/RECUSADA, RECUSADA → ACEITA (aplicar depois); componente app/seals (Recusadas).",
+        "text": "SealBondService.suggest/respond, SealBond.basis/confidence/justification/aiInferenceId, AiCapability SUGERIR_CHANCELA, sub-aba Recusadas",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF39.CA04",
-        "text": "Classes SealPolicyEvaluator.onRelevantEvent/evaluate, SealBond.criteriaReportJson/requiresReview, Seal.autoIssued, AiCapability AVALIAR_POLITICA; atividades S14, I2, S15, S16 → S10 (AUTO) ou S9 (REVISAO); transições [] → consent (AUTO) e [] → EM_REVISAO (REVISAO); componentes SealPolicyEvaluator, platform · scheduler de recertificação.",
+        "text": "SealPolicyEvaluator.onRelevantEvent/evaluate, MetricCalculator, criteriaReportJson, Seal.autoIssued, PolicyMode AUTO/REVISAO",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF39.CA05",
-        "text": "Classes Seal.excellence/usageLimit/usageCount/availableFrom/availableUntil, Highlight, SealService.award, SealBondBasis.PREMIACAO, SealBondOrigin.CURADORIA; atividades M4, W5, S17 → E3 (409 LIMITE_ESGOTADO); sequência msgs 24–31 (SELECT FOR UPDATE, 409 LIMITE_ESGOTADO); transição [*] → consent (premiação dentro do ciclo e limite).",
+        "text": "SealBondService.awardExcellence, basis PREMIACAO, origin CURADORIA, Highlight (RF35), usageLimit/usageCount → 409 LIMITE_ESGOTADO",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF39.CA06",
-        "text": "Classes SealService.nominate, SealBondBasis.INDICACAO, SealProposal (status PENDENTE/CRIADA/RECUSADA); atividades A5, A6, W6, S18 (nenhum emite chancela) → S9; transição [*] → EM_REVISAO (indicação de colega); componente SealBondController.POST seal_bonds_nominate, SealController.POST seal_proposals.",
+        "text": "SealBondService.indicate (basis INDICACAO → EM_REVISAO), SealService.propose, SealProposal",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF39.CA07",
-        "text": "Classe SealBond.authorConsent, estados APROVADA e APROVADA_PRIVADA; atividades A4, S10, S11, S12; sequência msgs 9–10 (consent true) e 17–23; choice consent e transições APROVADA ⇄ APROVADA_PRIVADA.",
+        "text": "SealBond.authorConsent, SealBondService.consent/review, APROVADA_PRIVADA",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF39.CA08",
-        "text": "Classes SealBond (único targetId × issuerUserId, revokeReason, expiresAt, lastRecertifiedAt), SealPolicy.recertifyEveryDays, AuditLog.correlationId, SealService.revoke/recertify; atividades S5 → E5 (409 VINCULO_DUPLICADO), M6, S20, S19; sequência msgs 12 (409 VINCULO_DUPLICADO) e 21 (audit_log correlationId); estado composto APROVADA (Vigente ⇄ Recertificando), transições → REVOGADA, → EXPIRADA; componentes AuditLog, scheduler de recertificação e fim de ciclo.",
+        "text": "único (targetId, issuerUserId) → 409 CHANCELA_DUPLICADA, SealBondService.revoke, SealPolicyEvaluator.recertify, REVOGADA/EXPIRADA, AuditLog com correlationId",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF39.CA09",
-        "text": "Classes Benefit (type, startsAt, expiresAt, totalQuota, perUserLimit), enum BenefitType (7 tipos), BenefitService.publish; atividades M5, W7 → S1; componentes BenefitController, BenefitCard, app/benefits.",
+        "text": "Benefit (BenefitType, startsAt/expiresAt, totalQuota, perUserLimit), BenefitService.publish",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF39.CA10",
-        "text": "Classes BenefitRedemption (idempotencyKey, code, status, ledgerEntryId), AiCreditLedgerEntry (source BENEFICIO), DeciaPointsLedgerEntry (BENEFICIO_BONUS), BenefitService.redeem, DeciaPointsService.creditAi; atividades A7, S21 → E4 (409 CHANCELA_INVALIDA), D7 (lock Redis), S22, S23; sequência msgs 32–46 (SET NX, 409 CHANCELA_INVALIDA, resgate existente, ai_credit_ledger); componentes cache-redis · lock de resgate, storage-s3 · certificado PDF.",
+        "text": "BenefitService.redeem (transacional, idempotencyKey), BenefitRedemption, 409 CHANCELA_INVALIDA, AiCreditLedgerEntry, DP BENEFICIO_BONUS",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF39.CA11",
-        "text": "Classes TaskItem.state MODELO_PUBLICO, TaskItem.sealIdsJson, ModelOffer.shelf CHANCELADO, TaskStateMachine, CounterService.publishChanceled, SealService.issuerMetrics; atividades S13, S25; sequência msgs 18–19 e 23 (lacre no card); transição consent → APROVADA (MODELO_PUBLICO · prateleira CHANCELADO); componentes SealWax, CounterService (RF40), métricas em app/companies/[slug].",
+        "text": "TaskItem/ProjectScheme/AnnualPlan.sealIdsJson, TaskState MODELO_PUBLICO, Vitrine/Balcão \"chancelado\" (RF27/RF40), métricas do emissor (RF28.CA06)",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF39.CA12",
-        "text": "Classe Notification (category CHANCELA); atividade S24 (autor em cada mudança, emissor em pedido/indicação, i18n) → D6; sequência msgs 15, 21, 30, 44 (notifications); nota da máquina de estados (toda transição → Notification + audit_log); componente platform · DomainEventOutbox · i18n.",
+        "text": "Notification CHANCELA_ESTADO/INDICACAO, i18n das mensagens",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -2444,55 +2444,55 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 40,
     "title": "Oferecer tarefas, projetos e kits como modelos no Balcão de Modelos (marketplace interno em DECIA Points, sem dinheiro) e reutilizá-los com crédito ao autor",
     "hu": null,
-    "summary": "Contexto Balcão & Loja & DECIA Points (bounded context 7). Entidade central: ModelOffer (status ATIVA → RETIRADA | ESGOTADA) sobre um alvo TASK | PROJECT | KIT. A oferta liga TaskItem.offeredInCounter = true (etiqueta OFERECIDA) sem destruir o estado de trabalho. O remix é uma transferência no ledger de DECIA Points (DeciaPointsService: débito do comprador + crédito do autor na mesma transação, counterpartyUserId, idempotencyKey), registrada em Remix. Não existe moeda real nem gateway (RF40.CA08).",
-    "route": "Balcão de Modelos (/models, também acessível pela Loja Work Station), sub-aba \"Meus modelos oferecidos\" no perfil (RF19)",
-    "coverage": "RF40.CA01 · RF40.CA02 · RF40.CA03 · RF40.CA04 · RF40.CA05 · RF40.CA06 · RF40.CA07 · RF40.CA08",
+    "summary": "ModelOffer (targetType TASK · PROJECT · KIT, pricePoints 0 = grátis, license ModelLicense COPIA_LIVRE · ATRIBUICAO · SOMENTE_LEITURA, visibility, shelf COMUNIDADE · CHANCELADO, isHandover repasse, status OfferStatus ATIVA · RETIRADA · ESGOTADA, contadores). O item passa a TaskItem.offeredInCounter = true + TaskState OFERECIDA mantendo o estado de trabalho (TaskStateLog). Remixar = Remix + cópia respeitando a licença + 1 lançamento no ledger que debita o comprador e credita o autor (DeciaPointsLedgerEntry COMPRA_LOJA com counterpartyUserId, idempotencyKey; VENDA_BALCAO espelho) — grátis credita só reuseCount. Saldo insuficiente → 409 SALDO_INSUFICIENTE. Nenhum campo de moeda real, nenhum gateway (CA08). Destacar/converter em chancelado passa pelo fluxo RF39 (indicação → chancela) preservando originalTaskId/originalProjectId.",
+    "route": "Balcão de Modelos (/models, prateleiras Chancelados · Comunidade, também pela Loja /store), ação Oferecer como modelo no card (/tasks/[id], /projects/[id], kits), sub-aba Meus modelos oferecidos no perfil (/profile?tab=modelos), \"repassar ao Balcão\" ao arquivar (RF41)",
+    "coverage": "RF40.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs. A HU40 ainda diz \"Pontos de Contribuição\" (= DECIA Points, RF42).",
     "cas": [
       {
         "id": "RF40.CA01",
-        "text": "Classes ModelOffer (pricePoints, license, usageDescription, visibility, availableFrom/Until, targetType TASK/PROJECT/KIT), TaskItem.offeredInCounter, TaskState.OFERECIDA, TaskStateMachine.markOffered, CounterService.offer; atividades O1, O2, W1, S1 (403), S2 (422), S3; sequência msgs 1–8; transições [*] → ATIVA e EstadoDeTrabalho → Oferecida (estado de trabalho preservado); componentes OfferDialog, ModelOfferController.",
+        "text": "ModelOffer (pricePoints, license, usageDescription, visibility, availableFrom/Until), ModelCounterService.offer, TaskState OFERECIDA + TaskStateLog, offeredInCounter",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF40.CA02",
-        "text": "Classes ModelOffer.shelf (COMUNIDADE, CHANCELADO), enum Shelf, CounterService.browse; atividades B1, W2 (filtros categoria, tipo, departamento, licença, preço; ordenação remixes/reações/recentes), S5; sequência msgs 9–15 (OpenSearch); componentes app/models, search-opensearch, ModelCard.",
+        "text": "Shelf COMUNIDADE/CHANCELADO, ModelCounterService.browse, filtros e ordenação (remixes · reações · recentes), SealBond APROVADA",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF40.CA03",
-        "text": "Classes DeciaPointsService.transfer, DeciaPointsLedgerEntry (counterpartyUserId, idempotencyKey, correlationId, eventCode COMPRA_LOJA/VENDA_BALCAO), Remix.ledgerEntryId, TaskItem.reuseCount; atividades S7 (idempotência), S8, S9 → E4 (409 SALDO_INSUFICIENTE + atalho B6), S10, S11 (grátis: só reuseCount); sequência msgs 16–20, 23–31 (SELECT saldo FOR UPDATE, 409 SALDO_INSUFICIENTE, 2 lançamentos com mesmo correlationId); componentes DeciaPointsService, cache-redis · saldo e lock, BalanceHint.",
+        "text": "DeciaPointsService.transfer (COMPRA_LOJA + VENDA_BALCAO, counterpartyUserId, idempotencyKey), 409 SALDO_INSUFICIENTE, grátis → reuseCount",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF40.CA04",
-        "text": "Enum ModelLicense, AcervoService.copyTask/copyProject/copyKit, CounterService.takeToProject, TaskItem.originalTaskId (crédito imutável), ProjectTask.snapshotJson; atividades S12 → S13 (COPIA_LIVRE), S14 (ATRIBUICAO), S15 (SOMENTE_LEITURA só Levar ao projeto), E5 (409 LICENCA_NAO_PERMITE); sequência msgs 22 e 27 (cópia com crédito imutável por ATRIBUICAO); componente LicenseBadge.",
+        "text": "LicenseEnforcer.copy, ModelLicense (SOMENTE_LEITURA referência · ATRIBUICAO crédito imutável · COPIA_LIVRE), Remix, originalTaskId/originalProjectId",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF40.CA05",
-        "text": "Classes ModelOffer.isHandover, CounterService.offerHandover; atividades O3, S4 (preço 0, etiqueta repasse); transições EstadoDeTrabalho → Arquivada → Oferecida (repasse aceito) e ATIVA → ESGOTADA (repasse levado); componente ModelCard (etiqueta repasse).",
+        "text": "ModelCounterService.handoverOnArchive, ModelOffer.isHandover, preço 0, etiqueta repasse (RF41)",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF40.CA06",
-        "text": "Classes ModelOffer.viewsCount/remixCount/pointsEarned/status, CounterService.myOffers/withdraw, OfferStatus; atividades O4, W7, W5, S17 (cópias permanecem); sequência msgs 32–38; transição ATIVA → RETIRADA; componentes app/profile (Meus modelos oferecidos), GET me_model_offers.",
+        "text": "ModelOffer.viewsCount/remixCount/pointsEarned, ModelCounterService.myOffers/withdraw, OfferStatus RETIRADA",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF40.CA07",
-        "text": "Classes ModelOffer.highlightedBy, CounterService.highlight, SealService.nominate, SealBond.basis INDICACAO; atividades B5, W6, S18 (403 para não EMPRESA/CHEFE), S19 (crédito do autor preservado); transições ATIVA → ATIVA (destaque → INDICACAO; APROVADA → shelf CHANCELADO); componente SealService (RF39).",
+        "text": "ModelCounterService.highlight, highlightedBy, SealBondService.indicate (INDICACAO → RF39), Shelf CHANCELADO, crédito preservado",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF40.CA08",
-        "text": "Nota da classe ModelOffer (nenhum campo de moeda real), DeciaPointsLedgerEntry.correlationId, AuditLog; atividade S10 e D3/D5 (ledger + audit_log); sequência msg 30 (audit_log correlationId); nota da máquina de estados (nenhum gateway); componentes platform · AuditLog — não há componente de pagamento no diagrama.",
+        "text": "invariante: sem campo monetário, sem gateway; todo movimento é DeciaPointsLedgerEntry com AuditLog/correlationId",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -2503,61 +2503,61 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 41,
     "title": "Gerir o Acervo de Tarefas (inventário do usuário): estados, sub-filtros, ordenação, prazos legais, anexos & evidências e ações rápidas",
     "hu": null,
-    "summary": "Contexto Acervo de Tarefas (bounded context 2). Entidade central: TaskItem com TaskState RASCUNHO → DISPONIVEL → EM_USO ⇄ BLOQUEADA → CONCLUIDA → ARQUIVADA, mais MODELO_PUBLICO (só via chancela RF39 ou publicação explícita) e OFERECIDA (Balcão RF40). Toda transição passa por TaskStateMachine e grava TaskStateLog (equivalente ao wardrobe_availability_log do FAI). O Acervo é o inventário que alimenta os selects do Criador de Projetos (RF21) e os anexos de mensagem do DECIA (RF29). A criação de tarefas é o RF20.",
-    "route": "Acervo de Tarefas (/tasks), detalhe da tarefa (/tasks/[id]), Anexos & Evidências (/attachments)",
-    "coverage": "RF41.CA01 · RF41.CA02 · RF41.CA03 · RF41.CA04 · RF41.CA05 · RF41.CA06 · RF41.CA07 · RF41.CA08 · RF41.CA09",
+    "summary": "Estados (TaskState): RASCUNHO · DISPONIVEL · EM_USO (em ≥ 1 projeto ativo, automático) · BLOQUEADA · CONCLUIDA · ARQUIVADA · MODELO_PUBLICO (só via chancela RF39 ou publicação explícita) · OFERECIDA (Balcão RF40); toda transição em TaskStateLog (TaskStateMachine com tabela testada). Sub-filtros: Todas · Favoritas · Disponíveis · Em uso · Bloqueadas · Concluídas · Modelos públicos · Chanceladas · Oferecidas (+ filtros categoria, tipo, processo, natureza, departamento, accessClass, prazo, origem; ordenação recentes, mais/menos usadas, nome, prazo, valor), tudo na querystring (CA09). Prazo legal (legalDueAt, LegalDeadlineRule): card âmbar a 3 dias, vermelho vencido, ⚖, notificação PRAZO_PROXIMO/PRAZO_VENCIDO (job diário) e sugestão na Tarefa do Dia (RF44). Evidências (Evidence: foto com takenAt, geolocalização opcional AES, vínculo a tarefa/projeto, studioStatus) podem virar IMAGEM_EDITADA pelo Estúdio (RF4). Exclusão: projetos de outros mantêm ProjectTask.snapshotJson (RF23) e donos são avisados; tarefa ligada a decisão VALIDADA (FinalDecision.resultingTaskId ou nó TAREFA do rastro) não é excluída, só arquivada (409). Acervo de terceiros: VisibilityFilter + Guard (403 no resto).",
+    "route": "Acervo de Tarefas (/tasks?filtro=&categoria=&ordem=&page=), detalhe (/tasks/[id]), Anexos & Evidências (/attachments), acervo de terceiros (/u/[username]?tab=acervo)",
+    "coverage": "RF41.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs. A criação de tarefas é o RF4 (corpo em RF20); o Acervo alimenta os selects do Criador de Projetos (RF5) e os anexos do DECIA (RF29).",
     "cas": [
       {
         "id": "RF41.CA01",
-        "text": "Classes AcervoService.list/counters, TaskController.GET tasks/tasks_counters; atividades U1, W1 (skeleton + contadores), W2 → W3 (estado vazio ilustrado) / W4 (tentar de novo), S1, S2; sequência msgs 1–11 (skeleton, 503 BUSCA_INDISPONIVEL → tentar de novo, grade de cards); componentes SubFilterTabs, Skeleton, EmptyState, RetryBanner, cache-redis · contadores.",
+        "text": "AcervoService.list/counters, TaskCardView, contadores por sub-filtro em CachePort",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF41.CA02",
-        "text": "Classes TaskStateMachine (transition, onProjectActivated, onProjectTaskRemoved, canTransition), TaskStateLog, TaskItem.state/blockedBy*/version, enum TaskState; atividades S4 → E2 (422 TRANSICAO_INVALIDA), S5, S6 (EM_USO automático, MODELO_PUBLICO só via chancela/publicação); sequência msgs 21–28; máquina de estados completa (RASCUNHO → DISPONIVEL → EM_USO ⇄ BLOQUEADA → CONCLUIDA → ARQUIVADA, MODELO_PUBLICO, OFERECIDA) e nota do task_state_log; componente TaskStateMachine.",
+        "text": "TaskStateMachine.transition/onProjectActivated/onProjectLeft, TaskState, TaskStateLog, MODELO_PUBLICO só via chancela/publicação",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF41.CA03",
-        "text": "Classes AcervoService.detail, TaskAttachment, TaskVersion, ProjectTask, DecisionTraceNode, SealBond, TaskStateLog, MediaObject.variantsJson; atividades U3, W6, S3; sequência msgs 12–19 (preview, versões, projetos em uso, fio, chancelas, interações, histórico); componentes app/tasks/[id], Viewers (pdf, xlsx, imagem, dwg/dxf 2D, ifc/glb 3D), storage-s3.",
+        "text": "AcervoService.detail (preview, metadados RF4, TaskVersion, ProjectTask em uso, DecisionTraceNode, SealBond, interações, TaskStateLog)",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF41.CA04",
-        "text": "Classes LegalDeadlineRule, TaskItem.legalDeadlineRuleId/legalDeadlineBaseDate/legalDueAt, LegalDeadlineScheduler.scanUpcoming/computeLegalDueAt, Notification; atividades S12 (job diário → notificação ao responsável, Prioridade do Dia) e W11 (âmbar 3 dias, vermelho vencido, ⚖); sequência msg 11; componentes DeadlineBadge ⚖, platform · scheduler diário de prazos legais.",
+        "text": "LegalDeadlineRule, TaskItem.legalDueAt, LegalDeadlineService.scanDueSoon, Notification PRAZO_PROXIMO/PRAZO_VENCIDO, Due (âmbar · vermelho · ⚖), RF44",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF41.CA05",
-        "text": "Classes AcervoService.delete, ProjectTask.snapshotJson/removedByAuthor, FinalDecision.resultingTaskId; atividades U6, S7 → E3 (409 DECISAO_VINCULADA → S11 só ARQUIVADA), S8, S9 (snapshot preservado + Notification aos donos), S10; sequência msgs 29–37; transições CONCLUIDA/DISPONIVEL → [*] com nota sobre decisão validada.",
+        "text": "AcervoService.delete, ProjectTask.snapshotJson/removedByAuthor (RF23), FinalDecision.resultingTaskId, 409 TAREFA_EM_DECISAO, Notification TAREFA_REUTILIZADA",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF41.CA06",
-        "text": "Classes Evidence (takenAt, latitude/longitude AES, caption, linkedTaskId, linkedProjectId, studioStatus, derivedTaskId), enum StudioStatus, AcervoService.addEvidence/evidenceToTask, EvidenceController; atividades U7, W9, S13 → E4 (422 VALIDACAO), S14 (Estúdio de Documento RF20 → IMAGEM_EDITADA); componentes app/attachments, EvidenceUploader, PipelineJob (ANTIVIRUS, OCR, THUMBNAIL).",
+        "text": "Evidence (takenAt, latitude/longitude AES, linkedTaskId/ProjectId, studioStatus), EvidenceService.upload/link/toStudio, UploadGuard, OwnMedia, IMAGEM_EDITADA (RF4)",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF41.CA07",
-        "text": "Classes AcervoService.favorite/duplicate, SavedItem, TaskController (favorite, duplicate, transition), CounterService, SealService, DecisionTraceService, ProjectService; atividades U4, U5, W7, W8 (Levar ao projeto abre PhaseSelect do RF21, Compartilhar na sessão RF29, Pedir chancela RF39, Oferecer RF40, Arquivar/Repassar); sequência msgs 20–28 (arquivar oferece repasse); transições → OFERECIDA, → ARQUIVADA, → MODELO_PUBLICO; componentes QuickActions, PhaseSelect (RF21).",
+        "text": "AcervoService.quickAction (FAVORITAR · DUPLICAR · LEVAR_AO_PROJETO · COMPARTILHAR_SESSAO · PEDIR_CHANCELA · OFERECER_BALCAO · ARQUIVAR/REPASSAR), AcervoService.archive",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF41.CA08",
-        "text": "Classes TaskItem.visibility, enum Visibility, AcervoService.listForViewer/takeToMyAcervo, TaskController.GET users_id_tasks; atividades U8, W10, S15 → E1 (403 ACESSO_NEGADO), S16 (Levar ao meu acervo RF23); sequência msgs 38–44; componente app/users/[id]/tasks.",
+        "text": "VisibilityFilter.allowedFor, Guard.requireOwner (403), ação Levar ao meu acervo (RF23)",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF41.CA09",
-        "text": "Classe AcervoService.list (filters, sort, page), SearchPort; atividades U2, U9, W5 (querystring = visão restaurável, 20 por página, i18n), S1 (ordenações recentes, mais/menos usadas, nome, prazo, valor); sequência msgs 1–4 e 10 (querystring, página 20, i18n); componentes app/tasks (querystring, paginação 20), search-opensearch, platform · i18n.",
+        "text": "querystring (filtro, filtros, ordem, page), 20 por página, i18n, AcervoQuery",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -2566,69 +2566,69 @@ export const RF_CATALOG: readonly RfEntry[] = [
   {
     "id": "RF42",
     "n": 42,
-    "title": "Acumular DECIA Points por participação de qualidade no chat DECIA e usá-los em compras dentro do app (Loja Work Station: modelos do Balcão, créditos de IA, capas/skins, impulsos, kits)",
+    "title": "Acumular DECIA Points por participação de qualidade no chat DECIA e usá-los em compras dentro do app (Loja Work AI: modelos do Balcão, créditos de IA, capas/skins, impulsos, kits)",
     "hu": null,
-    "summary": "Contexto Balcão & Loja & DECIA Points (bounded context 7). Entidade central: DeciaPointsLedgerEntry (status CONFIRMADO | SUSPENSO | ESTORNADO), append-only e idempotente (idempotencyKey = eventCode + refId + userId). Regras vêm de DeciaPointsRule versionada com vigência; o lançamento guarda ruleVersionId, logo alterar a regra não altera o passado. Gastos passam por StoreService (débito atômico + entrega) e AiCreditLedgerEntry (cota comprada consumida antes da mensal). AntiFraudService suspende lançamentos para revisão do chefe. Nenhum campo de moeda real (RF42.CA10).",
-    "route": "DECIA Points (/points: saldo, extrato, regras), Loja Work Station (/store)",
-    "coverage": "RF42.CA01 · RF42.CA02 · RF42.CA03 · RF42.CA04 · RF42.CA05 · RF42.CA06 · RF42.CA07 · RF42.CA08 · RF42.CA09 · RF42.CA10",
+    "summary": "Os DECIA Points são a única moeda (sem dinheiro real, sem gateway, CA10). Ganha-se só por participar bem no DECIA: PointsEvent ARGUMENTO_EVIDENCIA (+5, teto 10 msgs/dia/sessão) · CONSENSO (+3) · DIVERGENCIA_RESOLVIDA (+8) · PERGUNTA_RESPONDIDA (+4) · ARTEFATO_USADO (+6 ao autor) · DECISAO_VALIDADA (+15 × multiplicador 0,5–2,0 do perfil deliberativo) · PRESENCA_ENCERRADA (+2) · REACAO_QUALIDADE (+2, teto 20/dia) · ATA_RATIFICADA/ENCAMINHAMENTO_CUMPRIDO (+3/+5) · BENEFICIO_BONUS · META_ATINGIDA; não pontuam ruído, auto-reação, sessão de teste (User.testAccount), repetidas (similarityHash > 90 %). Cada evento confirmado pela IA vira 1 DeciaPointsLedgerEntry idempotente (idempotencyKey = tipo + id do evento + usuário, correlationId, ruleVersionId); regras em DeciaPointsRule versionada (ADMIN/EMPRESA, vigência; não altera o passado). Gasto: StoreItem (StoreItemKind) → StorePurchase transacional (409 SALDO_INSUFICIENTE / ITEM_INDISPONIVEL) com entrega (modelo copiado, AiCreditLedgerEntry, UserSkin, impulso MuralEntry.boostUntil); Balcão credita o autor no mesmo lançamento (RF40). Antifraude suspende (LedgerStatus SUSPENSO) para o chefe confirmar/estornar; expiração (expiresAt, aviso 30 dias) e doação com limite mensal (PointsDonation).",
+    "route": "DECIA Points (/points: saldo, extrato, regras, gráfico mensal), Loja Work AI (/store), extrato por sessão no perfil deliberativo (/profile?tab=decia-points), fila de suspensos do chefe (/moderation), dashboard (/admin/dashboard, /issuer/dashboard)",
+    "coverage": "RF42.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs. Proposta de nova redação e economia em docs/produto/DECIA_POINTS.md (não adotada aqui; os valores abaixo são os do card).",
     "cas": [
       {
         "id": "RF42.CA01",
-        "text": "Classes DeciaPointsLedgerEntry (idempotencyKey, delta, eventCode, sessionId, correlationId), DeciaPointsService.award, AiEngine (confirma classificação), enum PointsEvent; atividades I1, I2, S1, S2 → X1 (idempotente), S7; sequência msgs 1–9 e 15–18 (chave única, reprocessar não duplica); transição [*] → fraud → CONFIRMADO; componentes DomainEventOutbox (AFTER_COMMIT).",
+        "text": "DeciaPointsService.award, DeciaPointsLedgerEntry (delta, eventCode, sessionId, idempotencyKey, correlationId), PointsEvent, unique idempotencyKey",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF42.CA02",
-        "text": "Classes DeciaPointsRule (points, dailyCap, weeklyCap, perSessionCap, oncePerRef, validFrom/validTo, editedBy), DeciaPointsLedgerEntry.ruleVersionId/qualityMultiplier, RulesRepository.activeRule, DeliberativeProfile; atividades S3, S4 → X2, S5; sequência msgs 9–11 (regra vigente em occurredAt, teto); nota da máquina de estados (nova versão não recalcula); componentes AdminRulesController, RulesRepository.",
+        "text": "DeciaPointsRule (points, caps, validFrom/To, editedBy), PointsRuleEngine.resolve/applyCaps/multiplier, ruleVersionId, qualityMultiplier",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF42.CA03",
-        "text": "Classes DeciaPointsService.balance/ledger, PointsController (balance, ledger, rules, monthly); atividades U2, W1 (i18n); componentes app/points, LedgerTable, RulesPlainText, MonthlyChart, platform · i18n.",
+        "text": "DeciaPointsService.balance/statement, PointsController, regras vigentes, série mensal, i18n",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF42.CA04",
-        "text": "Classes StoreItem, StorePurchase (pricePaid, ledgerEntryId, deliveryJson, status, idempotencyKey), StoreService.purchase/deliver, enums StoreItemKind, PurchaseStatus; atividades U3, W2, S10, S11 → E2 (409 ITEM_INDISPONIVEL), S12 → E1 (409 SALDO_INSUFICIENTE), S13 (transação atômica + entrega); sequência msgs 19–32; componentes StoreController, StoreItemCard, cache-redis · locks.",
+        "text": "StoreService.purchase/deliver (transação atômica), StoreItem, StorePurchase (idempotencyKey, deliveryJson), 409 SALDO_INSUFICIENTE / ITEM_INDISPONIVEL",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF42.CA05",
-        "text": "Classes DeciaPointsService.transfer, DeciaPointsLedgerEntry.counterpartyUserId, CounterService; atividade S13 (MODELO_BALCAO → crédito VENDA_BALCAO ao autor no mesmo lançamento, respeitando a licença); componente CounterService (RF40) · entrega MODELO_BALCAO. Detalhe da transferência no RF40 §3.",
+        "text": "DeciaPointsService.transfer (COMPRA_LOJA + VENDA_BALCAO, counterpartyUserId), licença RF40",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF42.CA06",
-        "text": "Classes AiCreditLedgerEntry (source COMPRA/CONSUMO), AiQuota.purchasedCredits/consumed/monthlyLimit, DeciaPointsService.consumeAiQuota; atividades U4, S14, S15, W6 (origem da cota, aviso + Loja); sequência msgs 33–41 (crédito antes da mensal, 409 COTA_ESGOTADA); componentes QuotaSourceBadge, AiEngine · consome cota, cache-redis · quota mensal.",
+        "text": "AiCreditLedgerEntry, AiQuota.purchasedCredits, AiQuotaService.consume, quotaSource CREDITO, aviso + Loja",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF42.CA07",
-        "text": "Classes AntiFraudService (isRepeated, isCollusion, isFakeSession), DeciaPointsLedgerEntry.status/suspendedReason/reviewedBy, SessionMessage.similarityHash, Reaction.ignoredReason, User.testAccount, DeciaPointsService.review; atividades S6 → S8, U6, W4, S18 → E4; sequência msgs 12–14; estados SUSPENSO → CONFIRMADO / ESTORNADO e nota do saldo; componente ReviewQueue.",
+        "text": "AntiFraudService.check/suspend/review, LedgerStatus SUSPENSO/ESTORNADO, User.testAccount, SessionMessage.similarityHash, Guard.requireDeptHead, AuditLog",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF42.CA08",
-        "text": "Classes DeciaPointsLedgerEntry.eventCode/sessionId, DeliberativeProfile, AiCreditLedgerEntry.departmentId; atividade W5 (perfil deliberativo por evento/sessão, dashboard por departamento e custo de IA); componentes app/profile, app/admin e app/companies.",
+        "text": "extrato por tipo de evento e por sessão no perfil deliberativo (RF19/RF43), pontos por departamento e custo de IA no dashboard (RF18/RF28)",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF42.CA09",
-        "text": "Classes Company.pointsPolicyJson, DeciaPointsLedgerEntry.expiresAt, PointsDonation (monthKey, ledgerDebitId, ledgerCreditId), DeciaPointsService.expire/donate, eventos EXPIRACAO, DOACAO_ENVIADA, DOACAO_RECEBIDA; atividades U5, W3, S16 → E3 (409 LIMITE_DOACAO), S17 (doador sem ganho), S19 (job mensal, aviso 30 dias); estado composto CONFIRMADO (Vigente → AvisoExpiracao → Expirado); componente scheduler mensal de expiração.",
+        "text": "DeciaPointsLedgerEntry.expiresAt, DeciaPointsService.expire/donate, PointsDonation (monthKey, limite), Company.pointsPolicyJson, lançamento EXPIRACAO",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF42.CA10",
-        "text": "Nota da classe DeciaPointsLedgerEntry (sem moeda real), AuditLog.correlationId; atividade D5 e S18 (audit_log); sequência msg 31 (audit_log correlationId, sem dados sensíveis); componente platform · AuditLog — nenhum componente de gateway ou campo monetário em qualquer diagrama.",
+        "text": "invariante sem moeda real/gateway; AuditLog com correlationId e metadataJson sanitizado em todo lançamento",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -2639,97 +2639,97 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 43,
     "title": "Usar a IA do sistema — insights do Acervo e do Perfil, ranking de usuários, motor do DECIA e Autopilot para criar tarefas e sugerir novos projetos com custo, tempo, prazo e viabilidade (EVM, CPM, PERT, Monte Carlo, ROI, matriz de risco)",
     "hu": null,
-    "summary": "Contexto IA do sistema (bounded context 10). Núcleo: AiEngine (Strategy + Chain of Responsibility: ClaudeAdapter → GeminiAdapter → LocalEngine) com AiProviderCircuitState (CLOSED → OPEN → HALF_OPEN), retry/timeout, AiQuota (mensal + créditos comprados, RF42) e FeatureFlag por função. Privacidade: accessClass RESTRITO/SIGILOSO nunca sai para provedor externo. Regra de ouro: a IA só redige sobre números calculados por serviços de domínio testáveis (MetricDefinition, FeasibilityService), nunca inventa. Entidades de saída: Insight, RankingEntry, FeasibilitySheet (status PROPOSTA → ACEITA | DESCARTADA), AiInferenceLog.",
-    "route": "Insights (/insights: Acervo · Perfil · Equipe · Ranking · Projetos sugeridos), Autopilot (/autopilot, estende o RF30), painel \"IA do sistema\" no admin (RF18)",
-    "coverage": "RF43.CA01 · RF43.CA02 · RF43.CA03 · RF43.CA04 · RF43.CA05 · RF43.CA06 · RF43.CA07 · RF43.CA08 · RF43.CA09 · RF43.CA10 · RF43.CA11 · RF43.CA12 · RF43.CA13 · RF43.CA14 · RF43.CA15",
+    "summary": "Motor (AiEngine, ARQUITETURA §3.1): AiRequest(capability, hostRf, userId, deptId, accessClass, payload, mode) → governança (feature flag por função, AccessClassification RESTRITO/SIGILOSO só LocalEngine, Masking de dados pessoais — existe no main —, AiQuota em Redis, AiBudget teto diário Q-50, consentimento) → Claude (primário) → Gemini (alternativo) → LocalEngine (regras, embeddings locais, PERT/CPM/Monte Carlo/EVM); circuit breaker + retry + timeout (Resilience4j, AiProviderCircuitState); sempre AiInferenceLog (ai_inference_log já existe no V2). Regra de ouro (D-12): a IA só interpreta números calculados pelo sistema — MetricCalculator + MetricDefinition (catálogo §8 em docs/arquitetura/METRICAS_GESTAO.md: fórmula, fonte, proxy, minSamples) → MetricSnapshot → Insight (ACERVO · PERFIL · EQUIPE · PROJETO, metricRefsJson, actionsJson), RankingEntry (dimensões separadas, RankingWeights públicos, rankingOptOut, \"Explique minha posição\"), FeasibilitySheet (custo P10/P50/P90, PERT/CPM, Monte Carlo 1.000 execuções, score decomposto, top 5 riscos, WBS, RACI, premissas e desconhecidos). Nada vira decisão, chancela, ranking oficial ou projeto sem confirmação humana.",
+    "route": "Insights (/insights: Acervo · Perfil · Equipe · Ranking · Projetos sugeridos), Autopilot (/autopilot, estende RF30), sessão em modo Avançado (/decia/[sessionId]), painel admin IA do sistema (/admin/ai, RF18), página \"Como o ranking é calculado\"",
+    "coverage": "RF43.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 · CA15 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs.",
     "cas": [
       {
         "id": "RF43.CA01",
-        "text": "Classes AiEngine.chain, AiProviderPort + ClaudeAdapter/GeminiAdapter/LocalEngine, CircuitBreaker, AiProviderCircuitState, AiInferenceLog (provider, model, estimatedCostUsd, latencyMs, result FALLBACK, fallbackUsed, correlationId); atividades I5–I10, I12; sequência msgs 15–26 (primário falha → alternativo → local, log completo); máquina de estados AiProviderCircuitState (CLOSED → OPEN → HALF_OPEN); componentes ai-providers, FallbackBanner, cache-redis · circuit state.",
+        "text": "AiEngine.chain, CircuitBreakerPort, AiProviderCircuitState, AiInferenceLog (model, cost, latency, fallbackUsed, correlationId), aviso de fallback",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF43.CA02",
-        "text": "Classes TaskItem.accessClass, AiEngine.guardPrivacy, AiInferenceLog.maskedFields/result BLOQUEADO_SIGILO, enum InferenceResult; atividades I2 → I10, I3; sequência msgs 12–14 (LocalEngine, BLOQUEADO_SIGILO, maskedFields); componente ai-providers · PII masker.",
+        "text": "AiGovernance.accessClassRoute/mask, Masking (main), InferenceResult BLOQUEADO_SIGILO, maskedFieldsJson",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF43.CA03",
-        "text": "Classes Insight (scope ACERVO, metricRefsJson, actionsJson, severity), InsightService.acervo/applyAction; atividades U5, W4, S9 (Score 0–100 com decomposição, paradas, duplicadas, fantasma, lacunas, modelos recomendados, ações 1 clique); componentes ScoreBreakdown, OneClickAction, app/insights.",
+        "text": "InsightService.acervo/applyAction, Insight scope ACERVO (Score, paradas, duplicadas, fantasma, lacunas, modelos recomendados, actionsJson), MetricCalculator",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF43.CA04",
-        "text": "Classes InsightService.perfil(userId, consent), Insight.scope PERFIL; atividades S10 → E2 (403 só o dono), S12 (comparação anonimizada, resumo profissional só com consentimento); componente InsightController.GET insights_perfil.",
+        "text": "InsightService.perfil, UserConsent RESUMO_PROFISSIONAL_IA (403 CONSENTIMENTO_NECESSARIO), comparação anonimizada, DeliberativeProfile",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF43.CA05",
-        "text": "Classes RankingEntry (dimension, position, explanationJson), RankingWeights (weightsJson, criteriaPublicText, validFrom, editedBy), User.rankingOptOut, enum RankingDimension (7 dimensões), RankingService.compute/explain/updateWeights; atividade S13 (volume bruto nunca é critério); sequência msgs 43–49 (explain-me, opt-out); componentes RankingTable + ExplainMe, PipelineJob RECALC_RANKING, AuditLog (pesos com vigência).",
+        "text": "RankingService.compute/explain/optOut/updateWeights, RankingEntry.dimension/explanationJson, RankingWeights (vigência, editedBy), User.rankingOptOut (main), nunca volume bruto",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF43.CA06",
-        "text": "Classes DeciaSession.aiMode, enum AiMode, Citation, AiEngine.guardQuota (créditos → cota → DECIA Points), AiQuota; atividade I4 (modo AVANCADO debita cota ou DP com aviso) e E3; componentes SessionService · modo ECONOMIA/AVANCADO · citações RF33, search-opensearch · ws-memory.",
+        "text": "DeciaSession.aiMode AVANCADO, CitationService (RF33), métricas reais do projeto na sessão, débito de cota/DP com aviso",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF43.CA07",
-        "text": "Classes AutopilotService.tasksFrom, TaskItem (state RASCUNHO, sourceKind AUTOPILOT, aiGenerated), AiCapability.AUTOPILOT_TAREFAS; relação AutopilotService → AiEngine (AUTOPILOT_TAREFAS); componente AutopilotController.POST autopilot_tasks — nada vira DISPONIVEL sem revisão (RF20/RF41).",
+        "text": "AutopilotService.tasksFrom, TaskItem RASCUNHO (tipo, categoria, prazo legal, responsável, dependências), nada DISPONIVEL sem revisão (RF4)",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF43.CA08",
-        "text": "Classes FeasibilitySheet (costJson P10/P50/P90, timeJson PERT/CPM, deadlineJson Monte Carlo 1000, viabilityScoreJson, risksJson top 5, wbsJson, raciJson, assumptionsJson, unknownsJson), FeasibilityService (7 métodos), AutopilotService.suggestProjects(max5); atividades S1, S2, S3, W2, U2; sequência msgs 1–7 e 27–29 (até 5 fichas ordenadas); transição [*] → PROPOSTA; componentes FeasibilityCard, RiskMatrix.",
+        "text": "AutopilotService.projectCandidates, FeasibilityService.build, FeasibilitySheet (costJson P10/P50/P90, timeJson PERT/CPM, deadlineJson Monte Carlo 1.000, viabilityScoreJson, risksJson top 5, wbsJson, raciJson, assumptionsJson, unknownsJson), até 5 por viabilidade",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF43.CA09",
-        "text": "Classes ProjectScheme.evmJson/criticalPathJson, ProjectTask (plannedValue, earnedValue, actualCost, isCritical, slackDays), FeasibilityService.evm/cpm; atividade S14 (EVM PV, EV, AC, CPI, SPI, EAC, ETC, VAC, TCPI, burndown, alerta SPI menor que 0,9 há 2 semanas → Simulador RF31); componentes EvmPanel, AutopilotController.GET projects_id_evm.",
+        "text": "MetricCalculator.evm/cpm, ProjectScheme.evmJson/criticalPathJson, burndown/fluxo cumulativo, alerta SPI → RF31",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF43.CA10",
-        "text": "Classes FeasibilitySheet.status/discardReason/resultingProjectId/resultingTaskId, AutopilotService.accept/discard, ProjectScheme.origin AUTOPILOTO, TaskItem ESTUDO_TECNICO_PRELIMINAR; atividades U3, W3, S4 → S5/S6, S7 → E1 (422 MOTIVO_OBRIGATORIO), S8; sequência msgs 30–42; transições PROPOSTA → ACEITA / DESCARTADA e nota.",
+        "text": "AutopilotService.accept/discard, ProjectScheme RASCUNHO origin AUTOPILOTO, TaskType ESTUDO_TECNICO_PRELIMINAR, FeasibilitySheet.discardReason, sessão DECIA (RF29)",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF43.CA11",
-        "text": "Nota de FeasibilityService (determinístico, sem chave externa), LocalEngine; atividades I1 → I10 (flag desabilitada ou sem provedor → motor local, redação simplificada com aviso); sequência msgs 12–14 e 19–21; componentes ws-domain · FeasibilityService, MetricCalculator, FeatureFlag ai.local.only.",
+        "text": "LocalEngine executa PERT, CPM, Monte Carlo, EVM, scores e métricas integralmente; só redação simplificada",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF43.CA12",
-        "text": "Classes AiInferenceLog (estimatedCostUsd, latencyMs, capability, departmentId, fallbackUsed, quotaSource), AiQuota, FeasibilitySheet.status (taxa de aceitação), AdminAiController; atividades U6, W6; componente app/admin/ai.",
+        "text": "AdminAiController, agregados de AiInferenceLog por capability/departamento, taxa de fallback, taxa de aceitação, AiQuota, alertas de custo",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF43.CA13",
-        "text": "Classes MetricDefinition (code, domain, formula, sourceDescription, proxyNote, unit, minSamples), MetricSnapshot, MetricCalculator, Insight.metricRefsJson; atividades S12 (fórmula, fonte, proxy) e I11 (redige só sobre números calculados, cita métrica e valor); nota de MetricCalculator; componente ws-domain · MetricCalculator por métrica A–D (METRICAS_GESTAO.md).",
+        "text": "MetricDefinition (code, formula, sourceDescription, proxyNote, minSamples), MetricCalculator por domínio com testes unitários, METRICAS_GESTAO.md, IA cita a métrica",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF43.CA14",
-        "text": "Classes InsightService.equipe(departmentId, viewer), Insight.scope EQUIPE, MetricDefinition.minSamples; atividades S10 (CHEFE/EMPRESA) → E2, S11 (pesquisas D: mínimo 5 respondentes), S12 (benchmarks internos anonimizados, tendência, recomendações acionáveis); componente InsightController.GET insights_equipe.",
+        "text": "InsightService.equipe, Insight scope EQUIPE (carga, gargalos, segurança psicológica, rede, bus factor, eNPS), SurveyService (anônimas, mínimo 5), benchmarks anonimizados, Guard.requireDeptHead/requireRole EMPRESA",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF43.CA15",
-        "text": "Classe MetricDefinition.minSamples (A/B: 3 projetos ou sinais); atividades S11 → W5 (tela explica o que falta coletar em vez de números vazios); componente InsufficientDataState.",
+        "text": "MetricDefinition.minSamples, mínimo 3 projetos/sinais para domínios A e B, EmptyState explicativo",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -2740,67 +2740,67 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 44,
     "title": "Receber a Tarefa do Dia sugerida pela IA e acompanhar o Hype Score de Eficiência (previsto × realizado), calculado por princípios de gestão empresarial e de projetos, com feedback diário e semana planejada",
     "hu": null,
-    "summary": "Contexto Gamificação & Reputação (bounded context 9). Entidade central: DailyTask (única por userId + taskDate), com priorityIndexJson (Eisenhower, WSJF, folga CPM, MoSCoW, Pareto, conselho de WIP), hsePredictedJson × hseRealizedJson e feedback (DailyFeedback CONCLUI | ADIEI | BLOQUEADA | DELEGUEI). Os cálculos são serviços de domínio determinísticos e testáveis (PriorityIndexCalculator, HseCalculator) com pesos versionados em HseWeights por EMPRESA; o AiEngine só redige a explicação (✦) e cai para o motor local sem perder nenhum número (RF44.CA09). WeekPlan/WeekPlanDay compõem a semana planejada.",
-    "route": "sub-aba \"Tarefa do Dia\" no perfil (RF19) e widget no topo do Acervo (RF41) e da Mesa (RF22)",
-    "coverage": "RF44.CA01 · RF44.CA02 · RF44.CA03 · RF44.CA04 · RF44.CA05 · RF44.CA06 · RF44.CA07 · RF44.CA08 · RF44.CA09 · RF44.CA10",
+    "summary": "DailyTask (único userId + taskDate; taskId entre as DISPONIVEL/EM_USO; priorityIndexJson {eisenhower, wsjf, cpmSlack, moscow, pareto, wipAdvice}; hsePredictedJson / hseRealizedJson {total, components[]}; feedback DailyFeedback CONCLUI · ADIEI · BLOQUEADA · DELEGUEI; actualHours, swapReason, swappedFromTaskId, delegatedToUserId, blockedByRef, aiInferenceId). O índice de prioridade (Eisenhower × WSJF × folga CPM × MoSCoW/Pareto × WIP/Little's Law, UserPreferences.wipLimit padrão 3) e o HSE (0–100: eficiência 20 · eficácia 20 · valor WSJF 15 · pontualidade SPI 15 · qualidade 15 · impacto na equipe 10 · foco 5, HseWeights por EMPRESA com versão) são serviços de domínio determinísticos (PriorityIndexService, HseCalculator, D-12, METRICAS_GESTAO.md); a IA (TAREFA_DO_DIA, HSE) só redige a explicação ✦. EfficiencyScoreSnapshot guarda o HSE diário e a média móvel de 7 dias; WeekPlan/WeekPlanDay a semana (prazos legais, reuniões Google/Microsoft, carga ≤ 80 %, streak, fechamento de sexta). Feedback CONCLUI → TaskStateMachine CONCLUIDA (RF41) e notifica dependentes; BLOQUEADA cria dependência; DELEGUEI cria Assignment (RF46) com rastro.",
+    "route": "sub-aba Tarefa do Dia no perfil (/profile?tab=tarefa-do-dia), widget no topo do Acervo (/tasks) e da Mesa (/desk), Semana planejada (/profile?tab=semana), notificação diária às 8h (preferências RF3)",
+    "coverage": "RF44.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs.",
     "cas": [
       {
         "id": "RF44.CA01",
-        "text": "Classes DailyTask (único userId + taskDate, priorityIndexJson, hsePredictedJson), DailyTaskService.getOrCreate, PriorityIndexCalculator.rank, HseCalculator.predict; atividades U1, W1, S1, S2, S3, P1–P4, H1, S6, U2; sequência msgs 1–17 (lock, índice único, 201 com decomposição); transição [*] → Sugerida; componentes ProtocolTicket, PriorityBreakdown, HseGauge.",
+        "text": "DailyTask (único userId+taskDate, priorityIndexJson, hsePredictedJson), DailyTaskService.today, PriorityIndexService.rank, HseCalculator.predict",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF44.CA02",
-        "text": "Classes DailyTask.swapReason/swappedFromTaskId, DailyTaskService.swap, PriorityIndexCalculator.rank(candidates, userWeights); atividades U4, W2, S7 → E1 (422 MOTIVO_OBRIGATORIO), S8 (ajusta pesos pessoais); sequência msgs 18–24; transição Sugerida → Sugerida (swap).",
+        "text": "DailyTaskService.swap, swappedFromTaskId, swapReason (422 sem motivo), ajuste de pesos pessoais",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF44.CA03",
-        "text": "Classes DailyTask.feedback/actualHours/hseRealizedJson, HseCalculator.realize, TaskStateMachine, EfficiencyScoreSnapshot, ProjectTaskDependency; atividades U5, W3, S9 → S10 (HSE realizado, ▲▼, CONCLUIDA, notifica dependentes, movingAvg7); sequência msgs 25–36; transições Sugerida → CONCLUI e EM_USO/DISPONIVEL → CONCLUIDA.",
+        "text": "DailyTaskService.feedback CONCLUI, actualHours, HseCalculator.realize, hseRealizedJson, EfficiencyScoreSnapshot, TaskStateMachine → CONCLUIDA, notificação a dependentes",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF44.CA04",
-        "text": "Classes DailyTask.blockedByRef/delegatedToUserId, TaskItem.blockedByTaskId/blockedByUserId, TaskStateLog; atividades U6–U8, S11, S12 (sem penalizar bloqueio de terceiro → insight de equipe, dependência com rastro), S13 (transferência com TaskStateLog); transições Sugerida → ADIEI / BLOQUEADA / DELEGUEI e EM_USO → BLOQUEADA, EM_USO → EM_USO (DELEGUEI).",
+        "text": "feedback ADIEI/BLOQUEADA/DELEGUEI, componentes aplicáveis, blockedByRef, blockedByTaskId/UserId, delegatedToUserId, AssignmentService.propose (RF46) com rastro",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF44.CA05",
-        "text": "Classes UserPreferences.wipLimit (padrão 3), PriorityIndexCalculator.wipAdvice, HseCalculator.foco; atividades S4 → S5 (prioriza concluir EM_USO, explica com Little's Law); sequência msgs 8–9.",
+        "text": "PriorityIndexService.wipAdvice, UserPreferences.wipLimit (padrão 3), Little's Law",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF44.CA06",
-        "text": "Classes WeekPlan (streak, closingHse, recommendation), WeekPlanDay (sortOrder, meetingsJson, loadPct), CalendarPort, DailyTaskService.weekPlan/reorder/closeFriday; atividades U9, W4, S14 (prazos legais, reuniões, carga até 80%, reordenar persiste, sexta); sequência msgs 37–42; componentes WeekBoard (drag), StreakBadge, Google Workspace Calendar · Microsoft 365 Calendar.",
+        "text": "WeekPlan, WeekPlanDay (meetingsJson, loadPct), WeekPlanService.week/reorder/closeFriday, CalendarPort, streak",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF44.CA07",
-        "text": "Classes DailyTaskService.history, EfficiencyScoreSnapshot.movingAvg7; atividades U10, W5, S15 (30 dias, previsto × realizado, média móvel 7 d, gráfico de componentes); componentes app/profile (histórico 30 d), ComponentBars.",
+        "text": "DailyTaskService.history (30 dias), EfficiencyScoreSnapshot.movingAvg7, gráfico de componentes",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF44.CA08",
-        "text": "Classes HseWeights (companyId, version, weightsJson, validFrom), EfficiencyScoreSnapshot.weightsVersion, PriorityIndexCalculator e HseCalculator em ws-domain; notas das classes (determinístico, testável, METRICAS_GESTAO.md, mudar pesos não recalcula dias passados); lane L_dom; componentes ws-domain · PriorityIndexCalculator, HseCalculator (HseWeights versionado).",
+        "text": "HseWeights (companyId, version, weightsJson, validFrom), HseWeightsController, METRICAS_GESTAO.md, serviços de domínio testáveis, passado não recalcula",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF44.CA09",
-        "text": "Classes DailyTask.suggestedByAi/aiInferenceId, AiInferenceLog, AiCapability TAREFA_DO_DIA e HSE; atividades I1 → I2 (✦) / I3 (motor local, números inalterados), I4; sequência msgs 11–13; componentes AiSpark ✦, LocalEngine (redação simplificada).",
+        "text": "DailyTask.aiInferenceId, AiCapability TAREFA_DO_DIA/HSE, LocalEngine determinístico com redação simplificada, faísca ✦",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF44.CA10",
-        "text": "Classes UserPreferences.notificationPrefsJson (dailyTaskAt 08:00)/timezone, Notification, NotificationPort; atividade W6 (notificação 8h no fuso, opt-in, i18n); componentes platform · scheduler 8h por fuso, persistence-cassandra · notifications_by_user, i18n.",
+        "text": "UserPreferences.notificationPrefsJson.dailyTaskAt (08:00) e timezone (RF3), Notification TAREFA_DO_DIA, i18n",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -2811,67 +2811,67 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 45,
     "title": "Calcular com a IA o Hype Score do Perfil (0–1000) a partir de tudo o que o usuário produziu, das interações recebidas (curtidas, reações, comentários, salvos, remixes) e da participação no DECIA — exibível ou oculto a critério do usuário, sempre explicável",
     "hu": null,
-    "summary": "Contexto Gamificação & Reputação (bounded context 9). Entidade central: ProfileHypeScore (única por userId + scoreDate, idempotencyKey), com blocksJson em 5 blocos (produção 25, reconhecimento social 25, participação DECIA 25, eficiência e impacto 15, reconhecimentos e chancelas 10), bayesianPriorsJson, halfLifeDays 180, percentileInDept, bandCode (HypeBand). Eventos descartados vão para HypeIgnoredEvent (NAO_VERIFICADO, AUTO_INTERACAO, ANTIFRAUDE). Visibilidade em User.hypeVisibility (HypeVisibility PUBLICO | EMPRESA | SO_EU, padrão SO_EU). O job diário é PipelineJob RECALC_HYPE → HypeScoreService; a IA só redige a explicação.",
-    "route": "cabeçalho do perfil (RF19) com o selo do Hype Score (se exibido), página /profile/hype (só o dono) com a decomposição",
-    "coverage": "RF45.CA01 · RF45.CA02 · RF45.CA03 · RF45.CA04 · RF45.CA05 · RF45.CA06 · RF45.CA07 · RF45.CA08 · RF45.CA09 · RF45.CA10",
+    "summary": "ProfileHypeScore (único userId + scoreDate; score 0–1000; bandCode → HypeBand Iniciante · Contribuinte · Referência · Líder de prática · Lenda do departamento, nomes editáveis pela EMPRESA; blocksJson produção 25 % · reconhecimento social 25 % · participação no DECIA 25 % · eficiência e impacto 15 % · reconhecimentos e chancelas 10 %; bayesianPriorsJson, halfLifeDays 180, percentileInDept, topPositiveEventsJson, topNegativeEventsJson, suggestionsJson, weightsVersion, aiInferenceId, idempotencyKey). Regras estatísticas em HypeCalculator (determinístico, D-12, METRICAS_GESTAO.md seção Hype): média bayesiana por bloco, decaimento meia-vida 180 d, normalização por departamento/empresa (percentil), tetos por dia, ponderação PageRank pela reputação de quem interage (Reaction.actorHypeAtTime do mês anterior, ≤ 3× o peso base), antifraude compartilhado com RF42 (HypeIgnoredEvent NAO_VERIFICADO · AUTO_INTERACAO · ANTIFRAUDE, só User.verified). Exibição: User.hypeVisibility PUBLICO · EMPRESA · SO_EU (padrão; existe no main: HypeVisibility) — a API omite o campo ou responde 403 a quem não pode ver; ocultar não impede o cálculo nem o ranking (RF43, que respeita rankingOptOut). A IA (HYPE_PERFIL) só redige a explicação ✦. Política de uso (LGPD): indicador de reputação e desenvolvimento, não instrumento disciplinar (Company.hypePolicyJson); revisão de decisão automatizada via DataSubjectRequest target HYPE (RF3).",
+    "route": "selo no cabeçalho do perfil (/profile, /u/[username], se exibido), página Por que meu Hype é X? (/profile/hype, só o dono), aba \"ignoradas\", página pública \"Como o Hype é calculado\" (/hype/como-e-calculado), controle de exibição em /settings (RF3), recalibração da EMPRESA (/hype/recalibration), histograma no dashboard (/admin/dashboard, /issuer/dashboard)",
+    "coverage": "RF45.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs.",
     "cas": [
       {
         "id": "RF45.CA01",
-        "text": "Classes ProfileHypeScore (scoreDate, score 0–1000, weightsVersion, blocksJson, idempotencyKey), HypeScoreService.recalculate/runDailyJob, PipelineJob RECALC_HYPE; atividades J1, U1, S1 → X1 (idempotente), S2, S6; sequência msgs 1–4 e 16 (lock, no-op se já calculado, UPSERT); máquina de estados PipelineJob RECALC_HYPE; componentes platform · scheduler diário · PipelineJob RECALC_HYPE.",
+        "text": "ProfileHypeScore (único userId+scoreDate, score, weightsVersion, blocksJson, idempotencyKey), HypeScoreService.recalculateAll/recalculate, PipelineJob RECALC_HYPE",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF45.CA02",
-        "text": "Classes HypeCalculator.bayesianMean/decay, ProfileHypeScore.bayesianPriorsJson/halfLifeDays; atividades H1 (0,5^(dias ÷ 180), nunca zera), H2 (prior do departamento, flag amostra pequena); sequência msgs 11–12; componente SmallSampleHint.",
+        "text": "HypeCalculator.bayesian/decay, bayesianPriorsJson, halfLifeDays 180, flag amostra pequena",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF45.CA03",
-        "text": "Classes HypeIgnoredEvent (eventType, eventId, reason), enum IgnoredReason, User.verified, AntiFraudService (isVerified, isSelfInteraction, isCollusion), Reaction.ignoredReason; atividades S3 → S4 (aba ignoradas com motivo); sequência msgs 9–10; componentes IgnoredEventsTable, HypeController.GET profile_hype_ignored, AntiFraudService (RF42).",
+        "text": "AntiFraudService.isIgnored, HypeIgnoredEvent (IgnoredReason NAO_VERIFICADO · AUTO_INTERACAO · ANTIFRAUDE), User.verified, aba ignoradas",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF45.CA04",
-        "text": "Classes HypeCalculator.reputationWeight(actorHypePrevMonth, base, cap3x), Reaction.actorHypeAtTime; atividade S5 (Hype do autor no mês anterior, cap 3×); sequência msgs 7 e 11 (Hype dos autores no mês anterior, cap 3x).",
+        "text": "HypeCalculator.actorWeight, Reaction.actorHypeAtTime (mês anterior, ≤ 3× base)",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF45.CA05",
-        "text": "Classes ProfileHypeScore.topPositiveEventsJson/topNegativeEventsJson/suggestionsJson/aiInferenceId, HypeScoreService.explain, AiCapability HYPE_PERFIL, AiInferenceLog; atividades U1, W1, H5, I1, I2; sequência msgs 13–16 e 21–26 (score, faixa, blocos, 12 meses, top 5 ±, 3 sugestões ✦); componentes app/profile/hype, BlockBreakdown, HypeHistoryChart, TopEventsList, AiSpark ✦.",
+        "text": "HypeScoreService.explain, histórico 12 meses, topPositiveEventsJson/topNegativeEventsJson/suggestionsJson, AiCapability HYPE_PERFIL, aiInferenceId",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF45.CA06",
-        "text": "Classes User.hypeVisibility, enum HypeVisibility (PUBLICO, EMPRESA, SO_EU padrão), HypeScoreService.visibleTo, PreferencesController; atividades U2, W2, U3, W3, S8, S9, S10 → E1 (403 / campo omitido); sequência msgs 27–36; máquina de estados User.hypeVisibility; componentes HypeBadge, app/settings/preferences.",
+        "text": "User.hypeVisibility (HypeVisibility, main), HypeScoreService.visibleTo, Guard.requireSameCompany, 403/omissão do campo",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF45.CA07",
-        "text": "Classes Company.hypePolicyJson, HypeBand.name/min/max, ProfileHypeScore.weightsVersion, HypeScoreService.updatePolicy, CompanyPolicyController, AuditLog; atividades U4, W4, S11 → E2 (422), W6 (página pública); sequência msgs 37–42 (weightsVersion+1, validFrom futuro, audit_log, meses passados não recalculados); nota da máquina de estados Band; componente app/hype/how-it-works.",
+        "text": "HypePolicyService.update, Company.hypePolicyJson (pesos, meia-vida, faixas, validFrom), HypeBand, AuditLog HYPE_POLICY_UPDATED, página \"Como o Hype é calculado\"",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF45.CA08",
-        "text": "Classes RankingEntry (dimension HYPE_PERFIL), User.rankingOptOut, RankingService.compute; atividade S7 (exclui opt-out, nunca expõe número de quem é SÓ EU); sequência msgs 17–19 (ranking sem o número de quem é SO_EU); nota da máquina de estados Vis; componentes RankingService (RF43) · HYPE_PERFIL, cache-redis · ranking HYPE_PERFIL.",
+        "text": "RankingService dimensão HYPE_PERFIL, User.rankingOptOut, nunca expõe SO_EU",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF45.CA09",
-        "text": "Classe HypeCalculator em ws-domain (bayesianMean, decay, normalizePercentile, reputationWeight, blocks, band) com nota (determinístico, testável, METRICAS_GESTAO.md seção Hype do Perfil); lane L_dom (H1–H5); atividade I1 (IA só redige); componente ws-domain · HypeCalculator — testes unitários.",
+        "text": "HypeCalculator determinístico com testes unitários (bayesiana, decaimento, normalização, antifraude), METRICAS_GESTAO.md, IA só redige",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF45.CA10",
-        "text": "Classes DashboardController.GET dashboard_hype_distribution, MetricSnapshot; atividades U5, W5, S12 (histograma anonimizado por departamento, evolução média, nunca lista nominal de quem ocultou); componentes HypeHistogram, app/admin e app/companies (dashboard).",
+        "text": "HypeScoreService.distribution, histograma anonimizado por departamento e evolução média, nunca lista nominal",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -2881,44 +2881,44 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "id": "RF46",
     "n": 46,
     "title": "Utilizar chats de mensageria para comunicar-se com outros usuários e atribuir ou receber tarefas e projetos",
-    "hu": "como usuário do Work Station posso enviar mensagens e atribuir tarefas ou projetos para usuários conectados pelo chat do WS, pelo chat do DECIA ou clicando em botões de interação social em um esquema, para melhorar a gestão e o fluxo de trabalho da equipe. O RF introduz um chat de mensageria (conversa direta 1:1 ou em grupo, fora da sessão DECIA) e a atribuição como transação com aceite: quem recebe pode aceitar, recusar com motivo ou devolver. Entidades novas (propostas, a incluir na TAXONOMIA): DirectConversation, DirectConversationParticipant, DirectMessage (Cassandra, TTL) e Assignment.",
-    "summary": "HU46: como usuário do Work Station posso enviar mensagens e atribuir tarefas ou projetos para usuários conectados pelo chat do WS, pelo chat do DECIA ou clicando em botões de interação social em um esquema, para melhorar a gestão e o fluxo de trabalho da equipe. O RF introduz um chat de mensageria (conversa direta 1:1 ou em grupo, fora da sessão DECIA) e a atribuição como transação com aceite: quem recebe pode aceitar, recusar com motivo ou devolver. Entidades novas (propostas, a incluir na TAXONOMIA): DirectConversation, DirectConversationParticipant, DirectMessage (Cassandra, TTL) e Assignment.",
-    "route": "Mensagens (/messages, /messages/[conversationId]), ícone na barra superior ao lado de Notificações; ação Atribuir no card de tarefa/projeto (RF18/RF19 \"atribuir\"), dentro do chat da sessão DECIA (/decia/[sessionId]) e na aba Minha equipe do CHEFE (RF10)",
-    "coverage": "RF46.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 — todos \"(CA a confirmar)\", derivados do título + HU46 (corpo do card vazio); relacionados: RF10 (chefe atribui tarefa/projeto, sem corpo), RF18/RF19 (interações \"retornar\" e \"atribuir\"), RF44.CA DELEGUEI (caminho inverso), RF29.CA04 (rastro quando a atribuição nasce no DECIA)",
+    "hu": "como usuário do Work Station posso enviar mensagens e atribuir tarefas ou projetos para usuários conectados pelo chat do WS, pelo chat do DECIA ou clicando em botões de interação social em um esquema, para melhorar a gestão e o fluxo de trabalho da equipe. O RF introduz o chat de mensageria (conversa direta 1:1 ou em grupo, fora da sessão DECIA) e a atribuição como transação com aceite: quem recebe aceita, recusa com motivo ou devolve. Entidades da TAXONOMIA §12b (proposta): DirectConversation, DirectConversationParticipant, DirectMessage (Cassandra messages_by_conversation, TTL), Assignment (AssignmentTargetType TASK · PROJECT, AssignmentOrigin CHAT_WS · CHAT_DECIA · BOTAO_ESQUEMA · MINHA_EQUIPE, AssignmentStatus PROPOSTA · ACEITA · RECUSADA · DEVOLVIDA, previousResponsibleId, traceNodeId). Mesma entidade Assignment para RF10, RF18/RF19 e RF46.",
+    "summary": "HU46: como usuário do Work Station posso enviar mensagens e atribuir tarefas ou projetos para usuários conectados pelo chat do WS, pelo chat do DECIA ou clicando em botões de interação social em um esquema, para melhorar a gestão e o fluxo de trabalho da equipe. O RF introduz o chat de mensageria (conversa direta 1:1 ou em grupo, fora da sessão DECIA) e a atribuição como transação com aceite: quem recebe aceita, recusa com motivo ou devolve. Entidades da TAXONOMIA §12b (proposta): DirectConversation, DirectConversationParticipant, DirectMessage (Cassandra messages_by_conversation, TTL), Assignment (AssignmentTargetType TASK · PROJECT, AssignmentOrigin CHAT_WS · CHAT_DECIA · BOTAO_ESQUEMA · MINHA_EQUIPE, AssignmentStatus PROPOSTA · ACEITA · RECUSADA · DEVOLVIDA, previousResponsibleId, traceNodeId). Mesma entidade Assignment para RF10, RF18/RF19 e RF46.",
+    "route": "Mensagens (/messages, /messages/[conversationId], ícone na TopBar ao lado de Notificações), ação Atribuir no card de tarefa/projeto (RF18/RF19 \"atribuir\"), no composer da sessão DECIA (/decia/[sessionId]) e na aba Minha equipe do CHEFE (/departments/[slug]/team, RF10), caixa Atribuições recebidas (/messages?tab=atribuicoes)",
+    "coverage": "RF46.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 — todos \"(CA a confirmar)\", derivados do título + HU46 (corpo do card vazio) — regra: o título do card define o RF. Relacionados: RF10 (chefe atribui, sem corpo), RF18/RF19 (\"retornar\" e \"atribuir\"), RF44.CA04 (DELEGUEI é o caminho inverso), RF29.CA04 (rastro quando a atribuição nasce no DECIA).",
     "cas": [
       {
         "id": "RF46.CA01",
-        "text": "Posso abrir uma conversa direta (1:1) ou em grupo com usuários da mesma empresa, enviar texto e anexar tarefa/projeto como cartão (attachmentsJson com targetType TASK · PROJECT e snapshot); a conversa fica fora da sessão DECIA, sem IA e sem DECIA Points. Usuário de outra empresa: 403 EMPRESA_DIFERENTE.",
+        "text": "Posso abrir uma conversa direta (1:1) ou em grupo com usuários da mesma empresa, enviar texto e anexar tarefa/projeto como cartão (attachmentsJson com targetType TASK · PROJECT e snapshot); sem IA e sem DECIA Points. Usuário de outra empresa: 403 EMPRESA_DIFERENTE.",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF46.CA02",
-        "text": "Anexo com accessClass RESTRITO ou SIGILOSO só é aceito se todos os participantes têm acesso ao item (mesma visibilidade/departamento); caso contrário 403 ACESSO_NEGADO e o cartão não é enviado.",
+        "text": "Anexo com accessClass RESTRITO ou SIGILOSO só é aceito se todos os participantes têm acesso ao item; caso contrário 403 ACESSO_NEGADO e o cartão não é enviado.",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF46.CA03",
-        "text": "A ação Atribuir — pelo chat do WS (CHAT_WS), pelo chat da sessão DECIA (CHAT_DECIA) ou pelo botão no card do esquema (BOTAO_ESQUEMA) — cria Assignment com targetType TASK · PROJECT, destinatário, prazo e nota, em status PROPOSTA, gera DirectMessage de sistema na conversa e Notification ATRIBUICAO_PROPOSTA.",
+        "text": "A ação Atribuir — pelo chat do WS (CHAT_WS), pela sessão DECIA (CHAT_DECIA) ou pelo botão no card (BOTAO_ESQUEMA) — cria Assignment PROPOSTA com destinatário, prazo e nota, gera DirectMessage de sistema na conversa e Notification ATRIBUICAO_PROPOSTA.",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF46.CA04",
-        "text": "O destinatário aceita (ACEITA → TaskItem.responsibleId / ProjectTask.responsibleId atualizados, TaskStateLog, alimenta a Tarefa do Dia RF44), recusa com motivo (RECUSADA, motivo obrigatório, 422 MOTIVO_OBRIGATORIO) ou, depois de aceitar, devolve com motivo (DEVOLVIDA); quem atribuiu é notificado em cada resposta. Só o destinatário responde (403), e uma atribuição já respondida não muda (409 ATRIBUICAO_JA_RESPONDIDA).",
+        "text": "O destinatário aceita (ACEITA → TaskItem.responsibleId / ProjectTask.responsibleId, TaskStateLog, alimenta a Tarefa do Dia RF44), recusa com motivo (RECUSADA, 422 MOTIVO_OBRIGATORIO) ou, depois de aceitar, devolve com motivo (DEVOLVIDA); quem atribuiu é notificado. Só o destinatário responde (403); atribuição já respondida não muda (409 ATRIBUICAO_JA_RESPONDIDA).",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF46.CA05",
-        "text": "CHEFE pode atribuir a membros do seu departamento (RF10, requireDeptHead); EMPREGADO pode propor a colegas da mesma empresa (sempre com aceite); toda atribuição grava AuditLog, e quando a origem é CHAT_DECIA também um nó DecisionTraceNode TAREFA/PROJETO ligado à mensagem (RF29.CA04).",
+        "text": "CHEFE atribui a membros do seu departamento (RF10, requireDeptHead); EMPREGADO propõe a colegas da mesma empresa (sempre com aceite); toda atribuição grava AuditLog, e com origem CHAT_DECIA também um nó DecisionTraceNode TAREFA/PROJETO ligado à mensagem (RF29.CA04).",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF46.CA06",
-        "text": "Mensagens têm TTL configurável por empresa (Company.pointsPolicyJson não; nova chave messagingPolicyJson, proposta), não entram no índice de busca nem na memória institucional, e o usuário pode arquivar/sair da conversa; a lista de conversas e as não lidas chegam em tempo real (Redis pub/sub → WebSocket/SSE).",
+        "text": "Mensagens têm TTL por empresa (Company.messagingPolicyJson, proposta), não entram em busca nem na Memória Institucional, e o usuário pode arquivar/sair da conversa; lista e não lidas em tempo real (Redis pub/sub → SSE/WebSocket).",
         "note": "",
         "kind": "rastreabilidade"
       }

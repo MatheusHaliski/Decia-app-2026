@@ -1,6 +1,7 @@
 package br.gov.pr.secid.workstation.infrastructure.redis;
 
 import br.gov.pr.secid.workstation.application.identity.RateLimitPort;
+import br.gov.pr.secid.workstation.application.identity.SessionStorePort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -24,5 +25,11 @@ public class RedisAdaptersConfig {
     @Bean
     RateLimitPort redisRateLimit(StringRedisTemplate redis) {
         return new RedisRateLimit(redis);
+    }
+
+    /** Famílias de refresh no Redis — sem este bean a API não subiria com a flag ligada (InMemorySessionStore se desliga). */
+    @Bean
+    SessionStorePort redisSessionStore(StringRedisTemplate redis) {
+        return new RedisSessionStore(redis);
     }
 }

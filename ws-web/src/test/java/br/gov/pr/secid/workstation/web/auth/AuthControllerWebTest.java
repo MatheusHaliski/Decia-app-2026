@@ -33,6 +33,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -65,6 +66,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * (bulkhead), 401/403 nos endpoints autenticados e sid revogado recusado pelo SessionActiveFilter.
  */
 @WebMvcTest(controllers = AuthController.class)
+@TestPropertySource(properties = "ws.security.edge-trusted-proxies=127.0.0.1")   // o MockMvc chega de 127.0.0.1: é "a borda"
 @Import({SecurityConfig.class, JwtConfig.class, GlobalExceptionHandler.class, ErrorWriter.class, ApiErrorAuthenticationEntryPoint.class,
         ApiErrorAccessDeniedHandler.class, CorrelationIdFilter.class, ClockConfig.class, InMemoryRateLimit.class, InMemorySessionStore.class,
         ClientIpResolver.class, CurrentUserArgumentResolver.class, AuthControllerWebTest.Bulkhead.class})

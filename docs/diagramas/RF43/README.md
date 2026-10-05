@@ -1,211 +1,247 @@
 # RF43 — Usar a IA do sistema — insights do Acervo e do Perfil, ranking de usuários, motor do DECIA e Autopilot para criar tarefas e sugerir novos projetos com custo, tempo, prazo e viabilidade (EVM, CPM, PERT, Monte Carlo, ROI, matriz de risco)
-**HU:** HU43 · **Sprint (board Work Station):** Product Backlog (não priorizado — pós-Sprint 4) · **Equivalente FAI:** RF24 Usar a IA do sistema (Strategy + Chain of Responsibility primário → alternativa → motor local, `ai_inference_log`, circuit breaker, fallback) + sugestões do Copilot (RF10) + Inventory Score (RF29) + Hype Score · **Aba/rota:** Insights (`/insights`: Acervo · Perfil · Equipe · Ranking · Projetos sugeridos), Autopilot (`/autopilot`, estende o RF30), painel "IA do sistema" no admin (RF18)
-**Critérios de aceite cobertos:** RF43.CA01 · RF43.CA02 · RF43.CA03 · RF43.CA04 · RF43.CA05 · RF43.CA06 · RF43.CA07 · RF43.CA08 · RF43.CA09 · RF43.CA10 · RF43.CA11 · RF43.CA12 · RF43.CA13 · RF43.CA14 · RF43.CA15
+**HU:** HU43 · **Sprint (board Work Station):** Product Backlog (não comprometido na Sprint 4; o `AiEngine` é base de todo RF com IA) · **Equivalente FAI:** RF24 Usar a IA do sistema (Strategy + Chain of Responsibility, `ai_inference_log`, circuit breaker, fallback) + Copilot (RF10) + Inventory Score (RF29) + Hype Score · **Aba/rota:** Insights (`/insights`: Acervo · Perfil · Equipe · Ranking · Projetos sugeridos), Autopilot (`/autopilot`, estende RF30), sessão em modo Avançado (`/decia/[sessionId]`), painel admin **IA do sistema** (`/admin/ai`, RF18), página "Como o ranking é calculado"
+**Critérios de aceite cobertos:** RF43.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 · CA15 (corpo do card, inalterado) — regra: o **título do card** define o RF e o corpo traz os próprios CAs.
 
-> Contexto IA do sistema (bounded context 10). Núcleo: `AiEngine` (Strategy + Chain of Responsibility: `ClaudeAdapter` → `GeminiAdapter` → `LocalEngine`) com `AiProviderCircuitState` (CLOSED → OPEN → HALF_OPEN), retry/timeout, `AiQuota` (mensal + créditos comprados, RF42) e `FeatureFlag` por função. **Privacidade:** `accessClass` RESTRITO/SIGILOSO nunca sai para provedor externo. **Regra de ouro:** a IA só redige sobre números calculados por serviços de domínio testáveis (`MetricDefinition`, `FeasibilityService`), nunca inventa. Entidades de saída: `Insight`, `RankingEntry`, `FeasibilitySheet` (status PROPOSTA → ACEITA | DESCARTADA), `AiInferenceLog`.
+**Motor** (`AiEngine`, ARQUITETURA §3.1): `AiRequest(capability, hostRf, userId, deptId, accessClass, payload, mode)` → governança (feature flag por função, `AccessClassification` RESTRITO/SIGILOSO só `LocalEngine`, `Masking` de dados pessoais — existe no main —, `AiQuota` em Redis, `AiBudget` teto diário Q-50, consentimento) → Claude (primário) → Gemini (alternativo) → `LocalEngine` (regras, embeddings locais, PERT/CPM/Monte Carlo/EVM); circuit breaker + retry + timeout (Resilience4j, `AiProviderCircuitState`); **sempre** `AiInferenceLog` (`ai_inference_log` já existe no V2). **Regra de ouro (D-12):** a IA só **interpreta números calculados pelo sistema** — `MetricCalculator` + `MetricDefinition` (catálogo §8 em `docs/arquitetura/METRICAS_GESTAO.md`: fórmula, fonte, proxy, `minSamples`) → `MetricSnapshot` → `Insight` (ACERVO · PERFIL · EQUIPE · PROJETO, `metricRefsJson`, `actionsJson`), `RankingEntry` (dimensões separadas, `RankingWeights` públicos, `rankingOptOut`, "Explique minha posição"), `FeasibilitySheet` (custo P10/P50/P90, PERT/CPM, Monte Carlo 1.000 execuções, score decomposto, top 5 riscos, WBS, RACI, premissas e desconhecidos). Nada vira decisão, chancela, ranking oficial ou projeto sem confirmação humana.
 
 ## 1. Diagrama de classes
 
 ```mermaid
 classDiagram
-  direction LR
+direction LR
 
+namespace ws_application_ai {
+  class AiEngine {
+    <<service>>
+    +run(AiRequest) AiResponse
+    -govern(AiRequest) Route
+    -chain(primary, secondary, local)
+  }
+  class AiRequest {
+    <<service>>
+    +capability: AiCapability
+    +hostRf: String
+    +userId: UUID
+    +departmentId: UUID
+    +accessClass: AccessClassification
+    +payload: JSON
+    +mode: AiMode
+  }
+  class AiResponse {
+    <<service>>
+    +output: JSON
+    +explanation: String
+    +confidence: BigDecimal
+    +citations: List~Citation~
+    +fallbackUsed: boolean
+    +inferenceId: UUID
+  }
+  class AiGovernance {
+    <<service>>
+    +featureFlag(capability)
+    +accessClassRoute(accessClass)
+    +mask(payload) MaskedPayload
+    +quota(userId, deptId) QuotaSource
+    +budget(estimatedUsd)
+    +consent(userId, purpose)
+  }
+  class AiBudget {
+    <<service>>
+    +reserve(estimatedUsd) boolean
+  }
+  class AiProviderPort {
+    <<port>>
+    +complete(prompt, model, timeout)
+    +embed(text)
+  }
+  class QuotaPort {
+    <<port>>
+    +tryConsume(scope, id, units)
+  }
+  class CircuitBreakerPort {
+    <<port>>
+    +state(provider) CircuitState
+  }
+  class MetricCalculator {
+    <<service>>
+    +compute(metricCode, scope, scopeId, period) MetricSnapshot
+    +evm(project) EvmValues
+    +pert(tasks) PertValues
+    +cpm(tasks, deps) CriticalPath
+    +monteCarlo(project, runs) Probability
+    +riskMatrix(project) RiskExposure
+    +roi(costs, benefits) RoiValues
+    +littlesLaw(wip, throughput) CycleTime
+  }
+  class InsightService {
+    <<service>>
+    +acervo(actor) List~Insight~
+    +perfil(actor, consent) List~Insight~
+    +equipe(actor, deptId) List~Insight~
+    +applyAction(actor, insightId, action)
+  }
+  class RankingService {
+    <<service>>
+    +compute(scope, scopeId, period) List~RankingEntry~
+    +explain(actor, dimension) Explanation
+    +optOut(actor, boolean)
+    +updateWeights(actor, RankingWeightsForm) RankingWeights
+  }
+  class AutopilotService {
+    <<service>>
+    +tasksFrom(actor, source) List~TaskDraft~
+    +projectCandidates(actor, deptId) List~FeasibilitySheet~
+    +accept(actor, sheetId, target) AcceptResult
+    +discard(actor, sheetId, reason)
+  }
+  class FeasibilityService {
+    <<service>>
+    +build(candidate) FeasibilitySheet
+  }
+  class SurveyService {
+    <<service>>
+    +psychSafety(deptId, period) Result
+    +healthCheck(deptId, quarter) Result
+    +enps(deptId, period) Result
+    -minRespondents 5
+  }
+}
+
+namespace ws_domain_ia {
   class AiInferenceLog {
     <<entity>>
-    +UUID id
-    +UUID userId
-    +UUID departmentId
-    +AiCapability capability
-    +String hostRf
-    +AiProvider provider
-    +String model
-    +AiMode mode
-    +int latencyMs
-    +int inputTokens
-    +int outputTokens
-    +BigDecimal estimatedCostUsd
-    +InferenceResult result
-    +boolean fallbackUsed
-    +String maskedFields
-    +BigDecimal confidence
-    +String quotaSource
-    +String correlationId
+    +id: UUID
+    +userId: UUID
+    +departmentId: UUID
+    +capability: AiCapability
+    +hostRf: String
+    +provider: AiProvider
+    +model: String
+    +mode: AiMode
+    +latencyMs: int
+    +inputTokens: int
+    +outputTokens: int
+    +estimatedCostUsd: BigDecimal
+    +result: InferenceResult
+    +fallbackUsed: boolean
+    +maskedFieldsJson: JSON
+    +confidence: BigDecimal
+    +reviewedBy: UUID
+    +quotaSource: String
+    +correlationId: String
   }
   class AiQuota {
     <<entity>>
-    +String scope
-    +UUID scopeId
-    +String monthKey
-    +int monthlyLimit
-    +int consumed
-    +int purchasedCredits
-    +Instant resetAt
+    +scope: String
+    +scopeId: UUID
+    +monthKey: String
+    +monthlyLimit: int
+    +consumed: int
+    +purchasedCredits: int
   }
   class AiProviderCircuitState {
     <<entity>>
-    +AiProvider provider
-    +CircuitState state
-    +int failures
-    +Instant openedAt
-  }
-  class FeatureFlag {
-    <<entity>>
-    +String key
-    +boolean enabled
-    +String scope
-    +String rolloutJson
+    +provider: AiProvider
+    +state: CircuitState
+    +failures: int
+    +openedAt: Instant
   }
   class Insight {
     <<entity>>
-    +UUID id
-    +InsightScope scope
-    +UUID scopeId
-    +String kind
-    +String title
-    +String bodyMd
-    +List~MetricRef~ metricRefsJson
-    +List~Action~ actionsJson
-    +String severity
-    +UUID aiInferenceId
-    +Instant dismissedAt
-    +Instant generatedAt
+    +id: UUID
+    +scope: InsightScope
+    +scopeId: UUID
+    +kind: String
+    +title: String
+    +bodyMd: String
+    +metricRefsJson: JSON
+    +actionsJson: JSON
+    +severity: String
+    +aiInferenceId: UUID
+    +dismissedAt: Instant
   }
   class FeasibilitySheet {
     <<entity>>
-    +UUID id
-    +String candidateTitle
-    +String demandRef
-    +String costJson
-    +String timeJson
-    +String deadlineJson
-    +String viabilityScoreJson
-    +String risksJson
-    +String wbsJson
-    +String raciJson
-    +String assumptionsJson
-    +String unknownsJson
-    +SheetStatus status
-    +String discardReason
-    +UUID resultingProjectId
-    +UUID resultingTaskId
-    +UUID aiInferenceId
+    +id: UUID
+    +candidateTitle: String
+    +demandRef: String
+    +costJson: JSON
+    +timeJson: JSON
+    +deadlineJson: JSON
+    +viabilityScoreJson: JSON
+    +risksJson: JSON
+    +wbsJson: JSON
+    +raciJson: JSON
+    +assumptionsJson: JSON
+    +unknownsJson: JSON
+    +status: SheetStatus
+    +discardReason: String
+    +resultingProjectId: UUID
+    +resultingTaskId: UUID
   }
   class MetricDefinition {
     <<entity>>
-    +String code
-    +MetricDomain domain
-    +String name
-    +String formula
-    +String sourceDescription
-    +String proxyNote
-    +String unit
-    +int minSamples
+    +code: String
+    +domain: MetricDomain
+    +name: String
+    +formula: String
+    +sourceDescription: String
+    +proxyNote: String
+    +unit: String
+    +minSamples: int
   }
   class MetricSnapshot {
     <<entity>>
-    +UUID id
-    +String metricCode
-    +String scope
-    +UUID scopeId
-    +LocalDate periodStart
-    +LocalDate periodEnd
-    +BigDecimal value
-    +String valuesJson
+    +metricCode: String
+    +scope: MetricScope
+    +scopeId: UUID
+    +periodStart: LocalDate
+    +periodEnd: LocalDate
+    +value: BigDecimal
+    +valuesJson: JSON
   }
   class RankingEntry {
     <<entity>>
-    +UUID id
-    +String scope
-    +UUID scopeId
-    +String periodKey
-    +RankingDimension dimension
-    +UUID userId
-    +BigDecimal value
-    +int position
-    +String explanationJson
+    +scope: String
+    +scopeId: UUID
+    +periodKey: String
+    +dimension: RankingDimension
+    +userId: UUID
+    +value: BigDecimal
+    +position: int
+    +explanationJson: JSON
   }
   class RankingWeights {
     <<entity>>
-    +UUID id
-    +UUID companyId
-    +int version
-    +String weightsJson
-    +String criteriaPublicText
-    +Instant validFrom
-    +UUID editedBy
+    +companyId: UUID
+    +version: int
+    +weightsJson: JSON
+    +criteriaPublicText: String
+    +validFrom: Instant
+    +editedBy: UUID
   }
-  class User {
-    <<entity>>
-    +UUID id
-    +boolean rankingOptOut
-  }
-  class TaskItem {
-    <<entity>>
-    +UUID id
-    +AccessClassification accessClass
-    +TaskState state
-    +SourceKind sourceKind
-    +boolean aiGenerated
-  }
-  class ProjectScheme {
-    <<entity>>
-    +UUID id
-    +SchemeOrigin origin
-    +ProjectStatus status
-    +String criticalPathJson
-    +String evmJson
-  }
-  class ProjectTask {
-    <<entity>>
-    +BigDecimal pertOptimistic
-    +BigDecimal pertMostLikely
-    +BigDecimal pertPessimistic
-    +BigDecimal plannedValue
-    +BigDecimal earnedValue
-    +BigDecimal actualCost
-    +boolean isCritical
-    +int slackDays
-  }
-  class DeciaSession {
-    <<entity>>
-    +UUID id
-    +AiMode aiMode
-    +UUID linkedProjectId
-  }
-  class Citation {
-    <<entity>>
-    +String sourceType
-    +UUID sourceId
-    +String excerpt
-    +BigDecimal score
-  }
-  class AiCreditLedgerEntry {
-    <<entity>>
-    +UUID userId
-    +int delta
-    +String source
-  }
-
   class AiCapability {
     <<enum>>
     CLASSIFICAR_MENSAGEM
     RESUMO_ANALITICO
     AUTOPILOT_PROJETO
     AUTOPILOT_TAREFAS
-    INSIGHT
+    SIMULAR_CENARIO
+    CONFORMIDADE
     MEMORIA_BUSCA
-    ...21 valores
+    INSIGHT
+    TAREFA_DO_DIA
+    HSE
+    HYPE_PERFIL
+    DOSSIE
+    THUMBNAIL
+    CAPA_IA
   }
   class AiProvider {
     <<enum>>
     CLAUDE
     GEMINI
     LOCAL
-  }
-  class AiMode {
-    <<enum>>
-    ECONOMIA
-    AVANCADO
   }
   class InferenceResult {
     <<enum>>
@@ -220,28 +256,6 @@ classDiagram
     OPEN
     HALF_OPEN
   }
-  class InsightScope {
-    <<enum>>
-    ACERVO
-    PERFIL
-    EQUIPE
-    PROJETO
-  }
-  class SheetStatus {
-    <<enum>>
-    PROPOSTA
-    ACEITA
-    DESCARTADA
-  }
-  class MetricDomain {
-    <<enum>>
-    INOVACAO
-    TI
-    PROJETOS
-    EQUIPES
-    DECIA
-    PONTOS
-  }
   class RankingDimension {
     <<enum>>
     QUALIDADE_DELIBERATIVA
@@ -252,260 +266,233 @@ classDiagram
     HSE_MEDIO
     HYPE_PERFIL
   }
+  class MetricDomain {
+    <<enum>>
+    INOVACAO
+    TI
+    PROJETOS
+    EQUIPES
+    DECIA
+    PONTOS
+  }
+}
 
+namespace ws_domain_contexto {
+  class User {
+    <<entity>>
+    +id: UUID
+    +rankingOptOut: boolean
+    +hypeVisibility: HypeVisibility
+  }
+  class UserConsent {
+    <<entity>>
+    +purpose: ConsentPurpose
+    +granted: boolean
+  }
+  class TaskItem {
+    <<entity>>
+    +accessClass: AccessClassification
+    +state: TaskState
+  }
+  class ProjectScheme {
+    <<entity>>
+    +evmJson: JSON
+    +criticalPathJson: JSON
+    +status: ProjectStatus
+  }
+  class DeciaSession {
+    <<entity>>
+    +aiMode: AiMode
+  }
+  class FeatureFlag {
+    <<entity>>
+    +flagKey: String
+    +enabled: boolean
+    +scope: String
+  }
+}
+
+namespace ws_web {
   class InsightController {
     <<controller>>
-    +GET insights_acervo
-    +GET insights_perfil
-    +GET insights_equipe
-    +POST insights_id_action
+    +GET_api_insights_acervo()
+    +GET_api_insights_perfil()
+    +GET_api_insights_equipe(deptId)
+    +POST_api_insights_id_action(code)
   }
   class RankingController {
     <<controller>>
-    +GET rankings
-    +GET rankings_explain_me
-    +PUT rankings_weights
-    +POST rankings_opt_out
+    +GET_api_rankings(scope, dimension, period)
+    +GET_api_rankings_explain(dimension)
+    +POST_api_me_ranking_opt_out(value)
+    +PUT_api_rankings_weights(form)
   }
   class AutopilotController {
     <<controller>>
-    +POST autopilot_tasks
-    +POST autopilot_projects
-    +POST feasibility_id_accept
-    +POST feasibility_id_discard
-    +GET projects_id_evm
+    +POST_api_autopilot_tasks(source)
+    +GET_api_autopilot_projects(deptId)
+    +POST_api_feasibility_id_accept(target)
+    +POST_api_feasibility_id_discard(reason)
   }
   class AdminAiController {
     <<controller>>
-    +GET admin_ai_dashboard
+    +GET_api_admin_ai(period, deptId)
   }
-  class AiEngine {
-    <<service>>
-    +run(capability, input, accessClass, mode) AiResult
-    -guardPrivacy(input, accessClass) MaskedInput
-    -guardQuota(userId, departmentId) QuotaSource
-    -chain() List~AiProviderPort~
-    -log(result) AiInferenceLog
-  }
-  class AiProviderPort {
-    <<port>>
-    +infer(prompt, model, timeout) ProviderResult
-    +name() AiProvider
-  }
-  class ClaudeAdapter {
+}
+
+namespace ws_infrastructure {
+  class ClaudeProvider {
     <<adapter>>
   }
-  class GeminiAdapter {
+  class GeminiProvider {
     <<adapter>>
   }
   class LocalEngine {
     <<adapter>>
-    +rules()
-    +localEmbeddings()
-    +pmHeuristics()
   }
-  class CircuitBreaker {
-    <<service>>
-    +allow(provider) boolean
-    +onSuccess(provider) void
-    +onFailure(provider) void
+  class RedisQuotaAdapter {
+    <<adapter>>
   }
-  class InsightService {
-    <<service>>
-    +acervo(userId) List~Insight~
-    +perfil(userId, consent) List~Insight~
-    +equipe(departmentId, viewer) List~Insight~
-    +applyAction(insightId, actionCode) void
+  class Resilience4jCircuit {
+    <<adapter>>
   }
-  class RankingService {
-    <<service>>
-    +compute(scope, scopeId, period, dimension) List~RankingEntry~
-    +explain(userId, dimension) Explanation
-    +updateWeights(companyId, weights, editor) RankingWeights
-  }
-  class AutopilotService {
-    <<service>>
-    +tasksFrom(source, text) List~TaskItem~
-    +suggestProjects(userId, max5) List~FeasibilitySheet~
-    +accept(sheetId, target) ProjectScheme
-    +discard(sheetId, reason) FeasibilitySheet
-  }
-  class FeasibilityService {
-    <<service>>
-    +pert(o, m, p) Estimate
-    +cpm(tasks, deps) CriticalPath
-    +monteCarlo(tasks, runs1000) ProbabilityOnTime
-    +evm(project) EvmIndicators
-    +costBands(wbs) P10P50P90
-    +riskMatrix(risks) Top5
-    +viabilityScore(dims) Score0to100
-  }
-  class MetricCalculator {
-    <<service>>
-    +compute(metricCode, scope, period) MetricSnapshot
-  }
+}
 
-  AiInferenceLog --> AiCapability : capability
-  AiInferenceLog --> AiProvider : provider
-  AiInferenceLog --> AiMode : mode
-  AiInferenceLog --> InferenceResult : result
-  AiProviderCircuitState --> CircuitState : state
-  AiProviderCircuitState --> AiProvider : provider
-  Insight --> InsightScope : scope
-  Insight ..> MetricDefinition : metricRefsJson cita code, value, formula, source, proxy
-  Insight ..> AiInferenceLog : aiInferenceId
-  FeasibilitySheet --> SheetStatus : status
-  FeasibilitySheet ..> ProjectScheme : resultingProjectId (origin AUTOPILOTO)
-  FeasibilitySheet ..> TaskItem : resultingTaskId ESTUDO_TECNICO_PRELIMINAR
-  MetricDefinition --> MetricDomain : domain
-  MetricSnapshot --> MetricDefinition : metricCode
-  RankingEntry --> RankingDimension : dimension
-  RankingEntry ..> RankingWeights : pesos públicos
-  RankingEntry ..> User : rankingOptOut
-  ProjectScheme "1" --> "*" ProjectTask : PERT e EVM por tarefa
-  DeciaSession --> AiMode : aiMode
-  AiQuota ..> AiCreditLedgerEntry : purchasedCredits
-
-  InsightController --> InsightService
-  RankingController --> RankingService
-  AutopilotController --> AutopilotService
-  AdminAiController ..> AiInferenceLog
-  InsightService --> AiEngine : INSIGHT
-  InsightService --> MetricCalculator
-  RankingService --> MetricCalculator
-  AutopilotService --> AiEngine : AUTOPILOT_PROJETO e AUTOPILOT_TAREFAS
-  AutopilotService --> FeasibilityService
-  AiEngine --> AiProviderPort : chain primário → alternativo → local
-  AiProviderPort <|.. ClaudeAdapter
-  AiProviderPort <|.. GeminiAdapter
-  AiProviderPort <|.. LocalEngine
-  AiEngine --> CircuitBreaker
-  CircuitBreaker ..> AiProviderCircuitState
-  AiEngine ..> AiQuota
-  AiEngine ..> FeatureFlag
-  AiEngine ..> AiInferenceLog
-  AiEngine ..> Citation : MEMORIA_BUSCA (RF33)
-  MetricCalculator ..> MetricSnapshot
-
-  note for AiEngine "Strategy + Chain of Responsibility · timeout e retry por provedor · nada vira decisão, chancela, ranking ou projeto sem confirmação humana"
-  note for FeasibilityService "ws-domain · determinístico e testável · funciona sem chave externa (RF43.CA11) · documentado em METRICAS_GESTAO.md"
-  note for MetricCalculator "um serviço de domínio por métrica do catálogo A–D · fórmula, fonte e proxy (RF43.CA13)"
-  note for AiProviderCircuitState "Redis · nomes AiProvider, InferenceResult, CircuitState, InsightScope, SheetStatus, MetricDomain a confirmar"
+AiEngine --> AiRequest
+AiEngine --> AiResponse
+AiEngine --> AiGovernance
+AiGovernance --> AiBudget
+AiGovernance --> QuotaPort
+AiGovernance ..> FeatureFlag
+AiGovernance ..> UserConsent
+AiEngine --> AiProviderPort
+AiEngine --> CircuitBreakerPort
+AiEngine ..> AiInferenceLog : grava sempre
+QuotaPort ..> AiQuota
+CircuitBreakerPort ..> AiProviderCircuitState
+InsightService --> MetricCalculator
+InsightService --> AiEngine
+InsightService ..> Insight
+InsightService --> SurveyService
+RankingService --> MetricCalculator
+RankingService ..> RankingEntry
+RankingService ..> RankingWeights
+RankingService ..> User : rankingOptOut
+AutopilotService --> FeasibilityService
+AutopilotService --> AiEngine
+FeasibilityService --> MetricCalculator
+FeasibilityService ..> FeasibilitySheet
+MetricCalculator ..> MetricDefinition
+MetricCalculator ..> MetricSnapshot
+MetricCalculator ..> ProjectScheme : evmJson criticalPathJson
+TaskItem ..> AiGovernance : RESTRITO SIGILOSO so LOCAL
+DeciaSession ..> AiEngine : aiMode AVANCADO
+InsightController --> InsightService
+RankingController --> RankingService
+AutopilotController --> AutopilotService
+AdminAiController ..> AiInferenceLog : custo latencia fallback aceitacao
+ClaudeProvider ..|> AiProviderPort
+GeminiProvider ..|> AiProviderPort
+LocalEngine ..|> AiProviderPort
+RedisQuotaAdapter ..|> QuotaPort
+Resilience4jCircuit ..|> CircuitBreakerPort
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  classDef err fill:#FFE3E3,stroke:#C0392B,color:#5B1A12
-  classDef ai fill:#FFF3D6,stroke:#D68910,color:#5C3B00
-  classDef store fill:#EEF6FF,stroke:#4A4852,color:#1F2937
-
-  subgraph L_user["Ator humano · EMPREGADO · CHEFE · EMPRESA · ADMIN"]
-    U1["Abre /autopilot › Projetos sugeridos"]
-    U2["Revisa até 5 candidatos ordenados por viabilidade, cada um com Ficha de Viabilidade"]
-    U3{"Aceita, abre sessão DECIA ou descarta?"}
-    U4["Informa motivo do descarte"]
-    U5["Abre /insights (Acervo · Perfil · Equipe · Ranking) e clica Explique minha posição ou uma ação de 1 clique"]
-    U6["ADMIN abre painel IA do sistema"]
+  subgraph ATOR["Ator (EMPREGADO · CHEFE · EMPRESA · ADMIN)"]
+    A0([Qualquer função de IA]) --> A1["Pede insight, ranking, sessão avançada, Autopilot…"]
+    A2([Insights › Acervo]) --> A3["Score do Acervo, paradas, duplicadas, fantasma, lacunas, modelos recomendados · ação em 1 clique"]
+    A4([Insights › Perfil, só dono]) --> A5["Competências com evidências, evolução, recomendações, comparação anonimizada · resumo profissional só com consentimento"]
+    A6([Insights › Equipe, CHEFE/EMPRESA]) --> A7["Métricas D com tendência e benchmarks anonimizados · pesquisas anônimas (mínimo 5)"]
+    A8([Ranking]) --> A9["Dimensões separadas, período, pesos públicos · Explique minha posição · opt-out"]
+    A10([Autopilot]) --> A11{"Tarefas ou projetos?"}
+    A11 -->|tarefas| A12["N tarefas em rascunho"]
+    A11 -->|projetos| A13["Até 5 candidatos com Ficha de Viabilidade · aceitar, abrir sessão ou descartar com motivo"]
+    A14([ADMIN › IA do sistema]) --> A15["Custo/latência por função e departamento, taxa de fallback, aceitação, cotas, alertas"]
   end
 
-  subgraph L_web["Web/BFF · Next.js /autopilot · /insights · /admin/ai"]
-    W1["POST /autopilot/projects"]
-    W2["Ficha: custo P10/P50/P90, PERT/CPM, Monte Carlo pOnTime, score decomposto, top 5 riscos, WBS, RACI, premissas, o que a IA não sabe · faísca ✦ + aviso de fallback ou motor local"]
-    W3["POST /feasibility/id/accept (PROJETO | SESSAO) · POST /feasibility/id/discard (reason)"]
-    W4["GET /insights/* · GET /rankings?dimension=&period= · GET /rankings/explain-me · POST /insights/id/action"]
-    W5["Tela explica o que falta coletar quando amostra insuficiente (sem números vazios)"]
-    W6["GET /admin/ai/dashboard: custo e latência por função e departamento, taxa de fallback, taxa de aceitação, cotas, alertas de custo"]
+  subgraph FE["Next.js / BFF (app/(shell)/insights · autopilot · decia/[sessionId] · admin/ai)"]
+    F1["InsightCard (metricRefs com fórmula, fonte, proxy · ação em 1 clique) · Spark ✦ · banner de fallback"]
+    F2["RankingTable por dimensão · Dialog Explique minha posição · Switch opt-out · página Como o ranking é calculado"]
+    F3["FeasibilitySheetView: P10/P50/P90, PERT/CPM, Monte Carlo, score decomposto, top 5 riscos, WBS, RACI, premissas, desconhecidos"]
+    F4["EmptyState explicativo quando faltam dados (mínimo 3 projetos/sinais)"]
+    F5["AdminAiPanel"]
   end
 
-  subgraph L_app["ws-application · AutopilotService · FeasibilityService · InsightService · RankingService"]
-    S1["AutopilotService.suggestProjects: candidatos de eixos do plano sem projeto, lacunas por processo, decisões sem projeto, metas, histórico (RF33)"]
-    S2["FeasibilityService (determinístico): PERT O/M/P por tarefa · CPM caminho crítico e folgas · Monte Carlo 1000 execuções → pOnTime · custo paramétrico + análogo P10/P50/P90 · matriz P×I top 5 · ROI/payback/VPL · WBS · RACI · SMART · score 0–100"]
-    S3["Persiste FeasibilitySheet PROPOSTA (≤5) com assumptionsJson e unknownsJson"]
-    S4{"Ação?"}
-    S5["accept PROJETO: ProjectScheme RASCUNHO (origin AUTOPILOTO) + tarefas/kits pré-selecionados + TaskItem ESTUDO_TECNICO_PRELIMINAR (✦) · FeasibilitySheet ACEITA"]
-    S6["accept SESSAO: DeciaSession com topic da ficha (RF29) · ACEITA"]
-    S7{"Motivo informado?"}
-    S8["FeasibilitySheet DESCARTADA (discardReason alimenta próximas sugestões)"]
-    S9["InsightService: Score do Acervo (0–100) com decomposição · paradas, duplicadas, fantasma, lacunas, prazos em risco · modelos recomendados do Balcão · ações 1 clique (arquivar, repassar, criar faltante, mesclar)"]
-    S10{"Perfil: viewer é o dono? Equipe: viewer é CHEFE/EMPRESA do departamento?"}
-    S11{"Amostra mínima? (A/B: 3 projetos ou sinais · pesquisas D: 5 respondentes)"}
-    S12["MetricCalculator por métrica do catálogo A–D (fórmula, fonte, proxy) → MetricSnapshot · comparação anonimizada · resumo profissional só com consentimento"]
-    S13["RankingService.compute: dimensões separadas, pesos públicos (RankingWeights vigente), opt-out respeitado, volume bruto de mensagens nunca é critério · explain(userId)"]
-    S14["Projeto em execução: evm(PV, EV, AC, CPI, SPI, EAC, ETC, VAC, TCPI) + caminho crítico + burndown/fluxo cumulativo · alerta SPI menor que 0,9 há 2 semanas → recomendação + link Simulador (RF31)"]
-    E1["422 MOTIVO_OBRIGATORIO"]
-    E2["403 ACESSO_NEGADO"]
-    E3["409 COTA_ESGOTADA → Loja Work Station"]
+  subgraph WEB["ws-web"]
+    W1["JWT · CorrelationIdFilter · rate limit por usuário"]
+    W2["GlobalExceptionHandler"]
   end
 
-  subgraph L_ai["IA (AiEngine) · Strategy + Chain"]
-    I1{"FeatureFlag da função habilitada?"}
-    I2{"accessClass RESTRITO ou SIGILOSO?"}
-    I3["guardPrivacy: mascara dados pessoais (LGPD) → maskedFields"]
-    I4{"guardQuota: créditos comprados → cota mensal → DECIA Points (modo AVANCADO)?"}
-    I5{"CircuitBreaker.allow(primário)?"}
-    I6["Provedor primário (Claude ou Gemini) com timeout e retry"]
-    I7{"Sucesso?"}
-    I8["onFailure → failures+1 · OPEN se limiar · tenta alternativo"]
-    I9{"Alternativo ok?"}
-    I10["LocalEngine: regras, embeddings locais, heurísticas de PM · redação simplificada · aviso de fallback"]
-    I11["Redige narrativa SÓ sobre números do FeasibilityService/MetricCalculator · cita métrica e valor · confiança + explicação"]
-    I12["AiInferenceLog: provider, model, mode, latency, tokens, custo, result (OK | FALLBACK | ERRO | BLOQUEADO_SIGILO), fallbackUsed, maskedFields, quotaSource, correlationId"]
+  subgraph APP["ws-application"]
+    G1["AiGovernance: feature flag da função ativa?"]
+    G1 -->|não| E1["404 ou 503 FUNCAO_DESLIGADA"]
+    G2{"Payload contém RESTRITO/SIGILOSO?"}
+    G2 -->|sim| G3["Rota só LocalEngine · aviso · result BLOQUEADO_SIGILO para externos"]
+    G2 -->|não| G4["Masking de dados pessoais (Masking existe no main)"]
+    G5{"QuotaPort.tryConsume (créditos comprados antes da cota mensal)?"}
+    G5 -->|não| E2["429 COTA_ESGOTADA + Loja"]
+    G6{"AiBudget.reserve (teto diário USD)?"}
+    G6 -->|não| E3["503 IA_INDISPONIVEL"]
+    G7["MetricCalculator calcula TODOS os números (seção 8) antes da IA · MetricSnapshot"]
+    G8{"Amostra suficiente? (minSamples · 3 projetos/sinais · 5 respondentes)"}
+    G8 -->|não| G9["Tela explica o que falta coletar (sem números vazios)"]
+    G10["InsightService: Score do Acervo, listas, lacunas por processo, modelos recomendados · actionsJson (arquivar, repassar, criar faltante, mesclar)"]
+    G11{"Resumo profissional: UserConsent RESUMO_PROFISSIONAL_IA?"}
+    G11 -->|não| E4["403 CONSENTIMENTO_NECESSARIO"]
+    G12["RankingService: dimensões separadas · pesos de RankingWeights (vigência, auditoria) · nunca volume bruto de mensagens · opt-out oculta · explanationJson"]
+    G13["AutopilotService.tasksFrom: tarefas RASCUNHO (tipo, categoria, prazo legal, responsável, dependências) — nada DISPONIVEL sem revisão"]
+    G14["FeasibilityService.build: custo P10/P50/P90 (paramétrica + análoga), PERT, CPM, Monte Carlo 1.000 runs, score 0–100 decomposto, matriz P×I top 5, ROI/payback/VPL, WBS, RACI, SMART"]
+    G15{"Aceitar ou descartar?"}
+    G15 -->|aceitar| G16["ProjectScheme RASCUNHO + ESTUDO_TECNICO_PRELIMINAR ✦ ou sessão DECIA (RF29)"]
+    G15 -->|descartar| G17["Motivo obrigatório (422) → alimenta próximas sugestões"]
+    G18["Projeto em execução: EVM (PV, EV, AC, CPI, SPI, EAC, ETC, VAC, TCPI), caminho crítico, burndown/fluxo cumulativo · alerta SPI menor que 0,9 há 2 semanas → link Simulador (RF31)"]
+    G19["Sessão aiMode AVANCADO: cita fontes (RF33), traz métricas reais do projeto, sugere relacionados · debita cota ou DP com aviso prévio"]
   end
 
-  subgraph L_db["Persistência"]
-    D1["MySQL feasibility_sheets · project_schemes · project_tasks (PERT, EVM) · tasks ESTUDO_TECNICO_PRELIMINAR"]
-    D2["MySQL insights · metric_definitions · metric_snapshots · ranking_entries · ranking_weights · Redis rankings"]
-    D3["Redis quota:scope:id:mês · circuit:provider · MySQL ai_quotas · ai_credit_ledger"]
-    D4["MySQL ai_inference_log · feature_flags · audit_log (pesos editados com vigência)"]
-    D5["OpenSearch ws-memory (projetos semelhantes, citações RF33)"]
+  subgraph IA["AiEngine (Strategy + Chain)"]
+    I1["Claude (primário) · circuit breaker · retry · timeout"]
+    I1 -->|falha ou circuito OPEN| I2["Gemini (alternativo)"]
+    I2 -->|falha| I3["LocalEngine: regras, embeddings locais, PERT/CPM/Monte Carlo/EVM, heurísticas de PM — redação simplificada"]
+    I4["AiInferenceLog: modelo, custo, latência, fallbackUsed, maskedFields, confidence, correlationId"]
+    I5["Saída: faísca ✦ + gerado por IA em [data] — modelo — revisado por + confiança + explicação + métrica citada"]
   end
 
-  U1 --> W1 --> S1 --> D5
-  S1 --> S2 --> S3 --> D1
-  S3 --> I1
-  I1 -- "não" --> I10
-  I1 -- "sim" --> I2
-  I2 -- "sim" --> I10
-  I2 -- "não" --> I3 --> I4
-  I4 -- "sem cota" --> E3
-  I4 -- "ok" --> I5
-  I5 -- "OPEN" --> I9
-  I5 -- "CLOSED ou HALF_OPEN" --> I6 --> I7
-  I7 -- "sim" --> I11
-  I7 -- "não (timeout, erro)" --> I8 --> I9
-  I9 -- "sim" --> I11
-  I9 -- "não" --> I10 --> I11
-  I11 --> I12 --> D4
-  I4 --> D3
-  I5 --> D3
-  I11 --> W2 --> U2 --> U3
-  U3 -- "aceitar" --> W3 --> S4
-  U3 -- "descartar" --> U4 --> W3
-  S4 -- "PROJETO" --> S5 --> D1
-  S4 -- "SESSAO" --> S6 --> D1
-  S4 -- "descartar" --> S7
-  S7 -- "não" --> E1
-  S7 -- "sim" --> S8 --> D1
+  subgraph DB["Persistência"]
+    D1[("MySQL ai_inference_log (V2) · ai_quotas · insights · feasibility_sheets · metric_definitions · metric_snapshots · ranking_entries · ranking_weights · feature_flags (V2)")]
+    D2[("Redis quota:{scope}:{id}:{month} · circuit state · ranking cache · flag redis.enabled")]
+    D3[("OpenSearch ws-memory embeddings · flag opensearch.enabled")]
+  end
 
-  U5 --> W4 --> S10
-  S10 -- "não" --> E2
-  S10 -- "sim" --> S11
-  S11 -- "não" --> W5
-  S11 -- "sim" --> S12 --> D2
-  S12 --> S9 --> I1
-  S12 --> S13 --> D2
-  S12 --> S14 --> D1
-  S9 --> D2
-  S13 --> I1
-
-  U6 --> W6 --> D4
-  W6 --> D3
-
-  class E1,E2,E3 err
-  class I1,I2,I3,I4,I5,I6,I7,I8,I9,I10,I11,I12 ai
-  class D1,D2,D3,D4,D5 store
+  A1 --> W1 --> G1 -->|sim| G2
+  G3 --> G5
+  G4 --> G5
+  G5 -->|sim| G6 -->|sim| G7 --> G8 -->|sim| I1
+  G9 --> F4
+  I1 --> I4
+  I2 --> I4
+  I3 --> I4 --> I5 --> D1
+  A2 --> A3 --> G10 --> F1
+  A4 --> A5 --> G11 -->|sim| G10
+  A6 --> A7 --> G10
+  A8 --> A9 --> G12 --> F2
+  G12 --> D2
+  A10 --> A11
+  A12 --> G13
+  A13 --> G14 --> F3 --> G15
+  G16 --> D1
+  G17 --> D1
+  G18 --> F1
+  G19 --> D3
+  A14 --> A15 --> F5 --> D1
+  G5 --> D2
+  E1 --> W2
+  E2 --> W2
+  E3 --> W2
+  E4 --> W2
 ```
 
 ## 3. Diagrama de sequência
@@ -513,121 +500,122 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário
-  participant N as Next.js (App Router)
+  participant U as Usuário
+  participant FE as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
-  participant OS as OpenSearch
   participant R as Redis
-  participant EV as DomainEvents (AFTER_COMMIT)
+  participant OS as OpenSearch
 
-  Note over U,EV: Autopilot de Projetos com Ficha de Viabilidade
-  U->>N: Sugerir novos projetos
-  N->>C: POST /autopilot/projects
-  C->>S: AutopilotService.suggestProjects(userId, 5)
-  S->>DB: SELECT plan_axes sem projeto · final_decisions sem projeto · collective_goals · metric_snapshots
-  S->>OS: kNN ws-memory (projetos e planilhas semelhantes, RF33) → citações
-  S->>S: FeasibilityService: PERT, CPM, Monte Carlo 1000 runs, custo P10/P50/P90, EVM histórico, matriz P×I, ROI/VPL, WBS, RACI, score
-  S->>DB: INSERT feasibility_sheets (PROPOSTA ×5, assumptionsJson, unknownsJson)
-  S->>AI: run(AUTOPILOT_PROJETO, números das fichas, accessClass INTERNO, ECONOMIA)
-  AI->>R: GET quota:USER:id:mês (créditos comprados antes da mensal)
-  alt sem cota nem créditos
-    AI-->>S: QuotaExceeded
-    S-->>N: 409 COTA_ESGOTADA (atalho para a Loja Work Station)
-  else accessClass RESTRITO ou SIGILOSO em alguma fonte
-    AI->>AI: LocalEngine redige (sem saída externa) · result BLOQUEADO_SIGILO
-    AI->>DB: INSERT ai_inference_log (provider LOCAL, maskedFields)
-    AI-->>S: narrativa simplificada + aviso motor local
-  else cota ok
-    AI->>R: GET circuit:CLAUDE
-    AI->>AI: ClaudeAdapter.infer (timeout 20 s, retry 1)
-    alt primário falha ou timeout
-      AI->>R: INCR failures · SET circuit:CLAUDE OPEN se limiar
-      AI->>AI: GeminiAdapter.infer
-      alt alternativo também falha
-        AI->>AI: LocalEngine (regras + heurísticas de PM) · redação simplificada
-        AI->>DB: INSERT ai_inference_log (result FALLBACK, fallbackUsed, latency, custo 0, correlationId)
-        AI-->>S: narrativa + aviso de fallback
-      else alternativo ok
-        AI->>DB: INSERT ai_inference_log (provider GEMINI, result FALLBACK, fallbackUsed)
-        AI-->>S: narrativa + aviso de fallback
-      end
-    else primário ok
-      AI->>R: onSuccess → circuit CLOSED
-      AI->>DB: INSERT ai_inference_log (provider CLAUDE, model, latency, tokens, custo, quotaSource, correlationId)
-      AI-->>S: narrativa que cita métrica e valor + confiança + explicação
-    end
-  end
-  S->>DB: UPDATE feasibility_sheets aiInferenceId
-  S-->>N: 200 até 5 fichas ordenadas por viabilidade (✦)
-  N-->>U: Fichas com premissas, intervalos e o que a IA não sabe
-
-  U->>N: Aceitar ficha 2 como projeto
-  N->>C: POST /feasibility/id/accept (PROJETO)
-  C->>S: AutopilotService.accept(sheetId, PROJETO)
-  S->>DB: INSERT project_schemes (RASCUNHO, origin AUTOPILOTO) · project_tasks (PERT O/M/P, isCritical, slackDays) · tasks ESTUDO_TECNICO_PRELIMINAR (aiGenerated, RASCUNHO)
-  S->>DB: UPDATE feasibility_sheets (ACEITA, resultingProjectId, resultingTaskId)
-  S->>EV: ProjectCreatedFromAutopilot(projectId)
-  S-->>N: 201 ProjectScheme RASCUNHO (RF21)
-
-  U->>N: Descartar ficha 4
-  N->>C: POST /feasibility/id/discard (reason vazio)
-  C->>S: discard(sheetId, reason)
-  alt motivo vazio
-    S-->>N: 422 MOTIVO_OBRIGATORIO
-  else motivo informado
-    S->>DB: UPDATE feasibility_sheets (DESCARTADA, discardReason)
-    S-->>N: 200 (motivo alimenta próximas sugestões)
-  end
-
-  Note over U,EV: Ranking transparente
-  U->>N: Ranking › Pontualidade (SPI) › Explique minha posição
-  N->>C: GET /rankings/explain-me?dimension=PONTUALIDADE_SPI
-  C->>S: RankingService.explain(userId, PONTUALIDADE_SPI)
-  S->>R: GET ranking:DEPARTAMENTO:id:periodo:PONTUALIDADE_SPI
-  S->>DB: SELECT ranking_weights vigente · metric_snapshots do usuário
-  alt usuário com rankingOptOut
-    S-->>N: 200 posição omitida + critérios públicos
+  Note over U,OS: CA01 + CA02 + CA11 — chain com governança (vale para toda capability)
+  U->>FE: Insights › Acervo
+  FE->>C: GET /api/insights/acervo
+  C->>S: InsightService.acervo(actor)
+  S->>S: MetricCalculator: Score do Acervo (completude, prazos, reutilização, conformidade), paradas, duplicadas (similaridade), fantasma, lacunas por processo
+  S->>DB: metric_snapshots (fórmula e proxy de metric_definitions)
+  S->>AI: run(INSIGHT, números + referências, mode ECONOMIA)
+  AI->>AI: AiGovernance: feature flag · accessClass (RESTRITO/SIGILOSO → LOCAL) · Masking · quota · AiBudget
+  AI->>R: QuotaPort.tryConsume (créditos comprados antes da cota mensal)
+  alt cota esgotada
+    AI-->>S: 429 COTA_ESGOTADA
+    S-->>FE: aviso + atalho /store
   else ok
-    S-->>N: 200 posição, valor, pesos públicos, explicação (volume de mensagens não é critério)
+    AI->>AI: Claude (circuit CLOSED, retry, timeout)
+    alt timeout ou circuito OPEN
+      AI->>AI: Gemini
+      alt falha
+        AI->>AI: LocalEngine (cálculos determinísticos completos, redação simplificada)
+      end
+    end
+    AI->>DB: insert ai_inference_log (modelo, custo, latência, fallbackUsed, maskedFields, correlationId)
+    AI-->>S: AiResponse (explicação cita a métrica e o valor, confidence)
+    S->>DB: insert insights (scope ACERVO, metricRefsJson, actionsJson)
+    S-->>FE: InsightCards com Spark ✦ e aviso de fallback se houver
   end
+  U->>FE: ação em 1 clique: arquivar tarefa parada
+  FE->>C: POST /api/insights/{id}/action {ARQUIVAR}
+  C->>S: InsightService.applyAction → TaskStateMachine (RF41)
+  S-->>FE: 200
+
+  Note over U,OS: CA04 — Insights › Perfil com consentimento
+  U->>FE: pede resumo profissional exportável
+  FE->>C: GET /api/insights/perfil?resumo=true
+  C->>S: InsightService.perfil(actor, consent)
+  S->>DB: user_consents RESUMO_PROFISSIONAL_IA
+  alt sem consentimento
+    S-->>C: 403 CONSENTIMENTO_NECESSARIO
+  else ok
+    S->>AI: run(INSIGHT perfil, métricas do perfil deliberativo + comparação anonimizada)
+    AI-->>S: texto ✦
+    S-->>FE: competências com evidências, evolução mensal, recomendações, resumo
+  end
+
+  Note over U,OS: CA05 — ranking transparente
+  U->>FE: abre ranking do departamento, dimensão PONTUALIDADE_SPI
+  FE->>C: GET /api/rankings?scope=DEPARTAMENTO&dimension=PONTUALIDADE_SPI&period=2026-Q3
+  C->>S: RankingService.compute(...)
+  S->>R: ranking cache
+  S->>DB: ranking_weights vigente · metric_snapshots · users.ranking_opt_out
+  S-->>FE: RankingEntry[] (opt-out ocultos) + critérios e pesos públicos
+  U->>FE: Explique minha posição
+  FE->>C: GET /api/rankings/explain?dimension=PONTUALIDADE_SPI
+  C->>S: RankingService.explain(actor, dimension)
+  S-->>FE: explanationJson (métricas, pesos, posição) ✦
+
+  Note over U,OS: CA08 + CA10 — Autopilot de Projetos com Ficha de Viabilidade
+  U->>FE: Projetos sugeridos para o departamento
+  FE->>C: GET /api/autopilot/projects?deptId=
+  C->>S: AutopilotService.projectCandidates(actor, deptId)
+  S->>DB: eixos sem projeto (RF24), lacunas do acervo, decisões sem projeto (RF29), metas (RF35), histórico
+  S->>OS: knn ws-memory projetos semelhantes (RF33)
+  S->>S: FeasibilityService.build por candidato: custo P10/P50/P90, PERT, CPM, Monte Carlo 1.000 runs, score decomposto, top 5 riscos, ROI/payback/VPL, WBS, RACI
+  S->>AI: run(AUTOPILOT_PROJETO, redigir premissas e desconhecidos sobre os números)
+  AI-->>S: texto ✦ + AiInferenceLog
+  S->>DB: insert feasibility_sheets (PROPOSTA) até 5 ordenados por viabilidade
+  S-->>FE: FeasibilitySheetView[]
+  U->>FE: aceita o candidato 2
+  FE->>C: POST /api/feasibility/{id}/accept {PROJETO}
+  C->>S: AutopilotService.accept(actor, id, PROJETO)
+  S->>DB: insert project_schemes (RASCUNHO, origin AUTOPILOTO) + tasks ESTUDO_TECNICO_PRELIMINAR (aiGenerated) · feasibility_sheets ACEITA
+  S-->>FE: 201 → /desk
+
+  Note over U,OS: CA09 — EVM no projeto em execução
+  U->>FE: abre projeto EM_EXECUCAO
+  FE->>C: GET /api/projects/{id}/metrics
+  C->>S: MetricCalculator.evm + cpm + burndown
+  S->>DB: project_tasks (PV, EV, AC, percentComplete) → project_schemes.evm_json
+  S-->>FE: CPI, SPI, EAC, ETC, VAC, TCPI, caminho crítico, fluxo cumulativo + alerta SPI menor que 0,9 há 2 semanas com link /simulate
+
+  Note over U,OS: CA12 — painel admin
+  U->>FE: ADMIN abre IA do sistema
+  FE->>C: GET /api/admin/ai?period=
+  C->>S: AdminAiService.load
+  S->>DB: ai_inference_log agregado por capability e departamento · ai_quotas · taxa de fallback · taxa de aceitação (feasibility_sheets, seal_bonds)
+  S-->>FE: AdminAiPanel com alertas de custo
 ```
 
 ## 4. Máquina de estados
 
-Duas entidades do RF têm estados próprios: `AiProviderCircuitState.state` (circuit breaker por provedor, §1) e `FeasibilitySheet.status` (§7).
+Entidade central: `AiProviderCircuitState.state` (`CircuitState`) do circuit breaker por provedor — decide a cadeia primário → alternativo → local. A `FeasibilitySheet` (PROPOSTA · ACEITA · DESCARTADA) está no RF26 §4.
 
 ```mermaid
 stateDiagram-v2
-  direction LR
-
-  state "AiProviderCircuitState (por provedor, Redis)" as CB {
-    [*] --> CLOSED
-    CLOSED --> CLOSED : sucesso (failures = 0)
-    CLOSED --> OPEN : failures atinge o limiar (timeout, 5xx, erro de auth)
-    OPEN --> HALF_OPEN : cooldown após openedAt expira
-    HALF_OPEN --> CLOSED : requisição de prova ok
-    HALF_OPEN --> OPEN : requisição de prova falha
-  }
-
-  state "FeasibilitySheet.status" as FS {
-    [*] --> PROPOSTA : AutopilotService.suggestProjects (até 5, ordenadas por viabilidade)
-    PROPOSTA --> ACEITA : aceitar → ProjectScheme RASCUNHO + ETP ✦ ou DeciaSession (RF29)
-    PROPOSTA --> DESCARTADA : descartar com motivo (422 MOTIVO_OBRIGATORIO sem motivo)
-    ACEITA --> [*]
-    DESCARTADA --> [*]
-  }
-
-  note right of CB
-    Enquanto OPEN, a Chain pula o provedor:
-    primário → alternativo → LocalEngine.
-    O resultado registra FALLBACK e fallbackUsed (RF43.CA01).
+  [*] --> CLOSED: provedor saudável · recebe as chamadas (Claude primário, Gemini alternativo)
+  CLOSED --> OPEN: falhas ou timeouts acima do limiar na janela (Resilience4j) · result FALLBACK no AiInferenceLog
+  OPEN --> HALF_OPEN: waitDuration vencido · deixa passar chamadas de teste
+  HALF_OPEN --> CLOSED: chamadas de teste OK
+  HALF_OPEN --> OPEN: chamada de teste falhou
+  OPEN --> OPEN: chamadas vão direto ao próximo da cadeia (Gemini → LocalEngine) com aviso de fallback (CA01)
+  note right of OPEN
+    Com todos OPEN ou sem chave: LocalEngine executa
+    PERT, CPM, Monte Carlo, EVM, scores e todas as métricas
+    integralmente · só a redação fica simplificada (CA11).
   end note
-  note right of FS
-    discardReason alimenta as próximas sugestões (RF43.CA10).
-    Nada vira projeto sem o aceite humano.
+  note left of CLOSED
+    RESTRITO/SIGILOSO nunca chega ao provedor externo,
+    independente do estado (CA02).
   end note
 ```
 
@@ -635,98 +623,79 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js"]
-    FE1["app/insights (Acervo · Perfil · Equipe · Ranking · Projetos sugeridos) · app/autopilot · app/projects/[id] (EVM, caminho crítico, burndown) · app/admin/ai (painel IA do sistema)"]
-    FE2["components/ui · AiSpark ✦ + tooltip (modelo, data, revisor) · FallbackBanner · FeasibilityCard · ScoreBreakdown · RiskMatrix · EvmPanel · RankingTable + ExplainMe · InsufficientDataState · OneClickAction"]
+  subgraph FRONT["Frontend Next.js 15"]
+    R1["app/(shell)/insights (Acervo · Perfil · Equipe · Ranking · Projetos sugeridos) · autopilot · decia/[sessionId] (modo Avançado) · admin/ai · projects/[id] (painel EVM)"]
+    R2["components: InsightCard · MetricRef (fórmula, fonte, proxy) · RankingTable · Dialog Explique minha posição · FeasibilitySheetView · EvmPanel · ProjectCard composition PAINEL_METRICAS · Spark ✦ · EmptyState explicativo · AdminAiPanel"]
+    BFF["app/bff"]
+    R1 --> R2 --> BFF
   end
-
   subgraph WEB["ws-web"]
-    C1["InsightController"]
-    C2["RankingController"]
-    C3["AutopilotController"]
-    C4["AdminAiController"]
+    CTRL["InsightController · RankingController · AutopilotController · AdminAiController (@Operation RF43.CA01-CA15)"]
+    SEC["SecurityConfig · CorrelationIdFilter · GlobalExceptionHandler (main)"]
   end
-
-  subgraph APP["ws-application"]
-    S1["AiEngine (Strategy + Chain) · guardPrivacy · guardQuota · CircuitBreaker"]
-    S2["InsightService"]
-    S3["RankingService"]
-    S4["AutopilotService"]
-    S5["SessionService (RF7–RF16) · modo ECONOMIA/AVANCADO · citações RF33"]
-    P1["AiProviderPort"]
-    P2["SearchPort (ws-memory)"]
+  subgraph APPL["ws-application"]
+    AIE["ai/AiEngine (Strategy + Chain of Responsibility) · AiGovernance · AiBudget (Q-50)"]
+    MSK["common/Masking (main)"]
+    MC["metrics/MetricCalculator + metrics/* por domínio (A inovação · B TI · C projetos · D equipes) — METRICAS_GESTAO.md, testes unitários"]
+    INS["ai/InsightService · SurveyService (anônimas, mínimo 5)"]
+    RK["gamification/RankingService (dimensões separadas, pesos públicos, opt-out)"]
+    AP["ai/AutopilotService · FeasibilityService"]
+    AQ["ai/AiQuotaService"]
+    GD["security/Guard (main)"]
+    DE["events/DomainEvents AFTER_COMMIT (RECALC_METRICS · RECALC_RANKING)"]
+    PORTS["ports: AiProviderPort · QuotaPort · CircuitBreakerPort · SearchIndexPort"]
   end
-
-  subgraph DOM["ws-domain · br.gov.pr.secid.workstation"]
-    D1["FeasibilityService (PERT, CPM, Monte Carlo, EVM, custo, risco, ROI, WBS, RACI, SMART)"]
-    D2["MetricCalculator por métrica A–D (METRICAS_GESTAO.md)"]
-    D3["AiInferenceLog · AiQuota · AiProviderCircuitState · FeatureFlag · Insight · FeasibilitySheet · MetricDefinition · MetricSnapshot · RankingEntry · RankingWeights · Citation"]
+  subgraph DOM["ws-domain"]
+    ENT["AiInferenceLog (V2) · FeatureFlag (V2, ai.local.only = TRUE) · AiQuota · AiProviderCircuitState · Insight · FeasibilitySheet · MetricDefinition · MetricSnapshot · RankingEntry · RankingWeights · User.rankingOptOut (main) · UserConsent (planejado)"]
   end
-
-  subgraph INFRA["ws-infrastructure/*"]
-    I1["ai-providers · ClaudeAdapter · GeminiAdapter · LocalEngine (regras, embeddings locais, heurísticas de PM) · PII masker"]
-    I2["cache-redis · quota por usuário/departamento · circuit state · rankings"]
-    I3["persistence-mysql · ai_inference_log, ai_quotas, insights, feasibility_sheets, metric_definitions, metric_snapshots, ranking_entries, ranking_weights, feature_flags"]
-    I4["search-opensearch · índice ws-memory (dense_vector)"]
-    I5["platform · FeatureFlag (ai.provider.claude, ai.provider.gemini, ai.local.only) · DomainEventOutbox · PipelineJob RECALC_RANKING · AuditLog · scheduler de insights"]
+  subgraph INFRA["ws-infrastructure"]
+    AIC["ai-providers/ai-claude (flag ai.provider.claude) · AiProvidersConfig (main)"]
+    AIG["ai-providers/ai-gemini (flag ai.provider.gemini)"]
+    AIL["ai-providers/ai-local LocalEngine (ai.local.only) · embeddings locais"]
+    R4J["resilience4j-spring-boot4 circuit breaker · retry · time limiter (D-13)"]
+    RD["cache-redis quotas · circuit state · ranking cache (RedisAdaptersConfig no main)"]
+    OSA["search-opensearch ws-memory (flag opensearch.enabled)"]
+    MY["persistence-mysql ai_inference_log · feature_flags (V2) · insights · feasibility_sheets · metric_* · ranking_*"]
   end
-
-  subgraph EXT["Serviços externos"]
-    X1["Claude"]
-    X2["Gemini"]
-    X3["Google Workspace · Microsoft 365 · e-Protocolo (disponibilidade e SLA — métricas B)"]
-    X4["SINAPI / SICRO (referência de custo, quando disponíveis)"]
-  end
-
-  FE1 --> C1
-  FE1 --> C2
-  FE1 --> C3
-  FE1 --> C4
-  FE2 -.-> FE1
-  C1 --> S2
-  C2 --> S3
-  C3 --> S4
-  C4 --> D3
-  S2 --> S1
-  S3 --> D2
-  S4 --> S1
-  S4 --> D1
-  S5 --> S1
-  S2 --> D2
-  S1 --> P1
-  S4 --> P2
-  P1 --> I1
-  I1 --> X1
-  I1 --> X2
-  S1 --> I2
-  S3 --> I2
-  D3 --> I3
-  P2 --> I4
-  I5 --> S1
-  I5 --> S3
-  D2 -.-> X3
-  D1 -.-> X4
+  BFF --> CTRL --> SEC
+  CTRL --> INS
+  CTRL --> RK
+  CTRL --> AP
+  INS --> MC
+  RK --> MC
+  AP --> MC
+  INS --> AIE
+  AP --> AIE
+  AIE --> MSK
+  AIE --> AQ
+  AIE --> PORTS
+  DE --> MC
+  DE --> RK
+  AIE --> ENT --> MY --> MYSQL[("MySQL 8")]
+  PORTS --> AIC --> CLAUDE["Claude"]
+  PORTS --> AIG --> GEM["Gemini"]
+  PORTS --> AIL
+  PORTS --> R4J
+  PORTS --> RD --> REDIS[("Redis")]
+  PORTS --> OSA --> OPENS[("OpenSearch")]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
-|---|---|
-| RF43.CA01 | Classes `AiEngine.chain`, `AiProviderPort` + `ClaudeAdapter`/`GeminiAdapter`/`LocalEngine`, `CircuitBreaker`, `AiProviderCircuitState`, `AiInferenceLog` (provider, model, estimatedCostUsd, latencyMs, result FALLBACK, fallbackUsed, correlationId); atividades I5–I10, I12; sequência msgs 15–26 (primário falha → alternativo → local, log completo); máquina de estados `AiProviderCircuitState` (CLOSED → OPEN → HALF_OPEN); componentes `ai-providers`, `FallbackBanner`, `cache-redis · circuit state`. |
-| RF43.CA02 | Classes `TaskItem.accessClass`, `AiEngine.guardPrivacy`, `AiInferenceLog.maskedFields/result BLOQUEADO_SIGILO`, enum `InferenceResult`; atividades I2 → I10, I3; sequência msgs 12–14 (LocalEngine, BLOQUEADO_SIGILO, maskedFields); componente `ai-providers · PII masker`. |
-| RF43.CA03 | Classes `Insight` (scope ACERVO, metricRefsJson, actionsJson, severity), `InsightService.acervo/applyAction`; atividades U5, W4, S9 (Score 0–100 com decomposição, paradas, duplicadas, fantasma, lacunas, modelos recomendados, ações 1 clique); componentes `ScoreBreakdown`, `OneClickAction`, `app/insights`. |
-| RF43.CA04 | Classes `InsightService.perfil(userId, consent)`, `Insight.scope PERFIL`; atividades S10 → E2 (403 só o dono), S12 (comparação anonimizada, resumo profissional só com consentimento); componente `InsightController.GET insights_perfil`. |
-| RF43.CA05 | Classes `RankingEntry` (dimension, position, explanationJson), `RankingWeights` (weightsJson, criteriaPublicText, validFrom, editedBy), `User.rankingOptOut`, enum `RankingDimension` (7 dimensões), `RankingService.compute/explain/updateWeights`; atividade S13 (volume bruto nunca é critério); sequência msgs 43–49 (explain-me, opt-out); componentes `RankingTable + ExplainMe`, `PipelineJob RECALC_RANKING`, `AuditLog` (pesos com vigência). |
-| RF43.CA06 | Classes `DeciaSession.aiMode`, enum `AiMode`, `Citation`, `AiEngine.guardQuota` (créditos → cota → DECIA Points), `AiQuota`; atividade I4 (modo AVANCADO debita cota ou DP com aviso) e E3; componentes `SessionService · modo ECONOMIA/AVANCADO · citações RF33`, `search-opensearch · ws-memory`. |
-| RF43.CA07 | Classes `AutopilotService.tasksFrom`, `TaskItem` (state RASCUNHO, sourceKind AUTOPILOT, aiGenerated), `AiCapability.AUTOPILOT_TAREFAS`; relação `AutopilotService → AiEngine (AUTOPILOT_TAREFAS)`; componente `AutopilotController.POST autopilot_tasks` — nada vira DISPONIVEL sem revisão (RF20/RF41). |
-| RF43.CA08 | Classes `FeasibilitySheet` (costJson P10/P50/P90, timeJson PERT/CPM, deadlineJson Monte Carlo 1000, viabilityScoreJson, risksJson top 5, wbsJson, raciJson, assumptionsJson, unknownsJson), `FeasibilityService` (7 métodos), `AutopilotService.suggestProjects(max5)`; atividades S1, S2, S3, W2, U2; sequência msgs 1–7 e 27–29 (até 5 fichas ordenadas); transição `[*] → PROPOSTA`; componentes `FeasibilityCard`, `RiskMatrix`. |
-| RF43.CA09 | Classes `ProjectScheme.evmJson/criticalPathJson`, `ProjectTask` (plannedValue, earnedValue, actualCost, isCritical, slackDays), `FeasibilityService.evm/cpm`; atividade S14 (EVM PV, EV, AC, CPI, SPI, EAC, ETC, VAC, TCPI, burndown, alerta SPI menor que 0,9 há 2 semanas → Simulador RF31); componentes `EvmPanel`, `AutopilotController.GET projects_id_evm`. |
-| RF43.CA10 | Classes `FeasibilitySheet.status/discardReason/resultingProjectId/resultingTaskId`, `AutopilotService.accept/discard`, `ProjectScheme.origin AUTOPILOTO`, `TaskItem ESTUDO_TECNICO_PRELIMINAR`; atividades U3, W3, S4 → S5/S6, S7 → E1 (422 MOTIVO_OBRIGATORIO), S8; sequência msgs 30–42; transições `PROPOSTA → ACEITA / DESCARTADA` e nota. |
-| RF43.CA11 | Nota de `FeasibilityService` (determinístico, sem chave externa), `LocalEngine`; atividades I1 → I10 (flag desabilitada ou sem provedor → motor local, redação simplificada com aviso); sequência msgs 12–14 e 19–21; componentes `ws-domain · FeasibilityService`, `MetricCalculator`, `FeatureFlag ai.local.only`. |
-| RF43.CA12 | Classes `AiInferenceLog` (estimatedCostUsd, latencyMs, capability, departmentId, fallbackUsed, quotaSource), `AiQuota`, `FeasibilitySheet.status` (taxa de aceitação), `AdminAiController`; atividades U6, W6; componente `app/admin/ai`. |
-| RF43.CA13 | Classes `MetricDefinition` (code, domain, formula, sourceDescription, proxyNote, unit, minSamples), `MetricSnapshot`, `MetricCalculator`, `Insight.metricRefsJson`; atividades S12 (fórmula, fonte, proxy) e I11 (redige só sobre números calculados, cita métrica e valor); nota de `MetricCalculator`; componente `ws-domain · MetricCalculator por métrica A–D (METRICAS_GESTAO.md)`. |
-| RF43.CA14 | Classes `InsightService.equipe(departmentId, viewer)`, `Insight.scope EQUIPE`, `MetricDefinition.minSamples`; atividades S10 (CHEFE/EMPRESA) → E2, S11 (pesquisas D: mínimo 5 respondentes), S12 (benchmarks internos anonimizados, tendência, recomendações acionáveis); componente `InsightController.GET insights_equipe`. |
-| RF43.CA15 | Classe `MetricDefinition.minSamples` (A/B: 3 projetos ou sinais); atividades S11 → W5 (tela explica o que falta coletar em vez de números vazios); componente `InsufficientDataState`. |
-
-
-Tela/aba: `/autopilot` (esqueleto em `app/(shell)/autopilot/page.tsx`) · `/insights` (esqueleto em `app/(shell)/insights/page.tsx`) · `/departments/[slug]/team` (esqueleto em `app/(shell)/departments/[slug]/team/page.tsx`) · `/admin` (esqueleto em `app/(shell)/admin/page.tsx`)
+| CA | Classe | Passo | Mensagem | Transição | Componente |
+|---|---|---|---|---|---|
+| RF43.CA01 | `AiEngine.chain`, `CircuitBreakerPort`, `AiProviderCircuitState`, `AiInferenceLog` (model, cost, latency, fallbackUsed, correlationId), aviso de fallback | I1 → I2 → I3 → I4 | 11–18 | toda a máquina | `AIE`, `R4J`, `AIC/AIG/AIL` |
+| RF43.CA02 | `AiGovernance.accessClassRoute/mask`, `Masking` (main), `InferenceResult BLOQUEADO_SIGILO`, `maskedFieldsJson` | G2 → G3/G4 | 8 | nota de CLOSED | `MSK`, `AIL` |
+| RF43.CA03 | `InsightService.acervo/applyAction`, `Insight scope ACERVO` (Score, paradas, duplicadas, fantasma, lacunas, modelos recomendados, `actionsJson`), `MetricCalculator` | A2 → A3 → G7 → G10 → F1 | 1–25 | — | `INS`, `MC`, `InsightCard`, `MetricRef` |
+| RF43.CA04 | `InsightService.perfil`, `UserConsent RESUMO_PROFISSIONAL_IA` (403 CONSENTIMENTO_NECESSARIO), comparação anonimizada, `DeliberativeProfile` | A4 → A5 → G11 → G10 | 26–34 | — | `INS`, `R1 insights/perfil` |
+| RF43.CA05 | `RankingService.compute/explain/optOut/updateWeights`, `RankingEntry.dimension/explanationJson`, `RankingWeights` (vigência, `editedBy`), `User.rankingOptOut` (main), nunca volume bruto | A8 → A9 → G12 → F2 | 35–43 | — | `RK`, `RankingTable`, `RD` |
+| RF43.CA06 | `DeciaSession.aiMode AVANCADO`, `CitationService` (RF33), métricas reais do projeto na sessão, débito de cota/DP com aviso | G19 | — (RF8/RF11/RF16 em modo AVANCADO) | — | `AIE`, `OSA`, `AQ` |
+| RF43.CA07 | `AutopilotService.tasksFrom`, `TaskItem RASCUNHO` (tipo, categoria, prazo legal, responsável, dependências), nada DISPONIVEL sem revisão (RF4) | A10 → A11 → A12 → G13 | — (RF26 §3) | — | `AP` |
+| RF43.CA08 | `AutopilotService.projectCandidates`, `FeasibilityService.build`, `FeasibilitySheet` (costJson P10/P50/P90, timeJson PERT/CPM, deadlineJson Monte Carlo 1.000, viabilityScoreJson, risksJson top 5, wbsJson, raciJson, assumptionsJson, unknownsJson), até 5 por viabilidade | A13 → G14 → F3 | 44–52 | — (RF26 §4 PROPOSTA) | `AP`, `MC`, `FeasibilitySheetView` |
+| RF43.CA09 | `MetricCalculator.evm/cpm`, `ProjectScheme.evmJson/criticalPathJson`, burndown/fluxo cumulativo, alerta SPI → RF31 | G18 | 58–62 | — | `MC`, `EvmPanel`, `PAINEL_METRICAS` |
+| RF43.CA10 | `AutopilotService.accept/discard`, `ProjectScheme RASCUNHO origin AUTOPILOTO`, `TaskType ESTUDO_TECNICO_PRELIMINAR`, `FeasibilitySheet.discardReason`, sessão DECIA (RF29) | G15 → G16/G17 | 53–57 | `PROPOSTA → ACEITA / DESCARTADA` (RF26 §4) | `AP` |
+| RF43.CA11 | `LocalEngine` executa PERT, CPM, Monte Carlo, EVM, scores e métricas integralmente; só redação simplificada | I3 · G7 | 15–16 | nota de OPEN | `AIL`, `MC` |
+| RF43.CA12 | `AdminAiController`, agregados de `AiInferenceLog` por capability/departamento, taxa de fallback, taxa de aceitação, `AiQuota`, alertas de custo | A14 → A15 → F5 | 63–67 | — | `AdminAiPanel`, `MY` |
+| RF43.CA13 | `MetricDefinition` (code, formula, sourceDescription, proxyNote, minSamples), `MetricCalculator` por domínio com testes unitários, `METRICAS_GESTAO.md`, IA cita a métrica | G7 | 4–5 | — | `MC`, `MY (metric_definitions)` |
+| RF43.CA14 | `InsightService.equipe`, `Insight scope EQUIPE` (carga, gargalos, segurança psicológica, rede, bus factor, eNPS), `SurveyService` (anônimas, mínimo 5), benchmarks anonimizados, `Guard.requireDeptHead/requireRole EMPRESA` | A6 → A7 → G8 → G10 | — (GET /insights/equipe) | — | `INS`, `SurveyService`, `GD` |
+| RF43.CA15 | `MetricDefinition.minSamples`, mínimo 3 projetos/sinais para domínios A e B, `EmptyState` explicativo | G8 → G9 → F4 | — | — | `F4 EmptyState`, `MC` |

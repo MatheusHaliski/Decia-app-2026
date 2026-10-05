@@ -1,0 +1,32 @@
+package br.gov.pr.secid.workstation.domain.ia;
+
+/** Capacidade de IA invocada (TAXONOMIA §10.1); catálogo que cresce por RF — sem CHECK no banco (D-23). */
+public enum AiCapability {
+    ABRIR_SESSAO,
+    CLASSIFICAR_MENSAGEM,
+    DETECTAR_DIVERGENCIA,
+    FORMULAR_PERGUNTA,
+    RESUMO_ANALITICO,
+    DECISAO_FINAL,
+    ARTEFATO,
+    PREENCHER_TAREFA,
+    COMPOR_PROJETO,
+    AUTOPILOT_PROJETO,
+    AUTOPILOT_TAREFAS,
+    SIMULAR_CENARIO,
+    CONFORMIDADE,
+    MEMORIA_BUSCA,
+    EXTRAIR_DESENHO,
+    EXTRAIR_DOCUMENTO,
+    TRANSCREVER,
+    ATA_VIVA,
+    SUGERIR_CHANCELA,
+    AVALIAR_POLITICA,
+    TAREFA_DO_DIA,
+    HSE,
+    HYPE_PERFIL,
+    INSIGHT,
+    DOSSIE,
+    THUMBNAIL,
+    CAPA_IA
+}

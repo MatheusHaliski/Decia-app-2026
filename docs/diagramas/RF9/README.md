@@ -1,174 +1,168 @@
 # RF9 — Permitir que um chefe de departamento possa adicionar ou remover um usuário da sua lista de empregados atuais
-**HU:** HU9 · **Sprint (board Work Station):** lista *Requisitos Funcionais* (sem sprint atribuída) · **Equivalente FAI:** RF22 Perfil institucional (celebridade) — abas "do administrador" negadas no serviço (`guard.deny`) e não só escondidas; no FAI não há lotação de pessoas, a gestão de equipe é nova · **Aba/rota:** página do departamento `/departments/[slug]` → aba **Equipe**, modo **"Minha equipe" (gestão)** só para o chefe (`/departments/[slug]/team`); atalho **Minha equipe** no grupo Gestão do menu
-**Critérios de aceite cobertos:** RF9.CA01 … RF9.CA06 — **todos "(CA a confirmar)"**: o corpo do card RF9 está vazio e o **escopo é novo** (antes RF9 = participantes da sessão DECIA, preservado em `_anterior/RF9`); os CAs foram derivados do título + HU9 e reaproveitam RF28.CA02 (lotação 1 por vez com histórico em `DepartmentMembership`), RF28.CA03 (auditoria do chefe), o guard `requireDeptHead` e a aba "Minha equipe" propostos em `docs/produto/ABAS_POR_PERFIL.md` §1.2 e §7.b
+**HU:** HU9 · **Sprint (board Work Station):** lista *Requisitos Funcionais* sem sprint atribuída (o card "SPRINT 2" cita "RF9 Adicionar/remover usuários" da **sessão DECIA**, escopo antigo preservado em `_anterior/RF9`; fase (g) da ARQUITETURA §6: "RF9/RF10/RF46 (equipe, atribuição, chat)") · **Equivalente FAI:** RF22 Perfil institucional (celebridade) — abas "do administrador" negadas no serviço (`guard.deny`); o FAI não tem lotação de pessoas, a gestão de equipe é nova · **Aba/rota:** página do departamento `/departments/[slug]` → aba **Equipe** → modo **Minha equipe (gestão)** só para o chefe (`/departments/[slug]/team?mode=manage`); atalho **Minha equipe** no grupo Gestão do `SidebarNav` (ABAS_POR_PERFIL §1.2, §7.b); API `GET /api/departments/{id}/members`, `GET /api/departments/{id}/members/history`, `POST /api/departments/{id}/members`, `DELETE /api/departments/{id}/members/{userId}`, `GET /api/departments/{id}/members/{userId}/pending`
+**Critérios de aceite cobertos:** RF9.CA01 … RF9.CA06 — **todos "(CA a confirmar)"**: o corpo do card está vazio e o **escopo é novo**; os CAs foram derivados do título + HU9 e reaproveitam RF28.CA02 (lotação 1 por vez com histórico em `DepartmentMembership`), RF28.CA03 (auditoria do chefe), o guard `requireDeptHead` e a aba "Minha equipe" propostos em `docs/produto/ABAS_POR_PERFIL.md`. Todas as classes do RF são **(planejado)**; reais: `Guard.requireRole/ownerOrAdmin`, `User.companyId/departmentId` (colunas sem FK até o RF28, D-23), `AuditLogPort`, `SecurityConfig`.
 
 > **HU9** — COMO chefe de departamento de uma empresa POSSO adicionar ou remover um usuário de minha lista de empregados ativos PARA melhorar a minha gestão empresarial.
 
-A **lista de empregados atuais** de um departamento é o conjunto de `DepartmentMembership` **vigentes** (`endedAt` nulo) daquele `Department`; `User.departmentId` espelha a lotação atual (1 por vez, RF28.CA02). O **CHEFE** (`Department.headUserId`, guard `requireDeptHead`, que também aceita a EMPRESA dona da `Company` e o ADMIN) **adiciona** (cria `DepartmentMembership` MEMBRO e encerra a lotação anterior em outro departamento — transferência), **remove** (fecha `endedAt` + `reason`, zera `User.departmentId`, revoga `CuratorAppointment` vigente) e **transfere** (remove + adiciona na mesma transação, com o chefe de destino ou a EMPRESA). O histórico nunca é apagado; remover avisa o empregado e, se ele tem pendências (tarefas EM_USO como responsável, sessões DECIA ativas, chancelas EM_REVISAO), oferece o **Dossiê de Transição** (RF36) antes de confirmar. A API da equipe só expõe nome, username, cargo e lotação — nunca `email`/`phone` (LGPD). Nenhuma IA neste RF.
+## Critérios de aceite derivados da HU9 (todos "CA a confirmar")
 
-## Critérios de aceite derivados do título + HU9 (todos "CA a confirmar")
-
-| CA | Enunciado (Dado / Quando / Então) | Fonte reaproveitada |
+| CA | Enunciado (Dado / Quando / Então) | Origem |
 |---|---|---|
-| **RF9.CA01** (CA a confirmar) | Dado um CHEFE_DEPARTAMENTO com `Department.headUserId == eu` (ou EMPRESA dona da Company, ou ADMIN — `requireDeptHead`), quando abro a aba Equipe no modo **Minha equipe**, então vejo os `DepartmentMembership` vigentes (nome, username, `jobTitle`, `roleInDept`, `startedAt`, etiqueta Curador) com busca e paginação (> 50), mais o histórico de lotações encerradas; quem não é chefe não vê o modo gestão no menu e recebe `403 ACESSO_NEGADO` na API; a API nunca devolve `email`/`phone`. | RF28.CA02, RF28.CA08, ABAS §7.b |
-| **RF9.CA02** (CA a confirmar) | Dado o modo gestão, quando **adiciono** um usuário (busca por nome/username na mesma `Company`, `AccountStatus` ACTIVE), então nasce um `DepartmentMembership` MEMBRO com `startedAt`, a lotação vigente anterior (em outro departamento) é encerrada com `endedAt` e `reason` TRANSFERENCIA e `User.departmentId` passa a ser o meu departamento; já membro vigente → `409 MEMBRO_DUPLICADO`; outra empresa → `422 FORA_DA_EMPRESA`; conta não ACTIVE → `422 USUARIO_INATIVO`. | RF28.CA02 (1 departamento por vez) |
-| **RF9.CA03** (CA a confirmar) | Dado um membro vigente, quando **removo** informando `reason` (obrigatório, `422 VALIDACAO`), então o `DepartmentMembership` recebe `endedAt` e `reason` (sem apagar), `User.departmentId` fica nulo, o `CuratorAppointment` vigente dele é revogado (`revokeReason` = saída do departamento) e suas tarefas/projetos **permanecem** com o dono; remover o próprio chefe (`headUserId`) → `422 CHEFE_NAO_REMOVIVEL` (troca de chefe é RF28.CA07). | RF28.CA02, RF28.CA03, RF28.CA07 |
-| **RF9.CA04** (CA a confirmar) | Dado que o removido tem pendências (responsável em `ProjectTask` aberta, `TaskItem` EM_USO/BLOQUEADA como responsável, `SessionParticipant` em sessão ATIVA, `SealBond` EM_REVISAO de que é alvo), quando confirmo a remoção, então o sistema lista as pendências e oferece **gerar Dossiê de Transição** (`HandoffDossier` reason TRANSFERENCIA/SAIDA, RF36) ou **transferir** para outro departamento (remover + adicionar na mesma transação); itens PRIVADOS do empregado nunca entram sem consentimento. | RF36.CA01, RF36.CA05 |
-| **RF9.CA05** (CA a confirmar) | Dado a inclusão ou remoção, então `MemberAdded`/`MemberRemoved` (AFTER_COMMIT) gravam `AuditLog MEMBER_ADDED/MEMBER_REMOVED` com `correlationId`, notificam o empregado (`Notification` category SISTEMA: "você foi adicionado/removido do departamento X", com motivo), invalidam o cache Redis de métricas/contadores do departamento e atualizam a aba pública Equipe e a página da empresa (Pessoas). | RF28.CA03 (auditoria), RF28.CA04 (cache) |
-| **RF9.CA06** (CA a confirmar) | Dado o histórico, então re-adicionar alguém cria um **novo** `DepartmentMembership` (o anterior permanece encerrado), a linha do tempo de lotações aparece no modo gestão e no perfil do empregado (empresa/departamento atual, RF16), e todas as mensagens são i18n (pt-BR/en/es). | RF28.CA02 (histórico), RF19.CA07 |
+| **RF9.CA01** (CA a confirmar) | Dado um CHEFE_DEPARTAMENTO com `Department.headUserId == eu` (ou EMPRESA dona da `Company`, ou ADMIN — `Guard.requireDeptHead`), quando abro a aba Equipe no modo **Minha equipe**, então vejo os `DepartmentMembership` vigentes (nome, username, `jobTitle`, `roleInDept`, `startedAt`, etiqueta Curador) com busca e paginação (> 50), mais o histórico de lotações encerradas; quem não é chefe vê só a lista pública (RF14) e a API de gestão responde `403 ACESSO_NEGADO`. | ABAS §7.b, RF28.CA02 |
+| **RF9.CA02** (CA a confirmar) | Dado o modo gestão, quando **adiciono** um usuário (busca por nome/username na mesma `Company`, `AccountStatus ACTIVE`), então nasce um `DepartmentMembership` MEMBRO com `startedAt`, a lotação vigente anterior (em outro departamento) é encerrada com `endedAt` e `reason TRANSFERENCIA` e `User.departmentId` passa a ser o meu departamento; já membro vigente → `409 MEMBRO_DUPLICADO`; usuário de outra empresa, não ACTIVE ou perfil EMPRESA → `422 VALIDACAO`. | RF28.CA02 (1 lotação por vez) |
+| **RF9.CA03** (CA a confirmar) | Dado um membro vigente, quando **removo** informando `reason` (obrigatório, `422 VALIDACAO`), então o `DepartmentMembership` recebe `endedAt` e `reason` (sem apagar), `User.departmentId` fica nulo, o `CuratorAppointment` vigente dele é revogado (`revokeReason` = saída do departamento) e suas tarefas/projetos **permanecem** com o dono; remover o próprio chefe (`headUserId`) → `409 CHEFE_NAO_REMOVIVEL` (trocar o chefe é RF28). | RF28.CA02/CA03 |
+| **RF9.CA04** (CA a confirmar) | Dado que o removido tem pendências (responsável em `ProjectTask` aberta, `TaskItem` EM_USO/BLOQUEADA como responsável, `SessionParticipant` em sessão ATIVA, `SealBond` EM_REVISAO de que é alvo, `Assignment` ACEITA), quando confirmo a remoção, então o sistema lista as pendências (`GET …/pending`) e oferece **gerar Dossiê de Transição** (`HandoffDossier` reason TRANSFERENCIA/SAIDA, RF36) ou **transferir** para outro membro; sem escolha, a remoção prossegue e as pendências ficam marcadas "sem responsável no departamento". | RF36, RF10 |
+| **RF9.CA05** (CA a confirmar) | Dado a inclusão ou remoção, então `MemberAdded`/`MemberRemoved` (AFTER_COMMIT) gravam `AuditLog MEMBER_ADDED/MEMBER_REMOVED` com `correlationId`, notificam o empregado (`Notification` tipo SISTEMA, categoria SISTEMA: "você foi adicionado/removido do departamento X", com motivo), invalidam o cache Redis de métricas/contadores do departamento e atualizam a aba pública Equipe e a página da empresa (RF14/RF15). | RF28.CA03 |
+| **RF9.CA06** (CA a confirmar) | Dado o histórico, então re-adicionar alguém cria um **novo** `DepartmentMembership` (o anterior permanece encerrado), a linha do tempo de lotações aparece no modo gestão e no perfil do empregado (empresa/departamento atual, RF16), e todas as mensagens são i18n (pt-BR/en/es). | RF28.CA02 (histórico) |
 
 ## 1. Diagrama de classes
 
 ```mermaid
 classDiagram
-direction LR
+  direction LR
 
-namespace ws_domain_identidade {
-  class User {
-    <<entity>>
-    +id: UUID
-    +username: String
-    +fullName: String
-    +displayName: String
-    +jobTitle: String
-    +profileType: ProfileType
-    +role: Role
-    +status: AccountStatus
-    +companyId: UUID
-    +departmentId: UUID lotação atual
-    +avatarUrl: String
-    .. +25 campos ..
+  class DepartmentMembersController {
+    <<controller>>
+    +list(deptId, q, page, CurrentUser) Page~MemberView~
+    +history(deptId, page, CurrentUser) Page~MembershipView~
+    +add(deptId, AddMemberRequest, CurrentUser, ctx) MemberView
+    +pending(deptId, userId, CurrentUser) PendingSummary
+    +remove(deptId, userId, RemoveMemberRequest, CurrentUser, ctx) void
   }
+  class TeamService {
+    <<service>>
+    +listMembers(deptId, q, page, actor) Page
+    +history(deptId, page, actor) Page
+    +addMember(deptId, userId, actor, ctx) DepartmentMembership
+    +removeMember(deptId, userId, reason, handoff, actor, ctx) void
+    +pendingOf(deptId, userId) PendingSummary
+  }
+  class Guard {
+    <<service>>
+    +requireRole(CurrentUser, Role) void
+    +ownerOrAdmin(CurrentUser, ownerId) void
+    +requireDeptHead(CurrentUser, Department) void
+  }
+  class CuratorService {
+    <<service>>
+    +revokeOnLeave(userId, deptId, reason) void
+  }
+  class HandoffService {
+    <<service>>
+    +generate(subjectUserId, reason, requestedBy) HandoffDossier
+  }
+  class DepartmentRepositoryPort {
+    <<port>>
+    +findById(id) Optional
+    +findBySlug(slug) Optional
+  }
+  class MembershipRepositoryPort {
+    <<port>>
+    +findCurrent(userId) Optional
+    +findCurrentByDept(deptId, q, page) Page
+    +findHistoryByDept(deptId, page) Page
+    +save(DepartmentMembership) DepartmentMembership
+  }
+  class UserRepositoryPort {
+    <<port>>
+    +findById(id) Optional
+    +searchInCompany(companyId, q) List
+    +save(User) User
+  }
+  class PendingWorkPort {
+    <<port>>
+    +openProjectTasks(userId) int
+    +tasksInUse(userId) int
+    +activeSessions(userId) int
+    +sealBondsInReview(userId) int
+    +acceptedAssignments(userId) int
+  }
+  class NotificationPort {
+    <<port>>
+    +notify(Notification) void
+  }
+  class CounterCachePort {
+    <<port>>
+    +evict(key) void
+  }
+
   class Company {
     <<entity>>
-    +id: UUID
-    +ownerUserId: UUID perfil EMPRESA
-    +legalName: String
-    +slug: String
+    +UUID id
+    +UUID ownerUserId
+    +String legalName
+    +String slug
+    +String status
   }
   class Department {
     <<entity>>
-    +id: UUID
-    +companyId: UUID
-    +name: String
-    +acronym: String
-    +slug: String
-    +color: String
-    +monogram: String
-    +headUserId: UUID CHEFE
-    +active: boolean
+    +UUID id
+    +UUID companyId
+    +String name
+    +String acronym
+    +String slug
+    +String color
+    +String monogram
+    +UUID headUserId
+    +boolean active
   }
   class DepartmentMembership {
     <<entity>>
-    +id: UUID
-    +userId: UUID
-    +departmentId: UUID
-    +roleInDept: DeptRole
-    +startedAt: Instant
-    +endedAt: Instant nulo = vigente
-    +reason: String
+    +UUID id
+    +UUID userId
+    +UUID departmentId
+    +DeptRole roleInDept
+    +Instant startedAt
+    +Instant endedAt
+    +String reason
+  }
+  class User {
+    <<entity>>
+    +UUID id
+    +String username
+    +String fullName
+    +String jobTitle
+    +ProfileType profileType
+    +AccountStatus status
+    +UUID companyId
+    +UUID departmentId
   }
   class CuratorAppointment {
     <<entity>>
-    +id: UUID
-    +departmentId: UUID
-    +curatorUserId: UUID
-    +revokedAt: Instant
-    +revokeReason: String
-    +scope: CuratorScope
-  }
-}
-
-namespace ws_domain_pendencias {
-  class ProjectTask {
-    <<entity>>
-    +id: UUID
-    +projectId: UUID
-    +responsibleId: UUID
-    +percentComplete: int
-  }
-  class TaskItem {
-    <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +responsibleId: UUID
-    +state: TaskState
-    +visibility: Visibility
-  }
-  class SessionParticipant {
-    <<entity>>
-    +sessionId: UUID
-    +userId: UUID
-    +leftAt: Instant
-  }
-  class SealBond {
-    <<entity>>
-    +id: UUID
-    +targetOwnerId: UUID
-    +status: SealBondStatus
+    +UUID departmentId
+    +UUID curatorUserId
+    +Instant revokedAt
+    +String revokeReason
+    +CuratorScope scope
   }
   class HandoffDossier {
     <<entity>>
-    +id: UUID
-    +subjectType: String EMPREGADO
-    +subjectUserId: UUID
-    +requestedBy: UUID
-    +reason: HandoffReason
-    +status: HandoffStatus
-    +consentForPrivateItems: boolean
+    +UUID subjectUserId
+    +HandoffReason reason
+    +HandoffStatus status
+    +UUID successorUserId
   }
-}
-
-namespace ws_domain_plataforma {
   class Notification {
     <<entity>>
-    +id: UUID
-    +recipientId: UUID
-    +actorId: UUID
-    +type: NotificationType SISTEMA
-    +category: String SISTEMA
-    +title: String
-    +body: String
-    +payloadJson: JSON
+    +UUID recipientId
+    +NotificationType type
+    +String category
+    +String title
+    +String body
   }
   class AuditLog {
     <<entity>>
-    +id: UUID
-    +actorId: UUID
-    +action: String MEMBER_ADDED MEMBER_REMOVED MEMBER_TRANSFERRED
-    +resourceType: String DEPARTMENT
-    +resourceId: UUID
-    +correlationId: String
-    +metadataJson: JSON
+    +UUID actorId
+    +String action
+    +String resourceType
+    +String resourceId
+    +String correlationId
   }
-  class DomainEventOutbox {
-    <<entity>>
-    +aggregateType: String DEPARTMENT
-    +eventType: String MemberAdded MemberRemoved
-    +payloadJson: JSON
-  }
-}
-
-namespace ws_domain_enums {
   class DeptRole {
     <<enum>>
     MEMBRO
     CHEFE
     CURADOR
-  }
-  class ProfileType {
-    <<enum>>
-    EMPREGADO
-    EMPRESA
-    CHEFE_DEPARTAMENTO
-  }
-  class AccountStatus {
-    <<enum>>
-    PENDING_EMAIL_VERIFICATION
-    PENDING_VALIDATION
-    ACTIVE
-    SUSPENDED
-    DELETION_SCHEDULED
   }
   class HandoffReason {
     <<enum>>
@@ -177,200 +171,109 @@ namespace ws_domain_enums {
     FIM_GESTAO
     TROCA_CHEFE
   }
-}
+  class ProfileType {
+    <<enum>>
+    EMPREGADO
+    EMPRESA
+    CHEFE_DEPARTAMENTO
+  }
 
-namespace ws_application {
-  class InstitutionalService {
-    <<service>>
-    +listTeam(actorId, deptId, query, page) TeamView vigentes + histórico
-    +addMember(actorId, deptId, userId) DepartmentMembership
-    +removeMember(actorId, deptId, userId, reason) DepartmentMembership
-    +transferMember(actorId, fromDeptId, toDeptId, userId, reason) DepartmentMembership
-    +pendingItemsOf(userId, deptId) PendingSummary
-    +assignMembership(actorId, userId, deptId, reason) DepartmentMembership
-  }
-  class AccessPolicy {
-    <<service>>
-    +requireDeptHead(user, departmentId) void headUserId ou EMPRESA dona ou ADMIN
-    +requireSameCompany(user, companyId) void
-  }
-  class CuratorService {
-    <<service>>
-    +revokeAllOf(userId, deptId, reason)
-  }
-  class HandoffService {
-    <<service>>
-    +generateForMember(deptId, userId, reason) HandoffDossier
-  }
-  class NotificationService {
-    <<service>>
-    +notifyMembershipChange(recipientId, actorId, dept, added, reason)
-  }
-  class CachePort {
-    <<port>>
-    +evict(key)
-  }
-}
-
-namespace ws_web {
-  class DepartmentTeamController {
-    <<controller>>
-    +GET_api_departments_id_team_manage(q, page)
-    +POST_api_departments_id_members(userId)
-    +DELETE_api_departments_id_members_userId(reason)
-    +POST_api_departments_id_members_userId_transfer(toDeptId, reason)
-    +GET_api_departments_id_members_userId_pending()
-  }
-}
-
-namespace ws_infrastructure {
-  class DepartmentMembershipJpaRepository {
-    <<adapter>>
-  }
-  class AuditLogJpaRepository {
-    <<adapter>>
-  }
-  class RedisMetricsCache {
-    <<adapter>>
-  }
-  class CassandraNotificationAdapter {
-    <<adapter>>
-  }
-}
-
-Company "1" --> "*" Department
-Company "1" --> "*" User : companyId
-Department "1" --> "*" DepartmentMembership : lista de empregados = vigentes
-User "1" --> "*" DepartmentMembership : histórico de lotações
-User --> Department : departmentId atual
-Department --> User : headUserId CHEFE
-Department "1" --> "*" CuratorAppointment
-CuratorAppointment --> User : curatorUserId
-ProjectTask --> User : responsibleId pendência
-TaskItem --> User : responsibleId pendência
-SessionParticipant --> User : userId pendência
-SealBond --> User : targetOwnerId pendência
-HandoffDossier --> User : subjectUserId
-Notification --> User : recipientId
-DepartmentMembership --> DeptRole
-User --> ProfileType
-User --> AccountStatus
-HandoffDossier --> HandoffReason
-
-DepartmentTeamController ..> InstitutionalService
-DepartmentTeamController ..> AccessPolicy : requireDeptHead 403
-InstitutionalService ..> AccessPolicy
-InstitutionalService ..> DepartmentMembership
-InstitutionalService ..> CuratorService : revoga ao remover
-InstitutionalService ..> HandoffService : pendências CA04
-InstitutionalService ..> DomainEventOutbox : MemberAdded MemberRemoved
-DomainEventOutbox ..> AuditLog : AFTER_COMMIT
-DomainEventOutbox ..> NotificationService : AFTER_COMMIT
-DomainEventOutbox ..> CachePort : evict métricas do departamento
-DepartmentMembershipJpaRepository ..> DepartmentMembership : JPA
-AuditLogJpaRepository ..> AuditLog : JPA
-RedisMetricsCache ..|> CachePort
-CassandraNotificationAdapter ..> Notification : notifications_by_user
-
-note for DepartmentMembership "tabela department_memberships · lista de empregados atuais = endedAt IS NULL · 1 lotação vigente por usuário (RF28.CA02) · nunca apagada (CA06)"
-note for AccessPolicy "requireDeptHead = Department.headUserId == user OR Company.ownerUserId == user OR Role ADMIN · senão 403 ACESSO_NEGADO (CA01)"
-note for InstitutionalService "addMember: 409 MEMBRO_DUPLICADO, 422 FORA_DA_EMPRESA, 422 USUARIO_INATIVO (CA02) · removeMember: reason obrigatório, 422 CHEFE_NAO_REMOVIVEL (CA03) · API sem email/phone (LGPD)"
-note for HandoffDossier "oferecido quando o removido tem pendências (CA04) · itens PRIVADOS só com consentForPrivateItems (RF36.CA05)"
+  DepartmentMembersController --> TeamService
+  TeamService --> Guard
+  TeamService --> CuratorService
+  TeamService --> HandoffService
+  TeamService --> DepartmentRepositoryPort
+  TeamService --> MembershipRepositoryPort
+  TeamService --> UserRepositoryPort
+  TeamService --> PendingWorkPort
+  TeamService --> NotificationPort
+  TeamService --> CounterCachePort
+  Company "1" *-- "1..*" Department
+  Company "1" --> "1" User : ownerUserId (EMPRESA)
+  Department "1" --> "1" User : headUserId (CHEFE)
+  Department "1" --> "0..*" DepartmentMembership : histórico de lotações
+  User "1" --> "0..*" DepartmentMembership : no máximo 1 vigente (endedAt nulo)
+  User "0..*" --> "0..1" Department : departmentId = lotação atual
+  Department "1" --> "0..*" CuratorAppointment
+  HandoffDossier "0..*" --> "1" User : subjectUserId
+  DepartmentMembership --> DeptRole
+  HandoffDossier --> HandoffReason
+  User --> ProfileType
+  TeamService ..> Notification
+  TeamService ..> AuditLog : MEMBER_ADDED / MEMBER_REMOVED
+  note for DepartmentMembership "Invariante: por userId existe no máximo uma linha com endedAt nulo. Re-adicionar cria linha nova (CA06). FK users.department_id → departments RESTRICT entra no RF28 (D-23)."
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph LU["Ator humano"]
-    U1["CHEFE abre /departments/[slug] → Equipe → modo Minha equipe"]
-    U2["Busca um usuário e clica Adicionar"]
-    U3["Clica Remover em um membro e informa o motivo"]
-    U4["Escolhe: gerar Dossiê de Transição, transferir para outro departamento ou confirmar remoção"]
-    U5["EMPREGADO recebe a notificação e vê a lotação atual no perfil"]
+  subgraph ATOR["Chefe de departamento (headUserId) · EMPRESA dona · ADMIN"]
+    A1["Abre /departments/{slug}/team?mode=manage (atalho Minha equipe no grupo Gestão)"]
+    A2["Busca um colega da mesma empresa e clica Adicionar"]
+    A3["Clica Remover num membro vigente e informa o motivo"]
+    A4["Escolhe o destino das pendências: gerar Dossiê de Transição · transferir para colega · prosseguir"]
+  end
+  subgraph FE["Next.js (App Router) · BFF"]
+    F1["GET /api/departments/{id}/members?q=&page= · GET …/members/history"]
+    F2["GET /api/users/search?companyId=&q= (ACTIVE)"]
+    F3["POST /api/departments/{id}/members {userId}"]
+    F4["GET /api/departments/{id}/members/{userId}/pending → Dialog com pendências"]
+    F5["DELETE /api/departments/{id}/members/{userId} {reason, handoff: DOSSIE | TRANSFER:{toUserId} | NONE}"]
+    F6["Lista com Avatar/Monogram, jobTitle, roleInDept, Tag Curador, startedAt · linha do tempo do histórico"]
+  end
+  subgraph WEB["ws-web"]
+    W1["JWT + SessionActiveFilter + CurrentUserArgumentResolver"]
+    W2["DepartmentMembersController"]
+    E403["403 ACESSO_NEGADO (não é headUserId, nem dono da Company, nem ADMIN)"]
+    E422["422 VALIDACAO (outra empresa · não ACTIVE · perfil EMPRESA · reason vazio)"]
+    E409D["409 MEMBRO_DUPLICADO"]
+    E409C["409 CHEFE_NAO_REMOVIVEL"]
+    E404["404 DEPARTAMENTO_NAO_ENCONTRADO / USUARIO_NAO_ENCONTRADO"]
+  end
+  subgraph APP["ws-application · TeamService"]
+    S1["Guard.requireDeptHead(actor, department)"]
+    S2{"autorizado?"}
+    S3["listMembers / history (MembershipRepositoryPort)"]
+    ADD1["Valida alvo: mesma companyId · ACTIVE · profileType != EMPRESA"]
+    ADD2{"já vigente neste departamento?"}
+    ADD3["Encerra lotação vigente em outro departamento (endedAt, reason TRANSFERENCIA)"]
+    ADD4["DepartmentMembership(MEMBRO, startedAt) · User.departmentId = deptId · AuditLog MEMBER_ADDED"]
+    REM1{"userId == headUserId?"}
+    REM2["pendingOf: ProjectTask abertas · TaskItem EM_USO/BLOQUEADA · SessionParticipant ATIVA · SealBond EM_REVISAO · Assignment ACEITA"]
+    REM3{"há pendências?"}
+    REM4["HandoffService.generate(SAIDA | TRANSFERENCIA) (RF36) ou transferência de responsáveis · ou marca 'sem responsável no departamento'"]
+    REM5["membership.endedAt + reason · User.departmentId = null · CuratorService.revokeOnLeave · AuditLog MEMBER_REMOVED · tarefas/projetos ficam com o dono"]
+    EV["AFTER_COMMIT: MemberAdded/MemberRemoved → Notification SISTEMA ao empregado (com motivo) · CounterCachePort.evict(metrics:department:{id}) · reindexa aba Equipe (RF14) e página da empresa (RF15)"]
+  end
+  subgraph PERS["Persistência"]
+    P1[("MySQL: departments, department_memberships, users (department_id), curator_appointments, handoff_dossiers, audit_log")]
+    P2[("Redis: metrics:department:{id}:* · contadores")]
+    P3[("Cassandra notifications_by_user · timeline_by_user")]
   end
 
-  subgraph LW["Web / BFF (Next.js App Router)"]
-    W1["Seletor de modo: público / Minha equipe (só chefe, EMPRESA em leitura)"]
-    W2["Lista de vigentes: nome, username, cargo, entrada, papel, Curador · busca · paginação > 50 · linha do tempo do histórico"]
-    W3["Modo gestão oculto no menu"]
-    W4["Diálogo de pendências com as opções"]
-    W5["Lista atualizada, toast i18n"]
-  end
-
-  subgraph LA["ws-application"]
-    A1["AccessPolicy.requireDeptHead"]
-    A2{"headUserId == eu, ou EMPRESA dona, ou ADMIN?"}
-    A3["403 ACESSO_NEGADO"]
-    A4["InstitutionalService.listTeam: memberships endedAt IS NULL + histórico, sem email/phone"]
-    A5["InstitutionalService.addMember"]
-    A6{"Mesma Company?"}
-    A7["422 FORA_DA_EMPRESA"]
-    A8{"AccountStatus ACTIVE?"}
-    A9["422 USUARIO_INATIVO"]
-    A10{"Já vigente neste departamento?"}
-    A11["409 MEMBRO_DUPLICADO"]
-    A12["Encerra lotação vigente em outro departamento: endedAt, reason TRANSFERENCIA"]
-    A13["INSERT DepartmentMembership MEMBRO startedAt · User.departmentId = dept"]
-    A14["InstitutionalService.removeMember"]
-    A15{"reason informado?"}
-    A16["422 VALIDACAO"]
-    A17{"userId == headUserId?"}
-    A18["422 CHEFE_NAO_REMOVIVEL"]
-    A19["pendingItemsOf: ProjectTask abertas, TaskItem EM_USO/BLOQUEADA, sessões ATIVAS, SealBond EM_REVISAO"]
-    A20{"Há pendências?"}
-    A21["HandoffService.generateForMember → HandoffDossier (RF36)"]
-    A22["transferMember: removeMember + addMember na mesma transação"]
-    A23["UPDATE membership endedAt, reason · User.departmentId = null · CuratorService.revokeAllOf"]
-    A24["AFTER_COMMIT MemberAdded / MemberRemoved"]
-    A25["AuditLog MEMBER_ADDED / MEMBER_REMOVED com correlationId"]
-    A26["NotificationService.notifyMembershipChange (SISTEMA, com motivo)"]
-    A27["CachePort.evict metrics:department e contadores"]
-  end
-
-  subgraph LP["Persistência"]
-    P1[("MySQL: departments, department_memberships, users, curator_appointments")]
-    P2[("MySQL: project_tasks, tasks, session_participants, seal_bonds — leitura de pendências")]
-    P3[("MySQL: handoff_dossiers")]
-    P4[("MySQL: audit_log · Cassandra: notifications_by_user")]
-    P5[("Redis: cache de métricas do departamento")]
-  end
-
-  U1 --> W1 --> A1 --> A2
-  A2 -->|"não"| A3 --> W3
-  A2 -->|"sim"| A4 --> P1
-  A4 --> W2
-  W2 --> U2 --> A5 --> A6
-  A6 -->|"não"| A7
-  A6 -->|"sim"| A8
-  A8 -->|"não"| A9
-  A8 -->|"sim"| A10
-  A10 -->|"sim"| A11
-  A10 -->|"não"| A12 --> A13 --> P1
-  A13 --> A24
-  W2 --> U3 --> A14 --> A15
-  A15 -->|"não"| A16
-  A15 -->|"sim"| A17
-  A17 -->|"sim"| A18
-  A17 -->|"não"| A19 --> P2
-  A19 --> A20
-  A20 -->|"sim"| W4 --> U4
-  U4 -->|"dossiê"| A21 --> P3
-  A21 --> A23
-  U4 -->|"transferir"| A22 --> A12
-  U4 -->|"confirmar"| A23
-  A20 -->|"não"| A23 --> P1
-  A23 --> A24
-  A24 --> A25 --> P4
-  A24 --> A26 --> P4
-  A24 --> A27 --> P5
-  A24 --> W5
-  A26 --> U5
-
-  classDef err fill:#ffe3e3,stroke:#c0392b,color:#5a1a12
-  classDef warn fill:#fff4d6,stroke:#b7791f,color:#5a3b06
-  class A3,A7,A9,A11,A16,A18 err
-  class W3,W4 warn
+  A1 --> F1 --> W1 --> W2 --> S1 --> S2
+  S2 -->|"não"| E403
+  S2 -->|"sim"| S3 --> F6
+  S3 --> P1
+  A2 --> F2 --> F3 --> W2 --> ADD1
+  ADD1 -->|"inválido"| E422
+  ADD1 --> ADD2
+  ADD2 -->|"sim"| E409D
+  ADD2 -->|"não"| ADD3 --> ADD4 --> P1
+  ADD4 --> EV
+  A3 --> F4 --> REM2
+  F4 --> F5 --> W2 --> REM1
+  REM1 -->|"sim"| E409C
+  REM1 -->|"não"| REM2 --> REM3
+  REM3 -->|"sim"| A4 --> REM4 --> REM5
+  REM3 -->|"não"| REM5
+  F5 -->|"reason vazio"| E422
+  REM5 --> P1
+  REM5 --> EV
+  EV --> P2
+  EV --> P3
+  W2 -->|"slug/usuário inexistente"| E404
 ```
 
 ## 3. Diagrama de sequência
@@ -378,118 +281,109 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário (CHEFE)
-  actor E as Empregado
-  participant NX as Next.js (App Router)
+  actor U as Usuário (chefe)
+  participant N as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
-  participant DB as Repository/MySQL
+  participant R as Repository/MySQL
+  participant RD as Redis
   participant CS as Cassandra
-  participant R as Redis
-  participant DE as DomainEvents (AFTER_COMMIT)
+  participant EV as DomainEvents (AFTER_COMMIT)
 
-  U->>NX: abre /departments/secid-uts/team (modo Minha equipe)
-  NX->>C: GET /api/departments/D1/team/manage?q=&page=1
-  C->>S: AccessPolicy.requireDeptHead(user, D1)
-  alt não é headUserId, nem EMPRESA dona, nem ADMIN (CA01)
+  U->>N: abre Minha equipe (modo gestão)
+  N->>C: GET /api/departments/{id}/members?q=&page=0
+  C->>S: TeamService.listMembers(deptId, q, page, actor)
+  S->>R: departments.findById
+  S->>S: Guard.requireDeptHead(actor, department)
+  alt não é chefe, dona da empresa nem ADMIN
     S-->>C: 403 ACESSO_NEGADO
-    C-->>NX: 403
-    NX-->>U: modo gestão indisponível
-  else chefe
-    C->>S: InstitutionalService.listTeam(actorId, D1, q, page)
-    S->>DB: department_memberships WHERE departmentId = D1 AND endedAt IS NULL JOIN users (nome, username, jobTitle) + curator_appointments vigentes
-    S->>DB: histórico endedAt IS NOT NULL ORDER BY endedAt DESC
-    S-->>C: 200 TeamView {vigentes, historico, total} sem email/phone
-    C-->>NX: 200
-    NX-->>U: lista de empregados atuais + linha do tempo
+    C-->>N: 403 (tela mostra só a lista pública, RF14)
+  else autorizado
+    S->>R: department_memberships vigentes (endedAt nulo) + users + curator_appointments
+    S-->>C: Page MemberView
+    C-->>N: 200 (lista com busca e paginação)
   end
 
-  U->>NX: busca "ana.souza" e clica Adicionar (CA02)
-  NX->>C: POST /api/departments/D1/members {userId: ana}
-  C->>S: InstitutionalService.addMember(actorId, D1, ana)
-  S->>DB: users WHERE id = ana (companyId, status) + membership vigente
-  alt outra empresa
-    S-->>C: 422 FORA_DA_EMPRESA
-  else conta não ACTIVE
-    S-->>C: 422 USUARIO_INATIVO
-  else já vigente em D1
+  U->>N: busca "maria" e clica Adicionar
+  N->>C: POST /api/departments/{id}/members {userId}
+  C->>S: TeamService.addMember(deptId, userId, actor, ctx)
+  S->>R: users.findById(userId)
+  alt outra empresa, não ACTIVE ou perfil EMPRESA
+    S-->>C: 422 VALIDACAO details.userId
+    C-->>N: 422
+  else já membro vigente deste departamento
+    S->>R: findCurrent(userId) = mesmo deptId
     S-->>C: 409 MEMBRO_DUPLICADO
+    C-->>N: 409
   else ok
-    S->>DB: UPDATE department_memberships SET endedAt = now(), reason = TRANSFERENCIA WHERE userId = ana AND endedAt IS NULL
-    S->>DB: INSERT department_memberships (ana, D1, MEMBRO, startedAt)
-    S->>DB: UPDATE users SET departmentId = D1 WHERE id = ana
-    S->>DE: publish MemberAdded {deptId D1, userId ana, actorId, correlationId}
-    S-->>C: 201 DepartmentMembership
-    C-->>NX: 201
-    NX-->>U: ana aparece na lista de vigentes
+    S->>R: findCurrent(userId) em outro departamento → endedAt = now, reason TRANSFERENCIA
+    S->>R: insert department_memberships (MEMBRO, startedAt = now)
+    S->>R: update users.department_id = deptId
+    S->>R: insert audit_log MEMBER_ADDED {deptId, userId, correlationId}
+    S-->>C: MemberView
+    C-->>N: 201
+    EV->>CS: notifications_by_user SISTEMA "você foi adicionado ao departamento X"
+    EV->>RD: evict metrics:department:{id}:*
   end
-  DE->>DB: INSERT audit_log (MEMBER_ADDED, resourceType DEPARTMENT, correlationId) (CA05)
-  DE->>CS: INSERT notifications_by_user (recipient ana, category SISTEMA, "você foi adicionado ao departamento SECID-UTS")
-  DE->>R: DEL metrics:department:D1 e counters
-  E->>NX: vê a notificação e a lotação atual no perfil (CA06)
 
-  U->>NX: clica Remover em "bruno" com motivo "transferido para a CPOE" (CA03)
-  NX->>C: GET /api/departments/D1/members/bruno/pending
-  C->>S: InstitutionalService.pendingItemsOf(bruno, D1)
-  S->>DB: project_tasks abertas, tasks EM_USO/BLOQUEADA, session_participants em sessões ATIVAS, seal_bonds EM_REVISAO WHERE responsável ou alvo = bruno
-  S-->>C: 200 PendingSummary {projectTasks 3, sessions 1, sealBonds 0}
-  C-->>NX: 200
-  NX-->>U: diálogo de pendências: gerar Dossiê, transferir ou confirmar (CA04)
-  U->>NX: escolhe transferir para CPOE com Dossiê
-  NX->>C: POST /api/departments/D1/members/bruno/transfer {toDeptId: D2, reason, withHandoff: true}
-  C->>S: InstitutionalService.transferMember(actorId, D1, D2, bruno, reason)
-  S->>S: requireDeptHead(user, D1) e requireDeptHead(user, D2) ou EMPRESA dona
-  alt bruno é headUserId de D1
-    S-->>C: 422 CHEFE_NAO_REMOVIVEL (troca de chefe é RF28.CA07)
+  U->>N: clica Remover em um membro
+  N->>C: GET /api/departments/{id}/members/{userId}/pending
+  C->>S: TeamService.pendingOf(deptId, userId)
+  S->>R: PendingWorkPort (ProjectTask abertas, EM_USO/BLOQUEADA, sessões ATIVAS, SealBond EM_REVISAO, Assignment ACEITA)
+  S-->>C: PendingSummary
+  C-->>N: 200 → Dialog "pendências encontradas"
+  U->>N: informa motivo e escolhe "gerar Dossiê de Transição"
+  N->>C: DELETE /api/departments/{id}/members/{userId} {reason, handoff: DOSSIE}
+  C->>S: TeamService.removeMember(deptId, userId, reason, DOSSIE, actor, ctx)
+  alt userId é o próprio headUserId
+    S-->>C: 409 CHEFE_NAO_REMOVIVEL (trocar o chefe é RF28)
+    C-->>N: 409
   else reason vazio
-    S-->>C: 422 VALIDACAO {field reason}
-  else ok, mesma transação
-    S->>DB: UPDATE department_memberships SET endedAt = now(), reason WHERE userId = bruno AND departmentId = D1 AND endedAt IS NULL
-    S->>DB: UPDATE curator_appointments SET revokedAt = now(), revokeReason = SAIDA_DO_DEPARTAMENTO WHERE curatorUserId = bruno AND departmentId = D1
-    S->>DB: INSERT department_memberships (bruno, D2, MEMBRO, startedAt)
-    S->>DB: UPDATE users SET departmentId = D2 WHERE id = bruno
-    S->>DB: INSERT handoff_dossiers (subjectType EMPREGADO, subjectUserId bruno, reason TRANSFERENCIA, status GERADO) via HandoffService
-    S->>DE: publish MemberRemoved {D1, bruno} e MemberAdded {D2, bruno}
-    S-->>C: 200 {membership D2, handoffDossierId}
-    C-->>NX: 200
-    NX-->>U: bruno sai dos vigentes de D1, histórico mostra a saída com motivo
+    S-->>C: 422 VALIDACAO details.reason
+    C-->>N: 422
+  else ok
+    S->>S: HandoffService.generate(userId, TRANSFERENCIA, actor) (RF36)
+    S->>R: insert handoff_dossiers
+    S->>R: update department_memberships.endedAt, reason
+    S->>R: update users.department_id = null
+    S->>R: update curator_appointments.revokedAt, revokeReason = "saída do departamento"
+    S->>R: insert audit_log MEMBER_REMOVED {reason, handoffId, correlationId}
+    Note over S,R: tarefas e projetos permanecem com o dono (ownerId não muda)
+    S-->>C: 204
+    C-->>N: 204 (linha vai para o histórico)
+    EV->>CS: notifications_by_user SISTEMA "você foi removido do departamento X" + motivo
+    EV->>RD: evict metrics:department:{id}:*
   end
-  DE->>DB: INSERT audit_log (MEMBER_REMOVED D1, MEMBER_ADDED D2, correlationId)
-  DE->>CS: INSERT notifications_by_user (recipient bruno, "você foi transferido para CPOE", motivo)
-  DE->>R: DEL metrics:department:D1, metrics:department:D2
-  Note over S,DB: tarefas e projetos de bruno permanecem com ele — o Dossiê (RF36) é que transfere responsabilidades, com consentimento para itens PRIVADOS
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: **`DepartmentMembership`**, que não tem enum próprio — o estado deriva de `endedAt` (nulo = **vigente**, preenchido = **encerrada**) e de `roleInDept` (`DeptRole`). Um usuário tem no máximo uma lotação vigente (RF28.CA02); a "lista de empregados atuais" é o conjunto de lotações vigentes do departamento. Registros nunca são apagados (CA06).
+Entidade central: **`DepartmentMembership`** (TAXONOMIA §1.6) — estados derivados de `endedAt` (não há enum): **VIGENTE** (`endedAt` nulo) e **ENCERRADA** (`endedAt` + `reason`). A invariante "no máximo uma VIGENTE por `userId`" é garantida pelo `TeamService` (e, no RF28, por índice parcial). `DeptRole` muda por nomeação (CHEFE/CURADOR, RF28), não por este RF.
 
 ```mermaid
 stateDiagram-v2
   direction LR
-  state "Sem lotação — User.departmentId nulo" as SemLotacao
-  state "Vigente — endedAt nulo, na lista de empregados atuais" as Vigente {
-    [*] --> MEMBRO
-    MEMBRO --> CURADOR : CuratorAppointment pelo chefe, RF28.CA03
-    CURADOR --> MEMBRO : revogação do curador
-    MEMBRO --> CHEFE : EMPRESA troca o chefe, RF28.CA07
-  }
-  state "Encerrada — endedAt + reason, só no histórico" as Encerrada
-  [*] --> SemLotacao : cadastro RF1 ou removido sem destino
-  SemLotacao --> Vigente : CHEFE adiciona, INSERT membership MEMBRO, User.departmentId = dept (CA02)
-  Vigente --> Encerrada : CHEFE remove com reason, endedAt = now, revoga curador, User.departmentId nulo (CA03)
-  Vigente --> Encerrada : transferência, reason TRANSFERENCIA, nova Vigente em outro departamento na mesma transação (CA04)
-  Encerrada --> Vigente : re-adicionado, NOVO registro, o anterior permanece encerrado (CA06)
-  Encerrada --> SemLotacao : sem nova lotação
-  note right of Vigente
-    1 lotação vigente por usuário (RF28.CA02).
-    headUserId não pode ser removido: 422 CHEFE_NAO_REMOVIVEL (CA03).
-    Já vigente neste departamento: 409 MEMBRO_DUPLICADO (CA02).
+  state "SEM_LOTACAO (User.departmentId nulo)" as SEM
+  state "VIGENTE (DepartmentMembership.endedAt nulo)" as VIG
+  state "ENCERRADA (endedAt + reason)" as ENC
+  state "VIGENTE em outro departamento" as OUTRO
+
+  [*] --> SEM : cadastro EMPREGADO (RF1) · intendedDepartmentId não lota (RF1.CA23)
+  SEM --> VIG : POST /api/departments/{id}/members pelo chefe (CA02) · MEMBRO · User.departmentId = deptId · MEMBER_ADDED
+  OUTRO --> ENC : chefe de outro departamento adiciona → lotação anterior encerra com reason TRANSFERENCIA (CA02)
+  VIG --> ENC : DELETE …/members/{userId} com reason (CA03) · User.departmentId = null · curadoria revogada · MEMBER_REMOVED
+  ENC --> SEM : efeito imediato da remoção
+  ENC --> VIG : re-adicionar cria NOVA linha (CA06) — a encerrada permanece no histórico
+  VIG --> VIG : nomeação CHEFE/CURADOR (RF28) muda roleInDept, não a lotação
+  VIG --> OUTRO : transferência iniciada pelo chefe de outro departamento
+  note right of VIG
+    headUserId não pode ser removido aqui:
+    409 CHEFE_NAO_REMOVIVEL (troca de chefe = RF28).
   end note
-  note right of Encerrada
-    Nunca apagada. Remoção com pendências oferece
-    HandoffDossier antes de confirmar (CA04).
-    AuditLog + Notification AFTER_COMMIT (CA05).
+  note right of ENC
+    Pendências do removido → HandoffDossier (RF36)
+    ou transferência de responsável (CA04).
+    Tarefas e projetos ficam com o dono.
   end note
 ```
 
@@ -497,79 +391,63 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js"]
-    F1["app/departments/[slug] — aba Equipe, seletor público / Minha equipe"]
-    F2["app/departments/[slug]/team — modo gestão: lista de vigentes, busca, paginação, histórico"]
-    F3["components/ui: TeamMemberRow nome username cargo entrada papel Curador, UserSearch mesma empresa, AddMemberDialog, RemoveMemberDialog com motivo, PendingItemsDialog Dossiê / transferir / confirmar, MembershipTimeline, RoleGate requireDeptHead, DepartmentBadge monograma + cor"]
-    F4["Menu Gestão: atalho Minha equipe (só CHEFE)"]
+  subgraph FE["Frontend · Next.js 15 App Router"]
+    PG["app/(shell)/departments/[slug]/team · ?mode=manage"]
+    UI["packages/ui: Tabs (Equipe · Histórico), Input (busca), Avatar/Monogram, Tag (Curador), Button, Dialog (motivo + pendências), Toast, EmptyState"]
+    SN["SidebarNav › Gestão › Minha equipe (só CHEFE / EMPRESA / ADMIN, P-15)"]
+    BFF["app/bff/departments/*"]
+    PG --> UI
+    PG --> BFF
+    SN --> PG
+  end
+  subgraph WSWEB["ws-web"]
+    SEC["SecurityConfig · SessionActiveFilter · CurrentUserArgumentResolver"]
+    DC["DepartmentMembersController"]
+    GEH["GlobalExceptionHandler (403, 404, 409, 422)"]
+  end
+  subgraph WSAPP["ws-application"]
+    TS["identity/org: TeamService"]
+    GD["security.Guard (real: requireRole, ownerOrAdmin · planejado: requireDeptHead)"]
+    CUR["seals: CuratorService.revokeOnLeave"]
+    HO["handoff: HandoffService (RF36)"]
+    PORTS["ports: DepartmentRepositoryPort · MembershipRepositoryPort · UserRepositoryPort (real) · PendingWorkPort · NotificationPort · CounterCachePort · AuditLogPort (real)"]
+    EVT["events: MemberAdded · MemberRemoved (AFTER_COMMIT)"]
+    TS --> GD
+    TS --> CUR
+    TS --> HO
+    TS --> PORTS
+    TS --> EVT
+  end
+  subgraph WSDOM["ws-domain"]
+    DOM["identity: User (real) · Company · Department · DepartmentMembership · CuratorAppointment · enums DeptRole/CuratorScope · handoff: HandoffDossier · social: Notification"]
+  end
+  subgraph INFRA["ws-infrastructure"]
+    MY["persistence-mysql: UserEntity (real) · JpaDepartmentRepository · JpaMembershipRepository · Flyway V__rf28_companies_departments (FK RESTRICT em users.department_id, D-23)"]
+    RDS["cache-redis: metrics:department:{id}, contadores"]
+    CAS["persistence-cassandra: notifications_by_user, timeline_by_user"]
+    OSE["search-opensearch: ws-people (lotação atual)"]
   end
 
-  subgraph WEB["ws-web"]
-    C1["DepartmentTeamController — GET /api/departments/{id}/team/manage, POST /members, DELETE /members/{userId}, POST /members/{userId}/transfer, GET /members/{userId}/pending"]
-  end
-
-  subgraph APP["ws-application"]
-    S1["InstitutionalService RF28"]
-    S2["AccessPolicy — requireDeptHead, requireSameCompany"]
-    S3["CuratorService RF28"]
-    S4["HandoffService RF36"]
-    S5["NotificationService"]
-    P1["CachePort"]
-  end
-
-  subgraph DOM["ws-domain"]
-    D1["User · Company · Department · DepartmentMembership · CuratorAppointment"]
-    D2["DeptRole · ProfileType · AccountStatus · HandoffReason"]
-    D3["ProjectTask · TaskItem · SessionParticipant · SealBond — leitura de pendências"]
-    D4["HandoffDossier · Notification · AuditLog · DomainEventOutbox"]
-  end
-
-  subgraph INFRA["ws-infrastructure/*"]
-    I1[("persistence-mysql: departments, department_memberships, users, curator_appointments, handoff_dossiers, audit_log")]
-    I2[("persistence-cassandra: notifications_by_user")]
-    I3[("cache-redis: RedisMetricsCache — métricas e contadores do departamento")]
-    I4["platform: outbox AFTER_COMMIT, AuditLog"]
-  end
-
-  subgraph EXT["Serviços externos"]
-    X1(["Nenhum provedor de IA neste RF — o Dossiê CA04 usa Claude/Gemini via RF36"])
-  end
-
-  F1 --- F3
-  F2 --- F3
-  F4 --> F2
-  F1 -->|"HTTPS/JSON"| C1
-  F2 -->|"HTTPS/JSON"| C1
-  C1 --> S1
-  C1 --> S2
-  S1 --> S2
-  S1 --> S3
-  S1 --> S4
-  S1 --> D1
-  S1 --> D3
-  D1 --> D2
-  S1 --> D4
-  D4 --> I4
-  I4 --> S5
-  I4 --> P1
-  S5 --> I2
-  P1 --> I3
-  D1 --> I1
-  D3 --> I1
-  D4 --> I1
-  S4 -.-> X1
+  BFF -->|"REST JSON"| SEC --> DC --> TS
+  DC --> GEH
+  MY -.implementa.-> PORTS
+  RDS -.implementa.-> PORTS
+  CAS -.implementa.-> PORTS
+  OSE -.implementa.-> PORTS
+  TS --> DOM
+  MY --> DB[("MySQL 8.4")]
+  RDS --> RD[("Redis 7")]
+  CAS --> CDB[("Cassandra 4.1")]
+  OSE --> OSX[("OpenSearch 2.19")]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
-|---|---|
-| RF9.CA01 (a confirmar) | Classes `Department.headUserId`, `DepartmentMembership.endedAt` (nota "lista = endedAt IS NULL"), `AccessPolicy.requireDeptHead` (nota), `InstitutionalService.listTeam`, `DepartmentTeamController GET …/team/manage` · Atividades `U1 → W1 → A1 → A2 → A3 403 → W3` / `A2 (sim) → A4 → P1 → W2` · Sequência msgs 1–11 (`alt não é headUserId … → 403` / `else chefe` → TeamView sem email/phone) · Componentes `app/departments/[slug]/team`, `TeamMemberRow`, `RoleGate requireDeptHead`, `Menu Gestão: Minha equipe` |
-| RF9.CA02 (a confirmar) | Classes `DepartmentMembership` (startedAt, roleInDept MEMBRO), `User.departmentId/companyId/status`, enums `DeptRole`, `AccountStatus`, `InstitutionalService.addMember`, `AccessPolicy.requireSameCompany` · Atividades `U2 → A5 → A6 → A7 422 FORA_DA_EMPRESA`, `A8 → A9 422 USUARIO_INATIVO`, `A10 → A11 409 MEMBRO_DUPLICADO`, `A12 → A13 → P1` · Sequência `POST /api/departments/D1/members` com os três `alt` de erro e `else ok` (encerra lotação anterior, INSERT membership, UPDATE users.departmentId) · Transição `SemLotacao → Vigente` e nota · Componentes `UserSearch mesma empresa`, `AddMemberDialog` |
-| RF9.CA03 (a confirmar) | Classes `DepartmentMembership.endedAt/reason`, `CuratorAppointment.revokedAt/revokeReason`, `InstitutionalService.removeMember`, `CuratorService.revokeAllOf` · Atividades `U3 → A14 → A15 → A16 422 VALIDACAO`, `A17 → A18 422 CHEFE_NAO_REMOVIVEL`, `A23 → P1` · Sequência `alt bruno é headUserId → 422 CHEFE_NAO_REMOVIVEL`, `else reason vazio → 422 VALIDACAO`, `else ok` → UPDATE membership endedAt, UPDATE curator_appointments revokedAt, nota "tarefas e projetos permanecem com ele" · Transição `Vigente → Encerrada : CHEFE remove com reason` e nota · Componente `RemoveMemberDialog com motivo` |
-| RF9.CA04 (a confirmar) | Classes `ProjectTask/TaskItem/SessionParticipant/SealBond` (pendências), `HandoffDossier` (reason TRANSFERENCIA/SAIDA, consentForPrivateItems), enum `HandoffReason`, `InstitutionalService.pendingItemsOf/transferMember`, `HandoffService.generateForMember` · Atividades `A19 → P2 → A20 → W4 → U4 → A21 → P3` / `A22 → A12` / `A23` · Sequência `GET …/members/bruno/pending` → PendingSummary → `POST …/transfer {withHandoff}` → INSERT handoff_dossiers na mesma transação · Transição `Vigente → Encerrada : transferência … nova Vigente na mesma transação` e nota · Componentes `PendingItemsDialog`, `HandoffService RF36`, `X1` |
-| RF9.CA05 (a confirmar) | Classes `DomainEventOutbox` (MemberAdded/MemberRemoved), `AuditLog MEMBER_ADDED/MEMBER_REMOVED/MEMBER_TRANSFERRED`, `Notification` (category SISTEMA), `NotificationService.notifyMembershipChange`, `CachePort.evict`, `RedisMetricsCache`, `CassandraNotificationAdapter` · Atividades `A24 → A25 → P4`, `A24 → A26 → P4 → U5`, `A24 → A27 → P5`, `A24 → W5` · Sequência `DE->>DB INSERT audit_log`, `DE->>CS INSERT notifications_by_user`, `DE->>R DEL metrics:department` (duas vezes) · Nota do estado *Encerrada* · Componentes `platform: outbox AFTER_COMMIT`, `persistence-cassandra`, `cache-redis` |
-| RF9.CA06 (a confirmar) | Classes `DepartmentMembership` (nota "nunca apagada"), `User "1" --> "*" DepartmentMembership : histórico` · Atividades `A4` (histórico) → `W2` (linha do tempo), `U5` · Sequência msg "histórico endedAt IS NOT NULL ORDER BY endedAt DESC", `E->>NX vê a lotação atual no perfil` · Transições `Encerrada → Vigente : re-adicionado, NOVO registro` e `Encerrada → SemLotacao` · Componentes `MembershipTimeline`, `TeamMemberRow` (i18n) |
-
-
-Tela/aba: `/departments/[slug]` (esqueleto em `app/(shell)/departments/[slug]/page.tsx`) · `/companies/[slug]/manage/departments` (esqueleto em `app/(shell)/companies/[slug]/manage/departments/page.tsx`) · `/departments/[slug]/team` (esqueleto em `app/(shell)/departments/[slug]/team/page.tsx`)
+| CA | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) | Situação |
+|---|---|---|---|---|---|---|
+| RF9.CA01 | `DepartmentMembersController.list/history`, `TeamService.listMembers/history`, `Guard.requireDeptHead`, `MembershipRepositoryPort.findCurrentByDept` | `A1`→`F1`→`S1`→`S2`→`S3`→`F6`, `E403` | 1–11 | — | `PG`, `SN`, `GD`, `UI` | planejado (`Guard` base real) |
+| RF9.CA02 | `TeamService.addMember`, `DepartmentMembership`, `User.departmentId`, `UserRepositoryPort.searchInCompany` | `A2`→`F2`→`F3`→`ADD1`→`ADD4`, `E422`, `E409D` | 12–26 | `SEM`→`VIG`, `OUTRO`→`ENC` | `TS`, `MY` | planejado (RF28.CA02) |
+| RF9.CA03 | `TeamService.removeMember`, `CuratorService.revokeOnLeave`, `CuratorAppointment.revokeReason` | `A3`→`F5`→`REM1`→`REM5`, `E409C`, `E422` | 36–47 | `VIG`→`ENC`→`SEM` | `TS`, `CUR` | planejado (RF28.CA03) |
+| RF9.CA04 | `TeamService.pendingOf`, `PendingWorkPort`, `HandoffService.generate`, `HandoffDossier` | `F4`→`REM2`→`REM3`→`A4`→`REM4` | 29–35, 43–44 | nota de `ENC` | `HO`, `PORTS` | planejado (RF36, RF10) |
+| RF9.CA05 | eventos `MemberAdded`/`MemberRemoved`, `AuditLogPort` (`MEMBER_ADDED`/`MEMBER_REMOVED`), `NotificationPort`, `CounterCachePort.evict` | `EV` | 23, 27–28, 47, 51–52 | — | `EVT`, `CAS`, `RDS`, `OSE` | planejado (`AuditLogPort` real) |
+| RF9.CA06 | `MembershipRepositoryPort.findHistoryByDept`, invariante de 1 vigente, `lib/i18n` | `F1` (history), `F6` | 10–11 | `ENC`→`VIG` (nova linha) | `UI` (linha do tempo), `PG` | planejado |

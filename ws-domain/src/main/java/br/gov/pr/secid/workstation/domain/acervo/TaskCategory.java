@@ -1,0 +1,20 @@
+package br.gov.pr.secid.workstation.domain.acervo;
+
+/** Categoria documental da tarefa (RF20.CA02) — TAXONOMIA §13. */
+public enum TaskCategory {
+    OFICIO_MEMORANDO,
+    PARECER_TECNICO,
+    ETP,
+    TERMO_REFERENCIA,
+    PLANILHA_ORCAMENTARIA,
+    PROJETO_BASICO_EXECUTIVO,
+    CRONOGRAMA,
+    ATA,
+    PORTARIA_RESOLUCAO,
+    CONTRATO_CONVENIO,
+    VISTORIA_RELATORIO_FOTOGRAFICO,
+    LICENCA_ANUENCIA,
+    MAPA_GEORREFERENCIA,
+    FORMULARIO,
+    OUTRO
+}

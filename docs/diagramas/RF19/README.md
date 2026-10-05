@@ -1,12 +1,14 @@
 # RF19 — Curtir, comentar, salvar, compartilhar, retornar, atribuir e remixar tarefas, esquemas de projeto e planos anuais (interações sociais)
-**HU:** HU19 · **Sprint (board Work Station):** a confirmar (card renomeado em 2026-10-02; origem `_anterior/RF26` = Sprint 4) · **Equivalente FAI:** RF19 Interações sociais (alvo polimórfico PIECE/SCHEME/DNA) · **Aba/rota:** ações inline em todos os cards (Acervo, Projetos, Planos Anuais, Mural, Buscar, perfil) · **API:** `/api/interactions/{type}/{id}/reactions|comments|saves|shares|remixes|counters`
-**Critérios de aceite cobertos:** RF26.CA01 · RF26.CA02 · RF26.CA03 · RF26.CA04 · RF26.CA05 · RF26.CA06 · RF26.CA07 · RF26.CA08 · RF26.CA09 (citados como estão escritos no card — **corpo do card = antigo RF26**). As interações **retornar** e **atribuir** constam só no título, sem CA no corpo: estão modeladas no **RF18** (CA03–CA06) e aqui aparecem apenas como remissão.
+**HU:** HU19 · **Sprint (board Work Station):** a confirmar (card renomeado em 2026-10-02; origem `_anterior/RF26` = Sprint 4, "HU26 / RF26 Interações sociais"; a HU19 do Product Backlog remete a "RF26 — critérios no card RF26") · **Equivalente FAI:** RF19 Interações sociais (alvo polimórfico PIECE/SCHEME/DNA) · **Aba/rota:** ações inline em todos os cards (Acervo RF6, Projetos, Planos Anuais RF24, Mural RF27, Buscar RF17, perfil RF16) · **API:** `/api/interactions/{type}/{id}/reactions|comments|saves|shares|remixes|counters`
+**Critérios de aceite cobertos:** RF26.CA01 · RF26.CA02 · RF26.CA03 · RF26.CA04 · RF26.CA05 · RF26.CA06 · RF26.CA07 · RF26.CA08 · RF26.CA09 — citados como estão escritos no card (**corpo do card = antigo RF26**, ver `RENUMERACAO.md`). As interações **retornar** e **atribuir** constam só no título, sem CA no corpo: estão modeladas no **RF18** (CA03–CA06) e aqui aparecem só como remissão. Todas as classes do RF são **(planejado)**; reais: `Guard`, `AuditLogPort`, `SecurityConfig`, `RedisAdaptersConfig`, `CassandraAdaptersConfig`.
 
-> **HU19** — COMO usuário autenticado POSSO curtir, reagir, comentar, salvar, compartilhar e remixar tarefas, esquemas de projeto e planos anuais PARA colaborar, dar retorno de qualidade e reaproveitar o trabalho dos colegas. Ref.: RF26 (equivalente às Interações sociais RF19 do FAI).
+> **HU19** — COMO usuário autenticado POSSO curtir, reagir, comentar, salvar, compartilhar e remixar tarefas, esquemas de projeto e planos anuais PARA colaborar, dar retorno de qualidade e reaproveitar o trabalho dos colegas.
 
-Alvo polimórfico `TargetType` (**TASK · PROJECT · PLAN** — além de KIT, PROJECT_TASK, MESSAGE, RECOGNITION usados por outros RFs). Seis interações, cada uma com sua entidade: **curtir** (`Reaction` CURTIR, única por ator e alvo), **reagir** (`Reaction` ÚTIL · BEM_FUNDAMENTADO · INOVADOR · CONFORME), **comentar** (`Comment` com thread `parentCommentId`, edição, exclusão pelo autor ou pelo chefe do departamento, menções → `Notification`), **salvar** (`SavedItem` com marcador favorito → sub-abas *Tarefas salvas* / *Projetos salvos*), **compartilhar** (`Share` em canal MURAL → `MuralEntry` RF27, SESSAO_DECIA → `MessageAttachment` RF29, LINK_EXTERNO com `externalToken`, `expiresAt` e imagem exportada `imageMediaId`) e **remixar** (`Remix` + cópia com `originalTaskId` / `originalProjectId` / `derivedFromPlanId` e crédito visível). Contadores desnormalizados (`likesCount … remixesCount`) em tempo quase real via Redis; toda interação respeita a **visibilidade** do alvo e gera **notificação agrupada por hora** (`Notification.groupKey`) ao dono, alimentando o perfil deliberativo (reações BEM_FUNDAMENTADO e CONFORME pesam na métrica de qualidade).
+Alvos: `TargetType` TASK · PROJECT · PLAN (TAXONOMIA §8). Entidades: `Reaction` (CURTIR + 4 reações qualitativas), `Comment` (thread, menções), `SavedItem`, `Share` (MURAL · SESSAO_DECIA · LINK_EXTERNO), `Remix` (cópia com crédito). Contadores desnormalizados nas entidades-alvo (`likesCount` … `remixesCount`) com Redis para tempo quase real; toda interação gera `Notification` agrupada por hora e alimenta o `DeliberativeProfile` (objetivo 2).
 
-| CA (como escrito no card) | Enunciado |
+## Critérios de aceite (card RF19, escritos como RF26)
+
+| CA | Enunciado |
 |---|---|
 | **RF26.CA01** | Curtir/descurtir tarefa, projeto ou plano (1 reação por usuário e alvo, índice único). |
 | **RF26.CA02** | Reações qualitativas: ÚTIL, BEM FUNDAMENTADO, INOVADOR, CONFORME (substituem TREND/ELEGANTE/CRIATIVO). |
@@ -17,181 +19,228 @@ Alvo polimórfico `TargetType` (**TASK · PROJECT · PLAN** — além de KIT, PR
 | **RF26.CA07** | Contadores (curtidas, comentários, salvos, compartilhamentos, remixes) em tempo quase real nos cards e no perfil. |
 | **RF26.CA08** | Interações respeitam a visibilidade: item PRIVADO não recebe interações de terceiros; item DEPARTAMENTO só de membros do departamento. |
 | **RF26.CA09** | Toda interação gera notificação ao dono (agrupada por hora) e alimenta o perfil deliberativo (objetivo 2) — reações BEM FUNDAMENTADO e CONFORME pesam na métrica de qualidade. |
-| *(título)* retornar · atribuir | Sem CA no corpo. Modelados no **RF18** com a entidade única `Assignment` (TAXONOMIA §12b, proposta: atribuir = PROPOSTA → ACEITA/RECUSADA; retornar = ACEITA → DEVOLVIDA com motivo). Aplicam-se a TASK e PROJECT (`AssignmentTargetType`); **não** a PLAN (a confirmar). |
-
-| Interação | Entidade | Regra de unicidade / canal | Contador | Alvos |
-|---|---|---|---|---|
-| Curtir / descurtir | `Reaction` CURTIR | único (actorId, targetType, targetId, CURTIR) — toggle | `likesCount` | TASK · PROJECT · PLAN |
-| Reagir | `Reaction` UTIL · BEM_FUNDAMENTADO · INOVADOR · CONFORME | 1 por tipo, ator e alvo | — (pesa no perfil deliberativo) | TASK · PROJECT · PLAN |
-| Comentar | `Comment` | thread via `parentCommentId`, `editedAt`, `deletedBy`, `mentionsJson` | `commentsCount` | TASK · PROJECT · PLAN |
-| Salvar | `SavedItem` | único (userId, targetType, targetId), `favorite` | `savesCount` | TASK · PROJECT · PLAN (sub-aba *Meus Planos* — a confirmar) |
-| Compartilhar | `Share` | `channel` MURAL · SESSAO_DECIA · LINK_EXTERNO (`externalToken`, `expiresAt`, `imageMediaId`) | `sharesCount` | TASK · PROJECT · PLAN |
-| Remixar | `Remix` + nova `TaskItem`/`ProjectScheme`/`AnnualPlan` | só alvos PUBLICA, `originalTaskId` / `originalProjectId` / `derivedFromPlanId` | `remixesCount` | TASK · PROJECT · PLAN |
 
 ## 1. Diagrama de classes
 
 ```mermaid
 classDiagram
-direction LR
+  direction LR
 
-namespace ws_domain_social {
+  class InteractionController {
+    <<controller>>
+    +react(type, id, ReactionRequest, CurrentUser, ctx) CountersView
+    +unreact(type, id, reactionType, CurrentUser) CountersView
+    +listComments(type, id, page) Page~CommentView~
+    +comment(type, id, CommentRequest, CurrentUser, ctx) CommentView
+    +editComment(commentId, CommentRequest, CurrentUser) CommentView
+    +deleteComment(commentId, CurrentUser, ctx) void
+    +save(type, id, SaveRequest, CurrentUser) CountersView
+    +unsave(type, id, CurrentUser) CountersView
+    +share(type, id, ShareRequest, CurrentUser, ctx) ShareView
+    +remix(type, id, CurrentUser, ctx) RemixView
+    +counters(type, id) CountersView
+  }
+  class InteractionService {
+    <<service>>
+    +react(actor, target, ReactionType, ctx) Counters
+    +unreact(actor, target, ReactionType) Counters
+    +comment(actor, target, contentMd, parentId, ctx) Comment
+    +editComment(actor, commentId, contentMd) Comment
+    +deleteComment(actor, commentId, ctx) void
+    +save(actor, target, favorite) Counters
+    +unsave(actor, target) Counters
+    +share(actor, target, ShareChannel, opts, ctx) Share
+    +remix(actor, target, ctx) Remix
+  }
+  class CounterService {
+    <<service>>
+    +increment(target, field) long
+    +decrement(target, field) long
+    +counters(target) Counters
+    +flushToMysql() void
+  }
+  class MentionParser {
+    <<service>>
+    +parse(contentMd) List~UUID~
+  }
+  class RemixService {
+    <<service>>
+    +copyTask(source, actor) TaskItem
+    +copyProject(source, actor) ProjectScheme
+  }
+  class ShareImageService {
+    <<service>>
+    +render(target) MediaObject
+  }
+  class AccessPolicy {
+    <<service>>
+    +canInteract(viewer, target) boolean
+    +canModerate(viewer, comment) boolean
+    +isPublic(target) boolean
+  }
+  class ReactionRepositoryPort {
+    <<port>>
+    +upsert(Reaction) Reaction
+    +delete(actorId, target, type) void
+  }
+  class CommentRepositoryPort {
+    <<port>>
+    +save(Comment) Comment
+    +findByTarget(target, page) Page
+  }
+  class SavedItemRepositoryPort {
+    <<port>>
+    +upsert(SavedItem) SavedItem
+    +delete(userId, target) void
+  }
+  class ShareRepositoryPort {
+    <<port>>
+    +save(Share) Share
+    +findByToken(token) Optional
+  }
+  class RemixRepositoryPort {
+    <<port>>
+    +save(Remix) Remix
+    +countBySource(sourceId) long
+  }
+  class CounterCachePort {
+    <<port>>
+    +incr(key) long
+    +decr(key) long
+    +get(keys) Map
+  }
+  class NotificationPort {
+    <<port>>
+    +notify(Notification) void
+  }
+  class MuralPort {
+    <<port>>
+    +publish(MuralEntry) void
+  }
+  class SessionAttachmentPort {
+    <<port>>
+    +attach(sessionId, target, actor) MessageAttachment
+  }
+  class DeliberativeProfilePort {
+    <<port>>
+    +recordInteraction(ownerId, ReactionType) void
+  }
+
   class Reaction {
     <<entity>>
-    +id: UUID
-    +actorId: UUID
-    +targetType: TargetType
-    +targetId: UUID
-    +reactionType: ReactionType
-    +at: Instant
-    +actorHypeAtTime: BigDecimal
-    +ignoredReason: String antifraude
+    +UUID id
+    +UUID actorId
+    +TargetType targetType
+    +UUID targetId
+    +ReactionType reactionType
+    +Instant at
+    +int actorHypeAtTime
+    +String ignoredReason
   }
   class Comment {
     <<entity>>
-    +id: UUID
-    +authorId: UUID
-    +targetType: TargetType
-    +targetId: UUID
-    +parentCommentId: UUID
-    +contentMd: String
-    +mentionsJson: JSON
-    +editedAt: Instant
-    +deletedBy: UUID
-    +active: boolean
+    +UUID id
+    +UUID authorId
+    +TargetType targetType
+    +UUID targetId
+    +UUID parentCommentId
+    +String contentMd
+    +JSON mentionsJson
+    +Instant editedAt
+    +UUID deletedBy
+    +boolean active
   }
   class SavedItem {
     <<entity>>
-    +id: UUID
-    +userId: UUID
-    +targetType: TargetType
-    +targetId: UUID
-    +favorite: boolean
-    +savedAt: Instant
+    +UUID id
+    +UUID userId
+    +TargetType targetType
+    +UUID targetId
+    +boolean favorite
+    +Instant savedAt
   }
   class Share {
     <<entity>>
-    +id: UUID
-    +actorId: UUID
-    +targetType: TargetType
-    +targetId: UUID
-    +channel: ShareChannel
-    +sessionId: UUID
-    +externalToken: String
-    +expiresAt: Instant
-    +imageMediaId: UUID
+    +UUID id
+    +UUID actorId
+    +TargetType targetType
+    +UUID targetId
+    +ShareChannel channel
+    +UUID sessionId
+    +String externalToken
+    +Instant expiresAt
+    +UUID imageMediaId
   }
   class Remix {
     <<entity>>
-    +id: UUID
-    +actorId: UUID
-    +sourceType: TargetType
-    +sourceId: UUID
-    +resultType: TargetType
-    +resultId: UUID
-    +modelOfferId: UUID
-    +ledgerEntryId: UUID
-    +at: Instant
+    +UUID id
+    +UUID actorId
+    +TargetType sourceType
+    +UUID sourceId
+    +TargetType resultType
+    +UUID resultId
+    +UUID modelOfferId
+    +UUID ledgerEntryId
+    +Instant at
   }
-  class MuralEntry {
-    <<entity>>
-    +id: UUID
-    +companyId: UUID
-    +kind: MuralKind COMPARTILHAMENTO
-    +targetType: TargetType
-    +targetId: UUID
-    +actorId: UUID
-  }
-  class Notification {
-    <<entity>>
-    +id: UUID
-    +recipientId: UUID
-    +actorId: UUID
-    +type: NotificationType
-    +category: String SOCIAL
-    +resourceType: String
-    +resourceId: UUID
-    +groupKey: String dono tipo hora
-    +read: boolean
-  }
-}
-
-namespace ws_domain_alvos {
   class TaskItem {
     <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +departmentId: UUID
-    +visibility: Visibility
-    +originalTaskId: UUID
-    +likesCount: long
-    +commentsCount: long
-    +savesCount: long
-    +sharesCount: long
-    +remixesCount: long
+    +UUID id
+    +UUID ownerId
+    +UUID departmentId
+    +Visibility visibility
+    +UUID originalTaskId
+    +long likesCount
+    +long commentsCount
+    +long savesCount
+    +long sharesCount
+    +long remixesCount
   }
   class ProjectScheme {
     <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +departmentId: UUID
-    +visibility: Visibility
-    +originalProjectId: UUID
-    +origin: SchemeOrigin REMIX
-    +likesCount: long
-    +commentsCount: long
-    +savesCount: long
-    +sharesCount: long
-    +remixesCount: long
+    +UUID id
+    +UUID ownerId
+    +Visibility visibility
+    +UUID originalProjectId
+    +SchemeOrigin origin
+    +long likesCount
+    +long remixesCount
   }
   class AnnualPlan {
     <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +scope: PlanScope
-    +visibility: Visibility
-    +derivedFromPlanId: UUID remix
-    +status: PlanStatus
-    +likesCount: long
-    +commentsCount: long
-    +savesCount: long
+    +UUID id
+    +UUID ownerId
+    +Visibility visibility
+    +long likesCount
+  }
+  class Notification {
+    <<entity>>
+    +UUID recipientId
+    +UUID actorId
+    +NotificationType type
+    +String category
+    +String groupKey
+  }
+  class MuralEntry {
+    <<entity>>
+    +String kind
+    +UUID companyId
+    +String targetType
+    +UUID targetId
   }
   class MessageAttachment {
     <<entity>>
-    +messageId: UUID
-    +targetType: String TASK PROJECT PLAN
-    +targetId: UUID
-    +snapshotJson: JSON
+    +UUID messageId
+    +String targetType
+    +UUID targetId
+    +boolean usedInDecision
   }
   class DeliberativeProfile {
     <<entity>>
-    +userId: UUID
-    +periodKey: String
-    +evidenceUse: BigDecimal
-    +deltaJson: JSON
-  }
-  class Department {
-    <<entity>>
-    +id: UUID
-    +headUserId: UUID chefe pode excluir comentário
-  }
-  class DepartmentMembership {
-    <<entity>>
-    +userId: UUID
-    +departmentId: UUID
-    +endedAt: Instant
-  }
-}
-
-namespace ws_domain_enums {
-  class TargetType {
-    <<enum>>
-    TASK
-    PROJECT
-    PLAN
-    KIT
-    PROJECT_TASK
-    MESSAGE
-    RECOGNITION
+    +UUID userId
+    +BigDecimal evidenceUse
+    +BigDecimal consistency
+    +JSON badgesJson
   }
   class ReactionType {
     <<enum>>
@@ -207,223 +256,136 @@ namespace ws_domain_enums {
     SESSAO_DECIA
     LINK_EXTERNO
   }
-  class Visibility {
+  class TargetType {
     <<enum>>
-    PRIVADA
-    DEPARTAMENTO
-    EMPRESA
-    PUBLICA
+    TASK
+    PROJECT
+    PLAN
+    KIT
+    PROJECT_TASK
+    MESSAGE
+    RECOGNITION
   }
-}
+  class NotificationType {
+    <<enum>>
+    REACAO
+    COMENTARIO
+    MENCAO
+    REMIX
+  }
 
-namespace ws_application {
-  class SocialService {
-    <<service>>
-    +toggleLike(actorId, type, id) Reaction
-    +react(actorId, type, id, reactionType) Reaction
-    +comment(actorId, type, id, contentMd, parentId, mentions) Comment
-    +editComment(actorId, commentId, contentMd) Comment
-    +deleteComment(actorId, commentId) autor ou chefe do departamento
-    +save(userId, type, id, favorite) SavedItem
-    +share(actorId, type, id, channel, sessionId, expiresAt) Share
-    +remix(actorId, type, id) Remix
-    +counters(type, id) Counters
-    -checkVisibility(actor, target) 403 ACESSO_NEGADO
-  }
-  class AssignmentService {
-    <<service>>
-    +propose() atribuir — ver RF18, RF10, RF46
-    +giveBack() retornar — ver RF18
-  }
-  class MuralService {
-    <<service>>
-    +postShare(Share) MuralEntry
-  }
-  class DeciaSessionService {
-    <<service>>
-    +attachToSession(sessionId, type, id) MessageAttachment
-  }
-  class NotificationService {
-    <<service>>
-    +notifyOwner(event) agrupa por groupKey hora
-    +notifyMentions(Comment)
-  }
-  class ReputationService {
-    <<service>>
-    +onQualityReaction(ownerId, reactionType) BEM_FUNDAMENTADO CONFORME
-  }
-  class CounterCachePort {
-    <<port>>
-    +incr(type, id, counter)
-    +get(type, id) Counters
-  }
-  class MediaStoragePort {
-    <<port>>
-    +renderShareImage(target) MediaObject capa + resumo
-    +presign(mediaId) URL
-  }
-}
-
-namespace ws_web {
-  class InteractionController {
-    <<controller>>
-    +POST_api_interactions_type_id_reactions(body)
-    +DELETE_api_interactions_type_id_reactions_reactionType()
-    +POST_api_interactions_type_id_comments(body)
-    +PATCH_api_interactions_comments_commentId(body)
-    +DELETE_api_interactions_comments_commentId()
-    +POST_api_interactions_type_id_saves(favorite)
-    +POST_api_interactions_type_id_shares(channel, sessionId, expiresAt)
-    +POST_api_interactions_type_id_remixes()
-    +GET_api_interactions_type_id_counters()
-    +GET_s_token_link_externo_publico()
-  }
-}
-
-namespace ws_infrastructure {
-  class RedisCounterAdapter {
-    <<adapter>>
-  }
-  class S3StorageAdapter {
-    <<adapter>>
-  }
-  class CassandraNotificationAdapter {
-    <<adapter>>
-  }
-}
-
-Reaction --> ReactionType
-Reaction --> TargetType
-Comment --> TargetType
-Comment "*" --> "0..1" Comment : parentCommentId thread
-SavedItem --> TargetType
-Share --> ShareChannel
-Share --> TargetType
-Share "1" --> "0..1" MuralEntry : channel MURAL
-Share "1" --> "0..1" MessageAttachment : channel SESSAO_DECIA
-Remix --> TargetType : sourceType e resultType
-Remix ..> TaskItem : resultId com originalTaskId
-Remix ..> ProjectScheme : resultId com originalProjectId
-Remix ..> AnnualPlan : resultId com derivedFromPlanId
-Reaction ..> TaskItem : targetId quando TASK
-Reaction ..> ProjectScheme : targetId quando PROJECT
-Reaction ..> AnnualPlan : targetId quando PLAN
-Notification "*" --> "1" TaskItem : resourceId dono notificado
-TaskItem --> Visibility
-ProjectScheme --> Visibility
-AnnualPlan --> Visibility
-
-InteractionController ..> SocialService
-InteractionController ..> AssignmentService : RF18 atribuir e retornar
-SocialService ..> MuralService : MURAL
-SocialService ..> DeciaSessionService : SESSAO_DECIA
-SocialService ..> MediaStoragePort : LINK_EXTERNO imagem
-SocialService ..> CounterCachePort
-SocialService ..> NotificationService : AFTER_COMMIT
-SocialService ..> ReputationService : AFTER_COMMIT
-SocialService ..> Department : chefe exclui comentário
-SocialService ..> DepartmentMembership : visibilidade DEPARTAMENTO
-NotificationService ..> Notification
-ReputationService ..> DeliberativeProfile
-RedisCounterAdapter ..|> CounterCachePort
-S3StorageAdapter ..|> MediaStoragePort
-CassandraNotificationAdapter ..> Notification : notifications_by_user TTL
-
-note for Reaction "tabela reactions · único actorId + targetType + targetId + reactionType = CURTIR (CA01) · tipos qualitativos (CA02) · alvos TASK, PROJECT, PLAN"
-note for Comment "tabela comments · thread, edição, exclusão pelo autor ou chefe, menções notificam (CA03)"
-note for Share "tabela shares · MURAL → MuralEntry, SESSAO_DECIA → MessageAttachment, LINK_EXTERNO com externalToken, expiresAt e imageMediaId (CA05)"
-note for SocialService "checkVisibility: PRIVADA só dono, DEPARTAMENTO só membros, EMPRESA só mesma empresa (CA08) · contadores em Redis + colunas desnormalizadas (CA07) · retornar e atribuir → RF18"
+  InteractionController --> InteractionService
+  InteractionController --> CounterService
+  InteractionService --> AccessPolicy
+  InteractionService --> CounterService
+  InteractionService --> MentionParser
+  InteractionService --> RemixService
+  InteractionService --> ShareImageService
+  InteractionService --> ReactionRepositoryPort
+  InteractionService --> CommentRepositoryPort
+  InteractionService --> SavedItemRepositoryPort
+  InteractionService --> ShareRepositoryPort
+  InteractionService --> RemixRepositoryPort
+  InteractionService --> NotificationPort
+  InteractionService --> MuralPort
+  InteractionService --> SessionAttachmentPort
+  InteractionService --> DeliberativeProfilePort
+  CounterService --> CounterCachePort
+  Reaction --> ReactionType
+  Reaction --> TargetType
+  Share --> ShareChannel
+  Notification --> NotificationType
+  Reaction "0..*" --> "1" TaskItem : alvo TASK
+  Reaction "0..*" --> "1" ProjectScheme : alvo PROJECT
+  Reaction "0..*" --> "1" AnnualPlan : alvo PLAN
+  Comment "0..*" --> "0..1" Comment : parentCommentId (thread)
+  SavedItem "0..*" --> "1" TaskItem
+  Share "0..*" --> "0..1" MessageAttachment : SESSAO_DECIA
+  Share ..> MuralEntry : MURAL
+  Remix "1" --> "1" TaskItem : resultId (originalTaskId = sourceId)
+  Remix "1" --> "1" ProjectScheme : resultId (originalProjectId, origin REMIX)
+  InteractionService ..> Notification
+  InteractionService ..> DeliberativeProfile : BEM_FUNDAMENTADO e CONFORME pesam
+  note for Reaction "Único (actorId, targetType, targetId, reactionType = CURTIR). actorHypeAtTime: peso PageRank (RF45.CA04). ignoredReason: antifraude (RF45.CA03)."
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph LU["Usuário"]
-    U1["Aciona uma ação no card de tarefa, projeto ou plano anual: curtir, reagir, comentar, salvar, compartilhar ou remixar"]
-    U2["Dono abre o card ou o perfil"]
-    U3["Retornar ou Atribuir → fluxo do RF18"]
+  subgraph ATOR["Usuário autenticado · Dono do alvo · Chefe (moderação)"]
+    A1["Abre a barra de interações de um card (tarefa, projeto ou plano)"]
+    A2["Curte ou reage (ÚTIL · BEM FUNDAMENTADO · INOVADOR · CONFORME)"]
+    A3["Comenta / responde na thread / edita / exclui · menciona @colega"]
+    A4["Salva (favorito) · Compartilha (Mural · sessão DECIA · link externo) · Remixa"]
+    A5["Dono recebe notificações agrupadas por hora e vê os contadores no perfil"]
+  end
+  subgraph FE["Next.js (App Router) · BFF"]
+    F1["Counters com valores do cache · Popover de reações · thread de comentários (Textarea com @menções)"]
+    F2["POST|DELETE /api/interactions/{type}/{id}/reactions · POST|PATCH|DELETE …/comments · POST|DELETE …/saves · POST …/shares · POST …/remixes · GET …/counters"]
+    F3["Link externo: página pública /s/{token} com imagem exportada (capa + resumo) até expiresAt"]
+  end
+  subgraph WEB["ws-web"]
+    W1["JWT + SessionActiveFilter + CurrentUserArgumentResolver"]
+    W2["InteractionController"]
+    E403["403 ACESSO_NEGADO (PRIVADA de terceiro · DEPARTAMENTO sem ser membro · EMPRESA de outra empresa)"]
+    E403M["403 ACESSO_NEGADO (editar/excluir comentário sem ser autor ou chefe)"]
+    E422["422 VALIDACAO (reação inválida · comentário vazio · canal inválido · expiração > 30 d)"]
+    E409["409 REMIX_INDISPONIVEL (alvo não público) · 410 LINK_EXPIRADO"]
+  end
+  subgraph APP["ws-application · InteractionService"]
+    S1["AccessPolicy.canInteract(ator, alvo): PRIVADA só dono · DEPARTAMENTO só membros · EMPRESA só mesma empresa · PUBLICA todos"]
+    S2{"pode interagir?"}
+    R1["react: upsert Reaction (único por ator+alvo para CURTIR; 1 por tipo qualitativo) · actorHypeAtTime · antifraude (auto-interação → ignoredReason)"]
+    C1["comment: MentionParser → mentionsJson · parentCommentId (thread) · editedAt na edição · deletedBy/active=false na exclusão (autor ou canModerate = chefe do departamento)"]
+    SV1["save: upsert SavedItem(favorite) · aparece em Tarefas salvas / Projetos salvos (RF6)"]
+    SH1{"canal?"}
+    SH2["MURAL: MuralPort.publish(MuralEntry COMPARTILHAMENTO) — exige visibility ≥ EMPRESA"]
+    SH3["SESSAO_DECIA: SessionAttachmentPort.attach → MessageAttachment (RF29.CA03, ≤ 5 por mensagem)"]
+    SH4["LINK_EXTERNO: externalToken + expiresAt + ShareImageService.render (capa + resumo) → S3"]
+    RX1{"alvo PUBLICA?"}
+    RX2["RemixService.copyTask/copyProject: cópia com originalTaskId/originalProjectId, origin REMIX, crédito visível · Remix(modelOfferId se veio do Balcão, ledgerEntryId RF40/RF42)"]
+    CT["CounterService: INCR/DECR no Redis → flush em lote para likesCount… no MySQL"]
+    EV["AFTER_COMMIT: Notification REACAO/COMENTARIO/MENCAO/REMIX ao dono (groupKey = hora) · DeliberativeProfilePort.recordInteraction (BEM_FUNDAMENTADO e CONFORME pesam) · 'remixado por N pessoas' no card do autor"]
+  end
+  subgraph PERS["Persistência"]
+    P1[("MySQL: reactions, comments, saved_items, shares, remixes, tasks/project_schemes/annual_plans (contadores), mural_entries, message_attachments, deliberative_profiles")]
+    P2[("Redis: counters:{type}:{id}:{field} · dedupe de notificação por hora")]
+    P3[("Cassandra: notifications_by_user · timeline_by_user")]
+    P4[("S3: imagem exportada do link externo")]
   end
 
-  subgraph LW["Web / BFF (Next.js App Router)"]
-    W1["Atualização otimista do contador e do estado do botão"]
-    W2["Mensagem: item sem permissão para interagir"]
-    W3["Contadores em tempo quase real: curtidas, comentários, salvos, compartilhamentos, remixes"]
-    W4["Autor original vê remixado por N pessoas"]
-  end
-
-  subgraph LA["ws-application"]
-    A1["SocialService.checkVisibility"]
-    A2{"PRIVADA e ator não é dono? DEPARTAMENTO e ator não é membro? EMPRESA e outra empresa?"}
-    A3["403 ACESSO_NEGADO"]
-    A4{"Qual ação?"}
-    A5["toggleLike: existe Reaction CURTIR? remove, senão insere — índice único"]
-    A6["react: insere Reaction UTIL / BEM_FUNDAMENTADO / INOVADOR / CONFORME, 1 por tipo"]
-    A7["comment: Comment com parentCommentId opcional, mentionsJson"]
-    A8{"Editar ou excluir: ator é autor? ou chefe do departamento do alvo?"}
-    A9["403 ACESSO_NEGADO"]
-    A10["editComment editedAt / deleteComment deletedBy, active false"]
-    A11["save: SavedItem com favorite → Tarefas salvas / Projetos salvos / Planos salvos"]
-    A12{"Canal do compartilhamento"}
-    A13["MURAL: MuralService.postShare → MuralEntry COMPARTILHAMENTO"]
-    A14["SESSAO_DECIA: DeciaSessionService.attachToSession → MessageAttachment"]
-    A15["LINK_EXTERNO: externalToken, expiresAt, MediaStoragePort.renderShareImage capa + resumo"]
-    A16{"Alvo é PUBLICA?"}
-    A17["422 REMIX_SOMENTE_PUBLICO"]
-    A18["remix: cópia com originalTaskId / originalProjectId / derivedFromPlanId, origin REMIX, crédito visível; Remix; remixesCount + 1"]
-    A19["CounterCachePort.incr + UPDATE coluna desnormalizada"]
-    A20["AFTER_COMMIT InteractionCreated"]
-    A21["NotificationService.notifyOwner: groupKey = dono + tipo + hora; notifyMentions"]
-    A22["ReputationService.onQualityReaction se BEM_FUNDAMENTADO ou CONFORME → métrica de qualidade do DeliberativeProfile"]
-    A23["AssignmentService.propose / giveBack — RF18.CA03–CA06"]
-  end
-
-  subgraph LP["Persistência"]
-    P1[("MySQL: reactions, comments, saved_items, shares, remixes + tasks / project_schemes / annual_plans contadores")]
-    P2[("Redis: counters:{type}:{id}")]
-    P3[("MySQL: mural_entries · message_attachments · S3: imagem do link")]
-    P4[("Cassandra: notifications_by_user TTL · MySQL: deliberative_profiles")]
-  end
-
-  U1 --> A1 --> A2
-  A2 -->|"sim"| A3 --> W2
-  A2 -->|"não"| A4
-  A4 -->|"curtir"| A5
-  A4 -->|"reagir"| A6
-  A4 -->|"comentar"| A7
-  A4 -->|"editar/excluir comentário"| A8
-  A8 -->|"não"| A9
-  A8 -->|"sim"| A10
-  A4 -->|"salvar"| A11
-  A4 -->|"compartilhar"| A12
-  A12 -->|"MURAL"| A13 --> P3
-  A12 -->|"SESSAO_DECIA"| A14 --> P3
-  A12 -->|"LINK_EXTERNO"| A15 --> P3
-  A4 -->|"remixar"| A16
-  A16 -->|"não"| A17
-  A16 -->|"sim"| A18
-  A5 --> P1
-  A6 --> P1
-  A7 --> P1
-  A10 --> P1
-  A11 --> P1
-  A13 --> P1
-  A14 --> P1
-  A15 --> P1
-  A18 --> P1
-  P1 --> A19 --> P2 --> W3
-  A19 --> W1
-  P1 --> A20
-  A20 --> A21 --> P4
-  A20 --> A22 --> P4
-  A18 --> W4
-  U2 --> W3
-  U3 --> A23
-
-  classDef err fill:#ffe3e3,stroke:#c0392b,color:#5a1a12
-  classDef ref fill:#eef6ff,stroke:#4a4852,color:#1f2937
-  class A3,A9,A17 err
-  class U3,A23 ref
+  A1 --> F1 --> F2 --> W1 --> W2 --> S1 --> S2
+  S2 -->|"não"| E403
+  A2 --> F2
+  S2 -->|"reação"| R1 --> CT
+  A3 --> F2
+  S2 -->|"comentário"| C1 --> CT
+  C1 -->|"sem papel"| E403M
+  A4 --> F2
+  S2 -->|"salvar"| SV1 --> CT
+  S2 -->|"compartilhar"| SH1
+  SH1 -->|"MURAL"| SH2 --> CT
+  SH1 -->|"SESSAO_DECIA"| SH3 --> CT
+  SH1 -->|"LINK_EXTERNO"| SH4 --> P4
+  SH4 --> CT
+  SH4 --> F3
+  F3 -->|"expirado"| E409
+  S2 -->|"remixar"| RX1
+  RX1 -->|"não"| E409
+  RX1 -->|"sim"| RX2 --> CT
+  W2 -->|"payload inválido"| E422
+  CT --> P2
+  CT --> P1
+  R1 --> P1
+  C1 --> P1
+  SV1 --> P1
+  SH2 --> P1
+  SH3 --> P1
+  RX2 --> P1
+  CT --> EV --> P3
+  EV --> P1
+  EV --> A5
 ```
 
 ## 3. Diagrama de sequência
@@ -432,149 +394,137 @@ flowchart TD
 sequenceDiagram
   autonumber
   actor U as Usuário
-  actor O as Dono do item
-  participant NX as Next.js (App Router)
+  actor O as Dono do alvo
+  participant N as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
-  participant DB as Repository/MySQL
-  participant R as Redis
+  participant R as Repository/MySQL
+  participant RD as Redis
   participant CS as Cassandra
   participant S3 as S3
-  participant DE as DomainEvents (AFTER_COMMIT)
+  participant EV as DomainEvents (AFTER_COMMIT)
 
-  U->>NX: curte o plano anual PA1 no card (CA01, alvo PLAN)
-  NX->>NX: atualização otimista do contador (CA07)
-  NX->>C: POST /api/interactions/PLAN/PA1/reactions {reactionType CURTIR}
-  C->>S: SocialService.toggleLike(actorId, PLAN, PA1)
-  S->>DB: annual_plans PA1 (visibility, ownerId, departmentId)
-  S->>S: checkVisibility(actor, PA1)
-  alt PA1 PRIVADA de outra pessoa, ou DEPARTAMENTO sem ser membro (CA08)
+  U->>N: reage BEM_FUNDAMENTADO num projeto
+  N->>C: POST /api/interactions/PROJECT/{id}/reactions {BEM_FUNDAMENTADO}
+  C->>S: InteractionService.react(actor, target, type, ctx)
+  S->>R: project_schemes.findById
+  S->>S: AccessPolicy.canInteract(actor, project)
+  alt PRIVADA de terceiro ou DEPARTAMENTO sem ser membro
     S-->>C: 403 ACESSO_NEGADO
-    C-->>NX: 403
-    NX-->>U: desfaz a atualização otimista, mensagem
-  else permitido
-    S->>DB: SELECT reactions WHERE actorId AND PLAN AND PA1 AND CURTIR (índice único)
-    alt já curtido
-      S->>DB: DELETE reactions — descurtir
-      S->>R: DECR counters:PLAN:PA1:likes
-      S->>DB: UPDATE annual_plans SET likesCount = likesCount - 1
-    else ainda não
-      S->>DB: INSERT reactions (CURTIR, actorHypeAtTime)
-      S->>R: INCR counters:PLAN:PA1:likes
-      S->>DB: UPDATE annual_plans SET likesCount = likesCount + 1
-      S->>DE: publish InteractionCreated {REACTION, CURTIR}
-    end
-    S-->>C: 200 {liked, likesCount}
-    C-->>NX: 200
+    C-->>N: 403
+  else ok
+    S->>R: upsert reactions (único: actor + alvo + CURTIR / 1 por tipo qualitativo, actorHypeAtTime)
+    S->>RD: INCR counters:PROJECT:{id}:likes
+    S-->>C: CountersView
+    C-->>N: 200 (contador atualizado na hora)
+    EV->>RD: dedupe notif:{ownerId}:{hora}
+    EV->>CS: notifications_by_user REACAO (groupKey = hora)
+    EV->>R: deliberative_profiles do dono (BEM_FUNDAMENTADO pesa na qualidade)
+    EV->>R: flush em lote → project_schemes.likes_count
   end
 
-  U->>NX: reage BEM_FUNDAMENTADO à tarefa T3 (CA02)
-  NX->>C: POST /api/interactions/TASK/T3/reactions {reactionType BEM_FUNDAMENTADO}
-  C->>S: SocialService.react
-  S->>DB: INSERT reactions (BEM_FUNDAMENTADO)
-  S->>DE: publish InteractionCreated {REACTION, BEM_FUNDAMENTADO}
-  S-->>C: 201
-
-  U->>NX: comenta em T3 mencionando @ana e responde a um comentário (CA03)
-  NX->>C: POST /api/interactions/TASK/T3/comments {contentMd, parentCommentId, mentions [ana]}
-  C->>S: SocialService.comment
-  S->>DB: INSERT comments (parentCommentId, mentionsJson)
-  S->>R: INCR counters:TASK:T3:comments
-  S->>DE: publish CommentCreated
-  S-->>C: 201 Comment
-  O->>NX: chefe do departamento exclui o comentário
-  NX->>C: DELETE /api/interactions/comments/{commentId}
-  C->>S: SocialService.deleteComment(actorId chefe)
-  S->>DB: comments + Department.headUserId do alvo
-  alt ator não é autor nem chefe do departamento
+  U->>N: comenta "@joao veja o cronograma" como resposta a outro comentário
+  N->>C: POST /api/interactions/PROJECT/{id}/comments {contentMd, parentCommentId}
+  C->>S: InteractionService.comment(actor, target, contentMd, parentId, ctx)
+  S->>S: MentionParser.parse → [joaoId]
+  S->>R: insert comments (parentCommentId, mentionsJson)
+  S->>RD: INCR counters:PROJECT:{id}:comments
+  S-->>C: CommentView
+  C-->>N: 201 (thread)
+  EV->>CS: COMENTARIO ao dono (agrupado) + MENCAO ao @joao
+  U->>N: exclui o comentário (como autor) — ou o chefe do departamento modera
+  N->>C: DELETE /api/interactions/comments/{commentId}
+  C->>S: InteractionService.deleteComment(actor, commentId, ctx)
+  alt nem autor nem chefe do departamento
     S-->>C: 403 ACESSO_NEGADO
-  else autorizado
-    S->>DB: UPDATE comments SET active false, deletedBy
-    S-->>C: 204
+    C-->>N: 403
+  else ok
+    S->>R: update comments (active=false, deletedBy) · audit_log COMMENT_DELETED
+    S->>RD: DECR counters:PROJECT:{id}:comments
+    C-->>N: 204
   end
 
-  U->>NX: salva T3 como favorita (CA04)
-  NX->>C: POST /api/interactions/TASK/T3/saves {favorite true}
-  C->>S: SocialService.save
-  S->>DB: INSERT saved_items (favorite) — aparece em Tarefas salvas
-  S->>R: INCR counters:TASK:T3:saves
-  S-->>C: 201
+  U->>N: salva como favorito
+  N->>C: POST /api/interactions/TASK/{id}/saves {favorite true}
+  C->>S: InteractionService.save(actor, target, favorite)
+  S->>R: upsert saved_items
+  S->>RD: INCR counters:TASK:{id}:saves
+  C-->>N: 200 (aparece em Tarefas salvas, RF6)
 
-  U->>NX: compartilha o projeto P1 por link externo com expiração em 7 dias (CA05)
-  NX->>C: POST /api/interactions/PROJECT/P1/shares {channel LINK_EXTERNO, expiresAt}
-  C->>S: SocialService.share
-  S->>S3: MediaStoragePort.renderShareImage(P1) — capa + resumo
-  S3-->>S: imageMediaId
-  S->>DB: INSERT shares (channel LINK_EXTERNO, externalToken, expiresAt, imageMediaId)
-  S->>R: INCR counters:PROJECT:P1:shares
-  S-->>C: 201 {url /s/{externalToken}, expiresAt}
-  Note over S,DB: channel MURAL → MuralService.postShare cria MuralEntry COMPARTILHAMENTO (RF27). channel SESSAO_DECIA → DeciaSessionService.attachToSession cria MessageAttachment (RF29).
+  U->>N: compartilha por link externo (expira em 7 d)
+  N->>C: POST /api/interactions/PROJECT/{id}/shares {LINK_EXTERNO, expiresInDays 7}
+  C->>S: InteractionService.share(actor, target, LINK_EXTERNO, opts, ctx)
+  S->>S: ShareImageService.render (capa + resumo)
+  S->>S3: put(shares/{token}.png)
+  S->>R: insert shares (externalToken, expiresAt, imageMediaId)
+  S->>RD: INCR counters:PROJECT:{id}:shares
+  S-->>C: ShareView {url /s/{token}, expiresAt}
+  C-->>N: 201
+  Note over N,S3: /s/{token} após expiresAt → 410 LINK_EXPIRADO
 
-  U->>NX: remixa o projeto público P1 (CA06)
-  NX->>C: POST /api/interactions/PROJECT/P1/remixes
-  C->>S: SocialService.remix(actorId, PROJECT, P1)
-  alt P1 não é PUBLICA
-    S-->>C: 422 REMIX_SOMENTE_PUBLICO
-  else pública
-    S->>DB: INSERT project_schemes (cópia, origin REMIX, originalProjectId P1, ownerId ator)
-    S->>DB: INSERT project_tasks copiados
-    S->>DB: INSERT remixes (sourceType PROJECT, sourceId P1, resultType PROJECT, resultId)
-    S->>R: INCR counters:PROJECT:P1:remixes
-    S->>DB: UPDATE project_schemes SET remixesCount + 1 WHERE id = P1
-    S->>DE: publish RemixCreated
-    S-->>C: 201 cópia com crédito visível
+  U->>N: remixa um projeto público
+  N->>C: POST /api/interactions/PROJECT/{id}/remixes
+  C->>S: InteractionService.remix(actor, target, ctx)
+  alt alvo não é PUBLICA
+    S-->>C: 409 REMIX_INDISPONIVEL
+    C-->>N: 409
+  else ok
+    S->>R: RemixService.copyProject → project_schemes (originalProjectId, origin REMIX) + project_tasks (cópias/referências)
+    S->>R: insert remixes (sourceId, resultId, modelOfferId?, ledgerEntryId?)
+    S->>RD: INCR counters:PROJECT:{id}:remixes
+    S-->>C: RemixView {resultId}
+    C-->>N: 201 → /projects/{resultId}/edit
+    EV->>CS: REMIX ao autor original ("remixado por N pessoas")
+    EV->>R: DECIA Points VENDA_BALCAO quando veio do Balcão (RF40/RF42)
   end
-  Note over S,DB: remix de PLAN cria AnnualPlan com derivedFromPlanId (RF24.CA04) e os 6 PlanAxis copiados
 
-  DE->>CS: INSERT notifications_by_user (recipient dono, category SOCIAL, groupKey dono + tipo + hora) (CA09)
-  DE->>DB: UPDATE deliberative_profiles — reações BEM_FUNDAMENTADO e CONFORME pesam na métrica de qualidade (CA09)
-  O->>NX: abre o card de P1
-  NX->>C: GET /api/interactions/PROJECT/P1/counters
-  C->>S: SocialService.counters
-  S->>R: MGET counters:PROJECT:P1:*
-  S-->>C: 200 {likes, comments, saves, shares, remixes} (CA07)
-  NX-->>O: remixado por N pessoas, notificações agrupadas por hora
-  Note over U,DE: Retornar e Atribuir (título do card) seguem o RF18: POST /api/assignments e POST /api/assignments/{id}/give-back
+  O->>N: abre o perfil
+  N->>C: GET /api/interactions/PROJECT/{id}/counters
+  C->>S: CounterService.counters(target)
+  S->>RD: MGET counters:PROJECT:{id}:*
+  S-->>C: CountersView (likes, comments, saves, shares, remixes)
+  C-->>N: 200
 ```
 
 ## 4. Máquina de estados
 
-O RF19 não tem máquina de estados própria. A entidade com ciclo de vida mais rico que ele altera é o **`Comment`** (`active`, `editedAt`, `deletedBy`); os blocos seguintes mostram o ciclo do **`Share` LINK_EXTERNO** (`expiresAt`) e o toggle de **`Reaction` CURTIR**. O ciclo de `Assignment` (atribuir/retornar, TAXONOMIA §12b) está no RF18.
+Entidade central: as entidades sociais não têm enum de status na TAXONOMIA; o ciclo relevante é o de **`Comment`** (`active`/`deletedBy`/`editedAt`, CA03) e o de **`Share` LINK_EXTERNO** (`expiresAt`, CA05). `Reaction`/`SavedItem` existem ou não (CA01/CA04); `Remix` é imutável (CA06). "Retornar" e "atribuir" seguem `AssignmentStatus` no RF18 §4.
 
 ```mermaid
 stateDiagram-v2
+  direction LR
   state "Comment" as CM {
-    [*] --> PUBLICADO : POST comments, raiz ou resposta com parentCommentId
-    PUBLICADO --> PUBLICADO : nova resposta na thread
-    PUBLICADO --> EDITADO : autor edita, editedAt
-    EDITADO --> EDITADO : autor edita novamente
-    PUBLICADO --> EXCLUIDO : autor ou chefe do departamento exclui, deletedBy, active false
-    EDITADO --> EXCLUIDO : autor ou chefe do departamento exclui
-    EXCLUIDO --> [*]
+    state "PUBLICADO" as PUB
+    state "EDITADO (editedAt)" as EDT
+    state "EXCLUIDO (active = false, deletedBy)" as EXC
+    [*] --> PUB : POST …/comments [canInteract, conteúdo não vazio] · COMENTARIO + MENCAO (CA03)
+    PUB --> EDT : PATCH pelo autor
+    EDT --> EDT : nova edição
+    PUB --> EXC : DELETE pelo autor ou pelo chefe do departamento (canModerate)
+    EDT --> EXC : DELETE
+    EXC --> [*] : fica na thread como "comentário removido" (respostas preservadas)
   }
   state "Share LINK_EXTERNO" as SH {
-    [*] --> LINK_ATIVO : POST shares LINK_EXTERNO, externalToken, imagem capa + resumo
-    LINK_ATIVO --> LINK_EXPIRADO : passa expiresAt
-    LINK_ATIVO --> LINK_REVOGADO : autor revoga
-    LINK_EXPIRADO --> [*]
-    LINK_REVOGADO --> [*]
+    state "ATIVO (/s/{token})" as ATV
+    state "EXPIRADO (410 LINK_EXPIRADO)" as EXP
+    state "REVOGADO" as REV
+    [*] --> ATV : POST …/shares {LINK_EXTERNO, expiresInDays ≤ 30} · imagem exportada no S3 (CA05)
+    ATV --> EXP : expiresAt vencido · imagem apagada por job
+    ATV --> REV : dono ou ator revoga
+    EXP --> [*]
+    REV --> [*]
   }
-  state "Reaction CURTIR — TASK, PROJECT ou PLAN" as RC {
-    [*] --> NAO_CURTIDO
-    NAO_CURTIDO --> CURTIDO : toggleLike insere, índice único
-    CURTIDO --> NAO_CURTIDO : toggleLike remove
+  state "Reaction CURTIR" as RC {
+    state "SEM_REACAO" as SEM
+    state "CURTIDO" as CUR
+    [*] --> SEM
+    SEM --> CUR : POST …/reactions {CURTIR} (CA01) · índice único por ator + alvo
+    CUR --> SEM : DELETE …/reactions/CURTIR (descurtir)
   }
-  note right of CM
-    Menções em mentionsJson geram Notification (CA03).
-    Exclusão por terceiro sem papel de chefe: 403 ACESSO_NEGADO.
-  end note
-  note right of SH
-    Canais MURAL e SESSAO_DECIA não expiram:
-    viram MuralEntry e MessageAttachment (CA05).
-  end note
-  note right of RC
-    1 reação CURTIR por usuário e alvo (CA01).
-    Reações qualitativas seguem a mesma regra por tipo (CA02).
+  note right of PUB
+    Item PRIVADO de terceiro ou DEPARTAMENTO sem ser membro:
+    403 ACESSO_NEGADO em toda interação (CA08).
+    Cada transição notifica o dono agrupado por hora (CA09).
   end note
 ```
 
@@ -582,80 +532,65 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js"]
-    F1["components/ui: InteractionBar, LikeButton, ReactionPicker UTIL BEM_FUNDAMENTADO INOVADOR CONFORME, CommentThread com menções, SaveButton favorito, ShareSheet Mural / Sessão DECIA / Link externo, RemixButton, CountersRow, CreditBadge + ReturnButton e AssignButton (RF18)"]
-    F2["Usado em: app/acervo, app/projects, app/plans, app/mural, app/search, app/u/[username], app/profile sub-abas Tarefas salvas e Projetos salvos"]
-    F3["app/s/[token] — página pública do link externo com imagem exportada"]
+  subgraph FE["Frontend · Next.js 15 App Router"]
+    PG["Barra de interações em TaskCard / ProjectCard / card de Plano Anual (Acervo, Projetos, Planos, Mural, Buscar, /u/[username]) · página pública app/s/[token]"]
+    UI["packages/ui: Counters, Popover (reações: útil, bem fundamentado, inovador, conforme), Textarea (@menções), Dialog (compartilhar: canal, expiração), Button, Toast, Avatar (crédito do remix)"]
+    BFF["app/bff/interactions/*"]
+    PG --> UI
+    PG --> BFF
+  end
+  subgraph WSWEB["ws-web"]
+    SEC["SecurityConfig · SessionActiveFilter · CurrentUserArgumentResolver · GET /s/{token} público"]
+    IC["InteractionController · PublicShareController"]
+    GEH["GlobalExceptionHandler (403, 409, 410, 422)"]
+  end
+  subgraph WSAPP["ws-application"]
+    SOC["social: InteractionService · CounterService · MentionParser · RemixService · ShareImageService"]
+    SECU["security: AccessPolicy.canInteract/canModerate/isPublic · Guard (real)"]
+    PORTS["ports: ReactionRepositoryPort · CommentRepositoryPort · SavedItemRepositoryPort · ShareRepositoryPort · RemixRepositoryPort · CounterCachePort · NotificationPort · MuralPort · SessionAttachmentPort · DeliberativeProfilePort · MediaStoragePort · AuditLogPort (real)"]
+    EVT["events: Reacted · Commented · Mentioned · Saved · Shared · Remixed (AFTER_COMMIT) → SideEffectRunner"]
+    GAM["gamification: DeliberativeProfileService (objetivo 2) · ProfileHypeService (RF45) · points: PointsService (VENDA_BALCAO, RF42)"]
+    DEC["decia: SessionAttachment (RF29.CA03) · social: MuralService (RF27)"]
+    SOC --> SECU
+    SOC --> PORTS
+    SOC --> EVT
+    EVT --> GAM
+    SOC --> DEC
+  end
+  subgraph WSDOM["ws-domain"]
+    DOM["social: Reaction · Comment · SavedItem · Share · Remix · Notification · MuralEntry · enums ReactionType/ShareChannel/TargetType/NotificationType · acervo: TaskItem · projects: ProjectScheme · planning: AnnualPlan · decia: MessageAttachment · gamification: DeliberativeProfile"]
+  end
+  subgraph INFRA["ws-infrastructure"]
+    MY["persistence-mysql: Jpa*Repository (reactions, comments, saved_items, shares, remixes) · contadores desnormalizados"]
+    RDS["cache-redis (RedisAdaptersConfig): counters:{type}:{id}:{field} · dedupe por hora · flush em lote"]
+    CAS["persistence-cassandra (CassandraAdaptersConfig): notifications_by_user (TTL) · timeline_by_user"]
+    S3["storage-s3: imagem exportada do link externo (capa + resumo)"]
   end
 
-  subgraph WEB["ws-web"]
-    C1["InteractionController — /api/interactions/{type}/{id}/reactions|comments|saves|shares|remixes|counters · AssignmentController /api/assignments (RF18)"]
-    C2["PublicShareController — /s/{externalToken}"]
-  end
-
-  subgraph APP["ws-application"]
-    S1["SocialService"]
-    S2["MuralService RF27"]
-    S3["DeciaSessionService RF29"]
-    S4["NotificationService plataforma"]
-    S5["ReputationService RF43"]
-    S6["AssignmentService RF18 / RF10 / RF46 (TAXONOMIA 12b, proposta)"]
-    P1["CounterCachePort"]
-    P2["MediaStoragePort"]
-  end
-
-  subgraph DOM["ws-domain"]
-    D1["Reaction · Comment · SavedItem · Share · Remix"]
-    D2["TaskItem · ProjectScheme · AnnualPlan contadores e visibilidade · MessageAttachment · MuralEntry"]
-    D3["Notification · DeliberativeProfile · Department · DepartmentMembership · DomainEventOutbox"]
-  end
-
-  subgraph INFRA["ws-infrastructure/*"]
-    I1[("persistence-mysql: reactions, comments, saved_items, shares, remixes, mural_entries, message_attachments, tasks, project_schemes, annual_plans, deliberative_profiles")]
-    I2[("cache-redis: RedisCounterAdapter counters:{type}:{id}:*")]
-    I3[("persistence-cassandra: notifications_by_user TTL, timeline_by_user")]
-    I4[("storage-s3: imagem exportada do link externo")]
-    I5["platform: outbox AFTER_COMMIT InteractionCreated, CommentCreated, RemixCreated"]
-  end
-
-  F1 --- F2
-  F1 -->|"HTTPS/JSON"| C1
-  F3 -->|"HTTPS"| C2
-  C1 --> S1
-  C1 --> S6
-  C2 --> S1
-  S1 --> S2
-  S1 --> S3
-  S1 --> P1
-  S1 --> P2
-  S1 --> D1
-  S1 --> D2
-  S1 --> D3
-  D3 --> I5
-  I5 --> S4
-  I5 --> S5
-  S4 --> I3
-  S5 --> I1
-  D1 --> I1
-  D2 --> I1
-  P1 --> I2
-  P2 --> I4
+  BFF -->|"REST JSON"| SEC --> IC --> SOC
+  IC --> GEH
+  MY -.implementa.-> PORTS
+  RDS -.implementa.-> PORTS
+  CAS -.implementa.-> PORTS
+  S3 -.implementa.-> PORTS
+  SOC --> DOM
+  MY --> DB[("MySQL 8.4")]
+  RDS --> RD[("Redis 7")]
+  CAS --> CDB[("Cassandra 4.1")]
+  S3 --> MINIO[("S3 / MinIO")]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
-|---|---|
-| RF26.CA01 | `Reaction` (nota índice único actorId + targetType + targetId + CURTIR), `SocialService.toggleLike` · Atividades `A4 (curtir) → A5 → P1` · Sequência `POST …/PLAN/PA1/reactions {CURTIR}` → `alt já curtido → DELETE` / `INSERT reactions` (msgs 3–21) · Máquina *Reaction CURTIR* · Componente `LikeButton` |
-| RF26.CA02 | Enum `ReactionType` (UTIL, BEM_FUNDAMENTADO, INOVADOR, CONFORME), `SocialService.react` · Atividades `A4 (reagir) → A6` · Sequência `POST …/TASK/T3/reactions {BEM_FUNDAMENTADO}` (msgs 22–26) · Nota de *Reaction CURTIR* · Componente `ReactionPicker` |
-| RF26.CA03 | `Comment` (parentCommentId, mentionsJson, editedAt, deletedBy, active), `Department.headUserId`, `SocialService.comment/editComment/deleteComment`, `NotificationService.notifyMentions` · Atividades `A7`, `A8 → A9 403 / A10` · Sequência `POST …/comments {contentMd, parentCommentId, mentions}` e `DELETE /api/interactions/comments/{id}` com `alt ator não é autor nem chefe → 403` (msgs 27–40) · Máquina *Comment* · Componente `CommentThread` |
-| RF26.CA04 | `SavedItem` (favorite), `SocialService.save` · Atividades `A4 (salvar) → A11` · Sequência `POST …/TASK/T3/saves {favorite true}` (msgs 41–45) · Componentes `SaveButton`, `app/profile sub-abas Tarefas salvas e Projetos salvos` |
-| RF26.CA05 | `Share` (channel, sessionId, externalToken, expiresAt, imageMediaId), enum `ShareChannel`, `MuralEntry`, `MessageAttachment`, `MuralService.postShare`, `DeciaSessionService.attachToSession`, `MediaStoragePort.renderShareImage` · Atividades `A12 → A13 / A14 / A15 → P3` · Sequência `POST …/PROJECT/P1/shares {LINK_EXTERNO, expiresAt}` → `renderShareImage` → `INSERT shares` + nota MURAL / SESSAO_DECIA (msgs 46–53) · Máquina *Share LINK_EXTERNO* · Componentes `ShareSheet`, `PublicShareController /s/{token}`, `app/s/[token]`, `storage-s3` |
-| RF26.CA06 | `Remix`, `TaskItem.originalTaskId`, `ProjectScheme.originalProjectId / origin REMIX`, `AnnualPlan.derivedFromPlanId`, `SocialService.remix` · Atividades `A16 → A17 422 REMIX_SOMENTE_PUBLICO / A18 → W4` · Sequência `POST …/PROJECT/P1/remixes` → `alt não é PUBLICA → 422` / `INSERT project_schemes (cópia, origin REMIX …)`, `INSERT remixes`, nota remix de PLAN (msgs 54–64) · Componentes `RemixButton`, `CreditBadge` |
-| RF26.CA07 | `TaskItem/ProjectScheme/AnnualPlan.likesCount … remixesCount`, `CounterCachePort`, `RedisCounterAdapter`, `SocialService.counters` · Atividades `A19 → P2 → W3`, `W1` (otimista) · Sequência `INCR/DECR counters:…`, `UPDATE … likesCount`, `GET …/counters → MGET` (msgs 2, 67–71) · Componentes `CountersRow`, `cache-redis` |
-| RF26.CA08 | `SocialService.checkVisibility` (nota), enum `Visibility`, `DepartmentMembership` · Atividades `A1 → A2 → A3 403 ACESSO_NEGADO → W2` · Sequência `checkVisibility(actor, PA1)` → `alt PA1 PRIVADA de outra pessoa, ou DEPARTAMENTO sem ser membro → 403` (msgs 6–9) |
-| RF26.CA09 | `Notification.groupKey` (dono + tipo + hora, category SOCIAL), `DeliberativeProfile`, `NotificationService.notifyOwner`, `ReputationService.onQualityReaction`, `CassandraNotificationAdapter` · Atividades `A20 → A21 → P4`, `A20 → A22 → P4` · Sequência `DE->>CS INSERT notifications_by_user (… groupKey dono + tipo + hora)` e `DE->>DB UPDATE deliberative_profiles` (msgs 65–66) · Componentes `NotificationService`, `ReputationService RF43`, `persistence-cassandra` |
-| *(título)* retornar · atribuir | `AssignmentService.propose/giveBack` (TAXONOMIA §12b, proposta), `AssignmentController` `/api/assignments`, `/{id}/give-back` · Atividade `U3 → A23` · Sequência nota final · Componentes `ReturnButton`, `AssignButton` · Detalhe, estados e CAs: **RF18.CA03–CA06** |
-
-
-Tela/aba: `/mural` (esqueleto em `app/(shell)/mural/page.tsx`) · `/profile` (esqueleto em `app/(shell)/profile/page.tsx`)
+| CA (card RF19, escrito como RF26) | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) | Situação |
+|---|---|---|---|---|---|---|
+| RF26.CA01 | `InteractionService.react/unreact`, `Reaction` (único actor+alvo+CURTIR), `ReactionRepositoryPort.upsert/delete` | `A2`→`F2`→`R1`→`CT` | 1–4, 8–11 | `RC`: `SEM`→`CUR`→`SEM` | `SOC`, `MY` (índice único), `RDS` | planejado |
+| RF26.CA02 | `ReactionType` (UTIL · BEM_FUNDAMENTADO · INOVADOR · CONFORME), `Reaction.actorHypeAtTime/ignoredReason` | `R1` | 1, 8 | — | `UI` (`Popover`) | planejado (RF45.CA03/CA04) |
+| RF26.CA03 | `InteractionService.comment/editComment/deleteComment`, `Comment` (`parentCommentId`, `mentionsJson`, `editedAt`, `deletedBy`), `MentionParser`, `AccessPolicy.canModerate` | `A3`→`C1`, `E403M` | 17–32 | `CM`: `PUB`→`EDT`→`EXC` | `SOC`, `UI` (`Textarea`), `CAS` (MENCAO) | planejado |
+| RF26.CA04 | `InteractionService.save/unsave`, `SavedItem.favorite`, `SavedItemRepositoryPort` | `A4`→`SV1` | 33–38 | — | `SOC`, `MY` | planejado (RF6.CA05) |
+| RF26.CA05 | `InteractionService.share`, `Share`, `ShareChannel`, `MuralPort`, `SessionAttachmentPort`, `ShareImageService`, `PublicShareController` | `SH1`→`SH2`/`SH3`/`SH4`, `F3`, `E409` (410) | 39–47 | `SH`: `ATV`→`EXP`/`REV` | `SOC`, `DEC`, `S3`, `SEC` (`/s/{token}`) | planejado (RF27, RF29.CA03) |
+| RF26.CA06 | `InteractionService.remix`, `RemixService.copyTask/copyProject`, `Remix`, `TaskItem.originalTaskId`, `ProjectScheme.originalProjectId/origin REMIX`, `AccessPolicy.isPublic` | `RX1`→`RX2`, `E409` | 48–59 | — (imutável) | `SOC`, `GAM` (`PointsService`), `UI` (`Avatar` crédito) | planejado (RF40/RF42) |
+| RF26.CA07 | `CounterService.increment/decrement/counters/flushToMysql`, `CounterCachePort`, contadores em `TaskItem`/`ProjectScheme`/`AnnualPlan` | `CT` | 10–11, 15, 60–64 | — | `RDS`, `MY` | planejado |
+| RF26.CA08 | `AccessPolicy.canInteract` | `S1`→`S2`→`E403` | 5–7 | nota de `PUB` | `SECU`, `GEH` | planejado |
+| RF26.CA09 | eventos `Reacted`/`Commented`/`Mentioned`/`Remixed`, `NotificationPort`, `Notification.groupKey`, `DeliberativeProfilePort.recordInteraction` | `EV`→`A5` | 12–14, 23, 57 | nota de `PUB` | `EVT`, `GAM`, `CAS` | planejado (objetivo 2) |
+| (título) retornar · atribuir | `AssignmentService`, `Assignment` | — | — | `AssignmentStatus` (RF18 §4) | `ASG` no RF18 | modelado no RF18.CA03–CA06 (remissão) |
