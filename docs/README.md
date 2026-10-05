@@ -17,6 +17,7 @@
 | [`diagramas/RENUMERACAO.md`](diagramas/RENUMERACAO.md) | Mapa entre a numeração anterior e a atual do board; versões anteriores em `diagramas/_anterior/` |
 | [`legal/`](legal/README.md) | Rascunhos v0.1 dos **Termos de Uso** e da **Política de Privacidade** para órgão público (controlador SECID-PR; encarregado via `WS_LEGAL_DPO_NAME`/`WS_LEGAL_DPO_CONTACT`), versões independentes, regra das traduções de cortesia e o teste que recusa marcadores |
 | [`produto/CADASTRO_E_LGPD.md`](produto/CADASTRO_E_LGPD.md) | Plano de implementação dos blocos A (aceite dos termos), B (tipos de perfil e validação) e C (configurações e direitos do titular): ordem, dependências da SEG, componentes `packages/ui`, endpoints, jobs, testes-guarda e a tabela requisito → PR → teste → status |
+| [`produto/BIBLIOGRAFIA.md`](produto/BIBLIOGRAFIA.md) | Pesquisa: bibliografia de embasamento teórico por tema (estação de trabalho digital, mensageria empresarial, CSCW/groupware, equipes de alto desempenho, recompensa e gamificação, deliberação assistida por IA, memória institucional, setor público), termos de busca pt/en, glossário e mapa tema → contexto → RF |
 | [`DECISOES.md`](DECISOES.md) | Decisões tomadas (D-nn), dúvidas abertas (Q-nn) e índice das perguntas das pesquisas |
 | `testes/` | Evidências de teste por RF (preenchido a cada PR) |
 
