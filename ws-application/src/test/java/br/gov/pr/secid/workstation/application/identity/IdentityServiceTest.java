@@ -176,9 +176,13 @@ class IdentityServiceTest {
         assertThat(identity.sessionActive(null)).isFalse();
     }
 
-    /** Achado P1 (Codex): duas requisições com o MESMO refresh não podem ganhar as duas. */
+    /**
+     * Achado P1 (Codex): duas requisições com o MESMO refresh não podem ganhar as duas. Com o tombstone (D-32) o resultado
+     * legítimo é 0 OU 1 sucesso: se uma perdedora detecta o reuso antes de a vencedora salvar o sucessor, a vencedora
+     * também recebe SESSAO_INVALIDA (ver sucessorEmVooDepoisDoReusoDetectadoNaoVale). Nunca 2.
+     */
     @Test
-    void vinteRefreshesParalelosComOMesmoTokenSoUmGanhaEOsDemaisRevogamAFamilia() throws Exception {
+    void vinteRefreshesParalelosComOMesmoTokenNoMaximoUmGanhaEAFamiliaEhRevogada() throws Exception {
         Session s = identity.login(new IdentityService.LoginCommand("maria.silva", password, false, null, null), ctx);
         int threads = 20;
         CountDownLatch start = new CountDownLatch(1);
@@ -207,10 +211,11 @@ class IdentityServiceTest {
         } finally {
             pool.shutdownNow();
         }
-        assertThat(ok.get()).as("exatamente um consumo").isEqualTo(1);
-        assertThat(invalid.get()).isEqualTo(threads - 1);
+        assertThat(ok.get()).as("no máximo um consumo vence; nunca dois").isLessThanOrEqualTo(1);
+        assertThat(ok.get() + invalid.get()).as("toda requisição terminou com sucesso ou SESSAO_INVALIDA").isEqualTo(threads);
         assertThat(identity.sessionActive(s.sessionId())).as("reuso detectado: família inteira revogada").isFalse();
-        assertThat(audit.actions()).filteredOn(AuditActions.REFRESH_REUSO::equals).hasSize(threads - 1);
+        assertThat(audit.actions()).filteredOn(AuditActions.REFRESH_REUSO::equals)
+                .as("cada perdedora do consume audita o reuso").hasSizeGreaterThanOrEqualTo(threads - 1);
     }
 
     /**
