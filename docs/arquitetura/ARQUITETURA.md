@@ -138,18 +138,19 @@ stateDiagram-v2
   ARQUIVADA --> [*]
 ```
 
-## 6. Ordem de implementação (do pedido) e entregáveis por RF
+## 6. Ordem de implementação e entregáveis (numeração atual do board, 2026-10-05)
 | Fase | Escopo | Entregáveis |
 |---|---|---|
-| (a) | Esqueleto Maven (`ws-*`), `docker-compose.dev.yml` (mysql, redis, cassandra, opensearch, minio), CI gate, `V1__baseline.sql` (users, preferences, refresh_tokens, audit_log, ai_inference_log, feature_flags, domain_events, media_objects) | PR `chore(skeleton)` |
-| (b) | Design system DECIA (`packages/ui`, tokens, componentes obrigatórios, `/lab/design-system`) | PR `feat(rf38)` |
-| (c) | RF1–RF3 auth/perfis (OIDC + local, JWT/refresh Redis, preferências, aprovação EMPRESA/CHEFE) | PR `feat(rf1)`, `feat(rf2)`, `feat(rf3)` |
-| (d) | RF20 Criador de Tarefas + RF41 Acervo (TaskItem, estados, prazos legais, anexos, thumbnails) | PRs por RF |
-| (e) | RF21 Criador de Projetos (selects = inventário), RF22 Mesa, RF23 extração | PRs por RF |
-| (f) | RF4–RF6 sessão DECIA + RF29 ponte + RF7 classificação | PRs por RF |
-| (g) | Demais RFs pela prioridade do board: Sprint 2 (RF8–RF11), Sprint 3 (RF12–RF18), Sprint 4 (RF26–RF28), backlog (RF24, RF25, RF30–RF45) | PRs por RF |
+| (a) **Bloco 1 de segurança** | Esqueleto Maven `ws-*` (Boot 4.1, D-13), `docker-compose.dev.yml`, CI com gitleaks no histórico e testes-guarda, Dependabot, config sem senha padrão, erros/logs, Docker com healthcheck | PR `chore(skeleton)` |
+| (a') **Bloco 2** | `V1__baseline.sql` com `account_origin`, política de `ON DELETE` por domínio, `ForeignKeyPolicyTest` | PR `feat(sec)` |
+| (b) | Design system v2 (`packages/ui`, tokens `--ws-*`, WS Glyphs) + shell do app (TopBar, SidebarNav, folha Criar, barra mobile, placeholders de rotas) + preferências (**RF3**, D-11) + i18n | PR `feat(rf3)` / `feat(ui)` |
+| (c) **Bloco 3** | RF1–RF3 auth/perfis com os controles do D-14 (Argon2id, bloqueio atômico, limites por IP, bulkhead, OIDC, JWT/refresh) | PRs `feat(rf1)`, `feat(rf2)`, `feat(rf3)` |
+| (c') **LGPD A/B/C** | Aceite de termos (RF1), tipos de perfil e validação (RF1 + RF28), configurações e direitos do titular (RF3) | PRs por bloco |
+| (d) | **RF4** Criador de Tarefas + **RF6/RF41** Acervo + **RF23** importação de provedores | PRs por RF |
+| (e) | **RF5** Criador de Projetos (selects = inventário) + **RF20** adequação do acervo + **RF21/RF22** Mesa + **RF7/RF8/RF12** detalhe e edição | PRs por RF |
+| (f) | Sessão DECIA (tema/acesso, iniciar, mensagens, classificação — cards a recriar no board, Q-44) + **RF29** ponte + **RF13** artefatos | PRs por RF |
+| (g) | Blocos 4–7 de segurança (sessão no front, BOLA/BFLA/mídia/IA, dados demo, bancos endurecidos e backup) intercalados; demais RFs pela prioridade do board: RF9/RF10/RF46 (equipe, atribuição, chat), RF14–RF19 (perfis, busca, social), RF24–RF28, RF30–RF45 | PRs por RF |
 
-Cada RF entrega: migração Flyway própria · endpoints com RF/CA no `@Operation` · testes unit + integração Testcontainers (inclui 403) · tela com componentes do design system · i18n pt-BR/en/es · evidência em `docs/testes/RFnn/` · diagramas em `docs/diagramas/RFnn/`.
-
+Cada RF entrega: migração Flyway própria · endpoints com RF/CA no `@Operation` · testes unit + integração Testcontainers (inclui 403, BOLA/BFLA) · tela com componentes do design system · i18n pt-BR/en/es · evidência em `docs/testes/RFnn/` · diagramas em `docs/diagramas/RFnn/`. Mapa entre a numeração anterior e a atual: [`../diagramas/RENUMERACAO.md`](../diagramas/RENUMERACAO.md).
 ## 7. Decisões abertas
 Ver [`../DECISOES.md`](../DECISOES.md).
