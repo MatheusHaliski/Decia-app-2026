@@ -1,333 +1,332 @@
 # RF30 — Gerar um Esquema de Projeto completo com o Autopiloto de Projeto a partir de uma demanda (ofício, e-mail ou frase), reutilizando modelos chancelados
+**HU:** HU30 · **Sprint (board Work Station):** Product Backlog (não comprometido na Sprint 4) · **Equivalente FAI:** Autopiloto + "Vista-me" (RF28) · **Aba/rota:** Autopiloto (`/autopilot`), proposta aberta na Mesa em modo rascunho (`/desk?draft=`), botão **Abrir sessão DECIA sobre a proposta** (RF29)
+**Critérios de aceite cobertos:** RF30.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 (corpo do card, inalterado) — regra: o **título do card** define o RF e o corpo traz os próprios CAs. O RF43 §7 estende o Autopilot (tarefas em lote e Ficha de Viabilidade); o RF26 (Copilot) é a porta de entrada nos criadores.
 
-**HU:** HU30 · **Sprint (board Work Station):** Product Backlog (pós-Sprint 4, a priorizar) · **Equivalente FAI:** Autopiloto + "Vista-me" (RF28) · **Aba/rota:** Autopiloto (`/autopilot`); proposta exibida na Mesa de Trabalho (RF22) em modo rascunho
-
-**Critérios de aceite cobertos:** RF30.CA01 · RF30.CA02 · RF30.CA03 · RF30.CA04 · RF30.CA05 · RF30.CA06
-
-> Contextos da TAXONOMIA: **3. Criador de Projetos** (`ProjectScheme` com `origin = AUTOPILOTO`, `ProjectTask`, `ProjectTaskDependency`), **2. Acervo** (`TaskItem` com `sourceKind = AUTOPILOT`), **6. Chancelas** (`SealBond APROVADA` = modelos chancelados), **8. Social** (`Remix` = crédito a cada modelo usado) e **10. IA do sistema** (`AiInferenceLog` capability `AUTOPILOT_PROJETO`, `InstitutionalMemoryDocument` para "projetos semelhantes", RF33). A proposta **não é persistida** no MySQL até o usuário confirmar (CA03): vive em Redis (`autopilot:draft:{draftId}`, TTL) — decisão a confirmar em `DECISOES.md`.
+Fluxo: demanda (texto, ofício/e-mail colado ou `TaskItem` DOCUMENTO do acervo) → `AiEngine` capability `AUTOPILOT_PROJETO` extrai objetivo, prazo, departamento provável e categoria (CA01) → compõe fases, tarefas, dependências, responsáveis sugeridos e prazos **remixando modelos chancelados** (`SealBond APROVADA`, `ModelOffer shelf CHANCELADO`) e projetos semelhantes da Memória Institucional (RF33) com **crédito** a cada modelo (`ProjectScheme.originalProjectId`, `TaskItem.originalTaskId`, `Remix`) (CA02) → proposta mostrada na Mesa em **rascunho não persistido** (`ProjectDraft` em Redis com TTL; flag `redis.enabled`, fallback em memória) até o usuário confirmar (CA03) → `ProjectScheme origin AUTOPILOTO`, faísca ✦ e `AiInferenceLog` (CA04). Sem chave externa: `LocalEngine` (regras + modelos chancelados) com aviso (CA05).
 
 ## 1. Diagrama de classes
 
 ```mermaid
 classDiagram
-  direction LR
-  namespace ws-domain {
-    class ProjectScheme {
-      <<entity>>
-      +UUID id
-      +UUID ownerId
-      +UUID departmentId
-      +String title
-      +String objective
-      +CreationMode creationMode
-      +SchemeOrigin origin
-      +UUID originalProjectId
-      +String aiOrientation
-      +ProjectStatus status
-      +ProjectPhase currentPhase
-      +String deskSkin
-      +boolean aiGenerated
-      +UUID aiInferenceId
-      +JSON autosaveDraftJson
-    }
-    class ProjectTask {
-      <<entity>>
-      +UUID id
-      +UUID projectId
-      +UUID taskId
-      +ProjectPhase phase
-      +int sortOrder
-      +UUID responsibleId
-      +LocalDate dueAt
-      +BigDecimal estimatedHours
-      +String moscow
-      +JSON snapshotJson
-      +double canvasX
-      +double canvasY
-    }
-    class ProjectTaskDependency {
-      <<entity>>
-      +UUID id
-      +UUID projectId
-      +UUID predecessorProjectTaskId
-      +UUID successorProjectTaskId
-      +String type
-      +int lagDays
-    }
-    class TaskItem {
-      <<entity>>
-      +UUID id
-      +UUID ownerId
-      +String title
-      +TaskType type
-      +TaskCategory category
-      +AccessClassification accessClass
-      +SourceKind sourceKind
-      +UUID originalTaskId
-      +boolean aiGenerated
-      +UUID aiInferenceId
-    }
-    class SealBond {
-      <<entity>>
-      +UUID id
-      +UUID sealId
-      +String targetType
-      +UUID targetId
-      +SealBondStatus status
-      +Instant issuedAt
-    }
-    class Remix {
-      <<entity>>
-      +UUID id
-      +UUID actorId
-      +String sourceType
-      +UUID sourceId
-      +String resultType
-      +UUID resultId
-      +UUID ledgerEntryId
-    }
-    class AiInferenceLog {
-      <<entity>>
-      +UUID id
-      +UUID userId
-      +UUID departmentId
-      +AiCapability capability
-      +String provider
-      +String model
-      +String mode
-      +int latencyMs
-      +int inputTokens
-      +int outputTokens
-      +BigDecimal estimatedCostUsd
-      +String result
-      +boolean fallbackUsed
-      +JSON inputSummaryJson
-      +String outputSummary
-    }
-    class InstitutionalMemoryDocument {
-      <<entity>>
-      +String docId
-      +String sourceType
-      +UUID sourceId
-      +UUID companyId
-      +UUID departmentId
-      +String category
-      +float[] embedding
-    }
-    class DeciaSession {
-      <<entity>>
-      +UUID id
-      +String topic
-      +UUID linkedProjectId
-      +SessionStatus status
-    }
-    class SchemeOrigin {
-      <<enum>>
-      CRIAR_PROJETO
-      DECIA
-      REMIX
-      AUTOPILOTO
-      MODELO
-      CENARIO
-      DOSSIE
-      ATA_VIVA
-    }
-    class CreationMode {
-      <<enum>>
-      MANUAL
-      COM_IA
-    }
-    class ProjectPhase {
-      <<enum>>
-      DEMANDA
-      PLANEJAMENTO
-      ELABORACAO
-      ANALISE
-      APROVACAO
-      EXECUCAO
-      ENCERRAMENTO
-    }
-    class AiCapability {
-      <<enum>>
-      AUTOPILOT_PROJETO
-      AUTOPILOT_TAREFAS
-      COMPOR_PROJETO
-      MEMORIA_BUSCA
-    }
+direction LR
+
+namespace ws_domain_projects {
+  class ProjectScheme {
+    <<entity>>
+    +id: UUID
+    +ownerId: UUID
+    +departmentId: UUID
+    +title: String
+    +objective: String
+    +creationMode: CreationMode
+    +origin: SchemeOrigin
+    +originalProjectId: UUID
+    +sourceSessionId: UUID
+    +status: ProjectStatus
+    +currentPhase: ProjectPhase
+    +exerciseYear: int
+    +aiGenerated: boolean
+    +aiInferenceId: UUID
+    +autosaveDraftJson: JSON
+    .. +25 campos ..
   }
-  namespace ws-application {
-    class AutopilotService {
-      <<service>>
-      +analyzeDemand(actorId, demandText, documentTaskId) DemandAnalysis
-      +proposeScheme(actorId, analysis) AutopilotDraft
-      +updateDraft(actorId, draftId, patch) AutopilotDraft
-      +confirm(actorId, draftId) ProjectScheme
-      +discard(actorId, draftId) void
-    }
-    class MemoryService {
-      <<service>>
-      +similarProjects(analysis, companyId, visibilityCtx) List~Citation~
-    }
-    class DeciaBridgeService {
-      <<service>>
-      +openSessionFromProject(actorId, projectId) DeciaSession
-    }
-    class AiEngine {
-      <<service>>
-      +extractDemand(text, accessClass) DemandAnalysis
-      +composeScheme(analysis, templates, similar, history) SchemeProposal
-      +isExternalAvailable(departmentId) boolean
-    }
-    class AiProviderPort {
-      <<port>>
-      +complete(prompt, mode, accessClass) AiResult
-    }
-    class EmbeddingPort {
-      <<port>>
-      +embed(text) float[]
-    }
-    class SearchIndexPort {
-      <<port>>
-      +knn(index, vector, filters, k) List~Hit~
-    }
-    class DraftCachePort {
-      <<port>>
-      +put(draftId, draft, ttl) void
-      +get(draftId) AutopilotDraft
-      +evict(draftId) void
-    }
+  class ProjectTask {
+    <<entity>>
+    +projectId: UUID
+    +taskId: UUID
+    +phase: ProjectPhase
+    +sortOrder: int
+    +responsibleId: UUID
+    +dueAt: LocalDate
+    +pertOptimistic: BigDecimal
+    +pertMostLikely: BigDecimal
+    +pertPessimistic: BigDecimal
+    +snapshotJson: JSON
   }
-  namespace ws-web {
-    class AutopilotController {
-      <<controller>>
-      +analyze(body)
-      +propose(body)
-      +patchDraft(draftId, patch)
-      +confirm(draftId)
-      +discard(draftId)
-      +openSession(draftId)
-    }
+  class ProjectTaskDependency {
+    <<entity>>
+    +predecessorProjectTaskId: UUID
+    +successorProjectTaskId: UUID
+    +type: String
+    +lagDays: int
   }
-  namespace ws-infrastructure {
-    class ClaudeAdapter {
-      <<adapter>>
-    }
-    class GeminiAdapter {
-      <<adapter>>
-    }
-    class LocalAutopilotEngine {
-      <<adapter>>
-      regras + modelos chancelados
-    }
-    class OpenSearchIndexAdapter {
-      <<adapter>>
-      índice ws-memory
-    }
-    class RedisDraftCache {
-      <<adapter>>
-      autopilot draft TTL
-    }
+  class SchemeOrigin {
+    <<enum>>
+    CRIAR_PROJETO
+    DECIA
+    REMIX
+    AUTOPILOTO
+    MODELO
+    CENARIO
+    DOSSIE
+    ATA_VIVA
   }
-  ProjectScheme "1" --> "*" ProjectTask
-  ProjectScheme "1" --> "*" ProjectTaskDependency
-  ProjectTask --> TaskItem : taskId
-  ProjectScheme --> SchemeOrigin
-  ProjectScheme --> CreationMode
-  ProjectScheme --> ProjectPhase : currentPhase
-  ProjectScheme --> AiInferenceLog : aiInferenceId
-  ProjectScheme --> ProjectScheme : originalProjectId modelo
-  Remix --> ProjectScheme : resultId
-  Remix ..> SealBond : sourceId modelo chancelado
-  SealBond ..> ProjectScheme : targetType PROJECT
-  AiInferenceLog --> AiCapability
-  DeciaSession --> ProjectScheme : linkedProjectId
-  AutopilotService ..> AiEngine
-  AutopilotService ..> MemoryService : RF33 semelhantes
-  AutopilotService ..> DraftCachePort : rascunho volátil
-  AutopilotService ..> ProjectScheme : confirm
-  AutopilotService ..> Remix : crédito por modelo
-  AutopilotService ..> AiInferenceLog
-  AutopilotService ..> DeciaBridgeService : CA06
-  AiEngine ..> AiProviderPort
-  MemoryService ..> EmbeddingPort
-  MemoryService ..> SearchIndexPort
-  AutopilotController ..> AutopilotService
-  ClaudeAdapter ..|> AiProviderPort
-  GeminiAdapter ..|> AiProviderPort
-  LocalAutopilotEngine ..|> AiProviderPort : fallback provider LOCAL
-  OpenSearchIndexAdapter ..|> SearchIndexPort
-  RedisDraftCache ..|> DraftCachePort
-  note for ProjectScheme "tabela project_schemes · origin AUTOPILOTO · creationMode COM_IA · .. +25 campos .."
-  note for AiInferenceLog "capability AUTOPILOT_PROJETO · inputSummaryJson lista os modelos de referência · .. +10 campos .."
-  note for TaskItem "sourceKind AUTOPILOT quando a tarefa nasce da proposta · .. +40 campos .."
+  class ProjectPhase {
+    <<enum>>
+    DEMANDA
+    PLANEJAMENTO
+    ELABORACAO
+    ANALISE
+    APROVACAO
+    EXECUCAO
+    ENCERRAMENTO
+  }
+}
+
+namespace ws_domain_acervo_seals_social {
+  class TaskItem {
+    <<entity>>
+    +id: UUID
+    +title: String
+    +type: TaskType
+    +category: TaskCategory
+    +accessClass: AccessClassification
+    +state: TaskState
+    +originalTaskId: UUID
+    +sealIdsJson: JSON
+    +reuseCount: int
+    .. +45 campos ..
+  }
+  class SealBond {
+    <<entity>>
+    +targetType: String
+    +targetId: UUID
+    +status: SealBondStatus
+  }
+  class ModelOffer {
+    <<entity>>
+    +targetType: String
+    +targetId: UUID
+    +shelf: Shelf
+    +license: ModelLicense
+  }
+  class Remix {
+    <<entity>>
+    +actorId: UUID
+    +sourceType: String
+    +sourceId: UUID
+    +resultType: String
+    +resultId: UUID
+  }
+}
+
+namespace ws_domain_ia {
+  class AiInferenceLog {
+    <<entity>>
+    +id: UUID
+    +capability: AiCapability
+    +hostRf: String
+    +provider: AiProvider
+    +model: String
+    +latencyMs: int
+    +estimatedCostUsd: BigDecimal
+    +result: InferenceResult
+    +fallbackUsed: boolean
+    +inputSummaryJson: JSON
+    +correlationId: String
+  }
+  class InstitutionalMemoryDocument {
+    <<entity>>
+    +sourceType: MemorySourceType
+    +sourceId: UUID
+    +embedding: dense_vector
+  }
+}
+
+namespace ws_application {
+  class AutopilotService {
+    <<service>>
+    +extractDemand(actor, DemandInput) DemandSummary
+    +compose(actor, DemandSummary) ProjectDraft
+    +previewOnDesk(actor, draftId) ProjectDraft
+    +editDraft(actor, draftId, DraftPatch) ProjectDraft
+    +confirm(actor, draftId) ProjectScheme
+    +discard(actor, draftId)
+    +openSessionOnDraft(actor, draftId) DeciaSession
+  }
+  class ProjectDraft {
+    <<service>>
+    +draftId: UUID
+    +phases: List~PhaseDraft~
+    +tasks: List~TaskDraft~
+    +dependencies: List~DependencyDraft~
+    +referenceModels: List~ModelCredit~
+    +inferenceId: UUID
+    +fallbackUsed: boolean
+    +expiresAt: Instant
+  }
+  class ModelCatalog {
+    <<service>>
+    +chanceladosFor(departmentId, processTag) List~TaskItem~
+    +similarProjects(embedding) List~ProjectScheme~
+  }
+  class CriticalPathService {
+    <<service>>
+    +compute(tasks, deps) CriticalPath
+  }
+  class AiEngine {
+    <<service>>
+    +run(AiRequest) AiResponse
+  }
+  class DeciaBridgeService {
+    <<service>>
+    +openSessionFromDraft(actor, draft) DeciaSession
+  }
+  class Guard {
+    <<service>>
+    +requireOwner(actor, ownerId)
+    +requireSameCompany(actor, companyId)
+  }
+  class DraftCachePort {
+    <<port>>
+    +put(draftId, ProjectDraft, ttl)
+    +get(draftId)
+    +evict(draftId)
+  }
+  class SearchIndexPort {
+    <<port>>
+    +knn(ws_memory, embedding, filter)
+  }
+  class QuotaPort {
+    <<port>>
+    +tryConsume(scope, id, units)
+  }
+}
+
+namespace ws_web {
+  class AutopilotController {
+    <<controller>>
+    +POST_api_autopilot_demands(DemandInput)
+    +POST_api_autopilot_drafts(DemandSummary)
+    +GET_api_autopilot_drafts_id()
+    +PATCH_api_autopilot_drafts_id(DraftPatch)
+    +POST_api_autopilot_drafts_id_confirm()
+    +DELETE_api_autopilot_drafts_id()
+    +POST_api_autopilot_drafts_id_decia_session()
+  }
+}
+
+namespace ws_infrastructure {
+  class RedisDraftCacheAdapter {
+    <<adapter>>
+  }
+  class InMemoryDraftCache {
+    <<adapter>>
+  }
+  class OpenSearchIndexAdapter {
+    <<adapter>>
+  }
+  class LocalEngine {
+    <<adapter>>
+  }
+}
+
+ProjectScheme "1" *-- "0..*" ProjectTask
+ProjectScheme "1" *-- "0..*" ProjectTaskDependency
+ProjectTask "0..*" --> "0..1" TaskItem
+ProjectScheme "0..*" --> "0..1" ProjectScheme : originalProjectId credito
+TaskItem "0..*" --> "0..1" TaskItem : originalTaskId credito
+Remix ..> ProjectScheme : resultado AUTOPILOTO
+ModelCatalog ..> SealBond : APROVADA
+ModelCatalog ..> ModelOffer : shelf CHANCELADO
+ModelCatalog ..> InstitutionalMemoryDocument : similares RF33
+AutopilotController --> AutopilotService
+AutopilotService --> ProjectDraft
+AutopilotService --> ModelCatalog
+AutopilotService --> CriticalPathService
+AutopilotService --> AiEngine
+AutopilotService --> DeciaBridgeService
+AutopilotService --> Guard
+AutopilotService --> DraftCachePort
+AutopilotService --> QuotaPort
+ModelCatalog --> SearchIndexPort
+AiEngine ..> AiInferenceLog
+AutopilotService ..> ProjectScheme : confirm cria origin AUTOPILOTO
+AutopilotService ..> Remix : credito aos modelos
+RedisDraftCacheAdapter ..|> DraftCachePort
+InMemoryDraftCache ..|> DraftCachePort
+OpenSearchIndexAdapter ..|> SearchIndexPort
+LocalEngine ..> AiEngine : fallback regras + modelos chancelados
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph L1["Ator humano"]
-    U1["Abre /autopilot e informa a demanda: texto livre, ofício ou e-mail colado, ou DOCUMENTO do acervo"]
-    U2["Revê a proposta na Mesa de Trabalho em modo rascunho"]
-    U3{"Aceitar, remover ou trocar tarefa?"}
-    U4["Confirma a proposta"]
-    U5["Clica Abrir sessão DECIA sobre a proposta"]
+  subgraph ATOR["Ator (EMPREGADO · CHEFE)"]
+    A0([Abre /autopilot]) --> A1["Informa a demanda: texto livre, ofício/e-mail colado ou DOCUMENTO do acervo"]
+    A2["Confere objetivo, prazo, departamento e categoria extraídos ✦"]
+    A3["Vê a proposta na Mesa em rascunho"]
+    A4{"Ação por tarefa"}
+    A4 -->|aceitar| A5["Mantém"]
+    A4 -->|remover| A6["Remove"]
+    A4 -->|trocar| A7["Troca por outra do acervo ou modelo"]
+    A8{"Confirmar?"}
+    A8 -->|sim| A9["Confirma e salva"]
+    A8 -->|decidir em grupo| A10["Abrir sessão DECIA sobre a proposta"]
+    A8 -->|não| A11["Descarta"]
   end
-  subgraph L2["Web/BFF (Next.js App Router)"]
-    W1["Aviso de fallback: motor local, sem IA externa"]
-    W2["Mesa RF22 com cartões rascunho, faísca ✦ e créditos aos modelos usados"]
-    W3["Card do projeto com faísca ✦ e origem AUTOPILOTO"]
+
+  subgraph FE["Next.js / BFF (app/(shell)/autopilot · desk)"]
+    F1["DemandForm (Textarea, AttachmentPicker DOCUMENTO) · POST /api/autopilot/demands"]
+    F2["POST /api/autopilot/drafts"]
+    F3["Mesa em modo rascunho: PhaseBar + SelectList por fase + PostIt · banner fallback quando LocalEngine"]
+    F4["PATCH /drafts/{id} (aceitar, remover, trocar)"]
+    F5["POST /drafts/{id}/confirm"]
+    F6["POST /drafts/{id}/decia-session"]
   end
-  subgraph L3["ws-application"]
-    S1{"Demanda vazia ou DOCUMENTO inacessível?"}
-    S2{"accessClass RESTRITO ou SIGILOSO?"}
-    S3{"Chave de IA e cota disponíveis?"}
-    S4["Mascara campos sensíveis e segue com provider externo"]
-    S5["Seleciona modelos chancelados: SealBond APROVADA targetType PROJECT da empresa ou departamento"]
-    S6["MemoryService.similarProjects: projetos CONCLUIDO semelhantes (RF33)"]
-    S7["Monta AutopilotDraft: fases, tarefas (tipo e categoria), dependências, responsáveis sugeridos por histórico do departamento, prazos, créditos"]
-    S8["DraftCachePort.put (Redis, TTL) · nada no MySQL"]
-    S9["DraftCachePort.put com patch do usuário"]
-    S10["Transação: ProjectScheme origin AUTOPILOTO, creationMode COM_IA, aiGenerated · ProjectTask + ProjectTaskDependency · TaskItem sourceKind AUTOPILOT quando nova"]
-    S11["Remix por modelo usado (crédito ao autor) · AiInferenceLog (modelo, custo, latência, modelos de referência)"]
-    S12["DraftCachePort.evict · evento ProjectCreated"]
-    S13["DeciaBridgeService.openSessionFromProject (RF29.CA01) · projeto EM_DECISAO"]
-    E1["422 VALIDACAO"]
-    E2["403 ACESSO_NEGADO (DOCUMENTO de outro usuário sem permissão)"]
+
+  subgraph WEB["ws-web · AutopilotController"]
+    W1["JWT · CorrelationIdFilter · rate limit por usuário"]
+    W2["GlobalExceptionHandler"]
   end
-  subgraph L4["IA (AiEngine)"]
-    A1["extractDemand ✦: objetivo, prazo, departamento provável, categoria do processo"]
-    A2["composeScheme ✦ remixando modelos chancelados e semelhantes"]
-    A3["LocalAutopilotEngine: regras + modelos chancelados, result FALLBACK"]
+
+  subgraph APP["ws-application · AutopilotService"]
+    P1{"DOCUMENTO anexado é do ator ou visível? (Guard.requireOwner / visibilidade)"}
+    P1 -->|não| E1["403 ACESSO_NEGADO"]
+    P2{"Documento RESTRITO/SIGILOSO?"}
+    P2 -->|sim| P3["Só LocalEngine + aviso"]
+    P2 -->|não| P4["Masking de dados pessoais"]
+    P5{"QuotaPort.tryConsume ok?"}
+    P5 -->|não| E2["429 COTA_ESGOTADA"]
+    P6["ModelCatalog: modelos chancelados do departamento + projetos semelhantes bem avaliados (RF33)"]
+    P7["CriticalPathService: dependências sem ciclo, prazos por PERT"]
+    P8["ProjectDraft em DraftCachePort (TTL 24 h) — nada persistido no MySQL"]
+    P9{"Draft existe e pertence ao ator?"}
+    P9 -->|não| E3["404 NAO_ENCONTRADO ou 403"]
+    P10["confirm: ProjectScheme RASCUNHO origin AUTOPILOTO · ProjectTask por fase · dependências · Remix e reuseCount++ por modelo usado · aiGenerated + aiInferenceId"]
+    P11["DeciaBridgeService.openSessionFromDraft (tema = objetivo, anexos = tarefas propostas)"]
+    P12["evict draft"]
   end
-  subgraph L5["Persistência"]
-    D1[("Redis: autopilot draft TTL · quota de IA")]
-    D2[("MySQL: seal_bonds · project_schemes (modelos) · tasks")]
-    D3[("OpenSearch: ws-memory kNN")]
-    D4[("MySQL: project_schemes · project_tasks · project_task_dependencies · tasks · remixes · ai_inference_log")]
-    D5[("MySQL: decia_sessions")]
+
+  subgraph IA["AiEngine (AUTOPILOT_PROJETO)"]
+    I1["Extrai objetivo, prazo, departamento provável, categoria do processo"]
+    I2["Claude → Gemini → LocalEngine (regras + modelos chancelados)"]
+    I3["Compõe fases, tarefas (tipo e categoria), dependências, responsáveis por histórico, prazos · crédito por modelo"]
+    I4["AiInferenceLog (modelo, custo, latência, modelos de referência, fallbackUsed)"]
   end
-  U1 --> S1
-  S1 -->|"sim"| E1
-  S1 -->|"sem permissão"| E2
-  S1 -->|"ok"| S2
-  S2 -->|"sim"| A3
-  S2 -->|"não"| S3
-  S3 -->|"não"| A3 --> W1
-  S3 -->|"sim"| S4 --> A1
-  A1 --> S5 --> D2
-  W1 --> S5
-  S5 --> S6 --> D3
-  S6 --> A2 --> S7 --> S8 --> D1
-  S8 --> W2 --> U2 --> U3
-  U3 -->|"ajusta"| S9 --> D1
-  S9 --> W2
-  U3 -->|"pronto"| U4 --> S10 --> D4
-  S10 --> S11 --> D4
-  S11 --> S12 --> W3
-  W3 --> U5 --> S13 --> D5
-  classDef err fill:#fde2e2,stroke:#b91c1c,color:#7f1d1d
-  class E1,E2 err
+
+  subgraph DB["Persistência"]
+    D1[("MySQL project_schemes · project_tasks · project_task_dependencies · remixes · ai_inference_log")]
+    D2[("Redis draft:{id} TTL · quota · flag redis.enabled (fallback in-memory)")]
+    D3[("OpenSearch ws-memory · ws-projects · flag opensearch.enabled")]
+  end
+
+  A1 --> F1 --> W1 --> P1 -->|sim| P2
+  P3 --> P5
+  P4 --> P5
+  P5 -->|sim| I1 --> I4 --> A2
+  A2 --> F2 --> W1 --> P6 --> D3
+  P6 --> I2 --> I3 --> I4 --> P7 --> P8 --> D2 --> F3 --> A3 --> A4
+  A5 --> A8
+  A6 --> F4 --> W1 --> P9 -->|sim| P8
+  A7 --> F4
+  A9 --> F5 --> W1 --> P9 --> P10 --> D1 --> P12
+  A10 --> F6 --> W1 --> P9 --> P11 --> D1
+  A11 --> P12 --> D2
+  E1 --> W2
+  E2 --> W2
+  E3 --> W2
 ```
 
 ## 3. Diagrama de sequência
@@ -335,114 +334,92 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário
-  participant NX as Next.js (App Router)
+  participant U as Usuário
+  participant FE as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
-  participant OS as OpenSearch
   participant R as Redis
+  participant OS as OpenSearch
   participant EV as DomainEvents (AFTER_COMMIT)
 
-  Note over U,EV: CA01 — demanda em texto livre, ofício colado ou DOCUMENTO do acervo
-  U->>NX: cola o ofício em /autopilot
-  NX->>C: POST /api/autopilot/analyze {demandText, documentTaskId?}
-  C->>S: AutopilotService.analyzeDemand(actorId, text, docId)
-  alt texto vazio e sem documento
-    S-->>C: 422 VALIDACAO
-  else DOCUMENTO sem permissão
-    S-->>C: 403 ACESSO_NEGADO
+  U->>FE: cola ofício e clica Gerar proposta
+  FE->>C: POST /api/autopilot/demands {text, documentTaskId}
+  C->>S: AutopilotService.extractDemand(actor, input)
+  S->>S: Guard.requireOwner ou visibilidade do DOCUMENTO
+  S->>R: QuotaPort.tryConsume(USER, actor, 1)
+  alt cota esgotada
+    S-->>C: 429 COTA_ESGOTADA (atalho Loja, RF42.CA06)
   else ok
-    S->>R: GET quota:DEPARTMENT:{id}:{month}
-    alt sem chave de IA ou cota esgotada (CA05)
-      S->>AI: extractDemand via LocalAutopilotEngine (provider LOCAL)
-      AI-->>S: DemandAnalysis parcial + fallbackUsed = true
-      S-->>NX: 200 análise + aviso de fallback
-    else provider externo disponível
-      S->>AI: extractDemand(text, accessClass) com campos sensíveis mascarados
-      AI-->>S: objetivo, prazo, departamento provável, categoria ✦
-      S-->>NX: 200 DemandAnalysis
+    S->>AI: run(AUTOPILOT_PROJETO extrair, texto mascarado)
+    alt documento RESTRITO/SIGILOSO ou sem chave externa
+      AI->>AI: LocalEngine (regras) · fallbackUsed = true
+    else provedor externo
+      AI->>AI: Claude → fallback Gemini
     end
+    AI->>DB: insert ai_inference_log
+    AI-->>S: objetivo, prazo, departamento provável, categoria ✦
+    S-->>FE: DemandSummary + aviso de fallback se houver
   end
 
-  Note over U,EV: CA02 e CA03 — proposta remixando modelos chancelados, rascunho não persistido
-  NX->>C: POST /api/autopilot/propose {analysis}
-  C->>S: AutopilotService.proposeScheme(actorId, analysis)
-  S->>DB: SELECT seal_bonds APROVADA targetType PROJECT (empresa, departamento) + project_schemes modelo
-  S->>OS: kNN ws-memory (MemoryService.similarProjects, filtros visibilidade e empresa)
-  OS-->>S: projetos semelhantes com score
-  S->>AI: composeScheme(analysis, modelos, semelhantes, histórico de responsáveis)
-  AI-->>S: fases, tarefas (tipo e categoria), dependências, responsáveis, prazos, créditos ✦
-  S->>R: SET autopilot:draft:{draftId} (TTL 24h)
-  S-->>NX: 200 AutopilotDraft
-  NX-->>U: Mesa de Trabalho em modo rascunho (RF22)
-  U->>NX: remove uma tarefa e troca outra
-  NX->>C: PATCH /api/autopilot/drafts/{draftId}
-  C->>S: AutopilotService.updateDraft(actorId, draftId, patch)
-  S->>R: GET + SET autopilot:draft:{draftId}
-  S-->>NX: 200 AutopilotDraft
+  U->>FE: confirma a leitura e pede o esquema
+  FE->>C: POST /api/autopilot/drafts (DemandSummary)
+  C->>S: AutopilotService.compose(actor, summary)
+  S->>DB: modelos chancelados do departamento (seal_bonds APROVADA, model_offers CHANCELADO)
+  S->>OS: knn ws-memory projetos semelhantes bem avaliados (RF33)
+  S->>AI: run(AUTOPILOT_PROJETO compor, modelos + semelhantes + histórico de responsáveis)
+  AI-->>S: fases, tarefas, dependências, responsáveis, prazos, crédito por modelo
+  S->>S: CriticalPathService.compute (sem ciclo, PERT)
+  S->>R: put draft:{id} (TTL 24 h)
+  S-->>FE: ProjectDraft (nada persistido)
+  FE->>U: Mesa em modo rascunho com Spark ✦
 
-  Note over U,EV: CA04 — confirmação persiste com origem AUTOPILOTO e log de inferência
-  U->>NX: Confirmar
-  NX->>C: POST /api/autopilot/drafts/{draftId}/confirm
-  C->>S: AutopilotService.confirm(actorId, draftId)
-  S->>R: GET autopilot:draft:{draftId}
-  alt rascunho expirou
-    S-->>C: 409 RASCUNHO_EXPIRADO
-  else ok
-    S->>DB: INSERT project_schemes (origin AUTOPILOTO, creationMode COM_IA, aiGenerated, aiInferenceId)
-    S->>DB: INSERT project_tasks · project_task_dependencies · tasks (sourceKind AUTOPILOT)
-    S->>DB: INSERT remixes (um por modelo chancelado usado) · INSERT ai_inference_log (AUTOPILOT_PROJETO)
-    S->>R: DEL autopilot:draft:{draftId}
-    S-)EV: ProjectCreated(origin AUTOPILOTO)
-    EV->>DB: thumbnails e mosaico (RF38) · DeciaPointsLedgerEntry para autores remixados (RF42)
-    S-->>C: 201 ProjectScheme
+  U->>FE: remove uma tarefa e troca outra
+  FE->>C: PATCH /api/autopilot/drafts/{id}
+  C->>S: AutopilotService.editDraft(actor, id, patch)
+  S->>R: get draft (403 se não é do ator)
+  S->>R: put draft atualizado
+  S-->>FE: ProjectDraft
+
+  alt confirmar
+    U->>FE: Confirmar
+    FE->>C: POST /api/autopilot/drafts/{id}/confirm
+    C->>S: AutopilotService.confirm(actor, id)
+    S->>DB: insert project_schemes (RASCUNHO, origin AUTOPILOTO, aiGenerated, aiInferenceId) + project_tasks + dependencies
+    S->>DB: insert remixes + update tasks.reuse_count dos modelos usados
+    S->>EV: ProjectCreated(AUTOPILOTO)
+    S->>R: evict draft
+    S-->>FE: 201 ProjectScheme → /desk
+  else decidir em grupo
+    U->>FE: Abrir sessão DECIA sobre a proposta
+    FE->>C: POST /api/autopilot/drafts/{id}/decia-session
+    C->>S: AutopilotService.openSessionOnDraft(actor, id)
+    S->>S: DeciaBridgeService.openSessionFromDraft (tema = objetivo)
+    S->>DB: insert decia_sessions + anexos = tarefas propostas
+    S-->>FE: 201 DeciaSession → /decia/[sessionId]
   end
-
-  Note over U,EV: CA06 — decidir em grupo sobre o esqueleto
-  U->>NX: Abrir sessão DECIA sobre a proposta
-  NX->>C: POST /api/projects/{projectId}/decia-session
-  C->>S: DeciaBridgeService.openSessionFromProject (RF29.CA01)
-  S->>DB: INSERT decia_sessions · UPDATE project_schemes SET status = EM_DECISAO
-  S-->>NX: 201 DeciaSession
+  EV->>EV: PipelineJob THUMBNAIL · indexação ws-projects
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: `ProjectScheme.status` (`ProjectStatus`) — precedida pelos estados **voláteis** do `AutopilotDraft` (Redis, fora do MySQL), que não são estados da entidade e existem só até a confirmação (CA03).
+Entidade central: a proposta (`ProjectDraft`, só em cache) até virar `ProjectScheme`; depois vale `ProjectStatus` (máquina do RF22). Aqui os estados do rascunho do Autopiloto:
 
 ```mermaid
 stateDiagram-v2
-  direction LR
-  state "AutopilotDraft (Redis, volátil)" as Draft {
-    [*] --> Analisada : POST /api/autopilot/analyze (CA01)
-    Analisada --> Proposta : POST /api/autopilot/propose (CA02)
-    Proposta --> Ajustada : PATCH drafts/{id} aceitar, remover, trocar (CA03)
-    Ajustada --> Ajustada : novos ajustes
-    Proposta --> Expirada : TTL vence
-    Ajustada --> Expirada : TTL vence
-    Proposta --> Descartada : DELETE drafts/{id}
-    Ajustada --> Descartada : DELETE drafts/{id}
-    Expirada --> [*]
-    Descartada --> [*]
-  }
-  Draft --> RASCUNHO : POST drafts/{id}/confirm → ProjectScheme origin AUTOPILOTO ✦ (CA04)
-  RASCUNHO --> PUBLICADO : publicar
-  RASCUNHO --> EM_DECISAO : Abrir sessão DECIA sobre a proposta (CA06, RF29.CA01)
-  PUBLICADO --> EM_DECISAO : Abrir sessão DECIA
-  EM_DECISAO --> APROVADO : decisão VALIDADA
-  EM_DECISAO --> DEVOLVIDO : decisão DEVOLVIDA
-  APROVADO --> EM_EXECUCAO
-  EM_EXECUCAO --> CONCLUIDO
-  CONCLUIDO --> ARQUIVADO
-  note right of Draft
-    Nada é persistido no MySQL até confirmar (CA03)
-    Fallback local marca fallbackUsed e avisa (CA05)
-  end note
-  note right of RASCUNHO
-    aiGenerated = true · aiInferenceId → ai_inference_log
-    Remix por modelo chancelado usado (crédito)
+  [*] --> DEMANDA_EXTRAIDA: POST /demands → objetivo, prazo, departamento, categoria ✦ (CA01)
+  DEMANDA_EXTRAIDA --> PROPOSTA_EM_RASCUNHO: POST /drafts → fases, tarefas, dependências, créditos (CA02) · guardado em Redis com TTL
+  PROPOSTA_EM_RASCUNHO --> PROPOSTA_EM_RASCUNHO: PATCH aceita, remove, troca tarefas (CA03)
+  PROPOSTA_EM_RASCUNHO --> PERSISTIDO_RASCUNHO: POST /confirm → ProjectScheme RASCUNHO origin AUTOPILOTO (CA04)
+  PROPOSTA_EM_RASCUNHO --> EM_DECISAO_DECIA: POST /decia-session → sessão com a proposta como anexos (CA06)
+  PROPOSTA_EM_RASCUNHO --> DESCARTADA: DELETE ou TTL de 24 h vencido
+  PERSISTIDO_RASCUNHO --> [*]: segue ProjectStatus (RF22)
+  EM_DECISAO_DECIA --> [*]: decisão validada cria o projeto (RF29.CA02)
+  DESCARTADA --> [*]
+  note right of PROPOSTA_EM_RASCUNHO
+    Nada é persistido no MySQL até confirmar (CA03).
+    fallbackUsed = true quando só LocalEngine (CA05).
   end note
 ```
 
@@ -450,81 +427,63 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Next.js (frontend)"]
-    direction TB
-    P1["app/autopilot/page.tsx · entrada da demanda (texto, colar, DOCUMENTO)"]
-    P2["app/projects/[id]/desk · Mesa de Trabalho em modo rascunho (RF22)"]
-    UI1["components/ui: DeskCanvas · DraftTaskCard ✦ · FallbackBanner · ModelCreditChip"]
+  subgraph FRONT["Frontend Next.js 15"]
+    R1["app/(shell)/autopilot · desk (modo rascunho)"]
+    R2["components: DemandForm · AttachmentPicker · PhaseBar · SelectList · PostIt · BackgroundArt · Spark ✦ · Toast (fallback) · Button abrir-decia"]
+    BFF["app/bff"]
+    R1 --> R2 --> BFF
   end
-  subgraph WEB["ws-web (REST · br.gov.pr.secid.workstation.web)"]
-    direction TB
-    C1["AutopilotController"]
-    C2["ProjectDeciaController (RF29)"]
+  subgraph WEB["ws-web"]
+    AC["AutopilotController (@Operation RF30.CA01-CA06)"]
+    SEC["SecurityConfig · CorrelationIdFilter · GlobalExceptionHandler (main)"]
   end
-  subgraph APP["ws-application"]
-    direction TB
-    S1["AutopilotService"]
-    S2["MemoryService (RF33)"]
-    S3["DeciaBridgeService (RF29)"]
-    S4["AiEngine"]
-    PT1["AiProviderPort"]
-    PT2["EmbeddingPort"]
-    PT3["SearchIndexPort"]
-    PT4["DraftCachePort"]
+  subgraph APPL["ws-application"]
+    AS["projects/AutopilotService · ProjectDraft"]
+    MCAT["seals/ModelCatalog"]
+    CP["metrics/CriticalPathService (determinístico)"]
+    BS["decia/DeciaBridgeService (RF29)"]
+    AIE["ai/AiEngine (AUTOPILOT_PROJETO) · Masking (main) · AiBudget"]
+    GD["security/Guard (sec-b3)"]
+    DE["events/DomainEvents AFTER_COMMIT"]
+    PORTS["ports: DraftCachePort · QuotaPort · SearchIndexPort · AiProviderPort"]
   end
   subgraph DOM["ws-domain"]
-    direction TB
-    E1["ProjectScheme · ProjectTask · ProjectTaskDependency · TaskItem"]
-    E2["SealBond · Remix · AiInferenceLog · InstitutionalMemoryDocument"]
-    E3["SchemeOrigin · CreationMode · ProjectPhase · AiCapability"]
+    ENT["ProjectScheme · ProjectTask · ProjectTaskDependency · SchemeOrigin · Remix · AiInferenceLog (planejado)"]
   end
   subgraph INFRA["ws-infrastructure"]
-    direction TB
-    I1["persistence-mysql: ProjectScheme/ProjectTask/SealBond/Remix/AiInferenceLog repositories"]
-    I2["cache-redis: RedisDraftCache · AiQuota"]
-    I3["search-opensearch: OpenSearchIndexAdapter (ws-memory)"]
-    I4["ai-providers: ClaudeAdapter · GeminiAdapter · LocalAutopilotEngine · AiProviderCircuitState"]
-    I5["platform: DomainEventOutbox · FeatureFlag ai.local.only"]
+    MY["persistence-mysql (V2 ai_inference_log existe · V__rf21/rf30 projetos)"]
+    RD["cache-redis draft TTL · quota (flag redis.enabled · fallback in-memory)"]
+    OSA["search-opensearch ws-memory · ws-projects (flag opensearch.enabled)"]
+    AIC["ai-providers/ai-claude (ai.provider.claude)"]
+    AIG["ai-providers/ai-gemini (ai.provider.gemini)"]
+    AIL["ai-providers/ai-local LocalEngine (ai.local.only = TRUE no V2)"]
   end
-  subgraph EXT["Serviços externos"]
-    X1(["Claude / Gemini"])
-  end
-  P1 --> C1
-  P2 --> C1
-  P2 --> C2
-  UI1 -.-> P2
-  C1 --> S1
-  C2 --> S3
-  S1 --> S2
-  S1 --> S3
-  S1 --> S4
-  S1 -.-> PT4
-  S4 -.-> PT1
-  S2 -.-> PT2
-  S2 -.-> PT3
-  S1 --> E1
-  S1 --> E2
-  E1 --> E3
-  S1 --> I1
-  S1 --> I5
-  I2 -. implementa .-> PT4
-  I3 -. implementa .-> PT3
-  I4 -. implementa .-> PT1
-  I4 -. implementa .-> PT2
-  I4 --> X1
-  classDef port stroke-dasharray: 4 3
-  class PT1,PT2,PT3,PT4 port
+  BFF --> AC --> SEC
+  AC --> AS
+  AS --> MCAT
+  AS --> CP
+  AS --> BS
+  AS --> AIE
+  AS --> GD
+  AS --> DE
+  AS --> PORTS
+  MCAT --> PORTS
+  AIE --> PORTS
+  AS --> ENT --> MY --> MYSQL[("MySQL 8")]
+  PORTS --> RD --> REDIS[("Redis")]
+  PORTS --> OSA --> OPENS[("OpenSearch")]
+  PORTS --> AIC --> CLAUDE["Claude"]
+  PORTS --> AIG --> GEM["Gemini"]
+  PORTS --> AIL
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
-|---|---|
-| RF30.CA01 | Classes `AutopilotService.analyzeDemand`, `AiEngine.extractDemand`, `TaskItem` (DOCUMENTO de entrada, `accessClass`); atividades `U1 → S1 → S2/S3 → S4 → A1` (422 VALIDACAO, 403 ACESSO_NEGADO); sequência bloco «CA01» (`POST /api/autopilot/analyze`); transição `[*] → Analisada`; componente `app/autopilot`, `AutopilotController.analyze` |
-| RF30.CA02 | Classes `SealBond APROVADA` (modelos chancelados), `MemoryService.similarProjects`, `AiEngine.composeScheme`, `Remix` (crédito), `ProjectTaskDependency`, `ProjectTask.responsibleId/dueAt`; atividades `S5 → S6 → A2 → S7`; sequência bloco «CA02 e CA03» (SELECT seal_bonds, kNN ws-memory, composeScheme ✦); transição `Analisada → Proposta`; componentes `MemoryService`, `search-opensearch`, `ModelCreditChip` |
-| RF30.CA03 | Classes `DraftCachePort`, `RedisDraftCache`, `AutopilotService.updateDraft/discard`; atividades `S8 → W2 → U2 → U3 → S9` (nada no MySQL); sequência bloco «CA02 e CA03» (`SET autopilot:draft` TTL, `PATCH /api/autopilot/drafts/{id}`); estados voláteis `Proposta → Ajustada → Descartada/Expirada`; componentes `DeskCanvas`, `DraftTaskCard`, `cache-redis` |
-| RF30.CA04 | Classes `ProjectScheme.origin = AUTOPILOTO`, `creationMode = COM_IA`, `aiGenerated`, `aiInferenceId`, `AiInferenceLog` (modelo, custo, latência, `inputSummaryJson` com modelos de referência); atividades `U4 → S10 → S11 → S12 → W3`; sequência bloco «CA04» (INSERT project_schemes, remixes, ai_inference_log; 409 RASCUNHO_EXPIRADO); transição `Draft → RASCUNHO` e nota; componente `persistence-mysql` |
-| RF30.CA05 | Classes `LocalAutopilotEngine ..|> AiProviderPort`, `AiInferenceLog.fallbackUsed/result FALLBACK`, `AiEngine.isExternalAvailable`; atividades `S2/S3 → A3 → W1` (sem chave ou cota, ou RESTRITO/SIGILOSO); sequência bloco «CA01» alt «sem chave de IA ou cota esgotada»; nota do estado `Draft`; componentes `FallbackBanner`, `ai-providers`, `FeatureFlag ai.local.only` |
-| RF30.CA06 | Classes `DeciaBridgeService.openSessionFromProject`, `DeciaSession.linkedProjectId`; atividades `W3 → U5 → S13 → D5`; sequência bloco «CA06» (`POST /api/projects/{id}/decia-session`, EM_DECISAO); transição `RASCUNHO → EM_DECISAO`; componente `ProjectDeciaController (RF29)` |
-
-> Dúvidas para `docs/DECISOES.md`: onde vive o rascunho não persistido (Redis com TTL vs. somente cliente vs. `ProjectScheme.autosaveDraftJson` — esta última contradiz CA03); `DraftCachePort` e `409 RASCUNHO_EXPIRADO` são propostas; TaskItems novos criados pela proposta recebem `sourceKind AUTOPILOT`, mas tarefas reaproveitadas de modelos entram como `REMIX`.
+| CA | Classe | Passo | Mensagem | Transição | Componente |
+|---|---|---|---|---|---|
+| RF30.CA01 | `AutopilotService.extractDemand`, `DemandInput` (texto · colado · `TaskItem` DOCUMENTO), `AiCapability AUTOPILOT_PROJETO` | A1 → F1 → P1 (403) → P2 → P5 (429) → I1 → A2 | 1–15 | `[*] → DEMANDA_EXTRAIDA` | `DemandForm`, `AC`, `AIE` |
+| RF30.CA02 | `AutopilotService.compose`, `ModelCatalog.chanceladosFor/similarProjects`, `SealBond APROVADA`, `ModelOffer CHANCELADO`, `Remix`, `ProjectTaskDependency`, `CriticalPathService` | A2 → F2 → P6 → I2 → I3 → P7 | 16–24 | `DEMANDA_EXTRAIDA → PROPOSTA_EM_RASCUNHO` | `MCAT`, `CP`, `OSA` |
+| RF30.CA03 | `ProjectDraft`, `DraftCachePort` (TTL, nada no MySQL), `AutopilotService.editDraft` | A3 → A4 → F3/F4 → P8 → P9 | 25–31 | `PROPOSTA_EM_RASCUNHO → self` | `RD`, `desk` modo rascunho, `SelectList`, `PostIt` |
+| RF30.CA04 | `SchemeOrigin AUTOPILOTO`, `ProjectScheme.aiGenerated/aiInferenceId`, `AiInferenceLog` (modelo, custo, latência, modelos de referência) | A9 → F5 → P10 → D1 | 32–38 | `PROPOSTA_EM_RASCUNHO → PERSISTIDO_RASCUNHO` | `Spark ✦`, `MY` |
+| RF30.CA05 | `LocalEngine`, `AiInferenceLog.fallbackUsed`, aviso no front | P2 → P3 · I2 (fallback) · F3 banner | 9–10 | nota de PROPOSTA_EM_RASCUNHO | `AIL`, `Toast` |
+| RF30.CA06 | `AutopilotService.openSessionOnDraft`, `DeciaBridgeService.openSessionFromDraft` | A10 → F6 → P9 → P11 | 39–44 | `PROPOSTA_EM_RASCUNHO → EM_DECISAO_DECIA` | `BS`, `Button abrir-decia` |
