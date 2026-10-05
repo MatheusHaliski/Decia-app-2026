@@ -48,7 +48,8 @@ class RedisSessionStoreIT {
     }
 
     private static RefreshRecord record(UUID family, UUID user, Duration ttl) {
-        Instant now = Instant.now();
+        // sub-milissegundo de propósito: o store precisa devolver o instante exato, não o truncado em millis
+        Instant now = Instant.now().plusNanos(123_456);
         return new RefreshRecord("h-" + UUID.randomUUID(), family, user, now, now.plus(ttl), null, null, true, "Note");
     }
 

@@ -17,7 +17,8 @@ import java.util.UUID;
 
 /**
  * Famílias de refresh token no Redis (RF2.CA04/CA05, D-30; Q-85 resolvida): {@code sess:tok:<hash>} é um HASH com os
- * campos do {@link RefreshRecord} (instantes em epoch-ms; {@code revokedAt} ausente = vivo), {@code sess:fam:<família>} é
+ * campos do {@link RefreshRecord} (instantes em epoch-ms para o Lua e em ISO-8601 exato nos campos {@code *Iso};
+ * {@code revokedAt} ausente = vivo), {@code sess:fam:<família>} é
  * o SET dos hashes da família e {@code sess:user:<pessoa>} o SET das famílias. TTL de cada chave = expiração + 1 dia de
  * graça, para o token rotacionado continuar existindo e o reuso ser detectado. {@link #consume} é um script Lua: só uma
  * requisição com o mesmo token vê {@code ROTATED}.
@@ -56,10 +57,12 @@ public class RedisSessionStore implements SessionStorePort {
         Map<String, String> fields = new LinkedHashMap<>();
         fields.put("family", r.familyId().toString());
         fields.put("user", r.userId().toString());
-        fields.put("createdAt", String.valueOf(r.createdAt().toEpochMilli()));
-        fields.put("expiresAt", String.valueOf(r.expiresAt().toEpochMilli()));
+        // Dois formatos por instante: epoch-millis (o script Lua compara números) e ISO-8601 completo (*Iso), para a
+        // leitura devolver exatamente o instante gravado — Instant.now() tem nanos em JVMs recentes e millis os perdiam.
+        putInstant(fields, "createdAt", r.createdAt());
+        putInstant(fields, "expiresAt", r.expiresAt());
         if (r.revokedAt() != null) {
-            fields.put("revokedAt", String.valueOf(r.revokedAt().toEpochMilli()));
+            putInstant(fields, "revokedAt", r.revokedAt());
         }
         if (r.rotatedFromHash() != null) {
             fields.put("rotatedFrom", r.rotatedFromHash());
@@ -108,7 +111,16 @@ public class RedisSessionStore implements SessionStorePort {
         return v == null ? null : v.toString();
     }
 
+    private static void putInstant(Map<String, String> fields, String field, Instant value) {
+        fields.put(field, String.valueOf(value.toEpochMilli()));
+        fields.put(field + "Iso", value.toString());
+    }
+
     private static Instant instant(Map<Object, Object> h, String field) {
+        String iso = str(h, field + "Iso");
+        if (iso != null) {
+            return Instant.parse(iso);
+        }
         String v = str(h, field);
         return v == null ? null : Instant.ofEpochMilli(Long.parseLong(v));
     }
@@ -116,7 +128,9 @@ public class RedisSessionStore implements SessionStorePort {
     @Override
     public void revoke(String tokenHash, Instant at) {
         if (Boolean.TRUE.equals(redis.hasKey(tokenKey(tokenHash)))) {
-            redis.opsForHash().putIfAbsent(tokenKey(tokenHash), "revokedAt", String.valueOf(at.toEpochMilli()));
+            if (Boolean.TRUE.equals(redis.opsForHash().putIfAbsent(tokenKey(tokenHash), "revokedAt", String.valueOf(at.toEpochMilli())))) {
+                redis.opsForHash().put(tokenKey(tokenHash), "revokedAtIso", at.toString());
+            }
         }
     }
 
