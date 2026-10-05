@@ -1,5 +1,6 @@
 package br.gov.pr.secid.workstation.web.support;
 
+import br.gov.pr.secid.workstation.application.common.ApiException;
 import br.gov.pr.secid.workstation.application.identity.RateLimitPort;
 import br.gov.pr.secid.workstation.web.config.WsSecurityProperties;
 import br.gov.pr.secid.workstation.web.error.ErrorWriter;
@@ -34,7 +35,10 @@ import java.util.UUID;
  *       Retry-After em vez de esgotar o pool do banco.</li>
  * </ol>
  * Respostas no formato {@code ApiError}: {@code 429 MUITAS_TENTATIVAS} e {@code 503 AUTENTICACAO_OCUPADA}, ambas com
- * {@code Retry-After}. Desligável por {@code ws.security.auth-rate-limit.enabled=false} (só para testes locais).
+ * {@code Retry-After}. Se o {@link RateLimitPort} falhar (Redis fora do ar), o filtro <b>fecha</b> a rota com
+ * {@code 503 SERVICO_INDISPONIVEL} + {@code Retry-After} no mesmo contrato: o {@code GlobalExceptionHandler} ainda não está
+ * no caminho, porque o filtro roda antes do DispatcherServlet. Desligável por
+ * {@code ws.security.auth-rate-limit.enabled=false} (só para testes locais).
  */
 @Component
 @Order(AuthRateLimitFilter.ORDER)
@@ -43,6 +47,8 @@ public class AuthRateLimitFilter extends OncePerRequestFilter {
     public static final int ORDER = -102;
     public static final String MUITAS_TENTATIVAS = "MUITAS_TENTATIVAS";
     public static final String AUTENTICACAO_OCUPADA = "AUTENTICACAO_OCUPADA";
+    /** Retry-After quando o armazenamento do limite falha (fail closed). */
+    static final long STORE_RETRY_AFTER_SECONDS = 5;
 
     /** {@code *} casa com exatamente um segmento. {@code hashes}: a rota calcula Argon2 (entra no bulkhead). */
     public record Rule(String method, String path, int limit, Duration window, boolean hashes) {
@@ -143,9 +149,20 @@ public class AuthRateLimitFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         Rule rule = ruleFor(req.getMethod(), RequestPaths.normalized(req)).orElseThrow();
         UUID owner = owner(clientIp.resolve(req));
-        if (!rateLimit.tryAcquire(owner, rule.bucket(), rule.limit(), rule.window())) {
-            long retry = rateLimit.status(owner, rule.bucket(), rule.limit(), rule.window())
-                    .retryAfterSeconds(java.time.Instant.now());
+        boolean acquired;
+        long retry = 0;
+        try {
+            acquired = rateLimit.tryAcquire(owner, rule.bucket(), rule.limit(), rule.window());
+            if (!acquired) {
+                retry = rateLimit.status(owner, rule.bucket(), rule.limit(), rule.window()).retryAfterSeconds(java.time.Instant.now());
+            }
+        } catch (RuntimeException e) {
+            logger.error("Armazenamento do limite por IP indisponível em " + rule.bucket() + ": " + e + " — fechando a rota");
+            reject(req, res, 503, STORE_RETRY_AFTER_SECONDS, ApiException.SERVICO_INDISPONIVEL,
+                    "Serviço temporariamente indisponível. Tente de novo em instantes.");
+            return;
+        }
+        if (!acquired) {
             reject(req, res, 429, retry, MUITAS_TENTATIVAS, "Muitas tentativas a partir deste endereço. Aguarde e tente de novo.");
             return;
         }
