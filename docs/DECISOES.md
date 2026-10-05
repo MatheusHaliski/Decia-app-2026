@@ -6,7 +6,7 @@ Formato: **D-nn** decisão tomada (com justificativa) · **Q-nn** dúvida aberta
 
 | # | Data | Decisão | Justificativa |
 |---|---|---|---|
-| D-01 | 2026-10-03 | Backend em **Java 21 LTS + Spring Boot 3.5.x** (não 4.x) | 3.5 é a linha estável com Spring Security 6.5, springdoc 2.x e Resilience4j maduros; Java 25 só quando Testcontainers/JaCoCo/SpotBugs tiverem suporte comprovado. |
+| D-01 | 2026-10-03 | ~~Backend em Java 21 LTS + Spring Boot 3.5.x~~ **Substituída pela D-13.** | O suporte OSS da linha 3.5 terminou em 30/06/2026. |
 | D-02 | 2026-10-03 | Módulos Maven `ws-domain`, `ws-application`, `ws-infrastructure/*`, `ws-web`, `ws-bootstrap`; pacote raiz `br.gov.pr.secid.workstation` | Espelho 1:1 do FAI (`fai-*`), facilitando reaproveitar código de auth, AiEngine, eventos, Guard. |
 | D-03 | 2026-10-03 | Diagramas em **Mermaid** (não PlantUML como no FAI), um `README.md` por RF com 5 diagramas | Renderiza no GitHub sem build; validação automatizada com `mermaid-cli`. PlantUML pode ser exportado depois se o TDE exigir PNG. |
 | D-04 | 2026-10-03 | Identificadores `UUID` (BINARY(16)); auditoria `AuditableEntity`/`VersionedAuditableEntity`; JSON do MySQL 8 para campos `*Json` | Igual ao FAI; evita enumerar colunas voláteis (políticas, decomposições de score). |
@@ -18,6 +18,8 @@ Formato: **D-nn** decisão tomada (com justificativa) · **Q-nn** dúvida aberta
 | D-10 | 2026-10-03 | Avatar 3D fora do escopo v1 | Card "Ideias": "em avaliação, sem RF". |
 | D-11 | 2026-10-03 | Design system antes de qualquer tela; nenhum HTML/CSS solto; 4 temas via `data-theme` | Pedido explícito + RF38. |
 | D-12 | 2026-10-03 | Rankings, Hype do Perfil, HSE e índice de prioridade são **serviços de domínio determinísticos**; a IA só redige | RF43 regra de ouro, RF44.CA08, RF45.CA09. |
+| D-13 | 2026-10-05 | **Spring Boot 4.1.x** (Framework 7, Security 7, Hibernate 7, Jackson 3 `tools.jackson`, springdoc 3, Testcontainers 2, `resilience4j-spring-boot4`); bytecode Java 21 (`--release 21`); imagem `eclipse-temurin:25-jre` (LTS). Só JVM LTS na imagem; major de framework é migração, não bump. Starters modulares obrigatórios (`webmvc`, `flyway`, `security-oauth2-resource-server`, `webmvc-test`, `security-test`); `FAIL_ON_NULL_FOR_PRIMITIVES` desligado e coberto por teste; `spring.autoconfigure.exclude` conferido por teste (o Boot ignora classe inexistente em silêncio). | Substitui a D-01: a linha 3.5 ficou sem patches de segurança em 30/06/2026 e a 4.1 tem suporte até 31/07/2027 (endoflife.date). Armadilhas listadas em `docs/MIGRACAO_SPRING_BOOT_4.md` do FAI. |
+| D-14 | 2026-10-05 | Segurança herdada do FAI (RF49) entra desde o esqueleto: bloqueio por conta com reserva atômica antes do hash, limite por IP+método+rota com IP assinado pelo BFF (nunca `X-Forwarded-For`), bulkhead de hashes (503 + Retry-After), Argon2id OWASP, JWT RS256 com família revogada, refresh só em cookie `ws_rt` e access token só em memória, política de `ON DELETE` por domínio com `ForeignKeyPolicyTest`, `account_origin` desde o V1, testes-guarda no `mvn verify`, gitleaks no histórico inteiro. Camada 1 de Zero Trust (EDR/MDM/disco) é da TI da SECID, fora do repo. | Dois bugs só apareceram no FAI sob ataque real (hash em corrida; pool do banco esgotado). Detalhes em `docs/seguranca/SEGURANCA.md` e `docs/diagramas/SEG/`. |
 
 ## Dúvidas abertas (perguntar antes de codificar)
 
@@ -70,6 +72,11 @@ Formato: **D-nn** decisão tomada (com justificativa) · **Q-nn** dúvida aberta
 | Q-45 | Logo | O download dos anexos do Trello é bloqueado pela política de rede desta sessão (host trello.com negado). A paleta em `design-system/TOKENS.md` foi derivada da descrição textual e está marcada "provisória". Para calibrar: (a) liberar trello.com em *Network access* do ambiente, ou (b) commitar o PNG em `public/brand/work-station-logo.png`. O card tem 8 imagens anexadas; qual é a oficial (a mais recente é "Imagem do ChatGPT 1 de out. de 2026, 15_30_09.png")? | Tokens, Glyphs, artes |
 | Q-46 | RF3/RF23 | O brief chama a página de preferências de "RF23" (numeração do FAI); no board, RF3 é "editar informações pessoais e preferências" e RF23 é "importar de outros provedores". Os commits e @Operation da tela de preferências usarão `rf3` salvo orientação contrária. | Etapa (b) |
 | Q-47 | Labs | Os wireframes `/lab/anatomias`, `/lab/perfis`, `/lab/decia` e `/lab/glyphs` foram entregues como páginas estáticas em `docs/lab/` e `docs/design-system/` (tokens + classes ws-*, sem build), porque o shell Next.js só nasce depois da aprovação. Na etapa (b) viram rotas `app/lab/*` com os componentes reais. | Etapa (b) |
+| Q-48 | Segurança | Os controles de segurança/integridade/operação herdados do FAI (RF49 lá) viram um **RF** no board Work Station (ex.: RF47) ou um **RNF**? Não criaremos card sem confirmação. | Rastreabilidade, `docs/diagramas/SEG/` |
+| Q-49 | RF2 | TTL do access token: a ARQUITETURA diz 10 min, o README do RF2 diz 15 min. Qual vale? (padrão até resposta: 15 min, como no FAI) | JwtTokenIssuer |
+| Q-50 | IA | Teto de gasto de IA (`AiBudget`): o FAI usa USD 5,00/dia global e 0,50/dia por pessoa. Quais valores para o Work Station (por pessoa, por departamento, global)? | AiBudget, cotas RF43 |
+| Q-51 | Infra | Hospedagem ainda não decidida (Railway como no FAI? nuvem do Estado?). Os scripts `infra/<provedor>/<banco>/start.sh`, backup e RPO/RTO dependem disso; faremos o que independe (usuários de menor privilégio, TLS, ACL Redis). | Bloco 7 |
+| Q-52 | Repositório | **Branch protection na `main`** é ação do dono: CI obrigatório + 1 revisão + sem push direto. Já está configurada? | Gate de CI |
 
 ## Perguntas das pesquisas de produto (etapa 0 do brief de esqueleto)
 
