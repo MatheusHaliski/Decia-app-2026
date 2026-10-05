@@ -232,6 +232,8 @@ Prancha: `tarefa-estado-*` (8) em `anatomias/svg/`.
 
 ### 2.3 Matriz variação × layout × elemento visual
 
+**Slots fixos do cabeçalho (compact/expanded), da direita para a esquerda:** 1 faísca ✦ · 2 favorito ⭐ · 3 ícone do provedor; cada slot tem 22 px e só é ocupado quando a variação existe (os seguintes deslizam para a direita). O **lacre** fica na superfície externa (zona SELO do layout) e, quando presente, empurra os três slots 22 px para a esquerda. **Cadeado** e **⚖** não ocupam slot: vivem na etiqueta de estado e no prazo. Nenhum marcador cobre outro; a faísca nunca é coberta (`RF38.CA04`). Ordem registrada em D-50.
+
 Legenda: ⭐ marcador · 🔒 cadeado · ⚖ balança · ✦ faísca · ◉ lacre · ▣ carimbo · DP ficha DP · ◦ pulso · ⌁ chip/linha de texto · — não aparece. (Os símbolos são abreviações da tabela; na UI são os glifos próprios de `icons.mjs`, nunca emoji.)
 
 | Variação | compact | list | expanded | attachment | mini |
@@ -392,6 +394,8 @@ Pranchas: `projeto-estado-*` (5) + `projeto-chancelado`.
 | **Arquivado** | ver §4.1 | `status = ARQUIVADO` | esmaecido | — | — | — | reabrir com justificativa | — | `RF22.CA06` |
 
 ### 4.3 Matriz variação × layout × elemento visual
+
+**Sobreposições na capa:** a faixa de destaque (18 px, topo da capa) é pintada **antes** da faísca ✦, que desce 20 px quando a faixa existe — a faísca nunca é coberta (`RF38.CA04`); favorito ⭐ no canto superior esquerdo (abaixo da faixa quando houver), selo de conformidade no canto inferior esquerdo, anel de progresso no inferior direito, carimbo centrado na base, lacre na superfície externa. **Visibilidade:** a linha "visibilidade: X" só aparece para o dono e quando ≠ PÚBLICA; PRIVADA = só o dono; DEPARTAMENTO = equipe do departamento (entra no quadro da equipe, `ABAS_POR_PERFIL`); EMPRESA = toda a empresa (`RF21.CA11`, `RF26.CA08`).
 
 | Variação | mosaic | hero | mural | postit |
 |---|---|---|---|---|
@@ -634,7 +638,7 @@ flowchart LR
 | Avatar do responsável | ambos | `responsibleId` · `ProjectTask.responsibleId` | §2.1, §3.2 | `board › Identidade §7` |
 | Avatar do atribuidor + prazo | ambos | `Assignment.fromUserId/toUserId/dueAt/status` | §12b.4 | `board › RF10/RF46` |
 | Borda + monograma do departamento | ambos | `departmentId` → `Department.color/monogram/acronym` | §1.5 | `RF38.CA09` |
-| Faísca ✦ | ambos | `aiGenerated`, `aiInferenceId`; projeto `creationMode = COM_IA`, `origin = AUTOPILOTO` | §2.1, §3.1 | `RF38.CA04` |
+| Faísca ✦ (nunca coberta por faixa, lacre ou marcador; slot 1 do cabeçalho / canto da capa) | ambos | `aiGenerated`, `aiInferenceId`; projeto `creationMode = COM_IA`, `origin = AUTOPILOTO` | §2.1, §3.1 | `RF38.CA04` |
 | Lacre (dourado · azul-marinho · fita · partido) | ambos | `SealBond.status`, `Seal.issuerKind`, `Seal.excellence`, `sealIdsJson` | §6.1, §6.3 | `RF38.CA06`; `board › Chancelas §6` |
 | Ficha DP (preço · licença · "repasse") | ambos | `ModelOffer.pricePoints/license/isHandover/shelf`, `offeredInCounter` | §7.1 | `board › Chancelas §6`; `RF40` |
 | "remixado de" / "↻ N" | ambos | `originalTaskId` · `originalProjectId`, `Remix`, `reuseCount`, `remixesCount` | §2.1, §3.1, §8.5 | `RF26.CA06`; `RF23.CA04` |
