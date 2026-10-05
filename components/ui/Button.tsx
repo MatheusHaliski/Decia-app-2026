@@ -50,15 +50,20 @@ export function Button(props: ButtonProps) {
   const classes = buttonClassName(variant, size, className);
 
   if ("href" in rest && typeof rest.href === "string") {
-    const { href, ...anchor } = rest as ButtonAsLink;
+    const { href, onClick, ...anchor } = rest as ButtonAsLink;
     const external = /^https?:\/\//.test(href);
+    // Ocupado: o link continua no DOM (mesma caixa, mesmo texto) mas perde o href, sai da ordem de tabulação e não
+    // navega — aria-disabled sozinho não impede clique nem Enter.
     return (
       <a
-        href={href}
+        href={busy ? undefined : href}
+        role={busy ? "link" : undefined}
+        tabIndex={busy ? -1 : undefined}
         className={classes}
         aria-busy={busy || undefined}
         aria-disabled={busy || undefined}
         rel={external ? "noopener noreferrer" : undefined}
+        onClick={busy ? (e) => e.preventDefault() : onClick}
         {...anchor}
       >
         {children}

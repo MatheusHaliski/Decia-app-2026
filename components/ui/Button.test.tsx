@@ -29,6 +29,22 @@ describe("Button (design system)", () => {
     expect(btn.getAttribute("aria-busy")).toBe("true");
   });
 
+  it("link ocupado não navega: sem href, fora do tab e com clique anulado", () => {
+    render(
+      <Button href="/relatorio" busy>
+        Gerando
+      </Button>,
+    );
+    const link = screen.getByRole("link", { name: "Gerando" });
+    expect(link.tagName).toBe("A");
+    expect(link.hasAttribute("href")).toBe(false);
+    expect(link.getAttribute("tabindex")).toBe("-1");
+    expect(link.getAttribute("aria-disabled")).toBe("true");
+    const click = new MouseEvent("click", { bubbles: true, cancelable: true });
+    link.dispatchEvent(click);
+    expect(click.defaultPrevented).toBe(true);
+  });
+
   it("nenhuma classe traz cor literal: só var(--token)", () => {
     for (const variant of ["default", "primary", "secondary", "ghost", "danger"] as const) {
       for (const size of ["sm", "md", "lg"] as const) {
