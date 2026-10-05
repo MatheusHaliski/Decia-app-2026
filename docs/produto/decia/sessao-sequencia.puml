@@ -1,0 +1,152 @@
+@startuml DECIA_Sessao_Sequencia
+title DECIA — Sequência de uma sessão completa (caminho feliz + devolução)\nFontes: RF29.CA01/CA05, RF5–RF8, RF10–RF17, TAXONOMIA §5, ARQUITETURA §5.1–5.2; itens "proposta" marcados
+skinparam backgroundColor #FFFFFF
+skinparam sequence {
+  ArrowColor #4A4852
+  LifeLineBorderColor #4A4852
+  ParticipantBackgroundColor #F4F2EF
+  ParticipantBorderColor #4A4852
+  ActorBackgroundColor #E6F0FA
+  GroupBorderColor #8A8782
+}
+skinparam participant<<ia>> {
+  BackgroundColor #FFF3DC
+  BorderColor #E39B12
+}
+autonumber "<b>[0]"
+
+actor "Dono do projeto\n(EMPREGADO)" as Dono
+actor "Chefe\n(admin da sessão)" as Chefe
+actor "Participantes" as Grupo
+participant "Next.js\n/decia/[sessionId]" as FE
+participant "ws-web\nDeciaSession·Message·\nDecision·Lifecycle Controllers" as WEB
+participant "ws-application\nDeciaBridge·Session·Message·\nDivergence·Summary·Decision·\nLifecycle Services" as APP
+participant "AiEngine\n(Claude → Gemini → local)" as AI <<ia>>
+database "MySQL" as DB
+database "Cassandra\nmessages_by_session\ntrace_by_entity" as CAS
+queue "Redis pub/sub\n+ SSE/WebSocket" as RT
+database "S3 / MinIO" as S3
+participant "DomainEvents\n(AFTER_COMMIT)" as EV
+
+== RASCUNHO → AGENDADA → ABERTA (RF29.CA01, RF4, RF5) ==
+Dono -> FE : "Abrir sessão DECIA" no projeto
+FE -> WEB : POST /api/projects/{id}/decia-session
+WEB -> APP : openSessionFromProject(id)
+APP -> DB : DeciaSession(RASCUNHO, topic=objetivo, linkedProjectId)\nSessionParticipant(responsáveis + chefe)\nproject.status = EM_DECISAO
+APP -> DB : DecisionTrace PROJETO → ANEXOU → SESSAO
+APP -> EV : SessionProposed
+EV -> RT : Notification ao chefe "sessão aguardando você"
+Chefe -> FE : ajusta tema/objetivo/acesso (RF4), marca data
+FE -> WEB : PATCH /api/decia/sessions/{id} · POST /{id}/schedule (proposta)
+WEB -> APP : schedule(scheduledAt)
+APP -> DB : status = AGENDADA, scheduledAt
+APP -> AI : PREPARAR_CONTEXTO (proposta): pauta, precedentes RF33, tarefas do projeto
+AI --> APP : pauta + citações (✦)
+EV -> RT : convites + lembrete (24 h / 1 h antes)
+Chefe -> FE : "Iniciar sessão"
+FE -> WEB : POST /api/decia/sessions/{id}/start
+WEB -> APP : start()
+APP -> DB : status = ABERTA, phase = CONTEXTO, startedAt\nparticipante IA
+APP -> CAS : mensagem de abertura (authorKind IA): objetivo, anexos, precedentes
+APP -> EV : SessionStarted
+EV -> RT : SSE para o grupo · Notification
+
+== ABERTA · fases CONTEXTO → DIVERGIR → ESCLARECER → CONVERGIR (RF6–RF10, RF16, RF29.CA03) ==
+loop deliberação
+  Grupo -> FE : mensagem + até 5 anexos do acervo
+  FE -> WEB : POST /api/decia/sessions/{id}/messages
+  WEB -> APP : send(bodyMd, attachments)
+  APP -> CAS : INSERT messages_by_session (TIMEUUID, TTL)
+  APP -> DB : session_messages_idx + messageCount + outbox
+  APP -> RT : publish(message) → SSE em ≤ 300 ms (proposta)
+  APP -> EV : MessageSent
+  EV -> AI : CLASSIFICAR (RF7)
+  AI --> EV : MessageClassification(label, confidence, hasEvidence, linkedTaskId)
+  EV -> DB : message_classifications · DecisionTrace MENSAGEM → CLASSIFICOU
+  EV -> RT : etiqueta da classificação na mensagem · Mesa recebe o item (proposta)
+  alt label = DIVERGENCIA entre autores distintos (RF8)
+    EV -> AI : DETECTAR_DIVERGENCIA
+    AI --> EV : Divergence(ABERTA, summary, parties)
+    EV -> DB : divergences · Notification DIVERGENCIA_DETECTADA
+    Chefe -> WEB : habilita resposta (RF10.CA01) → EM_RESPOSTA
+    Grupo -> WEB : resposta (replyTo = origem)
+    WEB -> APP : DivergenceReply
+    APP -> AI : avaliar resolves?
+    AI --> APP : resolves = true
+    APP -> DB : Divergence RESOLVIDA · +8 DP (idempotente, RF42)
+  else label = RISCO ou ponto crítico (RF16)
+    EV -> AI : FORMULAR_PERGUNTA
+    AI --> EV : AiQuestion(ABERTA, citações RF33)
+    EV -> CAS : mensagem IA classificada PERGUNTA (fixada)
+    Grupo -> WEB : resposta com evidência → RESPONDIDA · +4 DP
+  end
+  APP -> APP : PercentBar "rumo à decisão" recalculada (serviço determinístico, proposta)
+  APP -> RT : progresso · fase sugerida · "quem falta se manifestar"
+end
+Chefe -> WEB : POST /{id}/phase {CONVERGIR} (proposta)
+APP -> AI : AGRUPAR_OPCOES (proposta): opções × critérios para a Mesa
+AI --> APP : DecisionOption[] + DecisionCriterion[] (✦)
+APP -> DB : Mesa (SessionBoardItem) · rodada de consentimento
+
+== CONVERGINDO → DECISAO_PROPOSTA → EM_REVISAO (RF11, RF12) ==
+Chefe -> FE : "Gerar resumo"
+FE -> WEB : POST /api/decia/sessions/{id}/summaries
+WEB -> APP : generateSummary()
+APP -> DB : status = CONVERGINDO (chat em leitura)
+APP -> AI : RESUMO_ANALITICO (argumentos, consensos, divergências, riscos,\n≥ 2 cenários, critérios, citações RF33, tarefas afetadas RF29.CA08)
+alt IA indisponível
+  AI --> APP : fallback esgotado (RF43.CA01)
+  APP -> DB : status = ABERTA · aviso ao grupo
+else resumo gerado
+  AI --> APP : AnalyticalSummary RASCUNHO (✦)
+  Chefe -> WEB : publica o resumo (RF11)
+  APP -> DB : summary PUBLICADO · Resumo vivo atualizado
+  APP -> EV : SummaryPublished
+  EV -> AI : DECISAO_FINAL (RF12.CA01)
+  AI --> EV : FinalDecision PROPOSTA (texto, justificativa, cenário, citações)
+  EV -> DB : final_decisions · status = DECISAO_PROPOSTA
+  EV -> RT : Notification ao grupo e ao admin
+  Chefe -> WEB : edita (RF12.CA03) e encaminha (RF12.CA02)
+  APP -> DB : decision EM_REVISAO · session EM_REVISAO
+  EV -> RT : fila "Decisões pendentes" do revisor (RF28.CA06)
+end
+
+== EM_REVISAO → VALIDADA | DEVOLVIDA → REABERTA (RF15, RF14) ==
+Chefe -> FE : /decision/review · lê fio de decisão
+alt VALIDADA
+  FE -> WEB : POST /decisions/{did}/review {VALIDADA}
+  WEB -> APP : review()
+  APP -> DB : DecisionReview · stamp VALIDADO · session VALIDADA\nTaskItem ATA_REGISTRO em APROVAÇÃO · project APROVADO (RF29.CA05)
+  APP -> DB : DecisionTrace DECISAO → REVISOU · Minuta somente leitura (proposta)
+  APP -> EV : DecisionValidated
+  EV -> AI : ARTEFATO (RELATORIO, ATA, CHECKLIST) (RF13.CA01)
+  AI --> EV : contentMd (✦)
+  EV -> S3 : PDFs (PipelineJob EXPORT_PDF)
+  EV -> DB : +15 DP × qualidade a cada contribuinte (RF42) · MuralEntry
+  EV -> RT : Notification agrupada (RF13.CA03) · confete discreto (RF38.CA10)
+  APP -> DB : status = ENCERRADA (automático após artefatos, proposta)
+else DEVOLVIDA
+  FE -> WEB : POST /decisions/{did}/review {DEVOLVIDA, reason}
+  APP -> DB : stamp DEVOLVIDO · session DEVOLVIDA · project DEVOLVIDO
+  APP -> EV : DecisionReturned
+  EV -> AI : justificar reabertura (RF14.CA01)
+  AI --> EV : ReopenRequest PENDENTE (justification ≥ 20)
+  EV -> RT : Notification + votação 48 h
+  Grupo -> WEB : votos ACEITAR/RECUSAR (RF14.CA02)
+  alt ACEITA (admin ou maioria no prazo)
+    APP -> DB : session REABERTA · phase = ESCLARECER · decisão DEVOLVIDA → SUBSTITUIDA depois
+    note over Grupo, AI : novo ciclo: deliberação → resumo → decisão → revisão
+  else RECUSADA
+    Chefe -> WEB : POST /{id}/close {reason}
+    APP -> DB : status = ENCERRADA
+  end
+end
+
+== ENCERRADA → ARQUIVADA (RF17, RF33) ==
+APP -> EV : SessionClosed
+EV -> RT : Notification · +2 DP presença
+EV -> S3 : export JSON + PDF do histórico (RF17.CA03)
+EV -> DB : SessionArchive (checksum) · status = ARQUIVADA · MetricSnapshot (RF18)
+EV -> CAS : trace_by_entity consolidado
+EV -> AI : INDEXAR_MEMORIA (embeddings, RF33.CA01 — falha não bloqueia)
+@enduml

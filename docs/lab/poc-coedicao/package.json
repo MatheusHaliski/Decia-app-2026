@@ -1,0 +1,21 @@
+{
+  "name": "ws-poc-coedicao",
+  "version": "0.1.0",
+  "private": true,
+  "description": "PoC de coedição da Minuta Coletiva (Work Station / DECIA): Yjs + y-websocket + awareness, servidor Node mínimo e teste E2E com 2 abas",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs 1234",
+    "test": "node test.mjs teste-2-abas.png"
+  },
+  "dependencies": {
+    "lib0": "^0.2.119",
+    "ws": "^8.22.0",
+    "y-protocols": "^1.0.7",
+    "y-websocket": "^3.1.0",
+    "yjs": "^13.6.33"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.63.0"
+  }
+}

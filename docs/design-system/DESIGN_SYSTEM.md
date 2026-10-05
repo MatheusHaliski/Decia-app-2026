@@ -3,6 +3,8 @@
 > Conceito visual (card "Identidade visual e estética" do board): **"a repartição do futuro"** — a papelaria da repartição pública (carimbo, protocolo, pasta suspensa, clipe, lacre) reinterpretada em flat/duotone; a IA é sempre a **faísca âmbar ✦**. Tudo que a IA gerou carrega a faísca (transparência = objetivo do projeto).
 > Fonte de verdade dos tokens: [`anatomias/lib/tokens.mjs`](anatomias/lib/tokens.mjs) → gera [`tokens.css`](tokens.css), a tabela de contraste abaixo, os `<style>` dos SVGs e a galeria [`anatomias/index.html`](anatomias/index.html). Regra: **nenhuma tela usa HTML/CSS solto**; todo elemento visual é um componente de `packages/ui` com estes tokens. Anatomia dos cards em [`ANATOMIA_CARDS.md`](ANATOMIA_CARDS.md).
 
+> **v2 (`--ws-*`, paleta do logo):** tokens em [`TOKENS.md`](TOKENS.md) / [`tokens-ws.css`](tokens-ws.css) (gerados por `anatomias/lib/tokens-ws.mjs`, 4 temas: claro · escuro · contraste · terminal, com mapa de migração), ícones WS Glyphs em [`GLYPHS.md`](GLYPHS.md) / `glyphs/`, artes de fundo em `backgrounds/`. Este documento descreve a v1; os tokens sem prefixo continuam válidos até a migração da etapa (b).
+
 ## 1. Como usar
 ```
 docs/design-system/

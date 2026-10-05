@@ -1,20 +1,30 @@
-# RF20 — Criar tarefas no Criador de Tarefas a partir de arquivos, links e conteúdo do ambiente corporativo (Windows, Google Workspace, Microsoft 365, e-mail, e-Protocolo), com pré-preenchimento por IA e formulário profissional
-**HU:** HU20 · **Sprint (board Work Station):** 4 · **Equivalente FAI:** RF4 Adicionar peça (foto → IA pré-preenche → formulário com taxonomia oficial → "Mais detalhes" → Closet) + RF11 Background Studio + buscador web de marcas · **Aba/rota:** Criar Tarefa (`/tasks/new`; também pela folha "+ Criar" e pelo botão "Cadastrar nova tarefa" do Criador de Projetos, RF21)
-**Critérios de aceite cobertos:** RF20.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 · CA15
+# RF20 — Utilizar o construtor de projetos do Work Station para compreender se as tarefas de meu acervo são adequadas dentro de meu ambiente empresarial
+**HU:** HU20 · **Sprint (board Work Station):** a confirmar (card renomeado em 2026-10-02; origem `_anterior/RF20` = Sprint 4) · **Equivalente FAI:** Inventory Score (RF29 do FAI: "o que falta no meu closet") + Smart Mirror (RF28: "o que falta neste look") + Criar Look (RF5) · **Aba/rota:** painel **Adequação do acervo** dentro do Criador de Projetos (`/projects/new?painel=adequacao`, proposta) e sub-aba Insights › Acervo (`/insights/acervo`, RF43)
+**Critérios de aceite cobertos:** o **título** define o RF — CAs derivados do título + HU20, numerados **RF20.A01 … RF20.A06** e marcados "(CA a confirmar)". **Corpo do card = criador de tarefas** (RF20.CA01–CA15: Fonte · Detecção por IA · Dados · Mais detalhes · Arte do card) — esses CAs são citados abaixo como estão escritos e estão diagramados no **RF4** (Criador de tarefas) e em `_anterior/RF20`; não são modelados aqui.
 
-A **tarefa** (`TaskItem`) é a unidade mínima do Work Station (= peça de roupa). O Criador de Tarefas tem **5 etapas**: (1) **Fonte** — Arquivo · Colar · Google Workspace · Microsoft 365 · E-mail · Link · Protocolo · Foto/scanner · Texto com IA; (2) **Detecção por IA** (`TaskDetectionService` → AiEngine `PREENCHER_TAREFA`); (3) **Dados da tarefa** (taxonomia oficial, prazo legal via `DeadlineService`, órgão via busca web); (4) **Mais detalhes** (chancelas sugeridas RF39, visibilidade, estado inicial, situação do documento, protocolo, guarda, Balcão RF40, tags, dependências, vínculo a projeto/fase); (5) **Arte do card** (thumbnail assíncrono RF38). Antivírus (`AntivirusPort`), OCR (`OcrPort`) e thumbnail rodam como `PipelineJob` após o commit; o resultado entra no **Acervo de Tarefas (RF41)**.
+> **HU20** — COMO usuário autenticado dentro do sistema Work Station POSSO utilizar o construtor de projetos PARA compreender de maneira mais estratégica e funcional se os dados qualitativos ou quantitativos de meu acervo de trabalho constituem projetos sólidos e bem elaborados.
 
-| Fonte (etapa 1) | `SourceKind` | `TaskType` resultante | Porta / adaptador |
+O construtor de projetos (RF5 `ProjectComposerService`) ganha um **painel de adequação**: antes ou durante a composição, o usuário escolhe um **processo** (`ProcessTag`: Licitação, Convênio, Obra…) e o sistema responde **"o meu acervo sustenta um projeto sólido deste processo?"** com três leituras: (1) **Score do Acervo 0–100** com decomposição e **lacunas por processo** (RF43 §2 — `InsightService.acervo`, `Insight` scope ACERVO, `MetricSnapshot`); (2) **Espelho de Conformidade hipotético** (RF32 — `ComplianceService.evaluateHypothetical` sobre um projeto-rascunho montado automaticamente com as tarefas compatíveis do meu Acervo via `PHASE_BY_CATEGORY`, devolvendo % de conformidade, itens OBRIGATORIO_AUSENTE ⛔ e FORA_DE_ORDEM); (3) **ações de 1 clique**: criar a tarefa faltante (abre o Criador de tarefas, RF4 — corpo deste card), buscar modelo no Balcão (RF40) ou na Buscar (RF17), levar tarefa de colega ao meu acervo (RF7), **compor o projeto** com o que já existe (RF5) ou abrir sessão DECIA. Números vêm de serviços determinísticos; a IA (`AiEngine` `INSIGHT`) só redige a explicação com faísca ✦ e cai para texto-padrão sem perder nenhum número.
+
+| CA (título) | Enunciado (Dado / Quando / Então) |
+|---|---|
+| **RF20.A01** (CA a confirmar) | Dado um empregado no Criador de Projetos, quando abre o painel **Adequação do acervo**, então vê o **Score do Acervo** (0–100) com decomposição (cobertura por processo, tarefas paradas, duplicadas, "fantasma" sem anexo, prazos legais em risco, reutilização) e o **mapa de lacunas por processo** (`ProcessTag` × categorias esperadas), calculados por `InsightService.acervo` sobre `MetricDefinition`/`MetricSnapshot` (RF43.CA03); acervo com menos de 3 tarefas mostra "o que coletar" em vez de números. |
+| **RF20.A02** (CA a confirmar) | Dado um processo escolhido (ex.: LICITACAO), quando peço "avaliar adequação", então o sistema monta um **projeto hipotético** com as tarefas compatíveis do meu Acervo (`AcervoService.listCompatible` + `PHASE_BY_CATEGORY`, só DISPONIVEL/EM_USO/MODELO_PUBLICO) e roda `ComplianceService.evaluateHypothetical` contra o checklist ativo da empresa/departamento (RF32.CA01), devolvendo % de conformidade, itens ATENDIDO / RECOMENDADO_AUSENTE / OBRIGATORIO_AUSENTE ⛔ / FORA_DE_ORDEM e qual tarefa satisfaz cada item; nada é persistido como `ProjectScheme` nem `ComplianceResult`. |
+| **RF20.A03** (CA a confirmar) | Dado o resultado, quando a IA está disponível, então `AiEngine INSIGHT` redige em até 3 frases por lacuna "por que isto falta e o que fazer", citando métrica e valor (faísca ✦, `AiInferenceLog`); IA indisponível ou `accessClass` RESTRITO/SIGILOSO → texto-padrão do motor local, com os mesmos números. |
+| **RF20.A04** (CA a confirmar) | Dado uma lacuna OBRIGATORIO_AUSENTE, quando aciono a ação de 1 clique, então posso: **criar a tarefa faltante** (abre o Criador de tarefas pré-preenchido com categoria/tipo/fase esperados e `checklistItemId`, RF4/RF32.CA03), **buscar modelo** no Balcão (RF40) ou na Buscar (RF17), ou **levar ao meu acervo** uma tarefa compatível de colega (RF7); a ação fica em `Insight.actionsJson` e o painel recalcula ao voltar. |
+| **RF20.A05** (CA a confirmar) | Dado um resultado com conformidade ≥ limiar do checklist e sem ⛔, quando clico **Compor projeto com estas tarefas**, então o compositor (RF5) abre com as fases pré-preenchidas pelo projeto hipotético e `ProjectScheme` nasce RASCUNHO com `aiOrientation` = processo escolhido; com ⛔ o botão fica disponível com aviso "projeto nascerá com pendência bloqueante" (`hasBlockingPending`) — aviso, não impedimento (RF32.CA04). |
+| **RF20.A06** (CA a confirmar) | Dado o painel, quando a avaliação termina, então um `Insight` (scope ACERVO, kind ADEQUACAO_PROCESSO, `metricRefsJson`, `actionsJson`, `severity`) é gravado para o usuário e aparece em Insights › Acervo (RF43) até ser dispensado (`dismissedAt`) ou até o próximo recálculo; avaliação de acervo de **terceiro** responde `403 ACESSO_NEGADO` (RF43.CA04 "só o dono"); checklist inexistente para o processo → `404 CHECKLIST_NAO_ENCONTRADO` com sugestão de propor um (RF32). |
+
+| CA do corpo (citado como está no card) | Onde está modelado |
+|---|---|
+| RF20.CA01 formatos e limite de upload, antivírus · CA02 detecção por IA pré-preenche · CA03 IA sem confiança → formulário vazio · CA04 obrigatórios → Acervo e projeto/fase · CA05 lote/.zip → rascunho por arquivo · CA06 Ctrl+V → TEXTO_MANUAL/PLANILHA/IMAGEM_EDITADA · CA07 vinculado Google/Microsoft sincroniza · CA08 e-mail → tarefa · CA09 protocolo → PROTOCOLO · CA10 busca web de órgão · CA11 prazo legal calculado · CA12 OCR indisponível → job · CA13 chancelas sugeridas · CA14 422 por campo · CA15 Oferecer no Balcão | **RF4 — Criador de tarefas** (`docs/diagramas/RF4/README.md`) e `docs/diagramas/_anterior/RF20/README.md` |
+
+| Leitura do painel | Serviço (existente) | Entidades lidas | Saída |
 |---|---|---|---|
-| Arquivo Windows/macOS (.docx .xlsx .pptx .pdf .txt .md .csv .msg .eml .zip .png .jpg .dwg .dxf .ifc .glb; 50 MB, zip 200 MB) | ARQUIVO | por MIME detectado: DOCUMENTO, PLANILHA, PASTA, IMAGEM_EDITADA, DESENHO_TECNICO … | `MediaStoragePort` (S3), `AntivirusPort` |
-| Colar Ctrl+V (texto · tabela · captura) | COLAR | TEXTO_MANUAL · PLANILHA · IMAGEM_EDITADA | `MediaStoragePort` |
-| Google Workspace (Drive, Gmail, Agenda) — vinculado ou copiado | GOOGLE | DOCUMENTO · PLANILHA · FORMULARIO · EMAIL | `ExternalDocPort` (GoogleDriveAdapter) |
-| Microsoft 365 (OneDrive/SharePoint, Outlook, Teams) — vinculado ou copiado | MICROSOFT | DOCUMENTO · PLANILHA · EMAIL · LINK | `ExternalDocPort` (MicrosoftGraphAdapter) |
-| E-mail encaminhado para `tarefas+<usuário>@workai…` ou .eml/.msg colado | EMAIL | EMAIL (+ anexos → `TaskAttachment` ou tarefas filhas) | `EmailInboundAdapter` |
-| Link (URL pública ou interna) | LINK | LINK | `LinkPreviewAdapter` (favicon, título, captura) |
-| Protocolo (e-Protocolo/SEI, nº de processo) | PROTOCOLO | PROTOCOLO | `ProtocolPort` (e-Protocolo) |
-| Foto/scanner do celular via QR + Estúdio de Documento | FOTO | IMAGEM_EDITADA · DOCUMENTO (após OCR) | `MediaStoragePort`, `OcrPort` |
-| Texto com IA (pedido + até 5 tarefas de referência) | TEXTO_IA | TEXTO_IA | AiEngine `PREENCHER_TAREFA` |
+| Score do Acervo + lacunas por processo | `InsightService.acervo` (RF43) | `TaskItem`, `MetricDefinition`, `MetricSnapshot`, `ComplianceItem.expectedCategory` | `Insight` scope ACERVO, `metricRefsJson` |
+| Espelho hipotético por processo | `ComplianceService.evaluateHypothetical` (RF32) + `AcervoService.listCompatible` (RF5) | `ComplianceChecklist`, `ComplianceItem`, `TaskItem` | `ComplianceResult` em memória (não persistido) |
+| Compor projeto | `ProjectComposerService.compose` (RF5) | `TaskItem` → `ProjectTask` | `ProjectScheme` RASCUNHO |
+| Criar faltante | `TaskCreatorService` (RF4) | — | `TaskItem` RASCUNHO com `checklistItemId` |
 
 ## 1. Diagrama de classes
 
@@ -29,253 +39,138 @@ namespace ws_domain_acervo {
     +ownerId: UUID
     +departmentId: UUID
     +title: String
-    +summary: String
-    +descriptionMd: String
-    +type: TaskType
     +category: TaskCategory
-    +subcategory: String
-    +processTags: Set~ProcessTag~ max 2
-    +natureTags: Set~NatureTag~ max 2
-    +accessClass: AccessClassification
-    +format: String
-    +effortSize: EffortSize
-    +estimatedHours: BigDecimal
-    +amountInvolved: BigDecimal
-    +origin: TaskOrigin
-    +sourceKind: SourceKind
-    +sourceRef: String
-    +linkMode: LinkMode
-    +orgEntityId: UUID
-    +responsibleId: UUID
-    +dueAt: LocalDate
-    +legalDeadlineRuleId: UUID
-    +legalDeadlineBaseDate: LocalDate
-    +legalDueAt: LocalDate
-    +legalOverrideReason: String
-    +priority: Priority
+    +type: TaskType
+    +processTags: Set~ProcessTag~
     +state: TaskState
-    +docSituation: DocSituation
-    +receivedAt: LocalDate
-    +senderOrigin: String
-    +protocolNumber: String
-    +retentionPolicyJson: JSON
-    +visibility: Visibility
-    +offeredInCounter: boolean
-    +aiGenerated: boolean
-    +aiInferenceId: UUID
-    +aiConfidenceJson: JSON
-    +thumbnailUrl: String
-    +coverUrl: String
-    +coverMode: CoverMode
-    +cardSkin: String
-    +tags: Set~String~
-    +notes: String
-    +sourceProjectId: UUID
-    +version: long
-    .. +12 campos ..
+    +accessClass: AccessClassification
+    +dueAt: LocalDate
+    +legalDueAt: LocalDate
+    +checklistItemId: UUID tarefa faltante criada pelo Espelho
+    +reuseCount: int
+    +projectUsageCount: int
+    .. +40 campos ..
   }
   class TaskAttachment {
     <<entity>>
-    +id: UUID
     +taskId: UUID
-    +mediaObjectId: UUID
-    +fileName: String
-    +mimeType: String detectado
-    +sizeBytes: long
-    +sha256: String
-    +antivirusStatus: String PENDENTE LIMPO INFECTADO
-    +ocrStatus: String
-    +ocrTextRef: String
     +isPrimary: boolean
-    +sortOrder: int
-  }
-  class TaskVersion {
-    <<entity>>
-    +id: UUID
-    +taskId: UUID
-    +versionNumber: int
-    +externalRevisionId: String
-    +syncedAt: Instant
-    +thumbnailUrl: String
-    +changeSummary: String
-    +snapshotMediaId: UUID
-  }
-  class LegalDeadlineRule {
-    <<entity>>
-    +id: UUID
-    +companyId: UUID
-    +category: TaskCategory
-    +subcategory: String
-    +days: int
-    +businessDays: boolean
-    +legalBasis: String
-    +description: String
-    +active: boolean
-    +validFrom: LocalDate
-    +validTo: LocalDate
-  }
-  class OrgEntity {
-    <<entity>>
-    +id: UUID
-    +name: String
-    +cnpj: String
-    +kind: String ORGAO FORNECEDOR ENTIDADE CIDADAO
-    +source: String WIKIDATA CNPJ SITE MANUAL
-    +externalRef: String
-    +websiteUrl: String
-    +logoUrl: String
-    +verified: boolean
-  }
-  class Evidence {
-    <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +mediaObjectId: UUID
-    +studioStatus: String ORIGINAL ENDIREITADA RECORTADA SEM_FUNDO OCR
-    +derivedTaskId: UUID
   }
 }
 
 namespace ws_domain_projetos {
-  class ProjectTask {
+  class ProjectScheme {
     <<entity>>
     +id: UUID
+    +ownerId: UUID
+    +title: String
+    +processTags: Set~ProcessTag~
+    +creationMode: CreationMode
+    +origin: SchemeOrigin CRIAR_PROJETO
+    +aiOrientation: String
+    +status: ProjectStatus RASCUNHO
+    +conformityPercent: BigDecimal
+    +hasBlockingPending: boolean
+    +autosaveDraftJson: JSON
+  }
+  class ProjectTask {
+    <<entity>>
     +projectId: UUID
     +taskId: UUID
     +phase: ProjectPhase
     +sortOrder: int
-    +responsibleId: UUID
-    +dueAt: LocalDate
+  }
+  class ComplianceChecklist {
+    <<entity>>
+    +id: UUID
+    +companyId: UUID
+    +departmentId: UUID
+    +processTag: ProcessTag
+    +name: String
+    +legalBasis: String
+    +active: boolean
+  }
+  class ComplianceItem {
+    <<entity>>
+    +id: UUID
+    +checklistId: UUID
+    +label: String
+    +requirement: String OBRIGATORIO RECOMENDADO
+    +expectedPhase: ProjectPhase
+    +expectedCategory: TaskCategory
+    +expectedType: TaskType
+    +mustPrecedeItemId: UUID
+  }
+  class ComplianceResult {
+    <<entity>>
+    +projectId: UUID nulo quando hipotético
+    +checklistId: UUID
+    +itemsJson: JSON status por item e satisfiedByProjectTaskId
+    +percent: BigDecimal
+    +blockingCount: int
   }
 }
 
-namespace ws_domain_chancelas_balcao {
-  class SealBond {
+namespace ws_domain_ia {
+  class Insight {
     <<entity>>
     +id: UUID
-    +sealId: UUID
-    +targetType: String TASK
-    +targetId: UUID
-    +basis: SealBondBasis
-    +origin: String SUGESTAO_IA
-    +confidence: BigDecimal
-    +status: SealBondStatus
-    +requiresReview: boolean
+    +scope: InsightScope ACERVO
+    +scopeId: UUID userId
+    +kind: String ADEQUACAO_PROCESSO
+    +title: String
+    +bodyMd: String
+    +metricRefsJson: JSON metricCode value formula source
+    +actionsJson: JSON 1 clique
+    +severity: String
+    +aiInferenceId: UUID
+    +dismissedAt: Instant
+    +generatedAt: Instant
   }
-  class ModelOffer {
+  class MetricDefinition {
     <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +targetType: String TASK
-    +targetId: UUID
-    +pricePoints: int
-    +license: ModelLicense
-    +status: String ATIVA
+    +code: String
+    +domain: MetricDomain
+    +formula: String
+    +minSamples: int
   }
-}
-
-namespace ws_domain_plataforma {
-  class MediaObject {
+  class MetricSnapshot {
     <<entity>>
-    +id: UUID
-    +bucket: String
-    +key: String
-    +mimeType: String
-    +sizeBytes: long
-    +sha256: String
-    +accessClass: AccessClassification
-    +variantsJson: JSON thumb preview
-  }
-  class PipelineJob {
-    <<entity>>
-    +id: UUID
-    +type: String THUMBNAIL OCR ANTIVIRUS SYNC_EXTERNO
-    +targetType: String
-    +targetId: UUID
-    +status: String PENDENTE RODANDO OK FALHA REPROCESSAR
-    +attempts: int
-    +lastError: String
+    +metricCode: String
+    +scope: MetricScope USUARIO
+    +scopeId: UUID
+    +value: BigDecimal
+    +valuesJson: JSON
   }
   class AiInferenceLog {
     <<entity>>
-    +id: UUID
-    +userId: UUID
-    +capability: AiCapability PREENCHER_TAREFA
-    +provider: String
-    +mode: AiMode
-    +confidence: BigDecimal
-    +result: String OK FALLBACK ERRO BLOQUEADO_SIGILO
-    +maskedFields: String
-    +correlationId: String
+    +capability: AiCapability INSIGHT
+    +result: InferenceResult
+    +fallbackUsed: boolean
   }
 }
 
 namespace ws_domain_enums {
-  class TaskType {
+  class ProcessTag {
     <<enum>>
-    TEXTO_MANUAL
-    TEXTO_IA
-    IMAGEM_WEB
-    IMAGEM_EDITADA
-    PLANILHA
-    DOCUMENTO
-    PASTA
-    LINK
-    DESENHO_TECNICO
-    FORMULARIO
-    ATA_REGISTRO
-    EMAIL
-    PROTOCOLO
-    CRONOGRAMA
-    ESTUDO_TECNICO_PRELIMINAR
+    LICITACAO
+    CONVENIO
+    OBRA
+    REGULARIZACAO_FUNDIARIA
+    PLANEJAMENTO_URBANO
+    ORCAMENTO
+    PESSOAL
+    JURIDICO
   }
-  class TaskCategory {
+  class ProjectPhase {
     <<enum>>
-    OFICIO_MEMORANDO
-    PARECER_TECNICO
-    ETP
-    TERMO_REFERENCIA
-    PLANILHA_ORCAMENTARIA
-    PROJETO_BASICO_EXECUTIVO
-    CRONOGRAMA
-    ATA
-    PORTARIA_RESOLUCAO
-    CONTRATO_CONVENIO
-    VISTORIA_RELATORIO_FOTOGRAFICO
-    LICENCA_ANUENCIA
-    MAPA_GEORREFERENCIA
-    FORMULARIO
-    OUTRO
-  }
-  class SourceKind {
-    <<enum>>
-    ARQUIVO
-    COLAR
-    GOOGLE
-    MICROSOFT
-    EMAIL
-    LINK
-    PROTOCOLO
-    FOTO
-    TEXTO_IA
-    EXTRAIDA_DE_PROJETO
-    REMIX
-    DECIA
-    AUTOPILOT
-    ATA_VIVA
-    DOSSIE
-  }
-  class LinkMode {
-    <<enum>>
-    VINCULADO
-    COPIADO
-  }
-  class AccessClassification {
-    <<enum>>
-    PUBLICO
-    INTERNO
-    RESTRITO
-    SIGILOSO
+    DEMANDA
+    PLANEJAMENTO
+    ELABORACAO
+    ANALISE
+    APROVACAO
+    EXECUCAO
+    ENCERRAMENTO
   }
   class TaskState {
     <<enum>>
@@ -288,334 +183,211 @@ namespace ws_domain_enums {
     MODELO_PUBLICO
     OFERECIDA
   }
-  class DocSituation {
+  class InsightScope {
     <<enum>>
-    MINUTA
-    REVISADO
-    ASSINADO
-    PUBLICADO
-  }
-  class EffortSize {
-    <<enum>>
-    P
-    M
-    G
-  }
-  class TaskOrigin {
-    <<enum>>
-    INTERNA
-    ORGAO_EXTERNO
-    FORNECEDOR
-    CIDADAO
+    ACERVO
+    PERFIL
+    EQUIPE
+    PROJETO
   }
 }
 
 namespace ws_application {
-  class TaskCreatorService {
+  class AcervoFitService {
     <<service>>
-    +receiveSource(userId, SourceInput) SourceReceipt
-    +createDraftsFromBatch(userId, mediaIds, explodeZip) List~TaskItem~
-    +createFromPaste(userId, clipboard) TaskItem
-    +createFromEmail(userId, MailMessage, attachmentsMode) TaskItem
-    +createFromProtocol(userId, protocolNumber) TaskItem
-    +save(userId, TaskForm) TaskItem
-    +linkToProject(taskId, projectId, phase) ProjectTask
-    +offerInCounter(taskId, pricePoints, license) ModelOffer
-    -validate(TaskForm) 422 VALIDACAO details por campo
+    +evaluate(userId, processTag) AcervoFitReport proposta
+    +buildHypothetical(userId, processTag) ProjectDraft fases via PHASE_BY_CATEGORY
+    +applyAction(userId, insightId, actionCode) ActionResult
+    +composeFrom(userId, reportId) ProjectScheme RASCUNHO
+    -requireOwner(viewer, userId) 403
   }
-  class TaskDetectionService {
+  class InsightService {
     <<service>>
-    +detect(userId, SourceReceipt) DetectionResult
-    -maskSensitive(accessClass) campos
-    -confidenceThreshold: BigDecimal
+    +acervo(userId) List~Insight~ Score do Acervo 0 a 100 e lacunas por processo
+    +applyAction(insightId, actionCode) void
   }
-  class DeadlineService {
+  class MetricCalculator {
     <<service>>
-    +compute(category, subcategory, baseDate, companyId) LegalDeadline
-    +override(taskId, newDueAt, reason) TaskItem
-    +explain(rule, baseDate) String
+    +compute(metricCode, scope, scopeId) MetricSnapshot determinístico
+  }
+  class ComplianceService {
+    <<service>>
+    +evaluateHypothetical(project, tasks) ComplianceResult não persistido
+    +createMissingTask(actorId, projectId, itemId) TaskItem
   }
   class AcervoService {
     <<service>>
-    +addToAcervo(TaskItem)
-    +syncLinkedVersion(taskId, externalRevision) TaskVersion
-    +convertLinkToSnapshot(taskId) TaskVersion
+    +listCompatible(userId, phase, filters) List~TaskItem~ PHASE_BY_CATEGORY
+    +countAvailable(userId) int
   }
-  class OrgEntityService {
+  class ProjectComposerService {
     <<service>>
-    +searchWeb(query) List~OrgCandidate~
-    +pick(candidate) OrgEntity
+    +openComposer(userId, draft) ComposerState
+    +compose(userId, form) ProjectScheme
   }
-  class SealService {
+  class TaskCreatorService {
     <<service>>
-    +suggestForTask(taskId) List~SealBond~
-    +accept(bondId) SealBond
+    +prefill(category, type, phase, checklistItemId) TaskForm RF4
   }
   class AiEngine {
     <<service>>
-    +infer(capability, input, mode) AiResult
-  }
-  class MediaStoragePort {
-    <<port>>
-    +put(stream, mimeType, accessClass) MediaObject
-    +presign(mediaId) URL
-  }
-  class AntivirusPort {
-    <<port>>
-    +scan(mediaId) PENDENTE LIMPO INFECTADO
-  }
-  class OcrPort {
-    <<port>>
-    +extractText(mediaId) OcrResult
-    +studio(mediaId, ops) MediaObject
-  }
-  class ExternalDocPort {
-    <<port>>
-    +pick(provider, oauthToken) ExternalDoc
-    +fetch(provider, ref, mode) ExternalDoc
-    +subscribeChanges(provider, ref) Subscription
-    +revoke(provider, ref)
-  }
-  class ProtocolPort {
-    <<port>>
-    +lookup(protocolNumber) ProtocolMetadata
-  }
-  class OrgLookupPort {
-    <<port>>
-    +search(query) List~OrgCandidate~
+    +infer(INSIGHT, numbers) narrativa só sobre números calculados
   }
   class SearchIndexPort {
     <<port>>
-    +indexTask(TaskItem, ocrText)
+    +search(q, filters) modelos no Balcão e na Buscar
   }
 }
 
 namespace ws_web {
-  class TaskController {
+  class AcervoFitController {
     <<controller>>
-    +POST_api_tasks_sources(multipart ou ref)
-    +POST_api_tasks_detect(sourceReceiptId)
-    +GET_api_legal_deadlines_compute(category, baseDate)
-    +GET_api_org_entities_search(q)
-    +POST_api_tasks(TaskForm)
-    +POST_api_tasks_batch_confirm(draftIds)
-    +POST_api_tasks_id_seal_bonds_bondId_accept()
+    +GET_api_acervo_fit_score()
+    +POST_api_acervo_fit_evaluate(processTag)
+    +POST_api_acervo_fit_insightId_action(actionCode)
+    +POST_api_acervo_fit_reportId_compose()
   }
-  class ExternalDocWebhookController {
+  class InsightController {
     <<controller>>
-    +POST_api_webhooks_google_drive()
-    +POST_api_webhooks_microsoft_graph()
-  }
-  class EmailInboundController {
-    <<controller>>
-    +POST_api_inbound_email(MailMessage)
+    +GET_api_insights_acervo()
   }
 }
 
 namespace ws_infrastructure {
-  class S3StorageAdapter {
+  class ClaudeGeminiAdapter {
     <<adapter>>
   }
-  class ClamAvAdapter {
-    <<adapter>>
-  }
-  class TesseractOcrAdapter {
-    <<adapter>>
-  }
-  class GoogleDriveAdapter {
-    <<adapter>>
-  }
-  class MicrosoftGraphAdapter {
-    <<adapter>>
-  }
-  class EProtocoloAdapter {
-    <<adapter>>
-  }
-  class WikidataCnpjAdapter {
+  class LocalEngine {
     <<adapter>>
   }
   class OpenSearchIndexAdapter {
     <<adapter>>
   }
-  class ClaudeGeminiAdapter {
-    <<adapter>>
-  }
 }
 
-TaskItem "1" --> "*" TaskAttachment : anexos
-TaskItem "1" --> "*" TaskVersion : versões se VINCULADO
-TaskItem "*" --> "0..1" LegalDeadlineRule : legalDeadlineRuleId
-TaskItem "*" --> "0..1" OrgEntity : orgEntityId
-TaskItem "1" --> "*" ProjectTask : vínculo a projeto e fase
-TaskItem "1" --> "*" SealBond : targetId quando TASK
-TaskItem "1" --> "0..1" ModelOffer : Balcão
-TaskItem "*" --> "0..1" AiInferenceLog : aiInferenceId
-TaskAttachment "*" --> "1" MediaObject : mediaObjectId
-TaskVersion "*" --> "0..1" MediaObject : snapshotMediaId
-Evidence "*" --> "0..1" TaskItem : derivedTaskId
-PipelineJob "*" --> "1" TaskItem : targetId
-TaskItem --> TaskType
-TaskItem --> TaskCategory
-TaskItem --> SourceKind
-TaskItem --> LinkMode
-TaskItem --> AccessClassification
+TaskItem "1" --> "*" TaskAttachment : fantasma = sem anexo
+TaskItem --> ProcessTag
 TaskItem --> TaskState
-TaskItem --> DocSituation
-TaskItem --> EffortSize
-TaskItem --> TaskOrigin
+TaskItem "*" --> "0..1" ComplianceItem : checklistItemId
+ProjectScheme "1" --> "*" ProjectTask
+ProjectTask "*" --> "1" TaskItem
+ProjectTask --> ProjectPhase
+ComplianceChecklist "1" --> "*" ComplianceItem
+ComplianceChecklist --> ProcessTag
+ComplianceResult "*" --> "1" ComplianceChecklist
+ComplianceItem --> ProjectPhase : expectedPhase
+Insight --> InsightScope
+Insight "*" --> "*" MetricSnapshot : metricRefsJson
+MetricSnapshot "*" --> "1" MetricDefinition : metricCode
+Insight "*" --> "0..1" AiInferenceLog : aiInferenceId
 
-TaskController ..> TaskCreatorService
-TaskController ..> TaskDetectionService
-TaskController ..> DeadlineService
-TaskController ..> OrgEntityService
-TaskController ..> SealService
-ExternalDocWebhookController ..> AcervoService : syncLinkedVersion
-EmailInboundController ..> TaskCreatorService : createFromEmail
-TaskCreatorService ..> MediaStoragePort
-TaskCreatorService ..> AntivirusPort
-TaskCreatorService ..> ExternalDocPort
-TaskCreatorService ..> ProtocolPort
-TaskCreatorService ..> DeadlineService
-TaskCreatorService ..> AcervoService
-TaskCreatorService ..> SearchIndexPort
-TaskDetectionService ..> AiEngine : PREENCHER_TAREFA
-TaskDetectionService ..> OcrPort
-OrgEntityService ..> OrgLookupPort
-AcervoService ..> ExternalDocPort
-AcervoService ..> OcrPort
-S3StorageAdapter ..|> MediaStoragePort
-ClamAvAdapter ..|> AntivirusPort
-TesseractOcrAdapter ..|> OcrPort
-GoogleDriveAdapter ..|> ExternalDocPort
-MicrosoftGraphAdapter ..|> ExternalDocPort
-EProtocoloAdapter ..|> ProtocolPort
-WikidataCnpjAdapter ..|> OrgLookupPort
+AcervoFitController ..> AcervoFitService
+InsightController ..> InsightService
+AcervoFitService ..> InsightService : Score do Acervo e lacunas RF43
+AcervoFitService ..> ComplianceService : evaluateHypothetical RF32
+AcervoFitService ..> AcervoService : listCompatible RF5
+AcervoFitService ..> ProjectComposerService : composeFrom RF5
+AcervoFitService ..> TaskCreatorService : criar faltante RF4
+AcervoFitService ..> AiEngine : INSIGHT narrativa
+AcervoFitService ..> SearchIndexPort : buscar modelo RF17 RF40
+InsightService ..> MetricCalculator
+InsightService ..> Insight
+ComplianceService ..> ComplianceResult : em memória
+ClaudeGeminiAdapter ..> AiEngine : primário
+LocalEngine ..> AiEngine : fallback texto-padrão
 OpenSearchIndexAdapter ..|> SearchIndexPort
-ClaudeGeminiAdapter ..> AiEngine : provider
 
-note for TaskItem "tabela tasks · obrigatórios: title, category, accessClass, processTags ≥1, natureTags ≥1, dueAt quando a categoria tem prazo legal (CA04)"
-note for TaskAttachment "tabela task_attachments · mimeType detectado pelo conteúdo, não só pela extensão (CA01)"
-note for TaskVersion "tabela task_versions · itens VINCULADOS Google/Microsoft; revogar OAuth converte em snapshot (CA07)"
-note for LegalDeadlineRule "tabela legal_deadline_rules · companyId nulo = regra padrão (CA11)"
-note for TaskDetectionService "RESTRITO/SIGILOSO nunca vai a IA externa: result BLOQUEADO_SIGILO ou ai.local.only"
+note for AcervoFitService "serviço de orquestração (proposta) — não cria entidade nova: lê TaskItem, ComplianceChecklist e grava só Insight (A06) · requireOwner 403 (RF43.CA04)"
+note for ComplianceResult "hipotético: projectId nulo, não persistido (A02) · persistido só quando o projeto existe (RF32.CA02)"
+note for Insight "scope ACERVO, kind ADEQUACAO_PROCESSO · metricRefsJson cita métrica, valor, fórmula e fonte · actionsJson: criar faltante, buscar modelo, levar ao acervo, compor (A04, A06)"
+note for TaskItem "corpo do card RF20.CA01–15 (Criador de tarefas) está no RF4 — aqui a tarefa é só lida e, na ação criar faltante, nasce RASCUNHO com checklistItemId"
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph LU["Usuário"]
-    U1["Abre /tasks/new e escolhe a aba da fonte"]
-    U2["Etapa 3: revisa dados da tarefa, taxonomia oficial"]
-    U3["Etapa 4: Mais detalhes — chancelas sugeridas, visibilidade, estado inicial, situação, protocolo, guarda, Balcão, tags, dependências, projeto/fase"]
-    U4["Etapa 5: arte do card — thumbnail automático, capa manual ou IA, skin, pré-visualização"]
-    U5["Salvar"]
-    U6["Lote: revisa cada rascunho e confirma"]
+  subgraph LU["Usuário (empregado)"]
+    U1["Abre o Criador de Projetos e o painel Adequação do acervo"]
+    U2["Escolhe um processo (ProcessTag) e clica Avaliar adequação"]
+    U3["Clica numa ação de 1 clique da lacuna"]
+    U4["Clica Compor projeto com estas tarefas"]
   end
 
   subgraph LW["Web / BFF (Next.js App Router)"]
-    W1{"Qual fonte?"}
-    W2["Upload multipart / seletor Drive ou OneDrive via OAuth / colar / link / nº protocolo / QR do celular / pedido para IA"]
-    W3["Formulário pré-preenchido com confiança e faísca ✦, tudo editável"]
-    W4["Formulário vazio + aviso de preenchimento manual"]
-    W5["Destaca campos com mensagem i18n específica"]
-    W6["Card aparece no Acervo RF41 e, se indicado, no projeto/fase RF21"]
+    W1["ScoreBreakdown 0 a 100 + mapa de lacunas por processo"]
+    W2["Aviso: acervo com menos de 3 tarefas — o que coletar"]
+    W3["Espelho hipotético: % conformidade, itens ATENDIDO / RECOMENDADO_AUSENTE / OBRIGATORIO_AUSENTE ⛔ / FORA_DE_ORDEM, tarefa que satisfaz cada item, explicação ✦"]
+    W4{"Ação escolhida"}
+    W5["Abre Criador de tarefas pré-preenchido (RF4) — corpo deste card"]
+    W6["Abre Balcão (RF40) ou Buscar (RF17) filtrados pela categoria faltante"]
+    W7["Levar ao meu acervo tarefa compatível de colega (RF7)"]
+    W8["Compositor RF5 com fases pré-preenchidas; aviso se houver ⛔"]
+    W9["Erro específico (i18n)"]
   end
 
   subgraph LA["ws-application"]
-    A1["TaskCreatorService.receiveSource"]
-    A2{"Formato aceito e dentro do limite 50 MB / zip 200 MB?"}
-    A3["422 VALIDACAO: formato ou tamanho não aceito"]
-    A4["AntivirusPort.scan"]
-    A5{"Resultado do antivírus"}
-    A6["422 ARQUIVO_MALICIOSO: upload bloqueado e MediaObject descartado"]
-    A7{"Vários arquivos ou .zip?"}
-    A8["1 rascunho RASCUNHO por arquivo ou 1 PASTA com opção explodir em N tarefas"]
-    A9{"Colar: texto, tabela ou captura?"}
-    A10["TEXTO_MANUAL / PLANILHA / IMAGEM_EDITADA com conteúdo preservado"]
-    A11["E-mail: assunto → title, corpo → descriptionMd, remetente → senderOrigin, anexos → TaskAttachment ou tarefas filhas, thread em sourceRef"]
-    A12["Protocolo: TaskItem PROTOCOLO com link ao sistema de origem; ProtocolPort.lookup se houver integração"]
-    A13["Google/Microsoft: ExternalDocPort.fetch — VINCULADO assina mudanças, COPIADO gera snapshot"]
-    A14{"accessClass sugerida é RESTRITO ou SIGILOSO?"}
-    A15["TaskDetectionService.detect com campos mascarados ou IA local"]
-    A16["TaskDetectionService.detect"]
-    A17{"Confiança ≥ limiar e IA disponível?"}
-    A18["DeadlineService.compute: vencimento + explicação da base legal; sobrescrever exige legalOverrideReason"]
-    A19["OrgEntityService.searchWeb: candidatos Wikidata / CNPJ / site com logo tratado"]
-    A20["SealService.suggestForTask: até 3 chancelas; aceitar cria SealBond SUGERIDA → ACEITA; recusar não bloqueia"]
-    A21["TaskCreatorService.save → validate"]
-    A22{"Obrigatórios ok? title, category, accessClass, ≥1 processo, ≥1 natureza, prazo se exigido"}
-    A23["422 VALIDACAO com details por campo e correlationId"]
-    A24["Persiste TaskItem, TaskAttachment, ProjectTask se projeto/fase, ModelOffer se Oferecer no Balcão"]
-    A25["AFTER_COMMIT TaskCreated: PipelineJob THUMBNAIL, OCR, SYNC_EXTERNO; SearchIndexPort.indexTask"]
-    A26{"OcrPort / Estúdio disponível?"}
-    A27["Salva com arquivo original e PipelineJob OCR REPROCESSAR pendente, aviso no card"]
+    A1["AcervoFitService.requireOwner"]
+    A2{"viewer é o dono do acervo?"}
+    A3["403 ACESSO_NEGADO"]
+    A4["InsightService.acervo → MetricCalculator por métrica do catálogo"]
+    A5{"Amostra mínima? (≥ 3 tarefas)"}
+    A6["Score do Acervo 0 a 100 com decomposição + lacunas por ProcessTag × expectedCategory"]
+    A7["AcervoFitService.evaluate(processTag)"]
+    A8{"ComplianceChecklist ativo para o processo?"}
+    A9["404 CHECKLIST_NAO_ENCONTRADO + sugerir propor checklist RF32"]
+    A10["AcervoService.listCompatible por fase (PHASE_BY_CATEGORY), só DISPONIVEL / EM_USO / MODELO_PUBLICO"]
+    A11["buildHypothetical: ProjectDraft em memória com as tarefas por fase"]
+    A12["ComplianceService.evaluateHypothetical(draft, tasks) → ComplianceResult não persistido"]
+    A13["Persiste Insight scope ACERVO kind ADEQUACAO_PROCESSO com metricRefsJson e actionsJson"]
+    A14["applyAction: registra em Insight.actionsJson e redireciona"]
+    A15["composeFrom: ProjectComposerService.compose → ProjectScheme RASCUNHO, aiOrientation = processo, conformityPercent, hasBlockingPending"]
   end
 
   subgraph LI["IA (AiEngine)"]
-    I1["PREENCHER_TAREFA: tipo, categoria, subcategoria, título, resumo 3 linhas, departamento provável, órgão, partes, datas e prazo legal, valor, palavras-chave, sigilo sugerido + confiança por campo"]
-    I2["Redige TEXTO_IA no padrão do departamento a partir do pedido e até 5 tarefas de referência"]
-    I3["THUMBNAIL / CAPA_IA assíncronos"]
+    I1{"IA disponível e accessClass permite?"}
+    I2["INSIGHT: redige até 3 frases por lacuna citando métrica e valor · faísca ✦ · AiInferenceLog"]
+    I3["LocalEngine: texto-padrão com os mesmos números · fallbackUsed"]
   end
 
   subgraph LP["Persistência"]
-    P1[("S3: MediaObject original + variantes")]
-    P2[("MySQL: tasks, task_attachments, task_versions, project_tasks, model_offers, seal_bonds")]
-    P3[("MySQL: ai_inference_log")]
-    P4[("MySQL: pipeline_jobs")]
-    P5[("OpenSearch: índice de tarefas + texto OCR")]
+    P1[("MySQL: tasks, task_attachments, metric_definitions, metric_snapshots")]
+    P2[("MySQL: compliance_checklists, compliance_items")]
+    P3[("MySQL: insights, ai_inference_log")]
+    P4[("MySQL: project_schemes, project_tasks (RASCUNHO) · tasks RASCUNHO com checklistItemId")]
   end
 
-  U1 --> W1
-  W1 -->|"Arquivo / Foto"| W2 --> A1 --> A2
-  W1 -->|"Colar"| A9
-  W1 -->|"E-mail"| A11
-  W1 -->|"Protocolo"| A12
-  W1 -->|"Google / Microsoft"| A13
-  W1 -->|"Texto com IA"| I2
-  A2 -->|"não"| A3
-  A2 -->|"sim"| P1 --> A4 --> A5
-  A5 -->|"INFECTADO"| A6
-  A5 -->|"LIMPO"| A7
-  A7 -->|"sim"| A8 --> U6
-  A7 -->|"não"| A14
-  A9 --> A10 --> A14
-  A11 --> A14
-  A12 --> A14
-  A13 --> A14
-  I2 --> P3
-  I2 --> W3
-  A14 -->|"sim"| A15
-  A14 -->|"não"| A16
-  A15 --> I1
-  A16 --> I1
-  I1 --> P3
-  I1 --> A17
-  A17 -->|"sim"| W3
-  A17 -->|"não ou indisponível"| W4
-  W3 --> U2
-  W4 --> U2
-  U2 --> A18
-  U2 --> A19
-  U2 --> U3
-  U3 --> A20
-  U3 --> U4 --> U5 --> A21 --> A22
-  A22 -->|"não"| A23 --> W5 --> U2
-  A22 -->|"sim"| A26
-  A26 -->|"não"| A27 --> A24
-  A26 -->|"sim"| A24
-  A24 --> P2
-  A24 --> A25
-  A25 --> P4
-  A25 --> I3
-  A25 --> P5
-  A25 --> W6
-  U6 --> A21
+  U1 --> A1 --> A2
+  A2 -->|"não"| A3 --> W9
+  A2 -->|"sim"| A4 --> P1
+  A4 --> A5
+  A5 -->|"não"| W2
+  A5 -->|"sim"| A6 --> W1
+  W1 --> U2 --> A7 --> A8
+  A8 -->|"não"| A9 --> W9
+  A8 -->|"sim"| A10 --> P1
+  A10 --> A11 --> A12 --> P2
+  A12 --> I1
+  I1 -->|"sim"| I2 --> A13
+  I1 -->|"não"| I3 --> A13
+  A13 --> P3
+  A13 --> W3
+  W3 --> U3 --> A14 --> W4
+  W4 -->|"criar faltante"| W5 --> P4
+  W4 -->|"buscar modelo"| W6
+  W4 -->|"levar ao acervo"| W7
+  W5 -.->|"ao voltar, recalcula"| A7
+  W6 -.->|"ao voltar, recalcula"| A7
+  W7 -.->|"ao voltar, recalcula"| A7
+  W3 --> U4 --> A15 --> P4
+  A15 --> W8
 
   classDef err fill:#ffe3e3,stroke:#c0392b,color:#5a1a12
   classDef warn fill:#fff4d6,stroke:#b7791f,color:#5a3b06
-  class A3,A6,A23 err
-  class W4,A27 warn
+  classDef ai fill:#fff3d6,stroke:#d68910,color:#5c3b00
+  class A3,A9,W9 err
+  class W2,I3 warn
+  class I1,I2 ai
 ```
 
 ## 3. Diagrama de sequência
@@ -630,144 +402,114 @@ sequenceDiagram
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant OS as OpenSearch
-  participant S3 as S3
-  participant DE as DomainEvents (AFTER_COMMIT)
 
-  U->>NX: arrasta oficio.pdf em /tasks/new (aba Arquivo)
-  NX->>C: POST /api/tasks/sources (multipart)
-  C->>S: TaskCreatorService.receiveSource(userId, file)
-  S->>S: detecta MIME pelo conteúdo, valida formato e limite 50 MB
-  alt formato ou tamanho não aceito
-    S-->>C: 422 VALIDACAO {details: [{field: file, code: FORMATO_NAO_ACEITO}], correlationId}
-    C-->>NX: 422
-    NX-->>U: mensagem clara do motivo (CA01)
-  else aceito
-    S->>S3: MediaStoragePort.put(stream, mimeType, accessClass INTERNO)
-    S3-->>S: MediaObject {id, sha256}
-    S->>S: AntivirusPort.scan(mediaId)
-    alt INFECTADO
-      S->>S3: delete(mediaId)
-      S-->>C: 422 ARQUIVO_MALICIOSO
-      C-->>NX: 422
-      NX-->>U: upload bloqueado (CA01)
-    else LIMPO
-      S->>DB: INSERT task_attachments (antivirusStatus LIMPO) ligado a rascunho temporário
-      S-->>C: 201 SourceReceipt {sourceReceiptId, type sugerido DOCUMENTO}
-      C-->>NX: 201
+  U->>NX: abre /projects/new?painel=adequacao (A01)
+  NX->>C: GET /api/acervo-fit/score
+  C->>S: AcervoFitService.requireOwner + InsightService.acervo(userId)
+  S->>DB: tasks do dono (state, category, processTags, dueAt, legalDueAt, reuseCount) + task_attachments + metric_definitions
+  alt acervo com menos de 3 tarefas
+    S-->>C: 200 {insufficientSample true, whatToCollect [...]}
+    C-->>NX: 200
+    NX-->>U: o que coletar, sem números vazios
+  else amostra ok
+    S->>S: MetricCalculator: cobertura por processo, paradas, duplicadas, fantasma, prazos em risco, reutilização → Score 0 a 100
+    S->>DB: INSERT metric_snapshots (scope USUARIO)
+    S-->>C: 200 {score 62, breakdown, gapsByProcess {LICITACAO [ETP, PARECER_TECNICO], OBRA [LICENCA_ANUENCIA]}}
+    C-->>NX: 200
+    NX-->>U: ScoreBreakdown + mapa de lacunas por processo
+  end
+
+  U->>NX: escolhe LICITACAO e clica Avaliar adequação (A02)
+  NX->>C: POST /api/acervo-fit/evaluate {processTag LICITACAO}
+  C->>S: AcervoFitService.evaluate(userId, LICITACAO)
+  S->>DB: compliance_checklists WHERE processTag = LICITACAO AND active AND (departmentId = meu OR null) + compliance_items
+  alt nenhum checklist ativo para o processo (A06)
+    S-->>C: 404 CHECKLIST_NAO_ENCONTRADO {hint propor checklist RF32}
+    C-->>NX: 404
+    NX-->>U: sugere propor checklist ao chefe
+  else checklist encontrado
+    S->>S: AcervoService.listCompatible por fase via PHASE_BY_CATEGORY (DISPONIVEL, EM_USO, MODELO_PUBLICO)
+    S->>S: buildHypothetical → ProjectDraft em memória (7 fases)
+    S->>S: ComplianceService.evaluateHypothetical(draft, tasks) → percent 58, blockingCount 2, itemsJson
+    alt IA disponível e nenhuma tarefa RESTRITO/SIGILOSO no draft (A03)
+      S->>AI: infer(INSIGHT, {percent, items, gaps, metricRefs})
+      AI-->>S: narrativa por lacuna citando métrica e valor + AiInferenceLog OK
+    else IA indisponível, cota esgotada ou sigilo
+      S->>AI: LocalEngine texto-padrão
+      AI-->>S: narrativa padrão, fallbackUsed true, mesmos números
     end
-  end
-
-  NX->>C: POST /api/tasks/detect {sourceReceiptId}
-  C->>S: TaskDetectionService.detect(userId, receipt)
-  S->>S: accessClass sugerida RESTRITO/SIGILOSO? mascara campos ou usa ai.local.only
-  S->>AI: infer(PREENCHER_TAREFA, {texto extraído, nome do arquivo, departamento})
-  alt IA indisponível ou confiança abaixo do limiar
-    AI-->>S: result FALLBACK ou ERRO
-    S->>DB: INSERT ai_inference_log (result FALLBACK)
-    S-->>C: 200 DetectionResult {fields: vazio, warning: PREENCHIMENTO_MANUAL}
+    S->>DB: INSERT insights (scope ACERVO, scopeId userId, kind ADEQUACAO_PROCESSO, metricRefsJson, actionsJson, severity, aiInferenceId)
+    S-->>C: 200 AcervoFitReport {percent 58, items [ETP OBRIGATORIO_AUSENTE, PARECER_TECNICO OBRIGATORIO_AUSENTE, TR ATENDIDO por T12, PLANILHA FORA_DE_ORDEM], actions, narrative ✦}
     C-->>NX: 200
-    NX-->>U: formulário vazio + aviso, cadastro não bloqueado (CA03)
-  else sucesso
-    AI-->>S: {type, category, subcategory, title, summary, departmentId, orgEntity, parties, dates, legalDeadline, amount, keywords, accessClass, confidence por campo}
-    S->>DB: INSERT ai_inference_log (capability PREENCHER_TAREFA, result OK)
-    S-->>C: 200 DetectionResult + aiInferenceId + aiConfidenceJson
-    C-->>NX: 200
-    NX-->>U: campos pré-preenchidos, editáveis, com confiança e faísca ✦ (CA02)
+    NX-->>U: Espelho hipotético com ⛔ nas 2 lacunas obrigatórias e explicação ✦
   end
 
-  U->>NX: escolhe categoria OFICIO_MEMORANDO e data-base 2026-03-10
-  NX->>C: GET /api/legal-deadlines/compute?category=OFICIO_MEMORANDO&baseDate=2026-03-10
-  C->>S: DeadlineService.compute(category, subcategory, baseDate, companyId)
-  S->>DB: legal_deadline_rules WHERE category AND active AND companyId IN (empresa, null)
-  S-->>C: {legalDueAt, explanation: "15 dias úteis a partir do recebimento — base legal X", ruleId}
+  U->>NX: na lacuna ETP clica Criar tarefa faltante (A04)
+  NX->>C: POST /api/acervo-fit/{insightId}/action {actionCode CRIAR_FALTANTE, itemId ETP}
+  C->>S: AcervoFitService.applyAction
+  S->>DB: UPDATE insights SET actionsJson[CRIAR_FALTANTE].appliedAt
+  S->>S: TaskCreatorService.prefill(category ETP, type ESTUDO_TECNICO_PRELIMINAR, phase PLANEJAMENTO, checklistItemId)
+  S-->>C: 200 {redirect /tasks/new?prefill=...}
   C-->>NX: 200
-  NX-->>U: vencimento calculado e explicado, sobrescrever exige justificativa (CA11)
-
-  U->>NX: digita "Prefeitura de Londrina" no campo Órgão e aciona busca web
-  NX->>C: GET /api/org-entities/search?q=Prefeitura+de+Londrina
-  C->>S: OrgEntityService.searchWeb(q) via OrgLookupPort
-  S-->>C: candidatos {name, source WIKIDATA/CNPJ/SITE, cnpj, logoUrl tratado}
+  NX-->>U: Criador de tarefas pré-preenchido (RF4 — corpo deste card)
+  Note over U,DB: ao salvar a tarefa (RF4) e voltar, o painel chama evaluate de novo e o item ETP passa a ATENDIDO
+  U->>NX: na lacuna PARECER_TECNICO clica Buscar modelo
+  NX->>C: POST /api/acervo-fit/{insightId}/action {actionCode BUSCAR_MODELO, itemId PARECER}
+  C->>S: AcervoFitService.applyAction
+  S->>OS: search ws-tasks {category PARECER_TECNICO, state MODELO_PUBLICO ou offeredInCounter, visibilityFilter}
+  OS-->>S: modelos compatíveis
+  S-->>C: 200 {redirect /search?tab=TAREFAS&categoria=PARECER_TECNICO&chancelado=true}
   C-->>NX: 200
-  U->>NX: escolhe candidato (CA10)
 
-  NX->>C: GET /api/tasks/seal-suggestions?draftId
-  C->>S: SealService.suggestForTask(draft)
-  S->>AI: infer(SUGERIR_CHANCELA, {tarefa, modelos chancelados})
-  AI-->>S: até 3 chancelas com confiança e justificativa
-  S-->>C: 200 sugestões
-  U->>NX: aceita 1 chancela, recusa as outras (CA13)
+  U->>NX: clica Compor projeto com estas tarefas (A05)
+  NX->>C: POST /api/acervo-fit/{reportId}/compose
+  C->>S: AcervoFitService.composeFrom(userId, reportId)
+  S->>S: ProjectComposerService.compose(form do draft, creationMode MANUAL, aiOrientation LICITACAO)
+  S->>DB: INSERT project_schemes (RASCUNHO, origin CRIAR_PROJETO, processTags [LICITACAO], conformityPercent 58, hasBlockingPending true) + project_tasks por fase
+  S-->>C: 201 {projectId, warnings [PENDENCIA_BLOQUEANTE: ETP, PARECER_TECNICO]}
+  C-->>NX: 201
+  NX-->>U: compositor RF5 aberto com as fases preenchidas e aviso ⛔ (aviso, não impedimento)
 
-  U->>NX: Salvar (visibilidade DEPARTAMENTO, estado DISPONIVEL, Oferecer no Balcão 20 DP, projeto X fase DEMANDA)
-  NX->>C: POST /api/tasks {TaskForm}
-  C->>S: TaskCreatorService.save(userId, form)
-  S->>S: validate obrigatórios: title, category, accessClass, processTags ≥1, natureTags ≥1, dueAt se prazo legal
-  alt erro de validação
-    S-->>C: 422 VALIDACAO {details: [{field: natureTags, code: MINIMO_1}], correlationId}
-    C-->>NX: 422
-    NX-->>U: campos destacados com mensagem i18n (CA14)
-  else válido
-    S->>DB: INSERT tasks (sourceKind ARQUIVO, state DISPONIVEL, aiInferenceId, orgEntityId, legalDueAt)
-    S->>DB: UPDATE task_attachments SET taskId
-    S->>DB: INSERT project_tasks (projectId X, phase DEMANDA, responsibleId = dono, dueAt = prazo) (CA04)
-    S->>DB: INSERT model_offers (pricePoints 20, license) (CA15)
-    S->>DB: INSERT seal_bonds (status ACEITA, requiresReview conforme política do emissor) (CA13)
-    S->>DE: publish TaskCreated {taskId, correlationId}
-    S-->>C: 201 TaskItem
-    C-->>NX: 201
-    NX-->>U: card aparece imediatamente no Acervo RF41 e no projeto/fase (CA04)
-  end
-
-  DE->>DB: INSERT pipeline_jobs THUMBNAIL, OCR (PENDENTE)
-  DE->>AI: infer(THUMBNAIL, {mediaId, type DOCUMENTO}) assíncrono
-  AI-->>DE: thumbnailUrl
-  DE->>DB: UPDATE tasks SET thumbnailUrl, coverMode AUTO
-  alt OcrPort indisponível
-    DE->>DB: UPDATE pipeline_jobs SET status REPROCESSAR, lastError (CA12)
-    Note over DE,NX: card mostra aviso "OCR pendente", arquivo original preservado
-  else OCR ok
-    DE->>OS: indexTask(task, ocrText)
-    DE->>DB: UPDATE task_attachments SET ocrStatus OK, ocrTextRef
-  end
-
-  Note over NX,DE: Item VINCULADO (Google/Microsoft): webhook de mudança → AcervoService.syncLinkedVersion → INSERT task_versions, novo thumbnail (CA07). Revogar OAuth → convertLinkToSnapshot (linkMode COPIADO).
+  U->>NX: tenta avaliar o acervo de um colega pela URL (A06)
+  NX->>C: GET /api/acervo-fit/score?userId=outro
+  C->>S: AcervoFitService.requireOwner
+  S-->>C: 403 ACESSO_NEGADO
+  C-->>NX: 403
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: **`TaskItem.state`** (enum `TaskState`). O RF20 cria a tarefa em **RASCUNHO** (lote, "Texto com IA" não confirmado, projeto ainda não escolhido) ou **DISPONIVEL** (estado inicial escolhido na etapa 4) e, quando o usuário marca "Oferecer no Balcão", ela também fica **OFERECIDA** (RF40). As demais transições pertencem ao RF41/RF21 e estão indicadas para contexto.
+O RF20 (título) não cria estados próprios: nada do que ele avalia é persistido além do **`Insight`**, cujo ciclo (sem enum na TAXONOMIA — `generatedAt` → `actionsJson[].appliedAt` → `dismissedAt`) é mostrado abaixo. O segundo bloco mostra o efeito das ações de 1 clique sobre `TaskItem.state` (`TaskState`) e o terceiro o nascimento do `ProjectScheme` (`ProjectStatus`) a partir do painel. Os estados do corpo do card (criador de tarefas) estão em `_anterior/RF20` §4 e no RF4.
 
 ```mermaid
 stateDiagram-v2
-  [*] --> RASCUNHO : salvar como rascunho / 1 rascunho por arquivo do lote / PASTA a explodir
-  [*] --> DISPONIVEL : salvar com estado inicial DISPONIVEL e obrigatórios válidos
-  RASCUNHO --> DISPONIVEL : confirmar lote ou completar obrigatórios
-  RASCUNHO --> ARQUIVADA : descartar rascunho
-  DISPONIVEL --> EM_USO : ProjectTask criada no RF21 ou vínculo direto a projeto/fase no criador
-  DISPONIVEL --> OFERECIDA : Oferecer no Balcão com pricePoints e license, RF40
-  OFERECIDA --> DISPONIVEL : retirar oferta
-  EM_USO --> DISPONIVEL : removida de todos os projetos
-  DISPONIVEL --> BLOQUEADA : blockedByTaskId / blockedByUserId + blockReason
-  EM_USO --> BLOQUEADA : dependência predecessora pendente
-  BLOQUEADA --> EM_USO : desbloqueio
-  EM_USO --> CONCLUIDA : percentComplete 100 ou marcada concluída
-  DISPONIVEL --> CONCLUIDA : marcada concluída
-  CONCLUIDA --> ARQUIVADA : arquivar
-  DISPONIVEL --> ARQUIVADA : arquivar
-  DISPONIVEL --> MODELO_PUBLICO : chancela APROVADA ou publicação como modelo
-  CONCLUIDA --> MODELO_PUBLICO : chancela APROVADA
-  MODELO_PUBLICO --> OFERECIDA : oferecer no Balcão como modelo chancelado
-  ARQUIVADA --> [*]
-  note right of RASCUNHO
-    Lote ou .zip: um RASCUNHO por arquivo, revisados antes de confirmar (CA05).
-    Detecção sem confiança: formulário vazio, mas o cadastro segue (CA03).
+  state "Insight scope ACERVO kind ADEQUACAO_PROCESSO (A06)" as IN {
+    [*] --> GERADO : evaluate(processTag) grava metricRefsJson, actionsJson, severity
+    GERADO --> ACAO_APLICADA : applyAction CRIAR_FALTANTE, BUSCAR_MODELO, LEVAR_AO_ACERVO (appliedAt)
+    ACAO_APLICADA --> GERADO : usuário volta ao painel, novo evaluate substitui o Insight
+    GERADO --> DISPENSADO : usuário dispensa, dismissedAt
+    ACAO_APLICADA --> DISPENSADO : dispensa
+    GERADO --> GERADO : recálculo diário do Score do Acervo (RF43)
+    DISPENSADO --> [*]
+  }
+  state "TaskItem.state — efeito das ações de 1 clique (A04)" as TS {
+    [*] --> RASCUNHO : CRIAR_FALTANTE abre RF4 com checklistItemId
+    RASCUNHO --> DISPONIVEL : tarefa salva com obrigatórios (RF4) — lacuna vira ATENDIDO
+    DISPONIVEL --> EM_USO : composeFrom cria ProjectTask (A05)
+    MODELO_PUBLICO --> DISPONIVEL : LEVAR_AO_ACERVO copia modelo de colega (RF7)
+  }
+  state "ProjectScheme.status — nasce do painel (A05)" as PS {
+    [*] --> RASCUNHO : composeFrom com conformityPercent e hasBlockingPending
+    RASCUNHO --> PUBLICADO : publicar no compositor RF5 — ⛔ é aviso, não impedimento (RF32.CA04)
+  }
+  note right of IN
+    Avaliação hipotética não persiste ProjectScheme nem ComplianceResult (A02).
+    Só o Insight fica, visível em Insights › Acervo até dismissedAt.
+    Acervo de terceiro: 403 ACESSO_NEGADO.
   end note
-  note right of DISPONIVEL
-    Aparece imediatamente no Acervo RF41 (CA04).
-    PipelineJob THUMBNAIL/OCR roda após o commit; OCR indisponível
-    deixa job REPROCESSAR e aviso no card (CA12).
-  end note
-  note left of OFERECIDA
-    Visível na sub-aba Modelos oferecidos com preço em DP e licença (CA15).
+  note right of TS
+    Score do Acervo e lacunas recalculados a cada volta ao painel.
+    Tarefas RESTRITO/SIGILOSO entram nos números, mas nunca vão à IA externa (A03).
   end note
 ```
 
@@ -776,124 +518,78 @@ stateDiagram-v2
 ```mermaid
 flowchart LR
   subgraph FE["Frontend Next.js"]
-    F1["app/tasks/new — 5 etapas"]
-    F2["components/ui: SourceTabs, DropZone, ClipboardPaste, DrivePicker, OneDrivePicker, EmailDrop, ProtocolInput, QrPhotoCapture, DocumentStudio, AiComposer"]
-    F3["components/ui: TaskForm taxonomia oficial, ConfidenceBadge ✦, LegalDeadlineHint ⚖, OrgSearch, SealSuggestions, CardPreview, CardArtStudio"]
-    F4["Modal reutilizado pelo Criador de Projetos RF21"]
+    F1["app/projects/new — Criador de Projetos (RF5) com painel Adequação do acervo"]
+    F2["app/insights/acervo — Insights › Acervo (RF43)"]
+    F3["components/ui: ScoreBreakdown 0 a 100, GapMap ProcessTag × categoria, ProcessPicker, MirrorPanel (itens ATENDIDO / AUSENTE ⛔ / FORA_DE_ORDEM), SparkBadge ✦, OneClickAction (criar faltante, buscar modelo, levar ao acervo), ComposeFromReportButton, InsufficientSampleCard"]
+    F4["Destinos das ações: app/tasks/new (RF4 — corpo do card), app/search (RF17), Balcão (RF40), compositor RF5"]
   end
 
   subgraph WEB["ws-web"]
-    C1["TaskController — /api/tasks, /sources, /detect, /batch/confirm"]
-    C2["DeadlineController — /api/legal-deadlines/compute"]
-    C3["OrgEntityController — /api/org-entities/search"]
-    C4["ExternalDocWebhookController — /api/webhooks/google-drive, /microsoft-graph"]
-    C5["EmailInboundController — /api/inbound/email"]
+    C1["AcervoFitController — /api/acervo-fit/score, /evaluate, /{insightId}/action, /{reportId}/compose"]
+    C2["InsightController RF43 — /api/insights/acervo"]
   end
 
   subgraph APP["ws-application"]
-    S1["TaskCreatorService"]
-    S2["TaskDetectionService"]
-    S3["DeadlineService"]
-    S4["AcervoService RF41"]
-    S5["OrgEntityService"]
-    S6["SealService RF39"]
-    S7["AiEngine"]
-    P1["MediaStoragePort"]
-    P2["AntivirusPort"]
-    P3["OcrPort"]
-    P4["ExternalDocPort"]
-    P5["ProtocolPort"]
-    P6["OrgLookupPort"]
-    P7["SearchIndexPort"]
+    S1["AcervoFitService (orquestração, proposta)"]
+    S2["InsightService + MetricCalculator RF43"]
+    S3["ComplianceService RF32 — evaluateHypothetical"]
+    S4["AcervoService + ProjectComposerService RF5"]
+    S5["TaskCreatorService RF4"]
+    S6["AiEngine — INSIGHT (Strategy + Chain: Claude → Gemini → LocalEngine)"]
+    P1["SearchIndexPort"]
   end
 
   subgraph DOM["ws-domain"]
-    D1["TaskItem · TaskAttachment · TaskVersion · LegalDeadlineRule · OrgEntity · Evidence"]
-    D2["ProjectTask · SealBond · ModelOffer"]
-    D3["MediaObject · PipelineJob · AiInferenceLog · DomainEventOutbox"]
+    D1["TaskItem · TaskAttachment · enums ProcessTag, TaskState"]
+    D2["ComplianceChecklist · ComplianceItem · ComplianceResult (em memória) · ProjectScheme · ProjectTask"]
+    D3["Insight · MetricDefinition · MetricSnapshot · AiInferenceLog"]
   end
 
   subgraph INFRA["ws-infrastructure/*"]
-    I1[("persistence-mysql: tasks, task_attachments, task_versions, legal_deadline_rules, org_entities, project_tasks, seal_bonds, model_offers, pipeline_jobs, ai_inference_log")]
-    I2[("storage-s3: S3StorageAdapter — originais, thumbnails, snapshots")]
-    I3[("search-opensearch: OpenSearchIndexAdapter — índice de tarefas + texto OCR")]
-    I4["ai-providers: ClaudeGeminiAdapter + fallback local — PREENCHER_TAREFA, SUGERIR_CHANCELA, THUMBNAIL, CAPA_IA"]
-    I5["platform: ClamAvAdapter, TesseractOcrAdapter, GoogleDriveAdapter, MicrosoftGraphAdapter, EProtocoloAdapter, WikidataCnpjAdapter, EmailInboundAdapter, PipelineJob worker, outbox AFTER_COMMIT"]
+    I1[("persistence-mysql: tasks, task_attachments, compliance_checklists, compliance_items, project_schemes, project_tasks, insights, metric_definitions, metric_snapshots, ai_inference_log")]
+    I2["ai-providers: ClaudeGeminiAdapter + LocalEngine fallback, AiProviderCircuitState"]
+    I3[("search-opensearch: ws-tasks — modelos chancelados e ofertados")]
+    I4[("cache-redis: quota IA, score do dia")]
   end
 
   subgraph EXT["Serviços externos"]
     E1(("Claude / Gemini"))
-    E2(("Google Workspace: Drive, Gmail, Agenda"))
-    E3(("Microsoft 365: OneDrive, SharePoint, Outlook, Teams"))
-    E4(("e-Protocolo / SEI"))
-    E5(("Wikidata / Receita CNPJ / site oficial"))
-    E6(("Servidor de e-mail tarefas+usuario@workai"))
   end
 
-  F1 --- F2
   F1 --- F3
-  F4 --- F1
-  F1 -->|"HTTPS/JSON multipart"| C1
-  F3 -->|"HTTPS/JSON"| C2
-  F3 -->|"HTTPS/JSON"| C3
+  F2 --- F3
+  F3 --- F4
+  F1 -->|"HTTPS/JSON"| C1
+  F2 -->|"HTTPS/JSON"| C2
   C1 --> S1
-  C1 --> S2
-  C1 --> S6
-  C2 --> S3
-  C3 --> S5
-  C4 --> S4
-  C5 --> S1
+  C2 --> S2
+  S1 --> S2
   S1 --> S3
   S1 --> S4
+  S1 --> S5
+  S1 --> S6
   S1 --> P1
-  S1 --> P2
-  S1 --> P4
-  S1 --> P5
-  S1 --> P7
-  S2 --> S7
-  S2 --> P3
-  S4 --> P4
-  S4 --> P3
-  S5 --> P6
-  S6 --> S7
   S1 --> D1
-  S1 --> D2
-  S1 --> D3
+  S2 --> D3
+  S3 --> D2
+  S4 --> D2
   D1 --> I1
   D2 --> I1
   D3 --> I1
-  P1 --> I2
-  P7 --> I3
-  S7 --> I4
-  P2 --> I5
-  P3 --> I5
-  P4 --> I5
-  P5 --> I5
-  P6 --> I5
-  I4 -.-> E1
-  I5 -.->|"OAuth do usuário + webhooks"| E2
-  I5 -.->|"OAuth do usuário + webhooks"| E3
-  I5 -.-> E4
-  I5 -.-> E5
-  E6 -.-> C5
+  S6 --> I2
+  S6 --> I4
+  P1 --> I3
+  I2 -.-> E1
 ```
 
 ## 6. Rastreabilidade
 
 | CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
 |---|---|
-| RF20.CA01 | Classes `TaskAttachment.mimeType detectado/antivirusStatus`, `MediaObject`, `AntivirusPort`, `ClamAvAdapter`, `TaskCreatorService.receiveSource` · Atividades `A1 → A2 → A3 422 VALIDACAO`, `A4 → A5 → A6 422 ARQUIVO_MALICIOSO` · Sequência msgs 1–17 (dois `alt`) · Componentes `DropZone`, `DrivePicker`, `OneDrivePicker`, `AntivirusPort → platform ClamAvAdapter`, `storage-s3` |
-| RF20.CA02 | Classes `TaskDetectionService.detect`, `AiEngine`, `AiInferenceLog` (capability PREENCHER_TAREFA), `TaskItem.aiGenerated/aiInferenceId/aiConfidenceJson` · Atividades `A14 → A15/A16 → I1 → P3 → A17 → W3` · Sequência msgs 18–21 e `else sucesso` (msgs 27–31) · Componentes `ConfidenceBadge ✦`, `ai-providers` |
-| RF20.CA03 | `TaskDetectionService.confidenceThreshold` · Atividades `A17 → W4` (formulário vazio + aviso) · Sequência `alt IA indisponível ou confiança abaixo do limiar` (msgs 22–26) |
-| RF20.CA04 | Classes `TaskItem` (nota de obrigatórios), `ProjectTask`, `TaskCreatorService.save/linkToProject`, `AcervoService.addToAcervo` · Atividades `A21 → A22 → A24 → P2 → A25 → W6` · Sequência msgs 51–54 e 58–66 (save, INSERT tasks, project_tasks, 201, card no Acervo) · Transição `[*] → DISPONIVEL` e `DISPONIVEL → EM_USO` · Componente `AcervoService RF41` |
-| RF20.CA05 | `TaskCreatorService.createDraftsFromBatch`, enum `TaskType.PASTA` · Atividades `A7 → A8 → U6 → A21` · Transição `[*] → RASCUNHO` (1 por arquivo / PASTA a explodir) e nota · Componente `TaskController /batch/confirm` |
-| RF20.CA06 | `TaskCreatorService.createFromPaste`, enum `SourceKind.COLAR`, `TaskType` TEXTO_MANUAL/PLANILHA/IMAGEM_EDITADA · Atividades `W1 → A9 → A10` · Componente `ClipboardPaste` |
-| RF20.CA07 | Classes `TaskVersion`, `TaskItem.linkMode/sourceRef`, enum `LinkMode`, `ExternalDocPort.subscribeChanges/revoke`, `AcervoService.syncLinkedVersion/convertLinkToSnapshot`, `ExternalDocWebhookController`, `GoogleDriveAdapter`, `MicrosoftGraphAdapter` · Atividades `A13` · Sequência nota final (webhook → task_versions; revogar → snapshot) · Componentes `C4`, `I5 → E2/E3` com OAuth do usuário |
-| RF20.CA08 | `TaskCreatorService.createFromEmail`, `EmailInboundController`, enum `SourceKind.EMAIL`, `TaskType.EMAIL`, `TaskItem.senderOrigin/sourceRef` · Atividades `W1 → A11` · Componentes `EmailDrop`, `C5`, `E6 → C5` |
-| RF20.CA09 | `TaskCreatorService.createFromProtocol`, `ProtocolPort.lookup`, `EProtocoloAdapter`, `TaskItem.protocolNumber`, `TaskType.PROTOCOLO` · Atividades `W1 → A12` · Componentes `ProtocolInput`, `P5 → I5 → E4` |
-| RF20.CA10 | Classes `OrgEntity` (source WIKIDATA/CNPJ/SITE, externalRef, logoUrl), `OrgEntityService.searchWeb/pick`, `OrgLookupPort`, `WikidataCnpjAdapter` · Atividades `A19` · Sequência msgs 39–44 · Componentes `OrgSearch`, `C3`, `E5` |
-| RF20.CA11 | Classes `LegalDeadlineRule`, `TaskItem.legalDeadlineRuleId/legalDeadlineBaseDate/legalDueAt/legalOverrideReason`, `DeadlineService.compute/explain/override` · Atividades `A18` · Sequência msgs 32–38 · Componentes `LegalDeadlineHint ⚖`, `DeadlineController` |
-| RF20.CA12 | Classes `PipelineJob` (status REPROCESSAR, lastError), `OcrPort`, `TaskAttachment.ocrStatus` · Atividades `A26 → A27 → A24` · Sequência `alt OcrPort indisponível` (msg 71 + nota "OCR pendente") · Nota do estado DISPONIVEL · Componente `platform PipelineJob worker` |
-| RF20.CA13 | Classes `SealBond` (status SUGERIDA → ACEITA, requiresReview, origin SUGESTAO_IA), `SealService.suggestForTask/accept` · Atividades `A20` · Sequência msgs 45–50 e INSERT seal_bonds (msg 62) · Componente `SealSuggestions`, `SealService RF39` |
-| RF20.CA14 | `TaskCreatorService.validate` (422 VALIDACAO details por campo) · Atividades `A22 → A23 → W5` · Sequência `alt erro de validação` (msgs 55–57) com `details` e `correlationId` · Componente `TaskForm` (mensagens i18n) |
-| RF20.CA15 | Classes `ModelOffer` (pricePoints, license), `TaskItem.offeredInCounter`, `TaskCreatorService.offerInCounter` · Atividades `U3` (Oferecer no Balcão) → `A24` · Sequência INSERT model_offers (msg 61) · Transição `DISPONIVEL → OFERECIDA` e nota |
+| RF20.A01 | Classes `Insight` (scope ACERVO, metricRefsJson), `MetricDefinition`, `MetricSnapshot`, `TaskItem` (state, processTags, dueAt, legalDueAt, reuseCount), `TaskAttachment` (fantasma), `InsightService.acervo`, `MetricCalculator` · Atividades `U1 → A1 → A4 → P1 → A5 → W2 / A6 → W1` · Sequência msgs 1–13 (`alt acervo com menos de 3 tarefas`, `Score 62, breakdown, gapsByProcess`) · Componentes `ScoreBreakdown`, `GapMap`, `InsufficientSampleCard`, `InsightService + MetricCalculator RF43` |
+| RF20.A02 | Classes `ComplianceChecklist`, `ComplianceItem` (expectedPhase, expectedCategory), `ComplianceResult` (nota "hipotético não persistido"), `AcervoFitService.evaluate/buildHypothetical`, `AcervoService.listCompatible`, `ComplianceService.evaluateHypothetical`, enum `ProcessTag` · Atividades `U2 → A7 → A8 → A10 → A11 → A12 → P2` · Sequência msgs 14–24 e 31–34 (`listCompatible … PHASE_BY_CATEGORY`, `buildHypothetical`, `evaluateHypothetical → percent 58, blockingCount 2`) · Nota da máquina *Insight* ("não persiste ProjectScheme nem ComplianceResult") · Componentes `ProcessPicker`, `MirrorPanel`, `ComplianceService RF32` |
+| RF20.A03 | `AiEngine.infer(INSIGHT)`, `AiInferenceLog` (fallbackUsed), `LocalEngine`, `ClaudeGeminiAdapter`, `TaskItem.accessClass` · Atividades `I1 → I2 / I3 → A13` · Sequência msgs 25–30 (`alt IA disponível e nenhuma tarefa RESTRITO/SIGILOSO` / `LocalEngine texto-padrão, mesmos números`) · Nota da máquina *TaskItem.state* (sigilo) · Componentes `SparkBadge ✦`, `ai-providers`, `Claude / Gemini` |
+| RF20.A04 | `Insight.actionsJson`, `AcervoFitService.applyAction`, `TaskCreatorService.prefill`, `TaskItem.checklistItemId`, `SearchIndexPort.search` · Atividades `U3 → A14 → W4 → W5 (RF4) / W6 (RF17, RF40) / W7 (RF7)` e retornos "ao voltar, recalcula" · Sequência msgs 35–50 (`CRIAR_FALTANTE → redirect /tasks/new?prefill`, nota de recálculo, `BUSCAR_MODELO → search ws-tasks … → redirect /search`) · Transições `GERADO → ACAO_APLICADA → GERADO`, `[*] → RASCUNHO → DISPONIVEL`, `MODELO_PUBLICO → DISPONIVEL` · Componentes `OneClickAction`, `app/tasks/new (RF4)`, `app/search (RF17)`, `Balcão (RF40)` |
+| RF20.A05 | `AcervoFitService.composeFrom`, `ProjectComposerService.compose`, `ProjectScheme` (RASCUNHO, aiOrientation, conformityPercent, hasBlockingPending), `ProjectTask` · Atividades `U4 → A15 → P4 → W8` · Sequência msgs 51–57 (`INSERT project_schemes (RASCUNHO … hasBlockingPending true)`, `warnings [PENDENCIA_BLOQUEANTE]`, "aviso, não impedimento") · Máquina *ProjectScheme.status — nasce do painel* e transição `DISPONIVEL → EM_USO` · Componentes `ComposeFromReportButton`, `ProjectComposerService RF5` |
+| RF20.A06 | `Insight` (dismissedAt, generatedAt), `AcervoFitService.requireOwner`, `ComplianceChecklist.active` · Atividades `A2 → A3 403`, `A8 → A9 404 CHECKLIST_NAO_ENCONTRADO`, `A13 → P3` · Sequência msgs 18–21 (`404 … hint propor checklist RF32`), 31 (`INSERT insights`), 58–62 (`403 ACESSO_NEGADO`) · Máquina *Insight* (GERADO → DISPENSADO) e nota · Componentes `app/insights/acervo`, `InsightController RF43` |
+| RF20.CA01 … RF20.CA15 (corpo do card) | Criador de tarefas — **não modelados aqui**: ver `docs/diagramas/RF4/README.md` e `docs/diagramas/_anterior/RF20/README.md` (cabeçalho, tabela "CA do corpo") · Ponto de contato neste README: ação `CRIAR_FALTANTE` → `TaskCreatorService.prefill` → `app/tasks/new` (A04) |

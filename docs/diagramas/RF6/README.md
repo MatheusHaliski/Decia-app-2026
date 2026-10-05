@@ -1,359 +1,493 @@
-# RF6 — Enviar mensagens dentro do chat, enquanto a sessão estiver ativa.
-**HU:** HU6 · **Sprint (board Work Station):** 1 · **Equivalente FAI:** RF10 Copilot — "Mensagem do Copilot" → **Mensagem do DECIA** (toda mensagem pode carregar tarefa/artefato anexado e é classificada, RF7) · **Aba/rota:** DECIA (`/decia/[sessionId]`, caixa de mensagem + anexos do acervo) — rota sugerida
-**Critérios de aceite cobertos:** RF6.CA01 … RF6.CA06 (RF1–RF18 não têm CAs no board: derivados da HU6 e marcados "CA a confirmar")
+# RF6 — Acessar e gerenciar o Perfil  Empresarial (Acervo Digital + Projetos Salvos)
+**HU:** HU6 · **Sprint (board Work Station):** lista *Requisitos Funcionais* (sem sprint atribuída) · **Equivalente FAI:** RF6 Perfil Lookbook (Closet Digital + Looks Salvos): abas Closet · Looks · Looks salvos · Peças salvas, toggles de estado no topo do card · **Aba/rota:** Meu perfil (`/profile`, sub-abas `?tab=acervo|projetos|projetos-salvos|tarefas-salvas`), perfil de terceiros em `/u/[username]`; Acervo também em `/tasks`
+**Critérios de aceite cobertos:** RF6.CA01 … RF6.CA06 — **todos "(CA a confirmar)"**: o corpo do card RF6 está vazio; os CAs foram derivados do título + HU6 e reaproveitam o já validado em `_anterior/RF19` (sub-abas 1–2 e 7–8), RF41 (estados do Acervo) e RF26.CA04 (salvar)
 
-> **HU6** — COMO usuário participante do grupo da conversa POSSO enviar mensagens no chat enquanto a sessão estiver ativa PARA contribuir com argumentos, opiniões e informações sobre o tema da sessão.
+> **HU6** — COMO usuário autenticado dentro do sistema POSSO visualizar meu perfil com tudo o que criei (tarefas, projetos, planos, decisões) em sub-abas e o meu perfil deliberativo gerado pela IA PARA acompanhar e mostrar minha produção e minha evolução desde que entrei no sistema.
 
-## Critérios de aceite derivados da HU6 (todos "CA a confirmar")
+O **Perfil Empresarial** é o perfil de trabalho do usuário (= Perfil Lookbook do FAI): cabeçalho (avatar, nome, cargo, empresa, departamento, contadores) e as sub-abas que o título do card recorta — **Acervo Digital** (sub-aba 1 do RF19: `TaskItem` do dono com os 8 estados do `TaskState`, RF41) e **Projetos** (sub-aba 2: `ProjectScheme`) para todos, mais **Projetos salvos / Tarefas salvas** (sub-abas 7–8: `SavedItem`, RF26.CA04) só para o dono. "Gerenciar" = ações rápidas do card (favoritar, mudar estado via `TaskStateMachine`, arquivar, duplicar, levar ao projeto, remover dos salvos). As demais sub-abas da HU6 (planos, decisões, perfil deliberativo) ficam no card RF26 (corpo = antigo RF19) e não são repetidas aqui.
 
-| CA | Enunciado (Dado / Quando / Então) |
-|---|---|
-| **RF6.CA01** (CA a confirmar) | Dado um `SessionParticipant` ativo (`leftAt` nulo, `role` MEMBRO ou ADMIN) numa sessão `ATIVA` (ou `REABERTA`), quando envia `bodyMd` (1–4000 caracteres, Markdown restrito), opcionalmente `replyToMessageId` e até **5 anexos do acervo** (`MessageAttachment` TASK · PROJECT · PLAN, RF29.CA03), então a `SessionMessage` é criada com `id` TIMEUUID, `authorKind HUMANO`, `sentAt` e `correlationId`, e a API responde `201` com a mensagem renderizada. |
-| **RF6.CA02** (CA a confirmar) | Dado a sessão fora de `ATIVA`/`REABERTA` → `409 SESSAO_NAO_ATIVA`; usuário que não é participante ativo ou é `OBSERVADOR` → `403 ACESSO_NEGADO`; corpo vazio, acima do limite, mais de 5 anexos ou anexo sem permissão de leitura → `422 VALIDACAO`. |
-| **RF6.CA03** (CA a confirmar) | Dado a mensagem aceita, então ela é gravada no **Cassandra** `messages_by_session` (partição `sessionId`, cluster `sentAt` desc, TTL = `DeciaSession.messageTtlDays`) e indexada no **MySQL** `session_messages_idx` (id, sessionId, authorId, sentAt, classificationId) na mesma unidade de trabalho que incrementa `messageCount` e grava o evento `MessageSent` no outbox; a escrita é idempotente pelo TIMEUUID (reenvio não duplica). |
-| **RF6.CA04** (CA a confirmar) | Dado participantes conectados, então a mensagem chega em **tempo real** (SSE via Redis pub/sub) a todos os participantes ativos da sessão; ao abrir a sessão, as mensagens são paginadas por cursor (`?before=<sentAt>&limit=50`) a partir do Cassandra e `SessionParticipant.lastReadAt` é atualizado. |
-| **RF6.CA05** (CA a confirmar) | Dado a mensagem aceita, então o `similarityHash` é calculado e, se for > 90 % similar a uma mensagem recente do mesmo autor na sessão, ela é marcada como repetida (não pontua, RF42); anexos com `accessClass RESTRITO`/`SIGILOSO` marcam a mensagem para classificação **só no motor local** (RF43.CA02); o autor pode editar (`editedAt`) ou apagar (`deleted` = true, corpo oculto) a própria mensagem em até 5 min, mantendo o registro no rastro (RF29.CA07). |
-| **RF6.CA06** (CA a confirmar) | Dado o commit, então `MessageSent` (AFTER_COMMIT) dispara a classificação assíncrona da IA (RF7), a notificação dos participantes desconectados (agrupada por hora, `Notification.groupKey`) e `AuditLog MESSAGE_SENT` (sem o corpo); tudo i18n e com `correlationId` fim a fim. |
+## Critérios de aceite derivados do título + HU6 (todos "CA a confirmar")
+
+| CA | Enunciado (Dado / Quando / Então) | Fonte reaproveitada |
+|---|---|---|
+| **RF6.CA01** (CA a confirmar) | Dado um usuário autenticado, quando abre `/profile`, então vê o cabeçalho (avatar, nome, `jobTitle`, empresa, departamento, contadores de tarefas, projetos e salvos via Redis) e as sub-abas **Acervo Digital**, **Projetos**, **Projetos salvos** e **Tarefas salvas**; em `/u/[username]` um terceiro vê só Acervo Digital e Projetos, com itens filtrados por `Visibility`; sub-aba restrita acessada por terceiro → `403 ACESSO_NEGADO`. | RF19.CA01, RF19.CA02 |
+| **RF6.CA02** (CA a confirmar) | Dado a sub-aba Acervo Digital, então ela lista os `TaskItem` do dono em grade compacta com **sub-filtros por estado** (`TaskState`: RASCUNHO · DISPONIVEL · EM_USO · BLOQUEADA · CONCLUIDA · ARQUIVADA · MODELO_PUBLICO · OFERECIDA) com contadores, filtros por categoria/tipo/processo/natureza, ordenação (recentes, mais usadas, nome, prazo), busca (OpenSearch), paginação de 20 e querystring restaurável; skeleton, estado vazio ilustrado e "tentar de novo" em `503 BUSCA_INDISPONIVEL`. | RF41.CA01, RF41.CA09 |
+| **RF6.CA03** (CA a confirmar) | Dado um card do meu Acervo, quando aciono uma ação rápida (favoritar ⭐, mudar estado, arquivar, duplicar, levar ao projeto), então a transição passa por `TaskStateMachine` e grava `TaskStateLog`; transição inválida → `422 TRANSICAO_INVALIDA`; EM_USO é automático ao entrar em projeto ativo e MODELO_PUBLICO só via chancela/publicação; a etiqueta de estado aparece em texto no topo do card. | RF41.CA02, RF41.CA07, RF38.CA05 |
+| **RF6.CA04** (CA a confirmar) | Dado a sub-aba Projetos, então ela lista os `ProjectScheme` do dono com capa-mosaico, barra de fases, `status` e `currentPhase`, filtráveis por status/fase/exercício e paginados; abrir um card leva ao detalhe do projeto (lista por fase, RF7) e, para o dono, à edição (RF8/RF22). | RF19 sub-aba 2, RF21.CA10 |
+| **RF6.CA05** (CA a confirmar) | Dado a sub-aba Projetos salvos ou Tarefas salvas, então ela lista os `SavedItem` do dono (`targetType` PROJECT ou TASK) com marcador `favorite`, respeitando a visibilidade atual do alvo (alvo que ficou PRIVADO aparece como "indisponível"); "Remover dos salvos" apaga o `SavedItem` e decrementa `savesCount`; só o dono acessa (`requireOwner`). | RF26.CA04, RF19 sub-abas 7–8 |
+| **RF6.CA06** (CA a confirmar) | Dado o perfil de um terceiro, quando vejo seu Acervo Digital, então só aparecem tarefas com `visibility` compatível (PUBLICA; EMPRESA se mesma empresa; DEPARTAMENTO se membro), nunca PRIVADA; cada card oferece **"Levar ao meu acervo"** (RF7/RF23) e interações sociais (RF19 atual); a API devolve `403 ACESSO_NEGADO` para item fora da visibilidade. | RF41.CA08, RF26.CA08 |
 
 ## 1. Diagrama de classes
 
 ```mermaid
 classDiagram
-  direction LR
+direction LR
 
-  namespace ws_domain {
-    class DeciaSession {
-      <<entity>>
-      +id: UUID
-      +status: SessionStatus
-      +messageTtlDays: int
-      +messageCount: int
-      +aiMode: AiMode
-    }
-    class SessionParticipant {
-      <<entity>>
-      +sessionId: UUID
-      +userId: UUID
-      +role: ParticipantRole
-      +leftAt: Instant
-      +lastReadAt: Instant
-    }
-    class SessionMessage {
-      <<entity>>
-      +id: TIMEUUID
-      +sessionId: UUID
-      +authorId: UUID
-      +authorKind: String
-      +bodyMd: String
-      +replyToMessageId: TIMEUUID
-      +sentAt: Instant
-      +editedAt: Instant
-      +deleted: boolean
-      +attachmentsJson: String
-      +classificationId: UUID
-      +similarityHash: String
-      +correlationId: String
-    }
-    class MessageAttachment {
-      <<entity>>
-      +id: UUID
-      +messageId: TIMEUUID
-      +targetType: String
-      +targetId: UUID
-      +snapshotJson: String
-      +usedInDecision: boolean
-    }
-    class TaskItem {
-      <<entity>>
-      +id: UUID
-      +title: String
-      +accessClass: AccessClassification
-      +visibility: Visibility
-    }
-    class SessionStatus {
-      <<enum>>
-      PROPOSTA
-      ATIVA
-      EM_RESUMO
-      EM_DECISAO
-      EM_REVISAO
-      REABERTA
-      ENCERRADA
-      ARQUIVADA
-    }
-    class ParticipantRole {
-      <<enum>>
-      ADMIN
-      MEMBRO
-      OBSERVADOR
-      IA
-    }
-    class AccessClassification {
-      <<enum>>
-      PUBLICO
-      INTERNO
-      RESTRITO
-      SIGILOSO
-    }
+namespace ws_domain_identidade {
+  class User {
+    <<entity>>
+    +id: UUID
+    +username: String
+    +fullName: String
+    +displayName: String
+    +jobTitle: String
+    +profileType: ProfileType
+    +companyId: UUID
+    +departmentId: UUID
+    +avatarUrl: String
+    +coverUrl: String
+    +bio: String
+    .. +25 campos ..
   }
-
-  namespace ws_application {
-    class MessageService {
-      <<service>>
-      +send(current CurrentUser, sessionId, cmd SendMessageCommand) MessageView
-      +edit(current CurrentUser, sessionId, messageId, bodyMd) MessageView
-      +softDelete(current CurrentUser, sessionId, messageId) void
-      +page(current CurrentUser, sessionId, before Instant, limit int) Page~MessageView~
-      +markRead(current CurrentUser, sessionId, at Instant) void
-      -similarityHash(bodyMd) String
-      -requireActiveParticipant(sessionId, userId) SessionParticipant
-    }
-    class AttachmentResolver {
-      <<service>>
-      +resolve(current CurrentUser, refs List~AttachmentRef~) List~MessageAttachment~
-      +highestAccessClass(attachments) AccessClassification
-    }
-    class MessageStorePort {
-      <<port>>
-      +append(message SessionMessage, ttlDays int) void
-      +pageBySession(sessionId, before Instant, limit int) List~SessionMessage~
-      +markEdited(sessionId, messageId, bodyMd, at) void
-      +markDeleted(sessionId, messageId) void
-    }
-    class MessageIndexRepository {
-      <<port>>
-      +insert(idx MessageIndexRow) void
-      +recentByAuthor(sessionId, authorId, limit int) List~MessageIndexRow~
-    }
-    class RealtimePublisherPort {
-      <<port>>
-      +publish(sessionId, event SessionEvent) void
-    }
-    class DomainEventPublisherPort {
-      <<port>>
-      +publish(event DomainEvent) void
-    }
+  class Company {
+    <<entity>>
+    +id: UUID
+    +legalName: String
+    +slug: String
+    +logoUrl: String
   }
-
-  namespace ws_web {
-    class MessageController {
-      <<controller>>
-      +send(sessionId, cmd SendMessageCommand) MessageView
-      +page(sessionId, before, limit) Page~MessageView~
-      +edit(sessionId, messageId, body EditRequest) MessageView
-      +softDelete(sessionId, messageId) void
-      +markRead(sessionId, body ReadRequest) void
-    }
-    class SessionStreamController {
-      <<controller>>
-      +stream(sessionId) SseEmitter
-    }
+  class Department {
+    <<entity>>
+    +id: UUID
+    +companyId: UUID
+    +name: String
+    +acronym: String
+    +color: String
+    +monogram: String
   }
+}
 
-  namespace ws_infrastructure {
-    class CassandraMessageStore {
-      <<adapter>>
-      +table: String
-    }
-    class MysqlMessageIndexRepository {
-      <<adapter>>
-    }
-    class RedisRealtimePublisher {
-      <<adapter>>
-      +channel: String
-    }
-    class OutboxEventPublisher {
-      <<adapter>>
-    }
+namespace ws_domain_acervo {
+  class TaskItem {
+    <<entity>>
+    +id: UUID
+    +ownerId: UUID
+    +departmentId: UUID
+    +title: String
+    +type: TaskType
+    +category: TaskCategory
+    +state: TaskState
+    +visibility: Visibility
+    +favorite: boolean
+    +dueAt: LocalDate
+    +legalDueAt: LocalDate
+    +thumbnailUrl: String
+    +projectUsageCount: int
+    +reuseCount: int
+    +savesCount: long
+    +version: long
+    .. +40 campos ..
   }
+  class TaskStateLog {
+    <<entity>>
+    +id: UUID
+    +taskId: UUID
+    +fromState: TaskState
+    +toState: TaskState
+    +actorId: UUID
+    +reason: String
+    +projectId: UUID
+    +at: Instant
+  }
+}
 
-  MessageController --> MessageService
-  SessionStreamController --> RealtimePublisherPort : subscribe
-  MessageService --> AttachmentResolver
-  MessageService --> MessageStorePort
-  MessageService --> MessageIndexRepository
-  MessageService --> RealtimePublisherPort
-  MessageService --> DomainEventPublisherPort
-  CassandraMessageStore ..|> MessageStorePort
-  MysqlMessageIndexRepository ..|> MessageIndexRepository
-  RedisRealtimePublisher ..|> RealtimePublisherPort
-  OutboxEventPublisher ..|> DomainEventPublisherPort
-  DeciaSession "1" --> "*" SessionMessage : messages_by_session
-  DeciaSession "1" --> "*" SessionParticipant
-  SessionMessage "1" --> "0..5" MessageAttachment : anexos do acervo
-  MessageAttachment ..> TaskItem : targetType TASK
-  SessionMessage ..> SessionParticipant : authorId
-  DeciaSession --> SessionStatus
-  SessionParticipant --> ParticipantRole
-  TaskItem --> AccessClassification
+namespace ws_domain_projetos {
+  class ProjectScheme {
+    <<entity>>
+    +id: UUID
+    +ownerId: UUID
+    +departmentId: UUID
+    +title: String
+    +status: ProjectStatus
+    +currentPhase: ProjectPhase
+    +exerciseYear: int
+    +visibility: Visibility
+    +coverMode: CoverMode
+    +coverUrl: String
+    +mosaicJson: JSON
+    +savesCount: long
+    .. +30 campos ..
+  }
+}
 
-  note for SessionMessage "Cassandra messages_by_session (PK sessionId, cluster sentAt desc, TTL) + índice MySQL session_messages_idx (id, sessionId, authorId, sentAt, classificationId)"
-  note for MessageAttachment "tabela message_attachments (RF29.CA03, máx. 5) · targetType TASK · PROJECT · PLAN · SCENARIO · ARTIFACT · EVIDENCE"
+namespace ws_domain_social {
+  class SavedItem {
+    <<entity>>
+    +id: UUID
+    +userId: UUID
+    +targetType: TargetType
+    +targetId: UUID
+    +favorite: boolean
+    +savedAt: Instant
+  }
+}
+
+namespace ws_domain_enums {
+  class TaskState {
+    <<enum>>
+    RASCUNHO
+    DISPONIVEL
+    EM_USO
+    BLOQUEADA
+    CONCLUIDA
+    ARQUIVADA
+    MODELO_PUBLICO
+    OFERECIDA
+  }
+  class ProjectStatus {
+    <<enum>>
+    RASCUNHO
+    PUBLICADO
+    EM_DECISAO
+    APROVADO
+    EM_EXECUCAO
+    CONCLUIDO
+    ARQUIVADO
+    DEVOLVIDO
+  }
+  class Visibility {
+    <<enum>>
+    PRIVADA
+    DEPARTAMENTO
+    EMPRESA
+    PUBLICA
+  }
+  class TargetType {
+    <<enum>>
+    TASK
+    PROJECT
+    PLAN
+    KIT
+    PROJECT_TASK
+    MESSAGE
+    RECOGNITION
+  }
+}
+
+namespace ws_application {
+  class ProfileService {
+    <<service>>
+    +loadHeader(viewerId, username) ProfileHeader
+    +listTabs(viewerId, ownerId) List~ProfileTab~
+    +loadTab(viewerId, ownerId, tab, filters, page) Page
+    +visibilityFilter(viewer, owner) Visibility[]
+  }
+  class AcervoService {
+    <<service>>
+    +list(ownerId, filters, sort, page) Page~TaskItem~
+    +counters(ownerId) Map~TaskState, int~
+    +listForViewer(viewerId, ownerId, filters, page) Page~TaskItem~
+    +favorite(userId, taskId, on) TaskItem
+    +duplicate(userId, taskId) TaskItem
+    +archive(userId, taskId) TaskItem
+    +takeToMyAcervo(viewerId, taskId) TaskItem
+  }
+  class TaskStateMachine {
+    <<service>>
+    +canTransition(from, to) boolean
+    +transition(taskId, to, actorId, reason) TaskStateLog
+    +onProjectActivated(taskIds, projectId)
+    +onProjectTaskRemoved(taskId)
+  }
+  class ProjectService {
+    <<service>>
+    +listByOwner(viewerId, ownerId, filters, page) Page~ProjectScheme~
+  }
+  class SocialService {
+    <<service>>
+    +save(userId, targetType, targetId, favorite) SavedItem
+    +unsave(userId, targetType, targetId)
+    +savedItems(userId, targetType, page) Page~SavedItem~
+    +checkVisibility(viewer, target) boolean
+  }
+  class CachePort {
+    <<port>>
+    +getCounters(ownerId) Counters
+    +putCounters(ownerId, counters, ttl)
+  }
+  class SearchPort {
+    <<port>>
+    +searchTasks(ownerId, query, filters, page) Page~UUID~
+  }
+}
+
+namespace ws_web {
+  class ProfileController {
+    <<controller>>
+    +GET_api_profile_me()
+    +GET_api_users_username(username)
+    +GET_api_users_username_tabs_tab(username, tab, query)
+  }
+  class TaskController {
+    <<controller>>
+    +GET_api_me_tasks(estado, categoria, tipo, q, sort, page)
+    +GET_api_me_tasks_counters()
+    +POST_api_tasks_id_transition(to, reason)
+    +POST_api_tasks_id_favorite()
+    +POST_api_tasks_id_duplicate()
+    +POST_api_tasks_id_take()
+  }
+  class InteractionController {
+    <<controller>>
+    +GET_api_me_saved(type, page)
+    +POST_api_interactions_type_id_saves(favorite)
+    +DELETE_api_interactions_type_id_saves()
+  }
+}
+
+namespace ws_infrastructure {
+  class RedisCacheAdapter {
+    <<adapter>>
+  }
+  class OpenSearchAdapter {
+    <<adapter>>
+  }
+  class TaskJpaRepository {
+    <<adapter>>
+  }
+  class SavedItemJpaRepository {
+    <<adapter>>
+  }
+}
+
+User "1" --> "0..1" Company : companyId
+User "1" --> "0..1" Department : departmentId
+TaskItem "*" --> "1" User : ownerId
+TaskItem "1" --> "*" TaskStateLog : transições
+ProjectScheme "*" --> "1" User : ownerId
+SavedItem "*" --> "1" User : userId
+SavedItem ..> TaskItem : targetType TASK
+SavedItem ..> ProjectScheme : targetType PROJECT
+SavedItem --> TargetType
+TaskItem --> TaskState
+TaskItem --> Visibility
+ProjectScheme --> ProjectStatus
+ProjectScheme --> Visibility
+
+ProfileController ..> ProfileService
+TaskController ..> AcervoService
+TaskController ..> TaskStateMachine
+InteractionController ..> SocialService
+ProfileService ..> AcervoService : sub-aba Acervo Digital
+ProfileService ..> ProjectService : sub-aba Projetos
+ProfileService ..> SocialService : sub-abas Salvos
+ProfileService ..> CachePort : contadores
+AcervoService ..> TaskStateMachine
+AcervoService ..> SearchPort
+RedisCacheAdapter ..|> CachePort
+OpenSearchAdapter ..|> SearchPort
+TaskJpaRepository ..> TaskItem : JPA
+SavedItemJpaRepository ..> SavedItem : JPA
+
+note for ProfileService "sub-abas Acervo Digital e Projetos para todos (visibilityFilter), Projetos salvos e Tarefas salvas só para o dono — 403 para terceiros (CA01, CA06)"
+note for TaskStateMachine "toda transição grava TaskStateLog · inválida = 422 TRANSICAO_INVALIDA · EM_USO automático ao entrar em projeto · MODELO_PUBLICO só via chancela/publicação (CA03)"
+note for SavedItem "tabela saved_items · único (userId, targetType, targetId) · favorite · savesCount desnormalizado no alvo (CA05)"
+note for TaskItem "tabela tasks · sub-filtros por state com contadores em Redis · busca por OpenSearch · 20 por página (CA02)"
 ```
 
 ## 2. Diagrama de atividades
 
-Raias: Participante · Web/BFF · `ws-application` · Persistência · IA (AiEngine) só como destino do evento (a classificação é o RF7).
-
 ```mermaid
 flowchart TD
-  subgraph L1["Ator humano — Participante (MEMBRO ou ADMIN)"]
-    A1(["Abre a sessão /decia/[id]"]) --> A2["Lê as mensagens (paginação por cursor) · lastReadAt atualizado"]
-    A2 --> A3["Escreve o texto (Markdown restrito), responde a uma mensagem e anexa até 5 itens do acervo"]
-    A3 --> A4["Envia"]
-    A20(["Mensagem aparece para todos em tempo real"])
+  subgraph LU["Usuário"]
+    U1["Abre /profile ou /u/[username]"]
+    U2["Escolhe sub-aba: Acervo Digital · Projetos · Projetos salvos · Tarefas salvas"]
+    U3["Acervo: sub-filtro por estado, filtros, busca, ordenação, página"]
+    U4["Ação rápida no card: favoritar, mudar estado, arquivar, duplicar, levar ao projeto"]
+    U5["Salvos: remover dos salvos ou marcar favorito"]
+    U6["Terceiro: Levar ao meu acervo"]
   end
 
-  subgraph L2["Web / BFF (Next.js App Router)"]
-    B1["GET /api/decia/sessions/{id}/messages?before=&limit=50"]
-    B2["POST /api/decia/sessions/{id}/messages (Idempotency-Key = TIMEUUID gerado no cliente)"]
-    B3["SSE /api/decia/sessions/{id}/stream recebe MessageSent e insere no fim da lista"]
+  subgraph LW["Web / BFF (Next.js App Router)"]
+    W1["Lê tab + filtros + page da URL, renderiza skeleton"]
+    W2["Cabeçalho com contadores e lista de sub-abas"]
+    W3["Grade compacta de cards com etiqueta de estado em texto e ⭐ só para o dono"]
+    W4["Atualiza a URL com tab e filtros ativos"]
+    W5["Estado vazio ilustrado / banner tentar de novo"]
+    W6["Toast de erro: transição não permitida, com o motivo"]
   end
 
-  subgraph L3["ws-application — MessageService"]
-    C1{"Participante ativo e role MEMBRO/ADMIN?"}
-    C1 -->|não| E403["403 ACESSO_NEGADO"]
-    C1 -->|sim| C2{"Sessão ATIVA ou REABERTA?"}
-    C2 -->|não| E409["409 SESSAO_NAO_ATIVA"]
-    C2 -->|sim| C3{"bodyMd 1–4000, ≤ 5 anexos, anexos legíveis pelo autor?"}
-    C3 -->|não| E422["422 VALIDACAO"]
-    C3 -->|sim| C4["Resolve anexos (snapshotJson) e maior accessClass"]
-    C4 --> C5["similarityHash; compara com as últimas 20 do autor → marca repetida se > 90 %"]
-    C5 --> C6["Monta SessionMessage (TIMEUUID, authorKind=HUMANO, sentAt, correlationId)"]
-    C6 --> C7["Cassandra append (TTL = messageTtlDays) — idempotente"]
-    C7 --> C8["TX MySQL: session_messages_idx + message_attachments + messageCount++ + outbox MessageSent (flag localOnly se RESTRITO/SIGILOSO)"]
-    C8 --> C9["Publica no Redis pub/sub → SSE dos participantes"]
-    C10["AFTER_COMMIT: MessageSent → ClassificationService (RF7) · Notification agrupada aos desconectados · AuditLog MESSAGE_SENT"]
-    C11{"Editar/apagar: é o autor e ≤ 5 min?"}
-    C11 -->|não| E403
-    C11 -->|sim| C12["editedAt ou deleted=true (corpo oculto, registro mantido no rastro)"]
+  subgraph LA["ws-application"]
+    A1["ProfileService.loadHeader + listTabs"]
+    A2{"viewer == dono?"}
+    A3["4 sub-abas"]
+    A4["Só Acervo Digital e Projetos"]
+    A5["ProfileService.loadTab"]
+    A6{"Sub-aba de salvos e viewer não é dono?"}
+    A7["403 ACESSO_NEGADO"]
+    A8["AcervoService.list ou listForViewer com visibilityFilter"]
+    A9["AcervoService.counters por TaskState"]
+    A10{"SearchPort disponível?"}
+    A11["503 BUSCA_INDISPONIVEL"]
+    A12["ProjectService.listByOwner com visibilityFilter"]
+    A13["SocialService.savedItems TASK ou PROJECT, checkVisibility do alvo"]
+    A14["TaskStateMachine.canTransition"]
+    A15{"Transição permitida?"}
+    A16["422 TRANSICAO_INVALIDA"]
+    A17["TaskStateMachine.transition → TaskStateLog"]
+    A18["AcervoService.favorite / duplicate / archive"]
+    A19["SocialService.unsave → savesCount − 1"]
+    A20["AcervoService.takeToMyAcervo → cópia EXTRAIDA_DE_PROJETO ou REMIX, RF7/RF23"]
   end
 
-  subgraph L4["IA (AiEngine)"]
-    I1["Consome MessageSent e classifica (RF7)"]
+  subgraph LP["Persistência"]
+    P1[("MySQL: users, companies, departments")]
+    P2[("Redis: contadores do perfil e por estado")]
+    P3[("MySQL: tasks, task_state_log")]
+    P4[("OpenSearch: índice de tarefas")]
+    P5[("MySQL: project_schemes")]
+    P6[("MySQL: saved_items")]
   end
 
-  subgraph L5["Persistência"]
-    D1[("Cassandra: messages_by_session (sessionId, sentAt desc, TTL)")]
-    D2[("MySQL: session_messages_idx, message_attachments, decia_sessions.message_count, domain_events, audit_log")]
-    D3[("Redis: pub/sub decia.session.{id}")]
-  end
+  U1 --> W1 --> A1
+  A1 --> P1
+  A1 --> P2
+  A1 --> A2
+  A2 -->|"sim"| A3 --> W2
+  A2 -->|"não"| A4 --> W2
+  W2 --> U2 --> W4 --> A5 --> A6
+  A6 -->|"sim"| A7
+  A6 -->|"não, Acervo Digital"| A8
+  A6 -->|"não, Projetos"| A12 --> P5 --> W3
+  A6 -->|"não, Salvos e dono"| A13 --> P6 --> W3
+  A8 --> A9 --> P2
+  A8 --> A10
+  A10 -->|"não"| A11 --> W5
+  A10 -->|"sim"| P4 --> P3 --> W3
+  W3 --> U3 --> W4
+  W3 --> U4 --> A14 --> A15
+  A15 -->|"não"| A16 --> W6
+  A15 -->|"sim"| A17 --> P3
+  U4 --> A18 --> P3
+  W3 --> U5 --> A19 --> P6
+  W3 --> U6 --> A20 --> P3
 
-  A1 --> B1 --> D1
-  B1 --> A2
-  A4 --> B2 --> C1
-  C7 --> D1
-  C8 --> D2
-  C9 --> D3
-  D3 --> B3 --> A20
-  C8 --> C10
-  C10 --> I1
-  C12 --> D1
-  C12 --> D2
-
-  classDef erro fill:#fde2e2,stroke:#c0392b,color:#7b1d1d;
-  class E403,E409,E422 erro;
+  classDef err fill:#ffe3e3,stroke:#c0392b,color:#5a1a12
+  classDef warn fill:#fff4d6,stroke:#b7791f,color:#5a3b06
+  class A7,A11,A16 err
+  class W5,W6 warn
 ```
 
 ## 3. Diagrama de sequência
 
-Caminho feliz do envio com anexo, entrega em tempo real e `alt` de erro dos CA02 (409/403/422); leitura paginada e edição em `opt`.
-
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário (participante MEMBRO)
-  participant N as Next.js (App Router) /decia/[id]
-  participant C as MessageController (ws-web)
-  participant S as MessageService (ws-application)
-  participant CS as Cassandra
+  actor U as Usuário
+  participant NX as Next.js (App Router)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant DB as Repository/MySQL
+  participant OS as OpenSearch
   participant R as Redis
-  participant DE as DomainEvents (AFTER_COMMIT)
-  participant AI as AiEngine
 
-  U->>N: abre a sessão
-  N->>C: GET /api/decia/sessions/{id}/messages?limit=50
-  C->>S: page(currentUser, sessionId, before=null, 50)
-  S->>DB: SELECT session_participants (ativo?) + decia_sessions.status
-  S->>CS: SELECT messages_by_session WHERE session_id=? ORDER BY sent_at DESC LIMIT 50
-  S->>DB: UPDATE session_participants SET last_read_at=now (CA04)
-  S-->>C: Page de MessageView (com classificação e anexos inline)
-  C-->>N: 200
-  N->>N: abre SSE /api/decia/sessions/{id}/stream (CA04)
+  U->>NX: GET /profile?tab=acervo&estado=EM_USO&categoria=ETP&page=1
+  NX->>C: GET /api/profile/me
+  C->>S: ProfileService.loadHeader(viewerId, me)
+  S->>DB: users + company + department
+  S->>R: GET counters:{ownerId}
+  alt miss no cache
+    S->>DB: COUNT tasks por state, project_schemes, saved_items
+    S->>R: SET counters:{ownerId} TTL 60s
+  end
+  S->>S: listTabs: dono = Acervo Digital, Projetos, Projetos salvos, Tarefas salvas (CA01)
+  S-->>C: 200 ProfileHeader + tabs
+  C-->>NX: 200
 
-  U->>N: escreve o texto e anexa a tarefa "Planilha orçamentária v2"
-  N->>C: POST /api/decia/sessions/{id}/messages (Idempotency-Key TIMEUUID)
-  C->>S: send(currentUser, sessionId, SendMessageCommand)
-  S->>DB: SELECT session_participants WHERE session_id AND user_id AND left_at IS NULL
-  alt não é participante ativo ou é OBSERVADOR (CA02)
-    S-->>C: 403 ACESSO_NEGADO
-    C-->>N: 403
-  else sessão fora de ATIVA/REABERTA (CA02)
-    S->>DB: SELECT decia_sessions.status
-    S-->>C: 409 SESSAO_NAO_ATIVA
-    C-->>N: 409 → caixa de mensagem desabilitada
-  else corpo vazio, > 4000 ou > 5 anexos (CA02)
-    S-->>C: 422 VALIDACAO (details.bodyMd / details.attachments)
-  else mensagem válida (CA01)
-    S->>DB: SELECT tasks WHERE id IN (anexos) → visibilidade e accessClass (AttachmentResolver)
-    S->>DB: SELECT session_messages_idx recentes do autor → similarityHash (CA05)
-    S->>CS: INSERT messages_by_session (id TIMEUUID, body_md, attachments_json, similarity_hash) USING TTL messageTtlDays (CA03)
-    S->>DB: BEGIN · INSERT session_messages_idx · INSERT message_attachments · UPDATE decia_sessions message_count+1 · INSERT domain_events MessageSent · COMMIT (CA03)
-    S->>R: PUBLISH decia.session.{id} MessageSent(messageId) (CA04)
-    S-->>C: 201 MessageView
-    C-->>N: 201
-    R-->>N: evento SSE para todos os participantes conectados
-    N-->>U: mensagem renderizada com anexo inline
-    DE->>AI: AFTER_COMMIT → MessageSent → ClassificationService.classify (RF7, localOnly se RESTRITO/SIGILOSO) (CA06)
-    DE->>CS: AFTER_COMMIT → notifications_by_user para desconectados (groupKey por hora) (CA06)
-    DE->>DB: AFTER_COMMIT → INSERT audit_log MESSAGE_SENT (sem o corpo) (CA06)
+  NX->>C: GET /api/me/tasks?estado=EM_USO&categoria=ETP&page=1&size=20
+  C->>S: AcervoService.list(ownerId, filters, sort, page)
+  S->>OS: searchTasks(ownerId, q, filters, page)
+  alt OpenSearch indisponível (CA02)
+    OS-->>S: timeout
+    S-->>C: 503 BUSCA_INDISPONIVEL
+    C-->>NX: 503
+    NX-->>U: banner "tentar de novo"
+  else ok
+    OS-->>S: ids paginados + total
+    S->>DB: tasks WHERE id IN ids
+    S->>R: GET counters por state
+    S-->>C: 200 Page {items, total, countersByState}
+    C-->>NX: 200
+    NX-->>U: grade compacta, sub-filtros com contadores, URL restaurável (CA02)
   end
 
-  opt Editar ou apagar a própria mensagem em até 5 min (CA05)
-    U->>N: edita o texto
-    N->>C: PATCH /api/decia/sessions/{id}/messages/{messageId}
-    C->>S: edit(currentUser, sessionId, messageId, bodyMd)
-    S->>CS: UPDATE messages_by_session SET body_md, edited_at
-    S->>R: PUBLISH MessageEdited
-    S-->>C: 200 MessageView (editada)
+  U->>NX: ação rápida "marcar CONCLUIDA" em uma tarefa RASCUNHO (CA03)
+  NX->>C: POST /api/tasks/T1/transition {to: CONCLUIDA}
+  C->>S: TaskStateMachine.transition(T1, CONCLUIDA, actorId, reason)
+  S->>S: canTransition(RASCUNHO, CONCLUIDA) = false
+  alt transição inválida
+    S-->>C: 422 TRANSICAO_INVALIDA {from RASCUNHO, to CONCLUIDA}
+    C-->>NX: 422
+    NX-->>U: toast com o motivo
+  else permitida, por exemplo DISPONIVEL para ARQUIVADA
+    S->>DB: UPDATE tasks SET state, version + 1
+    S->>DB: INSERT task_state_log (fromState, toState, actorId, reason)
+    S->>R: DEL counters:{ownerId}
+    S-->>C: 200 TaskItem
+    C-->>NX: 200
+    NX-->>U: etiqueta de estado atualizada no card
   end
+
+  U->>NX: sub-aba Projetos salvos (CA05)
+  NX->>C: GET /api/me/saved?type=PROJECT&page=1
+  C->>S: SocialService.savedItems(userId, PROJECT, page)
+  S->>DB: saved_items JOIN project_schemes WHERE userId
+  S->>S: checkVisibility de cada alvo, PRIVADO alheio vira "indisponível"
+  S-->>C: 200 Page de SavedItem com alvo resumido
+  C-->>NX: 200
+  U->>NX: Remover dos salvos
+  NX->>C: DELETE /api/interactions/PROJECT/P7/saves
+  C->>S: SocialService.unsave(userId, PROJECT, P7)
+  S->>DB: DELETE saved_items · UPDATE project_schemes SET savesCount = savesCount - 1
+  S-->>C: 204
+
+  U->>NX: terceiro abre /u/maria?tab=tarefas-salvas (CA01, CA06)
+  NX->>C: GET /api/users/maria/tabs/tarefas-salvas
+  C->>S: ProfileService.loadTab(viewerId, ownerId, TAREFAS_SALVAS)
+  S-->>C: 403 ACESSO_NEGADO (sub-aba só do dono)
+  C-->>NX: 403
+  NX->>C: GET /api/users/maria/tabs/acervo?page=1
+  C->>S: AcervoService.listForViewer(viewerId, ownerId, filters, page)
+  S->>S: visibilityFilter = PUBLICA + EMPRESA se mesma empresa + DEPARTAMENTO se membro
+  S->>DB: tasks WHERE ownerId AND visibility IN filtro
+  S-->>C: 200 Page com ação "Levar ao meu acervo"
+  C-->>NX: 200
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: `SessionMessage`. Ela não tem enum de status na TAXONOMIA; os estados são **implícitos pelos campos** `classificationId`, `editedAt` e `deleted`, e o envio depende do `SessionStatus` da sessão (ATIVA/REABERTA), mostrado como guarda.
+Entidade central: **`TaskItem.state`** (enum `TaskState`), que o Acervo Digital exibe como sub-filtros e etiqueta de estado e que a ação rápida "mudar estado" altera via `TaskStateMachine` (RF41.CA02). `ProjectScheme.status` e `SavedItem` não têm máquina própria neste RF — o perfil só os lê.
 
 ```mermaid
 stateDiagram-v2
-  direction LR
-  [*] --> ENVIADA : POST messages (sessão ATIVA ou REABERTA, participante ativo) — RF6.CA01
-  state "ENVIADA (classificationId nulo)" as ENVIADA
-  state "CLASSIFICADA (classificationId preenchido, RF7)" as CLASSIFICADA
-  state "EDITADA (editedAt preenchido)" as EDITADA
-  state "APAGADA (deleted = true, corpo oculto)" as APAGADA
-  state "EXPIRADA (TTL do Cassandra)" as EXPIRADA
-
-  ENVIADA --> CLASSIFICADA : ClassificationService conclui (assíncrono, RF7)
-  ENVIADA --> EDITADA : autor edita em até 5 min (RF6.CA05)
-  CLASSIFICADA --> EDITADA : autor edita em até 5 min → reclassifica (RF7)
-  EDITADA --> CLASSIFICADA : nova classificação
-  ENVIADA --> APAGADA : autor apaga em até 5 min
-  CLASSIFICADA --> APAGADA : autor apaga em até 5 min
-  EDITADA --> APAGADA : autor apaga em até 5 min
-  CLASSIFICADA --> EXPIRADA : messageTtlDays (índice MySQL e rastro permanecem)
-  APAGADA --> EXPIRADA : messageTtlDays
-  EXPIRADA --> [*]
-
-  note right of ENVIADA
-    Guarda de envio (RF6.CA02):
-    DeciaSession.status em ATIVA ou REABERTA → 201
-    PROPOSTA, EM_RESUMO, EM_DECISAO, EM_REVISAO,
-    ENCERRADA, ARQUIVADA → 409 SESSAO_NAO_ATIVA
+  [*] --> RASCUNHO : criador de tarefas RF4 salva como rascunho
+  [*] --> DISPONIVEL : criador de tarefas RF4 salva com estado inicial DISPONIVEL
+  RASCUNHO --> DISPONIVEL : completar obrigatórios
+  RASCUNHO --> ARQUIVADA : descartar
+  DISPONIVEL --> EM_USO : automático ao entrar em projeto ativo, RF5
+  EM_USO --> DISPONIVEL : removida de todos os projetos
+  DISPONIVEL --> BLOQUEADA : bloquear com motivo
+  EM_USO --> BLOQUEADA : predecessora pendente
+  BLOQUEADA --> EM_USO : desbloquear
+  BLOQUEADA --> DISPONIVEL : desbloquear sem projeto
+  EM_USO --> CONCLUIDA : concluir
+  DISPONIVEL --> CONCLUIDA : concluir
+  CONCLUIDA --> ARQUIVADA : arquivar
+  DISPONIVEL --> ARQUIVADA : arquivar
+  ARQUIVADA --> DISPONIVEL : desarquivar
+  DISPONIVEL --> MODELO_PUBLICO : chancela APROVADA ou publicar como modelo, RF39
+  CONCLUIDA --> MODELO_PUBLICO : chancela APROVADA
+  DISPONIVEL --> OFERECIDA : oferecer no Balcão, RF40
+  MODELO_PUBLICO --> OFERECIDA : oferecer modelo chancelado
+  OFERECIDA --> DISPONIVEL : retirar oferta
+  ARQUIVADA --> [*] : exclusão com snapshot nos projetos de terceiros, RF41.CA05
+  note right of DISPONIVEL
+    Sub-filtros do Acervo Digital mostram contadores por estado (CA02).
+    Transição pela ação rápida passa por TaskStateMachine e grava
+    TaskStateLog; inválida = 422 TRANSICAO_INVALIDA (CA03).
   end note
-  note right of APAGADA
-    O registro continua no índice e no DecisionTrace
-    (append-only, RF29.CA07), só o corpo é ocultado.
+  note left of MODELO_PUBLICO
+    Nunca por ação rápida direta: só via chancela ou publicação (CA03).
   end note
 ```
 
@@ -361,77 +495,77 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js (App Router)"]
-    FE1["app/(app)/decia/[sessionId]/page.tsx (lista virtualizada + MessageComposer)"]
-    FE2["components/ui (MessageCard, AttachmentPicker do acervo, MarkdownRestrito, ClassBadge)"]
-    FE3["app/api/decia/[sessionId]/stream/route.ts (SSE proxy com Bearer)"]
-    FE4["lib/decia/useSessionStream.ts (reconexão, cursor)"]
+  subgraph FE["Frontend Next.js"]
+    F1["app/profile — cabeçalho + sub-abas Acervo Digital · Projetos · Projetos salvos · Tarefas salvas"]
+    F2["app/u/[username] — Acervo Digital e Projetos com visibilidade"]
+    F3["components/ui: ProfileHeader, SubTabs, SubFilterTabs por estado, FilterBar, Pagination, TaskCard com etiqueta de estado e ⭐, ProjectCard mosaico + barra de fases, QuickActions, SaveButton, EmptyState, RetryBanner"]
   end
 
   subgraph WEB["ws-web"]
-    W1["MessageController /api/decia/sessions/{id}/messages · /{messageId} · /read"]
-    W2["SessionStreamController /api/decia/sessions/{id}/stream (SSE)"]
-    W3["SecurityConfig (JWT) · IdempotencyKeyFilter · CorrelationIdFilter"]
+    C1["ProfileController — /api/profile/me, /api/users/{username}, /tabs/{tab}"]
+    C2["TaskController — /api/me/tasks, /counters, /api/tasks/{id}/transition, /favorite, /duplicate, /take"]
+    C3["InteractionController RF26 — /api/me/saved, /api/interactions/{type}/{id}/saves"]
   end
 
   subgraph APP["ws-application"]
-    S1["MessageService"]
-    S2["AttachmentResolver (visibilidade + accessClass)"]
-    S3["Guard.requireActiveParticipant"]
-    P1["MessageStorePort · MessageIndexRepository"]
-    P2["RealtimePublisherPort · DomainEventPublisherPort · NotificationPort"]
+    S1["ProfileService"]
+    S2["AcervoService RF41"]
+    S3["TaskStateMachine RF41"]
+    S4["ProjectService"]
+    S5["SocialService RF26"]
+    P1["CachePort"]
+    P2["SearchPort"]
   end
 
   subgraph DOM["ws-domain"]
-    D1["DeciaSession · SessionParticipant · SessionMessage · MessageAttachment · TaskItem"]
-    D2["SessionStatus · ParticipantRole · AccessClassification"]
-    D3["DeciaSessionRepository · SessionParticipantRepository · TaskItemRepository"]
+    D1["User · Company · Department"]
+    D2["TaskItem · TaskStateLog · TaskState · Visibility"]
+    D3["ProjectScheme · ProjectStatus"]
+    D4["SavedItem · TargetType"]
   end
 
-  subgraph INFRA["ws-infrastructure"]
-    I1["persistence-cassandra (CassandraMessageStore: messages_by_session, notifications_by_user)"]
-    I2["persistence-mysql (session_messages_idx, message_attachments, decia_sessions, domain_events, audit_log)"]
-    I3["cache-redis (RedisRealtimePublisher pub/sub decia.session.*)"]
-    I4["platform (OutboxEventPublisher → MessageSent, NotificationDispatcher, AuditLogWriter)"]
-    I5["ai-providers (consumidor do MessageSent → RF7)"]
+  subgraph INFRA["ws-infrastructure/*"]
+    I1[("persistence-mysql: users, tasks, task_state_log, project_schemes, saved_items")]
+    I2[("cache-redis: contadores do perfil e por estado")]
+    I3[("search-opensearch: índice de tarefas — busca e filtros do Acervo")]
   end
 
-  CA[("Cassandra")]
-  MY[("MySQL 8")]
-  RD[("Redis")]
-
-  FE1 --> FE2
-  FE1 --> FE4
-  FE4 --> FE3
-  FE1 -->|HTTPS/JSON| W1
-  FE3 -->|SSE| W2
-  W3 -.-> W1
-  W1 --> S1
+  F1 --- F3
+  F2 --- F3
+  F1 -->|"HTTPS/JSON"| C1
+  F2 -->|"HTTPS/JSON"| C1
+  F3 -->|"HTTPS/JSON"| C2
+  F3 -->|"HTTPS/JSON"| C3
+  C1 --> S1
+  C2 --> S2
+  C2 --> S3
+  C3 --> S5
   S1 --> S2
-  S1 --> S3
+  S1 --> S4
+  S1 --> S5
   S1 --> P1
-  S1 --> P2
+  S2 --> S3
+  S2 --> P2
   S1 --> D1
-  S2 --> D3
-  I1 -.->|implementa| P1
-  I2 -.->|implementa| P1
-  I3 -.->|implementa| P2
-  I4 -.->|implementa| P2
-  W2 --> I3
-  I4 -->|MessageSent| I5
-  I1 --> CA
-  I2 --> MY
-  I3 --> RD
-  BOOT["ws-bootstrap (flags cassandra.enabled, redis.enabled; TTL padrão; limites de mensagem)"] -.-> INFRA
+  S2 --> D2
+  S3 --> D2
+  S4 --> D3
+  S5 --> D4
+  D1 --> I1
+  D2 --> I1
+  D3 --> I1
+  D4 --> I1
+  P1 --> I2
+  P2 --> I3
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) |
-|---|---|---|---|---|---|
-| RF6.CA01 | `MessageService.send`, `SessionMessage` (TIMEUUID, authorKind, sentAt, correlationId), `MessageAttachment`, `AttachmentResolver.resolve` | `A3`, `A4`, `B2`, `C3`, `C4`, `C6` | 10–12, 21–27 (`POST …/messages`, 201) | `[*] → ENVIADA` | `FE1`, `FE2 AttachmentPicker`, `W1`, `S1`, `S2` |
-| RF6.CA02 | `MessageService.requireActiveParticipant`, `SessionParticipant.leftAt/role`, `DeciaSession.status`, `SessionStatus` | `C1` → `E403`, `C2` → `E409`, `C3` → `E422` | 13–20 (`403`, `409 SESSAO_NAO_ATIVA`, `422`) | guarda em `ENVIADA` | `S3 Guard`, `W3` |
-| RF6.CA03 | `MessageStorePort`/`CassandraMessageStore`, `MessageIndexRepository`/`MysqlMessageIndexRepository`, `DeciaSession.messageCount/messageTtlDays` | `C7`, `C8`, `D1`, `D2` | 23–24 (INSERT Cassandra USING TTL, TX MySQL + outbox) | `CLASSIFICADA → EXPIRADA` (TTL) | `I1`, `I2`, `W3 IdempotencyKeyFilter` |
-| RF6.CA04 | `RealtimePublisherPort`/`RedisRealtimePublisher`, `SessionStreamController`, `MessageService.page/markRead`, `SessionParticipant.lastReadAt` | `A2`, `B1`, `B3`, `C9`, `D3` | 1–9 (paginação, lastReadAt, SSE), 25–29 (PUBLISH → SSE) | — | `W2`, `FE3`, `FE4`, `I3` |
-| RF6.CA05 | `SessionMessage.similarityHash/editedAt/deleted`, `MessageService.edit/softDelete`, `AttachmentResolver.highestAccessClass`, `AccessClassification` | `C4`, `C5`, `C11`, `C12` | 22 (similarityHash), 33–38 (`opt` editar) | `→ EDITADA`, `→ APAGADA` | `S1`, `S2`, `I1` (UPDATE) |
-| RF6.CA06 | `DomainEventPublisherPort`/`OutboxEventPublisher` (`MessageSent`), `Notification.groupKey`, `AuditLog` | `C10`, `I1` | 30–32 (AFTER_COMMIT → RF7, notificações agrupadas, audit_log) | `ENVIADA → CLASSIFICADA` (efeito do evento) | `I4`, `I5`, `I1 notifications_by_user` |
+| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
+|---|---|
+| RF6.CA01 (a confirmar) | Classes `User` (jobTitle, companyId, departmentId), `Company`, `Department`, `ProfileService.loadHeader/listTabs/loadTab`, `CachePort` · Atividades `U1 → W1 → A1 → A2 → A3/A4 → W2`, `A6 → A7 403 ACESSO_NEGADO` · Sequência msgs 1–11 (header, contadores Redis, listTabs) e `GET /api/users/maria/tabs/tarefas-salvas → 403` · Componentes `app/profile`, `app/u/[username]`, `ProfileHeader`, `SubTabs`, `cache-redis` |
+| RF6.CA02 (a confirmar) | Classes `TaskItem.state/favorite/thumbnailUrl`, enum `TaskState`, `AcervoService.list/counters`, `SearchPort` · Atividades `A8 → A9 → P2`, `A10 → A11 503 BUSCA_INDISPONIVEL → W5` / `A10 → P4 → P3 → W3`, `U3 → W4` (URL restaurável) · Sequência `GET /api/me/tasks?estado=EM_USO…` com `alt OpenSearch indisponível` · Nota do estado DISPONIVEL · Componentes `SubFilterTabs`, `FilterBar`, `Pagination`, `EmptyState`, `RetryBanner`, `search-opensearch` |
+| RF6.CA03 (a confirmar) | Classes `TaskStateMachine` (canTransition, transition), `TaskStateLog`, `AcervoService.favorite/duplicate/archive` · Atividades `U4 → A14 → A15 → A16 422 TRANSICAO_INVALIDA → W6` / `A15 → A17 → P3`, `A18` · Sequência `POST /api/tasks/T1/transition` com `alt transição inválida` / `else permitida` · Máquina de estados inteira e notas (MODELO_PUBLICO só via chancela) · Componentes `QuickActions`, `TaskCard` (etiqueta de estado em texto, ⭐ só dono), `TaskStateMachine RF41` |
+| RF6.CA04 (a confirmar) | Classes `ProjectScheme` (status, currentPhase, coverMode, mosaicJson), enum `ProjectStatus`, `ProjectService.listByOwner` · Atividades `A6 → A12 → P5 → W3` · Componentes `ProjectCard mosaico + barra de fases`, `ProjectService` |
+| RF6.CA05 (a confirmar) | Classes `SavedItem` (favorite, savedAt, nota de unicidade), enum `TargetType`, `SocialService.save/unsave/savedItems`, `InteractionController` · Atividades `A6 → A13 → P6 → W3`, `U5 → A19 → P6` · Sequência `GET /api/me/saved?type=PROJECT` → checkVisibility → `DELETE …/saves` → `savesCount - 1` · Componentes `SaveButton`, `InteractionController RF26`, `SocialService RF26` |
+| RF6.CA06 (a confirmar) | `ProfileService.visibilityFilter`, `AcervoService.listForViewer/takeToMyAcervo`, enum `Visibility`, `SocialService.checkVisibility` · Atividades `A2 (não) → A4`, `A8` (visibilityFilter), `U6 → A20 → P3` · Sequência `GET /api/users/maria/tabs/acervo` → "visibilityFilter = PUBLICA + EMPRESA + DEPARTAMENTO" → "Levar ao meu acervo" · Componente `app/u/[username]` |

@@ -1,356 +1,347 @@
-# RF16 — Formular perguntas ao grupo quando for identificado um ponto crítico na análise do tema da conversa
-**HU:** HU16 · **Sprint (board Work Station):** 3 · **Equivalente FAI:** card RF16 não cita equivalente; pelo Mapa de equivalência o DECIA é o **RF10 Copilot** do FAI (o Copilot pergunta ao usuário para refinar a sugestão) — aqui a pergunta é dirigida ao grupo e auditada (`ai_questions`) · **Aba/rota:** DECIA — sessão › painel lateral "Perguntas da IA" (`/decia/[sessionId]`; rota a confirmar)
-**Critérios de aceite cobertos:** RF16.CA01 · RF16.CA02 · RF16.CA03 · RF16.CA04 · RF16.CA05 · RF16.CA06 (RF1–RF18 não têm CAs no board: derivados da HU16 + RF7, RF8, RF11, RF33.CA03, RF42 e marcados "CA a confirmar")
+# RF16 — Visualizar perfil de um usuário comum que é empregado dentro de uma empresa
+**HU:** HU16 · **Sprint (board Work Station):** a confirmar (card renomeado em 2026-10-02; origem `_anterior/RF19` = Sprint 4) · **Equivalente FAI:** RF17 Perfil de outros usuários (Lookbook de terceiros, `LookbookService` com `!self`) · **Aba/rota:** perfil de terceiros em `/u/[username]` (API `GET /api/users/{username}` e `GET /api/users/{username}/tabs/{tab}`)
+**Critérios de aceite cobertos:** RF16.CA01 … RF16.CA06 — corpo do card vazio: CAs derivados do título + HU16 + `_anterior/RF19` CA02 (perfil de terceiros) e `docs/produto/ABAS_POR_PERFIL.md` Matriz B (colunas "terceiros"); todos marcados "(CA a confirmar)"
 
-> **HU16** — COMO IA do sistema POSSO formular perguntas ao grupo quando identificar um ponto crítico na análise do tema da conversa PARA esclarecer o ponto crítico e garantir que a análise do tema avance com clareza.
+> **HU16** — COMO usuário dentro do sistema Work Station POSSO visualizar o perfil de um usuário que trabalha dentro de uma organização PARA realizar alguma funcionalidade.
 
-Diferença para o RF8: o RF8 formaliza perguntas a partir de mensagens **RISCO** (`AiQuestion.kind = RISCO`); o RF16 detecta **pontos críticos** da análise (`kind = PONTO_CRITICO`): lacuna de evidência numa recomendação, conflito com o plano anual (RF24) ou com o Espelho de Conformidade (RF32), prazo legal em risco (RF20.CA11), argumento central sem contraditório.
+O RF16 é a **visão de terceiros** do perfil pessoal (RF19 anterior / RF26 atual): quem abre `/u/[username]` de um **EMPREGADO** vê o cabeçalho público (avatar, nome, cargo, empresa, departamento, contadores) e apenas as **sub-abas 1–5** (Acervo de Tarefas · Meus Projetos · Programas & Agrupamentos · Decisões · Perfil deliberativo resumo); as sub-abas 6–15 são **omitidas** na lista e respondem `403 ACESSO_NEGADO` em chamada direta. Cada item listado passa pelo filtro de **visibilidade** (`PUBLICA` sempre · `EMPRESA` se mesma empresa · `DEPARTAMENTO` se membro do departamento · `PRIVADA` nunca). O **Hype Score** aparece no cabeçalho só conforme `User.hypeVisibility` (RF45.CA06). O RF16 é **somente leitura**; a única escrita é o botão **Seguir** (`Follow`, RF27.CA06) e as ações sociais inline dos cards (RF18/RF19), que pertencem aos seus RFs. Se o `username` for de uma conta EMPRESA ou CHEFE, o cabeçalho oferece o atalho para a página institucional (RF15 / RF14).
 
-| CA | Enunciado (CA a confirmar) |
+| CA | Enunciado (Dado / Quando / Então) |
 |---|---|
-| **RF16.CA01** | Dado mensagens classificadas (RF7) e o contexto da sessão, quando a IA (capability FORMULAR_PERGUNTA) detecta um ponto crítico, então cria `AiQuestion` (kind PONTO_CRITICO, status ABERTA) com `questionText`, `basisMessageIds` e `citationsJson` (RF33.CA03 — "baseado em") e posta `SessionMessage` (authorKind IA) classificada como PERGUNTA. |
-| **RF16.CA02** | Dado a pergunta criada, então o grupo recebe `Notification` (categoria DECIA) e a pergunta fica **fixada** no painel lateral até ser RESPONDIDA ou IGNORADA; nó PERGUNTA entra no rastro (RF29) com arestas ORIGINOU a partir das mensagens-base. |
-| **RF16.CA03** | Dado um participante responde (mensagem com `replyToMessageId` = mensagem da pergunta), quando a IA avalia a resposta, então `status = RESPONDIDA`, `answeredByMessageId` e `answeredWithEvidence` (true se cita tarefa/anexo/fonte); com evidência, evento AFTER_COMMIT credita **+4 DP** (`PERGUNTA_RESPONDIDA`, idempotente, RF42.CA01). Resposta sem evidência mantém ABERTA com aviso "cite uma fonte para encerrar". |
-| **RF16.CA04** | Dado pergunta ABERTA até a geração do resumo (RF11) ou descartada pelo administrador ("Descartar"), então `status = IGNORADA` e ela consta em `attentionPointsJson` do resumo. |
-| **RF16.CA05** | Dado ≥ 3 perguntas ABERTAS na sessão ou pergunta similar já aberta (similaridade > 90 % do `questionText`), então a IA **não duplica**; em `aiMode` ECONOMIA a detecção roda a cada N mensagens; tudo registrado em `ai_inference_log`. |
-| **RF16.CA06** | Dado sessão fora de ATIVA/REABERTA, então a IA não formula perguntas; resposta a pergunta RESPONDIDA/IGNORADA → `409 PERGUNTA_ENCERRADA`; descarte por não-admin → `403 ACESSO_NEGADO`. |
+| **RF16.CA01** (CA a confirmar) | Dado um usuário autenticado, quando abre `/u/{username}` de um EMPREGADO, então vê o cabeçalho público: avatar, nome, cargo (`jobTitle`), empresa, departamento (sigla, cor, monograma), contadores (tarefas, projetos, decisões, seguidores) e o botão Seguir; `username` inexistente → `404 USUARIO_NAO_ENCONTRADO`; conta `SUSPENDED`/`DELETION_SCHEDULED` → `404` (não enumera contas). |
+| **RF16.CA02** (CA a confirmar) | Dado o perfil de terceiro, quando a API devolve a lista de sub-abas, então só vêm as sub-abas **1–5**; as 6–15 são omitidas e uma chamada direta a `/tabs/{6..15}` responde `403 ACESSO_NEGADO` (sem bypass para ADMIN nas sub-abas 9, 13, 14, 15). |
+| **RF16.CA03** (CA a confirmar) | Dado uma sub-aba 1–4, quando listo os itens, então cada `TaskItem`, `ProjectScheme`, `Grouping` e `FinalDecision` passa pelo `visibilityFilter`: `PUBLICA` sempre; `EMPRESA` se `viewer.companyId == owner.companyId`; `DEPARTAMENTO` se o viewer tem `DepartmentMembership` vigente no departamento do item; `PRIVADA` nunca. Contadores do cabeçalho contam só o que o viewer pode ver. |
+| **RF16.CA04** (CA a confirmar) | Dado o cabeçalho, quando `owner.hypeVisibility` é `PUBLICO` então o Hype Score aparece para todos; `EMPRESA` só para a mesma empresa; `SO_EU` nunca — a API **não devolve** o campo (nem para CHEFE nem para ADMIN). A sub-aba 5 mostra só `DeliberativeProfile.publicIndicatorsJson` e `badgesJson` escolhidos pelo dono. |
+| **RF16.CA05** (CA a confirmar) | Dado uma sub-aba aberta, quando aplico filtros e paginação (`?tab=&fase=&categoria=&page=&size=20`), então a URL reflete o estado e cada card traz as ações inline do RF18/RF19 (curtir, comentar, salvar, compartilhar, remixar) e, no Acervo, "Levar ao meu acervo" (RF7/RF41.CA08) — todas respeitando a visibilidade do item. |
+| **RF16.CA06** (CA a confirmar) | Dado que o `username` pertence a uma conta `EMPRESA` ou `CHEFE_DEPARTAMENTO`, quando abro o perfil, então o cabeçalho mostra a etiqueta institucional ("Chefe de {sigla}" com monograma, ou logo da empresa) e o atalho para a página do departamento (RF14) ou da empresa (RF15); textos em pt-BR/en/es e layout responsivo. |
+
+| # | Sub-aba visível a terceiros | Entidade lida | Filtro |
+|---|---|---|---|
+| 1 | Acervo de Tarefas | `TaskItem` | `visibility` ∈ visibilityFilter · `state` ≠ RASCUNHO |
+| 2 | Meus Projetos | `ProjectScheme` | `visibility` ∈ visibilityFilter · `status` ≠ RASCUNHO |
+| 3 | Programas & Agrupamentos | `Grouping`, `GroupingItem` | itens filtrados individualmente |
+| 4 | Decisões | `FinalDecision`, `DecisionTraceNode` | `canView` da `DeciaSession` (accessMode) |
+| 5 | Perfil deliberativo (resumo) | `DeliberativeProfile.publicIndicatorsJson`, `badgesJson` | só o que o dono publicou |
 
 ## 1. Diagrama de classes
 
 ```mermaid
 classDiagram
-  direction LR
+direction LR
 
+namespace ws_domain_identidade {
+  class User {
+    <<entity>>
+    +id: UUID
+    +username: String
+    +fullName: String
+    +displayName: String
+    +jobTitle: String
+    +profileType: ProfileType
+    +status: AccountStatus
+    +companyId: UUID
+    +departmentId: UUID
+    +avatarUrl: String
+    +coverUrl: String
+    +bio: String
+    +verified: boolean
+    +hypeVisibility: HypeVisibility
+    .. +18 campos ..
+  }
+  class Company {
+    <<entity>>
+    +id: UUID
+    +legalName: String
+    +slug: String
+    +logoUrl: String
+  }
+  class Department {
+    <<entity>>
+    +id: UUID
+    +companyId: UUID
+    +name: String
+    +acronym: String
+    +color: String
+    +monogram: String
+    +headUserId: UUID
+  }
+  class DepartmentMembership {
+    <<entity>>
+    +userId: UUID
+    +departmentId: UUID
+    +roleInDept: DeptRole
+    +endedAt: Instant
+  }
+}
+
+namespace ws_domain_portfolio {
+  class TaskItem {
+    <<entity>>
+    +id: UUID
+    +ownerId: UUID
+    +departmentId: UUID
+    +title: String
+    +category: TaskCategory
+    +state: TaskState
+    +visibility: Visibility
+    +thumbnailUrl: String
+    +likesCount: long
+    .. +45 campos ..
+  }
+  class ProjectScheme {
+    <<entity>>
+    +id: UUID
+    +ownerId: UUID
+    +departmentId: UUID
+    +title: String
+    +status: ProjectStatus
+    +currentPhase: ProjectPhase
+    +visibility: Visibility
+    +coverUrl: String
+    .. +30 campos ..
+  }
+  class Grouping {
+    <<entity>>
+    +id: UUID
+    +ownerId: UUID
+    +type: GroupingType
+    +label: String
+  }
+  class FinalDecision {
+    <<entity>>
+    +id: UUID
+    +sessionId: UUID
+    +decisionText: String
+    +status: DecisionStatus
+    +stampJson: JSON
+  }
   class DeciaSession {
     <<entity>>
-    +UUID id
-    +String topic
-    +UUID adminUserId
-    +UUID linkedProjectId
-    +UUID planAxisId
-    +SessionStatus status
-    +AiMode aiMode
+    +id: UUID
+    +accessMode: SessionAccess
+    +companyId: UUID
+    +departmentId: UUID
   }
-  class SessionMessage {
+  class DeliberativeProfile {
     <<entity>>
-    +TIMEUUID id
-    +UUID sessionId
-    +UUID authorId
-    +AuthorKind authorKind
-    +String bodyMd
-    +TIMEUUID replyToMessageId
-    +String attachmentsJson
-    +String similarityHash
-    +Instant sentAt
+    +userId: UUID
+    +periodKey: String
+    +publicIndicatorsJson: JSON
+    +badgesJson: JSON
   }
-  class MessageClassification {
+  class ProfileHypeScore {
     <<entity>>
-    +UUID id
-    +UUID messageId
-    +MessageClass label
-    +BigDecimal confidence
-    +boolean hasEvidence
-    +String evidenceRefsJson
-    +UUID linkedTaskId
+    +userId: UUID
+    +scoreDate: LocalDate
+    +score: int
+    +bandCode: String
   }
-  class AiQuestion {
+  class Follow {
     <<entity>>
-    +UUID id
-    +UUID sessionId
-    +QuestionKind kind
-    +String questionText
-    +String basisMessageIds
-    +QuestionStatus status
-    +TIMEUUID answeredByMessageId
-    +boolean answeredWithEvidence
-    +UUID aiInferenceId
-    +String citationsJson
+    +id: UUID
+    +followerId: UUID
+    +targetType: FollowTargetType
+    +targetId: UUID
+    +status: FollowStatus
   }
-  class Citation {
-    <<entity>>
-    +String sourceType
-    +UUID sourceId
-    +String excerpt
-    +String url
-    +BigDecimal score
-  }
-  class ComplianceResult {
-    <<entity>>
-    +UUID id
-    +UUID projectId
-    +int blockingCount
-    +String itemsJson
-  }
-  class PlanAxis {
-    <<entity>>
-    +UUID id
-    +String name
-    +String goal
-    +String aggregatedRisk
-  }
-  class DecisionTraceNode {
-    <<entity>>
-    +UUID id
-    +TraceNodeType nodeType
-    +UUID refId
-    +String label
-    +String classLabel
-  }
-  class DeciaPointsLedgerEntry {
-    <<entity>>
-    +UUID id
-    +UUID userId
-    +int delta
-    +PointsEvent eventCode
-    +UUID refId
-    +String idempotencyKey
-  }
-  class Notification {
-    <<entity>>
-    +UUID id
-    +UUID recipientId
-    +NotificationType type
-    +String category
-    +UUID resourceId
-  }
-  class AiInferenceLog {
-    <<entity>>
-    +UUID id
-    +AiCapability capability
-    +AiMode mode
-    +String provider
-    +String result
-    +BigDecimal confidence
-  }
+}
 
-  class QuestionKind {
+namespace ws_domain_enums {
+  class ProfileType {
     <<enum>>
-    RISCO
-    PONTO_CRITICO
-    ESCLARECIMENTO
+    EMPREGADO
+    EMPRESA
+    CHEFE_DEPARTAMENTO
   }
-  class QuestionStatus {
+  class HypeVisibility {
     <<enum>>
-    ABERTA
-    RESPONDIDA
-    IGNORADA
+    PUBLICO
+    EMPRESA
+    SO_EU
   }
-  class MessageClass {
+  class Visibility {
     <<enum>>
-    ARGUMENTO
-    DIVERGENCIA
-    RISCO
-    CONSENSO
-    PERGUNTA
-    RUIDO
+    PRIVADA
+    DEPARTAMENTO
+    EMPRESA
+    PUBLICA
   }
-  class SessionStatus {
+  class AccountStatus {
     <<enum>>
-    ATIVA
-    REABERTA
-    EM_RESUMO
+    PENDING_EMAIL_VERIFICATION
+    PENDING_VALIDATION
+    ACTIVE
+    SUSPENDED
+    DELETION_SCHEDULED
   }
-  class PointsEvent {
-    <<enum>>
-    PERGUNTA_RESPONDIDA
-    ARGUMENTO_EVIDENCIA
-  }
+}
 
-  class AiQuestionController {
+namespace ws_application {
+  class ProfileService {
+    <<service>>
+    +loadHeader(viewerId, username) ProfileHeader
+    +listTabs(viewerId, ownerId) List~ProfileTab~ terceiro recebe 1 a 5
+    +loadTab(viewerId, ownerId, tab, filters, page) Page
+    +visibilityFilter(viewer, owner) Visibility[]
+    +canSeeHype(viewer, owner) boolean
+    +institutionalShortcut(owner) Link RF14 RF15
+  }
+  class AccessPolicy {
+    <<service>>
+    +canView(viewer, item) boolean
+    +requireOwnerStrict(viewer, owner) 403 sem bypass ADMIN
+    +isSameCompany(viewer, owner) boolean
+    +isDeptMember(viewer, departmentId) boolean
+  }
+  class SocialService {
+    <<service>>
+    +counters(ownerId, viewer) Counters só itens visíveis
+    +follow(followerId, USER, ownerId) Follow
+  }
+  class ReputationService {
+    <<service>>
+    +publicDeliberativeSummary(ownerId) PublicIndicators
+    +hypeScoreIfAllowed(viewer, owner) ProfileHypeScore
+  }
+  class CachePort {
+    <<port>>
+    +getCounters(ownerId, viewerLevel) Counters
+    +putCounters(ownerId, viewerLevel, counters, ttl)
+  }
+}
+
+namespace ws_web {
+  class ProfileController {
     <<controller>>
-    +list(sessionId, status) 200
-    +dismiss(sessionId, questionId) 200
+    +GET_api_users_username(username)
+    +GET_api_users_username_tabs_tab(username, tab, query)
+    +GET_api_users_username_hype(username)
   }
-  class AiQuestionService {
-    <<service>>
-    +onMessageClassified(event) AFTER_COMMIT
-    +detectCriticalPoint(sessionId) Optional~AiQuestion~
-    +onReplyToQuestion(sessionId, messageId) AFTER_COMMIT
-    +dismiss(actor, sessionId, questionId)
-    +ignoreOpenOnSummary(sessionId)
-    -isDuplicate(sessionId, questionText) boolean
+  class FollowController {
+    <<controller>>
+    +POST_api_follows(targetType, targetId)
   }
-  class DecisionTraceService {
-    <<service>>
-    +appendNode(sessionId, PERGUNTA, questionId)
-    +appendEdge(messageNode, questionNode, ORIGINOU)
-  }
-  class DeciaPointsService {
-    <<service>>
-    +onQuestionAnswered(event) AFTER_COMMIT
-  }
-  class AiEnginePort {
-    <<port>>
-    +detectCriticalPoint(context) Optional~QuestionDraft~
-    +evaluateAnswer(question, reply) AnswerEvaluation
-  }
-  class MemorySearchPort {
-    <<port>>
-    +searchCitations(query, filters) List~Citation~
-  }
-  class SessionMessageRepositoryPort {
-    <<port>>
-    +append(SessionMessage)
-    +findRecent(sessionId, limit) List~SessionMessage~
-  }
-  class NotificationPort {
-    <<port>>
-    +notifyGroup(recipients, type, resource)
-  }
-  class AiQuestionRepository {
-    <<adapter>>
-    MySQL ai_questions
-  }
-  class CassandraMessageAdapter {
-    <<adapter>>
-    messages_by_session
-  }
-  class OpenSearchMemoryAdapter {
-    <<adapter>>
-    índice ws-memory
-  }
-  class AiEngineAdapter {
-    <<adapter>>
-    Claude e Gemini com fallback local
-  }
+}
 
-  DeciaSession "1" --> "*" AiQuestion : perguntas
-  DeciaSession --> SessionStatus
-  AiQuestion --> QuestionKind
-  AiQuestion --> QuestionStatus
-  AiQuestion ..> SessionMessage : basisMessageIds / answeredByMessageId
-  AiQuestion ..> Citation : citationsJson
-  AiQuestion ..> AiInferenceLog : aiInferenceId
-  AiQuestion ..> ComplianceResult : ponto crítico de conformidade
-  AiQuestion ..> PlanAxis : ponto crítico de alinhamento
-  SessionMessage "1" --> "0..1" MessageClassification
-  MessageClassification --> MessageClass
-  DecisionTraceNode ..> AiQuestion : refId quando PERGUNTA
-  DeciaPointsLedgerEntry --> PointsEvent
-  DeciaPointsLedgerEntry ..> AiQuestion : refId PERGUNTA_RESPONDIDA
-  Notification ..> AiQuestion : resourceId
+namespace ws_infrastructure {
+  class RedisCacheAdapter {
+    <<adapter>>
+  }
+  class MySqlProfileReadAdapter {
+    <<adapter>>
+  }
+  class CassandraTraceReadAdapter {
+    <<adapter>>
+  }
+}
 
-  AiQuestionController --> AiQuestionService
-  AiQuestionService --> AiEnginePort
-  AiQuestionService --> MemorySearchPort
-  AiQuestionService --> SessionMessageRepositoryPort
-  AiQuestionService --> NotificationPort
-  AiQuestionService --> DecisionTraceService
-  AiQuestionService --> AiQuestionRepository
-  AiQuestionService ..> DeciaPointsService : evento QuestionAnswered
-  AiEnginePort <|.. AiEngineAdapter
-  MemorySearchPort <|.. OpenSearchMemoryAdapter
-  SessionMessageRepositoryPort <|.. CassandraMessageAdapter
+User "1" --> "0..1" Company : companyId
+User "1" --> "0..1" Department : departmentId
+User "1" --> "*" DepartmentMembership : lotações
+User --> ProfileType
+User --> HypeVisibility
+User --> AccountStatus
+TaskItem "*" --> "1" User : ownerId
+ProjectScheme "*" --> "1" User : ownerId
+Grouping "*" --> "1" User : ownerId
+FinalDecision "*" --> "1" DeciaSession : sessionId
+DeliberativeProfile "*" --> "1" User : userId
+ProfileHypeScore "*" --> "1" User : userId
+Follow "*" --> "1" User : followerId
+Follow ..> User : targetId quando USER
+TaskItem --> Visibility
+ProjectScheme --> Visibility
 
-  note for AiQuestion "tabela ai_questions — kind RISCO (RF8), PONTO_CRITICO (RF16), ESCLARECIMENTO .. status ABERTA, RESPONDIDA, IGNORADA"
-  note for AiQuestionService "onMessageClassified: listener AFTER_COMMIT do RF7 .. teto 3 ABERTAS por sessão, dedupe por similaridade > 90 %"
+ProfileController ..> ProfileService
+FollowController ..> SocialService
+ProfileService ..> AccessPolicy
+ProfileService ..> SocialService
+ProfileService ..> ReputationService
+ProfileService ..> CachePort
+AccessPolicy ..> DepartmentMembership : isDeptMember
+RedisCacheAdapter ..|> CachePort
+MySqlProfileReadAdapter ..> ProfileService : users, tasks, project_schemes, groupings, final_decisions
+CassandraTraceReadAdapter ..> ProfileService : trace_by_entity sub-aba 4
+
+note for ProfileService "listTabs para terceiro = sub-abas 1 a 5 (CA02) · visibilityFilter = PUBLICA + EMPRESA se mesma empresa + DEPARTAMENTO se membro (CA03) · canSeeHype por hypeVisibility (CA04)"
+note for AccessPolicy "requireOwnerStrict: sub-abas 9, 13, 14, 15 sem bypass de ADMIN (ABAS_POR_PERFIL P-05, proposta)"
+note for User "tabela users · cabeçalho público usa jobTitle, companyId, departmentId, hypeVisibility · status SUSPENDED ou DELETION_SCHEDULED responde 404 (CA01)"
+note for Follow "única escrita do RF16: botão Seguir (RF27.CA06)"
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph L1["Grupo / Administrador da sessão"]
-    A0(["Mensagens enviadas e classificadas (RF6/RF7)"])
-    A1["Grupo recebe notificação e vê a pergunta fixada no painel"]
-    A2{"Alguém responde?"}
-    A3["Participante responde citando tarefa, anexo ou fonte"]
-    A4["Participante responde sem evidência"]
-    A5["Admin descarta a pergunta"]
-    A6["Resumo analítico é gerado (RF11)"]
-    A7(["Fim"])
+  subgraph LU["Usuário (viewer)"]
+    U1["Abre /u/[username] de um colega"]
+    U2["Escolhe sub-aba 1 a 5, filtros e página"]
+    U3["Clica Seguir ou ação social inline do card"]
+    U4["Clica no atalho institucional"]
   end
 
-  subgraph L2["Web / BFF (Next.js App Router)"]
-    B1["Painel lateral: GET /api/decia/sessions/{id}/questions?status=ABERTA"]
-    B2["POST /api/decia/sessions/{id}/messages {replyToMessageId = pergunta} (RF6)"]
-    B3["POST /api/decia/sessions/{id}/questions/{qid}/dismiss"]
-    B4["Exibe 403 ACESSO_NEGADO"]
-    B5["Exibe 409 PERGUNTA_ENCERRADA"]
-    B6["Pergunta marcada RESPONDIDA ✓ e toast +4 DP"]
-    B7["Aviso: cite uma fonte para encerrar a pergunta"]
+  subgraph LW["Web / BFF (Next.js App Router)"]
+    W1["Resolve locale pt-BR / en / es, layout responsivo"]
+    W2["Renderiza skeleton, lê tab + filtros + page da URL"]
+    W3["Cabeçalho público + lista de sub-abas 1 a 5 + botão Seguir"]
+    W4["Página perfil não encontrado"]
+    W5["Grade paginada, URL com tab e filtros, InteractionBar RF18/RF19"]
+    W6["Redireciona para /departments/[slug] (RF14) ou /companies/[slug] (RF15)"]
   end
 
-  subgraph L3["ws-application (AiQuestionService)"]
-    C0["Listener MessageClassified (AFTER_COMMIT)"]
-    C1{"session.status em ATIVA ou REABERTA?"}
-    C2{"aiMode ECONOMIA: contador de mensagens atingiu N?"}
-    C3{"perguntas ABERTAS < 3?"}
-    C4["Monta contexto: últimas classificações, divergências, ComplianceResult, PlanAxis, prazos legais"]
-    C5["AiEnginePort.detectCriticalPoint"]
-    C6{"ponto crítico encontrado?"}
-    C7{"similar a pergunta ABERTA (> 90 %)?"}
-    C8["MemorySearchPort.searchCitations"]
-    C9["INSERT AiQuestion PONTO_CRITICO ABERTA (basisMessageIds, citationsJson)"]
-    C10["SessionMessage authorKind IA (classificada PERGUNTA)"]
-    C11["Rastro: nó PERGUNTA + arestas ORIGINOU"]
-    C12["NotificationPort.notifyGroup"]
-    C13["Listener onReplyToQuestion: replyToMessageId aponta para pergunta"]
-    C14{"pergunta ABERTA?"}
-    C15["AiEnginePort.evaluateAnswer"]
-    C16{"answeredWithEvidence?"}
-    C17["status = RESPONDIDA, answeredByMessageId, answeredWithEvidence = true"]
-    C18["Publica QuestionAnswered (outbox)"]
-    C19["Mantém ABERTA; registra tentativa"]
-    C20{"actor = adminUserId?"}
-    C21["status = IGNORADA"]
-    C22["ignoreOpenOnSummary: ABERTAS → IGNORADA; entram em attentionPointsJson"]
+  subgraph LA["ws-application"]
+    A1["ProfileService.loadHeader(viewer, username)"]
+    A2{"Usuário existe e status ACTIVE?"}
+    A3["404 USUARIO_NAO_ENCONTRADO"]
+    A4{"profileType do dono?"}
+    A5["institutionalShortcut: etiqueta Chefe de sigla ou logo da empresa + link RF14/RF15"]
+    A6["visibilityFilter: PUBLICA + EMPRESA se mesma empresa + DEPARTAMENTO se membro"]
+    A7["SocialService.counters só com itens visíveis ao viewer"]
+    A8{"canSeeHype? PUBLICO sim · EMPRESA se mesma empresa · SO_EU nunca"}
+    A9["Cabeçalho com Hype Score e faixa"]
+    A10["Cabeçalho sem o campo hype"]
+    A11["listTabs: terceiro recebe sub-abas 1 a 5"]
+    A12["ProfileService.loadTab(viewer, owner, tab, filters, page)"]
+    A13{"tab entre 6 e 15?"}
+    A14["403 ACESSO_NEGADO (requireOwnerStrict, sem bypass ADMIN)"]
+    A15["Aplica visibilityFilter por item; sub-aba 4 usa canView da DeciaSession; sub-aba 5 só publicIndicatorsJson"]
+    A16["SocialService.follow(viewer, USER, owner) — RF27.CA06"]
   end
 
-  subgraph L4["IA (AiEngine)"]
-    D1["FORMULAR_PERGUNTA: lacuna de evidência, conflito com plano/conformidade, prazo legal, argumento sem contraditório"]
-    D2["Redige questionText + baseado em …"]
-    D3["Avalia resposta: cita tarefa/anexo/fonte?"]
-    D4["AiInferenceLog (mode, provider, confidence)"]
+  subgraph LI["IA (AiEngine)"]
+    I1["Não há inferência no RF16 — Hype e indicadores já calculados em RF45/RF43"]
   end
 
-  subgraph L5["Persistência"]
-    E1[("MySQL ai_questions · message_classifications · compliance_results · plan_axes")]
-    E2[("Cassandra messages_by_session · notifications_by_user")]
-    E3[("OpenSearch ws-memory")]
-    E4[("MySQL decision_trace_nodes/edges · domain_events · decia_points_ledger")]
+  subgraph LP["Persistência"]
+    P1[("MySQL: users, companies, departments, department_memberships")]
+    P2[("Redis: counters:{ownerId}:{viewerLevel}, hype do dia")]
+    P3[("MySQL: tasks, project_schemes, groupings, final_decisions, deliberative_profiles, profile_hype_scores")]
+    P4[("Cassandra: trace_by_entity — fio de decisão da sub-aba 4")]
+    P5[("MySQL: follows")]
   end
 
-  subgraph L6["Listeners AFTER_COMMIT"]
-    F1["DeciaPointsService: +4 DP PERGUNTA_RESPONDIDA (idempotente)"]
-    F2["NotificationPort: grupo — pergunta respondida"]
-  end
+  U1 --> W1 --> W2 --> A1 --> P1
+  A1 --> A2
+  A2 -->|"não"| A3 --> W4
+  A2 -->|"sim"| A4
+  A4 -->|"EMPRESA ou CHEFE"| A5 --> A6
+  A4 -->|"EMPREGADO"| A6
+  A6 --> A7 --> P2
+  A7 --> A8
+  A8 -->|"sim"| A9 --> A11
+  A8 -->|"não"| A10 --> A11
+  A11 --> W3
+  W3 --> U2 --> A12 --> A13
+  A13 -->|"sim"| A14
+  A13 -->|"não"| A15 --> P3
+  A15 --> P4
+  P3 --> W5
+  W5 --> U3 --> A16 --> P5
+  W3 --> U4 --> W6
+  A9 -.-> I1
 
-  A0 --> C0 --> C1
-  C1 -->|não| A7
-  C1 -->|sim| C2
-  C2 -->|não| A7
-  C2 -->|sim| C3
-  C3 -->|não| A7
-  C3 -->|sim| C4 --> E1
-  C4 --> C5 --> D1 --> D2 --> D4 --> C6
-  C6 -->|não| A7
-  C6 -->|sim| C7
-  C7 -->|sim| A7
-  C7 -->|não| C8 --> E3
-  C8 --> C9 --> E1
-  C9 --> C10 --> E2
-  C10 --> C11 --> E4
-  C11 --> C12 --> E2
-  C12 --> A1 --> B1 --> A2
-  A2 -->|com evidência| A3 --> B2 --> C13
-  A2 -->|sem evidência| A4 --> B2
-  A2 -->|descartar| A5 --> B3 --> C20
-  A2 -->|ninguém| A6 --> C22 --> E1
-  C22 --> A7
-  C13 --> C14
-  C14 -->|não| B5 --> A7
-  C14 -->|sim| C15 --> D3 --> D4
-  D3 --> C16
-  C16 -->|sim| C17 --> E1
-  C17 --> C18 --> E4
-  C18 --> F1 --> E4
-  C18 --> F2 --> E2
-  F1 --> B6 --> A7
-  C16 -->|não| C19 --> B7 --> A2
-  C20 -->|não| B4 --> A7
-  C20 -->|sim| C21 --> E1
-  C21 --> A7
+  classDef err fill:#ffe3e3,stroke:#c0392b,color:#5a1a12
+  class A3,A14 err
 ```
 
 ## 3. Diagrama de sequência
@@ -358,107 +349,105 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário (participante / admin)
-  participant FE as Next.js (App Router)
+  actor U as Usuário
+  participant NX as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
-  participant AI as AiEngine
   participant DB as Repository/MySQL
   participant CS as Cassandra
-  participant OS as OpenSearch
-  participant EV as DomainEvents (AFTER_COMMIT)
+  participant R as Redis
 
-  rect rgb(245, 242, 239)
-    Note over U,EV: Caminho feliz — IA detecta ponto crítico, pergunta ao grupo, participante responde com evidência
-    EV-->>S: AiQuestionService.onMessageClassified(sessionId, messageId, label)
-    S->>DB: SELECT decia_sessions (status ATIVA, aiMode) + count(ai_questions ABERTA) < 3
-    S->>CS: SELECT messages_by_session (últimas N)
-    S->>DB: SELECT message_classifications, divergences, compliance_results, plan_axes, legal_deadline_rules
-    S->>AI: detectCriticalPoint(context)
-    AI-->>S: QuestionDraft {questionText, basisMessageIds, kind PONTO_CRITICO, confidence}
-    S->>DB: SELECT ai_questions ABERTA → similaridade do questionText ≤ 90 %
-    S->>OS: kNN ws-memory (questionText, filtros empresa/departamento)
-    OS-->>S: Citation[] (ou vazio → "sem precedente")
-    S->>DB: INSERT ai_inference_log (FORMULAR_PERGUNTA)
-    S->>DB: INSERT ai_questions (PONTO_CRITICO, ABERTA, basisMessageIds, citationsJson)
-    S->>CS: INSERT messages_by_session (authorKind IA, bodyMd = pergunta, classification PERGUNTA)
-    S->>DB: INSERT decision_trace_nodes (PERGUNTA) + decision_trace_edges (MENSAGEM → PERGUNTA, ORIGINOU)
-    S->>CS: INSERT notifications_by_user (participantes, PERGUNTA_IA)
-
-    U->>FE: Vê a pergunta fixada no painel
-    FE->>C: GET /api/decia/sessions/{id}/questions?status=ABERTA
-    C->>S: AiQuestionService.list(sessionId, ABERTA)
-    S->>DB: SELECT ai_questions
-    S-->>C: 200 [AiQuestion + citations]
-    C-->>FE: 200
-    FE-->>U: Pergunta com faísca ✦ e "baseado em"
-    U->>FE: Responde citando a tarefa Planilha orçamentária v2
-    FE->>C: POST /api/decia/sessions/{id}/messages {bodyMd, replyToMessageId, attachmentIds} (RF6)
-    C->>S: SessionMessageService.send(...) → INSERT messages_by_session → evento MessageSent
-    EV-->>S: AiQuestionService.onReplyToQuestion(sessionId, messageId)
-    S->>DB: SELECT ai_questions WHERE messageId = replyToMessageId AND status = ABERTA
-    S->>AI: evaluateAnswer(question, reply, attachments)
-    AI-->>S: AnswerEvaluation {answers: true, withEvidence: true, rationale}
-    S->>DB: INSERT ai_inference_log
-    S->>DB: UPDATE ai_questions SET status = RESPONDIDA, answeredByMessageId, answeredWithEvidence = true
-    S->>DB: INSERT decision_trace_edges (PERGUNTA → MENSAGEM, RESPONDEU)
-    S->>DB: INSERT domain_events (QuestionAnswered)
-    EV-->>S: DeciaPointsService.onQuestionAnswered → INSERT decia_points_ledger (+4 PERGUNTA_RESPONDIDA, idempotencyKey)
-    EV-->>S: NotificationPort.notifyGroup(participantes, PERGUNTA_RESPONDIDA)
-    FE-->>U: Pergunta marcada RESPONDIDA ✓ e toast +4 DP
+  U->>NX: GET /u/maria?tab=projetos&fase=ELABORACAO&page=1
+  NX->>NX: resolve locale e lê tab, filtros e page da URL (CA05, CA06)
+  NX->>C: GET /api/users/maria
+  C->>S: ProfileService.loadHeader(viewerId, "maria")
+  S->>DB: users WHERE username = maria JOIN companies, departments
+  alt username inexistente ou status SUSPENDED / DELETION_SCHEDULED (CA01)
+    DB-->>S: vazio ou conta indisponível
+    S-->>C: 404 USUARIO_NAO_ENCONTRADO
+    C-->>NX: 404
+    NX-->>U: página perfil não encontrado
+  else EMPREGADO ACTIVE
+    S->>S: visibilityFilter(viewer, maria) = PUBLICA + EMPRESA (mesma empresa) + DEPARTAMENTO (membro) (CA03)
+    S->>R: GET counters:{ownerId}:{viewerLevel}
+    opt miss no cache
+      S->>DB: COUNT tasks, project_schemes, final_decisions, follows filtrados pelo visibilityFilter
+      S->>R: SET counters TTL 60s
+    end
+    S->>S: canSeeHype(viewer, maria) por hypeVisibility (CA04)
+    alt hypeVisibility SO_EU ou EMPRESA de outra empresa
+      S->>S: omite o campo hype da resposta
+    else PUBLICO ou EMPRESA da mesma empresa
+      S->>DB: profile_hype_scores WHERE userId AND scoreDate = hoje
+    end
+    S->>S: listTabs(viewer, maria) = sub-abas 1 a 5 (CA02)
+    S-->>C: ProfileHeader + tabs 1 a 5 + follow state
+    C-->>NX: 200
+    NX-->>U: cabeçalho público com botão Seguir
   end
 
-  alt RF16.CA03 — resposta sem evidência
-    AI-->>S: AnswerEvaluation {answers: true, withEvidence: false}
-    S->>DB: UPDATE ai_questions SET answeredWithEvidence = false (status permanece ABERTA)
-    FE-->>U: "Cite uma fonte (tarefa, anexo ou memória) para encerrar a pergunta"
-  else RF16.CA05 — teto ou duplicata
-    S->>DB: count(ai_questions ABERTA) = 3 ou similaridade > 90 %
-    S->>DB: INSERT ai_inference_log (result OK, outputSummary "suprimida: teto/duplicata")
-    Note over S,DB: nenhuma pergunta criada
-  else RF16.CA06 — resposta a pergunta encerrada
-    EV-->>S: onReplyToQuestion(...)
-    S->>DB: SELECT ai_questions.status IN (RESPONDIDA, IGNORADA)
-    S-->>C: 409 PERGUNTA_ENCERRADA (mensagem segue no chat como comum)
-  else RF16.CA04 — admin descarta
-    U->>FE: Clica "Descartar"
-    FE->>C: POST /api/decia/sessions/{id}/questions/{qid}/dismiss
-    C->>S: AiQuestionService.dismiss(actor, sessionId, questionId)
-    S->>DB: SELECT decia_sessions.adminUserId = actor
-    S->>DB: UPDATE ai_questions SET status = IGNORADA
-    S-->>C: 200
-    C-->>FE: 200
+  NX->>C: GET /api/users/maria/tabs/projetos?fase=ELABORACAO&page=1&size=20
+  C->>S: ProfileService.loadTab(viewerId, ownerId, PROJETOS, filters, page)
+  S->>DB: project_schemes WHERE ownerId AND visibility IN filtro AND status <> RASCUNHO AND currentPhase = ELABORACAO
+  DB-->>S: Page de ProjectScheme
+  S-->>C: 200 Page {items, total, page}
+  C-->>NX: 200
+  NX-->>U: grade paginada com InteractionBar RF18/RF19 (CA05)
+
+  NX->>C: GET /api/users/maria/tabs/decisoes?page=1
+  C->>S: ProfileService.loadTab(viewerId, ownerId, DECISOES)
+  S->>DB: final_decisions JOIN decia_sessions WHERE canView(viewer, accessMode)
+  S->>CS: trace_by_entity para o fio de decisão de cada decisão visível
+  S-->>C: 200 decisões com carimbo VALIDADO ou DEVOLVIDO
+  C-->>NX: 200
+
+  U->>NX: tenta abrir a sub-aba 13 DECIA Points pela URL
+  NX->>C: GET /api/users/maria/tabs/pontos
+  C->>S: ProfileService.loadTab(viewerId, ownerId, PONTOS)
+  alt viewer não é o dono (CA02)
+    S-->>C: 403 ACESSO_NEGADO (requireOwnerStrict, sem bypass ADMIN)
+    C-->>NX: 403
+    NX-->>U: aba indisponível, volta para a sub-aba 1
   end
+
+  U->>NX: clica Seguir
+  NX->>C: POST /api/follows {targetType USER, targetId maria}
+  C->>S: SocialService.follow(viewerId, USER, maria) (RF27.CA06)
+  S->>DB: INSERT follows (ATIVO) ou idempotente
+  S-->>C: 201 Follow
+  C-->>NX: 201
+  NX-->>U: botão vira Seguindo
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: `AiQuestion.status` (`QuestionStatus`: ABERTA → RESPONDIDA | IGNORADA). A sessão (`SessionStatus`) precisa estar em ATIVA ou REABERTA para a IA formular.
+O RF16 é **somente leitura** e não tem estados próprios. Dois ciclos governam o que o terceiro vê: **`User.hypeVisibility`** (enum `HypeVisibility`, alterado pelo dono no RF45.CA06 — define se o Hype Score aparece no cabeçalho, CA04) e o **`Follow.status`** (enum `FollowStatus`, única escrita disparada a partir desta tela, RF27.CA06).
 
 ```mermaid
 stateDiagram-v2
-  [*] --> ABERTA : IA detecta ponto crítico (FORMULAR_PERGUNTA, kind PONTO_CRITICO) — RF16.CA01
-  ABERTA --> ABERTA : resposta sem evidência (answeredWithEvidence = false) — RF16.CA03
-  ABERTA --> RESPONDIDA : resposta com evidência avaliada pela IA — RF16.CA03
-  ABERTA --> IGNORADA : admin descarta — RF16.CA04
-  ABERTA --> IGNORADA : resumo RF11 gerado com a pergunta aberta — RF16.CA04
-  RESPONDIDA --> [*]
-  IGNORADA --> [*]
-
-  note right of ABERTA
-    fixada no painel lateral
-    teto: 3 ABERTAS por sessão
-    dedupe: similaridade > 90 % não cria nova
-    só nasce com sessão ATIVA ou REABERTA
+  state "User.hypeVisibility — decide o cabeçalho visto por terceiros (CA04)" as HV {
+    [*] --> SO_EU : padrão ao criar a conta
+    SO_EU --> EMPRESA : dono escolhe EMPRESA em /profile/hype
+    SO_EU --> PUBLICO : dono escolhe PUBLICO
+    EMPRESA --> PUBLICO : dono amplia
+    PUBLICO --> EMPRESA : dono restringe
+    EMPRESA --> SO_EU : dono oculta
+    PUBLICO --> SO_EU : dono oculta
+  }
+  state "Follow (viewer → dono do perfil) — RF27.CA06" as FO {
+    [*] --> NAO_SEGUE
+    NAO_SEGUE --> ATIVO : POST follows USER
+    ATIVO --> REMOVIDO : DELETE follows
+    REMOVIDO --> ATIVO : seguir novamente
+  }
+  note right of HV
+    SO_EU: a API nunca devolve o campo hype a terceiros, nem a CHEFE ou ADMIN.
+    EMPRESA: só viewer com companyId igual ao do dono.
+    PUBLICO: qualquer usuário autenticado.
   end note
-  note right of RESPONDIDA
-    answeredByMessageId + answeredWithEvidence = true
-    AFTER_COMMIT: +4 DP PERGUNTA_RESPONDIDA ao autor
-    aresta RESPONDEU no rastro
-    nova resposta → 409 PERGUNTA_ENCERRADA
-  end note
-  note left of IGNORADA
-    consta em attentionPointsJson do AnalyticalSummary
+  note right of FO
+    Follow ATIVO alimenta a sub-aba Seguindo do Mural (RF27)
+    e o contador de seguidores do cabeçalho (CA01).
   end note
 ```
 
@@ -466,97 +455,67 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js (App Router)"]
-    FE1["app/decia/[sessionId]/page.tsx — painel Perguntas da IA"]
-    FE2["components/ui/AiQuestionCard · PinnedQuestions · ReplyComposer (RF6) · CitationChip"]
+  subgraph FE["Frontend Next.js"]
+    F1["app/u/[username] — cabeçalho público + sub-abas 1 a 5"]
+    F2["components/ui: ProfileHeader, HypeBadge condicional, InstitutionalShortcut, SubTabs 1 a 5, FilterBar, Pagination, TaskCard, ProjectCard, DecisionThread, PublicIndicators, FollowButton, InteractionBar RF18/RF19"]
+    F3["i18n next-intl pt-BR / en / es · layout responsivo"]
   end
 
   subgraph WEB["ws-web"]
-    W1["AiQuestionController (REST /api/decia/sessions/{id}/questions)"]
-    W2["SessionMessageController (RF6 — resposta via replyToMessageId)"]
-    W3["SessionAccessGuard (participante / adminUserId)"]
+    C1["ProfileController — /api/users/{username}, /tabs/{tab}, /hype"]
+    C2["FollowController RF27 — /api/follows"]
+    C3["InteractionController RF18/RF19"]
   end
 
   subgraph APP["ws-application"]
-    S1["AiQuestionService (+ listeners MessageClassified, MessageSent)"]
-    S2["SessionMessageService (RF6)"]
-    S3["DecisionTraceService"]
-    S4["DeciaPointsService (listener AFTER_COMMIT)"]
-    S5["SummaryService.ignoreOpenOnSummary (RF11)"]
-    P1["AiEnginePort"]
-    P2["MemorySearchPort"]
-    P3["SessionMessageRepositoryPort"]
-    P4["NotificationPort"]
-    P5["DomainEventPublisher (outbox)"]
+    S1["ProfileService"]
+    S2["AccessPolicy — canView, visibilityFilter, requireOwnerStrict"]
+    S3["SocialService — counters, follow"]
+    S4["ReputationService RF43/RF45 — indicadores públicos, hype se permitido"]
+    P1["CachePort"]
   end
 
   subgraph DOM["ws-domain"]
-    D1["AiQuestion · Citation"]
-    D2["SessionMessage · MessageClassification · DeciaSession"]
-    D3["ComplianceResult · PlanAxis · LegalDeadlineRule (leitura)"]
-    D4["DecisionTraceNode · DecisionTraceEdge · DeciaPointsLedgerEntry"]
-    D5["Enums: QuestionKind · QuestionStatus · MessageClass · SessionStatus · PointsEvent"]
+    D1["User · Company · Department · DepartmentMembership"]
+    D2["TaskItem · ProjectScheme · Grouping · FinalDecision · DeciaSession · Follow"]
+    D3["DeliberativeProfile · ProfileHypeScore · HypeBand"]
   end
 
-  subgraph INFRA["ws-infrastructure"]
-    I1["persistence-mysql: AiQuestionRepository, MessageClassificationRepository, ComplianceResultRepository, PlanAxisRepository, DecisionTraceRepository, DeciaPointsLedgerRepository, DomainEventOutboxRepository"]
-    I2["persistence-cassandra: CassandraMessageAdapter, NotificationFeedAdapter"]
-    I3["search-opensearch: OpenSearchMemoryAdapter (ws-memory)"]
-    I4["cache-redis: AiQuotaAdapter, CircuitStateAdapter, contador de mensagens por sessão (modo ECONOMIA)"]
-    I5["ai-providers: AiEngineAdapter (FORMULAR_PERGUNTA, ai_inference_log)"]
-    I6["platform: NotificationAdapter, OutboxRelay"]
+  subgraph INFRA["ws-infrastructure/*"]
+    I1[("persistence-mysql: users, companies, departments, department_memberships, tasks, project_schemes, groupings, final_decisions, deliberative_profiles, profile_hype_scores, follows")]
+    I2[("cache-redis: counters:{ownerId}:{viewerLevel}, hype do dia")]
+    I3[("persistence-cassandra: trace_by_entity — fio de decisão da sub-aba 4")]
   end
 
-  subgraph EXT["Serviços externos"]
-    X1["Claude / Gemini"]
-  end
-
-  MY[("MySQL 8")]
-  CA[("Cassandra")]
-  OS[("OpenSearch")]
-  RD[("Redis")]
-
-  FE1 --> FE2
-  FE2 -->|HTTPS/JSON| W1 --> W3 --> S1
-  FE2 -->|HTTPS/JSON| W2 --> W3 --> S2
-  S2 --> P5
-  P5 -.->|AFTER_COMMIT MessageClassified / MessageSent| S1
-  P5 -.->|AFTER_COMMIT QuestionAnswered| S4
+  F1 --- F2
+  F1 --- F3
+  F1 -->|"HTTPS/JSON"| C1
+  F2 -->|"HTTPS/JSON"| C2
+  F2 -->|"HTTPS/JSON"| C3
+  C1 --> S1
+  C2 --> S3
+  S1 --> S2
   S1 --> S3
-  S5 --> S1
+  S1 --> S4
   S1 --> P1
-  S1 --> P2
-  S1 --> P3
-  S1 --> P4
   S1 --> D1
   S1 --> D2
-  S1 --> D3
-  S3 --> D4
-  S4 --> D4
-  D1 --> D5
-  P1 -.-> I5
-  P2 -.-> I3
-  P3 -.-> I2
-  P4 -.-> I6
-  I5 --> I4
-  S1 --> I4
-  S1 --> I1
-  S3 --> I1
-  S4 --> I1
-  I1 --> MY
-  I2 --> CA
-  I3 --> OS
-  I4 --> RD
-  I5 --> X1
+  S4 --> D3
+  D1 --> I1
+  D2 --> I1
+  D3 --> I1
+  P1 --> I2
+  S1 --> I3
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Classe | Passo (atividades) | Mensagem (sequência) | Transição (estados) | Componente |
-|---|---|---|---|---|---|
-| RF16.CA01 | `AiQuestion` (kind PONTO_CRITICO, questionText, basisMessageIds, citationsJson), `AiQuestionService.onMessageClassified/detectCriticalPoint`, `AiEnginePort.detectCriticalPoint`, `MemorySearchPort`, `SessionMessage` (IA, PERGUNTA) | A0, C0, C4–C10, D1, D2, D4 | 1–12 | [*] → ABERTA | `AiQuestionService`, `AiEngineAdapter`, `OpenSearchMemoryAdapter`, `CassandraMessageAdapter` |
-| RF16.CA02 | `Notification` (DECIA), `DecisionTraceNode` PERGUNTA / arestas ORIGINOU, `PinnedQuestions` | C11, C12, A1, B1 | 13–20 | nota de ABERTA (fixada) | `NotificationAdapter`, `DecisionTraceService`, `AiQuestionController.list` |
-| RF16.CA03 | `AiQuestion.status/answeredByMessageId/answeredWithEvidence`, `AiEnginePort.evaluateAnswer`, `DeciaPointsLedgerEntry` (PERGUNTA_RESPONDIDA +4), `DeciaPointsService.onQuestionAnswered` | A3, A4, B2, C13–C19, F1, F2, B6, B7 | 21–34; `alt` sem evidência | ABERTA → RESPONDIDA; ABERTA → ABERTA | `SessionMessageService`, `DeciaPointsService`, `OutboxRelay` |
-| RF16.CA04 | `AiQuestion.status = IGNORADA`, `AiQuestionService.dismiss/ignoreOpenOnSummary`, `AnalyticalSummary.attentionPointsJson` | A5, A6, B3, C20–C22 | `alt` RF16.CA04 (dismiss) | ABERTA → IGNORADA (2 gatilhos) | `AiQuestionController.dismiss`, `SummaryService` |
-| RF16.CA05 | `AiQuestionService.isDuplicate`, teto 3 ABERTAS, `SessionMessage.similarityHash`, `AiMode` ECONOMIA (contador Redis), `AiInferenceLog` | C2, C3, C7 | 2, 7; `alt` RF16.CA05 | nota de ABERTA (teto/dedupe) | `AiQuotaAdapter`, contador Redis, `AiEngineAdapter` |
-| RF16.CA06 | guarda `SessionStatus` ATIVA/REABERTA, `SessionAccessGuard` (admin), 409 PERGUNTA_ENCERRADA | C1, C14, C20, B4, B5 | `alt` 409 PERGUNTA_ENCERRADA | RESPONDIDA/IGNORADA terminais | `SessionAccessGuard`, `AiQuestionService` |
+| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
+|---|---|
+| RF16.CA01 | Classes `User` (jobTitle, companyId, departmentId, status), `Company`, `Department` (acronym, color, monogram), `ProfileService.loadHeader`, `SocialService.counters`, `CachePort` · Atividades `U1 → A1 → A2 → A3 404 / A6 → A7 → P2 → W3` · Sequência msgs 3–8 (`alt` 404) e 9–20 (contadores filtrados, cabeçalho) · Componentes `ProfileHeader`, `FollowButton`, `cache-redis` |
+| RF16.CA02 | `ProfileService.listTabs` (nota "terceiro = 1 a 5"), `AccessPolicy.requireOwnerStrict` (nota P-05) · Atividades `A11`, `A13 → A14 403 ACESSO_NEGADO` · Sequência msg 17 (listTabs 1 a 5) e bloco `alt viewer não é o dono → 403` (msgs 37–40) · Componente `SubTabs 1 a 5` |
+| RF16.CA03 | `ProfileService.visibilityFilter`, `AccessPolicy.canView/isSameCompany/isDeptMember`, `DepartmentMembership`, enum `Visibility` · Atividades `A6`, `A15` · Sequência msg 9 (visibilityFilter), msg 12 (COUNT filtrado), msgs 23–24 (`visibility IN filtro AND status <> RASCUNHO`), msgs 29–30 (`canView` da `DeciaSession`) · Tabela de sub-abas do cabeçalho |
+| RF16.CA04 | `User.hypeVisibility`, enum `HypeVisibility`, `ProfileService.canSeeHype`, `ReputationService.hypeScoreIfAllowed/publicDeliberativeSummary`, `DeliberativeProfile.publicIndicatorsJson` · Atividades `A8 → A9 / A10`, `A15` (sub-aba 5) · Sequência msgs 14–16 (`alt SO_EU → omite o campo hype`) · Máquina de estados *User.hypeVisibility* e nota · Componentes `HypeBadge condicional`, `PublicIndicators` |
+| RF16.CA05 | `ProfileController.GET_api_users_username_tabs_tab`, `ProfileService.loadTab` · Atividades `W2` (lê tab + filtros + page), `U2 → A12`, `W5` (InteractionBar) · Sequência msgs 1–2 e 22–27 (`?fase=&page=&size=20`, grade com InteractionBar) · Componentes `FilterBar`, `Pagination`, `InteractionBar RF18/RF19`, `InteractionController RF18/RF19` |
+| RF16.CA06 | Enum `ProfileType`, `ProfileService.institutionalShortcut` · Atividades `W1` (locale, responsivo), `A4 → A5`, `U4 → W6` (RF14 / RF15) · Sequência msg 2 (locale) · Componentes `InstitutionalShortcut`, `i18n next-intl` |
+| (escrita única) Seguir | `Follow`, `SocialService.follow`, `FollowController` · Atividades `U3 → A16 → P5` · Sequência msgs 41–46 · Máquina de estados *Follow* · pertence ao RF27.CA06 |

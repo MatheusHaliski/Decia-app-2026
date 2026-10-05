@@ -1,17 +1,19 @@
-# RF15 — Revisar a decisão final gerada pela IA. Em caso de rejeição, deve-se responder ao grupo o motivo desta decisão
-**HU:** HU15 · **Sprint (board Work Station):** 3 · **Equivalente FAI:** card RF15 não cita equivalente; análogo à **fila de revisão de `SealBond`** do FAI (RF20/RF21: marca aprova/rejeita com motivo → APPROVED/REJECTED), aqui aplicada à decisão da IA (carimbo VALIDADO/DEVOLVIDO, RF38 §4) · **Aba/rota:** DECIA — sessão › "Revisar decisão" (`/decia/[sessionId]/decision/review`; rota a confirmar) + fila "Decisões pendentes de revisão" no dashboard do CHEFE (RF28.CA06)
-**Critérios de aceite cobertos:** RF15.CA01 · RF15.CA02 · RF15.CA03 · RF15.CA04 · RF15.CA05 · RF15.CA06 (RF1–RF18 não têm CAs no board: derivados da HU15 + RF29.CA05, RF33.CA01, RF38 §4, RF42 e marcados "CA a confirmar")
+# RF15 — Visualizar perfil de um empresa ou órgão público/privado
+**HU:** HU15 · **Sprint (board Work Station):** lista *Requisitos Funcionais* (card renumerado, sem sprint atribuída — a confirmar) · **Equivalente FAI:** RF14 Aba Marcas + RF22 Perfil institucional (página da MARCA, `brands/[slug]/page.tsx` abas públicas × `admin`, `InstitutionalService.java`) · **Aba/rota:** **página da empresa** `/companies/[slug]` (Matriz C de `docs/produto/ABAS_POR_PERFIL.md` §4), alcançada pela lista `/companies`, pela aba Buscar (RF27), pelo cabeçalho de qualquer perfil/departamento ou pela barra inferior (5º destino para EMPRESA e visitante); API `GET /api/companies/{slug}` + `GET /api/companies/{id}/tabs/{tab}`
+**Critérios de aceite cobertos:** RF15.CA01 · RF15.CA02 · RF15.CA03 · RF15.CA04 · RF15.CA05 · RF15.CA06 — corpo do card vazio: CAs derivados do título + HU15 + RF28.CA01/CA04/CA06/CA08 (`docs/diagramas/RF28/README.md`) + RF24.CA04 + RF39.CA09/CA11 + RF27.CA06 + Matriz C e §7.a (Comunicados), marcados **(CA a confirmar)**
 
-> **HU15** — COMO administrador do sistema POSSO revisar a decisão final gerada pela IA e, em caso de rejeição, registrar e comunicar ao grupo o motivo PARA garantir que apenas decisões validadas e alinhadas às políticas institucionais sejam oficializadas.
+> **HU15** — COMO usuário dentro do sistema Work Station POSSO procurar o perfil de uma empresa ou órgão público/privado PARA obter informação relevante ou realizar alguma funcionalidade.
+
+A **empresa/órgão** é a conta de perfil EMPRESA (`User.profileType = EMPRESA`) dona de uma `Company` (`ownerUserId`; ex.: Secretaria das Cidades). A página institucional mostra cabeçalho (logo, brasão, nome, sobre, site, cor de destaque, **contadores institucionais** — sem cargo, departamento ou Hype, RF19.CA06/P-04), **métricas públicas do período** (RF28.CA04) e sub-abas **públicas**: Sobre · Departamentos (→ RF14) · Programas (RF25) · Plano Anual oficial (RF24) · Chancelas e modelos oficiais (RF39) · Benefícios (RF39.CA09) · Destaques (RF35.CA03) · Pessoas · **Comunicados (proposta §7.a)**; e a aba **Gestão** só para a dona (negada no serviço). Este RF é de **leitura**, com duas escritas: **Seguir** (`Follow` COMPANY) e, pela dona/chefes, **Comunicados** — entidade `Announcement` **(proposta)**. Órgãos **externos** (fornecedores, órgãos sem conta) são `OrgEntity` e não têm página; só ficha (dúvida §6).
 
 | CA | Enunciado (CA a confirmar) |
 |---|---|
-| **RF15.CA01** | Dado `FinalDecision` EM_REVISAO (RF12), quando o administrador da sessão (`adminUserId` — CHEFE DE DEPARTAMENTO ou ADMIN) abre a revisão, então vê `decisionText`, `rationale`, cenário escolhido, `citationsJson` e o fio de decisão (RF29.CA06); qualquer outro usuário → `403 ACESSO_NEGADO`. |
-| **RF15.CA02** | Dado o revisor escolhe **VALIDADA**, então é criado `DecisionReview` (outcome VALIDADA, reviewedAt), `FinalDecision.status = VALIDADA`, `reviewId` e `stampJson = {kind: VALIDADO, date, reviewerName}`; o grupo é notificado (`notifiedGroupAt`); no projeto vinculado nasce `TaskItem` ATA_REGISTRO na fase APROVACAO com o carimbo (RF29.CA05, `resultingTaskId`) e `ProjectScheme.status` passa a APROVADO. |
-| **RF15.CA03** | Dado o revisor escolhe **DEVOLVIDA**, então `reason` é obrigatório (vazio → `422 VALIDACAO`); `FinalDecision.status = DEVOLVIDA`, `stampJson = {kind: DEVOLVIDO, date, reviewerName}`; o grupo recebe `Notification` com o **motivo** e `SessionMessage` (IA) o republica no chat; a tarefa ATA_REGISTRO nasce com carimbo DEVOLVIDO + motivo e `ProjectScheme.status` passa a DEVOLVIDO; dispara o RF14. |
-| **RF15.CA04** | Dado VALIDADA, quando `DecisionValidated` é publicado AFTER_COMMIT, então cada participante que contribuiu (≥ 1 mensagem classificada ≠ RUIDO) recebe **+15 DP × qualityMultiplier (0,5–2,0)** (`DECISAO_VALIDADA`, idempotente, RF42.CA01) e nasce `MuralEntry` kind DECISAO_VALIDADA (RF27); dispara RF13 (artefatos). |
-| **RF15.CA05** | Dado decisão já VALIDADA/DEVOLVIDA, quando outra revisão chega → `409 DECISAO_JA_REVISADA`; decisão em PROPOSTA (não encaminhada) → `409 DECISAO_NAO_ENCAMINHADA`; a revisão é **imutável**, vai ao rastro (nó REVISAO, aresta REVISOU) e ao `audit_log`. |
-| **RF15.CA06** | Dado decisão VALIDADA, então é indexada na Memória Institucional (`InstitutionalMemoryDocument.sourceType = DECISAO`, RF33.CA01) por `PipelineJob` INDEXAR_MEMORIA; e a sessão fica apta ao encerramento (RF17). |
+| **RF15.CA01** | Dado qualquer usuário (inclusive visitante), quando busca uma empresa/órgão (aba Buscar por `legalName`/sigla, lista `/companies`, link em perfil ou departamento) e abre `/companies/[slug]`, então vê o cabeçalho: `Company.logoUrl`, `coatOfArmsUrl`, `legalName`, `about`, `websiteUrl`, `accentColor` aplicado como cor de destaque, e contadores institucionais (departamentos ativos, pessoas, projetos publicados, modelos oficiais, decisões validadas, seguidores) — **sem** cargo, departamento, Hype, Tarefa do Dia ou DP; slug inexistente, `Company.status` inativo ou dona ainda em `PENDING_VALIDATION` (RF28.CA01) → `404 EMPRESA_NAO_ENCONTRADA`. |
+| **RF15.CA02** | Dado o cabeçalho, então as sub-abas públicas são: **Sobre** · **Departamentos** (`Department` ativos com monograma, cor e chefe → `/departments/[slug]`, RF14) · **Programas** (`Grouping` tipo PROGRAMA, RF25) · **Plano Anual oficial** (`AnnualPlan` scope EMPRESA PUBLICADO com 6 `PlanAxis`; botão **Derivar** para mesma empresa, RF24.CA04) · **Chancelas e modelos oficiais** (`Seal` ATIVA da empresa + `ModelOffer` shelf CHANCELADO, RF39.CA11) · **Benefícios** (`Benefit` DISPONIVEL, RF39.CA09) · **Destaques** (`Highlight` do mês, RF35.CA03) · **Pessoas** (nomes/cargos públicos por departamento) · **Comunicados** (proposta); tab + filtros + página na URL (RF19.CA03). |
+| **RF15.CA03** | Dado a sub-aba **Comunicados (proposta §7.a)**, então EMPRESA dona e CHEFES da empresa publicam `Announcement {companyId, departmentId?, authorId, title, bodyMd, attachmentsJson, visibility EMPRESA/PUBLICO, pinned, commentsEnabled, publishedAt, archivedAt}`; comunicado de chefe sai com o monograma do departamento; colegas da mesma empresa reagem (`Reaction`) e comentam (`Comment`, `TargetType.COMUNICADO` proposto) quando `commentsEnabled`; fixados ficam no topo; cada publicação entra no Mural (RF27) como `MuralEntry.kind = COMUNICADO` (proposto) com etiqueta "Oficial"; visitante/outra empresa vê só `PUBLICO`; EMPREGADO/CURADOR que tenta publicar → `403 ACESSO_NEGADO`; título vazio → `422 VALIDACAO`. |
+| **RF15.CA04** | Dado o período selecionado (padrão: exercício corrente) e o filtro opcional por departamento, então as **métricas públicas** (RF28.CA04) — projetos publicados, modelos oficiais, decisões validadas, chancelas emitidas, benefícios resgatados — vêm de `MetricSnapshot` (scope EMPRESA) com cache Redis `metrics:company:{id}:{period}` TTL 300 s; nunca dados nominais de desempenho (RF45.CA10). |
+| **RF15.CA05** | Dado o viewer autenticado, então as **ações** a partir da página são: **Seguir** (`Follow` targetType COMPANY, único e idempotente; eventos no Seguindo do Mural, RF27.CA06), **Derivar** o plano oficial (mesma empresa; plano não PUBLICADO → `422 DERIVACAO_INVALIDA`, RF24.CA04), **Resgatar** benefício (exige `SealBond` APROVADA → senão `409 CHANCELA_INVALIDA`, RF39.CA10), **Levar ao meu acervo** um modelo oficial (RF41.CA08), **Propor chancela** (EMPREGADO da empresa, RF39.CA06), **Mensagem** (RF46), abrir departamento (RF14); visitante anônimo → `401` nas ações. |
+| **RF15.CA06** | Dado o viewer, então a aba **Gestão** (Departamentos & chefes, Pessoas & lotações, Chancelas & políticas, Benefícios, Plano oficial, Programas, Políticas, Dashboard do emissor, Insights da empresa, Dossiês, Comunicados) só aparece para `Company.ownerUserId` e é **negada no serviço** (`403 ACESSO_NEGADO`) para qualquer outro, inclusive CHEFE e ADMIN em escrita; visibilidade por item segue `AccessPolicy.visibilityFilter` (anônimo/outra empresa → `PUBLICA`; mesma empresa → + `EMPRESA`); `cnpj` (AES) só para a dona e ADMIN; página em pt-BR/en/es e responsiva. |
 
 ## 1. Diagrama de classes
 
@@ -19,343 +21,367 @@
 classDiagram
   direction LR
 
-  class DeciaSession {
+  class Company {
     <<entity>>
     +UUID id
-    +String topic
-    +UUID adminUserId
-    +UUID linkedProjectId
-    +SessionStatus status
-  }
-  class FinalDecision {
-    <<entity>>
-    +UUID id
-    +UUID sessionId
-    +UUID summaryId
-    +String decisionText
-    +String rationale
-    +UUID chosenScenarioId
-    +boolean proposedByAi
-    +DecisionStatus status
-    +UUID reviewId
-    +UUID resultingTaskId
-    +String stampJson
-    +String citationsJson
-  }
-  class DecisionReview {
-    <<entity>>
-    +UUID id
-    +UUID decisionId
-    +UUID reviewerId
-    +ReviewOutcome outcome
-    +String reason
-    +Instant reviewedAt
-    +Instant notifiedGroupAt
+    +UUID ownerUserId
+    +String legalName
+    +String slug
+    +String cnpj
+    +String logoUrl
+    +String coatOfArmsUrl
+    +String about
+    +String websiteUrl
+    +String accentColor
+    +String status
   }
   class User {
     <<entity>>
     +UUID id
-    +String fullName
+    +String username
     +ProfileType profileType
-    +Role role
+    +AccountStatus status
+    +UUID companyId
     +UUID departmentId
   }
-  class TaskItem {
+  class Department {
     <<entity>>
     +UUID id
-    +UUID ownerId
+    +UUID companyId
+    +String name
+    +String acronym
+    +String slug
+    +String color
+    +String monogram
+    +UUID headUserId
+    +boolean active
+  }
+  class Announcement {
+    <<entity>>
+    +UUID id
+    +UUID companyId
+    +UUID departmentId
+    +UUID authorId
     +String title
-    +TaskType type
-    +TaskCategory category
-    +SourceKind sourceKind
-    +String sourceRef
-    +TaskState state
+    +String bodyMd
+    +String attachmentsJson
+    +AnnouncementVisibility visibility
+    +boolean pinned
+    +boolean commentsEnabled
+    +AnnouncementStatus status
+    +Instant publishedAt
+    +Instant archivedAt
   }
-  class ProjectTask {
-    <<entity>>
-    +UUID id
-    +UUID projectId
-    +UUID taskId
-    +ProjectPhase phase
-    +UUID decisionTraceNodeId
+  class AnnouncementStatus {
+    <<enum>>
+    RASCUNHO
+    PUBLICADO
+    FIXADO
+    ARQUIVADO
   }
-  class ProjectScheme {
-    <<entity>>
-    +UUID id
-    +ProjectStatus status
-    +ProjectPhase currentPhase
-    +Instant lastDeciaEventAt
-    +String lastDeciaEventLabel
-  }
-  class DecisionTraceNode {
-    <<entity>>
-    +UUID id
-    +UUID sessionId
-    +TraceNodeType nodeType
-    +UUID refId
-    +String label
-    +UUID actorId
-    +String snapshotJson
-  }
-  class DecisionTraceEdge {
-    <<entity>>
-    +UUID id
-    +UUID fromNodeId
-    +UUID toNodeId
-    +TraceRelation relation
-  }
-  class DeciaPointsLedgerEntry {
-    <<entity>>
-    +UUID id
-    +UUID userId
-    +int delta
-    +PointsEvent eventCode
-    +UUID refId
-    +UUID sessionId
-    +BigDecimal qualityMultiplier
-    +String idempotencyKey
-    +LedgerStatus status
-  }
-  class DeliberativeProfile {
-    <<entity>>
-    +UUID userId
-    +String periodKey
-    +BigDecimal clarity
-    +BigDecimal evidenceUse
-    +BigDecimal consistency
+  class AnnouncementVisibility {
+    <<enum>>
+    EMPRESA
+    PUBLICO
   }
   class MuralEntry {
     <<entity>>
     +UUID id
+    +UUID companyId
+    +UUID departmentId
     +String kind
     +String targetType
     +UUID targetId
     +UUID actorId
   }
-  class Notification {
+  class Follow {
     <<entity>>
-    +UUID id
-    +UUID recipientId
-    +NotificationType type
-    +String category
-    +String body
+    +UUID followerId
+    +FollowTargetType targetType
+    +UUID targetId
+    +FollowStatus status
   }
-  class AuditLog {
+  class AnnualPlan {
     <<entity>>
     +UUID id
+    +PlanScope scope
+    +UUID companyId
+    +int exerciseYear
+    +String title
+    +PlanStatus status
+    +Visibility visibility
+  }
+  class PlanAxis {
+    <<entity>>
+    +UUID planId
+    +int position
+    +String name
+    +String goal
+    +BigDecimal completedPct
+  }
+  class Grouping {
+    <<entity>>
+    +UUID companyId
+    +GroupingType type
+    +String label
+    +GroupingStatus status
+  }
+  class Seal {
+    <<entity>>
+    +UUID id
+    +UUID companyId
+    +String issuerKind
+    +String name
+    +SealTier tier
+    +SealStatus status
+    +boolean excellence
+  }
+  class ModelOffer {
+    <<entity>>
+    +UUID id
+    +String targetType
+    +UUID targetId
+    +Shelf shelf
+    +OfferStatus status
+  }
+  class Benefit {
+    <<entity>>
+    +UUID id
+    +UUID sealId
+    +BenefitType type
+    +String title
+    +int totalQuota
+    +int redeemedCount
+    +String status
+  }
+  class Highlight {
+    <<entity>>
+    +UUID companyId
+    +String monthKey
+    +String targetType
+    +UUID targetId
+    +int position
+  }
+  class MetricSnapshot {
+    <<entity>>
+    +String metricCode
+    +MetricScope scope
+    +UUID scopeId
+    +BigDecimal value
+  }
+  class Reaction {
+    <<entity>>
     +UUID actorId
-    +String action
-    +String resourceType
-    +UUID resourceId
-    +String correlationId
+    +String targetType
+    +UUID targetId
+    +ReactionType reactionType
+  }
+  class Comment {
+    <<entity>>
+    +UUID authorId
+    +String targetType
+    +UUID targetId
+    +String contentMd
   }
 
-  class DecisionStatus {
-    <<enum>>
-    PROPOSTA
-    EM_REVISAO
-    VALIDADA
-    DEVOLVIDA
-    SUBSTITUIDA
-  }
-  class ReviewOutcome {
-    <<enum>>
-    VALIDADA
-    DEVOLVIDA
-  }
-  class ProjectStatus {
-    <<enum>>
-    EM_DECISAO
-    APROVADO
-    DEVOLVIDO
-  }
-  class ProjectPhase {
-    <<enum>>
-    ANALISE
-    APROVACAO
-    EXECUCAO
-  }
-  class PointsEvent {
-    <<enum>>
-    DECISAO_VALIDADA
-    ARTEFATO_USADO
-    PRESENCA_ENCERRADA
-  }
-
-  class DecisionReviewController {
+  class CompanyPageController {
     <<controller>>
-    +getForReview(sessionId, decisionId) 200
-    +review(sessionId, decisionId, ReviewForm) 200
-    +pendingQueue(departmentId) 200
+    +GET_api_companies(q, page) 200
+    +GET_api_companies_slug(period, dept) 200
+    +GET_api_companies_id_tabs_tab(filters, page) 200
+    +GET_api_companies_id_announcements(page) 200
+    +POST_api_companies_id_announcements(body) 201
+    +PATCH_api_announcements_id(body) 200
+    +POST_api_follows(COMPANY, id) 200
   }
-  class DecisionService {
+  class InstitutionalService {
     <<service>>
-    +getForReview(actor, sessionId, decisionId) ReviewView
-    +review(actor, sessionId, decisionId, outcome, reason) DecisionReview
-    -stamp(decision, outcome, reviewer) StampJson
+    +companyPage(viewer, slug, period, dept) CompanyPageView
+    +listTabs(viewer, company) List~Tab~
+    +loadTab(viewer, companyId, tab, filters, page) Page
+    +publicMetrics(companyId, period, dept) Metrics
+    +managementMenu(owner, companyId) Menu
   }
-  class TaskCreationService {
+  class AnnouncementService {
     <<service>>
-    +createDecisionRecord(decision, review, project) TaskItem
+    +publish(actor, companyId, form) Announcement
+    +pin(actor, announcementId, pinned) Announcement
+    +archive(actor, announcementId) Announcement
+    +list(viewer, companyId, page) Page
   }
-  class ProjectStatusService {
+  class SocialService {
     <<service>>
-    +onDecisionReviewed(projectId, outcome)
+    +follow(viewer, COMPANY, companyId) Follow
+    +react(viewer, COMUNICADO, id, type) Reaction
+    +comment(viewer, COMUNICADO, id, contentMd) Comment
   }
-  class DecisionTraceService {
+  class AccessPolicy {
     <<service>>
-    +appendNode(sessionId, REVISAO, reviewId)
-    +appendEdge(decisionNode, reviewNode, REVISOU)
+    +requireOwner(user, company) void
+    +requireIssuer(user) void
+    +requireSameCompany(user, companyId) void
+    +visibilityFilter(viewer, companyId) Visibility[]
   }
-  class DeciaPointsService {
-    <<service>>
-    +onDecisionValidated(event) AFTER_COMMIT
-    +qualityMultiplier(userId, sessionId) BigDecimal
-  }
-  class NotificationPort {
+  class MetricsCachePort {
     <<port>>
-    +notifyGroup(recipients, type, body)
+    +get(key) Metrics
+    +put(key, metrics, ttl)
   }
-  class MemoryIndexPort {
+  class MuralPort {
     <<port>>
-    +scheduleIndex(sourceType, sourceId)
+    +publish(MuralEntry)
   }
-  class DecisionReviewRepository {
+  class CompanyJpaRepository {
     <<adapter>>
-    MySQL decision_reviews
+    MySQL companies
   }
-  class FinalDecisionRepository {
+  class AnnouncementRepository {
     <<adapter>>
-    MySQL final_decisions (@Version)
+    MySQL announcements
+  }
+  class RedisMetricsCache {
+    <<adapter>>
+    metrics company id period
   }
 
-  DeciaSession "1" --> "*" FinalDecision
-  DeciaSession ..> ProjectScheme : linkedProjectId
-  DeciaSession ..> User : adminUserId (revisor)
-  FinalDecision --> DecisionStatus
-  FinalDecision "1" --> "0..1" DecisionReview : reviewId
-  FinalDecision ..> TaskItem : resultingTaskId (ATA_REGISTRO)
-  DecisionReview --> ReviewOutcome
-  DecisionReview "*" --> "1" User : reviewerId
-  TaskItem "1" --> "*" ProjectTask : em fase APROVACAO
-  ProjectTask "*" --> "1" ProjectScheme
-  ProjectTask ..> DecisionTraceNode : decisionTraceNodeId
-  ProjectScheme --> ProjectStatus
-  ProjectTask --> ProjectPhase
-  DecisionTraceEdge --> DecisionTraceNode : fromNodeId / toNodeId
-  DecisionTraceNode ..> DecisionReview : refId quando REVISAO
-  DeciaPointsLedgerEntry --> PointsEvent
-  DeciaPointsLedgerEntry ..> FinalDecision : refId
-  DeciaPointsLedgerEntry ..> DeliberativeProfile : qualityMultiplier
-  MuralEntry ..> FinalDecision : targetId (DECISION)
+  Company --> User : ownerUserId EMPRESA
+  Company "1" --> "*" Department
+  Company "1" --> "*" Announcement
+  Announcement --> AnnouncementStatus
+  Announcement --> AnnouncementVisibility
+  Announcement --> User : authorId EMPRESA ou CHEFE
+  Announcement ..> Department : monograma quando autor e chefe
+  Announcement "1" --> "0..1" MuralEntry : kind COMUNICADO
+  Reaction ..> Announcement : targetType COMUNICADO
+  Comment ..> Announcement : targetType COMUNICADO
+  Follow ..> Company : targetType COMPANY
+  Company "1" --> "0..1" AnnualPlan : plano oficial PUBLICADO
+  AnnualPlan "1" --> "6" PlanAxis
+  Company "1" --> "*" Grouping : PROGRAMA
+  Company "1" --> "*" Seal
+  Seal "1" --> "*" Benefit
+  ModelOffer ..> Seal : shelf CHANCELADO
+  Highlight ..> Company
+  MetricSnapshot ..> Company : scope EMPRESA
 
-  DecisionReviewController --> DecisionService
-  DecisionService --> DecisionReviewRepository
-  DecisionService --> FinalDecisionRepository
-  DecisionService --> TaskCreationService
-  DecisionService --> ProjectStatusService
-  DecisionService --> DecisionTraceService
-  DecisionService --> NotificationPort
-  DecisionService --> MemoryIndexPort
-  DecisionService ..> DeciaPointsService : evento DecisionValidated
-  DecisionService ..> AuditLog : registra
-  NotificationPort ..> Notification : cria
+  CompanyPageController --> InstitutionalService
+  CompanyPageController --> AnnouncementService
+  CompanyPageController --> SocialService
+  InstitutionalService --> AccessPolicy
+  InstitutionalService --> MetricsCachePort
+  InstitutionalService --> CompanyJpaRepository
+  AnnouncementService --> AccessPolicy : requireIssuer e requireSameCompany
+  AnnouncementService --> AnnouncementRepository
+  AnnouncementService --> MuralPort
+  MetricsCachePort <|.. RedisMetricsCache
 
-  note for DecisionReview "tabela decision_reviews — outcome VALIDADA, DEVOLVIDA .. reason obrigatório se DEVOLVIDA .. imutável"
-  note for FinalDecision "stampJson = {kind VALIDADO|DEVOLVIDO, date, reviewerName} — carimbo do fio de decisão (RF38 §4)"
-  note for DeciaPointsLedgerEntry "+15 × qualityMultiplier 0,5–2,0 (perfil deliberativo, objetivo 2) .. idempotencyKey = DECISAO_VALIDADA + decisionId + userId .."
+  note for Company "tabela companies (RF28) · .. +4 campos (pointsPolicyJson, hypePolicyJson, rankingWeightsId, recordingRetentionPolicy) .. · cnpj AES so para dona e ADMIN"
+  note for Announcement "PROPOSTA (ABAS_POR_PERFIL §7.a) — tabela announcements · publica EMPRESA dona e CHEFES da empresa · TargetType.COMUNICADO e MuralEntry.kind COMUNICADO tambem propostos"
+  note for InstitutionalService "reaproveita publicPage e issuerDashboard do RF28 · abas de gestao negadas no servico para quem nao e ownerUserId (RF28.CA08)"
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph L1["Administrador da sessão (CHEFE / ADMIN)"]
-    A0(["Notificação: decisão aguardando revisão (RF12)"])
-    A1["Abre a revisão: decisão, justificativa, cenário, citações, fio de decisão"]
-    A2{"Veredito?"}
-    A3["Escolhe VALIDADA"]
-    A4["Escolhe DEVOLVIDA e escreve o motivo"]
-    A5(["Fim — grupo informado"])
+  classDef err fill:#ffe3e3,stroke:#c0392b,color:#5a1a12
+  classDef ai fill:#fff3d6,stroke:#d68910,color:#5c3b00
+
+  subgraph L1["Ator humano · usuário, visitante, dona (EMPRESA) e chefes"]
+    U1["Procura a empresa/órgão: aba Buscar, lista /companies, link em perfil ou departamento"]
+    U2["Abre /companies/[slug]"]
+    U3["Escolhe sub-aba, filtros, período, departamento"]
+    U4["Clica Seguir"]
+    U5["Aciona funcionalidade: Derivar plano, Resgatar benefício, Levar ao acervo, Propor chancela, Mensagem, abrir departamento"]
+    U6["EMPRESA ou CHEFE publica / fixa / arquiva comunicado"]
+    U7["Colega reage ou comenta um comunicado"]
+    U8["Dona abre a aba Gestão"]
+    U9(["Fim"])
   end
 
-  subgraph L2["Web / BFF (Next.js App Router)"]
-    B1["GET /api/decia/sessions/{id}/decisions/{did}/review"]
-    B2["POST /api/decia/sessions/{id}/decisions/{did}/review {outcome, reason}"]
-    B3["Exibe 403 ACESSO_NEGADO"]
-    B4["Exibe 409 DECISAO_JA_REVISADA ou 409 DECISAO_NAO_ENCAMINHADA"]
-    B5["Exibe 422 VALIDACAO — motivo obrigatório"]
-    B6["Carimbo VALIDADO (verde) com data e revisor + confete discreto"]
-    B7["Carimbo DEVOLVIDO (vermelho) com o motivo"]
+  subgraph L2["Web/BFF (Next.js App Router)"]
+    W1["GET /api/companies?q= · GET /api/search?type=COMPANY"]
+    W2["GET /api/companies/{slug}?period=&dept= · locale e layout responsivo · accentColor como destaque"]
+    W3["Cabeçalho: CompanyLogo, brasão, nome, sobre, site, contadores institucionais, Seguir · (Editar + Dashboard do emissor se dona)"]
+    W4["Sub-abas: Sobre · Departamentos · Programas · Plano Anual oficial · Chancelas e modelos oficiais · Benefícios · Destaques · Pessoas · Comunicados · (Gestão se dona) · URL com tab e filtros"]
+    W5["GET /api/companies/{id}/tabs/{tab}?filters&page"]
+    W6["POST /api/follows {COMPANY, id}"]
+    W7["POST /api/companies/{id}/announcements · PATCH /api/announcements/{id} (pinned, archived)"]
+    W8["POST /api/interactions/COMUNICADO/{id}/reactions · /comments (RF26)"]
+    W9["Exibe 404 EMPRESA_NAO_ENCONTRADA"]
+    W10["Exibe 403 ACESSO_NEGADO (Gestão, publicar comunicado)"]
+    W11["Exibe 422 VALIDACAO / 422 DERIVACAO_INVALIDA / 409 CHANCELA_INVALIDA / 401"]
   end
 
-  subgraph L3["ws-application (DecisionService)"]
-    C1{"actor = adminUserId?"}
-    C2{"decision.status = EM_REVISAO?"}
-    C3{"outcome = DEVOLVIDA e reason vazio?"}
-    C4["INSERT DecisionReview (outcome, reason, reviewedAt)"]
-    C5["FinalDecision.status = outcome; reviewId; stampJson"]
-    C6{"outcome?"}
-    C7["TaskCreationService: TaskItem ATA_REGISTRO em APROVACAO com carimbo VALIDADO (RF29.CA05)"]
-    C8["ProjectStatusService: ProjectScheme → APROVADO; lastDeciaEventLabel"]
-    C9["TaskCreationService: TaskItem ATA_REGISTRO com carimbo DEVOLVIDO + motivo"]
-    C10["ProjectStatusService: ProjectScheme → DEVOLVIDO"]
-    C11["Rastro: nó REVISAO + aresta REVISOU (DECISAO → REVISAO)"]
-    C12["AuditLog DECISION_REVIEWED (correlationId)"]
-    C13["Publica DecisionValidated (outbox)"]
-    C14["Publica DecisionReturned (outbox)"]
-    C15["notifiedGroupAt = now"]
+  subgraph L3["ws-application · InstitutionalService · AnnouncementService · SocialService"]
+    S1{"Company por slug existe, status ativo e dona ACTIVE (não PENDING_VALIDATION)?"}
+    S2["Carrega Company + contadores institucionais (departamentos ativos, pessoas, projetos publicados, modelos oficiais, decisões validadas, seguidores)"]
+    S3["publicMetrics: MetricsCachePort.get metrics:company:{id}:{period}:{dept}"]
+    S4{"cache vazio?"}
+    S5["Agrega MetricSnapshot EMPRESA · SET TTL 300 s"]
+    S6["AccessPolicy.visibilityFilter: PUBLICA + EMPRESA se mesma empresa · isOwner = viewer == ownerUserId"]
+    S7["listTabs: públicas + Gestão se isOwner"]
+    S8{"Aba Gestão ou escrita institucional sem isOwner?"}
+    S9["loadTab por sub-aba: Departments, Groupings PROGRAMA, AnnualPlan PUBLICADO + PlanAxis, Seals + ModelOffer CHANCELADO, Benefits DISPONIVEL, Highlights, Pessoas, Announcements (visibility por viewer)"]
+    S10{"viewer autenticado?"}
+    S11["SocialService.follow COMPANY (idempotente)"]
+    S12["Encaminha ao RF alvo: RF24 derivar, RF39 resgatar/propor, RF41 levar ao acervo, RF46 mensagem, RF14 departamento"]
+    S13{"requireIssuer e requireSameCompany: EMPRESA dona ou CHEFE da empresa?"}
+    S14{"título não vazio?"}
+    S15["AnnouncementService.publish: INSERT announcements (PUBLICADO ou FIXADO, visibility, commentsEnabled) · AuditLog"]
+    S16["Evento AnnouncementPublished (AFTER_COMMIT) → MuralEntry kind COMUNICADO etiqueta Oficial · Notification aos seguidores"]
+    S17{"requireSameCompany e commentsEnabled?"}
+    S18["Reaction / Comment com targetType COMUNICADO (RF26)"]
+    S19["managementMenu: Departamentos & chefes · Pessoas · Chancelas & políticas · Benefícios · Plano oficial · Programas · Políticas · Dashboard do emissor · Insights · Dossiês · Comunicados"]
   end
 
-  subgraph L4["Persistência"]
-    E1[("MySQL final_decisions · decision_reviews")]
-    E2[("MySQL tasks · project_tasks · project_schemes")]
-    E3[("MySQL decision_trace_nodes/edges · audit_log · domain_events")]
-    E4[("Cassandra notifications_by_user · messages_by_session")]
+  subgraph L4["IA (AiEngine)"]
+    A1["Não usada neste RF — leitura institucional · Insights da empresa (RF43.CA14) só na aba Gestão"]
   end
 
-  subgraph L5["Listeners AFTER_COMMIT"]
-    F1["NotificationPort: grupo — Decisão VALIDADA"]
-    F2["DeciaPointsService: +15 × qualityMultiplier DECISAO_VALIDADA por contribuinte (idempotente)"]
-    F3["MuralEntry DECISAO_VALIDADA (RF27)"]
-    F4["ArtifactService: gerar relatório, ata, checklist (RF13)"]
-    F5["PipelineJob INDEXAR_MEMORIA (sourceType DECISAO, RF33.CA01)"]
-    F6["NotificationPort: grupo — Decisão DEVOLVIDA + motivo; SessionMessage IA com o motivo"]
-    F7["ReopenService: pedido de reabertura (RF14)"]
+  subgraph L5["Persistência"]
+    D1[("MySQL companies · users · departments · follows · announcements · audit_log")]
+    D2[("Redis metrics:company:{id}:{period}:{dept} · counters")]
+    D3[("MySQL groupings · annual_plans · plan_axes · seals · model_offers · benefits · highlights · metric_snapshots · reactions · comments")]
+    D4[("MySQL mural_entries · Cassandra timeline_by_user · notifications_by_user")]
+    D5[("OpenSearch ws-companies")]
   end
 
-  A0 --> A1 --> B1 --> C1
-  C1 -->|não| B3 --> A5
-  C1 -->|sim| A2
-  A2 -->|validar| A3 --> B2
-  A2 -->|devolver| A4 --> B2
-  B2 --> C2
-  C2 -->|não| B4 --> A5
-  C2 -->|sim| C3
-  C3 -->|sim| B5 --> A4
-  C3 -->|não| C4 --> E1
-  C4 --> C5 --> E1
-  C5 --> C6
-  C6 -->|VALIDADA| C7 --> E2
-  C7 --> C8 --> E2
-  C8 --> C11
-  C6 -->|DEVOLVIDA| C9 --> E2
-  C9 --> C10 --> E2
-  C10 --> C11 --> E3
-  C11 --> C12 --> E3
-  C12 --> C6b{"outcome?"}
-  C6b -->|VALIDADA| C13 --> E3
-  C6b -->|DEVOLVIDA| C14 --> E3
-  C13 --> F1 --> E4
-  C13 --> F2
-  C13 --> F3
-  C13 --> F4
-  C13 --> F5
-  C14 --> F6 --> E4
-  C14 --> F7
-  F1 --> C15 --> B6 --> A5
-  F6 --> C15
-  C15 --> B7 --> A5
+  U1 --> W1 --> D5
+  W1 --> U2 --> W2 --> S1
+  S1 -->|"não"| W9 --> U9
+  S1 -->|"sim"| S2 --> D1
+  S2 --> S3 --> D2
+  S3 --> S4
+  S4 -->|"sim"| S5 --> D3
+  S5 --> D2
+  S4 -->|"não"| S6
+  S5 --> S6 --> S7 --> W3 --> W4 --> U3 --> W5 --> S8
+  S8 -->|"sim"| W10 --> U9
+  S8 -->|"não"| S9 --> D3
+  S9 --> W4
+  W3 --> U4 --> W6 --> S10
+  S10 -->|"não"| W11 --> U9
+  S10 -->|"sim"| S11 --> D1
+  S11 --> W3
+  W4 --> U5 --> S12 --> U9
+  W4 --> U6 --> W7 --> S13
+  S13 -->|"não"| W10
+  S13 -->|"sim"| S14
+  S14 -->|"não"| W11
+  S14 -->|"sim"| S15 --> D1
+  S15 --> S16 --> D4
+  S16 --> U9
+  W4 --> U7 --> W8 --> S17
+  S17 -->|"não"| W10
+  S17 -->|"sim"| S18 --> D3
+  S18 --> U9
+  W4 --> U8 --> S8
+  S8 -->|"não, dona"| S19 --> U9
+  S19 -. "Insights" .-> A1
+
+  class W9,W10,W11 err
+  class A1 ai
 ```
 
 ## 3. Diagrama de sequência
@@ -363,113 +389,120 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário (admin da sessão — CHEFE/ADMIN)
+  actor U as Usuário
+  actor CH as Usuário (CHEFE)
   participant FE as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
   participant DB as Repository/MySQL
-  participant CS as Cassandra
+  participant R as Redis
   participant OS as OpenSearch
+  participant CS as Cassandra
   participant EV as DomainEvents (AFTER_COMMIT)
 
   rect rgb(245, 242, 239)
-    Note over U,EV: Caminho feliz — revisor VALIDA: carimbo, tarefa ATA_REGISTRO, pontos, mural, artefatos, memória
-    U->>FE: Abre "Revisar decisão"
-    FE->>C: GET /api/decia/sessions/{id}/decisions/{did}/review
-    C->>S: DecisionService.getForReview(actor, sessionId, decisionId)
-    S->>DB: SELECT decia_sessions.adminUserId = actor
-    S->>DB: SELECT final_decisions (EM_REVISAO) + summary_scenarios + decision_trace (fio de decisão)
-    S-->>C: 200 ReviewView {decisionText, rationale, scenario, citations, trace}
+    Note over U,EV: Caminho feliz — empregado abre a página da Secretaria, lê plano e benefícios, segue · chefe publica comunicado
+    U->>FE: Buscar "Secretaria das Cidades"
+    FE->>C: GET /api/search?q=Secretaria&type=COMPANY
+    C->>S: SearchService.search(viewer, q, COMPANY)
+    S->>OS: query ws-companies (legalName, slug)
+    OS-->>S: hits
+    S-->>C: 200 [{slug secid, legalName, logoUrl}]
     C-->>FE: 200
-    FE-->>U: Tela de revisão com fio de decisão
-    U->>FE: Escolhe VALIDADA e confirma
-    FE->>C: POST /api/decia/sessions/{id}/decisions/{did}/review {outcome VALIDADA}
-    C->>S: DecisionService.review(actor, sessionId, decisionId, VALIDADA, null)
-    S->>DB: SELECT final_decisions FOR UPDATE (status = EM_REVISAO, @Version)
-    S->>DB: INSERT decision_reviews (VALIDADA, reviewerId, reviewedAt)
-    S->>DB: UPDATE final_decisions SET status = VALIDADA, reviewId, stampJson = {VALIDADO, date, reviewerName}
-    S->>DB: INSERT tasks (ATA_REGISTRO, category ATA, sourceKind DECIA, sourceRef = decisionId, notes = carimbo)
-    S->>DB: INSERT project_tasks (phase APROVACAO, decisionTraceNodeId) + UPDATE final_decisions SET resultingTaskId
-    S->>DB: UPDATE project_schemes SET status = APROVADO, lastDeciaEventLabel = "decisão validada"
-    S->>DB: INSERT decision_trace_nodes (REVISAO, snapshotJson) + decision_trace_edges (DECISAO → REVISAO, REVISOU)
-    S->>DB: INSERT audit_log (DECISION_REVIEWED, correlationId)
-    S->>DB: INSERT domain_events (DecisionValidated)
-    S->>DB: INSERT pipeline_jobs (INDEXAR_MEMORIA, DECISAO)
-    S-->>C: 200 {decision VALIDADA, stampJson, resultingTaskId}
+    U->>FE: Abre /companies/secid?tab=plano
+    FE->>C: GET /api/companies/secid?period=2026
+    C->>S: InstitutionalService.companyPage(viewer, slug, period, dept null)
+    S->>DB: SELECT companies WHERE slug AND status ativo · users (ownerUserId, status ACTIVE)
+    S->>DB: COUNT departments ativos · users da empresa · follows (COMPANY)
+    S->>R: GET metrics:company:{id}:2026
+    R-->>S: miss
+    S->>DB: SELECT metric_snapshots (EMPRESA) · COUNT project_schemes PUBLICADO · model_offers CHANCELADO · final_decisions VALIDADA · seal_bonds APROVADA · benefit_redemptions
+    S->>R: SET metrics:company:{id}:2026 TTL 300
+    S->>S: visibilityFilter = PUBLICA + EMPRESA (mesma empresa) · isOwner = false
+    S->>S: listTabs = Sobre, Departamentos, Programas, Plano Anual oficial, Chancelas e modelos oficiais, Benefícios, Destaques, Pessoas, Comunicados
+    S-->>C: 200 CompanyPageView {header sem cargo/Hype, metrics, tabs, following false}
     C-->>FE: 200
-    FE-->>U: Carimbo VALIDADO + confete discreto
-    EV-->>S: NotificationPort.notifyGroup(participantes, DECISAO_VALIDADA) → UPDATE decision_reviews SET notifiedGroupAt
-    S->>CS: INSERT notifications_by_user (participantes)
-    EV-->>S: DeciaPointsService.onDecisionValidated
-    S->>DB: SELECT contribuintes (message_classifications ≠ RUIDO) + deliberative_profiles (qualityMultiplier)
-    S->>DB: INSERT decia_points_ledger (+15 × m, DECISAO_VALIDADA, idempotencyKey) por contribuinte
-    EV-->>S: MuralService: INSERT mural_entries (DECISAO_VALIDADA)
-    EV-->>S: ArtifactService.onDecisionValidated (RF13)
-    S->>OS: index ws-memory {sourceType DECISAO, sourceId, text}
+    FE-->>U: Cabeçalho com logo, brasão, accentColor, contadores institucionais, Seguir
+    FE->>C: GET /api/companies/{id}/tabs/plano
+    C->>S: InstitutionalService.loadTab(viewer, companyId, PLANO_OFICIAL)
+    S->>DB: SELECT annual_plans WHERE companyId AND scope = EMPRESA AND status = PUBLICADO · plan_axes (6)
+    S-->>C: 200 {plan, axes, canDerive true}
+    C-->>FE: 200
+    FE-->>U: 6 eixos com progresso · botão Derivar (RF24.CA04)
+    U->>FE: Seguir
+    FE->>C: POST /api/follows {targetType COMPANY, targetId}
+    C->>S: SocialService.follow(viewer, COMPANY, companyId)
+    S->>DB: INSERT follows (ATIVO) ON DUPLICATE KEY UPDATE status = ATIVO
+    S->>CS: INSERT timeline_by_user (viewer, FOLLOW_STARTED)
+    S-->>C: 200 Follow {ATIVO}
+    C-->>FE: 200
+    FE-->>U: Seguindo · eventos da empresa entram em Seguindo (RF27)
+
+    CH->>FE: Comunicados › Publicar "Convocação reunião de planejamento 2027" (EMPRESA, fixado, comentários ligados)
+    FE->>C: POST /api/companies/{id}/announcements {title, bodyMd, visibility EMPRESA, pinned true, commentsEnabled true}
+    C->>S: AnnouncementService.publish(actor, companyId, form)
+    S->>DB: SELECT departments WHERE headUserId = actor AND companyId → requireIssuer e requireSameCompany ok
+    S->>DB: INSERT announcements (FIXADO, departmentId do chefe, publishedAt) · INSERT audit_log
+    S-)EV: AnnouncementPublished(announcementId)
+    EV->>DB: INSERT mural_entries (kind COMUNICADO, etiqueta Oficial, companyId, departmentId)
+    EV->>CS: INSERT notifications_by_user (seguidores da empresa, SISTEMA, comunicado)
+    S-->>C: 201 Announcement
+    C-->>FE: 201
+    FE-->>CH: Comunicado fixado no topo com monograma do departamento
   end
 
-  alt RF15.CA03 — revisor DEVOLVE com motivo
-    U->>FE: Escolhe DEVOLVIDA e escreve o motivo
-    FE->>C: POST .../review {outcome DEVOLVIDA, reason}
-    C->>S: review(..., DEVOLVIDA, reason)
-    S->>DB: INSERT decision_reviews (DEVOLVIDA, reason) + UPDATE final_decisions SET status = DEVOLVIDA, stampJson = {DEVOLVIDO, …}
-    S->>DB: INSERT tasks ATA_REGISTRO (carimbo DEVOLVIDO + motivo) + UPDATE project_schemes SET status = DEVOLVIDO
-    S->>DB: INSERT decision_trace (REVISAO, REVISOU) + audit_log + domain_events (DecisionReturned)
-    S-->>C: 200 {decision DEVOLVIDA}
-    EV-->>S: NotificationPort.notifyGroup(participantes, DECISAO_DEVOLVIDA, body = reason)
-    S->>CS: INSERT messages_by_session (authorKind IA, bodyMd = motivo da devolução)
-    EV-->>S: ReopenService.onDecisionReturned (RF14)
-  else RF15.CA03 — DEVOLVIDA sem motivo
-    FE->>C: POST .../review {outcome DEVOLVIDA, reason ""}
-    C->>S: review(...)
-    S-->>C: 422 VALIDACAO (reason obrigatório)
-    C-->>FE: 422
-  else RF15.CA05 — decisão já revisada
-    FE->>C: POST .../review
-    C->>S: review(...)
-    S->>DB: SELECT final_decisions.status IN (VALIDADA, DEVOLVIDA)
-    S-->>C: 409 DECISAO_JA_REVISADA
-    C-->>FE: 409
-  else RF15.CA01 — não é o administrador da sessão
-    FE->>C: GET .../review
-    C->>S: getForReview(...)
-    S->>DB: SELECT decia_sessions.adminUserId ≠ actor
+  alt RF15.CA01 — empresa inexistente ou dona ainda PENDING_VALIDATION
+    FE->>C: GET /api/companies/xpto
+    C->>S: companyPage(viewer, "xpto", period, null)
+    S->>DB: SELECT companies WHERE slug = xpto → vazio (ou dona PENDING_VALIDATION)
+    S-->>C: 404 EMPRESA_NAO_ENCONTRADA
+    C-->>FE: 404
+  else RF15.CA06 — aba Gestão sem ser a dona
+    FE->>C: GET /api/companies/{id}/tabs/gestao
+    C->>S: loadTab(viewer, companyId, GESTAO)
+    S->>S: requireOwner → viewer não é ownerUserId
     S-->>C: 403 ACESSO_NEGADO
     C-->>FE: 403
+  else RF15.CA03 — EMPREGADO tenta publicar comunicado
+    FE->>C: POST /api/companies/{id}/announcements
+    C->>S: AnnouncementService.publish(actor EMPREGADO, ...)
+    S->>S: requireIssuer falha (não é EMPRESA nem CHEFE)
+    S-->>C: 403 ACESSO_NEGADO
+    C-->>FE: 403
+  else RF15.CA05 — derivar plano não publicado
+    FE->>C: POST /api/plans/{id}/derive
+    C->>S: PlanService.derive(viewer, planId)
+    S->>DB: SELECT annual_plans → status RASCUNHO
+    S-->>C: 422 DERIVACAO_INVALIDA
+    C-->>FE: 422
   end
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: `FinalDecision.status` (`DecisionStatus`) — o RF15 é o único que atribui VALIDADA e DEVOLVIDA.
+O RF15 é de leitura e não tem entidade própria com estados; as escritas são **`Follow.status`** (igual ao RF14, `FollowStatus` ATIVO · REMOVIDO) e o **`Announcement.status`** (enum `AnnouncementStatus`, **proposta**), detalhado abaixo. A existência da página depende de `Company.status` + `User.status` da dona (`AccountStatus`, máquina em `RF28/README.md` §4).
 
 ```mermaid
 stateDiagram-v2
-  [*] --> PROPOSTA : IA propõe (RF12)
-  PROPOSTA --> EM_REVISAO : admin encaminha (RF12)
-  PROPOSTA --> SUBSTITUIDA : nova proposta (RF12.CA04)
-  EM_REVISAO --> VALIDADA : revisor VALIDA — RF15.CA02
-  EM_REVISAO --> DEVOLVIDA : revisor DEVOLVE com reason obrigatório — RF15.CA03
-  DEVOLVIDA --> SUBSTITUIDA : sessão REABERTA gera nova decisão (RF14.CA05)
-  VALIDADA --> [*]
-  SUBSTITUIDA --> [*]
+  direction LR
+  [*] --> RASCUNHO : EMPRESA ou CHEFE começa um comunicado (CA03)
+  RASCUNHO --> PUBLICADO : Publicar — visibility EMPRESA ou PUBLICO, MuralEntry COMUNICADO, notifica seguidores
+  RASCUNHO --> FIXADO : Publicar com pinned true
+  PUBLICADO --> FIXADO : Fixar — vai ao topo da pagina e faixa do Mural
+  FIXADO --> PUBLICADO : Desafixar
+  PUBLICADO --> ARQUIVADO : Arquivar — sai da pagina, MuralEntry mantida como historico
+  FIXADO --> ARQUIVADO : Arquivar
+  ARQUIVADO --> PUBLICADO : Restaurar (so dona)
+  ARQUIVADO --> [*]
 
-  note right of VALIDADA
-    stampJson = VALIDADO + data + revisor
-    TaskItem ATA_REGISTRO em APROVACAO (RF29.CA05)
-    ProjectScheme → APROVADO
-    AFTER_COMMIT: +15 × qualidade DP, MuralEntry, RF13, INDEXAR_MEMORIA
-    terminal — nova revisão → 409 DECISAO_JA_REVISADA
+  note right of PUBLICADO
+    Colegas da mesma empresa reagem e comentam quando commentsEnabled
+    Visitante e outra empresa so veem visibility PUBLICO (CA03, CA06)
+    Comentarios podem ser desligados por comunicado
   end note
-  note left of DEVOLVIDA
-    stampJson = DEVOLVIDO + motivo
-    grupo notificado com o motivo (notifiedGroupAt)
-    ProjectScheme → DEVOLVIDO
-    AFTER_COMMIT: ReopenRequest (RF14)
-  end note
-  note right of EM_REVISAO
-    revisão só pelo adminUserId (CHEFE/ADMIN)
-    decisão em PROPOSTA → 409 DECISAO_NAO_ENCAMINHADA
+  note right of FIXADO
+    Varios podem estar fixados — ordem por publishedAt desc
+    Chefe so fixa e arquiva os proprios — a dona todos
   end note
 ```
 
@@ -478,93 +511,102 @@ stateDiagram-v2
 ```mermaid
 flowchart LR
   subgraph FE["Frontend Next.js (App Router)"]
-    FE1["app/decia/[sessionId]/decision/review/page.tsx"]
-    FE2["app/admin/dashboard — fila Decisões pendentes (RF28.CA06)"]
-    FE3["components/ui/ReviewPanel · DecisionThread (fio de decisão) · StampBadge · ReasonTextarea"]
+    F1["app/companies/page.tsx · lista de empresas e órgãos"]
+    F2["app/companies/[slug]/page.tsx · sub-abas públicas + Gestão (dona)"]
+    F3["app/search · aba Buscar (RF27) tipo Empresa · barra inferior 5º destino (EMPRESA e visitante)"]
+    F4["components/ui: CompanyHeader (logo, brasão, accentColor, contadores institucionais) · PublicMetrics · SubTabs · FilterBar · Pagination · DepartmentBadge · PlanAxesGrid (6 eixos) · SealWax · BenefitCard · HighlightCard · PeopleList · AnnouncementCard (etiqueta Oficial, pin, monograma) · AnnouncementComposer · FollowButton · ActionBar · RoleGate"]
+    F5["i18n next-intl pt-BR/en/es · layout responsivo"]
   end
 
   subgraph WEB["ws-web"]
-    W1["DecisionReviewController (REST /api/decia/sessions/{id}/decisions/{did}/review)"]
-    W2["SessionAccessGuard (adminUserId; perfil CHEFE/ADMIN)"]
+    C1["CompanyPageController (GET /api/companies · GET /api/companies/{slug} · GET .../tabs/{tab})"]
+    C2["AnnouncementController (GET/POST /api/companies/{id}/announcements · PATCH /api/announcements/{id})"]
+    C3["FollowController · InteractionController (RF26, targetType COMUNICADO)"]
+    C4["SearchController"]
+    C5["AccessPolicy guards: requireOwner · requireIssuer · requireSameCompany"]
   end
 
   subgraph APP["ws-application"]
-    S1["DecisionService.review"]
-    S2["TaskCreationService (RF20/RF29)"]
-    S3["ProjectStatusService (RF21)"]
-    S4["DecisionTraceService"]
-    S5["DeciaPointsService (listener AFTER_COMMIT)"]
-    S6["MuralService (listener, RF27)"]
-    S7["ArtifactService (listener, RF13)"]
-    S8["ReopenService (listener, RF14)"]
-    P1["NotificationPort"]
-    P2["MemoryIndexPort"]
-    P3["DomainEventPublisher (outbox)"]
+    S1["InstitutionalService (companyPage, listTabs, loadTab, publicMetrics, managementMenu) — RF28"]
+    S2["AnnouncementService* (publish, pin, archive, list)"]
+    S3["SocialService (follow, react, comment) — RF26/RF27"]
+    S4["PlanService.derive — RF24 · BenefitService.redeem — RF39 · SearchService — RF27"]
+    S5["AccessPolicy"]
+    P1["MetricsCachePort"]
+    P2["MuralPort"]
+    P3["NotificationPort"]
   end
 
-  subgraph DOM["ws-domain"]
-    D1["FinalDecision · DecisionReview"]
-    D2["TaskItem · ProjectTask · ProjectScheme"]
-    D3["DecisionTraceNode · DecisionTraceEdge · AuditLog"]
-    D4["DeciaPointsLedgerEntry · DeliberativeProfile · MuralEntry"]
-    D5["Enums: DecisionStatus · ReviewOutcome · ProjectStatus · ProjectPhase · PointsEvent"]
+  subgraph DOM["ws-domain · br.gov.pr.secid.workstation"]
+    D1["Company · User (ownerUserId) · Department"]
+    D2["Announcement* · AnnouncementStatus* · AnnouncementVisibility* · MuralEntry (kind COMUNICADO*) · Reaction · Comment (TargetType COMUNICADO*) · Follow"]
+    D3["AnnualPlan · PlanAxis · Grouping · Seal · ModelOffer · Benefit · Highlight · MetricSnapshot (leitura)"]
+    D4["Enums: FollowTargetType · FollowStatus · Visibility · PlanStatus · Shelf · BenefitType"]
   end
 
-  subgraph INFRA["ws-infrastructure"]
-    I1["persistence-mysql: FinalDecisionRepository (@Version), DecisionReviewRepository, TaskItemRepository, ProjectTaskRepository, ProjectSchemeRepository, DecisionTraceRepository, DeciaPointsLedgerRepository, MuralEntryRepository, AuditLogRepository, PipelineJobRepository"]
-    I2["persistence-cassandra: NotificationFeedAdapter, CassandraMessageAdapter"]
-    I3["search-opensearch: OpenSearchMemoryAdapter (ws-memory)"]
-    I4["cache-redis: PointsBalanceCache"]
-    I5["platform: NotificationAdapter, OutboxRelay, PipelineJobRunner"]
+  subgraph INFRA["ws-infrastructure/*"]
+    I1["persistence-mysql: CompanyJpaRepository · DepartmentJpaRepository · AnnouncementRepository* · FollowRepository · AnnualPlanRepository · GroupingRepository · SealRepository · ModelOfferRepository · BenefitRepository · HighlightRepository · MetricSnapshotRepository · MuralEntryRepository"]
+    I2["cache-redis: RedisMetricsCache (metrics:company:*) · counters"]
+    I3["search-opensearch: OpenSearchCompanyIndex (ws-companies)"]
+    I4["persistence-cassandra: TimelineAdapter · NotificationFeedAdapter"]
+    I5["platform: OutboxRelay (AnnouncementPublished) · AuditLog"]
+  end
+
+  subgraph EXT["Serviços externos"]
+    X1(["Nenhum provedor de IA neste RF · Insights da empresa (RF43) só na aba Gestão"])
   end
 
   MY[("MySQL 8")]
-  CA[("Cassandra")]
-  OS[("OpenSearch")]
   RD[("Redis")]
+  OS[("OpenSearch")]
+  CA[("Cassandra")]
 
-  FE1 --> FE3
-  FE2 --> FE3
-  FE3 -->|HTTPS/JSON| W1 --> W2 --> S1
-  S1 --> S2
-  S1 --> S3
-  S1 --> S4
+  F1 --> C1
+  F3 --> C4
+  F2 --> F4
+  F5 -.-> F2
+  F4 -->|"HTTPS/JSON"| C1 --> C5 --> S1
+  F4 -->|"HTTPS/JSON"| C2 --> C5 --> S2
+  F4 -->|"HTTPS/JSON"| C3 --> S3
+  C4 --> S4
+  F2 -. "Departamentos" .-> RF14["app/departments/[slug] (RF14)"]
+  S1 --> S5
+  S2 --> S5
   S1 --> P1
-  S1 --> P2
-  S1 --> P3
-  P3 -.->|AFTER_COMMIT DecisionValidated| S5
-  P3 -.->|AFTER_COMMIT DecisionValidated| S6
-  P3 -.->|AFTER_COMMIT DecisionValidated| S7
-  P3 -.->|AFTER_COMMIT DecisionReturned| S8
+  S2 --> P2
+  S2 --> P3
   S1 --> D1
+  S1 --> D3
   S2 --> D2
   S3 --> D2
-  S4 --> D3
-  S5 --> D4
-  S6 --> D4
-  D1 --> D5
-  P1 -.-> I5
-  P2 -.-> I5
-  I5 --> I2
-  I5 --> I3
-  S5 --> I4
+  D1 --> D4
   S1 --> I1
   S2 --> I1
-  S4 --> I1
-  S5 --> I1
+  S3 --> I1
+  S3 -.-> I4
+  P1 -.-> I2
+  P2 -.-> I1
+  P3 -.-> I4
+  S2 -.-> I5
+  S4 -.-> I3
   I1 --> MY
-  I2 --> CA
+  I2 --> RD
   I3 --> OS
-  I4 --> RD
+  I4 --> CA
+  S1 -.-> X1
 ```
+
+*Legenda: `*` = proposta (fora da TAXONOMIA v1).*
 
 ## 6. Rastreabilidade
 
 | CA | Classe | Passo (atividades) | Mensagem (sequência) | Transição (estados) | Componente |
 |---|---|---|---|---|---|
-| RF15.CA01 | `DecisionService.getForReview`, `DeciaSession.adminUserId`, `DecisionTraceNode/Edge` (fio de decisão), `SessionAccessGuard` | A1, B1, C1, B3 | 1–8; `alt` 403 ACESSO_NEGADO | nota de EM_REVISAO | `DecisionReviewController.getForReview`, `ReviewPanel`, `DecisionThread` |
-| RF15.CA02 | `DecisionReview` (VALIDADA), `FinalDecision.status/reviewId/stampJson/resultingTaskId`, `TaskItem` ATA_REGISTRO, `ProjectTask` APROVACAO, `ProjectScheme.status APROVADO`, `TaskCreationService`, `ProjectStatusService` | A3, B2, C4–C8, B6 | 9–24 | EM_REVISAO → VALIDADA | `DecisionService.review`, `TaskCreationService`, `ProjectStatusService`, `StampBadge` |
-| RF15.CA03 | `DecisionReview.reason` (obrigatório), `stampJson` DEVOLVIDO, `DecisionReview.notifiedGroupAt`, `SessionMessage` (IA), `ProjectScheme.status DEVOLVIDO` | A4, C3, C9, C10, C14, F6, B5, B7 | `alt` RF15.CA03 (DEVOLVIDA) e `alt` 422 VALIDACAO | EM_REVISAO → DEVOLVIDA | `ReasonTextarea`, `NotificationAdapter`, `CassandraMessageAdapter`, `ReopenService` |
-| RF15.CA04 | `DeciaPointsLedgerEntry` (DECISAO_VALIDADA, qualityMultiplier), `DeliberativeProfile`, `DeciaPointsService.onDecisionValidated`, `MuralEntry` DECISAO_VALIDADA, `ArtifactService` | C13, F1–F4 | 25–31 | nota de VALIDADA | `DeciaPointsService`, `MuralService`, `ArtifactService`, `OutboxRelay`, `PointsBalanceCache` |
-| RF15.CA05 | `FinalDecisionRepository` (@Version, SELECT FOR UPDATE), `AuditLog`, `DecisionTraceNode` REVISAO / aresta REVISOU | C2, C11, C12, B4 | 12, 19, 20; `alt` 409 DECISAO_JA_REVISADA | VALIDADA/DEVOLVIDA sem transição de volta | `DecisionTraceService`, `AuditLogRepository` |
-| RF15.CA06 | `PipelineJob` INDEXAR_MEMORIA, `InstitutionalMemoryDocument` (DECISAO), `MemoryIndexPort` | F5 | 22, 32 | nota de VALIDADA | `OpenSearchMemoryAdapter`, `PipelineJobRunner` |
+| RF15.CA01 | `Company` (logoUrl, coatOfArmsUrl, legalName, about, websiteUrl, accentColor, status, slug), `User.status` da dona, `InstitutionalService.companyPage` | U1, U2, W1, W2, W3, S1, S2, W9 | 1–12, 20–21; `alt` 404 EMPRESA_NAO_ENCONTRADA | — (depende de `AccountStatus` da dona, RF28 §4) | `app/companies`, `CompanyHeader`, `OpenSearchCompanyIndex`, `CompanyJpaRepository` |
+| RF15.CA02 | `InstitutionalService.listTabs/loadTab`, `Department`, `Grouping` (PROGRAMA), `AnnualPlan` + `PlanAxis`, `Seal`, `ModelOffer` (CHANCELADO), `Benefit`, `Highlight`, `Announcement` | U3, W4, W5, S7, S9 | 18, 22–27 | — | `SubTabs`, `DepartmentBadge`, `PlanAxesGrid`, `SealWax`, `BenefitCard`, `HighlightCard`, `PeopleList` |
+| RF15.CA03 | `Announcement` (proposta), enums `AnnouncementStatus`/`AnnouncementVisibility`, `AnnouncementService.publish/pin/archive`, `MuralEntry.kind` COMUNICADO, `Reaction`/`Comment` COMUNICADO, `AccessPolicy.requireIssuer/requireSameCompany` | U6, U7, W7, W8, S13–S18 | 36–46; `alt` 403 (EMPREGADO publica) | toda a máquina `RASCUNHO → PUBLICADO/FIXADO → ARQUIVADO` | `AnnouncementCard`, `AnnouncementComposer`, `AnnouncementController`, `AnnouncementRepository`, `InteractionController`, `OutboxRelay` |
+| RF15.CA04 | `MetricSnapshot` (scope EMPRESA), `InstitutionalService.publicMetrics`, `MetricsCachePort`, `RedisMetricsCache` | S3–S5, D2, D3 | 13–16 | — | `PublicMetrics`, `FilterBar` (período, departamento), `RedisMetricsCache` |
+| RF15.CA05 | `Follow` (COMPANY), `SocialService.follow`, `PlanService.derive`, `BenefitService.redeem`, `AnnualPlan.status` | U4, U5, W6, S10–S12, W11 | 28–35; `alt` 422 DERIVACAO_INVALIDA | `Follow` ATIVO/REMOVIDO (RF14 §4) | `FollowButton`, `ActionBar`, `FollowController`, RFs alvo (RF24, RF39, RF41, RF46, RF14) |
+| RF15.CA06 | `AccessPolicy.requireOwner/visibilityFilter`, `Company.ownerUserId`, `Company.cnpj` (AES), `InstitutionalService.managementMenu` | U8, S6, S8, S19, W10 | 17; `alt` 403 ACESSO_NEGADO (Gestão) | notas de PUBLICADO (visitante só PUBLICO) | `RoleGate`, `AccessPolicy guards`, `i18n next-intl`, layout responsivo |
+
+**Dúvidas para confirmar:** (a) aceitar a sub-aba **Comunicados** e a entidade `Announcement` (ABAS_POR_PERFIL §7.a, P-06) — ou só o atalho para o Mural filtrado; (b) "órgão público/privado" **sem conta** no Work Station (`OrgEntity`: fornecedor, órgão externo) ganha página pública própria (`/orgs/[id]`) ou só a ficha no card da tarefa; (c) `Company.status` não tem valores na TAXONOMIA — propor ATIVA · SUSPENSA · ENCERRADA; (d) Plano Anual oficial sai do perfil "Meus Planos" da conta EMPRESA e fica só aqui (P-04/Q-08); (e) visitante anônimo vê a página inteira (métricas e Pessoas nomes/cargos) ou só Sobre; (f) sprint do card.

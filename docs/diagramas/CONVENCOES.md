@@ -13,9 +13,12 @@ Cabeçalho obrigatório de cada README:
 ```
 # RFnn — <título do card do board>
 **HU:** HUnn · **Sprint (board Work Station):** n · **Equivalente FAI:** <texto do card> · **Aba/rota:** <se houver>
-**Critérios de aceite cobertos:** RFnn.CA01 … (RF1–RF18 não têm CAs no board: derivar das HUs e marcar "CA a confirmar")
+**Critérios de aceite cobertos:** RFnn.CA01 … — regra: o **título do card** define o RF; se o corpo do card estiver vazio, derivar 4–6 CAs do título + HU de mesmo número e marcar "(CA a confirmar)"; se o corpo contiver CAs de outro id (ex.: card RF5 com RF21.CA01–14), citar esses CAs como estão escritos e anotar "corpo do card = antigo RFxx" no cabeçalho
 ```
 
 Depois dos 5 diagramas: `## 6. Rastreabilidade` — tabela `CA → elemento do diagrama (classe / passo / mensagem / transição / componente)`.
 
 Regras Mermaid: sem `<br>` em `classDiagram`; rótulos com `:` ou `()` entre aspas; ids ASCII sem acento (texto pode ter acento); um diagrama por bloco ```mermaid. Nomes de módulos: `ws-domain`, `ws-application`, `ws-infrastructure`, `ws-web`, `ws-bootstrap`. Pacote Java raiz: `br.gov.pr.secid.workstation`.
+
+
+As pastas `docs/diagramas/RF1…RF46` seguem a numeração **atual** do board Work Station (leitura de 2026-10-05). As versões anteriores dos RFs renumerados ficam em `docs/diagramas/_anterior/` e o mapa está em `RENUMERACAO.md`.

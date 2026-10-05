@@ -1,16 +1,19 @@
-# RF14 — Solicitar reabertura da sessão ao grupo, em caso de rejeição, com motivo devidamente justificado
-**HU:** HU14 · **Sprint (board Work Station):** 3 · **Equivalente FAI:** card RF14 não cita equivalente; sem análogo direto no FAI — no fluxo de `SealBond` (FAI RF20/RF21) um vínculo REJECTED é terminal; aqui a rejeição da decisão (RF15) abre um ciclo de reabertura deliberativa · **Aba/rota:** DECIA — sessão › banner "Pedido de reabertura" (`/decia/[sessionId]`; rota a confirmar)
-**Critérios de aceite cobertos:** RF14.CA01 · RF14.CA02 · RF14.CA03 · RF14.CA04 · RF14.CA05 (RF1–RF18 não têm CAs no board: derivados da HU14 + RF15, RF12.CA04, RF29 e marcados "CA a confirmar")
+# RF14 — Visualizar perfil de um chefe de departamento
+**HU:** HU14 · **Sprint (board Work Station):** lista *Requisitos Funcionais* (card renumerado, sem sprint atribuída — a confirmar) · **Equivalente FAI:** RF22 Perfil institucional (página da CELEBRIDADE, `brands/[slug]/page.tsx` abas públicas × `admin`) + RF17 perfil de outros · **Aba/rota:** **página do departamento** `/departments/[slug]` (Matriz D de `docs/produto/ABAS_POR_PERFIL.md` §5 — é o que o board chama de "perfil do chefe"), alcançada pela aba Buscar (RF27), por `/companies/[slug]` › Departamentos (RF15) ou pelo atalho no perfil pessoal do chefe (`/u/[username]`, RF16/RF19); API `GET /api/departments/{slug}` + `GET /api/departments/{id}/tabs/{tab}`
+**Critérios de aceite cobertos:** RF14.CA01 · RF14.CA02 · RF14.CA03 · RF14.CA04 · RF14.CA05 · RF14.CA06 — corpo do card vazio: CAs derivados do título + HU14 + RF28.CA02/CA03/CA04/CA06/CA08 (`docs/diagramas/RF28/README.md`) + RF27.CA06 (seguir) + RF45.CA06/CA10 (Hype) + Matriz D, marcados **(CA a confirmar)**
 
-> **HU14** — COMO IA do sistema POSSO solicitar ao grupo a reabertura da sessão, quando a decisão for rejeitada, com motivo devidamente justificado PARA permitir que a discussão seja retomada e a decisão refeita com base no motivo da rejeição.
+> **HU14** — COMO usuário dentro do sistema Work Station POSSO procurar o perfil de um chefe de departamento PARA obter informação relevante ou realizar alguma funcionalidade.
+
+O CHEFE é uma **pessoa** (perfil pessoal com as 15 sub-abas do RF19 em `/u/[username]`) **e** o `headUserId` de um `Department`. O "perfil de chefe" do board é a **página institucional do departamento**: cabeçalho com sigla, cor, monograma, capa e o chefe (avatar, nome, cargo "Chefe de {sigla}"), métricas públicas do período e sub-abas **públicas** (Sobre · Projetos · Sessões DECIA · Chancelas · Reconhecimentos · Equipe) + sub-abas de **gestão** só para o chefe/EMPRESA (Minha equipe RF9/RF10, Dashboard do emissor, Insights da Equipe), **negadas no serviço** e não só ocultas. Este RF é de **leitura**; a única escrita própria é **Seguir** (`Follow` targetType DEPARTMENT). Reaproveita `InstitutionalService.publicPage` e `RedisMetricsCache` do RF28.
 
 | CA | Enunciado (CA a confirmar) |
 |---|---|
-| **RF14.CA01** | Dado `FinalDecision` DEVOLVIDA com `DecisionReview.reason` (RF15), quando o evento `DecisionReturned` dispara AFTER_COMMIT, então a IA cria `ReopenRequest` PENDENTE com `requestedBy = IA`, `decisionId` e `justification` redigida a partir do motivo da devolução (o que precisa ser rediscutido, quais divergências/riscos reabrir), e posta `SessionMessage` (authorKind IA) + `Notification` (DECIA) ao grupo. |
-| **RF14.CA02** | Dado o pedido PENDENTE, quando participantes MEMBRO votam em `votesJson` (ACEITAR / RECUSAR), então o administrador decide (ou a maioria simples dos votantes decide ao fim do prazo configurável): **ACEITA** → sessão EM_REVISAO → REABERTA (`decidedAt`), o chat volta a aceitar mensagens (RF6) com a decisão DEVOLVIDA e o motivo fixados como contexto; **RECUSADA** → a sessão permanece EM_REVISAO para o administrador encerrar (RF17). |
-| **RF14.CA03** | Dado um pedido manual (participante ou admin), quando `justification` tem menos de 20 caracteres → `422 VALIDACAO`; sessão sem decisão DEVOLVIDA → `409 DECISAO_NAO_DEVOLVIDA`; não-participante → `403 ACESSO_NEGADO`. |
-| **RF14.CA04** | Dado pedido já ACEITA/RECUSADA, quando chega novo voto ou nova decisão → `409 PEDIDO_ENCERRADO`; existe no máximo **um** `ReopenRequest` PENDENTE por `decisionId`; voto repetido do mesmo usuário substitui o anterior (idempotente). |
-| **RF14.CA05** | Dado sessão REABERTA, então um novo ciclo RF11 → RF12 → RF15 produz nova `FinalDecision`; a DEVOLVIDA passa a SUBSTITUIDA e o rastro liga REVISAO → ORIGINOU → (nó DECISAO novo), preservando a decisão devolvida (RF29.CA07). |
+| **RF14.CA01** | Dado qualquer usuário (inclusive visitante), quando busca um chefe/departamento (aba Buscar por nome, sigla ou nome do chefe; lista de departamentos da empresa; menção `@sigla`) e abre `/departments/[slug]`, então vê o cabeçalho: `Department.acronym`, `name`, `color`, `monogram`, `coverUrl`, `about`, chefe (`User` de `headUserId`: avatar, `fullName`, `jobTitle` → "Chefe de {acronym}"), `Company` (logo + link para RF15), contadores (pessoas com `DepartmentMembership` vigente, projetos publicados, decisões validadas, chancelas emitidas, seguidores) e botão **Seguir**; slug inexistente ou `active = false` → `404 DEPARTAMENTO_NAO_ENCONTRADO`. |
+| **RF14.CA02** | Dado o cabeçalho, então as sub-abas públicas são: **Sobre** · **Projetos do departamento** (filtros fase, exercício; `canView` por item) · **Sessões DECIA** (abertas/encerradas: membro vê as suas, mesma empresa vê PÚBLICAS/encerradas com resumo, visitante não vê) · **Chancelas do departamento** (`Seal` ativas; a fila de revisão só para chefe/curador) · **Reconhecimentos emitidos** (`Recognition` com `publicOnMural`) · **Equipe** (modo público: nome, cargo, monograma, etiqueta "Curador" por `CuratorAppointment` ativo); tab + filtros + página ficam na URL (RF19.CA03). |
+| **RF14.CA03** | Dado o período selecionado (padrão: exercício corrente), então as **métricas públicas** (RF28.CA04) são agregadas: projetos publicados, modelos oficiais/chancelas APROVADAS, decisões VALIDADAS, tempo médio até decisão, pessoas; vêm de `MetricSnapshot` (DEPARTAMENTO) com cache Redis `metrics:department:{id}:{period}` TTL 300 s; **nunca** expõem HSE, Hype ou DECIA Points nominais (RF45.CA10) — só histograma anonimizado quando o viewer é chefe. |
+| **RF14.CA04** | Dado o viewer autenticado, quando aciona **Seguir**, então é criado `Follow {followerId, targetType DEPARTMENT, targetId, status ATIVO}` (único; repetir é idempotente → 200 com o mesmo registro); **Deixar de seguir** → `status REMOVIDO`; os eventos do departamento (projeto publicado, decisão validada, reconhecimento) entram na sub-aba Seguindo do Mural (RF27) e em `TimelineEvent` do seguidor; visitante anônimo → `401` com convite a entrar. |
+| **RF14.CA05** | Dado o viewer, então as **ações** disponíveis a partir da página dependem do papel: membro do departamento → "Pedir chancela", "Indicar colega", "Propor chancela" (RF39.CA06), "Mensagem ao chefe" (RF46); mesma empresa → "Levar ao meu acervo" nos modelos oficiais (RF41.CA08), "Mensagem"; chefe (`headUserId`) e EMPRESA dona → "Gerir" (Minha equipe RF9/RF10, Dashboard do emissor RF28.CA06, Insights da Equipe RF43.CA14); link "Ver perfil pessoal" abre `/u/[username]` do chefe (sub-abas 1–5 e Hype conforme `hypeVisibility`, RF16/RF19). |
+| **RF14.CA06** | Dado o viewer, então a **visibilidade por item** segue `AccessPolicy.visibilityFilter`: anônimo/outra empresa → só `PUBLICA`; mesma empresa → + `EMPRESA`; membro → + `DEPARTAMENTO`; sub-abas de gestão → `403 ACESSO_NEGADO` no serviço para quem não é `headUserId` nem `Company.ownerUserId` (curador com escopo FILA_REVISAO/PREMIACAO vê só a fila/premiação); dados pessoais (`email`, `phone`) nunca saem na API da equipe; página em pt-BR/en/es e responsiva (RF19.CA07). |
 
 ## 1. Diagrama de classes
 
@@ -18,286 +21,332 @@
 classDiagram
   direction LR
 
+  class Department {
+    <<entity>>
+    +UUID id
+    +UUID companyId
+    +String name
+    +String acronym
+    +String slug
+    +String color
+    +String monogram
+    +UUID headUserId
+    +String about
+    +String coverUrl
+    +boolean active
+  }
+  class User {
+    <<entity>>
+    +UUID id
+    +String username
+    +String fullName
+    +String jobTitle
+    +ProfileType profileType
+    +UUID companyId
+    +UUID departmentId
+    +String avatarUrl
+    +HypeVisibility hypeVisibility
+  }
+  class Company {
+    <<entity>>
+    +UUID id
+    +UUID ownerUserId
+    +String legalName
+    +String slug
+    +String logoUrl
+    +String accentColor
+  }
+  class DepartmentMembership {
+    <<entity>>
+    +UUID userId
+    +UUID departmentId
+    +DeptRole roleInDept
+    +Instant startedAt
+    +Instant endedAt
+  }
+  class CuratorAppointment {
+    <<entity>>
+    +UUID departmentId
+    +UUID curatorUserId
+    +CuratorScope scope
+    +Instant revokedAt
+  }
+  class Follow {
+    <<entity>>
+    +UUID id
+    +UUID followerId
+    +FollowTargetType targetType
+    +UUID targetId
+    +FollowStatus status
+    +Instant at
+  }
+  class ProjectScheme {
+    <<entity>>
+    +UUID id
+    +UUID departmentId
+    +String title
+    +ProjectStatus status
+    +ProjectPhase currentPhase
+    +int exerciseYear
+    +Visibility visibility
+  }
   class DeciaSession {
     <<entity>>
     +UUID id
+    +UUID departmentId
     +String topic
-    +UUID adminUserId
+    +SessionAccess accessMode
     +SessionStatus status
-    +int participantCount
   }
-  class SessionParticipant {
+  class Seal {
     <<entity>>
     +UUID id
-    +UUID sessionId
-    +UUID userId
-    +ParticipantRole role
-    +Instant leftAt
+    +UUID departmentId
+    +String name
+    +SealTier tier
+    +SealStatus status
+    +String artJson
+  }
+  class SealBond {
+    <<entity>>
+    +UUID sealId
+    +UUID targetId
+    +SealBondStatus status
+  }
+  class Recognition {
+    <<entity>>
+    +UUID id
+    +UUID issuerUserId
+    +UUID recipientUserId
+    +String name
+    +String medalArtJson
+    +boolean publicOnMural
   }
   class FinalDecision {
     <<entity>>
-    +UUID id
     +UUID sessionId
-    +String decisionText
     +DecisionStatus status
-    +UUID reviewId
-    +String stampJson
   }
-  class DecisionReview {
+  class MetricSnapshot {
     <<entity>>
-    +UUID id
-    +UUID decisionId
-    +UUID reviewerId
-    +ReviewOutcome outcome
-    +String reason
-    +Instant reviewedAt
-    +Instant notifiedGroupAt
+    +String metricCode
+    +MetricScope scope
+    +UUID scopeId
+    +LocalDate periodStart
+    +LocalDate periodEnd
+    +BigDecimal value
   }
-  class ReopenRequest {
+  class TimelineEvent {
     <<entity>>
-    +UUID id
-    +UUID sessionId
-    +UUID decisionId
-    +UUID requestedBy
-    +String justification
-    +ReopenStatus status
-    +String votesJson
-    +Instant decidedAt
+    +UUID userId
+    +Instant at
+    +String eventType
+    +String targetType
+    +UUID targetId
   }
-  class SessionMessage {
-    <<entity>>
-    +TIMEUUID id
-    +UUID sessionId
-    +UUID authorId
-    +AuthorKind authorKind
-    +String bodyMd
-    +Instant sentAt
+  class FollowTargetType {
+    <<enum>>
+    USER
+    DEPARTMENT
+    COMPANY
   }
-  class Notification {
-    <<entity>>
-    +UUID id
-    +UUID recipientId
-    +NotificationType type
-    +String category
-    +UUID resourceId
+  class FollowStatus {
+    <<enum>>
+    ATIVO
+    REMOVIDO
   }
-  class DecisionTraceNode {
-    <<entity>>
-    +UUID id
-    +TraceNodeType nodeType
-    +UUID refId
-    +String label
+  class Visibility {
+    <<enum>>
+    PRIVADA
+    DEPARTAMENTO
+    EMPRESA
+    PUBLICA
   }
-  class DecisionTraceEdge {
-    <<entity>>
-    +UUID id
-    +UUID fromNodeId
-    +UUID toNodeId
-    +TraceRelation relation
-  }
-  class AiInferenceLog {
-    <<entity>>
-    +UUID id
-    +AiCapability capability
-    +String result
+  class CuratorScope {
+    <<enum>>
+    FILA_REVISAO
+    PREMIACAO
+    AMBOS
   }
 
-  class SessionStatus {
-    <<enum>>
-    EM_REVISAO
-    REABERTA
-    EM_RESUMO
-    ENCERRADA
-  }
-  class ReopenStatus {
-    <<enum>>
-    PENDENTE
-    ACEITA
-    RECUSADA
-  }
-  class DecisionStatus {
-    <<enum>>
-    DEVOLVIDA
-    SUBSTITUIDA
-    PROPOSTA
-  }
-  class ReviewOutcome {
-    <<enum>>
-    VALIDADA
-    DEVOLVIDA
-  }
-
-  class ReopenController {
+  class DepartmentPageController {
     <<controller>>
-    +create(sessionId, ReopenForm) 201
-    +vote(sessionId, requestId, VoteForm) 200
-    +decide(sessionId, requestId, DecideForm) 200
-    +getPending(sessionId) 200
+    +GET_api_departments_slug(period) 200
+    +GET_api_departments_id_tabs_tab(filters, page) 200
+    +GET_api_departments_id_team() 200
+    +GET_api_departments_id_team_manage() 200 ou 403
+    +POST_api_follows(targetType, targetId) 200
+    +DELETE_api_follows_id() 204
+    +GET_api_search(q, type) 200
   }
-  class ReopenService {
+  class InstitutionalService {
     <<service>>
-    +onDecisionReturned(event) AFTER_COMMIT
-    +request(actor, sessionId, decisionId, justification) ReopenRequest
-    +vote(actor, sessionId, requestId, choice)
-    +decide(actor, sessionId, requestId, outcome)
-    +closeExpired(requestId)
+    +departmentPage(viewer, slug, period) DepartmentPageView
+    +listTabs(viewer, department) List~Tab~
+    +loadTab(viewer, deptId, tab, filters, page) Page
+    +publicMetrics(deptId, period) Metrics
   }
-  class SessionLifecycleService {
+  class SocialService {
     <<service>>
-    +transition(sessionId, from, to)
+    +follow(viewer, DEPARTMENT, deptId) Follow
+    +unfollow(viewer, followId) Follow
+    +followersCount(deptId) long
   }
-  class DecisionService {
+  class CuratorService {
     <<service>>
-    +supersede(decisionId)
+    +isCurator(userId, deptId, scope) boolean
   }
-  class DecisionTraceService {
+  class AccessPolicy {
     <<service>>
-    +appendNode(sessionId, REVISAO, requestId)
-    +appendEdge(reviewNode, newNode, ORIGINOU)
+    +visibilityFilter(viewer, deptId, companyId) Visibility[]
+    +canManage(viewer, department) boolean
+    +canView(viewer, item) boolean
   }
-  class AiEnginePort {
+  class SearchService {
+    <<service>>
+    +search(viewer, q, type DEPARTMENT) Page
+  }
+  class MetricsCachePort {
     <<port>>
-    +draftReopenJustification(decision, review, summary) String
+    +get(key) Metrics
+    +put(key, metrics, ttl)
   }
-  class NotificationPort {
+  class SearchIndexPort {
     <<port>>
-    +notifyGroup(recipients, type, resource)
+    +query(index, q, filters) Page
   }
-  class SessionMessageRepositoryPort {
-    <<port>>
-    +append(SessionMessage)
-  }
-  class ReopenRequestRepository {
+  class DepartmentJpaRepository {
     <<adapter>>
-    MySQL reopen_requests
+    MySQL departments
   }
-  class CassandraMessageAdapter {
+  class RedisMetricsCache {
     <<adapter>>
-    messages_by_session
+    metrics department id period
   }
-  class AiEngineAdapter {
+  class OpenSearchDepartmentIndex {
     <<adapter>>
-    Claude e Gemini com fallback local
+    indice ws-departments
   }
 
-  DeciaSession "1" --> "*" ReopenRequest : pedidos
-  DeciaSession "1" --> "*" SessionParticipant
-  DeciaSession --> SessionStatus
-  ReopenRequest --> ReopenStatus
-  ReopenRequest "*" --> "1" FinalDecision : decisionId (DEVOLVIDA)
-  ReopenRequest ..> SessionParticipant : votesJson (userId, choice, at)
-  ReopenRequest ..> AiInferenceLog : justificativa gerada
-  FinalDecision --> DecisionStatus
-  FinalDecision "1" --> "0..1" DecisionReview : reviewId
-  DecisionReview --> ReviewOutcome
-  DecisionTraceEdge --> DecisionTraceNode : fromNodeId / toNodeId
-  DecisionTraceNode ..> ReopenRequest : refId quando REVISAO (reabertura)
+  Company "1" --> "*" Department
+  Department --> User : headUserId CHEFE
+  Department "1" --> "*" DepartmentMembership
+  DepartmentMembership --> User
+  Department "1" --> "*" CuratorAppointment
+  CuratorAppointment --> CuratorScope
+  Department "1" --> "*" ProjectScheme
+  Department "1" --> "*" DeciaSession
+  Department "1" --> "*" Seal
+  Seal "1" --> "*" SealBond
+  DeciaSession "1" --> "0..1" FinalDecision
+  Recognition --> User : issuerUserId CHEFE
+  Follow --> FollowTargetType
+  Follow --> FollowStatus
+  Follow ..> Department : targetId quando DEPARTMENT
+  TimelineEvent ..> Follow : eventos do seguido
+  MetricSnapshot ..> Department : scope DEPARTAMENTO
+  ProjectScheme --> Visibility
+  User --> Company
 
-  ReopenController --> ReopenService
-  ReopenService --> SessionLifecycleService
-  ReopenService --> DecisionService
-  ReopenService --> DecisionTraceService
-  ReopenService --> AiEnginePort
-  ReopenService --> NotificationPort
-  ReopenService --> SessionMessageRepositoryPort
-  ReopenService --> ReopenRequestRepository
-  AiEnginePort <|.. AiEngineAdapter
-  SessionMessageRepositoryPort <|.. CassandraMessageAdapter
-  NotificationPort ..> Notification : cria
+  DepartmentPageController --> InstitutionalService
+  DepartmentPageController --> SocialService
+  DepartmentPageController --> SearchService
+  InstitutionalService --> AccessPolicy
+  InstitutionalService --> CuratorService
+  InstitutionalService --> MetricsCachePort
+  InstitutionalService --> DepartmentJpaRepository
+  SearchService --> SearchIndexPort
+  MetricsCachePort <|.. RedisMetricsCache
+  SearchIndexPort <|.. OpenSearchDepartmentIndex
 
-  note for ReopenRequest "tabela reopen_requests — status PENDENTE, ACEITA, RECUSADA .. votesJson = [{userId, choice ACEITAR|RECUSAR, at}] .. máximo 1 PENDENTE por decisionId"
-  note for ReopenService "onDecisionReturned: listener AFTER_COMMIT do RF15 (outcome DEVOLVIDA)"
+  note for Department "tabela departments (RF28.CA02) · slug e a rota publica · active false devolve 404"
+  note for InstitutionalService "reaproveita publicPage do RF28 · sub-abas publicas para todos, gestao so headUserId ou Company.ownerUserId (403 no servico)"
+  note for MetricSnapshot "metricas publicas agregadas (RF28.CA04) · nunca HSE, Hype ou DP nominal (RF45.CA10)"
+  note for Follow "unico (followerId, targetType, targetId) · unica escrita deste RF (CA04)"
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph L1["Grupo / Administrador da sessão"]
-    A0(["Decisão DEVOLVIDA com motivo (RF15)"])
-    A1["Grupo recebe notificação e lê o pedido de reabertura da IA"]
-    A2["Membros votam ACEITAR ou RECUSAR"]
-    A3{"Admin decide ou prazo encerra?"}
-    A4["Admin aciona Aceitar reabertura"]
-    A5["Admin aciona Recusar reabertura"]
-    A6["Sessão REABERTA — grupo volta a debater com o motivo fixado"]
-    A7["Sessão continua EM_REVISAO — admin encerra (RF17)"]
-    A8(["Fim"])
+  classDef err fill:#ffe3e3,stroke:#c0392b,color:#5a1a12
+  classDef ai fill:#fff3d6,stroke:#d68910,color:#5c3b00
+
+  subgraph L1["Ator humano · qualquer usuário ou visitante"]
+    U1["Busca chefe/departamento na aba Buscar, na página da empresa ou por menção"]
+    U2["Abre /departments/[slug]"]
+    U3["Escolhe sub-aba, filtros, período"]
+    U4["Clica Seguir / Deixar de seguir"]
+    U5["Aciona uma funcionalidade: pedir chancela, indicar colega, mensagem ao chefe, levar ao acervo, ver perfil pessoal, Gerir"]
+    U6(["Fim"])
   end
 
-  subgraph L2["Web / BFF (Next.js App Router)"]
-    B1["GET /api/decia/sessions/{id}/reopen-requests/pending"]
-    B2["POST /api/decia/sessions/{id}/reopen-requests/{rid}/votes"]
-    B3["POST /api/decia/sessions/{id}/reopen-requests/{rid}/decide"]
-    B4["POST /api/decia/sessions/{id}/reopen-requests (pedido manual)"]
-    B5["Exibe 403 ACESSO_NEGADO"]
-    B6["Exibe 409 PEDIDO_ENCERRADO ou 409 DECISAO_NAO_DEVOLVIDA"]
-    B7["Exibe 422 VALIDACAO — justificativa curta"]
-    B8["Banner: decisão devolvida + motivo + placar de votos"]
+  subgraph L2["Web/BFF (Next.js App Router)"]
+    W1["GET /api/search?q=&type=DEPARTMENT (nome, sigla, nome do chefe)"]
+    W2["GET /api/departments/{slug}?period= · resolve locale e layout responsivo"]
+    W3["Renderiza cabeçalho: DepartmentBadge (monograma + cor), capa, chefe com cargo Chefe de {sigla}, CompanyLogo, contadores, botão Seguir"]
+    W4["Sub-abas públicas: Sobre · Projetos · Sessões DECIA · Chancelas · Reconhecimentos · Equipe · (+ Gerir se canManage) · URL com tab e filtros"]
+    W5["GET /api/departments/{id}/tabs/{tab}?filters&page"]
+    W6["POST /api/follows {DEPARTMENT, id} · DELETE /api/follows/{id}"]
+    W7["Botões de ação por papel (RoleGate): membro, mesma empresa, chefe/EMPRESA"]
+    W8["Exibe 404 DEPARTAMENTO_NAO_ENCONTRADO"]
+    W9["Exibe 403 ACESSO_NEGADO (sub-aba de gestão)"]
+    W10["Exibe 401 — entre para seguir"]
   end
 
-  subgraph L3["ws-application (ReopenService)"]
-    C0["Listener DecisionReturned (AFTER_COMMIT)"]
-    C1{"já existe ReopenRequest PENDENTE para a decisão?"}
-    C2["AiEnginePort.draftReopenJustification (motivo → o que rediscutir)"]
-    C3["INSERT ReopenRequest PENDENTE (requestedBy = IA)"]
-    C4["SessionMessage authorKind IA com o pedido"]
-    C5["NotificationPort.notifyGroup (REABERTURA_SOLICITADA)"]
-    C6{"actor é MEMBRO ativo e pedido PENDENTE?"}
-    C7["Upsert voto em votesJson (idempotente por userId)"]
-    C8{"actor = adminUserId ou prazo vencido com maioria?"}
-    C9{"resultado?"}
-    C10["status = ACEITA, decidedAt"]
-    C11["SessionLifecycleService: EM_REVISAO → REABERTA"]
-    C12["DecisionService.supersede: DEVOLVIDA → SUBSTITUIDA ao nascer nova decisão"]
-    C13["Rastro: nó REVISAO (reabertura) + aresta ORIGINOU"]
-    C14["status = RECUSADA, decidedAt"]
-    C15{"justification ≥ 20 chars e decisão DEVOLVIDA?"}
+  subgraph L3["ws-application · InstitutionalService · SocialService"]
+    S1{"Department encontrado por slug e active?"}
+    S2["Carrega Department + User(headUserId) + Company + contadores"]
+    S3["publicMetrics: MetricsCachePort.get metrics:department:{id}:{period}"]
+    S4{"cache vazio?"}
+    S5["Agrega MetricSnapshot DEPARTAMENTO: projetos publicados, chancelas APROVADAS, decisões VALIDADAS, tempo até decisão, pessoas · SET TTL 300 s"]
+    S6["AccessPolicy.visibilityFilter: PUBLICA + EMPRESA se mesma empresa + DEPARTAMENTO se membro"]
+    S7{"canManage: viewer é headUserId ou Company.ownerUserId?"}
+    S8["listTabs: públicas (+ Gerir) · curador com escopo vê só fila/premiação"]
+    S9{"Sub-aba de gestão pedida sem canManage?"}
+    S10["loadTab com visibilityFilter e paginação (Projetos, Sessões, Chancelas, Reconhecimentos, Equipe pública com etiqueta Curador)"]
+    S11{"viewer autenticado?"}
+    S12["SocialService.follow: Follow DEPARTMENT ATIVO (idempotente) / unfollow → REMOVIDO"]
+    S13["Encaminha para o RF alvo: RF39 (chancela), RF46 (mensagem), RF41 (levar ao acervo), RF19/RF16 (perfil pessoal), RF9/RF10/RF28/RF43 (Gerir)"]
   end
 
   subgraph L4["IA (AiEngine)"]
-    D1["FORMULAR_PERGUNTA / DECISAO_FINAL: sintetiza o motivo da devolução em pauta de reabertura"]
-    D2["AiInferenceLog"]
+    A1["Não usada neste RF — leitura institucional · Insights da Equipe (RF43.CA14) só no modo Gerir"]
   end
 
   subgraph L5["Persistência"]
-    E1[("MySQL reopen_requests · final_decisions · decision_reviews")]
-    E2[("Cassandra messages_by_session · notifications_by_user")]
-    E3[("MySQL decia_sessions · decision_trace_nodes/edges · domain_events")]
+    D1[("MySQL departments · users · companies · department_memberships · curator_appointments")]
+    D2[("Redis metrics:department:{id}:{period} · counters")]
+    D3[("MySQL project_schemes · decia_sessions · seals · seal_bonds · recognitions · metric_snapshots")]
+    D4[("MySQL follows · Cassandra timeline_by_user")]
+    D5[("OpenSearch ws-departments")]
   end
 
-  subgraph L6["Listeners AFTER_COMMIT"]
-    F1["NotificationPort: grupo — Sessão reaberta / Reabertura recusada"]
-    F2["Timer: closeExpired ao fim do prazo (maioria simples)"]
-  end
+  U1 --> W1 --> D5
+  W1 --> U2 --> W2 --> S1
+  S1 -->|"não"| W8 --> U6
+  S1 -->|"sim"| S2 --> D1
+  S2 --> S3 --> D2
+  S3 --> S4
+  S4 -->|"sim"| S5 --> D3
+  S5 --> D2
+  S4 -->|"não"| S6
+  S5 --> S6 --> S7
+  S7 -->|"sim"| S8
+  S7 -->|"não"| S8
+  S8 --> W3 --> W4 --> U3 --> W5 --> S9
+  S9 -->|"sim"| W9 --> U6
+  S9 -->|"não"| S10 --> D3
+  S10 --> W4
+  W3 --> U4 --> W6 --> S11
+  S11 -->|"não"| W10 --> U6
+  S11 -->|"sim"| S12 --> D4
+  S12 --> W3
+  W4 --> W7 --> U5 --> S13 --> U6
+  S13 -. "modo Gerir" .-> A1
 
-  A0 --> C0 --> C1
-  C1 -->|sim| A8
-  C1 -->|não| C2 --> D1 --> D2 --> C3 --> E1
-  C3 --> C4 --> E2
-  C4 --> C5 --> E2
-  C5 --> A1 --> B1 --> B8 --> A2 --> B2 --> C6
-  C6 -->|não| B5 --> A8
-  C6 -->|pedido encerrado| B6 --> A8
-  C6 -->|sim| C7 --> E1
-  C7 --> A3
-  A3 -->|admin aceita| A4 --> B3 --> C8
-  A3 -->|admin recusa| A5 --> B3
-  A3 -->|prazo| F2 --> C8
-  C8 -->|não| B5
-  C8 -->|sim| C9
-  C9 -->|ACEITA| C10 --> E1
-  C10 --> C11 --> E3
-  C11 --> C13 --> E3
-  C13 --> F1 --> A6
-  A6 --> C12 --> E1
-  C12 --> A8
-  C9 -->|RECUSADA| C14 --> E1
-  C14 --> F1 --> A7 --> A8
-  A2 -.->|pedido manual| B4 --> C15
-  C15 -->|não| B7 --> A8
-  C15 -->|decisão não devolvida| B6
-  C15 -->|sim| C3
+  class W8,W9,W10 err
+  class A1 ai
 ```
 
 ## 3. Diagrama de sequência
@@ -305,114 +354,102 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário (membro / admin)
+  actor U as Usuário
   participant FE as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
-  participant AI as AiEngine
   participant DB as Repository/MySQL
+  participant R as Redis
+  participant OS as OpenSearch
   participant CS as Cassandra
-  participant EV as DomainEvents (AFTER_COMMIT)
 
   rect rgb(245, 242, 239)
-    Note over U,EV: Caminho feliz — IA pede reabertura, grupo vota, admin aceita, sessão REABERTA
-    EV-->>S: ReopenService.onDecisionReturned(sessionId, decisionId, reviewId)
-    S->>DB: SELECT final_decisions (DEVOLVIDA), decision_reviews.reason, analytical_summaries
-    S->>DB: SELECT reopen_requests WHERE decisionId AND status = PENDENTE → nenhum
-    S->>AI: draftReopenJustification(decision, review.reason, summary)
-    AI-->>S: justification ("O revisor devolveu por X — rediscutir riscos R1 e divergência D2")
-    S->>DB: INSERT ai_inference_log
-    S->>DB: INSERT reopen_requests (PENDENTE, requestedBy = IA, justification)
-    S->>CS: INSERT messages_by_session (authorKind IA, bodyMd = pedido)
-    S->>CS: INSERT notifications_by_user (participantes, REABERTURA_SOLICITADA)
-    S->>DB: INSERT decision_trace_nodes (REVISAO, label "pedido de reabertura")
-
-    U->>FE: Abre a sessão — banner do pedido
-    FE->>C: GET /api/decia/sessions/{id}/reopen-requests/pending
-    C->>S: ReopenService.getPending(sessionId)
-    S->>DB: SELECT reopen_requests PENDENTE + votesJson
-    S-->>C: 200 ReopenRequest {justification, votes, deadline}
+    Note over U,CS: Caminho feliz — busca o chefe, abre a página do departamento, navega nas sub-abas e segue
+    U->>FE: Buscar "SECID-UTS" (ou nome do chefe)
+    FE->>C: GET /api/search?q=SECID-UTS&type=DEPARTMENT
+    C->>S: SearchService.search(viewer, q, DEPARTMENT)
+    S->>OS: query ws-departments (name, acronym, headName)
+    OS-->>S: hits
+    S-->>C: 200 [{slug, acronym, headName}]
     C-->>FE: 200
-    FE-->>U: Motivo da devolução, justificativa da IA, placar
-    U->>FE: Vota ACEITAR
-    FE->>C: POST /api/decia/sessions/{id}/reopen-requests/{rid}/votes {choice ACEITAR}
-    C->>S: ReopenService.vote(actor, sessionId, requestId, ACEITAR)
-    S->>DB: SELECT session_participants (actor MEMBRO, leftAt null)
-    S->>DB: UPDATE reopen_requests SET votesJson = upsert(userId, ACEITAR)
-    S-->>C: 200 placar
+    U->>FE: Abre /departments/secid-uts?tab=projetos&fase=ELABORACAO
+    FE->>C: GET /api/departments/secid-uts?period=2026
+    C->>S: InstitutionalService.departmentPage(viewer, slug, period)
+    S->>DB: SELECT departments WHERE slug AND active · users (headUserId) · companies
+    S->>DB: COUNT department_memberships vigentes · follows (DEPARTMENT) · curator_appointments ativos
+    S->>R: GET metrics:department:{id}:2026
+    R-->>S: miss
+    S->>DB: SELECT metric_snapshots (DEPARTAMENTO) · COUNT project_schemes PUBLICADO · seal_bonds APROVADA · final_decisions VALIDADA
+    S->>R: SET metrics:department:{id}:2026 TTL 300
+    S->>S: AccessPolicy.visibilityFilter(viewer) = PUBLICA + EMPRESA (mesma empresa) · canManage = false
+    S->>S: listTabs = Sobre, Projetos, Sessões DECIA, Chancelas, Reconhecimentos, Equipe
+    S-->>C: 200 DepartmentPageView {header, chefe, metrics, tabs, following false}
     C-->>FE: 200
-
-    U->>FE: Admin clica "Aceitar reabertura"
-    FE->>C: POST /api/decia/sessions/{id}/reopen-requests/{rid}/decide {outcome ACEITA}
-    C->>S: ReopenService.decide(actor, sessionId, requestId, ACEITA)
-    S->>DB: SELECT decia_sessions (adminUserId = actor, status = EM_REVISAO)
-    S->>DB: UPDATE reopen_requests SET status = ACEITA, decidedAt
-    S->>DB: UPDATE decia_sessions SET status = REABERTA
-    S->>DB: INSERT decision_trace_edges (REVISAO → sessão REABERTA, ORIGINOU)
-    S->>DB: INSERT audit_log + domain_events (SessionReopened)
-    S-->>C: 200 {session REABERTA}
+    FE-->>U: Cabeçalho com DepartmentBadge, chefe "Chefe de SECID-UTS", métricas públicas, botão Seguir
+    FE->>C: GET /api/departments/{id}/tabs/projetos?fase=ELABORACAO&page=1
+    C->>S: InstitutionalService.loadTab(viewer, deptId, PROJETOS, filters, page)
+    S->>DB: SELECT project_schemes WHERE departmentId AND visibility IN (PUBLICA, EMPRESA) AND currentPhase = ELABORACAO
+    S-->>C: 200 Page de ProjectScheme (cards MOSAICO)
     C-->>FE: 200
-    FE-->>U: Chat liberado — decisão devolvida e motivo fixados no topo
-    EV-->>S: NotificationPort.notifyGroup(participantes, SESSAO_REABERTA)
+    FE-->>U: Grade paginada · URL com tab e filtros
+    U->>FE: Seguir
+    FE->>C: POST /api/follows {targetType DEPARTMENT, targetId}
+    C->>S: SocialService.follow(viewer, DEPARTMENT, deptId)
+    S->>DB: INSERT follows (ATIVO) ON DUPLICATE KEY UPDATE status = ATIVO
+    S->>CS: INSERT timeline_by_user (viewer, FOLLOW_STARTED)
+    S->>R: INCR counters:department:{id}:followers
+    S-->>C: 200 Follow {status ATIVO}
+    C-->>FE: 200
+    FE-->>U: Botão vira Seguindo · eventos do departamento entram em Seguindo (RF27)
+    U->>FE: Equipe › clica no chefe › Ver perfil pessoal
+    FE-->>U: Navega para /u/[username] (RF16/RF19 sub-abas 1–5)
   end
 
-  alt RF14.CA03 — justificativa curta em pedido manual
-    U->>FE: Pede reabertura manualmente
-    FE->>C: POST /api/decia/sessions/{id}/reopen-requests {justification "ok"}
-    C->>S: ReopenService.request(actor, sessionId, decisionId, justification)
-    S-->>C: 422 VALIDACAO
-    C-->>FE: 422
-  else RF14.CA03 — decisão não está DEVOLVIDA
-    FE->>C: POST .../reopen-requests
-    C->>S: request(...)
-    S->>DB: SELECT final_decisions.status ≠ DEVOLVIDA
-    S-->>C: 409 DECISAO_NAO_DEVOLVIDA
-  else RF14.CA04 — pedido já decidido
-    FE->>C: POST .../votes
-    C->>S: vote(...)
-    S->>DB: SELECT reopen_requests.status IN (ACEITA, RECUSADA)
-    S-->>C: 409 PEDIDO_ENCERRADO
-    C-->>FE: 409
-  else RF14.CA02 — admin recusa
-    FE->>C: POST .../decide {outcome RECUSADA}
-    C->>S: decide(..., RECUSADA)
-    S->>DB: UPDATE reopen_requests SET status = RECUSADA, decidedAt
-    S-->>C: 200 {session permanece EM_REVISAO}
-    EV-->>S: NotificationPort.notifyGroup(participantes, REABERTURA_RECUSADA)
+  alt RF14.CA01 — slug inexistente ou departamento inativo
+    FE->>C: GET /api/departments/xpto
+    C->>S: departmentPage(viewer, "xpto", period)
+    S->>DB: SELECT departments WHERE slug = xpto AND active → vazio
+    S-->>C: 404 DEPARTAMENTO_NAO_ENCONTRADO
+    C-->>FE: 404
+  else RF14.CA06 — sub-aba de gestão sem permissão
+    FE->>C: GET /api/departments/{id}/team/manage
+    C->>S: InstitutionalService.loadTab(viewer, deptId, MINHA_EQUIPE)
+    S->>S: canManage = viewer não é headUserId nem Company.ownerUserId
+    S-->>C: 403 ACESSO_NEGADO
+    C-->>FE: 403
+  else RF14.CA04 — visitante anônimo tenta seguir
+    FE->>C: POST /api/follows (sem sessão)
+    C-->>FE: 401 (entrar para seguir)
   end
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: `ReopenRequest.status` (PENDENTE → ACEITA | RECUSADA), acoplada à transição EM_REVISAO → REABERTA de `SessionStatus` (`DeciaSession`).
+O RF14 é de leitura e não tem estados próprios. A única entidade que ele altera é **`Follow.status`** (enum `FollowStatus`), e a página só existe enquanto **`Department.active = true`** (alterado pela EMPRESA no RF28). Ambas abaixo.
 
 ```mermaid
 stateDiagram-v2
-  [*] --> PENDENTE : decisão DEVOLVIDA (RF15) → IA cria pedido com justificativa — RF14.CA01
-  [*] --> PENDENTE : pedido manual de participante (justification ≥ 20 chars) — RF14.CA03
-  PENDENTE --> PENDENTE : voto ACEITAR/RECUSAR registrado em votesJson (upsert por userId) — RF14.CA02
-  PENDENTE --> ACEITA : admin aceita ou maioria simples ao fim do prazo — RF14.CA02
-  PENDENTE --> RECUSADA : admin recusa ou maioria recusa ao fim do prazo — RF14.CA02
-  ACEITA --> [*]
-  RECUSADA --> [*]
+  direction LR
 
-  state "SessionStatus (DeciaSession)" as Sess {
-    EM_REVISAO --> REABERTA : ReopenRequest ACEITA
-    REABERTA --> EM_RESUMO : novo ciclo RF11 → RF12 → RF15 — RF14.CA05
-    EM_REVISAO --> ENCERRADA : ReopenRequest RECUSADA → admin encerra (RF17)
+  state "Follow (targetType DEPARTMENT) — CA04" as F {
+    [*] --> NaoSegue
+    NaoSegue --> ATIVO : POST /api/follows — INSERT follows (unico followerId, targetType, targetId)
+    ATIVO --> ATIVO : POST repetido — idempotente, 200 com o mesmo registro
+    ATIVO --> REMOVIDO : DELETE /api/follows/{id} — Deixar de seguir
+    REMOVIDO --> ATIVO : Seguir de novo — reativa o mesmo registro
   }
 
-  ACEITA --> REABERTA : dispara
-  RECUSADA --> ENCERRADA : libera encerramento
+  state "Department.active — página pública (CA01)" as D {
+    [*] --> Ativo : EMPRESA cria departamento (RF28.CA02)
+    Ativo --> Inativo : EMPRESA desativa — página devolve 404 DEPARTAMENTO_NAO_ENCONTRADO
+    Inativo --> Ativo : EMPRESA reativa
+    Ativo --> Ativo : troca de chefe (RF28.CA07) — cabecalho muda, seguidores mantidos
+  }
 
-  note right of PENDENTE
-    máximo 1 PENDENTE por decisionId
-    novo voto após decisão → 409 PEDIDO_ENCERRADO
-  end note
-  note right of REABERTA
-    chat volta a aceitar mensagens (RF6)
-    decisão DEVOLVIDA + motivo fixados como contexto
-    ao nascer nova FinalDecision, a DEVOLVIDA → SUBSTITUIDA
+  note right of F
+    Eventos do departamento (projeto publicado, decisao validada,
+    reconhecimento) entram na sub-aba Seguindo do Mural (RF27)
+    e em timeline_by_user do seguidor enquanto ATIVO
   end note
 ```
 
@@ -421,78 +458,90 @@ stateDiagram-v2
 ```mermaid
 flowchart LR
   subgraph FE["Frontend Next.js (App Router)"]
-    FE1["app/decia/[sessionId]/page.tsx — banner ReopenRequest"]
-    FE2["components/ui/ReopenBanner · VoteButtons · DecideReopenDialog"]
+    F1["app/departments/[slug]/page.tsx · sub-abas públicas + Gerir (RoleGate)"]
+    F2["app/search · aba Buscar (RF27) com tipo Departamento"]
+    F3["app/u/[username] · perfil pessoal do chefe (RF16/RF19)"]
+    F4["components/ui: DepartmentBadge (monograma + cor) · HeadCard (avatar, Chefe de {sigla}) · CompanyLogo · PublicMetrics · SubTabs · FilterBar · Pagination · FollowButton · TeamList (etiqueta Curador) · SealWax · MedalBadge · ActionBar (pedir chancela, indicar, mensagem, levar ao acervo)"]
+    F5["i18n next-intl pt-BR/en/es · layout responsivo"]
   end
 
   subgraph WEB["ws-web"]
-    W1["ReopenController (REST /api/decia/sessions/{id}/reopen-requests)"]
-    W2["SessionAccessGuard (MEMBRO ativo / adminUserId)"]
+    C1["DepartmentPageController (GET /api/departments/{slug} · GET .../tabs/{tab} · GET .../team · GET .../team/manage)"]
+    C2["FollowController (POST/DELETE /api/follows)"]
+    C3["SearchController (GET /api/search)"]
+    C4["RoleGate / AccessPolicy (canManage, visibilityFilter)"]
   end
 
   subgraph APP["ws-application"]
-    S1["ReopenService (+ listener DecisionReturned, timer closeExpired)"]
-    S2["SessionLifecycleService"]
-    S3["DecisionService.supersede"]
-    S4["DecisionTraceService"]
-    P1["AiEnginePort"]
-    P2["NotificationPort"]
-    P3["SessionMessageRepositoryPort"]
-    P4["DomainEventPublisher (outbox)"]
+    S1["InstitutionalService (departmentPage, listTabs, loadTab, publicMetrics) — RF28"]
+    S2["SocialService (follow, unfollow, followersCount) — RF26/RF27"]
+    S3["CuratorService.isCurator — RF28"]
+    S4["SearchService — RF27"]
+    S5["AccessPolicy"]
+    P1["MetricsCachePort"]
+    P2["SearchIndexPort"]
   end
 
-  subgraph DOM["ws-domain"]
-    D1["ReopenRequest"]
-    D2["FinalDecision · DecisionReview · DeciaSession · SessionParticipant"]
-    D3["DecisionTraceNode · DecisionTraceEdge"]
-    D4["Enums: ReopenStatus · SessionStatus · DecisionStatus"]
+  subgraph DOM["ws-domain · br.gov.pr.secid.workstation"]
+    D1["Department · User (headUserId) · Company · DepartmentMembership · CuratorAppointment"]
+    D2["Follow · TimelineEvent · MetricSnapshot"]
+    D3["ProjectScheme · DeciaSession · Seal · SealBond · Recognition · FinalDecision (leitura)"]
+    D4["Enums: FollowTargetType · FollowStatus · Visibility · CuratorScope · ProfileType"]
   end
 
-  subgraph INFRA["ws-infrastructure"]
-    I1["persistence-mysql: ReopenRequestRepository, FinalDecisionRepository, DecisionReviewRepository, DeciaSessionRepository, SessionParticipantRepository, DecisionTraceRepository, DomainEventOutboxRepository, AuditLogRepository"]
-    I2["persistence-cassandra: CassandraMessageAdapter, NotificationFeedAdapter"]
-    I3["ai-providers: AiEngineAdapter (justificativa, ai_inference_log)"]
-    I4["platform: NotificationAdapter, OutboxRelay, SchedulerAdapter (prazo de votação)"]
+  subgraph INFRA["ws-infrastructure/*"]
+    I1["persistence-mysql: DepartmentJpaRepository · UserRepository · DepartmentMembershipRepository · CuratorAppointmentRepository · FollowRepository · ProjectSchemeRepository · SealRepository · RecognitionRepository · MetricSnapshotRepository"]
+    I2["cache-redis: RedisMetricsCache (metrics:department:*) · counters"]
+    I3["search-opensearch: OpenSearchDepartmentIndex (ws-departments)"]
+    I4["persistence-cassandra: TimelineAdapter (timeline_by_user)"]
   end
 
   subgraph EXT["Serviços externos"]
-    X1["Claude / Gemini"]
+    X1(["Nenhum provedor de IA neste RF · Insights da Equipe (RF43) só no modo Gerir"])
   end
 
   MY[("MySQL 8")]
+  RD[("Redis")]
+  OS[("OpenSearch")]
   CA[("Cassandra")]
 
-  FE1 --> FE2 -->|HTTPS/JSON| W1 --> W2 --> S1
-  S1 --> S2
+  F2 --> C3
+  F1 --> F4
+  F5 -.-> F1
+  F4 -->|"HTTPS/JSON"| C1 --> C4 --> S1
+  F4 -->|"HTTPS/JSON"| C2 --> S2
+  C3 --> S4
+  F1 -. "Ver perfil pessoal" .-> F3
+  S1 --> S5
   S1 --> S3
-  S1 --> S4
   S1 --> P1
-  S1 --> P2
-  S1 --> P3
-  S1 --> P4
-  P4 -.->|AFTER_COMMIT DecisionReturned| S1
-  P4 -.->|AFTER_COMMIT SessionReopened| P2
+  S4 --> P2
   S1 --> D1
+  S1 --> D3
+  S2 --> D2
   S1 --> D2
-  S4 --> D3
   D1 --> D4
-  P1 -.-> I3
-  P2 -.-> I4
-  P3 -.-> I2
-  I4 -.->|timer| S1
   S1 --> I1
-  S4 --> I1
+  S2 --> I1
+  S2 -.-> I4
+  P1 -.-> I2
+  P2 -.-> I3
   I1 --> MY
-  I2 --> CA
-  I3 --> X1
+  I2 --> RD
+  I3 --> OS
+  I4 --> CA
+  S1 -.-> X1
 ```
 
 ## 6. Rastreabilidade
 
 | CA | Classe | Passo (atividades) | Mensagem (sequência) | Transição (estados) | Componente |
 |---|---|---|---|---|---|
-| RF14.CA01 | `ReopenRequest` (requestedBy = IA, justification, decisionId), `ReopenService.onDecisionReturned`, `AiEnginePort.draftReopenJustification`, `SessionMessage` (IA), `NotificationPort` | A0, C0–C5, D1, D2 | 1–10 | [*] → PENDENTE | `ReopenService`, `AiEngineAdapter`, `CassandraMessageAdapter`, `NotificationAdapter` |
-| RF14.CA02 | `ReopenRequest.votesJson/status/decidedAt`, `ReopenService.vote/decide/closeExpired`, `SessionLifecycleService` (EM_REVISAO → REABERTA) | A2–A7, B2, B3, C6–C11, C14, F1, F2 | 11–36; `alt` RF14.CA02 (RECUSADA) | PENDENTE → PENDENTE (voto); PENDENTE → ACEITA / RECUSADA; EM_REVISAO → REABERTA | `ReopenController`, `VoteButtons`, `SchedulerAdapter`, `SessionLifecycleService` |
-| RF14.CA03 | `ReopenService.request` (validação ≥ 20 chars), `FinalDecision.status DEVOLVIDA`, `SessionAccessGuard` | B4, C15, B7, B6, B5 | `alt` 422 VALIDACAO; `alt` 409 DECISAO_NAO_DEVOLVIDA | [*] → PENDENTE (manual) | `ReopenController.create`, `SessionAccessGuard` |
-| RF14.CA04 | unicidade PENDENTE por `decisionId` (índice), upsert em `votesJson` | C1, C7, B6 | `alt` 409 PEDIDO_ENCERRADO; 3 (SELECT PENDENTE → nenhum) | nota de PENDENTE | `ReopenRequestRepository` |
-| RF14.CA05 | `DecisionService.supersede` (DEVOLVIDA → SUBSTITUIDA), `DecisionTraceEdge` ORIGINOU, novo ciclo RF11–RF15 | A6, C12, C13 | 32 (trace), 36 | REABERTA → EM_RESUMO; DEVOLVIDA → SUBSTITUIDA (RF12) | `DecisionService`, `DecisionTraceService` |
+| RF14.CA01 | `Department` (slug, acronym, color, monogram, coverUrl, about, headUserId, active), `User` (jobTitle, avatarUrl), `Company`, `DepartmentMembership`, `InstitutionalService.departmentPage`, `SearchService.search` | U1, U2, W1, W2, W3, S1, S2, W8 | 1–13, 20–21; `alt` 404 DEPARTAMENTO_NAO_ENCONTRADO | `Department.active` Ativo/Inativo | `app/search`, `DepartmentBadge`, `HeadCard`, `CompanyLogo`, `OpenSearchDepartmentIndex`, `DepartmentJpaRepository` |
+| RF14.CA02 | `InstitutionalService.listTabs/loadTab`, `ProjectScheme`, `DeciaSession` (accessMode), `Seal`, `Recognition.publicOnMural`, `CuratorAppointment` (etiqueta Curador), `CuratorService.isCurator` | U3, W4, W5, S8, S10 | 18, 22–27 | — | `SubTabs`, `FilterBar`, `Pagination`, `TeamList`, `SealWax`, `MedalBadge` |
+| RF14.CA03 | `MetricSnapshot` (scope DEPARTAMENTO), `InstitutionalService.publicMetrics`, `MetricsCachePort`, `RedisMetricsCache` | S3, S4, S5, D2, D3 | 14–17 | — | `PublicMetrics`, `RedisMetricsCache`, `MetricSnapshotRepository` |
+| RF14.CA04 | `Follow` (targetType DEPARTMENT, status), enums `FollowTargetType`/`FollowStatus`, `SocialService.follow/unfollow`, `TimelineEvent` | U4, W6, S11, S12, W10, D4 | 28–35; `alt` 401 | `NaoSegue → ATIVO → REMOVIDO → ATIVO` | `FollowButton`, `FollowController`, `FollowRepository`, `TimelineAdapter` |
+| RF14.CA05 | `AccessPolicy.canManage`, `Department.headUserId`, `Company.ownerUserId`, `User.username/hypeVisibility` (perfil pessoal) | U5, W7, S7, S13 | 36–37 | — | `ActionBar`, `RoleGate`, link para `app/u/[username]`, RFs alvo (RF39, RF46, RF41, RF9/RF10, RF28, RF43) |
+| RF14.CA06 | `AccessPolicy.visibilityFilter/canView`, enum `Visibility`, `CuratorScope`, `InstitutionalService.loadTab` (403 no serviço) | S6, S9, W9 | 17, 24; `alt` 403 ACESSO_NEGADO | nota de `Follow` (eventos só enquanto ATIVO) | `RoleGate / AccessPolicy`, `i18n next-intl`, layout responsivo |
+
+**Dúvidas para confirmar:** (a) "perfil de um chefe" = página do departamento (`/departments/[slug]`) com atalho ao perfil pessoal, ou o inverso (perfil pessoal `/u/[username]` com bloco institucional) — o board usa as duas leituras (ABAS_POR_PERFIL §5 e §7.d); (b) quais métricas públicas entram (RF28.CA04 lista 3; aqui propomos 5); (c) a busca de chefe pelo **nome da pessoa** na aba Buscar deve resolver para o departamento ou para o perfil pessoal; (d) visitante anônimo vê a página (Sobre, Equipe nomes/cargos, Projetos PÚBLICOS) ou só usuários autenticados; (e) sprint do card.

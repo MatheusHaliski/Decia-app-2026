@@ -1,385 +1,643 @@
-# RF5 — Iniciar, junto ao Administrador da sessão, uma nova sessão de conversa do DECIA.
-**HU:** HU5 · **Sprint (board Work Station):** 1 · **Equivalente FAI:** RF10 Copilot (`CopilotService` abre a conversa; aqui a abertura é em grupo, com proposta → confirmação do administrador) · **Aba/rota:** DECIA (`/decia/new` para propor, `/decia/[sessionId]` com o botão "Iniciar sessão" para o admin; `/projects/[id]` → "Abrir sessão DECIA", RF29.CA01) — rotas sugeridas
-**Critérios de aceite cobertos:** RF5.CA01 … RF5.CA06 (RF1–RF18 não têm CAs no board: derivados da HU5 e marcados "CA a confirmar")
+# RF5 — Utilizar o criador de projetos, escolhendo em cada fase do projeto as unidades de tarefa, em modo manual ou com IA
+**HU:** HU5 · **Sprint (board Work Station):** lista *Requisitos Funcionais* (sem sprint atribuída) · **Equivalente FAI:** RF5 Criar esquema (aba "Criar Look": slots por tipo com uma peça de cada, selects alimentados pelo Closet, modo Manual / Com IA, título, ocasião, estilo, orientação livre, foto opcional, capa = composição das peças, selos vindos das peças, pré-visualização do card, cadastrar nova peça inline, mínimo de 2 peças) · **Aba/rota:** Criar Projeto (`/projects/new`)
+**Critérios de aceite cobertos:** RF21.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 — **corpo do card = antigo RF21** (o card RF5 traz os CAs escritos como RF21.CA01–14; são citados aqui como estão no board, ver `RENUMERACAO.md`)
 
-> **HU5** — COMO grupo da conversa (conjunto de usuários vinculados a um tema) POSSO iniciar uma nova sessão de conversa em conjunto com o administrador da sessão PARA dar início à discussão estruturada sobre o tema definido.
+> **HU5** — COMO usuário logado dentro do sistema WS POSSO acessar a aba criar novo projeto PARA criar um esquema de projeto único e personalizado conforme as diretrizes de minha equipe de trabalho.
 
-> **Nota de modelagem (TAXONOMIA §14):** o "grupo da conversa" é modelado como `SessionParticipant` com `role MEMBRO`; não existe entidade `Group`. O "em conjunto" vira o par **proposta** (`createdByUserId`, status `PROPOSTA`) → **confirmação** (`adminUserId`, status `ATIVA`). Confirmar em `DECISOES.md`.
+O **Esquema de Projeto** (`ProjectScheme`, = look) é a composição ordenada de tarefas (`TaskItem`, = peças) em **7 fases** (`ProjectPhase`: DEMANDA · PLANEJAMENTO · ELABORAÇÃO · ANÁLISE · APROVAÇÃO · EXECUÇÃO · ENCERRAMENTO). Cada fase tem um **select múltiplo pesquisável** cujo conteúdo são as **unidades de tarefa do Acervo** do usuário (RF6/RF41) **compatíveis com a fase** (mapa `PHASE_BY_CATEGORY`, equivalente ao `SLOT_BY_CATEGORY` do FAI). Cada tarefa selecionada vira um `ProjectTask` (fase, ordem, responsável, prazo) e as dependências viram `ProjectTaskDependency` (sem ciclos). O compositor funciona em modo **Manual** ou **Com IA** (AiEngine `COMPOR_PROJETO` devolve 3 propostas usando só tarefas do Acervo), aceita "Criar a partir de modelo" (Kit / modelo chancelado, com `Remix` e crédito), abre o criador de tarefas (RF4, corpo RF20) em modal e mantém **autosave** do rascunho em `ProjectScheme.autosaveDraftJson`.
 
-## Critérios de aceite derivados da HU5 (todos "CA a confirmar")
-
-| CA | Enunciado (Dado / Quando / Então) |
+| Categoria (`TaskCategory`) | Fase(s) compatível(is) — `PHASE_BY_CATEGORY` |
 |---|---|
-| **RF5.CA01** (CA a confirmar) | Dado um EMPREGADO autenticado, quando propõe uma sessão informando tema proposto, departamento e convidados (≥ 1 colega dentro do `accessMode`), então a `DeciaSession` é criada em `PROPOSTA` com `createdByUserId` = ele, `adminUserId` = CHEFE do departamento (`Department.headUserId`) e os convidados viram `SessionParticipant role MEMBRO` (`addedBy` = proponente); o proponente também entra como MEMBRO. |
-| **RF5.CA02** (CA a confirmar) | Dado a proposta criada, então o administrador recebe `Notification` (categoria DECIA, "sessão proposta") e o grupo vê a sessão como "aguardando o administrador"; o administrador pode **ajustar tema e acesso (RF4)** antes de iniciar. |
-| **RF5.CA03** (CA a confirmar) | Dado o administrador na sessão `PROPOSTA`, quando clica em "Iniciar sessão" (`POST /api/decia/sessions/{id}/start`), então o status passa a `ATIVA`, `startedAt` = agora, é criado o `SessionParticipant role IA` e a IA publica a mensagem de abertura com o tema, as regras e o modo (ECONOMIA/AVANCADO); quem não é `adminUserId`/ADMIN recebe `403 ACESSO_NEGADO`. |
-| **RF5.CA04** (CA a confirmar) | Dado a proposta, quando o administrador **recusa** (`POST …/decline` com motivo obrigatório), então a sessão vai a `ARQUIVADA` com `archivedAt` e o motivo é notificado ao grupo; iniciar uma sessão que não está em `PROPOSTA` → `409 ESTADO_INVALIDO`; iniciar com menos de 2 participantes humanos → `422 VALIDACAO`. |
-| **RF5.CA05** (CA a confirmar) | Dado um projeto (RF29.CA01), quando o responsável clica em "Abrir sessão DECIA", então o mesmo fluxo cria a sessão com `topic` = objetivo do projeto, `linkedProjectId`, participantes = responsáveis + chefe do departamento, anexa as tarefas como contexto da IA e o projeto passa a `EM_DECISAO`. |
-| **RF5.CA06** (CA a confirmar) | Dado o início da sessão, então `SessionStarted` (AFTER_COMMIT) notifica todos os participantes, grava `AuditLog SESSION_STARTED`, atualiza `participantCount` e abre o canal em tempo real (SSE) da sessão; a lista "Minhas sessões" separa PROPOSTA (aguardando) de ATIVA; tudo i18n. |
+| OFICIO_MEMORANDO, PROTOCOLO (tipo) | DEMANDA |
+| ETP, TERMO_REFERENCIA, CRONOGRAMA | PLANEJAMENTO |
+| PROJETO_BASICO_EXECUTIVO, PLANILHA_ORCAMENTARIA, PARECER_TECNICO, MAPA_GEORREFERENCIA | ELABORAÇÃO · ANÁLISE |
+| ATA, PORTARIA_RESOLUCAO, LICENCA_ANUENCIA | APROVAÇÃO |
+| CONTRATO_CONVENIO, VISTORIA_RELATORIO_FOTOGRAFICO | EXECUÇÃO |
+| Relatório final (DOCUMENTO em ENCERRAMENTO) | ENCERRAMENTO |
+| OUTRO, FORMULARIO | qualquer fase |
 
 ## 1. Diagrama de classes
 
 ```mermaid
 classDiagram
-  direction LR
+direction LR
 
-  namespace ws_domain {
-    class DeciaSession {
-      <<entity>>
-      +id: UUID
-      +topic: String
-      +description: String
-      +adminUserId: UUID
-      +createdByUserId: UUID
-      +companyId: UUID
-      +departmentId: UUID
-      +accessMode: SessionAccess
-      +status: SessionStatus
-      +aiMode: AiMode
-      +linkedProjectId: UUID
-      +startedAt: Instant
-      +archivedAt: Instant
-      +participantCount: int
-      +messageCount: int
-    }
-    class SessionParticipant {
-      <<entity>>
-      +id: UUID
-      +sessionId: UUID
-      +userId: UUID
-      +role: ParticipantRole
-      +joinedAt: Instant
-      +leftAt: Instant
-      +addedBy: UUID
-      +lastReadAt: Instant
-    }
-    class SessionMessage {
-      <<entity>>
-      +id: TIMEUUID
-      +sessionId: UUID
-      +authorId: UUID
-      +authorKind: String
-      +bodyMd: String
-      +sentAt: Instant
-      +correlationId: String
-    }
-    class Department {
-      <<entity>>
-      +id: UUID
-      +companyId: UUID
-      +headUserId: UUID
-      +acronym: String
-    }
-    class ProjectScheme {
-      <<entity>>
-      +id: UUID
-      +objective: String
-      +status: ProjectStatus
-      +departmentId: UUID
-    }
-    class Notification {
-      <<entity>>
-      +recipientId: UUID
-      +type: NotificationType
-      +category: String
-      +resourceId: UUID
-    }
-    class SessionStatus {
-      <<enum>>
-      PROPOSTA
-      ATIVA
-      EM_RESUMO
-      EM_DECISAO
-      EM_REVISAO
-      REABERTA
-      ENCERRADA
-      ARQUIVADA
-    }
-    class ParticipantRole {
-      <<enum>>
-      ADMIN
-      MEMBRO
-      OBSERVADOR
-      IA
-    }
-    class SessionAccess {
-      <<enum>>
-      FECHADA
-      DEPARTAMENTO
-      EMPRESA
-    }
+namespace ws_domain_projetos {
+  class ProjectScheme {
+    <<entity>>
+    +id: UUID
+    +ownerId: UUID
+    +companyId: UUID
+    +departmentId: UUID
+    +title: String
+    +emoji: String
+    +iconId: String
+    +objective: String 1 frase
+    +descriptionMd: String
+    +processTags: Set~ProcessTag~ max 2
+    +natureTags: Set~NatureTag~ max 2
+    +creationMode: CreationMode
+    +origin: SchemeOrigin
+    +originalProjectId: UUID
+    +sourceSessionId: UUID
+    +aiOrientation: String
+    +status: ProjectStatus
+    +currentPhase: ProjectPhase
+    +priority: Priority
+    +visibility: Visibility herdada do perfil
+    +exerciseYear: int
+    +programGroupingId: UUID
+    +planAxisId: UUID
+    +coverMode: CoverMode
+    +coverUrl: String
+    +mosaicJson: JSON
+    +criticalPathJson: JSON
+    +nextMilestoneAt: LocalDate
+    +aiGenerated: boolean
+    +aiInferenceId: UUID
+    +sealIdsJson: JSON
+    +autosaveDraftJson: JSON
+    +version: long
+    .. +12 campos ..
   }
-
-  namespace ws_application {
-    class DeciaSessionService {
-      <<service>>
-      +propose(current CurrentUser, cmd ProposeSessionCommand) SessionView
-      +openFromProject(current CurrentUser, projectId) SessionView
-      +start(current CurrentUser, sessionId) SessionView
-      +decline(current CurrentUser, sessionId, reason) SessionView
-      +mySessions(current CurrentUser, filter SessionFilter) Page~SessionCard~
-    }
-    class ParticipantService {
-      <<service>>
-      +addMany(session DeciaSession, userIds List~UUID~, role ParticipantRole, addedBy) int
-      +addAiParticipant(session DeciaSession) SessionParticipant
-      +activeHumans(sessionId) int
-    }
-    class MessageService {
-      <<service>>
-      +postSystemMessage(sessionId, bodyMd, correlationId) SessionMessage
-    }
-    class AiEngine {
-      <<service>>
-      +openingMessage(session DeciaSession, contextTaskIds List~UUID~) AiOutcome~String~
-    }
-    class NotificationPort {
-      <<port>>
-      +notify(recipients List~UUID~, notification Notification) void
-    }
-    class RealtimePublisherPort {
-      <<port>>
-      +publish(sessionId, event SessionEvent) void
-    }
-    class DomainEventPublisherPort {
-      <<port>>
-      +publish(event DomainEvent) void
-    }
+  class ProjectTask {
+    <<entity>>
+    +id: UUID
+    +projectId: UUID
+    +taskId: UUID
+    +phase: ProjectPhase
+    +sortOrder: int
+    +responsibleId: UUID padrão dono da tarefa
+    +dueAt: LocalDate padrão prazo da tarefa
+    +startAt: LocalDate
+    +estimatedHours: BigDecimal
+    +pertOptimistic: BigDecimal
+    +pertMostLikely: BigDecimal
+    +pertPessimistic: BigDecimal
+    +isCritical: boolean
+    +slackDays: int
+    +moscow: String MUST SHOULD COULD WONT
+    +snapshotJson: JSON
   }
-
-  namespace ws_web {
-    class DeciaSessionController {
-      <<controller>>
-      +propose(cmd ProposeSessionCommand) SessionView
-      +openFromProject(projectId) SessionView
-      +start(sessionId) SessionView
-      +decline(sessionId, body DeclineRequest) SessionView
-      +mySessions(filter SessionFilter) Page~SessionCard~
-    }
+  class ProjectTaskDependency {
+    <<entity>>
+    +id: UUID
+    +projectId: UUID
+    +predecessorProjectTaskId: UUID
+    +successorProjectTaskId: UUID
+    +type: String FS SS FF SF
+    +lagDays: int
   }
-
-  namespace ws_infrastructure {
-    class CassandraNotificationProjector {
-      <<adapter>>
-    }
-    class RedisRealtimePublisher {
-      <<adapter>>
-      +channel: String
-    }
-    class OutboxEventPublisher {
-      <<adapter>>
-    }
+  class ProcessKit {
+    <<entity>>
+    +id: UUID
+    +ownerId: UUID
+    +name: String
+    +processTag: ProcessTag
+    +sealIdsJson: JSON
+    +remixCount: int
   }
+  class KitItem {
+    <<entity>>
+    +id: UUID
+    +kitId: UUID
+    +taskId: UUID
+    +phase: ProjectPhase
+    +sortOrder: int
+    +optional: boolean
+  }
+}
 
-  DeciaSessionController --> DeciaSessionService
-  DeciaSessionService --> ParticipantService
-  DeciaSessionService --> MessageService
-  DeciaSessionService --> AiEngine : mensagem de abertura
-  DeciaSessionService --> NotificationPort
-  DeciaSessionService --> RealtimePublisherPort
-  DeciaSessionService --> DomainEventPublisherPort
-  CassandraNotificationProjector ..|> NotificationPort
-  RedisRealtimePublisher ..|> RealtimePublisherPort
-  OutboxEventPublisher ..|> DomainEventPublisherPort
-  DeciaSession "1" --> "*" SessionParticipant : grupo da conversa
-  DeciaSession "1" --> "*" SessionMessage : mensagens
-  DeciaSession ..> Department : headUserId vira adminUserId
-  DeciaSession ..> ProjectScheme : linkedProjectId (RF29.CA01)
-  DeciaSession --> SessionStatus
-  DeciaSession --> SessionAccess
-  SessionParticipant --> ParticipantRole
-  Notification ..> DeciaSession : SESSAO_PROPOSTA, SESSAO_INICIADA
+namespace ws_domain_acervo {
+  class TaskItem {
+    <<entity>>
+    +id: UUID
+    +ownerId: UUID
+    +title: String
+    +type: TaskType
+    +category: TaskCategory
+    +state: TaskState
+    +visibility: Visibility
+    +dueAt: LocalDate
+    +thumbnailUrl: String
+    +sealIdsJson: JSON
+    +originalTaskId: UUID
+    +blockReason: String
+    +projectUsageCount: int
+    .. +45 campos ..
+  }
+  class TaskStateLog {
+    <<entity>>
+    +id: UUID
+    +taskId: UUID
+    +fromState: TaskState
+    +toState: TaskState
+    +actorId: UUID
+    +reason: String
+    +projectId: UUID
+    +correlationId: String
+    +at: Instant
+  }
+}
 
-  note for DeciaSession "tabela decia_sessions · createdByUserId = quem propôs (grupo) · adminUserId = quem inicia · .. +7 campos .."
-  note for SessionParticipant "tabela session_participants · grupo da conversa = participantes MEMBRO (TAXONOMIA §14)"
+namespace ws_domain_outros {
+  class SealBond {
+    <<entity>>
+    +id: UUID
+    +sealId: UUID
+    +targetType: String TASK ou PROJECT
+    +targetId: UUID
+    +basis: SealBondBasis
+    +status: SealBondStatus
+    +confidence: BigDecimal
+  }
+  class PlanAxis {
+    <<entity>>
+    +id: UUID
+    +planId: UUID
+    +position: int 1 a 6
+    +name: String
+  }
+  class Grouping {
+    <<entity>>
+    +id: UUID
+    +type: GroupingType PROGRAMA
+    +label: String
+  }
+  class Remix {
+    <<entity>>
+    +id: UUID
+    +actorId: UUID
+    +sourceType: String
+    +sourceId: UUID
+    +resultType: String
+    +resultId: UUID
+    +modelOfferId: UUID
+  }
+  class MuralEntry {
+    <<entity>>
+    +id: UUID
+    +kind: String PROJETO_PUBLICADO
+    +targetType: TargetType PROJECT
+    +targetId: UUID
+  }
+  class DeciaSession {
+    <<entity>>
+    +id: UUID
+    +topic: String = objective
+    +linkedProjectId: UUID
+    +status: SessionStatus
+  }
+  class AiInferenceLog {
+    <<entity>>
+    +id: UUID
+    +capability: AiCapability COMPOR_PROJETO
+    +result: InferenceResult
+  }
+}
+
+namespace ws_domain_enums {
+  class ProjectPhase {
+    <<enum>>
+    DEMANDA
+    PLANEJAMENTO
+    ELABORACAO
+    ANALISE
+    APROVACAO
+    EXECUCAO
+    ENCERRAMENTO
+  }
+  class ProjectStatus {
+    <<enum>>
+    RASCUNHO
+    PUBLICADO
+    EM_DECISAO
+    APROVADO
+    EM_EXECUCAO
+    CONCLUIDO
+    ARQUIVADO
+    DEVOLVIDO
+  }
+  class CreationMode {
+    <<enum>>
+    MANUAL
+    COM_IA
+  }
+  class SchemeOrigin {
+    <<enum>>
+    CRIAR_PROJETO
+    DECIA
+    REMIX
+    AUTOPILOTO
+    MODELO
+    CENARIO
+    DOSSIE
+    ATA_VIVA
+  }
+  class TaskState {
+    <<enum>>
+    RASCUNHO
+    DISPONIVEL
+    EM_USO
+    BLOQUEADA
+    CONCLUIDA
+    ARQUIVADA
+    MODELO_PUBLICO
+    OFERECIDA
+  }
+}
+
+namespace ws_application {
+  class ProjectComposerService {
+    <<service>>
+    +openComposer(userId) ComposerState
+    +autosave(userId, draftId, DraftJson) ProjectScheme
+    +listPhaseOptions(userId, phase, query) List~TaskOption~
+    +compose(userId, ProjectForm) ProjectScheme
+    +composeWithAi(userId, processTags, natureTags, orientation) List~Proposal~
+    +fromModel(userId, modelId ou kitId) ComposerState
+    +validateMinimum(selections) 422 FASES_MINIMAS
+    +validateDependencies(deps, dueDates) 422 DEPENDENCIA_CICLICA ou PRAZO_ANTERIOR_PREDECESSORA
+    +criticalPath(tasks, deps) List~UUID~
+    +publish(projectId) ProjectScheme
+    +openDeciaSession(projectId) DeciaSession
+  }
+  class AcervoService {
+    <<service>>
+    +countAvailable(userId) int
+    +listCompatible(userId, phase, filters) List~TaskItem~
+    +markInUse(taskIds, projectId, correlationId)
+  }
+  class TaskCreatorService {
+    <<service>>
+    +save(userId, TaskForm) TaskItem
+  }
+  class SealService {
+    <<service>>
+    +inheritFromTasks(taskIds) List~SealBond~
+    +suggestForProject(projectId, issuerIds) List~SealBond~
+  }
+  class MuralService {
+    <<service>>
+    +publishProject(projectId) MuralEntry
+  }
+  class DeciaSessionService {
+    <<service>>
+    +openFromProject(projectId) DeciaSession
+  }
+  class AiEngine {
+    <<service>>
+    +infer(capability, input, mode) AiResult
+  }
+  class MediaStoragePort {
+    <<port>>
+    +put(stream) MediaObject
+    +studio(mediaId, ops) MediaObject
+  }
+  class SearchIndexPort {
+    <<port>>
+    +indexProject(ProjectScheme)
+  }
+}
+
+namespace ws_web {
+  class ProjectController {
+    <<controller>>
+    +GET_api_projects_composer()
+    +PUT_api_projects_drafts_id(DraftJson)
+    +GET_api_acervo_tasks(phase, q, filters)
+    +POST_api_projects_ai_compose(body)
+    +POST_api_projects(ProjectForm)
+    +POST_api_projects_from_model(modelId)
+    +POST_api_projects_id_publish()
+    +POST_api_projects_id_decia_session()
+  }
+}
+
+namespace ws_infrastructure {
+  class ClaudeGeminiAdapter {
+    <<adapter>>
+  }
+  class S3StorageAdapter {
+    <<adapter>>
+  }
+  class OpenSearchIndexAdapter {
+    <<adapter>>
+  }
+}
+
+ProjectScheme "1" --> "*" ProjectTask : tarefas por fase
+ProjectScheme "1" --> "*" ProjectTaskDependency : grafo sem ciclos
+ProjectScheme "*" --> "0..1" PlanAxis : planAxisId
+ProjectScheme "*" --> "0..1" Grouping : programGroupingId
+ProjectScheme "*" --> "0..1" ProjectScheme : originalProjectId remix ou modelo
+ProjectScheme "1" --> "*" SealBond : targetId quando PROJECT
+ProjectScheme "1" --> "0..1" MuralEntry : publicação
+ProjectScheme "1" --> "0..1" DeciaSession : linkedProjectId
+ProjectScheme "*" --> "0..1" AiInferenceLog : aiInferenceId
+ProjectTask "*" --> "0..1" TaskItem : taskId
+ProjectTaskDependency "*" --> "1" ProjectTask : predecessor
+ProjectTaskDependency "*" --> "1" ProjectTask : successor
+ProcessKit "1" --> "*" KitItem
+KitItem "*" --> "1" TaskItem
+TaskItem "1" --> "*" TaskStateLog : DISPONIVEL para EM_USO
+TaskItem "1" --> "*" SealBond : chancela vem da tarefa
+Remix "*" --> "1" ProjectScheme : resultId
+ProjectScheme --> ProjectStatus
+ProjectScheme --> ProjectPhase : currentPhase
+ProjectScheme --> CreationMode
+ProjectScheme --> SchemeOrigin
+ProjectTask --> ProjectPhase
+TaskItem --> TaskState
+
+ProjectController ..> ProjectComposerService
+ProjectController ..> AcervoService
+ProjectController ..> TaskCreatorService : modal Cadastrar nova tarefa RF4
+ProjectComposerService ..> AcervoService
+ProjectComposerService ..> SealService
+ProjectComposerService ..> MuralService
+ProjectComposerService ..> DeciaSessionService
+ProjectComposerService ..> AiEngine : COMPOR_PROJETO 3 propostas
+ProjectComposerService ..> MediaStoragePort : foto do projeto
+ProjectComposerService ..> SearchIndexPort
+ClaudeGeminiAdapter ..> AiEngine
+S3StorageAdapter ..|> MediaStoragePort
+OpenSearchIndexAdapter ..|> SearchIndexPort
+
+note for ProjectScheme "tabela project_schemes · mínimo 1 tarefa em DEMANDA + 1 em outra fase (CA04, CA05) · autosaveDraftJson sem ProjectTask persistido não gera EM_USO (CA14) · creationMode MANUAL ou COM_IA"
+note for ProjectTask "tabela project_tasks · responsibleId padrão = dono da tarefa, dueAt padrão = prazo da tarefa (CA04)"
+note for ProjectTaskDependency "tabela project_task_dependencies · ciclo ou prazo anterior à predecessora = 422 (CA08)"
+note for AcervoService "listCompatible filtra por PHASE_BY_CATEGORY e devolve BLOQUEADA/ARQUIVADA desabilitadas com motivo (CA03)"
 ```
 
 ## 2. Diagrama de atividades
 
-Raias: Grupo (EMPREGADO proponente) · Administrador da sessão · Web/BFF · `ws-application` · IA (AiEngine) · Persistência.
-
 ```mermaid
 flowchart TD
-  subgraph L1["Ator humano — Grupo da conversa (EMPREGADO)"]
-    A1(["Abre DECIA → Propor sessão"]) --> A2["Informa tema proposto, departamento e convidados (≥ 1)"]
-    A2 --> A3["Envia a proposta"]
-    A10["Vê a sessão como aguardando o administrador"]
-    A30(["Sessão ATIVA: grupo pode enviar mensagens (RF6)"])
+  subgraph LU["Usuário"]
+    U1["Abre /projects/new"]
+    U2["Escolhe modo: Manual, Com IA ou Criar a partir de modelo"]
+    U3["Abre o select de uma fase, pesquisa e seleciona unidades de tarefa; ou arrasta do Acervo"]
+    U4["Cadastrar nova tarefa dentro do select"]
+    U5["Define dependências A antes de B, prazos e responsáveis"]
+    U6["Preenche ficha: título, emoji, objetivo, processo, natureza, departamento, exercício, programa, eixo, prioridade, orientação para a IA, foto"]
+    U7["Salvar"]
+    U8["Sai sem salvar"]
+    U9["Publicar no Mural"]
+    U10["Abrir sessão DECIA sobre este projeto"]
+    U11["Escolhe 1 das 3 propostas e edita"]
   end
 
-  subgraph L1b["Ator humano — Administrador da sessão (CHEFE_DEPARTAMENTO ou ADMIN)"]
-    H1["Recebe notificação da proposta"] --> H2["Abre a sessão PROPOSTA e ajusta tema/acesso se quiser (RF4)"]
-    H2 --> H3{"Iniciar ou recusar?"}
-    H3 -->|iniciar| H4["Clica em Iniciar sessão"]
-    H3 -->|recusar| H5["Informa o motivo e recusa"]
+  subgraph LW["Web / BFF (Next.js App Router)"]
+    W1["Compositor: Acervo filtrável à esquerda, 7 selects de fase ao centro, ficha à direita"]
+    W2["Orientação: cadastre tarefas primeiro, atalho para /tasks/new"]
+    W3["Modal RF4 (criador de tarefas); ao salvar a tarefa volta já selecionada na fase"]
+    W4["Autosave a cada alteração: PUT /api/projects/drafts/{id}"]
+    W5["Pré-visualização do card: capa mosaico + barra de 7 fases + chancelas + caminho crítico"]
+    W6["Campos destacados com 422"]
+    W7["Recupera rascunho na próxima abertura"]
   end
 
-  subgraph L2["Web / BFF (Next.js App Router)"]
-    B1["POST /api/decia/sessions (propose)"]
-    B2["POST /api/decia/sessions/{id}/start"]
-    B3["POST /api/decia/sessions/{id}/decline"]
-    B4["Abre o canal SSE /api/decia/sessions/{id}/stream"]
+  subgraph LA["ws-application"]
+    A1["AcervoService.countAvailable"]
+    A2{"≥ 2 tarefas DISPONIVEIS?"}
+    A3["AcervoService.listCompatible: só meu Acervo + compartilhadas com permissão, PHASE_BY_CATEGORY, thumbnail, tipo, categoria, estado, prazo; BLOQUEADA/ARQUIVADA desabilitadas com motivo"]
+    A4["ProjectComposerService.validateDependencies"]
+    A5{"Ciclo?"}
+    A6["422 DEPENDENCIA_CICLICA"]
+    A7{"Prazo do sucessor anterior ao da predecessora?"}
+    A8["422 PRAZO_ANTERIOR_PREDECESSORA"]
+    A9["criticalPath CPM → criticalPathJson"]
+    A10["SealService.inheritFromTasks: chancelas do projeto vêm das tarefas; sugere tier PROJETO do mesmo emissor"]
+    A11["ProjectComposerService.compose → validateMinimum"]
+    A12{"≥ 1 tarefa em DEMANDA e ≥ 1 em outra fase, título e ≥ 1 processo?"}
+    A13["422 FASES_MINIMAS: indica o mínimo exigido"]
+    A14{"Foto enviada?"}
+    A15["Capa = mosaico das tarefas, coverMode MOSAICO"]
+    A16["MediaStoragePort.studio endireitar/recortar, coverMode FOTO"]
+    A17["Persiste ProjectScheme origin CRIAR_PROJETO ou AUTOPILOTO, creationMode, ProjectTasks, dependências; visibilidade herdada do perfil"]
+    A18["AcervoService.markInUse: tarefas DISPONIVEL → EM_USO + TaskStateLog com projectId"]
+    A19["ProjectComposerService.fromModel: cópias/remixes das tarefas com Remix e crédito ao autor; cada uma trocável pelo equivalente do meu Acervo"]
+    A20["ProjectComposerService.autosave → autosaveDraftJson; sem ProjectTask persistido, sem EM_USO"]
+    A21["MuralService.publishProject → status PUBLICADO, MuralEntry, SearchIndexPort"]
+    A22["DeciaSessionService.openFromProject: tema = objetivo, participantes = responsáveis + chefe, tarefas anexadas; projeto → EM_DECISAO"]
   end
 
-  subgraph L3["ws-application — DeciaSessionService / ParticipantService"]
-    C1{"Proponente da empresa e convidados dentro do accessMode?"}
-    C1 -->|não| E422["422 VALIDACAO (convidado fora do escopo ou sem convidados)"]
-    C1 -->|sim| C2["Cria DeciaSession PROPOSTA: createdByUserId=proponente, adminUserId=Department.headUserId"]
-    C2 --> C3["SessionParticipant MEMBRO para proponente e convidados (addedBy=proponente)"]
-    C3 --> C4["Publica SessionProposed (AFTER_COMMIT) → Notification ao admin"]
-    C5{"É adminUserId ou ADMIN?"}
-    C5 -->|não| E403["403 ACESSO_NEGADO"]
-    C5 -->|sim| C6{"status PROPOSTA?"}
-    C6 -->|não| E409["409 ESTADO_INVALIDO"]
-    C6 -->|sim| C7{"≥ 2 participantes humanos ativos?"}
-    C7 -->|não| E422b["422 VALIDACAO (mínimo 2 participantes)"]
-    C7 -->|sim| C8["status → ATIVA, startedAt=now, participantCount"]
-    C8 --> C9["Cria SessionParticipant role=IA"]
-    C9 --> C10["Pede ao AiEngine a mensagem de abertura (tema, regras, modo)"]
-    C11["Grava mensagem de abertura (authorKind=IA)"] --> C12["Publica SessionStarted (AFTER_COMMIT) → Notification a todos · AuditLog SESSION_STARTED · realtime"]
-    C13{"É adminUserId ou ADMIN e status PROPOSTA?"}
-    C13 -->|não| E403
-    C13 -->|sim| C14["status → ARQUIVADA, archivedAt=now, motivo em description"]
-    C14 --> C15["Publica SessionDeclined (AFTER_COMMIT) → Notification ao grupo com o motivo"]
+  subgraph LI["IA (AiEngine)"]
+    I1["COMPOR_PROJETO: 3 esquemas distintos só com tarefas do meu Acervo, respeitando orientação, materiais, prazos e departamento; fases, dependências e justificativa"]
   end
 
-  subgraph L4["IA (AiEngine)"]
-    I1["Capability ABRIR_SESSAO (modo ECONOMIA: template local · AVANCADO: provedor)"] --> I2["Texto de abertura + AiInferenceLog"]
+  subgraph LP["Persistência"]
+    P1[("MySQL: tasks do Acervo")]
+    P2[("MySQL: project_schemes autosaveDraftJson")]
+    P3[("MySQL: project_schemes, project_tasks, project_task_dependencies, task_state_log, seal_bonds, remixes")]
+    P4[("MySQL: ai_inference_log")]
+    P5[("S3: foto do projeto tratada")]
+    P6[("MySQL: mural_entries · OpenSearch: índice de projetos")]
+    P7[("MySQL: decia_sessions, session_participants, message_attachments")]
   end
 
-  subgraph L5["Persistência"]
-    D1[("MySQL: decia_sessions, session_participants, audit_log, domain_events, ai_inference_log")]
-    D2[("Cassandra: messages_by_session, notifications_by_user")]
-    D3[("Redis: pub/sub da sessão (SSE)")]
-  end
+  U1 --> A1 --> P1
+  A1 --> A2
+  A2 -->|"não"| W2
+  A2 -->|"sim"| W1 --> U2
+  U2 -->|"Manual"| U3
+  U2 -->|"Com IA"| I1
+  U2 -->|"Modelo ou Kit"| A19 --> U3
+  I1 --> P4
+  I1 --> U11 --> U3
+  U3 --> A3 --> P1
+  A3 --> U5
+  U3 --> U4 --> W3 --> U3
+  U5 --> A4 --> A5
+  A5 -->|"sim"| A6 --> W6
+  A5 -->|"não"| A7
+  A7 -->|"sim"| A8 --> W6
+  A7 -->|"não"| A9 --> A10 --> W5
+  W5 --> U6
+  U3 --> W4 --> A20 --> P2
+  U6 --> W4
+  U6 --> U7 --> A11 --> A12
+  A12 -->|"não"| A13 --> W6 --> U3
+  A12 -->|"sim"| A14
+  A14 -->|"não"| A15 --> A17
+  A14 -->|"sim"| A16 --> P5 --> A17
+  A17 --> P3
+  A17 --> A18 --> P3
+  A17 --> U9 --> A21 --> P6
+  A17 --> U10 --> A22 --> P7
+  U8 --> W4
+  U8 -.-> W7
 
-  A3 --> B1 --> C1
-  C2 --> D1
-  C3 --> D1
-  C4 --> D2
-  C4 --> A10
-  C4 --> H1
-  H4 --> B2 --> C5
-  H5 --> B3 --> C13
-  C8 --> D1
-  C10 --> I1
-  I2 --> C11
-  C11 --> D2
-  C12 --> D2
-  C12 --> D3
-  D3 --> B4 --> A30
-  C14 --> D1
-  C15 --> D2
-
-  classDef erro fill:#fde2e2,stroke:#c0392b,color:#7b1d1d;
-  class E422,E422b,E403,E409 erro;
+  classDef err fill:#ffe3e3,stroke:#c0392b,color:#5a1a12
+  classDef warn fill:#fff4d6,stroke:#b7791f,color:#5a3b06
+  class A6,A8,A13 err
+  class W2 warn
 ```
 
 ## 3. Diagrama de sequência
 
-Caminho feliz proposta → notificação → início, com os `alt` de erro do CA03 (403) e do CA04 (409 / 422) e a recusa em `opt`.
-
 ```mermaid
 sequenceDiagram
   autonumber
-  actor G as Grupo (EMPREGADO proponente)
-  actor A as Administrador da sessão (CHEFE)
-  participant N as Next.js (App Router) /decia
-  participant C as DeciaSessionController (ws-web)
-  participant S as DeciaSessionService (ws-application)
-  participant P as ParticipantService (ws-application)
+  actor U as Usuário
+  participant NX as Next.js (App Router)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
-  participant CS as Cassandra
-  participant R as Redis
+  participant OS as OpenSearch
   participant DE as DomainEvents (AFTER_COMMIT)
 
-  G->>N: tema proposto, departamento, convidados
-  N->>C: POST /api/decia/sessions (Bearer)
-  C->>S: propose(currentUser, ProposeSessionCommand)
-  S->>DB: SELECT departments WHERE id (headUserId → adminUserId)
-  S->>S: valida convidados dentro do accessMode e da companyId (CA01)
-  S->>DB: INSERT decia_sessions (status=PROPOSTA, created_by_user_id, admin_user_id)
-  S->>P: addMany(session, proponente + convidados, MEMBRO, addedBy=proponente)
-  P->>DB: INSERT session_participants (role=MEMBRO, joined_at)
-  S->>DE: publish SessionProposed(sessionId, adminUserId)
-  S-->>C: 201 SessionView (PROPOSTA)
-  C-->>N: 201
-  N-->>G: "Aguardando o administrador iniciar"
-  DE->>CS: AFTER_COMMIT → notifications_by_user (admin: SESSAO_PROPOSTA) (CA02)
-  DE->>DB: AFTER_COMMIT → audit_log SESSION_PROPOSED
-
-  A->>N: abre a sessão PROPOSTA e clica em Iniciar sessão
-  N->>C: POST /api/decia/sessions/{id}/start
-  C->>S: start(currentUser, sessionId)
-  S->>DB: SELECT decia_sessions WHERE id (status, admin_user_id, version)
-  alt não é adminUserId nem ADMIN (CA03)
-    S-->>C: 403 ACESSO_NEGADO
-    C-->>N: 403
-  else status diferente de PROPOSTA (CA04)
-    S-->>C: 409 ESTADO_INVALIDO
-    C-->>N: 409
-  else menos de 2 participantes humanos (CA04)
-    S->>P: activeHumans(sessionId)
-    S-->>C: 422 VALIDACAO (mínimo 2 participantes)
-  else pode iniciar (CA03)
-    S->>DB: UPDATE decia_sessions SET status=ATIVA, started_at=now, participant_count
-    S->>P: addAiParticipant(session)
-    P->>DB: INSERT session_participants (role=IA)
-    S->>AI: openingMessage(session, contextTaskIds)
-    AI-->>S: texto de abertura (tema, regras, modo) + AiInferenceLog
-    S->>CS: INSERT messages_by_session (authorKind=IA, bodyMd=abertura)
-    S->>DB: INSERT session_messages_idx + UPDATE message_count
-    S->>DE: publish SessionStarted(sessionId, participantIds)
-    S-->>C: 200 SessionView (ATIVA)
-    C-->>N: 200
-    N-->>A: sessão ativa, caixa de mensagem habilitada
-    DE->>CS: AFTER_COMMIT → notifications_by_user (todos: SESSAO_INICIADA) (CA06)
-    DE->>R: AFTER_COMMIT → PUBLISH decia.session.{id} SessionStarted → SSE dos participantes (CA06)
-    DE->>DB: AFTER_COMMIT → audit_log SESSION_STARTED (CA06)
-    R-->>N: evento SSE
-    N-->>G: sessão passou a ATIVA, pode enviar mensagens (RF6)
+  U->>NX: abre /projects/new
+  NX->>C: GET /api/projects/composer
+  C->>S: ProjectComposerService.openComposer(userId)
+  S->>DB: COUNT tasks WHERE ownerId AND state = DISPONIVEL
+  alt menos de 2 tarefas DISPONIVEIS
+    S-->>C: 200 {composerEnabled: false, hint: CADASTRE_TAREFAS, shortcut: /tasks/new}
+    C-->>NX: 200
+    NX-->>U: orientação com atalho para o criador de tarefas RF4 (CA02)
+  else 2 ou mais
+    S->>DB: SELECT project_schemes WHERE ownerId AND autosaveDraftJson IS NOT NULL
+    S-->>C: 200 {composerEnabled: true, draft recuperado ou vazio}
+    C-->>NX: 200
+    NX-->>U: Acervo à esquerda, 7 selects vazios ou com o rascunho, ficha à direita (CA01, CA14)
   end
 
-  opt Administrador recusa a proposta (CA04)
-    A->>N: Recusar com motivo
-    N->>C: POST /api/decia/sessions/{id}/decline
-    C->>S: decline(currentUser, sessionId, reason)
-    S->>DB: UPDATE decia_sessions SET status=ARQUIVADA, archived_at=now
-    S->>DE: publish SessionDeclined(sessionId, reason)
-    DE->>CS: AFTER_COMMIT → notifications_by_user (grupo: SESSAO_RECUSADA + motivo)
-    S-->>C: 200 SessionView (ARQUIVADA)
+  U->>NX: abre o select da fase PLANEJAMENTO e digita "ETP"
+  NX->>C: GET /api/acervo/tasks?phase=PLANEJAMENTO&q=ETP
+  C->>S: AcervoService.listCompatible(userId, PLANEJAMENTO, q)
+  S->>DB: tasks WHERE ownerId OR sharedWith AND category IN PHASE_BY_CATEGORY[PLANEJAMENTO] AND title LIKE
+  DB-->>S: lista com thumbnail, tipo, categoria, estado, prazo
+  S-->>C: 200 opções — BLOQUEADA/ARQUIVADA com disabled = true e disabledReason (CA03)
+  C-->>NX: 200
+
+  U->>NX: Cadastrar nova tarefa dentro do select (CA07)
+  NX->>C: POST /api/tasks (modal RF4)
+  C->>S: TaskCreatorService.save(userId, form)
+  S->>DB: INSERT tasks (state DISPONIVEL)
+  S-->>C: 201 TaskItem
+  C-->>NX: 201
+  NX-->>U: tarefa já selecionada na fase PLANEJAMENTO
+
+  loop a cada alteração no compositor
+    NX->>C: PUT /api/projects/drafts/{draftId} {selections, deps, sheet}
+    C->>S: ProjectComposerService.autosave
+    S->>DB: UPSERT project_schemes SET autosaveDraftJson, status RASCUNHO (sem project_tasks, sem EM_USO)
+    S-->>C: 204
   end
+
+  opt modo Com IA (CA06)
+    U->>NX: confirma processo LICITACAO, natureza TECNICA e orientação "pavimentação com FINISA, 90 dias"
+    NX->>C: POST /api/projects/ai-compose {processTags, natureTags, orientation}
+    C->>S: ProjectComposerService.composeWithAi
+    S->>DB: tasks DISPONIVEIS do Acervo do usuário
+    S->>AI: infer(COMPOR_PROJETO, {acervo, orientação, departamento}, mode)
+    AI-->>S: 3 propostas {fases preenchidas, dependências, justificativa}
+    S->>DB: INSERT ai_inference_log (capability COMPOR_PROJETO)
+    S-->>C: 200 propostas
+    C-->>NX: 200
+    NX-->>U: escolhe 1 e edita (origem AUTOPILOTO se integralmente da IA)
+  end
+
+  U->>NX: define A antes de B e prazo de B anterior ao de A
+  NX->>C: POST /api/projects/validate-dependencies {deps, dueDates}
+  C->>S: ProjectComposerService.validateDependencies
+  alt ciclo ou prazo inválido (CA08)
+    S-->>C: 422 DEPENDENCIA_CICLICA ou 422 PRAZO_ANTERIOR_PREDECESSORA {details, correlationId}
+    C-->>NX: 422
+    NX-->>U: aresta destacada com o motivo
+  else válido
+    S->>S: criticalPath CPM
+    S-->>C: 200 {criticalPath: [ids]}
+    C-->>NX: 200
+    NX-->>U: caminho crítico na pré-visualização e chancelas das tarefas em "Chancelas do projeto" (CA09)
+  end
+
+  U->>NX: Salvar
+  NX->>C: POST /api/projects {ProjectForm}
+  C->>S: ProjectComposerService.compose(userId, form)
+  S->>S: validateMinimum: 1 em DEMANDA + 1 em outra fase, título, ≥1 processo
+  alt sem tarefa ou só DEMANDA (CA05)
+    S-->>C: 422 FASES_MINIMAS {details: [{field: phases, code: MINIMO_DEMANDA_MAIS_UMA}]}
+    C-->>NX: 422
+    NX-->>U: indica o mínimo exigido
+  else válido (CA04)
+    S->>DB: UPDATE project_schemes SET title, objective, origin CRIAR_PROJETO, creationMode, visibility herdada do perfil, autosaveDraftJson NULL
+    S->>DB: INSERT project_tasks (phase, sortOrder, responsibleId = dono da tarefa, dueAt = prazo da tarefa)
+    S->>DB: INSERT project_task_dependencies
+    S->>DB: UPDATE tasks SET state EM_USO WHERE id IN selecionadas
+    S->>DB: INSERT task_state_log (DISPONIVEL → EM_USO, projectId, correlationId)
+    S->>DB: UPDATE project_schemes SET coverMode MOSAICO, mosaicJson (sem foto, CA10)
+    S->>DE: publish ProjectCreated
+    S-->>C: 201 ProjectScheme
+    C-->>NX: 201
+    NX-->>U: card do projeto com capa mosaico e barra de fases
+  end
+  DE->>S: SealService.suggestForProject (chancela tier PROJETO do mesmo emissor, CA09)
+  DE->>AI: infer(SUGERIR_CHANCELA, {projeto, chancelas das tarefas})
+
+  U->>NX: Publicar no Mural (CA11)
+  NX->>C: POST /api/projects/{id}/publish
+  C->>S: ProjectComposerService.publish
+  S->>DB: UPDATE project_schemes SET status PUBLICADO
+  S->>DB: INSERT mural_entries (kind PROJETO_PUBLICADO)
+  S->>OS: indexProject respeitando visibility
+  S-->>C: 200
+  C-->>NX: 200
+
+  U->>NX: Abrir sessão DECIA sobre este projeto (CA12)
+  NX->>C: POST /api/projects/{id}/decia-session
+  C->>S: DeciaSessionService.openFromProject
+  S->>DB: INSERT decia_sessions (topic = objective, linkedProjectId)
+  S->>DB: INSERT session_participants (responsáveis + chefe do departamento)
+  S->>DB: INSERT message_attachments (tarefas do projeto)
+  S->>DB: UPDATE project_schemes SET status EM_DECISAO
+  S-->>C: 201 DeciaSession
+  C-->>NX: 201
+  NX-->>U: redireciona para a sessão (RF29)
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: `DeciaSession.status` (`SessionStatus`). O RF5 é dono de `PROPOSTA → ATIVA` (iniciar) e `PROPOSTA → ARQUIVADA` (recusar); o restante é contexto dos RF11–RF17.
+Entidade central: **`ProjectScheme.status`** (enum `ProjectStatus`). O RF5 cobre o nascimento do esquema: rascunho de autosave (RASCUNHO com `autosaveDraftJson` e **sem** `ProjectTask`), esquema salvo (RASCUNHO com `ProjectTask`s e tarefas EM_USO), publicação (PUBLICADO, CA11) e abertura de sessão (EM_DECISAO, CA12). Os demais estados pertencem ao RF22/RF29 e aparecem para contexto.
 
 ```mermaid
 stateDiagram-v2
-  direction LR
-  [*] --> PROPOSTA : grupo propõe (RF5.CA01) ou Abrir sessão DECIA no projeto (RF5.CA05)
-  PROPOSTA --> PROPOSTA : admin ajusta tema e acesso (RF4)
-  PROPOSTA --> ATIVA : admin inicia (RF5.CA03) — startedAt, participante IA, mensagem de abertura
-  PROPOSTA --> ARQUIVADA : admin recusa com motivo (RF5.CA04)
-  ATIVA --> EM_RESUMO : IA gera o resumo analítico (RF11)
-  EM_RESUMO --> EM_DECISAO : IA registra a decisão (RF12)
-  EM_DECISAO --> EM_REVISAO : enviada ao admin (RF15)
-  EM_REVISAO --> ENCERRADA : decisão validada (RF15/RF17)
-  EM_REVISAO --> REABERTA : devolvida e reaberta (RF14)
-  REABERTA --> EM_RESUMO : novo ciclo
-  ENCERRADA --> ARQUIVADA : histórico exportado (RF17)
-  ARQUIVADA --> [*]
-
-  note right of PROPOSTA
-    Visível ao grupo como "aguardando o administrador".
-    Iniciar exige adminUserId (403) e status PROPOSTA (409)
-    e pelo menos 2 participantes humanos (422).
+  state "RASCUNHO — autosave" as RASC_AUTO
+  state "RASCUNHO — salvo" as RASC_SALVO
+  [*] --> RASC_AUTO : primeira alteração no compositor, PUT drafts
+  RASC_AUTO --> RASC_AUTO : autosave a cada alteração
+  RASC_AUTO --> [*] : descartar rascunho
+  RASC_AUTO --> RASC_SALVO : POST projects válido, ProjectTasks persistidos, tarefas EM_USO
+  RASC_SALVO --> RASC_SALVO : editar no RF22, nova ProjectVersion
+  RASC_SALVO --> PUBLICADO : publicar no Mural, MuralEntry, índice OpenSearch
+  RASC_SALVO --> EM_DECISAO : abrir sessão DECIA sobre este projeto
+  PUBLICADO --> EM_DECISAO : abrir sessão DECIA
+  EM_DECISAO --> APROVADO : FinalDecision VALIDADA pelo chefe, RF29
+  EM_DECISAO --> DEVOLVIDO : FinalDecision DEVOLVIDA com motivo
+  DEVOLVIDO --> EM_DECISAO : sessão reaberta
+  DEVOLVIDO --> RASC_SALVO : ajustar o esquema
+  APROVADO --> EM_EXECUCAO : primeira ProjectTask em EXECUCAO iniciada
+  EM_EXECUCAO --> CONCLUIDO : todas as ProjectTasks concluídas
+  CONCLUIDO --> ARQUIVADO : arquivar
+  PUBLICADO --> ARQUIVADO : arquivar
+  ARQUIVADO --> [*]
+  note right of RASC_AUTO
+    autosaveDraftJson preenchido, nenhum ProjectTask.
+    Não gera EM_USO nas tarefas (CA14).
+    Recuperado na próxima abertura do compositor.
   end note
-  note right of ATIVA
-    Só aqui (e em REABERTA) o grupo envia mensagens (RF6)
-    e o admin adiciona/remove participantes (RF9).
+  note right of RASC_SALVO
+    Exige 1 tarefa em DEMANDA + 1 em outra fase (CA04, CA05).
+    creationMode MANUAL ou COM_IA; origin CRIAR_PROJETO ou AUTOPILOTO
+    quando veio integralmente da IA (CA06).
+    Tarefas selecionadas passam a EM_USO com TaskStateLog (RF41).
+  end note
+  note left of EM_DECISAO
+    Sessão nasce com tema = objetivo,
+    participantes = responsáveis + chefe,
+    tarefas anexadas (CA12, RF29).
   end note
 ```
 
@@ -387,84 +645,99 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js (App Router)"]
-    FE1["app/(app)/decia/new/page.tsx (propor: tema, convidados)"]
-    FE2["app/(app)/decia/[sessionId]/page.tsx (botão Iniciar / Recusar para o admin)"]
-    FE3["app/(app)/projects/[id] → Abrir sessão DECIA (RF29.CA01)"]
-    FE4["app/api/decia/[sessionId]/stream/route.ts (SSE proxy)"]
-    FE5["components/ui (ParticipantPicker, SessionStatusBadge, Toast)"]
+  subgraph FE["Frontend Next.js"]
+    F1["app/projects/new — compositor 3 colunas, seletor Manual / Com IA / Modelo"]
+    F2["components/ui: AcervoPanel com filtros e busca, PhaseSelect x7 multi pesquisável, DragDropTask, DependencyEditor, ProjectSheet, AiComposePanel 3 propostas, ModelPicker Kit/modelo, CardPreview mosaico + barra de fases + chancelas, CriticalPathPreview"]
+    F3["Modal TaskCreator RF4 devolve a tarefa selecionada"]
+    F4["Autosave hook: debounce + PUT drafts"]
   end
 
   subgraph WEB["ws-web"]
-    W1["DeciaSessionController /api/decia/sessions · /{id}/start · /{id}/decline · /from-project/{projectId}"]
-    W2["SessionStreamController /api/decia/sessions/{id}/stream (SSE)"]
-    W3["SecurityConfig (JWT) · CurrentUserResolver"]
+    C1["ProjectController — /api/projects, /composer, /drafts, /ai-compose, /from-model, /validate-dependencies, /publish, /decia-session"]
+    C2["AcervoController — /api/acervo/tasks?phase=&q="]
+    C3["TaskController RF4 — /api/tasks"]
   end
 
   subgraph APP["ws-application"]
-    S1["DeciaSessionService"]
-    S2["ParticipantService"]
-    S3["MessageService (mensagem de sistema)"]
-    S4["AiEngine (capability ABRIR_SESSAO)"]
-    P1["NotificationPort · RealtimePublisherPort · DomainEventPublisherPort"]
+    S1["ProjectComposerService"]
+    S2["AcervoService RF41"]
+    S3["TaskCreatorService RF4"]
+    S4["SealService RF39"]
+    S5["MuralService RF27"]
+    S6["DeciaSessionService RF29"]
+    S7["AiEngine"]
+    P1["MediaStoragePort"]
+    P2["SearchIndexPort"]
   end
 
   subgraph DOM["ws-domain"]
-    D1["DeciaSession · SessionParticipant · SessionMessage · Department · ProjectScheme · Notification · AuditLog"]
-    D2["SessionStatus · ParticipantRole · SessionAccess · AiMode"]
-    D3["DeciaSessionRepository · SessionParticipantRepository · DepartmentRepository · ProjectSchemeRepository"]
+    D1["ProjectScheme · ProjectTask · ProjectTaskDependency · ProcessKit · KitItem"]
+    D2["TaskItem · TaskStateLog · SealBond · Remix · PlanAxis · Grouping"]
+    D3["MuralEntry · DeciaSession · AiInferenceLog · DomainEventOutbox"]
+    D4["PHASE_BY_CATEGORY · CPM caminho crítico · validação de ciclos"]
   end
 
-  subgraph INFRA["ws-infrastructure"]
-    I1["persistence-mysql (decia_sessions, session_participants, session_messages_idx, audit_log, domain_events)"]
-    I2["persistence-cassandra (messages_by_session, notifications_by_user)"]
-    I3["cache-redis (RedisRealtimePublisher pub/sub)"]
-    I4["ai-providers (ClaudeProvider, GeminiProvider, LocalEngine)"]
-    I5["platform (OutboxEventPublisher, NotificationDispatcher, AuditLogWriter)"]
+  subgraph INFRA["ws-infrastructure/*"]
+    I1[("persistence-mysql: project_schemes, project_tasks, project_task_dependencies, tasks, task_state_log, seal_bonds, remixes, mural_entries, decia_sessions, ai_inference_log")]
+    I2[("storage-s3: foto do projeto, capa tratada no Estúdio")]
+    I3[("search-opensearch: índice de projetos ao publicar")]
+    I4["ai-providers: ClaudeGeminiAdapter — COMPOR_PROJETO, SUGERIR_CHANCELA, CAPA_IA"]
+    I5["platform: outbox AFTER_COMMIT, PipelineJob"]
   end
 
   subgraph EXT["Serviços externos"]
-    X1["Claude / Gemini (mensagem de abertura em modo AVANCADO)"]
+    E1(("Claude / Gemini"))
   end
 
-  MY[("MySQL 8")]
-  CA[("Cassandra")]
-  RD[("Redis")]
-
-  FE1 --> W1
-  FE2 --> W1
-  FE3 --> W1
-  FE2 --> FE4
-  FE4 --> W2
-  FE1 --> FE5
-  W3 -.-> W1
-  W1 --> S1
+  F1 --- F2
+  F1 --- F3
+  F1 --- F4
+  F1 -->|"HTTPS/JSON"| C1
+  F2 -->|"HTTPS/JSON"| C2
+  F3 -->|"HTTPS/JSON"| C3
+  C1 --> S1
+  C2 --> S2
+  C3 --> S3
   S1 --> S2
-  S1 --> S3
   S1 --> S4
+  S1 --> S5
+  S1 --> S6
+  S1 --> S7
   S1 --> P1
+  S1 --> P2
+  S4 --> S7
   S1 --> D1
-  S1 --> D3
-  S4 --> I4
-  I4 --> X1
-  I2 -.->|implementa| P1
-  I3 -.->|implementa| P1
-  I5 -.->|implementa| P1
-  W2 --> I3
+  S1 --> D4
+  S2 --> D2
+  S5 --> D3
+  S6 --> D3
+  D1 --> I1
+  D2 --> I1
   D3 --> I1
-  I1 --> MY
-  I2 --> CA
-  I3 --> RD
-  BOOT["ws-bootstrap (flags ai.provider.claude, ai.provider.gemini, ai.local.only, cassandra.enabled)"] -.-> INFRA
+  D3 --> I5
+  P1 --> I2
+  P2 --> I3
+  S7 --> I4
+  I4 -.-> E1
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) |
-|---|---|---|---|---|---|
-| RF5.CA01 | `DeciaSessionService.propose`, `DeciaSession.createdByUserId/adminUserId`, `Department.headUserId`, `ParticipantService.addMany`, `SessionParticipant role MEMBRO` | `A2`, `A3`, `B1`, `C1` → `E422`, `C2`, `C3` | 1–11 (`POST /api/decia/sessions`, 201 PROPOSTA) | `[*] → PROPOSTA` | `FE1`, `W1`, `S1`, `S2`, `I1` |
-| RF5.CA02 | `Notification` (SESSAO_PROPOSTA), `NotificationPort`, `DeciaSessionService` (RF4 em PROPOSTA) | `C4`, `H1`, `H2`, `A10` | 12–14 | `PROPOSTA → PROPOSTA` (ajustes do RF4) | `I2 notifications_by_user`, `I5 NotificationDispatcher`, `FE2` |
-| RF5.CA03 | `DeciaSessionService.start`, `ParticipantService.addAiParticipant`, `SessionParticipant role IA`, `AiEngine.openingMessage`, `MessageService.postSystemMessage` | `H4`, `B2`, `C5` → `E403`, `C8`–`C12`, `I1`, `I2` | 15–19, 26–37 | `PROPOSTA → ATIVA` | `W1 /start`, `S4 AiEngine`, `I4 ai-providers`, `X1` |
-| RF5.CA04 | `DeciaSessionService.decline`, `ParticipantService.activeHumans`, `DeciaSession.archivedAt` | `C6` → `E409`, `C7` → `E422b`, `H5`, `B3`, `C13`–`C15` | 20–25, 43–50 (`opt` recusa) | `PROPOSTA → ARQUIVADA` | `W1 /decline` |
-| RF5.CA05 | `DeciaSessionService.openFromProject`, `DeciaSession.linkedProjectId`, `ProjectScheme.objective/status` | (variante de `C2`: topic = objetivo, participantes = responsáveis + chefe) | 1–11 com origem `FE3` | `[*] → PROPOSTA` (via projeto) | `FE3`, `W1 /from-project`, `D3 ProjectSchemeRepository` |
-| RF5.CA06 | `DomainEventPublisherPort`, `RealtimePublisherPort`/`RedisRealtimePublisher`, `AuditLog`, `DeciaSession.participantCount` | `C12`, `D3`, `B4`, `A30` | 38–42 (AFTER_COMMIT → notificações, PUBLISH, audit_log, SSE) | nota em `ATIVA` | `W2 SessionStreamController`, `FE4`, `I3 cache-redis`, `I5` |
+Os ids dos CAs são os do corpo do card RF5 (corpo do card = antigo RF21).
+
+| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
+|---|---|
+| RF21.CA01 | `ProjectComposerService.openComposer`, `AcervoService.countAvailable` · Atividades `U1 → A1 → A2 (sim) → W1` · Sequência `GET /api/projects/composer` → `else 2 ou mais` → "Acervo à esquerda, 7 selects vazios, ficha à direita" · Componentes `AcervoPanel`, `PhaseSelect x7`, `ProjectSheet` |
+| RF21.CA02 | Atividades `A2 (não) → W2` (orientação + atalho /tasks/new) · Sequência `alt menos de 2 tarefas DISPONIVEIS` → `{composerEnabled: false, hint: CADASTRE_TAREFAS}` |
+| RF21.CA03 | `AcervoService.listCompatible` (nota PHASE_BY_CATEGORY, desabilitadas com motivo), tabela `PHASE_BY_CATEGORY` do cabeçalho, enum `TaskState` · Atividades `U3 → A3 → P1` · Sequência `GET /api/acervo/tasks?phase=PLANEJAMENTO&q=ETP` → "BLOQUEADA/ARQUIVADA com disabled e disabledReason" · Componentes `AcervoController`, `PhaseSelect` |
+| RF21.CA04 | Classes `ProjectScheme` (origin CRIAR_PROJETO, creationMode, visibility herdada), `ProjectTask` (nota responsibleId/dueAt padrão), `TaskStateLog`, `AcervoService.markInUse` · Atividades `U7 → A11 → A12 (sim) → A17 → A18 → P3` · Sequência `else válido (CA04)`: UPDATE project_schemes, INSERT project_tasks, UPDATE tasks EM_USO, INSERT task_state_log · Transição `RASC_AUTO → RASC_SALVO` e nota |
+| RF21.CA05 | `ProjectComposerService.validateMinimum` · Atividades `A12 (não) → A13 422 FASES_MINIMAS → W6` · Sequência `alt sem tarefa ou só DEMANDA` → `422 FASES_MINIMAS` · Nota do estado RASC_SALVO |
+| RF21.CA06 | `ProjectComposerService.composeWithAi`, `AiEngine` (COMPOR_PROJETO), `AiInferenceLog`, enums `CreationMode.COM_IA`, `SchemeOrigin.AUTOPILOTO` · Atividades `U2 (Com IA) → I1 → P4 → U11` · Sequência `opt modo Com IA`: `POST /api/projects/ai-compose` → 3 propostas → INSERT ai_inference_log · Componentes `AiComposePanel`, `ai-providers` |
+| RF21.CA07 | `TaskCreatorService.save`, `ProjectController ..> TaskCreatorService` · Atividades `U4 → W3 → U3` · Sequência "Cadastrar nova tarefa dentro do select" → `POST /api/tasks (modal RF4)` → "já selecionada na fase" · Componentes `Modal TaskCreator RF4`, `TaskController RF4` |
+| RF21.CA08 | Classes `ProjectTaskDependency` (nota 422), `ProjectComposerService.validateDependencies/criticalPath`, `ProjectScheme.criticalPathJson`, `ProjectTask.isCritical/slackDays` · Atividades `U5 → A4 → A5/A6 → A7/A8 → A9` · Sequência `POST /api/projects/validate-dependencies` → `alt ciclo ou prazo inválido` / `else válido` (criticalPath CPM) · Componentes `DependencyEditor`, `CriticalPathPreview`, `D4` |
+| RF21.CA09 | Classes `SealBond` (TASK ou PROJECT), `TaskItem.sealIdsJson`, `ProjectScheme.sealIdsJson`, `SealService.inheritFromTasks/suggestForProject` · Atividades `A10` · Sequência "chancelas das tarefas em Chancelas do projeto" e `DE->>S: SealService.suggestForProject` · Componente `SealService RF39` |
+| RF21.CA10 | `ProjectScheme.coverMode/coverUrl/mosaicJson`, `MediaStoragePort.studio` · Atividades `A14 → A15` (mosaico) / `A14 → A16 → P5` (foto tratada) · Sequência `UPDATE project_schemes SET coverMode MOSAICO, mosaicJson` · Componentes `CardPreview`, `storage-s3` |
+| RF21.CA11 | `ProjectComposerService.publish`, `MuralService.publishProject`, `MuralEntry`, `SearchIndexPort` · Atividades `U9 → A21 → P6` · Sequência `POST /api/projects/{id}/publish` → status PUBLICADO, INSERT mural_entries, indexProject respeitando visibility · Transição `RASC_SALVO → PUBLICADO` · Componentes `MuralService RF27`, `search-opensearch` |
+| RF21.CA12 | `DeciaSessionService.openFromProject`, `DeciaSession` (topic = objective, linkedProjectId) · Atividades `U10 → A22 → P7` · Sequência `POST /api/projects/{id}/decia-session` → decia_sessions, session_participants, message_attachments, status EM_DECISAO · Transição `RASC_SALVO/PUBLICADO → EM_DECISAO` e nota · Componente `DeciaSessionService RF29` |
+| RF21.CA13 | Classes `ProcessKit`, `KitItem`, `Remix`, `ProjectScheme.originalProjectId`, enum `SchemeOrigin.MODELO/REMIX`, `ProjectComposerService.fromModel` · Atividades `U2 (Modelo ou Kit) → A19 → U3` · Componentes `ModelPicker Kit/modelo`, `ProjectController /from-model` |
+| RF21.CA14 | `ProjectScheme.autosaveDraftJson`, `ProjectComposerService.autosave` · Atividades `U3/U6 → W4 → A20 → P2`, `U8 → W4`, `W7` (recupera) · Sequência `loop a cada alteração` → `PUT /api/projects/drafts/{draftId}` (sem project_tasks, sem EM_USO) e `SELECT ... autosaveDraftJson IS NOT NULL` na abertura · Estado `RASC_AUTO` + nota · Componente `Autosave hook` |

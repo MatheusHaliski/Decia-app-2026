@@ -1,18 +1,32 @@
-# RF21 — Compor um Esquema de Projeto no Criador de Projetos, escolhendo em cada fase (select) as unidades de tarefa do meu Acervo, em modo manual ou com IA
-**HU:** HU21 · **Sprint (board Work Station):** 4 · **Equivalente FAI:** RF5 Criar esquema (aba "Criar Look": slots por tipo com uma peça de cada, selects alimentados pelo Closet, modo Manual / Com IA, título, ocasião, estilo, orientação livre, foto opcional, capa = composição das peças, selos vindos das peças, pré-visualização do card, cadastrar nova peça inline, mínimo de 2 peças) · **Aba/rota:** Criar Projeto (`/projects/new`)
-**Critérios de aceite cobertos:** RF21.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14
+# RF21 — Utilizar a mesa de trabalho digital de meu perfil
+**HU:** HU21 · **Sprint (board Work Station):** a confirmar (card renomeado em 2026-10-02; origem RF22 Mesa de Trabalho = Sprint 4) · **Equivalente FAI:** RF27 Meu Quarto (Ilha central, Smart Mirror, skins) + RF15 Editor Canvas 2D · **Aba/rota:** Mesa de Trabalho (`/desk`, sub-abas **Minha mesa** · **Mesa da equipe**); a Mesa de um **projeto** continua no RF22 (`/projects/[id]/edit`) e a **Mesa do DECIA** na sessão (`docs/produto/DECIA_SESSAO_E_MESA.md` §C)
+**Critérios de aceite cobertos:** RF21.CA01 … RF21.CA07 — corpo do card vazio: CAs derivados do título + HU21 + RF22 (quadro / linha do tempo / canvas, skins, colaboração ≤ 3 s, versões) + Mesa do DECIA §C (mesma família visual); todos marcados "(CA a confirmar)"
 
-O **Esquema de Projeto** (`ProjectScheme`, = look) é a composição ordenada de tarefas (`TaskItem`, = peças) em **7 fases** (`ProjectPhase`: DEMANDA · PLANEJAMENTO · ELABORAÇÃO · ANÁLISE · APROVAÇÃO · EXECUÇÃO · ENCERRAMENTO). Cada fase tem um **select múltiplo pesquisável** cujo conteúdo são as tarefas do Acervo do usuário (RF41) **compatíveis com a fase** (mapa `PHASE_BY_CATEGORY`, equivalente ao `SLOT_BY_CATEGORY` do FAI). Cada tarefa selecionada vira um `ProjectTask` (fase, ordem, responsável, prazo) e as dependências viram `ProjectTaskDependency` (sem ciclos). O compositor funciona em modo **Manual** ou **Com IA** (AiEngine `COMPOR_PROJETO` devolve 3 propostas usando só tarefas do Acervo), aceita "Criar a partir de modelo" (Kit / modelo chancelado, com `Remix` e crédito) e mantém **autosave** do rascunho em `ProjectScheme.autosaveDraftJson`.
+> **HU21** — COMO usuário pertencente a alguma empresa ou organização POSSO acessar a mesa de trabalho de minha equipe PARA visualizar de forma estratégica, formal e coerente as metas diárias, semanais e mensais de minha empresa, além de entender o que meus colegas de equipe estão produzindo.
 
-| Categoria (`TaskCategory`) | Fase(s) compatível(is) — `PHASE_BY_CATEGORY` |
+A **Mesa de Trabalho do perfil** é o painel pessoal/da equipe que reúne, sobre a mesma família visual do RF22 (texturas `DeskSkin` PAPEL · CORTIÇA · BLUEPRINT · PAPEL_TIMBRADO, post-its, cartões), **widgets** com três horizontes: **diário** (Tarefa do Dia e HSE, `DailyTask` RF44), **semanal** (`WeekPlan`/`WeekPlanDay`, prazos ≤ 7 dias) e **mensal** (eixos do Plano Anual do departamento `PlanAxis.completedPct`, metas coletivas `CollectiveGoal.progress`, destaques `Highlight`). Tem duas sub-abas: **Minha mesa** (layout em `UserPreferences.dashboardLayoutJson`, skin de `UserPreferences.deskSkin`/`UserSkin`) e **Mesa da equipe** (um canvas por departamento, compartilhado pelos membros com propagação ≤ 3 s via Redis pub/sub, projetos da equipe por fase, linha do tempo de marcos, atividade dos colegas via `TimelineEvent`/`MuralEntry`). Entidades novas **(propostas)**: `TeamDesk` (`id · departmentId · layoutJson · deskSkin · version · updatedBy · updatedAt`) e `DeskNote` (`id · deskScope (PESSOAL · EQUIPE) · scopeId · authorId · contentMd · color · canvasX · canvasY · canvasScale · canvasRotation · canvasLayer · pinned · active`). Três visões do mesmo estado — **Quadro** (projetos da equipe por `ProjectPhase`), **Linha do tempo** (marcos `nextMilestoneAt`, `dueAt`, `legalDueAt`, `votingDeadlineAt`) e **Canvas** (widgets e post-its com x/y/escala/rotação/camada). Abrir um projeto leva à Mesa do projeto (RF22); abrir uma sessão leva à Mesa do DECIA. Limites LGPD: HSE nominal e Tarefa do Dia só do próprio usuário; a equipe vê agregados (RF45.CA10, `ABAS_POR_PERFIL.md` §7.b).
+
+| CA | Enunciado (Dado / Quando / Então) |
 |---|---|
-| OFICIO_MEMORANDO, PROTOCOLO (tipo) | DEMANDA |
-| ETP, TERMO_REFERENCIA, CRONOGRAMA | PLANEJAMENTO |
-| PROJETO_BASICO_EXECUTIVO, PLANILHA_ORCAMENTARIA, PARECER_TECNICO, MAPA_GEORREFERENCIA | ELABORAÇÃO · ANÁLISE |
-| ATA, PORTARIA_RESOLUCAO, LICENCA_ANUENCIA | APROVAÇÃO |
-| CONTRATO_CONVENIO, VISTORIA_RELATORIO_FOTOGRAFICO | EXECUÇÃO |
-| Relatório final (DOCUMENTO em ENCERRAMENTO) | ENCERRAMENTO |
-| OUTRO, FORMULARIO | qualquer fase |
+| **RF21.CA01** (CA a confirmar) | Dado um usuário autenticado com lotação (`DepartmentMembership` vigente), quando abre `/desk`, então vê as sub-abas **Minha mesa** e **Mesa da equipe** (do departamento em que está lotado) com a textura `DeskSkin` das suas preferências ou de uma `UserSkin` comprada (RF38/RF42); conta EMPRESA vê a Mesa de cada departamento em **leitura**; sem lotação, só Minha mesa. |
+| **RF21.CA02** (CA a confirmar) | Dado a Mesa, quando carrega, então mostra widgets nos três horizontes: **diário** — Tarefa do Dia + HSE previsto × realizado (RF44, só do próprio usuário); **semanal** — semana planejada `WeekPlanDay` e prazos ≤ 7 dias; **mensal** — eixos do Plano Anual do departamento (`PlanAxis.completedPct`, `aggregatedRisk`), metas coletivas abertas (`CollectiveGoal.progress`) e Destaque do mês (`Highlight`); cada widget linka ao RF de origem. |
+| **RF21.CA03** (CA a confirmar) | Dado a Mesa da equipe, quando abro a visão **Quadro**, então vejo os projetos do departamento (visibilidade DEPARTAMENTO/EMPRESA/PUBLICA) agrupados por `ProjectPhase` com responsável, prazo e `hasBlockingPending`; a visão **Linha do tempo** mostra marcos dos próximos 30 dias; o painel **Atividade dos colegas** lista `TimelineEvent`/`MuralEntry` do departamento (projetos publicados, decisões validadas, chancelas, reconhecimentos) — nunca itens PRIVADA nem HSE/Tarefa do Dia de terceiros. |
+| **RF21.CA04** (CA a confirmar) | Dado a visão **Canvas**, quando arrasto, redimensiono ou giro um widget ou post-it (`DeskNote`) e troco a skin, então a posição (`canvasX/Y/Scale/Rotation/Layer`) persiste em `UserPreferences.dashboardLayoutJson` (Minha mesa) ou `TeamDesk.layoutJson` (Mesa da equipe) sem gerar versão; trocar de visão reprojeta o mesmo estado sem perder dados (como RF22.CA03). |
+| **RF21.CA05** (CA a confirmar) | Dado dois membros editando a Mesa da equipe, quando um move um post-it ou cria uma nota, então o outro recebe a alteração em ≤ 3 s (Redis pub/sub `desk:team:{departmentId}` + WebSocket/polling), com presença visível e conflito resolvido por **último-vence com aviso** (`CONFLITO_ULTIMO_VENCE`, `TeamDesk.version`); só membros do departamento e o chefe escrevem — demais `403 ACESSO_NEGADO`. |
+| **RF21.CA06** (CA a confirmar) | Dado um card de projeto na Mesa, quando clico "abrir na Mesa do projeto", então vou para RF22 (`/projects/[id]/edit`) e qualquer alteração estrutural gera `ProjectVersion` (RF22.CA02); "abrir sessão DECIA" leva à Mesa do DECIA; as ações sociais inline seguem RF18/RF19; o widget Tarefa do Dia aceita o feedback do RF44 direto da Mesa. |
+| **RF21.CA07** (CA a confirmar) | Dado a Mesa da equipe, quando o chefe (`Department.headUserId`) fixa (`pinned`) uma nota ou define a skin padrão, então ela fica no topo para todos; a Mesa guarda `version` e permite "restaurar layout padrão"; exportar a Mesa em PDF/PNG roda como `PipelineJob EXPORT_PDF` (RF22.CA07). |
+
+| Widget | Horizonte | Entidades lidas | RF origem | Visível na Mesa da equipe? |
+|---|---|---|---|---|
+| Tarefa do Dia + HSE previsto × realizado | diário | `DailyTask`, `EfficiencyScoreSnapshot` | RF44 | só a própria; equipe vê agregados (quantos CONCLUI/ADIEI/BLOQUEADA/DELEGUEI) |
+| Semana planejada + prazos ≤ 7 dias | semanal | `WeekPlan`, `WeekPlanDay`, `TaskItem.dueAt/legalDueAt`, `ProjectTask.dueAt` | RF44, RF41 | prazos da equipe sim (dado operacional) |
+| Eixos do Plano Anual | mensal | `AnnualPlan` (scope DEPARTAMENTO/EMPRESA), `PlanAxis` | RF24 | sim |
+| Metas coletivas | mensal | `CollectiveGoal`, `GoalParticipant` | RF35 | sim |
+| Destaque do mês | mensal | `Highlight` | RF35 | sim |
+| Projetos da equipe por fase (Quadro) | contínuo | `ProjectScheme`, `ProjectTask` | RF5/RF22 | sim (visibilidade ≥ DEPARTAMENTO) |
+| Marcos (Linha do tempo) | 30 dias | `ProjectScheme.nextMilestoneAt`, `ReopenRequest.votingDeadlineAt`, `Meeting.ratificationDeadlineAt` | RF22, RF14, RF37 | sim |
+| Atividade dos colegas | contínuo | `TimelineEvent`, `MuralEntry` | RF27 | sim |
+| Post-its (`DeskNote`, proposta) | livre | `DeskNote` | RF21 | sim, com `pinned` pelo chefe |
 
 ## 1. Diagrama de classes
 
@@ -20,181 +34,182 @@ O **Esquema de Projeto** (`ProjectScheme`, = look) é a composição ordenada de
 classDiagram
 direction LR
 
-namespace ws_domain_projetos {
-  class ProjectScheme {
+namespace ws_domain_mesa {
+  class TeamDesk {
     <<entity>>
     +id: UUID
-    +ownerId: UUID
-    +companyId: UUID
     +departmentId: UUID
-    +title: String
-    +emoji: String
-    +iconId: String
-    +objective: String 1 frase
-    +descriptionMd: String
-    +processTags: Set~ProcessTag~ max 2
-    +natureTags: Set~NatureTag~ max 2
-    +creationMode: CreationMode
-    +origin: SchemeOrigin
-    +originalProjectId: UUID
-    +sourceSessionId: UUID
-    +aiOrientation: String
-    +status: ProjectStatus
-    +currentPhase: ProjectPhase
-    +priority: Priority
-    +visibility: Visibility herdada do perfil
-    +exerciseYear: int
-    +programGroupingId: UUID
-    +planAxisId: UUID
-    +coverMode: CoverMode
-    +coverUrl: String
-    +mosaicJson: JSON
-    +criticalPathJson: JSON
-    +nextMilestoneAt: LocalDate
-    +aiGenerated: boolean
-    +aiInferenceId: UUID
-    +sealIdsJson: JSON
-    +autosaveDraftJson: JSON
-    +version: long
-    .. +12 campos ..
+    +layoutJson: JSON widgets e posições
+    +deskSkin: DeskSkin
+    +version: long otimista
+    +updatedBy: UUID
+    +updatedAt: Instant
   }
-  class ProjectTask {
+  class DeskNote {
     <<entity>>
     +id: UUID
-    +projectId: UUID
-    +taskId: UUID
-    +phase: ProjectPhase
-    +sortOrder: int
-    +responsibleId: UUID padrão dono da tarefa
-    +dueAt: LocalDate padrão prazo da tarefa
-    +startAt: LocalDate
-    +estimatedHours: BigDecimal
-    +pertOptimistic: BigDecimal
-    +pertMostLikely: BigDecimal
-    +pertPessimistic: BigDecimal
-    +isCritical: boolean
-    +slackDays: int
-    +moscow: String MUST SHOULD COULD WONT
-    +snapshotJson: JSON
+    +deskScope: String PESSOAL EQUIPE
+    +scopeId: UUID userId ou departmentId
+    +authorId: UUID
+    +contentMd: String
+    +color: String
+    +canvasX: BigDecimal
+    +canvasY: BigDecimal
+    +canvasScale: BigDecimal
+    +canvasRotation: BigDecimal
+    +canvasLayer: int
+    +pinned: boolean chefe
+    +active: boolean
   }
-  class ProjectTaskDependency {
+  class UserPreferences {
     <<entity>>
-    +id: UUID
-    +projectId: UUID
-    +predecessorProjectTaskId: UUID
-    +successorProjectTaskId: UUID
-    +type: DependencyType
-    +lagDays: int
+    +userId: UUID
+    +deskSkin: DeskSkin
+    +dashboardLayoutJson: JSON Minha mesa
+    +wipLimit: int
   }
-  class ProcessKit {
+  class UserSkin {
     <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +name: String
-    +processTag: ProcessTag
-    +sealIdsJson: JSON
-    +remixCount: int
-  }
-  class KitItem {
-    <<entity>>
-    +id: UUID
-    +kitId: UUID
-    +taskId: UUID
-    +phase: ProjectPhase
-    +sortOrder: int
-    +optional: boolean
+    +userId: UUID
+    +skinKind: String MESA
+    +skinKey: String
+    +acquiredVia: String
   }
 }
 
-namespace ws_domain_acervo {
-  class TaskItem {
+namespace ws_domain_widgets {
+  class DailyTask {
     <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +title: String
-    +type: TaskType
-    +category: TaskCategory
-    +state: TaskState
-    +visibility: Visibility
-    +dueAt: LocalDate
-    +thumbnailUrl: String
-    +sealIdsJson: JSON
-    +originalTaskId: UUID
-    +blockReason: String
-    +projectUsageCount: int
-    .. +45 campos ..
-  }
-  class TaskStateLog {
-    <<entity>>
-    +id: UUID
+    +userId: UUID
+    +taskDate: LocalDate
     +taskId: UUID
-    +fromState: TaskState
-    +toState: TaskState
-    +actorId: UUID
-    +reason: String
+    +hsePredictedJson: JSON
+    +hseRealizedJson: JSON
+    +feedback: DailyFeedback
+  }
+  class WeekPlan {
+    <<entity>>
+    +userId: UUID
+    +weekStart: LocalDate
+    +streak: int
+  }
+  class WeekPlanDay {
+    <<entity>>
+    +weekPlanId: UUID
+    +date: LocalDate
+    +taskId: UUID
+    +loadPct: int
+  }
+  class AnnualPlan {
+    <<entity>>
+    +id: UUID
+    +scope: PlanScope
+    +departmentId: UUID
+    +exerciseYear: int
+    +status: PlanStatus
+  }
+  class PlanAxis {
+    <<entity>>
+    +planId: UUID
+    +position: int
+    +name: String
+    +completedPct: BigDecimal
+    +nearestDueAt: LocalDate
+    +aggregatedRisk: RiskLevel
+  }
+  class CollectiveGoal {
+    <<entity>>
+    +id: UUID
+    +departmentId: UUID
+    +title: String
+    +progress: BigDecimal
+    +periodTo: LocalDate
+    +status: GoalStatus
+  }
+  class Highlight {
+    <<entity>>
+    +departmentId: UUID
+    +monthKey: String
+    +targetType: String
+    +targetId: UUID
+  }
+  class ProjectScheme {
+    <<entity>>
+    +id: UUID
+    +departmentId: UUID
+    +title: String
+    +status: ProjectStatus
+    +currentPhase: ProjectPhase
+    +visibility: Visibility
+    +nextMilestoneAt: LocalDate
+    +hasBlockingPending: boolean
+  }
+  class ProjectTask {
+    <<entity>>
     +projectId: UUID
-    +correlationId: String
+    +responsibleId: UUID
+    +dueAt: LocalDate
+    +isCritical: boolean
+  }
+  class TimelineEvent {
+    <<entity>>
+    +userId: UUID
+    +at: Instant
+    +eventType: String
+    +targetType: TargetType
+    +targetId: UUID
+  }
+  class MuralEntry {
+    <<entity>>
+    +departmentId: UUID
+    +kind: MuralKind
+    +targetId: UUID
     +at: Instant
   }
 }
 
-namespace ws_domain_outros {
-  class SealBond {
+namespace ws_domain_identidade {
+  class Department {
     <<entity>>
     +id: UUID
-    +sealId: UUID
-    +targetType: String TASK ou PROJECT
-    +targetId: UUID
-    +basis: SealBondBasis
-    +status: SealBondStatus
-    +confidence: BigDecimal
+    +companyId: UUID
+    +acronym: String
+    +headUserId: UUID
   }
-  class PlanAxis {
+  class DepartmentMembership {
     <<entity>>
-    +id: UUID
-    +planId: UUID
-    +position: int 1 a 6
-    +name: String
+    +userId: UUID
+    +departmentId: UUID
+    +endedAt: Instant
   }
-  class Grouping {
+  class PipelineJob {
     <<entity>>
-    +id: UUID
-    +type: GroupingType PROGRAMA
-    +label: String
-  }
-  class Remix {
-    <<entity>>
-    +id: UUID
-    +actorId: UUID
-    +sourceType: String
-    +sourceId: UUID
-    +resultType: String
-    +resultId: UUID
-    +modelOfferId: UUID
-  }
-  class MuralEntry {
-    <<entity>>
-    +id: UUID
-    +kind: String PROJETO_PUBLICADO
-    +targetType: TargetType PROJECT
-    +targetId: UUID
-  }
-  class DeciaSession {
-    <<entity>>
-    +id: UUID
-    +topic: String = objective
-    +linkedProjectId: UUID
-    +status: SessionStatus
-  }
-  class AiInferenceLog {
-    <<entity>>
-    +id: UUID
-    +capability: AiCapability COMPOR_PROJETO
-    +result: String
+    +type: String EXPORT_PDF
+    +targetType: String TEAM_DESK
+    +status: PipelineJobStatus
   }
 }
 
 namespace ws_domain_enums {
+  class DeskSkin {
+    <<enum>>
+    PAPEL
+    CORTICA
+    BLUEPRINT
+    PAPEL_TIMBRADO
+  }
+  class DeskView {
+    <<enum>>
+    QUADRO
+    LINHA_DO_TEMPO
+    CANVAS
+  }
+  class GoalStatus {
+    <<enum>>
+    ABERTA
+    ATINGIDA
+    EXPIRADA
+  }
   class ProjectPhase {
     <<enum>>
     DEMANDA
@@ -205,280 +220,215 @@ namespace ws_domain_enums {
     EXECUCAO
     ENCERRAMENTO
   }
-  class ProjectStatus {
-    <<enum>>
-    RASCUNHO
-    PUBLICADO
-    EM_DECISAO
-    APROVADO
-    EM_EXECUCAO
-    CONCLUIDO
-    ARQUIVADO
-    DEVOLVIDO
-  }
-  class CreationMode {
-    <<enum>>
-    MANUAL
-    COM_IA
-  }
-  class SchemeOrigin {
-    <<enum>>
-    CRIAR_PROJETO
-    DECIA
-    REMIX
-    AUTOPILOTO
-    MODELO
-    CENARIO
-    DOSSIE
-    ATA_VIVA
-  }
-  class DependencyType {
-    <<enum>>
-    FS
-    SS
-    FF
-    SF
-  }
-  class TaskState {
-    <<enum>>
-    RASCUNHO
-    DISPONIVEL
-    EM_USO
-    BLOQUEADA
-    CONCLUIDA
-    ARQUIVADA
-    MODELO_PUBLICO
-    OFERECIDA
-  }
 }
 
 namespace ws_application {
-  class ProjectComposerService {
+  class ProfileDeskService {
     <<service>>
-    +openComposer(userId) ComposerState
-    +autosave(userId, draftId, DraftJson) ProjectScheme
-    +listPhaseOptions(userId, phase, query) List~TaskOption~
-    +compose(userId, ProjectForm) ProjectScheme
-    +composeWithAi(userId, processTags, natureTags, orientation) List~Proposal~
-    +fromModel(userId, modelId ou kitId) ComposerState
-    +validateMinimum(selections) 422 FASES_MINIMAS
-    +validateDependencies(deps, dueDates) 422 DEPENDENCIA_CICLICA ou PRAZO_ANTERIOR_PREDECESSORA
-    +criticalPath(tasks, deps) List~UUID~
-    +publish(projectId) ProjectScheme
-    +openDeciaSession(projectId) DeciaSession
+    +loadMyDesk(userId, view) DeskState widgets diário semanal mensal
+    +loadTeamDesk(viewerId, departmentId, view) DeskState
+    +canEditTeamDesk(userId, departmentId) boolean membro vigente ou chefe
+    +saveMyLayout(userId, layoutJson)
+    +saveTeamLayout(userId, departmentId, layoutJson, baseVersion) ChangeResult
+    +upsertNote(userId, DeskNote) DeskNote
+    +pinNote(chefeId, noteId, pinned)
+    +setSkin(userId, scope, skinKey)
+    +resetTeamLayout(chefeId, departmentId)
+    +requestExport(userId, departmentId, format) PipelineJob
   }
-  class AcervoService {
+  class DeskWidgetService {
     <<service>>
-    +countAvailable(userId) int
-    +listCompatible(userId, phase, filters) List~TaskItem~
-    +markInUse(taskIds, projectId, correlationId)
+    +daily(userId) DailyTask só o próprio
+    +dailyAggregates(departmentId) Map sem HSE nominal
+    +weekly(userId, departmentId) WeekPlanDay e prazos 7 dias
+    +monthly(departmentId) PlanAxis CollectiveGoal Highlight
+    +teamBoard(viewer, departmentId) Map~ProjectPhase, List~ProjectScheme~~
+    +milestones(departmentId, days 30) List~Milestone~
+    +colleaguesActivity(viewer, departmentId, page) List~TimelineEvent~
   }
-  class TaskCreatorService {
+  class AccessPolicy {
     <<service>>
-    +save(userId, TaskForm) TaskItem
+    +isDeptMember(user, departmentId) boolean
+    +isDeptHead(user, departmentId) boolean
+    +visibilityFilter(viewer) Visibility[] nunca PRIVADA de terceiros
   }
-  class SealService {
-    <<service>>
-    +inheritFromTasks(taskIds) List~SealBond~
-    +suggestForProject(projectId, issuerIds) List~SealBond~
-  }
-  class MuralService {
-    <<service>>
-    +publishProject(projectId) MuralEntry
-  }
-  class DeciaSessionService {
-    <<service>>
-    +openFromProject(projectId) DeciaSession
-  }
-  class AiEngine {
-    <<service>>
-    +infer(capability, input, mode) AiResult
-  }
-  class MediaStoragePort {
+  class CollaborationPort {
     <<port>>
-    +put(stream) MediaObject
-    +studio(mediaId, ops) MediaObject
+    +publish(channel desk team departmentId, ChangeEvent)
+    +subscribe(channel) Stream~ChangeEvent~
+    +presence(channel) List~UUID~
   }
-  class SearchIndexPort {
+  class TimelinePort {
     <<port>>
-    +indexProject(ProjectScheme)
+    +readDepartment(departmentId, page) List~TimelineEvent~
+  }
+  class PdfRenderPort {
+    <<port>>
+    +renderDesk(DeskState) byte
   }
 }
 
 namespace ws_web {
-  class ProjectController {
+  class ProfileDeskController {
     <<controller>>
-    +GET_api_projects_composer()
-    +PUT_api_projects_drafts_id(DraftJson)
-    +GET_api_acervo_tasks(phase, q, filters)
-    +POST_api_projects_ai_compose(body)
-    +POST_api_projects(ProjectForm)
-    +POST_api_projects_from_model(modelId)
-    +POST_api_projects_id_publish()
-    +POST_api_projects_id_decia_session()
+    +GET_api_desk_me(view)
+    +GET_api_desk_team_departmentId(view)
+    +PUT_api_desk_me_layout(body)
+    +PUT_api_desk_team_departmentId_layout(body, If_Match)
+    +POST_api_desk_notes(body)
+    +PATCH_api_desk_notes_noteId(body)
+    +PUT_api_desk_skin(scope, skinKey)
+    +POST_api_desk_team_departmentId_reset()
+    +POST_api_desk_team_departmentId_export(format)
+  }
+  class DeskRealtimeController {
+    <<controller>>
+    +WS_ws_desk_team_departmentId()
+    +GET_api_desk_team_departmentId_changes_since(ts)
   }
 }
 
 namespace ws_infrastructure {
-  class ClaudeGeminiAdapter {
+  class RedisPubSubAdapter {
     <<adapter>>
   }
-  class S3StorageAdapter {
+  class CassandraTimelineAdapter {
     <<adapter>>
   }
-  class OpenSearchIndexAdapter {
+  class PdfRendererAdapter {
+    <<adapter>>
+  }
+  class MySqlDeskAdapter {
     <<adapter>>
   }
 }
 
-ProjectScheme "1" --> "*" ProjectTask : tarefas por fase
-ProjectScheme "1" --> "*" ProjectTaskDependency : grafo sem ciclos
-ProjectScheme "*" --> "0..1" PlanAxis : planAxisId
-ProjectScheme "*" --> "0..1" Grouping : programGroupingId
-ProjectScheme "*" --> "0..1" ProjectScheme : originalProjectId remix ou modelo
-ProjectScheme "1" --> "*" SealBond : targetId quando PROJECT
-ProjectScheme "1" --> "0..1" MuralEntry : publicação
-ProjectScheme "1" --> "0..1" DeciaSession : linkedProjectId
-ProjectScheme "*" --> "0..1" AiInferenceLog : aiInferenceId
-ProjectTask "*" --> "0..1" TaskItem : taskId
-ProjectTaskDependency "*" --> "1" ProjectTask : predecessor
-ProjectTaskDependency "*" --> "1" ProjectTask : successor
-ProjectTaskDependency --> DependencyType
-ProcessKit "1" --> "*" KitItem
-KitItem "*" --> "1" TaskItem
-TaskItem "1" --> "*" TaskStateLog : DISPONIVEL para EM_USO
-TaskItem "1" --> "*" SealBond : chancela vem da tarefa
-Remix "*" --> "1" ProjectScheme : resultId
-ProjectScheme --> ProjectStatus
-ProjectScheme --> ProjectPhase : currentPhase
-ProjectScheme --> CreationMode
-ProjectScheme --> SchemeOrigin
-ProjectTask --> ProjectPhase
-TaskItem --> TaskState
+TeamDesk "1" --> "1" Department : departmentId
+TeamDesk --> DeskSkin
+TeamDesk "1" --> "*" DeskNote : deskScope EQUIPE
+UserPreferences "1" --> "*" DeskNote : deskScope PESSOAL
+UserPreferences --> DeskSkin
+UserSkin "*" --> "1" DeskSkin : skinKey
+Department "1" --> "*" DepartmentMembership : membros vigentes editam
+AnnualPlan "1" --> "*" PlanAxis
+WeekPlan "1" --> "*" WeekPlanDay
+ProjectScheme "1" --> "*" ProjectTask
+ProjectScheme --> ProjectPhase : currentPhase Quadro
+CollectiveGoal --> GoalStatus
+MuralEntry "1" --> "*" TimelineEvent : fan-out
+PipelineJob ..> TeamDesk : export
 
-ProjectController ..> ProjectComposerService
-ProjectController ..> AcervoService
-ProjectController ..> TaskCreatorService : modal Cadastrar nova tarefa
-ProjectComposerService ..> AcervoService
-ProjectComposerService ..> SealService
-ProjectComposerService ..> MuralService
-ProjectComposerService ..> DeciaSessionService
-ProjectComposerService ..> AiEngine : COMPOR_PROJETO 3 propostas
-ProjectComposerService ..> MediaStoragePort : foto do projeto
-ProjectComposerService ..> SearchIndexPort
-ClaudeGeminiAdapter ..> AiEngine
-S3StorageAdapter ..|> MediaStoragePort
-OpenSearchIndexAdapter ..|> SearchIndexPort
+ProfileDeskController ..> ProfileDeskService
+DeskRealtimeController ..> CollaborationPort
+ProfileDeskService ..> DeskWidgetService
+ProfileDeskService ..> AccessPolicy
+ProfileDeskService ..> CollaborationPort : publish ChangeEvent
+ProfileDeskService ..> PdfRenderPort
+ProfileDeskService ..> TeamDesk
+ProfileDeskService ..> DeskNote
+ProfileDeskService ..> UserPreferences : dashboardLayoutJson deskSkin
+DeskWidgetService ..> DailyTask
+DeskWidgetService ..> WeekPlanDay
+DeskWidgetService ..> PlanAxis
+DeskWidgetService ..> CollectiveGoal
+DeskWidgetService ..> Highlight
+DeskWidgetService ..> ProjectScheme
+DeskWidgetService ..> TimelinePort
+RedisPubSubAdapter ..|> CollaborationPort
+CassandraTimelineAdapter ..|> TimelinePort
+PdfRendererAdapter ..|> PdfRenderPort
+MySqlDeskAdapter ..> TeamDesk : team_desks proposta
+MySqlDeskAdapter ..> DeskNote : desk_notes proposta
 
-note for ProjectScheme "tabela project_schemes · mínimo 1 tarefa em DEMANDA + 1 em outra fase (CA04, CA05) · autosaveDraftJson sem ProjectTask persistido não gera EM_USO (CA14)"
-note for ProjectTask "tabela project_tasks · responsibleId padrão = dono da tarefa, dueAt padrão = prazo da tarefa (CA04)"
-note for ProjectTaskDependency "tabela project_task_dependencies · ciclo ou prazo anterior à predecessora = 422 (CA08)"
-note for AcervoService "listCompatible filtra por PHASE_BY_CATEGORY e devolve BLOQUEADA/ARQUIVADA desabilitadas com motivo (CA03)"
+note for TeamDesk "tabela team_desks (proposta) · 1 por departamento · layoutJson com widgets e posições · version otimista, último-vence com aviso (CA04, CA05, CA07)"
+note for DeskNote "tabela desk_notes (proposta) · post-it pessoal ou da equipe · canvasX/Y/Scale/Rotation/Layer como ProjectTask (RF22.CA03) · pinned só pelo chefe (CA07)"
+note for DeskWidgetService "daily só do próprio usuário · dailyAggregates sem HSE nominal (RF45.CA10) · teamBoard com visibilityFilter, nunca PRIVADA de terceiros (CA02, CA03)"
+note for ProfileDeskService "Minha mesa persiste em UserPreferences.dashboardLayoutJson · Mesa da equipe em TeamDesk.layoutJson · canEditTeamDesk = membro vigente OR headUserId (CA01, CA05)"
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph LU["Usuário"]
-    U1["Abre /projects/new"]
-    U2["Escolhe modo: Manual, Com IA ou Criar a partir de modelo"]
-    U3["Abre o select de uma fase, pesquisa e seleciona tarefas; ou arrasta do Acervo"]
-    U4["Cadastrar nova tarefa dentro do select"]
-    U5["Define dependências A antes de B, prazos e responsáveis"]
-    U6["Preenche ficha: título, emoji, objetivo, processo, natureza, departamento, exercício, programa, eixo, prioridade, orientação para a IA, foto"]
-    U7["Salvar"]
-    U8["Sai sem salvar"]
-    U9["Publicar no Mural"]
-    U10["Abrir sessão DECIA sobre este projeto"]
-    U11["Escolhe 1 das 3 propostas e edita"]
+  subgraph LU["Usuário · Colega · Chefe"]
+    U1["Abre /desk"]
+    U2["Escolhe sub-aba Minha mesa ou Mesa da equipe"]
+    U3["Troca de visão: Quadro / Linha do tempo / Canvas"]
+    U4["Arrasta, redimensiona, gira widget ou post-it; cria nota; troca skin"]
+    U5["Registra feedback da Tarefa do Dia no widget"]
+    U6["Abre projeto na Mesa do projeto (RF22) ou sessão na Mesa do DECIA"]
+    U7["Chefe fixa nota, define skin padrão, restaura layout ou exporta"]
   end
 
   subgraph LW["Web / BFF (Next.js App Router)"]
-    W1["Compositor: Acervo filtrável à esquerda, 7 selects de fase ao centro, ficha à direita"]
-    W2["Orientação: cadastre tarefas primeiro, atalho para /tasks/new"]
-    W3["Modal RF20; ao salvar a tarefa volta já selecionada na fase"]
-    W4["Autosave a cada alteração: PUT /api/projects/drafts/{id}"]
-    W5["Pré-visualização do card: capa mosaico + barra de 7 fases + chancelas + caminho crítico"]
-    W6["Campos destacados com 422"]
-    W7["Recupera rascunho na próxima abertura"]
+    W1["Carrega DeskState único; textura DeskSkin das preferências ou UserSkin"]
+    W2["Troca de visão só reprojeta o mesmo estado"]
+    W3["Widgets diário · semanal · mensal; Quadro por fase; Linha do tempo 30 dias; Atividade dos colegas"]
+    W4["Envia PUT layout com If-Match = version local"]
+    W5["Aplica ChangeEvent via WS ou polling ≤ 3 s; toast se CONFLITO_ULTIMO_VENCE; avatares de presença"]
+    W6["Modo somente leitura (EMPRESA, outro departamento)"]
+    W7["Navega para /projects/[id]/edit ou /decia/[id]"]
+    W8["Aguarda job e oferece download PDF/PNG"]
   end
 
   subgraph LA["ws-application"]
-    A1["AcervoService.countAvailable"]
-    A2{"≥ 2 tarefas DISPONIVEIS?"}
-    A3["AcervoService.listCompatible: só meu Acervo + compartilhadas com permissão, PHASE_BY_CATEGORY, thumbnail, tipo, categoria, estado, prazo; BLOQUEADA/ARQUIVADA desabilitadas com motivo"]
-    A4["ProjectComposerService.validateDependencies"]
-    A5{"Ciclo?"}
-    A6["422 DEPENDENCIA_CICLICA"]
-    A7{"Prazo do sucessor anterior ao da predecessora?"}
-    A8["422 PRAZO_ANTERIOR_PREDECESSORA"]
-    A9["criticalPath CPM → criticalPathJson"]
-    A10["SealService.inheritFromTasks: chancelas do projeto vêm das tarefas; sugere tier PROJETO do mesmo emissor"]
-    A11["ProjectComposerService.compose → validateMinimum"]
-    A12{"≥ 1 tarefa em DEMANDA e ≥ 1 em outra fase, título e ≥ 1 processo?"}
-    A13["422 FASES_MINIMAS: indica o mínimo exigido"]
-    A14{"Foto enviada?"}
-    A15["Capa = mosaico das tarefas, coverMode MOSAICO"]
-    A16["MediaStoragePort.studio endireitar/recortar, coverMode FOTO"]
-    A17["Persiste ProjectScheme origin CRIAR_PROJETO ou AUTOPILOTO, ProjectTasks, dependências; visibilidade herdada do perfil"]
-    A18["AcervoService.markInUse: tarefas DISPONIVEL → EM_USO + TaskStateLog com projectId"]
-    A19["ProjectComposerService.fromModel: cópias/remixes das tarefas com Remix e crédito ao autor; cada uma trocável pelo equivalente do meu Acervo"]
-    A20["ProjectComposerService.autosave → autosaveDraftJson; sem ProjectTask persistido, sem EM_USO"]
-    A21["MuralService.publishProject → status PUBLICADO, MuralEntry, SearchIndexPort"]
-    A22["DeciaSessionService.openFromProject: tema = objetivo, participantes = responsáveis + chefe, tarefas anexadas; projeto → EM_DECISAO"]
-  end
-
-  subgraph LI["IA (AiEngine)"]
-    I1["COMPOR_PROJETO: 3 esquemas distintos só com tarefas do meu Acervo, respeitando orientação, materiais, prazos e departamento; fases, dependências e justificativa"]
+    A1{"Usuário tem DepartmentMembership vigente?"}
+    A2["Só Minha mesa"]
+    A3["Minha mesa + Mesa da equipe do departamento"]
+    A4["ProfileDeskService.loadMyDesk / loadTeamDesk"]
+    A5["DeskWidgetService: daily (só o próprio) · dailyAggregates (sem HSE nominal) · weekly · monthly · teamBoard com visibilityFilter · milestones 30 dias · colleaguesActivity"]
+    A6{"canEditTeamDesk? membro vigente ou chefe"}
+    A7["403 ACESSO_NEGADO em qualquer escrita na Mesa da equipe"]
+    A8{"Escopo da alteração"}
+    A9["saveMyLayout → UserPreferences.dashboardLayoutJson"]
+    A10{"baseVersion == TeamDesk.version?"}
+    A11["Aplica por último-vence e marca warning CONFLITO_ULTIMO_VENCE"]
+    A12["saveTeamLayout / upsertNote → TeamDesk.version + 1; CollaborationPort.publish desk:team:{departmentId}"]
+    A13["DailyTaskService.registerFeedback (RF44)"]
+    A14{"ator é Department.headUserId?"}
+    A15["pinNote / setSkin padrão / resetTeamLayout"]
+    A16["requestExport → PipelineJob EXPORT_PDF PENDENTE → 202 jobId; worker PdfRenderPort.renderDesk"]
   end
 
   subgraph LP["Persistência"]
-    P1[("MySQL: tasks do Acervo")]
-    P2[("MySQL: project_schemes autosaveDraftJson")]
-    P3[("MySQL: project_schemes, project_tasks, project_task_dependencies, task_state_log, seal_bonds, remixes")]
-    P4[("MySQL: ai_inference_log")]
-    P5[("S3: foto do projeto tratada")]
-    P6[("MySQL: mural_entries · OpenSearch: índice de projetos")]
-    P7[("MySQL: decia_sessions, session_participants, message_attachments")]
+    P1[("MySQL: user_preferences, user_skins, department_memberships, departments")]
+    P2[("MySQL: daily_tasks, hse_snapshots, week_plans, week_plan_days, annual_plans, plan_axes, collective_goals, highlights, project_schemes, project_tasks, mural_entries")]
+    P3[("Cassandra: timeline_by_user — atividade dos colegas")]
+    P4[("MySQL: team_desks (proposta), desk_notes (proposta)")]
+    P5[("Redis: pub/sub desk:team:{departmentId}, presença")]
+    P6[("MySQL: pipeline_jobs · S3: PDF/PNG")]
   end
 
-  U1 --> A1 --> P1
-  A1 --> A2
-  A2 -->|"não"| W2
-  A2 -->|"sim"| W1 --> U2
-  U2 -->|"Manual"| U3
-  U2 -->|"Com IA"| I1
-  U2 -->|"Modelo ou Kit"| A19 --> U3
-  I1 --> P4
-  I1 --> U11 --> U3
-  U3 --> A3 --> P1
-  A3 --> U5
-  U3 --> U4 --> W3 --> U3
-  U5 --> A4 --> A5
-  A5 -->|"sim"| A6 --> W6
-  A5 -->|"não"| A7
-  A7 -->|"sim"| A8 --> W6
-  A7 -->|"não"| A9 --> A10 --> W5
-  W5 --> U6
-  U3 --> W4 --> A20 --> P2
-  U6 --> W4
-  U6 --> U7 --> A11 --> A12
-  A12 -->|"não"| A13 --> W6 --> U3
-  A12 -->|"sim"| A14
-  A14 -->|"não"| A15 --> A17
-  A14 -->|"sim"| A16 --> P5 --> A17
-  A17 --> P3
-  A17 --> A18 --> P3
-  A17 --> U9 --> A21 --> P6
-  A17 --> U10 --> A22 --> P7
-  U8 --> W4
-  U8 -.-> W7
+  U1 --> A1
+  A1 -->|"não"| A2 --> A4
+  A1 -->|"sim"| A3 --> U2 --> A4
+  A4 --> P1
+  A4 --> A5 --> P2
+  A5 --> P3
+  A5 --> W1 --> W3
+  W3 --> U3 --> W2
+  W3 --> U4 --> A8
+  A8 -->|"Minha mesa"| A9 --> P1
+  A8 -->|"Mesa da equipe"| A6
+  A6 -->|"não"| W6 -.->|"tentativa de escrita"| A7
+  A6 -->|"sim"| W4 --> A10
+  A10 -->|"não"| A11 --> A12
+  A10 -->|"sim"| A12
+  A12 --> P4
+  A12 --> P5 --> W5
+  W3 --> U5 --> A13 --> P2
+  W3 --> U6 --> W7
+  W3 --> U7 --> A14
+  A14 -->|"não"| A7
+  A14 -->|"sim, fixar/skin/restaurar"| A15 --> P4
+  A15 --> A12
+  A14 -->|"sim, exportar"| A16 --> P6
+  A16 --> W8
 
   classDef err fill:#ffe3e3,stroke:#c0392b,color:#5a1a12
   classDef warn fill:#fff4d6,stroke:#b7791f,color:#5a3b06
-  class A6,A8,A13 err
-  class W2 warn
+  class A7 err
+  class A11,W6 warn
 ```
 
 ## 3. Diagrama de sequência
@@ -486,163 +436,149 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário
+  actor U as Usuário A
+  actor B as Colega B
+  actor CH as Chefe
   participant NX as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
-  participant AI as AiEngine
   participant DB as Repository/MySQL
-  participant OS as OpenSearch
+  participant CS as Cassandra
+  participant R as Redis
+  participant S3 as S3
   participant DE as DomainEvents (AFTER_COMMIT)
 
-  U->>NX: abre /projects/new
-  NX->>C: GET /api/projects/composer
-  C->>S: ProjectComposerService.openComposer(userId)
-  S->>DB: COUNT tasks WHERE ownerId AND state = DISPONIVEL
-  alt menos de 2 tarefas DISPONIVEIS
-    S-->>C: 200 {composerEnabled: false, hint: CADASTRE_TAREFAS, shortcut: /tasks/new}
-    C-->>NX: 200
-    NX-->>U: orientação com atalho para o RF20 (CA02)
-  else 2 ou mais
-    S->>DB: SELECT project_schemes WHERE ownerId AND autosaveDraftJson IS NOT NULL
-    S-->>C: 200 {composerEnabled: true, draft recuperado ou vazio}
-    C-->>NX: 200
-    NX-->>U: Acervo à esquerda, 7 selects vazios ou com o rascunho, ficha à direita (CA01, CA14)
-  end
-
-  U->>NX: abre o select da fase PLANEJAMENTO e digita "ETP"
-  NX->>C: GET /api/acervo/tasks?phase=PLANEJAMENTO&q=ETP
-  C->>S: AcervoService.listCompatible(userId, PLANEJAMENTO, q)
-  S->>DB: tasks WHERE ownerId OR sharedWith AND category IN PHASE_BY_CATEGORY[PLANEJAMENTO] AND title LIKE
-  DB-->>S: lista com thumbnail, tipo, categoria, estado, prazo
-  S-->>C: 200 opções — BLOQUEADA/ARQUIVADA com disabled = true e disabledReason (CA03)
+  U->>NX: abre /desk (CA01)
+  NX->>C: GET /api/desk/me?view=CANVAS
+  C->>S: ProfileDeskService.loadMyDesk(userId, CANVAS)
+  S->>DB: user_preferences (deskSkin, dashboardLayoutJson, wipLimit) + user_skins MESA + department_memberships vigente
+  S->>DB: DeskWidgetService.daily → daily_tasks hoje + hse_snapshots (só o próprio) (CA02)
+  S->>DB: weekly → week_plan_days da semana + tasks e project_tasks com dueAt ≤ 7 dias
+  S->>DB: monthly → plan_axes do plano DEPARTAMENTO vigente, collective_goals ABERTA, highlights do mês
+  S-->>C: 200 DeskState {skin, layout, widgets diário semanal mensal, teamDeskAvailable true}
   C-->>NX: 200
+  NX-->>U: Minha mesa com textura PAPEL_TIMBRADO e widgets
 
-  U->>NX: Cadastrar nova tarefa dentro do select (CA07)
-  NX->>C: POST /api/tasks (modal RF20)
-  C->>S: TaskCreatorService.save(userId, form)
-  S->>DB: INSERT tasks (state DISPONIVEL)
-  S-->>C: 201 TaskItem
+  U->>NX: sub-aba Mesa da equipe, visão Quadro (CA03)
+  NX->>C: GET /api/desk/team/UTS?view=QUADRO
+  C->>S: ProfileDeskService.loadTeamDesk(viewerId, UTS, QUADRO)
+  S->>S: AccessPolicy.isDeptMember OR isDeptHead OR conta EMPRESA (leitura)
+  alt viewer de outro departamento sem ser EMPRESA
+    S-->>C: 403 ACESSO_NEGADO
+    C-->>NX: 403
+  else permitido
+    S->>DB: team_desks WHERE departmentId = UTS (layoutJson, deskSkin, version) + desk_notes EQUIPE
+    S->>DB: teamBoard → project_schemes WHERE departmentId = UTS AND visibility IN (DEPARTAMENTO, EMPRESA, PUBLICA) GROUP BY currentPhase
+    S->>DB: milestones 30 dias → nextMilestoneAt, project_tasks.dueAt, reopen_requests.votingDeadlineAt, meetings.ratificationDeadlineAt
+    S->>DB: dailyAggregates → COUNT feedback por tipo, HSE médio (sem nominal)
+    S->>CS: timeline_by_user dos membros de UTS ORDER BY at DESC LIMIT 20 (atividade dos colegas)
+    S->>R: presence desk:team:UTS
+    S-->>C: 200 DeskState {editable true, version 7, board por fase, milestones, aggregates, activity, notes, presence}
+    C-->>NX: 200
+    NX-->>U: Quadro por fase, Linha do tempo e Atividade dos colegas (trocar visão reprojeta o mesmo estado, CA04)
+    NX->>C: WS /ws/desk/team/UTS
+    C->>R: SUBSCRIBE desk:team:UTS
+  end
+
+  U->>NX: visão Canvas, cria post-it "Reunião de alinhamento sexta" e move para x 420, y 160 (CA04)
+  NX->>C: POST /api/desk/notes {deskScope EQUIPE, scopeId UTS, contentMd, color, canvasX, canvasY}
+  C->>S: ProfileDeskService.upsertNote(userId, note)
+  S->>S: canEditTeamDesk(userId, UTS)
+  S->>DB: INSERT desk_notes (EQUIPE, UTS, author A, canvas*)
+  S->>R: PUBLISH desk:team:UTS NoteCreated {noteId, author A}
+  S-->>C: 201 DeskNote
   C-->>NX: 201
-  NX-->>U: tarefa já selecionada na fase PLANEJAMENTO
+  R-->>C: mensagem no canal
+  C-->>B: WS push em até 3 s (CA05)
+  B->>B: aplica NoteCreated no Canvas
 
-  loop a cada alteração no compositor
-    NX->>C: PUT /api/projects/drafts/{draftId} {selections, deps, sheet}
-    C->>S: ProjectComposerService.autosave
-    S->>DB: UPSERT project_schemes SET autosaveDraftJson, status RASCUNHO (sem project_tasks, sem EM_USO)
-    S-->>C: 204
+  B->>NX: move o widget Metas do mês com If-Match 7
+  NX->>C: PUT /api/desk/team/UTS/layout {layoutJson} If-Match 7
+  C->>S: ProfileDeskService.saveTeamLayout(B, UTS, layoutJson, baseVersion 7)
+  S->>DB: SELECT version FROM team_desks WHERE departmentId = UTS
+  opt version atual 8 diferente de baseVersion 7 (CA05)
+    S->>S: aplica mesmo assim, warning CONFLITO_ULTIMO_VENCE
   end
+  S->>DB: UPDATE team_desks SET layoutJson, version 9, updatedBy B
+  S->>R: PUBLISH desk:team:UTS LayoutChanged {version 9}
+  S-->>C: 200 {version 9, warnings [CONFLITO_ULTIMO_VENCE]?}
+  C-->>NX: 200
+  C-->>U: WS push LayoutChanged, toast se conflito
 
-  opt modo Com IA (CA06)
-    U->>NX: confirma processo LICITACAO, natureza TECNICA e orientação "pavimentação com FINISA, 90 dias"
-    NX->>C: POST /api/projects/ai-compose {processTags, natureTags, orientation}
-    C->>S: ProjectComposerService.composeWithAi
-    S->>DB: tasks DISPONIVEIS do Acervo do usuário
-    S->>AI: infer(COMPOR_PROJETO, {acervo, orientação, departamento}, mode)
-    AI-->>S: 3 propostas {fases preenchidas, dependências, justificativa}
-    S->>DB: INSERT ai_inference_log (capability COMPOR_PROJETO)
-    S-->>C: 200 propostas
-    C-->>NX: 200
-    NX-->>U: escolhe 1 e edita (origem AUTOPILOTO se integralmente da IA)
-  end
-
-  U->>NX: define A antes de B e prazo de B anterior ao de A
-  NX->>C: POST /api/projects/validate-dependencies {deps, dueDates}
-  C->>S: ProjectComposerService.validateDependencies
-  alt ciclo ou prazo inválido (CA08)
-    S-->>C: 422 DEPENDENCIA_CICLICA ou 422 PRAZO_ANTERIOR_PREDECESSORA {details, correlationId}
-    C-->>NX: 422
-    NX-->>U: aresta destacada com o motivo
-  else válido
-    S->>S: criticalPath CPM
-    S-->>C: 200 {criticalPath: [ids]}
-    C-->>NX: 200
-    NX-->>U: caminho crítico na pré-visualização e chancelas das tarefas em "Chancelas do projeto" (CA09)
-  end
-
-  U->>NX: Salvar
-  NX->>C: POST /api/projects {ProjectForm}
-  C->>S: ProjectComposerService.compose(userId, form)
-  S->>S: validateMinimum: 1 em DEMANDA + 1 em outra fase, título, ≥1 processo
-  alt sem tarefa ou só DEMANDA (CA05)
-    S-->>C: 422 FASES_MINIMAS {details: [{field: phases, code: MINIMO_DEMANDA_MAIS_UMA}]}
-    C-->>NX: 422
-    NX-->>U: indica o mínimo exigido
-  else válido (CA04)
-    S->>DB: UPDATE project_schemes SET title, objective, origin CRIAR_PROJETO, creationMode, visibility herdada do perfil, autosaveDraftJson NULL
-    S->>DB: INSERT project_tasks (phase, sortOrder, responsibleId = dono da tarefa, dueAt = prazo da tarefa)
-    S->>DB: INSERT project_task_dependencies
-    S->>DB: UPDATE tasks SET state EM_USO WHERE id IN selecionadas
-    S->>DB: INSERT task_state_log (DISPONIVEL → EM_USO, projectId, correlationId)
-    S->>DB: UPDATE project_schemes SET coverMode MOSAICO, mosaicJson (sem foto, CA10)
-    S->>DE: publish ProjectCreated
-    S-->>C: 201 ProjectScheme
-    C-->>NX: 201
-    NX-->>U: card do projeto com capa mosaico e barra de fases
-  end
-  DE->>S: SealService.suggestForProject (chancela tier PROJETO do mesmo emissor, CA09)
-  DE->>AI: infer(SUGERIR_CHANCELA, {projeto, chancelas das tarefas})
-
-  U->>NX: Publicar no Mural (CA11)
-  NX->>C: POST /api/projects/{id}/publish
-  C->>S: ProjectComposerService.publish
-  S->>DB: UPDATE project_schemes SET status PUBLICADO
-  S->>DB: INSERT mural_entries (kind PROJETO_PUBLICADO)
-  S->>OS: indexProject respeitando visibility
+  U->>NX: no widget Tarefa do Dia marca CONCLUI 3h (CA06)
+  NX->>C: POST /api/daily-tasks/today/feedback {CONCLUI, actualHours 3}
+  C->>S: DailyTaskService.registerFeedback (RF44)
+  S->>DB: UPDATE daily_tasks + INSERT hse_snapshots
   S-->>C: 200
-  C-->>NX: 200
+  U->>NX: clica abrir na Mesa do projeto no card P4
+  NX-->>U: navega para /projects/P4/edit (RF22 — alterações estruturais geram ProjectVersion)
 
-  U->>NX: Abrir sessão DECIA sobre este projeto (CA12)
-  NX->>C: POST /api/projects/{id}/decia-session
-  C->>S: DeciaSessionService.openFromProject
-  S->>DB: INSERT decia_sessions (topic = objective, linkedProjectId)
-  S->>DB: INSERT session_participants (responsáveis + chefe do departamento)
-  S->>DB: INSERT message_attachments (tarefas do projeto)
-  S->>DB: UPDATE project_schemes SET status EM_DECISAO
-  S-->>C: 201 DeciaSession
-  C-->>NX: 201
-  NX-->>U: redireciona para a sessão (RF29)
+  CH->>NX: fixa a nota de A no topo e exporta a Mesa em PDF (CA07)
+  NX->>C: PATCH /api/desk/notes/{noteId} {pinned true}
+  C->>S: ProfileDeskService.pinNote(chefeId, noteId, true)
+  S->>S: AccessPolicy.isDeptHead(chefe, UTS)
+  alt ator não é headUserId
+    S-->>C: 403 ACESSO_NEGADO
+  else chefe
+    S->>DB: UPDATE desk_notes SET pinned true
+    S->>R: PUBLISH desk:team:UTS NotePinned
+    S-->>C: 200
+  end
+  NX->>C: POST /api/desk/team/UTS/export?format=PDF
+  C->>S: ProfileDeskService.requestExport(chefe, UTS, PDF)
+  S->>DB: INSERT pipeline_jobs (EXPORT_PDF, targetType TEAM_DESK, PENDENTE)
+  S-->>C: 202 {jobId}
+  DE->>S: worker: PdfRenderPort.renderDesk(DeskState)
+  S->>S3: MediaStoragePort.put(pdf)
+  S->>DB: UPDATE pipeline_jobs SET status OK, mediaObjectId
+  NX->>C: GET /api/jobs/{jobId}
+  C-->>NX: 200 {status OK, downloadUrl presign}
+  NX-->>CH: download do PDF da Mesa
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: **`ProjectScheme.status`** (enum `ProjectStatus`). O RF21 cobre o nascimento do esquema: rascunho de autosave (RASCUNHO com `autosaveDraftJson` e **sem** `ProjectTask`), esquema salvo (RASCUNHO com `ProjectTask`s e tarefas EM_USO), publicação (PUBLICADO, CA11) e abertura de sessão (EM_DECISAO, CA12). Os demais estados pertencem ao RF22/RF29 e aparecem para contexto.
+A Mesa do perfil não tem entidade com `status`: `TeamDesk` e `DeskNote` (propostas) só versionam o layout. Os ciclos relevantes são (1) a **visão** da Mesa (`DeskView`, região concorrente como em RF22.CA03) com o **modo de edição** da Mesa da equipe; (2) a **`CollectiveGoal.status`** (`GoalStatus`), estado dos widgets mensais que a HU21 pede ("metas diárias, semanais e mensais"); (3) a **`DeskNote`** (proposta) com `pinned`/`active`.
 
 ```mermaid
 stateDiagram-v2
-  state "RASCUNHO — autosave" as RASC_AUTO
-  state "RASCUNHO — salvo" as RASC_SALVO
-  [*] --> RASC_AUTO : primeira alteração no compositor, PUT drafts
-  RASC_AUTO --> RASC_AUTO : autosave a cada alteração
-  RASC_AUTO --> [*] : descartar rascunho
-  RASC_AUTO --> RASC_SALVO : POST projects válido, ProjectTasks persistidos, tarefas EM_USO
-  RASC_SALVO --> RASC_SALVO : editar no RF22, nova ProjectVersion
-  RASC_SALVO --> PUBLICADO : publicar no Mural, MuralEntry, índice OpenSearch
-  RASC_SALVO --> EM_DECISAO : abrir sessão DECIA sobre este projeto
-  PUBLICADO --> EM_DECISAO : abrir sessão DECIA
-  EM_DECISAO --> APROVADO : FinalDecision VALIDADA pelo chefe, RF15 RF29
-  EM_DECISAO --> DEVOLVIDO : FinalDecision DEVOLVIDA com motivo
-  DEVOLVIDO --> EM_DECISAO : sessão reaberta, RF14
-  DEVOLVIDO --> RASC_SALVO : ajustar o esquema
-  APROVADO --> EM_EXECUCAO : primeira ProjectTask em EXECUCAO iniciada
-  EM_EXECUCAO --> CONCLUIDO : todas as ProjectTasks concluídas
-  CONCLUIDO --> ARQUIVADO : arquivar
-  PUBLICADO --> ARQUIVADO : arquivar
-  ARQUIVADO --> [*]
-  note right of RASC_AUTO
-    autosaveDraftJson preenchido, nenhum ProjectTask.
-    Não gera EM_USO nas tarefas (CA14).
-    Recuperado na próxima abertura do compositor.
+  state "Mesa da equipe — sessão de uso (CA01, CA04, CA05)" as MD {
+    [*] --> SomenteLeitura : viewer não é membro vigente nem chefe (EMPRESA lê)
+    [*] --> Editavel : membro vigente ou Department.headUserId
+    state Editavel {
+      [*] --> Quadro
+      Quadro --> LinhaDoTempo : trocar visão
+      LinhaDoTempo --> Canvas : trocar visão
+      Canvas --> Quadro : trocar visão
+      Canvas --> Canvas : mover widget ou post-it, TeamDesk.version + 1, publish ≤ 3 s
+    }
+    SomenteLeitura --> Editavel : passa a ter DepartmentMembership vigente
+    Editavel --> SomenteLeitura : lotação encerrada (endedAt)
+  }
+  state "CollectiveGoal.status — widget mensal (CA02)" as CG {
+    [*] --> ABERTA : chefe ou EMPRESA cria meta (RF35)
+    ABERTA --> ABERTA : progress recalculado, barra no widget
+    ABERTA --> ATINGIDA : criterionJson satisfeito, achievedAt, reconhecimento
+    ABERTA --> EXPIRADA : passa periodTo sem atingir
+    ATINGIDA --> [*]
+    EXPIRADA --> [*]
+  }
+  state "DeskNote (proposta) — CA04, CA07" as DN {
+    [*] --> ATIVA : POST desk notes, canvas x y escala rotação camada
+    ATIVA --> ATIVA : autor move ou edita, publish NoteMoved
+    ATIVA --> FIXADA : chefe pinned true, topo para todos
+    FIXADA --> ATIVA : chefe pinned false
+    ATIVA --> REMOVIDA : autor ou chefe remove, active false
+    FIXADA --> REMOVIDA : chefe remove
+    REMOVIDA --> [*]
+  }
+  note right of MD
+    Escrita em SomenteLeitura: 403 ACESSO_NEGADO.
+    Conflito concorrente: último-vence com aviso CONFLITO_ULTIMO_VENCE.
+    Minha mesa é sempre editável pelo dono (dashboardLayoutJson).
   end note
-  note right of RASC_SALVO
-    Exige 1 tarefa em DEMANDA + 1 em outra fase (CA04, CA05).
-    origin CRIAR_PROJETO ou AUTOPILOTO quando veio integralmente da IA (CA06).
-    Tarefas selecionadas passam a EM_USO com TaskStateLog (RF41).
-  end note
-  note left of EM_DECISAO
-    Sessão nasce com tema = objetivo,
-    participantes = responsáveis + chefe,
-    tarefas anexadas (CA12, RF29).
+  note right of CG
+    ATINGIDA move a meta para o widget Destaques e dispara DECIA Points (RF35, RF42).
   end note
 ```
 
@@ -651,96 +587,75 @@ stateDiagram-v2
 ```mermaid
 flowchart LR
   subgraph FE["Frontend Next.js"]
-    F1["app/projects/new — compositor 3 colunas"]
-    F2["components/ui: AcervoPanel com filtros e busca, PhaseSelect x7 multi pesquisável, DragDropTask, DependencyEditor, ProjectSheet, AiComposePanel 3 propostas, ModelPicker Kit/modelo, CardPreview mosaico + barra de fases + chancelas, CriticalPathPreview"]
-    F3["Modal TaskCreator RF20 devolve a tarefa selecionada"]
-    F4["Autosave hook: debounce + PUT drafts"]
+    F1["app/desk — sub-abas Minha mesa · Mesa da equipe; visões Quadro · Linha do tempo · Canvas"]
+    F2["components/ui: DeskCanvas (BackgroundArt + DeskSkinPicker), WidgetFrame arrastável, DailyTaskCard + HseGauge, WeekStrip, PlanAxisRing, GoalProgressBar, HighlightCard, TeamKanbanBoard por fase, MilestoneTimeline 30 dias, ColleaguesActivityFeed, PostIt (DeskNote), PinButton, PresenceAvatars, ExportMenu PDF/PNG, OpenInProjectDeskButton, OpenInDeciaButton, InteractionBar RF18/RF19"]
+    F3["Realtime client: WebSocket com fallback polling 3 s, toast CONFLITO_ULTIMO_VENCE"]
   end
 
   subgraph WEB["ws-web"]
-    C1["ProjectController — /api/projects, /composer, /drafts, /ai-compose, /from-model, /validate-dependencies, /publish, /decia-session"]
-    C2["AcervoController — /api/acervo/tasks?phase=&q="]
-    C3["TaskController RF20 — /api/tasks"]
+    C1["ProfileDeskController — /api/desk/me, /api/desk/team/{departmentId}, /layout, /notes, /skin, /reset, /export"]
+    C2["DeskRealtimeController — /ws/desk/team/{departmentId}, /changes?since"]
+    C3["DailyTaskController RF44 · ProjectDeskController RF22 · InteractionController RF18/RF19 · JobController"]
   end
 
   subgraph APP["ws-application"]
-    S1["ProjectComposerService"]
-    S2["AcervoService RF41"]
-    S3["TaskCreatorService RF20"]
-    S4["SealService RF39"]
-    S5["MuralService RF27"]
-    S6["DeciaSessionService RF29"]
-    S7["AiEngine"]
-    P1["MediaStoragePort"]
-    P2["SearchIndexPort"]
+    S1["ProfileDeskService"]
+    S2["DeskWidgetService"]
+    S3["AccessPolicy — isDeptMember, isDeptHead, visibilityFilter"]
+    S4["DailyTaskService RF44 · PlanService RF24 · GoalService RF35 · MuralService RF27"]
+    P1["CollaborationPort"]
+    P2["TimelinePort"]
+    P3["PdfRenderPort · MediaStoragePort"]
   end
 
   subgraph DOM["ws-domain"]
-    D1["ProjectScheme · ProjectTask · ProjectTaskDependency · ProcessKit · KitItem"]
-    D2["TaskItem · TaskStateLog · SealBond · Remix · PlanAxis · Grouping"]
-    D3["MuralEntry · DeciaSession · AiInferenceLog · DomainEventOutbox"]
-    D4["PHASE_BY_CATEGORY · CPM caminho crítico · validação de ciclos"]
+    D1["TeamDesk (proposta) · DeskNote (proposta) · UserPreferences.dashboardLayoutJson/deskSkin · UserSkin · enums DeskSkin, DeskView"]
+    D2["DailyTask · EfficiencyScoreSnapshot · WeekPlan · WeekPlanDay · AnnualPlan · PlanAxis · CollectiveGoal · Highlight · ProjectScheme · ProjectTask · MuralEntry · TimelineEvent"]
+    D3["Department · DepartmentMembership · PipelineJob · MediaObject"]
   end
 
   subgraph INFRA["ws-infrastructure/*"]
-    I1[("persistence-mysql: project_schemes, project_tasks, project_task_dependencies, tasks, task_state_log, seal_bonds, remixes, mural_entries, decia_sessions, ai_inference_log")]
-    I2[("storage-s3: foto do projeto, capa tratada no Estúdio")]
-    I3[("search-opensearch: índice de projetos ao publicar")]
-    I4["ai-providers: ClaudeGeminiAdapter — COMPOR_PROJETO, SUGERIR_CHANCELA, CAPA_IA"]
-    I5["platform: outbox AFTER_COMMIT, PipelineJob"]
-  end
-
-  subgraph EXT["Serviços externos"]
-    E1(("Claude / Gemini"))
+    I1[("persistence-mysql: team_desks (proposta), desk_notes (proposta), user_preferences, user_skins, daily_tasks, hse_snapshots, week_plans, plan_axes, collective_goals, highlights, project_schemes, project_tasks, mural_entries, pipeline_jobs")]
+    I2[("cache-redis: RedisPubSubAdapter — canal desk:team:{departmentId}, presença")]
+    I3[("persistence-cassandra: CassandraTimelineAdapter timeline_by_user")]
+    I4[("storage-s3: PDF/PNG exportado, presign")]
+    I5["platform: PdfRendererAdapter, PipelineJob worker EXPORT_PDF, WebSocket endpoint"]
   end
 
   F1 --- F2
   F1 --- F3
-  F1 --- F4
   F1 -->|"HTTPS/JSON"| C1
-  F2 -->|"HTTPS/JSON"| C2
-  F3 -->|"HTTPS/JSON"| C3
+  F3 -->|"WS / polling"| C2
+  F2 -->|"HTTPS/JSON"| C3
   C1 --> S1
-  C2 --> S2
-  C3 --> S3
+  C2 --> P1
   S1 --> S2
-  S1 --> S4
-  S1 --> S5
-  S1 --> S6
-  S1 --> S7
+  S1 --> S3
   S1 --> P1
-  S1 --> P2
-  S4 --> S7
+  S1 --> P3
   S1 --> D1
-  S1 --> D4
+  S2 --> S4
+  S2 --> P2
   S2 --> D2
-  S5 --> D3
-  S6 --> D3
+  S3 --> D3
   D1 --> I1
   D2 --> I1
   D3 --> I1
-  D3 --> I5
   P1 --> I2
   P2 --> I3
-  S7 --> I4
-  I4 -.-> E1
+  P3 --> I4
+  P3 --> I5
+  D3 --> I5
 ```
 
 ## 6. Rastreabilidade
 
 | CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
 |---|---|
-| RF21.CA01 | `ProjectComposerService.openComposer`, `AcervoService.countAvailable` · Atividades `U1 → A1 → A2 (sim) → W1` · Sequência `GET /api/projects/composer` → `else 2 ou mais` → "Acervo à esquerda, 7 selects vazios, ficha à direita" · Componentes `AcervoPanel`, `PhaseSelect x7`, `ProjectSheet` |
-| RF21.CA02 | Atividades `A2 (não) → W2` (orientação + atalho /tasks/new) · Sequência `alt menos de 2 tarefas DISPONIVEIS` → `{composerEnabled: false, hint: CADASTRE_TAREFAS}` |
-| RF21.CA03 | `AcervoService.listCompatible` (nota PHASE_BY_CATEGORY, desabilitadas com motivo), tabela `PHASE_BY_CATEGORY` do cabeçalho, enum `TaskState` · Atividades `U3 → A3 → P1` · Sequência `GET /api/acervo/tasks?phase=PLANEJAMENTO&q=ETP` → "BLOQUEADA/ARQUIVADA com disabled e disabledReason" · Componentes `AcervoController`, `PhaseSelect` |
-| RF21.CA04 | Classes `ProjectScheme` (origin CRIAR_PROJETO, visibility herdada), `ProjectTask` (nota responsibleId/dueAt padrão), `TaskStateLog`, `AcervoService.markInUse` · Atividades `U7 → A11 → A12 (sim) → A17 → A18 → P3` · Sequência `else válido (CA04)`: UPDATE project_schemes, INSERT project_tasks, UPDATE tasks EM_USO, INSERT task_state_log · Transição `RASC_AUTO → RASC_SALVO` e nota |
-| RF21.CA05 | `ProjectComposerService.validateMinimum` · Atividades `A12 (não) → A13 422 FASES_MINIMAS → W6` · Sequência `alt sem tarefa ou só DEMANDA` → `422 FASES_MINIMAS` · Nota do estado RASC_SALVO |
-| RF21.CA06 | `ProjectComposerService.composeWithAi`, `AiEngine` (COMPOR_PROJETO), `AiInferenceLog`, enums `CreationMode.COM_IA`, `SchemeOrigin.AUTOPILOTO` · Atividades `U2 (Com IA) → I1 → P4 → U11` · Sequência `opt modo Com IA`: `POST /api/projects/ai-compose` → 3 propostas → INSERT ai_inference_log · Componentes `AiComposePanel`, `ai-providers` |
-| RF21.CA07 | `TaskCreatorService.save`, `ProjectController ..> TaskCreatorService` · Atividades `U4 → W3 → U3` · Sequência "Cadastrar nova tarefa dentro do select" → `POST /api/tasks (modal RF20)` → "já selecionada na fase" · Componentes `Modal TaskCreator RF20`, `TaskController RF20` |
-| RF21.CA08 | Classes `ProjectTaskDependency` (nota 422), enum `DependencyType`, `ProjectComposerService.validateDependencies/criticalPath`, `ProjectScheme.criticalPathJson`, `ProjectTask.isCritical/slackDays` · Atividades `U5 → A4 → A5/A6 → A7/A8 → A9` · Sequência `POST /api/projects/validate-dependencies` → `alt ciclo ou prazo inválido` / `else válido` (criticalPath CPM) · Componentes `DependencyEditor`, `CriticalPathPreview`, `D4` |
-| RF21.CA09 | Classes `SealBond` (TASK ou PROJECT), `TaskItem.sealIdsJson`, `ProjectScheme.sealIdsJson`, `SealService.inheritFromTasks/suggestForProject` · Atividades `A10` · Sequência "chancelas das tarefas em Chancelas do projeto" e `DE->>S: SealService.suggestForProject` (tier PROJETO do mesmo emissor) · Componente `SealService RF39` |
-| RF21.CA10 | `ProjectScheme.coverMode/coverUrl/mosaicJson`, `MediaStoragePort.studio` · Atividades `A14 → A15` (mosaico) / `A14 → A16 → P5` (foto tratada) · Sequência `UPDATE project_schemes SET coverMode MOSAICO, mosaicJson` · Componentes `CardPreview`, `storage-s3` |
-| RF21.CA11 | `ProjectComposerService.publish`, `MuralService.publishProject`, `MuralEntry`, `SearchIndexPort` · Atividades `U9 → A21 → P6` · Sequência `POST /api/projects/{id}/publish` → status PUBLICADO, INSERT mural_entries, indexProject respeitando visibility · Transição `RASC_SALVO → PUBLICADO` · Componentes `MuralService RF27`, `search-opensearch` |
-| RF21.CA12 | `DeciaSessionService.openFromProject`, `DeciaSession` (topic = objective, linkedProjectId) · Atividades `U10 → A22 → P7` · Sequência `POST /api/projects/{id}/decia-session` → decia_sessions, session_participants, message_attachments, status EM_DECISAO · Transição `RASC_SALVO/PUBLICADO → EM_DECISAO` e nota · Componente `DeciaSessionService RF29` |
-| RF21.CA13 | Classes `ProcessKit`, `KitItem`, `Remix`, `ProjectScheme.originalProjectId`, enum `SchemeOrigin.MODELO/REMIX`, `ProjectComposerService.fromModel` · Atividades `U2 (Modelo ou Kit) → A19 → U3` · Componentes `ModelPicker Kit/modelo`, `ProjectController /from-model` |
-| RF21.CA14 | `ProjectScheme.autosaveDraftJson`, `ProjectComposerService.autosave` · Atividades `U3/U6 → W4 → A20 → P2`, `U8 → W4`, `W7` (recupera) · Sequência `loop a cada alteração` → `PUT /api/projects/drafts/{draftId}` (sem project_tasks, sem EM_USO) e `SELECT ... autosaveDraftJson IS NOT NULL` na abertura · Estado `RASC_AUTO` + nota · Componente `Autosave hook` |
+| RF21.CA01 | Classes `UserPreferences.deskSkin/dashboardLayoutJson`, `UserSkin`, `TeamDesk` (proposta), `DepartmentMembership`, enum `DeskSkin`, `ProfileDeskService.loadMyDesk/loadTeamDesk`, `AccessPolicy.isDeptMember/isDeptHead` · Atividades `U1 → A1 → A2 / A3 → U2 → A4 → P1 → W1` · Sequência msgs 1–9 (`user_preferences … user_skins MESA … department_memberships`, `teamDeskAvailable`) e 13–15 (`isDeptMember OR isDeptHead OR conta EMPRESA`, `alt → 403`) · Estados `[*] → SomenteLeitura / Editavel` · Componentes `app/desk`, `DeskCanvas`, `DeskSkinPicker` |
+| RF21.CA02 | Classes `DailyTask`, `EfficiencyScoreSnapshot`, `WeekPlan`, `WeekPlanDay`, `AnnualPlan`, `PlanAxis` (completedPct, aggregatedRisk), `CollectiveGoal` (progress), `Highlight`, `DeskWidgetService.daily/dailyAggregates/weekly/monthly` (nota "daily só do próprio") · Atividades `A5 → P2` · Sequência msgs 5–7 (daily, weekly, monthly) e 20 (`dailyAggregates … sem nominal`) · Máquina *CollectiveGoal.status* · Componentes `DailyTaskCard + HseGauge`, `WeekStrip`, `PlanAxisRing`, `GoalProgressBar`, `HighlightCard` · Tabela de widgets do cabeçalho |
+| RF21.CA03 | `ProjectScheme` (currentPhase, visibility, nextMilestoneAt, hasBlockingPending), `ProjectTask`, `TimelineEvent`, `MuralEntry`, `DeskWidgetService.teamBoard/milestones/colleaguesActivity`, `AccessPolicy.visibilityFilter`, `TimelinePort`, enum `ProjectPhase` · Atividades `A5 → P2 / P3 → W3` · Sequência msgs 18–23 (`teamBoard … visibility IN (DEPARTAMENTO, EMPRESA, PUBLICA) GROUP BY currentPhase`, `milestones 30 dias`, `timeline_by_user dos membros`) · Componentes `TeamKanbanBoard`, `MilestoneTimeline`, `ColleaguesActivityFeed`, `persistence-cassandra` |
+| RF21.CA04 | `DeskNote` (canvasX/Y/Scale/Rotation/Layer), `TeamDesk.layoutJson`, `UserPreferences.dashboardLayoutJson`, enum `DeskView`, `ProfileDeskService.saveMyLayout/saveTeamLayout/upsertNote/setSkin` · Atividades `U3 → W2`, `U4 → A8 → A9 / A12 → P4` · Sequência msg 24 ("trocar visão reprojeta o mesmo estado") e 27–33 (`POST /api/desk/notes … canvasX, canvasY`) · Região concorrente *Quadro → LinhaDoTempo → Canvas* e transição `Canvas → Canvas`; máquina *DeskNote* `[*] → ATIVA → ATIVA` · Componentes `WidgetFrame arrastável`, `PostIt` |
+| RF21.CA05 | `CollaborationPort` (publish/subscribe/presence), `RedisPubSubAdapter`, `DeskRealtimeController`, `TeamDesk.version`, `ProfileDeskService.canEditTeamDesk` (nota) · Atividades `A6 → W6 -.-> A7 403`, `A10 → A11 (último-vence) → A12 → P5 → W5` · Sequência msgs 25–26 (SUBSCRIBE), 31–36 (`PUBLISH … NoteCreated`, `WS push em até 3 s`), 37–46 (`If-Match 7`, `opt version atual 8 … CONFLITO_ULTIMO_VENCE`, `version 9`) · Nota da máquina *Mesa da equipe* · Componentes `Realtime client`, `PresenceAvatars`, `cache-redis pub/sub` |
+| RF21.CA06 | `DailyTaskService.registerFeedback` (RF44), `ProjectDeskController` (RF22), `InteractionBar RF18/RF19` · Atividades `U5 → A13 → P2`, `U6 → W7` · Sequência msgs 47–53 (`POST /api/daily-tasks/today/feedback`, "navega para /projects/P4/edit (RF22 — … ProjectVersion)") · Componentes `OpenInProjectDeskButton`, `OpenInDeciaButton`, `DailyTaskController RF44`, `ProjectDeskController RF22` |
+| RF21.CA07 | `DeskNote.pinned`, `TeamDesk.deskSkin/version`, `Department.headUserId`, `ProfileDeskService.pinNote/resetTeamLayout/requestExport`, `PipelineJob EXPORT_PDF` (targetType TEAM_DESK), `PdfRenderPort.renderDesk`, `MediaObject` · Atividades `U7 → A14 → A7 403 / A15 → P4 → A12`, `A14 → A16 → P6 → W8` · Sequência msgs 54–72 (`PATCH …/notes/{id} {pinned true}`, `alt ator não é headUserId → 403`, `INSERT pipeline_jobs EXPORT_PDF TEAM_DESK`, `renderDesk`, `downloadUrl presign`) · Transições `ATIVA → FIXADA → ATIVA / REMOVIDA` · Componentes `PinButton`, `ExportMenu PDF/PNG`, `storage-s3`, `platform PdfRendererAdapter` |

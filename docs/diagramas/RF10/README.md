@@ -1,17 +1,19 @@
-# RF10 — Permitir que o grupo ou usuário ativo na sessão possa responder uma divergência apontada pela IA
-**HU:** HU10 · **Sprint (board Work Station):** 2 · **Equivalente FAI:** card RF10 não cita equivalente; pelo Mapa de equivalência o DECIA é o **RF10 Copilot** do FAI (mensagem do Copilot → mensagem do DECIA) · **Aba/rota:** DECIA — sessão (`/decia/[sessionId]`, painel "Divergências"; rota a confirmar)
-**Critérios de aceite cobertos:** RF10.CA01 · RF10.CA02 · RF10.CA03 · RF10.CA04 · RF10.CA05 · RF10.CA06 (RF1–RF18 não têm CAs no board: derivados da HU10 + RF8/RF29/RF42 e marcados "CA a confirmar")
+# RF10 — Permitir que o chefe de departamento possa atribuir uma tarefa ou projeto a um usuário
+**HU:** HU10 · **Sprint (board Work Station):** lista *Requisitos Funcionais* (card novo, sem sprint atribuída — a confirmar) · **Equivalente FAI:** nenhum (o FAI não tem hierarquia chefe → empregado; a atribuição é escopo novo do Work Station, ver `docs/produto/ABAS_POR_PERFIL.md` §7.b, TAXONOMIA §12b e `docs/diagramas/RF46/README.md`) · **Aba/rota:** página do departamento › **Equipe › Minha equipe (gestão)** (`/departments/[slug]/team?mode=manage`, origem `MINHA_EQUIPE`), ação "Atribuir" no card de tarefa (`/tasks/[id]`) e de projeto (`/projects/[id]`, origem `BOTAO_ESQUEMA`); lado do atribuído: `/me/assignments` ("Atribuídas a mim") e Tarefa do Dia (RF44); API `POST /api/assignments`
+**Critérios de aceite cobertos:** RF10.CA01 · RF10.CA02 · RF10.CA03 · RF10.CA04 · RF10.CA05 · RF10.CA06 — corpo do card vazio: CAs derivados do título + HU10 + `ABAS_POR_PERFIL.md` §7.b (bloco 3) e P-02 + RF46.CA03–CA05 (mesma entidade `Assignment`), marcados **(CA a confirmar)**
 
-> **HU10** — COMO administrador da sessão de conversa POSSO habilitar que grupo ou usuário ativo responda uma divergência PARA permitir que os participantes esclareçam ou resolvam os pontos divergentes da discussão.
+> **HU10** — COMO chefe de departamento POSSO clicar em "Atribuir tarefa ou projeto" PARA que um empregado possa visualizar sua lista de tarefas ou projetos pendentes dentro de seu escopo de trabalho.
+
+A atribuição usa a entidade **`Assignment`** da TAXONOMIA §12b (contexto *Mensageria & Atribuição*, marcado **proposta** na taxonomia): `targetType` `AssignmentTargetType` (TASK · PROJECT), `fromUserId`, `toUserId`, `origin` `AssignmentOrigin` (MINHA_EQUIPE · BOTAO_ESQUEMA · CHAT_WS · CHAT_DECIA), `status` `AssignmentStatus` (PROPOSTA · ACEITA · RECUSADA · DEVOLVIDA), `dueAt`, `message`, `reason`, `previousResponsibleId`, `traceNodeId`, `respondedAt`. O RF10 é o caso em que **`fromUserId` é o CHEFE** (`Department.headUserId`) e as origens são `MINHA_EQUIPE` ou `BOTAO_ESQUEMA`; o RF46 cobre as origens `CHAT_WS`/`CHAT_DECIA` e a proposta entre colegas. O `responsibleId` (`TaskItem` §2.1 / `ProjectTask` §3.2) só é escrito no **aceite**; `previousResponsibleId` permite a **devolução**. Rastro: `Assignment` + `AuditLog` + `TaskStateLog` (quando o aceite muda `TaskState`) + `Notification` ATRIBUICAO_PROPOSTA · ATRIBUICAO_ACEITA · ATRIBUICAO_RECUSADA · ATRIBUICAO_DEVOLVIDA (já em `NotificationType`, §8.8).
 
 | CA | Enunciado (CA a confirmar) |
 |---|---|
-| **RF10.CA01** | Dado uma `Divergence` ABERTA detectada pela IA (RF8), quando o administrador da sessão habilita a resposta para **o grupo** ou para **um participante**, então `SessionParticipant.canReplyDivergence` é marcado nos habilitados, a divergência passa a EM_RESPOSTA e os habilitados recebem `Notification` (categoria DECIA). |
-| **RF10.CA02** | Dado um participante habilitado, quando envia a resposta (mensagem com `replyToMessageId` = `originMessageId` da divergência), então é criado `DivergenceReply` ligado à `Divergence` e à `SessionMessage`; participante **não habilitado** recebe `403 ACESSO_NEGADO`. |
-| **RF10.CA03** | Dado uma resposta registrada, quando a IA (capability DETECTAR_DIVERGENCIA) a avalia, então marca `DivergenceReply.resolves`; com `resolves=true` a divergência passa a RESOLVIDA (`resolvedByReplyId`, `resolvedAt`) e o grupo é notificado; com `false` permanece EM_RESPOSTA. |
-| **RF10.CA04** | Dado divergência RESOLVIDA, quando o evento `DivergenceResolved` é publicado AFTER_COMMIT, então o autor da resposta recebe **+8 DP** (`PointsEvent.DIVERGENCIA_RESOLVIDA`) em lançamento idempotente (RF42.CA01) e o Rastro de Decisão ganha nó DIVERGENCIA → aresta RESPONDEU → nó MENSAGEM (RF29). |
-| **RF10.CA05** | Dado sessão fora de ATIVA/REABERTA → `409 SESSAO_NAO_ATIVA`; divergência já RESOLVIDA ou SEM_CONSENSO → `409 DIVERGENCIA_ENCERRADA`; resposta vazia → `422 VALIDACAO`. |
-| **RF10.CA06** | Dado divergência sem resposta resolutiva, quando o administrador a encerra como SEM_CONSENSO (ou o resumo RF11 é gerado), então ela consta em `divergencesJson` do resumo analítico. |
+| **RF10.CA01** | Dado um CHEFE (`Department.headUserId`) em *Minha equipe* ou num card de tarefa/projeto, quando aciona **Atribuir** escolhendo pessoa, alvo (`TaskItem` ou `ProjectScheme`), prazo opcional e mensagem (≤ 500), então `POST /api/assignments` cria `Assignment` com `status = PROPOSTA`, `fromUserId` = chefe, `toUserId`, `targetType`, `targetId`, `dueAt`, `message`, `origin` (MINHA_EQUIPE ou BOTAO_ESQUEMA) e `previousResponsibleId` = responsável atual; `AuditLog` ASSIGNMENT_CREATED com `correlationId`. |
+| **RF10.CA02** | Dado o pedido, então o serviço exige `AccessPolicy.requireDeptHead` do departamento da pessoa: ator que não é chefe → `403 ACESSO_NEGADO`; pessoa sem `DepartmentMembership` vigente no departamento do chefe → `422 VALIDACAO (FORA_DO_DEPARTAMENTO)`; alvo que o ator não pode ver (`Visibility.PRIVADA` de terceiro) → `403 ACESSO_NEGADO`; alvo em CONCLUIDA/ARQUIVADA (tarefa) ou CONCLUIDO/ARQUIVADO (projeto) → `409 ESTADO_INVALIDO`; já existe `Assignment` PROPOSTA ou ACEITA para o mesmo (`targetId`, `toUserId`) → `409 ATRIBUICAO_DUPLICADA`. |
+| **RF10.CA03** | Dado o commit, então o evento `AssignmentProposed` (AFTER_COMMIT) grava `Notification` tipo **ATRIBUICAO_PROPOSTA**, categoria SISTEMA, `resourceType = ASSIGNMENT`, em `notifications_by_user` (Cassandra) + espelho MySQL, e `TimelineEvent` do atribuído; o chefe acompanha o estado no bloco 3 de *Minha equipe* (`GET /api/departments/{id}/assignments`). |
+| **RF10.CA04** | Dado o atribuído (`toUserId`), quando **aceita** (`POST /api/assignments/{id}/accept`), então `status = ACEITA`, `respondedAt`, `TaskItem.responsibleId` ou `ProjectTask.responsibleId` (todas as `ProjectTask` sem responsável, quando PROJECT) recebe `toUserId`, `TaskStateLog` é gravado se a tarefa passa de DISPONIVEL para EM_USO (`reason` ATRIBUICAO_ACEITA) e o chefe recebe ATRIBUICAO_ACEITA; quando **recusa** (`/refuse`), então `reason` é obrigatório (`422 MOTIVO_OBRIGATORIO`), `status = RECUSADA` e o chefe recebe ATRIBUICAO_RECUSADA; quem não é `toUserId` → `403 ACESSO_NEGADO`; responder atribuição já respondida → `409 ATRIBUICAO_JA_RESPONDIDA`. |
+| **RF10.CA05** | Dado o atribuído, então `/me/assignments` (`AssignmentService.listForMe`) lista as atribuições PROPOSTA e ACEITA (filtros: tipo, prazo, quem atribuiu) com o alvo em card `LINHA`; a `Assignment` ACEITA entra no `priorityIndexJson` da Tarefa do Dia (RF44) com o fator "atribuída pelo chefe" e no Dossiê de Transição (RF36) como item pendente; o chefe vê, por pessoa, as atribuições abertas em *Minha equipe* (bloco 2 Carga e bloco 3). |
+| **RF10.CA06** | Dado o atribuído com `Assignment` ACEITA, quando **devolve** com motivo (`POST /api/assignments/{id}/give-back`), então `status = DEVOLVIDA`, `reason` obrigatório (`422 MOTIVO_OBRIGATORIO`), o `responsibleId` volta a `previousResponsibleId`, `TaskStateLog` registra a volta e o chefe recebe ATRIBUICAO_DEVOLVIDA; DELEGUEI da Tarefa do Dia (RF44) e "Atribuir" no chat (RF46) chamam o mesmo `AssignmentService.propose` com `origin` CHAT_WS/CHAT_DECIA; delegação para pessoa de outro departamento exige aceite do chefe dela **(a confirmar)**. |
 
 ## 1. Diagrama de classes
 
@@ -19,346 +21,304 @@
 classDiagram
   direction LR
 
-  class DeciaSession {
+  class Assignment {
     <<entity>>
     +UUID id
-    +String topic
-    +UUID adminUserId
-    +SessionStatus status
-    +AiMode aiMode
-    +int messageCount
-    +int participantCount
+    +AssignmentTargetType targetType
+    +UUID targetId
+    +UUID fromUserId
+    +UUID toUserId
+    +AssignmentOrigin origin
+    +AssignmentStatus status
+    +LocalDate dueAt
+    +String message
+    +String reason
+    +UUID previousResponsibleId
+    +UUID traceNodeId
+    +Instant respondedAt
   }
-  class SessionParticipant {
+  class AssignmentStatus {
+    <<enum>>
+    PROPOSTA
+    ACEITA
+    RECUSADA
+    DEVOLVIDA
+  }
+  class AssignmentTargetType {
+    <<enum>>
+    TASK
+    PROJECT
+  }
+  class AssignmentOrigin {
+    <<enum>>
+    MINHA_EQUIPE
+    BOTAO_ESQUEMA
+    CHAT_WS
+    CHAT_DECIA
+  }
+  class TaskItem {
     <<entity>>
     +UUID id
-    +UUID sessionId
-    +UUID userId
-    +ParticipantRole role
-    +boolean canReplyDivergence
-    +Instant joinedAt
-    +Instant leftAt
+    +UUID ownerId
+    +UUID departmentId
+    +String title
+    +UUID responsibleId
+    +LocalDate dueAt
+    +TaskState state
+    +Visibility visibility
   }
-  class SessionMessage {
-    <<entity>>
-    +TIMEUUID id
-    +UUID sessionId
-    +UUID authorId
-    +AuthorKind authorKind
-    +String bodyMd
-    +TIMEUUID replyToMessageId
-    +Instant sentAt
-    +UUID classificationId
-    +String correlationId
-  }
-  class MessageClassification {
+  class ProjectScheme {
     <<entity>>
     +UUID id
-    +UUID messageId
-    +MessageClass label
-    +BigDecimal confidence
-    +boolean hasEvidence
-    +UUID aiInferenceId
+    +UUID ownerId
+    +UUID departmentId
+    +String title
+    +ProjectStatus status
+    +Visibility visibility
   }
-  class Divergence {
+  class ProjectTask {
     <<entity>>
     +UUID id
-    +UUID sessionId
-    +TIMEUUID originMessageId
-    +boolean detectedByAi
-    +String summary
-    +String partiesJson
-    +DivergenceStatus status
-    +UUID resolvedByReplyId
-    +Instant resolvedAt
-    +Instant notifiedAt
-    +UUID aiInferenceId
+    +UUID projectId
+    +UUID taskId
+    +ProjectPhase phase
+    +UUID responsibleId
+    +LocalDate dueAt
   }
-  class DivergenceReply {
+  class TaskStateLog {
     <<entity>>
     +UUID id
-    +UUID divergenceId
-    +UUID authorId
-    +TIMEUUID messageId
-    +boolean resolves
-    +Instant at
-  }
-  class DecisionTraceNode {
-    <<entity>>
-    +UUID id
-    +UUID sessionId
-    +TraceNodeType nodeType
-    +UUID refId
-    +String label
-    +String classLabel
+    +UUID taskId
+    +TaskState fromState
+    +TaskState toState
     +UUID actorId
-    +Instant at
-  }
-  class DecisionTraceEdge {
-    <<entity>>
-    +UUID id
-    +UUID fromNodeId
-    +UUID toNodeId
-    +TraceRelation relation
-    +Instant at
-  }
-  class DeciaPointsLedgerEntry {
-    <<entity>>
-    +UUID id
-    +UUID userId
-    +int delta
-    +PointsEvent eventCode
-    +String refType
-    +UUID refId
-    +UUID sessionId
-    +String idempotencyKey
-    +LedgerStatus status
+    +String reason
     +String correlationId
+  }
+  class User {
+    <<entity>>
+    +UUID id
+    +String username
+    +String fullName
+    +ProfileType profileType
+    +UUID departmentId
+  }
+  class Department {
+    <<entity>>
+    +UUID id
+    +String acronym
+    +UUID headUserId
+  }
+  class DepartmentMembership {
+    <<entity>>
+    +UUID userId
+    +UUID departmentId
+    +DeptRole roleInDept
+    +Instant startedAt
+    +Instant endedAt
   }
   class Notification {
     <<entity>>
-    +UUID id
     +UUID recipientId
+    +UUID actorId
     +NotificationType type
     +String category
     +String resourceType
     +UUID resourceId
     +String groupKey
   }
-  class AiInferenceLog {
+  class NotificationType {
+    <<enum>>
+    ATRIBUICAO_PROPOSTA
+    ATRIBUICAO_ACEITA
+    ATRIBUICAO_RECUSADA
+    ATRIBUICAO_DEVOLVIDA
+  }
+  class DailyTask {
     <<entity>>
-    +UUID id
-    +AiCapability capability
-    +String provider
-    +String result
+    +UUID userId
+    +LocalDate taskDate
+    +String priorityIndexJson
+    +DailyFeedback feedback
+    +UUID delegatedToUserId
+  }
+  class AuditLog {
+    <<entity>>
+    +UUID actorId
+    +String action
+    +String resourceType
+    +UUID resourceId
     +String correlationId
   }
 
-  class SessionStatus {
-    <<enum>>
-    PROPOSTA
-    ATIVA
-    EM_RESUMO
-    EM_DECISAO
-    EM_REVISAO
-    REABERTA
-    ENCERRADA
-    ARQUIVADA
-  }
-  class DivergenceStatus {
-    <<enum>>
-    ABERTA
-    EM_RESPOSTA
-    RESOLVIDA
-    SEM_CONSENSO
-  }
-  class MessageClass {
-    <<enum>>
-    ARGUMENTO
-    DIVERGENCIA
-    RISCO
-    CONSENSO
-    PERGUNTA
-    RUIDO
-  }
-  class ParticipantRole {
-    <<enum>>
-    ADMIN
-    MEMBRO
-    OBSERVADOR
-    IA
-  }
-  class PointsEvent {
-    <<enum>>
-    DIVERGENCIA_RESOLVIDA
-    ARGUMENTO_EVIDENCIA
-    CONSENSO
-    PERGUNTA_RESPONDIDA
-  }
-
-  class DivergenceController {
+  class AssignmentController {
     <<controller>>
-    +enableReply(sessionId, divergenceId, EnableReplyForm) 200
-    +reply(sessionId, divergenceId, ReplyForm) 201
-    +closeWithoutConsensus(sessionId, divergenceId) 200
-    +list(sessionId) 200
+    +POST_api_assignments(body) 201
+    +POST_api_assignments_id_accept() 200
+    +POST_api_assignments_id_refuse(reason) 200
+    +POST_api_assignments_id_give_back(reason) 200
+    +GET_api_me_assignments(status, page) 200
+    +GET_api_departments_id_assignments(status, userId) 200
   }
-  class DivergenceService {
+  class AssignmentService {
     <<service>>
-    +enableReply(actor, sessionId, divergenceId, scope, userId)
-    +reply(actor, sessionId, divergenceId, bodyMd, attachments)
-    +evaluateReply(divergenceId, replyId)
-    +closeWithoutConsensus(actor, divergenceId)
+    +propose(fromUserId, target, toUserId, dueAt, message, origin, context) Assignment
+    +accept(toUserId, assignmentId) Assignment
+    +refuse(toUserId, assignmentId, reason) Assignment
+    +giveBack(toUserId, assignmentId, reason) Assignment
+    +listForMe(userId, status, page) Page
+    +listForDepartment(headId, deptId, filters) Page
+    -requireAssignee(actor, assignment) 403 ACESSO_NEGADO
+    -requireOpen(assignment) 409 ATRIBUICAO_JA_RESPONDIDA
+    -applyResponsible(assignment) TaskItem ou ProjectTask
   }
-  class DeciaPointsService {
+  class AccessPolicy {
     <<service>>
-    +onDivergenceResolved(event) AFTER_COMMIT
-    +credit(userId, eventCode, refId, sessionId)
+    +requireDeptHead(user, deptId) void
+    +canView(user, target) boolean
   }
-  class DecisionTraceService {
+  class DailyTaskService {
     <<service>>
-    +appendNode(sessionId, nodeType, refId, label)
-    +appendEdge(fromNodeId, toNodeId, relation)
-  }
-  class AiEnginePort {
-    <<port>>
-    +evaluateDivergenceReply(context) AiResult
+    +delegate(userId, taskId, toUserId) Assignment
+    +priorityIndex(userId) inclui ACEITA do chefe
   }
   class NotificationPort {
     <<port>>
-    +notify(recipients, type, resource)
+    +notify(recipientId, type, resource, payload)
   }
-  class SessionMessageRepositoryPort {
-    <<port>>
-    +append(SessionMessage)
-    +findById(sessionId, messageId)
-  }
-  class DivergenceRepository {
+  class AssignmentRepository {
     <<adapter>>
-    MySQL divergences
+    MySQL assignments
   }
-  class DivergenceReplyRepository {
+  class NotificationFeedAdapter {
     <<adapter>>
-    MySQL divergence_replies
-  }
-  class CassandraMessageAdapter {
-    <<adapter>>
-    messages_by_session
-  }
-  class AiEngineAdapter {
-    <<adapter>>
-    Claude e Gemini com fallback local
+    Cassandra notifications_by_user
   }
 
-  DeciaSession "1" --> "*" SessionParticipant : participantes
-  DeciaSession "1" --> "*" Divergence : divergências
-  DeciaSession --> SessionStatus
-  SessionParticipant --> ParticipantRole
-  Divergence --> DivergenceStatus
-  Divergence "1" --> "*" DivergenceReply : respostas
-  Divergence ..> SessionMessage : originMessageId
-  Divergence ..> DivergenceReply : resolvedByReplyId
-  Divergence ..> AiInferenceLog : aiInferenceId
-  DivergenceReply ..> SessionMessage : messageId
-  SessionMessage "1" --> "0..1" MessageClassification : classificationId
-  MessageClassification --> MessageClass
-  DecisionTraceEdge --> DecisionTraceNode : fromNodeId
-  DecisionTraceEdge --> DecisionTraceNode : toNodeId
-  DecisionTraceNode ..> Divergence : refId quando DIVERGENCIA
-  DeciaPointsLedgerEntry --> PointsEvent
-  DeciaPointsLedgerEntry ..> DivergenceReply : refId
+  Assignment --> AssignmentStatus
+  Assignment --> AssignmentTargetType
+  Assignment --> AssignmentOrigin
+  Assignment --> User : fromUserId CHEFE
+  Assignment --> User : toUserId
+  Assignment --> User : previousResponsibleId
+  Assignment ..> TaskItem : targetId quando TASK
+  Assignment ..> ProjectScheme : targetId quando PROJECT
+  Department --> User : headUserId
+  DepartmentMembership --> User
+  DepartmentMembership --> Department
+  ProjectScheme "1" --> "*" ProjectTask
+  ProjectTask --> TaskItem : taskId
+  TaskItem --> User : responsibleId
+  ProjectTask --> User : responsibleId
+  TaskItem "1" --> "*" TaskStateLog
+  Notification --> NotificationType
+  Notification ..> Assignment : resourceId
+  DailyTask ..> Assignment : fator atribuida pelo chefe
 
-  DivergenceController --> DivergenceService
-  DivergenceService --> DivergenceRepository
-  DivergenceService --> DivergenceReplyRepository
-  DivergenceService --> SessionMessageRepositoryPort
-  DivergenceService --> AiEnginePort
-  DivergenceService --> NotificationPort
-  DivergenceService --> DecisionTraceService
-  DivergenceService ..> DeciaPointsService : evento DivergenceResolved
-  SessionMessageRepositoryPort <|.. CassandraMessageAdapter
-  AiEnginePort <|.. AiEngineAdapter
-  DeciaPointsService --> DeciaPointsLedgerEntry : INSERT idempotente
+  AssignmentController --> AssignmentService
+  AssignmentService --> AccessPolicy
+  AssignmentService --> AssignmentRepository
+  AssignmentService --> NotificationPort
+  AssignmentService ..> AuditLog
+  AssignmentService ..> TaskStateLog : aceite DISPONIVEL para EM_USO e devolucao
+  DailyTaskService --> AssignmentService : DELEGUEI
+  NotificationPort <|.. NotificationFeedAdapter
 
-  note for Divergence "tabela divergences — status ABERTA, EM_RESPOSTA, RESOLVIDA, SEM_CONSENSO"
-  note for SessionParticipant "tabela session_participants — canReplyDivergence habilitado pelo admin (RF10) .. +4 campos .."
-  note for SessionMessage "Cassandra messages_by_session + índice MySQL session_messages_idx .. +5 campos .."
-  note for DeciaPointsLedgerEntry "decia_points_ledger — idempotencyKey = tipo + idEvento + usuário .. +9 campos .."
+  note for Assignment "TAXONOMIA §12b (proposta) — tabela assignments · mesma entidade do RF46 e das acoes atribuir/retornar (RF18/RF19) · no RF10 fromUserId e o headUserId e origin e MINHA_EQUIPE ou BOTAO_ESQUEMA · unico parcial (targetId, toUserId) em PROPOSTA ou ACEITA (409 ATRIBUICAO_DUPLICADA, proposta deste RF)"
+  note for NotificationType "subconjunto dos valores de TAXONOMIA §8.8 usados aqui"
+  note for TaskItem "responsibleId e escrito so no aceite (CA04) e volta a previousResponsibleId na devolucao (CA06)"
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph L1["Administrador da sessão / Participante"]
-    A0(["Divergência ABERTA no painel (RF8)"])
-    A1["Admin abre a divergência e escolhe habilitar resposta"]
-    A2{"Escopo?"}
-    A3["Habilitar para o GRUPO"]
-    A4["Habilitar para um PARTICIPANTE"]
-    A5["Participante habilitado escreve a resposta"]
-    A6["Admin decide encerrar SEM_CONSENSO"]
-    A7(["Fim"])
+  classDef err fill:#ffe3e3,stroke:#c0392b,color:#5a1a12
+  classDef ai fill:#fff3d6,stroke:#d68910,color:#5c3b00
+
+  subgraph L1["Ator humano · CHEFE e atribuído"]
+    U1["CHEFE abre Minha equipe ou o card da tarefa/projeto e clica Atribuir"]
+    U2["Escolhe pessoa, alvo (tarefa ou projeto), prazo e mensagem"]
+    U3["Atribuído recebe notificação e abre Atribuídas a mim"]
+    U4{"Aceita ou recusa?"}
+    U5["Informa motivo da recusa"]
+    U6["CHEFE acompanha o estado no bloco 3 de Minha equipe"]
+    U7["Atribuído, depois de aceitar, devolve com motivo"]
+    U8(["Fim"])
   end
 
-  subgraph L2["Web / BFF (Next.js App Router)"]
-    B1["POST /api/decia/sessions/{id}/divergences/{divId}/enable-reply"]
-    B2["POST /api/decia/sessions/{id}/divergences/{divId}/replies"]
-    B3["POST /api/decia/sessions/{id}/divergences/{divId}/close"]
-    B4["Exibe 403 ACESSO_NEGADO"]
-    B5["Exibe 409 SESSAO_NAO_ATIVA ou 409 DIVERGENCIA_ENCERRADA"]
-    B6["Exibe 422 VALIDACAO"]
-    B7["Atualiza painel: divergência RESOLVIDA ✓ e toast +8 DP"]
-    B8["Atualiza painel: continua EM_RESPOSTA"]
+  subgraph L2["Web/BFF (Next.js App Router)"]
+    W1["AssignDialog: busca membros do departamento (DepartmentMembership vigente), sugestão de carga ✦ opcional"]
+    W2["POST /api/assignments {targetType, targetId, toUserId, dueAt, message, origin MINHA_EQUIPE ou BOTAO_ESQUEMA}"]
+    W3["Lista /me/assignments com cards LINHA, filtros tipo, prazo, quem atribuiu"]
+    W4["POST /api/assignments/{id}/accept · /refuse · /give-back"]
+    W5["Exibe 403 ACESSO_NEGADO"]
+    W6["Exibe 422 VALIDACAO (FORA_DO_DEPARTAMENTO) ou 422 MOTIVO_OBRIGATORIO"]
+    W7["Exibe 409 ESTADO_INVALIDO · 409 ATRIBUICAO_DUPLICADA · 409 ATRIBUICAO_JA_RESPONDIDA"]
   end
 
-  subgraph L3["ws-application (DivergenceService)"]
-    C1{"actor = adminUserId?"}
-    C2{"session.status em ATIVA ou REABERTA?"}
-    C3{"divergence.status em ABERTA ou EM_RESPOSTA?"}
-    C4["Marca canReplyDivergence nos habilitados"]
-    C5["Divergence.status = EM_RESPOSTA"]
-    C6["Notifica habilitados (categoria DECIA)"]
-    C7{"actor.canReplyDivergence?"}
-    C8{"bodyMd não vazio e anexos ≤ 5?"}
-    C9["Cria SessionMessage com replyToMessageId = originMessageId"]
-    C10["Cria DivergenceReply (resolves = null)"]
-    C11["Chama IA: avaliar se a resposta resolve"]
-    C12{"resolves?"}
-    C13["Divergence.status = RESOLVIDA; resolvedByReplyId; resolvedAt"]
-    C14["Publica DivergenceResolved (outbox)"]
-    C15["Divergence.status = SEM_CONSENSO"]
-    C16["Append rastro: nó DIVERGENCIA → RESPONDEU → nó MENSAGEM"]
+  subgraph L3["ws-application · AssignmentService"]
+    S1{"AccessPolicy.requireDeptHead: ator é headUserId do departamento da pessoa?"}
+    S2{"Pessoa tem DepartmentMembership vigente nesse departamento?"}
+    S3{"Ator pode ver o alvo (canView) e alvo não está CONCLUIDA/ARQUIVADA?"}
+    S4{"Já existe Assignment PROPOSTA ou ACEITA para (alvo, pessoa)?"}
+    S5["INSERT assignments (PROPOSTA, origin, dueAt, message, previousResponsibleId) + AuditLog ASSIGNMENT_CREATED"]
+    S6["Evento AssignmentProposed (AFTER_COMMIT) → NotificationPort ATRIBUICAO_PROPOSTA + TimelineEvent"]
+    S7{"requireAssignee (ator é toUserId) e requireOpen (status PROPOSTA)?"}
+    S8["accept: status ACEITA, respondedAt · applyResponsible → UPDATE responsibleId em tasks ou project_tasks"]
+    S9{"Tarefa DISPONIVEL?"}
+    S10["TaskStateLog DISPONIVEL → EM_USO (reason ATRIBUICAO_ACEITA, correlationId)"]
+    S11{"reason informado?"}
+    S12["refuse: status RECUSADA, reason"]
+    S13["Notifica o chefe (ATRIBUICAO_ACEITA ou ATRIBUICAO_RECUSADA)"]
+    S14["giveBack: status DEVOLVIDA, reason · responsibleId volta a previousResponsibleId · TaskStateLog · ATRIBUICAO_DEVOLVIDA ao chefe"]
+    S15["DailyTaskService.priorityIndex inclui fator atribuída pelo chefe (RF44)"]
+    S16["listForDepartment: atribuições abertas por pessoa (bloco 2 Carga e bloco 3)"]
   end
 
-  subgraph L4["IA (AiEngine)"]
-    D1["DETECTAR_DIVERGENCIA: compara resposta × partiesJson × summary"]
-    D2["Retorna resolves, confidence, rationale"]
-    D3["Registra AiInferenceLog"]
+  subgraph L4["IA (AiEngine) · opcional"]
+    A1["INSIGHT equipe (RF43 §8-D): sugere pessoa com menor carga EM_USO × wipLimit ✦"]
   end
 
   subgraph L5["Persistência"]
-    E1[("MySQL divergences / session_participants")]
-    E2[("Cassandra messages_by_session")]
-    E3[("MySQL divergence_replies")]
-    E4[("MySQL domain_events + decia_points_ledger")]
-    E5[("MySQL decision_trace_nodes / edges")]
+    D1[("MySQL assignments · tasks.responsibleId · project_tasks.responsibleId · task_state_log · audit_log")]
+    D2[("Cassandra notifications_by_user · timeline_by_user + MySQL notifications")]
+    D3[("MySQL daily_tasks.priorityIndexJson")]
   end
 
-  subgraph L6["Listeners AFTER_COMMIT"]
-    F1["DeciaPointsService: +8 DP DIVERGENCIA_RESOLVIDA (idempotente)"]
-    F2["NotificationPort: grupo informado da resolução"]
-  end
+  U1 --> W1 --> U2 --> W2 --> S1
+  W1 -. "sugestão" .-> A1
+  S1 -->|"não"| W5 --> U8
+  S1 -->|"sim"| S2
+  S2 -->|"não"| W6 --> U8
+  S2 -->|"sim"| S3
+  S3 -->|"não"| W7 --> U8
+  S3 -->|"sim"| S4
+  S4 -->|"sim"| W7
+  S4 -->|"não"| S5 --> D1
+  S5 --> S6 --> D2
+  S6 --> U3 --> W3 --> U4
+  U4 -->|"aceita"| W4 --> S7
+  U4 -->|"recusa"| U5 --> W4
+  S7 -->|"não"| W7
+  S7 -->|"sim, aceite"| S8 --> D1
+  S8 --> S9
+  S9 -->|"sim"| S10 --> D1
+  S9 -->|"não"| S13
+  S10 --> S13
+  S7 -->|"sim, recusa"| S11
+  S11 -->|"não"| W6
+  S11 -->|"sim"| S12 --> D1
+  S12 --> S13 --> D2
+  S13 --> U6 --> S16 --> D1
+  S8 --> S15 --> D3
+  S8 -. "mais tarde" .-> U7 --> W4 --> S14 --> D1
+  S14 --> D2
+  S14 --> U8
+  S16 --> U8
 
-  A0 --> A1 --> A2
-  A2 -->|grupo| A3 --> B1
-  A2 -->|um participante| A4 --> B1
-  B1 --> C1
-  C1 -->|não| B4 --> A7
-  C1 -->|sim| C2
-  C2 -->|não| B5 --> A7
-  C2 -->|sim| C3
-  C3 -->|não| B5
-  C3 -->|sim| C4 --> C5 --> E1
-  C5 --> C6 --> A5
-  A5 --> B2 --> C7
-  C7 -->|não| B4
-  C7 -->|sim| C8
-  C8 -->|não| B6 --> A5
-  C8 -->|sim| C9 --> E2
-  C9 --> C10 --> E3
-  C10 --> C11 --> D1 --> D2 --> D3
-  D2 --> C12
-  C12 -->|sim| C13 --> E1
-  C13 --> C16 --> E5
-  C13 --> C14 --> E4
-  C14 --> F1 --> E4
-  C14 --> F2
-  F1 --> B7 --> A7
-  C12 -->|não| B8 --> A5
-  A6 --> B3 --> C1
-  C3 -->|admin encerra| C15 --> E1
-  C15 --> A7
+  class W5,W6,W7 err
+  class A1 ai
 ```
 
 ## 3. Diagrama de sequência
@@ -366,92 +326,102 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário (admin / participante)
+  actor CH as Usuário (CHEFE)
+  actor EM as Usuário (atribuído)
   participant FE as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
-  participant AI as AiEngine
   participant DB as Repository/MySQL
   participant CS as Cassandra
   participant EV as DomainEvents (AFTER_COMMIT)
 
   rect rgb(245, 242, 239)
-    Note over U,EV: Caminho feliz — admin habilita, participante responde, IA marca como resolvida
-    U->>FE: Habilitar resposta (escopo GRUPO | userId)
-    FE->>C: POST /api/decia/sessions/{id}/divergences/{divId}/enable-reply
-    C->>S: DivergenceService.enableReply(actor, sessionId, divId, scope, userId)
-    S->>DB: SELECT decia_sessions, divergences (status, adminUserId)
-    S->>DB: UPDATE session_participants SET canReplyDivergence = true
-    S->>DB: UPDATE divergences SET status = EM_RESPOSTA
-    S-->>C: 200 {divergence EM_RESPOSTA, enabledUserIds}
-    C-->>FE: 200
-    FE-->>U: Painel atualizado — habilitados recebem Notification (DECIA)
-
-    U->>FE: Escreve resposta à divergência
-    FE->>C: POST /api/decia/sessions/{id}/divergences/{divId}/replies {bodyMd, attachmentIds}
-    C->>S: DivergenceService.reply(actor, sessionId, divId, bodyMd, attachments)
-    S->>DB: SELECT session_participants (canReplyDivergence)
-    S->>CS: INSERT messages_by_session (replyToMessageId = originMessageId, correlationId)
-    S->>DB: INSERT divergence_replies (resolves = null)
-    S->>AI: evaluateDivergenceReply(summary, partiesJson, reply)
-    AI-->>S: {resolves: true, confidence 0.87, rationale}
-    S->>DB: INSERT ai_inference_log (DETECTAR_DIVERGENCIA)
-    S->>DB: UPDATE divergence_replies SET resolves = true
-    S->>DB: UPDATE divergences SET status = RESOLVIDA, resolvedByReplyId, resolvedAt
-    S->>DB: INSERT decision_trace_nodes (MENSAGEM) + decision_trace_edges (RESPONDEU)
-    S->>DB: INSERT domain_events (DivergenceResolved)
-    S-->>C: 201 {reply, divergence RESOLVIDA}
+    Note over CH,EV: Caminho feliz — chefe atribui tarefa, empregado aceita, responsibleId muda e o chefe é avisado
+    CH->>FE: Minha equipe › Atribuir (pessoa Bruno, tarefa T1, prazo, mensagem)
+    FE->>C: POST /api/assignments {targetType TASK, targetId T1, toUserId Bruno, dueAt, message, origin MINHA_EQUIPE}
+    C->>S: AssignmentService.propose(fromUserId, TASK T1, Bruno, dueAt, message, MINHA_EQUIPE, context)
+    S->>DB: SELECT departments WHERE headUserId = actor · department_memberships vigente de Bruno
+    S->>DB: SELECT tasks T1 (state, visibility, ownerId, responsibleId) · assignments PROPOSTA ou ACEITA para (T1, Bruno)
+    S->>DB: INSERT assignments (PROPOSTA, previousResponsibleId = responsibleId atual) · INSERT audit_log (ASSIGNMENT_CREATED)
+    S-)EV: AssignmentProposed(assignmentId)
+    EV->>CS: INSERT notifications_by_user (Bruno, ATRIBUICAO_PROPOSTA, resource ASSIGNMENT) · timeline_by_user
+    EV->>DB: INSERT notifications (espelho)
+    S-->>C: 201 Assignment {status PROPOSTA}
     C-->>FE: 201
-    FE-->>U: Divergência resolvida ✓
-    EV-->>S: DeciaPointsService.onDivergenceResolved (AFTER_COMMIT)
-    S->>DB: INSERT decia_points_ledger (+8 DIVERGENCIA_RESOLVIDA, idempotencyKey)
-    EV-->>S: NotificationPort.notify(grupo, DIVERGENCIA_RESOLVIDA)
+    FE-->>CH: Atribuição proposta — aguardando aceite
+
+    EM->>FE: Abre notificação › Atribuídas a mim
+    FE->>C: GET /api/me/assignments?status=PROPOSTA
+    C->>S: AssignmentService.listForMe(userId, PROPOSTA, page)
+    S->>DB: SELECT assignments JOIN tasks ou project_schemes (snapshot do alvo)
+    S-->>C: 200 Page (cards LINHA)
+    C-->>FE: 200
+    EM->>FE: Aceitar
+    FE->>C: POST /api/assignments/A1/accept
+    C->>S: AssignmentService.accept(actor, A1)
+    S->>DB: SELECT assignments A1 (toUserId = actor, status PROPOSTA)
+    S->>DB: UPDATE assignments SET status = ACEITA, respondedAt · UPDATE tasks SET responsibleId = Bruno, state = EM_USO
+    S->>DB: INSERT task_state_log (DISPONIVEL → EM_USO, reason ATRIBUICAO_ACEITA, correlationId) · audit_log
+    S-)EV: AssignmentAccepted(A1)
+    EV->>CS: INSERT notifications_by_user (chefe, ATRIBUICAO_ACEITA)
+    EV->>DB: UPDATE daily_tasks.priorityIndexJson (fator atribuída pelo chefe, RF44)
+    S-->>C: 200 Assignment {status ACEITA}
+    C-->>FE: 200
+    FE-->>EM: Tarefa agora em Atribuídas a mim e na Tarefa do Dia
   end
 
-  alt RF10.CA02 — participante não habilitado
-    U->>FE: Tenta responder
-    FE->>C: POST .../replies
-    C->>S: reply(...)
-    S->>DB: SELECT session_participants (canReplyDivergence = false)
+  alt RF10.CA02 — ator não é chefe do departamento da pessoa
+    FE->>C: POST /api/assignments
+    C->>S: propose(...)
+    S->>DB: SELECT departments WHERE headUserId = actor → não contém o departamento de Bruno
     S-->>C: 403 ACESSO_NEGADO
     C-->>FE: 403
-    FE-->>U: "Aguarde o administrador habilitar a resposta"
-  else RF10.CA05 — sessão não ativa ou divergência encerrada
-    FE->>C: POST .../replies
-    C->>S: reply(...)
-    S->>DB: SELECT decia_sessions.status / divergences.status
-    S-->>C: 409 SESSAO_NAO_ATIVA ou 409 DIVERGENCIA_ENCERRADA
+  else RF10.CA02 — já existe atribuição PROPOSTA para (T1, Bruno)
+    S->>DB: SELECT assignments WHERE targetId = T1 AND toUserId = Bruno AND status IN (PROPOSTA, ACEITA) → 1 linha
+    S-->>C: 409 ATRIBUICAO_DUPLICADA
     C-->>FE: 409
-  else RF10.CA03 — IA conclui que não resolve
-    AI-->>S: {resolves: false, rationale}
-    S->>DB: UPDATE divergence_replies SET resolves = false
-    S-->>C: 201 {reply, divergence EM_RESPOSTA}
-    FE-->>U: Resposta registrada — divergência continua aberta
+  else RF10.CA04 — recusa sem motivo
+    FE->>C: POST /api/assignments/A1/refuse {reason vazio}
+    C->>S: refuse(actor, A1, reason)
+    S-->>C: 422 MOTIVO_OBRIGATORIO
+    C-->>FE: 422
+  else RF10.CA06 — devolução depois do aceite
+    FE->>C: POST /api/assignments/A1/give-back {reason}
+    C->>S: giveBack(actor, A1, reason)
+    S->>DB: UPDATE assignments SET status = DEVOLVIDA, reason, respondedAt · UPDATE tasks SET responsibleId = previousResponsibleId
+    S->>DB: INSERT task_state_log (EM_USO → DISPONIVEL, reason ATRIBUICAO_DEVOLVIDA)
+    S-)EV: AssignmentGivenBack(A1)
+    EV->>CS: INSERT notifications_by_user (chefe, ATRIBUICAO_DEVOLVIDA)
+    S-->>C: 200 Assignment {status DEVOLVIDA}
+    C-->>FE: 200
   end
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: `Divergence.status` (`DivergenceStatus`). A sessão (`SessionStatus`) precisa estar em ATIVA ou REABERTA para qualquer transição disparada por humano.
+Entidade central: **`Assignment.status`** (enum `AssignmentStatus` — TAXONOMIA §12b/§13). O aceite escreve `TaskItem.responsibleId`/`ProjectTask.responsibleId` e pode mover `TaskState` DISPONIVEL → EM_USO (RF41), registrado em `TaskStateLog`; a devolução restaura `previousResponsibleId`.
 
 ```mermaid
 stateDiagram-v2
-  [*] --> ABERTA : IA detecta divergência (RF8) e notifica o grupo
-  ABERTA --> EM_RESPOSTA : admin habilita resposta (grupo ou participante) — RF10.CA01
-  EM_RESPOSTA --> EM_RESPOSTA : resposta registrada e IA marca resolves = false — RF10.CA03
-  EM_RESPOSTA --> RESOLVIDA : IA marca resolves = true (resolvedByReplyId, resolvedAt) — RF10.CA03
-  ABERTA --> SEM_CONSENSO : admin encerra sem resposta — RF10.CA06
-  EM_RESPOSTA --> SEM_CONSENSO : admin encerra ou resumo RF11 gerado sem resolução — RF10.CA06
-  RESOLVIDA --> [*]
-  SEM_CONSENSO --> [*]
+  direction LR
+  [*] --> PROPOSTA : CHEFE atribui (CA01) — AuditLog e Notification ATRIBUICAO_PROPOSTA
+  PROPOSTA --> ACEITA : atribuído aceita (CA04) — responsibleId recebe toUserId
+  PROPOSTA --> RECUSADA : atribuído recusa com reason obrigatório (CA04)
+  ACEITA --> DEVOLVIDA : atribuído devolve com reason (CA06) — responsibleId volta a previousResponsibleId
+  RECUSADA --> [*]
+  DEVOLVIDA --> [*]
+  ACEITA --> [*] : alvo chega a CONCLUIDA ou CONCLUIDO (CA05) — status permanece ACEITA
 
-  note right of RESOLVIDA
-    AFTER_COMMIT: +8 DP ao autor da resposta (DIVERGENCIA_RESOLVIDA)
-    rastro DIVERGENCIA → RESPONDEU → MENSAGEM
-    estado terminal: nova resposta → 409 DIVERGENCIA_ENCERRADA
+  note right of PROPOSTA
+    Unico parcial (targetId, toUserId) em PROPOSTA ou ACEITA
+    nova tentativa devolve 409 ATRIBUICAO_DUPLICADA (CA02)
+    aparece em /me/assignments e em Minha equipe bloco 3
+    responder de novo devolve 409 ATRIBUICAO_JA_RESPONDIDA
   end note
-  note left of SEM_CONSENSO
-    consta em divergencesJson do AnalyticalSummary (RF11)
+  note right of ACEITA
+    Entra no priorityIndexJson da Tarefa do Dia (RF44)
+    e como item pendente do Dossie de Transicao (RF36)
+    Nao ha estado CANCELADA — o chefe reatribui propondo de novo (duvida d)
   end note
 ```
 
@@ -460,77 +430,75 @@ stateDiagram-v2
 ```mermaid
 flowchart LR
   subgraph FE["Frontend Next.js (App Router)"]
-    FE1["app/decia/[sessionId]/page.tsx — painel Divergências"]
-    FE2["components/ui/DivergenceCard · ReplyComposer · EnableReplyDialog"]
+    F1["app/departments/[slug]/team · modo gestão Minha equipe (bloco 3 Atribuir, bloco 2 Carga)"]
+    F2["app/tasks/[id] · app/projects/[id] · ação Atribuir no card (BOTAO_ESQUEMA)"]
+    F3["app/me/assignments · Atribuídas a mim"]
+    F4["components/ui: AssignDialog · MemberPicker · AssignmentBadge (PROPOSTA/ACEITA/RECUSADA/DEVOLVIDA) · GiveBackDialog · NotificationBell · LinhaCard"]
   end
 
   subgraph WEB["ws-web"]
-    W1["DivergenceController (REST /api/decia/sessions/{id}/divergences)"]
-    W2["SessionAccessGuard (adminUserId, canReplyDivergence)"]
+    C1["AssignmentController (POST /api/assignments · /api/assignments/{id}/accept|refuse|give-back · GET /api/me/assignments · GET /api/departments/{id}/assignments)"]
+    C2["RoleGate / requireDeptHead"]
   end
 
   subgraph APP["ws-application"]
-    S1["DivergenceService"]
-    S2["DecisionTraceService"]
-    S3["DeciaPointsService (listener AFTER_COMMIT)"]
-    P1["AiEnginePort"]
-    P2["SessionMessageRepositoryPort"]
-    P3["NotificationPort"]
-    P4["DomainEventPublisher (outbox)"]
+    S1["AssignmentService (propose, accept, refuse, giveBack, listForMe, listForDepartment)"]
+    S2["AccessPolicy (requireDeptHead, canView)"]
+    S3["DailyTaskService (RF44 · DELEGUEI → propose · priorityIndex)"]
+    S4["MessagingService (RF46 · Atribuir no chat → origin CHAT_WS/CHAT_DECIA)"]
+    P1["NotificationPort"]
+    P2["AuditPort"]
   end
 
-  subgraph DOM["ws-domain"]
-    D1["Divergence · DivergenceReply · SessionParticipant"]
-    D2["DecisionTraceNode · DecisionTraceEdge"]
-    D3["DeciaPointsLedgerEntry · DeciaPointsRule"]
-    D4["Enums: DivergenceStatus · SessionStatus · PointsEvent"]
+  subgraph DOM["ws-domain · br.gov.pr.secid.workstation"]
+    D1["Assignment · AssignmentStatus · AssignmentTargetType · AssignmentOrigin (TAXONOMIA §12b)"]
+    D2["TaskItem.responsibleId · ProjectScheme · ProjectTask.responsibleId · TaskStateLog"]
+    D3["User · Department.headUserId · DepartmentMembership"]
+    D4["Notification (ATRIBUICAO_*) · TimelineEvent · AuditLog · DailyTask"]
   end
 
-  subgraph INFRA["ws-infrastructure"]
-    I1["persistence-mysql: DivergenceRepository, DivergenceReplyRepository, SessionParticipantRepository, DecisionTraceRepository, DeciaPointsLedgerRepository, DomainEventOutboxRepository"]
-    I2["persistence-cassandra: CassandraMessageAdapter (messages_by_session)"]
-    I3["ai-providers: AiEngineAdapter (Strategy + Chain of Responsibility, circuit breaker, ai_inference_log)"]
-    I4["platform: NotificationAdapter, AuditLogAdapter, OutboxRelay"]
-  end
-
-  subgraph EXT["Serviços externos"]
-    X1["Claude / Gemini"]
+  subgraph INFRA["ws-infrastructure/*"]
+    I1["persistence-mysql: AssignmentRepository · TaskItemRepository · ProjectTaskRepository · TaskStateLogRepository · AuditLogRepository · NotificationRepository"]
+    I2["persistence-cassandra: NotificationFeedAdapter (notifications_by_user) · TimelineAdapter (timeline_by_user)"]
+    I3["platform: OutboxRelay (AssignmentProposed, AssignmentAccepted, AssignmentRefused, AssignmentGivenBack) · NotificationAdapter"]
+    I4["ai-providers: AiEngineAdapter INSIGHT (sugestão de carga, opcional)"]
   end
 
   MY[("MySQL 8")]
   CA[("Cassandra")]
+  X1["Claude / Gemini (só na sugestão opcional)"]
 
-  FE1 --> FE2
-  FE2 -->|HTTPS/JSON| W1
-  W1 --> W2 --> S1
+  F1 --> F4
+  F2 --> F4
+  F3 --> F4
+  F4 -->|"HTTPS/JSON"| C1 --> C2 --> S1
   S1 --> S2
+  S3 --> S1
+  S4 --> S1
   S1 --> P1
   S1 --> P2
-  S1 --> P3
-  S1 --> P4
-  P4 -.->|AFTER_COMMIT DivergenceResolved| S3
   S1 --> D1
-  S2 --> D2
-  S3 --> D3
-  D1 --> D4
-  P1 -.-> I3
-  P2 -.-> I2
-  P3 -.-> I4
+  S1 --> D2
+  S2 --> D3
+  P1 --> D4
   S1 --> I1
-  S2 --> I1
-  S3 --> I1
+  P1 -.-> I2
+  P1 -.-> I3
+  P2 -.-> I1
+  F1 -. "sugestão ✦" .-> I4 --> X1
   I1 --> MY
   I2 --> CA
-  I3 --> X1
 ```
 
 ## 6. Rastreabilidade
 
 | CA | Classe | Passo (atividades) | Mensagem (sequência) | Transição (estados) | Componente |
 |---|---|---|---|---|---|
-| RF10.CA01 | `SessionParticipant.canReplyDivergence`, `Divergence.status`, `DivergenceService.enableReply`, `NotificationPort` | A1–A4, B1, C1–C6 | 1–9 (enable-reply → UPDATE session_participants / divergences → Notification) | ABERTA → EM_RESPOSTA | `DivergenceController`, `SessionAccessGuard`, `DivergenceService`, `NotificationAdapter` |
-| RF10.CA02 | `DivergenceReply`, `SessionMessage.replyToMessageId`, `DivergenceService.reply` | A5, B2, C7–C10, E2, E3 | 10–14 (INSERT messages_by_session + divergence_replies); `alt` 403 ACESSO_NEGADO | EM_RESPOSTA (sem transição) | `CassandraMessageAdapter`, `DivergenceReplyRepository` |
-| RF10.CA03 | `DivergenceReply.resolves`, `Divergence.resolvedByReplyId/resolvedAt`, `AiEnginePort.evaluateDivergenceReply`, `AiInferenceLog` | C11–C13, D1–D3, B7/B8 | 15–19; `alt` resolves=false | EM_RESPOSTA → RESOLVIDA / EM_RESPOSTA → EM_RESPOSTA | `AiEngineAdapter`, Claude/Gemini |
-| RF10.CA04 | `DeciaPointsLedgerEntry` (DIVERGENCIA_RESOLVIDA, idempotencyKey), `DeciaPointsService.onDivergenceResolved`, `DecisionTraceNode/Edge` (RESPONDEU) | C14, C16, F1, F2, E4, E5 | 20–26 (outbox → AFTER_COMMIT → ledger + notificação) | nota de RESOLVIDA | `DeciaPointsService`, `DecisionTraceService`, `OutboxRelay`, `DeciaPointsLedgerRepository` |
-| RF10.CA05 | `DeciaSession.status`, `Divergence.status` (guardas) | C2, C3, C8, B5, B6 | `alt` 409 SESSAO_NAO_ATIVA / 409 DIVERGENCIA_ENCERRADA | RESOLVIDA e SEM_CONSENSO terminais | `SessionAccessGuard`, `DivergenceService` |
-| RF10.CA06 | `Divergence.status = SEM_CONSENSO`, `DivergenceService.closeWithoutConsensus`, `AnalyticalSummary.divergencesJson` (RF11) | A6, B3, C15 | — (fluxo do admin; ver RF11) | ABERTA/EM_RESPOSTA → SEM_CONSENSO | `DivergenceController.closeWithoutConsensus` |
+| RF10.CA01 | `Assignment` (targetType, targetId, fromUserId, toUserId, dueAt, message, origin, previousResponsibleId), `AssignmentService.propose`, `AssignmentController.POST_api_assignments`, `AuditLog` | U1, U2, W1, W2, S5 | 1–6 | `[*] → PROPOSTA` | `AssignDialog`, `MemberPicker`, `AssignmentController`, `AssignmentRepository` |
+| RF10.CA02 | `AccessPolicy.requireDeptHead/canView`, `Department.headUserId`, `DepartmentMembership` (vigente), `TaskItem.state/visibility`, `ProjectScheme.status`, índice único parcial de `Assignment` | S1–S4, W5, W6, W7 | 4–5; `alt` 403 ACESSO_NEGADO; `alt` 409 ATRIBUICAO_DUPLICADA | nota de PROPOSTA (409 na repetição) | `RoleGate / requireDeptHead`, `AccessPolicy` |
+| RF10.CA03 | `Notification` (ATRIBUICAO_PROPOSTA, resourceType ASSIGNMENT), `NotificationType`, `TimelineEvent`, `NotificationPort`, evento `AssignmentProposed`, `AssignmentService.listForDepartment` | S6, D2, U3, U6, S16 | 7–9 | rótulo da transição `[*] → PROPOSTA` | `OutboxRelay`, `NotificationFeedAdapter`, `TimelineAdapter`, `NotificationBell`, bloco 3 de `Minha equipe` |
+| RF10.CA04 | `AssignmentService.accept/refuse/requireAssignee/requireOpen/applyResponsible`, `Assignment.reason/respondedAt`, `TaskItem.responsibleId`, `ProjectTask.responsibleId`, `TaskStateLog` | U4, U5, W4, S7–S13 | 19–30; `alt` 422 MOTIVO_OBRIGATORIO | `PROPOSTA → ACEITA`, `PROPOSTA → RECUSADA` | `AssignmentBadge`, `TaskStateLogRepository`, `ProjectTaskRepository` |
+| RF10.CA05 | `AssignmentService.listForMe/listForDepartment`, `DailyTask.priorityIndexJson`, `DailyTaskService.priorityIndex` | W3, S15, S16, D3 | 13–18, 28 | nota de ACEITA; `ACEITA → [*]` quando o alvo conclui | `app/me/assignments`, `LinhaCard`, `DailyTaskService` |
+| RF10.CA06 | `AssignmentService.giveBack`, `Assignment.previousResponsibleId`, `AssignmentOrigin` (CHAT_WS, CHAT_DECIA), `DailyTaskService.delegate`, `MessagingService` | U7, S14 | `alt` RF10.CA06 (give-back, ATRIBUICAO_DEVOLVIDA) | `ACEITA → DEVOLVIDA` | `GiveBackDialog`, `DailyTaskService (RF44)`, `MessagingService (RF46)` |
+
+**Dúvidas para confirmar:** (a) nomes dos campos: TAXONOMIA §12b usa `fromUserId`/`toUserId`/`message`/`reason`; `RF46/README.md` usa `assignerId`/`assigneeId`/`note`/`responseReason` e acrescenta `projectTaskId`, `companyId`, `departmentId`, `conversationId`, `sessionId` — unificar; (b) atribuir um **projeto inteiro** preenche todas as `ProjectTask` sem responsável ou só marca o projeto; (c) índice único parcial (`targetId`, `toUserId`) em PROPOSTA/ACEITA e o erro `409 ATRIBUICAO_DUPLICADA` são proposta deste RF; (d) o chefe pode **cancelar** uma PROPOSTA (estado CANCELADA não existe em `AssignmentStatus`) ou só o atribuído responde; (e) delegação (RF44 DELEGUEI) para fora do departamento exige aceite do chefe de destino; (f) sprint do card.

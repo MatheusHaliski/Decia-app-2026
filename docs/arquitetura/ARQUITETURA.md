@@ -21,7 +21,7 @@ flowchart LR
     UI["packages/ui · tokens.css · componentes"] --> APP
   end
   BFF -->|REST JSON · JWT| WEB
-  subgraph BE["Backend · Java 21 · Spring Boot 3.5.x · Maven multi-módulo hexagonal"]
+  subgraph BE["Backend · Java 21 (bytecode) · Spring Boot 4.1.x · JVM 25 LTS na imagem · Maven multi-módulo hexagonal"]
     WEB["ws-web · controllers por RF · Spring Security · GlobalExceptionHandler · springdoc"]
     APPL["ws-application · casos de uso (services) · AiEngine · ports · DomainEvents · Guard"]
     DOM["ws-domain · entidades JPA · enums · repositórios · AES-GCM"]
@@ -47,7 +47,7 @@ flowchart LR
 | `ws-domain` | Entidades JPA (`TaskItem`, `ProjectScheme`, `ProjectTask`, `AnnualPlan`, `DeciaSession`, `Seal`, `SealBond`, `DeciaPointsLedgerEntry`, …), enums, `*Repository` (Spring Data), `AuditableEntity`/`VersionedAuditableEntity`, `AesGcmStringConverter` | — |
 | `ws-application` | Um pacote por contexto (`identity`, `acervo`, `projects`, `planning`, `decia`, `seals`, `points`, `social`, `gamification`, `ai`, `handoff`); casos de uso em `service/*` (um por RF/área); `ai/AiEngine` (Strategy + Chain of Responsibility); `ports/*` (interfaces para o mundo externo); `events/DomainEvents` + listeners `@TransactionalEventListener(AFTER_COMMIT)` com `SideEffectRunner` (REQUIRES_NEW); `security/Guard` (`requireRole`, `requireOwner`, `requireParticipant`, `requireIssuer`); `metrics/*` (serviços de domínio testáveis do catálogo RF43 §8, `METRICAS_GESTAO.md`) | domain |
 | `ws-infrastructure` (pom agregador) | `persistence-mysql` (Flyway `V1__…`, analytics via views/procedures, backup), `persistence-cassandra` (projeções `timeline_by_user`, `notifications_by_user`, `messages_by_session`, `trace_by_entity`), `search-opensearch` (índices `ws-tasks`, `ws-projects`, `ws-memory` com `dense_vector`), `cache-redis` (refresh tokens, rate limit, cotas, contadores, ranking cache, circuit state), `storage-s3` (MinIO em dev), `ai-providers` (Claude SDK, Gemini, `LocalEngine`), `platform` (e-mail, OCR/antivírus hooks, Google/Microsoft OAuth connectors, e-Protocolo, Wikidata/CNPJ, transcrição) — **todos opt-in por propriedade/feature flag** | application |
-| `ws-web` | Controllers REST por RF (`@Operation(summary="RF20.CA02 …")`), `SecurityConfig` (OAuth2 Resource Server + login OIDC institucional + JWT próprio curto), `GlobalExceptionHandler` → `{code, message, details, correlationId}`, filtros de correlação/rate-limit, CSP/HSTS/CORS | application |
+| `ws-web` | Controllers REST por RF (`@Operation(summary="RF20.CA02 …")`), `SecurityConfig` (Spring Security 7: OAuth2 Resource Server + login OIDC institucional com PKCE + JWT RS256 próprio curto), `AuthRateLimitFilter` (limite por IP+método+rota, bulkhead de hashes), `ClientIpResolver` (IP assinado pelo BFF), `SessionActiveFilter` (família revogada), `CorrelationIdFilter`, `DevGateFilter`, `GlobalExceptionHandler` → `{code, message, details, correlationId}`, filtros de correlação/rate-limit, CSP/HSTS/CORS | application |
 | `ws-bootstrap` | `WorkStationApplication`, `application.yml` por perfil (`dev`, `test`, `prod`), schedulers (Tarefa do Dia 06:00, Hype diário, expiração de pontos, recertificação de chancelas, purge de notificações) | web + infrastructure |
 
 **Padrões** (herdados do FAI, obrigatórios): Ports & Adapters · Strategy + Chain of Responsibility no `AiEngine` (primário → alternativo → local, sempre com `ai_inference_log`) · Observer `AFTER_COMMIT` (pontos, notificações, projeções Cassandra, indexação OpenSearch, thumbnails, avaliação de política de chancela) · Repository · Circuit Breaker + Retry + TimeLimiter (Resilience4j) por provedor e por integração externa · Facade (`DashboardService`, `ProfileService`, `InsightsFacade`) · State Machine explícita para `TaskState`, `ProjectStatus`, `SessionStatus`, `SealBondStatus`, `DecisionStatus` (classe `*StateMachine` com tabela de transições testada).
@@ -68,7 +68,7 @@ Regra de ouro (RF43): a IA **só interpreta métricas calculadas pelo sistema**;
 ### 3.2 Persistência poliglota — responsabilidades e flags
 | Store | Responsabilidade | Flag | Dev |
 |---|---|---|---|
-| MySQL 8.4 | Fonte de verdade transacional: `users`, `tasks`, `project_schemes`, `project_tasks`, `annual_plans`, `groupings`, `seals`, `seal_bonds`, `benefits`, `decia_points_ledger`, `decision_trace_*`, `audit_log`, `ai_inference_log`, … Uma migração Flyway por mudança (`V1__baseline.sql`, `V2__rf20_tasks.sql`, …) | sempre | compose |
+| MySQL 8.4 | Fonte de verdade transacional (TLS obrigatório, usuário `ws_app` de menor privilégio e `ws_backup` só leitura; política de `ON DELETE` por domínio conferida pelo `ForeignKeyPolicyTest`; `users.account_origin` REAL/TEST_SEED/DEMO/SYSTEM desde o V1): `users`, `tasks`, `project_schemes`, `project_tasks`, `annual_plans`, `groupings`, `seals`, `seal_bonds`, `benefits`, `decia_points_ledger`, `decision_trace_*`, `audit_log`, `ai_inference_log`, … Uma migração Flyway por mudança (`V1__baseline.sql`, `V2__rf20_tasks.sql`, …) | sempre | compose |
 | Cassandra 4.1 | `timeline_by_user`, `notifications_by_user` (TTL), `messages_by_session` (TTL configurável por sessão), `trace_by_entity` (append-only) | `ws.cassandra.enabled` | profile `cassandra` |
 | OpenSearch 2.19 | Busca textual (RF27) e semântica/embeddings (RF33) de tarefas, projetos, sessões, artefatos; OCR | `ws.opensearch.enabled` | profile `opensearch` |
 | Redis 7 | refresh tokens (família/rotação), rate limit, contadores sociais, cotas de IA, cache de rankings, circuit state, autosave do compositor | `ws.redis.enabled` | profile `redis` |
@@ -77,7 +77,8 @@ Regra de ouro (RF43): a IA **só interpreta métricas calculadas pelo sistema**;
 Sem as flags, o sistema funciona só com MySQL (projeções e cache caem para implementações MySQL/in-memory, como no FAI). Testes de integração usam **Testcontainers** (MySQL sempre; Cassandra/OpenSearch/Redis/MinIO nos módulos que os adaptam).
 
 ### 3.3 Segurança
-- Spring Security 6 · login institucional **OAuth2/OIDC** (Keycloak/Entra ID) + cadastro local (RF1) com **Argon2id**; **JWT curto (RS256, 10 min)** + **refresh em Redis** com rotação por família e revogação (RF2).
+- Spring Security 7 · login institucional **OAuth2/OIDC** (Authorization Code + PKCE, `state`, `nonce`, validação de `iss`/`aud`/`exp`; vínculo a conta existente só com `email_verified`) + cadastro local (RF1) com **Argon2id** (m=19456 KiB, t=2, p=1; rehash no login); **JWT RS256 curto** (`iss`, `aud`; TTL em aberto na Q-49) + **refresh em Redis** com rotação por família, reuso revoga a família (RF2). Refresh só em cookie `ws_rt` HttpOnly/Secure/SameSite=Strict; access token só em memória no front.
+- **Força bruta (D-14):** bloqueio por conta (5 tentativas/15 min) com reserva atômica (`RateLimitPort.tryAcquire` INCR+EXPIRE em Lua, `release` nunca abaixo de 0) **antes** do hash; login sem oráculo (401 genérico e mesmo tempo para conta inexistente, senha errada e conta bloqueada; `403 CONTA_INDISPONIVEL`/`401 DOIS_FATORES_NECESSARIO` só após a senha certa); reconferência de senha (troca de senha, dados sensíveis, exclusão) no mesmo bloqueio com `429 MUITAS_TENTATIVAS` + `Retry-After`; limite por IP+método+rota (`AuthRateLimitFilter`, antes do Spring Security; IPv6 por /64); IP do cliente = HMAC do BFF (`X-Ws-Client-Ip`/`X-Ws-Proxy-Ts`/`X-Ws-Proxy-Sig`, `EDGE_PROXY_SECRET`) › `X-Real-IP` › TCP, nunca `X-Forwarded-For`; bulkhead de hashes Argon2 (`Semaphore` = `max(1, min(max(2, núcleos), pool/2))`, espera 2 s, depois `503 AUTENTICACAO_OCUPADA` + `Retry-After`); códigos de verificação com ≤ 5 tentativas (`noRollbackFor`) e 10/h por pessoa; nomes reservados; `AdminBootstrap` só cria se não existe e nunca promove sem `WS_ADMIN_PROMOTE_EXISTING=true`.
 - **RBAC por perfil** (`EMPREGADO`, `EMPRESA`, `CHEFE_DEPARTAMENTO`, `ADMIN`; papel contextual `CURADOR`) com `Guard.requireRole/requireOwner/requireParticipant/requireIssuer` relendo o papel do banco; testes 403 em todo endpoint (RF22.CA01, RF28.CA01/CA08, RF39.CA01, RF41.CA08).
 - **Classificação de acesso** das tarefas (`PUBLICO/INTERNO/RESTRITO/SIGILOSO`): RESTRITO/SIGILOSO nunca saem para provedor de IA externo (RF43.CA02); mascaramento de dados pessoais antes de qualquer inferência externa (LGPD).
 - AES-GCM em campos sensíveis (e-mail, telefone, CNPJ, geolocalização, transcrições); `audit_log` com `correlationId` em toda mudança de estado relevante (chancelas, pontos, decisões, lotações, curadores).
@@ -85,7 +86,7 @@ Sem as flags, o sistema funciona só com MySQL (projeções e cache caem para im
 - Erros HTTP: 200/201/202/204/400/403/404/409/422/429; corpo `{code, message, details, correlationId}`; códigos de negócio nomeados nos CAs (`VALIDACAO`, `ACESSO_NEGADO`, `PERIODO_INVALIDO`, `LIMITE_ESGOTADO`, `CHANCELA_INVALIDA`, `SALDO_INSUFICIENTE`, `ITEM_INDISPONIVEL`).
 
 ### 3.4 Gate de desenvolvedor (CI obrigatório em todo PR)
-`.github/workflows/ci.yml`: build + testes (`mvn -B verify`) · **JaCoCo ≥ 70 % linhas** em `ws-application` e `ws-web` · SpotBugs + Checkstyle · OWASP Dependency-Check · Trivy nas imagens · gitleaks · frontend `lint` + `typecheck` + `vitest` + `i18n:check` · Playwright smoke · lint de **Conventional Commits** com RF no escopo (`feat(rf20): …`, `docs(arch): …`) · PR template com checklist (CA, migração, testes, i18n, evidência em `docs/testes/`). Branch protection na `main`: 1 revisão obrigatória de outro integrante, CI verde, sem push direto. Ambientes `dev`/`test`/`prod` separados (profiles + secrets por ambiente).
+`.github/workflows/ci.yml` (`permissions: contents: read`, `concurrency` com cancelamento): build + testes (`mvn -B verify`, inclui os testes-guarda `MigrationVersionsTest`, `JsonContractTest`, `AutoConfigurationExclusionsTest`, `ForeignKeyPolicyTest`) · **JaCoCo ≥ 70 % linhas** em `ws-application` e `ws-web` · SpotBugs + Checkstyle · OWASP Dependency-Check · Trivy nas imagens · gitleaks no **histórico inteiro** (`fetch-depth: 0`, `--redact`; `.gitleaksignore` só com fingerprints exatos) · `npm audit --omit=dev --audit-level=high` · Dependabot (Maven, npm, GitHub Actions, Docker; grupo Spring; major de `eclipse-temurin`/`maven` ignorado) · frontend `lint` + `typecheck` + `vitest` + `i18n:check` · Playwright smoke · lint de **Conventional Commits** com RF no escopo (`feat(rf20): …`, `docs(arch): …`) · PR template com checklist (CA, migração, testes, i18n, evidência em `docs/testes/`). Branch protection na `main` (ação do dono, Q-52): 1 revisão obrigatória de outro integrante, CI verde, sem push direto. Deploy só após CI verde, com healthcheck em `/actuator/health` (timeout cobrindo o Flyway) e a versão anterior servindo se a nova não sobe. Ambientes `dev`/`test`/`prod` separados (profiles + secrets por ambiente).
 
 ## 4. Frontend
 - **Next.js 15 (App Router) + TypeScript + Tailwind 4**, componentes próprios em `packages/ui` (base radix/shadcn) com **tokens CSS** (`styles/tokens.css`) e 4 temas via `data-theme` (claro, escuro, alto contraste, blueprint). **Nenhum HTML/CSS solto nas telas**: todo elemento visual vem de um componente do design system (ver [`../design-system/DESIGN_SYSTEM.md`](../design-system/DESIGN_SYSTEM.md)).
@@ -137,18 +138,19 @@ stateDiagram-v2
   ARQUIVADA --> [*]
 ```
 
-## 6. Ordem de implementação (do pedido) e entregáveis por RF
+## 6. Ordem de implementação e entregáveis (numeração atual do board, 2026-10-05)
 | Fase | Escopo | Entregáveis |
 |---|---|---|
-| (a) | Esqueleto Maven (`ws-*`), `docker-compose.dev.yml` (mysql, redis, cassandra, opensearch, minio), CI gate, `V1__baseline.sql` (users, preferences, refresh_tokens, audit_log, ai_inference_log, feature_flags, domain_events, media_objects) | PR `chore(skeleton)` |
-| (b) | Design system DECIA (`packages/ui`, tokens, componentes obrigatórios, `/lab/design-system`) | PR `feat(rf38)` |
-| (c) | RF1–RF3 auth/perfis (OIDC + local, JWT/refresh Redis, preferências, aprovação EMPRESA/CHEFE) | PR `feat(rf1)`, `feat(rf2)`, `feat(rf3)` |
-| (d) | RF20 Criador de Tarefas + RF41 Acervo (TaskItem, estados, prazos legais, anexos, thumbnails) | PRs por RF |
-| (e) | RF21 Criador de Projetos (selects = inventário), RF22 Mesa, RF23 extração | PRs por RF |
-| (f) | RF4–RF6 sessão DECIA + RF29 ponte + RF7 classificação | PRs por RF |
-| (g) | Demais RFs pela prioridade do board: Sprint 2 (RF8–RF11), Sprint 3 (RF12–RF18), Sprint 4 (RF26–RF28), backlog (RF24, RF25, RF30–RF45) | PRs por RF |
+| (a) **Bloco 1 de segurança** | Esqueleto Maven `ws-*` (Boot 4.1, D-13), `docker-compose.dev.yml`, CI com gitleaks no histórico e testes-guarda, Dependabot, config sem senha padrão, erros/logs, Docker com healthcheck | PR `chore(skeleton)` |
+| (a') **Bloco 2** | `V1__baseline.sql` com `account_origin`, política de `ON DELETE` por domínio, `ForeignKeyPolicyTest` | PR `feat(sec)` |
+| (b) | Design system v2 (`packages/ui`, tokens `--ws-*`, WS Glyphs) + shell do app (TopBar, SidebarNav, folha Criar, barra mobile, placeholders de rotas) + preferências (**RF3**, D-11) + i18n | PR `feat(rf3)` / `feat(ui)` |
+| (c) **Bloco 3** | RF1–RF3 auth/perfis com os controles do D-14 (Argon2id, bloqueio atômico, limites por IP, bulkhead, OIDC, JWT/refresh) | PRs `feat(rf1)`, `feat(rf2)`, `feat(rf3)` |
+| (c') **LGPD A/B/C** | Aceite de termos (RF1), tipos de perfil e validação (RF1 + RF28), configurações e direitos do titular (RF3) | PRs por bloco |
+| (d) | **RF4** Criador de Tarefas + **RF6/RF41** Acervo + **RF23** importação de provedores | PRs por RF |
+| (e) | **RF5** Criador de Projetos (selects = inventário) + **RF20** adequação do acervo + **RF21/RF22** Mesa + **RF7/RF8/RF12** detalhe e edição | PRs por RF |
+| (f) | Sessão DECIA (tema/acesso, iniciar, mensagens, classificação — cards a recriar no board, Q-44) + **RF29** ponte + **RF13** artefatos | PRs por RF |
+| (g) | Blocos 4–7 de segurança (sessão no front, BOLA/BFLA/mídia/IA, dados demo, bancos endurecidos e backup) intercalados; demais RFs pela prioridade do board: RF9/RF10/RF46 (equipe, atribuição, chat), RF14–RF19 (perfis, busca, social), RF24–RF28, RF30–RF45 | PRs por RF |
 
-Cada RF entrega: migração Flyway própria · endpoints com RF/CA no `@Operation` · testes unit + integração Testcontainers (inclui 403) · tela com componentes do design system · i18n pt-BR/en/es · evidência em `docs/testes/RFnn/` · diagramas em `docs/diagramas/RFnn/`.
-
+Cada RF entrega: migração Flyway própria · endpoints com RF/CA no `@Operation` · testes unit + integração Testcontainers (inclui 403, BOLA/BFLA) · tela com componentes do design system · i18n pt-BR/en/es · evidência em `docs/testes/RFnn/` · diagramas em `docs/diagramas/RFnn/`. Mapa entre a numeração anterior e a atual: [`../diagramas/RENUMERACAO.md`](../diagramas/RENUMERACAO.md).
 ## 7. Decisões abertas
 Ver [`../DECISOES.md`](../DECISOES.md).
