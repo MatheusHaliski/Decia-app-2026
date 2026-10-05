@@ -361,7 +361,7 @@ flowchart TD
     S8["MemorySearchPort.cite → citações (Sem precedente se vazio)"]
     S9["UPDATE generated_artifacts (GERADO, title, contentMd, citationsJson, goalAlignmentJson, aiInferenceId)"]
     S10["Agenda PipelineJob EXPORT_PDF (ou XLSX) e INDEXAR_MEMORIA"]
-    S11["NotificationPort ARTEFATO (requerente; grupo se chat, groupKey = originId) · notifiedAt"]
+    S11["NotificationPort ARTEFATO (requerente, grupo se chat, groupKey = originId) · notifiedAt"]
     S12{"convertedTaskId nulo?"}
     S13["TaskCreationService.createFromArtifact (tipo por kind, sourceKind DECIA ou TEXTO_IA, aiGenerated) · convertedTaskId · status CONVERTIDO"]
     S14["regenerate: nova linha com supersedesArtifactId · anterior SUBSTITUIDO"]
