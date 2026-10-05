@@ -666,3 +666,6 @@ flowchart LR
 | RF38.CA08 | Classes `UserPreferences.theme/deskSkin/density/fontScale`, `ThemeMode` (inclui BLUEPRINT), `DeskSkin` (PAPEL, CORTICA, BLUEPRINT, PAPEL_TIMBRADO), `UserSkin`, `PreferencesService`, `PreferencesController`; atividades U6, W7 (menu recolhível responsivo), A16 (403 SKIN_NAO_ADQUIRIDA); sequência msgs 35–41; componentes `ThemeProvider`, `DeskSkin`, `settings/preferences`, `cache-redis`. |
 | RF38.CA09 | Classes `Department.monogram/color/acronym`, `Company.logoUrl/coatOfArmsUrl/accentColor`, `TaskItem.departmentId`, `ProjectScheme.departmentId`; atividades A10 (borda na cor do departamento) e W6 (DeptMonogram, CompanyLogo); componente `DeptMonogram`. |
 | RF38.CA10 | Classe `UserPreferences.reduceMotion`; atividade W8 (encaixe animado, confete, faísca animada, empty states; desliga com prefers-reduced-motion); sequência msg 41 (MotionProvider desliga animações); componentes `MotionProvider`, `EmptyState`, `tokens · prefers-reduced-motion`. |
+
+
+Tela/aba: `/settings` (esqueleto em `app/(shell)/settings/page.tsx`) · `/lab/design-system` (esqueleto em `app/(shell)/lab/design-system/page.tsx`) · `/lab/anatomias` (esqueleto em `app/(shell)/lab/anatomias/page.tsx`)

@@ -747,3 +747,6 @@ flowchart LR
 | RF43.CA15 (amostra mínima) | `MetricDefinition.minSamples` · Atividades `A21 (não) → W7` · Sequência `alt amostra abaixo de minSamples → 200 aba sem insights + explicação do que falta coletar` · Nota de `Insight` · Componente `InsufficientDataState` |
 
 > Dúvidas para `docs/DECISOES.md`: (1) a aba "Metas & Objetivos da equipe" é uma rota nova (`/departments/[slug]/goals`) ou é a sub-aba *Meus Planos Anuais / Trilhas* do perfil (RF19 sub-aba 6) com filtro de departamento? Modelei como rota nova com `TeamGoalsService`/`TeamGoalsController` (**propostas**, sem tabela própria); (2) o que o EMPREGADO vê dos insights de equipe — modelei "agregado e anonimizado" seguindo RF45.CA10 e ABAS_POR_PERFIL §7.b, mas o RF43.CA14 restringe a aba Insights › Equipe a CHEFE/EMPRESA; (3) `kind` do `Insight` (CARGA, GARGALO, TENDENCIA_EIXO, PROJETO_SEM_EIXO) não é enum nomeado na TAXONOMIA; (4) `409 PROJETO_JA_NO_PLANO`, `422 EIXOS_INVALIDOS`, `422 DERIVACAO_INVALIDA` herdados de `_anterior/RF24` continuam propostas.
+
+
+Tela/aba: `/companies/[slug]` (esqueleto em `app/(shell)/companies/[slug]/page.tsx`) · `/plans` (esqueleto em `app/(shell)/plans/page.tsx`) · `/goals` (esqueleto em `app/(shell)/goals/page.tsx`)

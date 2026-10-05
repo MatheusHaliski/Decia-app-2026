@@ -516,3 +516,6 @@ Herdados do RF49 do FAI pela **D-14**; diagramas das camadas de defesa e rastrea
 | **RF2.CA12** (CA a confirmar) | **OIDC.** Dado o `id_token` válido (PKCE, `state`, `nonce`, `iss`, `aud`, `exp`), então ele só é **vinculado a uma conta existente** de mesmo `emailHash` se o IdP marcar `email_verified=true` (Q-30); sem isso, não vincula (evita takeover). | 3 |
 | **RF2.CA13** (CA a confirmar) | **Tokens.** O access JWT é RS256 com `iss`, `aud` e `sid`; **TTL em aberto na Q-49** (10 min na ARQUITETURA, 15 min neste README e no FAI — até a resposta vale 15). O `SessionActiveFilter` recusa token de família revogada (`sid`). Refresh só no cookie `ws_rt`; access só em memória (teste falha se aparecer em `localStorage`/`sessionStorage`). | 3, 4 |
 | **RF2.CA14** (CA a confirmar) | **Auditoria.** Eventos `LOGIN_OK`, `LOGIN_FALHA` (motivo: usuario_inexistente, senha, 2fa), `LOGIN_BLOQUEADO_TENTATIVAS` (com `resetAt`) e `REFRESH_REUSO`, todos com `correlationId`, e-mail mascarado (`maskEmail`) e sem senha, token ou código — amplia o CA06. | 1, 3 |
+
+
+Tela/aba: `/login` (esqueleto em `app/(auth)/login/page.tsx`) · `/password-reset` (esqueleto em `app/(auth)/password-reset/page.tsx`)

@@ -545,3 +545,6 @@ flowchart LR
 | RF14.CA06 | `AccessPolicy.visibilityFilter/canView`, enum `Visibility`, `CuratorScope`, `InstitutionalService.loadTab` (403 no serviço) | S6, S9, W9 | 17, 24; `alt` 403 ACESSO_NEGADO | nota de `Follow` (eventos só enquanto ATIVO) | `RoleGate / AccessPolicy`, `i18n next-intl`, layout responsivo |
 
 **Dúvidas para confirmar:** (a) "perfil de um chefe" = página do departamento (`/departments/[slug]`) com atalho ao perfil pessoal, ou o inverso (perfil pessoal `/u/[username]` com bloco institucional) — o board usa as duas leituras (ABAS_POR_PERFIL §5 e §7.d); (b) quais métricas públicas entram (RF28.CA04 lista 3; aqui propomos 5); (c) a busca de chefe pelo **nome da pessoa** na aba Buscar deve resolver para o departamento ou para o perfil pessoal; (d) visitante anônimo vê a página (Sobre, Equipe nomes/cargos, Projetos PÚBLICOS) ou só usuários autenticados; (e) sprint do card.
+
+
+Tela/aba: `/departments/[slug]` (esqueleto em `app/(shell)/departments/[slug]/page.tsx`) · `/lab/perfis` (esqueleto em `app/(shell)/lab/perfis/page.tsx`)

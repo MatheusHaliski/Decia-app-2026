@@ -622,3 +622,6 @@ flowchart LR
 | RF45.CA08 | Classes `RankingEntry` (dimension HYPE_PERFIL), `User.rankingOptOut`, `RankingService.compute`; atividade S7 (exclui opt-out, nunca expõe número de quem é SÓ EU); sequência msgs 17–19 (ranking sem o número de quem é SO_EU); nota da máquina de estados `Vis`; componentes `RankingService (RF43) · HYPE_PERFIL`, `cache-redis · ranking HYPE_PERFIL`. |
 | RF45.CA09 | Classe `HypeCalculator` em `ws-domain` (bayesianMean, decay, normalizePercentile, reputationWeight, blocks, band) com nota (determinístico, testável, METRICAS_GESTAO.md seção Hype do Perfil); lane L_dom (H1–H5); atividade I1 (IA só redige); componente `ws-domain · HypeCalculator — testes unitários`. |
 | RF45.CA10 | Classes `DashboardController.GET dashboard_hype_distribution`, `MetricSnapshot`; atividades U5, W5, S12 (histograma anonimizado por departamento, evolução média, nunca lista nominal de quem ocultou); componentes `HypeHistogram`, `app/admin e app/companies (dashboard)`. |
+
+
+Tela/aba: `/profile` (esqueleto em `app/(shell)/profile/page.tsx`)

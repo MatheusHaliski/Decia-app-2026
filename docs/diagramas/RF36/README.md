@@ -553,3 +553,6 @@ flowchart LR
 | RF36.CA05 | Classes `HandoffDossier.consentForPrivateItems`, `TaskItem.visibility`, `ProjectTask.snapshotJson`, `HandoffService.grantConsent`; atividades `S4 → S5 → W2 → U2 → S9`, `S13 → S17`; sequência bloco «CA01, CA02 e CA05» (separa PRIVADA, `POST .../consent`) e nota final do bloco «CA03 e CA04» (snapshot preservado); transição `GERADO → GERADO` e notas de `GERADO`/`TRANSFERIDO`; componente `ConsentDialog` |
 
 > Dúvidas para `docs/DECISOES.md`: `HandoffStatus`, `HandoffReason` e `HandoffTargetType` não são enums nomeados na TAXONOMIA (valores inline); falta estado de recusa/cancelamento do dossiê (sucessor recusa, chefe cancela) — propor `RECUSADO`/`CANCELADO`; `PdfRenderPort`, `409 DOSSIE_EM_ANDAMENTO` e as rotas são propostas; quem herda decisões EM_REVISAO quando o sujeito era o revisor (sucessor vs. chefe); se o dossiê de GESTAO (RF25.CA05) exige sucessor ou encerra direto em TRANSFERIDO.
+
+
+Tela/aba: `/departments/[slug]/team` (esqueleto em `app/(shell)/departments/[slug]/team/page.tsx`) · `/handoffs` (esqueleto em `app/(shell)/handoffs/page.tsx`)

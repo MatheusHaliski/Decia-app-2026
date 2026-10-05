@@ -751,3 +751,6 @@ flowchart LR
 | RF26.CA04 (a confirmar — escolha de modo e aviso de débito) | = RF43.CA06 acima · `ModeSelector com custo`, `QuotaBanner` |
 
 > Dúvidas para `docs/DECISOES.md`: (1) o card RF26 tem **título Copilot** e **corpo perfil** (RF19.CA01–07) — este README modela o título e remete o corpo a RF6/RF16/`_anterior/RF19`; confirmar se o board será corrigido (ver RENUMERACAO.md e Q-44); (2) "Copilot do WS" e "Autopilot/Autopiloto" (RF30, RF43) são o mesmo recurso? Modelei como sinônimos de produto para o mesmo `AutopilotService`; (3) `AutopilotService.confirmTasks`, endpoint `/api/autopilot/tasks/confirm`, `hostRf RF26`, `TaskStateLog.reason COPILOT_ACEITO` e os CAs RF26.CA01–04 são propostas; (4) `AutopilotDraft` e `DraftCachePort` (Redis, TTL 24 h) continuam proposta herdada do RF30; (5) a HU26 cita "Ref.: RF21 … Critérios de aceite no card RF21" — o RF21 atual é a Mesa de trabalho digital, portanto a referência aponta para o antigo RF21 (criador de projetos, hoje card RF5).
+
+
+Tela/aba: `/autopilot` (esqueleto em `app/(shell)/autopilot/page.tsx`) · `/insights` (esqueleto em `app/(shell)/insights/page.tsx`)

@@ -677,3 +677,6 @@ checklist, note}` · `GET /api/admin/approvals/{id}/documents/{kind}` · `GET /a
 `POST /api/me/validation/resubmit` · `POST /api/departments/{id}/head-confirmations/{approvalId}` (chefe atual ou dono
 da EMPRESA). Auditoria: `APPROVAL_SUBMITTED`, `APPROVAL_DECIDED`, `APPROVAL_DOCUMENT_VIEWED`, `APPROVAL_CONFIRMED`.
 
+
+
+Tela/aba: `/companies` (esqueleto em `app/(shell)/companies/page.tsx`) · `/companies/[slug]` (esqueleto em `app/(shell)/companies/[slug]/page.tsx`) · `/departments/[slug]` (esqueleto em `app/(shell)/departments/[slug]/page.tsx`) · `/recognitions` (esqueleto em `app/(shell)/recognitions/page.tsx`) · `/issuer/dashboard` (esqueleto em `app/(shell)/issuer/dashboard/page.tsx`) · `/companies/[slug]/manage/departments` (esqueleto em `app/(shell)/companies/[slug]/manage/departments/page.tsx`) · `/departments/[slug]/team` (esqueleto em `app/(shell)/departments/[slug]/team/page.tsx`) · `/seals/review` (esqueleto em `app/(shell)/seals/review/page.tsx`) · `/curation` (esqueleto em `app/(shell)/curation/page.tsx`) · `/admin` (esqueleto em `app/(shell)/admin/page.tsx`)

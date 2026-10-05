@@ -823,8 +823,26 @@ Pares verificados: **732** · falhas: **0** · limite: 4,5:1 para texto (7:1 no 
 
 <!-- contraste:fim -->
 
-## 3. Catálogo de componentes (`packages/ui`)
-Classes de referência em [`components.css`](components.css); em React cada um é um componente tipado sobre radix/shadcn. Regras gerais: ícone sempre com rótulo (visível ou `aria-label`); estado sempre com nome em texto; foco visível com `--focus`; alvo mínimo 44 px em toque.
+## 3. Catálogo de componentes (`components/ui`, implementação real da etapa (b))
+Classes de referência em [`components.css`](components.css); em React cada um é um componente tipado em **`components/ui/`** (sem pacote separado por enquanto — D-30: `packages/ui` fica para quando houver um 2º app), sobre radix (`@radix-ui/react-{dialog,popover,tooltip,tabs,switch,checkbox,radio-group,toast}`, versões fixas) e tokens **v2 `--ws-*`** (`styles/tokens-ws.css`, cópia de [`tokens-ws.css`](tokens-ws.css) guardada por teste). Regras gerais: ícone sempre com rótulo (visível ou `aria-label`); estado sempre com nome em texto; foco visível com `--ws-focus-ring`; alvo mínimo 44 px em toque; **nenhuma cor literal** (ESLint + stylelint + teste de varredura).
+
+**Implementado em `components/ui/` (etapa (b)):**
+
+| Componente | Arquivo | Notas |
+|---|---|---|
+| `Button` (variants default · primary · gradient · secondary · ghost · danger · spark; sizes sm · md · lg · icon; `icon`, `busy`, `href`) · `IconButton` | `Button.tsx` | único lugar com `<button>`/`<a>` ao lado de `Link` e `Form` |
+| `Glyph` (17 WS Glyphs, outline/clay) · `Moji` (9 WS Moji) | `glyphs/Glyph.tsx` + `glyphs/sprite.gen.ts` (gerado por `scripts/glyphs/gerar-sprite.mjs` dos SVGs de [`glyphs/`](glyphs/)) | rótulo i18n obrigatório (RF38.CA01) |
+| `Avatar` · `Monogram` | `Avatar.tsx` | monograma do departamento na cor do nó |
+| `Badge` · `Tag` · `RfChip` | `Badge.tsx` | tons semânticos por token; `count`, `dashed`, `pulse`, `filled` |
+| `Tooltip` · `Popover` · `Dialog` · `Sheet` (left/right/bottom) | `Tooltip.tsx`, `Popover.tsx`, `Dialog.tsx` | radix: foco preso, Esc fecha, scrim `.ws-scrim` |
+| `Tabs` (roles tablist/tab/tabpanel, setas, Home/End, `?tab=` na URL) | `Tabs.tsx` | sub-abas das Matrizes A–E |
+| `Field` · `Input` · `Textarea` · `Select` · `Switch` · `Checkbox` · `RadioCards` · `SelectList` | `Form.tsx` | erro por campo via `aria-describedby` (422 `details`) |
+| `Toast` (`ToastProvider`/`useToast`) · `EmptyState` · `ErrorState` · `LoadingState` · `Skeleton` | `Toast.tsx`, `States.tsx`, `Skeleton.tsx` | estados vazios com WS Moji; "tentar de novo" |
+| `PercentBar` | `PercentBar.tsx` | "rumo à decisão" (DECIA_SESSAO_E_MESA §B.5), `role=progressbar` |
+| `BackgroundArt` (catálogo `WS_BACKGROUNDS`: 6 artes Aura Geometry + 6 placeholders; skins da Mesa) | `BackgroundArt.tsx` + `backgrounds/aura.gen.ts` (gerado por `scripts/brand/gerar-fundos.mjs`) | tom pela luminância medida (D-34) |
+| `Link` (inline · nav · card · plain) · `Card` · `MenuOption` | `Link.tsx`, `Card.tsx`, `Menu.tsx` | — |
+
+Shell em **`components/shell/`**: `AppShell`, `TopBar` (busca `/`, Mensagens, sino `NotificationsBell`, ficha DP, `ThemeLanguageMenu`, `UserPanel` = Central de Perfil), `SidebarNav` (rail 72 px), `BottomNav`, `CreateSheet`, `PageHeader`, `RfPage` (página-esqueleto), `ProfileHeader`, `LabEmbed`, `Providers`. Os itens abaixo que ainda não têm componente (TypeChip, Due, Spark, Stamp, Seal, DpChip completo, Medal, PhaseBar, ProgressRing, Mosaic, TaskCard, ProjectCard, DecisionThread, PostIt, Counters, Confetti) chegam com os RFs que os usam.
 
 | Componente | Props principais | Estados / variantes | RF |
 |---|---|---|---|
@@ -859,22 +877,25 @@ Classes de referência em [`components.css`](components.css); em React cada um �
 ## 4. Ícones (66 glifos próprios)
 Grupos: **tipos de tarefa** (16: folha com caneta, folha com faísca, moldura com globo, moldura com pincel, grade, pasta com aba, pasta com zíper, clipe, esquadro+compasso, cubo 3D, prancheta com check, carimbo, envelope, comprovante picotado, Gantt, folha com lupa) · **ações** (8) · **navegação** (11) · **estado/prazo/IA/chancela** (12) · **social e reações** (9: curtir, comentar, salvar, compartilhar, remixar, útil, bem fundamentado, inovador, conforme) · **chrome** (10). Sprite `<symbol id="ws-<nome>">` gerado por `icons.mjs`; nunca emoji do sistema (RF38.CA01).
 
-## 5. Estrutura em `packages/ui` (Next.js 15 + Tailwind 4 + radix)
+## 5. Estrutura real (Next.js 15 + Tailwind 4 + radix) — etapa (b)
 ```
-packages/ui/
-├── src/styles/tokens.css        ← cópia gerada deste tokens.css (CI falha se divergir)
-├── src/styles/components.css    ← camadas @layer components
-├── src/icons/                   ← sprite + <Icon name="criar-tarefa" />
-├── src/components/{button,tag,type-chip,due,spark,stamp,seal,dp-chip,medal,phase-bar,progress-ring,mosaic,
-│                   task-card,project-card,select-list,decision-thread,sidebar-nav,top-bar,background-art,
-│                   post-it,avatar,counters,toast,empty-state,error-state,skeleton,confetti,form/*}
-├── src/theme/ThemeProvider.tsx   ← lê UserPreferences → data-theme / data-density / data-reduce-motion
-└── src/i18n/                     ← rótulos dos componentes em pt-BR/en/es (ICU)
+styles/tokens-ws.css             ← cópia de docs/design-system/tokens-ws.css (styles/tokens-ws.test.ts falha se divergir)
+styles/preferences.css           ← data-density / data-font-scale (medidas, sem cor)
+app/globals.css                  ← @theme inline: bg-ws-*/text-ws-*/border-ws-* ← var(--ws-*); medidas do shell; animações dos glifos
+components/ui/                   ← design system (tabela do §3); index.ts exporta tudo
+components/ui/glyphs/sprite.gen.ts        ← gerado: scripts/glyphs/gerar-sprite.mjs (teste scripts/glyphs/sprite.test.ts)
+components/ui/backgrounds/aura.gen.ts     ← gerado: scripts/brand/gerar-fundos.mjs (artes em public/brand/backgrounds/)
+components/shell/                ← AppShell, TopBar, SidebarNav, BottomNav, CreateSheet, PageHeader, RfPage, UserPanel…
+lib/preferences/                 ← PreferencesProvider (RF3): lê local/API → data-theme/density/font-scale/reduce-motion/lang; bootScript com nonce
+lib/viewer/                      ← perfil de VISUALIZAÇÃO do lab (D-32)
+lib/nav/matrix.ts · lib/pages/registry.ts   ← Matriz A e registro rota → RF → acesso (ABAS_POR_PERFIL §11)
+lib/rf/catalog.gen.ts            ← gerado: scripts/rf/gerar-catalogo.mjs dos READMEs (teste lib/rf/catalog.test.ts)
+lib/i18n/messages/{pt-BR,en,es}.json        ← todos os rótulos (glifos, mojis, abas, preferências, erros)
 ```
-Tailwind consome os tokens via `@theme` (`--color-primary: var(--primary)` …); classes utilitárias só para layout; cor, tipo e raio sempre por token.
+`packages/ui` (pacote separado) fica para quando houver um segundo app (D-30). Tailwind consome os tokens via `@theme inline` (`--color-ws-accent: var(--ws-accent)` …); classes utilitárias só para layout; cor, tipo e raio sempre por token — classes de cor fixa do Tailwind (`bg-red-500`…) e `style={{ color: "#…" }}` são barradas pelo ESLint (`eslint.config.mjs`, fixture `scripts/lint-fixtures/color-literals.tsx`).
 
-## 6. Página `/lab/design-system` (Storybook leve)
-Rota do app que renderiza, com os componentes reais, o mesmo conteúdo da galeria estática: tokens (swatches lidos do CSS computado), tipografia, ícones, cada componente em todos os estados, e os cards de tarefa/projeto em todas as variações, com seletor de tema/densidade/idioma. Playwright smoke captura a página nos 4 temas e compara com `anatomias/capturas/` (regressão visual). Até o app existir, [`anatomias/index.html`](anatomias/index.html) cumpre esse papel.
+## 6. Página `/lab/design-system` (Storybook leve) — implementada
+`app/(shell)/lab/design-system/page.tsx` renderiza, com os componentes reais, tokens (swatches lidos do CSS computado), tipografia, WS Glyphs/Moji, cada componente em todos os estados e os cards; tema/densidade/idioma trocam pela barra superior. `/lab/anatomias`, `/lab/perfis` e `/lab/decia` combinam componentes reais com os wireframes de `docs/lab/*.html` (cópia em `public/lab-static/`, incorporada sem scripts por causa da CSP). O smoke Playwright (`e2e/shell.spec.ts`) captura o shell, o sino, a Central de Perfil, `/settings` e `/lab/design-system` em `docs/testes/shell/`.
 
 ## 7. Acessibilidade (resumo)
 Texto ≥ 4,5:1 (7:1 no alto contraste), glifos/bordas/foco ≥ 3:1 (tabela §2.9) · nome do estado e da cor em texto · ícone sempre com rótulo · ordem de Tab: um destino por link (a foto não é focável; o título é o link) · `prefers-reduced-motion` e `forced-colors` respeitados · alvos ≥ 44 px em toque · i18n em todos os rótulos.

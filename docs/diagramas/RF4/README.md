@@ -877,3 +877,6 @@ Os ids dos CAs são os do corpo do card RF20 (corpo do card = card RF20). A colu
 | RF20.CA13 | detalhes (Mais detalhes) | Classes `SealBond` (SUGERIDA → ACEITA, requiresReview, origin SUGESTAO_IA), `SealService.suggestForTask/accept` · Atividades `U3 → A20` · Sequência `GET /api/tasks/seal-suggestions` e INSERT seal_bonds · Componente `SealSuggestions`, `SealService RF39` |
 | RF20.CA14 | detalhes | `TaskCreatorService.validate` (422 VALIDACAO details por campo) · Atividades `A22 → A23 → W5 → U2` · Sequência `alt erro de validação` com `details` e `correlationId` · Componente `TaskForm` (mensagens i18n) |
 | RF20.CA15 | detalhes (Mais detalhes) | Classes `ModelOffer` (pricePoints, license), `TaskItem.offeredInCounter`, `TaskCreatorService.offerInCounter` · Atividades `U3 → A24` · Sequência INSERT model_offers · Transição `DISPONIVEL → OFERECIDA` e nota |
+
+
+Tela/aba: `/tasks/new` (esqueleto em `app/(shell)/tasks/new/page.tsx`)

@@ -569,3 +569,6 @@ flowchart LR
 | RF6.CA04 (a confirmar) | Classes `ProjectScheme` (status, currentPhase, coverMode, mosaicJson), enum `ProjectStatus`, `ProjectService.listByOwner` · Atividades `A6 → A12 → P5 → W3` · Componentes `ProjectCard mosaico + barra de fases`, `ProjectService` |
 | RF6.CA05 (a confirmar) | Classes `SavedItem` (favorite, savedAt, nota de unicidade), enum `TargetType`, `SocialService.save/unsave/savedItems`, `InteractionController` · Atividades `A6 → A13 → P6 → W3`, `U5 → A19 → P6` · Sequência `GET /api/me/saved?type=PROJECT` → checkVisibility → `DELETE …/saves` → `savesCount - 1` · Componentes `SaveButton`, `InteractionController RF26`, `SocialService RF26` |
 | RF6.CA06 (a confirmar) | `ProfileService.visibilityFilter`, `AcervoService.listForViewer/takeToMyAcervo`, enum `Visibility`, `SocialService.checkVisibility` · Atividades `A2 (não) → A4`, `A8` (visibilityFilter), `U6 → A20 → P3` · Sequência `GET /api/users/maria/tabs/acervo` → "visibilityFilter = PUBLICA + EMPRESA + DEPARTAMENTO" → "Levar ao meu acervo" · Componente `app/u/[username]` |
+
+
+Tela/aba: `/profile` (esqueleto em `app/(shell)/profile/page.tsx`) · `/u/[username]` (esqueleto em `app/(shell)/u/[username]/page.tsx`)

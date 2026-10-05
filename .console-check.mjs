@@ -1,0 +1,10 @@
+import { chromium } from "@playwright/test";
+const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+const p = await b.newPage();
+p.on("console", (m) => { if (m.type() === "error" || m.type() === "warning") console.log(m.type(), m.text().slice(0, 3000)); });
+p.on("pageerror", (e) => console.log("pageerror", e.message.slice(0, 400)));
+await p.goto("http://localhost:3000/mural", { waitUntil: "networkidle" });
+await p.waitForTimeout(3000);
+await p.goto("http://localhost:3000/settings", { waitUntil: "networkidle" });
+await p.waitForTimeout(2000);
+await b.close();

@@ -727,3 +727,6 @@ flowchart LR
 | RF43.CA13 | Classes `MetricDefinition` (code, domain, formula, sourceDescription, proxyNote, unit, minSamples), `MetricSnapshot`, `MetricCalculator`, `Insight.metricRefsJson`; atividades S12 (fórmula, fonte, proxy) e I11 (redige só sobre números calculados, cita métrica e valor); nota de `MetricCalculator`; componente `ws-domain · MetricCalculator por métrica A–D (METRICAS_GESTAO.md)`. |
 | RF43.CA14 | Classes `InsightService.equipe(departmentId, viewer)`, `Insight.scope EQUIPE`, `MetricDefinition.minSamples`; atividades S10 (CHEFE/EMPRESA) → E2, S11 (pesquisas D: mínimo 5 respondentes), S12 (benchmarks internos anonimizados, tendência, recomendações acionáveis); componente `InsightController.GET insights_equipe`. |
 | RF43.CA15 | Classe `MetricDefinition.minSamples` (A/B: 3 projetos ou sinais); atividades S11 → W5 (tela explica o que falta coletar em vez de números vazios); componente `InsufficientDataState`. |
+
+
+Tela/aba: `/autopilot` (esqueleto em `app/(shell)/autopilot/page.tsx`) · `/insights` (esqueleto em `app/(shell)/insights/page.tsx`) · `/departments/[slug]/team` (esqueleto em `app/(shell)/departments/[slug]/team/page.tsx`) · `/admin` (esqueleto em `app/(shell)/admin/page.tsx`)

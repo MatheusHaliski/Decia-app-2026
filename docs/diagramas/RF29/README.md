@@ -662,3 +662,6 @@ flowchart LR
 | RF29.CA09 | Classe `DecisionTraceService.completenessIndicator`; atividades `U9 → S18 → D6` (`vw_decisions_with_trace`, `metric_snapshots`); nota do estado `CONCLUIDO`; componentes `app/admin/dashboard`, `platform: vw_decisions_with_trace` |
 
 > Dúvidas de modelagem registradas em `docs/DECISOES.md`: nome do enum da aresta (`relation`) não existe na TAXONOMIA (listado como nota); `409 SESSAO_JA_VINCULADA` e as rotas REST são propostas; `TaskService`/`ProjectService` (RF20/RF21) são dependências assumidas.
+
+
+Tela/aba: `/projects/[id]` (esqueleto em `app/(shell)/projects/[id]/page.tsx`) · `/decia` (esqueleto em `app/(shell)/decia/page.tsx`) · `/decia/[sessionId]` (esqueleto em `app/(shell)/decia/[sessionId]/page.tsx`) · `/decia/review` (esqueleto em `app/(shell)/decia/review/page.tsx`) · `/lab/decia` (esqueleto em `app/(shell)/lab/decia/page.tsx`)

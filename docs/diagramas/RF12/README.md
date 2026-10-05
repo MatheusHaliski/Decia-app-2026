@@ -633,3 +633,6 @@ flowchart LR
 | RF12.CA06 | eventos `TaskUpdated`/`ProjectUpdated`, `SearchIndexPort`, `CardArtService.rebuildMosaic`, `ProjectTask.snapshotJson`, `ProjectScheme.hasBlockingPending`, `Notification` (PRAZO_PROXIMO) | S15, S16, S17, D5, D6 | 26–29 | — (efeitos após `Editavel`) | `OutboxRelay`, `OpenSearchIndexAdapter`, `CardCacheAdapter`, `NotificationFeedAdapter` |
 
 **Dúvidas para confirmar:** (a) escopo exato: RF12 = formulário de dados e RF21/RF22 = Mesa (Quadro/Linha do tempo/canvas), ou o card RF12 engloba a Mesa também; (b) rascunho de tarefa em Redis (proposta) × coluna `autosaveDraftJson` em `tasks`; (c) edição de dados descritivos de projeto gera `ProjectVersion` (`reason = DADOS`) ou só alterações estruturais (RF22.CA02); (d) política de concorrência: tarefa `409 CONFLITO_VERSAO` × projeto último-vence com aviso; (e) sprint do card.
+
+
+Tela/aba: `/profile` (esqueleto em `app/(shell)/profile/page.tsx`) · `/tasks/[id]/edit` (esqueleto em `app/(shell)/tasks/[id]/edit/page.tsx`) · `/projects/[id]/edit` (esqueleto em `app/(shell)/projects/[id]/edit/page.tsx`)

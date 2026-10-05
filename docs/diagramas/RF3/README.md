@@ -601,3 +601,6 @@ Endpoints propostos da aba Seus dados: `GET /api/me/data-map` · `POST|GET /api/
 · `GET /api/me/policies` · `GET|PUT /api/me/consents/{purpose}`. Jobs agendados: `AccountAnonymizationJob` (diário),
 `ExportExpiryJob` (horário), ambos com `@Scheduled`, lock e teste de agendamento.
 
+
+
+Tela/aba: `/settings` (esqueleto em `app/(shell)/settings/page.tsx`)

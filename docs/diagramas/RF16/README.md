@@ -519,3 +519,6 @@ flowchart LR
 | RF16.CA05 | `ProfileController.GET_api_users_username_tabs_tab`, `ProfileService.loadTab` · Atividades `W2` (lê tab + filtros + page), `U2 → A12`, `W5` (InteractionBar) · Sequência msgs 1–2 e 22–27 (`?fase=&page=&size=20`, grade com InteractionBar) · Componentes `FilterBar`, `Pagination`, `InteractionBar RF18/RF19`, `InteractionController RF18/RF19` |
 | RF16.CA06 | Enum `ProfileType`, `ProfileService.institutionalShortcut` · Atividades `W1` (locale, responsivo), `A4 → A5`, `U4 → W6` (RF14 / RF15) · Sequência msg 2 (locale) · Componentes `InstitutionalShortcut`, `i18n next-intl` |
 | (escrita única) Seguir | `Follow`, `SocialService.follow`, `FollowController` · Atividades `U3 → A16 → P5` · Sequência msgs 41–46 · Máquina de estados *Follow* · pertence ao RF27.CA06 |
+
+
+Tela/aba: `/u/[username]` (esqueleto em `app/(shell)/u/[username]/page.tsx`) · `/lab/perfis` (esqueleto em `app/(shell)/lab/perfis/page.tsx`)

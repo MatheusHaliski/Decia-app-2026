@@ -528,3 +528,6 @@ flowchart LR
 | RF30.CA06 | Classes `DeciaBridgeService.openSessionFromProject`, `DeciaSession.linkedProjectId`; atividades `W3 → U5 → S13 → D5`; sequência bloco «CA06» (`POST /api/projects/{id}/decia-session`, EM_DECISAO); transição `RASCUNHO → EM_DECISAO`; componente `ProjectDeciaController (RF29)` |
 
 > Dúvidas para `docs/DECISOES.md`: onde vive o rascunho não persistido (Redis com TTL vs. somente cliente vs. `ProjectScheme.autosaveDraftJson` — esta última contradiz CA03); `DraftCachePort` e `409 RASCUNHO_EXPIRADO` são propostas; TaskItems novos criados pela proposta recebem `sourceKind AUTOPILOT`, mas tarefas reaproveitadas de modelos entram como `REMIX`.
+
+
+Tela/aba: `/autopilot` (esqueleto em `app/(shell)/autopilot/page.tsx`)

@@ -558,3 +558,6 @@ stateDiagram-v2
   end note
 ```
 
+
+
+Tela/aba: `/register` (esqueleto em `app/(auth)/register/page.tsx`) · `/verify-email` (esqueleto em `app/(auth)/verify-email/page.tsx`)

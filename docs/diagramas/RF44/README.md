@@ -591,3 +591,6 @@ flowchart LR
 | RF44.CA08 | Classes `HseWeights` (companyId, version, weightsJson, validFrom), `EfficiencyScoreSnapshot.weightsVersion`, `PriorityIndexCalculator` e `HseCalculator` em `ws-domain`; notas das classes (determinístico, testável, METRICAS_GESTAO.md, mudar pesos não recalcula dias passados); lane L_dom; componentes `ws-domain · PriorityIndexCalculator`, `HseCalculator (HseWeights versionado)`. |
 | RF44.CA09 | Classes `DailyTask.suggestedByAi/aiInferenceId`, `AiInferenceLog`, `AiCapability` TAREFA_DO_DIA e HSE; atividades I1 → I2 (✦) / I3 (motor local, números inalterados), I4; sequência msgs 11–13; componentes `AiSpark ✦`, `LocalEngine (redação simplificada)`. |
 | RF44.CA10 | Classes `UserPreferences.notificationPrefsJson (dailyTaskAt 08:00)/timezone`, `Notification`, `NotificationPort`; atividade W6 (notificação 8h no fuso, opt-in, i18n); componentes `platform · scheduler 8h por fuso`, `persistence-cassandra · notifications_by_user`, `i18n`. |
+
+
+Tela/aba: `/profile` (esqueleto em `app/(shell)/profile/page.tsx`) · `/tasks` (esqueleto em `app/(shell)/tasks/page.tsx`) · `/desk` (esqueleto em `app/(shell)/desk/page.tsx`)

@@ -24,7 +24,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
-        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: bootScript }} />
+        {/* o navegador esconde o atributo nonce no DOM: suppressHydrationWarning evita o falso aviso de hidratação */}
+        <script nonce={nonce} suppressHydrationWarning dangerouslySetInnerHTML={{ __html: bootScript }} />
       </head>
       <body>
         <Providers>{children}</Providers>

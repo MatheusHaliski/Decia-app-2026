@@ -550,3 +550,6 @@ flowchart LR
 | RF40.CA06 | Classes `ModelOffer.viewsCount/remixCount/pointsEarned/status`, `CounterService.myOffers/withdraw`, `OfferStatus`; atividades O4, W7, W5, S17 (cópias permanecem); sequência msgs 32–38; transição `ATIVA → RETIRADA`; componentes `app/profile (Meus modelos oferecidos)`, `GET me_model_offers`. |
 | RF40.CA07 | Classes `ModelOffer.highlightedBy`, `CounterService.highlight`, `SealService.nominate`, `SealBond.basis` INDICACAO; atividades B5, W6, S18 (403 para não EMPRESA/CHEFE), S19 (crédito do autor preservado); transições `ATIVA → ATIVA` (destaque → INDICACAO; APROVADA → shelf CHANCELADO); componente `SealService (RF39)`. |
 | RF40.CA08 | Nota da classe `ModelOffer` (nenhum campo de moeda real), `DeciaPointsLedgerEntry.correlationId`, `AuditLog`; atividade S10 e D3/D5 (ledger + audit_log); sequência msg 30 (audit_log correlationId); nota da máquina de estados (nenhum gateway); componentes `platform · AuditLog` — não há componente de pagamento no diagrama. |
+
+
+Tela/aba: `/models` (esqueleto em `app/(shell)/models/page.tsx`) · `/profile` (esqueleto em `app/(shell)/profile/page.tsx`) · `/store` (esqueleto em `app/(shell)/store/page.tsx`)

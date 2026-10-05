@@ -706,3 +706,6 @@ flowchart LR
 | RF23.CA06 (a confirmar — importar **projeto** de provedor) | `TaskCreatorService.importFolderAsProject`, `ExternalDocPort.listFolder`, `TaskController POST /api/tasks/import-project`, `ProjectScheme` RASCUNHO com uma `ProjectTask` por arquivo da pasta (ou item do plano Planner/Google Tasks) · Sem passo próprio nos diagramas 2–4 até confirmação do CA |
 
 > Dúvidas para `docs/DECISOES.md`: (1) o título cita **projetos** de outros provedores, mas nenhum CA do board descreve essa importação — RF23.CA06 acima é proposta (pasta Drive/SharePoint → PASTA explodida em tarefas + `ProjectScheme` RASCUNHO; Planner/Google Tasks → `ProjectTask` por item); (2) `NotificationType` não tem valor para "tarefa reutilizada" — usei `REMIX` (existente); alternativa é acrescentar `TAREFA_REUTILIZADA` à TAXONOMIA; (3) eventos `TaskImported`, `TaskExtracted`, `TaskDeletedWithSnapshot` e o erro `422 PROVEDOR_INDISPONIVEL` são propostas; (4) a importação de provedores continua sendo também parte do RF20 (Criador de Tarefas) — o RF23 reutiliza `TaskCreatorService` e não duplica o formulário.
+
+
+Tela/aba: `/tasks/new` (esqueleto em `app/(shell)/tasks/new/page.tsx`)

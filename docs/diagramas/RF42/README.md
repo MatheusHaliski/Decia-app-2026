@@ -602,3 +602,6 @@ flowchart LR
 | RF42.CA08 | Classes `DeciaPointsLedgerEntry.eventCode/sessionId`, `DeliberativeProfile`, `AiCreditLedgerEntry.departmentId`; atividade W5 (perfil deliberativo por evento/sessão, dashboard por departamento e custo de IA); componentes `app/profile`, `app/admin e app/companies`. |
 | RF42.CA09 | Classes `Company.pointsPolicyJson`, `DeciaPointsLedgerEntry.expiresAt`, `PointsDonation` (monthKey, ledgerDebitId, ledgerCreditId), `DeciaPointsService.expire/donate`, eventos `EXPIRACAO`, `DOACAO_ENVIADA`, `DOACAO_RECEBIDA`; atividades U5, W3, S16 → E3 (409 LIMITE_DOACAO), S17 (doador sem ganho), S19 (job mensal, aviso 30 dias); estado composto `CONFIRMADO` (Vigente → AvisoExpiracao → Expirado); componente `scheduler mensal de expiração`. |
 | RF42.CA10 | Nota da classe `DeciaPointsLedgerEntry` (sem moeda real), `AuditLog.correlationId`; atividade D5 e S18 (audit_log); sequência msg 31 (audit_log correlationId, sem dados sensíveis); componente `platform · AuditLog` — nenhum componente de gateway ou campo monetário em qualquer diagrama. |
+
+
+Tela/aba: `/points` (esqueleto em `app/(shell)/points/page.tsx`) · `/store` (esqueleto em `app/(shell)/store/page.tsx`)

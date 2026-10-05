@@ -507,3 +507,6 @@ flowchart LR
 | RF34.CA06 | Classes `AiInferenceLog` (EXTRAIR_DESENHO / EXTRAIR_DOCUMENTO, modelo, custo, latência, fallbackUsed), `LocalStructuralEngine ..|> AiProviderPort`, `TaskItem.accessClass`; atividades `S6 → A3 → S9 → W2`; sequência bloco «CA01 e CA06» alt «sem IA externa ou RESTRITO/SIGILOSO»; transição `PROCESSANDO → PRONTA` (leitura estrutural) e nota; componentes `FallbackBanner`, `ai-providers: LocalStructuralEngine` |
 
 > Dúvidas para `docs/DECISOES.md`: valores de `ExtractionResult.status` (proposta PROCESSANDO · PRONTA · REVISADA · CONVERTIDA · FALHA); vínculo da tarefa derivada com a origem — usei `TaskItem.originalTaskId` (campo de crédito de remix) por não existir `SourceKind` de extração (alternativa: novo `SourceKind.EXTRACAO`); `OcrPort`, `MediaStoragePort`, `409 ANTIVIRUS_PENDENTE` e bibliotecas CAD (ezdxf, IfcOpenShell) são propostas; `.dwg` exige conversão prévia para `.dxf` (ODA File Converter) — confirmar licenciamento.
+
+
+Tela/aba: `/tasks/[id]` (esqueleto em `app/(shell)/tasks/[id]/page.tsx`) · `/tasks/new` (esqueleto em `app/(shell)/tasks/new/page.tsx`)

@@ -490,3 +490,6 @@ flowchart LR
 | RF31.CA05 | Classes `AiInferenceLog` (SIMULAR_CENARIO, fallbackUsed), `ProjectScenario.aiInferenceId`, `LocalCpmEngine ..|> SchedulePort`; atividades `S6 → A2 → S7` e `W1` (aviso de cálculo só local); sequência bloco «CA01, CA02 e CA05» alt «sem IA externa»; nota do estado `RASCUNHO`; componente `ai-providers: LocalCpmEngine` |
 
 > Dúvidas para `docs/DECISOES.md`: `ScenarioStatus` não é enum nomeado na TAXONOMIA (status listado inline em `ProjectScenario`); `SchedulePort` e `409 VERSAO_CONFLITO` (optimistic lock por `ProjectScheme.version`) são propostas; quem pode simular um projeto alheio (chefe revisor, RF32.CA06) — aqui só dono/responsável criam cenários.
+
+
+Tela/aba: `/projects/[id]/simulate` (esqueleto em `app/(shell)/projects/[id]/simulate/page.tsx`)

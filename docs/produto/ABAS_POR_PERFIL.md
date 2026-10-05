@@ -359,3 +359,67 @@ Para o **CURADOR** nada some; ganha o grupo Gestão › Curadoria (§7.e) e a et
 ## 10. Como ler o wireframe
 
 `docs/lab/perfis.html` é estático e usa só `docs/design-system/tokens.css` + `components.css` (classes `ws-*`). Controles no topo: **perfil** (Empregado · Empresa · Chefe · Curador · Admin), **visão** (próprio perfil × como terceiro) e **tema** (`data-theme` claro · escuro · contraste · blueprint). Cada combinação pode ser aberta por URL: `perfis.html?perfil=chefe&visao=terceiro&tema=escuro`. As abas marcadas com a etiqueta **oculta** aparecem apagadas na visão "terceiro" para mostrar o que a API omite; as marcadas **proposta** são as deste documento. Capturas (1440 px, tema claro, visão própria): `docs/lab/capturas/perfis-{empregado,empresa,chefe,curador,admin}.png`.
+
+
+---
+
+## 11. Implementado em (etapa (b) — shell e páginas-esqueleto)
+
+Fonte: `lib/pages/registry.ts` (rota → arquivo → RFs → visibilidade por perfil) e `lib/nav/matrix.ts` (Matriz A). Cada página é um esqueleto (`components/shell/RfPage.tsx`): cabeçalho com chips dos RFs, sub-abas da matriz, bloco "O que esta aba vai fazer" com os CAs copiados dos READMEs (`lib/rf/catalog.gen.ts`) e `403 ACESSO_NEGADO` simulado quando a célula é **O** para o perfil de visualização (`lib/viewer`, D-32). Matrizes: A menu lateral · B perfil · C empresa · D departamento · E globais · auth · lab · global.
+
+| Aba | Rota | Arquivo | RF(s) | Matriz |
+|---|---|---|---|---|
+| Mural | `/mural` | `app/(shell)/mural/page.tsx` | RF27 RF18 RF19 | A |
+| Buscar | `/search` | `app/(shell)/search/page.tsx` | RF27 RF17 | A |
+| Memória Institucional | `/memory` | `app/(shell)/memory/page.tsx` | RF33 | A |
+| Empresas & Departamentos | `/companies` | `app/(shell)/companies/page.tsx` | RF28 | A |
+| Página da empresa | `/companies/[slug]` | `app/(shell)/companies/[slug]/page.tsx` | RF15 RF28 RF25 RF39 RF24 | C |
+| Página do departamento | `/departments/[slug]` | `app/(shell)/departments/[slug]/page.tsx` | RF14 RF28 RF9 | D |
+| Balcão de Modelos | `/models` | `app/(shell)/models/page.tsx` | RF40 | A |
+| Mensagens | `/messages` | `app/(shell)/messages/page.tsx` | RF46 RF10 | A |
+| Conversa | `/messages/[conversationId]` | `app/(shell)/messages/[conversationId]/page.tsx` | RF46 RF13 | A |
+| Meu perfil | `/profile` | `app/(shell)/profile/page.tsx` | RF6 RF19 RF12 RF25 RF44 RF45 RF40 | B |
+| Perfil | `/u/[username]` | `app/(shell)/u/[username]/page.tsx` | RF16 RF6 RF18 | B |
+| Acervo de Tarefas | `/tasks` | `app/(shell)/tasks/page.tsx` | RF41 RF44 RF18 RF13 | A |
+| Tarefa | `/tasks/[id]` | `app/(shell)/tasks/[id]/page.tsx` | RF41 RF7 RF34 RF13 RF10 | A |
+| Editar tarefa | `/tasks/[id]/edit` | `app/(shell)/tasks/[id]/edit/page.tsx` | RF8 RF11 RF12 | A |
+| Anexos & Evidências | `/attachments` | `app/(shell)/attachments/page.tsx` | RF41 | A |
+| Mesa de Trabalho | `/desk` | `app/(shell)/desk/page.tsx` | RF21 RF22 RF44 | A |
+| Projeto | `/projects/[id]` | `app/(shell)/projects/[id]/page.tsx` | RF7 RF29 RF13 RF10 | A |
+| Editar projeto na Mesa | `/projects/[id]/edit` | `app/(shell)/projects/[id]/edit/page.tsx` | RF22 RF12 RF8 RF11 | A |
+| Simulador de Cenários | `/projects/[id]/simulate` | `app/(shell)/projects/[id]/simulate/page.tsx` | RF31 | A |
+| Espelho de Conformidade | `/projects/[id]/mirror` | `app/(shell)/projects/[id]/mirror/page.tsx` | RF32 | A |
+| Criar Tarefa | `/tasks/new` | `app/(shell)/tasks/new/page.tsx` | RF4 RF23 RF34 | A |
+| Criar Projeto | `/projects/new` | `app/(shell)/projects/new/page.tsx` | RF5 RF20 | A |
+| Plano Anual / Trilha | `/plans` | `app/(shell)/plans/page.tsx` | RF24 | A |
+| Autopilot | `/autopilot` | `app/(shell)/autopilot/page.tsx` | RF30 RF26 RF43 | A |
+| DECIA | `/decia` | `app/(shell)/decia/page.tsx` | RF29 RF37 | A |
+| Sessão DECIA | `/decia/[sessionId]` | `app/(shell)/decia/[sessionId]/page.tsx` | RF29 RF13 RF37 RF46 | A |
+| Insights | `/insights` | `app/(shell)/insights/page.tsx` | RF43 RF20 RF26 | E |
+| Metas coletivas | `/goals` | `app/(shell)/goals/page.tsx` | RF35 RF24 | E |
+| DECIA Points | `/points` | `app/(shell)/points/page.tsx` | RF42 | E |
+| Loja Work Station | `/store` | `app/(shell)/store/page.tsx` | RF42 RF40 | E |
+| Destaques | `/highlights` | `app/(shell)/highlights/page.tsx` | RF35 | E |
+| Benefícios | `/benefits` | `app/(shell)/benefits/page.tsx` | RF39 | E |
+| Reconhecimentos | `/recognitions` | `app/(shell)/recognitions/page.tsx` | RF35 RF28 | E |
+| Dashboard do emissor | `/issuer/dashboard` | `app/(shell)/issuer/dashboard/page.tsx` | RF28 | A |
+| Departamentos & chefes | `/companies/[slug]/manage/departments` | `app/(shell)/companies/[slug]/manage/departments/page.tsx` | RF28 RF9 | A |
+| Minha equipe | `/departments/[slug]/team` | `app/(shell)/departments/[slug]/team/page.tsx` | RF9 RF10 RF28 RF43 RF36 RF46 | D |
+| Fila de chancelas | `/seals/review` | `app/(shell)/seals/review/page.tsx` | RF39 RF28 | A |
+| Decisões em revisão | `/decia/review` | `app/(shell)/decia/review/page.tsx` | RF29 | A |
+| Chancelas & políticas | `/seals` | `app/(shell)/seals/page.tsx` | RF39 | A |
+| Dossiês de transição | `/handoffs` | `app/(shell)/handoffs/page.tsx` | RF36 | A |
+| Curadoria | `/curation` | `app/(shell)/curation/page.tsx` | RF28 RF39 RF35 | A |
+| Admin | `/admin` | `app/(shell)/admin/page.tsx` | RF18 RF28 RF43 | E |
+| Preferências | `/settings` | `app/(shell)/settings/page.tsx` | RF3 RF38 | global |
+| Notificações | `/notifications` | `app/(shell)/notifications/page.tsx` |  | global |
+| Entrar | `/login` | `app/(auth)/login/page.tsx` | RF2 | auth |
+| Criar conta | `/register` | `app/(auth)/register/page.tsx` | RF1 | auth |
+| Recuperar senha | `/password-reset` | `app/(auth)/password-reset/page.tsx` | RF2 | auth |
+| Confirmar e-mail | `/verify-email` | `app/(auth)/verify-email/page.tsx` | RF1 | auth |
+| Design system | `/lab/design-system` | `app/(shell)/lab/design-system/page.tsx` | RF38 | lab |
+| Anatomias e Estúdio | `/lab/anatomias` | `app/(shell)/lab/anatomias/page.tsx` | RF38 RF11 | lab |
+| Abas por perfil | `/lab/perfis` | `app/(shell)/lab/perfis/page.tsx` | RF14 RF15 RF16 | lab |
+| Sessão DECIA e Mesa | `/lab/decia` | `app/(shell)/lab/decia/page.tsx` | RF29 RF37 | lab |
+
+Itens ainda sem rota própria (ficam como sub-abas/ações): Tarefa do Dia (widget em `/tasks`, `/desk` e sub-aba 9 do perfil), Políticas da empresa (sub-aba Gestão de `/companies/[slug]`), Comunicados (sub-aba proposta), `/meetings/new` (RF37), `/groupings/[id]` (RF25), `/memory/explore` (RF33), `/plans/new|[id]|compare` (RF24) — ver Q-101…Q-106 em `docs/DECISOES.md`.

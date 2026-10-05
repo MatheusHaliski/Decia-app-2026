@@ -610,3 +610,6 @@ flowchart LR
 | RF15.CA06 | `AccessPolicy.requireOwner/visibilityFilter`, `Company.ownerUserId`, `Company.cnpj` (AES), `InstitutionalService.managementMenu` | U8, S6, S8, S19, W10 | 17; `alt` 403 ACESSO_NEGADO (Gestão) | notas de PUBLICADO (visitante só PUBLICO) | `RoleGate`, `AccessPolicy guards`, `i18n next-intl`, layout responsivo |
 
 **Dúvidas para confirmar:** (a) aceitar a sub-aba **Comunicados** e a entidade `Announcement` (ABAS_POR_PERFIL §7.a, P-06) — ou só o atalho para o Mural filtrado; (b) "órgão público/privado" **sem conta** no Work Station (`OrgEntity`: fornecedor, órgão externo) ganha página pública própria (`/orgs/[id]`) ou só a ficha no card da tarefa; (c) `Company.status` não tem valores na TAXONOMIA — propor ATIVA · SUSPENSA · ENCERRADA; (d) Plano Anual oficial sai do perfil "Meus Planos" da conta EMPRESA e fica só aqui (P-04/Q-08); (e) visitante anônimo vê a página inteira (métricas e Pessoas nomes/cargos) ou só Sobre; (f) sprint do card.
+
+
+Tela/aba: `/companies/[slug]` (esqueleto em `app/(shell)/companies/[slug]/page.tsx`) · `/lab/perfis` (esqueleto em `app/(shell)/lab/perfis/page.tsx`)

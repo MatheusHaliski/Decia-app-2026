@@ -527,3 +527,6 @@ flowchart LR
 | RF33.CA06 | Classes `DomainEventOutbox`, `PipelineJob` (status, attempts, lastError), `PipelineJobStatus`, `AiInferenceLog result ERRO`, `OutboxPublisher`; atividades `S2`, `S4 -.-> S6` (negócio intacto); sequência bloco «CA01 e CA06» alt «OpenSearch indisponível»; transições `RODANDO → REPROCESSAR → RODANDO/FALHA` e nota; componentes `platform: OutboxPublisher · PipelineJob worker` |
 
 > Dúvidas para `docs/DECISOES.md`: Claude não oferece API de embeddings — `EmbeddingPort` precisa de Gemini (text-embedding) ou modelo local (`ai.local.only`), e a TAXONOMIA lista só CLAUDE · GEMINI · LOCAL como providers; comportamento com `opensearch.enabled = false` (fallback MySQL FULLTEXT sem semântica ou funcionalidade desativada); `MemorySourceType` e `PipelineJobStatus` não são enums nomeados na TAXONOMIA; score mínimo para "sem precedente" é parâmetro a definir.
+
+
+Tela/aba: `/memory` (esqueleto em `app/(shell)/memory/page.tsx`)

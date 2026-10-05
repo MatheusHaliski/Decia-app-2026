@@ -590,3 +590,6 @@ flowchart LR
 | RF11.CA06 | `TaskItem.cardLayout/cardSkin` (planos), `CardArtResolver.readCardArt` (tolerante), `CardCachePort`, `CardArtService.rebuildMosaic`, evento `CardArtChanged` | W1, S5, S6, D1, D3 | 3–5, 27–32, 35 | `Aplicado` publica `CardArtChanged`; nota de `Cover` | `lib/card-art` compartilhada, `CardCacheAdapter`, `OutboxRelay`, `ProjectSchemeRepository` |
 
 **Dúvidas para confirmar:** (a) aprovar `cardArtJson` + `cardLayout` como colunas novas em `tasks` e `project_schemes` (TAXONOMIA só tem `cardSkin`, `coverMode`, `coverUrl`, `mosaicJson`); (b) nome na UI: "Estúdio do card" × "editor de arte de fundo" (P-17); (c) limite de 2 destaques decorativos; (d) unificar `CoverMode` (AUTO·MANUAL·IA) e `ProjectCoverMode` (MOSAICO·FOTO·IA) — Q-41; (e) arte com IA debita a cota de IA do usuário (RF42.CA06) ou tem cota própria `CAPA_IA_LOTE` da Loja; (f) sprint do card.
+
+
+Tela/aba: `/tasks/[id]/edit` (esqueleto em `app/(shell)/tasks/[id]/edit/page.tsx`) · `/projects/[id]/edit` (esqueleto em `app/(shell)/projects/[id]/edit/page.tsx`) · `/lab/anatomias` (esqueleto em `app/(shell)/lab/anatomias/page.tsx`)

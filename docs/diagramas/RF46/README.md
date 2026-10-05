@@ -719,3 +719,6 @@ flowchart LR
 > 4. Grupos: permitir conversas em grupo já na primeira versão ou só 1:1? `ConversationKind.GRUPO` está modelado, mas pode ficar atrás de `messagingPolicyJson.allowGroups`.
 > 5. Atribuição de **projeto** inteiro: altera `ProjectScheme.ownerId` ou só cria responsável? Modelei como responsável (sem trocar dono); confirmar. Para tarefa dentro de projeto, atualiza `ProjectTask.responsibleId` (campo `projectTaskId` na `Assignment`).
 > 6. Posição no menu (ícone na barra superior + item Mensagens em Descobrir) e códigos HTTP (`403 EMPRESA_DIFERENTE`, `409 ATRIBUICAO_JA_RESPONDIDA`, `422 MOTIVO_OBRIGATORIO`) são propostas.
+
+
+Tela/aba: `/messages` (esqueleto em `app/(shell)/messages/page.tsx`) · `/messages/[conversationId]` (esqueleto em `app/(shell)/messages/[conversationId]/page.tsx`) · `/decia/[sessionId]` (esqueleto em `app/(shell)/decia/[sessionId]/page.tsx`) · `/departments/[slug]/team` (esqueleto em `app/(shell)/departments/[slug]/team/page.tsx`)

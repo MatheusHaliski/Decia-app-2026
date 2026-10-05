@@ -68,6 +68,36 @@ jobs:
       - name: Dependências de produção sem vulnerabilidade alta ou crítica
         run: npm audit --omit=dev --audit-level=high
 
+  e2e:
+    name: "E2E do shell (Playwright · Chromium)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --no-fund
+      - name: "Navegador do Playwright"
+        run: npx playwright install --with-deps chromium
+      - name: "Smoke do shell (sidebar, sino, Central de Perfil, tema, idioma, settings, lab)"
+        run: npx playwright test
+        env:
+          CHROMIUM_PATH: ""
+          NEXT_PUBLIC_API_BASE_URL: http://127.0.0.1:9
+      - name: "Relatório e capturas"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-report
+          path: |
+            playwright-report/
+            test-results/
+            docs/testes/shell/
+          retention-days: 7
+
   secrets:
     name: Segredos (gitleaks, histórico inteiro)
     runs-on: ubuntu-latest

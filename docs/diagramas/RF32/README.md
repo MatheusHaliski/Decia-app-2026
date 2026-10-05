@@ -513,3 +513,6 @@ flowchart LR
 | RF32.CA06 | Classe `AccessPolicy.canEditProject`; atividades `U6 → S4 → ... → S8 → W4` (modo leitura) e `S9 → E4`; sequência bloco «CA02, CA05 e CA06» (resposta em modo leitura) e bloco «CA03» alt 403 para revisor; nota do estado `Item`; componente `MirrorController` |
 
 > Dúvidas para `docs/DECISOES.md`: `ItemStatus` e `Requirement` não são enums nomeados na TAXONOMIA (valores inline); `RuleEnginePort` e `409 CONFORMIDADE_PENDENTE` são propostas (o card pede "aviso, não impedimento" — alternativa: 200 com flag `requiresOverride`); a tarefa faltante recebe `sourceProjectId` mas não há `SourceKind` específico para "criada pelo Espelho".
+
+
+Tela/aba: `/projects/[id]/mirror` (esqueleto em `app/(shell)/projects/[id]/mirror/page.tsx`)

@@ -548,3 +548,6 @@ flowchart LR
 | RF35.CA06 | Classes `CollectiveGoal.minEffortCheck`, `Company.pointsPolicyJson` (mínimo de esforço, limite por emissor/mês), `RecognitionService.monthlyCount`, `AuditLog`; atividades `S2 → E2` (422 META_TRIVIAL), `S15 → E3` (429 LIMITE_EMISSOR_MES), `S3`/`S16` (AuditLog); sequência blocos «CA01 e CA06» e «CA04 e CA06» (alts de anti-abuso, INSERT audit_log); transição `[*] → ABERTA` condicionada ao anti-abuso; componente `platform: AuditLog` |
 
 > Dúvidas para `docs/DECISOES.md`: `GoalStatus`, `RecognitionSource` e `HighlightTargetType` não são enums nomeados na TAXONOMIA (valores inline); `DeciaPointsService` (RF42) e `DeliberativeProfileService` (RF19) são dependências assumidas; código HTTP do limite mensal (429 LIMITE_EMISSOR_MES vs. 409) e onde fica o mínimo de esforço (`Company.pointsPolicyJson`) são propostas; `Highlight` não tem campo de status — se precisar de rascunho/publicado explícito, acrescentar.
+
+
+Tela/aba: `/goals` (esqueleto em `app/(shell)/goals/page.tsx`) · `/highlights` (esqueleto em `app/(shell)/highlights/page.tsx`) · `/recognitions` (esqueleto em `app/(shell)/recognitions/page.tsx`) · `/curation` (esqueleto em `app/(shell)/curation/page.tsx`)
