@@ -1,328 +1,258 @@
 package br.gov.pr.secid.workstation.application.identity;
 
 import br.gov.pr.secid.workstation.application.audit.AuditActions;
-import br.gov.pr.secid.workstation.application.audit.AuditEntry;
-import br.gov.pr.secid.workstation.application.audit.AuditPort;
 import br.gov.pr.secid.workstation.application.common.ApiException;
-import br.gov.pr.secid.workstation.application.ratelimit.InMemoryRateLimit;
 import br.gov.pr.secid.workstation.domain.identity.AccountStatus;
-import br.gov.pr.secid.workstation.domain.identity.ProfileType;
 import br.gov.pr.secid.workstation.domain.identity.Role;
 import br.gov.pr.secid.workstation.domain.identity.User;
-import br.gov.pr.secid.workstation.domain.identity.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
 import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
 
-/**
- * Login sem oráculo e bloqueio atômico (SEG RN49.02/RN49.03, CA01–CA03): 401 genérico e mesmo caminho para conta
- * inexistente, senha errada e conta bloqueada; reserva antes do hash; 40 pedidos em paralelo avaliam no máximo 5
- * senhas reais; 403/2FA só após a senha certa; reconferência com 429.
- */
+/** RF2.CA07 (sem oráculo), CA08 (bloqueio atômico antes do hash), CA09 (reconferência), CA04 (reuso), CA14 (auditoria sem segredo). */
 class IdentityServiceTest {
-    private static final Instant NOW = Instant.parse("2026-10-05T12:00:00Z");
-    private static final String SENHA = "Senha-certa-1";
-
-    /** Hasher determinístico e barato que conta quantas vezes comparou contra um hash REAL (não o falso). */
-    static final class CountingHasher implements PasswordHasherPort {
-        final AtomicInteger realEvaluations = new AtomicInteger();
-        final AtomicInteger dummyEvaluations = new AtomicInteger();
-        boolean weakHashes;
-
-        @Override
-        public String hash(CharSequence raw) {
-            return "h:" + raw;
-        }
-
-        @Override
-        public boolean matches(CharSequence raw, String encoded) {
-            if (encoded.startsWith("h:dummy-")) {
-                dummyEvaluations.incrementAndGet();
-                return false;
-            }
-            realEvaluations.incrementAndGet();
-            return encoded.equals("h:" + raw);
-        }
-
-        @Override
-        public boolean needsRehash(String encoded) {
-            return weakHashes;
-        }
-    }
-
-    /** Auditoria em memória. */
-    static final class RecordingAudit implements AuditPort {
-        final List<AuditEntry> entries = new CopyOnWriteArrayList<>();
-
-        @Override
-        public void record(AuditEntry entry) {
-            entries.add(entry);
-        }
-
-        AuditEntry last() {
-            return entries.get(entries.size() - 1);
-        }
-    }
-
-    private final UserRepository users = mock(UserRepository.class);
-    private final CountingHasher hasher = new CountingHasher();
-    private final Clock clock = Clock.fixed(NOW, ZoneOffset.UTC);
-    private final InMemoryRateLimit rateLimit = new InMemoryRateLimit(clock, 1_000);
-    private final RecordingAudit audit = new RecordingAudit();
-    private IdentityService service;
-    private User maria;
+    /** Senha e refresh de teste gerados por execução — nada fixo no repositório. */
+    final String password = "pw-" + UUID.randomUUID();
+    final RequestContext ctx = new RequestContext("203.0.113.7", "JUnit/5");
+    final Fakes.Users users = new Fakes.Users();
+    final Fakes.SpyHasher hasher = new Fakes.SpyHasher();
+    final Fakes.Audit audit = new Fakes.Audit();
+    final InMemoryRateLimit rateLimit = new InMemoryRateLimit();
+    final InMemorySessionStore sessions = new InMemorySessionStore();
+    IdentityService identity;
+    User maria;
 
     @BeforeEach
-    void setUp() throws Exception {
-        service = new IdentityService(users, hasher, rateLimit, audit, clock);
-        maria = user("maria", "maria.silva@pr.gov.br", AccountStatus.ACTIVE);
-        when(users.findByEmailHash(anyString())).thenReturn(Optional.empty());
-        when(users.findByUsernameIgnoreCase(anyString())).thenReturn(Optional.empty());
-        when(users.findByEmailHash(Identifiers.emailHash("maria.silva@pr.gov.br"))).thenReturn(Optional.of(maria));
-        when(users.findByUsernameIgnoreCase("maria")).thenReturn(Optional.of(maria));
-        when(users.findById(maria.getId())).thenReturn(Optional.of(maria));
-        when(users.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+    void setUp() {
+        identity = new IdentityService(users, Fakes.EMAIL_HASHER, hasher, rateLimit, sessions, Fakes.NO_MIRROR, Fakes.TOKENS,
+                audit, SessionPolicy.defaults(), Clock.systemUTC());
+        maria = users.add(Fakes.user("maria.silva", "Maria.Silva@Exemplo.gov.br", hasher.hash(password)));
+        hasher.matchesCalls.set(0);
     }
 
-    private User user(String username, String email, AccountStatus status) throws Exception {
-        User u = new User();
-        Field id = u.getClass().getSuperclass().getDeclaredField("id");
-        id.setAccessible(true);
-        id.set(u, UUID.randomUUID());
-        u.setUsername(username);
-        u.setFullName("Maria Silva");
-        u.setEmailEnc("enc");
-        u.setEmailHash(Identifiers.emailHash(email));
-        u.setPasswordHash(hasher.hash(SENHA));
-        u.setProfileType(ProfileType.EMPREGADO);
-        u.setRole(Role.USER);
-        u.setStatus(status);
-        return u;
+    private ApiException login(String identifier, String pw) {
+        return catchThrowableOfType(ApiException.class, () -> identity.login(new IdentityService.LoginCommand(identifier, pw, false, null, null), ctx));
     }
 
-    private static ApiException loginFails(IdentityService s, String identifier, String senha) {
-        try {
-            s.login(new LoginCommand(identifier, senha), "203.0.113.9", "ua");
-        } catch (ApiException e) {
-            return e;
+    @Test
+    void contaInexistenteSenhaErradaEContaBloqueadaRespondemOMesmo401() {
+        ApiException inexistente = login("ninguem@exemplo.gov.br", password);
+        assertThat(hasher.matchesCalls.get()).as("hash falso avaliado para conta inexistente").isEqualTo(1);
+        ApiException senhaErrada = login("maria.silva", "errada-" + password);
+        for (int i = 0; i < 4; i++) {
+            login("maria.silva", "errada-" + password);
         }
-        throw new AssertionError("esperava falha de login");
-    }
-
-    @Test
-    void contaInexistenteRecebe401GenericoEAvaliaOHashFalso() {
-        ApiException e = loginFails(service, "ninguem@pr.gov.br", SENHA);
-        assertThat(e.status()).isEqualTo(401);
-        assertThat(e.code()).isEqualTo(IdentityService.CREDENCIAIS_INVALIDAS);
-        assertThat(hasher.dummyEvaluations.get()).isEqualTo(1);
-        assertThat(hasher.realEvaluations.get()).isZero();
-        assertThat(audit.last().action()).isEqualTo(AuditActions.LOGIN_FALHA);
-        assertThat(audit.last().actorId()).isNull();
-        assertThat(audit.last().metadata()).containsEntry("reason", "usuario_inexistente");
-        // identificador vazio e comando nulo seguem o mesmo caminho
-        assertThat(loginFails(service, "   ", SENHA).code()).isEqualTo(IdentityService.CREDENCIAIS_INVALIDAS);
-        assertThatThrownBy(() -> service.login(null, "ip", "ua")).isInstanceOf(ApiException.class);
-        assertThat(hasher.realEvaluations.get()).isZero();
-    }
-
-    @Test
-    void senhaErradaRecebeOMesmo401EAReservaFica() {
-        ApiException e = loginFails(service, "maria", "errada");
-        assertThat(e.status()).isEqualTo(401);
-        assertThat(e.code()).isEqualTo(IdentityService.CREDENCIAIS_INVALIDAS);
-        assertThat(e.getMessage()).isEqualTo(loginFails(service, "ninguem", "x").getMessage());
-        assertThat(service.loginFailStatus(maria).used()).isEqualTo(1);
-        assertThat(audit.entries.get(0).action()).isEqualTo(AuditActions.LOGIN_FALHA);
-        assertThat(audit.entries.get(0).actorId()).isEqualTo(maria.getId());
-        assertThat(audit.entries.get(0).metadata()).containsEntry("reason", "senha");
-    }
-
-    @Test
-    void sextaTentativaBloqueiaENemASenhaCertaEntraSemAvaliarOHashReal() {
-        for (int i = 0; i < 5; i++) {
-            loginFails(service, "maria", "errada-" + i);
+        ApiException bloqueadaComSenhaCerta = login("MARIA.SILVA", password);
+        for (ApiException e : List.of(inexistente, senhaErrada, bloqueadaComSenhaCerta)) {
+            assertThat(e.status()).isEqualTo(401);
+            assertThat(e.code()).isEqualTo(AuthCodes.CREDENCIAIS_INVALIDAS);
+            assertThat(e.getMessage()).isEqualTo(inexistente.getMessage());
+            assertThat(e.details()).isEmpty();
         }
-        assertThat(hasher.realEvaluations.get()).isEqualTo(5);
-        ApiException e = loginFails(service, "Maria.Silva@PR.gov.br", SENHA);   // senha certa, conta bloqueada
-        assertThat(e.status()).isEqualTo(401);
-        assertThat(e.code()).isEqualTo(IdentityService.CREDENCIAIS_INVALIDAS);
-        assertThat(hasher.realEvaluations.get()).as("bloqueada: só o hash falso é avaliado").isEqualTo(5);
-        assertThat(hasher.dummyEvaluations.get()).isEqualTo(1);
-        assertThat(audit.last().action()).isEqualTo(AuditActions.LOGIN_BLOQUEADO_TENTATIVAS);
-        assertThat(audit.last().result()).isEqualTo(AuditEntry.NEGADO);
-        assertThat(audit.last().metadata()).containsKey("resetAt");
-        assertThat(service.loginFailStatus(maria).used()).isEqualTo(6);
-        assertThat(maria.getLastLoginAt()).isNull();
+        assertThat(audit.actions()).contains(AuditActions.LOGIN_FALHA, AuditActions.LOGIN_BLOQUEADO_TENTATIVAS)
+                .doesNotContain(AuditActions.LOGIN_OK);
+        assertThat(audit.dump()).contains("usuario_inexistente").contains("m***@e***.br").doesNotContain("Maria.Silva@");
     }
 
     @Test
-    void senhaCertaDevolveAReservaZeraOBaldeEAudita() {
-        loginFails(service, "maria", "errada");
-        loginFails(service, "maria", "errada");
-        AuthenticatedUser me = service.login(new LoginCommand("maria", SENHA), "203.0.113.9", "ua");
-        assertThat(me.id()).isEqualTo(maria.getId());
-        assertThat(me.username()).isEqualTo("maria");
-        assertThat(me.role()).isEqualTo(Role.USER);
-        assertThat(me.profileType()).isEqualTo(ProfileType.EMPREGADO);
-        assertThat(service.loginFailStatus(maria).used()).isZero();
-        assertThat(maria.getLastLoginAt()).isEqualTo(NOW);
-        assertThat(maria.getPasswordHash()).isEqualTo("h:" + SENHA);
-        assertThat(audit.last().action()).isEqualTo(AuditActions.LOGIN_OK);
-        assertThat(audit.last().result()).isEqualTo(AuditEntry.OK);
-        // login por e-mail com maiúsculas e espaços também encontra a conta
-        assertThat(service.login(new LoginCommand("  MARIA.silva@pr.gov.br ", SENHA), "ip", "ua").id()).isEqualTo(maria.getId());
-    }
+    void contaIndisponivelEDoisFatoresSoAparecemDepoisDaSenhaCertaEForaDoBloqueio() {
+        maria.setStatus(AccountStatus.SUSPENDED);
+        assertThat(login("maria.silva", "errada-" + password).code()).isEqualTo(AuthCodes.CREDENCIAIS_INVALIDAS);
+        ApiException suspensa = login("maria.silva", password);
+        assertThat(suspensa.status()).isEqualTo(403);
+        assertThat(suspensa.code()).isEqualTo(AuthCodes.CONTA_INDISPONIVEL);
 
-    @Test
-    void hashComParametrosFracosERefeitoNoLogin() {
-        hasher.weakHashes = true;
-        maria.setPasswordHash("h:" + SENHA);
-        service.login(new LoginCommand("maria", SENHA), "ip", "ua");
-        assertThat(maria.getPasswordHash()).isEqualTo("h:" + SENHA);   // refeito com a senha certa (hasher determinístico)
-        assertThat(hasher.realEvaluations.get()).isEqualTo(1);
-    }
-
-    @Test
-    void statusDaContaSoAparecemDepoisDaSenhaCerta() throws Exception {
-        for (AccountStatus status : AccountStatus.values()) {
-            if (status.canLogin()) {
-                continue;
-            }
-            User u = user("u-" + status.name().toLowerCase(), status.name().toLowerCase() + "@pr.gov.br", status);
-            when(users.findByUsernameIgnoreCase(u.getUsername())).thenReturn(Optional.of(u));
-            assertThat(loginFails(service, u.getUsername(), "errada").status()).as("%s com senha errada", status).isEqualTo(401);
-            ApiException e = loginFails(service, u.getUsername(), SENHA);
-            assertThat(e.status()).as("%s com senha certa", status).isEqualTo(403);
-            assertThat(audit.last().result()).isEqualTo(AuditEntry.NEGADO);
-        }
-        assertThat(loginFails(service, "u-pending_email_verification", SENHA).code()).isEqualTo(IdentityService.EMAIL_NAO_VERIFICADO);
-        assertThat(loginFails(service, "u-pending_validation", SENHA).code()).isEqualTo(IdentityService.PERFIL_EM_VALIDACAO);
-        assertThat(loginFails(service, "u-suspended", SENHA).code()).isEqualTo(IdentityService.CONTA_INDISPONIVEL);
-        assertThat(loginFails(service, "u-deletion_scheduled", SENHA).code()).isEqualTo(IdentityService.CONTA_INDISPONIVEL);
-        assertThat(loginFails(service, "u-anonymized", SENHA).code()).isEqualTo(IdentityService.CONTA_INDISPONIVEL);
-        assertThat(IdentityService.statusDenial(null)).isNull();
-        assertThat(IdentityService.statusDenial(AccountStatus.ACTIVE)).isNull();
-    }
-
-    @Test
-    void contaSemSenhaLocalSegueOCaminhoDeContaInexistente() {
-        maria.setPasswordHash(null);     // conta só OIDC (RF2)
-        ApiException e = loginFails(service, "maria", SENHA);
-        assertThat(e.code()).isEqualTo(IdentityService.CREDENCIAIS_INVALIDAS);
-        assertThat(hasher.dummyEvaluations.get()).isEqualTo(1);
-        assertThat(audit.last().actorId()).isNull();
-    }
-
-    @Test
-    void doisFatoresSoDepoisDaSenhaCerta() {
+        maria.setStatus(AccountStatus.ACTIVE);
         maria.setTwoFactorEnabled(true);
-        assertThat(loginFails(service, "maria", "errada").code()).isEqualTo(IdentityService.CREDENCIAIS_INVALIDAS);
-        ApiException e = loginFails(service, "maria", SENHA);
-        assertThat(e.status()).isEqualTo(401);
-        assertThat(e.code()).isEqualTo(IdentityService.DOIS_FATORES_NECESSARIO);
-        assertThat(service.loginFailStatus(maria).used()).as("senha certa devolveu só a própria reserva; a falha anterior fica").isEqualTo(1);
+        assertThat(login("maria.silva", "errada-" + password).code()).isEqualTo(AuthCodes.CREDENCIAIS_INVALIDAS);
+        ApiException dois = login("maria.silva", password);
+        assertThat(dois.status()).isEqualTo(401);
+        assertThat(dois.code()).isEqualTo(AuthCodes.DOIS_FATORES_NECESSARIO);
+        assertThat(dois.details()).containsEntry("twoFactorRequired", true);
+
+        // bloqueada: nem o 403 nem o 2FA vazam
+        for (int i = 0; i < 5; i++) {
+            login("maria.silva", "x" + i);
+        }
+        assertThat(login("maria.silva", password).code()).isEqualTo(AuthCodes.CREDENCIAIS_INVALIDAS);
+        maria.setTwoFactorEnabled(false);
+        maria.setStatus(AccountStatus.SUSPENDED);
+        assertThat(login("maria.silva", password).code()).isEqualTo(AuthCodes.CREDENCIAIS_INVALIDAS);
     }
 
     @Test
-    void quarentaLoginsEmParaleloAvaliamNoMaximoCincoSenhasReais() throws Exception {
-        int pedidos = 40;
-        ExecutorService pool = Executors.newFixedThreadPool(pedidos);
+    void quarentaPedidosParalelosComSenhaErradaAvaliamNoMaximoCincoHashes() throws Exception {
+        hasher.delayMillis = 30;                                   // abre a janela entre ler e somar (corrida)
+        int threads = 40;
+        CountDownLatch start = new CountDownLatch(1);
+        ExecutorService pool = Executors.newFixedThreadPool(threads);
         try {
-            CountDownLatch largada = new CountDownLatch(1);
-            List<Future<ApiException>> futures = new ArrayList<>();
-            for (int i = 0; i < pedidos; i++) {
-                int n = i;
-                futures.add(pool.submit(() -> {
-                    largada.await();
-                    return loginFails(service, "maria", "chute-" + n);
+            List<Future<ApiException>> results = new ArrayList<>();
+            for (int i = 0; i < threads; i++) {
+                final int n = i;
+                results.add(pool.submit(() -> {
+                    start.await(5, TimeUnit.SECONDS);
+                    return login("maria.silva", "errada-" + n);
                 }));
             }
-            largada.countDown();
-            for (Future<ApiException> f : futures) {
-                ApiException e = f.get(30, TimeUnit.SECONDS);
-                assertThat(e.status()).isEqualTo(401);                     // nenhum 500, nenhum código diferente
-                assertThat(e.code()).isEqualTo(IdentityService.CREDENCIAIS_INVALIDAS);
+            start.countDown();
+            for (Future<ApiException> f : results) {
+                ApiException e = f.get(10, TimeUnit.SECONDS);
+                assertThat(e.status()).isEqualTo(401);
+                assertThat(e.code()).isEqualTo(AuthCodes.CREDENCIAIS_INVALIDAS);
             }
-            assertThat(hasher.realEvaluations.get()).as("senhas avaliadas contra o hash real").isLessThanOrEqualTo(5);
-            assertThat(hasher.realEvaluations.get() + hasher.dummyEvaluations.get())
-                    .as("todo pedido avaliou algum hash (mesmo tempo)").isEqualTo(pedidos);
-            assertThat(service.loginFailStatus(maria).used()).isEqualTo(pedidos);
-            assertThat(audit.entries).hasSize(pedidos);
-            assertThat(audit.entries.stream().filter(a -> a.action().equals(AuditActions.LOGIN_BLOQUEADO_TENTATIVAS)).count())
-                    .isEqualTo(pedidos - hasher.realEvaluations.get());
         } finally {
             pool.shutdownNow();
         }
+        assertThat(hasher.matchesCalls.get()).as("reserva atômica antes do hash").isLessThanOrEqualTo(5);
+        assertThat(audit.actions()).filteredOn(AuditActions.LOGIN_BLOQUEADO_TENTATIVAS::equals).hasSize(threads - 5);
     }
 
     @Test
-    void reconferenciaDeSenhaUsaAMesmaReservaEDa429NaSexta() {
+    void loginCertoZeraOBloqueioRefazHashAntigoEAbreSessao() {
+        for (int i = 0; i < 4; i++) {
+            login("maria.silva", "errada" + i);
+        }
+        hasher.rehash = true;
+        Session s = identity.login(new IdentityService.LoginCommand("maria.silva@exemplo.gov.br", password, true, "Note", null), ctx);
+        assertThat(s.accessToken()).isEqualTo("jwt:" + maria.getId() + ":" + s.sessionId());
+        assertThat(s.tokenType()).isEqualTo("Bearer");
+        assertThat(s.expiresIn()).isEqualTo(900);
+        assertThat(s.refreshToken()).hasSize(64);
+        assertThat(s.user().id()).isEqualTo(maria.getId());
+        assertThat(s.warnings()).isEmpty();
+        assertThat(maria.getLastLoginAt()).isNotNull();
+        assertThat(maria.getPasswordHash()).isEqualTo("h:" + password);
+        assertThat(rateLimit.status(maria.getId(), IdentityService.LOGIN_FAIL_BUCKET, 5, SessionPolicy.defaults().lockWindow()).used()).isZero();
+        assertThat(identity.sessionActive(s.sessionId())).isTrue();
+        assertThat(audit.actions()).contains(AuditActions.LOGIN_OK);
+        // depois do reset, 5 erros novos são permitidos antes de bloquear
         for (int i = 0; i < 5; i++) {
-            ApiException e = catchApi(() -> service.reauthenticate(maria.getId(), "errada", "ip", "ua"));
-            assertThat(e.status()).isEqualTo(401);
-            assertThat(e.code()).isEqualTo(IdentityService.SENHA_ATUAL_INCORRETA);
+            login("maria.silva", "errada" + i);
         }
-        ApiException blocked = catchApi(() -> service.reauthenticate(maria.getId(), SENHA, "ip", "ua"));
-        assertThat(blocked.status()).isEqualTo(429);
-        assertThat(blocked.code()).isEqualTo(IdentityService.MUITAS_TENTATIVAS);
-        assertThat(blocked.details()).containsEntry("retryAfterSeconds", IdentityService.LOCK_WINDOW.toSeconds());
-        assertThat(audit.last().action()).isEqualTo(AuditActions.REAUTH_FALHA);
-        assertThat(audit.last().result()).isEqualTo(AuditEntry.NEGADO);
-        assertThat(hasher.realEvaluations.get()).isEqualTo(5);
-        // sessão de conta inexistente
-        assertThat(catchApi(() -> service.reauthenticate(UUID.randomUUID(), SENHA, "ip", "ua")).status()).isEqualTo(401);
+        assertThat(login("maria.silva", password).code()).isEqualTo(AuthCodes.CREDENCIAIS_INVALIDAS);
     }
 
     @Test
-    void reconferenciaCertaDevolveAReserva() {
-        catchApi(() -> service.reauthenticate(maria.getId(), "errada", "ip", "ua"));
-        service.reauthenticate(maria.getId(), SENHA, "ip", "ua");
-        assertThat(service.loginFailStatus(maria).used()).as("devolveu a própria reserva; a errada anterior fica").isEqualTo(1);
-        assertThat(audit.last().action()).isEqualTo(AuditActions.REAUTH_OK);
-        assertThat(catchApi(() -> service.reauthenticate(maria.getId(), null, "ip", "ua")).code()).isEqualTo(IdentityService.SENHA_ATUAL_INCORRETA);
-        assertThat(service.loginFailStatus(maria).used()).isEqualTo(2);
+    void semLembrarMeORefreshDura24hEComLembrarMe30d() {
+        Session curta = identity.login(new IdentityService.LoginCommand("maria.silva", password, false, null, null), ctx);
+        Session longa = identity.login(new IdentityService.LoginCommand("maria.silva", password, true, null, null), ctx);
+        assertThat(java.time.Duration.between(java.time.Instant.now(), curta.refreshExpiresAt()).toHours()).isBetween(23L, 24L);
+        assertThat(java.time.Duration.between(java.time.Instant.now(), longa.refreshExpiresAt()).toDays()).isBetween(29L, 30L);
     }
 
     @Test
-    void identificadoresEComandoNaoVazamSegredos() {
-        assertThat(Identifiers.normalize("  Maria.Silva@PR.gov.br ")).isEqualTo("maria.silva@pr.gov.br");
-        assertThat(Identifiers.normalize(null)).isEmpty();
-        assertThat(Identifiers.looksLikeEmail("maria@x")).isTrue();
-        assertThat(Identifiers.looksLikeEmail("@x")).isFalse();
-        assertThat(Identifiers.looksLikeEmail("maria@")).isFalse();
-        assertThat(Identifiers.emailHash("Maria@PR.gov.br")).isEqualTo(Identifiers.emailHash("maria@pr.gov.br")).hasSize(64);
-        assertThat(new LoginCommand("maria.silva@pr.gov.br", "segredo").toString()).doesNotContain("segredo").contains("m***@p***.br");
-        assertThat(new LoginCommand(null, null).toString()).contains("null");
+    void refreshRotacionaEReusoDoTokenAntigoRevogaAFamiliaInteira() {
+        Session s1 = identity.login(new IdentityService.LoginCommand("maria.silva", password, false, null, null), ctx);
+        Session s2 = identity.refresh(s1.refreshToken(), ctx);
+        assertThat(s2.sessionId()).isEqualTo(s1.sessionId());
+        assertThat(s2.refreshToken()).isNotEqualTo(s1.refreshToken());
+        assertThat(identity.sessionActive(s1.sessionId())).isTrue();
+
+        ApiException reuso = catchThrowableOfType(ApiException.class, () -> identity.refresh(s1.refreshToken(), ctx));
+        assertThat(reuso.status()).isEqualTo(401);
+        assertThat(reuso.code()).isEqualTo(AuthCodes.SESSAO_INVALIDA);
+        assertThat(identity.sessionActive(s1.sessionId())).as("família inteira revogada").isFalse();
+        assertThat(catchThrowableOfType(ApiException.class, () -> identity.refresh(s2.refreshToken(), ctx)).code())
+                .as("o token novo também morre").isEqualTo(AuthCodes.SESSAO_INVALIDA);
+        assertThat(audit.actions()).contains(AuditActions.REFRESH_REUSO);
+        assertThat(audit.dump()).doesNotContain(s1.refreshToken()).doesNotContain(s2.refreshToken());
+
+        assertThat(catchThrowableOfType(ApiException.class, () -> identity.refresh("nao-existe", ctx)).code()).isEqualTo(AuthCodes.SESSAO_INVALIDA);
+        assertThat(catchThrowableOfType(ApiException.class, () -> identity.refresh(" ", ctx)).code()).isEqualTo(AuthCodes.SESSAO_INVALIDA);
+        assertThat(identity.sessionActive(null)).isFalse();
     }
 
-    private static ApiException catchApi(Runnable r) {
-        try {
-            r.run();
-        } catch (ApiException e) {
-            return e;
+    @Test
+    void refreshDeContaSuspensaEncerraASessaoELogoutRevogaAFamilia() {
+        Session s = identity.login(new IdentityService.LoginCommand("maria.silva", password, false, null, null), ctx);
+        maria.setStatus(AccountStatus.SUSPENDED);
+        assertThat(catchThrowableOfType(ApiException.class, () -> identity.refresh(s.refreshToken(), ctx)).code()).isEqualTo(AuthCodes.SESSAO_INVALIDA);
+        assertThat(identity.sessionActive(s.sessionId())).isFalse();
+
+        maria.setStatus(AccountStatus.ACTIVE);
+        Session t = identity.login(new IdentityService.LoginCommand("maria.silva", password, false, null, null), ctx);
+        identity.logout(new CurrentUser(maria.getId(), Role.USER, t.sessionId()), ctx);
+        assertThat(identity.sessionActive(t.sessionId())).isFalse();
+        assertThat(audit.actions()).contains(AuditActions.LOGOUT);
+    }
+
+    @Test
+    void sextoChuteDaSenhaAtualNaTrocaRecebe429ComRetryAfter() {
+        Session s = identity.login(new IdentityService.LoginCommand("maria.silva", password, false, null, null), ctx);
+        CurrentUser current = new CurrentUser(maria.getId(), Role.USER, s.sessionId());
+        String nova = "Nova-" + UUID.randomUUID();
+        for (int i = 0; i < 5; i++) {
+            ApiException e = catchThrowableOfType(ApiException.class,
+                    () -> identity.changePassword(current, "errada", nova, nova, ctx));
+            assertThat(e.status()).isEqualTo(422);
+            assertThat(e.code()).isEqualTo(AuthCodes.SENHA_ATUAL_INCORRETA);
         }
-        return null;
+        ApiException sexto = catchThrowableOfType(ApiException.class, () -> identity.changePassword(current, password, nova, nova, ctx));
+        assertThat(sexto.status()).isEqualTo(429);
+        assertThat(sexto.code()).isEqualTo(AuthCodes.MUITAS_TENTATIVAS);
+        assertThat((Long) sexto.details().get("retryAfterSeconds")).isBetween(1L, 900L);
+        assertThat(maria.getPasswordHash()).as("nem a senha certa passa bloqueada").isEqualTo("h:" + password);
+        // a mesma reserva vale para o login
+        assertThat(login("maria.silva", password).code()).isEqualTo(AuthCodes.CREDENCIAIS_INVALIDAS);
+        // a redefinição por e-mail tira do bloqueio
+        identity.clearLockout(maria.getId());
+        assertThat(identity.changePassword(current, password, nova, nova, ctx)).isZero();
+        assertThat(maria.getPasswordHash()).isEqualTo("h:" + nova);
+        assertThat(audit.actions()).contains(AuditActions.PASSWORD_CHANGED);
+    }
+
+    @Test
+    void trocaDeSenhaEncerraAsOutrasSessoesEValidaASenhaNova() {
+        Session atual = identity.login(new IdentityService.LoginCommand("maria.silva", password, false, null, null), ctx);
+        Session outra = identity.login(new IdentityService.LoginCommand("maria.silva", password, true, "Celular", null), ctx);
+        CurrentUser current = new CurrentUser(maria.getId(), Role.USER, atual.sessionId());
+        ApiException fraca = catchThrowableOfType(ApiException.class, () -> identity.changePassword(current, password, "curta", "curta", ctx));
+        assertThat(fraca.code()).isEqualTo(ApiException.VALIDACAO);
+        String nova = "Nova-" + UUID.randomUUID();
+        ApiException diferente = catchThrowableOfType(ApiException.class, () -> identity.changePassword(current, password, nova, nova + "x", ctx));
+        assertThat(diferente.details().toString()).contains("confirmPassword");
+        assertThat(identity.changePassword(current, password, nova, nova, ctx)).isEqualTo(1);
+        assertThat(identity.sessionActive(atual.sessionId())).isTrue();
+        assertThat(identity.sessionActive(outra.sessionId())).isFalse();
+        assertThat(identity.activeSessions(maria.getId())).hasSize(1);
+        assertThat(identity.reauthenticate(current, nova, "teste", ctx).getId()).isEqualTo(maria.getId());
+        assertThat(catchThrowableOfType(ApiException.class, () -> identity.reauthenticate(current, "x", "teste", ctx)).code())
+                .isEqualTo(AuthCodes.REAUTENTICACAO_FALHOU);
+    }
+
+    @Test
+    void contaSoOidcSemSenhaNuncaEntraPorSenhaNemViraOraculo() {
+        maria.setPasswordHash(null);
+        assertThat(login("maria.silva", "").code()).isEqualTo(AuthCodes.CREDENCIAIS_INVALIDAS);
+        assertThat(login("maria.silva", password).code()).isEqualTo(AuthCodes.CREDENCIAIS_INVALIDAS);
+        assertThat(hasher.matchesCalls.get()).as("o hash falso é avaliado mesmo assim").isEqualTo(2);
+    }
+
+    @Test
+    void auditoriaNuncaContemSenhaNemToken() {
+        login("maria.silva", "errada-" + password);
+        Session s = identity.login(new IdentityService.LoginCommand("maria.silva", password, false, null, null), ctx);
+        identity.refresh(s.refreshToken(), ctx);
+        catchThrowableOfType(ApiException.class, () -> identity.refresh(s.refreshToken(), ctx));
+        String dump = audit.dump();
+        assertThat(dump).doesNotContain(password).doesNotContain("errada-").doesNotContain(s.refreshToken())
+                .doesNotContain(s.accessToken()).doesNotContain("h:");
+        assertThat(audit.events).allSatisfy(e -> {
+            assertThat(e.ip()).isEqualTo("203.0.113.7");
+            assertThat(e.userAgent()).isEqualTo("JUnit/5");
+        });
     }
 }

@@ -1,78 +1,64 @@
 package br.gov.pr.secid.workstation.domain.identity;
 
-import br.gov.pr.secid.workstation.domain.common.AuditableEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
-
 import java.time.Instant;
+import java.util.UUID;
 
 /**
- * Conta de pessoa (tabela {@code users}, V2). Subconjunto das colunas usado pela autenticação (Bloco 3): e-mail só
- * cifrado ({@code email_enc}) + hash para busca/unicidade ({@code email_hash}); senha só como hash Argon2id;
- * {@code test_account} é coluna gerada no banco (nunca gravada pela aplicação, D-23). As demais colunas do V2
- * (perfil, aceites, exclusão) entram com os RFs que as usam.
+ * Conta de pessoa (TAXONOMIA §1.1, tabela {@code users}). Objeto de domínio puro: a persistência ({@code UserEntity},
+ * persistence-mysql) cifra {@code email}/{@code phone} com AES-GCM e grava {@code emailHash} para busca. Nunca carrega
+ * a senha em claro — só o hash Argon2id.
  */
-@Entity
-@Table(name = "users")
-public class User extends AuditableEntity {
-
-    @Column(name = "username", nullable = false, length = 80)
-    private String username;
-
-    @Column(name = "full_name", nullable = false, length = 160)
-    private String fullName;
-
-    @Column(name = "display_name", length = 80)
-    private String displayName;
-
-    @Column(name = "email_enc", nullable = false, length = 512)
-    private String emailEnc;
-
-    @Column(name = "email_hash", nullable = false, length = 128)
-    private String emailHash;
-
-    @Column(name = "email_verified", nullable = false)
-    private boolean emailVerified;
-
-    @Column(name = "password_hash")
-    private String passwordHash;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "profile_type", nullable = false, length = 30)
-    private ProfileType profileType;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false, length = 20)
-    private Role role = Role.USER;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 40)
-    private AccountStatus status = AccountStatus.PENDING_EMAIL_VERIFICATION;
-
-    @Column(name = "two_factor_enabled", nullable = false)
-    private boolean twoFactorEnabled;
-
-    @Column(name = "last_login_at")
-    private Instant lastLoginAt;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "account_origin", nullable = false, length = 20)
-    private AccountOrigin accountOrigin = AccountOrigin.REAL;
-
-    @Column(name = "fixture_key", length = 80)
-    private String fixtureKey;
-
-    /** Gerada no banco a partir de {@code account_origin}; só leitura. */
-    @Column(name = "test_account", insertable = false, updatable = false)
-    private boolean testAccount;
-
-    @Version
-    @Column(name = "version", nullable = false)
+public class User {
+    private UUID id;
     private long version;
+    private String username;
+    private String fullName;
+    private String displayName;
+    private String email;
+    private String emailHash;
+    private boolean emailVerified;
+    private String phone;
+    private String passwordHash;
+    private String oidcSubject;
+    private String oidcIssuer;
+    private ProfileType profileType;
+    private Role role = Role.USER;
+    private AccountStatus status = AccountStatus.PENDING_EMAIL_VERIFICATION;
+    private String jobTitle;
+    private String avatarUrl;
+    private String coverUrl;
+    private String bio;
+    private boolean verified;
+    private boolean twoFactorEnabled;
+    private HypeVisibility hypeVisibility = HypeVisibility.SO_EU;
+    private boolean rankingOptOut;
+    private Instant lastLoginAt;
+    private String termsVersion;
+    private String privacyVersion;
+    private Instant deletionRequestedAt;
+    private Instant deletionScheduledAt;
+    private String deletionReason;
+    private Instant anonymizedAt;
+    private AccountOrigin accountOrigin = AccountOrigin.REAL;
+    private String fixtureKey;
+    private Instant createdAt;
+    private Instant updatedAt;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
+    }
 
     public String getUsername() {
         return username;
@@ -98,12 +84,12 @@ public class User extends AuditableEntity {
         this.displayName = displayName;
     }
 
-    public String getEmailEnc() {
-        return emailEnc;
+    public String getEmail() {
+        return email;
     }
 
-    public void setEmailEnc(String emailEnc) {
-        this.emailEnc = emailEnc;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getEmailHash() {
@@ -122,12 +108,36 @@ public class User extends AuditableEntity {
         this.emailVerified = emailVerified;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public String getPasswordHash() {
         return passwordHash;
     }
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+
+    public String getOidcSubject() {
+        return oidcSubject;
+    }
+
+    public void setOidcSubject(String oidcSubject) {
+        this.oidcSubject = oidcSubject;
+    }
+
+    public String getOidcIssuer() {
+        return oidcIssuer;
+    }
+
+    public void setOidcIssuer(String oidcIssuer) {
+        this.oidcIssuer = oidcIssuer;
     }
 
     public ProfileType getProfileType() {
@@ -154,6 +164,46 @@ public class User extends AuditableEntity {
         this.status = status;
     }
 
+    public String getJobTitle() {
+        return jobTitle;
+    }
+
+    public void setJobTitle(String jobTitle) {
+        this.jobTitle = jobTitle;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
+
     public boolean isTwoFactorEnabled() {
         return twoFactorEnabled;
     }
@@ -162,12 +212,76 @@ public class User extends AuditableEntity {
         this.twoFactorEnabled = twoFactorEnabled;
     }
 
+    public HypeVisibility getHypeVisibility() {
+        return hypeVisibility;
+    }
+
+    public void setHypeVisibility(HypeVisibility hypeVisibility) {
+        this.hypeVisibility = hypeVisibility;
+    }
+
+    public boolean isRankingOptOut() {
+        return rankingOptOut;
+    }
+
+    public void setRankingOptOut(boolean rankingOptOut) {
+        this.rankingOptOut = rankingOptOut;
+    }
+
     public Instant getLastLoginAt() {
         return lastLoginAt;
     }
 
     public void setLastLoginAt(Instant lastLoginAt) {
         this.lastLoginAt = lastLoginAt;
+    }
+
+    public String getTermsVersion() {
+        return termsVersion;
+    }
+
+    public void setTermsVersion(String termsVersion) {
+        this.termsVersion = termsVersion;
+    }
+
+    public String getPrivacyVersion() {
+        return privacyVersion;
+    }
+
+    public void setPrivacyVersion(String privacyVersion) {
+        this.privacyVersion = privacyVersion;
+    }
+
+    public Instant getDeletionRequestedAt() {
+        return deletionRequestedAt;
+    }
+
+    public void setDeletionRequestedAt(Instant deletionRequestedAt) {
+        this.deletionRequestedAt = deletionRequestedAt;
+    }
+
+    public Instant getDeletionScheduledAt() {
+        return deletionScheduledAt;
+    }
+
+    public void setDeletionScheduledAt(Instant deletionScheduledAt) {
+        this.deletionScheduledAt = deletionScheduledAt;
+    }
+
+    public String getDeletionReason() {
+        return deletionReason;
+    }
+
+    public void setDeletionReason(String deletionReason) {
+        this.deletionReason = deletionReason;
+    }
+
+    public Instant getAnonymizedAt() {
+        return anonymizedAt;
+    }
+
+    public void setAnonymizedAt(Instant anonymizedAt) {
+        this.anonymizedAt = anonymizedAt;
     }
 
     public AccountOrigin getAccountOrigin() {
@@ -186,11 +300,30 @@ public class User extends AuditableEntity {
         this.fixtureKey = fixtureKey;
     }
 
-    public boolean isTestAccount() {
-        return testAccount;
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 
-    public long getVersion() {
-        return version;
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    /** Pode usar a API além de cancelar a exclusão/exportar (D-18): só {@code ACTIVE} e os pendentes. */
+    public boolean isDeletionScheduled() {
+        return status == AccountStatus.DELETION_SCHEDULED;
+    }
+
+    /** Nunca inclui hash de senha, e-mail ou telefone — seguro para log. */
+    @Override
+    public String toString() {
+        return "User{id=" + id + ", username=" + username + ", status=" + status + ", role=" + role + "}";
     }
 }

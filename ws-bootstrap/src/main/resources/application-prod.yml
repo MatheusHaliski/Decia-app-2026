@@ -25,3 +25,5 @@ logging:
 ws:
   secrets:
     enforce: true
+  mail:
+    echo-body: false

@@ -1,6 +1,6 @@
 package br.gov.pr.secid.workstation.domain.identity;
 
-/** Papel global da conta (CHECK {@code ck_users_role}); vira o claim {@code role} do JWT e {@code ROLE_<papel>} no Spring Security. */
+/** Papel global ({@code users.role}, CHECK ck_users_role). Vai no claim {@code role} do JWT → {@code ROLE_*}. */
 public enum Role {
     USER,
     ADMIN
