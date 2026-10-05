@@ -81,6 +81,9 @@ Formato: **D-nn** decisão tomada (com justificativa) · **Q-nn** dúvida aberta
 | Q-54 | RF23 | O título cita "projetos" de outros provedores, mas nenhum CA descreve isso. Proposta RF23.CA06: pasta do Drive/SharePoint ou plano do Planner/Google Tasks → `ProjectScheme` RASCUNHO. Confirmar. | ExternalDocPort |
 | Q-55 | RF24 | "Metas & Objetivos da equipe" é rota nova (`/departments/[slug]/goals`) ou sub-aba 6 do perfil? EMPREGADO vê insights de equipe agregados/anonimizados (ABAS_POR_PERFIL §7.b) ou só CHEFE/EMPRESA (RF43.CA14)? | TeamGoalsService |
 | Q-56 | RF26 | "Copilot do WS" = Autopilot de tarefas e de projetos (RF30/RF43) no mesmo `AutopilotService`? O corpo do card RF26 (perfil) foi remetido a RF6/RF16. | AutopilotService |
+| Q-57 | RF10/RF46 | Unificar o contrato de `Assignment` (TAXONOMIA §12b usa `fromUserId/toUserId/message/reason`; o README RF46 usa `assignerId/assigneeId/note/responseReason` + `projectTaskId`). Atribuir um PROJECT inteiro preenche o responsável de todas as `ProjectTask`? Existe CANCELADA pelo chefe? | AssignmentService |
+| Q-58 | RF11/RF13/RF15 | Aprovar colunas `card_art_json`/`card_layout` (RF11), tabela `generated_artifacts` ampliando `session_artifacts` com `ArtifactOrigin` (RF13), entidade `Announcement` + `MuralEntry.kind COMUNICADO` (RF15) e `Company.status` (ATIVA·SUSPENSA·ENCERRADA). | TAXONOMIA |
+| Q-59 | RF14/RF16 | "Perfil do chefe" (RF14) = página do departamento `/departments/[slug]`, com o perfil pessoal do chefe em `/u/[username]` (RF16)? Órgão sem conta (`OrgEntity`) ganha página pública? | Rotas, ABAS_POR_PERFIL |
 
 ## Perguntas das pesquisas de produto (etapa 0 do brief de esqueleto)
 

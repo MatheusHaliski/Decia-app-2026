@@ -601,6 +601,15 @@ erDiagram
   DEPARTMENT ||--o{ CURATOR_APPOINTMENT : curadores
   USER ||--|| USER_PREFERENCES : tem
   USER ||--o{ REFRESH_TOKEN : sessoes
+  USER ||--o{ POLICY_ACCEPTANCE : aceites_append_only
+  POLICY_DOCUMENT ||--o{ POLICY_ACCEPTANCE : versao_aceita
+  USER ||--o{ USER_CONSENT : consentimentos
+  USER ||--o{ CONSENT_EVENT : historico_consentimento
+  USER ||--o{ DATA_SUBJECT_REQUEST : direitos_art18_art20
+  USER ||--o{ DATA_EXPORT_REQUEST : exportacoes
+  USER ||--o| APPROVAL_REQUEST : validacao_perfil
+  VERIFICATION_POLICY ||--o{ APPROVAL_REQUEST : versao_da_politica
+  PENDING_UPLOAD }o--o| USER : consumido_no_cadastro
 
   USER ||--o{ TASK_ITEM : cria
   DEPARTMENT ||--o{ TASK_ITEM : origem
