@@ -1,356 +1,313 @@
 # RF36 — Gerar o Dossiê de Transição (handoff) quando um empregado muda de departamento, sai ou uma gestão encerra, transferindo projetos, tarefas e pendências com contexto
+**HU:** HU36 · **Sprint (board Work Station):** Product Backlog (não comprometido na Sprint 4) · **Equivalente FAI:** — (ideia nova; usa Agrupamentos/Eras RF34 e o histórico RF17 do FAI) · **Aba/rota:** ação **Gerar dossiê de transição** no perfil do empregado visto pelo chefe (`/u/[username]`), na página do departamento (`/departments/[slug]/team`) e na GESTAO (`/groupings/[id]`); lista e detalhe em `/handoffs`, `/handoffs/[id]`; aceite do sucessor por notificação
+**Critérios de aceite cobertos:** RF36.CA01 · CA02 · CA03 · CA04 · CA05 (corpo do card, inalterado) — regra: o **título do card** define o RF e o corpo traz os próprios CAs. Gatilhos externos: RF25.CA05 (encerrar GESTAO), RF28.CA07 (troca de chefe), RF9 (chefe remove empregado).
 
-**HU:** HU36 · **Sprint (board Work Station):** Product Backlog (pós-Sprint 4, a priorizar) · **Equivalente FAI:** sem equivalente direto (ideia nova; usa Agrupamentos/Eras RF34 e o histórico RF17) · **Aba/rota:** ação no perfil/departamento (`/handoff`); gestão em `/companies/[slug]/groupings/[id]` (RF25.CA05, rota a confirmar)
-
-**Critérios de aceite cobertos:** RF36.CA01 · RF36.CA02 · RF36.CA03 · RF36.CA04 · RF36.CA05
-
-> Contextos da TAXONOMIA: **11. Transição & Memória** (`HandoffDossier`, `HandoffItem`), **4. Planejamento** (`Grouping.handoffDossierId`, status ENCERRADO), **2/3** (`TaskItem` DOCUMENTO PDF com `sourceKind DOSSIE`, `ProjectScheme` "Transição de [nome]" com `origin DOSSIE`, `ProjectTask.responsibleId/snapshotJson`), **5. DECIA** (`DeciaSession` ATIVA, `SessionParticipant` com `addedBy/removedBy`, `FinalDecision EM_REVISAO`, `DecisionTraceNode`), **1** (`DepartmentMembership.endedAt`), **10/12** (`AiInferenceLog` capability `DOSSIE`, `MediaObject`, `Notification`). Itens `PRIVADA` do empregado só entram com `consentForPrivateItems`; a saída nunca apaga tarefas usadas por outros (snapshot RF23).
+`HandoffDossier` (`subjectType` EMPREGADO · GESTAO; `reason` `HandoffReason` SAIDA · TRANSFERENCIA · FIM_GESTAO · TROCA_CHEFE; `status` `HandoffStatus` GERADO · AGUARDANDO_SUCESSOR · TRANSFERIDO · RECUSADO · CANCELADO) compila em `contentJson` projetos abertos por fase, tarefas pendentes/bloqueadas com prazos, sessões DECIA em andamento, decisões pendentes de revisão, contatos/fornecedores (`OrgEntity`) citados e um **resumo de contexto** por projeto redigido pela IA (`DOSSIE`) **sobre dados do sistema**. Materializa-se em `TaskItem` DOCUMENTO (PDF, `sourceKind DOSSIE`, faísca ✦) e `ProjectScheme` "Transição de [nome]" (`origin DOSSIE`) com as tarefas de encaminhamento, ligados ao rastro (nó TAREFA/PROJETO). O sucessor aceita → `HandoffItem`s transferem `responsibleId` (antigo fica `previousResponsibleId`), sessões ativas notificam a troca de participante (RF9), histórico intacto. Itens PRIVADOS só com `consentForPrivateItems`; saída nunca apaga tarefas usadas por outros (snapshot RF23).
 
 ## 1. Diagrama de classes
 
 ```mermaid
 classDiagram
-  direction LR
-  namespace ws-domain {
-    class HandoffDossier {
-      <<entity>>
-      +UUID id
-      +String subjectType
-      +UUID subjectUserId
-      +UUID groupingId
-      +UUID requestedBy
-      +String reason
-      +Instant generatedAt
-      +JSON contentJson
-      +UUID documentTaskId
-      +UUID transitionProjectId
-      +UUID successorUserId
-      +Instant successorAcceptedAt
-      +String status
-      +Boolean consentForPrivateItems
-      +UUID aiInferenceId
-    }
-    class HandoffItem {
-      <<entity>>
-      +UUID id
-      +UUID dossierId
-      +String targetType
-      +UUID targetId
-      +UUID previousResponsibleId
-      +UUID newResponsibleId
-      +Instant transferredAt
-      +String note
-    }
-    class Grouping {
-      <<entity>>
-      +UUID id
-      +GroupingType type
-      +String label
-      +String status
-      +Instant closedAt
-      +UUID handoffDossierId
-    }
-    class TaskItem {
-      <<entity>>
-      +UUID id
-      +UUID ownerId
-      +UUID responsibleId
-      +String title
-      +TaskType type
-      +SourceKind sourceKind
-      +TaskState state
-      +Visibility visibility
-      +LocalDate dueAt
-      +boolean aiGenerated
-      +UUID aiInferenceId
-    }
-    class ProjectScheme {
-      <<entity>>
-      +UUID id
-      +UUID ownerId
-      +String title
-      +SchemeOrigin origin
-      +ProjectStatus status
-      +ProjectPhase currentPhase
-    }
-    class ProjectTask {
-      <<entity>>
-      +UUID id
-      +UUID projectId
-      +UUID taskId
-      +UUID responsibleId
-      +JSON snapshotJson
-    }
-    class DeciaSession {
-      <<entity>>
-      +UUID id
-      +String topic
-      +UUID adminUserId
-      +SessionStatus status
-    }
-    class SessionParticipant {
-      <<entity>>
-      +UUID id
-      +UUID sessionId
-      +UUID userId
-      +ParticipantRole role
-      +Instant leftAt
-      +UUID addedBy
-      +UUID removedBy
-      +String removeReason
-    }
-    class FinalDecision {
-      <<entity>>
-      +UUID id
-      +UUID sessionId
-      +DecisionStatus status
-    }
-    class DepartmentMembership {
-      <<entity>>
-      +UUID id
-      +UUID userId
-      +UUID departmentId
-      +Instant endedAt
-      +String reason
-    }
-    class DecisionTraceNode {
-      <<entity>>
-      +UUID id
-      +TraceNodeType nodeType
-      +UUID refId
-      +JSON snapshotJson
-    }
-    class MediaObject {
-      <<entity>>
-      +UUID id
-      +String key
-      +String mimeType
-    }
-    class AiInferenceLog {
-      <<entity>>
-      +UUID id
-      +AiCapability capability
-      +String result
-      +boolean fallbackUsed
-    }
-    class HandoffStatus {
-      <<enum>>
-      GERADO
-      AGUARDANDO_SUCESSOR
-      TRANSFERIDO
-    }
-    class HandoffReason {
-      <<enum>>
-      SAIDA
-      TRANSFERENCIA
-      FIM_GESTAO
-      TROCA_CHEFE
-    }
-    class HandoffTargetType {
-      <<enum>>
-      TASK
-      PROJECT
-      SESSION
-      REVIEW
-    }
+direction LR
+
+namespace ws_domain_handoff {
+  class HandoffDossier {
+    <<entity>>
+    +id: UUID
+    +subjectType: String
+    +subjectUserId: UUID
+    +groupingId: UUID
+    +requestedBy: UUID
+    +reason: HandoffReason
+    +generatedAt: Instant
+    +contentJson: JSON
+    +documentTaskId: UUID
+    +transitionProjectId: UUID
+    +successorUserId: UUID
+    +successorAcceptedAt: Instant
+    +status: HandoffStatus
+    +consentForPrivateItems: boolean
+    +aiInferenceId: UUID
   }
-  namespace ws-application {
-    class HandoffService {
-      <<service>>
-      +generate(actorId, subjectType, subjectId, reason) HandoffDossier
-      +generateForHeadChange(deptId, oldHeadId, newHeadId) HandoffDossier
-      +grantConsent(subjectId, dossierId, consent) HandoffDossier
-      +nominateSuccessor(actorId, dossierId, successorId) HandoffDossier
-      +accept(successorId, dossierId) HandoffDossier
-      +compileContent(subject) HandoffContent
-    }
-    class DeciaBridgeService {
-      <<service>>
-      +swapParticipant(sessionId, fromUserId, toUserId, reason) SessionParticipant
-    }
-    class DecisionTraceService {
-      <<service>>
-      +appendNode(sessionId, type, refId, label, classLabel, actorId, snapshot) DecisionTraceNode
-    }
-    class InstitutionalService {
-      <<service>>
-      +endMembership(userId, reason) DepartmentMembership
-    }
-    class TaskService {
-      <<service>>
-      +create(ownerId, form) TaskItem
-    }
-    class ProjectService {
-      <<service>>
-      +create(ownerId, form) ProjectScheme
-    }
-    class AiEngine {
-      <<service>>
-      +contextSummaries(openProjects, tasks, sessions) List~Summary~
-    }
-    class AiProviderPort {
-      <<port>>
-      +complete(prompt, mode, accessClass) AiResult
-    }
-    class MediaStoragePort {
-      <<port>>
-      +put(bytes, mimeType, accessClass) MediaObject
-    }
-    class PdfRenderPort {
-      <<port>>
-      +render(template, content) bytes
-    }
+  class HandoffItem {
+    <<entity>>
+    +id: UUID
+    +dossierId: UUID
+    +targetType: String
+    +targetId: UUID
+    +previousResponsibleId: UUID
+    +newResponsibleId: UUID
+    +transferredAt: Instant
+    +note: String
   }
-  namespace ws-web {
-    class HandoffController {
-      <<controller>>
-      +generate(body)
-      +consent(dossierId, body)
-      +nominate(dossierId, body)
-      +accept(dossierId)
-      +get(dossierId)
-    }
+  class HandoffStatus {
+    <<enum>>
+    GERADO
+    AGUARDANDO_SUCESSOR
+    TRANSFERIDO
+    RECUSADO
+    CANCELADO
   }
-  namespace ws-infrastructure {
-    class HandoffJpaRepository {
-      <<adapter>>
-    }
-    class S3MediaStorageAdapter {
-      <<adapter>>
-    }
-    class PdfRenderAdapter {
-      <<adapter>>
-    }
-    class ClaudeAdapter {
-      <<adapter>>
-    }
-    class CassandraSystemMessageWriter {
-      <<adapter>>
-      messages_by_session
-    }
+  class HandoffReason {
+    <<enum>>
+    SAIDA
+    TRANSFERENCIA
+    FIM_GESTAO
+    TROCA_CHEFE
   }
-  HandoffDossier "1" --> "*" HandoffItem
-  HandoffDossier --> HandoffStatus : status
-  HandoffDossier --> HandoffReason : reason
-  HandoffItem --> HandoffTargetType : targetType
-  HandoffDossier --> TaskItem : documentTaskId DOCUMENTO PDF
-  HandoffDossier --> ProjectScheme : transitionProjectId origin DOSSIE
-  HandoffDossier --> Grouping : groupingId quando GESTAO
-  Grouping --> HandoffDossier : handoffDossierId
-  HandoffDossier --> AiInferenceLog : aiInferenceId
-  HandoffItem ..> TaskItem : targetType TASK
-  HandoffItem ..> ProjectScheme : targetType PROJECT
-  HandoffItem ..> DeciaSession : targetType SESSION
-  HandoffItem ..> FinalDecision : targetType REVIEW
-  ProjectScheme "1" --> "*" ProjectTask
-  DeciaSession "1" --> "*" SessionParticipant
-  TaskItem --> MediaObject : anexo PDF
-  HandoffService ..> HandoffDossier
-  HandoffService ..> HandoffItem
-  HandoffService ..> AiEngine : resumo de contexto ✦
-  HandoffService ..> PdfRenderPort
-  HandoffService ..> MediaStoragePort
-  HandoffService ..> TaskService : DOCUMENTO e encaminhamentos
-  HandoffService ..> ProjectService : projeto Transição
-  HandoffService ..> DeciaBridgeService : troca de participante RF9
-  HandoffService ..> DecisionTraceService : rastro RF29
-  HandoffService ..> InstitutionalService : encerra lotação
-  AiEngine ..> AiProviderPort
-  HandoffController ..> HandoffService
-  HandoffJpaRepository ..> HandoffDossier : MySQL
-  S3MediaStorageAdapter ..|> MediaStoragePort
-  PdfRenderAdapter ..|> PdfRenderPort
-  ClaudeAdapter ..|> AiProviderPort
-  CassandraSystemMessageWriter ..> DeciaSession : mensagem de sistema da troca
-  note for HandoffDossier "tabela handoff_dossiers · contentJson {openProjectsByPhase, pendingTasks, blockedTasks, activeSessions, pendingReviews, contacts, contextSummaries[]}"
-  note for HandoffItem "tabela handoff_items · previousResponsibleId fica como anterior (CA03)"
-  note for TaskItem "tabela tasks · sourceKind DOSSIE · visibility PRIVADA exige consentimento (CA05) · .. +40 campos .."
+}
+
+namespace ws_domain_alvos {
+  class TaskItem {
+    <<entity>>
+    +id: UUID
+    +ownerId: UUID
+    +responsibleId: UUID
+    +type: TaskType
+    +state: TaskState
+    +visibility: Visibility
+    +dueAt: LocalDate
+    +sourceKind: SourceKind
+    +aiGenerated: boolean
+    .. +45 campos ..
+  }
+  class ProjectScheme {
+    <<entity>>
+    +id: UUID
+    +ownerId: UUID
+    +title: String
+    +origin: SchemeOrigin
+    +status: ProjectStatus
+    +currentPhase: ProjectPhase
+    .. +32 campos ..
+  }
+  class ProjectTask {
+    <<entity>>
+    +projectId: UUID
+    +taskId: UUID
+    +responsibleId: UUID
+    +snapshotJson: JSON
+  }
+  class DeciaSession {
+    <<entity>>
+    +id: UUID
+    +status: SessionStatus
+    +adminUserId: UUID
+  }
+  class SessionParticipant {
+    <<entity>>
+    +sessionId: UUID
+    +userId: UUID
+    +leftAt: Instant
+    +removeReason: String
+  }
+  class DecisionReview {
+    <<entity>>
+    +decisionId: UUID
+    +reviewerId: UUID
+  }
+  class Grouping {
+    <<entity>>
+    +id: UUID
+    +type: GroupingType
+    +status: GroupingStatus
+    +handoffDossierId: UUID
+  }
+  class DepartmentMembership {
+    <<entity>>
+    +userId: UUID
+    +departmentId: UUID
+    +endedAt: Instant
+    +reason: String
+  }
+  class OrgEntity {
+    <<entity>>
+    +id: UUID
+    +name: String
+    +kind: String
+  }
+  class DecisionTraceNode {
+    <<entity>>
+    +nodeType: TraceNodeType
+    +refId: UUID
+  }
+}
+
+namespace ws_application {
+  class HandoffService {
+    <<service>>
+    +generateForEmployee(actor, userId, reason, successorId, consent) HandoffDossier
+    +generateForGrouping(groupingId, requestedBy) HandoffDossier
+    +accept(actor, dossierId) HandoffDossier
+    +refuse(actor, dossierId, reason) HandoffDossier
+    +cancel(actor, dossierId, reason)
+    -collect(subject) HandoffContent
+    -materialize(dossier) void
+  }
+  class TransferService {
+    <<service>>
+    +transfer(items, newResponsibleId) List~HandoffItem~
+  }
+  class DeciaSessionService {
+    <<service>>
+    +replaceParticipant(sessionId, oldUserId, newUserId, reason)
+  }
+  class TaskService {
+    <<service>>
+    +createDocument(actor, TaskForm, mediaId) TaskItem
+  }
+  class ProjectService {
+    <<service>>
+    +create(actor, ProjectForm) ProjectScheme
+  }
+  class AiEngine {
+    <<service>>
+    +run(AiRequest) AiResponse
+  }
+  class Guard {
+    <<service>>
+    +requireRole(actor, role)
+    +requireDeptHead(actor, deptId)
+    +requireOwner(actor, ownerId)
+  }
+  class StoragePort {
+    <<port>>
+    +put(key, pdf)
+  }
+  class JobPort {
+    <<port>>
+    +enqueue(EXPORT_PDF)
+  }
+  class DomainEvents {
+    <<service>>
+    +publish(event)
+  }
+}
+
+namespace ws_web {
+  class HandoffController {
+    <<controller>>
+    +POST_api_handoffs(subject, reason, successorId, consent)
+    +GET_api_handoffs_id()
+    +POST_api_handoffs_id_accept()
+    +POST_api_handoffs_id_refuse(reason)
+    +POST_api_handoffs_id_cancel(reason)
+  }
+}
+
+namespace ws_infrastructure {
+  class S3StorageAdapter {
+    <<adapter>>
+  }
+  class PdfExportJob {
+    <<adapter>>
+  }
+}
+
+HandoffDossier "1" *-- "0..*" HandoffItem
+HandoffDossier "0..1" --> "0..1" TaskItem : documentTaskId DOCUMENTO PDF
+HandoffDossier "0..1" --> "0..1" ProjectScheme : transitionProjectId
+HandoffDossier "0..1" --> "0..1" Grouping : groupingId GESTAO
+HandoffItem ..> TaskItem : TASK
+HandoffItem ..> ProjectScheme : PROJECT
+HandoffItem ..> DeciaSession : SESSION
+HandoffItem ..> DecisionReview : REVIEW
+HandoffDossier ..> DepartmentMembership : saida ou transferencia
+HandoffDossier ..> OrgEntity : contatos citados
+HandoffDossier ..> DecisionTraceNode : rastro RF29
+ProjectScheme "1" *-- "0..*" ProjectTask
+DeciaSession "1" o-- "0..*" SessionParticipant
+HandoffController --> HandoffService
+HandoffService --> TransferService
+HandoffService --> DeciaSessionService
+HandoffService --> TaskService
+HandoffService --> ProjectService
+HandoffService --> AiEngine
+HandoffService --> Guard
+HandoffService --> StoragePort
+HandoffService --> JobPort
+HandoffService --> DomainEvents
+DomainEvents ..> HandoffService : GroupingClosed GESTAO · HeadChanged · MemberRemoved
+S3StorageAdapter ..|> StoragePort
+PdfExportJob ..> JobPort
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph L1["Ator humano"]
-    U1["CHEFE ou EMPRESA aciona Gerar dossiê de transição para um empregado ou uma GESTAO"]
-    U2["Empregado decide consentir itens PRIVADA"]
-    U3["CHEFE indica o sucessor"]
-    U4["Sucessor aceita o dossiê"]
-    U5["Grupo da sessão DECIA vê a troca de participante"]
+  subgraph ATOR["Ator (CHEFE · EMPRESA · sucessor · empregado que sai)"]
+    A0([Gatilho]) --> A1{"Origem"}
+    A1 -->|manual| A2["CHEFE/EMPRESA clica Gerar dossiê de transição para um empregado"]
+    A1 -->|RF25.CA05| A3["GESTAO encerrada"]
+    A1 -->|RF28.CA07| A4["Troca de chefe"]
+    A5["Indica o sucessor e pede consentimento do empregado para itens PRIVADOS"]
+    A6([Sucessor recebe notificação]) --> A7{"Aceita?"}
+    A7 -->|sim| A8["Aceita a responsabilidade"]
+    A7 -->|não| A9["Recusa com motivo"]
   end
-  subgraph L2["Web/BFF (Next.js App Router)"]
-    W1["Dossiê: PDF, projeto Transição de [nome] com faísca ✦ e fio de decisão"]
-    W2["Pedido de consentimento no perfil do empregado"]
-    W3["Tarefas e projetos exibem novo responsável e anterior"]
-    W4["Mensagem de sistema na sessão e notificação RF9"]
+
+  subgraph FE["Next.js / BFF (app/(shell)/handoffs · u/[username] · departments/[slug]/team · groupings/[id])"]
+    F1["HandoffForm (motivo, sucessor SelectList, Switch de consentimento) · POST /api/handoffs"]
+    F2["HandoffView: projetos por fase, tarefas pendentes/bloqueadas, sessões, decisões, contatos, resumo ✦ por projeto · link do PDF"]
+    F3["POST /api/handoffs/{id}/accept · /refuse"]
   end
-  subgraph L3["ws-application"]
-    S1{"Ator é CHEFE do departamento ou EMPRESA?"}
-    S2{"Já existe dossiê não TRANSFERIDO para o mesmo sujeito?"}
-    S3["compileContent: projetos abertos por fase, tarefas pendentes e bloqueadas com prazos, sessões ATIVA, decisões EM_REVISAO, contatos e fornecedores citados"]
-    S4{"Há itens PRIVADA do empregado?"}
-    S5["Exclui itens PRIVADA até consentForPrivateItems"]
-    S6["PdfRenderPort → MediaStoragePort.put · TaskService.create DOCUMENTO (sourceKind DOSSIE, aiGenerated)"]
-    S7["ProjectService.create Transição de [nome] (origin DOSSIE) · ProjectTask por encaminhamento · HandoffItem por alvo"]
-    S8["DecisionTraceService: nós TAREFA e PROJETO · AiInferenceLog DOSSIE · status GERADO"]
-    S9["consentForPrivateItems = true · recompila com itens PRIVADA"]
-    S10{"Sucessor ativo e diferente do sujeito?"}
-    S11["successorUserId · status AGUARDANDO_SUCESSOR · Notification"]
-    S12{"Ator é o successorUserId?"}
-    S13["Transação: HandoffItem.newResponsibleId e transferredAt · TaskItem.responsibleId · ProjectTask.responsibleId · previousResponsibleId permanece como anterior"]
-    S14["DeciaBridgeService.swapParticipant em cada sessão ATIVA: SessionParticipant leftAt, removedBy, removeReason + novo participante addedBy · histórico intacto"]
-    S15["Decisões EM_REVISAO: reviewer passa ao sucessor ou ao chefe"]
-    S16["successorAcceptedAt · status TRANSFERIDO · InstitutionalService.endMembership (reason) · Grouping ENCERRADO quando GESTAO"]
-    S17["Tarefas do empregado usadas por outros: ProjectTask.snapshotJson preservado, nada é apagado"]
-    E1["403 ACESSO_NEGADO"]
-    E2["409 DOSSIE_EM_ANDAMENTO"]
-    E3["422 VALIDACAO"]
-    E4["403 ACESSO_NEGADO"]
+
+  subgraph WEB["ws-web · HandoffController"]
+    W1["JWT · CorrelationIdFilter"]
+    W2["GlobalExceptionHandler"]
   end
-  subgraph L4["IA (AiEngine)"]
-    A1["contextSummaries ✦ por projeto: onde parou, o que falta, riscos"]
-    A2["Sem IA externa: dossiê com dados estruturados e sem resumos (result FALLBACK)"]
+
+  subgraph APP["ws-application · HandoffService"]
+    P1{"Guard.requireRole EMPRESA ou requireDeptHead do empregado?"}
+    P1 -->|não| E1["403 ACESSO_NEGADO"]
+    P2{"Já existe dossiê GERADO/AGUARDANDO para o mesmo sujeito?"}
+    P2 -->|sim| E2["409 DOSSIE_EM_ANDAMENTO"]
+    P3["collect: projetos abertos por fase · tarefas pendentes e BLOQUEADAS com prazos · sessões ATIVA/REABERTA · DecisionReview pendentes · OrgEntity citados"]
+    P4{"Itens PRIVADOS do empregado?"}
+    P4 -->|sem consentimento| P5["Excluídos do dossiê (só contagem)"]
+    P4 -->|consentForPrivateItems| P6["Incluídos"]
+    P7["materialize: TaskItem DOCUMENTO PDF (sourceKind DOSSIE, ✦) + ProjectScheme Transição de [nome] (origin DOSSIE) com tarefas de encaminhamento · DecisionTrace"]
+    P8["status GERADO → AGUARDANDO_SUCESSOR · Notification TRANSICAO ao sucessor"]
+    P9{"Ator é o sucessor indicado?"}
+    P9 -->|não| E3["403 ACESSO_NEGADO"]
+    P10["TransferService: HandoffItem por alvo · responsibleId = sucessor · previousResponsibleId = anterior · TaskStateLog · ProjectTask.responsibleId"]
+    P11["DeciaSessionService.replaceParticipant nas sessões ativas · Notification PARTICIPANTE_ADICIONADO/REMOVIDO ao grupo (RF9) · histórico intacto"]
+    P12["status TRANSFERIDO · AuditLog HANDOFF_TRANSFERRED"]
+    P13["status RECUSADO (motivo obrigatório, 422 se vazio) · chefe indica outro sucessor"]
+    P14["Saída nunca apaga tarefas usadas por outros: ProjectTask mantém snapshotJson (RF23)"]
   end
-  subgraph L5["Persistência"]
-    D1[("MySQL: handoff_dossiers · handoff_items · ai_inference_log")]
-    D2[("MySQL: project_schemes · project_tasks · tasks · decia_sessions · final_decisions · department_memberships")]
-    D3[("S3: dossiê PDF")]
-    D4[("MySQL: session_participants · Cassandra: messages_by_session · notifications_by_user")]
-    D5[("MySQL: decision_trace_nodes · groupings")]
+
+  subgraph IA["AiEngine (DOSSIE)"]
+    I1["Resumo de contexto por projeto: onde parou, o que falta, riscos — só sobre dados coletados"]
+    I2["Claude → Gemini → LocalEngine (lista estruturada sem redação)"]
+    I3["AiInferenceLog"]
   end
-  U1 --> S1
-  S1 -->|"não"| E1
-  S1 -->|"sim"| S2
-  S2 -->|"sim"| E2
-  S2 -->|"não"| S3 --> D2
-  S3 --> S4
-  S4 -->|"sim"| S5 --> W2
-  S4 -->|"não"| A1
-  S5 --> A1
-  A1 --> S6
-  A1 -. "fallback" .-> A2 --> S6
-  S6 --> D3
-  S6 --> S7 --> D2
-  S7 --> S8 --> D1
-  S8 --> D5
-  S8 --> W1
-  W2 --> U2 --> S9 --> D1
-  S9 --> S6
-  W1 --> U3 --> S10
-  S10 -->|"não"| E3
-  S10 -->|"sim"| S11 --> D1
-  S11 --> U4 --> S12
-  S12 -->|"não"| E4
-  S12 -->|"sim"| S13 --> D2
-  S13 --> S14 --> D4
-  S14 --> W4 --> U5
-  S13 --> S15 --> D2
-  S15 --> S16 --> D1
-  S16 --> D5
-  S16 --> W3
-  S13 --> S17
-  classDef err fill:#fde2e2,stroke:#b91c1c,color:#7f1d1d
-  class E1,E2,E3,E4 err
+
+  subgraph DB["Persistência"]
+    D1[("MySQL handoff_dossiers · handoff_items · tasks · project_schemes · project_tasks · session_participants · task_state_log · audit_log")]
+    D2[("S3 dossiê PDF em restricted/ · flag storage.s3")]
+    D3[("Cassandra notifications_by_user · trace_by_entity · flag cassandra.enabled")]
+  end
+
+  A2 --> A5 --> F1 --> W1 --> P1 -->|sim| P2 -->|não| P3
+  A3 --> P3
+  A4 --> P3
+  P3 --> P4
+  P5 --> I1
+  P6 --> I1
+  I1 --> I2 --> I3 --> P7 --> D1
+  P7 --> D2
+  P7 --> P8 --> D3
+  P8 --> F2
+  A6 --> A7
+  A8 --> F3 --> W1 --> P9 -->|sim| P10 --> P11 --> P12 --> D1
+  P11 --> D3
+  A9 --> F3 --> P9 --> P13 --> D1
+  P10 --> P14
+  E1 --> W2
+  E2 --> W2
+  E3 --> W2
 ```
 
 ## 3. Diagrama de sequência
@@ -358,112 +315,84 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário
-  participant NX as Next.js (App Router)
+  participant U as Usuário
+  participant FE as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
-  participant CS as Cassandra
   participant S3 as S3
+  participant CAS as Cassandra
   participant EV as DomainEvents (AFTER_COMMIT)
 
-  Note over U,EV: CA01, CA02 e CA05 — gerar o dossiê
-  U->>NX: CHEFE aciona Gerar dossiê de transição (saída de um empregado)
-  NX->>C: POST /api/handoff/dossiers {subjectType EMPREGADO, subjectUserId, reason SAIDA}
-  C->>S: HandoffService.generate(actorId, EMPREGADO, subjectUserId, SAIDA)
-  alt ator não é CHEFE do departamento nem EMPRESA
-    S-->>C: 403 ACESSO_NEGADO
-  else já existe dossiê não TRANSFERIDO para o sujeito
+  U->>FE: CHEFE gera dossiê de saída da Ana, sucessor Bruno
+  FE->>C: POST /api/handoffs {EMPREGADO, userId, SAIDA, successorId, consent}
+  C->>S: HandoffService.generateForEmployee(actor, userId, SAIDA, successorId, consent)
+  S->>S: Guard.requireDeptHead(actor, dept da Ana)
+  alt já existe dossiê em andamento
     S-->>C: 409 DOSSIE_EM_ANDAMENTO
   else ok
-    S->>DB: SELECT projetos abertos por fase, tarefas pendentes e bloqueadas com prazos, sessões ATIVA, decisões EM_REVISAO, contatos citados
-    S->>S: separa itens visibility PRIVADA (entram só com consentimento, CA05)
-    alt provider externo disponível
-      S->>AI: contextSummaries(openProjects, tasks, sessions)
-      AI-->>S: por projeto onde parou, o que falta, riscos ✦
-    else sem IA externa
-      S->>S: dossiê estruturado sem resumos · fallbackUsed
+    S->>DB: collect: project_schemes abertos, tasks pendentes/BLOQUEADAS, decia_sessions ATIVA, decision_reviews pendentes, org_entities citados
+    alt sem consentForPrivateItems
+      S->>S: remove itens PRIVADA (fica só a contagem)
     end
-    S->>S: PdfRenderPort.render(dossiê)
-    S->>S3: PUT dossie.pdf (MediaStoragePort)
-    S->>DB: INSERT tasks (DOCUMENTO, sourceKind DOSSIE, aiGenerated) · INSERT project_schemes (Transição de Nome, origin DOSSIE)
-    S->>DB: INSERT project_tasks (encaminhamentos) · INSERT handoff_items (TASK, PROJECT, SESSION, REVIEW)
-    S->>DB: INSERT handoff_dossiers (GERADO, contentJson, documentTaskId, transitionProjectId) · INSERT ai_inference_log (DOSSIE)
-    S->>DB: INSERT decision_trace_nodes (TAREFA, PROJETO) · edges (ORIGINOU)
-    S->>CS: INSERT trace_by_entity
-    S-)EV: HandoffGenerated
-    EV->>DB: INSERT notifications (empregado: pedido de consentimento)
+    S->>AI: run(DOSSIE, dados coletados mascarados)
+    alt provedor indisponível
+      AI-->>S: LocalEngine devolve lista estruturada sem redação · fallbackUsed
+    else ok
+      AI-->>S: resumo de contexto por projeto ✦ (onde parou, o que falta, riscos)
+    end
+    AI->>DB: insert ai_inference_log
+    S->>DB: insert handoff_dossiers (GERADO, contentJson)
+    S->>DB: insert tasks DOCUMENTO (sourceKind DOSSIE, aiGenerated) + project_schemes Transição de Ana (origin DOSSIE) + project_tasks de encaminhamento
+    S->>DB: decision_trace_nodes TAREFA/PROJETO (RF29)
+    S->>EV: HandoffGenerated
+    S->>DB: update handoff_dossiers status AGUARDANDO_SUCESSOR, documentTaskId, transitionProjectId
     S-->>C: 201 HandoffDossier
   end
-  U->>NX: empregado consente itens PRIVADA
-  NX->>C: POST /api/handoff/dossiers/{id}/consent {consent true}
-  C->>S: HandoffService.grantConsent(subjectId, dossierId, true)
-  S->>DB: UPDATE handoff_dossiers SET consentForPrivateItems = true
-  S->>S: recompila contentJson com itens PRIVADA e regenera o PDF
-  S-->>NX: 200
+  EV->>S3: PipelineJob EXPORT_PDF → restricted/handoffs/{id}.pdf
+  EV->>CAS: Notification TRANSICAO ao sucessor · timeline
 
-  Note over U,EV: CA03 e CA04 — sucessor aceita e a responsabilidade é transferida
-  U->>NX: CHEFE indica o sucessor
-  NX->>C: POST /api/handoff/dossiers/{id}/successor {successorUserId}
-  C->>S: HandoffService.nominateSuccessor(actorId, dossierId, successorId)
-  alt sucessor igual ao sujeito ou inativo
-    S-->>C: 422 VALIDACAO
-  else ok
-    S->>DB: UPDATE handoff_dossiers SET successorUserId, status = AGUARDANDO_SUCESSOR
-    S-)EV: SuccessorNominated
-    EV->>DB: INSERT notifications (sucessor)
-    S-->>NX: 200
-  end
-  U->>NX: sucessor aceita
-  NX->>C: POST /api/handoff/dossiers/{id}/accept
-  C->>S: HandoffService.accept(successorId, dossierId)
-  alt ator não é o successorUserId
+  U->>FE: Bruno abre /handoffs/{id} e aceita
+  FE->>C: POST /api/handoffs/{id}/accept
+  C->>S: HandoffService.accept(actor, id)
+  alt ator não é o sucessor indicado
     S-->>C: 403 ACESSO_NEGADO
   else ok
-    S->>DB: UPDATE handoff_items SET newResponsibleId, transferredAt (previousResponsibleId mantido)
-    S->>DB: UPDATE tasks SET responsibleId · UPDATE project_tasks SET responsibleId
-    loop para cada DeciaSession ATIVA do empregado
-      S->>S: DeciaBridgeService.swapParticipant(sessionId, from, to, reason DOSSIE)
-      S->>DB: UPDATE session_participants SET leftAt, removedBy, removeReason · INSERT session_participants (addedBy)
-      S->>CS: INSERT messages_by_session (mensagem de sistema: troca de participante)
+    loop cada item do dossiê
+      S->>DB: insert handoff_items (previousResponsibleId = Ana, newResponsibleId = Bruno)
+      S->>DB: update tasks.responsible_id / project_tasks.responsible_id · task_state_log
     end
-    S->>DB: UPDATE final_decisions EM_REVISAO (revisor passa ao sucessor ou ao chefe)
-    S->>DB: UPDATE handoff_dossiers SET successorAcceptedAt, status = TRANSFERIDO
-    S->>DB: UPDATE department_memberships SET endedAt, reason · UPDATE groupings SET status = ENCERRADO quando GESTAO
-    S-)EV: HandoffTransferred
-    EV->>CS: INSERT notifications_by_user (grupo das sessões, RF9)
-    EV->>DB: INSERT audit_log
-    Note over S,DB: tarefas usadas por outros mantêm ProjectTask.snapshotJson (CA05), nada é apagado
-    S-->>NX: 200 HandoffDossier TRANSFERIDO
+    S->>DB: decia_sessions ativas → session_participants (Ana leftAt + removeReason, Bruno joinedAt)
+    S->>DB: update handoff_dossiers TRANSFERIDO, successorAcceptedAt · audit_log HANDOFF_TRANSFERRED
+    S->>EV: HandoffTransferred
+    S-->>C: 200
   end
+  EV->>CAS: Notification PARTICIPANTE_REMOVIDO/ADICIONADO ao grupo das sessões (RF9) · histórico de mensagens intacto
+  Note over S,DB: tarefas da Ana usadas em projetos de outros continuam via snapshotJson (RF23), nunca apagadas (CA05)
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: `HandoffDossier.status` (GERADO · AGUARDANDO_SUCESSOR · TRANSFERIDO). O consentimento é um flag (`consentForPrivateItems`), não um estado.
+Entidade central: `HandoffDossier.status` (`HandoffStatus`).
 
 ```mermaid
 stateDiagram-v2
-  direction LR
-  [*] --> GERADO : POST /api/handoff/dossiers (CA01) → PDF + projeto Transição ✦ (CA02)
-  GERADO --> GERADO : consentimento de itens PRIVADA recompila o dossiê (CA05)
-  GERADO --> AGUARDANDO_SUCESSOR : CHEFE indica successorUserId (CA03)
-  AGUARDANDO_SUCESSOR --> AGUARDANDO_SUCESSOR : troca de sucessor indicado
-  AGUARDANDO_SUCESSOR --> TRANSFERIDO : sucessor aceita → responsabilidades transferidas (CA03), sessões notificadas (CA04)
+  [*] --> GERADO: POST /api/handoffs ou evento GroupingClosed GESTAO / HeadChanged (CA01) · IA compila contentJson ✦
+  GERADO --> AGUARDANDO_SUCESSOR: documento PDF + projeto Transição materializados (CA02) · Notification ao sucessor
+  AGUARDANDO_SUCESSOR --> TRANSFERIDO: sucessor aceita → HandoffItems transferem responsabilidades · sessões notificadas (CA03, CA04)
+  AGUARDANDO_SUCESSOR --> RECUSADO: sucessor recusa com motivo
+  RECUSADO --> AGUARDANDO_SUCESSOR: chefe indica outro sucessor
+  AGUARDANDO_SUCESSOR --> CANCELADO: chefe/EMPRESA cancela com motivo
+  GERADO --> CANCELADO: cancelado antes de materializar
   TRANSFERIDO --> [*]
-  note right of GERADO
-    contentJson compilado · documentTaskId e transitionProjectId criados
-    itens PRIVADA fora até consentForPrivateItems = true
-  end note
+  CANCELADO --> [*]
   note right of TRANSFERIDO
-    HandoffItem.previousResponsibleId permanece como anterior
-    DepartmentMembership.endedAt · Grouping ENCERRADO quando GESTAO
-    Nenhuma tarefa usada por outros é apagada (snapshot RF23)
+    previousResponsibleId preservado em cada HandoffItem.
+    Histórico das sessões e snapshots das tarefas intactos (CA04, CA05).
   end note
-  note left of AGUARDANDO_SUCESSOR
-    Falta um estado de recusa ou cancelamento na TAXONOMIA
-    (ver dúvida em DECISOES.md)
+  note right of GERADO
+    Itens PRIVADOS só entram com consentForPrivateItems (CA05).
   end note
 ```
 
@@ -471,85 +400,60 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Next.js (frontend)"]
-    direction TB
-    P1["app/handoff/page.tsx · gerar, consentir, indicar, aceitar"]
-    P2["app/profile · ação Gerar dossiê e pedido de consentimento"]
-    P3["app/departments/[slug] · Equipe: ação por empregado"]
-    P4["app/companies/[slug]/groupings/[id] · encerrar gestão (RF25.CA05)"]
-    UI1["components/ui: HandoffSummary (por fase) · ConsentDialog · SuccessorPicker · ResponsibleBadge (atual e anterior)"]
+  subgraph FRONT["Frontend Next.js 15"]
+    R1["app/(shell)/handoffs · handoffs/[id] · u/[username] (ação do chefe) · departments/[slug]/team · groupings/[id]"]
+    R2["components: HandoffForm · SelectList (sucessor) · Switch (consentimento) · HandoffView · TaskCard list · PhaseBar · Spark ✦ · Dialog (motivo)"]
+    BFF["app/bff"]
+    R1 --> R2 --> BFF
   end
-  subgraph WEB["ws-web (REST · br.gov.pr.secid.workstation.web)"]
-    direction TB
-    C1["HandoffController"]
+  subgraph WEB["ws-web"]
+    HC["HandoffController (@Operation RF36.CA01-CA05)"]
+    SEC["SecurityConfig · CorrelationIdFilter · GlobalExceptionHandler (main)"]
   end
-  subgraph APP["ws-application"]
-    direction TB
-    S1["HandoffService"]
-    S2["DeciaBridgeService (RF29, RF9)"]
-    S3["DecisionTraceService (RF29)"]
-    S4["InstitutionalService (RF28)"]
-    S5["TaskService (RF20) · ProjectService (RF21)"]
-    S6["AiEngine"]
-    PT1["AiProviderPort"]
-    PT2["MediaStoragePort"]
-    PT3["PdfRenderPort"]
+  subgraph APPL["ws-application"]
+    HS["handoff/HandoffService"]
+    TRS["handoff/TransferService"]
+    DSS["decia/DeciaSessionService.replaceParticipant (RF9)"]
+    TS["acervo/TaskService · projects/ProjectService"]
+    AIE["ai/AiEngine (DOSSIE) · Masking (main)"]
+    GD["security/Guard (main: requireRole · planejado: requireDeptHead)"]
+    AUD["audit/AuditLogPort (main)"]
+    DE["events/DomainEvents AFTER_COMMIT (GroupingClosed · HeadChanged · MemberRemoved)"]
+    PORTS["ports: StoragePort · JobPort · AiProviderPort · NotificationPort"]
   end
   subgraph DOM["ws-domain"]
-    direction TB
-    E1["HandoffDossier · HandoffItem · Grouping"]
-    E2["TaskItem · ProjectScheme · ProjectTask · DeciaSession · SessionParticipant · FinalDecision"]
-    E3["DepartmentMembership · DecisionTraceNode · MediaObject · AiInferenceLog"]
+    ENT["HandoffDossier · HandoffItem · HandoffStatus · HandoffReason · TaskItem · ProjectScheme · SessionParticipant (planejado)"]
   end
   subgraph INFRA["ws-infrastructure"]
-    direction TB
-    I1["persistence-mysql: HandoffJpaRepository e repositórios dos alvos"]
-    I2["storage-s3: S3MediaStorageAdapter (PDF)"]
-    I3["persistence-cassandra: CassandraSystemMessageWriter · notifications_by_user · trace_by_entity"]
-    I4["ai-providers: ClaudeAdapter · GeminiAdapter"]
-    I5["platform: PdfRenderAdapter · DomainEventOutbox · AuditLog · Notification"]
+    MY["persistence-mysql handoff_* (V__rf36)"]
+    S3A["storage-s3 restricted/handoffs (flag storage.s3)"]
+    CASA["persistence-cassandra notifications · trace (flag cassandra.enabled)"]
+    AIP["ai-providers ai-claude · ai-gemini · ai-local"]
+    PLAT["platform: PDF export"]
   end
-  subgraph EXT["Serviços externos"]
-    X1(["Claude / Gemini"])
-  end
-  P1 --> C1
-  P2 --> C1
-  P3 --> C1
-  P4 --> C1
-  UI1 -.-> P1
-  C1 --> S1
-  S1 --> S2
-  S1 --> S3
-  S1 --> S4
-  S1 --> S5
-  S1 --> S6
-  S6 -.-> PT1
-  S1 -.-> PT2
-  S1 -.-> PT3
-  S1 --> E1
-  S1 --> E2
-  S3 --> E3
-  S4 --> E3
-  S1 --> I1
-  S2 --> I3
-  S3 --> I3
-  S1 --> I5
-  I2 -. implementa .-> PT2
-  I5 -. implementa .-> PT3
-  I4 -. implementa .-> PT1
-  I4 --> X1
-  classDef port stroke-dasharray: 4 3
-  class PT1,PT2,PT3 port
+  BFF --> HC --> SEC
+  HC --> HS
+  HS --> TRS
+  HS --> DSS
+  HS --> TS
+  HS --> AIE
+  HS --> GD
+  HS --> AUD
+  DE --> HS
+  HS --> PORTS
+  HS --> ENT --> MY --> MYSQL[("MySQL 8")]
+  PORTS --> S3A --> S3[("S3 / MinIO")]
+  PORTS --> CASA --> CASS[("Cassandra")]
+  PORTS --> AIP --> AI["Claude / Gemini / local"]
+  PORTS --> PLAT
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
-|---|---|
-| RF36.CA01 | Classes `HandoffDossier` (subjectType EMPREGADO/GESTAO, reason, contentJson {openProjectsByPhase, pendingTasks, blockedTasks, activeSessions, pendingReviews, contacts, contextSummaries[]}), `Grouping.handoffDossierId`, `HandoffService.generate/compileContent`, `AiEngine.contextSummaries`; atividades `U1 → S1 → S2 → S3 → A1/A2` (403 ACESSO_NEGADO, 409 DOSSIE_EM_ANDAMENTO); sequência bloco «CA01, CA02 e CA05»; transição `[*] → GERADO`; componentes `app/handoff`, `HandoffSummary`, `app/companies/[slug]/groupings/[id]` |
-| RF36.CA02 | Classes `HandoffDossier.documentTaskId/transitionProjectId/aiInferenceId`, `TaskItem` (DOCUMENTO, sourceKind DOSSIE, aiGenerated), `ProjectScheme origin DOSSIE`, `ProjectTask` (encaminhamentos), `PdfRenderPort`, `MediaStoragePort`, `DecisionTraceService`; atividades `S6 → S7 → S8 → W1`; sequência bloco «CA01, CA02 e CA05» (PUT dossie.pdf, INSERT tasks/project_schemes/decision_trace_nodes); nota do estado `GERADO`; componentes `storage-s3`, `PdfRenderAdapter`, `DecisionTraceService (RF29)` |
-| RF36.CA03 | Classes `HandoffDossier.successorUserId/successorAcceptedAt`, `HandoffItem.previousResponsibleId/newResponsibleId/transferredAt`, `HandoffService.nominateSuccessor/accept`, `TaskItem.responsibleId`, `ProjectTask.responsibleId`; atividades `U3 → S10 → S11 → U4 → S12 → S13 → S16 → W3` (422, 403); sequência bloco «CA03 e CA04»; transições `GERADO → AGUARDANDO_SUCESSOR → TRANSFERIDO` e nota; componentes `SuccessorPicker`, `ResponsibleBadge` |
-| RF36.CA04 | Classes `SessionParticipant` (leftAt, removedBy, removeReason, addedBy), `DeciaBridgeService.swapParticipant`, `HandoffItem targetType SESSION`, `CassandraSystemMessageWriter`; atividades `S13 → S14 → W4 → U5`; sequência bloco «CA03 e CA04» (loop por sessão ATIVA, mensagem de sistema, notifications_by_user RF9); transição `AGUARDANDO_SUCESSOR → TRANSFERIDO`; componentes `persistence-cassandra`, `DeciaBridgeService (RF29, RF9)` |
-| RF36.CA05 | Classes `HandoffDossier.consentForPrivateItems`, `TaskItem.visibility`, `ProjectTask.snapshotJson`, `HandoffService.grantConsent`; atividades `S4 → S5 → W2 → U2 → S9`, `S13 → S17`; sequência bloco «CA01, CA02 e CA05» (separa PRIVADA, `POST .../consent`) e nota final do bloco «CA03 e CA04» (snapshot preservado); transição `GERADO → GERADO` e notas de `GERADO`/`TRANSFERIDO`; componente `ConsentDialog` |
-
-> Dúvidas para `docs/DECISOES.md`: `HandoffStatus`, `HandoffReason` e `HandoffTargetType` não são enums nomeados na TAXONOMIA (valores inline); falta estado de recusa/cancelamento do dossiê (sucessor recusa, chefe cancela) — propor `RECUSADO`/`CANCELADO`; `PdfRenderPort`, `409 DOSSIE_EM_ANDAMENTO` e as rotas são propostas; quem herda decisões EM_REVISAO quando o sujeito era o revisor (sucessor vs. chefe); se o dossiê de GESTAO (RF25.CA05) exige sucessor ou encerra direto em TRANSFERIDO.
+| CA | Classe | Passo | Mensagem | Transição | Componente |
+|---|---|---|---|---|---|
+| RF36.CA01 | `HandoffService.generateForEmployee/generateForGrouping/collect`, `HandoffDossier.contentJson` (openProjectsByPhase, pendingTasks, blockedTasks, activeSessions, pendingReviews, contacts, contextSummaries), `HandoffReason`, `AiCapability DOSSIE` | A1 → A2/A3/A4 → F1 → P1 (403) → P2 (409) → P3 → I1 → I2 | 1–14 | `[*] → GERADO` | `HS`, `AIE`, `HandoffForm` |
+| RF36.CA02 | `HandoffService.materialize`, `TaskItem` DOCUMENTO `sourceKind DOSSIE` + `aiGenerated`, `ProjectScheme origin DOSSIE`, `DecisionTraceNode`, `PipelineJob EXPORT_PDF` | P7 → P8 | 15–21 | `GERADO → AGUARDANDO_SUCESSOR` | `TS`, `S3A`, `PLAT`, `Spark ✦` |
+| RF36.CA03 | `HandoffDossier.successorUserId/successorAcceptedAt`, `HandoffService.accept/refuse`, `TransferService`, `HandoffItem.previousResponsibleId/newResponsibleId`, `TaskStateLog` | A6 → A7 → A8 → F3 → P9 (403) → P10 → P12 · A9 → P13 | 22–33 | `AGUARDANDO_SUCESSOR → TRANSFERIDO / RECUSADO` | `TRS`, `AUD`, `HandoffView` |
+| RF36.CA04 | `DeciaSessionService.replaceParticipant`, `SessionParticipant.leftAt/removeReason`, `Notification PARTICIPANTE_*` (RF9), histórico intacto | P11 | 30, 34 | nota de TRANSFERIDO | `DSS`, `CASA` |
+| RF36.CA05 | `HandoffDossier.consentForPrivateItems`, `Visibility PRIVADA`, `ProjectTask.snapshotJson` (RF23), nunca DELETE de tarefas usadas por outros | A5 → P4 → P5/P6 · P14 | 8–9, 35 | nota de GERADO + nota de TRANSFERIDO | `Switch (consentimento)`, `HS` |
