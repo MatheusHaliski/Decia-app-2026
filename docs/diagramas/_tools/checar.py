@@ -88,7 +88,8 @@ def checar(path):
 
     # rastreabilidade cobre todo CA do cabeçalho
     if cab is not None and idx6 is not None:
-        cas_cab = expandir_cas(cab)
+        # só a parte antes do primeiro " — " lista os CAs cobertos; depois vêm as fontes/observações
+        cas_cab = expandir_cas(cab.split(" — ")[0])
         tabela = "\n".join(linhas[idx6:])
         faltam = sorted(c for c in cas_cab if c not in tabela)
         if faltam:

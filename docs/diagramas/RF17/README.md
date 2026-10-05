@@ -1,160 +1,183 @@
 # RF17 — Visualizar esquemas de tarefa & projetos criados por outros usuários na rede social do Work Station, através da aba "Buscar"
-**HU:** HU17 · **Sprint (board Work Station):** a confirmar (card renomeado em 2026-10-02; origem RF27 = Sprint 4) · **Equivalente FAI:** RF8 Buscar/Explorar (busca textual com abas e contadores, "looks parecidos com este") · **Aba/rota:** Buscar (`/search`, abas PROJETOS · TAREFAS · PESSOAS · EMPRESAS · CHEFES DE DEPARTAMENTO) e páginas de leitura de esquema de terceiros (`/tasks/[id]`, `/projects/[id]`)
-**Critérios de aceite cobertos:** RF17.CA01 … RF17.CA06 — corpo do card vazio: CAs derivados do título + HU17 + RF27 (CA03 busca, CA04 visibilidade, CA05 semântica); todos marcados "(CA a confirmar)". O Mural (RF27.CA01/CA02/CA06) continua no RF27.
+**HU:** HU17 · **Sprint (board Work Station):** lista *Requisitos Funcionais* sem sprint atribuída (card renomeado em 2026-10-02; origem RF27 = Sprint 4; o card "SPRINT 3" cita "RF17 Encerrar sessão", escopo antigo preservado em `_anterior/RF17` — `RENUMERACAO.md`) · **Equivalente FAI:** RF8 Buscar/Explorar (busca textual com abas e contadores, "looks parecidos com este") · **Aba/rota:** Buscar (`/search`, abas PROJETOS · TAREFAS · PESSOAS · EMPRESAS · CHEFES DE DEPARTAMENTO) e páginas de leitura de esquema de terceiros (`/tasks/[id]`, `/projects/[id]`); API `GET /api/search?q=&tab=&filters…&page=`, `GET /api/search/suggestions`, `GET /api/projects/{id}/similar`, `GET /api/tasks/{id}`, `GET /api/projects/{id}`
+**Critérios de aceite cobertos:** RF17.CA01 … RF17.CA06 — corpo do card vazio: CAs derivados do título + HU17 + RF27 (CA03 busca, CA04 visibilidade, CA05 semântica); todos marcados "(CA a confirmar)". O Mural (RF27.CA01/CA02/CA06) continua no RF27. Todas as classes do RF são **(planejado)**; reais: `OpenSearchAdaptersConfig` (flag `opensearch.enabled`), `AiProvidersConfig`, `Guard`, `SecurityConfig`.
 
 > **HU17** — COMO usuário autenticado no sistema POSSO visualizar esquemas de tarefa ou projeto criados por outros usuários, chefes ou empresas na aba "Buscar/Explorar" PARA me inspirar em outras combinações e ampliar minhas referências de projetos.
 
-A aba **Buscar** é a porta de **descoberta de esquemas de terceiros**: busca textual (título, descrição, tags, texto OCR dos anexos via `TaskAttachment.ocrTextRef`) nos índices OpenSearch `ws-tasks`, `ws-projects`, `ws-people`, `ws-orgs`, devolvendo **5 abas com contadores**. Todo resultado passa pelo `visibilityFilter` do viewer (outra empresa só vê `PUBLICA`; `accessClass` SIGILOSO nunca é indexado para terceiros). Ao abrir um resultado o usuário vê o **esquema completo em modo leitura** (anatomia do card e ficha — `docs/design-system/ANATOMIAS_E_ESTUDIO.md` §2/§3) com **crédito do autor**, as ações sociais inline (RF18/RF19), "Levar ao meu acervo" (RF7/RF41.CA08) e, para projetos, **"projetos parecidos com este"** (kNN em `ws-memory`, RF33). A indexação é assíncrona: publicar ou mudar visibilidade emite evento AFTER_COMMIT → `PipelineJob INDEXAR_BUSCA` (proposta de novo tipo, hoje só existe `INDEXAR_MEMORIA`).
+A busca lê os índices OpenSearch `ws-tasks`, `ws-projects`, `ws-people` e `ws-orgs` (ARQUITETURA §3.2) com o mesmo `AccessPolicy.visibilityFilter` dos perfis (RF16), devolve 5 abas com contadores e abre o esquema de terceiro em **modo leitura** com crédito do autor. "Projetos parecidos" usa `AiEngine` capability `MEMORIA_BUSCA` (embedding) e kNN em `ws-memory` (RF33), com fallback textual. A indexação é assíncrona (`PipelineJob INDEXAR_BUSCA`, proposta) a partir dos eventos de publicação/alteração/arquivamento.
+
+## Critérios de aceite derivados da HU17 (todos "CA a confirmar")
 
 | CA | Enunciado (Dado / Quando / Então) |
 |---|---|
-| **RF17.CA01** (CA a confirmar) | Dado um usuário autenticado em `/search`, quando digita um termo, então o sistema busca em título, descrição, tags e texto OCR (OpenSearch `ws-tasks`, `ws-projects`, `ws-people`, `ws-orgs`) e devolve **5 abas com contadores** (PROJETOS · TAREFAS · PESSOAS · EMPRESAS · CHEFES DE DEPARTAMENTO) em ≤ 1 s p95; termo vazio mostra sugestões (recentes, em alta, chancelados). |
-| **RF17.CA02** (CA a confirmar) | Dado uma aba, quando aplico filtros (categoria, tipo, fase, departamento, exercício, chancelado, prazo) e pagino (20 por página), então a URL reflete `q`, `tab`, filtros e `page`; a tela mostra skeleton ao carregar, estado vazio ilustrado e botão "tentar de novo" em erro (`503 INDISPONIVEL`). |
-| **RF17.CA03** (CA a confirmar) | Dado os resultados, quando são devolvidos, então só contêm itens que o viewer pode ver: `PUBLICA` sempre; `EMPRESA` se mesma empresa; `DEPARTAMENTO` se membro; `PRIVADA` só os meus; `RASCUNHO` nunca aparece para terceiros; `accessClass` SIGILOSO nunca é indexado e RESTRITO só para o departamento dono. Resultados de outra empresa só se `PUBLICA`. |
+| **RF17.CA01** (CA a confirmar) | Dado um usuário autenticado em `/search`, quando digita um termo, então o sistema busca em título, descrição, tags e texto OCR (OpenSearch `ws-tasks`, `ws-projects`, `ws-people`, `ws-orgs`) e devolve **5 abas com contadores** (PROJETOS · TAREFAS · PESSOAS · EMPRESAS · CHEFES DE DEPARTAMENTO) em ≤ 1 s p95; termo vazio mostra sugestões (recentes, em alta, chancelados) via `GET /api/search/suggestions`. |
+| **RF17.CA02** (CA a confirmar) | Dado uma aba, quando aplico filtros (categoria, tipo, fase, departamento, exercício, chancelado, prazo) e pagino (20 por página), então a URL reflete `q`, `tab`, filtros e `page`; a tela mostra `Skeleton` ao carregar, `EmptyState` ilustrado e `ErrorState` com "tentar de novo" em erro (`503 BUSCA_INDISPONIVEL` quando o OpenSearch está fora ou a flag está desligada). |
+| **RF17.CA03** (CA a confirmar) | Dado os resultados, quando são devolvidos, então só contêm itens que o viewer pode ver (`AccessPolicy.visibilityFilter` aplicado como filtro da query): `PUBLICA` sempre; `EMPRESA` se mesma empresa; `DEPARTAMENTO` se membro; `PRIVADA` só os meus; `RASCUNHO` nunca aparece para terceiros; `accessClass` SIGILOSO nunca é indexado e RESTRITO só para o departamento dono. Resultados de outra empresa só se `PUBLICA`. |
 | **RF17.CA04** (CA a confirmar) | Dado um resultado de tarefa ou projeto de outro usuário, quando o abro, então vejo o esquema completo em **modo leitura** (ficha, fases e tarefas do projeto, capa, chancelas) com o **crédito do autor** (avatar + link para RF16/RF14/RF15), as ações inline do RF18/RF19 e "Levar ao meu acervo" (RF7/RF41.CA08); edição é `403 ACESSO_NEGADO`; item que ficou PRIVADA depois de indexado responde `404` e sai do índice. |
-| **RF17.CA05** (CA a confirmar) | Dado um projeto aberto, quando clico em "projetos parecidos com este", então o sistema gera o embedding (`AiEngine` `MEMORIA_BUSCA`) e faz kNN em `ws-memory` com o mesmo `visibilityFilter`, devolvendo até 10 projetos com score e motivo ("mesmo processo, 4 tarefas em comum"); sem IA disponível cai para "mais do mesmo processo/departamento" (busca textual). |
-| **RF17.CA06** (CA a confirmar) | Dado que um autor publica, altera a visibilidade ou arquiva uma tarefa/projeto, quando a transação é confirmada, então o evento AFTER_COMMIT agenda `PipelineJob INDEXAR_BUSCA` e o índice reflete a mudança em ≤ 60 s; falha deixa o job `REPROCESSAR` sem afetar a operação do autor. |
-
-| Aba de Buscar | Índice OpenSearch | Entidade | Filtros |
-|---|---|---|---|
-| PROJETOS | `ws-projects` | `ProjectScheme` | fase, departamento, exercício, chancelado, prazo |
-| TAREFAS | `ws-tasks` (+ texto OCR) | `TaskItem`, `TaskAttachment.ocrTextRef` | categoria, tipo, departamento, chancelado, prazo |
-| PESSOAS | `ws-people` | `User` (EMPREGADO) | departamento, empresa |
-| EMPRESAS | `ws-orgs` | `Company` | — |
-| CHEFES DE DEPARTAMENTO | `ws-people` (profileType CHEFE_DEPARTAMENTO) | `User`, `Department.headUserId` | empresa, departamento |
-| semântica | `ws-memory` kNN | `InstitutionalMemoryDocument` | sourceType PROJETO/TAREFA |
+| **RF17.CA05** (CA a confirmar) | Dado um projeto aberto, quando clico em "projetos parecidos com este", então o sistema gera o embedding (`AiEngine MEMORIA_BUSCA`) e faz kNN em `ws-memory` com o mesmo `visibilityFilter`, devolvendo até 10 projetos com score e motivo ("mesmo processo, 4 tarefas em comum"); sem IA disponível cai para "mais do mesmo processo/departamento" (busca textual); `AiInferenceLog` registra a inferência. |
+| **RF17.CA06** (CA a confirmar) | Dado que um autor publica, altera a visibilidade ou arquiva uma tarefa/projeto, quando a transação é confirmada, então o evento AFTER_COMMIT agenda `PipelineJob INDEXAR_BUSCA` (tipo proposto) e o índice reflete a mudança em ≤ 60 s; falha deixa o job `REPROCESSAR` sem afetar a operação do autor. |
 
 ## 1. Diagrama de classes
 
 ```mermaid
 classDiagram
-direction LR
+  direction LR
 
-namespace ws_domain_alvos {
-  class ProjectScheme {
-    <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +companyId: UUID
-    +departmentId: UUID
-    +title: String
-    +objective: String
-    +descriptionMd: String
-    +processTags: Set~ProcessTag~
-    +currentPhase: ProjectPhase
-    +status: ProjectStatus
-    +visibility: Visibility
-    +exerciseYear: int
-    +sealIdsJson: JSON
-    +coverUrl: String
-    +nextMilestoneAt: LocalDate
-    +viewsCount: long
-    .. +25 campos ..
+  class SearchController {
+    <<controller>>
+    +search(q, tab, filters, page, CurrentUser) SearchResultView
+    +suggestions(CurrentUser) SuggestionsView
+    +similar(projectId, CurrentUser) List~SimilarProjectView~
   }
-  class ProjectTask {
-    <<entity>>
-    +projectId: UUID
-    +taskId: UUID
-    +phase: ProjectPhase
-    +snapshotJson: JSON
+  class ReadOnlySchemeController {
+    <<controller>>
+    +task(id, CurrentUser) TaskReadView
+    +project(id, CurrentUser) ProjectReadView
   }
+  class SearchService {
+    <<service>>
+    +search(SearchQuery, viewer) SearchResultView
+    +suggestions(viewer) SuggestionsView
+    -countersPerTab(q, viewer) Map
+  }
+  class SimilarProjectsService {
+    <<service>>
+    +similar(projectId, viewer) List~SimilarProjectView~
+    -fallbackTextual(project, viewer) List
+  }
+  class SchemeReadService {
+    <<service>>
+    +task(id, viewer) TaskReadView
+    +project(id, viewer) ProjectReadView
+    -creditOf(owner) AuthorCredit
+  }
+  class SearchIndexer {
+    <<service>>
+    +onPublished(target) void
+    +onVisibilityChanged(target) void
+    +onArchived(target) void
+    +run(PipelineJob) void
+  }
+  class AccessPolicy {
+    <<service>>
+    +visibilityFilter(viewer) VisibilityScope
+    +canView(viewer, item) boolean
+  }
+  class AiEngine {
+    <<service>>
+    +run(AiRequest) AiResponse
+    capability MEMORIA_BUSCA
+  }
+  class SearchIndexPort {
+    <<port>>
+    +search(index, query, scope, page) SearchPage
+    +count(index, query, scope) long
+    +index(doc) void
+    +delete(index, id) void
+    +knn(index, vector, scope, k) List
+  }
+  class SearchQuery {
+    <<value>>
+    +String q
+    +SearchTab tab
+    +Map filters
+    +int page
+    +int size
+  }
+  class VisibilityScope {
+    <<value>>
+    +UUID viewerId
+    +UUID companyId
+    +Set~UUID~ departmentIds
+    +Set~Visibility~ visibilities
+  }
+  class PipelineJobPort {
+    <<port>>
+    +enqueue(type, targetType, targetId) PipelineJob
+  }
+  class TaskRepositoryPort {
+    <<port>>
+    +findById(id) Optional
+  }
+  class ProjectRepositoryPort {
+    <<port>>
+    +findById(id) Optional
+  }
+
   class TaskItem {
     <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +departmentId: UUID
-    +title: String
-    +summary: String
-    +descriptionMd: String
-    +tags: Set~String~
-    +category: TaskCategory
-    +type: TaskType
-    +processTags: Set~ProcessTag~
-    +state: TaskState
-    +visibility: Visibility
-    +accessClass: AccessClassification
-    +sealIdsJson: JSON
-    +thumbnailUrl: String
-    +viewsCount: long
-    .. +40 campos ..
+    +UUID id
+    +UUID ownerId
+    +UUID departmentId
+    +String title
+    +String summary
+    +Set~String~ tags
+    +TaskCategory category
+    +TaskType type
+    +TaskState state
+    +Visibility visibility
+    +AccessClassification accessClass
+    +JSON sealIdsJson
   }
-  class TaskAttachment {
+  class ProjectScheme {
     <<entity>>
-    +taskId: UUID
-    +ocrTextRef: String OpenSearch
+    +UUID id
+    +UUID ownerId
+    +UUID departmentId
+    +String title
+    +String objective
+    +Set~ProcessTag~ processTags
+    +ProjectStatus status
+    +ProjectPhase currentPhase
+    +Visibility visibility
+    +int exerciseYear
+    +JSON sealIdsJson
   }
   class User {
     <<entity>>
-    +id: UUID
-    +username: String
-    +fullName: String
-    +jobTitle: String
-    +profileType: ProfileType
-    +companyId: UUID
-    +departmentId: UUID
-    +avatarUrl: String
+    +String username
+    +String fullName
+    +String jobTitle
+    +ProfileType profileType
+    +UUID companyId
+    +UUID departmentId
   }
   class Company {
     <<entity>>
-    +id: UUID
-    +legalName: String
-    +slug: String
-    +logoUrl: String
+    +String legalName
+    +String slug
   }
   class Department {
     <<entity>>
-    +id: UUID
-    +companyId: UUID
-    +acronym: String
-    +headUserId: UUID
+    +String name
+    +String acronym
+    +UUID headUserId
+  }
+  class TaskAttachment {
+    <<entity>>
+    +String ocrTextRef
   }
   class InstitutionalMemoryDocument {
-    <<entity>>
-    +docId: String
-    +sourceType: MemorySourceType PROJETO TAREFA
-    +sourceId: UUID
-    +companyId: UUID
-    +departmentId: UUID
-    +visibility: Visibility
-    +accessClass: AccessClassification
-    +embedding: dense_vector
+    <<document>>
+    +String docId
+    +MemorySourceType sourceType
+    +UUID sourceId
+    +String text
+    +float[] embedding
+    +Visibility visibility
+    +AccessClassification accessClass
   }
-  class MemoryQuery {
-    <<entity>>
-    +id: UUID
-    +userId: UUID
-    +queryText: String
-    +filtersJson: JSON
-    +resultsJson: JSON
-    +aiInferenceId: UUID
-  }
-}
-
-namespace ws_domain_plataforma {
   class PipelineJob {
     <<entity>>
-    +id: UUID
-    +type: String INDEXAR_BUSCA proposta
-    +targetType: String TASK PROJECT
-    +targetId: UUID
-    +status: PipelineJobStatus
-    +attempts: int
-  }
-  class DomainEventOutbox {
-    <<entity>>
-    +aggregateType: String
-    +aggregateId: UUID
-    +eventType: String VisibilityChanged Published Archived
-    +publishedAt: Instant
+    +String type
+    +PipelineJobStatus status
+    +int attempts
   }
   class AiInferenceLog {
     <<entity>>
-    +capability: AiCapability MEMORIA_BUSCA
-    +result: InferenceResult
+    +AiCapability capability
+    +String hostRf
   }
-}
-
-namespace ws_domain_enums {
   class SearchTab {
     <<enum>>
     PROJETOS
@@ -177,214 +200,97 @@ namespace ws_domain_enums {
     RESTRITO
     SIGILOSO
   }
-  class PipelineJobStatus {
-    <<enum>>
-    PENDENTE
-    RODANDO
-    OK
-    FALHA
-    REPROCESSAR
-  }
-}
 
-namespace ws_application {
-  class SearchService {
-    <<service>>
-    +search(viewerId, q, tab, filters, page 20) SearchResult 5 abas com contadores
-    +suggestions(viewerId) Suggestions recentes em alta chancelados
-    +similar(viewerId, PROJECT, id) List~Hit~ kNN ou fallback textual
-    -visibilityFilter(viewer) PUBLICA EMPRESA DEPARTAMENTO PRIVADA só minhas
-    -accessClassFilter(viewer) exclui SIGILOSO e RESTRITO de outro departamento
-  }
-  class SchemeReadService {
-    <<service>>
-    +openTask(viewerId, taskId) TaskView modo leitura + crédito
-    +openProject(viewerId, projectId) ProjectView fases, tarefas, capa, chancelas
-    +incrementViews(type, id)
-  }
-  class AccessPolicy {
-    <<service>>
-    +canView(viewer, item) boolean
-    +canEdit(viewer, item) boolean
-  }
-  class SearchIndexingService {
-    <<service>>
-    +onPublishedOrVisibilityChanged(event) PipelineJob INDEXAR_BUSCA
-    +index(type, id) upsert no índice com visibility e accessClass
-    +remove(type, id) item PRIVADA ou RASCUNHO
-  }
-  class AiEngine {
-    <<service>>
-    +embed(text) vector MEMORIA_BUSCA
-  }
-  class SearchIndexPort {
-    <<port>>
-    +msearch(query, indices, filters) SearchResult
-    +count(query, indices, filters) Map~SearchTab, long~
-    +knn(index ws-memory, vector, filters) List~Hit~
-    +upsert(index, doc)
-    +delete(index, docId)
-  }
-  class CachePort {
-    <<port>>
-    +getSuggestions(companyId)
-    +incrViews(type, id)
-  }
-}
-
-namespace ws_web {
-  class SearchController {
-    <<controller>>
-    +GET_api_search(q, tab, filters, page)
-    +GET_api_search_counts(q, filters)
-    +GET_api_search_suggestions()
-    +POST_api_search_similar(type, id)
-  }
-  class SchemeReadController {
-    <<controller>>
-    +GET_api_tasks_id(id)
-    +GET_api_projects_id(id)
-  }
-}
-
-namespace ws_infrastructure {
-  class OpenSearchIndexAdapter {
-    <<adapter>>
-  }
-  class RedisCacheAdapter {
-    <<adapter>>
-  }
-  class ClaudeGeminiAdapter {
-    <<adapter>>
-  }
-  class OutboxRelay {
-    <<adapter>>
-  }
-}
-
-ProjectScheme "1" --> "*" ProjectTask : fases e tarefas
-ProjectTask ..> TaskItem : taskId ou snapshotJson
-TaskItem "1" --> "*" TaskAttachment : ocrTextRef indexado
-ProjectScheme "*" --> "1" User : ownerId crédito
-TaskItem "*" --> "1" User : ownerId crédito
-User "*" --> "0..1" Company : companyId
-User "*" --> "0..1" Department : departmentId
-Department "*" --> "1" User : headUserId aba CHEFES
-InstitutionalMemoryDocument ..> ProjectScheme : sourceId quando PROJETO
-InstitutionalMemoryDocument ..> TaskItem : sourceId quando TAREFA
-MemoryQuery ..> AiInferenceLog : aiInferenceId
-PipelineJob ..> ProjectScheme : targetId quando PROJECT
-PipelineJob ..> TaskItem : targetId quando TASK
-DomainEventOutbox ..> PipelineJob : relay agenda INDEXAR_BUSCA
-TaskItem --> Visibility
-TaskItem --> AccessClassification
-ProjectScheme --> Visibility
-PipelineJob --> PipelineJobStatus
-
-SearchController ..> SearchService
-SchemeReadController ..> SchemeReadService
-SearchService ..> SearchIndexPort
-SearchService ..> AiEngine : embed MEMORIA_BUSCA
-SearchService ..> CachePort : sugestões
-SearchService ..> MemoryQuery : registra consulta semântica
-SchemeReadService ..> AccessPolicy : canView 404 canEdit 403
-SchemeReadService ..> CachePort : incrViews
-SearchIndexingService ..> SearchIndexPort : upsert delete
-SearchIndexingService ..> PipelineJob
-OpenSearchIndexAdapter ..|> SearchIndexPort
-RedisCacheAdapter ..|> CachePort
-ClaudeGeminiAdapter ..> AiEngine
-OutboxRelay ..> SearchIndexingService : AFTER_COMMIT
-
-note for SearchService "msearch em ws-projects, ws-tasks com OCR, ws-people, ws-orgs — 5 abas com contadores (CA01) · visibilityFilter + accessClassFilter: outra empresa só PUBLICA, SIGILOSO nunca (CA03) · similar via ws-memory kNN com fallback textual (CA05)"
-note for SchemeReadService "modo leitura com crédito do autor, InteractionBar RF18/RF19 e Levar ao meu acervo RF7/RF41.CA08 · canEdit falso → 403 (CA04)"
-note for PipelineJob "tipo INDEXAR_BUSCA (proposta — TAXONOMIA só tem INDEXAR_MEMORIA) · ≤ 60 s · FALHA → REPROCESSAR (CA06)"
+  SearchController --> SearchService
+  SearchController --> SimilarProjectsService
+  ReadOnlySchemeController --> SchemeReadService
+  SearchService --> AccessPolicy
+  SearchService --> SearchIndexPort
+  SearchService ..> SearchQuery
+  SearchService ..> VisibilityScope
+  SimilarProjectsService --> AiEngine
+  SimilarProjectsService --> SearchIndexPort
+  SimilarProjectsService --> AccessPolicy
+  SchemeReadService --> AccessPolicy
+  SchemeReadService --> TaskRepositoryPort
+  SchemeReadService --> ProjectRepositoryPort
+  SearchIndexer --> SearchIndexPort
+  SearchIndexer --> PipelineJobPort
+  SearchQuery --> SearchTab
+  SearchIndexPort ..> TaskItem : ws-tasks
+  SearchIndexPort ..> ProjectScheme : ws-projects
+  SearchIndexPort ..> User : ws-people
+  SearchIndexPort ..> Company : ws-orgs
+  SearchIndexPort ..> Department : ws-orgs (chefes)
+  SearchIndexPort ..> InstitutionalMemoryDocument : ws-memory (kNN)
+  TaskItem "1" --> "0..*" TaskAttachment : texto OCR indexado
+  PipelineJob "0..*" --> "1" TaskItem : INDEXAR_BUSCA
+  PipelineJob "0..*" --> "1" ProjectScheme : INDEXAR_BUSCA
+  SimilarProjectsService ..> AiInferenceLog
+  TaskItem --> Visibility
+  TaskItem --> AccessClassification
+  note for SearchIndexPort "SIGILOSO nunca entra no índice. RESTRITO entra com departmentId e só sai na query do departamento dono. RASCUNHO não é indexado."
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph LU["Usuário"]
-    U1["Abre /search e digita um termo"]
-    U2["Escolhe aba, filtros e página"]
-    U3["Abre um resultado de tarefa ou projeto de outro usuário"]
-    U4["Clica em projetos parecidos com este"]
-    U5["Aciona ação inline: curtir, salvar, remixar, Levar ao meu acervo"]
-    A0["Autor publica, muda visibilidade ou arquiva um esquema"]
+  subgraph ATOR["Usuário autenticado"]
+    A1["Abre /search e digita um termo (ou deixa vazio)"]
+    A2["Escolhe uma aba, aplica filtros e pagina"]
+    A3["Abre um resultado de tarefa/projeto de terceiro"]
+    A4["Clica 'projetos parecidos com este' · interage · Levar ao meu acervo"]
+  end
+  subgraph FE["Next.js (App Router) · BFF"]
+    F1["GET /api/search/suggestions (termo vazio: recentes, em alta, chancelados)"]
+    F2["GET /api/search?q=&tab=&categoria=&tipo=&fase=&dept=&exercicio=&chancelado=&prazo=&page= · URL reflete tudo · Skeleton"]
+    F3["5 Tabs com contadores · TaskCard / ProjectCard / Avatar (pessoas) / logo (empresas) / Monogram (chefes) · EmptyState · ErrorState tentar de novo"]
+    F4["GET /api/tasks/{id} ou /api/projects/{id} → modo leitura com crédito do autor + ações inline (RF18/RF19) + Levar ao meu acervo (RF7)"]
+    F5["GET /api/projects/{id}/similar"]
+  end
+  subgraph WEB["ws-web"]
+    W1["JWT + SessionActiveFilter + CurrentUserArgumentResolver"]
+    W2["SearchController · ReadOnlySchemeController"]
+    E503["503 BUSCA_INDISPONIVEL (OpenSearch fora / flag opensearch.enabled off)"]
+    E403["403 ACESSO_NEGADO (tentar editar esquema de terceiro)"]
+    E404["404 (item que ficou PRIVADA ou foi arquivado)"]
+  end
+  subgraph APP["ws-application"]
+    S1["AccessPolicy.visibilityFilter(viewer) → VisibilityScope {companyId, departmentIds, visibilities}"]
+    S2["SearchService.search: query multi-campo (título, descrição, tags, OCR) + filtro de escopo + filtros da aba"]
+    S3["countersPerTab: 5 contagens em paralelo (ws-tasks, ws-projects, ws-people, ws-orgs)"]
+    S4["Resultados paginados (20) ordenados por relevância"]
+    R1["SchemeReadService: canView? → ficha completa em leitura, fases/tarefas, capa, chancelas, creditOf(owner)"]
+    R2{"viewer pode ver o item?"}
+    SIM1["SimilarProjectsService: AiEngine MEMORIA_BUSCA → embedding do projeto"]
+    SIM2{"IA disponível?"}
+    SIM3["kNN em ws-memory (k=10) com o mesmo VisibilityScope · score + motivo (processo, tarefas em comum)"]
+    SIM4["fallback textual: mesmo processo/departamento"]
+    IDX["SearchIndexer (AFTER_COMMIT de TaskPublished/ProjectPublished/VisibilityChanged/Archived) → PipelineJob INDEXAR_BUSCA → index/delete ≤ 60 s · falha → REPROCESSAR"]
+  end
+  subgraph PERS["Persistência"]
+    P1[("OpenSearch: ws-tasks · ws-projects · ws-people · ws-orgs · ws-memory (dense_vector)")]
+    P2[("MySQL: tasks, project_schemes, users, companies, departments, pipeline_jobs, ai_inference_log")]
+    P3[("Redis: sugestões (recentes, em alta) · cache de contadores")]
   end
 
-  subgraph LW["Web / BFF (Next.js App Router)"]
-    W1["Skeleton; termo vazio mostra sugestões"]
-    W2{"Resposta ok?"}
-    W3["Erro: botão tentar de novo"]
-    W4{"Lista vazia?"}
-    W5["Estado vazio ilustrado"]
-    W6["5 abas com contadores, filtros e paginação 20; URL com q, tab, filtros, page"]
-    W7["Página do esquema em modo leitura: ficha, fases, capa, chancelas, crédito do autor, InteractionBar, Levar ao meu acervo"]
-    W8["Lista de parecidos com score e motivo"]
-  end
-
-  subgraph LA["ws-application"]
-    A1["SearchService.search → visibilityFilter + accessClassFilter"]
-    A2["SearchIndexPort.msearch em ws-projects, ws-tasks com OCR, ws-people, ws-orgs + count por aba"]
-    A3["SchemeReadService.openTask / openProject"]
-    A4{"AccessPolicy.canView(viewer, item)?"}
-    A5["404 NAO_ENCONTRADO (item PRIVADA, RASCUNHO ou de outra empresa não PUBLICA)"]
-    A6["Monta view de leitura + crédito do autor; incrViews"]
-    A7{"Tentativa de edição?"}
-    A8["403 ACESSO_NEGADO"]
-    A9["SearchService.similar: AiEngine.embed → knn ws-memory com visibilityFilter"]
-    A10{"IA disponível?"}
-    A11["Fallback: busca textual por processTag e departamento"]
-    A12["SocialService / AcervoService — RF18, RF19, RF7"]
-    A13["SearchIndexingService.onPublishedOrVisibilityChanged → PipelineJob INDEXAR_BUSCA PENDENTE"]
-    A14{"Novo estado visível a terceiros?"}
-    A15["upsert no índice com visibility e accessClass"]
-    A16["delete do índice (PRIVADA, RASCUNHO, SIGILOSO)"]
-    A17{"Job ok?"}
-    A18["status REPROCESSAR, retry com backoff"]
-  end
-
-  subgraph LI["IA (AiEngine)"]
-    I1["MEMORIA_BUSCA: embedding do título + objetivo + descrição do projeto; AiInferenceLog"]
-  end
-
-  subgraph LP["Persistência"]
-    P1[("OpenSearch: ws-projects, ws-tasks, ws-people, ws-orgs")]
-    P2[("OpenSearch: ws-memory dense_vector")]
-    P3[("MySQL: project_schemes, project_tasks, tasks, users, companies, departments · Redis: viewsCount, sugestões")]
-    P4[("MySQL: domain_events outbox, pipeline_jobs, memory_queries, ai_inference_log")]
-  end
-
-  U1 --> W1 --> A1 --> A2 --> P1 --> W2
-  W2 -->|"não"| W3 --> W1
-  W2 -->|"sim"| W4
-  W4 -->|"sim"| W5
-  W4 -->|"não"| W6 --> U2 --> A1
-  W6 --> U3 --> A3 --> A4
-  A4 -->|"não"| A5
-  A4 -->|"sim"| A6 --> P3 --> W7
-  W7 --> A7
-  A7 -->|"sim"| A8
-  W7 --> U4 --> A9 --> A10
-  A10 -->|"sim"| I1 --> P2 --> W8
-  A10 -->|"não"| A11 --> P1
-  A11 --> W8
-  A9 --> P4
-  W7 --> U5 --> A12
-  A0 --> A13 --> P4
-  A13 --> A14
-  A14 -->|"sim"| A15 --> P1
-  A14 -->|"não"| A16 --> P1
-  A15 --> A17
-  A16 --> A17
-  A17 -->|"não"| A18 --> P4
-
-  classDef err fill:#ffe3e3,stroke:#c0392b,color:#5a1a12
-  classDef warn fill:#fff4d6,stroke:#b7791f,color:#5a3b06
-  class W3,A5,A8 err
-  class W5,A11,A18 warn
+  A1 -->|"vazio"| F1 --> P3
+  A1 --> F2 --> W1 --> W2 --> S1 --> S2 --> S3 --> S4 --> F3
+  S2 --> P1
+  S2 -->|"índice indisponível"| E503
+  A2 --> F2
+  A3 --> F4 --> W2 --> R1 --> R2
+  R2 -->|"não (PRIVADA agora)"| E404
+  R2 -->|"editar"| E403
+  R2 -->|"sim"| F4
+  R1 --> P2
+  A4 --> F5 --> W2 --> SIM1 --> SIM2
+  SIM2 -->|"sim"| SIM3 --> P1
+  SIM2 -->|"não"| SIM4 --> P1
+  SIM1 --> P2
+  P2 -.eventos de publicação/visibilidade/arquivamento.-> IDX --> P1
+  IDX --> P2
 ```
 
 ## 3. Diagrama de sequência
@@ -393,128 +299,100 @@ flowchart TD
 sequenceDiagram
   autonumber
   actor U as Usuário
-  actor A as Autor do esquema
-  participant NX as Next.js (App Router)
+  participant N as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
   participant AI as AiEngine
-  participant DB as Repository/MySQL
   participant OS as OpenSearch
-  participant R as Redis
-  participant DE as DomainEvents (AFTER_COMMIT)
+  participant R as Repository/MySQL
+  participant RD as Redis
+  participant EV as DomainEvents (AFTER_COMMIT)
 
-  U->>NX: digita "pavimentação" em /search, aba TAREFAS, filtro categoria TERMO_REFERENCIA (CA01, CA02)
-  NX->>NX: skeleton, URL ?q=pavimentacao&tab=TAREFAS&categoria=TERMO_REFERENCIA&page=1
-  NX->>C: GET /api/search?q=pavimentacao&tab=TAREFAS&categoria=TERMO_REFERENCIA&page=1&size=20
-  C->>S: SearchService.search(viewerId, q, TAREFAS, filters, 1)
-  S->>S: visibilityFilter(viewer) = PUBLICA + EMPRESA (minha empresa) + DEPARTAMENTO (minhas lotações) + PRIVADA (ownerId = eu) (CA03)
-  S->>S: accessClassFilter exclui SIGILOSO e RESTRITO de outro departamento (CA03)
-  S->>OS: msearch ws-tasks (title, summary, descriptionMd, tags, ocrText), ws-projects, ws-people, ws-orgs com filtros + count por índice
-  alt OpenSearch indisponível (CA02)
-    OS-->>S: timeout
-    S-->>C: 503 INDISPONIVEL {correlationId}
-    C-->>NX: 503
-    NX-->>U: erro com botão tentar de novo
+  U->>N: digita "pavimentação" em /search
+  N->>C: GET /api/search?q=pavimentacao&tab=PROJETOS&page=0
+  C->>S: SearchService.search(query, viewer)
+  S->>S: AccessPolicy.visibilityFilter(viewer) → VisibilityScope
+  par contadores das 5 abas
+    S->>OS: count ws-projects (q + scope)
+    S->>OS: count ws-tasks (q + scope + accessClass != SIGILOSO, RESTRITO só do meu departamento)
+    S->>OS: count ws-people
+    S->>OS: count ws-orgs (empresas)
+    S->>OS: count ws-orgs (chefes)
+  end
+  alt OpenSearch indisponível ou flag desligada
+    S-->>C: 503 BUSCA_INDISPONIVEL
+    C-->>N: 503 (ErrorState "tentar de novo")
   else ok
-    OS-->>S: hits da aba TAREFAS + counts por aba
-    S-->>C: 200 {tabs {PROJETOS 8, TAREFAS 31, PESSOAS 2, EMPRESAS 1, CHEFES_DE_DEPARTAMENTO 1}, items 20, nextPage}
-    C-->>NX: 200
-    alt lista vazia
-      NX-->>U: estado vazio ilustrado
-    else itens
-      NX-->>U: 5 abas com contadores, cards de outros usuários com crédito e InteractionBar
-    end
+    S->>OS: search ws-projects (título, objetivo, tags, OCR) + scope + filtros, page 0, size 20
+    OS-->>S: hits ordenados por relevância (≤ 1 s p95)
+    S-->>C: SearchResultView {counters por aba, page}
+    C-->>N: 200 (URL com q, tab, filtros, page)
+    N-->>U: 5 Tabs com contadores + ProjectCards
   end
 
-  U->>NX: abre o projeto P7 de outro departamento (CA04)
-  NX->>C: GET /api/projects/P7
-  C->>S: SchemeReadService.openProject(viewerId, P7)
-  S->>DB: project_schemes P7 + project_tasks + tasks (snapshot) + users (autor) + seal_bonds APROVADA
-  S->>S: AccessPolicy.canView(viewer, P7)
-  alt P7 PRIVADA, RASCUNHO ou de outra empresa sem ser PUBLICA
-    S-->>C: 404 NAO_ENCONTRADO
-    C-->>NX: 404
-    NX-->>U: esquema indisponível
-  else visível
-    S->>R: INCR views:PROJECT:P7
-    S-->>C: 200 ProjectView {readOnly true, author, phases, tasks, cover, seals}
-    C-->>NX: 200
-    NX-->>U: ficha completa em modo leitura, crédito do autor, InteractionBar RF18/RF19, Levar ao meu acervo
+  U->>N: abre um projeto de outro departamento
+  N->>C: GET /api/projects/{id}
+  C->>S: SchemeReadService.project(id, viewer)
+  S->>R: project_schemes + project_tasks + seal_bonds + owner
+  alt visibilidade mudou para PRIVADA depois de indexado
+    S-->>C: 404 PROJETO_NAO_ENCONTRADO
+    C-->>N: 404 (item sai do índice no próximo INDEXAR_BUSCA)
+  else pode ver
+    S->>S: creditOf(owner) → avatar + link /u/{username} ou /departments/{slug} ou /companies/{slug}
+    S-->>C: ProjectReadView {readOnly=true, credit, actions: interações + Levar ao meu acervo}
+    C-->>N: 200 (modo leitura, edição oculta)
   end
-  U->>NX: tenta editar o título de P7
-  NX->>C: PATCH /api/projects/P7
-  C->>S: AccessPolicy.canEdit(viewer, P7)
-  S-->>C: 403 ACESSO_NEGADO (CA04)
-  C-->>NX: 403
+  N->>C: PATCH /api/projects/{id} (tentativa de edição)
+  C-->>N: 403 ACESSO_NEGADO
 
-  U->>NX: clica projetos parecidos com este (CA05)
-  NX->>C: POST /api/search/similar {type PROJECT, id P7}
-  C->>S: SearchService.similar(viewerId, PROJECT, P7)
-  S->>AI: embed(título + objetivo + descrição de P7) MEMORIA_BUSCA
-  alt IA indisponível ou cota esgotada
-    AI-->>S: FALLBACK
-    S->>OS: busca textual ws-projects por processTags e departmentId de P7
-  else embedding ok
-    AI-->>S: vector + AiInferenceLog
-    S->>OS: knn ws-memory (dense_vector) filtros sourceType PROJETO, visibilityFilter, accessClass não SIGILOSO
+  U->>N: "projetos parecidos com este"
+  N->>C: GET /api/projects/{id}/similar
+  C->>S: SimilarProjectsService.similar(id, viewer)
+  S->>AI: run(MEMORIA_BUSCA, hostRf RF17, texto do projeto mascarado)
+  alt IA disponível
+    AI->>R: insert ai_inference_log
+    AI-->>S: embedding
+    S->>OS: knn ws-memory (k=10, scope do viewer)
+    OS-->>S: vizinhos com score
+    S-->>C: até 10 projetos com score e motivo ("mesmo processo, 4 tarefas em comum")
+  else IA indisponível (circuit aberto / cota)
+    S->>OS: search ws-projects mesmo processo/departamento
+    S-->>C: lista textual com aviso "sem IA"
   end
-  OS-->>S: top 10 com score
-  S->>DB: INSERT memory_queries (queryText, filtersJson, resultsJson, aiInferenceId)
-  S-->>C: 200 projetos parecidos com score e motivo
-  C-->>NX: 200
-  NX-->>U: lista de parecidos
+  C-->>N: 200
 
-  A->>NX: muda a visibilidade da tarefa T9 de DEPARTAMENTO para PUBLICA (CA06)
-  NX->>C: PATCH /api/tasks/T9 {visibility PUBLICA}
-  C->>S: TaskService.update (RF12)
-  S->>DB: UPDATE tasks SET visibility, INSERT domain_events VisibilityChanged
-  S->>DE: publish VisibilityChanged {TASK, T9}
-  S-->>C: 200
-  DE->>S: SearchIndexingService.onPublishedOrVisibilityChanged
-  S->>DB: INSERT pipeline_jobs (type INDEXAR_BUSCA, targetType TASK, targetId T9, PENDENTE)
-  S->>OS: upsert ws-tasks doc T9 {visibility PUBLICA, accessClass, ocrText}
-  alt falha no OpenSearch
-    S->>DB: UPDATE pipeline_jobs SET status REPROCESSAR, attempts + 1
-  else ok
-    S->>DB: UPDATE pipeline_jobs SET status OK
-  end
-  Note over DE,OS: ≤ 60 s entre o commit do autor e o índice refletir a mudança (CA06)
+  Note over R,OS: Indexação assíncrona (CA06)
+  EV->>R: ProjectPublished / VisibilityChanged / Archived → enqueue PipelineJob INDEXAR_BUSCA
+  R->>OS: index ou delete (≤ 60 s) — falha → attempts++ e REPROCESSAR
 ```
 
 ## 4. Máquina de estados
 
-O RF17 é majoritariamente leitura e não tem estados próprios. O que ele governa é a **descobribilidade** de um esquema de terceiros, função de `ProjectScheme.status` / `TaskItem.state` (nunca RASCUNHO) e de `Visibility` + `AccessClassification`. O diagrama mostra o ciclo do **documento no índice OpenSearch** (`PipelineJob INDEXAR_BUSCA`, proposta — enum `PipelineJobStatus`) e, ao lado, os estados de `ProjectStatus` sob a ótica "aparece na Buscar para terceiros".
+Entidade central: este RF só lê `TaskItem`/`ProjectScheme`; o que tem ciclo próprio aqui é a **presença no índice** (derivada de `state`/`status`, `visibility`, `accessClass` e do `PipelineJob INDEXAR_BUSCA`, CA03/CA06). As máquinas de `TaskState` e `ProjectStatus` estão em RF4/RF5 §4.
 
 ```mermaid
 stateDiagram-v2
-  state "PipelineJob INDEXAR_BUSCA (proposta) — CA06" as PJ {
-    [*] --> PENDENTE : evento AFTER_COMMIT Published, VisibilityChanged ou Archived
-    PENDENTE --> RODANDO : worker pega o job
-    RODANDO --> OK : upsert ou delete no índice concluído
-    RODANDO --> FALHA : OpenSearch indisponível
-    FALHA --> REPROCESSAR : attempts menor que o limite, backoff
-    REPROCESSAR --> RODANDO : nova tentativa
-    OK --> [*]
-  }
-  state "ProjectScheme.status — visível na Buscar para terceiros? (CA03)" as PS {
-    [*] --> RASCUNHO
-    RASCUNHO --> PUBLICADO : publicar — entra no índice se visibility permitir
-    PUBLICADO --> EM_DECISAO : abrir sessão DECIA — continua indexado
-    EM_DECISAO --> APROVADO : decisão validada
-    EM_DECISAO --> DEVOLVIDO : decisão devolvida
-    APROVADO --> EM_EXECUCAO : iniciar execução
-    EM_EXECUCAO --> CONCLUIDO : concluir — permanece indexado como referência
-    CONCLUIDO --> ARQUIVADO : arquivar — sai do índice de terceiros
-    PUBLICADO --> ARQUIVADO : arquivar
-  }
-  note right of PJ
-    Índice reflete a mudança em ≤ 60 s.
-    PRIVADA, RASCUNHO e SIGILOSO disparam delete, não upsert.
-  end note
-  note right of PS
-    RASCUNHO nunca aparece para terceiros.
-    Em qualquer estado indexado, o viewer ainda passa pelo visibilityFilter:
-    outra empresa só vê PUBLICA (CA03).
+  direction LR
+  state "NAO_INDEXADO (RASCUNHO · SIGILOSO · PRIVADA de terceiro)" as NAO
+  state "INDEXACAO_PENDENTE (PipelineJob INDEXAR_BUSCA PENDENTE/RODANDO)" as PEN
+  state "INDEXADO (visível conforme scope)" as IDX
+  state "REMOCAO_PENDENTE" as REMP
+  state "REPROCESSAR (falha, attempts++)" as REP
+
+  [*] --> NAO : criação (RF4/RF5) em RASCUNHO
+  NAO --> PEN : publicar / DISPONIVEL / visibility ≥ DEPARTAMENTO [accessClass != SIGILOSO] (CA06)
+  PEN --> IDX : index OK (≤ 60 s) · documento com visibility, companyId, departmentId, accessClass
+  PEN --> REP : erro no OpenSearch
+  REP --> PEN : nova tentativa agendada
+  REP --> [*] : attempts esgotados (lastError, operação do autor não afetada)
+  IDX --> PEN : título/tags/visibility alterados (RF12) → reindexa
+  IDX --> REMP : visibility → PRIVADA · ARQUIVADA/ARQUIVADO · accessClass → SIGILOSO
+  REMP --> NAO : delete OK (quem abrir o link antigo recebe 404)
+  REMP --> REP : erro
+  note right of IDX
+    A query sempre aplica VisibilityScope do viewer:
+    PUBLICA · +EMPRESA · +DEPARTAMENTO · PRIVADA só os meus ·
+    RESTRITO só para o departamento dono (CA03).
   end note
 ```
 
@@ -522,78 +400,67 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js"]
-    F1["app/search — abas PROJETOS · TAREFAS · PESSOAS · EMPRESAS · CHEFES DE DEPARTAMENTO"]
-    F2["app/tasks/[id] e app/projects/[id] — modo leitura de esquema de terceiros"]
-    F3["components/ui: SearchBox, SearchSuggestions, SearchTabs com contadores, SearchFilters, FeedSkeleton, EmptyStateIllustrated, RetryButton, Pagination 20, TaskCard, ProjectCard, AuthorCredit, ReadOnlyBanner, SimilarProjectsButton, InteractionBar RF18/RF19, TakeToMyAcervoButton RF7"]
+  subgraph FE["Frontend · Next.js 15 App Router"]
+    PG["app/(shell)/search · ?q=&tab=&filtros&page= · páginas de leitura tasks/[id] e projects/[id] (readOnly)"]
+    UI["packages/ui: Input (busca), Tabs (com contadores), TaskCard, ProjectCard, Avatar/Monogram, Seal, Counters, Skeleton, EmptyState, ErrorState (tentar de novo), Button (Levar ao meu acervo)"]
+    SN["TopBar (busca global → /search) · SidebarNav › Descobrir › Buscar"]
+    BFF["app/bff/search/* · app/bff/tasks/* · app/bff/projects/*"]
+    PG --> UI
+    PG --> BFF
+    SN --> PG
+  end
+  subgraph WSWEB["ws-web"]
+    SEC["SecurityConfig · SessionActiveFilter · CurrentUserArgumentResolver"]
+    SC["SearchController · ReadOnlySchemeController"]
+    GEH["GlobalExceptionHandler (403, 404, 503)"]
+  end
+  subgraph WSAPP["ws-application"]
+    SRCH["search: SearchService · SimilarProjectsService · SearchIndexer"]
+    RD["acervo/projects: SchemeReadService"]
+    AIE["ai: AiEngine MEMORIA_BUSCA (embeddings) · circuit breaker"]
+    SECU["security: AccessPolicy.visibilityFilter/canView"]
+    PORTS["ports: SearchIndexPort · PipelineJobPort · TaskRepositoryPort · ProjectRepositoryPort · UserRepositoryPort · CounterCachePort"]
+    EVT["events: TaskPublished · ProjectPublished · VisibilityChanged · Archived (AFTER_COMMIT) → SearchIndexer"]
+    SRCH --> SECU
+    SRCH --> AIE
+    SRCH --> PORTS
+    RD --> SECU
+    RD --> PORTS
+    EVT --> SRCH
+  end
+  subgraph WSDOM["ws-domain"]
+    DOM["acervo: TaskItem · TaskAttachment (OCR) · projects: ProjectScheme · identity: User · Company · Department · platform: PipelineJob · AiInferenceLog · memory: InstitutionalMemoryDocument"]
+  end
+  subgraph INFRA["ws-infrastructure"]
+    OSE["search-opensearch (OpenSearchAdaptersConfig, flag opensearch.enabled): índices ws-tasks · ws-projects · ws-people · ws-orgs · ws-memory (dense_vector) · fallback MySQL LIKE sem a flag"]
+    MY["persistence-mysql: Jpa*Repository · pipeline_jobs"]
+    RDS["cache-redis: sugestões, contadores"]
+    AIP["ai-providers: Claude → Gemini → LocalEngine (embeddings locais)"]
+    PLT["platform: worker INDEXAR_BUSCA"]
   end
 
-  subgraph WEB["ws-web"]
-    C1["SearchController — /api/search, /counts, /suggestions, /similar"]
-    C2["SchemeReadController — /api/tasks/{id}, /api/projects/{id}"]
-    C3["InteractionController RF18/RF19 · AcervoController RF7/RF41"]
-  end
-
-  subgraph APP["ws-application"]
-    S1["SearchService"]
-    S2["SchemeReadService + AccessPolicy"]
-    S3["SearchIndexingService"]
-    S4["AiEngine — embed MEMORIA_BUSCA"]
-    P1["SearchIndexPort"]
-    P2["CachePort"]
-  end
-
-  subgraph DOM["ws-domain"]
-    D1["ProjectScheme · ProjectTask · TaskItem · TaskAttachment · User · Company · Department"]
-    D2["InstitutionalMemoryDocument · MemoryQuery RF33"]
-    D3["PipelineJob INDEXAR_BUSCA (proposta) · DomainEventOutbox · AiInferenceLog"]
-  end
-
-  subgraph INFRA["ws-infrastructure/*"]
-    I1[("search-opensearch: OpenSearchIndexAdapter — ws-projects, ws-tasks + OCR, ws-people, ws-orgs, ws-memory kNN")]
-    I2[("persistence-mysql: project_schemes, project_tasks, tasks, users, companies, departments, pipeline_jobs, domain_events, memory_queries, ai_inference_log")]
-    I3[("cache-redis: sugestões, viewsCount")]
-    I4["ai-providers: ClaudeGeminiAdapter — embeddings, fallback textual"]
-    I5["platform: OutboxRelay AFTER_COMMIT, PipelineJob worker INDEXAR_BUSCA"]
-  end
-
-  subgraph EXT["Serviços externos"]
-    E1(("Claude / Gemini embeddings"))
-  end
-
-  F1 --- F3
-  F2 --- F3
-  F1 -->|"HTTPS/JSON"| C1
-  F2 -->|"HTTPS/JSON"| C2
-  F3 -->|"HTTPS/JSON"| C3
-  C1 --> S1
-  C2 --> S2
-  S1 --> P1
-  S1 --> P2
-  S1 --> S4
-  S1 --> D2
-  S2 --> D1
-  S2 --> P2
-  S3 --> P1
-  S3 --> D3
-  D1 --> I2
-  D2 --> I2
-  D3 --> I2
-  D3 --> I5
-  I5 --> S3
-  P1 --> I1
-  P2 --> I3
-  S4 --> I4
-  I4 -.-> E1
+  BFF -->|"REST JSON"| SEC --> SC --> SRCH
+  SC --> RD
+  SC --> GEH
+  OSE -.implementa SearchIndexPort.-> PORTS
+  MY -.implementa.-> PORTS
+  RDS -.implementa.-> PORTS
+  AIP -.implementa.-> AIE
+  PLT --> SRCH
+  SRCH --> DOM
+  OSE --> OSX[("OpenSearch 2.19")]
+  MY --> DB[("MySQL 8.4")]
+  RDS --> RDX[("Redis 7")]
+  AIP --> CL["Claude · Gemini"]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
-|---|---|
-| RF17.CA01 | `SearchService.search/suggestions`, `SearchIndexPort.msearch/count`, enum `SearchTab`, `TaskAttachment.ocrTextRef`, tabela de índices do cabeçalho · Atividades `U1 → W1 → A1 → A2 → P1 → W6` · Sequência msgs 1–7 e 13–15 (`msearch … + count por índice`, `{tabs {PROJETOS 8, TAREFAS 31 …}}`) · Componentes `SearchBox`, `SearchSuggestions`, `SearchTabs com contadores`, `search-opensearch` |
-| RF17.CA02 | `SearchController.GET_api_search(q, tab, filters, page)` · Atividades `W1` (skeleton), `W2 → W3` (tentar de novo), `W4 → W5` (vazio), `U2 → A1` (filtros e página), `W6` (URL) · Sequência msg 2 (URL com q, tab, filtros, page) e blocos `alt OpenSearch indisponível → 503 … tentar de novo` / `alt lista vazia` · Componentes `SearchFilters`, `FeedSkeleton`, `EmptyStateIllustrated`, `RetryButton`, `Pagination 20` |
-| RF17.CA03 | `SearchService.visibilityFilter/accessClassFilter` (nota), enums `Visibility`, `AccessClassification`, `SearchIndexingService.remove` · Atividades `A1`, `A4 → A5 404`, `A14 → A16` · Sequência msgs 5–6 (filtros) e `alt P7 PRIVADA, RASCUNHO ou de outra empresa → 404` · Máquina *ProjectScheme.status — visível na Buscar?* e notas |
-| RF17.CA04 | `SchemeReadService.openTask/openProject/incrementViews` (nota), `AccessPolicy.canView/canEdit`, `ProjectTask.snapshotJson`, `User` (crédito) · Atividades `U3 → A3 → A4 → A6 → P3 → W7`, `A7 → A8 403`, `U5 → A12` · Sequência msgs 20–31 (`ProjectView {readOnly true, author …}`) e 32–36 (`PATCH → 403 ACESSO_NEGADO`) · Componentes `app/tasks/[id]`, `app/projects/[id]`, `AuthorCredit`, `ReadOnlyBanner`, `InteractionBar RF18/RF19`, `TakeToMyAcervoButton RF7` |
-| RF17.CA05 | `InstitutionalMemoryDocument` (embedding), `MemoryQuery`, `SearchService.similar`, `SearchIndexPort.knn`, `AiEngine.embed` · Atividades `U4 → A9 → A10 → I1 → P2 → W8` e `A10 (não) → A11` (fallback textual) · Sequência msgs 37–50 (`embed … MEMORIA_BUSCA`, `alt IA indisponível → busca textual`, `knn ws-memory`, `INSERT memory_queries`) · Componentes `SimilarProjectsButton`, `ws-memory kNN`, `ai-providers`, `Claude / Gemini embeddings` |
-| RF17.CA06 | `PipelineJob` (tipo INDEXAR_BUSCA, proposta), `DomainEventOutbox`, `SearchIndexingService.onPublishedOrVisibilityChanged/index/remove`, `SearchIndexPort.upsert/delete`, `OutboxRelay` · Atividades `A0 → A13 → A14 → A15 / A16 → P1`, `A17 → A18 REPROCESSAR` · Sequência msgs 51–62 (`publish VisibilityChanged`, `INSERT pipeline_jobs INDEXAR_BUSCA`, `upsert ws-tasks`, `alt falha → REPROCESSAR`, nota ≤ 60 s) · Máquina *PipelineJob INDEXAR_BUSCA* · Componentes `platform: OutboxRelay, PipelineJob worker` |
+| CA | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) | Situação |
+|---|---|---|---|---|---|---|
+| RF17.CA01 | `SearchController.search/suggestions`, `SearchService.search/countersPerTab`, `SearchQuery`, `SearchTab`, `SearchIndexPort.search/count` | `A1`→`F1`/`F2`→`S2`→`S3`→`S4`→`F3` | 1–10, 14–18 | — | `PG`, `UI` (`Tabs`), `SRCH`, `OSE`, `RDS` | planejado (`OpenSearchAdaptersConfig` real) |
+| RF17.CA02 | URL `?q=&tab=&filtros&page=`, `Skeleton`/`EmptyState`/`ErrorState`, `503 BUSCA_INDISPONIVEL` | `A2`→`F2`→`F3`, `E503` | 11–13 | — | `UI`, `GEH`, `OSE` (flag) | planejado |
+| RF17.CA03 | `AccessPolicy.visibilityFilter`, `VisibilityScope`, `SearchIndexer` (SIGILOSO nunca, RESTRITO por departamento, RASCUNHO nunca) | `S1`→`S2` | 4–9 | nota de `IDX`, `NAO` | `SECU`, `OSE` | planejado |
+| RF17.CA04 | `ReadOnlySchemeController`, `SchemeReadService.task/project/creditOf`, `AccessPolicy.canView` | `A3`→`F4`→`R1`→`R2`, `E403`, `E404` | 19–29 | `IDX`→`REMP`→`NAO` | `RD`, `UI` (`ProjectCard`, `Seal`, `Counters`) | planejado (RF7, RF16, RF18/RF19) |
+| RF17.CA05 | `SimilarProjectsService.similar/fallbackTextual`, `AiEngine` (MEMORIA_BUSCA), `SearchIndexPort.knn`, `InstitutionalMemoryDocument`, `AiInferenceLog` | `A4`→`F5`→`SIM1`→`SIM2`→`SIM3`/`SIM4` | 30–42 | — | `AIE`, `AIP`, `OSE` (`ws-memory`) | planejado (RF33) |
+| RF17.CA06 | `SearchIndexer.onPublished/onVisibilityChanged/onArchived/run`, `PipelineJob INDEXAR_BUSCA`, `PipelineJobPort` | `IDX` | 43–44 | `NAO`→`PEN`→`IDX`, `IDX`→`REMP`, `REP` | `EVT`, `PLT`, `MY` | planejado |
