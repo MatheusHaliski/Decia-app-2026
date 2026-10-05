@@ -41,7 +41,14 @@ public class GlobalExceptionHandler {
         if (ex.status() >= 500) {
             log.warn("{} {} -> {} {}", req.getMethod(), req.getRequestURI(), ex.status(), ex.code());
         }
-        return respond(req, ex.status(), ex.code(), ex.getMessage(), ex.details());
+        ResponseEntity<ApiError> response = respond(req, ex.status(), ex.code(), ex.getMessage(), ex.details());
+        if (ex.status() == 429 || ex.status() == 503) {
+            // D-14: todo 429/503 de autenticação sai com Retry-After (segundos), vindo de details.retryAfterSeconds ou 2 s
+            Object retry = ex.details().get("retryAfterSeconds");
+            long seconds = retry instanceof Number n ? Math.max(1, n.longValue()) : 2;
+            return ResponseEntity.status(ex.status()).header("Retry-After", String.valueOf(seconds)).body(response.getBody());
+        }
+        return response;
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

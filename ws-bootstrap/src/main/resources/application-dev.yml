@@ -14,3 +14,5 @@ logging:
 ws:
   secrets:
     enforce: false      # em dev os segredos ausentes geram só um WARN no boot
+  mail:
+    echo-body: true     # dev: o código de verificação aparece no log local (nunca em prod)

@@ -169,7 +169,7 @@ class ForeignKeyPolicyTest {
                     versions.add(rs.getString(1) + "=" + rs.getString(2));
                 }
             }
-            assertThat(versions).containsExactly("1=V1__baseline.sql", "2=V2__baseline_dominio_base.sql");
+            assertThat(versions).containsExactly("1=V1__baseline.sql", "2=V2__baseline_dominio_base.sql", "3=V3__rf1_rf2_autenticacao.sql");
             try (ResultSet rs = st.executeQuery("SELECT meta_value FROM app_meta WHERE meta_key = 'schema.baseline'")) {
                 assertThat(rs.next()).isTrue();
                 assertThat(rs.getString(1)).isEqualTo("bloco-2");
