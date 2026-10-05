@@ -2,8 +2,10 @@ package br.gov.pr.secid.workstation.web.error;
 
 import br.gov.pr.secid.workstation.web.config.JwtConfig;
 import br.gov.pr.secid.workstation.web.config.SecurityConfig;
+import br.gov.pr.secid.workstation.web.ratelimit.RateLimitConfig;
 import br.gov.pr.secid.workstation.web.security.ApiErrorAccessDeniedHandler;
 import br.gov.pr.secid.workstation.web.security.ApiErrorAuthenticationEntryPoint;
+import br.gov.pr.secid.workstation.web.support.ClientIpResolver;
 import br.gov.pr.secid.workstation.web.support.CorrelationIdFilter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,7 +34,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @WebMvcTest(controllers = ProbeController.class)
 @Import({SecurityConfig.class, JwtConfig.class, GlobalExceptionHandler.class, ErrorWriter.class,
-        ApiErrorAuthenticationEntryPoint.class, ApiErrorAccessDeniedHandler.class, CorrelationIdFilter.class})
+        ApiErrorAuthenticationEntryPoint.class, ApiErrorAccessDeniedHandler.class, CorrelationIdFilter.class,
+        RateLimitConfig.class, ClientIpResolver.class})
 class GlobalExceptionHandlerWebTest {
 
     @Autowired

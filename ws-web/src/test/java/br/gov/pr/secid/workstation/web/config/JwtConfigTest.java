@@ -53,7 +53,7 @@ class JwtConfigTest {
 
     private static WsSecurityProperties props(String publicKeyPath) {
         return new WsSecurityProperties(new WsSecurityProperties.Jwt("ws-test", "ws-api", publicKeyPath, ""),
-                new WsSecurityProperties.Cors(List.of("http://localhost:3000")));
+                new WsSecurityProperties.Cors(List.of("http://localhost:3000")), null);
     }
 
     @Test
@@ -91,13 +91,19 @@ class JwtConfigTest {
 
     @Test
     void propriedadesTemPadroesSeguros() {
-        WsSecurityProperties p = new WsSecurityProperties(null, null);
+        WsSecurityProperties p = new WsSecurityProperties(null, null, null);
         assertThat(p.jwt().issuer()).isEqualTo("work-station");
         assertThat(p.jwt().audience()).isEqualTo("work-station-api");
         assertThat(p.jwt().hasPublicKey()).isFalse();
         assertThat(p.cors().allowedOrigins()).containsExactly("http://localhost:3000");
+        assertThat(p.edgeProxy().secret()).isEmpty();
+        assertThat(p.edgeProxy().clientIpHeader()).isEqualTo("X-Real-IP");
+        assertThat(p.jwt().hasPrivateKey()).isFalse();
         WsSecurityProperties q = new WsSecurityProperties(new WsSecurityProperties.Jwt(" ", null, " /k.pem ", null),
-                new WsSecurityProperties.Cors(List.of(" https://a ", "", "https://b")));
+                new WsSecurityProperties.Cors(List.of(" https://a ", "", "https://b")),
+                new WsSecurityProperties.EdgeProxy(" s ", " X-Client "));
+        assertThat(q.edgeProxy().secret()).isEqualTo("s");
+        assertThat(q.edgeProxy().clientIpHeader()).isEqualTo("X-Client");
         assertThat(q.jwt().publicKeyPath()).isEqualTo("/k.pem");
         assertThat(q.cors().allowedOrigins()).containsExactly("https://a", "https://b");
     }
