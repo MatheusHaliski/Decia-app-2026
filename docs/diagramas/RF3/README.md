@@ -10,8 +10,8 @@ Classes **(real)** existem em `origin/main` (Bloco 3, PR #16); **(planejado)**: 
 
 | CA | Enunciado (Dado / Quando / Então) |
 |---|---|
-| **RF3.CA01** (CA a confirmar) | Dado o usuário autenticado (`CurrentUser`), quando edito `fullName` (3–160), `displayName` (≤ 80), `jobTitle` (≤ 120), `bio` (≤ 1000), `avatarUrl`/`coverUrl` (`https://` ou caminho interno) por `PATCH /api/me`, então `AccountService.update` valida e salva com lock otimista (`User.version`); `username` é imutável (`422 USERNAME_IMUTAVEL`); erros voltam como `422 VALIDACAO details.fields`; conta `DELETION_SCHEDULED` → `Guard.requireNotDeletionScheduled` (`409 EXCLUSAO_AGENDADA`). |
-| **RF3.CA02** (CA a confirmar) | Dado a troca de e-mail ou telefone (`PATCH /api/me/sensitive {currentPassword, email, phone}`), então a senha atual é reconferida com o **mesmo bloqueio do login** (`login-fail`, 6º erro → `429 MUITAS_TENTATIVAS`; errada → `422 SENHA_ATUAL_INCORRETA`), o `emailHash` novo deve ser único (`409 EMAIL_EM_USO`), `emailVerified` volta a `false`, `RegistrationService.resendVerification` envia o código ao e-mail novo e `AuditLog SENSITIVE_DATA_UPDATED` grava os campos alterados com e-mail mascarado. |
+| **RF3.CA01** (CA a confirmar) | Dado o usuário autenticado (`CurrentUser`), quando edito `fullName` (3–160), `displayName` (≤ 80), `jobTitle` (≤ 120), `bio` (≤ 1000), `avatarUrl`/`coverUrl` (`https://` ou caminho interno) por `PATCH /api/me`, então `AccountService.update` valida e salva com lock otimista (`User.version`); `username` é imutável (`422 USERNAME_IMUTAVEL`); erros voltam como `422 VALIDACAO details.fields`; conta `DELETION_SCHEDULED` → `Guard.requireNotDeletionScheduled` (`403 EXCLUSAO_AGENDADA`, D-18). |
+| **RF3.CA02** (CA a confirmar) | Dado a troca de e-mail ou telefone (`PATCH /api/me/sensitive {currentPassword, email, phone}`), então `IdentityService.reauthenticate` reconfere a senha atual com o **mesmo bloqueio do login** (`login-fail`, 6º erro → `429 MUITAS_TENTATIVAS` + `Retry-After`; errada → `401 REAUTENTICACAO_FALHOU`; `422 SENHA_ATUAL_INCORRETA` é só da troca de senha), o `emailHash` novo deve ser único (`409 EMAIL_EM_USO`), `emailVerified` volta a `false`, `RegistrationService.resendVerification` envia o código ao e-mail novo e `AuditLog SENSITIVE_DATA_UPDATED` grava os campos alterados com e-mail mascarado. |
 | **RF3.CA03** (CA a confirmar) | Dado a aba Aparência, quando altero `theme` (`ThemeMode` AUTO·CLARO·ESCURO·ALTO_CONTRASTE·BLUEPRINT), `language` (PT_BR·EN·ES), `density`, `fontScale`, `reduceMotion`, `deskSkin` (`DeskSkin`), `defaultCardSkin`, `timezone`, `wipLimit`, `aiModeDefault` (ECONOMIA·AVANCADO), `notificationPrefsJson` (inclui `dailyTaskAt`, RF44.CA10) e `dashboardLayoutJson`, então o cliente aplica **na hora** (`data-theme`, i18n) e persiste por `PUT /api/me/preferences` (`AccountService.updatePreferences`, `AuditLog PREFERENCES_UPDATED`); `GET /api/me/preferences` devolve os padrões quando ainda não há linha. |
 | **RF3.CA04** (CA a confirmar) | Dado a aba Privacidade, quando altero `hypeVisibility` (PUBLICO·EMPRESA·SO_EU, padrão SO_EU, RF45.CA06) e `rankingOptOut` (RF43.CA05) no mesmo `PATCH /api/me`, então valor inválido → `422 details.fields.hypeVisibility`, a mudança vale na próxima leitura do perfil/ranking e fica em `AuditLog PROFILE_UPDATED` (campos alterados, sem valores pessoais). |
 | **RF3.CA05** (CA a confirmar) | Dado o upload de avatar ou capa (**planejado**, D-22), então o arquivo (≤ 5 MB, mime por magic bytes png/jpg/webp, reencode sem EXIF) vira `PendingUpload` → `MediaObject` com `accessClass PUBLIC`, `PipelineJob THUMBNAIL` gera as variantes e `avatarUrl`/`coverUrl` apontam para a variante; o anterior é removido quando substituído. |
@@ -286,10 +286,10 @@ flowchart TD
     E401["401 NAO_AUTENTICADO / SESSAO_ENCERRADA"]
     E422["422 VALIDACAO details.fields"]
     E422U["422 USERNAME_IMUTAVEL"]
-    E422S["422 SENHA_ATUAL_INCORRETA"]
+    E401R["401 REAUTENTICACAO_FALHOU"]
     E429["429 MUITAS_TENTATIVAS + Retry-After"]
     E409E["409 EMAIL_EM_USO"]
-    E409D["409 EXCLUSAO_AGENDADA"]
+    E403D["403 EXCLUSAO_AGENDADA"]
   end
   subgraph APP["ws-application · AccountService"]
     S1["findById(current.id) · Guard.requireNotDeletionScheduled"]
@@ -314,7 +314,7 @@ flowchart TD
   A1 --> F1 --> F2 --> W1 --> W3 --> S1 --> S2
   A2 --> F2
   W1 -->|"sem token ou família revogada"| E401
-  S2 -->|"sim"| E409D
+  S2 -->|"sim"| E403D
   S2 -->|"não"| S3 --> S4
   S4 -->|"não"| E422
   S3 -->|"username no corpo"| E422U
@@ -326,7 +326,7 @@ flowchart TD
   W3 --> T1 --> T2
   T1 --> D2
   T2 -->|"6º erro"| E429
-  T2 -->|"senha errada"| E422S
+  T2 -->|"senha errada"| E401R
   T2 -->|"ok"| T3
   T3 -->|"sim"| E409E
   T3 -->|"não"| T4 --> D1
@@ -359,8 +359,8 @@ sequenceDiagram
   S->>R: findById(current.id)
   S->>S: Guard.requireNotDeletionScheduled(user)
   alt conta com exclusão agendada
-    S-->>C: 409 EXCLUSAO_AGENDADA
-    C-->>N: 409
+    S-->>C: 403 EXCLUSAO_AGENDADA (Guard.requireNotDeletionScheduled, D-18)
+    C-->>N: 403
   else campo inválido
     S-->>C: 422 VALIDACAO details.fields (fullName, bio, hypeVisibility...)
     C-->>N: 422 (erro por campo, i18n)
@@ -384,8 +384,8 @@ sequenceDiagram
     C-->>N: 429
   else senha atual errada
     S->>S: Argon2PasswordHasher.matches = false (reserva fica)
-    S-->>C: 422 SENHA_ATUAL_INCORRETA
-    C-->>N: 422
+    S-->>C: 401 REAUTENTICACAO_FALHOU
+    C-->>N: 401
   else e-mail já usado por outra conta
     S->>R: existsByEmailHash(hash novo) = true
     S-->>C: 409 EMAIL_EM_USO
@@ -423,7 +423,7 @@ stateDiagram-v2
   state "ACTIVE (edição liberada)" as ACT
   state "PENDING_EMAIL_VERIFICATION" as PEV
   state "PENDING_VALIDATION (edição liberada, ações de emissor bloqueadas)" as PV
-  state "DELETION_SCHEDULED (409 EXCLUSAO_AGENDADA em PATCH /api/me)" as DEL
+  state "DELETION_SCHEDULED (403 EXCLUSAO_AGENDADA em PATCH /api/me)" as DEL
   state "ANONYMIZED" as ANO
 
   [*] --> PEV : cadastro (RF1)
@@ -507,8 +507,8 @@ flowchart LR
 
 | CA | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) | Situação |
 |---|---|---|---|---|---|---|
-| RF3.CA01 | `MeController.update`, `AccountService.update`, `ProfileUpdate`, `Guard.requireNotDeletionScheduled`, `User.version` | `S1`→`S5`, `E422`, `E422U`, `E409D` | 2–17 | `ACT`→`ACT`, nota de `DEL` | `MC`, `AS`, `GD`, `UI` | real (Bloco 3, main) |
-| RF3.CA02 | `AccountService.updateSensitive`, `SensitiveUpdate`, `IdentityService` (bloqueio), `RegistrationService.resendVerification`, `AesGcmStringConverter` | `A3`→`T1`→`T4`, `E429`, `E422S`, `E409E` | 21–38 | `ACT`→`PEV` (e-mail novo) | `ARL`, `AS`, `IS`, `PLT`, `MY` | real |
+| RF3.CA01 | `MeController.update`, `AccountService.update`, `ProfileUpdate`, `Guard.requireNotDeletionScheduled`, `User.version` | `S1`→`S5`, `E422`, `E422U`, `E403D` | 2–17 | `ACT`→`ACT`, nota de `DEL` | `MC`, `AS`, `GD`, `UI` | real (Bloco 3, main) |
+| RF3.CA02 | `AccountService.updateSensitive`, `SensitiveUpdate`, `IdentityService` (bloqueio), `RegistrationService.resendVerification`, `AesGcmStringConverter` | `A3`→`T1`→`T4`, `E429`, `E401R`, `E409E` | 21–38 | `ACT`→`PEV` (e-mail novo) | `ARL`, `AS`, `IS`, `PLT`, `MY` | real |
 | RF3.CA03 | `UserPreferences`, `AccountService.updatePreferences/preferences`, `ThemeMode`, `UiLanguage`, `DeskSkin`, `AiMode` | `A4`→`F4`→`P1` | 39–48 | — | `TH`, `MC`, `MY` (`user_preferences` CASCADE) | real |
 | RF3.CA04 | `ProfileUpdate.hypeVisibility/rankingOptOut`, `HypeVisibility` | `A2`→`F2`→`S3`→`S5` | 2–16 | — | `AS`, `UI` (`Switch`) | real (`AuditLog PROFILE_UPDATED`) |
 | RF3.CA05 | `MediaStoragePort`, `MediaObject`, `PendingUpload`, `PipelineJob THUMBNAIL` | — | — | — | `S3`, `JOBS` | planejado (D-22) |
@@ -526,7 +526,7 @@ flowchart LR
 | RF3.CA17 | `PersonalDataRegistryCoverageTest` | — | — | — | `LG` | planejado |
 | RF3.CA18 | `DataSubjectRequest`, `DsrKind`, `DsrStatus` | — | — | — | `LG` | planejado (Q-71) |
 | RF3.CA19 | `AccountService.requestDeletion`, `DeletionRequest`, `DeletionReceipt`, `DELETION_GRACE` | — | — | `ACT`→`DEL`, §7.3 bloco 2 | `MC`, `AS`, `ARL` (10/h) | real (409 `EXCLUSAO_AGENDADA` se já agendada) |
-| RF3.CA20 | `Guard.requireNotDeletionScheduled`, `Session.warnings` | `S2`→`E409D` | 7–8 | nota de `DEL` | `GD`, `UI` (`Banner`) | real (hoje `409`, D-18 prevê `403 EXCLUSAO_AGENDADA` para criar conteúdo — Q proposta) |
+| RF3.CA20 | `Guard.requireNotDeletionScheduled`, `Session.warnings` | `S2`→`E403D` | 7–8 | nota de `DEL` | `GD`, `UI` (`Banner`) | real (`403 EXCLUSAO_AGENDADA` em `PATCH /api/me`; demais rotas de conteúdo quando existirem) |
 | RF3.CA21 | `AccountAnonymizationJob`, `AccountStatus.ANONYMIZED` | — | — | `DEL`→`ANO` | `JOBS` | planejado (D-18) |
 | RF3.CA22 | `GET /api/auth/sessions`, `GET /api/me/policies` | — | — | — | `PG` (abas Sessões e Termos) | planejado |
 | RF3.CA23 | padrões LGPD de interface (`packages/ui`) | `F1` | — | — | `UI` | planejado |
@@ -553,7 +553,7 @@ Bloco **C** de `docs/produto/CADASTRO_E_LGPD.md`: a tela de configurações é o
 | CA | Enunciado (Dado / Quando / Então) |
 |---|---|
 | **RF3.CA07** (CA a confirmar) | Dado `/settings`, então as abas usam `Tabs` de `packages/ui` com a aba atual na URL (`?tab=conta`), navegáveis por teclado; nenhuma aba contém HTML/CSS solto (D-11). |
-| **RF3.CA08** (CA a confirmar) | Dado a troca de e-mail, então ela exige a **senha atual com o bloqueio** `login-fail` (6º erro → `429 MUITAS_TENTATIVAS` + `Retry-After`; **real**), envia o código ao e-mail novo (**real**, `resendVerification`) e um **aviso ao antigo** (planejado); a troca de senha encerra as outras sessões (`SESSIONS_REVOKED`, real). |
+| **RF3.CA08** (CA a confirmar) | Dado a troca de e-mail, então ela exige a **senha atual com o bloqueio** `login-fail` (`IdentityService.reauthenticate`: errada → `401 REAUTENTICACAO_FALHOU`, 6º erro → `429 MUITAS_TENTATIVAS` + `Retry-After`; **real**), envia o código ao e-mail novo (**real**, `resendVerification`) e um **aviso ao antigo** (planejado, Q-84); hoje o e-mail novo vale de imediato para login (sem coluna de e-mail pendente — divergência a confirmar); a troca de senha encerra as outras sessões (`SESSIONS_REVOKED`, real). |
 | **RF3.CA09** (CA a confirmar) | Dado a aba Privacidade, então `hypeVisibility` nasce `SO_EU` e `rankingOptOut` `false`; alterar grava `AuditLog PROFILE_UPDATED` com os campos alterados (**real**; o nome `PRIVACY_CHANGED` do plano não existe em `AuditActions`) e vale na próxima leitura. |
 | **RF3.CA10** (CA a confirmar, Q-67) | Dado os consentimentos, então existem só para **finalidades opcionais** (`ConsentPurpose`: `RESUMO_PROFISSIONAL_IA`, RF43.CA04; `GRAVACAO_REUNIOES_PADRAO`); cada uma mostra `title`, `description`, `legalBasis`, `article`, `sensitive`, `grantedAt`, `revokedAt`, `policyVersion` (iguais ao OpenAPI, CA24); **nunca vem marcada**; revogar tem o mesmo esforço que conceder (`PUT /api/me/consents/{purpose} {granted}`). |
 | **RF3.CA11** (CA a confirmar) | Dado conceder ou revogar, então grava-se `consent_events` (append-only) e o estado em `user_consents`, mais `AuditLog CONSENT_GRANTED` ou `CONSENT_REVOKED`; o histórico aparece na aba. |
@@ -565,7 +565,7 @@ Bloco **C** de `docs/produto/CADASTRO_E_LGPD.md`: a tela de configurações é o
 | **RF3.CA17** (CA a confirmar) | Dado uma entidade com coluna de pessoa, então ela está no `PersonalDataRegistry` ou em `EXCLUDED_WITH_REASON`; `PersonalDataRegistryCoverageTest` falha o CI para entidade nova sem classificação. |
 | **RF3.CA18** (CA a confirmar, Q-71) | Dado "Outros direitos", então a pessoa abre `DataSubjectRequest` de **revisão de decisão automatizada** (art. 20: HSE, ranking, Hype, classificação IA), **oposição** e **informação sobre compartilhamento**; cada pedido tem `dueAt`, status, encarregado e `AuditLog DSR_OPENED`; o canal (`WS_LEGAL_DPO_CONTACT`) aparece na aba. |
 | **RF3.CA19** (CA a confirmar, Q-68) | Dado "Encerrar minha conta", então o pedido exige a **senha atual com bloqueio** (**real**: `POST /api/me/deletion {currentPassword, reason}`, `AuditLog ACCOUNT_DELETION_REQUESTED`, `deletionScheduledAt = +30 d`, `DeletionReceipt.cancelable`); antes de confirmar, o `Dialog` mostra o que será anonimizado e o que fica (planejado); já agendada → `409 EXCLUSAO_AGENDADA`. |
-| **RF3.CA20** (CA a confirmar) | Dado `DELETION_SCHEDULED`, então o login devolve `warnings` com a data (**real**), o `Banner` mostra a data e o botão cancelar (`DELETE /api/me/deletion`, **real**, `ACCOUNT_DELETION_CANCELLED`; sem agendamento → `409 EXCLUSAO_NAO_AGENDADA`), editar o perfil recebe `409 EXCLUSAO_AGENDADA` (`Guard.requireNotDeletionScheduled`, **real**) e criar conteúdo receberá `403 EXCLUSAO_AGENDADA` (D-18, planejado — divergência de código a registrar). |
+| **RF3.CA20** (CA a confirmar) | Dado `DELETION_SCHEDULED`, então o login devolve `warnings` com a data (**real**), o `Banner` mostra a data e o botão cancelar (`DELETE /api/me/deletion`, **real**, `ACCOUNT_DELETION_CANCELLED`; sem agendamento → `409 EXCLUSAO_NAO_AGENDADA`), editar o perfil recebe `403 EXCLUSAO_AGENDADA` (`Guard.requireNotDeletionScheduled`, **real**) e criar conteúdo receberá o mesmo `403` quando as rotas existirem (D-18); o pedido também encerra as outras sessões. |
 | **RF3.CA21** (CA a confirmar) | Dado o prazo vencido, então o `AccountAnonymizationJob` roda por `@Scheduled` com **lock** (ShedLock); teste 1 prova o agendamento; teste 2 (Testcontainers) prova a anonimização no MySQL, S3 `restricted/`, Cassandra e OpenSearch, a revogação das sessões e `ACCOUNT_DELETION_COMPLETED`, mantendo `policy_acceptances`, `consent_events` e documentos públicos. |
 | **RF3.CA22** (CA a confirmar) | Dado as abas Sessões e Termos e políticas, então a primeira lista `refresh_tokens` por família (`deviceName`, `createdIp`, `lastUsedAt`, atual) com revogação, e a segunda mostra por documento a versão aceita, data, canal e link para a vigente (`GET /api/me/policies`). |
 | **RF3.CA23** (CA a confirmar) | Dado qualquer controle, então valem os padrões LGPD: privacidade por padrão, aceitar e recusar com o **mesmo destaque**, sem texto que constranja quem recusa, foco visível, teclado e `reduceMotion`. |
@@ -614,8 +614,8 @@ stateDiagram-v2
   ANO --> [*]
   note right of DEL
     Login com warning e Banner · perfil oculto
-    PATCH /api/me: 409 EXCLUSAO_AGENDADA (real)
-    criar conteúdo: 403 EXCLUSAO_AGENDADA (D-18)
+    PATCH /api/me e criar conteúdo: 403 EXCLUSAO_AGENDADA (Guard, D-18)
+    POST /api/me/deletion repetido: 409 EXCLUSAO_AGENDADA
     exportar e cancelar continuam liberados
   end note
   note right of ANO
