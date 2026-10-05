@@ -29,7 +29,7 @@ class CatalogSchemaConsistencyTest {
 
     private static final Pattern CREATE = Pattern.compile("CREATE\\s+TABLE\\s+(\\w+)\\s*\\((.*?)\\)\\s*ENGINE", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     private static final Pattern ADD_COLUMN = Pattern.compile("ALTER\\s+TABLE\\s+(\\w+)\\s+ADD\\s+COLUMN\\s+(\\w+)", Pattern.CASE_INSENSITIVE);
-    private static final Set<String> NOT_COLUMNS = Set.of("PRIMARY", "CONSTRAINT", "INDEX", "UNIQUE", "KEY", "FOREIGN", "FULLTEXT", "CHECK");
+    private static final Set<String> NOT_COLUMNS = Set.of("PRIMARY", "CONSTRAINT", "INDEX", "UNIQUE", "KEY", "FOREIGN", "FULLTEXT", "CHECK", "ON");
 
     private static Map<String, List<String>> columnsByTable() throws Exception {
         Map<String, List<String>> out = new LinkedHashMap<>();
