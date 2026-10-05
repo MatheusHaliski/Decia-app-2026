@@ -2,6 +2,7 @@ package br.gov.pr.secid.workstation.application.identity;
 
 import br.gov.pr.secid.workstation.application.audit.AuditActions;
 import br.gov.pr.secid.workstation.application.common.ApiException;
+import br.gov.pr.secid.workstation.application.common.Hashing;
 import br.gov.pr.secid.workstation.domain.identity.AccountStatus;
 import br.gov.pr.secid.workstation.domain.identity.Role;
 import br.gov.pr.secid.workstation.domain.identity.User;
@@ -210,6 +211,85 @@ class IdentityServiceTest {
         assertThat(invalid.get()).isEqualTo(threads - 1);
         assertThat(identity.sessionActive(s.sessionId())).as("reuso detectado: família inteira revogada").isFalse();
         assertThat(audit.actions()).filteredOn(AuditActions.REFRESH_REUSO::equals).hasSize(threads - 1);
+    }
+
+    /**
+     * Achado P1 (Codex, PR #18): a vencedora do consume pausa antes de salvar o sucessor; a perdedora detecta reuso e revoga a
+     * família; a vencedora então salva. Com o tombstone (D-32) o sucessor NÃO vale e a vencedora também recebe SESSAO_INVALIDA.
+     */
+    @Test
+    void sucessorEmVooDepoisDoReusoDetectadoNaoVale() throws Exception {
+        CountDownLatch winnerAtSave = new CountDownLatch(1);
+        CountDownLatch loserDone = new CountDownLatch(1);
+        SessionStorePort instrumented = new SessionStorePort() {
+            @Override
+            public void save(RefreshRecord record) {
+                if (record.rotatedFromHash() != null) {            // só o sucessor espera a perdedora terminar
+                    winnerAtSave.countDown();
+                    try {
+                        assertThat(loserDone.await(5, TimeUnit.SECONDS)).isTrue();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+                sessions.save(record);
+            }
+
+            @Override
+            public java.util.Optional<RefreshRecord> find(String h) {
+                return sessions.find(h);
+            }
+
+            @Override
+            public void revoke(String h, java.time.Instant at) {
+                sessions.revoke(h, at);
+            }
+
+            @Override
+            public Consume consume(String h, java.time.Instant now) {
+                return sessions.consume(h, now);
+            }
+
+            @Override
+            public void revokeFamily(UUID f, java.time.Instant at) {
+                sessions.revokeFamily(f, at);
+            }
+
+            @Override
+            public int revokeAllOfUser(UUID u, UUID keep, java.time.Instant at) {
+                return sessions.revokeAllOfUser(u, keep, at);
+            }
+
+            @Override
+            public boolean familyActive(UUID f, java.time.Instant now) {
+                return sessions.familyActive(f, now);
+            }
+
+            @Override
+            public List<RefreshRecord> activeOfUser(UUID u, java.time.Instant now) {
+                return sessions.activeOfUser(u, now);
+            }
+        };
+        IdentityService racing = new IdentityService(users, Fakes.EMAIL_HASHER, hasher, rateLimit, instrumented, Fakes.NO_MIRROR, Fakes.TOKENS,
+                audit, SessionPolicy.defaults(), Clock.systemUTC());
+        Session s = racing.login(new IdentityService.LoginCommand("maria.silva", password, false, null, null), ctx);
+        ExecutorService pool = Executors.newSingleThreadExecutor();
+        try {
+            Future<ApiException> winner = pool.submit(() -> catchThrowableOfType(ApiException.class, () -> racing.refresh(s.refreshToken(), ctx)));
+            assertThat(winnerAtSave.await(5, TimeUnit.SECONDS)).as("vencedora consumiu e está prestes a salvar").isTrue();
+            ApiException loser = catchThrowableOfType(ApiException.class, () -> racing.refresh(s.refreshToken(), ctx));
+            assertThat(loser.code()).isEqualTo(AuthCodes.SESSAO_INVALIDA);
+            assertThat(audit.actions()).contains(AuditActions.REFRESH_REUSO);
+            loserDone.countDown();
+            ApiException winnerOutcome = winner.get(10, TimeUnit.SECONDS);
+            assertThat(winnerOutcome).as("o sucessor em voo foi recusado pelo tombstone").isNotNull();
+            assertThat(winnerOutcome.code()).isEqualTo(AuthCodes.SESSAO_INVALIDA);
+        } finally {
+            pool.shutdownNow();
+        }
+        assertThat(racing.sessionActive(s.sessionId())).isFalse();
+        assertThat(racing.activeSessions(maria.getId())).as("nenhum token da família vale").isEmpty();
+        assertThat(sessions.find(Hashing.sha256(s.refreshToken())).orElseThrow().revokedAt()).isNotNull();
     }
 
     @Test

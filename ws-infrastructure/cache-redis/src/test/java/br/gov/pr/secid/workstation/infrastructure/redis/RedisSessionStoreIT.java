@@ -84,6 +84,97 @@ class RedisSessionStoreIT {
         assertThat(template.hasKey(RedisSessionStore.tokenKey("inexistente"))).isFalse();
     }
 
+    /** Achado P1 (PR #18): consume → revokeFamily (perdedora) → save do sucessor (vencedora): o sucessor é recusado pelo tombstone. */
+    @Test
+    void sucessorSalvoDepoisDoTombstoneDaFamiliaERecusado() {
+        UUID user = UUID.randomUUID();
+        UUID fam = UUID.randomUUID();
+        RefreshRecord first = record(fam, user, Duration.ofDays(1));
+        store.save(first);
+        assertThat(store.consume(first.tokenHash(), Instant.now())).isEqualTo(SessionStorePort.Consume.ROTATED);
+        store.revokeFamily(fam, Instant.now());
+        RefreshRecord successor = new RefreshRecord("h-next-" + fam, fam, user, Instant.now(), Instant.now().plus(Duration.ofDays(1)), null,
+                first.tokenHash(), true, "Note");
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> store.save(successor)).isInstanceOf(SessionStorePort.FamilyRevokedException.class);
+        assertThat(template.hasKey(RedisSessionStore.tokenKey(successor.tokenHash()))).as("nada do sucessor gravado").isFalse();
+        assertThat(store.familyActive(fam, Instant.now())).isFalse();
+        assertThat(store.consume(first.tokenHash(), Instant.now())).isEqualTo(SessionStorePort.Consume.REUSED);
+        assertThat(store.find(first.tokenHash()).orElseThrow().revokedAt()).isNotNull();
+        assertThat(store.activeOfUser(user, Instant.now())).isEmpty();
+        assertThat(template.getExpire(RedisSessionStore.metaKey(fam), TimeUnit.SECONDS)).isPositive();
+        // token ainda não revogado individualmente numa família com tombstone: find devolve revogado e consume vê reuso
+        UUID fam2 = UUID.randomUUID();
+        RefreshRecord live = record(fam2, user, Duration.ofDays(1));
+        store.save(live);
+        template.opsForHash().put(RedisSessionStore.metaKey(fam2), "revokedAt", String.valueOf(Instant.now().toEpochMilli()));
+        assertThat(store.find(live.tokenHash()).orElseThrow().revokedAt()).isNotNull();
+        assertThat(store.consume(live.tokenHash(), Instant.now())).isEqualTo(SessionStorePort.Consume.REUSED);
+        assertThat(store.familyActive(fam2, Instant.now())).isFalse();
+    }
+
+    /** Achado P1 (PR #18): familyActive é O(1) — ≤ 2 round-trips ao Redis seja qual for o número de rotações da família. */
+    @Test
+    void familyActiveFazNoMaximoDoisRoundTripsIndependenteDasRotacoes() {
+        CountingConnectionFactory counting = new CountingConnectionFactory(factory);
+        StringRedisTemplate countedTemplate = new StringRedisTemplate(counting);
+        RedisSessionStore counted = new RedisSessionStore(countedTemplate);
+        UUID user = UUID.randomUUID();
+        UUID fam = UUID.randomUUID();
+        RefreshRecord current = record(fam, user, Duration.ofDays(30));
+        counted.save(current);
+        for (int i = 0; i < 50; i++) {
+            assertThat(counted.consume(current.tokenHash(), Instant.now())).isEqualTo(SessionStorePort.Consume.ROTATED);
+            RefreshRecord next = new RefreshRecord("h-" + UUID.randomUUID(), fam, user, Instant.now(), Instant.now().plus(Duration.ofDays(30)),
+                    null, current.tokenHash(), true, "Note");
+            counted.save(next);
+            current = next;
+        }
+        assertThat(template.opsForSet().size(RedisSessionStore.familyKey(fam))).isEqualTo(51);
+        counting.connections.set(0);
+        assertThat(counted.familyActive(fam, Instant.now())).isTrue();
+        assertThat(counting.connections.get()).as("round-trips do familyActive").isLessThanOrEqualTo(2);
+        counting.connections.set(0);
+        assertThat(counted.activeOfUser(user, Instant.now())).hasSize(1);
+        assertThat(counting.connections.get()).as("lista de sessões: só o token vigente de cada família").isLessThanOrEqualTo(6);
+        assertThat(counted.find(current.tokenHash()).orElseThrow().tokenHash()).isEqualTo(current.tokenHash());
+    }
+
+    /** Cada operação do RedisTemplate pede uma conexão: contar getConnection() = contar round-trips. */
+    static final class CountingConnectionFactory implements org.springframework.data.redis.connection.RedisConnectionFactory {
+        final java.util.concurrent.atomic.AtomicInteger connections = new java.util.concurrent.atomic.AtomicInteger();
+        private final org.springframework.data.redis.connection.RedisConnectionFactory delegate;
+
+        CountingConnectionFactory(org.springframework.data.redis.connection.RedisConnectionFactory delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public org.springframework.data.redis.connection.RedisConnection getConnection() {
+            connections.incrementAndGet();
+            return delegate.getConnection();
+        }
+
+        @Override
+        public org.springframework.data.redis.connection.RedisClusterConnection getClusterConnection() {
+            return delegate.getClusterConnection();
+        }
+
+        @Override
+        public boolean getConvertPipelineAndTxResults() {
+            return delegate.getConvertPipelineAndTxResults();
+        }
+
+        @Override
+        public org.springframework.data.redis.connection.RedisSentinelConnection getSentinelConnection() {
+            return delegate.getSentinelConnection();
+        }
+
+        @Override
+        public org.springframework.dao.DataAccessException translateExceptionIfPossible(RuntimeException ex) {
+            return delegate.translateExceptionIfPossible(ex);
+        }
+    }
+
     @Test
     void vinteThreadsComOMesmoTokenSoUmaRotaciona() throws Exception {
         RefreshRecord r = record(UUID.randomUUID(), UUID.randomUUID(), Duration.ofDays(1));

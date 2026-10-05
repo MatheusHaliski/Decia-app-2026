@@ -11,6 +11,10 @@ import java.util.UUID;
  * {@link #familyActive} a cada requisição autenticada.
  */
 public interface SessionStorePort {
+    /**
+     * Guarda um token. Lança {@link FamilyRevokedException} se a família já tem o marcador de revogação (tombstone, D-32):
+     * o sucessor de um refresh que perdeu a corrida para a detecção de reuso nunca entra em vigor.
+     */
     void save(RefreshRecord record);
 
     Optional<RefreshRecord> find(String tokenHash);
@@ -26,6 +30,15 @@ public interface SessionStorePort {
     Consume consume(String tokenHash, Instant now);
 
     enum Consume { ROTATED, REUSED, EXPIRED, UNKNOWN }
+
+    /** A família foi revogada (logout, reuso, troca de senha) entre o consumo do token e a gravação do sucessor. */
+    class FamilyRevokedException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
+        public FamilyRevokedException(UUID familyId) {
+            super("família de sessão revogada: " + familyId);
+        }
+    }
 
     /** Revoga a família inteira (logout, reuso detectado, troca de senha). */
     void revokeFamily(UUID familyId, Instant at);

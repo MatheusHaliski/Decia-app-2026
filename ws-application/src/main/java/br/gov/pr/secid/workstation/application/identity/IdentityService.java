@@ -145,7 +145,12 @@ public class IdentityService {
         String raw = Hashing.randomToken(32);
         RefreshRecord record = new RefreshRecord(Hashing.sha256(raw), family, u.getId(), now, now.plus(policy.refreshTtl(persistent)),
                 null, rotatedFromHash, persistent, deviceName == null ? shortAgent(ctx.userAgent()) : deviceName);
-        sessions.save(record);
+        try {
+            sessions.save(record);
+        } catch (SessionStorePort.FamilyRevokedException revoked) {
+            // D-32: a família foi revogada (reuso detectado por outra requisição, logout) entre o consume e a gravação do sucessor
+            throw sessionInvalid();
+        }
         mirror.saved(record, ctx);
         List<String> warnings = new ArrayList<>();
         if (!u.isEmailVerified()) {
