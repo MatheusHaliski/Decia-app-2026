@@ -120,9 +120,26 @@ ws:
     jwt:
       issuer: ${WS_JWT_ISSUER:work-station}
       audience: ${WS_JWT_AUDIENCE:work-station-api}
-      # caminhos de arquivo PEM (scripts/keys/generate_jwt_keys.sh grava em ./keys/, fora do git). Vazio = nenhum token aceito.
+      # chaves RS256 por CAMINHO de arquivo PEM (scripts/keys/generate_jwt_keys.sh grava em ./keys/, fora do git) OU pelo
+      # CONTEÚDO PEM em variável (D-24; o caminho tem precedência). Sem pública = nenhum token aceito; sem privada = login 503.
       public-key-path: ${WS_JWT_PUBLIC_KEY_PATH:}
       private-key-path: ${WS_JWT_PRIVATE_KEY_PATH:}
+      public-key-pem: ${WS_JWT_PUBLIC_KEY_PEM:}
+      private-key-pem: ${WS_JWT_PRIVATE_KEY_PEM:}
+      access-ttl-minutes: ${WS_JWT_ACCESS_TTL_MINUTES:15}       # Q-49: 15 min até a resposta (D-25)
+    session:
+      refresh-ttl: ${WS_REFRESH_TTL:30d}                         # "lembrar-me" (Q-30)
+      refresh-short-ttl: ${WS_REFRESH_SHORT_TTL:24h}             # sem "lembrar-me"
+      max-login-failures: 5                                      # bloqueio por conta (D-14): 5 em 15 min
+      lock-window: 15m
+    # IP do cliente (D-14): assinado pelo BFF com EDGE_PROXY_SECRET (HMAC-SHA256, >= 32 chars) > cabeçalho único da borda > TCP.
+    # Nunca X-Forwarded-For. Vazio desliga a assinatura (WARN).
+    edge-proxy-secret: ${EDGE_PROXY_SECRET:}
+    edge-ip-header: ${WS_EDGE_IP_HEADER:X-Real-IP}
+    auth-rate-limit:
+      enabled: ${WS_AUTH_RATE_LIMIT_ENABLED:true}
+    auth-hash-concurrency: ${WS_AUTH_HASH_CONCURRENCY:0}         # 0 = max(1, min(max(2, núcleos), pool/2))
+    auth-hash-wait-ms: ${WS_AUTH_HASH_WAIT_MS:2000}
     cors:
       allowed-origins: ${WS_CORS_ALLOWED_ORIGINS:http://localhost:3000}
   secrets:
@@ -130,11 +147,34 @@ ws:
     enforce: ${WS_SECRETS_ENFORCE:false}
     required:
       "[WS_DB_PASSWORD]": ${WS_DB_PASSWORD:}
-      "[WS_JWT_PRIVATE_KEY_PATH]": ${WS_JWT_PRIVATE_KEY_PATH:}
-      "[WS_JWT_PUBLIC_KEY_PATH]": ${WS_JWT_PUBLIC_KEY_PATH:}
+      # chave JWT: basta UMA das duas formas (D-24) — a chave composta "A|B" fica satisfeita se qualquer uma tiver valor
+      "[WS_JWT_PRIVATE_KEY_PATH|WS_JWT_PRIVATE_KEY_PEM]": ${WS_JWT_PRIVATE_KEY_PATH:}${WS_JWT_PRIVATE_KEY_PEM:}
+      "[WS_JWT_PUBLIC_KEY_PATH|WS_JWT_PUBLIC_KEY_PEM]": ${WS_JWT_PUBLIC_KEY_PATH:}${WS_JWT_PUBLIC_KEY_PEM:}
       "[WS_DATA_ENCRYPTION_KEY]": ${WS_DATA_ENCRYPTION_KEY:}
   data:
-    encryption-key: ${WS_DATA_ENCRYPTION_KEY:}           # AES-GCM dos campos sensíveis (Bloco 2); base64 de 32 bytes
+    encryption-key: ${WS_DATA_ENCRYPTION_KEY:}           # AES-GCM dos campos sensíveis + HMAC do email_hash; base64 de 32 bytes
+  admin:
+    # AdminBootstrap (RF1.CA10): cria o ADMIN só se não existe nenhum; nunca promove conta existente sem promote-existing=true
+    bootstrap-enabled: ${WS_ADMIN_BOOTSTRAP_ENABLED:false}
+    email: ${WS_ADMIN_EMAIL:}
+    username: ${WS_ADMIN_USERNAME:admin}
+    initial-password: ${WS_ADMIN_INITIAL_PASSWORD:}      # segredo; só usado na criação; nunca tem valor padrão
+    promote-existing: ${WS_ADMIN_PROMOTE_EXISTING:false}
+  legal:
+    # versões vigentes gravadas em users.terms_version/privacy_version no cadastro (gancho do bloco LGPD A; PolicyDocument depois)
+    current-versions:
+      terms: ${WS_LEGAL_TERMS_VERSION:1.0}
+      privacy: ${WS_LEGAL_PRIVACY_VERSION:1.0}
+  mail:
+    # Bloco 3: adaptador de LOG mascarado (sem SMTP). Variáveis WS_SMTP_* ficam reservadas para o adaptador real (Q-84).
+    echo-body: ${WS_MAIL_ECHO_BODY:false}               # true só em dev: imprime o corpo (com o código) no log local
+  oidc:
+    # RF2.CA03/CA12 — login institucional (Authorization Code + PKCE no BFF; a API valida o id_token). Desligado por padrão.
+    enabled: ${WS_OIDC_ENABLED:false}
+    issuer-uri: ${WS_OIDC_ISSUER_URI:}
+    client-id: ${WS_OIDC_CLIENT_ID:}
+    client-secret: ${WS_OIDC_CLIENT_SECRET:}
+    provider-name: ${WS_OIDC_PROVIDER_NAME:institucional}
   storage:
     type: ${WS_STORAGE_TYPE:local}                       # local | s3
     local-dir: ${WS_STORAGE_LOCAL_DIR:./data/media}

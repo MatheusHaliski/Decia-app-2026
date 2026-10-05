@@ -1,9 +1,15 @@
 package br.gov.pr.secid.workstation.web.error;
 
+import br.gov.pr.secid.workstation.application.common.ClockConfig;
+import br.gov.pr.secid.workstation.application.identity.InMemoryRateLimit;
+import br.gov.pr.secid.workstation.application.identity.InMemorySessionStore;
+import br.gov.pr.secid.workstation.application.identity.RefreshRecord;
 import br.gov.pr.secid.workstation.web.config.JwtConfig;
 import br.gov.pr.secid.workstation.web.config.SecurityConfig;
 import br.gov.pr.secid.workstation.web.security.ApiErrorAccessDeniedHandler;
 import br.gov.pr.secid.workstation.web.security.ApiErrorAuthenticationEntryPoint;
+import br.gov.pr.secid.workstation.web.security.HashBulkhead;
+import br.gov.pr.secid.workstation.web.support.ClientIpResolver;
 import br.gov.pr.secid.workstation.web.support.CorrelationIdFilter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,19 +38,32 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @WebMvcTest(controllers = ProbeController.class)
 @Import({SecurityConfig.class, JwtConfig.class, GlobalExceptionHandler.class, ErrorWriter.class,
-        ApiErrorAuthenticationEntryPoint.class, ApiErrorAccessDeniedHandler.class, CorrelationIdFilter.class})
+        ApiErrorAuthenticationEntryPoint.class, ApiErrorAccessDeniedHandler.class, CorrelationIdFilter.class,
+        InMemoryRateLimit.class, InMemorySessionStore.class, ClockConfig.class, ClientIpResolver.class, HashBulkhead.class})
 class GlobalExceptionHandlerWebTest {
 
     @Autowired
     MockMvc mvc;
 
+    @Autowired
+    InMemorySessionStore sessions;
+
+    /** Toda sessão desta API tem família viva ({@code sid}); o SessionActiveFilter recusa as demais. */
+    private static final java.util.UUID SID = java.util.UUID.randomUUID();
+
+    @org.junit.jupiter.api.BeforeEach
+    void liveSession() {
+        java.time.Instant now = java.time.Instant.now();
+        sessions.save(new RefreshRecord("h-probe", SID, java.util.UUID.randomUUID(), now, now.plus(java.time.Duration.ofDays(1)), null, null, false, null));
+    }
+
     /** Token já validado com o papel dado — o mesmo que o JwtAuthenticationConverter produziria a partir do claim "role". */
     private static MockHttpServletRequestBuilder withRole(MockHttpServletRequestBuilder b, String role) {
-        return b.with(jwt().jwt(j -> j.claim("role", role)).authorities(new SimpleGrantedAuthority("ROLE_" + role)));
+        return b.with(jwt().jwt(j -> j.claim("role", role).claim("sid", SID.toString())).authorities(new SimpleGrantedAuthority("ROLE_" + role)));
     }
 
     private static MockHttpServletRequestBuilder authed(MockHttpServletRequestBuilder b) {
-        return withRole(b, "EMPREGADO");
+        return withRole(b, "USER");
     }
 
     @Test
@@ -69,6 +88,9 @@ class GlobalExceptionHandlerWebTest {
         mvc.perform(authed(get("/actuator/metrics"))).andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.code").value("ACESSO_NEGADO"));
         mvc.perform(withRole(get("/actuator/metrics"), "ADMIN")).andExpect(status().isNotFound());
+        // papel desconhecido no claim (BFLA): 403 mesmo com token válido
+        mvc.perform(withRole(get("/probe/ok"), "CONVIDADO")).andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.code").value("ACESSO_NEGADO"));
     }
 
     @Test
