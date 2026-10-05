@@ -9,10 +9,13 @@ Documentos: [`docs/arquitetura/ARQUITETURA.md`](docs/arquitetura/ARQUITETURA.md)
 [`docs/arquitetura/TAXONOMIA.md`](docs/arquitetura/TAXONOMIA.md) · [`docs/DECISOES.md`](docs/DECISOES.md) ·
 [`docs/seguranca/SEGURANCA.md`](docs/seguranca/SEGURANCA.md) · [`docs/design-system/`](docs/design-system/).
 
-## Estado: Bloco 1 — esqueleto seguro (fase (a) da ARQUITETURA §6)
+## Estado: Bloco 2 — banco: integridade e origem dos dados (fase (a) da ARQUITETURA §6)
 
 Backend Java 21 / **Spring Boot 4.1.1** multi-módulo, frontend **Next.js 15** mínimo, CI com gates, Docker e compose.
-Nenhum RF implementado ainda: `V1__baseline.sql` só prova o Flyway; `User` e o baseline real são do Bloco 2.
+Nenhum RF implementado ainda: `V1__baseline.sql` só prova o Flyway; `V2__baseline_dominio_base.sql` cria o domínio base
+(`users` com `account_origin`/`test_account` gerada, `user_preferences`, `refresh_tokens`, `audit_log`, `ai_inference_log`,
+`feature_flags`, `domain_events`, `media_objects`) com a política de `ON DELETE` por domínio guardada por teste (D-23).
+Entidades JPA e autenticação são do Bloco 3.
 
 ## Rodar em 5 minutos
 
@@ -63,20 +66,32 @@ Lista completa e comentada em [`.env.example`](.env.example); runbook de segredo
 Frontend na raiz: `app/` (App Router), `components/ui/` (design system — único lugar com `<button>`, `<a>`, `<input>`…),
 `styles/tokens.css` (cópia de `docs/design-system/tokens.css`), `lib/i18n/` (pt-BR/en/es + `qps-ploc`), `middleware.ts` (CSP com nonce).
 
+## Banco (MySQL 8.4 · Flyway)
+
+Schema 100 % por migration em `ws-infrastructure/persistence-mysql/src/main/resources/db/migration/` (`spring.jpa.hibernate.ddl-auto: none`;
+o Hibernate nunca cria nem altera tabela). `V1__baseline.sql` (só `app_meta`) e `V2__baseline_dominio_base.sql` (domínio base) nunca são editadas:
+mudança = `V3+`. Convenções do V2 (D-23): ids `BINARY(16)` (UUID), enums `VARCHAR` + `CHECK ck_<tabela>_<coluna>`, FK `fk_<tabela>__<coluna>` com
+`ON DELETE` explícito seguindo a política por domínio (dono → `CASCADE`; catálogo institucional e trilhas append-only → `RESTRICT`; `SET NULL` só
+para filho válido sem pai). Toda FK tem uma linha em `ForeignKeyPolicy.POLICY` — a migration e a linha entram no mesmo commit, e
+`ForeignKeyPolicyTest` compara com `INFORMATION_SCHEMA`. Contas sintéticas: `users.account_origin` (REAL · TEST_SEED · DEMO · SYSTEM) com
+`test_account` gerada no banco; nunca pontuam (RF42). Tabela de FKs e controles em [`docs/seguranca/SEGURANCA.md`](docs/seguranca/SEGURANCA.md) §2.
+
 ## Testes e gates (`mvn -B -ntp verify` · `npm run lint && npm run typecheck && npm test && npm run build`)
 
 Testes-guarda que falham o build antes do deploy:
 
 | Teste | Protege contra |
 |---|---|
-| `MigrationVersionsTest` (persistence-mysql) | duas branches com a mesma versão `V<n>__` (SQL e Java, ignora `$`) |
+| `MigrationVersionsTest` (persistence-mysql) | duas branches com a mesma versão `V<n>__` (SQL e Java, ignora `$`); V1/V2 renomeadas; migration Java entrando sem registro |
+| `ForeignKeyPolicyUnitTest` (persistence-mysql) | FK nova nas migrations SQL sem linha em `ForeignKeyPolicy.POLICY`, sem nome `fk_<tabela>__<coluna>`, sem `ON DELETE`/`ON UPDATE` explícitos, ou `SET FOREIGN_KEY_CHECKS=0` — roda sem Docker |
+| `ForeignKeyPolicyTest` (persistence-mysql) | Flyway do zero num MySQL 8.4 real: FK no banco fora da política, política sem FK, regra `ON DELETE` divergente; `users.test_account` deixar de ser gerada; CHECK de `account_origin` aceitar valor inválido (Testcontainers; pulado sem Docker) |
 | `JsonContractTest` (ws-bootstrap) | Jackson 3 mudar o contrato com o front: `null` em primitivo → padrão, campo desconhecido ignorado, datas ISO-8601 — montado com o `application.yml` real |
 | `AutoConfigurationExclusionsTest` | `spring.autoconfigure.exclude` apontando para classe renomeada (o Boot ignora em silêncio e o Cassandra voltaria a ligar) |
 | `ApplicationYmlSecurityTest` | senha/chave padrão em qualquer `application*.yml`, TLS desligado, docs/health abertos em prod |
 | `RequiredSecretsGuardTest` | boot em prod com `WS_DB_PASSWORD`, `WS_JWT_*_KEY_PATH` ou `WS_DATA_ENCRYPTION_KEY` vazios (mensagem só com os NOMES) |
 | `SensitiveDataMaskingConverterTest` | senha/token/JWT/credencial de URL escapando no log |
 | `GlobalExceptionHandlerWebTest` (ws-web) | 400/401/403/404/405/409/415/422/429/503/500 fora do formato `ApiError`, stack trace ou mensagem interna no corpo, header `X-Correlation-Id` ausente, `/actuator/*` aberto |
-| `WorkStationApplicationIT` | contexto completo + Flyway contra MySQL 8.4 real (Testcontainers; pulado sem Docker) |
+| `WorkStationApplicationIT` | contexto completo + Flyway (V1 e V2 com `success = 1`, `schema.baseline = bloco-2`) contra MySQL 8.4 real (Testcontainers; pulado sem Docker) |
 | `forbidden-elements.lint.test.ts` (front) | afrouxar a regra que proíbe elementos nativos fora de `components/ui/**` |
 | `scripts/i18n/check.js` | chave faltando/órfã/vazia ou variáveis diferentes entre pt-BR/en/es |
 
@@ -90,6 +105,6 @@ vitest, `npm audit --omit=dev --audit-level=high`. CI em [`.github/workflows/ci.
 
 - Commits **Conventional Commits** com RF no escopo quando houver: `feat(rf20): …`, `chore(ci): …`, `docs(arch): …`
   (`commitlint.config.mjs`). PRs seguem [`.github/pull_request_template.md`](.github/pull_request_template.md).
-- Uma migration Flyway por mudança (`V<n>__rf<nn>_<assunto>.sql`), nunca editar uma aplicada.
+- Uma migration Flyway por mudança (`V<n>__rf<nn>_<assunto>.sql`), nunca editar uma aplicada; FK nova = linha nova em `ForeignKeyPolicy.POLICY` no mesmo commit; nunca `SET FOREIGN_KEY_CHECKS=0`.
 - Erros HTTP sempre `{code, message, details, correlationId}`; códigos nomeados nos CAs (`VALIDACAO`, `ACESSO_NEGADO`, …).
 - Nenhum HTML/CSS solto nas telas (D-11): componente do design system, cor por token, texto por chave i18n.
