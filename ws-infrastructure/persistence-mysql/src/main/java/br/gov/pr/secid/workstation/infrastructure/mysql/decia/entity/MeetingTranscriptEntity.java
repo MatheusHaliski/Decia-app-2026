@@ -1,7 +1,9 @@
 package br.gov.pr.secid.workstation.infrastructure.mysql.decia.entity;
 
 import br.gov.pr.secid.workstation.domain.common.AuditableEntity;
+import br.gov.pr.secid.workstation.infrastructure.mysql.crypto.AesGcmStringConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import java.util.UUID;
@@ -18,6 +20,7 @@ public class MeetingTranscriptEntity extends AuditableEntity {
     @Column(name = "meeting_id", nullable = false, columnDefinition = "BINARY(16)")
     private UUID meetingId;
 
+    @Convert(converter = AesGcmStringConverter.class)
     @Column(name = "text_enc", nullable = false, columnDefinition = "LONGTEXT")
     private String textEnc;
 

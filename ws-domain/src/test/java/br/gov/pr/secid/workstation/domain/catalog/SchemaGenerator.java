@@ -17,6 +17,7 @@ import java.util.TreeMap;
  * Gera, a partir do {@link DomainCatalog}: (1) as migrations {@code V10+__*.sql} em {@code persistence-mysql}; (2) o bloco gerado da
  * {@code ForeignKeyPolicy.POLICY}; (3) as entidades JPA e repositórios Spring Data por contexto. Uso (raiz do repositório como argumento):
  * {@code java -cp ws-domain/target/classes:ws-domain/target/test-classes br.gov.pr.secid.workstation.domain.catalog.SchemaGenerator .}
+ * — com {@code --jpa-only} reemite só entidades/repositórios (migrations já aplicadas nunca são regeneradas).
  *
  * <p>Fica em test-scope de propósito: não é código de produção e roda uma vez por mudança de domínio; os artefatos gerados são commitados
  * e guardados por {@code EntityCatalogTest}, {@code ForeignKeyPolicyUnitTest} e {@code CatalogSchemaConsistencyTest}.
@@ -37,21 +38,24 @@ public final class SchemaGenerator {
 
     public static void main(String[] args) throws IOException {
         Path root = Path.of(args.length > 0 ? args[0] : ".").toAbsolutePath().normalize();
-        Map<Integer, String> sql = renderMigrations();
+        boolean jpaOnly = List.of(args).contains("--jpa-only");   // migrations já aplicadas nunca são regeneradas (D-40)
+        Map<Integer, String> sql = jpaOnly ? Map.of() : renderMigrations();
         for (Map.Entry<Integer, String> e : sql.entrySet()) {
             Path file = root.resolve(MIGRATIONS).resolve("V" + e.getKey() + "__" + DomainCatalog.MIGRATIONS.get(e.getKey()) + ".sql");
             Files.writeString(file, e.getValue(), StandardCharsets.UTF_8);
             System.out.println("migration: " + file.getFileName());
         }
-        Path policy = root.resolve(MYSQL + "/src/main/java/br/gov/pr/secid/workstation/infrastructure/mysql/schema/ForeignKeyPolicy.java");
-        String src = Files.readString(policy, StandardCharsets.UTF_8);
-        int a = src.indexOf(GEN_START);
-        int b = src.indexOf(GEN_END);
-        if (a < 0 || b < 0) {
-            throw new IllegalStateException("marcadores do bloco gerado não encontrados em ForeignKeyPolicy.java");
+        if (!jpaOnly) {
+            Path policy = root.resolve(MYSQL + "/src/main/java/br/gov/pr/secid/workstation/infrastructure/mysql/schema/ForeignKeyPolicy.java");
+            String src = Files.readString(policy, StandardCharsets.UTF_8);
+            int a = src.indexOf(GEN_START);
+            int b = src.indexOf(GEN_END);
+            if (a < 0 || b < 0) {
+                throw new IllegalStateException("marcadores do bloco gerado não encontrados em ForeignKeyPolicy.java");
+            }
+            Files.writeString(policy, src.substring(0, a) + renderPolicyBlock() + src.substring(b), StandardCharsets.UTF_8);
+            System.out.println("policy: " + policy.getFileName());
         }
-        Files.writeString(policy, src.substring(0, a) + renderPolicyBlock() + src.substring(b), StandardCharsets.UTF_8);
-        System.out.println("policy: " + policy.getFileName());
         int n = 0;
         for (EntityDescriptor e : DomainCatalog.entries()) {
             if (!e.generatesSql()) {
@@ -334,6 +338,12 @@ public final class SchemaGenerator {
                 imports.add("jakarta.persistence.EnumType");
                 imports.add("jakarta.persistence.Enumerated");
                 fields.append("    @Enumerated(EnumType.STRING)\n");
+            }
+            if (a.encrypted()) {
+                // LGPD: só o cifrado vai ao banco (AES-GCM, WS_DATA_ENCRYPTION_KEY) — mesmo conversor de users.email_enc (Bloco 3)
+                imports.add("jakarta.persistence.Convert");
+                imports.add(INFRA_PKG + ".crypto.AesGcmStringConverter");
+                fields.append("    @Convert(converter = AesGcmStringConverter.class)\n");
             }
             fields.append("    @Column(name = \"").append(a.column()).append('"');
             if (!a.nullable()) {

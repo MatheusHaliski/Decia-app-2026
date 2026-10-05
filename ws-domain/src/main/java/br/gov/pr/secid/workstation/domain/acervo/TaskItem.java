@@ -5,6 +5,7 @@ import br.gov.pr.secid.workstation.domain.catalog.DomainEntity;
 import br.gov.pr.secid.workstation.domain.catalog.OnDelete;
 import br.gov.pr.secid.workstation.domain.catalog.Store;
 import br.gov.pr.secid.workstation.domain.common.AccessClassification;
+import br.gov.pr.secid.workstation.domain.common.DomainRuleException;
 import br.gov.pr.secid.workstation.domain.common.Priority;
 import br.gov.pr.secid.workstation.domain.common.Visibility;
 
@@ -105,8 +106,14 @@ public record TaskItem(
         tags = tags == null ? Set.of() : Set.copyOf(tags);
     }
 
-    /** Transição de estado pela máquina do RF41; quem chama grava o {@link TaskStateLog}. */
+    /**
+     * Transição de estado pela máquina do RF41; quem chama grava o {@link TaskStateLog}. BLOQUEADA nunca passa por aqui: exige causa
+     * (tarefa ou pessoa) e motivo, logo só por {@link #block(UUID, UUID, String)} ({@code 409 TAREFA_BLOQUEIO_SEM_CAUSA}).
+     */
     public TaskItem transition(TaskState to) {
+        if (to == TaskState.BLOQUEADA) {
+            throw new DomainRuleException("TAREFA_BLOQUEIO_SEM_CAUSA", "bloqueio exige blockedByTaskId/blockedByUserId e blockReason: use block(...)");
+        }
         TaskState next = state.transition(to);
         return withState(next, next == TaskState.BLOQUEADA ? blockedByTaskId : null, next == TaskState.BLOQUEADA ? blockedByUserId : null,
                 next == TaskState.BLOQUEADA ? blockReason : null);

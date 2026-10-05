@@ -1,6 +1,8 @@
 package br.gov.pr.secid.workstation.infrastructure.mysql.institutional.entity;
 
+import br.gov.pr.secid.workstation.infrastructure.mysql.crypto.AesGcmStringConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -23,6 +25,7 @@ public class EmpresaProfileExtensionEntity {
     @Column(name = "legal_name", nullable = false)
     private String legalName;
 
+    @Convert(converter = AesGcmStringConverter.class)
     @Column(name = "company_cnpj_enc")
     private String companyCnpjEnc;
 

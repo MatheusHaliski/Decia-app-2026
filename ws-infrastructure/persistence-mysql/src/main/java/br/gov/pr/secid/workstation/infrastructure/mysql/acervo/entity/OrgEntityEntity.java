@@ -3,7 +3,9 @@ package br.gov.pr.secid.workstation.infrastructure.mysql.acervo.entity;
 import br.gov.pr.secid.workstation.domain.acervo.OrgEntityKind;
 import br.gov.pr.secid.workstation.domain.acervo.OrgEntitySource;
 import br.gov.pr.secid.workstation.domain.common.AuditableEntity;
+import br.gov.pr.secid.workstation.infrastructure.mysql.crypto.AesGcmStringConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -21,6 +23,7 @@ public class OrgEntityEntity extends AuditableEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Convert(converter = AesGcmStringConverter.class)
     @Column(name = "cnpj_enc")
     private String cnpjEnc;
 

@@ -3,9 +3,11 @@ package br.gov.pr.secid.workstation.domain.institutional;
 import br.gov.pr.secid.workstation.domain.catalog.Attr;
 import br.gov.pr.secid.workstation.domain.catalog.DomainEntity;
 import br.gov.pr.secid.workstation.domain.catalog.OnDelete;
+import br.gov.pr.secid.workstation.domain.common.DomainRuleException;
 import br.gov.pr.secid.workstation.domain.identity.ProfileType;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -46,17 +48,29 @@ public record ApprovalRequest(
         }
     }
 
-    /** Aplica a decisão do ADMIN; o ADMIN não decide o próprio pedido (403 ACESSO_NEGADO) e motivos são obrigatórios em AJUSTES/RECUSAR. */
+    /**
+     * Aplica a decisão do ADMIN (RF28.CA10/CA16, D-19): o ADMIN não decide o próprio pedido ({@code 403 ACESSO_NEGADO}); APROVAR exige
+     * todo critério obrigatório do {@link ApprovalCriteria checklist} marcado ({@code 409 CRITERIOS_PENDENTES} — checklist ausente também
+     * é pendência); AJUSTES/RECUSAR exigem ≥ 1 motivo em {@code reasonsJson} ({@code 422 VALIDACAO details.reasons}).
+     */
     public ApprovalRequest review(ReviewDecision decision, UUID adminId, String reasons, Instant at) {
         if (adminId.equals(userId)) {
             throw new IllegalStateException("ACESSO_NEGADO: o ADMIN não decide o próprio pedido");
         }
         ApprovalStatus next = status.transition(decision.resultingStatus());
-        if (next.requiresReason() && (reasons == null || reasons.isBlank())) {
-            throw new IllegalArgumentException("VALIDACAO: motivos obrigatórios em " + next);
+        if (next == ApprovalStatus.APROVADO) {
+            ApprovalCriteria criteria = ApprovalCriteria.parse(criteriaJson);
+            if (!criteria.allMandatoryChecked()) {
+                List<String> pending = criteria.items().isEmpty() ? List.of("CHECKLIST_AUSENTE") : criteria.pendingMandatoryCodes();
+                throw new DomainRuleException("CRITERIOS_PENDENTES", "critérios obrigatórios não conferidos: " + pending, pending);
+            }
         }
-        return new ApprovalRequest(id, userId, requestedProfile, evidenceJson, next, policyVersion, criteriaJson, reasons, note, attempts,
-                emailConfirmedAt, submittedAt, dueAt, verificationCode, documentKeysJson, confirmedBy, confirmedAt, adminId, at);
+        if (next.requiresReason() && ApprovalCriteria.countReasons(reasons) < 1) {
+            throw new IllegalArgumentException("VALIDACAO: " + next + " exige pelo menos um motivo em reasonsJson");
+        }
+        return new ApprovalRequest(id, userId, requestedProfile, evidenceJson, next, policyVersion, criteriaJson,
+                next.requiresReason() ? reasons : reasonsJson, note, attempts, emailConfirmedAt, submittedAt, dueAt, verificationCode,
+                documentKeysJson, confirmedBy, confirmedAt, adminId, at);
     }
 
     /** Reenvio pelo titular: volta a PENDENTE e conta uma tentativa; na quinta tentativa esgota. */

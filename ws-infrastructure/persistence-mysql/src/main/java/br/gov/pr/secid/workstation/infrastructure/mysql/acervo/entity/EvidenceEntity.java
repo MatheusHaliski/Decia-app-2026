@@ -2,7 +2,9 @@ package br.gov.pr.secid.workstation.infrastructure.mysql.acervo.entity;
 
 import br.gov.pr.secid.workstation.domain.acervo.StudioStatus;
 import br.gov.pr.secid.workstation.domain.common.AuditableEntity;
+import br.gov.pr.secid.workstation.infrastructure.mysql.crypto.AesGcmStringConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -28,9 +30,11 @@ public class EvidenceEntity extends AuditableEntity {
     @Column(name = "taken_at")
     private Instant takenAt;
 
+    @Convert(converter = AesGcmStringConverter.class)
     @Column(name = "latitude_enc")
     private String latitudeEnc;
 
+    @Convert(converter = AesGcmStringConverter.class)
     @Column(name = "longitude_enc")
     private String longitudeEnc;
 

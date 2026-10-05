@@ -84,9 +84,13 @@ public record ProjectScheme(
         }
     }
 
-    /** Transição pela máquina do RF22; reabrir projeto bloqueado exige justificativa (422 VALIDACAO). */
+    /**
+     * Transição pela máquina do RF22. Só REABRIR um projeto travado (CONCLUIDO/ARQUIVADO → estado editável) exige justificativa
+     * (422 VALIDACAO; vai para ProjectVersion.reason + AuditLog PROJECT_REOPEN, RF22.CA06); CONCLUIDO → ARQUIVADO não reabre nada.
+     */
     public ProjectScheme transition(ProjectStatus to, String justification) {
-        if (status.isLocked() && (justification == null || justification.isBlank())) {
+        boolean reopening = status.isLocked() && to != null && !to.isLocked();
+        if (reopening && (justification == null || justification.isBlank())) {
             throw new IllegalArgumentException("VALIDACAO: reabrir projeto " + status + " exige justificativa");
         }
         ProjectStatus next = status.transition(to);

@@ -2,7 +2,9 @@ package br.gov.pr.secid.workstation.infrastructure.mysql.institutional.entity;
 
 import br.gov.pr.secid.workstation.domain.common.AuditableEntity;
 import br.gov.pr.secid.workstation.domain.institutional.CompanyStatus;
+import br.gov.pr.secid.workstation.infrastructure.mysql.crypto.AesGcmStringConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -28,6 +30,7 @@ public class CompanyEntity extends AuditableEntity {
     @Column(name = "slug", nullable = false)
     private String slug;
 
+    @Convert(converter = AesGcmStringConverter.class)
     @Column(name = "cnpj_enc")
     private String cnpjEnc;
 
