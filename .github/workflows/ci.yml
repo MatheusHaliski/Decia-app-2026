@@ -82,7 +82,9 @@ jobs:
         run: |
           curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
             | tar -xz gitleaks
-          ./gitleaks git --redact --no-banner --exit-code 1 .
+          # Histórico inteiro DESTA branch (HEAD). Sem --log-opts o gitleaks usa --all e passa a julgar o PR por
+          # commits de outras branches do remoto (fetch-depth 0 traz todas), que não são deste PR.
+          ./gitleaks git --redact --no-banner --exit-code 1 --log-opts="HEAD" .
 
   commits:
     name: Conventional Commits (commitlint)
