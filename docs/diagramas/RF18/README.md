@@ -1,28 +1,28 @@
 # RF18 — Interagir socialmente com tarefas e projetos: curtir, comentar, salvar, compartilhar, remixar, retornar e atribuir
-**HU:** HU18 · **Sprint (board Work Station):** a confirmar (card renomeado em 2026-10-02; origem `_anterior/RF26` = Sprint 4) · **Equivalente FAI:** RF19 Interações sociais (alvo polimórfico) — **retornar** e **atribuir** não existem no FAI · **Aba/rota:** ações inline em todo card de tarefa/projeto (Acervo, Projetos, Mural, Buscar, perfil de terceiros) · **API:** `/api/interactions/{type}/{id}/reactions|comments|saves|shares|remixes|counters` (RF19) + `/api/interactions/{type}/{id}/returns` e `/api/interactions/{type}/{id}/assignments` (novas)
-**Critérios de aceite cobertos:** RF18.CA01 … RF18.CA06 — corpo do card vazio: CA01–CA02 remetem aos RF26.CA01–09 citados no card RF19; CA03–CA06 modelam as duas interações novas ("retornar" e "atribuir", esta última = RF10); todos marcados "(CA a confirmar)"
+**HU:** HU18 · **Sprint (board Work Station):** a confirmar (card renomeado em 2026-10-02; origem `_anterior/RF26` = Sprint 4) · **Equivalente FAI:** RF19 Interações sociais (alvo polimórfico) — **retornar** e **atribuir** não existem no FAI · **Aba/rota:** ações inline em todo card de tarefa/projeto (Acervo, Projetos, Mural, Buscar, perfil de terceiros, Mesa) · **API:** `/api/interactions/{type}/{id}/reactions|comments|saves|shares|remixes|counters` (RF19) + `POST /api/assignments` (origem `BOTAO_ESQUEMA`), `POST /api/assignments/{id}/accept|refuse|give-back` (TAXONOMIA §12b, compartilhada com RF10 e RF46)
+**Critérios de aceite cobertos:** RF18.CA01 … RF18.CA06 — corpo do card vazio: CA01–CA02 remetem aos RF26.CA01–09 citados no card RF19; CA03–CA06 modelam as duas interações novas ("atribuir" = RF10/RF46.CA03–CA05 pelo botão do esquema; "retornar" = `Assignment` → DEVOLVIDA com motivo); todos marcados "(CA a confirmar)"
 
 > **HU18** — COMO usuário visualizando um esquema de tarefa ou projeto POSSO utilizar as funcionalidades de rede social do sistema PARA interagir com usuários conectados ou membros de minha equipe, a fim de aumentar minha produtividade e gerar networking.
 
-O RF18 é a **barra de interações** de todo card de **tarefa** (`TaskItem`) e **projeto** (`ProjectScheme`). As seis interações sociais clássicas (curtir/reagir, comentar, salvar, compartilhar, remixar) são as do antigo RF26, agora detalhadas no card **RF19** (RF26.CA01–09) e **não são repetidas aqui**: este README as referencia e modela as **duas interações novas**, que mudam o fluxo de trabalho e não apenas a reputação:
+O RF18 é a **barra de interações** de todo card de **tarefa** (`TaskItem`) e **projeto** (`ProjectScheme`). As seis interações sociais clássicas (curtir/reagir, comentar, salvar, compartilhar, remixar) são as do antigo RF26, detalhadas no card **RF19** (RF26.CA01–09) e **não repetidas aqui**. Este README modela as **duas interações novas**, que mudam o fluxo de trabalho e não só a reputação, usando a entidade única **`Assignment`** (TAXONOMIA §12b, *proposta*; mesma entidade de RF10 "chefe atribui" e RF46 "atribuir pelo chat"):
 
-- **Retornar** — quem recebeu uma tarefa/projeto (por atribuição RF10, por compartilhamento em sessão DECIA ou por "Levar ao meu acervo") **devolve ao autor com motivo** (≥ 20 caracteres). Entidade nova **`TaskReturn` (proposta)**: `id · actorId · targetType (TASK · PROJECT) · targetId · recipientId (autor/dono) · assignmentId (opcional) · reason · status (ABERTA · ACEITA · RECUSADA · RESOLVIDA) · at · resolvedAt · resolutionNote`. Efeito no alvo: projeto → `ProjectStatus.DEVOLVIDO` (já existe, com carimbo DEVOLVIDO + motivo); tarefa → **`TaskState.DEVOLVIDA` (proposta de novo valor; alternativa: `BLOQUEADA` com `blockReason` e `blockedByUserId`)** + `TaskStateLog`.
-- **Atribuir** — o **CHEFE** (`Department.headUserId`) atribui tarefa ou projeto a um **membro do departamento** com prazo (ver RF10 / `ABAS_POR_PERFIL.md` §7.b). Entidade nova **`Assignment` (proposta)**: `id · assignerId · assigneeId · targetType (TASK · PROJECT · PROJECT_TASK) · targetId · dueAt · note · status (PENDENTE · ACEITA · RECUSADA · DEVOLVIDA · CONCLUIDA) · refusalReason · at · respondedAt`. Efeito: `TaskItem.responsibleId` / `ProjectTask.responsibleId` = atribuído, `TaskStateLog`, `Notification` e entrada no índice de prioridade da Tarefa do Dia (RF44). O atribuído **aceita ou recusa com motivo**; **DELEGUEI** (RF44) é o caminho inverso.
+- **Atribuir** — pelo botão do card (`AssignmentOrigin.BOTAO_ESQUEMA`) qualquer usuário **propõe** uma tarefa/projeto a um colega **da mesma empresa**, com prazo e nota (`Assignment` PROPOSTA, `fromUserId`, `toUserId`, `dueAt`, `message`, `previousResponsibleId`); o CHEFE atribuindo a membro do seu departamento (origem `MINHA_EQUIPE`, RF10) segue o mesmo caminho com `requireDeptHead`. O destinatário **aceita** (ACEITA → `TaskItem.responsibleId` / `ProjectTask.responsibleId`, `TaskStateLog`, Tarefa do Dia RF44) ou **recusa com motivo** (RECUSADA).
+- **Retornar** — quem **aceitou** uma atribuição **devolve ao remetente com motivo** (`AssignmentService.giveBack` → `Assignment` DEVOLVIDA, `reason` obrigatório, `responsibleId` restaurado para `previousResponsibleId`, `TaskStateLog`, `Notification ATRIBUICAO_DEVOLVIDA`). Para **projeto** devolvido o card do remetente mostra o carimbo DEVOLVIDO com motivo (design system *Stamp*); `ProjectStatus.DEVOLVIDO` continua reservado à revisão de decisão (RF15/RF29) — **dúvida Q-53**. Retornar um item **sem** `Assignment` ACEITA (ex.: tarefa só compartilhada em sessão ou levada ao acervo) responde `404 SEM_ATRIBUICAO` nesta versão (a confirmar).
 
 | CA | Enunciado (Dado / Quando / Então) |
 |---|---|
 | **RF18.CA01** (CA a confirmar) | Dado um card de tarefa ou projeto visível para mim, quando abro a barra de interações, então posso **curtir/reagir, comentar, salvar, compartilhar e remixar** exatamente como nos RF26.CA01–CA07 (citados no card RF19), com contadores em tempo quase real. |
 | **RF18.CA02** (CA a confirmar) | Dado qualquer interação, quando é enviada, então respeita a visibilidade do alvo (RF26.CA08: PRIVADA só dono, DEPARTAMENTO só membros, EMPRESA só mesma empresa → `403 ACESSO_NEGADO`) e gera notificação agrupada por hora ao dono (RF26.CA09). |
-| **RF18.CA03** (CA a confirmar) | Dado que recebi uma tarefa/projeto (atribuído a mim, compartilhado em sessão ou levado ao meu acervo), quando clico **Retornar** e informo o motivo (≥ 20 caracteres), então nasce `TaskReturn` ABERTA, o alvo muda para DEVOLVIDO (projeto) / DEVOLVIDA (tarefa, proposta) com `TaskStateLog`, a `Assignment` ligada vai a DEVOLVIDA, e o autor recebe `Notification` com o motivo; motivo curto → `422 MOTIVO_OBRIGATORIO`; alvo que não me foi entregue → `403 ACESSO_NEGADO`; retorno já aberto → `409 RETORNO_PENDENTE`. |
-| **RF18.CA04** (CA a confirmar) | Dado um `TaskReturn` ABERTA, quando o autor aceita (corrige e reenvia) ou recusa com nota, então o retorno vai a ACEITA/RECUSADA e o alvo volta a DISPONIVEL/EM_USO (tarefa) ou ao status anterior (projeto); o card do autor mostra o carimbo DEVOLVIDO com motivo enquanto ABERTA (design system *Stamp*). |
-| **RF18.CA05** (CA a confirmar) | Dado um CHEFE de departamento, quando clica **Atribuir** em uma tarefa/projeto e escolhe um membro do seu departamento e um prazo, então nasce `Assignment` PENDENTE, `responsibleId` passa ao atribuído, `TaskStateLog` registra, o atribuído recebe `Notification` e a atribuição entra no índice de prioridade da Tarefa do Dia dele (RF44); ator não CHEFE ou pessoa fora do departamento → `403 ACESSO_NEGADO`; tarefa ARQUIVADA/CONCLUIDA → `409 ESTADO_INVALIDO`. |
-| **RF18.CA06** (CA a confirmar) | Dado uma `Assignment` PENDENTE, quando o atribuído aceita ou recusa com motivo, então ela vai a ACEITA (prazo fixado, tarefa EM_USO se estava DISPONIVEL) ou RECUSADA (`responsibleId` volta ao anterior, chefe notificado); a recusa sem motivo é `422 MOTIVO_OBRIGATORIO`; toda atribuição e retorno ficam em `AuditLog` e aparecem no histórico do card. |
+| **RF18.CA03** (CA a confirmar) | Dado um usuário que vê a tarefa/projeto, quando clica **Atribuir**, escolhe um colega **da mesma empresa**, prazo e nota, então nasce `Assignment` PROPOSTA (`origin BOTAO_ESQUEMA`, `previousResponsibleId` = responsável atual), com `AuditLog ASSIGNMENT_CREATED` e `Notification ATRIBUICAO_PROPOSTA` ao destinatário; se o ator é CHEFE e o destinatário membro do seu departamento a origem é `MINHA_EQUIPE` (RF10); colega de outra empresa → `403 EMPRESA_DIFERENTE`; alvo que o ator não pode ver → `403 ACESSO_NEGADO`; tarefa ARQUIVADA/CONCLUIDA ou projeto CONCLUIDO/ARQUIVADO → `409 ESTADO_INVALIDO`; já existe PROPOSTA/ACEITA para o mesmo alvo e destinatário → `409 ATRIBUICAO_DUPLICADA`. |
+| **RF18.CA04** (CA a confirmar) | Dado uma `Assignment` PROPOSTA para mim, quando **aceito**, então ela vai a ACEITA, `TaskItem.responsibleId` / `ProjectTask.responsibleId` passam a mim, `TaskStateLog` registra (DISPONIVEL → EM_USO se era DISPONIVEL), a atribuição entra no índice de prioridade da minha Tarefa do Dia (RF44) e o remetente recebe `ATRIBUICAO_ACEITA`; quando **recuso**, informo motivo (`reason`, sem ele `422 MOTIVO_OBRIGATORIO`) e ela vai a RECUSADA com `ATRIBUICAO_RECUSADA`; só o destinatário responde (`403 ACESSO_NEGADO`) e resposta repetida é `409 ATRIBUICAO_JA_RESPONDIDA`. |
+| **RF18.CA05** (CA a confirmar) | Dado uma `Assignment` ACEITA minha, quando clico **Retornar** e informo o motivo (≥ 20 caracteres), então ela vai a DEVOLVIDA, `responsibleId` volta a `previousResponsibleId`, `TaskStateLog` registra com o motivo, `AuditLog ASSIGNMENT_RESPONDED` grava e o remetente recebe `ATRIBUICAO_DEVOLVIDA`; o card do remetente mostra carimbo DEVOLVIDO + motivo até ele reatribuir ou retomar; sem `Assignment` ACEITA para mim → `404 SEM_ATRIBUICAO`; motivo curto → `422 MOTIVO_OBRIGATORIO`. |
+| **RF18.CA06** (CA a confirmar) | Dado o card, quando o abro, então vejo o histórico de atribuições e retornos (`Assignment` por alvo, com quem, quando, status e motivo) ao lado dos contadores sociais; o perfil do destinatário (RF16) mostra a etiqueta "atribuída por …" nos itens visíveis; DELEGUEI da Tarefa do Dia (RF44) cria uma nova `Assignment` PROPOSTA (caminho inverso) — regras completas em RF46.CA03–CA05. |
 
 | Interação | Entidade | Quem pode | Efeito no alvo | Notificação |
 |---|---|---|---|---|
 | Curtir · reagir · comentar · salvar · compartilhar · remixar | `Reaction`, `Comment`, `SavedItem`, `Share`, `Remix` | qualquer usuário com visibilidade (RF26.CA08) | contadores desnormalizados | `REACAO`, `COMENTARIO`, `MENCAO`, `REMIX` (RF26.CA09) |
-| **Retornar** | `TaskReturn` (proposta) | quem recebeu o item (atribuído, membro da sessão, quem levou ao acervo) | projeto → DEVOLVIDO · tarefa → DEVOLVIDA (proposta) · `Assignment` → DEVOLVIDA | `ITEM_DEVOLVIDO` (proposta de novo `NotificationType`) |
-| **Atribuir** | `Assignment` (proposta) | CHEFE do departamento (RF10) | `responsibleId` = atribuído · DISPONIVEL → EM_USO ao aceitar | `ATRIBUICAO` (proposta de novo `NotificationType`) · prioridade na Tarefa do Dia (RF44) |
+| **Atribuir** (propor) | `Assignment` PROPOSTA, origem `BOTAO_ESQUEMA` (ou `MINHA_EQUIPE` se CHEFE → membro, RF10) | quem vê o alvo, a colega da mesma empresa | ao aceitar: `responsibleId` = destinatário · DISPONIVEL → EM_USO | `ATRIBUICAO_PROPOSTA` → `ATRIBUICAO_ACEITA` / `ATRIBUICAO_RECUSADA` · prioridade na Tarefa do Dia (RF44) |
+| **Retornar** (devolver) | `Assignment` ACEITA → DEVOLVIDA, `reason` obrigatório | só o destinatário (`toUserId`) de uma atribuição ACEITA | `responsibleId` = `previousResponsibleId` · `TaskStateLog` · carimbo DEVOLVIDO no card do remetente | `ATRIBUICAO_DEVOLVIDA` |
 
 ## 1. Diagrama de classes
 
@@ -67,34 +67,6 @@ namespace ws_domain_social {
     +sourceId: UUID
     +resultId: UUID
   }
-  class TaskReturn {
-    <<entity>>
-    +id: UUID
-    +actorId: UUID
-    +targetType: TargetType TASK PROJECT
-    +targetId: UUID
-    +recipientId: UUID autor ou dono
-    +assignmentId: UUID opcional
-    +reason: String min 20
-    +status: ReturnStatus
-    +at: Instant
-    +resolvedAt: Instant
-    +resolutionNote: String
-  }
-  class Assignment {
-    <<entity>>
-    +id: UUID
-    +assignerId: UUID chefe
-    +assigneeId: UUID membro do departamento
-    +targetType: TargetType TASK PROJECT PROJECT_TASK
-    +targetId: UUID
-    +dueAt: LocalDate
-    +note: String
-    +status: AssignmentStatus
-    +refusalReason: String
-    +at: Instant
-    +respondedAt: Instant
-  }
   class Notification {
     <<entity>>
     +recipientId: UUID
@@ -108,6 +80,31 @@ namespace ws_domain_social {
   }
 }
 
+namespace ws_domain_mensageria_atribuicao {
+  class Assignment {
+    <<entity>>
+    +id: UUID
+    +targetType: AssignmentTargetType
+    +targetId: UUID
+    +fromUserId: UUID quem atribui
+    +toUserId: UUID destinatário
+    +origin: AssignmentOrigin
+    +status: AssignmentStatus
+    +dueAt: LocalDate
+    +message: String nota
+    +reason: String obrigatório em RECUSADA e DEVOLVIDA
+    +previousResponsibleId: UUID
+    +traceNodeId: UUID quando CHAT_DECIA
+    +respondedAt: Instant
+  }
+  class DirectMessage {
+    <<entity>>
+    +conversationId: UUID
+    +authorId: UUID
+    +assignmentId: UUID mensagem de sistema RF46
+  }
+}
+
 namespace ws_domain_alvos {
   class TaskItem {
     <<entity>>
@@ -116,8 +113,6 @@ namespace ws_domain_alvos {
     +departmentId: UUID
     +responsibleId: UUID
     +state: TaskState
-    +blockedByUserId: UUID
-    +blockReason: String
     +visibility: Visibility
     +dueAt: LocalDate
     +likesCount: long
@@ -153,10 +148,16 @@ namespace ws_domain_alvos {
     +reason: String
     +correlationId: String
   }
+  class User {
+    <<entity>>
+    +id: UUID
+    +companyId: UUID mesma empresa
+    +profileType: ProfileType
+  }
   class Department {
     <<entity>>
     +id: UUID
-    +headUserId: UUID chefe atribui
+    +headUserId: UUID chefe → MINHA_EQUIPE
   }
   class DepartmentMembership {
     <<entity>>
@@ -168,14 +169,14 @@ namespace ws_domain_alvos {
     <<entity>>
     +userId: UUID
     +taskDate: LocalDate
-    +priorityIndexJson: JSON inclui atribuída pelo chefe
-    +feedback: DailyFeedback
+    +priorityIndexJson: JSON inclui atribuída
+    +feedback: DailyFeedback DELEGUEI
     +delegatedToUserId: UUID
   }
   class AuditLog {
     <<entity>>
     +actorId: UUID
-    +action: String ITEM_RETURNED ITEM_ASSIGNED
+    +action: String ASSIGNMENT_CREATED ASSIGNMENT_RESPONDED
     +resourceType: String
     +resourceId: UUID
   }
@@ -192,20 +193,35 @@ namespace ws_domain_enums {
     MESSAGE
     RECOGNITION
   }
-  class ReturnStatus {
+  class AssignmentTargetType {
     <<enum>>
-    ABERTA
-    ACEITA
-    RECUSADA
-    RESOLVIDA
+    TASK
+    PROJECT
+  }
+  class AssignmentOrigin {
+    <<enum>>
+    CHAT_WS
+    CHAT_DECIA
+    BOTAO_ESQUEMA
+    MINHA_EQUIPE
   }
   class AssignmentStatus {
     <<enum>>
-    PENDENTE
+    PROPOSTA
     ACEITA
     RECUSADA
     DEVOLVIDA
-    CONCLUIDA
+  }
+  class NotificationType {
+    <<enum>>
+    REACAO
+    COMENTARIO
+    MENCAO
+    REMIX
+    ATRIBUICAO_PROPOSTA
+    ATRIBUICAO_ACEITA
+    ATRIBUICAO_RECUSADA
+    ATRIBUICAO_DEVOLVIDA
   }
   class TaskState {
     <<enum>>
@@ -217,18 +233,6 @@ namespace ws_domain_enums {
     ARQUIVADA
     MODELO_PUBLICO
     OFERECIDA
-    DEVOLVIDA proposta
-  }
-  class ProjectStatus {
-    <<enum>>
-    RASCUNHO
-    PUBLICADO
-    EM_DECISAO
-    APROVADO
-    EM_EXECUCAO
-    CONCLUIDO
-    ARQUIVADO
-    DEVOLVIDO
   }
 }
 
@@ -239,21 +243,23 @@ namespace ws_application {
     +counters(type, id) Counters
     -checkVisibility(actor, target) 403 ACESSO_NEGADO
   }
-  class ReturnService {
-    <<service>>
-    +returnItem(actorId, type, id, reason) TaskReturn
-    +accept(ownerId, returnId, note) TaskReturn
-    +refuse(ownerId, returnId, note) TaskReturn
-    -requireRecipient(actor, target) atribuído, membro da sessão ou quem levou ao acervo
-    -applyTargetState(target) DEVOLVIDO ou DEVOLVIDA
-  }
   class AssignmentService {
     <<service>>
-    +assign(chefeId, type, id, assigneeId, dueAt, note) Assignment
-    +accept(assigneeId, assignmentId) Assignment
-    +refuse(assigneeId, assignmentId, reason) Assignment
-    -requireDeptHead(actor, target) 403
-    -requireDeptMember(assignee, departmentId) 403
+    +propose(fromUserId, target, toUserId, dueAt, message, origin) Assignment
+    +accept(toUserId, assignmentId) Assignment
+    +refuse(toUserId, assignmentId, reason) Assignment
+    +giveBack(toUserId, assignmentId, reason) Assignment retornar
+    +historyForTarget(viewer, target) List~Assignment~
+    -requireAssignee(actor, assignment) 403 ACESSO_NEGADO
+    -requireOpen(assignment) 409 ATRIBUICAO_JA_RESPONDIDA
+    -requireUnique(target, toUserId) 409 ATRIBUICAO_DUPLICADA
+    -applyResponsible(assignment) TaskItem ou ProjectTask
+  }
+  class AccessPolicy {
+    <<service>>
+    +canView(actor, target) boolean
+    +requireSameCompany(a, b) 403 EMPRESA_DIFERENTE
+    +isDeptHeadOf(actor, toUserId) boolean origem MINHA_EQUIPE
   }
   class TaskStateMachine {
     <<service>>
@@ -266,7 +272,7 @@ namespace ws_application {
   }
   class DailyTaskService {
     <<service>>
-    +onAssigned(assigneeId, taskId, dueAt) prioridade atribuída pelo chefe
+    +onAssignmentAccepted(toUserId, taskId, dueAt) prioridade atribuída
   }
   class CounterCachePort {
     <<port>>
@@ -280,12 +286,15 @@ namespace ws_web {
     <<controller>>
     +POST_api_interactions_type_id_reactions_comments_saves_shares_remixes()
     +GET_api_interactions_type_id_counters()
-    +POST_api_interactions_type_id_returns(reason)
-    +POST_api_interactions_returns_returnId_accept(note)
-    +POST_api_interactions_returns_returnId_refuse(note)
-    +POST_api_interactions_type_id_assignments(assigneeId, dueAt, note)
-    +POST_api_interactions_assignments_assignmentId_accept()
-    +POST_api_interactions_assignments_assignmentId_refuse(reason)
+    +GET_api_interactions_type_id_assignments() histórico do card
+  }
+  class AssignmentController {
+    <<controller>>
+    +POST_api_assignments(targetType, targetId, toUserId, dueAt, message, origin)
+    +POST_api_assignments_id_accept()
+    +POST_api_assignments_id_refuse(reason)
+    +POST_api_assignments_id_give_back(reason)
+    +GET_api_assignments_me(status)
   }
 }
 
@@ -296,7 +305,7 @@ namespace ws_infrastructure {
   class CassandraNotificationAdapter {
     <<adapter>>
   }
-  class MySqlSocialAdapter {
+  class MySqlAssignmentAdapter {
     <<adapter>>
   }
 }
@@ -306,31 +315,27 @@ Comment --> TargetType
 SavedItem --> TargetType
 Share --> TargetType
 Remix --> TargetType
-TaskReturn --> TargetType
-TaskReturn --> ReturnStatus
-TaskReturn "*" --> "0..1" Assignment : assignmentId
-TaskReturn ..> TaskItem : targetId quando TASK → DEVOLVIDA
-TaskReturn ..> ProjectScheme : targetId quando PROJECT → DEVOLVIDO
-Assignment --> TargetType
+Assignment --> AssignmentTargetType
+Assignment --> AssignmentOrigin
 Assignment --> AssignmentStatus
-Assignment ..> TaskItem : responsibleId = assigneeId
-Assignment ..> ProjectTask : responsibleId quando PROJECT_TASK
-Assignment "*" --> "1" Department : assigner = headUserId
-Assignment ..> DepartmentMembership : assignee membro vigente
-Assignment ..> DailyTask : entra no priorityIndexJson
+Assignment "*" --> "1" User : fromUserId
+Assignment "*" --> "1" User : toUserId mesma empresa
+Assignment ..> TaskItem : targetId quando TASK → responsibleId
+Assignment ..> ProjectScheme : targetId quando PROJECT
+Assignment ..> ProjectTask : responsibleId das tarefas do projeto
+Assignment ..> Department : MINHA_EQUIPE exige headUserId
+Assignment ..> DepartmentMembership : destinatário membro vigente RF10
+Assignment ..> DailyTask : ACEITA entra no priorityIndexJson
+Assignment "1" --> "*" TaskStateLog : ACEITA e DEVOLVIDA
+Assignment "1" --> "0..1" DirectMessage : mensagem de sistema RF46
 TaskItem --> TaskState
-ProjectScheme --> ProjectStatus
-TaskItem "1" --> "*" TaskStateLog
-Notification ..> TaskReturn : ITEM_DEVOLVIDO proposta
-Notification ..> Assignment : ATRIBUICAO proposta
+Notification --> NotificationType
+Notification ..> Assignment : ATRIBUICAO_*
 
 InteractionController ..> SocialService
-InteractionController ..> ReturnService
-InteractionController ..> AssignmentService
-ReturnService ..> TaskStateMachine
-ReturnService ..> AssignmentService : marca Assignment DEVOLVIDA
-ReturnService ..> NotificationService : AFTER_COMMIT
-ReturnService ..> AuditLog
+InteractionController ..> AssignmentService : historyForTarget
+AssignmentController ..> AssignmentService
+AssignmentService ..> AccessPolicy
 AssignmentService ..> TaskStateMachine
 AssignmentService ..> NotificationService : AFTER_COMMIT
 AssignmentService ..> DailyTaskService : AFTER_COMMIT
@@ -338,102 +343,102 @@ AssignmentService ..> AuditLog
 SocialService ..> CounterCachePort
 RedisCounterAdapter ..|> CounterCachePort
 CassandraNotificationAdapter ..> Notification : notifications_by_user TTL
-MySqlSocialAdapter ..> TaskReturn : task_returns proposta
-MySqlSocialAdapter ..> Assignment : assignments proposta
+MySqlAssignmentAdapter ..> Assignment : assignments
 
-note for TaskReturn "tabela task_returns (proposta) · reason min 20 · 1 ABERTA por alvo e ator (409 RETORNO_PENDENTE) · projeto → DEVOLVIDO, tarefa → DEVOLVIDA proposta (CA03, CA04)"
-note for Assignment "tabela assignments (proposta) · só Department.headUserId atribui a membro vigente (CA05) · aceitar fixa prazo e põe EM_USO, recusar exige motivo (CA06)"
+note for Assignment "TAXONOMIA 12b.4 (proposta) · tabela assignments · entidade única de RF10, RF18/RF19 e RF46 · PROPOSTA → ACEITA | RECUSADA, ACEITA → DEVOLVIDA (retornar) · reason obrigatório em RECUSADA e DEVOLVIDA (CA03–CA05)"
+note for AssignmentService "propose: canView + requireSameCompany + requireUnique, origem BOTAO_ESQUEMA ou MINHA_EQUIPE se chefe → membro (CA03) · giveBack restaura previousResponsibleId (CA05)"
 note for SocialService "seis interações clássicas detalhadas no RF19 (RF26.CA01–09) — aqui só referenciadas (CA01, CA02)"
-note for TaskState "DEVOLVIDA é proposta de novo valor; alternativa sem mudar o enum: BLOQUEADA + blockedByUserId + blockReason"
+note for TaskItem "retornar não cria estado novo em TaskState: o responsável volta ao anterior e o card do remetente ganha carimbo DEVOLVIDO (Q-53)"
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph LU["Usuário (ator) · Autor/dono · Chefe · Atribuído"]
+  subgraph LU["Usuário (ator) · Destinatário · Remetente"]
     U1["Abre a barra de interações de uma tarefa ou projeto"]
     U2["Escolhe: curtir, reagir, comentar, salvar, compartilhar, remixar"]
-    U3["Clica Retornar e escreve o motivo"]
-    U4["Autor aceita (corrige e reenvia) ou recusa o retorno com nota"]
-    U5["Chefe clica Atribuir, escolhe membro e prazo"]
-    U6["Atribuído aceita ou recusa com motivo"]
+    U3["Clica Atribuir, escolhe colega, prazo e nota"]
+    U4["Destinatário aceita ou recusa com motivo"]
+    U5["Destinatário clica Retornar e escreve o motivo"]
+    U6["Remetente abre o card: carimbo DEVOLVIDO + motivo, reatribui ou retoma"]
   end
 
   subgraph LW["Web / BFF (Next.js App Router)"]
-    W1["InteractionBar com contadores otimistas"]
-    W2["Modal Retornar: motivo min 20 caracteres"]
-    W3["Card do autor com carimbo DEVOLVIDO + motivo"]
-    W4["Modal Atribuir: pessoa (membros do departamento), prazo, nota"]
-    W5["Card do atribuído com etiqueta Atribuída por chefe · prazo; botões Aceitar / Recusar"]
-    W6["Mensagem de erro específica (i18n)"]
+    W1["InteractionBar com contadores otimistas + histórico de atribuições do card"]
+    W2["AssignModal: colegas da mesma empresa (membros do departamento se CHEFE), prazo, nota"]
+    W3["Card do destinatário: etiqueta Atribuída por · prazo; botões Aceitar / Recusar; depois Retornar"]
+    W4["ReturnModal: motivo min 20 caracteres"]
+    W5["Mensagem de erro específica (i18n)"]
   end
 
   subgraph LA["ws-application"]
     A1["SocialService.checkVisibility → ações RF26.CA01–09 (ver RF19)"]
-    A2["ReturnService.returnItem"]
-    A3{"ator recebeu o item? atribuído, membro da sessão ou levou ao acervo"}
+    A2["AssignmentService.propose"]
+    A3{"AccessPolicy.canView(ator, alvo)?"}
     A4["403 ACESSO_NEGADO"]
-    A5{"reason ≥ 20 caracteres?"}
-    A6["422 MOTIVO_OBRIGATORIO"]
-    A7{"já existe TaskReturn ABERTA para o alvo?"}
-    A8["409 RETORNO_PENDENTE"]
-    A9["INSERT TaskReturn ABERTA; projeto → DEVOLVIDO ou tarefa → DEVOLVIDA via TaskStateMachine + TaskStateLog; Assignment ligada → DEVOLVIDA; AuditLog ITEM_RETURNED"]
-    A10["ReturnService.accept / refuse → status ACEITA ou RECUSADA; alvo volta a DISPONIVEL/EM_USO ou status anterior"]
-    A11["AssignmentService.assign"]
-    A12{"ator é Department.headUserId do alvo?"}
-    A13{"assignee tem DepartmentMembership vigente no departamento?"}
-    A14{"alvo ARQUIVADA, CONCLUIDA ou ARQUIVADO?"}
-    A15["409 ESTADO_INVALIDO"]
-    A16["INSERT Assignment PENDENTE; responsibleId = assignee; TaskStateLog; AuditLog ITEM_ASSIGNED"]
-    A17["AssignmentService.accept → ACEITA; DISPONIVEL → EM_USO; dueAt fixado"]
-    A18{"recusa com motivo?"}
-    A19["AssignmentService.refuse → RECUSADA; responsibleId volta ao anterior"]
-    A20["AFTER_COMMIT: NotificationService ITEM_DEVOLVIDO / ATRIBUICAO (propostas) · DailyTaskService.onAssigned"]
+    A5{"destinatário da mesma empresa?"}
+    A6["403 EMPRESA_DIFERENTE"]
+    A7{"alvo ARQUIVADA/CONCLUIDA ou CONCLUIDO/ARQUIVADO?"}
+    A8["409 ESTADO_INVALIDO"]
+    A9{"já existe PROPOSTA ou ACEITA para alvo + destinatário?"}
+    A10["409 ATRIBUICAO_DUPLICADA"]
+    A11["origin = MINHA_EQUIPE se ator é headUserId do departamento do destinatário, senão BOTAO_ESQUEMA"]
+    A12["INSERT Assignment PROPOSTA (previousResponsibleId = responsável atual); AuditLog ASSIGNMENT_CREATED"]
+    A13{"ator é o toUserId e status PROPOSTA?"}
+    A14["403 ACESSO_NEGADO ou 409 ATRIBUICAO_JA_RESPONDIDA"]
+    A15["accept → ACEITA; applyResponsible: TaskItem/ProjectTask.responsibleId = toUserId; TaskStateMachine DISPONIVEL → EM_USO; TaskStateLog"]
+    A16{"motivo informado?"}
+    A17["422 MOTIVO_OBRIGATORIO"]
+    A18["refuse → RECUSADA com reason"]
+    A19["AssignmentService.giveBack"]
+    A20{"existe Assignment ACEITA com toUserId = ator para o alvo?"}
+    A21["404 SEM_ATRIBUICAO"]
+    A22["giveBack → DEVOLVIDA com reason; responsibleId = previousResponsibleId; TaskStateLog com motivo; AuditLog ASSIGNMENT_RESPONDED"]
+    A23["AFTER_COMMIT: NotificationService ATRIBUICAO_PROPOSTA / ACEITA / RECUSADA / DEVOLVIDA · DailyTaskService.onAssignmentAccepted"]
   end
 
   subgraph LI["IA (AiEngine)"]
-    I1["Sem inferência direta — a atribuição entra no índice de prioridade da Tarefa do Dia (RF44, PriorityIndexCalculator determinístico)"]
+    I1["Sem inferência direta — a atribuição ACEITA entra no PriorityIndexCalculator determinístico da Tarefa do Dia (RF44)"]
   end
 
   subgraph LP["Persistência"]
     P1[("MySQL: reactions, comments, saved_items, shares, remixes · Redis counters")]
-    P2[("MySQL: task_returns (proposta), tasks, project_schemes, task_state_log, audit_log")]
-    P3[("MySQL: assignments (proposta), tasks.responsibleId, project_tasks.responsibleId, task_state_log, audit_log")]
-    P4[("Cassandra: notifications_by_user · MySQL: daily_tasks priorityIndexJson")]
+    P2[("MySQL: assignments, tasks.responsibleId, project_tasks.responsibleId, task_state_log, audit_log")]
+    P3[("Cassandra: notifications_by_user · MySQL: daily_tasks priorityIndexJson")]
   end
 
   U1 --> W1
   W1 --> U2 --> A1 --> P1
   W1 --> U3 --> W2 --> A2 --> A3
-  A3 -->|"não"| A4 --> W6
+  A3 -->|"não"| A4 --> W5
   A3 -->|"sim"| A5
-  A5 -->|"não"| A6 --> W6
+  A5 -->|"não"| A6 --> W5
   A5 -->|"sim"| A7
-  A7 -->|"sim"| A8 --> W6
-  A7 -->|"não"| A9 --> P2
-  A9 --> A20
-  A9 --> W3 --> U4 --> A10 --> P2
-  W1 --> U5 --> W4 --> A11 --> A12
-  A12 -->|"não"| A4
-  A12 -->|"sim"| A13
-  A13 -->|"não"| A4
-  A13 -->|"sim"| A14
-  A14 -->|"sim"| A15 --> W6
-  A14 -->|"não"| A16 --> P3
-  A16 --> A20
-  A16 --> W5 --> U6
-  U6 -->|"aceitar"| A17 --> P3
-  U6 -->|"recusar"| A18
-  A18 -->|"não"| A6
-  A18 -->|"sim"| A19 --> P3
-  A17 --> A20
-  A19 --> A20
-  A20 --> P4
-  A20 -.-> I1
+  A7 -->|"sim"| A8 --> W5
+  A7 -->|"não"| A9
+  A9 -->|"sim"| A10 --> W5
+  A9 -->|"não"| A11 --> A12 --> P2
+  A12 --> A23
+  A12 --> W3 --> U4 --> A13
+  A13 -->|"não"| A14 --> W5
+  A13 -->|"sim, aceitar"| A15 --> P2
+  A13 -->|"sim, recusar"| A16
+  A16 -->|"não"| A17 --> W5
+  A16 -->|"sim"| A18 --> P2
+  A15 --> A23
+  A18 --> A23
+  W3 --> U5 --> W4 --> A19 --> A20
+  A20 -->|"não"| A21 --> W5
+  A20 -->|"sim"| A16
+  A16 -->|"sim, retornar"| A22 --> P2
+  A22 --> A23
+  A22 --> U6 --> U3
+  A23 --> P3
+  A23 -.-> I1
 
   classDef err fill:#ffe3e3,stroke:#c0392b,color:#5a1a12
-  class A4,A6,A8,A15,W6 err
+  class A4,A6,A8,A10,A14,A17,A21,W5 err
 ```
 
 ## 3. Diagrama de sequência
@@ -441,9 +446,8 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário (atribuído)
-  actor CH as Chefe do departamento
-  actor O as Autor/dono
+  actor U as Usuário (remetente)
+  actor M as Maria (destinatária)
   participant NX as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
@@ -460,113 +464,108 @@ sequenceDiagram
   S->>R: INCR counters:TASK:T3:likes
   S-->>C: 200 {liked, likesCount}
 
-  CH->>NX: Atribuir T3 a Maria com prazo 30/10 (CA05)
-  NX->>C: POST /api/interactions/TASK/T3/assignments {assigneeId maria, dueAt 2026-10-30, note}
-  C->>S: AssignmentService.assign(chefeId, TASK, T3, maria, dueAt, note)
-  S->>DB: tasks T3 (departmentId, state, responsibleId) + departments.headUserId + department_memberships de maria
-  alt ator não é headUserId do departamento ou maria não é membro vigente
+  U->>NX: Atribuir T3 a Maria, prazo 30/10, nota (CA03)
+  NX->>C: POST /api/assignments {targetType TASK, targetId T3, toUserId maria, dueAt 2026-10-30, message, origin BOTAO_ESQUEMA}
+  C->>S: AssignmentService.propose(userId, TASK T3, maria, dueAt, message, BOTAO_ESQUEMA)
+  S->>DB: tasks T3 (state, responsibleId, visibility, departmentId) + users (companyId de ambos) + departments.headUserId + assignments abertas para T3 e maria
+  alt ator não vê T3
     S-->>C: 403 ACESSO_NEGADO
-    C-->>NX: 403
-  else tarefa ARQUIVADA ou CONCLUIDA
+  else Maria é de outra empresa
+    S-->>C: 403 EMPRESA_DIFERENTE
+  else T3 ARQUIVADA ou CONCLUIDA
     S-->>C: 409 ESTADO_INVALIDO
-    C-->>NX: 409
+  else já existe PROPOSTA ou ACEITA para T3 e Maria
+    S-->>C: 409 ATRIBUICAO_DUPLICADA
   else permitido
-    S->>DB: INSERT assignments (PENDENTE, assigner chefe, assignee maria, dueAt)
-    S->>DB: UPDATE tasks SET responsibleId = maria, INSERT task_state_log (reason atribuída pelo chefe)
-    S->>DB: INSERT audit_log ITEM_ASSIGNED
-    S->>DE: publish ItemAssigned {TASK, T3, maria}
-    S-->>C: 201 Assignment PENDENTE
+    S->>S: origin = MINHA_EQUIPE se ator é headUserId do departamento de Maria (RF10), senão BOTAO_ESQUEMA
+    S->>DB: INSERT assignments (PROPOSTA, from ator, to maria, dueAt, message, previousResponsibleId = responsibleId atual)
+    S->>DB: INSERT audit_log ASSIGNMENT_CREATED
+    S->>DE: publish AssignmentProposed {T3, maria}
+    S-->>C: 201 Assignment PROPOSTA
     C-->>NX: 201
-    NX-->>CH: card com etiqueta Atribuída a Maria · aguardando aceite
+    NX-->>U: card com etiqueta Proposta a Maria · aguardando aceite
   end
-  DE->>CS: INSERT notifications_by_user (recipient maria, type ATRIBUICAO proposta, payload prazo e nota)
-  DE->>DB: DailyTaskService.onAssigned → priorityIndexJson de maria inclui atribuída pelo chefe (RF44)
+  DE->>CS: INSERT notifications_by_user (recipient maria, type ATRIBUICAO_PROPOSTA, payload prazo e nota)
 
-  U->>NX: Maria aceita a atribuição (CA06)
-  NX->>C: POST /api/interactions/assignments/{id}/accept
+  M->>NX: aceita a atribuição (CA04)
+  NX->>C: POST /api/assignments/{id}/accept
   C->>S: AssignmentService.accept(maria, id)
-  S->>DB: UPDATE assignments SET status ACEITA, respondedAt
-  S->>DB: TaskStateMachine DISPONIVEL → EM_USO + task_state_log
-  S-->>C: 200 Assignment ACEITA
-  C-->>NX: 200
-  Note over U,DB: recusar: POST .../assignments/{id}/refuse {reason} → RECUSADA, responsibleId volta ao anterior, chefe notificado. Sem reason → 422 MOTIVO_OBRIGATORIO
-
-  U->>NX: Maria clica Retornar em T3 e escreve o motivo (CA03)
-  NX->>C: POST /api/interactions/TASK/T3/returns {reason "Falta a planilha orçamentária atualizada e o parecer jurídico"}
-  C->>S: ReturnService.returnItem(maria, TASK, T3, reason)
-  S->>DB: tasks T3 + assignments ACEITA de maria + task_returns ABERTA existentes
-  alt maria não recebeu T3 (não é atribuída, nem membro da sessão, nem levou ao acervo)
+  alt ator não é toUserId
     S-->>C: 403 ACESSO_NEGADO
+  else status já não é PROPOSTA
+    S-->>C: 409 ATRIBUICAO_JA_RESPONDIDA
+  else ok
+    S->>DB: UPDATE assignments SET status ACEITA, respondedAt
+    S->>DB: UPDATE tasks SET responsibleId = maria · TaskStateMachine DISPONIVEL → EM_USO · INSERT task_state_log (reason ATRIBUICAO_ACEITA)
+    S->>DB: INSERT audit_log ASSIGNMENT_RESPONDED
+    S->>DE: publish AssignmentAccepted
+    S-->>C: 200 Assignment ACEITA
+    C-->>NX: 200
+  end
+  DE->>CS: INSERT notifications_by_user (recipient remetente, type ATRIBUICAO_ACEITA)
+  DE->>DB: DailyTaskService.onAssignmentAccepted → priorityIndexJson de maria inclui atribuída (RF44)
+  Note over M,DB: recusar: POST /api/assignments/{id}/refuse {reason} → RECUSADA, ATRIBUICAO_RECUSADA ao remetente. Sem reason → 422 MOTIVO_OBRIGATORIO
+
+  M->>NX: dias depois clica Retornar em T3 e escreve o motivo (CA05)
+  NX->>C: POST /api/assignments/{id}/give-back {reason "Falta a planilha orçamentária atualizada e o parecer jurídico"}
+  C->>S: AssignmentService.giveBack(maria, id, reason)
+  S->>DB: assignments WHERE id AND toUserId = maria
+  alt não existe Assignment ACEITA de Maria para T3
+    S-->>C: 404 SEM_ATRIBUICAO
   else reason com menos de 20 caracteres
     S-->>C: 422 MOTIVO_OBRIGATORIO
-  else já existe TaskReturn ABERTA para T3
-    S-->>C: 409 RETORNO_PENDENTE
   else permitido
-    S->>DB: INSERT task_returns (ABERTA, actor maria, recipient dono de T3, assignmentId, reason)
-    S->>DB: TaskStateMachine EM_USO → DEVOLVIDA (proposta) + task_state_log com reason
-    S->>DB: UPDATE assignments SET status DEVOLVIDA
-    S->>DB: INSERT audit_log ITEM_RETURNED
-    S->>DE: publish ItemReturned {TASK, T3, dono}
-    S-->>C: 201 TaskReturn ABERTA
-    C-->>NX: 201
-    NX-->>U: card sai da minha lista, etiqueta Devolvida ao autor
+    S->>DB: UPDATE assignments SET status DEVOLVIDA, reason, respondedAt
+    S->>DB: UPDATE tasks SET responsibleId = previousResponsibleId · INSERT task_state_log (reason devolvida com motivo)
+    S->>DB: INSERT audit_log ASSIGNMENT_RESPONDED
+    S->>DE: publish AssignmentGivenBack {T3, remetente, reason}
+    S-->>C: 200 Assignment DEVOLVIDA
+    C-->>NX: 200
+    NX-->>M: card sai da minha lista, etiqueta Devolvida ao remetente
   end
-  DE->>CS: INSERT notifications_by_user (recipient dono, type ITEM_DEVOLVIDO proposta, payload motivo)
+  DE->>CS: INSERT notifications_by_user (recipient remetente, type ATRIBUICAO_DEVOLVIDA, payload motivo)
 
-  O->>NX: dono abre T3, vê carimbo DEVOLVIDO com motivo e aceita o retorno (CA04)
-  NX->>C: POST /api/interactions/returns/{returnId}/accept {note "corrigido, reenviando"}
-  C->>S: ReturnService.accept(dono, returnId, note)
-  S->>DB: UPDATE task_returns SET status ACEITA, resolvedAt, resolutionNote
-  S->>DB: TaskStateMachine DEVOLVIDA → DISPONIVEL + task_state_log
-  S-->>C: 200 TaskReturn ACEITA
+  U->>NX: abre T3 (CA06)
+  NX->>C: GET /api/interactions/TASK/T3/assignments
+  C->>S: AssignmentService.historyForTarget(viewer, TASK T3)
+  S->>DB: assignments WHERE targetType TASK AND targetId T3 ORDER BY at
+  S-->>C: 200 [{maria, PROPOSTA → ACEITA → DEVOLVIDA, reason, datas}]
   C-->>NX: 200
-  NX-->>O: carimbo removido, tarefa de volta ao Acervo
-  Note over O,DB: projeto retornado segue o mesmo fluxo com ProjectStatus → DEVOLVIDO e volta ao status anterior ao aceitar
+  NX-->>U: carimbo DEVOLVIDO com motivo + histórico ao lado dos contadores sociais, botão Reatribuir
+  Note over U,DB: projeto devolvido segue o mesmo fluxo em project_tasks.responsibleId e não altera ProjectStatus (Q-53)
 ```
 
 ## 4. Máquina de estados
 
-Entidades centrais do RF18 são as duas **propostas**: `Assignment.status` (`AssignmentStatus`) e `TaskReturn.status` (`ReturnStatus`). O terceiro bloco mostra o efeito sobre `TaskItem.state` (`TaskState`), incluindo o valor **DEVOLVIDA (proposta)**; para projetos o efeito equivalente é `ProjectStatus.DEVOLVIDO` (já existente — ver RF22/RF29).
+Entidade central do RF18 é **`Assignment.status`** (`AssignmentStatus` PROPOSTA · ACEITA · RECUSADA · DEVOLVIDA, TAXONOMIA §12b — a mesma máquina do RF46 vista pelo botão do esquema). O segundo bloco mostra o efeito sobre **`TaskItem.state`** (`TaskState`), que **não ganha estado novo**: retornar restaura o responsável e volta a tarefa a DISPONIVEL se ninguém mais a usa (Q-53).
 
 ```mermaid
 stateDiagram-v2
-  state "Assignment (proposta) — CA05, CA06" as AS {
-    [*] --> PENDENTE : chefe atribui a membro do departamento, responsibleId = assignee
-    PENDENTE --> ACEITA : atribuído aceita, dueAt fixado
-    PENDENTE --> RECUSADA : atribuído recusa com motivo, responsibleId volta
-    ACEITA --> DEVOLVIDA : atribuído retorna com motivo (TaskReturn ABERTA)
-    DEVOLVIDA --> ACEITA : autor aceita o retorno e reenvia
-    ACEITA --> CONCLUIDA : tarefa CONCLUIDA ou projeto CONCLUIDO
+  state "Assignment.status — atribuir e retornar pelo card (CA03–CA05)" as AS {
+    [*] --> PROPOSTA : POST assignments origem BOTAO_ESQUEMA ou MINHA_EQUIPE, previousResponsibleId guardado
+    PROPOSTA --> ACEITA : destinatário aceita, responsibleId atualizado, TaskStateLog, Tarefa do Dia
+    PROPOSTA --> RECUSADA : destinatário recusa com motivo obrigatório
+    ACEITA --> DEVOLVIDA : destinatário retorna com motivo, responsibleId = previousResponsibleId
+    ACEITA --> ACEITA : trabalho segue, DELEGUEI da Tarefa do Dia gera nova Assignment (RF44)
+    ACEITA --> [*] : tarefa CONCLUIDA ou projeto CONCLUIDO
     RECUSADA --> [*]
-    CONCLUIDA --> [*]
+    DEVOLVIDA --> [*] : remetente reatribui (nova Assignment) ou retoma
   }
-  state "TaskReturn (proposta) — CA03, CA04" as TR {
-    [*] --> ABERTA : POST returns com reason min 20
-    ABERTA --> ACEITA : autor aceita, corrige e reenvia
-    ABERTA --> RECUSADA : autor recusa com nota
-    ACEITA --> RESOLVIDA : item reenviado e aceito pelo destinatário
-    RECUSADA --> [*]
-    RESOLVIDA --> [*]
-  }
-  state "TaskItem.state — efeito das interações novas" as TS {
-    DISPONIVEL --> EM_USO : Assignment ACEITA
-    EM_USO --> DEVOLVIDA : TaskReturn ABERTA (DEVOLVIDA é proposta de novo valor)
-    DISPONIVEL --> DEVOLVIDA : TaskReturn ABERTA sobre tarefa levada ao acervo
-    DEVOLVIDA --> DISPONIVEL : retorno ACEITA ou RECUSADA pelo autor
-    DEVOLVIDA --> EM_USO : retorno resolvido com reenvio ao atribuído
+  state "TaskItem.state — efeito de atribuir e retornar" as TS {
+    DISPONIVEL --> EM_USO : Assignment ACEITA (responsibleId = destinatário)
+    EM_USO --> EM_USO : Assignment DEVOLVIDA e tarefa ainda em projeto, responsibleId restaurado
+    EM_USO --> DISPONIVEL : Assignment DEVOLVIDA e tarefa fora de projeto
   }
   note right of AS
-    Só Department.headUserId atribui e só a membro vigente (403).
-    Alvo ARQUIVADA/CONCLUIDA: 409 ESTADO_INVALIDO.
-    1 Assignment PENDENTE ou ACEITA por alvo e atribuído.
-  end note
-  note right of TR
-    1 TaskReturn ABERTA por alvo: 409 RETORNO_PENDENTE.
-    Carimbo DEVOLVIDO com motivo no card do autor enquanto ABERTA.
+    Só o destinatário responde 403 ACESSO_NEGADO.
+    Resposta repetida 409 ATRIBUICAO_JA_RESPONDIDA.
+    Recusar ou retornar sem motivo 422 MOTIVO_OBRIGATORIO.
+    Propor duplicada 409 ATRIBUICAO_DUPLICADA. Outra empresa 403 EMPRESA_DIFERENTE.
+    Toda transição grava AuditLog e notifica ATRIBUICAO_* (CA06).
   end note
   note right of TS
-    Alternativa sem alterar o enum TaskState:
-    BLOQUEADA com blockedByUserId = ator e blockReason = motivo.
+    Carimbo DEVOLVIDO com motivo no card do remetente enquanto a última Assignment é DEVOLVIDA.
+    ProjectStatus.DEVOLVIDO continua reservado à revisão de decisão (RF15/RF29) — dúvida Q-53.
   end note
 ```
 
@@ -575,18 +574,19 @@ stateDiagram-v2
 ```mermaid
 flowchart LR
   subgraph FE["Frontend Next.js"]
-    F1["components/ui: InteractionBar — LikeButton, ReactionPicker, CommentThread, SaveButton, ShareSheet, RemixButton (RF19) + ReturnButton com ReturnModal (motivo min 20), AssignButton com AssignModal (membros do departamento, prazo, nota), AcceptRefuseBar, Stamp DEVOLVIDO, AssignmentBadge"]
-    F2["Usado em: app/tasks, app/projects, app/mural, app/search, app/u/[username] (RF16), app/desk (RF21), Minha equipe (RF10)"]
+    F1["components/ui: InteractionBar — LikeButton, ReactionPicker, CommentThread, SaveButton, ShareSheet, RemixButton (RF19) + AssignButton com AssignModal (colegas da mesma empresa / membros do departamento, prazo, nota), AcceptRefuseBar, ReturnButton com ReturnModal (motivo min 20), AssignmentBadge, AssignmentHistory, Stamp DEVOLVIDO"]
+    F2["Usado em: app/tasks, app/projects, app/mural, app/search, app/u/[username] (RF16), app/desk (RF21), Minha equipe (RF10), chat (RF46)"]
   end
 
   subgraph WEB["ws-web"]
-    C1["InteractionController — /api/interactions/{type}/{id}/reactions|comments|saves|shares|remixes|counters (RF19) + /returns + /assignments, /returns/{id}/accept|refuse, /assignments/{id}/accept|refuse"]
+    C1["InteractionController — /api/interactions/{type}/{id}/reactions|comments|saves|shares|remixes|counters (RF19) + /assignments (histórico do card)"]
+    C2["AssignmentController — /api/assignments, /{id}/accept, /{id}/refuse, /{id}/give-back, /me (compartilhado com RF10 e RF46)"]
   end
 
   subgraph APP["ws-application"]
     S1["SocialService RF19"]
-    S2["ReturnService (proposta)"]
-    S3["AssignmentService (proposta) — RF10"]
+    S2["AssignmentService — propose, accept, refuse, giveBack (TAXONOMIA 12b)"]
+    S3["AccessPolicy — canView, requireSameCompany, isDeptHeadOf"]
     S4["TaskStateMachine RF41"]
     S5["NotificationService plataforma"]
     S6["DailyTaskService RF44"]
@@ -595,31 +595,29 @@ flowchart LR
 
   subgraph DOM["ws-domain"]
     D1["Reaction · Comment · SavedItem · Share · Remix"]
-    D2["TaskReturn (proposta) · Assignment (proposta) · enums ReturnStatus, AssignmentStatus, TaskState.DEVOLVIDA (proposta)"]
-    D3["TaskItem · ProjectScheme · ProjectTask · TaskStateLog · Department · DepartmentMembership · DailyTask · Notification · AuditLog · DomainEventOutbox"]
+    D2["Assignment · enums AssignmentTargetType, AssignmentOrigin, AssignmentStatus · NotificationType ATRIBUICAO_* (TAXONOMIA 12b, proposta)"]
+    D3["TaskItem · ProjectScheme · ProjectTask · TaskStateLog · User · Department · DepartmentMembership · DailyTask · Notification · AuditLog · DomainEventOutbox"]
   end
 
   subgraph INFRA["ws-infrastructure/*"]
-    I1[("persistence-mysql: reactions, comments, saved_items, shares, remixes, task_returns (proposta), assignments (proposta), tasks, project_schemes, project_tasks, task_state_log, daily_tasks, audit_log")]
+    I1[("persistence-mysql: reactions, comments, saved_items, shares, remixes, assignments, tasks, project_schemes, project_tasks, task_state_log, daily_tasks, audit_log")]
     I2[("cache-redis: counters:{type}:{id}:*")]
-    I3[("persistence-cassandra: notifications_by_user TTL")]
-    I4["platform: outbox AFTER_COMMIT ItemAssigned, ItemReturned, InteractionCreated"]
+    I3[("persistence-cassandra: notifications_by_user TTL · messages_by_conversation (mensagem de sistema, RF46)")]
+    I4["platform: outbox AFTER_COMMIT AssignmentProposed, AssignmentAccepted, AssignmentRefused, AssignmentGivenBack, InteractionCreated"]
   end
 
   F1 --- F2
   F1 -->|"HTTPS/JSON"| C1
+  F1 -->|"HTTPS/JSON"| C2
   C1 --> S1
   C1 --> S2
-  C1 --> S3
+  C2 --> S2
   S1 --> P1
   S1 --> D1
-  S2 --> S4
   S2 --> S3
+  S2 --> S4
   S2 --> D2
   S2 --> D3
-  S3 --> S4
-  S3 --> D2
-  S3 --> D3
   D3 --> I4
   I4 --> S5
   I4 --> S6
@@ -637,7 +635,7 @@ flowchart LR
 |---|---|
 | RF18.CA01 | Classes `Reaction`, `Comment`, `SavedItem`, `Share`, `Remix`, `SocialService` (nota "seis interações detalhadas no RF19"), `CounterCachePort` · Atividades `U1 → W1 → U2 → A1 → P1` · Sequência msgs 1–6 (curtir T3, INCR counters) · Componentes `InteractionBar` (parte RF19), `cache-redis` · Detalhe completo: RF19 (RF26.CA01–07) |
 | RF18.CA02 | `SocialService.checkVisibility` (403), `Notification.groupKey`, `NotificationService.notifyOwner` · Atividade `A1` · Sequência nota inicial · Componentes `NotificationService`, `persistence-cassandra` · Detalhe: RF19 (RF26.CA08–09) |
-| RF18.CA03 | `TaskReturn` (proposta; nota reason min 20, 1 ABERTA por alvo), enum `ReturnStatus`, `ReturnService.returnItem/requireRecipient/applyTargetState`, `TaskStateMachine`, `TaskState.DEVOLVIDA` (proposta), `ProjectStatus.DEVOLVIDO`, `AuditLog ITEM_RETURNED`, `Notification ITEM_DEVOLVIDO` (proposta) · Atividades `U3 → W2 → A2 → A3 (403) → A5 (422) → A7 (409) → A9 → P2 → A20` · Sequência msgs 33–47 (`POST …/returns`, `alt` 403 / 422 / 409, `INSERT task_returns`, `EM_USO → DEVOLVIDA`, `UPDATE assignments DEVOLVIDA`, `notifications_by_user ITEM_DEVOLVIDO`) · Transições `[*] → ABERTA` e `EM_USO → DEVOLVIDA` · Componentes `ReturnButton`, `ReturnModal`, `ReturnService (proposta)` |
-| RF18.CA04 | `ReturnService.accept/refuse`, `TaskReturn.resolvedAt/resolutionNote` · Atividades `W3 (carimbo DEVOLVIDO) → U4 → A10 → P2` · Sequência msgs 48–55 (`POST …/returns/{id}/accept`, `DEVOLVIDA → DISPONIVEL`, nota do projeto) · Transições `ABERTA → ACEITA / RECUSADA`, `DEVOLVIDA → DISPONIVEL / EM_USO` · Componente `Stamp DEVOLVIDO` |
-| RF18.CA05 | `Assignment` (proposta; nota), enum `AssignmentStatus`, `AssignmentService.assign/requireDeptHead/requireDeptMember`, `Department.headUserId`, `DepartmentMembership`, `TaskItem.responsibleId`, `ProjectTask.responsibleId`, `TaskStateLog`, `AuditLog ITEM_ASSIGNED`, `DailyTaskService.onAssigned`, `Notification ATRIBUICAO` (proposta) · Atividades `U5 → W4 → A11 → A12/A13 (403) → A14 (409) → A16 → P3 → A20 → P4` · Sequência msgs 7–22 (`POST …/assignments`, `alt` 403 / 409, `INSERT assignments PENDENTE`, `UPDATE tasks responsibleId`, `notifications_by_user ATRIBUICAO`, `DailyTaskService.onAssigned`) · Transição `[*] → PENDENTE` · Componentes `AssignButton`, `AssignModal`, `AssignmentService (proposta) — RF10`, `DailyTaskService RF44` |
-| RF18.CA06 | `AssignmentService.accept/refuse`, `Assignment.refusalReason/respondedAt`, `AuditLog` · Atividades `W5 → U6 → A17 / A18 (422) → A19 → P3 → A20` · Sequência msgs 23–30 (`accept → ACEITA`, `DISPONIVEL → EM_USO`, nota recusar → 422 MOTIVO_OBRIGATORIO) · Transições `PENDENTE → ACEITA / RECUSADA`, `ACEITA → DEVOLVIDA / CONCLUIDA`, `DISPONIVEL → EM_USO` · Componentes `AcceptRefuseBar`, `AssignmentBadge` |
+| RF18.CA03 | `Assignment` (TAXONOMIA 12b; nota), enums `AssignmentTargetType`, `AssignmentOrigin` (BOTAO_ESQUEMA, MINHA_EQUIPE), `AssignmentStatus`, `AssignmentService.propose/requireUnique`, `AccessPolicy.canView/requireSameCompany/isDeptHeadOf`, `Department.headUserId`, `AuditLog ASSIGNMENT_CREATED`, `NotificationType.ATRIBUICAO_PROPOSTA` · Atividades `U3 → W2 → A2 → A3 (403) → A5 (403 EMPRESA_DIFERENTE) → A7 (409 ESTADO_INVALIDO) → A9 (409 ATRIBUICAO_DUPLICADA) → A11 → A12 → P2 → A23` · Sequência msgs 7–24 (`POST /api/assignments … origin BOTAO_ESQUEMA`, 4 `alt` de erro, `INSERT assignments PROPOSTA … previousResponsibleId`, `notifications_by_user ATRIBUICAO_PROPOSTA`) · Transição `[*] → PROPOSTA` · Componentes `AssignButton`, `AssignModal`, `AssignmentController`, `AssignmentService` |
+| RF18.CA04 | `AssignmentService.accept/refuse/requireAssignee/requireOpen/applyResponsible`, `TaskItem.responsibleId`, `ProjectTask.responsibleId`, `TaskStateMachine`, `TaskStateLog`, `DailyTaskService.onAssignmentAccepted`, `DailyTask.priorityIndexJson`, `NotificationType.ATRIBUICAO_ACEITA/ATRIBUICAO_RECUSADA` · Atividades `W3 → U4 → A13 (403/409) → A15 → P2 → A23` e `A16 (422) → A18` · Sequência msgs 25–38 (`accept`, `alt` 403 / 409, `responsibleId = maria · DISPONIVEL → EM_USO`, `ATRIBUICAO_ACEITA`, `onAssignmentAccepted`, nota recusar → 422) · Transições `PROPOSTA → ACEITA / RECUSADA`, `DISPONIVEL → EM_USO` · Componentes `AcceptRefuseBar`, `AssignmentBadge`, `DailyTaskService RF44` |
+| RF18.CA05 | `AssignmentService.giveBack`, `Assignment.reason/previousResponsibleId/respondedAt`, `TaskStateLog`, `AuditLog ASSIGNMENT_RESPONDED`, `NotificationType.ATRIBUICAO_DEVOLVIDA` · Atividades `U5 → W4 → A19 → A20 (404 SEM_ATRIBUICAO) → A16 (422) → A22 → P2 → A23`, `U6` (carimbo) · Sequência msgs 39–52 (`POST /api/assignments/{id}/give-back {reason}`, `alt` 404 / 422, `status DEVOLVIDA`, `responsibleId = previousResponsibleId`, `ATRIBUICAO_DEVOLVIDA`) · Transição `ACEITA → DEVOLVIDA` e `EM_USO → EM_USO / DISPONIVEL` + notas (Q-53) · Componentes `ReturnButton`, `ReturnModal`, `Stamp DEVOLVIDO` |
+| RF18.CA06 | `AssignmentService.historyForTarget`, `InteractionController.GET_api_interactions_type_id_assignments`, `DailyTask.feedback DELEGUEI/delegatedToUserId`, `AuditLog`, `DirectMessage.assignmentId` (RF46) · Atividades `W1` (histórico no card), `A23 → P3`, transição `ACEITA → ACEITA` (DELEGUEI) · Sequência msgs 53–59 (`GET …/assignments → histórico`, carimbo + botão Reatribuir, nota do projeto) · Componentes `AssignmentHistory`, `app/u/[username] (RF16)`, `Minha equipe (RF10)`, `chat (RF46)` |

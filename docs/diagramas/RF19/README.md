@@ -17,7 +17,7 @@ Alvo polimórfico `TargetType` (**TASK · PROJECT · PLAN** — além de KIT, PR
 | **RF26.CA07** | Contadores (curtidas, comentários, salvos, compartilhamentos, remixes) em tempo quase real nos cards e no perfil. |
 | **RF26.CA08** | Interações respeitam a visibilidade: item PRIVADO não recebe interações de terceiros; item DEPARTAMENTO só de membros do departamento. |
 | **RF26.CA09** | Toda interação gera notificação ao dono (agrupada por hora) e alimenta o perfil deliberativo (objetivo 2) — reações BEM FUNDAMENTADO e CONFORME pesam na métrica de qualidade. |
-| *(título)* retornar · atribuir | Sem CA no corpo. Modelados no **RF18** (`TaskReturn` e `Assignment`, propostas). Aplicam-se a TASK e PROJECT; **não** a PLAN (a confirmar). |
+| *(título)* retornar · atribuir | Sem CA no corpo. Modelados no **RF18** com a entidade única `Assignment` (TAXONOMIA §12b, proposta: atribuir = PROPOSTA → ACEITA/RECUSADA; retornar = ACEITA → DEVOLVIDA com motivo). Aplicam-se a TASK e PROJECT (`AssignmentTargetType`); **não** a PLAN (a confirmar). |
 
 | Interação | Entidade | Regra de unicidade / canal | Contador | Alvos |
 |---|---|---|---|---|
@@ -230,13 +230,10 @@ namespace ws_application {
     +counters(type, id) Counters
     -checkVisibility(actor, target) 403 ACESSO_NEGADO
   }
-  class ReturnService {
-    <<service>>
-    +returnItem() ver RF18 proposta
-  }
   class AssignmentService {
     <<service>>
-    +assign() ver RF18 e RF10 proposta
+    +propose() atribuir — ver RF18, RF10, RF46
+    +giveBack() retornar — ver RF18
   }
   class MuralService {
     <<service>>
@@ -317,8 +314,7 @@ ProjectScheme --> Visibility
 AnnualPlan --> Visibility
 
 InteractionController ..> SocialService
-InteractionController ..> ReturnService : RF18
-InteractionController ..> AssignmentService : RF18
+InteractionController ..> AssignmentService : RF18 atribuir e retornar
 SocialService ..> MuralService : MURAL
 SocialService ..> DeciaSessionService : SESSAO_DECIA
 SocialService ..> MediaStoragePort : LINK_EXTERNO imagem
@@ -379,7 +375,7 @@ flowchart TD
     A20["AFTER_COMMIT InteractionCreated"]
     A21["NotificationService.notifyOwner: groupKey = dono + tipo + hora; notifyMentions"]
     A22["ReputationService.onQualityReaction se BEM_FUNDAMENTADO ou CONFORME → métrica de qualidade do DeliberativeProfile"]
-    A23["ReturnService / AssignmentService — RF18.CA03–CA06"]
+    A23["AssignmentService.propose / giveBack — RF18.CA03–CA06"]
   end
 
   subgraph LP["Persistência"]
@@ -538,12 +534,12 @@ sequenceDiagram
   S->>R: MGET counters:PROJECT:P1:*
   S-->>C: 200 {likes, comments, saves, shares, remixes} (CA07)
   NX-->>O: remixado por N pessoas, notificações agrupadas por hora
-  Note over U,DE: Retornar e Atribuir (título do card) seguem o RF18: POST .../returns e POST .../assignments
+  Note over U,DE: Retornar e Atribuir (título do card) seguem o RF18: POST /api/assignments e POST /api/assignments/{id}/give-back
 ```
 
 ## 4. Máquina de estados
 
-O RF19 não tem máquina de estados própria. A entidade com ciclo de vida mais rico que ele altera é o **`Comment`** (`active`, `editedAt`, `deletedBy`); os blocos seguintes mostram o ciclo do **`Share` LINK_EXTERNO** (`expiresAt`) e o toggle de **`Reaction` CURTIR**. Os ciclos de `TaskReturn` e `Assignment` (retornar/atribuir) estão no RF18.
+O RF19 não tem máquina de estados própria. A entidade com ciclo de vida mais rico que ele altera é o **`Comment`** (`active`, `editedAt`, `deletedBy`); os blocos seguintes mostram o ciclo do **`Share` LINK_EXTERNO** (`expiresAt`) e o toggle de **`Reaction` CURTIR**. O ciclo de `Assignment` (atribuir/retornar, TAXONOMIA §12b) está no RF18.
 
 ```mermaid
 stateDiagram-v2
@@ -593,7 +589,7 @@ flowchart LR
   end
 
   subgraph WEB["ws-web"]
-    C1["InteractionController — /api/interactions/{type}/{id}/reactions|comments|saves|shares|remixes|counters (+ /returns, /assignments RF18)"]
+    C1["InteractionController — /api/interactions/{type}/{id}/reactions|comments|saves|shares|remixes|counters · AssignmentController /api/assignments (RF18)"]
     C2["PublicShareController — /s/{externalToken}"]
   end
 
@@ -603,7 +599,7 @@ flowchart LR
     S3["DeciaSessionService RF29"]
     S4["NotificationService plataforma"]
     S5["ReputationService RF43"]
-    S6["ReturnService · AssignmentService RF18 (propostas)"]
+    S6["AssignmentService RF18 / RF10 / RF46 (TAXONOMIA 12b, proposta)"]
     P1["CounterCachePort"]
     P2["MediaStoragePort"]
   end
@@ -659,4 +655,4 @@ flowchart LR
 | RF26.CA07 | `TaskItem/ProjectScheme/AnnualPlan.likesCount … remixesCount`, `CounterCachePort`, `RedisCounterAdapter`, `SocialService.counters` · Atividades `A19 → P2 → W3`, `W1` (otimista) · Sequência `INCR/DECR counters:…`, `UPDATE … likesCount`, `GET …/counters → MGET` (msgs 2, 67–71) · Componentes `CountersRow`, `cache-redis` |
 | RF26.CA08 | `SocialService.checkVisibility` (nota), enum `Visibility`, `DepartmentMembership` · Atividades `A1 → A2 → A3 403 ACESSO_NEGADO → W2` · Sequência `checkVisibility(actor, PA1)` → `alt PA1 PRIVADA de outra pessoa, ou DEPARTAMENTO sem ser membro → 403` (msgs 6–9) |
 | RF26.CA09 | `Notification.groupKey` (dono + tipo + hora, category SOCIAL), `DeliberativeProfile`, `NotificationService.notifyOwner`, `ReputationService.onQualityReaction`, `CassandraNotificationAdapter` · Atividades `A20 → A21 → P4`, `A20 → A22 → P4` · Sequência `DE->>CS INSERT notifications_by_user (… groupKey dono + tipo + hora)` e `DE->>DB UPDATE deliberative_profiles` (msgs 65–66) · Componentes `NotificationService`, `ReputationService RF43`, `persistence-cassandra` |
-| *(título)* retornar · atribuir | `ReturnService`, `AssignmentService` (propostas, RF18), `InteractionController` (+ `/returns`, `/assignments`) · Atividade `U3 → A23` · Sequência nota final · Componentes `ReturnButton`, `AssignButton` · Detalhe, estados e CAs: **RF18.CA03–CA06** |
+| *(título)* retornar · atribuir | `AssignmentService.propose/giveBack` (TAXONOMIA §12b, proposta), `AssignmentController` `/api/assignments`, `/{id}/give-back` · Atividade `U3 → A23` · Sequência nota final · Componentes `ReturnButton`, `AssignButton` · Detalhe, estados e CAs: **RF18.CA03–CA06** |
