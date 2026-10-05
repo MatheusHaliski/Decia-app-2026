@@ -77,6 +77,10 @@ Formato: **D-nn** decisão tomada (com justificativa) · **Q-nn** dúvida aberta
 | Q-50 | IA | Teto de gasto de IA (`AiBudget`): o FAI usa USD 5,00/dia global e 0,50/dia por pessoa. Quais valores para o Work Station (por pessoa, por departamento, global)? | AiBudget, cotas RF43 |
 | Q-51 | Infra | Hospedagem ainda não decidida (Railway como no FAI? nuvem do Estado?). Os scripts `infra/<provedor>/<banco>/start.sh`, backup e RPO/RTO dependem disso; faremos o que independe (usuários de menor privilégio, TLS, ACL Redis). | Bloco 7 |
 | Q-52 | Repositório | **Branch protection na `main`** é ação do dono: CI obrigatório + 1 revisão + sem push direto. Já está configurada? | Gate de CI |
+| Q-53 | RF10/RF18/RF19/RF46 | `Assignment` é uma só entidade para "chefe atribui" (RF10), as ações "atribuir/retornar" dos esquemas (RF18/RF19) e o chat do WS (RF46)? Atribuir um projeto troca `ownerId` ou só o responsável? Conversas em grupo já na v1? | MessagingService, AssignmentService |
+| Q-54 | RF23 | O título cita "projetos" de outros provedores, mas nenhum CA descreve isso. Proposta RF23.CA06: pasta do Drive/SharePoint ou plano do Planner/Google Tasks → `ProjectScheme` RASCUNHO. Confirmar. | ExternalDocPort |
+| Q-55 | RF24 | "Metas & Objetivos da equipe" é rota nova (`/departments/[slug]/goals`) ou sub-aba 6 do perfil? EMPREGADO vê insights de equipe agregados/anonimizados (ABAS_POR_PERFIL §7.b) ou só CHEFE/EMPRESA (RF43.CA14)? | TeamGoalsService |
+| Q-56 | RF26 | "Copilot do WS" = Autopilot de tarefas e de projetos (RF30/RF43) no mesmo `AutopilotService`? O corpo do card RF26 (perfil) foi remetido a RF6/RF16. | AutopilotService |
 
 ## Perguntas das pesquisas de produto (etapa 0 do brief de esqueleto)
 

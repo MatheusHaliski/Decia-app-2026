@@ -385,7 +385,7 @@ Alvo polimórfico `TargetType`: TASK · PROJECT · PLAN · KIT · PROJECT_TASK �
 ### 8.5 `Remix` — `remixes` — id · actorId · sourceType · sourceId · resultType · resultId · modelOfferId · ledgerEntryId · at.
 ### 8.6 `Follow` — `follows` — id · followerId · targetType (USER · DEPARTMENT · COMPANY) · targetId · status · at. Único.
 ### 8.7 `MuralEntry` — `mural_entries` (+ Cassandra `timeline_by_user`) — id · companyId · departmentId · kind (COMPARTILHAMENTO · DECISAO_VALIDADA · PROJETO_PUBLICADO · RECONHECIMENTO · META · DESTAQUE · IMPULSO) · targetType · targetId · actorId · boostUntil · at.
-### 8.8 `Notification` — Cassandra `notifications_by_user` (TTL) + `notifications` — id · recipientId · actorId · type `NotificationType` (SESSAO_PROPOSTA · SESSAO_INICIADA · PARTICIPANTE_ADICIONADO · PARTICIPANTE_REMOVIDO · DIVERGENCIA_DETECTADA · PERGUNTA_IA · RESUMO_PUBLICADO · DECISAO_PROPOSTA · DECISAO_VALIDADA · DECISAO_DEVOLVIDA · REABERTURA · ARTEFATO · PRAZO_PROXIMO · PRAZO_VENCIDO · REACAO · COMENTARIO · MENCAO · REMIX · CHANCELA_ESTADO · INDICACAO · BENEFICIO · PONTOS · META · RECONHECIMENTO · TAREFA_DO_DIA · TRANSICAO · SISTEMA) · category (SOCIAL · DECIA · PRAZO · CHANCELA · PONTOS · SISTEMA) · resourceType · resourceId · title · body · payloadJson · groupKey (agrupamento por hora) · read · readAt · deliveredChannels.
+### 8.8 `Notification` — Cassandra `notifications_by_user` (TTL) + `notifications` — id · recipientId · actorId · type `NotificationType` (SESSAO_PROPOSTA · SESSAO_INICIADA · PARTICIPANTE_ADICIONADO · PARTICIPANTE_REMOVIDO · DIVERGENCIA_DETECTADA · PERGUNTA_IA · RESUMO_PUBLICADO · DECISAO_PROPOSTA · DECISAO_VALIDADA · DECISAO_DEVOLVIDA · REABERTURA · ARTEFATO · PRAZO_PROXIMO · PRAZO_VENCIDO · REACAO · COMENTARIO · MENCAO · REMIX · CHANCELA_ESTADO · INDICACAO · BENEFICIO · PONTOS · META · RECONHECIMENTO · TAREFA_DO_DIA · TRANSICAO · MENSAGEM_DIRETA · ATRIBUICAO_PROPOSTA · ATRIBUICAO_ACEITA · ATRIBUICAO_RECUSADA · ATRIBUICAO_DEVOLVIDA · TAREFA_REUTILIZADA · SISTEMA) · category (SOCIAL · DECIA · PRAZO · CHANCELA · PONTOS · SISTEMA) · resourceType · resourceId · title · body · payloadJson · groupKey (agrupamento por hora) · read · readAt · deliveredChannels.
 ### 8.9 `TimelineEvent` — Cassandra `timeline_by_user` — userId · at (cluster desc) · eventType · targetType · targetId · payloadJson.
 
 ---
@@ -451,6 +451,13 @@ id · subjectType (EMPREGADO · GESTAO) · subjectUserId · groupingId · reques
 ### 12.8 `UsageIndicator` (RF18) — views/procedures MySQL: `vw_sessions_by_period`, `vw_decisions_with_trace` (objetivo 1), `vw_decisions_with_sources` (objetivo 3), `sp_admin_kpis`, `sp_timeseries`; materializadas em `MetricSnapshot`.
 
 ---
+
+## 12b. Mensageria & Atribuição (RF10, RF18/RF19 "atribuir/retornar", RF46) — proposta
+
+### 12b.1 `DirectConversation` — `direct_conversations` — id · companyId · kind `ConversationKind` (DIRETA · GRUPO) · title · createdBy · lastMessageAt · messagingPolicy (TTL de `Company.messagingPolicyJson`).
+### 12b.2 `DirectConversationParticipant` — id · conversationId · userId · joinedAt · leftAt · lastReadAt.
+### 12b.3 `DirectMessage` — Cassandra `messages_by_conversation` (partição conversationId, TTL) — id (TIMEUUID) · authorId · bodyMd · attachmentsJson (TASK/PROJECT) · assignmentId · sentAt. Sem IA, sem DECIA Points, não indexado na Memória.
+### 12b.4 `Assignment` — `assignments` — id · targetType `AssignmentTargetType` (TASK · PROJECT) · targetId · fromUserId · toUserId · origin `AssignmentOrigin` (CHAT_WS · CHAT_DECIA · BOTAO_ESQUEMA · MINHA_EQUIPE) · status `AssignmentStatus` (PROPOSTA · ACEITA · RECUSADA · DEVOLVIDA) · dueAt · message · reason (obrigatório em RECUSADA/DEVOLVIDA) · previousResponsibleId · traceNodeId (quando origem CHAT_DECIA) · respondedAt. Mesma entidade para RF10 (chefe atribui), RF18/RF19 (ações "atribuir" e "retornar") e RF46.
 
 ## 13. Enums consolidados
 
@@ -519,6 +526,10 @@ id · subjectType (EMPREGADO · GESTAO) · subjectUserId · groupingId · reques
 | SheetStatus | PROPOSTA · ACEITA · DESCARTADA |
 | IgnoredReason | NAO_VERIFICADO · AUTO_INTERACAO · ANTIFRAUDE |
 | StudioStatus | ORIGINAL · ENDIREITADA · RECORTADA · SEM_FUNDO · OCR |
+| ConversationKind | DIRETA · GRUPO |
+| AssignmentTargetType | TASK · PROJECT |
+| AssignmentOrigin | CHAT_WS · CHAT_DECIA · BOTAO_ESQUEMA · MINHA_EQUIPE |
+| AssignmentStatus | PROPOSTA · ACEITA · RECUSADA · DEVOLVIDA |
 | CoverMode / ProjectCoverMode | AUTO · MANUAL · IA / MOSAICO · FOTO · IA (unificação em aberto, Q-41) |
 
 ## 14. Pendências de modelagem (ver `docs/DECISOES.md`)
