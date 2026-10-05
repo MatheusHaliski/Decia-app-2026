@@ -8,3 +8,11 @@
 # usa valores de baixa entropia e estas entradas cobrem só o commit em que nasceram.
 65e11187816a9979d580fc9f61d1b4266a641269:ws-bootstrap/src/test/java/br/gov/pr/secid/workstation/bootstrap/logging/SensitiveDataMaskingConverterTest.java:generic-api-key:22
 65e11187816a9979d580fc9f61d1b4266a641269:ws-bootstrap/src/test/java/br/gov/pr/secid/workstation/bootstrap/logging/SensitiveDataMaskingConverterTest.java:generic-api-key:23
+#
+# Bloco 3: o leitor da chave privada do JWT (JwtTokenIssuer.readPrivateKey) cita os marcadores PEM
+# "-----BEGIN/END PRIVATE KEY-----" só para removê-los do arquivo; não há chave no código.
+beb5cce55c251cdbec429bcddd4bf1880f569921:ws-web/src/main/java/br/gov/pr/secid/workstation/web/security/JwtTokenIssuer.java:private-key:115
+# Teste do mesmo leitor: um "PEM" inválido inventado ("CONTEUDO-SECRETO-INVALIDO") que o teste prova não vazar na mensagem de erro.
+beb5cce55c251cdbec429bcddd4bf1880f569921:ws-web/src/test/java/br/gov/pr/secid/workstation/web/security/JwtTokenIssuerTest.java:private-key:104
+# Segredo de teste do IP assinado (ClientIpResolverTest): string literal de baixa entropia usada só para assinar o HMAC no teste.
+52041e2bf0430ad1b5705886ebf89d316ea5cba5:ws-web/src/test/java/br/gov/pr/secid/workstation/web/support/ClientIpResolverTest.java:generic-api-key:15
