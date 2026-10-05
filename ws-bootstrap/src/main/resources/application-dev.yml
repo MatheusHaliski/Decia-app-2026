@@ -1,0 +1,16 @@
+# Perfil dev (máquina do desenvolvedor, docker-compose.dev.yml). Continua SEM senha padrão: WS_DB_PASSWORD vem do .env.
+spring:
+  jpa:
+    show-sql: false
+springdoc:
+  swagger-ui:
+    enabled: true
+  api-docs:
+    enabled: true
+logging:
+  level:
+    br.gov.pr.secid.workstation: ${WS_LOG_LEVEL_APP:DEBUG}
+    org.springframework.security: ${WS_LOG_LEVEL_SECURITY:INFO}
+ws:
+  secrets:
+    enforce: false      # em dev os segredos ausentes geram só um WARN no boot

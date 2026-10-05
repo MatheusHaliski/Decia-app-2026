@@ -1,0 +1,14 @@
+{
+  "app.name": "Work Station",
+  "home.eyebrow": "SECID-PR · Work Station / DECIA",
+  "home.title": "Esqueleto seguro en marcha",
+  "home.subtitle": "Bloque 1: Maven multimódulo, seguridad base, pruebas guardianas y puerta de CI. Las pantallas llegan con el design system (RF38).",
+  "home.cta.health": "Ver salud de la API",
+  "home.cta.docs": "Documentación",
+  "common.loading": "Cargando…",
+  "common.retry": "Intentar de nuevo",
+  "error.generic": "Algo salió mal de nuestro lado. Informe el código {correlationId} al soporte.",
+  "error.unauthenticated": "Inicie sesión para continuar.",
+  "error.forbidden": "No tiene permiso para esta acción.",
+  "error.notFound": "No encontramos lo que busca."
+}

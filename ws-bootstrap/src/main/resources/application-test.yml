@@ -1,0 +1,20 @@
+# Perfil test (mvn verify, CI). O MySQL vem do Testcontainers (@ServiceConnection sobrescreve url/usuário/senha);
+# nenhuma credencial fixa aqui. Documentação OpenAPI desligada para a fatia não depender do springdoc.
+spring:
+  datasource:
+    password: ${WS_DB_PASSWORD:}    # só para o contexto subir sem .env; o Testcontainers injeta a senha real do contêiner
+  flyway:
+    clean-disabled: true
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
+logging:
+  level:
+    root: WARN
+    br.gov.pr.secid.workstation: INFO
+    org.testcontainers: INFO
+ws:
+  secrets:
+    enforce: false

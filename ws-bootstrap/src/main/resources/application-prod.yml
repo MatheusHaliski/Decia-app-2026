@@ -1,0 +1,27 @@
+# Perfil prod. Tudo que é segredo é obrigatório: WS_DB_PASSWORD, WS_JWT_PRIVATE_KEY_PATH, WS_JWT_PUBLIC_KEY_PATH e
+# WS_DATA_ENCRYPTION_KEY vazios derrubam o boot (RequiredSecretsGuard, testado em RequiredSecretsGuardTest).
+# TLS obrigatório no MySQL; documentação OpenAPI e detalhes do health fechados.
+spring:
+  datasource:
+    url: jdbc:mysql://${WS_DB_HOST}:${WS_DB_PORT:3306}/${WS_DB_NAME}?sslMode=${WS_DB_SSL_MODE:REQUIRED}&allowPublicKeyRetrieval=false&serverTimezone=UTC&characterEncoding=UTF-8
+springdoc:
+  swagger-ui:
+    enabled: ${WS_API_DOCS_ENABLED:false}
+  api-docs:
+    enabled: ${WS_API_DOCS_ENABLED:false}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${WS_MANAGEMENT_EXPOSURE:health}
+  endpoint:
+    health:
+      show-details: never
+      show-components: never
+logging:
+  level:
+    root: ${WS_LOG_LEVEL:INFO}
+    br.gov.pr.secid.workstation: ${WS_LOG_LEVEL_APP:INFO}
+ws:
+  secrets:
+    enforce: true

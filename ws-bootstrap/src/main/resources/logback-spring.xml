@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Log da API: correlationId do MDC em toda linha e mensagem passada pelo SensitiveDataMaskingConverter (%mmsg),
+     que mascara senha/token/chave que escapem (SensitiveDataMaskingConverterTest). Nunca logue valor de segredo
+     de propósito: o mascaramento é a última linha de defesa, não a política. -->
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <conversionRule conversionWord="mmsg" class="br.gov.pr.secid.workstation.bootstrap.logging.SensitiveDataMaskingConverter"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX, UTC} %-5level [%X{correlationId:-}] %logger{30} - %mmsg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

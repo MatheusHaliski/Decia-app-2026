@@ -1,0 +1,48 @@
+{
+  "name": "work-station-web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Frontend Next.js do Work Station / DECIA (SECID-PR) — consome a API Java em NEXT_PUBLIC_API_BASE_URL",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --max-warnings 0 --ignore-pattern \"scripts/lint-fixtures/**\" && stylelint \"**/*.css\" --ignore-pattern \"node_modules/**\" --ignore-pattern \".next/**\" --ignore-pattern \"docs/**\" --ignore-pattern \"ws-*/**\" --ignore-pattern \"public/**\"",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "i18n:check": "node scripts/i18n/check.js --fail",
+    "prebuild": "node scripts/i18n/check.js --fail"
+  },
+  "dependencies": {
+    "next": "^15.5.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
+    "@next/eslint-plugin-next": "^15.5.0",
+    "@tailwindcss/postcss": "^4.1.0",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitest/coverage-v8": "^3.2.0",
+    "eslint": "^9.39.0",
+    "jsdom": "^26.0.0",
+    "postcss": "^8.5.29",
+    "stylelint": "^16.0.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.40.0",
+    "vitest": "^3.2.0"
+  },
+  "overrides": {
+    "postcss": "^8.5.29"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>br.gov.pr.secid.workstation</groupId>
+        <artifactId>work-station-api</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>ws-bootstrap</artifactId>
+    <name>ws-bootstrap</name>
+    <description>WorkStationApplication, application.yml por perfil (dev/test/prod), testes-guarda e teste de contexto com Testcontainers</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>br.gov.pr.secid.workstation</groupId>
+            <artifactId>ws-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>br.gov.pr.secid.workstation</groupId>
+            <artifactId>persistence-mysql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>br.gov.pr.secid.workstation</groupId>
+            <artifactId>persistence-cassandra</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>br.gov.pr.secid.workstation</groupId>
+            <artifactId>search-opensearch</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>br.gov.pr.secid.workstation</groupId>
+            <artifactId>cache-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>br.gov.pr.secid.workstation</groupId>
+            <artifactId>storage-s3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>br.gov.pr.secid.workstation</groupId>
+            <artifactId>ai-providers</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>br.gov.pr.secid.workstation</groupId>
+            <artifactId>platform</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Testcontainers 2 (artefatos renomeados: testcontainers-mysql, testcontainers-junit-jupiter) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers-mysql</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
