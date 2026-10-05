@@ -32,6 +32,7 @@
         <springdoc.version>3.1.1</springdoc.version>
         <resilience4j.version>2.4.0</resilience4j.version>
         <lombok.version>1.18.46</lombok.version>
+        <bouncycastle.version>1.84</bouncycastle.version>
 
         <jacoco.version>0.8.15</jacoco.version>
         <spotbugs-plugin.version>4.10.4.1</spotbugs-plugin.version>
@@ -64,6 +65,12 @@
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
                 <version>${springdoc.version}</version>
+            </dependency>
+            <dependency>
+                <!-- Argon2id do spring-security-crypto (Argon2PasswordHasher) -->
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>${bouncycastle.version}</version>
             </dependency>
             <!-- módulos internos -->
             <dependency>

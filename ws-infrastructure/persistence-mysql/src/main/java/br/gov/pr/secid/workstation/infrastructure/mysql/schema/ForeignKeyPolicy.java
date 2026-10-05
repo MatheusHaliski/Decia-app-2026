@@ -134,13 +134,14 @@ public final class ForeignKeyPolicy {
     }
 
     /**
-     * FKs do {@code V2__baseline_dominio_base.sql} (Bloco 2), escritas à mão.
+     * FKs do {@code V2__baseline_dominio_base.sql} (Bloco 2) e {@code V3__rf1_rf2_autenticacao.sql} (Bloco 3), escritas à mão.
      */
     private static final List<Fk> BASELINE_V2 = List.of(
             // → users (dono dos dados: CASCADE; trilhas append-only: RESTRICT)
             new Fk("user_preferences", "user_id", "users", "CASCADE"),
             new Fk("refresh_tokens", "user_id", "users", "CASCADE"),
             new Fk("media_objects", "owner_id", "users", "CASCADE"),
+            new Fk("verification_codes", "user_id", "users", "CASCADE"),        // V3 (RF1/RF2): código é dado do dono
             new Fk("audit_log", "actor_id", "users", "RESTRICT"),
             new Fk("ai_inference_log", "user_id", "users", "RESTRICT"),
             new Fk("ai_inference_log", "reviewed_by", "users", "RESTRICT"),

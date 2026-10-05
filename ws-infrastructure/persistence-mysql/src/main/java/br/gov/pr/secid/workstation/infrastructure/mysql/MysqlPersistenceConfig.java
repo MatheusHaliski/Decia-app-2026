@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
- * MySQL é a fonte de verdade e o único store sempre ligado (ARQUITETURA §3.2). As entidades JPA ({@code *Entity}) e os
- * repositórios Spring Data das migrations V10+ ficam neste módulo, por contexto ({@code infrastructure.mysql.<contexto>.entity|repository},
- * gerados do {@code DomainCatalog} de ws-domain, D-40); o schema é 100% Flyway ({@code db/migration/V*__*.sql}, {@code ddl-auto: none}).
+ * MySQL é a fonte de verdade e o único store sempre ligado (ARQUITETURA §3.2). O domínio puro fica em ws-domain; as
+ * entidades JPA ({@code UserEntity}…) e os repositórios Spring Data ficam neste módulo, atrás das portas de
+ * ws-application. O schema é 100% Flyway ({@code db/migration/V*__*.sql}, {@code ddl-auto: none}).
  * Boot 4: {@code EntityScan} mudou para {@code org.springframework.boot.persistence.autoconfigure}.
  */
 @Configuration

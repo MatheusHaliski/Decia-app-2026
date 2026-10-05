@@ -1,6 +1,7 @@
 package br.gov.pr.secid.workstation.domain.identity;
 
-/** Papel global (RF2, RF18); CURADOR é papel contextual via {@code CuratorAppointment}. */
+/** Papel global ({@code users.role}, CHECK ck_users_role). Vai no claim {@code role} do JWT → {@code ROLE_*}. */
 public enum Role {
-    USER, ADMIN
+    USER,
+    ADMIN
 }

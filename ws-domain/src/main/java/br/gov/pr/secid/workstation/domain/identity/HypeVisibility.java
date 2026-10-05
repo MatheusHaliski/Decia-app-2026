@@ -1,6 +1,8 @@
 package br.gov.pr.secid.workstation.domain.identity;
 
-/** Quem vê o Hype do perfil (RF45.CA06); padrão SO_EU. */
+/** Visibilidade do Hype no perfil (RF45.CA06; padrão {@code SO_EU}). */
 public enum HypeVisibility {
-    PUBLICO, EMPRESA, SO_EU
+    PUBLICO,
+    EMPRESA,
+    SO_EU
 }
