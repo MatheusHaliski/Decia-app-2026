@@ -92,6 +92,8 @@ Frontend na raiz: `app/` (App Router), `components/ui/` (design system — únic
 
 ## Banco (MySQL 8.4 · Flyway)
 
+> **Planilha RF × entidade × atributo × banco de produção:** [`docs/arquitetura/RF_ENTIDADES_ATRIBUTOS.xlsx`](docs/arquitetura/RF_ENTIDADES_ATRIBUTOS.xlsx), gerada de `catalogo-entidades.json` por `docs/arquitetura/gerar-planilha-entidades.py` (abas Atributos · Entidades · RF x Entidade · Bancos · Legenda; contagens por fórmula, recalculadas ao abrir).
+
 Schema 100 % por migration em `ws-infrastructure/persistence-mysql/src/main/resources/db/migration/` (`spring.jpa.hibernate.ddl-auto: none`;
 o Hibernate nunca cria nem altera tabela). Migrations aplicadas nunca são editadas: mudança = versão nova. Convenções do V2 (D-23): ids `BINARY(16)` (UUID),
 enums `VARCHAR` + `CHECK ck_<tabela>_<coluna>`, FK `fk_<tabela>__<coluna>` com `ON DELETE` explícito seguindo a política por domínio (dono → `CASCADE`;
