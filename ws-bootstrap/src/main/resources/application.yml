@@ -123,6 +123,7 @@ ws:
       # caminhos de arquivo PEM (scripts/keys/generate_jwt_keys.sh grava em ./keys/, fora do git). Vazio = nenhum token aceito.
       public-key-path: ${WS_JWT_PUBLIC_KEY_PATH:}
       private-key-path: ${WS_JWT_PRIVATE_KEY_PATH:}
+      access-ttl: ${WS_JWT_ACCESS_TTL:15m}                 # Q-49 (10 ou 15 min); padrão 15 min como no FAI
     cors:
       allowed-origins: ${WS_CORS_ALLOWED_ORIGINS:http://localhost:3000}
     edge-proxy:

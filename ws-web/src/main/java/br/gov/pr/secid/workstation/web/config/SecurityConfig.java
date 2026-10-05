@@ -23,7 +23,8 @@ import java.util.List;
 
 /**
  * Segurança da API (ARQUITETURA §3.3): stateless, JWT RS256 próprio (OAuth2 Resource Server), papel vindo do claim
- * {@code role}. Público: só {@code GET /actuator/health} e a documentação OpenAPI (desligável em prod). O resto do
+ * {@code role}. Público: {@code GET /actuator/health}, {@code POST /api/auth/login} e a documentação OpenAPI
+ * (desligável em prod). O resto do
  * Actuator exige ADMIN; qualquer outra rota exige autenticação. 401/403 saem em JSON ({@code ApiError}).
  */
 @Configuration
@@ -51,6 +52,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()   // freios no AuthRateLimitFilter
                         .requestMatchers(HttpMethod.GET, "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/actuator/**").hasRole("ADMIN")
                         .anyRequest().authenticated())

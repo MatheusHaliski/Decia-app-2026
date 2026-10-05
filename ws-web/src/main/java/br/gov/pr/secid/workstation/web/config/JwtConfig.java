@@ -36,7 +36,7 @@ public class JwtConfig {
     private static final Logger log = LoggerFactory.getLogger(JwtConfig.class);
 
     @Bean
-    JwtDecoder jwtDecoder(WsSecurityProperties props) {
+    public JwtDecoder jwtDecoder(WsSecurityProperties props) {
         WsSecurityProperties.Jwt jwt = props.jwt();
         if (!jwt.hasPublicKey()) {
             log.warn("ws.security.jwt.public-key-path vazio: nenhum token será aceito (só rotas públicas)");
