@@ -6,7 +6,7 @@ import { useNotifications } from "./useNotifications";
 
 afterEach(() => localStorage.removeItem(NOTIF_SIM_KEY));
 
-describe("notificações (mock D-33)", () => {
+describe("notificações (mock D-36)", () => {
   it("mock tipado: todo tipo tem glifo e chave i18n; contagem de não lidas", () => {
     for (const n of MOCK_NOTIFICATIONS) {
       expect(KIND_GLYPH[n.kind]).toBeTruthy();

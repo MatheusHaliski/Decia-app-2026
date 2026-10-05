@@ -1,6 +1,6 @@
 "use client";
 // Mesa de Trabalho (RF21/RF22; Matriz A §2.2): esqueleto com a prévia real da Mesa — skin (RF22, RF38.CA08) e arte de
-// fundo (RF23/RF3, D-34) vêm das preferências do usuário e mudam na hora.
+// fundo (RF23/RF3, D-37) vêm das preferências do usuário e mudam na hora.
 import { BackgroundArt, Button, Tag } from "@/components/ui";
 import { RfPage } from "@/components/shell/RfPage";
 import { useI18n } from "@/lib/i18n/useI18n";

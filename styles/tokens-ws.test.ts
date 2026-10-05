@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 
-/** D-30: styles/tokens-ws.css é cópia da fonte de verdade docs/design-system/tokens-ws.css — o CI falha se divergir. */
+/** D-33: styles/tokens-ws.css é cópia da fonte de verdade docs/design-system/tokens-ws.css — o CI falha se divergir. */
 describe("tokens v2 do app", () => {
   it("styles/tokens-ws.css é idêntico a docs/design-system/tokens-ws.css", () => {
     const app = fs.readFileSync(`${ROOT}/styles/tokens-ws.css`, "utf8");

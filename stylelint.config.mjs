@@ -1,4 +1,4 @@
-// stylelint do Work Station: cor só por token (D-11, D-30). Hex, rgb(), rgba(), hsl(), hsla(), oklch() etc. são proibidos
+// stylelint do Work Station: cor só por token (D-11, D-33). Hex, rgb(), rgba(), hsl(), hsla(), oklch() etc. são proibidos
 // em qualquer CSS exceto styles/tokens-ws.css (cópia gerada de docs/design-system/tokens-ws.css) — quem precisa de uma cor
 // nova cria o token (e passa pela tabela de contraste de TOKENS.md) em vez de escrever o valor na tela. Além disso, toda
 // propriedade de cor só aceita var(--ws-…), currentColor, transparent, inherit ou palavras-chave estruturais (none, auto).

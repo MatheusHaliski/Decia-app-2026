@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Artes de fundo das telas (RF23/RF3, D-34): a partir dos originais do dono em public/brand/RF23/ ("Aura Geometry (n).png",
+// Artes de fundo das telas (RF23/RF3, D-37): a partir dos originais do dono em public/brand/RF23/ ("Aura Geometry (n).png",
 // mantidos intactos) gera nomes estáveis e variantes otimizadas em public/brand/backgrounds/ — <id>.png (cópia),
 // <id>-1280.webp, <id>-640.webp (2 tamanhos para srcset) e <id>-thumb.webp (320×180, seletor) — e mede a luminância
 // média (0–100) de cada arte para o catálogo decidir o tom (dark < 50) e, portanto, o scrim/tinta do texto sobre a arte.

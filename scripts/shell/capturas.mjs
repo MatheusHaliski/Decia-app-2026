@@ -39,7 +39,7 @@ export const CAPTURAS = [
   { file: "05-login.png", route: "/login", perfil: "VISITANTE", tema: "claro", viewport: DESKTOP, descricao: "RF2 — entrar (BFF /bff/auth/login)", prepare: (p) => p.getByRole("button", { name: "Entrar" }).waitFor() },
   { file: "06-cadastro.png", route: "/register", perfil: "VISITANTE", tema: "claro", viewport: DESKTOP, descricao: "RF1 — cadastro com tipo de perfil, campos e aceite dos termos", full: true, prepare: (p) => p.getByRole("checkbox").waitFor() },
   { file: "07-rf23-preferencias.png", route: "/settings?tab=aparencia", perfil: "EMPREGADO", tema: "claro", viewport: DESKTOP, descricao: "RF3/RF23 — tema, idioma, densidade, fonte, movimento, skin da Mesa e as 6 artes de fundo", full: true, prepare: async (p) => { await ready(p); await p.getByRole("radio", { name: /^Aura Geometry 6/ }).waitFor(); } },
-  { file: "08-notificacoes-popover.png", route: "/mural", perfil: "EMPREGADO", tema: "claro", viewport: DESKTOP, descricao: "Sino aberto com os itens mock (D-33)", prepare: async (p) => { await ready(p); await p.getByTestId("bell").click(); await p.getByRole("dialog", { name: "Notificações" }).getByRole("listitem").first().waitFor(); } },
+  { file: "08-notificacoes-popover.png", route: "/mural", perfil: "EMPREGADO", tema: "claro", viewport: DESKTOP, descricao: "Sino aberto com os itens mock (D-36)", prepare: async (p) => { await ready(p); await p.getByTestId("bell").click(); await p.getByRole("dialog", { name: "Notificações" }).getByRole("listitem").first().waitFor(); } },
   { file: "09-notificacoes-pagina.png", route: "/notifications", perfil: "EMPREGADO", tema: "claro", viewport: DESKTOP, descricao: "Lista completa de notificações com simulação de estados", prepare: async (p) => { await ready(p); await p.getByRole("main").getByRole("listitem").first().waitFor(); } },
   { file: "10-central-perfil.png", route: "/mural", perfil: "EMPREGADO", tema: "claro", viewport: DESKTOP, descricao: "Central de Perfil aberta (avatar, perfil, empresa/departamento, links, seletor do lab)", prepare: async (p) => { await ready(p); await p.getByTestId("user-panel").click(); await p.getByRole("dialog", { name: "Central de Perfil" }).waitFor(); } },
   { file: "11-tema-escuro.png", route: "/mural", perfil: "EMPREGADO", tema: "escuro", viewport: DESKTOP, descricao: "Shell no tema escuro", prepare: ready },
@@ -68,7 +68,7 @@ export async function capturar(lista = CAPTURAS) {
   const linhas = lista.map((c) => `| [\`${c.file}\`](${c.file}) | \`${c.route}\` | ${c.perfil} | ${c.tema} | ${c.viewport.width}×${c.viewport.height} | ${c.descricao} |`);
   const readme = `# Capturas do shell (etapa (b))
 
-Geradas por \`node scripts/shell/capturas.mjs\` (Playwright + Chromium em \`/opt/pw-browsers/chromium\`; app em \`next build && next start\`), perfil de visualização do lab (D-32) e tema gravados antes da primeira pintura. Para uma aba nova, acrescente uma entrada em \`CAPTURAS\` e rode o script de novo.
+Geradas por \`node scripts/shell/capturas.mjs\` (Playwright + Chromium em \`/opt/pw-browsers/chromium\`; app em \`next build && next start\`), perfil de visualização do lab (D-35) e tema gravados antes da primeira pintura. Para uma aba nova, acrescente uma entrada em \`CAPTURAS\` e rode o script de novo.
 
 | Captura | Rota | Perfil | Tema | Viewport | O que mostra |
 |---|---|---|---|---|---|

@@ -1,6 +1,6 @@
 "use client";
 /**
- * ViewerProvider (D-32): perfil de VISUALIZAÇÃO do lab, só no front, para testar a visibilidade das abas por perfil.
+ * ViewerProvider (D-35): perfil de VISUALIZAÇÃO do lab, só no front, para testar a visibilidade das abas por perfil.
  * Guardado em localStorage (`ws.lab.viewer`, try/catch). Quando a sessão real existir (Bloco 3), o perfil passa a vir
  * de /api/me e o seletor fica restrito ao /lab.
  */

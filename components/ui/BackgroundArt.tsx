@@ -4,7 +4,7 @@ import { AURA_ARTS } from "./backgrounds/aura.gen";
 import { cn } from "./cn";
 
 /**
- * BackgroundArt (docs/design-system/backgrounds/README.md; RF23/RF3, D-34): arte de fundo do shell/Mesa pelo catálogo tipado.
+ * BackgroundArt (docs/design-system/backgrounds/README.md; RF23/RF3, D-37): arte de fundo do shell/Mesa pelo catálogo tipado.
  * As 6 artes finais do dono ("Aura Geometry", public/brand/RF23) entram como `aura-geometry-01…06` com variantes otimizadas
  * (scripts/brand/gerar-fundos.mjs → public/brand/backgrounds/<id>-{1280,640}.webp + thumb) e tom medido pela luminância
  * média: dark → scrim escuro + texto creme; light → vidro claro + texto do tema. Os placeholders SVG só com tokens continuam

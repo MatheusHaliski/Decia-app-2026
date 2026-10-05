@@ -1,7 +1,7 @@
 "use client";
 /**
  * Estado das notificações no shell: carregando → lista | vazio | erro; "marcar todas como lidas". Hoje alimentado pelo
- * mock (D-33) com simulação de estados pelo lab; quando `GET /api/notifications` existir, troca-se só o `load()`.
+ * mock (D-36) com simulação de estados pelo lab; quando `GET /api/notifications` existir, troca-se só o `load()`.
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MOCK_NOTIFICATIONS, NOTIF_SIM_KEY, readSim, unreadCount, type AppNotification, type NotificationsSim } from "./mock";

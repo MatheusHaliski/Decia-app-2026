@@ -1,6 +1,6 @@
 "use client";
 // /lab/perfis: visibilidade das abas por perfil (ABAS_POR_PERFIL.md Matrizes A–E) com o perfil de VISUALIZAÇÃO do shell
-// (D-32). A tabela lê a mesma matriz que a sidebar usa; o wireframe docs/lab/perfis.html vem embaixo como referência.
+// (D-35). A tabela lê a mesma matriz que a sidebar usa; o wireframe docs/lab/perfis.html vem embaixo como referência.
 import { Fragment } from "react";
 import { Badge, Card, Glyph, Link, cn } from "@/components/ui";
 import { LabEmbed } from "@/components/shell/LabEmbed";

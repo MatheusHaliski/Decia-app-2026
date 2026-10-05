@@ -1,5 +1,5 @@
 "use client";
-// Lista completa de notificações (mock D-33 até o RF de notificações). Estados vazio/erro/carregando simuláveis pelo lab.
+// Lista completa de notificações (mock D-36 até o RF de notificações). Estados vazio/erro/carregando simuláveis pelo lab.
 import { Badge, Button, Card, Select } from "@/components/ui";
 import { NotificationsList } from "@/components/shell/NotificationsBell";
 import { PageHeader } from "@/components/shell/PageHeader";

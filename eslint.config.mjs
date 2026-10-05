@@ -1,5 +1,5 @@
 // ESLint (flat config) do frontend Work Station. Além do recomendado do TypeScript e do Next, aplica as regras do design
-// system (D-11, D-30, ARQUITETURA §4):
+// system (D-11, D-33, ARQUITETURA §4):
 //  1. nenhum elemento interativo/nativo solto nas telas — <button>, <input>, <select>, <dialog>, <progress> e <a> só podem
 //     aparecer dentro de components/ui/** (fora dali use Button, Input, Select, Dialog, PercentBar e Link do design system);
 //  2. nenhuma cor literal em JSX: `style={{ color: "#fff" }}` / `rgb()` / `hsl()` e classes Tailwind de cor fixa

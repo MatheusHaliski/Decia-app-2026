@@ -1,5 +1,5 @@
 /**
- * Perfil de VISUALIZAÇÃO do lab (D-32): só no front, para testar a visibilidade das abas por perfil
+ * Perfil de VISUALIZAÇÃO do lab (D-35): só no front, para testar a visibilidade das abas por perfil
  * (docs/produto/ABAS_POR_PERFIL.md §1.1). Não é autenticação — a sessão real chega no Bloco 3 (RF1/RF2) e passará a
  * alimentar o mesmo contexto. EMPREGADO · EMPRESA · CHEFE · CURADOR · ADMIN · VISITANTE (não logado).
  */

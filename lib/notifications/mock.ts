@@ -1,5 +1,5 @@
 /**
- * Notificações — dados MOCK tipados (D-33) até o RF de notificações ligar `GET /api/notifications`. Tipos conforme a
+ * Notificações — dados MOCK tipados (D-36) até o RF de notificações ligar `GET /api/notifications`. Tipos conforme a
  * TAXONOMIA (`Notification`, `NotificationType`): menção (RF19.CA03), decisão validada/devolvida (RF29), chancela
  * (RF39.CA12), DECIA Points (RF42), Tarefa do Dia (RF44), atribuição proposta (RF46.CA03), sistema. Textos por chave
  * i18n com variáveis; nenhuma pessoa real.

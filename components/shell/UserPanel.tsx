@@ -9,7 +9,7 @@ import { useViewer } from "@/lib/viewer/ViewerProvider";
 
 /**
  * Central de Perfil (painel do usuário na barra superior): avatar + monograma do departamento, nome, perfil,
- * empresa/departamento, links Meu perfil · Preferências · Sair e, para o lab (D-32), o seletor do perfil de
+ * empresa/departamento, links Meu perfil · Preferências · Sair e, para o lab (D-35), o seletor do perfil de
  * VISUALIZAÇÃO (EMPREGADO · EMPRESA · CHEFE · CURADOR · ADMIN · VISITANTE) — só no front, para testar a visibilidade.
  */
 export function ViewerProfileSelect({ className }: { className?: string }) {

@@ -365,7 +365,7 @@ Para o **CURADOR** nada some; ganha o grupo Gestão › Curadoria (§7.e) e a et
 
 ## 11. Implementado em (etapa (b) — shell e páginas-esqueleto)
 
-Fonte: `lib/pages/registry.ts` (rota → arquivo → RFs → visibilidade por perfil) e `lib/nav/matrix.ts` (Matriz A). Cada página é um esqueleto (`components/shell/RfPage.tsx`): cabeçalho com chips dos RFs, sub-abas da matriz, bloco "O que esta aba vai fazer" com os CAs copiados dos READMEs (`lib/rf/catalog.gen.ts`) e `403 ACESSO_NEGADO` simulado quando a célula é **O** para o perfil de visualização (`lib/viewer`, D-32). Matrizes: A menu lateral · B perfil · C empresa · D departamento · E globais · auth · lab · global.
+Fonte: `lib/pages/registry.ts` (rota → arquivo → RFs → visibilidade por perfil) e `lib/nav/matrix.ts` (Matriz A). Cada página é um esqueleto (`components/shell/RfPage.tsx`): cabeçalho com chips dos RFs, sub-abas da matriz, bloco "O que esta aba vai fazer" com os CAs copiados dos READMEs (`lib/rf/catalog.gen.ts`) e `403 ACESSO_NEGADO` simulado quando a célula é **O** para o perfil de visualização (`lib/viewer`, D-35). Matrizes: A menu lateral · B perfil · C empresa · D departamento · E globais · auth · lab · global.
 
 | Aba | Rota | Arquivo | RF(s) | Matriz |
 |---|---|---|---|---|

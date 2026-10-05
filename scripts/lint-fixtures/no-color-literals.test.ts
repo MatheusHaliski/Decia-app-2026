@@ -19,7 +19,7 @@ function walk(dir: string, out: string[] = []): string[] {
   return out;
 }
 
-/** Guarda genérica (D-11, D-30): nenhuma cor literal fora de styles/tokens-ws.css — nem no sprite de glifos gerado. */
+/** Guarda genérica (D-11, D-33): nenhuma cor literal fora de styles/tokens-ws.css — nem no sprite de glifos gerado. */
 describe("cor só por token em components/**, app/**, lib/** e styles/**", () => {
   it("nenhum arquivo traz #hex, rgb(), hsl() etc. (exceto tokens-ws.css)", () => {
     const offenders: string[] = [];

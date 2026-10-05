@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 const ROOT = fileURLToPath(new URL("../..", import.meta.url));
 
 /**
- * Prova dos gates do design system (D-11, D-30): a configuração REAL do ESLint (eslint.config.mjs) tem de rejeitar cada
+ * Prova dos gates do design system (D-11, D-33): a configuração REAL do ESLint (eslint.config.mjs) tem de rejeitar cada
  * elemento nativo solto fora de components/ui/**, rejeitar cor literal/classe Tailwind de cor fixa em qualquer .tsx e
  * aceitar os componentes do design system, que usam os elementos nativos por dentro.
  */
