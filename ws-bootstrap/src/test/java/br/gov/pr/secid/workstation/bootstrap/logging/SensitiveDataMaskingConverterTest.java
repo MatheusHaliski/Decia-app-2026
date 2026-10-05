@@ -19,8 +19,9 @@ class SensitiveDataMaskingConverterTest {
             "{\"token\":\"abc.def.ghi\"}                            | abc.def.ghi",
             "Authorization: Bearer eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ1MSJ9.c2lnbmF0dXJl | eyJhbGciOiJSUzI1NiJ9",
             "jdbc:mysql://ws:S3nh4Forte@db:3306/workstation         | S3nh4Forte",
-            "api_key=sk-live-123456 enviado                        | sk-live-123456",
-            "WS_DATA_ENCRYPTION_KEY=YWJjZGVmZ2hpamtsbW5vcA==        | YWJjZGVmZ2hpamtsbW5vcA==",
+            // valores de brinquedo de baixa entropia: o que importa aqui é o NOME da chave disparar a máscara
+            "api_key=chave-de-teste-falsa enviado                 | chave-de-teste-falsa",
+            "WS_DATA_ENCRYPTION_KEY=valor-de-teste-falso            | valor-de-teste-falso",
             "client_secret: xyz-987                                | xyz-987",
     })
     void mascaraSegredosConhecidos(String message, String secret) {
