@@ -32,7 +32,6 @@
         <springdoc.version>3.1.1</springdoc.version>
         <resilience4j.version>2.4.0</resilience4j.version>
         <lombok.version>1.18.46</lombok.version>
-        <!-- Argon2id (Spring Security delega ao BouncyCastle; o BOM do Boot não gerencia o bcprov) -->
         <bouncycastle.version>1.84</bouncycastle.version>
 
         <jacoco.version>0.8.15</jacoco.version>
@@ -68,6 +67,7 @@
                 <version>${springdoc.version}</version>
             </dependency>
             <dependency>
+                <!-- Argon2id do spring-security-crypto (Argon2PasswordHasher) -->
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-jdk18on</artifactId>
                 <version>${bouncycastle.version}</version>

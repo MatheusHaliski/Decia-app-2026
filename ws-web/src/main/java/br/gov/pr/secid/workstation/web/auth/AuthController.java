@@ -1,54 +1,82 @@
 package br.gov.pr.secid.workstation.web.auth;
 
-import br.gov.pr.secid.workstation.application.identity.AuthenticatedUser;
+import br.gov.pr.secid.workstation.application.identity.CurrentUser;
 import br.gov.pr.secid.workstation.application.identity.IdentityService;
-import br.gov.pr.secid.workstation.application.identity.LoginCommand;
-import br.gov.pr.secid.workstation.application.identity.TokenIssuerPort;
-import br.gov.pr.secid.workstation.web.support.ClientIpResolver;
+import br.gov.pr.secid.workstation.application.identity.RequestContext;
+import br.gov.pr.secid.workstation.application.identity.Session;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.springframework.http.CacheControl;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
+import java.util.Map;
 
 /**
- * Autenticação local (RF1/RF2 — Bloco 3). Antes deste controller rodam o {@code AuthRateLimitFilter} (limite por IP e
- * teto de hashes) e, dentro do {@link IdentityService}, o bloqueio por conta e o login sem oráculo. A resposta nunca
- * é cacheada ({@code Cache-Control: no-store}).
+ * RF2 — sessão: login, refresh com rotação, logout e troca de senha. O refresh token volta no corpo SÓ para o BFF
+ * (Bloco 4), que o guarda no cookie {@code ws_rt} HttpOnly; o navegador nunca o vê. Limites por IP e bulkhead ficam
+ * no {@code AuthRateLimitFilter}, antes do Spring Security.
  */
 @RestController
 @RequestMapping("/api/auth")
-@Tag(name = "auth", description = "Cadastro local e sessão (RF1/RF2)")
+@Tag(name = "RF2 Autenticação")
 public class AuthController {
     private final IdentityService identity;
-    private final TokenIssuerPort tokens;
-    private final ClientIpResolver clientIp;
 
-    public AuthController(IdentityService identity, TokenIssuerPort tokens, ClientIpResolver clientIp) {
+    public AuthController(IdentityService identity) {
         this.identity = identity;
-        this.tokens = tokens;
-        this.clientIp = clientIp;
     }
 
+    /** {@code rememberMe} é opcional (ausente = false): wrapper para o contrato não depender do Jackson aceitar primitivo faltando. */
+    public record LoginRequest(@NotBlank @Size(max = 320) String identifier, @NotBlank @Size(max = 128) String password,
+                               Boolean rememberMe, @Size(max = 120) String deviceName, @Size(max = 12) String twoFactorCode) {
+        boolean remember() {
+            return Boolean.TRUE.equals(rememberMe);
+        }
+    }
+
+    public record RefreshRequest(@NotBlank @Size(max = 256) String refreshToken) {
+    }
+
+    public record ChangePasswordRequest(@NotBlank @Size(max = 128) String currentPassword, @NotBlank @Size(max = 128) String newPassword,
+                                        @NotBlank @Size(max = 128) String confirmPassword) {
+    }
+
+    @Operation(summary = "RF2.CA01/CA02/CA07/CA08 Login com username ou e-mail e senha; 401 CREDENCIAIS_INVALIDAS único para "
+            + "conta inexistente, senha errada e conta bloqueada; 403 CONTA_INDISPONIVEL e 401 DOIS_FATORES_NECESSARIO só após a senha certa")
     @PostMapping("/login")
-    @Operation(summary = "SEG.CA01–CA04 — login local sem oráculo: 401 genérico para conta inexistente, senha errada ou "
-            + "conta bloqueada (5 tentativas em 15 min, reserva atômica antes do hash); 403/2FA só após a senha certa; "
-            + "429 por IP (30 em 10 min) e 503 com Retry-After quando o teto de hashes é atingido")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest body, HttpServletRequest request) {
-        String ip = clientIp.resolve(request);
-        AuthenticatedUser user = identity.login(new LoginCommand(body.identifier(), body.password()), ip,
-                request.getHeader("User-Agent"));
-        UUID familyId = UUID.randomUUID();      // RF2: vira a família do refresh token
-        String token = tokens.issueAccessToken(user, familyId);
-        return ResponseEntity.ok()
-                .cacheControl(CacheControl.noStore())
-                .body(new LoginResponse(token, "Bearer", tokens.accessTokenTtl().toSeconds(), LoginResponse.UserCard.of(user)));
+    public Session login(@Valid @RequestBody LoginRequest body, RequestContext ctx) {
+        return identity.login(new IdentityService.LoginCommand(body.identifier(), body.password(), body.remember(),
+                body.deviceName(), body.twoFactorCode()), ctx);
+    }
+
+    @Operation(summary = "RF2.CA04 Refresh com rotação por família; reuso de token rotacionado revoga a família (401 SESSAO_INVALIDA)")
+    @PostMapping("/refresh")
+    public Session refresh(@Valid @RequestBody RefreshRequest body, RequestContext ctx) {
+        return identity.refresh(body.refreshToken(), ctx);
+    }
+
+    @Operation(summary = "RF2.CA05 Logout: revoga a família da sessão atual (sid); o access token deixa de valer no SessionActiveFilter")
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void logout(CurrentUser user, RequestContext ctx) {
+        identity.logout(user, ctx);
+    }
+
+    @Operation(summary = "RF2.CA05/CA09 Troca de senha com reconferência da atual no mesmo bloqueio (6º erro → 429 MUITAS_TENTATIVAS); "
+            + "encerra as outras sessões")
+    @PutMapping("/password")
+    public ResponseEntity<Map<String, Object>> changePassword(CurrentUser user, @Valid @RequestBody ChangePasswordRequest body,
+                                                              RequestContext ctx) {
+        int ended = identity.changePassword(user, body.currentPassword(), body.newPassword(), body.confirmPassword(), ctx);
+        return ResponseEntity.ok(Map.of("sessionsEnded", ended));
     }
 }
