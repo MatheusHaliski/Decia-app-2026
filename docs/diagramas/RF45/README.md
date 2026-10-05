@@ -1,198 +1,50 @@
 # RF45 — Calcular com a IA o Hype Score do Perfil (0–1000) a partir de tudo o que o usuário produziu, das interações recebidas (curtidas, reações, comentários, salvos, remixes) e da participação no DECIA — exibível ou oculto a critério do usuário, sempre explicável
-**HU:** HU45 · **Sprint (board Work Station):** Product Backlog (não priorizado — pós-Sprint 4) · **Equivalente FAI:** Hype Score do look/perfil (RF6 painel do Look do Dia) + Inventory Score (RF29) + contadores sociais (RF19) — consolidados em um índice de reputação profissional por pessoa · **Aba/rota:** cabeçalho do perfil (RF19) com o selo do Hype Score (se exibido), página `/profile/hype` (só o dono) com a decomposição
-**Critérios de aceite cobertos:** RF45.CA01 · RF45.CA02 · RF45.CA03 · RF45.CA04 · RF45.CA05 · RF45.CA06 · RF45.CA07 · RF45.CA08 · RF45.CA09 · RF45.CA10
+**HU:** HU45 · **Sprint (board Work Station):** Product Backlog (não comprometido na Sprint 4) · **Equivalente FAI:** Hype Score do look/perfil + Inventory Score (RF29) + contadores sociais (RF19), consolidados em um índice de reputação profissional por pessoa · **Aba/rota:** selo no cabeçalho do perfil (`/profile`, `/u/[username]`, se exibido), página **Por que meu Hype é X?** (`/profile/hype`, só o dono), aba "ignoradas", página pública "Como o Hype é calculado" (`/hype/como-e-calculado`), controle de exibição em `/settings` (RF3), recalibração da EMPRESA (`/hype/recalibration`), histograma no dashboard (`/admin/dashboard`, `/issuer/dashboard`)
+**Critérios de aceite cobertos:** RF45.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 (corpo do card, inalterado) — regra: o **título do card** define o RF e o corpo traz os próprios CAs.
 
-> Contexto Gamificação & Reputação (bounded context 9). Entidade central: `ProfileHypeScore` (única por `userId + scoreDate`, `idempotencyKey`), com `blocksJson` em 5 blocos (produção 25, reconhecimento social 25, participação DECIA 25, eficiência e impacto 15, reconhecimentos e chancelas 10), `bayesianPriorsJson`, `halfLifeDays` 180, `percentileInDept`, `bandCode` (`HypeBand`). Eventos descartados vão para `HypeIgnoredEvent` (NAO_VERIFICADO, AUTO_INTERACAO, ANTIFRAUDE). Visibilidade em `User.hypeVisibility` (`HypeVisibility` PUBLICO | EMPRESA | SO_EU, padrão SO_EU). O job diário é `PipelineJob RECALC_HYPE` → `HypeScoreService`; a IA só redige a explicação.
+`ProfileHypeScore` (único `userId + scoreDate`; `score` 0–1000; `bandCode` → `HypeBand` Iniciante · Contribuinte · Referência · Líder de prática · Lenda do departamento, nomes editáveis pela EMPRESA; `blocksJson` produção 25 % · reconhecimento social 25 % · participação no DECIA 25 % · eficiência e impacto 15 % · reconhecimentos e chancelas 10 %; `bayesianPriorsJson`, `halfLifeDays` 180, `percentileInDept`, `topPositiveEventsJson`, `topNegativeEventsJson`, `suggestionsJson`, `weightsVersion`, `aiInferenceId`, `idempotencyKey`). Regras estatísticas em `HypeCalculator` (determinístico, D-12, `METRICAS_GESTAO.md` seção Hype): **média bayesiana** por bloco, **decaimento** meia-vida 180 d, **normalização por departamento/empresa** (percentil), tetos por dia, ponderação **PageRank** pela reputação de quem interage (`Reaction.actorHypeAtTime` do mês anterior, ≤ 3× o peso base), **antifraude** compartilhado com RF42 (`HypeIgnoredEvent` NAO_VERIFICADO · AUTO_INTERACAO · ANTIFRAUDE, só `User.verified`). Exibição: `User.hypeVisibility` PUBLICO · EMPRESA · SO_EU (padrão; **existe no main**: `HypeVisibility`) — a API omite o campo ou responde 403 a quem não pode ver; ocultar não impede o cálculo nem o ranking (RF43, que respeita `rankingOptOut`). A IA (`HYPE_PERFIL`) **só redige** a explicação ✦. Política de uso (LGPD): indicador de reputação e desenvolvimento, não instrumento disciplinar (`Company.hypePolicyJson`); revisão de decisão automatizada via `DataSubjectRequest` target HYPE (RF3).
 
 ## 1. Diagrama de classes
 
 ```mermaid
 classDiagram
-  direction LR
+direction LR
 
+namespace ws_domain_reputacao {
   class ProfileHypeScore {
     <<entity>>
-    +UUID id
-    +UUID userId
-    +LocalDate scoreDate
-    +int score
-    +String bandCode
-    +String blocksJson
-    +String bayesianPriorsJson
-    +int halfLifeDays
-    +BigDecimal percentileInDept
-    +String topPositiveEventsJson
-    +String topNegativeEventsJson
-    +String suggestionsJson
-    +int weightsVersion
-    +UUID aiInferenceId
-    +String idempotencyKey
+    +id: UUID
+    +userId: UUID
+    +scoreDate: LocalDate
+    +score: int
+    +bandCode: String
+    +blocksJson: JSON
+    +bayesianPriorsJson: JSON
+    +halfLifeDays: int
+    +percentileInDept: BigDecimal
+    +topPositiveEventsJson: JSON
+    +topNegativeEventsJson: JSON
+    +suggestionsJson: JSON
+    +weightsVersion: int
+    +aiInferenceId: UUID
+    +idempotencyKey: String
   }
   class HypeBand {
     <<entity>>
-    +UUID id
-    +UUID companyId
-    +int min
-    +int max
-    +String name
+    +id: UUID
+    +companyId: UUID
+    +min: int
+    +max: int
+    +name: String
   }
   class HypeIgnoredEvent {
     <<entity>>
-    +UUID id
-    +UUID userId
-    +String eventType
-    +UUID eventId
-    +IgnoredReason reason
-    +Instant at
-  }
-  class User {
-    <<entity>>
-    +UUID id
-    +boolean verified
-    +HypeVisibility hypeVisibility
-    +boolean rankingOptOut
-    +UUID departmentId
-    +UUID companyId
-  }
-  class Company {
-    <<entity>>
-    +UUID id
-    +String hypePolicyJson
-  }
-  class Reaction {
-    <<entity>>
-    +UUID id
-    +UUID actorId
-    +String targetType
-    +UUID targetId
-    +ReactionType reactionType
-    +Instant at
-    +int actorHypeAtTime
-    +String ignoredReason
-  }
-  class Comment {
-    <<entity>>
-    +UUID authorId
-    +UUID targetId
-    +UUID parentCommentId
-  }
-  class SavedItem {
-    <<entity>>
-    +UUID userId
-    +UUID targetId
-  }
-  class Share {
-    <<entity>>
-    +UUID actorId
-    +UUID targetId
-    +ShareChannel channel
-  }
-  class Remix {
-    <<entity>>
-    +UUID actorId
-    +UUID sourceId
-    +UUID modelOfferId
-  }
-  class DeciaPointsLedgerEntry {
-    <<entity>>
-    +UUID userId
-    +int delta
-    +PointsEvent eventCode
-    +String status
-  }
-  class DeliberativeProfile {
-    <<entity>>
-    +UUID userId
-    +String periodKey
-    +BigDecimal clarity
-    +BigDecimal evidenceUse
-    +BigDecimal consistency
-  }
-  class EfficiencyScoreSnapshot {
-    <<entity>>
-    +UUID userId
-    +LocalDate date
-    +BigDecimal hse
-    +BigDecimal movingAvg7
-  }
-  class SealBond {
-    <<entity>>
-    +UUID targetOwnerId
-    +SealBondStatus status
-    +UUID sealId
-  }
-  class Seal {
-    <<entity>>
-    +UUID id
-    +SealTier tier
-    +boolean excellence
-  }
-  class Recognition {
-    <<entity>>
-    +UUID recipientUserId
-    +String source
-    +Instant issuedAt
-  }
-  class Highlight {
-    <<entity>>
-    +String monthKey
-    +String targetType
-    +UUID targetId
-  }
-  class TaskItem {
-    <<entity>>
-    +UUID ownerId
-    +TaskState state
-    +String sealIdsJson
-    +int reuseCount
-    +String aiConfidenceJson
-  }
-  class ProjectScheme {
-    <<entity>>
-    +UUID ownerId
-    +ProjectStatus status
-    +BigDecimal conformityPercent
-  }
-  class RankingEntry {
-    <<entity>>
-    +RankingDimension dimension
-    +UUID userId
-    +BigDecimal value
-    +int position
-  }
-  class PipelineJob {
-    <<entity>>
-    +String type
-    +UUID targetId
-    +String status
-    +int attempts
-  }
-  class AiInferenceLog {
-    <<entity>>
-    +UUID id
-    +AiCapability capability
-    +String provider
-    +String result
-  }
-  class AuditLog {
-    <<entity>>
-    +UUID actorId
-    +String action
-    +String metadataJson
-  }
-  class MetricSnapshot {
-    <<entity>>
-    +String metricCode
-    +String scope
-    +UUID scopeId
-    +String valuesJson
-  }
-
-  class HypeVisibility {
-    <<enum>>
-    PUBLICO
-    EMPRESA
-    SO_EU
+    +id: UUID
+    +userId: UUID
+    +eventType: String
+    +eventId: UUID
+    +reason: IgnoredReason
+    +at: Instant
   }
   class IgnoredReason {
     <<enum>>
@@ -200,214 +52,274 @@ classDiagram
     AUTO_INTERACAO
     ANTIFRAUDE
   }
-  class ReactionType {
+  class HypeVisibility {
     <<enum>>
-    CURTIR
-    UTIL
-    BEM_FUNDAMENTADO
-    INOVADOR
-    CONFORME
+    PUBLICO
+    EMPRESA
+    SO_EU
   }
-  class RankingDimension {
-    <<enum>>
-    HYPE_PERFIL
-    HSE_MEDIO
-    ...5 valores
-  }
+}
 
-  class HypeController {
-    <<controller>>
-    +GET profile_hype
-    +GET profile_hype_ignored
-    +POST profile_hype_recalculate
-    +GET users_id_hype
-    +GET hype_how_it_works
+namespace ws_domain_entradas {
+  class User {
+    <<entity>>
+    +id: UUID
+    +verified: boolean
+    +hypeVisibility: HypeVisibility
+    +rankingOptOut: boolean
+    +companyId: UUID
+    +departmentId: UUID
   }
-  class PreferencesController {
-    <<controller>>
-    +PATCH me_hype_visibility
+  class Company {
+    <<entity>>
+    +id: UUID
+    +hypePolicyJson: JSON
   }
-  class CompanyPolicyController {
-    <<controller>>
-    +PUT companies_id_hype_policy
+  class TaskItem {
+    <<entity>>
+    +ownerId: UUID
+    +state: TaskState
+    +sealIdsJson: JSON
+    +reuseCount: int
   }
-  class DashboardController {
-    <<controller>>
-    +GET dashboard_hype_distribution
+  class ProjectScheme {
+    <<entity>>
+    +ownerId: UUID
+    +status: ProjectStatus
+    +conformityPercent: BigDecimal
   }
+  class Reaction {
+    <<entity>>
+    +actorId: UUID
+    +targetId: UUID
+    +reactionType: ReactionType
+    +actorHypeAtTime: int
+    +ignoredReason: String
+  }
+  class Comment {
+    <<entity>>
+    +authorId: UUID
+    +targetId: UUID
+    +parentCommentId: UUID
+  }
+  class Remix {
+    <<entity>>
+    +actorId: UUID
+    +sourceId: UUID
+  }
+  class DeciaPointsLedgerEntry {
+    <<entity>>
+    +userId: UUID
+    +eventCode: PointsEvent
+    +status: LedgerStatus
+  }
+  class DeliberativeProfile {
+    <<entity>>
+    +userId: UUID
+    +consistency: BigDecimal
+  }
+  class EfficiencyScoreSnapshot {
+    <<entity>>
+    +userId: UUID
+    +movingAvg7: BigDecimal
+  }
+  class Recognition {
+    <<entity>>
+    +recipientUserId: UUID
+  }
+  class SealBond {
+    <<entity>>
+    +targetOwnerId: UUID
+    +status: SealBondStatus
+  }
+  class Highlight {
+    <<entity>>
+    +targetType: String
+    +targetId: UUID
+  }
+  class RankingEntry {
+    <<entity>>
+    +dimension: RankingDimension
+    +userId: UUID
+  }
+  class DataSubjectRequest {
+    <<entity>>
+    +kind: DsrKind
+    +target: DsrTarget
+    +targetId: UUID
+  }
+}
+
+namespace ws_application {
   class HypeScoreService {
     <<service>>
+    +recalculateAll(scoreDate) void
     +recalculate(userId, scoreDate) ProfileHypeScore
-    +runDailyJob(companyId) int
-    +explain(userId) HypeExplanation
-    +ignored(userId) List~HypeIgnoredEvent~
-    +visibleTo(targetUserId, viewer) Optional~int~
-    +updatePolicy(companyId, policy, editor) Company
+    +explain(actor) HypeExplanation
+    +ignored(actor) List~HypeIgnoredEvent~
+    +visibleTo(viewer, ownerId) Optional~HypeView~
+    +distribution(actor, deptId) Histogram
   }
   class HypeCalculator {
     <<service>>
-    +bayesianMean(values, deptPrior, k) BigDecimal
-    +decay(eventAt, halfLifeDays180) BigDecimal
-    +normalizePercentile(score, deptScores) BigDecimal
-    +reputationWeight(actorHypePrevMonth, base, cap3x) BigDecimal
-    +blocks(inputs, weightsVersion) BlocksBreakdown
-    +band(score, bands) HypeBand
+    +compute(inputs, weights, priors) HypeResult
+    -bayesian(block, samples, prior) BigDecimal
+    -decay(event, halfLifeDays) BigDecimal
+    -normalize(value, deptDistribution) BigDecimal
+    -actorWeight(actorHypePrevMonth) BigDecimal
+    -dailyCap(eventType) int
   }
   class AntiFraudService {
     <<service>>
-    +isSelfInteraction(actorId, ownerId) boolean
-    +isCollusion(actorId, ownerId, window) boolean
-    +isVerified(actorId) boolean
+    +isIgnored(interaction) Optional~IgnoredReason~
   }
-  class RankingService {
+  class HypePolicyService {
     <<service>>
-    +compute(scope, scopeId, period, HYPE_PERFIL) List~RankingEntry~
+    +update(actor, HypePolicyForm) Company
+    +bands(companyId) List~HypeBand~
   }
   class AiEngine {
     <<service>>
-    +run(capability, input, accessClass) AiResult
+    +run(HYPE_PERFIL) AiResponse
   }
+  class Guard {
+    <<service>>
+    +requireOwner(actor, ownerId)
+    +requireRole(actor, role)
+    +requireSameCompany(actor, companyId)
+  }
+  class CachePort {
+    <<port>>
+    +hype(userId)
+  }
+  class JobPort {
+    <<port>>
+    +enqueue(RECALC_HYPE)
+  }
+  class AuditLogPort {
+    <<port>>
+    +record(AuditEvent)
+  }
+}
 
-  ProfileHypeScore --> User : userId
-  ProfileHypeScore ..> HypeBand : bandCode
-  ProfileHypeScore ..> AiInferenceLog : aiInferenceId (HYPE_PERFIL)
-  HypeIgnoredEvent --> IgnoredReason : reason
-  HypeIgnoredEvent --> User : userId (dono)
-  User --> HypeVisibility : hypeVisibility
-  Company ..> HypeBand : nomes das faixas (hypePolicyJson)
-  Company ..> ProfileHypeScore : pesos e meia-vida (weightsVersion)
-  Reaction --> ReactionType : reactionType
-  Reaction ..> ProfileHypeScore : actorHypeAtTime (peso PageRank)
-  Comment ..> ProfileHypeScore : bloco reconhecimento social
-  SavedItem ..> ProfileHypeScore : bloco reconhecimento social
-  Share ..> ProfileHypeScore : bloco reconhecimento social
-  Remix ..> ProfileHypeScore : bloco reconhecimento social
-  DeciaPointsLedgerEntry ..> ProfileHypeScore : bloco participação DECIA
-  DeliberativeProfile ..> ProfileHypeScore : consistência (objetivo 2)
-  EfficiencyScoreSnapshot ..> ProfileHypeScore : bloco eficiência e impacto
-  TaskItem ..> ProfileHypeScore : bloco produção e reutilizações
-  ProjectScheme ..> ProfileHypeScore : bloco produção (conformidade)
-  SealBond --> Seal : sealId
-  SealBond ..> ProfileHypeScore : bloco reconhecimentos e chancelas (tier, Excelência x2)
-  Recognition ..> ProfileHypeScore : bloco reconhecimentos
-  Highlight ..> ProfileHypeScore : destaques do mês
-  RankingEntry --> RankingDimension : HYPE_PERFIL
-  PipelineJob ..> HypeScoreService : RECALC_HYPE diário
+namespace ws_web {
+  class HypeController {
+    <<controller>>
+    +GET_api_me_hype()
+    +GET_api_me_hype_ignored()
+    +POST_api_me_hype_recalculate()
+    +GET_api_users_id_hype()
+    +GET_api_hype_how_it_works()
+    +PUT_api_companies_id_hype_policy(form)
+    +GET_api_dashboard_hype_distribution(deptId)
+  }
+}
 
-  HypeController --> HypeScoreService
-  PreferencesController ..> User : hypeVisibility
-  CompanyPolicyController --> HypeScoreService : updatePolicy
-  DashboardController --> HypeScoreService : distribuição anonimizada
-  HypeScoreService --> HypeCalculator
-  HypeScoreService --> AntiFraudService
-  HypeScoreService --> RankingService : HYPE_PERFIL (opt-out)
-  HypeScoreService --> AiEngine : HYPE_PERFIL (redação)
-  HypeScoreService ..> ProfileHypeScore
-  HypeScoreService ..> HypeIgnoredEvent
-  HypeScoreService ..> MetricSnapshot
-  HypeScoreService ..> AuditLog
-
-  note for ProfileHypeScore "tabela profile_hype_scores · único (userId, scoreDate) · blocksJson producao 25, reconhecimentoSocial 25, participacaoDecia 25, eficienciaImpacto 15, reconhecimentosChancelas 10"
-  note for HypeCalculator "ws-domain · determinístico e testável (média bayesiana, decaimento 180 d, normalização, antifraude) · METRICAS_GESTAO.md seção Hype do Perfil"
-  note for HypeBand "tabela hype_bands · 0–199 Iniciante · 200–399 Contribuinte · 400–599 Referência · 600–799 Líder de prática · 800–1000 Lenda do departamento"
-  note for IgnoredReason "nome do enum a confirmar · TAXONOMIA só lista valores em HypeIgnoredEvent.reason"
+ProfileHypeScore "0..*" --> "1" User
+ProfileHypeScore ..> HypeBand : bandCode
+User "1" o-- "0..*" HypeIgnoredEvent
+Company "1" o-- "0..*" HypeBand
+Company ..> HypeCalculator : hypePolicyJson pesos meia-vida faixas
+TaskItem ..> HypeCalculator : bloco producao
+ProjectScheme ..> HypeCalculator : bloco producao
+Reaction ..> HypeCalculator : bloco social ponderado por actorHypeAtTime
+Comment ..> HypeCalculator : bloco social
+Remix ..> HypeCalculator : bloco social
+DeciaPointsLedgerEntry ..> HypeCalculator : bloco DECIA
+DeliberativeProfile ..> HypeCalculator : consistencia
+EfficiencyScoreSnapshot ..> HypeCalculator : bloco eficiencia
+Recognition ..> HypeCalculator : bloco reconhecimentos
+SealBond ..> HypeCalculator : chancelas tier e Excelencia
+Highlight ..> HypeCalculator : destaques
+ProfileHypeScore ..> RankingEntry : HYPE_PERFIL respeita opt-out
+DataSubjectRequest ..> ProfileHypeScore : revisao art 20
+HypeController --> HypeScoreService
+HypeController --> HypePolicyService
+HypeScoreService --> HypeCalculator
+HypeScoreService --> AntiFraudService
+HypeScoreService --> AiEngine
+HypeScoreService --> Guard
+HypeScoreService --> CachePort
+HypeScoreService --> JobPort
+HypePolicyService --> Guard
+HypePolicyService --> AuditLogPort
+AntiFraudService ..> HypeIgnoredEvent : grava motivo
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  classDef err fill:#FFE3E3,stroke:#C0392B,color:#5B1A12
-  classDef ai fill:#FFF3D6,stroke:#D68910,color:#5C3B00
-  classDef store fill:#EEF6FF,stroke:#4A4852,color:#1F2937
-  classDef dom fill:#F3F0FA,stroke:#7E57C2,color:#2D2438
-
-  subgraph L_user["Ator humano · usuário dono · outro usuário · EMPRESA / CHEFE"]
-    U1["Dono abre /profile/hype (Por que meu Hype é 640?) ou pede recálculo"]
-    U2["Dono escolhe PÚBLICO / EMPRESA / SÓ EU nas preferências"]
-    U3["Outro usuário abre o perfil ou um card de autoria"]
-    U4["EMPRESA edita pesos dos blocos, meia-vida ou nomes das faixas"]
-    U5["EMPRESA/CHEFE abre o dashboard (RF18/RF28)"]
+  subgraph ATOR["Ator (dono · outro usuário · EMPRESA · CHEFE)"]
+    A0([Job diário ou sob demanda]) --> A1["Recalcula o Hype de cada usuário com atividade"]
+    A2([Dono abre /profile/hype]) --> A3["Score, faixa, decomposição, histórico 12 meses, top 5 positivos e negativos, 3 sugestões ✦"]
+    A4([Dono abre aba ignoradas]) --> A5["Interações descartadas com motivo"]
+    A6([Dono escolhe exibição em /settings]) --> A7{"PUBLICO · EMPRESA · SO_EU"}
+    A8([Outro usuário abre /u/username])
+    A9([EMPRESA edita pesos, meia-vida, nomes das faixas])
+    A10([EMPRESA/CHEFE abre dashboard]) --> A11["Histograma por departamento anonimizado e evolução média"]
   end
 
-  subgraph L_web["Web/BFF · Next.js /profile/hype · cabeçalho do perfil · cards · dashboard"]
-    W1["GET /profile/hype → score, faixa, blocos, histórico 12 meses, top 5 ±, 3 sugestões (✦) · aba ignoradas"]
-    W2["PATCH /me/hype-visibility"]
-    W3["GET /users/id/hype ou campo hype no card: HypeBadge só se permitido"]
-    W4["PUT /companies/id/hype-policy (vigência futura)"]
-    W5["GET /dashboard/hype-distribution → histograma anonimizado por departamento + evolução média"]
-    W6["Página pública Como o Hype é calculado (pesos, meia-vida, faixas, regras)"]
+  subgraph FE["Next.js / BFF (app/(shell)/profile/hype · u/[username] · settings · hype/como-e-calculado · hype/recalibration · admin/dashboard)"]
+    F1["HypeBadge no cabeçalho do perfil (só se visível ao viewer) · autor com Hype 640 nos cards (TaskCard/ProjectCard)"]
+    F2["HypePage: HypeGauge, BlocksBreakdown, HistoryChart 12m, TopEvents, Suggestions com Spark ✦ · GET /api/me/hype"]
+    F3["IgnoredList · GET /api/me/hype/ignored"]
+    F4["Select de visibilidade (RF3) · PATCH /api/me/preferences"]
+    F5["Página pública Como o Hype é calculado (pesos e regras vigentes)"]
+    F6["RecalibrationForm · PUT /api/companies/{id}/hype-policy"]
+    F7["Histogram anonimizado · GET /api/dashboard/hype-distribution"]
   end
 
-  subgraph L_job["Persistência / plataforma · job diário"]
-    J1["Scheduler 03h: PipelineJob RECALC_HYPE por usuário ativo"]
-    D1["MySQL profile_hype_scores (único userId + scoreDate) · hype_ignored_events · hype_bands"]
-    D2["MySQL reactions, comments, saved_items, shares, remixes, decia_points_ledger, deliberative_profiles, hse_snapshots, seal_bonds, recognitions, highlights, tasks, project_schemes"]
-    D3["Redis lock hype:userId:data · ranking:HYPE_PERFIL"]
-    D4["MySQL ai_inference_log · audit_log (política editada) · companies.hypePolicyJson · metric_snapshots"]
+  subgraph WEB["ws-web"]
+    W1["JWT · CorrelationIdFilter"]
+    W2["GlobalExceptionHandler"]
   end
 
-  subgraph L_app["ws-application · HypeScoreService"]
-    S1{"Já existe ProfileHypeScore (userId, scoreDate)?"}
-    S2["Coleta eventos do usuário (produção, interações recebidas, DECIA, eficiência, reconhecimentos) + pesos vigentes (weightsVersion) + priors do departamento"]
-    S3{"Para cada interação recebida: autor verificado? não é auto-interação? não marcada pelo antifraude (RF42)?"}
-    S4["HypeIgnoredEvent (NAO_VERIFICADO | AUTO_INTERACAO | ANTIFRAUDE) visível na aba ignoradas"]
-    S5["Peso da interação = reputationWeight(Hype do autor no mês anterior, cap 3× o base) · teto por dia por tipo de evento"]
-    S6["Upsert ProfileHypeScore (idempotencyKey = userId + scoreDate + weightsVersion) · score 0–1000 · bandCode"]
-    S7["RankingService HYPE_PERFIL: exclui rankingOptOut · nunca expõe número de quem é SÓ EU"]
-    S8{"viewer é o dono?"}
-    S9{"hypeVisibility permite ao viewer (PUBLICO · EMPRESA mesma empresa · SÓ EU nunca)?"}
-    S10["Campo hype omitido (ou 403 na rota dedicada)"]
-    S11["Política nova: weightsVersion+1, validFrom futuro · audit_log · meses passados não recalculados"]
-    S12["Distribuição: histograma por departamento anonimizado · evolução média · nunca lista nominal de quem ocultou"]
-    E1["403 ACESSO_NEGADO"]
-    E2["422 VALIDACAO (pesos não somam 100, meia-vida inválida)"]
-    X1(["Retorna o score do dia (idempotente)"])
+  subgraph APP["ws-application"]
+    P1["PipelineJob RECALC_HYPE por usuário (lock, idempotencyKey = userId + scoreDate + weightsVersion)"]
+    P2{"Já calculado hoje com a mesma versão?"}
+    P2 -->|sim| P3["Idempotente: retorna o existente"]
+    P2 -->|não| P4["Coleta entradas: produção, interações recebidas, DP, perfil deliberativo, HSE médio, reutilizações, reconhecimentos, chancelas, destaques"]
+    P4 --> P5["AntiFraudService.isIgnored: perfil não verificado · auto-interação · padrão antifraude (RF42) → HypeIgnoredEvent com motivo"]
+    P5 --> P6["HypeCalculator: peso do ator = Hype do mês anterior (≤ 3× base) · decaimento meia-vida 180d · teto por dia · média bayesiana por bloco (prior = média do departamento) · normalização por percentil"]
+    P6 --> P7{"Bloco com poucas amostras?"}
+    P7 -->|sim| P8["Puxa para a média do departamento · flag amostra pequena"]
+    P7 -->|não| P9["Score 0–1000 + bandCode (HypeBand da empresa)"]
+    P8 --> P9
+    P9 --> P10["Top 5 eventos positivos/negativos · 3 sugestões sobre os números"]
+    P11["ProfileHypeScore (único userId+scoreDate) + cache"]
+    P12{"Guard.requireOwner?"}
+    P12 -->|não| E1["403 ACESSO_NEGADO"]
+    P13["HypeScoreService.visibleTo(viewer, owner): SO_EU → omite campo · EMPRESA → só mesma empresa (requireSameCompany) · PUBLICO → todos"]
+    P14["Ranking HYPE_PERFIL (RF43): respeita rankingOptOut · nunca expõe número de quem escolheu SO_EU"]
+    P15["Guard.requireRole EMPRESA → Company.hypePolicyJson nova versão (validFrom futuro) · HypeBand · AuditLog HYPE_POLICY_UPDATED · meses passados intactos"]
+    P16["distribution: histograma por departamento anonimizado + evolução média · nunca lista nominal de quem ocultou"]
   end
 
-  subgraph L_dom["ws-domain · HypeCalculator"]
-    H1["decay: peso × 0,5^(dias ÷ 180) para todos os eventos (nunca zera)"]
-    H2["bayesianMean por bloco: puxa para a média do departamento quando a amostra é pequena · flag amostra pequena"]
-    H3["blocks: produção 25 · reconhecimento social 25 · participação DECIA 25 · eficiência e impacto 15 · reconhecimentos e chancelas 10 (tier PROJETO/PLANO mais, Excelência x2)"]
-    H4["normalizePercentile por departamento/empresa · band(score)"]
-    H5["top 5 eventos positivos e negativos · 3 sugestões candidatas (números)"]
+  subgraph IA["AiEngine (HYPE_PERFIL)"]
+    I1["Redige Por que meu Hype é X? sobre blocksJson, top eventos e sugestões (nunca inventa números)"]
+    I2["Claude → Gemini → LocalEngine (texto simplificado)"]
+    I3["AiInferenceLog"]
   end
 
-  subgraph L_ai["IA (AiEngine) · HYPE_PERFIL"]
-    I1["Redige a explicação e as 3 sugestões sobre os números (✦) · motor local se externo indisponível"]
-    I2["AiInferenceLog"]
+  subgraph DB["Persistência"]
+    D1[("MySQL profile_hype_scores (unique userId+scoreDate) · hype_bands · hype_ignored_events · companies.hype_policy_json · pipeline_jobs · audit_log")]
+    D2[("Redis hype:{userId} · ranking cache · flag redis.enabled")]
   end
 
-  J1 --> S1
-  U1 --> W1 --> S1
-  S1 -- "sim e não é pedido de recálculo" --> X1
-  S1 -- "não" --> S2 --> D2
-  S2 --> S3
-  S3 -- "não" --> S4 --> D1
-  S3 -- "sim" --> S5 --> H1 --> H2 --> H3 --> H4 --> H5 --> I1 --> I2 --> D4
-  I1 --> S6 --> D1
-  S6 --> D3
-  S6 --> S7 --> D3
-  S6 --> W1
-
-  U2 --> W2 --> D1
-  U3 --> W3 --> S8
-  S8 -- "sim" --> W1
-  S8 -- "não" --> S9
-  S9 -- "não" --> S10 --> E1
-  S9 -- "sim" --> W3
-
-  U4 --> W4 --> S11
-  S11 -- "inválido" --> E2
-  S11 -- "ok" --> D4
-  S11 --> W6
-
-  U5 --> W5 --> S12 --> D1
-
-  class E1,E2 err
-  class I1,I2 ai
-  class D1,D2,D3,D4,J1 store
-  class H1,H2,H3,H4,H5 dom
+  A0 --> A1 --> P1 --> P2
+  P3 --> D1
+  P10 --> I1 --> I2 --> I3 --> P11 --> D1
+  P11 --> D2
+  A2 --> A3 --> F2 --> W1 --> P12 -->|sim| D1
+  A4 --> A5 --> F3 --> W1 --> P12
+  A6 --> A7 --> F4 --> W1 --> D1
+  A8 --> F1 --> W1 --> P13 --> D1
+  P13 --> P14 --> D2
+  A9 --> F6 --> W1 --> P15 --> D1
+  A10 --> A11 --> F7 --> W1 --> P16 --> D1
+  F5 --> D1
+  E1 --> W2
 ```
 
 ## 3. Diagrama de sequência
@@ -415,8 +327,8 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário
-  participant N as Next.js (App Router)
+  participant U as Usuário
+  participant FE as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
   participant AI as AiEngine
@@ -424,122 +336,91 @@ sequenceDiagram
   participant R as Redis
   participant EV as DomainEvents (AFTER_COMMIT)
 
-  Note over S,EV: Job diário (PipelineJob RECALC_HYPE) por usuário
-  EV->>S: HypeScoreService.recalculate(userId, hoje)
-  S->>R: SET NX hype:userId:hoje (lock)
-  S->>DB: SELECT profile_hype_scores WHERE userId AND scoreDate = hoje
-  alt já calculado hoje
-    S-->>EV: no-op (idempotente)
-  else calcular
-    S->>DB: SELECT companies.hypePolicyJson (pesos, meia-vida 180, faixas, weightsVersion) · priors do departamento
-    S->>DB: SELECT tasks, project_schemes, process_kits do dono (estado, conformidade, chancela, Score do Acervo)
-    S->>DB: SELECT reactions, comments, saved_items, shares, remixes recebidos + users.verified dos autores + Hype dos autores no mês anterior
-    S->>DB: SELECT decia_points_ledger CONFIRMADO, deliberative_profiles, hse_snapshots, seal_bonds APROVADA (tier, excellence), recognitions, highlights
-    loop para cada interação recebida
-      S->>S: AntiFraudService: verified? auto-interação? antifraude RF42?
-      alt descartada
-        S->>DB: INSERT hype_ignored_events (eventType, eventId, reason)
-      else aceita
-        S->>S: peso = reputationWeight(hype do autor no mês anterior, cap 3x) × decay(180 d)
-      end
+  Note over S,EV: CA01 a CA04 — job diário idempotente
+  EV->>S: scheduler diário → HypeScoreService.recalculateAll(hoje) · PipelineJob RECALC_HYPE por usuário
+  loop cada usuário com atividade
+    S->>DB: profile_hype_scores where userId and scoreDate = hoje and weightsVersion = vigente
+    alt já existe
+      S-->>EV: idempotente, nada a fazer
+    else calcula
+      S->>DB: entradas: tasks, project_schemes, reactions (actorHypeAtTime), comments, saved_items, shares, remixes, decia_points_ledger CONFIRMADO, deliberative_profiles, hse_snapshots, recognitions, seal_bonds APROVADA, highlights
+      S->>S: AntiFraudService.isIgnored por interação (não verificado · auto-interação · antifraude RF42)
+      S->>DB: insert hype_ignored_events (motivo)
+      S->>S: HypeCalculator: peso do ator pelo Hype do mês anterior (≤ 3×) · decaimento 180 d · teto por dia · bayesiana por bloco · percentil no departamento
+      S->>DB: company.hype_policy_json (pesos, meia-vida, faixas) · hype_bands
+      S->>AI: run(HYPE_PERFIL, blocos + top eventos + sugestões calculados)
+      AI-->>S: texto explicativo ✦ + AiInferenceLog
+      S->>DB: insert profile_hype_scores (score, bandCode, blocksJson, bayesianPriorsJson, percentileInDept, topPositive/Negative, suggestions, weightsVersion, idempotencyKey)
+      S->>R: hype:{userId}
     end
-    S->>S: HypeCalculator: bayesianMean por bloco (prior do departamento, flag amostra pequena) → blocks (25/25/25/15/10) → score 0–1000 → percentil no departamento → band
-    S->>AI: run(HYPE_PERFIL, números dos blocos + top 5 ± + candidatas a sugestão)
-    alt provedor externo indisponível
-      AI-->>S: motor local → explicação simplificada (números inalterados)
-    else ok
-      AI-->>S: explicação e 3 sugestões redigidas sobre os números (✦)
-    end
-    S->>DB: INSERT ai_inference_log · UPSERT profile_hype_scores (score, bandCode, blocksJson, bayesianPriorsJson, halfLifeDays, percentileInDept, top±, suggestionsJson, weightsVersion, idempotencyKey)
-    S->>EV: HypeScoreUpdated(userId, score)
-    EV->>S: RankingService.compute(DEPARTAMENTO, deptId, mês, HYPE_PERFIL) excluindo rankingOptOut
-    S->>R: ZADD ranking:HYPE_PERFIL:deptId:mês (sem o número de quem é SO_EU)
-    S->>R: DEL lock
   end
 
-  Note over U,EV: Dono vê a decomposição
-  U->>N: Abre /profile/hype
-  N->>C: GET /profile/hype
-  C->>S: HypeScoreService.explain(userId)
-  S->>DB: SELECT profile_hype_scores últimos 12 meses · hype_ignored_events · hype_bands
-  S-->>N: 200 score 640, faixa Líder de prática, blocos, histórico, top 5 ±, 3 sugestões ✦, flag amostra pequena, aba ignoradas
-  N-->>U: Por que meu Hype é 640?
+  Note over U,EV: CA05 — página do dono
+  U->>FE: abre /profile/hype
+  FE->>C: GET /api/me/hype
+  C->>S: HypeScoreService.explain(actor)
+  S->>S: Guard.requireOwner
+  S->>DB: últimos 12 meses de profile_hype_scores + hype_ignored_events
+  S-->>FE: score, faixa, decomposição, histórico, top 5 ±, 3 sugestões (Spark ✦), amostra pequena quando houver
 
-  Note over U,EV: Visibilidade e acesso de terceiros
-  U->>N: Preferências › Hype: EMPRESA
-  N->>C: PATCH /me/hype-visibility (EMPRESA)
-  C->>S: PreferencesService.update
-  S->>DB: UPDATE users hypeVisibility = EMPRESA
-  S-->>N: 200 (cabeçalho e cards respeitam imediatamente)
-  U->>N: Colega de outra empresa abre o perfil
-  N->>C: GET /users/id/hype
-  C->>S: visibleTo(targetUserId, viewer)
-  alt viewer sem permissão (SO_EU, ou EMPRESA e viewer de outra empresa)
-    S-->>N: 403 ACESSO_NEGADO (campo hype omitido nos cards)
+  Note over U,EV: CA06 + CA08 — visibilidade
+  U->>FE: escolhe EMPRESA em /settings
+  FE->>C: PATCH /api/me/preferences {hypeVisibility EMPRESA}
+  C->>S: AccountService (main) → users.hype_visibility
+  S-->>FE: 200 (cabeçalho e cards atualizam imediatamente)
+  U->>FE: colega de outra empresa abre /u/username
+  FE->>C: GET /api/users/{id}/hype
+  C->>S: HypeScoreService.visibleTo(viewer, owner)
+  alt SO_EU ou viewer de outra empresa
+    S-->>C: 403 ACESSO_NEGADO (ou campo omitido no perfil)
   else permitido
-    S-->>N: 200 score e faixa
+    S->>R: hype:{ownerId}
+    S-->>FE: score + faixa
   end
+  FE->>C: GET /api/rankings?dimension=HYPE_PERFIL
+  C->>S: RankingService (RF43) → respeita rankingOptOut e nunca expõe SO_EU
+  S-->>FE: posições sem o número de quem ocultou
 
-  Note over U,EV: EMPRESA edita a política
-  U->>N: Pesos 30/20/25/15/10, meia-vida 180, faixa 5 = Lenda da SECID
-  N->>C: PUT /companies/id/hype-policy
-  C->>S: updatePolicy(companyId, policy, editor)
-  alt pesos não somam 100
-    S-->>N: 422 VALIDACAO
-  else ok
-    S->>DB: UPDATE companies.hypePolicyJson (weightsVersion+1, validFrom futuro) · hype_bands · INSERT audit_log (editor, diff)
-    S-->>N: 200 (meses passados não recalculados · página Como o Hype é calculado atualizada)
-  end
+  Note over U,EV: CA07 — recalibração pela EMPRESA
+  U->>FE: EMPRESA altera meia-vida para 240 d e renomeia faixas
+  FE->>C: PUT /api/companies/{id}/hype-policy
+  C->>S: HypePolicyService.update(actor, form)
+  S->>S: Guard.requireRole(EMPRESA)
+  S->>DB: update companies.hype_policy_json (validFrom futuro, version+1) · hype_bands · audit_log HYPE_POLICY_UPDATED
+  S-->>FE: 200 (meses passados não recalculam · página pública atualizada)
+
+  Note over U,EV: CA10 — dashboard
+  U->>FE: CHEFE abre dashboard
+  FE->>C: GET /api/dashboard/hype-distribution?deptId=
+  C->>S: HypeScoreService.distribution(actor, deptId)
+  S->>DB: histograma por faixa (anonimizado) + média mensal
+  S-->>FE: Histogram (nunca lista nominal)
 ```
 
 ## 4. Máquina de estados
 
-`ProfileHypeScore` não tem campo de status. Usam-se os estados que o RF afeta: a **faixa** (`ProfileHypeScore.bandCode` ↔ `HypeBand`) e a **visibilidade** (`User.hypeVisibility`), além do ciclo do `PipelineJob RECALC_HYPE`.
+Entidade central: `User.hypeVisibility` (`HypeVisibility`, enum e coluna **existem no main**) — o único estado que o titular controla; `ProfileHypeScore` é um snapshot diário imutável (recalcular o mesmo dia é idempotente).
 
 ```mermaid
 stateDiagram-v2
-  direction LR
-
-  state "bandCode (HypeBand, 0–1000)" as Band {
-    [*] --> Iniciante : primeiro cálculo (0–199)
-    Iniciante --> Contribuinte : score chega a 200
-    Contribuinte --> Referencia : 400
-    Referencia --> LiderDePratica : 600
-    LiderDePratica --> Lenda : 800
-    Lenda --> LiderDePratica : decaimento 180 d sem novos eventos
-    LiderDePratica --> Referencia : decaimento
-    Referencia --> Contribuinte : decaimento
-    Contribuinte --> Iniciante : decaimento
-  }
-
-  state "User.hypeVisibility" as Vis {
-    [*] --> SO_EU : padrão inicial
-    SO_EU --> EMPRESA : usuário escolhe
-    SO_EU --> PUBLICO : usuário escolhe
-    EMPRESA --> PUBLICO : usuário escolhe
-    PUBLICO --> EMPRESA : usuário restringe
-    EMPRESA --> SO_EU : usuário oculta
-    PUBLICO --> SO_EU : usuário oculta
-  }
-
-  state "PipelineJob RECALC_HYPE (diário)" as Job {
-    [*] --> PENDENTE : scheduler 03h ou pedido do dono
-    PENDENTE --> RODANDO
-    RODANDO --> OK : upsert idempotente (userId, scoreDate)
-    RODANDO --> FALHA : erro
-    FALHA --> REPROCESSAR : attempts menor que 3
-    REPROCESSAR --> PENDENTE
-    OK --> [*]
-  }
-
-  note right of Vis
-    Ocultar não impede o cálculo nem o uso no ranking (RF43),
-    que respeita o opt-out próprio do ranking e nunca
-    expõe o número de quem escolheu SO_EU (RF45.CA08).
+  [*] --> SO_EU: padrão inicial no cadastro (RF1) · cálculo acontece igual (CA06)
+  SO_EU --> EMPRESA: titular escolhe em /settings (RF3)
+  SO_EU --> PUBLICO: titular escolhe
+  EMPRESA --> PUBLICO: titular amplia
+  EMPRESA --> SO_EU: titular restringe
+  PUBLICO --> EMPRESA: titular restringe
+  PUBLICO --> SO_EU: titular oculta
+  note right of SO_EU
+    API omite o campo ou responde 403 a terceiros.
+    Ranking (RF43) nunca expõe o número (CA08).
+    Cálculo e uso interno continuam.
   end note
-  note right of Band
-    Nomes das faixas editáveis pela EMPRESA (hypePolicyJson),
-    com vigência futura e auditoria (RF45.CA07).
+  note right of PUBLICO
+    Cabeçalho do perfil e cards de autoria mostram
+    número e faixa imediatamente (CA06).
+  end note
+  note left of EMPRESA
+    Só colegas da mesma empresa (Guard.requireSameCompany).
   end note
 ```
 
@@ -547,78 +428,64 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js"]
-    FE1["app/profile (cabeçalho com HypeBadge se permitido) · app/profile/hype (só o dono: decomposição, histórico 12 meses, top 5 ±, sugestões, aba ignoradas) · app/hype/how-it-works (pesos e regras públicos) · app/settings/preferences (visibilidade) · app/admin e app/companies (dashboard: histograma anonimizado)"]
-    FE2["components/ui · HypeBadge (score + faixa) · BlockBreakdown · HypeHistoryChart · TopEventsList · IgnoredEventsTable · SmallSampleHint · AiSpark ✦ · HypeHistogram"]
+  subgraph FRONT["Frontend Next.js 15"]
+    R1["app/(shell)/profile/hype (dono) · profile e u/[username] (HypeBadge) · settings (visibilidade) · hype/como-e-calculado · hype/recalibration · admin/dashboard · issuer/dashboard"]
+    R2["components: HypeBadge · HypeGauge · BlocksBreakdown · HistoryChart · TopEvents · Suggestions · IgnoredList · Histogram · Select (visibilidade) · TaskCard/ProjectCard (autor com Hype) · Spark ✦"]
+    BFF["app/bff"]
+    R1 --> R2 --> BFF
   end
-
   subgraph WEB["ws-web"]
-    C1["HypeController"]
-    C2["PreferencesController"]
-    C3["CompanyPolicyController"]
-    C4["DashboardController"]
+    HC["HypeController (@Operation RF45.CA01-CA10) · MeController (main: preferências)"]
+    SEC["SecurityConfig · CorrelationIdFilter · GlobalExceptionHandler (main)"]
   end
-
-  subgraph APP["ws-application"]
-    S1["HypeScoreService"]
-    S2["AntiFraudService (RF42)"]
-    S3["RankingService (RF43) · HYPE_PERFIL"]
-    S4["AiEngine (RF43) · HYPE_PERFIL"]
-    S5["PreferencesService (RF3)"]
+  subgraph APPL["ws-application"]
+    HSS["gamification/HypeScoreService"]
+    HCAL["metrics/HypeCalculator (bayesiana · decaimento · normalização · PageRank · tetos — testes unitários, METRICAS_GESTAO.md)"]
+    AF["points/AntiFraudService (compartilhado com RF42)"]
+    HPS["gamification/HypePolicyService"]
+    RK["gamification/RankingService (RF43, HYPE_PERFIL)"]
+    AIE["ai/AiEngine (HYPE_PERFIL, só redação)"]
+    ACC["account/AccountService (main: hypeVisibility)"]
+    GD["security/Guard (main: requireRole, ownerOrAdmin · planejado: requireSameCompany)"]
+    AUD["audit/AuditLogPort (main)"]
+    SCH["schedulers (ws-bootstrap): Hype diário · PipelineJob RECALC_HYPE"]
   end
-
-  subgraph DOM["ws-domain · br.gov.pr.secid.workstation"]
-    D1["HypeCalculator (bayesianMean, decay 180 d, normalizePercentile, reputationWeight cap 3x, blocks, band) — testes unitários"]
-    D2["ProfileHypeScore · HypeBand · HypeIgnoredEvent · User.hypeVisibility · Company.hypePolicyJson · RankingEntry"]
-    D3["Fontes: Reaction (actorHypeAtTime) · Comment · SavedItem · Share · Remix · DeciaPointsLedgerEntry · DeliberativeProfile · EfficiencyScoreSnapshot · SealBond/Seal · Recognition · Highlight · TaskItem · ProjectScheme"]
+  subgraph DOM["ws-domain"]
+    ENT["User.hypeVisibility · HypeVisibility · User.verified/rankingOptOut (main) · ProfileHypeScore · HypeBand · HypeIgnoredEvent · IgnoredReason · Company.hypePolicyJson (planejado)"]
   end
-
-  subgraph INFRA["ws-infrastructure/*"]
-    I1["persistence-mysql · profile_hype_scores, hype_bands, hype_ignored_events, companies, ranking_entries"]
-    I2["cache-redis · lock diário · ranking HYPE_PERFIL · cache do badge"]
-    I3["ai-providers · ClaudeAdapter · GeminiAdapter · LocalEngine"]
-    I4["platform · scheduler diário · PipelineJob RECALC_HYPE · DomainEventOutbox · AuditLog · i18n"]
+  subgraph INFRA["ws-infrastructure"]
+    MY["persistence-mysql profile_hype_scores (unique userId+scoreDate) · hype_bands · hype_ignored_events (V__rf45) · users (V2/V3)"]
+    RD["cache-redis hype:{userId} · ranking (flag redis.enabled)"]
+    AIP["ai-providers (ai-claude · ai-gemini · ai-local)"]
   end
-
-  subgraph EXT["Serviços externos"]
-    X1["Claude / Gemini (redação da explicação)"]
-  end
-
-  FE1 --> C1
-  FE1 --> C2
-  FE1 --> C3
-  FE1 --> C4
-  FE2 -.-> FE1
-  C1 --> S1
-  C2 --> S5
-  C3 --> S1
-  C4 --> S1
-  S1 --> D1
-  S1 --> S2
-  S1 --> S3
-  S1 --> S4
-  S1 --> D2
-  S1 --> D3
-  S5 --> D2
-  D2 --> I1
-  D3 --> I1
-  S1 --> I2
-  S3 --> I2
-  S4 --> I3 --> X1
-  I4 --> S1
+  BFF --> HC --> SEC
+  HC --> HSS
+  HC --> HPS
+  HC --> ACC
+  HSS --> HCAL
+  HSS --> AF
+  HSS --> AIE
+  HSS --> GD
+  HPS --> GD
+  HPS --> AUD
+  RK --> HSS
+  SCH --> HSS
+  HSS --> ENT --> MY --> MYSQL[("MySQL 8")]
+  HSS --> RD --> REDIS[("Redis")]
+  AIE --> AIP --> AI["Claude / Gemini / local"]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
-|---|---|
-| RF45.CA01 | Classes `ProfileHypeScore` (scoreDate, score 0–1000, weightsVersion, blocksJson, idempotencyKey), `HypeScoreService.recalculate/runDailyJob`, `PipelineJob RECALC_HYPE`; atividades J1, U1, S1 → X1 (idempotente), S2, S6; sequência msgs 1–4 e 16 (lock, no-op se já calculado, UPSERT); máquina de estados `PipelineJob RECALC_HYPE`; componentes `platform · scheduler diário · PipelineJob RECALC_HYPE`. |
-| RF45.CA02 | Classes `HypeCalculator.bayesianMean/decay`, `ProfileHypeScore.bayesianPriorsJson/halfLifeDays`; atividades H1 (0,5^(dias ÷ 180), nunca zera), H2 (prior do departamento, flag amostra pequena); sequência msgs 11–12; componente `SmallSampleHint`. |
-| RF45.CA03 | Classes `HypeIgnoredEvent` (eventType, eventId, reason), enum `IgnoredReason`, `User.verified`, `AntiFraudService` (isVerified, isSelfInteraction, isCollusion), `Reaction.ignoredReason`; atividades S3 → S4 (aba ignoradas com motivo); sequência msgs 9–10; componentes `IgnoredEventsTable`, `HypeController.GET profile_hype_ignored`, `AntiFraudService (RF42)`. |
-| RF45.CA04 | Classes `HypeCalculator.reputationWeight(actorHypePrevMonth, base, cap3x)`, `Reaction.actorHypeAtTime`; atividade S5 (Hype do autor no mês anterior, cap 3×); sequência msgs 7 e 11 (Hype dos autores no mês anterior, cap 3x). |
-| RF45.CA05 | Classes `ProfileHypeScore.topPositiveEventsJson/topNegativeEventsJson/suggestionsJson/aiInferenceId`, `HypeScoreService.explain`, `AiCapability HYPE_PERFIL`, `AiInferenceLog`; atividades U1, W1, H5, I1, I2; sequência msgs 13–16 e 21–26 (score, faixa, blocos, 12 meses, top 5 ±, 3 sugestões ✦); componentes `app/profile/hype`, `BlockBreakdown`, `HypeHistoryChart`, `TopEventsList`, `AiSpark ✦`. |
-| RF45.CA06 | Classes `User.hypeVisibility`, enum `HypeVisibility` (PUBLICO, EMPRESA, SO_EU padrão), `HypeScoreService.visibleTo`, `PreferencesController`; atividades U2, W2, U3, W3, S8, S9, S10 → E1 (403 / campo omitido); sequência msgs 27–36; máquina de estados `User.hypeVisibility`; componentes `HypeBadge`, `app/settings/preferences`. |
-| RF45.CA07 | Classes `Company.hypePolicyJson`, `HypeBand.name/min/max`, `ProfileHypeScore.weightsVersion`, `HypeScoreService.updatePolicy`, `CompanyPolicyController`, `AuditLog`; atividades U4, W4, S11 → E2 (422), W6 (página pública); sequência msgs 37–42 (weightsVersion+1, validFrom futuro, audit_log, meses passados não recalculados); nota da máquina de estados `Band`; componente `app/hype/how-it-works`. |
-| RF45.CA08 | Classes `RankingEntry` (dimension HYPE_PERFIL), `User.rankingOptOut`, `RankingService.compute`; atividade S7 (exclui opt-out, nunca expõe número de quem é SÓ EU); sequência msgs 17–19 (ranking sem o número de quem é SO_EU); nota da máquina de estados `Vis`; componentes `RankingService (RF43) · HYPE_PERFIL`, `cache-redis · ranking HYPE_PERFIL`. |
-| RF45.CA09 | Classe `HypeCalculator` em `ws-domain` (bayesianMean, decay, normalizePercentile, reputationWeight, blocks, band) com nota (determinístico, testável, METRICAS_GESTAO.md seção Hype do Perfil); lane L_dom (H1–H5); atividade I1 (IA só redige); componente `ws-domain · HypeCalculator — testes unitários`. |
-| RF45.CA10 | Classes `DashboardController.GET dashboard_hype_distribution`, `MetricSnapshot`; atividades U5, W5, S12 (histograma anonimizado por departamento, evolução média, nunca lista nominal de quem ocultou); componentes `HypeHistogram`, `app/admin e app/companies (dashboard)`. |
+| CA | Classe | Passo | Mensagem | Transição | Componente |
+|---|---|---|---|---|---|
+| RF45.CA01 | `ProfileHypeScore` (único userId+scoreDate, score, weightsVersion, blocksJson, idempotencyKey), `HypeScoreService.recalculateAll/recalculate`, `PipelineJob RECALC_HYPE` | A0 → A1 → P1 → P2 → P3/P4 → P9 → P11 | 1–15 | — (snapshot imutável) | `HSS`, `SCH`, `MY (unique)` |
+| RF45.CA02 | `HypeCalculator.bayesian/decay`, `bayesianPriorsJson`, `halfLifeDays` 180, flag amostra pequena | P6 → P7 → P8 | 8, 19 | — | `HCAL` |
+| RF45.CA03 | `AntiFraudService.isIgnored`, `HypeIgnoredEvent` (`IgnoredReason` NAO_VERIFICADO · AUTO_INTERACAO · ANTIFRAUDE), `User.verified`, aba ignoradas | P5 · A4 → A5 → F3 | 6–7, 18 | — | `AF`, `IgnoredList` |
+| RF45.CA04 | `HypeCalculator.actorWeight`, `Reaction.actorHypeAtTime` (mês anterior, ≤ 3× base) | P6 | 5, 8 | — | `HCAL` |
+| RF45.CA05 | `HypeScoreService.explain`, histórico 12 meses, `topPositiveEventsJson/topNegativeEventsJson/suggestionsJson`, `AiCapability HYPE_PERFIL`, `aiInferenceId` | A2 → A3 → F2 → P12 → I1 → I2 → I3 | 10–11, 16–19 | — | `HypePage`, `AIE`, `Spark ✦` |
+| RF45.CA06 | `User.hypeVisibility` (`HypeVisibility`, main), `HypeScoreService.visibleTo`, `Guard.requireSameCompany`, 403/omissão do campo | A6 → A7 → F4 · A8 → F1 → P13 | 20–29 | toda a máquina | `ACC`, `HypeBadge`, `Select (visibilidade)` |
+| RF45.CA07 | `HypePolicyService.update`, `Company.hypePolicyJson` (pesos, meia-vida, faixas, validFrom), `HypeBand`, `AuditLog HYPE_POLICY_UPDATED`, página "Como o Hype é calculado" | A9 → F6 → P15 · F5 | 34–38 | — | `HPS`, `AUD`, `R1 hype/como-e-calculado` |
+| RF45.CA08 | `RankingService` dimensão `HYPE_PERFIL`, `User.rankingOptOut`, nunca expõe SO_EU | P14 | 30–32 | nota de SO_EU | `RK`, `RD` |
+| RF45.CA09 | `HypeCalculator` determinístico com testes unitários (bayesiana, decaimento, normalização, antifraude), `METRICAS_GESTAO.md`, IA só redige | P6 · I1 | 8–11 | — | `HCAL`, `AIE` |
+| RF45.CA10 | `HypeScoreService.distribution`, histograma anonimizado por departamento e evolução média, nunca lista nominal | A10 → A11 → F7 → P16 | 39–43 | — | `Histogram`, `admin/issuer dashboard` |
