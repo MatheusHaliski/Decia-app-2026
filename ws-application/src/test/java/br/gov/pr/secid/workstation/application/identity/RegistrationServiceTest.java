@@ -33,7 +33,7 @@ class RegistrationServiceTest {
         IdentityService identity = new IdentityService(users, Fakes.EMAIL_HASHER, hasher, rateLimit, new InMemorySessionStore(),
                 Fakes.NO_MIRROR, Fakes.TOKENS, audit, SessionPolicy.defaults(), Clock.systemUTC());
         registration = new RegistrationService(users, prefs, codes, Fakes.EMAIL_HASHER, hasher, rateLimit, mails, audit, identity,
-                LegalProperties.defaults(), Clock.systemUTC());
+                LegalProperties.defaults(), Clock.systemUTC(), new AccountInserter(users, prefs));
     }
 
     private RegistrationService.RegisterCommand cmd(String type, String username, String email) {
@@ -69,6 +69,42 @@ class RegistrationServiceTest {
         assertThat(mails.last().template()).isEqualTo("account-already-exists");
         assertThat(mails.last().secret()).isNull();
         assertThat(audit.actions()).contains(AuditActions.REGISTER_EMAIL_EM_USO);
+    }
+
+    /** Achado P2 (Codex): a violação de unicidade de um cadastro concorrente vira o mesmo 202, nunca um erro. */
+    @Test
+    void cadastroConcorrenteDoMesmoEmailViraOMesmo202ViaInserterEmTransacaoPropria() throws Exception {
+        Fakes.Users racing = new Fakes.Users() {
+            int saves;
+
+            @Override
+            public User save(User user) {
+                if (saves++ == 0 && user.getId() == null) {
+                    // outro pedido ganhou a corrida: a linha já existe quando o INSERT chega
+                    User winner = Fakes.user("primeira", user.getEmail(), "h:x");
+                    rows.put(winner.getId(), winner);
+                    throw new org.springframework.dao.DuplicateKeyException("ux_users_email_hash");
+                }
+                return super.save(user);
+            }
+        };
+        RegistrationService svc = new RegistrationService(racing, prefs, codes, Fakes.EMAIL_HASHER, hasher, rateLimit, mails, audit,
+                new IdentityService(racing, Fakes.EMAIL_HASHER, hasher, rateLimit, new InMemorySessionStore(), Fakes.NO_MIRROR, Fakes.TOKENS,
+                        audit, SessionPolicy.defaults(), Clock.systemUTC()), LegalProperties.defaults(), Clock.systemUTC(),
+                new AccountInserter(racing, prefs));
+        RegistrationService.Receipt r = svc.register(cmd("EMPREGADO", "segunda", "corrida@exemplo.gov.br"), ctx);
+        assertThat(r).isEqualTo(RegistrationService.Receipt.verificationSent("corrida@exemplo.gov.br"));
+        assertThat(mails.last().template()).isEqualTo("account-already-exists");
+        assertThat(racing.rows).hasSize(1);
+        assertThat(AccountInserter.class.getMethod("insert", User.class).getAnnotation(org.springframework.transaction.annotation.Transactional.class)
+                .propagation()).as("INSERT em transação própria").isEqualTo(org.springframework.transaction.annotation.Propagation.REQUIRES_NEW);
+        assertThatNoTransactionalOn(RegistrationService.class, "register");
+    }
+
+    private static void assertThatNoTransactionalOn(Class<?> type, String method) {
+        java.lang.reflect.Method m = java.util.Arrays.stream(type.getMethods()).filter(x -> x.getName().equals(method)).findFirst().orElseThrow();
+        assertThat(m.getAnnotation(org.springframework.transaction.annotation.Transactional.class))
+                .as("register sem transação externa: a violação não pode marcar rollback-only").isNull();
     }
 
     @Test

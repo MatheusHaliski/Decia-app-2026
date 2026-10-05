@@ -11,7 +11,6 @@ import br.gov.pr.secid.workstation.domain.identity.AccountStatus;
 import br.gov.pr.secid.workstation.domain.identity.ProfileType;
 import br.gov.pr.secid.workstation.domain.identity.Role;
 import br.gov.pr.secid.workstation.domain.identity.User;
-import br.gov.pr.secid.workstation.domain.identity.UserPreferences;
 import br.gov.pr.secid.workstation.domain.identity.VerificationPurpose;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -64,12 +63,14 @@ public class RegistrationService {
     private final IdentityService identity;
     private final LegalProperties legal;
     private final Clock clock;
+    private final AccountInserter inserter;
 
     public RegistrationService(UserRepositoryPort users, UserPreferencesRepositoryPort preferences, VerificationCodeRepositoryPort codes,
                                EmailHasher emailHasher, PasswordHasher hasher, RateLimitPort rateLimit, MailPort mail, AuditLogPort audit,
-                               IdentityService identity, LegalProperties legal, Clock clock) {
+                               IdentityService identity, LegalProperties legal, Clock clock, AccountInserter inserter) {
         this.users = users;
         this.preferences = preferences;
+        this.inserter = inserter;
         this.codes = codes;
         this.emailHasher = emailHasher;
         this.hasher = hasher;
@@ -96,7 +97,11 @@ public class RegistrationService {
     }
 
     // ------------------------------------------------------------------ cadastro
-    @Transactional
+    /**
+     * Sem {@code @Transactional} aqui de propósito (D-31): o INSERT de {@code users}+{@code user_preferences} roda em transação
+     * PRÓPRIA no {@link AccountInserter}; a violação de unicidade de um cadastro concorrente (mesmo e-mail/username) volta
+     * como exceção já com aquela transação desfeita — sem marcar nada como rollback-only — e vira a mesma resposta 202.
+     */
     public Receipt register(RegisterCommand cmd, RequestContext ctx) {
         Map<String, Object> fields = new LinkedHashMap<>();
         ProfileType type = parseProfileType(cmd.profileType(), fields);
@@ -155,15 +160,13 @@ public class RegistrationService {
         u.setPrivacyVersion(legal.currentVersions().privacy());
         u.setCreatedAt(clock.instant());
         try {
-            u = users.save(u);
+            u = inserter.insert(u);
         } catch (DataIntegrityViolationException race) {
             // dois cadastros do mesmo e-mail na mesma janela: o segundo recebe a mesma resposta de "já existe"
             return users.findByEmailHash(emailHash).map(found -> alreadyExists(found, email, ctx))
-                    .orElseThrow(() -> new ApiException(AuthCodes.USERNAME_EM_USO, 409, "Este nome de usuário já está em uso."));
+                    .orElseThrow(() -> new ApiException(AuthCodes.USERNAME_EM_USO, 409, "Este nome de usuário já está em uso.",
+                            Map.of("suggestions", suggestions(username))));
         }
-        UserPreferences prefs = new UserPreferences();
-        prefs.setUserId(u.getId());
-        preferences.save(prefs);
         sendVerification(u);
         audit.record(AuditEvent.of(u.getId(), AuditActions.USER_REGISTERED, "user", u.getId().toString(), AuditEvent.OK, ctx.ip(),
                 ctx.userAgent(), Map.of("profileType", type.name(), "email", Masking.maskEmail(email), "termsVersion",

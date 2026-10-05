@@ -1,221 +1,129 @@
-# RF38 — Aplicar a identidade visual do Work Station — ícones por tipo de tarefa, thumbnails automáticos, capa-mosaico de projeto, fio de decisão, lacres, etiquetas de estado, temas e skins da Mesa
-**HU:** HU38 · **Sprint (board Work Station):** Product Backlog (não priorizado — pós-Sprint 4) · **Equivalente FAI:** anatomia dos cards (v17), anatomia do DNA, Background Studio (RF11), skins de card, temas (RF23 preferências) · **Aba/rota:** transversal (design system em `components/ui`); capa manual/IA em `/tasks/[id]` e `/projects/[id]`; temas e skins em `/settings/preferences`
-**Critérios de aceite cobertos:** RF38.CA01 · RF38.CA02 · RF38.CA03 · RF38.CA04 · RF38.CA05 · RF38.CA06 · RF38.CA07 · RF38.CA08 · RF38.CA09 · RF38.CA10
+# RF38 — Aplicar a identidade visual do Work AI — ícones por tipo de tarefa, thumbnails automáticos, capa-mosaico de projeto, fio de decisão, lacres, etiquetas de estado, temas e skins da Mesa
+**HU:** HU38 · **Sprint (board Work Station):** Product Backlog (transversal; o design system v2 entra antes de qualquer tela, D-11) · **Equivalente FAI:** anatomia dos cards (v17), anatomia do DNA, Background Studio (RF11), skins de card, temas (RF23 preferências) · **Aba/rota:** transversal — todo card, lista, busca, anexo de mensagem e fio de decisão; preferências em `/settings` (tema, skin da Mesa, reduceMotion); Estúdio de Arte do card (RF11, `/tasks/[id]/art`, `/projects/[id]/art`); galeria `/lab/design-system`
+**Critérios de aceite cobertos:** RF38.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 (corpo do card, inalterado) — regra: o **título do card** define o RF e o corpo traz os próprios CAs. Fontes de detalhe: `docs/design-system/DESIGN_SYSTEM.md` (§2 tokens, §3 catálogo de componentes, §4 glifos), `ANATOMIA_CARDS.md`, `ANATOMIAS_E_ESTUDIO.md` v3 (enums `TaskCardLayout`, `ProjectCardLayout`, `TaskComposition`, `ProjectComposition`, `SchemeView`, `TaskCardVariant`, `ProjectCardVariant`, `CardArtConfig`), `GLYPHS.md`, `TOKENS.md`.
 
-> Conceito "a repartição do futuro": papelaria pública (carimbo, protocolo, pasta suspensa, clipe, lacre) em flat/duotone; tudo que a IA gerou carrega a **faísca âmbar ✦**. O RF é majoritariamente frontend (componentes do design system), com três pontos de backend: o **thumbnail assíncrono** (`PipelineJob THUMBNAIL` → `ThumbnailService`), a **capa-mosaico** recalculada por evento (`CardArtService`) e a **capa por IA** (`AiEngine CAPA_IA`). Preferências visuais vivem em `UserPreferences`; skins adquiridas em `UserSkin`.
+Regra do design system: **nenhum HTML/CSS solto** nas telas (D-11); todo elemento visual vem de `packages/ui` com tokens `--ws-*` e 4 temas via `data-theme` (claro · escuro · contraste · blueprint). As **variações** dos cards são **flags derivadas dos dados** (`taskVariants(TaskView, viewer)`, `projectVariants(ProjectView, viewer)`), nunca escritas à mão; tipos vêm do OpenAPI (D-21). O backend contribui com: `TaskType` → glifo/cor (`TypeChip`), `PipelineJob THUMBNAIL` assíncrono (`TaskItem.thumbnailUrl/coverMode`), `ProjectScheme.mosaicJson/coverMode` (mosaico 2×3 recomputado AFTER_COMMIT), `aiGenerated/aiInferenceId/reviewedBy` (faísca ✦), `TaskState`/`ProjectStatus` (etiquetas com nome em texto), `legalDueAt` (⚖), `SealBond`/`Seal.artJson` (lacre), `Recognition.medalArtJson` (medalha), `FinalDecision.stampJson` (carimbo), `DecisionTraceNode.classLabel` (fio), `Department.color/monogram`, `Company.logoUrl`, `UserPreferences.theme/deskSkin/reduceMotion`, `UserSkin` (skins compradas, RF42) e `CardArtConfig` (`card_art_json`, Estúdio, proposta Q-58).
 
 ## 1. Diagrama de classes
 
 ```mermaid
 classDiagram
-  direction LR
+direction LR
 
+namespace ws_domain_dados_visuais {
   class TaskItem {
     <<entity>>
-    +UUID id
-    +TaskType type
-    +TaskCategory category
-    +TaskState state
-    +LocalDate dueAt
-    +LocalDate legalDueAt
-    +UUID legalDeadlineRuleId
-    +boolean aiGenerated
-    +UUID aiInferenceId
-    +String thumbnailUrl
-    +String coverUrl
-    +CoverMode coverMode
-    +String cardSkin
-    +String format
-    +UUID departmentId
-    +String sealIdsJson
+    +id: UUID
+    +type: TaskType
+    +state: TaskState
+    +departmentId: UUID
+    +dueAt: LocalDate
+    +legalDueAt: LocalDate
+    +thumbnailUrl: String
+    +coverUrl: String
+    +coverMode: CoverMode
+    +cardSkin: String
+    +cardArtJson: JSON
+    +aiGenerated: boolean
+    +aiInferenceId: UUID
+    +sealIdsJson: JSON
+    .. +40 campos ..
   }
   class ProjectScheme {
     <<entity>>
-    +UUID id
-    +String title
-    +String emoji
-    +String iconId
-    +UUID departmentId
-    +ProjectPhase currentPhase
-    +ProjectCoverMode coverMode
-    +String coverUrl
-    +String mosaicJson
-    +String deskSkin
-    +String deskBackgroundJson
-    +LocalDate nextMilestoneAt
-    +String lastDeciaEventLabel
-    +boolean aiGenerated
-  }
-  class ProjectTask {
-    <<entity>>
-    +UUID projectId
-    +UUID taskId
-    +ProjectPhase phase
-    +int percentComplete
-    +String snapshotJson
-  }
-  class UserPreferences {
-    <<entity>>
-    +UUID userId
-    +ThemeMode theme
-    +String density
-    +BigDecimal fontScale
-    +boolean reduceMotion
-    +DeskSkin deskSkin
-    +String defaultCardSkin
-    +String dashboardLayoutJson
-  }
-  class UserSkin {
-    <<entity>>
-    +UUID id
-    +UUID userId
-    +String skinKind
-    +String skinKey
-    +String acquiredVia
-    +UUID purchaseId
-  }
-  class PipelineJob {
-    <<entity>>
-    +UUID id
-    +String type
-    +String targetType
-    +UUID targetId
-    +String status
-    +int attempts
-    +String lastError
-    +Instant scheduledAt
-  }
-  class MediaObject {
-    <<entity>>
-    +UUID id
-    +String bucket
-    +String key
-    +String mimeType
-    +String variantsJson
-    +AccessClassification accessClass
-  }
-  class TaskVersion {
-    <<entity>>
-    +UUID taskId
-    +int versionNumber
-    +String externalRevisionId
-    +String thumbnailUrl
-  }
-  class AiInferenceLog {
-    <<entity>>
-    +UUID id
-    +AiCapability capability
-    +String provider
-    +String model
-    +String result
-    +UUID reviewedBy
-    +Instant reviewedAt
-    +Instant createdAt
-  }
-  class Department {
-    <<entity>>
-    +UUID id
-    +String acronym
-    +String color
-    +String monogram
-    +UUID headUserId
-  }
-  class Company {
-    <<entity>>
-    +UUID id
-    +String logoUrl
-    +String coatOfArmsUrl
-    +String accentColor
-  }
-  class Seal {
-    <<entity>>
-    +UUID id
-    +String issuerKind
-    +String artJson
-    +String iconUrl
-    +boolean excellence
-  }
-  class SealBond {
-    <<entity>>
-    +UUID sealId
-    +UUID targetId
-    +SealBondStatus status
-    +String sealCode
-  }
-  class Recognition {
-    <<entity>>
-    +UUID id
-    +UUID recipientUserId
-    +String medalArtJson
-  }
-  class FinalDecision {
-    <<entity>>
-    +UUID id
-    +DecisionStatus status
-    +String stampJson
+    +id: UUID
+    +status: ProjectStatus
+    +currentPhase: ProjectPhase
+    +departmentId: UUID
+    +emoji: String
+    +iconId: String
+    +coverMode: ProjectCoverMode
+    +coverUrl: String
+    +mosaicJson: JSON
+    +deskSkin: String
+    +deskBackgroundJson: JSON
+    +cardArtJson: JSON
+    +aiGenerated: boolean
+    .. +28 campos ..
   }
   class DecisionTraceNode {
     <<entity>>
-    +UUID id
-    +TraceNodeType nodeType
-    +String classLabel
-    +Instant at
+    +nodeType: TraceNodeType
+    +classLabel: MessageClass
+    +actorId: UUID
+    +at: Instant
   }
-  class DecisionTraceEdge {
+  class FinalDecision {
     <<entity>>
-    +UUID fromNodeId
-    +UUID toNodeId
-    +String relation
+    +stampJson: JSON
+    +status: DecisionStatus
   }
-  class LegalDeadlineRule {
+  class SealBond {
     <<entity>>
-    +UUID id
-    +TaskCategory category
-    +int days
-    +boolean businessDays
-    +String legalBasis
+    +sealId: UUID
+    +status: SealBondStatus
+    +basis: SealBondBasis
   }
+  class Seal {
+    <<entity>>
+    +issuerKind: String
+    +artJson: JSON
+    +excellence: boolean
+  }
+  class Recognition {
+    <<entity>>
+    +medalArtJson: JSON
+    +name: String
+  }
+  class Department {
+    <<entity>>
+    +color: String
+    +monogram: String
+  }
+  class Company {
+    <<entity>>
+    +logoUrl: String
+    +accentColor: String
+  }
+  class AiInferenceLog {
+    <<entity>>
+    +id: UUID
+    +model: String
+    +createdAt: Instant
+    +reviewedBy: UUID
+    +reviewedAt: Instant
+  }
+}
 
-  class TaskType {
-    <<enum>>
-    TEXTO_MANUAL
-    TEXTO_IA
-    IMAGEM_WEB
-    IMAGEM_EDITADA
-    PLANILHA
-    DOCUMENTO
-    PASTA
-    LINK
-    DESENHO_TECNICO
-    FORMULARIO
-    ATA_REGISTRO
-    EMAIL
-    PROTOCOLO
-    CRONOGRAMA
-    ESTUDO_TECNICO_PRELIMINAR
+namespace ws_domain_preferencias_plataforma {
+  class UserPreferences {
+    <<entity>>
+    +theme: ThemeMode
+    +language: UiLanguage
+    +density: String
+    +fontScale: BigDecimal
+    +reduceMotion: boolean
+    +deskSkin: DeskSkin
+    +defaultCardSkin: String
   }
-  class TaskState {
-    <<enum>>
-    RASCUNHO
-    DISPONIVEL
-    EM_USO
-    BLOQUEADA
-    CONCLUIDA
-    ARQUIVADA
-    MODELO_PUBLICO
-    OFERECIDA
+  class UserSkin {
+    <<entity>>
+    +userId: UUID
+    +skinKind: String
+    +skinKey: String
+    +acquiredVia: String
   }
-  class CoverMode {
-    <<enum>>
-    AUTO
-    MANUAL
-    IA
+  class PipelineJob {
+    <<entity>>
+    +type: String
+    +targetType: String
+    +targetId: UUID
+    +status: PipelineJobStatus
   }
-  class ProjectCoverMode {
-    <<enum>>
-    MOSAICO
-    FOTO
-    IA
+  class MediaObject {
+    <<entity>>
+    +objectKey: String
+    +variantsJson: JSON
   }
   class ThemeMode {
     <<enum>>
@@ -232,244 +140,301 @@ classDiagram
     BLUEPRINT
     PAPEL_TIMBRADO
   }
-  class MessageClass {
+  class CoverMode {
     <<enum>>
-    ARGUMENTO azul
-    DIVERGENCIA laranja
-    RISCO vermelho
-    CONSENSO verde
-    PERGUNTA roxo
-    RUIDO
+    AUTO
+    MANUAL
+    IA
   }
-  class DecisionStatus {
+  class ProjectCoverMode {
     <<enum>>
-    PROPOSTA
-    EM_REVISAO
-    VALIDADA
-    DEVOLVIDA
-    SUBSTITUIDA
+    MOSAICO
+    FOTO
+    IA
   }
+}
 
-  class TaskController {
-    <<controller>>
-    +PUT tasks_id_cover
-    +POST tasks_id_cover_ai
-    +DELETE tasks_id_cover
-  }
-  class ProjectController {
-    <<controller>>
-    +PUT projects_id_cover
-    +POST projects_id_cover_ai
-    +PATCH projects_id_icon
-  }
-  class PreferencesController {
-    <<controller>>
-    +GET me_preferences
-    +PATCH me_preferences
-  }
+namespace ws_application {
   class ThumbnailService {
     <<service>>
-    +schedule(taskId) PipelineJob
-    +render(taskId) MediaObject
-    +strategyFor(type, format) ThumbnailStrategy
-    +replaceManual(taskId, mediaId) TaskItem
-    +requestAiCover(taskId, prompt) TaskItem
+    +onTaskCreatedOrUpdated(event) PipelineJob
+    +render(task) MediaObject
+    +replaceManual(actor, taskId, media) TaskItem
+    +requestAiCover(actor, taskId) TaskItem
   }
-  class ThumbnailStrategy {
-    <<port>>
-    +render(task, media) MediaObject
-  }
-  class FirstPageStrategy {
-    <<adapter>>
-  }
-  class MiniChartStrategy {
-    <<adapter>>
-  }
-  class CadSilhouetteStrategy {
-    <<adapter>>
-  }
-  class MonogramStrategy {
-    <<adapter>>
-  }
-  class FaviconCaptureStrategy {
-    <<adapter>>
+  class MosaicService {
+    <<service>>
+    +recompute(projectId) ProjectScheme
   }
   class CardArtService {
     <<service>>
-    +rebuildMosaic(projectId) ProjectScheme
-    +phaseRing(projectId) PhaseProgress
-    +requestAiCover(projectId, theme) ProjectScheme
-    +sealWaxFor(sealBond) SealWaxSpec
-    +stampFor(decision) StampSpec
-  }
-  class AiEngine {
-    <<service>>
-    +run(capability, input, accessClass) AiResult
+    +get(actor, kind, id) CardArtConfig
+    +put(actor, kind, id, CardArtConfig, baseRev) CardArtConfig
+    +effectiveLayout(card) Composition
   }
   class PreferencesService {
     <<service>>
-    +update(userId, patch) UserPreferences
-    +availableSkins(userId) List~UserSkin~
+    +update(actor, PreferencesForm) UserPreferences
   }
+  class AiEngine {
+    <<service>>
+    +run(CAPA_IA) AiResponse
+  }
+  class Guard {
+    <<service>>
+    +requireOwner(actor, ownerId)
+  }
+  class UploadGuard {
+    <<service>>
+    +checkMagicBytes(bytes)
+    +checkPixelCeiling(w, h)
+  }
+  class StoragePort {
+    <<port>>
+    +put(key, bytes)
+  }
+  class JobPort {
+    <<port>>
+    +enqueue(THUMBNAIL)
+  }
+}
 
-  TaskItem --> TaskType : type
-  TaskItem --> TaskState : state
-  TaskItem --> CoverMode : coverMode
-  TaskItem ..> MediaObject : thumbnailUrl e coverUrl
-  TaskItem ..> AiInferenceLog : aiInferenceId
-  TaskItem ..> LegalDeadlineRule : legalDeadlineRuleId
-  TaskItem "1" --> "*" TaskVersion : versões
-  TaskItem --> Department : departmentId
-  ProjectScheme --> ProjectCoverMode : coverMode
-  ProjectScheme "1" --> "*" ProjectTask : tarefas do mosaico
-  ProjectTask --> TaskItem : taskId
-  ProjectScheme --> Department : departmentId
-  Department --> Company : companyId
-  UserPreferences --> ThemeMode : theme
-  UserPreferences --> DeskSkin : deskSkin
-  UserPreferences "1" --> "*" UserSkin : skins adquiridas
-  PipelineJob ..> TaskItem : THUMBNAIL
-  SealBond --> Seal : sealId
-  SealBond ..> TaskItem : lacre no card
-  FinalDecision --> DecisionStatus : status
-  DecisionTraceNode ..> MessageClass : classLabel
-  DecisionTraceNode "1" --> "*" DecisionTraceEdge : fio
+namespace packages_ui {
+  class TaskCard {
+    <<component>>
+    +layout: TaskCardLayout
+    +variants: Set~TaskCardVariant~
+    +composition: TaskComposition
+    +family: String
+  }
+  class ProjectCard {
+    <<component>>
+    +layout: ProjectCardLayout
+    +variants: Set~ProjectCardVariant~
+    +composition: ProjectComposition
+    +cover: String
+  }
+  class TypeChip {
+    <<component>>
+    +type: TaskType
+  }
+  class Tag {
+    <<component>>
+    +state: TaskState
+    +status: ProjectStatus
+    +classLabel: MessageClass
+    +pulse: boolean
+  }
+  class Due {
+    <<component>>
+    +date: LocalDate
+    +kind: String
+    +legal: boolean
+  }
+  class Spark {
+    <<component>>
+    +generatedAt: Instant
+    +model: String
+    +reviewedBy: String
+  }
+  class Stamp {
+    <<component>>
+    +kind: String
+    +date: LocalDate
+    +reviewer: String
+  }
+  class SealBadge {
+    <<component>>
+    +issuer: String
+    +excellence: boolean
+  }
+  class Medal {
+    <<component>>
+    +name: String
+  }
+  class Mosaic {
+    <<component>>
+    +tiles: List
+  }
+  class ProgressRing {
+    <<component>>
+    +value: int
+    +total: int
+  }
+  class DecisionThread {
+    <<component>>
+    +nodes: List
+    +stamp: String
+  }
+  class BackgroundArt {
+    <<component>>
+    +skin: DeskSkin
+  }
+  class Monogram {
+    <<component>>
+    +initials: String
+    +dept: String
+  }
+  class ThemeProvider {
+    <<component>>
+    +dataTheme: String
+    +reduceMotion: boolean
+  }
+  class Confetti {
+    <<component>>
+  }
+  class TaskCardLayout {
+    <<enum>>
+    compact
+    list
+    expanded
+    attachment
+    mini
+  }
+  class ProjectCardLayout {
+    <<enum>>
+    mosaic
+    hero
+    mural
+    postit
+  }
+  class TaskComposition {
+    <<enum>>
+    PAGINA
+    GRADE
+    PRANCHA
+    MENSAGEM
+    FICHA
+  }
+  class ProjectComposition {
+    <<enum>>
+    MOSAICO
+    LINHA_TEMPO
+    KANBAN_MINI
+    PAINEL_METRICAS
+    CAPA_FOTO
+  }
+  class SchemeView {
+    <<enum>>
+    BOARD
+    TIMELINE
+    DESK
+  }
+}
 
-  TaskController --> ThumbnailService
-  ProjectController --> CardArtService
-  PreferencesController --> PreferencesService
-  ThumbnailService --> ThumbnailStrategy
-  ThumbnailStrategy <|.. FirstPageStrategy
-  ThumbnailStrategy <|.. MiniChartStrategy
-  ThumbnailStrategy <|.. CadSilhouetteStrategy
-  ThumbnailStrategy <|.. MonogramStrategy
-  ThumbnailStrategy <|.. FaviconCaptureStrategy
-  ThumbnailService --> AiEngine : CAPA_IA
-  CardArtService --> AiEngine : CAPA_IA
-  ThumbnailService ..> PipelineJob
-  ThumbnailService ..> MediaObject
-  CardArtService ..> ProjectScheme
-  CardArtService ..> SealBond
-  CardArtService ..> FinalDecision
-  PreferencesService ..> UserPreferences
-
-  note for TaskItem "tabela tasks · +40 campos · thumbnailUrl, coverUrl, coverMode (RF38.CA02)"
-  note for ProjectScheme "tabela project_schemes · +30 campos · mosaicJson 2x3 + anel por fase (RF38.CA03)"
-  note for UserPreferences "tabela user_preferences · RF38.CA08 · reduceMotion alimenta prefers-reduced-motion"
-  note for CoverMode "TAXONOMIA lista AUTO MANUAL IA para TaskItem e MOSAICO FOTO IA para ProjectScheme · unificar nome a confirmar"
-  note for MessageClass "cores dos nós do fio de decisão (RF38.CA07)"
+TaskItem ..> TypeChip : type
+TaskItem ..> Tag : state
+TaskItem ..> Due : dueAt legalDueAt
+TaskItem ..> Spark : aiGenerated aiInferenceId
+AiInferenceLog ..> Spark : model createdAt reviewedBy
+ProjectScheme ..> Mosaic : mosaicJson
+ProjectScheme ..> ProgressRing : currentPhase
+ProjectScheme ..> Tag : status
+DecisionTraceNode ..> DecisionThread : classLabel cor do no
+FinalDecision ..> Stamp : stampJson
+SealBond ..> SealBadge : status APROVADA
+Seal ..> SealBadge : artJson excellence
+Recognition ..> Medal : medalArtJson
+Department ..> Monogram : color monogram
+Department ..> TaskCard : borda na cor
+Company ..> ThemeProvider : logoUrl accentColor
+UserPreferences ..> ThemeProvider : theme reduceMotion
+UserPreferences ..> BackgroundArt : deskSkin
+UserSkin ..> BackgroundArt : skins compradas
+TaskCard *-- TypeChip
+TaskCard *-- Tag
+TaskCard *-- Due
+TaskCard *-- Spark
+TaskCard *-- SealBadge
+TaskCard --> TaskCardLayout
+TaskCard --> TaskComposition
+ProjectCard *-- Mosaic
+ProjectCard *-- ProgressRing
+ProjectCard *-- Stamp
+ProjectCard --> ProjectCardLayout
+ProjectCard --> ProjectComposition
+ThumbnailService --> JobPort
+ThumbnailService --> StoragePort
+ThumbnailService --> AiEngine
+ThumbnailService --> UploadGuard
+ThumbnailService ..> TaskItem : thumbnailUrl coverMode
+MosaicService ..> ProjectScheme : mosaicJson
+CardArtService ..> TaskItem : cardArtJson
+CardArtService ..> ProjectScheme : cardArtJson
+CardArtService --> Guard
+PreferencesService ..> UserPreferences
+PipelineJob ..> ThumbnailService : THUMBNAIL
+MediaObject ..> TaskItem : variantsJson thumb
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  classDef err fill:#FFE3E3,stroke:#C0392B,color:#5B1A12
-  classDef ai fill:#FFF3D6,stroke:#D68910,color:#5C3B00
-  classDef store fill:#EEF6FF,stroke:#4A4852,color:#1F2937
-
-  subgraph L_user["Ator humano · Usuário"]
-    U1["Cria ou envia uma tarefa (RF20)"]
-    U2["Vê o card com ícone do tipo, etiqueta de estado, prazo, lacre, faísca ✦ e thumbnail"]
-    U3{"Quer trocar a capa?"}
-    U4["Envia imagem manual"]
-    U5["Pede capa à IA (tema ou título)"]
-    U6["Altera tema, skin da Mesa, densidade, reduzir movimento"]
-    U7["Passa o mouse na faísca ✦: tooltip gerado por IA em data, revisado por pessoa"]
+  subgraph ATOR["Ator (qualquer usuário)"]
+    A0([Cria ou envia uma tarefa]) --> A1["Arquivo ou texto entra no acervo (RF4)"]
+    A2([Abre qualquer lista, busca, anexo ou fio]) --> A3["Vê cards com ícone por tipo, etiqueta de estado em texto, prazo colorido, lacre, faísca"]
+    A4([Decisão validada na sessão]) --> A5["Vê carimbo VALIDADO e confete discreto"]
+    A6([Preferências]) --> A7["Escolhe tema claro/escuro/contraste/blueprint, skin da Mesa, reduzir movimento"]
+    A8([Troca a thumbnail]) --> A9{"Manual ou IA?"}
   end
 
-  subgraph L_web["Web/BFF · Next.js + components/ui"]
-    W1["TaskTypeIcon: glifo + cor por TaskType (tabela de identidade); rótulo textual sempre presente"]
-    W2["StateTag: etiqueta de protocolo com nome do estado em texto (tracejado, pulso, cadeado, carimbo verde, esmaecido, estrela)"]
-    W3["DeadlineBadge: âmbar a 3 dias, vermelho vencido, ícone ⚖ se legalDueAt"]
-    W4["SealWax (dourado empresa, azul-marinho chefe, fita vermelha Excelência) · Medal · DecisionStamp VALIDADO/DEVOLVIDO com data e revisor"]
-    W5["DecisionThread: linha vertical com nós coloridos por classLabel (azul, laranja, vermelho, verde, roxo)"]
-    W6["ProjectMosaicCover 2x3 + PhaseRing + borda na cor do departamento · DeptMonogram · CompanyLogo"]
-    W7["ThemeProvider: AUTO, CLARO, ESCURO, ALTO_CONTRASTE, BLUEPRINT · DeskSkin · menu recolhível responsivo"]
-    W8["MotionProvider: encaixe animado, confete discreto, faísca animada, empty states; desliga com prefers-reduced-motion ou reduceMotion"]
-    W9["PUT /tasks/id/cover (mediaId) · POST /tasks/id/cover/ai · PATCH /me/preferences"]
-    W10["Thumbnail placeholder (skeleton com glifo do tipo) enquanto o job roda"]
+  subgraph FE["Next.js / BFF (packages/ui · app/(shell)/*)"]
+    F1["taskVariants(TaskView, viewer) / projectVariants(ProjectView, viewer) → Set de flags"]
+    F2["TaskCard layout compact/list/expanded/attachment/mini · ProjectCard mosaic/hero/mural/postit · effectiveLayout(composition)"]
+    F3["TypeChip (glifo + nome) · Tag (nome do estado em texto, estilo tracejado/pulso/cadeado/carimbo/estrela) · Due (âmbar 3 dias, vermelho vencido, ⚖) · Spark tooltip · SealBadge · Medal · Stamp · DecisionThread"]
+    F4["ThemeProvider data-theme + prefers-reduced-motion · BackgroundArt(deskSkin) · SidebarNav recolhível · bottom-nav"]
+    F5["Micro-interações: encaixe animado ao arrastar para a fase, Confetti na decisão validada, faísca animada durante geração, EmptyState ilustrado"]
+    F6["PUT /api/tasks/{id}/cover (manual) · POST /api/tasks/{id}/cover/ai"]
   end
 
-  subgraph L_app["ws-application · ThumbnailService · CardArtService · PreferencesService"]
-    A1["Evento TaskCreated ou TaskAttachmentReady → ThumbnailService.schedule → PipelineJob THUMBNAIL"]
-    A2{"Estratégia por tipo e formato?"}
-    A3["DOCUMENTO: primeira página estilizada"]
-    A4["PLANILHA: mini-gráfico dos dados"]
-    A5["DESENHO_TECNICO: silhueta do dwg/dxf/ifc/glb"]
-    A6["TEXTO, FORMULARIO, ATA, PROTOCOLO, EMAIL: monograma das iniciais sobre a cor da categoria"]
-    A7["LINK: favicon + captura"]
-    A8["Grava variante thumb em MediaObject.variantsJson e TaskItem.thumbnailUrl (coverMode AUTO)"]
-    A9["Evento TaskThumbnailReady → CardArtService.rebuildMosaic para cada projeto que contém a tarefa"]
-    A10["Mosaico 2x3 das tarefas principais + percentComplete por fase + Department.color → mosaicJson"]
-    A11{"Imagem manual válida (mime real, tamanho, antivírus)?"}
-    A12["coverMode MANUAL · coverUrl = mediaId"]
-    A13{"Cota de IA disponível (RF42.CA06)?"}
-    A14{"accessClass RESTRITO ou SIGILOSO?"}
-    A15["coverMode IA · coverUrl · aiGenerated true · aiInferenceId (faísca ✦)"]
-    A16["PreferencesService.update: valida skin possuída (UserSkin ou PADRAO)"]
-    E1["422 VALIDACAO (mime inválido, arquivo grande, infectado)"]
-    E2["409 COTA_ESGOTADA → atalho para a Loja Work Station"]
-    E3["403 SKIN_NAO_ADQUIRIDA"]
+  subgraph WEB["ws-web"]
+    W1["TaskController · ProjectController · PreferencesController (MeController existe no main) · CardArtController"]
+    W2["GlobalExceptionHandler"]
   end
 
-  subgraph L_ai["IA (AiEngine) · capability CAPA_IA e THUMBNAIL"]
-    I1["Gera ilustração flat a partir do tema (ex.: pavimentação urbana) com PII mascarada"]
-    I2["Motor local: monograma/paleta determinística (BLOQUEADO_SIGILO para externo)"]
-    I3["AiInferenceLog: provider, model, createdAt, reviewedBy → alimenta o tooltip da faísca"]
+  subgraph APP["ws-application"]
+    P1["DomainEvents TaskCreated/TaskUpdated AFTER_COMMIT → ThumbnailService.onTaskCreatedOrUpdated → PipelineJob THUMBNAIL"]
+    P2{"Tipo da tarefa"}
+    P2 -->|DOCUMENTO PLANILHA| P3["1ª página estilizada ou mini-gráfico"]
+    P2 -->|DESENHO_TECNICO| P4["Silhueta do desenho"]
+    P2 -->|LINK| P5["favicon + captura"]
+    P2 -->|PASTA PROTOCOLO| P6["Monograma do departamento"]
+    P7["UploadGuard (magic bytes, teto de pixels) → reencode webp → MediaObject.variantsJson thumb/preview → TaskItem.thumbnailUrl, coverMode AUTO"]
+    P8["MosaicService.recompute(projectId): 6 thumbnails principais + progresso por fase → ProjectScheme.mosaicJson (AFTER_COMMIT de ProjectTask)"]
+    P9{"Guard.requireOwner(tarefa)?"}
+    P9 -->|não| E1["403 ACESSO_NEGADO"]
+    P10["Manual: coverMode MANUAL · IA: AiEngine CAPA_IA → coverMode IA + aiInferenceId"]
+    P11["PreferencesService.update → UserPreferences.theme/deskSkin/reduceMotion (RF3)"]
+    P12["CardArtService.put(CardArtConfig, baseRev) → 409 REVISAO_DESATUALIZADA se baseRev divergir"]
   end
 
-  subgraph L_db["Persistência"]
-    D1["MySQL pipeline_jobs (THUMBNAIL PENDENTE → RODANDO → OK | FALHA → REPROCESSAR)"]
-    D2["S3 MediaObject variantes thumb e preview"]
-    D3["MySQL tasks.thumbnailUrl, coverUrl, coverMode · task_versions.thumbnailUrl"]
-    D4["MySQL project_schemes.mosaicJson, coverUrl, coverMode"]
-    D5["MySQL user_preferences · user_skins"]
-    D6["MySQL ai_inference_log"]
+  subgraph IA["AiEngine (THUMBNAIL · CAPA_IA)"]
+    I1["Gera capa sob pedido do dono · AiInferenceLog (model, createdAt) → tooltip gerado por IA em [data], revisado por [pessoa]"]
   end
 
-  U1 --> A1 --> D1
-  A1 --> W10
-  D1 --> A2
-  A2 -- "DOCUMENTO" --> A3
-  A2 -- "PLANILHA" --> A4
-  A2 -- "DESENHO_TECNICO" --> A5
-  A2 -- "texto e afins" --> A6
-  A2 -- "LINK" --> A7
-  A3 --> A8
-  A4 --> A8
-  A5 --> A8
-  A6 --> A8
-  A7 --> A8
-  A8 --> D2
-  A8 --> D3
-  A8 --> A9 --> A10 --> D4
-  A10 --> W6
-  D3 --> W1 --> U2
-  W2 --> U2
-  W3 --> U2
-  W4 --> U2
-  W5 --> U2
-  U2 --> U7
-  U2 --> U3
-  U3 -- "imagem manual" --> U4 --> W9 --> A11
-  A11 -- "não" --> E1
-  A11 -- "sim" --> A12 --> D3
-  U3 -- "capa por IA" --> U5 --> W9 --> A13
-  A13 -- "não" --> E2
-  A13 -- "sim" --> A14
-  A14 -- "sim" --> I2 --> A15
-  A14 -- "não" --> I1 --> A15
-  I1 --> I3 --> D6
-  A15 --> D3
-  A15 --> A9
-  U6 --> W9 --> A16
-  A16 -- "skin não possuída" --> E3
-  A16 -- "ok" --> D5 --> W7 --> W8
+  subgraph DB["Persistência"]
+    D1[("MySQL tasks · project_schemes · user_preferences (V2) · user_skins · pipeline_jobs · media_objects (V2) · ai_inference_log (V2)")]
+    D2[("S3 thumbnails · capas · variants · flag storage.s3")]
+  end
 
-  class E1,E2,E3 err
-  class I1,I2,I3 ai
-  class D1,D2,D3,D4,D5,D6 store
+  A1 --> P1 --> P2
+  P3 --> P7
+  P4 --> P7
+  P5 --> P7
+  P6 --> P7
+  P7 --> D2
+  P7 --> D1
+  P7 --> P8 --> D1
+  A2 --> F1 --> F2 --> F3
+  A3 --> F3
+  A4 --> A5 --> F5
+  A6 --> A7 --> F4 --> W1 --> P11 --> D1
+  A8 --> A9 -->|manual| F6 --> W1 --> P9 -->|sim| P10 --> D1
+  A9 -->|IA| F6
+  P10 --> I1 --> D1
+  F2 --> W1 --> P12 --> D1
+  E1 --> W2
 ```
 
 ## 3. Diagrama de sequência
@@ -477,106 +442,89 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário
-  participant N as Next.js (App Router)
+  participant U as Usuário
+  participant FE as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant S3 as S3
-  participant R as Redis
   participant EV as DomainEvents (AFTER_COMMIT)
 
-  U->>N: Envia documento como tarefa (RF20)
-  N->>C: POST /tasks (multipart)
-  C->>S: AcervoService.create → commit
-  S->>EV: TaskCreated(taskId)
-  EV->>S: ThumbnailService.schedule(taskId)
-  S->>DB: INSERT pipeline_jobs (THUMBNAIL, PENDENTE)
-  S-->>N: 201 TaskItem (thumbnailUrl null → skeleton com glifo do tipo)
-  Note over S,S3: worker assíncrono (platform) pega o job
-  S->>DB: UPDATE pipeline_jobs RODANDO
-  S->>S3: GET original · PUT variante thumb (primeira página estilizada)
-  S->>DB: UPDATE tasks (thumbnailUrl, coverMode AUTO) · media_objects.variantsJson · pipeline_jobs OK
-  S->>EV: TaskThumbnailReady(taskId)
-  EV->>S: CardArtService.rebuildMosaic(projectId) para cada projeto da tarefa
-  S->>DB: SELECT project_tasks + tasks.thumbnailUrl + percentComplete por fase
-  S->>DB: UPDATE project_schemes (mosaicJson 2x3, anel de fase, Department.color)
-  S->>R: DEL cache card:project:id
-  N->>C: GET /tasks/id (SWR revalida)
-  C-->>N: 200 TaskItem com thumbnailUrl, state, dueAt, legalDueAt, sealIdsJson, aiGenerated
-  N-->>U: Card: TaskTypeIcon + StateTag + DeadlineBadge ⚖ + SealWax + ✦
+  Note over U,EV: CA02 + CA03 — thumbnail automático e capa-mosaico
+  U->>FE: envia um DOCUMENTO pdf (RF4)
+  FE->>C: POST /api/tasks (multipart)
+  C->>S: TaskService.create(actor, form, file)
+  S->>DB: insert tasks (thumbnailUrl null, coverMode AUTO)
+  S->>EV: TaskCreated
+  S-->>FE: 201 TaskItem (card com Skeleton na mídia)
+  EV->>S: ThumbnailService.onTaskCreatedOrUpdated → pipeline_jobs THUMBNAIL
+  S->>S3: get anexo primário
+  S->>S: UploadGuard (magic bytes, teto de pixels) · render 1ª página estilizada → webp
+  S->>S3: put thumbnails/{taskId}.webp + variants
+  S->>DB: update tasks.thumbnail_url · media_objects.variants_json · pipeline_jobs OK
+  S->>EV: ThumbnailReady
+  EV->>S: MosaicService.recompute(projectId) para cada projeto que usa a tarefa
+  S->>DB: update project_schemes.mosaic_json (6 tiles + progresso por fase)
+  FE->>C: GET /api/tasks/{id}
+  C-->>FE: TaskView com thumbnailUrl → TaskCard troca Skeleton pela mídia
 
-  U->>N: Pedir capa à IA
-  N->>C: POST /tasks/id/cover/ai (tema)
-  C->>S: ThumbnailService.requestAiCover(taskId, tema)
-  S->>R: GET quota:USER:id:mês (créditos comprados antes da cota mensal)
-  alt sem cota e sem créditos
-    S-->>N: 409 COTA_ESGOTADA (atalho para a Loja)
-  else accessClass RESTRITO ou SIGILOSO
-    S->>AI: run(CAPA_IA, tema, accessClass)
-    AI-->>S: motor local (monograma e paleta) · result BLOQUEADO_SIGILO para externo
-    S->>DB: INSERT ai_inference_log · UPDATE tasks (coverUrl, coverMode IA, aiGenerated, aiInferenceId)
-    S-->>N: 200 TaskItem com aviso de motor local
-  else cota ok e acesso PUBLICO ou INTERNO
-    S->>AI: run(CAPA_IA, tema mascarado)
-    AI-->>S: imagem flat + confiança
-    S->>S3: PUT cover
-    S->>DB: INSERT ai_inference_log · UPDATE tasks (coverUrl, coverMode IA, aiGenerated, aiInferenceId)
-    S->>EV: TaskCoverChanged(taskId) → rebuildMosaic
-    S-->>N: 200 TaskItem
-    N-->>U: Capa com faísca ✦ e tooltip gerado por IA em data, revisado por
-  end
-
-  U->>N: Tema BLUEPRINT + skin da Mesa CORTICA + reduzir movimento
-  N->>C: PATCH /me/preferences
-  C->>S: PreferencesService.update(userId, patch)
-  alt skin não adquirida (UserSkin ausente e não PADRAO)
-    S-->>N: 403 SKIN_NAO_ADQUIRIDA
+  Note over U,EV: CA02 — substituir por capa manual ou IA
+  U->>FE: pede capa à IA
+  FE->>C: POST /api/tasks/{id}/cover/ai
+  C->>S: ThumbnailService.requestAiCover(actor, taskId)
+  S->>S: Guard.requireOwner(actor, task.ownerId)
+  alt não é dono
+    S-->>C: 403 ACESSO_NEGADO
   else ok
-    S->>DB: UPDATE user_preferences (theme, deskSkin, reduceMotion)
-    S-->>N: 200 UserPreferences
-    N-->>U: ThemeProvider aplica data-theme e MotionProvider desliga animações
+    S->>AI: run(CAPA_IA, título + tipo + categoria)
+    AI->>DB: insert ai_inference_log (model, createdAt)
+    AI-->>S: imagem ✦
+    S->>S3: put covers/{taskId}.webp
+    S->>DB: update tasks coverUrl, coverMode IA, aiInferenceId
+    S-->>FE: 200 TaskView (Spark com tooltip gerado por IA em [data])
   end
+
+  Note over U,EV: CA04 + CA06 + CA07 — faísca, carimbo e fio na tela
+  U->>FE: abre /tasks/{id}
+  FE->>C: GET /api/tasks/{id} + GET /api/trace?targetType=TASK
+  C->>S: TaskService.detail + DecisionTraceService.thread
+  S->>DB: tasks + ai_inference_log (reviewedBy) + seal_bonds APROVADA + seals.artJson + decision_trace_nodes.classLabel + final_decisions.stampJson
+  S-->>FE: TaskView, SealViews, DecisionThread nodes, Stamp
+  FE->>FE: taskVariants(view, viewer) → GERADA_IA, CHANCELADA, COM_CARIMBO · render TypeChip, Tag, Due, Spark, SealBadge, DecisionThread (nós por classe), Stamp
+
+  Note over U,EV: CA08 — tema e skin
+  U->>FE: escolhe tema Blueprint e skin cortiça
+  FE->>C: PATCH /api/me/preferences {theme BLUEPRINT, deskSkin CORTICA, reduceMotion true}
+  C->>S: PreferencesService.update(actor, form) (MeController + UserPreferences existem no main)
+  S->>DB: update user_preferences
+  S-->>FE: 200 → ThemeProvider data-theme=blueprint · BackgroundArt cortiça · animações desligadas
 ```
 
 ## 4. Máquina de estados
 
-O RF não tem entidade com estado próprio. Usa-se o `PipelineJob.status` do job `THUMBNAIL` e o `TaskItem.coverMode` que ele afeta (o mesmo vale para `ProjectScheme.coverMode` MOSAICO → FOTO → IA).
+Entidade central: `TaskItem.coverMode` (`CoverMode`) e o `PipelineJob THUMBNAIL` que o alimenta; as etiquetas de estado (CA05) renderizam as máquinas de `TaskState` (RF41) e `ProjectStatus` (RF22), não têm máquina própria.
 
 ```mermaid
 stateDiagram-v2
-  direction LR
-
-  state "PipelineJob THUMBNAIL" as Job {
-    [*] --> PENDENTE : TaskCreated ou TaskAttachmentReady
-    PENDENTE --> RODANDO : worker pega o job
-    RODANDO --> OK : variante thumb gravada
-    RODANDO --> FALHA : erro de render ou mime não suportado
-    FALHA --> REPROCESSAR : attempts menor que 3 (backoff)
-    REPROCESSAR --> PENDENTE
-    FALHA --> [*] : attempts esgotados · card fica com glifo do tipo
-    OK --> [*]
-  }
-
-  state "TaskItem.coverMode" as Cover {
-    [*] --> SemThumb : tarefa criada
-    SemThumb --> AUTO : job OK (thumbnailUrl)
-    AUTO --> MANUAL : usuário envia imagem válida
-    AUTO --> IA : capa gerada (aiGenerated, aiInferenceId, faísca ✦)
-    MANUAL --> IA : usuário pede capa à IA
-    IA --> MANUAL : usuário substitui por imagem
-    MANUAL --> AUTO : usuário restaura automática
-    IA --> AUTO : usuário restaura automática
-    AUTO --> AUTO : anexo principal muda → novo job THUMBNAIL
-  }
-
-  Job --> Cover : OK publica TaskThumbnailReady
-
-  note right of Cover
-    Qualquer mudança de coverMode ou thumbnailUrl
-    dispara CardArtService.rebuildMosaic nos projetos
-    que contêm a tarefa (RF38.CA03)
+  state "Sem thumbnail (Skeleton)" as SEM
+  [*] --> SEM: tarefa criada ou arquivo atualizado (RF4)
+  SEM --> AUTO: PipelineJob THUMBNAIL OK → thumbnailUrl gerado por tipo (CA02)
+  SEM --> SEM: PipelineJob FALHA → REPROCESSAR · card mostra placeholder do tipo (TypeChip)
+  AUTO --> AUTO: arquivo atualizado → novo job · mosaico dos projetos recalculado (CA03)
+  AUTO --> MANUAL: dono envia imagem (UploadGuard, reencode sem EXIF)
+  AUTO --> IA: dono pede capa à IA → aiInferenceId · faísca ✦ (CA04)
+  MANUAL --> IA: pede capa à IA
+  IA --> MANUAL: substitui por imagem própria
+  MANUAL --> AUTO: remove a capa manual
+  IA --> AUTO: remove a capa gerada
+  note right of IA
+    Tooltip: gerado por IA em [AiInferenceLog.createdAt]
+    revisado por [AiInferenceLog.reviewedBy] (CA04)
+  end note
+  note right of AUTO
+    Fonte por tipo: 1ª página estilizada · mini-gráfico ·
+    silhueta do desenho · monograma · favicon + captura
   end note
 ```
 
@@ -584,85 +532,67 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js"]
-    FE1["app/ · tasks, projects, sessions, profile, settings/preferences"]
-    FE2["components/ui · design system: TaskTypeIcon · TaskThumbnail · StateTag · DeadlineBadge · AiSpark ✦ · SealWax · Medal · DecisionStamp · DecisionThread · ProjectMosaicCover · PhaseRing · DeptMonogram · ThemeProvider · DeskSkin · MotionProvider · EmptyState"]
-    FE3["tokens · cores por TaskType, cores por MessageClass, temas CLARO/ESCURO/ALTO_CONTRASTE/BLUEPRINT, prefers-reduced-motion"]
+  subgraph FRONT["Frontend Next.js 15 · packages/ui (design system DECIA)"]
+    TOK["styles/tokens.css --ws-* · 4 temas data-theme (claro · escuro · contraste · blueprint) · motion tokens (prefers-reduced-motion)"]
+    GL["icons sprite ws-<nome> (66 glifos: 16 tipos de tarefa, ações, estado/prazo/IA/chancela, social)"]
+    CARDS["TaskCard (TaskCardLayout · TaskComposition · TaskCardVariant) · ProjectCard (ProjectCardLayout · ProjectComposition · ProjectCardVariant) · taskVariants/projectVariants · effectiveLayout"]
+    ATOMS["TypeChip · Tag · Due · Spark ✦ · Stamp · Seal · Medal · DpChip · PhaseBar · ProgressRing · Mosaic · Monogram · Counters"]
+    THREAD["DecisionThread (fio: nós por MessageClass, carimbo)"]
+    SHELL["ThemeProvider · SidebarNav recolhível · bottom-nav · TopBar · BackgroundArt(DeskSkin) · PostIt · SchemeView BOARD/TIMELINE/DESK"]
+    FX["Confetti · encaixe animado (drag para fase) · faísca animada · EmptyState/ErrorState/Skeleton"]
+    STUDIO["Estúdio de Arte do card (RF11): CardArtConfig · ArtKind · composições"]
+    LAB["app/lab/design-system (Storybook leve) · api:types gerados do OpenAPI (D-21)"]
+    TOK --> ATOMS --> CARDS
+    GL --> ATOMS
+    CARDS --> THREAD
+    SHELL --> CARDS
+    FX --> CARDS
+    STUDIO --> CARDS
   end
-
   subgraph WEB["ws-web"]
-    C1["TaskController (cover)"]
-    C2["ProjectController (cover, icon)"]
-    C3["PreferencesController"]
+    CTRL["TaskController · ProjectController · CardArtController · MeController (main: preferências)"]
   end
-
-  subgraph APP["ws-application"]
-    S1["ThumbnailService + ThumbnailStrategy (FirstPage, MiniChart, CadSilhouette, Monogram, FaviconCapture)"]
-    S2["CardArtService (mosaico, anel, lacre, carimbo)"]
-    S3["PreferencesService"]
-    S4["AiEngine (RF43) · CAPA_IA"]
-    P1["StoragePort"]
+  subgraph APPL["ws-application"]
+    TH["platform/ThumbnailService (PipelineJob THUMBNAIL)"]
+    MO["projects/MosaicService (AFTER_COMMIT)"]
+    CA["platform/CardArtService (card_art_json, baseRev)"]
+    PR["identity/PreferencesService · AccountService (main)"]
+    AIE["ai/AiEngine (THUMBNAIL · CAPA_IA)"]
+    UG["security/UploadGuard (magic bytes · teto de pixels)"]
+    DE["events/DomainEvents AFTER_COMMIT"]
   end
-
-  subgraph DOM["ws-domain · br.gov.pr.secid.workstation"]
-    D1["TaskItem · TaskVersion · ProjectScheme · ProjectTask"]
-    D2["UserPreferences · UserSkin"]
-    D3["PipelineJob · MediaObject · AiInferenceLog"]
-    D4["Seal · SealBond · Recognition · FinalDecision · DecisionTraceNode · Department · Company"]
+  subgraph DOM["ws-domain"]
+    ENT["UserPreferences (main: theme, deskSkin, reduceMotion) · TaskItem.thumbnailUrl/coverMode/cardSkin/cardArtJson · ProjectScheme.mosaicJson/coverMode · UserSkin · Department.color/monogram (planejado)"]
   end
-
-  subgraph INFRA["ws-infrastructure/*"]
-    I1["persistence-mysql"]
-    I2["storage-s3 · variantes thumb/preview/cover"]
-    I3["cache-redis · cache de cards e preferências"]
-    I4["ai-providers · ClaudeAdapter · GeminiAdapter · LocalEngine"]
-    I5["platform · PipelineJob worker · DomainEventOutbox · renderers (pdf, xlsx, dwg/ifc/glb, headless capture)"]
+  subgraph INFRA["ws-infrastructure"]
+    MY["persistence-mysql user_preferences · media_objects · pipeline_jobs (V2) · colunas de capa (V__rf38)"]
+    S3A["storage-s3 thumbnails · capas · variants (flag storage.s3)"]
+    PLAT["platform: render de 1ª página · captura de link · reencode webp"]
+    AIP["ai-providers (CAPA_IA)"]
   end
-
-  subgraph EXT["Serviços externos"]
-    X1["Claude / Gemini (capa por IA)"]
-    X2["Google Workspace · Microsoft 365 (export da 1ª página de gdoc/docx vinculados → TaskVersion.thumbnailUrl)"]
-  end
-
-  FE1 --> C1
-  FE1 --> C2
-  FE1 --> C3
-  FE2 -.-> FE1
-  FE3 -.-> FE2
-  C1 --> S1
-  C2 --> S2
-  C3 --> S3
-  S1 --> S4
-  S2 --> S4
-  S1 --> P1
-  S1 --> D1
-  S1 --> D3
-  S2 --> D1
-  S2 --> D4
-  S3 --> D2
-  D1 --> I1
-  D2 --> I1
-  D3 --> I1
-  D4 --> I1
-  P1 --> I2
-  S4 --> I4 --> X1
-  I5 --> S1
-  I5 --> S2
-  I5 --> X2
-  FE1 -.-> I3
+  CARDS -->|REST JSON tipos gerados| CTRL
+  CTRL --> TH
+  CTRL --> CA
+  CTRL --> PR
+  DE --> TH --> MO
+  TH --> AIE --> AIP
+  TH --> UG
+  TH --> PLAT
+  TH --> S3A --> S3[("S3 / MinIO")]
+  PR --> ENT --> MY --> MYSQL[("MySQL 8")]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
-|---|---|
-| RF38.CA01 | Enum `TaskType` (15 valores) e `TaskItem.type`; atividade W1 (TaskTypeIcon com rótulo textual) e U2; sequência msg 18 (card com TaskTypeIcon); componentes `TaskTypeIcon`, `tokens · cores por TaskType`; o mesmo ícone é reutilizado em `DecisionThread` e anexos de mensagem (W5). |
-| RF38.CA02 | Classes `ThumbnailService`, `ThumbnailStrategy` + 5 adapters, `PipelineJob` (THUMBNAIL), `MediaObject.variantsJson`, `TaskItem.thumbnailUrl/coverUrl/coverMode`, `CoverMode`; atividades A1→A2→A3..A7→A8, W10, U3→U4/U5, A11 (422 VALIDACAO), A13 (409 COTA_ESGOTADA), A14, A15; sequência msgs 1–10 e 19–34; máquina de estados `PipelineJob THUMBNAIL` e `TaskItem.coverMode`; componentes `ThumbnailService`, `PipelineJob worker`, `storage-s3`, `renderers`. |
-| RF38.CA03 | Classes `ProjectScheme.mosaicJson/coverUrl/coverMode`, `ProjectCoverMode`, `ProjectTask.percentComplete/phase`, `Department.color`, `CardArtService.rebuildMosaic/phaseRing`; atividades A9, A10, W6; sequência msgs 11–15 (TaskThumbnailReady → rebuildMosaic → DEL cache) e 32; nota da máquina de estados (qualquer mudança dispara rebuild); componentes `CardArtService`, `ProjectMosaicCover`, `PhaseRing`. |
-| RF38.CA04 | Classes `TaskItem.aiGenerated/aiInferenceId`, `ProjectScheme.aiGenerated`, `AiInferenceLog.createdAt/model/reviewedBy/reviewedAt`; atividades U7, I3, A15; sequência msgs 31 e 34 (tooltip gerado por IA em data, revisado por); transição `AUTO → IA` (faísca ✦); componentes `AiSpark ✦`. |
-| RF38.CA05 | Enum `TaskState` (8 valores), `TaskItem.dueAt/legalDueAt/legalDeadlineRuleId`, `LegalDeadlineRule`; atividades W2 (nome do estado em texto, estilos tracejado/pulso/cadeado/carimbo/esmaecido/estrela) e W3 (âmbar 3 dias, vermelho vencido, ⚖); sequência msg 18; componentes `StateTag`, `DeadlineBadge`. |
-| RF38.CA06 | Classes `Seal.artJson/issuerKind/excellence`, `SealBond.status/sealCode`, `Recognition.medalArtJson`, `FinalDecision.stampJson/status`, `DecisionStatus`, `CardArtService.sealWaxFor/stampFor`; atividade W4; sequência msg 18 (SealWax); componentes `SealWax`, `Medal`, `DecisionStamp`. |
-| RF38.CA07 | Classes `DecisionTraceNode.classLabel`, `DecisionTraceEdge`, enum `MessageClass` com cores; atividade W5; componentes `DecisionThread`, `tokens · cores por MessageClass`. |
-| RF38.CA08 | Classes `UserPreferences.theme/deskSkin/density/fontScale`, `ThemeMode` (inclui BLUEPRINT), `DeskSkin` (PAPEL, CORTICA, BLUEPRINT, PAPEL_TIMBRADO), `UserSkin`, `PreferencesService`, `PreferencesController`; atividades U6, W7 (menu recolhível responsivo), A16 (403 SKIN_NAO_ADQUIRIDA); sequência msgs 35–41; componentes `ThemeProvider`, `DeskSkin`, `settings/preferences`, `cache-redis`. |
-| RF38.CA09 | Classes `Department.monogram/color/acronym`, `Company.logoUrl/coatOfArmsUrl/accentColor`, `TaskItem.departmentId`, `ProjectScheme.departmentId`; atividades A10 (borda na cor do departamento) e W6 (DeptMonogram, CompanyLogo); componente `DeptMonogram`. |
-| RF38.CA10 | Classe `UserPreferences.reduceMotion`; atividade W8 (encaixe animado, confete, faísca animada, empty states; desliga com prefers-reduced-motion); sequência msg 41 (MotionProvider desliga animações); componentes `MotionProvider`, `EmptyState`, `tokens · prefers-reduced-motion`. |
+| CA | Classe | Passo | Mensagem | Transição | Componente |
+|---|---|---|---|---|---|
+| RF38.CA01 | `TaskType` → `TypeChip`, sprite `ws-<nome>` (16 glifos de tipo), `TaskCard` em cards/listas/busca/anexos (`TaskCardLayout`), `DecisionThread` | A2 → A3 → F1 → F2 → F3 | 40–44 | — | `GL`, `ATOMS (TypeChip)`, `CARDS` |
+| RF38.CA02 | `ThumbnailService.onTaskCreatedOrUpdated/render/replaceManual/requestAiCover`, `PipelineJob THUMBNAIL`, `TaskItem.thumbnailUrl/coverUrl/coverMode`, `MediaObject.variantsJson`, `AiCapability CAPA_IA` | A1 → P1 → P2 → P3..P6 → P7 · A8 → A9 → F6 → P9 → P10 → I1 | 1–17, 18–30 | `SEM → AUTO → MANUAL / IA` | `TH`, `PLAT`, `S3A`, `AIP` |
+| RF38.CA03 | `MosaicService.recompute`, `ProjectScheme.mosaicJson/coverMode MOSAICO`, `ProjectCard layout mosaic`, `Mosaic`, `ProgressRing`, borda `Department.color` | P8 | 14–15 | `AUTO → self (mosaico recalculado)` | `MO`, `ATOMS (Mosaic, ProgressRing)` |
+| RF38.CA04 | `Spark` (generatedAt, model, reviewedBy), `TaskItem.aiGenerated/aiInferenceId`, `AiInferenceLog.model/createdAt/reviewedBy`, variante `GERADA_IA` | P10 → I1 · F3 | 25–30, 44 | nota de IA | `ATOMS (Spark ✦)` |
+| RF38.CA05 | `Tag` (nome do estado em texto, estilos por `TaskState`/`ProjectStatus`), `Due` (âmbar ≤ 3 dias, vermelho vencido, ⚖ `legalDueAt`), variantes `PRAZO_LEGAL`, `BLOQUEADA`… | F3 | 44 | máquinas de RF41/RF22 renderizadas | `ATOMS (Tag, Due)` |
+| RF38.CA06 | `Seal.artJson/issuerKind/excellence` + `SealBond APROVADA` → `Seal` (lacre dourado/azul-marinho), `Recognition.medalArtJson` → `Medal`, `FinalDecision.stampJson` → `Stamp` (VALIDADO/DEVOLVIDO, data, revisor), variantes `CHANCELADA`, `COM_CARIMBO` | F3 | 40–44 | — | `ATOMS (Seal, Medal, Stamp)` |
+| RF38.CA07 | `DecisionTraceNode.classLabel` (ARGUMENTO azul · DIVERGENCIA laranja · RISCO vermelho · CONSENSO verde · PERGUNTA roxo) → `DecisionThread` | F3 | 41–44 | — | `THREAD` |
+| RF38.CA08 | `UserPreferences.theme/deskSkin/reduceMotion` (existe no main), `ThemeMode` (4 temas + AUTO), `DeskSkin`, `UserSkin`, `ThemeProvider`, `BackgroundArt`, `SidebarNav` recolhível | A6 → A7 → F4 → P11 | 45–49 | — | `TOK`, `SHELL`, `PR`, `MeController` |
+| RF38.CA09 | `Department.color/monogram`, `Company.logoUrl/accentColor` → `Monogram`, borda do card na cor do departamento | F3 (TaskCard/ProjectCard) | 40–44 | — | `ATOMS (Monogram)`, `CARDS` |
+| RF38.CA10 | `Confetti` (decisão validada), encaixe animado (drag para fase, `SchemeView BOARD`), faísca animada (geração), `EmptyState` ilustrado, `prefers-reduced-motion` + `UserPreferences.reduceMotion` | A4 → A5 → F5 · F4 | 49 | — | `FX`, `TOK (motion)` |
