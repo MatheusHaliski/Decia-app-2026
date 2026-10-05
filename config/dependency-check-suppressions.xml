@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Supressões do OWASP Dependency-Check (perfil -Psecurity). Cada entrada: CVE, motivo e data de revisão. Vazio por enquanto. -->
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+</suppressions>
