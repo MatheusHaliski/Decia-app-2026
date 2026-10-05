@@ -1,8 +1,8 @@
 # Renumeração dos RFs no board Work Station (leitura de 2026-10-03)
 
-Entre 2026-10-01 e 2026-10-02 os cards RF4–RF26 da lista *Requisitos Funcionais* foram **renomeados no padrão de numeração do FAI**, mas os corpos (critérios de aceite) continuam com os ids antigos e, em vários cards, o corpo não corresponde ao novo título. Os diagramas em `docs/diagramas/RFnn/` seguem a **numeração anterior** (a que os CAs ainda citam). Esta tabela liga as duas numerações até o board estabilizar (ver Q-44 em `../DECISOES.md`).
+Entre 2026-10-01 e 2026-10-02 os cards RF4–RF26 da lista *Requisitos Funcionais* foram **renomeados no padrão de numeração do FAI**, mas os corpos (critérios de aceite) continuam com os ids antigos e, em vários cards, o corpo não corresponde ao novo título. Desde 2026-10-05 as pastas `docs/diagramas/RFnn/` seguem a **numeração atual do board** (título do card = RF). As versões anteriores dos RFs renumerados (RF4–RF21, RF23, RF24, RF26 — inclusive os 15 RFs da sessão DECIA que ficaram sem card) estão preservadas em `docs/diagramas/_anterior/`. Esta tabela liga as duas numerações (ver Q-44 em `../DECISOES.md`).
 
-| Card atual (título novo) | Corpo/CAs que o card contém | Pasta de diagramas correspondente | Observação |
+| Card atual (título novo) | Corpo/CAs que o card contém | Conteúdo de origem (em `_anterior/`) | Observação |
 |---|---|---|---|
 | RF1, RF2, RF3 | inalterados | RF1, RF2, RF3 | RF3 = perfil **e preferências** (o brief chama a tela de preferências de "RF23") |
 | RF4 Criador de tarefas (manual/IA) | vazio | RF20 | corpo do criador de tarefas está no card RF20 |
