@@ -16,3 +16,7 @@ beb5cce55c251cdbec429bcddd4bf1880f569921:ws-web/src/main/java/br/gov/pr/secid/wo
 beb5cce55c251cdbec429bcddd4bf1880f569921:ws-web/src/test/java/br/gov/pr/secid/workstation/web/security/JwtTokenIssuerTest.java:private-key:104
 # Segredo de teste do IP assinado (ClientIpResolverTest): string literal de baixa entropia usada só para assinar o HMAC no teste.
 52041e2bf0430ad1b5705886ebf89d316ea5cba5:ws-web/src/test/java/br/gov/pr/secid/workstation/web/support/ClientIpResolverTest.java:generic-api-key:15
+#
+# Branch paralelo claude/cool-gates-okf4h5-sec-b3 (o job varre todas as refs do repositório, não só o PR): teste
+# JwtKeysAndIssuerTest passa um "PEM" inventado ("SEGREDO-FALSO") ao parser só para provar que ele não vaza na mensagem.
+609592d9f36fa853a94764b0594858c933b51c7b:ws-web/src/test/java/br/gov/pr/secid/workstation/web/config/JwtKeysAndIssuerTest.java:private-key:146
