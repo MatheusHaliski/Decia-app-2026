@@ -161,13 +161,14 @@ class ForeignKeyPolicyUnitTest {
         }
     }
 
+    /** A tabela dona da FK é a do {@code CREATE TABLE} ou {@code ALTER TABLE … ADD CONSTRAINT} (FKs cruzadas das V10+) mais próximo antes dela. */
     private static String owningTable(String sql, int constraintOffset) {
-        Matcher create = Pattern.compile("CREATE\\s+TABLE\\s+(\\w+)", Pattern.CASE_INSENSITIVE).matcher(sql);
+        Matcher stmt = Pattern.compile("(?:CREATE|ALTER)\\s+TABLE\\s+(\\w+)", Pattern.CASE_INSENSITIVE).matcher(sql);
         String table = null;
-        while (create.find() && create.start() < constraintOffset) {
-            table = create.group(1).toLowerCase(Locale.ROOT);
+        while (stmt.find() && stmt.start() < constraintOffset) {
+            table = stmt.group(1).toLowerCase(Locale.ROOT);
         }
-        assertThat(table).as("CONSTRAINT fora de um CREATE TABLE (ALTER TABLE ainda não é lido por este teste)").isNotNull();
+        assertThat(table).as("CONSTRAINT fora de um CREATE TABLE / ALTER TABLE").isNotNull();
         return table;
     }
 }

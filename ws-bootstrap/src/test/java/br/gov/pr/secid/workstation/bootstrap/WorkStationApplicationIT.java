@@ -58,7 +58,7 @@ class WorkStationApplicationIT {
         List<String> versions = jdbc.queryForList(
                 "SELECT version FROM flyway_schema_history WHERE success = 1 AND version IS NOT NULL ORDER BY installed_rank",
                 String.class);
-        assertThat(versions).containsExactly("1", "2");
+        assertThat(versions).startsWith("1", "2").contains("10", "21");   // V10–V21: catálogo de domínio (D-40)
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM flyway_schema_history WHERE success = 0", Integer.class)).isZero();
         // tabelas do Bloco 2 existem e o contexto JPA (ddl-auto: none) não mexeu nelas
         List<String> tables = jdbc.queryForList(
