@@ -1,178 +1,98 @@
 # RF41 — Gerir o Acervo de Tarefas (inventário do usuário): estados, sub-filtros, ordenação, prazos legais, anexos & evidências e ações rápidas
-**HU:** HU41 · **Sprint (board Work Station):** Product Backlog (não priorizado — pós-Sprint 4) · **Equivalente FAI:** Closet Digital (RF6) + RF31 Estados do acervo + RF12 Minhas Fotos + RF7 detalhe da peça · **Aba/rota:** Acervo de Tarefas (`/tasks`), detalhe da tarefa (`/tasks/[id]`), Anexos & Evidências (`/attachments`)
-**Critérios de aceite cobertos:** RF41.CA01 · RF41.CA02 · RF41.CA03 · RF41.CA04 · RF41.CA05 · RF41.CA06 · RF41.CA07 · RF41.CA08 · RF41.CA09
+**HU:** HU41 · **Sprint (board Work Station):** Product Backlog (não comprometido na Sprint 4; o Acervo é entregue junto com RF4/RF6 na fase (d) da ARQUITETURA §6) · **Equivalente FAI:** Closet Digital (RF6) + RF31 Estados do acervo + RF12 Minhas Fotos + RF7 detalhe da peça · **Aba/rota:** Acervo de Tarefas (`/tasks?filtro=&categoria=&ordem=&page=`), detalhe (`/tasks/[id]`), Anexos & Evidências (`/attachments`), acervo de terceiros (`/u/[username]?tab=acervo`)
+**Critérios de aceite cobertos:** RF41.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 (corpo do card, inalterado) — regra: o **título do card** define o RF e o corpo traz os próprios CAs. A criação de tarefas é o RF4 (corpo em RF20); o Acervo alimenta os selects do Criador de Projetos (RF5) e os anexos do DECIA (RF29).
 
-> Contexto Acervo de Tarefas (bounded context 2). Entidade central: `TaskItem` com `TaskState` RASCUNHO → DISPONIVEL → EM_USO ⇄ BLOQUEADA → CONCLUIDA → ARQUIVADA, mais MODELO_PUBLICO (só via chancela RF39 ou publicação explícita) e OFERECIDA (Balcão RF40). Toda transição passa por `TaskStateMachine` e grava `TaskStateLog` (equivalente ao `wardrobe_availability_log` do FAI). O Acervo é o inventário que alimenta os selects do Criador de Projetos (RF21) e os anexos de mensagem do DECIA (RF29). A criação de tarefas é o RF20.
+Estados (`TaskState`): RASCUNHO · DISPONIVEL · EM_USO (em ≥ 1 projeto ativo, automático) · BLOQUEADA · CONCLUIDA · ARQUIVADA · MODELO_PUBLICO (só via chancela RF39 ou publicação explícita) · OFERECIDA (Balcão RF40); toda transição em `TaskStateLog` (`TaskStateMachine` com tabela testada). Sub-filtros: Todas · Favoritas · Disponíveis · Em uso · Bloqueadas · Concluídas · Modelos públicos · Chanceladas · Oferecidas (+ filtros categoria, tipo, processo, natureza, departamento, `accessClass`, prazo, origem; ordenação recentes, mais/menos usadas, nome, prazo, valor), tudo na querystring (CA09). Prazo legal (`legalDueAt`, `LegalDeadlineRule`): card âmbar a 3 dias, vermelho vencido, ⚖, notificação `PRAZO_PROXIMO/PRAZO_VENCIDO` (job diário) e sugestão na Tarefa do Dia (RF44). Evidências (`Evidence`: foto com `takenAt`, geolocalização opcional AES, vínculo a tarefa/projeto, `studioStatus`) podem virar IMAGEM_EDITADA pelo Estúdio (RF4). Exclusão: projetos de outros mantêm `ProjectTask.snapshotJson` (RF23) e donos são avisados; tarefa ligada a decisão VALIDADA (`FinalDecision.resultingTaskId` ou nó TAREFA do rastro) **não é excluída, só arquivada** (409). Acervo de terceiros: `VisibilityFilter` + `Guard` (403 no resto).
 
 ## 1. Diagrama de classes
 
 ```mermaid
 classDiagram
-  direction LR
+direction LR
 
+namespace ws_domain_acervo {
   class TaskItem {
     <<entity>>
-    +UUID id
-    +UUID ownerId
-    +UUID departmentId
-    +String title
-    +String summary
-    +TaskType type
-    +TaskCategory category
-    +String subcategory
-    +Set~ProcessTag~ processTags
-    +Set~NatureTag~ natureTags
-    +AccessClassification accessClass
-    +String format
-    +EffortSize effortSize
-    +BigDecimal amountInvolved
-    +TaskOrigin origin
-    +SourceKind sourceKind
-    +String sourceRef
-    +LinkMode linkMode
-    +UUID orgEntityId
-    +UUID responsibleId
-    +LocalDate dueAt
-    +UUID legalDeadlineRuleId
-    +LocalDate legalDeadlineBaseDate
-    +LocalDate legalDueAt
-    +String legalOverrideReason
-    +Priority priority
-    +TaskState state
-    +UUID blockedByTaskId
-    +UUID blockedByUserId
-    +String blockReason
-    +DocSituation docSituation
-    +Visibility visibility
-    +boolean favorite
-    +boolean offeredInCounter
-    +String thumbnailUrl
-    +int reuseCount
-    +int projectUsageCount
-    +String sealIdsJson
-    +long version
+    +id: UUID
+    +ownerId: UUID
+    +departmentId: UUID
+    +title: String
+    +summary: String
+    +type: TaskType
+    +category: TaskCategory
+    +processTags: Set~ProcessTag~
+    +natureTags: Set~NatureTag~
+    +accessClass: AccessClassification
+    +sourceKind: SourceKind
+    +state: TaskState
+    +blockedByTaskId: UUID
+    +blockedByUserId: UUID
+    +blockReason: String
+    +dueAt: LocalDate
+    +legalDeadlineRuleId: UUID
+    +legalDueAt: LocalDate
+    +amountInvolved: BigDecimal
+    +visibility: Visibility
+    +favorite: boolean
+    +offeredInCounter: boolean
+    +thumbnailUrl: String
+    +reuseCount: int
+    +projectUsageCount: int
+    +sealIdsJson: JSON
+    +version: long
+    .. +30 campos ..
   }
   class TaskStateLog {
     <<entity>>
-    +UUID id
-    +UUID taskId
-    +TaskState fromState
-    +TaskState toState
-    +UUID actorId
-    +String reason
-    +UUID projectId
-    +String correlationId
-    +Instant at
+    +id: UUID
+    +taskId: UUID
+    +fromState: TaskState
+    +toState: TaskState
+    +actorId: UUID
+    +reason: String
+    +projectId: UUID
+    +correlationId: String
+    +at: Instant
   }
   class TaskAttachment {
     <<entity>>
-    +UUID id
-    +UUID taskId
-    +UUID mediaObjectId
-    +String fileName
-    +String mimeType
-    +long sizeBytes
-    +String sha256
-    +String antivirusStatus
-    +String ocrStatus
-    +String ocrTextRef
-    +boolean isPrimary
+    +taskId: UUID
+    +mediaObjectId: UUID
+    +mimeType: String
+    +antivirusStatus: String
+    +isPrimary: boolean
   }
   class TaskVersion {
     <<entity>>
-    +UUID id
-    +UUID taskId
-    +int versionNumber
-    +String externalRevisionId
-    +Instant syncedAt
-    +String changeSummary
+    +taskId: UUID
+    +versionNumber: int
+    +externalRevisionId: String
+    +syncedAt: Instant
   }
   class LegalDeadlineRule {
     <<entity>>
-    +UUID id
-    +UUID companyId
-    +TaskCategory category
-    +String subcategory
-    +int days
-    +boolean businessDays
-    +String legalBasis
-    +boolean active
+    +id: UUID
+    +companyId: UUID
+    +category: TaskCategory
+    +days: int
+    +businessDays: boolean
+    +legalBasis: String
+    +active: boolean
   }
   class Evidence {
     <<entity>>
-    +UUID id
-    +UUID ownerId
-    +UUID mediaObjectId
-    +Instant takenAt
-    +BigDecimal latitude
-    +BigDecimal longitude
-    +String caption
-    +UUID linkedTaskId
-    +UUID linkedProjectId
-    +String studioStatus
-    +UUID derivedTaskId
+    +id: UUID
+    +ownerId: UUID
+    +mediaObjectId: UUID
+    +takenAt: Instant
+    +latitude: BigDecimal
+    +longitude: BigDecimal
+    +caption: String
+    +linkedTaskId: UUID
+    +linkedProjectId: UUID
+    +studioStatus: StudioStatus
+    +derivedTaskId: UUID
   }
-  class OrgEntity {
-    <<entity>>
-    +UUID id
-    +String name
-    +String kind
-    +String logoUrl
-  }
-  class ProjectTask {
-    <<entity>>
-    +UUID id
-    +UUID projectId
-    +UUID taskId
-    +ProjectPhase phase
-    +String snapshotJson
-    +boolean removedByAuthor
-  }
-  class ProjectScheme {
-    <<entity>>
-    +UUID id
-    +UUID ownerId
-    +ProjectStatus status
-  }
-  class FinalDecision {
-    <<entity>>
-    +UUID id
-    +DecisionStatus status
-    +UUID resultingTaskId
-  }
-  class SavedItem {
-    <<entity>>
-    +UUID userId
-    +String targetType
-    +UUID targetId
-    +boolean favorite
-  }
-  class DecisionTraceNode {
-    <<entity>>
-    +UUID id
-    +TraceNodeType nodeType
-    +UUID refId
-  }
-  class SealBond {
-    <<entity>>
-    +UUID targetId
-    +SealBondStatus status
-  }
-  class Notification {
-    <<entity>>
-    +UUID recipientId
-    +String category
-    +String resourceType
-    +UUID resourceId
-  }
-  class MediaObject {
-    <<entity>>
-    +UUID id
-    +String mimeType
-    +String variantsJson
-    +AccessClassification accessClass
-  }
-
   class TaskState {
     <<enum>>
     RASCUNHO
@@ -184,46 +104,6 @@ classDiagram
     MODELO_PUBLICO
     OFERECIDA
   }
-  class TaskType {
-    <<enum>>
-    TEXTO_MANUAL
-    DOCUMENTO
-    PLANILHA
-    DESENHO_TECNICO
-    IMAGEM_EDITADA
-    ...10 valores
-  }
-  class TaskCategory {
-    <<enum>>
-    OFICIO_MEMORANDO
-    PARECER_TECNICO
-    ETP
-    TERMO_REFERENCIA
-    ...11 valores
-  }
-  class AccessClassification {
-    <<enum>>
-    PUBLICO
-    INTERNO
-    RESTRITO
-    SIGILOSO
-  }
-  class Visibility {
-    <<enum>>
-    PRIVADA
-    DEPARTAMENTO
-    EMPRESA
-    PUBLICA
-  }
-  class SourceKind {
-    <<enum>>
-    ARQUIVO
-    GOOGLE
-    MICROSOFT
-    EMAIL
-    PROTOCOLO
-    ...10 valores
-  }
   class StudioStatus {
     <<enum>>
     ORIGINAL
@@ -232,196 +112,239 @@ classDiagram
     SEM_FUNDO
     OCR
   }
+}
 
-  class TaskController {
-    <<controller>>
-    +GET tasks
-    +GET tasks_counters
-    +GET tasks_id
-    +POST tasks_id_transition
-    +POST tasks_id_favorite
-    +POST tasks_id_duplicate
-    +DELETE tasks_id
-    +GET users_id_tasks
+namespace ws_domain_relacionados {
+  class ProjectTask {
+    <<entity>>
+    +projectId: UUID
+    +taskId: UUID
+    +snapshotJson: JSON
+    +removedByAuthor: boolean
   }
-  class EvidenceController {
-    <<controller>>
-    +POST evidences
-    +GET evidences
-    +POST evidences_id_to_task
+  class ProjectScheme {
+    <<entity>>
+    +id: UUID
+    +ownerId: UUID
+    +status: ProjectStatus
   }
+  class FinalDecision {
+    <<entity>>
+    +resultingTaskId: UUID
+    +status: DecisionStatus
+  }
+  class DecisionTraceNode {
+    <<entity>>
+    +nodeType: TraceNodeType
+    +refId: UUID
+  }
+  class SealBond {
+    <<entity>>
+    +targetId: UUID
+    +status: SealBondStatus
+  }
+  class Notification {
+    <<entity>>
+    +recipientId: UUID
+    +type: NotificationType
+  }
+}
+
+namespace ws_application {
   class AcervoService {
     <<service>>
-    +list(owner, subFilter, filters, sort, page) Page~TaskItem~
-    +counters(owner) Map~SubFilter int~
-    +detail(taskId, viewer) TaskDetail
-    +favorite(taskId, user) SavedItem
-    +duplicate(taskId, user) TaskItem
-    +delete(taskId, owner) void
-    +listForViewer(ownerId, viewer, filters) Page~TaskItem~
-    +takeToMyAcervo(taskId, viewer) TaskItem
-    +addEvidence(owner, media, meta) Evidence
-    +evidenceToTask(evidenceId) TaskItem
+    +list(viewer, ownerId, AcervoQuery) Page~TaskCardView~
+    +counters(viewer, ownerId) Map~SubFilter,int~
+    +detail(viewer, taskId) TaskDetailView
+    +quickAction(actor, taskId, action) TaskItem
+    +delete(actor, taskId) DeleteResult
+    +archive(actor, taskId, handover) TaskItem
   }
   class TaskStateMachine {
     <<service>>
-    +transition(taskId, toState, actor, reason, projectId) TaskStateLog
-    +onProjectActivated(projectId) void
-    +onProjectTaskRemoved(projectId, taskId) void
-    +canTransition(from, to) boolean
+    +transition(task, to, actor, reason, projectId)
+    +onProjectActivated(projectId)
+    +onProjectLeft(projectId, taskId)
   }
-  class LegalDeadlineScheduler {
+  class LegalDeadlineService {
     <<service>>
-    +scanUpcoming() void
-    +computeLegalDueAt(task, rule) LocalDate
+    +compute(task) LocalDate
+    +scanDueSoon() void
   }
-  class SearchPort {
+  class EvidenceService {
+    <<service>>
+    +upload(actor, media, meta) Evidence
+    +link(actor, evidenceId, taskId, projectId)
+    +toStudio(actor, evidenceId) TaskItem
+  }
+  class VisibilityFilter {
+    <<service>>
+    +allowedFor(viewer) Filter
+  }
+  class Guard {
+    <<service>>
+    +requireOwner(actor, ownerId)
+    +requireSameCompany(actor, companyId)
+  }
+  class UploadGuard {
+    <<service>>
+    +checkMagicBytes(bytes)
+    +checkPixelCeiling(w, h)
+  }
+  class OwnMedia {
+    <<service>>
+    +requireAccess(actor, MediaObject)
+  }
+  class SearchIndexPort {
     <<port>>
-    +searchTasks(query, filters, sort, page) Page~UUID~
+    +search(ws_tasks, query, filter, sort, page)
   }
+  class CachePort {
+    <<port>>
+    +counters(ownerId)
+  }
+  class DomainEvents {
+    <<service>>
+    +publish(event)
+  }
+}
 
-  TaskItem --> TaskState : state
-  TaskItem --> TaskType : type
-  TaskItem --> TaskCategory : category
-  TaskItem --> AccessClassification : accessClass
-  TaskItem --> Visibility : visibility
-  TaskItem --> SourceKind : sourceKind
-  TaskItem "1" --> "*" TaskStateLog : taskId
-  TaskItem "1" --> "*" TaskAttachment : taskId
-  TaskItem "1" --> "*" TaskVersion : taskId (GOOGLE, MICROSOFT)
-  TaskItem --> LegalDeadlineRule : legalDeadlineRuleId
-  TaskItem --> OrgEntity : orgEntityId
-  TaskItem ..> TaskItem : blockedByTaskId
-  TaskItem "1" --> "*" ProjectTask : taskId (em uso)
-  ProjectTask --> ProjectScheme : projectId
-  FinalDecision ..> TaskItem : resultingTaskId (não excluível)
-  Evidence --> StudioStatus : studioStatus
-  Evidence ..> TaskItem : linkedTaskId
-  Evidence ..> TaskItem : derivedTaskId IMAGEM_EDITADA
-  Evidence --> MediaObject : mediaObjectId
-  TaskAttachment --> MediaObject : mediaObjectId
-  SavedItem ..> TaskItem : favoritar
-  DecisionTraceNode ..> TaskItem : fio de decisão (RF29)
-  SealBond ..> TaskItem : chancelas (RF39)
+namespace ws_web {
+  class AcervoController {
+    <<controller>>
+    +GET_api_tasks(filtro, filtros, ordem, page)
+    +GET_api_tasks_counters()
+    +GET_api_tasks_id()
+    +POST_api_tasks_id_actions(action)
+    +DELETE_api_tasks_id()
+    +GET_api_users_id_tasks(filtros, page)
+  }
+  class EvidenceController {
+    <<controller>>
+    +POST_api_evidences(file, meta)
+    +POST_api_evidences_id_link(taskId, projectId)
+    +POST_api_evidences_id_studio()
+  }
+}
 
-  TaskController --> AcervoService
-  TaskController --> TaskStateMachine
-  EvidenceController --> AcervoService
-  AcervoService --> TaskStateMachine
-  AcervoService --> SearchPort
-  LegalDeadlineScheduler ..> TaskItem
-  LegalDeadlineScheduler ..> Notification
-  TaskStateMachine ..> TaskStateLog
-  TaskStateMachine ..> Notification
-
-  note for TaskItem "tabela tasks · +12 campos · version otimista · índice (ownerId, state), (responsibleId, legalDueAt)"
-  note for TaskStateLog "tabela task_state_log · equivalente ao wardrobe_availability_log do FAI · toda transição (RF41.CA02)"
-  note for Evidence "tabela evidences · latitude/longitude opcionais com AES-GCM · RF41.CA06"
-  note for LegalDeadlineRule "tabela legal_deadline_rules · companyId null = padrão · dias úteis ou corridos"
+TaskItem "1" o-- "0..*" TaskStateLog
+TaskItem "1" o-- "0..*" TaskAttachment
+TaskItem "1" o-- "0..*" TaskVersion
+TaskItem "0..*" --> "0..1" LegalDeadlineRule
+TaskItem "0..*" --> "0..1" TaskItem : blockedByTaskId
+Evidence "0..*" --> "0..1" TaskItem : linkedTaskId
+Evidence "0..1" --> "0..1" TaskItem : derivedTaskId IMAGEM_EDITADA
+ProjectTask "0..*" --> "0..1" TaskItem : referencia ou snapshot
+ProjectScheme "1" *-- "0..*" ProjectTask
+FinalDecision ..> TaskItem : resultingTaskId nao exclui
+DecisionTraceNode ..> TaskItem : TAREFA no rastro
+SealBond ..> TaskItem : Chanceladas
+AcervoController --> AcervoService
+EvidenceController --> EvidenceService
+AcervoService --> TaskStateMachine
+AcervoService --> LegalDeadlineService
+AcervoService --> VisibilityFilter
+AcervoService --> Guard
+AcervoService --> SearchIndexPort
+AcervoService --> CachePort
+AcervoService --> DomainEvents
+TaskStateMachine ..> TaskStateLog : grava toda transicao
+EvidenceService --> UploadGuard
+EvidenceService --> OwnMedia
+LegalDeadlineService ..> Notification : PRAZO_PROXIMO PRAZO_VENCIDO
+DomainEvents ..> TaskStateMachine : ProjectActivated ProjectTaskRemoved
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  classDef err fill:#FFE3E3,stroke:#C0392B,color:#5B1A12
-  classDef store fill:#EEF6FF,stroke:#4A4852,color:#1F2937
-  classDef job fill:#F3F0FA,stroke:#7E57C2,color:#2D2438
-
-  subgraph L_user["Ator humano · EMPREGADO"]
-    U1["Abre o Acervo /tasks"]
-    U2["Escolhe sub-filtro (Todas, Favoritas, Disponíveis, Em uso, Bloqueadas, Concluídas, Modelos públicos, Chanceladas, Oferecidas), filtros e ordenação"]
-    U3["Abre o detalhe /tasks/id"]
-    U4{"Ação rápida?"}
-    U5["Favoritar · Duplicar · Levar ao projeto · Compartilhar na sessão DECIA · Pedir chancela · Oferecer no Balcão · Arquivar/Repassar"]
-    U6["Exclui tarefa usada em projetos de outros"]
-    U7["Envia fotos de vistoria/obra em /attachments"]
-    U8["Abre o Acervo de outro usuário (RF19)"]
-    U9["Compartilha a URL com filtros"]
+  subgraph ATOR["Ator (EMPREGADO dono · visitante do perfil)"]
+    A0([Abre /tasks]) --> A1["Vê grade de cards com contadores por sub-filtro"]
+    A1 --> A2["Aplica sub-filtro, filtros e ordenação"]
+    A3([Abre /tasks/id]) --> A4["Pré-visualização, metadados, versões, projetos em uso, fio de decisão, chancelas, interações, histórico"]
+    A5([Ação rápida no card]) --> A6{"Qual?"}
+    A6 -->|favoritar| A7
+    A6 -->|duplicar| A7
+    A6 -->|Levar ao projeto| A8["Select de fase do Criador (RF5)"]
+    A6 -->|Compartilhar na sessão| A9["Anexo na sessão DECIA (RF29)"]
+    A6 -->|Pedir chancela| A10["Indicação RF39"]
+    A6 -->|Oferecer no Balcão| A11["RF40"]
+    A6 -->|arquivar ou repassar| A12["Arquiva, opção repassar ao Balcão"]
+    A7["Executa"]
+    A13([Exclui tarefa usada por outros]) --> A14{"Confirma?"}
+    A15([Envia fotos de vistoria]) --> A16["Data, geolocalização opcional, vínculo a tarefa/projeto"]
+    A17([Abre acervo de outro usuário])
   end
 
-  subgraph L_web["Web/BFF · Next.js /tasks · /tasks/[id] · /attachments"]
-    W1["Skeleton de carregamento → grade de cards (RF38) com contadores por sub-filtro"]
-    W2{"Resposta?"}
-    W3["Estado vazio ilustrado"]
-    W4["Erro: tentar de novo"]
-    W5["GET /tasks?sub=&category=&type=&process=&nature=&department=&access=&due=vencidas|7d|30d&source=&sort=&page= (querystring = visão restaurável, 20 por página, i18n)"]
-    W6["GET /tasks/id → preview (documento, planilha, imagem, desenho 2D-3D), metadados RF20, versões, projetos em uso, fio de decisão, chancelas, interações, histórico"]
-    W7["POST /tasks/id/transition · /favorite · /duplicate · DELETE /tasks/id"]
-    W8["Levar ao projeto abre o select de fase do RF21 · Compartilhar abre a sessão (RF29) · Pedir chancela (RF39) · Oferecer (RF40)"]
-    W9["POST /evidences (foto, takenAt, lat/long opcional, linkedTaskId/ProjectId)"]
-    W10["GET /users/id/tasks"]
-    W11["Card âmbar a 3 dias, vermelho vencido, ícone ⚖ (RF38.CA05)"]
+  subgraph FE["Next.js / BFF (app/(shell)/tasks · tasks/[id] · attachments · u/[username])"]
+    F1["Querystring guarda filtro, filtros, ordem e page · 20 por página · i18n"]
+    F2["TaskCard layout compact (grade) com variants por TaskState, FAVORITA, PRAZO_LEGAL, CHANCELADA, NO_BALCAO · Skeleton · EmptyState ilustrado · ErrorState tentar de novo"]
+    F3["Detalhe: layout expanded · preview por tipo · DecisionThread · Seal · Counters · histórico (TaskStateLog)"]
+    F4["Ações rápidas (menu do card) · POST /api/tasks/{id}/actions"]
+    F5["Due âmbar a 3 dias, vermelho vencido, ⚖ prazo legal"]
+    F6["EvidenceUploader (EXIF data/GPS com consentimento) · POST /api/evidences"]
+    F7["Dialog de exclusão: lista projetos de outros que usam a tarefa"]
   end
 
-  subgraph L_app["ws-application · AcervoService · TaskStateMachine · LegalDeadlineScheduler"]
-    S1["AcervoService.list: filtra por ownerId, sub-filtro e filtros · ordena (recentes, mais usadas, menos usadas, nome, prazo, valor) · pagina 20"]
-    S2["AcervoService.counters por sub-filtro (cache)"]
-    S3["AcervoService.detail: agrega TaskAttachment, TaskVersion, ProjectTask em uso, DecisionTraceNode, SealBond, Reaction/Comment, TaskStateLog"]
-    S4{"TaskStateMachine.canTransition(from, to)?"}
-    S5["Aplica transição · TaskStateLog (actor, reason, projectId, correlationId) · version+1"]
-    S6["Automático: projeto ativo → EM_USO · sai do projeto → DISPONIVEL · MODELO_PUBLICO só via SealBond APROVADA ou publicação explícita"]
-    S7{"Tarefa vinculada a FinalDecision VALIDADA (resultingTaskId ou anexo usado)?"}
-    S8{"Usada em ProjectTask de outros donos?"}
-    S9["Marca ProjectTask.removedByAuthor · snapshotJson preservado (RF23) · Notification aos donos"]
-    S10["Exclui tarefa (soft delete) · TaskStateLog"]
-    S11["Só ARQUIVADA permitida"]
-    S12["LegalDeadlineScheduler.scanUpcoming (diário): legalDueAt em 3 dias ou vencido → Notification ao responsável · sinaliza Prioridade do Dia (RF19/RF44)"]
-    S13["addEvidence: MediaObject (antivírus, EXIF takenAt, geolocalização opcional AES) · Evidence studioStatus ORIGINAL"]
-    S14["evidenceToTask: Estúdio de Documento (RF20) → TaskItem IMAGEM_EDITADA · Evidence.derivedTaskId"]
-    S15{"Viewer tem visibilidade compatível (PRIVADA, DEPARTAMENTO, EMPRESA, PUBLICA)?"}
-    S16["listForViewer: só tarefas visíveis · ação Levar ao meu acervo (RF23) quando permitida"]
-    E1["403 ACESSO_NEGADO"]
-    E2["422 TRANSICAO_INVALIDA"]
-    E3["409 DECISAO_VINCULADA (só arquivar)"]
-    E4["422 VALIDACAO (foto inválida, mime real diferente da extensão)"]
+  subgraph WEB["ws-web"]
+    W1["JWT · CorrelationIdFilter · rate limit por rota"]
+    W2["GlobalExceptionHandler"]
   end
 
-  subgraph L_db["Persistência"]
-    D1["OpenSearch índice tasks (texto, filtros, ordenação) · Redis contadores por sub-filtro"]
-    D2["MySQL tasks · task_state_log · task_attachments · task_versions · project_tasks"]
-    D3["MySQL evidences · media_objects (S3) · pipeline_jobs ANTIVIRUS, OCR, THUMBNAIL"]
-    D4["MySQL legal_deadline_rules · DomainEventOutbox → notifications_by_user"]
-    D5["S3 originais e variantes (preview) · audit_log"]
+  subgraph APP["ws-application"]
+    P1["AcervoService.list: VisibilityFilter + Guard (próprio ou terceiro) + SearchIndexPort + contadores em cache"]
+    P2{"Ator é dono?"}
+    P2 -->|não| P3["Só visibilidade compatível · ação Levar ao meu acervo (RF23) se permitida · resto 403"]
+    P4["TaskStateMachine.transition: RASCUNHO→DISPONIVEL→EM_USO⇄BLOQUEADA→CONCLUIDA→ARQUIVADA"]
+    P4 --> P5{"Transição permitida?"}
+    P5 -->|não| E1["409 TRANSICAO_INVALIDA"]
+    P5 -->|sim| P6["TaskStateLog (from, to, actor, reason, projectId, correlationId)"]
+    P7["AFTER_COMMIT ProjectActivated → EM_USO automático · ProjectTaskRemoved ou projeto encerrado → volta a DISPONIVEL"]
+    P8{"MODELO_PUBLICO?"}
+    P8 -->|só via chancela aprovada ou publicação explícita| P6
+    P9["LegalDeadlineService.scanDueSoon (job diário): legalDueAt em 3 dias ou vencido → Notification PRAZO_PROXIMO/PRAZO_VENCIDO · sugere na Tarefa do Dia (RF44)"]
+    P10{"Guard.requireOwner(tarefa)?"}
+    P10 -->|não| E2["403 ACESSO_NEGADO"]
+    P11{"Tarefa ligada a decisão VALIDADA?"}
+    P11 -->|sim| E3["409 TAREFA_EM_DECISAO: só arquivar"]
+    P11 -->|não| P12["Projetos de outros mantêm ProjectTask.snapshotJson (removedByAuthor) · Notification TAREFA_REUTILIZADA aos donos · delete"]
+    P13["UploadGuard (magic bytes, teto de pixels) · reencode · geolocalização AES opcional · Evidence · OwnMedia"]
+    P14["toStudio: Evidence → TaskItem IMAGEM_EDITADA (RF4) · derivedTaskId"]
+    P15["archive: ARQUIVADA · oferece repassar ao Balcão (RF40.CA05)"]
   end
 
-  U1 --> W1 --> W5 --> S1 --> D1
-  S1 --> D2
-  U2 --> W5
-  U9 --> W5
-  S1 --> S2 --> D1
-  S2 --> W2
-  W2 -- "0 itens" --> W3
-  W2 -- "erro" --> W4 --> W5
-  W2 -- "itens" --> W11
-  U3 --> W6 --> S3 --> D2
-  S3 --> D5
-  U4 --> U5
-  U5 --> W7 --> S4
-  U5 --> W8
-  S4 -- "não" --> E2
-  S4 -- "sim" --> S5 --> D2
-  S6 --> S5
-  S5 --> D4
-  U6 --> W7 --> S7
-  S7 -- "sim" --> E3 --> S11 --> S5
-  S7 -- "não" --> S8
-  S8 -- "sim" --> S9 --> S10
-  S8 -- "não" --> S10 --> D2
-  S9 --> D4
-  S12 --> D4
-  S12 --> W11
-  U7 --> W9 --> S13
-  S13 -- "inválido" --> E4
-  S13 -- "ok" --> D3
-  S13 --> S14 --> D2
-  U8 --> W10 --> S15
-  S15 -- "não" --> E1
-  S15 -- "sim" --> S16 --> D1
+  subgraph DB["Persistência"]
+    D1[("MySQL tasks · task_state_log · task_attachments · task_versions · legal_deadline_rules · evidences · project_tasks")]
+    D2[("OpenSearch ws-tasks · flag opensearch.enabled (fallback consulta MySQL)")]
+    D3[("Redis contadores por sub-filtro · flag redis.enabled")]
+    D4[("S3 anexos · evidências · thumbnails · flag storage.s3")]
+    D5[("Cassandra notifications_by_user · flag cassandra.enabled")]
+  end
 
-  class E1,E2,E3,E4 err
-  class D1,D2,D3,D4,D5 store
-  class S12 job
+  A0 --> F1 --> W1 --> P1 --> D2
+  P1 --> D3
+  P1 --> F2 --> A1
+  A2 --> F1
+  A3 --> F3 --> W1 --> P1 --> D1
+  A5 --> A6
+  A7 --> F4 --> W1 --> P10 -->|sim| P4
+  A12 --> F4 --> W1 --> P10 --> P15 --> P4
+  P6 --> D1
+  P7 --> P4
+  P9 --> D5
+  P9 --> F5
+  A13 --> F7 --> A14 -->|sim| W1 --> P10 --> P11
+  P12 --> D1
+  P12 --> D5
+  A15 --> A16 --> F6 --> W1 --> P13 --> D4
+  P13 --> D1
+  P13 --> P14 --> D1
+  A17 --> F1 --> P2
+  P3 --> F2
+  E1 --> W2
+  E2 --> W2
+  E3 --> W2
 ```
 
 ## 3. Diagrama de sequência
@@ -429,8 +352,8 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário
-  participant N as Next.js (App Router)
+  participant U as Usuário
+  participant FE as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
   participant DB as Repository/MySQL
@@ -439,120 +362,102 @@ sequenceDiagram
   participant S3 as S3
   participant EV as DomainEvents (AFTER_COMMIT)
 
-  Note over U,EV: Listagem com sub-filtros, filtros, ordenação e paginação
-  U->>N: Abre /tasks?sub=disponiveis&process=LICITACAO&due=7d&sort=prazo&page=1
-  N-->>U: Skeleton com contadores em cache
-  N->>C: GET /tasks (querystring)
-  C->>S: AcervoService.list(owner, DISPONIVEIS, filters, prazo, page 1)
-  S->>OS: search tasks (ownerId, state DISPONIVEL, processTags LICITACAO, dueAt até 7 dias) sort dueAt
-  OS-->>S: 20 ids + total
-  S->>DB: SELECT tasks IN ids (+ sealIdsJson, thumbnailUrl, legalDueAt)
-  S->>R: GET counters:acervo:ownerId (por sub-filtro)
-  alt índice indisponível
-    S-->>N: 503 BUSCA_INDISPONIVEL → botão tentar de novo
-  else ok
-    S-->>N: 200 página (20, i18n) + contadores
-    N-->>U: Grade de cards (RF38) · âmbar a 3 dias · vermelho vencido ⚖ · estado vazio ilustrado se 0
+  U->>FE: abre /tasks?filtro=EM_USO&categoria=ETP&ordem=prazo&page=2
+  FE->>C: GET /api/tasks?filtro=EM_USO&categoria=ETP&ordem=prazo&page=2
+  C->>S: AcervoService.list(viewer, viewer.id, query)
+  S->>S: VisibilityFilter + Guard (dono)
+  alt opensearch.enabled
+    S->>OS: search ws-tasks (filtros, ordenação, 20 por página)
+  else fallback
+    S->>DB: select tasks paginado
+  end
+  S->>R: contadores por sub-filtro (cache)
+  S-->>FE: Page de TaskCardView + contadores
+  FE->>FE: TaskCard compact com variants (EM_USO, PRAZO_LEGAL, CHANCELADA) · Due âmbar/vermelho/⚖
+  alt erro de rede
+    FE-->>U: ErrorState com tentar de novo
   end
 
-  Note over U,EV: Detalhe da tarefa
-  U->>N: Abre /tasks/id
-  N->>C: GET /tasks/id
-  C->>S: AcervoService.detail(taskId, viewer)
-  S->>DB: SELECT tasks, task_attachments, task_versions, project_tasks (em uso), seal_bonds, task_state_log, reactions, comments
-  S->>DB: SELECT decision_trace_nodes WHERE refId = taskId (fio de decisão RF29)
-  S->>S3: URL pré-assinada do preview (pdf, xlsx, imagem, dwg/ifc/glb)
-  S-->>N: 200 TaskDetail
-  N-->>U: Preview + metadados RF20 + versões + projetos + fio + chancelas + interações + histórico
+  U->>FE: ação rápida Levar ao projeto
+  FE->>C: POST /api/tasks/{id}/actions {LEVAR_AO_PROJETO, projectId, phase}
+  C->>S: AcervoService.quickAction(actor, id, action)
+  S->>S: Guard.requireOwner(actor, task.ownerId)
+  S->>DB: insert project_tasks (fase)
+  S->>EV: ProjectTaskAdded
+  S-->>C: 201
+  EV->>S: TaskStateMachine.onProjectActivated → DISPONIVEL → EM_USO
+  S->>DB: update tasks.state EM_USO · insert task_state_log (projectId, correlationId)
 
-  Note over U,EV: Ação rápida: arquivar (transição) e exclusão com regras
-  U->>N: Arquivar
-  N->>C: POST /tasks/id/transition (ARQUIVADA, reason)
-  C->>S: TaskStateMachine.transition(taskId, ARQUIVADA, actor, reason)
-  alt transição inválida (ex.: EM_USO → ARQUIVADA)
-    S-->>N: 422 TRANSICAO_INVALIDA
-  else ok
-    S->>DB: UPDATE tasks state, version+1 · INSERT task_state_log (from, to, actor, reason, correlationId)
-    S->>EV: TaskStateChanged(taskId, CONCLUIDA → ARQUIVADA)
-    EV-->>OS: reindex task
-    EV-->>R: DEL counters:acervo:ownerId
-    S-->>N: 200 (oferece repassar ao Balcão, RF40.CA05)
-  end
-  U->>N: Excluir tarefa usada em projeto de outro dono
-  N->>C: DELETE /tasks/id
-  C->>S: AcervoService.delete(taskId, owner)
-  S->>DB: SELECT final_decisions WHERE resultingTaskId = taskId AND status VALIDADA · SELECT project_tasks WHERE taskId
-  alt vinculada a decisão validada
-    S-->>N: 409 DECISAO_VINCULADA (só arquivar)
+  U->>FE: exclui tarefa usada no projeto de um colega
+  FE->>C: DELETE /api/tasks/{id}
+  C->>S: AcervoService.delete(actor, id)
+  S->>DB: final_decisions.resulting_task_id / decision_trace_nodes TAREFA
+  alt ligada a decisão VALIDADA
+    S-->>C: 409 TAREFA_EM_DECISAO (só arquivar)
   else usada em projetos de outros
-    S->>DB: UPDATE project_tasks removedByAuthor=true (snapshotJson mantido, RF23) · soft delete tasks · task_state_log
-    S->>EV: TaskDeleted(taskId, projectOwnerIds)
-    EV-->>DB: notifications (donos dos projetos)
-    S-->>N: 204
+    S->>DB: project_tasks set task_id null, removedByAuthor true (snapshotJson preservado)
+    S->>DB: delete tasks (anexos → S3 lifecycle)
+    S->>EV: TaskDeleted → Notification TAREFA_REUTILIZADA aos donos dos projetos
+    S-->>C: 204
   end
 
-  Note over U,EV: Acervo de outro usuário
-  U->>N: Abre perfil de X › Acervo
-  N->>C: GET /users/X/tasks
-  C->>S: AcervoService.listForViewer(X, viewer, filters)
-  alt viewer sem visibilidade compatível para a tarefa pedida
-    S-->>N: 403 ACESSO_NEGADO
-  else ok
-    S->>OS: search tasks ownerId X AND visibility IN (visíveis ao viewer)
-    S-->>N: 200 tarefas visíveis + flag Levar ao meu acervo (RF23)
-  end
+  U->>FE: envia foto de vistoria em /attachments
+  FE->>C: POST /api/evidences (file, takenAt, lat/long opcional, taskId)
+  C->>S: EvidenceService.upload(actor, media, meta)
+  S->>S: UploadGuard magic bytes + teto de pixels · reencode sem EXIF (geo guardada AES só se consentido)
+  S->>S3: put evidences/{id}.webp
+  S->>DB: insert evidences (linkedTaskId, takenAt, studioStatus ORIGINAL)
+  S-->>C: 201 Evidence
+
+  Note over S,EV: job diário LegalDeadlineService.scanDueSoon
+  EV->>S: scanDueSoon()
+  S->>DB: tasks com legal_due_at em 3 dias ou vencidas
+  S->>EV: Notification PRAZO_PROXIMO / PRAZO_VENCIDO ao responsável · candidata à Tarefa do Dia (RF44)
+
+  U->>FE: abre acervo de outro usuário
+  FE->>C: GET /api/users/{id}/tasks?page=1
+  C->>S: AcervoService.list(viewer, ownerId, query)
+  S->>S: VisibilityFilter (PUBLICA ou EMPRESA se mesma empresa)
+  S-->>FE: cards visíveis com ação Levar ao meu acervo quando permitida
+  FE->>C: POST /api/tasks/{idPrivada}/actions {FAVORITAR}
+  C->>S: Guard.requireOwner
+  S-->>C: 403 ACESSO_NEGADO
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: `TaskItem.state` (`TaskState`). `OFERECIDA` é a etiqueta do Balcão (RF40) e preserva o estado de trabalho; a exclusão obedece às regras do RF41.CA05.
+Entidade central: `TaskItem.state` (`TaskState`, `TaskStateMachine` com tabela de transições testada; toda transição em `TaskStateLog`).
 
 ```mermaid
 stateDiagram-v2
-  direction LR
-
-  [*] --> RASCUNHO : RF20 cria (manual, IA, Autopilot, Ata Viva)
-  RASCUNHO --> DISPONIVEL : usuário revisa e publica no acervo
-  RASCUNHO --> [*] : exclui rascunho
-
-  DISPONIVEL --> EM_USO : automático · entra em ProjectTask de projeto ativo (TaskStateLog.projectId)
-  EM_USO --> DISPONIVEL : automático · sai do último projeto ativo
-  EM_USO --> BLOQUEADA : aguarda outra tarefa ou pessoa (blockedByTaskId, blockedByUserId, blockReason) · feedback BLOQUEADA (RF44)
-  BLOQUEADA --> EM_USO : desbloqueio (tarefa predecessora CONCLUIDA ou pessoa responde)
-  DISPONIVEL --> BLOQUEADA : dependência declarada sem projeto
-  BLOQUEADA --> DISPONIVEL : desbloqueio fora de projeto
-
-  EM_USO --> CONCLUIDA : conclusão (manual ou feedback CONCLUI da Tarefa do Dia, RF44)
-  DISPONIVEL --> CONCLUIDA : conclusão direta
-  CONCLUIDA --> EM_USO : reabertura (retrabalho, conta na Qualidade do HSE)
-
-  CONCLUIDA --> ARQUIVADA : arquivar (oferece repasse ao Balcão, RF40.CA05)
-  DISPONIVEL --> ARQUIVADA : arquivar
-  ARQUIVADA --> DISPONIVEL : restaurar
-
-  DISPONIVEL --> MODELO_PUBLICO : SealBond APROVADA (RF39) ou publicação explícita como modelo
-  CONCLUIDA --> MODELO_PUBLICO : SealBond APROVADA (RF39) ou publicação explícita
-  MODELO_PUBLICO --> DISPONIVEL : chancela REVOGADA ou EXPIRADA sem outra chancela · despublicar
-  MODELO_PUBLICO --> ARQUIVADA : arquivar modelo
-
-  state "OFERECIDA (etiqueta RF40)" as OFERECIDA
-  DISPONIVEL --> OFERECIDA : Oferecer no Balcão (offeredInCounter = true)
-  CONCLUIDA --> OFERECIDA : Oferecer no Balcão
-  MODELO_PUBLICO --> OFERECIDA : prateleira CHANCELADO
-  ARQUIVADA --> OFERECIDA : repasse (isHandover, preço 0)
-  OFERECIDA --> DISPONIVEL : oferta RETIRADA ou ESGOTADA (volta ao estado de trabalho preservado)
-
-  CONCLUIDA --> [*] : excluir (snapshot mantido nos projetos de outros · donos avisados)
-  DISPONIVEL --> [*] : excluir (idem)
-  ARQUIVADA --> [*] : excluir
-
-  note right of CONCLUIDA
-    Tarefa vinculada a FinalDecision VALIDADA
-    não pode ser excluída: só ARQUIVADA (409 DECISAO_VINCULADA)
+  [*] --> RASCUNHO: criada (RF4) · Copilot/Autopilot/extração (RF26, RF34)
+  RASCUNHO --> DISPONIVEL: dono conclui o cadastro
+  DISPONIVEL --> EM_USO: entra em projeto ativo (automático, AFTER_COMMIT)
+  EM_USO --> DISPONIVEL: sai do projeto ou projeto encerra (automático)
+  EM_USO --> BLOQUEADA: aguarda outra tarefa ou pessoa (blockedByTaskId / blockedByUserId, blockReason)
+  BLOQUEADA --> EM_USO: dependência resolvida
+  DISPONIVEL --> BLOQUEADA: bloqueio registrado
+  BLOQUEADA --> DISPONIVEL: desbloqueada fora de projeto
+  EM_USO --> CONCLUIDA: concluída (também pelo feedback CONCLUI da Tarefa do Dia, RF44)
+  DISPONIVEL --> CONCLUIDA: concluída
+  CONCLUIDA --> ARQUIVADA: arquivar (oferece repassar ao Balcão, RF40.CA05)
+  DISPONIVEL --> ARQUIVADA: arquivar
+  RASCUNHO --> ARQUIVADA: descartada
+  DISPONIVEL --> MODELO_PUBLICO: chancela APROVADA (RF39) ou publicação explícita
+  CONCLUIDA --> MODELO_PUBLICO: chancela APROVADA ou publicação explícita
+  MODELO_PUBLICO --> DISPONIVEL: despublicada ou chancela revogada
+  DISPONIVEL --> OFERECIDA: Oferecer no Balcão (RF40)
+  CONCLUIDA --> OFERECIDA: Oferecer no Balcão
+  OFERECIDA --> DISPONIVEL: oferta retirada (volta ao estado de trabalho registrado)
+  ARQUIVADA --> DISPONIVEL: desarquivar
+  ARQUIVADA --> [*]
+  note right of ARQUIVADA
+    Tarefa ligada a decisão VALIDADA não é excluída: só arquivada (CA05).
+    Exclusão em outros estados preserva snapshotJson nos projetos de terceiros.
   end note
   note left of EM_USO
-    Toda transição grava task_state_log
-    (fromState, toState, actorId, reason, projectId, correlationId)
+    Transição inválida → 409 TRANSICAO_INVALIDA.
+    Toda transição → TaskStateLog (CA02).
   end note
 ```
 
@@ -560,78 +465,70 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js"]
-    FE1["app/tasks (grade, sub-filtros, filtros, ordenação, querystring, paginação 20) · app/tasks/[id] (detalhe) · app/attachments (Anexos & Evidências) · app/users/[id]/tasks"]
-    FE2["components/ui · TaskCard (RF38) · StateTag · DeadlineBadge ⚖ · SubFilterTabs com contadores · Skeleton · EmptyState · RetryBanner · QuickActions · PhaseSelect (RF21) · Viewers (pdf, xlsx, imagem, dwg/dxf 2D, ifc/glb 3D) · EvidenceUploader"]
+  subgraph FRONT["Frontend Next.js 15"]
+    R1["app/(shell)/tasks (grade + querystring) · tasks/[id] · attachments · u/[username] (acervo de terceiro)"]
+    R2["components: TaskCard (TaskCardLayout compact/list/expanded · TaskCardVariant por TaskState, FAVORITA, PRAZO_LEGAL, CHANCELADA, NO_BALCAO, COM_EVIDENCIA) · Tag · Due · TypeChip · Seal · Counters · DecisionThread · EvidenceUploader · Skeleton · EmptyState · ErrorState · Dialog"]
+    BFF["app/bff"]
+    R1 --> R2 --> BFF
   end
-
   subgraph WEB["ws-web"]
-    C1["TaskController"]
-    C2["EvidenceController"]
+    AC["AcervoController · EvidenceController (@Operation RF41.CA01-CA09)"]
+    SEC["SecurityConfig · CorrelationIdFilter · AuthRateLimitFilter · GlobalExceptionHandler (main)"]
   end
-
-  subgraph APP["ws-application"]
-    S1["AcervoService"]
-    S2["TaskStateMachine"]
-    S3["LegalDeadlineScheduler"]
-    S4["CounterService (RF40) · SealService (RF39) · DecisionTraceService (RF29) · ProjectService (RF21)"]
-    P1["SearchPort"]
-    P2["StoragePort"]
+  subgraph APPL["ws-application"]
+    AS["acervo/AcervoService"]
+    TSM["acervo/TaskStateMachine (tabela testada)"]
+    LDS["acervo/LegalDeadlineService (job diário)"]
+    ES["acervo/EvidenceService"]
+    VF["social/VisibilityFilter"]
+    GD["security/Guard (main: ownerOrAdmin · requireRole)"]
+    OM["security/OwnMedia (restricted/)"]
+    UG["security/UploadGuard (magic bytes · teto de pixels)"]
+    DE["events/DomainEvents AFTER_COMMIT (ProjectActivated · ProjectTaskRemoved · TaskDeleted)"]
+    PORTS["ports: SearchIndexPort · CachePort · StoragePort · NotificationPort"]
+    SCH["schedulers (ws-bootstrap): prazos legais 06:00"]
   end
-
-  subgraph DOM["ws-domain · br.gov.pr.secid.workstation"]
-    D1["TaskItem · TaskStateLog · TaskAttachment · TaskVersion · LegalDeadlineRule · OrgEntity · Evidence"]
-    D2["ProjectTask · FinalDecision · SavedItem · SealBond · DecisionTraceNode"]
+  subgraph DOM["ws-domain"]
+    ENT["TaskItem · TaskState · TaskStateLog · TaskAttachment · TaskVersion · LegalDeadlineRule · Evidence · StudioStatus (planejado) · MediaObject (V2)"]
   end
-
-  subgraph INFRA["ws-infrastructure/*"]
-    I1["persistence-mysql · tasks, task_state_log, task_attachments, task_versions, evidences, legal_deadline_rules"]
-    I2["search-opensearch · índice tasks (texto, filtros, ordenação) · ocrTextRef"]
-    I3["cache-redis · contadores por sub-filtro · visão de lista"]
-    I4["storage-s3 · originais, previews, fotos de evidência"]
-    I5["platform · scheduler diário de prazos legais · PipelineJob (ANTIVIRUS, OCR, THUMBNAIL, SYNC_EXTERNO) · DomainEventOutbox · AuditLog · i18n"]
+  subgraph INFRA["ws-infrastructure"]
+    MY["persistence-mysql tasks · task_state_log · evidences (V__rf4/rf41)"]
+    OSA["search-opensearch ws-tasks (flag opensearch.enabled)"]
+    RD["cache-redis contadores (flag redis.enabled)"]
+    S3A["storage-s3 anexos · evidências (flag storage.s3)"]
+    CASA["persistence-cassandra notifications (flag cassandra.enabled)"]
   end
-
-  subgraph EXT["Serviços externos"]
-    X1["Google Workspace · Microsoft 365 (TaskVersion de itens vinculados, SYNC_EXTERNO)"]
-    X2["e-Protocolo (origem PROTOCOLO, protocolNumber)"]
-  end
-
-  FE1 --> C1
-  FE1 --> C2
-  FE2 -.-> FE1
-  C1 --> S1
-  C1 --> S2
-  C2 --> S1
-  S1 --> S2
-  S1 --> S4
-  S1 --> P1
-  S1 --> P2
-  S1 --> D1
-  S1 --> D2
-  S2 --> D1
-  S3 --> D1
-  D1 --> I1
-  D2 --> I1
-  P1 --> I2
-  P2 --> I4
-  S1 --> I3
-  I5 --> S3
-  I5 --> I2
-  I5 --> X1
-  S1 -.-> X2
+  BFF --> AC --> SEC
+  AC --> AS
+  AC --> ES
+  AS --> TSM
+  AS --> LDS
+  AS --> VF
+  AS --> GD
+  AS --> DE
+  AS --> PORTS
+  ES --> UG
+  ES --> OM
+  ES --> PORTS
+  DE --> TSM
+  SCH --> LDS
+  AS --> ENT --> MY --> MYSQL[("MySQL 8")]
+  PORTS --> OSA --> OPENS[("OpenSearch")]
+  PORTS --> RD --> REDIS[("Redis")]
+  PORTS --> S3A --> S3[("S3 / MinIO")]
+  DE --> CASA --> CASS[("Cassandra")]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
-|---|---|
-| RF41.CA01 | Classes `AcervoService.list/counters`, `TaskController.GET tasks/tasks_counters`; atividades U1, W1 (skeleton + contadores), W2 → W3 (estado vazio ilustrado) / W4 (tentar de novo), S1, S2; sequência msgs 1–11 (skeleton, 503 BUSCA_INDISPONIVEL → tentar de novo, grade de cards); componentes `SubFilterTabs`, `Skeleton`, `EmptyState`, `RetryBanner`, `cache-redis · contadores`. |
-| RF41.CA02 | Classes `TaskStateMachine` (transition, onProjectActivated, onProjectTaskRemoved, canTransition), `TaskStateLog`, `TaskItem.state/blockedBy*/version`, enum `TaskState`; atividades S4 → E2 (422 TRANSICAO_INVALIDA), S5, S6 (EM_USO automático, MODELO_PUBLICO só via chancela/publicação); sequência msgs 21–28; máquina de estados completa (RASCUNHO → DISPONIVEL → EM_USO ⇄ BLOQUEADA → CONCLUIDA → ARQUIVADA, MODELO_PUBLICO, OFERECIDA) e nota do `task_state_log`; componente `TaskStateMachine`. |
-| RF41.CA03 | Classes `AcervoService.detail`, `TaskAttachment`, `TaskVersion`, `ProjectTask`, `DecisionTraceNode`, `SealBond`, `TaskStateLog`, `MediaObject.variantsJson`; atividades U3, W6, S3; sequência msgs 12–19 (preview, versões, projetos em uso, fio, chancelas, interações, histórico); componentes `app/tasks/[id]`, `Viewers (pdf, xlsx, imagem, dwg/dxf 2D, ifc/glb 3D)`, `storage-s3`. |
-| RF41.CA04 | Classes `LegalDeadlineRule`, `TaskItem.legalDeadlineRuleId/legalDeadlineBaseDate/legalDueAt`, `LegalDeadlineScheduler.scanUpcoming/computeLegalDueAt`, `Notification`; atividades S12 (job diário → notificação ao responsável, Prioridade do Dia) e W11 (âmbar 3 dias, vermelho vencido, ⚖); sequência msg 11; componentes `DeadlineBadge ⚖`, `platform · scheduler diário de prazos legais`. |
-| RF41.CA05 | Classes `AcervoService.delete`, `ProjectTask.snapshotJson/removedByAuthor`, `FinalDecision.resultingTaskId`; atividades U6, S7 → E3 (409 DECISAO_VINCULADA → S11 só ARQUIVADA), S8, S9 (snapshot preservado + Notification aos donos), S10; sequência msgs 29–37; transições `CONCLUIDA/DISPONIVEL → [*]` com nota sobre decisão validada. |
-| RF41.CA06 | Classes `Evidence` (takenAt, latitude/longitude AES, caption, linkedTaskId, linkedProjectId, studioStatus, derivedTaskId), enum `StudioStatus`, `AcervoService.addEvidence/evidenceToTask`, `EvidenceController`; atividades U7, W9, S13 → E4 (422 VALIDACAO), S14 (Estúdio de Documento RF20 → IMAGEM_EDITADA); componentes `app/attachments`, `EvidenceUploader`, `PipelineJob (ANTIVIRUS, OCR, THUMBNAIL)`. |
-| RF41.CA07 | Classes `AcervoService.favorite/duplicate`, `SavedItem`, `TaskController` (favorite, duplicate, transition), `CounterService`, `SealService`, `DecisionTraceService`, `ProjectService`; atividades U4, U5, W7, W8 (Levar ao projeto abre PhaseSelect do RF21, Compartilhar na sessão RF29, Pedir chancela RF39, Oferecer RF40, Arquivar/Repassar); sequência msgs 20–28 (arquivar oferece repasse); transições `→ OFERECIDA`, `→ ARQUIVADA`, `→ MODELO_PUBLICO`; componentes `QuickActions`, `PhaseSelect (RF21)`. |
-| RF41.CA08 | Classes `TaskItem.visibility`, enum `Visibility`, `AcervoService.listForViewer/takeToMyAcervo`, `TaskController.GET users_id_tasks`; atividades U8, W10, S15 → E1 (403 ACESSO_NEGADO), S16 (Levar ao meu acervo RF23); sequência msgs 38–44; componente `app/users/[id]/tasks`. |
-| RF41.CA09 | Classe `AcervoService.list` (filters, sort, page), `SearchPort`; atividades U2, U9, W5 (querystring = visão restaurável, 20 por página, i18n), S1 (ordenações recentes, mais/menos usadas, nome, prazo, valor); sequência msgs 1–4 e 10 (querystring, página 20, i18n); componentes `app/tasks (querystring, paginação 20)`, `search-opensearch`, `platform · i18n`. |
+| CA | Classe | Passo | Mensagem | Transição | Componente |
+|---|---|---|---|---|---|
+| RF41.CA01 | `AcervoService.list/counters`, `TaskCardView`, contadores por sub-filtro em `CachePort` | A0 → A1 → F1 → P1 → F2 | 1–11 | — | `TaskCard compact`, `Skeleton · EmptyState · ErrorState`, `RD`, `OSA` |
+| RF41.CA02 | `TaskStateMachine.transition/onProjectActivated/onProjectLeft`, `TaskState`, `TaskStateLog`, MODELO_PUBLICO só via chancela/publicação | P4 → P5 (409) → P6 · P7 · P8 | 12–20 | toda a máquina + nota de EM_USO | `TSM`, `DE`, `MY` |
+| RF41.CA03 | `AcervoService.detail` (preview, metadados RF4, `TaskVersion`, `ProjectTask` em uso, `DecisionTraceNode`, `SealBond`, interações, `TaskStateLog`) | A3 → A4 → F3 | — (GET /api/tasks/{id}) | — | `TaskCard expanded`, `DecisionThread`, `Seal`, `Counters` |
+| RF41.CA04 | `LegalDeadlineRule`, `TaskItem.legalDueAt`, `LegalDeadlineService.scanDueSoon`, `Notification PRAZO_PROXIMO/PRAZO_VENCIDO`, `Due` (âmbar · vermelho · ⚖), RF44 | P9 → F5 | 39–41 | — | `LDS`, `SCH`, `Due`, `CASA` |
+| RF41.CA05 | `AcervoService.delete`, `ProjectTask.snapshotJson/removedByAuthor` (RF23), `FinalDecision.resultingTaskId`, 409 TAREFA_EM_DECISAO, `Notification TAREFA_REUTILIZADA` | A13 → A14 → F7 → P10 → P11 (409) → P12 | 21–29 | nota de ARQUIVADA | `AS`, `Dialog` |
+| RF41.CA06 | `Evidence` (takenAt, latitude/longitude AES, linkedTaskId/ProjectId, studioStatus), `EvidenceService.upload/link/toStudio`, `UploadGuard`, `OwnMedia`, IMAGEM_EDITADA (RF4) | A15 → A16 → F6 → P13 → P14 | 30–36 | — | `ES`, `UG`, `OM`, `EvidenceUploader`, `S3A` |
+| RF41.CA07 | `AcervoService.quickAction` (FAVORITAR · DUPLICAR · LEVAR_AO_PROJETO · COMPARTILHAR_SESSAO · PEDIR_CHANCELA · OFERECER_BALCAO · ARQUIVAR/REPASSAR), `AcervoService.archive` | A5 → A6 → A7..A12 → F4 → P10 → P4/P15 | 12–17 | `→ ARQUIVADA / OFERECIDA / EM_USO` | `F4 menu do card`, `TSM` |
+| RF41.CA08 | `VisibilityFilter.allowedFor`, `Guard.requireOwner` (403), ação Levar ao meu acervo (RF23) | A17 → F1 → P2 → P3 | 42–49 | — | `VF`, `GD`, `R1 u/[username]` |
+| RF41.CA09 | querystring (filtro, filtros, ordem, page), 20 por página, i18n, `AcervoQuery` | A2 → F1 | 1–3 | — | `R1 /tasks`, `lib/i18n` |
