@@ -53,12 +53,21 @@ public class RedisSessionStore implements SessionStorePort {
             end
             return 1
             """, Long.class);
-    /** KEYS: meta da família; ARGV: agora (ms). 1 round-trip: tombstone ou expiração da família → inativa. */
+    /**
+     * KEYS: meta da família; ARGV: agora (ms). 1 round-trip: tombstone, família expirada ou token vigente ({@code current})
+     * já consumido/expirado → inativa. Mesma semântica do {@code InMemorySessionStore}: só há família ativa com um token vivo.
+     * A chave do token deriva do {@code current} (mesmo nó fora de cluster, Q-91).
+     */
     static final RedisScript<Long> FAMILY_ACTIVE = RedisScript.of("""
-            local m = redis.call('HMGET', KEYS[1], 'revokedAt', 'expiresAt')
+            local m = redis.call('HMGET', KEYS[1], 'revokedAt', 'expiresAt', 'current')
             if not m[2] then return 0 end
             if m[1] then return 0 end
             if tonumber(m[2]) <= tonumber(ARGV[1]) then return 0 end
+            if not m[3] then return 0 end
+            local t = redis.call('HMGET', 'sess:tok:' .. m[3], 'revokedAt', 'expiresAt')
+            if not t[2] then return 0 end
+            if t[1] then return 0 end
+            if tonumber(t[2]) <= tonumber(ARGV[1]) then return 0 end
             return 1
             """, Long.class);
 
