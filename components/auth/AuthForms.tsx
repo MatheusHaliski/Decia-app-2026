@@ -45,8 +45,9 @@ function RfFooter({ id }: { id: string }) {
 export function LoginForm() {
   const { t } = useI18n();
   const router = useRouter();
+  const [rememberMe, setRememberMe] = useState(false);
   const { status, run, reset } = useSubmit(async (f: FormData) => {
-    await auth.login({ identifier: String(f.get("identifier") ?? ""), password: String(f.get("password") ?? "") });
+    await auth.login({ identifier: String(f.get("identifier") ?? ""), password: String(f.get("password") ?? ""), rememberMe });
     router.push("/mural");
   });
   const fields = status.kind === "error" && status.error instanceof ApiError ? status.error.fields : {};
@@ -61,6 +62,7 @@ export function LoginForm() {
           <Field label={t("auth.password")} error={fields.password} required>
             {({ id, describedBy, invalid }) => <Input id={id} name="password" type="password" autoComplete="current-password" required aria-describedby={describedBy} invalid={invalid} />}
           </Field>
+          <Checkbox checked={rememberMe} onCheckedChange={setRememberMe} label={t("auth.login.rememberMe")} hint={t("auth.login.rememberMeHint")} />
           {status.kind === "error" ? <Failure error={status.error} onRetry={reset} /> : null}
           <Button type="submit" variant="primary" size="lg" busy={status.kind === "busy"}>{t("auth.login.submit")}</Button>
           <div className="flex flex-wrap justify-between gap-2 text-[length:var(--ws-text-body-sm)]">
@@ -87,8 +89,8 @@ export function RegisterForm() {
     const password = String(f.get("password") ?? "");
     if (password !== String(f.get("confirm") ?? "")) { setLocalError(t("auth.register.passwordMismatch")); throw new ApiError(422, "VALIDACAO", t("error.validation"), { confirm: t("auth.register.passwordMismatch") }); }
     setLocalError(null);
-    await auth.register({ profileType, fullName: f.get("fullName"), username: f.get("username"), email: f.get("email"), password, acceptTerms });
-    router.push("/verify-email");
+    const receipt = await auth.register({ profileType, fullName: String(f.get("fullName") ?? ""), username: String(f.get("username") ?? ""), email: String(f.get("email") ?? ""), password, confirmPassword: password, acceptTerms });
+    router.push(`/verify-email?email=${encodeURIComponent(String(f.get("email") ?? ""))}&masked=${encodeURIComponent(receipt.maskedEmail ?? "")}`);
   });
   const fields = status.kind === "error" && status.error instanceof ApiError ? status.error.fields : {};
   const onSubmit = (e: FormEvent<HTMLFormElement>) => { e.preventDefault(); void run(new FormData(e.currentTarget)); };

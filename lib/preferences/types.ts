@@ -85,18 +85,21 @@ export function sanitizePreferences(raw: unknown): UserPreferences {
   };
 }
 
-/** Corpo de `PUT /api/me/preferences` (enum do servidor, TAXONOMIA §1.2). */
+/**
+ * Corpo de `PUT /api/me/preferences` (MeController.PreferencesRequest, Bloco 3): theme AUTO·CLARO·ESCURO·ALTO_CONTRASTE·BLUEPRINT
+ * (o tema "terminal" do DS v2 viaja como BLUEPRINT até a V3 ratificar TERMINAL — Q-100), fontScale decimal (1.00 = 100 %),
+ * notificationPrefsJson como texto JSON (a arte de fundo vai dentro dele até existir a coluna `background_id`, Q-100).
+ */
 export function toServer(p: UserPreferences) {
-  const theme = ({ auto: "AUTO", claro: "CLARO", escuro: "ESCURO", contraste: "ALTO_CONTRASTE", terminal: "TERMINAL" } as const)[p.theme];
+  const theme = ({ auto: "AUTO", claro: "CLARO", escuro: "ESCURO", contraste: "ALTO_CONTRASTE", terminal: "BLUEPRINT" } as const)[p.theme];
   return {
     theme,
     language: toServerLanguage(p.language),
     density: p.density.toUpperCase(),
-    fontScale: p.fontScale,
+    fontScale: Number((p.fontScale / 100).toFixed(2)),
     reduceMotion: p.reduceMotion,
     deskSkin: p.deskSkin.toUpperCase().replace("-", "_"),
-    backgroundId: p.backgroundId,
-    notificationPrefsJson: p.notificationPrefs,
+    notificationPrefsJson: JSON.stringify({ ...p.notificationPrefs, backgroundId: p.backgroundId }),
     timezone: p.timezone,
     wipLimit: p.wipLimit,
     aiModeDefault: p.aiModeDefault.toUpperCase(),
@@ -106,14 +109,21 @@ export function toServer(p: UserPreferences) {
 /** Resposta de `GET /api/me/preferences` → preferências do cliente (campos desconhecidos caem no padrão). */
 export function fromServer(raw: unknown): UserPreferences {
   const r = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
-  const theme = ({ AUTO: "auto", CLARO: "claro", ESCURO: "escuro", ALTO_CONTRASTE: "contraste", TERMINAL: "terminal", BLUEPRINT: "escuro" } as Record<string, Theme>)[String(r.theme)];
+  const theme = ({ AUTO: "auto", CLARO: "claro", ESCURO: "escuro", ALTO_CONTRASTE: "contraste", TERMINAL: "terminal", BLUEPRINT: "terminal" } as Record<string, Theme>)[String(r.theme)];
+  let notif: unknown = r.notificationPrefsJson ?? r.notificationPrefs;
+  if (typeof notif === "string") { try { notif = JSON.parse(notif); } catch { notif = undefined; } }
+  const fs = Number(r.fontScale);
+  const fontScale = Number.isFinite(fs) ? (fs <= 2 ? Math.round(fs * 100) : fs) : undefined;
+  const nb = (notif && typeof notif === "object" ? (notif as Record<string, unknown>).backgroundId : undefined);
   return sanitizePreferences({
     ...r,
     theme,
     language: fromServerLanguage(typeof r.language === "string" ? r.language : null) ?? undefined,
     density: typeof r.density === "string" ? r.density.toLowerCase() : undefined,
+    fontScale: fontScale === 112 || fontScale === 113 ? 112 : fontScale,
     deskSkin: typeof r.deskSkin === "string" ? r.deskSkin.toLowerCase().replace("_", "-") : undefined,
-    notificationPrefs: r.notificationPrefsJson ?? r.notificationPrefs,
+    notificationPrefs: notif,
+    backgroundId: typeof nb === "string" ? nb : undefined,
     aiModeDefault: typeof r.aiModeDefault === "string" ? r.aiModeDefault.toLowerCase() : undefined,
   });
 }

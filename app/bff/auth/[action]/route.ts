@@ -16,7 +16,8 @@ const RT_COOKIE = "ws_rt";
 const RT_HINT_COOKIE = "ws_rt_h";
 const RT_PATH = "/bff/auth";
 const MAX_BODY = 64 * 1024;
-const ACTIONS = new Set(["login", "register", "refresh", "logout"]);
+const ACTIONS = new Set(["login", "register", "confirm", "refresh", "logout"]);
+const UPSTREAM: Record<string, string> = { login: "/api/auth/login", register: "/api/auth/register", confirm: "/api/auth/email-verification/confirm" };
 
 type Json = Record<string, unknown>;
 
@@ -114,8 +115,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ act
   const raw = await req.text();
   if (raw.length > MAX_BODY) return NextResponse.json({ status: 413, code: "CORPO_GRANDE" }, { status: 413 });
 
-  if (action === "login" || action === "register") {
-    const r = await callApi(req, `/api/auth/${action}`, raw || "{}");
+  if (action === "login" || action === "register" || action === "confirm") {
+    const r = await callApi(req, UPSTREAM[action]!, raw || "{}");
     return r ? withSession(req, r.status, r.data, r.headers) : offline();
   }
 

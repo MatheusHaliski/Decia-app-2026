@@ -1,7 +1,7 @@
 // Design system v2 do Work Station (DESIGN_SYSTEM.md §3/§5, D-30): único lugar com <button>, <a>, <input>, <select>.
 export { Avatar, Monogram, initialsOf } from "./Avatar";
 export type { AvatarProps, NodeColor } from "./Avatar";
-export { BackgroundArt, DESK_SKIN_CLASS, WS_BACKGROUNDS, backgroundById, backgroundUrl } from "./BackgroundArt";
+export { BackgroundArt, DESK_SKIN_CLASS, WS_BACKGROUNDS, backgroundById, backgroundImageCss, backgroundUrl } from "./BackgroundArt";
 export type { WsBackground, WsBackgroundId } from "./BackgroundArt";
 export { Badge, RfChip, Tag } from "./Badge";
 export type { BadgeProps, TagProps, Tone } from "./Badge";

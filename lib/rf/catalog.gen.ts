@@ -23,8 +23,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF1.CA02",
-        "text": "Dado um e-mail (emailHash) ou username já cadastrado, quando envio o formulário, então recebo 409 EMAIL_EM_USO ou 409 USERNAME_EM_USO; o sistema oferece sugestões de username livres (GET /api/auth/username-suggestions).",
-        "note": "CA a confirmar",
+        "text": "Dado um username já cadastrado, então 409 USERNAME_EM_USO com details.suggestions (username é público; GET /api/usernames/{u}/availability e GET /api/auth/username-suggestions). Dado um e-mail já cadastrado, então a resposta é a mesma 202 VERIFICACAO_ENVIADA do cadastro novo (sem oráculo) e a pessoa recebe um e-mail \"você já tem uma conta\" em vez do código — não há 409 EMAIL_EM_USO. Implementado em RegistrationService.register.",
+        "note": "CA a confirmar — corrigido no Bloco 3, Q-86/D-27",
         "kind": "enunciado"
       },
       {
@@ -41,8 +41,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF1.CA05",
-        "text": "Dado o cadastro criado, então o sistema cria UserPreferences padrão (theme AUTO, language PT_BR, timezone America/Sao_Paulo, wipLimit 3, aiModeDefault ECONOMIA) e já emite a sessão (access JWT 15 min + RefreshToken em cookie HttpOnly pelo BFF) como no RF2, levando o usuário para /verify-email.",
-        "note": "CA a confirmar",
+        "text": "Dado o cadastro criado, então o sistema cria UserPreferences padrão (theme AUTO, language PT_BR, timezone America/Sao_Paulo, wipLimit 3, aiModeDefault ECONOMIA) e grava terms_version/privacy_version vigentes; a sessão (access JWT 15 min + refresh para o BFF) é emitida só na confirmação do código (POST /api/auth/email-verification/confirm) — emitir no register revelaria se a conta era nova. A tela vai para /verify-email sem sessão.",
+        "note": "CA a confirmar — ajustado no Bloco 3, Q-86",
         "kind": "enunciado"
       },
       {
@@ -71,8 +71,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF1.CA10",
-        "text": "Dado um username que, depois da normalização, seja admin, root, suporte, secid, decia, workstation ou comece com demo_/e2e_, então o cadastro responde 422 VALIDACAO (nome reservado); a conta de administração só nasce pelo AdminBootstrap (segredo WS_ADMIN_PASSWORD, nunca promove conta existente sem WS_ADMIN_PROMOTE_EXISTING=true).",
-        "note": "CA a confirmar",
+        "text": "Dado um username que, depois da normalização (Usernames.normalize), seja admin, root, suporte, secid, decia, workstation ou comece com demo_/e2e_, então o cadastro responde 422 NOME_RESERVADO (código próprio, com details.suggestions); a conta de administração só nasce pelo AdminBootstrap (WS_ADMIN_BOOTSTRAP_ENABLED=true, segredo WS_ADMIN_INITIAL_PASSWORD ≥ 16 chars sem padrão, só se não existe nenhum ADMIN; nunca promove conta existente sem WS_ADMIN_PROMOTE_EXISTING=true).",
+        "note": "CA a confirmar — ajustado no Bloco 3",
         "kind": "enunciado"
       },
       {
@@ -196,8 +196,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF2.CA02",
-        "text": "Dado credenciais erradas ou usuário inexistente, então 401 CREDENCIAIS_INVALIDAS com a mesma mensagem e tempo (sem enumerar contas); conta SUSPENDED/DELETION_SCHEDULED → 403 CONTA_INDISPONIVEL; PENDING_EMAIL_VERIFICATION entra com aviso; twoFactorEnabled → 401 DOIS_FATORES_NECESSARIO até informar o código.",
-        "note": "CA a confirmar",
+        "text": "Dado credenciais erradas, usuário inexistente ou conta bloqueada por tentativas (mesmo com a senha certa), então a resposta é idêntica: 401 CREDENCIAIS_INVALIDAS, mesma mensagem, sem details (conta inexistente avalia um hash falso). Só depois da senha certa e fora do bloqueio: conta SUSPENDED/ANONYMIZED → 403 CONTA_INDISPONIVEL; twoFactorEnabled → 401 DOIS_FATORES_NECESSARIO (details.twoFactorRequired=true; conferência TOTP é a Q-83). DELETION_SCHEDULED entra com aviso (para cancelar a exclusão, D-18); PENDING_EMAIL_VERIFICATION não tem sessão antes de confirmar o código. Implementado em IdentityService.login; testes IdentityServiceTest.",
+        "note": "CA a confirmar — corrigido no Bloco 3, Q-82",
         "kind": "enunciado"
       },
       {
@@ -291,8 +291,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF3.CA02",
-        "text": "Dado a troca de e-mail, quando informo o novo e-mail, então é exigida reautenticação (senha atual ou OIDC recente — 401 REAUTENTICACAO_NECESSARIA), o emailHash deve ser único (409 EMAIL_EM_USO), emailVerified volta a false e um novo código é enviado; até confirmar, o e-mail antigo continua valendo para login.",
-        "note": "CA a confirmar",
+        "text": "Dado a troca de e-mail/telefone (PATCH /api/me/sensitive), então é exigida a senha atual no mesmo bloqueio do login (401 REAUTENTICACAO_FALHOU; 6º erro → 429 MUITAS_TENTATIVAS + Retry-After), o emailHash deve ser único (409 EMAIL_EM_USO — aceitável: a pessoa já está autenticada), emailVerified volta a false e um novo código é enviado. Divergência a confirmar: hoje o e-mail novo passa a valer imediatamente para login (não há coluna de \"e-mail pendente\" no V2); manter o antigo até confirmar exige V4. OIDC recente como reautenticação: Q-85.",
+        "note": "CA a confirmar — ajustado no Bloco 3",
         "kind": "enunciado"
       },
       {

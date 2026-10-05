@@ -138,7 +138,6 @@ async function parseError(res: Response): Promise<ApiError> {
 /** Caminhos vindos de parâmetros de rota: nada de "..", barra invertida ou caractere de controle. */
 export function checkPath(path: string) {
   const bare = path.split("?")[0] ?? "";
-  // eslint-disable-next-line no-control-regex
   if (/[\u0000-\u001F\\]/.test(bare) || /(^|\/)(\.|%2e){2}(\/|$)/i.test(bare) || /%2f/i.test(bare) || !bare.startsWith("/")) {
     throw new ApiError(400, "CAMINHO_INVALIDO", tr("error.offline"));
   }
@@ -182,23 +181,32 @@ export const api = {
   delete: <T,>(path: string, opts?: RequestOptions) => request<T>("DELETE", path, undefined, opts),
 };
 
-/** Sessão (RF1/RF2) pelo BFF: o refresh token fica no cookie; só o access token volta para a memória. */
-export interface SessionResponse { accessToken: string; user?: { id: string; username: string; displayName?: string; profileType?: string; role?: string } }
+/** Sessão (RF2) pelo BFF: o refresh token fica no cookie; só o access token volta para a memória (contrato Bloco 3: `Session`). */
+export interface SessionUser { id: string; username: string; displayName?: string; fullName?: string; profileType?: string; role?: string; status?: string }
+export interface SessionResponse { accessToken: string; tokenType?: string; expiresIn?: number; sessionId?: string; user?: SessionUser; warnings?: string[] }
+/** Cadastro (RF1): `202 Receipt` — sem sessão até confirmar o e-mail (RF1.CA04). */
+export interface RegisterReceipt { status: string; maskedEmail: string; nextStep: string }
+export interface RegisterBody { profileType: string; fullName: string; username: string; email: string; password: string; confirmPassword: string; phone?: string; acceptTerms: boolean }
+
 export const auth = {
-  async login(body: { identifier: string; password: string }): Promise<SessionResponse> {
+  async login(body: { identifier: string; password: string; rememberMe?: boolean; deviceName?: string; twoFactorCode?: string }): Promise<SessionResponse> {
     const s = await api.post<SessionResponse>("/bff/auth/login", body, { anonymous: true });
     tokenStore.set(s.accessToken);
     return s;
   },
-  async register(body: Record<string, unknown>): Promise<SessionResponse> {
-    const s = await api.post<SessionResponse>("/bff/auth/register", body, { anonymous: true });
-    if (typeof s?.accessToken === "string") tokenStore.set(s.accessToken);
+  register: (body: RegisterBody) => api.post<RegisterReceipt>("/bff/auth/register", body, { anonymous: true }),
+  /** Confirma o código do e-mail e abre a sessão (RegistrationController POST /api/auth/email-verification/confirm). */
+  async confirmEmail(body: { email: string; code: string; deviceName?: string }): Promise<SessionResponse> {
+    const s = await api.post<SessionResponse>("/bff/auth/confirm", body, { anonymous: true });
+    tokenStore.set(s.accessToken);
     return s;
   },
+  resendCode: (body: { email: string }) => api.post<{ status: string }>("/api/auth/email-verification/resend", body, { anonymous: true }),
   async logout(): Promise<void> {
     try { await api.post("/bff/auth/logout"); } finally { tokenStore.clear(); }
   },
-  passwordReset: (body: { email: string }) => api.post<void>("/api/auth/password-reset", body, { anonymous: true }),
+  passwordReset: (body: { email: string }) => api.post<{ status: string }>("/api/auth/password-reset/request", body, { anonymous: true }),
+  passwordResetConfirm: (body: { token: string; newPassword: string; confirmPassword: string }) => api.post<void>("/api/auth/password-reset/confirm", body, { anonymous: true }),
 };
 
 /** Monta query string ignorando valores vazios. */

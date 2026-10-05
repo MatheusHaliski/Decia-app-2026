@@ -133,6 +133,7 @@ export const PAGES: readonly PageEntry[] = [
   p("/login", "app/(auth)/login/page.tsx", "auth.login.title", ["RF2"], everyone("V"), "perfil", "auth"),
   p("/register", "app/(auth)/register/page.tsx", "auth.register.title", ["RF1"], everyone("V"), "perfil", "auth"),
   p("/password-reset", "app/(auth)/password-reset/page.tsx", "auth.reset.title", ["RF2"], everyone("V"), "perfil", "auth"),
+  p("/verify-email", "app/(auth)/verify-email/page.tsx", "auth.verify.title", ["RF1"], everyone("V"), "perfil", "auth"),
   // Lab
   p("/lab/design-system", "app/(shell)/lab/design-system/page.tsx", "lab.designSystem", ["RF38"], everyone("V"), "configuracoes", "lab"),
   p("/lab/anatomias", "app/(shell)/lab/anatomias/page.tsx", "lab.anatomias", ["RF38", "RF11"], everyone("V"), "mesa", "lab"),

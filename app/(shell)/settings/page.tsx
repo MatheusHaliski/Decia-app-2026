@@ -66,7 +66,7 @@ function Appearance() {
           value={prefs.backgroundId}
           onValueChange={(v) => update({ backgroundId: v })}
           columns={4}
-          options={WS_BACKGROUNDS.map((b) => ({ value: b.id, label: t(b.labelKey), hint: b.placeholder ? t("settings.placeholderArt") : undefined, preview: <BackgroundArt backgroundId={b.id} minHeight="2.5rem" className="rounded-none border-0" /> }))}
+          options={WS_BACKGROUNDS.map((b) => ({ value: b.id, label: t(b.labelKey), hint: b.descriptionKey ? t(b.descriptionKey) : b.placeholder ? t("settings.placeholderArt") : undefined, preview: <BackgroundArt backgroundId={b.id} minHeight="2.5rem" className="rounded-none border-0" /> }))}
         />
         <div className="mt-3"><BackgroundArt backgroundId={prefs.backgroundId} minHeight="6rem"><p className="text-[length:var(--ws-text-body-sm)] font-semibold">{t("settings.backgroundPreview")}</p></BackgroundArt></div>
       </Card>

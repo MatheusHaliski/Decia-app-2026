@@ -4,6 +4,8 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   images: { unoptimized: true },
+  // o repositório pode ser aberto por worktree (lockfile duplicado): a raiz de rastreamento é sempre o próprio app
+  outputFileTracingRoot: process.cwd(),
   // OWASP A05 — cabeçalhos em todas as respostas; a CSP com nonce por requisição vem do middleware.ts
   async headers() {
     return [

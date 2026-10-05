@@ -117,7 +117,7 @@ export function RfPage({ page, subtitle, tabs, tabLabel, renderTab, children, hi
           {(active) => renderTab?.(active) ?? (
             <EmptyState
               moji={page.moji ?? "vazio"}
-              title={t(emptyTitleKey ?? "rf.emptyTitle", { tab: tabItems.find((x) => x.slug === active)?.label ?? active })}
+              title={t(emptyTitleKey ?? "rf.emptyTitle", { tab: String(tabItems.find((x) => x.slug === active)?.label ?? active) })}
               description={t("rf.emptyDescription")}
             />
           )}

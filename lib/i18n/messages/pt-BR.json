@@ -3,7 +3,6 @@
   "brand.name": "Work Station",
   "brand.home": "Work Station — início",
   "home.cta.docs": "Documentação",
-
   "common.loading": "Carregando…",
   "common.retry": "Tentar de novo",
   "common.close": "Fechar",
@@ -13,13 +12,11 @@
   "common.proposalHint": "Item marcado como proposta em docs/produto/ABAS_POR_PERFIL.md — aguarda decisão do dono do produto.",
   "common.yes": "Sim",
   "common.no": "Não",
-
   "a11y.skip": "Pular para o conteúdo",
   "a11y.mainMenu": "Menu principal",
   "a11y.bottomNav": "Navegação principal (celular)",
   "a11y.toggleMenu": "Abrir ou recolher o menu",
   "a11y.subTabs": "Sub-abas",
-
   "error.title": "Algo deu errado",
   "error.generic": "Algo deu errado do nosso lado. Informe o código {correlationId} ao suporte.",
   "error.correlation": "código {correlationId}",
@@ -32,17 +29,14 @@
   "error.offline": "Sem conexão com a API. Verifique a rede e tente de novo.",
   "error.validation": "Confira os campos destacados.",
   "error.conflict": "Este registro já existe ou foi alterado por outra pessoa.",
-
   "forbidden.title": "Acesso negado (simulado)",
   "forbidden.description": "A matriz de abas por perfil marca esta aba como oculta para o perfil {profile}. O backend responderá 403 ACESSO_NEGADO.",
   "access.E": "{profile}: visível e editável",
   "access.V": "{profile}: visível",
   "access.hint": "Célula da matriz ABAS_POR_PERFIL.md para o perfil de visualização atual",
-
   "notFound.title": "Página não encontrada",
   "notFound.description": "A rota não existe ou mudou de lugar. Todas as abas estão no menu lateral.",
   "notFound.back": "Voltar ao Mural",
-
   "nav.group.descobrir": "Descobrir",
   "nav.group.meuTrabalho": "Meu trabalho",
   "nav.group.criar": "Criar",
@@ -90,7 +84,6 @@
   "nav.logout": "Sair",
   "nav.createShort": "Criar",
   "nav.companyPage": "Empresa",
-
   "page.company": "Página da empresa",
   "page.department": "Página do departamento",
   "page.userProfile": "Perfil",
@@ -100,7 +93,6 @@
   "page.project": "Projeto",
   "page.projectEdit": "Editar projeto na Mesa",
   "page.session": "Sessão DECIA",
-
   "tabs.mural.empresa": "Mural da empresa",
   "tabs.mural.vitrine": "Vitrine de projetos",
   "tabs.mural.seguindo": "Seguindo",
@@ -185,7 +177,6 @@
   "tabs.department.minhaEquipe": "Minha equipe",
   "tabs.department.dashboard": "Dashboard do emissor",
   "tabs.department.insights": "Insights da Equipe",
-
   "create.title": "Criar",
   "create.description": "O que você quer criar agora?",
   "create.task": "Criar Tarefa",
@@ -198,16 +189,13 @@
   "create.deciaHint": "Deliberação em grupo assistida por IA",
   "create.seal": "Nova chancela",
   "create.sealHint": "Só EMPRESA e CHEFE (RF39.CA01)",
-
   "topbar.searchPlaceholder": "Buscar projetos, tarefas, pessoas… ( / )",
   "topbar.themeLanguage": "Tema e idioma",
   "topbar.moreInSettings": "Mais opções em Preferências",
   "topbar.dpLabel": "Saldo: {n} DECIA Points",
   "topbar.dpTooltip": "DECIA Points — saldo, extrato e Loja (RF42)",
-
   "userPanel.title": "Central de Perfil",
   "userPanel.open": "Abrir a Central de Perfil de {name}",
-
   "viewer.switchLabel": "Perfil de visualização (lab)",
   "viewer.switchHint": "Ver o app como:",
   "viewer.notLogged": "Não autenticado",
@@ -223,7 +211,6 @@
   "viewer.role.curador": "Analista · Curadoria",
   "viewer.role.admin": "Administração do sistema",
   "viewer.role.visitante": "Sem sessão",
-
   "profile.EMPREGADO": "Empregado",
   "profile.EMPRESA": "Empresa",
   "profile.CHEFE": "Chefe de departamento",
@@ -240,7 +227,6 @@
   "profileType.EMPREGADO": "Empregado",
   "profileType.EMPRESA": "Empresa",
   "profileType.CHEFE_DEPARTAMENTO": "Chefe de departamento",
-
   "company.owner": "Você é a dona desta página",
   "company.publicMetrics": "métricas públicas (RF28.CA04)",
   "company.gestao.departamentos": "Departamentos & chefes",
@@ -257,7 +243,6 @@
   "department.head": "Você chefia este departamento",
   "department.openManage": "Abrir modo gestão",
   "department.manageHint": "Lotação, carga e balanceamento, atribuir tarefa (RF10), fila de chancelas, reconhecimentos e dossiês — só para o chefe (EMPRESA em leitura).",
-
   "notif.unread": "não lida",
   "notif.bellWithCount": "Notificações ({n} não lidas)",
   "notif.markAllRead": "Marcar todas como lidas",
@@ -280,7 +265,6 @@
   "notif.points": "Você ganhou {n} DECIA Points",
   "notif.assignment": "{who} propôs atribuir “{title}” a você",
   "notif.system": "Termos de Uso atualizados — releia quando puder",
-
   "settings.theme": "Tema",
   "settings.language": "Idioma",
   "settings.density": "Densidade",
@@ -310,7 +294,6 @@
   "settings.savedLocallyHint": "Sincronizam com a conta quando a API de preferências entrar (Bloco 3).",
   "settings.backendPending": "Esta aba depende do backend de autenticação e dos direitos do titular (Bloco 3 / LGPD C). O esqueleto já reserva o lugar.",
   "settings.block3": "Bloco 3",
-
   "theme.auto": "Automático",
   "theme.autoHint": "segue o sistema (agora: {theme})",
   "theme.claro": "Claro",
@@ -335,7 +318,6 @@
   "notifPrefs.seals": "Chancelas e reconhecimentos",
   "notifPrefs.points": "DECIA Points",
   "notifPrefs.weeklyDigest": "Resumo semanal",
-
   "background.sem-arte": "Sem arte",
   "background.malha-laranja": "Malha laranja",
   "background.nos-multicolor": "Nós multicoloridos",
@@ -343,7 +325,6 @@
   "background.disco-creme": "Disco creme",
   "background.blueprint-de-rede": "Blueprint de rede",
   "background.grade-minima": "Grade mínima",
-
   "glyph.criar-tarefa": "Criar tarefa",
   "glyph.criar-projeto": "Criar projeto",
   "glyph.sessao-decia": "Sessão DECIA",
@@ -375,9 +356,7 @@
   "msgClass.risk": "Risco",
   "msgClass.consensus": "Consenso",
   "msgClass.question": "Pergunta",
-
   "toast.region": "Avisos",
-
   "rf.whatThisTabDoes": "O que esta aba vai fazer",
   "rf.ptBrNote": "Texto copiado dos READMEs dos RFs (docs/diagramas, pt-BR) pelo gerador scripts/rf/gerar-catalogo.mjs.",
   "rf.story": "História",
@@ -393,7 +372,6 @@
   "rf.emptyDescription": "Esqueleto da etapa (b): o shell, as sub-abas e a visibilidade por perfil já valem; os dados chegam com o RF.",
   "rf.sessionCardsNote": "Os cards da sessão DECIA (tema/acesso, iniciar, mensagens, classificar, resumo, decisão…) ainda serão recriados no board (Q-44); esta aba cita os RFs vizinhos que a usam.",
   "rf.matrixNote": "Matriz {matrix} · rota {route} · arquivo {file}",
-
   "auth.login.title": "Entrar",
   "auth.login.submit": "Entrar",
   "auth.login.forgot": "Esqueci a senha",
@@ -421,7 +399,6 @@
   "auth.email": "E-mail",
   "auth.offlineTitle": "API indisponível",
   "auth.oidcSoon": "Login institucional (OIDC) chega com o Bloco 3.",
-
   "lab.designSystem": "Design system",
   "lab.designSystemDescription": "Tokens, tipografia, WS Glyphs e Moji e cada componente em todos os estados — com os componentes reais. Troque tema, densidade e idioma na barra superior.",
   "lab.anatomias": "Anatomias e Estúdio",
@@ -486,5 +463,28 @@
   "lab.deskColumn.decisao": "Decisão",
   "lab.openStatic": "Abrir wireframe",
   "lab.openSource": "Ver fonte",
-  "lab.embedNote": "Wireframe estático de referência (tokens v1). A CSP do app bloqueia os scripts inline: os controles dentro da moldura não respondem; use os componentes reais acima."
+  "lab.embedNote": "Wireframe estático de referência (tokens v1). A CSP do app bloqueia os scripts inline: os controles dentro da moldura não respondem; use os componentes reais acima.",
+  "auth.login.rememberMe": "Lembrar-me neste aparelho",
+  "auth.login.rememberMeHint": "Sessão de 30 dias em vez de 24 h (Q-30).",
+  "auth.verify.title": "Confirmar e-mail",
+  "auth.verify.hint": "Digite o código de 6 dígitos que enviamos para o seu e-mail.",
+  "auth.verify.sentTo": "Enviamos um código para {email}.",
+  "auth.verify.code": "Código",
+  "auth.verify.submit": "Confirmar",
+  "auth.verify.resend": "Reenviar código",
+  "auth.verify.resent": "Código reenviado. Confira a caixa de entrada.",
+  "background.aura-geometry-01": "Aura Geometry 1",
+  "background.aura-geometry-01.description": "Malha geométrica escura — recomendada no tema escuro; texto creme sobre scrim.",
+  "background.aura-geometry-02": "Aura Geometry 2",
+  "background.aura-geometry-02.description": "Geometria em meio-tom — tema escuro; texto creme sobre scrim.",
+  "background.aura-geometry-03": "Aura Geometry 3",
+  "background.aura-geometry-03.description": "Quase preta — ideal no tema terminal; texto creme.",
+  "background.aura-geometry-04": "Aura Geometry 4",
+  "background.aura-geometry-04.description": "Clara — tema claro; texto do tema sobre vidro.",
+  "background.aura-geometry-05": "Aura Geometry 5",
+  "background.aura-geometry-05.description": "Noturna, muito escura — terminal ou escuro; texto creme.",
+  "background.aura-geometry-06": "Aura Geometry 6",
+  "background.aura-geometry-06.description": "Escura e contida — funciona no alto contraste; texto creme.",
+  "desk.preview": "Prévia da Mesa com a skin e a arte de fundo escolhidas em Preferências",
+  "desk.changeInSettings": "Trocar skin ou arte"
 }
