@@ -67,6 +67,35 @@ class WorkStationApplicationIT {
                 "feature_flags", "domain_events", "media_objects", "verification_codes");
     }
 
+    /** Achado P2 (Codex): dois cadastros concorrentes do mesmo e-mail recebem os dois o MESMO 202 (sem UnexpectedRollbackException). */
+    @Test
+    void cadastrosConcorrentesDoMesmoEmailRecebemOMesmo202() throws Exception {
+        String password = "Senha-" + java.util.UUID.randomUUID();
+        java.util.concurrent.ExecutorService pool = java.util.concurrent.Executors.newFixedThreadPool(4);
+        try {
+            java.util.List<java.util.concurrent.Future<Integer>> fs = new java.util.ArrayList<>();
+            java.util.concurrent.CountDownLatch start = new java.util.concurrent.CountDownLatch(1);
+            for (int i = 0; i < 4; i++) {
+                final int n = i;
+                fs.add(pool.submit(() -> {
+                    start.await(5, java.util.concurrent.TimeUnit.SECONDS);
+                    String body = "{\"profileType\":\"EMPREGADO\",\"fullName\":\"Pessoa Corrida\",\"username\":\"corrida" + n
+                            + "\",\"email\":\"corrida@exemplo.gov.br\",\"password\":\"" + password + "\",\"confirmPassword\":\"" + password
+                            + "\",\"acceptTerms\":true}";
+                    return mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/api/auth/register")
+                            .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(body)).andReturn().getResponse().getStatus();
+                }));
+            }
+            start.countDown();
+            for (java.util.concurrent.Future<Integer> f : fs) {
+                assertThat(f.get(30, java.util.concurrent.TimeUnit.SECONDS)).isEqualTo(202);
+            }
+        } finally {
+            pool.shutdownNow();
+        }
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM users WHERE username LIKE 'corrida%'", Integer.class)).isEqualTo(1);
+    }
+
     @Test
     void healthEPublicoEOResto401EmJson() throws Exception {
         mvc.perform(get("/actuator/health")).andExpect(status().isOk())

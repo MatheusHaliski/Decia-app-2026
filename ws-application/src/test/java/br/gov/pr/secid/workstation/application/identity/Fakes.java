@@ -25,7 +25,7 @@ final class Fakes {
     private Fakes() {
     }
 
-    static final class Users implements UserRepositoryPort {
+    static class Users implements UserRepositoryPort {
         final Map<UUID, User> rows = new ConcurrentHashMap<>();
 
         User add(User u) {

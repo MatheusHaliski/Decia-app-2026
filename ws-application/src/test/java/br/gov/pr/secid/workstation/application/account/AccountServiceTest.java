@@ -169,7 +169,8 @@ class AccountServiceTest {
         };
         identity = new IdentityService(users, emailHasher, hasher, rateLimit, sessions, mirror, tokens, audit, SessionPolicy.defaults(), Clock.systemUTC());
         RegistrationService registration = new RegistrationService(users, prefs, codes, emailHasher, hasher, rateLimit, mails::add, audit,
-                identity, LegalProperties.defaults(), Clock.systemUTC());
+                identity, LegalProperties.defaults(), Clock.systemUTC(),
+                new br.gov.pr.secid.workstation.application.identity.AccountInserter(users, prefs));
         account = new AccountService(users, prefs, emailHasher, identity, registration, audit, Clock.systemUTC());
         maria = new User();
         maria.setUsername("maria");

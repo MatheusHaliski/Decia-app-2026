@@ -145,7 +145,12 @@ public class IdentityService {
         String raw = Hashing.randomToken(32);
         RefreshRecord record = new RefreshRecord(Hashing.sha256(raw), family, u.getId(), now, now.plus(policy.refreshTtl(persistent)),
                 null, rotatedFromHash, persistent, deviceName == null ? shortAgent(ctx.userAgent()) : deviceName);
-        sessions.save(record);
+        try {
+            sessions.save(record);
+        } catch (SessionStorePort.FamilyRevokedException revoked) {
+            // D-32: a família foi revogada (reuso detectado por outra requisição, logout) entre o consume e a gravação do sucessor
+            throw sessionInvalid();
+        }
         mirror.saved(record, ctx);
         List<String> warnings = new ArrayList<>();
         if (!u.isEmailVerified()) {
@@ -162,23 +167,32 @@ public class IdentityService {
                 UserView.of(u), List.copyOf(warnings));
     }
 
-    /** Rotação por família (RF2.CA04): reuso de token já rotacionado revoga a família inteira e audita {@code REFRESH_REUSO}. */
+    /**
+     * Rotação por família (RF2.CA04): o token é consumido de forma ATÔMICA ({@link SessionStorePort#consume}, D-30) —
+     * duas requisições com o mesmo refresh nunca ganham as duas. Reuso de token já rotacionado revoga a família inteira e
+     * audita {@code REFRESH_REUSO}; a perdedora da corrida também cai aqui, o que encerra a sessão para as duas (seguro por desenho).
+     */
     @Transactional(noRollbackFor = ApiException.class)
     public Session refresh(String rawRefresh, RequestContext ctx) {
         if (rawRefresh == null || rawRefresh.isBlank()) {
             throw sessionInvalid();
         }
         Instant now = clock.instant();
-        RefreshRecord rt = sessions.find(Hashing.sha256(rawRefresh)).orElseThrow(IdentityService::sessionInvalid);
-        if (rt.revokedAt() != null) {
-            sessions.revokeFamily(rt.familyId(), now);
-            mirror.familyRevoked(rt.familyId(), now);
-            audit.record(AuditEvent.of(rt.userId(), AuditActions.REFRESH_REUSO, "session", rt.familyId().toString(), AuditEvent.NEGADO,
-                    ctx.ip(), ctx.userAgent(), Map.of()));
-            throw new ApiException(AuthCodes.SESSAO_INVALIDA, 401, "Sessão encerrada por segurança. Entre de novo.");
-        }
-        if (!rt.expiresAt().isAfter(now)) {
-            throw sessionInvalid();
+        String hash = Hashing.sha256(rawRefresh);
+        SessionStorePort.Consume outcome = sessions.consume(hash, now);
+        RefreshRecord rt = sessions.find(hash).orElseThrow(IdentityService::sessionInvalid);
+        switch (outcome) {
+            case REUSED -> {
+                sessions.revokeFamily(rt.familyId(), now);
+                mirror.familyRevoked(rt.familyId(), now);
+                audit.record(AuditEvent.of(rt.userId(), AuditActions.REFRESH_REUSO, "session", rt.familyId().toString(), AuditEvent.NEGADO,
+                        ctx.ip(), ctx.userAgent(), Map.of()));
+                throw new ApiException(AuthCodes.SESSAO_INVALIDA, 401, "Sessão encerrada por segurança. Entre de novo.");
+            }
+            case EXPIRED, UNKNOWN -> throw sessionInvalid();
+            default -> {
+                // ROTATED: só esta requisição consumiu o token
+            }
         }
         User u = users.findById(rt.userId()).orElseThrow(IdentityService::sessionInvalid);
         if (u.getStatus().blocksLogin()) {
@@ -186,7 +200,6 @@ public class IdentityService {
             mirror.familyRevoked(rt.familyId(), now);
             throw sessionInvalid();
         }
-        sessions.revoke(rt.tokenHash(), now);
         mirror.revoked(rt.tokenHash(), now);
         return issue(u, rt.familyId(), rt.tokenHash(), rt.persistent(), rt.deviceName(), ctx);
     }
