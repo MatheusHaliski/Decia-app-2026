@@ -15,6 +15,8 @@
 | [`design-system/ANATOMIAS_E_ESTUDIO.md`](design-system/ANATOMIAS_E_ESTUDIO.md) | Pesquisa: entidades dos esquemas de tarefa e projeto campo a campo, mapeamento das anatomias do FAI, Estúdio de Arte do Card (layouts, estilos, `CardArtConfig`); wireframe [`lab/anatomias.html`](lab/anatomias.html) |
 | [`design-system/TOKENS.md`](design-system/TOKENS.md) · [`GLYPHS.md`](design-system/GLYPHS.md) | Design system v2: tokens `--ws-*` calibrados pelo logo (claro/escuro/alto-contraste/terminal), WS Glyphs e WS Moji ([`glyphs/index.html`](design-system/glyphs/index.html)), artes de fundo (`backgrounds/`) |
 | [`diagramas/RENUMERACAO.md`](diagramas/RENUMERACAO.md) | Mapa entre a numeração anterior e a atual do board; versões anteriores em `diagramas/_anterior/` |
+| [`legal/`](legal/README.md) | Rascunhos v0.1 dos **Termos de Uso** e da **Política de Privacidade** para órgão público (controlador SECID-PR; encarregado via `WS_LEGAL_DPO_NAME`/`WS_LEGAL_DPO_CONTACT`), versões independentes, regra das traduções de cortesia e o teste que recusa marcadores |
+| [`produto/CADASTRO_E_LGPD.md`](produto/CADASTRO_E_LGPD.md) | Plano de implementação dos blocos A (aceite dos termos), B (tipos de perfil e validação) e C (configurações e direitos do titular): ordem, dependências da SEG, componentes `packages/ui`, endpoints, jobs, testes-guarda e a tabela requisito → PR → teste → status |
 | [`DECISOES.md`](DECISOES.md) | Decisões tomadas (D-nn), dúvidas abertas (Q-nn) e índice das perguntas das pesquisas |
 | `testes/` | Evidências de teste por RF (preenchido a cada PR) |
 

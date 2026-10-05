@@ -3,7 +3,7 @@
 Fonte dos documentos que o app publica em `/termos` e `/privacidade` e que a API serve em
 `GET /api/legal/{TERMOS|PRIVACIDADE}/current` e `/versions` (RF1 bloco A, D-15, D-16). Nenhum deles está vigente:
 são **rascunhos v0.1** escritos pela engenharia como proposta e aguardam a validação do encarregado e do jurídico da
-SECID-PR (Q-57, Q-58). Até lá o cabeçalho fica `status: rascunho` e `effectiveFrom: null`, e a publicação é recusada.
+SECID-PR (Q-60, Q-61). Até lá o cabeçalho fica `status: rascunho` e `effectiveFrom: null`, e a publicação é recusada.
 
 | Arquivo | Documento (`PolicyDocumentKind`) | Versão | Status |
 |---|---|---|---|
@@ -43,7 +43,7 @@ Publicar uma versão = mudar `status: vigente`, preencher `effectiveFrom`, subir
 
 O texto oficial é o **pt-BR**. As versões em inglês e espanhol (`TERMOS_DE_USO.en.md`, `POLITICA_DE_PRIVACIDADE.es.md`
 etc., quando existirem) são **traduções de cortesia** com a mesma `version` do original e um aviso fixo no topo de que
-o pt-BR prevalece em caso de divergência (Q-66). O aceite registrado é sempre do documento e da versão, não do idioma;
+o pt-BR prevalece em caso de divergência (Q-69). O aceite registrado é sempre do documento e da versão, não do idioma;
 `PolicyAcceptance` não guarda `language`, e o gate não pede novo aceite quando só uma tradução muda.
 
 ## Valores injetados pela configuração
@@ -75,5 +75,5 @@ resposta humana ficam na seção final **"Pendências para o jurídico"** de cad
 Os textos do FAI são de uma rede social de moda para consumidores (CDC, ECA Digital, loja de itens 3D, cupons de
 marcas). Aqui o controlador é um **órgão público** (LGPD art. 23) e os usuários são servidores e colaboradores: não
 há relação de consumo, a base legal predominante não é contrato nem consentimento, e "excluir" tem limites de guarda
-documental (Q-65). O que foi aproveitado: a estrutura por seções, o resumo inicial, a tabela finalidade × base legal e
+documental (Q-68). O que foi aproveitado: a estrutura por seções, o resumo inicial, a tabela finalidade × base legal e
 a tabela de retenção.
