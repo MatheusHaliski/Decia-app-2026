@@ -87,12 +87,20 @@ class ApplicationYmlSecurityTest {
         StandardEnvironment e = env(null, "WS_DB_PASSWORD", "p", "WS_JWT_PRIVATE_KEY_PATH", "/k/priv.pem",
                 "WS_JWT_PUBLIC_KEY_PATH", "/k/pub.pem", "WS_DATA_ENCRYPTION_KEY", "k");
         assertThat(e.getProperty("ws.secrets.required[WS_DB_PASSWORD]")).isEqualTo("p");
-        assertThat(e.getProperty("ws.secrets.required[WS_JWT_PRIVATE_KEY_PATH]")).isEqualTo("/k/priv.pem");
-        assertThat(e.getProperty("ws.secrets.required[WS_JWT_PUBLIC_KEY_PATH]")).isEqualTo("/k/pub.pem");
+        assertThat(e.getProperty("ws.secrets.required[WS_JWT_PRIVATE_KEY_PATH|WS_JWT_PRIVATE_KEY_PEM]")).isEqualTo("/k/priv.pem");
+        assertThat(e.getProperty("ws.secrets.required[WS_JWT_PUBLIC_KEY_PATH|WS_JWT_PUBLIC_KEY_PEM]")).isEqualTo("/k/pub.pem");
+        // D-24: a chave por PEM satisfaz o mesmo requisito
+        StandardEnvironment pem = env(null, "WS_DB_PASSWORD", "p", "WS_JWT_PRIVATE_KEY_PEM", "-----BEGIN", "WS_JWT_PUBLIC_KEY_PEM", "-----BEGIN");
+        assertThat(pem.getProperty("ws.secrets.required[WS_JWT_PRIVATE_KEY_PATH|WS_JWT_PRIVATE_KEY_PEM]")).isEqualTo("-----BEGIN");
+        assertThat(pem.getProperty("ws.security.jwt.private-key-pem")).isEqualTo("-----BEGIN");
+        assertThat(pem.getProperty("ws.security.jwt.access-ttl-minutes")).isEqualTo("15");
+        assertThat(pem.getProperty("ws.admin.initial-password")).isEmpty();
+        assertThat(pem.getProperty("ws.admin.bootstrap-enabled")).isEqualTo("false");
+        assertThat(pem.getProperty("ws.oidc.enabled")).isEqualTo("false");
         assertThat(e.getProperty("ws.secrets.required[WS_DATA_ENCRYPTION_KEY]")).isEqualTo("k");
         assertThat(e.getProperty("ws.security.jwt.public-key-path")).isEqualTo("/k/pub.pem");
         StandardEnvironment vazio = env(null, "WS_DB_PASSWORD", "p");
-        assertThat(vazio.getProperty("ws.secrets.required[WS_JWT_PRIVATE_KEY_PATH]")).isEmpty();
+        assertThat(vazio.getProperty("ws.secrets.required[WS_JWT_PRIVATE_KEY_PATH|WS_JWT_PRIVATE_KEY_PEM]")).isEmpty();
         assertThat(vazio.getProperty("ws.security.jwt.public-key-path")).isEmpty();
     }
 

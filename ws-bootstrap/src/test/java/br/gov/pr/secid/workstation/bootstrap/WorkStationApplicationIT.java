@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Contexto completo (todos os módulos ws-*) subindo contra um MySQL 8.4 real do Testcontainers, com o Flyway
- * aplicando V1__baseline.sql e V2__baseline_dominio_base.sql. Sem Docker na máquina o teste é pulado
+ * aplicando V1__baseline.sql, V2__baseline_dominio_base.sql e V3__rf1_rf2_autenticacao.sql. Sem Docker na máquina o teste é pulado
  * (disabledWithoutDocker) — no CI o Docker existe.
  * Confere o contrato de segurança do Bloco 1: /actuator/health público, resto do Actuator fechado, 401 em JSON.
  */
@@ -58,13 +58,13 @@ class WorkStationApplicationIT {
         List<String> versions = jdbc.queryForList(
                 "SELECT version FROM flyway_schema_history WHERE success = 1 AND version IS NOT NULL ORDER BY installed_rank",
                 String.class);
-        assertThat(versions).containsExactly("1", "2");
+        assertThat(versions).containsExactly("1", "2", "3");
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM flyway_schema_history WHERE success = 0", Integer.class)).isZero();
         // tabelas do Bloco 2 existem e o contexto JPA (ddl-auto: none) não mexeu nelas
         List<String> tables = jdbc.queryForList(
                 "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME", String.class);
         assertThat(tables).contains("users", "user_preferences", "refresh_tokens", "audit_log", "ai_inference_log",
-                "feature_flags", "domain_events", "media_objects");
+                "feature_flags", "domain_events", "media_objects", "verification_codes");
     }
 
     @Test
