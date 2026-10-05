@@ -160,7 +160,7 @@ class ForeignKeyPolicyTest {
     }
 
     @Test
-    void v1EV2EstaoNoHistoricoDoFlywayEBaselineEBloco2() throws Exception {
+    void historicoDoFlywayTemTodasAsMigrationsEBaselineEBloco2() throws Exception {
         try (Connection c = open(); Statement st = c.createStatement()) {
             List<String> versions = new ArrayList<>();
             try (ResultSet rs = st.executeQuery(
@@ -169,7 +169,15 @@ class ForeignKeyPolicyTest {
                     versions.add(rs.getString(1) + "=" + rs.getString(2));
                 }
             }
-            assertThat(versions).containsExactly("1=V1__baseline.sql", "2=V2__baseline_dominio_base.sql", "3=V3__rf1_rf2_autenticacao.sql");
+            assertThat(versions).startsWith("1=V1__baseline.sql", "2=V2__baseline_dominio_base.sql");
+            // toda migration SQL do classpath foi aplicada com sucesso (V10–V21 do catálogo de domínio incluídas, D-40)
+            List<String> expected = new ArrayList<>();
+            for (org.springframework.core.io.Resource r : new org.springframework.core.io.support.PathMatchingResourcePatternResolver()
+                    .getResources("classpath*:db/migration/V*__*.sql")) {
+                String file = r.getFilename();
+                expected.add(file.substring(1, file.indexOf("__")).replace('_', '.') + "=" + file);
+            }
+            assertThat(versions).containsExactlyInAnyOrderElementsOf(expected);
             try (ResultSet rs = st.executeQuery("SELECT meta_value FROM app_meta WHERE meta_key = 'schema.baseline'")) {
                 assertThat(rs.next()).isTrue();
                 assertThat(rs.getString(1)).isEqualTo("bloco-2");

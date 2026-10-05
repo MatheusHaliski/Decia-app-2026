@@ -4,6 +4,7 @@
 
 > Fonte de verdade dos requisitos: board Trello **Work Station** (ex-"Decisão com Inteligência Artificial - DECIA - SECIDPR"), listas *Work Station + DECIA*, *Requisitos Funcionais* (RF1–RF45) e *Product Backlog* (HU1–HU45).
 > Esqueleto reaproveitado do **Fashion AI (FAI)** (`matheushaliski/tcc-2026-fashion-ai-backend`, módulo `fai-domain`). Cada entidade indica a equivalente no FAI e o RF que a origina.
+> **Implementação (D-40):** cada entidade abaixo é um record de `ws-domain` anotado com `@DomainEntity`/`@Attr`; nomes de coluna, tipos SQL, nulidade, CHECKs, FKs e store ficam em [`catalogo-entidades.json`](catalogo-entidades.json) (gerado, 123 entidades / 1522 atributos) e nas migrations `V10`–`V21` geradas dele — ver §17. Quando este texto e o catálogo divergirem, vale o catálogo.
 > Convenções: identificadores `UUID` (BINARY(16) no MySQL), auditoria herdada de `AuditableEntity` (`createdAt`, `updatedAt`, `createdBy`, `updatedBy`) e, quando houver concorrência, `VersionedAuditableEntity` (`@Version version`). Campos `*Json` são colunas `JSON` do MySQL 8. Campos sensíveis (LGPD) usam o conversor `AesGcmStringConverter`.
 
 ## 0. Mapa de contextos (bounded contexts)
@@ -751,3 +752,25 @@ erDiagram
 | HandoffDossier, HandoffItem | RF36 | RF25, RF28 |
 | AuditLog, DomainEventOutbox, PipelineJob, FeatureFlag, MediaObject, UserSkin | transversal | RF18, RF38, RF42 |
 | DataExportRequest, PersonalDataRegistry (proposta) | RF3 (exportação, transparência, anonimização) | todo RF com dado pessoal (teste-guarda de cobertura) |
+
+## 17. Alinhamento com o que foi implementado (D-40 — 2026-10-05)
+
+Mapa seção → migration → pacote de `ws-domain` → pacote JPA (`persistence-mysql/…/infrastructure/mysql/<ctx>`):
+
+| Seção | Migration | Pacote domínio | Observações de alinhamento |
+|---|---|---|---|
+| §1.4–1.9, §1.15, extensões | `V10__rf28_institucional_lgpd` | `institutional` | `ApprovalStatus` ganha **ESGOTADO** (README RF28, Q-127); `Company` ganha `messagingPolicyJson` (RF46) e `status` `CompanyStatus` (Q-121); `PendingUpload.key` → coluna `object_key` |
+| §1.10–1.14, §12.6 | `V10` | `lgpd` | `user_consents`/`consent_events`/`policy_acceptances`/`data_subject_requests` com FK `users` **RESTRICT** (Q-128) |
+| §2 | `V11__rf41_acervo_tarefas` | `acervo` | `processTags`/`natureTags`/`tags` → colunas `*_json`; `cnpj`, `latitude`, `longitude` → `*_enc`; `estimatedHours` separado de `effortSize`; `OcrStatus` (Q-123); `ProcessTag` fechado (Q-122) |
+| §3 (+ RF21 `TeamDesk`, `DeskNote`) | `V12__rf21_criador_projetos` | `projetos` | `ComplianceChecklist.version` → `checklist_version`; `ProjectComment` (§3.5) é `comments` com `PROJECT_TASK` |
+| §4 | `V13__rf24_planejamento` | `planejamento` | `plan_axis_projects.plan_id` desnormalizado para a unicidade (plano, projeto) |
+| §5.1–5.14, 5.16–5.18 | `V14__rf4_decia_sessao` | `decia` | `SessionMessage` = Cassandra + `SessionMessageIndex` (`session_messages_idx`); `SessionArtifact` ⊇ `GeneratedArtifact` do RF13 (Q-125); `AiQuestion.basisMessageIds` → `basis_message_ids_json`; `SessionStatus` (Q-124) |
+| §5.15, §11 | `V15__rf29_rastro_decisao` | `rastro` | nós/arestas RESTRICT (imutáveis); `HandoffStatus` com máquina de estados |
+| §8 (+ RF15 `Announcement`) | `V16__rf27_social` | `social` | `Notification.read` → `is_read`; `deliveredChannels` → `delivered_channels_json`; `MuralKind.COMUNICADO`; `TimelineEvent` só Cassandra |
+| §6.7, §7.2–7.3, §7.6–7.7, §9 | `V17__rf42_gamificacao` | `gamificacao` | `HypeBand.min/max` → `min_score`/`max_score` (+ `code`); `EfficiencyScoreSnapshot.date` → `score_date`; `WeekPlanDay.date` → `plan_date` |
+| §6.1–6.6 | `V18__rf39_chancelas` | `chancelas` | `SealBond.targetType` = `SealTargetType`; unicidades `(target_id, issuer_user_id)` e `seal_code` |
+| §7.1, §7.4–7.5, §12.7 | `V19__rf40_balcao_loja` | `balcao` | `UserSkin` aqui (compra/benefício), não em Plataforma |
+| §12b | `V20__rf46_mensageria_atribuicao` | `mensageria` | `DirectConversation.messagingPolicy` → `messaging_ttl_days`; `DirectMessage` só Cassandra |
+| §10, §12.2–12.5, §12.9 | `V21__rf43_ia_plataforma` (+ V2) | `ia`, `plataforma` | `AiInferenceLog`, `DomainEventOutbox`, `FeatureFlag`, `MediaObject` descrevem as tabelas do V2 (sem SQL novo, Q-131); `metric_snapshots.metric_code` → FK `metric_definitions(code)`; `UsageIndicator` (§12.8) adiado (Q-130); `PersonalDataSource`, `Citation`, `TaskSnapshot` são valores só em código (`store: code`) |
+| §1.1–1.3, §12.1 | `V2`/`V3` (Bloco 3) | `identity` (Bloco 3) | fora deste catálogo por decisão de escopo; `users.company_id`/`department_id` ganham FK no V10 |
+

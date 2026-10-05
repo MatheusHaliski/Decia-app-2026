@@ -1,0 +1,23 @@
+package br.gov.pr.secid.workstation.domain.gamificacao;
+
+/** Evento que gera/debita DECIA Points (RF42.CA02; D-07). */
+public enum PointsEvent {
+    ARGUMENTO_EVIDENCIA,
+    CONSENSO,
+    DIVERGENCIA_RESOLVIDA,
+    PERGUNTA_RESPONDIDA,
+    ARTEFATO_USADO,
+    DECISAO_VALIDADA,
+    PRESENCA_ENCERRADA,
+    REACAO_QUALIDADE,
+    ATA_RATIFICADA,
+    ENCAMINHAMENTO_CUMPRIDO,
+    META_ATINGIDA,
+    BENEFICIO_BONUS,
+    COMPRA_LOJA,
+    VENDA_BALCAO,
+    DOACAO_ENVIADA,
+    DOACAO_RECEBIDA,
+    ESTORNO,
+    EXPIRACAO
+}
