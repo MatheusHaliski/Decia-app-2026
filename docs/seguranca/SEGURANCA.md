@@ -2,7 +2,7 @@
 
 > Referência: [`ARQUITETURA.md` §3.3](../arquitetura/ARQUITETURA.md) (controles) e §3.4 (gate de CI). Este documento
 > registra, para cada controle, **onde está no código, qual teste o protege e como verificar à mão**. O Bloco 1 preenche
-> a base; cada bloco/RF seguinte acrescenta as suas linhas (RBAC/Guard, Argon2id, refresh em Redis, AES-GCM, upload,
+> a base, o Bloco 2 o banco; cada bloco/RF seguinte acrescenta as suas linhas (RBAC/Guard, Argon2id, refresh em Redis, AES-GCM, upload,
 > rate limit, audit_log, classificação de acesso para IA…). Nenhum valor de segredo aparece aqui — só nomes de variáveis.
 
 ## 1. Controles entregues no Bloco 1
@@ -32,15 +32,48 @@
 | Dependências vulneráveis | `npm audit --omit=dev --audit-level=high` (CI), `overrides.postcss`; OWASP Dependency-Check (`mvn -Psecurity verify`, `config/dependency-check-suppressions.xml`); Dependabot (maven/npm/actions/docker) | job `frontend` do CI | `npm audit`; `mvn -Psecurity verify` (precisa de rede; `NVD_API_KEY` acelera) |
 | Cobertura e análise estática obrigatórias | JaCoCo ≥ 70 % linhas (`ws-application`, `ws-web`), Checkstyle, SpotBugs — no `mvn verify` | próprio build | `mvn -B -ntp verify` |
 
-## 2. Pendências por bloco (linhas a acrescentar nesta tabela)
+## 2. Controles entregues no Bloco 2 — banco: integridade e origem dos dados
+
+Baseline real em `ws-infrastructure/persistence-mysql/src/main/resources/db/migration/V2__baseline_dominio_base.sql` (D-23, Q-76).
+Fonte de verdade do schema é a migration; `TAXONOMIA.md` foi alinhada a ela.
+
+| Controle | Onde está | Teste | Como verificar à mão |
+|---|---|---|---|
+| Política de `ON DELETE` por domínio codificada e comparada com o banco | `ForeignKeyPolicy.POLICY` (`persistence-mysql/.../mysql/schema/`), FKs nomeadas `fk_<tabela>__<coluna>` com `ON DELETE`/`ON UPDATE` explícitos no V2 | `ForeignKeyPolicyTest` (Testcontainers MySQL 8.4, Flyway do zero: FK extra, faltante ou divergente falha), `ForeignKeyPolicyUnitTest` (mesma comparação contra o texto das migrations, sem Docker) | `SELECT k.TABLE_NAME, k.COLUMN_NAME, r.DELETE_RULE FROM information_schema.KEY_COLUMN_USAGE k JOIN information_schema.REFERENTIAL_CONSTRAINTS r USING (CONSTRAINT_SCHEMA, CONSTRAINT_NAME) WHERE k.TABLE_SCHEMA = DATABASE()` e conferir com a tabela abaixo |
+| Trilhas append-only nunca cascateiam | `audit_log.actor_id`, `ai_inference_log.user_id`/`reviewed_by` → `users` `RESTRICT` | `ForeignKeyPolicyUnitTest.trilhasAppendOnlyNuncaCascateiam`, `ForeignKeyPolicyTest.trilhaAppendOnlySeguraOUsuarioEDadoDoDonoVaiJunto` | `DELETE FROM users WHERE …` com linha em `audit_log` → erro `fk_audit_log__actor_id` |
+| Conta sintética marcada no banco, não na aplicação | `users.account_origin` (`VARCHAR` + `CHECK ck_users_account_origin`: REAL · TEST_SEED · DEMO · SYSTEM), `fixture_key` único, `test_account` **gerada** (`account_origin IN ('TEST_SEED','DEMO')` STORED, indexada); enum `AccountOrigin` em `ws-domain` | `ForeignKeyPolicyTest.testAccountEColunaGeradaDaOrigemDaConta`, `.checkDeAccountOriginBarraValorInvalidoEGeradaSegueAOrigem`, `AccountOriginTest` | `INSERT … account_origin = 'X'` → `Check constraint 'ck_users_account_origin' is violated`; `SELECT EXTRA FROM information_schema.COLUMNS WHERE TABLE_NAME='users' AND COLUMN_NAME='test_account'` → `STORED GENERATED` |
+| Nunca `SET FOREIGN_KEY_CHECKS=0`; toda FK com nome e regras explícitas | V2 (cabeçalho) | `ForeignKeyPolicyUnitTest.migrationsNuncaDesligamAChecagemDeFk`, `.politicaEspelhaAsFksDeclaradasNasMigrationsSql` | `grep -rn FOREIGN_KEY_CHECKS ws-infrastructure/persistence-mysql/src/main/resources/db/migration/` só no comentário |
+| Migrations imutáveis e versionadas sem colisão | `V1__baseline.sql`, `V2__baseline_dominio_base.sql`; `spring.flyway.validate-on-migrate: true` | `MigrationVersionsTest` (V1/V2 pelo nome, versões únicas, nenhuma migration Java ainda), `WorkStationApplicationIT.historicoDoFlywayTemV1EV2ComSucesso`, `ForeignKeyPolicyTest.v1EV2EstaoNoHistoricoDoFlywayEBaselineEBloco2` | `SELECT version, script, success FROM flyway_schema_history`; `SELECT meta_value FROM app_meta WHERE meta_key='schema.baseline'` → `bloco-2` |
+| Schema só por Flyway (Hibernate não cria nem altera tabela) | `spring.jpa.hibernate.ddl-auto: none` em `application.yml`; nenhuma entidade de domínio neste bloco (auth é o Bloco 3) | `ApplicationYmlSecurityTest`, `WorkStationApplicationIT` (lista de tabelas = a do V2) | subir a API e conferir que `SHOW TABLES` só tem as tabelas das migrations |
+| Stores opcionais e IA externa nascem desligados | `feature_flags`: `redis.enabled`, `cassandra.enabled`, `opensearch.enabled`, `storage.s3`, `ai.provider.claude`, `ai.provider.gemini` = FALSE; `ai.local.only` = TRUE | `ForeignKeyPolicyTest.v1EV2EstaoNoHistoricoDoFlywayEBaselineEBloco2` (só `ai.local.only` ligada) | `SELECT flag_key, enabled FROM feature_flags` |
+| Dados pessoais cifrados no banco, hash para busca | `users.email_enc`, `users.phone_enc` (AES-GCM, `WS_DATA_ENCRYPTION_KEY`), `users.email_hash` único; `refresh_tokens.token_hash` (só o hash do token) | — (o `AesGcmStringConverter` e o `UserEntity` entram no Bloco 3 junto com a auth) | `SELECT email_enc FROM users` nunca mostra e-mail em claro |
+
+### 2.1 Política de FK (`ForeignKeyPolicy.POLICY` = FKs do V2)
+
+| tabela.coluna | → referência | ON DELETE | Motivo |
+|---|---|---|---|
+| `user_preferences.user_id` | `users.id` | **CASCADE** | preferências são dado do dono; somem com a conta sintética apagada |
+| `refresh_tokens.user_id` | `users.id` | **CASCADE** | sessões são do dono; apagar conta = revogar tudo |
+| `refresh_tokens.rotated_from_id` | `refresh_tokens.id` | **SET NULL** | o token rotacionado continua válido como histórico sem o anterior (único caso de SET NULL) |
+| `media_objects.owner_id` | `users.id` | **CASCADE** | mídia enviada pertence ao dono |
+| `audit_log.actor_id` | `users.id` | **RESTRICT** | trilha append-only: apagar usuário com trilha é erro, não limpeza; `NULL` = sistema/anônimo |
+| `ai_inference_log.user_id` | `users.id` | **RESTRICT** | trilha append-only de custo/mascaramento/fallback; nunca cascateia |
+| `ai_inference_log.reviewed_by` | `users.id` | **RESTRICT** | revisão humana faz parte da trilha |
+
+Sem FK ainda (entram com a tabela-pai e a linha na POLICY no mesmo commit): `users.company_id`/`department_id` e
+`ai_inference_log.department_id` → RF28 (`RESTRICT`, catálogo institucional). `domain_events` não tem FK por desenho
+(outbox sobrevive ao agregado). Conta `REAL` nunca recebe `DELETE`: é anonimizada (D-18); o `DELETE` físico só existe
+para `TEST_SEED`/`DEMO` no reset de ambiente e, por causa do `RESTRICT`, esse reset apaga a trilha antes (Q-80).
+
+## 3. Pendências por bloco (linhas a acrescentar nesta tabela)
 
 | Bloco | Controle | Observação |
 |---|---|---|
-| 2 | Baseline real (`users`, `refresh_tokens`, `audit_log`, `ai_inference_log`, `feature_flags`, `domain_events`, `media_objects`), `AesGcmStringConverter` com `WS_DATA_ENCRYPTION_KEY`, `audit_log` com `correlationId` | `AccountOrigin` já existe em `ws-domain` para marcar contas de seed/demo (não pontuam) |
+| 2 → 3 | ~~Baseline real~~ (entregue na seção 2). Ficam para o Bloco 3, junto com `UserEntity` e a auth: `AesGcmStringConverter` com `WS_DATA_ENCRYPTION_KEY` (grava `email_enc`/`phone_enc`), escrita do `audit_log` com `correlationId` do `CorrelationIdFilter`, espelho Redis ↔ `refresh_tokens` | colunas já existem no V2; a FK de `companies`/`departments` entra no RF28 |
 | 3 | RF1–RF3: Argon2id, JWT 10 min + refresh em Redis com rotação por família e revogação, OIDC institucional (Q-02), RBAC `Guard.requireRole/Owner/Participant/Issuer`, testes 403 em todo endpoint, rate limit por IP/usuário | trocar o decodificador "recusa tudo" sem chave por emissão real; `WS_JWT_PRIVATE_KEY_PATH` passa a ser usado |
 | (d)+ | Upload: tipo real (magic bytes), limite por formato, antivírus/quarentena, zip-bomb guard; classificação `PUBLICO/INTERNO/RESTRITO/SIGILOSO` e mascaramento antes de IA externa (RF43.CA02); Trivy nas imagens; Playwright smoke | — |
 
-## 3. Runbook de segredos (só nomes)
+## 4. Runbook de segredos (só nomes)
 
 | Segredo | Variável | Gerar | Onde fica | Rotação |
 |---|---|---|---|---|

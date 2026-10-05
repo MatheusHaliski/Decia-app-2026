@@ -36,10 +36,10 @@ Mapa de equivalência FAI → Work Station (card "Mapa de equivalência"): Taref
 | username | String(80) | único, imutável após verificação |
 | fullName | String(160) | obrigatório |
 | displayName | String(80) | |
-| email | String (AES-GCM) | sensível |
+| email → coluna `email_enc` | String (AES-GCM, `WS_DATA_ENCRYPTION_KEY`) | sensível; só o cifrado vai ao banco |
 | emailHash | String(128) | único, busca |
 | emailVerified | boolean | |
-| phone | String (AES-GCM) | opcional |
+| phone → coluna `phone_enc` | String (AES-GCM) | opcional |
 | passwordHash | String | Argon2id; nulo para login só OIDC |
 | oidcSubject / oidcIssuer | String | login institucional (RF2) |
 | profileType | `ProfileType` | EMPREGADO · EMPRESA · CHEFE_DEPARTAMENTO |
@@ -53,13 +53,18 @@ Mapa de equivalência FAI → Work Station (card "Mapa de equivalência"): Taref
 | twoFactorEnabled | boolean | |
 | hypeVisibility | `HypeVisibility` | PUBLICO · EMPRESA · SO_EU (padrão) (RF45.CA06) |
 | rankingOptOut | boolean | RF43.CA05 |
-| testAccount | boolean | não pontua (RF42) |
+| accountOrigin | `AccountOrigin` | REAL (padrão) · TEST_SEED · DEMO · SYSTEM — `VARCHAR` + CHECK, indexada (D-23) |
+| fixtureKey | String(80) | único, nulo em conta real; chave imutável da fixture de seed/demo |
+| testAccount | boolean **gerada** | coluna `GENERATED ALWAYS AS (account_origin IN ('TEST_SEED','DEMO')) STORED`, indexada; a aplicação nunca grava (D-23). Não pontua (RF42) |
 | lastLoginAt | Instant | |
 | termsVersion / privacyVersion | String(20) | **(proposta, RF1 bloco A)** cópia da última versão aceita de cada documento, para o gate ser rápido; a prova é `PolicyAcceptance` |
 | birthDate | LocalDate (AES-GCM) | **(proposta, condicional à Q-63)** só coletada se menores (aprendizes/estagiários) puderem usar; então obrigatória no servidor (art. 14) |
 | deletionRequestedAt / deletionScheduledAt | Instant | **(proposta, RF3 bloco C)** pedido de exclusão e data em que o job anonimiza (+30 d, cancelável) |
 | deletionReason | String(500) | **(proposta)** motivo opcional informado pelo titular (nunca exibido a terceiros) |
 | anonymizedAt | Instant | **(proposta)** preenchido pelo job `AccountAnonymizationJob`; `status` vai a `ANONYMIZED` |
+| createdAt / updatedAt / version | Instant · long | `AuditableEntity` + lock otimista (`version`) |
+
+Colunas no banco (`V2__baseline_dominio_base.sql`, fonte de verdade): `company_id` e `department_id` ficam **sem FK** até o RF28 criar `companies`/`departments` (D-23); unicidades `ux_users_username`, `ux_users_email_hash`, `ux_users_fixture_key`, `ux_users_oidc (oidc_issuer, oidc_subject)`.
 
 **Extensões de perfil (proposta, Q-64)** — 1:1 com `User`, preenchidas no cadastro e conferidas na validação (RF28); os valores confirmados viram `Company`/`Department` na aprovação (Q-65, Q-66):
 
@@ -73,7 +78,7 @@ Mapa de equivalência FAI → Work Station (card "Mapa de equivalência"): Taref
 theme `ThemeMode` (AUTO·CLARO·ESCURO·ALTO_CONTRASTE·BLUEPRINT) · language `UiLanguage` (PT_BR·EN·ES) · density · fontScale · reduceMotion · deskSkin `DeskSkin` (PAPEL·CORTICA·BLUEPRINT·PAPEL_TIMBRADO) · defaultCardSkin · notificationPrefsJson (inclui `dailyTaskAt` 08:00, RF44.CA10) · timezone · wipLimit (padrão 3, RF44.CA05) · dashboardLayoutJson · aiModeDefault (ECONOMIA·AVANCADO).
 
 ### 1.3 `RefreshToken` (= FAI) — Redis (hash por `familyId`) com espelho em `refresh_tokens`
-tokenHash · familyId · userId · expiresAt · revokedAt · rotatedFromId · createdIp · userAgent · deviceName · lastUsedAt · persistent.
+tokenHash (único) · familyId (índice) · userId (FK `users` **CASCADE**) · expiresAt · revokedAt · rotatedFromId (FK self **SET NULL**) · createdIp · userAgent · deviceName · lastUsedAt · persistent · createdAt. Só o **hash** do token é persistido.
 
 ### 1.4 `Company` (= FAI `BrandProfile`) — `companies` (RF28)
 id · ownerUserId (perfil EMPRESA) · legalName · slug (único) · cnpj (AES) · logoUrl · coatOfArmsUrl · about · websiteUrl · accentColor · pointsPolicyJson (tetos, expiração RF42.CA09, limite de doação) · hypePolicyJson (pesos, meia-vida, nomes das faixas RF45.CA07) · rankingWeightsId · recordingRetentionPolicy (RF37.CA05) · status.
@@ -449,7 +454,7 @@ id · userId · scoreDate · score (0–1000) · bandCode · blocksJson {produca
 ## 10. IA do sistema (RF7, RF11, RF30, RF33, RF34, RF43)
 
 ### 10.1 `AiInferenceLog` (= FAI) — `ai_inference_log`
-id · userId · departmentId · capability `AiCapability` (ABRIR_SESSAO · CLASSIFICAR_MENSAGEM · DETECTAR_DIVERGENCIA · FORMULAR_PERGUNTA · RESUMO_ANALITICO · DECISAO_FINAL · ARTEFATO · PREENCHER_TAREFA · COMPOR_PROJETO · AUTOPILOT_PROJETO · AUTOPILOT_TAREFAS · SIMULAR_CENARIO · CONFORMIDADE · MEMORIA_BUSCA · EXTRAIR_DESENHO · EXTRAIR_DOCUMENTO · TRANSCREVER · ATA_VIVA · SUGERIR_CHANCELA · AVALIAR_POLITICA · TAREFA_DO_DIA · HSE · HYPE_PERFIL · INSIGHT · DOSSIE · THUMBNAIL · CAPA_IA) · hostRf · provider (CLAUDE · GEMINI · LOCAL) · model · mode (ECONOMIA · AVANCADO) · latencyMs · inputTokens · outputTokens · estimatedCostUsd · result (OK · FALLBACK · ERRO · BLOQUEADO_SIGILO) · fallbackUsed · maskedFields · inputSummaryJson · outputSummary · confidence · reviewedBy · reviewedAt · quotaSource (MENSAL · CREDITO · PONTOS) · correlationId · createdAt.
+id · userId · departmentId · capability `AiCapability` (ABRIR_SESSAO · CLASSIFICAR_MENSAGEM · DETECTAR_DIVERGENCIA · FORMULAR_PERGUNTA · RESUMO_ANALITICO · DECISAO_FINAL · ARTEFATO · PREENCHER_TAREFA · COMPOR_PROJETO · AUTOPILOT_PROJETO · AUTOPILOT_TAREFAS · SIMULAR_CENARIO · CONFORMIDADE · MEMORIA_BUSCA · EXTRAIR_DESENHO · EXTRAIR_DOCUMENTO · TRANSCREVER · ATA_VIVA · SUGERIR_CHANCELA · AVALIAR_POLITICA · TAREFA_DO_DIA · HSE · HYPE_PERFIL · INSIGHT · DOSSIE · THUMBNAIL · CAPA_IA) · hostRf · provider (CLAUDE · GEMINI · LOCAL) · model · mode (ECONOMIA · AVANCADO) · latencyMs · inputTokens · outputTokens · estimatedCostUsd · result (OK · FALLBACK · ERRO · BLOQUEADO_SIGILO) · fallbackUsed · maskedFieldsJson · inputSummaryJson · outputSummary · confidence · reviewedBy · reviewedAt · quotaSource (MENSAL · CREDITO · PONTOS) · correlationId · createdAt. **Append-only**: `userId` e `reviewedBy` são FK `users` **RESTRICT** (nunca cascateiam); `capability` sem CHECK no banco porque cresce por RF (D-23); `departmentId` sem FK até o RF28.
 
 ### 10.2 `AiQuota` — Redis (`quota:{scope}:{id}:{month}`) + `ai_quotas` — scope (USER · DEPARTMENT) · scopeId · monthKey · monthlyLimit · consumed · purchasedCredits · resetAt.
 ### 10.3 `AiProviderCircuitState` — Redis — provider · state (CLOSED · OPEN · HALF_OPEN) · failures · openedAt.
@@ -476,11 +481,11 @@ id · subjectType (EMPREGADO · GESTAO) · subjectUserId · groupingId · reques
 
 ## 12. Plataforma (transversal, RF18, RF38)
 
-### 12.1 `AuditLog` (= FAI) — `audit_log` — id · actorId · action · resourceType · resourceId · result · ip · userAgent · correlationId · metadataJson (sanitizado) · at.
-### 12.2 `DomainEventOutbox` — `domain_events` — id · aggregateType · aggregateId · eventType · payloadJson · occurredAt · publishedAt · attempts. Observer AFTER_COMMIT.
+### 12.1 `AuditLog` (= FAI) — `audit_log` — id · actorId (FK `users` **RESTRICT**, nulo = sistema/anônimo) · action · resourceType · resourceId · result (OK · FALHA · NEGADO, Q-79) · ip · userAgent · correlationId · metadataJson (sanitizado) · at. **Append-only** (só INSERT); índices (actorId, at), (resourceType, resourceId), (action, at), correlationId.
+### 12.2 `DomainEventOutbox` — `domain_events` — id · aggregateType · aggregateId (textual: UUID ou chave natural) · eventType · payloadJson · occurredAt · publishedAt (índice) · attempts. Observer AFTER_COMMIT. Sem FK por desenho: o evento sobrevive ao agregado.
 ### 12.3 `PipelineJob` (= FAI) — `pipeline_jobs` — id · type (THUMBNAIL · OCR · ANTIVIRUS · SYNC_EXTERNO · INDEXAR_MEMORIA · EXPORT_PDF · TRANSCRICAO · RECALC_HYPE · RECALC_RANKING · RECALC_METRICS · PERGUNTA_ADIADA · **DATA_EXPORT** (proposta, RF3)) · targetType · targetId · status (PENDENTE · RODANDO · OK · FALHA · REPROCESSAR) · attempts · lastError · scheduledAt · finishedAt.
-### 12.4 `FeatureFlag` — `feature_flags` — key · enabled · scope · rolloutJson. Flags obrigatórias: `redis.enabled`, `cassandra.enabled`, `opensearch.enabled`, `storage.s3`, `ai.provider.claude`, `ai.provider.gemini`, `ai.local.only`.
-### 12.5 `MediaObject` — S3/MinIO + `media_objects` — id · bucket · key · mimeType · sizeBytes · sha256 · ownerId · accessClass · variantsJson (thumb, preview) · createdAt.
+### 12.4 `FeatureFlag` — `feature_flags` — flagKey (PK) · enabled · scope (GLOBAL · EMPRESA · DEPARTAMENTO · USUARIO) · rolloutJson · updatedAt. Todas nascem **desligadas** no V2, exceto `ai.local.only = TRUE`. Flags obrigatórias: `redis.enabled`, `cassandra.enabled`, `opensearch.enabled`, `storage.s3`, `ai.provider.claude`, `ai.provider.gemini`, `ai.local.only`.
+### 12.5 `MediaObject` — S3/MinIO + `media_objects` — id · bucket · objectKey (único) · mimeType · sizeBytes · sha256 · ownerId (FK `users` **CASCADE**) · accessClass (PUBLIC · PRIVATE · RESTRICTED — classe de armazenamento, distinta de `AccessClassification` do conteúdo, Q-79) · variantsJson (thumb, preview) · createdAt.
 ### 12.6 `DataExportRequest` (= FAI, LGPD art. 18 II e V) — `data_export_requests` (**proposta**, D-20)
 id · userId · status `ExportStatus` (**REQUESTED → PROCESSING → READY → EXPIRED | FAILED**) · jobId → `PipelineJob DATA_EXPORT` (assíncrona) · fileKey (`restricted/users/{userId}/exports/{id}.json` ou `.zip`) · format `ExportFormat` (JSON · ZIP) · language `UiLanguage` (idioma da pessoa) · sizeBytes · requestedAt · completedAt · expiresAt (**+7 d**) · downloadedAt · failureReason. Limite **3 por dia por pessoa** (contador atômico `RateLimitPort`, `429 LIMITE_EXPORTACOES`); download só do dono (`OwnMedia`, `403`), vencida `410 EXPORTACAO_EXPIRADA`; nome e tipo corretos (`.json` + `application/json`, ou ZIP de verdade); conteúdo vem do `PersonalDataRegistry` (§12.9). Notificação quando READY.
 ### 12.7 `UserSkin` — skins/capas compradas (RF38, RF42) — `user_skins` — id · userId · skinKind (MESA · CARD · TEMA) · skinKey · acquiredVia (PADRAO · COMPRA · BENEFICIO) · purchaseId.
