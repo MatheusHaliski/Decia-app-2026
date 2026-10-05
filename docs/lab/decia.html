@@ -19,12 +19,18 @@ code { font-family: var(--font-data); font-size: 11px; background: var(--surface
 .bar .seg [aria-pressed="true"], .bar .seg [aria-current="page"] { background: var(--ink); color: var(--surface); }
 .lab-note { font-size: var(--text-caption); color: var(--muted); margin: var(--space-2) 0; }
 [data-view] { display: none; } [data-view][data-active="true"] { display: block; }
+svg.ws-icon { display: inline-block; }
+.lab-col .ws-tag, .lab-panel .ws-tag, .lab-comment .ws-tag { white-space: normal; height: auto; min-height: var(--card-tag-h); line-height: 1.2; padding-block: 2px; }
+.lab-panel__h { flex-wrap: wrap; }
 
 /* ---- moldura do app (topbar + corpo) ---- */
 .lab-app { border: 1px solid var(--line-soft); border-radius: var(--radius-lg); overflow: hidden; background: var(--ground); box-shadow: var(--shadow-1); }
 .lab-app .ws-topbar { position: static; }
 .lab-app__body { display: grid; grid-template-columns: minmax(0, 1fr) 320px; min-height: 640px; }
-.lab-app__body--3 { grid-template-columns: 300px minmax(0, 1fr) 320px; }
+.lab-app__body--3 { grid-template-columns: 280px minmax(0, 1fr) 400px; }
+.lab-app__body--3 .lab-col--side { font-size: var(--text-body-sm); }
+.lab-app__body--3 .lab-matrix th, .lab-app__body--3 .lab-matrix td { padding: 6px 4px; }
+.lab-table-wrap { overflow-x: auto; max-width: 100%; }
 .lab-col { min-width: 0; display: grid; align-content: start; gap: var(--space-3); padding: var(--space-3); }
 .lab-col--side { background: var(--surface); border-left: 1px solid var(--line-soft); }
 .lab-col--left { background: var(--surface); border-right: 1px solid var(--line-soft); }
@@ -85,6 +91,7 @@ code { font-family: var(--font-data); font-size: 11px; background: var(--surface
 .lab-person .ws-avatar::after { content: ""; position: absolute; right: -2px; bottom: -2px; width: 8px; height: 8px; border-radius: 50%; background: var(--class-ruido); box-shadow: 0 0 0 1.5px var(--surface); }
 .lab-person[data-online="true"] .ws-avatar::after { background: var(--class-consenso); }
 .lab-person small { display: block; color: var(--muted); font-size: 10px; }
+.lab-person .ws-tag { justify-self: end; max-width: 120px; text-align: right; }
 .lab-person[data-silent="true"] { background: var(--class-pergunta-soft); border-radius: var(--radius-sm); padding-inline: var(--space-1); }
 .lab-presence { display: flex; align-items: center; }
 .lab-presence .ws-avatar { margin-left: -4px; }
@@ -111,7 +118,7 @@ code { font-family: var(--font-data); font-size: 11px; background: var(--surface
 .lab-ibis__arg[data-class="consenso"] { --c: var(--class-consenso); --c-ink: var(--class-consenso-ink); --c-soft: var(--class-consenso-soft); }
 .lab-ibis__arg[data-class="pergunta"] { --c: var(--class-pergunta); --c-ink: var(--class-pergunta-ink); --c-soft: var(--class-pergunta-soft); }
 .lab-ibis__arg b { font-family: var(--font-data); font-size: 9px; letter-spacing: .06em; text-transform: uppercase; color: var(--c-ink); }
-.lab-ibis__arg small { color: var(--muted); font-size: 10px; }
+.lab-ibis__arg small { color: var(--muted); font-size: 10px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
 .lab-ibis__ev { display: flex; gap: var(--space-1); flex-wrap: wrap; }
 .lab-ibis__ev .ws-tag { --t: var(--type-link); --t-ink: var(--type-link-ink); --t-soft: var(--type-link-soft); text-transform: none; letter-spacing: 0; font-family: var(--font-ui); font-size: 10.5px; }
 .lab-ibis__legend { display: flex; gap: var(--space-2); flex-wrap: wrap; }
@@ -174,7 +181,7 @@ code { font-family: var(--font-data); font-size: 11px; background: var(--surface
 
 /* ---- Coedição: Minuta Coletiva ---- */
 .lab-doc-shell { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 0; }
-.lab-doc { padding: var(--space-6) var(--space-7); background: var(--surface); display: grid; gap: var(--space-3); position: relative; max-width: 760px; }
+.lab-doc { padding: var(--space-6) clamp(var(--space-4), 6%, var(--space-10)); background: var(--surface); display: grid; gap: var(--space-3); position: relative; }
 .lab-doc h1 { font-size: var(--text-h1); margin: 0; }
 .lab-doc p { margin: 0; font-size: var(--text-body-lg); line-height: 1.6; font-family: var(--font-editorial); position: relative; }
 .lab-doc .lab-sec { display: grid; gap: var(--space-2); padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4); border-left: 3px solid var(--line-soft); border-radius: var(--radius-xs); position: relative; }
@@ -206,7 +213,7 @@ code { font-family: var(--font-data); font-size: 11px; background: var(--surface
 .lab-comment[data-active="true"] { border-color: var(--due-soon); box-shadow: var(--shadow-1); }
 .lab-comment__h { display: flex; gap: var(--space-1); align-items: center; font-size: var(--text-caption); color: var(--muted); }
 .lab-comment__h b { color: var(--ink); }
-.lab-comment__reply { display: flex; gap: var(--space-1); }
+.lab-comment__reply { display: flex; gap: var(--space-1); flex-wrap: wrap; }
 .lab-comment__reply .ws-btn { min-height: 24px; padding: 0 .5rem; font-size: 10px; }
 .lab-comment[data-resolved="true"] { opacity: var(--opacity-arquivado); }
 /* IA: texto com faísca */
@@ -498,7 +505,7 @@ body[data-embed="true"] .lab-app { border: 0; border-radius: 0; box-shadow: none
     </div>
     <aside class="lab-col lab-col--side" aria-label="Mesa em matriz">
       <div class="lab-panel__h"><i data-ic="mesa"></i>Mesa · matriz critérios × opções <button class="ws-btn ws-btn--ghost ws-btn--sm">Tela cheia</button></div>
-      <table class="lab-matrix">
+      <div class="lab-table-wrap"><table class="lab-matrix">
         <thead><tr><th scope="col">Critério · peso</th><th scope="col">A galeria</th><th scope="col">B geodreno</th><th scope="col" data-lead="true">C híbrida <span class="ws-spark"><i data-ic="faisca"></i></span></th></tr></thead>
         <tbody>
           <tr><th scope="row">Custo <small>peso 3</small></th><td><span class="lab-score" data-s="alto">5</span><span class="lab-cite">planilha v2</span></td><td><span class="lab-score" data-s="baixo">2</span></td><td data-lead="true"><span class="lab-score" data-s="medio">4</span></td></tr>
@@ -507,7 +514,7 @@ body[data-embed="true"] .lab-app { border: 0; border-radius: 0; box-shadow: none
           <tr><th scope="row">Conformidade legal <small>peso 2</small></th><td><span class="lab-score" data-s="alto">5</span></td><td><span class="lab-score" data-s="medio">3</span><span class="lab-cite">? jurídico</span></td><td data-lead="true"><span class="lab-score" data-s="medio">4</span></td></tr>
         </tbody>
         <tfoot><tr><td style="text-align:left">Total ponderado</td><td>48</td><td>35</td><td data-lead="true">48 ✓</td></tr></tfoot>
-      </table>
+      </table></div>
       <p class="lab-muted">Pontuação proposta pela IA (1–5) a partir das evidências; qualquer participante pode ajustar uma célula — a alteração entra no rastro com autor e data. Empate em 48: o critério de maior peso (risco) desempata para C.</p>
       <div class="lab-panel"><div class="lab-panel__h"><i data-ic="comentar"></i>Chat · gaveta <span class="ws-tag" data-class="argumento">3 novas</span></div><div class="lab-muted">Última: Carlos P. 09:41 — "Concordo com a híbrida se a sondagem confirmar…"</div><button class="ws-btn ws-btn--ghost ws-btn--sm">Abrir chat</button></div>
     </aside>
@@ -548,7 +555,7 @@ body[data-embed="true"] .lab-app { border: 0; border-radius: 0; box-shadow: none
     </div>
 
     <h3><i data-ic="gestao"></i> c) Matriz critérios × opções com pontuação</h3>
-    <table class="lab-matrix">
+    <div class="lab-table-wrap"><table class="lab-matrix">
       <thead><tr><th scope="col">Critério · peso</th><th scope="col">A galeria</th><th scope="col">B geodreno</th><th scope="col" data-lead="true">C híbrida <span class="ws-spark"><i data-ic="faisca"></i></span></th><th scope="col">Evidências</th></tr></thead>
       <tbody>
         <tr><th scope="row">Custo <small>peso 3</small></th><td><span class="lab-score" data-s="alto">5</span></td><td><span class="lab-score" data-s="baixo">2</span></td><td data-lead="true"><span class="lab-score" data-s="medio">4</span></td><td style="text-align:left"><span class="lab-cite">planilha v2</span> <span class="lab-cite">cotação geodreno</span></td></tr>
@@ -557,7 +564,7 @@ body[data-embed="true"] .lab-app { border: 0; border-radius: 0; box-shadow: none
         <tr><th scope="row">Conformidade legal <small>peso 2</small></th><td><span class="lab-score" data-s="alto">5</span></td><td><span class="lab-score" data-s="medio">3</span></td><td data-lead="true"><span class="lab-score" data-s="medio">4</span></td><td style="text-align:left"><span class="lab-cite">parecer lote 1</span> <span class="ws-tag" data-class="pergunta">jurídico pendente</span></td></tr>
       </tbody>
       <tfoot><tr><td style="text-align:left">Total ponderado (máx. 60)</td><td>48</td><td>35</td><td data-lead="true">48 ✓ desempate pelo peso</td><td></td></tr></tfoot>
-    </table>
+    </table></div>
 
     <h3><i data-ic="pino"></i> d) Canvas livre — post-its, conectores e skin de mesa (RF22)</h3>
     <div class="ws-desk lab-desk-wrap" data-skin="papel" aria-label="canvas livre">
