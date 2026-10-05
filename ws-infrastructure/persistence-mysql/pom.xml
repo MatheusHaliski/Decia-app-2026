@@ -43,6 +43,11 @@
         </dependency>
         <!-- Testcontainers 2 (versões do BOM do Boot 4): ForeignKeyPolicyTest sobe um MySQL 8.4 real e roda o Flyway do zero -->
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers-junit-jupiter</artifactId>
             <scope>test</scope>
