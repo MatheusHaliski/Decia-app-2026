@@ -2,6 +2,7 @@ package br.gov.pr.secid.workstation.web.support;
 
 import br.gov.pr.secid.workstation.application.identity.InMemoryRateLimit;
 import br.gov.pr.secid.workstation.application.identity.RateLimitPort;
+import br.gov.pr.secid.workstation.application.identity.RateLimitPort.QuotaStatus;
 import br.gov.pr.secid.workstation.web.config.WsSecurityProperties;
 import br.gov.pr.secid.workstation.web.error.ErrorWriter;
 import br.gov.pr.secid.workstation.web.security.HashBulkhead;
@@ -26,7 +27,7 @@ class AuthRateLimitFilterTest {
     private final WsSecurityProperties props = new WsSecurityProperties(null,
             new WsSecurityProperties.Cors(List.of("http://localhost:3000")));
     private final ErrorWriter errors = new ErrorWriter(new ObjectMapper());
-    private final AuthRateLimitFilter filter = new AuthRateLimitFilter(rateLimit, new ClientIpResolver("", "X-Real-IP"),
+    private final AuthRateLimitFilter filter = new AuthRateLimitFilter(rateLimit, new ClientIpResolver("", "X-Real-IP", List.of("10.0.0.0/8")),
             new HashBulkhead(8, 2000), errors, props, true);
 
     private static MockHttpServletRequest login(String rawUri, String servletPath, String xff) {
@@ -139,7 +140,7 @@ class AuthRateLimitFilterTest {
         for (int i = 0; i < 40; i++) {
             assertThat(status(login("/api/feed", "/api/feed", null))).isEqualTo(200);
         }
-        AuthRateLimitFilter off = new AuthRateLimitFilter(rateLimit, new ClientIpResolver("", "X-Real-IP"),
+        AuthRateLimitFilter off = new AuthRateLimitFilter(rateLimit, new ClientIpResolver("", "X-Real-IP", List.of("10.0.0.0/8")),
                 new HashBulkhead(1, 10), errors, props, false);
         for (int i = 0; i < 40; i++) {
             assertThat(send(off, from("POST", "/api/auth/login", "203.0.113.50")).getStatus()).isEqualTo(200);
@@ -149,7 +150,7 @@ class AuthRateLimitFilterTest {
     /** Bulkhead: com as vagas ocupadas, o pedido seguinte recebe 503 + Retry-After em vez de segurar conexão do banco. */
     @Test
     void hashesSimultaneosAcimaDoTetoRecebem503() throws Exception {
-        AuthRateLimitFilter oneSlot = new AuthRateLimitFilter(rateLimit, new ClientIpResolver("", "X-Real-IP"),
+        AuthRateLimitFilter oneSlot = new AuthRateLimitFilter(rateLimit, new ClientIpResolver("", "X-Real-IP", List.of("10.0.0.0/8")),
                 new HashBulkhead(1, 50), errors, props, true);
         CountDownLatch inside = new CountDownLatch(1);
         CountDownLatch leave = new CountDownLatch(1);
@@ -193,5 +194,33 @@ class AuthRateLimitFilterTest {
         HashBulkhead b = new HashBulkhead(0, 1, 10);
         assertThat(b.size()).isEqualTo(HashBulkhead.defaultPermits(Runtime.getRuntime().availableProcessors(), 10));
         assertThat(new HashBulkhead(3, 1, 10).size()).isEqualTo(3);
+    }
+
+    @Test
+    void armazenamentoDoLimiteForaDoArFechaARotaCom503NoContratoDeErro() throws Exception {
+        RateLimitPort quebrado = new RateLimitPort() {
+            @Override
+            public boolean tryAcquire(java.util.UUID owner, String bucket, int limit, java.time.Duration window) {
+                throw new org.springframework.dao.DataAccessResourceFailureException("redis fora do ar");
+            }
+
+            @Override
+            public QuotaStatus status(java.util.UUID owner, String bucket, int limit, java.time.Duration window) {
+                throw new IllegalStateException("não deve ser chamado");
+            }
+        };
+        AuthRateLimitFilter fechado = new AuthRateLimitFilter(quebrado, new ClientIpResolver("", "X-Real-IP", List.of("10.0.0.0/8")),
+                new HashBulkhead(2, 50), errors, props, true);
+        java.util.concurrent.atomic.AtomicInteger chamadas = new java.util.concurrent.atomic.AtomicInteger();
+        MockHttpServletResponse res = new MockHttpServletResponse();
+        fechado.doFilter(from("POST", "/api/auth/login", "203.0.113.9"), res, (rq, rs) -> chamadas.incrementAndGet());
+        assertThat(chamadas.get()).as("fail closed: a rota não roda").isZero();
+        assertThat(res.getStatus()).isEqualTo(503);
+        assertThat(res.getHeader("Retry-After")).isEqualTo(String.valueOf(AuthRateLimitFilter.STORE_RETRY_AFTER_SECONDS));
+        assertThat(res.getContentType()).startsWith("application/json");
+        assertThat(res.getContentAsString()).contains("\"code\":\"SERVICO_INDISPONIVEL\"").contains("\"status\":503");
+        // rota fora das regras continua passando
+        fechado.doFilter(login("/api/feed", "/api/feed", null), new MockHttpServletResponse(), (rq, rs) -> chamadas.incrementAndGet());
+        assertThat(chamadas.get()).isEqualTo(1);
     }
 }
