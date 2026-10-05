@@ -1,6 +1,8 @@
 package br.gov.pr.secid.workstation.web.ratelimit;
 
 import br.gov.pr.secid.workstation.application.ratelimit.InMemoryRateLimit;
+import br.gov.pr.secid.workstation.application.ratelimit.QuotaStatus;
+import br.gov.pr.secid.workstation.application.ratelimit.RateLimitPort;
 import br.gov.pr.secid.workstation.web.error.ErrorWriter;
 import br.gov.pr.secid.workstation.web.support.ClientIpResolver;
 import jakarta.servlet.ServletException;
@@ -14,6 +16,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,7 +29,7 @@ class AuthRateLimitFilterTest {
     private final InMemoryRateLimit rateLimit = new InMemoryRateLimit(clock, 1_000);
     private final HashBulkhead bulkhead = new HashBulkhead(2, 50);
     private final AuthRateLimitFilter filter = new AuthRateLimitFilter(rateLimit,
-            new ClientIpResolver("", "X-Real-IP", clock), bulkhead, new ErrorWriter(new ObjectMapper()), clock);
+            new ClientIpResolver("", "X-Real-IP", List.of(), clock), bulkhead, new ErrorWriter(new ObjectMapper()), clock);
 
     private MockHttpServletResponse call(String method, String path, String ip, String... headers) throws Exception {
         MockHttpServletRequest req = new MockHttpServletRequest(method, path);
@@ -116,5 +119,43 @@ class AuthRateLimitFilterTest {
         assertThat(chamadas.get()).isEqualTo(1);
         assertThat(bulkhead.available()).isEqualTo(2);
         assertThat(rateLimit.status("ip:203.0.113.9", "put:/api/me/password", 20, Duration.ofHours(1)).used()).isEqualTo(1);
+    }
+
+    @Test
+    void armazenamentoDoLimiteForaDoArFechaARotaCom503NoContratoDeErro() throws Exception {
+        RateLimitPort quebrado = new RateLimitPort() {
+            @Override
+            public boolean tryAcquire(String owner, String bucket, int limit, Duration window) {
+                throw new org.springframework.dao.DataAccessResourceFailureException("redis fora do ar");
+            }
+
+            @Override
+            public QuotaStatus status(String owner, String bucket, int limit, Duration window) {
+                throw new IllegalStateException("não deve ser chamado");
+            }
+
+            @Override
+            public void reset(String owner, String bucket) {
+            }
+        };
+        AuthRateLimitFilter fechado = new AuthRateLimitFilter(quebrado, new ClientIpResolver("", "X-Real-IP", List.of(), clock),
+                bulkhead, new ErrorWriter(new ObjectMapper()), clock);
+        MockHttpServletRequest req = new MockHttpServletRequest("POST", "/api/auth/login");
+        req.setRequestURI("/api/auth/login");
+        req.setRemoteAddr("203.0.113.9");
+        MockHttpServletResponse res = new MockHttpServletResponse();
+        AtomicInteger chamadas = new AtomicInteger();
+        fechado.doFilter(req, res, (rq, rs) -> chamadas.incrementAndGet());
+        assertThat(chamadas.get()).as("fail closed: a rota não roda").isZero();
+        assertThat(res.getStatus()).isEqualTo(503);
+        assertThat(res.getHeader("Retry-After")).isEqualTo(String.valueOf(AuthRateLimitFilter.STORE_RETRY_AFTER_SECONDS));
+        assertThat(res.getContentType()).startsWith("application/json");
+        assertThat(res.getContentAsString()).contains("\"code\":\"SERVICO_INDISPONIVEL\"").contains("\"status\":503");
+        assertThat(bulkhead.available()).isEqualTo(2);
+        // rota fora das regras continua passando
+        MockHttpServletRequest livre = new MockHttpServletRequest("GET", "/api/tasks");
+        livre.setRequestURI("/api/tasks");
+        fechado.doFilter(livre, new MockHttpServletResponse(), (rq, rs) -> chamadas.incrementAndGet());
+        assertThat(chamadas.get()).isEqualTo(1);
     }
 }

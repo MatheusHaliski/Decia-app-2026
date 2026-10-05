@@ -130,6 +130,8 @@ ws:
       # IP assinado pelo BFF (HMAC-SHA256 de ip|ts; mesmo valor no front, nunca NEXT_PUBLIC_). Vazio = assinatura ignorada (WARN).
       secret: ${EDGE_PROXY_SECRET:}
       client-ip-header: ${WS_CLIENT_IP_HEADER:X-Real-IP}   # header da borda com o IP literal; X-Forwarded-For nunca é lido
+      # IPs/CIDRs da borda (separados por vírgula). Só de um deles o client-ip-header é aceito; vazio = header ignorado (WARN).
+      trusted-proxies: ${WS_TRUSTED_PROXIES:}
     auth:
       hash-permits: ${WS_AUTH_HASH_PERMITS:0}             # 0 = max(1, min(max(2, núcleos), pool/2)) (HashBulkhead)
       hash-wait-millis: ${WS_AUTH_HASH_WAIT_MILLIS:2000}

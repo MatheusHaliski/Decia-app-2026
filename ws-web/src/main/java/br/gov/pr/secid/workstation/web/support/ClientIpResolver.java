@@ -1,6 +1,8 @@
 package br.gov.pr.secid.workstation.web.support;
 
 import br.gov.pr.secid.workstation.web.config.WsSecurityProperties;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletRequestWrapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,15 +19,20 @@ import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.time.Clock;
 import java.util.HexFormat;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
  * IP do cliente para os limites por IP e a auditoria (SEG RN49.04, D-14). Ordem: {@code X-Ws-Client-Ip} assinado pelo
  * BFF ({@code X-Ws-Proxy-Sig} = HMAC-SHA256 de {@code ip|ts} com {@code EDGE_PROXY_SECRET}, {@code X-Ws-Proxy-Ts}
- * dentro de {@value #MAX_SKEW_SECONDS} s, comparação em tempo constante) › header da borda ({@code X-Real-IP}) › endereço
- * TCP. <b>Nunca</b> {@code X-Forwarded-For}: qualquer cliente pode forjá-lo. Só literais de IP são aceitos (nada de
- * DNS). IPv6 é reduzido ao prefixo /64 ({@link #bucketOwner}): trocar o fim do endereço não abre balde novo.
- * Segredo ausente ou menor que {@value #MIN_SECRET_LENGTH} caracteres: WARN no boot e a assinatura é ignorada.
+ * dentro de {@value #MAX_SKEW_SECONDS} s, comparação em tempo constante) › header da borda ({@code X-Real-IP}), aceito
+ * <b>só</b> quando o par TCP é um proxy de confiança ({@code ws.security.edge-proxy.trusted-proxies}, IPs ou CIDRs; lista
+ * vazia = header ignorado) › endereço TCP. <b>Nunca</b> {@code X-Forwarded-For}: qualquer cliente pode forjá-lo, e por
+ * isso o endereço TCP é lido na requisição <b>original</b> ({@link #tcpPeer}), por baixo de qualquer wrapper como o
+ * {@code ForwardedHeaderFilter} ({@code server.forward-headers-strategy=framework}), que derivaria {@code getRemoteAddr()}
+ * de {@code X-Forwarded-For}. Só literais de IP são aceitos (nada de DNS). IPv6 é reduzido ao prefixo /64
+ * ({@link #bucketOwner}): trocar o fim do endereço não abre balde novo. Segredo ausente ou menor que
+ * {@value #MIN_SECRET_LENGTH} caracteres: WARN no boot e a assinatura é ignorada.
  */
 @Component
 public class ClientIpResolver {
@@ -42,16 +49,18 @@ public class ClientIpResolver {
 
     private final byte[] edgeSecret;
     private final String header;
+    private final List<Cidr> trustedProxies;
     private final Clock clock;
 
     @Autowired
     public ClientIpResolver(WsSecurityProperties props) {
-        this(props.edgeProxy().secret(), props.edgeProxy().clientIpHeader(), Clock.systemUTC());
+        this(props.edgeProxy().secret(), props.edgeProxy().clientIpHeader(), props.edgeProxy().trustedProxies(), Clock.systemUTC());
     }
 
-    public ClientIpResolver(String edgeSecret, String header, Clock clock) {
+    public ClientIpResolver(String edgeSecret, String header, List<String> trustedProxies, Clock clock) {
         if (edgeSecret == null || edgeSecret.isBlank()) {
-            log.warn("EDGE_PROXY_SECRET ausente: o IP assinado pelo BFF será ignorado; vale {} e depois o endereço TCP", header);
+            log.warn("EDGE_PROXY_SECRET ausente: o IP assinado pelo BFF será ignorado; vale {} (de proxy confiável) e depois o endereço TCP",
+                    header);
             this.edgeSecret = null;
         } else if (edgeSecret.length() < MIN_SECRET_LENGTH) {
             log.warn("EDGE_PROXY_SECRET com menos de {} caracteres: assinatura ignorada", MIN_SECRET_LENGTH);
@@ -60,6 +69,11 @@ public class ClientIpResolver {
             this.edgeSecret = edgeSecret.getBytes(StandardCharsets.UTF_8);
         }
         this.header = header;
+        this.trustedProxies = trustedProxies == null ? List.of() : trustedProxies.stream().map(Cidr::parse).toList();
+        if (this.trustedProxies.isEmpty()) {
+            log.warn("ws.security.edge-proxy.trusted-proxies vazio: o header {} será ignorado; vale o IP assinado e depois o endereço TCP",
+                    header);
+        }
         this.clock = clock;
     }
 
@@ -69,18 +83,41 @@ public class ClientIpResolver {
         if (cached != null) {
             return cached.toString();
         }
+        String peer = literalIp(tcpPeer(request));
         String ip = signedIp(request.getHeader(SIGNED_IP), request.getHeader(SIGNED_TS), request.getHeader(SIGNED_SIG));
-        if (ip == null) {
+        if (ip == null && isTrustedProxy(peer)) {
             ip = literalIp(request.getHeader(header));
         }
         if (ip == null) {
-            ip = literalIp(request.getRemoteAddr());
+            ip = peer;
         }
         if (ip == null) {
             ip = "0.0.0.0";
         }
         request.setAttribute(ATTRIBUTE, ip);
         return ip;
+    }
+
+    /** Endereço do par TCP da requisição original, por baixo de qualquer wrapper (nunca o derivado de {@code X-Forwarded-For}). */
+    static String tcpPeer(HttpServletRequest request) {
+        ServletRequest r = request;
+        while (r instanceof ServletRequestWrapper w) {
+            r = w.getRequest();
+        }
+        return r.getRemoteAddr();
+    }
+
+    boolean isTrustedProxy(String peer) {
+        InetAddress addr = parse(peer);
+        if (addr == null) {
+            return false;
+        }
+        for (Cidr cidr : trustedProxies) {
+            if (cidr.contains(addr)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** IP já resolvido nesta requisição (ou {@code null} se o filtro ainda não passou). */
@@ -165,6 +202,58 @@ public class ClientIpResolver {
             return InetAddress.getByName(v);   // literal garantido pelos padrões acima: não há consulta DNS
         } catch (UnknownHostException | IllegalArgumentException e) {
             return null;
+        }
+    }
+
+    /** IP único ou bloco CIDR ({@code 10.0.0.0/8}, {@code fd00::/8}) da borda de confiança. Inválido derruba o boot. */
+    static final class Cidr {
+        private final byte[] address;
+        private final int bits;
+
+        private Cidr(byte[] address, int bits) {
+            this.address = address;
+            this.bits = bits;
+        }
+
+        static Cidr parse(String spec) {
+            String v = spec.trim();
+            int slash = v.indexOf('/');
+            InetAddress addr = ClientIpResolver.parse(slash < 0 ? v : v.substring(0, slash));
+            if (addr == null) {
+                throw new IllegalArgumentException("trusted-proxies: '" + spec + "' não é IP nem CIDR literal");
+            }
+            int max = addr.getAddress().length * 8;
+            int bits = max;
+            if (slash >= 0) {
+                try {
+                    bits = Integer.parseInt(v.substring(slash + 1));
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("trusted-proxies: prefixo inválido em '" + spec + "'", e);
+                }
+                if (bits < 0 || bits > max) {
+                    throw new IllegalArgumentException("trusted-proxies: prefixo fora de 0.." + max + " em '" + spec + "'");
+                }
+            }
+            return new Cidr(addr.getAddress(), bits);
+        }
+
+        boolean contains(InetAddress candidate) {
+            byte[] c = candidate.getAddress();
+            if (c.length != address.length) {
+                return false;
+            }
+            int full = bits / 8;
+            for (int i = 0; i < full; i++) {
+                if (c[i] != address[i]) {
+                    return false;
+                }
+            }
+            int rest = bits % 8;
+            if (rest == 0) {
+                return true;
+            }
+            int mask = (0xff << (8 - rest)) & 0xff;
+            return (c[full] & mask) == (address[full] & mask);
         }
     }
 }

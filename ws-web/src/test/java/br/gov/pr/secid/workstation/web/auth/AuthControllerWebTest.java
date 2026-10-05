@@ -23,6 +23,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Duration;
@@ -44,6 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * IdentityService no formato ApiError, resposta com no-store, e o AuthRateLimitFilter real barrando o 31º pedido do IP.
  */
 @WebMvcTest(controllers = AuthController.class)
+@TestPropertySource(properties = "ws.security.edge-proxy.trusted-proxies=127.0.0.1")   // o MockMvc chega de 127.0.0.1
 @Import({SecurityConfig.class, JwtConfig.class, GlobalExceptionHandler.class, ErrorWriter.class,
         ApiErrorAuthenticationEntryPoint.class, ApiErrorAccessDeniedHandler.class, CorrelationIdFilter.class,
         RateLimitConfig.class, ClientIpResolver.class})

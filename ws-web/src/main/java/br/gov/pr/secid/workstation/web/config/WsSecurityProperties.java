@@ -19,7 +19,7 @@ public record WsSecurityProperties(Jwt jwt, Cors cors, EdgeProxy edgeProxy) {
     public WsSecurityProperties {
         jwt = jwt == null ? new Jwt(null, null, null, null) : jwt;
         cors = cors == null ? new Cors(null) : cors;
-        edgeProxy = edgeProxy == null ? new EdgeProxy(null, null) : edgeProxy;
+        edgeProxy = edgeProxy == null ? new EdgeProxy(null, null, null) : edgeProxy;
     }
 
     public record Jwt(String issuer, String audience, String publicKeyPath, String privateKeyPath) {
@@ -49,12 +49,15 @@ public record WsSecurityProperties(Jwt jwt, Cors cors, EdgeProxy edgeProxy) {
     /**
      * IP do cliente (SEG RN49.04): o BFF assina {@code ip|ts} com HMAC-SHA256 usando {@code secret} (mesmo valor nos
      * dois lados, nunca {@code NEXT_PUBLIC_}); sem assinatura válida vale {@code clientIpHeader} ({@code X-Real-IP},
-     * posto pela borda) e, por último, o endereço TCP. {@code X-Forwarded-For} nunca é lido.
+     * posto pela borda) <b>somente</b> quando o par TCP está em {@code trustedProxies} (IPs ou CIDRs da borda; lista
+     * vazia = header ignorado), e, por último, o endereço TCP. {@code X-Forwarded-For} nunca é lido.
      */
-    public record EdgeProxy(String secret, String clientIpHeader) {
+    public record EdgeProxy(String secret, String clientIpHeader, List<String> trustedProxies) {
         public EdgeProxy {
             secret = secret == null ? "" : secret.trim();
             clientIpHeader = blankToDefault(clientIpHeader, "X-Real-IP");
+            trustedProxies = trustedProxies == null ? List.of()
+                    : trustedProxies.stream().map(String::trim).filter(s -> !s.isEmpty()).toList();
         }
     }
 

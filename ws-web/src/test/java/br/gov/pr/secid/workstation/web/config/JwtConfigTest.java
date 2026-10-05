@@ -101,9 +101,11 @@ class JwtConfigTest {
         assertThat(p.jwt().hasPrivateKey()).isFalse();
         WsSecurityProperties q = new WsSecurityProperties(new WsSecurityProperties.Jwt(" ", null, " /k.pem ", null),
                 new WsSecurityProperties.Cors(List.of(" https://a ", "", "https://b")),
-                new WsSecurityProperties.EdgeProxy(" s ", " X-Client "));
+                new WsSecurityProperties.EdgeProxy(" s ", " X-Client ", List.of(" 10.0.0.0/8 ", "")));
         assertThat(q.edgeProxy().secret()).isEqualTo("s");
         assertThat(q.edgeProxy().clientIpHeader()).isEqualTo("X-Client");
+        assertThat(q.edgeProxy().trustedProxies()).containsExactly("10.0.0.0/8");
+        assertThat(p.edgeProxy().trustedProxies()).as("sem proxy de confiança, o header da borda é ignorado").isEmpty();
         assertThat(q.jwt().publicKeyPath()).isEqualTo("/k.pem");
         assertThat(q.cors().allowedOrigins()).containsExactly("https://a", "https://b");
     }

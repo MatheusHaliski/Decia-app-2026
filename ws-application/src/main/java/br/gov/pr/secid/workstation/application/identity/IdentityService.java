@@ -9,6 +9,7 @@ import br.gov.pr.secid.workstation.application.ratelimit.RateLimitPort;
 import br.gov.pr.secid.workstation.domain.identity.AccountStatus;
 import br.gov.pr.secid.workstation.domain.identity.User;
 import br.gov.pr.secid.workstation.domain.identity.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +58,7 @@ public class IdentityService {
     /** Hash de uma senha aleatória, avaliado quando não há hash real — mesmo custo, nenhuma informação. */
     private final String dummyHash;
 
+    @Autowired
     public IdentityService(UserRepository users, PasswordHasherPort hasher, RateLimitPort rateLimit, AuditPort audit) {
         this(users, hasher, rateLimit, audit, Clock.systemUTC());
     }

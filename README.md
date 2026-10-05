@@ -46,7 +46,7 @@ Imagem da API: `docker build -f Dockerfile.backend -t work-station-api .` (perfi
 |---|---|---|
 | MySQL (obrigatório) | `WS_DB_HOST`, `WS_DB_PORT`, `WS_DB_NAME`, `WS_DB_USER`, **`WS_DB_PASSWORD`**, `WS_DB_SSL_MODE`, `WS_DB_POOL_SIZE` | sem `WS_DB_PASSWORD` a API não sobe em nenhum perfil; prod força `sslMode=REQUIRED` |
 | JWT RS256 | **`WS_JWT_PRIVATE_KEY_PATH`**, **`WS_JWT_PUBLIC_KEY_PATH`**, `WS_JWT_ISSUER`, `WS_JWT_AUDIENCE`, `WS_JWT_ACCESS_TTL` | caminhos de PEM gerados por `scripts/keys/generate_jwt_keys.sh`; obrigatórios em prod; sem a privada o login responde 503 |
-| Freios de autenticação | `EDGE_PROXY_SECRET`, `WS_CLIENT_IP_HEADER`, `WS_AUTH_HASH_PERMITS`, `WS_AUTH_HASH_WAIT_MILLIS` | segredo do IP assinado pelo BFF (mesmo valor no front, ≥ 32 caracteres); header da borda (`X-Real-IP`); teto de hashes Argon2 |
+| Freios de autenticação | `EDGE_PROXY_SECRET`, `WS_CLIENT_IP_HEADER`, `WS_TRUSTED_PROXIES`, `WS_AUTH_HASH_PERMITS`, `WS_AUTH_HASH_WAIT_MILLIS` | segredo do IP assinado pelo BFF (mesmo valor no front, ≥ 32 caracteres); header da borda (`X-Real-IP`), aceito só dos IPs/CIDRs de `WS_TRUSTED_PROXIES` (vazio = ignorado); teto de hashes Argon2 |
 | Criptografia | **`WS_DATA_ENCRYPTION_KEY`** | AES-GCM dos campos sensíveis (Bloco 2); obrigatória em prod |
 | Aplicação | `PORT`, `WS_APP_BASE_URL`, `WS_FRONTEND_URL`, `WS_CORS_ALLOWED_ORIGINS`, `WS_API_DOCS_ENABLED`, `WS_MANAGEMENT_EXPOSURE`, `WS_SECRETS_ENFORCE`, `WS_LOG_LEVEL*` | prod: docs desligados, só `health` exposto |
 | Stores opcionais | `WS_REDIS_*`, `WS_CASSANDRA_*`, `WS_OPENSEARCH_*`, `WS_STORAGE_TYPE`, `WS_S3_*`, `WS_PLATFORM_ENABLED` | desligados por padrão (ARQUITETURA §3.2) |
