@@ -58,6 +58,11 @@ export function parseReadme(id, md) {
     const t = plain(l.replace(/^>\s*/, ""));
     if (t.length >= 80) { summary = t; break; }
   }
+  // README só com cabeçalho + CAs em lista (ex.: RF26 reescrito pelos diagramas): resume pelo primeiro CA ou pelo título
+  if (!summary && !hu) {
+    const firstCa = lines.find((l) => /^-\s+\*\*RF\d+\.(CA|A)\d+\*\*/.test(l));
+    summary = firstCa ? plain(firstCa.replace(/^-\s+/, "")) : title;
+  }
   const found = new Map();
   for (const line of lines) {
     let m = null;

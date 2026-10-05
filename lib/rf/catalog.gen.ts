@@ -11,169 +11,169 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 1,
     "title": "Cadastrar usuário na plataforma com dados de acesso",
     "hu": "COMO visitante do sistema POSSO realizar meu cadastro na plataforma informando meus dados de acesso PARA obter uma conta e acessar as funcionalidades do DECIA.",
-    "summary": null,
-    "route": "/register → /verify-email (BFF /bff/auth/register) — rota sugerida",
-    "coverage": "RF1.CA01 … RF1.CA06 (RF1–RF18 não têm CAs no board: derivados da HU1 e marcados \"CA a confirmar\") · RF1.CA07–CA13 (§7, segurança D-14) · RF1.CA14–CA27 (§8, aceite dos termos e tipos de perfil, D-15…D-22, \"CA a confirmar\")",
+    "summary": "O cadastro local é o Bloco 3 do plano de segurança (ARQUITETURA §6 (c)). Classes marcadas (real) existem em origin/main (Bloco 3, PR #16); as marcadas (planejado) vêm da TAXONOMIA §1.8–1.15 e do CADASTRO_E_LGPD.md (blocos A/B).",
+    "route": "/register → /verify-email (BFF app/bff/auth/register → POST /api/auth/register); /termos e /privacidade (D-15)",
+    "coverage": "RF1.CA01 … RF1.CA06 (corpo do card vazio → derivados do título + HU1, todos \"(CA a confirmar)\") · RF1.CA07 … RF1.CA13 (§7, controles de segurança D-14) · RF1.CA14 … RF1.CA27 (§8, aceite dos termos e tipos de perfil, D-15…D-22) — regra: o título do card define o RF; os CAs foram atualizados para o código real do Bloco 3 (RegistrationController, RegistrationService, V3__rf1_rf2_autenticacao.sql)",
     "cas": [
       {
         "id": "RF1.CA01",
-        "text": "Dado o formulário de cadastro, quando informo perfil (ProfileType EMPREGADO · EMPRESA · CHEFE_DEPARTAMENTO), nome completo, username, e-mail, senha e confirmação, então cada campo é validado (formato de e-mail, username normalizado sem reservados, política mínima de senha, senhas iguais) e os erros voltam como 422 VALIDACAO com details por campo e correlationId.",
+        "text": "Dado o formulário de cadastro, quando informo profileType (EMPREGADO · EMPRESA · CHEFE_DEPARTAMENTO), fullName (3–160), username (3–30, Usernames.normalize), email, password + confirmPassword (Passwords.problem), telefone opcional (E.164) e acceptTerms, então cada campo é validado e os erros voltam juntos como 422 VALIDACAO com details.fields por campo e correlationId.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA02",
-        "text": "Dado um username já cadastrado, então 409 USERNAME_EM_USO com details.suggestions (username é público; GET /api/usernames/{u}/availability e GET /api/auth/username-suggestions). Dado um e-mail já cadastrado, então a resposta é a mesma 202 VERIFICACAO_ENVIADA do cadastro novo (sem oráculo) e a pessoa recebe um e-mail \"você já tem uma conta\" em vez do código — não há 409 EMAIL_EM_USO. Implementado em RegistrationService.register.",
-        "note": "CA a confirmar — corrigido no Bloco 3, Q-86/D-27",
+        "text": "Dado um username já em uso, então 409 USERNAME_EM_USO com details.suggestions; nome reservado (admin, root, suporte, secid, decia, workstation, prefixos demo_/e2e_) → 422 NOME_RESERVADO. Dado um e-mail já cadastrado, então a resposta é a mesma 202 Receipt do cadastro novo (sem oráculo, D-27/Q-86): o dono recebe o e-mail \"você já tem conta\" e AuditLog REGISTER_EMAIL_EM_USO. Disponibilidade em GET /api/usernames/{username}/availability e sugestões em GET /api/auth/username-suggestions.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA03",
-        "text": "Dado um cadastro válido, então a senha é guardada apenas como hash Argon2id (parâmetros mínimos OWASP) via PasswordHasherPort, nunca aparece em log, evento ou auditoria; e-mail e telefone são cifrados em repouso (AesGcmStringConverter, LGPD).",
+        "text": "Dado um cadastro válido, então a senha é guardada só como hash Argon2id (Argon2PasswordHasher), nunca aparece em log, evento ou auditoria (SensitiveDataMaskingConverter); e-mail e telefone vão ao banco cifrados (FieldCipher/AesGcmStringConverter, AES-256-GCM enc:v1:, colunas email_enc/phone_enc) e a busca usa emailHash = HMAC-SHA256 com chave derivada de WS_DATA_ENCRYPTION_KEY (HmacEmailHasher, Q-87).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA04",
-        "text": "Dado o cadastro criado, então a conta nasce com AccountStatus PENDING_EMAIL_VERIFICATION e recebe um código de verificação por e-mail (AFTER_COMMIT); ao confirmar o código, EMPREGADO → ACTIVE e EMPRESA/CHEFE_DEPARTAMENTO → PENDING_VALIDATION com ApprovalRequest PENDENTE para o ADMIN (RF28.CA01).",
+        "text": "Dado o cadastro criado, então a conta nasce AccountStatus PENDING_EMAIL_VERIFICATION, accountOrigin REAL, com UserPreferences padrão e um VerificationCode (6 dígitos, só o hash, TTL) enviado por MailPort; ao confirmar em POST /api/auth/email-verification/confirm, EMPREGADO → ACTIVE e EMPRESA/CHEFE_DEPARTAMENTO → PENDING_VALIDATION com ApprovalRequest PENDENTE (planejado, RF28.CA01, D-19).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA05",
-        "text": "Dado o cadastro criado, então o sistema cria UserPreferences padrão (theme AUTO, language PT_BR, timezone America/Sao_Paulo, wipLimit 3, aiModeDefault ECONOMIA) e grava terms_version/privacy_version vigentes; a sessão (access JWT 15 min + refresh para o BFF) é emitida só na confirmação do código (POST /api/auth/email-verification/confirm) — emitir no register revelaria se a conta era nova. A tela vai para /verify-email sem sessão.",
-        "note": "CA a confirmar — ajustado no Bloco 3, Q-86",
+        "text": "Dado o código confirmado, então RegistrationService.confirmEmail grava emailVerified, AuditLog EMAIL_VERIFIED e abre a sessão pelo IdentityService.openSession (access JWT RS256 + refresh em ws_rt, como no RF2), levando ao shell do app; antes disso o cadastro responde só 202 Receipt {status VERIFICACAO_ENVIADA, maskedEmail, nextStep} e redireciona para /verify-email sem sessão (emitir no register revelaria se a conta era nova, D-27/Q-86).",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA06",
-        "text": "Dado tentativas repetidas, então há limite por IP (429 LIMITE_ENVIOS) e por código informado (429 MUITAS_TENTATIVAS); AuditLog USER_REGISTERED e EMAIL_VERIFIED são gravados sem dados sensíveis e com correlationId.",
+        "text": "Dado tentativas repetidas, então o AuthRateLimitFilter limita por IP (register 10/h, resend 10/h, confirm 20/h → 429 MUITAS_TENTATIVAS + Retry-After), o reenvio é silencioso e limitado por pessoa (RateLimitPort email-verification-send), e AuditLog USER_REGISTERED / EMAIL_VERIFIED / EMAIL_VERIFICATION_FALHA são gravados com e-mail mascarado e correlationId.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA07",
-        "text": "Dado um cadastro válido, então a senha é guardada com Argon2id exatamente em m=19456 KiB, t=2, p=1, salt 16 bytes, hash 32 bytes (mínimo OWASP), e needsRehash refaz o hash no próximo login quando os parâmetros mudarem.",
+        "text": "Dado um cadastro válido, então a senha é guardada com Argon2id nos parâmetros mínimos OWASP (m=19456 KiB, t=2, p=1, salt 16 B, hash 32 B) e needsRehash refaz o hash no próximo login quando os parâmetros mudarem.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA08",
-        "text": "Dado o mesmo IP (assinado pelo BFF em X-Ws-Client-Ip/X-Ws-Proxy-Ts/X-Ws-Proxy-Sig; senão X-Real-IP; senão TCP; nunca X-Forwarded-For; IPv6 por /64), então o AuthRateLimitFilter aplica, antes do Spring Security, POST /api/auth/register 10/h, envios do cadastro 40/h, GET /api/auth/username-suggestions 60/10 min e disponibilidade de username 120/10 min; o excedente recebe 429 MUITAS_TENTATIVAS com Retry-After (substitui o 429 LIMITE_ENVIOS do CA06).",
+        "text": "Dado o mesmo IP (assinado pelo BFF em X-Ws-Client-Ip/X-Ws-Proxy-Ts/X-Ws-Proxy-Sig; senão X-Real-IP; senão TCP; nunca X-Forwarded-For; IPv6 por /64), então o AuthRateLimitFilter aplica antes do Spring Security POST /api/auth/register 10/h, email-verification/resend 10/h, confirm 20/h, GET /api/auth/username-suggestions 60/10 min e POST /api/auth/uploads 40/h; o excedente recebe 429 MUITAS_TENTATIVAS com Retry-After.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA09",
-        "text": "Dado um pico de cadastros, então o HashBulkhead (permits = max(1, min(max(2, núcleos), poolDoBanco/2)), espera 2 s) limita os Argon2 simultâneos e o excedente recebe 503 AUTENTICACAO_OCUPADA + Retry-After; 60 pedidos paralelos geram zero HTTP 500.",
+        "text": "Dado um pico de cadastros, então o HashBulkhead (permits = max(1, min(max(2, núcleos), pool/2)), espera 2 s) limita os Argon2 simultâneos e o excedente recebe 503 AUTENTICACAO_OCUPADA + Retry-After; 60 pedidos paralelos geram zero HTTP 500.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA10",
-        "text": "Dado um username que, depois da normalização (Usernames.normalize), seja admin, root, suporte, secid, decia, workstation ou comece com demo_/e2e_, então o cadastro responde 422 NOME_RESERVADO (código próprio, com details.suggestions); a conta de administração só nasce pelo AdminBootstrap (WS_ADMIN_BOOTSTRAP_ENABLED=true, segredo WS_ADMIN_INITIAL_PASSWORD ≥ 16 chars sem padrão, só se não existe nenhum ADMIN; nunca promove conta existente sem WS_ADMIN_PROMOTE_EXISTING=true).",
-        "note": "CA a confirmar — ajustado no Bloco 3",
+        "text": "Dado um username que, normalizado, seja reservado (admin, root, suporte, secid, decia, workstation, prefixos demo_/e2e_), então o cadastro responde 422 NOME_RESERVADO com sugestões; a conta ADMIN só nasce pelo AdminBootstrap (WS_ADMIN_BOOTSTRAP_ENABLED=true, WS_ADMIN_INITIAL_PASSWORD ≥ 16 chars sem padrão, só se não existe nenhum ADMIN; nunca promove conta existente sem WS_ADMIN_PROMOTE_EXISTING=true).",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA11",
-        "text": "Dado o código de verificação, então há no máximo 5 tentativas por código (attempts++ persiste mesmo com erro, noRollbackFor) e um contador atômico de 10 tentativas/h por pessoa e finalidade; o excedente recebe 429 MUITAS_TENTATIVAS.",
+        "text": "Dado o código de verificação, então há no máximo 5 tentativas por código (attempts++ persiste mesmo com erro, @Transactional(noRollbackFor = ApiException.class)) e um contador atômico de 10 tentativas/h por pessoa e finalidade (RateLimitPort); o excedente recebe 429 MUITAS_TENTATIVAS.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA12",
-        "text": "Dado o cadastro criado, então users.account_origin nasce REAL (enum AccountOrigin REAL/TEST_SEED/DEMO/SYSTEM desde o V1__baseline.sql), com fixture_key NULL e test_account gerada = false; contas TEST_SEED/DEMO ficam fora de rankings, HSE, DECIA Points e métricas do RF43, e o e-mail nunca é enviado a .test/.example/.invalid/.localhost.",
+        "text": "Dado o cadastro criado, então users.account_origin nasce REAL (CHECK no V2), fixture_key NULL e test_account gerada = false; contas TEST_SEED/DEMO ficam fora de rankings, HSE, DECIA Points e métricas (RF43), e o e-mail nunca é enviado a .test/.example/.invalid/.localhost.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA13",
-        "text": "Dado qualquer log ou evento do cadastro, então o e-mail aparece mascarado (maskEmail: m@dominio) e nunca há senha, token ou código; a sessão emitida no CA05 segue o RF2 (TTL do access token em aberto na Q-49*: 10 min na ARQUITETURA, 15 min aqui).",
+        "text": "Dado qualquer log ou evento do cadastro, então o e-mail aparece mascarado (Masking.maskEmail) e nunca há senha, token ou código; a sessão emitida no CA05 segue o RF2 (TTL do access em aberto na Q-49).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA14",
-        "text": "Dado o formulário de cadastro, então o Checkbox \"Li e aceito os Termos de Uso e a Política de Privacidade\" vem desmarcado, com links para os dois documentos que abrem em Sheet ou em nova aba sem perder o formulário; o botão \"Criar conta\" fica disabled até marcar (teste Vitest: sem o checkbox o submit não dispara).",
+        "text": "Dado o formulário, então o Checkbox \"Li e aceito os Termos de Uso e a Política de Privacidade\" vem desmarcado, com links para os dois documentos (abrem em Sheet ou nova aba sem perder o formulário); \"Criar conta\" fica disabled até marcar.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA15",
-        "text": "Dado o pedido chegando sem acceptTerms=true, então o servidor responde 422 VALIDACAO com details.acceptTerms (teste de integração); o cliente envia as versões que exibiu (termsVersion, privacyVersion) e, se alguma não for a VIGENTE, recebe 409 VERSAO_DOS_TERMOS_DESATUALIZADA (Q-70).",
+        "text": "Dado o pedido sem acceptTerms=true, então 422 VALIDACAO com details.fields.acceptTerms (real); o cliente envia termsVersion/privacyVersion exibidas e, se alguma não for a VIGENTE, recebe 409 VERSAO_DOS_TERMOS_DESATUALIZADA (planejado, Q-70).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA16",
-        "text": "Dado o cadastro aceito, então são gravadas duas linhas em policy_acceptances (TERMOS e PRIVACIDADE, cada uma com version, accepted_at, ip, user_agent, channel), a cópia em users.terms_version/privacy_version e o AuditLog POLICY_ACCEPTED {document, version, channel}. A tabela é append-only e a FK é ON DELETE RESTRICT: o registro sobrevive à anonimização (art. 8º, § 2º).",
+        "text": "Dado o cadastro aceito, então são gravadas duas linhas em policy_acceptances (TERMOS e PRIVACIDADE com version, accepted_at, ip, user_agent, channel), a cópia em users.terms_version/privacy_version (real) e AuditLog POLICY_ACCEPTED; a tabela é append-only, FK RESTRICT, e sobrevive à anonimização (art. 8º §2º).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA17",
-        "text": "Dado qualquer caminho que cria conta, então o aceite é capturado: cadastro local (CADASTRO_LOCAL), primeiro login OIDC numa tela de conclusão de cadastro (OIDC, Q-02) e seed demo (SEED). O admin do AdminBootstrap não recebe aceite automático e passa pelo gate (CA18) no primeiro login.",
+        "text": "Dado qualquer caminho que cria conta, então o aceite é capturado: CADASTRO_LOCAL, primeiro login OIDC numa tela de conclusão (OIDC, OidcAccountLinker) e seed (SEED); o admin do AdminBootstrap passa pelo gate (CA18) no primeiro login.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA18",
-        "text": "Dado que a versão VIGENTE de um documento é mais nova que a aceita, então o app abre um Dialog bloqueante com o changelog e a API responde 403 ACEITE_PENDENTE a tudo, exceto GET /api/me/policies, POST /api/me/policies/accept {document, version}, logout, exportação (/api/me/exports) e pedido de exclusão (/api/me/deletion): quem recusa continua exercendo seus direitos. O aceite novo entra com channel REACEITE.",
+        "text": "Dado versão VIGENTE mais nova que a aceita, então Dialog bloqueante com o changelog e 403 ACEITE_PENDENTE a tudo, exceto GET /api/me/policies, POST /api/me/policies/accept, logout, exportação e pedido de exclusão (PolicyGateFilter depois do JWT).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA19",
-        "text": "Dado as páginas públicas /termos e /privacidade, então elas funcionam sem login e pelo gate, mostram a versão vigente e o histórico (GET /api/legal/{TERMOS|PRIVACIDADE}/current e /versions), e o PolicyTextGuardTest falha se a versão publicada tiver marcador [ … ] ou \"validar com jurídico\" (regras em docs/legal/README.md).",
+        "text": "Dado /termos e /privacidade, então funcionam sem login e pelo gate, mostram a versão vigente e o histórico (GET /api/legal/{TERMOS|PRIVACIDADE}/current e /versions); PolicyTextGuardTest recusa texto com marcador […] ou \"validar com jurídico\".",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA20",
-        "text": "Dado o cadastro, então nenhum consentimento de finalidade opcional (ConsentPurpose) é pedido junto com o aceite (art. 8º, § 4º); user_consents nasce vazio e os interruptores ficam só em /settings?tab=privacidade (RF3.CA10).",
+        "text": "Dado o cadastro, então nenhum consentimento opcional (ConsentPurpose) é pedido junto com o aceite; user_consents nasce vazio (RF3.CA10).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA21",
-        "text": "Dado a resposta à Q-63: se menores não podem usar, a data de nascimento não é coletada; se podem, birthDate é obrigatória no servidor (campo vazio → 422 details.birthDate, nunca \"pulado\" como no FAI) e a regra do art. 14 é aplicada.",
+        "text": "Dado a resposta à Q-63: se menores não podem usar, birthDate não é coletada; se podem, é obrigatória no servidor (422 details.fields.birthDate) e a regra do art. 14 é aplicada.",
         "note": "CA a confirmar, Q-63",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA22",
-        "text": "Dado a escolha do tipo, então ela é feita com RadioCard (ícone, título, uma linha do que o perfil pode fazer e o aviso \"precisa de validação\" em EMPRESA e CHEFE_DEPARTAMENTO); ADMIN enviado no corpo recebe 422 VALIDACAO (details.profileType); CURADOR não é tipo (D-09).",
+        "text": "Dado a escolha do tipo com RadioCard, então profileType fora de EMPREGADO/EMPRESA/CHEFE_DEPARTAMENTO (inclusive ADMIN) recebe 422 VALIDACAO details.fields.profileType (real, parseProfileType); CURADOR não é tipo (D-09).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA23",
-        "text": "Dado o tipo escolhido, então os campos extras são (proposta): EMPREGADO jobTitle e intendedDepartmentId opcional (não lota; quem lota é o chefe, RF28.CA02); EMPRESA legalName, companyCnpj (dígitos verificadores), officialSite obrigatório (normalizado para https://, recusa @perfil) e representationDocId; CHEFE companyId existente, departamento e appointmentLink (Diário Oficial). Erros voltam como 422 VALIDACAO com details por campo.",
+        "text": "Dado o tipo, então os campos extras são: EMPREGADO jobTitle e intendedDepartmentId opcional (não lota); EMPRESA legalName, companyCnpj, officialSite obrigatório (https://, recusa @perfil), representationDocId; CHEFE companyId existente, departamento e appointmentLink. Erros 422 VALIDACAO por campo.",
         "note": "CA a confirmar, Q-64",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA24",
-        "text": "Dado a resposta à Q-62, então EMPREGADO pode exigir e-mail de domínio institucional numa lista permitida (422 details.email); para EMPRESA, se o domínio do e-mail for igual ao do officialSite (fora da lista de e-mails gratuitos), o critério REPRESENTACAO da validação é marcado automaticamente (RF28.CA15).",
+        "text": "Dado a resposta à Q-62, então EMPREGADO pode exigir domínio institucional; para EMPRESA, e-mail no domínio do officialSite (fora de freeMailDomainsJson) marca o critério REPRESENTACAO automaticamente (RF28.CA15).",
         "note": "CA a confirmar, Q-62",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA25",
-        "text": "Dado POST /api/auth/uploads?kind=, então kind só pode ser avatar, identity ou representation; há limite de bytes e de pixels (SEG RN49.08), reencode que remove EXIF/GPS, documentos vão para restricted/pending/… e viram PendingUpload com expiresAt = +24 h; o cadastro só aceita URL de envio pendente do mesmo kind (422 details.<campo>); o PendingUploadCleanupJob apaga os abandonados, e um teste prova que o método está agendado (@Scheduled + lock).",
+        "text": "Dado POST /api/auth/uploads?kind=avatar|identity|representation, então tipo real por magic bytes, limite de bytes e de pixels, reencode sem EXIF/GPS, documentos em restricted/pending/…, PendingUpload.expiresAt = +24 h; o cadastro só aceita upload do mesmo kind e não consumido; PendingUploadCleanupJob apaga os abandonados (teste prova o @Scheduled). A regra de IP (40/h) já está em AuthRateLimitFilter.RULES.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA26",
-        "text": "Dado o campo username, então a disponibilidade é consultada com debounce de 400 ms (GET /api/auth/username-availability), a lista de reservados normalizada inclui secid, decia, workstation e os prefixos demo_/e2e_ (CA10) e há sugestões (/username-suggestions).",
+        "text": "Dado o campo username, então a disponibilidade é consultada com debounce de 400 ms em GET /api/usernames/{username}/availability (real: {username, available, reason, suggestions}) e sugestões em GET /api/auth/username-suggestions?base=.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF1.CA27",
-        "text": "Dado EMPRESA ou CHEFE_DEPARTAMENTO, então o ApprovalRequest nasce só depois da confirmação do e-mail (resolve a divergência entre o CA04 e o passo C7 do §2, onde ele nascia no registro); o prazo em dias úteis conta daí (RF28.CA12); enquanto PENDING_VALIDATION, Guard.requireApprovedProfile responde 403 PERFIL_EM_VALIDACAO e o menu esconde as ações de emissor.",
+        "text": "Dado EMPRESA ou CHEFE_DEPARTAMENTO, então o ApprovalRequest nasce só depois da confirmação do e-mail (passo C5 do §2); o prazo em dias úteis conta daí (RF28.CA12); enquanto PENDING_VALIDATION, Guard.requireApprovedProfile responde 403 PERFIL_EM_VALIDACAO.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
@@ -184,92 +184,92 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 2,
     "title": "Autenticar usuário na plataforma com credenciais de acesso",
     "hu": "COMO usuário cadastrado no sistema POSSO autenticar-me na plataforma com minhas credenciais de acesso PARA acessar minha área pessoal de forma segura.",
-    "summary": null,
-    "route": "/login (BFF /bff/auth/login, /bff/auth/refresh, /bff/auth/logout, /bff/auth/oidc/[provider]) — rota sugerida",
-    "coverage": "RF2.CA01 … RF2.CA06 (RF1–RF18 não têm CAs no board: derivados da HU2 e marcados \"CA a confirmar\")",
+    "summary": "Classes (real) existem em origin/main (Bloco 3, PR #16); (planejado): RedisSessionStore (hoje InMemorySessionStore + espelho JPA refresh_tokens, Q-85), GET/DELETE /api/auth/sessions (Q-89; IdentityService.activeSessions já existe), PKCE/state do OIDC no BFF e cookie ws_rt (Bloco 4, Q-85), conferência TOTP do 2FA (Q-83), SMTP real (Q-84), PolicyGateFilter (D-16). Números adotados: D-25 (TTLs), D-26 (Argon2id e bulkhead), D-27 (cadastro sem oráculo).",
+    "route": "/login (BFF app/bff/auth/login → POST /api/auth/login), /login/institucional (POST /api/auth/oidc/login), /forgot-password (POST /api/auth/password-reset/request|confirm); todas as rotas autenticadas passam pelo SessionActiveFilter",
+    "coverage": "RF2.CA01 … RF2.CA06 (corpo do card vazio → derivados do título + HU2, todos \"(CA a confirmar)\") · RF2.CA07 … RF2.CA14 (§7, controles de segurança D-14) — regra: o título do card define o RF; CAs alinhados ao código real do Bloco 3 (AuthController, IdentityService, AuthRateLimitFilter, HashBulkhead, SessionActiveFilter, JwtTokenIssuer, OidcService, PasswordResetService)",
     "cas": [
       {
         "id": "RF2.CA01",
-        "text": "Dado identifier (username ou e-mail) e senha, quando faço login, então a senha é conferida contra o hash Argon2id (PasswordHasherPort.matches, com re-hash transparente se os parâmetros mudaram) e recebo um access JWT (15 min; claims user_id, sid=familyId, role, profile_type) e um refresh token opaco (30 d se \"lembrar-me\", 24 h se não) guardado como hash no Redis (refresh:{familyId}) com espelho em refresh_tokens; o BFF devolve o refresh só em cookie HttpOnly + Secure + SameSite=Strict (ws_rt).",
+        "text": "Dado identifier (username ou e-mail) e password, quando faço POST /api/auth/login, então a senha é conferida contra o hash Argon2id (PasswordHasher.matches, re-hash transparente por needsRehash) e recebo Session {accessToken RS256 15 min (D-25; claims iss, aud, sub, sid=familyId, role, profile_type, username, jti), tokenType Bearer, expiresIn, refreshToken opaco, refreshExpiresAt, family, user, warnings}; o refresh (30 d se rememberMe, 24 h se não — SessionPolicy) é guardado só como SHA-256 (RefreshRecord.tokenHash) com espelho em refresh_tokens; o BFF devolve o refresh só no cookie ws_rt (HttpOnly, Secure, SameSite=Strict).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF2.CA02",
-        "text": "Dado credenciais erradas, usuário inexistente ou conta bloqueada por tentativas (mesmo com a senha certa), então a resposta é idêntica: 401 CREDENCIAIS_INVALIDAS, mesma mensagem, sem details (conta inexistente avalia um hash falso). Só depois da senha certa e fora do bloqueio: conta SUSPENDED/ANONYMIZED → 403 CONTA_INDISPONIVEL; twoFactorEnabled → 401 DOIS_FATORES_NECESSARIO (details.twoFactorRequired=true; conferência TOTP é a Q-83). DELETION_SCHEDULED entra com aviso (para cancelar a exclusão, D-18); PENDING_EMAIL_VERIFICATION não tem sessão antes de confirmar o código. Implementado em IdentityService.login; testes IdentityServiceTest.",
-        "note": "CA a confirmar — corrigido no Bloco 3, Q-82",
+        "text": "Dado conta inexistente, senha errada ou conta bloqueada, então 401 CREDENCIAIS_INVALIDAS com a mesma mensagem e tempo (hash falso dummyHash); conta SUSPENDED/ANONYMIZED (AccountStatus.blocksLogin) → 403 CONTA_INDISPONIVEL depois da senha certa; PENDING_VALIDATION e DELETION_SCHEDULED entram com warnings (Q-82; PENDING_EMAIL_VERIFICATION só tem sessão após confirmar o código, D-27); twoFactorEnabled → 401 DOIS_FATORES_NECESSARIO {twoFactorRequired} (conferência TOTP é a Q-83).",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF2.CA03",
-        "text": "Dado o botão \"Entrar com conta institucional\", então o fluxo OAuth2/OIDC Authorization Code + PKCE (Google Workspace ou Microsoft 365 / Entra ID) valida o id_token (assinatura JWKS, iss, aud, nonce, exp), vincula oidcSubject/oidcIssuer ao User existente de mesmo emailHash (ou cria conta ACTIVE, passwordHash nulo, emailVerified true) e emite a mesma sessão do CA01.",
+        "text": "Dado \"Entrar com conta institucional\", então o front faz OIDC Authorization Code + PKCE e envia POST /api/auth/oidc/login {idToken, nonce}; OidcService exige ws.oidc.enabled (404 OIDC_DESLIGADO), IdTokenVerifier (Nimbus) valida assinatura JWKS, iss, aud, nonce, exp (401 OIDC_TOKEN_INVALIDO); OidcAccountLinker vincula oidcSubject/oidcIssuer ao User de mesmo emailHash só com email_verified=true (401 OIDC_EMAIL_NAO_VERIFICADO, AuditLog OIDC_LINK_RECUSADO) ou cria conta ACTIVE sem senha; emite a mesma Session (AuditLog OIDC_LOGIN).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF2.CA04",
-        "text": "Dado um refresh token válido, quando o BFF chama /api/auth/refresh, então ocorre rotação: novo token da mesma família, o anterior fica revokedAt/rotatedFromId; reuso de um token já rotacionado revoga a família inteira e responde 401 SESSAO_INVALIDA (detecção de roubo).",
+        "text": "Dado um refresh válido, quando o BFF chama POST /api/auth/refresh, então ocorre rotação: novo token da mesma familyId, o anterior recebe revokedAt/rotatedFromHash; reuso de token já rotacionado revoga a família inteira, grava AuditLog REFRESH_REUSO e responde 401 SESSAO_INVALIDA; expirado ou desconhecido → 401 SESSAO_INVALIDA; conta que passou a blocksLogin() → família revogada.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF2.CA05",
-        "text": "Dado o usuário autenticado, então logout revoga a família; GET /api/auth/sessions lista dispositivos (deviceName, IP, lastUsedAt, atual) e DELETE /api/auth/sessions/{familyId} revoga outra sessão; trocar a senha encerra todas as outras famílias. SessionActiveFilter recusa access tokens cuja família foi revogada (sid).",
+        "text": "Dado o usuário autenticado, então POST /api/auth/logout revoga a família (AuditLog LOGOUT); PUT /api/auth/password exige a senha atual (mesmo bloqueio do login), grava PASSWORD_CHANGED e revoga as outras famílias (SESSIONS_REVOKED); o SessionActiveFilter recusa a cada requisição access tokens cuja família foi revogada (sid → 401 SESSAO_ENCERRADA). GET /api/auth/sessions e DELETE /api/auth/sessions/{familyId} são planejados (aba Sessões do RF3 §7).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF2.CA06",
-        "text": "Dado tentativas repetidas, então há limite por IP e por identifier (429 MUITAS_TENTATIVAS), AuditLog LOGIN_OK / LOGIN_FALHA / REFRESH_REUSO / LOGOUT com correlationId e sem senha, e User.lastLoginAt é atualizado; todas as mensagens são i18n (pt-BR/en/es).",
+        "text": "Dado tentativas repetidas, então há limite por IP (AuthRateLimitFilter) e por conta (RateLimitPort login-fail), AuditLog LOGIN_OK / LOGIN_FALHA / LOGIN_BLOQUEADO_TENTATIVAS / REFRESH_REUSO / LOGOUT com correlationId, e-mail mascarado e sem senha ou token; User.lastLoginAt é atualizado; mensagens i18n (pt-BR/en/es). Redefinição por e-mail: POST /api/auth/password-reset/request (resposta igual exista ou não a conta, 5/h por pessoa) e /confirm {token, newPassword} (422 LINK_INVALIDO), que tira a conta do bloqueio.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF2.CA07",
-        "text": "IdentityService.login (hash falso para conta inexistente), PasswordHasherPort.matches",
-        "note": "CA a confirmar, D-14",
+        "text": "IdentityService.login (ordem das checagens), dummyHash",
+        "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF2.CA08",
-        "text": "RateLimitPort.tryAcquire/release/reset (login-fail, 5, 15 min), RedisRateLimiter (Lua)",
-        "note": "CA a confirmar, D-14",
+        "text": "RateLimitPort.tryAcquire/release/reset, RedisRateLimit (Lua), SessionPolicy.maxLoginFailures/lockWindow",
+        "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF2.CA09",
-        "text": "IdentityService.passwordMatchesWithLockout/changePassword/reauthenticate",
-        "note": "CA a confirmar, D-14",
+        "text": "IdentityService.changePassword, AccountService.updateSensitive/requestDeletion",
+        "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF2.CA10",
         "text": "AuthRateLimitFilter.RULES, ClientIpResolver",
-        "note": "CA a confirmar, D-14",
+        "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF2.CA11",
         "text": "HashBulkhead",
-        "note": "CA a confirmar, D-14",
+        "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF2.CA12",
-        "text": "IdentityService.loginOidc, OidcClientPort.validateIdToken (email_verified)",
-        "note": "CA a confirmar, D-14",
+        "text": "OidcAccountLinker (email_verified), AuthCodes.OIDC_EMAIL_NAO_VERIFICADO",
+        "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF2.CA13",
-        "text": "JwtTokenIssuer.ttl (Q-49), SessionActiveFilter",
-        "note": "CA a confirmar, D-14",
+        "text": "JwtTokenIssuer, JwtKeys, SessionActiveFilter, BFF ws_rt",
+        "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF2.CA14",
-        "text": "AuditLog (LOGIN_OK, LOGIN_FALHA, LOGIN_BLOQUEADO_TENTATIVAS, REFRESH_REUSO), IdentityService.maskEmail",
-        "note": "CA a confirmar, D-14",
+        "text": "AuditActions.LOGIN_OK/LOGIN_FALHA/LOGIN_BLOQUEADO_TENTATIVAS/REFRESH_REUSO/LOGOUT, AuditEvent, Masking",
+        "note": "",
         "kind": "rastreabilidade"
       }
     ]
@@ -279,43 +279,43 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 3,
     "title": "Editar informações pessoais e preferências do perfil do usuário",
     "hu": "COMO usuário autenticado no sistema POSSO editar minhas informações pessoais e preferências de perfil PARA manter meus dados atualizados e personalizar minha experiência na plataforma.",
-    "summary": null,
-    "route": "Meu perfil → Editar (/profile/edit) e /settings com abas na URL (?tab=conta|aparencia|privacidade|dados|sessoes|termos, §7; substitui /settings/preferences) — rotas sugeridas; a aba Meu perfil é /profile (RF19)",
-    "coverage": "RF3.CA01 … RF3.CA06 (RF1–RF18 não têm CAs no board: derivados da HU3 e marcados \"CA a confirmar\") · RF3.CA07–CA24 (§7, configurações e direitos do titular — o \"RF23\" do FAI, Q-46 —, D-15…D-21, \"CA a confirmar\")",
+    "summary": "Classes (real) existem em origin/main (Bloco 3, PR #16); (planejado): UserConsent/ConsentEvent/ConsentChecks, DataExportRequest/DataExportWorker, DataSubjectRequest, PersonalDataRegistry, AccountAnonymizationJob, upload de avatar (PendingUpload/MediaObject, D-22), GET/DELETE /api/auth/sessions, PolicyGateFilter.",
+    "route": "/settings com abas na URL ?tab=conta|aparencia|privacidade|dados|sessoes|termos|validacao (ABAS_POR_PERFIL §9); API GET|PATCH /api/me, PATCH /api/me/sensitive, GET|PUT /api/me/preferences, POST|DELETE /api/me/deletion",
+    "coverage": "RF3.CA01 … RF3.CA06 (corpo do card vazio → derivados do título + HU3, todos \"(CA a confirmar)\") · RF3.CA07 … RF3.CA24 (§7, configurações e direitos do titular, D-15…D-21) — regra: o título do card define o RF; CAs alinhados ao código real do Bloco 3 (MeController, AccountService, UserPreferences, Guard.requireNotDeletionScheduled)",
     "cas": [
       {
         "id": "RF3.CA01",
-        "text": "Dado o usuário autenticado, quando edito fullName, displayName, jobTitle (cargo), bio, phone, avatarUrl, coverUrl, então os campos são validados (tamanhos da TAXONOMIA, telefone E.164) e salvos via PATCH /api/me; username é imutável após a verificação (422 USERNAME_IMUTAVEL); erros voltam como 422 VALIDACAO com details por campo.",
+        "text": "Dado o usuário autenticado (CurrentUser), quando edito fullName (3–160), displayName (≤ 80), jobTitle (≤ 120), bio (≤ 1000), avatarUrl/coverUrl (https:// ou caminho interno) por PATCH /api/me, então AccountService.update valida e salva com lock otimista (User.version); username é imutável (422 USERNAME_IMUTAVEL); erros voltam como 422 VALIDACAO details.fields; conta DELETION_SCHEDULED → Guard.requireNotDeletionScheduled (403 EXCLUSAO_AGENDADA, D-18).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA02",
-        "text": "Dado a troca de e-mail/telefone (PATCH /api/me/sensitive), então é exigida a senha atual no mesmo bloqueio do login (401 REAUTENTICACAO_FALHOU; 6º erro → 429 MUITAS_TENTATIVAS + Retry-After), o emailHash deve ser único (409 EMAIL_EM_USO — aceitável: a pessoa já está autenticada), emailVerified volta a false e um novo código é enviado. Divergência a confirmar: hoje o e-mail novo passa a valer imediatamente para login (não há coluna de \"e-mail pendente\" no V2); manter o antigo até confirmar exige V4. OIDC recente como reautenticação: Q-85.",
-        "note": "CA a confirmar — ajustado no Bloco 3",
+        "text": "Dado a troca de e-mail ou telefone (PATCH /api/me/sensitive {currentPassword, email, phone}), então IdentityService.reauthenticate reconfere a senha atual com o mesmo bloqueio do login (login-fail, 6º erro → 429 MUITAS_TENTATIVAS + Retry-After; errada → 401 REAUTENTICACAO_FALHOU; 422 SENHA_ATUAL_INCORRETA é só da troca de senha), o emailHash novo deve ser único (409 EMAIL_EM_USO), emailVerified volta a false, RegistrationService.resendVerification envia o código ao e-mail novo e AuditLog SENSITIVE_DATA_UPDATED grava os campos alterados com e-mail mascarado.",
+        "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA03",
-        "text": "Dado a tela de preferências, quando altero theme (ThemeMode AUTO·CLARO·ESCURO·ALTO_CONTRASTE·BLUEPRINT), language (UiLanguage PT_BR·EN·ES), density, fontScale, reduceMotion, deskSkin (DeskSkin), defaultCardSkin, timezone, wipLimit, aiModeDefault (ECONOMIA·AVANCADO) e notificationPrefsJson (inclui dailyTaskAt 08:00, RF44.CA10), então elas são aplicadas imediatamente no cliente (sem recarregar) e persistidas em user_preferences (PUT /api/me/preferences), respeitando RF38.CA08.",
+        "text": "Dado a aba Aparência, quando altero theme (ThemeMode AUTO·CLARO·ESCURO·ALTO_CONTRASTE·BLUEPRINT), language (PT_BR·EN·ES), density, fontScale, reduceMotion, deskSkin (DeskSkin), defaultCardSkin, timezone, wipLimit, aiModeDefault (ECONOMIA·AVANCADO), notificationPrefsJson (inclui dailyTaskAt, RF44.CA10) e dashboardLayoutJson, então o cliente aplica na hora (data-theme, i18n) e persiste por PUT /api/me/preferences (AccountService.updatePreferences, AuditLog PREFERENCES_UPDATED); GET /api/me/preferences devolve os padrões quando ainda não há linha.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA04",
-        "text": "Dado as opções de privacidade, quando altero hypeVisibility (PUBLICO·EMPRESA·SO_EU, RF45.CA06) e rankingOptOut (RF43.CA05), então a mudança vale na próxima leitura do perfil/ranking e fica em AuditLog PRIVACY_CHANGED.",
+        "text": "Dado a aba Privacidade, quando altero hypeVisibility (PUBLICO·EMPRESA·SO_EU, padrão SO_EU, RF45.CA06) e rankingOptOut (RF43.CA05) no mesmo PATCH /api/me, então valor inválido → 422 details.fields.hypeVisibility, a mudança vale na próxima leitura do perfil/ranking e fica em AuditLog PROFILE_UPDATED (campos alterados, sem valores pessoais).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA05",
-        "text": "Dado o upload de avatar ou capa, então o arquivo (≤ 5 MB, mime detectado pelo conteúdo: png/jpg/webp) vira MediaObject no S3/MinIO com accessClass PUBLICO, um PipelineJob THUMBNAIL gera as variantes de forma assíncrona e o User.avatarUrl/coverUrl aponta para a variante; o anterior é removido quando substituído.",
+        "text": "Dado o upload de avatar ou capa (planejado, D-22), então o arquivo (≤ 5 MB, mime por magic bytes png/jpg/webp, reencode sem EXIF) vira PendingUpload → MediaObject com accessClass PUBLIC, PipelineJob THUMBNAIL gera as variantes e avatarUrl/coverUrl apontam para a variante; o anterior é removido quando substituído.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA06",
-        "text": "Dado qualquer alteração de perfil, então ela gera AuditLog PROFILE_UPDATED (sem valores sensíveis, com correlationId) e o evento UserProfileUpdated (AFTER_COMMIT) reindexa a pessoa na busca (OpenSearch, RF27) e invalida o cache do cabeçalho do perfil (RF19); campos LGPD (email, phone) permanecem cifrados com AesGcmStringConverter.",
+        "text": "Dado qualquer alteração de perfil, então AuditLog PROFILE_UPDATED/PREFERENCES_UPDATED com correlationId e, após o commit, o evento UserProfileUpdated (planejado) reindexa a pessoa no OpenSearch ws-people (RF17/RF27) e invalida o cache do cabeçalho do perfil (RF6/RF16); GET /api/users/{id} devolve o UserView público de terceiros (sem e-mail/telefone, Guard.ownerOrAdmin para os campos privados).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -327,103 +327,103 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF3.CA08",
-        "text": "Dado a troca de e-mail, então ela exige a senha atual com o bloqueio da SEG RN49.03 (6º erro → 429 MUITAS_TENTATIVAS + Retry-After), envia um código ao e-mail novo e um aviso ao antigo; a troca de senha encerra as outras sessões (RF2.CA05). Refina o CA02.",
+        "text": "Dado a troca de e-mail, então ela exige a senha atual com o bloqueio login-fail (IdentityService.reauthenticate: errada → 401 REAUTENTICACAO_FALHOU, 6º erro → 429 MUITAS_TENTATIVAS + Retry-After; real), envia o código ao e-mail novo (real, resendVerification) e um aviso ao antigo (planejado, Q-84); hoje o e-mail novo vale de imediato para login (sem coluna de e-mail pendente — divergência a confirmar); a troca de senha encerra as outras sessões (SESSIONS_REVOKED, real).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA09",
-        "text": "Dado a aba Privacidade, então hypeVisibility nasce SO_EU e rankingOptOut false; alterar grava AuditLog PRIVACY_CHANGED e vale na próxima leitura (refina o CA04).",
+        "text": "Dado a aba Privacidade, então hypeVisibility nasce SO_EU e rankingOptOut false; alterar grava AuditLog PROFILE_UPDATED com os campos alterados (real; o nome PRIVACY_CHANGED do plano não existe em AuditActions) e vale na próxima leitura.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA10",
-        "text": "Dado os consentimentos, então existem só para finalidades opcionais (ConsentPurpose proposto: RESUMO_PROFISSIONAL_IA, RF43.CA04; GRAVACAO_REUNIOES_PADRAO, preferência — o consentimento por reunião continua no RF37); cada uma mostra title, description, legalBasis, article, sensitive, grantedAt, revokedAt e policyVersion (campos iguais aos do OpenAPI, CA24); nunca vem marcada; revogar tem o mesmo esforço que conceder (PUT /api/me/consents/{purpose} {granted}).",
+        "text": "Dado os consentimentos, então existem só para finalidades opcionais (ConsentPurpose: RESUMO_PROFISSIONAL_IA, RF43.CA04; GRAVACAO_REUNIOES_PADRAO); cada uma mostra title, description, legalBasis, article, sensitive, grantedAt, revokedAt, policyVersion (iguais ao OpenAPI, CA24); nunca vem marcada; revogar tem o mesmo esforço que conceder (PUT /api/me/consents/{purpose} {granted}).",
         "note": "CA a confirmar, Q-67",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA11",
-        "text": "Dado conceder ou revogar, então grava-se uma linha em consent_events (append-only) e o estado em user_consents, mais AuditLog CONSENT_GRANTED ou CONSENT_REVOKED; o histórico aparece na própria aba.",
+        "text": "Dado conceder ou revogar, então grava-se consent_events (append-only) e o estado em user_consents, mais AuditLog CONSENT_GRANTED ou CONSENT_REVOKED; o histórico aparece na aba.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA12",
-        "text": "Dado o enum ConsentPurpose, então cada valor tem um ponto de verificação registrado em ConsentChecks (mapa finalidade → método que o serviço chama antes do tratamento); ConsentCoverageTest falha o CI para finalidade sem checagem, e finalidade sem uso não aparece na tela.",
+        "text": "Dado o enum ConsentPurpose, então cada valor tem um ponto de verificação em ConsentChecks; ConsentCoverageTest falha o CI para finalidade sem checagem, e finalidade sem uso não aparece na tela.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA13",
-        "text": "Dado \"Quais dados temos\" (art. 9º; art. 18 I e II), então a página lista, por categoria, finalidade, base legal, retenção e com quem é compartilhada (provedores de IA com mascaramento, Google Workspace, Microsoft 365), tudo vindo do PersonalDataRegistry (GET /api/me/data-map) — o mesmo registro que a exportação usa.",
+        "text": "Dado \"Quais dados temos\" (art. 9º; art. 18 I e II), então a página lista, por categoria, finalidade, base legal, retenção e compartilhamento (IA mascarada, Google Workspace, Microsoft 365), tudo vindo do PersonalDataRegistry (GET /api/me/data-map).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA14",
-        "text": "Dado \"Exportar meus dados\", então POST /api/me/exports cria DataExportRequest REQUESTED e enfileira PipelineJob DATA_EXPORT (assíncrona); limite 3 por dia por pessoa (429 LIMITE_EXPORTACOES); estados REQUESTED → PROCESSING → READY → EXPIRED | FAILED; GET /api/me/exports lista com requestedAt e expiresAt.",
+        "text": "Dado \"Exportar meus dados\", então POST /api/me/exports cria DataExportRequest REQUESTED e enfileira PipelineJob DATA_EXPORT; limite 3 por dia por pessoa (RateLimitPort, 429 LIMITE_EXPORTACOES); GET /api/me/exports lista com requestedAt e expiresAt.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA15",
-        "text": "Dado a exportação pronta, então o arquivo tem nome e tipo corretos (.json + application/json, ou um ZIP de verdade), sai no idioma da pessoa, fica em restricted/users/{userId}/exports/, só o dono baixa (OwnMedia, 403 para os outros), o link expira em 7 dias (410 EXPORTACAO_EXPIRADA) e há notificação quando fica pronta.",
+        "text": "Dado a exportação pronta, então o arquivo tem nome e tipo corretos (.json + application/json, ou ZIP real), sai no idioma da pessoa, fica em restricted/users/{userId}/exports/, só o dono baixa (OwnMedia, 403), expira em 7 dias (410 EXPORTACAO_EXPIRADA) e há notificação quando pronta.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA16",
-        "text": "Dado o conteúdo, então inclui perfil, preferências, aceites, consentimentos e histórico; sessões, lotações e nomeações; tarefas e projetos de autoria própria e as próprias mensagens do DECIA (nunca as de outras pessoas); decisões de que participou, pontos, reconhecimentos; inferências de IA sobre a pessoa e a auditoria sobre ela.",
+        "text": "Dado o conteúdo, então inclui perfil, preferências, aceites, consentimentos; sessões, lotações; tarefas e projetos próprios e as próprias mensagens do DECIA; decisões, pontos, reconhecimentos; inferências de IA e auditoria sobre a pessoa.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA17",
-        "text": "Dado uma entidade com coluna de pessoa (userId, authorId, actorId, ownerId, recipientId…), então ela está no PersonalDataRegistry ou em EXCLUDED_WITH_REASON; PersonalDataRegistryCoverageTest falha o CI para entidade nova sem classificação.",
+        "text": "Dado uma entidade com coluna de pessoa, então ela está no PersonalDataRegistry ou em EXCLUDED_WITH_REASON; PersonalDataRegistryCoverageTest falha o CI para entidade nova sem classificação.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA18",
-        "text": "Dado \"Outros direitos\", então a pessoa pode abrir DataSubjectRequest de revisão de decisão automatizada (art. 20: HSE, ranking, Hype ou classificação por IA, com targetId), oposição e informação sobre compartilhamento; cada pedido tem prazo (dueAt), status, encarregado responsável e AuditLog DSR_OPENED; o canal do encarregado (WS_LEGAL_DPO_CONTACT) aparece na aba. Correção é pela aba Conta.",
+        "text": "Dado \"Outros direitos\", então a pessoa abre DataSubjectRequest de revisão de decisão automatizada (art. 20: HSE, ranking, Hype, classificação IA), oposição e informação sobre compartilhamento; cada pedido tem dueAt, status, encarregado e AuditLog DSR_OPENED; o canal (WS_LEGAL_DPO_CONTACT) aparece na aba.",
         "note": "CA a confirmar, Q-71",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA19",
-        "text": "Dado \"Encerrar minha conta\", então o pedido exige a senha atual com bloqueio, e antes de confirmar o Dialog mostra o que será anonimizado e o que fica guardado e por quê (documentos públicos com guarda legal: atas, decisões validadas, DecisionTrace, chancelas emitidas, ledger; e os aceites — art. 16 e tabela de temporalidade); a conta vai a DELETION_SCHEDULED por 30 dias, cancelável; AuditLog ACCOUNT_DELETION_REQUESTED / ACCOUNT_DELETION_CANCELLED.",
+        "text": "Dado \"Encerrar minha conta\", então o pedido exige a senha atual com bloqueio (real: POST /api/me/deletion {currentPassword, reason}, AuditLog ACCOUNT_DELETION_REQUESTED, deletionScheduledAt = +30 d, DeletionReceipt.cancelable); antes de confirmar, o Dialog mostra o que será anonimizado e o que fica (planejado); já agendada → 409 EXCLUSAO_AGENDADA.",
         "note": "CA a confirmar, Q-68",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA20",
-        "text": "Dado DELETION_SCHEDULED, então o login mostra um Banner com a data e o botão de cancelar, criar conteúdo recebe 403 EXCLUSAO_AGENDADA e o perfil fica oculto (busca, rankings, Mural).",
+        "text": "Dado DELETION_SCHEDULED, então o login devolve warnings com a data (real), o Banner mostra a data e o botão cancelar (DELETE /api/me/deletion, real, ACCOUNT_DELETION_CANCELLED; sem agendamento → 409 EXCLUSAO_NAO_AGENDADA), editar o perfil recebe 403 EXCLUSAO_AGENDADA (Guard.requireNotDeletionScheduled, real) e criar conteúdo receberá o mesmo 403 quando as rotas existirem (D-18); o pedido também encerra as outras sessões.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA21",
-        "text": "Dado o prazo vencido, então o AccountAnonymizationJob roda por @Scheduled com lock (ShedLock) que impede execução dupla em várias réplicas; teste 1 prova que o método está agendado; teste 2 (Testcontainers) prova que ele anonimiza os dados pessoais no MySQL, apaga arquivos e documentos de restricted/, limpa as projeções no Cassandra e no OpenSearch, revoga as sessões e grava ACCOUNT_DELETION_COMPLETED, mantendo policy_acceptances, consent_events e os documentos públicos.",
+        "text": "Dado o prazo vencido, então o AccountAnonymizationJob roda por @Scheduled com lock (ShedLock); teste 1 prova o agendamento; teste 2 (Testcontainers) prova a anonimização no MySQL, S3 restricted/, Cassandra e OpenSearch, a revogação das sessões e ACCOUNT_DELETION_COMPLETED, mantendo policy_acceptances, consent_events e documentos públicos.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA22",
-        "text": "Dado as abas Sessões e Termos e políticas, então a primeira reaproveita RF2.CA05 e a segunda mostra, por documento, a versão aceita, a data, o canal e o link para a versão vigente (GET /api/me/policies).",
+        "text": "Dado as abas Sessões e Termos e políticas, então a primeira lista refresh_tokens por família (deviceName, createdIp, lastUsedAt, atual) com revogação, e a segunda mostra por documento a versão aceita, data, canal e link para a vigente (GET /api/me/policies).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA23",
-        "text": "Dado qualquer controle da tela, então valem os padrões LGPD: privacidade por padrão, aceitar e recusar com o mesmo destaque, nenhum texto que constranja quem recusa, foco visível, navegação por teclado e reduceMotion respeitado.",
+        "text": "Dado qualquer controle, então valem os padrões LGPD: privacidade por padrão, aceitar e recusar com o mesmo destaque, sem texto que constranja quem recusa, foco visível, teclado e reduceMotion.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA24",
-        "text": "Dado o contrato front/back, então os tipos TypeScript do front são gerados do OpenAPI (springdoc → openapi-typescript) e o CI falha se o arquivo gerado divergir do commitado ou se o front ler um campo que o back não declara (defeito 7 do FAI).",
+        "text": "Dado o contrato front/back, então os tipos TypeScript são gerados do OpenAPI (springdoc → openapi-typescript) e o CI falha se o gerado divergir do commitado ou se o front ler um campo que o back não declara (D-21).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
@@ -434,97 +434,97 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 4,
     "title": "Utilizar o criador de tarefas, escolhendo o tipo do arquivo e editando detalhes, em modo manual ou com IA",
     "hu": "COMO usuário logado dentro do sistema WS POSSO acessar a aba criar nova tarefa PARA criar um esquema de tarefa único e personalizado conforme as diretrizes de minha equipe de trabalho.",
-    "summary": "A tarefa (TaskItem) é a unidade mínima do Work Station (= peça de roupa). O título atual do card destaca três coisas que o corpo (RF20) detalha: (a) escolher o tipo do arquivo — a aba da fonte na etapa 1 determina SourceKind e o TaskType sugerido (tabela abaixo), editável na etapa 3; (b) editar detalhes — etapas 3 (dados da tarefa, taxonomia oficial) e 4 (Mais detalhes); (c) modo manual ou com IA — no modo Com IA a etapa 2 (TaskDetectionService → AiEngine PREENCHER_TAREFA) pré-preenche o formulário com confiança por campo e faísca ✦, e a aba \"Texto com IA\" redige a tarefa; no modo Manual a detecção é pulada (ou falha, CA03) e o formulário nasce vazio. As 5 etapas são: (1) Fonte; (2) Detecção por IA; (3) Dados da tarefa (prazo legal via DeadlineService, órgão via busca web); (4) Mais detalhes (chancelas RF39, visibilidade, estado inicial, situação do documento, protocolo, guarda, Balcão RF40, tags, dependências, projeto/fase); (5) Arte do card (thumbnail assíncrono RF38). Antivírus (AntivirusPort), OCR (OcrPort) e thumbnail rodam como PipelineJob após o commit e o resultado entra no Acervo (RF6/RF41).",
-    "route": "Criar Tarefa (/tasks/new; também pela folha \"+ Criar\" e pelo botão \"Cadastrar nova tarefa\" do Criador de Projetos, RF5)",
-    "coverage": "RF20.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 · CA15 — corpo do card = card RF20 (o card RF4 está vazio; o criador de tarefas está descrito no corpo do card RF20, cujos CAs são citados aqui como estão escritos; ver RENUMERACAO.md)",
+    "summary": "A tarefa (TaskItem, TAXONOMIA §2.1) é a unidade mínima do Work Station (= peça de roupa). O título do card destaca o que o corpo (RF20) detalha em 5 etapas: (1) Fonte — a aba escolhida define SourceKind e o TaskType sugerido; (2) Detecção por IA — AiEngine capability PREENCHER_TAREFA pré-preenche com confiança por campo e faísca ✦ (pulada no modo Manual ou quando a IA falha, CA03); (3) Dados da tarefa — taxonomia oficial, prazo legal (LegalDeadlineRule), órgão (OrgEntity via busca web); (4) Mais detalhes — chancelas sugeridas (RF39), visibilidade, estado inicial, situação do documento, protocolo, guarda, Balcão (RF40), tags, dependências, projeto/fase; (5) Arte do card — thumbnail assíncrono (RF38/RF11). Antivírus, OCR e thumbnail rodam como PipelineJob após o commit e a tarefa entra no Acervo (RF6/RF41).",
+    "route": "Criar Tarefa (/tasks/new; folha \"+ Criar\" do SidebarNav; botão \"Cadastrar nova tarefa\" do Criador de Projetos, RF5); API POST /api/tasks, POST /api/tasks/uploads, POST /api/tasks/detect, GET /api/org-entities/search, GET /api/legal-deadlines/compute",
+    "coverage": "RF20.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 · CA15 — corpo do card = card RF20 (o card RF4 está vazio; o criador de tarefas está descrito no corpo do card RF20, cujos CAs são citados aqui como estão escritos; ver RENUMERACAO.md). Nenhuma classe deste RF existe ainda no código: tudo (planejado), exceto os transversais do Bloco 1–3 (SecurityConfig, CorrelationIdFilter, Guard, AuditLogPort, AuthRateLimitFilter, S3StorageConfig, AiProvidersConfig).",
     "cas": [
       {
         "id": "RF20.CA01",
-        "text": "tipo",
+        "text": "UploadService, MediaStoragePort, AntivirusPort, MediaObject, ExternalDocPort",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF20.CA02",
-        "text": "modo (Com IA)",
+        "text": "TaskDetectionService, AiEngine (PREENCHER_TAREFA), AiInferenceLog, TaskItem.aiConfidenceJson/aiGenerated",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF20.CA03",
-        "text": "modo (Manual / fallback)",
+        "text": "TaskDetectionService (fallback vazio)",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF20.CA04",
-        "text": "detalhes",
+        "text": "TaskCreationService.create/validate, TaskRepositoryPort, ProjectTask (RF5)",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF20.CA05",
-        "text": "tipo",
+        "text": "TaskCreationService.createBatch, TaskType.PASTA",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF20.CA06",
-        "text": "tipo",
+        "text": "TaskCreationService.fromPaste, SourceKind.COLAR",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF20.CA07",
-        "text": "tipo",
+        "text": "ExternalDocPort.watch, TaskVersion, LinkMode, PipelineJob SYNC_EXTERNO",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF20.CA08",
-        "text": "tipo",
+        "text": "TaskCreationService.fromEmail, EmailInboundAdapter, TaskAttachment",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF20.CA09",
-        "text": "tipo",
+        "text": "TaskCreationService.fromProtocol, ProtocolPort, TaskType.PROTOCOLO, TaskItem.protocolNumber",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF20.CA10",
-        "text": "detalhes",
+        "text": "OrgEntityLookupService, OrgLookupPort, OrgEntity",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF20.CA11",
-        "text": "detalhes",
+        "text": "DeadlineService, LegalDeadlineRule, TaskItem.legalDueAt/legalOverrideReason",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF20.CA12",
-        "text": "tipo",
+        "text": "OcrPort, PipelineJob OCR (REPROCESSAR), TaskAttachment.ocrStatus",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF20.CA13",
-        "text": "detalhes (Mais detalhes)",
+        "text": "SealSuggestionService, SealBond SUGERIDA→ACEITA",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF20.CA14",
-        "text": "detalhes",
+        "text": "TaskCreationService.validate, GlobalExceptionHandler (ApiError.details)",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF20.CA15",
-        "text": "detalhes (Mais detalhes)",
+        "text": "ModelOffer, TaskItem.offeredInCounter",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -535,91 +535,91 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 5,
     "title": "Utilizar o criador de projetos, escolhendo em cada fase do projeto as unidades de tarefa, em modo manual ou com IA",
     "hu": "COMO usuário logado dentro do sistema WS POSSO acessar a aba criar novo projeto PARA criar um esquema de projeto único e personalizado conforme as diretrizes de minha equipe de trabalho.",
-    "summary": "O Esquema de Projeto (ProjectScheme, = look) é a composição ordenada de tarefas (TaskItem, = peças) em 7 fases (ProjectPhase: DEMANDA · PLANEJAMENTO · ELABORAÇÃO · ANÁLISE · APROVAÇÃO · EXECUÇÃO · ENCERRAMENTO). Cada fase tem um select múltiplo pesquisável cujo conteúdo são as unidades de tarefa do Acervo do usuário (RF6/RF41) compatíveis com a fase (mapa PHASE_BY_CATEGORY, equivalente ao SLOT_BY_CATEGORY do FAI). Cada tarefa selecionada vira um ProjectTask (fase, ordem, responsável, prazo) e as dependências viram ProjectTaskDependency (sem ciclos). O compositor funciona em modo Manual ou Com IA (AiEngine COMPOR_PROJETO devolve 3 propostas usando só tarefas do Acervo), aceita \"Criar a partir de modelo\" (Kit / modelo chancelado, com Remix e crédito), abre o criador de tarefas (RF4, corpo RF20) em modal e mantém autosave do rascunho em ProjectScheme.autosaveDraftJson.",
-    "route": "Criar Projeto (/projects/new)",
-    "coverage": "RF21.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 — corpo do card = antigo RF21 (o card RF5 traz os CAs escritos como RF21.CA01–14; são citados aqui como estão no board, ver RENUMERACAO.md)",
+    "summary": "O Esquema de Projeto (ProjectScheme, TAXONOMIA §3.1) é a composição ordenada de tarefas (ProjectTask) por 7 fases (ProjectPhase: DEMANDA · PLANEJAMENTO · ELABORAÇÃO · ANÁLISE · APROVAÇÃO · EXECUÇÃO · ENCERRAMENTO). Os selects de cada fase listam somente as unidades de tarefa do Acervo do usuário (RF6/RF41) compatíveis com a fase (mapa categoria → fase, PhaseCompatibility, como SLOT_BY_CATEGORY do FAI): Ofício/Protocolo → DEMANDA; ETP/TR/Cronograma → PLANEJAMENTO; Projeto básico/Planilha/Parecer → ELABORAÇÃO/ANÁLISE; Ata/Portaria → APROVAÇÃO; Contrato/Vistoria → EXECUÇÃO; Relatório final → ENCERRAMENTO; OUTRO em qualquer fase. Layout: Acervo filtrável (esquerda) · slots por fase (centro, SelectList + arrastar) · Ficha do projeto (direita: título, emoji, objetivo, processo ≤ 2, natureza ≤ 2, departamento, exercício, programa RF25, eixo RF24, prioridade, visibilidade herdada do perfil RF3, Manual / Com IA, orientação livre, foto, chancelas vindas das tarefas RF39, pré-visualização com capa-mosaico e PhaseBar RF38).",
+    "route": "Criar Projeto (/projects/new; folha \"+ Criar\"); API POST /api/projects, PUT /api/projects/draft, GET /api/me/tasks?phase=&q= (selects), POST /api/projects/compose-ai, POST /api/projects/from-model/{id}, POST /api/projects/{id}/publish, POST /api/projects/{id}/decia-session (RF29)",
+    "coverage": "RF21.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 — corpo do card = antigo RF21 (o card RF5 traz os CAs escritos como RF21.CA01–14 e são citados como estão no board; ver RENUMERACAO.md). Todas as classes do RF são (planejado); transversais reais do Bloco 1–3: SecurityConfig, SessionActiveFilter, Guard, CorrelationIdFilter, AuditLogPort, RedisAdaptersConfig, AiProvidersConfig.",
     "cas": [
       {
         "id": "RF21.CA01",
-        "text": "ProjectComposerService.openComposer, AcervoService.countAvailable · Atividades U1 → A1 → A2 (sim) → W1 · Sequência GET /api/projects/composer → else 2 ou mais → \"Acervo à esquerda, 7 selects vazios, ficha à direita\" · Componentes AcervoPanel, PhaseSelect x7, ProjectSheet",
+        "text": "PhaseCompatibility.optionsFor, TaskRepositoryPort.findMine",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF21.CA02",
-        "text": "Atividades A2 (não) → W2 (orientação + atalho /tasks/new) · Sequência alt menos de 2 tarefas DISPONIVEIS → {composerEnabled: false, hint: CADASTRE_TAREFAS}",
+        "text": "PhaseCompatibility (contagem), EmptyState",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF21.CA03",
-        "text": "AcervoService.listCompatible (nota PHASE_BY_CATEGORY, desabilitadas com motivo), tabela PHASE_BY_CATEGORY do cabeçalho, enum TaskState · Atividades U3 → A3 → P1 · Sequência GET /api/acervo/tasks?phase=PLANEJAMENTO&q=ETP → \"BLOQUEADA/ARQUIVADA com disabled e disabledReason\" · Componentes AcervoController, PhaseSelect",
+        "text": "PhaseCompatibility.phasesFor/optionsFor, TaskOption.disabledReason, TaskRepositoryPort.findSharedWithMe",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF21.CA04",
-        "text": "Classes ProjectScheme (origin CRIAR_PROJETO, creationMode, visibility herdada), ProjectTask (nota responsibleId/dueAt padrão), TaskStateLog, AcervoService.markInUse · Atividades U7 → A11 → A12 (sim) → A17 → A18 → P3 · Sequência else válido (CA04): UPDATE project_schemes, INSERT project_tasks, UPDATE tasks EM_USO, INSERT task_state_log · Transição RASC_AUTO → RASC_SALVO e nota",
+        "text": "ProjectCompositionService.create/resolveDefaults, ProjectTask, TaskStateMachine, SchemeOrigin.CRIAR_PROJETO",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF21.CA05",
-        "text": "ProjectComposerService.validateMinimum · Atividades A12 (não) → A13 422 FASES_MINIMAS → W6 · Sequência alt sem tarefa ou só DEMANDA → 422 FASES_MINIMAS · Nota do estado RASC_SALVO",
+        "text": "ProjectCompositionService.validateMinimum",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF21.CA06",
-        "text": "ProjectComposerService.composeWithAi, AiEngine (COMPOR_PROJETO), AiInferenceLog, enums CreationMode.COM_IA, SchemeOrigin.AUTOPILOTO · Atividades U2 (Com IA) → I1 → P4 → U11 · Sequência opt modo Com IA: POST /api/projects/ai-compose → 3 propostas → INSERT ai_inference_log · Componentes AiComposePanel, ai-providers",
+        "text": "ProjectAutopilotService, AiEngine (COMPOR_PROJETO), AiInferenceLog, SchemeOrigin.AUTOPILOTO",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF21.CA07",
-        "text": "TaskCreatorService.save, ProjectController ..> TaskCreatorService · Atividades U4 → W3 → U3 · Sequência \"Cadastrar nova tarefa dentro do select\" → POST /api/tasks (modal RF4) → \"já selecionada na fase\" · Componentes Modal TaskCreator RF4, TaskController RF4",
+        "text": "SelectList.onCreateNew, TaskCreationService (RF4)",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF21.CA08",
-        "text": "Classes ProjectTaskDependency (nota 422), ProjectComposerService.validateDependencies/criticalPath, ProjectScheme.criticalPathJson, ProjectTask.isCritical/slackDays · Atividades U5 → A4 → A5/A6 → A7/A8 → A9 · Sequência POST /api/projects/validate-dependencies → alt ciclo ou prazo inválido / else válido (criticalPath CPM) · Componentes DependencyEditor, CriticalPathPreview, D4",
+        "text": "DependencyGraph.assertNoCycle/assertDatesConsistent/criticalPath, ProjectTaskDependency, ProjectScheme.criticalPathJson",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF21.CA09",
-        "text": "Classes SealBond (TASK ou PROJECT), TaskItem.sealIdsJson, ProjectScheme.sealIdsJson, SealService.inheritFromTasks/suggestForProject · Atividades A10 · Sequência \"chancelas das tarefas em Chancelas do projeto\" e DE->>S: SealService.suggestForProject · Componente SealService RF39",
+        "text": "ProjectCompositionService.applySealsFromTasks, SealBond, ProjectScheme.sealIdsJson",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF21.CA10",
-        "text": "ProjectScheme.coverMode/coverUrl/mosaicJson, MediaStoragePort.studio · Atividades A14 → A15 (mosaico) / A14 → A16 → P5 (foto tratada) · Sequência UPDATE project_schemes SET coverMode MOSAICO, mosaicJson · Componentes CardPreview, storage-s3",
+        "text": "MosaicService, ProjectScheme.coverMode/coverUrl/mosaicJson",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF21.CA11",
-        "text": "ProjectComposerService.publish, MuralService.publishProject, MuralEntry, SearchIndexPort · Atividades U9 → A21 → P6 · Sequência POST /api/projects/{id}/publish → status PUBLICADO, INSERT mural_entries, indexProject respeitando visibility · Transição RASC_SALVO → PUBLICADO · Componentes MuralService RF27, search-opensearch",
+        "text": "ProjectCompositionService.publish, MuralPort, ProjectStatus.PUBLICADO",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF21.CA12",
-        "text": "DeciaSessionService.openFromProject, DeciaSession (topic = objective, linkedProjectId) · Atividades U10 → A22 → P7 · Sequência POST /api/projects/{id}/decia-session → decia_sessions, session_participants, message_attachments, status EM_DECISAO · Transição RASC_SALVO/PUBLICADO → EM_DECISAO e nota · Componente DeciaSessionService RF29",
+        "text": "DeciaBridgeService.openSessionFromProject, DeciaSession.linkedProjectId, ProjectStatus.EM_DECISAO",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF21.CA13",
-        "text": "Classes ProcessKit, KitItem, Remix, ProjectScheme.originalProjectId, enum SchemeOrigin.MODELO/REMIX, ProjectComposerService.fromModel · Atividades U2 (Modelo ou Kit) → A19 → U3 · Componentes ModelPicker Kit/modelo, ProjectController /from-model",
+        "text": "ModelImportService.fromModel, ProcessKit, KitItem, SchemeOrigin.MODELO, Remix",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF21.CA14",
-        "text": "ProjectScheme.autosaveDraftJson, ProjectComposerService.autosave · Atividades U3/U6 → W4 → A20 → P2, U8 → W4, W7 (recupera) · Sequência loop a cada alteração → PUT /api/projects/drafts/{draftId} (sem project_tasks, sem EM_USO) e SELECT ... autosaveDraftJson IS NOT NULL na abertura · Estado RASC_AUTO + nota · Componente Autosave hook",
+        "text": "DraftService, DraftStorePort, ProjectScheme.autosaveDraftJson",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -1530,74 +1530,50 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 24,
     "title": "Visualizar a aba metas & objetivos de minha equipe com insights analíticos gerados por IA",
     "hu": null,
-    "summary": "A aba Metas & Objetivos é a visão da equipe (departamento) sobre três fontes já modeladas: (1) o Plano Anual (AnnualPlan = DNA de Estilo, 6 PlanAxis com meta, indicador e cor, projetos ligados por PlanAxisProject, derivação do plano oficial da EMPRESA, comparação entre exercícios); (2) as metas coletivas (CollectiveGoal/GoalParticipant, RF35) com progresso calculado de MetricSnapshot; (3) os insights de equipe (Insight com scope = EQUIPE, RF43 §4) — carga e balanceamento, gargalos, tendência por eixo, recomendações acionáveis — redigidos pela AiEngine somente sobre números do MetricCalculator, com amostra mínima (MetricDefinition.minSamples) e benchmarks anonimizados. CHEFE e EMPRESA veem a aba completa; EMPREGADO vê o plano do departamento, as metas em que pode entrar e os insights agregados (nunca nominais, RF45.CA10).",
-    "route": "Plano Anual (/plans, /plans/new, /plans/[id], /plans/compare?a=&b=) + aba Metas & Objetivos da equipe (/departments/[slug]/goals, proposta) que reúne eixos do plano, metas coletivas (/goals, RF35) e Insights › Equipe (/insights/equipe, RF43)",
-    "coverage": "RF24.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 (corpo do card — Plano Anual) · RF35.CA01 · RF35.CA02 (metas coletivas, citados como estão) · RF43.CA14 · RF43.CA15 (insights de equipe, citados como estão) — regra: o título do card define o RF; o corpo contém os CAs RF24.CA01–07 do Plano Anual (= _anterior/RF24); o título acrescenta \"da equipe\" e \"insights da IA\", cobertos pelos CAs do RF35 e do RF43 §4",
+    "summary": "O Plano Anual (AnnualPlan, = DNA de Estilo) tem 6 eixos (PlanAxis) com meta, indicador e cor; projetos entram nos eixos por PlanAxisProject (1 eixo por plano). O plano da EMPRESA é o oficial; CHEFE e EMPREGADO derivam (derivedFromPlanId). A IA só interpreta números calculados pelo sistema (D-12): aggregatedRisk vem de ComplianceResult/ProjectScenario (RF31/RF32) e os insights da aba (Insight com scope EQUIPE) citam MetricSnapshot.",
+    "route": "Plano Anual (/plans, /plans/new, /plans/[id], /plans/compare?a=&b=) + visão da equipe em /departments/[slug] (sub-aba Plano Anual, RF28) e /insights › Equipe (RF43)",
+    "coverage": "RF24.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 (corpo do card) — regra: o título do card define o RF; o corpo contém os CAs do Plano Anual (RF24.CA01–07). O título acrescenta \"insights analíticos gerados por IA\": cobertos pelo CA03 (risco agregado da IA) e pelo CA07 (IA do DECIA cita o eixo e sinaliza projetos sem eixo), com apoio dos insights de equipe do RF43 §4 (citados, não reescritos aqui).",
     "cas": [
       {
         "id": "RF24.CA01",
-        "text": "AnnualPlan (exerciseYear, title), PlanAxis (position 1..6, name, goal, indicator, color), relação AnnualPlan \"1\" --> \"6\" PlanAxis, PlanService.create/validateSixAxes · Atividades U2 → A5 → A6 → A7 422 EIXOS_INVALIDOS / P1 → W2 · Sequência (bloco \"Vincular\"/derivação usam o plano criado) · Transição [*] → RASCUNHO + nota · Componentes AxisGrid 6 células, AxisCard, app/plans/new",
+        "text": "AnnualPlan, PlanAxis (6, position 1..6), PlanService.create",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF24.CA02",
-        "text": "PlanAxisProject (nota índice único planId + projectId), ProjectScheme.planAxisId, PlanService.linkProject/validateOnePerPlan · Atividades U3 → A8 → A9 → A10 409 PROJETO_JA_NO_PLANO, A11 → A12 403, A13 → P1 · Sequência POST /api/plans/{planId}/axes/{axisId}/projects → alt P1 já em outro eixo → 409 / INSERT plan_axis_projects · UPDATE project_schemes SET planAxisId · Nota do estado Plan · Componente ProjectDragDrop",
+        "text": "PlanAxisProject, ProjectScheme.planAxisId, PlanService.linkProject",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF24.CA03",
-        "text": "PlanAxis.projectsCount/completedPct/nearestDueAt/aggregatedRisk, enum RiskLevel, PlanService.recomputeAxis, RiskAggregationService.aggregate, ComplianceResult, ProjectScenario, CachePort · Atividades A13 → P2, A13 → I2 → W2 · Sequência recomputeAxis, DE->>AI run(CONFORMIDADE agregada …) → UPDATE plan_axes SET aggregatedRisk, GET /api/departments/{deptId}/goals-tab (agregados do Redis) · Componentes cache-redis, ai-providers",
+        "text": "PlanAxis.projectsCount/completedPct/nearestDueAt/aggregatedRisk, AxisAggregationService, ComplianceResult, ProjectScenario",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF24.CA04",
-        "text": "AnnualPlan.derivedFromPlanId/scope, enum PlanScope, PlanService.derive · Atividades U4 → A14 → A15 → A16 422 / P1 · Sequência POST /api/plans/{officialId}/derive → alt não é EMPRESA publicado → 422 DERIVACAO_INVALIDA / INSERT annual_plans (scope DEPARTAMENTO, derivedFromPlanId …) · Transição PUBLICADO → DERIVADO → RASCUNHO · Componente DeriveButton",
+        "text": "AnnualPlan.derivedFromPlanId, PlanScope, PlanService.derive",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF24.CA05",
-        "text": "Enum CompareBucket (NOVO, CONCLUIDO, REPROGRAMADO, MANTIDO), PlanService.compare · Atividades U5 → A17 → W4 · Sequência GET /api/plans/compare?a=&b= → CompareResult {porEixo …} · Transição ENCERRADO → ENCERRADO : usado em comparação · Componentes app/plans/compare, CompareColumns",
+        "text": "CompareBucket, PlanService.compare",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF24.CA06",
-        "text": "Reaction (targetType PLAN), SealBond (tier PLANO, PLANO_MATCH), AnnualPlan.visibility/coverUrl/sealIdsJson, SocialService.react, SealService.suggestForPlan · Atividades U6 → A18 → P5 · Sequência POST /api/plans/{planId}/publish · POST /api/interactions/PLAN/{planId}/reactions · Transição PUBLICADO → PUBLICADO : interações RF26, chancela tier PLANO · Componentes InteractionBar RF26, SealWax, InteractionController RF26",
+        "text": "Reaction/Comment/SavedItem/Share com TargetType PLAN, SealBond tier PLANO, AnnualPlan.visibility/coverUrl",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF24.CA07",
-        "text": "DeciaSession.planAxisId, AnalyticalSummary.recommendationsJson (planAxisId), Insight PROJETO_SEM_EIXO, PlanService.projectsWithoutAxis · Atividades A1 → A23 → P4 → W8, A23 -.-> I3 · Sequência nota final \"RF24.CA07 — … inclui planAxisId em cada recomendação … Insight PROJETO_SEM_EIXO que aparece nesta aba\" · Componentes ai-providers RESUMO_ANALITICO cita eixo, painel \"eixos citados no DECIA\" em W1",
+        "text": "DeciaSession.planAxisId, AnalyticalSummary.recommendationsJson[].planAxisId, Insight PROJETO_SEM_EIXO, PlanService.projectsWithoutAxis",
         "note": "",
-        "kind": "rastreabilidade"
-      },
-      {
-        "id": "RF35.CA01",
-        "text": "CollectiveGoal (criterionJson, periodFrom/To, rewardPointsPerParticipant, progress), GoalParticipant, GoalService.create/join/recomputeProgress, MetricSnapshot · Atividades U7 → A19 → P3 → W5 · Sequência bloco \"Meta coletiva da equipe\" (POST /api/goals/{goalId}/join) · Estado composto Goal [*] → ABERTA → ABERTA · Componentes app/goals RF35, GoalProgressBar, GoalProgressScheduler",
-        "note": "meta coletiva: período, critério mensurável, recompensa",
-        "kind": "rastreabilidade"
-      },
-      {
-        "id": "RF35.CA02",
-        "text": "CollectiveGoal.status/achievedAt, enum GoalStatus, GoalService.recomputeProgress · Atividade A19 (recomputeProgress a partir de MetricSnapshot) · Transição ABERTA → ATINGIDA / EXPIRADA e nota (META_ATINGIDA por participante) · Componente platform GoalProgressScheduler",
-        "note": "progresso automático e meta atingida",
-        "kind": "rastreabilidade"
-      },
-      {
-        "id": "RF43.CA14",
-        "text": "Insight (scope EQUIPE, metricRefsJson, actionsJson, severity), InsightService.equipe/applyAction, MetricCalculator, TeamGoalsService.visibleInsights, AiEngine INSIGHT · Atividades A1 → A2 → A3/A4, A20 → A22 → I1 → P4 → W6, U8 → A24 · Sequência bloco \"Abrir a aba\" (InsightService.equipe, MetricCalculator.compute, run(INSIGHT …), viewer EMPREGADO recebe só insights agregados) · Componentes InsightCard ✦, OneClickAction, InsightController RF43, ai-providers INSIGHT",
-        "note": "insights de equipe para CHEFE/EMPRESA, benchmarks anonimizados, recomendações acionáveis",
-        "kind": "rastreabilidade"
-      },
-      {
-        "id": "RF43.CA15",
-        "text": "MetricDefinition.minSamples · Atividades A21 (não) → W7 · Sequência alt amostra abaixo de minSamples → 200 aba sem insights + explicação do que falta coletar · Nota de Insight · Componente InsufficientDataState",
-        "note": "amostra mínima",
         "kind": "rastreabilidade"
       }
     ]
@@ -1607,37 +1583,37 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 25,
     "title": "Agrupar projetos e tarefas em Programas, Exercícios e Gestões (agrupamentos institucionais)",
     "hu": null,
-    "summary": "O Agrupamento (Grouping, = SchemeGrouping do FAI) organiza projetos e tarefas em quatro tipos (GroupingType): PROGRAMA (= coleção, ex.: \"Programa Cidade Acessível 2026\"), EXERCÍCIO (= temporada, ano orçamentário), GESTÃO (= era, período de um chefe ou de uma gestão da empresa) e FRENTE (= linha de estilo, tema transversal). EMPRESA e CHEFE criam qualquer tipo; EMPREGADO só cria FRENTE pessoal. A ligação é GroupingItem (targetType PROJECT | TASK) e, para projetos, os ponteiros desnormalizados ProjectScheme.programGroupingId / exerciseGroupingId / managementGroupingId — um item pode estar em vários agrupamentos de tipos diferentes, mas em no máximo um por tipo. A página do agrupamento mostra capa, projetos em grade, progresso agregado e a linha do tempo de decisões (DecisionTraceNode, RF29). Agrupamentos aparecem na página da empresa/departamento (RF28) e são indexados para Buscar (RF27). Encerrar uma GESTÃO gera automaticamente o Dossiê de Transição (HandoffDossier, RF36) do período.",
-    "route": "sub-aba Programas & Agrupamentos no perfil (RF19), página do agrupamento (/groupings/[id]), página da empresa/departamento (RF28)",
-    "coverage": "RF25.CA01 · CA02 · CA03 · CA04 · CA05",
+    "summary": "Tipos (GroupingType): PROGRAMA (= coleção, EMPRESA/CHEFE), EXERCICIO (= temporada, ano orçamentário), GESTAO (= era, período de um chefe ou de uma gestão), FRENTE (= linha de estilo; a única que o EMPREGADO cria, pessoal). Um projeto aponta direto para até três agrupamentos (ProjectScheme.programGroupingId / exerciseGroupingId / managementGroupingId) e GroupingItem registra qualquer item (PROJECT · TASK). Encerrar uma GESTAO dispara o Dossiê de Transição (RF36) por evento AFTER_COMMIT.",
+    "route": "sub-aba Programas & Agrupamentos do perfil (/profile?tab=programas, /u/[username]?tab=programas), página do agrupamento (/groupings/[id]), páginas da empresa/departamento (/companies/[slug], /departments/[slug], RF28)",
+    "coverage": "RF25.CA01 · CA02 · CA03 · CA04 · CA05 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs.",
     "cas": [
       {
         "id": "RF25.CA01",
-        "text": "Grouping (type, label, description, coverUrl, periodFrom/To), enums GroupingType, ProfileType, GroupingService.create/canCreate (nota EMPREGADO só FRENTE), MediaStoragePort · Atividades U1 → A1 → A2 → A3 403 ACESSO_NEGADO / A4 → P1 · Sequência POST /api/groupings → alt EMPREGADO tentando criar … → 403 / INSERT groupings · Transição [*] → ATIVO + nota · Componentes GroupingForm, storage-s3",
+        "text": "Grouping (type, label, periodFrom/To, coverUrl, description), GroupingType, GroupingService.create, Guard.requireRole",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF25.CA02",
-        "text": "GroupingItem (nota 1 por tipo), ProjectScheme.programGroupingId/exerciseGroupingId/managementGroupingId, GroupingService.addItem/validateOnePerType · Atividades U2 → A5 → A6 → A7 409 AGRUPAMENTO_MESMO_TIPO / A8 → P2 · Sequência POST /api/groupings/{gId}/items → alt P5 já em outra GESTAO → 409 / INSERT grouping_items + UPDATE project_schemes SET managementGroupingId · Transição ATIVO → ATIVO · Componente ItemPicker",
+        "text": "GroupingItem, ProjectScheme.programGroupingId/exerciseGroupingId/managementGroupingId, GroupingService.addItem",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF25.CA03",
-        "text": "GroupingService.page, ProjectTask.percentComplete, DecisionTraceNode (nodeType DECISAO), DeciaSession.linkedProjectId, DecisionTraceService.timelineForProjects, CassandraTraceReadAdapter · Atividades U3 → A9 → A10 → P3 → W2 · Sequência GET /api/groupings/{gId} → AVG percentComplete + COUNT por status → trace_by_entity … nodeType = DECISAO → {cover, projects grid, progress, decisionsTimeline} · Componentes app/groupings/[id], ProgressRing, DecisionTimeline, persistence-cassandra",
+        "text": "GroupingProgressService.aggregate/decisionTimeline, DecisionTraceNode",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF25.CA04",
-        "text": "GroupingService.listForOrg, SearchIndexPort.indexGrouping, Company, Department · Atividades U4 → A11 → P1 → W4 · Sequência indexGrouping (CA04), GET /api/companies/secid/groupings, GET /api/search?q=… → msearch inclui índice de agrupamentos · Componentes F3 (RF28), SearchController RF27, search-opensearch",
+        "text": "SearchIndexPort.indexGrouping, InstitutionalMemoryDocument, páginas RF28",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF25.CA05",
-        "text": "Grouping.status/closedAt/handoffDossierId, enums GroupingStatus, HandoffStatus, HandoffDossier (subjectType GESTAO, reason FIM_GESTAO, contentJson), HandoffItem, GroupingService.close, HandoffService.generateForManagement, AiEngine DOSSIE, Notification · Atividades U5 → A12 → A14 → A13 (sim) → A15 → I1 → A16 → P4 → W5 · Sequência POST /api/groupings/{gId}/close → publish GroupingClosed → HandoffService.generateForManagement → infer(DOSSIE …) → INSERT handoff_dossiers, handoff_items, UPDATE groupings SET handoffDossierId, notificação · Transições ATIVO → ENCERRADO → fim → DOSSIE_GERADO → AGUARDANDO_SUCESSOR → TRANSFERIDO · Componentes CloseManagementDialog, HandoffService RF36, platform outbox GroupingClosed, ai-providers DOSSIE",
+        "text": "Grouping.closedAt/handoffDossierId, DomainEvents GroupingClosed, HandoffService.generateForGrouping, HandoffDossier",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -1648,104 +1624,80 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 26,
     "title": "Utilizar o Copilot do WS para criar sugestões de tarefas e projetos de maneira mais prática e funcional",
     "hu": null,
-    "summary": "O Copilot do WS é o nome de produto para o par Autopilot de tarefas (texto, ofício ou e-mail → N TaskItem RASCUNHO com sourceKind = AUTOPILOT, RF43.CA07) + Autopilot de projetos (demanda → AutopilotDraft volátil em Redis → ProjectScheme com origin = AUTOPILOTO ao confirmar, RF30; ou até 5 candidatos com FeasibilitySheet ordenados por viabilidade, RF43.CA08). Tudo passa pela AiEngine (Strategy + Chain: Claude → Gemini → LocalEngine), respeita AiMode ECONOMIA/AVANÇADO (UserPreferences.aiModeDefault, cota AiQuota), nunca envia accessClass RESTRITO/SIGILOSO a provedor externo e nada vira tarefa DISPONÍVEL nem projeto PUBLICADO sem aceite humano. CAs derivados da HU26 (a confirmar):",
-    "route": "Copilot / Autopilot (/autopilot: Sugerir tarefas e Sugerir projetos), Insights › Projetos sugeridos (/insights, RF43), botão ✦ \"Pedir ao Copilot\" na folha \"+ Criar\", no Acervo (RF41) e na Mesa de Trabalho (RF22); a proposta de projeto abre na Mesa em modo rascunho",
-    "coverage": "corpo do card = RF19.CA01–07 (perfil do usuário: cabeçalho, 15 sub-abas, filtros, Tarefa do Dia, perfil deliberativo, sub-abas institucionais, i18n) — citados como estão escritos, corpo do card = antigo RF19 (perfil, ver RF6/RF16 e _anterior/RF19), não modelados aqui; o título (Copilot do WS) é modelado com os CAs já escritos nos cards RF30 e RF43: RF30.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 (Autopiloto de Projeto) · RF43.CA06 (modo ECONOMIA/AVANÇADO) · RF43.CA07 (Autopilot de tarefas) · RF43.CA08 (Ficha de Viabilidade, até 5 candidatos) · RF43.CA10 (aceitar/descartar) · RF43.CA11 (motor local sem chave externa) — e RF26.CA01–CA04 derivados da HU26 \"(CA a confirmar)\"",
+    "summary": "RF26.CA01 Em /autopilot, no criador de tarefas e na Mesa, o botão Sugerir com o Copilot recebe uma frase, e-mail, protocolo ou o contexto atual (projeto aberto, acervo, perfil) e devolve N tarefas em rascunho (tipo, categoria, prazo legal, responsável, dependências) — nada vira DISPONÍVEL sem revisão (= RF43.CA07).",
+    "route": "Copilot em /autopilot (sugestões de tarefas e projetos, estende RF30/RF43 §7) e botão Sugerir com o Copilot em /tasks/new, /projects/new e na Mesa (/desk); corpo do card: Meu perfil (/profile, /u/[username])",
+    "coverage": "RF19.CA01 … RF19.CA07 (citados como estão escritos — corpo do card = antigo RF19, perfil/portfólio) + RF26.CA01 … RF26.CA05 (CA a confirmar), derivados do título + HU26 (Copilot que sugere tarefas e projetos inteiros) — regra: o título do card define o RF; título e corpo divergem (RENUMERACAO.md).",
     "cas": [
       {
         "id": "RF19.CA01",
-        "text": "Não modelados aqui — corpo do card = antigo RF19; ver RF6 (Perfil Empresarial), RF16 (Ver perfil de empregado) e _anterior/RF19/README.md (cabeçalho, 15 sub-abas, filtros/URL, Tarefa do Dia, perfil deliberativo, sub-abas institucionais, i18n)",
-        "note": "–CA07 (corpo do card = perfil",
+        "text": "User, ProfileService.self, contadores",
+        "note": "corpo",
+        "kind": "rastreabilidade"
+      },
+      {
+        "id": "RF19.CA02",
+        "text": "ProfileService.ofUser, Visibility, HypeVisibility",
+        "note": "corpo",
+        "kind": "rastreabilidade"
+      },
+      {
+        "id": "RF19.CA03",
+        "text": "filtros e paginação por sub-aba (querystring)",
+        "note": "corpo",
+        "kind": "rastreabilidade"
+      },
+      {
+        "id": "RF19.CA04",
+        "text": "DailyTask único (userId, taskDate)",
+        "note": "corpo",
+        "kind": "rastreabilidade"
+      },
+      {
+        "id": "RF19.CA05",
+        "text": "DeliberativeProfile.deltaJson",
+        "note": "corpo",
+        "kind": "rastreabilidade"
+      },
+      {
+        "id": "RF19.CA06",
+        "text": "sub-abas institucionais EMPRESA/CHEFE",
+        "note": "corpo",
+        "kind": "rastreabilidade"
+      },
+      {
+        "id": "RF19.CA07",
+        "text": "i18n pt-BR/en/es, responsivo",
+        "note": "corpo",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF26.CA01",
-        "text": "Atividades U1 (folha + Criar, Acervo, Mesa, /autopilot) · Componentes F3 (botão ✦ Pedir ao Copilot), CopilotSheet",
-        "note": "a confirmar — acionável de qualquer tela de criação",
+        "text": "Em /autopilot, no criador de tarefas e na Mesa, o botão Sugerir com o Copilot recebe uma frase, e-mail, protocolo ou o contexto atual (projeto aberto, acervo, perfil) e devolve N tarefas em rascunho (tipo, categoria, prazo legal, responsável, dependências) — nada vira DISPONÍVEL sem revisão (= RF43.CA07).",
+        "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF26.CA02",
-        "text": "= RF43.CA07 acima · Componente BatchReviewBar",
-        "note": "a confirmar — rascunhos revisáveis em lote",
+        "text": "O Copilot sugere projetos inteiros (até 5 candidatos ordenados por viabilidade) a partir de eixos do plano sem projeto, lacunas do acervo e decisões DECIA sem projeto, cada um com Ficha de Viabilidade (= RF43.CA08, RF30.CA02).",
+        "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF26.CA03",
-        "text": "= RF30.CA02–CA04 e RF43.CA08–CA10 acima · Remix, ModelCreditChip",
-        "note": "a confirmar — proposta na Mesa ou Ficha, crédito aos modelos",
+        "text": "Cada sugestão carrega a faísca ✦, a explicação (\"baseado em: eixo X, modelo chancelado Y, sessão Z\") e o AiInferenceLog; o usuário aceita, edita ou descarta (descartar exige motivo, que alimenta as próximas sugestões).",
+        "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF26.CA04",
-        "text": "= RF43.CA06 acima · ModeSelector com custo, QuotaBanner",
-        "note": "a confirmar — escolha de modo e aviso de débito",
+        "text": "Tarefas RESTRITO/SIGILOSO no contexto nunca saem para provedor externo (só LocalEngine, com aviso); sem chave externa o Copilot usa regras + modelos chancelados e avisa o fallback (= RF30.CA05, RF43.CA02).",
+        "note": "",
         "kind": "rastreabilidade"
       },
       {
-        "id": "RF30.CA01",
-        "text": "AutopilotService.analyzeDemand, TaskItem.accessClass do DOCUMENTO · Atividades U3 → W1 → A1 → A2 (422/403) · Sequência bloco \"Copilot de projetos a partir de uma demanda\" (POST /api/autopilot/analyze) · Transição [*] → Analisada · Componentes app/autopilot, CopilotSheet",
-        "note": "demanda em texto, ofício ou DOCUMENTO",
-        "kind": "rastreabilidade"
-      },
-      {
-        "id": "RF30.CA02",
-        "text": "SealBond APROVADA, MemoryService.similarProjects, InstitutionalMemoryDocument, Citation, Remix, ProjectTaskDependency · Atividades A6 → P3 · Sequência SELECT seal_bonds APROVADA + kNN ws-memory + run(COMPOR_PROJETO …) · Transição Analisada → Proposta · Componentes MemoryService RF33, search-opensearch, ModelCreditChip",
-        "note": "proposta remixa modelos chancelados e semelhantes",
-        "kind": "rastreabilidade"
-      },
-      {
-        "id": "RF30.CA03",
-        "text": "DraftCachePort, RedisDraftCache, AutopilotService.updateDraft/discard · Atividades A7 → P2 → W3 → U5 · Sequência SET autopilot:draft TTL 24h, PATCH /api/autopilot/drafts/{draftId} · Estados Proposta → Ajustada → Descartada/Expirada · Componentes DeskCanvas, cache-redis",
-        "note": "rascunho não persistido, ajustes",
-        "kind": "rastreabilidade"
-      },
-      {
-        "id": "RF30.CA04",
-        "text": "ProjectScheme.origin AUTOPILOTO / creationMode COM_IA / aiGenerated / aiInferenceId, AiInferenceLog, Remix · Atividades U6 → A17 → A18 (409) / A11 → P4 → W5 · Sequência POST /api/autopilot/drafts/{draftId}/confirm → INSERT project_schemes … remixes … ai_inference_log · Transição Ajustada → RASCUNHO_P · Componente persistence-mysql",
-        "note": "confirmar persiste com origem AUTOPILOTO e log",
-        "kind": "rastreabilidade"
-      },
-      {
-        "id": "RF30.CA05",
-        "text": "`LocalEngine ..",
-        "note": "fallback sem chave ou cota",
-        "kind": "rastreabilidade"
-      },
-      {
-        "id": "RF30.CA06",
-        "text": "DeciaBridgeService.openSessionFromProject, DeciaSession.linkedProjectId · Atividades U6 → A13 → P5 · Transição RASCUNHO_P → EM_DECISAO · Componente ProjectDeciaController RF29",
-        "note": "abrir sessão DECIA sobre a proposta",
-        "kind": "rastreabilidade"
-      },
-      {
-        "id": "RF43.CA06",
-        "text": "AiMode, UserPreferences.aiModeDefault, AiQuota, AiEngine.guardQuota, AiInferenceLog.mode/quotaSource · Atividades U3 → W1, I3 → I4 409 COTA_ESGOTADA · Sequência GET quota:USER …, alt sem cota nem créditos → 409 COTA_ESGOTADA {storeUrl}, debita cota AVANCADO … com aviso prévio · Nota do estado T · Componentes ModeSelector com custo, QuotaBanner, cache-redis quota",
-        "note": "modo ECONOMIA/AVANÇADO, cota e DECIA Points",
-        "kind": "rastreabilidade"
-      },
-      {
-        "id": "RF43.CA07",
-        "text": "AutopilotService.tasksFrom/confirmTasks, TaskItem (state RASCUNHO, sourceKind AUTOPILOT, aiGenerated, aiConfidenceJson), enum AiCapability.AUTOPILOT_TAREFAS · Atividades A3 → A4 → P1 → W2 → U4 → A5 · Sequência bloco \"Copilot de tarefas\" (POST /api/autopilot/tasks, INSERT tasks x N (state RASCUNHO …), POST /api/autopilot/tasks/confirm) · Estado T RASCUNHO → DISPONIVEL / ARQUIVADA · Componentes DraftTaskCard ✦, ConfidenceBadge, BatchReviewBar",
-        "note": "Autopilot de tarefas → rascunhos",
-        "kind": "rastreabilidade"
-      },
-      {
-        "id": "RF43.CA08",
-        "text": "FeasibilitySheet (costJson, timeJson, deadlineJson, viabilityScoreJson, risksJson, wbsJson, raciJson, assumptionsJson, unknownsJson), FeasibilityService, AutopilotService.suggestProjects(max5) · Atividades A8 → A9 → A10 → P4 → W3 · Sequência bloco \"Copilot sugere novos projetos\" (POST /api/autopilot/projects, INSERT feasibility_sheets (PROPOSTA x5 …)) · Transição [*] → PROPOSTA · Componentes FeasibilityCard, ScoreBreakdown, RiskMatrix, ws-domain FeasibilityService",
-        "note": "Ficha de Viabilidade, até 5",
-        "kind": "rastreabilidade"
-      },
-      {
-        "id": "RF43.CA10",
-        "text": "FeasibilitySheet.status/discardReason/resultingProjectId/resultingTaskId, AutopilotService.accept/discardSheet, TaskItem ESTUDO_TECNICO_PRELIMINAR · Atividades U6 → A12 → P4 → W5, U7 → A14 → A15 (422) / A16 · Sequência POST /api/feasibility/{id2}/accept {PROJETO} + alt motivo vazio → 422 MOTIVO_OBRIGATORIO · Transições PROPOSTA → ACEITA / DESCARTADA e nota",
-        "note": "aceitar/descartar ficha",
-        "kind": "rastreabilidade"
-      },
-      {
-        "id": "RF43.CA11",
-        "text": "Nota de AiEngine (LocalEngine sem chave externa), FeasibilityService determinístico · Atividades I1 (sim) → I7, I5 (OPEN) → I7 · Sequência alt DOCUMENTO RESTRITO ou SIGILOSO → LocalEngine … BLOQUEADO_SIGILO · Componente ai-providers LocalEngine, FeatureFlag ai.local.only",
-        "note": "motor local sem chave externa",
+        "id": "RF26.CA05",
+        "text": "Aceitar cria TaskItem RASCUNHO com sourceKind AUTOPILOT ou ProjectScheme RASCUNHO com origin AUTOPILOTO e abre o item no criador correspondente (RF4/RF5) ou na Mesa (RF22); cota de IA (AiQuota) é debitada e, sem cota, o botão oferece a Loja (RF42.CA06).",
+        "note": "",
         "kind": "rastreabilidade"
       }
     ]
@@ -1755,43 +1707,43 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 27,
     "title": "Navegar no Mural (mural da empresa e vitrine de projetos) e Buscar projetos, tarefas, pessoas, empresas e chefes de departamento",
     "hu": null,
-    "summary": "Mural — três sub-abas: Mural da empresa (MuralEntry da minha empresa: compartilhamentos, decisões validadas, projetos publicados, reconhecimentos — ordem cronológica, filtros por departamento e tipo de item), Vitrine de projetos (= Passarela: projetos chancelados sealIdsJson e modelos MODELO_PUBLICO, capa grande e \"remixar\") e Seguindo (atividade das pessoas/departamentos/empresas que sigo, via Follow + Cassandra timeline_by_user). Páginas de 20 itens, skeleton, estado vazio ilustrado e \"tentar de novo\" em erro; cada item traz as ações do RF26 inline. Buscar — textual (título, descrição, tags, texto OCR de documentos via TaskAttachment.ocrTextRef) nos índices OpenSearch, devolvendo as 5 abas com contadores, respeitando visibilidade e perfil (outra empresa só se PUBLICA); busca semântica opcional (\"projetos parecidos com este\") sobre a Memória Institucional (InstitutionalMemoryDocument, RF33). Seguir/deixar de seguir pessoas, departamentos e empresas com vínculo único.",
-    "route": "Mural (/mural, sub-abas Mural da empresa · Vitrine de projetos · Seguindo) e Buscar (/search, abas PROJETOS · TAREFAS · PESSOAS · EMPRESAS · CHEFES DE DEPARTAMENTO)",
-    "coverage": "RF27.CA01 · CA02 · CA03 · CA04 · CA05 · CA06",
+    "summary": "O Mural é a projeção cronológica MuralEntry (MySQL) espelhada em Cassandra timeline_by_user (flag cassandra.enabled; sem a flag, consulta MySQL paginada). A Busca é textual (OpenSearch ws-tasks, ws-projects, ws-users, ws-companies; OCR de anexos em TaskAttachment.ocrTextRef) e, opcionalmente, semântica via Memória Institucional (ws-memory, RF33). Toda leitura passa pelo filtro de visibilidade e perfil (VisibilityFilter: itens de outra empresa só se PUBLICA). Seguir é Follow único por (followerId, targetType, targetId).",
+    "route": "Mural (/mural, sub-abas Mural da empresa · Vitrine de projetos · Seguindo) e Buscar (/search?q=&tab=PROJETOS|TAREFAS|PESSOAS|EMPRESAS|CHEFES)",
+    "coverage": "RF27.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs.",
     "cas": [
       {
         "id": "RF27.CA01",
-        "text": "MuralEntry (nota páginas de 20), MuralService.companyFeed/showcase/following, CachePort, TimelinePort · Atividades U1 → W1 (skeleton) → A1 → A2/A3/A4 → W2 (não) → W3 tentar de novo, W4 (sim) → W5 estado vazio, W6 → U2 → W7 próxima página · Sequência GET /api/mural?…&size=20 com alt falha de infraestrutura → 503 … tentar de novo e alt lista vazia → estado vazio ilustrado · Nota de MuralEntry · Componentes FeedSkeleton, EmptyStateIllustrated, RetryButton, InfiniteScroll 20, cache-redis",
+        "text": "MuralService.company/showcase/following, TimelinePort.page (20 por página)",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF27.CA02",
-        "text": "Reaction ..> MuralEntry : ações RF26 inline, SocialService · Atividades W6 → U3 → A12 · Sequência \"20 cards com ações do RF26 inline\" · Transição PUBLICADA (nota) · Componentes InteractionBar RF26, InteractionController RF26",
+        "text": "SocialService.react, Reaction, MuralItemView.actions",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF27.CA03",
-        "text": "SearchService.search, SearchIndexPort.msearch/count, enum SearchTab, TaskAttachment.ocrTextRef, tabela de índices do cabeçalho · Atividades U4 → A5 → A6 → P3 → W8 · Sequência GET /api/search?q=…&tab=PROJETOS → msearch ws-projects, ws-tasks (title, descriptionMd, tags, ocrText), ws-people, ws-orgs → {tabs: {PROJETOS 12, TAREFAS 31, …}} · Componentes SearchBox, SearchTabs com contadores, SearchFilters, search-opensearch",
+        "text": "SearchService.search, SearchIndexPort.search, TaskAttachment.ocrTextRef, contadores por aba",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF27.CA04",
-        "text": "SearchService.visibilityFilter (nota outra empresa só PUBLICA), enum Visibility, User.profileType, Department.headUserId (aba CHEFES) · Atividades A5 · Sequência visibilityFilter(viewer) = PUBLICA + EMPRESA (minha empresa) + … e \"resultados de outra empresa só se PUBLICA\"",
+        "text": "VisibilityFilter.allowedFor, Visibility, Guard.requireSameCompany",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF27.CA05",
-        "text": "InstitutionalMemoryDocument (embedding dense_vector), SearchService.similar, SearchIndexPort.knn, AiEngine.embed · Atividades U5 → A7 → I1 → P4 → W8 · Sequência POST /api/search/similar {PROJECT, P1} → embed(…) MEMORIA_BUSCA → knn ws-memory … accessClass não SIGILOSO · Componentes SimilarProjectsButton, ws-memory kNN, ai-providers embeddings, Claude / Gemini embeddings",
+        "text": "SearchService.similar, InstitutionalMemoryDocument, AiEngine MEMORIA_BUSCA",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF27.CA06",
-        "text": "Follow (nota índice único), enums FollowTargetType, FollowStatus, SocialService.follow/unfollow, MuralService.fanOut, TimelineEvent · Atividades U6 → A8 → A9 → A10 / A11 → P5 → W9 · Sequência POST /api/follows {DEPARTMENT, CPOE} → alt já segue → idempotente / INSERT follows (ATIVO) → DELETE /api/follows/DEPARTMENT/CPOE → status REMOVIDO, nota de fan-out · Máquina Follow (NAO_SEGUE → ATIVO → REMOVIDO → ATIVO) · Componentes FollowButton, FollowController, persistence-cassandra timeline_by_user",
+        "text": "Follow (único), FollowService.follow/unfollow, Notification, fan-out TimelineEvent",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -1800,57 +1752,57 @@ export const RF_CATALOG: readonly RfEntry[] = [
   {
     "id": "RF28",
     "n": 28,
-    "title": "Gerir perfis EMPRESA e CHEFE DE DEPARTAMENTO (departamentos, página institucional, chancela de tarefas/projetos e emissão de reconhecimentos)",
+    "title": "Gerir perfis de empresa e chefe de departamento (departamentos, página institucional, chancela de tarefas/projetos e emissão de reconhecimentos)",
     "hu": null,
-    "summary": "Contextos da TAXONOMIA: 1. Identidade & Acesso (User, Company, Department, DepartmentMembership, CuratorAppointment, ApprovalRequest) e 6. Chancelas & Benefícios (só Recognition). Perfis: EMPREGADO (= PESSOAL), EMPRESA (= MARCA, ex.: Secretaria das Cidades), CHEFE_DEPARTAMENTO (= CELEBRIDADE) e ADMIN. Página da empresa: Sobre · Departamentos · Programas (RF25) · Plano Anual (RF24) · Chancelas e modelos oficiais (RF39) · Benefícios (RF39) · Destaques (RF35) · Pessoas. Página do departamento/chefe: Sobre · Projetos · Sessões DECIA · Chancelas e fila de revisão (RF39) · Reconhecimentos (RF35) · Equipe (com curadores). Papel CURADOR é contextual (CuratorAppointment), não um Role.",
-    "route": "Empresas & Departamentos (/companies, /companies/[slug], /departments/[slug]); aprovação ADMIN em POST /api/admin/approvals/{userId}",
-    "coverage": "RF28.CA01 · RF28.CA02 · RF28.CA03 · RF28.CA04 · RF28.CA05 · RF28.CA06 · RF28.CA07 · RF28.CA08 · RF28.CA09–CA17 (§7, validação de perfis com política versionada, D-19, \"CA a confirmar\")",
+    "summary": "Perfis: EMPREGADO (= PESSOAL), EMPRESA (= MARCA), CHEFE_DEPARTAMENTO (= CELEBRIDADE), ADMIN; papel contextual CURADOR (CuratorAppointment). EMPRESA e CHEFE nascem PENDING_VALIDATION e passam pelo ADMIN (ApprovalRequest + VerificationPolicy). A EMPRESA cria Departments e lota pessoas (DepartmentMembership, 1 lotação ativa por vez, histórico preservado). A troca de chefe (Department.headUserId) move sessões DECIA, filas de revisão e chancelas pendentes e gera o Dossiê de Transição (RF36). O que já existe em código (sec-b3): User com profileType/status/verified, ProfileType, AccountStatus, Guard.requireRole/ownerOrAdmin, AuditLogPort; Company, Department e o restante são planejados (users.company_id/department_id sem FK até a migration deste RF, D-23).",
+    "route": "Empresas & Departamentos (/companies, /companies/[slug], /companies/[slug]/manage, /companies/[slug]/manage/departments, /departments/[slug], /departments/[slug]/team), painel do emissor (/issuer/dashboard), fila do ADMIN (/admin/approvals), central de validação da pessoa (/settings?tab=validacao)",
+    "coverage": "RF28.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 (corpo do card, inalterado) + RF28.CA09 … CA17 (CA a confirmar, D-19 — validação institucional com VerificationPolicy versionada, §7) — regra: o título do card define o RF e o corpo traz os próprios CAs; o fluxo de chancelas em si está no RF39 e o Balcão no RF40.",
     "cas": [
       {
         "id": "RF28.CA01",
-        "text": "Classes User.profileType, User.status, ApprovalRequest, AccessPolicy, AdminApprovalController; atividades U1 → W1 → S1 → S2/S3, U2 → S4 → S5/S6; sequência bloco «CA01» (POST /api/admin/approvals/{userId}, alt 403 ACESSO_NEGADO); estados PENDING_EMAIL_VERIFICATION → PENDING_VALIDATION → ACTIVE/SUSPENDED; componentes app/admin/approvals, RoleGate, AdminApprovalController",
+        "text": "User.profileType/status, ApprovalRequest, ApprovalService.decide, Guard.requireRole, AdminApprovalController.POST_api_admin_approvals_userId",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF28.CA02",
-        "text": "Classes Company 1→* Department, DepartmentMembership (startedAt/endedAt), User.departmentId; atividades U3 → S7 → S8 (422 VALIDACAO), U4 → S9 → S10; sequência bloco «CA02» (POST .../departments com 422 VALIDACAO, POST .../members, UPDATE endedAt + INSERT); nota do estado ACTIVE; componente CompanyController, DepartmentBadge",
+        "text": "Department, DepartmentMembership (1 ativa, histórico), CompanyService.createDepartment/assignMember",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF28.CA03",
-        "text": "Classes CuratorAppointment, CuratorScope, CuratorService ..> AuditLog, DeptRole.CURADOR; atividades U5 → S11 → S12 → D1/D2 (403 ACESSO_NEGADO); sequência bloco «CA03» (POST .../curators, INSERT audit_log, alt 403); componente CuratorController, app/departments/[slug] Equipe",
+        "text": "CuratorAppointment, CuratorScope, DepartmentService.appointCurator/revokeCurator, AuditLog CURATOR_APPOINTED/REVOKED",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF28.CA04",
-        "text": "Classes Follow ..> Company/Department, InstitutionalService.publicPage, RedisMetricsCache; atividades U6 → W2 → S13 → D3/D1, U7 → S14; sequência bloco «CA04 e CA06» (GET página + cache Redis); componentes app/companies/[slug], cache-redis",
+        "text": "CompanyService.publicPage, DepartmentService.publicPage, Follow (RF27.CA06), MetricSnapshot (métricas públicas)",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF28.CA05",
-        "text": "Classes Recognition, RecognitionService, RecognitionController; atividade U8 → S15 (MuralEntry RECONHECIMENTO, 403 para EMPREGADO em E4); sequência bloco «CA05» (POST /api/recognitions, evento → mural_entries + notifications); componentes MedalBadge, RecognitionController",
+        "text": "Recognition, RecognitionService.issue, MuralEntry RECONHECIMENTO",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF28.CA06",
-        "text": "Classe InstitutionalService.issuerDashboard, IssuerDashboardController; atividades U9 → W3 → S16 → D3/D1 (projetos por fase, prazos em risco, decisões EM_REVISAO, fila SealBond, custo de IA, resgates); sequência bloco «CA04 e CA06» (GET /api/issuer/dashboard); componentes app/issuer/dashboard, cache-redis",
+        "text": "IssuerDashboardService.load, MetricSnapshot, AiInferenceLog (custo de IA), SealBond (fila), BenefitRedemption",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF28.CA07",
-        "text": "Classes Department.headUserId, InstitutionalService.changeHead, HandoffService ..> HandoffDossier; atividades U10 → S17 → S18 → A1 → D4 (move sessões, filas e chancelas pendentes); nota do estado ACTIVE (mais de um departamento); componente HandoffService (RF36)",
+        "text": "Department.headUserId, CompanyService.changeHead, DomainEvents HeadChanged, HandoffDossier TROCA_CHEFE",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF28.CA08",
-        "text": "Classe AccessPolicy.requireIssuer; atividades U11 → S19 → E3/S20; sequência bloco «CA04 e CA06», última troca (403 ACESSO_NEGADO no dashboard para EMPREGADO); nota do estado ACTIVE; componente RoleGate",
+        "text": "Guard.requireIssuerOrCurator, Guard.requireRole",
         "note": "",
         "kind": "rastreabilidade"
       },
@@ -1874,7 +1826,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF28.CA12",
-        "text": "Dado o pedido, então o prazo é contado em dias úteis (proposta: 3 para a 1ª análise, 2 para reanálise, 30 dias corridos para a pessoa responder a AJUSTES; Q-71) a partir de emailConfirmedAt; antes da confirmação do e-mail a conta não entra na fila (RF1.CA27).",
+        "text": "Dado o pedido, então o prazo é contado em dias úteis (proposta: 3 para a 1ª análise, 2 para reanálise, 30 dias corridos para a pessoa responder a AJUSTES; Q-71) a partir de emailConfirmedAt; antes da confirmação do e-mail a conta não entra na fila.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -1898,7 +1850,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF28.CA16",
-        "text": "Dado APROVADO, então para EMPRESA o sistema cria a Company com ownerUserId = a pessoa (lacuna dos docs: nenhum fluxo criava Company), legalName, cnpj e websiteUrl vindos da extensão; para CHEFE exige antes a confirmação do chefe atual ou do dono da EMPRESA (confirmedBy) e então define Department.headUserId e abre DepartmentMembership CHEFE. User.status → ACTIVE, verified = true.",
+        "text": "Dado APROVADO, então para EMPRESA o sistema cria a Company com ownerUserId = a pessoa, legalName, cnpj e websiteUrl vindos da extensão; para CHEFE exige antes a confirmação do chefe atual ou do dono da EMPRESA (confirmedBy) e então define Department.headUserId e abre DepartmentMembership CHEFE. User.status → ACTIVE, verified = true.",
         "note": "CA a confirmar, Q-65, Q-66",
         "kind": "enunciado"
       },
@@ -1915,61 +1867,61 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 29,
     "title": "Integrar o DECIA ao Criador de Projetos — compartilhar tarefas/artefatos na sessão, abrir sessão a partir de um projeto, transformar argumentos/divergências/decisões em tarefas e manter o Rastro de Decisão",
     "hu": null,
-    "summary": "Contextos da TAXONOMIA: 5. DECIA (DeciaSession, SessionParticipant, SessionMessage, MessageClassification, MessageAttachment, AnalyticalSummary, FinalDecision, DecisionReview, SessionArtifact, DecisionTraceNode, DecisionTraceEdge), 3. Criador de Projetos (ProjectScheme, ProjectTask) e 2. Acervo (TaskItem). O Rastro de Decisão é um grafo append-only: nós em decision_trace_nodes (MySQL) com espelho Cassandra trace_by_entity; arestas em decision_trace_edges. Visual: fio de decisão (RF38.CA07) — nós coloridos pela MessageClass (ARGUMENTO azul · DIVERGENCIA laranja · RISCO vermelho · CONSENSO verde · PERGUNTA roxo) e carimbo VALIDADO / DEVOLVIDO (FinalDecision.stampJson).",
-    "route": "sessão DECIA (/decia/[sessionId]), projeto (/projects/[id], painel \"Por que isto existe?\"), tarefa (/tasks/[id]) — rotas a confirmar (o card não as fixa)",
-    "coverage": "RF29.CA01 · RF29.CA02 · RF29.CA03 · RF29.CA04 · RF29.CA05 · RF29.CA06 · RF29.CA07 · RF29.CA08 · RF29.CA09",
+    "summary": "O Rastro de Decisão (DecisionTrace) é um grafo append-only — DecisionTraceNode (MENSAGEM · CLASSIFICACAO · DIVERGENCIA · PERGUNTA · RESUMO · CENARIO · DECISAO · REVISAO · TAREFA · PROJETO · ARTEFATO · ATA_VIVA · CONFORMIDADE) e DecisionTraceEdge (ORIGINOU · CLASSIFICOU · RESPONDEU · RESUMIU · DECIDIU · REVISOU · TRANSFORMOU_EM · ANEXOU · VERIFICOU) — gravado no MySQL e espelhado em Cassandra trace_by_entity (flag cassandra.enabled). Renderiza-se como o fio de decisão (DecisionThread, RF38.CA07): linha vertical, nós coloridos por classLabel (ARGUMENTO azul · DIVERGENCIA laranja · RISCO vermelho · CONSENSO verde · PERGUNTA roxo), carimbo VALIDADO/DEVOLVIDO no fim (Stamp). Imutável: nenhuma API de UPDATE/DELETE; exclusão de tarefa mantém o nó via snapshotJson (RF23).",
+    "route": "botão Abrir sessão DECIA no projeto (/projects/[id], Mesa /desk), sessão (/decia/[sessionId]: composer com anexos do acervo, ação \"Transformar em tarefa\", \"Criar projeto a partir desta sessão\"), painel Por que isto existe? em /tasks/[id] e /projects/[id], indicador em /admin/dashboard (RF18)",
+    "coverage": "RF29.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs. A sessão em si (tema, mensagens, classificação, resumo, decisão, revisão) está em docs/produto/DECIA_SESSAO_E_MESA.md e nos PlantUML docs/produto/decia/*.puml; aqui só a ponte com o Criador de Projetos e o Rastro de Decisão.",
     "cas": [
       {
         "id": "RF29.CA01",
-        "text": "Classes DeciaSession.linkedProjectId, DeciaBridgeService.openSessionFromProject, ProjectService.changeStatus; atividades U1 → S1 → S2 → A1 → S3 (409 SESSAO_JA_VINCULADA); sequência bloco «CA01» (POST /api/projects/{id}/decia-session, topic = objective, participantes, EM_DECISAO, nós PROJETO/ORIGINOU); transições RASCUNHO/PUBLICADO → EM_DECISAO; componentes app/projects/[id], ProjectDeciaController",
+        "text": "DeciaBridgeService.openSessionFromProject, DeciaSession.linkedProjectId/topic, ProjectStatus EM_DECISAO, nó PROJETO → ANEXOU → SESSAO",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF29.CA02",
-        "text": "Classes ProjectScheme.origin = DECIA, ProjectScheme.sourceSessionId, AiEngine.composeFromSession, SessionArtifact.convertedTaskId, DeciaBridgeService.createProjectFromSession; atividades U6 → A4 → S14; transição inicial [*] → RASCUNHO (origin DECIA); componente SessionBridgeController.createProject",
+        "text": "DeciaBridgeService.createProjectFromSession, SchemeOrigin DECIA, ProjectScheme.sourceSessionId, SessionArtifact.convertedTaskId",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF29.CA03",
-        "text": "Classes SessionMessage 1→0..5 MessageAttachment (targetType TASK/PROJECT/PLAN, snapshotJson), DeciaBridgeService.attachToMessage; atividades U2 → S4 → S5 → W1 (422 VALIDACAO máx. 5, 403 ACESSO_NEGADO); sequência bloco «CA03 e CA04» (POST /api/sessions/{id}/messages, alts 422/403); componentes AttachmentChip, CassandraMessageStore",
+        "text": "MessageAttachment (≤ 5, snapshotJson), DeciaBridgeService.attachToMessage, Guard.requireParticipant",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF29.CA04",
-        "text": "Classes MessageClassification.label, MessageClass, DeciaBridgeService.toTaskPrefill/transformMessageIntoTask, TaskItem.sourceKind = DECIA, DecisionTraceEdge.relation = TRANSFORMOU_EM; atividades U3 → S7 → A3 → S8 → U4 → S9 (422 para RUIDO); sequência bloco «CA03 e CA04» (GET/POST /api/messages/{id}/to-task, suggestPhase ✦); componentes ToTaskButton, TaskService (RF20)",
+        "text": "DeciaBridgeService.transformMessageIntoTask, MessageClassification.label, TaskItem sourceKind DECIA, ProjectTask.phase, aresta TRANSFORMOU_EM",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF29.CA05",
-        "text": "Classes FinalDecision.resultingTaskId, FinalDecision.stampJson, DecisionReview.outcome/reason, DeciaBridgeService.onDecisionReviewed; atividades U5 → S10 → S11/S12 → S13; sequência bloco «CA05» (ATA_REGISTRO em APROVACAO, stamp VALIDADO, projeto APROVADO); transições revisao → APROVADO e revisao → DEVOLVIDO; componente StampBadge",
+        "text": "DeciaBridgeService.onDecisionReviewed, FinalDecision.resultingTaskId/stampJson, DecisionReview.outcome/reason, TaskType ATA_REGISTRO, fase APROVACAO",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF29.CA06",
-        "text": "Classes DecisionTraceService.threadFor, DecisionTraceNode.classLabel/actorId/at, ProjectTask.decisionTraceNodeId; atividades U7 → S15 → W2 → W3 (link à mensagem original mesmo com sessão ENCERRADA); sequência bloco «CA06 e CA07» (GET /api/tasks/{id}/trace); componentes DecisionThread, app/tasks/[id], app/projects/[id]",
+        "text": "DecisionTraceService.thread, DecisionTraceNode.classLabel/actorId/at, DecisionTraceEdge",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF29.CA07",
-        "text": "Classes DecisionTraceNode/DecisionTraceEdge (append-only, nota), CassandraTraceMirror, DecisionTraceService.export, MediaStoragePort, DecisionTraceNode.snapshotJson; atividades U8 → S16 → D5/D4, S15 (snapshot RF23); sequência bloco «CA06 e CA07» (GET .../trace/export?format=pdf, S3, audit_log); componentes S3TraceExportAdapter, persistence-cassandra",
+        "text": "append-only (sem UPDATE/DELETE), DecisionTraceService.export, snapshotJson, PipelineJob EXPORT_PDF",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF29.CA08",
-        "text": "Classes AnalyticalSummary.recommendationsJson ({affectedTaskIds, affectedProjectIds, planAxisId}), DeciaBridgeService.enrichSummaryWithTargets, DeciaSession.planAxisId; atividades A5 → S17 → D4; componente AnalyticalSummary em ws-domain E2",
+        "text": "AnalyticalSummary.recommendationsJson[].affectedTaskIds/affectedProjectIds/planAxisId, SummaryService",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF29.CA09",
-        "text": "Classe DecisionTraceService.completenessIndicator; atividades U9 → S18 → D6 (vw_decisions_with_trace, metric_snapshots); nota do estado CONCLUIDO; componentes app/admin/dashboard, platform: vw_decisions_with_trace",
+        "text": "MetricCalculator.decisionsWithTrace, view vw_decisions_with_trace, MetricSnapshot",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -1980,43 +1932,43 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 30,
     "title": "Gerar um Esquema de Projeto completo com o Autopiloto de Projeto a partir de uma demanda (ofício, e-mail ou frase), reutilizando modelos chancelados",
     "hu": null,
-    "summary": "Contextos da TAXONOMIA: 3. Criador de Projetos (ProjectScheme com origin = AUTOPILOTO, ProjectTask, ProjectTaskDependency), 2. Acervo (TaskItem com sourceKind = AUTOPILOT), 6. Chancelas (SealBond APROVADA = modelos chancelados), 8. Social (Remix = crédito a cada modelo usado) e 10. IA do sistema (AiInferenceLog capability AUTOPILOT_PROJETO, InstitutionalMemoryDocument para \"projetos semelhantes\", RF33). A proposta não é persistida no MySQL até o usuário confirmar (CA03): vive em Redis (autopilot:draft:{draftId}, TTL) — decisão a confirmar em DECISOES.md.",
-    "route": "Autopiloto (/autopilot); proposta exibida na Mesa de Trabalho (RF22) em modo rascunho",
-    "coverage": "RF30.CA01 · RF30.CA02 · RF30.CA03 · RF30.CA04 · RF30.CA05 · RF30.CA06",
+    "summary": "Fluxo: demanda (texto, ofício/e-mail colado ou TaskItem DOCUMENTO do acervo) → AiEngine capability AUTOPILOT_PROJETO extrai objetivo, prazo, departamento provável e categoria (CA01) → compõe fases, tarefas, dependências, responsáveis sugeridos e prazos remixando modelos chancelados (SealBond APROVADA, ModelOffer shelf CHANCELADO) e projetos semelhantes da Memória Institucional (RF33) com crédito a cada modelo (ProjectScheme.originalProjectId, TaskItem.originalTaskId, Remix) (CA02) → proposta mostrada na Mesa em rascunho não persistido (ProjectDraft em Redis com TTL; flag redis.enabled, fallback em memória) até o usuário confirmar (CA03) → ProjectScheme origin AUTOPILOTO, faísca ✦ e AiInferenceLog (CA04). Sem chave externa: LocalEngine (regras + modelos chancelados) com aviso (CA05).",
+    "route": "Autopiloto (/autopilot), proposta aberta na Mesa em modo rascunho (/desk?draft=), botão Abrir sessão DECIA sobre a proposta (RF29)",
+    "coverage": "RF30.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs. O RF43 §7 estende o Autopilot (tarefas em lote e Ficha de Viabilidade); o RF26 (Copilot) é a porta de entrada nos criadores.",
     "cas": [
       {
         "id": "RF30.CA01",
-        "text": "Classes AutopilotService.analyzeDemand, AiEngine.extractDemand, TaskItem (DOCUMENTO de entrada, accessClass); atividades U1 → S1 → S2/S3 → S4 → A1 (422 VALIDACAO, 403 ACESSO_NEGADO); sequência bloco «CA01» (POST /api/autopilot/analyze); transição [*] → Analisada; componente app/autopilot, AutopilotController.analyze",
+        "text": "AutopilotService.extractDemand, DemandInput (texto · colado · TaskItem DOCUMENTO), AiCapability AUTOPILOT_PROJETO",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF30.CA02",
-        "text": "Classes SealBond APROVADA (modelos chancelados), MemoryService.similarProjects, AiEngine.composeScheme, Remix (crédito), ProjectTaskDependency, ProjectTask.responsibleId/dueAt; atividades S5 → S6 → A2 → S7; sequência bloco «CA02 e CA03» (SELECT seal_bonds, kNN ws-memory, composeScheme ✦); transição Analisada → Proposta; componentes MemoryService, search-opensearch, ModelCreditChip",
+        "text": "AutopilotService.compose, ModelCatalog.chanceladosFor/similarProjects, SealBond APROVADA, ModelOffer CHANCELADO, Remix, ProjectTaskDependency, CriticalPathService",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF30.CA03",
-        "text": "Classes DraftCachePort, RedisDraftCache, AutopilotService.updateDraft/discard; atividades S8 → W2 → U2 → U3 → S9 (nada no MySQL); sequência bloco «CA02 e CA03» (SET autopilot:draft TTL, PATCH /api/autopilot/drafts/{id}); estados voláteis Proposta → Ajustada → Descartada/Expirada; componentes DeskCanvas, DraftTaskCard, cache-redis",
+        "text": "ProjectDraft, DraftCachePort (TTL, nada no MySQL), AutopilotService.editDraft",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF30.CA04",
-        "text": "Classes ProjectScheme.origin = AUTOPILOTO, creationMode = COM_IA, aiGenerated, aiInferenceId, AiInferenceLog (modelo, custo, latência, inputSummaryJson com modelos de referência); atividades U4 → S10 → S11 → S12 → W3; sequência bloco «CA04» (INSERT project_schemes, remixes, ai_inference_log; 409 RASCUNHO_EXPIRADO); transição Draft → RASCUNHO e nota; componente persistence-mysql",
+        "text": "SchemeOrigin AUTOPILOTO, ProjectScheme.aiGenerated/aiInferenceId, AiInferenceLog (modelo, custo, latência, modelos de referência)",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF30.CA05",
-        "text": "Classes `LocalAutopilotEngine ..",
+        "text": "LocalEngine, AiInferenceLog.fallbackUsed, aviso no front",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF30.CA06",
-        "text": "Classes DeciaBridgeService.openSessionFromProject, DeciaSession.linkedProjectId; atividades W3 → U5 → S13 → D5; sequência bloco «CA06» (POST /api/projects/{id}/decia-session, EM_DECISAO); transição RASCUNHO → EM_DECISAO; componente ProjectDeciaController (RF29)",
+        "text": "AutopilotService.openSessionOnDraft, DeciaBridgeService.openSessionFromDraft",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -2027,37 +1979,37 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 31,
     "title": "Simular cenários sobre um Esquema de Projeto (corte de orçamento, atraso, troca de fornecedor, mudança de escopo) antes de enviá-lo à aprovação",
     "hu": null,
-    "summary": "Contextos da TAXONOMIA: 3. Criador de Projetos (ProjectScenario, ProjectScheme, ProjectTask com PERT/EVM, ProjectTaskDependency, ProjectVersion.sourceScenarioId, ComplianceResult), 5. DECIA (SummaryScenario.linkedProjectScenarioId, FinalDecision.chosenScenarioId, MessageAttachment targetType SCENARIO) e 10. IA (AiInferenceLog capability SIMULAR_CENARIO). O motor local (CPM/PERT) cobre linha do tempo e caminho crítico sem IA externa; a IA externa acrescenta riscos novos e vantagens/desvantagens no formato dos cenários do RF11 (SummaryScenario).",
-    "route": "Simulador de Cenários (/projects/[id]/simulate)",
-    "coverage": "RF31.CA01 · RF31.CA02 · RF31.CA03 · RF31.CA04 · RF31.CA05",
+    "summary": "Um ProjectScenario guarda as variáveis (variablesJson: budgetDeltaPct, scheduleDeltaDays, removedTaskIds, addedTasksJson, responsibleSwaps, supplierSwaps, scopeChangeText) e o relatório de impacto (impactReportJson) no mesmo formato dos cenários do resumo analítico (RF11, SummaryScenario). O recálculo de linha do tempo, caminho crítico e risco por fase é determinístico (CriticalPathService, RiskMatrixService, D-12); a IA (SIMULAR_CENARIO) só redige vantagens/desvantagens e cruza com o Espelho (RF32). Salvar cria uma variante (não altera o original); aplicar gera ProjectVersion com sourceScenarioId (RF22). Compartilhar na sessão cria MessageAttachment tipo SCENARIO e SummaryScenario.linkedProjectScenarioId.",
+    "route": "Simulador de Cenários (/projects/[id]/simulate, comparação ?compare=a,b,c), compartilhar na sessão (/decia/[sessionId], RF29)",
+    "coverage": "RF31.CA01 · CA02 · CA03 · CA04 · CA05 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs.",
     "cas": [
       {
         "id": "RF31.CA01",
-        "text": "Classes ProjectScenario.variablesJson (budgetDeltaPct, scheduleDeltaDays, removedTaskIds, addedTasksJson, responsibleSwaps, supplierSwaps, scopeChangeText), ScenarioService.create; atividades U1 → S1 → U2 → S2 → S3 (403 ACESSO_NEGADO, 422 VALIDACAO); sequência bloco «CA01, CA02 e CA05» (POST /api/projects/{id}/scenarios); transição [*] → RASCUNHO; componentes ScenarioForm, app/projects/[id]/simulate",
+        "text": "ProjectScenario.variablesJson (budgetDeltaPct, scheduleDeltaDays, removedTaskIds, addedTasksJson, responsibleSwaps, supplierSwaps, scopeChangeText), ScenarioService.create",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF31.CA02",
-        "text": "Classes SchedulePort.recalc/criticalPath/riskByPhase, ProjectScenario.impactReportJson/recalculatedTimelineJson/riskByPhaseJson, ComplianceService.evaluateHypothetical, AiEngine.impactNarrative, ProjectTask.pert*/isCritical/slackDays; atividades S4 → S5 → S6 → A1/A2 → S7 → W1; sequência bloco «CA01, CA02 e CA05» (recalc, evaluateHypothetical, impactNarrative ✦); componentes ImpactReport, TimelineGantt, RiskByPhase, LocalCpmEngine",
+        "text": "CriticalPathService, RiskMatrixService, ComplianceService.evaluate, impactReportJson (formato SummaryScenario), AiCapability SIMULAR_CENARIO",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF31.CA03",
-        "text": "Classes ScenarioService.compare/save/apply, ProjectVersion.sourceScenarioId, ProjectScenario.appliedVersionId, ScenarioStatus; atividades U3 → S8 → S9 → W2, U4 → S10/S11 → S12 → W4 (422 máx. 3, 409 VERSAO_CONFLITO); sequência bloco «CA03»; transições RASCUNHO/SALVO → APLICADO e → SALVO; componentes ScenarioCompare, app/projects/[id]/history",
+        "text": "ScenarioService.compare/save/apply, ScenarioStatus SALVO/APLICADO, ProjectVersion.sourceScenarioId",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF31.CA04",
-        "text": "Classes MessageAttachment targetType SCENARIO, ProjectScenario.sharedInSessionId, SummaryScenario.linkedProjectScenarioId, FinalDecision.chosenScenarioId, ScenarioService.shareInSession, DeciaBridgeService; atividades U5 → S14 → U6 → S15; sequência bloco «CA04» (nó CENARIO no rastro); nota do estado SALVO; componentes app/decia/[sessionId], CassandraMessageStore",
+        "text": "ScenarioService.shareInSession, MessageAttachment SCENARIO, sharedInSessionId, SummaryScenario.linkedProjectScenarioId, FinalDecision.chosenScenarioId, nó CENARIO",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF31.CA05",
-        "text": "Classes AiInferenceLog (SIMULAR_CENARIO, fallbackUsed), ProjectScenario.aiInferenceId, `LocalCpmEngine ..",
+        "text": "AiInferenceLog (faísca ✦), LocalEngine (prazo/caminho crítico sem IA externa)",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -2068,43 +2020,43 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 32,
     "title": "Verificar a conformidade de um Esquema de Projeto no Espelho de Conformidade (checklists legais e do departamento) e sugerir as tarefas faltantes",
     "hu": null,
-    "summary": "Contextos da TAXONOMIA: 3. Criador de Projetos (ComplianceChecklist, ComplianceItem, ComplianceResult, ProjectScheme.conformityPercent/hasBlockingPending, ProjectTask), 2. Acervo (TaskItem.checklistItemId = tarefa faltante criada pelo Espelho), 5. DECIA (AnalyticalSummary.complianceResultId, DecisionTraceNode CONFORMIDADE, aresta VERIFICOU) e 10. IA (AiInferenceLog capability CONFORMIDADE). Exemplos de checklist do card: licitação — Lei 14.133/2021 (ETP antes do TR, parecer jurídico antes da APROVACAO, pesquisa de preços); obra — licença ambiental, ART/RRT, projeto básico antes da EXECUCAO. O bloqueio em ⛔ é aviso, não impedimento: o chefe aprova com overrideReason (autoridade humana).",
-    "route": "Espelho de Conformidade (/projects/[id]/mirror); manutenção de checklists na página da empresa/departamento (/companies/[slug]/checklists, rota a confirmar)",
-    "coverage": "RF32.CA01 · RF32.CA02 · RF32.CA03 · RF32.CA04 · RF32.CA05 · RF32.CA06",
+    "summary": "ComplianceChecklist (por processTag, empresa ou departamento, com legalBasis, ex.: Lei 14.133/2021) tem ComplianceItems (OBRIGATORIO · RECOMENDADO, expectedPhase, expectedCategory, expectedType, mustPrecedeItemId). Abrir o Espelho gera um ComplianceResult (itemsJson com ATENDIDO · RECOMENDADO_AUSENTE · OBRIGATORIO_AUSENTE · FORA_DE_ORDEM, percent, blockingCount). O cruzamento é determinístico (ComplianceService); a IA (CONFORMIDADE) só sugere qual tarefa atende cada item e redige a explicação ✦. O selo (%) vai para ProjectScheme.conformityPercent/hasBlockingPending; a passagem para APROVACAO com ⛔ pendente exige justificativa do chefe (overrideByUserId/overrideReason, autoridade humana). O resultado entra no resumo analítico (AnalyticalSummary.complianceResultId) e no rastro (nó CONFORMIDADE → VERIFICOU).",
+    "route": "Espelho de Conformidade (/projects/[id]/mirror), gestão de checklists na página da empresa/departamento (/companies/[slug]/manage/checklists, /departments/[slug]/checklists), selo de conformidade no ProjectCard",
+    "coverage": "RF32.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs.",
     "cas": [
       {
         "id": "RF32.CA01",
-        "text": "Classes ComplianceChecklist (processTag, legalBasis, departmentId null = empresa), ComplianceItem (requirement, expectedPhase, expectedCategory, expectedType, mustPrecedeItemId), ComplianceService.createChecklist/upsertItem, AccessPolicy.requireIssuer; atividades U1 → S1 → S2 → S3 (403 ACESSO_NEGADO, 422 VALIDACAO); sequência bloco «CA01»; componentes app/companies/[slug]/checklists, ComplianceChecklistController",
+        "text": "ComplianceChecklist, ComplianceItem (requirement, expectedPhase, mustPrecedeItemId), ChecklistService.create/update, Guard.requireRole/requireDeptHead",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF32.CA02",
-        "text": "Classes ComplianceService.evaluate, RuleEnginePort, AiEngine.matchItems, ComplianceResult.itemsJson (ATENDIDO com satisfiedByProjectTaskId, RECOMENDADO_AUSENTE, OBRIGATORIO_AUSENTE, FORA_DE_ORDEM); atividades U2 → S4 → S5 → S6 → A1/A2 → S7 → W1; sequência bloco «CA02, CA05 e CA06»; transições de NaoAvaliado no estado Item; componentes ChecklistItemRow, LocalComplianceEngine",
+        "text": "ComplianceService.evaluate, ComplianceResult.itemsJson (ItemStatus), AiCapability CONFORMIDADE",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF32.CA03",
-        "text": "Classes ComplianceService.createMissingTask, TaskItem.checklistItemId, TaskService.create, ProjectTask.phase = expectedPhase; atividades U3 → S9 → S10 → S6 (403 para revisor); sequência bloco «CA03»; transições *_AUSENTE → ATENDIDO; componente CreateMissingTaskButton",
+        "text": "ComplianceService.createMissingTask, TaskItem.checklistItemId, ProjectTask.phase = expectedPhase",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF32.CA04",
-        "text": "Classes ProjectScheme.conformityPercent/hasBlockingPending, ComplianceResult.percent/blockingCount/overrideByUserId/overrideReason, ComplianceService.gatePhaseChange, AuditLog; atividades S8 → W2, U4 → S11 → W3 → S12 → U5 → S13 (409 CONFORMIDADE_PENDENTE como aviso); sequência bloco «CA04»; estado Gate (ComPendencia → AprovacaoComJustificativa); componentes ConformitySeal, OverrideDialog",
+        "text": "ProjectScheme.conformityPercent/hasBlockingPending, ComplianceService.gateToApproval/override, overrideByUserId/overrideReason, AuditLog COMPLIANCE_OVERRIDE",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF32.CA05",
-        "text": "Classes AnalyticalSummary.complianceResultId, DecisionTraceNode nodeType CONFORMIDADE, DecisionTraceService.appendNode; atividade S7 → S15 → D4; sequência bloco «CA02, CA05 e CA06» (evento ConformityEvaluated → analytical_summaries, decision_trace_nodes, trace_by_entity); nota do estado Gate; componentes DecisionTraceService (RF29), CassandraTraceMirror",
+        "text": "AnalyticalSummary.complianceResultId, nó CONFORMIDADE + aresta VERIFICOU, DomainEvents ComplianceEvaluated",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF32.CA06",
-        "text": "Classe AccessPolicy.canEditProject; atividades U6 → S4 → ... → S8 → W4 (modo leitura) e S9 → E4; sequência bloco «CA02, CA05 e CA06» (resposta em modo leitura) e bloco «CA03» alt 403 para revisor; nota do estado Item; componente MirrorController",
+        "text": "Guard (chefe revisor lê, não edita), ComplianceService.createMissingTask 403 para revisor",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -2115,43 +2067,43 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 33,
     "title": "Consultar a Memória Institucional (busca semântica sobre sessões encerradas, artefatos, projetos e tarefas) e fazer a IA do DECIA citar fontes institucionais",
     "hu": null,
-    "summary": "Contextos da TAXONOMIA: 10. IA do sistema (InstitutionalMemoryDocument no índice OpenSearch ws-memory, Citation valor embutido, MemoryQuery, AiInferenceLog capability MEMORIA_BUSCA), 5. DECIA (DeciaSession.indexedInMemory, AiQuestion.citationsJson, AnalyticalSummary.recommendationsJson[].citations, FinalDecision.citationsJson, SessionArtifact), 12. Plataforma (DomainEventOutbox, PipelineJob INDEXAR_MEMORIA, FeatureFlag opensearch.enabled). Base do objetivo 3: recomendação sem fonte é marcada \"sem precedente\"; indexação é assíncrona (AFTER_COMMIT) e nunca bloqueia a operação de negócio. Conteúdo RESTRITO/SIGILOSO nunca vai a IA externa: indexa só metadados ou usa embedding local.",
-    "route": "Memória Institucional (/memory); explorador visual em /memory/explore (rota a confirmar)",
-    "coverage": "RF33.CA01 · RF33.CA02 · RF33.CA03 · RF33.CA04 · RF33.CA05 · RF33.CA06",
+    "summary": "Índice OpenSearch ws-memory (InstitutionalMemoryDocument: sourceType SESSAO · ARTEFATO · DECISAO · PROJETO · TAREFA · DOCUMENTO, embedding dense_vector, metadados empresa/departamento/categoria/exercício/autor/data, visibility, accessClass). Indexação assíncrona por PipelineJob INDEXAR_MEMORIA disparado AFTER_COMMIT quando algo é encerrado/publicado (sessão ARQUIVADA, artefato, decisão VALIDADA, projeto CONCLUIDO, tarefa MODELO_PUBLICO, documento indexável); falha não bloqueia o negócio (PipelineJob FALHA/REPROCESSAR, log em ai_inference_log). Toda consulta passa pelo filtro de visibilidade/perfil; RESTRITO/SIGILOSO nunca é embeddado por provedor externo (só LocalEngine). Respostas carregam Citation[] (sourceType, sourceId, excerpt, url, score); vazio = \"sem precedente\". Flag opensearch.enabled; sem ela, /memory mostra EmptyState \"índice desligado\" e a IA marca tudo \"sem precedente\".",
+    "route": "Memória Institucional (/memory: pergunta em linguagem natural, explorador visual por departamento/categoria/exercício), citações dentro da sessão (/decia/[sessionId]), \"projetos parecidos\" em /search (RF27.CA05), indicador em /admin/dashboard (RF18)",
+    "coverage": "RF33.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs. Base do objetivo 3 (justificativa rastreável correlacionada à base de conhecimento institucional).",
     "cas": [
       {
         "id": "RF33.CA01",
-        "text": "Classes InstitutionalMemoryDocument (metadados empresa, departamento, categoria, exercício, autor, indexedAt, embedding), MemorySourceType, MemoryIndexingListener.on*, DeciaSession.indexedInMemory; atividades U1 → S1 → S2 → S3 → A1/A2 → S4 → S5; sequência bloco «CA01 e CA06» (PUT ws-memory/_doc); transições PENDENTE → RODANDO → OK; componentes search-opensearch, MemoryIndexingListener",
+        "text": "InstitutionalMemoryDocument (sourceType, metadados), MemoryIndexer.onClosedOrPublished/index, PipelineJob INDEXAR_MEMORIA, DeciaSession.indexedInMemory",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF33.CA02",
-        "text": "Classes MemoryService.query, Citation (excerpt, url, score), MemoryQuery, AccessPolicy.visibilityFilter, AiEngine.answerWithCitations; atividades U2 → S7 → S8 → A5 → S9 → A3 → S10 → W1 (422 VALIDACAO, 403 ACESSO_NEGADO ao abrir fonte); sequência bloco «CA02»; nota do estado OK; componentes app/memory, MemoryResultCard, MemoryController",
+        "text": "MemoryService.ask, Citation (excerpt, url, score), MemoryQuery, VisibilityFilter",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF33.CA03",
-        "text": "Classes MemoryService.retrieveForSession, AiEngine.recommendWithSources, AiQuestion.citationsJson, AnalyticalSummary.recommendationsJson[].citations, FinalDecision.citationsJson, nota de Citation (vazio = sem precedente); atividades U3 → S11 → S12 → S13/S14 → W2; sequência bloco «CA03»; componentes CitationChip, NoPrecedentBadge, SessionAiController",
+        "text": "CitationService.citeFor/markNoPrecedent, AnalyticalSummary.recommendationsJson[].citations, AiQuestion.citationsJson, FinalDecision.citationsJson",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF33.CA04",
-        "text": "Classes MemoryService.explore/similarProjects, SearchIndexPort.aggregate; atividades U4 → S15 → D2/D4 → W3; sequência bloco «CA04 e CA05» (aggregate + cache Redis); componentes app/memory/explore, FacetMap, cache-redis",
+        "text": "MemoryService.explore/similar, facets departamento/categoria/exercício, RF27.CA05",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF33.CA05",
-        "text": "Classes MemoryService.citationIndicator, MetricSnapshot; atividades U5 → S16 → D5 (vw_decisions_with_sources); sequência bloco «CA04 e CA05» (GET /api/admin/kpis); componentes app/admin/dashboard, persistence-mysql: vw_decisions_with_sources",
+        "text": "MetricCalculator.decisionsWithSources, view vw_decisions_with_sources, MetricSnapshot",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF33.CA06",
-        "text": "Classes DomainEventOutbox, PipelineJob (status, attempts, lastError), PipelineJobStatus, AiInferenceLog result ERRO, OutboxPublisher; atividades S2, S4 -.-> S6 (negócio intacto); sequência bloco «CA01 e CA06» alt «OpenSearch indisponível»; transições RODANDO → REPROCESSAR → RODANDO/FALHA e nota; componentes platform: OutboxPublisher · PipelineJob worker",
+        "text": "DomainEvents AFTER_COMMIT, PipelineJob FALHA/REPROCESSAR, AiInferenceLog ERRO",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -2162,43 +2114,43 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 34,
     "title": "Extrair informações de desenhos técnicos e documentos (dwg/dxf/ifc/glb/pdf) com IA para gerar quantitativos, planilha orçamentária e cronograma pré-preenchidos",
     "hu": null,
-    "summary": "Contextos da TAXONOMIA: 2. Acervo (TaskItem tipos DESENHO_TECNICO · DOCUMENTO · PLANILHA · CRONOGRAMA · IMAGEM_EDITADA, TaskAttachment com mimeType, antivirusStatus, ocrStatus, Evidence.studioStatus), 3. Criador de Projetos (ProjectTask da tarefa derivada no mesmo projeto), 10. IA (ExtractionResult kind QUANTITATIVOS · ITENS_PRAZOS · ESTRUTURAL, ExtractionCorrection, AiInferenceLog capability EXTRAIR_DESENHO / EXTRAIR_DOCUMENTO) e 12. Plataforma (MediaObject, PipelineJob OCR). Sem IA externa o motor local lê camadas/blocos (ESTRUTURAL) sem interpretação semântica e avisa. RESTRITO/SIGILOSO nunca vai a IA externa.",
-    "route": "ação \"Extrair com IA\" na tarefa DESENHO_TECNICO / DOCUMENTO (/tasks/[id], RF20); visualizador 3D (/tasks/[id]/viewer, rota a confirmar)",
-    "coverage": "RF34.CA01 · RF34.CA02 · RF34.CA03 · RF34.CA04 · RF34.CA05 · RF34.CA06",
+    "summary": "ExtractionResult (kind QUANTITATIVOS · ITENS_PRAZOS · ESTRUTURAL; rowsJson com confiança por linha; layersJson; status ExtractionStatus PROCESSANDO · PRONTA · REVISADA · CONVERTIDA · FALHA) nasce de uma TaskItem DESENHO_TECNICO (.dwg/.dxf/.ifc) ou DOCUMENTO (.pdf/.docx). A leitura estrutural (camadas/blocos/entidades, OCR) é feita pelo platform (parsers + OCR) e pelo LocalEngine; a interpretação semântica (item, unidade, quantidade, datas, responsáveis) usa AiEngine capabilities EXTRAIR_DESENHO/EXTRAIR_DOCUMENTO; sem provedor externo só a estrutural, com aviso (CA06). O arquivo passa por OwnMedia (restricted/ quando RESTRITO/SIGILOSO), magic bytes, limite por formato e teto de pixels antes de alocar (SEG). Correções do usuário (ExtractionCorrection) ficam por departamento e alimentam as próximas extrações (few-shot/regras locais). Converter cria TaskItem PLANILHA (PLANILHA_ORCAMENTARIA) ou CRONOGRAMA com sourceKind EXTRACAO, originalTaskId = tarefa de origem, faísca ✦, e ProjectTask no mesmo projeto.",
+    "route": "ação Extrair com IA no detalhe da tarefa DESENHO_TECNICO / DOCUMENTO (/tasks/[id], painel ExtractionPanel), visualizador 3D (/tasks/[id]/viewer), resultado vira tarefa PLANILHA/CRONOGRAMA no mesmo projeto (RF4/RF5)",
+    "coverage": "RF34.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs.",
     "cas": [
       {
         "id": "RF34.CA01",
-        "text": "Classes ExtractionService.extractQuantities, CadReaderPort.readLayers, ExtractionResult.kind = QUANTITATIVOS, rowsJson (item, unit, qty, area, volume, confidence), layersJson, AiEngine.interpretCad; atividades U1 → S1 → S2 → S3 → S6 → S7 → A1 → S8 → W1 (403, 409 ANTIVIRUS_PENDENTE, 422 formato); sequência bloco «CA01 e CA06»; transição [*] → PROCESSANDO → PRONTA; componentes ExtractionTable, DxfCadReaderAdapter, IfcCadReaderAdapter",
+        "text": "ExtractionService.extractQuantities, StructuralReader.readCad/readIfc, ExtractionResult.rowsJson (item, unidade, quantidade, área/volume, confiança), ExtractionKind QUANTITATIVOS",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF34.CA02",
-        "text": "Classes ExtractionService.extractItemsAndDeadlines, OcrPort, TaskAttachment.ocrStatus/ocrTextRef, PipelineJob OCR, AiEngine.extractFromDocument, ExtractionResult.kind = ITENS_PRAZOS; atividades U2 → S1 → S2 → S4 → S5 → S6 → A2 → S8; sequência bloco «CA02»; componentes TesseractOcrAdapter, search-opensearch: ocrTextRef",
+        "text": "ExtractionService.extractItemsAndDeadlines, StructuralReader.readPdf, OcrPort, ExtractionKind ITENS_PRAZOS",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF34.CA03",
-        "text": "Classes ExtractionService.derive, ExtractionResult.derivedTaskId, TaskItem.originalTaskId/aiGenerated/aiInferenceId, ProjectTask (mesmo projeto), TaskService.create; atividades U4 → S11 → W3; sequência bloco «CA04 e CA03» (POST /api/extractions/{id}/derive, evento thumbnail RF38); transições PRONTA/REVISADA → CONVERTIDA e nota; componente DeriveButton",
+        "text": "ExtractionService.convert, TaskService.createDerived, TaskType PLANILHA/CRONOGRAMA, SourceKind EXTRACAO, originalTaskId, ProjectTask, derivedTaskId",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF34.CA04",
-        "text": "Classes ExtractionCorrection (rowIndex, field, oldValue, newValue, departmentId), ExtractionService.correctRow, AiEngine.*(…, departmentCorrections); atividades U3 → S10, S7 (correções como exemplos); sequência bloco «CA04 e CA03» (PATCH /api/extractions/{id}/rows/{i}) e SELECT extraction_corrections no bloco «CA01»; transição PRONTA → REVISADA e nota; componente ExtractionTable (edição)",
+        "text": "ExtractionService.review, ExtractionCorrection (departmentId), exemplos nas próximas extrações",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF34.CA05",
-        "text": "Classes ExtractionService.viewerUrl/captureAsImage, MediaStoragePort.presign/put, Evidence.studioStatus/derivedTaskId, TaskType.IMAGEM_EDITADA; atividades U5 → S12 → W4 → U6 → S13; sequência bloco «CA05»; componentes app/tasks/[id]/viewer, Viewer3D, MeasureTool, storage-s3",
+        "text": "ExtractionService.captureFromViewer, Evidence, UploadGuard, tarefa IMAGEM_EDITADA (RF4)",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF34.CA06",
-        "text": "Classes AiInferenceLog (EXTRAIR_DESENHO / EXTRAIR_DOCUMENTO, modelo, custo, latência, fallbackUsed), `LocalStructuralEngine ..",
+        "text": "AiInferenceLog (modelo, custo, latência), LocalEngine (estrutural sem semântica), ExtractionKind ESTRUTURAL, aviso",
         "note": "",
         "kind": "rastreabilidade"
       }
