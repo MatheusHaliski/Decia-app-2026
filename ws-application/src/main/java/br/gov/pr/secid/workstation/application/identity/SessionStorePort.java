@@ -18,6 +18,15 @@ public interface SessionStorePort {
     /** Marca um token como usado/rotacionado (a família continua viva pelo sucessor). */
     void revoke(String tokenHash, Instant at);
 
+    /**
+     * Consumo ATÔMICO do refresh (RF2.CA04, D-30): se o token existe, não está revogado e não expirou, marca-o revogado
+     * e devolve {@link Consume#ROTATED}; se já estava revogado, {@link Consume#REUSED}; expirado → {@link Consume#EXPIRED};
+     * inexistente → {@link Consume#UNKNOWN}. Duas requisições com o MESMO token nunca ganham as duas: só uma vê ROTATED.
+     */
+    Consume consume(String tokenHash, Instant now);
+
+    enum Consume { ROTATED, REUSED, EXPIRED, UNKNOWN }
+
     /** Revoga a família inteira (logout, reuso detectado, troca de senha). */
     void revokeFamily(UUID familyId, Instant at);
 

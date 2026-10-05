@@ -12,7 +12,7 @@ class ClientIpResolverTest {
     /** Segredo de teste gerado por execução (nunca versionado): 64 hex. */
     private static final String SECRET = java.util.HexFormat.of().formatHex(randomBytes());
     private final AtomicLong now = new AtomicLong(1_760_000_000L);
-    private final ClientIpResolver resolver = new ClientIpResolver(SECRET, "X-Real-IP", now::get);
+    private final ClientIpResolver resolver = new ClientIpResolver(SECRET, "X-Real-IP", "10.0.0.0/8", now::get);
 
     private static byte[] randomBytes() {
         byte[] b = new byte[32];
@@ -39,7 +39,7 @@ class ClientIpResolverTest {
         MockHttpServletRequest r = request("10.0.0.9");
         r.addHeader("X-Forwarded-For", "203.0.113.77, 10.0.0.1");
         assertThat(resolver.resolve(r)).isEqualTo("10.0.0.9");
-        ClientIpResolver semBorda = new ClientIpResolver("", "", now::get);
+        ClientIpResolver semBorda = new ClientIpResolver("", "", "10.0.0.0/8", now::get);
         assertThat(semBorda.resolve(r)).isEqualTo("10.0.0.9");
     }
 
@@ -68,12 +68,12 @@ class ClientIpResolverTest {
 
     @Test
     void segredoCurtoOuAusenteDesligaAAssinatura() {
-        ClientIpResolver curto = new ClientIpResolver("curto", "X-Real-IP", now::get);
+        ClientIpResolver curto = new ClientIpResolver("curto", "X-Real-IP", "10.0.0.0/8", now::get);
         assertThat(curto.signedHeadersEnabled()).isFalse();
         long ts = now.get();
         assertThat(curto.resolve(signed("198.51.100.4", ts, ClientIpResolver.signature("curto", "198.51.100.4", ts))))
                 .as("mesmo assinando com o segredo curto, o cabeçalho é ignorado").isEqualTo("10.0.0.9");
-        assertThat(new ClientIpResolver("", "X-Real-IP", now::get).signedHeadersEnabled()).isFalse();
+        assertThat(new ClientIpResolver("", "X-Real-IP", "10.0.0.0/8", now::get).signedHeadersEnabled()).isFalse();
         assertThat(resolver.signedHeadersEnabled()).isTrue();
     }
 
@@ -90,10 +90,53 @@ class ClientIpResolverTest {
         assertThat(resolver.resolve(v6)).isEqualTo("2001:db8:0:0:0:0:0:1");
         // resolvido uma vez por requisição
         assertThat(resolver.resolve(v6)).isEqualTo("2001:db8:0:0:0:0:0:1");
-        ClientIpResolver semHeader = new ClientIpResolver(SECRET, "", now::get);
+        ClientIpResolver semHeader = new ClientIpResolver(SECRET, "", "10.0.0.0/8", now::get);
         MockHttpServletRequest fresh = request("10.0.0.9");
         fresh.addHeader("X-Real-IP", "203.0.113.10");
         assertThat(semHeader.resolve(fresh)).as("cabeçalho da borda desligado").isEqualTo("10.0.0.9");
+    }
+
+    /** Achado P1 (Codex): o cabeçalho da borda só vale vindo de um proxy confiável (WS_TRUSTED_PROXIES), senão qualquer cliente escolhe o IP. */
+    @Test
+    void cabecalhoDaBordaSoValeDePeerNaAllowlistDeProxies() {
+        ClientIpResolver semAllowlist = new ClientIpResolver("", "X-Real-IP", "", now::get);
+        MockHttpServletRequest r = request("10.0.0.9");
+        r.addHeader("X-Real-IP", "203.0.113.10");
+        assertThat(semAllowlist.resolve(r)).as("allowlist vazia = cabeçalho ignorado").isEqualTo("10.0.0.9");
+        assertThat(semAllowlist.trustedProxies()).isEmpty();
+
+        ClientIpResolver allow = new ClientIpResolver("", "X-Real-IP", " 10.0.0.0/8 , 192.0.2.7, 2001:db8::/32 ", now::get);
+        assertThat(allow.trustedProxies()).hasSize(3);
+        MockHttpServletRequest fromProxy = request("10.200.3.4");
+        fromProxy.addHeader("X-Real-IP", "203.0.113.10");
+        assertThat(allow.resolve(fromProxy)).isEqualTo("203.0.113.10");
+        MockHttpServletRequest fromClient = request("198.51.100.44");
+        fromClient.addHeader("X-Real-IP", "203.0.113.10");
+        fromClient.addHeader("X-Forwarded-For", "203.0.113.11");
+        assertThat(allow.resolve(fromClient)).as("peer fora da allowlist: cabeçalho ignorado, XFF também").isEqualTo("198.51.100.44");
+        MockHttpServletRequest single = request("192.0.2.7");
+        single.addHeader("X-Real-IP", "203.0.113.12");
+        assertThat(allow.resolve(single)).isEqualTo("203.0.113.12");
+        MockHttpServletRequest v6 = request("2001:db8:aaaa::1");
+        v6.addHeader("X-Real-IP", "203.0.113.13");
+        assertThat(allow.resolve(v6)).isEqualTo("203.0.113.13");
+        MockHttpServletRequest v6out = request("2001:db9::1");
+        v6out.addHeader("X-Real-IP", "203.0.113.13");
+        assertThat(allow.resolve(v6out)).isEqualTo("2001:db9:0:0:0:0:0:1");
+        // o IP assinado pelo BFF continua valendo de qualquer peer (a prova é a assinatura, não o peer)
+        long ts = now.get();
+        MockHttpServletRequest signedFromAnywhere = request("198.51.100.44");
+        signedFromAnywhere.addHeader(ClientIpResolver.SIGNED_IP, "198.51.100.4");
+        signedFromAnywhere.addHeader(ClientIpResolver.SIGNED_TS, String.valueOf(ts));
+        signedFromAnywhere.addHeader(ClientIpResolver.SIGNED_SIG, ClientIpResolver.signature(SECRET, "198.51.100.4", ts));
+        assertThat(new ClientIpResolver(SECRET, "X-Real-IP", "", now::get).resolve(signedFromAnywhere)).isEqualTo("198.51.100.4");
+        for (String bad : new String[] {"nao-ip", "10.0.0.0/33", "10.0.0.0/x", "evil.example/8"}) {
+            org.assertj.core.api.Assertions.assertThatThrownBy(() -> new ClientIpResolver("", "X-Real-IP", bad, now::get))
+                    .as(bad).isInstanceOf(IllegalArgumentException.class);
+        }
+        assertThat(ClientIpResolver.Cidr.parse("10.1.2.3").prefix()).isEqualTo(32);
+        assertThat(ClientIpResolver.Cidr.parse("::1").prefix()).isEqualTo(128);
+        assertThat(ClientIpResolver.Cidr.parse("10.0.0.0/8").contains(java.net.InetAddress.getLoopbackAddress())).isFalse();
     }
 
     @Test

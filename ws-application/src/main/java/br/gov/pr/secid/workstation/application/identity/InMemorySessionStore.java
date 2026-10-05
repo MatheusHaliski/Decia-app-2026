@@ -10,7 +10,10 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/** {@link SessionStorePort} em memória (uma instância; sessões morrem no reinício). Com Redis ligado, o adaptador Redis assume. */
+/**
+ * {@link SessionStorePort} em memória (uma instância; sessões morrem no reinício). Com {@code ws.redis.enabled=true} o
+ * {@code RedisSessionStore} (cache-redis) assume. O {@link #consume} é atômico pelo {@code compute} do ConcurrentHashMap.
+ */
 @Component
 @ConditionalOnProperty(prefix = "ws.redis", name = "enabled", havingValue = "false", matchIfMissing = true)
 public class InMemorySessionStore implements SessionStorePort {
@@ -29,6 +32,24 @@ public class InMemorySessionStore implements SessionStorePort {
     @Override
     public void revoke(String tokenHash, Instant at) {
         byHash.computeIfPresent(tokenHash, (k, r) -> r.revoked(at));
+    }
+
+    @Override
+    public Consume consume(String tokenHash, Instant now) {
+        Consume[] result = {Consume.UNKNOWN};
+        byHash.computeIfPresent(tokenHash, (k, r) -> {
+            if (r.revokedAt() != null) {
+                result[0] = Consume.REUSED;
+                return r;
+            }
+            if (!r.expiresAt().isAfter(now)) {
+                result[0] = Consume.EXPIRED;
+                return r;
+            }
+            result[0] = Consume.ROTATED;
+            return r.revoked(now);
+        });
+        return result[0];
     }
 
     @Override

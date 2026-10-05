@@ -175,6 +175,43 @@ class IdentityServiceTest {
         assertThat(identity.sessionActive(null)).isFalse();
     }
 
+    /** Achado P1 (Codex): duas requisições com o MESMO refresh não podem ganhar as duas. */
+    @Test
+    void vinteRefreshesParalelosComOMesmoTokenSoUmGanhaEOsDemaisRevogamAFamilia() throws Exception {
+        Session s = identity.login(new IdentityService.LoginCommand("maria.silva", password, false, null, null), ctx);
+        int threads = 20;
+        CountDownLatch start = new CountDownLatch(1);
+        ExecutorService pool = Executors.newFixedThreadPool(threads);
+        java.util.concurrent.atomic.AtomicInteger ok = new java.util.concurrent.atomic.AtomicInteger();
+        java.util.concurrent.atomic.AtomicInteger invalid = new java.util.concurrent.atomic.AtomicInteger();
+        try {
+            List<Future<?>> fs = new ArrayList<>();
+            for (int i = 0; i < threads; i++) {
+                fs.add(pool.submit(() -> {
+                    start.await(5, TimeUnit.SECONDS);
+                    try {
+                        identity.refresh(s.refreshToken(), ctx);
+                        ok.incrementAndGet();
+                    } catch (ApiException e) {
+                        assertThat(e.code()).isEqualTo(AuthCodes.SESSAO_INVALIDA);
+                        invalid.incrementAndGet();
+                    }
+                    return null;
+                }));
+            }
+            start.countDown();
+            for (Future<?> f : fs) {
+                f.get(10, TimeUnit.SECONDS);
+            }
+        } finally {
+            pool.shutdownNow();
+        }
+        assertThat(ok.get()).as("exatamente um consumo").isEqualTo(1);
+        assertThat(invalid.get()).isEqualTo(threads - 1);
+        assertThat(identity.sessionActive(s.sessionId())).as("reuso detectado: família inteira revogada").isFalse();
+        assertThat(audit.actions()).filteredOn(AuditActions.REFRESH_REUSO::equals).hasSize(threads - 1);
+    }
+
     @Test
     void refreshDeContaSuspensaEncerraASessaoELogoutRevogaAFamilia() {
         Session s = identity.login(new IdentityService.LoginCommand("maria.silva", password, false, null, null), ctx);

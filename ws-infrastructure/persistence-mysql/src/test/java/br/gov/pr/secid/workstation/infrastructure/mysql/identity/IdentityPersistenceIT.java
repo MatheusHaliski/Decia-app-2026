@@ -71,6 +71,8 @@ class IdentityPersistenceIT {
     EmailHasher emailHasher;
     @Autowired
     JdbcTemplate jdbc;
+    @Autowired
+    org.springframework.transaction.PlatformTransactionManager transactionManager;
 
     private User newUser(String username, String email) {
         User u = new User();
@@ -143,6 +145,22 @@ class IdentityPersistenceIT {
         Map<String, Object> row = jdbc.queryForMap("SELECT action, result, metadata_json FROM audit_log WHERE actor_id = ?", uuidBytes(u.getId()));
         assertThat(row.get("action")).isEqualTo("LOGIN_OK");
         assertThat(row.get("metadata_json").toString()).contains("b***@e***.br").doesNotContain("deve-sumir");
+    }
+
+    /** Achado P1 (Codex): criar o usuário e auditá-lo como ator NO MESMO fluxo transacional não pode travar na FK (REQUIRES_NEW travava). */
+    @Test
+    void auditarUsuarioCriadoNaMesmaTransacaoNaoTravaNaFk() {
+        org.springframework.transaction.support.TransactionTemplate tx =
+                new org.springframework.transaction.support.TransactionTemplate(transactionManager);
+        UUID[] id = new UUID[1];
+        org.junit.jupiter.api.Assertions.assertTimeoutPreemptively(Duration.ofSeconds(20), () -> tx.executeWithoutResult(status -> {
+            User u = newUser("cris.it", "cris.it@exemplo.gov.br");
+            id[0] = u.getId();
+            audit.record(AuditEvent.of(u.getId(), "USER_REGISTERED", "user", u.getId().toString(), AuditEvent.OK, "203.0.113.1", "IT", Map.of()));
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_log WHERE actor_id = ?", Integer.class, uuidBytes(u.getId())))
+                    .as("ainda não gravado: espera o commit").isZero();
+        }));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_log WHERE actor_id = ?", Integer.class, uuidBytes(id[0]))).isEqualTo(1);
     }
 
     private static byte[] uuidBytes(UUID id) {

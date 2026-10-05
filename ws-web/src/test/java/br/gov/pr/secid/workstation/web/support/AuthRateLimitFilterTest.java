@@ -26,7 +26,7 @@ class AuthRateLimitFilterTest {
     private final WsSecurityProperties props = new WsSecurityProperties(null,
             new WsSecurityProperties.Cors(List.of("http://localhost:3000")));
     private final ErrorWriter errors = new ErrorWriter(new ObjectMapper());
-    private final AuthRateLimitFilter filter = new AuthRateLimitFilter(rateLimit, new ClientIpResolver("", "X-Real-IP"),
+    private final AuthRateLimitFilter filter = new AuthRateLimitFilter(rateLimit, new ClientIpResolver("", "X-Real-IP", "10.0.0.0/8"),
             new HashBulkhead(8, 2000), errors, props, true);
 
     private static MockHttpServletRequest login(String rawUri, String servletPath, String xff) {
@@ -139,7 +139,7 @@ class AuthRateLimitFilterTest {
         for (int i = 0; i < 40; i++) {
             assertThat(status(login("/api/feed", "/api/feed", null))).isEqualTo(200);
         }
-        AuthRateLimitFilter off = new AuthRateLimitFilter(rateLimit, new ClientIpResolver("", "X-Real-IP"),
+        AuthRateLimitFilter off = new AuthRateLimitFilter(rateLimit, new ClientIpResolver("", "X-Real-IP", "10.0.0.0/8"),
                 new HashBulkhead(1, 10), errors, props, false);
         for (int i = 0; i < 40; i++) {
             assertThat(send(off, from("POST", "/api/auth/login", "203.0.113.50")).getStatus()).isEqualTo(200);
@@ -149,7 +149,7 @@ class AuthRateLimitFilterTest {
     /** Bulkhead: com as vagas ocupadas, o pedido seguinte recebe 503 + Retry-After em vez de segurar conexão do banco. */
     @Test
     void hashesSimultaneosAcimaDoTetoRecebem503() throws Exception {
-        AuthRateLimitFilter oneSlot = new AuthRateLimitFilter(rateLimit, new ClientIpResolver("", "X-Real-IP"),
+        AuthRateLimitFilter oneSlot = new AuthRateLimitFilter(rateLimit, new ClientIpResolver("", "X-Real-IP", "10.0.0.0/8"),
                 new HashBulkhead(1, 50), errors, props, true);
         CountDownLatch inside = new CountDownLatch(1);
         CountDownLatch leave = new CountDownLatch(1);

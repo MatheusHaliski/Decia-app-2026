@@ -64,7 +64,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Fatia MVC com a segurança real e o IdentityService falso: contrato HTTP do RF2, 60 logins paralelos sem nenhum 500
  * (bulkhead), 401/403 nos endpoints autenticados e sid revogado recusado pelo SessionActiveFilter.
  */
-@WebMvcTest(controllers = AuthController.class)
+@WebMvcTest(controllers = AuthController.class, properties = "ws.security.trusted-proxies=127.0.0.1/32")
 @Import({SecurityConfig.class, JwtConfig.class, GlobalExceptionHandler.class, ErrorWriter.class, ApiErrorAuthenticationEntryPoint.class,
         ApiErrorAccessDeniedHandler.class, CorrelationIdFilter.class, ClockConfig.class, InMemoryRateLimit.class, InMemorySessionStore.class,
         ClientIpResolver.class, CurrentUserArgumentResolver.class, AuthControllerWebTest.Bulkhead.class})

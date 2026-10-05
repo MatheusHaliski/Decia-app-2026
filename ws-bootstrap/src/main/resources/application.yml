@@ -136,6 +136,8 @@ ws:
     # Nunca X-Forwarded-For. Vazio desliga a assinatura (WARN).
     edge-proxy-secret: ${EDGE_PROXY_SECRET:}
     edge-ip-header: ${WS_EDGE_IP_HEADER:X-Real-IP}
+    # CIDRs dos proxies da hospedagem cujo cabeçalho da borda é aceito (D-29). Vazio = cabeçalho ignorado (API exposta direto).
+    trusted-proxies: ${WS_TRUSTED_PROXIES:}
     auth-rate-limit:
       enabled: ${WS_AUTH_RATE_LIMIT_ENABLED:true}
     auth-hash-concurrency: ${WS_AUTH_HASH_CONCURRENCY:0}         # 0 = max(1, min(max(2, núcleos), pool/2))
