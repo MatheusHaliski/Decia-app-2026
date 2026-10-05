@@ -93,7 +93,8 @@ class IdentityPersistenceIT {
         assertThat(row.get("email_enc").toString()).startsWith("enc:v1:").doesNotContainIgnoringCase("ana.it@");
         assertThat(row.get("phone_enc").toString()).startsWith("enc:v1:").doesNotContain("41999990000");
         assertThat(row.get("email_hash")).isEqualTo(emailHasher.hash("ana.it@exemplo.gov.br"));
-        assertThat(((Number) row.get("test_account")).intValue()).isZero();
+        // coluna gerada BOOLEAN: o Connector/J devolve Boolean (TINYINT(1)) — nunca Number
+        assertThat(String.valueOf(row.get("test_account"))).isIn("false", "0");
         User found = users.findByEmailHash(emailHasher.hash("ana.it@exemplo.gov.br")).orElseThrow();
         assertThat(found.getEmail()).isEqualTo("Ana.IT@Exemplo.gov.br");
         assertThat(found.getPhone()).isEqualTo("+5541999990000");
