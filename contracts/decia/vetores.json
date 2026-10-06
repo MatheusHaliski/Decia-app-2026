@@ -1,0 +1,1600 @@
+{
+  "version": "decia-scoring-v1",
+  "scoring": [
+    {
+      "name": "arquitetura-ponderada",
+      "input": {
+        "weightingEnabled": true,
+        "criteria": [
+          {
+            "key": "seguranca",
+            "weightPct": 30
+          },
+          {
+            "key": "custo",
+            "weightPct": 20
+          },
+          {
+            "key": "escalabilidade",
+            "weightPct": 25
+          },
+          {
+            "key": "tempo",
+            "weightPct": 15
+          },
+          {
+            "key": "manutencao",
+            "weightPct": 10
+          }
+        ],
+        "alternatives": [
+          {
+            "key": "A"
+          },
+          {
+            "key": "B"
+          },
+          {
+            "key": "C"
+          },
+          {
+            "key": "D",
+            "status": "DESCARTADA"
+          }
+        ],
+        "assessments": [
+          {
+            "alt": "A",
+            "crit": "seguranca",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "custo",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "escalabilidade",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "tempo",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "manutencao",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "seguranca",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "custo",
+            "score": 2,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "escalabilidade",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "tempo",
+            "score": 2,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "manutencao",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "seguranca",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "custo",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "escalabilidade",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "tempo",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "manutencao",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "seguranca",
+            "score": 2,
+            "by": "u2"
+          },
+          {
+            "alt": "B",
+            "crit": "seguranca",
+            "score": 5,
+            "by": "u3"
+          }
+        ]
+      },
+      "expected": {
+        "valid": true,
+        "reason": null,
+        "weightSum": 100,
+        "ranking": [
+          {
+            "alt": "A",
+            "score": 3.8,
+            "contributions": {
+              "seguranca": 0.9,
+              "custo": 1.0,
+              "escalabilidade": 0.75,
+              "tempo": 0.75,
+              "manutencao": 0.4
+            }
+          },
+          {
+            "alt": "B",
+            "score": 3.75,
+            "contributions": {
+              "seguranca": 1.5,
+              "custo": 0.4,
+              "escalabilidade": 1.25,
+              "tempo": 0.3,
+              "manutencao": 0.3
+            }
+          },
+          {
+            "alt": "C",
+            "score": 3.55,
+            "contributions": {
+              "seguranca": 1.2,
+              "custo": 0.6,
+              "escalabilidade": 1.0,
+              "tempo": 0.45,
+              "manutencao": 0.3
+            }
+          }
+        ],
+        "incomplete": [],
+        "leader": "A"
+      }
+    },
+    {
+      "name": "pesos-iguais-incompleta",
+      "input": {
+        "weightingEnabled": false,
+        "criteria": [
+          {
+            "key": "valor"
+          },
+          {
+            "key": "esforco"
+          }
+        ],
+        "alternatives": [
+          {
+            "key": "A"
+          },
+          {
+            "key": "B"
+          },
+          {
+            "key": "C"
+          }
+        ],
+        "assessments": [
+          {
+            "alt": "A",
+            "crit": "valor",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "esforco",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "valor",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "esforco",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "valor",
+            "score": 5,
+            "by": "u1"
+          }
+        ]
+      },
+      "expected": {
+        "valid": true,
+        "reason": null,
+        "weightSum": null,
+        "ranking": [
+          {
+            "alt": "A",
+            "score": 4.0,
+            "contributions": {
+              "valor": 2.0,
+              "esforco": 2.0
+            }
+          },
+          {
+            "alt": "B",
+            "score": 3.5,
+            "contributions": {
+              "valor": 2.0,
+              "esforco": 1.5
+            }
+          }
+        ],
+        "incomplete": [
+          "C"
+        ],
+        "leader": "A"
+      }
+    },
+    {
+      "name": "empate-tecnico",
+      "input": {
+        "weightingEnabled": false,
+        "criteria": [
+          {
+            "key": "x"
+          },
+          {
+            "key": "y"
+          }
+        ],
+        "alternatives": [
+          {
+            "key": "A"
+          },
+          {
+            "key": "B"
+          }
+        ],
+        "assessments": [
+          {
+            "alt": "A",
+            "crit": "x",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "y",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "x",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "y",
+            "score": 5,
+            "by": "u1"
+          }
+        ]
+      },
+      "expected": {
+        "valid": true,
+        "reason": null,
+        "weightSum": null,
+        "ranking": [
+          {
+            "alt": "A",
+            "score": 4.0,
+            "contributions": {
+              "x": 2.5,
+              "y": 1.5
+            }
+          },
+          {
+            "alt": "B",
+            "score": 4.0,
+            "contributions": {
+              "x": 1.5,
+              "y": 2.5
+            }
+          }
+        ],
+        "incomplete": [],
+        "leader": null
+      }
+    },
+    {
+      "name": "pesos-nao-somam-100",
+      "input": {
+        "weightingEnabled": true,
+        "criteria": [
+          {
+            "key": "seguranca",
+            "weightPct": 30
+          },
+          {
+            "key": "custo",
+            "weightPct": 25
+          },
+          {
+            "key": "escalabilidade",
+            "weightPct": 25
+          },
+          {
+            "key": "tempo",
+            "weightPct": 15
+          },
+          {
+            "key": "manutencao",
+            "weightPct": 10
+          }
+        ],
+        "alternatives": [
+          {
+            "key": "A"
+          },
+          {
+            "key": "B"
+          },
+          {
+            "key": "C"
+          },
+          {
+            "key": "D",
+            "status": "DESCARTADA"
+          }
+        ],
+        "assessments": [
+          {
+            "alt": "A",
+            "crit": "seguranca",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "custo",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "escalabilidade",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "tempo",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "manutencao",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "seguranca",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "custo",
+            "score": 2,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "escalabilidade",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "tempo",
+            "score": 2,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "manutencao",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "seguranca",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "custo",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "escalabilidade",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "tempo",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "manutencao",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "seguranca",
+            "score": 2,
+            "by": "u2"
+          },
+          {
+            "alt": "B",
+            "crit": "seguranca",
+            "score": 5,
+            "by": "u3"
+          }
+        ]
+      },
+      "expected": {
+        "valid": false,
+        "reason": "PESOS_NAO_SOMAM_100",
+        "weightSum": 105.0,
+        "ranking": [],
+        "incomplete": [],
+        "leader": null
+      }
+    },
+    {
+      "name": "mediana-par",
+      "input": {
+        "weightingEnabled": false,
+        "criteria": [
+          {
+            "key": "x"
+          }
+        ],
+        "alternatives": [
+          {
+            "key": "A"
+          }
+        ],
+        "assessments": [
+          {
+            "alt": "A",
+            "crit": "x",
+            "score": 2,
+            "by": "u0"
+          },
+          {
+            "alt": "A",
+            "crit": "x",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "x",
+            "score": 4,
+            "by": "u2"
+          },
+          {
+            "alt": "A",
+            "crit": "x",
+            "score": 5,
+            "by": "u3"
+          }
+        ]
+      },
+      "expected": {
+        "valid": true,
+        "reason": null,
+        "weightSum": null,
+        "ranking": [
+          {
+            "alt": "A",
+            "score": 3.5,
+            "contributions": {
+              "x": 3.5
+            }
+          }
+        ],
+        "incomplete": [],
+        "leader": "A"
+      }
+    }
+  ],
+  "divergence": [
+    {
+      "name": "arquitetura",
+      "input": {
+        "weightingEnabled": true,
+        "criteria": [
+          {
+            "key": "seguranca",
+            "weightPct": 30
+          },
+          {
+            "key": "custo",
+            "weightPct": 20
+          },
+          {
+            "key": "escalabilidade",
+            "weightPct": 25
+          },
+          {
+            "key": "tempo",
+            "weightPct": 15
+          },
+          {
+            "key": "manutencao",
+            "weightPct": 10
+          }
+        ],
+        "alternatives": [
+          {
+            "key": "A"
+          },
+          {
+            "key": "B"
+          },
+          {
+            "key": "C"
+          },
+          {
+            "key": "D",
+            "status": "DESCARTADA"
+          }
+        ],
+        "assessments": [
+          {
+            "alt": "A",
+            "crit": "seguranca",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "custo",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "escalabilidade",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "tempo",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "manutencao",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "seguranca",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "custo",
+            "score": 2,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "escalabilidade",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "tempo",
+            "score": 2,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "manutencao",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "seguranca",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "custo",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "escalabilidade",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "tempo",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "manutencao",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "seguranca",
+            "score": 2,
+            "by": "u2"
+          },
+          {
+            "alt": "B",
+            "crit": "seguranca",
+            "score": 5,
+            "by": "u3"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "alt": "B",
+          "crit": "seguranca",
+          "range": 3,
+          "level": "ALTA"
+        }
+      ]
+    }
+  ],
+  "dominance": [
+    {
+      "name": "arquitetura",
+      "input": {
+        "weightingEnabled": true,
+        "criteria": [
+          {
+            "key": "seguranca",
+            "weightPct": 30
+          },
+          {
+            "key": "custo",
+            "weightPct": 20
+          },
+          {
+            "key": "escalabilidade",
+            "weightPct": 25
+          },
+          {
+            "key": "tempo",
+            "weightPct": 15
+          },
+          {
+            "key": "manutencao",
+            "weightPct": 10
+          }
+        ],
+        "alternatives": [
+          {
+            "key": "A"
+          },
+          {
+            "key": "B"
+          },
+          {
+            "key": "C"
+          },
+          {
+            "key": "D",
+            "status": "DESCARTADA"
+          }
+        ],
+        "assessments": [
+          {
+            "alt": "A",
+            "crit": "seguranca",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "custo",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "escalabilidade",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "tempo",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "manutencao",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "seguranca",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "custo",
+            "score": 2,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "escalabilidade",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "tempo",
+            "score": 2,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "manutencao",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "seguranca",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "custo",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "escalabilidade",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "tempo",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "manutencao",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "seguranca",
+            "score": 2,
+            "by": "u2"
+          },
+          {
+            "alt": "B",
+            "crit": "seguranca",
+            "score": 5,
+            "by": "u3"
+          }
+        ]
+      },
+      "expected": []
+    },
+    {
+      "name": "pesos-iguais",
+      "input": {
+        "weightingEnabled": false,
+        "criteria": [
+          {
+            "key": "valor"
+          },
+          {
+            "key": "esforco"
+          }
+        ],
+        "alternatives": [
+          {
+            "key": "A"
+          },
+          {
+            "key": "B"
+          },
+          {
+            "key": "C"
+          }
+        ],
+        "assessments": [
+          {
+            "alt": "A",
+            "crit": "valor",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "esforco",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "valor",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "esforco",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "valor",
+            "score": 5,
+            "by": "u1"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "dominant": "A",
+          "dominated": "B",
+          "betterOn": [
+            "esforco"
+          ]
+        }
+      ]
+    }
+  ],
+  "sensitivity": [
+    {
+      "name": "arquitetura",
+      "input": {
+        "weightingEnabled": true,
+        "criteria": [
+          {
+            "key": "seguranca",
+            "weightPct": 30
+          },
+          {
+            "key": "custo",
+            "weightPct": 20
+          },
+          {
+            "key": "escalabilidade",
+            "weightPct": 25
+          },
+          {
+            "key": "tempo",
+            "weightPct": 15
+          },
+          {
+            "key": "manutencao",
+            "weightPct": 10
+          }
+        ],
+        "alternatives": [
+          {
+            "key": "A"
+          },
+          {
+            "key": "B"
+          },
+          {
+            "key": "C"
+          },
+          {
+            "key": "D",
+            "status": "DESCARTADA"
+          }
+        ],
+        "assessments": [
+          {
+            "alt": "A",
+            "crit": "seguranca",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "custo",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "escalabilidade",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "tempo",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "manutencao",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "seguranca",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "custo",
+            "score": 2,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "escalabilidade",
+            "score": 5,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "tempo",
+            "score": 2,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "manutencao",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "seguranca",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "custo",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "escalabilidade",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "tempo",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "manutencao",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "seguranca",
+            "score": 2,
+            "by": "u2"
+          },
+          {
+            "alt": "B",
+            "crit": "seguranca",
+            "score": 5,
+            "by": "u3"
+          }
+        ]
+      },
+      "expected": {
+        "applicable": true,
+        "flips": [
+          {
+            "criterion": "custo",
+            "fromPct": 20,
+            "toPct": 17,
+            "delta": 3,
+            "newLeader": "B"
+          },
+          {
+            "criterion": "tempo",
+            "fromPct": 15,
+            "toPct": 12,
+            "delta": 3,
+            "newLeader": "B"
+          },
+          {
+            "criterion": "seguranca",
+            "fromPct": 30,
+            "toPct": 34,
+            "delta": 4,
+            "newLeader": "B"
+          },
+          {
+            "criterion": "escalabilidade",
+            "fromPct": 25,
+            "toPct": 29,
+            "delta": 4,
+            "newLeader": "B"
+          },
+          {
+            "criterion": "manutencao",
+            "fromPct": 10,
+            "toPct": 1,
+            "delta": 9,
+            "newLeader": "B"
+          }
+        ],
+        "robust": false,
+        "sensitive": true
+      }
+    },
+    {
+      "name": "sem-pesos",
+      "input": {
+        "weightingEnabled": false,
+        "criteria": [
+          {
+            "key": "valor"
+          },
+          {
+            "key": "esforco"
+          }
+        ],
+        "alternatives": [
+          {
+            "key": "A"
+          },
+          {
+            "key": "B"
+          },
+          {
+            "key": "C"
+          }
+        ],
+        "assessments": [
+          {
+            "alt": "A",
+            "crit": "valor",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "A",
+            "crit": "esforco",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "valor",
+            "score": 4,
+            "by": "u1"
+          },
+          {
+            "alt": "B",
+            "crit": "esforco",
+            "score": 3,
+            "by": "u1"
+          },
+          {
+            "alt": "C",
+            "crit": "valor",
+            "score": 5,
+            "by": "u1"
+          }
+        ]
+      },
+      "expected": {
+        "applicable": false,
+        "flips": [],
+        "robust": null
+      }
+    }
+  ],
+  "evidenceStrength": [
+    {
+      "name": "forte",
+      "input": {
+        "alt": "B",
+        "evidence": [
+          {
+            "nature": "EVIDENCIA",
+            "reliability": "ALTA",
+            "source": "teste-carga",
+            "links": [
+              {
+                "alt": "B",
+                "stance": "SUSTENTA"
+              }
+            ]
+          },
+          {
+            "nature": "FATO",
+            "reliability": "ALTA",
+            "source": "sla-fornecedor",
+            "links": [
+              {
+                "alt": "B",
+                "stance": "SUSTENTA"
+              }
+            ]
+          },
+          {
+            "nature": "OPINIAO",
+            "reliability": "MEDIA",
+            "source": "especialista",
+            "links": [
+              {
+                "alt": "B",
+                "stance": "CONTRADIZ"
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "level": "FORTE",
+        "support": 6.0,
+        "contra": 1.0,
+        "reason": null
+      }
+    },
+    {
+      "name": "moderada",
+      "input": {
+        "alt": "B",
+        "evidence": [
+          {
+            "nature": "EVIDENCIA",
+            "reliability": "ALTA",
+            "source": "teste-carga",
+            "links": [
+              {
+                "alt": "B",
+                "stance": "SUSTENTA"
+              }
+            ]
+          },
+          {
+            "nature": "FATO",
+            "reliability": "MEDIA",
+            "source": "teste-carga",
+            "links": [
+              {
+                "alt": "B",
+                "stance": "SUSTENTA"
+              },
+              {
+                "alt": "A",
+                "stance": "CONTRADIZ"
+              }
+            ]
+          },
+          {
+            "nature": "EVIDENCIA",
+            "reliability": "ALTA",
+            "source": "teste-carga",
+            "links": [
+              {
+                "alt": "B",
+                "stance": "SUSTENTA"
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "level": "MODERADA",
+        "support": 8.0,
+        "contra": 0.0,
+        "reason": null
+      }
+    },
+    {
+      "name": "fraca-contradita",
+      "input": {
+        "alt": "A",
+        "evidence": [
+          {
+            "nature": "EVIDENCIA",
+            "reliability": "ALTA",
+            "source": "s1",
+            "links": [
+              {
+                "alt": "A",
+                "stance": "SUSTENTA"
+              }
+            ]
+          },
+          {
+            "nature": "EVIDENCIA",
+            "reliability": "ALTA",
+            "source": "s2",
+            "links": [
+              {
+                "alt": "A",
+                "stance": "CONTRADIZ"
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "level": "FRACA",
+        "support": 3.0,
+        "contra": 3.0,
+        "reason": null
+      }
+    },
+    {
+      "name": "substituida-nao-conta",
+      "input": {
+        "alt": "A",
+        "evidence": [
+          {
+            "nature": "EVIDENCIA",
+            "reliability": "ALTA",
+            "source": "s1",
+            "superseded": true,
+            "links": [
+              {
+                "alt": "A",
+                "stance": "SUSTENTA"
+              }
+            ]
+          }
+        ]
+      },
+      "expected": {
+        "level": "FRACA",
+        "support": 0,
+        "contra": 0,
+        "reason": "SEM_EVIDENCIA"
+      }
+    }
+  ],
+  "riskSeverityMatrix": [
+    {
+      "likelihood": "RARA",
+      "impact": "BAIXO",
+      "expected": "BAIXO"
+    },
+    {
+      "likelihood": "RARA",
+      "impact": "MEDIO",
+      "expected": "BAIXO"
+    },
+    {
+      "likelihood": "RARA",
+      "impact": "ALTO",
+      "expected": "MEDIO"
+    },
+    {
+      "likelihood": "RARA",
+      "impact": "CRITICO",
+      "expected": "ALTO"
+    },
+    {
+      "likelihood": "POSSIVEL",
+      "impact": "BAIXO",
+      "expected": "BAIXO"
+    },
+    {
+      "likelihood": "POSSIVEL",
+      "impact": "MEDIO",
+      "expected": "MEDIO"
+    },
+    {
+      "likelihood": "POSSIVEL",
+      "impact": "ALTO",
+      "expected": "ALTO"
+    },
+    {
+      "likelihood": "POSSIVEL",
+      "impact": "CRITICO",
+      "expected": "ALTO"
+    },
+    {
+      "likelihood": "PROVAVEL",
+      "impact": "BAIXO",
+      "expected": "MEDIO"
+    },
+    {
+      "likelihood": "PROVAVEL",
+      "impact": "MEDIO",
+      "expected": "ALTO"
+    },
+    {
+      "likelihood": "PROVAVEL",
+      "impact": "ALTO",
+      "expected": "ALTO"
+    },
+    {
+      "likelihood": "PROVAVEL",
+      "impact": "CRITICO",
+      "expected": "CRITICO"
+    },
+    {
+      "likelihood": "QUASE_CERTA",
+      "impact": "BAIXO",
+      "expected": "MEDIO"
+    },
+    {
+      "likelihood": "QUASE_CERTA",
+      "impact": "MEDIO",
+      "expected": "ALTO"
+    },
+    {
+      "likelihood": "QUASE_CERTA",
+      "impact": "ALTO",
+      "expected": "CRITICO"
+    },
+    {
+      "likelihood": "QUASE_CERTA",
+      "impact": "CRITICO",
+      "expected": "CRITICO"
+    }
+  ],
+  "decisionRisk": [
+    {
+      "name": "critico",
+      "input": {
+        "alt": "B",
+        "risks": [
+          {
+            "likelihood": "PROVAVEL",
+            "impact": "CRITICO",
+            "status": "ABERTO",
+            "alt": "B"
+          },
+          {
+            "likelihood": "RARA",
+            "impact": "BAIXO",
+            "status": "ABERTO"
+          }
+        ]
+      },
+      "expected": "CRITICO"
+    },
+    {
+      "name": "mitigado-ignorado",
+      "input": {
+        "alt": "B",
+        "risks": [
+          {
+            "likelihood": "QUASE_CERTA",
+            "impact": "CRITICO",
+            "status": "MITIGADO",
+            "alt": "B"
+          },
+          {
+            "likelihood": "POSSIVEL",
+            "impact": "MEDIO",
+            "status": "ABERTO",
+            "alt": "B"
+          },
+          {
+            "likelihood": "QUASE_CERTA",
+            "impact": "CRITICO",
+            "status": "ABERTO",
+            "alt": "A"
+          }
+        ]
+      },
+      "expected": "MEDIO"
+    },
+    {
+      "name": "premissa-critica-invalidada",
+      "input": {
+        "alt": "B",
+        "risks": [
+          {
+            "likelihood": "RARA",
+            "impact": "MEDIO",
+            "status": "ABERTO",
+            "alt": "B"
+          }
+        ],
+        "assumptions": [
+          {
+            "importance": "CRITICO",
+            "status": "INVALIDADA"
+          }
+        ]
+      },
+      "expected": "ALTO"
+    },
+    {
+      "name": "nao-avaliado",
+      "input": {
+        "alt": "B",
+        "risks": []
+      },
+      "expected": "NAO_AVALIADO"
+    }
+  ],
+  "confidenceBand": [
+    {
+      "pct": 0,
+      "expected": "BAIXA"
+    },
+    {
+      "pct": 35,
+      "expected": "BAIXA"
+    },
+    {
+      "pct": 40,
+      "expected": "MEDIA"
+    },
+    {
+      "pct": 65,
+      "expected": "MEDIA"
+    },
+    {
+      "pct": 70,
+      "expected": "ALTA"
+    },
+    {
+      "pct": 100,
+      "expected": "ALTA"
+    }
+  ],
+  "brier": [
+    {
+      "name": "misto",
+      "input": [
+        {
+          "probabilityPct": 80,
+          "resolution": "OCORREU"
+        },
+        {
+          "probabilityPct": 70,
+          "resolution": "NAO_OCORREU"
+        },
+        {
+          "probabilityPct": 30,
+          "resolution": "NAO_OCORREU"
+        },
+        {
+          "probabilityPct": 90,
+          "resolution": "OCORREU"
+        },
+        {
+          "probabilityPct": 60,
+          "resolution": "PENDENTE"
+        },
+        {
+          "probabilityPct": 50,
+          "resolution": "ANULADA"
+        }
+      ],
+      "expected": {
+        "n": 4,
+        "brier": 0.1575
+      }
+    }
+  ],
+  "snapshotHash": [
+    {
+      "name": "canonico",
+      "input": {
+        "decisionId": "d-1",
+        "selected": "B",
+        "confidencePct": 70,
+        "scores": [
+          {
+            "alt": "B",
+            "score": 4.25
+          },
+          {
+            "alt": "A",
+            "score": 3.8
+          }
+        ],
+        "rationale": "Escala e segurança pesam mais; custo inicial aceito.",
+        "weights": {
+          "custo": 20,
+          "seguranca": 30
+        }
+      },
+      "canonical": "{\"confidencePct\":70,\"decisionId\":\"d-1\",\"rationale\":\"Escala e segurança pesam mais; custo inicial aceito.\",\"scores\":[{\"alt\":\"B\",\"score\":4.25},{\"alt\":\"A\",\"score\":3.8}],\"selected\":\"B\",\"weights\":{\"custo\":20,\"seguranca\":30}}",
+      "sha256": "cffac919957215797acb97da3f596d542c7add0a2479a3cd3155884a867a19ea"
+    }
+  ]
+}
