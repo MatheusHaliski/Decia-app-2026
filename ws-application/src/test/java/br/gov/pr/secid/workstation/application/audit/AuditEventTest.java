@@ -13,19 +13,23 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /** Nenhum caminho consegue gravar segredo na trilha: chaves que parecem segredo são apagadas na construção. */
 class AuditEventTest {
 
+    // valores com letras fora de [0-9a-f]: nunca aparecem por acaso no UUID aleatório do actorId (antes "abc" colidia ~0,7% das vezes)
+    private static final String SEGREDO = "segredo-vazado";
+    private static final String CODIGO = "otp-kz-7781";
+
     @Test
     void chavesQueParecemSegredoSaoMascaradasEOCorrelationIdVemDoMdc() {
         MDC.put(AuditEvent.MDC_CORRELATION, "corr-teste-1234");
         try {
             Map<String, Object> raw = new HashMap<>();
-            raw.put("password", "abc");
-            raw.put("senhaAtual", "abc");
-            raw.put("refreshToken", "abc");
-            raw.put("accessToken", "abc");
-            raw.put("code", "123456");
-            raw.put("codigo", "123456");
-            raw.put("passwordHash", "abc");
-            raw.put("client_secret", "abc");
+            raw.put("password", SEGREDO);
+            raw.put("senhaAtual", SEGREDO);
+            raw.put("refreshToken", SEGREDO);
+            raw.put("accessToken", SEGREDO);
+            raw.put("code", CODIGO);
+            raw.put("codigo", CODIGO);
+            raw.put("passwordHash", SEGREDO);
+            raw.put("client_secret", SEGREDO);
             raw.put("Authorization", "Bearer x");
             raw.put("reason", "senha");
             raw.put("email", "m***@e***.br");
@@ -39,7 +43,7 @@ class AuditEventTest {
                     assertThat(v).as(k).isEqualTo("***");
                 }
             });
-            assertThat(e.toString()).doesNotContain("abc").doesNotContain("123456").doesNotContain("Bearer");
+            assertThat(e.toString()).doesNotContain(SEGREDO).doesNotContain(CODIGO).doesNotContain("Bearer");
             assertThatThrownBy(() -> e.metadata().put("x", 1)).isInstanceOf(UnsupportedOperationException.class);
         } finally {
             MDC.remove(AuditEvent.MDC_CORRELATION);
