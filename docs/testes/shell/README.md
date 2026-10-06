@@ -28,5 +28,17 @@ Geradas por `node scripts/shell/capturas.mjs` (Playwright + Chromium em `/opt/pw
 | [`28-decia-workspace-execucao-revisao.png`](28-decia-workspace-execucao-revisao.png) | `/decia/decisoes/d-lancamento?secao=execucao` | EMPREGADO | claro | 1440×900 | Workspace › Execução e revisão (lançamento, REVISADA): resultado PARCIAL, processo ADEQUADO, previsões e Brier |
 | [`29-decia-decisoes-mobile.png`](29-decia-decisoes-mobile.png) | `/decia?tab=decisoes` | EMPREGADO | claro | 390×844 | Celular: lista COMPACT de decisões (tocar abre o workspace) |
 | [`30-decia-decisao-vazia-ux.png`](30-decia-decisao-vazia-ux.png) | `/decia/decisoes/d-navegacao?secao=comparar` | EMPREGADO | claro | 1440×900 | Decisão de UX em ENQUADRAMENTO: estados vazios com a próxima ação (alternativas, critérios) |
+| [`40-perfil-proprio.png`](40-perfil-proprio.png) | `/profile` | EMPREGADO | claro | 1440×900 | RF6 — meu perfil: cabeçalho com contadores reais, Delegadas a mim, notificações e Acervo Digital em grade |
+| [`41-perfil-terceiros.png`](41-perfil-terceiros.png) | `/u/ana.exemplo` | EMPREGADO | claro | 1440×900 | RF16 — perfil de terceiros: sub-abas 1–5, Seguir, Hype público, itens filtrados pela visibilidade e barra social inline |
+| [`42-perfil-chefe.png`](42-perfil-chefe.png) | `/departments/cpoe?tab=projetos` | EMPREGADO | claro | 1440×900 | RF14 — página do departamento (perfil do chefe): chefe com link ao perfil pessoal, contadores, Seguir e projetos publicados |
+| [`43-perfil-empresa.png`](43-perfil-empresa.png) | `/companies/secretaria-exemplo` | EMPREGADO | claro | 1440×900 | RF15 — página da empresa: contadores institucionais (sem cargo/Hype/DP), Seguir e projetos publicados |
+| [`44-tarefa-expandida-social.png`](44-tarefa-expandida-social.png) | `/tasks/t-ana-etp` | EMPREGADO | claro | 1440×900 | RF19/RF41 — esquema de tarefa no layout ampliado com a barra social completa (curtir, reagir, comentar, salvar, compartilhar, remixar, delegar, retornar) |
+| [`45-comentarios.png`](45-comentarios.png) | `/tasks/t-ana-etp` | EMPREGADO | claro | 1440×900 | RF26.CA03 — comentários com resposta de 1 nível, @menção, editar/excluir os próprios e contador de caracteres |
+| [`46-compartilhar.png`](46-compartilhar.png) | `/tasks/t-ana-etp` | EMPREGADO | claro | 1440×900 | RF26.CA05 — folha Compartilhar: Mural, sessão DECIA e link externo com validade (canais do ShareChannel) |
+| [`47-remixar.png`](47-remixar.png) | `/u/ana.exemplo` | EMPREGADO | claro | 1440×900 | RF26.CA06 — Remixar: original, crédito e o que será copiado × o que fica no original |
+| [`48-mural.png`](48-mural.png) | `/mural` | EMPREGADO | claro | 1440×900 | RF27 — Mural da empresa: compartilhamentos e projetos publicados com a barra social inline (só o que o viewer pode ver) |
+| [`49-perfil-mobile.png`](49-perfil-mobile.png) | `/u/ana.exemplo` | EMPREGADO | claro | 390×844 | Celular: perfil de terceiros sem rolagem horizontal (cards em coluna, barra social compacta) |
+| [`50-delegar-dialogo.png`](50-delegar-dialogo.png) | `/tasks/t-pessoa-cronograma` | EMPREGADO | claro | 1440×900 | RF18.CA03 — Delegar: busca de pessoas da empresa (motivo para quem não pode receber), mensagem e prazo |
+| [`51-delegadas-a-mim.png`](51-delegadas-a-mim.png) | `/profile` | EMPREGADO | claro | 1440×900 | RF18.CA04/CA05 — Delegadas a mim: Aceitar/Recusar a proposta, Devolver a aceita (motivo ≥ 20) e Delegadas por mim |
 
 Capturas do smoke E2E (`npx playwright test`, `e2e/shell.spec.ts`) ficam em [`e2e/`](e2e/).

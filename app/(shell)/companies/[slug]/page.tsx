@@ -1,10 +1,13 @@
 "use client";
 // Página da EMPRESA (RF15/RF28; Matriz C, ABAS_POR_PERFIL §4): abas públicas + "Gestão" só da dona (§7.c, opção C).
+// Cabeçalho RF15.CA01 (contadores institucionais, Seguir) e projetos publicados em "Sobre", sobre o repositório DEMO social.
 import { useParams } from "next/navigation";
+import { CompanyHeader, PublishedProjects, useCompanyProjects, useSocial } from "@/components/social";
 import { Badge, Card, Glyph, Link, Monogram } from "@/components/ui";
 import { RfPage } from "@/components/shell/RfPage";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { pageByRoute } from "@/lib/pages/registry";
+import { companyBySlug } from "@/lib/social/rules";
 import { useViewer } from "@/lib/viewer/ViewerProvider";
 
 const PAGE = pageByRoute("/companies/[slug]")!;
@@ -15,13 +18,21 @@ export default function CompanyPage() {
   const { t } = useI18n();
   const { profile, user } = useViewer();
   const owner = profile === "EMPRESA" && user.companySlug === slug;
+  const { state } = useSocial();
+  const known = !!companyBySlug(state, slug);
+  const projects = useCompanyProjects(slug);
   return (
     <RfPage
       page={PAGE}
       subtitle={slug}
-      actions={owner ? <><Badge tone="success">{t("company.owner")}</Badge></> : undefined}
+      actions={owner ? <><Badge tone="success">{t("company.owner")}</Badge></> : known ? <Badge tone="neutral" title={t("social.demoHint")}>{t("decia.demo")}</Badge> : undefined}
       renderTab={(tab) =>
-        tab === "gestao" ? (
+        tab === "sobre" && known ? (
+          <section aria-labelledby="company-projects" className="grid gap-3">
+            <h2 id="company-projects" className="font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h3)] font-semibold">{t("social.institution.projects")}</h2>
+            <PublishedProjects projects={projects} />
+          </section>
+        ) : tab === "gestao" ? (
           <Card title={t("tabs.company.gestao")} eyebrow={t("common.proposal")}>
             <ul className="grid gap-1 sm:grid-cols-2">
               {GESTAO_ITEMS.map((k) => (
@@ -37,13 +48,13 @@ export default function CompanyPage() {
         ) : undefined
       }
     >
-      <Card tone="clay" className="flex flex-wrap items-center gap-[var(--ws-space-4)]">
+      {known ? <CompanyHeader slug={slug} /> : <Card tone="clay" className="flex flex-wrap items-center gap-[var(--ws-space-4)]">
         <Monogram name={slug} monogram={slug.slice(0, 3).toUpperCase()} node="orange" size={64} />
         <div className="min-w-0 flex-1">
           <p className="font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h2)] font-semibold">{t("viewer.company.exemplo")}</p>
           <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">/companies/{slug} · {t("company.publicMetrics")}</p>
         </div>
-      </Card>
+      </Card>}
     </RfPage>
   );
 }
