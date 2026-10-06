@@ -168,10 +168,13 @@ describe("frescor (§6.11) e saúde (§6.8)", () => {
     expect(freshness({ ...far, triggers: [{ ...far.triggers[0]!, status: "DISPARADO", firedAt: iso(-1) }] }, NOW)).toBe("VENCIDA");
     expect(freshness({ ...far, assumptions: [{ ...far.assumptions[0]!, importance: "CRITICO", validationStatus: "INVALIDADA", validatedAt: iso(-1) }] }, NOW)).toBe("VENCIDA");
   });
-  it("REVISAO_DEVIDA por evidência nova depois do snapshot e por reviewEveryDays excedido", () => {
+  it("REVISAO_DEVIDA por evidência ligada depois do snapshot (solta não conta) e por reviewEveryDays excedido", () => {
     const base = demo()[DEMO_DECISION_IDS.fornecedor]!;
     const far = { ...base, checkpoints: [{ ...base.checkpoints[0]!, dueAt: iso(60) }] };
-    expect(freshness({ ...far, evidence: [...far.evidence, { ...far.evidence[0]!, id: "novo", addedAt: iso(-1) }] }, NOW)).toBe("REVISAO_DEVIDA");
+    const withNew = { ...far, evidence: [...far.evidence, { ...far.evidence[0]!, id: "novo", addedAt: iso(-1) }] };
+    // evidência solta, sem link, não move a decisão para revisão
+    expect(freshness(withNew, NOW)).toBe("FRESCA");
+    expect(freshness({ ...withNew, evidenceLinks: [...withNew.evidenceLinks, { id: "l-novo", evidenceId: "novo", targetType: "ALTERNATIVA", targetId: withNew.alternatives[0]!.id, stance: "CONTRADIZ", createdAt: iso(-1) }] }, NOW)).toBe("REVISAO_DEVIDA");
     expect(freshness({ ...far, decision: { ...far.decision, reviewEveryDays: 7 } }, NOW)).toBe("REVISAO_DEVIDA");
   });
   it("saúde tem 5 componentes e nenhuma nota geral", () => {
@@ -209,5 +212,20 @@ describe("alinhamento com o domínio Java (D-53)", () => {
     const treated = { ...agg, assumptions: agg.assumptions.map((a) => ({ ...a, validationStatus: "EM_VALIDACAO" as const })) };
     expect(readiness(treated).checks.find((c) => c.key === "assumptions")!.state).toBe("OK");
     expect(readiness(agg).checks.find((c) => c.key === "assumptions")!.state).toBe("ALERTA");
+  });
+});
+
+describe("ciclo de vida nos comandos (Codex PR #31)", () => {
+  it("Decidir percorre transições explícitas até AGUARDANDO_DECISAO e recusa estados finais", async () => {
+    const { decide, setScore, DecisionLifecycleError } = await import("./commands");
+    const arq = demo()[DEMO_DECISION_IDS.arquitetura]!; // COMPARACAO
+    const draft = { selectedAlternativeId: "arq-b", rationale: "Escala e segurança pesam mais", confidencePct: 65, warningsConfirmed: true };
+    const { aggregate } = decide(arq, draft, arq.decision.ownerUserId, NOW);
+    expect(aggregate.decision.status).toBe("DECIDIDA");
+    const moves = aggregate.events.slice(arq.events.length).filter((e) => e.type === "ESTADO_ALTERADO").map((e) => `${e.payload.from}→${e.payload.to}`);
+    expect(moves).toEqual(["COMPARACAO→AGUARDANDO_DECISAO", "AGUARDANDO_DECISAO→DECIDIDA"]);
+    const decided = demo()[DEMO_DECISION_IDS.fornecedor]!; // DECIDIDA
+    expect(() => decide(decided, draft, decided.decision.ownerUserId, NOW)).toThrow(DecisionLifecycleError);
+    expect(() => setScore(decided, decided.alternatives[0]!.id, decided.criteria[0]!.id, decided.decision.ownerUserId, 1, NOW)).toThrow(/DECISAO_CICLO_TRANSICAO_INVALIDA/);
   });
 });

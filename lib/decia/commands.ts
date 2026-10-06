@@ -8,6 +8,7 @@ import type {
   DecisionAggregate, DecisionComplexity, DecisionEvent, DecisionEventType, DecisionKind, DecisionLevel, DecisionLifecycle, DecisionSnapshot,
   EvidenceNature, EvidenceStance, OutcomeResult, RelevanceLevel,
 } from "./types";
+import { isStructureEditable, LIFECYCLE_TRANSITIONS, PATH_TO_AWAITING } from "./types";
 
 let seq = 0;
 const nextId = (prefix: string) => `${prefix}-${Date.now().toString(36)}-${(seq++).toString(36)}`;
@@ -19,17 +20,20 @@ function touch(agg: DecisionAggregate, now: Date, actor: string | null, type: De
 
 /** Grava (ou remove, com `score = null`) a nota 1–5 de um avaliador para (alternativa, critério). */
 export function setScore(agg: DecisionAggregate, altId: string, critId: string, assessorId: string, score: number | null, now: Date): DecisionAggregate {
+  requireEditable(agg);
   const rest = agg.assessments.filter((a) => !(a.alternativeId === altId && a.criterionId === critId && a.assessorUserId === assessorId));
   const assessments = score === null ? rest : [...rest, { id: nextId("as"), alternativeId: altId, criterionId: critId, assessorUserId: assessorId, score: Math.max(1, Math.min(5, Math.round(score))), submittedAt: now.toISOString(), origin: "HUMANO" as const }];
   return touch({ ...agg, assessments }, now, assessorId, "AVALIACAO_REGISTRADA", { altId, critId, score });
 }
 
 export function setWeight(agg: DecisionAggregate, critId: string, weightPct: number | null, actor: string, now: Date): DecisionAggregate {
+  requireEditable(agg);
   const criteria = agg.criteria.map((c) => (c.id === critId ? { ...c, weightPct } : c));
   return touch({ ...agg, criteria }, now, actor, "CRITERIO_ATUALIZADO", { critId, weightPct });
 }
 
 export function addAlternative(agg: DecisionAggregate, input: { title: string; doNothing?: boolean }, actor: string, now: Date): DecisionAggregate {
+  requireEditable(agg);
   const position = agg.alternatives.length;
   const label = String.fromCharCode(65 + (position % 26));
   const alternative = { id: nextId("alt"), label, title: input.title.trim(), doNothing: !!input.doNothing, pros: [], cons: [], status: "ATIVA" as const, origin: "HUMANO" as const, position };
@@ -53,6 +57,7 @@ export function addEvidence(
 }
 
 export function addCriteria(agg: DecisionAggregate, names: readonly string[], actor: string, now: Date): DecisionAggregate {
+  requireEditable(agg);
   const start = agg.criteria.length;
   const criteria = [...agg.criteria, ...names.map((name, i) => ({ id: nextId("crt"), name, direction: "MAIOR_MELHOR" as const, weightPct: null, origin: "HUMANO" as const, position: start + i }))];
   return touch({ ...agg, criteria }, now, actor, "CRITERIO_ATUALIZADO", { added: names.length });
@@ -78,7 +83,21 @@ export class DecisionIncompleteError extends Error {
  * Decidir (§4.3/§6.10/§6.12): exige o guarda sem bloqueios (avisos precisam de `warningsConfirmed`), grava o snapshot
  * DECISAO append-only com o hash do JSON canônico e muda o estado para DECIDIDA. O snapshot nunca é atualizado depois.
  */
+export class DecisionLifecycleError extends Error {
+  readonly code = "DECISAO_CICLO_TRANSICAO_INVALIDA";
+  constructor(from: string, to: string) {
+    super(`DECISAO_CICLO_TRANSICAO_INVALIDA: ${from} → ${to}`);
+  }
+}
+
+/** A estrutura só muda antes de decidir (ou reaberta); depois disso, alterar exige reabrir (Codex P2, PR #31). */
+function requireEditable(agg: DecisionAggregate) {
+  if (!isStructureEditable(agg.decision.status)) throw new DecisionLifecycleError(agg.decision.status, "EDICAO");
+}
+
 export function decide(agg: DecisionAggregate, draft: DecisionDraft & { warningsConfirmed?: boolean }, actor: string, now: Date): { aggregate: DecisionAggregate; snapshot: DecisionSnapshot } {
+  const path = PATH_TO_AWAITING[agg.decision.status];
+  if (!path) throw new DecisionLifecycleError(agg.decision.status, "DECIDIDA");
   // a guarda roda sobre exatamente os valores que serão gravados (confiança já normalizada, motivo sem espaços nas pontas)
   const confidencePct = draft.confidencePct == null ? undefined : snapConfidence(draft.confidencePct);
   const stored = { selectedAlternativeId: draft.selectedAlternativeId, rationale: draft.rationale.trim(), confidencePct };
@@ -93,12 +112,19 @@ export function decide(agg: DecisionAggregate, draft: DecisionDraft & { warnings
     id: nextId("snap"), kind: "DECISAO", versionNumber, takenAt: now.toISOString(), takenByUserId: actor, contentJson, contentSha256: sha256Hex(contentJson),
     rationale: draft.rationale.trim(), confidencePct, selectedAlternativeLabel: selected.label, modelVersion: MODEL_VERSION,
   };
+  // cada transição intermediária é explícita, validada e registrada na trilha (nunca um salto direto para DECIDIDA)
+  let walked = agg;
+  for (const to of [...path, "DECIDIDA" as const]) {
+    const from = walked.decision.status;
+    if (!LIFECYCLE_TRANSITIONS[from].includes(to)) throw new DecisionLifecycleError(from, to);
+    if (to !== "DECIDIDA") walked = touch({ ...walked, decision: { ...walked.decision, status: to } }, now, actor, "ESTADO_ALTERADO", { from, to });
+  }
   const decided: DecisionAggregate = {
-    ...agg,
+    ...walked,
     decision: { ...agg.decision, status: "DECIDIDA", selectedAlternativeId: selected.id, decidedAt: now.toISOString(), rationale: draft.rationale.trim(), decisionConfidencePct: confidencePct },
     snapshots: [...agg.snapshots, snapshot],
   };
-  const withTrail = touch(touch(decided, now, actor, "DECISAO_FINALIZADA", { snapshotId: snapshot.id, warnings: guard.warnings, sha256: snapshot.contentSha256 }), now, actor, "ESTADO_ALTERADO", { to: "DECIDIDA" });
+  const withTrail = touch(touch(decided, now, actor, "DECISAO_FINALIZADA", { snapshotId: snapshot.id, warnings: guard.warnings, sha256: snapshot.contentSha256 }), now, actor, "ESTADO_ALTERADO", { from: "AGUARDANDO_DECISAO", to: "DECIDIDA" });
   return { aggregate: withTrail, snapshot };
 }
 

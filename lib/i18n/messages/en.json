@@ -660,6 +660,7 @@
   "decia.compare.noAlternatives": "A real decision compares options — including doing nothing.",
   "decia.compare.suggestAi": "Suggest with AI",
   "decia.compare.noCriteria": "Which criteria matter for this question?",
+  "decia.compare.lockedAfterDecision": "Decision finalized: the matrix is read-only. To change scores or weights, reopen the decision (the decision-time snapshot is preserved).",
   "decia.compare.chooseTemplate": "Pick from a template",
   "decia.compare.matrixNeedsAlternatives": "Add alternatives to fill the matrix.",
   "decia.compare.independentNote": "Independent round: each person rated before seeing the others' median.",

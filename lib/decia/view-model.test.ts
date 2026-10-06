@@ -98,9 +98,9 @@ describe("comandos e repositório em memória", () => {
     expect(aggregate.decision).toMatchObject({ status: "DECIDIDA", selectedAlternativeId: "arq-a", decisionConfidencePct: 60 });
     expect(snapshot).toMatchObject({ kind: "DECISAO", versionNumber: 1, selectedAlternativeLabel: "A", confidencePct: 60 });
     expect(verifySnapshot(snapshot)).toBe(true);
-    expect(aggregate.events.at(-1)!.payload).toEqual({ to: "DECIDIDA" });
-    // mudar a matriz depois não reescreve o passado
-    const later = setScore(aggregate, "arq-b", "arq-seguranca", "u-pessoa", 1, NOW);
-    expect(later.snapshots[0]!.contentSha256).toBe(snapshot.contentSha256);
+    expect(aggregate.events.at(-1)!.payload).toEqual({ from: "AGUARDANDO_DECISAO", to: "DECIDIDA" });
+    // depois de DECIDIDA a matriz não muda sem reabrir; o snapshot do momento da decisão continua íntegro
+    expect(() => setScore(aggregate, "arq-b", "arq-seguranca", "u-pessoa", 1, NOW)).toThrow(/DECISAO_CICLO_TRANSICAO_INVALIDA/);
+    expect(aggregate.snapshots[0]!.contentSha256).toBe(snapshot.contentSha256);
   });
 });

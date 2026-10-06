@@ -284,6 +284,21 @@ describe("DecisionWorkspace", () => {
     expect(screen.getByTestId("current-state")).toBeTruthy();
   });
 
+  it("depois de decidida a matriz é somente leitura (sem selects, pesos nem 'Adicionar alternativa')", () => {
+    const f = demo()[DEMO_DECISION_IDS.fornecedor]!;
+    const a = ws(f, "comparar");
+    expect(screen.getByTestId("matrix-locked").textContent).toContain("reabra a decisão");
+    const cells = document.querySelectorAll('[data-testid^="cell-"]');
+    expect(cells.length).toBeGreaterThan(0);
+    cells.forEach((c) => expect(c.querySelector("select, input")).toBeNull());
+    expect(screen.queryAllByRole("spinbutton")).toHaveLength(0);
+    expect(screen.queryByRole("button", { name: "Adicionar alternativa" })).toBeNull();
+    a.unmount();
+    ws(demo()[DEMO_DECISION_IDS.arquitetura]!, "comparar");
+    expect(screen.queryByTestId("matrix-locked")).toBeNull();
+    expect(document.querySelector('[data-testid^="cell-"] select')).not.toBeNull();
+  });
+
   it("execução e revisão do lançamento: boa decisão, resultado parcial; Brier com n", () => {
     ws(demo()[DEMO_DECISION_IDS.lancamento]!, "execucao");
     expect(screen.getByTestId("quadrant").textContent).toContain("Boa decisão, resultado parcial");

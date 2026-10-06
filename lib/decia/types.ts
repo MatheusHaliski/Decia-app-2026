@@ -26,6 +26,23 @@ export const LIFECYCLE_TRANSITIONS: Record<DecisionLifecycle, readonly DecisionL
   ARQUIVADA: [],
 };
 
+/** Estados em que a estrutura (alternativas, critérios, pesos, notas) pode mudar; depois de DECIDIDA só reabrindo (§4.3). */
+export const STRUCTURE_EDITABLE: readonly DecisionLifecycle[] = ["RASCUNHO", "ENQUADRAMENTO", "PESQUISA", "COMPARACAO", "AGUARDANDO_DECISAO", "REABERTA"];
+export const isStructureEditable = (s: DecisionLifecycle) => STRUCTURE_EDITABLE.includes(s);
+
+/**
+ * Caminho explícito até AGUARDANDO_DECISAO para a ação única "Decidir" (decisão rápida, §4.3): cada passo é uma transição
+ * permitida e fica na trilha. Estados fora deste mapa não podem decidir (Codex P1, PR #31).
+ */
+export const PATH_TO_AWAITING: Partial<Record<DecisionLifecycle, readonly DecisionLifecycle[]>> = {
+  RASCUNHO: ["ENQUADRAMENTO", "COMPARACAO", "AGUARDANDO_DECISAO"],
+  ENQUADRAMENTO: ["COMPARACAO", "AGUARDANDO_DECISAO"],
+  PESQUISA: ["COMPARACAO", "AGUARDANDO_DECISAO"],
+  COMPARACAO: ["AGUARDANDO_DECISAO"],
+  REABERTA: ["COMPARACAO", "AGUARDANDO_DECISAO"],
+  AGUARDANDO_DECISAO: [],
+};
+
 export const DECISION_COMPLEXITY = ["RAPIDA", "PADRAO", "PROFUNDA"] as const;
 export type DecisionComplexity = (typeof DECISION_COMPLEXITY)[number];
 

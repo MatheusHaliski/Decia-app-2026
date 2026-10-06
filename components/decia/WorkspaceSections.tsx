@@ -7,7 +7,7 @@ import {
   brier, CALIBRATION_MIN_N, divergence, evidenceStrengthOf, freshness, health, riskSeverity, scoreOf, toScoringInput, verifySnapshot,
 } from "@/lib/decia/rules";
 import type { DecisionAggregate, DecisionLevel, EvidenceNature, Likelihood, PeopleDirectory } from "@/lib/decia/types";
-import { DECISION_LEVEL, LIKELIHOOD } from "@/lib/decia/types";
+import { DECISION_LEVEL, isStructureEditable, LIKELIHOOD } from "@/lib/decia/types";
 import { toDecisionCardViewModel } from "@/lib/decia/view-model";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { AiSuggestion } from "./AiSuggestion";
@@ -211,6 +211,7 @@ export function CompareSection(props: SectionProps) {
   const [adding, setAdding] = useState(false);
   const [aiAsked, setAiAsked] = useState(false);
   const alts = [...aggregate.alternatives].sort((a, b) => a.position - b.position);
+  const editable = isStructureEditable(aggregate.decision.status);
   const divs = divergence(toScoringInput(aggregate)).filter((d) => d.level !== "BAIXA");
   const altName = (id: string) => { const a = aggregate.alternatives.find((x) => x.id === id); return a ? `${a.label} — ${a.title}` : id; };
   const critName = (id: string) => aggregate.criteria.find((c) => c.id === id)?.name ?? id;
@@ -221,7 +222,7 @@ export function CompareSection(props: SectionProps) {
     <div className="grid gap-[var(--ws-space-4)]">
       <Block
         title={t("decia.compare.alternatives")}
-        actions={alts.length ? <Button size="sm" onClick={() => setAdding(true)}>{t("decia.compare.addAlternative")}</Button> : undefined}
+        actions={alts.length && editable ? <Button size="sm" onClick={() => setAdding(true)}>{t("decia.compare.addAlternative")}</Button> : undefined}
         testId="alternatives"
       >
         {alts.length ? (
@@ -243,7 +244,7 @@ export function CompareSection(props: SectionProps) {
           <EmptyState
             compact
             title={t("decia.compare.noAlternatives")}
-            action={<div className="flex flex-wrap justify-center gap-2"><Button variant="primary" onClick={() => setAdding(true)}>{t("decia.compare.addAlternative")}</Button><Button variant="spark" onClick={() => setAiAsked(true)}>✦ {t("decia.compare.suggestAi")}</Button></div>}
+            action={editable ? <div className="flex flex-wrap justify-center gap-2"><Button variant="primary" onClick={() => setAdding(true)}>{t("decia.compare.addAlternative")}</Button><Button variant="spark" onClick={() => setAiAsked(true)}>✦ {t("decia.compare.suggestAi")}</Button></div> : undefined}
           />
         )}
         {aiAsked ? <AiUnavailable /> : null}
@@ -254,18 +255,20 @@ export function CompareSection(props: SectionProps) {
           <EmptyState
             compact
             title={t("decia.compare.noCriteria")}
-            action={<Button variant="primary" onClick={() => onSave(addCriteria(aggregate, tpl.criteria, currentUserId, new Date()))}>{t("decia.compare.chooseTemplate")}</Button>}
+            action={editable ? <Button variant="primary" onClick={() => onSave(addCriteria(aggregate, tpl.criteria, currentUserId, new Date()))}>{t("decia.compare.chooseTemplate")}</Button> : undefined}
           />
         ) : !alts.some((a) => a.status === "ATIVA") ? (
           <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{t("decia.compare.matrixNeedsAlternatives")}</p>
         ) : (
           <>
             {aggregate.decision.independentScoring ? <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("decia.compare.independentNote")}</p> : null}
+            {editable ? null : <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted" data-testid="matrix-locked">{t("decia.compare.lockedAfterDecision")}</p>}
             <CriteriaMatrix
               aggregate={aggregate}
               currentUserId={currentUserId}
-              onScore={(altId, critId, score) => onSave(setScore(aggregate, altId, critId, currentUserId, score, new Date()))}
-              onWeight={(critId, pct) => onSave(setWeight(aggregate, critId, pct, currentUserId, new Date()))}
+              readOnly={!editable}
+              onScore={editable ? (altId, critId, score) => onSave(setScore(aggregate, altId, critId, currentUserId, score, new Date())) : undefined}
+              onWeight={editable ? (critId, pct) => onSave(setWeight(aggregate, critId, pct, currentUserId, new Date())) : undefined}
             />
           </>
         )}
