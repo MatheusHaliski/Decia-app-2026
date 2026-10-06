@@ -1,0 +1,1296 @@
+{
+  "components" : {
+    "schemas" : {
+      "Availability" : {
+        "properties" : {
+          "available" : {
+            "type" : "boolean"
+          },
+          "reason" : {
+            "type" : "string"
+          },
+          "suggestions" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "username" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "ChangePasswordRequest" : {
+        "properties" : {
+          "confirmPassword" : {
+            "maxLength" : 128,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "currentPassword" : {
+            "maxLength" : 128,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "newPassword" : {
+            "maxLength" : 128,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "required" : [ "confirmPassword", "currentPassword", "newPassword" ],
+        "type" : "object"
+      },
+      "ConfirmBodyDto" : {
+        "properties" : {
+          "confirmPassword" : {
+            "maxLength" : 128,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "newPassword" : {
+            "maxLength" : 128,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "token" : {
+            "maxLength" : 256,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "required" : [ "confirmPassword", "newPassword", "token" ],
+        "type" : "object"
+      },
+      "ConfirmRequest" : {
+        "properties" : {
+          "code" : {
+            "maxLength" : 12,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "deviceName" : {
+            "maxLength" : 120,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "email" : {
+            "maxLength" : 320,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "required" : [ "code", "email" ],
+        "type" : "object"
+      },
+      "CurrentUser" : {
+        "properties" : {
+          "admin" : {
+            "type" : "boolean"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "role" : {
+            "enum" : [ "USER", "ADMIN" ],
+            "type" : "string"
+          },
+          "sessionId" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "DeletionBody" : {
+        "properties" : {
+          "currentPassword" : {
+            "maxLength" : 128,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "reason" : {
+            "maxLength" : 500,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "required" : [ "currentPassword" ],
+        "type" : "object"
+      },
+      "DeletionReceipt" : {
+        "properties" : {
+          "cancelable" : {
+            "type" : "boolean"
+          },
+          "deletionRequestedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "deletionScheduledAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "EmailRequest" : {
+        "properties" : {
+          "email" : {
+            "maxLength" : 320,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "required" : [ "email" ],
+        "type" : "object"
+      },
+      "LoginRequest" : {
+        "properties" : {
+          "deviceName" : {
+            "maxLength" : 120,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "identifier" : {
+            "maxLength" : 320,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "password" : {
+            "maxLength" : 128,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "rememberMe" : {
+            "type" : "boolean"
+          },
+          "twoFactorCode" : {
+            "maxLength" : 12,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "required" : [ "identifier", "password" ],
+        "type" : "object"
+      },
+      "OidcLoginRequest" : {
+        "properties" : {
+          "deviceName" : {
+            "maxLength" : 120,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "idToken" : {
+            "maxLength" : 8192,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "nonce" : {
+            "maxLength" : 256,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "required" : [ "idToken", "nonce" ],
+        "type" : "object"
+      },
+      "PreferencesRequest" : {
+        "properties" : {
+          "aiModeDefault" : {
+            "type" : "string"
+          },
+          "dashboardLayoutJson" : {
+            "type" : "string"
+          },
+          "defaultCardSkin" : {
+            "type" : "string"
+          },
+          "density" : {
+            "type" : "string"
+          },
+          "deskSkin" : {
+            "type" : "string"
+          },
+          "fontScale" : {
+            "type" : "number"
+          },
+          "language" : {
+            "type" : "string"
+          },
+          "notificationPrefsJson" : {
+            "type" : "string"
+          },
+          "reduceMotion" : {
+            "type" : "boolean"
+          },
+          "theme" : {
+            "type" : "string"
+          },
+          "timezone" : {
+            "type" : "string"
+          },
+          "wipLimit" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "ProfileRequest" : {
+        "properties" : {
+          "avatarUrl" : {
+            "maxLength" : 500,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "bio" : {
+            "maxLength" : 1000,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "coverUrl" : {
+            "maxLength" : 500,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "displayName" : {
+            "maxLength" : 80,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "fullName" : {
+            "maxLength" : 160,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "hypeVisibility" : {
+            "maxLength" : 20,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "jobTitle" : {
+            "maxLength" : 120,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "rankingOptOut" : {
+            "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
+      "Receipt" : {
+        "properties" : {
+          "maskedEmail" : {
+            "type" : "string"
+          },
+          "nextStep" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "RefreshRequest" : {
+        "properties" : {
+          "refreshToken" : {
+            "maxLength" : 256,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "required" : [ "refreshToken" ],
+        "type" : "object"
+      },
+      "RegisterRequest" : {
+        "properties" : {
+          "acceptTerms" : {
+            "type" : "boolean"
+          },
+          "confirmPassword" : {
+            "maxLength" : 128,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "email" : {
+            "maxLength" : 320,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "fullName" : {
+            "maxLength" : 160,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "password" : {
+            "maxLength" : 128,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "phone" : {
+            "maxLength" : 32,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "profileType" : {
+            "maxLength" : 30,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "username" : {
+            "maxLength" : 80,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "RequestBodyDto" : {
+        "properties" : {
+          "email" : {
+            "maxLength" : 320,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "required" : [ "email" ],
+        "type" : "object"
+      },
+      "RequestContext" : {
+        "properties" : {
+          "ip" : {
+            "type" : "string"
+          },
+          "userAgent" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "SensitiveRequest" : {
+        "properties" : {
+          "currentPassword" : {
+            "maxLength" : 128,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "email" : {
+            "maxLength" : 320,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "phone" : {
+            "maxLength" : 32,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "required" : [ "currentPassword" ],
+        "type" : "object"
+      },
+      "Session" : {
+        "properties" : {
+          "accessToken" : {
+            "type" : "string"
+          },
+          "expiresIn" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "refreshExpiresAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "refreshToken" : {
+            "type" : "string"
+          },
+          "sessionId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "tokenType" : {
+            "type" : "string"
+          },
+          "user" : {
+            "$ref" : "#/components/schemas/UserView"
+          },
+          "warnings" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          }
+        },
+        "type" : "object"
+      },
+      "UserPreferences" : {
+        "properties" : {
+          "aiModeDefault" : {
+            "type" : "string"
+          },
+          "dashboardLayoutJson" : {
+            "type" : "string"
+          },
+          "defaultCardSkin" : {
+            "type" : "string"
+          },
+          "density" : {
+            "type" : "string"
+          },
+          "deskSkin" : {
+            "type" : "string"
+          },
+          "fontScale" : {
+            "type" : "number"
+          },
+          "language" : {
+            "type" : "string"
+          },
+          "notificationPrefsJson" : {
+            "type" : "string"
+          },
+          "reduceMotion" : {
+            "type" : "boolean"
+          },
+          "theme" : {
+            "type" : "string"
+          },
+          "timezone" : {
+            "type" : "string"
+          },
+          "userId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "version" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "wipLimit" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "UserView" : {
+        "properties" : {
+          "avatarUrl" : {
+            "type" : "string"
+          },
+          "bio" : {
+            "type" : "string"
+          },
+          "coverUrl" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "deletionScheduledAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "displayName" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "emailVerified" : {
+            "type" : "boolean"
+          },
+          "fullName" : {
+            "type" : "string"
+          },
+          "hypeVisibility" : {
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "jobTitle" : {
+            "type" : "string"
+          },
+          "lastLoginAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "phone" : {
+            "type" : "string"
+          },
+          "privacyVersion" : {
+            "type" : "string"
+          },
+          "profileType" : {
+            "type" : "string"
+          },
+          "rankingOptOut" : {
+            "type" : "boolean"
+          },
+          "role" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "termsVersion" : {
+            "type" : "string"
+          },
+          "twoFactorEnabled" : {
+            "type" : "boolean"
+          },
+          "username" : {
+            "type" : "string"
+          },
+          "verified" : {
+            "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      }
+    }
+  },
+  "info" : {
+    "title" : "OpenAPI definition",
+    "version" : "v0"
+  },
+  "openapi" : "3.1.0",
+  "paths" : {
+    "/api/auth/email-verification/confirm" : {
+      "post" : {
+        "operationId" : "confirm_1",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "ctx",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/RequestContext"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ConfirmRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Session"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF1.CA04/CA05/CA11 Confirma o código do e-mail (≤ 5 tentativas por código, 10/h por pessoa → 429 MUITAS_TENTATIVAS); EMPREGADO → ACTIVE, EMPRESA/CHEFE → PENDING_VALIDATION; devolve a sessão",
+        "tags" : [ "RF1 Cadastro" ]
+      }
+    },
+    "/api/auth/email-verification/resend" : {
+      "post" : {
+        "operationId" : "resend",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "ctx",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/RequestContext"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/EmailRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "202" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "additionalProperties" : {
+                    "type" : "string"
+                  },
+                  "type" : "object"
+                }
+              }
+            },
+            "description" : "Accepted"
+          }
+        },
+        "summary" : "RF1.CA04 Reenvia o código de verificação; resposta 202 idêntica exista ou não a conta (5/h por pessoa)",
+        "tags" : [ "RF1 Cadastro" ]
+      }
+    },
+    "/api/auth/login" : {
+      "post" : {
+        "operationId" : "login_1",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "ctx",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/RequestContext"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Session"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF2.CA01/CA02/CA07/CA08 Login com username ou e-mail e senha; 401 CREDENCIAIS_INVALIDAS único para conta inexistente, senha errada e conta bloqueada; 403 CONTA_INDISPONIVEL e 401 DOIS_FATORES_NECESSARIO só após a senha certa",
+        "tags" : [ "RF2 Autenticação" ]
+      }
+    },
+    "/api/auth/logout" : {
+      "post" : {
+        "operationId" : "logout",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "user",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/CurrentUser"
+          }
+        }, {
+          "in" : "query",
+          "name" : "ctx",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/RequestContext"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "summary" : "RF2.CA05 Logout: revoga a família da sessão atual (sid); o access token deixa de valer no SessionActiveFilter",
+        "tags" : [ "RF2 Autenticação" ]
+      }
+    },
+    "/api/auth/oidc/login" : {
+      "post" : {
+        "operationId" : "login",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "ctx",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/RequestContext"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OidcLoginRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Session"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF2.CA03/CA12 Login institucional: valida o id_token (iss/aud/exp/nonce) e vincula a conta existente só com email_verified=true; 404 OIDC_DESLIGADO sem a flag",
+        "tags" : [ "RF2 Autenticação" ]
+      }
+    },
+    "/api/auth/password" : {
+      "put" : {
+        "operationId" : "changePassword",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "user",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/CurrentUser"
+          }
+        }, {
+          "in" : "query",
+          "name" : "ctx",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/RequestContext"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ChangePasswordRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "additionalProperties" : { },
+                  "type" : "object"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF2.CA05/CA09 Troca de senha com reconferência da atual no mesmo bloqueio (6º erro → 429 MUITAS_TENTATIVAS); encerra as outras sessões",
+        "tags" : [ "RF2 Autenticação" ]
+      }
+    },
+    "/api/auth/password-reset/confirm" : {
+      "post" : {
+        "operationId" : "confirm",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "ctx",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/RequestContext"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ConfirmBodyDto"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "summary" : "RF2.CA08 Confirma com o token (hash, 1 uso, 30 min): troca a senha, tira a conta do bloqueio e encerra as sessões; 422 LINK_INVALIDO",
+        "tags" : [ "RF2 Autenticação" ]
+      }
+    },
+    "/api/auth/password-reset/request" : {
+      "post" : {
+        "operationId" : "request",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "ctx",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/RequestContext"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RequestBodyDto"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "202" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "additionalProperties" : {
+                    "type" : "string"
+                  },
+                  "type" : "object"
+                }
+              }
+            },
+            "description" : "Accepted"
+          }
+        },
+        "summary" : "RF2.CA08 Pede a redefinição: 202 idêntico exista ou não o e-mail; 5 pedidos/h por pessoa (silencioso)",
+        "tags" : [ "RF2 Autenticação" ]
+      }
+    },
+    "/api/auth/refresh" : {
+      "post" : {
+        "operationId" : "refresh",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "ctx",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/RequestContext"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RefreshRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Session"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF2.CA04 Refresh com rotação por família; reuso de token rotacionado revoga a família (401 SESSAO_INVALIDA)",
+        "tags" : [ "RF2 Autenticação" ]
+      }
+    },
+    "/api/auth/register" : {
+      "post" : {
+        "operationId" : "register",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "ctx",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/RequestContext"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "202" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Receipt"
+                }
+              }
+            },
+            "description" : "Accepted"
+          }
+        },
+        "summary" : "RF1.CA01/CA03/CA04/CA10/CA15/CA22 Cadastro: 422 VALIDACAO por campo (acceptTerms obrigatório), 422 NOME_RESERVADO, 409 USERNAME_EM_USO; e-mail já cadastrado recebe a MESMA resposta 202 (sem oráculo) e um e-mail de conta existente",
+        "tags" : [ "RF1 Cadastro" ]
+      }
+    },
+    "/api/auth/username-suggestions" : {
+      "get" : {
+        "operationId" : "suggestions",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "base",
+          "required" : false,
+          "schema" : {
+            "default" : "",
+            "maxLength" : 160,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "additionalProperties" : {
+                    "items" : {
+                      "type" : "string"
+                    },
+                    "type" : "array"
+                  },
+                  "type" : "object"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF1.CA02 Sugestões de username livres a partir do nome ou do username desejado",
+        "tags" : [ "RF1 Cadastro" ]
+      }
+    },
+    "/api/me" : {
+      "get" : {
+        "operationId" : "me",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "user",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/CurrentUser"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF3.CA01 Minha conta (projeção sem hash)",
+        "tags" : [ "RF3 Conta" ]
+      },
+      "patch" : {
+        "operationId" : "update",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "user",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/CurrentUser"
+          }
+        }, {
+          "in" : "query",
+          "name" : "ctx",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/RequestContext"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ProfileRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF3.CA01/CA04/CA06 Edita campos não sensíveis (422 VALIDACAO por campo); 403 EXCLUSAO_AGENDADA durante o prazo",
+        "tags" : [ "RF3 Conta" ]
+      }
+    },
+    "/api/me/deletion" : {
+      "delete" : {
+        "operationId" : "cancelDeletion",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "user",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/CurrentUser"
+          }
+        }, {
+          "in" : "query",
+          "name" : "ctx",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/RequestContext"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DeletionReceipt"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF3.CA19/CA20 Cancela a exclusão agendada (409 EXCLUSAO_NAO_AGENDADA se não houver)",
+        "tags" : [ "RF3 Conta" ]
+      },
+      "post" : {
+        "operationId" : "requestDeletion",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "user",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/CurrentUser"
+          }
+        }, {
+          "in" : "query",
+          "name" : "ctx",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/RequestContext"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DeletionBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "202" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DeletionReceipt"
+                }
+              }
+            },
+            "description" : "Accepted"
+          }
+        },
+        "summary" : "RF3.CA19 Pede a exclusão (senha atual com bloqueio): DELETION_SCHEDULED por 30 dias, cancelável; a anonimização é o job do bloco LGPD C",
+        "tags" : [ "RF3 Conta" ]
+      }
+    },
+    "/api/me/preferences" : {
+      "get" : {
+        "operationId" : "preferences",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "user",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/CurrentUser"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserPreferences"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF3.CA03 Preferências (padrões do V2 quando ainda não gravadas)",
+        "tags" : [ "RF3 Conta" ]
+      },
+      "put" : {
+        "operationId" : "updatePreferences",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "user",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/CurrentUser"
+          }
+        }, {
+          "in" : "query",
+          "name" : "ctx",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/RequestContext"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PreferencesRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserPreferences"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF3.CA03 Salva as preferências (valores validados contra os CHECKs do V2; 422 VALIDACAO por campo)",
+        "tags" : [ "RF3 Conta" ]
+      }
+    },
+    "/api/me/sensitive" : {
+      "patch" : {
+        "operationId" : "sensitive",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "user",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/CurrentUser"
+          }
+        }, {
+          "in" : "query",
+          "name" : "ctx",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/RequestContext"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SensitiveRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF3.CA02/CA08 E-mail/telefone com step-up da senha atual no mesmo bloqueio do login (401 REAUTENTICACAO_FALHOU, 6º erro → 429 MUITAS_TENTATIVAS); e-mail novo volta a 'não confirmado' e recebe código",
+        "tags" : [ "RF3 Conta" ]
+      }
+    },
+    "/api/usernames/{username}/availability" : {
+      "get" : {
+        "operationId" : "availability",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "username",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 80,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Availability"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF1.CA02/CA26 Disponibilidade do username normalizado (FORMATO | RESERVADO | EM_USO) com sugestões",
+        "tags" : [ "RF1 Cadastro" ]
+      }
+    },
+    "/api/users/{id}" : {
+      "get" : {
+        "operationId" : "profile",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "user",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/CurrentUser"
+          }
+        }, {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF3.CA01 Perfil por id — só o dono ou ADMIN com papel relido do banco (403 ACESSO_NEGADO uniforme)",
+        "tags" : [ "RF3 Conta" ]
+      }
+    }
+  }
+}
