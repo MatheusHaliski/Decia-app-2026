@@ -92,4 +92,18 @@ describe("PreferencesProvider", () => {
     expect(screen.getByTestId("locale").textContent).toBe("en:Search");
     expect(adapter.saved.at(-1)).toMatchObject({ theme: "terminal", language: "en" });
   });
+
+  it("não apaga os atributos do bootScript com os padrões enquanto o armazenamento local não respondeu (sem flash na hidratação)", async () => {
+    const html = document.documentElement;
+    html.setAttribute("data-theme", "escuro");
+    html.setAttribute("lang", "es");
+    let release: (p: Partial<typeof DEFAULT_PREFERENCES>) => void = () => {};
+    const pending = { load: () => new Promise<null | typeof DEFAULT_PREFERENCES>((r) => { release = (p) => r({ ...DEFAULT_PREFERENCES, ...p }); }), save: async () => {} };
+    renderWithProviders(<Probe />, { adapters: [pending] });
+    expect(html.getAttribute("data-theme")).toBe("escuro");
+    expect(html.getAttribute("lang")).toBe("es");
+    await act(async () => { release({ theme: "contraste", language: "en" }); });
+    expect(html.getAttribute("data-theme")).toBe("contraste");
+    expect(html.getAttribute("lang")).toBe("en");
+  });
 });
