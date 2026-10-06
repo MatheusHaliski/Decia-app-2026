@@ -5,6 +5,7 @@ import br.gov.pr.secid.workstation.application.audit.AuditEvent;
 import br.gov.pr.secid.workstation.application.audit.AuditLogPort;
 import br.gov.pr.secid.workstation.application.common.ApiException;
 import br.gov.pr.secid.workstation.application.security.ResourceAuthorizer;
+import br.gov.pr.secid.workstation.domain.security.ScopedResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,9 +67,15 @@ public class SessionService {
     /** Encerra uma sessão da própria pessoa (pode ser a atual — equivale ao logout). 404 para id alheio ou inexistente. */
     @Transactional
     public void revoke(CurrentUser actor, UUID sessionId, RequestContext ctx) {
-        UUID owner = actor == null || sessionId == null ? null
-                : sessions.activeOfUser(actor.id(), clock.instant()).stream().anyMatch(r -> r.familyId().equals(sessionId)) ? actor.id() : null;
-        authorizer.requireOwnSession(actor, owner);
+        if (actor == null) {
+            throw ApiException.unauthorized("Faça login para continuar.");
+        }
+        boolean own = sessionId != null
+                && sessions.activeOfUser(actor.id(), clock.instant()).stream().anyMatch(r -> r.familyId().equals(sessionId));
+        authorizer.requireOwnSession(actor, own ? actor.id() : null);
+        if (sessionId == null) {
+            throw ResourceAuthorizer.notFound(ScopedResource.Kind.SESSION);
+        }
         Instant now = clock.instant();
         sessions.revokeFamily(sessionId, now);
         mirror.familyRevoked(sessionId, now);
