@@ -1,6 +1,6 @@
 # RF48 — Utilizar a aba Agentes (Copilot de testes) para testar uma contratação antes do início e durante a execução — testes contratuais, orçamentários, comportamentais, de integridade e Score do Contrato, sempre com fundamentação bibliográfica
 **HU:** HU48 · **Sprint (board Work Station):** Product Backlog (card novo de 2026-10-06; fora da Sprint 4) · **Equivalente FAI:** — (sem equivalente) · **Aba/rota:** **Agentes** (`/agents`; também "Testar esta contratação" dentro de um projeto de categoria Licitação/Contrato — `/projects/[id]`)
-**Critérios de aceite cobertos:** RF48.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 · CA15 (corpo do card, inalterado; CA13–CA15 acrescentados pelo dono em 2026-10-06 com a escolha da interface do RF47) — regra: o **título do card** define o RF e o corpo traz os próprios CAs.
+**Critérios de aceite cobertos:** RF48.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 · CA15 · CA16 · CA17 · CA18 · CA19 (corpo do card, inalterado; CA13–CA15 acrescentados pelo dono em 2026-10-06 com a escolha da interface do RF47; CA16–CA19 em comentário do card de 2026-10-06) — regra: o **título do card** define o RF e o corpo traz os próprios CAs.
 
 > **HU48** — COMO: agente de contratação, gestor/fiscal de contrato, controle interno ou chefe POSSO: rodar o Copilot de testes da aba Agentes sobre uma contratação, antes do início e na execução (testes contratuais, orçamentários, comportamentais, de integridade e Score do Contrato), com evidência e bibliografia real em cada achado PARA: saber se vale a pena contratar e acompanhar o contrato com base verificável, com a decisão mantida pela autoridade competente
 
@@ -24,6 +24,12 @@
 - **RF48.CA13 (Opção A no dossiê)** Dado o dossiê aberto na aba Agentes, quando aciono **"Encontrar no dossiê"**, então uso a busca com palavra no contexto do RF47 (CA11) com o escopo fixado nos documentos da contratação; cada ocorrência tem **"Vincular como evidência"**, que a liga a um achado existente ou a uma verificação manual registrada no relatório.
 - **RF48.CA14 (Opção C no dossiê)** Dado o dossiê, quando aciono **"Extrair do dossiê"**, então vejo a extração do RF47 (CA12) — termos, valores, datas e prazos, artigos de lei, órgãos/empresas/processos — e os agentes determinísticos a usam como entrada (ex.: Prazos e vigência lê as datas; Aditivos compara valores com o limite do art. 125; Contratual confere artigos citados); cada achado aponta a linha extraída e o trecho de origem.
 - **RF48.CA15** Dado uma lista de termos do RF47 (ex.: "cláusulas de risco"), quando o agente Contratual a aplica, então termo ausente vira ⚠️ atenção ("verificar redação equivalente"), nunca ⛔ automático, e o resultado entra no relatório com a lista e a versão usadas.
+
+**Critérios adicionais (comentário do dono no card RF48, 2026-10-06 — "todas as opções do RF47 entram no Copilot e o RF48 ganha alternativas de tela"; copiados sem alteração):**
+- **RF48.CA16 (Opção B no dossiê)** Dado o dossiê, quando aciono **"Ler com mapa"**, então abro o leitor do RF47 com as ocorrências destacadas, o mapa lateral mostrando também os trechos já usados em achados (cor e forma pelo resultado) e a ação "Vincular trecho selecionado como evidência" de um achado ou de uma verificação manual.
+- **RF48.CA17 (Ferramentas do dossiê em abas)** Dado o dossiê, quando abro as ferramentas, então vejo as abas **Encontrar (A) · Ler com mapa (B) · Extrair (C) · Lista de termos**, todas com escopo fixo nos documentos da contratação e com a mesma política de acesso e de sigilo do RF47.
+- **RF48.CA18 (Modos de tela principal)** Dado a aba Agentes, quando escolho o modo de visualização, então posso alternar entre: **Mesa de testes** (dossiê · agentes por fase · score), **Assistente passo a passo** (contratação → fase e papel → testes recomendados → rodar → revisar), **Carteira de contratos** (várias contratações com score, portões, achados abertos e próximo gatilho; para gestor, controle interno e chefe) e **Matriz de testes** (agentes × documentos com o pior resultado em cada célula); o modo escolhido fica salvo por pessoa.
+- **RF48.CA19 (Conexão RF47 ↔ RF48)** Dado qualquer tela do RF48, quando aciono "Abrir no Encontrar", então o RF47 abre com o escopo do dossiê; e, dado o RF47 aberto num projeto de categoria Licitação/Contrato, quando aciono **"Testar esta contratação"**, então a aba Agentes abre com aquele dossiê. "Ver no documento" num achado abre o leitor (B) na posição exata; uma linha do Extrair (C) leva ao achado que a usou.
 
 Entidades **propostas** (TAXONOMIA ainda não as tem; migration reservada V45, `docs/PLANO_EXECUCAO.md` §6): `ContractDossier` (projeto + documentos + regime legal), `TestAgentDefinition` (17 agentes, versão), `ContractTestRun`, `TestFinding` (`FindingResult` CONFORME · ATENCAO · NAO_CONFORME · NAO_VERIFICAVEL), `FindingEvidence`, `ExternalQueryRecord` (fonte, data/hora, hash), `CuratedReference` (base bibliográfica curada e versionada), `UnfoundedHypothesis`, `FindingContestation` (contraditório), `ContractScore` + `ContractScoreWeights` (versionados). Os achados usam o índice de texto e a extração do RF47 (escopo `DOSSIE`) para localizar cláusulas e trechos; `FindingEvidence` guarda `extractedRowId` (linha extraída) e o trecho de origem (CA14).
 
@@ -197,6 +203,8 @@ namespace ws_application {
     +findInDossier(actor, dossierId, query) FindResultPage
     +extractFromDossier(actor, dossierId) EntityReport
     +linkAsEvidence(actor, occurrence, findingId) FindingEvidence
+    +readWithMap(actor, dossierId, documentId) ReaderView
+    +viewMode(actor) AgentViewMode
   }
   class AgentRunner {
     <<service>>
@@ -227,6 +235,14 @@ namespace ws_application {
     +extractTerms(actor, scope) TermReport
     +extractEntities(actor, scope, kind) EntityReport
     +applyGlossary(actor, glossaryId, documentId) GlossaryReport
+    +readWithMap(actor, documentId, query) ReaderView
+  }
+  class AgentViewMode {
+    <<enum>>
+    MESA_DE_TESTES
+    ASSISTENTE
+    CARTEIRA
+    MATRIZ
   }
   class ResourceAuthorizer {
     <<service>>
@@ -319,6 +335,9 @@ flowchart TD
     A6 -->|decidir| A9["Decisão humana registrada no DECIA (RF29)"]
     A10["Encontrar no dossiê (Opção A do RF47) · Vincular como evidência"]
     A11["Extrair do dossiê (Opção C do RF47) · linhas extraídas"]
+    A12["Ler com mapa (Opção B) · Lista de termos — abas das ferramentas do dossiê (CA16, CA17)"]
+    A13{"Modo de tela (CA18): Mesa de testes · Assistente · Carteira · Matriz — salvo por pessoa"}
+    A14["Abrir no Encontrar / Ver no documento → RF47 com escopo do dossiê (CA19)"]
   end
 
   subgraph FE["Next.js / BFF (app/(shell)/agents)"]
@@ -379,6 +398,9 @@ flowchart TD
   P8 --> P9 --> P10 --> P11 --> D1
   P11 --> F2 --> A5 --> A6
   A7 --> D1
+  A0 --> A13 --> A1
+  A1 --> A12 --> P12
+  A5 --> A14
   A1 --> A10 --> P12
   A1 --> A11 --> P12
   P2 --> P12 --> P3
@@ -453,6 +475,12 @@ sequenceDiagram
   FE->>C: POST /api/agent-findings/{id}/evidences {occurrence}
   C->>S: linkAsEvidence(actor, occurrence, findingId)
   S->>DB: insert finding_evidences (documento, página, trecho, extractedRowId ou manualCheck)
+  U->>FE: Ver no documento (achado) — CA19
+  FE->>C: GET /api/find/read?documentId=...&scope=DOSSIE:{dossierId}
+  C->>S: DocumentFindService.readWithMap (leitor B do RF47) · mapa com trechos já usados em achados
+  S-->>FE: leitor na posição exata · Vincular trecho selecionado como evidência (CA16)
+  U->>FE: Abrir no Encontrar (CA19)
+  FE->>FE: navega para /find com escopo DOSSIE
   U->>FE: anexa contraditório ao achado de integridade
   FE->>C: POST /api/agent-findings/{id}/contestations
   C->>S: contest(actor, findingId, text)
@@ -490,7 +518,11 @@ stateDiagram-v2
 flowchart LR
   subgraph FRONT["Frontend Next.js 15"]
     R1["app/(shell)/agents (Agentes — Copilot de testes) · entradas Encontrar no dossiê e Extrair do dossiê · Testar esta contratação em /projects/[id]"]
-    R4["componentes do RF47 (/find): linhas KWIC (Opção A) e abas de extração (Opção C), reaproveitados com escopo DOSSIE"]
+    R4["componentes do RF47 (/find): Encontrar (A) · Ler com mapa (B) · Extrair (C) · Lista de termos, reaproveitados com escopo DOSSIE"]
+    R5["seletor de modo: Mesa de testes · Assistente passo a passo · Carteira de contratos · Matriz de testes (preferência por pessoa)"]
+    R6["navegação RF48 ↔ RF47: Abrir no Encontrar · Ver no documento (leitor B) · Testar esta contratação"]
+    R1 --> R5
+    R1 --> R6 --> R7["app/(shell)/find (RF47)"]
     R1 --> R4 --> BFF
     R2["components/ui: Tabs (antes do início · execução · transversais) · Badge · Card · Table · EmptyState"]
     BFF["app/bff"]
@@ -546,7 +578,7 @@ flowchart LR
 | RF48.CA03 | `FindingAssembler.assemble`, `UnfoundedHypothesis` (fora do Score) | P8 | 21 | — | `FA` |
 | RF48.CA04 | aviso fixo no relatório, ausência de ação "redigir"/"aprovar", `DecisionPort` só abre decisão humana | A9 · F2 | 27 | — | `CTS`, `DEC` |
 | RF48.CA05 | `SanctionRegistryPort`, `CertificatePort`, `ExternalQueryRecord` (fonte, data/hora, sha256) | P4 → P5 → P6 | 12–16 | `EM_EXECUCAO → CONCLUIDA_COM_PENDENCIAS` | `CGU`, `CERT` |
-| RF48.CA06 | agente Integridade só com fontes oficiais, `PersonalDataMasker`, `FindingContestation` | P5 · A6 → A7 | 12–16, 38–42 | — | `CGU`, `AIG` |
+| RF48.CA06 | agente Integridade só com fontes oficiais, `PersonalDataMasker`, `FindingContestation` | P5 · A6 → A7 | 12–16, 44–48 | — | `CGU`, `AIG` |
 | RF48.CA07 | `ContractScoreCalculator`, `ContractScore` (geral, dimensões, pesos, contribuições, confiança, portões), `ContractScoreWeights` versionado, `WeightedScoring` | P9 | 22 | nota de CONCLUIDA | `CSC`, `WS` |
 | RF48.CA08 | `RunTrigger`, `previousRunId`, `TestFinding.changedSinceLastRun` | P10 | 28–29 | `CONCLUIDA → SUPERADA` | `CTS` |
 | RF48.CA09 | `AiGateway` (`allowsExternalAi`), `AiBudget`, `ai_inference_log`, `DeterministicRules` sem IA | P3 · I1 → I2/I3 → I4 | 17–20 | — | `AIG`, `AR` |
@@ -556,6 +588,10 @@ flowchart LR
 | RF48.CA13 | `ContractTestService.findInDossier/linkAsEvidence`, `DocumentFindService.find` (RF47.CA11) com `FindScope.DOSSIE`, `FindingEvidence.manualCheck` | A10 → P12 | 30–37 | — | `R1`, `R4`, `FC`, `DFS` |
 | RF48.CA14 | `ContractTestService.extractFromDossier`, `DocumentFindService.extractEntities` (RF47.CA12), `DeterministicRules` lendo datas/valores/artigos, `FindingEvidence.extractedRowId` | A11 → P12 → P3 | 8–9 | — | `DFS`, `AR` |
 | RF48.CA15 | `DocumentFindService.applyGlossary` (RF47.CA05) no agente Contratual; ausente → `ATENCAO`, nunca `NAO_CONFORME`; lista e versão no relatório | P13 | 10 | — | `AR`, `FA` |
+| RF48.CA16 | `DocumentFindService.readWithMap` (leitor B do RF47) com escopo DOSSIE, mapa com trechos já usados em achados (cor e forma pelo `FindingResult`), `linkAsEvidence` / `FindingEvidence.manualCheck` | A12 → P12 | 38–41 | — | `R4`, `DFS` |
+| RF48.CA17 | abas Encontrar · Ler com mapa · Extrair · Lista de termos (`AGENTS_TABS`), `FindScope.DOSSIE`, mesma `AccessPolicy`/classificação do RF47 | A12 · A10 · A11 → P12 | 30–33, 38–41 | — | `R4`, `FC`, `DFS` |
+| RF48.CA18 | `AgentViewMode` (MESA_DE_TESTES · ASSISTENTE · CARTEIRA · MATRIZ), preferência por pessoa | A0 → A13 → A1 | — | — | `R5` |
+| RF48.CA19 | navegação Abrir no Encontrar (→ `/find` com escopo DOSSIE), Testar esta contratação (RF47.CA14 → `/agents`), Ver no documento (leitor B na posição), linha do Extrair → achado (`FindingEvidence.extractedRowId`) | A5 → A14 | 38–43 | — | `R6`, `R7` |
 
 ### 6.1 Relação com RFs e blocos existentes
 
@@ -685,8 +721,9 @@ Regra do DECIA (`docs/decia/02_MATRIZ_BIBLIOGRAFICA.md`): toda referência produ
 | Gatilho "certidão a vencer em 15 dias" e "ciclo mensal" | HIPÓTESE DE PRODUTO (do card) | CA08 |
 | "Score do Contrato" como número único de 0 a 100 | HIPÓTESE DE PRODUTO (do card) | agente 16 |
 | Texto do aviso jurídico | PROPOSTA DE DESIGN (redação a validar, Q-234) | relatório |
+| Quatro modos de tela (Mesa de testes · Assistente · Carteira · Matriz) e ferramentas do dossiê em abas | HIPÓTESE DE PRODUTO (comentário do card, RF48.CA16–CA19) | `AgentViewMode`, abas |
 
-**Tamanho da matriz:** 28 referências bibliográficas/normativas (Lei 14.133/2021 contada uma vez) → 41 regras (B48-01…B48-41), cada uma com teste planejado; 7 itens marcados sem fonte.
+**Tamanho da matriz:** 28 referências bibliográficas/normativas (Lei 14.133/2021 contada uma vez) → 41 regras (B48-01…B48-41), cada uma com teste planejado; 8 itens marcados sem fonte.
 
 **Aviso fixo no relatório (CA04; redação proposta, Q-234):** "Este relatório não substitui parecer jurídico nem a decisão da autoridade competente. Pessoas cuidam do jurídico: o Copilot de testes aponta fatos verificáveis com evidência e fonte; você não decide questão jurídica com base nele."
 

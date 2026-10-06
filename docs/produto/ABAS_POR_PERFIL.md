@@ -77,7 +77,7 @@ Fonte dos itens: `board › Mapa de equivalência §2` (`board2.md:52-78`); rota
 | Memória Institucional (`/memory`) | RF33 | V | V | V | V | V | `GET /api/memory/search` · `requireCanCreate` + `canView` |
 | Empresas & Departamentos (`/companies`, `/companies/[slug]`, `/departments/[slug]`) | RF28 | V | V | V | V | V | `GET /api/companies`, `GET /api/companies/{slug}` (público, como `/api/institutional/**` em `SecurityConfig.java:47`) |
 | Balcão de Modelos (`/models`) — prateleiras Chancelados · Comunidade | RF40 | **E** (oferecer, remixar) | **E** (destacar → chancelar, RF40.CA07) | **E** (destacar) | V (**proposta:** pré-selecionar para o chefe) | V | `GET /api/models`; `POST /api/models` (`requireOwner` do alvo); `POST /api/models/{id}/highlight` (`requireIssuer`) |
-| Encontrar (`/find`) — Encontrar (Opção A, palavra no contexto) · Extrair termos e entidades (Opção C) | RF47 | E | E | E | E | E | `GET /api/find?q=&scope=` · `ResourceAuthorizer` + `AccessPolicy.visible` como filtro **dentro** da consulta ao índice (RF47.CA02, Bloco 5); visitante **O** (D-128) |
+| Encontrar (`/find`) — Encontrar (A) · Ler com mapa (B) · Extrair termos e entidades (C) · Lista de termos; botão Testar esta contratação → Agentes (RF47.CA14) | RF47 | E | E | E | E | E | `GET /api/find?q=&scope=` · `ResourceAuthorizer` + `AccessPolicy.visible` como filtro **dentro** da consulta ao índice (RF47.CA02, Bloco 5); visitante **O** (D-128) |
 
 ### 2.2 Meu trabalho
 
@@ -90,7 +90,7 @@ Fonte dos itens: `board › Mapa de equivalência §2` (`board2.md:52-78`); rota
 | Mesa de Trabalho (`/desk`) | RF22 | E | E | E | E | E | `GET /api/me/desk` |
 | Espelho de Conformidade (`/projects/[id]/mirror`) | RF32 | E (projetos próprios ou onde é responsável) | E | E | E | E | `requireOwner` ou participante do projeto |
 | Simulador de Cenários (`/projects/[id]/simulate`) | RF31 | E | E | E | E | E | idem |
-| Agentes — Copilot de testes (`/agents`; "Testar esta contratação" no projeto) — Antes do início · Execução · Transversais · Encontrar no dossiê · Extrair do dossiê (Opções A e C do RF47, escopo do dossiê) | RF48 | E (com acesso ao projeto) | E (define pesos do Score, RF48.CA07) | E (define pesos do Score) | E (com acesso ao projeto) | V | `GET /api/projects/{id}/agents`, `POST /api/projects/{id}/agents/runs` · `ResourceAuthorizer` do projeto (RF48.CA12); recomendados por papel: agente de contratação, gestor/fiscal, controle interno, chefe; visitante **O** (D-130) |
+| Agentes — Copilot de testes (`/agents`; "Testar esta contratação" no projeto) — modos Mesa de testes · Assistente · Carteira · Matriz (CA18); sub-abas Antes do início · Execução · Transversais · Encontrar · Ler com mapa · Extrair · Lista de termos no dossiê (CA17); Abrir no Encontrar (CA19) | RF48 | E (com acesso ao projeto) | E (define pesos do Score, RF48.CA07) | E (define pesos do Score) | E (com acesso ao projeto) | V | `GET /api/projects/{id}/agents`, `POST /api/projects/{id}/agents/runs` · `ResourceAuthorizer` do projeto (RF48.CA12); recomendados por papel: agente de contratação, gestor/fiscal, controle interno, chefe; visitante **O** (D-130) |
 
 ### 2.3 Criar
 

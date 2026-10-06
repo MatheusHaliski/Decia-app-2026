@@ -1,12 +1,12 @@
 # RF47 — Encontrar palavras-chave em documentos — varrer documentos longos de tarefas e projetos para localizar e extrair termos, frases e palavras (com contexto e fonte)
 **HU:** HU47 · **Sprint (board Work Station):** Product Backlog (card novo de 2026-10-06; fora da Sprint 4) · **Equivalente FAI:** — (sem equivalente; nasce do trabalho com documentos longos no setor público: editais, contratos, TRs, pareceres, atas) · **Aba/rota:** **Encontrar** (`/find`; também como botão "Encontrar neste documento" dentro de uma tarefa ou projeto — `/tasks/[id]`, `/projects/[id]`)
-**Critérios de aceite cobertos:** RF47.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 (corpo do card, inalterado; CA11–CA13 acrescentados pelo dono em 2026-10-06 com a escolha da interface) — regra: o **título do card** define o RF e o corpo traz os próprios CAs.
+**Critérios de aceite cobertos:** RF47.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 (corpo do card, inalterado; CA11–CA13 acrescentados pelo dono em 2026-10-06 com a escolha da interface; CA14 em comentário do card de 2026-10-06) — regra: o **título do card** define o RF e o corpo traz os próprios CAs.
 
 > **HU47** — COMO: usuário autenticado POSSO: encontrar palavras-chave dentro dos documentos das minhas tarefas e projetos (ou em tudo que posso ver), ver cada ocorrência no seu contexto e extrair os termos, frases, valores, prazos e artigos de lei citados PARA: varrer documentos longos (editais, contratos, TRs, pareceres, atas) sem ler página por página e anexar o que encontrei como evidência
 
 O Encontrar complementa o **Buscar** (RF27, que acha *itens*), a **Memória Institucional** (RF33, busca semântica) e a **detecção de palavras-chave do Criador de Tarefas** (RF20 · CA02): aqui o foco é **dentro do texto** dos anexos (`TaskAttachment`, RF41). **Modos** (card): (1) **Encontrar palavra-chave em documento** — escolho uma tarefa/projeto (ou vários) e procuro termos; (2) **Só encontrar palavra-chave** — procuro em todos os documentos que posso ver. **Base** (card): recuperação de informação clássica, **sem depender de IA** — índice invertido com ranking BM25 e analisador em português (stemming RSLP, stopwords, sem acento), concordância KWIC e extração de termos-chave sem treino (YAKE!). A IA é opcional (resumo dos achados) e passa pelo gate do RF43 (`AiGateway`, D-69). A visibilidade de cada documento é decidida pela mesma política do Bloco 5 (`AccessPolicy.visible` via `ResourceAuthorizer`, D-65/D-66), **aplicada como filtro dentro da consulta ao índice**, nunca depois da paginação.
 
-**Interface escolhida (card, 2026-10-06): Opção A + Opção C.** A = tela principal de busca com palavra no contexto (KWIC); C = aba "Extrair termos e entidades" na mesma tela. As duas também existem dentro do RF48 (dossiê da contratação). No esqueleto `/find` elas são as duas sub-abas **Encontrar** (A) e **Extrair termos e entidades** (C); no RF48 são reaproveitadas com `FindScope.DOSSIE` (mesmos serviços, escopo fixado nos documentos do dossiê).
+**Interface escolhida (card, 2026-10-06): Opção A + Opção C.** A = tela principal de busca com palavra no contexto (KWIC); C = aba "Extrair termos e entidades" na mesma tela. As duas também existem dentro do RF48 (dossiê da contratação). Com o comentário do RF47.CA14 as ferramentas passam a quatro — A busca com palavra no contexto, **B leitor com mapa**, C extrair e **lista de termos** (CA05) —, e o esqueleto `/find` mostra as quatro como sub-abas (**Encontrar** · **Ler com mapa** · **Extrair termos e entidades** · **Lista de termos**) com o botão **Testar esta contratação** no cabeçalho; no RF48 são reaproveitadas com `FindScope.DOSSIE` (mesmos serviços, escopo fixado nos documentos do dossiê).
 
 **Critérios de aceite (copiados do card RF47, sem alteração):**
 - **RF47.CA01** Dado um usuário autenticado na aba Encontrar, quando informa um ou mais termos (com operadores: frase exata entre aspas, E/OU/NÃO, curinga `*`, proximidade "termo1 termo2"~N) e o escopo (uma tarefa, um projeto, uma seleção ou "tudo que posso ver"), então recebe a lista de ocorrências agrupada por documento, com contagem, página/seção e **trecho em contexto** (KWIC, ±N palavras) com o termo destacado.
@@ -22,6 +22,9 @@ O Encontrar complementa o **Buscar** (RF27, que acha *itens*), a **Memória Inst
 - **RF47.CA11 (Opção A — tela principal)** Dado a aba Encontrar, quando busco, então os resultados aparecem como linhas KWIC alinhadas (referência da página · contexto à esquerda · **termo** ao centro · contexto à direita), com controle do tamanho do contexto (±4 / ±8 / ±16 palavras), alternância **agrupar por documento / por termo**, filtros laterais (documentos com contagem, classificação) e as ações exportar, salvar busca e anexar como evidência; cada linha abre o documento na posição da ocorrência.
 - **RF47.CA12 (Opção C — aba Extrair)** Dado a aba "Extrair termos e entidades" da mesma tela, quando aberta para o escopo atual, então vejo abas **Termos e frases-chave** (relevância e ocorrências), **Valores (R$)**, **Datas e prazos**, **Artigos de lei citados** e **Órgãos, empresas e processos** (CPF/CNPJ mascarados), cada linha com "onde aparece" e **"Ver no contexto"**, que abre a Opção A já filtrada naquele termo; sem IA, com "Resumir com IA" opcional.
 - **RF47.CA13** Dado o RF48 (aba Agentes), quando abro um dossiê de contratação, então as Opções A e C estão disponíveis com o escopo fixado nos documentos daquele dossiê (ver RF48.CA13–CA15).
+
+**Critério adicional (comentário do dono no card RF47, 2026-10-06, copiado sem alteração):**
+- **RF47.CA14 (Conexão RF47 ↔ RF48)** Dado o Encontrar aberto num projeto de categoria Licitação/Contrato, quando aciono **"Testar esta contratação"** (botão no cabeçalho), então a aba Agentes (RF48) abre com o dossiê daquele projeto; e cada resultado do Encontrar pode ser "Vinculado como evidência" de um achado do RF48. As quatro ferramentas (A busca com palavra no contexto, B leitor com mapa, C extrair, lista de termos) são as mesmas usadas dentro do RF48 (RF48.CA13–CA19).
 
 Entidades **propostas** (TAXONOMIA ainda não as tem; entram na onda do RF47 com a migration reservada V44, `docs/PLANO_EXECUCAO.md` §6): `DocumentText` (texto extraído por anexo e página, `IndexingStatus`), `TextEntity` (entidade reconhecida, valor mascarado), `KeywordGlossary`/`GlossaryTerm`, `SavedFind`. O conteúdo indexado vive no OpenSearch (`ws-find-*`); o MySQL guarda só metadados, status e hash.
 
@@ -182,6 +185,8 @@ namespace ws_application {
     +extractTerms(actor, scope) TermReport
     +extractEntities(actor, scope, kind) EntityReport
     +seeInContext(actor, term, scope) FindResultPage
+    +readWithMap(actor, documentId, query) ReaderView
+    +linkToFinding(actor, occurrence, findingId) Evidence
     +applyGlossary(actor, glossaryId, documentId) GlossaryReport
     +export(actor, findId, format) Media
     +saveFind(actor, FindQuery) SavedFind
@@ -450,6 +455,10 @@ sequenceDiagram
     S->>S: escopo = documentos do dossiê ∩ visíveis (AccessPolicy) · mesmos serviços de busca e extração
     S-->>FE: ocorrências e extração do dossiê (consumidas pelos agentes do RF48)
   end
+  U->>FE: Testar esta contratação (cabeçalho, projeto Licitação/Contrato — CA14)
+  FE->>FE: navega para /agents com o dossiê do projeto (RF48)
+  U->>FE: Vincular resultado como evidência de um achado do RF48
+  FE->>C: POST /api/agent-findings/{id}/evidences {occurrence}
   U->>FE: Anexar resultado como evidência na sessão DECIA
   FE->>C: POST /api/find/{id}/evidence {target}
   C->>S: attachAsEvidence(actor, findId, target)
@@ -490,7 +499,9 @@ stateDiagram-v2
 flowchart LR
   subgraph FRONT["Frontend Next.js 15"]
     R1["app/(shell)/find: sub-abas Encontrar (Opção A, KWIC alinhado) e Extrair termos e entidades (Opção C) · botão Encontrar neste documento em /tasks/[id] e /projects/[id]"]
-    R3["app/(shell)/agents (RF48): Encontrar no dossiê · Extrair do dossiê (mesmos componentes, escopo DOSSIE)"]
+    R3["app/(shell)/agents (RF48): Encontrar · Ler com mapa · Extrair · Lista de termos no dossiê (mesmos componentes, escopo DOSSIE) · Abrir no Encontrar"]
+    NAV["navegação RF47 ↔ RF48: Testar esta contratação (/find → /agents com o dossiê) · Abrir no Encontrar (/agents → /find com escopo DOSSIE)"]
+    R1 --> NAV --> R3
     R3 --> BFF
     R2["components/ui: Input · Tabs · Badge · Card · EmptyState · Button"]
     BFF["app/bff"]
@@ -546,7 +557,7 @@ flowchart LR
 | RF47.CA03 | `TextExtractionPipeline`, `OcrPort`, `DocumentText`, `IndexingStatus` | X1 → X2 → X3/X4 → X5 → X7 · P8 | 1–8, 18 | `[*] → PENDENTE → … → INDEXADO` | `TEP`, `PLAT` |
 | RF47.CA04 | `KeyTermExtractor.yake/tfidf`, `KeyTerm`, `EntityRecognizer`, `TextEntity`, `EntityKind`, `PersonalDataMasker` | A5 → A6 | 22–27 | — | `KW`, `MSK` |
 | RF47.CA05 | `KeywordGlossary`, `GlossaryTerm.required`, `DocumentFindService.applyGlossary` | A5 → A7 | — (mesmo fluxo de busca por termo) | — | `FS` |
-| RF47.CA06 | `DocumentFindService.export/saveFind/attachAsEvidence`, `SavedFind`, evidência com rastro (RF29) | A5 → A8 → P9 | 35–39 | — | `FS`, `MY` |
+| RF47.CA06 | `DocumentFindService.export/saveFind/attachAsEvidence`, `SavedFind`, evidência com rastro (RF29) | A5 → A8 → P9 | 39–43 | — | `FS`, `MY` |
 | RF47.CA07 | `AiGateway` (`allowsExternalAi`), `TextExtractionPipeline` e OCR **locais**, `restricted/` | I1 → I2 | 28–30 | — | `AIG`, `PLAT`, `S3A` |
 | RF47.CA08 | `DocumentFindService` (reexecução sem acento e por radical), sugestão de ampliar escopo | P6 → P7 → F3 | — | — | `FS`, `OSA` |
 | RF47.CA09 | limite de páginas, paginação, métrica de latência do 1º lote | X5 → X6 · P10 | 5, 20 | `→ EXCEDE_LIMITE` | `OSA`, `FS` |
@@ -554,6 +565,7 @@ flowchart LR
 | RF47.CA11 | Opção A: `Occurrence` (página, esquerda, termo, direita), `FindQuery.kwicWindow` (4/8/16), `FindQuery.groupBy` (documento/termo), filtros por documento e classificação, export/salvar/anexar | A4 → F1 → P5 → F2 → A5 | 9–21 | — | `R1`, `FS`, `KW` |
 | RF47.CA12 | Opção C: `DocumentFindService.extractTerms/extractEntities/seeInContext`, `KeyTerm`, `TextEntity`/`EntityKind`, `PersonalDataMasker`; "Resumir com IA" via `AiGateway` | A5 → A6 → A4 | 22–30 | — | `R1`, `KW`, `MSK`, `AIG` |
 | RF47.CA13 | `FindScope.DOSSIE`, `FindQuery.dossierId`, reuso por `ContractTestService` (RF48) | — | 31–34 | — | `R3`, `RF48S` → `FS` |
+| RF47.CA14 | botão Testar esta contratação (→ `/agents` com o dossiê), `DocumentFindService.linkToFinding`, `readWithMap` (leitor B) e lista de termos compartilhados com o RF48 | A5 → A8 | 35–38 | — | `NAV`, `R1`, `R3`, `FS` |
 
 ### 6.1 Relação com RFs e blocos existentes
 
@@ -595,10 +607,11 @@ Regra do DECIA (`docs/decia/02_MATRIZ_BIBLIOGRAFICA.md`): toda referência produ
 | Variações "sem acento, radical" quando nada é achado | PROPOSTA DE DESIGN (derivada de B47-04) | `DocumentFindService` |
 | Glossários por departamento ("cláusulas de risco") | HIPÓTESE DE PRODUTO (do card) | `KeywordGlossary` |
 | Motor de OCR local (ex.: Tesseract) e extrator de texto | PROPOSTA DE DESIGN — escolha registrada em D-127 | `PlatformOcrAdapter` |
+| Leitor com mapa (B), as quatro ferramentas compartilhadas com o RF48 e o botão Testar esta contratação | HIPÓTESE DE PRODUTO (comentário do card, RF47.CA14) | `readWithMap`, navegação |
 
 Para a Opção A (CA11), B47-06 rege as janelas ±4/±8/±16 (o "N" do KWIC passa a ser uma das três); para a Opção C (CA12), B47-07…B47-11 regem as abas de termos e entidades.
 
-**Tamanho da matriz:** 7 referências bibliográficas/normativas → 11 regras (B47-01…B47-11), cada uma com teste planejado; 6 itens marcados sem fonte.
+**Tamanho da matriz:** 7 referências bibliográficas/normativas → 11 regras (B47-01…B47-11), cada uma com teste planejado; 7 itens marcados sem fonte.
 
 ## 8. Referências (ABNT NBR 6023)
 
@@ -618,4 +631,4 @@ ORENGO, Viviane Moreira; HUYCK, Christian. A stemming algorithm for the Portugue
 
 ROBERTSON, Stephen; ZARAGOZA, Hugo. The probabilistic relevance framework: BM25 and beyond. **Foundations and Trends in Information Retrieval**, v. 3, n. 4, p. 333-389, 2009.
 
-Tela/aba: `/find` (esqueleto em `app/(shell)/find/page.tsx`, sub-abas Encontrar = Opção A e Extrair termos e entidades = Opção C)
+Tela/aba: `/find` (esqueleto em `app/(shell)/find/page.tsx`, sub-abas Encontrar (A) · Ler com mapa (B) · Extrair termos e entidades (C) · Lista de termos, botão Testar esta contratação)
