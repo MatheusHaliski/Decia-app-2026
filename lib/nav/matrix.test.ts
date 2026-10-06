@@ -115,8 +115,8 @@ describe("RF47 Encontrar e RF48 Agentes (D-128, D-130)", () => {
     expect(visibleGroups("EMPREGADO").find((g) => g.id === "meu-trabalho")!.items.map((i) => i.id)).toContain("agents");
   });
 
-  it("interface do card (Opção A + Opção C): /find tem Encontrar e Extrair; /agents tem as fases e Encontrar/Extrair no dossiê", () => {
-    expect(PAGES.find((p) => p.route === "/find")!.tabs!.map((t) => t.slug)).toEqual(["encontrar", "extrair"]);
-    expect(PAGES.find((p) => p.route === "/agents")!.tabs!.map((t) => t.slug)).toEqual(["antes", "execucao", "transversais", "encontrar-no-dossie", "extrair-do-dossie"]);
+  it("ferramentas A · B · C · lista de termos em /find (RF47.CA14) e no dossiê de /agents (RF48.CA17), junto das fases", () => {
+    expect(PAGES.find((p) => p.route === "/find")!.tabs!.map((t) => t.slug)).toEqual(["encontrar", "ler", "extrair", "lista"]);
+    expect(PAGES.find((p) => p.route === "/agents")!.tabs!.map((t) => t.slug)).toEqual(["antes", "execucao", "transversais", "encontrar-no-dossie", "ler-com-mapa", "extrair-do-dossie", "lista-de-termos"]);
   });
 });

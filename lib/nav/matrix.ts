@@ -80,18 +80,24 @@ export const MESSAGES_TABS: readonly SubTab[] = [
   { slug: "conversas", labelKey: "tabs.messages.conversas" },
   { slug: "atribuicoes", labelKey: "tabs.messages.atribuicoes" },
 ];
-/** Encontrar (RF47, interface "Opção A + Opção C" do card): A = busca com palavra no contexto; C = extrair termos e entidades. */
+/** Encontrar (RF47): as quatro ferramentas do card e do RF47.CA14 — A busca com palavra no contexto · B leitor com mapa ·
+ * C extrair termos e entidades · lista de termos — as mesmas usadas no dossiê do RF48. */
 export const FIND_TABS: readonly SubTab[] = [
   { slug: "encontrar", labelKey: "tabs.find.encontrar" },
+  { slug: "ler", labelKey: "tabs.find.ler" },
   { slug: "extrair", labelKey: "tabs.find.extrair" },
+  { slug: "lista", labelKey: "tabs.find.lista" },
 ];
-/** Agentes — Copilot de testes (RF48.CA01): catálogo por fase + Encontrar/Extrair no dossiê (RF48.CA13/CA14, reuso do RF47). */
+/** Agentes — Copilot de testes: catálogo por fase (RF48.CA01) + ferramentas do dossiê em abas (RF48.CA17: Encontrar ·
+ * Ler com mapa · Extrair · Lista de termos, escopo fixo nos documentos da contratação). */
 export const AGENTS_TABS: readonly SubTab[] = [
   { slug: "antes", labelKey: "tabs.agents.antes" },
   { slug: "execucao", labelKey: "tabs.agents.execucao" },
   { slug: "transversais", labelKey: "tabs.agents.transversais" },
   { slug: "encontrar-no-dossie", labelKey: "tabs.agents.encontrar" },
+  { slug: "ler-com-mapa", labelKey: "tabs.agents.ler" },
   { slug: "extrair-do-dossie", labelKey: "tabs.agents.extrair" },
+  { slug: "lista-de-termos", labelKey: "tabs.agents.lista" },
 ];
 export const SETTINGS_TABS: readonly SubTab[] = [
   { slug: "aparencia", labelKey: "tabs.settings.aparencia" },

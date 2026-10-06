@@ -2931,7 +2931,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": "COMO: usuário autenticado POSSO: encontrar palavras-chave dentro dos documentos das minhas tarefas e projetos (ou em tudo que posso ver), ver cada ocorrência no seu contexto e extrair os termos, frases, valores, prazos e artigos de lei citados PARA: varrer documentos longos (editais, contratos, TRs, pareceres, atas) sem ler página por página e anexar o que encontrei como evidência",
     "summary": "O Encontrar complementa o Buscar (RF27, que acha itens), a Memória Institucional (RF33, busca semântica) e a detecção de palavras-chave do Criador de Tarefas (RF20 · CA02): aqui o foco é dentro do texto dos anexos (TaskAttachment, RF41). Modos (card): (1) Encontrar palavra-chave em documento — escolho uma tarefa/projeto (ou vários) e procuro termos; (2) Só encontrar palavra-chave — procuro em todos os documentos que posso ver. Base (card): recuperação de informação clássica, sem depender de IA — índice invertido com ranking BM25 e analisador em português (stemming RSLP, stopwords, sem acento), concordância KWIC e extração de termos-chave sem treino (YAKE!). A IA é opcional (resumo dos achados) e passa pelo gate do RF43 (AiGateway, D-69). A visibilidade de cada documento é decidida pela mesma política do Bloco 5 (AccessPolicy.visible via ResourceAuthorizer, D-65/D-66), aplicada como filtro dentro da consulta ao índice, nunca depois da paginação.",
     "route": "Encontrar (/find; também como botão \"Encontrar neste documento\" dentro de uma tarefa ou projeto — /tasks/[id], /projects/[id])",
-    "coverage": "RF47.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 (corpo do card, inalterado; CA11–CA13 acrescentados pelo dono em 2026-10-06 com a escolha da interface) — regra: o título do card define o RF e o corpo traz os próprios CAs.",
+    "coverage": "RF47.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 (corpo do card, inalterado; CA11–CA13 acrescentados pelo dono em 2026-10-06 com a escolha da interface; CA14 em comentário do card de 2026-10-06) — regra: o título do card define o RF e o corpo traz os próprios CAs.",
     "cas": [
       {
         "id": "RF47.CA01",
@@ -3010,6 +3010,12 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "text": "Dado o RF48 (aba Agentes), quando abro um dossiê de contratação, então as Opções A e C estão disponíveis com o escopo fixado nos documentos daquele dossiê (ver RF48.CA13–CA15).",
         "note": "",
         "kind": "enunciado"
+      },
+      {
+        "id": "RF47.CA14",
+        "text": "Dado o Encontrar aberto num projeto de categoria Licitação/Contrato, quando aciono \"Testar esta contratação\" (botão no cabeçalho), então a aba Agentes (RF48) abre com o dossiê daquele projeto; e cada resultado do Encontrar pode ser \"Vinculado como evidência\" de um achado do RF48. As quatro ferramentas (A busca com palavra no contexto, B leitor com mapa, C extrair, lista de termos) são as mesmas usadas dentro do RF48 (RF48.CA13–CA19).",
+        "note": "Conexão RF47 ↔ RF48",
+        "kind": "enunciado"
       }
     ]
   },
@@ -3020,7 +3026,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": "COMO: agente de contratação, gestor/fiscal de contrato, controle interno ou chefe POSSO: rodar o Copilot de testes da aba Agentes sobre uma contratação, antes do início e na execução (testes contratuais, orçamentários, comportamentais, de integridade e Score do Contrato), com evidência e bibliografia real em cada achado PARA: saber se vale a pena contratar e acompanhar o contrato com base verificável, com a decisão mantida pela autoridade competente",
     "summary": "Não é o Copilot sugestivo do RF26: aqui o Copilot testa. Cada agente executa uma bateria de testes sobre o dossiê de uma contratação (tarefas e anexos do projeto: ETP, TR, edital, proposta, contrato, medições, aditivos, certidões) e devolve achados verificáveis, nunca uma decisão. Contexto do card: contratações do Governo do Estado do Paraná — Lei 14.133/2021, regulamentação estadual (Decreto Estadual 10.086/2022) e, para contratos antigos, Lei Estadual 15.608/2007. Regra de ouro (IA é crítica, não decisora): todo achado traz evidência (trecho do documento, certidão ou consulta com data) e fundamentação normativa e bibliográfica real (artigo de lei, norma técnica, obra acadêmica ou profissional, com seção/página quando houver). Sem referência, não é achado. Pessoas cuidam do jurídico: o Copilot não decide questão jurídica, não aprova nem reprova empresa ou contrato e não redige conteúdo.",
     "route": "Agentes (/agents; também \"Testar esta contratação\" dentro de um projeto de categoria Licitação/Contrato — /projects/[id])",
-    "coverage": "RF48.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 · CA15 (corpo do card, inalterado; CA13–CA15 acrescentados pelo dono em 2026-10-06 com a escolha da interface do RF47) — regra: o título do card define o RF e o corpo traz os próprios CAs.",
+    "coverage": "RF48.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 · CA15 · CA16 · CA17 · CA18 · CA19 (corpo do card, inalterado; CA13–CA15 acrescentados pelo dono em 2026-10-06 com a escolha da interface do RF47; CA16–CA19 em comentário do card de 2026-10-06) — regra: o título do card define o RF e o corpo traz os próprios CAs.",
     "cas": [
       {
         "id": "RF48.CA01",
@@ -3110,6 +3116,30 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "id": "RF48.CA15",
         "text": "Dado uma lista de termos do RF47 (ex.: \"cláusulas de risco\"), quando o agente Contratual a aplica, então termo ausente vira ⚠️ atenção (\"verificar redação equivalente\"), nunca ⛔ automático, e o resultado entra no relatório com a lista e a versão usadas.",
         "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF48.CA16",
+        "text": "Dado o dossiê, quando aciono \"Ler com mapa\", então abro o leitor do RF47 com as ocorrências destacadas, o mapa lateral mostrando também os trechos já usados em achados (cor e forma pelo resultado) e a ação \"Vincular trecho selecionado como evidência\" de um achado ou de uma verificação manual.",
+        "note": "Opção B no dossiê",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF48.CA17",
+        "text": "Dado o dossiê, quando abro as ferramentas, então vejo as abas Encontrar (A) · Ler com mapa (B) · Extrair (C) · Lista de termos, todas com escopo fixo nos documentos da contratação e com a mesma política de acesso e de sigilo do RF47.",
+        "note": "Ferramentas do dossiê em abas",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF48.CA18",
+        "text": "Dado a aba Agentes, quando escolho o modo de visualização, então posso alternar entre: Mesa de testes (dossiê · agentes por fase · score), Assistente passo a passo (contratação → fase e papel → testes recomendados → rodar → revisar), Carteira de contratos (várias contratações com score, portões, achados abertos e próximo gatilho; para gestor, controle interno e chefe) e Matriz de testes (agentes × documentos com o pior resultado em cada célula); o modo escolhido fica salvo por pessoa.",
+        "note": "Modos de tela principal",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF48.CA19",
+        "text": "Dado qualquer tela do RF48, quando aciono \"Abrir no Encontrar\", então o RF47 abre com o escopo do dossiê; e, dado o RF47 aberto num projeto de categoria Licitação/Contrato, quando aciono \"Testar esta contratação\", então a aba Agentes abre com aquele dossiê. \"Ver no documento\" num achado abre o leitor (B) na posição exata; uma linha do Extrair (C) leva ao achado que a usou.",
+        "note": "Conexão RF47 ↔ RF48",
         "kind": "enunciado"
       }
     ]

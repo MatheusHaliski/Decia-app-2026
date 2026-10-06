@@ -89,7 +89,7 @@ export const PAGES: readonly PageEntry[] = [
   p("/models", "app/(shell)/models/page.tsx", "nav.models", ["RF40"], access({ EMPREGADO: "E", EMPRESA: "E", CHEFE: "E", CURADOR: "V", ADMIN: "V", VISITANTE: "V" }), "balcao", "A", { tabs: MODELS_TABS }),
   p("/messages", "app/(shell)/messages/page.tsx", "nav.messages", ["RF46", "RF10"], logged("E"), "sessao-decia", "A", { tabs: MESSAGES_TABS, note: "proposal" }),
   p("/messages/[conversationId]", "app/(shell)/messages/[conversationId]/page.tsx", "page.conversation", ["RF46", "RF13"], logged("E"), "sessao-decia", "A", { note: "proposal" }),
-  p("/find", "app/(shell)/find/page.tsx", "nav.find", ["RF47", "RF27", "RF33", "RF20"], logged("E"), "buscar", "A", { tabs: FIND_TABS }),
+  p("/find", "app/(shell)/find/page.tsx", "nav.find", ["RF47", "RF48", "RF27", "RF33", "RF20"], logged("E"), "buscar", "A", { tabs: FIND_TABS }),
   // Meu trabalho (§2.2)
   p("/profile", "app/(shell)/profile/page.tsx", "nav.profile", ["RF6", "RF19", "RF12", "RF25", "RF44", "RF45", "RF40"], logged("E"), "perfil", "B", { tabs: PROFILE_TABS }),
   p("/u/[username]", "app/(shell)/u/[username]/page.tsx", "page.userProfile", ["RF16", "RF6", "RF18", "RF19"], everyone("V"), "perfil", "B", { tabs: PROFILE_TABS }),
