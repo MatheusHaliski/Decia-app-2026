@@ -96,7 +96,15 @@ export const POINTS_TABS: readonly SubTab[] = [
   { slug: "regras", labelKey: "tabs.points.regras" },
   { slug: "departamentos", labelKey: "tabs.points.departamentos", hiddenFor: ["EMPREGADO", "CURADOR", "VISITANTE"] },
 ];
+/** /decia (docs/decia/05_WORKSPACE_E_NAVEGACAO.md §2, RF29): a unidade de navegação passa a ser a decisão; as sessões em grupo continuam em "Sessões". */
 export const DECIA_TABS: readonly SubTab[] = [
+  { slug: "atencao", labelKey: "tabs.decia.atencao" },
+  { slug: "decisoes", labelKey: "tabs.decia.decisoes" },
+  { slug: "sessoes", labelKey: "tabs.decia.sessoes" },
+  { slug: "revisoes", labelKey: "tabs.decia.revisoes" },
+];
+/** Sub-abas de DECIA › Sessões (as abas originais da sessão deliberativa). */
+export const DECIA_SESSION_TABS: readonly SubTab[] = [
   { slug: "abertas", labelKey: "tabs.decia.abertas" },
   { slug: "minhas", labelKey: "tabs.decia.minhas" },
   { slug: "encerradas", labelKey: "tabs.decia.encerradas" },
@@ -217,7 +225,7 @@ export function bottomNav(user: ViewerUser): (BottomDest | "create")[] {
 }
 
 export interface CreateOption { id: string; labelKey: string; hintKey: string; glyph: GlyphName; href: string; rf: string }
-/** §2.6 folha "+ Criar": Tarefa · Projeto · Plano Anual/Trilha · Nova sessão DECIA; EMPRESA/CHEFE: + Nova chancela (RF39.CA01). */
+/** §2.6 folha "+ Criar": Tarefa · Projeto · Plano Anual/Trilha · Nova decisão DECIA (05 §4: abre o fluxo "Nova decisão"); EMPRESA/CHEFE: + Nova chancela (RF39.CA01). */
 export function createOptions(profile: ViewerProfile): CreateOption[] {
   const base: CreateOption[] = [
     { id: "task", labelKey: "create.task", hintKey: "create.taskHint", glyph: "criar-tarefa", href: "/tasks/new", rf: "RF4" },

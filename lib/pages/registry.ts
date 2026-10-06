@@ -106,7 +106,8 @@ export const PAGES: readonly PageEntry[] = [
   p("/projects/new", "app/(shell)/projects/new/page.tsx", "nav.projectsNew", ["RF5", "RF20"], logged("E"), "criar-projeto", "A"),
   p("/plans", "app/(shell)/plans/page.tsx", "nav.plans", ["RF24"], logged("E"), "tarefa-do-dia", "A"),
   p("/autopilot", "app/(shell)/autopilot/page.tsx", "nav.autopilot", ["RF30", "RF26", "RF43"], logged("E"), "insights-ia", "A"),
-  p("/decia", "app/(shell)/decia/page.tsx", "nav.decia", ["RF29", "RF37"], logged("E"), "sessao-decia", "A", { tabs: DECIA_TABS, note: "sessionCards" }),
+  p("/decia", "app/(shell)/decia/page.tsx", "nav.decia", ["RF29", "RF37"], logged("E"), "sessao-decia", "A", { tabs: DECIA_TABS }),
+  p("/decia/decisoes/[decisionId]", "app/(shell)/decia/decisoes/[decisionId]/page.tsx", "page.decision", ["RF29"], logged("E"), "sessao-decia", "A"),
   p("/decia/[sessionId]", "app/(shell)/decia/[sessionId]/page.tsx", "page.session", ["RF29", "RF13", "RF37", "RF46"], logged("E"), "sessao-decia", "A", { tabs: SESSION_TABS, note: "sessionCards" }),
   p("/insights", "app/(shell)/insights/page.tsx", "nav.insights", ["RF43", "RF20", "RF26"], logged("V"), "insights-ia", "E", { tabs: INSIGHTS_TABS }),
   // Jogar e ganhar (§2.4 / Matriz E)
