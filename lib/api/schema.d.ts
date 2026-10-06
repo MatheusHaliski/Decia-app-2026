@@ -174,6 +174,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF2.CA05 Minhas sessões vivas (dispositivo, última atividade, expiração; a atual marcada com current=true) */
+        get: operations["list"];
+        put?: never;
+        post?: never;
+        /** RF2.CA05 Sai de todos os outros dispositivos (mantém a sessão atual) */
+        delete: operations["revokeOthers"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/sessions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** RF2.CA05 Encerra uma sessão minha: revoga a família do refresh token; sessão de outra pessoa → 404 NAO_ENCONTRADO */
+        delete: operations["revoke"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/username-suggestions": {
         parameters: {
             query?: never;
@@ -411,6 +446,17 @@ export interface components {
             tokenType?: string;
             user?: components["schemas"]["UserView"];
             warnings?: string[];
+        };
+        SessionView: {
+            current?: boolean;
+            deviceName?: string;
+            /** Format: date-time */
+            expiresAt?: string;
+            /** Format: uuid */
+            id?: string;
+            /** Format: date-time */
+            lastActiveAt?: string;
+            persistent?: boolean;
         };
         UserPreferences: {
             aiModeDefault?: string;
@@ -704,6 +750,68 @@ export interface operations {
                 content: {
                     "*/*": components["schemas"]["Receipt"];
                 };
+            };
+        };
+    };
+    list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["SessionView"][];
+                };
+            };
+        };
+    };
+    revokeOthers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    revoke: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
