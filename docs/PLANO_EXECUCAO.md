@@ -1,6 +1,6 @@
 # Plano de execução — tudo o que falta (2026-10-06)
 
-Fonte de verdade dos requisitos: board Trello **Work Station** (46 RFs; nenhum RF novo é inventado aqui). Este plano junta
+Fonte de verdade dos requisitos: board Trello **Work Station** (48 RFs — RF47 Encontrar e RF48 Agentes entraram no board em 2026-10-06; nenhum RF novo é inventado aqui). Este plano junta
 as três trilhas abertas — **segurança (blocos 4–8)**, **LGPD/cadastro (blocos A–C)** e **DECIA (fases 7–12 +
 mensageria)** — com dependências, ordem de PRs e reserva de numeração para trabalho em paralelo sem colisão.
 
@@ -13,6 +13,7 @@ mensageria)** — com dependências, ordem de PRs e reserva de numeração para 
 | Domínio de todos os RFs (123 entidades, V10–V21; tabelas LGPD já existem em V10) | #22 |
 | DECIA fases 1–6: auditoria, matriz bibliográfica, modelo, domínio V22, cards, workspace, correções | #29, #30, #31, #32 |
 | Diagramas, anatomias, bibliografia | #17, #19, #20, #21 |
+| RF47 Encontrar e RF48 Agentes: diagramas, matriz bibliográfica, catálogo dos 17 agentes, esqueletos `/find` e `/agents` (sem backend) | branch `claude/rf47-rf48` |
 
 Em andamento: **mensageria do DECIA** (Hohpe & Woolf) — branch `claude/decia-mensageria`, V23.
 
@@ -37,6 +38,12 @@ flowchart LR
   D7 --> B8[Bloco 8 · tabela final controle→PR→teste→status]
   LC --> B8
   D11 --> D12[DECIA 12 · acessibilidade, performance, QA]
+  ACV[onda Acervo · extração de texto e OCR dos anexos] --> RF47[RF47 Encontrar · índice OpenSearch BM25 pt]
+  B5 --> RF47
+  RF47 --> RF48[RF48 Agentes · Copilot de testes]
+  D7 --> RF48
+  IA43[onda IA · gate RF43, AiBudget] --> RF48
+  B5 --> IA43
 ```
 
 ## 3. Blocos — escopo, controles e testes-guarda
@@ -55,6 +62,8 @@ teste que falharia sem ele, segredos só pelo nome, nunca editar migration aplic
 | **CI** | Trivy na imagem `Dockerfile.backend` (falha em HIGH/CRITICAL corrigível); OpenAPI → TypeScript (`openapi-typescript`) gerado do `/v3/api-docs` em teste e diff obrigatório | CI falha se tipos divergirem | — |
 | **LGPD A — Aceite de termos** | `PolicyDocument` versionado substitui `ws.legal.current-versions`; aceite append-only no cadastro (`policy_acceptances`); `PolicyGateFilter` → `403 ACEITE_PENDENTE` em nova versão; telas `/termos` e `/privacidade`; componentes do DS (Checkbox, Banner, FormField) | cadastro sem aceite → 422; nova versão bloqueia até aceitar; histórico nunca editável | Bloco 4 |
 | **LGPD B — Tipos de perfil** | EMPRESA e CHEFE_DEPARTAMENTO com `ApprovalRequest` (PENDENTE·AJUSTES·APROVADO·RECUSADO), `VerificationPolicy`, fila de revisão do ADMIN (RF28.CA01) | perfil pendente não acessa recursos institucionais; AJUSTES volta ao solicitante; 403 para não-ADMIN na fila | LGPD A |
+| **RF47 — Encontrar (`/find`)** | interface do card "Opção A + Opção C" (busca KWIC alinhada ±4/±8/±16 + aba Extrair termos e entidades, também dentro do RF48 com escopo do dossiê); extração de texto paginado (PDF, DOCX, XLSX, PPTX, TXT, MD, CSV, EML/MSG) com OCR local; índice OpenSearch `ws-find-*` com analisador pt (asciifolding, stop pt, `portuguese_rslp`) e BM25; `QueryParser` (aspas, E/OU/NÃO, curinga, `~N`); KWIC ±N palavras; YAKE!/TF-IDF; entidades com mascaramento LGPD; glossários; exportação e evidência (RF29); auditoria sem conteúdo; RESTRITO/SIGILOSO só local | documento invisível nunca aparece **nem é contado** (filtro dentro da consulta, inclusive no total); `NÃO` isolado → 422; RESTRITO/SIGILOSO não chega ao provedor externo; CPF nunca sai aberto na exportação; `audit_log` sem trecho de documento; documento não indexado avisado como "ficou de fora"; 1º lote ≤ 2 s medido (`docs/diagramas/RF47/README.md` §7) | onda Acervo, Bloco 5 |
+| **RF48 — Agentes (`/agents`)** | Encontrar/Extrair no dossiê reaproveitando os serviços do RF47 com `FindScope.DOSSIE` (lista de termos ausente → ⚠️, nunca ⛔); 17 agentes de teste (antes do início · execução · transversais) sobre o dossiê da contratação; `FindingAssembler` (sem evidência ou sem referência curada → "Hipóteses não fundamentadas"); consultas oficiais (CEIS/CNEP pela API da CGU com `WS_CGU_API_KEY`, certidões) com fonte, data/hora e hash; Score do Contrato sobre o motor do DECIA com portões, contribuições, confiança e pesos versionados; gatilhos de execução; contraditório; exportação PDF/XLSX ABNT | achado sem referência nunca vira achado nem entra no Score; consulta que falha/expira/pede captcha → ❔ (nunca ✅); portão disparado → "bloqueado para verificação" com qualquer número; mesmo dossiê + mesmas regras → resultado idêntico; dossiê RESTRITO/SIGILOSO → IA só local; Copilot não tem ação de redigir/aprovar; aviso jurídico sempre no relatório (`docs/diagramas/RF48/README.md` §10) | RF47, DECIA 7, onda IA (RF43), Bloco 5 |
 | **LGPD C — Configurações e direitos (RF3)** | consentimentos opcionais (`ConsentEvent`), exportação assíncrona (REQUESTED→PROCESSING→READY→EXPIRED/FAILED), exclusão = anonimização com retenção legal (`AccountAnonymizationJob` com lock e teste de agendamento), `DataSubjectRequest` | job roda no horário com lock único; exportação expira; anonimização mantém trilhas legais | LGPD B, Bloco 5 |
 
 ## 4. DECIA — fases restantes
@@ -76,8 +85,8 @@ teste que falharia sem ele, segredos só pelo nome, nunca editar migration aplic
 | 1 (agora) | Mensageria · Perfil + rede social + Delegar (RF6, RF14–RF19, RF27) · Bloco 5 · Bloco 4 · CI Trivy + OpenAPI→TS | 5 PRs |
 | 2 | LGPD A · Bloco 7 · DECIA 7 · Bloco 4b (2FA + SMTP, assim que Q-83/Q-84 forem decididas) · onda Acervo (RF4, RF8, RF11, RF12, RF23, RF41) | 5 PRs |
 | 3 | LGPD B · DECIA 8 · DECIA 9 · Bloco 6 · onda Institucional (RF9, RF10, RF28, RF36, RF39) · onda Mensageria (RF46) | 6 PRs |
-| 4 | LGPD C · DECIA 10 · onda Projetos (RF5, RF7, RF20–RF22, RF25, RF31, RF32) · onda Planejamento (RF24) · onda IA (RF13, RF26, RF43) | 5 PRs |
-| 5 | DECIA 11 · onda Gamificação (RF35, RF40, RF42, RF44, RF45) · RF30 e RF34 (IA sobre projetos) | 3 PRs |
+| 4 | LGPD C · DECIA 10 · onda Projetos (RF5, RF7, RF20–RF22, RF25, RF31, RF32) · onda Planejamento (RF24) · onda IA (RF13, RF26, RF43) · RF47 Encontrar (depois da onda Acervo e do Bloco 5) | 6 PRs |
+| 5 | DECIA 11 · onda Gamificação (RF35, RF40, RF42, RF44, RF45) · RF30 e RF34 (IA sobre projetos) · RF48 Agentes (depende de RF47, DECIA 7 e do gate de IA do RF43) | 4 PRs |
 | 6 | DECIA 12 (QA: axe, regressão visual, performance, usabilidade) — depende de DECIA 11 | 1 PR |
 | 7 | Bloco 8 (fechamento: tabela controle → PR → teste → status) — por último, depende de tudo | 1 PR |
 
@@ -111,6 +120,8 @@ teste que falharia sem ele, segredos só pelo nome, nunca editar migration aplic
 | Onda IA | D-118–D-120 | Q-218–Q-220 | V41 |
 | Onda Gamificação | D-121–D-124 | Q-221–Q-224 | V42 |
 | RF30 + RF34 | D-125–D-126 | Q-225–Q-226 | V43 |
+| RF47 Encontrar | D-127–D-129 | Q-227–Q-229 | V44 |
+| RF48 Agentes (Copilot de testes) | D-130–D-134 | Q-230–Q-234 | V45 |
 
 Faixa não usada fica livre (o `MigrationVersionsTest` só proíbe versão repetida e aceita lacunas; se um trabalho precisar
 de mais de uma migration, pede uma faixa nova neste quadro antes de criar).
@@ -125,7 +136,10 @@ de qualquer deploy que a aplique). Versões reservadas e não usadas nunca bloqu
 Proteção de branch em `main` (Q-52) · criar os segredos no cofre pelos nomes do runbook (`docs/seguranca/SEGURANCA.md` §5) ·
 registrar o app no IdP institucional (OIDC) · WAF/borda e `WS_TRUSTED_PROXIES` · decidir Q-152…Q-156 (DECIA) e as Qs de
 LGPD/jurídico (Q-60…Q-73) · escolher o provedor SMTP institucional (Q-84) e a política de 2FA (Q-83) — a
-**implementação** dessas duas é o Bloco 4b (código e testes), não ação do time.
+**implementação** dessas duas é o Bloco 4b (código e testes), não ação do time. · RF47/RF48: pedir a chave da API de
+dados do Portal da Transparência (guardada como `WS_CGU_API_KEY`), levantar com a SEAP/TCE-PR o acesso às fontes
+estaduais (Q-230), nomear quem cura a base bibliográfica (Q-228) e validar o aviso jurídico (Q-234) — "Pessoas
+cuidam do jurídico".
 
 ## 8. Todos os RFs — estado e onda
 
@@ -179,6 +193,8 @@ LGPD/jurídico (Q-60…Q-73) · escolher o provedor SMTP institucional (Q-84) e 
 | RF44 | Tarefa do Dia e HSE | domínio + esqueleto | onda Gamificação | 5 |
 | RF45 | Hype Score do Perfil | domínio + esqueleto | onda Gamificação (Q-153) | 5 |
 | RF46 | Chats de mensageria | domínio + esqueleto | onda Mensageria/Social | 3 |
+| RF47 | Encontrar palavras-chave em documentos (`/find`) | diagramas + matriz bibliográfica + esqueleto (sem domínio) | onda Encontrar (após Acervo e Bloco 5) | 4 |
+| RF48 | Agentes — Copilot de testes de contratação (`/agents`) | diagramas + catálogo dos 17 agentes + matriz bibliográfica + esqueleto (sem domínio) | onda Agentes (após RF47, DECIA 7 e onda IA) | 5 |
 
-Ondas temáticas: **Social** (RF6, RF14–RF19, RF27, cards de tarefa RF38) · **Acervo** (RF4, RF8, RF11, RF12, RF23, RF41) · **Projetos** (RF5, RF7, RF20–RF22, RF25, RF30–RF32, RF34) · **Institucional** (RF9, RF10, RF28, RF36, RF39) · **Planejamento** (RF24) · **Gamificação** (RF35, RF40, RF42, RF44, RF45) · **IA** (RF13, RF26, RF43) · **DECIA** (RF29, RF33, RF37) · **Mensageria** (RF46). Cada onda entrega primeiro UI funcional com repositório de demonstração rotulado (como o DECIA) e regras puras testadas; a API entra depois dos Blocos 4–5.
+Ondas temáticas: **Social** (RF6, RF14–RF19, RF27, cards de tarefa RF38) · **Acervo** (RF4, RF8, RF11, RF12, RF23, RF41) · **Projetos** (RF5, RF7, RF20–RF22, RF25, RF30–RF32, RF34) · **Institucional** (RF9, RF10, RF28, RF36, RF39) · **Planejamento** (RF24) · **Gamificação** (RF35, RF40, RF42, RF44, RF45) · **IA** (RF13, RF26, RF43) · **DECIA** (RF29, RF33, RF37) · **Mensageria** (RF46) · **Encontrar** (RF47) · **Agentes** (RF48). Cada onda entrega primeiro UI funcional com repositório de demonstração rotulado (como o DECIA) e regras puras testadas; a API entra depois dos Blocos 4–5.
 
