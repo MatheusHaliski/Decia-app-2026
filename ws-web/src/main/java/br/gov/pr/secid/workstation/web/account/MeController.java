@@ -5,6 +5,7 @@ import br.gov.pr.secid.workstation.application.identity.CurrentUser;
 import br.gov.pr.secid.workstation.application.identity.RequestContext;
 import br.gov.pr.secid.workstation.application.identity.UserView;
 import br.gov.pr.secid.workstation.domain.identity.UserPreferences;
+import br.gov.pr.secid.workstation.web.security.AuthorizedBy;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -25,8 +26,9 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
- * RF3 — a própria conta. Todo endpoint exige papel conhecido (USER/ADMIN) e {@code sid} vivo; {@code GET /api/users/{id}}
- * passa pelo {@code Guard.ownerOrAdmin} (403 ACESSO_NEGADO para terceiros). Step-ups ({@code /sensitive}, {@code /deletion})
+ * RF3 — a própria conta. Todo endpoint exige papel conhecido (USER/ADMIN) e {@code sid} vivo; a autorização de recurso fica no
+ * serviço ({@code ResourceAuthorizer}, D-65/D-66): {@code /api/me*} pela própria conta, {@code GET /api/users/{id}} por
+ * {@code requireSelfOrAdmin} com o papel relido do banco (403 ACESSO_NEGADO uniforme para terceiros). Step-ups ({@code /sensitive}, {@code /deletion})
  * pedem a senha atual no mesmo bloqueio do login (6º erro → 429 MUITAS_TENTATIVAS + Retry-After).
  */
 @RestController
@@ -76,8 +78,9 @@ public class MeController {
         return account.me(user);
     }
 
-    @Operation(summary = "RF3.CA01 Perfil por id — só o dono ou ADMIN (Guard.ownerOrAdmin → 403 ACESSO_NEGADO)")
+    @Operation(summary = "RF3.CA01 Perfil por id — só o dono ou ADMIN com papel relido do banco (403 ACESSO_NEGADO uniforme)")
     @GetMapping("/api/users/{id}")
+    @AuthorizedBy("requireSelfOrAdmin")
     public UserView profile(CurrentUser user, @PathVariable UUID id) {
         return account.profile(user, id);
     }

@@ -9,6 +9,7 @@ import br.gov.pr.secid.workstation.application.identity.InMemoryRateLimit;
 import br.gov.pr.secid.workstation.application.identity.InMemorySessionStore;
 import br.gov.pr.secid.workstation.application.identity.RefreshRecord;
 import br.gov.pr.secid.workstation.application.identity.UserView;
+import br.gov.pr.secid.workstation.application.security.AuthorizationTrail;
 import br.gov.pr.secid.workstation.domain.identity.UserPreferences;
 import br.gov.pr.secid.workstation.web.config.JwtConfig;
 import br.gov.pr.secid.workstation.web.config.SecurityConfig;
@@ -127,7 +128,10 @@ class MeControllerWebTest {
     void perfilDeTerceiroDa403PeloGuardEOProprioOuAdminPassa() throws Exception {
         UUID other = UUID.randomUUID();
         when(account.profile(any(), eq(other))).thenThrow(ApiException.forbidden("x"));
-        when(account.profile(any(), eq(userId))).thenReturn(view());
+        when(account.profile(any(), eq(userId))).thenAnswer(inv -> {
+            AuthorizationTrail.record("USER:" + userId);           // o serviço real passa pelo ResourceAuthorizer (D-65)
+            return view();
+        });
         mvc.perform(authed(get("/api/users/" + other), "USER")).andExpect(status().isForbidden()).andExpect(jsonPath("$.code").value("ACESSO_NEGADO"));
         mvc.perform(authed(get("/api/users/" + userId), "USER")).andExpect(status().isOk()).andExpect(jsonPath("$.username").value("maria"));
         ArgumentCaptor<CurrentUser> actor = ArgumentCaptor.forClass(CurrentUser.class);
@@ -135,6 +139,18 @@ class MeControllerWebTest {
         assertThat(actor.getValue().id()).isEqualTo(userId);
         assertThat(actor.getValue().sessionId()).isEqualTo(sid);
         mvc.perform(authed(get("/api/users/nao-uuid"), "USER")).andExpect(status().isBadRequest()).andExpect(jsonPath("$.code").value("PARAMETRO_INVALIDO"));
+    }
+
+    @Test
+    void handlerComIdQueRespondeSemPassarPeloAuthorizerEBloqueadoCom500() throws Exception {
+        // D-65: serviço que "esquece" o ResourceAuthorizer nunca devolve o dado — a rede de segurança corta a resposta
+        when(account.profile(any(), eq(userId))).thenReturn(view());
+        mvc.perform(authed(get("/api/users/" + userId), "USER")).andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.code").value("ERRO_INTERNO")).andExpect(jsonPath("$.username").doesNotExist());
+        // e a marca de uma requisição não vaza para a próxima (thread reaproveitada)
+        AuthorizationTrail.record("vazamento");
+        mvc.perform(authed(get("/api/users/" + userId), "USER")).andExpect(status().isInternalServerError());
+        assertThat(AuthorizationTrail.checked()).isFalse();
     }
 
     @Test

@@ -3668,6 +3668,28 @@
       ]
     },
     {
+      "context": "12 Plataforma",
+      "entity": "MediaScan",
+      "table": "media_scans",
+      "rfs": ["RF20", "RF34", "RF38", "RF41"],
+      "store": "mysql",
+      "migration": "V24",
+      "pk": "id",
+      "doc": "Quarentena/antivírus por objeto de mídia (filho de media_objects → CASCADE); única por media_id. Tipo detectado por magic bytes.",
+      "indexes": ["status, created_at"],
+      "uniques": [],
+      "attributes": [
+        {"name": "id", "type": "UUID", "column": "id", "sqlType": "BINARY(16)", "nullable": false, "pk": true, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "identificador"},
+        {"name": "mediaId", "type": "UUID", "column": "media_id", "sqlType": "BINARY(16)", "nullable": false, "pk": false, "constraint": "FK media_objects.id ON DELETE CASCADE", "enumValues": [], "ref": "media_objects.id", "onDelete": "CASCADE", "default": "", "encrypted": false, "description": "objeto de mídia"},
+        {"name": "status", "type": "MediaScanStatus", "column": "status", "sqlType": "VARCHAR(20)", "nullable": false, "pk": false, "constraint": "PENDENTE · LIMPO · INFECTADO · NAO_VERIFICADO", "enumValues": ["PENDENTE", "LIMPO", "INFECTADO", "NAO_VERIFICADO"], "ref": "", "onDelete": "", "default": "'PENDENTE'", "encrypted": false, "description": "situação da varredura"},
+        {"name": "detectedType", "type": "String", "column": "detected_type", "sqlType": "VARCHAR(20)", "nullable": false, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "tipo detectado (magic bytes)"},
+        {"name": "engine", "type": "String", "column": "engine", "sqlType": "VARCHAR(40)", "nullable": true, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "motor de antivírus"},
+        {"name": "threatName", "type": "String", "column": "threat_name", "sqlType": "VARCHAR(200)", "nullable": true, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "ameaça detectada"},
+        {"name": "scannedAt", "type": "Instant", "column": "scanned_at", "sqlType": "TIMESTAMP(6)", "nullable": true, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "varrido em"},
+        {"name": "createdAt", "type": "Instant", "column": "created_at", "sqlType": "TIMESTAMP(6)", "nullable": false, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "CURRENT_TIMESTAMP(6)", "encrypted": false, "description": "criação (UTC)"}
+      ]
+    },
+    {
       "context": "10 IA do sistema",
       "entity": "AiInferenceLog",
       "table": "ai_inference_log",

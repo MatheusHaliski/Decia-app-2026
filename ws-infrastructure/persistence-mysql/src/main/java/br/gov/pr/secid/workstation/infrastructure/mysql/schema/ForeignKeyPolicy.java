@@ -519,7 +519,9 @@ public final class ForeignKeyPolicy {
             new Fk("decision_work_links", "decision_id", "decisions", "CASCADE"),
             new Fk("decision_work_links", "created_by_user_id", "users", "RESTRICT"),
             new Fk("decision_events", "decision_id", "decisions", "RESTRICT"),
-            new Fk("decision_events", "actor_user_id", "users", "RESTRICT")
+            new Fk("decision_events", "actor_user_id", "users", "RESTRICT"),
+            // V24 — seg_bloco5_quarentena_midia
+            new Fk("media_scans", "media_id", "media_objects", "CASCADE")
     );
     // <<< gerado
 

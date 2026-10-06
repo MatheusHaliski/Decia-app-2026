@@ -203,6 +203,22 @@ ws:
     timeout-seconds: ${WS_AI_REQUEST_TIMEOUT_SECONDS:30}
     anthropic-api-key: ${WS_ANTHROPIC_API_KEY:}
     google-ai-api-key: ${WS_GOOGLE_AI_API_KEY:}
+    budget:                                              # Bloco 5 (D-68): teto diário por pessoa e por empresa; valores na Q-50
+      user-daily-requests: ${WS_AI_BUDGET_USER_DAILY_REQUESTS:200}
+      user-daily-tokens: ${WS_AI_BUDGET_USER_DAILY_TOKENS:200000}
+      company-daily-requests: ${WS_AI_BUDGET_COMPANY_DAILY_REQUESTS:5000}
+      company-daily-tokens: ${WS_AI_BUDGET_COMPANY_DAILY_TOKENS:5000000}
+      zone: ${WS_AI_BUDGET_ZONE:America/Sao_Paulo}
+  upload:
+    # Bloco 5 (D-67): tipo real por magic bytes, limite por categoria, teto de pixels, guarda de ZIP, quarentena (Q-165)
+    max-image-pixels: ${WS_UPLOAD_MAX_IMAGE_PIXELS:40000000}
+    max-image-side: ${WS_UPLOAD_MAX_IMAGE_SIDE:16384}
+    zip-max-entries: ${WS_UPLOAD_ZIP_MAX_ENTRIES:2000}
+    zip-max-bytes: ${WS_UPLOAD_ZIP_MAX_BYTES:209715200}
+    zip-max-ratio: ${WS_UPLOAD_ZIP_MAX_RATIO:100}
+    zip-max-depth: ${WS_UPLOAD_ZIP_MAX_DEPTH:1}
+    require-antivirus: ${WS_UPLOAD_REQUIRE_ANTIVIRUS:false}
+    signed-url-ttl-seconds: ${WS_MEDIA_SIGNED_URL_TTL_SECONDS:60}
 
 ---
 spring:
