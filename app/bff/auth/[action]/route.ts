@@ -8,7 +8,8 @@ import { NextResponse, type NextRequest } from "next/server";
  * tentar renovar ao abrir o app.
  * - Anti-CSRF: só POST da própria origem (Origin / Sec-Fetch-Site) e cookie SameSite=Strict.
  * - IP real (D-14): `X-Ws-Client-Ip` + `X-Ws-Proxy-Ts` + `X-Ws-Proxy-Sig` = HMAC-SHA256(EDGE_PROXY_SECRET, "ip|ts");
- *   o backend nunca lê X-Forwarded-For. Sem EDGE_PROXY_SECRET (≥ 32 chars) os cabeçalhos não são enviados.
+ *   o IP vem só de `X-Real-IP` (sobrescrito pelo proxy de borda confiável) — nunca de X-Forwarded-For, que o cliente
+ *   controla e não pode ser assinado. Sem EDGE_PROXY_SECRET (≥ 32 chars) ou sem X-Real-IP os cabeçalhos não são enviados.
  * - Sem backend (etapa b): a API fora do ar vira `502 OFFLINE`, que a tela mostra como ErrorState amigável.
  */
 const API = (process.env.API_INTERNAL_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080").trim().replace(/\/+$/, "");
@@ -22,7 +23,7 @@ const UPSTREAM: Record<string, string> = { login: "/api/auth/login", register: "
 type Json = Record<string, unknown>;
 
 function clientIp(req: NextRequest): string | null {
-  const ip = (req.headers.get("x-real-ip") ?? req.headers.get("x-forwarded-for")?.split(",")[0] ?? "").trim();
+  const ip = (req.headers.get("x-real-ip") ?? "").trim();
   return /^[0-9a-fA-F:.]{2,45}$/.test(ip) ? ip : null;
 }
 
