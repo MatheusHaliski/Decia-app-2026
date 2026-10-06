@@ -22,7 +22,7 @@ public record ScopedResource(Kind kind, UUID id, UUID ownerId, UUID companyId, U
 
     /** Tipo do recurso — vai na mensagem de erro (404 "Tarefa não encontrada") e no teste-matriz. */
     public enum Kind {
-        TASK("Tarefa"), PROJECT("Projeto"), DECISION("Decisão"), MEDIA("Arquivo"), USER("Usuário");
+        TASK("Tarefa"), PROJECT("Projeto"), DECISION("Decisão"), MEDIA("Arquivo"), USER("Usuário"), SESSION("Sessão");
 
         private final String label;
 
