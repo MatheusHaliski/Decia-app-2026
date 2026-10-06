@@ -5,9 +5,9 @@ import { DECISION_EVENT_TYPES } from "./types";
 afterEach(() => setAnalyticsSink(null));
 
 describe("analytics do DECIA (03 §9)", () => {
-  it("lista os 14 eventos da especificação, todos também tipos de DecisionEvent", () => {
+  it("lista os 14 eventos da especificação; em maiúsculas são o enum DecisionEventType (Java)", () => {
     expect(DECIA_ANALYTICS_EVENTS).toHaveLength(14);
-    for (const e of DECIA_ANALYTICS_EVENTS) expect(DECISION_EVENT_TYPES).toContain(e);
+    expect(DECIA_ANALYTICS_EVENTS.map((e) => e.toUpperCase())).toEqual([...DECISION_EVENT_TYPES]);
   });
 
   it("sink padrão é no-op e não escreve no console", () => {

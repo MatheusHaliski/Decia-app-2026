@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import { buildDemoDecisions, DEMO_DECISION_IDS } from "./fixtures";
 import {
   brier, calibration, canonicalJson, confidenceBand, decisionRisk, divergence, dominance, evidenceStrength, freshness, health, median,
-  preDecisionGuard, r2, readiness, riskSeverity, scoreMatrix, scoreOf, sensitivity, sha256Hex, sha256HexAsync, snapConfidence,
+  isValidRecommendation, preDecisionGuard, r2, readiness, riskSeverity, scoreMatrix, scoreOf, sensitivity, sha256Hex, sha256HexAsync, snapConfidence,
   suggestComplexity, toScoringInput, verifySnapshot, type DecisionRiskInput, type EvidenceInput, type ScoringInput,
 } from "./rules";
 import type { DecisionAggregate, DecisionLevel, Likelihood } from "./types";
@@ -131,7 +131,7 @@ describe("prontidão (§6.7)", () => {
 describe("guarda pré-decisão (§6.10)", () => {
   it("bloqueia sem alternativa, sem responsável, motivo curto e alternativa descartada", () => {
     const agg = demo()[DEMO_DECISION_IDS.arquitetura]!;
-    expect(preDecisionGuard(agg, { selectedAlternativeId: null, rationale: "curto" })).toMatchObject({ code: "DECISAO_INCOMPLETA", blocking: ["SEM_ALTERNATIVA", "MOTIVO_CURTO"] });
+    expect(preDecisionGuard(agg, { selectedAlternativeId: null, rationale: "curto" })).toMatchObject({ code: "DECISAO_INCOMPLETA", blocking: ["SEM_ALTERNATIVA_SELECIONADA", "MOTIVO_VAZIO"] });
     expect(preDecisionGuard({ ...agg, decision: { ...agg.decision, ownerUserId: null } }, { selectedAlternativeId: "arq-a", rationale: "motivo suficiente" }).blocking).toEqual(["SEM_RESPONSAVEL"]);
     expect(preDecisionGuard(agg, { selectedAlternativeId: "arq-d", rationale: "motivo suficiente" }).blocking).toEqual(["ALTERNATIVA_DESCARTADA"]);
   });
@@ -139,12 +139,12 @@ describe("guarda pré-decisão (§6.10)", () => {
     const agg = demo()[DEMO_DECISION_IDS.arquitetura]!;
     const g = preDecisionGuard(agg, { selectedAlternativeId: "arq-a", rationale: "Custo e tempo pesam mais agora.", confidencePct: 80 });
     expect(g.code).toBeNull();
-    expect(g.warnings).toEqual(["PRONTIDAO_INCOMPLETA", "DIVERGENCIA_ALTA", "PREMISSA_CRITICA_NAO_VALIDADA", "CONFIANCA_ACIMA_DA_EVIDENCIA"]);
+    expect(g.warnings).toEqual(["PRONTIDAO_INCOMPLETA", "DIVERGENCIA_ALTA_ABERTA", "PREMISSA_CRITICA_NAO_VALIDADA", "CONFIANCA_ACIMA_DA_EVIDENCIA"]);
   });
   it("risco CRÍTICO aberto avisa; RAPIDA nunca recebe avisos de evidência/prontidão", () => {
     const agg = demo()[DEMO_DECISION_IDS.sprint]!;
     const crit: DecisionAggregate = { ...agg, risks: [...agg.risks, { id: "x", title: "x", likelihood: "QUASE_CERTA", impact: "CRITICO", source: "MANUAL", status: "ABERTO", origin: "HUMANO" }] };
-    expect(preDecisionGuard(crit, { selectedAlternativeId: "spr-a", rationale: "maior valor agora" }).warnings).toContain("RISCO_CRITICO");
+    expect(preDecisionGuard(crit, { selectedAlternativeId: "spr-a", rationale: "maior valor agora" }).warnings).toContain("RISCO_CRITICO_ABERTO");
     const arq = demo()[DEMO_DECISION_IDS.arquitetura]!;
     const quick: DecisionAggregate = { ...arq, decision: { ...arq.decision, complexity: "RAPIDA" } };
     const w = preDecisionGuard(quick, { selectedAlternativeId: "arq-a", rationale: "motivo suficiente", confidencePct: 90 }).warnings;
@@ -192,5 +192,22 @@ describe("snapshots das fixtures", () => {
   });
   it("Brier do lançamento (4 previsões resolvidas)", () => {
     expect(brier(demo()[DEMO_DECISION_IDS.lancamento]!.forecasts)).toEqual({ n: 4, brier: 0.2281 });
+  });
+});
+
+describe("alinhamento com o domínio Java (D-53)", () => {
+  it("toda recomendação das fixtures tem 'o que sustenta' e 'o que contradiz' (§7)", () => {
+    for (const a of buildDemoDecisions(NOW)) for (const r of a.recommendations) expect(isValidRecommendation(r), r.id).toBe(true);
+    expect(isValidRecommendation({ supporting: ["x"], contradicting: [] })).toBe(false);
+  });
+  it("checkpoint AGENDADO já vencido conta como devido em ≤ 7 dias", () => {
+    const base = demo()[DEMO_DECISION_IDS.fornecedor]!;
+    expect(freshness({ ...base, checkpoints: [{ ...base.checkpoints[0]!, dueAt: iso(-20) }] }, NOW)).toBe("REVISAO_DEVIDA");
+  });
+  it("premissa crítica EM_VALIDACAO conta como tratada; NAO_VALIDADA não", () => {
+    const agg = demo()[DEMO_DECISION_IDS.arquitetura]!;
+    const treated = { ...agg, assumptions: agg.assumptions.map((a) => ({ ...a, validationStatus: "EM_VALIDACAO" as const })) };
+    expect(readiness(treated).checks.find((c) => c.key === "assumptions")!.state).toBe("OK");
+    expect(readiness(agg).checks.find((c) => c.key === "assumptions")!.state).toBe("ALERTA");
   });
 });

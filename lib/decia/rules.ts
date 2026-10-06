@@ -478,8 +478,9 @@ export function health(agg: DecisionAggregate, now: Date): HealthComponent[] {
 }
 
 /* ---- Guarda pré-decisão (§6.10) ---- */
-export type GuardBlock = "SEM_ALTERNATIVA" | "SEM_RESPONSAVEL" | "MOTIVO_CURTO" | "ALTERNATIVA_DESCARTADA";
-export type GuardWarning = "PRONTIDAO_INCOMPLETA" | "RISCO_CRITICO" | "DIVERGENCIA_ALTA" | "PREMISSA_CRITICA_NAO_VALIDADA" | "CONFIANCA_ACIMA_DA_EVIDENCIA";
+/** Mesmos nomes do Java `PreDecisionGuard.Block`/`Warning` (D-53). */
+export type GuardBlock = "SEM_ALTERNATIVA_SELECIONADA" | "SEM_RESPONSAVEL" | "MOTIVO_VAZIO" | "ALTERNATIVA_DESCARTADA";
+export type GuardWarning = "PRONTIDAO_INCOMPLETA" | "RISCO_CRITICO_ABERTO" | "DIVERGENCIA_ALTA_ABERTA" | "PREMISSA_CRITICA_NAO_VALIDADA" | "CONFIANCA_ACIMA_DA_EVIDENCIA";
 export interface DecisionDraft { selectedAlternativeId?: string | null; rationale: string; confidencePct?: number | null }
 export interface GuardResult { code: "DECISAO_INCOMPLETA" | null; blocking: GuardBlock[]; warnings: GuardWarning[] }
 
@@ -487,17 +488,18 @@ export function preDecisionGuard(agg: DecisionAggregate, draft: DecisionDraft): 
   const d = agg.decision;
   const blocking: GuardBlock[] = [];
   const alt = draft.selectedAlternativeId ? agg.alternatives.find((a) => a.id === draft.selectedAlternativeId) : undefined;
-  if (!alt) blocking.push("SEM_ALTERNATIVA");
+  if (!alt) blocking.push("SEM_ALTERNATIVA_SELECIONADA");
+  else if (alt.status === "DESCARTADA") blocking.push("ALTERNATIVA_DESCARTADA");
   if (!d.ownerUserId) blocking.push("SEM_RESPONSAVEL");
-  if (draft.rationale.trim().length < 10) blocking.push("MOTIVO_CURTO");
-  if (alt?.status === "DESCARTADA") blocking.push("ALTERNATIVA_DESCARTADA");
+  if (draft.rationale.trim().length < 10) blocking.push("MOTIVO_VAZIO");
   const warnings: GuardWarning[] = [];
   const altId = alt?.id ?? null;
   // a prontidão é avaliada com a alternativa escolhida como foco
   const probe: DecisionAggregate = altId ? { ...agg, decision: { ...d, selectedAlternativeId: altId } } : agg;
   if (d.complexity !== "RAPIDA" && readiness(probe).level !== "PRONTA_PARA_DECIDIR") warnings.push("PRONTIDAO_INCOMPLETA");
-  if (decisionRiskOf(agg, altId) === "CRITICO") warnings.push("RISCO_CRITICO");
-  if (highDivergenceOf(agg).length) warnings.push("DIVERGENCIA_ALTA");
+  // como no Java: qualquer risco ABERTO com severidade CRÍTICA (§6.6)
+  if (agg.risks.some((r) => r.status === "ABERTO" && riskSeverity(r.likelihood, r.impact) === "CRITICO")) warnings.push("RISCO_CRITICO_ABERTO");
+  if (highDivergenceOf(agg).length) warnings.push("DIVERGENCIA_ALTA_ABERTA");
   if (agg.assumptions.some((a) => a.importance === "CRITICO" && a.validationStatus === "NAO_VALIDADA")) warnings.push("PREMISSA_CRITICA_NAO_VALIDADA");
   if (d.complexity !== "RAPIDA" && draft.confidencePct != null && confidenceBand(draft.confidencePct) === "ALTA" && evidenceStrengthOf(agg, altId).level === "FRACA") warnings.push("CONFIANCA_ACIMA_DA_EVIDENCIA");
   return { code: blocking.length ? "DECISAO_INCOMPLETA" : null, blocking, warnings };
@@ -537,6 +539,9 @@ export function buildSnapshotContent(agg: DecisionAggregate, draft: DecisionDraf
     modelVersion: MODEL_VERSION,
   };
 }
+
+/** §7: recomendação sem `supporting` **e** `contradicting` (≥ 1 item cada) é rejeitada pelo domínio. */
+export const isValidRecommendation = (r: { supporting: readonly string[]; contradicting: readonly string[] }) => r.supporting.length > 0 && r.contradicting.length > 0;
 
 /** Re-hash do conteúdo: diferente do gravado = adulteração (teste-guarda). */
 export const verifySnapshot = (s: { contentJson: string; contentSha256: string }) => sha256Hex(s.contentJson) === s.contentSha256;

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { PAGES, PROFILE_TABS, COMPANY_TABS, DEPARTMENT_TABS } from "@/lib/pages/registry";
 import { VIEWER_PROFILES, VIEWER_USERS } from "@/lib/viewer/profiles";
-import { NAV_GROUPS, bottomNav, createOptions, isActivePath, resolveHref, visibleGroups, visibleTabs, INSIGHTS_TABS } from "./matrix";
+import { DECIA_SESSION_TABS, DECIA_TABS, NAV_GROUPS, bottomNav, createOptions, isActivePath, resolveHref, visibleGroups, visibleTabs, INSIGHTS_TABS } from "./matrix";
 
 /** A Matriz A (ABAS_POR_PERFIL.md §2) codificada em lib/nav/matrix.ts — células conferidas contra o documento. */
 describe("Matriz A — sidebar por perfil", () => {
@@ -41,6 +41,16 @@ describe("Matriz A — sidebar por perfil", () => {
     expect(isActivePath("/muralx", "/mural")).toBe(false);
   });
 
+  it("DECIA: Precisa de atenção (padrão) · Decisões · Sessões · Revisões; as abas da sessão ficam em Sessões; + Criar abre ?acao=nova", () => {
+    expect(DECIA_TABS.map((t) => t.slug)).toEqual(["atencao", "decisoes", "sessoes", "revisoes"]);
+    expect(DECIA_SESSION_TABS.map((t) => t.slug)).toEqual(["abertas", "minhas", "encerradas"]);
+    expect(createOptions("EMPREGADO").find((o) => o.id === "decia")).toMatchObject({ href: "/decia?acao=nova", rf: "RF29" });
+    const ws = PAGES.find((p) => p.route === "/decia/decisoes/[decisionId]")!;
+    expect(ws.rfs).toEqual(["RF29"]);
+    expect(ws.access.VISITANTE).toBe("O");
+    expect(ws.access.EMPREGADO).toBe("E");
+  });
+
   it("sub-abas: Insights › Equipe oculta para EMPREGADO/CURADOR; Perfil oculta para EMPRESA", () => {
     expect(visibleTabs(INSIGHTS_TABS, "EMPREGADO").map((t) => t.slug)).toEqual(["acervo", "perfil", "ranking", "sugeridos"]);
     expect(visibleTabs(INSIGHTS_TABS, "EMPRESA").map((t) => t.slug)).toEqual(["acervo", "equipe", "ranking", "sugeridos"]);
@@ -76,7 +86,7 @@ describe("Matrizes B/C/D e registro de páginas", () => {
   it("todas as rotas da ARQUITETURA §4 e da Matriz A estão registradas, sem duplicatas", () => {
     const routes = PAGES.map((p) => p.route);
     expect(new Set(routes).size).toBe(routes.length);
-    for (const r of ["/mural", "/search", "/memory", "/companies", "/models", "/profile", "/u/[username]", "/tasks", "/attachments", "/desk", "/projects/[id]/edit", "/projects/[id]/simulate", "/projects/[id]/mirror", "/tasks/new", "/projects/new", "/plans", "/autopilot", "/decia", "/decia/[sessionId]", "/insights", "/goals", "/points", "/store", "/highlights", "/recognitions", "/benefits", "/admin", "/lab/design-system", "/settings", "/notifications", "/messages", "/login", "/register", "/password-reset", "/verify-email", "/issuer/dashboard", "/companies/[slug]/manage/departments", "/departments/[slug]/team", "/seals", "/seals/review", "/decia/review", "/handoffs", "/curation"]) {
+    for (const r of ["/mural", "/search", "/memory", "/companies", "/models", "/profile", "/u/[username]", "/tasks", "/attachments", "/desk", "/projects/[id]/edit", "/projects/[id]/simulate", "/projects/[id]/mirror", "/tasks/new", "/projects/new", "/plans", "/autopilot", "/decia", "/decia/decisoes/[decisionId]", "/decia/[sessionId]", "/insights", "/goals", "/points", "/store", "/highlights", "/recognitions", "/benefits", "/admin", "/lab/design-system", "/settings", "/notifications", "/messages", "/login", "/register", "/password-reset", "/verify-email", "/issuer/dashboard", "/companies/[slug]/manage/departments", "/departments/[slug]/team", "/seals", "/seals/review", "/decia/review", "/handoffs", "/curation"]) {
       expect(routes, r).toContain(r);
     }
     for (const item of NAV_GROUPS.flatMap((g) => g.items)) {

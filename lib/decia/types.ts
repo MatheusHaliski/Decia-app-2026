@@ -29,8 +29,8 @@ export const LIFECYCLE_TRANSITIONS: Record<DecisionLifecycle, readonly DecisionL
 export const DECISION_COMPLEXITY = ["RAPIDA", "PADRAO", "PROFUNDA"] as const;
 export type DecisionComplexity = (typeof DECISION_COMPLEXITY)[number];
 
-/** Tipo da decisão (filtro "tipo"). A especificação não lista os valores: DESIGN PROPOSAL. */
-export const DECISION_KIND = ["TECNICA", "PRODUTO", "FORNECEDOR", "PROJETO", "EXPERIENCIA", "OUTRA"] as const;
+/** Tipo da decisão (filtro "tipo") — mesmos valores do enum Java `DecisionKind` (ws-domain, PR #30). */
+export const DECISION_KIND = ["ESTRATEGICA", "TATICA", "OPERACIONAL", "TECNICA", "FINANCEIRA", "PRODUTO", "PESSOAS", "CONTRATACAO", "RISCO"] as const;
 export type DecisionKind = (typeof DECISION_KIND)[number];
 
 export const DECISION_LEVEL = ["BAIXO", "MEDIO", "ALTO", "CRITICO"] as const;
@@ -45,11 +45,12 @@ export type Visibility = "PRIVADA" | "DEPARTAMENTO" | "EMPRESA" | "PUBLICA";
 export type AlternativeStatus = "ATIVA" | "DESCARTADA";
 export type CriterionDirection = "MAIOR_MELHOR" | "MENOR_MELHOR";
 export type EvidenceNature = "FATO" | "EVIDENCIA" | "OPINIAO";
-/** A especificação não lista os valores: DESIGN PROPOSAL. */
-export type EvidenceKind = "DOCUMENTO" | "METRICA" | "TESTE" | "ENTREVISTA" | "REFERENCIA" | "OUTRO";
-/** A especificação não lista os valores: DESIGN PROPOSAL (primária = medida/observada pela equipe). */
-export type SourceQuality = "PRIMARIA" | "SECUNDARIA" | "TERCIARIA";
-export type RelevanceLevel = "ALTA" | "MEDIA" | "BAIXA";
+/** Mesmos valores do enum Java `EvidenceKind`. */
+export type EvidenceKind = "DOCUMENTO" | "METRICA" | "CONJUNTO_DADOS" | "PESQUISA" | "FEEDBACK_USUARIO" | "BENCHMARK" | "TESTE_TECNICO" | "OPINIAO_ESPECIALISTA" | "FONTE_EXTERNA" | "NORMA";
+/** Mesmos valores do enum Java `SourceQuality`. */
+export const SOURCE_QUALITY = ["PRIMARIA", "SECUNDARIA", "INTERNA", "ESPECIALISTA", "NAO_VERIFICADA"] as const;
+export type SourceQuality = (typeof SOURCE_QUALITY)[number];
+export type RelevanceLevel = "BAIXA" | "MEDIA" | "ALTA";
 export type EvidenceTargetType = "ALTERNATIVA" | "CRITERIO" | "PREMISSA" | "RISCO" | "AVALIACAO";
 export type EvidenceStance = "SUSTENTA" | "CONTRADIZ" | "CONTEXTO";
 export type AssumptionValidation = "NAO_VALIDADA" | "EM_VALIDACAO" | "VALIDADA" | "INVALIDADA";
@@ -68,13 +69,18 @@ export type OutcomeResult = "SUCESSO" | "PARCIAL" | "FALHOU" | "CANCELADA" | "SU
 export type ProcessQuality = "ADEQUADA" | "PARCIAL" | "INADEQUADA";
 export type WorkLinkTarget = "TAREFA" | "PROJETO" | "MARCO";
 
-/** Eventos de domínio / analytics (§9). `status_changed` alimenta a linha do tempo do card (04 §3 `timeline`). */
+/** Eventos de domínio (§9 em maiúsculas) — mesmos valores do enum Java `DecisionEventType`; o nome de analytics é o minúsculo. */
 export const DECISION_EVENT_TYPES = [
-  "decision_created", "evidence_added", "alternative_added", "criterion_changed", "decision_compared",
-  "decision_challenged", "decision_finalized", "decision_reopened", "checkpoint_completed", "outcome_recorded",
-  "review_completed", "card_flipped", "ai_suggestion_accepted", "ai_suggestion_dismissed", "status_changed",
+  "DECISION_CREATED", "EVIDENCE_ADDED", "ALTERNATIVE_ADDED", "CRITERION_CHANGED", "DECISION_COMPARED", "DECISION_CHALLENGED",
+  "DECISION_FINALIZED", "DECISION_REOPENED", "CHECKPOINT_COMPLETED", "OUTCOME_RECORDED", "REVIEW_COMPLETED", "CARD_FLIPPED",
+  "AI_SUGGESTION_ACCEPTED", "AI_SUGGESTION_DISMISSED",
 ] as const;
 export type DecisionEventType = (typeof DECISION_EVENT_TYPES)[number];
+/**
+ * Marcador de transição de estado usado só pela linha do tempo do mock (04 §3 `timeline`, "de decision_events"). Não existe
+ * no enum Java: quando a API existir, a linha do tempo virá do payload `to` dos eventos (ambiguidade registrada no relatório).
+ */
+export type TimelineMarker = "STATUS_CHANGED";
 
 /** Datas sempre em ISO-8601 (UTC). */
 export type IsoDate = string;
@@ -298,7 +304,7 @@ export interface DecisionEvent {
   id: string;
   /** nulo = IA/sistema */
   actorUserId: string | null;
-  type: DecisionEventType;
+  type: DecisionEventType | TimelineMarker;
   payload: Record<string, unknown>;
   at: IsoDate;
   correlationId?: string;

@@ -86,14 +86,14 @@ describe("comandos e repositório em memória", () => {
     const a4 = addEvidence(a3, { title: "Benchmark", nature: "FATO", sourceLabel: "lab", reliability: "ALTA", altId: "arq-a", stance: "SUSTENTA" }, "u-pessoa", NOW);
     expect(a4.evidenceLinks.at(-1)).toMatchObject({ targetId: "arq-a", stance: "SUSTENTA" });
     const a5 = addCriteria(a4, ["Suporte"], "u-pessoa", NOW);
-    expect(a5.events.slice(-5).map((e) => e.type)).toEqual(["decision_compared", "criterion_changed", "alternative_added", "evidence_added", "criterion_changed"]);
+    expect(a5.events.slice(-5).map((e) => e.type)).toEqual(["DECISION_COMPARED", "CRITERION_CHANGED", "ALTERNATIVE_ADDED", "EVIDENCE_ADDED", "CRITERION_CHANGED"]);
     expect(createDecision({ question: "Qual?", complexity: "RAPIDA", impact: "BAIXO", ownerUserId: "u" }, NOW).criteria).toEqual([]);
   });
 
   it("decidir: bloqueios lançam DECISAO_INCOMPLETA, avisos exigem confirmação, snapshot é verificável e o estado vira DECIDIDA", () => {
     const agg = byId()[DEMO_DECISION_IDS.arquitetura]!;
     expect(() => decide(agg, { selectedAlternativeId: "arq-a", rationale: "curto" }, "u-pessoa", NOW)).toThrow(DecisionIncompleteError);
-    expect(() => decide(agg, { selectedAlternativeId: "arq-a", rationale: "Custo e tempo pesam mais agora." }, "u-pessoa", NOW)).toThrow(/AVISOS_NAO_CONFIRMADOS/);
+    expect(() => decide(agg, { selectedAlternativeId: "arq-a", rationale: "Custo e tempo pesam mais agora." }, "u-pessoa", NOW)).toThrow(/DECISAO_AVISOS_NAO_CONFIRMADOS/);
     const { aggregate, snapshot } = decide(agg, { selectedAlternativeId: "arq-a", rationale: "Custo e tempo pesam mais agora.", confidencePct: 62, warningsConfirmed: true }, "u-pessoa", NOW);
     expect(aggregate.decision).toMatchObject({ status: "DECIDIDA", selectedAlternativeId: "arq-a", decisionConfidencePct: 60 });
     expect(snapshot).toMatchObject({ kind: "DECISAO", versionNumber: 1, selectedAlternativeLabel: "A", confidencePct: 60 });

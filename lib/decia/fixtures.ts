@@ -40,6 +40,9 @@ export const DEMO_DECISION_IDS = {
 
 /** Prefixo das decisões criadas pelo fluxo "Nova decisão" (só existem na memória do navegador). */
 export const NEW_DECISION_PREFIX = "d-nova-";
+/** Ids que o workspace aceita: os exemplos e os criados nesta aba; o resto é 404. */
+export const isKnownDecisionId = (id: string) =>
+  (Object.values(DEMO_DECISION_IDS) as string[]).includes(id) || (id.startsWith(NEW_DECISION_PREFIX) && /^[a-z0-9-]{8,80}$/.test(id));
 
 const DAY = 86_400_000;
 const at = (now: Date, days: number) => new Date(now.getTime() + days * DAY).toISOString();
@@ -48,7 +51,7 @@ const H: ContentOrigin = "HUMANO";
 function decision(now: Date, p: Partial<Decision> & Pick<Decision, "id" | "title" | "question" | "status">): Decision {
   return {
     version: 1, stakeholders: [], ownerUserId: DEMO_CURRENT_USER_ID, createdByUserId: DEMO_CURRENT_USER_ID, companyId: "c-exemplo",
-    complexity: "PADRAO", kind: "OUTRA", impact: "MEDIO", urgency: "MEDIO", visibility: "PRIVADA", accessClass: "INTERNO",
+    complexity: "PADRAO", kind: "OPERACIONAL", impact: "MEDIO", urgency: "MEDIO", visibility: "PRIVADA", accessClass: "INTERNO",
     weightingEnabled: false, independentScoring: false, createdAt: at(now, -30), updatedAt: at(now, -1), ...p,
   };
 }
@@ -65,8 +68,8 @@ const crit = (id: string, name: string, position: number, weightPct: number | nu
 const scores = (now: Date, prefix: string, by: string, altId: string, entries: [string, number][]): CriterionAssessment[] =>
   entries.map(([critId, score]) => ({ id: `${prefix}-${altId}-${critId}-${by}`, alternativeId: altId, criterionId: critId, assessorUserId: by, score, submittedAt: at(now, -6), origin: H }));
 const statusTrail = (now: Date, prefix: string, trail: [DecisionLifecycle, number][]): DecisionEvent[] => [
-  { id: `${prefix}-ev-0`, actorUserId: DEMO_CURRENT_USER_ID, type: "decision_created", payload: {}, at: at(now, trail[0]?.[1] ?? -30) },
-  ...trail.map(([status, days], i) => ({ id: `${prefix}-ev-${i + 1}`, actorUserId: DEMO_CURRENT_USER_ID, type: "status_changed" as const, payload: { to: status }, at: at(now, days) })),
+  { id: `${prefix}-ev-0`, actorUserId: DEMO_CURRENT_USER_ID, type: "DECISION_CREATED", payload: {}, at: at(now, trail[0]?.[1] ?? -30) },
+  ...trail.map(([status, days], i) => ({ id: `${prefix}-ev-${i + 1}`, actorUserId: DEMO_CURRENT_USER_ID, type: "STATUS_CHANGED" as const, payload: { to: status }, at: at(now, days) })),
 ];
 
 function snapshot(agg: DecisionAggregate, takenAt: string, by: string): DecisionSnapshot {
@@ -122,11 +125,11 @@ function arquitetura(now: Date): DecisionAggregate {
     ...scores(now, id, "u-carla", "arq-b", [[c("seguranca"), 5]]),
   ];
   agg.evidence = [
-    { id: "arq-e1", nature: "EVIDENCIA", kind: "TESTE", title: "Teste de carga no ambiente de homologação", summary: "Com 2× o pico atual, A e B mantiveram latência abaixo de 300 ms.", sourceLabel: "teste-carga", observedAt: at(now, -9), retrievedAt: at(now, -9), sourceQuality: "PRIMARIA", relevance: "ALTA", reliability: "ALTA", origin: H, addedByUserId: "u-bruno", addedAt: at(now, -9) },
+    { id: "arq-e1", nature: "EVIDENCIA", kind: "TESTE_TECNICO", title: "Teste de carga no ambiente de homologação", summary: "Com 2× o pico atual, A e B mantiveram latência abaixo de 300 ms.", sourceLabel: "teste-carga", observedAt: at(now, -9), retrievedAt: at(now, -9), sourceQuality: "PRIMARIA", relevance: "ALTA", reliability: "ALTA", origin: H, addedByUserId: "u-bruno", addedAt: at(now, -9) },
     { id: "arq-e2", nature: "FATO", kind: "DOCUMENTO", title: "Limite de região documentado pelo provedor A", summary: "O plano contratável de A não oferece região no Brasil.", sourceLabel: "documentacao-provedor-a", retrievedAt: at(now, -8), sourceQuality: "SECUNDARIA", relevance: "ALTA", reliability: "ALTA", origin: H, addedByUserId: "u-carla", addedAt: at(now, -8) },
     { id: "arq-e3", nature: "FATO", kind: "DOCUMENTO", title: "Relatório de conformidade de segurança do provedor B", summary: "Certificações e SLA de 99,95 % verificados.", sourceLabel: "sla-fornecedor", retrievedAt: at(now, -7), sourceQuality: "SECUNDARIA", relevance: "ALTA", reliability: "ALTA", origin: H, addedByUserId: "u-carla", addedAt: at(now, -7) },
-    { id: "arq-e4", nature: "OPINIAO", kind: "ENTREVISTA", title: "Especialista: operar B exige pessoa dedicada", summary: "Sem automação, a operação de B consome meio período de uma pessoa.", sourceLabel: "especialista", authorLabel: "Consultoria (demo)", sourceQuality: "TERCIARIA", relevance: "MEDIA", reliability: "MEDIA", origin: H, addedByUserId: "u-pessoa", addedAt: at(now, -6) },
-    { id: "arq-e5", nature: "FATO", kind: "METRICA", title: "Planilha de custos estimados (12 meses)", summary: "A: R$ 48 mil · B: R$ 108 mil · C: R$ 84 mil por ano.", sourceLabel: "financeiro", retrievedAt: at(now, -5), sourceQuality: "PRIMARIA", relevance: "ALTA", reliability: "MEDIA", origin: H, addedByUserId: "u-pessoa", addedAt: at(now, -5) },
+    { id: "arq-e4", nature: "OPINIAO", kind: "OPINIAO_ESPECIALISTA", title: "Especialista: operar B exige pessoa dedicada", summary: "Sem automação, a operação de B consome meio período de uma pessoa.", sourceLabel: "especialista", authorLabel: "Consultoria (demo)", sourceQuality: "ESPECIALISTA", relevance: "MEDIA", reliability: "MEDIA", origin: H, addedByUserId: "u-pessoa", addedAt: at(now, -6) },
+    { id: "arq-e5", nature: "FATO", kind: "CONJUNTO_DADOS", title: "Planilha de custos estimados (12 meses)", summary: "A: R$ 48 mil · B: R$ 108 mil · C: R$ 84 mil por ano.", sourceLabel: "financeiro", retrievedAt: at(now, -5), sourceQuality: "INTERNA", relevance: "ALTA", reliability: "MEDIA", origin: H, addedByUserId: "u-pessoa", addedAt: at(now, -5) },
   ];
   agg.evidenceLinks = [
     { id: "arq-l1", evidenceId: "arq-e1", targetType: "ALTERNATIVA", targetId: "arq-a", stance: "SUSTENTA" },
@@ -192,9 +195,9 @@ function sprint(now: Date): DecisionAggregate {
     ...v("spr-d", [["valor", 1], ["esforco", 5], ["risco", 5], ["meta", 2]]),
   ];
   agg.evidence = [
-    { id: "spr-e1", nature: "FATO", kind: "METRICA", title: "Pesquisa com 40 pessoas usuárias", summary: "62 % pedem exportação em PDF.", sourceLabel: "pesquisa", retrievedAt: at(now, -8), sourceQuality: "PRIMARIA", relevance: "ALTA", reliability: "ALTA", origin: H, addedByUserId: "u-ana", addedAt: at(now, -8) },
+    { id: "spr-e1", nature: "FATO", kind: "PESQUISA", title: "Pesquisa com 40 pessoas usuárias", summary: "62 % pedem exportação em PDF.", sourceLabel: "pesquisa", retrievedAt: at(now, -8), sourceQuality: "PRIMARIA", relevance: "ALTA", reliability: "ALTA", origin: H, addedByUserId: "u-ana", addedAt: at(now, -8) },
     { id: "spr-e2", nature: "EVIDENCIA", kind: "DOCUMENTO", title: "Chamados de suporte do último mês", summary: "18 chamados pedem uma forma de compartilhar relatórios.", sourceLabel: "suporte", retrievedAt: at(now, -7), sourceQuality: "PRIMARIA", relevance: "ALTA", reliability: "MEDIA", origin: H, addedByUserId: "u-pessoa", addedAt: at(now, -7) },
-    { id: "spr-e3", nature: "OPINIAO", kind: "ENTREVISTA", title: "Time comercial prefere notificações", summary: "Ajudaria a reter clientes institucionais.", sourceLabel: "comercial", sourceQuality: "TERCIARIA", relevance: "MEDIA", reliability: "MEDIA", origin: H, addedByUserId: "u-ana", addedAt: at(now, -6) },
+    { id: "spr-e3", nature: "OPINIAO", kind: "FEEDBACK_USUARIO", title: "Time comercial prefere notificações", summary: "Ajudaria a reter clientes institucionais.", sourceLabel: "comercial", sourceQuality: "NAO_VERIFICADA", relevance: "MEDIA", reliability: "MEDIA", origin: H, addedByUserId: "u-ana", addedAt: at(now, -6) },
   ];
   agg.evidenceLinks = [
     { id: "spr-l1", evidenceId: "spr-e1", targetType: "ALTERNATIVA", targetId: "spr-a", stance: "SUSTENTA" },
@@ -217,7 +220,7 @@ function fornecedor(now: Date): DecisionAggregate {
   const id = DEMO_DECISION_IDS.fornecedor;
   const agg = empty(decision(now, {
     id, title: "Fornecedor de suporte técnico", question: "Qual fornecedor de suporte devemos contratar?", status: "DECIDIDA", complexity: "PADRAO",
-    kind: "FORNECEDOR", impact: "ALTO", urgency: "MEDIO", ownerUserId: "u-ana", createdByUserId: "u-ana", targetDate: at(now, -10), projectId: "p-suporte",
+    kind: "CONTRATACAO", impact: "ALTO", urgency: "MEDIO", ownerUserId: "u-ana", createdByUserId: "u-ana", targetDate: at(now, -10), projectId: "p-suporte",
     selectedAlternativeId: "for-b", decidedAt: at(now, -12), decisionConfidencePct: 70, reviewEveryDays: 30,
     rationale: "B cobre o horário estendido e tem SLA verificado; o custo maior foi aceito pelo financeiro.",
     objective: "Atendimento de segundo nível com SLA de 4 horas em horário estendido.",
@@ -241,7 +244,7 @@ function fornecedor(now: Date): DecisionAggregate {
   ];
   agg.evidence = [
     { id: "for-e1", nature: "FATO", kind: "DOCUMENTO", title: "Proposta técnica do Fornecedor Beta", summary: "SLA de 4 h, atendimento das 7 h às 22 h.", sourceLabel: "proposta-beta", retrievedAt: at(now, -20), sourceQuality: "PRIMARIA", relevance: "ALTA", reliability: "ALTA", origin: H, addedByUserId: "u-ana", addedAt: at(now, -20) },
-    { id: "for-e2", nature: "EVIDENCIA", kind: "REFERENCIA", title: "Referência de outra instituição (demo)", summary: "SLA cumprido em 96 % dos chamados em 2025.", sourceLabel: "referencia", retrievedAt: at(now, -18), sourceQuality: "SECUNDARIA", relevance: "ALTA", reliability: "MEDIA", origin: H, addedByUserId: "u-pessoa", addedAt: at(now, -18) },
+    { id: "for-e2", nature: "EVIDENCIA", kind: "FONTE_EXTERNA", title: "Referência de outra instituição (demo)", summary: "SLA cumprido em 96 % dos chamados em 2025.", sourceLabel: "referencia", retrievedAt: at(now, -18), sourceQuality: "SECUNDARIA", relevance: "ALTA", reliability: "MEDIA", origin: H, addedByUserId: "u-pessoa", addedAt: at(now, -18) },
     { id: "for-e3", nature: "FATO", kind: "DOCUMENTO", title: "Atestado de capacidade técnica", summary: "Atendimento de volume equivalente comprovado.", sourceLabel: "atestado", retrievedAt: at(now, -16), sourceQuality: "PRIMARIA", relevance: "ALTA", reliability: "ALTA", origin: H, addedByUserId: "u-ana", addedAt: at(now, -16) },
   ];
   agg.evidenceLinks = [
@@ -274,7 +277,7 @@ function lancamento(now: Date): DecisionAggregate {
   const id = DEMO_DECISION_IDS.lancamento;
   const agg = empty(decision(now, {
     id, title: "Lançamento da versão 2", question: "Adiar o lançamento ou reduzir o escopo?", status: "REVISADA", complexity: "PADRAO",
-    kind: "PROJETO", impact: "ALTO", urgency: "CRITICO", ownerUserId: "u-bruno", createdByUserId: "u-bruno", targetDate: at(now, -80),
+    kind: "TATICA", impact: "ALTO", urgency: "CRITICO", ownerUserId: "u-bruno", createdByUserId: "u-bruno", targetDate: at(now, -80),
     projectId: "p-atendimento", selectedAlternativeId: "lan-b", decidedAt: at(now, -78), decisionConfidencePct: 65,
     rationale: "Reduzir o escopo preserva a data acordada; o módulo de relatórios entra na versão seguinte.",
     stakeholders: ["Diretoria (demo)", "Atendimento", "Equipe de desenvolvimento"], createdAt: at(now, -90),
@@ -293,7 +296,7 @@ function lancamento(now: Date): DecisionAggregate {
   const v = (alt: string, entries: [string, number][]) => scores(now, id, "u-bruno", alt, entries.map(([k, s]) => [`lan-${k}`, s] as [string, number]));
   agg.assessments = [...v("lan-a", [["prazo", 1], ["valor", 5], ["risco", 4]]), ...v("lan-b", [["prazo", 5], ["valor", 3], ["risco", 4]])];
   agg.evidence = [
-    { id: "lan-e1", nature: "EVIDENCIA", kind: "TESTE", title: "Testes de carga da versão 2", summary: "Escopo completo falhou; escopo reduzido passou.", sourceLabel: "teste-carga", retrievedAt: at(now, -82), sourceQuality: "PRIMARIA", relevance: "ALTA", reliability: "ALTA", origin: H, addedByUserId: "u-bruno", addedAt: at(now, -82) },
+    { id: "lan-e1", nature: "EVIDENCIA", kind: "TESTE_TECNICO", title: "Testes de carga da versão 2", summary: "Escopo completo falhou; escopo reduzido passou.", sourceLabel: "teste-carga", retrievedAt: at(now, -82), sourceQuality: "PRIMARIA", relevance: "ALTA", reliability: "ALTA", origin: H, addedByUserId: "u-bruno", addedAt: at(now, -82) },
     { id: "lan-e2", nature: "FATO", kind: "DOCUMENTO", title: "Compromisso de data com a diretoria", summary: "Data pública anunciada.", sourceLabel: "ata", retrievedAt: at(now, -85), sourceQuality: "PRIMARIA", relevance: "ALTA", reliability: "ALTA", origin: H, addedByUserId: "u-bruno", addedAt: at(now, -85) },
   ];
   agg.evidenceLinks = [
@@ -343,7 +346,7 @@ function navegacao(now: Date): DecisionAggregate {
   const id = DEMO_DECISION_IDS.navegacao;
   const agg = empty(decision(now, {
     id, title: "Arquitetura de navegação", question: "Qual arquitetura de navegação devemos usar?", status: "ENQUADRAMENTO", complexity: "PADRAO",
-    kind: "EXPERIENCIA", impact: "MEDIO", urgency: "BAIXO", ownerUserId: "u-carla", createdByUserId: "u-carla", targetDate: at(now, 40), createdAt: at(now, -2), updatedAt: at(now, -1),
+    kind: "PRODUTO", impact: "MEDIO", urgency: "BAIXO", ownerUserId: "u-carla", createdByUserId: "u-carla", targetDate: at(now, 40), createdAt: at(now, -2), updatedAt: at(now, -1),
   }));
   agg.participants = [{ userId: "u-carla", role: "CONDUTOR", joinedAt: at(now, -2) }];
   agg.events = statusTrail(now, id, [["RASCUNHO", -2], ["ENQUADRAMENTO", -1]]);
@@ -386,7 +389,7 @@ export function buildEdgeCases(now: Date) {
   const highConfWeakEvidence = base(now, "e-confianca-alta", { decisionConfidencePct: 85 });
   const many = base(now, "e-muitas");
   many.alternatives = Array.from({ length: 8 }, (_, i) => alt(`e-muitas-${i}`, String.fromCharCode(65 + i), `Opção ${String.fromCharCode(65 + i)}`, i));
-  many.assessments = many.alternatives.flatMap((a, i) => scores(now, "e-muitas", "u-pessoa", a.id, [["e-muitas-x", 1 + (i % 5)], ["e-muitas-y", 5 - (i % 5)]]));
+  many.assessments = many.alternatives.flatMap((a, i) => scores(now, "e-muitas", "u-pessoa", a.id, [["e-muitas-x", 5 - (i % 5)], ["e-muitas-y", 5 - (i % 3)]]));
   const overdue = base(now, "e-atrasada", { status: "AGUARDANDO_DECISAO", targetDate: at(now, -3) });
   const resolved = base(now, "e-resolvida", { status: "RESOLVIDA", selectedAlternativeId: "e-resolvida-a", decidedAt: at(now, -40), decisionConfidencePct: 70, rationale: "A tinha a melhor nota." });
   resolved.outcome = { id: "e-o1", result: "SUCESSO", observedAt: at(now, -2), summary: "Meta atingida.", recordedByUserId: "u-pessoa" };

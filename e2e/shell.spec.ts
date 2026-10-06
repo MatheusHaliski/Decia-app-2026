@@ -30,7 +30,7 @@ test("shell desktop: sidebar com 5 grupos, navegação por 3 grupos e estado ati
 
   await sidebar.getByRole("link", { name: "DECIA", exact: true }).click();
   await expect(page).toHaveURL(/\/decia$/);
-  await expect(page.getByRole("tab", { name: "Abertas" })).toBeVisible();
+  await expect(page.getByRole("tab", { name: "Precisa de atenção" })).toBeVisible();
 
   await sidebar.getByRole("link", { name: /DECIA Points/ }).click();
   await expect(page).toHaveURL(/\/points$/);

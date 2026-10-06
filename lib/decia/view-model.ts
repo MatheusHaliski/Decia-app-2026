@@ -176,7 +176,7 @@ export function toDecisionCardViewModel(agg: DecisionAggregate, now: Date, opts:
     outcome: agg.outcome?.result ?? null,
     stakeholders: d.stakeholders,
     back,
-    timeline: agg.events.filter((e) => e.type === "status_changed").map((e) => ({ status: e.payload.to as DecisionLifecycle, at: e.at })),
+    timeline: agg.events.filter((e) => e.type === "STATUS_CHANGED").map((e) => ({ status: e.payload.to as DecisionLifecycle, at: e.at })),
     nextAction: nextActionOf(agg, r, now),
   };
 }

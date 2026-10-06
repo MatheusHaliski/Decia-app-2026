@@ -5,14 +5,14 @@
  */
 import { buildSnapshotContent, canonicalJson, MODEL_VERSION, preDecisionGuard, sha256Hex, snapConfidence, type DecisionDraft } from "./rules";
 import type {
-  DecisionAggregate, DecisionComplexity, DecisionEvent, DecisionEventType, DecisionKind, DecisionLevel, DecisionLifecycle, DecisionSnapshot,
-  EvidenceNature, EvidenceStance, RelevanceLevel,
+  DecisionAggregate, DecisionComplexity, DecisionEvent, DecisionEventType, TimelineMarker, DecisionKind, DecisionLevel, DecisionLifecycle, DecisionSnapshot,
+  EvidenceNature, EvidenceStance, OutcomeResult, RelevanceLevel,
 } from "./types";
 
 let seq = 0;
 const nextId = (prefix: string) => `${prefix}-${Date.now().toString(36)}-${(seq++).toString(36)}`;
 
-function touch(agg: DecisionAggregate, now: Date, actor: string | null, type: DecisionEventType, payload: Record<string, unknown> = {}): DecisionAggregate {
+function touch(agg: DecisionAggregate, now: Date, actor: string | null, type: DecisionEventType | TimelineMarker, payload: Record<string, unknown> = {}): DecisionAggregate {
   const ev: DecisionEvent = { id: nextId("ev"), actorUserId: actor, type, payload, at: now.toISOString() };
   return { ...agg, decision: { ...agg.decision, version: agg.decision.version + 1, updatedAt: now.toISOString() }, events: [...agg.events, ev] };
 }
@@ -21,19 +21,19 @@ function touch(agg: DecisionAggregate, now: Date, actor: string | null, type: De
 export function setScore(agg: DecisionAggregate, altId: string, critId: string, assessorId: string, score: number | null, now: Date): DecisionAggregate {
   const rest = agg.assessments.filter((a) => !(a.alternativeId === altId && a.criterionId === critId && a.assessorUserId === assessorId));
   const assessments = score === null ? rest : [...rest, { id: nextId("as"), alternativeId: altId, criterionId: critId, assessorUserId: assessorId, score: Math.max(1, Math.min(5, Math.round(score))), submittedAt: now.toISOString(), origin: "HUMANO" as const }];
-  return touch({ ...agg, assessments }, now, assessorId, "decision_compared", { altId, critId, score });
+  return touch({ ...agg, assessments }, now, assessorId, "DECISION_COMPARED", { altId, critId, score });
 }
 
 export function setWeight(agg: DecisionAggregate, critId: string, weightPct: number | null, actor: string, now: Date): DecisionAggregate {
   const criteria = agg.criteria.map((c) => (c.id === critId ? { ...c, weightPct } : c));
-  return touch({ ...agg, criteria }, now, actor, "criterion_changed", { critId, weightPct });
+  return touch({ ...agg, criteria }, now, actor, "CRITERION_CHANGED", { critId, weightPct });
 }
 
 export function addAlternative(agg: DecisionAggregate, input: { title: string; doNothing?: boolean }, actor: string, now: Date): DecisionAggregate {
   const position = agg.alternatives.length;
   const label = String.fromCharCode(65 + (position % 26));
   const alternative = { id: nextId("alt"), label, title: input.title.trim(), doNothing: !!input.doNothing, pros: [], cons: [], status: "ATIVA" as const, origin: "HUMANO" as const, position };
-  return touch({ ...agg, alternatives: [...agg.alternatives, alternative] }, now, actor, "alternative_added", { label });
+  return touch({ ...agg, alternatives: [...agg.alternatives, alternative] }, now, actor, "ALTERNATIVE_ADDED", { label });
 }
 
 export function addEvidence(
@@ -44,27 +44,27 @@ export function addEvidence(
 ): DecisionAggregate {
   const id = nextId("evd");
   const evidence = {
-    id, nature: input.nature, kind: "OUTRO" as const, title: input.title.trim(), summary: "", sourceLabel: input.sourceLabel.trim() || "—",
-    retrievedAt: now.toISOString(), sourceQuality: "PRIMARIA" as const, relevance: "MEDIA" as const, reliability: input.reliability,
+    id, nature: input.nature, kind: "DOCUMENTO" as const, title: input.title.trim(), summary: "", sourceLabel: input.sourceLabel.trim() || "—",
+    retrievedAt: now.toISOString(), sourceQuality: "NAO_VERIFICADA" as const, relevance: "MEDIA" as const, reliability: input.reliability,
     origin: "HUMANO" as const, addedByUserId: actor, addedAt: now.toISOString(),
   };
   const links = input.altId ? [{ id: nextId("lnk"), evidenceId: id, targetType: "ALTERNATIVA" as const, targetId: input.altId, stance: input.stance ?? "SUSTENTA", createdAt: now.toISOString() }] : [];
-  return touch({ ...agg, evidence: [...agg.evidence, evidence], evidenceLinks: [...agg.evidenceLinks, ...links] }, now, actor, "evidence_added", { evidenceId: id });
+  return touch({ ...agg, evidence: [...agg.evidence, evidence], evidenceLinks: [...agg.evidenceLinks, ...links] }, now, actor, "EVIDENCE_ADDED", { evidenceId: id });
 }
 
 export function addCriteria(agg: DecisionAggregate, names: readonly string[], actor: string, now: Date): DecisionAggregate {
   const start = agg.criteria.length;
   const criteria = [...agg.criteria, ...names.map((name, i) => ({ id: nextId("crt"), name, direction: "MAIOR_MELHOR" as const, weightPct: null, origin: "HUMANO" as const, position: start + i }))];
-  return touch({ ...agg, criteria }, now, actor, "criterion_changed", { added: names.length });
+  return touch({ ...agg, criteria }, now, actor, "CRITERION_CHANGED", { added: names.length });
 }
 
 export function setRecommendationStatus(agg: DecisionAggregate, recId: string, status: "ACEITA" | "DESCARTADA", actor: string, now: Date): DecisionAggregate {
   const recommendations = agg.recommendations.map((r) => (r.id === recId ? { ...r, status } : r));
-  return touch({ ...agg, recommendations }, now, actor, status === "ACEITA" ? "ai_suggestion_accepted" : "ai_suggestion_dismissed", { recId });
+  return touch({ ...agg, recommendations }, now, actor, status === "ACEITA" ? "AI_SUGGESTION_ACCEPTED" : "AI_SUGGESTION_DISMISSED", { recId });
 }
 
 export function setStatus(agg: DecisionAggregate, to: DecisionLifecycle, actor: string, now: Date): DecisionAggregate {
-  return touch({ ...agg, decision: { ...agg.decision, status: to } }, now, actor, "status_changed", { to });
+  return touch({ ...agg, decision: { ...agg.decision, status: to } }, now, actor, "STATUS_CHANGED", { to });
 }
 
 export class DecisionIncompleteError extends Error {
@@ -81,7 +81,7 @@ export class DecisionIncompleteError extends Error {
 export function decide(agg: DecisionAggregate, draft: DecisionDraft & { warningsConfirmed?: boolean }, actor: string, now: Date): { aggregate: DecisionAggregate; snapshot: DecisionSnapshot } {
   const guard = preDecisionGuard(agg, draft);
   if (guard.blocking.length) throw new DecisionIncompleteError(guard.blocking);
-  if (guard.warnings.length && !draft.warningsConfirmed) throw new DecisionIncompleteError(["AVISOS_NAO_CONFIRMADOS"]);
+  if (guard.warnings.length && !draft.warningsConfirmed) throw new DecisionIncompleteError(["DECISAO_AVISOS_NAO_CONFIRMADOS"]);
   const confidencePct = draft.confidencePct == null ? undefined : snapConfidence(draft.confidencePct);
   const content = buildSnapshotContent(agg, { ...draft, confidencePct, decidedByUserId: actor });
   const contentJson = canonicalJson(content);
@@ -96,8 +96,15 @@ export function decide(agg: DecisionAggregate, draft: DecisionDraft & { warnings
     decision: { ...agg.decision, status: "DECIDIDA", selectedAlternativeId: selected.id, decidedAt: now.toISOString(), rationale: draft.rationale.trim(), decisionConfidencePct: confidencePct },
     snapshots: [...agg.snapshots, snapshot],
   };
-  const withTrail = touch(touch(decided, now, actor, "decision_finalized", { snapshotId: snapshot.id, warnings: guard.warnings, sha256: snapshot.contentSha256 }), now, actor, "status_changed", { to: "DECIDIDA" });
+  const withTrail = touch(touch(decided, now, actor, "DECISION_FINALIZED", { snapshotId: snapshot.id, warnings: guard.warnings, sha256: snapshot.contentSha256 }), now, actor, "STATUS_CHANGED", { to: "DECIDIDA" });
   return { aggregate: withTrail, snapshot };
+}
+
+/** Registrar o resultado observado (único por decisão) e mover para RESOLVIDA. */
+export function recordOutcome(agg: DecisionAggregate, input: { result: OutcomeResult; summary: string }, actor: string, now: Date): DecisionAggregate {
+  const outcome = { id: nextId("out"), result: input.result, summary: input.summary.trim(), observedAt: now.toISOString(), recordedByUserId: actor };
+  const withOutcome = touch({ ...agg, outcome, decision: { ...agg.decision, status: "RESOLVIDA" } }, now, actor, "OUTCOME_RECORDED", { result: input.result });
+  return touch(withOutcome, now, actor, "STATUS_CHANGED", { to: "RESOLVIDA" });
 }
 
 export interface NewDecisionInput {
@@ -111,7 +118,7 @@ export interface NewDecisionInput {
 
 /** Modelos opcionais da criação: critérios sugeridos (o usuário pode editar tudo depois). DESIGN PROPOSAL. */
 export const DECISION_TEMPLATES: Record<string, { kind: DecisionKind; criteria: string[] }> = {
-  fornecedor: { kind: "FORNECEDOR", criteria: ["Custo", "Qualidade do serviço", "Prazo", "Risco de transição"] },
+  fornecedor: { kind: "CONTRATACAO", criteria: ["Custo", "Qualidade do serviço", "Prazo", "Risco de transição"] },
   priorizacao: { kind: "PRODUTO", criteria: ["Valor para o usuário", "Esforço", "Risco técnico", "Alinhamento com a meta"] },
   arquitetura: { kind: "TECNICA", criteria: ["Segurança", "Custo", "Escalabilidade", "Tempo de implantação", "Manutenção"] },
 };
@@ -123,14 +130,14 @@ export function createDecision(input: NewDecisionInput, now: Date, id = nextId("
   const agg: DecisionAggregate = {
     decision: {
       id, version: 1, title: question.replace(/\?$/, "").slice(0, 160), question, stakeholders: [], ownerUserId: input.ownerUserId, createdByUserId: input.ownerUserId,
-      companyId: "c-exemplo", status: "RASCUNHO", complexity: input.complexity, kind: input.kind ?? tpl?.kind ?? "OUTRA", impact: input.impact, urgency: "MEDIO",
+      companyId: "c-exemplo", status: "RASCUNHO", complexity: input.complexity, kind: input.kind ?? tpl?.kind ?? "OPERACIONAL", impact: input.impact, urgency: "MEDIO",
       visibility: "PRIVADA", accessClass: "INTERNO", weightingEnabled: input.complexity === "PROFUNDA", independentScoring: false, templateKey: input.templateKey,
       createdAt: iso, updatedAt: iso,
     },
     participants: [{ userId: input.ownerUserId, role: "CONDUTOR", joinedAt: iso }],
     alternatives: [], criteria: [], assessments: [], evidence: [], evidenceLinks: [], assumptions: [], risks: [], scenarios: [], forecasts: [],
     recommendations: [], triggers: [], snapshots: [], checkpoints: [], workLinks: [],
-    events: [{ id: nextId("ev"), actorUserId: input.ownerUserId, type: "decision_created", payload: { complexity: input.complexity }, at: iso }],
+    events: [{ id: nextId("ev"), actorUserId: input.ownerUserId, type: "DECISION_CREATED", payload: { complexity: input.complexity }, at: iso }],
   };
   return tpl ? { ...addCriteria(agg, tpl.criteria, input.ownerUserId, now), decision: { ...agg.decision, version: 1 } } : agg;
 }
