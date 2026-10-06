@@ -308,6 +308,8 @@ describe("Desafiar e caixa de entrada", () => {
     expect(screen.getAllByRole("button", { name: "Pedir análise" })).toHaveLength(5);
     fireEvent.click(screen.getAllByRole("button", { name: "Pedir análise" })[0]!);
     expect(screen.getByTestId("ai-unavailable").textContent).toContain("Análise de IA indisponível");
+    expect(screen.getByTestId("ai-state").textContent).toBe("Análise: falhou");
+    expect(screen.getByRole("dialog").textContent).not.toMatch(/router|consumer|dead letter|fila/i);
   });
 
   it("grupos da caixa de entrada", () => {

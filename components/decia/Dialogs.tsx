@@ -4,7 +4,7 @@ import { Button, Checkbox, Dialog, Field, Input, Select, Tag, Textarea, useToast
 import { track } from "@/lib/decia/analytics";
 import { addAlternative, addEvidence, decide, recordOutcome } from "@/lib/decia/commands";
 import { focusAlternativeId, preDecisionGuard, scoreOf } from "@/lib/decia/rules";
-import type { DecisionAggregate, EvidenceNature, EvidenceStance, OutcomeResult, RelevanceLevel } from "@/lib/decia/types";
+import type { AiAnalysisState, DecisionAggregate, EvidenceNature, EvidenceStance, OutcomeResult, RelevanceLevel } from "@/lib/decia/types";
 import { useI18n } from "@/lib/i18n/useI18n";
 
 export interface DialogBaseProps {
@@ -105,8 +105,11 @@ export const CHALLENGE_MODES = ["reasoning", "alternatives", "assumptions", "cou
 export function ChallengeDialog({ open, onOpenChange, decisionId }: { open: boolean; onOpenChange: (o: boolean) => void; decisionId: string }) {
   const { t } = useI18n();
   const [asked, setAsked] = useState<string | null>(null);
+  // estado da análise assíncrona (Solicitada → Processando → Parcial/Concluída/Falhou), separado do estado da decisão;
+  // sem serviço de IA conectado, todo pedido termina em "Falhou" com mensagem em linguagem simples
+  const [state, setState] = useState<AiAnalysisState | null>(null);
   useEffect(() => {
-    if (!open) setAsked(null);
+    if (!open) { setAsked(null); setState(null); }
   }, [open]);
   return (
     <Dialog open={open} onOpenChange={onOpenChange} title={t("decia.challenge.title")} description={t("decia.challenge.desc")} className="w-[min(94vw,36rem)]">
@@ -116,13 +119,13 @@ export function ChallengeDialog({ open, onOpenChange, decisionId }: { open: bool
           {CHALLENGE_MODES.map((m) => (
             <li key={m} className="flex flex-wrap items-center justify-between gap-2 rounded-[var(--ws-radius-md)] border border-ws-ai-spark bg-ws-ai-spark-soft p-3">
               <span className="flex min-w-0 items-center gap-2 text-[length:var(--ws-text-body-sm)] font-semibold"><span aria-hidden className="text-ws-ai-spark-ink">✦</span>{t(`decia.challenge.modes.${m}`)}</span>
-              <Button size="sm" variant="spark" onClick={() => { setAsked(m); track("decision_challenged", { decisionId, mode: m }); }}>{t("decia.challenge.run")}</Button>
+              <Button size="sm" variant="spark" onClick={() => { setAsked(m); setState("FALHOU"); track("decision_challenged", { decisionId, mode: m }); }}>{t("decia.challenge.run")}</Button>
             </li>
           ))}
         </ul>
         {asked ? (
           <div role="alert" className="grid gap-1 rounded-[var(--ws-radius-md)] border border-ws-danger bg-ws-danger-soft p-3 text-[length:var(--ws-text-body-sm)]" data-testid="ai-unavailable">
-            <p className="font-semibold">{t("decia.ai.unavailable")}</p>
+            <p className="flex flex-wrap items-center gap-2 font-semibold">{t("decia.ai.unavailable")}{state ? <span data-testid="ai-state"><Tag tone="danger">{t("decia.aiState.label", { state: t(`decia.aiState.${state}`) })}</Tag></span> : null}</p>
             <p className="text-ws-text-muted">{t("decia.challenge.unavailableDetail", { mode: t(`decia.challenge.modes.${asked}`) })}</p>
           </div>
         ) : null}

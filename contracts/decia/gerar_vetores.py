@@ -38,6 +38,8 @@ def score(inp, weights_override=None):
     crits = [c["key"] for c in inp["criteria"]]
     alts = [a["key"] for a in inp["alternatives"] if a.get("status", "ATIVA") == "ATIVA"]
     weighting = inp["weightingEnabled"]
+    if not crits:
+        return {"valid": False, "reason": "SEM_CRITERIOS", "weightSum": None, "ranking": [], "incomplete": [], "leader": None}
     if weighting:
         w = weights_override or {c["key"]: c.get("weightPct") for c in inp["criteria"]}
         if any(v is None or v < 0 or v > 100 for v in w.values()):
@@ -234,6 +236,7 @@ EMPATE = {
     ],
 }
 SOMA_ERRADA = {**ARQ, "criteria": [{**c, "weightPct": (c["weightPct"] + 5 if c["key"] == "custo" else c["weightPct"])} for c in ARQ["criteria"]]}
+SEM_CRITERIOS = {"weightingEnabled": False, "criteria": [], "alternatives": [{"key": "A"}], "assessments": []}
 MEDIANA_PAR = {
     "weightingEnabled": False, "criteria": [{"key": "x"}], "alternatives": [{"key": "A"}],
     "assessments": [{"alt": "A", "crit": "x", "score": s, "by": f"u{i}"} for i, s in enumerate([2, 3, 4, 5])],
@@ -292,11 +295,13 @@ cases = {
         {"name": "empate-tecnico", "input": EMPATE, "expected": score(EMPATE)},
         {"name": "pesos-nao-somam-100", "input": SOMA_ERRADA, "expected": score(SOMA_ERRADA)},
         {"name": "mediana-par", "input": MEDIANA_PAR, "expected": score(MEDIANA_PAR)},
+        {"name": "sem-criterios", "input": SEM_CRITERIOS, "expected": score(SEM_CRITERIOS)},
     ],
     "divergence": [{"name": "arquitetura", "input": ARQ, "expected": divergence(ARQ)}],
     "dominance": [{"name": "arquitetura", "input": ARQ, "expected": dominance(ARQ)},
                   {"name": "pesos-iguais", "input": IGUAL, "expected": dominance(IGUAL)}],
     "sensitivity": [{"name": "arquitetura", "input": ARQ, "expected": sensitivity(ARQ)},
+                    {"name": "sem-criterios", "input": SEM_CRITERIOS, "expected": sensitivity(SEM_CRITERIOS)},
                     {"name": "sem-pesos", "input": IGUAL, "expected": sensitivity(IGUAL)}],
     "evidenceStrength": [{**e, "expected": evidence_strength(e["input"])} for e in EVID],
     "riskSeverityMatrix": [{"likelihood": l, "impact": i, "expected": severity(l, i)} for l in LIK for i in IMP],

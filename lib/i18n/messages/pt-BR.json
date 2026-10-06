@@ -984,5 +984,11 @@
   "decia.kind.FINANCEIRA": "Financeira",
   "decia.kind.PESSOAS": "Pessoas",
   "decia.kind.CONTRATACAO": "Contratação",
-  "decia.kind.RISCO": "Risco"
+  "decia.kind.RISCO": "Risco",
+  "decia.aiState.label": "Análise: {state}",
+  "decia.aiState.SOLICITADA": "solicitada",
+  "decia.aiState.PROCESSANDO": "processando",
+  "decia.aiState.PARCIAL": "parcial",
+  "decia.aiState.CONCLUIDA": "concluída",
+  "decia.aiState.FALHOU": "falhou"
 }

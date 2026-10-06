@@ -43,7 +43,7 @@ export function RfBlock({ rf, open = false }: { rf: RfEntry; open?: boolean }) {
         <span className="min-w-0 flex-1">{rf.title}</span>
         <span className="text-ws-text-muted transition-transform group-open:rotate-180" aria-hidden>⌄</span>
       </summary>
-      <div className="grid gap-3 border-t border-ws-border p-3 text-[length:var(--ws-text-body-sm)]">
+      <div className="grid gap-3 border-t border-ws-border p-3 text-[length:var(--ws-text-body-sm)] [overflow-wrap:anywhere]">
         {rf.hu ? <p><span className="font-semibold">{t("rf.story")}:</span> {rf.hu}</p> : null}
         {!rf.hu && rf.summary ? <p className="text-ws-text-muted">{rf.summary}</p> : null}
         {rf.route ? <p className="text-ws-text-muted"><span className="font-semibold text-ws-text">{t("rf.route")}:</span> {rf.route}</p> : null}
@@ -92,7 +92,7 @@ export function RfPage({ page, subtitle, tabs, tabLabel, renderTab, children, hi
           code="403 ACESSO_NEGADO"
           action={<div className="flex items-center gap-2 text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("viewer.switchHint")} <ViewerProfileSelect /></div>}
         />
-        {!hideCas && rfs.length ? <section aria-labelledby="rf-block" className="grid gap-2"><h2 id="rf-block" className="font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h3)] font-semibold">{t("rf.whatThisTabDoes")}</h2>{rfs.map((rf) => <RfBlock key={rf.id} rf={rf} />)}</section> : null}
+        {!hideCas && rfs.length ? <section aria-labelledby="rf-block" className="grid grid-cols-[minmax(0,1fr)] gap-2"><h2 id="rf-block" className="font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h3)] font-semibold">{t("rf.whatThisTabDoes")}</h2>{rfs.map((rf) => <RfBlock key={rf.id} rf={rf} />)}</section> : null}
       </div>
     );
   }
@@ -102,7 +102,7 @@ export function RfPage({ page, subtitle, tabs, tabLabel, renderTab, children, hi
   );
 
   return (
-    <div className="grid gap-[var(--ws-space-5)]">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-[var(--ws-space-5)]">
       <PageHeader
         title={title}
         glyph={page.glyph}
@@ -126,10 +126,10 @@ export function RfPage({ page, subtitle, tabs, tabLabel, renderTab, children, hi
         <EmptyState moji={page.moji ?? "vazio"} title={t(emptyTitleKey ?? "rf.emptyTitleNoTab")} description={t("rf.emptyDescription")} />
       )}
       {!hideCas && rfs.length ? (
-        <section aria-labelledby="rf-block" className="grid gap-2">
+        <section aria-labelledby="rf-block" className="grid grid-cols-[minmax(0,1fr)] gap-2">
           <h2 id="rf-block" className="font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h3)] font-semibold">{t("rf.whatThisTabDoes")}</h2>
           <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("rf.ptBrNote")}</p>
-          <div className={cn("grid gap-2")}>{rfs.map((rf, i) => <RfBlock key={rf.id} rf={rf} open={i === 0} />)}</div>
+          <div className={cn("grid grid-cols-[minmax(0,1fr)] gap-2")}>{rfs.map((rf, i) => <RfBlock key={rf.id} rf={rf} open={i === 0} />)}</div>
         </section>
       ) : null}
       <Card tone="soft" padding="sm" className="text-[length:var(--ws-text-caption)] text-ws-text-muted">

@@ -69,18 +69,26 @@ export type OutcomeResult = "SUCESSO" | "PARCIAL" | "FALHOU" | "CANCELADA" | "SU
 export type ProcessQuality = "ADEQUADA" | "PARCIAL" | "INADEQUADA";
 export type WorkLinkTarget = "TAREFA" | "PROJETO" | "MARCO";
 
-/** Eventos de domínio (§9 em maiúsculas) — mesmos valores do enum Java `DecisionEventType`; o nome de analytics é o minúsculo. */
-export const DECISION_EVENT_TYPES = [
-  "DECISION_CREATED", "EVIDENCE_ADDED", "ALTERNATIVE_ADDED", "CRITERION_CHANGED", "DECISION_COMPARED", "DECISION_CHALLENGED",
-  "DECISION_FINALIZED", "DECISION_REOPENED", "CHECKPOINT_COMPLETED", "OUTCOME_RECORDED", "REVIEW_COMPLETED", "CARD_FLIPPED",
-  "AI_SUGGESTION_ACCEPTED", "AI_SUGGESTION_DISMISSED",
-] as const;
-export type DecisionEventType = (typeof DECISION_EVENT_TYPES)[number];
 /**
- * Marcador de transição de estado usado só pela linha do tempo do mock (04 §3 `timeline`, "de decision_events"). Não existe
- * no enum Java: quando a API existir, a linha do tempo virá do payload `to` dos eventos (ambiguidade registrada no relatório).
+ * Fatos de domínio da decisão (pretérito) — mesmos valores e nomes de mensagem do enum Java `DecisionEventType`
+ * (ws-domain, PR #30). Formam o histórico da decisão (linha do tempo do card). Eventos de interface/analytics
+ * (`card_flipped`, `decision_compared`, `ai_suggestion_*`…) vivem só em lib/decia/analytics.ts e nunca entram aqui.
  */
-export type TimelineMarker = "STATUS_CHANGED";
+export const DECISION_EVENT_MESSAGE = {
+  DECISAO_CRIADA: "DecisionCreated", PROBLEMA_ENQUADRADO: "DecisionFramed", ESTADO_ALTERADO: "DecisionStatusChanged",
+  EVIDENCIA_ADICIONADA: "EvidenceAdded", EVIDENCIA_SUBSTITUIDA: "EvidenceSuperseded", ALTERNATIVA_CRIADA: "AlternativeCreated",
+  ALTERNATIVA_DESCARTADA: "AlternativeDiscarded", CRITERIO_ATUALIZADO: "CriterionUpdated", AVALIACAO_REGISTRADA: "AssessmentRecorded",
+  PREMISSA_ATUALIZADA: "AssumptionUpdated", RISCO_ALTERADO: "RiskChanged", RECOMENDACAO_GERADA: "RecommendationGenerated",
+  SUGESTAO_IA_ACEITA: "AiSuggestionAccepted", SUGESTAO_IA_DESCARTADA: "AiSuggestionDismissed", DECISAO_DESAFIADA: "DecisionChallenged",
+  DECISAO_FINALIZADA: "DecisionFinalized", DECISAO_REABERTA: "DecisionReopened", TRABALHO_VINCULADO: "WorkItemsLinked",
+  CHECKPOINT_VENCENDO: "CheckpointDue", CHECKPOINT_CONCLUIDO: "CheckpointCompleted", GATILHO_DISPARADO: "TriggerFired",
+  RESULTADO_REGISTRADO: "OutcomeRecorded", REVISAO_CONCLUIDA: "ReviewCompleted", DECISAO_ARQUIVADA: "DecisionArchived",
+} as const;
+export type DecisionEventType = keyof typeof DECISION_EVENT_MESSAGE;
+export const DECISION_EVENT_TYPES = Object.keys(DECISION_EVENT_MESSAGE) as DecisionEventType[];
+
+/** Estado de uma análise assíncrona da IA — distinto do estado da decisão (nunca termos técnicos de mensageria na UI). */
+export type AiAnalysisState = "SOLICITADA" | "PROCESSANDO" | "PARCIAL" | "CONCLUIDA" | "FALHOU";
 
 /** Datas sempre em ISO-8601 (UTC). */
 export type IsoDate = string;
@@ -304,7 +312,7 @@ export interface DecisionEvent {
   id: string;
   /** nulo = IA/sistema */
   actorUserId: string | null;
-  type: DecisionEventType | TimelineMarker;
+  type: DecisionEventType;
   payload: Record<string, unknown>;
   at: IsoDate;
   correlationId?: string;

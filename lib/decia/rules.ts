@@ -35,7 +35,7 @@ export interface ScoringInput {
 export interface RankingRow { alt: string; score: number; contributions: Record<string, number> }
 export interface ScoreResult {
   valid: boolean;
-  reason: "PESO_INVALIDO" | "PESOS_NAO_SOMAM_100" | null;
+  reason: "SEM_CRITERIOS" | "PESO_INVALIDO" | "PESOS_NAO_SOMAM_100" | null;
   weightSum: number | null;
   ranking: RankingRow[];
   incomplete: string[];
@@ -62,6 +62,7 @@ export function consensus(inp: ScoringInput, alts: readonly string[] = activeKey
 export function scoreMatrix(inp: ScoringInput, weightsOverride?: Record<string, number>): ScoreResult {
   const crits = inp.criteria.map((c) => c.key);
   const alts = activeKeys(inp);
+  if (!crits.length) return { valid: false, reason: "SEM_CRITERIOS", weightSum: null, ranking: [], incomplete: [], leader: null };
   let w: Record<string, number>;
   if (inp.weightingEnabled) {
     const raw: Record<string, number | null | undefined> = weightsOverride ?? Object.fromEntries(inp.criteria.map((c) => [c.key, c.weightPct]));

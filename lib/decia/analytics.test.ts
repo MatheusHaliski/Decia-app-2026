@@ -1,13 +1,16 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { DECIA_ANALYTICS_EVENTS, setAnalyticsSink, track, type AnalyticsRecord } from "./analytics";
-import { DECISION_EVENT_TYPES } from "./types";
+import { DECISION_EVENT_MESSAGE, DECISION_EVENT_TYPES } from "./types";
 
 afterEach(() => setAnalyticsSink(null));
 
 describe("analytics do DECIA (03 §9)", () => {
-  it("lista os 14 eventos da especificação; em maiúsculas são o enum DecisionEventType (Java)", () => {
+  it("lista os 14 eventos da especificação, separados dos fatos de domínio (histórico da decisão)", () => {
     expect(DECIA_ANALYTICS_EVENTS).toHaveLength(14);
-    expect(DECIA_ANALYTICS_EVENTS.map((e) => e.toUpperCase())).toEqual([...DECISION_EVENT_TYPES]);
+    for (const e of DECIA_ANALYTICS_EVENTS) expect(DECISION_EVENT_TYPES as string[]).not.toContain(e);
+    expect(DECISION_EVENT_TYPES).toHaveLength(24);
+    expect(DECISION_EVENT_TYPES as string[]).not.toContain("CARD_FLIPPED");
+    expect(DECISION_EVENT_MESSAGE.DECISAO_CRIADA).toBe("DecisionCreated");
   });
 
   it("sink padrão é no-op e não escreve no console", () => {

@@ -1,5 +1,7 @@
 /**
- * DECIA — eventos de produto (03 §9). Lista tipada e um "sink" trocável: por padrão é no-op (sem console, sem rede);
+ * DECIA — eventos de produto (03 §9). Separados dos fatos de domínio (`DecisionEventType`, histórico da decisão):
+ * eventos de interface como `card_flipped` e `decision_compared` nunca entram no histórico.
+ * Lista tipada e um "sink" trocável: por padrão é no-op (sem console, sem rede);
  * o backend de analytics, quando existir, registra o próprio sink. Métricas sempre com contexto, nunca "tempo no app",
  * e nada de XP por quantidade (G9).
  */

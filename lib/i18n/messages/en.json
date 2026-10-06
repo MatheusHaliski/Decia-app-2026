@@ -984,5 +984,11 @@
   "decia.kind.FINANCEIRA": "Financial",
   "decia.kind.PESSOAS": "People",
   "decia.kind.CONTRATACAO": "Procurement",
-  "decia.kind.RISCO": "Risk"
+  "decia.kind.RISCO": "Risk",
+  "decia.aiState.label": "Analysis: {state}",
+  "decia.aiState.SOLICITADA": "requested",
+  "decia.aiState.PROCESSANDO": "processing",
+  "decia.aiState.PARCIAL": "partial",
+  "decia.aiState.CONCLUIDA": "completed",
+  "decia.aiState.FALHOU": "failed"
 }

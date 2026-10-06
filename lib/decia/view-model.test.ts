@@ -86,7 +86,7 @@ describe("comandos e repositório em memória", () => {
     const a4 = addEvidence(a3, { title: "Benchmark", nature: "FATO", sourceLabel: "lab", reliability: "ALTA", altId: "arq-a", stance: "SUSTENTA" }, "u-pessoa", NOW);
     expect(a4.evidenceLinks.at(-1)).toMatchObject({ targetId: "arq-a", stance: "SUSTENTA" });
     const a5 = addCriteria(a4, ["Suporte"], "u-pessoa", NOW);
-    expect(a5.events.slice(-5).map((e) => e.type)).toEqual(["DECISION_COMPARED", "CRITERION_CHANGED", "ALTERNATIVE_ADDED", "EVIDENCE_ADDED", "CRITERION_CHANGED"]);
+    expect(a5.events.slice(-5).map((e) => e.type)).toEqual(["AVALIACAO_REGISTRADA", "CRITERIO_ATUALIZADO", "ALTERNATIVA_CRIADA", "EVIDENCIA_ADICIONADA", "CRITERIO_ATUALIZADO"]);
     expect(createDecision({ question: "Qual?", complexity: "RAPIDA", impact: "BAIXO", ownerUserId: "u" }, NOW).criteria).toEqual([]);
   });
 

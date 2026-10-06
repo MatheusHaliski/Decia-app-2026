@@ -73,7 +73,7 @@ export function DecisionWorkspace({ aggregate, now, currentUserId, people, onSav
   const deadline = d.targetDate ? formatDay(d.targetDate, intl) : t("decia.card.noDeadline");
 
   return (
-    <div className="grid gap-[var(--ws-space-4)]" data-testid="workspace">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-[var(--ws-space-4)]" data-testid="workspace">
       <header className="grid gap-[var(--ws-space-3)] rounded-[var(--ws-radius-lg)] border border-ws-border bg-ws-surface-1 p-[var(--ws-space-4)] shadow-ws-1">
         <div className="flex flex-wrap items-center gap-2">
           {backHref ? <Button size="sm" variant="ghost" href={backHref}>← {t("decia.ws.back")}</Button> : null}
@@ -115,7 +115,7 @@ export function DecisionWorkspace({ aggregate, now, currentUserId, people, onSav
         </nav>
       </header>
 
-      <div className="grid gap-[var(--ws-space-4)] lg:grid-cols-[13rem_minmax(0,1fr)]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-[var(--ws-space-4)] lg:grid-cols-[13rem_minmax(0,1fr)]">
         <div className="lg:hidden">
           <Select aria-label={t("decia.ws.sectionsLabel")} value={section} onChange={(e) => go(e.target.value as WorkspaceSection)} options={WORKSPACE_SECTIONS.map((s) => ({ value: s, label: t(`decia.ws.section.${s}`) }))} />
         </div>

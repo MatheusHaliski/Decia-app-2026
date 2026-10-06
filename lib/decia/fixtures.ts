@@ -68,8 +68,8 @@ const crit = (id: string, name: string, position: number, weightPct: number | nu
 const scores = (now: Date, prefix: string, by: string, altId: string, entries: [string, number][]): CriterionAssessment[] =>
   entries.map(([critId, score]) => ({ id: `${prefix}-${altId}-${critId}-${by}`, alternativeId: altId, criterionId: critId, assessorUserId: by, score, submittedAt: at(now, -6), origin: H }));
 const statusTrail = (now: Date, prefix: string, trail: [DecisionLifecycle, number][]): DecisionEvent[] => [
-  { id: `${prefix}-ev-0`, actorUserId: DEMO_CURRENT_USER_ID, type: "DECISION_CREATED", payload: {}, at: at(now, trail[0]?.[1] ?? -30) },
-  ...trail.map(([status, days], i) => ({ id: `${prefix}-ev-${i + 1}`, actorUserId: DEMO_CURRENT_USER_ID, type: "STATUS_CHANGED" as const, payload: { to: status }, at: at(now, days) })),
+  { id: `${prefix}-ev-0`, actorUserId: DEMO_CURRENT_USER_ID, type: "DECISAO_CRIADA", payload: {}, at: at(now, trail[0]?.[1] ?? -30) },
+  ...trail.map(([status, days], i) => ({ id: `${prefix}-ev-${i + 1}`, actorUserId: DEMO_CURRENT_USER_ID, type: "ESTADO_ALTERADO" as const, payload: { to: status }, at: at(now, days) })),
 ];
 
 function snapshot(agg: DecisionAggregate, takenAt: string, by: string): DecisionSnapshot {
