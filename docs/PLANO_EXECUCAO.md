@@ -47,6 +47,7 @@ teste que falharia sem ele, segredos só pelo nome, nunca editar migration aplic
 | Bloco | Escopo | Testes-guarda principais | Depende de |
 |---|---|---|---|
 | **4 — Sessão no front** | Proteção de rotas no `middleware.ts` (não autenticado → `/login?next=`, sem open redirect); renovação silenciosa e logout em todas as abas; cabeçalhos de segurança no Next (CSP com nonce, HSTS, frame-ancestors, referrer, permissions); OIDC Authorization Code + PKCE/`state`/`nonce` no BFF atrás de `WS_OIDC_ENABLED`; `GET/DELETE /api/auth/sessions` (RF2.CA05) + aba Sessões em `/settings` | rota protegida sem sessão redireciona; `next` externo ignorado; CSP presente; `state`/`nonce` inválidos → 400; PKCE obrigatório; revogar sessão derruba o refresh; 403 ao revogar sessão de outro usuário | Bloco 3 |
+| **4b — 2FA e SMTP** | TOTP (RFC 6238): cadastro com QR + códigos de recuperação de uso único (hash Argon2), `POST /api/auth/2fa/verify` para concluir o login que hoje para em `401 DOIS_FATORES_NECESSARIO`, limite de tentativas por conta e IP, desativação exige senha + código; adaptador SMTP real (TLS obrigatório, templates i18n) no lugar do registrador de e-mails do Bloco 3. **Até o Bloco 4b, nenhum fluxo do app ativa 2FA** (só existe o campo `two_factor_enabled`, sem endpoint que o ligue), então ninguém fica preso no login por esse caminho | código errado/reutilizado → 401; 6ª tentativa → 429; código de recuperação só vale uma vez; desativar sem senha → 403; e-mail sem TLS recusado | Bloco 4, Q-83, Q-84 |
 | **5 — BOLA/BFLA, mídia, IA** | Políticas de autorização por recurso (`AccessPolicy` por agregado: dono, papel DACI/departamento, visibilidade, ADMIN) aplicadas no serviço, não no controller; matriz endpoint × perfil com teste 403; upload: tipo real por magic bytes, limite por formato, teto de pixels, zip-bomb, prefixo `restricted/`, OwnMedia; IA: `AiBudget` por usuário/empresa, classificação de acesso e mascaramento antes de IA externa (RF43.CA02), `SIGILOSO`/`RESTRITO` nunca saem | id de outro usuário → 403/404 sem vazar existência; papel insuficiente → 403; PNG com extensão .jpg recusado; bomba de descompressão recusada; payload `SIGILOSO` não chega ao provedor externo; orçamento estourado → 429 com motivo | Bloco 3 |
 | **6 — Dados demo** | `DemoEnvironmentGuard` (seeds só fora de prod), contas `account_origin = TEST_SEED/DEMO`, seed idempotente dos 5 casos DECIA e do shell, reset seguro (ledgers/trilhas antes, Q-80) | seed nunca roda em prod; reset não apaga conta REAL; idempotência | Blocos 3, DECIA 7 |
 | **7 — Bancos endurecidos e backup** | usuário MySQL de menor privilégio (sem DDL em runtime; Flyway com usuário próprio), TLS obrigatório, Redis com ACL e senha, OpenSearch/Cassandra/S3 só com credencial, backup diário cifrado + teste de restauração automatizado, runbook | conexão sem TLS recusada; usuário da app sem `DROP`; restauração reproduz checksum | Bloco 2 |
@@ -68,17 +69,19 @@ teste que falharia sem ele, segredos só pelo nome, nunca editar migration aplic
 | **11 — Calibração e insights** | Brier/calibração privados (n ≥ 10), padrões observados (opt-in) | 9 |
 | **12 — QA** | axe, regressão visual, performance de grade, testes de usabilidade (roteiro em `docs/decia/08_BACKLOG_E_PLANO.md` §3) | 11 |
 
-## 5. Ondas de execução (paralelo onde não há dependência)
+## 5. Ondas de execução (paralelo só onde não há dependência)
 
 | Onda | Em paralelo | Saída |
 |---|---|---|
-| 1 (agora) | Mensageria · **Perfil + rede social (RF6, RF14–RF19, RF27)** · **Bloco 5** · Bloco 4 · CI Trivy + OpenAPI→TS | 5 PRs |
-| 2 | LGPD A · Bloco 7 · DECIA 7 | 3 PRs |
-| 3 | LGPD B · DECIA 8 · DECIA 9 · Bloco 6 | 4 PRs |
-| 4 | LGPD C · DECIA 10 | 2 PRs |
-| 5 | DECIA 11 · DECIA 12 · Bloco 8 | 3 PRs |
+| 1 (agora) | Mensageria · Perfil + rede social + Delegar (RF6, RF14–RF19, RF27) · Bloco 5 · Bloco 4 · CI Trivy + OpenAPI→TS | 5 PRs |
+| 2 | LGPD A · Bloco 7 · DECIA 7 · Bloco 4b (2FA + SMTP, assim que Q-83/Q-84 forem decididas) · onda Acervo (RF4, RF8, RF11, RF12, RF23, RF41) | 5 PRs |
+| 3 | LGPD B · DECIA 8 · DECIA 9 · Bloco 6 · onda Institucional (RF9, RF10, RF28, RF36, RF39) · onda Mensageria (RF46) | 6 PRs |
+| 4 | LGPD C · DECIA 10 · onda Projetos (RF5, RF7, RF20–RF22, RF25, RF31, RF32) · onda Planejamento (RF24) · onda IA (RF13, RF26, RF43) | 5 PRs |
+| 5 | DECIA 11 · onda Gamificação (RF35, RF40, RF42, RF44, RF45) · RF30 e RF34 (IA sobre projetos) | 3 PRs |
+| 6 | DECIA 12 (QA: axe, regressão visual, performance, usabilidade) — depende de DECIA 11 | 1 PR |
+| 7 | Bloco 8 (fechamento: tabela controle → PR → teste → status) — por último, depende de tudo | 1 PR |
 
-## 6. Reserva de numeração (evita colisão entre PRs paralelos)
+## 6. Reserva de numeração (cada trabalho tem a sua faixa; nada compartilhado)
 
 | Trabalho | Decisões | Dúvidas | Migration |
 |---|---|---|---|
@@ -86,12 +89,43 @@ teste que falharia sem ele, segredos só pelo nome, nunca editar migration aplic
 | Bloco 4 | D-60–D-64 | Q-160–Q-164 | — (usa `refresh_tokens`) |
 | Bloco 5 | D-65–D-69 | Q-165–Q-169 | V24 |
 | CI | D-70–D-71 | Q-170–Q-171 | — |
-| LGPD A | D-72–D-74 | Q-172–Q-174 | V25 se precisar |
+| LGPD A | D-72–D-74 | Q-172–Q-174 | V25 |
 | Bloco 7 | D-75–D-77 | Q-175–Q-177 | — |
-| Perfil + rede social | D-90–D-94 | Q-190–Q-194 | V30 se precisar |
-| DECIA 7 | D-78–D-82 | Q-178–Q-182 | V26 se precisar |
-| LGPD B / C | D-83–D-88 | Q-183–Q-188 | V27 / V28 |
-| DECIA 8–12, Bloco 6, Bloco 8 | D-89, D-95+ | Q-189, Q-195+ | V29, V31+ |
+| DECIA 7 | D-78–D-82 | Q-178–Q-182 | V26 |
+| LGPD B | D-83–D-85 | Q-183–Q-185 | V27 |
+| LGPD C | D-86–D-88 | Q-186–Q-188 | V28 |
+| DECIA 8 | D-89 | Q-189 | V29 |
+| Perfil + rede social + Delegar | D-90–D-94 | Q-190–Q-194 | V30 |
+| DECIA 9 | D-95–D-96 | Q-195–Q-196 | V31 |
+| Bloco 6 | D-97 | Q-197 | V32 |
+| Bloco 4b (2FA + SMTP) | D-98–D-99 | Q-198–Q-199 | V33 |
+| DECIA 10 | D-100–D-101 | Q-200–Q-201 | V34 |
+| DECIA 11 | D-102 | Q-202 | V35 |
+| DECIA 12 | D-103 | Q-203 | — |
+| Bloco 8 | D-104 | Q-204 | — |
+| Onda Acervo | D-105–D-107 | Q-205–Q-207 | V36 |
+| Onda Institucional | D-108–D-110 | Q-208–Q-210 | V37 |
+| Onda Mensageria (RF46) | D-111–D-112 | Q-211–Q-212 | V38 |
+| Onda Projetos | D-113–D-116 | Q-213–Q-216 | V39 |
+| Onda Planejamento | D-117 | Q-217 | V40 |
+| Onda IA | D-118–D-120 | Q-218–Q-220 | V41 |
+| Onda Gamificação | D-121–D-124 | Q-221–Q-224 | V42 |
+| RF30 + RF34 | D-125–D-126 | Q-225–Q-226 | V43 |
+
+Faixa não usada fica livre (o `MigrationVersionsTest` só proíbe versão repetida e aceita lacunas; se um trabalho precisar
+de mais de uma migration, pede uma faixa nova neste quadro antes de criar).
+
+**Ordem de merge das migrations:** o Flyway (sem `outOfOrder`) recusa aplicar uma versão menor depois que uma maior já
+rodou num banco. Então PRs com migration entram em `main` **em ordem crescente de versão**; se um PR com versão maior
+ficar pronto antes, ele espera, ou a sua migration é renumerada para a próxima livre acima da maior já mesclada (antes
+de qualquer deploy que a aplique). Versões reservadas e não usadas nunca bloqueiam.
+
+## 7. Só o time pode fazer (não é código)
+
+Proteção de branch em `main` (Q-52) · criar os segredos no cofre pelos nomes do runbook (`docs/seguranca/SEGURANCA.md` §5) ·
+registrar o app no IdP institucional (OIDC) · WAF/borda e `WS_TRUSTED_PROXIES` · decidir Q-152…Q-156 (DECIA) e as Qs de
+LGPD/jurídico (Q-60…Q-73) · escolher o provedor SMTP institucional (Q-84) e a política de 2FA (Q-83) — a
+**implementação** dessas duas é o Bloco 4b (código e testes), não ação do time.
 
 ## 8. Todos os RFs — estado e onda
 
@@ -148,8 +182,3 @@ teste que falharia sem ele, segredos só pelo nome, nunca editar migration aplic
 
 Ondas temáticas: **Social** (RF6, RF14–RF19, RF27, cards de tarefa RF38) · **Acervo** (RF4, RF8, RF11, RF12, RF23, RF41) · **Projetos** (RF5, RF7, RF20–RF22, RF25, RF30–RF32, RF34) · **Institucional** (RF9, RF10, RF28, RF36, RF39) · **Planejamento** (RF24) · **Gamificação** (RF35, RF40, RF42, RF44, RF45) · **IA** (RF13, RF26, RF43) · **DECIA** (RF29, RF33, RF37) · **Mensageria** (RF46). Cada onda entrega primeiro UI funcional com repositório de demonstração rotulado (como o DECIA) e regras puras testadas; a API entra depois dos Blocos 4–5.
 
-## 7. Só o time pode fazer (não é código)
-
-Proteção de branch em `main` (Q-52) · criar os segredos no cofre pelos nomes do runbook (`docs/seguranca/SEGURANCA.md` §5) ·
-registrar o app no IdP institucional (OIDC) · WAF/borda e `WS_TRUSTED_PROXIES` · decidir Q-152…Q-156 (DECIA) e as Qs de
-LGPD/jurídico (Q-60…Q-73) · SMTP institucional (Q-84) · política de 2FA (Q-83).
