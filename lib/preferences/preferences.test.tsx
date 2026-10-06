@@ -27,6 +27,12 @@ describe("preferências: tipos e contrato do servidor (RF3.CA03)", () => {
     expect(p.notificationPrefs.email).toBe(false);
   });
 
+  it("aceita UTC (opção oferecida em Configurações) além de nomes Região/Cidade", () => {
+    expect(sanitizePreferences({ timezone: "UTC" }).timezone).toBe("UTC");
+    expect(sanitizePreferences({ timezone: "America/Manaus" }).timezone).toBe("America/Manaus");
+    expect(sanitizePreferences({ timezone: "GMT" }).timezone).toBe("America/Sao_Paulo");
+  });
+
   it("toServer/fromServer seguem MeController.PreferencesRequest (fontScale decimal, enum maiúsculo, JSON em texto)", () => {
     const body = toServer({ ...DEFAULT_PREFERENCES, theme: "contraste", language: "en", fontScale: 125, deskSkin: "papel-timbrado", backgroundId: "aura-geometry-01" });
     expect(body).toMatchObject({ theme: "ALTO_CONTRASTE", language: "EN", density: "NORMAL", fontScale: 1.25, deskSkin: "PAPEL_TIMBRADO", aiModeDefault: "ECONOMIA", wipLimit: 3 });

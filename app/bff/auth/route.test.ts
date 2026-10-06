@@ -3,9 +3,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { POST } from "./[action]/route";
 
 const call = (action: string, body: unknown = {}, init: { origin?: string | null; cookie?: string; headers?: Record<string, string> } = {}) => {
-  const headers = new Headers({ "content-type": "application/json", ...init.headers });
+  const headers = new Headers({ "content-type": "application/json" });
   if (init.origin !== null) headers.set("origin", init.origin ?? "http://localhost:3000");
   if (init.cookie) headers.set("cookie", init.cookie);
+  for (const [k, v] of Object.entries(init.headers ?? {})) headers.set(k, v);
   const req = new NextRequest("http://localhost:3000/bff/auth/" + action, { method: "POST", headers, body: JSON.stringify(body) });
   return POST(req, { params: Promise.resolve({ action }) });
 };
