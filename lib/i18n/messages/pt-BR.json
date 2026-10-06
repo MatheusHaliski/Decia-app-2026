@@ -660,6 +660,7 @@
   "decia.compare.noAlternatives": "Uma decisão real compara opções — inclusive não agir.",
   "decia.compare.suggestAi": "Sugerir com IA",
   "decia.compare.noCriteria": "Que critérios importam para esta pergunta?",
+  "decia.compare.lockedAfterDecision": "Decisão finalizada: a matriz é somente leitura. Para alterar notas ou pesos, reabra a decisão (o snapshot do momento da decisão é preservado).",
   "decia.compare.chooseTemplate": "Escolher de um modelo",
   "decia.compare.matrixNeedsAlternatives": "Adicione alternativas para preencher a matriz.",
   "decia.compare.independentNote": "Rodada independente: cada pessoa avaliou antes de ver a mediana dos outros.",
