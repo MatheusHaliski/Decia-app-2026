@@ -12,7 +12,8 @@ import java.util.UUID;
  * Trilha append-only da decisão (§8: toda escrita gera um evento com quem, o quê, quando e diff): auditoria, linha do tempo do card e
  * analytics (§9). {@code actorUserId} nulo = IA/sistema.
  */
-@DomainEntity(context = "5b DECIA decisão estruturada", table = "decision_events", rfs = {"RF29", "RF43"}, migration = 22, audit = Audit.NONE,
+@DomainEntity(context = "5b DECIA decisão estruturada", appendOnly = true,
+        table = "decision_events", rfs = {"RF29", "RF43"}, migration = 22, audit = Audit.NONE,
         doc = "APPEND-ONLY. Decisão RESTRICT (histórico não se apaga) e ator RESTRICT (nulo = IA/sistema).",
         indexes = {"decision_id, at", "type, at", "actor_user_id, at", "correlation_id"})
 public record DecisionEvent(

@@ -35,6 +35,12 @@ public @interface DomainEntity {
     /** Coluna {@code version BIGINT} para lock otimista. */
     boolean versioned() default false;
 
+    /**
+     * Trilha append-only: o gerador emite a entidade JPA como {@code @Immutable} com todas as colunas {@code updatable = false} e um
+     * repositório só de inserção/leitura (sem update/delete), como o {@code AuditLogJpaRepository}. Não muda o SQL.
+     */
+    boolean appendOnly() default false;
+
     /** Coluna chave primária quando não é {@code id}; o record deve ter o componente correspondente. */
     String pk() default "id";
 

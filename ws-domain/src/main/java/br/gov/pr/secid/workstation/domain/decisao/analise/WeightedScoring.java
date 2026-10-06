@@ -17,6 +17,8 @@ import java.util.Map;
 public final class WeightedScoring {
 
     public static final String PESO_INVALIDO = "PESO_INVALIDO";
+    /** Sem critérios não há modelo: nenhum ranking (evita 0/0 em rascunhos — Codex P2, PR #30). */
+    public static final String SEM_CRITERIOS = "SEM_CRITERIOS";
     public static final String PESOS_NAO_SOMAM_100 = "PESOS_NAO_SOMAM_100";
     static final double EPS = 1e-9;
     static final double TIE = 0.05;
@@ -77,6 +79,9 @@ public final class WeightedScoring {
         List<String> crits = in.criterionKeys();
         List<String> alts = in.activeAlternativeKeys();
         Map<String, Double> w = new LinkedHashMap<>();
+        if (crits.isEmpty()) {
+            return Result.invalid(SEM_CRITERIOS, null);
+        }
         if (in.weightingEnabled()) {
             if (weightsOverride != null) {
                 w.putAll(weightsOverride);

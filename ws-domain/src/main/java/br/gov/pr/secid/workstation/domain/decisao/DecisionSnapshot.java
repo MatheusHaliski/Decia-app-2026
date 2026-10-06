@@ -14,7 +14,8 @@ import java.util.UUID;
  * Snapshot imutável do que se sabia no momento (G7, §6.12): {@code contentJson} é o JSON canônico (chaves ordenadas, sem espaços) e
  * {@code contentSha256} o seu SHA-256. Append-only: nunca é atualizado; re-hash diferente = adulteração ({@link #isIntact()}).
  */
-@DomainEntity(context = "5b DECIA decisão estruturada", table = "decision_snapshots", rfs = {"RF29", "RF33"}, migration = 22, audit = Audit.NONE,
+@DomainEntity(context = "5b DECIA decisão estruturada", appendOnly = true,
+        table = "decision_snapshots", rfs = {"RF29", "RF33"}, migration = 22, audit = Audit.NONE,
         doc = "APPEND-ONLY. Decisão RESTRICT (não se apaga decisão com histórico) e autor RESTRICT. Conteúdo canônico + SHA-256 (G7).",
         uniques = {"decision_id, version_number"}, indexes = {"decision_id, kind, taken_at"},
         checks = {"CHAR_LENGTH(content_sha256) = 64", "version_number > 0",

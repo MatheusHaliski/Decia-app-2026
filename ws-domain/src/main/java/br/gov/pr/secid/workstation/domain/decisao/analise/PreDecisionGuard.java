@@ -49,6 +49,18 @@ public final class PreDecisionGuard {
         }
     }
 
+    /**
+     * Fatos sobre os filhos da decisão que o agregado {@code Decision} não carrega (status da alternativa escolhida, prontidão, riscos,
+     * divergência, premissas e força da evidência). {@code alternativeId} amarra os fatos à alternativa que será gravada: o
+     * {@code Decision.decide} recusa fatos de outra alternativa (Codex P1, PR #30).
+     */
+    public record Facts(java.util.UUID alternativeId, AlternativeStatus alternativeStatus, Readiness.Level readiness, boolean criticalRiskOpen,
+                        boolean highDivergenceOpen, boolean criticalAssumptionUnvalidated, EvidenceStrength.Level evidence) {
+        public Facts {
+            Objects.requireNonNull(alternativeId, "alternativeId");
+        }
+    }
+
     public record Result(List<Block> blocking, List<Warning> warnings) {
         public Result {
             blocking = List.copyOf(blocking);

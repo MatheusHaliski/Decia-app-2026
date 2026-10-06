@@ -85,15 +85,25 @@ public record Decision(
     }
 
     /**
-     * AGUARDANDO_DECISAO → DECIDIDA. Só o responsável (ou APROVADOR com delegação explícita, §8); o guarda pré-decisão bloqueia erros e
-     * exige confirmação dos avisos (§6.10). Quem chama grava o snapshot DECISAO na mesma transação.
+     * AGUARDANDO_DECISAO → DECIDIDA. Só o responsável (ou APROVADOR com delegação explícita, §8). O guarda pré-decisão (§6.10) é calculado
+     * aqui, a partir dos próprios valores que serão gravados (alternativa, motivo, confiança, complexidade e responsável desta decisão) e dos
+     * fatos dos filhos, que precisam ser da mesma alternativa — não há como validar um conjunto de valores e gravar outro. Quem chama grava
+     * o snapshot DECISAO na mesma transação.
      */
     public Decision decide(UUID actorUserId, boolean delegatedApprover, UUID alternativeId, String reason, Integer confidencePct,
-                           PreDecisionGuard.Result guard, boolean warningsConfirmed, Instant at) {
+                           PreDecisionGuard.Facts facts, boolean warningsConfirmed, Instant at) {
         requireOwner(actorUserId, delegatedApprover);
-        Objects.requireNonNull(guard, "guard").enforce(warningsConfirmed);
+        Objects.requireNonNull(facts, "facts");
+        if (alternativeId != null && !alternativeId.equals(facts.alternativeId())) {
+            throw new DomainRuleException("DECISAO_FATOS_DIVERGENTES", "os fatos do guarda são de outra alternativa");
+        }
+        DecisionRules.confidence(confidencePct, "confidencePct");
+        PreDecisionGuard.Result guard = PreDecisionGuard.check(new PreDecisionGuard.Input(complexity,
+                alternativeId == null ? null : facts.alternativeStatus(), ownerUserId != null, reason, facts.readiness(), facts.criticalRiskOpen(),
+                facts.highDivergenceOpen(), facts.criticalAssumptionUnvalidated(), confidencePct, facts.evidence()));
+        guard.enforce(warningsConfirmed);
         DecisionLifecycle next = status.transition(DecisionLifecycle.DECIDIDA);
-        return withState(next, Objects.requireNonNull(alternativeId, "alternativeId"), Objects.requireNonNull(at, "at"), confidencePct, reason);
+        return withState(next, alternativeId, Objects.requireNonNull(at, "at"), confidencePct, reason);
     }
 
     /** DECIDIDA/EM_EXECUCAO/RESOLVIDA/REVISADA → REABERTA. Só o responsável (§8); o snapshot anterior permanece e quem chama grava o REABERTURA. */

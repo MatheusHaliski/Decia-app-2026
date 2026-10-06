@@ -176,6 +176,7 @@ Contraste destacado (G10): **confiança ALTA + evidência FRACA** gera o alerta 
   UI mostra "os pesos somam X %".
 - `score(alt) = Σ_c nota(alt, c) × w_c / Σ_c w_c`, resultado em [1, 5], arredondado a **2 casas** no cálculo e exibido
   com **1 casa**. A contribuição de cada critério (`nota × w_c / Σw`) é sempre exibida (explicabilidade).
+- Sem nenhum critério a matriz é **inválida** (`SEM_CRITERIOS`, sem ranking nem líder) — rascunho não gera recomendação.
 - Alternativas `DESCARTADA` ficam fora do ranking. Célula sem avaliação → a alternativa fica **incompleta** e não entra no
   ranking (nunca imputar zero).
 - Empate: diferença < 0,05 → "empate técnico" (sem líder).
@@ -310,12 +311,16 @@ valem também aqui.
 - Texto humano nunca é sobrescrito pela IA: a sugestão chega como proposta com diff e precisa de aceite.
 - BOLA/BFLA dos endpoints seguem o Bloco 4/5 de segurança (pendente): **nenhuma API de decisão é exposta antes dele**.
 
-## 9. Analytics (eventos) e métricas de produto
+## 9. Eventos de domínio, analytics e métricas de produto
 
-Eventos (`lib/decia/analytics.ts` / `DecisionEventType`): `decision_created`, `evidence_added`, `alternative_added`,
-`criterion_changed`, `decision_compared`, `decision_challenged`, `decision_finalized`, `decision_reopened`,
-`checkpoint_completed`, `outcome_recorded`, `review_completed`, `card_flipped`, `ai_suggestion_accepted`,
-`ai_suggestion_dismissed`.
+Três coisas diferentes, nunca misturadas (Hohpe & Woolf: *Event Message*, *Message History*; arquitetura em
+`09_ARQUITETURA_MENSAGENS.md`):
+
+| Conceito | Onde | Exemplos | Quem lê |
+|---|---|---|---|
+| **Histórico da decisão** (fatos de domínio, pretérito) | `decision_events` (`DecisionEventType`) + outbox `domain_events` | `DecisionCreated`, `EvidenceAdded`, `AlternativeCreated`, `CriterionUpdated`, `RiskChanged`, `DecisionFinalized`, `DecisionReopened`, `CheckpointDue`, `OutcomeRecorded`, `ReviewCompleted` | usuário (linha do tempo), auditoria |
+| **Histórico técnico de mensagens** | message store / entregas por consumidor | "`CriterionUpdated` consumido pelo AnalyticsConsumer (tentativa 2)" | só admin (Monitor de integrações) |
+| **Analytics de UI** | `lib/decia/analytics.ts` | `card_flipped`, `decision_compared`, `ai_suggestion_dismissed` | produto (agregado, sem conteúdo) |
 
 Métricas (sempre com contexto, nunca "tempo no app"): `decisionCompletionRate`, `timeToDecision` (por complexidade),
 `evidenceCoverage`, `reviewCompletionRate`, `checkpointCompliance`, `outcomeCaptureRate`. **Sem XP por quantidade** (G9).

@@ -3,7 +3,9 @@ package br.gov.pr.secid.workstation.domain.decisao;
 import br.gov.pr.secid.workstation.domain.common.AccessClassification;
 import br.gov.pr.secid.workstation.domain.common.DomainRuleException;
 import br.gov.pr.secid.workstation.domain.common.Visibility;
+import br.gov.pr.secid.workstation.domain.decisao.analise.EvidenceStrength;
 import br.gov.pr.secid.workstation.domain.decisao.analise.PreDecisionGuard;
+import br.gov.pr.secid.workstation.domain.decisao.analise.Readiness;
 import br.gov.pr.secid.workstation.domain.decisao.analise.SnapshotCanonicalizer;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +26,11 @@ class DecisionAggregateTest {
     private static final UUID OWNER = UUID.randomUUID();
     private static final UUID OTHER = UUID.randomUUID();
     private static final UUID ALT = UUID.randomUUID();
-    private static final PreDecisionGuard.Result CLEAN = new PreDecisionGuard.Result(List.of(), List.of());
+    private static final PreDecisionGuard.Facts CLEAN = facts(ALT, false, EvidenceStrength.Level.FORTE);
+
+    private static PreDecisionGuard.Facts facts(UUID alt, boolean criticalRisk, EvidenceStrength.Level evidence) {
+        return new PreDecisionGuard.Facts(alt, AlternativeStatus.ATIVA, Readiness.Level.PRONTA_PARA_DECIDIR, criticalRisk, false, false, evidence);
+    }
 
     private static Decision decision(DecisionLifecycle status, Integer confidence) {
         return new Decision(UUID.randomUUID(), "Nuvem da API", "Qual provedor de nuvem usar para a API?", null, null, null, null, null, null, null,
@@ -41,13 +47,22 @@ class DecisionAggregateTest {
         assertThatThrownBy(() -> waiting.decide(OTHER, false, ALT, "motivo bem explicado", 70, CLEAN, false, NOW))
                 .hasMessageContaining("DECISAO_SO_RESPONSAVEL");
 
-        PreDecisionGuard.Result blocked = new PreDecisionGuard.Result(List.of(PreDecisionGuard.Block.MOTIVO_VAZIO), List.of());
-        assertThatThrownBy(() -> waiting.decide(OWNER, false, ALT, "curto", 70, blocked, true, NOW))
+        assertThatThrownBy(() -> waiting.decide(OWNER, false, ALT, "curto", 70, CLEAN, true, NOW))
+                .as("o motivo validado é o motivo gravado")
                 .isInstanceOfSatisfying(DomainRuleException.class, e -> {
                     assertThat(e.getCode()).isEqualTo(PreDecisionGuard.DECISAO_INCOMPLETA);
                     assertThat(e.getDetails()).containsExactly("MOTIVO_VAZIO");
                 });
-        PreDecisionGuard.Result warned = new PreDecisionGuard.Result(List.of(), List.of(PreDecisionGuard.Warning.RISCO_CRITICO_ABERTO));
+        assertThatThrownBy(() -> waiting.decide(OWNER, false, null, "motivo bem explicado", 70, CLEAN, true, NOW))
+                .isInstanceOfSatisfying(DomainRuleException.class, e -> assertThat(e.getDetails()).contains("SEM_ALTERNATIVA_SELECIONADA"));
+        assertThatThrownBy(() -> waiting.decide(OWNER, false, ALT, "motivo bem explicado", 70, facts(UUID.randomUUID(), false,
+                EvidenceStrength.Level.FORTE), true, NOW)).as("fatos de outra alternativa").hasMessageContaining("DECISAO_FATOS_DIVERGENTES");
+        assertThatThrownBy(() -> waiting.decide(OWNER, false, ALT, "motivo bem explicado", 90, facts(ALT, false, EvidenceStrength.Level.FRACA),
+                false, NOW)).as("a confiança validada é a confiança gravada").isInstanceOfSatisfying(DomainRuleException.class, e -> {
+                    assertThat(e.getCode()).isEqualTo(PreDecisionGuard.AVISOS_NAO_CONFIRMADOS);
+                    assertThat(e.getDetails()).containsExactly("CONFIANCA_ACIMA_DA_EVIDENCIA");
+                });
+        PreDecisionGuard.Facts warned = facts(ALT, true, EvidenceStrength.Level.FORTE);
         assertThatThrownBy(() -> waiting.decide(OWNER, false, ALT, "motivo bem explicado", 70, warned, false, NOW))
                 .hasMessageContaining(PreDecisionGuard.AVISOS_NAO_CONFIRMADOS);
 
@@ -179,8 +194,10 @@ class DecisionAggregateTest {
         assertThat(DecisionComplexity.suggest(DecisionLevel.BAIXO, 1, 3)).isEqualTo(DecisionComplexity.PADRAO);
         assertThat(DecisionComplexity.suggest(DecisionLevel.BAIXO, 2, 2)).isEqualTo(DecisionComplexity.RAPIDA);
 
-        assertThat(DecisionEventType.DECISION_FINALIZED.wireName()).isEqualTo("decision_finalized");
-        assertThat(DecisionEventType.values()).hasSize(14);
+        assertThat(DecisionEventType.DECISAO_FINALIZADA.messageType()).isEqualTo("DecisionFinalized");
+        assertThat(java.util.Arrays.stream(DecisionEventType.values()).map(DecisionEventType::messageType))
+                .as("evento = fato no pretérito, sem eventos de UI").doesNotHaveDuplicates().noneMatch(m -> m.contains("Flipped") || m.contains("Compared"));
+        assertThat(DecisionEventType.values()).hasSize(24);
         assertThat(RelevanceLevel.ALTA.weight()).isEqualTo(3);
         assertThat(DecisionLevel.max(DecisionLevel.ALTO, DecisionLevel.MEDIO)).isEqualTo(DecisionLevel.ALTO);
 

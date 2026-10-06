@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.UUID;
+import org.hibernate.annotations.Immutable;
 
 /**
  * Entidade JPA de {@code decision_events} (DecisionEvent — 5b DECIA decisão estruturada; RF29, RF43). Gerada pelo
@@ -16,6 +17,7 @@ import java.util.UUID;
  * MySQL; enums como String; JSON como String.
  */
 @Entity
+@Immutable
 @Table(name = "decision_events")
 public class DecisionEventEntity {
 
@@ -23,23 +25,23 @@ public class DecisionEventEntity {
     @Column(name = "id", nullable = false, updatable = false, columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(name = "decision_id", nullable = false, columnDefinition = "BINARY(16)")
+    @Column(name = "decision_id", nullable = false, updatable = false, columnDefinition = "BINARY(16)")
     private UUID decisionId;
 
-    @Column(name = "actor_user_id", columnDefinition = "BINARY(16)")
+    @Column(name = "actor_user_id", updatable = false, columnDefinition = "BINARY(16)")
     private UUID actorUserId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
+    @Column(name = "type", nullable = false, updatable = false)
     private DecisionEventType type;
 
-    @Column(name = "payload_json", columnDefinition = "JSON")
+    @Column(name = "payload_json", updatable = false, columnDefinition = "JSON")
     private String payloadJson;
 
-    @Column(name = "at", nullable = false)
+    @Column(name = "at", nullable = false, updatable = false)
     private Instant at;
 
-    @Column(name = "correlation_id", nullable = false)
+    @Column(name = "correlation_id", nullable = false, updatable = false)
     private String correlationId;
 
     public UUID getId() {

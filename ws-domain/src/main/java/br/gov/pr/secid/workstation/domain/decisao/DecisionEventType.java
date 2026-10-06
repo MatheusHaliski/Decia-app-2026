@@ -1,17 +1,46 @@
 package br.gov.pr.secid.workstation.domain.decisao;
 
-import java.util.Locale;
-
 /**
- * Tipo do evento da trilha da decisão (§8 "toda escrita gera DecisionEvent") e de analytics (§9, {@code lib/decia/analytics.ts}). Os valores
- * são os nomes do §9 em maiúsculas; {@link #wireName()} devolve o nome do evento de analytics ({@code decision_created}…).
+ * Fato de domínio da decisão (pretérito: "algo aconteceu"), gravado em {@code decision_events} (histórico da decisão, legível pelo usuário)
+ * e publicado no outbox {@code domain_events} com o nome de mensagem {@link #messageType()} (docs/decia/09_ARQUITETURA_MENSAGENS.md,
+ * Hohpe &amp; Woolf: Event Message). Comandos ("faça algo", ex.: {@code GenerateDecisionAnalysis}) não entram aqui; eventos de UI/analytics
+ * ({@code card_flipped}, {@code decision_compared}) vivem só no frontend ({@code lib/decia/analytics.ts}) — histórico da decisão ≠
+ * histórico técnico de mensagens ≠ analytics.
  */
 public enum DecisionEventType {
-    DECISION_CREATED, EVIDENCE_ADDED, ALTERNATIVE_ADDED, CRITERION_CHANGED, DECISION_COMPARED, DECISION_CHALLENGED, DECISION_FINALIZED,
-    DECISION_REOPENED, CHECKPOINT_COMPLETED, OUTCOME_RECORDED, REVIEW_COMPLETED, CARD_FLIPPED, AI_SUGGESTION_ACCEPTED, AI_SUGGESTION_DISMISSED;
+    DECISAO_CRIADA("DecisionCreated"),
+    PROBLEMA_ENQUADRADO("DecisionFramed"),
+    ESTADO_ALTERADO("DecisionStatusChanged"),
+    EVIDENCIA_ADICIONADA("EvidenceAdded"),
+    EVIDENCIA_SUBSTITUIDA("EvidenceSuperseded"),
+    ALTERNATIVA_CRIADA("AlternativeCreated"),
+    ALTERNATIVA_DESCARTADA("AlternativeDiscarded"),
+    CRITERIO_ATUALIZADO("CriterionUpdated"),
+    AVALIACAO_REGISTRADA("AssessmentRecorded"),
+    PREMISSA_ATUALIZADA("AssumptionUpdated"),
+    RISCO_ALTERADO("RiskChanged"),
+    RECOMENDACAO_GERADA("RecommendationGenerated"),
+    SUGESTAO_IA_ACEITA("AiSuggestionAccepted"),
+    SUGESTAO_IA_DESCARTADA("AiSuggestionDismissed"),
+    DECISAO_DESAFIADA("DecisionChallenged"),
+    DECISAO_FINALIZADA("DecisionFinalized"),
+    DECISAO_REABERTA("DecisionReopened"),
+    TRABALHO_VINCULADO("WorkItemsLinked"),
+    CHECKPOINT_VENCENDO("CheckpointDue"),
+    CHECKPOINT_CONCLUIDO("CheckpointCompleted"),
+    GATILHO_DISPARADO("TriggerFired"),
+    RESULTADO_REGISTRADO("OutcomeRecorded"),
+    REVISAO_CONCLUIDA("ReviewCompleted"),
+    DECISAO_ARQUIVADA("DecisionArchived");
 
-    /** Nome do evento de analytics (snake_case minúsculo, como no §9). */
-    public String wireName() {
-        return name().toLowerCase(Locale.ROOT);
+    private final String messageType;
+
+    DecisionEventType(String messageType) {
+        this.messageType = messageType;
+    }
+
+    /** Nome da mensagem de evento no canal {@code decision.events} (PascalCase, pretérito). */
+    public String messageType() {
+        return messageType;
     }
 }
