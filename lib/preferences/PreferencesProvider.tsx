@@ -4,7 +4,7 @@
  * data-font-scale / data-reduce-motion / lang) IMEDIATAMENTE (sem recarregar) e persiste no adaptador local e,
  * havendo sessão, na API. Também é a fonte do idioma para `tr()`/`useI18n()` (lib/i18n/state.ts).
  */
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { setCurrentLocale } from "@/lib/i18n/state";
 import { apiAdapter, htmlAttributes, localAdapter, type PreferencesAdapter } from "./storage";
 import { DEFAULT_PREFERENCES, sanitizePreferences, type UserPreferences } from "./types";
@@ -27,6 +27,9 @@ export function applyHtmlAttributes(root: HTMLElement, prefs: UserPreferences) {
     else root.setAttribute(name, value);
   }
 }
+
+// useLayoutEffect avisa no SSR; no servidor não há <html> a ajustar
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 export function PreferencesProvider({ children, adapters = [localAdapter, apiAdapter], initial }: { children: ReactNode; adapters?: PreferencesAdapter[]; initial?: Partial<UserPreferences> }) {
   const [prefs, setPrefs] = useState<UserPreferences>(() => sanitizePreferences({ ...DEFAULT_PREFERENCES, ...initial }));
@@ -51,8 +54,9 @@ export function PreferencesProvider({ children, adapters = [localAdapter, apiAda
     return () => { alive = false; mq.removeEventListener("change", l); };
   }, []);
 
-  // 2) aplica no <html> e no estado do i18n a cada mudança
-  useEffect(() => {
+  // 2) aplica no <html> e no estado do i18n a cada mudança — em layout effect, no mesmo commit do render: o tema/idioma
+  //    nunca fica um quadro atrás do texto (sem piscar, e o DOM já está coerente quando o render termina)
+  useIsomorphicLayoutEffect(() => {
     applyHtmlAttributes(document.documentElement, prefs);
     setCurrentLocale(prefs.language);
   }, [prefs]);
