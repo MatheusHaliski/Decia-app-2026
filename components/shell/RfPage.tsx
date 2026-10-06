@@ -30,6 +30,8 @@ export interface RfPageProps {
   hideCas?: boolean;
   actions?: ReactNode;
   emptyTitleKey?: string;
+  /** página sem sub-abas cujo conteúdo funcional já está em `children` (sem o EmptyState genérico) */
+  noEmpty?: boolean;
 }
 
 export const rfById = (id: string): RfEntry | undefined => RF_CATALOG.find((r) => r.id === id);
@@ -71,7 +73,7 @@ export function RfBlock({ rf, open = false }: { rf: RfEntry; open?: boolean }) {
   );
 }
 
-export function RfPage({ page, subtitle, tabs, tabLabel, renderTab, children, hideCas, actions, emptyTitleKey }: RfPageProps) {
+export function RfPage({ page, subtitle, tabs, tabLabel, renderTab, children, hideCas, actions, emptyTitleKey, noEmpty }: RfPageProps) {
   const { t } = useI18n();
   const { profile } = useViewer();
   const cell = page.access[profile];
@@ -122,7 +124,7 @@ export function RfPage({ page, subtitle, tabs, tabLabel, renderTab, children, hi
             />
           )}
         </Tabs>
-      ) : (
+      ) : noEmpty ? null : (
         <EmptyState moji={page.moji ?? "vazio"} title={t(emptyTitleKey ?? "rf.emptyTitleNoTab")} description={t("rf.emptyDescription")} />
       )}
       {!hideCas && rfs.length ? (

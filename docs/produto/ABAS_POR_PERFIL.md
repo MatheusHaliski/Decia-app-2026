@@ -379,9 +379,9 @@ Fonte: `lib/pages/registry.ts` (rota → arquivo → RFs → visibilidade por pe
 | Mensagens | `/messages` | `app/(shell)/messages/page.tsx` | RF46 RF10 | A |
 | Conversa | `/messages/[conversationId]` | `app/(shell)/messages/[conversationId]/page.tsx` | RF46 RF13 | A |
 | Meu perfil | `/profile` | `app/(shell)/profile/page.tsx` | RF6 RF19 RF12 RF25 RF44 RF45 RF40 | B |
-| Perfil | `/u/[username]` | `app/(shell)/u/[username]/page.tsx` | RF16 RF6 RF18 | B |
+| Perfil | `/u/[username]` | `app/(shell)/u/[username]/page.tsx` | RF16 RF6 RF18 RF19 | B |
 | Acervo de Tarefas | `/tasks` | `app/(shell)/tasks/page.tsx` | RF41 RF44 RF18 RF13 | A |
-| Tarefa | `/tasks/[id]` | `app/(shell)/tasks/[id]/page.tsx` | RF41 RF7 RF34 RF13 RF10 | A |
+| Tarefa | `/tasks/[id]` | `app/(shell)/tasks/[id]/page.tsx` | RF41 RF19 RF18 RF7 RF34 RF13 RF10 | A |
 | Editar tarefa | `/tasks/[id]/edit` | `app/(shell)/tasks/[id]/edit/page.tsx` | RF8 RF11 RF12 | A |
 | Anexos & Evidências | `/attachments` | `app/(shell)/attachments/page.tsx` | RF41 | A |
 | Mesa de Trabalho | `/desk` | `app/(shell)/desk/page.tsx` | RF21 RF22 RF44 | A |
