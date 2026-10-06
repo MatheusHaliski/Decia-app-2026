@@ -384,7 +384,7 @@ Política de FK (D-52): filhos → CASCADE na decisão, **exceto** `decision_sna
 id · title(160) · question(500) · contextMd · objective · constraintsMd · scope · stakeholdersJson · resourcesMd · dependenciesMd ·
 targetDate · ownerUserId · createdByUserId · companyId · departmentId? · sessionId? · projectId? · finalDecisionId? ·
 supersedesDecisionId? · status `DecisionLifecycle` · complexity `DecisionComplexity` (RAPIDA · PADRAO · PROFUNDA) · kind
-`DecisionKind` (ESTRATEGICA · TATICA · OPERACIONAL) · impact/urgency `DecisionLevel` (BAIXO · MEDIO · ALTO · CRITICO) · visibility
+`DecisionKind` (ESTRATEGICA · TATICA · OPERACIONAL · TECNICA · FINANCEIRA · PRODUTO · PESSOAS · CONTRATACAO · RISCO) · impact/urgency `DecisionLevel` (BAIXO · MEDIO · ALTO · CRITICO) · visibility
 (PRIVADA por padrão) · accessClass · weightingEnabled · independentScoring · templateKey? · selectedAlternativeId? (estado atual) ·
 decidedAt? · decisionConfidencePct? (0–100, passo 5) · rationale? · reviewEveryDays?.
 Ciclo `DecisionLifecycle`: RASCUNHO → ENQUADRAMENTO → PESQUISA → COMPARACAO → AGUARDANDO_DECISAO → DECIDIDA → EM_EXECUCAO → RESOLVIDA →

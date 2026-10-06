@@ -103,6 +103,13 @@ convenções do V2 (D-23). Nenhuma migration aplicada é editada; ligações com
 
 `origin` = `ContentOrigin` {HUMANO, IA, IMPORTADA} em toda entidade que a IA pode propor.
 
+Valores dos enums que a tabela acima não lista:
+`DecisionKind` {ESTRATEGICA, TATICA, OPERACIONAL, TECNICA, FINANCEIRA, PRODUTO, PESSOAS, CONTRATACAO, RISCO} ·
+`EvidenceKind` {DOCUMENTO, METRICA, CONJUNTO_DADOS, PESQUISA, FEEDBACK_USUARIO, BENCHMARK, TESTE_TECNICO,
+OPINIAO_ESPECIALISTA, FONTE_EXTERNA, NORMA} · `SourceQuality` {PRIMARIA, SECUNDARIA, INTERNA, ESPECIALISTA, NAO_VERIFICADA}
+(classificação de apoio, nunca verdade absoluta) · `RelevanceLevel` {BAIXA, MEDIA, ALTA} · `Likelihood` {RARA, POSSIVEL,
+PROVAVEL, QUASE_CERTA}.
+
 ### 4.3 Ciclo de vida — `DecisionLifecycle`
 
 ```

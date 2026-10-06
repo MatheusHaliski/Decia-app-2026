@@ -1,6 +1,6 @@
 package br.gov.pr.secid.workstation.domain.decisao;
 
-/** Qualidade da fonte da evidência (§4.2). O spec não enumera os valores; escala proposta (D-53). */
+/** Qualidade da fonte (03_MODELO_FUNCIONAL §4.2); classificação de apoio, nunca verdade absoluta. */
 public enum SourceQuality {
-    OFICIAL, PRIMARIA, SECUNDARIA, NAO_VERIFICADA
+    PRIMARIA, SECUNDARIA, INTERNA, ESPECIALISTA, NAO_VERIFICADA
 }

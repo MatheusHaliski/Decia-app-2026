@@ -483,7 +483,7 @@ public final class ForeignKeyPolicy {
             new Fk("criterion_assessments", "criterion_id", "decision_criteria", "CASCADE"),
             new Fk("criterion_assessments", "assessor_user_id", "users", "RESTRICT"),
             new Fk("decision_evidence", "decision_id", "decisions", "CASCADE"),
-            new Fk("decision_evidence", "media_id", "media_objects", "SET NULL"),
+            new Fk("decision_evidence", "media_id", "media_objects", "RESTRICT"),
             new Fk("decision_evidence", "task_id", "tasks", "SET NULL"),
             new Fk("decision_evidence", "ai_inference_id", "ai_inference_log", "SET NULL"),
             new Fk("decision_evidence", "added_by_user_id", "users", "RESTRICT"),

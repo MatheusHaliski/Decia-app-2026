@@ -23,7 +23,7 @@ public record DecisionEvidence(
         @Attr(value = "resumo", sql = "TEXT") String summary,
         @Attr(value = "fonte (rótulo)", len = 300) String sourceLabel,
         @Attr(value = "URL da fonte", opt = true, len = 2048) String sourceUrl,
-        @Attr(value = "arquivo", opt = true, ref = "media_objects", onDelete = OnDelete.SET_NULL) UUID mediaId,
+        @Attr(value = "arquivo", opt = true, ref = "media_objects", onDelete = OnDelete.RESTRICT) UUID mediaId,
         @Attr(value = "tarefa de origem", opt = true, ref = "tasks", onDelete = OnDelete.SET_NULL) UUID taskId,
         @Attr(value = "autor da fonte", opt = true, len = 200) String authorLabel,
         @Attr(value = "observada em", opt = true) Instant observedAt,

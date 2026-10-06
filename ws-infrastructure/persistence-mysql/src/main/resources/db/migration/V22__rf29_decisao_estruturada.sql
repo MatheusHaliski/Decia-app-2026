@@ -68,7 +68,7 @@ CREATE TABLE decisions (
         ON DELETE SET NULL ON UPDATE RESTRICT,
     CONSTRAINT ck_decisions_status CHECK (status IN ('RASCUNHO', 'ENQUADRAMENTO', 'PESQUISA', 'COMPARACAO', 'AGUARDANDO_DECISAO', 'DECIDIDA', 'EM_EXECUCAO', 'RESOLVIDA', 'REVISADA', 'REABERTA', 'ARQUIVADA')),
     CONSTRAINT ck_decisions_complexity CHECK (complexity IN ('RAPIDA', 'PADRAO', 'PROFUNDA')),
-    CONSTRAINT ck_decisions_kind CHECK (kind IN ('ESTRATEGICA', 'TATICA', 'OPERACIONAL')),
+    CONSTRAINT ck_decisions_kind CHECK (kind IN ('ESTRATEGICA', 'TATICA', 'OPERACIONAL', 'TECNICA', 'FINANCEIRA', 'PRODUTO', 'PESSOAS', 'CONTRATACAO', 'RISCO')),
     CONSTRAINT ck_decisions_impact CHECK (impact IN ('BAIXO', 'MEDIO', 'ALTO', 'CRITICO')),
     CONSTRAINT ck_decisions_urgency CHECK (urgency IN ('BAIXO', 'MEDIO', 'ALTO', 'CRITICO')),
     CONSTRAINT ck_decisions_visibility CHECK (visibility IN ('PRIVADA', 'DEPARTAMENTO', 'EMPRESA', 'PUBLICA')),
@@ -220,7 +220,7 @@ CREATE TABLE decision_evidence (
     id                      BINARY(16)      NOT NULL,
     decision_id             BINARY(16)      NOT NULL,
     nature                  VARCHAR(20)     NOT NULL,
-    kind                    VARCHAR(20)     NOT NULL,
+    kind                    VARCHAR(30)     NOT NULL,
     title                   VARCHAR(200)    NOT NULL,
     summary                 TEXT            NOT NULL,
     source_label            VARCHAR(300)    NOT NULL,
@@ -243,7 +243,7 @@ CREATE TABLE decision_evidence (
     CONSTRAINT fk_decision_evidence__decision_id FOREIGN KEY (decision_id) REFERENCES decisions (id)
         ON DELETE CASCADE ON UPDATE RESTRICT,
     CONSTRAINT fk_decision_evidence__media_id FOREIGN KEY (media_id) REFERENCES media_objects (id)
-        ON DELETE SET NULL ON UPDATE RESTRICT,
+        ON DELETE RESTRICT ON UPDATE RESTRICT,
     CONSTRAINT fk_decision_evidence__task_id FOREIGN KEY (task_id) REFERENCES tasks (id)
         ON DELETE SET NULL ON UPDATE RESTRICT,
     CONSTRAINT fk_decision_evidence__ai_inference_id FOREIGN KEY (ai_inference_id) REFERENCES ai_inference_log (id)
@@ -251,8 +251,8 @@ CREATE TABLE decision_evidence (
     CONSTRAINT fk_decision_evidence__added_by_user_id FOREIGN KEY (added_by_user_id) REFERENCES users (id)
         ON DELETE RESTRICT ON UPDATE RESTRICT,
     CONSTRAINT ck_decision_evidence_nature CHECK (nature IN ('FATO', 'EVIDENCIA', 'OPINIAO')),
-    CONSTRAINT ck_decision_evidence_kind CHECK (kind IN ('DOCUMENTO', 'DADO', 'NORMA', 'PESQUISA', 'ENTREVISTA', 'TESTE', 'PRECEDENTE', 'OUTRO')),
-    CONSTRAINT ck_decision_evidence_source_quality CHECK (source_quality IN ('OFICIAL', 'PRIMARIA', 'SECUNDARIA', 'NAO_VERIFICADA')),
+    CONSTRAINT ck_decision_evidence_kind CHECK (kind IN ('DOCUMENTO', 'METRICA', 'CONJUNTO_DADOS', 'PESQUISA', 'FEEDBACK_USUARIO', 'BENCHMARK', 'TESTE_TECNICO', 'OPINIAO_ESPECIALISTA', 'FONTE_EXTERNA', 'NORMA')),
+    CONSTRAINT ck_decision_evidence_source_quality CHECK (source_quality IN ('PRIMARIA', 'SECUNDARIA', 'INTERNA', 'ESPECIALISTA', 'NAO_VERIFICADA')),
     CONSTRAINT ck_decision_evidence_relevance CHECK (relevance IN ('BAIXA', 'MEDIA', 'ALTA')),
     CONSTRAINT ck_decision_evidence_reliability CHECK (reliability IN ('BAIXA', 'MEDIA', 'ALTA')),
     CONSTRAINT ck_decision_evidence_origin CHECK (origin IN ('HUMANO', 'IA', 'IMPORTADA')),

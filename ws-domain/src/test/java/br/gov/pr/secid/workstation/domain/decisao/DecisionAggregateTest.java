@@ -155,7 +155,7 @@ class DecisionAggregateTest {
 
     @Test
     void evidenciaNuncaApagadaSoSubstituida() {
-        DecisionEvidence ev = new DecisionEvidence(UUID.randomUUID(), UUID.randomUUID(), EvidenceNature.FATO, EvidenceKind.TESTE, "Teste de carga",
+        DecisionEvidence ev = new DecisionEvidence(UUID.randomUUID(), UUID.randomUUID(), EvidenceNature.FATO, EvidenceKind.TESTE_TECNICO, "Teste de carga",
                 "p99 < 200 ms", "relatório", null, null, null, null, null, NOW, SourceQuality.PRIMARIA, RelevanceLevel.ALTA, RelevanceLevel.ALTA,
                 ContentOrigin.HUMANO, null, OWNER, null);
         assertThat(ev.isCurrent()).isTrue();
