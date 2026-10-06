@@ -27,6 +27,25 @@ const seed = (page, { theme = "claro", viewer = "EMPREGADO", sidebar = "open" } 
     } catch { /* ignore */ }
   }, { theme, viewer, sidebar });
 
+/**
+ * Sessão SIMULADA (Bloco 4, D-60): as rotas protegidas exigem o cookie-sinal `ws_rt_h`; sem backend, o BFF recebe um `ws_rt` fictício,
+ * tenta renovar, ganha 502 e a sessão fica como está. Perfil VISITANTE (ou `sessao: false`) fotografa sem cookie nenhum.
+ */
+const sessionCookies = (base) => [
+  { name: "ws_rt_h", value: "1", url: base, sameSite: "Strict" },
+  { name: "ws_rt", value: "captura-sessao-simulada", domain: new URL(base).hostname, path: "/bff/auth", httpOnly: true, sameSite: "Strict" },
+];
+
+/** API de sessões simulada para as capturas da aba Sessões (RF2.CA05) — sem backend no ambiente das capturas. */
+const SESSOES = [
+  { id: "s-atual", deviceName: "Firefox 131 · Linux (este computador)", lastActiveAt: "2026-10-06T12:05:00Z", expiresAt: "2026-10-07T12:05:00Z", persistent: false, current: true },
+  { id: "s-celular", deviceName: "Chrome 129 · Android", lastActiveAt: "2026-10-05T21:40:00Z", expiresAt: "2026-11-04T21:40:00Z", persistent: true, current: false },
+  { id: "s-trabalho", deviceName: "Edge 129 · Windows (SECID)", lastActiveAt: "2026-10-02T14:12:00Z", expiresAt: "2026-11-01T14:12:00Z", persistent: true, current: false },
+];
+const mockSessoes = (page) => page.route(/\/api\/auth\/sessions(\/|$|\?)/, (r) => r.request().method() === "GET"
+  ? r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(SESSOES) })
+  : r.fulfill({ status: 204 }));
+
 /** Espera a hidratação (o sino só ganha a contagem depois que o React carregou o mock). */
 const ready = (page) => page.getByTestId("bell").first().waitFor({ state: "visible" }).then(() => page.waitForFunction(() => /\(/.test(document.querySelector('[data-testid="bell"]')?.getAttribute("aria-label") ?? "")));
 
@@ -45,6 +64,12 @@ export const CAPTURAS = [
   { file: "11-tema-escuro.png", route: "/mural", perfil: "EMPREGADO", tema: "escuro", viewport: DESKTOP, descricao: "Shell no tema escuro", prepare: ready },
   { file: "12-tema-terminal.png", route: "/mural", perfil: "EMPREGADO", tema: "terminal", viewport: DESKTOP, descricao: "Shell no tema terminal (corpo em mono)", prepare: ready },
   { file: "13-lab-design-system.png", route: "/lab/design-system", perfil: "EMPREGADO", tema: "claro", viewport: DESKTOP, descricao: "/lab/design-system — tokens, glifos e componentes reais", full: true, prepare: async (p) => { await ready(p); await p.locator("code", { hasText: "--ws-accent" }).first().waitFor(); } },
+  // Sessão no front (Bloco 4, D-60–D-62): login com next, aba Sessões e o estado "saiu em todas as abas"
+  { file: "14-login-next-protegida.png", route: "/settings?tab=sessoes", perfil: "VISITANTE", tema: "claro", viewport: DESKTOP, descricao: "Bloco 4 — rota protegida sem sessão: o middleware leva a /login?next=%2Fsettings%3Ftab%3Dsessoes (next saneado, sem open redirect)", prepare: async (p) => { await p.waitForURL(/\/login\?next=/); await p.getByRole("button", { name: "Entrar" }).waitFor(); } },
+  { file: "15-sessoes-lista.png", route: "/settings?tab=sessoes", perfil: "EMPREGADO", tema: "claro", viewport: DESKTOP, descricao: "RF2.CA05 — Configurações › Sessões: dispositivos com sessão viva, a atual marcada, encerrar um ou todos os outros (API simulada)", full: true, mock: mockSessoes, prepare: async (p) => { await ready(p); await p.getByTestId("session-item").nth(2).waitFor(); } },
+  { file: "16-sessoes-confirmar.png", route: "/settings?tab=sessoes", perfil: "EMPREGADO", tema: "claro", viewport: DESKTOP, descricao: "RF2.CA05 — confirmação antes de encerrar a sessão do celular (revoga a família do refresh token)", mock: mockSessoes, prepare: async (p) => { await ready(p); await p.getByTestId("session-item").nth(1).getByTestId("session-revoke").click(); await p.getByRole("dialog", { name: "Encerrar esta sessão?" }).waitFor(); } },
+  { file: "17-saiu-em-todas-as-abas.png", route: "/login?next=%2Fsettings%3Ftab%3Dsessoes&reason=signed-out", perfil: "VISITANTE", tema: "claro", viewport: DESKTOP, descricao: "Bloco 4 — logout em uma aba: as outras caem aqui com o aviso “saiu em todas as abas” e o caminho de volta", prepare: (p) => p.getByTestId("login-reason").waitFor() },
+  { file: "18-sessoes-mobile.png", route: "/settings?tab=sessoes", perfil: "EMPREGADO", tema: "claro", viewport: MOBILE, descricao: "Celular: aba Sessões sem rolagem horizontal", full: true, mock: mockSessoes, prepare: async (p) => { await ready(p); await p.getByTestId("session-item").nth(2).waitFor(); } },
   // DECIA — decisão estruturada (RF29; docs/decia/04_DECISION_CARD.md e 05_WORKSPACE_E_NAVEGACAO.md). Dados DEMO.
   { file: "20-decia-precisa-de-atencao.png", route: "/decia", perfil: "EMPREGADO", tema: "claro", viewport: DESKTOP, descricao: "DECIA › Precisa de atenção: card HERO (aguardando sua decisão) e grupos da caixa de entrada", full: true, prepare: async (p) => { await ready(p); await p.getByTestId("inbox-hero").waitFor(); } },
   { file: "21-decia-decisoes-grade.png", route: "/decia?tab=decisoes", perfil: "EMPREGADO", tema: "claro", viewport: DESKTOP, descricao: "DECIA › Decisões em grade (cards STANDARD) com filtros", full: true, prepare: async (p) => { await ready(p); await p.getByTestId("view-grid").click(); await p.locator("[data-mode='STANDARD']").first().waitFor(); } },
@@ -82,8 +107,13 @@ export async function capturar(lista = CAPTURAS) {
       if (so && !so.test(c.file)) continue;
       const context = await browser.newContext({ viewport: c.viewport, locale: "pt-BR", colorScheme: "light", deviceScaleFactor: 1 });
       const page = await context.newPage();
+      if (c.perfil !== "VISITANTE" && c.sessao !== false) await context.addCookies(sessionCookies(BASE));
+      if (c.mock) await c.mock(page);
       await seed(page, { theme: c.tema, viewer: c.perfil, ...(c.seed ?? {}) });
-      await page.goto(`${BASE}${c.route}`, { waitUntil: "networkidle" });
+      // com sessão o app chama a API (porta 9 = recusada pelo Chromium com ERR_UNSAFE_PORT, que o "networkidle" nunca dá por
+      // terminada): espera o load e, no máximo 5 s, a rede assentar; quem decide quando fotografar é o `prepare`
+      await page.goto(`${BASE}${c.route}`, { waitUntil: "load" });
+      await page.waitForLoadState("networkidle", { timeout: 5000 }).catch(() => {});
       if (c.prepare) await c.prepare(page);
       await page.waitForTimeout(400);
       await page.screenshot({ path: path.join(OUT, c.file), fullPage: !!c.full, animations: "disabled" });
@@ -96,7 +126,7 @@ export async function capturar(lista = CAPTURAS) {
   const linhas = lista.map((c) => `| [\`${c.file}\`](${c.file}) | \`${c.route}\` | ${c.perfil} | ${c.tema} | ${c.viewport.width}×${c.viewport.height} | ${c.descricao} |`);
   const readme = `# Capturas do shell (etapa (b))
 
-Geradas por \`node scripts/shell/capturas.mjs\` (Playwright + Chromium em \`/opt/pw-browsers/chromium\`; app em \`next build && next start\`), perfil de visualização do lab (D-35) e tema gravados antes da primeira pintura. Para uma aba nova, acrescente uma entrada em \`CAPTURAS\` e rode o script de novo.
+Geradas por \`node scripts/shell/capturas.mjs\` (Playwright + Chromium em \`/opt/pw-browsers/chromium\`; app em \`next build && next start\`), perfil de visualização do lab (D-35) e tema gravados antes da primeira pintura; perfis logados recebem a sessão simulada (cookies \`ws_rt_h\`/\`ws_rt\` fictícios, Bloco 4) e as capturas da aba Sessões usam a API simulada do próprio script. Para uma aba nova, acrescente uma entrada em \`CAPTURAS\` e rode o script de novo.
 
 | Captura | Rota | Perfil | Tema | Viewport | O que mostra |
 |---|---|---|---|---|---|
