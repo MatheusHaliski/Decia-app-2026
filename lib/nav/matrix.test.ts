@@ -91,7 +91,7 @@ describe("Matrizes B/C/D e registro de páginas", () => {
   it("todas as rotas da ARQUITETURA §4 e da Matriz A estão registradas, sem duplicatas", () => {
     const routes = PAGES.map((p) => p.route);
     expect(new Set(routes).size).toBe(routes.length);
-    for (const r of ["/mural", "/search", "/memory", "/companies", "/models", "/profile", "/u/[username]", "/tasks", "/attachments", "/desk", "/projects/[id]/edit", "/projects/[id]/simulate", "/projects/[id]/mirror", "/tasks/new", "/projects/new", "/plans", "/autopilot", "/decia", "/decia/decisoes/[decisionId]", "/decia/[sessionId]", "/insights", "/goals", "/points", "/store", "/highlights", "/recognitions", "/benefits", "/admin", "/lab/design-system", "/settings", "/notifications", "/messages", "/login", "/register", "/password-reset", "/verify-email", "/issuer/dashboard", "/companies/[slug]/manage/departments", "/departments/[slug]/team", "/seals", "/seals/review", "/decia/review", "/handoffs", "/curation"]) {
+    for (const r of ["/mural", "/search", "/memory", "/companies", "/models", "/profile", "/u/[username]", "/tasks", "/attachments", "/desk", "/projects/[id]/edit", "/projects/[id]/simulate", "/projects/[id]/mirror", "/tasks/new", "/projects/new", "/plans", "/autopilot", "/decia", "/decia/decisoes/[decisionId]", "/decia/[sessionId]", "/insights", "/goals", "/points", "/store", "/highlights", "/recognitions", "/benefits", "/admin", "/lab/design-system", "/settings", "/notifications", "/messages", "/login", "/register", "/password-reset", "/verify-email", "/issuer/dashboard", "/companies/[slug]/manage/departments", "/departments/[slug]/team", "/seals", "/seals/review", "/decia/review", "/handoffs", "/curation", "/find", "/agents"]) {
       expect(routes, r).toContain(r);
     }
     for (const item of NAV_GROUPS.flatMap((g) => g.items)) {
@@ -99,5 +99,24 @@ describe("Matrizes B/C/D e registro de páginas", () => {
       const pattern = href.replace("/projects/[slug]/", "/projects/[id]/");
       expect(routes.some((r) => r === pattern || r === href), `${item.id} → ${href}`).toBe(true);
     }
+  });
+});
+
+describe("RF47 Encontrar e RF48 Agentes (D-128, D-130)", () => {
+  it("visitante não acessa nenhuma das duas; logados editam; em Agentes o ADMIN só vê", () => {
+    const find = PAGES.find((p) => p.route === "/find")!;
+    const agents = PAGES.find((p) => p.route === "/agents")!;
+    expect(VIEWER_PROFILES.map((p) => find.access[p])).toEqual(["E", "E", "E", "E", "E", "O"]);
+    expect(VIEWER_PROFILES.map((p) => agents.access[p])).toEqual(["E", "E", "E", "E", "V", "O"]);
+    expect(find.rfs[0]).toBe("RF47");
+    expect(agents.rfs[0]).toBe("RF48");
+    expect(visibleGroups("VISITANTE")[0]!.items.map((i) => i.id)).not.toContain("find");
+    expect(visibleGroups("EMPREGADO").find((g) => g.id === "descobrir")!.items.map((i) => i.id)).toContain("find");
+    expect(visibleGroups("EMPREGADO").find((g) => g.id === "meu-trabalho")!.items.map((i) => i.id)).toContain("agents");
+  });
+
+  it("ferramentas A · B · C · lista de termos em /find (RF47.CA14) e no dossiê de /agents (RF48.CA17), junto das fases", () => {
+    expect(PAGES.find((p) => p.route === "/find")!.tabs!.map((t) => t.slug)).toEqual(["encontrar", "ler", "extrair", "lista"]);
+    expect(PAGES.find((p) => p.route === "/agents")!.tabs!.map((t) => t.slug)).toEqual(["antes", "execucao", "transversais", "encontrar-no-dossie", "ler-com-mapa", "extrair-do-dossie", "lista-de-termos"]);
   });
 });

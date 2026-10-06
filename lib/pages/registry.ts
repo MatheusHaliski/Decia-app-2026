@@ -1,10 +1,10 @@
 /**
  * Registro das páginas-esqueleto: rota → título (i18n) → RFs citados (docs/diagramas/RFnn/README.md "Aba/rota") →
  * visibilidade por perfil (ABAS_POR_PERFIL.md Matrizes A–E) → sub-abas. É a tabela do §11 "Implementado em" e a
- * fonte do teste que exige uma página para cada RF1–RF46 (lib/rf/catalog.test.ts).
+ * fonte do teste que exige uma página para cada RF1–RF48 (lib/rf/catalog.test.ts).
  */
 import type { GlyphName, MojiName } from "@/components/ui/glyphs/sprite.gen";
-import { ADMIN_TABS, DECIA_TABS, DESK_TABS, INSIGHTS_TABS, MESSAGES_TABS, MODELS_TABS, MURAL_TABS, POINTS_TABS, SEARCH_TABS, SESSION_TABS, SETTINGS_TABS, type SubTab } from "@/lib/nav/matrix";
+import { ADMIN_TABS, AGENTS_ACCESS, AGENTS_TABS, DECIA_TABS, DESK_TABS, FIND_TABS, INSIGHTS_TABS, MESSAGES_TABS, MODELS_TABS, MURAL_TABS, POINTS_TABS, SEARCH_TABS, SESSION_TABS, SETTINGS_TABS, type SubTab } from "@/lib/nav/matrix";
 import { access, everyone, logged, type AccessMatrix } from "@/lib/viewer/profiles";
 
 export interface PageEntry {
@@ -89,6 +89,7 @@ export const PAGES: readonly PageEntry[] = [
   p("/models", "app/(shell)/models/page.tsx", "nav.models", ["RF40"], access({ EMPREGADO: "E", EMPRESA: "E", CHEFE: "E", CURADOR: "V", ADMIN: "V", VISITANTE: "V" }), "balcao", "A", { tabs: MODELS_TABS }),
   p("/messages", "app/(shell)/messages/page.tsx", "nav.messages", ["RF46", "RF10"], logged("E"), "sessao-decia", "A", { tabs: MESSAGES_TABS, note: "proposal" }),
   p("/messages/[conversationId]", "app/(shell)/messages/[conversationId]/page.tsx", "page.conversation", ["RF46", "RF13"], logged("E"), "sessao-decia", "A", { note: "proposal" }),
+  p("/find", "app/(shell)/find/page.tsx", "nav.find", ["RF47", "RF48", "RF27", "RF33", "RF20"], logged("E"), "buscar", "A", { tabs: FIND_TABS }),
   // Meu trabalho (§2.2)
   p("/profile", "app/(shell)/profile/page.tsx", "nav.profile", ["RF6", "RF19", "RF12", "RF25", "RF44", "RF45", "RF40"], logged("E"), "perfil", "B", { tabs: PROFILE_TABS }),
   p("/u/[username]", "app/(shell)/u/[username]/page.tsx", "page.userProfile", ["RF16", "RF6", "RF18", "RF19"], everyone("V"), "perfil", "B", { tabs: PROFILE_TABS }),
@@ -102,6 +103,7 @@ export const PAGES: readonly PageEntry[] = [
   p("/projects/[id]/edit", "app/(shell)/projects/[id]/edit/page.tsx", "page.projectEdit", ["RF22", "RF12", "RF8", "RF11"], logged("E"), "mesa", "A"),
   p("/projects/[id]/simulate", "app/(shell)/projects/[id]/simulate/page.tsx", "nav.simulate", ["RF31"], logged("E"), "hype", "A"),
   p("/projects/[id]/mirror", "app/(shell)/projects/[id]/mirror/page.tsx", "nav.mirror", ["RF32"], logged("E"), "insights-ia", "A"),
+  p("/agents", "app/(shell)/agents/page.tsx", "page.agents", ["RF48", "RF47", "RF29", "RF43"], AGENTS_ACCESS, "chancela", "A", { tabs: AGENTS_TABS }),
   // Criar (§2.3)
   p("/tasks/new", "app/(shell)/tasks/new/page.tsx", "nav.tasksNew", ["RF4", "RF23", "RF34"], logged("E"), "criar-tarefa", "A"),
   p("/projects/new", "app/(shell)/projects/new/page.tsx", "nav.projectsNew", ["RF5", "RF20"], logged("E"), "criar-projeto", "A"),

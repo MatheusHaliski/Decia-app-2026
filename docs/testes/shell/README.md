@@ -45,5 +45,9 @@ Geradas por `node scripts/shell/capturas.mjs` (Playwright + Chromium em `/opt/pw
 | [`49-perfil-mobile.png`](49-perfil-mobile.png) | `/u/ana.exemplo` | EMPREGADO | claro | 390×844 | Celular: perfil de terceiros sem rolagem horizontal (cards em coluna, barra social compacta) |
 | [`50-delegar-dialogo.png`](50-delegar-dialogo.png) | `/tasks/t-pessoa-cronograma` | EMPREGADO | claro | 1440×900 | RF18.CA03 — Delegar: busca de pessoas da empresa (motivo para quem não pode receber), mensagem e prazo |
 | [`51-delegadas-a-mim.png`](51-delegadas-a-mim.png) | `/profile` | EMPREGADO | claro | 1440×900 | RF18.CA04/CA05 — Delegadas a mim: Aceitar/Recusar a proposta, Devolver a aceita (motivo ≥ 20) e Delegadas por mim |
+| [`60-rf47-encontrar.png`](60-rf47-encontrar.png) | `/find` | EMPREGADO | claro | 1440×900 | RF47 — Encontrar (esqueleto): sub-abas Encontrar (A) · Ler com mapa (B) · Extrair (C) · Lista de termos, botão Testar esta contratação (CA14) e os CA01–CA14 do card |
+| [`61-rf48-agentes.png`](61-rf48-agentes.png) | `/agents?tab=encontrar-no-dossie` | EMPREGADO | claro | 1440×900 | RF48 — Agentes — Copilot de testes (esqueleto): modos Mesa de testes · Assistente · Carteira · Matriz (CA18), Abrir no Encontrar (CA19), fases + ferramentas do dossiê em abas (CA17) e os CA01–CA19 do card |
+| [`62-rf47-extrair.png`](62-rf47-extrair.png) | `/find?tab=extrair` | EMPREGADO | claro | 1440×900 | RF47.CA12 — sub-aba Extrair termos e entidades = Opção C (Termos e frases-chave · Valores · Datas e prazos · Artigos de lei · Órgãos, empresas e processos) |
+| [`63-rf48-extrair-do-dossie.png`](63-rf48-extrair-do-dossie.png) | `/agents?tab=extrair-do-dossie` | EMPREGADO | claro | 1440×900 | RF48.CA14 — Extrair do dossiê: a Opção C do RF47 com escopo do dossiê, entrada dos agentes determinísticos |
 
 Capturas do smoke E2E (`npx playwright test`, `e2e/shell.spec.ts`) ficam em [`e2e/`](e2e/).
