@@ -31,7 +31,7 @@
         <spring-boot.version>4.1.1</spring-boot.version>
         <springdoc.version>3.1.1</springdoc.version>
         <resilience4j.version>2.4.0</resilience4j.version>
-        <lombok.version>1.18.46</lombok.version>
+        <lombok.version>1.18.48</lombok.version>
         <bouncycastle.version>1.86</bouncycastle.version>
         <!-- Correções de segurança à frente do BOM do Boot 4.1.1 (D-70, gate Trivy): o Boot 4.1.1 traz Tomcat 11.0.24 e
              Jackson 3.1.5 / 2.21.5, com CVEs HIGH/CRITICAL já corrigidas em patch. Remover cada linha quando o BOM do Boot
