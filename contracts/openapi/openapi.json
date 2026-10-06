@@ -84,26 +84,6 @@
         "required" : [ "code", "email" ],
         "type" : "object"
       },
-      "CurrentUser" : {
-        "properties" : {
-          "admin" : {
-            "type" : "boolean"
-          },
-          "id" : {
-            "format" : "uuid",
-            "type" : "string"
-          },
-          "role" : {
-            "enum" : [ "USER", "ADMIN" ],
-            "type" : "string"
-          },
-          "sessionId" : {
-            "format" : "uuid",
-            "type" : "string"
-          }
-        },
-        "type" : "object"
-      },
       "DeletionBody" : {
         "properties" : {
           "currentPassword" : {
@@ -364,17 +344,6 @@
         "required" : [ "email" ],
         "type" : "object"
       },
-      "RequestContext" : {
-        "properties" : {
-          "ip" : {
-            "type" : "string"
-          },
-          "userAgent" : {
-            "type" : "string"
-          }
-        },
-        "type" : "object"
-      },
       "SensitiveRequest" : {
         "properties" : {
           "currentPassword" : {
@@ -570,14 +539,6 @@
     "/api/auth/email-verification/confirm" : {
       "post" : {
         "operationId" : "confirm_1",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "ctx",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/RequestContext"
-          }
-        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -607,14 +568,6 @@
     "/api/auth/email-verification/resend" : {
       "post" : {
         "operationId" : "resend",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "ctx",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/RequestContext"
-          }
-        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -647,14 +600,6 @@
     "/api/auth/login" : {
       "post" : {
         "operationId" : "login_1",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "ctx",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/RequestContext"
-          }
-        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -684,21 +629,6 @@
     "/api/auth/logout" : {
       "post" : {
         "operationId" : "logout",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "user",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/CurrentUser"
-          }
-        }, {
-          "in" : "query",
-          "name" : "ctx",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/RequestContext"
-          }
-        } ],
         "responses" : {
           "204" : {
             "description" : "No Content"
@@ -711,14 +641,6 @@
     "/api/auth/oidc/login" : {
       "post" : {
         "operationId" : "login",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "ctx",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/RequestContext"
-          }
-        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -748,21 +670,6 @@
     "/api/auth/password" : {
       "put" : {
         "operationId" : "changePassword",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "user",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/CurrentUser"
-          }
-        }, {
-          "in" : "query",
-          "name" : "ctx",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/RequestContext"
-          }
-        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -793,14 +700,6 @@
     "/api/auth/password-reset/confirm" : {
       "post" : {
         "operationId" : "confirm",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "ctx",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/RequestContext"
-          }
-        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -823,14 +722,6 @@
     "/api/auth/password-reset/request" : {
       "post" : {
         "operationId" : "request",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "ctx",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/RequestContext"
-          }
-        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -863,14 +754,6 @@
     "/api/auth/refresh" : {
       "post" : {
         "operationId" : "refresh",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "ctx",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/RequestContext"
-          }
-        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -900,14 +783,6 @@
     "/api/auth/register" : {
       "post" : {
         "operationId" : "register",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "ctx",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/RequestContext"
-          }
-        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -973,14 +848,6 @@
     "/api/me" : {
       "get" : {
         "operationId" : "me",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "user",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/CurrentUser"
-          }
-        } ],
         "responses" : {
           "200" : {
             "content" : {
@@ -998,21 +865,6 @@
       },
       "patch" : {
         "operationId" : "update",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "user",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/CurrentUser"
-          }
-        }, {
-          "in" : "query",
-          "name" : "ctx",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/RequestContext"
-          }
-        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -1042,21 +894,6 @@
     "/api/me/deletion" : {
       "delete" : {
         "operationId" : "cancelDeletion",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "user",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/CurrentUser"
-          }
-        }, {
-          "in" : "query",
-          "name" : "ctx",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/RequestContext"
-          }
-        } ],
         "responses" : {
           "200" : {
             "content" : {
@@ -1074,21 +911,6 @@
       },
       "post" : {
         "operationId" : "requestDeletion",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "user",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/CurrentUser"
-          }
-        }, {
-          "in" : "query",
-          "name" : "ctx",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/RequestContext"
-          }
-        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -1118,14 +940,6 @@
     "/api/me/preferences" : {
       "get" : {
         "operationId" : "preferences",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "user",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/CurrentUser"
-          }
-        } ],
         "responses" : {
           "200" : {
             "content" : {
@@ -1143,21 +957,6 @@
       },
       "put" : {
         "operationId" : "updatePreferences",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "user",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/CurrentUser"
-          }
-        }, {
-          "in" : "query",
-          "name" : "ctx",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/RequestContext"
-          }
-        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -1187,21 +986,6 @@
     "/api/me/sensitive" : {
       "patch" : {
         "operationId" : "sensitive",
-        "parameters" : [ {
-          "in" : "query",
-          "name" : "user",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/CurrentUser"
-          }
-        }, {
-          "in" : "query",
-          "name" : "ctx",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/RequestContext"
-          }
-        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -1261,13 +1045,6 @@
       "get" : {
         "operationId" : "profile",
         "parameters" : [ {
-          "in" : "query",
-          "name" : "user",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/components/schemas/CurrentUser"
-          }
-        }, {
           "in" : "path",
           "name" : "id",
           "required" : true,

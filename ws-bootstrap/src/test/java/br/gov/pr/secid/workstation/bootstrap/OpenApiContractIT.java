@@ -72,6 +72,10 @@ class OpenApiContractIT {
         assertThat(spec.path("paths").has("/api/me/preferences")).isTrue();
         assertThat(spec.path("paths").has("/api/auth/login")).isTrue();
         assertThat(spec.has("servers")).isFalse();
+        // argumentos injetados pelo servidor (CurrentUserArgumentResolver) nunca aparecem como parâmetro do cliente
+        assertThat(spec.path("components").path("schemas").has("CurrentUser")).isFalse();
+        assertThat(spec.path("components").path("schemas").has("RequestContext")).isFalse();
+        assertThat(raw).doesNotContain("\"name\":\"ctx\"").doesNotContain("\"name\":\"user\"");
 
         Path target = repositoryRoot().resolve(SPEC_PATH);
         Files.createDirectories(target.getParent());

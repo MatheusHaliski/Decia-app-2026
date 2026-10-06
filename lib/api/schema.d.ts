@@ -321,15 +321,6 @@ export interface components {
             deviceName?: string;
             email: string;
         };
-        CurrentUser: {
-            admin?: boolean;
-            /** Format: uuid */
-            id?: string;
-            /** @enum {string} */
-            role?: "USER" | "ADMIN";
-            /** Format: uuid */
-            sessionId?: string;
-        };
         DeletionBody: {
             currentPassword: string;
             reason?: string;
@@ -402,10 +393,6 @@ export interface components {
         };
         RequestBodyDto: {
             email: string;
-        };
-        RequestContext: {
-            ip?: string;
-            userAgent?: string;
         };
         SensitiveRequest: {
             currentPassword: string;
@@ -484,9 +471,7 @@ export type $defs = Record<string, never>;
 export interface operations {
     confirm_1: {
         parameters: {
-            query: {
-                ctx: components["schemas"]["RequestContext"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -510,9 +495,7 @@ export interface operations {
     };
     resend: {
         parameters: {
-            query: {
-                ctx: components["schemas"]["RequestContext"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -538,9 +521,7 @@ export interface operations {
     };
     login_1: {
         parameters: {
-            query: {
-                ctx: components["schemas"]["RequestContext"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -564,10 +545,7 @@ export interface operations {
     };
     logout: {
         parameters: {
-            query: {
-                user: components["schemas"]["CurrentUser"];
-                ctx: components["schemas"]["RequestContext"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -585,9 +563,7 @@ export interface operations {
     };
     login: {
         parameters: {
-            query: {
-                ctx: components["schemas"]["RequestContext"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -611,10 +587,7 @@ export interface operations {
     };
     changePassword: {
         parameters: {
-            query: {
-                user: components["schemas"]["CurrentUser"];
-                ctx: components["schemas"]["RequestContext"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -640,9 +613,7 @@ export interface operations {
     };
     confirm: {
         parameters: {
-            query: {
-                ctx: components["schemas"]["RequestContext"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -664,9 +635,7 @@ export interface operations {
     };
     request: {
         parameters: {
-            query: {
-                ctx: components["schemas"]["RequestContext"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -692,9 +661,7 @@ export interface operations {
     };
     refresh: {
         parameters: {
-            query: {
-                ctx: components["schemas"]["RequestContext"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -718,9 +685,7 @@ export interface operations {
     };
     register: {
         parameters: {
-            query: {
-                ctx: components["schemas"]["RequestContext"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -768,9 +733,7 @@ export interface operations {
     };
     me: {
         parameters: {
-            query: {
-                user: components["schemas"]["CurrentUser"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -790,10 +753,7 @@ export interface operations {
     };
     update: {
         parameters: {
-            query: {
-                user: components["schemas"]["CurrentUser"];
-                ctx: components["schemas"]["RequestContext"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -817,10 +777,7 @@ export interface operations {
     };
     requestDeletion: {
         parameters: {
-            query: {
-                user: components["schemas"]["CurrentUser"];
-                ctx: components["schemas"]["RequestContext"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -844,10 +801,7 @@ export interface operations {
     };
     cancelDeletion: {
         parameters: {
-            query: {
-                user: components["schemas"]["CurrentUser"];
-                ctx: components["schemas"]["RequestContext"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -867,9 +821,7 @@ export interface operations {
     };
     preferences: {
         parameters: {
-            query: {
-                user: components["schemas"]["CurrentUser"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -889,10 +841,7 @@ export interface operations {
     };
     updatePreferences: {
         parameters: {
-            query: {
-                user: components["schemas"]["CurrentUser"];
-                ctx: components["schemas"]["RequestContext"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -916,10 +865,7 @@ export interface operations {
     };
     sensitive: {
         parameters: {
-            query: {
-                user: components["schemas"]["CurrentUser"];
-                ctx: components["schemas"]["RequestContext"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -965,9 +911,7 @@ export interface operations {
     };
     profile: {
         parameters: {
-            query: {
-                user: components["schemas"]["CurrentUser"];
-            };
+            query?: never;
             header?: never;
             path: {
                 id: string;
