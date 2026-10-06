@@ -443,8 +443,9 @@ export function freshness(agg: DecisionAggregate, now: Date): Freshness | null {
   if (agg.checkpoints.some((c) => c.status === "AGENDADO" && ts(c.dueAt) - t <= 7 * DAY)) return "REVISAO_DEVIDA";
   if (lastDecisionSnap) {
     const snapAt = ts(lastDecisionSnap.takenAt);
-    if (agg.evidence.some((e) => !e.supersededAt && ts(e.addedAt) > snapAt)) return "REVISAO_DEVIDA";
-    if (agg.evidenceLinks.some((l) => l.createdAt && ts(l.createdAt) > snapAt)) return "REVISAO_DEVIDA";
+    // só evidência LIGADA à decisão depois do snapshot conta (uma referência solta não move a decisão para revisão — Codex P2, PR #31)
+    const live = new Set(agg.evidence.filter((e) => !e.supersededAt).map((e) => e.id));
+    if (agg.evidenceLinks.some((l) => live.has(l.evidenceId) && l.createdAt && ts(l.createdAt) > snapAt)) return "REVISAO_DEVIDA";
   }
   if (d.reviewEveryDays) {
     const lastReview = Math.max(decidedAt || 0, ...agg.checkpoints.filter((c) => c.status === "CONCLUIDO").map((c) => ts(c.completedAt) || 0));
