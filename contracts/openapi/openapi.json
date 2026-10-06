@@ -400,6 +400,32 @@
         },
         "type" : "object"
       },
+      "SessionView" : {
+        "properties" : {
+          "current" : {
+            "type" : "boolean"
+          },
+          "deviceName" : {
+            "type" : "string"
+          },
+          "expiresAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "lastActiveAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "persistent" : {
+            "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
       "UserPreferences" : {
         "properties" : {
           "aiModeDefault" : {
@@ -807,6 +833,67 @@
         },
         "summary" : "RF1.CA01/CA03/CA04/CA10/CA15/CA22 Cadastro: 422 VALIDACAO por campo (acceptTerms obrigatório), 422 NOME_RESERVADO, 409 USERNAME_EM_USO; e-mail já cadastrado recebe a MESMA resposta 202 (sem oráculo) e um e-mail de conta existente",
         "tags" : [ "RF1 Cadastro" ]
+      }
+    },
+    "/api/auth/sessions" : {
+      "delete" : {
+        "operationId" : "revokeOthers",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "additionalProperties" : { },
+                  "type" : "object"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF2.CA05 Sai de todos os outros dispositivos (mantém a sessão atual)",
+        "tags" : [ "RF2 Autenticação" ]
+      },
+      "get" : {
+        "operationId" : "list",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/SessionView"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF2.CA05 Minhas sessões vivas (dispositivo, última atividade, expiração; a atual marcada com current=true)",
+        "tags" : [ "RF2 Autenticação" ]
+      }
+    },
+    "/api/auth/sessions/{id}" : {
+      "delete" : {
+        "operationId" : "revoke",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "summary" : "RF2.CA05 Encerra uma sessão minha: revoga a família do refresh token; sessão de outra pessoa → 404 NAO_ENCONTRADO",
+        "tags" : [ "RF2 Autenticação" ]
       }
     },
     "/api/auth/username-suggestions" : {
