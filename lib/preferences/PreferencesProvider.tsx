@@ -34,6 +34,10 @@ const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffec
 export function PreferencesProvider({ children, adapters = [localAdapter, apiAdapter], initial }: { children: ReactNode; adapters?: PreferencesAdapter[]; initial?: Partial<UserPreferences> }) {
   const [prefs, setPrefs] = useState<UserPreferences>(() => sanitizePreferences({ ...DEFAULT_PREFERENCES, ...initial }));
   const [ready, setReady] = useState(false);
+  // Até o 1º adaptador (o local, que o bootScript do <head> também lê) responder, o <html> é do bootScript: aplicar os
+  // padrões antes disso apagaria o tema/idioma salvos e pintaria o padrão na hidratação (Codex, PR #36). Com `initial`,
+  // o valor já é conhecido desde o 1º render.
+  const [firstLoadDone, setFirstLoadDone] = useState(initial !== undefined);
   const [systemDark, setSystemDark] = useState(false);
   const adaptersRef = useRef(adapters);
 
@@ -43,9 +47,11 @@ export function PreferencesProvider({ children, adapters = [localAdapter, apiAda
     (async () => {
       for (const a of adaptersRef.current) {
         const loaded = await a.load();
-        if (alive && loaded) setPrefs(loaded);
+        if (!alive) return;
+        if (loaded) setPrefs(loaded);
+        setFirstLoadDone(true);
       }
-      if (alive) setReady(true);
+      if (alive) { setFirstLoadDone(true); setReady(true); }
     })();
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     setSystemDark(mq.matches);
@@ -57,9 +63,10 @@ export function PreferencesProvider({ children, adapters = [localAdapter, apiAda
   // 2) aplica no <html> e no estado do i18n a cada mudança — em layout effect, no mesmo commit do render: o tema/idioma
   //    nunca fica um quadro atrás do texto (sem piscar, e o DOM já está coerente quando o render termina)
   useIsomorphicLayoutEffect(() => {
+    if (!firstLoadDone) return;
     applyHtmlAttributes(document.documentElement, prefs);
     setCurrentLocale(prefs.language);
-  }, [prefs]);
+  }, [prefs, firstLoadDone]);
 
   const persist = useCallback((next: UserPreferences) => {
     for (const a of adaptersRef.current) void a.save(next);
