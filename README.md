@@ -166,6 +166,7 @@ Testes-guarda que falham o build antes do deploy:
 | `SensitiveDataMaskingConverterTest` | senha/token/JWT/credencial de URL escapando no log |
 | `GlobalExceptionHandlerWebTest` (ws-web) | 400/401/403/404/405/409/415/422/429/503/500 fora do formato `ApiError`, stack trace ou mensagem interna no corpo, header `X-Correlation-Id` ausente, `/actuator/*` aberto |
 | `WorkStationApplicationIT` | contexto completo + Flyway (V1 e V2 com `success = 1`, `schema.baseline = bloco-2`) contra MySQL 8.4 real (Testcontainers; pulado sem Docker) |
+| `OpenApiContractIT` (ws-bootstrap) · `lib/api/schema.test.ts` (front) | DTO/rota mudar sem regenerar `contracts/openapi/openapi.json` e `lib/api/schema.d.ts` (o CI regenera e exige `git diff` vazio); geração vazia/lixo sem `/api/me/preferences` (Testcontainers; o CI exige que o IT tenha rodado) |
 | `forbidden-elements.lint.test.ts` (front) | afrouxar as regras que proíbem elementos nativos fora de `components/ui/**` e cor literal/classe Tailwind de cor fixa em JSX |
 | `no-color-literals.test.ts`, `tokens-ws.test.ts`, `sprite.test.ts`, `catalog.test.ts` (front) | cor literal fora de `styles/tokens-ws.css`; `styles/tokens-ws.css` divergir de `docs/design-system/tokens-ws.css`; sprite de glifos ou catálogo de RFs desatualizados em relação aos SVGs/READMEs; RF sem página-esqueleto |
 | `scripts/i18n/check.js` | chave faltando/órfã/vazia ou variáveis diferentes entre pt-BR/en/es |
@@ -174,7 +175,27 @@ Gates no mesmo `verify`: JaCoCo **≥ 70 % de linhas** em `ws-application` e `ws
 SpotBugs (`config/spotbugs-exclude.xml`). OWASP Dependency-Check fica no perfil `mvn -Psecurity verify` (baixa a base
 NVD; `NVD_API_KEY` acelera) para não travar o CI por rede. Frontend: ESLint + stylelint (cor só por token), `tsc`,
 vitest, `npm audit --omit=dev --audit-level=high`. CI em [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
-(backend, frontend, gitleaks no histórico inteiro, commitlint).
+(backend, frontend, contrato OpenAPI → TypeScript, Trivy na imagem, gitleaks no histórico inteiro, commitlint).
+
+**Trivy (D-70).** O job `trivy` constrói a imagem do `Dockerfile.backend` e falha em vulnerabilidade **HIGH/CRITICAL com
+correção disponível** (SO ou jar do app; `--ignore-unfixed`). Achado corrigível se resolve subindo a versão (base da imagem
+ou dependência — enquanto o BOM do Boot não alcança, a versão corrigida fica fixada no `pom.xml` da raiz, Q-170). Exceção
+só em `.trivyignore`, com justificativa e data de validade em comentário, e listada no PR. Local:
+`docker build -f Dockerfile.backend -t work-station-api . && trivy image --scanners vuln --ignore-unfixed --severity HIGH,CRITICAL work-station-api`.
+
+### Contrato OpenAPI → TypeScript (D-71)
+
+`contracts/openapi/openapi.json` é a especificação do `/v3/api-docs` gravada pelo `OpenApiContractIT` (contexto completo,
+chaves ordenadas, sem `servers`, saída idêntica entre execuções); `lib/api/schema.d.ts` sai dela pelo `openapi-typescript`
+(versão fixa no `package.json`). Os dois são versionados e **nunca editados à mão**. Mudou controller/DTO? Regenere e versione:
+
+```bash
+mvn -B -ntp -pl ws-bootstrap -am test -Dtest=OpenApiContractIT -Dsurefire.failIfNoSpecifiedTests=false   # precisa de Docker
+npm run api:types
+```
+
+No CI o job `backend` confere que o IT rodou e que a especificação não mudou, e o job `api-types` regenera os tipos e
+exige `git diff --exit-code` vazio.
 
 ## Convenções
 
