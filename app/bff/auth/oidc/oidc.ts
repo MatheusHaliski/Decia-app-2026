@@ -141,7 +141,11 @@ export async function callback(req: NextRequest): Promise<NextResponse> {
   if (!cfg) return disabled();
   const name = cookieName(req);
   const pending = decodePending(req.cookies.get(name)?.value);
-  const done = (res: NextResponse) => { res.cookies.set(name, "", { path: "/", maxAge: 0 }); return res; };   // uso único, sempre
+  // uso único, sempre — apagar com os MESMOS atributos da criação: sem `Secure` o navegador ignora a operação no `__Host-`
+  const done = (res: NextResponse) => {
+    res.cookies.set(name, "", { httpOnly: true, secure: secureCookie(req), sameSite: "lax", path: "/", maxAge: 0 });
+    return res;
+  };
   const q = req.nextUrl.searchParams;
   if (q.get("error")) return done(NextResponse.redirect(new URL("/login?reason=oidc-error", req.nextUrl.origin), 303));
   if (!pending || typeof pending.v !== "string" || !VERIFIER_RE.test(pending.v)) return done(fail(400, "OIDC_PKCE_AUSENTE"));

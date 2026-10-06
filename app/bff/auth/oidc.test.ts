@@ -82,6 +82,20 @@ describe("BFF OIDC: Authorization Code + PKCE + state + nonce", () => {
     expect(fetchMock.mock.calls.some(([u]) => String(u).endsWith("/token"))).toBe(false);
   });
 
+  it("em HTTPS o cookie é __Host- e é apagado com Secure (sem Secure o navegador ignora o apagamento e o estado segue válido)", async () => {
+    const start = await startGET(new NextRequest("https://ws.exemplo.gov.br/bff/auth/oidc/start?next=%2Ftasks"));
+    const created = start.cookies.get("__Host-ws_oidc")!;
+    expect(created.secure).toBe(true);
+    const cookie = `__Host-ws_oidc=${created.value}`;
+    const res = await callbackGET(new NextRequest("https://ws.exemplo.gov.br/bff/auth/oidc/callback?code=abc&state=errado", { headers: { cookie } }));
+    expect(res.status).toBe(400);
+    const deleted = res.cookies.get("__Host-ws_oidc")!;
+    expect(deleted.maxAge).toBe(0);
+    expect(deleted.secure).toBe(true);
+    expect(deleted.path).toBe("/");
+    expect(res.headers.get("set-cookie")).toMatch(/__Host-ws_oidc=;.*Secure/i);
+  });
+
   it("nonce do id_token diferente do guardado → 400 OIDC_NONCE_INVALIDO e a API nem é chamada", async () => {
     const { cookie } = await begin();
     const p = pending(cookie);

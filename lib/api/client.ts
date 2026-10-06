@@ -7,6 +7,7 @@
 import { tr } from "@/lib/i18n/core";
 import { acceptLanguage, getCurrentLocale } from "@/lib/i18n/state";
 import { createAuthBus, jwtExpiry, refreshDelayMs, type AuthBus, type AuthMessage } from "@/lib/auth/bus";
+import { withStorageLease } from "@/lib/auth/lease";
 
 const RAW_API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 export const API_BASE = (RAW_API_BASE && RAW_API_BASE.trim() ? RAW_API_BASE : "http://localhost:8080").replace(/\/+$/, "");
@@ -123,7 +124,7 @@ export const hasSession = () => !!accessToken || tokenStore.restorable;
 /** Serializa a renovação entre abas (a rotação do refresh token invalida o anterior). */
 async function withRefreshLock<T>(fn: () => Promise<T>): Promise<T> {
   const locks = typeof navigator !== "undefined" ? (navigator as Navigator & { locks?: LockManager }).locks : undefined;
-  return locks ? locks.request("ws-auth-refresh", fn) : fn();
+  return locks ? locks.request("ws-auth-refresh", fn) : withStorageLease(fn);
 }
 
 type RefreshOutcome = "ok" | "ended" | "offline";
