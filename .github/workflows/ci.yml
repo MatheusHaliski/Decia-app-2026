@@ -34,7 +34,7 @@ jobs:
         run: mvn -B -ntp verify
       - name: Relatórios (cobertura, surefire)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: backend-reports
           path: |
@@ -89,7 +89,7 @@ jobs:
           NEXT_PUBLIC_API_BASE_URL: http://127.0.0.1:9
       - name: "Relatório e capturas"
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: e2e-report
           path: |
