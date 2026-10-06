@@ -3,7 +3,12 @@ import { defineConfig, devices } from "@playwright/test";
 /**
  * E2E mínimo do shell (ARQUITETURA §3.4 "Playwright smoke"). Localmente usa o Chromium já instalado em
  * /opt/pw-browsers/chromium (nunca rodar `playwright install` aqui, CHROMIUM_PATH sobrescreve); no CI o job `e2e`
- * instala o navegador do Playwright e deixa CHROMIUM_PATH vazio. Sobe `next dev` (ou reaproveita um servidor em :3000).
+ * instala o navegador do Playwright e deixa CHROMIUM_PATH vazio. Sobe o BUILD DE PRODUÇÃO (`next build && next start`) ou
+ * reaproveita um servidor em :3000. Não `next dev`: lá cada rota compila sob demanda e cada compilação dispara um evento HMR
+ * ("[Fast Refresh] rebuilding" / "had to perform a full reload") em TODAS as páginas abertas pelos dois workers — a página
+ * em teste recarrega ou demora a hidratar no meio do passo (sino sem contagem, tema perdido no reload, repositório DEMO em
+ * memória zerado). Reproduzido também no main anterior ao Bloco 4 (4/55 com --repeat-each=5); o Bloco 4 aumentou a chance
+ * porque a sessão simulada faz cada página chamar o BFF e a API (mais rotas compiladas durante os testes).
  */
 const executablePath = process.env.CHROMIUM_PATH === "" ? undefined : process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium";
 
@@ -34,10 +39,10 @@ export default defineConfig({
     storageState: { cookies: E2E_SESSION_COOKIES, origins: [] },
   },
   webServer: {
-    command: "npm run dev",
+    command: "npm run build && npm run start",
     url: "http://localhost:3000/mural",
     reuseExistingServer: true,
-    timeout: 180_000,
+    timeout: 300_000, // inclui o `next build` (o tempo de cada teste não muda)
     env: { PORT: "3000", NEXT_PUBLIC_API_BASE_URL: "http://127.0.0.1:9", NEXT_TELEMETRY_DISABLED: "1" },
   },
 });
