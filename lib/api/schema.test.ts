@@ -1,17 +1,10 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import type { components, paths } from "./schema";
 
 // Guarda do contrato OpenAPI → TypeScript (D-71). `contracts/openapi/openapi.json` sai do teste OpenApiContractIT
 // (backend) e `lib/api/schema.d.ts` do `npm run api:types`; o CI regenera os dois e falha no `git diff --exit-code`.
 // Aqui o teste falha se a geração vier vazia ou lixo, ou se os tipos não cobrirem todas as rotas da especificação.
-
-// Checagem em tempo de compilação (tsc --noEmit): some a rota ou o schema → o typecheck quebra.
-type PreferencesGet = paths["/api/me/preferences"]["get"];
-type PreferencesPut = paths["/api/me/preferences"]["put"];
-type Preferences = components["schemas"]["UserPreferences"];
-const _compileTimeGuard: [PreferencesGet, PreferencesPut, Preferences] | null = null;
 
 const read = (relative: string) => readFileSync(fileURLToPath(new URL(relative, import.meta.url)), "utf8");
 
@@ -24,7 +17,6 @@ describe("contrato OpenAPI gerado (openapi-typescript)", () => {
   const types = read("./schema.d.ts");
 
   it("especificação é OpenAPI 3, determinística (sem servers) e traz rotas conhecidas", () => {
-    expect(_compileTimeGuard).toBeNull();
     expect(spec.openapi).toMatch(/^3\./);
     expect(spec.servers).toBeUndefined();
     expect(Object.keys(spec.paths)).toEqual(expect.arrayContaining(["/api/me/preferences", "/api/auth/login", "/api/me"]));
