@@ -93,7 +93,8 @@ export const PAGES: readonly PageEntry[] = [
   p("/profile", "app/(shell)/profile/page.tsx", "nav.profile", ["RF6", "RF19", "RF12", "RF25", "RF44", "RF45", "RF40"], logged("E"), "perfil", "B", { tabs: PROFILE_TABS }),
   p("/u/[username]", "app/(shell)/u/[username]/page.tsx", "page.userProfile", ["RF16", "RF6", "RF18", "RF19"], everyone("V"), "perfil", "B", { tabs: PROFILE_TABS }),
   p("/tasks", "app/(shell)/tasks/page.tsx", "nav.tasks", ["RF41", "RF44", "RF18", "RF13"], logged("E"), "acervo", "A"),
-  p("/tasks/[id]", "app/(shell)/tasks/[id]/page.tsx", "page.task", ["RF41", "RF19", "RF18", "RF7", "RF34", "RF13", "RF10"], logged("V"), "acervo", "A"),
+  // visitante lê só tarefas PUBLICA (perfis públicos, Mural, Buscar — RF16/RF17.CA04/RF27); o resto 403 no TaskDetail (D-93)
+  p("/tasks/[id]", "app/(shell)/tasks/[id]/page.tsx", "page.task", ["RF41", "RF19", "RF18", "RF7", "RF34", "RF13", "RF10"], everyone("V"), "acervo", "A"),
   p("/tasks/[id]/edit", "app/(shell)/tasks/[id]/edit/page.tsx", "page.taskEdit", ["RF8", "RF11", "RF12"], logged("E"), "criar-tarefa", "A"),
   p("/attachments", "app/(shell)/attachments/page.tsx", "nav.attachments", ["RF41"], logged("E"), "acervo", "A"),
   p("/desk", "app/(shell)/desk/page.tsx", "nav.desk", ["RF21", "RF22", "RF44"], logged("E"), "mesa", "A", { tabs: DESK_TABS }),

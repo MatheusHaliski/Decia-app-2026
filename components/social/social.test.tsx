@@ -10,7 +10,10 @@ import { taskById } from "@/lib/social/rules";
 import type { ViewerId } from "@/lib/social/types";
 import { toTaskCardViewModel } from "@/lib/social/view-model";
 import type { ViewerProfile } from "@/lib/viewer/profiles";
-import { AssignmentInbox, CommentThread, FollowButton, ProfileView, ShareSheet, SocialScope, TaskSchemeCard, useSocial, type TaskCardLayout } from "./index";
+import { AssignmentInbox, CommentThread, FollowButton, ProfileView, RemixDialog, ShareSheet, SocialScope, TaskDetail, TaskSchemeCard, useSocial, type TaskCardLayout } from "./index";
+import { DEMO_PROJECT_IDS } from "@/lib/social/fixtures";
+import { projectById } from "@/lib/social/rules";
+import { toProjectCardViewModel } from "@/lib/social/view-model";
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ replace: vi.fn(), push: vi.fn(), prefetch: vi.fn() }),
@@ -264,6 +267,29 @@ describe("ProfileView — sub-abas por viewer (Matriz B)", () => {
     expect(screen.getByTestId("institutional-link").getAttribute("href")).toBe("/companies/secretaria-exemplo");
     expect(profileTabs()).toHaveLength(4);
     expect(within(screen.getByTestId("profile-counters")).queryByText(/Pontos|Points/)).toBeNull();
+  });
+});
+
+describe("correções da revisão (PR #35)", () => {
+  it("visitante abre tarefa PUBLICA só para leitura (ações pedem login) e recebe 403 nas não públicas", () => {
+    const { render } = setup(null);
+    const { unmount } = render(<TaskDetail taskId={T.anaEtp} />, "VISITANTE");
+    expect(screen.getByTestId("task-detail")).toBeTruthy();
+    expect(bar().getByTestId("action-like").getAttribute("aria-disabled")).toBe("true");
+    expect(screen.getByText("Entre na sua conta para interagir.", { selector: "p" })).toBeTruthy();
+    unmount();
+    render(<TaskDetail taskId={T.anaPlanilha} />, "VISITANTE");
+    expect(screen.queryByTestId("task-detail")).toBeNull();
+    expect(screen.getByText(/403 ACESSO_NEGADO/)).toBeTruthy();
+  });
+  it("remix de projeto não leva à página-esqueleto /projects/[id]; leva à sub-aba Projetos do perfil", () => {
+    const { render, repo } = setup();
+    const vm = toProjectCardViewModel(repo.snapshot(), U.pessoa, projectById(repo.snapshot(), DEMO_PROJECT_IDS.anaMobilidade)!);
+    render(<RemixDialog open onOpenChange={() => {}} vm={vm} />);
+    fireEvent.click(screen.getByTestId("remix-confirm"));
+    const done = screen.getByTestId("remix-done");
+    expect(within(done).getByTestId("remix-go-acervo").getAttribute("href")).toBe("/profile?tab=projetos");
+    expect(within(done).queryAllByRole("link").some((a) => (a.getAttribute("href") ?? "").startsWith("/projects/"))).toBe(false);
   });
 });
 

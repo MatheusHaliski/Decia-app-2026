@@ -83,6 +83,11 @@ describe("Matrizes B/C/D e registro de páginas", () => {
     expect(visibleTabs(DEPARTMENT_TABS, "EMPREGADO").map((t) => t.slug)).not.toContain("minha-equipe");
   });
 
+  it("/tasks/[id] aceita visitante (só leitura; o TaskDetail filtra por visibilidade, D-93)", () => {
+    expect(PAGES.find((p) => p.route === "/tasks/[id]")!.access.VISITANTE).toBe("V");
+    expect(PAGES.find((p) => p.route === "/tasks/[id]/edit")!.access.VISITANTE).toBe("O");
+  });
+
   it("todas as rotas da ARQUITETURA §4 e da Matriz A estão registradas, sem duplicatas", () => {
     const routes = PAGES.map((p) => p.route);
     expect(new Set(routes).size).toBe(routes.length);

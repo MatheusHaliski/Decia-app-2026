@@ -22,7 +22,7 @@ export function RemixDialog({ open, onOpenChange, vm }: { open: boolean; onOpenC
     const r = run((s, v, now) => remix(s, v, vm.ref, now), "social.toast.remixed");
     if (r.ok) setResult(r.resultId);
   };
-  const resultHref = result ? (vm.kind === "TASK" ? `/tasks/${result}` : `/projects/${result}`) : "";
+  const resultHref = result ? `/tasks/${result}` : "";
   return (
     <Dialog open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) setResult(null); }} title={<><span aria-hidden>{ACTION_SYMBOL.remix} </span>{t("social.remix.title")}</>} description={t("social.remix.description")} className="w-[min(92vw,36rem)]">
       {result ? (
@@ -31,7 +31,8 @@ export function RemixDialog({ open, onOpenChange, vm }: { open: boolean; onOpenC
           <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{t("social.remix.doneHint")}</p>
           <div className="flex flex-wrap gap-2">
             <Button variant="primary" href={vm.kind === "TASK" ? "/profile?tab=acervo" : "/profile?tab=projetos"} data-testid="remix-go-acervo">{t("social.remix.goAcervo")}</Button>
-            <Button href={resultHref}>{t("social.remix.openCopy")}</Button>
+            {/* projeto: /projects/[id] ainda é esqueleto — a cópia aparece na sub-aba Projetos do perfil (botão acima) */}
+            {vm.kind === "TASK" ? <Button href={resultHref} data-testid="remix-open-copy">{t("social.remix.openCopy")}</Button> : null}
           </div>
         </div>
       ) : (

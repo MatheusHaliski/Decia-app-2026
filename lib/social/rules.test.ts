@@ -380,3 +380,37 @@ describe("Mural (RF27.CA01/CA02/CA04/CA06)", () => {
     expect(muralFeed(s, null, "seguindo")).toEqual([]);
   });
 });
+
+describe("correções da revisão (PR #35)", () => {
+  it("entrada de Mural sem alvo (COMUNICADO) só para a mesma empresa — nunca visitante nem outra empresa", () => {
+    const s0 = fresh();
+    const s: SocialState = { ...s0, mural: [{ id: "m-com", companyId: "c-secretaria", departmentId: null, kind: "COMUNICADO", targetType: null, targetId: null, actorId: U.secretaria, boostUntil: null, at: NOW.toISOString() }, ...s0.mural] };
+    expect(muralFeed(s, U.pessoa, "empresa").map((e) => e.id)).toContain("m-com");
+    expect(muralFeed(s, null, "empresa").map((e) => e.id)).not.toContain("m-com");
+    expect(muralFeed(s, U.carla, "empresa").map((e) => e.id)).not.toContain("m-com");
+    expect(muralFeed(s, U.carla, "seguindo").map((e) => e.id)).not.toContain("m-com");
+  });
+  it("remover dos salvos funciona mesmo se o alvo deixou de existir", () => {
+    const s0 = fresh();
+    const s: SocialState = { ...s0, saved: [...s0.saved, { id: "s-orfao", userId: U.pessoa, targetType: "TASK", targetId: "t-apagada", favorite: false, savedAt: NOW.toISOString() }] };
+    const r = ok(toggleSave(s, U.pessoa, task("t-apagada"), NOW));
+    expect(r.saved).toBe(false);
+    expect(r.state.saved.some((x) => x.id === "s-orfao")).toBe(false);
+    expect(err(toggleSave(s0, U.pessoa, task("t-apagada"), NOW))).toBe("NAO_ENCONTRADO");
+  });
+  it("editar comentário notifica só as menções novas que podem ver o item (sem duplicar, sem auto-notificação)", () => {
+    let s = fresh(); // c-seed-3 (Bruno) já menciona @pessoa.exemplo
+    const before = notificationsFor(s, U.pessoa).length;
+    s = ok(editComment(s, U.bruno, "c-seed-3", "@pessoa.exemplo e @ana.exemplo e @bruno.exemplo, vejam", NOW)).state;
+    expect(notificationsFor(s, U.ana).filter((n) => n.type === "MENCAO")).toHaveLength(1);
+    expect(notificationsFor(s, U.pessoa)).toHaveLength(before); // já era mencionada
+    expect(notificationsFor(s, U.bruno)).toHaveLength(0); // autor
+    s = ok(editComment(s, U.bruno, "c-seed-3", "@pessoa.exemplo e @ana.exemplo, vejam de novo", LATER)).state;
+    expect(notificationsFor(s, U.ana).filter((n) => n.type === "MENCAO")).toHaveLength(1);
+    const ata = ok(addComment(fresh(), U.pessoa, task(T.anaAta), "rascunho", NOW));
+    const c = ata.state.comments.find((x) => x.id === ata.commentId)!;
+    const edited = ok(editComment(ata.state, U.pessoa, c.id, "@carla.exemplo olha", NOW)).state; // DEPARTAMENTO: Carla não vê
+    expect(notificationsFor(edited, U.carla)).toHaveLength(0);
+  });
+});
+

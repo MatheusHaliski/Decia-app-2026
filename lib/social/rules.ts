@@ -291,8 +291,19 @@ export function editComment(s: SocialState, viewer: ViewerId, commentId: string,
   const invalid = validateContent(content);
   if (invalid) return fail(invalid);
   const text = content.trim();
-  const updated: Comment = { ...c, contentMd: text, mentions: parseMentions(s, text), editedAt: now.toISOString() };
-  return { ok: true, state: { ...s, comments: s.comments.map((x) => (x.id === commentId ? updated : x)) } };
+  const mentions = parseMentions(s, text);
+  const updated: Comment = { ...c, contentMd: text, mentions, editedAt: now.toISOString() };
+  let next: SocialState = { ...s, comments: s.comments.map((x) => (x.id === commentId ? updated : x)) };
+  // só as menções NOVAS da edição notificam (sem repetir quem já foi mencionado, sem auto-notificação)
+  const ref: TargetRef = { type: c.targetType as TargetRef["type"], id: c.targetId };
+  const item = itemOf(next, ref);
+  if (item) {
+    for (const username of mentions.filter((u) => !c.mentions.includes(u))) {
+      const p = personByUsername(next, username);
+      if (p && canView(next, p.id, item)) next = notify(next, { recipientId: p.id, actorId: viewer, type: "MENCAO", resource: ref, targetTitle: titleOf(item), aggregate: false, key: `${c.id}:${username}` }, now);
+    }
+  }
+  return { ok: true, state: next };
 }
 
 /** Quem pode excluir: o autor ou o chefe do departamento do item (RF26.CA03). */
@@ -327,11 +338,11 @@ export function threadOf(s: SocialState, ref: TargetRef): ThreadNode[] {
 export const savedOf = (s: SocialState, ref: TargetRef, viewer: ViewerId) => (viewer ? s.saved.find((x) => x.userId === viewer && sameTarget(x, ref)) : undefined);
 
 export function toggleSave(s: SocialState, viewer: ViewerId, ref: TargetRef, now: Date): Result<{ saved: boolean }> {
+  const existing = savedOf(s, ref, viewer);
+  // remover dos salvos vale mesmo se o alvo ficou invisível ou deixou de existir (RF6.CA05 "indisponível" → Remover)
+  if (existing) return { ok: true, saved: false, state: { ...s, saved: s.saved.filter((x) => x.id !== existing.id) } };
   const item = itemOf(s, ref);
   if (!item) return fail("NAO_ENCONTRADO");
-  const existing = savedOf(s, ref, viewer);
-  // remover dos salvos vale mesmo se o alvo ficou invisível (RF6.CA05 "indisponível" → Remover)
-  if (existing) return { ok: true, saved: false, state: { ...s, saved: s.saved.filter((x) => x.id !== existing.id) } };
   const perm = canInteract(s, viewer, item);
   if (!perm.ok) return fail(perm.reason);
   const saved: SavedItem = { id: nextId("s", s.saved.map((x) => x.id)), userId: viewer!, targetType: ref.type, targetId: ref.id, favorite: false, savedAt: now.toISOString() };
@@ -703,7 +714,8 @@ export type MuralTab = "empresa" | "vitrine" | "seguindo";
 export function muralFeed(s: SocialState, viewer: ViewerId, tab: MuralTab): MuralEntry[] {
   const person = personById(s, viewer);
   const visible = s.mural.filter((e) => {
-    if (!e.targetType || !e.targetId) return true;
+    // entrada sem alvo (COMUNICADO, META, RECONHECIMENTO…): MuralEntry não tem visibilidade própria → só a mesma empresa
+    if (!e.targetType || !e.targetId) return !!person?.companyId && person.companyId === e.companyId;
     const item = itemOf(s, { type: e.targetType as TargetRef["type"], id: e.targetId });
     return !!item && canView(s, viewer, item);
   });
@@ -713,7 +725,7 @@ export function muralFeed(s: SocialState, viewer: ViewerId, tab: MuralTab): Mura
     if (!person) return [];
     return sorted.filter((e) => isFollowing(s, viewer, "USER", e.actorId) || (e.departmentId && isFollowing(s, viewer, "DEPARTMENT", e.departmentId)) || isFollowing(s, viewer, "COMPANY", e.companyId));
   }
-  return sorted.filter((e) => (person?.companyId && e.companyId === person.companyId) || !person || e.targetType === null || isPublicTarget(s, e));
+  return sorted.filter((e) => (person?.companyId && e.companyId === person.companyId) || isPublicTarget(s, e));
 }
 
 function isPublicTarget(s: SocialState, e: MuralEntry): boolean {
