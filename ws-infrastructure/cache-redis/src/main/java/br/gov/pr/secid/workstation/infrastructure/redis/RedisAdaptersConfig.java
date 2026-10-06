@@ -1,5 +1,6 @@
 package br.gov.pr.secid.workstation.infrastructure.redis;
 
+import br.gov.pr.secid.workstation.application.ai.AiBudgetCounterPort;
 import br.gov.pr.secid.workstation.application.identity.RateLimitPort;
 import br.gov.pr.secid.workstation.application.identity.SessionStorePort;
 import org.slf4j.Logger;
@@ -31,5 +32,11 @@ public class RedisAdaptersConfig {
     @Bean
     SessionStorePort redisSessionStore(StringRedisTemplate redis) {
         return new RedisSessionStore(redis);
+    }
+
+    /** Orçamento diário de IA compartilhado entre réplicas (D-68) — o InMemoryAiBudgetCounter se desliga com a flag. */
+    @Bean
+    AiBudgetCounterPort redisAiBudgetCounter(StringRedisTemplate redis) {
+        return new RedisAiBudgetCounter(redis);
     }
 }

@@ -15,6 +15,7 @@ import br.gov.pr.secid.workstation.application.identity.UserPreferencesRepositor
 import br.gov.pr.secid.workstation.application.identity.UserRepositoryPort;
 import br.gov.pr.secid.workstation.application.identity.UserView;
 import br.gov.pr.secid.workstation.application.security.Guard;
+import br.gov.pr.secid.workstation.application.security.ResourceAuthorizer;
 import br.gov.pr.secid.workstation.domain.identity.AccountStatus;
 import br.gov.pr.secid.workstation.domain.identity.HypeVisibility;
 import br.gov.pr.secid.workstation.domain.identity.User;
@@ -37,7 +38,8 @@ import java.util.UUID;
 /**
  * RF3 — a própria conta (CA01–CA04, CA08, CA19–CA20): perfil não sensível, dados sensíveis com step-up de senha (no mesmo
  * bloqueio do login), preferências e exclusão agendada (D-18: {@code DELETION_SCHEDULED} por 30 dias, cancelável; a
- * anonimização é o job do bloco LGPD C). BOLA: {@link Guard#ownerOrAdmin} em todo acesso por id.
+ * anonimização é o job do bloco LGPD C). BOLA/BFLA (D-65/D-66): todo acesso passa pelo {@link ResourceAuthorizer} — a própria conta
+ * por {@code ownAccount/confirmOwn}, a conta de terceiro por {@code requireSelfOrAdmin} (papel ADMIN relido do banco).
  */
 @Service
 public class AccountService {
@@ -55,9 +57,11 @@ public class AccountService {
     private final RegistrationService registration;
     private final AuditLogPort audit;
     private final Clock clock;
+    private final ResourceAuthorizer authorizer;
 
     public AccountService(UserRepositoryPort users, UserPreferencesRepositoryPort preferences, EmailHasher emailHasher,
-                          IdentityService identity, RegistrationService registration, AuditLogPort audit, Clock clock) {
+                          IdentityService identity, RegistrationService registration, AuditLogPort audit, Clock clock,
+                          ResourceAuthorizer authorizer) {
         this.users = users;
         this.preferences = preferences;
         this.emailHasher = emailHasher;
@@ -65,6 +69,7 @@ public class AccountService {
         this.registration = registration;
         this.audit = audit;
         this.clock = clock;
+        this.authorizer = authorizer;
     }
 
     public record ProfileUpdate(String fullName, String displayName, String jobTitle, String bio, String avatarUrl, String coverUrl,
@@ -82,12 +87,12 @@ public class AccountService {
 
     // ------------------------------------------------------------------ leitura
     public UserView me(CurrentUser current) {
-        return UserView.of(load(current.id()));
+        return UserView.of(authorizer.ownAccount(current));
     }
 
-    /** Perfil por id: só o dono ou ADMIN (BOLA). */
+    /** Perfil por id: só a própria pessoa ou ADMIN com papel relido do banco (BOLA/BFLA, 403 uniforme — D-65). */
     public UserView profile(CurrentUser actor, UUID userId) {
-        Guard.ownerOrAdmin(actor, userId);
+        authorizer.requireSelfOrAdmin(actor, userId);
         return UserView.of(load(userId));
     }
 
@@ -98,7 +103,7 @@ public class AccountService {
     // ------------------------------------------------------------------ perfil
     @Transactional
     public UserView update(CurrentUser current, ProfileUpdate cmd, RequestContext ctx) {
-        User u = load(current.id());
+        User u = authorizer.ownAccount(current);
         Guard.requireNotDeletionScheduled(u);
         Map<String, Object> fields = new LinkedHashMap<>();
         List<String> changed = new ArrayList<>();
@@ -187,7 +192,7 @@ public class AccountService {
     /** E-mail/telefone exigem a senha atual no mesmo bloqueio do login (RF3.CA02/CA08): 6º erro → 429. */
     @Transactional(noRollbackFor = ApiException.class)
     public UserView updateSensitive(CurrentUser current, SensitiveUpdate cmd, RequestContext ctx) {
-        User u = identity.reauthenticate(current, cmd.currentPassword(), "dados_sensiveis", ctx);
+        User u = authorizer.confirmOwn(current, identity.reauthenticate(current, cmd.currentPassword(), "dados_sensiveis", ctx));
         Guard.requireNotDeletionScheduled(u);
         Map<String, Object> fields = new LinkedHashMap<>();
         List<String> changed = new ArrayList<>();
@@ -233,7 +238,7 @@ public class AccountService {
     // ------------------------------------------------------------------ exclusão (D-18)
     @Transactional(noRollbackFor = ApiException.class)
     public DeletionReceipt requestDeletion(CurrentUser current, DeletionRequest cmd, RequestContext ctx) {
-        User u = identity.reauthenticate(current, cmd.currentPassword(), "exclusao", ctx);
+        User u = authorizer.confirmOwn(current, identity.reauthenticate(current, cmd.currentPassword(), "exclusao", ctx));
         if (u.isDeletionScheduled()) {
             throw new ApiException(AuthCodes.EXCLUSAO_AGENDADA, 409, "A exclusão desta conta já está agendada.");
         }
@@ -252,7 +257,7 @@ public class AccountService {
 
     @Transactional
     public DeletionReceipt cancelDeletion(CurrentUser current, RequestContext ctx) {
-        User u = load(current.id());
+        User u = authorizer.ownAccount(current);
         if (!u.isDeletionScheduled()) {
             throw new ApiException(AuthCodes.EXCLUSAO_NAO_AGENDADA, 409, "Não há exclusão agendada para esta conta.");
         }
@@ -269,6 +274,7 @@ public class AccountService {
 
     // ------------------------------------------------------------------ preferências
     public UserPreferences preferences(CurrentUser current) {
+        authorizer.ownAccount(current);
         return preferences.findByUserId(current.id()).orElseGet(() -> {
             UserPreferences p = new UserPreferences();
             p.setUserId(current.id());
@@ -278,7 +284,7 @@ public class AccountService {
 
     @Transactional
     public UserPreferences updatePreferences(CurrentUser current, UserPreferences cmd, RequestContext ctx) {
-        load(current.id());
+        authorizer.ownAccount(current);
         Map<String, Object> fields = new LinkedHashMap<>();
         UserPreferences p = preferences(current);
         if (cmd.getTheme() != null) {

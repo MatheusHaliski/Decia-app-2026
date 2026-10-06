@@ -113,6 +113,7 @@ import br.gov.pr.secid.workstation.domain.planejamento.PlanAxisProject;
 import br.gov.pr.secid.workstation.domain.plataforma.DomainEventOutbox;
 import br.gov.pr.secid.workstation.domain.plataforma.FeatureFlag;
 import br.gov.pr.secid.workstation.domain.plataforma.MediaObject;
+import br.gov.pr.secid.workstation.domain.plataforma.MediaScan;
 import br.gov.pr.secid.workstation.domain.plataforma.PersonalDataSource;
 import br.gov.pr.secid.workstation.domain.plataforma.PipelineJob;
 import br.gov.pr.secid.workstation.domain.projetos.ComplianceChecklist;
@@ -174,7 +175,8 @@ public final class DomainCatalog {
             Map.entry(19, "rf40_balcao_loja"),
             Map.entry(20, "rf46_mensageria_atribuicao"),
             Map.entry(21, "rf43_ia_plataforma"),
-            Map.entry(22, "rf29_decisao_estruturada"));
+            Map.entry(22, "rf29_decisao_estruturada"),
+            Map.entry(24, "seg_bloco5_quarentena_midia"));
 
     /**
      * FKs de tabelas que NÃO são geradas pelo catálogo (V2/Bloco 3) e que passam a existir quando a tabela-pai nasce:
@@ -228,6 +230,8 @@ public final class DomainCatalog {
             DecisionEvidence.class, EvidenceLink.class, DecisionAssumption.class, DecisionRisk.class, DecisionScenario.class, DecisionForecast.class,
             DecisionRecommendation.class, DecisionTrigger.class, DecisionSnapshot.class, DecisionCheckpoint.class, DecisionOutcome.class,
             DecisionRetrospective.class, DecisionWorkLink.class, DecisionEvent.class,
+            // V24 — Segurança Bloco 5: quarentena/antivírus de mídia (D-67). V23 é reservada à mensageria do DECIA.
+            MediaScan.class,
             // V2 — já existem (só domínio + catálogo)
             AiInferenceLog.class, DomainEventOutbox.class, FeatureFlag.class, MediaObject.class);
 

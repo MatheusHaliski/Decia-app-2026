@@ -23,12 +23,18 @@ class RedisAdaptersConfigTest {
         StringRedisTemplate stringRedisTemplate() {
             return mock(StringRedisTemplate.class);
         }
+
+        @Bean
+        java.time.Clock clock() {
+            return java.time.Clock.systemUTC();
+        }
     }
 
     private final ApplicationContextRunner runner = new ApplicationContextRunner()
             .withUserConfiguration(FakeRedis.class, RedisAdaptersConfig.class,
                     br.gov.pr.secid.workstation.application.identity.InMemorySessionStore.class,
-                    br.gov.pr.secid.workstation.application.identity.InMemoryRateLimit.class);
+                    br.gov.pr.secid.workstation.application.identity.InMemoryRateLimit.class,
+                    br.gov.pr.secid.workstation.application.ai.InMemoryAiBudgetCounter.class);
 
     @Test
     void comRedisLigadoExisteUmSessionStoreEUmRateLimitDoRedis() {
@@ -36,6 +42,8 @@ class RedisAdaptersConfigTest {
             assertThat(ctx).hasSingleBean(SessionStorePort.class).hasSingleBean(RateLimitPort.class);
             assertThat(ctx.getBean(SessionStorePort.class)).isInstanceOf(RedisSessionStore.class);
             assertThat(ctx.getBean(RateLimitPort.class)).isInstanceOf(RedisRateLimit.class);
+            assertThat(ctx).hasSingleBean(br.gov.pr.secid.workstation.application.ai.AiBudgetCounterPort.class);
+            assertThat(ctx.getBean(br.gov.pr.secid.workstation.application.ai.AiBudgetCounterPort.class)).isInstanceOf(RedisAiBudgetCounter.class);
         });
     }
 
@@ -44,6 +52,8 @@ class RedisAdaptersConfigTest {
         runner.withPropertyValues("ws.redis.enabled=false").run(ctx -> {
             assertThat(ctx).hasSingleBean(SessionStorePort.class).hasSingleBean(RateLimitPort.class);
             assertThat(ctx.getBean(SessionStorePort.class)).isInstanceOf(br.gov.pr.secid.workstation.application.identity.InMemorySessionStore.class);
+            assertThat(ctx.getBean(br.gov.pr.secid.workstation.application.ai.AiBudgetCounterPort.class))
+                    .isInstanceOf(br.gov.pr.secid.workstation.application.ai.InMemoryAiBudgetCounter.class);
         });
         runner.run(ctx -> assertThat(ctx).hasSingleBean(SessionStorePort.class));
     }

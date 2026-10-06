@@ -210,6 +210,8 @@ public class UserEntity {
         u.setRole(role);
         u.setStatus(status);
         u.setJobTitle(jobTitle);
+        u.setCompanyId(companyId);          // lotação só leitura: apply() não grava (RF28 é quem lota — D-66)
+        u.setDepartmentId(departmentId);
         u.setAvatarUrl(avatarUrl);
         u.setCoverUrl(coverUrl);
         u.setBio(bio);
