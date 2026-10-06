@@ -457,3 +457,7 @@ flowchart LR
 | RF27.CA06 | `Follow` (único), `FollowService.follow/unfollow`, `Notification`, fan-out `TimelineEvent` | A7 → F5 → P7 (409 JA_SEGUINDO) → P8 | 30–37 | `[*] → ATIVO → REMOVIDO → ATIVO` | `FS`, `FollowButton`, `DE` |
 
 Tela/aba: `/mural` (esqueleto em `app/(shell)/mural/page.tsx`) · `/search` (esqueleto em `app/(shell)/search/page.tsx`)
+
+## 7. Front implementado (onda Social, DEMO)
+
+`/mural` mostra o feed de `MuralEntry` do repositório DEMO (`muralFeed` em `lib/social/rules.ts`): **Mural da empresa** (entradas da empresa + públicas de outras; só alvos que o viewer vê — CA04), **Vitrine de projetos** (`PROJETO_PUBLICADO`) e **Seguindo** (atores, departamentos e empresas com `Follow` ATIVO — CA06), cada entrada com ator, verbo, card do alvo e a barra social inline. Compartilhar no Mural cria a entrada na hora. Buscar (`/search`) continua esqueleto. Captura `48-mural.png`.
