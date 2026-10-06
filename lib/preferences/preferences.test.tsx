@@ -18,6 +18,11 @@ describe("preferências: tipos e contrato do servidor (RF3.CA03)", () => {
     expect(p.reduceMotion).toBe(true);
     expect(p.wipLimit).toBe(3);
     expect(p.timezone).toBe("America/Sao_Paulo");
+    expect(sanitizePreferences({ timezone: "UTC" }).timezone).toBe("UTC");
+    expect(sanitizePreferences({ timezone: "America/Manaus" }).timezone).toBe("America/Manaus");
+    expect(sanitizePreferences({ timezone: "Etc/GMT+3" }).timezone).toBe("Etc/GMT+3");
+    expect(sanitizePreferences({ timezone: "Mars/Olympus_Mons" }).timezone).toBe("America/Sao_Paulo");
+    expect(sanitizePreferences({ timezone: "Europe/Lisbon; drop" }).timezone).toBe("America/Sao_Paulo");
     expect(p.notificationPrefs.dailyTaskAt).toBe("08:00");
     expect(p.notificationPrefs.email).toBe(false);
   });
