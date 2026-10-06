@@ -98,7 +98,7 @@ export function RegisterForm() {
     <div className="grid gap-[var(--ws-space-4)]">
       <Card tone="clay" padding="lg" title={t("auth.register.title")} eyebrow={<Badge tone="accent">RF1</Badge>}>
         <form onSubmit={onSubmit} className="grid gap-[var(--ws-space-4)]" noValidate>
-          <RadioCards label={t("auth.register.profileType")} value={profileType} onValueChange={(v) => setProfileType(v as typeof profileType)} columns={3} options={PROFILE_TYPES.map((p) => ({ value: p, label: t(`profileType.${p}`), hint: p === "EMPREGADO" ? undefined : t("auth.register.pendingValidation") }))} />
+          <RadioCards label={t("auth.register.profileType")} value={profileType} onValueChange={(v) => setProfileType(v as typeof profileType)} columns={1} options={PROFILE_TYPES.map((p) => ({ value: p, label: t(`profileType.${p}`), hint: p === "EMPREGADO" ? undefined : t("auth.register.pendingValidation") }))} />
           <Field label={t("auth.fullName")} error={fields.fullName} required>
             {({ id, describedBy, invalid }) => <Input id={id} name="fullName" autoComplete="name" required aria-describedby={describedBy} invalid={invalid} />}
           </Field>
@@ -108,7 +108,7 @@ export function RegisterForm() {
           <Field label={t("auth.email")} error={fields.email} required>
             {({ id, describedBy, invalid }) => <Input id={id} name="email" type="email" autoComplete="email" required aria-describedby={describedBy} invalid={invalid} />}
           </Field>
-          <div className="grid gap-[var(--ws-space-4)] sm:grid-cols-2">
+          <div className="grid items-start gap-[var(--ws-space-4)] sm:grid-cols-2">
             <Field label={t("auth.password")} error={fields.password} hint={t("auth.passwordHint")} required>
               {({ id, describedBy, invalid }) => <Input id={id} name="password" type="password" autoComplete="new-password" required aria-describedby={describedBy} invalid={invalid} />}
             </Field>

@@ -120,25 +120,25 @@ export function Checkbox({ checked, onCheckedChange, label, hint, disabled, clas
 }
 
 export interface RadioCardOption { value: string; label: ReactNode; hint?: ReactNode; glyph?: GlyphName; preview?: ReactNode; disabled?: boolean }
-export interface RadioCardsProps { value: string; onValueChange: (v: string) => void; options: readonly RadioCardOption[]; label: string; columns?: 2 | 3 | 4; className?: string }
+export interface RadioCardsProps { value: string; onValueChange: (v: string) => void; options: readonly RadioCardOption[]; label: string; columns?: 1 | 2 | 3 | 4; className?: string }
 /** Cartões de opção única (tema, densidade, skin): radio-group do radix com teclado completo e estado em texto. */
 export function RadioCards({ value, onValueChange, options, label, columns = 3, className }: RadioCardsProps) {
   return (
-    <RR.Root value={value} onValueChange={onValueChange} aria-label={label} className={cn("grid gap-2", columns === 2 ? "grid-cols-2" : columns === 4 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-2 sm:grid-cols-3", className)}>
+    <RR.Root value={value} onValueChange={onValueChange} aria-label={label} className={cn("grid gap-2", columns === 1 ? "grid-cols-1" : columns === 2 ? "grid-cols-2" : columns === 4 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-2 sm:grid-cols-3", className)}>
       {options.map((o) => (
         <RR.Item
           key={o.value}
           value={o.value}
           disabled={o.disabled}
-          className="group grid cursor-pointer gap-2 rounded-[var(--ws-radius-md)] border-[1.5px] border-ws-border bg-ws-surface-1 p-3 text-left text-ws-text transition-colors hover:bg-ws-surface-2 data-[state=checked]:border-ws-accent data-[state=checked]:bg-ws-accent-soft focus-visible:outline-none focus-visible:[box-shadow:var(--ws-focus-ring)] disabled:cursor-not-allowed disabled:opacity-55"
+          className="group grid min-w-0 cursor-pointer gap-2 rounded-[var(--ws-radius-md)] border-[1.5px] border-ws-border bg-ws-surface-1 p-3 text-left text-ws-text transition-colors hover:bg-ws-surface-2 data-[state=checked]:border-ws-accent data-[state=checked]:bg-ws-accent-soft focus-visible:outline-none focus-visible:[box-shadow:var(--ws-focus-ring)] disabled:cursor-not-allowed disabled:opacity-55"
         >
           {o.preview ? <span className="block h-10 overflow-hidden rounded-[var(--ws-radius-sm)] border border-ws-border" aria-hidden>{o.preview}</span> : null}
-          <span className="flex items-center gap-2">
+          <span className="flex min-w-0 items-start gap-2">
             {o.glyph ? <Glyph name={o.glyph} size={18} decorative /> : null}
-            <span className="text-[length:var(--ws-text-body-sm)] font-semibold">{o.label}</span>
-            <span className="ml-auto size-2 rounded-full border border-ws-border-strong group-data-[state=checked]:border-ws-accent group-data-[state=checked]:bg-ws-accent" aria-hidden />
+            <span className="min-w-0 break-words text-[length:var(--ws-text-body-sm)] font-semibold">{o.label}</span>
+            <span className="ml-auto mt-1.5 size-2 shrink-0 rounded-full border border-ws-border-strong group-data-[state=checked]:border-ws-accent group-data-[state=checked]:bg-ws-accent" aria-hidden />
           </span>
-          {o.hint ? <span className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{o.hint}</span> : null}
+          {o.hint ? <span className="min-w-0 break-words text-[length:var(--ws-text-caption)] text-ws-text-muted">{o.hint}</span> : null}
         </RR.Item>
       ))}
     </RR.Root>

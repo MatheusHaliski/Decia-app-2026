@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { clientIp } from "../edge-ip";
 
 /**
  * BFF da sessão (RF1/RF2; ARQUITETURA §3.3, D-14): o refresh token nunca chega ao JavaScript da página. Login, cadastro,
@@ -7,9 +8,10 @@ import { NextResponse, type NextRequest } from "next/server";
  * access token (fica em memória, lib/api/client.ts). Cookie-sinal `ws_rt_h=1` (sem segredo) avisa o cliente que vale
  * tentar renovar ao abrir o app.
  * - Anti-CSRF: só POST da própria origem (Origin / Sec-Fetch-Site) e cookie SameSite=Strict.
- * - IP real (D-14): `X-Ws-Client-Ip` + `X-Ws-Proxy-Ts` + `X-Ws-Proxy-Sig` = HMAC-SHA256(EDGE_PROXY_SECRET, "ip|ts");
- *   o IP vem só de `X-Real-IP` (sobrescrito pelo proxy de borda confiável) — nunca de X-Forwarded-For, que o cliente
- *   controla e não pode ser assinado. Sem EDGE_PROXY_SECRET (≥ 32 chars) ou sem X-Real-IP os cabeçalhos não são enviados.
+ * - IP real (D-14): `X-Ws-Client-Ip` + `X-Ws-Proxy-Ts` + `X-Ws-Proxy-Sig` = HMAC-SHA256(EDGE_PROXY_SECRET, "ip|ts").
+ *   Só é assinado o cabeçalho que a borda confiável SOBRESCREVE (`WS_EDGE_IP_HEADER`, padrão X-Real-IP); X-Forwarded-For
+ *   nunca é lido nem assinado — o cliente controla esse valor e escolheria o próprio balde de rate limit (revisão do
+ *   PR #23). Sem EDGE_PROXY_SECRET (≥ 32 chars) ou sem o cabeçalho da borda, nada é assinado.
  * - Sem backend (etapa b): a API fora do ar vira `502 OFFLINE`, que a tela mostra como ErrorState amigável.
  */
 const API = (process.env.API_INTERNAL_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080").trim().replace(/\/+$/, "");
@@ -21,11 +23,6 @@ const ACTIONS = new Set(["login", "register", "confirm", "refresh", "logout"]);
 const UPSTREAM: Record<string, string> = { login: "/api/auth/login", register: "/api/auth/register", confirm: "/api/auth/email-verification/confirm" };
 
 type Json = Record<string, unknown>;
-
-function clientIp(req: NextRequest): string | null {
-  const ip = (req.headers.get("x-real-ip") ?? "").trim();
-  return /^[0-9a-fA-F:.]{2,45}$/.test(ip) ? ip : null;
-}
 
 async function hmacB64url(secret: string, data: string): Promise<string> {
   const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
