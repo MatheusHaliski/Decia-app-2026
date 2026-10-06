@@ -559,6 +559,27 @@
         "incomplete": [],
         "leader": "A"
       }
+    },
+    {
+      "name": "sem-criterios",
+      "input": {
+        "weightingEnabled": false,
+        "criteria": [],
+        "alternatives": [
+          {
+            "key": "A"
+          }
+        ],
+        "assessments": []
+      },
+      "expected": {
+        "valid": false,
+        "reason": "SEM_CRITERIOS",
+        "weightSum": null,
+        "ranking": [],
+        "incomplete": [],
+        "leader": null
+      }
     }
   ],
   "divergence": [
@@ -1122,6 +1143,24 @@
         ],
         "robust": false,
         "sensitive": true
+      }
+    },
+    {
+      "name": "sem-criterios",
+      "input": {
+        "weightingEnabled": false,
+        "criteria": [],
+        "alternatives": [
+          {
+            "key": "A"
+          }
+        ],
+        "assessments": []
+      },
+      "expected": {
+        "applicable": false,
+        "flips": [],
+        "robust": null
       }
     },
     {

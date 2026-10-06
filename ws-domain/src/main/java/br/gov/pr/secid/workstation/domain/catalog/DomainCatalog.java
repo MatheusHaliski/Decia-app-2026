@@ -36,6 +36,25 @@ import br.gov.pr.secid.workstation.domain.decia.SessionMessage;
 import br.gov.pr.secid.workstation.domain.decia.SessionMessageIndex;
 import br.gov.pr.secid.workstation.domain.decia.SessionParticipant;
 import br.gov.pr.secid.workstation.domain.decia.SummaryScenario;
+import br.gov.pr.secid.workstation.domain.decisao.CriterionAssessment;
+import br.gov.pr.secid.workstation.domain.decisao.Decision;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionAlternative;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionAssumption;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionCheckpoint;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionCriterion;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionEvent;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionEvidence;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionForecast;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionOutcome;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionParticipant;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionRecommendation;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionRetrospective;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionRisk;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionScenario;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionSnapshot;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionTrigger;
+import br.gov.pr.secid.workstation.domain.decisao.DecisionWorkLink;
+import br.gov.pr.secid.workstation.domain.decisao.EvidenceLink;
 import br.gov.pr.secid.workstation.domain.gamificacao.AiCreditLedgerEntry;
 import br.gov.pr.secid.workstation.domain.gamificacao.CollectiveGoal;
 import br.gov.pr.secid.workstation.domain.gamificacao.DailyTask;
@@ -154,7 +173,8 @@ public final class DomainCatalog {
             Map.entry(18, "rf39_chancelas"),
             Map.entry(19, "rf40_balcao_loja"),
             Map.entry(20, "rf46_mensageria_atribuicao"),
-            Map.entry(21, "rf43_ia_plataforma"));
+            Map.entry(21, "rf43_ia_plataforma"),
+            Map.entry(22, "rf29_decisao_estruturada"));
 
     /**
      * FKs de tabelas que NÃO são geradas pelo catálogo (V2/Bloco 3) e que passam a existir quando a tabela-pai nasce:
@@ -203,6 +223,11 @@ public final class DomainCatalog {
             AiQuota.class, Insight.class, FeasibilitySheet.class, MetricDefinition.class, MetricSnapshot.class, ExtractionResult.class,
             ExtractionCorrection.class, MemoryQuery.class, PipelineJob.class,
             AiProviderCircuitState.class, InstitutionalMemoryDocument.class, Citation.class, PersonalDataSource.class,
+            // V22 — DECIA decisão estruturada (contexto 5b, docs/decia/03_MODELO_FUNCIONAL.md §4)
+            Decision.class, DecisionParticipant.class, DecisionAlternative.class, DecisionCriterion.class, CriterionAssessment.class,
+            DecisionEvidence.class, EvidenceLink.class, DecisionAssumption.class, DecisionRisk.class, DecisionScenario.class, DecisionForecast.class,
+            DecisionRecommendation.class, DecisionTrigger.class, DecisionSnapshot.class, DecisionCheckpoint.class, DecisionOutcome.class,
+            DecisionRetrospective.class, DecisionWorkLink.class, DecisionEvent.class,
             // V2 — já existem (só domínio + catálogo)
             AiInferenceLog.class, DomainEventOutbox.class, FeatureFlag.class, MediaObject.class);
 
