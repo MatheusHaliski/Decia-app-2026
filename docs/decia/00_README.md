@@ -13,6 +13,7 @@ DECIA responder **"Como esta decisão foi construída?"** — não só "qual op�
 | [06_APLICACAO_PRATICA.md](06_APLICACAO_PRATICA.md) | 5 decisões ponta a ponta + modelos |
 | [07_SERVICE_BLUEPRINT.md](07_SERVICE_BLUEPRINT.md) | ação → frontend → domínio → IA → dados → notificação |
 | [08_BACKLOG_E_PLANO.md](08_BACKLOG_E_PLANO.md) | fases, backlog P0–P4 por trilha, roteiro de testes de usabilidade |
+| [09_ARQUITETURA_MENSAGENS.md](09_ARQUITETURA_MENSAGENS.md) | arquitetura de mensagens e eventos (Hohpe & Woolf): envelope, canais, comando × evento, pub-sub, roteamento, tradutores, correlação, splitter/aggregator, outbox, idempotência, retry/dead letter, projeção do card, observabilidade, critério de aceite |
 | [`contracts/decia/vetores.json`](../../contracts/decia/vetores.json) | vetores de teste das regras (gerados por `gerar_vetores.py`), usados por Java e TypeScript |
 
 ## Critério final de aceite — rastreio
