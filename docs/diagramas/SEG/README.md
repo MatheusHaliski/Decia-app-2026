@@ -682,8 +682,8 @@ Cada regra (RN49.01–12) e critério (CA01–CA10) do RF49 do FAI → elemento 
 | RN49.03 | `RateLimitPort.tryAcquire/release/reset`, `IdentityService.passwordMatchesWithLockout/changePassword/reauthenticate/confirmPasswordReset`, `RedisRateLimit`, `InMemoryRateLimit` | `F4`, `F5`, `F10`, `F15`, `E401b` | 19–20, 25, 29, nota após 38 (reconferência 429) | bloco 1 inteiro (`Livre`→`Contando`→`Bloqueada`, redefinição → `Livre`) | `S1`, `I1`, `I5` | 3 |
 | RN49.04 | `ClientIpResolver`, `AuthRateLimitFilter.bucketKey` | `C3`–`C5`, `D2` | 2–4 | — | `BFF`, `W2` | 3 |
 | RN49.05 | `HashBulkhead`, `AuthRateLimitFilter`, `Rule.hashes` | `D5`–`D6`→`E503`, `D9` | 10–12, 36 | nota de `Bloqueada` ("ANTES desta máquina") | `W3` | 3 |
-| RN49.06 | `OwnMedia`, `Guard.requireOwner/requireAdmin` | — | — | — | `S2`, `I3`, `S3` | 5 |
-| RN49.07 | `IdentityService.maskEmail`, `AiBudget`, `CorrelationIdFilter` | `F3`, `F17` (auditoria sem segredo) | 17, 33 | — | `S1`, `I4`, `W5`, `IA` | 1, 5 |
+| RN49.06 | `MediaAccessPolicy` (OwnMedia), `ResourceAuthorizer.requireMedia`, `MediaUploadService.authorizeRead`, `MediaKeys` (`restricted/`) | §7.2 | §7.2 | — | `S2`, `I3`, `S3` | 5 |
+| RN49.07 | `IdentityService.maskEmail`, `AiBudget`, `AiGateway`, `PersonalDataMasker`, `CorrelationIdFilter` | `F3`, `F17` (auditoria sem segredo) | 17, 33 | — | `S1`, `I4`, `W5`, `IA` | 1, 5 |
 | RN49.08 | — | `P2` ("MySQL TLS, ws_app") | — | — | `DBS` (`MY`, `CAS`, `OS`, `RD`), aresta `JDBC sslMode=REQUIRED` | 7 |
 | RN49.09 | `ForeignKeyPolicy`, `Fk` | — | — | — | `I2`, `CI` (`ForeignKeyPolicyTest`) | 2 |
 | RN49.10 | `AccountOrigin`, `User.accountOrigin/testAccount`, `DemoDataAdminPort.realAccountsAmong/deleteTestAccounts` | — | — | — | `S4`, `I2` | 2, 6 |
@@ -694,7 +694,7 @@ Cada regra (RN49.01–12) e critério (CA01–CA10) do RF49 do FAI → elemento 
 | CA03 | `IdentityService.passwordMatchesWithLockout/changePassword/reauthenticate`, `Rule` (PUT password, PATCH me/sensitive, POST me/deletion) | `A1`, `E401b` | nota após 38 | nota de `Bloqueada` (429 na reconferência) | `W3`, `S1` | 3 |
 | CA04 | `AuthRateLimitFilter.RULES/bucketKey`, `ClientIpResolver` | `D2`–`D4`→`E429` | 3–9 | — | `W2`, `W3`, `BFF` | 3 |
 | CA05 | `JwtTokenIssuer`, `SessionActiveFilter` | `C8` | 38, 39–55 (refresh pelo cookie) | bloco 2 (`ATIVA`→`ROTACIONADA`→`ATIVA`) | `BFF`, `APP` | 4 |
-| CA06 | `OwnMedia`, `Guard` | — | — | — | `S2`, `I3` | 5 |
+| CA06 | `ResourceAuthorizer`, `AccessPolicy`, `MediaAccessPolicy`, `AuthorizationEnforcementAdvice` (testes `PathVariableAuthorizationTest`, `AuthorizationMatrixWebTest`) | §7.1 | §7.2 | — | `S2`, `I3` | 5 |
 | CA07 | `ForeignKeyPolicy.divergences` | — | — | — | `I2`, `CI` | 2 |
 | CA08 | — | — | — | — | `CI`, `BP`, `DEPLOY` | 1 |
 | CA09 | — | — | — | — | `DEPLOY` | 1, 7 |
@@ -706,3 +706,81 @@ Cada regra (RN49.01–12) e critério (CA01–CA10) do RF49 do FAI → elemento 
 - Segredos a criar, só por nome: `EDGE_PROXY_SECRET` (mesmo valor no front e na API, nunca `NEXT_PUBLIC_`), `JWT_PRIVATE_KEY_PEM`/`JWT_PUBLIC_KEY_PEM` (`scripts/keys/generate_jwt_keys.sh`), `DATA_ENCRYPTION_KEY`, `WS_ADMIN_EMAIL`/`WS_ADMIN_PASSWORD`, `WS_ADMIN_PROMOTE_EXISTING`, `WS_DEMO_ENABLED`/`WS_DEMO_ALLOW_PRODUCTION`, `MYSQL_APP_PASSWORD`/`MYSQL_BACKUP_PASSWORD`, `REDIS_APP_PASSWORD`, `CASSANDRA_APP_PASSWORD`, `OPENSEARCH_APP_PASSWORD`, `CF_ACCESS_AUD`.
 - Branch protection na `main` (Q-52), configuração do IdP institucional (OIDC com `email_verified`, MFA para ADMIN/EMPRESA/CHEFE/CURADOR) e do WAF/Turnstile (bloco 8).
 - Respostas às Q-48 (RF ou RNF), Q-49 (TTL), Q-50 (tetos de IA) e Q-51 (hospedagem).
+
+## 7. Bloco 5 — BOLA/BFLA, upload e gate de IA (D-65…D-69)
+
+Controles em `ws-domain` (`domain.security`: políticas puras), `ws-application` (`security.ResourceAuthorizer`, `media.*`, `ai.*`),
+`ws-web` (`AuthorizationEnforcementAdvice`, `@AuthorizedBy`/`@AuthorizationExempt`) e adaptadores (`JpaMembershipAdapter`,
+`JpaAiInferenceLog`, `RedisAiBudgetCounter`, `LocalMediaStorage`). Tabela controle → teste em `docs/seguranca/SEGURANCA.md` §3.2.
+
+### 7.1 Autorização de recurso (BOLA/BFLA)
+
+```mermaid
+flowchart TD
+  R[Requisição autenticada com id no caminho] --> H{Handler anotado}
+  H -- AuthorizationExempt com motivo --> OK1[Segue sem authorizer]
+  H -- AuthorizedBy --> S[Serviço chama o ResourceAuthorizer]
+  S --> V[Viewer: papel relido do banco, empresa, departamento, lotações]
+  V --> L{Recurso existe}
+  L -- não --> NF[404 NAO_ENCONTRADO]
+  L -- sim --> P{Política pura do domínio}
+  P -- invisível --> NF
+  P -- visível sem permissão --> F[403 ACESSO_NEGADO]
+  P -- permitido --> T[Marca AuthorizationTrail]
+  T --> B[Corpo da resposta]
+  B --> A{Advice: trilha marcada}
+  A -- sim --> OK[200]
+  A -- não --> E[500 ERRO_INTERNO, dado não sai]
+```
+
+Visibilidade: dono, colaborador e ADMIN sempre; PUBLICA = autenticado; EMPRESA = mesma empresa; DEPARTAMENTO = lotado;
+PRIVADA = ninguém mais. RESTRITO nunca passa de DEPARTAMENTO; SIGILOSO = PRIVADA (Q-166). Decisão: papéis DACI do §8.
+
+### 7.2 Upload e leitura de mídia
+
+```mermaid
+sequenceDiagram
+  participant C as Cliente
+  participant S as MediaUploadService
+  participant I as MediaUploadInspector
+  participant AV as AntivirusPort
+  participant ST as MediaStoragePort
+  participant DB as media_objects e media_scans
+  C->>S: bytes, nome e Content-Type declarados
+  S->>I: inspect
+  I->>I: magic bytes, limite por categoria
+  I->>I: ZIP: entradas, total, razão, profundidade, zip-slip
+  I->>I: imagem: pixels do cabeçalho
+  I->>I: extensão e Content-Type batem com o tipo real
+  I-->>S: tipo real, SHA-256, nome saneado
+  S->>AV: scan
+  AV-->>S: LIMPO, PENDENTE, INFECTADO ou NAO_VERIFICADO
+  S->>DB: dedupe por dono e SHA-256
+  S->>ST: put em restricted/ ou private/ ou public/
+  S->>DB: grava objeto e varredura
+  C->>S: ler mídia por id
+  S->>DB: busca, 404 se não existe
+  S->>S: ResourceAuthorizer.requireMedia (OwnMedia)
+  S->>DB: quarentena, 423 se não servível
+  S->>ST: URL assinada curta ou bytes
+```
+
+### 7.3 Gate de IA
+
+```mermaid
+flowchart TD
+  Q[Pedido de inferência de um RF] --> BU{AiBudget: pessoa e empresa}
+  BU -- estourou --> E429[429 IA_ORCAMENTO_ESGOTADO com Retry-After]
+  BU -- reservado --> CL{Flag remota ligada e classificação PUBLICO ou INTERNO}
+  CL -- sim --> MK[PersonalDataMasker: e-mail, CPF, CNPJ, telefone]
+  MK --> RM[Provedor remoto]
+  RM -- falhou --> LC{Motor local}
+  CL -- não --> LC
+  LC -- existe --> LO[Motor local]
+  LC -- não existe, RESTRITO ou SIGILOSO --> E422[422 IA_CONTEUDO_RESTRITO, BLOQUEADO_SIGILO]
+  LC -- não existe, falha do remoto --> E503[503 IA_INDISPONIVEL]
+  RM --> LOG[ai_inference_log: masked_fields_json, rota, sem prompt]
+  LO --> LOG
+  E422 --> LOG
+  E503 --> LOG
+```
