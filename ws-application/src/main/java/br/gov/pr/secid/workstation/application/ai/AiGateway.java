@@ -103,17 +103,12 @@ public class AiGateway {
                     budget.refund(reservation);
                     throw ApiException.unavailable(INDISPONIVEL, "A IA está indisponível no momento. Tente novamente mais tarde.");
                 }
-                long fbStart = clock.millis();
-                AiEnginePort.Completion out = local.get().complete(req.prompt(), req.maxOutputTokens());
-                return finish(req, reservation, AiProvider.LOCAL, out, InferenceResult.FALLBACK, true, masked, "LOCAL_FALLBACK", fbStart);
+                return runLocal(req, reservation, local.get(), InferenceResult.FALLBACK, true, masked, "LOCAL_FALLBACK");
             }
         }
         PersonalDataMasker.Masked none = new PersonalDataMasker.Masked(req.prompt(), Map.of());
         if (local.isPresent()) {
-            long start = clock.millis();
-            AiEnginePort.Completion out = local.get().complete(req.prompt(), req.maxOutputTokens());
-            return finish(req, reservation, AiProvider.LOCAL, out, InferenceResult.OK, wantedRemote, none,
-                    wantedRemote ? "LOCAL_CLASSIFICACAO" : "LOCAL", start);
+            return runLocal(req, reservation, local.get(), InferenceResult.OK, wantedRemote, none, wantedRemote ? "LOCAL_CLASSIFICACAO" : "LOCAL");
         }
         budget.refund(reservation);
         if (!cls.allowsExternalAi()) {
@@ -121,7 +116,29 @@ public class AiGateway {
             throw ApiException.unprocessable(CONTEUDO_RESTRITO, "Conteúdo " + cls.name() + " não pode ser enviado a IA externa e não há motor local.",
                     Map.of("classification", cls.name()));
         }
+        // nenhum motor elegível (remoto desligado e sem motor local): também fica na trilha (Codex P2, PR #34)
+        append(req, AiProvider.LOCAL, null, null, InferenceResult.ERRO, false, none, "SEM_MOTOR", 0);
         throw ApiException.unavailable(INDISPONIVEL, "A IA está indisponível no momento. Tente novamente mais tarde.");
+    }
+
+    /**
+     * Chamada ao motor local (direta ou fallback). Falha do motor local vira {@code 503 IA_INDISPONIVEL} controlado, com linha ERRO na
+     * trilha e estorno da reserva do orçamento — nunca um 500 que consome a cota (Codex P1, PR #34).
+     */
+    private AiResult runLocal(AiRequest req, AiBudget.Reservation reservation, AiEnginePort engine, InferenceResult result, boolean fallback,
+                              PersonalDataMasker.Masked masked, String route) {
+        long start = clock.millis();
+        AiEnginePort.Completion out;
+        try {
+            out = engine.complete(req.prompt(), req.maxOutputTokens());
+        } catch (RuntimeException e) {
+            log.warn("Motor de IA local falhou (capability={}, route={}, correlationId={}): {}", req.capability(), route, req.correlationId(),
+                    e.getClass().getSimpleName());
+            append(req, AiProvider.LOCAL, null, null, InferenceResult.ERRO, fallback, masked, route, (int) Math.max(0, clock.millis() - start));
+            budget.refund(reservation);
+            throw ApiException.unavailable(INDISPONIVEL, "A IA está indisponível no momento. Tente novamente mais tarde.");
+        }
+        return finish(req, reservation, AiProvider.LOCAL, out, result, fallback, masked, route, start);
     }
 
     private AiResult finish(AiRequest req, AiBudget.Reservation reservation, AiProvider provider, AiEnginePort.Completion out, InferenceResult result,

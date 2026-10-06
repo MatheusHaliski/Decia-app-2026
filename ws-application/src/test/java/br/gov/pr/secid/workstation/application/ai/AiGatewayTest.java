@@ -152,4 +152,54 @@ class AiGatewayTest {
         AiGateway g = new AiGateway(null, (List<AiEnginePort>) null, new AiBudget(new InMemoryAiBudgetCounter(clock), null, clock), trail::add, clock);
         assertThat(catchThrowableOfType(ApiException.class, () -> g.infer(r)).status()).isEqualTo(503);
     }
+    /** Codex P1 (PR #34): falha do motor local vira 503 controlado, com linha ERRO na trilha e a cota estornada. */
+    @Test
+    void falhaDoMotorLocalVira503ComTrilhaEEstornoDaCota() {
+        AiEnginePort broken = mock(AiEnginePort.class);
+        when(broken.provider()).thenReturn(AiProvider.LOCAL);
+        when(broken.remote()).thenReturn(false);
+        when(broken.complete(anyString(), anyInt())).thenThrow(new IllegalStateException("modelo local fora do ar"));
+        AiControlProperties props = new AiControlProperties(false, new AiControlProperties.Budget(1, 0, 0, 0, null));
+        AiBudget sharedBudget = new AiBudget(new InMemoryAiBudgetCounter(clock), props, clock);
+        AiGateway g = new AiGateway(props, List.of(broken), sharedBudget, trail::add, clock);
+
+        ApiException e = catchThrowableOfType(ApiException.class, () -> g.infer(req(AccessClassification.INTERNO, "resuma")));
+        assertThat(e.code()).isEqualTo(AiGateway.INDISPONIVEL);
+        assertThat(trail).singleElement().satisfies(l -> {
+            assertThat(l.result()).isEqualTo(InferenceResult.ERRO);
+            assertThat(l.inputSummaryJson()).contains("\"route\":\"LOCAL\"");
+        });
+        // a cota de 1 pedido/dia foi estornada: um novo pedido com um motor saudável passa
+        AiGateway healthy = new AiGateway(props, List.of(local), sharedBudget, trail::add, clock);
+        assertThat(healthy.infer(req(AccessClassification.INTERNO, "resuma")).provider()).isEqualTo(AiProvider.LOCAL);
+    }
+
+    /** Codex P1 (PR #34): falha do motor local durante o fallback também é controlada e auditada. */
+    @Test
+    void falhaDoLocalNoFallbackTambemVira503Auditado() {
+        AiEnginePort broken = mock(AiEnginePort.class);
+        when(broken.provider()).thenReturn(AiProvider.LOCAL);
+        when(broken.remote()).thenReturn(false);
+        when(broken.complete(anyString(), anyInt())).thenThrow(new IllegalStateException("fora do ar"));
+        when(remote.complete(anyString(), anyInt())).thenThrow(new IllegalStateException("provedor caiu"));
+        ApiException e = catchThrowableOfType(ApiException.class,
+                () -> gateway(true, List.of(remote, broken)).infer(req(AccessClassification.PUBLICO, "texto")));
+        assertThat(e.code()).isEqualTo(AiGateway.INDISPONIVEL);
+        assertThat(trail).last().satisfies(l -> {
+            assertThat(l.result()).isEqualTo(InferenceResult.ERRO);
+            assertThat(l.fallbackUsed()).isTrue();
+            assertThat(l.inputSummaryJson()).contains("LOCAL_FALLBACK");
+        });
+    }
+
+    /** Codex P2 (PR #34): sem nenhum motor elegível para conteúdo PUBLICO/INTERNO, o 503 também deixa linha ERRO na trilha. */
+    @Test
+    void semMotorElegivelParaConteudoPublicoFicaNaTrilha() {
+        ApiException e = catchThrowableOfType(ApiException.class, () -> gateway(false, List.of(remote)).infer(req(AccessClassification.PUBLICO, "x")));
+        assertThat(e.code()).isEqualTo(AiGateway.INDISPONIVEL);
+        assertThat(trail).singleElement().satisfies(l -> {
+            assertThat(l.result()).isEqualTo(InferenceResult.ERRO);
+            assertThat(l.inputSummaryJson()).contains("SEM_MOTOR");
+        });
+    }
 }
