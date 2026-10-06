@@ -1,10 +1,12 @@
 "use client";
 // Preferências (RF3.CA03): tema, idioma, densidade, tamanho da fonte, reduzir movimento, skin da Mesa, arte de fundo,
 // notificações, fuso, WIP e modo de IA — aplicadas imediatamente e persistidas (local agora; API no Bloco 3).
-// Abas Conta · Privacidade · Dados · Sessões · Termos ficam como esqueleto (backend no Bloco 3 / LGPD C, RF3.CA07–CA24).
+// Sessões (RF2.CA05) já fala com a API (Bloco 4, D-62); Conta · Privacidade · Dados · Termos seguem como esqueleto
+// (LGPD A/C, RF3.CA07–CA24).
 import { useState } from "react";
 import { BackgroundArt, Badge, Button, Card, Checkbox, EmptyState, Field, Input, RadioCards, Select, Switch, WS_BACKGROUNDS, useToast } from "@/components/ui";
 import { RfPage } from "@/components/shell/RfPage";
+import { SessionsPanel } from "@/components/settings/SessionsPanel";
 import { useI18n } from "@/lib/i18n/useI18n";
 import type { Locale } from "@/lib/i18n/state";
 import { pageByRoute } from "@/lib/pages/registry";
@@ -13,7 +15,7 @@ import { AI_MODES, DENSITIES, DESK_SKINS, FONT_SCALES, THEMES, type AiMode, type
 
 const PAGE = pageByRoute("/settings")!;
 const TIMEZONES = ["America/Sao_Paulo", "America/Manaus", "America/Rio_Branco", "America/Noronha", "America/Belem", "America/Fortaleza", "America/Recife", "America/Bahia", "America/Cuiaba", "America/Campo_Grande", "America/Boa_Vista", "UTC"];
-const SKELETON_TABS = new Set(["conta", "privacidade", "dados", "sessoes", "termos"]);
+const SKELETON_TABS = new Set(["conta", "privacidade", "dados", "termos"]);
 
 function Appearance() {
   const { t, locales } = useI18n();
@@ -132,6 +134,7 @@ export default function SettingsPage() {
         if (tab === "aparencia") return <Appearance />;
         if (tab === "notificacoes") return <Notifications />;
         if (tab === "trabalho") return <Work />;
+        if (tab === "sessoes") return <SessionsPanel />;
         if (SKELETON_TABS.has(tab)) {
           return (
             <EmptyState

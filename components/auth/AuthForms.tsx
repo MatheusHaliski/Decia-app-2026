@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Badge, Button, Card, Checkbox, ErrorState, Field, Input, Link, RadioCards } from "@/components/ui";
 import { ApiError, auth, describeError } from "@/lib/api/client";
+import { safeNext } from "@/lib/auth/next";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { RfBlock, rfById } from "@/components/shell/RfPage";
 
@@ -42,18 +43,31 @@ function RfFooter({ id }: { id: string }) {
   return rf ? <RfBlock rf={rf} /> : null;
 }
 
-export function LoginForm() {
+/** Por que a pessoa caiu no login (Bloco 4): saiu em outra aba / sessão encerrada, ou o IdP institucional recusou. */
+const LOGIN_REASONS = new Set(["signed-out", "oidc-error"]);
+
+export function LoginForm({ next, reason, oidcEnabled = false }: { next?: string | null; reason?: string | null; oidcEnabled?: boolean } = {}) {
   const { t } = useI18n();
   const router = useRouter();
   const [rememberMe, setRememberMe] = useState(false);
+  // D-60: o destino vem de ?next= e passa por safeNext (só caminho relativo da própria origem)
+  const target = safeNext(next);
   const { status, run, reset } = useSubmit(async (f: FormData) => {
     await auth.login({ identifier: String(f.get("identifier") ?? ""), password: String(f.get("password") ?? ""), rememberMe });
-    router.push("/mural");
+    router.push(target);
   });
   const fields = status.kind === "error" && status.error instanceof ApiError ? status.error.fields : {};
   const onSubmit = (e: FormEvent<HTMLFormElement>) => { e.preventDefault(); void run(new FormData(e.currentTarget)); };
   return (
     <div className="grid gap-[var(--ws-space-4)]">
+      {reason && LOGIN_REASONS.has(reason) ? (
+        <Card tone="soft" role="status" data-testid="login-reason">
+          <p className="flex flex-wrap items-center gap-2 text-[length:var(--ws-text-body-sm)]">
+            <Badge tone={reason === "signed-out" ? "info" : "warning"}>{t(`auth.reason.${reason}.badge`)}</Badge>
+            <span>{t(`auth.reason.${reason}`)}</span>
+          </p>
+        </Card>
+      ) : null}
       <Card tone="clay" padding="lg" title={t("auth.login.title")} eyebrow={<Badge tone="accent">RF2</Badge>}>
         <form onSubmit={onSubmit} className="grid gap-[var(--ws-space-4)]" noValidate>
           <Field label={t("auth.identifier")} error={fields.identifier ?? fields.email} required>
@@ -71,7 +85,12 @@ export function LoginForm() {
           </div>
         </form>
       </Card>
-      <p className="text-center text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("auth.oidcSoon")}</p>
+      {oidcEnabled ? (
+        // navegação de página inteira (não next/link: o prefetch dispararia o início do fluxo e gravaria o cookie de uso único)
+        <Button variant="secondary" className="justify-self-center" data-testid="oidc-start" onClick={() => window.location.assign(`/bff/auth/oidc/start?next=${encodeURIComponent(target)}`)}>{t("auth.oidc.start")}</Button>
+      ) : (
+        <p className="text-center text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("auth.oidcSoon")}</p>
+      )}
       <RfFooter id="RF2" />
     </div>
   );

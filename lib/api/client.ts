@@ -6,6 +6,7 @@
  */
 import { tr } from "@/lib/i18n/core";
 import { acceptLanguage, getCurrentLocale } from "@/lib/i18n/state";
+import { createAuthBus, jwtExpiry, refreshDelayMs, type AuthBus, type AuthMessage } from "@/lib/auth/bus";
 
 const RAW_API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 export const API_BASE = (RAW_API_BASE && RAW_API_BASE.trim() ? RAW_API_BASE : "http://localhost:8080").replace(/\/+$/, "");
@@ -49,19 +50,65 @@ export function describeError(e: unknown): string {
 }
 
 let accessToken: string | null = null;
-const channel: BroadcastChannel | null = typeof window !== "undefined" && typeof BroadcastChannel !== "undefined" ? new BroadcastChannel("ws-auth") : null;
 let sharedAt = 0;
+let refreshTimer: ReturnType<typeof setTimeout> | null = null;
+
+type Listener = () => void;
+const unauthorizedListeners = new Set<Listener>();
+/** Chamado quando a sessão acabou (logout em outra aba, sessão encerrada em Configurações › Sessões, refresh recusado). */
+export function onUnauthorized(l: Listener) { unauthorizedListeners.add(l); return () => unauthorizedListeners.delete(l); }
+
+function stopTimer() {
+  if (refreshTimer) clearTimeout(refreshTimer);
+  refreshTimer = null;
+}
+
+/** Renovação silenciosa (Bloco 4, D-61): agenda o refresh 60 s (± folga) antes do `exp` do access token. */
+function schedule(token: string) {
+  stopTimer();
+  if (typeof window === "undefined") return;
+  const exp = jwtExpiry(token);
+  if (exp === null) return;
+  refreshTimer = setTimeout(() => { void silentRefresh(); }, refreshDelayMs(exp));
+}
+
+/** A sessão acabou: esquece o token, para o timer, avisa as outras abas (se veio daqui) e os ouvintes desta aba. */
+function sessionEnded(broadcast: boolean) {
+  accessToken = null;
+  stopTimer();
+  if (broadcast) bus.post({ type: "logout" });
+  unauthorizedListeners.forEach((l) => l());
+}
+
+function onBusMessage(msg: AuthMessage) {
+  if (msg.type === "access") { accessToken = msg.token; sharedAt = Date.now(); schedule(msg.token); }
+  if (msg.type === "refreshed") sharedAt = Date.now();
+  // logout em outra aba sai nesta também — mesmo sem token em memória (a aba pode nem ter chamado a API ainda)
+  if (msg.type === "logout") sessionEnded(false);
+}
+
+let bus: AuthBus = createAuthBus();
+let unsubscribeBus = bus.subscribe(onBusMessage);
+/** Troca o canal entre abas (testes: duas "abas" no mesmo processo). */
+export function attachAuthBus(next: AuthBus) {
+  unsubscribeBus();
+  bus = next;
+  unsubscribeBus = bus.subscribe(onBusMessage);
+}
 
 export const tokenStore = {
   get access() { return accessToken; },
   set(access: string) {
     accessToken = access;
     sharedAt = Date.now();
-    channel?.postMessage({ type: "access", token: access });
+    schedule(access);
+    bus.post({ type: "access", token: access });
   },
+  /** Saída feita NESTA aba (logout): limpa e avisa as outras abas; quem chamou cuida da navegação. */
   clear() {
     accessToken = null;
-    channel?.postMessage({ type: "logout" });
+    stopTimer();
+    bus.post({ type: "logout" });
   },
   /** Há sessão para restaurar? (cookie-sinal sem segredo gravado pelo BFF) */
   get restorable() {
@@ -73,48 +120,57 @@ export const tokenStore = {
 /** Sessão ativa ou restaurável — decide se vale chamar a API de preferências, notificações etc. */
 export const hasSession = () => !!accessToken || tokenStore.restorable;
 
-type Listener = () => void;
-const unauthorizedListeners = new Set<Listener>();
-/** Chamado quando a sessão não pode ser renovada (logout global). */
-export function onUnauthorized(l: Listener) { unauthorizedListeners.add(l); return () => unauthorizedListeners.delete(l); }
-
-channel?.addEventListener("message", (e: MessageEvent) => {
-  const msg = e.data as { type?: string; token?: string } | null;
-  if (msg?.type === "access" && typeof msg.token === "string") { accessToken = msg.token; sharedAt = Date.now(); }
-  if (msg?.type === "logout" && accessToken) { accessToken = null; unauthorizedListeners.forEach((l) => l()); }
-});
-
 /** Serializa a renovação entre abas (a rotação do refresh token invalida o anterior). */
 async function withRefreshLock<T>(fn: () => Promise<T>): Promise<T> {
   const locks = typeof navigator !== "undefined" ? (navigator as Navigator & { locks?: LockManager }).locks : undefined;
   return locks ? locks.request("ws-auth-refresh", fn) : fn();
 }
 
-let refreshing: Promise<boolean> | null = null;
-async function tryRefresh(): Promise<boolean> {
+type RefreshOutcome = "ok" | "ended" | "offline";
+let refreshing: Promise<RefreshOutcome> | null = null;
+/** Single-flight: chamadas simultâneas nesta aba esperam a MESMA renovação; entre abas, o Web Lock + `sharedAt`. */
+function refreshOnce(): Promise<RefreshOutcome> {
   if (refreshing) return refreshing;
   const startedAt = Date.now();
-  refreshing = withRefreshLock(async () => {
-    if (sharedAt > startedAt && accessToken) return true;
+  refreshing = withRefreshLock<RefreshOutcome>(async () => {
+    if (sharedAt > startedAt && accessToken) return "ok";
     try {
       const res = await fetch("/bff/auth/refresh", { method: "POST", cache: "no-store", headers: { "Content-Type": "application/json" }, body: "{}" });
-      if (!res.ok) return false;
+      if (res.status === 401) return "ended";
+      if (!res.ok) return "offline";
       const s = (await res.json()) as { accessToken?: unknown };
-      if (typeof s.accessToken !== "string") return false;
+      if (typeof s.accessToken !== "string") return "offline";
       tokenStore.set(s.accessToken);
-      return true;
+      return "ok";
     } catch {
-      return false;
+      return "offline";
     }
   }).finally(() => { refreshing = null; });
   return refreshing;
 }
 
-/** Restaura a sessão ao abrir o app (cookie HttpOnly → access token em memória). */
+async function tryRefresh(): Promise<boolean> {
+  return (await refreshOnce()) === "ok";
+}
+
+/** Disparada pelo timer: sessão recusada (401) sai em todas as abas; API fora do ar tenta de novo em 30 s. */
+export async function silentRefresh(): Promise<RefreshOutcome> {
+  const outcome = await refreshOnce();
+  if (outcome === "ended") sessionEnded(true);
+  if (outcome === "offline" && accessToken && typeof window !== "undefined") {
+    stopTimer();
+    refreshTimer = setTimeout(() => { void silentRefresh(); }, 30_000);
+  }
+  return outcome;
+}
+
+/** Restaura a sessão ao abrir o app (cookie HttpOnly → access token em memória) e agenda a renovação silenciosa. */
 export async function restoreSession(): Promise<boolean> {
   if (accessToken) return true;
   if (!tokenStore.restorable) return false;
-  return tryRefresh();
+  const outcome = await refreshOnce();
+  if (outcome === "ended") sessionEnded(true); // o BFF já apagou os cookies: a sessão acabou em todas as abas
+  return outcome === "ok";
 }
 
 export interface RequestOptions {
@@ -163,8 +219,7 @@ async function request<T>(method: string, path: string, body?: unknown, opts: Re
   }
   if (res.status === 401 && !opts.anonymous && !bff && retry && (token || tokenStore.restorable)) {
     if (await tryRefresh()) return request<T>(method, path, body, opts, false);
-    tokenStore.clear();
-    unauthorizedListeners.forEach((l) => l());
+    sessionEnded(true);
   }
   if (!res.ok) throw await parseError(res);
   if (res.status === 204) return undefined as T;
@@ -207,6 +262,14 @@ export const auth = {
   },
   passwordReset: (body: { email: string }) => api.post<{ status: string }>("/api/auth/password-reset/request", body, { anonymous: true }),
   passwordResetConfirm: (body: { token: string; newPassword: string; confirmPassword: string }) => api.post<void>("/api/auth/password-reset/confirm", body, { anonymous: true }),
+};
+
+/** Sessões da própria pessoa (RF2.CA05, Bloco 4): `GET/DELETE /api/auth/sessions[/{id}]`. Nunca há token na resposta. */
+export interface SessionInfo { id: string; deviceName: string | null; lastActiveAt: string; expiresAt: string; persistent: boolean; current: boolean }
+export const sessions = {
+  list: () => api.get<SessionInfo[]>("/api/auth/sessions"),
+  revoke: (id: string) => api.delete<void>(`/api/auth/sessions/${encodeURIComponent(id)}`),
+  revokeOthers: () => api.delete<{ sessionsEnded: number }>("/api/auth/sessions"),
 };
 
 /** Monta query string ignorando valores vazios. */
