@@ -7,6 +7,16 @@ import { defineConfig, devices } from "@playwright/test";
  */
 const executablePath = process.env.CHROMIUM_PATH === "" ? undefined : process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium";
 
+/**
+ * Sessão SIMULADA para as specs do lab (Bloco 4, D-60): o middleware só deixa entrar nas rotas protegidas com o cookie-sinal
+ * `ws_rt_h=1`, e o BFF só tenta renovar com um `ws_rt` presente (sem backend, a API responde 502 e a sessão fica como está).
+ * Valores fictícios, sem segredo. `e2e/sessao.spec.ts` zera isto para provar o redirecionamento sem sessão.
+ */
+export const E2E_SESSION_COOKIES = [
+  { name: "ws_rt_h", value: "1", domain: "localhost", path: "/", expires: -1, httpOnly: false, secure: false, sameSite: "Strict" as const },
+  { name: "ws_rt", value: "e2e-sessao-simulada", domain: "localhost", path: "/bff/auth", expires: -1, httpOnly: true, secure: false, sameSite: "Strict" as const },
+];
+
 export default defineConfig({
   testDir: "./e2e",
   timeout: 60_000,
@@ -21,6 +31,7 @@ export default defineConfig({
     colorScheme: "light",
     ...devices["Desktop Chrome"],
     launchOptions: executablePath ? { executablePath } : {},
+    storageState: { cookies: E2E_SESSION_COOKIES, origins: [] },
   },
   webServer: {
     command: "npm run dev",

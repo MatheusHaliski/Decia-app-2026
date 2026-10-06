@@ -1,6 +1,6 @@
 # Capturas do shell (etapa (b))
 
-Geradas por `node scripts/shell/capturas.mjs` (Playwright + Chromium em `/opt/pw-browsers/chromium`; app em `next build && next start`), perfil de visualização do lab (D-35) e tema gravados antes da primeira pintura. Para uma aba nova, acrescente uma entrada em `CAPTURAS` e rode o script de novo.
+Geradas por `node scripts/shell/capturas.mjs` (Playwright + Chromium em `/opt/pw-browsers/chromium`; app em `next build && next start`), perfil de visualização do lab (D-35) e tema gravados antes da primeira pintura; perfis logados recebem a sessão simulada (cookies `ws_rt_h`/`ws_rt` fictícios, Bloco 4) e as capturas da aba Sessões usam a API simulada do próprio script. Para uma aba nova, acrescente uma entrada em `CAPTURAS` e rode o script de novo.
 
 | Captura | Rota | Perfil | Tema | Viewport | O que mostra |
 |---|---|---|---|---|---|
@@ -17,6 +17,11 @@ Geradas por `node scripts/shell/capturas.mjs` (Playwright + Chromium em `/opt/pw
 | [`11-tema-escuro.png`](11-tema-escuro.png) | `/mural` | EMPREGADO | escuro | 1440×900 | Shell no tema escuro |
 | [`12-tema-terminal.png`](12-tema-terminal.png) | `/mural` | EMPREGADO | terminal | 1440×900 | Shell no tema terminal (corpo em mono) |
 | [`13-lab-design-system.png`](13-lab-design-system.png) | `/lab/design-system` | EMPREGADO | claro | 1440×900 | /lab/design-system — tokens, glifos e componentes reais |
+| [`14-login-next-protegida.png`](14-login-next-protegida.png) | `/settings?tab=sessoes` | VISITANTE | claro | 1440×900 | Bloco 4 — rota protegida sem sessão: o middleware leva a /login?next=%2Fsettings%3Ftab%3Dsessoes (next saneado, sem open redirect) |
+| [`15-sessoes-lista.png`](15-sessoes-lista.png) | `/settings?tab=sessoes` | EMPREGADO | claro | 1440×900 | RF2.CA05 — Configurações › Sessões: dispositivos com sessão viva, a atual marcada, encerrar um ou todos os outros (API simulada) |
+| [`16-sessoes-confirmar.png`](16-sessoes-confirmar.png) | `/settings?tab=sessoes` | EMPREGADO | claro | 1440×900 | RF2.CA05 — confirmação antes de encerrar a sessão do celular (revoga a família do refresh token) |
+| [`17-saiu-em-todas-as-abas.png`](17-saiu-em-todas-as-abas.png) | `/login?next=%2Fsettings%3Ftab%3Dsessoes&reason=signed-out` | VISITANTE | claro | 1440×900 | Bloco 4 — logout em uma aba: as outras caem aqui com o aviso “saiu em todas as abas” e o caminho de volta |
+| [`18-sessoes-mobile.png`](18-sessoes-mobile.png) | `/settings?tab=sessoes` | EMPREGADO | claro | 390×844 | Celular: aba Sessões sem rolagem horizontal |
 | [`20-decia-precisa-de-atencao.png`](20-decia-precisa-de-atencao.png) | `/decia` | EMPREGADO | claro | 1440×900 | DECIA › Precisa de atenção: card HERO (aguardando sua decisão) e grupos da caixa de entrada |
 | [`21-decia-decisoes-grade.png`](21-decia-decisoes-grade.png) | `/decia?tab=decisoes` | EMPREGADO | claro | 1440×900 | DECIA › Decisões em grade (cards STANDARD) com filtros |
 | [`22-decia-decisoes-lista.png`](22-decia-decisoes-lista.png) | `/decia?tab=decisoes` | EMPREGADO | claro | 1440×900 | DECIA › Decisões em lista (cards COMPACT) |

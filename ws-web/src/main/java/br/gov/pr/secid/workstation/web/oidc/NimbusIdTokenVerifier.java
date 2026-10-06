@@ -72,7 +72,8 @@ public class NimbusIdTokenVerifier implements IdTokenVerifier {
         String nonce = jwt.getClaimAsString("nonce");
         if (nonce == null || !java.security.MessageDigest.isEqual(nonce.getBytes(java.nio.charset.StandardCharsets.UTF_8),
                 expectedNonce.getBytes(java.nio.charset.StandardCharsets.UTF_8))) {
-            throw new ApiException(AuthCodes.OIDC_TOKEN_INVALIDO, 401, "Token institucional não corresponde a este login (nonce).");
+            // Bloco 4 (D-63): nonce divergente é pedido inválido (replay/troca de id_token), não credencial errada → 400
+            throw new ApiException(AuthCodes.OIDC_NONCE_INVALIDO, 400, "Token institucional não corresponde a este login (nonce).");
         }
         Boolean verified = jwt.getClaimAsBoolean("email_verified");
         return new OidcAccountLinker.OidcClaims(jwt.getClaimAsString("iss"), jwt.getSubject(), jwt.getClaimAsString("email"),

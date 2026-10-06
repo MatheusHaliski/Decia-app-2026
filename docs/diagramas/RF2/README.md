@@ -4,7 +4,7 @@
 
 > **HU2** — COMO usuário cadastrado no sistema POSSO autenticar-me na plataforma com minhas credenciais de acesso PARA acessar minha área pessoal de forma segura.
 
-Classes **(real)** existem em `origin/main` (Bloco 3, PR #16); **(planejado)**: `RedisSessionStore` (hoje `InMemorySessionStore` + espelho JPA `refresh_tokens`, Q-85), `GET/DELETE /api/auth/sessions` (Q-89; `IdentityService.activeSessions` já existe), PKCE/`state` do OIDC no BFF e cookie `ws_rt` (Bloco 4, Q-85), conferência TOTP do 2FA (Q-83), SMTP real (Q-84), `PolicyGateFilter` (D-16). Números adotados: D-25 (TTLs), D-26 (Argon2id e bulkhead), D-27 (cadastro sem oráculo).
+Classes **(real)** existem em `origin/main` (Bloco 3, PR #16); **(planejado)**: `RedisSessionStore` (hoje `InMemorySessionStore` + espelho JPA `refresh_tokens`, Q-85), conferência TOTP do 2FA (Q-83), SMTP real (Q-84), `PolicyGateFilter` (D-16). Números adotados: D-25 (TTLs), D-26 (Argon2id e bulkhead), D-27 (cadastro sem oráculo). **Bloco 4 (real, D-60–D-64):** proteção de rotas no `middleware.ts`, renovação silenciosa e logout entre abas, OIDC Authorization Code + PKCE S256/`state`/`nonce` no BFF e `GET/DELETE /api/auth/sessions` com a aba Sessões — §8.
 
 ## Critérios de aceite derivados da HU2 (todos "CA a confirmar")
 
@@ -467,6 +467,7 @@ stateDiagram-v2
     ROT --> ATIVA : o novo token passa a ser o corrente
     ROT --> REV : reuso do token antigo → revokeFamily + REFRESH_REUSO + 401 SESSAO_INVALIDA
     ATIVA --> REV : logout · changePassword (outras famílias, SESSIONS_REVOKED) · status.blocksLogin() · password-reset confirm
+    ATIVA --> REV : DELETE /api/auth/sessions/{id} (SESSION_REVOKED) · DELETE /api/auth/sessions (outras, SESSIONS_REVOKED) — Bloco 4
     ATIVA --> EXP : expiresAt vencido (30 d persistente, 24 h sessão) → 401 SESSAO_INVALIDA
     REV --> [*]
     EXP --> [*]
@@ -503,7 +504,11 @@ flowchart LR
     PG["app/(auth)/login · login/institucional · forgot-password"]
     UI["packages/ui: Input, Button, Banner (warnings), Toast, Dialog (2FA)"]
     BFF["app/bff/auth/* · cookie ws_rt · access em memória · X-Correlation-Id · HMAC EDGE_PROXY_SECRET → X-Ws-Client-Ip/Ts/Sig"]
-    MW["middleware.ts: CSP nonce, HSTS, frame-ancestors none"]
+    MW["middleware.ts: CSP nonce, HSTS, frame-ancestors none · rota protegida → /login?next= (safeNext)"]
+    OB["app/bff/auth/oidc/start|callback: PKCE S256 · state · nonce · cookie __Host-ws_oidc"]
+    SW["SessionWatcher + lib/auth/bus: BroadcastChannel/storage · renovação silenciosa"]
+    PG --> OB
+    PG --> SW
     PG --> UI
     PG --> BFF
   end
@@ -513,14 +518,14 @@ flowchart LR
     SEC["SecurityConfig: STATELESS, oauth2ResourceServer JWT, PUBLIC_POST, jwtAuthenticationConverter role→ROLE_*"]
     SAF["SessionActiveFilter (após BearerTokenAuthenticationFilter)"]
     CUR["CurrentUserArgumentResolver → CurrentUser, RequestContext"]
-    AC["AuthController · OidcController · PasswordResetController"]
+    AC["AuthController · OidcController · PasswordResetController · SessionsController"]
     JWT["JwtConfig + JwtKeys + JwtTokenIssuer (RS256)"]
     NIM["NimbusIdTokenVerifier + OidcConfig"]
     A2["Argon2PasswordHasher"]
     GEH["GlobalExceptionHandler · ApiErrorAuthenticationEntryPoint · ApiErrorAccessDeniedHandler"]
   end
   subgraph WSAPP["ws-application · identity"]
-    IS["IdentityService (login, refresh, logout, changePassword, openSession, sessionActive)"]
+    IS["IdentityService (login, refresh, logout, changePassword, openSession, sessionActive) · SessionService (list, revoke, revokeOthers)"]
     OS["OidcService + OidcAccountLinker + OidcProperties"]
     PR["PasswordResetService"]
     SP["SessionPolicy · AuthCodes · AuditActions · Guard"]
@@ -571,9 +576,9 @@ flowchart LR
 |---|---|---|---|---|---|---|
 | RF2.CA01 | `IdentityService.login/openSession/issue`, `SessionPolicy`, `RefreshRecord`, `JwtTokenIssuer`, `Session` | `S1`→`S10`→`S11`→`F2` | 4–5, 27–38 | `[*]`→`ATIVA` | `AC`, `IS`, `JWT`, `BFF` (`ws_rt`) | real |
 | RF2.CA02 | `IdentityService.dummyHash`, `AccountStatus.blocksLogin`, `AuthCodes` | `S2`→`S3`→`E401`, `S6`→`S7`→`E401`, `S8`→`E403`, `S9`→`E2FA` | 6–9, 15–19, 22–26 | nota de `BLOQ` | `IS`, `GEH` | real (TOTP: Q-83) |
-| RF2.CA03 | `OidcController`, `OidcService`, `IdTokenVerifier`/`NimbusIdTokenVerifier`, `OidcAccountLinker` | `F4`→`O1`→`S11` | — (mesma emissão 32–38) | `[*]`→`ATIVA` | `OS`, `NIM`, `IDP` | real (`OidcTest`, `OidcWebTest`) |
+| RF2.CA03 | `OidcController`, `OidcService`, `IdTokenVerifier`/`NimbusIdTokenVerifier`, `OidcAccountLinker` | `F4`→`O1`→`S11` | — (mesma emissão 32–38) | `[*]`→`ATIVA` | `OS`, `NIM`, `IDP`, BFF `oidc/*` | real (`OidcTest`, `OidcWebTest`, `app/bff/auth/oidc.test.ts` — §8, D-63) |
 | RF2.CA04 | `IdentityService.refresh`, `SessionStorePort.revoke/revokeFamily`, `RefreshTokenMirrorPort` | `A2`→`F3`→`R1`→`E401S`/`S11` | 39–52 | `ATIVA`→`ROT`→`ATIVA`, `ROT`→`REV`, `ATIVA`→`EXP` | `IS`, `RDS`/`MEM`, `MY` | real |
-| RF2.CA05 | `IdentityService.logout/changePassword/revokeOtherSessions/activeSessions/sessionActive`, `SessionActiveFilter`, `CurrentUser` | `W6` | 53–58 | `ATIVA`→`REV` | `SAF`, `CUR`, `AC` | real; `GET/DELETE /api/auth/sessions` planejado (Q-89) |
+| RF2.CA05 | `IdentityService.logout/changePassword/revokeOtherSessions/activeSessions/sessionActive`, `SessionActiveFilter`, `CurrentUser` | `W6` | 53–58 | `ATIVA`→`REV` | `SAF`, `CUR`, `AC` | real; `SessionService` + `SessionsController` `GET/DELETE /api/auth/sessions[/{id}]` e aba Sessões (Bloco 4, §8, D-62) |
 | RF2.CA06 | `AuthRateLimitFilter`, `RateLimitPort`, `AuditActions`, `PasswordResetService` (`clearLockout`), `Masking` | `W2`→`E429`, `S5`, `S7`, `S10` | 3, 8, 12–13, 17, 30, 44 | `LOCK` inteiro | `ARL`, `RDS`, `PR`, `PLT` | real |
 | RF2.CA07 | `IdentityService.login` (ordem das checagens), `dummyHash` | `S3`, `S5`, `S7`, `S8`→`E403`, `S9`→`E2FA` | 6–26 | nota de `BLOQ` | `IS` | real (§7) |
 | RF2.CA08 | `RateLimitPort.tryAcquire/release/reset`, `RedisRateLimit` (Lua), `SessionPolicy.maxLoginFailures/lockWindow` | `S4`→`S5`, `S8`, `S10` | 11, 16, 21, 29 | `LIVRE`→`CONT`→`BLOQ`→`LIVRE` | `RDS`, `MEM` | real |
@@ -600,3 +605,86 @@ Herdados do RF49 do FAI pela **D-14**; camadas de defesa e rastreabilidade RN/CA
 | **RF2.CA14** (CA a confirmar) | **Auditoria.** Eventos `LOGIN_OK`, `LOGIN_FALHA` (`reason` usuario_inexistente · senha · conta_indisponivel · 2fa), `LOGIN_BLOQUEADO_TENTATIVAS` (`resetAt`), `REFRESH_REUSO`, `LOGOUT`, `PASSWORD_CHANGED`, `SESSIONS_REVOKED`, `OIDC_LOGIN`, todos com `correlationId`, e-mail mascarado e sem senha, token ou código. | `AuditActions`, `AuditEvent`, `JpaAuditLog`, `AuditEventTest` |
 
 Tela/aba: `/login` (esqueleto em `app/(auth)/login/page.tsx`) · `/password-reset` (esqueleto em `app/(auth)/password-reset/page.tsx`)
+
+## 8. Sessão no front (Bloco 4, D-60–D-64)
+
+**Proteção de rotas** (`middleware.ts` + `lib/auth/guard.ts`): rota cuja célula VISITANTE é "O" em `lib/pages/registry.ts` exige o cookie-sinal `ws_rt_h=1` (o `ws_rt` HttpOnly tem path=/bff/auth e o middleware não o vê); sem ele → `307 /login?next=<caminho>`. `next` passa por `safeNext` (só caminho relativo da própria origem; recusa `//`, `/\`, esquemas, barra invertida, controle e as formas codificadas). Rotas do visitante (Mural, Buscar, `/u/[username]`, `/tasks/[id]` — D-93) seguem públicas. `WS_ROUTE_GUARD=off` desliga só no lab sem backend (Q-160). **Cabeçalhos**: CSP com nonce por requisição, HSTS, X-Frame-Options e Referrer-Policy em toda resposta do middleware (inclusive o redirect); Permissions-Policy, nosniff e COOP em `next.config.ts`.
+
+```mermaid
+sequenceDiagram
+  autonumber
+  actor U as Pessoa (aba A)
+  participant B as Aba B (mesmo navegador)
+  participant MW as middleware.ts
+  participant N as BFF /bff/auth/*
+  participant C as API (SessionsController / AuthController)
+  participant S as SessionService + SessionStorePort
+  U->>MW: GET /settings?tab=sessoes (sem ws_rt_h)
+  MW-->>U: 307 /login?next=%2Fsettings%3Ftab%3Dsessoes
+  U->>N: POST /bff/auth/login → cookies ws_rt (HttpOnly) + ws_rt_h
+  N-->>U: access token (memória) · router.push(safeNext(next))
+  Note over U,B: tokenStore.set → agenda refresh (exp − 60 s ± 15 s) e publica {access} no BroadcastChannel
+  U->>N: (timer) POST /bff/auth/refresh — single-flight + Web Lock "ws-auth-refresh"
+  alt 200
+    N-->>U: access novo → {access} para as outras abas
+  else 401
+    N-->>U: apaga cookies → {logout} em todas as abas
+  end
+  U->>C: GET /api/auth/sessions (Bearer, sid vivo)
+  C->>S: list(CurrentUser) → famílias vivas, atual primeiro, sem hash
+  C-->>U: 200 [{id, deviceName, lastActiveAt, expiresAt, persistent, current}]
+  U->>C: DELETE /api/auth/sessions/{id} (@AuthorizedBy requireOwnSession)
+  C->>S: revoke → ResourceAuthorizer.requireOwnSession(actor, dono)
+  alt família de outra pessoa ou inexistente
+    S-->>C: 404 NAO_ENCONTRADO (mesma mensagem — não confirma o id)
+  else própria
+    S->>S: revokeFamily + RefreshTokenMirrorPort.familyRevoked + AuditLog SESSION_REVOKED
+    C-->>U: 204 (o refresh daquela família recebe 401 SESSAO_INVALIDA, o access cai no SessionActiveFilter)
+  end
+  U->>N: Sair → POST /bff/auth/logout (apaga cookies) · tokenStore.clear() publica {logout}
+  N-->>B: (BroadcastChannel ou evento storage) {logout}
+  B->>B: SessionWatcher → /login?next=<rota>&reason=signed-out (rota protegida) ou router.refresh() (pública)
+```
+
+**OIDC no BFF** (`app/bff/auth/oidc/*`, atrás de `WS_OIDC_ENABLED`, padrão desligado → `404 OIDC_DESLIGADO`):
+
+```mermaid
+sequenceDiagram
+  autonumber
+  actor U as Navegador
+  participant O as BFF /bff/auth/oidc
+  participant I as IdP institucional
+  participant C as API POST /api/auth/oidc/login
+  U->>O: GET /start?next=/x
+  O->>O: state, nonce, code_verifier = 32 bytes aleatórios cada · cookie __Host-ws_oidc HttpOnly, SameSite=Lax, 10 min, uso único
+  O-->>U: 302 authorization_endpoint?response_type=code&state&nonce&code_challenge=B64URL(SHA256(verifier))&code_challenge_method=S256
+  U->>I: autentica
+  I-->>U: 302 /bff/auth/oidc/callback?code&state
+  U->>O: GET /callback (cookie) — o cookie é apagado em toda resposta
+  alt sem code_verifier válido
+    O-->>U: 400 OIDC_PKCE_AUSENTE (nenhuma troca de código)
+  else state diferente (tempo constante) ou vencido
+    O-->>U: 400 OIDC_ESTADO_INVALIDO
+  else ok
+    O->>I: POST token_endpoint (code, redirect_uri, client_id, code_verifier[, client_secret_basic])
+    I-->>O: id_token
+    alt nonce do id_token ≠ guardado
+      O-->>U: 400 OIDC_NONCE_INVALIDO (a API nem é chamada)
+    else nonce confere
+      O->>C: {idToken, nonce} — NimbusIdTokenVerifier confere assinatura/iss/aud/exp e o nonce (≠ → 400 OIDC_NONCE_INVALIDO)
+      C-->>O: Session (refresh token)
+      O-->>U: 303 safeNext(next) + cookies ws_rt/ws_rt_h
+    end
+  end
+```
+
+| Controle | Teste-guarda (falha sem o controle) |
+|---|---|
+| Rota protegida sem sessão → `/login?next=` | `middleware.test.ts` "rota protegida sem sessão redireciona…", `e2e/sessao.spec.ts` "rota protegida redireciona…" |
+| `next` externo ignorado | `lib/auth/next.test.ts` "recusa … e cai no padrão" (21 formas), `e2e/sessao.spec.ts` "next externo é ignorado", `oidc.test.ts` "next externo no start é descartado" |
+| CSP com nonce, HSTS, frame-ancestors, Referrer/Permissions-Policy | `middleware.test.ts` (resposta do middleware e `next.config.ts`), `e2e/sessao.spec.ts` "cabeçalhos de segurança" |
+| `state`/`nonce` inválidos → 400 | `oidc.test.ts` "state inválido → 400", "nonce … → 400"; `OidcWebTest.verificadorNimbusConfereNonceEClaimsSemVazarOToken` (400) |
+| PKCE obrigatório | `oidc.test.ts` "PKCE obrigatório…", "start manda ao IdP com code_challenge S256…" |
+| Revogar sessão derruba o refresh | `SessionServiceTest.encerrarUmaSessaoDerrubaORefreshDaquelaSessaoEMantemAsOutras`, `SessionsControllerWebTest.encerrarSessaoPropriaRevogaAFamiliaEAlheiaDa404` |
+| Sessão de outra pessoa → 404 (D-65) | `SessionServiceTest.sessaoDeOutraPessoaResponde404IgualAIdInexistenteENaoEEncerrada`, `SessionsControllerWebTest` |
+| Logout entre abas | `lib/auth/bus.test.ts` (BroadcastChannel, fallback `storage`, cliente), `e2e/sessao.spec.ts` "logout numa aba encerra a sessão nas outras abas" |

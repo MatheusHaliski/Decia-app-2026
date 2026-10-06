@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { clientIp } from "../edge-ip";
+import { RT_COOKIE, callApi, clearSessionCookies, sameOrigin, setSessionCookies, type Json } from "../bff-session";
 
 /**
  * BFF da sessão (RF1/RF2; ARQUITETURA §3.3, D-14): o refresh token nunca chega ao JavaScript da página. Login, cadastro,
@@ -14,74 +14,9 @@ import { clientIp } from "../edge-ip";
  *   PR #23). Sem EDGE_PROXY_SECRET (≥ 32 chars) ou sem o cabeçalho da borda, nada é assinado.
  * - Sem backend (etapa b): a API fora do ar vira `502 OFFLINE`, que a tela mostra como ErrorState amigável.
  */
-const API = (process.env.API_INTERNAL_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080").trim().replace(/\/+$/, "");
-const RT_COOKIE = "ws_rt";
-const RT_HINT_COOKIE = "ws_rt_h";
-const RT_PATH = "/bff/auth";
 const MAX_BODY = 64 * 1024;
 const ACTIONS = new Set(["login", "register", "confirm", "refresh", "logout"]);
 const UPSTREAM: Record<string, string> = { login: "/api/auth/login", register: "/api/auth/register", confirm: "/api/auth/email-verification/confirm" };
-
-type Json = Record<string, unknown>;
-
-async function hmacB64url(secret: string, data: string): Promise<string> {
-  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
-  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(data));
-  return btoa(String.fromCharCode(...new Uint8Array(sig))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-}
-
-async function upstreamHeaders(req: NextRequest, authorization?: string): Promise<Record<string, string>> {
-  const h: Record<string, string> = { Accept: "application/json", "Content-Type": "application/json" };
-  for (const name of ["accept-language", "user-agent", "authorization", "x-correlation-id"]) {
-    const v = req.headers.get(name);
-    if (v) h[name] = v;
-  }
-  if (authorization) h.authorization = authorization;
-  const secret = process.env.EDGE_PROXY_SECRET?.trim();
-  const ip = clientIp(req);
-  if (secret && secret.length >= 32 && ip) {
-    const ts = String(Math.floor(Date.now() / 1000));
-    Object.assign(h, { "X-Ws-Client-Ip": ip, "X-Ws-Proxy-Ts": ts, "X-Ws-Proxy-Sig": await hmacB64url(secret, `${ip}|${ts}`) });
-  }
-  return h;
-}
-
-function sameOrigin(req: NextRequest): boolean {
-  const origin = req.headers.get("origin");
-  if (!origin) return req.headers.get("sec-fetch-site") === "same-origin";
-  const pub = process.env.WS_FRONTEND_URL?.trim().replace(/\/+$/, "");
-  return origin === req.nextUrl.origin || (!!pub && origin === pub);
-}
-
-const secureCookie = (req: NextRequest) => process.env.NODE_ENV === "production" || req.nextUrl.protocol === "https:";
-
-function setSessionCookies(res: NextResponse, req: NextRequest, refreshToken: string, refreshExpiresAt: unknown) {
-  const until = typeof refreshExpiresAt === "string" ? Date.parse(refreshExpiresAt) : NaN;
-  const maxAge = Number.isFinite(until) ? Math.max(60, Math.floor((until - Date.now()) / 1000)) : 24 * 60 * 60;
-  const secure = secureCookie(req);
-  res.cookies.set(RT_COOKIE, refreshToken, { httpOnly: true, secure, sameSite: "strict", path: RT_PATH, maxAge });
-  res.cookies.set(RT_HINT_COOKIE, "1", { httpOnly: false, secure, sameSite: "strict", path: "/", maxAge });
-}
-
-function clearSessionCookies(res: NextResponse) {
-  res.cookies.set(RT_COOKIE, "", { path: RT_PATH, maxAge: 0 });
-  res.cookies.set(RT_HINT_COOKIE, "", { path: "/", maxAge: 0 });
-}
-
-async function callApi(req: NextRequest, path: string, body: Json | string | null, authorization?: string): Promise<{ status: number; data: Json | null; headers: Headers } | null> {
-  try {
-    const r = await fetch(`${API}${path}`, {
-      method: "POST", headers: await upstreamHeaders(req, authorization), cache: "no-store",
-      body: body === null ? undefined : typeof body === "string" ? body : JSON.stringify(body),
-    });
-    const text = await r.text();
-    let data: Json | null = null;
-    try { data = text ? (JSON.parse(text) as Json) : null; } catch { data = null; }
-    return { status: r.status, data, headers: r.headers };
-  } catch {
-    return null;
-  }
-}
 
 function reply(status: number, data: Json | null, upstream?: Headers): NextResponse {
   const res = status === 204 || data === null ? new NextResponse(null, { status: status === 200 ? 204 : status }) : NextResponse.json(data, { status });

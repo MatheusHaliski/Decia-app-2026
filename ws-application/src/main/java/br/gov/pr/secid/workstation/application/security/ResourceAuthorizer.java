@@ -91,6 +91,22 @@ public class ResourceAuthorizer {
         return v;
     }
 
+    // ------------------------------------------------------------------------------------------------ sessões (RF2.CA05)
+
+    /**
+     * Sessão (família de refresh token) da própria pessoa ({@code DELETE /api/auth/sessions/{id}}, Bloco 4). A sessão de outra pessoa é
+     * invisível: responde o MESMO {@code 404} de um id inexistente ({@code sessionOwnerId} nulo), nunca 403 — não confirma que o id existe.
+     */
+    public void requireOwnSession(CurrentUser actor, UUID sessionOwnerId) {
+        if (actor == null) {
+            throw ApiException.unauthorized("Faça login para continuar.");
+        }
+        AuthorizationTrail.record("SESSION");
+        if (sessionOwnerId == null || !sessionOwnerId.equals(actor.id())) {
+            throw notFound(ScopedResource.Kind.SESSION);
+        }
+    }
+
     // ------------------------------------------------------------------------------------------------ recursos
 
     public void require(Viewer viewer, ScopedResource resource, ResourceAction action) {
