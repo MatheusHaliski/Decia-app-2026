@@ -60,6 +60,22 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
 
 const inList = <T extends readonly unknown[]>(list: T, v: unknown): v is T[number] => list.includes(v);
 
+/**
+ * Fuso válido: `UTC` ou um nome IANA `Area/Cidade` (ex.: `America/Sao_Paulo`) que o runtime conheça. O backend aceita
+ * qualquer `ZoneId.of`, mas o front só repassa o que a própria Intl resolve, para nunca gravar lixo (revisão do PR #23).
+ */
+export function isTimezone(v: unknown): v is string {
+  if (typeof v !== "string" || v.length > 64) return false;
+  if (v === "UTC") return true;
+  if (!/^[A-Za-z_]+\/[A-Za-z0-9_+-]+(\/[A-Za-z0-9_+-]+)?$/.test(v)) return false;
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: v });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /** Normaliza um objeto desconhecido (localStorage, API) para `UserPreferences`, descartando valores inválidos. */
 export function sanitizePreferences(raw: unknown): UserPreferences {
   const r = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
@@ -79,7 +95,7 @@ export function sanitizePreferences(raw: unknown): UserPreferences {
       email: bool(n.email, true), push: bool(n.push, false), mentions: bool(n.mentions, true), decia: bool(n.decia, true),
       seals: bool(n.seals, true), points: bool(n.points, true), weeklyDigest: bool(n.weeklyDigest, true),
     },
-    timezone: typeof r.timezone === "string" && (r.timezone === "UTC" || /^[A-Za-z_]+\/[A-Za-z_]+(\/[A-Za-z_]+)?$/.test(r.timezone)) ? r.timezone : DEFAULT_PREFERENCES.timezone,
+    timezone: isTimezone(r.timezone) ? r.timezone : DEFAULT_PREFERENCES.timezone,
     wipLimit: Number.isInteger(wip) && wip >= 1 && wip <= 20 ? wip : DEFAULT_PREFERENCES.wipLimit,
     aiModeDefault: inList(AI_MODES, r.aiModeDefault) ? r.aiModeDefault : DEFAULT_PREFERENCES.aiModeDefault,
   };

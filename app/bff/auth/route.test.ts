@@ -98,19 +98,22 @@ describe("POST /bff/auth/[action]", () => {
     expect(fetchMock).toHaveBeenCalledTimes(4);
   });
 
-  it("assina só o X-Real-IP do proxy de borda; X-Forwarded-For (controlado pelo cliente) nunca é assinado", async () => {
+  it("IP assinado (D-14): só X-Real-IP vira X-Ws-Client-Ip/-Proxy-Ts/-Proxy-Sig; X-Forwarded-For sozinho não é assinado", async () => {
     vi.stubEnv("EDGE_PROXY_SECRET", "s".repeat(32));
-    try {
-      const sent = () => new Headers(fetchMock.mock.lastCall![1]!.headers as Record<string, string>);
-      fetchMock.mockResolvedValue(upstream(401, { code: "CREDENCIAIS_INVALIDAS" }));
-      await call("login", {}, { headers: { "x-forwarded-for": "203.0.113.9" } });
-      expect(sent().get("X-Ws-Client-Ip")).toBeNull();
-      expect(sent().get("X-Ws-Proxy-Sig")).toBeNull();
-      await call("login", {}, { headers: { "x-real-ip": "198.51.100.7", "x-forwarded-for": "203.0.113.9" } });
-      expect(sent().get("X-Ws-Client-Ip")).toBe("198.51.100.7");
-      expect(sent().get("X-Ws-Proxy-Sig")).toMatch(/^[A-Za-z0-9_-]{43}$/);
-    } finally {
-      vi.unstubAllEnvs();
-    }
+    const sent = () => new Headers(fetchMock.mock.calls.at(-1)![1]!.headers as Record<string, string>);
+    fetchMock.mockResolvedValueOnce(upstream(401, { code: "CREDENCIAIS_INVALIDAS" }));
+    await call("login", { identifier: "x", password: "y" }, { headers: { "x-forwarded-for": "203.0.113.9" } });
+    expect(sent().get("x-ws-client-ip")).toBeNull();
+    expect(sent().get("x-ws-proxy-sig")).toBeNull();
+    fetchMock.mockResolvedValueOnce(upstream(401, { code: "CREDENCIAIS_INVALIDAS" }));
+    await call("login", { identifier: "x", password: "y" }, { headers: { "x-real-ip": "198.51.100.7", "x-forwarded-for": "203.0.113.9" } });
+    expect(sent().get("x-ws-client-ip")).toBe("198.51.100.7");
+    expect(sent().get("x-ws-proxy-ts")).toMatch(/^\d{10}$/);
+    expect(sent().get("x-ws-proxy-sig")).toMatch(/^[A-Za-z0-9_-]{43}$/);
+    vi.stubEnv("EDGE_PROXY_SECRET", "curto");
+    fetchMock.mockResolvedValueOnce(upstream(401, { code: "CREDENCIAIS_INVALIDAS" }));
+    await call("login", { identifier: "x", password: "y" }, { headers: { "x-real-ip": "198.51.100.7" } });
+    expect(sent().get("x-ws-client-ip")).toBeNull();
+    vi.unstubAllEnvs();
   });
 });
