@@ -390,3 +390,5 @@ flowchart LR
 | RF25.CA03 | `GroupingProgressService.aggregate/decisionTimeline`, `DecisionTraceNode` | A4 → F4 → P12 | 20–24 | `ENCERRADO → self (linha do tempo)` | `GP`, `ProgressRing`, `DecisionThread` |
 | RF25.CA04 | `SearchIndexPort.indexGrouping`, `InstitutionalMemoryDocument`, páginas RF28 | P4 → D3 | 11 | `ATIVO → self (busca e página)` | `OSA`, `R1 (/companies, /departments)` |
 | RF25.CA05 | `Grouping.closedAt/handoffDossierId`, `DomainEvents GroupingClosed`, `HandoffService.generateForGrouping`, `HandoffDossier` | A5 → F5 → P8 → P9 → P11 → I1 → I2 | 25–36 | `ATIVO → ENCERRADO` + nota | `DE`, `HS`, `AIE`, `AIP` |
+
+Tela/aba: `/companies/[slug]` (esqueleto em `app/(shell)/companies/[slug]/page.tsx`) · `/profile` (esqueleto em `app/(shell)/profile/page.tsx`)

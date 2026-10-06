@@ -569,3 +569,5 @@ flowchart LR
 | RF29.CA07 | append-only (sem UPDATE/DELETE), `DecisionTraceService.export`, `snapshotJson`, `PipelineJob EXPORT_PDF` | A10 → F6 → P14 | 47–51 | nota de PROPOSTA | `S3A`, `TS` |
 | RF29.CA08 | `AnalyticalSummary.recommendationsJson[].affectedTaskIds/affectedProjectIds/planAxisId`, `SummaryService` | I3 → I4 | — (RF11) | — | `SS`, `AIE` |
 | RF29.CA09 | `MetricCalculator.decisionsWithTrace`, view `vw_decisions_with_trace`, `MetricSnapshot` | P15 → D4 | — (RF18) | nota de VALIDADA | `MC`, `MY`, `admin/dashboard` |
+
+Tela/aba: `/projects/[id]` (esqueleto em `app/(shell)/projects/[id]/page.tsx`) · `/decia` (esqueleto em `app/(shell)/decia/page.tsx`) · `/decia/[sessionId]` (esqueleto em `app/(shell)/decia/[sessionId]/page.tsx`) · `/decia/review` (esqueleto em `app/(shell)/decia/review/page.tsx`) · `/lab/decia` (esqueleto em `app/(shell)/lab/decia/page.tsx`)

@@ -455,3 +455,5 @@ flowchart LR
 | RF27.CA04 | `VisibilityFilter.allowedFor`, `Visibility`, `Guard.requireSameCompany` | P1 (toda leitura) · P9 (403 ACESSO_NEGADO) | 4, 25 | — | `VF` |
 | RF27.CA05 | `SearchService.similar`, `InstitutionalMemoryDocument`, `AiEngine MEMORIA_BUSCA` | A8 → F6 → P9 → I1 → I2 → I3 | 22–29 | — | `AIE`, `AIP`, `OSA (ws-memory)` |
 | RF27.CA06 | `Follow` (único), `FollowService.follow/unfollow`, `Notification`, fan-out `TimelineEvent` | A7 → F5 → P7 (409 JA_SEGUINDO) → P8 | 30–37 | `[*] → ATIVO → REMOVIDO → ATIVO` | `FS`, `FollowButton`, `DE` |
+
+Tela/aba: `/mural` (esqueleto em `app/(shell)/mural/page.tsx`) · `/search` (esqueleto em `app/(shell)/search/page.tsx`)

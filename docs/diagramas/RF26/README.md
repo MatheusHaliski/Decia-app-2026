@@ -458,3 +458,5 @@ flowchart LR
 | RF19.CA05 (corpo) | `DeliberativeProfile.deltaJson` | — (RF43/RF45) | — | — | `PS` |
 | RF19.CA06 (corpo) | sub-abas institucionais EMPRESA/CHEFE | — (RF28) | — | — | `R3` |
 | RF19.CA07 (corpo) | i18n pt-BR/en/es, responsivo | — | — | — | `R3`, `lib/i18n` |
+
+Tela/aba: `/autopilot` (esqueleto em `app/(shell)/autopilot/page.tsx`) · `/insights` (esqueleto em `app/(shell)/insights/page.tsx`)

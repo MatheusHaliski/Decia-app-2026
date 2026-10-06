@@ -440,3 +440,5 @@ flowchart LR
 | RF31.CA03 | `ScenarioService.compare/save/apply`, `ScenarioStatus SALVO/APLICADO`, `ProjectVersion.sourceScenarioId` | A4 → F4 → P7 (422) · A5 → P8 · A6 → P9 | 17–30 | `RASCUNHO → SALVO → APLICADO` | `CompareTable`, `PV` |
 | RF31.CA04 | `ScenarioService.shareInSession`, `MessageAttachment SCENARIO`, `sharedInSessionId`, `SummaryScenario.linkedProjectScenarioId`, `FinalDecision.chosenScenarioId`, nó CENARIO | A7 → F5 → P10 (403/409) → P11 | 31–40 | `SALVO → self (compartilhado)` + nota | `BS`, `CASA` |
 | RF31.CA05 | `AiInferenceLog` (faísca ✦), `LocalEngine` (prazo/caminho crítico sem IA externa) | I2 → I3 | 11–14 | — | `AIP`, `Spark ✦` |
+
+Tela/aba: `/projects/[id]/simulate` (esqueleto em `app/(shell)/projects/[id]/simulate/page.tsx`)

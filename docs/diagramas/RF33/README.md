@@ -476,3 +476,5 @@ flowchart LR
 | RF33.CA04 | `MemoryService.explore/similar`, facets departamento/categoria/exercício, RF27.CA05 | A3 → F2 → P10 | — (GET /explore, /similar) | — | `ExplorerGrid`, `Facets` |
 | RF33.CA05 | `MetricCalculator.decisionsWithSources`, view `vw_decisions_with_sources`, `MetricSnapshot` | A7 → P16 | 38–42 | — | `MC2`, `MY`, `admin/dashboard` |
 | RF33.CA06 | `DomainEvents` AFTER_COMMIT, `PipelineJob FALHA/REPROCESSAR`, `AiInferenceLog ERRO` | P1 → P6 → P7 | 1, 9–11 | `RODANDO → FALHA → REPROCESSAR` + nota | `DE`, `MI`, `MY` |
+
+Tela/aba: `/memory` (esqueleto em `app/(shell)/memory/page.tsx`)

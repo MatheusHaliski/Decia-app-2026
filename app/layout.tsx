@@ -1,18 +1,35 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import type { ReactNode } from "react";
+import { Providers } from "@/components/shell/Providers";
+import { bootScript } from "@/lib/preferences/storage";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Work Station",
+  title: { default: "Work Station", template: "%s · Work Station" },
   description: "Work Station / DECIA — SECID-PR",
   robots: { index: false, follow: false },
+  icons: { icon: "/brand/work-station-monitor.svg" },
 };
 
-/** Shell mínimo do Bloco 1. Tema: data-theme vem das preferências (RF3) na etapa (b); sem ele vale prefers-color-scheme. */
-export default function RootLayout({ children }: { children: ReactNode }) {
+export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };
+
+/**
+ * Layout raiz: aplica as preferências salvas ANTES da primeira pintura com um script inline autorizado pelo nonce da
+ * CSP (middleware.ts), para não haver flash de tema/idioma. O PreferencesProvider assume depois (RF3.CA03).
+ * `suppressHydrationWarning` no <html>: o script muda data-theme/lang no cliente antes da hidratação.
+ */
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   return (
-    <html lang="pt-BR">
-      <body>{children}</body>
+    <html lang="pt-BR" suppressHydrationWarning>
+      <head>
+        {/* o navegador esconde o atributo nonce no DOM: suppressHydrationWarning evita o falso aviso de hidratação */}
+        <script nonce={nonce} suppressHydrationWarning dangerouslySetInnerHTML={{ __html: bootScript }} />
+      </head>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

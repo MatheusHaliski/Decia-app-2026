@@ -87,8 +87,16 @@ Lista completa e comentada em [`.env.example`](.env.example); runbook de segredo
 | `ws-web` | `AuthRateLimitFilter` (antes do Spring Security), `ClientIpResolver`, `HashBulkhead`, `Argon2PasswordHasher`, `JwtKeys`/`JwtConfig`/`JwtTokenIssuer`, `SessionActiveFilter`, `SecurityConfig`, `CurrentUserArgumentResolver`, controllers (`AuthController`, `RegistrationController`, `PasswordResetController`, `MeController`, `OidcController`), `GlobalExceptionHandler` → `{code, message, details, correlationId}` + `Retry-After` |
 | `ws-bootstrap` | `WorkStationApplication`, `application.yml` + `application-{dev,test,prod}.yml`, `RequiredSecretsGuard`, logback com mascaramento |
 
-Frontend na raiz: `app/` (App Router), `components/ui/` (design system — único lugar com `<button>`, `<a>`, `<input>`…),
-`styles/tokens.css` (cópia de `docs/design-system/tokens.css`), `lib/i18n/` (pt-BR/en/es + `qps-ploc`), `middleware.ts` (CSP com nonce).
+Frontend na raiz: ver a seção **Frontend** abaixo.
+
+## Frontend (etapa (b) — shell do app e páginas-esqueleto RF1–RF46)
+
+- **Design system v2** em `components/ui/` (tokens `--ws-*` de `styles/tokens-ws.css`, cópia guardada por teste de `docs/design-system/tokens-ws.css`; WS Glyphs/Moji como `<Glyph>`/`<Moji>` gerados dos SVGs; radix para Dialog/Sheet/Popover/Tooltip/Tabs/Switch/Checkbox/Radio/Toast). Único lugar com `<button>`, `<a>`, `<input>`, `<select>`. Cor **só por token**: ESLint barra `style={{ color: "#…" }}` e classes Tailwind de cor fixa; stylelint só aceita `var(--ws-…)`; `scripts/lint-fixtures/no-color-literals.test.ts` varre `components/`, `app/`, `lib/`, `styles/`.
+- **Shell** em `components/shell/`: `TopBar` (logo, busca global com atalho `/`, Mensagens, sino de notificações com Popover — mock em `lib/notifications/` até o RF —, ficha DP, tema/idioma, **Central de Perfil**), `SidebarNav` (grupos Descobrir · Meu trabalho · Criar · Jogar e ganhar · Gestão exatamente da Matriz A de `docs/produto/ABAS_POR_PERFIL.md`, recolhível para rail 72 px), `BottomNav` + folha "+ Criar" abaixo de 1024 px, `RfPage` (esqueleto por RF).
+- **Rotas** (`app/(shell)/…`, tabela completa em `docs/produto/ABAS_POR_PERFIL.md` §11): `/mural`, `/search`, `/memory`, `/companies[/[slug]]`, `/departments/[slug]`, `/models`, `/messages`, `/profile`, `/u/[username]`, `/tasks[/new|/[id]|/[id]/edit]`, `/attachments`, `/desk`, `/projects/new|[id]|[id]/edit|simulate|mirror`, `/plans`, `/autopilot`, `/decia[/[sessionId]|/review]`, `/insights`, `/goals`, `/points`, `/store`, `/highlights`, `/recognitions`, `/benefits`, `/handoffs`, `/seals[/review]`, `/curation`, `/issuer/dashboard`, `/companies/[slug]/manage/departments`, `/departments/[slug]/team`, `/admin`, `/settings` (RF3 real), `/notifications`, `/lab/{design-system,anatomias,perfis,decia}`; auth fora do shell: `/login`, `/register`, `/verify-email`, `/password-reset` (BFF `app/bff/auth/[action]`: cookie `ws_rt` HttpOnly, access token só em memória, `lib/api/client.ts`).
+- **Perfis de visualização do lab** (D-35): na Central de Perfil (ou `/lab/perfis`) troque entre EMPREGADO · EMPRESA · CHEFE · CURADOR · ADMIN · VISITANTE para ver a sidebar, as sub-abas e o 403 simulado de cada perfil — só no front, até a sessão real (`/api/me`) alimentar o mesmo contexto.
+- **Preferências (RF3)**: `lib/preferences/` aplica tema (auto/claro/escuro/contraste/terminal), idioma, densidade, fonte, movimento, skin da Mesa, arte de fundo (6 artes "Aura Geometry" do dono em `public/brand/backgrounds/`, D-37), notificações, fuso, WIP e modo de IA — na hora, sem recarregar; sem flash (script inline com nonce da CSP); local agora, `GET/PUT /api/me/preferences` quando houver sessão.
+- **Scripts**: `npm run rf:catalog` (READMEs → `lib/rf/catalog.gen.ts`), `npm run glyphs:sprite`, `npm run brand:fundos`, `npm run e2e` (Playwright; local usa `/opt/pw-browsers/chromium`, `CHROMIUM_PATH=""` no CI), `npm run shell:capturas` (13 capturas com nomes fixos + `docs/testes/shell/README.md`, com o app no ar). Evidências em `docs/testes/shell/`.
 
 ## Banco (MySQL 8.4 · Flyway)
 
@@ -158,7 +166,8 @@ Testes-guarda que falham o build antes do deploy:
 | `SensitiveDataMaskingConverterTest` | senha/token/JWT/credencial de URL escapando no log |
 | `GlobalExceptionHandlerWebTest` (ws-web) | 400/401/403/404/405/409/415/422/429/503/500 fora do formato `ApiError`, stack trace ou mensagem interna no corpo, header `X-Correlation-Id` ausente, `/actuator/*` aberto |
 | `WorkStationApplicationIT` | contexto completo + Flyway (V1 e V2 com `success = 1`, `schema.baseline = bloco-2`) contra MySQL 8.4 real (Testcontainers; pulado sem Docker) |
-| `forbidden-elements.lint.test.ts` (front) | afrouxar a regra que proíbe elementos nativos fora de `components/ui/**` |
+| `forbidden-elements.lint.test.ts` (front) | afrouxar as regras que proíbem elementos nativos fora de `components/ui/**` e cor literal/classe Tailwind de cor fixa em JSX |
+| `no-color-literals.test.ts`, `tokens-ws.test.ts`, `sprite.test.ts`, `catalog.test.ts` (front) | cor literal fora de `styles/tokens-ws.css`; `styles/tokens-ws.css` divergir de `docs/design-system/tokens-ws.css`; sprite de glifos ou catálogo de RFs desatualizados em relação aos SVGs/READMEs; RF sem página-esqueleto |
 | `scripts/i18n/check.js` | chave faltando/órfã/vazia ou variáveis diferentes entre pt-BR/en/es |
 
 Gates no mesmo `verify`: JaCoCo **≥ 70 % de linhas** em `ws-application` e `ws-web`, Checkstyle (`config/checkstyle.xml`),

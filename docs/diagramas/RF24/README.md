@@ -484,3 +484,5 @@ flowchart LR
 | RF24.CA05 | `CompareBucket`, `PlanService.compare` | A5 → F5 → P7 → F7 | — (GET /compare) | `ENCERRADO → self (base da comparação)` | `CMP`, `CompareTable` |
 | RF24.CA06 | `Reaction/Comment/SavedItem/Share` com `TargetType PLAN`, `SealBond` tier PLANO, `AnnualPlan.visibility/coverUrl` | A6 → F6 | — (RF26/RF39) | `PUBLICADO → self (interações · chancela)` | `Counters`, `Seal`, `SocialService`, `SealService` |
 | RF24.CA07 | `DeciaSession.planAxisId`, `AnalyticalSummary.recommendationsJson[].planAxisId`, `Insight PROJETO_SEM_EIXO`, `PlanService.projectsWithoutAxis` | I3 → I4 | 27–30 (eixo citado no GET) | nota de PUBLICADO | `INS`, `AIE`, `AIP` |
+
+Tela/aba: `/companies/[slug]` (esqueleto em `app/(shell)/companies/[slug]/page.tsx`) · `/plans` (esqueleto em `app/(shell)/plans/page.tsx`) · `/goals` (esqueleto em `app/(shell)/goals/page.tsx`)

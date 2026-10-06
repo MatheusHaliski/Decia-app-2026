@@ -463,3 +463,5 @@ flowchart LR
 | RF34.CA04 | `ExtractionService.review`, `ExtractionCorrection` (departmentId), exemplos nas próximas extrações | A5 → F3 → P10 · I2 | 26–29, 16 | `PRONTA → REVISADA` | `ExtractionPanel`, `MY` |
 | RF34.CA05 | `ExtractionService.captureFromViewer`, `Evidence`, `UploadGuard`, tarefa IMAGEM_EDITADA (RF4) | A4 → F5 → P12 | 38–43 | — | `Viewer3D`, `UG`, `S3A` |
 | RF34.CA06 | `AiInferenceLog` (modelo, custo, latência), `LocalEngine` (estrutural sem semântica), `ExtractionKind ESTRUTURAL`, aviso | P6 → P7 · I3 | 13–16, 22 | nota de PRONTA | `AIP`, `Toast` |
+
+Tela/aba: `/tasks/[id]` (esqueleto em `app/(shell)/tasks/[id]/page.tsx`) · `/tasks/new` (esqueleto em `app/(shell)/tasks/new/page.tsx`)

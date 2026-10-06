@@ -628,3 +628,5 @@ stateDiagram-v2
 ```
 
 Endpoints propostos da aba Seus dados: `GET /api/me/data-map` · `POST|GET /api/me/exports` · `GET /api/me/exports/{id}/download` · `POST|GET /api/me/requests` · `GET /api/me/policies` · `GET|PUT /api/me/consents/{purpose}`. Já existentes: `POST|DELETE /api/me/deletion`. Jobs agendados (planejado): `AccountAnonymizationJob` (diário), `ExportExpiryJob` (horário), ambos com `@Scheduled`, lock e teste de agendamento.
+
+Tela/aba: `/settings` (esqueleto em `app/(shell)/settings/page.tsx`)

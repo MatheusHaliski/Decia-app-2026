@@ -412,3 +412,5 @@ flowchart LR
 | RF32.CA04 | `ProjectScheme.conformityPercent/hasBlockingPending`, `ComplianceService.gateToApproval/override`, `overrideByUserId/overrideReason`, `AuditLog COMPLIANCE_OVERRIDE` | A6 → P10 (409 CONFORMIDADE_PENDENTE) → A7 → A8 → F4 → P11 → P12 · F5 | 32–44 | `GateAprovacao: Bloqueado → Liberado` | `PSM`, `ProjectCard`, `Dialog`, `AUD` |
 | RF32.CA05 | `AnalyticalSummary.complianceResultId`, nó `CONFORMIDADE` + aresta `VERIFICOU`, `DomainEvents ComplianceEvaluated` | P13 | 20–24 | nota de ATENDIDO | `TS`, `SUM`, `CASA` |
 | RF32.CA06 | `Guard` (chefe revisor lê, não edita), `ComplianceService.createMissingTask` 403 para revisor | P4 → P8 (403) | 12, 27–28 | — | `GD` |
+
+Tela/aba: `/projects/[id]/mirror` (esqueleto em `app/(shell)/projects/[id]/mirror/page.tsx`)

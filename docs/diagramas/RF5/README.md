@@ -567,3 +567,5 @@ flowchart LR
 | RF21.CA12 | `DeciaBridgeService.openSessionFromProject`, `DeciaSession.linkedProjectId`, `ProjectStatus.EM_DECISAO` | `A6`→`S13` | 56–62 | `RAS`→`DEC`, `PUB`→`DEC` | `DEC` | planejado (RF29) |
 | RF21.CA13 | `ModelImportService.fromModel`, `ProcessKit`, `KitItem`, `SchemeOrigin.MODELO`, `Remix` | `F8`→`M1` | — | `[*]`→`RAS` (origin MODELO) | `SOC`, `PRJ` | planejado (RF26/RF40) |
 | RF21.CA14 | `DraftService`, `DraftStorePort`, `ProjectScheme.autosaveDraftJson` | `F6`, `S11` | 15–18, 52 | nota de `RAS` | `RDS` (`draft:project:{userId}`) | planejado |
+
+Tela/aba: `/projects/new` (esqueleto em `app/(shell)/projects/new/page.tsx`)

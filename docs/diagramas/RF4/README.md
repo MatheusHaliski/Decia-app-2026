@@ -649,3 +649,5 @@ flowchart LR
 | RF20.CA13 | `SealSuggestionService`, `SealBond` SUGERIDA→ACEITA | `V5` | 51 | — | `SEAL` | planejado (RF39) |
 | RF20.CA14 | `TaskCreationService.validate`, `GlobalExceptionHandler` (`ApiError.details`) | `V2`→`E422` | 48–50 | — | `GEH`, `UI` (erro por campo i18n) | `GlobalExceptionHandler` real (Bloco 1); regras planejadas |
 | RF20.CA15 | `ModelOffer`, `TaskItem.offeredInCounter` | `V6` | 51 | `DIS`→`OFE`, `MOD`→`OFE` | `AC`, `MY` | planejado (RF40) |
+
+Tela/aba: `/tasks/new` (esqueleto em `app/(shell)/tasks/new/page.tsx`)

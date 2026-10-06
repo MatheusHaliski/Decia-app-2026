@@ -487,3 +487,5 @@ flowchart LR
 | RF30.CA04 | `SchemeOrigin AUTOPILOTO`, `ProjectScheme.aiGenerated/aiInferenceId`, `AiInferenceLog` (modelo, custo, latência, modelos de referência) | A9 → F5 → P10 → D1 | 32–38 | `PROPOSTA_EM_RASCUNHO → PERSISTIDO_RASCUNHO` | `Spark ✦`, `MY` |
 | RF30.CA05 | `LocalEngine`, `AiInferenceLog.fallbackUsed`, aviso no front | P2 → P3 · I2 (fallback) · F3 banner | 9–10 | nota de PROPOSTA_EM_RASCUNHO | `AIL`, `Toast` |
 | RF30.CA06 | `AutopilotService.openSessionOnDraft`, `DeciaBridgeService.openSessionFromDraft` | A10 → F6 → P9 → P11 | 39–44 | `PROPOSTA_EM_RASCUNHO → EM_DECISAO_DECIA` | `BS`, `Button abrir-decia` |
+
+Tela/aba: `/autopilot` (esqueleto em `app/(shell)/autopilot/page.tsx`)

@@ -619,3 +619,5 @@ stateDiagram-v2
     sobrevive à anonimização (art. 8º §2º).
   end note
 ```
+
+Tela/aba: `/register` (esqueleto em `app/(auth)/register/page.tsx`) · `/verify-email` (esqueleto em `app/(auth)/verify-email/page.tsx`)
