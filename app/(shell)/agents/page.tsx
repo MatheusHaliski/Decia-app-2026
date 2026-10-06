@@ -6,7 +6,8 @@
 import { useState } from "react";
 import { AreaPreview, EXTRACT_AREA_ITEMS, LIST_AREA_ITEMS, READ_AREA_ITEMS } from "@/components/shell/AreaPreview";
 import { RfPage } from "@/components/shell/RfPage";
-import { Card, Link, RadioCards } from "@/components/ui";
+import { DossierLink } from "@/components/shell/DossierLink";
+import { Card, RadioCards } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { pageByRoute } from "@/lib/pages/registry";
 
@@ -21,7 +22,7 @@ export default function Page() {
   return (
     <RfPage
       page={PAGE}
-      actions={<Link href="/find" data-testid="agents-open-in-find">{t("agents.openInFind")}</Link>}
+      actions={<DossierLink to="/find" labelKey="agents.openInFind" testId="agents-open-in-find" />}
       renderTab={(slug) => {
         if (slug === "encontrar-no-dossie") return <AreaPreview testId="agents-area-encontrar" titleKey="agents.area.encontrar.title" descriptionKey="agents.area.encontrar.description" itemKeys={["find.area.encontrar.contexto", "find.area.encontrar.agrupar", "agents.area.encontrar.vincular"]} />;
         if (slug === "ler-com-mapa") return <AreaPreview testId="agents-area-ler" titleKey="agents.area.ler.title" descriptionKey="agents.area.ler.description" itemKeys={[READ_AREA_ITEMS[0], "agents.area.ler.mapa", "agents.area.encontrar.vincular"]} />;

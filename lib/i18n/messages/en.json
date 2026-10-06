@@ -178,6 +178,7 @@
   "agents.mode.note": "Skeleton: the chosen mode will be saved per person when RF48 arrives.",
   "agents.openInFind": "Open in Find",
   "find.testContract": "Test this procurement",
+  "find.testContractNeedsDossier": "open Find from a Procurement/Contract project",
   "tabs.settings.aparencia": "Appearance",
   "tabs.settings.notificacoes": "Notifications",
   "tabs.settings.trabalho": "Work and AI",

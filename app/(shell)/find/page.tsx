@@ -4,18 +4,16 @@
 // (RF47.CA14). "Testar esta contratação" abre a aba Agentes (RF48). Conteúdo real chega no RF47.
 import { AreaPreview, EXTRACT_AREA_ITEMS, FIND_AREA_ITEMS, LIST_AREA_ITEMS, READ_AREA_ITEMS } from "@/components/shell/AreaPreview";
 import { RfPage } from "@/components/shell/RfPage";
-import { Link } from "@/components/ui";
-import { useI18n } from "@/lib/i18n/useI18n";
+import { DossierLink } from "@/components/shell/DossierLink";
 import { pageByRoute } from "@/lib/pages/registry";
 
 const PAGE = pageByRoute("/find")!;
 
 export default function Page() {
-  const { t } = useI18n();
   return (
     <RfPage
       page={PAGE}
-      actions={<Link href="/agents" data-testid="find-test-contract">{t("find.testContract")}</Link>}
+      actions={<DossierLink to="/agents" labelKey="find.testContract" testId="find-test-contract" requiresDossierHintKey="find.testContractNeedsDossier" />}
       renderTab={(slug) => {
         if (slug === "ler") return <AreaPreview testId="find-area-ler" titleKey="find.area.ler.title" descriptionKey="find.area.ler.description" itemKeys={[...READ_AREA_ITEMS, "find.area.ler.vincular"]} />;
         if (slug === "extrair") return <AreaPreview testId="find-area-extrair" titleKey="find.area.extrair.title" descriptionKey="find.area.extrair.description" itemKeys={EXTRACT_AREA_ITEMS} />;

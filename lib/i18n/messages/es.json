@@ -178,6 +178,7 @@
   "agents.mode.note": "Esqueleto: el modo elegido se guardará por persona cuando llegue el RF48.",
   "agents.openInFind": "Abrir en Encontrar",
   "find.testContract": "Probar esta contratación",
+  "find.testContractNeedsDossier": "abra Encontrar desde un proyecto de Licitación/Contrato",
   "tabs.settings.aparencia": "Apariencia",
   "tabs.settings.notificacoes": "Notificaciones",
   "tabs.settings.trabalho": "Trabajo e IA",
