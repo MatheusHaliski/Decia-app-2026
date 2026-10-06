@@ -79,7 +79,7 @@ export function sanitizePreferences(raw: unknown): UserPreferences {
       email: bool(n.email, true), push: bool(n.push, false), mentions: bool(n.mentions, true), decia: bool(n.decia, true),
       seals: bool(n.seals, true), points: bool(n.points, true), weeklyDigest: bool(n.weeklyDigest, true),
     },
-    timezone: typeof r.timezone === "string" && /^[A-Za-z_]+\/[A-Za-z_]+(\/[A-Za-z_]+)?$/.test(r.timezone) ? r.timezone : DEFAULT_PREFERENCES.timezone,
+    timezone: typeof r.timezone === "string" && (r.timezone === "UTC" || /^[A-Za-z_]+\/[A-Za-z_]+(\/[A-Za-z_]+)?$/.test(r.timezone)) ? r.timezone : DEFAULT_PREFERENCES.timezone,
     wipLimit: Number.isInteger(wip) && wip >= 1 && wip <= 20 ? wip : DEFAULT_PREFERENCES.wipLimit,
     aiModeDefault: inList(AI_MODES, r.aiModeDefault) ? r.aiModeDefault : DEFAULT_PREFERENCES.aiModeDefault,
   };
