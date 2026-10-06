@@ -44,6 +44,8 @@ describe("requiresSession (matriz de lib/pages/registry.ts)", () => {
     expect(requiresSession("/settings/")).toBe(true);
     expect(requiresSession("/admin/qualquer/coisa")).toBe(true);
     expect(requiresSession("/mural")).toBe(false);
+    expect(requiresSession("/find")).toBe(true);                // RF47: visitante sem acesso (D-128)
+    expect(requiresSession("/agents")).toBe(true);              // RF48: visitante sem acesso (D-130)
     expect(requiresSession("/nao-existe")).toBe(false);          // 404 do app
     expect(requiresSession("/bff/auth/refresh")).toBe(false);
   });

@@ -80,6 +80,19 @@ export const MESSAGES_TABS: readonly SubTab[] = [
   { slug: "conversas", labelKey: "tabs.messages.conversas" },
   { slug: "atribuicoes", labelKey: "tabs.messages.atribuicoes" },
 ];
+/** Encontrar (RF47, interface "Opção A + Opção C" do card): A = busca com palavra no contexto; C = extrair termos e entidades. */
+export const FIND_TABS: readonly SubTab[] = [
+  { slug: "encontrar", labelKey: "tabs.find.encontrar" },
+  { slug: "extrair", labelKey: "tabs.find.extrair" },
+];
+/** Agentes — Copilot de testes (RF48.CA01): catálogo por fase + Encontrar/Extrair no dossiê (RF48.CA13/CA14, reuso do RF47). */
+export const AGENTS_TABS: readonly SubTab[] = [
+  { slug: "antes", labelKey: "tabs.agents.antes" },
+  { slug: "execucao", labelKey: "tabs.agents.execucao" },
+  { slug: "transversais", labelKey: "tabs.agents.transversais" },
+  { slug: "encontrar-no-dossie", labelKey: "tabs.agents.encontrar" },
+  { slug: "extrair-do-dossie", labelKey: "tabs.agents.extrair" },
+];
 export const SETTINGS_TABS: readonly SubTab[] = [
   { slug: "aparencia", labelKey: "tabs.settings.aparencia" },
   { slug: "notificacoes", labelKey: "tabs.settings.notificacoes" },
@@ -117,6 +130,9 @@ export const SESSION_TABS: readonly SubTab[] = [
   { slug: "participantes", labelKey: "tabs.session.participantes" },
 ];
 
+/** RF48 (D-130): EMPREGADO/EMPRESA/CHEFE/CURADOR rodam sobre projetos que veem; ADMIN só lê; visitante sem acesso. */
+export const AGENTS_ACCESS = access({ EMPREGADO: "E", EMPRESA: "E", CHEFE: "E", CURADOR: "E", ADMIN: "V" });
+
 const companyHref = (u: ViewerUser) => `/companies/${u.companySlug ?? "secretaria-exemplo"}`;
 const departmentHref = (u: ViewerUser) => `/departments/${u.departmentSlug ?? "secid-uts"}`;
 
@@ -132,6 +148,8 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       { id: "models", labelKey: "nav.models", glyph: "balcao", href: "/models", rfs: ["RF40"], access: access({ EMPREGADO: "E", EMPRESA: "E", CHEFE: "E", CURADOR: "V", ADMIN: "V", VISITANTE: "V" }), subTabs: MODELS_TABS },
       // P-14/P-15 (ABAS_POR_PERFIL §8): Mensagens (RF46) no grupo Descobrir + ícone na barra superior — proposta
       { id: "messages", labelKey: "nav.messages", glyph: "sessao-decia", href: "/messages", rfs: ["RF46"], access: logged("E"), badge: "messages", proposal: true, subTabs: MESSAGES_TABS },
+      // RF47 Encontrar: busca dentro do texto dos anexos; visitante sem acesso (D-128)
+      { id: "find", labelKey: "nav.find", glyph: "buscar", href: "/find", rfs: ["RF47"], access: logged("E"), subTabs: FIND_TABS },
     ],
   },
   {
@@ -145,6 +163,8 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       // Espelho e Simulador exigem um projeto (Q-101): o atalho abre o projeto de exemplo até existir o seletor
       { id: "mirror", labelKey: "nav.mirror", glyph: "insights-ia", href: "/projects/exemplo/mirror", activeOn: ["/projects/"], rfs: ["RF32"], access: logged("E") },
       { id: "simulate", labelKey: "nav.simulate", glyph: "hype", href: "/projects/exemplo/simulate", rfs: ["RF31"], access: logged("E") },
+      // RF48 Agentes — Copilot de testes sobre o dossiê de uma contratação (D-130: quem vê o projeto roda; ADMIN só vê)
+      { id: "agents", labelKey: "nav.agents", glyph: "chancela", href: "/agents", rfs: ["RF48"], access: AGENTS_ACCESS, subTabs: AGENTS_TABS },
     ],
   },
   {

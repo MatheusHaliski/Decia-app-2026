@@ -77,6 +77,7 @@ Fonte dos itens: `board › Mapa de equivalência §2` (`board2.md:52-78`); rota
 | Memória Institucional (`/memory`) | RF33 | V | V | V | V | V | `GET /api/memory/search` · `requireCanCreate` + `canView` |
 | Empresas & Departamentos (`/companies`, `/companies/[slug]`, `/departments/[slug]`) | RF28 | V | V | V | V | V | `GET /api/companies`, `GET /api/companies/{slug}` (público, como `/api/institutional/**` em `SecurityConfig.java:47`) |
 | Balcão de Modelos (`/models`) — prateleiras Chancelados · Comunidade | RF40 | **E** (oferecer, remixar) | **E** (destacar → chancelar, RF40.CA07) | **E** (destacar) | V (**proposta:** pré-selecionar para o chefe) | V | `GET /api/models`; `POST /api/models` (`requireOwner` do alvo); `POST /api/models/{id}/highlight` (`requireIssuer`) |
+| Encontrar (`/find`) — Encontrar (Opção A, palavra no contexto) · Extrair termos e entidades (Opção C) | RF47 | E | E | E | E | E | `GET /api/find?q=&scope=` · `ResourceAuthorizer` + `AccessPolicy.visible` como filtro **dentro** da consulta ao índice (RF47.CA02, Bloco 5); visitante **O** (D-128) |
 
 ### 2.2 Meu trabalho
 
@@ -89,6 +90,7 @@ Fonte dos itens: `board › Mapa de equivalência §2` (`board2.md:52-78`); rota
 | Mesa de Trabalho (`/desk`) | RF22 | E | E | E | E | E | `GET /api/me/desk` |
 | Espelho de Conformidade (`/projects/[id]/mirror`) | RF32 | E (projetos próprios ou onde é responsável) | E | E | E | E | `requireOwner` ou participante do projeto |
 | Simulador de Cenários (`/projects/[id]/simulate`) | RF31 | E | E | E | E | E | idem |
+| Agentes — Copilot de testes (`/agents`; "Testar esta contratação" no projeto) — Antes do início · Execução · Transversais · Encontrar no dossiê · Extrair do dossiê (Opções A e C do RF47, escopo do dossiê) | RF48 | E (com acesso ao projeto) | E (define pesos do Score, RF48.CA07) | E (define pesos do Score) | E (com acesso ao projeto) | V | `GET /api/projects/{id}/agents`, `POST /api/projects/{id}/agents/runs` · `ResourceAuthorizer` do projeto (RF48.CA12); recomendados por papel: agente de contratação, gestor/fiscal, controle interno, chefe; visitante **O** (D-130) |
 
 ### 2.3 Criar
 
@@ -378,6 +380,7 @@ Fonte: `lib/pages/registry.ts` (rota → arquivo → RFs → visibilidade por pe
 | Balcão de Modelos | `/models` | `app/(shell)/models/page.tsx` | RF40 | A |
 | Mensagens | `/messages` | `app/(shell)/messages/page.tsx` | RF46 RF10 | A |
 | Conversa | `/messages/[conversationId]` | `app/(shell)/messages/[conversationId]/page.tsx` | RF46 RF13 | A |
+| Encontrar | `/find` | `app/(shell)/find/page.tsx` | RF47 RF27 RF33 RF20 | A |
 | Meu perfil | `/profile` | `app/(shell)/profile/page.tsx` | RF6 RF19 RF12 RF25 RF44 RF45 RF40 | B |
 | Perfil | `/u/[username]` | `app/(shell)/u/[username]/page.tsx` | RF16 RF6 RF18 RF19 | B |
 | Acervo de Tarefas | `/tasks` | `app/(shell)/tasks/page.tsx` | RF41 RF44 RF18 RF13 | A |
@@ -389,6 +392,7 @@ Fonte: `lib/pages/registry.ts` (rota → arquivo → RFs → visibilidade por pe
 | Editar projeto na Mesa | `/projects/[id]/edit` | `app/(shell)/projects/[id]/edit/page.tsx` | RF22 RF12 RF8 RF11 | A |
 | Simulador de Cenários | `/projects/[id]/simulate` | `app/(shell)/projects/[id]/simulate/page.tsx` | RF31 | A |
 | Espelho de Conformidade | `/projects/[id]/mirror` | `app/(shell)/projects/[id]/mirror/page.tsx` | RF32 | A |
+| Agentes — Copilot de testes | `/agents` | `app/(shell)/agents/page.tsx` | RF48 RF47 RF29 RF43 | A |
 | Criar Tarefa | `/tasks/new` | `app/(shell)/tasks/new/page.tsx` | RF4 RF23 RF34 | A |
 | Criar Projeto | `/projects/new` | `app/(shell)/projects/new/page.tsx` | RF5 RF20 | A |
 | Plano Anual / Trilha | `/plans` | `app/(shell)/plans/page.tsx` | RF24 | A |
