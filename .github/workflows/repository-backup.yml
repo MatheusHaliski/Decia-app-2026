@@ -32,7 +32,7 @@ jobs:
         shell: bash
         env:
           BACKUP_SSH_KEY: ${{ secrets.BACKUP_SSH_KEY }}
-          BACKUP_URL: git@github.com:MatheusHaliski/standard-users-listing-backup001.git
+          BACKUP_URL: git@github.com:MatheusHaliski/ws-backup001.git
         run: |
           set -euo pipefail
 
@@ -188,7 +188,7 @@ jobs:
             echo "| Field | Value |"
             echo "| --- | --- |"
             echo "| Source | \`${GITHUB_REPOSITORY}\` |"
-            echo "| Destination | \`MatheusHaliski/standard-users-listing-backup001\` |"
+            echo "| Destination | \`MatheusHaliski/ws-backup001\` |"
             echo "| Status | ${status} |"
             echo "| Branches processed | ${branch_count} |"
             echo "| Tags processed | ${tag_count} |"

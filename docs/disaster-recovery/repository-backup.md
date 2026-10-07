@@ -19,12 +19,10 @@ workflow was added. The current source identity and default branch are:
 
 - Source: `MatheusHaliski/Decia-app-2026`
 - Default branch: `main`
-- Backup destination: `MatheusHaliski/standard-users-listing-backup001`
-- Backup SSH URL: `git@github.com:MatheusHaliski/standard-users-listing-backup001.git`
+- Backup destination: `MatheusHaliski/ws-backup001`
+- Backup SSH URL: `git@github.com:MatheusHaliski/ws-backup001.git`
 
-The source repository name differs from the originally proposed
-`standard-users-listing`; use the source identity shown here unless the live
-repository is renamed. No existing official backup destination was configured.
+The backup destination is the newly created `ws-backup001` repository.
 
 ## Required credential setup
 
@@ -81,8 +79,8 @@ secret:
 3. On a trusted machine with access, verify refs directly:
 
    ```bash
-   git ls-remote --heads git@github.com:MatheusHaliski/standard-users-listing-backup001.git
-   git ls-remote --tags git@github.com:MatheusHaliski/standard-users-listing-backup001.git
+   git ls-remote --heads git@github.com:MatheusHaliski/ws-backup001.git
+   git ls-remote --tags git@github.com:MatheusHaliski/ws-backup001.git
    ```
 
 4. Confirm `refs/heads/main` appears. The workflow itself fails if `main` is
@@ -100,7 +98,7 @@ If the source repository is unavailable:
 2. Clone the backup:
 
    ```bash
-   git clone git@github.com:MatheusHaliski/standard-users-listing-backup001.git workstation-restored
+   git clone    git@github.com:MatheusHaliski/ws-backup001.git workstation-restored
    cd workstation-restored
    ```
 
