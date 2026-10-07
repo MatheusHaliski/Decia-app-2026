@@ -1,0 +1,200 @@
+name: Work Station Repository Backup
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 3 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: workstation-repository-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    name: Back up Git branches and tags
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out complete repository history
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Synchronize and verify backup repository
+        id: sync
+        shell: bash
+        env:
+          BACKUP_SSH_KEY: ${{ secrets.BACKUP_SSH_KEY }}
+          BACKUP_URL: git@github.com:MatheusHaliski/standard-users-listing-backup001.git
+        run: |
+          set -euo pipefail
+
+          echo "Work Station repository backup started"
+          : "${BACKUP_SSH_KEY:?The BACKUP_SSH_KEY repository secret is required}"
+
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$BACKUP_SSH_KEY" | tr -d '\r' > "$HOME/.ssh/id_ed25519"
+          chmod 600 "$HOME/.ssh/id_ed25519"
+          unset BACKUP_SSH_KEY
+          ssh-keygen -y -f "$HOME/.ssh/id_ed25519" >/dev/null
+
+          curl --retry 3 --fail --silent --show-error --proto '=https' --tlsv1.2 \
+            https://api.github.com/meta \
+            | jq -er '.ssh_keys[] | "github.com " + .' > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+          test -s "$HOME/.ssh/known_hosts"
+          ssh-keygen -F github.com -f "$HOME/.ssh/known_hosts" >/dev/null
+
+          export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/id_ed25519 -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts"
+
+          echo "Checking SSH authentication"
+          ssh_status=0
+          ssh_output="$(ssh -T git@github.com 2>&1)" || ssh_status=$?
+          if [[ "$ssh_output" != *"successfully authenticated"* ]]; then
+            echo "::error::SSH authentication failed (exit status ${ssh_status})."
+            exit 1
+          fi
+
+          if git remote get-url backup >/dev/null 2>&1; then
+            git remote set-url backup "$BACKUP_URL"
+          else
+            git remote add backup "$BACKUP_URL"
+          fi
+          if git config --get-all remote.backup.pushurl >/dev/null 2>&1; then
+            git config --unset-all remote.backup.pushurl
+          fi
+          configured_url="$(git remote get-url backup)"
+          if [[ "$configured_url" != "$BACKUP_URL" ]]; then
+            echo "::error::Backup remote URL does not match the configured destination."
+            exit 1
+          fi
+          echo "Backup remote configured"
+
+          echo "Validating backup destination access"
+          git ls-remote backup >/dev/null
+
+          echo "Fetching complete Git history"
+          git fetch origin \
+            '+refs/heads/*:refs/remotes/origin/*' \
+            '+refs/tags/*:refs/tags/*'
+
+          if ! git show-ref --verify --quiet refs/remotes/origin/main; then
+            echo "::error::The expected source branch main is missing."
+            exit 1
+          fi
+
+          mapfile -t branch_refs < <(git for-each-ref --format='%(refname)' refs/remotes/origin)
+          mapfile -t tag_refs < <(git for-each-ref --format='%(refname)' refs/tags)
+          branch_count=0
+          tag_count=0
+
+          echo "Synchronizing branches"
+          for branch_ref in "${branch_refs[@]}"; do
+            if [[ "$branch_ref" == refs/remotes/origin/HEAD ]]; then
+              continue
+            fi
+            branch_name="${branch_ref#refs/remotes/origin/}"
+            git push backup "${branch_ref}:refs/heads/${branch_name}"
+            branch_count=$((branch_count + 1))
+          done
+
+          echo "Synchronizing tags"
+          for tag_ref in "${tag_refs[@]}"; do
+            git push backup "${tag_ref}:${tag_ref}"
+            tag_count=$((tag_count + 1))
+          done
+
+          echo "Validating remote repository"
+          remote_heads="$(git ls-remote --heads backup)"
+          remote_tags="$(git ls-remote --tags backup)"
+          declare -A remote_head_oids=()
+          declare -A remote_tag_oids=()
+
+          while IFS=$'\t' read -r object_id ref_name; do
+            if [[ -n "${ref_name:-}" ]]; then
+              remote_head_oids["$ref_name"]="$object_id"
+            fi
+          done <<< "$remote_heads"
+          while IFS=$'\t' read -r object_id ref_name; do
+            if [[ -n "${ref_name:-}" ]]; then
+              remote_tag_oids["$ref_name"]="$object_id"
+            fi
+          done <<< "$remote_tags"
+
+          if [[ -z "${remote_head_oids[refs/heads/main]:-}" ]]; then
+            echo "::error::The backup repository is missing the required main branch."
+            exit 1
+          fi
+
+          for branch_ref in "${branch_refs[@]}"; do
+            if [[ "$branch_ref" == refs/remotes/origin/HEAD ]]; then
+              continue
+            fi
+            branch_name="${branch_ref#refs/remotes/origin/}"
+            expected_oid="$(git rev-parse "$branch_ref")"
+            if [[ "${remote_head_oids[refs/heads/${branch_name}]:-}" != "$expected_oid" ]]; then
+              echo "::error::Remote branch ${branch_name} does not match its source ref."
+              exit 1
+            fi
+          done
+
+          for tag_ref in "${tag_refs[@]}"; do
+            expected_oid="$(git rev-parse "$tag_ref")"
+            if [[ "${remote_tag_oids[$tag_ref]:-}" != "$expected_oid" ]]; then
+              echo "::error::Remote tag ${tag_ref#refs/tags/} does not match its source ref."
+              exit 1
+            fi
+          done
+
+          echo "Backup verification passed"
+          echo "branches=${branch_count}" >> "$GITHUB_OUTPUT"
+          echo "tags=${tag_count}" >> "$GITHUB_OUTPUT"
+
+      - name: Write backup run summary
+        if: always()
+        shell: bash
+        env:
+          SYNC_OUTCOME: ${{ steps.sync.outcome }}
+          BRANCH_COUNT: ${{ steps.sync.outputs.branches }}
+          TAG_COUNT: ${{ steps.sync.outputs.tags }}
+          TRIGGER: ${{ github.event_name }}
+          SOURCE_BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+
+          status=FAILED
+          remote_verification=FAILED
+          if [[ "$SYNC_OUTCOME" == "success" ]]; then
+            status=SUCCESS
+            remote_verification=PASSED
+          fi
+
+          branch_count="${BRANCH_COUNT:-Not completed}"
+          tag_count="${TAG_COUNT:-Not completed}"
+          source_branch="${SOURCE_BRANCH//$'\n'/ }"
+          source_branch="${source_branch//|/\\|}"
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+
+          {
+            echo "## Work Station Repository Backup"
+            echo
+            echo "| Field | Value |"
+            echo "| --- | --- |"
+            echo "| Source | \`${GITHUB_REPOSITORY}\` |"
+            echo "| Destination | \`MatheusHaliski/standard-users-listing-backup001\` |"
+            echo "| Status | ${status} |"
+            echo "| Branches processed | ${branch_count} |"
+            echo "| Tags processed | ${tag_count} |"
+            echo "| Remote verification | ${remote_verification} |"
+            echo "| Workflow run | [${GITHUB_RUN_ID}](${run_url}) |"
+            echo "| Trigger | ${TRIGGER} |"
+            echo "| Branch for trigger | ${source_branch} |"
+            echo "| Time | $(date -u '+%Y-%m-%d %H:%M:%S UTC') |"
+          } >> "$GITHUB_STEP_SUMMARY"
