@@ -21,4 +21,4 @@ Depois dos 5 diagramas: `## 6. Rastreabilidade` — tabela `CA → elemento do d
 Regras Mermaid: sem `<br>` em `classDiagram`; rótulos com `:` ou `()` entre aspas; ids ASCII sem acento (texto pode ter acento); um diagrama por bloco ```mermaid. Nomes de módulos: `ws-domain`, `ws-application`, `ws-infrastructure`, `ws-web`, `ws-bootstrap`. Pacote Java raiz: `br.gov.pr.secid.workstation`.
 
 
-As pastas `docs/diagramas/RF1…RF46` seguem a numeração **atual** do board Work Station (leitura de 2026-10-05). As versões anteriores dos RFs renumerados ficam em `docs/diagramas/_anterior/` e o mapa está em `RENUMERACAO.md`.
+As pastas `docs/diagramas/RF1…RF48` seguem a numeração **atual** do board Work Station (leitura de 2026-10-05; RF47 e RF48 lidos em 2026-10-06). As versões anteriores dos RFs renumerados ficam em `docs/diagramas/_anterior/` e o mapa está em `RENUMERACAO.md`.

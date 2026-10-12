@@ -74,7 +74,8 @@ class OidcWebTest {
         assertThat(claims.email()).isEqualTo("pessoa@exemplo.gov.br");
         assertThat(claims.emailVerified()).isTrue();
         ApiException nonce = catchThrowableOfType(ApiException.class, () -> verifier.verify("segredo-do-token", "outro"));
-        assertThat(nonce.code()).isEqualTo(AuthCodes.OIDC_TOKEN_INVALIDO);
+        assertThat(nonce.code()).isEqualTo(AuthCodes.OIDC_NONCE_INVALIDO);
+        assertThat(nonce.status()).as("nonce inválido → 400 (Bloco 4, D-63)").isEqualTo(400);
         assertThat(nonce.getMessage()).doesNotContain("segredo-do-token");
         JwtDecoder bad = token -> {
             throw new JwtException("assinatura inválida: " + token);

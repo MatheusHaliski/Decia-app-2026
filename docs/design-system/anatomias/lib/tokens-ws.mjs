@@ -115,6 +115,13 @@ export const STATIC = {
   'glyph-stroke': '1.75', 'glyph-size': '24px',
   'control-sm': '34px', 'control-md': '40px', 'control-lg': '48px', 'control-touch': '44px',
   'z-sticky': '20', 'z-header': '40', 'z-popover': '50', 'z-dialog': '60', 'z-toast': '70',
+  // Decision Card do DECIA (docs/decia/04_DECISION_CARD.md §8): só referências a tokens existentes, por isso
+  // acompanham os 4 temas sem par de contraste novo. ✦ continua exclusivo de --ws-ai-spark*.
+  'decision-card-radius': 'var(--ws-radius-lg)', 'decision-card-pad': 'var(--ws-space-4)', 'decision-status-bar': '4px',
+  'decision-flip-duration': 'var(--ws-duration-slow)', 'decision-critical': 'var(--ws-danger)',
+  'decision-node-evidence': 'var(--ws-node-blue)', 'decision-node-assumption': 'var(--ws-node-yellow)',
+  'decision-node-criteria': 'var(--ws-node-green)', 'decision-node-tradeoff': 'var(--ws-node-orange)',
+  'decision-node-risk': 'var(--ws-node-red)', 'decision-node-rejected': 'var(--ws-node-brown)',
 };
 
 /* ------------------------------------------------------------------------------------------------

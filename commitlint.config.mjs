@@ -9,8 +9,8 @@ export default {
       1,
       "always",
       ["skeleton", "ci", "sec", "arch", "ds", "i18n", "docs", "deps", "db", "api", "web", "infra", "release",
-        // RF1–RF45 (board Work Station)
-        ...Array.from({ length: 45 }, (_, i) => `rf${i + 1}`)],
+        // RF1–RF48 (board Work Station)
+        ...Array.from({ length: 48 }, (_, i) => `rf${i + 1}`)],
     ],
     "subject-case": [0],          // português com acentos e maiúsculas em siglas (RF, CA, API)
     "header-max-length": [2, "always", 120],

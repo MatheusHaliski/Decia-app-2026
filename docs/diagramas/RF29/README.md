@@ -571,3 +571,177 @@ flowchart LR
 | RF29.CA09 | `MetricCalculator.decisionsWithTrace`, view `vw_decisions_with_trace`, `MetricSnapshot` | P15 → D4 | — (RF18) | nota de VALIDADA | `MC`, `MY`, `admin/dashboard` |
 
 Tela/aba: `/projects/[id]` (esqueleto em `app/(shell)/projects/[id]/page.tsx`) · `/decia` (esqueleto em `app/(shell)/decia/page.tsx`) · `/decia/[sessionId]` (esqueleto em `app/(shell)/decia/[sessionId]/page.tsx`) · `/decia/review` (esqueleto em `app/(shell)/decia/review/page.tsx`) · `/lab/decia` (esqueleto em `app/(shell)/lab/decia/page.tsx`)
+
+## 7. Decisão estruturada (contexto 5b, V22) — extensão do Rastro de Decisão
+
+Modelo e regras: `docs/decia/03_MODELO_FUNCIONAL.md`. A sessão (§1–§6 acima) continua igual; a decisão estruturada é o
+registro canônico de **como a decisão foi construída** (pergunta → evidências → alternativas → critérios → análise →
+decisão → execução → aprendizado). Liga-se à sessão e ao `FinalDecision` por FKs opcionais saindo de `decisions`.
+
+### 7.1 Classes
+
+```mermaid
+classDiagram
+direction LR
+class Decision {
+  <<aggregate>>
+  +question: String
+  +ownerUserId: UUID
+  +status: DecisionLifecycle
+  +complexity: DecisionComplexity
+  +impact: DecisionLevel
+  +urgency: DecisionLevel
+  +weightingEnabled: boolean
+  +independentScoring: boolean
+  +selectedAlternativeId: UUID
+  +decisionConfidencePct: Integer
+  +sessionId: UUID
+  +finalDecisionId: UUID
+}
+class DecisionAlternative { +label: String
+  +doNothing: boolean
+  +status: AlternativeStatus }
+class DecisionCriterion { +name: String
+  +weightPct: BigDecimal }
+class CriterionAssessment { +score: 1..5
+  +assessorUserId: UUID }
+class DecisionEvidence { +nature: EvidenceNature
+  +sourceQuality: SourceQuality
+  +reliability: RelevanceLevel }
+class EvidenceLink { +targetType: EvidenceTarget
+  +stance: EvidenceStance }
+class DecisionAssumption { +confidencePct: Integer
+  +validationStatus: AssumptionStatus }
+class DecisionRisk { +likelihood: Likelihood
+  +impact: DecisionLevel }
+class DecisionRecommendation { +source: MODELO_or_IA
+  +supportingJson
+  +contradictingJson }
+class DecisionSnapshot { <<append-only>>
+  +contentJson
+  +contentSha256 }
+class DecisionEvent { <<append-only>>
+  +type: DecisionEventType }
+class DecisionOutcome { +result: OutcomeResult }
+class DecisionRetrospective { +processQuality: ProcessQuality }
+class DecisionCheckpoint { +dueAt
+  +status: CheckpointStatus }
+class DecisionWorkLink { +targetType: WorkLinkTarget }
+class DeciaSession
+class FinalDecision
+Decision "1" *-- "2..*" DecisionAlternative
+Decision "1" *-- "1..*" DecisionCriterion
+DecisionAlternative "1" *-- "*" CriterionAssessment
+DecisionCriterion "1" *-- "*" CriterionAssessment
+Decision "1" *-- "*" DecisionEvidence
+DecisionEvidence "1" *-- "*" EvidenceLink
+Decision "1" *-- "*" DecisionAssumption
+Decision "1" *-- "*" DecisionRisk
+Decision "1" *-- "*" DecisionRecommendation
+Decision "1" o-- "*" DecisionSnapshot : RESTRICT
+Decision "1" o-- "*" DecisionEvent : RESTRICT
+Decision "1" *-- "0..1" DecisionOutcome
+Decision "1" *-- "*" DecisionRetrospective
+Decision "1" *-- "*" DecisionCheckpoint
+Decision "1" *-- "*" DecisionWorkLink
+Decision "*" --> "0..1" DeciaSession : session_id
+Decision "*" --> "0..1" FinalDecision : final_decision_id
+```
+
+### 7.2 Máquina de estados (`DecisionLifecycle`)
+
+```mermaid
+stateDiagram-v2
+  [*] --> RASCUNHO
+  RASCUNHO --> ENQUADRAMENTO: pergunta definida
+  ENQUADRAMENTO --> PESQUISA
+  ENQUADRAMENTO --> COMPARACAO
+  PESQUISA --> COMPARACAO
+  PESQUISA --> ENQUADRAMENTO: problema reenquadrado
+  COMPARACAO --> PESQUISA: falta evidência
+  COMPARACAO --> AGUARDANDO_DECISAO: prontidão avaliada
+  AGUARDANDO_DECISAO --> COMPARACAO
+  AGUARDANDO_DECISAO --> DECIDIDA: guarda pré-decisão OK · snapshot DECISAO
+  DECIDIDA --> EM_EXECUCAO: tarefas ligadas
+  DECIDIDA --> RESOLVIDA
+  DECIDIDA --> REABERTA
+  EM_EXECUCAO --> RESOLVIDA: resultado registrado
+  EM_EXECUCAO --> REABERTA: gatilho disparado
+  RESOLVIDA --> REVISADA: retrospectiva
+  RESOLVIDA --> REABERTA
+  REVISADA --> REABERTA
+  REABERTA --> COMPARACAO: snapshot REABERTURA
+  REVISADA --> ARQUIVADA
+  RASCUNHO --> ARQUIVADA
+  ENQUADRAMENTO --> ARQUIVADA
+  PESQUISA --> ARQUIVADA
+  COMPARACAO --> ARQUIVADA
+  ARQUIVADA --> [*]
+```
+
+### 7.3 Atividades (decisão padrão)
+
+```mermaid
+flowchart TD
+  A1[Criar decisão: pergunta + complexidade] --> A2[Enquadrar: objetivo, restrições, prazo, DACI]
+  A2 --> A3[Coletar evidências com natureza e fonte]
+  A3 --> A4[Definir alternativas, inclusive não agir]
+  A4 --> A5[Escolher critérios e pesos]
+  A5 --> A6{Rodada independente?}
+  A6 -- sim --> A7[Cada participante avalia 1–5 sem ver os outros] --> A8[Revelar: mediana + divergência]
+  A6 -- não --> A8
+  A8 --> A9[Matriz, trade-offs, dominância, sensibilidade]
+  A9 --> A10[Desafiar: IA ✦ / pré-mortem / red team]
+  A10 --> A11{Prontidão}
+  A11 -- precisa de evidência --> A3
+  A11 -- pronta --> A12[Responsável escolhe, escreve motivo, declara confiança, gatilhos]
+  A12 --> A13{Guarda pré-decisão}
+  A13 -- bloqueio --> A12
+  A13 -- avisos confirmados / OK --> A14[DECIDIDA + snapshot SHA-256]
+  A14 --> A15[Gerar tarefas/marcos ligados + checkpoints]
+  A15 --> A16[Registrar resultado] --> A17[Retrospectiva: processo × resultado] --> A18[Lição reutilizável → memória RF33]
+```
+
+### 7.4 Sequência (decidir)
+
+```mermaid
+sequenceDiagram
+  actor Dono as Responsável
+  participant UI as DecisionWorkspace
+  participant R as Regras (rules.ts / domínio)
+  participant D as Decision (agregado)
+  participant S as DecisionSnapshot
+  participant E as DecisionEvent
+  Dono->>UI: Decidir (alternativa, motivo, confiança)
+  UI->>R: preDecisionGuard(decision)
+  R-->>UI: bloqueios[] / avisos[]
+  alt há bloqueio
+    UI-->>Dono: mensagem específica (ex.: motivo vazio)
+  else avisos
+    UI-->>Dono: Dialog com avisos (confirmação explícita)
+    Dono->>UI: confirmar
+  end
+  UI->>D: transition(DECIDIDA)
+  D->>S: snapshot(canonicalJson, sha256)
+  D->>E: DECIDIDA (actor, avisos confirmados)
+  UI-->>Dono: "No momento da decisão" (somente leitura)
+```
+
+### 7.5 Componentes
+
+```mermaid
+flowchart LR
+  subgraph Front["Next.js"]
+    CARD[DecisionCard COMPACT/STANDARD/DETAIL/HERO] --> VM[toDecisionCardViewModel]
+    WS[DecisionWorkspace 6 seções] --> RULES[lib/decia/rules.ts]
+    VM --> RULES
+    WS --> REPO[lib/decia/repository.ts mock → API]
+  end
+  subgraph Back["Spring (após Blocos 4–5)"]
+    API[DecisionController] --> APP[DecisionService] --> DOM[ws-domain decisao + analise]
+    APP --> JPA[persistence-mysql V22]
+  end
+  VEC[(contracts/decia/vetores.json)] -.testes.-> RULES
+  VEC -.testes.-> DOM
+  REPO -.fase 7.-> API
+```

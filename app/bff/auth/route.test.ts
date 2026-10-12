@@ -2,10 +2,11 @@ import { NextRequest } from "next/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { POST } from "./[action]/route";
 
-const call = (action: string, body: unknown = {}, init: { origin?: string | null; cookie?: string } = {}) => {
+const call = (action: string, body: unknown = {}, init: { origin?: string | null; cookie?: string; headers?: Record<string, string> } = {}) => {
   const headers = new Headers({ "content-type": "application/json" });
   if (init.origin !== null) headers.set("origin", init.origin ?? "http://localhost:3000");
   if (init.cookie) headers.set("cookie", init.cookie);
+  for (const [k, v] of Object.entries(init.headers ?? {})) headers.set(k, v);
   const req = new NextRequest("http://localhost:3000/bff/auth/" + action, { method: "POST", headers, body: JSON.stringify(body) });
   return POST(req, { params: Promise.resolve({ action }) });
 };
@@ -95,5 +96,24 @@ describe("POST /bff/auth/[action]", () => {
     expect(renewed.status).toBe(204);
     expect(renewed.cookies.get("ws_rt_h")!.maxAge).toBe(0);
     expect(fetchMock).toHaveBeenCalledTimes(4);
+  });
+
+  it("IP assinado (D-14): só X-Real-IP vira X-Ws-Client-Ip/-Proxy-Ts/-Proxy-Sig; X-Forwarded-For sozinho não é assinado", async () => {
+    vi.stubEnv("EDGE_PROXY_SECRET", "s".repeat(32));
+    const sent = () => new Headers(fetchMock.mock.calls.at(-1)![1]!.headers as Record<string, string>);
+    fetchMock.mockResolvedValueOnce(upstream(401, { code: "CREDENCIAIS_INVALIDAS" }));
+    await call("login", { identifier: "x", password: "y" }, { headers: { "x-forwarded-for": "203.0.113.9" } });
+    expect(sent().get("x-ws-client-ip")).toBeNull();
+    expect(sent().get("x-ws-proxy-sig")).toBeNull();
+    fetchMock.mockResolvedValueOnce(upstream(401, { code: "CREDENCIAIS_INVALIDAS" }));
+    await call("login", { identifier: "x", password: "y" }, { headers: { "x-real-ip": "198.51.100.7", "x-forwarded-for": "203.0.113.9" } });
+    expect(sent().get("x-ws-client-ip")).toBe("198.51.100.7");
+    expect(sent().get("x-ws-proxy-ts")).toMatch(/^\d{10}$/);
+    expect(sent().get("x-ws-proxy-sig")).toMatch(/^[A-Za-z0-9_-]{43}$/);
+    vi.stubEnv("EDGE_PROXY_SECRET", "curto");
+    fetchMock.mockResolvedValueOnce(upstream(401, { code: "CREDENCIAIS_INVALIDAS" }));
+    await call("login", { identifier: "x", password: "y" }, { headers: { "x-real-ip": "198.51.100.7" } });
+    expect(sent().get("x-ws-client-ip")).toBeNull();
+    vi.unstubAllEnvs();
   });
 });

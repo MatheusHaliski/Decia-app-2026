@@ -32,15 +32,21 @@
         <springdoc.version>3.1.1</springdoc.version>
         <resilience4j.version>2.4.0</resilience4j.version>
         <lombok.version>1.18.46</lombok.version>
-        <bouncycastle.version>1.84</bouncycastle.version>
+        <bouncycastle.version>1.86</bouncycastle.version>
+        <!-- Correções de segurança à frente do BOM do Boot 4.1.1 (D-70, gate Trivy): o Boot 4.1.1 traz Tomcat 11.0.24 e
+             Jackson 3.1.5 / 2.21.5, com CVEs HIGH/CRITICAL já corrigidas em patch. Remover cada linha quando o BOM do Boot
+             alcançar (ou passar) a versão daqui (Q-170). Só patch dentro da mesma minor. -->
+        <tomcat.version>11.0.26</tomcat.version>
+        <jackson-bom.version>3.1.7</jackson-bom.version>
+        <jackson-2-bom.version>2.21.7</jackson-2-bom.version>
 
         <jacoco.version>0.8.15</jacoco.version>
         <spotbugs-plugin.version>4.10.4.1</spotbugs-plugin.version>
         <checkstyle-plugin.version>3.6.0</checkstyle-plugin.version>
         <checkstyle.version>14.3.0</checkstyle.version>
         <dependency-check.version>13.0.0</dependency-check.version>
-        <surefire.version>3.5.4</surefire.version>
-        <compiler-plugin.version>3.14.0</compiler-plugin.version>
+        <surefire.version>3.6.0</surefire.version>
+        <compiler-plugin.version>3.16.0</compiler-plugin.version>
 
         <!-- Cobertura mínima de linhas (ARQUITETURA §3.4). Os módulos ws-application e ws-web ligam o check. -->
         <jacoco.min-line-coverage>0.70</jacoco.min-line-coverage>
@@ -49,6 +55,37 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- BOMs importados ANTES do Boot vencem (primeira importação ganha): Jackson 3 e Jackson 2 corrigidos (D-70) -->
+            <dependency>
+                <groupId>tools.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson-2-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- Tomcat embarcado corrigido (D-70); entradas explícitas vencem as importadas -->
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-core</artifactId>
+                <version>${tomcat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-el</artifactId>
+                <version>${tomcat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-websocket</artifactId>
+                <version>${tomcat.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>

@@ -10,8 +10,8 @@ describe("catálogo de RFs gerado dos READMEs", () => {
     expect(fs.readFileSync(OUT, "utf8")).toBe(gerar());
   });
 
-  it("tem RF1…RF46, cada um com título, rota e pelo menos um CA ou linha de cobertura", () => {
-    expect(RF_CATALOG.map((r) => r.n)).toEqual(Array.from({ length: 46 }, (_, i) => i + 1));
+  it("tem RF1…RF48, cada um com título, rota e pelo menos um CA ou linha de cobertura", () => {
+    expect(RF_CATALOG.map((r) => r.n)).toEqual(Array.from({ length: 48 }, (_, i) => i + 1));
     for (const rf of RF_CATALOG) {
       expect(rf.title.length, rf.id).toBeGreaterThan(10);
       expect(rf.route, rf.id).toBeTruthy();
@@ -45,9 +45,12 @@ describe("catálogo de RFs gerado dos READMEs", () => {
     expect(rf.cas[1]).toMatchObject({ kind: "rastreabilidade", text: "Classe X | atividade" });
     expect(rf.cas[2]).toMatchObject({ kind: "rastreabilidade", text: "Posso fazer outra coisa." });
     expect(plain("**a** `b` [c](d) \\| e")).toBe("a b c | e");
+    // rótulo entre parênteses dentro do negrito (cards RF47/RF48: "Opção A — tela principal") vira nota do CA
+    const rotulado = parseReadme("RF98", "# RF98 — T\n- **RF98.CA11 (Opção A — tela principal)** Dado a aba, quando busco, então vejo **linhas**.");
+    expect(rotulado.cas[0]).toMatchObject({ id: "RF98.CA11", kind: "enunciado", note: "Opção A — tela principal", text: "Dado a aba, quando busco, então vejo linhas." });
   });
 
-  it("toda página-esqueleto cita RFs do catálogo e todo RF1–RF46 tem pelo menos uma página", () => {
+  it("toda página-esqueleto cita RFs do catálogo e todo RF1–RF48 tem pelo menos uma página", () => {
     const ids = new Set(RF_CATALOG.map((r) => r.id));
     const cited = new Set<string>();
     for (const page of PAGES) for (const rf of rfsOf(page)) {

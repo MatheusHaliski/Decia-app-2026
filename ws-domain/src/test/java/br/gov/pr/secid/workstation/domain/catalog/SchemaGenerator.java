@@ -312,6 +312,9 @@ public final class SchemaGenerator {
         imports.add("jakarta.persistence.Column");
         imports.add("jakarta.persistence.Entity");
         imports.add("jakarta.persistence.Table");
+        if (appendOnly(e)) {
+            imports.add("org.hibernate.annotations.Immutable");
+        }
         if (inherits) {
             imports.add("br.gov.pr.secid.workstation.domain.common.AuditableEntity");
         } else {
@@ -349,7 +352,7 @@ public final class SchemaGenerator {
             if (!a.nullable()) {
                 fields.append(", nullable = false");
             }
-            if (a.pk() || a.column().equals("created_at")) {
+            if (a.pk() || a.column().equals("created_at") || appendOnly(e)) {
                 fields.append(", updatable = false");
             }
             if (a.javaType() == java.util.UUID.class) {
@@ -383,7 +386,11 @@ public final class SchemaGenerator {
             sb.append(" * ").append(line).append('\n');
         }
         sb.append(" */\n");
-        sb.append("@Entity\n@Table(name = \"").append(e.table()).append("\")\n");
+        sb.append("@Entity\n");
+        if (appendOnly(e)) {
+            sb.append("@Immutable\n");
+        }
+        sb.append("@Table(name = \"").append(e.table()).append("\")\n");
         sb.append("public class ").append(e.entity()).append("Entity").append(inherits ? " extends AuditableEntity" : "").append(" {\n\n");
         sb.append(fields).append(accessors);
         int last = sb.lastIndexOf("\n\n");
@@ -408,24 +415,45 @@ public final class SchemaGenerator {
         return t.getSimpleName();
     }
 
+    /** {@link DomainEntity#appendOnly()} da entidade (trilhas imutáveis: snapshot e eventos da decisão). */
+    static boolean appendOnly(EntityDescriptor e) {
+        DomainEntity ann = e.type() == null ? null : e.type().getAnnotation(DomainEntity.class);
+        return ann != null && ann.appendOnly();
+    }
+
     static String renderRepository(EntityDescriptor e, String ctx) {
         AttributeDescriptor pk = e.attribute(e.pk());
         String idType = pk.javaType() == java.util.UUID.class ? "UUID" : pk.javaType().getSimpleName();
+        boolean appendOnly = appendOnly(e);
         StringBuilder sb = new StringBuilder();
         sb.append("package ").append(INFRA_PKG).append('.').append(ctx).append(".repository;\n\n");
         sb.append("import ").append(INFRA_PKG).append('.').append(ctx).append(".entity.").append(e.entity()).append("Entity;\n");
-        sb.append("import org.springframework.data.jpa.repository.JpaRepository;\n");
+        sb.append(appendOnly ? "import org.springframework.data.repository.Repository;\n" : "import org.springframework.data.jpa.repository.JpaRepository;\n");
+        if (appendOnly || "UUID".equals(idType)) {
+            sb.append('\n');
+        }
+        if (appendOnly) {
+            sb.append("import java.util.Optional;\n");
+        }
         if ("UUID".equals(idType)) {
-            sb.append("\nimport java.util.UUID;\n");
+            sb.append("import java.util.UUID;\n");
         }
         sb.append("\n/**\n");
-        for (String line : wrap("Repositório Spring Data de {@code " + e.table() + "} (" + String.join(", ", e.rfs())
-                + "). Gerado pelo SchemaGenerator; consultas específicas entram por RF.", 120)) {
+        String doc = "Repositório Spring Data de {@code " + e.table() + "} (" + String.join(", ", e.rfs()) + "). Gerado pelo SchemaGenerator; "
+                + (appendOnly ? "append-only: só insere e lê — nenhum update/delete exposto (a entidade é @Immutable)."
+                        : "consultas específicas entram por RF.");
+        for (String line : wrap(doc, 120)) {
             sb.append(" * ").append(line).append('\n');
         }
         sb.append(" */\n");
-        sb.append("public interface ").append(e.entity()).append("Repository extends JpaRepository<").append(e.entity()).append("Entity, ")
-                .append(idType).append("> {\n}\n");
+        if (appendOnly) {
+            sb.append("public interface ").append(e.entity()).append("Repository extends Repository<").append(e.entity()).append("Entity, ")
+                    .append(idType).append("> {\n\n    ").append(e.entity()).append("Entity save(").append(e.entity()).append("Entity entity);\n\n")
+                    .append("    Optional<").append(e.entity()).append("Entity> findById(").append(idType).append(" id);\n\n    long count();\n}\n");
+        } else {
+            sb.append("public interface ").append(e.entity()).append("Repository extends JpaRepository<").append(e.entity()).append("Entity, ")
+                    .append(idType).append("> {\n}\n");
+        }
         return sb.toString();
     }
 

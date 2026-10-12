@@ -25,6 +25,9 @@ public class User {
     private Role role = Role.USER;
     private AccountStatus status = AccountStatus.PENDING_EMAIL_VERIFICATION;
     private String jobTitle;
+    /** Lotação (RF28): só leitura aqui — o adaptador lê de {@code users.company_id}/{@code department_id} e não grava (D-66). */
+    private UUID companyId;
+    private UUID departmentId;
     private String avatarUrl;
     private String coverUrl;
     private String bio;
@@ -170,6 +173,22 @@ public class User {
 
     public void setJobTitle(String jobTitle) {
         this.jobTitle = jobTitle;
+    }
+
+    public UUID getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(UUID companyId) {
+        this.companyId = companyId;
+    }
+
+    public UUID getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(UUID departmentId) {
+        this.departmentId = departmentId;
     }
 
     public String getAvatarUrl() {

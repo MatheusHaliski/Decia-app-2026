@@ -64,6 +64,13 @@
   --color-ws-node-brown-ink: var(--ws-node-brown-ink);
   --color-ws-node-orange-ink: var(--ws-node-orange-ink);
   --color-ws-glass-border: var(--ws-glass-border);
+  --color-ws-decision-critical: var(--ws-decision-critical);
+  --color-ws-decision-node-evidence: var(--ws-decision-node-evidence);
+  --color-ws-decision-node-assumption: var(--ws-decision-node-assumption);
+  --color-ws-decision-node-criteria: var(--ws-decision-node-criteria);
+  --color-ws-decision-node-tradeoff: var(--ws-decision-node-tradeoff);
+  --color-ws-decision-node-risk: var(--ws-decision-node-risk);
+  --color-ws-decision-node-rejected: var(--ws-decision-node-rejected);
   --font-ws-display: var(--ws-font-display);
   --font-ws-body: var(--ws-font-body);
   --font-ws-mono: var(--ws-font-mono);
@@ -143,3 +150,25 @@ body {
 
 /* Fonte do tema terminal também no shell (tokens-ws.css já troca --ws-body-font). */
 :root[data-theme="terminal"] .ws-shell-glass { border-style: dashed; }
+
+/* DECIA Decision Card — flip (docs/decia/04_DECISION_CARD.md §7). As duas faces ficam sobrepostas na mesma célula de
+   grid: a altura é a da face maior (sem layout shift). 3D só em data-motion="3d"; com prefers-reduced-motion ou a
+   preferência "Reduzir movimento" (data-reduce-motion) a troca é simples, sem rotação. */
+.ws-decision-flip__inner { display: grid; }
+.ws-decision-flip__inner > .ws-decision-face { grid-area: 1 / 1; min-width: 0; }
+.ws-decision-flip[data-motion="3d"] { perspective: 1600px; }
+.ws-decision-flip[data-motion="3d"] .ws-decision-flip__inner {
+  transform-style: preserve-3d;
+  transition: transform var(--ws-decision-flip-duration) var(--ws-ease-in-out);
+}
+.ws-decision-flip[data-motion="3d"][data-flipped="true"] .ws-decision-flip__inner { transform: rotateY(180deg); }
+.ws-decision-flip[data-motion="3d"] .ws-decision-face { backface-visibility: hidden; }
+.ws-decision-flip[data-motion="3d"] .ws-decision-face--back { transform: rotateY(180deg); }
+.ws-decision-flip[data-motion="reduced"] .ws-decision-face[aria-hidden="true"] { visibility: hidden; }
+@media (prefers-reduced-motion: reduce) {
+  .ws-decision-flip .ws-decision-flip__inner, .ws-decision-flip .ws-decision-face { transform: none !important; transition: none !important; }
+  .ws-decision-flip .ws-decision-face[aria-hidden="true"] { visibility: hidden; }
+}
+:root[data-reduce-motion="true"] .ws-decision-flip .ws-decision-flip__inner,
+:root[data-reduce-motion="true"] .ws-decision-flip .ws-decision-face { transform: none !important; transition: none !important; }
+:root[data-reduce-motion="true"] .ws-decision-flip .ws-decision-face[aria-hidden="true"] { visibility: hidden; }

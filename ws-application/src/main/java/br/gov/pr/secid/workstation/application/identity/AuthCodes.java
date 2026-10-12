@@ -20,6 +20,7 @@ public final class AuthCodes {
     public static final String EXCLUSAO_NAO_AGENDADA = "EXCLUSAO_NAO_AGENDADA";
     public static final String OIDC_DESLIGADO = "OIDC_DESLIGADO";
     public static final String OIDC_TOKEN_INVALIDO = "OIDC_TOKEN_INVALIDO";
+    public static final String OIDC_NONCE_INVALIDO = "OIDC_NONCE_INVALIDO";
     public static final String OIDC_EMAIL_NAO_VERIFICADO = "OIDC_EMAIL_NAO_VERIFICADO";
     public static final String AUTENTICACAO_INDISPONIVEL = "AUTENTICACAO_INDISPONIVEL";
 

@@ -18,8 +18,19 @@ describe("preferências: tipos e contrato do servidor (RF3.CA03)", () => {
     expect(p.reduceMotion).toBe(true);
     expect(p.wipLimit).toBe(3);
     expect(p.timezone).toBe("America/Sao_Paulo");
+    expect(sanitizePreferences({ timezone: "UTC" }).timezone).toBe("UTC");
+    expect(sanitizePreferences({ timezone: "America/Manaus" }).timezone).toBe("America/Manaus");
+    expect(sanitizePreferences({ timezone: "Etc/GMT+3" }).timezone).toBe("Etc/GMT+3");
+    expect(sanitizePreferences({ timezone: "Mars/Olympus_Mons" }).timezone).toBe("America/Sao_Paulo");
+    expect(sanitizePreferences({ timezone: "Europe/Lisbon; drop" }).timezone).toBe("America/Sao_Paulo");
     expect(p.notificationPrefs.dailyTaskAt).toBe("08:00");
     expect(p.notificationPrefs.email).toBe(false);
+  });
+
+  it("aceita UTC (opção oferecida em Configurações) além de nomes Região/Cidade", () => {
+    expect(sanitizePreferences({ timezone: "UTC" }).timezone).toBe("UTC");
+    expect(sanitizePreferences({ timezone: "America/Manaus" }).timezone).toBe("America/Manaus");
+    expect(sanitizePreferences({ timezone: "GMT" }).timezone).toBe("America/Sao_Paulo");
   });
 
   it("toServer/fromServer seguem MeController.PreferencesRequest (fontScale decimal, enum maiúsculo, JSON em texto)", () => {
@@ -80,5 +91,19 @@ describe("PreferencesProvider", () => {
     expect(document.documentElement.getAttribute("lang")).toBe("en");
     expect(screen.getByTestId("locale").textContent).toBe("en:Search");
     expect(adapter.saved.at(-1)).toMatchObject({ theme: "terminal", language: "en" });
+  });
+
+  it("não apaga os atributos do bootScript com os padrões enquanto o armazenamento local não respondeu (sem flash na hidratação)", async () => {
+    const html = document.documentElement;
+    html.setAttribute("data-theme", "escuro");
+    html.setAttribute("lang", "es");
+    let release: (p: Partial<typeof DEFAULT_PREFERENCES>) => void = () => {};
+    const pending = { load: () => new Promise<null | typeof DEFAULT_PREFERENCES>((r) => { release = (p) => r({ ...DEFAULT_PREFERENCES, ...p }); }), save: async () => {} };
+    renderWithProviders(<Probe />, { adapters: [pending] });
+    expect(html.getAttribute("data-theme")).toBe("escuro");
+    expect(html.getAttribute("lang")).toBe("es");
+    await act(async () => { release({ theme: "contraste", language: "en" }); });
+    expect(html.getAttribute("data-theme")).toBe("contraste");
+    expect(html.getAttribute("lang")).toBe("en");
   });
 });
