@@ -1,8 +1,15 @@
-# RF24 — Criar o Plano Anual / Trilha Estratégica (6 eixos) e vincular projetos a cada eixo, com comparação entre exercícios
-**HU:** HU24 · **Sprint (board Work Station):** Product Backlog (não comprometido na Sprint 4; candidato à Sprint 5) · **Equivalente FAI:** RF13 DNA de Estilo (6 células) · **Aba/rota:** Plano Anual (`/plans`, `/plans/new`, `/plans/[id]`, comparação em `/plans/compare?a=&b=`)
-**Critérios de aceite cobertos:** RF24.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07
+# RF24 — Visualizar a aba metas & objetivos de minha equipe com insights analíticos gerados por IA
+**HU:** HU24 · **Sprint (board Work Station):** Product Backlog (não comprometido na Sprint 4) · **Equivalente FAI:** RF13 DNA de Estilo (6 células) · **Aba/rota:** Plano Anual (`/plans`, `/plans/new`, `/plans/[id]`, `/plans/compare?a=&b=`) + visão da equipe em `/departments/[slug]` (sub-aba Plano Anual, RF28) e `/insights` › Equipe (RF43)
+**Critérios de aceite cobertos:** RF24.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 (corpo do card) — regra: o **título do card** define o RF; o corpo contém os CAs do Plano Anual (RF24.CA01–07). O título acrescenta "insights analíticos gerados por IA": cobertos pelo CA03 (risco agregado da IA) e pelo CA07 (IA do DECIA cita o eixo e sinaliza projetos sem eixo), com apoio dos insights de equipe do RF43 §4 (citados, não reescritos aqui).
 
-O **Plano Anual** (`AnnualPlan`, = DNA de Estilo) é o conjunto de **6 eixos estratégicos** (`PlanAxis`, position 1..6, cada um com meta, indicador e cor) que recebem projetos (`PlanAxisProject`, único por plano+projeto — um projeto fica em **1 eixo por plano**). A EMPRESA publica o plano oficial (`scope = EMPRESA`); chefes e empregados **derivam** (duplicam) o plano para DEPARTAMENTO/PESSOAL mantendo `derivedFromPlanId`. Cada eixo agrega nº de projetos, % concluídos, prazo mais próximo e **risco agregado** (IA, a partir de `ComplianceResult` RF32 e `ProjectScenario` RF31). A comparação lado a lado de dois exercícios classifica projetos em **novos, concluídos e reprogramados**. O plano recebe interações sociais (RF26) e chancela tier PLANO (RF39); a IA do DECIA cita `planAxisId` nas recomendações (RF11/RF29) e sinaliza projetos sem eixo (`Insight`).
+O **Plano Anual** (`AnnualPlan`, = DNA de Estilo) tem 6 eixos (`PlanAxis`) com meta, indicador e cor; projetos entram nos eixos por `PlanAxisProject` (1 eixo por plano). O plano da EMPRESA é o oficial; CHEFE e EMPREGADO **derivam** (`derivedFromPlanId`). A IA só **interpreta números calculados pelo sistema** (D-12): `aggregatedRisk` vem de `ComplianceResult`/`ProjectScenario` (RF31/RF32) e os insights da aba (`Insight` com `scope EQUIPE`) citam `MetricSnapshot`.
+
+| Painel da aba | Entidades | Quem vê | CAs |
+|---|---|---|---|
+| Grade de 6 eixos | `AnnualPlan`, `PlanAxis`, `PlanAxisProject`, `ProjectScheme.planAxisId` | equipe (visibilidade do plano) | CA01–CA04 |
+| Comparar exercícios | dois `AnnualPlan` do mesmo escopo, enum `CompareBucket` | equipe | CA05 |
+| Social e chancela | `Reaction`, `Comment`, `SavedItem`, `Share`, `SealBond` tier PLANO | todos | CA06 |
+| Eixo citado pelo DECIA · projetos sem eixo | `DeciaSession.planAxisId`, `AnalyticalSummary.recommendationsJson[].planAxisId`, `Insight PROJETO_SEM_EIXO` | todos | CA07 |
 
 ## 1. Diagrama de classes
 
@@ -10,7 +17,7 @@ O **Plano Anual** (`AnnualPlan`, = DNA de Estilo) é o conjunto de **6 eixos est
 classDiagram
 direction LR
 
-namespace ws_domain_planejamento {
+namespace ws_domain_planning {
   class AnnualPlan {
     <<entity>>
     +id: UUID
@@ -25,20 +32,17 @@ namespace ws_domain_planejamento {
     +status: PlanStatus
     +visibility: Visibility
     +coverUrl: String
-    +backgroundJson: JSON
     +creationMode: CreationMode
     +aiExplanationJson: JSON
-    +likesCount: long
-    +commentsCount: long
-    +savesCount: long
     +sealIdsJson: JSON
     +publishedAt: Instant
+    .. +5 campos ..
   }
   class PlanAxis {
     <<entity>>
     +id: UUID
     +planId: UUID
-    +position: int 1 a 6
+    +position: int
     +name: String
     +goal: String
     +indicator: String
@@ -58,97 +62,6 @@ namespace ws_domain_planejamento {
     +linkedBy: UUID
     +linkedAt: Instant
   }
-}
-
-namespace ws_domain_projetos {
-  class ProjectScheme {
-    <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +companyId: UUID
-    +departmentId: UUID
-    +title: String
-    +status: ProjectStatus
-    +currentPhase: ProjectPhase
-    +exerciseYear: int
-    +planAxisId: UUID
-    +nextMilestoneAt: LocalDate
-    +conformityPercent: BigDecimal
-    +hasBlockingPending: boolean
-    +evmJson: JSON
-  }
-  class ComplianceResult {
-    <<entity>>
-    +projectId: UUID
-    +percent: BigDecimal
-    +blockingCount: int
-  }
-  class ProjectScenario {
-    <<entity>>
-    +projectId: UUID
-    +riskByPhaseJson: JSON
-    +status: String
-  }
-}
-
-namespace ws_domain_decia_ia {
-  class DeciaSession {
-    <<entity>>
-    +id: UUID
-    +planAxisId: UUID eixo citado
-    +linkedProjectId: UUID
-  }
-  class AnalyticalSummary {
-    <<entity>>
-    +sessionId: UUID
-    +recommendationsJson: JSON planAxisId por recomendação
-  }
-  class Insight {
-    <<entity>>
-    +scope: String PROJETO
-    +scopeId: UUID
-    +kind: String PROJETO_SEM_EIXO
-    +severity: String
-  }
-  class AiInferenceLog {
-    <<entity>>
-    +capability: AiCapability
-    +result: String
-  }
-}
-
-namespace ws_domain_social_chancela {
-  class Reaction {
-    <<entity>>
-    +targetType: TargetType PLAN
-    +targetId: UUID
-    +reactionType: ReactionType
-  }
-  class Comment {
-    <<entity>>
-    +targetType: TargetType PLAN
-    +targetId: UUID
-  }
-  class SavedItem {
-    <<entity>>
-    +targetType: TargetType PLAN
-    +targetId: UUID
-  }
-  class Share {
-    <<entity>>
-    +targetType: TargetType PLAN
-    +channel: ShareChannel
-  }
-  class SealBond {
-    <<entity>>
-    +targetType: String PLAN
-    +targetId: UUID
-    +basis: SealBondBasis PLANO_MATCH
-    +status: SealBondStatus
-  }
-}
-
-namespace ws_domain_enums {
   class PlanScope {
     <<enum>>
     EMPRESA
@@ -167,13 +80,6 @@ namespace ws_domain_enums {
     MEDIO
     ALTO
   }
-  class Visibility {
-    <<enum>>
-    PRIVADA
-    DEPARTAMENTO
-    EMPRESA
-    PUBLICA
-  }
   class CompareBucket {
     <<enum>>
     NOVO
@@ -183,38 +89,118 @@ namespace ws_domain_enums {
   }
 }
 
+namespace ws_domain_projects {
+  class ProjectScheme {
+    <<entity>>
+    +id: UUID
+    +ownerId: UUID
+    +departmentId: UUID
+    +title: String
+    +status: ProjectStatus
+    +currentPhase: ProjectPhase
+    +exerciseYear: int
+    +planAxisId: UUID
+    +nextMilestoneAt: LocalDate
+    +conformityPercent: BigDecimal
+    +hasBlockingPending: boolean
+    .. +30 campos ..
+  }
+  class ComplianceResult {
+    <<entity>>
+    +projectId: UUID
+    +percent: BigDecimal
+    +blockingCount: int
+  }
+  class ProjectScenario {
+    <<entity>>
+    +projectId: UUID
+    +riskByPhaseJson: JSON
+  }
+}
+
+namespace ws_domain_decia_ia {
+  class DeciaSession {
+    <<entity>>
+    +id: UUID
+    +linkedProjectId: UUID
+    +planAxisId: UUID
+  }
+  class AnalyticalSummary {
+    <<entity>>
+    +sessionId: UUID
+    +recommendationsJson: JSON
+  }
+  class Insight {
+    <<entity>>
+    +scope: InsightScope
+    +scopeId: UUID
+    +kind: String
+    +metricRefsJson: JSON
+    +actionsJson: JSON
+    +aiInferenceId: UUID
+  }
+  class AiInferenceLog {
+    <<entity>>
+    +capability: AiCapability
+    +provider: AiProvider
+    +result: InferenceResult
+    +fallbackUsed: boolean
+  }
+}
+
+namespace ws_domain_social_seals {
+  class Reaction {
+    <<entity>>
+    +targetType: TargetType
+    +targetId: UUID
+    +reactionType: ReactionType
+  }
+  class SealBond {
+    <<entity>>
+    +targetType: String
+    +targetId: UUID
+    +basis: SealBondBasis
+    +status: SealBondStatus
+  }
+}
+
 namespace ws_application {
   class PlanService {
     <<service>>
-    +create(userId, PlanForm com 6 eixos) AnnualPlan
-    +linkProject(userId, planId, axisId, projectId) PlanAxisProject
-    +unlinkProject(userId, planId, projectId)
-    +recomputeAxis(axisId) PlanAxis
-    +derive(userId, officialPlanId, scope) AnnualPlan
-    +compare(planA, planB) CompareResult por CompareBucket
-    +publish(planId) AnnualPlan
-    +projectsWithoutAxis(companyId, year) List~ProjectScheme~
-    -validateSixAxes(form) 422 EIXOS_INVALIDOS
-    -validateOnePerPlan(planId, projectId) 409 PROJETO_JA_NO_PLANO
+    +create(actor, PlanForm) AnnualPlan
+    +publish(actor, planId) AnnualPlan
+    +linkProject(actor, planId, axisId, projectId) PlanAxisProject
+    +unlinkProject(actor, planId, projectId)
+    +derive(actor, officialPlanId, scope) AnnualPlan
+    +compare(actor, planA, planB) CompareResult
+    +projectsWithoutAxis(departmentId, year) List~ProjectScheme~
   }
-  class RiskAggregationService {
+  class AxisAggregationService {
     <<service>>
-    +aggregate(axisId) RiskLevel
+    +recompute(axisId) PlanAxis
+    +aggregateRisk(axisId) RiskLevel
+  }
+  class InsightService {
+    <<service>>
+    +equipe(viewer, departmentId) List~Insight~
   }
   class SocialService {
     <<service>>
-    +react(userId, PLAN, planId, type)
-    +comment(userId, PLAN, planId, text)
-    +save(userId, PLAN, planId)
-    +share(userId, PLAN, planId, channel)
+    +react(actor, PLAN, planId, type)
   }
   class SealService {
     <<service>>
-    +suggestForPlan(planId) List~SealBond~
+    +suggest(targetType, targetId) List~SealBond~
   }
   class AiEngine {
     <<service>>
-    +infer(capability, input, mode) AiResult
+    +run(AiRequest) AiResponse
+  }
+  class Guard {
+    <<service>>
+    +requireOwner(actor, ownerId)
+    +requireRole(actor, role)
+    +requireSameCompany(actor, companyId)
   }
   class CachePort {
     <<port>>
@@ -225,9 +211,9 @@ namespace ws_application {
     <<port>>
     +indexPlan(AnnualPlan)
   }
-  class MediaStoragePort {
-    <<port>>
-    +put(stream) MediaObject
+  class DomainEvents {
+    <<service>>
+    +publish(event)
   }
 }
 
@@ -236,12 +222,12 @@ namespace ws_web {
     <<controller>>
     +POST_api_plans(PlanForm)
     +GET_api_plans_id()
+    +PATCH_api_plans_id(PlanForm)
+    +POST_api_plans_id_publish()
     +POST_api_plans_id_axes_axisId_projects(projectId)
     +DELETE_api_plans_id_projects_projectId()
     +POST_api_plans_id_derive(scope)
     +GET_api_plans_compare(a, b)
-    +POST_api_plans_id_publish()
-    +GET_api_plans_id_projects_without_axis()
   }
 }
 
@@ -249,130 +235,105 @@ namespace ws_infrastructure {
   class RedisCacheAdapter {
     <<adapter>>
   }
-  class ClaudeGeminiAdapter {
-    <<adapter>>
-  }
   class OpenSearchIndexAdapter {
-    <<adapter>>
-  }
-  class S3StorageAdapter {
     <<adapter>>
   }
 }
 
-AnnualPlan "1" --> "6" PlanAxis : exatamente 6 eixos
-AnnualPlan "*" --> "0..1" AnnualPlan : derivedFromPlanId plano oficial
-PlanAxis "1" --> "*" PlanAxisProject
-PlanAxisProject "*" --> "1" ProjectScheme : projectId único por plano
-ProjectScheme "*" --> "0..1" PlanAxis : planAxisId
-ProjectScheme "1" --> "*" ComplianceResult : conformidade RF32
-ProjectScheme "1" --> "*" ProjectScenario : cenários RF31
-DeciaSession "*" --> "0..1" PlanAxis : planAxisId
-AnalyticalSummary ..> PlanAxis : recommendationsJson cita eixo
-Insight ..> ProjectScheme : PROJETO_SEM_EIXO
+AnnualPlan "1" *-- "6" PlanAxis : eixos
+PlanAxis "1" o-- "0..*" PlanAxisProject : vincula
+PlanAxisProject "0..*" --> "1" ProjectScheme : projeto
+AnnualPlan "0..*" --> "0..1" AnnualPlan : derivedFromPlanId
+ProjectScheme "0..*" --> "0..1" PlanAxis : planAxisId
+PlanAxis ..> ComplianceResult : risco agregado
+PlanAxis ..> ProjectScenario : risco agregado
+DeciaSession "0..*" --> "0..1" PlanAxis : cita eixo
+AnalyticalSummary ..> PlanAxis : recomendacao cita eixo
+Insight ..> PlanAxis : PROJETO_SEM_EIXO
 Reaction ..> AnnualPlan : targetType PLAN
-Comment ..> AnnualPlan : targetType PLAN
-SavedItem ..> AnnualPlan : targetType PLAN
-Share ..> AnnualPlan : targetType PLAN
 SealBond ..> AnnualPlan : tier PLANO
-AnnualPlan --> PlanScope
-AnnualPlan --> PlanStatus
-AnnualPlan --> Visibility
-PlanAxis --> RiskLevel : aggregatedRisk
-
-PlanController ..> PlanService
-PlanController ..> SocialService
-PlanService ..> RiskAggregationService
-PlanService ..> SealService
-PlanService ..> CachePort
-PlanService ..> SearchIndexPort
-PlanService ..> MediaStoragePort : capa
-RiskAggregationService ..> AiEngine : risco agregado a partir de RF31 e RF32
+PlanController --> PlanService
+PlanService --> AxisAggregationService
+PlanService --> Guard
+PlanService --> CachePort
+PlanService --> SearchIndexPort
+PlanService --> DomainEvents
+AxisAggregationService --> AiEngine : redige explicacao do risco
+AiEngine ..> AiInferenceLog
+InsightService --> AiEngine
 RedisCacheAdapter ..|> CachePort
 OpenSearchIndexAdapter ..|> SearchIndexPort
-S3StorageAdapter ..|> MediaStoragePort
-ClaudeGeminiAdapter ..> AiEngine
-
-note for AnnualPlan "tabela annual_plans · exercício, título, 6 eixos (CA01) · plano EMPRESA é o oficial, derivação mantém derivedFromPlanId (CA04) · visibilidade e capa (CA06)"
-note for PlanAxisProject "tabela plan_axis_projects · único planId + projectId via índice composto — 1 eixo por plano (CA02)"
-note for PlanAxis "projectsCount, completedPct, nearestDueAt recalculados a cada vínculo · aggregatedRisk pela IA (CA03)"
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph LU["Usuário"]
-    U1["EMPRESA, CHEFE ou EMPREGADO abre /plans/new"]
-    U2["Informa exercício, título e nomeia 6 eixos com meta, indicador e cor"]
-    U3["Arrasta projeto meu, do departamento ou da empresa para um eixo"]
-    U4["Clica Derivar para o meu departamento / trilha pessoal"]
-    U5["Abre comparação 2025 x 2026"]
-    U6["Curte, comenta, salva, compartilha o plano"]
+  subgraph ATOR["Ator (EMPRESA · CHEFE · EMPREGADO)"]
+    A0([Abre /plans]) --> A1{"O que quer fazer?"}
+    A1 -->|criar| A2["Preenche exercício, título e 6 eixos (meta, indicador, cor)"]
+    A1 -->|arrastar projeto| A3["Arrasta projeto para um eixo"]
+    A1 -->|derivar| A4["Clica Derivar plano oficial"]
+    A1 -->|comparar| A5["Escolhe exercícios A e B"]
+    A1 -->|interagir| A6["Curte, comenta, salva ou pede chancela do plano"]
   end
 
-  subgraph LW["Web / BFF (Next.js App Router)"]
-    W1["Grade 6 células com cor, meta e indicador"]
-    W2["Por eixo: nº de projetos, % concluídos, prazo mais próximo, risco agregado"]
-    W3["Toast: projeto já está em um eixo deste plano"]
-    W4["Colunas lado a lado: novos, concluídos, reprogramados"]
-    W5["Capa, visibilidade e barra de interações RF26 + lacre de chancela"]
+  subgraph FE["Next.js / BFF (app/(shell)/plans)"]
+    F1["PlanForm valida 6 eixos no cliente (erro por campo i18n)"]
+    F2["POST /api/plans ou PATCH /api/plans/{id}"]
+    F3["POST /api/plans/{id}/axes/{axisId}/projects"]
+    F4["POST /api/plans/{id}/derive"]
+    F5["GET /api/plans/compare?a=&b="]
+    F6["Ações sociais do RF26 com targetType PLAN"]
+    F7["Grade 6 células: nº projetos, % concluídos, prazo mais próximo, risco agregado ✦"]
   end
 
-  subgraph LA["ws-application"]
-    A1["PlanService.create → validateSixAxes"]
-    A2{"Exatamente 6 eixos nomeados?"}
-    A3["422 EIXOS_INVALIDOS"]
-    A4["Persiste AnnualPlan RASCUNHO + 6 PlanAxis position 1..6"]
-    A5["PlanService.linkProject → validateOnePerPlan"]
-    A6{"Projeto já vinculado a outro eixo deste plano?"}
-    A7["409 PROJETO_JA_NO_PLANO"]
-    A8{"Projeto visível para mim? meu, do departamento ou da empresa"}
-    A9["403 ACESSO_NEGADO"]
-    A10["INSERT PlanAxisProject + UPDATE ProjectScheme.planAxisId"]
-    A11["recomputeAxis: projectsCount, completedPct, nearestDueAt; evict cache"]
-    A12["RiskAggregationService.aggregate"]
-    A13["PlanService.derive: duplica plano e eixos, scope DEPARTAMENTO ou PESSOAL, derivedFromPlanId = oficial"]
-    A14{"Plano de origem é EMPRESA publicado?"}
-    A15["422 DERIVACAO_INVALIDA"]
-    A16["PlanService.compare: para cada projeto classifica NOVO, CONCLUIDO, REPROGRAMADO, MANTIDO"]
-    A17["SocialService.* com targetType PLAN; SealService.suggestForPlan tier PLANO"]
-    A18["PlanService.projectsWithoutAxis → Insight PROJETO_SEM_EIXO"]
+  subgraph WEB["ws-web · PlanController"]
+    W1["JWT + CorrelationIdFilter + rate limit por rota"]
+    W2["GlobalExceptionHandler → {code, message, details, correlationId}"]
   end
 
-  subgraph LI["IA (AiEngine)"]
-    I1["Risco agregado por eixo a partir de ComplianceResult RF32 e ProjectScenario RF31: BAIXO, MEDIO, ALTO"]
-    I2["RESUMO_ANALITICO do DECIA cita o planAxisId do projeto ao recomendar"]
+  subgraph APP["ws-application · PlanService"]
+    P1{"6 eixos, nomes únicos, cor válida?"}
+    P1 -->|não| E1["422 VALIDACAO details.axes"]
+    P2["Guard.requireOwner ou requireRole EMPRESA/CHEFE por scope"]
+    P2 -->|falha| E2["403 ACESSO_NEGADO"]
+    P3{"Projeto já está em outro eixo deste plano?"}
+    P3 -->|sim| E3["409 PROJETO_JA_NO_PLANO"]
+    P4{"Visibilidade do projeto compatível com o plano?"}
+    P4 -->|não| E4["403 ACESSO_NEGADO"]
+    P5["Grava PlanAxisProject + ProjectScheme.planAxisId"]
+    P6["Copia 6 eixos, derivedFromPlanId = oficial, scope DEPARTAMENTO/PESSOAL"]
+    P7["CompareService classifica projetos em NOVO · CONCLUIDO · REPROGRAMADO · MANTIDO"]
+    P8["DomainEvents.publish(PlanProjectLinked) AFTER_COMMIT"]
   end
 
-  subgraph LP["Persistência"]
-    P1[("MySQL: annual_plans, plan_axes")]
-    P2[("MySQL: plan_axis_projects, project_schemes.planAxisId")]
-    P3[("Redis: agregados por eixo")]
-    P4[("MySQL: ai_inference_log, insights")]
-    P5[("MySQL: reactions, comments, saved_items, shares, seal_bonds")]
+  subgraph IA["AiEngine (capability INSIGHT)"]
+    I1["Lê ComplianceResult e ProjectScenario dos projetos do eixo (números do sistema)"]
+    I2["aggregatedRisk = max ponderado · redige explicação ✦"]
+    I3{"Projetos do departamento sem eixo?"}
+    I3 -->|sim| I4["Insight PROJETO_SEM_EIXO (scope EQUIPE)"]
+    I5["AiInferenceLog (provider, fallbackUsed, correlationId)"]
   end
 
-  U1 --> U2 --> A1 --> A2
-  A2 -->|"não"| A3
-  A2 -->|"sim"| A4 --> P1 --> W1
-  W1 --> U3 --> A5 --> A6
-  A6 -->|"sim"| A7 --> W3
-  A6 -->|"não"| A8
-  A8 -->|"não"| A9
-  A8 -->|"sim"| A10 --> P2 --> A11 --> P3
-  A11 --> A12 --> I1 --> P4
-  I1 --> W2
-  W1 --> U4 --> A14
-  A14 -->|"não"| A15
-  A14 -->|"sim"| A13 --> P1
-  W1 --> U5 --> A16 --> W4
-  W1 --> U6 --> A17 --> P5 --> W5
-  A18 --> P4
-  A18 -.-> I2
+  subgraph DB["Persistência"]
+    D1[("MySQL annual_plans · plan_axes · plan_axis_projects")]
+    D2[("Redis cache agregados por eixo · flag redis.enabled")]
+    D3[("OpenSearch ws-plans · flag opensearch.enabled")]
+  end
 
-  classDef err fill:#ffe3e3,stroke:#c0392b,color:#5a1a12
-  class A3,A7,A9,A15 err
+  A2 --> F1 --> F2 --> W1 --> P1 -->|sim| P2 --> D1
+  A3 --> F3 --> W1 --> P2 --> P3 -->|não| P4 -->|sim| P5 --> D1 --> P8
+  A4 --> F4 --> W1 --> P2 --> P6 --> D1
+  A5 --> F5 --> W1 --> P7 --> F7
+  A6 --> F6 --> W1
+  P8 --> I1 --> I2 --> I5 --> D2 --> F7
+  P8 --> D3
+  P8 --> I3
+  E1 --> W2
+  E2 --> W2
+  E3 --> W2
+  E4 --> W2
 ```
 
 ## 3. Diagrama de sequência
@@ -380,121 +341,79 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário
-  participant NX as Next.js (App Router)
+  participant U as Usuário
+  participant FE as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
   participant R as Redis
   participant OS as OpenSearch
-  participant DE as DomainEvents (AFTER_COMMIT)
+  participant EV as DomainEvents (AFTER_COMMIT)
 
-  U->>NX: /plans/new — exercício 2026, título, 6 eixos (Mobilidade, Habitação, Saneamento, Regularização fundiária, Equipamentos públicos, Gestão interna)
-  NX->>C: POST /api/plans {exerciseYear, title, axes[6]}
-  C->>S: PlanService.create(userId, form)
-  S->>S: validateSixAxes
-  alt menos ou mais de 6 eixos, ou eixo sem nome (CA01)
-    S-->>C: 422 EIXOS_INVALIDOS {details: [{field: axes, code: EXATAMENTE_6}], correlationId}
-    C-->>NX: 422
-  else válido
-    S->>DB: INSERT annual_plans (scope por profileType, status RASCUNHO, visibility)
-    S->>DB: INSERT plan_axes x6 (position 1..6, name, goal, indicator, color)
-    S-->>C: 201 AnnualPlan
-    C-->>NX: 201
-    NX-->>U: grade de 6 células
+  U->>FE: cria plano 2026 com 6 eixos
+  FE->>C: POST /api/plans (PlanForm)
+  C->>S: PlanService.create(actor, form)
+  S->>S: Guard.requireRole(actor, EMPRESA ou CHEFE) para scope EMPRESA/DEPARTAMENTO
+  alt menos ou mais de 6 eixos
+    S-->>C: 422 VALIDACAO details.axes
+    C-->>FE: erro por campo i18n
+  else formulário válido
+    S->>DB: insert annual_plans + 6 plan_axes
+    S->>EV: PlanCreated
+    S-->>C: 201 AnnualPlan RASCUNHO
+    C-->>FE: plano criado
   end
 
-  U->>NX: arrasta projeto P1 para o eixo Saneamento (CA02)
-  NX->>C: POST /api/plans/{planId}/axes/{axisId}/projects {projectId P1}
-  C->>S: PlanService.linkProject(userId, planId, axisId, P1)
-  S->>DB: SELECT plan_axis_projects JOIN plan_axes WHERE planId AND projectId = P1
-  alt P1 já em outro eixo do mesmo plano
-    S-->>C: 409 PROJETO_JA_NO_PLANO {currentAxisId}
-    C-->>NX: 409
-    NX-->>U: "já está em Habitação — mover?"
+  U->>FE: arrasta projeto para o eixo Mobilidade
+  FE->>C: POST /api/plans/{id}/axes/{axisId}/projects {projectId}
+  C->>S: PlanService.linkProject(actor, planId, axisId, projectId)
+  S->>DB: select plan_axis_projects where planId and projectId
+  alt projeto já em outro eixo do plano
+    S-->>C: 409 PROJETO_JA_NO_PLANO
   else livre
-    S->>DB: INSERT plan_axis_projects (axisId, P1, linkedBy, linkedAt)
-    S->>DB: UPDATE project_schemes SET planAxisId WHERE id = P1
-    S->>S: recomputeAxis — projectsCount, completedPct, nearestDueAt (CA03)
-    S->>DB: UPDATE plan_axes SET projectsCount, completedPct, nearestDueAt
-    S->>R: DEL plan:{planId}:aggregates
-    S->>DE: publish ProjectLinkedToAxis
+    S->>DB: insert plan_axis_projects + update project_schemes.plan_axis_id
+    S->>EV: PlanProjectLinked
     S-->>C: 201 PlanAxisProject
-    C-->>NX: 201
   end
-  DE->>AI: infer(SIMULAR_CENARIO ou CONFORMIDADE agregada, {complianceResults, scenarios dos projetos do eixo})
-  AI-->>DE: aggregatedRisk ALTO + justificativa, ai_inference_log
-  DE->>DB: UPDATE plan_axes SET aggregatedRisk
-
-  U->>NX: abre /plans/{planId}
-  NX->>C: GET /api/plans/{planId}
-  C->>S: PlanService.get
-  S->>R: GET plan:{planId}:aggregates
-  S->>DB: annual_plans + plan_axes + projetos por eixo
-  S-->>C: 200 plano com 6 eixos, nº de projetos, % concluídos, prazo mais próximo, risco agregado, capa, contadores sociais, chancelas (CA03, CA06)
-  C-->>NX: 200
-
-  U->>NX: CHEFE clica Derivar para o departamento (CA04)
-  NX->>C: POST /api/plans/{officialId}/derive {scope: DEPARTAMENTO}
-  C->>S: PlanService.derive(userId, officialId, DEPARTAMENTO)
-  alt plano de origem não é EMPRESA publicado
-    S-->>C: 422 DERIVACAO_INVALIDA
-    C-->>NX: 422
-  else oficial
-    S->>DB: INSERT annual_plans (scope DEPARTAMENTO, derivedFromPlanId officialId, status RASCUNHO)
-    S->>DB: INSERT plan_axes x6 copiados
-    S-->>C: 201 plano derivado com vínculo ao oficial
-    C-->>NX: 201
+  EV->>S: AxisAggregationService.recompute(axisId)
+  S->>DB: count projetos, % CONCLUIDO, min nextMilestoneAt, compliance_results, project_scenarios
+  S->>AI: run(INSIGHT, números do eixo, mode ECONOMIA)
+  alt provedor externo indisponível
+    AI-->>S: LocalEngine redige explicação simplificada (fallbackUsed)
+  else ok
+    AI-->>S: aggregatedRisk + explicação ✦
   end
-
-  U->>NX: compara 2025 x 2026 (CA05)
-  NX->>C: GET /api/plans/compare?a={plan2025}&b={plan2026}
-  C->>S: PlanService.compare(a, b)
-  S->>DB: projetos dos dois planos por eixo + status + exerciseYear
-  S->>S: classifica NOVO (só em b), CONCLUIDO (status CONCLUIDO em a), REPROGRAMADO (em a e b com exerciseYear alterado), MANTIDO
-  S-->>C: 200 CompareResult {porEixo: [{axis, novos, concluidos, reprogramados}]}
-  C-->>NX: 200
-  NX-->>U: colunas lado a lado
-
-  U->>NX: publica o plano e reage BEM_FUNDAMENTADO (CA06)
-  NX->>C: POST /api/plans/{planId}/publish
-  C->>S: PlanService.publish
-  S->>DB: UPDATE annual_plans SET status PUBLICADO, publishedAt
-  S->>OS: indexPlan
-  NX->>C: POST /api/interactions/PLAN/{planId}/reactions {BEM_FUNDAMENTADO}
-  C->>S: SocialService.react(userId, PLAN, planId)
-  S->>DB: INSERT reactions (targetType PLAN)
-
-  Note over AI,DB: RF11/RF29 (CA07): ao gerar RESUMO_ANALITICO de uma sessão com linkedProjectId, o AiEngine inclui planAxisId em cada recomendação e, se o projeto não tem eixo, grava Insight PROJETO_SEM_EIXO.
+  AI->>DB: insert ai_inference_log
+  S->>DB: update plan_axes (projectsCount, completedPct, nearestDueAt, aggregatedRisk)
+  S->>R: evict agregados do plano (se redis.enabled)
+  EV->>OS: index ws-plans (se opensearch.enabled, falha não bloqueia)
+  FE->>C: GET /api/plans/{id}
+  C->>S: PlanService.get(actor, id)
+  S->>R: agregados em cache
+  S-->>FE: plano com 6 células e eixo citado por sessões DECIA
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: **`AnnualPlan.status`** (RASCUNHO · PUBLICADO · ENCERRADO). A derivação (CA04) nasce de um plano EMPRESA **PUBLICADO** e cria um novo plano RASCUNHO com `derivedFromPlanId`.
+Entidade central: `AnnualPlan.status` (`PlanStatus`). O vínculo projeto-eixo (`PlanAxisProject`) não tem estado próprio: existe ou não.
 
 ```mermaid
 stateDiagram-v2
-  [*] --> RASCUNHO : POST plans com exatamente 6 eixos
-  RASCUNHO --> RASCUNHO : nomear eixos, vincular e desvincular projetos, trocar capa
-  RASCUNHO --> PUBLICADO : publicar, indexa para Buscar e Mural
-  PUBLICADO --> PUBLICADO : vincular projetos, recomputar agregados e risco, interações RF26, chancela tier PLANO
-  PUBLICADO --> DERIVADO : derivar para DEPARTAMENTO ou PESSOAL, só se scope EMPRESA
-  state "Novo plano RASCUNHO com derivedFromPlanId" as DERIVADO
-  DERIVADO --> RASCUNHO : segue o ciclo próprio mantendo vínculo com o oficial
-  PUBLICADO --> ENCERRADO : fim do exercício ou encerramento manual
-  ENCERRADO --> ENCERRADO : somente leitura, usado em comparação de exercícios
+  [*] --> RASCUNHO: POST /api/plans (CA01)
+  RASCUNHO --> RASCUNHO: edita eixos · arrasta projetos (CA02)
+  RASCUNHO --> PUBLICADO: POST /publish (EMPRESA publica o oficial · CHEFE/EMPREGADO publicam derivado, CA04)
+  PUBLICADO --> PUBLICADO: arrasta projetos · interações sociais · chancela PLANO (CA06) · agregados recalculados AFTER_COMMIT (CA03)
+  PUBLICADO --> ENCERRADO: fim do exercício ou encerramento manual
+  ENCERRADO --> ENCERRADO: só leitura · base da comparação (CA05)
   ENCERRADO --> [*]
-  note right of RASCUNHO
-    Exatamente 6 PlanAxis position 1..6 (CA01).
-    Vincular projeto já presente no plano: 409 PROJETO_JA_NO_PLANO (CA02).
-  end note
   note right of PUBLICADO
-    Por eixo: projectsCount, completedPct, nearestDueAt,
-    aggregatedRisk da IA (CA03). Plano EMPRESA publicado é o oficial (CA04).
+    Plano oficial (scope EMPRESA) é a origem dos derivados.
+    Sessões DECIA e resumos citam o eixo (CA07).
   end note
-  note left of ENCERRADO
-    Comparação 2025 x 2026: NOVO, CONCLUIDO, REPROGRAMADO (CA05).
+  note right of RASCUNHO
+    Derivar copia os 6 eixos de um PUBLICADO oficial
+    e nasce RASCUNHO com derivedFromPlanId.
   end note
 ```
 
@@ -502,82 +421,68 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js"]
-    F1["app/plans, app/plans/new, app/plans/[id], app/plans/compare"]
-    F2["components/ui: AxisGrid 6 células, AxisCard com meta/indicador/cor/risco, ProjectDragDrop, DeriveButton, CompareColumns, PlanCover, InteractionBar RF26, SealWax"]
+  subgraph FRONT["Frontend Next.js 15"]
+    R1["app/(shell)/plans · /plans/new · /plans/[id] · /plans/compare"]
+    R2["components: PlanGrid (6 células) · AxisCard · DragProjectToAxis · CompareTable · Spark ✦ · Counters · Seal"]
+    BFF["app/bff (cookies httpOnly, X-Correlation-Id)"]
+    R1 --> R2 --> BFF
   end
 
   subgraph WEB["ws-web"]
-    C1["PlanController — /api/plans, /axes/{id}/projects, /derive, /compare, /publish, /projects-without-axis"]
-    C2["InteractionController RF26 — /api/interactions/PLAN/{id}/*"]
+    PC["PlanController (@Operation RF24.CA01-CA07)"]
+    SEC["SecurityConfig · JwtConfig · CorrelationIdFilter · GlobalExceptionHandler (existem no main)"]
   end
 
-  subgraph APP["ws-application"]
-    S1["PlanService"]
-    S2["RiskAggregationService"]
-    S3["SocialService RF26"]
-    S4["SealService RF39"]
-    S5["AiEngine"]
-    P1["CachePort"]
-    P2["SearchIndexPort"]
-    P3["MediaStoragePort"]
+  subgraph APPL["ws-application"]
+    PS["planning/PlanService"]
+    AG["planning/AxisAggregationService (determinístico, D-12)"]
+    CMP["planning/CompareService (CompareBucket)"]
+    INS["ai/InsightService"]
+    AIE["ai/AiEngine (Claude → Gemini → LocalEngine)"]
+    GD["security/Guard (existe em sec-b3: requireRole, ownerOrAdmin)"]
+    DE["events/DomainEvents AFTER_COMMIT"]
+    PORTS["ports: CachePort · SearchIndexPort · AiProviderPort"]
   end
 
   subgraph DOM["ws-domain"]
-    D1["AnnualPlan · PlanAxis · PlanAxisProject"]
-    D2["ProjectScheme · ComplianceResult · ProjectScenario"]
-    D3["DeciaSession · AnalyticalSummary · Insight · AiInferenceLog"]
-    D4["Reaction · Comment · SavedItem · Share · SealBond"]
+    ENT["AnnualPlan · PlanAxis · PlanAxisProject · enums PlanScope/PlanStatus/RiskLevel/CompareBucket (planejado)"]
   end
 
-  subgraph INFRA["ws-infrastructure/*"]
-    I1[("persistence-mysql: annual_plans, plan_axes, plan_axis_projects, project_schemes, compliance_results, project_scenarios, insights, reactions, comments, saved_items, shares, seal_bonds")]
-    I2[("cache-redis: agregados por eixo")]
-    I3[("search-opensearch: índice de planos para Buscar RF27")]
-    I4[("storage-s3: capa do plano")]
-    I5["ai-providers: ClaudeGeminiAdapter — risco agregado, RESUMO_ANALITICO cita eixo, INSIGHT"]
+  subgraph INFRA["ws-infrastructure"]
+    MY["persistence-mysql (Flyway V__rf24_annual_plans)"]
+    RD["cache-redis (flag redis.enabled)"]
+    OSA["search-opensearch ws-plans (flag opensearch.enabled)"]
+    AIP["ai-providers: ai-claude · ai-gemini · ai-local (flags ai.provider.*, ai.local.only)"]
   end
 
-  subgraph EXT["Serviços externos"]
-    E1(("Claude / Gemini"))
-  end
-
-  F1 --- F2
-  F1 -->|"HTTPS/JSON"| C1
-  F2 -->|"HTTPS/JSON"| C2
-  C1 --> S1
-  C2 --> S3
-  S1 --> S2
-  S1 --> S4
-  S1 --> P1
-  S1 --> P2
-  S1 --> P3
-  S2 --> S5
-  S4 --> S5
-  S1 --> D1
-  S1 --> D2
-  S2 --> D2
-  S3 --> D4
-  S5 --> D3
-  D1 --> I1
-  D2 --> I1
-  D3 --> I1
-  D4 --> I1
-  P1 --> I2
-  P2 --> I3
-  P3 --> I4
-  S5 --> I5
-  I5 -.-> E1
+  BFF -->|REST JSON JWT| PC --> PS
+  PC --> SEC
+  PS --> AG --> AIE
+  PS --> CMP
+  PS --> GD
+  PS --> DE --> INS --> AIE
+  PS --> PORTS
+  PS --> ENT
+  PORTS --> RD
+  PORTS --> OSA
+  PORTS --> AIP
+  ENT --> MY
+  MY --> MYSQL[("MySQL 8")]
+  RD --> REDIS[("Redis")]
+  OSA --> OPENS[("OpenSearch")]
+  AIP --> CLAUDE["Claude / Gemini"]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
-|---|---|
-| RF24.CA01 | `AnnualPlan` (exerciseYear, title), `PlanAxis` (position 1..6, name, goal, indicator, color), relação `AnnualPlan "1" --> "6" PlanAxis`, `PlanService.create/validateSixAxes` · Atividades `U2 → A1 → A2 → A3 422 EIXOS_INVALIDOS / A4 → P1 → W1` · Sequência `POST /api/plans` → `alt … 422 EIXOS_INVALIDOS` / `INSERT plan_axes x6` · Transição `[*] → RASCUNHO` + nota · Componentes `AxisGrid 6 células`, `AxisCard` |
-| RF24.CA02 | `PlanAxisProject` (nota índice único planId + projectId), `ProjectScheme.planAxisId`, `PlanService.linkProject/validateOnePerPlan` · Atividades `U3 → A5 → A6 → A7 409 PROJETO_JA_NO_PLANO`, `A8 → A9 403`, `A10 → P2` · Sequência `POST /api/plans/{planId}/axes/{axisId}/projects` → `alt P1 já em outro eixo → 409` / `INSERT plan_axis_projects` + `UPDATE project_schemes SET planAxisId` · Nota de RASCUNHO · Componente `ProjectDragDrop` |
-| RF24.CA03 | `PlanAxis.projectsCount/completedPct/nearestDueAt/aggregatedRisk`, enum `RiskLevel`, `PlanService.recomputeAxis`, `RiskAggregationService.aggregate`, `ComplianceResult`, `ProjectScenario`, `CachePort` · Atividades `A11 → P3`, `A12 → I1 → W2` · Sequência `recomputeAxis …`, `DE->>AI infer(… complianceResults, scenarios)` → `UPDATE plan_axes SET aggregatedRisk`, `GET /api/plans/{planId}` · Nota de PUBLICADO · Componentes `cache-redis`, `ai-providers` |
-| RF24.CA04 | `AnnualPlan.derivedFromPlanId/scope`, enum `PlanScope`, `PlanService.derive` · Atividades `U4 → A14 → A15 422 / A13 → P1` · Sequência `POST /api/plans/{officialId}/derive` → `alt não é EMPRESA publicado → 422 DERIVACAO_INVALIDA` / `INSERT annual_plans (scope DEPARTAMENTO, derivedFromPlanId …)` · Transição `PUBLICADO → DERIVADO → RASCUNHO` · Componente `DeriveButton` |
-| RF24.CA05 | Enum `CompareBucket` (NOVO, CONCLUIDO, REPROGRAMADO, MANTIDO), `PlanService.compare` · Atividades `U5 → A16 → W4` · Sequência `GET /api/plans/compare?a=&b=` → classificação → `CompareResult {porEixo …}` · Nota de ENCERRADO · Componentes `app/plans/compare`, `CompareColumns` |
-| RF24.CA06 | Classes `Reaction/Comment/SavedItem/Share` (targetType PLAN), `SealBond` (tier PLANO, PLANO_MATCH), `AnnualPlan.visibility/coverUrl/likesCount…`, `SocialService`, `SealService.suggestForPlan`, `MediaStoragePort` · Atividades `U6 → A17 → P5 → W5` · Sequência `POST /api/plans/{planId}/publish` + `POST /api/interactions/PLAN/{planId}/reactions` · Transição `PUBLICADO → PUBLICADO : interações RF26, chancela tier PLANO` · Componentes `PlanCover`, `InteractionBar RF26`, `SealWax`, `InteractionController RF26`, `storage-s3` |
-| RF24.CA07 | `DeciaSession.planAxisId`, `AnalyticalSummary.recommendationsJson (planAxisId)`, `Insight PROJETO_SEM_EIXO`, `PlanService.projectsWithoutAxis` · Atividades `A18 → P4`, `I2` · Sequência nota final "RF11/RF29 (CA07) … inclui planAxisId em cada recomendação … Insight PROJETO_SEM_EIXO" · Componentes `PlanController /projects-without-axis`, `ai-providers RESUMO_ANALITICO cita eixo` |
+| CA | Classe | Passo (atividades) | Mensagem (sequência) | Transição (estados) | Componente |
+|---|---|---|---|---|---|
+| RF24.CA01 | `AnnualPlan`, `PlanAxis` (6, position 1..6), `PlanService.create` | A2 → F1 → F2 → P1 (422 VALIDACAO) | 1–9 | `[*] → RASCUNHO` | `PlanController`, `PlanGrid`, `MY` |
+| RF24.CA02 | `PlanAxisProject`, `ProjectScheme.planAxisId`, `PlanService.linkProject` | A3 → F3 → P2 → P3 (409 PROJETO_JA_NO_PLANO) → P4 → P5 | 10–17 | `RASCUNHO/PUBLICADO → self (arrasta)` | `DragProjectToAxis`, `PS` |
+| RF24.CA03 | `PlanAxis.projectsCount/completedPct/nearestDueAt/aggregatedRisk`, `AxisAggregationService`, `ComplianceResult`, `ProjectScenario` | P8 → I1 → I2 → I5 → D2 → F7 | 18–26 | `PUBLICADO → self (agregados AFTER_COMMIT)` | `AG`, `AIE`, `RD` |
+| RF24.CA04 | `AnnualPlan.derivedFromPlanId`, `PlanScope`, `PlanService.derive` | A4 → F4 → P2 → P6 | — (POST /derive segue o fluxo 1–9) | nota de RASCUNHO · `RASCUNHO → PUBLICADO` | `PS`, `GD` |
+| RF24.CA05 | `CompareBucket`, `PlanService.compare` | A5 → F5 → P7 → F7 | — (GET /compare) | `ENCERRADO → self (base da comparação)` | `CMP`, `CompareTable` |
+| RF24.CA06 | `Reaction/Comment/SavedItem/Share` com `TargetType PLAN`, `SealBond` tier PLANO, `AnnualPlan.visibility/coverUrl` | A6 → F6 | — (RF26/RF39) | `PUBLICADO → self (interações · chancela)` | `Counters`, `Seal`, `SocialService`, `SealService` |
+| RF24.CA07 | `DeciaSession.planAxisId`, `AnalyticalSummary.recommendationsJson[].planAxisId`, `Insight PROJETO_SEM_EIXO`, `PlanService.projectsWithoutAxis` | I3 → I4 | 27–30 (eixo citado no GET) | nota de PUBLICADO | `INS`, `AIE`, `AIP` |
+
+Tela/aba: `/companies/[slug]` (esqueleto em `app/(shell)/companies/[slug]/page.tsx`) · `/plans` (esqueleto em `app/(shell)/plans/page.tsx`) · `/goals` (esqueleto em `app/(shell)/goals/page.tsx`)

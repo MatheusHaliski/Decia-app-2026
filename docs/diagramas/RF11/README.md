@@ -1,17 +1,21 @@
-# RF11 — Gerar e disponibilizar ao grupo da conversa um resumo analítico estruturado da sessão, contendo argumentos identificados, consensos, divergências, riscos, pontos de atenção e recomendações fundamentadas, incluindo cenários alternativos, vantagens, desvantagens e critérios de avaliação utilizados pela IA
-**HU:** HU11 · **Sprint (board Work Station):** 2 · **Equivalente FAI:** card RF11 não cita equivalente; pelo Mapa de equivalência o DECIA é o **RF10 Copilot** do FAI (sugestões do Copilot) + **RF24 IA do sistema**; a Loja (RF42) vende "sessão com IA avançada e resumo analítico estendido" · **Aba/rota:** DECIA — sessão › aba "Resumo" (`/decia/[sessionId]/summary`; rota a confirmar)
-**Critérios de aceite cobertos:** RF11.CA01 · RF11.CA02 · RF11.CA03 · RF11.CA04 · RF11.CA05 · RF11.CA06 (RF1–RF18 não têm CAs no board: derivados da HU11 + RF29.CA08, RF31.CA02/CA04, RF32.CA05, RF33.CA03, RF42 e marcados "CA a confirmar")
+# RF11 — Utilizar o editor de arte de fundo para personalizar esquemas de tarefas e projetos
+**HU:** HU11 · **Sprint (board Work Station):** lista *Requisitos Funcionais* sem sprint atribuída (card renumerado; o card "SPRINT 2" cita "RF11 Resumo analítico", escopo antigo — `RENUMERACAO.md`; origem `_anterior/RF38` Estúdio de Arte do Card) · **Equivalente FAI:** RF11 Background Studio (`PUT /api/pieces/{id}/background`, `backgroundConfigJson`, `resolveCardArt`, `CARD_SKINS`, `containerColorOf`, `inkOn`) + editor da arte do card da peça · **Aba/rota:** Estúdio do card dentro de `/tasks/[id]/edit` (etapa 5 "Arte do card" do criador, RF4) e `/projects/[id]/edit`; API `PUT /api/tasks/{id}/card-art`, `PUT /api/projects/{id}/card-art`, `POST /api/card-art/ai` (arte com IA), `POST /api/card-art/upload`
+**Critérios de aceite cobertos:** RF11.CA01 · RF11.CA02 · RF11.CA03 · RF11.CA04 · RF11.CA05 · RF11.CA06 — corpo do card vazio: CAs derivados do título + HU11 + RF38.CA02/CA04/CA08/CA10 + `docs/design-system/ANATOMIAS_E_ESTUDIO.md` §6 (Estúdio de Arte do card), marcados **(CA a confirmar)**. Todas as classes do RF são **(planejado)**; reais: `UserPreferences.defaultCardSkin/reduceMotion` (Bloco 3), `Guard.ownerOrAdmin`, `AiProvidersConfig`, `S3StorageConfig`, `RedisAdaptersConfig`.
 
-> **HU11** — COMO IA do sistema POSSO gerar e disponibilizar ao grupo um resumo analítico estruturado da sessão — com argumentos, consensos, divergências, riscos e pontos de atenção — e recomendações fundamentadas com cenários alternativos, vantagens, desvantagens e critérios de avaliação PARA consolidar a discussão e apoiar o grupo na tomada de decisão.
+> **HU11** — COMO usuário criando um esquema de tarefa ou projeto POSSO utilizar o editor de arte de fundo PARA personalizar background de esquemas de tarefas ou projetos.
 
-| CA | Enunciado (CA a confirmar) |
+O **Estúdio de Arte do card** grava `cardArtJson` (`CardArtConfig`, **proposta**: `v`, `layout`, `fundo`, `container`, `destaques`) na `TaskItem` (`coverMode`, `cardSkin`, `coverUrl`) ou no `ProjectScheme` (`coverMode` MOSAICO/FOTO/IA, `coverUrl`, `mosaicJson`). A renderização é determinística (`CardArtResolver.resolveCardArt`) e a mesma em feed, Mural, Vitrine, Balcão e Mesa. A **arte com IA** usa o `AiEngine` capability `CAPA_IA` sob a governança de `accessClass` e `AiQuota`.
+
+## Critérios de aceite derivados da HU11 (todos "CA a confirmar")
+
+| CA | Enunciado (Dado / Quando / Então) |
 |---|---|
-| **RF11.CA01** | Dado sessão ATIVA ou REABERTA com mensagens classificadas (RF7), quando o administrador aciona "Gerar resumo" (ou a IA sugere ao detectar convergência), então a sessão passa a EM_RESUMO e a IA (capability RESUMO_ANALITICO) cria `AnalyticalSummary` RASCUNHO com `argumentsJson`, `consensusJson`, `divergencesJson` (RF8/RF10, inclusive SEM_CONSENSO), `risksJson`, `attentionPointsJson` (perguntas IGNORADAS do RF16) e `recommendationsJson`. |
-| **RF11.CA02** | Dado o resumo gerado, então contém **≥ 2 `SummaryScenario`** (name, description, `advantagesJson`, `disadvantagesJson`, `criteriaScoresJson`) e `evaluationCriteriaJson` explicita os critérios usados pela IA; um cenário pode apontar `linkedProjectScenarioId` (Simulador RF31.CA04) e o `complianceResultId` do Espelho (RF32.CA05) entra no resumo. |
-| **RF11.CA03** | Dado cada recomendação, então traz `citations[]` (`Citation`: sourceType, sourceId, excerpt, url, score) obtidas por busca semântica em `ws-memory` (RF33.CA03 — "baseado em: sessão X, projeto Y") ou a marca **"sem precedente"**, e lista `affectedTaskIds`, `affectedProjectIds` e `planAxisId` (RF29.CA08). |
-| **RF11.CA04** | Dado o RASCUNHO, quando o administrador publica, então `status = PUBLICADO`, `versionNumber` incrementa a cada regeneração, o grupo recebe `Notification` (DECIA), o rastro ganha nó RESUMO com arestas RESUMIU a partir das mensagens-base, e os `MessageAttachment` usados ficam `usedInDecision = true` → evento AFTER_COMMIT credita **+6 DP** (`ARTEFATO_USADO`) ao autor do anexo (RF42). A sessão segue para EM_DECISAO (RF12). |
-| **RF11.CA05** | Dado mensagens/anexos com `accessClass` RESTRITO ou SIGILOSO, quando o resumo é gerado, então esses trechos **não vão ao provedor externo** (mascarados ou processados no motor local), registrado em `ai_inference_log` com `maskedFields` / `result = BLOQUEADO_SIGILO`. |
-| **RF11.CA06** | Dado provedor de IA indisponível (circuit OPEN) ou cota esgotada → `503 IA_INDISPONIVEL` / `429 COTA_EXCEDIDA` e a sessão volta a ATIVA; sessão sem mensagens classificadas → `422 VALIDACAO`; não-admin → `403 ACESSO_NEGADO`; sessão fora de ATIVA/REABERTA → `409 SESSAO_NAO_ATIVA`. |
+| **RF11.CA01** (CA a confirmar) | Dado o dono de uma tarefa ou projeto (`ownerId`), quando abre o Estúdio do card, então vê os segmentos **Fundo · Layout · Container · Destaques** com prévia ao vivo (card do feed + ampliado); o rascunho é local (Cancelar não grava; Restaurar padrão só no rascunho); **Aplicar** envia `PUT /api/tasks/{id}/card-art` ou `PUT /api/projects/{id}/card-art` com `CardArtConfig` + `baseRev`; quem não é dono → `403 ACESSO_NEGADO`; `rev` divergente → `409 REVISAO_DESATUALIZADA`; JSON fora do schema → `422 VALIDACAO`. |
+| **RF11.CA02** (CA a confirmar) | Dado o segmento **Fundo**, então o usuário escolhe cor sólida (8 cores de departamento + 6 neutras), gradiente (`marca`, `dept`, `spark`), textura (`papel`, `cortica`, `blueprint`, `timbrado`), terminal, monograma, malha de nós (`argumento`, `consenso`, `misto` + densidade 1–3), mosaico automático, imagem enviada ou arte com IA; `resolveCardArt` aplica a precedência (base `color → gradient → texture/terminal/monograma`; imagem `ai/upload → mesh → mosaic`); layouts com `ownArt` (GRADE, PRANCHA, LINHA_TEMPO) desligam o Fundo com explicação; layouts sem dado ficam desabilitados com motivo (`effectiveLayout`). |
+| **RF11.CA03** (CA a confirmar) | Dado o segmento **Container**, então o usuário escolhe a skin (`timbrado` padrão, `protocolo`, `carimbo`, `blueprint`, `noturno`; `contraste` forçado pelo tema) e a cor do container (nativa, 5 amostras ou livre); a tinta vem de `inkOn(hex)` por luminância (0,299 R + 0,587 G + 0,114 B > 140 → `#1A1714`, senão `#F5F2EC`), garantindo ≥ 4,5:1; skin premium sem `UserSkin` → `403 SKIN_NAO_ADQUIRIDA` com atalho para a Loja (RF42); `UserPreferences.defaultCardSkin` é o valor inicial. |
+| **RF11.CA04** (CA a confirmar) | Dado "Arte com IA" (prompt ≤ 300), então o serviço verifica `AiQuota` (créditos antes da cota mensal; sem saldo → `409 COTA_ESGOTADA` + Loja), `accessClass` RESTRITO/SIGILOSO → `LocalEngine` (monograma/paleta, `result BLOQUEADO_SIGILO` para externo), senão `AiEngine CAPA_IA` com tema mascarado; a imagem vai ao S3 (`MediaObject`) e `fundo.aiArt {url, prompt, generatedAt, inferenceId}` é gravado com `AiInferenceLog`; faísca ✦ obrigatória (RF38.CA04); resposta ≤ 30 s ou estado "gerando" com `motion spark`; **imagem enviada** passa por MIME real, tamanho e `PipelineJob ANTIVIRUS` → `422 VALIDACAO` se inválida. |
+| **RF11.CA05** (CA a confirmar) | Dado o segmento **Destaques**, então o usuário configura lacre (lugar reservado), tooltip da faísca (curto/completo), barra de fases (projeto), carimbo de estado/decisão (canto/centro/oculto), Hype do autor (respeita `HypeVisibility`) e **movimento** (`none`, `pulse`, `thread`); no máximo **2 destaques decorativos** → `422 LIMITE_DESTAQUES`; o movimento só roda no card ampliado e é desligado por `prefers-reduced-motion` ou `UserPreferences.reduceMotion` (RF38.CA10). |
+| **RF11.CA06** (CA a confirmar) | Dado `cardArtJson` gravado, então a API entrega `cardArt` no view da tarefa/projeto, a leitura é tolerante (config sem `v` lê como v1 com padrões PAGINA/MOSAICO + `timbrado`; valor desconhecido → padrão; `color` inválido → null); o mesmo `resolveCardArt` renderiza feed, Mural, Vitrine, Balcão e Mesa; o cache Redis do card é invalidado (`DEL card:task:{id}` / `card:project:{id}`) e `CardArtChanged` (AFTER_COMMIT) dispara `CardArtService.rebuildMosaic` nos projetos que contêm a tarefa (RF38.CA03). |
 
 ## 1. Diagrama de classes
 
@@ -19,345 +23,291 @@
 classDiagram
   direction LR
 
-  class DeciaSession {
+  class CardArtController {
+    <<controller>>
+    +applyTask(id, CardArtRequest, CurrentUser, ctx) CardArtView
+    +applyProject(id, CardArtRequest, CurrentUser, ctx) CardArtView
+    +generateAi(AiArtRequest, CurrentUser, ctx) AiArtResult
+    +upload(MultipartFile, CurrentUser) UploadReceipt
+  }
+  class CardArtService {
+    <<service>>
+    +apply(targetType, id, CardArtConfig, baseRev, actor, ctx) CardArtView
+    +generateAi(targetType, id, prompt, actor, ctx) AiArtResult
+    +rebuildMosaic(projectId) void
+    -validate(CardArtConfig) void
+    -requireSkin(actor, skinKey) void
+  }
+  class CardArtResolver {
+    <<service>>
+    +resolveCardArt(CardArtConfig, target, theme) ResolvedArt
+    +effectiveLayout(CardArtConfig, target) CardLayout
+    +inkOn(hex) String
+    +containerColorOf(skin, color) String
+  }
+  class CardArtConfig {
+    <<value>>
+    +int v
+    +CardLayout layout
+    +ArtKind fundoKind
+    +String color
+    +String gradient
+    +String texture
+    +String meshKind
+    +int meshDensity
+    +JSON aiArt
+    +UUID uploadMediaId
+    +CardSkin containerSkin
+    +String containerColor
+    +JSON destaques
+    +CardMotion motion
+    +int rev
+  }
+  class AiEngine {
+    <<service>>
+    +run(AiRequest) AiResponse
+    capability CAPA_IA
+  }
+  class UploadService {
+    <<service>>
+    +store(file, ownerId) MediaObject
+  }
+  class Guard {
+    <<service>>
+    +ownerOrAdmin(CurrentUser, ownerId) void
+  }
+  class TaskRepositoryPort {
+    <<port>>
+    +findById(id) Optional
+    +save(TaskItem) TaskItem
+  }
+  class ProjectRepositoryPort {
+    <<port>>
+    +findById(id) Optional
+    +findContaining(taskId) List
+    +save(ProjectScheme) ProjectScheme
+  }
+  class UserSkinRepositoryPort {
+    <<port>>
+    +owns(userId, skinKind, skinKey) boolean
+  }
+  class MediaStoragePort {
+    <<port>>
+    +put(key, bytes, mime) MediaObject
+  }
+  class QuotaPort {
+    <<port>>
+    +tryConsume(scope, id, cost) boolean
+  }
+  class CardCachePort {
+    <<port>>
+    +evict(key) void
+  }
+  class PipelineJobPort {
+    <<port>>
+    +enqueue(type, targetType, targetId) PipelineJob
+  }
+
+  class TaskItem {
     <<entity>>
     +UUID id
-    +String topic
-    +UUID adminUserId
-    +UUID linkedProjectId
-    +UUID planAxisId
-    +SessionStatus status
-    +AiMode aiMode
-  }
-  class AnalyticalSummary {
-    <<entity>>
-    +UUID id
-    +UUID sessionId
-    +int versionNumber
-    +Instant generatedAt
-    +String argumentsJson
-    +String consensusJson
-    +String divergencesJson
-    +String risksJson
-    +String attentionPointsJson
-    +String recommendationsJson
-    +String evaluationCriteriaJson
-    +UUID complianceResultId
-    +UUID aiInferenceId
-    +SummaryStatus status
-  }
-  class SummaryScenario {
-    <<entity>>
-    +UUID id
-    +UUID summaryId
-    +String name
-    +String description
-    +String advantagesJson
-    +String disadvantagesJson
-    +String criteriaScoresJson
-    +UUID linkedProjectScenarioId
-  }
-  class Citation {
-    <<entity>>
-    +String sourceType
-    +UUID sourceId
-    +String excerpt
-    +String url
-    +BigDecimal score
-  }
-  class InstitutionalMemoryDocument {
-    <<entity>>
-    +String docId
-    +String sourceType
-    +UUID sourceId
-    +UUID companyId
-    +UUID departmentId
-    +String title
-    +String text
-    +float[] embedding
-    +Visibility visibility
+    +UUID ownerId
     +AccessClassification accessClass
+    +CoverMode coverMode
+    +String coverUrl
+    +String thumbnailUrl
+    +String cardSkin
+    +JSON cardArtJson
+    +long version
   }
-  class MessageClassification {
+  class ProjectScheme {
     <<entity>>
     +UUID id
-    +UUID messageId
-    +MessageClass label
-    +boolean hasEvidence
-    +UUID linkedTaskId
-    +UUID linkedProjectId
+    +UUID ownerId
+    +CoverMode coverMode
+    +String coverUrl
+    +JSON mosaicJson
+    +JSON cardArtJson
+    +long version
   }
-  class Divergence {
+  class UserPreferences {
     <<entity>>
-    +UUID id
-    +String summary
-    +DivergenceStatus status
+    +String defaultCardSkin
+    +boolean reduceMotion
+    +String theme
   }
-  class AiQuestion {
+  class UserSkin {
     <<entity>>
-    +UUID id
-    +String kind
-    +String questionText
-    +String status
+    +UUID userId
+    +String skinKind
+    +String skinKey
+    +String acquiredVia
   }
-  class MessageAttachment {
+  class MediaObject {
     <<entity>>
-    +UUID id
-    +TIMEUUID messageId
-    +String targetType
-    +UUID targetId
-    +boolean usedInDecision
-  }
-  class ComplianceResult {
-    <<entity>>
-    +UUID id
-    +UUID projectId
-    +BigDecimal percent
-    +int blockingCount
-  }
-  class ProjectScenario {
-    <<entity>>
-    +UUID id
-    +UUID projectId
-    +String name
-    +String impactReportJson
-  }
-  class DecisionTraceNode {
-    <<entity>>
-    +UUID id
-    +TraceNodeType nodeType
-    +UUID refId
-    +String label
+    +String objectKey
+    +String mimeType
+    +String accessClass
   }
   class AiInferenceLog {
     <<entity>>
-    +UUID id
     +AiCapability capability
-    +String provider
-    +AiMode mode
-    +String result
-    +String maskedFields
-    +int inputTokens
-    +int outputTokens
+    +AiProvider provider
+    +InferenceResult result
+    +String quotaSource
   }
-  class DeciaPointsLedgerEntry {
+  class AiQuota {
     <<entity>>
-    +UUID userId
-    +int delta
-    +PointsEvent eventCode
-    +String idempotencyKey
+    +String scope
+    +String monthKey
+    +int monthlyLimit
+    +int consumed
+    +int purchasedCredits
   }
-
-  class SessionStatus {
+  class ArtKind {
     <<enum>>
-    ATIVA
-    EM_RESUMO
-    EM_DECISAO
-    REABERTA
+    COR
+    GRADIENTE
+    TEXTURA
+    TERMINAL
+    MONOGRAMA
+    MALHA
+    MOSAICO
+    IMAGEM
+    IA
   }
-  class SummaryStatus {
+  class CardLayout {
     <<enum>>
-    RASCUNHO
-    PUBLICADO
+    PAGINA
+    MOSAICO
+    GRADE
+    PRANCHA
+    LINHA_TEMPO
+    POSTIT
   }
-  class MessageClass {
+  class CardSkin {
     <<enum>>
-    ARGUMENTO
-    DIVERGENCIA
-    RISCO
-    CONSENSO
-    PERGUNTA
-    RUIDO
+    TIMBRADO
+    PROTOCOLO
+    CARIMBO
+    BLUEPRINT
+    NOTURNO
+    CONTRASTE
   }
-  class AiCapability {
+  class CardMotion {
     <<enum>>
-    RESUMO_ANALITICO
-    MEMORIA_BUSCA
-    CONFORMIDADE
+    NONE
+    PULSE
+    THREAD
+  }
+  class CoverMode {
+    <<enum>>
+    AUTO
+    MANUAL
+    IA
+    MOSAICO
+    FOTO
   }
 
-  class SummaryController {
-    <<controller>>
-    +generate(sessionId) 202
-    +getLatest(sessionId) 200
-    +publish(sessionId, summaryId) 200
-    +regenerate(sessionId, summaryId, instruction) 202
-  }
-  class SummaryService {
-    <<service>>
-    +generate(actor, sessionId) AnalyticalSummary
-    +publish(actor, sessionId, summaryId)
-    +regenerate(actor, sessionId, summaryId, instruction)
-    -collectContext(sessionId) SummaryContext
-    -maskSensitive(context) SummaryContext
-  }
-  class SessionLifecycleService {
-    <<service>>
-    +transition(sessionId, from, to)
-  }
-  class DecisionTraceService {
-    <<service>>
-    +appendNode(sessionId, RESUMO, summaryId)
-    +appendEdges(fromMessageNodes, summaryNode, RESUMIU)
-  }
-  class DeciaPointsService {
-    <<service>>
-    +onSummaryPublished(event) AFTER_COMMIT
-  }
-  class AiEnginePort {
-    <<port>>
-    +summarize(SummaryContext) SummaryDraft
-  }
-  class MemorySearchPort {
-    <<port>>
-    +searchCitations(query, filters) List~Citation~
-  }
-  class SessionMessageRepositoryPort {
-    <<port>>
-    +findClassifiedBySession(sessionId) List~SessionMessage~
-  }
-  class AnalyticalSummaryRepository {
-    <<adapter>>
-    MySQL analytical_summaries + summary_scenarios
-  }
-  class OpenSearchMemoryAdapter {
-    <<adapter>>
-    índice ws-memory
-  }
-  class AiEngineAdapter {
-    <<adapter>>
-    Claude e Gemini com fallback local
-  }
-  class CassandraMessageAdapter {
-    <<adapter>>
-    messages_by_session
-  }
-
-  DeciaSession "1" --> "*" AnalyticalSummary : versões
-  DeciaSession --> SessionStatus
-  AnalyticalSummary --> SummaryStatus
-  AnalyticalSummary "1" --> "2..*" SummaryScenario : cenários
-  AnalyticalSummary ..> Citation : recommendationsJson.citations
-  AnalyticalSummary ..> ComplianceResult : complianceResultId
-  AnalyticalSummary ..> AiInferenceLog : aiInferenceId
-  AnalyticalSummary ..> MessageClassification : argumentsJson e consensusJson
-  AnalyticalSummary ..> Divergence : divergencesJson
-  AnalyticalSummary ..> AiQuestion : attentionPointsJson
-  SummaryScenario ..> ProjectScenario : linkedProjectScenarioId
-  Citation ..> InstitutionalMemoryDocument : sourceId
-  MessageClassification --> MessageClass
-  DecisionTraceNode ..> AnalyticalSummary : refId quando RESUMO
-  DeciaPointsLedgerEntry ..> MessageAttachment : refId ARTEFATO_USADO
-
-  SummaryController --> SummaryService
-  SummaryService --> SessionLifecycleService
-  SummaryService --> SessionMessageRepositoryPort
-  SummaryService --> MemorySearchPort
-  SummaryService --> AiEnginePort
-  SummaryService --> AnalyticalSummaryRepository
-  SummaryService --> DecisionTraceService
-  SummaryService ..> DeciaPointsService : evento SummaryPublished
-  AiEnginePort <|.. AiEngineAdapter
-  MemorySearchPort <|.. OpenSearchMemoryAdapter
-  SessionMessageRepositoryPort <|.. CassandraMessageAdapter
-  AiEngineAdapter --> AiInferenceLog : registra
-
-  note for AnalyticalSummary "tabela analytical_summaries — status RASCUNHO, PUBLICADO .. recommendationsJson = [{text, affectedTaskIds, affectedProjectIds, planAxisId, citations[]}] .."
-  note for SummaryScenario "tabela summary_scenarios — mesmo formato do impactReportJson do RF31"
-  note for Citation "valor embutido — vazio = marca 'sem precedente' (RF33.CA03)"
-  note for InstitutionalMemoryDocument "OpenSearch ws-memory (dense_vector) .. +4 campos .."
+  CardArtController --> CardArtService
+  CardArtController --> UploadService
+  CardArtService --> CardArtResolver
+  CardArtService --> Guard
+  CardArtService --> AiEngine
+  CardArtService --> TaskRepositoryPort
+  CardArtService --> ProjectRepositoryPort
+  CardArtService --> UserSkinRepositoryPort
+  CardArtService --> MediaStoragePort
+  CardArtService --> QuotaPort
+  CardArtService --> CardCachePort
+  CardArtService --> PipelineJobPort
+  CardArtService ..> CardArtConfig
+  TaskItem ..> CardArtConfig : cardArtJson
+  ProjectScheme ..> CardArtConfig : cardArtJson
+  CardArtConfig --> ArtKind
+  CardArtConfig --> CardLayout
+  CardArtConfig --> CardSkin
+  CardArtConfig --> CardMotion
+  TaskItem --> CoverMode
+  ProjectScheme --> CoverMode
+  UserPreferences ..> CardSkin : defaultCardSkin
+  UserSkin "0..*" --> "1" UserPreferences : skins compradas (RF42)
+  CardArtConfig ..> MediaObject : uploadMediaId / aiArt.url
+  CardArtService ..> AiInferenceLog
+  QuotaPort ..> AiQuota
+  note for CardArtConfig "Proposta (ANATOMIAS_E_ESTUDIO §6): esquema versionado por v; leitura tolerante (sem v = v1 com PAGINA/MOSAICO + timbrado). CoverMode: unificação AUTO/MANUAL/IA × MOSAICO/FOTO/IA em aberto (Q-41)."
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph L1["Administrador da sessão / Grupo"]
-    A0(["Sessão ATIVA ou REABERTA com discussão madura"])
-    A1["Admin aciona Gerar resumo (ou aceita sugestão da IA)"]
-    A2["Admin revisa o rascunho (argumentos, cenários, critérios, citações)"]
-    A3{"Publicar ou regenerar?"}
-    A4["Admin informa instrução de ajuste"]
-    A5["Grupo lê o resumo publicado e os cenários"]
-    A6(["Fim — sessão em EM_DECISAO (RF12)"])
+  subgraph ATOR["Dono da tarefa ou do projeto"]
+    A1["Abre o Estúdio do card em /tasks/{id}/edit ou /projects/{id}/edit (etapa 5 no criador)"]
+    A2["Ajusta Fundo · Layout · Container · Destaques com prévia ao vivo (rascunho local)"]
+    A3["Opcional: Arte com IA (prompt ≤ 300) ou enviar imagem"]
+    A4["Aplicar (ou Cancelar / Restaurar padrão)"]
+  end
+  subgraph FE["Next.js (App Router) · BFF"]
+    F1["Carrega cardArt atual + UserPreferences (defaultCardSkin, reduceMotion, theme) + UserSkins"]
+    F2["CardArtResolver (cliente) renderiza prévia: card do feed + ampliado · effectiveLayout desabilita opções com motivo"]
+    F3["POST /api/card-art/ai {targetType, id, prompt} · POST /api/card-art/upload"]
+    F4["PUT /api/tasks/{id}/card-art ou PUT /api/projects/{id}/card-art {CardArtConfig, baseRev}"]
+  end
+  subgraph WEB["ws-web"]
+    W1["JWT + SessionActiveFilter + CurrentUserArgumentResolver"]
+    W2["CardArtController"]
+    E403["403 ACESSO_NEGADO (não é dono)"]
+    E403S["403 SKIN_NAO_ADQUIRIDA (atalho Loja)"]
+    E409R["409 REVISAO_DESATUALIZADA (rev)"]
+    E409Q["409 COTA_ESGOTADA (atalho Loja)"]
+    E422["422 VALIDACAO (schema) · 422 LIMITE_DESTAQUES · 422 imagem inválida"]
+  end
+  subgraph APP["ws-application · CardArtService"]
+    S1["Guard.ownerOrAdmin(actor, target.ownerId)"]
+    S2["validate: schema v, layout × ownArt, ≤ 2 destaques decorativos, color válido"]
+    S3{"válido?"}
+    S4{"baseRev == rev atual?"}
+    S5["requireSkin: skin premium exige UserSkin (ou PADRAO)"]
+    S6{"skin liberada?"}
+    S7["save cardArtJson (rev+1) · coverMode/coverUrl/cardSkin derivados · AuditLog CARD_ART_APPLIED"]
+    AI1["generateAi: QuotaPort.tryConsume (créditos antes da cota mensal)"]
+    AI2{"saldo?"}
+    AI3{"accessClass RESTRITO/SIGILOSO?"}
+    AI4["LocalEngine: monograma/paleta · AiInferenceLog BLOQUEADO_SIGILO"]
+    AI5["AiEngine CAPA_IA com tema mascarado (≤ 30 s, senão estado 'gerando' + motion spark) · AiInferenceLog"]
+    AI6["MediaObject no S3 · fundo.aiArt {url, prompt, generatedAt, inferenceId} · faísca ✦ obrigatória"]
+    UP1["UploadService: MIME real · tamanho · PipelineJob ANTIVIRUS"]
+    EV["AFTER_COMMIT: CardArtChanged → CardCachePort.evict(card:task|project:{id}) · rebuildMosaic nos projetos que contêm a tarefa (RF38.CA03) · reindexa thumbnail"]
+  end
+  subgraph PERS["Persistência"]
+    P1[("MySQL: tasks/project_schemes (card_art_json, cover_mode, cover_url, card_skin), user_skins, user_preferences, media_objects, ai_inference_log, pipeline_jobs, audit_log")]
+    P2[("Redis: card:task:{id} · card:project:{id} · AiQuota")]
+    P3[("S3: imagens enviadas e geradas · thumbnails · mosaicos")]
   end
 
-  subgraph L2["Web / BFF (Next.js App Router)"]
-    B1["POST /api/decia/sessions/{id}/summaries"]
-    B2["Polling GET /api/decia/sessions/{id}/summaries/latest"]
-    B3["POST /api/decia/sessions/{id}/summaries/{sid}/publish"]
-    B4["POST /api/decia/sessions/{id}/summaries/{sid}/regenerate"]
-    B5["Exibe 403 ACESSO_NEGADO"]
-    B6["Exibe 409 SESSAO_NAO_ATIVA"]
-    B7["Exibe 422 VALIDACAO — sem mensagens classificadas"]
-    B8["Exibe 503 IA_INDISPONIVEL ou 429 COTA_EXCEDIDA"]
-    B9["Renderiza abas: Argumentos · Consensos · Divergências · Riscos · Atenção · Recomendações · Cenários"]
-  end
-
-  subgraph L3["ws-application (SummaryService)"]
-    C1{"actor = adminUserId?"}
-    C2{"status em ATIVA ou REABERTA?"}
-    C3{"há mensagens classificadas?"}
-    C4["SessionLifecycleService: ATIVA → EM_RESUMO"]
-    C5["collectContext: classificações, divergências, perguntas, anexos, ComplianceResult, cenários RF31"]
-    C6["maskSensitive: remove RESTRITO/SIGILOSO do prompt externo"]
-    C7["MemorySearchPort.searchCitations por tema e recomendações"]
-    C8["AiEnginePort.summarize(context + citações)"]
-    C9{"IA respondeu?"}
-    C10["Salva AnalyticalSummary RASCUNHO + SummaryScenario (≥2) + evaluationCriteriaJson"]
-    C11["Marca recomendações sem citação como 'sem precedente'"]
-    C12["EM_RESUMO → ATIVA (rollback do estado)"]
-    C13["status = PUBLICADO, versionNumber++"]
-    C14["MessageAttachment.usedInDecision = true nos anexos citados"]
-    C15["Rastro: nó RESUMO + arestas RESUMIU"]
-    C16["Publica SummaryPublished (outbox)"]
-    C17["SessionLifecycleService: EM_RESUMO → EM_DECISAO"]
-  end
-
-  subgraph L4["IA (AiEngine)"]
-    D1["RESUMO_ANALITICO: estrutura argumentos/consensos/divergências/riscos/pontos de atenção"]
-    D2["Gera recomendações com cenários, vantagens, desvantagens, criteriaScores"]
-    D3["Anexa citações (baseado em: sessão X, projeto Y)"]
-    D4["AiInferenceLog (provider, mode, tokens, maskedFields)"]
-    D5["Circuit breaker / cota: FALLBACK local ou ERRO"]
-  end
-
-  subgraph L5["Persistência"]
-    E1[("Cassandra messages_by_session")]
-    E2[("MySQL message_classifications · divergences · ai_questions · compliance_results")]
-    E3[("OpenSearch ws-memory")]
-    E4[("MySQL analytical_summaries · summary_scenarios")]
-    E5[("MySQL decision_trace_nodes/edges · domain_events")]
-  end
-
-  subgraph L6["Listeners AFTER_COMMIT"]
-    F1["NotificationPort: grupo — Resumo analítico disponível"]
-    F2["DeciaPointsService: +6 DP ARTEFATO_USADO ao autor de cada anexo usado"]
-  end
-
-  A0 --> A1 --> B1 --> C1
-  C1 -->|não| B5 --> A6
-  C1 -->|sim| C2
-  C2 -->|não| B6 --> A6
-  C2 -->|sim| C3
-  C3 -->|não| B7 --> A6
-  C3 -->|sim| C4 --> C5
-  C5 --> E1
-  C5 --> E2
-  C5 --> C6 --> C7 --> E3
-  C7 --> C8 --> D1 --> D2 --> D3 --> D4
-  D5 -.-> C9
-  D4 --> C9
-  C9 -->|erro / cota| C12 --> B8 --> A6
-  C9 -->|sim| C10 --> E4
-  C10 --> C11 --> B2 --> A2 --> A3
-  A3 -->|regenerar| A4 --> B4 --> C5
-  A3 -->|publicar| B3 --> C13 --> E4
-  C13 --> C14 --> C15 --> E5
-  C15 --> C16 --> E5
-  C16 --> F1
-  C16 --> F2
-  C16 --> C17 --> B9 --> A5 --> A6
+  A1 --> F1 --> F2 --> A2 --> A4 --> F4 --> W1 --> W2 --> S1
+  S1 -->|"não"| E403
+  S1 --> S2 --> S3
+  S3 -->|"não"| E422
+  S3 -->|"sim"| S4
+  S4 -->|"não"| E409R
+  S4 -->|"sim"| S5 --> S6
+  S6 -->|"não"| E403S
+  S6 -->|"sim"| S7 --> P1
+  S7 --> EV --> P2
+  EV --> P3
+  A3 -->|"IA"| F3 --> W2 --> AI1 --> AI2
+  AI1 --> P2
+  AI2 -->|"não"| E409Q
+  AI2 -->|"sim"| AI3
+  AI3 -->|"sim"| AI4 --> AI6
+  AI3 -->|"não"| AI5 --> AI6 --> P3
+  AI6 --> F2
+  A3 -->|"imagem"| F3 --> UP1
+  UP1 -->|"inválida"| E422
+  UP1 --> P3
+  UP1 --> F2
 ```
 
 ## 3. Diagrama de sequência
@@ -365,105 +315,106 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário (admin da sessão)
-  participant FE as Next.js (App Router)
+  actor U as Usuário
+  participant N as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
   participant AI as AiEngine
-  participant DB as Repository/MySQL
-  participant CS as Cassandra
-  participant OS as OpenSearch
+  participant R as Repository/MySQL
+  participant RD as Redis
+  participant S3 as S3
   participant EV as DomainEvents (AFTER_COMMIT)
 
-  rect rgb(245, 242, 239)
-    Note over U,EV: Caminho feliz — gerar rascunho, publicar, notificar e creditar anexos usados
-    U->>FE: Clica "Gerar resumo analítico"
-    FE->>C: POST /api/decia/sessions/{id}/summaries
-    C->>S: SummaryService.generate(actor, sessionId)
-    S->>DB: SELECT decia_sessions (adminUserId, status, linkedProjectId, planAxisId)
-    S->>DB: UPDATE decia_sessions SET status = EM_RESUMO
-    S->>CS: SELECT messages_by_session (sessionId) — bodyMd, attachmentsJson
-    S->>DB: SELECT message_classifications, divergences, ai_questions, compliance_results, project_scenarios
-    S->>S: maskSensitive(accessClass RESTRITO/SIGILOSO)
-    S->>OS: kNN ws-memory (tema + argumentos, filtros empresa/departamento/visibilidade)
-    OS-->>S: top-k InstitutionalMemoryDocument → Citation[]
-    S->>AI: summarize(context, citations, aiMode)
-    AI-->>S: SummaryDraft {arguments, consensus, divergences, risks, attentionPoints, recommendations[], scenarios[2..n], evaluationCriteria}
-    S->>DB: INSERT ai_inference_log (RESUMO_ANALITICO, provider, tokens, maskedFields)
-    S->>DB: INSERT analytical_summaries (RASCUNHO, versionNumber = n+1)
-    S->>DB: INSERT summary_scenarios (name, advantagesJson, disadvantagesJson, criteriaScoresJson, linkedProjectScenarioId)
-    S-->>C: 202 {summaryId, status RASCUNHO}
-    C-->>FE: 202
-    FE->>C: GET /api/decia/sessions/{id}/summaries/latest
-    C-->>FE: 200 AnalyticalSummary + scenarios (recomendações sem citação marcadas "sem precedente")
-    FE-->>U: Rascunho para revisão
-    U->>FE: Clica "Publicar"
-    FE->>C: POST /api/decia/sessions/{id}/summaries/{sid}/publish
-    C->>S: SummaryService.publish(actor, sessionId, summaryId)
-    S->>DB: UPDATE analytical_summaries SET status = PUBLICADO
-    S->>DB: UPDATE message_attachments SET usedInDecision = true WHERE id IN (citados)
-    S->>DB: INSERT decision_trace_nodes (RESUMO) + decision_trace_edges (RESUMIU) a partir dos nós MENSAGEM
-    S->>DB: UPDATE decia_sessions SET status = EM_DECISAO
-    S->>DB: INSERT domain_events (SummaryPublished)
-    S-->>C: 200 {summary PUBLICADO}
-    C-->>FE: 200
-    FE-->>U: Resumo publicado — abas por seção
-    EV-->>S: NotificationPort.notify(participantes, RESUMO_DISPONIVEL)
-    EV-->>S: DeciaPointsService.onSummaryPublished → INSERT decia_points_ledger (+6 ARTEFATO_USADO, idempotencyKey)
-  end
+  U->>N: abre o Estúdio do card (tarefa)
+  N->>C: GET /api/tasks/{id} (cardArt, rev) + GET /api/me/preferences + GET /api/me/skins
+  C-->>N: 200 (defaultCardSkin, reduceMotion, skins adquiridas)
+  N->>N: prévia ao vivo com resolveCardArt (feed + ampliado), effectiveLayout
 
-  alt RF11.CA06 — provedor indisponível ou cota esgotada
-    S->>AI: summarize(...)
-    AI-->>S: ERRO (circuit OPEN) ou COTA_EXCEDIDA
-    S->>DB: INSERT ai_inference_log (result ERRO)
-    S->>DB: UPDATE decia_sessions SET status = ATIVA
-    S-->>C: 503 IA_INDISPONIVEL ou 429 COTA_EXCEDIDA
-    C-->>FE: 503 / 429
-    FE-->>U: "IA indisponível — tente novamente" (oferece modo ECONOMIA)
-  else RF11.CA06 — sem mensagens classificadas
-    S->>DB: SELECT count(message_classifications) = 0
-    S-->>C: 422 VALIDACAO
-    C-->>FE: 422
-  else RF11.CA06 — não é o admin da sessão
-    S->>DB: SELECT decia_sessions.adminUserId ≠ actor
+  U->>N: "Arte com IA" com prompt
+  N->>C: POST /api/card-art/ai {TASK, id, prompt}
+  C->>S: CardArtService.generateAi(TASK, id, prompt, actor, ctx)
+  S->>R: findById + Guard.ownerOrAdmin
+  S->>RD: QuotaPort.tryConsume(userId, CAPA_IA)
+  alt sem créditos nem cota
+    S-->>C: 409 COTA_ESGOTADA
+    C-->>N: 409 (atalho para a Loja, RF42)
+  else accessClass RESTRITO ou SIGILOSO
+    S->>AI: run(CAPA_IA, modo local)
+    AI->>AI: LocalEngine monograma/paleta
+    AI->>R: insert ai_inference_log (LOCAL, BLOQUEADO_SIGILO para externo)
+    AI-->>S: arte local
+  else externo
+    S->>AI: run(CAPA_IA, tema mascarado)
+    AI->>AI: Claude → Gemini → LocalEngine (≤ 30 s)
+    AI->>R: insert ai_inference_log (provider, custo, quotaSource)
+    AI-->>S: imagem
+  end
+  S->>S3: put(cards/{id}/ai-{inferenceId}.webp)
+  S->>R: insert media_objects
+  S-->>C: AiArtResult {url, prompt, generatedAt, inferenceId}
+  C-->>N: 200 (prévia atualizada, faísca ✦ obrigatória)
+
+  U->>N: Aplicar
+  N->>C: PUT /api/tasks/{id}/card-art {CardArtConfig, baseRev}
+  C->>S: CardArtService.apply(TASK, id, config, baseRev, actor, ctx)
+  S->>R: findById(task)
+  alt não é dono
     S-->>C: 403 ACESSO_NEGADO
-    C-->>FE: 403
+    C-->>N: 403
+  else schema inválido ou mais de 2 destaques
+    S-->>C: 422 VALIDACAO | 422 LIMITE_DESTAQUES
+    C-->>N: 422
+  else baseRev divergente (outra janela aplicou)
+    S-->>C: 409 REVISAO_DESATUALIZADA {rev atual}
+    C-->>N: 409 (recarrega a prévia)
+  else skin premium sem UserSkin
+    S->>R: user_skins.owns(userId, CARD, skinKey) = false
+    S-->>C: 403 SKIN_NAO_ADQUIRIDA
+    C-->>N: 403 (atalho para a Loja)
+  else ok
+    S->>R: update tasks.card_art_json (rev+1), cover_mode, cover_url, card_skin
+    S->>R: insert audit_log CARD_ART_APPLIED
+    S-->>C: CardArtView
+    C-->>N: 200
+    EV->>RD: DEL card:task:{id}
+    EV->>R: projetos que contêm a tarefa → CardArtService.rebuildMosaic
+    EV->>S3: mosaico/thumbnail recalculados
   end
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: `AnalyticalSummary.status` (RASCUNHO → PUBLICADO), acoplada ao trecho ATIVA → EM_RESUMO → EM_DECISAO de `SessionStatus` (`DeciaSession`).
+Entidade central: a **arte do card** não tem enum de status na TAXONOMIA; os estados abaixo são **derivados** de `coverMode` + `cardArtJson.rev` da `TaskItem`/`ProjectScheme` e do ciclo de uma geração com IA (`AiInferenceLog.result`). A tarefa/projeto em si seguem `TaskState`/`ProjectStatus` (RF4/RF5 §4).
 
 ```mermaid
 stateDiagram-v2
-  state "SessionStatus (DeciaSession)" as Sess {
-    ATIVA --> EM_RESUMO : admin aciona Gerar resumo — RF11.CA01
-    REABERTA --> EM_RESUMO : novo ciclo após reabertura (RF14)
-    EM_RESUMO --> ATIVA : IA indisponível, cota ou 422 — RF11.CA06
-    EM_RESUMO --> EM_DECISAO : resumo PUBLICADO — RF11.CA04
-  }
+  direction LR
+  state "PADRAO (sem cardArtJson · coverMode AUTO/MOSAICO · skin defaultCardSkin)" as PAD
+  state "RASCUNHO_LOCAL (prévia no cliente, nada gravado)" as RL
+  state "GERANDO_IA (motion spark)" as GER
+  state "APLICADA (cardArtJson v, rev n)" as APL
+  state "DESATUALIZADA (prévia com baseRev < rev)" as DES
 
-  state "AnalyticalSummary.status" as Sum {
-    [*] --> RASCUNHO : IA gera versão n+1 (RESUMO_ANALITICO)
-    RASCUNHO --> RASCUNHO : regenerar com instrução (nova linha, versionNumber++)
-    RASCUNHO --> PUBLICADO : admin publica — RF11.CA04
-    PUBLICADO --> [*]
-  }
-
-  EM_RESUMO --> RASCUNHO : gera
-  PUBLICADO --> EM_DECISAO : dispara
-
-  note right of RASCUNHO
-    ≥ 2 SummaryScenario
-    evaluationCriteriaJson preenchido
-    recomendações sem citação = "sem precedente"
+  [*] --> PAD : tarefa/projeto criado (RF4/RF5) · thumbnail automático (RF38.CA02)
+  PAD --> RL : abre o Estúdio (CA01)
+  APL --> RL : abre o Estúdio de novo
+  RL --> RL : ajusta Fundo/Layout/Container/Destaques · Restaurar padrão (só no rascunho)
+  RL --> PAD : Cancelar (nada gravado)
+  RL --> APL : Aplicar válido [dono, schema ok, ≤ 2 destaques, skin liberada, baseRev == rev] · rev+1 · CARD_ART_APPLIED · CardArtChanged
+  RL --> GER : Arte com IA [cota ok] · AiEngine CAPA_IA (local se RESTRITO/SIGILOSO)
+  GER --> RL : imagem pronta (≤ 30 s) · aiArt gravado no rascunho · faísca ✦
+  GER --> RL : falha ou timeout → aviso, rascunho mantido
+  RL --> DES : outra janela aplicou (rev avançou)
+  DES --> RL : recarrega prévia com o rev atual (409 REVISAO_DESATUALIZADA)
+  APL --> APL : CardArtChanged → evict cache · rebuildMosaic nos projetos (CA06)
+  APL --> PAD : "Restaurar padrão" aplicado (cardArtJson removido)
+  note right of APL
+    Leitura tolerante: sem v → v1 com PAGINA/MOSAICO + timbrado.
+    Mesmo resolveCardArt em feed, Mural, Vitrine, Balcão e Mesa.
   end note
-  note right of PUBLICADO
-    AFTER_COMMIT: Notification ao grupo
-    +6 DP ARTEFATO_USADO por anexo usado
-    nó RESUMO no DecisionTrace
-    versões anteriores permanecem (histórico)
+  note right of GER
+    409 COTA_ESGOTADA antes de entrar.
+    reduceMotion / prefers-reduced-motion desligam o movimento (RF38.CA10).
   end note
 ```
 
@@ -471,88 +422,65 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js (App Router)"]
-    FE1["app/decia/[sessionId]/summary/page.tsx"]
-    FE2["components/ui/SummaryTabs · ScenarioCard · CitationChip · CriteriaTable"]
+  subgraph FE["Frontend · Next.js 15 App Router"]
+    PG["Estúdio do card: app/(shell)/tasks/[id]/edit e projects/[id]/edit (segmentos Fundo · Layout · Container · Destaques)"]
+    UI["packages/ui: TaskCard/ProjectCard (prévia feed + ampliado), BackgroundArt, Seal (lugar reservado), Spark ✦, Stamp, PhaseBar, Mosaic, Tabs, Button, Toast"]
+    RES["lib/card-art: resolveCardArt · effectiveLayout · inkOn · containerColorOf (mesmo algoritmo do backend)"]
+    BFF["app/bff/card-art/*"]
+    PG --> UI
+    PG --> RES
+    PG --> BFF
   end
-
-  subgraph WEB["ws-web"]
-    W1["SummaryController (REST /api/decia/sessions/{id}/summaries)"]
-    W2["SessionAccessGuard (adminUserId)"]
+  subgraph WSWEB["ws-web"]
+    SEC["SecurityConfig · SessionActiveFilter · CurrentUserArgumentResolver"]
+    CC["CardArtController"]
+    GEH["GlobalExceptionHandler (403, 409, 422)"]
   end
-
-  subgraph APP["ws-application"]
-    S1["SummaryService"]
-    S2["SessionLifecycleService"]
-    S3["DecisionTraceService"]
-    S4["DeciaPointsService (listener AFTER_COMMIT)"]
-    P1["AiEnginePort"]
-    P2["MemorySearchPort"]
-    P3["SessionMessageRepositoryPort"]
-    P4["NotificationPort"]
-    P5["DomainEventPublisher (outbox)"]
+  subgraph WSAPP["ws-application"]
+    CAS["design: CardArtService · CardArtResolver (fonte do algoritmo) · CardArtConfig"]
+    AIE["ai: AiEngine CAPA_IA · AiQuota (créditos antes da cota)"]
+    UP["acervo: UploadService"]
+    GD["security.Guard.ownerOrAdmin (real)"]
+    PORTS["ports: TaskRepositoryPort · ProjectRepositoryPort · UserSkinRepositoryPort · MediaStoragePort · QuotaPort · CardCachePort · PipelineJobPort · AuditLogPort"]
+    EVT["events: CardArtChanged (AFTER_COMMIT) → rebuildMosaic · evict"]
+    CAS --> GD
+    CAS --> AIE
+    CAS --> UP
+    CAS --> PORTS
+    CAS --> EVT
   end
-
-  subgraph DOM["ws-domain"]
-    D1["AnalyticalSummary · SummaryScenario · Citation"]
-    D2["DeciaSession · MessageClassification · Divergence · AiQuestion · MessageAttachment"]
-    D3["ComplianceResult · ProjectScenario (leitura)"]
-    D4["Enums: SessionStatus · MessageClass · AiCapability · AiMode"]
+  subgraph WSDOM["ws-domain"]
+    DOM["acervo: TaskItem (cardArtJson, coverMode, cardSkin) · projects: ProjectScheme (mosaicJson) · identity: UserPreferences (real) · platform: UserSkin · MediaObject · AiInferenceLog · enums ArtKind/CardLayout/CardSkin/CardMotion/CoverMode"]
   end
-
   subgraph INFRA["ws-infrastructure"]
-    I1["persistence-mysql: AnalyticalSummaryRepository, SummaryScenarioRepository, MessageClassificationRepository, DivergenceRepository, AiQuestionRepository, ComplianceResultRepository, ProjectScenarioRepository, DecisionTraceRepository, DomainEventOutboxRepository"]
-    I2["persistence-cassandra: CassandraMessageAdapter"]
-    I3["search-opensearch: OpenSearchMemoryAdapter (ws-memory, kNN)"]
-    I4["cache-redis: AiQuotaAdapter, CircuitStateAdapter"]
-    I5["ai-providers: AiEngineAdapter (Strategy + Chain of Responsibility, mascaramento LGPD, ai_inference_log)"]
-    I6["platform: NotificationAdapter, OutboxRelay, AuditLogAdapter"]
+    MY["persistence-mysql: Jpa*Repository · user_skins"]
+    RDS["cache-redis: card:task|project:{id} · AiQuota"]
+    S3["storage-s3: imagens enviadas/geradas · mosaicos · thumbnails"]
+    AIP["ai-providers: Claude → Gemini → LocalEngine (monograma/paleta)"]
+    PLT["platform: AntivirusAdapter · workers THUMBNAIL/ANTIVIRUS"]
   end
 
-  subgraph EXT["Serviços externos"]
-    X1["Claude / Gemini"]
-  end
-
-  MY[("MySQL 8")]
-  CA[("Cassandra")]
-  OS[("OpenSearch")]
-  RD[("Redis")]
-
-  FE1 --> FE2 -->|HTTPS/JSON| W1 --> W2 --> S1
-  S1 --> S2
-  S1 --> S3
-  S1 --> P1
-  S1 --> P2
-  S1 --> P3
-  S1 --> P4
-  S1 --> P5
-  P5 -.->|AFTER_COMMIT SummaryPublished| S4
-  S1 --> D1
-  S1 --> D2
-  S1 --> D3
-  D1 --> D4
-  P1 -.-> I5
-  P2 -.-> I3
-  P3 -.-> I2
-  P4 -.-> I6
-  I5 --> I4
-  S1 --> I1
-  S3 --> I1
-  S4 --> I1
-  I1 --> MY
-  I2 --> CA
-  I3 --> OS
-  I4 --> RD
-  I5 --> X1
+  BFF -->|"REST JSON"| SEC --> CC --> CAS
+  CC --> GEH
+  MY -.implementa.-> PORTS
+  RDS -.implementa.-> PORTS
+  S3 -.implementa.-> PORTS
+  PLT -.implementa.-> PORTS
+  AIP -.implementa.-> AIE
+  CAS --> DOM
+  MY --> DB[("MySQL 8.4")]
+  RDS --> RD[("Redis 7")]
+  S3 --> MINIO[("S3 / MinIO")]
+  AIP --> CL["Claude · Gemini"]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Classe | Passo (atividades) | Mensagem (sequência) | Transição (estados) | Componente |
-|---|---|---|---|---|---|
-| RF11.CA01 | `AnalyticalSummary` (argumentsJson … recommendationsJson), `SummaryService.generate`, `SessionLifecycleService`, `AiEnginePort.summarize`, `AiCapability.RESUMO_ANALITICO` | A1, B1, C1–C5, C8, C10, D1, D4 | 1–16 | ATIVA/REABERTA → EM_RESUMO; [*] → RASCUNHO | `SummaryController`, `SummaryService`, `AiEngineAdapter`, `CassandraMessageAdapter` |
-| RF11.CA02 | `SummaryScenario` (advantagesJson, disadvantagesJson, criteriaScoresJson, linkedProjectScenarioId), `AnalyticalSummary.evaluationCriteriaJson/complianceResultId`, `ProjectScenario`, `ComplianceResult` | C5, C10, D2 | 7, 12, 15 | nota de RASCUNHO | `SummaryScenarioRepository`, `ComplianceResultRepository`, `ProjectScenarioRepository` |
-| RF11.CA03 | `Citation`, `InstitutionalMemoryDocument`, `MemorySearchPort.searchCitations`, `recommendationsJson.affectedTaskIds/affectedProjectIds/planAxisId` | C7, C11, D3, E3 | 9–10, 19 ("sem precedente") | nota de RASCUNHO | `OpenSearchMemoryAdapter`, `CitationChip` |
-| RF11.CA04 | `AnalyticalSummary.status/versionNumber`, `MessageAttachment.usedInDecision`, `DecisionTraceNode` RESUMO / aresta RESUMIU, `DeciaPointsService.onSummaryPublished`, `NotificationPort` | A3, B3, C13–C17, F1, F2 | 21–33 | RASCUNHO → PUBLICADO; EM_RESUMO → EM_DECISAO | `DecisionTraceService`, `DeciaPointsService`, `OutboxRelay`, `NotificationAdapter` |
-| RF11.CA05 | `SummaryService.maskSensitive`, `AiInferenceLog.maskedFields/result BLOQUEADO_SIGILO`, `AccessClassification` | C6, D4 | 8, 13 | — | `AiEngineAdapter` (mascaramento LGPD), `ai.local.only` flag |
-| RF11.CA06 | `AiProviderCircuitState`, `AiQuota`, guardas de `SummaryService` | C1–C3, C9, C12, B5–B8, D5 | `alt` 503/429, 422, 403 | EM_RESUMO → ATIVA | `AiQuotaAdapter`, `CircuitStateAdapter`, `SessionAccessGuard` |
+| CA | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) | Situação |
+|---|---|---|---|---|---|---|
+| RF11.CA01 | `CardArtController.applyTask/applyProject`, `CardArtService.apply/validate`, `CardArtConfig.rev`, `Guard.ownerOrAdmin` | `A1`→`A2`→`A4`→`F4`→`S1`→`S4`, `E403`, `E409R`, `E422` | 1–4, 26–37, 42–47 | `PAD`→`RL`→`APL`, `RL`→`PAD`, `RL`→`DES` | `PG`, `CC`, `CAS`, `GD` | planejado |
+| RF11.CA02 | `CardArtResolver.resolveCardArt/effectiveLayout`, `ArtKind`, `CardLayout` | `F2`, `S2` | 4 | `RL`→`RL` | `RES`, `CAS`, `UI` (`BackgroundArt`, `Mosaic`) | planejado |
+| RF11.CA03 | `CardArtResolver.inkOn/containerColorOf`, `CardSkin`, `UserSkinRepositoryPort.owns`, `UserPreferences.defaultCardSkin` | `S5`→`S6`→`E403S` | 2–3, 38–41 | guarda de `RL`→`APL` | `RES`, `MY` (`user_skins`) | planejado (`UserPreferences` real) |
+| RF11.CA04 | `CardArtService.generateAi`, `AiEngine` (CAPA_IA), `QuotaPort`/`AiQuota`, `AiInferenceLog`, `UploadService`, `MediaObject` | `A3`→`F3`→`AI1`→`AI6`, `UP1`, `E409Q`, `E422` | 5–25 | `RL`→`GER`→`RL` | `AIE`, `AIP`, `S3`, `PLT`, `RDS` | planejado |
+| RF11.CA05 | `CardArtConfig.destaques/motion`, `CardMotion`, `UserPreferences.reduceMotion`, `CardArtService.validate` (≤ 2) | `S2`→`S3`→`E422` | 32–33 | nota de `GER` | `UI` (`Seal`, `Stamp`, `PhaseBar`, `Spark`) | planejado (RF38.CA10) |
+| RF11.CA06 | `CardArtResolver` (leitura tolerante), `CardCachePort.evict`, evento `CardArtChanged`, `CardArtService.rebuildMosaic` | `S7`→`EV` | 42–47 | `APL`→`APL` | `EVT`, `RDS`, `S3`, `RES` | planejado (RF38.CA03) |

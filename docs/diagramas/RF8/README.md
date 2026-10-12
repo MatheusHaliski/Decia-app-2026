@@ -1,19 +1,19 @@
-# RF8 — Notificar o grupo a respeito de divergências, assim como formalizar perguntas a partir destes pontos de risco.
-**HU:** HU8 · **Sprint (board Work Station):** 2 · **Equivalente FAI:** RF10 Copilot (sugestões proativas do Copilot) + RF24 Usar a IA do sistema (`AiEngine`, capabilities DETECTAR_DIVERGENCIA e FORMULAR_PERGUNTA) + notificações RNF10 (`NotificationService`) · **Aba/rota:** DECIA (`/decia/[sessionId]` — mensagens da IA no chat + painel lateral "Divergências e perguntas"), sino de notificações — rota sugerida
-**Critérios de aceite cobertos:** RF8.CA01 … RF8.CA06 (RF1–RF18 não têm CAs no board: derivados da HU8 + RF16/RF29/RF42 e marcados "CA a confirmar")
+# RF8 — Editar arquivos de tarefas ou projetos dentro de meu perfil do Work Station
+**HU:** HU8 · **Sprint (board Work Station):** lista *Requisitos Funcionais* sem sprint atribuída (o card "SPRINT 2" cita "RF8 Notificar divergências", escopo antigo — `RENUMERACAO.md`; fase (e) da ARQUITETURA §6) · **Equivalente FAI:** RF8 Editar peça (formulário da peça, trocar foto, versão da foto) + RF9 Editar esquema · **Aba/rota:** `/tasks/[id]/edit` (ficha + **anexos + versões**, a partir do Acervo Digital, RF6) e `/projects/[id]/edit` (ficha do projeto e arquivos das tarefas pela Mesa, RF22); "Editar no provedor" abre Google Docs/Sheets ou Word/Excel online; API `PATCH /api/tasks/{id}`, `POST /api/tasks/{id}/attachments`, `PUT /api/tasks/{id}/attachments/{attId}` (substituir), `POST /api/tasks/{id}/link/convert`, `POST /api/tasks/{id}/complete`, `PATCH /api/projects/{id}`, webhook `POST /api/integrations/{provider}/changes`
+**Critérios de aceite cobertos:** RF8.CA01 … RF8.CA06 — **todos "(CA a confirmar)"**: o corpo do card está vazio; os CAs foram derivados do título + HU8 e reaproveitam RF20.CA07/CA12 (itens vinculados, `PipelineJob`), RF41.CA02/CA03 (estados, versões) e RF22.CA02/CA06 (versões de projeto, bloqueio). O foco deste RF são os **arquivos** (anexos, versões, provedor externo); a edição dos **dados** do esquema é o RF12. Todas as classes do RF são **(planejado)**; reais só os transversais (`SecurityConfig`, `SessionActiveFilter`, `Guard`, `AuditLogPort`, `S3StorageConfig`, `AiProvidersConfig`).
 
-> **HU8** — COMO IA do sistema POSSO notificar o grupo a respeito de divergências identificadas e formular perguntas a partir dos pontos de risco PARA estimular o esclarecimento e reduzir ambiguidades antes da decisão.
+> **HU8** — COMO usuário do sistema Work Station POSSO editar uma tarefa ou projeto de meu perfil PARA concluir projetos e receber insights de feedback da IA a respeito da qualidade do item.
 
 ## Critérios de aceite derivados da HU8 (todos "CA a confirmar")
 
-| CA | Enunciado (Dado / Quando / Então) |
-|---|---|
-| **RF8.CA01** (CA a confirmar) | Dado `MessageClassified` com `label DIVERGENCIA` (confidence ≥ 0,6) envolvendo autores distintos, então o `DivergenceService` pede ao `AiEngine` (DETECTAR_DIVERGENCIA) a síntese das posições e cria `Divergence` (`originMessageId`, `detectedByAi` true, `summary`, `partiesJson`, `status ABERTA`, `aiInferenceId`), publicando na sessão uma mensagem `authorKind IA` "Divergência identificada entre A e B sobre X". |
-| **RF8.CA02** (CA a confirmar) | Dado a divergência criada, então todos os participantes ativos recebem `Notification` (categoria DECIA, type DIVERGENCIA_DETECTADA, `groupKey` por sessão/hora para não inundar), em tempo real (SSE) e em `notifications_by_user`; `Divergence.notifiedAt` é preenchido. |
-| **RF8.CA03** (CA a confirmar) | Dado `MessageClassified` com `label RISCO` (ou um ponto crítico detectado no contexto, RF16), então a IA formula `AiQuestion` (`kind` RISCO · PONTO_CRITICO · ESCLARECIMENTO, `questionText`, `basisMessageIds`, `status ABERTA`, `citationsJson` com fontes da Memória Institucional quando houver — RF33.CA03) e a posta na sessão como mensagem IA, endereçada ao grupo. |
-| **RF8.CA04** (CA a confirmar) | Dado o controle de ruído, então há no máximo **3 perguntas ABERTAS** por sessão e não se cria `Divergence` já ABERTA para as mesmas partes/mensagens-base (dedupe por `basisMessageIds`/`partiesJson`); mensagens RUIDO ou repetidas nunca geram divergência nem pergunta; o administrador pode marcar uma pergunta como IGNORADA com motivo. |
-| **RF8.CA05** (CA a confirmar) | Dado o `AiEngine`, então a detecção e a formulação seguem a cadeia primário → alternativo → motor local com `AiInferenceLog`; **sem IA externa** (sigilo, cota ou falha) o motor local detecta divergência por heurística (contraste/negação entre pares de ARGUMENTO) e usa uma pergunta-modelo, com aviso "gerado pelo motor local" no card. |
-| **RF8.CA06** (CA a confirmar) | Dado divergência e pergunta criadas, então entram no `DecisionTrace` (nós DIVERGENCIA e PERGUNTA, arestas ORIGINOU a partir da mensagem), aparecem no painel lateral (abertas/resolvidas) e podem ser resolvidas pelo grupo (RF10 → `DivergenceReply`, RF16 → `answeredByMessageId`), gerando DECIA Points quando a IA marca como resolvida/respondida com evidência (RF42); `AuditLog DIVERGENCE_DETECTED` / `AI_QUESTION_ASKED`. |
+| CA | Enunciado (Dado / Quando / Então) | Origem |
+|---|---|---|
+| **RF8.CA01** (CA a confirmar) | Dado uma tarefa do meu perfil (sou `ownerId` ou `responsibleId`), quando edito título, categoria, tags, prazo, descrição ou classificação e salvo com `If-Match: version`, então o sistema valida como no criador (RF4: `422 VALIDACAO` por campo), grava com bloqueio otimista (`409 CONFLITO_VERSAO` se outra edição venceu), registra `AuditLog TASK_UPDATED` e reindexa no OpenSearch após o commit; quem não é dono nem responsável → `403 ACESSO_NEGADO`. | RF41.CA03, RF12 |
+| **RF8.CA02** (CA a confirmar) | Dado os anexos da tarefa, quando substituo o arquivo principal ou adiciono um novo, então o upload passa por `MediaStoragePort` + `AntivirusPort` (`422 ARQUIVO_MALICIOSO` bloqueia; `415`/`413` como no RF4), a versão anterior é preservada como `TaskVersion` (`versionNumber + 1`, `snapshotMediaId` do arquivo antigo, `changeSummary`), e thumbnail/OCR são reprocessados por `PipelineJob` após o commit (falha → `REPROCESSAR`, aviso no card). | RF20.CA01/CA12, RF41.CA06 |
+| **RF8.CA03** (CA a confirmar) | Dado um item `linkMode VINCULADO` (Google/Microsoft), quando aciono "Editar no provedor", então o documento abre no Google Docs/Sheets ou Word/Excel online com o OAuth do usuário; ao receber o webhook de mudança (`ExternalDocPort.watch`), `AcervoService.syncLinkedVersion` cria `TaskVersion` (`externalRevisionId`, `syncedAt`) e atualiza o thumbnail; "Converter em cópia" chama `convertLinkToSnapshot` (`linkMode COPIADO`, snapshot no S3); token revogado → conversão automática em snapshot com aviso. | RF20.CA07 |
+| **RF8.CA04** (CA a confirmar) | Dado um projeto do meu perfil, quando edito a ficha (título, objetivo, prazo, programa, eixo) ou os arquivos das suas tarefas pela Mesa (RF22), então mudanças estruturais geram `ProjectVersion` com `diffJson` legível e as não-estruturais só atualizam; projeto `CONCLUIDO`/`ARQUIVADO` → `409 PROJETO_BLOQUEADO` (reabrir exige justificativa); a visibilidade dos arquivos segue a da tarefa dona (`AccessPolicy`). | RF22.CA02/CA06 |
+| **RF8.CA05** (CA a confirmar) | Dado uma tarefa `EM_USO` ou `DISPONIVEL`, quando marco "Concluir" (`POST /api/tasks/{id}/complete`), então `TaskStateMachine` leva a `CONCLUIDA` com `TaskStateLog`; se era a última `ProjectTask` pendente de um projeto, `ProjectScheme.status` passa a `CONCLUIDO` e `percentComplete = 100`; transição inválida → `422 TRANSICAO_INVALIDA`; `BLOQUEADA` precisa ser desbloqueada antes. | RF41.CA02, RF5 §4 |
+| **RF8.CA06** (CA a confirmar) | Dado um salvamento bem-sucedido, então após o commit a IA gera um **`Insight` de qualidade** (`scope` ACERVO para tarefa, PROJETO para projeto; `metricRefsJson` com completude, clareza, prazo, conformidade RF32; `actionsJson` com correções em 1 clique), exibido com faísca ✦ e "Por que isto?", registrado em `ai_inference_log` (capability `INSIGHT`, `hostRf RF8`); `accessClass` RESTRITO/SIGILOSO → `LocalEngine`; sem cota → sem insight (nunca bloqueia o salvamento). | RF43 §2–4, RF43.CA02 |
 
 ## 1. Diagrama de classes
 
@@ -21,415 +21,461 @@
 classDiagram
   direction LR
 
-  namespace ws_domain {
-    class Divergence {
-      <<entity>>
-      +id: UUID
-      +sessionId: UUID
-      +originMessageId: TIMEUUID
-      +detectedByAi: boolean
-      +summary: String
-      +partiesJson: String
-      +status: String
-      +resolvedByReplyId: UUID
-      +resolvedAt: Instant
-      +notifiedAt: Instant
-      +aiInferenceId: UUID
-    }
-    class DivergenceReply {
-      <<entity>>
-      +id: UUID
-      +divergenceId: UUID
-      +authorId: UUID
-      +messageId: TIMEUUID
-      +resolves: boolean
-      +at: Instant
-    }
-    class AiQuestion {
-      <<entity>>
-      +id: UUID
-      +sessionId: UUID
-      +kind: String
-      +questionText: String
-      +basisMessageIds: String
-      +status: String
-      +answeredByMessageId: TIMEUUID
-      +answeredWithEvidence: boolean
-      +aiInferenceId: UUID
-      +citationsJson: String
-    }
-    class MessageClassification {
-      <<entity>>
-      +id: UUID
-      +messageId: TIMEUUID
-      +label: MessageClass
-      +confidence: BigDecimal
-    }
-    class SessionMessage {
-      <<entity>>
-      +id: TIMEUUID
-      +sessionId: UUID
-      +authorId: UUID
-      +authorKind: String
-      +bodyMd: String
-    }
-    class Notification {
-      <<entity>>
-      +id: UUID
-      +recipientId: UUID
-      +actorId: UUID
-      +type: NotificationType
-      +category: String
-      +resourceType: String
-      +resourceId: UUID
-      +title: String
-      +body: String
-      +groupKey: String
-      +read: boolean
-      +deliveredChannels: String
-    }
-    class DecisionTraceNode {
-      <<entity>>
-      +id: UUID
-      +sessionId: UUID
-      +nodeType: TraceNodeType
-      +refId: UUID
-      +classLabel: String
-    }
-    class DecisionTraceEdge {
-      <<entity>>
-      +fromNodeId: UUID
-      +toNodeId: UUID
-      +relation: String
-    }
-    class AiInferenceLog {
-      <<entity>>
-      +id: UUID
-      +capability: AiCapability
-      +provider: String
-      +result: String
-      +fallbackUsed: boolean
-      +correlationId: String
-    }
-    class MessageClass {
-      <<enum>>
-      ARGUMENTO
-      DIVERGENCIA
-      RISCO
-      CONSENSO
-      PERGUNTA
-      RUIDO
-    }
-    class AiCapability {
-      <<enum>>
-      DETECTAR_DIVERGENCIA
-      FORMULAR_PERGUNTA
-    }
+  class TaskEditController {
+    <<controller>>
+    +update(id, PatchTaskRequest, ifMatch, CurrentUser, ctx) TaskView
+    +addAttachment(id, MultipartFile, CurrentUser, ctx) AttachmentView
+    +replaceAttachment(id, attId, MultipartFile, CurrentUser, ctx) AttachmentView
+    +convertLink(id, CurrentUser, ctx) TaskView
+    +complete(id, CurrentUser, ctx) TaskView
+  }
+  class ProjectEditController {
+    <<controller>>
+    +update(id, PatchProjectRequest, ifMatch, CurrentUser, ctx) ProjectView
+  }
+  class IntegrationWebhookController {
+    <<controller>>
+    +changes(provider, payload, signature) void
+  }
+  class AcervoService {
+    <<service>>
+    +update(id, PatchTaskCommand, version, actor, ctx) TaskItem
+    +addAttachment(id, upload, actor, ctx) TaskAttachment
+    +replaceAttachment(id, attId, upload, actor, ctx) TaskAttachment
+    +syncLinkedVersion(taskId, externalRevisionId) TaskVersion
+    +convertLinkToSnapshot(id, actor, ctx) TaskItem
+    +complete(id, actor, ctx) TaskItem
+  }
+  class ProjectEditService {
+    <<service>>
+    +update(id, PatchProjectCommand, version, actor, ctx) ProjectScheme
+    -isStructural(diff) boolean
+    +completeIfAllDone(projectId) void
+  }
+  class UploadService {
+    <<service>>
+    +store(file, ownerId) MediaObject
+  }
+  class TaskStateMachine {
+    <<service>>
+    +transition(TaskItem, TaskState, actor, reason) TaskStateLog
+  }
+  class ProjectStatusStateMachine {
+    <<service>>
+    +transition(ProjectScheme, ProjectStatus, actor, reason) void
+  }
+  class QualityInsightService {
+    <<service>>
+    +afterSave(targetType, targetId) Insight
+  }
+  class AiEngine {
+    <<service>>
+    +run(AiRequest) AiResponse
+    capability INSIGHT
+  }
+  class AccessPolicy {
+    <<service>>
+    +canEdit(viewer, TaskItem) boolean
+    +canEdit(viewer, ProjectScheme) boolean
+  }
+  class TaskRepositoryPort {
+    <<port>>
+    +findById(id) Optional
+    +save(TaskItem) TaskItem
+  }
+  class ProjectRepositoryPort {
+    <<port>>
+    +save(ProjectScheme) ProjectScheme
+    +pendingProjectTasks(projectId) int
+  }
+  class MediaStoragePort {
+    <<port>>
+    +put(key, bytes, mime) MediaObject
+    +copy(from, to) MediaObject
+  }
+  class AntivirusPort {
+    <<port>>
+    +scan(MediaObject) ScanResult
+  }
+  class ExternalDocPort {
+    <<port>>
+    +editUrl(ref, token) URL
+    +watch(ref) void
+    +snapshot(ref) MediaObject
+    +revision(ref) String
+  }
+  class PipelineJobPort {
+    <<port>>
+    +enqueue(type, targetType, targetId) PipelineJob
+  }
+  class SearchIndexPort {
+    <<port>>
+    +index(TaskItem) void
+    +index(ProjectScheme) void
   }
 
-  namespace ws_application {
-    class DivergenceService {
-      <<service>>
-      +onMessageClassified(event MessageClassified) void
-      +detect(session DeciaSession, classification MessageClassification) Divergence
-      +list(current CurrentUser, sessionId, status) List~DivergenceView~
-      -alreadyOpen(sessionId, parties, basisIds) boolean
-    }
-    class AiQuestionService {
-      <<service>>
-      +onMessageClassified(event MessageClassified) void
-      +ask(session DeciaSession, kind, basisMessageIds) AiQuestion
-      +ignore(current CurrentUser, sessionId, questionId, reason) AiQuestion
-      +list(current CurrentUser, sessionId, status) List~AiQuestionView~
-      -openCount(sessionId) int
-    }
-    class MessageService {
-      <<service>>
-      +postAiMessage(sessionId, bodyMd, correlationId) SessionMessage
-    }
-    class AiEngine {
-      <<service>>
-      +text(call TextCall) AiOutcome
-    }
-    class NotificationPort {
-      <<port>>
-      +notifyGroup(sessionId, recipients List~UUID~, notification Notification, groupKey) void
-    }
-    class RealtimePublisherPort {
-      <<port>>
-      +publish(sessionId, event SessionEvent) void
-    }
-    class DecisionTracePort {
-      <<port>>
-      +appendNode(node DecisionTraceNode) UUID
-      +appendEdge(edge DecisionTraceEdge) void
-    }
-    class MemorySearchPort {
-      <<port>>
-      +citations(query, companyId, k) List~Citation~
-    }
-    class DomainEventPublisherPort {
-      <<port>>
-      +publish(event DomainEvent) void
-    }
+  class TaskItem {
+    <<entity>>
+    +UUID id
+    +UUID ownerId
+    +UUID responsibleId
+    +String title
+    +TaskCategory category
+    +Set~String~ tags
+    +LocalDate dueAt
+    +String descriptionMd
+    +AccessClassification accessClass
+    +TaskState state
+    +LinkMode linkMode
+    +String sourceRef
+    +String thumbnailUrl
+    +long version
+  }
+  class TaskAttachment {
+    <<entity>>
+    +UUID id
+    +UUID taskId
+    +UUID mediaObjectId
+    +String fileName
+    +String mimeType
+    +String sha256
+    +String antivirusStatus
+    +String ocrStatus
+    +boolean isPrimary
+    +int sortOrder
+  }
+  class TaskVersion {
+    <<entity>>
+    +UUID id
+    +UUID taskId
+    +int versionNumber
+    +String externalRevisionId
+    +Instant syncedAt
+    +String thumbnailUrl
+    +String changeSummary
+    +UUID snapshotMediaId
+  }
+  class TaskStateLog {
+    <<entity>>
+    +TaskState fromState
+    +TaskState toState
+    +UUID actorId
+    +String reason
+  }
+  class ProjectScheme {
+    <<entity>>
+    +UUID id
+    +UUID ownerId
+    +String title
+    +String objective
+    +ProjectStatus status
+    +UUID programGroupingId
+    +UUID planAxisId
+    +long version
+  }
+  class ProjectTask {
+    <<entity>>
+    +UUID taskId
+    +UUID responsibleId
+    +int percentComplete
+  }
+  class ProjectVersion {
+    <<entity>>
+    +UUID projectId
+    +int versionNumber
+    +UUID authorId
+    +JSON diffJson
+    +JSON snapshotJson
+    +String reason
+  }
+  class MediaObject {
+    <<entity>>
+    +String objectKey
+    +String mimeType
+    +String sha256
+  }
+  class PipelineJob {
+    <<entity>>
+    +String type
+    +PipelineJobStatus status
+    +int attempts
+    +String lastError
+  }
+  class Insight {
+    <<entity>>
+    +InsightScope scope
+    +UUID scopeId
+    +String kind
+    +String title
+    +String bodyMd
+    +JSON metricRefsJson
+    +JSON actionsJson
+    +UUID aiInferenceId
+  }
+  class LinkMode {
+    <<enum>>
+    VINCULADO
+    COPIADO
+  }
+  class PipelineJobStatus {
+    <<enum>>
+    PENDENTE
+    RODANDO
+    OK
+    FALHA
+    REPROCESSAR
   }
 
-  namespace ws_web {
-    class DeciaSessionController {
-      <<controller>>
-      +divergences(sessionId, status) List~DivergenceView~
-      +questions(sessionId, status) List~AiQuestionView~
-      +ignoreQuestion(sessionId, questionId, body IgnoreRequest) AiQuestionView
-    }
-  }
-
-  namespace ws_infrastructure {
-    class CassandraNotificationProjector {
-      <<adapter>>
-    }
-    class RedisRealtimePublisher {
-      <<adapter>>
-    }
-    class OpenSearchMemoryAdapter {
-      <<adapter>>
-      +index: String
-    }
-    class LocalEngineAdapter {
-      <<adapter>>
-      +divergenceHeuristic: ContrastDetector
-      +questionTemplates: Map
-    }
-  }
-
-  DeciaSessionController --> DivergenceService
-  DeciaSessionController --> AiQuestionService
-  DivergenceService --> AiEngine : DETECTAR_DIVERGENCIA
-  AiQuestionService --> AiEngine : FORMULAR_PERGUNTA
-  AiQuestionService --> MemorySearchPort : citações (RF33)
-  DivergenceService --> MessageService
-  AiQuestionService --> MessageService
-  DivergenceService --> NotificationPort
-  AiQuestionService --> NotificationPort
-  DivergenceService --> RealtimePublisherPort
-  DivergenceService --> DecisionTracePort
-  AiQuestionService --> DecisionTracePort
-  DivergenceService --> DomainEventPublisherPort
-  AiQuestionService --> DomainEventPublisherPort
-  CassandraNotificationProjector ..|> NotificationPort
-  RedisRealtimePublisher ..|> RealtimePublisherPort
-  OpenSearchMemoryAdapter ..|> MemorySearchPort
-  AiEngine ..> LocalEngineAdapter : fallback
-  Divergence "1" --> "*" DivergenceReply : respostas (RF10)
-  Divergence ..> SessionMessage : originMessageId
-  Divergence ..> AiInferenceLog : aiInferenceId
-  AiQuestion ..> SessionMessage : basisMessageIds e answeredByMessageId
-  AiQuestion ..> AiInferenceLog : aiInferenceId
-  MessageClassification --> MessageClass
-  MessageClassification ..> Divergence : DIVERGENCIA origina
-  MessageClassification ..> AiQuestion : RISCO origina
-  Notification ..> Divergence : DIVERGENCIA_DETECTADA
-  Notification ..> AiQuestion : PERGUNTA_IA
-  DecisionTraceNode "1" --> "*" DecisionTraceEdge : ORIGINOU
-  AiInferenceLog --> AiCapability
-
-  note for Divergence "tabela divergences (RF8, RF10) · status ABERTA · EM_RESPOSTA · RESOLVIDA · SEM_CONSENSO"
-  note for AiQuestion "tabela ai_questions (RF8, RF16) · kind RISCO · PONTO_CRITICO · ESCLARECIMENTO · status ABERTA · RESPONDIDA · IGNORADA"
-  note for Notification "Cassandra notifications_by_user (TTL) + MySQL notifications · categoria DECIA · groupKey agrupa por sessão/hora"
+  TaskEditController --> AcervoService
+  ProjectEditController --> ProjectEditService
+  IntegrationWebhookController --> AcervoService
+  AcervoService --> AccessPolicy
+  AcervoService --> UploadService
+  AcervoService --> TaskStateMachine
+  AcervoService --> TaskRepositoryPort
+  AcervoService --> ExternalDocPort
+  AcervoService --> PipelineJobPort
+  AcervoService --> SearchIndexPort
+  AcervoService --> ProjectEditService : completeIfAllDone
+  ProjectEditService --> AccessPolicy
+  ProjectEditService --> ProjectStatusStateMachine
+  ProjectEditService --> ProjectRepositoryPort
+  UploadService --> MediaStoragePort
+  UploadService --> AntivirusPort
+  QualityInsightService --> AiEngine
+  TaskItem "1" *-- "0..*" TaskAttachment
+  TaskItem "1" *-- "0..*" TaskVersion
+  TaskItem "1" --> "0..*" TaskStateLog
+  TaskAttachment "1" --> "1" MediaObject
+  TaskVersion "0..*" --> "0..1" MediaObject : snapshotMediaId
+  ProjectScheme "1" *-- "0..*" ProjectVersion
+  ProjectScheme "1" *-- "2..*" ProjectTask
+  ProjectTask "0..*" --> "0..1" TaskItem
+  PipelineJob "0..*" --> "1" TaskItem : THUMBNAIL, OCR, SYNC_EXTERNO
+  Insight "0..*" --> "1" TaskItem : scope ACERVO
+  Insight "0..*" --> "1" ProjectScheme : scope PROJETO
+  TaskItem --> LinkMode
+  PipelineJob --> PipelineJobStatus
+  note for TaskVersion "versionNumber cresce a cada substituição de arquivo (CA02) ou revisão externa sincronizada (CA03)."
 ```
 
 ## 2. Diagrama de atividades
 
-Raias: Grupo/Administrador · Web/BFF · `ws-application` · IA (AiEngine) · Persistência. Gatilho: `MessageClassified` (RF7).
-
 ```mermaid
 flowchart TD
-  subgraph L1["Ator humano — Grupo da conversa e administrador"]
-    A1["Recebe notificação e vê a mensagem da IA no chat"] --> A2{"O que fazer?"}
-    A2 -->|responder a divergência| A3["Responde (RF10) → DivergenceReply"]
-    A2 -->|responder a pergunta| A4["Responde com evidência (RF16)"]
-    A2 -->|admin: ignorar pergunta| A5["Marca IGNORADA com motivo"]
-    A20(["Divergência/pergunta listadas no painel lateral com status"])
+  subgraph ATOR["Dono ou responsável"]
+    A1["Abre /tasks/{id}/edit a partir do Acervo Digital (RF6) ou /projects/{id}/edit (RF22)"]
+    A2["Edita a ficha (título, categoria, tags, prazo, descrição, classificação)"]
+    A3["Substitui o arquivo principal ou adiciona anexo"]
+    A4["Item VINCULADO: Editar no provedor · Converter em cópia"]
+    A5["Marca Concluir"]
+    A6["Lê o Insight de qualidade ✦ e aplica correções em 1 clique"]
+  end
+  subgraph FE["Next.js (App Router) · BFF"]
+    F1["Formulário com If-Match: version · erro por campo"]
+    F2["PATCH /api/tasks/{id} · PATCH /api/projects/{id}"]
+    F3["POST|PUT /api/tasks/{id}/attachments (multipart) · lista de TaskVersion"]
+    F4["Abre editUrl do provedor em nova aba (OAuth do usuário) · POST /api/tasks/{id}/link/convert"]
+    F5["POST /api/tasks/{id}/complete"]
+    F6["Painel Insight com Spark ✦ e 'Por que isto?' (polling após salvar)"]
+  end
+  subgraph WEB["ws-web"]
+    W1["JWT + SessionActiveFilter + CurrentUserArgumentResolver"]
+    W2["TaskEditController · ProjectEditController · IntegrationWebhookController (assinatura do provedor)"]
+    E403["403 ACESSO_NEGADO (nem dono nem responsável)"]
+    E422["422 VALIDACAO por campo"]
+    E409V["409 CONFLITO_VERSAO (If-Match)"]
+    E409P["409 PROJETO_BLOQUEADO (CONCLUIDO/ARQUIVADO)"]
+    E422M["422 ARQUIVO_MALICIOSO · 415 · 413"]
+    E422T["422 TRANSICAO_INVALIDA (BLOQUEADA → desbloquear antes)"]
+  end
+  subgraph APP["ws-application"]
+    S1["AccessPolicy.canEdit(viewer, task | project)?"]
+    S2{"permitido?"}
+    S3["AcervoService.update: valida como RF4 · compara version"]
+    S4{"válido e versão igual?"}
+    S5["save · AuditLog TASK_UPDATED"]
+    T1["UploadService.store: MIME real · limite · AntivirusPort"]
+    T2{"limpo?"}
+    T3["TaskVersion(versionNumber+1, snapshotMediaId = arquivo antigo, changeSummary) · TaskAttachment aponta o novo MediaObject"]
+    L1["ExternalDocPort.editUrl(sourceRef, token OAuth)"]
+    L2["Webhook → syncLinkedVersion: TaskVersion(externalRevisionId, syncedAt) · thumbnail"]
+    L3["convertLinkToSnapshot: ExternalDocPort.snapshot → S3 · linkMode COPIADO (automático se token revogado)"]
+    P1["ProjectEditService.update: CONCLUIDO/ARQUIVADO?"]
+    P2{"estrutural?"}
+    P3["ProjectVersion(diffJson legível, snapshotJson, authorId)"]
+    P4["só atualiza ficha"]
+    C1["TaskStateMachine: EM_USO | DISPONIVEL → CONCLUIDA · TaskStateLog"]
+    C2{"última ProjectTask pendente do projeto?"}
+    C3["ProjectStatusStateMachine → CONCLUIDO · percentComplete = 100"]
+    EV["AFTER_COMMIT: PipelineJob THUMBNAIL/OCR (REPROCESSAR em falha) · SearchIndexPort.index · QualityInsightService.afterSave"]
+  end
+  subgraph IA["AiEngine"]
+    I1["Governança: accessClass RESTRITO/SIGILOSO → LocalEngine · AiQuota (sem cota → sem insight) · mascaramento"]
+    I2["INSIGHT hostRf RF8: completude, clareza, prazo, conformidade (RF32) → Insight(metricRefsJson, actionsJson) · AiInferenceLog"]
+  end
+  subgraph PERS["Persistência"]
+    D1[("MySQL: tasks, task_attachments, task_versions, task_state_log, project_schemes, project_versions, project_tasks, pipeline_jobs, insights, ai_inference_log, audit_log")]
+    D2[("S3: novo arquivo · snapshot do antigo · thumbnails")]
+    D3[("OpenSearch ws-tasks · ws-projects")]
+    D4["Google Drive / Microsoft Graph (OAuth do usuário, webhooks)"]
   end
 
-  subgraph L2["Web / BFF (Next.js App Router)"]
-    B1["SSE DivergenceDetected / AiQuestionAsked → insere a mensagem IA e atualiza o painel"]
-    B2["GET /api/decia/sessions/{id}/divergences · /questions"]
-    B3["POST /api/decia/sessions/{id}/questions/{qid}/ignore"]
-  end
-
-  subgraph L3["ws-application — DivergenceService / AiQuestionService"]
-    C0(["Evento MessageClassified (RF7)"]) --> C1{"label?"}
-    C1 -->|DIVERGENCIA conf ≥ 0,6| C2{"Autores distintos e não há Divergence ABERTA para as mesmas partes/base?"}
-    C2 -->|não| C3["Ignora (dedupe)"]
-    C2 -->|sim| C4["AiEngine DETECTAR_DIVERGENCIA: síntese das posições + partes"]
-    C5["Cria Divergence ABERTA (originMessageId, summary, partiesJson, aiInferenceId)"] --> C6["Mensagem IA no chat: Divergência identificada entre A e B sobre X"]
-    C6 --> C7["Notification DECIA a todos os ativos (groupKey sessão/hora) · notifiedAt"]
-    C7 --> C8["DecisionTrace: nó DIVERGENCIA + aresta ORIGINOU · AuditLog DIVERGENCE_DETECTED"]
-    C1 -->|RISCO ou ponto crítico| C9{"Perguntas ABERTAS na sessão < 3?"}
-    C9 -->|não| C10["Adia (fila) até uma pergunta ser respondida ou ignorada"]
-    C9 -->|sim| C11["Busca citações na Memória Institucional (RF33) se houver"]
-    C11 --> C12["AiEngine FORMULAR_PERGUNTA: questionText + kind"]
-    C13["Cria AiQuestion ABERTA (basisMessageIds, citationsJson, aiInferenceId)"] --> C14["Mensagem IA no chat endereçada ao grupo"]
-    C14 --> C15["Notification DECIA · DecisionTrace nó PERGUNTA + ORIGINOU · AuditLog AI_QUESTION_ASKED"]
-    C1 -->|ARGUMENTO, CONSENSO, PERGUNTA, RUIDO| C16["Nada neste RF (RUIDO nunca gera)"]
-    C17{"É adminUserId?"}
-    C17 -->|não| E403["403 ACESSO_NEGADO"]
-    C17 -->|sim| C18{"Pergunta ABERTA e motivo informado?"}
-    C18 -->|não| E422["422 VALIDACAO"]
-    C18 -->|sim| C19["AiQuestion.status → IGNORADA · libera vaga na fila"]
-  end
-
-  subgraph L4["IA (AiEngine — Strategy + Chain)"]
-    I1["Primário (Claude/Gemini) → alternativo → motor local"] --> I2{"Chegou ao motor local?"}
-    I2 -->|sim| I3["Heurística de contraste entre pares / pergunta-modelo · aviso gerado pelo motor local"]
-    I2 -->|não| I4["Resposta estruturada do provedor"]
-    I3 --> I5["AiInferenceLog (result FALLBACK ou BLOQUEADO_SIGILO)"]
-    I4 --> I6["AiInferenceLog (result OK)"]
-  end
-
-  subgraph L5["Persistência"]
-    D1[("MySQL: divergences, ai_questions, ai_inference_log, decision_trace_nodes/edges, notifications, audit_log, domain_events")]
-    D2[("Cassandra: messages_by_session (mensagens IA), notifications_by_user, trace_by_entity")]
-    D3[("Redis: pub/sub da sessão · AiQuota · circuit breaker")]
-    D4[("OpenSearch: ws-memory (citações)")]
-  end
-
-  C4 --> I1
-  C12 --> I1
-  I5 --> C5
-  I6 --> C5
-  I5 --> C13
-  I6 --> C13
-  C11 --> D4
-  C5 --> D1
-  C6 --> D2
-  C7 --> D2
-  C7 --> D3
-  C8 --> D1
-  C13 --> D1
-  C14 --> D2
-  C15 --> D1
-  C15 --> D2
-  D3 --> B1 --> A1
-  B2 --> A20
-  A5 --> B3 --> C17
-  C19 --> D1
-
-  classDef erro fill:#fde2e2,stroke:#c0392b,color:#7b1d1d;
-  class E403,E422 erro;
+  A1 --> F1 --> A2 --> F2 --> W1 --> W2 --> S1 --> S2
+  S2 -->|"não"| E403
+  S2 -->|"sim"| S3 --> S4
+  S4 -->|"campo inválido"| E422
+  S4 -->|"versão antiga"| E409V
+  S4 -->|"sim"| S5 --> D1
+  S5 --> EV
+  A3 --> F3 --> W2 --> T1 --> T2
+  T2 -->|"não"| E422M
+  T2 -->|"sim"| T3 --> D2
+  T3 --> D1
+  T3 --> EV
+  A4 --> F4 --> L1 --> D4
+  D4 -->|"webhook de mudança"| W2 --> L2 --> D1
+  F4 -->|"converter"| L3 --> D2
+  F2 -->|"projeto"| P1
+  P1 -->|"bloqueado"| E409P
+  P1 --> P2
+  P2 -->|"sim"| P3 --> D1
+  P2 -->|"não"| P4 --> D1
+  P3 --> EV
+  A5 --> F5 --> W2 --> C1
+  C1 -->|"inválida"| E422T
+  C1 --> C2
+  C2 -->|"sim"| C3 --> D1
+  C2 -->|"não"| D1
+  C1 --> EV
+  EV --> D3
+  EV --> I1 --> I2 --> D1
+  I2 --> F6 --> A6
 ```
 
 ## 3. Diagrama de sequência
 
-Caminho feliz da divergência (CA01, CA02) e da pergunta (CA03), `alt` de dedupe/limite (CA04), `alt` de fallback local (CA05) e o erro 403 ao ignorar. Sem ponto e vírgula nas mensagens.
-
 ```mermaid
 sequenceDiagram
   autonumber
-  participant DE as DomainEvents (AFTER_COMMIT)
-  participant DV as DivergenceService (ws-application)
-  participant AQ as AiQuestionService (ws-application)
+  actor U as Usuário
+  participant N as Next.js (App Router)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
   participant AI as AiEngine
+  participant R as Repository/MySQL
+  participant S3 as S3
   participant OS as OpenSearch
-  participant DB as Repository/MySQL
-  participant CS as Cassandra
-  participant R as Redis
-  participant N as Next.js (App Router) /decia/[id]
-  actor U as Usuário (grupo / admin)
-  participant C as DeciaSessionController (ws-web)
+  participant EV as DomainEvents (AFTER_COMMIT)
+  participant GW as Google Workspace / Microsoft 365
 
-  DE->>DV: MessageClassified(sessionId, messageId, label=DIVERGENCIA, confidence 0.82)
-  DV->>DB: SELECT divergences WHERE session_id AND status=ABERTA (mesmas partes/base?)
-  alt já existe divergência ABERTA equivalente (CA04)
-    DV->>DV: dedupe → nada a criar
-  else nova divergência (CA01)
-    DV->>CS: SELECT messages_by_session (mensagem + réplicas recentes)
-    DV->>AI: text(DETECTAR_DIVERGENCIA, contexto mascarado, mode da sessão)
-    alt provedor externo disponível
-      AI-->>DV: AiOutcome {summary, parties[A, B], topic, confidence} (ai_inference_log OK)
-    else sem IA externa — sigilo, cota ou falha (CA05)
-      AI->>AI: LocalEngineAdapter → heurística de contraste entre pares de ARGUMENTO
-      AI-->>DV: AiOutcome local {summary genérico, parties} (ai_inference_log FALLBACK, aviso)
-    end
-    DV->>DB: BEGIN · INSERT divergences (ABERTA, origin_message_id, parties_json, ai_inference_id) · INSERT decision_trace_nodes (DIVERGENCIA) + edges (ORIGINOU) · INSERT domain_events DivergenceDetected · COMMIT (CA06)
-    DV->>CS: INSERT messages_by_session (authorKind=IA, "Divergência identificada entre A e B sobre X")
-    DV->>DB: INSERT session_messages_idx (mensagem IA)
-    DE->>CS: AFTER_COMMIT → notifications_by_user para participantes ativos (DIVERGENCIA_DETECTADA, groupKey sessão/hora) (CA02)
-    DE->>DB: AFTER_COMMIT → UPDATE divergences SET notified_at · INSERT audit_log DIVERGENCE_DETECTED (CA02, CA06)
-    DE->>R: AFTER_COMMIT → PUBLISH decia.session.{id} DivergenceDetected (CA02)
-    R-->>N: SSE → mensagem da IA no chat + item no painel lateral
-    N-->>U: sino de notificação e card laranja "Divergência"
-  end
-
-  DE->>AQ: MessageClassified(sessionId, messageId, label=RISCO)
-  AQ->>DB: SELECT COUNT ai_questions WHERE session_id AND status=ABERTA
-  alt já há 3 perguntas ABERTAS (CA04)
-    AQ->>DB: INSERT pipeline_jobs (PERGUNTA_ADIADA) → reprocessa quando uma pergunta fechar
-  else há vaga (CA03)
-    AQ->>OS: kNN ws-memory (tema + mensagem) → citações institucionais (RF33.CA03)
-    OS-->>AQ: até 3 Citation (ou vazio → "sem precedente")
-    AQ->>AI: text(FORMULAR_PERGUNTA, basisMessages, citations)
-    AI-->>AQ: AiOutcome {kind=RISCO, questionText} (ai_inference_log)
-    AQ->>DB: BEGIN · INSERT ai_questions (ABERTA, basis_message_ids, citations_json) · INSERT decision_trace_nodes (PERGUNTA) + edges (ORIGINOU) · INSERT domain_events AiQuestionAsked · COMMIT (CA06)
-    AQ->>CS: INSERT messages_by_session (authorKind=IA, pergunta endereçada ao grupo, com citações)
-    DE->>CS: AFTER_COMMIT → notifications_by_user (PERGUNTA_IA)
-    DE->>R: AFTER_COMMIT → PUBLISH AiQuestionAsked
-    R-->>N: SSE → card roxo "Pergunta da IA" + painel lateral
-  end
-
-  U->>N: abre o painel lateral
-  N->>C: GET /api/decia/sessions/{id}/divergences?status=ABERTA e /questions?status=ABERTA
-  C-->>N: 200 listas com status, partes, base e citações (CA06)
-
-  U->>N: admin marca a pergunta como ignorada com motivo
-  N->>C: POST /api/decia/sessions/{id}/questions/{qid}/ignore {reason}
-  C->>AQ: ignore(currentUser, sessionId, questionId, reason)
-  alt não é adminUserId (CA04)
-    AQ-->>C: 403 ACESSO_NEGADO
+  U->>N: substitui o arquivo principal em /tasks/{id}/edit
+  N->>C: PUT /api/tasks/{id}/attachments/{attId} (multipart, If-Match: version)
+  C->>S: AcervoService.replaceAttachment(id, attId, upload, actor, ctx)
+  S->>R: findById(task)
+  S->>S: AccessPolicy.canEdit(actor, task)
+  alt nem dono nem responsável
+    S-->>C: 403 ACESSO_NEGADO
     C-->>N: 403
-  else admin (CA04)
-    AQ->>DB: UPDATE ai_questions SET status=IGNORADA · INSERT audit_log AI_QUESTION_IGNORED
-    AQ-->>C: 200 AiQuestionView
-    C-->>N: 200 → painel atualizado, vaga liberada na fila
+  else versão divergente
+    S-->>C: 409 CONFLITO_VERSAO
+    C-->>N: 409 (recarregar e refazer)
+  else upload inválido
+    S->>S: UploadService.store → MIME real, limite, AntivirusPort.scan
+    S-->>C: 422 ARQUIVO_MALICIOSO | 415 | 413
+    C-->>N: erro
+  else ok
+    S->>S3: put(novo arquivo) + copy(antigo → snapshot/{versionNumber})
+    S->>R: insert task_versions (versionNumber+1, snapshotMediaId, changeSummary)
+    S->>R: update task_attachments (mediaObjectId, sha256, ocrStatus PENDENTE) + tasks.version+1
+    S->>R: insert audit_log TASK_UPDATED {fields: attachments}
+    S-->>C: AttachmentView
+    C-->>N: 200
+    EV->>R: enqueue PipelineJob THUMBNAIL, OCR (falha → REPROCESSAR + aviso no card)
+    EV->>OS: index ws-tasks
+    EV->>AI: QualityInsightService.afterSave(TASK, id)
+    AI->>AI: governança (accessClass, AiQuota, mascaramento) → INSIGHT hostRf RF8
+    AI->>R: insert insights (scope ACERVO, metricRefsJson, actionsJson) + ai_inference_log
+    N->>C: GET /api/insights?scope=ACERVO&scopeId={id}
+    C-->>N: 200 Insight ✦ "Por que isto?"
+  end
+
+  Note over U,GW: Item VINCULADO (Google/Microsoft)
+  U->>N: "Editar no provedor"
+  N->>C: GET /api/tasks/{id}/link/edit-url
+  C->>S: ExternalDocPort.editUrl(sourceRef, token OAuth do usuário)
+  S-->>C: URL do Google Docs / Word online
+  C-->>N: 200 → nova aba
+  GW->>C: POST /api/integrations/{provider}/changes (assinatura válida)
+  C->>S: AcervoService.syncLinkedVersion(taskId, externalRevisionId)
+  S->>GW: revision(ref) + thumbnail
+  S->>R: insert task_versions (externalRevisionId, syncedAt, thumbnailUrl)
+  S-->>C: 204
+  alt token OAuth revogado
+    S->>S: convertLinkToSnapshot (automático)
+    S->>S3: put(snapshot)
+    S->>R: update tasks.linkMode = COPIADO + aviso
+  end
+
+  Note over U,EV: Concluir
+  U->>N: "Concluir" na tarefa EM_USO
+  N->>C: POST /api/tasks/{id}/complete
+  C->>S: AcervoService.complete(id, actor, ctx)
+  alt BLOQUEADA
+    S-->>C: 422 TRANSICAO_INVALIDA (desbloquear antes)
+    C-->>N: 422
+  else ok
+    S->>R: TaskStateMachine → CONCLUIDA + task_state_log
+    S->>R: pendingProjectTasks(projectId)
+    opt era a última pendente
+      S->>R: ProjectStatusStateMachine → CONCLUIDO, percentComplete = 100, ProjectVersion(reason CONCLUSAO)
+    end
+    S-->>C: TaskView
+    C-->>N: 200 (Tag carimbo CONCLUÍDA)
+    EV->>OS: index ws-tasks, ws-projects
   end
 ```
 
 ## 4. Máquina de estados
 
-Entidades centrais: `Divergence.status` (ABERTA · EM_RESPOSTA · RESOLVIDA · SEM_CONSENSO) e `AiQuestion.status` (ABERTA · RESPONDIDA · IGNORADA). O RF8 cria ambas em `ABERTA`; as transições de resposta pertencem aos RF10 e RF16 e aparecem para contexto.
+Entidade central: **`TaskItem.state`** (`TaskState`) na porção acionada pela edição (concluir, bloqueios) e, em paralelo, o **`PipelineJob.status`** dos reprocessamentos de arquivo (CA02/CA03). `ProjectStatus` (CA04/CA05) está completo no RF5 §4; aqui só a chegada a `CONCLUIDO`.
 
 ```mermaid
 stateDiagram-v2
   direction LR
-
-  state "Divergence (divergences)" as DIV {
-    [*] --> ABERTA : MessageClassified DIVERGENCIA sem duplicata (RF8.CA01) — notifica o grupo (CA02)
-    ABERTA --> EM_RESPOSTA : participante habilitado responde (RF10 → DivergenceReply)
-    EM_RESPOSTA --> EM_RESPOSTA : novas réplicas
-    EM_RESPOSTA --> RESOLVIDA : IA marca reply.resolves=true (RF10) → +8 DECIA Points (RF42)
-    EM_RESPOSTA --> SEM_CONSENSO : resumo analítico fecha sem convergência (RF11)
-    ABERTA --> SEM_CONSENSO : sessão vai a EM_RESUMO sem resposta (RF11)
-    RESOLVIDA --> [*]
-    SEM_CONSENSO --> [*]
+  state "TaskState (edição)" as TS {
+    state "DISPONIVEL" as DIS
+    state "EM_USO" as USO
+    state "BLOQUEADA" as BLO
+    state "CONCLUIDA" as CON
+    state "ARQUIVADA" as ARQ
+    DIS --> CON : POST /api/tasks/{id}/complete (CA05) · TaskStateLog
+    USO --> CON : complete (CA05) [se última ProjectTask pendente → ProjectStatus CONCLUIDO, percentComplete 100]
+    BLO --> DIS : desbloquear (pré-requisito do complete)
+    BLO --> USO : desbloquear [em projeto ativo]
+    CON --> ARQ : arquivar
+    ARQ --> DIS : reabrir com justificativa (RF12.CA05)
+    DIS --> DIS : PATCH /api/tasks/{id} · anexos · versões (não mudam estado)
+    USO --> USO : PATCH /api/tasks/{id} · anexos · versões
   }
-
-  state "AiQuestion (ai_questions)" as AQS {
-    [*] --> Q_ABERTA : MessageClassified RISCO ou ponto crítico, menos de 3 abertas (RF8.CA03/CA04)
-    Q_ABERTA --> Q_RESPONDIDA : mensagem do grupo responde (RF16) — answeredWithEvidence → +4 DP (RF42)
-    Q_ABERTA --> Q_IGNORADA : admin ignora com motivo (RF8.CA04)
-    Q_RESPONDIDA --> [*]
-    Q_IGNORADA --> [*]
+  state "PipelineJob (THUMBNAIL · OCR · SYNC_EXTERNO)" as PJ {
+    state "PENDENTE" as PEN
+    state "RODANDO" as ROD
+    state "OK" as OK
+    state "FALHA" as FAL
+    state "REPROCESSAR" as REP
+    [*] --> PEN : AFTER_COMMIT do salvamento (CA02) ou webhook do provedor (CA03)
+    PEN --> ROD : worker pega o job
+    ROD --> OK : thumbnail/OCR gravados · TaskAttachment.ocrStatus = OK
+    ROD --> FAL : erro (attempts++)
+    FAL --> REP : attempts < máximo · aviso no card
+    REP --> ROD : nova tentativa agendada
+    FAL --> [*] : attempts esgotados · lastError
+    OK --> [*]
   }
-
-  note right of DIV
-    Dedupe: não nasce nova ABERTA para as mesmas
-    partes e mensagens-base. Nó DIVERGENCIA no
-    DecisionTrace, aresta ORIGINOU (RF8.CA06).
-  end note
-  note right of AQS
-    Fila: a 4ª pergunta espera uma vaga
-    (RESPONDIDA ou IGNORADA). Nó PERGUNTA no
-    DecisionTrace, citações da memória (RF33).
+  note right of CON
+    Transição inválida: 422 TRANSICAO_INVALIDA.
+    BLOQUEADA nunca vai direto a CONCLUIDA.
   end note
 ```
 
@@ -437,93 +483,76 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js (App Router)"]
-    FE1["app/(app)/decia/[sessionId]/page.tsx (mensagens IA laranja/roxa + painel lateral)"]
-    FE2["components/ui (DivergencePanel, AiQuestionCard, NotificationBell, CitationChip)"]
-    FE3["lib/decia/useSessionStream.ts (DivergenceDetected, AiQuestionAsked)"]
+  subgraph FE["Frontend · Next.js 15 App Router"]
+    PG["app/(shell)/tasks/[id]/edit · app/(shell)/projects/[id]/edit (Mesa, RF22)"]
+    UI["packages/ui: Input/Select/Textarea, TaskCard (attachment), TypeChip, Tag, Due, Spark ✦ (Insight), Dialog (versões), Toast, ErrorState (job REPROCESSAR)"]
+    BFF["app/bff/tasks/* · app/bff/projects/* · OAuth Google/Microsoft (cookies httpOnly)"]
+    PG --> UI
+    PG --> BFF
   end
-
-  subgraph WEB["ws-web"]
-    W1["DeciaSessionController /api/decia/sessions/{id}/divergences · /questions · /questions/{qid}/ignore"]
-    W2["SessionStreamController (SSE) · NotificationController /api/me/notifications"]
+  subgraph WSWEB["ws-web"]
+    SEC["SecurityConfig · SessionActiveFilter · CurrentUserArgumentResolver"]
+    TC["TaskEditController · ProjectEditController"]
+    WH["IntegrationWebhookController (assinatura HMAC do provedor, idempotência por revisionId)"]
+    GEH["GlobalExceptionHandler (403, 409, 413, 415, 422)"]
   end
-
-  subgraph APP["ws-application"]
-    S1["DivergenceService (listener MessageClassified)"]
-    S2["AiQuestionService (listener MessageClassified, fila de 3)"]
-    S3["AiEngine (DETECTAR_DIVERGENCIA, FORMULAR_PERGUNTA)"]
-    S4["MessageService.postAiMessage · DecisionTraceService"]
-    P1["AiProviderPort · MemorySearchPort · NotificationPort"]
-    P2["RealtimePublisherPort · DecisionTracePort · DomainEventPublisherPort"]
+  subgraph WSAPP["ws-application"]
+    ACV["acervo: AcervoService · UploadService · TaskStateMachine"]
+    PRJ["projects: ProjectEditService · ProjectStatusStateMachine"]
+    AIE["ai: QualityInsightService · AiEngine INSIGHT · AiQuota"]
+    SECU["security: AccessPolicy · Guard (real)"]
+    PORTS["ports: TaskRepositoryPort · ProjectRepositoryPort · MediaStoragePort · AntivirusPort · ExternalDocPort · PipelineJobPort · SearchIndexPort · AuditLogPort"]
+    EVT["events: TaskUpdated · TaskCompleted · ProjectUpdated (AFTER_COMMIT) → SideEffectRunner"]
+    ACV --> SECU
+    ACV --> PORTS
+    ACV --> EVT
+    PRJ --> SECU
+    PRJ --> PORTS
+    PRJ --> EVT
+    EVT --> AIE
   end
-
-  subgraph DOM["ws-domain"]
-    D1["Divergence · DivergenceReply · AiQuestion · MessageClassification · SessionMessage · Notification · DecisionTraceNode/Edge · AiInferenceLog"]
-    D2["MessageClass · AiCapability · NotificationType · TraceNodeType"]
-    D3["DivergenceRepository · AiQuestionRepository · SessionParticipantRepository"]
+  subgraph WSDOM["ws-domain"]
+    DOM["acervo: TaskItem · TaskAttachment · TaskVersion · TaskStateLog · projects: ProjectScheme · ProjectTask · ProjectVersion · platform: MediaObject · PipelineJob · ai: Insight · AiInferenceLog"]
   end
-
   subgraph INFRA["ws-infrastructure"]
-    I1["ai-providers (ClaudeProviderAdapter, GeminiProviderAdapter, LocalEngineAdapter: ContrastDetector + templates)"]
-    I2["search-opensearch (OpenSearchMemoryAdapter índice ws-memory)"]
-    I3["persistence-mysql (divergences, ai_questions, notifications, decision_trace_*, ai_inference_log, domain_events, audit_log)"]
-    I4["persistence-cassandra (messages_by_session, notifications_by_user, trace_by_entity)"]
-    I5["cache-redis (RedisRealtimePublisher, RedisAiQuota, RedisCircuitBreaker)"]
-    I6["platform (OutboxEventPublisher, NotificationDispatcher, AuditLogWriter)"]
+    MY["persistence-mysql: Jpa*Repository · pipeline_jobs"]
+    S3["storage-s3: arquivos, snapshots de versão, thumbnails"]
+    OSE["search-opensearch: ws-tasks · ws-projects"]
+    AIP["ai-providers: Claude → Gemini → LocalEngine"]
+    PLT["platform: GoogleDriveAdapter · MicrosoftGraphAdapter (webhooks) · AntivirusAdapter · OcrAdapter · workers de PipelineJob"]
+  end
+  subgraph EXT["Externos"]
+    GW["Google Workspace (Docs/Sheets, Drive changes)"]
+    M365["Microsoft 365 (Word/Excel online, Graph subscriptions)"]
+    CL["Claude · Gemini"]
   end
 
-  subgraph EXT["Serviços externos"]
-    X1["Claude (Anthropic API)"]
-    X2["Gemini (Google AI)"]
-  end
-
-  MY[("MySQL 8")]
-  CA[("Cassandra")]
-  RD[("Redis")]
-  OSB[("OpenSearch")]
-
-  FE1 --> FE2
-  FE1 --> FE3
-  FE1 -->|HTTPS/JSON| W1
-  FE3 -->|SSE| W2
-  W1 --> S1
-  W1 --> S2
-  S1 --> S3
-  S2 --> S3
-  S1 --> S4
-  S2 --> S4
-  S1 --> P1
-  S2 --> P1
-  S1 --> P2
-  S2 --> P2
-  S1 --> D1
-  S2 --> D1
-  S1 --> D3
-  S2 --> D3
-  I1 -.->|implementa| P1
-  I2 -.->|implementa| P1
-  I4 -.->|implementa| P1
-  I5 -.->|implementa| P2
-  I3 -.->|implementa| P2
-  I6 -.->|implementa| P2
-  I1 --> X1
-  I1 --> X2
-  W2 --> I5
-  D3 --> I3
-  I3 --> MY
-  I4 --> CA
-  I5 --> RD
-  I2 --> OSB
-  BOOT["ws-bootstrap (limiar de confiança 0,6, máx. 3 perguntas abertas, flags ai.provider.*, opensearch.enabled)"] -.-> INFRA
+  BFF -->|"REST JSON"| SEC --> TC --> ACV
+  TC --> PRJ
+  GW -->|"webhook"| WH --> ACV
+  M365 -->|"webhook"| WH
+  TC --> GEH
+  MY -.implementa.-> PORTS
+  S3 -.implementa.-> PORTS
+  OSE -.implementa.-> PORTS
+  PLT -.implementa.-> PORTS
+  AIP -.implementa.-> AIE
+  ACV --> DOM
+  PLT --> GW
+  PLT --> M365
+  AIP --> CL
+  MY --> DB[("MySQL 8.4")]
+  S3 --> MINIO[("S3 / MinIO")]
+  OSE --> OSX[("OpenSearch 2.19")]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) |
-|---|---|---|---|---|---|
-| RF8.CA01 | `DivergenceService.onMessageClassified/detect`, `Divergence.originMessageId/summary/partiesJson/detectedByAi`, `AiEngine` (DETECTAR_DIVERGENCIA), `MessageService.postAiMessage` | `C0`, `C1`, `C2`, `C4`, `C5`, `C6` | 1, 5–7, 11–13 | `[*] → ABERTA` (Divergence) | `S1`, `S3`, `S4`, `I3 divergences`, `I4 messages_by_session` |
-| RF8.CA02 | `NotificationPort.notifyGroup`, `Notification.groupKey/category DECIA`, `Divergence.notifiedAt`, `RealtimePublisherPort` | `C7`, `B1`, `A1` | 14–18 | nota em `ABERTA` | `I4 notifications_by_user`, `I6 NotificationDispatcher`, `I5`, `W2`, `FE2 NotificationBell` |
-| RF8.CA03 | `AiQuestionService.ask`, `AiQuestion.kind/questionText/basisMessageIds/citationsJson`, `MemorySearchPort`/`OpenSearchMemoryAdapter`, `AiEngine` (FORMULAR_PERGUNTA) | `C9`, `C11`–`C14` | 19, 24–32 | `[*] → Q_ABERTA` | `S2`, `I2 search-opensearch`, `FE2 AiQuestionCard/CitationChip` |
-| RF8.CA04 | `DivergenceService.alreadyOpen`, `AiQuestionService.openCount/ignore`, `AiQuestion.status IGNORADA` | `C2` → `C3`, `C9` → `C10`, `C17` → `E403`, `C18` → `E422`, `C19` | 2–4 (dedupe), 20–23 (fila), 36–44 (ignorar, 403) | `Q_ABERTA → Q_IGNORADA`, nota da fila | `W1 /ignore`, `BOOT` (limiares) |
-| RF8.CA05 | `AiEngine` cadeia, `LocalEngineAdapter.divergenceHeuristic/questionTemplates`, `AiInferenceLog.fallbackUsed/result` | `I1`–`I6` | 8–10 (`else sem IA externa` → heurística local) | — | `I1 ai-providers`, `I5 RedisCircuitBreaker/AiQuota`, `X1`, `X2` |
-| RF8.CA06 | `DecisionTracePort`, `DecisionTraceNode DIVERGENCIA/PERGUNTA`, `DecisionTraceEdge ORIGINOU`, `DivergenceReply`, `AiQuestion.answeredByMessageId`, `AuditLog` | `C8`, `C15`, `A3`, `A4`, `B2`, `A20` | 11, 15, 29, 33–35 | `ABERTA → EM_RESPOSTA → RESOLVIDA` (RF10), `Q_ABERTA → Q_RESPONDIDA` (RF16) | `S4 DecisionTraceService`, `I3 decision_trace_*`, `I4 trace_by_entity`, `FE2 DivergencePanel` |
+| CA | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) | Situação |
+|---|---|---|---|---|---|---|
+| RF8.CA01 | `TaskEditController.update`, `AcervoService.update`, `AccessPolicy.canEdit`, `TaskItem.version`, `SearchIndexPort` | `A2`→`F2`→`S1`→`S5`, `E403`, `E422`, `E409V` | 4–9 (mesmo guard e versão), 22 | `DIS`→`DIS`, `USO`→`USO` | `TC`, `ACV`, `SECU`, `OSE` | planejado |
+| RF8.CA02 | `AcervoService.addAttachment/replaceAttachment`, `UploadService`, `AntivirusPort`, `TaskVersion`, `PipelineJob` | `A3`→`F3`→`T1`→`T3`→`EV`, `E422M` | 1–3, 10–21 | `PJ` inteiro | `S3`, `PLT` (antivírus, OCR), `UI` (`ErrorState`) | planejado |
+| RF8.CA03 | `ExternalDocPort.editUrl/watch/snapshot/revision`, `AcervoService.syncLinkedVersion/convertLinkToSnapshot`, `IntegrationWebhookController`, `LinkMode` | `A4`→`F4`→`L1`→`L2`/`L3` | 27–40 | `PEN` por webhook (SYNC_EXTERNO) | `WH`, `PLT`, `GW`, `M365`, `BFF` (OAuth) | planejado (RF20.CA07) |
+| RF8.CA04 | `ProjectEditService.update/isStructural`, `ProjectVersion`, `ProjectStatusStateMachine` | `F2`→`P1`→`P2`→`P3`/`P4`, `E409P` | — (mesmo padrão de 4–9) | `ProjectStatus` em RF5 §4, nota de `CON` | `PRJ`, `UI` (RF22) | planejado (RF22.CA02/CA06) |
+| RF8.CA05 | `AcervoService.complete`, `TaskStateMachine`, `ProjectEditService.completeIfAllDone`, `ProjectRepositoryPort.pendingProjectTasks` | `A5`→`F5`→`C1`→`C2`→`C3`, `E422T` | 41–52 | `DIS`→`CON`, `USO`→`CON`, `BLO`→`DIS` | `ACV`, `PRJ` | planejado |
+| RF8.CA06 | `QualityInsightService.afterSave`, `AiEngine` (INSIGHT), `Insight`, `AiInferenceLog` | `EV`→`I1`→`I2`→`F6`→`A6` | 23–26 | — | `AIE`, `AIP`, `UI` (`Spark`) | planejado (RF43) |

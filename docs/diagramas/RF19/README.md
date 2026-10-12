@@ -1,474 +1,391 @@
-# RF19 — Exibir o perfil do usuário (Portfólio de trabalho) com tudo o que ele criou no Work Station, em sub-abas, incluindo o perfil deliberativo gerado pela IA
-**HU:** HU19 · **Sprint (board Work Station):** 4 · **Equivalente FAI:** RF6 Perfil Lookbook (+ RF17 perfil de outros) · **Aba/rota:** Meu perfil (`/profile`), perfil de outros em `/u/[username]`
-**Critérios de aceite cobertos:** RF19.CA01 · RF19.CA02 · RF19.CA03 · RF19.CA04 · RF19.CA05 · RF19.CA06 · RF19.CA07
+# RF19 — Curtir, comentar, salvar, compartilhar, retornar, atribuir e remixar tarefas, esquemas de projeto e planos anuais (interações sociais)
+**HU:** HU19 · **Sprint (board Work Station):** a confirmar (card renomeado em 2026-10-02; origem `_anterior/RF26` = Sprint 4, "HU26 / RF26 Interações sociais"; a HU19 do Product Backlog remete a "RF26 — critérios no card RF26") · **Equivalente FAI:** RF19 Interações sociais (alvo polimórfico PIECE/SCHEME/DNA) · **Aba/rota:** ações inline em todos os cards (Acervo RF6, Projetos, Planos Anuais RF24, Mural RF27, Buscar RF17, perfil RF16) · **API:** `/api/interactions/{type}/{id}/reactions|comments|saves|shares|remixes|counters`
+**Critérios de aceite cobertos:** RF26.CA01 · RF26.CA02 · RF26.CA03 · RF26.CA04 · RF26.CA05 · RF26.CA06 · RF26.CA07 · RF26.CA08 · RF26.CA09 — citados como estão escritos no card (**corpo do card = antigo RF26**, ver `RENUMERACAO.md`). As interações **retornar** e **atribuir** constam só no título, sem CA no corpo: estão modeladas no **RF18** (CA03–CA06) e aqui aparecem só como remissão. Todas as classes do RF são **(planejado)**; reais: `Guard`, `AuditLogPort`, `SecurityConfig`, `RedisAdaptersConfig`, `CassandraAdaptersConfig`.
 
-O perfil é o **registro de tudo que o empregado produziu desde que entrou no sistema**: cabeçalho (avatar, nome, cargo, empresa, departamento, contadores e, se o dono permitir, o Hype Score do Perfil — RF45) e **15 sub-abas**. As sub-abas 1–5 são públicas (respeitando a visibilidade de cada item); as 6–15 só aparecem para o dono (*self*). Perfis EMPRESA e CHEFE DE DEPARTAMENTO ganham sub-abas institucionais (RF28). O RF19 **lê** entidades de quase todos os contextos; a única escrita própria é o feedback da *Tarefa do Dia* (sub-aba 9, RF44).
+> **HU19** — COMO usuário autenticado POSSO curtir, reagir, comentar, salvar, compartilhar e remixar tarefas, esquemas de projeto e planos anuais PARA colaborar, dar retorno de qualidade e reaproveitar o trabalho dos colegas.
 
-| # | Sub-aba | Visível para | Entidades lidas | RF fonte |
-|---|---|---|---|---|
-| 1 | Acervo de Tarefas | todos | `TaskItem` | RF41 |
-| 2 | Meus Projetos | todos | `ProjectScheme` | RF21/RF22 |
-| 3 | Programas & Agrupamentos | todos | `Grouping`, `GroupingItem` | RF25 |
-| 4 | Decisões | todos | `FinalDecision`, `DecisionTraceNode` | RF29 |
-| 5 | Perfil deliberativo (resumo) | todos | `DeliberativeProfile.publicIndicatorsJson`, `badgesJson` | RF43 |
-| 6 | Meus Planos Anuais / Trilhas | dono | `AnnualPlan`, `PlanAxis` | RF24 |
-| 7 | Projetos salvos | dono | `SavedItem` (PROJECT) | RF26 |
-| 8 | Tarefas salvas | dono | `SavedItem` (TASK) | RF26 |
-| 9 | Tarefa do Dia | dono | `DailyTask`, `WeekPlan`, `EfficiencyScoreSnapshot` | RF44 |
-| 10 | Kits de Processo | dono | `ProcessKit`, `KitItem` | RF21 |
-| 11 | Meus modelos oferecidos | dono | `ModelOffer` | RF40 |
-| 12 | Meus Reconhecimentos e Chancelas | dono | `Recognition`, `SealBond` | RF35/RF39 |
-| 13 | DECIA Points | dono | `DeciaPointsLedgerEntry`, `StoreItem` | RF42 |
-| 14 | Hype Score do Perfil | dono | `ProfileHypeScore`, `HypeBand`, `User.hypeVisibility` | RF45 |
-| 15 | Perfil deliberativo (completo) | dono | `DeliberativeProfile`, `Insight` | RF43 |
+Alvos: `TargetType` TASK · PROJECT · PLAN (TAXONOMIA §8). Entidades: `Reaction` (CURTIR + 4 reações qualitativas), `Comment` (thread, menções), `SavedItem`, `Share` (MURAL · SESSAO_DECIA · LINK_EXTERNO), `Remix` (cópia com crédito). Contadores desnormalizados nas entidades-alvo (`likesCount` … `remixesCount`) com Redis para tempo quase real; toda interação gera `Notification` agrupada por hora e alimenta o `DeliberativeProfile` (objetivo 2).
+
+## Critérios de aceite (card RF19, escritos como RF26)
+
+| CA | Enunciado |
+|---|---|
+| **RF26.CA01** | Curtir/descurtir tarefa, projeto ou plano (1 reação por usuário e alvo, índice único). |
+| **RF26.CA02** | Reações qualitativas: ÚTIL, BEM FUNDAMENTADO, INOVADOR, CONFORME (substituem TREND/ELEGANTE/CRIATIVO). |
+| **RF26.CA03** | Comentários com resposta (thread), edição, exclusão pelo autor ou pelo chefe do departamento; menções @usuário geram notificação. |
+| **RF26.CA04** | Salvar em *Tarefas salvas* / *Projetos salvos* com marcador de favorito. |
+| **RF26.CA05** | Compartilhar: no **Mural** da empresa (RF27), **dentro de uma sessão DECIA** (RF29) ou por **link externo** com imagem exportada (capa + resumo) e controle de expiração. |
+| **RF26.CA06** | **Remixar** um projeto ou tarefa pública: cria cópia com `originalId` e crédito visível; o autor original vê "remixado por N pessoas". |
+| **RF26.CA07** | Contadores (curtidas, comentários, salvos, compartilhamentos, remixes) em tempo quase real nos cards e no perfil. |
+| **RF26.CA08** | Interações respeitam a visibilidade: item PRIVADO não recebe interações de terceiros; item DEPARTAMENTO só de membros do departamento. |
+| **RF26.CA09** | Toda interação gera notificação ao dono (agrupada por hora) e alimenta o perfil deliberativo (objetivo 2) — reações BEM FUNDAMENTADO e CONFORME pesam na métrica de qualidade. |
 
 ## 1. Diagrama de classes
 
 ```mermaid
 classDiagram
-direction LR
+  direction LR
 
-namespace ws_domain_identidade {
-  class User {
-    <<entity>>
-    +id: UUID
-    +username: String
-    +fullName: String
-    +displayName: String
-    +jobTitle: String
-    +profileType: ProfileType
-    +companyId: UUID
-    +departmentId: UUID
-    +avatarUrl: String
-    +coverUrl: String
-    +bio: String
-    +verified: boolean
-    +hypeVisibility: HypeVisibility
-    +rankingOptOut: boolean
-    .. +20 campos ..
+  class InteractionController {
+    <<controller>>
+    +react(type, id, ReactionRequest, CurrentUser, ctx) CountersView
+    +unreact(type, id, reactionType, CurrentUser) CountersView
+    +listComments(type, id, page) Page~CommentView~
+    +comment(type, id, CommentRequest, CurrentUser, ctx) CommentView
+    +editComment(commentId, CommentRequest, CurrentUser) CommentView
+    +deleteComment(commentId, CurrentUser, ctx) void
+    +save(type, id, SaveRequest, CurrentUser) CountersView
+    +unsave(type, id, CurrentUser) CountersView
+    +share(type, id, ShareRequest, CurrentUser, ctx) ShareView
+    +remix(type, id, CurrentUser, ctx) RemixView
+    +counters(type, id) CountersView
   }
-  class Company {
-    <<entity>>
-    +id: UUID
-    +legalName: String
-    +slug: String
-    +logoUrl: String
+  class InteractionService {
+    <<service>>
+    +react(actor, target, ReactionType, ctx) Counters
+    +unreact(actor, target, ReactionType) Counters
+    +comment(actor, target, contentMd, parentId, ctx) Comment
+    +editComment(actor, commentId, contentMd) Comment
+    +deleteComment(actor, commentId, ctx) void
+    +save(actor, target, favorite) Counters
+    +unsave(actor, target) Counters
+    +share(actor, target, ShareChannel, opts, ctx) Share
+    +remix(actor, target, ctx) Remix
   }
-  class Department {
-    <<entity>>
-    +id: UUID
-    +companyId: UUID
-    +name: String
-    +acronym: String
-    +color: String
-    +monogram: String
-    +headUserId: UUID
+  class CounterService {
+    <<service>>
+    +increment(target, field) long
+    +decrement(target, field) long
+    +counters(target) Counters
+    +flushToMysql() void
   }
-  class UserPreferences {
-    <<entity>>
-    +language: UiLanguage
-    +theme: ThemeMode
-    +timezone: String
+  class MentionParser {
+    <<service>>
+    +parse(contentMd) List~UUID~
   }
-}
+  class RemixService {
+    <<service>>
+    +copyTask(source, actor) TaskItem
+    +copyProject(source, actor) ProjectScheme
+  }
+  class ShareImageService {
+    <<service>>
+    +render(target) MediaObject
+  }
+  class AccessPolicy {
+    <<service>>
+    +canInteract(viewer, target) boolean
+    +canModerate(viewer, comment) boolean
+    +isPublic(target) boolean
+  }
+  class ReactionRepositoryPort {
+    <<port>>
+    +upsert(Reaction) Reaction
+    +delete(actorId, target, type) void
+  }
+  class CommentRepositoryPort {
+    <<port>>
+    +save(Comment) Comment
+    +findByTarget(target, page) Page
+  }
+  class SavedItemRepositoryPort {
+    <<port>>
+    +upsert(SavedItem) SavedItem
+    +delete(userId, target) void
+  }
+  class ShareRepositoryPort {
+    <<port>>
+    +save(Share) Share
+    +findByToken(token) Optional
+  }
+  class RemixRepositoryPort {
+    <<port>>
+    +save(Remix) Remix
+    +countBySource(sourceId) long
+  }
+  class CounterCachePort {
+    <<port>>
+    +incr(key) long
+    +decr(key) long
+    +get(keys) Map
+  }
+  class NotificationPort {
+    <<port>>
+    +notify(Notification) void
+  }
+  class MuralPort {
+    <<port>>
+    +publish(MuralEntry) void
+  }
+  class SessionAttachmentPort {
+    <<port>>
+    +attach(sessionId, target, actor) MessageAttachment
+  }
+  class DeliberativeProfilePort {
+    <<port>>
+    +recordInteraction(ownerId, ReactionType) void
+  }
 
-namespace ws_domain_portfolio {
-  class TaskItem {
+  class Reaction {
     <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +title: String
-    +type: TaskType
-    +category: TaskCategory
-    +state: TaskState
-    +visibility: Visibility
-    +thumbnailUrl: String
-    .. +45 campos ..
+    +UUID id
+    +UUID actorId
+    +TargetType targetType
+    +UUID targetId
+    +ReactionType reactionType
+    +Instant at
+    +int actorHypeAtTime
+    +String ignoredReason
   }
-  class ProjectScheme {
+  class Comment {
     <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +title: String
-    +status: ProjectStatus
-    +currentPhase: ProjectPhase
-    +exerciseYear: int
-    +departmentId: UUID
-    +visibility: Visibility
-    .. +30 campos ..
-  }
-  class AnnualPlan {
-    <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +scope: PlanScope
-    +exerciseYear: int
-    +title: String
-    +visibility: Visibility
-  }
-  class Grouping {
-    <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +type: GroupingType
-    +label: String
-    +status: String
-  }
-  class FinalDecision {
-    <<entity>>
-    +id: UUID
-    +sessionId: UUID
-    +decisionText: String
-    +status: DecisionStatus
-    +stampJson: JSON
-  }
-  class DecisionTraceNode {
-    <<entity>>
-    +id: UUID
-    +sessionId: UUID
-    +nodeType: TraceNodeType
-    +classLabel: String
-    +actorId: UUID
+    +UUID id
+    +UUID authorId
+    +TargetType targetType
+    +UUID targetId
+    +UUID parentCommentId
+    +String contentMd
+    +JSON mentionsJson
+    +Instant editedAt
+    +UUID deletedBy
+    +boolean active
   }
   class SavedItem {
     <<entity>>
-    +id: UUID
-    +userId: UUID
-    +targetType: TargetType
-    +targetId: UUID
-    +favorite: boolean
+    +UUID id
+    +UUID userId
+    +TargetType targetType
+    +UUID targetId
+    +boolean favorite
+    +Instant savedAt
   }
-  class Follow {
+  class Share {
     <<entity>>
-    +id: UUID
-    +followerId: UUID
-    +targetType: String
-    +targetId: UUID
+    +UUID id
+    +UUID actorId
+    +TargetType targetType
+    +UUID targetId
+    +ShareChannel channel
+    +UUID sessionId
+    +String externalToken
+    +Instant expiresAt
+    +UUID imageMediaId
   }
-  class ProcessKit {
+  class Remix {
     <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +name: String
-    +processTag: ProcessTag
+    +UUID id
+    +UUID actorId
+    +TargetType sourceType
+    +UUID sourceId
+    +TargetType resultType
+    +UUID resultId
+    +UUID modelOfferId
+    +UUID ledgerEntryId
+    +Instant at
   }
-  class ModelOffer {
+  class TaskItem {
     <<entity>>
-    +id: UUID
-    +ownerId: UUID
-    +targetType: String
-    +pricePoints: int
-    +status: String
+    +UUID id
+    +UUID ownerId
+    +UUID departmentId
+    +Visibility visibility
+    +UUID originalTaskId
+    +long likesCount
+    +long commentsCount
+    +long savesCount
+    +long sharesCount
+    +long remixesCount
   }
-  class Recognition {
+  class ProjectScheme {
     <<entity>>
-    +id: UUID
-    +recipientUserId: UUID
-    +name: String
-    +medalArtJson: JSON
+    +UUID id
+    +UUID ownerId
+    +Visibility visibility
+    +UUID originalProjectId
+    +SchemeOrigin origin
+    +long likesCount
+    +long remixesCount
   }
-  class SealBond {
+  class AnnualPlan {
     <<entity>>
-    +id: UUID
-    +sealId: UUID
-    +targetOwnerId: UUID
-    +status: SealBondStatus
+    +UUID id
+    +UUID ownerId
+    +Visibility visibility
+    +long likesCount
   }
-  class DeciaPointsLedgerEntry {
+  class Notification {
     <<entity>>
-    +id: UUID
-    +userId: UUID
-    +delta: int
-    +eventCode: PointsEvent
-    +status: String
+    +UUID recipientId
+    +UUID actorId
+    +NotificationType type
+    +String category
+    +String groupKey
   }
-}
-
-namespace ws_domain_reputacao {
-  class DailyTask {
+  class MuralEntry {
     <<entity>>
-    +id: UUID
-    +userId: UUID
-    +taskDate: LocalDate
-    +taskId: UUID
-    +suggestedByAi: boolean
-    +priorityIndexJson: JSON
-    +hsePredictedJson: JSON
-    +hseRealizedJson: JSON
-    +feedback: DailyFeedback
-    +feedbackAt: Instant
-    +actualHours: BigDecimal
-    +weekPlanDayId: UUID
-    +aiInferenceId: UUID
+    +String kind
+    +UUID companyId
+    +String targetType
+    +UUID targetId
   }
-  class WeekPlan {
+  class MessageAttachment {
     <<entity>>
-    +id: UUID
-    +userId: UUID
-    +weekStart: LocalDate
-    +streak: int
-    +closingHse: BigDecimal
-  }
-  class EfficiencyScoreSnapshot {
-    <<entity>>
-    +userId: UUID
-    +date: LocalDate
-    +hse: BigDecimal
-    +movingAvg7: BigDecimal
-  }
-  class ProfileHypeScore {
-    <<entity>>
-    +userId: UUID
-    +scoreDate: LocalDate
-    +score: int
-    +bandCode: String
-    +blocksJson: JSON
-    +percentileInDept: BigDecimal
-    +suggestionsJson: JSON
-  }
-  class HypeBand {
-    <<entity>>
-    +companyId: UUID
-    +min: int
-    +max: int
-    +name: String
+    +UUID messageId
+    +String targetType
+    +UUID targetId
+    +boolean usedInDecision
   }
   class DeliberativeProfile {
     <<entity>>
-    +id: UUID
-    +userId: UUID
-    +periodKey: String
-    +clarity: BigDecimal
-    +evidenceUse: BigDecimal
-    +consistency: BigDecimal
-    +completeness: BigDecimal
-    +reuse: BigDecimal
-    +deltaJson: JSON
-    +badgesJson: JSON
-    +publicIndicatorsJson: JSON
-    +aiInsightsJson: JSON
+    +UUID userId
+    +BigDecimal evidenceUse
+    +BigDecimal consistency
+    +JSON badgesJson
   }
-}
-
-namespace ws_domain_enums {
-  class ProfileType {
+  class ReactionType {
     <<enum>>
-    EMPREGADO
-    EMPRESA
-    CHEFE_DEPARTAMENTO
+    CURTIR
+    UTIL
+    BEM_FUNDAMENTADO
+    INOVADOR
+    CONFORME
   }
-  class HypeVisibility {
+  class ShareChannel {
     <<enum>>
-    PUBLICO
-    EMPRESA
-    SO_EU
+    MURAL
+    SESSAO_DECIA
+    LINK_EXTERNO
   }
-  class Visibility {
+  class TargetType {
     <<enum>>
-    PRIVADA
-    DEPARTAMENTO
-    EMPRESA
-    PUBLICA
+    TASK
+    PROJECT
+    PLAN
+    KIT
+    PROJECT_TASK
+    MESSAGE
+    RECOGNITION
   }
-  class DailyFeedback {
+  class NotificationType {
     <<enum>>
-    CONCLUI
-    ADIEI
-    BLOQUEADA
-    DELEGUEI
+    REACAO
+    COMENTARIO
+    MENCAO
+    REMIX
   }
-  class UiLanguage {
-    <<enum>>
-    PT_BR
-    EN
-    ES
-  }
-}
 
-namespace ws_application {
-  class ProfileService {
-    <<service>>
-    +loadHeader(viewerId, username) ProfileHeader
-    +listTabs(viewerId, ownerId) List~ProfileTab~
-    +loadTab(viewerId, ownerId, tab, filters, page) Page
-    +canSeeHype(viewer, owner) boolean
-    +visibilityFilter(viewer, owner) Visibility[]
-  }
-  class DailyTaskService {
-    <<service>>
-    +today(userId) DailyTask
-    +registerFeedback(userId, date, feedback, actualHours) DailyTask
-    +weekPlan(userId) WeekPlan
-  }
-  class ReputationService {
-    <<service>>
-    +deliberativeProfile(userId, periodKey) DeliberativeProfile
-    +monthlySeries(userId) List~Point~
-    +hypeScore(userId) ProfileHypeScore
-  }
-  class SocialService {
-    <<service>>
-    +counters(ownerId) Counters
-    +savedItems(userId, targetType, page) Page
-  }
-  class AiEngine {
-    <<service>>
-    +infer(capability, input) AiResult
-  }
-  class CachePort {
-    <<port>>
-    +getCounters(ownerId) Counters
-    +putCounters(ownerId, counters, ttl)
-  }
-}
-
-namespace ws_web {
-  class ProfileController {
-    <<controller>>
-    +GET_api_profile_me()
-    +GET_api_users_username(username)
-    +GET_api_users_username_tabs_tab(username, tab, query)
-    +POST_api_daily_tasks_today_feedback(body)
-  }
-}
-
-namespace ws_infrastructure {
-  class RedisCacheAdapter {
-    <<adapter>>
-  }
-  class ClaudeGeminiAdapter {
-    <<adapter>>
-  }
-}
-
-User "1" --> "0..1" Company : companyId
-User "1" --> "0..1" Department : departmentId
-User "1" --> "1" UserPreferences : prefs
-User --> ProfileType
-User --> HypeVisibility
-TaskItem "*" --> "1" User : ownerId
-ProjectScheme "*" --> "1" User : ownerId
-AnnualPlan "*" --> "1" User : ownerId
-Grouping "*" --> "1" User : ownerId
-SavedItem "*" --> "1" User : userId
-Follow "*" --> "1" User : followerId
-ProcessKit "*" --> "1" User : ownerId
-ModelOffer "*" --> "1" User : ownerId
-Recognition "*" --> "1" User : recipientUserId
-SealBond "*" --> "1" User : targetOwnerId
-DeciaPointsLedgerEntry "*" --> "1" User : userId
-DecisionTraceNode "*" --> "1" FinalDecision : refId quando DECISAO
-DailyTask "*" --> "1" User : userId unico por taskDate
-DailyTask "*" --> "1" TaskItem : taskId
-DailyTask "*" --> "0..1" WeekPlan : weekPlanDayId
-DailyTask --> DailyFeedback
-EfficiencyScoreSnapshot "*" --> "1" User : userId
-ProfileHypeScore "*" --> "1" User : userId
-ProfileHypeScore --> HypeBand : bandCode
-DeliberativeProfile "*" --> "1" User : userId
-TaskItem --> Visibility
-ProjectScheme --> Visibility
-UserPreferences --> UiLanguage
-
-ProfileController ..> ProfileService
-ProfileController ..> DailyTaskService
-ProfileService ..> ReputationService
-ProfileService ..> SocialService
-ProfileService ..> CachePort
-DailyTaskService ..> AiEngine : TAREFA_DO_DIA e HSE
-ReputationService ..> AiEngine : HYPE_PERFIL e INSIGHT
-RedisCacheAdapter ..|> CachePort
-ClaudeGeminiAdapter ..> AiEngine : provider
-
-note for User "tabela users · o cabeçalho usa jobTitle, companyId, departmentId, hypeVisibility"
-note for DailyTask "tabela daily_tasks · índice único userId + taskDate (CA04)"
-note for DeliberativeProfile "tabela deliberative_profiles · deltaJson guarda a variação ▲▼ entre sessão atual e anterior (CA05)"
-note for ProfileService "15 sub-abas para o dono, 1–5 para terceiros, + institucionais para EMPRESA e CHEFE (CA01, CA02, CA06)"
+  InteractionController --> InteractionService
+  InteractionController --> CounterService
+  InteractionService --> AccessPolicy
+  InteractionService --> CounterService
+  InteractionService --> MentionParser
+  InteractionService --> RemixService
+  InteractionService --> ShareImageService
+  InteractionService --> ReactionRepositoryPort
+  InteractionService --> CommentRepositoryPort
+  InteractionService --> SavedItemRepositoryPort
+  InteractionService --> ShareRepositoryPort
+  InteractionService --> RemixRepositoryPort
+  InteractionService --> NotificationPort
+  InteractionService --> MuralPort
+  InteractionService --> SessionAttachmentPort
+  InteractionService --> DeliberativeProfilePort
+  CounterService --> CounterCachePort
+  Reaction --> ReactionType
+  Reaction --> TargetType
+  Share --> ShareChannel
+  Notification --> NotificationType
+  Reaction "0..*" --> "1" TaskItem : alvo TASK
+  Reaction "0..*" --> "1" ProjectScheme : alvo PROJECT
+  Reaction "0..*" --> "1" AnnualPlan : alvo PLAN
+  Comment "0..*" --> "0..1" Comment : parentCommentId (thread)
+  SavedItem "0..*" --> "1" TaskItem
+  Share "0..*" --> "0..1" MessageAttachment : SESSAO_DECIA
+  Share ..> MuralEntry : MURAL
+  Remix "1" --> "1" TaskItem : resultId (originalTaskId = sourceId)
+  Remix "1" --> "1" ProjectScheme : resultId (originalProjectId, origin REMIX)
+  InteractionService ..> Notification
+  InteractionService ..> DeliberativeProfile : BEM_FUNDAMENTADO e CONFORME pesam
+  note for Reaction "Único (actorId, targetType, targetId, reactionType = CURTIR). actorHypeAtTime: peso PageRank (RF45.CA04). ignoredReason: antifraude (RF45.CA03)."
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph LU["Usuário"]
-    U1["Abre /profile ou /u/[username]"]
-    U2["Escolhe sub-aba, filtros e página"]
-    U3["Sub-aba 9: registra feedback da Tarefa do Dia e esforço real"]
-    U4["Sub-aba 14: altera exibição do Hype Score PUBLICO / EMPRESA / SO_EU"]
+  subgraph ATOR["Usuário autenticado · Dono do alvo · Chefe (moderação)"]
+    A1["Abre a barra de interações de um card (tarefa, projeto ou plano)"]
+    A2["Curte ou reage (ÚTIL · BEM FUNDAMENTADO · INOVADOR · CONFORME)"]
+    A3["Comenta / responde na thread / edita / exclui · menciona @colega"]
+    A4["Salva (favorito) · Compartilha (Mural · sessão DECIA · link externo) · Remixa"]
+    A5["Dono recebe notificações agrupadas por hora e vê os contadores no perfil"]
+  end
+  subgraph FE["Next.js (App Router) · BFF"]
+    F1["Counters com valores do cache · Popover de reações · thread de comentários (Textarea com @menções)"]
+    F2["POST|DELETE /api/interactions/{type}/{id}/reactions · POST|PATCH|DELETE …/comments · POST|DELETE …/saves · POST …/shares · POST …/remixes · GET …/counters"]
+    F3["Link externo: página pública /s/{token} com imagem exportada (capa + resumo) até expiresAt"]
+  end
+  subgraph WEB["ws-web"]
+    W1["JWT + SessionActiveFilter + CurrentUserArgumentResolver"]
+    W2["InteractionController"]
+    E403["403 ACESSO_NEGADO (PRIVADA de terceiro · DEPARTAMENTO sem ser membro · EMPRESA de outra empresa)"]
+    E403M["403 ACESSO_NEGADO (editar/excluir comentário sem ser autor ou chefe)"]
+    E422["422 VALIDACAO (reação inválida · comentário vazio · canal inválido · expiração > 30 d)"]
+    E409["409 REMIX_INDISPONIVEL (alvo não público) · 410 LINK_EXPIRADO"]
+  end
+  subgraph APP["ws-application · InteractionService"]
+    S1["AccessPolicy.canInteract(ator, alvo): PRIVADA só dono · DEPARTAMENTO só membros · EMPRESA só mesma empresa · PUBLICA todos"]
+    S2{"pode interagir?"}
+    R1["react: upsert Reaction (único por ator+alvo para CURTIR; 1 por tipo qualitativo) · actorHypeAtTime · antifraude (auto-interação → ignoredReason)"]
+    C1["comment: MentionParser → mentionsJson · parentCommentId (thread) · editedAt na edição · deletedBy/active=false na exclusão (autor ou canModerate = chefe do departamento)"]
+    SV1["save: upsert SavedItem(favorite) · aparece em Tarefas salvas / Projetos salvos (RF6)"]
+    SH1{"canal?"}
+    SH2["MURAL: MuralPort.publish(MuralEntry COMPARTILHAMENTO) — exige visibility ≥ EMPRESA"]
+    SH3["SESSAO_DECIA: SessionAttachmentPort.attach → MessageAttachment (RF29.CA03, ≤ 5 por mensagem)"]
+    SH4["LINK_EXTERNO: externalToken + expiresAt + ShareImageService.render (capa + resumo) → S3"]
+    RX1{"alvo PUBLICA?"}
+    RX2["RemixService.copyTask/copyProject: cópia com originalTaskId/originalProjectId, origin REMIX, crédito visível · Remix(modelOfferId se veio do Balcão, ledgerEntryId RF40/RF42)"]
+    CT["CounterService: INCR/DECR no Redis → flush em lote para likesCount… no MySQL"]
+    EV["AFTER_COMMIT: Notification REACAO/COMENTARIO/MENCAO/REMIX ao dono (groupKey = hora) · DeliberativeProfilePort.recordInteraction (BEM_FUNDAMENTADO e CONFORME pesam) · 'remixado por N pessoas' no card do autor"]
+  end
+  subgraph PERS["Persistência"]
+    P1[("MySQL: reactions, comments, saved_items, shares, remixes, tasks/project_schemes/annual_plans (contadores), mural_entries, message_attachments, deliberative_profiles")]
+    P2[("Redis: counters:{type}:{id}:{field} · dedupe de notificação por hora")]
+    P3[("Cassandra: notifications_by_user · timeline_by_user")]
+    P4[("S3: imagem exportada do link externo")]
   end
 
-  subgraph LW["Web / BFF (Next.js App Router)"]
-    W1["Resolve locale pt-BR / en / es e layout responsivo"]
-    W2["Lê tab + filtros + page da URL e renderiza skeleton"]
-    W3["Atualiza a URL com tab e filtros ativos"]
-    W4["Renderiza cabeçalho e lista de sub-abas"]
-    W5["Renderiza gráfico de linha mensal e ▲▼"]
-  end
-
-  subgraph LA["ws-application"]
-    A1["ProfileService.loadHeader"]
-    A2{"viewer == dono?"}
-    A3["Sub-abas 1–15"]
-    A4["Sub-abas 1–5 somente"]
-    A5{"profileType do dono é EMPRESA ou CHEFE?"}
-    A6["Acrescenta sub-abas institucionais RF28"]
-    A7["visibilityFilter: PUBLICA, + EMPRESA se mesma empresa, + DEPARTAMENTO se membro, + PRIVADA se dono"]
-    A8{"canSeeHype? hypeVisibility x nível do viewer"}
-    A9["Cabeçalho com Hype Score"]
-    A10["Cabeçalho sem Hype Score"]
-    A11["ProfileService.loadTab com filtros e paginação"]
-    A12{"Sub-aba restrita e viewer não é dono?"}
-    A13["403 ACESSO_NEGADO"]
-    A14["DailyTaskService.registerFeedback"]
-    A15{"Já existe DailyTask para userId + taskDate?"}
-    A16["Atualiza feedback, actualHours e hseRealizedJson"]
-    A17["409 TAREFA_DO_DIA_DUPLICADA"]
-    A18["ReputationService.deliberativeProfile + monthlySeries"]
-  end
-
-  subgraph LI["IA (AiEngine)"]
-    I1["Calcula HSE realizado e registra feedback para a próxima sugestão TAREFA_DO_DIA"]
-    I2["Gera insights do perfil deliberativo e explica o Hype"]
-  end
-
-  subgraph LP["Persistência"]
-    P1[("MySQL: users, companies, departments")]
-    P2[("Redis: contadores do perfil, hype do dia")]
-    P3[("MySQL: tasks, project_schemes, annual_plans, groupings, saved_items, daily_tasks, deliberative_profiles, profile_hype_scores, ...")]
-    P4[("MySQL: daily_tasks UPSERT por userId + taskDate")]
-    P5[("MySQL: ai_inference_log")]
-  end
-
-  U1 --> W1 --> W2 --> A1
-  A1 --> P1
-  A1 --> P2
-  A1 --> A2
-  A2 -->|"sim"| A3
-  A2 -->|"não"| A4
-  A3 --> A5
-  A4 --> A5
-  A5 -->|"sim"| A6 --> A7
-  A5 -->|"não"| A7
-  A7 --> A8
-  A8 -->|"sim"| A9 --> W4
-  A8 -->|"não"| A10 --> W4
-  W4 --> U2
-  U2 --> W3 --> A11
-  A11 --> A12
-  A12 -->|"sim"| A13
-  A12 -->|"não"| P3
-  P3 --> W2
-  U3 --> A14 --> A15
-  A15 -->|"não, cria"| A16
-  A15 -->|"sim, mesma data já fechada"| A17
-  A16 --> P4
-  A16 --> I1
-  I1 --> P5
-  U4 --> A1
-  A11 -->|"sub-abas 5 e 15"| A18 --> I2 --> W5
-
-  classDef err fill:#ffe3e3,stroke:#c0392b,color:#5a1a12
-  class A13,A17 err
+  A1 --> F1 --> F2 --> W1 --> W2 --> S1 --> S2
+  S2 -->|"não"| E403
+  A2 --> F2
+  S2 -->|"reação"| R1 --> CT
+  A3 --> F2
+  S2 -->|"comentário"| C1 --> CT
+  C1 -->|"sem papel"| E403M
+  A4 --> F2
+  S2 -->|"salvar"| SV1 --> CT
+  S2 -->|"compartilhar"| SH1
+  SH1 -->|"MURAL"| SH2 --> CT
+  SH1 -->|"SESSAO_DECIA"| SH3 --> CT
+  SH1 -->|"LINK_EXTERNO"| SH4 --> P4
+  SH4 --> CT
+  SH4 --> F3
+  F3 -->|"expirado"| E409
+  S2 -->|"remixar"| RX1
+  RX1 -->|"não"| E409
+  RX1 -->|"sim"| RX2 --> CT
+  W2 -->|"payload inválido"| E422
+  CT --> P2
+  CT --> P1
+  R1 --> P1
+  C1 --> P1
+  SV1 --> P1
+  SH2 --> P1
+  SH3 --> P1
+  RX2 --> P1
+  CT --> EV --> P3
+  EV --> P1
+  EV --> A5
 ```
 
 ## 3. Diagrama de sequência
@@ -477,95 +394,137 @@ flowchart TD
 sequenceDiagram
   autonumber
   actor U as Usuário
-  participant NX as Next.js (App Router)
+  actor O as Dono do alvo
+  participant N as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
-  participant AI as AiEngine
-  participant DB as Repository/MySQL
-  participant R as Redis
+  participant R as Repository/MySQL
+  participant RD as Redis
+  participant CS as Cassandra
+  participant S3 as S3
+  participant EV as DomainEvents (AFTER_COMMIT)
 
-  U->>NX: GET /u/maria?tab=projetos&fase=ELABORACAO&page=2
-  NX->>NX: resolve locale (next-intl) e lê tab/filtros da URL (CA03, CA07)
-  NX->>C: GET /api/users/maria
-  C->>S: ProfileService.loadHeader(viewerId, "maria")
-  S->>DB: findByUsername + company + department
-  alt username inexistente
-    DB-->>S: vazio
-    S-->>C: 404 USUARIO_NAO_ENCONTRADO
-    C-->>NX: 404
-    NX-->>U: página "perfil não encontrado"
-  else encontrado
-    S->>R: GET counters:{ownerId} (tarefas, projetos, decisões, seguidores, DECIA Points)
-    R-->>S: contadores ou miss
-    opt miss no cache
-      S->>DB: COUNT tasks, project_schemes, final_decisions, follows, SUM decia_points_ledger
-      S->>R: SET counters:{ownerId} TTL 60s
-    end
-    S->>S: canSeeHype(viewer, owner) por hypeVisibility (RF45)
-    S->>S: listTabs: dono = 15, terceiro = 1–5, + institucionais se EMPRESA/CHEFE (CA01, CA02, CA06)
-    S-->>C: ProfileHeader + tabs
-    C-->>NX: 200 header
-  end
-
-  NX->>C: GET /api/users/maria/tabs/projetos?fase=ELABORACAO&page=2&size=20
-  C->>S: ProfileService.loadTab(viewerId, ownerId, PROJETOS, filters, page)
-  S->>S: visibilityFilter(viewer, owner) = PUBLICA + EMPRESA se mesma empresa
-  S->>DB: findProjects(ownerId, visibilityIn, currentPhase, page)
-  DB-->>S: Page de ProjectScheme
-  S-->>C: 200 Page {items, total, page}
-  C-->>NX: 200
-  NX-->>U: grade paginada, URL com tab e filtros
-
-  U->>NX: sub-aba Tarefa do Dia: feedback CONCLUI, 3h reais
-  NX->>C: POST /api/daily-tasks/today/feedback {feedback, actualHours}
-  C->>S: DailyTaskService.registerFeedback(userId, hoje, CONCLUI, 3)
-  S->>DB: SELECT daily_tasks WHERE userId AND taskDate = hoje
-  alt sub-aba restrita acessada por terceiro
+  U->>N: reage BEM_FUNDAMENTADO num projeto
+  N->>C: POST /api/interactions/PROJECT/{id}/reactions {BEM_FUNDAMENTADO}
+  C->>S: InteractionService.react(actor, target, type, ctx)
+  S->>R: project_schemes.findById
+  S->>S: AccessPolicy.canInteract(actor, project)
+  alt PRIVADA de terceiro ou DEPARTAMENTO sem ser membro
     S-->>C: 403 ACESSO_NEGADO
-    C-->>NX: 403
-  else dono
-    S->>AI: infer(HSE, {hsePredictedJson, feedback, actualHours})
-    AI-->>S: hseRealizedJson + log ai_inference_log
-    S->>DB: UPDATE daily_tasks SET feedback, feedbackAt, actualHours, hseRealizedJson (índice único userId + taskDate)
-    S->>DB: INSERT hse_snapshots (hse, movingAvg7)
-    S-->>C: 200 DailyTask atualizado
-    C-->>NX: 200
-    NX-->>U: HSE previsto x realizado, média móvel 7 dias, semana planejada
+    C-->>N: 403
+  else ok
+    S->>R: upsert reactions (único: actor + alvo + CURTIR / 1 por tipo qualitativo, actorHypeAtTime)
+    S->>RD: INCR counters:PROJECT:{id}:likes
+    S-->>C: CountersView
+    C-->>N: 200 (contador atualizado na hora)
+    EV->>RD: dedupe notif:{ownerId}:{hora}
+    EV->>CS: notifications_by_user REACAO (groupKey = hora)
+    EV->>R: deliberative_profiles do dono (BEM_FUNDAMENTADO pesa na qualidade)
+    EV->>R: flush em lote → project_schemes.likes_count
   end
 
-  NX->>C: GET /api/users/maria/tabs/perfil-deliberativo
-  C->>S: ReputationService.deliberativeProfile + monthlySeries
-  S->>DB: deliberative_profiles ORDER BY periodKey
-  S-->>C: métricas, deltaJson ▲▼, série mensal (CA05)
-  C-->>NX: 200
+  U->>N: comenta "@joao veja o cronograma" como resposta a outro comentário
+  N->>C: POST /api/interactions/PROJECT/{id}/comments {contentMd, parentCommentId}
+  C->>S: InteractionService.comment(actor, target, contentMd, parentId, ctx)
+  S->>S: MentionParser.parse → [joaoId]
+  S->>R: insert comments (parentCommentId, mentionsJson)
+  S->>RD: INCR counters:PROJECT:{id}:comments
+  S-->>C: CommentView
+  C-->>N: 201 (thread)
+  EV->>CS: COMENTARIO ao dono (agrupado) + MENCAO ao @joao
+  U->>N: exclui o comentário (como autor) — ou o chefe do departamento modera
+  N->>C: DELETE /api/interactions/comments/{commentId}
+  C->>S: InteractionService.deleteComment(actor, commentId, ctx)
+  alt nem autor nem chefe do departamento
+    S-->>C: 403 ACESSO_NEGADO
+    C-->>N: 403
+  else ok
+    S->>R: update comments (active=false, deletedBy) · audit_log COMMENT_DELETED
+    S->>RD: DECR counters:PROJECT:{id}:comments
+    C-->>N: 204
+  end
+
+  U->>N: salva como favorito
+  N->>C: POST /api/interactions/TASK/{id}/saves {favorite true}
+  C->>S: InteractionService.save(actor, target, favorite)
+  S->>R: upsert saved_items
+  S->>RD: INCR counters:TASK:{id}:saves
+  C-->>N: 200 (aparece em Tarefas salvas, RF6)
+
+  U->>N: compartilha por link externo (expira em 7 d)
+  N->>C: POST /api/interactions/PROJECT/{id}/shares {LINK_EXTERNO, expiresInDays 7}
+  C->>S: InteractionService.share(actor, target, LINK_EXTERNO, opts, ctx)
+  S->>S: ShareImageService.render (capa + resumo)
+  S->>S3: put(shares/{token}.png)
+  S->>R: insert shares (externalToken, expiresAt, imageMediaId)
+  S->>RD: INCR counters:PROJECT:{id}:shares
+  S-->>C: ShareView {url /s/{token}, expiresAt}
+  C-->>N: 201
+  Note over N,S3: /s/{token} após expiresAt → 410 LINK_EXPIRADO
+
+  U->>N: remixa um projeto público
+  N->>C: POST /api/interactions/PROJECT/{id}/remixes
+  C->>S: InteractionService.remix(actor, target, ctx)
+  alt alvo não é PUBLICA
+    S-->>C: 409 REMIX_INDISPONIVEL
+    C-->>N: 409
+  else ok
+    S->>R: RemixService.copyProject → project_schemes (originalProjectId, origin REMIX) + project_tasks (cópias/referências)
+    S->>R: insert remixes (sourceId, resultId, modelOfferId?, ledgerEntryId?)
+    S->>RD: INCR counters:PROJECT:{id}:remixes
+    S-->>C: RemixView {resultId}
+    C-->>N: 201 → /projects/{resultId}/edit
+    EV->>CS: REMIX ao autor original ("remixado por N pessoas")
+    EV->>R: DECIA Points VENDA_BALCAO quando veio do Balcão (RF40/RF42)
+  end
+
+  O->>N: abre o perfil
+  N->>C: GET /api/interactions/PROJECT/{id}/counters
+  C->>S: CounterService.counters(target)
+  S->>RD: MGET counters:PROJECT:{id}:*
+  S-->>C: CountersView (likes, comments, saves, shares, remixes)
+  C-->>N: 200
 ```
 
 ## 4. Máquina de estados
 
-O RF19 não possui estados próprios: a única entidade que ele altera é a **`DailyTask`** da sub-aba *Tarefa do Dia* (CA04). Os estados abaixo são o ciclo de vida diário de `DailyTask.feedback` (enum `DailyFeedback`); o estado inicial "Sugerida" corresponde a `feedback = null`.
+Entidade central: as entidades sociais não têm enum de status na TAXONOMIA; o ciclo relevante é o de **`Comment`** (`active`/`deletedBy`/`editedAt`, CA03) e o de **`Share` LINK_EXTERNO** (`expiresAt`, CA05). `Reaction`/`SavedItem` existem ou não (CA01/CA04); `Remix` é imutável (CA06). "Retornar" e "atribuir" seguem `AssignmentStatus` no RF18 §4.
 
 ```mermaid
 stateDiagram-v2
-  [*] --> SUGERIDA : AiEngine TAREFA_DO_DIA cria DailyTask para userId + taskDate
-  state "Sugerida — feedback nulo" as SUGERIDA
-  state "Trocada — swappedFromTaskId" as TROCADA
-  SUGERIDA --> TROCADA : usuário troca a tarefa, swapReason
-  TROCADA --> SUGERIDA : nova DailyTask do mesmo dia substitui a anterior
-  SUGERIDA --> CONCLUI : feedback CONCLUI + actualHours
-  SUGERIDA --> ADIEI : feedback ADIEI
-  SUGERIDA --> BLOQUEADA : feedback BLOQUEADA + blockedByRef
-  SUGERIDA --> DELEGUEI : feedback DELEGUEI + delegatedToUserId
-  CONCLUI --> [*] : hseRealizedJson calculado, hse_snapshots atualizado
-  ADIEI --> [*] : alimenta próxima sugestão
-  BLOQUEADA --> [*] : alimenta próxima sugestão
-  DELEGUEI --> [*] : alimenta próxima sugestão
-  note right of SUGERIDA
-    Índice único userId + taskDate.
-    Segundo registro no mesmo dia: 409 TAREFA_DO_DIA_DUPLICADA.
-  end note
-  note right of CONCLUI
-    feedback e actualHours calculam o Hype Score de Eficiência
-    realizado e a média móvel de 7 dias (RF44, CA04).
+  direction LR
+  state "Comment" as CM {
+    state "PUBLICADO" as PUB
+    state "EDITADO (editedAt)" as EDT
+    state "EXCLUIDO (active = false, deletedBy)" as EXC
+    [*] --> PUB : POST …/comments [canInteract, conteúdo não vazio] · COMENTARIO + MENCAO (CA03)
+    PUB --> EDT : PATCH pelo autor
+    EDT --> EDT : nova edição
+    PUB --> EXC : DELETE pelo autor ou pelo chefe do departamento (canModerate)
+    EDT --> EXC : DELETE
+    EXC --> [*] : fica na thread como "comentário removido" (respostas preservadas)
+  }
+  state "Share LINK_EXTERNO" as SH {
+    state "ATIVO (/s/{token})" as ATV
+    state "EXPIRADO (410 LINK_EXPIRADO)" as EXP
+    state "REVOGADO" as REV
+    [*] --> ATV : POST …/shares {LINK_EXTERNO, expiresInDays ≤ 30} · imagem exportada no S3 (CA05)
+    ATV --> EXP : expiresAt vencido · imagem apagada por job
+    ATV --> REV : dono ou ator revoga
+    EXP --> [*]
+    REV --> [*]
+  }
+  state "Reaction CURTIR" as RC {
+    state "SEM_REACAO" as SEM
+    state "CURTIDO" as CUR
+    [*] --> SEM
+    SEM --> CUR : POST …/reactions {CURTIR} (CA01) · índice único por ator + alvo
+    CUR --> SEM : DELETE …/reactions/CURTIR (descurtir)
+  }
+  note right of PUB
+    Item PRIVADO de terceiro ou DEPARTAMENTO sem ser membro:
+    403 ACESSO_NEGADO em toda interação (CA08).
+    Cada transição notifica o dono agrupado por hora (CA09).
   end note
 ```
 
@@ -573,77 +532,95 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js"]
-    F1["app/profile — 15 sub-abas, URL com tab e filtros"]
-    F2["app/u/[username] — sub-abas 1–5"]
-    F3["components/ui: ProfileHeader, SubTabs, FilterBar, Pagination, HypeBadge, DailyTaskCard, DeliberativeChart"]
-    F4["i18n next-intl pt-BR / en / es · layout responsivo"]
+  subgraph FE["Frontend · Next.js 15 App Router"]
+    PG["Barra de interações em TaskCard / ProjectCard / card de Plano Anual (Acervo, Projetos, Planos, Mural, Buscar, /u/[username]) · página pública app/s/[token]"]
+    UI["packages/ui: Counters, Popover (reações: útil, bem fundamentado, inovador, conforme), Textarea (@menções), Dialog (compartilhar: canal, expiração), Button, Toast, Avatar (crédito do remix)"]
+    BFF["app/bff/interactions/*"]
+    PG --> UI
+    PG --> BFF
+  end
+  subgraph WSWEB["ws-web"]
+    SEC["SecurityConfig · SessionActiveFilter · CurrentUserArgumentResolver · GET /s/{token} público"]
+    IC["InteractionController · PublicShareController"]
+    GEH["GlobalExceptionHandler (403, 409, 410, 422)"]
+  end
+  subgraph WSAPP["ws-application"]
+    SOC["social: InteractionService · CounterService · MentionParser · RemixService · ShareImageService"]
+    SECU["security: AccessPolicy.canInteract/canModerate/isPublic · Guard (real)"]
+    PORTS["ports: ReactionRepositoryPort · CommentRepositoryPort · SavedItemRepositoryPort · ShareRepositoryPort · RemixRepositoryPort · CounterCachePort · NotificationPort · MuralPort · SessionAttachmentPort · DeliberativeProfilePort · MediaStoragePort · AuditLogPort (real)"]
+    EVT["events: Reacted · Commented · Mentioned · Saved · Shared · Remixed (AFTER_COMMIT) → SideEffectRunner"]
+    GAM["gamification: DeliberativeProfileService (objetivo 2) · ProfileHypeService (RF45) · points: PointsService (VENDA_BALCAO, RF42)"]
+    DEC["decia: SessionAttachment (RF29.CA03) · social: MuralService (RF27)"]
+    SOC --> SECU
+    SOC --> PORTS
+    SOC --> EVT
+    EVT --> GAM
+    SOC --> DEC
+  end
+  subgraph WSDOM["ws-domain"]
+    DOM["social: Reaction · Comment · SavedItem · Share · Remix · Notification · MuralEntry · enums ReactionType/ShareChannel/TargetType/NotificationType · acervo: TaskItem · projects: ProjectScheme · planning: AnnualPlan · decia: MessageAttachment · gamification: DeliberativeProfile"]
+  end
+  subgraph INFRA["ws-infrastructure"]
+    MY["persistence-mysql: Jpa*Repository (reactions, comments, saved_items, shares, remixes) · contadores desnormalizados"]
+    RDS["cache-redis (RedisAdaptersConfig): counters:{type}:{id}:{field} · dedupe por hora · flush em lote"]
+    CAS["persistence-cassandra (CassandraAdaptersConfig): notifications_by_user (TTL) · timeline_by_user"]
+    S3["storage-s3: imagem exportada do link externo (capa + resumo)"]
   end
 
-  subgraph WEB["ws-web"]
-    C1["ProfileController"]
-    C2["DailyTaskController"]
-  end
-
-  subgraph APP["ws-application"]
-    S1["ProfileService"]
-    S2["DailyTaskService"]
-    S3["ReputationService"]
-    S4["SocialService"]
-    S5["AiEngine"]
-    P1["CachePort"]
-  end
-
-  subgraph DOM["ws-domain"]
-    D1["User · Company · Department · UserPreferences"]
-    D2["TaskItem · ProjectScheme · AnnualPlan · Grouping · SavedItem · Follow · ProcessKit · ModelOffer · Recognition · SealBond · DeciaPointsLedgerEntry · FinalDecision · DecisionTraceNode"]
-    D3["DailyTask · WeekPlan · EfficiencyScoreSnapshot · ProfileHypeScore · HypeBand · DeliberativeProfile"]
-  end
-
-  subgraph INFRA["ws-infrastructure/*"]
-    I1[("persistence-mysql: users, tasks, project_schemes, annual_plans, groupings, saved_items, daily_tasks, hse_snapshots, profile_hype_scores, deliberative_profiles")]
-    I2[("cache-redis: counters do perfil, hype do dia, rankings")]
-    I3["ai-providers: AiEngine TAREFA_DO_DIA, HSE, HYPE_PERFIL, INSIGHT"]
-    I4[("persistence-cassandra: trace_by_entity — fio de decisão da sub-aba 4")]
-  end
-
-  subgraph EXT["Serviços externos"]
-    E1(("Claude / Gemini"))
-  end
-
-  F1 -->|"HTTPS/JSON"| C1
-  F2 -->|"HTTPS/JSON"| C1
-  F1 -->|"HTTPS/JSON"| C2
-  F3 --- F1
-  F4 --- F1
-  C1 --> S1
-  C2 --> S2
-  S1 --> S3
-  S1 --> S4
-  S1 --> P1
-  S2 --> S5
-  S3 --> S5
-  S1 --> D1
-  S1 --> D2
-  S2 --> D3
-  S3 --> D3
-  D1 --> I1
-  D2 --> I1
-  D3 --> I1
-  P1 --> I2
-  S5 --> I3
-  S1 --> I4
-  I3 -.-> E1
+  BFF -->|"REST JSON"| SEC --> IC --> SOC
+  IC --> GEH
+  MY -.implementa.-> PORTS
+  RDS -.implementa.-> PORTS
+  CAS -.implementa.-> PORTS
+  S3 -.implementa.-> PORTS
+  SOC --> DOM
+  MY --> DB[("MySQL 8.4")]
+  RDS --> RD[("Redis 7")]
+  CAS --> CDB[("Cassandra 4.1")]
+  S3 --> MINIO[("S3 / MinIO")]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
+| CA (card RF19, escrito como RF26) | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) | Situação |
+|---|---|---|---|---|---|---|
+| RF26.CA01 | `InteractionService.react/unreact`, `Reaction` (único actor+alvo+CURTIR), `ReactionRepositoryPort.upsert/delete` | `A2`→`F2`→`R1`→`CT` | 1–4, 8–11 | `RC`: `SEM`→`CUR`→`SEM` | `SOC`, `MY` (índice único), `RDS` | planejado |
+| RF26.CA02 | `ReactionType` (UTIL · BEM_FUNDAMENTADO · INOVADOR · CONFORME), `Reaction.actorHypeAtTime/ignoredReason` | `R1` | 1, 8 | — | `UI` (`Popover`) | planejado (RF45.CA03/CA04) |
+| RF26.CA03 | `InteractionService.comment/editComment/deleteComment`, `Comment` (`parentCommentId`, `mentionsJson`, `editedAt`, `deletedBy`), `MentionParser`, `AccessPolicy.canModerate` | `A3`→`C1`, `E403M` | 17–32 | `CM`: `PUB`→`EDT`→`EXC` | `SOC`, `UI` (`Textarea`), `CAS` (MENCAO) | planejado |
+| RF26.CA04 | `InteractionService.save/unsave`, `SavedItem.favorite`, `SavedItemRepositoryPort` | `A4`→`SV1` | 33–38 | — | `SOC`, `MY` | planejado (RF6.CA05) |
+| RF26.CA05 | `InteractionService.share`, `Share`, `ShareChannel`, `MuralPort`, `SessionAttachmentPort`, `ShareImageService`, `PublicShareController` | `SH1`→`SH2`/`SH3`/`SH4`, `F3`, `E409` (410) | 39–47 | `SH`: `ATV`→`EXP`/`REV` | `SOC`, `DEC`, `S3`, `SEC` (`/s/{token}`) | planejado (RF27, RF29.CA03) |
+| RF26.CA06 | `InteractionService.remix`, `RemixService.copyTask/copyProject`, `Remix`, `TaskItem.originalTaskId`, `ProjectScheme.originalProjectId/origin REMIX`, `AccessPolicy.isPublic` | `RX1`→`RX2`, `E409` | 48–59 | — (imutável) | `SOC`, `GAM` (`PointsService`), `UI` (`Avatar` crédito) | planejado (RF40/RF42) |
+| RF26.CA07 | `CounterService.increment/decrement/counters/flushToMysql`, `CounterCachePort`, contadores em `TaskItem`/`ProjectScheme`/`AnnualPlan` | `CT` | 10–11, 15, 60–64 | — | `RDS`, `MY` | planejado |
+| RF26.CA08 | `AccessPolicy.canInteract` | `S1`→`S2`→`E403` | 5–7 | nota de `PUB` | `SECU`, `GEH` | planejado |
+| RF26.CA09 | eventos `Reacted`/`Commented`/`Mentioned`/`Remixed`, `NotificationPort`, `Notification.groupKey`, `DeliberativeProfilePort.recordInteraction` | `EV`→`A5` | 12–14, 23, 57 | nota de `PUB` | `EVT`, `GAM`, `CAS` | planejado (objetivo 2) |
+| (título) retornar · atribuir | `AssignmentService`, `Assignment` | — | — | `AssignmentStatus` (RF18 §4) | `ASG` no RF18 | modelado no RF18.CA03–CA06 (remissão) |
+
+## 7. Front implementado (onda Social, DEMO)
+
+Barra social e diálogos em `components/social/` (SocialBar, ReactionPicker, CommentThread, ShareSheet, RemixDialog, DelegateDialog/GiveBackDialog, AssignmentInbox) sobre regras puras em `lib/social/rules.ts` e o repositório **DEMO** em memória (`SocialRepository`, mesmo padrão do DECIA; a API `/api/interactions/...` vem depois dos Blocos 4–5). Tipos espelham `domain/social/*` (V16) e `domain/mensageria/Assignment` (V20) — `lib/social/types.test.ts` compara os enums com os `.java`.
+
+| CA | Implementação |
 |---|---|
-| RF19.CA01 | Classes `User` (jobTitle, companyId, departmentId), `Company`, `Department`, `ProfileService.loadHeader/listTabs`, `CachePort` (contadores) · Atividades `A1`, `A2 → A3` (15 sub-abas), `A8/A9` (Hype se exibido) · Sequência msgs 3–5 e 10–17 (header + contadores Redis + listTabs) · Componentes `app/profile`, `ProfileHeader`, `SubTabs`, `cache-redis` |
-| RF19.CA02 | `ProfileService.visibilityFilter/canSeeHype`, enum `HypeVisibility`, `Visibility` · Atividades `A2 → A4` (sub-abas 1–5), `A7` (PUBLICA + EMPRESA se mesma empresa), `A8`, `A12 → A13 403 ACESSO_NEGADO` · Sequência msgs 14–15 e 20 (canSeeHype, listTabs 1–5, visibilityFilter) e `alt` 403 (msgs 30–31) · Componente `app/u/[username]` |
-| RF19.CA03 | Atividades `W2` (lê tab + filtros + page da URL), `W3` (atualiza URL), `A11` (loadTab com filtros e paginação) · Sequência msgs 1–2 e 18–25 (`tabs/projetos?fase=&page=&size=`) · Componentes `FilterBar`, `Pagination` |
-| RF19.CA04 | Classes `DailyTask` (índice único userId + taskDate, feedback, actualHours, hseRealizedJson), `DailyTaskService.registerFeedback`, `EfficiencyScoreSnapshot`, `WeekPlan`, enum `DailyFeedback` · Atividades `U3 → A14 → A15 → A16/A17 409`, `I1`, `P4`, `P5` · Sequência msgs 26–38 · Máquina de estados inteira (SUGERIDA → CONCLUI/ADIEI/BLOQUEADA/DELEGUEI) · Componentes `DailyTaskController`, `DailyTaskService`, `DailyTaskCard` |
-| RF19.CA05 | Classes `DeliberativeProfile` (clarity, evidenceUse, consistency, completeness, reuse, deltaJson ▲▼), `ReputationService.deliberativeProfile/monthlySeries` · Atividades `A18 → I2 → W5` (gráfico de linha mensal) · Sequência msgs 39–43 · Componente `DeliberativeChart` |
-| RF19.CA06 | Enum `ProfileType`, `ProfileService.listTabs` · Atividades `A5 → A6` (sub-abas institucionais RF28) · Sequência msg 15 ("+ institucionais se EMPRESA/CHEFE") |
-| RF19.CA07 | Classes `UserPreferences.language`, enum `UiLanguage` · Atividades `W1` (locale + responsivo) · Sequência msg 2 (next-intl) · Componente `F4` (i18n next-intl, layout responsivo) |
+| RF26.CA01 | `react(…, "CURTIR")` liga/desliga; contador `countersOf`. |
+| RF26.CA02 | Qualitativas excludentes entre si, CURTIR independente (D-90); reação do dono grava `ignoredReason AUTO_INTERACAO`. |
+| RF26.CA03 | `addComment` (resposta de 1 nível, D-91), `editComment` (só autor, `editedAt`), `deleteComment` (autor ou chefe do departamento; lógica `active=false`, `deletedBy`), @menções → `MENCAO` só para quem vê o item; limite 1000 caracteres. |
+| RF26.CA04 | `toggleSave` / `toggleFavorite`; sub-abas Tarefas/Projetos salvos com "indisponível" quando o alvo saiu da visibilidade. |
+| RF26.CA05 | `share` nos três `ShareChannel`: MURAL (cria `MuralEntry COMPARTILHAMENTO`), SESSAO_DECIA (exige sessão), LINK_EXTERNO (token + validade 1–30 dias). Classificação e visibilidade limitam os canais (D-94). |
+| RF26.CA06 | `remix`: cópia RASCUNHO/PRIVADA no Acervo do ator com `originalTaskId`/`originalProjectId`, `reuseCount+1`, `Remix`, notificação ao autor e ao autor do original; remix de remix mantém a cadeia (`remixChain`); RESTRITO/SIGILOSO nunca (D-92). |
+| RF26.CA07 | Contadores derivados dos registros a cada mudança (sem Redis no DEMO). |
+| RF26.CA08 | `canInteract` = login + `canView`; toda ação indisponível fica `aria-disabled` com o motivo no nome acessível. |
+| RF26.CA09 | `notify`: nunca para si mesmo; agrupada por tipo + alvo + hora (`groupKey`); atribuições individuais (uma por `Assignment`). |
+| retornar · atribuir | "Delegar" = `Assignment PROPOSTA` (RF18.CA03); "Retornar" = ACEITA → DEVOLVIDA com motivo ≥ 20 (RF18.CA05). Ver RF18 §7. |
+
+```mermaid
+flowchart LR
+  B["SocialBar"] --> A{"Permissao?"}
+  A -->|"nao"| M["aria-disabled + motivo"]
+  A -->|"sim"| C["Comando puro em lib/social/rules"]
+  C --> S["Novo SocialState"]
+  S --> N["notify agrupado por hora"]
+  S --> R["Repositorio DEMO"]
+  R --> U["Cards e contadores atualizados"]
+```
+
+Rotas: `/tasks/[id]` (layout ampliado + comentários), `/mural`, perfis. Capturas `44`–`48`.

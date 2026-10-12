@@ -1,17 +1,13 @@
-# RF26 — Curtir, reagir, comentar, salvar, compartilhar e remixar tarefas, esquemas de projeto e planos anuais (interações sociais)
-**HU:** HU26 · **Sprint (board Work Station):** 4 · **Equivalente FAI:** RF19 Interações sociais (alvo polimórfico PIECE/SCHEME/DNA) · **Aba/rota:** ações inline em todos os cards (Acervo, Projetos, Planos, Mural, Buscar) · **API:** `/api/interactions/{type}/{id}/reactions|comments|saves|shares|remixes|counters`
-**Critérios de aceite cobertos:** RF26.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09
+# RF26 — Utilizar o Copilot do WS para criar sugestões de tarefas e projetos de maneira mais prática e funcional
+**HU:** HU26 · **Sprint (board Work Station):** Sprint 4 (card RF26 "Interações sociais" comprometido com o título antigo; conteúdo atual do título = Copilot) · **Equivalente FAI:** RF10 Copilot (sugestões) + RF6 Perfil Lookbook (corpo do card) · **Aba/rota:** Copilot em `/autopilot` (sugestões de tarefas e projetos, estende RF30/RF43 §7) e botão **Sugerir com o Copilot** em `/tasks/new`, `/projects/new` e na Mesa (`/desk`); corpo do card: Meu perfil (`/profile`, `/u/[username]`)
+**Critérios de aceite cobertos:** **RF19.CA01 … RF19.CA07** (citados como estão escritos — **corpo do card = antigo RF19**, perfil/portfólio) + **RF26.CA01 … RF26.CA05 (CA a confirmar)**, derivados do título + HU26 (Copilot que sugere tarefas e projetos inteiros) — regra: o **título do card** define o RF; título e corpo divergem (`RENUMERACAO.md`).
 
-Alvo polimórfico `TargetType` (TASK · PROJECT · PLAN — além de KIT, PROJECT_TASK, MESSAGE, RECOGNITION usados por outros RFs). Seis interações, cada uma com sua entidade: **curtir** (`Reaction` CURTIR, única por ator e alvo), **reagir** (`Reaction` ÚTIL · BEM_FUNDAMENTADO · INOVADOR · CONFORME), **comentar** (`Comment` com thread `parentCommentId`, edição, exclusão pelo autor ou pelo chefe do departamento, menções → `Notification`), **salvar** (`SavedItem` com marcador favorito → sub-abas *Tarefas salvas* / *Projetos salvos*, RF19), **compartilhar** (`Share` em canal MURAL → `MuralEntry` RF27, SESSAO_DECIA → `MessageAttachment` RF29, LINK_EXTERNO com `externalToken`, `expiresAt` e imagem exportada `imageMediaId`) e **remixar** (`Remix` + cópia com `originalTaskId` / `originalProjectId` e crédito visível). Contadores desnormalizados (`likesCount … remixesCount`) em tempo quase real via Redis; toda interação respeita a **visibilidade** do alvo e gera **notificação agrupada por hora** (`Notification.groupKey`) ao dono, alimentando o perfil deliberativo (reações BEM_FUNDAMENTADO e CONFORME pesam na métrica de qualidade).
-
-| Interação | Entidade | Regra de unicidade / canal | Contador |
-|---|---|---|---|
-| Curtir / descurtir | `Reaction` CURTIR | único (actorId, targetType, targetId, CURTIR) — toggle | `likesCount` |
-| Reagir | `Reaction` UTIL · BEM_FUNDAMENTADO · INOVADOR · CONFORME | 1 por tipo, ator e alvo | — (pesa no perfil deliberativo) |
-| Comentar | `Comment` | thread via `parentCommentId`, `editedAt`, `deletedBy`, `mentionsJson` | `commentsCount` |
-| Salvar | `SavedItem` | único (userId, targetType, targetId), `favorite` | `savesCount` |
-| Compartilhar | `Share` | `channel` MURAL · SESSAO_DECIA · LINK_EXTERNO (`externalToken`, `expiresAt`, `imageMediaId`) | `sharesCount` |
-| Remixar | `Remix` + nova `TaskItem`/`ProjectScheme` | só alvos PUBLICA, `originalTaskId` / `originalProjectId` | `remixesCount` |
+**CAs derivados do título (a confirmar):**
+- **RF26.CA01** Em `/autopilot`, no criador de tarefas e na Mesa, o botão **Sugerir com o Copilot** recebe uma frase, e-mail, protocolo ou o contexto atual (projeto aberto, acervo, perfil) e devolve **N tarefas em rascunho** (tipo, categoria, prazo legal, responsável, dependências) — nada vira DISPONÍVEL sem revisão (= RF43.CA07).
+- **RF26.CA02** O Copilot sugere **projetos inteiros** (até 5 candidatos ordenados por viabilidade) a partir de eixos do plano sem projeto, lacunas do acervo e decisões DECIA sem projeto, cada um com Ficha de Viabilidade (= RF43.CA08, RF30.CA02).
+- **RF26.CA03** Cada sugestão carrega a faísca ✦, a explicação ("baseado em: eixo X, modelo chancelado Y, sessão Z") e o `AiInferenceLog`; o usuário **aceita, edita ou descarta** (descartar exige motivo, que alimenta as próximas sugestões).
+- **RF26.CA04** Tarefas RESTRITO/SIGILOSO no contexto nunca saem para provedor externo (só `LocalEngine`, com aviso); sem chave externa o Copilot usa regras + modelos chancelados e avisa o fallback (= RF30.CA05, RF43.CA02).
+- **RF26.CA05** Aceitar cria `TaskItem` RASCUNHO com `sourceKind AUTOPILOT` ou `ProjectScheme` RASCUNHO com `origin AUTOPILOTO` e abre o item no criador correspondente (RF4/RF5) ou na Mesa (RF22); cota de IA (`AiQuota`) é debitada e, sem cota, o botão oferece a Loja (RF42.CA06).
 
 ## 1. Diagrama de classes
 
@@ -19,381 +15,305 @@ Alvo polimórfico `TargetType` (TASK · PROJECT · PLAN — além de KIT, PROJEC
 classDiagram
 direction LR
 
-namespace ws_domain_social {
-  class Reaction {
+namespace ws_domain_ia {
+  class FeasibilitySheet {
     <<entity>>
     +id: UUID
-    +actorId: UUID
-    +targetType: TargetType
-    +targetId: UUID
-    +reactionType: ReactionType
-    +at: Instant
-    +actorHypeAtTime: BigDecimal
-    +ignoredReason: String antifraude
+    +candidateTitle: String
+    +demandRef: String
+    +costJson: JSON
+    +timeJson: JSON
+    +deadlineJson: JSON
+    +viabilityScoreJson: JSON
+    +risksJson: JSON
+    +wbsJson: JSON
+    +raciJson: JSON
+    +assumptionsJson: JSON
+    +status: SheetStatus
+    +discardReason: String
+    +resultingProjectId: UUID
+    +resultingTaskId: UUID
+    +aiInferenceId: UUID
   }
-  class Comment {
+  class Insight {
     <<entity>>
-    +id: UUID
-    +authorId: UUID
-    +targetType: TargetType
-    +targetId: UUID
-    +parentCommentId: UUID
-    +contentMd: String
-    +mentionsJson: JSON
-    +editedAt: Instant
-    +deletedBy: UUID
-    +active: boolean
+    +scope: InsightScope
+    +scopeId: UUID
+    +kind: String
+    +metricRefsJson: JSON
+    +actionsJson: JSON
   }
-  class SavedItem {
+  class AiInferenceLog {
     <<entity>>
     +id: UUID
     +userId: UUID
-    +targetType: TargetType
-    +targetId: UUID
-    +favorite: boolean
-    +savedAt: Instant
+    +capability: AiCapability
+    +provider: AiProvider
+    +mode: AiMode
+    +result: InferenceResult
+    +fallbackUsed: boolean
+    +maskedFieldsJson: JSON
+    +quotaSource: String
+    +correlationId: String
   }
-  class Share {
+  class AiQuota {
     <<entity>>
-    +id: UUID
-    +actorId: UUID
-    +targetType: TargetType
-    +targetId: UUID
-    +channel: ShareChannel
-    +sessionId: UUID
-    +externalToken: String
-    +expiresAt: Instant
-    +imageMediaId: UUID
+    +scope: String
+    +scopeId: UUID
+    +monthKey: String
+    +monthlyLimit: int
+    +consumed: int
+    +purchasedCredits: int
   }
-  class Remix {
-    <<entity>>
-    +id: UUID
-    +actorId: UUID
-    +sourceType: TargetType
-    +sourceId: UUID
-    +resultType: TargetType
-    +resultId: UUID
-    +modelOfferId: UUID
-    +ledgerEntryId: UUID
-    +at: Instant
-  }
-  class MuralEntry {
-    <<entity>>
-    +id: UUID
-    +companyId: UUID
-    +kind: String COMPARTILHAMENTO
-    +targetType: TargetType
-    +targetId: UUID
-    +actorId: UUID
-  }
-  class Notification {
-    <<entity>>
-    +id: UUID
-    +recipientId: UUID
-    +actorId: UUID
-    +type: NotificationType
-    +category: String SOCIAL
-    +resourceType: String
-    +resourceId: UUID
-    +groupKey: String recipient tipo hora
-    +read: boolean
+  class SheetStatus {
+    <<enum>>
+    PROPOSTA
+    ACEITA
+    DESCARTADA
   }
 }
 
-namespace ws_domain_alvos {
+namespace ws_domain_acervo_projects {
   class TaskItem {
     <<entity>>
     +id: UUID
     +ownerId: UUID
-    +departmentId: UUID
-    +visibility: Visibility
-    +originalTaskId: UUID
-    +likesCount: long
-    +commentsCount: long
-    +savesCount: long
-    +sharesCount: long
-    +remixesCount: long
+    +title: String
+    +type: TaskType
+    +category: TaskCategory
+    +state: TaskState
+    +sourceKind: SourceKind
+    +accessClass: AccessClassification
+    +legalDueAt: LocalDate
+    +responsibleId: UUID
+    +aiGenerated: boolean
+    +aiInferenceId: UUID
+    .. +45 campos ..
   }
   class ProjectScheme {
     <<entity>>
     +id: UUID
-    +ownerId: UUID
-    +departmentId: UUID
-    +visibility: Visibility
-    +originalProjectId: UUID
-    +origin: SchemeOrigin REMIX
-    +likesCount: long
-    +commentsCount: long
-    +savesCount: long
-    +sharesCount: long
-    +remixesCount: long
+    +title: String
+    +objective: String
+    +origin: SchemeOrigin
+    +status: ProjectStatus
+    +planAxisId: UUID
+    +aiGenerated: boolean
+    +aiInferenceId: UUID
+    .. +30 campos ..
   }
-  class AnnualPlan {
+  class ProjectTask {
+    <<entity>>
+    +projectId: UUID
+    +taskId: UUID
+    +phase: ProjectPhase
+    +responsibleId: UUID
+    +dueAt: LocalDate
+    +pertMostLikely: BigDecimal
+  }
+}
+
+namespace ws_domain_identity_profile {
+  class User {
     <<entity>>
     +id: UUID
-    +ownerId: UUID
-    +visibility: Visibility
-    +likesCount: long
-    +commentsCount: long
-    +savesCount: long
-  }
-  class MessageAttachment {
-    <<entity>>
-    +messageId: UUID
-    +targetType: String TASK PROJECT PLAN
-    +targetId: UUID
-    +snapshotJson: JSON
+    +username: String
+    +fullName: String
+    +jobTitle: String
+    +profileType: ProfileType
+    +companyId: UUID
+    +departmentId: UUID
+    +hypeVisibility: HypeVisibility
+    +avatarUrl: String
+    .. +25 campos ..
   }
   class DeliberativeProfile {
     <<entity>>
     +userId: UUID
     +periodKey: String
+    +clarity: BigDecimal
     +evidenceUse: BigDecimal
+    +consistency: BigDecimal
     +deltaJson: JSON
   }
-  class Department {
-    <<entity>>
-    +id: UUID
-    +headUserId: UUID chefe pode excluir comentário
-  }
-  class DepartmentMembership {
+  class DailyTask {
     <<entity>>
     +userId: UUID
-    +departmentId: UUID
-    +endedAt: Instant
-  }
-}
-
-namespace ws_domain_enums {
-  class TargetType {
-    <<enum>>
-    TASK
-    PROJECT
-    PLAN
-    KIT
-    PROJECT_TASK
-    MESSAGE
-    RECOGNITION
-  }
-  class ReactionType {
-    <<enum>>
-    CURTIR
-    UTIL
-    BEM_FUNDAMENTADO
-    INOVADOR
-    CONFORME
-  }
-  class ShareChannel {
-    <<enum>>
-    MURAL
-    SESSAO_DECIA
-    LINK_EXTERNO
-  }
-  class Visibility {
-    <<enum>>
-    PRIVADA
-    DEPARTAMENTO
-    EMPRESA
-    PUBLICA
+    +taskDate: LocalDate
+    +taskId: UUID
+    +feedback: DailyFeedback
+    +hseRealizedJson: JSON
   }
 }
 
 namespace ws_application {
-  class SocialService {
+  class CopilotService {
     <<service>>
-    +toggleLike(actorId, type, id) Reaction
-    +react(actorId, type, id, reactionType) Reaction
-    +comment(actorId, type, id, contentMd, parentId, mentions) Comment
-    +editComment(actorId, commentId, contentMd) Comment
-    +deleteComment(actorId, commentId) autor ou chefe do departamento
-    +save(userId, type, id, favorite) SavedItem
-    +share(actorId, type, id, channel, sessionId, expiresAt) Share
-    +remix(actorId, type, id) Remix
-    +counters(type, id) Counters
-    -checkVisibility(actor, target) 403 ACESSO_NEGADO
+    +suggestTasks(actor, CopilotInput) List~TaskDraft~
+    +suggestProjects(actor, CopilotContext) List~FeasibilitySheet~
+    +accept(actor, suggestionId) AcceptResult
+    +discard(actor, suggestionId, reason)
   }
-  class MuralService {
+  class AutopilotService {
     <<service>>
-    +postShare(Share) MuralEntry
+    +compose(actor, demand) ProjectDraft
   }
-  class DeciaSessionService {
+  class AiEngine {
     <<service>>
-    +attachToSession(sessionId, type, id) MessageAttachment
+    +run(AiRequest) AiResponse
+    -governance(flag, accessClass, masking, quota, budget)
   }
-  class NotificationService {
+  class AiBudget {
     <<service>>
-    +notifyOwner(event) agrupa por groupKey hora
-    +notifyMentions(Comment)
+    +reserve(userId, estimatedUsd)
   }
-  class ReputationService {
+  class ProfileService {
     <<service>>
-    +onQualityReaction(ownerId, reactionType) BEM_FUNDAMENTADO CONFORME
+    +self(actor) ProfileView
+    +ofUser(viewer, username) PublicProfileView
   }
-  class CounterCachePort {
+  class Guard {
+    <<service>>
+    +requireOwner(actor, ownerId)
+    +requireSameCompany(actor, companyId)
+  }
+  class AiProviderPort {
     <<port>>
-    +incr(type, id, counter)
-    +get(type, id) Counters
+    +complete(prompt, model)
   }
-  class MediaStoragePort {
+  class QuotaPort {
     <<port>>
-    +renderShareImage(target) MediaObject capa + resumo
-    +presign(mediaId) URL
+    +tryConsume(scope, id, units)
   }
 }
 
 namespace ws_web {
-  class InteractionController {
+  class CopilotController {
     <<controller>>
-    +POST_api_interactions_type_id_reactions(body)
-    +DELETE_api_interactions_type_id_reactions_reactionType()
-    +POST_api_interactions_type_id_comments(body)
-    +PATCH_api_interactions_comments_commentId(body)
-    +DELETE_api_interactions_comments_commentId()
-    +POST_api_interactions_type_id_saves(favorite)
-    +POST_api_interactions_type_id_shares(channel, sessionId, expiresAt)
-    +POST_api_interactions_type_id_remixes()
-    +GET_api_interactions_type_id_counters()
-    +GET_s_token_link_externo_publico()
+    +POST_api_copilot_tasks(input)
+    +POST_api_copilot_projects(context)
+    +POST_api_copilot_suggestions_id_accept()
+    +POST_api_copilot_suggestions_id_discard(reason)
+  }
+  class ProfileController {
+    <<controller>>
+    +GET_api_me_profile()
+    +GET_api_users_username_profile()
   }
 }
 
 namespace ws_infrastructure {
-  class RedisCounterAdapter {
+  class ClaudeProvider {
     <<adapter>>
   }
-  class S3StorageAdapter {
+  class GeminiProvider {
     <<adapter>>
   }
-  class CassandraNotificationAdapter {
+  class LocalEngine {
+    <<adapter>>
+  }
+  class RedisQuotaAdapter {
     <<adapter>>
   }
 }
 
-Reaction --> ReactionType
-Reaction --> TargetType
-Comment --> TargetType
-Comment "*" --> "0..1" Comment : parentCommentId thread
-SavedItem --> TargetType
-Share --> ShareChannel
-Share --> TargetType
-Share "1" --> "0..1" MuralEntry : channel MURAL
-Share "1" --> "0..1" MessageAttachment : channel SESSAO_DECIA
-Remix --> TargetType : sourceType e resultType
-Remix ..> TaskItem : resultId com originalTaskId
-Remix ..> ProjectScheme : resultId com originalProjectId
-Reaction ..> TaskItem : targetId quando TASK
-Reaction ..> ProjectScheme : targetId quando PROJECT
-Reaction ..> AnnualPlan : targetId quando PLAN
-Notification "*" --> "1" TaskItem : resourceId dono notificado
-TaskItem --> Visibility
-ProjectScheme --> Visibility
-AnnualPlan --> Visibility
-
-InteractionController ..> SocialService
-SocialService ..> MuralService : MURAL
-SocialService ..> DeciaSessionService : SESSAO_DECIA
-SocialService ..> MediaStoragePort : LINK_EXTERNO imagem
-SocialService ..> CounterCachePort
-SocialService ..> NotificationService : AFTER_COMMIT
-SocialService ..> ReputationService : AFTER_COMMIT
-SocialService ..> Department : chefe exclui comentário
-SocialService ..> DepartmentMembership : visibilidade DEPARTAMENTO
-NotificationService ..> Notification
-ReputationService ..> DeliberativeProfile
-RedisCounterAdapter ..|> CounterCachePort
-S3StorageAdapter ..|> MediaStoragePort
-CassandraNotificationAdapter ..> Notification : notifications_by_user TTL
-
-note for Reaction "tabela reactions · único actorId + targetType + targetId + reactionType = CURTIR (CA01) · tipos qualitativos (CA02)"
-note for Comment "tabela comments · thread, edição, exclusão pelo autor ou chefe, menções notificam (CA03)"
-note for Share "tabela shares · MURAL → MuralEntry, SESSAO_DECIA → MessageAttachment, LINK_EXTERNO com externalToken, expiresAt e imageMediaId (CA05)"
-note for SocialService "checkVisibility: PRIVADA só dono, DEPARTAMENTO só membros, EMPRESA só mesma empresa (CA08) · contadores em Redis + colunas desnormalizadas (CA07)"
+CopilotController --> CopilotService
+CopilotService --> AutopilotService
+CopilotService --> AiEngine
+CopilotService --> Guard
+AiEngine --> AiBudget
+AiEngine --> AiProviderPort
+AiEngine --> QuotaPort
+AiEngine ..> AiInferenceLog : grava sempre
+QuotaPort ..> AiQuota
+CopilotService ..> FeasibilitySheet : cria PROPOSTA
+FeasibilitySheet "0..1" --> "0..1" ProjectScheme : resultingProjectId
+FeasibilitySheet "0..1" --> "0..1" TaskItem : resultingTaskId ESTUDO_TECNICO_PRELIMINAR
+CopilotService ..> TaskItem : RASCUNHO sourceKind AUTOPILOT
+CopilotService ..> ProjectScheme : RASCUNHO origin AUTOPILOTO
+ProjectScheme "1" *-- "0..*" ProjectTask
+CopilotService ..> Insight : lacunas do acervo
+ProfileController --> ProfileService
+ProfileService ..> User
+ProfileService ..> DeliberativeProfile
+ProfileService ..> DailyTask
+ClaudeProvider ..|> AiProviderPort
+GeminiProvider ..|> AiProviderPort
+LocalEngine ..|> AiProviderPort
+RedisQuotaAdapter ..|> QuotaPort
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph LU["Usuário"]
-    U1["Aciona uma ação no card: curtir, reagir, comentar, salvar, compartilhar ou remixar"]
-    U2["Dono abre o card ou o perfil"]
+  subgraph ATOR["Ator (EMPREGADO · CHEFE · EMPRESA)"]
+    A0([Clica Sugerir com o Copilot]) --> A1{"O que pedir?"}
+    A1 -->|tarefas| A2["Cola frase, e-mail ou protocolo · ou usa o contexto atual"]
+    A1 -->|projetos| A3["Pede projetos sugeridos para o departamento"]
+    A4{"Aceitar, editar ou descartar?"}
+    A4 -->|descartar| A5["Informa o motivo"]
+    A4 -->|aceitar| A6["Abre no criador ou na Mesa"]
   end
 
-  subgraph LW["Web / BFF (Next.js App Router)"]
-    W1["Atualização otimista do contador e do estado do botão"]
-    W2["Mensagem: item sem permissão para interagir"]
-    W3["Contadores em tempo quase real: curtidas, comentários, salvos, compartilhamentos, remixes"]
-    W4["Autor original vê remixado por N pessoas"]
+  subgraph FE["Next.js / BFF (app/(shell)/autopilot · tasks/new · projects/new · desk)"]
+    F1["CopilotPanel com Spark ✦ animada enquanto gera"]
+    F2["POST /api/copilot/tasks"]
+    F3["POST /api/copilot/projects"]
+    F4["Lista de sugestões: TaskCard mini com explicação · ProjectCard com Ficha de Viabilidade"]
+    F5["POST /suggestions/{id}/accept ou /discard"]
   end
 
-  subgraph LA["ws-application"]
-    A1["SocialService.checkVisibility"]
-    A2{"PRIVADA e ator não é dono? DEPARTAMENTO e ator não é membro? EMPRESA e outra empresa?"}
-    A3["403 ACESSO_NEGADO"]
-    A4{"Qual ação?"}
-    A5["toggleLike: existe Reaction CURTIR? remove, senão insere — índice único"]
-    A6["react: insere Reaction UTIL / BEM_FUNDAMENTADO / INOVADOR / CONFORME, 1 por tipo"]
-    A7["comment: Comment com parentCommentId opcional, mentionsJson"]
-    A8{"Editar ou excluir: ator é autor? ou chefe do departamento do alvo?"}
-    A9["403 ACESSO_NEGADO"]
-    A10["editComment editedAt / deleteComment deletedBy, active false"]
-    A11["save: SavedItem com favorite"]
-    A12{"Canal do compartilhamento"}
-    A13["MURAL: MuralService.postShare → MuralEntry COMPARTILHAMENTO"]
-    A14["SESSAO_DECIA: DeciaSessionService.attachToSession → MessageAttachment"]
-    A15["LINK_EXTERNO: externalToken, expiresAt, MediaStoragePort.renderShareImage capa + resumo"]
-    A16{"Alvo é PUBLICA?"}
-    A17["422 REMIX_SOMENTE_PUBLICO"]
-    A18["remix: cópia com originalTaskId / originalProjectId, origin REMIX, crédito visível; Remix; remixesCount + 1"]
-    A19["CounterCachePort.incr + UPDATE coluna desnormalizada"]
-    A20["AFTER_COMMIT InteractionCreated"]
-    A21["NotificationService.notifyOwner: groupKey = dono + tipo + hora; notifyMentions"]
-    A22["ReputationService.onQualityReaction se BEM_FUNDAMENTADO ou CONFORME → métrica de qualidade do DeliberativeProfile"]
+  subgraph WEB["ws-web · CopilotController"]
+    W1["JWT · CorrelationIdFilter · rate limit por usuário"]
+    W2["GlobalExceptionHandler"]
   end
 
-  subgraph LP["Persistência"]
-    P1[("MySQL: reactions, comments, saved_items, shares, remixes + tasks/project_schemes/annual_plans contadores")]
-    P2[("Redis: counters:{type}:{id}")]
-    P3[("MySQL: mural_entries · message_attachments · S3: imagem do link")]
-    P4[("Cassandra: notifications_by_user TTL · MySQL: deliberative_profiles")]
+  subgraph APP["ws-application · CopilotService"]
+    P1["Guard.requireSameCompany · requireOwner do contexto"]
+    P2{"Contexto tem tarefa RESTRITO/SIGILOSO?"}
+    P2 -->|sim| P3["Força LocalEngine + aviso"]
+    P2 -->|não| P4["Masking de dados pessoais"]
+    P5{"QuotaPort.tryConsume ok?"}
+    P5 -->|não| E1["429 COTA_ESGOTADA + atalho para a Loja"]
+    P6{"AiBudget.reserve ok?"}
+    P6 -->|não| E2["503 IA_INDISPONIVEL (teto diário, Q-50)"]
+    P7["Monta contexto: acervo, perfil deliberativo, eixos sem projeto, decisões sem projeto, modelos chancelados"]
+    P8["Aceitar: TaskItem RASCUNHO sourceKind AUTOPILOT ou ProjectScheme RASCUNHO origin AUTOPILOTO + ProjectTask por fase"]
+    P9{"Descartar com motivo?"}
+    P9 -->|vazio| E3["422 VALIDACAO details.reason"]
+    P9 -->|ok| P10["FeasibilitySheet DESCARTADA + motivo alimenta próximas sugestões"]
   end
 
-  U1 --> A1 --> A2
-  A2 -->|"sim"| A3 --> W2
-  A2 -->|"não"| A4
-  A4 -->|"curtir"| A5
-  A4 -->|"reagir"| A6
-  A4 -->|"comentar"| A7
-  A4 -->|"editar/excluir comentário"| A8
-  A8 -->|"não"| A9
-  A8 -->|"sim"| A10
-  A4 -->|"salvar"| A11
-  A4 -->|"compartilhar"| A12
-  A12 -->|"MURAL"| A13 --> P3
-  A12 -->|"SESSAO_DECIA"| A14 --> P3
-  A12 -->|"LINK_EXTERNO"| A15 --> P3
-  A4 -->|"remixar"| A16
-  A16 -->|"não"| A17
-  A16 -->|"sim"| A18
-  A5 --> P1
-  A6 --> P1
-  A7 --> P1
-  A10 --> P1
-  A11 --> P1
-  A13 --> P1
-  A14 --> P1
-  A15 --> P1
-  A18 --> P1
-  P1 --> A19 --> P2 --> W3
-  A19 --> W1
-  P1 --> A20
-  A20 --> A21 --> P4
-  A20 --> A22 --> P4
-  A18 --> W4
-  U2 --> W3
+  subgraph IA["AiEngine (AUTOPILOT_TAREFAS · AUTOPILOT_PROJETO)"]
+    I1["Claude (primário)"] -->|falha ou circuito aberto| I2["Gemini (alternativo)"] -->|falha| I3["LocalEngine: regras + modelos chancelados + PERT/CPM/Monte Carlo"]
+    I4["AiInferenceLog (modelo, custo, latência, fallbackUsed, maskedFields)"]
+    I5["Resposta com explicação, confiança e citações RF33"]
+  end
 
-  classDef err fill:#ffe3e3,stroke:#c0392b,color:#5a1a12
-  class A3,A9,A17 err
+  subgraph DB["Persistência"]
+    D1[("MySQL feasibility_sheets · tasks · project_schemes · ai_inference_log")]
+    D2[("Redis quota:{scope}:{id}:{month} · circuit state · flag redis.enabled")]
+    D3[("OpenSearch ws-memory (modelos semelhantes) · flag opensearch.enabled")]
+  end
+
+  A2 --> F1 --> F2 --> W1 --> P1 --> P2
+  A3 --> F1 --> F3 --> W1 --> P1
+  P3 --> P5
+  P4 --> P5
+  P5 -->|sim| P6 -->|sim| P7 --> I1
+  P7 --> D3
+  I1 --> I4
+  I2 --> I4
+  I3 --> I4
+  I4 --> I5 --> D1 --> F4 --> A4
+  P5 --> D2
+  A5 --> F5 --> W1 --> P9
+  A6 --> F5 --> W1 --> P8 --> D1
+  P10 --> D1
+  E1 --> W2
+  E2 --> W2
+  E3 --> W2
 ```
 
 ## 3. Diagrama de sequência
@@ -401,148 +321,74 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário
-  actor O as Dono do item
-  participant NX as Next.js (App Router)
+  participant U as Usuário
+  participant FE as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
+  participant AI as AiEngine
   participant DB as Repository/MySQL
   participant R as Redis
-  participant CS as Cassandra
-  participant S3 as S3
-  participant DE as DomainEvents (AFTER_COMMIT)
+  participant OS as OpenSearch
+  participant EV as DomainEvents (AFTER_COMMIT)
 
-  U->>NX: curte o projeto P1 no card (CA01)
-  NX->>NX: atualização otimista do contador (CA07)
-  NX->>C: POST /api/interactions/PROJECT/P1/reactions {reactionType CURTIR}
-  C->>S: SocialService.toggleLike(actorId, PROJECT, P1)
-  S->>DB: project_schemes P1 (visibility, ownerId, departmentId)
-  S->>S: checkVisibility(actor, P1)
-  alt P1 PRIVADA de outra pessoa, ou DEPARTAMENTO sem ser membro (CA08)
-    S-->>C: 403 ACESSO_NEGADO
-    C-->>NX: 403
-    NX-->>U: desfaz a atualização otimista, mensagem
-  else permitido
-    S->>DB: SELECT reactions WHERE actorId AND PROJECT AND P1 AND CURTIR (índice único)
-    alt já curtido
-      S->>DB: DELETE reactions — descurtir
-      S->>R: DECR counters:PROJECT:P1:likes
-      S->>DB: UPDATE project_schemes SET likesCount = likesCount - 1
-    else ainda não
-      S->>DB: INSERT reactions (CURTIR, actorHypeAtTime)
-      S->>R: INCR counters:PROJECT:P1:likes
-      S->>DB: UPDATE project_schemes SET likesCount = likesCount + 1
-      S->>DE: publish InteractionCreated {REACTION, CURTIR}
+  U->>FE: cola ofício e clica Sugerir tarefas
+  FE->>C: POST /api/copilot/tasks {text, projectId}
+  C->>S: CopilotService.suggestTasks(actor, input)
+  S->>S: Guard.requireSameCompany(actor, projeto.companyId)
+  S->>DB: carrega acervo, perfil deliberativo, modelos chancelados do departamento
+  S->>R: QuotaPort.tryConsume(USER, actor, 1)
+  alt cota esgotada e sem créditos comprados
+    S-->>C: 429 COTA_ESGOTADA
+    C-->>FE: aviso + atalho /store (RF42.CA06)
+  else cota ok
+    S->>AI: run(AUTOPILOT_TAREFAS, contexto mascarado, mode ECONOMIA)
+    alt contexto contém RESTRITO ou SIGILOSO
+      AI->>AI: roteia só para LocalEngine (BLOQUEADO_SIGILO para externos)
+    else provedor externo
+      AI->>OS: busca modelos semelhantes (ws-memory, RF33)
+      AI->>AI: Claude → fallback Gemini → fallback LocalEngine
     end
-    S-->>C: 200 {liked, likesCount}
-    C-->>NX: 200
+    AI->>DB: insert ai_inference_log
+    AI-->>S: N TaskDraft com explicação e confiança ✦
+    S-->>C: 200 sugestões (nada persistido ainda)
+    C-->>FE: lista de TaskCard mini com Spark
   end
 
-  U->>NX: reage BEM_FUNDAMENTADO à tarefa T3 (CA02)
-  NX->>C: POST /api/interactions/TASK/T3/reactions {reactionType BEM_FUNDAMENTADO}
-  C->>S: SocialService.react
-  S->>DB: INSERT reactions (BEM_FUNDAMENTADO)
-  S->>DE: publish InteractionCreated {REACTION, BEM_FUNDAMENTADO}
-  S-->>C: 201
-
-  U->>NX: comenta em T3 mencionando @ana e responde a um comentário (CA03)
-  NX->>C: POST /api/interactions/TASK/T3/comments {contentMd, parentCommentId, mentions [ana]}
-  C->>S: SocialService.comment
-  S->>DB: INSERT comments (parentCommentId, mentionsJson)
-  S->>R: INCR counters:TASK:T3:comments
-  S->>DE: publish CommentCreated
-  S-->>C: 201 Comment
-  O->>NX: chefe do departamento exclui o comentário
-  NX->>C: DELETE /api/interactions/comments/{commentId}
-  C->>S: SocialService.deleteComment(actorId chefe)
-  S->>DB: comments + Department.headUserId do alvo
-  alt ator não é autor nem chefe do departamento
-    S-->>C: 403 ACESSO_NEGADO
-  else autorizado
-    S->>DB: UPDATE comments SET active false, deletedBy
+  U->>FE: aceita 3 tarefas e descarta 1 (motivo)
+  FE->>C: POST /api/copilot/suggestions/{id}/accept
+  C->>S: CopilotService.accept(actor, id)
+  S->>DB: insert tasks (RASCUNHO, sourceKind AUTOPILOT, aiGenerated, aiInferenceId)
+  S->>EV: TaskCreated → PipelineJob THUMBNAIL
+  S-->>FE: redireciona para /tasks/new?draft=
+  FE->>C: POST /api/copilot/suggestions/{id}/discard {reason}
+  C->>S: CopilotService.discard(actor, id, reason)
+  alt motivo vazio
+    S-->>C: 422 VALIDACAO details.reason
+  else ok
+    S->>DB: update feasibility_sheets status DESCARTADA, discardReason
     S-->>C: 204
   end
-
-  U->>NX: salva T3 como favorita (CA04)
-  NX->>C: POST /api/interactions/TASK/T3/saves {favorite true}
-  C->>S: SocialService.save
-  S->>DB: INSERT saved_items (favorite) — aparece em Tarefas salvas RF19
-  S->>R: INCR counters:TASK:T3:saves
-  S-->>C: 201
-
-  U->>NX: compartilha P1 por link externo com expiração em 7 dias (CA05)
-  NX->>C: POST /api/interactions/PROJECT/P1/shares {channel LINK_EXTERNO, expiresAt}
-  C->>S: SocialService.share
-  S->>S3: MediaStoragePort.renderShareImage(P1) — capa + resumo
-  S3-->>S: imageMediaId
-  S->>DB: INSERT shares (channel LINK_EXTERNO, externalToken, expiresAt, imageMediaId)
-  S->>R: INCR counters:PROJECT:P1:shares
-  S-->>C: 201 {url /s/{externalToken}, expiresAt}
-  Note over S,DB: channel MURAL → MuralService.postShare cria MuralEntry COMPARTILHAMENTO (RF27). channel SESSAO_DECIA → DeciaSessionService.attachToSession cria MessageAttachment (RF29).
-
-  U->>NX: remixa o projeto público P1 (CA06)
-  NX->>C: POST /api/interactions/PROJECT/P1/remixes
-  C->>S: SocialService.remix(actorId, PROJECT, P1)
-  alt P1 não é PUBLICA
-    S-->>C: 422 REMIX_SOMENTE_PUBLICO
-  else pública
-    S->>DB: INSERT project_schemes (cópia, origin REMIX, originalProjectId P1, ownerId ator)
-    S->>DB: INSERT project_tasks copiados
-    S->>DB: INSERT remixes (sourceType PROJECT, sourceId P1, resultType PROJECT, resultId)
-    S->>R: INCR counters:PROJECT:P1:remixes
-    S->>DB: UPDATE project_schemes SET remixesCount + 1 WHERE id = P1
-    S->>DE: publish RemixCreated
-    S-->>C: 201 cópia com crédito visível
-  end
-
-  DE->>CS: INSERT notifications_by_user (recipient dono, category SOCIAL, groupKey dono + tipo + hora) (CA09)
-  DE->>DB: UPDATE deliberative_profiles — reações BEM_FUNDAMENTADO e CONFORME pesam na métrica de qualidade (CA09)
-  O->>NX: abre o card de P1
-  NX->>C: GET /api/interactions/PROJECT/P1/counters
-  C->>S: SocialService.counters
-  S->>R: MGET counters:PROJECT:P1:*
-  S-->>C: 200 {likes, comments, saves, shares, remixes} (CA07)
-  NX-->>O: "remixado por N pessoas", notificações agrupadas por hora
 ```
 
 ## 4. Máquina de estados
 
-O RF26 não tem máquina de estados própria. A entidade com ciclo de vida mais rico que ele altera é o **`Comment`** (`active`, `editedAt`, `deletedBy`), mostrado abaixo; o segundo diagrama aninhado mostra o ciclo do **`Share` LINK_EXTERNO** (`expiresAt`) e o toggle de **`Reaction` CURTIR**.
+Entidade central: `FeasibilitySheet.status` (`SheetStatus`) para as sugestões de projeto; as sugestões de tarefa não têm estado persistido até serem aceitas (nascem como `TaskItem` RASCUNHO, máquina do RF41). Corpo do card (perfil, RF19) não tem estado próprio.
 
 ```mermaid
 stateDiagram-v2
-  state "Comment" as CM {
-    [*] --> PUBLICADO : POST comments, raiz ou resposta com parentCommentId
-    PUBLICADO --> PUBLICADO : nova resposta na thread
-    PUBLICADO --> EDITADO : autor edita, editedAt
-    EDITADO --> EDITADO : autor edita novamente
-    PUBLICADO --> EXCLUIDO : autor ou chefe do departamento exclui, deletedBy, active false
-    EDITADO --> EXCLUIDO : autor ou chefe do departamento exclui
-    EXCLUIDO --> [*]
-  }
-  state "Share LINK_EXTERNO" as SH {
-    [*] --> LINK_ATIVO : POST shares LINK_EXTERNO, externalToken, imagem capa + resumo
-    LINK_ATIVO --> LINK_EXPIRADO : passa expiresAt
-    LINK_ATIVO --> LINK_REVOGADO : autor revoga
-    LINK_EXPIRADO --> [*]
-    LINK_REVOGADO --> [*]
-  }
-  state "Reaction CURTIR" as RC {
-    [*] --> NAO_CURTIDO
-    NAO_CURTIDO --> CURTIDO : toggleLike insere, índice único
-    CURTIDO --> NAO_CURTIDO : toggleLike remove
-  }
-  note right of CM
-    Menções em mentionsJson geram Notification (CA03).
-    Exclusão por terceiro sem papel de chefe: 403 ACESSO_NEGADO.
+  [*] --> PROPOSTA: Copilot devolve candidato com Ficha de Viabilidade ✦ (RF26.CA02)
+  PROPOSTA --> PROPOSTA: usuário edita título, tarefas ou premissas (RF26.CA03)
+  PROPOSTA --> ACEITA: aceitar → ProjectScheme RASCUNHO origin AUTOPILOTO + tarefa ESTUDO_TECNICO_PRELIMINAR (RF26.CA05)
+  PROPOSTA --> DESCARTADA: descartar com motivo obrigatório (422 sem motivo)
+  ACEITA --> [*]
+  DESCARTADA --> [*]
+  note right of PROPOSTA
+    Nada é persistido no acervo até ACEITA.
+    Cota debitada na geração, não no aceite.
   end note
-  note right of SH
-    Canais MURAL e SESSAO_DECIA não expiram:
-    viram MuralEntry e MessageAttachment (CA05).
-  end note
-  note right of RC
-    1 reação CURTIR por usuário e alvo (CA01).
-    Reações qualitativas seguem a mesma regra por tipo (CA02).
+  note right of DESCARTADA
+    discardReason alimenta o próximo
+    suggestProjects do mesmo usuário.
   end note
 ```
 
@@ -550,74 +396,67 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js"]
-    F1["components/ui: InteractionBar, LikeButton, ReactionPicker UTIL BEM_FUNDAMENTADO INOVADOR CONFORME, CommentThread com menções, SaveButton favorito, ShareSheet Mural / Sessão DECIA / Link externo, RemixButton, CountersRow, CreditBadge"]
-    F2["Usado em: app/acervo, app/projects, app/plans, app/mural, app/search, app/profile sub-abas Tarefas salvas e Projetos salvos"]
-    F3["app/s/[token] — página pública do link externo com imagem exportada"]
+  subgraph FRONT["Frontend Next.js 15"]
+    R1["app/(shell)/autopilot · tasks/new · projects/new · desk (botão Copilot)"]
+    R2["components: CopilotPanel · Spark ✦ · TaskCard mini · ProjectCard · FeasibilitySheetView · Dialog (motivo)"]
+    R3["app/(shell)/profile · u/[username] (corpo do card, RF19)"]
+    BFF["app/bff"]
+    R1 --> R2 --> BFF
+    R3 --> BFF
   end
-
   subgraph WEB["ws-web"]
-    C1["InteractionController — /api/interactions/{type}/{id}/reactions|comments|saves|shares|remixes|counters"]
-    C2["PublicShareController — /s/{externalToken}"]
+    CC["CopilotController (@Operation RF26.CA01-CA05)"]
+    PCO["ProfileController (RF19.CA01-CA07)"]
+    SEC["SecurityConfig · JwtConfig · CorrelationIdFilter · GlobalExceptionHandler (main)"]
   end
-
-  subgraph APP["ws-application"]
-    S1["SocialService"]
-    S2["MuralService RF27"]
-    S3["DeciaSessionService RF29"]
-    S4["NotificationService plataforma"]
-    S5["ReputationService RF43"]
-    P1["CounterCachePort"]
-    P2["MediaStoragePort"]
+  subgraph APPL["ws-application"]
+    CS["ai/CopilotService"]
+    AS["projects/AutopilotService (RF30)"]
+    AIE["ai/AiEngine (Strategy + Chain) · AiBudget · Masking (main)"]
+    PS["identity/ProfileService"]
+    GD["security/Guard (sec-b3)"]
+    PORTS["ports: AiProviderPort · QuotaPort · SearchIndexPort"]
   end
-
   subgraph DOM["ws-domain"]
-    D1["Reaction · Comment · SavedItem · Share · Remix"]
-    D2["TaskItem · ProjectScheme · AnnualPlan contadores e visibilidade · MessageAttachment · MuralEntry"]
-    D3["Notification · DeliberativeProfile · Department · DepartmentMembership · DomainEventOutbox"]
+    ENT["FeasibilitySheet · AiInferenceLog · AiQuota · TaskItem · ProjectScheme (planejado) · User (sec-b3)"]
   end
-
-  subgraph INFRA["ws-infrastructure/*"]
-    I1[("persistence-mysql: reactions, comments, saved_items, shares, remixes, mural_entries, message_attachments, tasks, project_schemes, annual_plans, deliberative_profiles")]
-    I2[("cache-redis: RedisCounterAdapter counters:{type}:{id}:*")]
-    I3[("persistence-cassandra: notifications_by_user TTL, timeline_by_user")]
-    I4[("storage-s3: imagem exportada do link externo")]
-    I5["platform: outbox AFTER_COMMIT InteractionCreated, CommentCreated, RemixCreated"]
+  subgraph INFRA["ws-infrastructure"]
+    AIC["ai-providers/ai-claude (flag ai.provider.claude)"]
+    AIG["ai-providers/ai-gemini (flag ai.provider.gemini)"]
+    AIL["ai-providers/ai-local LocalEngine (ai.local.only)"]
+    RD["cache-redis quotas · circuit state"]
+    OSA["search-opensearch ws-memory"]
+    MY["persistence-mysql"]
   end
-
-  F1 --- F2
-  F1 -->|"HTTPS/JSON"| C1
-  F3 -->|"HTTPS"| C2
-  C1 --> S1
-  C2 --> S1
-  S1 --> S2
-  S1 --> S3
-  S1 --> P1
-  S1 --> P2
-  S1 --> D1
-  S1 --> D2
-  S1 --> D3
-  D3 --> I5
-  I5 --> S4
-  I5 --> S5
-  S4 --> I3
-  S5 --> I1
-  D1 --> I1
-  D2 --> I1
-  P1 --> I2
-  P2 --> I4
+  BFF --> CC --> CS
+  BFF --> PCO --> PS
+  CC --> SEC
+  CS --> AS
+  CS --> AIE --> PORTS
+  CS --> GD
+  CS --> ENT --> MY --> MYSQL[("MySQL 8")]
+  PORTS --> AIC --> CLAUDE["Claude"]
+  PORTS --> AIG --> GEM["Gemini"]
+  PORTS --> AIL
+  PORTS --> RD --> REDIS[("Redis")]
+  PORTS --> OSA --> OPENS[("OpenSearch")]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
-|---|---|
-| RF26.CA01 | `Reaction` (nota índice único actorId + targetType + targetId + CURTIR), `SocialService.toggleLike` · Atividades `A4 (curtir) → A5 → P1` · Sequência `POST …/PROJECT/P1/reactions {CURTIR}` → `alt já curtido → DELETE` / `INSERT reactions` · Máquina *Reaction CURTIR* · Componente `LikeButton` |
-| RF26.CA02 | Enum `ReactionType` (UTIL, BEM_FUNDAMENTADO, INOVADOR, CONFORME), `SocialService.react` · Atividades `A4 (reagir) → A6` · Sequência `POST …/TASK/T3/reactions {BEM_FUNDAMENTADO}` · Nota de *Reaction CURTIR* · Componente `ReactionPicker` |
-| RF26.CA03 | `Comment` (parentCommentId, mentionsJson, editedAt, deletedBy, active), `Department.headUserId`, `SocialService.comment/editComment/deleteComment`, `NotificationService.notifyMentions` · Atividades `A7`, `A8 → A9 403 / A10` · Sequência `POST …/comments {contentMd, parentCommentId, mentions}` e `DELETE /api/interactions/comments/{id}` com `alt ator não é autor nem chefe → 403` · Máquina *Comment* (PUBLICADO → EDITADO → EXCLUIDO) · Componente `CommentThread` |
-| RF26.CA04 | `SavedItem` (favorite), `SocialService.save` · Atividades `A4 (salvar) → A11` · Sequência `POST …/TASK/T3/saves {favorite true}` → "aparece em Tarefas salvas RF19" · Componentes `SaveButton`, `app/profile sub-abas Tarefas salvas e Projetos salvos` |
-| RF26.CA05 | `Share` (channel, sessionId, externalToken, expiresAt, imageMediaId), enum `ShareChannel`, `MuralEntry`, `MessageAttachment`, `MuralService.postShare`, `DeciaSessionService.attachToSession`, `MediaStoragePort.renderShareImage` · Atividades `A12 → A13 / A14 / A15 → P3` · Sequência `POST …/PROJECT/P1/shares {LINK_EXTERNO, expiresAt}` → `renderShareImage` → `INSERT shares` + nota MURAL / SESSAO_DECIA · Máquina *Share LINK_EXTERNO* · Componentes `ShareSheet`, `PublicShareController /s/{token}`, `app/s/[token]`, `storage-s3` |
-| RF26.CA06 | `Remix`, `TaskItem.originalTaskId`, `ProjectScheme.originalProjectId / origin REMIX`, `SocialService.remix` · Atividades `A16 → A17 422 REMIX_SOMENTE_PUBLICO / A18 → W4` · Sequência `POST …/PROJECT/P1/remixes` → `alt não é PUBLICA → 422` / `INSERT project_schemes (cópia, origin REMIX, originalProjectId)`, `INSERT remixes`, "remixado por N pessoas" · Componentes `RemixButton`, `CreditBadge` |
-| RF26.CA07 | `TaskItem/ProjectScheme/AnnualPlan.likesCount … remixesCount`, `CounterCachePort`, `RedisCounterAdapter`, `SocialService.counters` · Atividades `A19 → P2 → W3`, `W1` (otimista) · Sequência `INCR/DECR counters:…`, `UPDATE … likesCount`, `GET …/counters` → `MGET` · Componentes `CountersRow`, `cache-redis` |
-| RF26.CA08 | `SocialService.checkVisibility` (nota), enum `Visibility`, `DepartmentMembership` · Atividades `A1 → A2 → A3 403 ACESSO_NEGADO → W2` · Sequência `checkVisibility(actor, P1)` → `alt P1 PRIVADA de outra pessoa, ou DEPARTAMENTO sem ser membro → 403` |
-| RF26.CA09 | `Notification.groupKey` (dono + tipo + hora, category SOCIAL), `DeliberativeProfile`, `NotificationService.notifyOwner`, `ReputationService.onQualityReaction`, `CassandraNotificationAdapter` · Atividades `A20 → A21 → P4`, `A20 → A22 → P4` · Sequência `DE->>CS INSERT notifications_by_user (… groupKey dono + tipo + hora)` e `DE->>DB UPDATE deliberative_profiles — BEM_FUNDAMENTADO e CONFORME pesam` · Componentes `NotificationService`, `ReputationService RF43`, `persistence-cassandra` |
+| CA | Classe | Passo | Mensagem | Transição | Componente |
+|---|---|---|---|---|---|
+| RF26.CA01 (a confirmar) | `CopilotService.suggestTasks`, `TaskItem` RASCUNHO, `AiCapability AUTOPILOT_TAREFAS` | A2 → F2 → P1 → P7 → I1..I5 → F4 | 1–20 | — (tarefa segue máquina do RF41) | `CC`, `CS`, `AIE` |
+| RF26.CA02 (a confirmar) | `CopilotService.suggestProjects`, `FeasibilitySheet`, `AUTOPILOT_PROJETO` | A3 → F3 → P7 → I1..I5 | — (mesmo fluxo com /projects) | `[*] → PROPOSTA` | `CS`, `AS`, `FeasibilitySheetView` |
+| RF26.CA03 (a confirmar) | `AiInferenceLog`, `FeasibilitySheet.discardReason`, `CopilotService.discard` | A4 → A5 → F5 → P9 (422) → P10 | 21–31 | `PROPOSTA → DESCARTADA` · `PROPOSTA → self` | `Spark ✦`, `Dialog` |
+| RF26.CA04 (a confirmar) | `AiEngine.governance`, `Masking`, `LocalEngine`, `InferenceResult BLOQUEADO_SIGILO` | P2 → P3 · I1 → I2 → I3 | 11–14 | — | `AIE`, `AIL`, `AIC`, `AIG` |
+| RF26.CA05 (a confirmar) | `CopilotService.accept`, `SourceKind AUTOPILOT`, `SchemeOrigin AUTOPILOTO`, `AiQuota`, `QuotaPort` | A6 → P8 · P5 (429 COTA_ESGOTADA) | 6–9, 22–26 | `PROPOSTA → ACEITA` | `RD`, `CS` |
+| RF19.CA01 (corpo) | `User`, `ProfileService.self`, contadores | — (corpo do card, ver `RF6`/`_anterior/RF19`) | — | — | `R3`, `PCO`, `PS` |
+| RF19.CA02 (corpo) | `ProfileService.ofUser`, `Visibility`, `HypeVisibility` | — | — | — | `R3`, `Guard.requireSameCompany` |
+| RF19.CA03 (corpo) | filtros e paginação por sub-aba (querystring) | — | — | — | `R3` |
+| RF19.CA04 (corpo) | `DailyTask` único (userId, taskDate) | — (RF44) | — | — | `PS` |
+| RF19.CA05 (corpo) | `DeliberativeProfile.deltaJson` | — (RF43/RF45) | — | — | `PS` |
+| RF19.CA06 (corpo) | sub-abas institucionais EMPRESA/CHEFE | — (RF28) | — | — | `R3` |
+| RF19.CA07 (corpo) | i18n pt-BR/en/es, responsivo | — | — | — | `R3`, `lib/i18n` |
+
+Tela/aba: `/autopilot` (esqueleto em `app/(shell)/autopilot/page.tsx`) · `/insights` (esqueleto em `app/(shell)/insights/page.tsx`)

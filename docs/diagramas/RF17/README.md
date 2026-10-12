@@ -1,17 +1,21 @@
-# RF17 — Encerrar uma sessão de conversa e salvar seu histórico para análise de dados
-**HU:** HU17 · **Sprint (board Work Station):** 3 · **Equivalente FAI:** card RF17 não cita equivalente; pelo Mapa de equivalência o histórico encerrado alimenta a **Memória Institucional** (= FAI **RF26 Explorador Global**, via RF33) e o Dossiê de Transição (RF36 "usa o histórico RF17") · **Aba/rota:** DECIA — sessão › "Encerrar sessão" (`/decia/[sessionId]`), histórico em `/decia/[sessionId]/archive` (rotas a confirmar)
-**Critérios de aceite cobertos:** RF17.CA01 · RF17.CA02 · RF17.CA03 · RF17.CA04 · RF17.CA05 · RF17.CA06 (RF1–RF18 não têm CAs no board: derivados da HU17 + RF29.CA06, RF33.CA01/CA06, RF42 e marcados "CA a confirmar")
+# RF17 — Visualizar esquemas de tarefa & projetos criados por outros usuários na rede social do Work Station, através da aba "Buscar"
+**HU:** HU17 · **Sprint (board Work Station):** lista *Requisitos Funcionais* sem sprint atribuída (card renomeado em 2026-10-02; origem RF27 = Sprint 4; o card "SPRINT 3" cita "RF17 Encerrar sessão", escopo antigo preservado em `_anterior/RF17` — `RENUMERACAO.md`) · **Equivalente FAI:** RF8 Buscar/Explorar (busca textual com abas e contadores, "looks parecidos com este") · **Aba/rota:** Buscar (`/search`, abas PROJETOS · TAREFAS · PESSOAS · EMPRESAS · CHEFES DE DEPARTAMENTO) e páginas de leitura de esquema de terceiros (`/tasks/[id]`, `/projects/[id]`); API `GET /api/search?q=&tab=&filters…&page=`, `GET /api/search/suggestions`, `GET /api/projects/{id}/similar`, `GET /api/tasks/{id}`, `GET /api/projects/{id}`
+**Critérios de aceite cobertos:** RF17.CA01 … RF17.CA06 — corpo do card vazio: CAs derivados do título + HU17 + RF27 (CA03 busca, CA04 visibilidade, CA05 semântica); todos marcados "(CA a confirmar)". O Mural (RF27.CA01/CA02/CA06) continua no RF27. Todas as classes do RF são **(planejado)**; reais: `OpenSearchAdaptersConfig` (flag `opensearch.enabled`), `AiProvidersConfig`, `Guard`, `SecurityConfig`.
 
-> **HU17** — COMO administrador do sistema POSSO encerrar uma sessão de conversa e salvar todo o seu histórico para análise de dados PARA preservar o registro da deliberação e alimentar os indicadores e análises do sistema.
+> **HU17** — COMO usuário autenticado no sistema POSSO visualizar esquemas de tarefa ou projeto criados por outros usuários, chefes ou empresas na aba "Buscar/Explorar" PARA me inspirar em outras combinações e ampliar minhas referências de projetos.
 
-| CA | Enunciado (CA a confirmar) |
+A busca lê os índices OpenSearch `ws-tasks`, `ws-projects`, `ws-people` e `ws-orgs` (ARQUITETURA §3.2) com o mesmo `AccessPolicy.visibilityFilter` dos perfis (RF16), devolve 5 abas com contadores e abre o esquema de terceiro em **modo leitura** com crédito do autor. "Projetos parecidos" usa `AiEngine` capability `MEMORIA_BUSCA` (embedding) e kNN em `ws-memory` (RF33), com fallback textual. A indexação é assíncrona (`PipelineJob INDEXAR_BUSCA`, proposta) a partir dos eventos de publicação/alteração/arquivamento.
+
+## Critérios de aceite derivados da HU17 (todos "CA a confirmar")
+
+| CA | Enunciado (Dado / Quando / Então) |
 |---|---|
-| **RF17.CA01** | Dado sessão EM_REVISAO com `FinalDecision` VALIDADA (ou DEVOLVIDA com `ReopenRequest` RECUSADA), quando o administrador da sessão aciona "Encerrar sessão", então `status = ENCERRADA`, `closedAt` preenchido, o chat fica somente leitura (RF6 → `409 SESSAO_NAO_ATIVA`) e os participantes recebem `Notification` (DECIA). |
-| **RF17.CA02** | Dado sessão ATIVA/REABERTA **sem decisão**, quando o admin tenta encerrar, então o motivo é obrigatório (`422 VALIDACAO` sem motivo) e a sessão encerra "sem decisão" (flag em `analyticsSnapshotJson`); não-admin → `403 ACESSO_NEGADO`; sessão já ENCERRADA/ARQUIVADA → `409 SESSAO_JA_ENCERRADA`; decisão EM_REVISAO pendente → `409 REVISAO_PENDENTE`. |
-| **RF17.CA03** | Dado ENCERRADA, quando `SessionClosed` dispara AFTER_COMMIT, então `SessionLifecycleService` exporta mensagens (Cassandra), classificações, divergências, perguntas, resumo, decisão, revisão e artefatos para **JSON + PDF** em S3 (`MediaObject`), cria `SessionArchive` (`exportMediaId`, `messageCount`, `checksum` SHA-256, `analyticsSnapshotJson`) e a sessão passa a ARQUIVADA com `archiveMediaId`/`archivedAt`. |
-| **RF17.CA04** | Dado o arquivo criado, então `PipelineJob` INDEXAR_MEMORIA indexa a sessão em `ws-memory` (`InstitutionalMemoryDocument.sourceType = SESSAO`, metadados empresa/departamento/categoria/exercício/autor/data) e marca `indexedInMemory = true` (RF33.CA01); falha de indexação **não bloqueia** o encerramento e fica em `ai_inference_log` (RF33.CA06). |
-| **RF17.CA05** | Dado ENCERRADA com resumo PUBLICADO, então cada participante presente (`leftAt` nulo, ≥ 1 mensagem) recebe **+2 DP** (`PRESENCA_ENCERRADA`, idempotente, RF42.CA01) e `analyticsSnapshotJson` (mensagens por classe, divergências resolvidas/abertas, perguntas respondidas, tempo até decisão, fontes citadas) alimenta `MetricSnapshot` (RF18). |
-| **RF17.CA06** | Dado sessão ARQUIVADA, então o histórico permanece navegável a partir do rastro (RF29.CA06) e da aba Histórico mesmo após o TTL do Cassandra (`messageTtlDays`), lido do export em S3; `DeciaSession.archiveMediaId` e o `SessionArchive` são imutáveis (`audit_log`). |
+| **RF17.CA01** (CA a confirmar) | Dado um usuário autenticado em `/search`, quando digita um termo, então o sistema busca em título, descrição, tags e texto OCR (OpenSearch `ws-tasks`, `ws-projects`, `ws-people`, `ws-orgs`) e devolve **5 abas com contadores** (PROJETOS · TAREFAS · PESSOAS · EMPRESAS · CHEFES DE DEPARTAMENTO) em ≤ 1 s p95; termo vazio mostra sugestões (recentes, em alta, chancelados) via `GET /api/search/suggestions`. |
+| **RF17.CA02** (CA a confirmar) | Dado uma aba, quando aplico filtros (categoria, tipo, fase, departamento, exercício, chancelado, prazo) e pagino (20 por página), então a URL reflete `q`, `tab`, filtros e `page`; a tela mostra `Skeleton` ao carregar, `EmptyState` ilustrado e `ErrorState` com "tentar de novo" em erro (`503 BUSCA_INDISPONIVEL` quando o OpenSearch está fora ou a flag está desligada). |
+| **RF17.CA03** (CA a confirmar) | Dado os resultados, quando são devolvidos, então só contêm itens que o viewer pode ver (`AccessPolicy.visibilityFilter` aplicado como filtro da query): `PUBLICA` sempre; `EMPRESA` se mesma empresa; `DEPARTAMENTO` se membro; `PRIVADA` só os meus; `RASCUNHO` nunca aparece para terceiros; `accessClass` SIGILOSO nunca é indexado e RESTRITO só para o departamento dono. Resultados de outra empresa só se `PUBLICA`. |
+| **RF17.CA04** (CA a confirmar) | Dado um resultado de tarefa ou projeto de outro usuário, quando o abro, então vejo o esquema completo em **modo leitura** (ficha, fases e tarefas do projeto, capa, chancelas) com o **crédito do autor** (avatar + link para RF16/RF14/RF15), as ações inline do RF18/RF19 e "Levar ao meu acervo" (RF7/RF41.CA08); edição é `403 ACESSO_NEGADO`; item que ficou PRIVADA depois de indexado responde `404` e sai do índice. |
+| **RF17.CA05** (CA a confirmar) | Dado um projeto aberto, quando clico em "projetos parecidos com este", então o sistema gera o embedding (`AiEngine MEMORIA_BUSCA`) e faz kNN em `ws-memory` com o mesmo `visibilityFilter`, devolvendo até 10 projetos com score e motivo ("mesmo processo, 4 tarefas em comum"); sem IA disponível cai para "mais do mesmo processo/departamento" (busca textual); `AiInferenceLog` registra a inferência. |
+| **RF17.CA06** (CA a confirmar) | Dado que um autor publica, altera a visibilidade ou arquiva uma tarefa/projeto, quando a transação é confirmada, então o evento AFTER_COMMIT agenda `PipelineJob INDEXAR_BUSCA` (tipo proposto) e o índice reflete a mudança em ≤ 60 s; falha deixa o job `REPROCESSAR` sem afetar a operação do autor. |
 
 ## 1. Diagrama de classes
 
@@ -19,352 +23,274 @@
 classDiagram
   direction LR
 
-  class DeciaSession {
+  class SearchController {
+    <<controller>>
+    +search(q, tab, filters, page, CurrentUser) SearchResultView
+    +suggestions(CurrentUser) SuggestionsView
+    +similar(projectId, CurrentUser) List~SimilarProjectView~
+  }
+  class ReadOnlySchemeController {
+    <<controller>>
+    +task(id, CurrentUser) TaskReadView
+    +project(id, CurrentUser) ProjectReadView
+  }
+  class SearchService {
+    <<service>>
+    +search(SearchQuery, viewer) SearchResultView
+    +suggestions(viewer) SuggestionsView
+    -countersPerTab(q, viewer) Map
+  }
+  class SimilarProjectsService {
+    <<service>>
+    +similar(projectId, viewer) List~SimilarProjectView~
+    -fallbackTextual(project, viewer) List
+  }
+  class SchemeReadService {
+    <<service>>
+    +task(id, viewer) TaskReadView
+    +project(id, viewer) ProjectReadView
+    -creditOf(owner) AuthorCredit
+  }
+  class SearchIndexer {
+    <<service>>
+    +onPublished(target) void
+    +onVisibilityChanged(target) void
+    +onArchived(target) void
+    +run(PipelineJob) void
+  }
+  class AccessPolicy {
+    <<service>>
+    +visibilityFilter(viewer) VisibilityScope
+    +canView(viewer, item) boolean
+  }
+  class AiEngine {
+    <<service>>
+    +run(AiRequest) AiResponse
+    capability MEMORIA_BUSCA
+  }
+  class SearchIndexPort {
+    <<port>>
+    +search(index, query, scope, page) SearchPage
+    +count(index, query, scope) long
+    +index(doc) void
+    +delete(index, id) void
+    +knn(index, vector, scope, k) List
+  }
+  class SearchQuery {
+    <<value>>
+    +String q
+    +SearchTab tab
+    +Map filters
+    +int page
+    +int size
+  }
+  class VisibilityScope {
+    <<value>>
+    +UUID viewerId
+    +UUID companyId
+    +Set~UUID~ departmentIds
+    +Set~Visibility~ visibilities
+  }
+  class PipelineJobPort {
+    <<port>>
+    +enqueue(type, targetType, targetId) PipelineJob
+  }
+  class TaskRepositoryPort {
+    <<port>>
+    +findById(id) Optional
+  }
+  class ProjectRepositoryPort {
+    <<port>>
+    +findById(id) Optional
+  }
+
+  class TaskItem {
     <<entity>>
     +UUID id
-    +String topic
-    +UUID adminUserId
+    +UUID ownerId
+    +UUID departmentId
+    +String title
+    +String summary
+    +Set~String~ tags
+    +TaskCategory category
+    +TaskType type
+    +TaskState state
+    +Visibility visibility
+    +AccessClassification accessClass
+    +JSON sealIdsJson
+  }
+  class ProjectScheme {
+    <<entity>>
+    +UUID id
+    +UUID ownerId
+    +UUID departmentId
+    +String title
+    +String objective
+    +Set~ProcessTag~ processTags
+    +ProjectStatus status
+    +ProjectPhase currentPhase
+    +Visibility visibility
+    +int exerciseYear
+    +JSON sealIdsJson
+  }
+  class User {
+    <<entity>>
+    +String username
+    +String fullName
+    +String jobTitle
+    +ProfileType profileType
     +UUID companyId
     +UUID departmentId
-    +SessionStatus status
-    +Instant startedAt
-    +Instant closedAt
-    +Instant archivedAt
-    +int messageCount
-    +int participantCount
-    +int messageTtlDays
-    +UUID archiveMediaId
-    +boolean indexedInMemory
   }
-  class SessionArchive {
+  class Company {
     <<entity>>
-    +UUID id
-    +UUID sessionId
-    +UUID exportMediaId
-    +int messageCount
-    +String checksum
-    +Instant archivedAt
-    +String analyticsSnapshotJson
+    +String legalName
+    +String slug
   }
-  class SessionParticipant {
+  class Department {
     <<entity>>
-    +UUID id
-    +UUID sessionId
-    +UUID userId
-    +ParticipantRole role
-    +Instant leftAt
+    +String name
+    +String acronym
+    +UUID headUserId
   }
-  class SessionMessage {
+  class TaskAttachment {
     <<entity>>
-    +TIMEUUID id
-    +UUID sessionId
-    +UUID authorId
-    +String bodyMd
-    +Instant sentAt
-    +UUID classificationId
+    +String ocrTextRef
   }
-  class FinalDecision {
-    <<entity>>
-    +UUID id
-    +UUID sessionId
-    +DecisionStatus status
-    +String stampJson
-    +String citationsJson
-  }
-  class ReopenRequest {
-    <<entity>>
-    +UUID id
-    +UUID decisionId
-    +ReopenStatus status
-  }
-  class AnalyticalSummary {
-    <<entity>>
-    +UUID id
-    +UUID sessionId
-    +SummaryStatus status
-  }
-  class SessionArtifact {
-    <<entity>>
-    +UUID id
-    +UUID sessionId
-    +ArtifactKind kind
-    +UUID mediaObjectId
-  }
-  class MediaObject {
-    <<entity>>
-    +UUID id
-    +String bucket
-    +String key
-    +String mimeType
-    +long sizeBytes
-    +String sha256
+  class InstitutionalMemoryDocument {
+    <<document>>
+    +String docId
+    +MemorySourceType sourceType
+    +UUID sourceId
+    +String text
+    +float[] embedding
+    +Visibility visibility
     +AccessClassification accessClass
   }
   class PipelineJob {
     <<entity>>
-    +UUID id
-    +PipelineJobType type
-    +UUID targetId
+    +String type
     +PipelineJobStatus status
     +int attempts
-    +String lastError
   }
-  class InstitutionalMemoryDocument {
+  class AiInferenceLog {
     <<entity>>
-    +String docId
-    +String sourceType
-    +UUID sourceId
-    +UUID companyId
-    +UUID departmentId
-    +int exerciseYear
-    +String title
-    +String text
-    +float[] embedding
-    +Instant indexedAt
+    +AiCapability capability
+    +String hostRf
   }
-  class MetricSnapshot {
-    <<entity>>
-    +UUID id
-    +String metricCode
-    +String scope
-    +UUID scopeId
-    +LocalDate periodStart
-    +LocalDate periodEnd
-    +BigDecimal value
-    +String valuesJson
-  }
-  class DeciaPointsLedgerEntry {
-    <<entity>>
-    +UUID userId
-    +int delta
-    +PointsEvent eventCode
-    +UUID sessionId
-    +String idempotencyKey
-  }
-  class AuditLog {
-    <<entity>>
-    +UUID actorId
-    +String action
-    +String resourceType
-    +UUID resourceId
-    +String correlationId
-  }
-
-  class SessionStatus {
+  class SearchTab {
     <<enum>>
-    PROPOSTA
-    ATIVA
-    EM_RESUMO
-    EM_DECISAO
-    EM_REVISAO
-    REABERTA
-    ENCERRADA
-    ARQUIVADA
+    PROJETOS
+    TAREFAS
+    PESSOAS
+    EMPRESAS
+    CHEFES_DE_DEPARTAMENTO
   }
-  class PipelineJobType {
+  class Visibility {
     <<enum>>
-    EXPORT_PDF
-    INDEXAR_MEMORIA
+    PRIVADA
+    DEPARTAMENTO
+    EMPRESA
+    PUBLICA
   }
-  class PointsEvent {
+  class AccessClassification {
     <<enum>>
-    PRESENCA_ENCERRADA
-    DECISAO_VALIDADA
+    PUBLICO
+    INTERNO
+    RESTRITO
+    SIGILOSO
   }
 
-  class SessionLifecycleController {
-    <<controller>>
-    +close(sessionId, CloseForm) 200
-    +archive(sessionId) 200
-    +downloadArchive(sessionId) 302
-  }
-  class SessionLifecycleService {
-    <<service>>
-    +close(actor, sessionId, reason) DeciaSession
-    +onSessionClosed(event) AFTER_COMMIT
-    +archive(sessionId) SessionArchive
-    +transition(sessionId, from, to)
-    -buildAnalyticsSnapshot(sessionId) AnalyticsSnapshot
-  }
-  class DeciaPointsService {
-    <<service>>
-    +onSessionClosed(event) AFTER_COMMIT
-  }
-  class AnalyticsService {
-    <<service>>
-    +onSessionArchived(event) AFTER_COMMIT
-    +materialize(snapshot) List~MetricSnapshot~
-  }
-  class SessionMessageRepositoryPort {
-    <<port>>
-    +streamAll(sessionId) Stream~SessionMessage~
-  }
-  class MediaStoragePort {
-    <<port>>
-    +put(bucket, key, bytes) MediaObject
-    +presignedUrl(mediaId) URL
-  }
-  class PdfRenderPort {
-    <<port>>
-    +render(contentMd) bytes
-  }
-  class MemoryIndexPort {
-    <<port>>
-    +index(InstitutionalMemoryDocument)
-  }
-  class NotificationPort {
-    <<port>>
-    +notifyGroup(recipients, type, resource)
-  }
-  class SessionArchiveRepository {
-    <<adapter>>
-    MySQL session_archives
-  }
-  class CassandraMessageAdapter {
-    <<adapter>>
-    messages_by_session (TTL)
-  }
-  class S3MediaAdapter {
-    <<adapter>>
-    bucket ws-archives
-  }
-  class OpenSearchMemoryAdapter {
-    <<adapter>>
-    índice ws-memory
-  }
-  class PipelineJobRunner {
-    <<adapter>>
-    platform — fila de jobs
-  }
-
-  DeciaSession --> SessionStatus
-  DeciaSession "1" --> "0..1" SessionArchive : histórico
-  DeciaSession "1" --> "*" SessionParticipant
-  DeciaSession "1" --> "*" SessionMessage : Cassandra
-  DeciaSession "1" --> "*" FinalDecision
-  DeciaSession "1" --> "*" AnalyticalSummary
-  DeciaSession "1" --> "*" SessionArtifact
-  DeciaSession ..> MediaObject : archiveMediaId
-  SessionArchive ..> MediaObject : exportMediaId (JSON + PDF)
-  SessionArchive ..> MetricSnapshot : analyticsSnapshotJson materializado
-  FinalDecision "1" --> "*" ReopenRequest
-  PipelineJob --> PipelineJobType
-  PipelineJob ..> SessionArchive : targetId
-  InstitutionalMemoryDocument ..> DeciaSession : sourceId (SESSAO)
-  DeciaPointsLedgerEntry --> PointsEvent
-  DeciaPointsLedgerEntry ..> DeciaSession : sessionId
-
-  SessionLifecycleController --> SessionLifecycleService
-  SessionLifecycleService --> SessionMessageRepositoryPort
-  SessionLifecycleService --> MediaStoragePort
-  SessionLifecycleService --> PdfRenderPort
-  SessionLifecycleService --> NotificationPort
-  SessionLifecycleService --> SessionArchiveRepository
-  SessionLifecycleService --> PipelineJob : agenda INDEXAR_MEMORIA
-  SessionLifecycleService ..> AuditLog : registra
-  SessionLifecycleService ..> DeciaPointsService : evento SessionClosed
-  SessionLifecycleService ..> AnalyticsService : evento SessionArchived
-  PipelineJobRunner --> MemoryIndexPort
-  SessionMessageRepositoryPort <|.. CassandraMessageAdapter
-  MediaStoragePort <|.. S3MediaAdapter
-  MemoryIndexPort <|.. OpenSearchMemoryAdapter
-
-  note for DeciaSession "tabela decia_sessions — ENCERRADA (closedAt) → ARQUIVADA (archivedAt, archiveMediaId, indexedInMemory) .. +6 campos .."
-  note for SessionArchive "tabela session_archives + S3 — imutável, checksum SHA-256 do JSON exportado"
-  note for SessionMessage "Cassandra messages_by_session com TTL messageTtlDays — após o TTL, o histórico é lido do export em S3 (RF17.CA06)"
+  SearchController --> SearchService
+  SearchController --> SimilarProjectsService
+  ReadOnlySchemeController --> SchemeReadService
+  SearchService --> AccessPolicy
+  SearchService --> SearchIndexPort
+  SearchService ..> SearchQuery
+  SearchService ..> VisibilityScope
+  SimilarProjectsService --> AiEngine
+  SimilarProjectsService --> SearchIndexPort
+  SimilarProjectsService --> AccessPolicy
+  SchemeReadService --> AccessPolicy
+  SchemeReadService --> TaskRepositoryPort
+  SchemeReadService --> ProjectRepositoryPort
+  SearchIndexer --> SearchIndexPort
+  SearchIndexer --> PipelineJobPort
+  SearchQuery --> SearchTab
+  SearchIndexPort ..> TaskItem : ws-tasks
+  SearchIndexPort ..> ProjectScheme : ws-projects
+  SearchIndexPort ..> User : ws-people
+  SearchIndexPort ..> Company : ws-orgs
+  SearchIndexPort ..> Department : ws-orgs (chefes)
+  SearchIndexPort ..> InstitutionalMemoryDocument : ws-memory (kNN)
+  TaskItem "1" --> "0..*" TaskAttachment : texto OCR indexado
+  PipelineJob "0..*" --> "1" TaskItem : INDEXAR_BUSCA
+  PipelineJob "0..*" --> "1" ProjectScheme : INDEXAR_BUSCA
+  SimilarProjectsService ..> AiInferenceLog
+  TaskItem --> Visibility
+  TaskItem --> AccessClassification
+  note for SearchIndexPort "SIGILOSO nunca entra no índice. RESTRITO entra com departmentId e só sai na query do departamento dono. RASCUNHO não é indexado."
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph L1["Administrador da sessão"]
-    A0(["Decisão VALIDADA (RF15) ou reabertura RECUSADA (RF14) — ou sessão sem decisão"])
-    A1["Admin aciona Encerrar sessão"]
-    A2{"Sessão tem decisão?"}
-    A3["Informa motivo do encerramento sem decisão"]
-    A4["Vê sessão ENCERRADA (somente leitura) e depois ARQUIVADA com link do histórico"]
-    A5(["Fim"])
+  subgraph ATOR["Usuário autenticado"]
+    A1["Abre /search e digita um termo (ou deixa vazio)"]
+    A2["Escolhe uma aba, aplica filtros e pagina"]
+    A3["Abre um resultado de tarefa/projeto de terceiro"]
+    A4["Clica 'projetos parecidos com este' · interage · Levar ao meu acervo"]
+  end
+  subgraph FE["Next.js (App Router) · BFF"]
+    F1["GET /api/search/suggestions (termo vazio: recentes, em alta, chancelados)"]
+    F2["GET /api/search?q=&tab=&categoria=&tipo=&fase=&dept=&exercicio=&chancelado=&prazo=&page= · URL reflete tudo · Skeleton"]
+    F3["5 Tabs com contadores · TaskCard / ProjectCard / Avatar (pessoas) / logo (empresas) / Monogram (chefes) · EmptyState · ErrorState tentar de novo"]
+    F4["GET /api/tasks/{id} ou /api/projects/{id} → modo leitura com crédito do autor + ações inline (RF18/RF19) + Levar ao meu acervo (RF7)"]
+    F5["GET /api/projects/{id}/similar"]
+  end
+  subgraph WEB["ws-web"]
+    W1["JWT + SessionActiveFilter + CurrentUserArgumentResolver"]
+    W2["SearchController · ReadOnlySchemeController"]
+    E503["503 BUSCA_INDISPONIVEL (OpenSearch fora / flag opensearch.enabled off)"]
+    E403["403 ACESSO_NEGADO (tentar editar esquema de terceiro)"]
+    E404["404 (item que ficou PRIVADA ou foi arquivado)"]
+  end
+  subgraph APP["ws-application"]
+    S1["AccessPolicy.visibilityFilter(viewer) → VisibilityScope {companyId, departmentIds, visibilities}"]
+    S2["SearchService.search: query multi-campo (título, descrição, tags, OCR) + filtro de escopo + filtros da aba"]
+    S3["countersPerTab: 5 contagens em paralelo (ws-tasks, ws-projects, ws-people, ws-orgs)"]
+    S4["Resultados paginados (20) ordenados por relevância"]
+    R1["SchemeReadService: canView? → ficha completa em leitura, fases/tarefas, capa, chancelas, creditOf(owner)"]
+    R2{"viewer pode ver o item?"}
+    SIM1["SimilarProjectsService: AiEngine MEMORIA_BUSCA → embedding do projeto"]
+    SIM2{"IA disponível?"}
+    SIM3["kNN em ws-memory (k=10) com o mesmo VisibilityScope · score + motivo (processo, tarefas em comum)"]
+    SIM4["fallback textual: mesmo processo/departamento"]
+    IDX["SearchIndexer (AFTER_COMMIT de TaskPublished/ProjectPublished/VisibilityChanged/Archived) → PipelineJob INDEXAR_BUSCA → index/delete ≤ 60 s · falha → REPROCESSAR"]
+  end
+  subgraph PERS["Persistência"]
+    P1[("OpenSearch: ws-tasks · ws-projects · ws-people · ws-orgs · ws-memory (dense_vector)")]
+    P2[("MySQL: tasks, project_schemes, users, companies, departments, pipeline_jobs, ai_inference_log")]
+    P3[("Redis: sugestões (recentes, em alta) · cache de contadores")]
   end
 
-  subgraph L2["Web / BFF (Next.js App Router)"]
-    B1["POST /api/decia/sessions/{id}/close {reason?}"]
-    B2["Exibe 403 ACESSO_NEGADO"]
-    B3["Exibe 409 SESSAO_JA_ENCERRADA ou 409 REVISAO_PENDENTE"]
-    B4["Exibe 422 VALIDACAO — motivo obrigatório sem decisão"]
-    B5["Composer desabilitado + etiqueta ENCERRADA"]
-    B6["GET /api/decia/sessions/{id}/archive → 302 URL assinada S3"]
-  end
-
-  subgraph L3["ws-application (SessionLifecycleService)"]
-    C1{"actor = adminUserId?"}
-    C2{"status em ENCERRADA ou ARQUIVADA?"}
-    C3{"há FinalDecision EM_REVISAO?"}
-    C4{"há decisão VALIDADA ou DEVOLVIDA com reabertura RECUSADA?"}
-    C5{"reason informado?"}
-    C6["status = ENCERRADA, closedAt; AuditLog SESSION_CLOSED"]
-    C7["Publica SessionClosed (outbox)"]
-    C8["Listener onSessionClosed (AFTER_COMMIT)"]
-    C9["Stream de mensagens do Cassandra + classificações, divergências, perguntas, resumo, decisão, revisão, artefatos"]
-    C10["Serializa JSON canônico e calcula SHA-256"]
-    C11["Renderiza PDF do histórico"]
-    C12["S3 PUT JSON + PDF → MediaObject"]
-    C13["INSERT SessionArchive (exportMediaId, messageCount, checksum, analyticsSnapshotJson)"]
-    C14["status = ARQUIVADA, archivedAt, archiveMediaId"]
-    C15["Agenda PipelineJob INDEXAR_MEMORIA (SESSAO)"]
-    C16["Publica SessionArchived (outbox)"]
-  end
-
-  subgraph L4["IA (AiEngine) / Jobs"]
-    D1["INDEXAR_MEMORIA: embedding do histórico → ws-memory (sourceType SESSAO)"]
-    D2{"indexou?"}
-    D3["indexedInMemory = true"]
-    D4["REPROCESSAR + ai_inference_log (falha não bloqueia)"]
-  end
-
-  subgraph L5["Persistência"]
-    E1[("MySQL decia_sessions · final_decisions · reopen_requests · audit_log · domain_events")]
-    E2[("Cassandra messages_by_session")]
-    E3[("S3 ws-archives + MySQL media_objects · session_archives")]
-    E4[("OpenSearch ws-memory")]
-    E5[("MySQL decia_points_ledger · metric_snapshots · pipeline_jobs")]
-  end
-
-  subgraph L6["Listeners AFTER_COMMIT"]
-    F1["NotificationPort: participantes — Sessão encerrada"]
-    F2["DeciaPointsService: +2 DP PRESENCA_ENCERRADA por participante presente (se resumo PUBLICADO)"]
-    F3["AnalyticsService: materializa analyticsSnapshotJson em MetricSnapshot (RF18)"]
-  end
-
-  A0 --> A1 --> A2
-  A2 -->|não| A3 --> B1
-  A2 -->|sim| B1
-  B1 --> C1
-  C1 -->|não| B2 --> A5
-  C1 -->|sim| C2
-  C2 -->|sim| B3 --> A5
-  C2 -->|não| C3
-  C3 -->|sim| B3
-  C3 -->|não| C4
-  C4 -->|sim| C6
-  C4 -->|não| C5
-  C5 -->|não| B4 --> A3
-  C5 -->|sim| C6 --> E1
-  C6 --> C7 --> E1
-  C7 --> B5 --> A4
-  C7 --> F1
-  C7 --> F2 --> E5
-  C7 --> C8 --> C9 --> E2
-  C9 --> C10 --> C11 --> C12 --> E3
-  C12 --> C13 --> E3
-  C13 --> C14 --> E1
-  C14 --> C15 --> E5
-  C15 --> D1 --> D2
-  D2 -->|sim| D3 --> E1
-  D3 --> E4
-  D2 -->|não| D4 --> D1
-  C14 --> C16 --> F3 --> E5
-  C16 --> B6 --> A4 --> A5
+  A1 -->|"vazio"| F1 --> P3
+  A1 --> F2 --> W1 --> W2 --> S1 --> S2 --> S3 --> S4 --> F3
+  S2 --> P1
+  S2 -->|"índice indisponível"| E503
+  A2 --> F2
+  A3 --> F4 --> W2 --> R1 --> R2
+  R2 -->|"não (PRIVADA agora)"| E404
+  R2 -->|"editar"| E403
+  R2 -->|"sim"| F4
+  R1 --> P2
+  A4 --> F5 --> W2 --> SIM1 --> SIM2
+  SIM2 -->|"sim"| SIM3 --> P1
+  SIM2 -->|"não"| SIM4 --> P1
+  SIM1 --> P2
+  P2 -.eventos de publicação/visibilidade/arquivamento.-> IDX --> P1
+  IDX --> P2
 ```
 
 ## 3. Diagrama de sequência
@@ -372,108 +298,101 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário (admin da sessão)
-  participant FE as Next.js (App Router)
+  actor U as Usuário
+  participant N as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
-  participant DB as Repository/MySQL
-  participant CS as Cassandra
+  participant AI as AiEngine
   participant OS as OpenSearch
-  participant S3 as S3
+  participant R as Repository/MySQL
+  participant RD as Redis
   participant EV as DomainEvents (AFTER_COMMIT)
 
-  rect rgb(245, 242, 239)
-    Note over U,EV: Caminho feliz — encerrar, exportar JSON+PDF para S3, arquivar, indexar na memória, creditar presença
-    U->>FE: Clica "Encerrar sessão"
-    FE->>C: POST /api/decia/sessions/{id}/close
-    C->>S: SessionLifecycleService.close(actor, sessionId, reason = null)
-    S->>DB: SELECT decia_sessions FOR UPDATE (adminUserId = actor, status = EM_REVISAO)
-    S->>DB: SELECT final_decisions (VALIDADA) / reopen_requests (RECUSADA)
-    S->>DB: UPDATE decia_sessions SET status = ENCERRADA, closedAt
-    S->>DB: INSERT audit_log (SESSION_CLOSED, correlationId) + domain_events (SessionClosed)
-    S-->>C: 200 {session ENCERRADA}
-    C-->>FE: 200
-    FE-->>U: Etiqueta ENCERRADA — composer desabilitado
-    EV-->>S: NotificationPort.notifyGroup(participantes, SESSAO_ENCERRADA)
-    S->>CS: INSERT notifications_by_user
-    EV-->>S: DeciaPointsService.onSessionClosed
-    S->>DB: SELECT session_participants (leftAt null) + analytical_summaries PUBLICADO
-    S->>DB: INSERT decia_points_ledger (+2 PRESENCA_ENCERRADA, idempotencyKey) por participante
-    EV-->>S: SessionLifecycleService.onSessionClosed → archive(sessionId)
-    S->>CS: SELECT messages_by_session (stream completo, antes do TTL)
-    S->>DB: SELECT message_classifications, divergences, divergence_replies, ai_questions, analytical_summaries, summary_scenarios, final_decisions, decision_reviews, session_artifacts, decision_trace
-    S->>S: serializa JSON canônico + SHA-256 + buildAnalyticsSnapshot
-    S->>S: PdfRenderPort.render(histórico)
-    S->>S3: PUT ws-archives/{sessionId}/history.json + history.pdf
-    S3-->>S: etag
-    S->>DB: INSERT media_objects (2) + INSERT session_archives (exportMediaId, messageCount, checksum, analyticsSnapshotJson)
-    S->>DB: UPDATE decia_sessions SET status = ARQUIVADA, archivedAt, archiveMediaId
-    S->>DB: INSERT pipeline_jobs (INDEXAR_MEMORIA, targetType SESSAO) + domain_events (SessionArchived)
-    EV-->>S: AnalyticsService.onSessionArchived → INSERT metric_snapshots (mensagens por classe, divergências, tempo até decisão, fontes citadas)
-    Note over S,OS: PipelineJobRunner (assíncrono)
-    S->>OS: index ws-memory {sourceType SESSAO, sourceId, companyId, departmentId, exerciseYear, text, embedding}
-    OS-->>S: 201
-    S->>DB: UPDATE decia_sessions SET indexedInMemory = true + UPDATE pipeline_jobs SET status = OK
-    U->>FE: Abre aba Histórico
-    FE->>C: GET /api/decia/sessions/{id}/archive
-    C->>S: SessionLifecycleService.archiveUrl(actor, sessionId)
-    S->>DB: SELECT session_archives + media_objects
-    S-->>C: 302 URL assinada S3 (JSON ou PDF)
-    C-->>FE: 302
-    FE-->>U: Histórico completo navegável (mesmo após TTL do Cassandra)
+  U->>N: digita "pavimentação" em /search
+  N->>C: GET /api/search?q=pavimentacao&tab=PROJETOS&page=0
+  C->>S: SearchService.search(query, viewer)
+  S->>S: AccessPolicy.visibilityFilter(viewer) → VisibilityScope
+  par contadores das 5 abas
+    S->>OS: count ws-projects (q + scope)
+    S->>OS: count ws-tasks (q + scope + accessClass != SIGILOSO, RESTRITO só do meu departamento)
+    S->>OS: count ws-people
+    S->>OS: count ws-orgs (empresas)
+    S->>OS: count ws-orgs (chefes)
+  end
+  alt OpenSearch indisponível ou flag desligada
+    S-->>C: 503 BUSCA_INDISPONIVEL
+    C-->>N: 503 (ErrorState "tentar de novo")
+  else ok
+    S->>OS: search ws-projects (título, objetivo, tags, OCR) + scope + filtros, page 0, size 20
+    OS-->>S: hits ordenados por relevância (≤ 1 s p95)
+    S-->>C: SearchResultView {counters por aba, page}
+    C-->>N: 200 (URL com q, tab, filtros, page)
+    N-->>U: 5 Tabs com contadores + ProjectCards
   end
 
-  alt RF17.CA02 — sessão sem decisão e sem motivo
-    FE->>C: POST .../close {reason ""}
-    C->>S: close(actor, sessionId, "")
-    S->>DB: SELECT final_decisions → nenhuma VALIDADA
-    S-->>C: 422 VALIDACAO (motivo obrigatório)
-    C-->>FE: 422
-  else RF17.CA02 — decisão ainda em revisão
-    S->>DB: SELECT final_decisions.status = EM_REVISAO
-    S-->>C: 409 REVISAO_PENDENTE
-  else RF17.CA02 — não é o admin ou já encerrada
-    S->>DB: SELECT decia_sessions (adminUserId ≠ actor ou status ENCERRADA/ARQUIVADA)
-    S-->>C: 403 ACESSO_NEGADO ou 409 SESSAO_JA_ENCERRADA
-  else RF17.CA04 — OpenSearch indisponível
-    S->>OS: index ws-memory
-    OS-->>S: erro
-    S->>DB: UPDATE pipeline_jobs SET status = REPROCESSAR, attempts + 1 + INSERT ai_inference_log (MEMORIA_BUSCA, result ERRO)
-    Note over S,DB: sessão continua ARQUIVADA — indexedInMemory = false até o retry
+  U->>N: abre um projeto de outro departamento
+  N->>C: GET /api/projects/{id}
+  C->>S: SchemeReadService.project(id, viewer)
+  S->>R: project_schemes + project_tasks + seal_bonds + owner
+  alt visibilidade mudou para PRIVADA depois de indexado
+    S-->>C: 404 PROJETO_NAO_ENCONTRADO
+    C-->>N: 404 (item sai do índice no próximo INDEXAR_BUSCA)
+  else pode ver
+    S->>S: creditOf(owner) → avatar + link /u/{username} ou /departments/{slug} ou /companies/{slug}
+    S-->>C: ProjectReadView {readOnly=true, credit, actions: interações + Levar ao meu acervo}
+    C-->>N: 200 (modo leitura, edição oculta)
   end
+  N->>C: PATCH /api/projects/{id} (tentativa de edição)
+  C-->>N: 403 ACESSO_NEGADO
+
+  U->>N: "projetos parecidos com este"
+  N->>C: GET /api/projects/{id}/similar
+  C->>S: SimilarProjectsService.similar(id, viewer)
+  S->>AI: run(MEMORIA_BUSCA, hostRf RF17, texto do projeto mascarado)
+  alt IA disponível
+    AI->>R: insert ai_inference_log
+    AI-->>S: embedding
+    S->>OS: knn ws-memory (k=10, scope do viewer)
+    OS-->>S: vizinhos com score
+    S-->>C: até 10 projetos com score e motivo ("mesmo processo, 4 tarefas em comum")
+  else IA indisponível (circuit aberto / cota)
+    S->>OS: search ws-projects mesmo processo/departamento
+    S-->>C: lista textual com aviso "sem IA"
+  end
+  C-->>N: 200
+
+  Note over R,OS: Indexação assíncrona (CA06)
+  EV->>R: ProjectPublished / VisibilityChanged / Archived → enqueue PipelineJob INDEXAR_BUSCA
+  R->>OS: index ou delete (≤ 60 s) — falha → attempts++ e REPROCESSAR
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: `DeciaSession.status` (`SessionStatus`) — ciclo completo, com destaque para ENCERRADA → ARQUIVADA, que é o trecho do RF17.
+Entidade central: este RF só lê `TaskItem`/`ProjectScheme`; o que tem ciclo próprio aqui é a **presença no índice** (derivada de `state`/`status`, `visibility`, `accessClass` e do `PipelineJob INDEXAR_BUSCA`, CA03/CA06). As máquinas de `TaskState` e `ProjectStatus` estão em RF4/RF5 §4.
 
 ```mermaid
 stateDiagram-v2
-  [*] --> PROPOSTA : grupo pede abertura (RF5)
-  PROPOSTA --> ATIVA : admin abre (RF4/RF5)
-  ATIVA --> EM_RESUMO : gerar resumo (RF11)
-  EM_RESUMO --> ATIVA : IA indisponível (RF11)
-  EM_RESUMO --> EM_DECISAO : resumo PUBLICADO (RF11)
-  EM_DECISAO --> EM_REVISAO : decisão encaminhada (RF12)
-  EM_REVISAO --> REABERTA : decisão DEVOLVIDA e ReopenRequest ACEITA (RF14)
-  REABERTA --> EM_RESUMO : novo ciclo (RF11)
-  EM_REVISAO --> ENCERRADA : decisão VALIDADA ou reabertura RECUSADA — RF17.CA01
-  ATIVA --> ENCERRADA : admin encerra sem decisão com motivo — RF17.CA02
-  REABERTA --> ENCERRADA : admin encerra sem decisão com motivo — RF17.CA02
-  ENCERRADA --> ARQUIVADA : AFTER_COMMIT exporta JSON+PDF para S3 e cria SessionArchive — RF17.CA03
-  ARQUIVADA --> [*]
+  direction LR
+  state "NAO_INDEXADO (RASCUNHO · SIGILOSO · PRIVADA de terceiro)" as NAO
+  state "INDEXACAO_PENDENTE (PipelineJob INDEXAR_BUSCA PENDENTE/RODANDO)" as PEN
+  state "INDEXADO (visível conforme scope)" as IDX
+  state "REMOCAO_PENDENTE" as REMP
+  state "REPROCESSAR (falha, attempts++)" as REP
 
-  note right of ENCERRADA
-    closedAt preenchido
-    chat somente leitura (RF6 → 409 SESSAO_NAO_ATIVA)
-    AFTER_COMMIT: Notification ao grupo, +2 DP PRESENCA_ENCERRADA
-    nova tentativa → 409 SESSAO_JA_ENCERRADA
-  end note
-  note right of ARQUIVADA
-    archivedAt, archiveMediaId, SessionArchive imutável (checksum)
-    PipelineJob INDEXAR_MEMORIA → indexedInMemory = true (falha não bloqueia)
-    MetricSnapshot materializado (RF18)
-    histórico navegável após TTL do Cassandra (RF29.CA06)
+  [*] --> NAO : criação (RF4/RF5) em RASCUNHO
+  NAO --> PEN : publicar / DISPONIVEL / visibility ≥ DEPARTAMENTO [accessClass != SIGILOSO] (CA06)
+  PEN --> IDX : index OK (≤ 60 s) · documento com visibility, companyId, departmentId, accessClass
+  PEN --> REP : erro no OpenSearch
+  REP --> PEN : nova tentativa agendada
+  REP --> [*] : attempts esgotados (lastError, operação do autor não afetada)
+  IDX --> PEN : título/tags/visibility alterados (RF12) → reindexa
+  IDX --> REMP : visibility → PRIVADA · ARQUIVADA/ARQUIVADO · accessClass → SIGILOSO
+  REMP --> NAO : delete OK (quem abrir o link antigo recebe 404)
+  REMP --> REP : erro
+  note right of IDX
+    A query sempre aplica VisibilityScope do viewer:
+    PUBLICA · +EMPRESA · +DEPARTAMENTO · PRIVADA só os meus ·
+    RESTRITO só para o departamento dono (CA03).
   end note
 ```
 
@@ -481,92 +400,67 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js (App Router)"]
-    FE1["app/decia/[sessionId]/page.tsx — botão Encerrar sessão"]
-    FE2["app/decia/[sessionId]/archive/page.tsx — Histórico"]
-    FE3["components/ui/CloseSessionDialog · SessionStatusBadge · ArchiveViewer"]
+  subgraph FE["Frontend · Next.js 15 App Router"]
+    PG["app/(shell)/search · ?q=&tab=&filtros&page= · páginas de leitura tasks/[id] e projects/[id] (readOnly)"]
+    UI["packages/ui: Input (busca), Tabs (com contadores), TaskCard, ProjectCard, Avatar/Monogram, Seal, Counters, Skeleton, EmptyState, ErrorState (tentar de novo), Button (Levar ao meu acervo)"]
+    SN["TopBar (busca global → /search) · SidebarNav › Descobrir › Buscar"]
+    BFF["app/bff/search/* · app/bff/tasks/* · app/bff/projects/*"]
+    PG --> UI
+    PG --> BFF
+    SN --> PG
   end
-
-  subgraph WEB["ws-web"]
-    W1["SessionLifecycleController (REST /api/decia/sessions/{id}/close, /archive)"]
-    W2["SessionAccessGuard (adminUserId / participante para leitura)"]
+  subgraph WSWEB["ws-web"]
+    SEC["SecurityConfig · SessionActiveFilter · CurrentUserArgumentResolver"]
+    SC["SearchController · ReadOnlySchemeController"]
+    GEH["GlobalExceptionHandler (403, 404, 503)"]
   end
-
-  subgraph APP["ws-application"]
-    S1["SessionLifecycleService (+ listener SessionClosed)"]
-    S2["DeciaPointsService (listener AFTER_COMMIT)"]
-    S3["AnalyticsService (listener SessionArchived, RF18)"]
-    P1["SessionMessageRepositoryPort"]
-    P2["MediaStoragePort"]
-    P3["PdfRenderPort"]
-    P4["MemoryIndexPort"]
-    P5["NotificationPort"]
-    P6["PipelineJobScheduler"]
-    P7["DomainEventPublisher (outbox)"]
+  subgraph WSAPP["ws-application"]
+    SRCH["search: SearchService · SimilarProjectsService · SearchIndexer"]
+    RD["acervo/projects: SchemeReadService"]
+    AIE["ai: AiEngine MEMORIA_BUSCA (embeddings) · circuit breaker"]
+    SECU["security: AccessPolicy.visibilityFilter/canView"]
+    PORTS["ports: SearchIndexPort · PipelineJobPort · TaskRepositoryPort · ProjectRepositoryPort · UserRepositoryPort · CounterCachePort"]
+    EVT["events: TaskPublished · ProjectPublished · VisibilityChanged · Archived (AFTER_COMMIT) → SearchIndexer"]
+    SRCH --> SECU
+    SRCH --> AIE
+    SRCH --> PORTS
+    RD --> SECU
+    RD --> PORTS
+    EVT --> SRCH
   end
-
-  subgraph DOM["ws-domain"]
-    D1["DeciaSession · SessionArchive · MediaObject · PipelineJob"]
-    D2["FinalDecision · ReopenRequest · AnalyticalSummary · SessionArtifact · SessionParticipant (leitura)"]
-    D3["DeciaPointsLedgerEntry · MetricSnapshot · AuditLog"]
-    D4["Enums: SessionStatus · PipelineJobType · PipelineJobStatus · PointsEvent"]
+  subgraph WSDOM["ws-domain"]
+    DOM["acervo: TaskItem · TaskAttachment (OCR) · projects: ProjectScheme · identity: User · Company · Department · platform: PipelineJob · AiInferenceLog · memory: InstitutionalMemoryDocument"]
   end
-
   subgraph INFRA["ws-infrastructure"]
-    I1["persistence-mysql: DeciaSessionRepository (@Version), SessionArchiveRepository, MediaObjectRepository, PipelineJobRepository, DeciaPointsLedgerRepository, MetricSnapshotRepository, AuditLogRepository, DomainEventOutboxRepository"]
-    I2["persistence-cassandra: CassandraMessageAdapter (stream completo), NotificationFeedAdapter"]
-    I3["storage-s3: S3MediaAdapter (bucket ws-archives, URL assinada)"]
-    I4["search-opensearch: OpenSearchMemoryAdapter (ws-memory, sourceType SESSAO)"]
-    I5["ai-providers: EmbeddingAdapter (MEMORIA_BUSCA, ai_inference_log)"]
-    I6["platform: PipelineJobRunner, PdfRenderAdapter, NotificationAdapter, OutboxRelay"]
+    OSE["search-opensearch (OpenSearchAdaptersConfig, flag opensearch.enabled): índices ws-tasks · ws-projects · ws-people · ws-orgs · ws-memory (dense_vector) · fallback MySQL LIKE sem a flag"]
+    MY["persistence-mysql: Jpa*Repository · pipeline_jobs"]
+    RDS["cache-redis: sugestões, contadores"]
+    AIP["ai-providers: Claude → Gemini → LocalEngine (embeddings locais)"]
+    PLT["platform: worker INDEXAR_BUSCA"]
   end
 
-  MY[("MySQL 8")]
-  CA[("Cassandra")]
-  OS[("OpenSearch")]
-  S3[("S3 / MinIO")]
-
-  FE1 --> FE3
-  FE2 --> FE3
-  FE3 -->|HTTPS/JSON| W1 --> W2 --> S1
-  S1 --> P1
-  S1 --> P2
-  S1 --> P3
-  S1 --> P5
-  S1 --> P6
-  S1 --> P7
-  P7 -.->|AFTER_COMMIT SessionClosed| S1
-  P7 -.->|AFTER_COMMIT SessionClosed| S2
-  P7 -.->|AFTER_COMMIT SessionArchived| S3
-  P6 -.->|INDEXAR_MEMORIA| I6
-  I6 --> P4
-  S1 --> D1
-  S1 --> D2
-  S2 --> D3
-  S3 --> D3
-  D1 --> D4
-  P1 -.-> I2
-  P2 -.-> I3
-  P3 -.-> I6
-  P4 -.-> I4
-  P5 -.-> I6
-  I4 --> I5
-  S1 --> I1
-  S2 --> I1
-  S3 --> I1
-  I1 --> MY
-  I2 --> CA
-  I3 --> S3
-  I4 --> OS
+  BFF -->|"REST JSON"| SEC --> SC --> SRCH
+  SC --> RD
+  SC --> GEH
+  OSE -.implementa SearchIndexPort.-> PORTS
+  MY -.implementa.-> PORTS
+  RDS -.implementa.-> PORTS
+  AIP -.implementa.-> AIE
+  PLT --> SRCH
+  SRCH --> DOM
+  OSE --> OSX[("OpenSearch 2.19")]
+  MY --> DB[("MySQL 8.4")]
+  RDS --> RDX[("Redis 7")]
+  AIP --> CL["Claude · Gemini"]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Classe | Passo (atividades) | Mensagem (sequência) | Transição (estados) | Componente |
-|---|---|---|---|---|---|
-| RF17.CA01 | `DeciaSession.status/closedAt`, `SessionLifecycleService.close`, `FinalDecision` VALIDADA / `ReopenRequest` RECUSADA, `NotificationPort`, `AuditLog` | A1, B1, C4, C6, C7, B5, F1 | 1–12 | EM_REVISAO → ENCERRADA | `SessionLifecycleController.close`, `SessionLifecycleService`, `NotificationAdapter` |
-| RF17.CA02 | guardas de `SessionLifecycleService` (reason, adminUserId, status, decisão EM_REVISAO), `analyticsSnapshotJson.closedWithoutDecision` | A2, A3, C1–C3, C5, B2–B4 | `alt` 422 VALIDACAO / 409 REVISAO_PENDENTE / 403 / 409 SESSAO_JA_ENCERRADA | ATIVA/REABERTA → ENCERRADA | `SessionAccessGuard`, `CloseSessionDialog` |
-| RF17.CA03 | `SessionArchive` (exportMediaId, messageCount, checksum, analyticsSnapshotJson), `MediaObject`, `DeciaSession.archivedAt/archiveMediaId`, `SessionLifecycleService.onSessionClosed/archive`, `MediaStoragePort`, `PdfRenderPort` | C8–C14 | 16–24 | ENCERRADA → ARQUIVADA | `CassandraMessageAdapter`, `S3MediaAdapter`, `PdfRenderAdapter`, `SessionArchiveRepository` |
-| RF17.CA04 | `PipelineJob` INDEXAR_MEMORIA, `InstitutionalMemoryDocument` (SESSAO), `DeciaSession.indexedInMemory`, `MemoryIndexPort`, `AiInferenceLog` | C15, D1–D4 | 25, 27–29; `alt` OpenSearch indisponível | nota de ARQUIVADA | `PipelineJobRunner`, `OpenSearchMemoryAdapter`, `EmbeddingAdapter` |
-| RF17.CA05 | `DeciaPointsLedgerEntry` (PRESENCA_ENCERRADA +2), `DeciaPointsService.onSessionClosed`, `MetricSnapshot`, `AnalyticsService.onSessionArchived/materialize` | F2, F3, C16 | 13–15, 26 | nota de ENCERRADA / ARQUIVADA | `DeciaPointsService`, `AnalyticsService`, `MetricSnapshotRepository` |
-| RF17.CA06 | `SessionArchive` imutável, `SessionMessage.messageTtlDays`, `SessionLifecycleController.downloadArchive`, rastro RF29.CA06 | B6, A4 | 30–36 | ARQUIVADA terminal | `ArchiveViewer`, `S3MediaAdapter` (URL assinada), `AuditLogRepository` |
+| CA | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) | Situação |
+|---|---|---|---|---|---|---|
+| RF17.CA01 | `SearchController.search/suggestions`, `SearchService.search/countersPerTab`, `SearchQuery`, `SearchTab`, `SearchIndexPort.search/count` | `A1`→`F1`/`F2`→`S2`→`S3`→`S4`→`F3` | 1–10, 14–18 | — | `PG`, `UI` (`Tabs`), `SRCH`, `OSE`, `RDS` | planejado (`OpenSearchAdaptersConfig` real) |
+| RF17.CA02 | URL `?q=&tab=&filtros&page=`, `Skeleton`/`EmptyState`/`ErrorState`, `503 BUSCA_INDISPONIVEL` | `A2`→`F2`→`F3`, `E503` | 11–13 | — | `UI`, `GEH`, `OSE` (flag) | planejado |
+| RF17.CA03 | `AccessPolicy.visibilityFilter`, `VisibilityScope`, `SearchIndexer` (SIGILOSO nunca, RESTRITO por departamento, RASCUNHO nunca) | `S1`→`S2` | 4–9 | nota de `IDX`, `NAO` | `SECU`, `OSE` | planejado |
+| RF17.CA04 | `ReadOnlySchemeController`, `SchemeReadService.task/project/creditOf`, `AccessPolicy.canView` | `A3`→`F4`→`R1`→`R2`, `E403`, `E404` | 19–29 | `IDX`→`REMP`→`NAO` | `RD`, `UI` (`ProjectCard`, `Seal`, `Counters`) | planejado (RF7, RF16, RF18/RF19) |
+| RF17.CA05 | `SimilarProjectsService.similar/fallbackTextual`, `AiEngine` (MEMORIA_BUSCA), `SearchIndexPort.knn`, `InstitutionalMemoryDocument`, `AiInferenceLog` | `A4`→`F5`→`SIM1`→`SIM2`→`SIM3`/`SIM4` | 30–42 | — | `AIE`, `AIP`, `OSE` (`ws-memory`) | planejado (RF33) |
+| RF17.CA06 | `SearchIndexer.onPublished/onVisibilityChanged/onArchived/run`, `PipelineJob INDEXAR_BUSCA`, `PipelineJobPort` | `IDX` | 43–44 | `NAO`→`PEN`→`IDX`, `IDX`→`REMP`, `REP` | `EVT`, `PLT`, `MY` | planejado |

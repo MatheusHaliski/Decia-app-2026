@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="Work Station"><title>Work Station — monitor &gt;_</title><defs>
+  <linearGradient id="ws-shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#666362" stop-opacity=".75"/><stop offset="1" stop-color="#666362" stop-opacity="0"/></linearGradient>
+  <radialGradient id="ws-field" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#F9923C"/><stop offset=".7" stop-color="#F28222"/><stop offset="1" stop-color="#E06A1B"/></radialGradient>
+  <radialGradient id="ws-disc" cx="40%" cy="32%" r="70%"><stop offset="0" stop-color="#FDF2D7"/><stop offset=".7" stop-color="#F1DEC0"/><stop offset="1" stop-color="#D6B892"/></radialGradient>
+  <linearGradient id="ws-ring" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A3B3B"/><stop offset="1" stop-color="#212223"/></linearGradient>
+</defs>
+  <rect x="28" y="40" width="200" height="144" rx="22" fill="#242525"/>
+  <rect x="28" y="40" width="200" height="72" rx="22" fill="url(#ws-shine)"/>
+  <rect x="43" y="55" width="170" height="114" rx="13.2" fill="#47443C"/>
+  <rect x="50.5" y="62.5" width="155" height="99" rx="11" fill="#242525"/>
+  <rect x="114" y="180" width="28" height="28" fill="#212223"/>
+  <rect x="76" y="202" width="104" height="15" rx="7.5" fill="#212223"/>
+  <rect x="76" y="202" width="104" height="6" rx="3" fill="#666362" opacity=".6"/>
+  <path d="M74 98l34 32-34 32" fill="none" stroke="#F1DEC0" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M122 162h48" fill="none" stroke="#F1DEC0" stroke-width="11" stroke-linecap="round"/>
+</svg>

@@ -1,19 +1,21 @@
-# RF7 — Classificar as mensagens enviadas em diferentes categorias, tais como: argumento, divergência, risco, consenso.
-**HU:** HU7 · **Sprint (board Work Station):** 2 · **Equivalente FAI:** RF24 Usar a IA do sistema (`AiEngine` Strategy + Chain of Responsibility: provedor primário → alternativo → motor local, `ai_inference_log`, circuit breaker, fallback) + RF10 Copilot (classificação das mensagens) · **Aba/rota:** DECIA (`/decia/[sessionId]` — badge de classe no card da mensagem, painel "IA do sistema" no admin RF18/RF43) — rota sugerida
-**Critérios de aceite cobertos:** RF7.CA01 … RF7.CA06 (RF1–RF18 não têm CAs no board: derivados da HU7 + RF29/RF42/RF43 e marcados "CA a confirmar")
+# RF7 — Abrir um esquema de tarefa a partir da lista de um esquema de projeto
+**HU:** HU7 · **Sprint (board Work Station):** lista *Requisitos Funcionais* sem sprint atribuída (o card "SPRINT 2" cita "RF7 Classificar mensagens", escopo antigo — `RENUMERACAO.md`; fase (e) da ARQUITETURA §6) · **Equivalente FAI:** RF7 Peça a partir do esquema (clicar numa peça do look abre o detalhe da peça com "Adicionar ao meu closet"; snapshot quando a peça foi excluída) · **Aba/rota:** detalhe do projeto `/projects/[id]` → lista de tarefas por fase → `/projects/[id]/tasks/[ptId]` (folha de detalhe com URL profunda), atalho para `/tasks/[id]`, ação "Levar ao meu acervo" (destino: Acervo Digital, RF6/RF41); API `GET /api/projects/{id}`, `GET /api/projects/{id}/tasks/{ptId}`, `POST /api/tasks/{id}/extract` (compartilhado com RF23), `GET /api/media/{id}/presign`
+**Critérios de aceite cobertos:** RF7.CA01 … RF7.CA06 — **todos "(CA a confirmar)"**: o corpo do card está vazio; os CAs foram derivados do título + HU7 e reaproveitam `_anterior/RF23` (snapshot RF23.CA03, "Levar ao meu acervo" RF23.CA01/CA05) e RF41.CA03 (detalhe da tarefa). Todas as classes do RF são **(planejado)**; reais só os transversais (`SecurityConfig`, `SessionActiveFilter`, `Guard`, `CorrelationIdFilter`, `AuditLogPort`).
 
-> **HU7** — COMO IA do sistema POSSO classificar automaticamente as mensagens enviadas em categorias como argumento, divergência, risco e consenso PARA estruturar a discussão e subsidiar análises e decisões fundamentadas.
+> **HU7** — COMO usuário visualizando um esquema de projeto POSSO clicar em um item da lista de tarefas PARA visualizar detalhes de uma tarefa e então compreender melhor o escopo do projeto.
+
+A lista do projeto é a lista de `ProjectTask` por fase (quadro, linha do tempo ou lista — RF22 §"Três visões"); clicar num item abre a **folha de detalhe** da `TaskItem` ligada (`ProjectTask.taskId`) ou, se o autor a excluiu, o `TaskSnapshot` guardado em `ProjectTask.snapshotJson` (TAXONOMIA §2.8). O que o viewer vê e pode fazer depende de `AccessPolicy` (visibilidade da tarefa) e do papel no projeto (dono, responsável, terceiro).
 
 ## Critérios de aceite derivados da HU7 (todos "CA a confirmar")
 
-| CA | Enunciado (Dado / Quando / Então) |
-|---|---|
-| **RF7.CA01** (CA a confirmar) | Dado o evento `MessageSent` (RF6) de uma mensagem `authorKind HUMANO`, então o `ClassificationService` classifica de forma **assíncrona** em `MessageClass` ARGUMENTO · DIVERGENCIA · RISCO · CONSENSO · PERGUNTA · RUIDO, gravando `MessageClassification` (label, `confidence` 0–1, `rationale`, `hasEvidence`, `evidenceRefsJson`) e preenchendo `SessionMessage.classificationId`; o card da mensagem recebe o badge em até 5 s (p95) via SSE. |
-| **RF7.CA02** (CA a confirmar) | Dado o `AiEngine` (Strategy + Chain), então a inferência tenta o **provedor primário** (Claude ou Gemini, conforme `FeatureFlag ai.provider.*`), depois o **alternativo** e por fim o **motor local** (regras + embeddings locais); timeout, erro, cota esgotada ou `AiProviderCircuitState OPEN` avançam a cadeia; cada chamada gera `AiInferenceLog` (capability CLASSIFICAR_MENSAGEM, provider, model, mode, latencyMs, tokens, estimatedCostUsd, result OK/FALLBACK/ERRO, fallbackUsed, correlationId). |
-| **RF7.CA03** (CA a confirmar) | Dado uma mensagem cujo anexo tem `accessClass RESTRITO` ou `SIGILOSO` (ou sessão marcada `localOnly`), então a classificação roda **somente no motor local** (`provider LOCAL`, `result BLOQUEADO_SIGILO` para a tentativa externa) com aviso no card; em qualquer chamada externa, dados pessoais são **mascarados** antes (`maskedFields`), conforme RF43.CA02 e LGPD. |
-| **RF7.CA04** (CA a confirmar) | Dado a classificação concluída, então ela liga o argumento ao item citado (`linkedTaskId`/`linkedProjectId`, RF29) e é exibida com a cor da classe (argumento azul, divergência laranja, risco vermelho, consenso verde, pergunta roxa) **com o nome em texto** (RF38.CA05/CA07) e a faísca ✦ com tooltip "gerado por IA em [data]" (RF38.CA04); o nó `DecisionTrace CLASSIFICACAO` e a aresta `CLASSIFICOU` são gravados (append-only). |
-| **RF7.CA05** (CA a confirmar) | Dado o autor da mensagem ou o administrador da sessão, quando confirma ou corrige a classe (`POST …/classification/confirm {label}`), então `confirmedByUserId` e o novo `label` são gravados mantendo o `aiInferenceId` original, o badge perde a faísca (revisado por humano) e a taxa de aceitação alimenta o painel "IA do sistema" (RF43.CA12); outros participantes não podem corrigir (`403 ACESSO_NEGADO`). |
-| **RF7.CA06** (CA a confirmar) | Dado a classificação, então ela dispara os efeitos via `MessageClassified` (AFTER_COMMIT): DIVERGENCIA → `DivergenceService` (RF8), RISCO/PERGUNTA → candidata a `AiQuestion` (RF8/RF16), ARGUMENTO com `hasEvidence` ou CONSENSO confirmado → evento pontuável idempotente (RF42.CA01); RUIDO e mensagens repetidas (`similarityHash`) não pontuam; a cota `AiQuota` do departamento é consumida (sem cota → motor local com aviso). |
+| CA | Enunciado (Dado / Quando / Então) | Origem |
+|---|---|---|
+| **RF7.CA01** (CA a confirmar) | Dado um projeto visível para mim, quando clico num item da lista de tarefas (quadro por fase, linha do tempo ou lista), então abre a folha de detalhe da tarefa com título, tipo (`TypeChip`), categoria, resumo (3 linhas), estado (`Tag` com nome em texto), prazo (`Due`, ⚖ se legal), responsável, anexos com pré-visualização (`GET /api/media/{id}/presign`), versões, chancelas (`Seal`), interações (`Counters`) e o **contexto no projeto** (fase, ordem, dependências, caminho crítico, `percentComplete`); a URL fica `/projects/{id}/tasks/{ptId}`. | RF41.CA03, RF22 |
+| **RF7.CA02** (CA a confirmar) | Dado um `ProjectTask` com `taskId` nulo (tarefa excluída pelo autor, `removedByAuthor`), quando o abro, então o detalhe mostra o `TaskSnapshot` (título, tipo, categoria, thumbnail, resumo, `ownerName`, `capturedAt`) com o aviso "removida pelo autor", sem anexos nem ações de cópia/edição; fases e dependências do projeto continuam íntegras. | RF23.CA03, RF41.CA05 |
+| **RF7.CA03** (CA a confirmar) | Dado que a tarefa tem `visibility` incompatível com o viewer (PRIVADA de outra pessoa, DEPARTAMENTO sem ser membro), quando clico no item, então o card aparece como "tarefa privada" (só fase e ordem) e a API responde `403 ACESSO_NEGADO`; `ProjectTask` inexistente no projeto → `404 TAREFA_NAO_ENCONTRADA`; projeto fora da minha visibilidade → `403`. | RF26.CA08, RF41.CA08 |
+| **RF7.CA04** (CA a confirmar) | Dado o detalhe de uma tarefa não-PRIVADA que não é minha, quando aciono **"Levar ao meu acervo"**, então nasce uma cópia (`sourceKind EXTRAIDA_DE_PROJETO`, `originalTaskId`, `sourceProjectId`, `state DISPONIVEL`, `visibility PRIVADA`, anexos por referência ao mesmo `MediaObject`), `reuseCount` da original incrementa e o dono é notificado (`Notification TAREFA_REUTILIZADA`); ação oculta para PRIVADA (403 na API). | RF23.CA01/CA02/CA04/CA05 |
+| **RF7.CA05** (CA a confirmar) | Dado que sou o dono da tarefa ou responsável no projeto, então a ação principal é **"Editar"** (abre RF8/RF12) e a alternativa "Abrir no Acervo" (`/tasks/[id]`); para os demais a ação principal é "Levar ao meu acervo" e as interações sociais (RF18/RF19); toda abertura incrementa `viewsCount` (contador desnormalizado, Redis → MySQL em lote). | RF41.CA07, RF26.CA07 |
+| **RF7.CA06** (CA a confirmar) | Dado a folha aberta, quando fecho ou uso "voltar", então retorno à lista do projeto na mesma fase e posição de rolagem; a folha carrega com `Skeleton`, respeita i18n pt-BR/en/es e layout responsivo (`Sheet` lateral no desktop, tela cheia no celular). | RF19.CA03, RF19.CA07 |
 
 ## 1. Diagrama de classes
 
@@ -21,411 +23,385 @@
 classDiagram
   direction LR
 
-  namespace ws_domain {
-    class SessionMessage {
-      <<entity>>
-      +id: TIMEUUID
-      +sessionId: UUID
-      +authorId: UUID
-      +authorKind: String
-      +bodyMd: String
-      +attachmentsJson: String
-      +classificationId: UUID
-      +similarityHash: String
-      +correlationId: String
-    }
-    class MessageClassification {
-      <<entity>>
-      +id: UUID
-      +messageId: TIMEUUID
-      +sessionId: UUID
-      +label: MessageClass
-      +confidence: BigDecimal
-      +hasEvidence: boolean
-      +evidenceRefsJson: String
-      +linkedTaskId: UUID
-      +linkedProjectId: UUID
-      +rationale: String
-      +aiInferenceId: UUID
-      +confirmedByUserId: UUID
-      +at: Instant
-    }
-    class AiInferenceLog {
-      <<entity>>
-      +id: UUID
-      +userId: UUID
-      +departmentId: UUID
-      +capability: AiCapability
-      +hostRf: String
-      +provider: String
-      +model: String
-      +mode: AiMode
-      +latencyMs: int
-      +inputTokens: int
-      +outputTokens: int
-      +estimatedCostUsd: BigDecimal
-      +result: String
-      +fallbackUsed: boolean
-      +maskedFields: String
-      +confidence: BigDecimal
-      +quotaSource: String
-      +correlationId: String
-    }
-    class AiQuota {
-      <<entity>>
-      +scope: String
-      +scopeId: UUID
-      +monthKey: String
-      +monthlyLimit: int
-      +consumed: int
-      +purchasedCredits: int
-    }
-    class AiProviderCircuitState {
-      <<entity>>
-      +provider: String
-      +state: String
-      +failures: int
-      +openedAt: Instant
-    }
-    class DecisionTraceNode {
-      <<entity>>
-      +id: UUID
-      +sessionId: UUID
-      +nodeType: TraceNodeType
-      +refId: UUID
-      +classLabel: String
-      +at: Instant
-    }
-    class DecisionTraceEdge {
-      <<entity>>
-      +fromNodeId: UUID
-      +toNodeId: UUID
-      +relation: String
-    }
-    class MessageClass {
-      <<enum>>
-      ARGUMENTO
-      DIVERGENCIA
-      RISCO
-      CONSENSO
-      PERGUNTA
-      RUIDO
-    }
-    class AiCapability {
-      <<enum>>
-      CLASSIFICAR_MENSAGEM
-      DETECTAR_DIVERGENCIA
-      FORMULAR_PERGUNTA
-    }
-    class AiMode {
-      <<enum>>
-      ECONOMIA
-      AVANCADO
-    }
+  class ProjectController {
+    <<controller>>
+    +detail(id, CurrentUser) ProjectDetailView
+    +taskDetail(id, ptId, CurrentUser) ProjectTaskDetailView
+  }
+  class TaskExtractController {
+    <<controller>>
+    +extract(taskId, ExtractRequest, CurrentUser, ctx) TaskView
+  }
+  class MediaController {
+    <<controller>>
+    +presign(mediaId, CurrentUser) PresignedUrl
+  }
+  class ProjectDetailService {
+    <<service>>
+    +detail(projectId, viewer) ProjectDetailView
+    +taskDetail(projectId, ptId, viewer) ProjectTaskDetailView
+    -contextOf(ProjectTask) ProjectContext
+    -actionsFor(viewer, task, project) List~Action~
+  }
+  class TaskExtractionService {
+    <<service>>
+    +extractToMyAcervo(taskId, projectId, actor, ctx) TaskItem
+  }
+  class AccessPolicy {
+    <<service>>
+    +canView(viewer, TaskItem) boolean
+    +canView(viewer, ProjectScheme) boolean
+    +canEdit(viewer, TaskItem, ProjectScheme) boolean
+  }
+  class ViewCounter {
+    <<service>>
+    +hit(targetType, targetId) void
+  }
+  class OwnMedia {
+    <<service>>
+    +requireReadable(viewer, MediaObject, TaskItem) void
+  }
+  class ProjectRepositoryPort {
+    <<port>>
+    +findById(id) Optional
+    +findProjectTask(projectId, ptId) Optional
+  }
+  class TaskRepositoryPort {
+    <<port>>
+    +findById(id) Optional
+    +save(TaskItem) TaskItem
+    +incrementReuse(id) void
+  }
+  class MediaStoragePort {
+    <<port>>
+    +presign(objectKey, ttl) URL
+  }
+  class CounterCachePort {
+    <<port>>
+    +increment(key) long
+  }
+  class NotificationPort {
+    <<port>>
+    +notify(Notification) void
   }
 
-  namespace ws_application {
-    class ClassificationService {
-      <<service>>
-      +onMessageSent(event MessageSent) void
-      +classify(message SessionMessage, session DeciaSession) MessageClassification
-      +confirm(current CurrentUser, sessionId, messageId, label MessageClass) MessageClassification
-      -buildPrompt(message, context) AiRequest
-      -localOnly(message, session) boolean
-    }
-    class AiEngine {
-      <<service>>
-      +text(call TextCall) AiOutcome
-      -chain(providers List~AiProviderPort~, call) AiOutcome
-      -mask(input, protectedNames) MaskedInput
-      -log(call, outcome) AiInferenceLog
-    }
-    class AiProviderPort {
-      <<port>>
-      +id() String
-      +available() boolean
-      +complete(request AiRequest) AiResponse
-    }
-    class AiQuotaPort {
-      <<port>>
-      +tryConsume(scope, scopeId, cost) QuotaDecision
-    }
-    class CircuitBreakerPort {
-      <<port>>
-      +allow(provider) boolean
-      +recordSuccess(provider) void
-      +recordFailure(provider) void
-    }
-    class PiiMaskerPort {
-      <<port>>
-      +mask(text, protectedNames) MaskedText
-    }
-    class DecisionTracePort {
-      <<port>>
-      +appendNode(node DecisionTraceNode) UUID
-      +appendEdge(edge DecisionTraceEdge) void
-    }
-    class DomainEventPublisherPort {
-      <<port>>
-      +publish(event DomainEvent) void
-    }
+  class ProjectScheme {
+    <<entity>>
+    +UUID id
+    +UUID ownerId
+    +String title
+    +ProjectStatus status
+    +ProjectPhase currentPhase
+    +Visibility visibility
+    +JSON criticalPathJson
+  }
+  class ProjectTask {
+    <<entity>>
+    +UUID id
+    +UUID projectId
+    +UUID taskId
+    +ProjectPhase phase
+    +int sortOrder
+    +UUID responsibleId
+    +LocalDate dueAt
+    +int percentComplete
+    +boolean isCritical
+    +int slackDays
+    +JSON snapshotJson
+    +boolean removedByAuthor
+  }
+  class TaskSnapshot {
+    <<value>>
+    +String title
+    +TaskType type
+    +TaskCategory category
+    +String thumbnailUrl
+    +String summary
+    +String ownerName
+    +Instant capturedAt
+  }
+  class ProjectTaskDependency {
+    <<entity>>
+    +UUID predecessorProjectTaskId
+    +UUID successorProjectTaskId
+    +String type
+    +int lagDays
+  }
+  class TaskItem {
+    <<entity>>
+    +UUID id
+    +UUID ownerId
+    +String title
+    +String summary
+    +TaskType type
+    +TaskCategory category
+    +TaskState state
+    +Visibility visibility
+    +UUID responsibleId
+    +LocalDate dueAt
+    +LocalDate legalDueAt
+    +SourceKind sourceKind
+    +UUID originalTaskId
+    +UUID sourceProjectId
+    +int reuseCount
+    +long viewsCount
+    +JSON sealIdsJson
+  }
+  class TaskAttachment {
+    <<entity>>
+    +UUID taskId
+    +UUID mediaObjectId
+    +String fileName
+    +String mimeType
+    +boolean isPrimary
+  }
+  class TaskVersion {
+    <<entity>>
+    +int versionNumber
+    +Instant syncedAt
+  }
+  class MediaObject {
+    <<entity>>
+    +String objectKey
+    +String accessClass
+    +UUID ownerId
+  }
+  class Notification {
+    <<entity>>
+    +NotificationType type
+    +UUID recipientId
+    +String groupKey
+  }
+  class Visibility {
+    <<enum>>
+    PRIVADA
+    DEPARTAMENTO
+    EMPRESA
+    PUBLICA
+  }
+  class SourceKind {
+    <<enum>>
+    ARQUIVO
+    COLAR
+    GOOGLE
+    MICROSOFT
+    EMAIL
+    LINK
+    PROTOCOLO
+    FOTO
+    TEXTO_IA
+    EXTRAIDA_DE_PROJETO
+    REMIX
+    DECIA
+    AUTOPILOT
   }
 
-  namespace ws_web {
-    class MessageController {
-      <<controller>>
-      +classification(sessionId, messageId) ClassificationView
-      +confirmClassification(sessionId, messageId, body ConfirmRequest) ClassificationView
-    }
-  }
-
-  namespace ws_infrastructure {
-    class ClaudeProviderAdapter {
-      <<adapter>>
-      +model: String
-    }
-    class GeminiProviderAdapter {
-      <<adapter>>
-      +model: String
-    }
-    class LocalEngineAdapter {
-      <<adapter>>
-      +rules: ClassificationRules
-      +embeddings: LocalEmbeddingIndex
-    }
-    class RedisCircuitBreaker {
-      <<adapter>>
-    }
-    class RedisAiQuota {
-      <<adapter>>
-    }
-  }
-
-  MessageController --> ClassificationService
-  ClassificationService --> AiEngine
-  ClassificationService --> DecisionTracePort
-  ClassificationService --> DomainEventPublisherPort
-  AiEngine --> AiProviderPort : Strategy
-  AiEngine --> AiQuotaPort
-  AiEngine --> CircuitBreakerPort
-  AiEngine --> PiiMaskerPort
-  ClaudeProviderAdapter ..|> AiProviderPort : 1º primário
-  GeminiProviderAdapter ..|> AiProviderPort : 2º alternativo
-  LocalEngineAdapter ..|> AiProviderPort : 3º motor local
-  RedisCircuitBreaker ..|> CircuitBreakerPort
-  RedisAiQuota ..|> AiQuotaPort
-  SessionMessage "1" --> "0..1" MessageClassification : classificationId
-  MessageClassification --> MessageClass
-  MessageClassification ..> AiInferenceLog : aiInferenceId
-  AiInferenceLog --> AiCapability
-  AiInferenceLog --> AiMode
-  AiEngine ..> AiInferenceLog : grava
-  AiEngine ..> AiQuota
-  AiEngine ..> AiProviderCircuitState
-  DecisionTraceNode "1" --> "*" DecisionTraceEdge : CLASSIFICOU
-  DecisionTraceNode ..> MessageClassification : refId (nodeType CLASSIFICACAO)
-
-  note for MessageClassification "tabela message_classifications (RF7) · confirmedByUserId = correção humana"
-  note for AiInferenceLog "tabela ai_inference_log · result OK · FALLBACK · ERRO · BLOQUEADO_SIGILO · provider CLAUDE · GEMINI · LOCAL · .. +6 campos .."
-  note for AiProviderCircuitState "Redis · state CLOSED · OPEN · HALF_OPEN"
+  ProjectController --> ProjectDetailService
+  TaskExtractController --> TaskExtractionService
+  MediaController --> OwnMedia
+  MediaController --> MediaStoragePort
+  ProjectDetailService --> AccessPolicy
+  ProjectDetailService --> ViewCounter
+  ProjectDetailService --> ProjectRepositoryPort
+  ProjectDetailService --> TaskRepositoryPort
+  TaskExtractionService --> AccessPolicy
+  TaskExtractionService --> TaskRepositoryPort
+  TaskExtractionService --> NotificationPort
+  ViewCounter --> CounterCachePort
+  ProjectScheme "1" *-- "2..*" ProjectTask
+  ProjectScheme "1" *-- "0..*" ProjectTaskDependency
+  ProjectTask "0..*" --> "0..1" TaskItem : taskId (nulo se removida)
+  ProjectTask ..> TaskSnapshot : snapshotJson
+  TaskItem "1" --> "0..*" TaskAttachment
+  TaskItem "1" --> "0..*" TaskVersion
+  TaskAttachment "1" --> "1" MediaObject
+  TaskItem "0..*" --> "0..1" TaskItem : originalTaskId (cópia extraída)
+  TaskItem "0..*" --> "0..1" ProjectScheme : sourceProjectId
+  TaskItem --> Visibility
+  TaskItem --> SourceKind
+  TaskExtractionService ..> Notification : TAREFA_REUTILIZADA
+  note for ProjectTask "+12 campos (startAt, estimatedHours, PERT, EVM, moscow, canvas*, stickyColor, decisionTraceNodeId). snapshotJson é atualizado por TaskUpdated (RF12.CA06) e congelado quando o autor exclui."
 ```
 
 ## 2. Diagrama de atividades
 
-Raias: Participante (autor/admin, só na confirmação) · Web/BFF · `ws-application` · IA (AiEngine) · Persistência. O gatilho é o evento `MessageSent` do RF6, não uma ação humana.
-
 ```mermaid
 flowchart TD
-  subgraph L1["Ator humano — Autor ou administrador da sessão"]
-    A1["Vê o badge da classe no card (cor + nome em texto + faísca)"] --> A2{"Concorda com a classe?"}
-    A2 -->|sim| A3["Confirma"]
-    A2 -->|não| A4["Corrige para outra classe"]
-    A20(["Classe revisada por humano (sem faísca)"])
+  subgraph ATOR["Usuário (dono · responsável · terceiro)"]
+    A1["Abre /projects/{id} e vê a lista de tarefas por fase"]
+    A2["Clica num item da lista"]
+    A3["Lê o detalhe · navega anexos, versões, chancelas, contexto no projeto"]
+    A4["Aciona a ação principal: Editar · Levar ao meu acervo · Abrir no Acervo"]
+    A5["Fecha a folha ou volta"]
+  end
+  subgraph FE["Next.js (App Router) · BFF"]
+    F1["GET /api/projects/{id} → quadro/linha do tempo/lista (ProjectCard, PhaseBar)"]
+    F2["Router push /projects/{id}/tasks/{ptId} · Sheet lateral (desktop) ou tela cheia (celular) · Skeleton"]
+    F3["GET /api/projects/{id}/tasks/{ptId}"]
+    F4["GET /api/media/{id}/presign para pré-visualizar anexo"]
+    F5["POST /api/tasks/{taskId}/extract {projectId}"]
+    F6["Volta à lista na mesma fase e rolagem (estado preservado na URL e no cache do router)"]
+  end
+  subgraph WEB["ws-web"]
+    W1["JWT + SessionActiveFilter + CurrentUserArgumentResolver"]
+    W2["ProjectController.taskDetail · TaskExtractController.extract · MediaController.presign"]
+    E403["403 ACESSO_NEGADO (projeto ou tarefa fora da visibilidade · PRIVADA de terceiro)"]
+    E404["404 TAREFA_NAO_ENCONTRADA (ptId não pertence ao projeto)"]
+    E409["409 JA_NO_ACERVO (cópia já existe para este usuário)"]
+  end
+  subgraph APP["ws-application"]
+    S1["ProjectDetailService.taskDetail: findProjectTask(projectId, ptId)"]
+    S2{"ProjectTask existe no projeto?"}
+    S3{"taskId nulo (removida pelo autor)?"}
+    S4["Monta detalhe a partir do TaskSnapshot: aviso 'removida pelo autor', sem anexos nem ações"]
+    S5{"AccessPolicy.canView(viewer, task)?"}
+    S6["Card 'tarefa privada' (só fase e ordem)"]
+    S7["Monta detalhe completo: tarefa + anexos (presign sob demanda) + versões + chancelas + contexto (fase, ordem, dependências, crítica, %)"]
+    S8["actionsFor: dono/responsável → Editar · terceiro → Levar ao meu acervo + interações"]
+    S9["ViewCounter.hit(TASK, id) → Redis, consolidado em viewsCount"]
+    X1["TaskExtractionService: canView e visibility != PRIVADA?"]
+    X2["Cópia: sourceKind EXTRAIDA_DE_PROJETO · originalTaskId · sourceProjectId · DISPONIVEL · PRIVADA · anexos por referência (mesmo MediaObject)"]
+    X3["reuseCount++ na original · AuditLog TASK_EXTRACTED"]
+    EV["AFTER_COMMIT: Notification TAREFA_REUTILIZADA ao dono · reindexa ws-tasks · métrica de reutilização (perfil deliberativo)"]
+  end
+  subgraph PERS["Persistência"]
+    P1[("MySQL: project_schemes, project_tasks (snapshot_json), project_task_dependencies, tasks, task_attachments, task_versions, media_objects, audit_log")]
+    P2[("Redis: views:task:{id} · card cache")]
+    P3[("S3: anexos (URL assinada curta) · thumbnails")]
+    P4[("Cassandra notifications_by_user · OpenSearch ws-tasks")]
   end
 
-  subgraph L2["Web / BFF (Next.js App Router)"]
-    B1["SSE MessageClassified → atualiza o badge do card"]
-    B2["POST /api/decia/sessions/{id}/messages/{msgId}/classification/confirm {label}"]
-  end
-
-  subgraph L3["ws-application — ClassificationService"]
-    C0(["Evento MessageSent (AFTER_COMMIT do RF6)"]) --> C1{"authorKind HUMANO e não repetida?"}
-    C1 -->|não| C2["Marca RUIDO ou ignora (não pontua)"]
-    C1 -->|sim| C3["Monta contexto: tema, últimas N mensagens, anexos citados"]
-    C3 --> C4{"Anexo RESTRITO/SIGILOSO ou sessão localOnly?"}
-    C4 -->|sim| C5["Força provider LOCAL (BLOQUEADO_SIGILO para externos)"]
-    C4 -->|não| C6["Mascara dados pessoais (PiiMasker)"]
-    C6 --> C7{"AiQuota do departamento disponível?"}
-    C7 -->|não| C5
-    C7 -->|sim| C8["AiEngine.text(CLASSIFICAR_MENSAGEM, mode da sessão)"]
-    C5 --> C8
-    C12["Grava MessageClassification + classificationId na mensagem"] --> C13["DecisionTrace: nó CLASSIFICACAO + aresta CLASSIFICOU"]
-    C13 --> C14["Publica MessageClassified (AFTER_COMMIT) → realtime, RF8, RF42"]
-    C15{"É autor ou adminUserId?"}
-    C15 -->|não| E403["403 ACESSO_NEGADO"]
-    C15 -->|sim| C16{"label no enum MessageClass?"}
-    C16 -->|não| E422["422 VALIDACAO"]
-    C16 -->|sim| C17["Atualiza label + confirmedByUserId (mantém aiInferenceId)"]
-    C17 --> C14
-  end
-
-  subgraph L4["IA (AiEngine — Strategy + Chain)"]
-    I1{"Circuito do primário CLOSED/HALF_OPEN?"}
-    I1 -->|sim| I2["Claude ou Gemini (primário) com timeout"]
-    I1 -->|não| I4
-    I2 --> I3{"Resposta válida (JSON label, confidence, rationale, evidence)?"}
-    I3 -->|sim| I7["AiInferenceLog result OK"]
-    I3 -->|não ou timeout| I4{"Circuito do alternativo permite?"}
-    I4 -->|sim| I5["Provedor alternativo"]
-    I4 -->|não| I6
-    I5 --> I3b{"Resposta válida?"}
-    I3b -->|sim| I7b["AiInferenceLog result FALLBACK"]
-    I3b -->|não| I6["Motor local: regras + embeddings locais"]
-    I6 --> I7c["AiInferenceLog result FALLBACK ou BLOQUEADO_SIGILO · aviso no card"]
-  end
-
-  subgraph L5["Persistência"]
-    D1[("MySQL: message_classifications, session_messages_idx.classification_id, ai_inference_log, decision_trace_nodes/edges, domain_events")]
-    D2[("Redis: AiQuota quota:{scope}:{id}:{month} · AiProviderCircuitState")]
-    D3[("Cassandra: trace_by_entity (espelho) · messages_by_session (leitura do contexto)")]
-  end
-
-  C3 --> D3
-  C7 --> D2
-  C8 --> I1
-  I7 --> C12
-  I7b --> C12
-  I7c --> C12
-  C12 --> D1
-  C13 --> D1
-  C13 --> D3
-  C14 --> B1 --> A1
-  A3 --> B2
-  A4 --> B2
-  B2 --> C15
-  C17 --> D1
-  C14 --> A20
-
-  classDef erro fill:#fde2e2,stroke:#c0392b,color:#7b1d1d;
-  class E403,E422 erro;
+  A1 --> F1 --> W1 --> W2 --> P1
+  F1 --> A2 --> F2 --> F3 --> W1
+  W2 --> S1 --> S2
+  S2 -->|"não"| E404
+  S2 -->|"sim"| S3
+  S3 -->|"sim"| S4 --> A3
+  S3 -->|"não"| S5
+  S5 -->|"não"| S6
+  S5 -->|"não, API direta"| E403
+  S5 -->|"sim"| S7 --> S8 --> S9 --> A3
+  S9 --> P2
+  S7 --> P1
+  A3 --> F4 --> W2 --> P3
+  A3 --> A4
+  A4 -->|"Levar ao meu acervo"| F5 --> W2 --> X1
+  X1 -->|"PRIVADA ou sem acesso"| E403
+  X1 -->|"já extraída"| E409
+  X1 -->|"ok"| X2 --> X3 --> P1
+  X3 --> EV --> P4
+  A4 -->|"Editar"| RF8["RF8 / RF12: /tasks/{id}/edit"]
+  A4 -->|"Abrir no Acervo"| RF41["/tasks/{id} (RF6/RF41)"]
+  A3 --> A5 --> F6
 ```
 
 ## 3. Diagrama de sequência
 
-Caminho feliz (primário responde), `alt` de fallback em cadeia (CA02), `alt` de sigilo (CA03) e confirmação humana (CA05). Sem ponto e vírgula nas mensagens.
-
 ```mermaid
 sequenceDiagram
   autonumber
-  participant DE as DomainEvents (AFTER_COMMIT)
-  participant CL as ClassificationService (ws-application)
+  actor U as Usuário
+  participant N as Next.js (App Router)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
+  participant R as Repository/MySQL
+  participant RD as Redis
+  participant S3 as S3
   participant CS as Cassandra
-  participant R as Redis
-  participant AI as AiEngine
-  participant P1 as Claude (primário)
-  participant P2 as Gemini (alternativo)
-  participant LC as Motor local (LocalEngineAdapter)
-  participant DB as Repository/MySQL
-  participant N as Next.js (App Router) /decia/[id]
-  actor U as Usuário (autor ou admin)
-  participant C as MessageController (ws-web)
+  participant EV as DomainEvents (AFTER_COMMIT)
 
-  DE->>CL: MessageSent(sessionId, messageId, authorId, localOnly, correlationId)
-  CL->>CS: SELECT messages_by_session (mensagem + últimas 20 do contexto)
-  CL->>DB: SELECT decia_sessions (topic, aiMode) + message_attachments (accessClass)
-  alt anexo RESTRITO/SIGILOSO ou sessão localOnly (CA03)
-    CL->>AI: text(CLASSIFICAR_MENSAGEM, providers=[LOCAL], reason=SIGILO)
-    AI->>LC: complete(request)
-    LC-->>AI: label, confidence, rationale
-    AI->>DB: INSERT ai_inference_log (provider LOCAL, result BLOQUEADO_SIGILO para externos, maskedFields)
-    AI-->>CL: AiOutcome (local, aviso de sigilo)
-  else mensagem comum (CA01, CA02)
-    CL->>AI: text(CLASSIFICAR_MENSAGEM, mode=aiMode, protectedNames)
-    AI->>AI: PiiMasker.mask (nomes, e-mails, CPF)
-    AI->>R: AiQuota.tryConsume(DEPARTMENT, departmentId)
-    alt sem cota mensal nem créditos
-      AI->>LC: complete(request) com aviso "sem cota"
-      LC-->>AI: resposta local
-    else com cota
-      AI->>R: CircuitBreaker.allow(CLAUDE)
-      alt circuito CLOSED e primário responde no timeout
-        AI->>P1: complete(prompt mascarado, JSON schema)
-        P1-->>AI: {label, confidence, rationale, evidenceRefs}
-        AI->>R: recordSuccess(CLAUDE)
-        AI->>DB: INSERT ai_inference_log (CLAUDE, result OK, tokens, custo, latência)
-      else timeout, erro 5xx ou circuito OPEN (CA02)
-        AI->>R: recordFailure(CLAUDE) → pode abrir o circuito
-        AI->>P2: complete(prompt mascarado)
-        alt alternativo responde
-          P2-->>AI: {label, confidence, rationale}
-          AI->>DB: INSERT ai_inference_log (GEMINI, result FALLBACK, fallbackUsed=true)
-        else alternativo também falha
-          AI->>LC: complete(request)
-          LC-->>AI: label por regras + embeddings locais
-          AI->>DB: INSERT ai_inference_log (LOCAL, result FALLBACK, fallbackUsed=true)
-        end
-      end
-    end
-    AI-->>CL: AiOutcome (label, confidence, rationale, provider, aiInferenceId)
+  U->>N: clica numa tarefa da fase ELABORACAO em /projects/{id}
+  N->>N: push /projects/{id}/tasks/{ptId} (Sheet com Skeleton)
+  N->>C: GET /api/projects/{id}/tasks/{ptId}
+  C->>S: ProjectDetailService.taskDetail(projectId, ptId, viewer)
+  S->>R: findById(project) + AccessPolicy.canView(viewer, project)
+  S->>R: findProjectTask(projectId, ptId)
+  alt ptId não pertence ao projeto
+    S-->>C: 404 TAREFA_NAO_ENCONTRADA
+    C-->>N: 404
+  else tarefa removida pelo autor (taskId nulo)
+    S->>S: detalhe a partir de snapshotJson (TaskSnapshot)
+    S-->>C: ProjectTaskDetailView {snapshot, removedByAuthor=true, actions=[]}
+    C-->>N: 200 (aviso "removida pelo autor", sem anexos)
+  else tarefa fora da visibilidade do viewer
+    S->>S: AccessPolicy.canView(viewer, task) = false
+    S-->>C: 403 ACESSO_NEGADO
+    C-->>N: 403 (card "tarefa privada": só fase e ordem)
+  else tarefa visível
+    S->>R: tasks + task_attachments + task_versions + seal_bonds + dependências do ProjectTask
+    S->>S: contextOf (fase, ordem, predecessoras, isCritical, slackDays, percentComplete)
+    S->>S: actionsFor(viewer) → Editar | Levar ao meu acervo | Abrir no Acervo + interações
+    S->>RD: INCR views:task:{taskId} (consolidação em lote em tasks.views_count)
+    S-->>C: ProjectTaskDetailView
+    C-->>N: 200
+    N-->>U: folha com TypeChip, Tag, Due ⚖, Seal, Counters, contexto no projeto
   end
-  CL->>DB: BEGIN · INSERT message_classifications · UPDATE session_messages_idx SET classification_id · INSERT decision_trace_nodes (CLASSIFICACAO) + decision_trace_edges (CLASSIFICOU) · INSERT domain_events MessageClassified · COMMIT (CA04)
-  CL->>CS: UPDATE messages_by_session SET classification_id (eventual)
-  DE->>R: AFTER_COMMIT → PUBLISH decia.session.{id} MessageClassified (CA01)
-  R-->>N: SSE → badge da classe com cor, nome em texto e faísca (CA04)
-  DE->>DE: AFTER_COMMIT → DivergenceService (se DIVERGENCIA, RF8) · PointsService evento idempotente (RF42) (CA06)
 
-  U->>N: corrige a classe de RISCO para DIVERGENCIA
-  N->>C: POST /api/decia/sessions/{id}/messages/{msgId}/classification/confirm {label}
-  C->>CL: confirm(currentUser, sessionId, messageId, DIVERGENCIA)
-  alt não é autor nem adminUserId (CA05)
-    CL-->>C: 403 ACESSO_NEGADO
+  U->>N: clica no anexo principal
+  N->>C: GET /api/media/{mediaId}/presign
+  C->>S: OwnMedia.requireReadable(viewer, media, task)
+  alt sem direito de leitura
+    S-->>C: 403 ACESSO_NEGADO
     C-->>N: 403
-  else autor ou admin (CA05)
-    CL->>DB: UPDATE message_classifications SET label, confirmed_by_user_id (mantém ai_inference_id)
-    CL->>DB: INSERT domain_events MessageClassified(confirmed=true)
-    CL-->>C: 200 ClassificationView (revisado por humano)
-    C-->>N: 200 → badge sem faísca, tooltip "revisado por [pessoa]"
-    DE->>DB: AFTER_COMMIT → métrica de aceitação para o painel IA do sistema (RF43.CA12)
+  else ok
+    S->>S3: presign(objectKey, 5 min)
+    S-->>C: PresignedUrl
+    C-->>N: 200 → pré-visualização
   end
+
+  U->>N: "Levar ao meu acervo"
+  N->>C: POST /api/tasks/{taskId}/extract {projectId}
+  C->>S: TaskExtractionService.extractToMyAcervo(taskId, projectId, actor, ctx)
+  S->>R: findById(task)
+  alt PRIVADA ou viewer sem acesso
+    S-->>C: 403 ACESSO_NEGADO
+    C-->>N: 403
+  else já existe cópia deste usuário
+    S-->>C: 409 JA_NO_ACERVO {existingTaskId}
+    C-->>N: 409 (link para a cópia)
+  else ok
+    S->>R: insert tasks (cópia: EXTRAIDA_DE_PROJETO, originalTaskId, sourceProjectId, DISPONIVEL, PRIVADA)
+    S->>R: insert task_attachments apontando os mesmos media_objects
+    S->>R: update original.reuse_count + 1 · insert audit_log TASK_EXTRACTED
+    S-->>C: TaskView (cópia)
+    C-->>N: 201 → Toast "no seu Acervo"
+    EV->>CS: notifications_by_user TAREFA_REUTILIZADA (dono da original)
+    EV->>R: deliberative_profiles.reuse (métrica de reutilização)
+  end
+
+  U->>N: fecha a folha
+  N->>N: back → /projects/{id} na mesma fase e rolagem
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: `MessageClassification`. Não há enum de status na TAXONOMIA, então os estados são **implícitos**: pendente (mensagem sem `classificationId`), em inferência (cadeia do AiEngine), classificada (`label` + `aiInferenceId`) e revisada (`confirmedByUserId`). O estado composto mostra a cadeia primário → alternativo → local e o circuito do provedor.
+Entidade central: a **ligação `ProjectTask` → `TaskItem`** vista pelo leitor — estados derivados de `taskId`, `removedByAuthor` e `AccessPolicy.canView` (não há enum; `ProjectTask` não tem `status`). A tarefa em si segue `TaskState` (RF4/RF6 §4); a cópia extraída nasce `DISPONIVEL`.
 
 ```mermaid
 stateDiagram-v2
   direction LR
-  [*] --> PENDENTE : MessageSent (RF6) com authorKind HUMANO
+  state "LIGADA_VISIVEL (taskId != null, canView)" as VIS
+  state "LIGADA_PRIVADA (taskId != null, canView = false)" as PRIV
+  state "REMOVIDA_PELO_AUTOR (taskId = null, snapshotJson)" as REM
+  state "Cópia no meu Acervo (TaskItem EXTRAIDA_DE_PROJETO, DISPONIVEL, PRIVADA)" as COPIA
 
-  state "EM_INFERENCIA (AiEngine Strategy + Chain)" as EM_INFERENCIA {
-    [*] --> PRIMARIO : circuito CLOSED ou HALF_OPEN
-    [*] --> LOCAL_SIGILO : anexo RESTRITO/SIGILOSO ou sem cota (RF7.CA03)
-    PRIMARIO --> ALTERNATIVO : timeout, erro ou circuito OPEN
-    ALTERNATIVO --> LOCAL : timeout ou erro
-    PRIMARIO --> [*] : resposta válida (result OK)
-    ALTERNATIVO --> [*] : resposta válida (result FALLBACK)
-    LOCAL --> [*] : regras + embeddings (result FALLBACK)
-    LOCAL_SIGILO --> [*] : regras + embeddings (result BLOQUEADO_SIGILO)
-  }
-
-  PENDENTE --> EM_INFERENCIA : ClassificationService.classify
-  EM_INFERENCIA --> CLASSIFICADA : label ARGUMENTO · DIVERGENCIA · RISCO · CONSENSO · PERGUNTA · RUIDO + aiInferenceId (RF7.CA01)
-  EM_INFERENCIA --> ERRO : todos os provedores falharam (result ERRO, nova tentativa com backoff)
-  ERRO --> EM_INFERENCIA : retry (PipelineJob REPROCESSAR)
-  CLASSIFICADA --> REVISADA : autor ou admin confirma ou corrige (confirmedByUserId, RF7.CA05)
-  CLASSIFICADA --> PENDENTE : mensagem editada em até 5 min (RF6.CA05) → reclassifica
-  REVISADA --> [*]
-
-  note right of CLASSIFICADA
-    Dispara MessageClassified (RF7.CA06):
-    DIVERGENCIA → RF8 · RISCO/PERGUNTA → AiQuestion
-    ARGUMENTO com evidência / CONSENSO → DECIA Points (RF42)
-    RUIDO → nada
+  [*] --> VIS : ProjectTask criada no Criador de Projetos (RF5) [visibility compatível com o viewer]
+  [*] --> PRIV : ProjectTask criada [tarefa PRIVADA de terceiro ou DEPARTAMENTO sem ser membro]
+  VIS --> PRIV : dono reduz a visibility da tarefa (RF12) → snapshotJson mantido, folha vira "tarefa privada"
+  PRIV --> VIS : dono amplia a visibility
+  VIS --> REM : dono exclui a tarefa → ProjectTask.taskId = null, removedByAuthor = true, snapshot congelado (RF23.CA03)
+  PRIV --> REM : dono exclui a tarefa
+  VIS --> VIS : TaskUpdated (RF12.CA06) atualiza snapshotJson e viewsCount++ a cada abertura
+  VIS --> COPIA : "Levar ao meu acervo" [viewer != dono, visibility != PRIVADA] · reuseCount++ · TAREFA_REUTILIZADA
+  COPIA --> [*] : passa a seguir TaskState no Acervo do viewer (RF6/RF41)
+  REM --> [*] : permanece no projeto como snapshot (fases e dependências íntegras)
+  note right of PRIV
+    API: 403 ACESSO_NEGADO.
+    Tela: card "tarefa privada" só com fase e ordem.
   end note
-  note left of EM_INFERENCIA
-    AiProviderCircuitState por provedor:
-    CLOSED → OPEN após N falhas → HALF_OPEN após espera
+  note right of REM
+    Sem anexos, sem Editar, sem Levar ao meu acervo.
+    Aviso "removida pelo autor".
   end note
 ```
 
@@ -433,83 +409,64 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js (App Router)"]
-    FE1["app/(app)/decia/[sessionId]/page.tsx (MessageCard com ClassBadge)"]
-    FE2["components/ui (ClassBadge: cor + nome em texto, AiSpark ✦ tooltip, ConfirmClassMenu)"]
-    FE3["lib/decia/useSessionStream.ts (MessageClassified)"]
+  subgraph FE["Frontend · Next.js 15 App Router"]
+    PG["app/(shell)/projects/[id] · app/(shell)/projects/[id]/tasks/[ptId] (rota paralela em Sheet)"]
+    UI["packages/ui: ProjectCard, PhaseBar, TaskCard (list/expanded), TypeChip, Tag, Due, Seal, Counters, Sheet, Skeleton, Button (icon transformar-tarefa)"]
+    BFF["app/bff/projects/* · app/bff/tasks/* · app/bff/media/*"]
+    PG --> UI
+    PG --> BFF
   end
-
-  subgraph WEB["ws-web"]
-    W1["MessageController /api/decia/sessions/{id}/messages/{msgId}/classification · /confirm"]
-    W2["SessionStreamController (SSE)"]
+  subgraph WSWEB["ws-web"]
+    SEC["SecurityConfig · SessionActiveFilter · CurrentUserArgumentResolver"]
+    PC["ProjectController · TaskExtractController · MediaController"]
+    GEH["GlobalExceptionHandler (403, 404, 409)"]
   end
-
-  subgraph APP["ws-application"]
-    S1["ClassificationService (listener MessageSent)"]
-    S2["AiEngine (Strategy + Chain, PiiMasker, log)"]
-    S3["DecisionTraceService"]
-    P1["AiProviderPort · CircuitBreakerPort · AiQuotaPort · PiiMaskerPort"]
-    P2["MessageStorePort · DecisionTracePort · DomainEventPublisherPort · RealtimePublisherPort"]
+  subgraph WSAPP["ws-application"]
+    PRJ["projects: ProjectDetailService"]
+    ACV["acervo: TaskExtractionService (compartilhado com RF23) · ViewCounter"]
+    SECU["security: AccessPolicy · OwnMedia · Guard (real)"]
+    PORTS["ports: ProjectRepositoryPort · TaskRepositoryPort · MediaStoragePort · CounterCachePort · NotificationPort · SearchIndexPort · AuditLogPort"]
+    EVT["events: TaskExtracted (AFTER_COMMIT)"]
+    PRJ --> SECU
+    PRJ --> PORTS
+    ACV --> SECU
+    ACV --> PORTS
+    ACV --> EVT
   end
-
-  subgraph DOM["ws-domain"]
-    D1["SessionMessage · MessageClassification · AiInferenceLog · AiQuota · AiProviderCircuitState · DecisionTraceNode · DecisionTraceEdge"]
-    D2["MessageClass · AiCapability · AiMode · AccessClassification · TraceNodeType"]
-    D3["MessageClassificationRepository · AiInferenceLogRepository · DecisionTraceNodeRepository"]
+  subgraph WSDOM["ws-domain"]
+    DOM["projects: ProjectScheme · ProjectTask · TaskSnapshot · ProjectTaskDependency · acervo: TaskItem · TaskAttachment · TaskVersion · platform: MediaObject · social: Notification"]
   end
-
   subgraph INFRA["ws-infrastructure"]
-    I1["ai-providers (ClaudeProviderAdapter, GeminiProviderAdapter, LocalEngineAdapter: regras + embeddings locais)"]
-    I2["cache-redis (RedisCircuitBreaker, RedisAiQuota, RedisRealtimePublisher)"]
-    I3["persistence-mysql (message_classifications, ai_inference_log, decision_trace_nodes/edges, domain_events)"]
-    I4["persistence-cassandra (messages_by_session leitura de contexto, trace_by_entity)"]
-    I5["platform (OutboxEventPublisher, FeatureFlags ai.provider.claude / ai.provider.gemini / ai.local.only)"]
+    MY["persistence-mysql: JpaProjectRepository · JpaTaskRepository"]
+    RDS["cache-redis: views:task:{id} · cache de card"]
+    S3["storage-s3: presign curto (5 min) · anexos por referência"]
+    CAS["persistence-cassandra: notifications_by_user · timeline_by_user"]
+    OSE["search-opensearch: ws-tasks (reindexa a cópia)"]
   end
 
-  subgraph EXT["Serviços externos"]
-    X1["Claude (Anthropic API)"]
-    X2["Gemini (Google AI)"]
-  end
-
-  MY[("MySQL 8")]
-  CA[("Cassandra")]
-  RD[("Redis")]
-
-  FE1 --> FE2
-  FE1 --> FE3
-  FE1 -->|HTTPS/JSON| W1
-  FE3 -->|SSE| W2
-  W1 --> S1
-  S1 --> S2
-  S1 --> S3
-  S1 --> P2
-  S2 --> P1
-  S1 --> D1
-  S1 --> D3
-  I1 -.->|implementa| P1
-  I2 -.->|implementa| P1
-  I2 -.->|implementa| P2
-  I3 -.->|implementa| P2
-  I4 -.->|implementa| P2
-  I5 -.->|implementa| P2
-  I5 -.->|flags| S2
-  I1 -->|primário| X1
-  I1 -->|alternativo| X2
-  W2 --> I2
-  D3 --> I3
-  I3 --> MY
-  I4 --> CA
-  I2 --> RD
-  BOOT["ws-bootstrap (chaves de API, timeouts, limiares do circuit breaker, cota mensal padrão)"] -.-> INFRA
+  BFF -->|"REST JSON"| SEC --> PC --> PRJ
+  PC --> ACV
+  PC --> GEH
+  MY -.implementa.-> PORTS
+  RDS -.implementa.-> PORTS
+  S3 -.implementa.-> PORTS
+  CAS -.implementa.-> PORTS
+  OSE -.implementa.-> PORTS
+  PRJ --> DOM
+  MY --> DB[("MySQL 8.4")]
+  RDS --> RD[("Redis 7")]
+  S3 --> MINIO[("S3 / MinIO")]
+  CAS --> CDB[("Cassandra 4.1")]
+  OSE --> OSX[("OpenSearch 2.19")]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) |
-|---|---|---|---|---|---|
-| RF7.CA01 | `ClassificationService.onMessageSent/classify`, `MessageClassification.label/confidence/rationale/hasEvidence`, `MessageClass`, `SessionMessage.classificationId` | `C0`, `C1`, `C3`, `C8`, `C12`, `B1` | 1–3, 12, 30–33 | `[*] → PENDENTE → EM_INFERENCIA → CLASSIFICADA` | `S1`, `W2`, `FE3`, `I3 message_classifications` |
-| RF7.CA02 | `AiEngine.text/chain`, `AiProviderPort` (Claude → Gemini → Local), `CircuitBreakerPort`/`AiProviderCircuitState`, `AiInferenceLog` | `I1`–`I7c` | 17–29 (`alt` timeout/erro → alternativo → local, `ai_inference_log` OK/FALLBACK) | composto `EM_INFERENCIA` (PRIMARIO → ALTERNATIVO → LOCAL), `→ ERRO` | `S2`, `I1 ai-providers`, `I2 RedisCircuitBreaker`, `X1`, `X2` |
-| RF7.CA03 | `ClassificationService.localOnly`, `PiiMaskerPort`, `AiInferenceLog.maskedFields/result BLOQUEADO_SIGILO`, `AccessClassification` | `C4` → `C5`, `C6` | 4–9 (`alt` sigilo → só LOCAL), 13 (mask) | `[*] → LOCAL_SIGILO` | `I1 LocalEngineAdapter`, `S2 PiiMasker`, `I5 ai.local.only` |
-| RF7.CA04 | `MessageClassification.linkedTaskId/linkedProjectId`, `DecisionTraceNode CLASSIFICACAO`, `DecisionTraceEdge CLASSIFICOU`, `DecisionTracePort` | `C13`, `B1`, `A1` | 30 (nós/arestas do trace), 33 (badge cor + texto + faísca) | nota em `CLASSIFICADA` | `FE2 ClassBadge/AiSpark`, `S3`, `I3 decision_trace_*`, `I4 trace_by_entity` |
-| RF7.CA05 | `ClassificationService.confirm`, `MessageClassification.confirmedByUserId`, `MessageController.confirmClassification` | `A2`–`A4`, `B2`, `C15` → `E403`, `C16` → `E422`, `C17` | 35–44 (`confirm`, 403, revisado por humano) | `CLASSIFICADA → REVISADA` | `W1 /confirm`, `FE2 ConfirmClassMenu` |
-| RF7.CA06 | `DomainEventPublisherPort` (`MessageClassified`), `AiQuotaPort`/`RedisAiQuota`/`AiQuota`, `SessionMessage.similarityHash` | `C1` → `C2`, `C7`, `C14` | 14–16 (cota), 34 (→ RF8, RF42) | nota em `CLASSIFICADA` | `I2 RedisAiQuota`, `I5 OutboxEventPublisher` |
+| CA | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) | Situação |
+|---|---|---|---|---|---|---|
+| RF7.CA01 | `ProjectDetailService.taskDetail/contextOf`, `ProjectTask`, `ProjectTaskDependency`, `TaskAttachment`, `TaskVersion`, `MediaController.presign` | `A2`→`F2`→`F3`→`S1`→`S7`→`A3`, `F4` | 1–6, 17–24, 25–33 | `[*]`→`VIS` | `PG`, `UI` (`TypeChip`, `Tag`, `Due`, `Seal`, `Counters`), `S3` | planejado |
+| RF7.CA02 | `ProjectTask.taskId/snapshotJson/removedByAuthor`, `TaskSnapshot` | `S3`→`S4` | 10–13 | `VIS`→`REM`, nota de `REM` | `PRJ`, `DOM` | planejado (RF23.CA03) |
+| RF7.CA03 | `AccessPolicy.canView`, `ProjectRepositoryPort.findProjectTask` | `S2`→`E404`, `S5`→`S6`/`E403` | 7–9, 14–16 | `[*]`→`PRIV`, `VIS`→`PRIV` | `SECU`, `GEH` | planejado |
+| RF7.CA04 | `TaskExtractionService.extractToMyAcervo`, `TaskItem.sourceKind/originalTaskId/sourceProjectId/reuseCount`, `NotificationPort` | `A4`→`F5`→`X1`→`X3`→`EV`, `E403`, `E409` | 34–50 | `VIS`→`COPIA` | `ACV`, `EVT`, `CAS`, `OSE` | planejado (RF23.CA01/CA02/CA04/CA05) |
+| RF7.CA05 | `ProjectDetailService.actionsFor`, `AccessPolicy.canEdit`, `ViewCounter`, `CounterCachePort` | `S8`→`S9`, `A4`→`RF8`/`RF41` | 20–21 | `VIS`→`VIS` (viewsCount) | `RDS`, `UI` (`Button`) | planejado |
+| RF7.CA06 | rota paralela `/projects/[id]/tasks/[ptId]`, `Sheet`, `Skeleton`, `lib/i18n` | `F2`, `A5`→`F6` | 2, 51–52 | — | `PG`, `UI` (`Sheet`, `Skeleton`) | planejado |

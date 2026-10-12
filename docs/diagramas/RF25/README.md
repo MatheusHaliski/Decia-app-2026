@@ -1,15 +1,8 @@
 # RF25 — Agrupar projetos e tarefas em Programas, Exercícios e Gestões (agrupamentos institucionais)
-**HU:** HU25 · **Sprint (board Work Station):** Product Backlog (não comprometido na Sprint 4; candidato à Sprint 5) · **Equivalente FAI:** Agrupamentos (Coleções da marca RF35, Eras da celebridade RF34, temporadas) · **Aba/rota:** sub-aba *Programas & Agrupamentos* no perfil (RF19), página do agrupamento (`/groupings/[id]`), página da empresa/departamento (RF28)
-**Critérios de aceite cobertos:** RF25.CA01 · CA02 · CA03 · CA04 · CA05
+**HU:** HU25 · **Sprint (board Work Station):** Product Backlog (não comprometido na Sprint 4) · **Equivalente FAI:** Agrupamentos (Coleções da marca RF35, Eras da celebridade RF34, temporadas) · **Aba/rota:** sub-aba **Programas & Agrupamentos** do perfil (`/profile?tab=programas`, `/u/[username]?tab=programas`), página do agrupamento (`/groupings/[id]`), páginas da empresa/departamento (`/companies/[slug]`, `/departments/[slug]`, RF28)
+**Critérios de aceite cobertos:** RF25.CA01 · CA02 · CA03 · CA04 · CA05 (corpo do card, inalterado) — regra: o **título do card** define o RF e o corpo traz os próprios CAs.
 
-O **Agrupamento** (`Grouping`, = SchemeGrouping do FAI) organiza projetos e tarefas em quatro tipos (`GroupingType`): **PROGRAMA** (= coleção, ex.: "Programa Cidade Acessível 2026"), **EXERCÍCIO** (= temporada, ano orçamentário), **GESTÃO** (= era, período de um chefe ou de uma gestão da empresa) e **FRENTE** (= linha de estilo, tema transversal). EMPRESA e CHEFE criam qualquer tipo; EMPREGADO só cria FRENTE pessoal. A ligação é `GroupingItem` (targetType PROJECT | TASK) e, para projetos, os ponteiros desnormalizados `ProjectScheme.programGroupingId / exerciseGroupingId / managementGroupingId` — **um item pode estar em vários agrupamentos de tipos diferentes, mas em no máximo um por tipo**. A página do agrupamento mostra capa, projetos em grade, progresso agregado e a linha do tempo de decisões (`DecisionTraceNode`, RF29). Agrupamentos aparecem na página da empresa/departamento (RF28) e são indexados para Buscar (RF27). **Encerrar uma GESTÃO** gera automaticamente o **Dossiê de Transição** (`HandoffDossier`, RF36) do período.
-
-| Tipo | Quem cria | Período | Exemplo |
-|---|---|---|---|
-| PROGRAMA | EMPRESA, CHEFE | livre | Programa Cidade Acessível 2026 |
-| EXERCICIO | EMPRESA, CHEFE | ano orçamentário | Exercício 2026 |
-| GESTAO | EMPRESA, CHEFE | mandato do chefe / gestão da empresa | Gestão SECID-UTS 2025–2026 |
-| FRENTE | EMPRESA, CHEFE, EMPREGADO (pessoal) | livre | Convênios federais |
+Tipos (`GroupingType`): **PROGRAMA** (= coleção, EMPRESA/CHEFE), **EXERCICIO** (= temporada, ano orçamentário), **GESTAO** (= era, período de um chefe ou de uma gestão), **FRENTE** (= linha de estilo; a única que o EMPREGADO cria, pessoal). Um projeto aponta direto para até três agrupamentos (`ProjectScheme.programGroupingId / exerciseGroupingId / managementGroupingId`) e `GroupingItem` registra qualquer item (PROJECT · TASK). Encerrar uma GESTAO dispara o **Dossiê de Transição** (RF36) por evento AFTER_COMMIT.
 
 ## 1. Diagrama de classes
 
@@ -17,7 +10,7 @@ O **Agrupamento** (`Grouping`, = SchemeGrouping do FAI) organiza projetos e tare
 classDiagram
 direction LR
 
-namespace ws_domain_planejamento {
+namespace ws_domain_planning {
   class Grouping {
     <<entity>>
     +id: UUID
@@ -39,110 +32,10 @@ namespace ws_domain_planejamento {
     <<entity>>
     +id: UUID
     +groupingId: UUID
-    +targetType: String PROJECT ou TASK
+    +targetType: String
     +targetId: UUID
     +addedAt: Instant
   }
-}
-
-namespace ws_domain_projetos_acervo {
-  class ProjectScheme {
-    <<entity>>
-    +id: UUID
-    +title: String
-    +status: ProjectStatus
-    +currentPhase: ProjectPhase
-    +programGroupingId: UUID
-    +exerciseGroupingId: UUID
-    +managementGroupingId: UUID
-    +departmentId: UUID
-    +coverUrl: String
-  }
-  class TaskItem {
-    <<entity>>
-    +id: UUID
-    +title: String
-    +state: TaskState
-    +departmentId: UUID
-  }
-  class ProjectTask {
-    <<entity>>
-    +projectId: UUID
-    +percentComplete: int
-  }
-}
-
-namespace ws_domain_identidade_decia {
-  class User {
-    <<entity>>
-    +id: UUID
-    +profileType: ProfileType
-    +companyId: UUID
-    +departmentId: UUID
-  }
-  class Company {
-    <<entity>>
-    +id: UUID
-    +legalName: String
-    +slug: String
-  }
-  class Department {
-    <<entity>>
-    +id: UUID
-    +companyId: UUID
-    +acronym: String
-    +headUserId: UUID
-  }
-  class DecisionTraceNode {
-    <<entity>>
-    +id: UUID
-    +sessionId: UUID
-    +nodeType: TraceNodeType DECISAO
-    +refId: UUID
-    +classLabel: String
-    +at: Instant
-  }
-  class DeciaSession {
-    <<entity>>
-    +id: UUID
-    +linkedProjectId: UUID
-  }
-}
-
-namespace ws_domain_transicao {
-  class HandoffDossier {
-    <<entity>>
-    +id: UUID
-    +subjectType: String GESTAO
-    +subjectUserId: UUID
-    +groupingId: UUID
-    +requestedBy: UUID
-    +reason: String FIM_GESTAO
-    +generatedAt: Instant
-    +contentJson: JSON openProjectsByPhase pendingTasks blockedTasks activeSessions pendingReviews contextSummaries
-    +documentTaskId: UUID
-    +transitionProjectId: UUID
-    +successorUserId: UUID
-    +status: HandoffStatus
-    +aiInferenceId: UUID
-  }
-  class HandoffItem {
-    <<entity>>
-    +dossierId: UUID
-    +targetType: String TASK PROJECT SESSION REVIEW
-    +targetId: UUID
-    +previousResponsibleId: UUID
-    +newResponsibleId: UUID
-  }
-  class Notification {
-    <<entity>>
-    +recipientId: UUID
-    +type: NotificationType DOSSIE_GERADO
-    +category: String SISTEMA
-  }
-}
-
-namespace ws_domain_enums {
   class GroupingType {
     <<enum>>
     PROGRAMA
@@ -155,64 +48,105 @@ namespace ws_domain_enums {
     ATIVO
     ENCERRADO
   }
-  class HandoffStatus {
-    <<enum>>
-    GERADO
-    AGUARDANDO_SUCESSOR
-    TRANSFERIDO
+}
+
+namespace ws_domain_projects_acervo {
+  class ProjectScheme {
+    <<entity>>
+    +id: UUID
+    +title: String
+    +status: ProjectStatus
+    +currentPhase: ProjectPhase
+    +exerciseYear: int
+    +programGroupingId: UUID
+    +exerciseGroupingId: UUID
+    +managementGroupingId: UUID
+    +visibility: Visibility
+    .. +30 campos ..
   }
-  class ProfileType {
-    <<enum>>
-    EMPREGADO
-    EMPRESA
-    CHEFE_DEPARTAMENTO
+  class TaskItem {
+    <<entity>>
+    +id: UUID
+    +title: String
+    +state: TaskState
+    +visibility: Visibility
+    .. +50 campos ..
+  }
+}
+
+namespace ws_domain_decia_handoff {
+  class DecisionTraceNode {
+    <<entity>>
+    +nodeType: TraceNodeType
+    +refId: UUID
+    +at: Instant
+  }
+  class HandoffDossier {
+    <<entity>>
+    +id: UUID
+    +subjectType: String
+    +groupingId: UUID
+    +reason: HandoffReason
+    +status: HandoffStatus
+  }
+  class InstitutionalMemoryDocument {
+    <<entity>>
+    +sourceType: MemorySourceType
+    +sourceId: UUID
+    +exerciseYear: int
   }
 }
 
 namespace ws_application {
   class GroupingService {
     <<service>>
-    +create(userId, GroupingForm) Grouping
-    +canCreate(user, type) boolean EMPRESA CHEFE qualquer tipo, EMPREGADO só FRENTE
-    +addItem(userId, groupingId, targetType, targetId) GroupingItem
-    +removeItem(userId, groupingId, targetId)
-    +page(viewerId, groupingId) GroupingPage capa grade progresso timeline
-    +listForOrg(companyId, departmentId) List~Grouping~
-    +close(userId, groupingId) Grouping
-    -validateOnePerType(targetId, type) 409 AGRUPAMENTO_MESMO_TIPO
+    +create(actor, GroupingForm) Grouping
+    +update(actor, id, GroupingForm) Grouping
+    +addItem(actor, groupingId, targetType, targetId) GroupingItem
+    +removeItem(actor, groupingId, itemId)
+    +page(actor, id) GroupingPageView
+    +close(actor, id, reason) Grouping
+    +listForProfile(viewer, ownerId) List~Grouping~
+  }
+  class GroupingProgressService {
+    <<service>>
+    +aggregate(groupingId) ProgressView
+    +decisionTimeline(groupingId) List~DecisionTraceNode~
   }
   class HandoffService {
     <<service>>
-    +generateForManagement(groupingId, requestedBy) HandoffDossier
+    +generateForGrouping(groupingId, requestedBy) HandoffDossier
   }
-  class DecisionTraceService {
+  class Guard {
     <<service>>
-    +timelineForProjects(projectIds) List~DecisionTraceNode~
+    +requireRole(actor, role)
+    +requireOwner(actor, ownerId)
+    +requireSameCompany(actor, companyId)
   }
-  class AiEngine {
+  class DomainEvents {
     <<service>>
-    +infer(capability DOSSIE, input) AiResult
+    +publish(GroupingClosed)
   }
   class SearchIndexPort {
     <<port>>
     +indexGrouping(Grouping)
   }
-  class MediaStoragePort {
+  class StoragePort {
     <<port>>
-    +put(stream) MediaObject
+    +putCover(MediaObject)
   }
 }
 
 namespace ws_web {
   class GroupingController {
     <<controller>>
-    +POST_api_groupings(GroupingForm)
+    +POST_api_groupings(form)
+    +PATCH_api_groupings_id(form)
     +GET_api_groupings_id()
     +POST_api_groupings_id_items(targetType, targetId)
-    +DELETE_api_groupings_id_items_targetId()
-    +POST_api_groupings_id_close()
-    +GET_api_companies_slug_groupings()
-    +GET_api_departments_id_groupings()
+    +DELETE_api_groupings_id_items_itemId()
+    +POST_api_groupings_id_close(reason)
+    +GET_api_users_id_groupings()
   }
 }
 
@@ -223,119 +157,100 @@ namespace ws_infrastructure {
   class S3StorageAdapter {
     <<adapter>>
   }
-  class CassandraTraceReadAdapter {
-    <<adapter>>
-  }
-  class ClaudeGeminiAdapter {
-    <<adapter>>
-  }
 }
 
-Grouping "1" --> "*" GroupingItem
-Grouping "*" --> "1" User : ownerId
-Grouping "*" --> "1" Company : companyId
-Grouping "*" --> "0..1" Department : departmentId
-Grouping "*" --> "0..1" HandoffDossier : handoffDossierId quando GESTAO encerrada
-GroupingItem "*" --> "0..1" ProjectScheme : targetId quando PROJECT
-GroupingItem "*" --> "0..1" TaskItem : targetId quando TASK
-ProjectScheme "*" --> "0..1" Grouping : programGroupingId
-ProjectScheme "*" --> "0..1" Grouping : exerciseGroupingId
-ProjectScheme "*" --> "0..1" Grouping : managementGroupingId
-ProjectScheme "1" --> "*" ProjectTask : progresso agregado
-DeciaSession "*" --> "0..1" ProjectScheme : linkedProjectId
-DeciaSession "1" --> "*" DecisionTraceNode : linha do tempo de decisões
-HandoffDossier "1" --> "*" HandoffItem
-HandoffDossier "*" --> "1" Grouping : groupingId
-Grouping --> GroupingType
-Grouping --> GroupingStatus
-HandoffDossier --> HandoffStatus
-User --> ProfileType
-
-GroupingController ..> GroupingService
-GroupingService ..> DecisionTraceService
-GroupingService ..> SearchIndexPort
-GroupingService ..> MediaStoragePort : capa
-GroupingService ..> HandoffService : AFTER_COMMIT GroupingClosed quando GESTAO
-HandoffService ..> AiEngine : DOSSIE contextSummaries
-HandoffService ..> Notification : chefe e sucessor
+Grouping "1" o-- "0..*" GroupingItem : agrupa
+GroupingItem "0..*" --> "0..1" ProjectScheme : PROJECT
+GroupingItem "0..*" --> "0..1" TaskItem : TASK
+ProjectScheme "0..*" --> "0..1" Grouping : programGroupingId
+ProjectScheme "0..*" --> "0..1" Grouping : exerciseGroupingId
+ProjectScheme "0..*" --> "0..1" Grouping : managementGroupingId
+Grouping "0..1" --> "0..1" HandoffDossier : handoffDossierId
+GroupingProgressService ..> DecisionTraceNode : linha do tempo RF29
+Grouping ..> InstitutionalMemoryDocument : pesquisavel RF27/RF33
+GroupingController --> GroupingService
+GroupingService --> GroupingProgressService
+GroupingService --> Guard
+GroupingService --> DomainEvents
+GroupingService --> SearchIndexPort
+GroupingService --> StoragePort
+DomainEvents ..> HandoffService : GroupingClosed GESTAO
 OpenSearchIndexAdapter ..|> SearchIndexPort
-S3StorageAdapter ..|> MediaStoragePort
-CassandraTraceReadAdapter ..> DecisionTraceService : trace_by_entity
-ClaudeGeminiAdapter ..> AiEngine
-
-note for Grouping "tabela groupings · nome, tipo, período, capa, descrição (CA01) · status ATIVO/ENCERRADO, closedAt, handoffDossierId (CA05)"
-note for GroupingItem "tabela grouping_items · um item em vários agrupamentos de tipos diferentes, no máximo 1 por tipo (CA02)"
-note for GroupingService "canCreate: EMPRESA e CHEFE qualquer tipo, EMPREGADO só FRENTE pessoal — senão 403 ACESSO_NEGADO (CA01)"
+S3StorageAdapter ..|> StoragePort
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph LU["Usuário"]
-    U1["EMPRESA / CHEFE / EMPREGADO cria agrupamento: nome, tipo, período, capa, descrição"]
-    U2["Adiciona projeto ou tarefa ao agrupamento"]
-    U3["Abre a página do agrupamento"]
-    U4["Abre a página da empresa/departamento ou busca por agrupamentos"]
-    U5["CHEFE ou EMPRESA encerra uma GESTÃO"]
+  subgraph ATOR["Ator (EMPRESA · CHEFE · EMPREGADO)"]
+    A0([Abre Programas & Agrupamentos]) --> A1{"Ação"}
+    A1 -->|criar| A2["Informa nome, tipo, período, capa e descrição"]
+    A1 -->|adicionar item| A3["Arrasta projeto ou tarefa para o agrupamento"]
+    A1 -->|abrir página| A4["Abre /groupings/[id]"]
+    A1 -->|encerrar GESTAO| A5["Clica Encerrar gestão"]
   end
 
-  subgraph LW["Web / BFF (Next.js App Router)"]
-    W1["Sub-aba Programas & Agrupamentos no perfil RF19"]
-    W2["Página: capa, projetos em grade, progresso agregado, linha do tempo de decisões"]
-    W3["Toast: item já está em outro agrupamento do mesmo tipo — mover?"]
-    W4["Seção Agrupamentos na página da empresa/departamento RF28; resultados em Buscar RF27"]
-    W5["Aviso: dossiê de transição gerado, link para RF36"]
+  subgraph FE["Next.js / BFF (app/(shell)/profile · groupings · companies)"]
+    F1["GroupingForm (TypeChip por tipo, Due do período, upload de capa via PendingUpload)"]
+    F2["POST /api/groupings"]
+    F3["POST /api/groupings/{id}/items"]
+    F4["GET /api/groupings/{id} → capa, grade ProjectCard, ProgressRing, DecisionThread"]
+    F5["POST /api/groupings/{id}/close"]
   end
 
-  subgraph LA["ws-application"]
-    A1["GroupingService.create → canCreate"]
-    A2{"Perfil pode criar este tipo? EMPRESA/CHEFE qualquer, EMPREGADO só FRENTE"}
-    A3["403 ACESSO_NEGADO"]
-    A4["Persiste Grouping ATIVO; MediaStoragePort capa; SearchIndexPort.indexGrouping"]
-    A5["GroupingService.addItem → validateOnePerType"]
-    A6{"Item já em outro agrupamento do mesmo tipo?"}
-    A7["409 AGRUPAMENTO_MESMO_TIPO"]
-    A8["INSERT GroupingItem; se PROJECT atualiza programGroupingId / exerciseGroupingId / managementGroupingId"]
-    A9["GroupingService.page: projetos, progresso agregado = média percentComplete e contagem por status"]
-    A10["DecisionTraceService.timelineForProjects: nós DECISAO das sessões vinculadas"]
-    A11["GroupingService.listForOrg + SearchService"]
-    A12["GroupingService.close"]
-    A13{"type == GESTAO?"}
-    A14["status ENCERRADO, closedAt"]
-    A15["AFTER_COMMIT GroupingClosed → HandoffService.generateForManagement"]
-    A16["HandoffDossier subjectType GESTAO, reason FIM_GESTAO, contentJson; HandoffItems; Grouping.handoffDossierId; Notification ao chefe e sucessor"]
+  subgraph WEB["ws-web · GroupingController"]
+    W1["JWT + CorrelationIdFilter"]
+    W2["GlobalExceptionHandler"]
   end
 
-  subgraph LI["IA (AiEngine)"]
-    I1["DOSSIE: contextSummaries dos projetos abertos, pendências e decisões do período"]
+  subgraph APP["ws-application · GroupingService"]
+    P1{"Perfil × tipo"}
+    P1 -->|EMPREGADO e tipo diferente de FRENTE| E1["403 ACESSO_NEGADO"]
+    P1 -->|EMPRESA ou CHEFE| P2
+    P1 -->|EMPREGADO e FRENTE| P2
+    P2{"periodFrom menor ou igual a periodTo?"}
+    P2 -->|não| E2["400 PERIODO_INVALIDO"]
+    P2 -->|sim| P3["Capa: magic bytes + teto de pixels (SEG) + reencode sem EXIF"]
+    P3 --> P4["Grava Grouping ATIVO"]
+    P5{"Item visível ao ator e da mesma empresa?"}
+    P5 -->|não| E3["403 ACESSO_NEGADO"]
+    P5 -->|sim| P6{"Já existe agrupamento do mesmo tipo neste projeto?"}
+    P6 -->|sim| E4["409 TIPO_JA_VINCULADO"]
+    P6 -->|não| P7["Grava GroupingItem + ProjectScheme.*GroupingId"]
+    P8["Guard.requireRole EMPRESA ou requireDeptHead"]
+    P8 --> P9{"type = GESTAO?"}
+    P9 -->|não| P10["status = ENCERRADO"]
+    P9 -->|sim| P11["status = ENCERRADO + DomainEvents GroupingClosed"]
+    P12["GroupingProgressService: progresso agregado + linha do tempo de decisões (DecisionTraceNode)"]
   end
 
-  subgraph LP["Persistência"]
-    P1[("MySQL: groupings · S3: capa · OpenSearch: índice de agrupamentos")]
-    P2[("MySQL: grouping_items, project_schemes.*GroupingId")]
-    P3[("MySQL: project_schemes, project_tasks · Cassandra: trace_by_entity")]
-    P4[("MySQL: handoff_dossiers, handoff_items, ai_inference_log · Cassandra: notifications_by_user")]
+  subgraph IA["AiEngine (capability DOSSIE, RF36)"]
+    I1["HandoffService.generateForGrouping → resumo de contexto ✦"]
+    I2["AiInferenceLog"]
   end
 
-  U1 --> A1 --> A2
-  A2 -->|"não"| A3
-  A2 -->|"sim"| A4 --> P1 --> W1
-  W1 --> U2 --> A5 --> A6
-  A6 -->|"sim"| A7 --> W3
-  A6 -->|"não"| A8 --> P2
-  W1 --> U3 --> A9 --> P3
-  A9 --> A10 --> P3
-  A10 --> W2
-  U4 --> A11 --> P1
-  A11 --> W4
-  W1 --> U5 --> A12 --> A14 --> P1
-  A14 --> A13
-  A13 -->|"não"| W1
-  A13 -->|"sim"| A15 --> I1 --> A16 --> P4 --> W5
+  subgraph DB["Persistência"]
+    D1[("MySQL groupings · grouping_items · project_schemes")]
+    D2[("S3 capas · flag storage.s3")]
+    D3[("OpenSearch ws-groupings · flag opensearch.enabled")]
+  end
 
-  classDef err fill:#ffe3e3,stroke:#c0392b,color:#5a1a12
-  class A3,A7 err
+  A2 --> F1 --> F2 --> W1 --> P1
+  P4 --> D1
+  P3 --> D2
+  P4 --> D3
+  A3 --> F3 --> W1 --> P5
+  P7 --> D1
+  A4 --> F4 --> W1 --> P12 --> D1
+  A5 --> F5 --> W1 --> P8
+  P10 --> D1
+  P11 --> D1
+  P11 --> I1 --> I2
+  E1 --> W2
+  E2 --> W2
+  E3 --> W2
+  E4 --> W2
 ```
 
 ## 3. Diagrama de sequência
@@ -343,111 +258,82 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário (CHEFE)
-  participant NX as Next.js (App Router)
+  participant U as Usuário
+  participant FE as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
   participant AI as AiEngine
   participant DB as Repository/MySQL
-  participant CS as Cassandra
+  participant S3 as S3
   participant OS as OpenSearch
-  participant DE as DomainEvents (AFTER_COMMIT)
+  participant EV as DomainEvents (AFTER_COMMIT)
 
-  U->>NX: Novo agrupamento — tipo GESTAO, "Gestão SECID-UTS 2025–2026", período, capa, descrição
-  NX->>C: POST /api/groupings {type, label, periodFrom, periodTo, description, cover}
-  C->>S: GroupingService.create(userId, form)
-  S->>S: canCreate(user, GESTAO)
-  alt EMPREGADO tentando criar PROGRAMA, EXERCICIO ou GESTAO (CA01)
-    S-->>C: 403 ACESSO_NEGADO {hint: EMPREGADO só cria FRENTE pessoal}
-    C-->>NX: 403
-  else permitido
-    S->>DB: INSERT groupings (type GESTAO, status ATIVO, companyId, departmentId)
-    S->>OS: indexGrouping (CA04)
+  U->>FE: cria Programa Cidade Acessível 2026 (capa, período)
+  FE->>C: POST /api/groupings
+  C->>S: GroupingService.create(actor, form)
+  S->>S: Guard.requireRole EMPRESA ou CHEFE (EMPREGADO só FRENTE)
+  alt EMPREGADO tentando PROGRAMA
+    S-->>C: 403 ACESSO_NEGADO
+  else período invertido
+    S-->>C: 400 PERIODO_INVALIDO
+  else válido
+    S->>S3: put cover (reencode, sem EXIF)
+    S->>DB: insert groupings (ATIVO)
+    S->>EV: GroupingCreated
     S-->>C: 201 Grouping
-    C-->>NX: 201
-    NX-->>U: agrupamento na sub-aba Programas & Agrupamentos
   end
+  EV->>OS: index ws-groupings (opensearch.enabled, falha não bloqueia)
 
-  U->>NX: adiciona o projeto P5 ao agrupamento (CA02)
-  NX->>C: POST /api/groupings/{gId}/items {targetType PROJECT, targetId P5}
-  C->>S: GroupingService.addItem(userId, gId, PROJECT, P5)
-  S->>DB: SELECT grouping_items JOIN groupings WHERE targetId = P5 AND type = GESTAO
-  alt P5 já em outra GESTAO
-    S-->>C: 409 AGRUPAMENTO_MESMO_TIPO {currentGroupingId}
-    C-->>NX: 409
-    NX-->>U: "já está em Gestão 2023–2024 — mover?"
+  U->>FE: arrasta projeto para o programa
+  FE->>C: POST /api/groupings/{id}/items {PROJECT, projectId}
+  C->>S: GroupingService.addItem(actor, id, PROJECT, projectId)
+  S->>DB: select project_schemes (visibilidade, companyId, programGroupingId)
+  alt projeto já tem PROGRAMA
+    S-->>C: 409 TIPO_JA_VINCULADO
   else livre
-    S->>DB: INSERT grouping_items (gId, PROJECT, P5)
-    S->>DB: UPDATE project_schemes SET managementGroupingId = gId WHERE id = P5
+    S->>DB: insert grouping_items + update project_schemes.program_grouping_id
     S-->>C: 201 GroupingItem
-    C-->>NX: 201
   end
 
-  U->>NX: abre /groupings/{gId} (CA03)
-  NX->>C: GET /api/groupings/{gId}
-  C->>S: GroupingService.page(viewerId, gId)
-  S->>DB: groupings + grouping_items + project_schemes + AVG project_tasks.percentComplete + COUNT por status
-  S->>CS: trace_by_entity WHERE entity IN projetos do agrupamento AND nodeType = DECISAO
-  CS-->>S: nós de decisão ordenados por at
-  S-->>C: 200 {cover, projects grid, progress agregado, decisionsTimeline}
-  C-->>NX: 200
-  NX-->>U: capa, grade, progresso, linha do tempo de decisões
+  U->>FE: abre /groupings/{id}
+  FE->>C: GET /api/groupings/{id}
+  C->>S: GroupingService.page(actor, id)
+  S->>DB: grouping + itens + progresso por fase + decision_trace_nodes dos projetos
+  S-->>FE: capa, grade, progresso agregado, linha do tempo de decisões
 
-  U->>NX: abre /companies/secid (CA04)
-  NX->>C: GET /api/companies/secid/groupings
-  C->>S: GroupingService.listForOrg(companyId)
-  S->>DB: groupings WHERE companyId ORDER BY type, periodFrom
-  S-->>C: 200 programas, exercícios, gestões, frentes
-  NX->>C: GET /api/search?q=Cidade+Acessivel
-  C->>OS: msearch inclui índice de agrupamentos
-  OS-->>C: hits de Grouping
-
-  U->>NX: Encerrar gestão (CA05)
-  NX->>C: POST /api/groupings/{gId}/close
-  C->>S: GroupingService.close(userId, gId)
-  S->>DB: UPDATE groupings SET status ENCERRADO, closedAt
-  S->>DE: publish GroupingClosed {gId, type GESTAO}
-  S-->>C: 200 Grouping ENCERRADO
-  C-->>NX: 200
-  DE->>S: HandoffService.generateForManagement(gId, requestedBy)
-  S->>DB: projetos abertos por fase, tarefas pendentes e bloqueadas, sessões ativas, revisões pendentes do período
-  S->>AI: infer(DOSSIE, {projetos, pendências, decisões do período})
-  AI-->>S: contextSummaries + ai_inference_log
-  S->>DB: INSERT handoff_dossiers (subjectType GESTAO, groupingId gId, reason FIM_GESTAO, status GERADO, contentJson)
-  S->>DB: INSERT handoff_items (TASK, PROJECT, SESSION, REVIEW)
-  S->>DB: UPDATE groupings SET handoffDossierId
-  S->>CS: INSERT notifications_by_user (chefe e sucessor, type DOSSIE_GERADO)
-  NX-->>U: aviso "Dossiê de Transição gerado" com link (RF36)
+  U->>FE: encerra a GESTAO 2023-2026
+  FE->>C: POST /api/groupings/{id}/close
+  C->>S: GroupingService.close(actor, id, reason)
+  S->>S: Guard.requireRole EMPRESA ou requireDeptHead
+  S->>DB: update groupings status ENCERRADO, closedAt
+  S->>EV: GroupingClosed(type GESTAO)
+  S-->>C: 200
+  EV->>S: HandoffService.generateForGrouping(groupingId)
+  S->>DB: coleta projetos abertos, tarefas pendentes, sessões ativas
+  S->>AI: run(DOSSIE, dados coletados)
+  AI-->>S: resumo de contexto ✦ + AiInferenceLog
+  S->>DB: insert handoff_dossiers + update groupings.handoff_dossier_id
+  S->>EV: HandoffGenerated → Notification TRANSICAO
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: **`Grouping.status`** (ATIVO · ENCERRADO). Encerrar um agrupamento do tipo **GESTAO** dispara a criação do `HandoffDossier` (RF36), cujos estados aparecem como consequência.
+Entidade central: `Grouping.status` (`GroupingStatus`). Os itens (`GroupingItem`) não têm estado.
 
 ```mermaid
 stateDiagram-v2
-  [*] --> ATIVO : POST groupings — EMPRESA/CHEFE qualquer tipo, EMPREGADO só FRENTE
-  ATIVO --> ATIVO : adicionar e remover itens, no máximo 1 agrupamento por tipo por item
-  ATIVO --> ENCERRADO : encerrar, closedAt
-  state "ENCERRADO — somente leitura" as ENCERRADO
-  state fim <<choice>>
-  ENCERRADO --> fim
-  fim --> DOSSIE_GERADO : type == GESTAO, AFTER_COMMIT GroupingClosed
-  fim --> [*] : outros tipos
-  state "HandoffDossier RF36" as HD {
-    state "GERADO" as DOSSIE_GERADO
-    DOSSIE_GERADO --> AGUARDANDO_SUCESSOR : sucessor indicado
-    AGUARDANDO_SUCESSOR --> TRANSFERIDO : sucessor aceita, HandoffItems reatribuídos
-  }
-  TRANSFERIDO --> [*]
-  note right of ATIVO
-    Criação negada ao EMPREGADO fora de FRENTE: 403 ACESSO_NEGADO (CA01).
-    Item já no mesmo tipo: 409 AGRUPAMENTO_MESMO_TIPO (CA02).
-    Página mostra capa, grade, progresso e decisões (CA03).
-    Indexado para Buscar e página da empresa/departamento (CA04).
+  [*] --> ATIVO: POST /api/groupings (CA01)
+  ATIVO --> ATIVO: adiciona ou remove itens (CA02) · edita capa e descrição · aparece na página da empresa e na busca (CA04)
+  ATIVO --> ENCERRADO: POST /close (EMPRESA ou CHEFE)
+  ENCERRADO --> ENCERRADO: só leitura · página com linha do tempo de decisões (CA03)
+  ENCERRADO --> [*]
+  note right of ENCERRADO
+    type = GESTAO: GroupingClosed AFTER_COMMIT gera
+    HandoffDossier (RF36) e grava handoffDossierId (CA05).
   end note
-  note right of HD
-    Grouping.handoffDossierId aponta para o dossiê do período (CA05).
+  note left of ATIVO
+    Regra por tipo: um projeto tem no máximo
+    1 PROGRAMA + 1 EXERCICIO + 1 GESTAO (409 TIPO_JA_VINCULADO).
   end note
 ```
 
@@ -455,86 +341,54 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js"]
-    F1["app/profile — sub-aba Programas & Agrupamentos RF19"]
-    F2["app/groupings/[id] — página do agrupamento"]
-    F3["app/companies/[slug], app/departments/[id] RF28 — seção Agrupamentos"]
-    F4["components/ui: GroupingCard, GroupingForm tipo/período/capa, ItemPicker projeto ou tarefa, ProgressRing, DecisionTimeline, CloseManagementDialog"]
+  subgraph FRONT["Frontend Next.js 15"]
+    R1["app/(shell)/profile (sub-aba Programas) · /groupings/[id] · /companies/[slug] · /departments/[slug]"]
+    R2["components: GroupingCard · GroupingForm · ProjectCard (grid) · ProgressRing · DecisionThread · EmptyState"]
+    BFF["app/bff"]
+    R1 --> R2 --> BFF
   end
-
   subgraph WEB["ws-web"]
-    C1["GroupingController — /api/groupings, /items, /close, /api/companies/{slug}/groupings, /api/departments/{id}/groupings"]
-    C2["SearchController RF27 — /api/search inclui agrupamentos"]
+    GC["GroupingController (@Operation RF25.CA01-CA05)"]
+    SEC["SecurityConfig · CorrelationIdFilter · GlobalExceptionHandler (main)"]
   end
-
-  subgraph APP["ws-application"]
-    S1["GroupingService"]
-    S2["HandoffService RF36"]
-    S3["DecisionTraceService RF29"]
-    S4["SearchService RF27"]
-    S5["AiEngine"]
-    P1["SearchIndexPort"]
-    P2["MediaStoragePort"]
+  subgraph APPL["ws-application"]
+    GS["planning/GroupingService"]
+    GP["planning/GroupingProgressService"]
+    HS["handoff/HandoffService (RF36)"]
+    GD["security/Guard (sec-b3 + requireDeptHead planejado)"]
+    DE["events/DomainEvents AFTER_COMMIT"]
+    AIE["ai/AiEngine"]
+    PORTS["ports: SearchIndexPort · StoragePort · AiProviderPort"]
   end
-
   subgraph DOM["ws-domain"]
-    D1["Grouping · GroupingItem"]
-    D2["ProjectScheme · TaskItem · ProjectTask"]
-    D3["HandoffDossier · HandoffItem · Notification · DecisionTraceNode · DeciaSession"]
-    D4["User · Company · Department"]
+    ENT["Grouping · GroupingItem · GroupingType · GroupingStatus (planejado)"]
   end
-
-  subgraph INFRA["ws-infrastructure/*"]
-    I1[("persistence-mysql: groupings, grouping_items, project_schemes, handoff_dossiers, handoff_items, ai_inference_log")]
-    I2[("persistence-cassandra: trace_by_entity, notifications_by_user")]
-    I3[("search-opensearch: índice de agrupamentos")]
-    I4[("storage-s3: capa do agrupamento")]
-    I5["ai-providers: ClaudeGeminiAdapter — DOSSIE"]
-    I6["platform: outbox AFTER_COMMIT GroupingClosed"]
+  subgraph INFRA["ws-infrastructure"]
+    MY["persistence-mysql (Flyway V__rf25_groupings)"]
+    S3A["storage-s3 (flag storage.s3)"]
+    OSA["search-opensearch (flag opensearch.enabled)"]
+    AIP["ai-providers (ai-claude · ai-gemini · ai-local)"]
   end
-
-  subgraph EXT["Serviços externos"]
-    E1(("Claude / Gemini"))
-  end
-
-  F1 --- F4
-  F2 --- F4
-  F3 --- F4
-  F1 -->|"HTTPS/JSON"| C1
-  F2 -->|"HTTPS/JSON"| C1
-  F3 -->|"HTTPS/JSON"| C1
-  F3 -->|"HTTPS/JSON"| C2
-  C1 --> S1
-  C2 --> S4
-  S1 --> S3
-  S1 --> P1
-  S1 --> P2
-  S1 --> D1
-  S1 --> D2
-  S1 --> D4
-  D1 --> I6
-  I6 --> S2
-  S2 --> S5
-  S2 --> D3
-  S3 --> I2
-  S4 --> I3
-  D1 --> I1
-  D2 --> I1
-  D3 --> I1
-  D3 --> I2
-  D4 --> I1
-  P1 --> I3
-  P2 --> I4
-  S5 --> I5
-  I5 -.-> E1
+  BFF --> GC --> GS
+  GC --> SEC
+  GS --> GP
+  GS --> GD
+  GS --> DE --> HS --> AIE
+  GS --> PORTS
+  GS --> ENT --> MY --> MYSQL[("MySQL 8")]
+  PORTS --> S3A --> S3[("S3 / MinIO")]
+  PORTS --> OSA --> OPENS[("OpenSearch")]
+  PORTS --> AIP --> AI["Claude / Gemini / local"]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Elemento do diagrama (classe / passo / mensagem / transição / componente) |
-|---|---|
-| RF25.CA01 | `Grouping` (type, label, description, coverUrl, periodFrom/To), enums `GroupingType`, `ProfileType`, `GroupingService.create/canCreate` (nota EMPREGADO só FRENTE), `MediaStoragePort` · Atividades `U1 → A1 → A2 → A3 403 ACESSO_NEGADO / A4 → P1` · Sequência `POST /api/groupings` → `alt EMPREGADO tentando criar … → 403` / `INSERT groupings` · Transição `[*] → ATIVO` + nota · Componentes `GroupingForm`, `storage-s3` |
-| RF25.CA02 | `GroupingItem` (nota 1 por tipo), `ProjectScheme.programGroupingId/exerciseGroupingId/managementGroupingId`, `GroupingService.addItem/validateOnePerType` · Atividades `U2 → A5 → A6 → A7 409 AGRUPAMENTO_MESMO_TIPO / A8 → P2` · Sequência `POST /api/groupings/{gId}/items` → `alt P5 já em outra GESTAO → 409` / `INSERT grouping_items` + `UPDATE project_schemes SET managementGroupingId` · Transição `ATIVO → ATIVO` · Componente `ItemPicker` |
-| RF25.CA03 | `GroupingService.page`, `ProjectTask.percentComplete`, `DecisionTraceNode` (nodeType DECISAO), `DeciaSession.linkedProjectId`, `DecisionTraceService.timelineForProjects`, `CassandraTraceReadAdapter` · Atividades `U3 → A9 → A10 → P3 → W2` · Sequência `GET /api/groupings/{gId}` → `AVG percentComplete + COUNT por status` → `trace_by_entity … nodeType = DECISAO` → `{cover, projects grid, progress, decisionsTimeline}` · Componentes `app/groupings/[id]`, `ProgressRing`, `DecisionTimeline`, `persistence-cassandra` |
-| RF25.CA04 | `GroupingService.listForOrg`, `SearchIndexPort.indexGrouping`, `Company`, `Department` · Atividades `U4 → A11 → P1 → W4` · Sequência `indexGrouping (CA04)`, `GET /api/companies/secid/groupings`, `GET /api/search?q=…` → `msearch inclui índice de agrupamentos` · Componentes `F3 (RF28)`, `SearchController RF27`, `search-opensearch` |
-| RF25.CA05 | `Grouping.status/closedAt/handoffDossierId`, enums `GroupingStatus`, `HandoffStatus`, `HandoffDossier` (subjectType GESTAO, reason FIM_GESTAO, contentJson), `HandoffItem`, `GroupingService.close`, `HandoffService.generateForManagement`, `AiEngine DOSSIE`, `Notification` · Atividades `U5 → A12 → A14 → A13 (sim) → A15 → I1 → A16 → P4 → W5` · Sequência `POST /api/groupings/{gId}/close` → `publish GroupingClosed` → `HandoffService.generateForManagement` → `infer(DOSSIE …)` → `INSERT handoff_dossiers`, `handoff_items`, `UPDATE groupings SET handoffDossierId`, notificação · Transições `ATIVO → ENCERRADO → fim → DOSSIE_GERADO → AGUARDANDO_SUCESSOR → TRANSFERIDO` · Componentes `CloseManagementDialog`, `HandoffService RF36`, `platform outbox GroupingClosed`, `ai-providers DOSSIE` |
+| CA | Classe | Passo | Mensagem | Transição | Componente |
+|---|---|---|---|---|---|
+| RF25.CA01 | `Grouping` (type, label, periodFrom/To, coverUrl, description), `GroupingType`, `GroupingService.create`, `Guard.requireRole` | A2 → F1 → F2 → P1 (403) → P2 (400 PERIODO_INVALIDO) → P3 → P4 | 1–11 | `[*] → ATIVO` | `GC`, `GS`, `GroupingForm`, `S3A` |
+| RF25.CA02 | `GroupingItem`, `ProjectScheme.programGroupingId/exerciseGroupingId/managementGroupingId`, `GroupingService.addItem` | A3 → F3 → P5 → P6 (409 TIPO_JA_VINCULADO) → P7 | 12–19 | `ATIVO → self (itens)` · nota de ATIVO | `GS`, `MY` |
+| RF25.CA03 | `GroupingProgressService.aggregate/decisionTimeline`, `DecisionTraceNode` | A4 → F4 → P12 | 20–24 | `ENCERRADO → self (linha do tempo)` | `GP`, `ProgressRing`, `DecisionThread` |
+| RF25.CA04 | `SearchIndexPort.indexGrouping`, `InstitutionalMemoryDocument`, páginas RF28 | P4 → D3 | 11 | `ATIVO → self (busca e página)` | `OSA`, `R1 (/companies, /departments)` |
+| RF25.CA05 | `Grouping.closedAt/handoffDossierId`, `DomainEvents GroupingClosed`, `HandoffService.generateForGrouping`, `HandoffDossier` | A5 → F5 → P8 → P9 → P11 → I1 → I2 | 25–36 | `ATIVO → ENCERRADO` + nota | `DE`, `HS`, `AIE`, `AIP` |
+
+Tela/aba: `/companies/[slug]` (esqueleto em `app/(shell)/companies/[slug]/page.tsx`) · `/profile` (esqueleto em `app/(shell)/profile/page.tsx`)

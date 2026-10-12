@@ -1,5 +1,6 @@
 # CI do Work Station / DECIA (ARQUITETURA §3.4): nada entra no main sem build, testes, gates de qualidade e varredura
 # de segredos. Branch protection na main: 1 revisão + estes jobs verdes + sem push direto.
+# Bloco CI (D-70, D-71): Trivy na imagem do Dockerfile.backend e contrato OpenAPI → TypeScript com diff obrigatório.
 name: CI
 
 on:
@@ -24,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -32,6 +33,18 @@ jobs:
           cache: maven
       - name: Build, testes-guarda, cobertura e análise estática
         run: mvn -B -ntp verify
+      # D-71: o OpenApiContractIT (dentro do verify) regrava contracts/openapi/openapi.json a partir do /v3/api-docs.
+      # Precisa ter RODADO (sem Docker ele é pulado e o diff passaria em silêncio) e não pode ter mudado nada.
+      - name: Contrato OpenAPI regenerado e sem divergência
+        run: |
+          report=ws-bootstrap/target/surefire-reports/TEST-br.gov.pr.secid.workstation.bootstrap.OpenApiContractIT.xml
+          test -f "$report" || { echo "::error::OpenApiContractIT não rodou"; exit 1; }
+          grep -Eq '<testsuite [^>]*skipped="0"' "$report" || { echo "::error::OpenApiContractIT foi pulado (Docker ausente?)"; exit 1; }
+          git add --intent-to-add contracts/openapi
+          if ! git diff --exit-code -- contracts/openapi; then
+            echo "::error::contracts/openapi/openapi.json diverge do código. Regenere (README.md, seção Contrato OpenAPI → TypeScript) e versione."
+            exit 1
+          fi
       - name: Relatórios (cobertura, surefire)
         if: always()
         uses: actions/upload-artifact@v4
@@ -47,7 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
@@ -68,12 +81,85 @@ jobs:
       - name: Dependências de produção sem vulnerabilidade alta ou crítica
         run: npm audit --omit=dev --audit-level=high
 
+  api-types:
+    name: Contrato OpenAPI → TypeScript (openapi-typescript · diff)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --no-fund
+      # D-71: lib/api/schema.d.ts tem de ser exatamente o que o openapi-typescript gera da especificação versionada
+      # (que o job backend confere contra o código). DTO/rota mudou sem regenerar → falha aqui ou lá.
+      - name: Regenerar tipos e exigir zero diff
+        run: |
+          npm run api:types
+          git add --intent-to-add lib/api/schema.d.ts
+          if ! git diff --exit-code -- lib/api/schema.d.ts; then
+            echo "::error::lib/api/schema.d.ts diverge de contracts/openapi/openapi.json. Rode npm run api:types e versione."
+            exit 1
+          fi
+
+  trivy:
+    name: Imagem da API (Trivy · HIGH/CRITICAL corrigível)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build da imagem (Dockerfile.backend)
+        run: docker build -f Dockerfile.backend -t work-station-api:ci .
+      # D-70: falha em HIGH/CRITICAL que JÁ TÊM correção (pacote do SO ou jar do app). Sem upload SARIF: exigiria
+      # security-events: write; o relatório sai em tabela no log. Exceção só via .trivyignore com justificativa e validade.
+      - name: Trivy (vulnerabilidades da imagem)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: image
+          image-ref: work-station-api:ci
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+          format: table
+
+  e2e:
+    name: "E2E do shell (Playwright · Chromium)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: frontend
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --no-fund
+      - name: "Navegador do Playwright"
+        run: npx playwright install --with-deps chromium
+      - name: "Smoke do shell (sidebar, sino, Central de Perfil, tema, idioma, settings, lab)"
+        run: npx playwright test
+        env:
+          CHROMIUM_PATH: ""
+          NEXT_PUBLIC_API_BASE_URL: http://127.0.0.1:9
+      - name: "Relatório e capturas"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-report
+          path: |
+            playwright-report/
+            test-results/
+            docs/testes/shell/
+          retention-days: 7
+
   secrets:
     name: Segredos (gitleaks, histórico inteiro)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: gitleaks
@@ -82,7 +168,9 @@ jobs:
         run: |
           curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
             | tar -xz gitleaks
-          ./gitleaks git --redact --no-banner --exit-code 1 .
+          # Histórico inteiro DESTA branch (HEAD). Sem --log-opts o gitleaks usa --all e passa a julgar o PR por
+          # commits de outras branches do remoto (fetch-depth 0 traz todas), que não são deste PR.
+          ./gitleaks git --redact --no-banner --exit-code 1 --log-opts="HEAD" .
 
   commits:
     name: Conventional Commits (commitlint)
@@ -90,7 +178,7 @@ jobs:
     timeout-minutes: 10
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: actions/setup-node@v4

@@ -4,24 +4,26 @@
 
 > Fonte de verdade dos requisitos: board Trello **Work Station** (ex-"Decisão com Inteligência Artificial - DECIA - SECIDPR"), listas *Work Station + DECIA*, *Requisitos Funcionais* (RF1–RF45) e *Product Backlog* (HU1–HU45).
 > Esqueleto reaproveitado do **Fashion AI (FAI)** (`matheushaliski/tcc-2026-fashion-ai-backend`, módulo `fai-domain`). Cada entidade indica a equivalente no FAI e o RF que a origina.
+> **Implementação (D-40):** cada entidade abaixo é um record de `ws-domain` anotado com `@DomainEntity`/`@Attr`; nomes de coluna, tipos SQL, nulidade, CHECKs, FKs e store ficam em [`catalogo-entidades.json`](catalogo-entidades.json) (gerado, 142 entidades / 1780 atributos) e nas migrations `V10`–`V22` geradas dele — ver §17. Quando este texto e o catálogo divergirem, vale o catálogo.
 > Convenções: identificadores `UUID` (BINARY(16) no MySQL), auditoria herdada de `AuditableEntity` (`createdAt`, `updatedAt`, `createdBy`, `updatedBy`) e, quando houver concorrência, `VersionedAuditableEntity` (`@Version version`). Campos `*Json` são colunas `JSON` do MySQL 8. Campos sensíveis (LGPD) usam o conversor `AesGcmStringConverter`.
 
 ## 0. Mapa de contextos (bounded contexts)
 
 | # | Contexto | Entidades principais | RFs | Store principal |
 |---|---|---|---|---|
-| 1 | **Identidade & Acesso** | User, UserPreferences, RefreshToken, Company, Department, DepartmentMembership, CuratorAppointment, ApprovalRequest | RF1–RF3, RF28 | MySQL + Redis (sessões) |
+| 1 | **Identidade & Acesso** | User (+ extensões EMPRESA/CHEFE), UserPreferences, RefreshToken, Company, Department, DepartmentMembership, CuratorAppointment, ApprovalRequest, VerificationPolicy, PendingUpload, **PolicyDocument, PolicyAcceptance, UserConsent, ConsentEvent, DataSubjectRequest** (proposta, LGPD) | RF1–RF3, RF28 | MySQL + Redis (sessões) |
 | 2 | **Acervo de Tarefas** (inventário) | TaskItem, TaskAttachment, TaskVersion, TaskStateLog, LegalDeadlineRule, OrgEntity, Evidence | RF20, RF23, RF34, RF41 | MySQL + S3 + OpenSearch |
 | 3 | **Criador de Projetos** | ProjectScheme, ProjectTask, ProjectVersion, ProjectScenario, ComplianceChecklist, ComplianceItem, ComplianceResult, ProcessKit, KitItem | RF21, RF22, RF30, RF31, RF32 | MySQL |
 | 4 | **Planejamento institucional** | AnnualPlan, PlanAxis, PlanAxisProject, Grouping, GroupingItem | RF24, RF25 | MySQL |
 | 5 | **DECIA** (centro do app) | DeciaSession, SessionParticipant, SessionMessage, MessageClassification, MessageAttachment, Divergence, DivergenceReply, AiQuestion, AnalyticalSummary, SummaryScenario, FinalDecision, DecisionReview, ReopenRequest, SessionArtifact, DecisionTrace, DecisionTraceNode, DecisionTraceEdge, Meeting, MeetingTranscript, RecordingConsent | RF4–RF17, RF29, RF37 | MySQL (estado) + Cassandra (mensagens/rastro append-only) |
+| 5b | **DECIA — decisão estruturada** (V22, §5b) | Decision, DecisionParticipant, DecisionAlternative, DecisionCriterion, CriterionAssessment, DecisionEvidence, EvidenceLink, DecisionAssumption, DecisionRisk, DecisionScenario, DecisionForecast, DecisionRecommendation, DecisionTrigger, DecisionSnapshot, DecisionCheckpoint, DecisionOutcome, DecisionRetrospective, DecisionWorkLink, DecisionEvent | RF29, RF31, RF33, RF43 | MySQL |
 | 6 | **Chancelas & Benefícios** | Seal (Chancela), SealPolicy, SealBond (VínculoChancela), SealProposal, Benefit, BenefitRedemption, Recognition | RF39, RF35, RF28 | MySQL |
 | 7 | **Balcão & Loja & DECIA Points** | ModelOffer, ModelLicense, DeciaPointsLedgerEntry, DeciaPointsRule, StoreItem, StorePurchase, AiCreditLedgerEntry, PointsDonation | RF40, RF42 | MySQL + Redis (saldos/cache) |
 | 8 | **Social & Descoberta** | Reaction, Comment, SavedItem, Share, Remix, Follow, MuralEntry, Notification, TimelineEvent | RF26, RF27 | MySQL + Cassandra (timeline/notificações) |
 | 9 | **Gamificação & Reputação** | CollectiveGoal, GoalParticipant, Highlight, DailyTask, WeekPlan, WeekPlanDay, HseWeights, EfficiencyScoreSnapshot, ProfileHypeScore, HypeBand, HypeIgnoredEvent, DeliberativeProfile, RankingEntry, RankingWeights, RankingOptOut | RF35, RF43, RF44, RF45, RF19 | MySQL + Redis (rankings) |
 | 10 | **IA do sistema** | AiInferenceLog, AiQuota, AiProviderCircuitState, Insight, FeasibilitySheet, MetricDefinition, MetricSnapshot, ExtractionResult, ExtractionCorrection, InstitutionalMemoryDocument, Citation | RF7, RF11, RF30, RF33, RF34, RF43 | MySQL + OpenSearch (embeddings) + Redis (cotas) |
 | 11 | **Transição & Memória** | HandoffDossier, HandoffItem, SessionArchive | RF36, RF17, RF33 | MySQL + S3 + OpenSearch |
-| 12 | **Plataforma** | AuditLog, DomainEvent (outbox), PipelineJob, FeatureFlag, MediaObject, DataExportRequest, Theme/Skin (UserSkin) | transversal, RF38 | MySQL + S3 |
+| 12 | **Plataforma** | AuditLog, DomainEvent (outbox), PipelineJob, FeatureFlag, MediaObject, DataExportRequest, PersonalDataRegistry (código), Theme/Skin (UserSkin) | transversal, RF3, RF38 | MySQL + S3 |
 
 Mapa de equivalência FAI → Work Station (card "Mapa de equivalência"): Tarefa = peça (WardrobeItem) · Esquema de Projeto = look (Scheme) · ProjectTask = SchemeItem · Plano Anual = DNA (DnaScheme) · Chancela = selo (Seal) · VínculoChancela = SealBond · Benefício/Resgate = Promotion/PromotionRedemption/CouponRight · DECIA Points = FAI Points · Tarefa do Dia = Look do Dia (DailyLook) · DECIA = Copilot · Kit de Processo = Cápsula · Agrupamento = SchemeGrouping.
 
@@ -36,10 +38,10 @@ Mapa de equivalência FAI → Work Station (card "Mapa de equivalência"): Taref
 | username | String(80) | único, imutável após verificação |
 | fullName | String(160) | obrigatório |
 | displayName | String(80) | |
-| email | String (AES-GCM) | sensível |
+| email → coluna `email_enc` | String (AES-GCM, `WS_DATA_ENCRYPTION_KEY`) | sensível; só o cifrado vai ao banco |
 | emailHash | String(128) | único, busca |
 | emailVerified | boolean | |
-| phone | String (AES-GCM) | opcional |
+| phone → coluna `phone_enc` | String (AES-GCM) | opcional |
 | passwordHash | String | Argon2id; nulo para login só OIDC |
 | oidcSubject / oidcIssuer | String | login institucional (RF2) |
 | profileType | `ProfileType` | EMPREGADO · EMPRESA · CHEFE_DEPARTAMENTO |
@@ -53,14 +55,32 @@ Mapa de equivalência FAI → Work Station (card "Mapa de equivalência"): Taref
 | twoFactorEnabled | boolean | |
 | hypeVisibility | `HypeVisibility` | PUBLICO · EMPRESA · SO_EU (padrão) (RF45.CA06) |
 | rankingOptOut | boolean | RF43.CA05 |
-| testAccount | boolean | não pontua (RF42) |
+| accountOrigin | `AccountOrigin` | REAL (padrão) · TEST_SEED · DEMO · SYSTEM — `VARCHAR` + CHECK, indexada (D-23) |
+| fixtureKey | String(80) | único, nulo em conta real; chave imutável da fixture de seed/demo |
+| testAccount | boolean **gerada** | coluna `GENERATED ALWAYS AS (account_origin IN ('TEST_SEED','DEMO')) STORED`, indexada; a aplicação nunca grava (D-23). Não pontua (RF42) |
 | lastLoginAt | Instant | |
+| termsVersion / privacyVersion | String(20) | **(proposta, RF1 bloco A)** cópia da última versão aceita de cada documento, para o gate ser rápido; a prova é `PolicyAcceptance` |
+| birthDate | LocalDate (AES-GCM) | **(proposta, condicional à Q-63)** só coletada se menores (aprendizes/estagiários) puderem usar; então obrigatória no servidor (art. 14) |
+| deletionRequestedAt / deletionScheduledAt | Instant | **(proposta, RF3 bloco C)** pedido de exclusão e data em que o job anonimiza (+30 d, cancelável) |
+| deletionReason | String(500) | **(proposta)** motivo opcional informado pelo titular (nunca exibido a terceiros) |
+| anonymizedAt | Instant | **(proposta)** preenchido pelo job `AccountAnonymizationJob`; `status` vai a `ANONYMIZED` |
+| createdAt / updatedAt / version | Instant · long | `AuditableEntity` + lock otimista (`version`) |
+
+Colunas no banco (`V2__baseline_dominio_base.sql`, fonte de verdade): `company_id` e `department_id` ficam **sem FK** até o RF28 criar `companies`/`departments` (D-23); unicidades `ux_users_username`, `ux_users_email_hash`, `ux_users_fixture_key`, `ux_users_oidc (oidc_issuer, oidc_subject)`.
+
+**Extensões de perfil (proposta, Q-64)** — 1:1 com `User`, preenchidas no cadastro e conferidas na validação (RF28); os valores confirmados viram `Company`/`Department` na aprovação (Q-65, Q-66):
+
+| Extensão | Tabela | Campos |
+|---|---|---|
+| `EmpresaProfileExtension` | `user_empresa_ext` | userId (PK) · legalName (razão social) · companyCnpj (AES-GCM, dígitos verificadores conferidos) · officialSite (obrigatório, normalizado para `https://`, recusa `@perfil`) · representationDocId → `PendingUpload`/`MediaObject` em `restricted/` (ato de nomeação ou portaria) |
+| `ChefeProfileExtension` | `user_chefe_ext` | userId (PK) · companyId → `Company` existente · departmentName ou departmentId · appointmentLink (link oficial do ato de nomeação no Diário Oficial, normalizado `https://`) |
+| EMPREGADO | — (campos em `users`) | jobTitle (cargo) · intendedDepartmentId (opcional; **não lota** ninguém, quem lota é o chefe, RF28.CA02) |
 
 ### 1.2 `UserPreferences` (= FAI) — `user_preferences` (RF3, RF38.CA08)
 theme `ThemeMode` (AUTO·CLARO·ESCURO·ALTO_CONTRASTE·BLUEPRINT) · language `UiLanguage` (PT_BR·EN·ES) · density · fontScale · reduceMotion · deskSkin `DeskSkin` (PAPEL·CORTICA·BLUEPRINT·PAPEL_TIMBRADO) · defaultCardSkin · notificationPrefsJson (inclui `dailyTaskAt` 08:00, RF44.CA10) · timezone · wipLimit (padrão 3, RF44.CA05) · dashboardLayoutJson · aiModeDefault (ECONOMIA·AVANCADO).
 
 ### 1.3 `RefreshToken` (= FAI) — Redis (hash por `familyId`) com espelho em `refresh_tokens`
-tokenHash · familyId · userId · expiresAt · revokedAt · rotatedFromId · createdIp · userAgent · deviceName · lastUsedAt · persistent.
+tokenHash (único) · familyId (índice) · userId (FK `users` **CASCADE**) · expiresAt · revokedAt · rotatedFromId (FK self **SET NULL**) · createdIp · userAgent · deviceName · lastUsedAt · persistent · createdAt. Só o **hash** do token é persistido.
 
 ### 1.4 `Company` (= FAI `BrandProfile`) — `companies` (RF28)
 id · ownerUserId (perfil EMPRESA) · legalName · slug (único) · cnpj (AES) · logoUrl · coatOfArmsUrl · about · websiteUrl · accentColor · pointsPolicyJson (tetos, expiração RF42.CA09, limite de doação) · hypePolicyJson (pesos, meia-vida, nomes das faixas RF45.CA07) · rankingWeightsId · recordingRetentionPolicy (RF37.CA05) · status.
@@ -74,8 +94,30 @@ id · userId · departmentId · roleInDept `DeptRole` (MEMBRO · CHEFE · CURADO
 ### 1.7 `CuratorAppointment` — `curator_appointments` (RF28.CA03)
 id · departmentId · curatorUserId · appointedBy · appointedAt · revokedAt · revokeReason · scope `CuratorScope` (FILA_REVISAO · PREMIACAO · AMBOS).
 
-### 1.8 `ApprovalRequest` — `approval_requests` (RF28.CA01)
-id · userId · requestedProfile · evidenceJson · status (PENDENTE·APROVADO·REJEITADO) · reviewedBy · reviewedAt · note.
+### 1.8 `ApprovalRequest` — `approval_requests` (RF28.CA01, RF28.CA09–CA17 **proposta**, D-19)
+id · userId · requestedProfile · evidenceJson · status `ApprovalStatus` (PENDENTE · **AJUSTES** · APROVADO · **RECUSADO**, antes REJEITADO) · policyVersion → `VerificationPolicy.version` · criteriaJson (checklist `[{code, mandatory, auto OK|FALHA|ANALISTA, checked, checkedBy, checkedAt}]`) · reasonsJson (motivos padronizados da recusa/ajustes, ≥ 1) · note (≤ 500, sem dado sensível) · attempts (cadastro = 1; **≤ 5**, depois só ADMIN reabre) · emailConfirmedAt · submittedAt · dueAt (prazo em **dias úteis** contado de `emailConfirmedAt`; reenvio conta de `submittedAt`) · verificationCode (`WS-` + 6 hex derivados do `userId`, mostrado só ao dono) · documentKeysJson (`restricted/pending/{uploadId}/representation.jpg` …) · confirmedBy / confirmedAt (CHEFE: chefe atual ou dono da EMPRESA, Q-66) · reviewedBy · reviewedAt.
+Regras: nasce **só depois da confirmação do e-mail** (corrige a divergência do RF1.CA04); `APROVADO` exige todos os critérios obrigatórios marcados (`409 CRITERIOS_PENDENTES`); `AJUSTES`/`RECUSADO` exigem motivo (`422 VALIDACAO details.reasons`); o ADMIN não decide o próprio pedido (`403 ACESSO_NEGADO`); cada abertura de documento é `no-store` e gera `AuditLog APPROVAL_DOCUMENT_VIEWED`.
+
+### 1.9 `VerificationPolicy` — `verification_policies` (RF28, **proposta**, = FAI `IssuerVerificationPolicy` versionada)
+id · version (ex.: `1.0`) · profileType (EMPRESA · CHEFE_DEPARTAMENTO) · criteriaJson (`[{code, mandatory, howChecked}]`) · reasonsJson (catálogo de motivos) · maxSubmissions (5) · slaBusinessDays (3, Q-71) · resubmitSlaBusinessDays (2) · adjustmentsReplyDays (30) · freeMailDomainsJson (gmail.com, outlook.com, …: domínio do e-mail não prova representação) · validFrom · status (RASCUNHO · VIGENTE · SUBSTITUIDA). O código carrega a vigente; o `ApprovalRequest` congela `policyVersion`. Critérios e motivos propostos em `docs/diagramas/RF28/README.md` §8.
+
+### 1.10 `PolicyDocument` — `policy_documents` (RF1 bloco A, **proposta**, D-15)
+id · document `PolicyDocumentKind` (TERMOS · PRIVACIDADE) · version (ex.: `1.0`; **independente por documento**) · language `UiLanguage` (PT_BR oficial; EN/ES cortesia, Q-69) · effectiveFrom · changelog (resumo das mudanças mostrado no gate) · bodyMd (fonte: `docs/legal/*.md`) · status (RASCUNHO · VIGENTE · SUBSTITUIDA) · publishedBy · publishedAt. Único (document, version, language); **uma** VIGENTE por (document, language). Publicar falha se o corpo tiver marcador `[` … `]` ou "validar com jurídico" (`PolicyTextGuardTest`). Lido em `GET /api/legal/{document}/current` e `/versions`.
+
+### 1.11 `PolicyAcceptance` — `policy_acceptances` (RF1 bloco A, **proposta**, D-16) — **append-only**
+id · userId · document · version · acceptedAt · ip · userAgent · channel `AcceptanceChannel` (CADASTRO_LOCAL · OIDC · REACEITE · SEED) · correlationId. Sem UPDATE/DELETE (trigger ou `@Immutable`); FK `users` **ON DELETE RESTRICT**; **sobrevive à anonimização** (prova do aceite, art. 8º §2º) — o `userId` fica, os demais dados pessoais do `User` já foram anonimizados. Gera `AuditLog POLICY_ACCEPTED {document, version, channel}`.
+
+### 1.12 `UserConsent` — `user_consents` (RF3 bloco C, **proposta**, D-17) — estado atual por finalidade
+id · userId · purpose `ConsentPurpose` · granted · grantedAt · revokedAt · policyVersion (versão da Política vigente no ato) · lastEventId → `ConsentEvent`. Único (userId, purpose). **Nunca nasce concedido**; só finalidades **opcionais** (a base legal das demais não é consentimento). Cada valor do enum tem um **ponto de verificação** obrigatório registrado em `ConsentChecks` (mapa finalidade → checagem usada pelo serviço); finalidade sem checagem quebra o CI e finalidade sem uso não aparece na tela.
+
+### 1.13 `ConsentEvent` — `consent_events` (RF3 bloco C, **proposta**) — **append-only**
+id · userId · purpose · action `ConsentAction` (GRANTED · REVOKED) · at · ip · userAgent · policyVersion · channel (SETTINGS · API) · correlationId. Sobrevive à anonimização junto com `PolicyAcceptance`. Auditoria `CONSENT_GRANTED` / `CONSENT_REVOKED`.
+
+### 1.14 `DataSubjectRequest` — `data_subject_requests` (RF3 bloco C, **proposta**, LGPD art. 18 e 20)
+id · userId · kind `DsrKind` (REVISAO_DECISAO_AUTOMATIZADA · OPOSICAO · INFORMACAO_COMPARTILHAMENTO · CORRECAO) · target `DsrTarget` (HSE · RANKING · HYPE · CLASSIFICACAO_IA; só para revisão) · targetId (ex.: `EfficiencyScoreSnapshot`, `RankingEntry`, `MessageClassification`) · description (≤ 2000) · status `DsrStatus` (ABERTA · EM_ANALISE · RESPONDIDA · RECUSADA · ENCERRADA) · openedAt · dueAt (prazo, Q-71) · assigneeId (ADMIN/encarregado; o canal do encarregado vem de `WS_LEGAL_DPO_CONTACT`) · responseMd · respondedAt · correlationId. Auditoria `DSR_OPENED`, `DSR_RESPONDED`. CORRECAO é atendida pela aba Conta (RF3.CA01) e só vira pedido quando o campo não é editável pelo titular.
+
+### 1.15 `PendingUpload` — `pending_uploads` (RF1 bloco B, **proposta**, D-22)
+id · kind `UploadKind` (avatar · identity · representation) · key (`pending/{id}/avatar.webp` público-depois-de-consumido; `restricted/pending/{id}/{kind}.jpg` para identity/representation) · mimeType (magic bytes) · sizeBytes · width · height (teto de pixels antes de alocar, SEG) · sha256 · ip · createdAt · expiresAt (**+24 h**) · consumedByUserId · consumedAt. Reencode remove EXIF/GPS. O cadastro só aceita `PendingUpload` **do mesmo `kind`** e não consumido; `PendingUploadCleanupJob` apaga os vencidos (`@Scheduled` + lock, com teste que prova o agendamento).
 
 ---
 
@@ -324,6 +366,62 @@ id · meetingId · userId · consented · at · ip.
 
 ---
 
+## 5b. DECIA — decisão estruturada (RF29, RF31, RF33, RF43; migration V22)
+
+> Fonte: [`docs/decia/03_MODELO_FUNCIONAL.md`](../decia/03_MODELO_FUNCIONAL.md) §4 (contrato funcional) e
+> [`contracts/decia/vetores.json`](../../contracts/decia/vetores.json) (regras de cálculo do §6). Pacote `ws-domain`
+> `br.gov.pr.secid.workstation.domain.decisao` (records) + `decisao.analise` (serviços puros, sem Spring); JPA em
+> `persistence-mysql/…/mysql/decisao`. A sessão em grupo (§5) continua existindo e passa a ser **um dos modos** de construir uma
+> decisão (Q-155). A validação formal RF29 continua no `FinalDecision` (§5.11), ligado por `decisions.final_decision_id` (D-54).
+> **Nenhuma API de decisão é exposta antes dos Blocos 4/5 de segurança (BOLA/BFLA)** — D-55.
+
+Política de FK (D-52): filhos → CASCADE na decisão, **exceto** `decision_snapshots` e `decision_events`, que são append-only e
+**RESTRICT** (decisão com histórico não se apaga); usuários sempre RESTRICT; referências opcionais (sessão, projeto, `final_decisions`,
+`summary_scenarios`, `project_scenarios`, `media_objects`, `tasks`, `ai_inference_log`, alternativa selecionada, decisão substituída)
+→ SET NULL. Alvos polimórficos (`decision_evidence_links.target_*`, `decision_work_links.target_*`) sem FK (D-41).
+
+### 5b.1 `Decision` — `decisions` (agregado raiz, versionado)
+id · title(160) · question(500) · contextMd · objective · constraintsMd · scope · stakeholdersJson · resourcesMd · dependenciesMd ·
+targetDate · ownerUserId · createdByUserId · companyId · departmentId? · sessionId? · projectId? · finalDecisionId? ·
+supersedesDecisionId? · status `DecisionLifecycle` · complexity `DecisionComplexity` (RAPIDA · PADRAO · PROFUNDA) · kind
+`DecisionKind` (ESTRATEGICA · TATICA · OPERACIONAL · TECNICA · FINANCEIRA · PRODUTO · PESSOAS · CONTRATACAO · RISCO) · impact/urgency `DecisionLevel` (BAIXO · MEDIO · ALTO · CRITICO) · visibility
+(PRIVADA por padrão) · accessClass · weightingEnabled · independentScoring · templateKey? · selectedAlternativeId? (estado atual) ·
+decidedAt? · decisionConfidencePct? (0–100, passo 5) · rationale? · reviewEveryDays?.
+Ciclo `DecisionLifecycle`: RASCUNHO → ENQUADRAMENTO → PESQUISA → COMPARACAO → AGUARDANDO_DECISAO → DECIDIDA → EM_EXECUCAO → RESOLVIDA →
+REVISADA → ARQUIVADA; REABERTA (de DECIDIDA, EM_EXECUCAO, RESOLVIDA, REVISADA) volta só para COMPARACAO. DECIDIDA só por
+`Decision.decide(...)` (guarda §6.10, só o responsável ou APROVADOR com delegação); REABERTA só por `Decision.reopen(...)`.
+
+### 5b.2 Filhos da decisão
+
+| Entidade → tabela | Atributos principais | Observações |
+|---|---|---|
+| `DecisionParticipant` → `decision_participants` | decisionId · userId · role `DecisionRole` (CONDUTOR · APROVADOR · CONTRIBUIDOR · INFORMADO) · joinedAt · assessmentsSubmittedAt? | único (decisão, usuário); G5 |
+| `DecisionAlternative` → `decision_alternatives` | label · title · description · doNothing · prosJson · consJson · estimatedCost? · estimatedDurationDays? · dependenciesMd? · status (ATIVA · DESCARTADA) · discardReason? · origin `ContentOrigin` · aiInferenceId? · summaryScenarioId? · projectScenarioId? · position | DESCARTADA exige motivo; único (decisão, rótulo) |
+| `DecisionCriterion` → `decision_criteria` | name · description · direction (MAIOR_MELHOR · MENOR_MELHOR, dica) · weightPct? DECIMAL(5,2) 0–100 · catalogKey? · origin · aiInferenceId? · position | único (decisão, nome) |
+| `CriterionAssessment` → `criterion_assessments` | alternativeId · criterionId · assessorUserId · score 1–5 · rationale? · submittedAt · origin | único (alternativa, critério, avaliador) |
+| `DecisionEvidence` → `decision_evidence` | nature (FATO · EVIDENCIA · OPINIAO) · kind `EvidenceKind` · title · summary · sourceLabel · sourceUrl? · mediaId? · taskId? · authorLabel? · observedAt? · retrievedAt? · sourceQuality `SourceQuality` · relevance/reliability `RelevanceLevel` (ALTA · MEDIA · BAIXA) · origin · aiInferenceId? · addedByUserId · supersededAt? | nunca apagada, só substituída |
+| `EvidenceLink` → `decision_evidence_links` | evidenceId · targetType (ALTERNATIVA · CRITERIO · PREMISSA · RISCO · AVALIACAO) · targetId · stance (SUSTENTA · CONTRADIZ · CONTEXTO) · note? | alvo polimórfico |
+| `DecisionAssumption` → `decision_assumptions` | statement · importance `DecisionLevel` · confidencePct? · validationStatus (NAO_VALIDADA · EM_VALIDACAO · VALIDADA · INVALIDADA) · ownerUserId? · alternativeId? · validationNote? · validatedAt? · origin · aiInferenceId? | crítica = CRITICO |
+| `DecisionRisk` → `decision_risks` | title · description? · alternativeId? · likelihood (RARA · POSSIVEL · PROVAVEL · QUASE_CERTA) · impact · mitigation? · ownerUserId? · source (MANUAL · PRE_MORTEM · RED_TEAM · IA) · status (ABERTO · MITIGADO · ACEITO · OCORREU · ENCERRADO) · origin · aiInferenceId? | severidade calculada (§6.6), sem coluna |
+| `DecisionScenario` → `decision_scenarios` | alternativeId? · scenarioCase (MELHOR · BASE · PIOR; `case` é palavra reservada) · description · likelihood · assumptionIdsJson? · expectedResult · projectScenarioId? | |
+| `DecisionForecast` → `decision_forecasts` | alternativeId? · statement · probabilityPct 5–95 passo 5 · resolveBy · forecasterUserId · resolution (PENDENTE · OCORREU · NAO_OCORREU · ANULADA) · resolvedAt? · resolvedByUserId? | base do Brier |
+| `DecisionRecommendation` → `decision_recommendations` | alternativeId? · source (MODELO · IA) · reasoningMd · supportingJson · contradictingJson · criticalAssumptionIdsJson · limitationsMd · whatWouldChangeMd · modelVersion · aiInferenceId? · status (SUGERIDA · ACEITA · DESCARTADA) | sem "sustenta" E "contradiz" → rejeitada (§7) |
+| `DecisionTrigger` → `decision_triggers` | conditionText · metricKey? · comparator? (`<` `<=` `>` `>=` `=` `!=`) · threshold? · status (ATIVO · DISPARADO · ARQUIVADO) · firedAt? | |
+| `DecisionSnapshot` → `decision_snapshots` | kind (DECISAO · REABERTURA · CHECKPOINT) · versionNumber · takenAt · takenByUserId · contentJson MEDIUMTEXT · contentSha256 CHAR(64) · rationale · confidencePct? · selectedAlternativeLabel? · modelVersion | **append-only, RESTRICT**; JSON canônico + SHA-256 (§6.12) |
+| `DecisionCheckpoint` → `decision_checkpoints` | dueAt · kind (PROGRAMADO · GATILHO) · status (AGENDADO · CONCLUIDO · PERDIDO · CANCELADO) · completedAt? · completedByUserId? · stillValid? · assumptionsChanged? · newEvidence? · confidencePctAfter? · action (MANTER · AJUSTAR · REABRIR)? · note? | CONCLUIDO exige ação |
+| `DecisionOutcome` → `decision_outcomes` | result (SUCESSO · PARCIAL · FALHOU · CANCELADA · SUBSTITUIDA) · observedAt · summary · metricsJson? · recordedByUserId | único por decisão |
+| `DecisionRetrospective` → `decision_retrospectives` | outcomeId? · whatHappened · whatExpected · whatWasRight · whatWasWrong · failedAssumptionIdsJson? · processQuality (ADEQUADA · PARCIAL · INADEQUADA) · lessonsMd · shareAsLesson · reviewedByUserId · reviewedAt | nome distinto de `DecisionReview` (§5.12) |
+| `DecisionWorkLink` → `decision_work_links` | targetType (TAREFA · PROJETO · MARCO) · targetId · createdByUserId · createdAt | alvo polimórfico |
+| `DecisionEvent` → `decision_events` | actorUserId? (nulo = IA/sistema) · type `DecisionEventType` (os 14 eventos do §9) · payloadJson? · at · correlationId | **append-only, RESTRICT** |
+
+### 5b.3 Serviços de domínio (`decisao.analise`, sem Spring)
+`WeightedScoring` (§6.1, `decia-scoring-v1`) · `DivergenceAnalysis` (§6.2) · `DominanceAnalysis` (§6.3) · `SensitivityAnalysis` (§6.4) ·
+`EvidenceStrength` (§6.5) · `RiskSeverity` (§6.6) · `Readiness` (§6.7) · `Health` (§6.8, sem nota geral) · `ConfidenceBand` e
+`Calibration` (§6.9) · `PreDecisionGuard` (§6.10) · `Freshness` (§6.11, relógio injetado) · `SnapshotCanonicalizer` (§6.12) ·
+`RecommendationValidator` (§7). Todos os vetores de `contracts/decia/vetores.json` são conferidos por `DeciaVectorsTest`.
+
+---
+
 ## 6. Chancelas, benefícios e reconhecimentos (RF39, RF35, RF28)
 
 ### 6.1 `Seal` — **Chancela** (= FAI `Seal`) — `seals`
@@ -385,7 +483,7 @@ Alvo polimórfico `TargetType`: TASK · PROJECT · PLAN · KIT · PROJECT_TASK �
 ### 8.5 `Remix` — `remixes` — id · actorId · sourceType · sourceId · resultType · resultId · modelOfferId · ledgerEntryId · at.
 ### 8.6 `Follow` — `follows` — id · followerId · targetType (USER · DEPARTMENT · COMPANY) · targetId · status · at. Único.
 ### 8.7 `MuralEntry` — `mural_entries` (+ Cassandra `timeline_by_user`) — id · companyId · departmentId · kind (COMPARTILHAMENTO · DECISAO_VALIDADA · PROJETO_PUBLICADO · RECONHECIMENTO · META · DESTAQUE · IMPULSO) · targetType · targetId · actorId · boostUntil · at.
-### 8.8 `Notification` — Cassandra `notifications_by_user` (TTL) + `notifications` — id · recipientId · actorId · type `NotificationType` (SESSAO_PROPOSTA · SESSAO_INICIADA · PARTICIPANTE_ADICIONADO · PARTICIPANTE_REMOVIDO · DIVERGENCIA_DETECTADA · PERGUNTA_IA · RESUMO_PUBLICADO · DECISAO_PROPOSTA · DECISAO_VALIDADA · DECISAO_DEVOLVIDA · REABERTURA · ARTEFATO · PRAZO_PROXIMO · PRAZO_VENCIDO · REACAO · COMENTARIO · MENCAO · REMIX · CHANCELA_ESTADO · INDICACAO · BENEFICIO · PONTOS · META · RECONHECIMENTO · TAREFA_DO_DIA · TRANSICAO · SISTEMA) · category (SOCIAL · DECIA · PRAZO · CHANCELA · PONTOS · SISTEMA) · resourceType · resourceId · title · body · payloadJson · groupKey (agrupamento por hora) · read · readAt · deliveredChannels.
+### 8.8 `Notification` — Cassandra `notifications_by_user` (TTL) + `notifications` — id · recipientId · actorId · type `NotificationType` (SESSAO_PROPOSTA · SESSAO_INICIADA · PARTICIPANTE_ADICIONADO · PARTICIPANTE_REMOVIDO · DIVERGENCIA_DETECTADA · PERGUNTA_IA · RESUMO_PUBLICADO · DECISAO_PROPOSTA · DECISAO_VALIDADA · DECISAO_DEVOLVIDA · REABERTURA · ARTEFATO · PRAZO_PROXIMO · PRAZO_VENCIDO · REACAO · COMENTARIO · MENCAO · REMIX · CHANCELA_ESTADO · INDICACAO · BENEFICIO · PONTOS · META · RECONHECIMENTO · TAREFA_DO_DIA · TRANSICAO · MENSAGEM_DIRETA · ATRIBUICAO_PROPOSTA · ATRIBUICAO_ACEITA · ATRIBUICAO_RECUSADA · ATRIBUICAO_DEVOLVIDA · TAREFA_REUTILIZADA · SISTEMA) · category (SOCIAL · DECIA · PRAZO · CHANCELA · PONTOS · SISTEMA) · resourceType · resourceId · title · body · payloadJson · groupKey (agrupamento por hora) · read · readAt · deliveredChannels.
 ### 8.9 `TimelineEvent` — Cassandra `timeline_by_user` — userId · at (cluster desc) · eventType · targetType · targetId · payloadJson.
 
 ---
@@ -414,7 +512,7 @@ id · userId · scoreDate · score (0–1000) · bandCode · blocksJson {produca
 ## 10. IA do sistema (RF7, RF11, RF30, RF33, RF34, RF43)
 
 ### 10.1 `AiInferenceLog` (= FAI) — `ai_inference_log`
-id · userId · departmentId · capability `AiCapability` (ABRIR_SESSAO · CLASSIFICAR_MENSAGEM · DETECTAR_DIVERGENCIA · FORMULAR_PERGUNTA · RESUMO_ANALITICO · DECISAO_FINAL · ARTEFATO · PREENCHER_TAREFA · COMPOR_PROJETO · AUTOPILOT_PROJETO · AUTOPILOT_TAREFAS · SIMULAR_CENARIO · CONFORMIDADE · MEMORIA_BUSCA · EXTRAIR_DESENHO · EXTRAIR_DOCUMENTO · TRANSCREVER · ATA_VIVA · SUGERIR_CHANCELA · AVALIAR_POLITICA · TAREFA_DO_DIA · HSE · HYPE_PERFIL · INSIGHT · DOSSIE · THUMBNAIL · CAPA_IA) · hostRf · provider (CLAUDE · GEMINI · LOCAL) · model · mode (ECONOMIA · AVANCADO) · latencyMs · inputTokens · outputTokens · estimatedCostUsd · result (OK · FALLBACK · ERRO · BLOQUEADO_SIGILO) · fallbackUsed · maskedFields · inputSummaryJson · outputSummary · confidence · reviewedBy · reviewedAt · quotaSource (MENSAL · CREDITO · PONTOS) · correlationId · createdAt.
+id · userId · departmentId · capability `AiCapability` (ABRIR_SESSAO · CLASSIFICAR_MENSAGEM · DETECTAR_DIVERGENCIA · FORMULAR_PERGUNTA · RESUMO_ANALITICO · DECISAO_FINAL · ARTEFATO · PREENCHER_TAREFA · COMPOR_PROJETO · AUTOPILOT_PROJETO · AUTOPILOT_TAREFAS · SIMULAR_CENARIO · CONFORMIDADE · MEMORIA_BUSCA · EXTRAIR_DESENHO · EXTRAIR_DOCUMENTO · TRANSCREVER · ATA_VIVA · SUGERIR_CHANCELA · AVALIAR_POLITICA · TAREFA_DO_DIA · HSE · HYPE_PERFIL · INSIGHT · DOSSIE · THUMBNAIL · CAPA_IA) · hostRf · provider (CLAUDE · GEMINI · LOCAL) · model · mode (ECONOMIA · AVANCADO) · latencyMs · inputTokens · outputTokens · estimatedCostUsd · result (OK · FALLBACK · ERRO · BLOQUEADO_SIGILO) · fallbackUsed · maskedFieldsJson · inputSummaryJson · outputSummary · confidence · reviewedBy · reviewedAt · quotaSource (MENSAL · CREDITO · PONTOS) · correlationId · createdAt. **Append-only**: `userId` e `reviewedBy` são FK `users` **RESTRICT** (nunca cascateiam); `capability` sem CHECK no banco porque cresce por RF (D-23); `departmentId` sem FK até o RF28.
 
 ### 10.2 `AiQuota` — Redis (`quota:{scope}:{id}:{month}`) + `ai_quotas` — scope (USER · DEPARTMENT) · scopeId · monthKey · monthlyLimit · consumed · purchasedCredits · resetAt.
 ### 10.3 `AiProviderCircuitState` — Redis — provider · state (CLOSED · OPEN · HALF_OPEN) · failures · openedAt.
@@ -441,16 +539,26 @@ id · subjectType (EMPREGADO · GESTAO) · subjectUserId · groupingId · reques
 
 ## 12. Plataforma (transversal, RF18, RF38)
 
-### 12.1 `AuditLog` (= FAI) — `audit_log` — id · actorId · action · resourceType · resourceId · result · ip · userAgent · correlationId · metadataJson (sanitizado) · at.
-### 12.2 `DomainEventOutbox` — `domain_events` — id · aggregateType · aggregateId · eventType · payloadJson · occurredAt · publishedAt · attempts. Observer AFTER_COMMIT.
-### 12.3 `PipelineJob` (= FAI) — `pipeline_jobs` — id · type (THUMBNAIL · OCR · ANTIVIRUS · SYNC_EXTERNO · INDEXAR_MEMORIA · EXPORT_PDF · TRANSCRICAO · RECALC_HYPE · RECALC_RANKING · RECALC_METRICS · PERGUNTA_ADIADA) · targetType · targetId · status (PENDENTE · RODANDO · OK · FALHA · REPROCESSAR) · attempts · lastError · scheduledAt · finishedAt.
-### 12.4 `FeatureFlag` — `feature_flags` — key · enabled · scope · rolloutJson. Flags obrigatórias: `redis.enabled`, `cassandra.enabled`, `opensearch.enabled`, `storage.s3`, `ai.provider.claude`, `ai.provider.gemini`, `ai.local.only`.
-### 12.5 `MediaObject` — S3/MinIO + `media_objects` — id · bucket · key · mimeType · sizeBytes · sha256 · ownerId · accessClass · variantsJson (thumb, preview) · createdAt.
-### 12.6 `DataExportRequest` (= FAI, LGPD) — `data_export_requests` — id · userId · status · mediaId · requestedAt · completedAt.
+### 12.1 `AuditLog` (= FAI) — `audit_log` — id · actorId (FK `users` **RESTRICT**, nulo = sistema/anônimo) · action · resourceType · resourceId · result (OK · FALHA · NEGADO, Q-79) · ip · userAgent · correlationId · metadataJson (sanitizado) · at. **Append-only** (só INSERT); índices (actorId, at), (resourceType, resourceId), (action, at), correlationId.
+### 12.2 `DomainEventOutbox` — `domain_events` — id · aggregateType · aggregateId (textual: UUID ou chave natural) · eventType · payloadJson · occurredAt · publishedAt (índice) · attempts. Observer AFTER_COMMIT. Sem FK por desenho: o evento sobrevive ao agregado.
+### 12.3 `PipelineJob` (= FAI) — `pipeline_jobs` — id · type (THUMBNAIL · OCR · ANTIVIRUS · SYNC_EXTERNO · INDEXAR_MEMORIA · EXPORT_PDF · TRANSCRICAO · RECALC_HYPE · RECALC_RANKING · RECALC_METRICS · PERGUNTA_ADIADA · **DATA_EXPORT** (proposta, RF3)) · targetType · targetId · status (PENDENTE · RODANDO · OK · FALHA · REPROCESSAR) · attempts · lastError · scheduledAt · finishedAt.
+### 12.4 `FeatureFlag` — `feature_flags` — flagKey (PK) · enabled · scope (GLOBAL · EMPRESA · DEPARTAMENTO · USUARIO) · rolloutJson · updatedAt. Todas nascem **desligadas** no V2, exceto `ai.local.only = TRUE`. Flags obrigatórias: `redis.enabled`, `cassandra.enabled`, `opensearch.enabled`, `storage.s3`, `ai.provider.claude`, `ai.provider.gemini`, `ai.local.only`.
+### 12.5 `MediaObject` — S3/MinIO + `media_objects` — id · bucket · objectKey (único) · mimeType · sizeBytes · sha256 · ownerId (FK `users` **CASCADE**) · accessClass (PUBLIC · PRIVATE · RESTRICTED — classe de armazenamento, distinta de `AccessClassification` do conteúdo, Q-79) · variantsJson (thumb, preview) · createdAt.
+### 12.6 `DataExportRequest` (= FAI, LGPD art. 18 II e V) — `data_export_requests` (**proposta**, D-20)
+id · userId · status `ExportStatus` (**REQUESTED → PROCESSING → READY → EXPIRED | FAILED**) · jobId → `PipelineJob DATA_EXPORT` (assíncrona) · fileKey (`restricted/users/{userId}/exports/{id}.json` ou `.zip`) · format `ExportFormat` (JSON · ZIP) · language `UiLanguage` (idioma da pessoa) · sizeBytes · requestedAt · completedAt · expiresAt (**+7 d**) · downloadedAt · failureReason. Limite **3 por dia por pessoa** (contador atômico `RateLimitPort`, `429 LIMITE_EXPORTACOES`); download só do dono (`OwnMedia`, `403`), vencida `410 EXPORTACAO_EXPIRADA`; nome e tipo corretos (`.json` + `application/json`, ou ZIP de verdade); conteúdo vem do `PersonalDataRegistry` (§12.9). Notificação quando READY.
 ### 12.7 `UserSkin` — skins/capas compradas (RF38, RF42) — `user_skins` — id · userId · skinKind (MESA · CARD · TEMA) · skinKey · acquiredVia (PADRAO · COMPRA · BENEFICIO) · purchaseId.
 ### 12.8 `UsageIndicator` (RF18) — views/procedures MySQL: `vw_sessions_by_period`, `vw_decisions_with_trace` (objetivo 1), `vw_decisions_with_sources` (objetivo 3), `sp_admin_kpis`, `sp_timeseries`; materializadas em `MetricSnapshot`.
+### 12.9 `PersonalDataRegistry` — registro único de fontes de dados pessoais (RF3 bloco C, **proposta**, D-18) — código em `ws-application/.../lgpd/PersonalDataRegistry.java`, exposto em `GET /api/me/data-map`
+Entradas `PersonalDataSource`: category (IDENTIFICACAO · CONTATO · CREDENCIAIS · PERFIL_PROFISSIONAL · PREFERENCIAS · ACEITES_E_CONSENTIMENTOS · SESSOES_E_ACESSO · LOTACOES_E_NOMEACOES · CONTEUDO_AUTORAL · MENSAGENS_DECIA · DECISOES_E_RASTRO · PONTOS_E_RECONHECIMENTOS · INFERENCIAS_IA · AUDITORIA · DOCUMENTOS_DE_VERIFICACAO) · entities[] (ex.: `User.email`, `SessionMessage.authorId`) · purpose · legalBasis (art. 7º II/V/IX, art. 11, art. 23) · retention (texto + regra) · sharing[] (`AI_PROVIDER_MASKED` · `GOOGLE_WORKSPACE` · `MICROSOFT_365` · `NONE`) · exportSection · onAnonymization (ANONIMIZAR · APAGAR · GUARDAR_LEGAL). É a **única fonte** da página "Quais dados temos" (transparência, art. 9º), do conteúdo da exportação e do plano do `AccountAnonymizationJob`. **Teste-guarda** `PersonalDataRegistryCoverageTest`: toda entidade JPA/Cassandra com coluna de pessoa (`userId`, `authorId`, `actorId`, `ownerId`, `recipientId`, `issuerUserId`…) está no registro ou em `EXCLUDED_WITH_REASON`; entidade nova sem classificação quebra o CI.
 
 ---
+
+## 12b. Mensageria & Atribuição (RF10, RF18/RF19 "atribuir/retornar", RF46) — proposta
+
+### 12b.1 `DirectConversation` — `direct_conversations` — id · companyId · kind `ConversationKind` (DIRETA · GRUPO) · title · createdBy · lastMessageAt · messagingPolicy (TTL de `Company.messagingPolicyJson`).
+### 12b.2 `DirectConversationParticipant` — id · conversationId · userId · joinedAt · leftAt · lastReadAt.
+### 12b.3 `DirectMessage` — Cassandra `messages_by_conversation` (partição conversationId, TTL) — id (TIMEUUID) · authorId · bodyMd · attachmentsJson (TASK/PROJECT) · assignmentId · sentAt. Sem IA, sem DECIA Points, não indexado na Memória.
+### 12b.4 `Assignment` — `assignments` — id · targetType `AssignmentTargetType` (TASK · PROJECT) · targetId · fromUserId · toUserId · origin `AssignmentOrigin` (CHAT_WS · CHAT_DECIA · BOTAO_ESQUEMA · MINHA_EQUIPE) · status `AssignmentStatus` (PROPOSTA · ACEITA · RECUSADA · DEVOLVIDA) · dueAt · message · reason (obrigatório em RECUSADA/DEVOLVIDA) · previousResponsibleId · traceNodeId (quando origem CHAT_DECIA) · respondedAt. Mesma entidade para RF10 (chefe atribui), RF18/RF19 (ações "atribuir" e "retornar") e RF46.
 
 ## 13. Enums consolidados
 
@@ -458,7 +566,21 @@ id · subjectType (EMPREGADO · GESTAO) · subjectUserId · groupingId · reques
 |---|---|
 | ProfileType | EMPREGADO · EMPRESA · CHEFE_DEPARTAMENTO |
 | Role | USER · ADMIN (+ papel contextual CURADOR via `CuratorAppointment`) |
-| AccountStatus | PENDING_EMAIL_VERIFICATION · PENDING_VALIDATION · ACTIVE · SUSPENDED · DELETION_SCHEDULED |
+| AccountStatus | PENDING_EMAIL_VERIFICATION · PENDING_VALIDATION · ACTIVE · SUSPENDED · DELETION_SCHEDULED · **ANONYMIZED** (proposta, D-18: estado final após o job; nunca há DELETE de `users`) |
+| ApprovalStatus | PENDENTE · **AJUSTES** · APROVADO · **RECUSADO** (proposta, D-19; antes PENDENTE · APROVADO · REJEITADO) |
+| ReviewDecision | APROVAR · AJUSTES · RECUSAR (proposta) |
+| CriterionAuto | OK · FALHA · ANALISTA (proposta; resultado da verificação automática de um critério) |
+| PolicyDocumentKind | TERMOS · PRIVACIDADE (proposta, D-15) |
+| PolicyDocumentStatus | RASCUNHO · VIGENTE · SUBSTITUIDA (proposta) |
+| AcceptanceChannel | CADASTRO_LOCAL · OIDC · REACEITE · SEED (proposta, D-16) |
+| ConsentPurpose | **RESUMO_PROFISSIONAL_IA** (RF43.CA04) · **GRAVACAO_REUNIOES_PADRAO** (preferência; o consentimento por reunião segue no RF37) — proposta, Q-67; cada valor exige ponto de verificação em `ConsentChecks` |
+| ConsentAction | GRANTED · REVOKED (proposta) |
+| DsrKind | REVISAO_DECISAO_AUTOMATIZADA · OPOSICAO · INFORMACAO_COMPARTILHAMENTO · CORRECAO (proposta) |
+| DsrTarget | HSE · RANKING · HYPE · CLASSIFICACAO_IA (proposta) |
+| DsrStatus | ABERTA · EM_ANALISE · RESPONDIDA · RECUSADA · ENCERRADA (proposta) |
+| ExportStatus | REQUESTED · PROCESSING · READY · EXPIRED · FAILED (proposta, D-20) |
+| ExportFormat | JSON · ZIP (proposta) |
+| UploadKind | avatar · identity · representation (proposta, D-22; valores em minúsculas porque viajam no query `?kind=`) |
 | Visibility | PRIVADA · DEPARTAMENTO · EMPRESA · PUBLICA |
 | AccessClassification | PUBLICO · INTERNO · RESTRITO · SIGILOSO |
 | TaskType | TEXTO_MANUAL · TEXTO_IA · IMAGEM_WEB · IMAGEM_EDITADA · PLANILHA · DOCUMENTO · PASTA · LINK · DESENHO_TECNICO · FORMULARIO · ATA_REGISTRO · EMAIL · PROTOCOLO · CRONOGRAMA · ESTUDO_TECNICO_PRELIMINAR |
@@ -519,12 +641,17 @@ id · subjectType (EMPREGADO · GESTAO) · subjectUserId · groupingId · reques
 | SheetStatus | PROPOSTA · ACEITA · DESCARTADA |
 | IgnoredReason | NAO_VERIFICADO · AUTO_INTERACAO · ANTIFRAUDE |
 | StudioStatus | ORIGINAL · ENDIREITADA · RECORTADA · SEM_FUNDO · OCR |
+| ConversationKind | DIRETA · GRUPO |
+| AssignmentTargetType | TASK · PROJECT |
+| AssignmentOrigin | CHAT_WS · CHAT_DECIA · BOTAO_ESQUEMA · MINHA_EQUIPE |
+| AssignmentStatus | PROPOSTA · ACEITA · RECUSADA · DEVOLVIDA |
 | CoverMode / ProjectCoverMode | AUTO · MANUAL · IA / MOSAICO · FOTO · IA (unificação em aberto, Q-41) |
 
 ## 14. Pendências de modelagem (ver `docs/DECISOES.md`)
 - Os cards RF1–RF18 do board não têm critérios de aceite escritos (só as HUs). A taxonomia do DECIA (seção 5) foi derivada das HUs + RF29/RF42/RF43; confirmar CAs antes da Sprint 1.
 - "Grupo da conversa" (HU5) foi modelado como `SessionParticipant` com `role MEMBRO`; não existe entidade `Group` separada. Confirmar.
 - Avatar 3D fora de escopo (card "Ideias"); "persona profissional" pode virar campo `jobTitle` + `DeliberativeProfile`.
+- **Cadastro e LGPD (proposta, 2026-10-05):** `PolicyDocument`, `PolicyAcceptance`, `UserConsent`, `ConsentEvent`, `DataSubjectRequest`, `VerificationPolicy`, `PendingUpload`, `PersonalDataRegistry`, as extensões EMPRESA/CHEFE de `User`, `ApprovalStatus` com AJUSTES/RECUSADO, `ExportStatus` e `AccountStatus.ANONYMIZED` são **propostas** (D-15…D-22) que dependem das respostas Q-60…Q-73 (encarregado, jurídico, PO). Plano em `docs/produto/CADASTRO_E_LGPD.md`.
 
 ## 15. Visão ER consolidada (relacionamentos entre contextos)
 
@@ -537,6 +664,15 @@ erDiagram
   DEPARTMENT ||--o{ CURATOR_APPOINTMENT : curadores
   USER ||--|| USER_PREFERENCES : tem
   USER ||--o{ REFRESH_TOKEN : sessoes
+  USER ||--o{ POLICY_ACCEPTANCE : aceites_append_only
+  POLICY_DOCUMENT ||--o{ POLICY_ACCEPTANCE : versao_aceita
+  USER ||--o{ USER_CONSENT : consentimentos
+  USER ||--o{ CONSENT_EVENT : historico_consentimento
+  USER ||--o{ DATA_SUBJECT_REQUEST : direitos_art18_art20
+  USER ||--o{ DATA_EXPORT_REQUEST : exportacoes
+  USER ||--o| APPROVAL_REQUEST : validacao_perfil
+  VERIFICATION_POLICY ||--o{ APPROVAL_REQUEST : versao_da_politica
+  PENDING_UPLOAD }o--o| USER : consumido_no_cadastro
 
   USER ||--o{ TASK_ITEM : cria
   DEPARTMENT ||--o{ TASK_ITEM : origem
@@ -637,7 +773,12 @@ erDiagram
 | Entidade | Nasce em | Lida/alterada em |
 |---|---|---|
 | User, UserPreferences, RefreshToken | RF1, RF2, RF3 | todos |
-| Company, Department, DepartmentMembership, CuratorAppointment, ApprovalRequest | RF28 | RF19, RF24, RF25, RF35, RF39 |
+| Company, Department, DepartmentMembership, CuratorAppointment | RF28 | RF19, RF24, RF25, RF35, RF39 |
+| ApprovalRequest, VerificationPolicy (proposta) | RF1 (após e-mail confirmado), RF28 | RF3 (central de validação), RF18 |
+| PendingUpload (proposta) | RF1 | RF3 (avatar), job de limpeza |
+| PolicyDocument, PolicyAcceptance (proposta) | RF1 (cadastro local, OIDC, seed), páginas `/termos` e `/privacidade` | RF2 (gate `403 ACEITE_PENDENTE`), RF3 (aba Termos e políticas), RF18 |
+| UserConsent, ConsentEvent (proposta) | RF3 | RF37 (gravação), RF43 (resumo profissional), RF18 |
+| DataSubjectRequest (proposta) | RF3 | RF18 (fila do encarregado/ADMIN), RF43/RF44/RF45 (revisão art. 20) |
 | TaskItem, TaskAttachment, TaskVersion, TaskStateLog, LegalDeadlineRule, OrgEntity, Evidence | RF20, RF41 | RF21–RF23, RF29, RF34, RF40, RF44 |
 | ProjectScheme, ProjectTask, ProjectTaskDependency, ProjectVersion | RF21, RF22 | RF23, RF24, RF25, RF29–RF32, RF43 |
 | ProjectScenario | RF31 | RF11, RF29 |
@@ -666,4 +807,28 @@ erDiagram
 | ExtractionResult, ExtractionCorrection | RF34 | RF20, RF21 |
 | InstitutionalMemoryDocument, Citation, MemoryQuery | RF33 | RF8, RF11, RF16, RF27, RF30 |
 | HandoffDossier, HandoffItem | RF36 | RF25, RF28 |
-| AuditLog, DomainEventOutbox, PipelineJob, FeatureFlag, MediaObject, DataExportRequest, UserSkin | transversal | RF18, RF38, RF42 |
+| AuditLog, DomainEventOutbox, PipelineJob, FeatureFlag, MediaObject, UserSkin | transversal | RF18, RF38, RF42 |
+| DataExportRequest, PersonalDataRegistry (proposta) | RF3 (exportação, transparência, anonimização) | todo RF com dado pessoal (teste-guarda de cobertura) |
+
+## 17. Alinhamento com o que foi implementado (D-40 — 2026-10-05)
+
+Mapa seção → migration → pacote de `ws-domain` → pacote JPA (`persistence-mysql/…/infrastructure/mysql/<ctx>`):
+
+| Seção | Migration | Pacote domínio | Observações de alinhamento |
+|---|---|---|---|
+| §1.4–1.9, §1.15, extensões | `V10__rf28_institucional_lgpd` | `institutional` | `ApprovalStatus` ganha **ESGOTADO** (README RF28, Q-127); `Company` ganha `messagingPolicyJson` (RF46) e `status` `CompanyStatus` (Q-121); `PendingUpload.key` → coluna `object_key` |
+| §1.10–1.14, §12.6 | `V10` | `lgpd` | `user_consents`/`consent_events`/`policy_acceptances`/`data_subject_requests` com FK `users` **RESTRICT** (Q-128) |
+| §2 | `V11__rf41_acervo_tarefas` | `acervo` | `processTags`/`natureTags`/`tags` → colunas `*_json`; `cnpj`, `latitude`, `longitude` → `*_enc`; `estimatedHours` separado de `effortSize`; `OcrStatus` (Q-123); `ProcessTag` fechado (Q-122) |
+| §3 (+ RF21 `TeamDesk`, `DeskNote`) | `V12__rf21_criador_projetos` | `projetos` | `ComplianceChecklist.version` → `checklist_version`; `ProjectComment` (§3.5) é `comments` com `PROJECT_TASK` |
+| §4 | `V13__rf24_planejamento` | `planejamento` | `plan_axis_projects.plan_id` desnormalizado para a unicidade (plano, projeto) |
+| §5.1–5.14, 5.16–5.18 | `V14__rf4_decia_sessao` | `decia` | `SessionMessage` = Cassandra + `SessionMessageIndex` (`session_messages_idx`); `SessionArtifact` ⊇ `GeneratedArtifact` do RF13 (Q-125); `AiQuestion.basisMessageIds` → `basis_message_ids_json`; `SessionStatus` (Q-124) |
+| §5.15, §11 | `V15__rf29_rastro_decisao` | `rastro` | nós/arestas RESTRICT (imutáveis); `HandoffStatus` com máquina de estados |
+| §8 (+ RF15 `Announcement`) | `V16__rf27_social` | `social` | `Notification.read` → `is_read`; `deliveredChannels` → `delivered_channels_json`; `MuralKind.COMUNICADO`; `TimelineEvent` só Cassandra |
+| §6.7, §7.2–7.3, §7.6–7.7, §9 | `V17__rf42_gamificacao` | `gamificacao` | `HypeBand.min/max` → `min_score`/`max_score` (+ `code`); `EfficiencyScoreSnapshot.date` → `score_date`; `WeekPlanDay.date` → `plan_date` |
+| §6.1–6.6 | `V18__rf39_chancelas` | `chancelas` | `SealBond.targetType` = `SealTargetType`; unicidades `(target_id, issuer_user_id)` e `seal_code` |
+| §7.1, §7.4–7.5, §12.7 | `V19__rf40_balcao_loja` | `balcao` | `UserSkin` aqui (compra/benefício), não em Plataforma |
+| §12b | `V20__rf46_mensageria_atribuicao` | `mensageria` | `DirectConversation.messagingPolicy` → `messaging_ttl_days`; `DirectMessage` só Cassandra |
+| §10, §12.2–12.5, §12.9 | `V21__rf43_ia_plataforma` (+ V2) | `ia`, `plataforma` | `AiInferenceLog`, `DomainEventOutbox`, `FeatureFlag`, `MediaObject` descrevem as tabelas do V2 (sem SQL novo, Q-131); `metric_snapshots.metric_code` → FK `metric_definitions(code)`; `UsageIndicator` (§12.8) adiado (Q-130); `PersonalDataSource`, `Citation`, `TaskSnapshot` são valores só em código (`store: code`) |
+| §5b | `V22__rf29_decisao_estruturada` | `decisao` (+ `decisao.analise`) | 19 tabelas do `03_MODELO_FUNCIONAL.md` §4.2; snapshots/eventos append-only com decisão RESTRICT (D-52); `ScenarioCase` → coluna `scenario_case`; severidade do risco calculada, sem coluna; valores de `DecisionKind`/`EvidenceKind`/`SourceQuality` propostos (D-53) |
+| §1.1–1.3, §12.1 | `V2`/`V3` (Bloco 3) | `identity` (Bloco 3) | fora deste catálogo por decisão de escopo; `users.company_id`/`department_id` ganham FK no V10 |
+

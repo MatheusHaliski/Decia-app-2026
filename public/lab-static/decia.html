@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="claro">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Work Station / DECIA — wireframes da sessão, da Mesa e da coedição</title>
+<link rel="stylesheet" href="design-system/tokens.css"><link rel="stylesheet" href="design-system/components.css">
+<style>
+/* ===== Página de laboratório: só tokens + classes ws-*; classes lab-* são layout (grid/flex/espaço) sem cor, sombra ou raio literal ===== */
+:root { --node-vermelho: var(--class-risco); --on-node-vermelho: var(--on-class-risco); --node-amarelo: var(--dept-ipe-amarelo); --on-node-amarelo: var(--on-dept-ipe-amarelo); --node-verde: var(--class-consenso); --on-node-verde: var(--on-class-consenso); --node-azul: var(--class-argumento); --on-node-azul: var(--on-class-argumento); --node-marrom: var(--dept-pinhao); --on-node-marrom: var(--on-dept-pinhao); --node-laranja: var(--class-divergencia); --on-node-laranja: var(--on-class-divergencia); }
+main { max-width: 1360px; margin: 0 auto; padding: var(--space-6) var(--space-4) var(--space-10); }
+h1 { font-family: var(--font-editorial); font-size: var(--text-display); font-weight: 600; margin: 0 0 var(--space-1); letter-spacing: var(--text-display--tracking); }
+h2 { font-family: var(--font-editorial); font-size: var(--text-h1); font-weight: 600; margin: var(--space-8) 0 var(--space-2); padding-top: var(--space-4); border-top: 1.5px solid var(--line-soft); }
+h3 { font-size: var(--text-h3); font-weight: 600; margin: var(--space-6) 0 var(--space-2); }
+p.lead { color: var(--muted); max-width: 80ch; margin: 0 0 var(--space-3); }
+code { font-family: var(--font-data); font-size: 11px; background: var(--surface-2); padding: 1px 5px; border-radius: var(--radius-xs); }
+.bar { position: sticky; top: 0; z-index: var(--z-sticky); display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; padding: var(--space-3) 0; background: color-mix(in srgb, var(--ground) 92%, transparent); backdrop-filter: blur(6px); }
+.bar .seg { display: inline-flex; border: 1.5px solid var(--line); border-radius: var(--radius-pill); overflow: hidden; }
+.bar .seg button, .bar .seg a { all: unset; cursor: pointer; padding: 6px 12px; font-size: var(--text-body-sm); font-weight: 600; }
+.bar .seg [aria-pressed="true"], .bar .seg [aria-current="page"] { background: var(--ink); color: var(--surface); }
+.lab-note { font-size: var(--text-caption); color: var(--muted); margin: var(--space-2) 0; }
+[data-view] { display: none; } [data-view][data-active="true"] { display: block; }
+svg.ws-icon { display: inline-block; }
+.lab-col .ws-tag, .lab-panel .ws-tag, .lab-comment .ws-tag { white-space: normal; height: auto; min-height: var(--card-tag-h); line-height: 1.2; padding-block: 2px; }
+.lab-panel__h { flex-wrap: wrap; }
+
+/* ---- moldura do app (topbar + corpo) ---- */
+.lab-app { border: 1px solid var(--line-soft); border-radius: var(--radius-lg); overflow: hidden; background: var(--ground); box-shadow: var(--shadow-1); }
+.lab-app .ws-topbar { position: static; }
+.lab-app__body { display: grid; grid-template-columns: minmax(0, 1fr) 320px; min-height: 640px; }
+.lab-app__body--3 { grid-template-columns: 280px minmax(0, 1fr) 400px; }
+.lab-app__body--3 .lab-col--side { font-size: var(--text-body-sm); }
+.lab-app__body--3 .lab-matrix th, .lab-app__body--3 .lab-matrix td { padding: 6px 4px; }
+.lab-table-wrap { overflow-x: auto; max-width: 100%; }
+.lab-col { min-width: 0; display: grid; align-content: start; gap: var(--space-3); padding: var(--space-3); }
+.lab-col--side { background: var(--surface); border-left: 1px solid var(--line-soft); }
+.lab-col--left { background: var(--surface); border-right: 1px solid var(--line-soft); }
+.lab-panel { border: 1px solid var(--line-soft); border-radius: var(--radius-md); background: var(--surface); padding: var(--space-3); display: grid; gap: var(--space-2); }
+.lab-panel__h { display: flex; align-items: center; gap: var(--space-2); font-family: var(--font-data); font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.lab-panel__h .ws-tag, .lab-panel__h .ws-btn { margin-left: auto; }
+.lab-row { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+.lab-muted { color: var(--muted); font-size: var(--text-caption); }
+
+/* ---- faixa de objetivo (fixa) ---- */
+.lab-goal { position: sticky; top: 0; z-index: var(--z-sticky); background: var(--surface); border-bottom: 1px solid var(--line-soft); padding: var(--space-3) var(--space-4); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-2) var(--space-4); align-items: center; }
+.lab-goal__q { font-family: var(--font-editorial); font-weight: 600; font-size: var(--text-h2); line-height: var(--text-h2--lh); margin: 0; }
+.lab-goal__meta { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; font-size: var(--text-caption); color: var(--muted); }
+.lab-goal__meta .lab-k { font-family: var(--font-data); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; }
+.lab-goal__right { display: grid; gap: var(--space-1); min-width: 220px; justify-items: end; }
+.lab-percent { display: grid; gap: 3px; width: 100%; }
+.lab-percent__track { height: var(--card-phasebar-h); border-radius: var(--radius-pill); background: var(--surface-3); overflow: hidden; }
+.lab-percent__fill { height: 100%; width: calc(var(--p) * 1%); background: var(--primary-gradient); border-radius: var(--radius-pill); }
+.lab-percent__label { display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 9.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--primary-ink); }
+.lab-goal--compact { grid-template-columns: 1fr; }
+
+/* ---- chat: mensagens classificadas (RF7) ---- */
+.lab-chat { display: grid; gap: var(--space-2); align-content: start; }
+.lab-msg { --c: var(--line-soft); --c-ink: var(--muted); --c-soft: var(--surface-2); display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-2); padding: var(--space-2) var(--space-3); border: 1px solid var(--line-soft); border-left: 4px solid var(--c); border-radius: var(--radius-md); background: var(--surface); }
+.lab-msg[data-class="argumento"] { --c: var(--class-argumento); --c-ink: var(--class-argumento-ink); --c-soft: var(--class-argumento-soft); }
+.lab-msg[data-class="divergencia"] { --c: var(--class-divergencia); --c-ink: var(--class-divergencia-ink); --c-soft: var(--class-divergencia-soft); }
+.lab-msg[data-class="risco"] { --c: var(--class-risco); --c-ink: var(--class-risco-ink); --c-soft: var(--class-risco-soft); }
+.lab-msg[data-class="consenso"] { --c: var(--class-consenso); --c-ink: var(--class-consenso-ink); --c-soft: var(--class-consenso-soft); }
+.lab-msg[data-class="pergunta"] { --c: var(--class-pergunta); --c-ink: var(--class-pergunta-ink); --c-soft: var(--class-pergunta-soft); }
+.lab-msg[data-class="ruido"] { --c: var(--class-ruido); --c-ink: var(--class-ruido-ink); --c-soft: var(--class-ruido-soft); }
+.lab-msg[data-author="ia"] { background: var(--spark-soft); border-color: var(--spark); border-left-color: var(--c); }
+.lab-msg[data-author="sistema"] { background: var(--surface-2); border-style: dashed; }
+.lab-msg[data-parked="true"] { opacity: var(--opacity-arquivado); border-style: dashed; }
+.lab-msg__head { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; font-size: var(--text-caption); color: var(--muted); }
+.lab-msg__head b { color: var(--ink); font-weight: 600; }
+.lab-msg__body { font-size: var(--text-body); margin: var(--space-1) 0; }
+.lab-msg__body mark { background: var(--c-soft); color: var(--c-ink); padding: 0 .15em; border-radius: var(--radius-xs); }
+.lab-msg__actions { display: flex; gap: var(--space-1); flex-wrap: wrap; }
+.lab-msg__actions .ws-btn { min-height: 28px; padding: 0 .5rem; font-size: var(--text-caption); }
+.lab-msg .ws-avatar { width: var(--card-avatar-lg); height: var(--card-avatar-lg); margin-top: 2px; }
+.lab-msg[data-author="ia"] .ws-avatar { background: var(--spark-soft); color: var(--spark-ink); box-shadow: 0 0 0 1.5px var(--spark); }
+/* anexo inline (RF29.CA03) */
+.lab-attach { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--space-2); padding: var(--space-2); border: 1px solid var(--line-soft); border-left: 3px solid var(--dept, var(--dept-gralha-azul)); border-radius: var(--radius-sm); background: var(--surface-2); margin: var(--space-1) 0; font-size: var(--text-body-sm); }
+.lab-attach__title { font-family: var(--font-editorial); font-weight: 600; display: block; }
+.lab-attach small { display: flex; gap: var(--space-2); align-items: center; color: var(--muted); font-size: 10px; }
+.lab-attach .ws-card__typechip { --tt: var(--type-planilha); --tt-soft: var(--type-planilha-soft); }
+.lab-attach[data-type="documento"] .ws-card__typechip { --tt: var(--ext-pdf); --tt-soft: var(--ext-pdf-soft); }
+.lab-attach[data-type="desenho"] .ws-card__typechip { --tt: var(--type-desenho-tecnico); --tt-soft: var(--type-desenho-tecnico-soft); }
+.lab-attach[data-type="ata"] .ws-card__typechip { --tt: var(--type-ata-registro); --tt-soft: var(--type-ata-registro-soft); }
+.lab-attach[data-type="projeto"] .ws-card__typechip { --tt: var(--primary); --tt-soft: var(--primary-soft); }
+/* compositor */
+.lab-composer { display: grid; gap: var(--space-2); padding: var(--space-3); border: 1.5px solid var(--line-soft); border-radius: var(--radius-md); background: var(--surface); position: sticky; bottom: 0; }
+.lab-composer__chips { display: flex; gap: var(--space-1); flex-wrap: wrap; }
+/* participantes */
+.lab-people { display: grid; gap: var(--space-1); }
+.lab-person { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--space-2); padding: 4px 0; font-size: var(--text-body-sm); }
+.lab-person .ws-avatar { position: relative; }
+.lab-person .ws-avatar::after { content: ""; position: absolute; right: -2px; bottom: -2px; width: 8px; height: 8px; border-radius: 50%; background: var(--class-ruido); box-shadow: 0 0 0 1.5px var(--surface); }
+.lab-person[data-online="true"] .ws-avatar::after { background: var(--class-consenso); }
+.lab-person small { display: block; color: var(--muted); font-size: 10px; }
+.lab-person .ws-tag { justify-self: end; max-width: 120px; text-align: right; }
+.lab-person[data-silent="true"] { background: var(--class-pergunta-soft); border-radius: var(--radius-sm); padding-inline: var(--space-1); }
+.lab-presence { display: flex; align-items: center; }
+.lab-presence .ws-avatar { margin-left: -4px; }
+.lab-presence .ws-avatar:first-child { margin-left: 0; }
+/* estacionamento */
+.lab-parking { display: grid; gap: var(--space-1); }
+.lab-parking__item { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--space-2); font-size: var(--text-body-sm); padding: var(--space-1) var(--space-2); border: 1px dashed var(--line-soft); border-radius: var(--radius-sm); color: var(--muted); }
+/* Mesa lateral (itens da sessão) */
+.lab-mesa-mini { display: grid; gap: var(--space-1); }
+.lab-mesa-mini .lab-attach { margin: 0; }
+
+/* ---- Layout 2: Mapa da Discussão (IBIS) ---- */
+.lab-ibis { display: grid; gap: var(--space-3); align-content: start; }
+.lab-ibis__q { padding: var(--space-3); border: 2px solid var(--class-pergunta); border-radius: var(--radius-md); background: var(--class-pergunta-soft); color: var(--class-pergunta-ink); font-family: var(--font-editorial); font-weight: 600; font-size: var(--text-h3); display: flex; gap: var(--space-2); align-items: center; }
+.lab-ibis__opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: var(--space-3); }
+.lab-ibis__opt { border: 1.5px solid var(--primary); border-radius: var(--radius-md); background: var(--surface); display: grid; gap: var(--space-2); padding: var(--space-3); position: relative; }
+.lab-ibis__opt::before { content: ""; position: absolute; left: 50%; top: -14px; height: 14px; width: var(--card-thread-w); background: var(--line-soft); }
+.lab-ibis__opt[data-leading="true"] { box-shadow: var(--shadow-aura); }
+.lab-ibis__opt > h4 { margin: 0; font-family: var(--font-editorial); font-size: var(--text-title); font-weight: 600; display: flex; gap: var(--space-2); align-items: center; }
+.lab-ibis__pc { display: grid; gap: var(--space-1); }
+.lab-ibis__arg { --c: var(--class-argumento); --c-ink: var(--class-argumento-ink); --c-soft: var(--class-argumento-soft); display: grid; gap: 2px; padding: var(--space-1) var(--space-2); border-left: 3px solid var(--c); border-radius: var(--radius-xs); background: var(--c-soft); font-size: var(--text-body-sm); }
+.lab-ibis__arg[data-class="divergencia"] { --c: var(--class-divergencia); --c-ink: var(--class-divergencia-ink); --c-soft: var(--class-divergencia-soft); }
+.lab-ibis__arg[data-class="risco"] { --c: var(--class-risco); --c-ink: var(--class-risco-ink); --c-soft: var(--class-risco-soft); }
+.lab-ibis__arg[data-class="consenso"] { --c: var(--class-consenso); --c-ink: var(--class-consenso-ink); --c-soft: var(--class-consenso-soft); }
+.lab-ibis__arg[data-class="pergunta"] { --c: var(--class-pergunta); --c-ink: var(--class-pergunta-ink); --c-soft: var(--class-pergunta-soft); }
+.lab-ibis__arg b { font-family: var(--font-data); font-size: 9px; letter-spacing: .06em; text-transform: uppercase; color: var(--c-ink); }
+.lab-ibis__arg small { color: var(--muted); font-size: 10px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.lab-ibis__ev { display: flex; gap: var(--space-1); flex-wrap: wrap; }
+.lab-ibis__ev .ws-tag { --t: var(--type-link); --t-ink: var(--type-link-ink); --t-soft: var(--type-link-soft); text-transform: none; letter-spacing: 0; font-family: var(--font-ui); font-size: 10.5px; }
+.lab-ibis__legend { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+
+/* ---- Layout 3: Resumo vivo + fio + matriz ---- */
+.lab-summary { display: grid; gap: var(--space-2); }
+.lab-summary__sec { border: 1px solid var(--line-soft); border-radius: var(--radius-md); background: var(--surface); padding: var(--space-3); display: grid; gap: var(--space-1); }
+.lab-summary__sec h4 { margin: 0; display: flex; gap: var(--space-2); align-items: center; font-family: var(--font-data); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--c-ink, var(--muted)); }
+.lab-summary__sec[data-class="argumento"] { --c-ink: var(--class-argumento-ink); } .lab-summary__sec[data-class="consenso"] { --c-ink: var(--class-consenso-ink); } .lab-summary__sec[data-class="divergencia"] { --c-ink: var(--class-divergencia-ink); } .lab-summary__sec[data-class="risco"] { --c-ink: var(--class-risco-ink); } .lab-summary__sec[data-class="pergunta"] { --c-ink: var(--class-pergunta-ink); }
+.lab-summary__sec ul { margin: 0; padding-left: 1.1rem; font-size: var(--text-body-sm); display: grid; gap: 2px; }
+.lab-summary__sec[data-ia="true"] { border-color: var(--spark); background: color-mix(in srgb, var(--spark-soft) 55%, var(--surface)); }
+.lab-cite { font-family: var(--font-data); font-size: 9.5px; color: var(--primary-ink); background: var(--primary-soft); padding: 0 4px; border-radius: var(--radius-xs); white-space: nowrap; }
+.lab-live { display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-data); font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--class-consenso-ink); }
+.lab-live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--class-consenso); box-shadow: 0 0 0 0 var(--class-consenso); animation: ws-pulse var(--dur-pulse) var(--ease-out) infinite; }
+/* matriz critérios × opções */
+.lab-matrix { width: 100%; border-collapse: separate; border-spacing: 0; font-size: var(--text-body-sm); }
+.lab-matrix th, .lab-matrix td { padding: var(--space-2); border-bottom: 1px solid var(--line-soft); text-align: left; vertical-align: top; }
+.lab-matrix thead th { font-family: var(--font-data); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); }
+.lab-matrix th[scope="row"] { font-weight: 600; white-space: nowrap; }
+.lab-matrix th[scope="row"] small { display: block; color: var(--muted); font-weight: 400; font-size: 10px; }
+.lab-matrix td { text-align: center; }
+.lab-score { display: inline-grid; place-items: center; min-width: 34px; height: 24px; padding: 0 6px; border-radius: var(--radius-pill); font-family: var(--font-data); font-weight: 700; font-size: 11px; background: var(--surface-3); color: var(--ink); }
+.lab-score[data-s="alto"] { background: var(--class-consenso-soft); color: var(--class-consenso-ink); border: 1px solid var(--class-consenso); }
+.lab-score[data-s="medio"] { background: var(--due-soon-soft); color: var(--due-soon-ink); border: 1px solid var(--due-soon); }
+.lab-score[data-s="baixo"] { background: var(--class-risco-soft); color: var(--class-risco-ink); border: 1px solid var(--class-risco); }
+.lab-matrix tfoot td { font-weight: 700; background: var(--surface-2); }
+.lab-matrix td[data-lead="true"], .lab-matrix th[data-lead="true"] { box-shadow: inset 0 0 0 2px var(--primary); }
+.lab-matrix .lab-cite { display: inline-block; margin-top: 2px; }
+
+/* ---- Mesa do DECIA: organizações ---- */
+.lab-board { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); gap: var(--space-2); overflow-x: auto; padding-bottom: var(--space-2); }
+.lab-board__col { border: 1px solid var(--line-soft); border-radius: var(--radius-md); background: var(--surface-2); padding: var(--space-2); display: grid; align-content: start; gap: var(--space-1); min-height: 180px; }
+.lab-board__col > h4 { margin: 0 0 4px; font-family: var(--font-data); font-size: 10px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+.lab-board__col[aria-current="step"] { outline: 2px solid var(--primary); outline-offset: -2px; }
+.lab-board__col > h4 .ws-tag { margin-left: auto; }
+.lab-board--7 { grid-auto-columns: minmax(150px, 1fr); }
+.lab-chip { --c: var(--line-soft); --c-ink: var(--ink); --c-soft: var(--surface); display: grid; gap: 2px; padding: var(--space-1) var(--space-2); border: 1px solid var(--line-soft); border-left: 3px solid var(--c); border-radius: var(--radius-sm); background: var(--c-soft); font-size: var(--text-body-sm); }
+.lab-chip[data-class="argumento"] { --c: var(--class-argumento); --c-soft: var(--class-argumento-soft); } .lab-chip[data-class="divergencia"] { --c: var(--class-divergencia); --c-soft: var(--class-divergencia-soft); } .lab-chip[data-class="risco"] { --c: var(--class-risco); --c-soft: var(--class-risco-soft); } .lab-chip[data-class="consenso"] { --c: var(--class-consenso); --c-soft: var(--class-consenso-soft); } .lab-chip[data-class="pergunta"] { --c: var(--class-pergunta); --c-soft: var(--class-pergunta-soft); }
+.lab-chip[data-kind="tarefa"] { --c: var(--primary); --c-soft: var(--surface); } .lab-chip[data-kind="decisao"] { --c: var(--class-consenso); --c-soft: var(--surface); border-style: double; border-width: 3px; }
+.lab-chip small { color: var(--muted); font-size: 10px; display: flex; gap: 6px; align-items: center; }
+.lab-desk-wrap { position: relative; min-height: 360px; }
+.lab-desk-wrap .ws-postit { position: absolute; }
+.lab-desk-wrap .ws-postit[data-tone="azul"] { --sticky: var(--class-argumento-soft); color: var(--class-argumento-ink); }
+.lab-desk-wrap .ws-postit[data-tone="laranja"] { --sticky: var(--class-divergencia-soft); color: var(--class-divergencia-ink); }
+.lab-desk-wrap .ws-postit[data-tone="vermelho"] { --sticky: var(--class-risco-soft); color: var(--class-risco-ink); }
+.lab-desk-wrap .ws-postit[data-tone="verde"] { --sticky: var(--class-consenso-soft); color: var(--class-consenso-ink); }
+.lab-desk-wrap .ws-postit small { color: inherit; opacity: .8; }
+.lab-desk-wrap svg.lab-links { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 4 4; fill: none; }
+.lab-desk-wrap .lab-desk-card { position: absolute; width: 190px; }
+/* linha do tempo */
+.lab-timeline { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 2px var(--space-2); font-size: var(--text-body-sm); align-items: center; }
+.lab-timeline__scale { display: grid; grid-template-columns: repeat(8, 1fr); font-family: var(--font-data); font-size: 9.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.lab-timeline__scale span { border-left: 1px solid var(--line-soft); padding-left: 3px; }
+.lab-timeline__row { position: relative; height: 26px; background: repeating-linear-gradient(90deg, var(--line-soft) 0 1px, transparent 1px 12.5%); }
+.lab-timeline__bar { --c: var(--primary); position: absolute; top: 5px; height: 16px; left: calc(var(--s) * 12.5%); width: calc(var(--w) * 12.5%); background: var(--c); border-radius: var(--radius-pill); color: var(--on-primary); font-family: var(--font-data); font-size: 9px; font-weight: 700; display: grid; align-items: center; padding: 0 6px; overflow: hidden; white-space: nowrap; }
+.lab-timeline__bar[data-class="argumento"] { --c: var(--class-argumento); color: var(--on-class-argumento); } .lab-timeline__bar[data-class="divergencia"] { --c: var(--class-divergencia); color: var(--on-class-divergencia); } .lab-timeline__bar[data-class="risco"] { --c: var(--class-risco); color: var(--on-class-risco); } .lab-timeline__bar[data-class="consenso"] { --c: var(--class-consenso); color: var(--on-class-consenso); } .lab-timeline__bar[data-class="pergunta"] { --c: var(--class-pergunta); color: var(--on-class-pergunta); }
+.lab-timeline__bar[data-kind="marco"] { width: 16px; height: 16px; border-radius: 2px; transform: rotate(45deg); padding: 0; background: var(--spark); }
+.lab-timeline__today { position: absolute; top: 0; bottom: 0; left: calc(var(--s) * 12.5%); width: 2px; background: var(--class-risco); }
+.lab-timeline__label { display: flex; gap: 6px; align-items: center; }
+
+/* ---- Coedição: Minuta Coletiva ---- */
+.lab-doc-shell { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 0; }
+.lab-doc { padding: var(--space-6) clamp(var(--space-4), 6%, var(--space-10)); background: var(--surface); display: grid; gap: var(--space-3); position: relative; }
+.lab-doc h1 { font-size: var(--text-h1); margin: 0; }
+.lab-doc p { margin: 0; font-size: var(--text-body-lg); line-height: 1.6; font-family: var(--font-editorial); position: relative; }
+.lab-doc .lab-sec { display: grid; gap: var(--space-2); padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4); border-left: 3px solid var(--line-soft); border-radius: var(--radius-xs); position: relative; }
+.lab-doc .lab-sec[data-locked="true"] { background: var(--surface-2); }
+.lab-sec__h { display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap; }
+.lab-sec__h h2 { margin: 0; padding: 0; border: 0; font-size: var(--text-h3); font-family: var(--font-ui); }
+.lab-sec__h .ws-tag { margin-left: auto; }
+.lab-sec[data-owner="azul"] { border-left-color: var(--node-azul); } .lab-sec[data-owner="laranja"] { border-left-color: var(--node-laranja); } .lab-sec[data-owner="verde"] { border-left-color: var(--node-verde); } .lab-sec[data-owner="vermelho"] { border-left-color: var(--node-vermelho); } .lab-sec[data-owner="amarelo"] { border-left-color: var(--node-amarelo); } .lab-sec[data-owner="marrom"] { border-left-color: var(--node-marrom); }
+.lab-sec[data-ia="true"] { border-left-color: var(--spark); background: color-mix(in srgb, var(--spark-soft) 60%, var(--surface)); }
+.lab-assign { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: var(--muted); font-family: var(--font-data); text-transform: uppercase; letter-spacing: .05em; }
+/* presença e cursores (cores de nó) */
+.lab-u { --u: var(--node-azul); --on-u: var(--on-node-azul); }
+.lab-u[data-color="vermelho"] { --u: var(--node-vermelho); --on-u: var(--on-node-vermelho); } .lab-u[data-color="amarelo"] { --u: var(--node-amarelo); --on-u: var(--on-node-amarelo); } .lab-u[data-color="verde"] { --u: var(--node-verde); --on-u: var(--on-node-verde); } .lab-u[data-color="azul"] { --u: var(--node-azul); --on-u: var(--on-node-azul); } .lab-u[data-color="marrom"] { --u: var(--node-marrom); --on-u: var(--on-node-marrom); } .lab-u[data-color="laranja"] { --u: var(--node-laranja); --on-u: var(--on-node-laranja); }
+.ws-avatar.lab-u { background: var(--u); color: var(--on-u); }
+.ws-avatar.lab-u[data-online="false"] { opacity: .45; }
+.lab-cursor { position: relative; display: inline-block; width: 2px; height: 1.1em; vertical-align: text-bottom; background: var(--u); margin: 0 -1px; }
+.lab-cursor::after { content: attr(data-name); position: absolute; left: -1px; top: -1.15em; background: var(--u); color: var(--on-u); font-family: var(--font-ui); font-size: 9px; font-weight: 700; line-height: 1.3; padding: 0 4px; border-radius: var(--radius-xs); white-space: nowrap; }
+.lab-sel { background: color-mix(in srgb, var(--u) 22%, transparent); box-decoration-break: clone; }
+/* sugestões em modo revisão */
+.lab-doc ins { text-decoration: none; background: var(--class-consenso-soft); color: var(--class-consenso-ink); border-bottom: 2px solid var(--class-consenso); }
+.lab-doc del { background: var(--class-risco-soft); color: var(--class-risco-ink); text-decoration: line-through; text-decoration-thickness: 2px; }
+.lab-sugg { display: inline-flex; gap: 4px; margin-left: 6px; vertical-align: middle; }
+.lab-sugg .ws-btn { min-height: 22px; padding: 0 .45rem; font-size: 10px; font-family: var(--font-data); text-transform: uppercase; letter-spacing: .04em; }
+/* comentários ancorados */
+.lab-anchor { background: var(--due-soon-soft); border-bottom: 2px solid var(--due-soon); cursor: pointer; }
+.lab-anchor[data-active="true"] { outline: 2px solid var(--due-soon); outline-offset: 1px; }
+.lab-comments { padding: var(--space-3); display: grid; align-content: start; gap: var(--space-2); background: var(--surface-2); border-left: 1px solid var(--line-soft); }
+.lab-comment { display: grid; gap: 4px; padding: var(--space-2); border: 1px solid var(--line-soft); border-radius: var(--radius-md); background: var(--surface); font-size: var(--text-body-sm); }
+.lab-comment[data-active="true"] { border-color: var(--due-soon); box-shadow: var(--shadow-1); }
+.lab-comment__h { display: flex; gap: var(--space-1); align-items: center; font-size: var(--text-caption); color: var(--muted); }
+.lab-comment__h b { color: var(--ink); }
+.lab-comment__reply { display: flex; gap: var(--space-1); flex-wrap: wrap; }
+.lab-comment__reply .ws-btn { min-height: 24px; padding: 0 .5rem; font-size: 10px; }
+.lab-comment[data-resolved="true"] { opacity: var(--opacity-arquivado); }
+/* IA: texto com faísca */
+.lab-ai-text { background: var(--spark-soft); border-bottom: 1.5px dotted var(--spark); }
+.lab-ai-text .ws-spark { vertical-align: middle; margin-left: 2px; }
+/* versões */
+.lab-versions { display: grid; gap: 2px; }
+.lab-version { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--space-2); align-items: center; padding: 6px var(--space-2); border-radius: var(--radius-sm); font-size: var(--text-body-sm); }
+.lab-version[aria-current="true"] { background: var(--primary-soft); color: var(--primary-ink); font-weight: 600; }
+.lab-version small { display: block; color: var(--muted); font-size: 10px; font-weight: 400; }
+.lab-version code { font-size: 10px; }
+.lab-doc-toolbar { display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap; padding: var(--space-2) var(--space-3); background: var(--surface); border-bottom: 1px solid var(--line-soft); }
+.lab-doc-toolbar .seg { display: inline-flex; border: 1.5px solid var(--line-soft); border-radius: var(--radius-pill); overflow: hidden; }
+.lab-doc-toolbar .seg button { all: unset; cursor: pointer; padding: 4px 10px; font-size: var(--text-caption); font-weight: 600; }
+.lab-doc-toolbar .seg button[aria-pressed="true"] { background: var(--primary); color: var(--on-primary); }
+.lab-doc-toolbar .lab-presence { margin-left: auto; }
+
+/* ---- card da sessão ---- */
+.lab-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: var(--space-4); }
+.lab-session { --dept: var(--dept-gralha-azul); position: relative; display: grid; gap: var(--space-2); padding: var(--card-pad-lg); border: var(--card-dept-border) solid var(--dept); border-radius: var(--card-r-out); background: var(--surface); box-shadow: var(--shadow-1); overflow: hidden; }
+.lab-session[data-status="proposta"] { border-style: dashed; border-color: var(--line-soft); }
+.lab-session[data-status="arquivada"] { opacity: var(--opacity-arquivado); filter: saturate(var(--saturate-arquivado)); }
+.lab-session__top { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+.lab-session__top .ws-tag { margin-left: auto; }
+.lab-session__theme { font-family: var(--font-editorial); font-weight: 600; font-size: 16px; line-height: 19px; margin: 0; }
+.lab-session__goal { font-size: var(--text-body-sm); color: var(--muted); margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.lab-session__row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); font-size: 11px; flex-wrap: wrap; }
+.lab-session__proj { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--primary-ink); }
+.lab-session .ws-stamp { position: absolute; right: 10px; top: 46px; }
+.lab-session__stats { display: flex; gap: var(--space-2); font-family: var(--font-data); font-size: 10px; color: var(--muted); }
+.lab-session__stats b { color: var(--ink); }
+.lab-session--list { grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; padding: var(--space-2) var(--space-3); }
+.lab-session--list .lab-session__theme { font-size: 14px; }
+
+/* ---- celular (390) ---- */
+.lab-phone { display: grid; gap: var(--space-2); justify-items: start; }
+.lab-phone iframe { width: 390px; max-width: 100%; height: 820px; border: 1px solid var(--line); border-radius: var(--radius-xl); background: var(--ground); box-shadow: var(--shadow-2); }
+.lab-phones { display: flex; gap: var(--space-4); flex-wrap: wrap; align-items: flex-start; }
+.lab-mobile-tabs { display: none; }
+body[data-embed="true"] main { padding: 0; }
+body[data-embed="true"] .bar, body[data-embed="true"] .lab-intro, body[data-embed="true"] .lab-phone, body[data-embed="true"] h2, body[data-embed="true"] h3, body[data-embed="true"] .lab-note, body[data-embed="true"] p.lead { display: none; }
+body[data-embed="true"] .lab-app { border: 0; border-radius: 0; box-shadow: none; }
+@media (max-width: 639px) {
+  .lab-app__body, .lab-app__body--3 { grid-template-columns: 1fr; }
+  .lab-col--side, .lab-col--left { border: 0; border-top: 1px solid var(--line-soft); }
+  .lab-goal { grid-template-columns: 1fr; padding: var(--space-2) var(--space-3); }
+  .lab-goal__q { font-size: var(--text-title); }
+  .lab-goal__right { justify-items: stretch; min-width: 0; }
+  .lab-mobile-tabs { display: grid; grid-template-columns: repeat(4, 1fr); position: sticky; bottom: 0; z-index: var(--z-header); background: var(--surface); border-top: 1px solid var(--line-soft); }
+  .lab-mobile-tabs a { display: grid; justify-items: center; gap: 2px; padding: 6px 2px; font-family: var(--font-data); font-size: 9px; letter-spacing: .04em; text-transform: uppercase; text-decoration: none; color: var(--muted); }
+  .lab-mobile-tabs a[aria-current="page"] { color: var(--primary-ink); box-shadow: inset 0 3px 0 var(--primary); }
+  .lab-doc-shell { grid-template-columns: 1fr; }
+  .lab-doc { padding: var(--space-4); }
+  .lab-comments { border-left: 0; border-top: 1px solid var(--line-soft); }
+  .lab-timeline { grid-template-columns: 120px minmax(0, 1fr); }
+  .lab-msg__actions .ws-btn span.lab-txt { display: none; }
+  .lab-session .ws-stamp { position: static; justify-self: start; }
+  .lab-ibis__opts { grid-template-columns: 1fr; }
+  .lab-matrix { display: block; overflow-x: auto; }
+  .lab-ws-topbar-hide { display: none; }
+}
+</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true"><symbol id="ws-texto-manual" viewBox="0 0 24 24"><path d="M6 2.5h8.5L20 8v13.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 2.5V8H20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 12h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 15.5h2.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 21.5l5-5 2 2-5 5h-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-texto-ia" viewBox="0 0 24 24"><path d="M6 2.5h8.5L20 8v13.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 2.5V8H20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 12h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 11.5l1.1 2.9 2.9 1.1-2.9 1.1-1.1 2.9-1.1-2.9-2.9-1.1 2.9-1.1z" fill="currentColor" stroke="none"/></symbol><symbol id="ws-imagem-web" viewBox="0 0 24 24"><path d="M3 5h18v14H3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 12h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 8.5c-1.7 1.9-1.7 5.1 0 7c1.7-1.9 1.7-5.1 0-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-imagem-editada" viewBox="0 0 24 24"><path d="M3 5h18v14H3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 14.5l6-6 2 2-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 14c-2 0-3 1.5-3 3.5 2 0 3.5-1 3.5-3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-planilha" viewBox="0 0 24 24"><path d="M3.5 4.5h17v15h-17z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 9.5h17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 14.5h17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.2 4.5v15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.8 4.5v15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-documento" viewBox="0 0 24 24"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h5l2 2.5h8A1.5 1.5 0 0 1 21 10v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 11.5h18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-pasta" viewBox="0 0 24 24"><path d="M2.5 5.5h19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 5.5V8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 5.5V8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 8h16v11.5H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 8v11.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 10.5h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 13h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 15.5h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 18h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-link" viewBox="0 0 24 24"><path d="M15.5 7.5l-6.3 6.3a2.2 2.2 0 0 0 3.1 3.1l7-7a4.4 4.4 0 0 0-6.2-6.2L5.5 11.3a6 6 0 0 0 8.5 8.5l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-desenho-tecnico" viewBox="0 0 24 24"><path d="M3 20.5L14.5 9v11.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 20.5l4-4v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 3v1.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 4.5L14.5 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M17.5 4.5L20.5 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.3 11.5h4.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-desenho-3d" viewBox="0 0 24 24"><path d="M12 2.5l8 4.5v10l-8 4.5-8-4.5v-10z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7l8 4.5 8-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 11.5v10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-formulario" viewBox="0 0 24 24"><path d="M8 4.5H6A1.5 1.5 0 0 0 4.5 6v14A1.5 1.5 0 0 0 6 21.5h12a1.5 1.5 0 0 0 1.5-1.5V6A1.5 1.5 0 0 0 18 4.5h-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 2.5h6a1 1 0 0 1 1 1V6H8V3.5a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 13.5l2.5 2.5 5-5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-ata-registro" viewBox="0 0 24 24"><path d="M10 11.5V6a2 2 0 0 1 4 0v5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 13A1.5 1.5 0 0 1 5 11.5h14a1.5 1.5 0 0 1 1.5 1.5v3.5h-17z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 19.5h12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-email" viewBox="0 0 24 24"><path d="M3 6.5h18v12H3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 7l9 6.5L21 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-protocolo" viewBox="0 0 24 24"><path d="M5 3h14v18l-2.3-1.6-2.3 1.6-2.4-1.6L9.6 21l-2.3-1.6L5 21z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 8h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 11.5h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 15h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-cronograma" viewBox="0 0 24 24"><path d="M4 3.5v17h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.5 8h6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 12h8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.5 16h4.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-estudo-tecnico-preliminar" viewBox="0 0 24 24"><path d="M20 12.5V8l-5.5-5.5H6v19h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 2.5V8H20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 8.5h2.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 12h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 21.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.2 20.3L11 23.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-criar-tarefa" viewBox="0 0 24 24"><path d="M6 2.5h8.5L20 8v13.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 2.5V8H20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 11v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-criar-projeto" viewBox="0 0 24 24"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h5l2 2.5h8A1.5 1.5 0 0 1 21 10v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 11.5v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 14.5h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-abrir-decia" viewBox="0 0 24 24"><path d="M4 5.5h16a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5h-8l-4.5 4v-4H4A1.5 1.5 0 0 1 2.5 15V7A1.5 1.5 0 0 1 4 5.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.5 7.5l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9z" fill="currentColor" stroke="none"/></symbol><symbol id="ws-chancelar" viewBox="0 0 24 24"><path d="M12 14.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 11.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 14.2L7.5 21l2.5-1.5L12 21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 14.2L16.5 21 14 19.5 12 21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-oferecer-balcao" viewBox="0 0 24 24"><path d="M3 10.5h18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10.5v10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 10.5v10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 16h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 10.5l2-5h12l2 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 5.5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 5.5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-transformar-tarefa" viewBox="0 0 24 24"><path d="M9 2.5h7.5L21 7v14.5H9z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 2.5V7H21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 12h9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 9l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-validar-decisao" viewBox="0 0 24 24"><path d="M10 11.5V6a2 2 0 0 1 4 0v5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 13A1.5 1.5 0 0 1 5 11.5h14a1.5 1.5 0 0 1 1.5 1.5v3.5h-17z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 19.5h12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 4.5l1.5 1.5 3-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-devolver-decisao" viewBox="0 0 24 24"><path d="M10 11.5V6a2 2 0 0 1 4 0v5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 13A1.5 1.5 0 0 1 5 11.5h14a1.5 1.5 0 0 1 1.5 1.5v3.5h-17z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 19.5h12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 2.5l4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 2.5l-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-descobrir" viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 8.5l-2 5-5 2 2-5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-meu-trabalho" viewBox="0 0 24 24"><path d="M8 4.5H6A1.5 1.5 0 0 0 4.5 6v14A1.5 1.5 0 0 0 6 21.5h12a1.5 1.5 0 0 0 1.5-1.5V6A1.5 1.5 0 0 0 18 4.5h-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 2.5h6a1 1 0 0 1 1 1V6H8V3.5a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 11h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 14.5h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 18h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-criar" viewBox="0 0 24 24"><path d="M4.5 4.5h15v15h-15z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 8.5v7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 12h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-jogar-ganhar" viewBox="0 0 24 24"><path d="M7 4.5h10v4a5 5 0 0 1-10 0z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 6H4.5a2.5 2.5 0 0 0 2.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 6h2.5A2.5 2.5 0 0 1 17 9.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 13.5v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 20.5h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 16.5c-2 0-3.5 1.6-3.5 4h7c0-2.4-1.5-4-3.5-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-gestao" viewBox="0 0 24 24"><path d="M4 20.5h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 17v-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 17V7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 17v-8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-acervo" viewBox="0 0 24 24"><path d="M3.5 5h17v4h-17z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 9v10.5h15V9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 13h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-mesa" viewBox="0 0 24 24"><path d="M3 8.5h18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 8.5v11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 8.5v11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 5h4v3.5H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 4h5v4.5h-5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-balcao" viewBox="0 0 24 24"><path d="M3 10.5h18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10.5v10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 10.5v10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 16h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 10.5l2-5h12l2 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-vitrine" viewBox="0 0 24 24"><path d="M3.5 4.5h17v15h-17z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 9h17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 9v10.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 6.5h2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 6.5h2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-mural" viewBox="0 0 24 24"><path d="M4 4.5h16v12H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 16.5v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 16.5v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 8h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 11.5h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-perfil" viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-faisca" viewBox="0 0 24 24"><path d="M12 2.5l2.2 6.3 6.3 2.2-6.3 2.2L12 19.5l-2.2-6.3-6.3-2.2 6.3-2.2z" fill="currentColor" stroke="none"/></symbol><symbol id="ws-cadeado" viewBox="0 0 24 24"><path d="M6.5 11h11a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 19.5v-7A1.5 1.5 0 0 1 6.5 11z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 15v2.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-estrela" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-balanca" viewBox="0 0 24 24"><path d="M12 3.5v17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 20.5h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 7.5h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 7.5l-3 7h6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 7.5l-3 7h6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-relogio" viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-ficha-dp" viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 17.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 9l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z" fill="currentColor" stroke="none"/></symbol><symbol id="ws-lacre" viewBox="0 0 24 24"><path d="M12 14.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 11.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 14.2L7.5 21l2.5-1.5L12 21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 14.2L16.5 21 14 19.5 12 21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-medalha" viewBox="0 0 24 24"><path d="M12 21.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 2.5l4 7.5 4-7.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 2.5h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 2.5h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-marco" viewBox="0 0 24 24"><path d="M5 21.5v-18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 4.5h12l-2 4 2 4H5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-pessoas" viewBox="0 0 24 24"><path d="M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 20.5a6.5 6.5 0 0 1 13 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 4.5a3.5 3.5 0 0 1 0 6.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 14.5a6.5 6.5 0 0 1 3.5 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-dependencia" viewBox="0 0 24 24"><path d="M4 6.5h5v5H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 12.5h5v5h-5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 9h3.5v6H15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-pino" viewBox="0 0 24 24"><path d="M12 21.5v-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 15.5h8l-1.5-4V5.5h1v-2h-7v2h1v6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-curtir" viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10A4.2 4.2 0 0 1 12 8a4.2 4.2 0 0 1 7.5 2.5c0 5.4-7.5 10-7.5 10z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-comentar" viewBox="0 0 24 24"><path d="M4 5h16a1.5 1.5 0 0 1 1.5 1.5v8A1.5 1.5 0 0 1 20 16h-8l-4.5 4v-4H4a1.5 1.5 0 0 1-1.5-1.5v-8A1.5 1.5 0 0 1 4 5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-salvar" viewBox="0 0 24 24"><path d="M6.5 3.5h11v17L12 16.5 6.5 20.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-compartilhar" viewBox="0 0 24 24"><path d="M12 3.5v12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 7.5l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 12.5v6a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5v-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-remixar" viewBox="0 0 24 24"><path d="M4 7.5h11.5l-3-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 16.5H8.5l3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7.5v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 16.5v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-util" viewBox="0 0 24 24"><path d="M4 11h3v9.5H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 11l4-7.5c1.5 0 2.5 1 2.5 2.5V9h5a2 2 0 0 1 2 2.3l-1.2 7a2.5 2.5 0 0 1-2.5 2.2H7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-bem-fundamentado" viewBox="0 0 24 24"><path d="M4.5 4.5h6a1.5 1.5 0 0 1 1.5 1.5v14a1.5 1.5 0 0 0-1.5-1.5h-6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.5 4.5h-6A1.5 1.5 0 0 0 12 6v14a1.5 1.5 0 0 1 1.5-1.5h6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 9h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 9h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-inovador" viewBox="0 0 24 24"><path d="M9 18.5h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 21.5h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 3a6 6 0 0 1 3.5 10.8c-.8.7-1 1.4-1 2.2h-5c0-.8-.2-1.5-1-2.2A6 6 0 0 1 12 3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-conforme" viewBox="0 0 24 24"><path d="M12 2.5l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10v-6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 12l2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-busca" viewBox="0 0 24 24"><path d="M10.5 17a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 15.5l5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-menu" viewBox="0 0 24 24"><path d="M4 7h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 12h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-sino" viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 20.5a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-fechar" viewBox="0 0 24 24"><path d="M6 6l12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-chevron" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-recolher" viewBox="0 0 24 24"><path d="M3.5 4.5h17v15h-17z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 4.5v15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 9.5l-2.5 2.5 2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="ws-alerta" viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5H2.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 10v4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 17.2a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8z" fill="currentColor" stroke="none"/></symbol><symbol id="ws-info" viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 11v5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.1a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8z" fill="currentColor" stroke="none"/></symbol><symbol id="ws-pasta-vazia" viewBox="0 0 24 24"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h5l2 2.5h8A1.5 1.5 0 0 1 21 10v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2.5 2.5"/></symbol></svg>
+<main>
+<p class="type-label lab-intro" style="color:var(--muted)">Work Station / DECIA · laboratório de wireframes · sessão deliberativa, Mesa do DECIA e coedição · 2026-10-03</p>
+<h1 class="lab-intro">Wireframes da sessão DECIA, da Mesa e da Minuta Coletiva</h1>
+<p class="lead lab-intro">Página estática (sem build) sobre <code>tokens.css</code> + <code>components.css</code> (classes <code>ws-*</code>); as classes <code>lab-*</code> são só grade/espaço e usam apenas tokens. Troque o tema: tudo responde a <code>data-theme</code>. Cada aba tem a variante celular (390 px) em um <code>&lt;iframe&gt;</code> da própria página com <code>?embed=1</code>. Documento conceitual: <code>docs/produto/DECIA_SESSAO_E_MESA.md</code>; comparativo técnico: <code>docs/produto/COEDICAO_TECNICA.md</code>; PoC: <code>docs/lab/poc-coedicao/</code>.</p>
+<div class="bar">
+  <span class="seg" role="group" aria-label="Tema"><button type="button" data-set-theme="claro" aria-pressed="true">Claro</button><button type="button" data-set-theme="escuro" aria-pressed="false">Escuro</button><button type="button" data-set-theme="contraste" aria-pressed="false">Alto contraste</button><button type="button" data-set-theme="blueprint" aria-pressed="false">Blueprint</button></span>
+  <nav class="seg" aria-label="Abas"><a href="?view=layout1" data-tab="layout1">1 · Faixa + chat + Mesa lateral</a><a href="?view=layout2" data-tab="layout2">2 · Mapa da Discussão (IBIS)</a><a href="?view=layout3" data-tab="layout3">3 · Resumo vivo + fio + matriz</a><a href="?view=mesa" data-tab="mesa">Mesa do DECIA</a><a href="?view=coedicao" data-tab="coedicao">Coedição</a><a href="?view=card" data-tab="card">Card da sessão</a></nav>
+</div>
+
+<!-- ======================================================================================== LAYOUT 1 -->
+<section data-view="layout1" aria-labelledby="h-l1">
+<h2 id="h-l1">Layout 1 — Faixa de objetivo + chat + Mesa lateral</h2>
+<p class="lead">O chat é o centro; a <b>Mesa lateral</b> guarda o que a sessão já produziu (anexos, itens estacionados, fio de decisão). A faixa de objetivo fica presa no topo (pergunta central, critérios, prazo, fase, "rumo à decisão"). Cada mensagem traz a classe do RF7 com o nome em texto, a faísca quando a IA classificou e as ações do RF29 ("Transformar em tarefa").</p>
+<div class="lab-app" id="app-l1">
+  <div class="ws-topbar lab-ws-topbar-hide"><span class="ws-topbar__brand"><i></i>Work Station</span><span class="ws-topbar__search"><i data-ic="busca"></i>Buscar tarefas, projetos, sessões…</span><span class="ws-topbar__right"><span class="ws-dp"><i data-ic="ficha-dp"></i>128 DP</span><button class="ws-btn ws-btn--ghost ws-btn--icon" aria-label="Notificações"><i data-ic="sino"></i></button><span class="ws-avatar">MH</span></span></div>
+  <div class="lab-goal">
+    <div>
+      <p class="lab-goal__q"><i data-ic="abrir-decia"></i> Qual solução de drenagem adotar no lote 2 (km 12–14) da pavimentação urbana?</p>
+      <div class="lab-goal__meta">
+        <span class="lab-k">Critérios</span><span class="ws-tag">custo</span><span class="ws-tag">prazo de obra</span><span class="ws-tag">risco geotécnico</span><span class="ws-tag">conformidade legal</span>
+        <span class="lab-k">Prazo</span><span class="ws-due" data-due="soon"><i data-ic="relogio"></i>decidir até 10/10 · 7 dias</span>
+        <span class="lab-k">Fase</span><span class="ws-tag ws-tag--pulse" data-status="em-decisao">EM_RESUMO · roxo</span>
+        <span class="ws-tag" data-status="em-execucao"><i data-ic="criar-projeto"></i>Projeto: Pavimentação urbana — lote 2</span>
+      </div>
+    </div>
+    <div class="lab-goal__right">
+      <div class="lab-percent" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-label="rumo à decisão: 62%"><div class="lab-percent__label"><span>Rumo à decisão</span><span>62%</span></div><div class="lab-percent__track"><div class="lab-percent__fill" style="--p:62"></div></div></div>
+      <span class="lab-muted">3 de 4 critérios cobertos · 1 divergência aberta · 1 pergunta sem resposta</span>
+    </div>
+  </div>
+  <div class="lab-app__body">
+    <div class="lab-col">
+      <div class="lab-chat" role="log" aria-label="mensagens da sessão">
+        <div class="lab-msg" data-author="sistema"><span class="ws-avatar"><i data-ic="info"></i></span><div><div class="lab-msg__head"><b>Sistema</b> · 01/10 09:00 · sessão aberta a partir do projeto (RF29.CA01); 12 tarefas anexadas como contexto da IA</div></div></div>
+        <div class="lab-msg" data-class="argumento"><span class="ws-avatar">MH</span><div>
+          <div class="lab-msg__head"><b>Maria H.</b> <span class="ws-tag" data-state="disponivel">admin</span> · 10:42 · <span class="ws-tag" data-class="argumento"><i data-ic="faisca"></i>argumento · azul · 0,91</span></div>
+          <div class="lab-msg__body">Proponho reutilizar o parecer do lote 1 como base: a solução de <mark>galeria celular</mark> foi aprovada pelo jurídico e ficou 12% abaixo do orçamento.</div>
+          <div class="lab-attach" data-type="documento"><span class="ws-card__typechip"><i data-ic="documento"></i></span><span><span class="lab-attach__title">Parecer técnico — lote 1 (PDF)</span><small><span class="ws-tag" data-state="concluida">concluída</span> · DEMANDA · Ana Costa · usado na decisão</small></span><button class="ws-btn ws-btn--ghost ws-btn--sm">Abrir</button></div>
+          <div class="lab-msg__actions"><button class="ws-btn ws-btn--ghost"><i data-ic="transformar-tarefa"></i><span class="lab-txt">Transformar em tarefa</span></button><button class="ws-btn ws-btn--ghost"><i data-ic="comentar"></i><span class="lab-txt">Responder</span></button><button class="ws-btn ws-btn--ghost"><i data-ic="bem-fundamentado"></i>4</button><button class="ws-btn ws-btn--ghost" title="corrigir classe (autor ou admin)"><span class="lab-txt">Corrigir classe</span></button></div>
+        </div></div>
+        <div class="lab-msg" data-class="divergencia"><span class="ws-avatar">CP</span><div>
+          <div class="lab-msg__head"><b>Carlos P.</b> membro · 10:50 · <span class="ws-tag" data-class="divergencia"><i data-ic="faisca"></i>divergência · laranja · 0,87</span> · responde a Maria H.</div>
+          <div class="lab-msg__body">O lote 2 tem solo diferente (argila mole no km 13); o parecer do lote 1 <mark>não se aplica à drenagem</mark>. Precisamos da sondagem antes de escolher.</div>
+          <div class="lab-attach" data-type="desenho"><span class="ws-card__typechip"><i data-ic="desenho-tecnico"></i></span><span><span class="lab-attach__title">Perfil geotécnico km 12–14 (DWG)</span><small><span class="ws-tag" data-state="em-uso">em uso</span> · ELABORAÇÃO · João S.</small></span><button class="ws-btn ws-btn--ghost ws-btn--sm">Abrir</button></div>
+          <div class="lab-msg__actions"><button class="ws-btn ws-btn--ghost"><i data-ic="transformar-tarefa"></i><span class="lab-txt">Transformar em tarefa</span></button><button class="ws-btn ws-btn--ghost"><i data-ic="comentar"></i><span class="lab-txt">Responder à divergência</span></button><span class="ws-tag" data-status="em-decisao">divergência aberta · aguarda resposta de Maria H.</span></div>
+        </div></div>
+        <div class="lab-msg" data-class="pergunta" data-author="ia"><span class="ws-avatar"><i data-ic="faisca"></i></span><div>
+          <div class="lab-msg__head"><b>IA do DECIA</b> <span class="ws-spark-note"><span class="ws-spark"><i data-ic="faisca"></i></span>gerado por IA em 01/10 10:51</span> · <span class="ws-tag" data-class="pergunta">pergunta · roxo · ponto crítico</span></div>
+          <div class="lab-msg__body">Existe sondagem SPT do km 12 ao 14 anexada ao projeto? Sem ela, o critério <b>risco geotécnico</b> fica sem evidência para as duas opções. <span class="lab-cite">baseado em: sessão "Drenagem lote 1", projeto "Pavimentação — lote 2"</span></div>
+          <div class="lab-msg__actions"><button class="ws-btn ws-btn--spark ws-btn--sm">Responder com evidência</button><button class="ws-btn ws-btn--ghost ws-btn--sm">Ignorar (vira ponto de atenção)</button></div>
+        </div></div>
+        <div class="lab-msg" data-class="risco"><span class="ws-avatar">JS</span><div>
+          <div class="lab-msg__head"><b>João S.</b> membro · 11:05 · <span class="ws-tag" data-class="risco"><i data-ic="faisca"></i>risco · vermelho · 0,82</span></div>
+          <div class="lab-msg__body">Se a sondagem só sair em 20/10, <mark>perdemos a janela da licitação</mark> (prazo legal 15/10 ⚖). Sugiro contratar sondagem complementar agora, em paralelo.</div>
+          <div class="lab-msg__actions"><button class="ws-btn ws-btn--ghost"><i data-ic="transformar-tarefa"></i><span class="lab-txt">Transformar em tarefa</span></button><span class="ws-due" data-due="over"><i data-ic="balanca"></i>prazo legal 15/10</span></div>
+        </div></div>
+        <div class="lab-msg" data-class="consenso"><span class="ws-avatar">AC</span><div>
+          <div class="lab-msg__head"><b>Ana Costa</b> <span class="ws-tag" data-state="disponivel">chefe UTS</span> · 11:12 · <span class="ws-tag" data-class="consenso">consenso · verde · revisado por humano</span></div>
+          <div class="lab-msg__body">De acordo com o João: contratar a sondagem complementar agora, independentemente da solução final. Isso atende o critério de prazo e reduz o risco.</div>
+          <div class="lab-attach" data-type="ata"><span class="ws-card__typechip"><i data-ic="ata-registro"></i></span><span><span class="lab-attach__title">Tarefa criada: "Contratar sondagem SPT km 12–14"</span><small><span class="ws-tag" data-state="disponivel">disponível</span> · PLANEJAMENTO · responsável João S. · prazo 08/10 · <i data-ic="dependencia"></i>rastro mensagem → tarefa</small></span><button class="ws-btn ws-btn--ghost ws-btn--sm">Ver rastro</button></div>
+        </div></div>
+        <div class="lab-msg" data-class="ruido" data-parked="true"><span class="ws-avatar">LR</span><div>
+          <div class="lab-msg__head"><b>Luísa R.</b> observadora · 11:15 · <span class="ws-tag" data-class="ruido">fora do tema · estacionado</span></div>
+          <div class="lab-msg__body">Aproveitando: alguém sabe se o convênio da iluminação pública já foi assinado?</div>
+          <div class="lab-msg__actions"><button class="ws-btn ws-btn--ghost ws-btn--sm"><i data-ic="pino"></i>Estacionado em "Itens fora do tema" · abrir outra sessão</button></div>
+        </div></div>
+      </div>
+      <div class="lab-composer">
+        <div class="lab-composer__chips"><span class="ws-tag" data-state="em-uso"><i data-ic="planilha"></i>Planilha orçamentária v2 ×</span><span class="lab-muted">1 de 5 anexos · arraste do acervo ou busque</span></div>
+        <input class="ws-input" placeholder="Escreva um argumento, uma divergência ou uma pergunta… (Markdown restrito, até 4000 caracteres)">
+        <div class="lab-row"><button class="ws-btn ws-btn--ghost ws-btn--sm"><i data-ic="acervo"></i>Anexar do acervo</button><button class="ws-btn ws-btn--ghost ws-btn--sm"><i data-ic="ata-registro"></i>Nova reunião (Ata Viva)</button><span style="margin-left:auto"></span><button class="ws-btn ws-btn--primary ws-btn--sm">Enviar</button></div>
+      </div>
+    </div>
+    <aside class="lab-col lab-col--side" aria-label="Mesa lateral">
+      <div class="lab-panel">
+        <div class="lab-panel__h"><i data-ic="pessoas"></i>Participantes · 5 + IA <span class="ws-tag" data-state="concluida">3 online</span></div>
+        <div class="lab-people">
+          <div class="lab-person" data-online="true"><span class="ws-avatar">MH</span><span>Maria H.<small>administradora · UTS</small></span><span class="ws-tag" data-state="disponivel">admin</span></div>
+          <div class="lab-person" data-online="true"><span class="ws-avatar">CP</span><span>Carlos P.<small>membro · CPOE</small></span><span class="ws-tag" data-class="divergencia">1 divergência</span></div>
+          <div class="lab-person" data-online="true"><span class="ws-avatar">JS</span><span>João S.<small>membro · responsável pela sondagem</small></span><span class="ws-tag" data-class="risco">1 risco</span></div>
+          <div class="lab-person" data-online="false"><span class="ws-avatar">AC</span><span>Ana Costa<small>chefe de departamento · valida a decisão</small></span><span class="ws-tag" data-state="concluida">validadora</span></div>
+          <div class="lab-person" data-online="false" data-silent="true"><span class="ws-avatar">PL</span><span>Pedro L.<small>membro · jurídico</small></span><span class="ws-tag" data-class="pergunta"><i data-ic="alerta"></i>falta se manifestar</span></div>
+          <div class="lab-person" data-online="true"><span class="ws-avatar" style="background:var(--spark-soft);color:var(--spark-ink)"><i data-ic="faisca"></i></span><span>IA do DECIA<small>classifica, pergunta, resume · modo AVANÇADO</small></span><span class="ws-tag" data-state="modelo-publico">IA</span></div>
+        </div>
+        <div class="lab-row"><span class="ws-tag" data-class="pergunta"><i data-ic="alerta"></i>quem falta se manifestar: Pedro L. (jurídico) · critério "conformidade legal"</span><button class="ws-btn ws-btn--ghost ws-btn--sm">Cutucar</button></div>
+      </div>
+      <div class="lab-panel">
+        <div class="lab-panel__h"><i data-ic="mesa"></i>Mesa da sessão · 4 itens <button class="ws-btn ws-btn--ghost ws-btn--sm">Abrir Mesa</button></div>
+        <div class="lab-mesa-mini">
+          <div class="lab-attach" data-type="documento"><span class="ws-card__typechip"><i data-ic="documento"></i></span><span><span class="lab-attach__title">Parecer técnico — lote 1</span><small>evidência · opção A</small></span><i data-ic="pino"></i></div>
+          <div class="lab-attach" data-type="desenho"><span class="ws-card__typechip"><i data-ic="desenho-tecnico"></i></span><span><span class="lab-attach__title">Perfil geotécnico km 12–14</span><small>evidência · divergência</small></span><i data-ic="pino"></i></div>
+          <div class="lab-attach"><span class="ws-card__typechip"><i data-ic="planilha"></i></span><span><span class="lab-attach__title">Planilha orçamentária v2</span><small>critério custo · A × B</small></span><i data-ic="pino"></i></div>
+          <div class="lab-attach" data-type="ata"><span class="ws-card__typechip"><i data-ic="ata-registro"></i></span><span><span class="lab-attach__title">Contratar sondagem SPT</span><small>tarefa criada da sessão</small></span><i data-ic="pino"></i></div>
+        </div>
+      </div>
+      <div class="lab-panel">
+        <div class="lab-panel__h"><i data-ic="pino"></i>Itens fora do tema · estacionamento</div>
+        <div class="lab-parking">
+          <div class="lab-parking__item"><span>Convênio da iluminação pública — Luísa R.</span><button class="ws-btn ws-btn--ghost ws-btn--sm">Abrir sessão</button></div>
+          <div class="lab-parking__item"><span>Padronizar nome dos arquivos DWG — Carlos P.</span><button class="ws-btn ws-btn--ghost ws-btn--sm">Virar tarefa</button></div>
+        </div>
+      </div>
+      <div class="lab-panel">
+        <div class="lab-panel__h"><i data-ic="dependencia"></i>Fio de decisão · ao vivo</div>
+        <ol class="ws-thread">
+          <li class="ws-thread__node" data-class="argumento"><div class="ws-thread__meta"><b>argumento · azul</b> · Maria H.</div>Reutilizar o parecer do lote 1</li>
+          <li class="ws-thread__node" data-class="divergencia"><div class="ws-thread__meta"><b>divergência · laranja</b> · Carlos P.</div>Solo diferente no km 13</li>
+          <li class="ws-thread__node" data-class="pergunta"><div class="ws-thread__meta"><b>pergunta · roxo</b> · IA <i data-ic="faisca"></i></div>Há sondagem SPT anexada?</li>
+          <li class="ws-thread__node" data-class="risco"><div class="ws-thread__meta"><b>risco · vermelho</b> · João S.</div>Janela da licitação (15/10 ⚖)</li>
+          <li class="ws-thread__node" data-class="consenso"><div class="ws-thread__meta"><b>consenso · verde</b> · Ana Costa</div>Sondagem complementar agora</li>
+          <li class="ws-thread__node" data-kind="tarefa"><div class="ws-thread__meta"><b>tarefa</b> · PLANEJAMENTO</div>Contratar sondagem SPT km 12–14</li>
+          <li class="ws-thread__node" data-kind="decisao"><div class="ws-thread__meta"><b>decisão</b> · pendente</div><span class="ws-tag" data-status="em-decisao">aguarda resumo</span></li>
+        </ol>
+      </div>
+    </aside>
+  </div>
+  <nav class="lab-mobile-tabs" aria-label="abas no celular"><a href="#" aria-current="page"><i data-ic="comentar"></i>Chat</a><a href="#"><i data-ic="mesa"></i>Mesa</a><a href="#"><i data-ic="pessoas"></i>Pessoas</a><a href="#"><i data-ic="dependencia"></i>Fio</a></nav>
+</div>
+<h3>Variante celular (390 px)</h3>
+<p class="lab-note">Faixa de objetivo compacta (pergunta + barra), chat em coluna única, Mesa lateral / participantes / fio viram abas inferiores; ações das mensagens só com ícone.</p>
+<div class="lab-phone"><iframe title="Layout 1 no celular" src="decia.html?view=layout1&amp;embed=1"></iframe></div>
+</section>
+
+<!-- ======================================================================================== LAYOUT 2 -->
+<section data-view="layout2" aria-labelledby="h-l2">
+<h2 id="h-l2">Layout 2 — Mapa da Discussão (IBIS) + chat</h2>
+<p class="lead">A IA organiza a conversa como um grafo IBIS: <b>questão → opções → prós/contras → evidências</b>. Prós e contras são as próprias mensagens classificadas (argumento azul, divergência laranja, risco vermelho, consenso verde, pergunta roxa); evidências são anexos do acervo. O chat continua à direita; clicar num nó rola até a mensagem de origem (rastro RF29.CA06).</p>
+<div class="lab-app" id="app-l2">
+  <div class="lab-goal">
+    <div>
+      <p class="lab-goal__q"><i data-ic="abrir-decia"></i> Qual solução de drenagem adotar no lote 2 (km 12–14)?</p>
+      <div class="lab-goal__meta"><span class="lab-k">Critérios</span><span class="ws-tag">custo</span><span class="ws-tag">prazo</span><span class="ws-tag">risco geotécnico</span><span class="ws-tag">conformidade</span><span class="lab-k">Prazo</span><span class="ws-due" data-due="soon"><i data-ic="relogio"></i>10/10</span><span class="lab-k">Fase</span><span class="ws-tag ws-tag--pulse" data-status="em-decisao">ATIVA · roxo</span></div>
+    </div>
+    <div class="lab-goal__right"><div class="lab-percent" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100"><div class="lab-percent__label"><span>Rumo à decisão</span><span>62%</span></div><div class="lab-percent__track"><div class="lab-percent__fill" style="--p:62"></div></div></div><span class="lab-muted">2 opções · 7 argumentos · 3 evidências · 1 pergunta aberta</span></div>
+  </div>
+  <div class="lab-app__body">
+    <div class="lab-col">
+      <div class="lab-row" style="justify-content:space-between"><span class="lab-panel__h"><i data-ic="descobrir"></i>Mapa da Discussão <span class="ws-spark-note"><span class="ws-spark"><i data-ic="faisca"></i></span>organizado pela IA · atualizado 11:12</span></span><span class="lab-ibis__legend"><span class="ws-tag" data-class="argumento">pró · argumento</span><span class="ws-tag" data-class="consenso">consenso</span><span class="ws-tag" data-class="divergencia">contra · divergência</span><span class="ws-tag" data-class="risco">risco</span><span class="ws-tag" data-class="pergunta">pergunta</span></span></div>
+      <div class="lab-ibis">
+        <div class="lab-ibis__q"><i data-ic="abrir-decia"></i>Questão: qual solução de drenagem para o km 12–14? <span class="ws-tag" data-class="pergunta" style="margin-left:auto">2 opções</span></div>
+        <div class="lab-ibis__opts">
+          <div class="lab-ibis__opt" data-leading="true">
+            <h4><i data-ic="marco"></i>Opção A — Galeria celular (como no lote 1) <span class="ws-tag" data-state="concluida" style="margin-left:auto">liderando</span></h4>
+            <div class="lab-ibis__pc">
+              <div class="lab-ibis__arg" data-class="argumento"><b>pró · argumento · azul</b>Parecer do lote 1 aprovado pelo jurídico; 12% abaixo do orçamento.<small>Maria H. · 10:42 · <i data-ic="faisca"></i>0,91</small></div>
+              <div class="lab-ibis__arg" data-class="consenso"><b>consenso · verde</b>Conformidade legal já verificada no lote 1 — todos concordam.<small>Ana Costa, Carlos P. · 11:12</small></div>
+              <div class="lab-ibis__arg" data-class="divergencia"><b>contra · divergência · laranja</b>Solo diferente no km 13 (argila mole): o parecer não se aplica à drenagem.<small>Carlos P. · 10:50 · aberta</small></div>
+              <div class="lab-ibis__arg" data-class="pergunta"><b>pergunta · roxo</b>Há sondagem SPT do km 12–14 anexada?<small>IA <i data-ic="faisca"></i> · sem resposta · bloqueia o critério "risco geotécnico"</small></div>
+            </div>
+            <div class="lab-ibis__ev"><span class="lab-k lab-muted">Evidências</span><span class="ws-tag"><i data-ic="documento"></i>Parecer técnico — lote 1</span><span class="ws-tag"><i data-ic="planilha"></i>Planilha orçamentária v2</span></div>
+            <div class="lab-row"><button class="ws-btn ws-btn--ghost ws-btn--sm"><i data-ic="transformar-tarefa"></i>Transformar em cenário</button><span class="lab-muted">critérios cobertos: custo ✓ prazo ✓ conformidade ✓ risco ?</span></div>
+          </div>
+          <div class="lab-ibis__opt">
+            <h4><i data-ic="marco"></i>Opção B — Drenagem profunda com geodreno</h4>
+            <div class="lab-ibis__pc">
+              <div class="lab-ibis__arg" data-class="argumento"><b>pró · argumento · azul</b>Adequada a argila mole; evita recalque na pista.<small>Carlos P. · 10:58 · <i data-ic="faisca"></i>0,88</small></div>
+              <div class="lab-ibis__arg" data-class="risco"><b>contra · risco · vermelho</b>Custo +28% e prazo +45 dias; perde a janela da licitação (15/10 ⚖).<small>João S. · 11:05</small></div>
+              <div class="lab-ibis__arg" data-class="divergencia"><b>contra · divergência · laranja</b>Fornecedor único na região — risco de licitação deserta.<small>Maria H. · 11:08</small></div>
+            </div>
+            <div class="lab-ibis__ev"><span class="lab-k lab-muted">Evidências</span><span class="ws-tag"><i data-ic="desenho-tecnico"></i>Perfil geotécnico km 12–14</span><span class="ws-tag" data-state="rascunho">sem precedente na Memória</span></div>
+            <div class="lab-row"><button class="ws-btn ws-btn--ghost ws-btn--sm"><i data-ic="transformar-tarefa"></i>Transformar em cenário</button><span class="lab-muted">critérios cobertos: risco ✓ custo ✗ prazo ✗ conformidade ?</span></div>
+          </div>
+        </div>
+        <div class="lab-ibis__opt" style="border-style:dashed;border-color:var(--line-soft)"><h4><i data-ic="criar"></i>Nova opção…<span class="lab-muted" style="font-weight:400;font-family:var(--font-ui)">a IA sugere "Opção C — híbrida: galeria no km 12 e geodreno no km 13" <span class="ws-spark"><i data-ic="faisca"></i></span></span></h4></div>
+      </div>
+    </div>
+    <aside class="lab-col lab-col--side" aria-label="chat">
+      <div class="lab-panel__h"><i data-ic="comentar"></i>Chat · 23 mensagens <span class="lab-presence"><span class="ws-avatar">MH</span><span class="ws-avatar">CP</span><span class="ws-avatar">JS</span></span></div>
+      <div class="lab-chat">
+        <div class="lab-msg" data-class="argumento"><span class="ws-avatar">CP</span><div><div class="lab-msg__head"><b>Carlos P.</b> · 10:58 · <span class="ws-tag" data-class="argumento">argumento · azul</span></div><div class="lab-msg__body">O geodreno é adequado à argila mole e evita recalque na pista. <span class="lab-muted">→ Opção B · pró</span></div></div></div>
+        <div class="lab-msg" data-class="risco"><span class="ws-avatar">JS</span><div><div class="lab-msg__head"><b>João S.</b> · 11:05 · <span class="ws-tag" data-class="risco">risco · vermelho</span></div><div class="lab-msg__body">Custo +28% e prazo +45 dias; perdemos a janela da licitação. <span class="lab-muted">→ Opção B · contra</span></div></div></div>
+        <div class="lab-msg" data-class="divergencia"><span class="ws-avatar">MH</span><div><div class="lab-msg__head"><b>Maria H.</b> · 11:08 · <span class="ws-tag" data-class="divergencia">divergência · laranja</span></div><div class="lab-msg__body">Fornecedor único na região: risco de licitação deserta. <span class="lab-muted">→ Opção B · contra</span></div></div></div>
+        <div class="lab-msg" data-class="consenso"><span class="ws-avatar">AC</span><div><div class="lab-msg__head"><b>Ana Costa</b> · 11:12 · <span class="ws-tag" data-class="consenso">consenso · verde</span></div><div class="lab-msg__body">Sondagem complementar agora, seja qual for a opção.</div><div class="lab-attach" data-type="ata"><span class="ws-card__typechip"><i data-ic="ata-registro"></i></span><span><span class="lab-attach__title">Contratar sondagem SPT</span><small>tarefa · João S. · 08/10</small></span></div></div></div>
+        <div class="lab-msg" data-author="ia" data-class="pergunta"><span class="ws-avatar"><i data-ic="faisca"></i></span><div><div class="lab-msg__head"><b>IA</b> · 11:13 · <span class="ws-tag" data-class="pergunta">pergunta · roxo</span></div><div class="lab-msg__body">Pedro L. (jurídico) ainda não se manifestou sobre "conformidade legal" da Opção B. Quer que eu o notifique?</div></div></div>
+      </div>
+      <div class="lab-composer"><input class="ws-input" placeholder="Mensagem… (a IA posiciona no mapa)"><div class="lab-row"><button class="ws-btn ws-btn--ghost ws-btn--sm"><i data-ic="acervo"></i>Anexar</button><button class="ws-btn ws-btn--primary ws-btn--sm" style="margin-left:auto">Enviar</button></div></div>
+    </aside>
+  </div>
+  <nav class="lab-mobile-tabs" aria-label="abas no celular"><a href="#" aria-current="page"><i data-ic="descobrir"></i>Mapa</a><a href="#"><i data-ic="comentar"></i>Chat</a><a href="#"><i data-ic="pessoas"></i>Pessoas</a><a href="#"><i data-ic="dependencia"></i>Fio</a></nav>
+</div>
+<h3>Variante celular (390 px)</h3>
+<p class="lab-note">Opções empilhadas; o chat vira aba inferior; a faixa de objetivo mantém só pergunta + barra.</p>
+<div class="lab-phone"><iframe title="Layout 2 no celular" src="decia.html?view=layout2&amp;embed=1"></iframe></div>
+</section>
+
+<!-- ======================================================================================== LAYOUT 3 -->
+<section data-view="layout3" aria-labelledby="h-l3">
+<h2 id="h-l3">Layout 3 — Resumo vivo + fio de decisão + Mesa em matriz critérios × opções</h2>
+<p class="lead">Para quem chega atrasado ou vai decidir: o <b>resumo analítico</b> (RF11) é regenerado a cada N mensagens e mostra argumentos, consensos, divergências, riscos, pontos de atenção e recomendações com citações; o <b>fio de decisão</b> costura mensagens → tarefas → decisão (RF29); a <b>matriz</b> pontua as opções pelos critérios da faixa de objetivo. O chat fica recolhido numa gaveta.</p>
+<div class="lab-app" id="app-l3">
+  <div class="lab-goal">
+    <div>
+      <p class="lab-goal__q"><i data-ic="abrir-decia"></i> Qual solução de drenagem adotar no lote 2 (km 12–14)?</p>
+      <div class="lab-goal__meta"><span class="lab-k">Critérios</span><span class="ws-tag">custo (peso 3)</span><span class="ws-tag">prazo (3)</span><span class="ws-tag">risco geotécnico (4)</span><span class="ws-tag">conformidade (2)</span><span class="lab-k">Prazo</span><span class="ws-due" data-due="soon"><i data-ic="relogio"></i>10/10</span><span class="lab-k">Fase</span><span class="ws-tag ws-tag--pulse" data-status="em-decisao">EM_DECISAO · roxo</span></div>
+    </div>
+    <div class="lab-goal__right"><div class="lab-percent" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"><div class="lab-percent__label"><span>Rumo à decisão</span><span>85%</span></div><div class="lab-percent__track"><div class="lab-percent__fill" style="--p:85"></div></div></div><span class="lab-muted">resumo v3 publicado · decisão proposta pela IA aguarda o grupo</span></div>
+  </div>
+  <div class="lab-app__body lab-app__body--3">
+    <div class="lab-col lab-col--left">
+      <div class="lab-panel__h"><i data-ic="dependencia"></i>Fio de decisão <span class="lab-live">ao vivo</span></div>
+      <ol class="ws-thread">
+        <li class="ws-thread__node" data-class="argumento"><div class="ws-thread__meta"><b>argumento · azul</b> · Maria H. · 10:42</div>Reutilizar o parecer do lote 1</li>
+        <li class="ws-thread__node" data-kind="tarefa"><div class="ws-thread__meta"><b>tarefa anexada</b></div>Parecer técnico — lote 1 (PDF)</li>
+        <li class="ws-thread__node" data-class="divergencia"><div class="ws-thread__meta"><b>divergência · laranja</b> · Carlos P. · 10:50</div>Solo diferente no km 13</li>
+        <li class="ws-thread__node" data-class="pergunta"><div class="ws-thread__meta"><b>pergunta · roxo</b> · IA <i data-ic="faisca"></i> · 10:51</div>Há sondagem SPT anexada?</li>
+        <li class="ws-thread__node" data-class="risco"><div class="ws-thread__meta"><b>risco · vermelho</b> · João S. · 11:05</div>Janela da licitação 15/10 ⚖</li>
+        <li class="ws-thread__node" data-class="consenso"><div class="ws-thread__meta"><b>consenso · verde</b> · Ana Costa · 11:12</div>Sondagem complementar agora</li>
+        <li class="ws-thread__node" data-kind="tarefa"><div class="ws-thread__meta"><b>tarefa criada</b> · PLANEJAMENTO</div>Contratar sondagem SPT km 12–14 · João S. · 08/10</li>
+        <li class="ws-thread__node" data-class="consenso"><div class="ws-thread__meta"><b>resumo v3</b> · IA <i data-ic="faisca"></i> · 02/10 09:30</div>2 cenários · 4 critérios</li>
+        <li class="ws-thread__node" data-kind="decisao"><div class="ws-thread__meta"><b>decisão proposta</b> · IA <i data-ic="faisca"></i></div>Opção A no km 12 + geodreno pontual no km 13 (híbrida)<br><span class="ws-tag" data-status="em-decisao">PROPOSTA · aguarda validação de Ana Costa</span></li>
+        <li class="ws-thread__node" data-kind="decisao" style="opacity:.55"><div class="ws-thread__meta"><b>revisão</b> · chefe</div><span class="ws-stamp ws-stamp--mini">Validado</span> <span class="ws-stamp ws-stamp--mini ws-stamp--devolvido">Devolvido</span></li>
+      </ol>
+    </div>
+    <div class="lab-col">
+      <div class="lab-row" style="justify-content:space-between"><span class="lab-panel__h"><i data-ic="texto-ia"></i>Resumo vivo · v3 <span class="ws-spark-note"><span class="ws-spark"><i data-ic="faisca"></i></span>gerado por IA em 02/10 09:30 · próxima atualização em 8 mensagens</span></span><span class="lab-row"><button class="ws-btn ws-btn--ghost ws-btn--sm">Comparar com v2</button><button class="ws-btn ws-btn--spark ws-btn--sm"><i data-ic="faisca"></i>Regenerar</button><button class="ws-btn ws-btn--primary ws-btn--sm">Publicar</button></span></div>
+      <div class="lab-summary">
+        <div class="lab-summary__sec" data-class="argumento"><h4><i data-ic="bem-fundamentado"></i>Argumentos (4)</h4><ul><li>Parecer do lote 1 aprovado e 12% abaixo do orçamento — Maria H. <span class="lab-cite">msg 10:42</span></li><li>Geodreno adequado à argila mole, evita recalque — Carlos P. <span class="lab-cite">msg 10:58</span> <span class="lab-cite">DWG km 12–14</span></li></ul></div>
+        <div class="lab-summary__sec" data-class="consenso"><h4><i data-ic="conforme"></i>Consensos (2)</h4><ul><li>Contratar sondagem SPT complementar agora, independentemente da opção — <b>tarefa criada</b> <span class="lab-cite">tarefa #1842</span></li><li>Conformidade legal da Opção A já verificada no lote 1</li></ul></div>
+        <div class="lab-summary__sec" data-class="divergencia"><h4><i data-ic="alerta"></i>Divergências (2 · 1 aberta)</h4><ul><li><b>Aberta:</b> aplicabilidade do parecer do lote 1 ao km 13 — Carlos P. × Maria H. <span class="ws-tag" data-class="divergencia">aguarda resposta</span></li><li>Resolvida: fornecedor único do geodreno (cotação alternativa anexada)</li></ul></div>
+        <div class="lab-summary__sec" data-class="risco"><h4><i data-ic="balanca"></i>Riscos (2)</h4><ul><li>Perder a janela da licitação (prazo legal 15/10) se a sondagem atrasar</li><li>Recalque na pista no km 13 se adotar galeria sem tratamento do solo</li></ul></div>
+        <div class="lab-summary__sec" data-class="pergunta"><h4><i data-ic="info"></i>Pontos de atenção (2)</h4><ul><li>Pedro L. (jurídico) não se manifestou sobre conformidade da Opção B</li><li>Pergunta ignorada: existe sondagem anterior do km 14?</li></ul></div>
+        <div class="lab-summary__sec" data-ia="true"><h4><span class="ws-spark"><i data-ic="faisca"></i></span>Recomendação e cenários</h4><ul><li><b>Cenário híbrido (recomendado):</b> galeria celular no km 12 e geodreno pontual no km 13 — custo +9%, prazo +10 dias, risco geotécnico baixo. Afeta: tarefas #1842, #1799 · projeto "Pavimentação — lote 2" · eixo do plano anual "Mobilidade". <span class="lab-cite">baseado em: sessão "Drenagem lote 1" (2025)</span></li><li>Cenário A puro: menor custo; risco geotécnico alto no km 13. <span class="lab-cite">Espelho de conformidade: OK</span></li><li>Cenário B puro: risco baixo; custo +28%, prazo +45 dias. <span class="lab-cite">sem precedente</span></li></ul><div class="lab-row"><button class="ws-btn ws-btn--primary ws-btn--sm"><i data-ic="validar-decisao"></i>Propor decisão com o cenário híbrido</button><button class="ws-btn ws-btn--ghost ws-btn--sm"><i data-ic="transformar-tarefa"></i>Transformar recomendação em tarefas</button></div></div>
+      </div>
+    </div>
+    <aside class="lab-col lab-col--side" aria-label="Mesa em matriz">
+      <div class="lab-panel__h"><i data-ic="mesa"></i>Mesa · matriz critérios × opções <button class="ws-btn ws-btn--ghost ws-btn--sm">Tela cheia</button></div>
+      <div class="lab-table-wrap"><table class="lab-matrix">
+        <thead><tr><th scope="col">Critério · peso</th><th scope="col">A galeria</th><th scope="col">B geodreno</th><th scope="col" data-lead="true">C híbrida <span class="ws-spark"><i data-ic="faisca"></i></span></th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Custo <small>peso 3</small></th><td><span class="lab-score" data-s="alto">5</span><span class="lab-cite">planilha v2</span></td><td><span class="lab-score" data-s="baixo">2</span></td><td data-lead="true"><span class="lab-score" data-s="medio">4</span></td></tr>
+          <tr><th scope="row">Prazo de obra <small>peso 3</small></th><td><span class="lab-score" data-s="alto">5</span></td><td><span class="lab-score" data-s="baixo">1</span><span class="lab-cite">+45 d</span></td><td data-lead="true"><span class="lab-score" data-s="medio">4</span></td></tr>
+          <tr><th scope="row">Risco geotécnico <small>peso 4</small></th><td><span class="lab-score" data-s="baixo">2</span><span class="lab-cite">sem SPT</span></td><td><span class="lab-score" data-s="alto">5</span></td><td data-lead="true"><span class="lab-score" data-s="alto">4</span></td></tr>
+          <tr><th scope="row">Conformidade legal <small>peso 2</small></th><td><span class="lab-score" data-s="alto">5</span></td><td><span class="lab-score" data-s="medio">3</span><span class="lab-cite">? jurídico</span></td><td data-lead="true"><span class="lab-score" data-s="medio">4</span></td></tr>
+        </tbody>
+        <tfoot><tr><td style="text-align:left">Total ponderado</td><td>48</td><td>35</td><td data-lead="true">48 ✓</td></tr></tfoot>
+      </table></div>
+      <p class="lab-muted">Pontuação proposta pela IA (1–5) a partir das evidências; qualquer participante pode ajustar uma célula — a alteração entra no rastro com autor e data. Empate em 48: o critério de maior peso (risco) desempata para C.</p>
+      <div class="lab-panel"><div class="lab-panel__h"><i data-ic="comentar"></i>Chat · gaveta <span class="ws-tag" data-class="argumento">3 novas</span></div><div class="lab-muted">Última: Carlos P. 09:41 — "Concordo com a híbrida se a sondagem confirmar…"</div><button class="ws-btn ws-btn--ghost ws-btn--sm">Abrir chat</button></div>
+    </aside>
+  </div>
+  <nav class="lab-mobile-tabs" aria-label="abas no celular"><a href="#" aria-current="page"><i data-ic="texto-ia"></i>Resumo</a><a href="#"><i data-ic="dependencia"></i>Fio</a><a href="#"><i data-ic="mesa"></i>Matriz</a><a href="#"><i data-ic="comentar"></i>Chat</a></nav>
+</div>
+<h3>Variante celular (390 px)</h3>
+<p class="lab-note">Fio, resumo e matriz empilhados em uma rolagem só; no app viram abas inferiores.</p>
+<div class="lab-phone"><iframe title="Layout 3 no celular" src="decia.html?view=layout3&amp;embed=1"></iframe></div>
+</section>
+
+<!-- ======================================================================================== MESA -->
+<section data-view="mesa" aria-labelledby="h-mesa">
+<h2 id="h-mesa">Mesa do DECIA — cinco organizações do mesmo material</h2>
+<p class="lead">Os mesmos itens (mensagens classificadas, anexos, tarefas, decisões) reorganizados: <b>por opção</b>, <b>por fase</b> (7 fases do projeto), <b>matriz critérios × opções</b>, <b>canvas livre</b> (post-its + conectores, skin de mesa do RF22) e <b>linha do tempo</b>. Mudar a organização não perde dados (RF22.CA03).</p>
+<div class="lab-app" id="app-mesa">
+  <div class="lab-doc-toolbar"><span class="lab-panel__h"><i data-ic="mesa"></i>Mesa · sessão "Drenagem lote 2"</span><span class="seg" role="group" aria-label="organização"><button aria-pressed="true">Por opção</button><button>Por fase</button><button>Matriz</button><button>Canvas</button><button>Linha do tempo</button></span><span class="seg" role="group" aria-label="skin"><button aria-pressed="true">Papel</button><button>Cortiça</button><button>Blueprint</button></span><span class="lab-presence"><span class="ws-avatar lab-u" data-color="azul">MH</span><span class="ws-avatar lab-u" data-color="laranja">CP</span><span class="ws-avatar lab-u" data-color="verde">JS</span></span></div>
+  <div class="lab-col">
+    <h3 style="margin-top:0"><i data-ic="marco"></i> a) Por opção — colunas = alternativas</h3>
+    <div class="lab-board">
+      <div class="lab-board__col"><h4>Opção A · galeria <span class="ws-tag" data-state="concluida">48 pts</span></h4><div class="lab-chip" data-class="argumento">Parecer do lote 1 aprovado, −12% orçamento<small>Maria H. · argumento</small></div><div class="lab-chip" data-class="consenso">Conformidade já verificada<small>consenso</small></div><div class="lab-chip" data-class="divergencia">Solo diferente no km 13<small>Carlos P. · aberta</small></div><div class="lab-chip" data-kind="tarefa"><i data-ic="documento"></i> Parecer técnico — lote 1<small>evidência</small></div></div>
+      <div class="lab-board__col"><h4>Opção B · geodreno <span class="ws-tag" data-state="rascunho">35 pts</span></h4><div class="lab-chip" data-class="argumento">Adequado à argila mole<small>Carlos P.</small></div><div class="lab-chip" data-class="risco">+28% custo, +45 d — perde a licitação<small>João S.</small></div><div class="lab-chip" data-class="divergencia">Fornecedor único<small>Maria H. · resolvida</small></div><div class="lab-chip" data-kind="tarefa"><i data-ic="desenho-tecnico"></i> Perfil geotécnico km 12–14<small>evidência</small></div></div>
+      <div class="lab-board__col" aria-current="step"><h4>Opção C · híbrida <span class="ws-spark"><i data-ic="faisca"></i></span><span class="ws-tag" data-state="modelo-publico">recomendada</span></h4><div class="lab-chip" data-class="argumento">Galeria no km 12 + geodreno no km 13<small>IA · cenário</small></div><div class="lab-chip" data-class="pergunta">Jurídico ainda não opinou<small>IA · aberta</small></div><div class="lab-chip" data-kind="decisao"><i data-ic="validar-decisao"></i> Decisão proposta<small>aguarda Ana Costa</small></div></div>
+      <div class="lab-board__col"><h4>Transversal</h4><div class="lab-chip" data-class="consenso">Sondagem SPT agora<small>Ana Costa</small></div><div class="lab-chip" data-kind="tarefa"><i data-ic="ata-registro"></i> Contratar sondagem SPT<small>João S. · 08/10</small></div><div class="lab-chip" data-class="risco">Prazo legal 15/10 ⚖<small>João S.</small></div></div>
+      <div class="lab-board__col" style="border-style:dashed"><h4><i data-ic="pino"></i> Estacionamento</h4><div class="lab-chip">Convênio da iluminação<small>Luísa R. · fora do tema</small></div><div class="lab-chip">Nome dos arquivos DWG<small>Carlos P.</small></div></div>
+    </div>
+
+    <h3><i data-ic="cronograma"></i> b) Por fase — as 7 fases do projeto vinculado</h3>
+    <div class="ws-phasebar" role="img" aria-label="fase 4 de 7: ANÁLISE"><div class="ws-phasebar__track"><div class="ws-phasebar__seg" data-done title="DEMANDA"></div><div class="ws-phasebar__seg" data-done title="PLANEJAMENTO"></div><div class="ws-phasebar__seg" data-done title="ELABORAÇÃO"></div><div class="ws-phasebar__seg" aria-current="step" title="ANÁLISE"></div><div class="ws-phasebar__seg" title="APROVAÇÃO"></div><div class="ws-phasebar__seg" title="EXECUÇÃO"></div><div class="ws-phasebar__seg" title="ENCERRAMENTO"></div></div><div class="ws-phasebar__label">ANÁLISE · 4/7 · a decisão desta sessão abre a APROVAÇÃO</div></div>
+    <div class="lab-board lab-board--7">
+      <div class="lab-board__col"><h4>1 Demanda</h4><div class="lab-chip" data-kind="tarefa"><i data-ic="documento"></i> Parecer lote 1<small>concluída</small></div><div class="lab-chip" data-class="argumento">Reutilizar parecer<small>Maria H.</small></div></div>
+      <div class="lab-board__col"><h4>2 Planejamento</h4><div class="lab-chip" data-kind="tarefa"><i data-ic="ata-registro"></i> Contratar sondagem SPT<small>João S. · 08/10</small></div><div class="lab-chip" data-class="consenso">Sondagem agora<small>Ana Costa</small></div></div>
+      <div class="lab-board__col"><h4>3 Elaboração</h4><div class="lab-chip" data-kind="tarefa"><i data-ic="desenho-tecnico"></i> Perfil geotécnico<small>em uso</small></div><div class="lab-chip" data-class="divergencia">Solo do km 13<small>aberta</small></div></div>
+      <div class="lab-board__col" aria-current="step"><h4>4 Análise <span class="ws-tag ws-tag--pulse" data-status="em-decisao">atual</span></h4><div class="lab-chip" data-class="risco">Janela da licitação<small>João S.</small></div><div class="lab-chip" data-class="pergunta">Há SPT anexada?<small>IA</small></div><div class="lab-chip" data-kind="tarefa"><i data-ic="planilha"></i> Planilha v2<small>critério custo</small></div></div>
+      <div class="lab-board__col"><h4>5 Aprovação</h4><div class="lab-chip" data-kind="decisao"><i data-ic="validar-decisao"></i> ATA/REGISTRO da decisão<small>criada ao validar (RF29.CA05)</small></div></div>
+      <div class="lab-board__col"><h4>6 Execução</h4><div class="lab-muted">—</div></div>
+      <div class="lab-board__col"><h4>7 Encerramento</h4><div class="lab-muted">—</div></div>
+    </div>
+
+    <h3><i data-ic="gestao"></i> c) Matriz critérios × opções com pontuação</h3>
+    <div class="lab-table-wrap"><table class="lab-matrix">
+      <thead><tr><th scope="col">Critério · peso</th><th scope="col">A galeria</th><th scope="col">B geodreno</th><th scope="col" data-lead="true">C híbrida <span class="ws-spark"><i data-ic="faisca"></i></span></th><th scope="col">Evidências</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Custo <small>peso 3</small></th><td><span class="lab-score" data-s="alto">5</span></td><td><span class="lab-score" data-s="baixo">2</span></td><td data-lead="true"><span class="lab-score" data-s="medio">4</span></td><td style="text-align:left"><span class="lab-cite">planilha v2</span> <span class="lab-cite">cotação geodreno</span></td></tr>
+        <tr><th scope="row">Prazo de obra <small>peso 3</small></th><td><span class="lab-score" data-s="alto">5</span></td><td><span class="lab-score" data-s="baixo">1</span></td><td data-lead="true"><span class="lab-score" data-s="medio">4</span></td><td style="text-align:left"><span class="lab-cite">cronograma v1</span></td></tr>
+        <tr><th scope="row">Risco geotécnico <small>peso 4</small></th><td><span class="lab-score" data-s="baixo">2</span></td><td><span class="lab-score" data-s="alto">5</span></td><td data-lead="true"><span class="lab-score" data-s="alto">4</span></td><td style="text-align:left"><span class="lab-cite">perfil DWG</span> <span class="ws-tag" data-class="pergunta">falta SPT</span></td></tr>
+        <tr><th scope="row">Conformidade legal <small>peso 2</small></th><td><span class="lab-score" data-s="alto">5</span></td><td><span class="lab-score" data-s="medio">3</span></td><td data-lead="true"><span class="lab-score" data-s="medio">4</span></td><td style="text-align:left"><span class="lab-cite">parecer lote 1</span> <span class="ws-tag" data-class="pergunta">jurídico pendente</span></td></tr>
+      </tbody>
+      <tfoot><tr><td style="text-align:left">Total ponderado (máx. 60)</td><td>48</td><td>35</td><td data-lead="true">48 ✓ desempate pelo peso</td><td></td></tr></tfoot>
+    </table></div>
+
+    <h3><i data-ic="pino"></i> d) Canvas livre — post-its, conectores e skin de mesa (RF22)</h3>
+    <div class="ws-desk lab-desk-wrap" data-skin="papel" aria-label="canvas livre">
+      <svg class="lab-links" aria-hidden="true"><path d="M150 90 C 240 90, 240 70, 320 70"/><path d="M150 110 C 240 140, 260 230, 330 230"/><path d="M470 90 C 560 90, 560 160, 640 160"/><path d="M470 230 C 560 230, 560 190, 640 170"/><path d="M830 160 C 900 160, 900 120, 960 120"/></svg>
+      <div class="ws-postit" data-tone="verde" style="left:20px;top:40px;transform:rotate(-3deg)"><i data-ic="abrir-decia"></i> Qual drenagem para o km 12–14?<small>questão central</small></div>
+      <div class="ws-postit" data-tone="azul" style="left:320px;top:30px;transform:rotate(2deg);width:150px">Opção A — galeria celular<small>Maria H. · argumento</small></div>
+      <div class="ws-postit" data-tone="laranja" style="left:330px;top:190px;transform:rotate(-1.5deg)">Solo diferente no km 13<small>Carlos P. · divergência</small></div>
+      <div class="ws-postit" data-tone="vermelho" style="left:640px;top:120px;transform:rotate(1deg)">Janela da licitação 15/10 ⚖<small>João S. · risco</small></div>
+      <div class="lab-desk-card ws-card ws-card--list" style="left:960px;top:90px"><div class="ws-card__frame"><div class="ws-card__content" style="grid-template-columns:auto 1fr"><span class="ws-card__typechip" style="--tt:var(--type-ata-registro);--tt-soft:var(--type-ata-registro-soft)"><i data-ic="ata-registro"></i></span><span><span class="ws-card__title">Contratar sondagem SPT</span><span class="ws-card__sub">tarefa · João S. · 08/10</span></span></div></div></div>
+      <div class="ws-postit" data-tone="verde" style="left:640px;top:250px;transform:rotate(-2deg)"><span class="ws-spark"><i data-ic="faisca"></i></span> Cenário híbrido<small>IA · recomendação</small></div>
+      <span class="ws-tag desk-label" style="position:absolute;right:8px;bottom:8px" data-state="disponivel">skin: papel · 6 itens · zoom 100%</span>
+    </div>
+
+    <h3><i data-ic="cronograma"></i> e) Linha do tempo — mensagens, tarefas e marcos da sessão</h3>
+    <div class="lab-timeline">
+      <div></div><div class="lab-timeline__scale"><span>01/10</span><span>02/10</span><span>03/10</span><span>06/10</span><span>07/10</span><span>08/10</span><span>10/10</span><span>15/10</span></div>
+      <div class="lab-timeline__label"><span class="ws-tag" data-class="argumento">argumento</span> parecer lote 1</div><div class="lab-timeline__row"><div class="lab-timeline__bar" data-class="argumento" style="--s:0;--w:1">Maria H.</div><div class="lab-timeline__today" style="--s:2.3"></div></div>
+      <div class="lab-timeline__label"><span class="ws-tag" data-class="divergencia">divergência</span> solo km 13</div><div class="lab-timeline__row"><div class="lab-timeline__bar" data-class="divergencia" style="--s:0.2;--w:2.1">aberta → resposta</div></div>
+      <div class="lab-timeline__label"><span class="ws-tag" data-class="pergunta">pergunta</span> há SPT?</div><div class="lab-timeline__row"><div class="lab-timeline__bar" data-class="pergunta" style="--s:0.3;--w:1.2">IA</div></div>
+      <div class="lab-timeline__label"><span class="ws-tag" data-class="risco">risco</span> janela da licitação</div><div class="lab-timeline__row"><div class="lab-timeline__bar" data-class="risco" style="--s:0.4;--w:7.5">até 15/10 ⚖</div></div>
+      <div class="lab-timeline__label"><span class="ws-tag" data-class="consenso">consenso</span> sondagem agora</div><div class="lab-timeline__row"><div class="lab-timeline__bar" data-class="consenso" style="--s:0.5;--w:0.6">Ana</div></div>
+      <div class="lab-timeline__label"><i data-ic="ata-registro"></i> tarefa: sondagem SPT</div><div class="lab-timeline__row"><div class="lab-timeline__bar" style="--s:0.6;--w:4.6">João S. · 01→08/10</div></div>
+      <div class="lab-timeline__label"><span class="ws-spark"><i data-ic="faisca"></i></span> resumo v1 · v2 · v3</div><div class="lab-timeline__row"><div class="lab-timeline__bar" data-kind="marco" style="--s:0.9"></div><div class="lab-timeline__bar" data-kind="marco" style="--s:1.4"></div><div class="lab-timeline__bar" data-kind="marco" style="--s:1.95"></div></div>
+      <div class="lab-timeline__label"><i data-ic="validar-decisao"></i> decisão · validação</div><div class="lab-timeline__row"><div class="lab-timeline__bar" data-class="consenso" style="--s:6;--w:1;opacity:.5">prazo 10/10</div></div>
+    </div>
+  </div>
+</div>
+<h3>Variante celular (390 px)</h3>
+<p class="lab-note">Quadros rolam na horizontal; matriz rola na horizontal; canvas livre vira lista (post-its empilhados) no celular — o canvas real só em tablet+.</p>
+<div class="lab-phone"><iframe title="Mesa no celular" src="decia.html?view=mesa&amp;embed=1"></iframe></div>
+</section>
+
+<!-- ======================================================================================== COEDIÇÃO -->
+<section data-view="coedicao" aria-labelledby="h-co">
+<h2 id="h-co">Coedição — "Minuta Coletiva" da sessão</h2>
+<p class="lead">Documento colaborativo da sessão (minuta da decisão / ata). Presença com as <b>cores de nó</b> (vermelho, amarelo, verde, azul, marrom, laranja) em avatares, cursores e seleções; seções atribuídas a pessoas; comentários ancorados no texto; <b>sugestões em modo revisão</b> (inserção verde, remoção vermelha) com aceitar/rejeitar; trechos escritos pela IA carregam a faísca ✦; versões nomeadas com autor e diff. Técnica em <code>COEDICAO_TECNICA.md</code>; PoC em <code>poc-coedicao/</code>.</p>
+<div class="lab-app" id="app-co">
+  <div class="lab-doc-toolbar">
+    <span class="lab-panel__h"><i data-ic="texto-manual"></i>Minuta Coletiva · Decisão — drenagem lote 2</span>
+    <span class="ws-tag" data-state="em-uso">em edição · v7</span>
+    <span class="seg" role="group" aria-label="modo"><button>Editar</button><button aria-pressed="true">Sugerir (revisão)</button><button>Ler</button></span>
+    <span class="ws-tag" data-state="bloqueada"><i data-ic="cadeado"></i>RESTRITO · motor local</span>
+    <span class="lab-presence" aria-label="6 pessoas no documento"><span class="ws-avatar lab-u" data-color="azul" title="Maria H. · azul">MH</span><span class="ws-avatar lab-u" data-color="laranja" title="Carlos P. · laranja">CP</span><span class="ws-avatar lab-u" data-color="verde" title="João S. · verde">JS</span><span class="ws-avatar lab-u" data-color="vermelho" title="Ana Costa · vermelho">AC</span><span class="ws-avatar lab-u" data-color="amarelo" title="Pedro L. · amarelo">PL</span><span class="ws-avatar lab-u" data-color="marrom" data-online="false" title="Luísa R. · marrom · offline">LR</span><span class="lab-muted" style="margin-left:6px">5 online · limite 10 editores</span></span>
+    <button class="ws-btn ws-btn--primary ws-btn--sm"><i data-ic="validar-decisao"></i>Enviar para validação</button>
+  </div>
+  <div class="lab-doc-shell">
+    <article class="lab-doc" aria-label="documento">
+      <h1>Minuta de decisão — drenagem do lote 2 (km 12–14)</h1>
+      <p class="lab-muted" style="font-family:var(--font-ui);font-size:var(--text-caption)">Sessão DECIA "Drenagem lote 2" · projeto Pavimentação urbana — lote 2 · UTS · gerada em 02/10 a partir do resumo v3 <span class="ws-spark"><i data-ic="faisca"></i></span> · editada por 5 pessoas</p>
+
+      <section class="lab-sec" data-owner="azul">
+        <div class="lab-sec__h"><h2>1. Contexto</h2><span class="lab-assign"><span class="ws-avatar lab-u" data-color="azul">MH</span>atribuída a Maria H. · azul</span><span class="ws-tag" data-state="concluida">pronta</span></div>
+        <p>O lote 2 da pavimentação urbana (km 12–14) exige solução de drenagem compatível com o perfil geotécnico levantado em setembro<span class="lab-cursor lab-u" data-color="azul" data-name="Maria H."></span>. O lote 1 adotou galeria celular, aprovada pelo jurídico em 2025.</p>
+      </section>
+
+      <section class="lab-sec" data-owner="laranja">
+        <div class="lab-sec__h"><h2>2. Opções analisadas</h2><span class="lab-assign"><span class="ws-avatar lab-u" data-color="laranja">CP</span>atribuída a Carlos P. · laranja</span><span class="ws-tag" data-state="em-uso">em edição</span></div>
+        <p>Foram avaliadas três opções: (A) galeria celular, (B) drenagem profunda com geodreno e (C) solução híbrida. <span class="lab-sel lab-u" data-color="laranja">A opção B é tecnicamente adequada à argila mole do km 13</span><span class="lab-cursor lab-u" data-color="laranja" data-name="Carlos P."></span>, mas implica custo <del>20%</del><ins>28%</ins> superior<span class="lab-sugg"><button class="ws-btn ws-btn--secondary">aceitar</button><button class="ws-btn ws-btn--ghost">rejeitar</button></span> e prazo adicional de 45 dias.</p>
+        <p><mark class="lab-anchor" data-active="true" data-c="c1">A galeria celular reaproveita o parecer do lote 1</mark>, com custo 12% abaixo do orçamento, porém sem evidência geotécnica para o km 13.</p>
+      </section>
+
+      <section class="lab-sec" data-owner="verde" data-ia="true">
+        <div class="lab-sec__h"><h2>3. Recomendação</h2><span class="lab-assign"><span class="ws-avatar lab-u" data-color="verde">JS</span>atribuída a João S. · verde</span><span class="ws-spark-note"><span class="ws-spark"><i data-ic="faisca"></i></span>rascunho da IA · revisar</span></div>
+        <p><span class="lab-ai-text">Recomenda-se o cenário híbrido: galeria celular no km 12 e geodreno pontual no km 13, com custo estimado 9% acima do orçamento e prazo adicional de 10 dias, condicionado ao resultado da sondagem SPT complementar.<span class="ws-spark" role="img" aria-label="gerado por IA em 02/10 09:30"><i data-ic="faisca"></i></span></span> <ins>A sondagem foi contratada em 01/10 (tarefa #1842, responsável João S., prazo 08/10).</ins><span class="lab-sugg"><button class="ws-btn ws-btn--secondary">aceitar</button><button class="ws-btn ws-btn--ghost">rejeitar</button></span><span class="lab-cursor lab-u" data-color="verde" data-name="João S."></span></p>
+      </section>
+
+      <section class="lab-sec" data-owner="amarelo">
+        <div class="lab-sec__h"><h2>4. Conformidade legal</h2><span class="lab-assign"><span class="ws-avatar lab-u" data-color="amarelo">PL</span>atribuída a Pedro L. · amarelo</span><span class="ws-tag" data-class="pergunta"><i data-ic="alerta"></i>falta se manifestar</span></div>
+        <p class="lab-muted" style="font-family:var(--font-ui)"><mark class="lab-anchor" data-c="c2">Seção vazia</mark> — Pedro L. foi notificado em 02/10. <span class="lab-cursor lab-u" data-color="amarelo" data-name="Pedro L."></span></p>
+      </section>
+
+      <section class="lab-sec" data-owner="vermelho" data-locked="true">
+        <div class="lab-sec__h"><h2>5. Decisão e validação</h2><span class="lab-assign"><span class="ws-avatar lab-u" data-color="vermelho">AC</span>Ana Costa · vermelho · chefe</span><span class="ws-tag" data-state="bloqueada"><i data-ic="cadeado"></i>só a validadora edita</span></div>
+        <p>Decisão: ____________________. <span class="lab-muted" style="font-family:var(--font-ui);font-size:var(--text-caption)">Ao validar, esta seção recebe o carimbo e vira tarefa ATA/REGISTRO na fase APROVAÇÃO (RF29.CA05).</span></p>
+        <div class="lab-row"><span class="ws-stamp" style="opacity:.35">Validado<small>__/__/____ · Ana Costa</small></span><span class="ws-stamp ws-stamp--devolvido" style="opacity:.35">Devolvido<small>motivo obrigatório</small></span></div>
+      </section>
+    </article>
+    <aside class="lab-comments" aria-label="comentários e versões">
+      <div class="lab-panel__h"><i data-ic="comentar"></i>Comentários ancorados · 3 <span class="ws-tag" data-class="divergencia">1 aberto</span></div>
+      <div class="lab-comment" data-active="true"><div class="lab-comment__h"><span class="ws-avatar lab-u" data-color="laranja">CP</span><b>Carlos P.</b> · 09:48 · âncora §2</div><div>"reaproveita o parecer do lote 1" — só vale para o km 12; o km 13 precisa da sondagem. Sugiro condicionar.</div><div class="lab-comment__h"><span class="ws-avatar lab-u" data-color="azul">MH</span><b>Maria H.</b> · 09:52</div><div>De acordo. Virou a inserção na §3.</div><div class="lab-comment__reply"><button class="ws-btn ws-btn--ghost">Responder</button><button class="ws-btn ws-btn--ghost"><i data-ic="check"></i>Resolver</button><button class="ws-btn ws-btn--ghost"><i data-ic="transformar-tarefa"></i>Virar tarefa</button></div></div>
+      <div class="lab-comment"><div class="lab-comment__h"><span class="ws-avatar lab-u" data-color="vermelho">AC</span><b>Ana Costa</b> · 10:02 · âncora §4</div><div>@Pedro L. preciso do parecer sobre a Opção B até 06/10 para validar.</div><div class="lab-comment__reply"><button class="ws-btn ws-btn--ghost">Responder</button><button class="ws-btn ws-btn--ghost">Resolver</button></div></div>
+      <div class="lab-comment" data-resolved="true"><div class="lab-comment__h"><span class="ws-avatar lab-u" data-color="verde">JS</span><b>João S.</b> · 09:30 · §3 · resolvido</div><div>Trocar "sugere-se" por "recomenda-se".</div></div>
+
+      <div class="lab-panel__h" style="margin-top:var(--space-2)"><i data-ic="cronograma"></i>Versões · histórico <button class="ws-btn ws-btn--ghost ws-btn--sm">Comparar</button></div>
+      <div class="lab-versions">
+        <div class="lab-version" aria-current="true"><span class="ws-avatar lab-u" data-color="laranja">CP</span><span>v7 · agora<small>Carlos P. · +1 sugestão (custo 20→28%)</small></span><code>atual</code></div>
+        <div class="lab-version"><span class="ws-avatar lab-u" data-color="verde">JS</span><span>v6 · 09:55<small>João S. · +1 frase na §3 (sondagem)</small></span><code>restaurar</code></div>
+        <div class="lab-version"><span class="ws-avatar lab-u" data-color="azul">MH</span><span>v5 · 09:52<small>Maria H. · §1 reescrita · comentário resolvido</small></span><code>restaurar</code></div>
+        <div class="lab-version"><span class="ws-avatar" style="background:var(--spark-soft);color:var(--spark-ink)"><i data-ic="faisca"></i></span><span>v4 · 02/10 09:30 · marco "rascunho da IA"<small>IA · §3 gerada do resumo v3</small></span><code>restaurar</code></div>
+        <div class="lab-version"><span class="ws-avatar lab-u" data-color="azul">MH</span><span>v1 · 01/10 17:10<small>criada a partir do modelo "Minuta de decisão"</small></span><code>restaurar</code></div>
+      </div>
+      <p class="lab-muted">Snapshot a cada 5 min ou 200 updates (S3) · eventos no rastro (Cassandra) · metadados MySQL. Offline: alterações ficam no dispositivo e sincronizam ao voltar.</p>
+    </aside>
+  </div>
+  <nav class="lab-mobile-tabs" aria-label="abas no celular"><a href="#" aria-current="page"><i data-ic="texto-manual"></i>Texto</a><a href="#"><i data-ic="comentar"></i>Comentários</a><a href="#"><i data-ic="pessoas"></i>Pessoas</a><a href="#"><i data-ic="cronograma"></i>Versões</a></nav>
+</div>
+<h3>Variante celular (390 px)</h3>
+<p class="lab-note">Documento em coluna única; comentários e versões viram abas inferiores; presença fica na barra do topo.</p>
+<div class="lab-phone"><iframe title="Coedição no celular" src="decia.html?view=coedicao&amp;embed=1"></iframe></div>
+</section>
+
+<!-- ======================================================================================== CARD -->
+<section data-view="card" aria-labelledby="h-card">
+<h2 id="h-card">Card da sessão DECIA (listas, Descobrir, Meu trabalho, projeto)</h2>
+<p class="lead">Tema, objetivo (pergunta central), estado/fase, participantes, projeto vinculado, progresso "rumo à decisão", prazo e carimbo quando há decisão validada ou devolvida. Borda na cor do departamento; estado como etiqueta de protocolo (PROPOSTA tracejada, ATIVA sólida, EM_DECISAO com pulso, ENCERRADA com carimbo, ARQUIVADA esmaecida).</p>
+<div class="lab-cards">
+  <article class="lab-session" data-status="ativa">
+    <div class="lab-session__top"><span class="ws-monogram">U</span><span class="lab-muted">UTS · fechada (convite)</span><span class="ws-tag" data-state="em-uso">ATIVA</span></div>
+    <h3 class="lab-session__theme" style="margin:0">Drenagem do lote 2 (km 12–14)</h3>
+    <p class="lab-session__goal">Qual solução de drenagem adotar? Critérios: custo, prazo, risco geotécnico, conformidade.</p>
+    <div class="lab-percent" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100"><div class="lab-percent__label"><span>Rumo à decisão</span><span>62%</span></div><div class="lab-percent__track"><div class="lab-percent__fill" style="--p:62"></div></div></div>
+    <div class="lab-session__row"><span class="lab-presence"><span class="ws-avatar">MH</span><span class="ws-avatar">CP</span><span class="ws-avatar">JS</span><span class="ws-avatar">+3</span></span><span class="ws-due" data-due="soon"><i data-ic="relogio"></i>decidir até 10/10</span></div>
+    <div class="lab-session__row"><span class="lab-session__proj"><i data-ic="criar-projeto"></i>Pavimentação urbana — lote 2 · ANÁLISE 4/7</span><span class="lab-session__stats"><b>23</b> msgs · <b>1</b> divergência · <b>4</b> anexos</span></div>
+  </article>
+  <article class="lab-session" data-status="em-decisao" style="--dept:var(--dept-araucaria)">
+    <div class="lab-session__top"><span class="ws-monogram" style="--d:var(--dept-araucaria)">C</span><span class="lab-muted">CPOE · departamento</span><span class="ws-tag ws-tag--pulse" data-status="em-decisao">EM_DECISAO</span></div>
+    <h3 class="lab-session__theme" style="margin:0">Padrão de nomenclatura dos arquivos DWG</h3>
+    <p class="lab-session__goal">Adotar o padrão ISO 19650 ou manter o padrão interno? Critérios: custo de migração, interoperabilidade.</p>
+    <div class="lab-percent" role="progressbar" aria-valuenow="88" aria-valuemin="0" aria-valuemax="100"><div class="lab-percent__label"><span>Rumo à decisão</span><span>88%</span></div><div class="lab-percent__track"><div class="lab-percent__fill" style="--p:88"></div></div></div>
+    <div class="lab-session__row"><span class="lab-presence"><span class="ws-avatar">CP</span><span class="ws-avatar">LR</span><span class="ws-avatar">+5</span></span><span class="ws-due" data-due="over"><i data-ic="relogio"></i>venceu 01/10</span></div>
+    <div class="lab-session__row"><span class="lab-session__proj"><i data-ic="criar-projeto"></i>sem projeto · <span class="ws-spark"><i data-ic="faisca"></i></span> decisão proposta pela IA</span><span class="lab-session__stats"><b>61</b> msgs · <b>0</b> abertas</span></div>
+  </article>
+  <article class="lab-session ws-confetti" data-status="encerrada" data-fire="false">
+    <div class="lab-session__top"><span class="ws-monogram">U</span><span class="lab-muted">UTS · empresa</span><span class="ws-tag" data-state="concluida">ENCERRADA</span></div>
+    <h3 class="lab-session__theme" style="margin:0">Drenagem do lote 1</h3>
+    <p class="lab-session__goal">Galeria celular × vala a céu aberto. Decidido pela galeria celular; parecer jurídico anexado.</p>
+    <span class="ws-stamp">Validado<small>18/09/2025 · Ana Costa (chefe UTS)</small></span>
+    <div class="lab-percent" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"><div class="lab-percent__label"><span>Decidida</span><span>100%</span></div><div class="lab-percent__track"><div class="lab-percent__fill" style="--p:100"></div></div></div>
+    <div class="lab-session__row"><span class="lab-presence"><span class="ws-avatar">MH</span><span class="ws-avatar">AC</span><span class="ws-avatar">+4</span></span><span class="ws-due"><i data-ic="relogio"></i>encerrada em 18/09/2025</span></div>
+    <div class="lab-session__row"><span class="lab-session__proj"><i data-ic="criar-projeto"></i>Pavimentação urbana — lote 1 · CONCLUÍDO</span><span class="lab-session__stats"><b>3</b> tarefas geradas · rastro completo</span></div>
+  </article>
+  <article class="lab-session" data-status="proposta">
+    <div class="lab-session__top"><span class="ws-monogram" style="--d:var(--dept-ipe-roxo)">G</span><span class="lab-muted">CGPO · proposta pelo grupo</span><span class="ws-tag" data-state="rascunho">PROPOSTA</span></div>
+    <h3 class="lab-session__theme" style="margin:0">Convênio da iluminação pública</h3>
+    <p class="lab-session__goal">Estacionado na sessão "Drenagem lote 2" por Luísa R. — aguarda o administrador aceitar a abertura.</p>
+    <div class="lab-percent" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><div class="lab-percent__label"><span>Rumo à decisão</span><span>0%</span></div><div class="lab-percent__track"><div class="lab-percent__fill" style="--p:0"></div></div></div>
+    <div class="lab-session__row"><span class="lab-presence"><span class="ws-avatar">LR</span></span><span class="ws-due"><i data-ic="relogio"></i>sem prazo</span></div>
+    <div class="lab-session__row"><span class="lab-session__proj"><i data-ic="criar-projeto"></i>sem projeto</span><button class="ws-btn ws-btn--primary ws-btn--sm">Aceitar e abrir</button></div>
+  </article>
+  <article class="lab-session" data-status="devolvida" style="--dept:var(--dept-terracota)">
+    <div class="lab-session__top"><span class="ws-monogram" style="--d:var(--dept-terracota)">F</span><span class="lab-muted">CFOE · departamento</span><span class="ws-tag" data-status="devolvido">REABERTA</span></div>
+    <h3 class="lab-session__theme" style="margin:0">Reajuste do contrato de manutenção</h3>
+    <p class="lab-session__goal">Decisão devolvida: falta parecer jurídico sobre o índice. Sessão reaberta por pedido aceito (RF14).</p>
+    <span class="ws-stamp ws-stamp--devolvido">Devolvido<small>30/09/2026 · falta parecer jurídico</small></span>
+    <div class="lab-percent" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"><div class="lab-percent__label"><span>Rumo à decisão</span><span>70%</span></div><div class="lab-percent__track"><div class="lab-percent__fill" style="--p:70"></div></div></div>
+    <div class="lab-session__row"><span class="lab-presence"><span class="ws-avatar">RF</span><span class="ws-avatar">PL</span><span class="ws-avatar">+2</span></span><span class="ws-due" data-due="soon"><i data-ic="balanca"></i>prazo legal 07/10</span></div>
+    <div class="lab-session__row"><span class="lab-session__proj"><i data-ic="criar-projeto"></i>Manutenção viária 2026 · APROVAÇÃO 5/7</span><span class="lab-session__stats"><b>40</b> msgs</span></div>
+  </article>
+  <article class="lab-session" data-status="arquivada">
+    <div class="lab-session__top"><span class="ws-monogram">U</span><span class="lab-muted">UTS</span><span class="ws-tag" data-state="arquivada">ARQUIVADA</span></div>
+    <h3 class="lab-session__theme" style="margin:0">Sinalização horizontal — 2024</h3>
+    <p class="lab-session__goal">Histórico exportado (PDF) e indexado na Memória; consultável pelo rastro.</p>
+    <div class="lab-session__row"><span class="lab-presence"><span class="ws-avatar">MH</span><span class="ws-avatar">+6</span></span><span class="ws-due"><i data-ic="relogio"></i>arquivada em 12/2024</span></div>
+  </article>
+</div>
+<h3>Variante em lista (Meu trabalho / projeto › sessões)</h3>
+<div style="display:grid;gap:var(--space-2)">
+  <article class="lab-session lab-session--list"><span class="ws-tag" data-state="em-uso">ATIVA</span><span><h3 class="lab-session__theme" style="margin:0">Drenagem do lote 2 (km 12–14)</h3><span class="lab-muted">Qual solução de drenagem adotar? · Pavimentação — lote 2 · 6 pessoas</span></span><div class="lab-percent" style="width:140px"><div class="lab-percent__label"><span>decisão</span><span>62%</span></div><div class="lab-percent__track"><div class="lab-percent__fill" style="--p:62"></div></div></div><span class="ws-due" data-due="soon"><i data-ic="relogio"></i>10/10</span></article>
+  <article class="lab-session lab-session--list"><span class="ws-tag" data-state="concluida">ENCERRADA</span><span><h3 class="lab-session__theme" style="margin:0">Drenagem do lote 1</h3><span class="lab-muted">Galeria celular × vala · Pavimentação — lote 1 · 6 pessoas</span></span><span class="ws-stamp ws-stamp--mini">Validado</span><span class="ws-due"><i data-ic="relogio"></i>18/09/25</span></article>
+</div>
+<h3>Variante celular (390 px)</h3>
+<div class="lab-phone"><iframe title="Cards no celular" src="decia.html?view=card&amp;embed=1"></iframe></div>
+</section>
+</main>
+<script>
+(function(){
+  // ícones: <i data-ic="nome"> → <svg class="ws-icon"><use href="#ws-nome"/></svg> (sprite gerado de anatomias/lib/icons.mjs)
+  document.querySelectorAll('i[data-ic]').forEach(function(i){ var s=document.createElementNS('http://www.w3.org/2000/svg','svg'); s.setAttribute('class','ws-icon'); s.setAttribute('aria-hidden','true'); var u=document.createElementNS('http://www.w3.org/2000/svg','use'); u.setAttribute('href','#ws-'+i.dataset.ic); s.appendChild(u); i.replaceWith(s); });
+  var root=document.documentElement, q=new URLSearchParams(location.search);
+  var views=['layout1','layout2','layout3','mesa','coedicao','card'];
+  var view=q.get('view')||(location.hash||'').replace('#','')||'layout1'; if(views.indexOf(view)<0) view='layout1';
+  var embed=q.get('embed')==='1'; if(embed) document.body.dataset.embed='true';
+  function show(v){ document.querySelectorAll('[data-view]').forEach(function(s){ s.dataset.active=String(s.dataset.view===v); }); document.querySelectorAll('[data-tab]').forEach(function(a){ if(a.dataset.tab===v) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); }); }
+  show(view);
+  document.querySelectorAll('[data-tab]').forEach(function(a){ a.addEventListener('click',function(e){ e.preventDefault(); view=a.dataset.tab; history.replaceState(null,'','?view='+view); show(view); window.scrollTo(0,0); }); });
+  // tema (mesmo mecanismo da galeria); em embed, herda o tema do pai pela query ?theme=
+  var t=q.get('theme'); if(t) root.dataset.theme=t;
+  function refresh(){ var t=root.dataset.theme; document.querySelectorAll('[data-set-theme]').forEach(function(b){ b.setAttribute('aria-pressed',String(b.dataset.setTheme===t)); }); document.querySelectorAll('iframe').forEach(function(f){ var u=new URL(f.getAttribute('src'),location.href); u.searchParams.set('theme',t); if(f.src!==u.href) f.src=u.href; }); }
+  document.querySelectorAll('[data-set-theme]').forEach(function(b){ b.addEventListener('click',function(){ root.dataset.theme=b.dataset.setTheme; try{localStorage.setItem('ws.theme',b.dataset.setTheme)}catch(e){} refresh(); }); });
+  if(!t){ try{ var s=localStorage.getItem('ws.theme'); if(s&&['claro','escuro','contraste','blueprint'].indexOf(s)>=0) root.dataset.theme=s; }catch(e){} }
+  refresh();
+})();
+</script>
+</body>
+</html>

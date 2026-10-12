@@ -1,17 +1,21 @@
-# RF13 — Gerar artefatos automáticos (relatório, ata, checklist) como resposta ao grupo, através de notificações e análise fundamentada
-**HU:** HU13 · **Sprint (board Work Station):** 3 · **Equivalente FAI:** **RF13 artefatos automáticos (ata)** do FAI — citado como equivalente no card RF37 (Ata Viva "estende os artefatos automáticos do RF13") · **Aba/rota:** DECIA — sessão › aba "Artefatos" (`/decia/[sessionId]/artifacts`; rota a confirmar) + Notificações
-**Critérios de aceite cobertos:** RF13.CA01 · RF13.CA02 · RF13.CA03 · RF13.CA04 · RF13.CA05 · RF13.CA06 (RF1–RF18 não têm CAs no board: derivados da HU13 + RF29.CA02/CA04, RF33.CA01, RF37, RF42 e marcados "CA a confirmar")
+# RF13 — Utilizar a funcionalidade gerar artefato dentro de esquemas, chats, abas e feed do Work Station
+**HU:** HU13 · **Sprint (board Work Station):** lista *Requisitos Funcionais* sem sprint atribuída (card renumerado; o card "SPRINT 3" cita "RF13 Artefatos automáticos" da sessão DECIA — escopo preservado em `_anterior/RF13` e **ampliado** aqui para esquemas, chats de mensageria, abas e feed; fase (f) da ARQUITETURA §6: "RF29 ponte + RF13 artefatos") · **Equivalente FAI:** RF13 artefatos automáticos do FAI (ata) — citado no card RF37 ("Ata Viva estende os artefatos automáticos do RF13") · **Aba/rota:** botão **Gerar artefato ✦** em `/tasks/[id]`, `/projects/[id]` (e Mesa), `/decia/[sessionId]` (aba Artefatos), `/messages/[conversationId]` (RF46), abas `/tasks`, `/search`, `/insights`, `/departments/[slug]/team` e itens do `/mural`; lista em `/me/artifacts`; API `POST /api/artifacts`, `GET /api/artifacts/{id}`, `GET /api/me/artifacts`, `POST /api/artifacts/{id}/to-task`, `POST /api/artifacts/{id}/regenerate`, `GET /api/artifacts/{id}/download`
+**Critérios de aceite cobertos:** RF13.CA01 · RF13.CA02 · RF13.CA03 · RF13.CA04 · RF13.CA05 · RF13.CA06 — corpo do card vazio: CAs derivados do título + HU13 + `docs/diagramas/_anterior/RF13/README.md` (RF13.CA01–CA06 da sessão: geração, EXPORT_PDF, notificação, Transformar em tarefa, Regerar, INDEXAR_MEMORIA) + RF42.CA06 (cota) + RF33.CA03 (citações), marcados **(CA a confirmar)**. Todas as classes do RF são **(planejado)**; reais: `Guard`, `AuditLogPort`, `SecurityConfig`, `AiProvidersConfig`, `S3StorageConfig`.
 
-> **HU13** — COMO IA do sistema POSSO gerar automaticamente artefatos (relatório, ata, checklist) e disponibilizá-los ao grupo por meio de notificações PARA documentar formalmente a sessão e facilitar a execução das ações decorrentes.
+> **HU13** — COMO usuário conectado dentro do Work Station POSSO clicar em gerar artefato dentro de um esquema ou chat DECIA PARA receber um arquivo produzido por IA e alinhado com os objetivos de minha equipe.
 
-| CA | Enunciado (CA a confirmar) |
+`SessionArtifact` (TAXONOMIA §5.14) nasce na sessão DECIA; o título atual do card estende a origem a **esquemas** (tarefa/projeto), **chats** (sessão DECIA e mensageria RF46), **abas** (Acervo, Buscar, Insights, Minha equipe) e **feed** (Mural). A entidade generalizada é `GeneratedArtifact` **(proposta)** com `originType`/`originId`, `status` (`ArtifactStatus`, proposta) e `goalAlignmentJson` (objetivos da equipe: `PlanAxis`, `CollectiveGoal`). A geração roda pelo `AiEngine` capability `ARTEFATO` com citações da Memória Institucional (RF33) e cota (`AiQuota`, RF42.CA06).
+
+## Critérios de aceite derivados da HU13 (todos "CA a confirmar")
+
+| CA | Enunciado (Dado / Quando / Então) |
 |---|---|
-| **RF13.CA01** | Dado decisão VALIDADA (RF15) — ou resumo PUBLICADO (RF11) para o artefato RESUMO_PDF — quando o evento AFTER_COMMIT dispara, então a IA (capability ARTEFATO) gera `SessionArtifact` de kind **RELATORIO**, **ATA** e **CHECKLIST** com `contentMd` fundamentado (tema, participantes, argumentos, divergências, decisão, revisor, citações) e `aiInferenceId`; `generatedAt` preenchido. |
-| **RF13.CA02** | Dado o `contentMd` salvo, então um `PipelineJob` EXPORT_PDF renderiza o PDF, grava em S3 (`MediaObject`) e preenche `mediaObjectId`; falha de renderização mantém o `contentMd` legível e o job vai a REPROCESSAR (retry com backoff). |
-| **RF13.CA03** | Dado artefatos prontos, então cada participante recebe **uma** `Notification` (categoria DECIA, `groupKey` = sessionId para agrupar os três) com título e link para a aba Artefatos; `notifiedAt` é preenchido em cada `SessionArtifact`. |
-| **RF13.CA04** | Dado um artefato, quando um participante aciona **"Transformar em tarefa"** (RF29.CA04), então é criada `TaskItem` (ATA → tipo ATA_REGISTRO / categoria ATA; RELATORIO → DOCUMENTO; CHECKLIST → FORMULARIO) com `sourceKind = DECIA`, `convertedTaskId` preenchido e rastro ARTEFATO → TRANSFORMOU_EM → TAREFA; repetir a ação → `409 ARTEFATO_JA_CONVERTIDO`. |
-| **RF13.CA05** | Dado o administrador da sessão, quando aciona "Regerar" com instrução de ajuste, então uma nova linha de `SessionArtifact` é gerada e a anterior preservada; não-participante → `403 ACESSO_NEGADO`; sessão sem decisão validada nem resumo publicado → `409 SEM_BASE_PARA_ARTEFATO`; instrução vazia → `422 VALIDACAO`. |
-| **RF13.CA06** | Dado artefato gerado, então é indexado na Memória Institucional (`InstitutionalMemoryDocument.sourceType = ARTEFATO`, RF33.CA01) por `PipelineJob` INDEXAR_MEMORIA assíncrono; falha não bloqueia a geração (RF33.CA06). |
+| **RF13.CA01** (CA a confirmar) | Dado o usuário em um esquema (tarefa/projeto), chat (sessão DECIA ou mensageria RF46), aba (Acervo, Buscar, Insights, Minha equipe) ou item do feed/Mural, quando aciona **Gerar artefato ✦**, então escolhe o `kind` compatível com a origem (RELATORIO · ATA · CHECKLIST · RESUMO_PDF · **MINUTA_DOCUMENTO · PLANILHA · CRONOGRAMA · APRESENTACAO** propostos) e uma instrução (≤ 1 000); `POST /api/artifacts {originType, originId, kind, instruction}` cria `GeneratedArtifact SOLICITADO` e devolve `202 {artifactId}`; a geração roda em `PipelineJob GERAR_ARTEFATO` (tipo proposto) com resposta esperada ≤ 30 s; kind incompatível ou instrução vazia → `422 VALIDACAO`; origem sem conteúdo → `409 SEM_BASE_PARA_ARTEFATO`. |
+| **RF13.CA02** (CA a confirmar) | Dado o job, então `ArtifactContextBuilder` monta o **contexto por origem**: esquema → `TaskItem`/`ProjectScheme` + `ProjectTask`s + decisões vinculadas (`DeciaSession.linkedProjectId`); chat → `SessionMessage`s + `MessageClassification` (ou `DirectMessage`s de `DirectConversation`, RF46); aba → filtros ativos + itens visíveis; feed → `MuralEntry` alvo; sempre acrescenta os **objetivos da equipe** (`PlanAxis` do `AnnualPlan` do departamento, `CollectiveGoal` ABERTAS) em `goalAlignmentJson`; só entra o que o requerente pode ver (`AccessPolicy.canView`); `accessClass` RESTRITO/SIGILOSO em qualquer item → motor local (`BLOQUEADO_SIGILO` para externo) ou item mascarado. |
+| **RF13.CA03** (CA a confirmar) | Dado o contexto, então `AiEngine` (capability ARTEFATO, `hostRf RF13`, `inputSummaryJson.originType`) gera `title` + `contentMd` fundamentado com citações da Memória Institucional (`Citation`; "Sem precedente" quando vazio, RF33.CA03), após `AiQuota.tryConsume` (créditos antes da cota mensal; sem saldo → `409 COTA_ESGOTADA` + Loja); `AiInferenceLog` registra provider, modo (ECONOMIA/AVANCADO), tokens e `quotaSource`; faísca ✦ com tooltip "gerado por IA em data" (RF38.CA04); limite de 10 gerações/hora por usuário → `429 LIMITE_GERACAO` (proposta, `RateLimitPort`). |
+| **RF13.CA04** (CA a confirmar) | Dado `contentMd` salvo (`GERADO`), então `PipelineJob EXPORT_PDF` (ou XLSX para PLANILHA/CRONOGRAMA) renderiza o arquivo, grava em S3 (`MediaObject`) e preenche `mediaObjectId` (`PRONTO`); `PipelineJob INDEXAR_MEMORIA` indexa `InstitutionalMemoryDocument.sourceType ARTEFATO`; falha de render mantém o `contentMd` legível e o job vai a REPROCESSAR; falha de indexação não bloqueia (RF33.CA06). |
+| **RF13.CA05** (CA a confirmar) | Dado o artefato pronto, então `Notification ARTEFATO` vai ao requerente (e a todos os participantes quando a origem é chat, `groupKey = originId`); o artefato aparece **na origem** (painel Artefatos do esquema, aba Artefatos da sessão, mensagem SISTEMA no chat, bloco da aba, comentário do item do feed) e em `/me/artifacts`; ações: baixar (URL assinada), **Transformar em tarefa** (`TaskItem` com `sourceKind DECIA` se origem for sessão, senão TEXTO_IA; ATA → ATA_REGISTRO, RELATORIO/MINUTA → DOCUMENTO, CHECKLIST → FORMULARIO, PLANILHA → PLANILHA, CRONOGRAMA → CRONOGRAMA; `convertedTaskId`; repetir → `409 ARTEFATO_JA_CONVERTIDO`), **Regerar** com ajuste (nova linha, anterior preservada, `supersedesArtifactId`), compartilhar no Mural (RF26.CA05); anexado numa sessão e usado na decisão → `MessageAttachment.usedInDecision` e DP `ARTEFATO_USADO` (RF42). |
+| **RF13.CA06** (CA a confirmar) | Dado o pedido, então `403 ACESSO_NEGADO` quando o requerente não pode ver a origem (não participante da sessão/chat, item PRIVADO de terceiro, aba de gestão sem `requireDeptHead`); a visibilidade do artefato herda a da origem (`Visibility` da tarefa/projeto, participantes do chat, dono da aba); artefatos de origem SIGILOSA nunca vão ao Mural nem à Memória pública; `AuditLog ARTIFACT_GENERATED` com `correlationId`. |
 
 ## 1. Diagrama de classes
 
@@ -19,330 +23,333 @@
 classDiagram
   direction LR
 
-  class DeciaSession {
-    <<entity>>
-    +UUID id
-    +String topic
-    +UUID adminUserId
-    +UUID linkedProjectId
-    +SessionStatus status
+  class ArtifactController {
+    <<controller>>
+    +create(CreateArtifactRequest, CurrentUser, ctx) ResponseEntity
+    +get(id, CurrentUser) ArtifactView
+    +listMine(filters, CurrentUser) Page
+    +toTask(id, CurrentUser, ctx) TaskView
+    +regenerate(id, RegenerateRequest, CurrentUser, ctx) ResponseEntity
+    +download(id, CurrentUser) PresignedUrl
   }
-  class FinalDecision {
-    <<entity>>
-    +UUID id
-    +UUID sessionId
-    +String decisionText
-    +String rationale
-    +DecisionStatus status
-    +String stampJson
-    +String citationsJson
+  class ArtifactService {
+    <<service>>
+    +request(CreateArtifactCommand, actor, ctx) GeneratedArtifact
+    +generate(artifactId) void
+    +toTask(id, actor, ctx) TaskItem
+    +regenerate(id, instruction, actor, ctx) GeneratedArtifact
+    -kindsFor(originType) Set~ArtifactKind~
   }
-  class AnalyticalSummary {
+  class ArtifactContextBuilder {
+    <<service>>
+    +build(originType, originId, viewer) ArtifactContext
+    -goalAlignment(departmentId) JSON
+    -maxAccessClass(items) AccessClassification
+  }
+  class ArtifactRenderer {
+    <<service>>
+    +render(GeneratedArtifact) MediaObject
+    PDF · XLSX · PPTX
+  }
+  class AiEngine {
+    <<service>>
+    +run(AiRequest) AiResponse
+    capability ARTEFATO
+  }
+  class MemorySearchService {
+    <<service>>
+    +citationsFor(context) List~Citation~
+  }
+  class AccessPolicy {
+    <<service>>
+    +canView(viewer, origin) boolean
+    +visibilityOf(origin) Visibility
+  }
+  class Guard {
+    <<service>>
+    +requireParticipant(CurrentUser, sessionId) void
+    +requireDeptHead(CurrentUser, Department) void
+  }
+  class ArtifactRepositoryPort {
+    <<port>>
+    +save(GeneratedArtifact) GeneratedArtifact
+    +findById(id) Optional
+    +findByRequester(userId, filters) Page
+  }
+  class PipelineJobPort {
+    <<port>>
+    +enqueue(type, targetType, targetId) PipelineJob
+  }
+  class QuotaPort {
+    <<port>>
+    +tryConsume(scope, id, cost) boolean
+  }
+  class RateLimitPort {
+    <<port>>
+    +tryAcquire(owner, bucket, limit, window) boolean
+  }
+  class MediaStoragePort {
+    <<port>>
+    +put(key, bytes, mime) MediaObject
+    +presign(key, ttl) URL
+  }
+  class MemoryIndexPort {
+    <<port>>
+    +index(InstitutionalMemoryDocument) void
+  }
+  class NotificationPort {
+    <<port>>
+    +notify(Notification) void
+  }
+
+  class GeneratedArtifact {
     <<entity>>
     +UUID id
-    +UUID sessionId
-    +String recommendationsJson
-    +SummaryStatus status
+    +ArtifactOriginType originType
+    +UUID originId
+    +UUID requesterId
+    +ArtifactKind kind
+    +String instruction
+    +String title
+    +String contentMd
+    +JSON citationsJson
+    +JSON goalAlignmentJson
+    +ArtifactStatus status
+    +UUID mediaObjectId
+    +UUID aiInferenceId
+    +UUID convertedTaskId
+    +UUID supersedesArtifactId
+    +Visibility visibility
+    +AccessClassification accessClass
+    +Instant generatedAt
+    +Instant notifiedAt
   }
   class SessionArtifact {
     <<entity>>
-    +UUID id
     +UUID sessionId
-    +ArtifactKind kind
+    +String kind
     +String title
     +UUID mediaObjectId
     +String contentMd
-    +Instant generatedAt
     +UUID aiInferenceId
-    +Instant notifiedAt
     +UUID convertedTaskId
   }
-  class MediaObject {
+  class DeciaSession {
     <<entity>>
     +UUID id
-    +String bucket
-    +String key
-    +String mimeType
-    +long sizeBytes
-    +String sha256
-    +AccessClassification accessClass
+    +UUID linkedProjectId
+    +SessionStatus status
   }
-  class PipelineJob {
+  class SessionMessage {
     <<entity>>
-    +UUID id
-    +PipelineJobType type
-    +String targetType
-    +UUID targetId
-    +PipelineJobStatus status
-    +int attempts
-    +String lastError
-    +Instant scheduledAt
-    +Instant finishedAt
+    +UUID sessionId
+    +String bodyMd
+    +UUID classificationId
   }
-  class Notification {
+  class DirectConversation {
     <<entity>>
     +UUID id
-    +UUID recipientId
-    +NotificationType type
-    +String category
-    +String resourceType
-    +UUID resourceId
-    +String title
-    +String groupKey
-    +boolean read
+    +ConversationKind kind
   }
   class TaskItem {
     <<entity>>
     +UUID id
-    +UUID ownerId
-    +String title
     +TaskType type
-    +TaskCategory category
     +SourceKind sourceKind
-    +String sourceRef
-    +TaskState state
+    +AccessClassification accessClass
+    +Visibility visibility
   }
-  class DecisionTraceNode {
+  class ProjectScheme {
     <<entity>>
     +UUID id
-    +TraceNodeType nodeType
-    +UUID refId
-    +String label
+    +UUID departmentId
+    +Visibility visibility
   }
-  class InstitutionalMemoryDocument {
+  class MuralEntry {
     <<entity>>
-    +String docId
-    +String sourceType
-    +UUID sourceId
+    +String kind
+    +String targetType
+    +UUID targetId
+  }
+  class PlanAxis {
+    <<entity>>
+    +String name
+    +String goal
+    +String indicator
+  }
+  class CollectiveGoal {
+    <<entity>>
     +String title
-    +String text
-    +float[] embedding
+    +GoalStatus status
   }
   class AiInferenceLog {
     <<entity>>
-    +UUID id
     +AiCapability capability
-    +String provider
-    +String result
+    +String hostRf
+    +AiMode mode
+    +String quotaSource
+    +InferenceResult result
   }
-
+  class Citation {
+    <<value>>
+    +MemorySourceType sourceType
+    +UUID sourceId
+    +String excerpt
+    +BigDecimal score
+  }
+  class PipelineJob {
+    <<entity>>
+    +String type
+    +PipelineJobStatus status
+  }
+  class ArtifactStatus {
+    <<enum>>
+    SOLICITADO
+    GERANDO
+    GERADO
+    PRONTO
+    FALHA
+    SUBSTITUIDO
+  }
   class ArtifactKind {
     <<enum>>
     RELATORIO
     ATA
     CHECKLIST
     RESUMO_PDF
+    MINUTA_DOCUMENTO
+    PLANILHA
+    CRONOGRAMA
+    APRESENTACAO
   }
-  class PipelineJobType {
+  class ArtifactOriginType {
     <<enum>>
-    EXPORT_PDF
-    INDEXAR_MEMORIA
-    THUMBNAIL
+    TASK
+    PROJECT
+    DECIA_SESSION
+    DIRECT_CONVERSATION
+    TAB
+    MURAL_ENTRY
   }
-  class PipelineJobStatus {
-    <<enum>>
-    PENDENTE
-    RODANDO
-    OK
-    FALHA
-    REPROCESSAR
-  }
-  class TaskType {
-    <<enum>>
-    ATA_REGISTRO
-    DOCUMENTO
-    FORMULARIO
-  }
-  class SourceKind {
-    <<enum>>
-    DECIA
-    ARQUIVO
-    COLAR
-  }
-
-  class ArtifactController {
-    <<controller>>
-    +list(sessionId) 200
-    +download(sessionId, artifactId) 302
-    +regenerate(sessionId, artifactId, instruction) 202
-    +toTask(sessionId, artifactId) 201
-  }
-  class ArtifactService {
-    <<service>>
-    +onDecisionValidated(event) AFTER_COMMIT
-    +onSummaryPublished(event) AFTER_COMMIT
-    +generate(sessionId, kinds) List~SessionArtifact~
-    +regenerate(actor, sessionId, artifactId, instruction)
-    +toTask(actor, sessionId, artifactId) TaskItem
-  }
-  class TaskCreationService {
-    <<service>>
-    +createFromArtifact(artifact, actor) TaskItem
-  }
-  class DecisionTraceService {
-    <<service>>
-    +appendNode(sessionId, ARTEFATO, artifactId)
-    +appendEdge(decisionNode, artifactNode, ORIGINOU)
-  }
-  class AiEnginePort {
-    <<port>>
-    +generateArtifact(kind, context) ArtifactDraft
-  }
-  class MediaStoragePort {
-    <<port>>
-    +put(bucket, key, bytes) MediaObject
-    +presignedUrl(mediaObjectId) URL
-  }
-  class PdfRenderPort {
-    <<port>>
-    +render(contentMd) bytes
-  }
-  class NotificationPort {
-    <<port>>
-    +notifyGroup(recipients, type, resource, groupKey)
-  }
-  class MemoryIndexPort {
-    <<port>>
-    +index(InstitutionalMemoryDocument)
-  }
-  class SessionArtifactRepository {
-    <<adapter>>
-    MySQL session_artifacts
-  }
-  class S3MediaAdapter {
-    <<adapter>>
-    bucket ws-artifacts
-  }
-  class PipelineJobRunner {
-    <<adapter>>
-    platform — fila de jobs
-  }
-  class OpenSearchMemoryAdapter {
-    <<adapter>>
-    índice ws-memory
-  }
-
-  DeciaSession "1" --> "*" SessionArtifact : artefatos
-  SessionArtifact --> ArtifactKind
-  SessionArtifact ..> MediaObject : mediaObjectId
-  SessionArtifact ..> AiInferenceLog : aiInferenceId
-  SessionArtifact ..> TaskItem : convertedTaskId
-  SessionArtifact ..> FinalDecision : base (VALIDADA)
-  SessionArtifact ..> AnalyticalSummary : base (PUBLICADO)
-  PipelineJob --> PipelineJobType
-  PipelineJob --> PipelineJobStatus
-  PipelineJob ..> SessionArtifact : targetId
-  TaskItem --> TaskType
-  TaskItem --> SourceKind
-  DecisionTraceNode ..> SessionArtifact : refId quando ARTEFATO
-  InstitutionalMemoryDocument ..> SessionArtifact : sourceId (ARTEFATO)
-  Notification ..> SessionArtifact : resourceId
 
   ArtifactController --> ArtifactService
-  ArtifactService --> AiEnginePort
-  ArtifactService --> SessionArtifactRepository
-  ArtifactService --> PipelineJob : agenda EXPORT_PDF e INDEXAR_MEMORIA
+  ArtifactService --> ArtifactContextBuilder
+  ArtifactService --> ArtifactRenderer
+  ArtifactService --> AiEngine
+  ArtifactService --> MemorySearchService
+  ArtifactService --> AccessPolicy
+  ArtifactService --> Guard
+  ArtifactService --> ArtifactRepositoryPort
+  ArtifactService --> PipelineJobPort
+  ArtifactService --> QuotaPort
+  ArtifactService --> RateLimitPort
+  ArtifactService --> MediaStoragePort
+  ArtifactService --> MemoryIndexPort
   ArtifactService --> NotificationPort
-  ArtifactService --> DecisionTraceService
-  ArtifactService --> TaskCreationService
-  PipelineJobRunner --> PdfRenderPort
-  PipelineJobRunner --> MediaStoragePort
-  PipelineJobRunner --> MemoryIndexPort
-  MediaStoragePort <|.. S3MediaAdapter
-  MemoryIndexPort <|.. OpenSearchMemoryAdapter
-
-  note for SessionArtifact "tabela session_artifacts — kind RELATORIO, ATA, CHECKLIST, RESUMO_PDF .. contentMd é a fonte, PDF é derivado .."
-  note for PipelineJob "tabela pipeline_jobs — EXPORT_PDF e INDEXAR_MEMORIA; retry com backoff até REPROCESSAR"
-  note for Notification "Cassandra notifications_by_user + MySQL notifications — groupKey = sessionId agrupa os 3 artefatos"
+  ArtifactContextBuilder --> AccessPolicy
+  GeneratedArtifact <|-- SessionArtifact : originType DECIA_SESSION (compatibilidade)
+  GeneratedArtifact --> ArtifactStatus
+  GeneratedArtifact --> ArtifactKind
+  GeneratedArtifact --> ArtifactOriginType
+  GeneratedArtifact "0..*" --> "0..1" DeciaSession : origem chat
+  GeneratedArtifact "0..*" --> "0..1" DirectConversation : origem chat (RF46)
+  GeneratedArtifact "0..*" --> "0..1" TaskItem : origem esquema
+  GeneratedArtifact "0..*" --> "0..1" ProjectScheme : origem esquema
+  GeneratedArtifact "0..*" --> "0..1" MuralEntry : origem feed
+  GeneratedArtifact "0..*" --> "0..1" TaskItem : convertedTaskId
+  GeneratedArtifact "0..*" --> "0..1" GeneratedArtifact : supersedesArtifactId
+  GeneratedArtifact "0..*" --> "0..1" AiInferenceLog
+  GeneratedArtifact ..> Citation : citationsJson
+  DeciaSession "1" --> "0..*" SessionMessage
+  ArtifactContextBuilder ..> PlanAxis : goalAlignmentJson
+  ArtifactContextBuilder ..> CollectiveGoal : goalAlignmentJson
+  PipelineJob "0..*" --> "1" GeneratedArtifact : GERAR_ARTEFATO · EXPORT_PDF · INDEXAR_MEMORIA
+  note for GeneratedArtifact "Proposta: generaliza SessionArtifact (TAXONOMIA §5.14) para as 6 origens do título. ArtifactStatus e os kinds MINUTA_DOCUMENTO/PLANILHA/CRONOGRAMA/APRESENTACAO são propostos."
 ```
 
 ## 2. Diagrama de atividades
 
 ```mermaid
 flowchart TD
-  subgraph L1["Grupo / Administrador da sessão"]
-    A0(["Decisão VALIDADA (RF15) ou resumo PUBLICADO (RF11)"])
-    A1["Participante recebe notificação: Artefatos da sessão disponíveis"]
-    A2["Abre aba Artefatos e lê relatório, ata, checklist"]
-    A3{"Ação?"}
-    A4["Baixar PDF"]
-    A5["Transformar em tarefa (RF29.CA04)"]
-    A6["Admin pede Regerar com instrução"]
-    A7(["Fim"])
+  subgraph ATOR["Usuário autenticado"]
+    A1["Está numa tarefa/projeto, sessão DECIA, chat, aba ou item do Mural e clica Gerar artefato ✦"]
+    A2["Escolhe o kind compatível e escreve a instrução (≤ 1 000)"]
+    A3["Recebe a notificação e abre o artefato na origem ou em /me/artifacts"]
+    A4["Baixa · Transforma em tarefa · Regera com ajuste · Compartilha no Mural"]
+  end
+  subgraph FE["Next.js (App Router) · BFF"]
+    F1["Sheet Gerar artefato: kinds por origem (ArtifactService.kindsFor) · Textarea · Spark ✦ animada enquanto gera"]
+    F2["POST /api/artifacts {originType, originId, kind, instruction} → 202 {artifactId}"]
+    F3["Polling GET /api/artifacts/{id} até PRONTO (ou falha)"]
+    F4["Painel Artefatos da origem · /me/artifacts · mensagem SISTEMA no chat · comentário no feed"]
+    F5["POST …/to-task · POST …/regenerate · GET …/download (URL assinada)"]
+  end
+  subgraph WEB["ws-web"]
+    W1["JWT + SessionActiveFilter + CurrentUserArgumentResolver"]
+    W2["ArtifactController"]
+    E403["403 ACESSO_NEGADO (não vê a origem · aba de gestão sem requireDeptHead)"]
+    E422["422 VALIDACAO (kind incompatível, instrução vazia)"]
+    E409B["409 SEM_BASE_PARA_ARTEFATO"]
+    E409Q["409 COTA_ESGOTADA (atalho Loja)"]
+    E409C["409 ARTEFATO_JA_CONVERTIDO"]
+    E429["429 LIMITE_GERACAO (10/h por usuário)"]
+  end
+  subgraph APP["ws-application"]
+    S1["AccessPolicy.canView(actor, origem) · Guard.requireParticipant/requireDeptHead"]
+    S2{"pode ver a origem?"}
+    S3{"kind compatível e instrução ok?"}
+    S4{"RateLimitPort 10/h ok?"}
+    S5["GeneratedArtifact SOLICITADO (visibility e accessClass herdadas) · PipelineJob GERAR_ARTEFATO · AuditLog ARTIFACT_GENERATED"]
+    J1["Job: ArtifactContextBuilder.build (itens visíveis + goalAlignmentJson de PlanAxis/CollectiveGoal)"]
+    J2{"origem tem conteúdo?"}
+    J3{"AiQuota.tryConsume?"}
+    J4["MemorySearchService.citationsFor → Citation[] ('Sem precedente' se vazio)"]
+    J5["status GERADO: title + contentMd + citationsJson + aiInferenceId"]
+    J6["PipelineJob EXPORT_PDF/XLSX → ArtifactRenderer → S3 → mediaObjectId · status PRONTO"]
+    J7["PipelineJob INDEXAR_MEMORIA → InstitutionalMemoryDocument ARTEFATO (não bloqueia; SIGILOSO não indexa público)"]
+    J8["status FALHA (contentMd preservado se já GERADO; render → REPROCESSAR)"]
+    T1["toTask: TaskItem (sourceKind DECIA | TEXTO_IA; tipo por kind) · convertedTaskId"]
+    T2["regenerate: novo GeneratedArtifact com supersedesArtifactId · anterior SUBSTITUIDO"]
+    EV["AFTER_COMMIT: Notification ARTEFATO (requerente + participantes do chat, groupKey originId) · artefato na origem · MessageAttachment.usedInDecision → DP ARTEFATO_USADO (RF42)"]
+  end
+  subgraph IA["AiEngine"]
+    I1["Governança: maxAccessClass RESTRITO/SIGILOSO → LocalEngine (BLOQUEADO_SIGILO) · mascaramento LGPD · modo ECONOMIA/AVANCADO"]
+    I2["ARTEFATO hostRf RF13 · Claude → Gemini → LocalEngine · AiInferenceLog (tokens, quotaSource)"]
+  end
+  subgraph PERS["Persistência"]
+    P1[("MySQL: generated_artifacts, pipeline_jobs, ai_inference_log, tasks, audit_log, session_messages_idx, mural_entries, plan_axes, collective_goals")]
+    P2[("Cassandra: messages_by_session · messages_by_conversation · notifications_by_user")]
+    P3[("S3: PDF/XLSX/PPTX gerados")]
+    P4[("OpenSearch ws-memory (citações e indexação)")]
+    P5[("Redis: AiQuota · balde artifact-gen 10/h")]
   end
 
-  subgraph L2["Web / BFF (Next.js App Router)"]
-    B1["GET /api/decia/sessions/{id}/artifacts"]
-    B2["GET /api/decia/sessions/{id}/artifacts/{aid}/download → 302 URL assinada S3"]
-    B3["POST /api/decia/sessions/{id}/artifacts/{aid}/to-task"]
-    B4["POST /api/decia/sessions/{id}/artifacts/{aid}/regenerate"]
-    B5["Exibe 403 ACESSO_NEGADO"]
-    B6["Exibe 409 ARTEFATO_JA_CONVERTIDO"]
-    B7["Exibe 409 SEM_BASE_PARA_ARTEFATO ou 422 VALIDACAO"]
-    B8["Mostra contentMd renderizado enquanto PDF não está pronto"]
-  end
-
-  subgraph L3["ws-application (ArtifactService)"]
-    C0["Listener DecisionValidated / SummaryPublished (AFTER_COMMIT)"]
-    C1["Monta contexto: tema, participantes, classificações, divergências, decisão, revisor, citações"]
-    C2["Para cada kind em RELATORIO, ATA, CHECKLIST"]
-    C3["AiEnginePort.generateArtifact(kind, contexto)"]
-    C4["INSERT SessionArtifact (contentMd, aiInferenceId, generatedAt)"]
-    C5["Agenda PipelineJob EXPORT_PDF e INDEXAR_MEMORIA"]
-    C6["Rastro: nó ARTEFATO + aresta ORIGINOU (DECISAO → ARTEFATO)"]
-    C7["NotificationPort.notifyGroup (groupKey = sessionId)"]
-    C8["SessionArtifact.notifiedAt = now"]
-    C9{"actor é participante?"}
-    C10{"convertedTaskId nulo?"}
-    C11["TaskCreationService.createFromArtifact (ATA_REGISTRO / DOCUMENTO / FORMULARIO, sourceKind DECIA)"]
-    C12["convertedTaskId = taskId; rastro ARTEFATO → TRANSFORMOU_EM → TAREFA"]
-    C13{"actor = adminUserId e instrução não vazia e há base?"}
-  end
-
-  subgraph L4["IA (AiEngine)"]
-    D1["ARTEFATO: redige relatório, ata (pauta, deliberação, encaminhamentos) e checklist (ações, responsáveis, prazos)"]
-    D2["Cita fontes (baseado em …) e marca faísca ✦"]
-    D3["AiInferenceLog"]
-  end
-
-  subgraph L5["Persistência"]
-    E1[("MySQL session_artifacts · pipeline_jobs · decision_trace_nodes/edges")]
-    E2[("S3 ws-artifacts (PDF) + MySQL media_objects")]
-    E3[("OpenSearch ws-memory")]
-    E4[("Cassandra notifications_by_user + MySQL notifications")]
-    E5[("MySQL tasks")]
-  end
-
-  subgraph L6["PipelineJobRunner (assíncrono)"]
-    F1["EXPORT_PDF: render contentMd → PDF → S3 → mediaObjectId"]
-    F2{"render OK?"}
-    F3["status OK"]
-    F4["status REPROCESSAR (retry com backoff) — contentMd permanece legível"]
-    F5["INDEXAR_MEMORIA: embedding → ws-memory (sourceType ARTEFATO)"]
-  end
-
-  A0 --> C0 --> C1 --> C2 --> C3 --> D1 --> D2 --> D3 --> C4 --> E1
-  C4 --> C5 --> E1
-  C5 --> F1 --> F2
-  F2 -->|sim| F3 --> E2
-  F2 -->|não| F4 --> F1
-  C5 --> F5 --> E3
-  C4 --> C6 --> E1
-  C6 --> C7 --> E4
-  C7 --> C8 --> E1
-  C7 --> A1 --> A2 --> B1 --> B8 --> A3
-  A3 -->|baixar| A4 --> B2 --> E2
-  B2 --> A7
-  A3 -->|tarefa| A5 --> B3 --> C9
-  C9 -->|não| B5 --> A7
-  C9 -->|sim| C10
-  C10 -->|não| B6 --> A7
-  C10 -->|sim| C11 --> E5
-  C11 --> C12 --> E1
-  C12 --> A7
-  A3 -->|regerar| A6 --> B4 --> C13
-  C13 -->|não| B7 --> A7
-  C13 -->|sim| C1
+  A1 --> F1 --> A2 --> F2 --> W1 --> W2 --> S1 --> S2
+  S2 -->|"não"| E403
+  S2 -->|"sim"| S3
+  S3 -->|"não"| E422
+  S3 -->|"sim"| S4
+  S4 -->|"não"| E429
+  S4 --> P5
+  S4 -->|"sim"| S5 --> P1
+  S5 --> F3
+  S5 --> J1 --> J2
+  J1 --> P2
+  J2 -->|"não"| E409B
+  J2 -->|"sim"| J3
+  J3 -->|"não"| E409Q
+  J3 -->|"sim"| I1 --> I2 --> J4 --> J5 --> J6 --> J7
+  J4 --> P4
+  I2 --> P1
+  J6 --> P3
+  J7 --> P4
+  I2 -->|"erro"| J8
+  J6 -->|"erro de render"| J8
+  J6 --> EV --> P2
+  F3 --> A3 --> F4 --> A4 --> F5 --> W2
+  W2 --> T1 --> P1
+  T1 -->|"repetido"| E409C
+  W2 --> T2 --> S4
 ```
 
 ## 3. Diagrama de sequência
@@ -350,104 +357,116 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   autonumber
-  actor U as Usuário (participante)
-  participant FE as Next.js (App Router)
+  actor U as Usuário
+  participant N as Next.js (App Router)
   participant C as Controller (ws-web)
   participant S as Service (ws-application)
   participant AI as AiEngine
-  participant DB as Repository/MySQL
+  participant R as Repository/MySQL
   participant CS as Cassandra
   participant OS as OpenSearch
+  participant RD as Redis
   participant S3 as S3
   participant EV as DomainEvents (AFTER_COMMIT)
 
-  rect rgb(245, 242, 239)
-    Note over U,EV: Caminho feliz — decisão validada gera relatório, ata e checklist, notifica o grupo e vira tarefa
-    EV-->>S: ArtifactService.onDecisionValidated(sessionId, decisionId)
-    S->>DB: SELECT decia_sessions, final_decisions (VALIDADA, stampJson), decision_reviews, analytical_summaries
-    S->>CS: SELECT messages_by_session (resumo das mensagens-base)
-    loop kind em RELATORIO, ATA, CHECKLIST
-      S->>AI: generateArtifact(kind, contexto, citations)
-      AI-->>S: ArtifactDraft {title, contentMd, citations}
-      S->>DB: INSERT ai_inference_log (ARTEFATO)
-      S->>DB: INSERT session_artifacts (kind, title, contentMd, generatedAt, aiInferenceId)
-      S->>DB: INSERT pipeline_jobs (EXPORT_PDF, targetId = artifactId, PENDENTE)
-      S->>DB: INSERT pipeline_jobs (INDEXAR_MEMORIA, targetId = artifactId, PENDENTE)
-      S->>DB: INSERT decision_trace_nodes (ARTEFATO) + decision_trace_edges (DECISAO → ARTEFATO, ORIGINOU)
-    end
-    S->>CS: INSERT notifications_by_user (participantes, ARTEFATOS_DISPONIVEIS, groupKey = sessionId)
-    S->>DB: INSERT notifications (espelho) + UPDATE session_artifacts SET notifiedAt
-    Note over S,S3: PipelineJobRunner (assíncrono)
-    S->>DB: UPDATE pipeline_jobs SET status = RODANDO
-    S->>S: PdfRenderPort.render(contentMd)
-    S->>S3: PUT ws-artifacts/{sessionId}/{artifactId}.pdf
-    S3-->>S: etag, sha256
-    S->>DB: INSERT media_objects + UPDATE session_artifacts SET mediaObjectId
-    S->>OS: index ws-memory {sourceType ARTEFATO, sourceId, text, embedding}
-    S->>DB: UPDATE pipeline_jobs SET status = OK
-
-    U->>FE: Abre notificação → aba Artefatos
-    FE->>C: GET /api/decia/sessions/{id}/artifacts
-    C->>S: ArtifactService.list(actor, sessionId)
-    S->>DB: SELECT session_artifacts WHERE sessionId
-    S-->>C: 200 [RELATORIO, ATA, CHECKLIST] (contentMd + mediaObjectId)
-    C-->>FE: 200
-    FE-->>U: Cards dos artefatos com faísca ✦
-    U->>FE: Clica "Transformar em tarefa" na ATA
-    FE->>C: POST /api/decia/sessions/{id}/artifacts/{aid}/to-task
-    C->>S: ArtifactService.toTask(actor, sessionId, artifactId)
-    S->>DB: SELECT session_participants (actor) + session_artifacts.convertedTaskId IS NULL
-    S->>DB: INSERT tasks (type ATA_REGISTRO, category ATA, sourceKind DECIA, sourceRef = artifactId)
-    S->>DB: UPDATE session_artifacts SET convertedTaskId
-    S->>DB: INSERT decision_trace_nodes (TAREFA) + decision_trace_edges (ARTEFATO → TAREFA, TRANSFORMOU_EM)
-    S-->>C: 201 TaskItem
-    C-->>FE: 201
-    FE-->>U: Tarefa criada — link para /tasks/[id]
-  end
-
-  alt RF13.CA02 — falha ao renderizar PDF
-    S->>S: PdfRenderPort.render(contentMd) → exceção
-    S->>DB: UPDATE pipeline_jobs SET status = REPROCESSAR, attempts + 1, lastError
-    Note over S,DB: contentMd continua disponível na aba Artefatos — retry com backoff
-  else RF13.CA04 — artefato já convertido
-    FE->>C: POST .../to-task
-    C->>S: toTask(...)
-    S->>DB: SELECT session_artifacts.convertedTaskId IS NOT NULL
-    S-->>C: 409 ARTEFATO_JA_CONVERTIDO
-    C-->>FE: 409
-  else RF13.CA05 — não participante
-    FE->>C: GET .../artifacts
-    C->>S: list(actor, sessionId)
-    S->>DB: SELECT session_participants → não encontrado
+  U->>N: Gerar artefato ✦ na aba Artefatos da sessão DECIA (kind ATA, instrução)
+  N->>C: POST /api/artifacts {DECIA_SESSION, sessionId, ATA, instruction}
+  C->>S: ArtifactService.request(cmd, actor, ctx)
+  S->>S: Guard.requireParticipant(actor, sessionId) · AccessPolicy.canView
+  alt não participante / origem invisível
     S-->>C: 403 ACESSO_NEGADO
-    C-->>FE: 403
+    C-->>N: 403
+  else kind incompatível ou instrução vazia
+    S-->>C: 422 VALIDACAO
+    C-->>N: 422
+  else 11ª geração na hora
+    S->>RD: RateLimitPort.tryAcquire(userId, artifact-gen, 10, 1h) = false
+    S-->>C: 429 LIMITE_GERACAO + Retry-After
+    C-->>N: 429
+  else aceito
+    S->>R: insert generated_artifacts (SOLICITADO, visibility/accessClass da origem) + pipeline_jobs GERAR_ARTEFATO + audit_log ARTIFACT_GENERATED
+    S-->>C: 202 {artifactId}
+    C-->>N: 202 (Spark ✦ animada)
   end
+
+  Note over S,S3: Worker do PipelineJob GERAR_ARTEFATO
+  S->>S: ArtifactContextBuilder.build(DECIA_SESSION, sessionId, requester)
+  S->>CS: messages_by_session (sessionId)
+  S->>R: message_classifications · plan_axes do departamento · collective_goals ABERTAS → goalAlignmentJson
+  alt sessão sem mensagens
+    S->>R: update status FALHA (409 SEM_BASE_PARA_ARTEFATO ao consultar)
+  else contexto montado
+    S->>RD: AiQuota.tryConsume(userId, deptId, ARTEFATO)
+    alt sem cota nem créditos
+      S->>R: update status FALHA (409 COTA_ESGOTADA)
+      S-->>N: GET /api/artifacts/{id} → FALHA + atalho Loja
+    else ok
+      S->>R: update status GERANDO
+      S->>OS: MemorySearchService.citationsFor (ws-memory, kNN com visibilityFilter)
+      S->>AI: run(ARTEFATO, hostRf RF13, contexto mascarado, citações)
+      AI->>AI: maxAccessClass RESTRITO/SIGILOSO → LocalEngine · senão Claude → Gemini → LocalEngine
+      AI->>R: insert ai_inference_log (provider, modo, tokens, quotaSource)
+      AI-->>S: title + contentMd + citações usadas ("Sem precedente" se vazio)
+      S->>R: update generated_artifacts (GERADO, title, contentMd, citationsJson, aiInferenceId)
+      S->>R: enqueue PipelineJob EXPORT_PDF + INDEXAR_MEMORIA
+      S->>S: ArtifactRenderer.render → PDF
+      S->>S3: put(artifacts/{id}.pdf)
+      S->>R: insert media_objects · update status PRONTO, mediaObjectId
+      S->>OS: index ws-memory (sourceType ARTEFATO) — falha não bloqueia
+      EV->>CS: notifications_by_user ARTEFATO (requerente + participantes, groupKey = sessionId)
+      EV->>CS: mensagem SISTEMA na sessão com o artefato
+    end
+  end
+
+  N->>C: GET /api/artifacts/{id} (polling)
+  C-->>N: 200 {status PRONTO, title, contentMd, citations, downloadUrl}
+  U->>N: Transformar em tarefa
+  N->>C: POST /api/artifacts/{id}/to-task
+  C->>S: ArtifactService.toTask(id, actor, ctx)
+  alt já convertido
+    S-->>C: 409 ARTEFATO_JA_CONVERTIDO {convertedTaskId}
+    C-->>N: 409
+  else ok
+    S->>R: insert tasks (ATA_REGISTRO, sourceKind DECIA, anexo = mediaObjectId) · update convertedTaskId
+    S-->>C: TaskView
+    C-->>N: 201 (vai ao Acervo, RF6/RF41)
+  end
+  U->>N: Regerar com ajuste
+  N->>C: POST /api/artifacts/{id}/regenerate {instruction}
+  C->>S: ArtifactService.regenerate → novo GeneratedArtifact (supersedesArtifactId) · anterior SUBSTITUIDO
+  C-->>N: 202 {artifactId novo}
 ```
 
 ## 4. Máquina de estados
 
-`SessionArtifact` não tem status próprio na taxonomia; o RF13 usa os estados de `PipelineJob.status` (`PipelineJobStatus`), entidade que ele cria para EXPORT_PDF e INDEXAR_MEMORIA de cada artefato.
+Entidade central: **`GeneratedArtifact.status`** (`ArtifactStatus`, **proposta** — `SessionArtifact` da TAXONOMIA não tem status). Os jobs `GERAR_ARTEFATO`, `EXPORT_PDF` e `INDEXAR_MEMORIA` seguem `PipelineJobStatus` (PENDENTE → RODANDO → OK | FALHA → REPROCESSAR), como no `_anterior/RF13`.
 
 ```mermaid
 stateDiagram-v2
-  [*] --> PENDENTE : ArtifactService agenda EXPORT_PDF / INDEXAR_MEMORIA — RF13.CA01
-  PENDENTE --> RODANDO : PipelineJobRunner pega o job
-  RODANDO --> OK : PDF em S3 e mediaObjectId preenchido — RF13.CA02
-  RODANDO --> OK : documento indexado em ws-memory — RF13.CA06
-  RODANDO --> REPROCESSAR : erro de render, S3 ou OpenSearch (attempts + 1, lastError)
-  REPROCESSAR --> RODANDO : retry com backoff exponencial
-  REPROCESSAR --> FALHA : attempts ≥ limite
-  OK --> [*]
-  FALHA --> [*]
+  direction LR
+  state "SOLICITADO" as SOL
+  state "GERANDO" as GER
+  state "GERADO (contentMd legível)" as GRD
+  state "PRONTO (arquivo em S3)" as PRO
+  state "FALHA" as FAL
+  state "SUBSTITUIDO" as SUB
 
-  note right of PENDENTE
-    criado na mesma transação do INSERT em session_artifacts
-    contentMd já é legível na aba Artefatos
-  end note
-  note right of FALHA
-    EXPORT_PDF em FALHA não bloqueia a notificação ao grupo
-    INDEXAR_MEMORIA em FALHA não bloqueia a operação (RF33.CA06)
-    admin pode reprocessar manualmente
+  [*] --> SOL : POST /api/artifacts (CA01) [canView, kind compatível, 10/h] · 202 · PipelineJob GERAR_ARTEFATO
+  SOL --> GER : worker monta o contexto (CA02) [origem com conteúdo, AiQuota ok]
+  SOL --> FAL : origem sem conteúdo (409 SEM_BASE_PARA_ARTEFATO) · sem cota (409 COTA_ESGOTADA)
+  GER --> GRD : AiEngine ARTEFATO devolve title + contentMd + citações (CA03) · AiInferenceLog
+  GER --> FAL : provedores e LocalEngine falharam (AiInferenceLog ERRO)
+  GRD --> PRO : EXPORT_PDF/XLSX OK → mediaObjectId (CA04) · INDEXAR_MEMORIA (não bloqueia) · Notification ARTEFATO (CA05)
+  GRD --> GRD : render falhou → PipelineJob REPROCESSAR, contentMd continua legível (CA04)
+  PRO --> PRO : Transformar em tarefa → convertedTaskId (repetir: 409 ARTEFATO_JA_CONVERTIDO) · compartilhar no Mural · usedInDecision → DP ARTEFATO_USADO
+  PRO --> SUB : Regerar com ajuste → novo artefato com supersedesArtifactId (CA05)
+  GRD --> SUB : Regerar antes do render
+  FAL --> SOL : usuário pede de novo (nova linha)
+  SUB --> [*]
+  FAL --> [*]
+  note right of PRO
+    Visibilidade herdada da origem (CA06).
+    Origem SIGILOSA: nunca Mural nem Memória pública.
   end note
 ```
 
@@ -455,88 +474,67 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js (App Router)"]
-    FE1["app/decia/[sessionId]/artifacts/page.tsx"]
-    FE2["components/ui/ArtifactCard · MarkdownViewer · ToTaskButton · NotificationBell"]
+  subgraph FE["Frontend · Next.js 15 App Router"]
+    PG["Botão Gerar artefato ✦ em tasks/[id], projects/[id], decia/[sessionId] (aba Artefatos), messages/[conversationId], tasks, search, insights, departments/[slug]/team, mural · lista em me/artifacts"]
+    UI["packages/ui: Sheet (kind + instrução), Spark ✦ (busy), Select, Textarea, TaskCard (attachment), Button (icon transformar-tarefa), Toast, Skeleton"]
+    BFF["app/bff/artifacts/*"]
+    PG --> UI
+    PG --> BFF
   end
-
-  subgraph WEB["ws-web"]
-    W1["ArtifactController (REST /api/decia/sessions/{id}/artifacts)"]
-    W2["SessionAccessGuard (participante / adminUserId)"]
+  subgraph WSWEB["ws-web"]
+    SEC["SecurityConfig · SessionActiveFilter · CurrentUserArgumentResolver"]
+    AC["ArtifactController"]
+    GEH["GlobalExceptionHandler (403, 409, 422, 429)"]
   end
-
-  subgraph APP["ws-application"]
-    S1["ArtifactService (+ listeners DecisionValidated, SummaryPublished)"]
-    S2["TaskCreationService (RF20/RF29)"]
-    S3["DecisionTraceService"]
-    P1["AiEnginePort"]
-    P2["MediaStoragePort"]
-    P3["PdfRenderPort"]
-    P4["MemoryIndexPort"]
-    P5["NotificationPort"]
-    P6["PipelineJobScheduler"]
+  subgraph WSAPP["ws-application"]
+    ART["artifacts: ArtifactService · ArtifactContextBuilder · ArtifactRenderer"]
+    AIE["ai: AiEngine ARTEFATO · AiQuota · MemorySearchService (RF33)"]
+    SECU["security: AccessPolicy · Guard.requireParticipant/requireDeptHead"]
+    PORTS["ports: ArtifactRepositoryPort · PipelineJobPort · QuotaPort · RateLimitPort (real) · MediaStoragePort · MemoryIndexPort · NotificationPort · MessageReadPort · AuditLogPort (real)"]
+    EVT["events: ArtifactReady · ArtifactConverted (AFTER_COMMIT) → notificações, DP ARTEFATO_USADO (RF42)"]
+    ART --> AIE
+    ART --> SECU
+    ART --> PORTS
+    ART --> EVT
   end
-
-  subgraph DOM["ws-domain"]
-    D1["SessionArtifact · MediaObject · PipelineJob"]
-    D2["FinalDecision · AnalyticalSummary · DeciaSession (leitura)"]
-    D3["TaskItem · DecisionTraceNode · DecisionTraceEdge"]
-    D4["Enums: ArtifactKind · PipelineJobType · PipelineJobStatus · TaskType · SourceKind"]
+  subgraph WSDOM["ws-domain"]
+    DOM["artifacts: GeneratedArtifact (proposta) · SessionArtifact · enums ArtifactStatus/ArtifactKind/ArtifactOriginType · decia: DeciaSession · SessionMessage · messaging: DirectConversation · acervo: TaskItem · planning: PlanAxis · gamification: CollectiveGoal · platform: PipelineJob · AiInferenceLog · Citation"]
   end
-
   subgraph INFRA["ws-infrastructure"]
-    I1["persistence-mysql: SessionArtifactRepository, PipelineJobRepository, MediaObjectRepository, TaskItemRepository, DecisionTraceRepository, NotificationRepository"]
-    I2["persistence-cassandra: NotificationFeedAdapter (notifications_by_user), CassandraMessageAdapter"]
-    I3["storage-s3: S3MediaAdapter (bucket ws-artifacts, URL assinada)"]
-    I4["search-opensearch: OpenSearchMemoryAdapter (ws-memory)"]
-    I5["ai-providers: AiEngineAdapter (ARTEFATO, ai_inference_log)"]
-    I6["platform: PipelineJobRunner, PdfRenderAdapter, NotificationAdapter, OutboxRelay"]
+    MY["persistence-mysql: JpaArtifactRepository · pipeline_jobs"]
+    CAS["persistence-cassandra: messages_by_session · messages_by_conversation · notifications_by_user"]
+    OSE["search-opensearch: ws-memory (dense_vector, citações e indexação)"]
+    S3["storage-s3: PDF/XLSX/PPTX gerados · presign para download"]
+    RDS["cache-redis: AiQuota · RedisRateLimit (real)"]
+    AIP["ai-providers: Claude → Gemini → LocalEngine"]
+    PLT["platform: workers de PipelineJob (GERAR_ARTEFATO, EXPORT_PDF, INDEXAR_MEMORIA)"]
   end
 
-  subgraph EXT["Serviços externos"]
-    X1["Claude / Gemini"]
-  end
-
-  MY[("MySQL 8")]
-  CA[("Cassandra")]
-  OS[("OpenSearch")]
-  S3[("S3 / MinIO")]
-
-  FE1 --> FE2 -->|HTTPS/JSON| W1 --> W2 --> S1
-  S1 --> S2
-  S1 --> S3
-  S1 --> P1
-  S1 --> P5
-  S1 --> P6
-  P6 -.->|jobs EXPORT_PDF / INDEXAR_MEMORIA| I6
-  I6 --> P2
-  I6 --> P3
-  I6 --> P4
-  S1 --> D1
-  S1 --> D2
-  S2 --> D3
-  S3 --> D3
-  D1 --> D4
-  P1 -.-> I5
-  P2 -.-> I3
-  P4 -.-> I4
-  P5 -.-> I2
-  S1 --> I1
-  S2 --> I1
-  I1 --> MY
-  I2 --> CA
-  I3 --> S3
-  I4 --> OS
-  I5 --> X1
+  BFF -->|"REST JSON"| SEC --> AC --> ART
+  AC --> GEH
+  MY -.implementa.-> PORTS
+  CAS -.implementa.-> PORTS
+  OSE -.implementa.-> PORTS
+  S3 -.implementa.-> PORTS
+  RDS -.implementa.-> PORTS
+  AIP -.implementa.-> AIE
+  PLT --> ART
+  ART --> DOM
+  MY --> DB[("MySQL 8.4")]
+  CAS --> CDB[("Cassandra 4.1")]
+  OSE --> OSX[("OpenSearch 2.19")]
+  S3 --> MINIO[("S3 / MinIO")]
+  RDS --> RD[("Redis 7")]
+  AIP --> CL["Claude · Gemini"]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Classe | Passo (atividades) | Mensagem (sequência) | Transição (estados) | Componente |
-|---|---|---|---|---|---|
-| RF13.CA01 | `SessionArtifact` (kind, contentMd, generatedAt, aiInferenceId), `ArtifactService.onDecisionValidated/onSummaryPublished/generate`, `AiEnginePort.generateArtifact`, `AiCapability.ARTEFATO`, `DecisionTraceNode` ARTEFATO | A0, C0–C4, C6, D1–D3 | 1–10 (loop por kind) | [*] → PENDENTE | `ArtifactService`, `AiEngineAdapter`, `SessionArtifactRepository`, `DecisionTraceService` |
-| RF13.CA02 | `PipelineJob` EXPORT_PDF, `MediaObject`, `SessionArtifact.mediaObjectId`, `PdfRenderPort`, `MediaStoragePort` | C5, F1–F4, E2 | 14–18; `alt` RF13.CA02 (REPROCESSAR) | PENDENTE → RODANDO → OK / REPROCESSAR → FALHA | `PipelineJobRunner`, `PdfRenderAdapter`, `S3MediaAdapter` |
-| RF13.CA03 | `Notification` (category DECIA, groupKey = sessionId), `SessionArtifact.notifiedAt`, `NotificationPort.notifyGroup` | C7, C8, A1, E4 | 11–12 | nota de PENDENTE (contentMd já legível) | `NotificationAdapter`, `NotificationFeedAdapter`, `NotificationBell` |
-| RF13.CA04 | `SessionArtifact.convertedTaskId`, `TaskItem` (ATA_REGISTRO / DOCUMENTO / FORMULARIO, sourceKind DECIA), `TaskCreationService.createFromArtifact`, aresta TRANSFORMOU_EM | A5, B3, C9–C12, E5 | 28–36; `alt` 409 ARTEFATO_JA_CONVERTIDO | — | `TaskCreationService`, `TaskItemRepository`, `ToTaskButton` |
-| RF13.CA05 | `ArtifactService.regenerate`, `SessionAccessGuard`, guardas 403/409/422 | A6, B4, C13, B5, B7 | `alt` 403 ACESSO_NEGADO | nova linha → novo job PENDENTE | `ArtifactController.regenerate`, `SessionAccessGuard` |
-| RF13.CA06 | `PipelineJob` INDEXAR_MEMORIA, `InstitutionalMemoryDocument` (sourceType ARTEFATO), `MemoryIndexPort` | C5, F5, E3 | 9, 19 | RODANDO → OK (indexado) / FALHA não bloqueante | `OpenSearchMemoryAdapter`, `PipelineJobRunner` |
+| CA | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) | Situação |
+|---|---|---|---|---|---|---|
+| RF13.CA01 | `ArtifactController.create`, `ArtifactService.request/kindsFor`, `GeneratedArtifact`, `ArtifactKind`, `ArtifactOriginType`, `PipelineJobPort` | `A1`→`A2`→`F2`→`S3`→`S5`, `E422`, `E409B` | 1–3, 8–9, 14–17, 23–24 | `[*]`→`SOL`, `SOL`→`FAL` | `PG`, `UI` (`Sheet`), `AC`, `ART`, `PLT` | planejado |
+| RF13.CA02 | `ArtifactContextBuilder.build/goalAlignment/maxAccessClass`, `AccessPolicy.canView`, `PlanAxis`, `CollectiveGoal`, `SessionMessage`, `DirectConversation`, `MuralEntry` | `J1`→`J2` | 19–22 | `SOL`→`GER` | `ART`, `CAS`, `MY` | planejado (RF46 para chat direto) |
+| RF13.CA03 | `AiEngine` (ARTEFATO), `QuotaPort`/`AiQuota`, `MemorySearchService`, `Citation`, `AiInferenceLog`, `RateLimitPort` (10/h) | `S4`→`E429`, `J3`→`E409Q`, `I1`→`I2`→`J4`→`J5` | 10–13, 25–36 | `GER`→`GRD`, `GER`→`FAL` | `AIE`, `AIP`, `OSE`, `RDS` | planejado (`RateLimitPort` real) |
+| RF13.CA04 | `ArtifactRenderer`, `PipelineJob EXPORT_PDF/INDEXAR_MEMORIA`, `MediaStoragePort`, `MemoryIndexPort`, `GeneratedArtifact.mediaObjectId` | `J6`→`J7`, `J8` | 37–41 | `GRD`→`PRO`, `GRD`→`GRD` (REPROCESSAR) | `S3`, `OSE`, `PLT` | planejado (RF33.CA06) |
+| RF13.CA05 | `NotificationPort`, `ArtifactService.toTask/regenerate`, `GeneratedArtifact.convertedTaskId/supersedesArtifactId`, `TaskItem.sourceKind` | `EV`, `A3`→`A4`→`F5`→`T1`/`T2`, `E409C` | 42–43, 44–56 | `PRO`→`PRO`, `PRO`→`SUB`, `GRD`→`SUB` | `EVT`, `CAS`, `UI` (`TaskCard`, botão transformar) | planejado (RF42 DP) |
+| RF13.CA06 | `AccessPolicy.canView/visibilityOf`, `Guard.requireParticipant/requireDeptHead`, `GeneratedArtifact.visibility/accessClass`, `AuditLogPort` (`ARTIFACT_GENERATED`) | `S1`→`S2`→`E403`, `S5`, `J7` (SIGILOSO não indexa público) | 4–7, 14 | nota de `PRO` | `SECU`, `GEH` | planejado (`Guard`/`AuditLogPort` reais) |

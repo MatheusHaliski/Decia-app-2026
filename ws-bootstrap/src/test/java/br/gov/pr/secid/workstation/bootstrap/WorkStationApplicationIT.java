@@ -12,6 +12,8 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -19,7 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Contexto completo (todos os módulos ws-*) subindo contra um MySQL 8.4 real do Testcontainers, com o Flyway
- * aplicando V1__baseline.sql. Sem Docker na máquina o teste é pulado (disabledWithoutDocker) — no CI o Docker existe.
+ * aplicando V1__baseline.sql, V2__baseline_dominio_base.sql e V3__rf1_rf2_autenticacao.sql. Sem Docker na máquina o teste é pulado
+ * (disabledWithoutDocker) — no CI o Docker existe.
  * Confere o contrato de segurança do Bloco 1: /actuator/health público, resto do Actuator fechado, 401 em JSON.
  */
 @Testcontainers(disabledWithoutDocker = true)
@@ -47,7 +50,50 @@ class WorkStationApplicationIT {
                 "SELECT COUNT(*) FROM flyway_schema_history WHERE success = 1 AND version = '1'", Integer.class);
         assertThat(applied).isEqualTo(1);
         assertThat(jdbc.queryForObject("SELECT meta_value FROM app_meta WHERE meta_key = 'schema.baseline'", String.class))
-                .isEqualTo("bloco-1");
+                .isEqualTo("bloco-2");
+    }
+
+    @Test
+    void historicoDoFlywayTemV1EV2ComSucesso() {
+        List<String> versions = jdbc.queryForList(
+                "SELECT version FROM flyway_schema_history WHERE success = 1 AND version IS NOT NULL ORDER BY installed_rank",
+                String.class);
+        assertThat(versions).startsWith("1", "2", "3").contains("10", "21");   // V10–V21: catálogo de domínio (D-40)
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM flyway_schema_history WHERE success = 0", Integer.class)).isZero();
+        // tabelas do Bloco 2 existem e o contexto JPA (ddl-auto: none) não mexeu nelas
+        List<String> tables = jdbc.queryForList(
+                "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME", String.class);
+        assertThat(tables).contains("users", "user_preferences", "refresh_tokens", "audit_log", "ai_inference_log",
+                "feature_flags", "domain_events", "media_objects", "verification_codes");
+    }
+
+    /** Achado P2 (Codex): dois cadastros concorrentes do mesmo e-mail recebem os dois o MESMO 202 (sem UnexpectedRollbackException). */
+    @Test
+    void cadastrosConcorrentesDoMesmoEmailRecebemOMesmo202() throws Exception {
+        String password = "Senha-" + java.util.UUID.randomUUID();
+        java.util.concurrent.ExecutorService pool = java.util.concurrent.Executors.newFixedThreadPool(4);
+        try {
+            java.util.List<java.util.concurrent.Future<Integer>> fs = new java.util.ArrayList<>();
+            java.util.concurrent.CountDownLatch start = new java.util.concurrent.CountDownLatch(1);
+            for (int i = 0; i < 4; i++) {
+                final int n = i;
+                fs.add(pool.submit(() -> {
+                    start.await(5, java.util.concurrent.TimeUnit.SECONDS);
+                    String body = "{\"profileType\":\"EMPREGADO\",\"fullName\":\"Pessoa Corrida\",\"username\":\"corrida" + n
+                            + "\",\"email\":\"corrida@exemplo.gov.br\",\"password\":\"" + password + "\",\"confirmPassword\":\"" + password
+                            + "\",\"acceptTerms\":true}";
+                    return mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/api/auth/register")
+                            .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(body)).andReturn().getResponse().getStatus();
+                }));
+            }
+            start.countDown();
+            for (java.util.concurrent.Future<Integer> f : fs) {
+                assertThat(f.get(30, java.util.concurrent.TimeUnit.SECONDS)).isEqualTo(202);
+            }
+        } finally {
+            pool.shutdownNow();
+        }
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM users WHERE username LIKE 'corrida%'", Integer.class)).isEqualTo(1);
     }
 
     @Test

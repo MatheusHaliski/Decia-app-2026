@@ -1,19 +1,19 @@
-# RF9 — Adicionar ou remover usuários de uma sessão de conversa ativa.
-**HU:** HU9 · **Sprint (board Work Station):** 2 · **Equivalente FAI:** RF10 Copilot (conversa individual no FAI — aqui a sessão é em grupo, com gestão de participantes pelo administrador) · **Aba/rota:** DECIA (`/decia/[sessionId]/participants` — painel de participantes com busca de colegas) — rota sugerida
-**Critérios de aceite cobertos:** RF9.CA01 … RF9.CA06 (RF1–RF18 não têm CAs no board: derivados da HU9 + RF4/RF10 e marcados "CA a confirmar")
+# RF9 — Permitir que um chefe de departamento possa adicionar ou remover um usuário da sua lista de empregados atuais
+**HU:** HU9 · **Sprint (board Work Station):** lista *Requisitos Funcionais* sem sprint atribuída (o card "SPRINT 2" cita "RF9 Adicionar/remover usuários" da **sessão DECIA**, escopo antigo preservado em `_anterior/RF9`; fase (g) da ARQUITETURA §6: "RF9/RF10/RF46 (equipe, atribuição, chat)") · **Equivalente FAI:** RF22 Perfil institucional (celebridade) — abas "do administrador" negadas no serviço (`guard.deny`); o FAI não tem lotação de pessoas, a gestão de equipe é nova · **Aba/rota:** página do departamento `/departments/[slug]` → aba **Equipe** → modo **Minha equipe (gestão)** só para o chefe (`/departments/[slug]/team?mode=manage`); atalho **Minha equipe** no grupo Gestão do `SidebarNav` (ABAS_POR_PERFIL §1.2, §7.b); API `GET /api/departments/{id}/members`, `GET /api/departments/{id}/members/history`, `POST /api/departments/{id}/members`, `DELETE /api/departments/{id}/members/{userId}`, `GET /api/departments/{id}/members/{userId}/pending`
+**Critérios de aceite cobertos:** RF9.CA01 … RF9.CA06 — **todos "(CA a confirmar)"**: o corpo do card está vazio e o **escopo é novo**; os CAs foram derivados do título + HU9 e reaproveitam RF28.CA02 (lotação 1 por vez com histórico em `DepartmentMembership`), RF28.CA03 (auditoria do chefe), o guard `requireDeptHead` e a aba "Minha equipe" propostos em `docs/produto/ABAS_POR_PERFIL.md`. Todas as classes do RF são **(planejado)**; reais: `Guard.requireRole/ownerOrAdmin`, `User.companyId/departmentId` (colunas sem FK até o RF28, D-23), `AuditLogPort`, `SecurityConfig`.
 
-> **HU9** — COMO administrador da sessão de conversa POSSO adicionar ou remover usuários de uma sessão de conversa ativa PARA manter o grupo de participantes adequado ao tema e às regras de acesso.
+> **HU9** — COMO chefe de departamento de uma empresa POSSO adicionar ou remover um usuário de minha lista de empregados ativos PARA melhorar a minha gestão empresarial.
 
 ## Critérios de aceite derivados da HU9 (todos "CA a confirmar")
 
-| CA | Enunciado (Dado / Quando / Então) |
-|---|---|
-| **RF9.CA01** (CA a confirmar) | Dado o administrador da sessão (`adminUserId` ou `Role ADMIN`) numa sessão `ATIVA` (ou `REABERTA`), quando adiciona um usuário (busca por nome/username) com `role` MEMBRO ou OBSERVADOR, então é criado `SessionParticipant` (`joinedAt`, `addedBy`, `canReplyDivergence` padrão false) e `participantCount` é incrementado; o usuário deve respeitar o `accessMode` (RF4.CA04): DEPARTAMENTO → mesmo `departmentId`, EMPRESA/FECHADA → mesma `companyId`; fora do escopo → `422 FORA_DO_ESCOPO_ACESSO`. |
-| **RF9.CA02** (CA a confirmar) | Dado o administrador, quando remove um participante informando `removeReason` (obrigatório), então `leftAt`, `removedBy` e `removeReason` são gravados (sem apagar o registro), `participantCount` decrementa, as mensagens do removido **permanecem** no histórico e ele perde o acesso imediatamente (canal SSE encerrado, `403` nas próximas chamadas) e deixa de receber notificações da sessão. |
-| **RF9.CA03** (CA a confirmar) | Dado as regras, então: quem não é admin → `403 ACESSO_NEGADO`; sessão fora de `ATIVA`/`REABERTA` → `409 SESSAO_NAO_ATIVA`; usuário já participante ativo → `409 PARTICIPANTE_DUPLICADO`; tentar remover o próprio `adminUserId` ou o participante `IA` → `422 VALIDACAO`; usuário com `AccountStatus` diferente de `ACTIVE` → `422 USUARIO_INATIVO`. |
-| **RF9.CA04** (CA a confirmar) | Dado um usuário removido, quando é adicionado de novo, então nasce um **novo** `SessionParticipant` (histórico de entradas e saídas preservado), `lastReadAt` reinicia e ele volta a ver as mensagens conforme o `accessMode`; a troca de papel MEMBRO ↔ OBSERVADOR (`PATCH …/participants/{userId}`) não cria novo registro. |
-| **RF9.CA05** (CA a confirmar) | Dado a inclusão ou remoção, então `ParticipantAdded`/`ParticipantRemoved` (AFTER_COMMIT) notificam o afetado (`Notification` DECIA "você foi adicionado/removido" com motivo), publicam mensagem de sistema no chat ("Fulano entrou na sessão" / "saiu da sessão"), atualizam o painel em tempo real e gravam `AuditLog PARTICIPANT_ADDED / PARTICIPANT_REMOVED` com `correlationId`. |
-| **RF9.CA06** (CA a confirmar) | Dado o painel de participantes, então ele lista `role`, `joinedAt`, presença online (SSE), `canReplyDivergence` (RF10) e ações do admin (remover, trocar papel, habilitar resposta a divergência); participantes comuns veem a lista sem ações; tudo i18n e paginado quando > 50. |
+| CA | Enunciado (Dado / Quando / Então) | Origem |
+|---|---|---|
+| **RF9.CA01** (CA a confirmar) | Dado um CHEFE_DEPARTAMENTO com `Department.headUserId == eu` (ou EMPRESA dona da `Company`, ou ADMIN — `Guard.requireDeptHead`), quando abro a aba Equipe no modo **Minha equipe**, então vejo os `DepartmentMembership` vigentes (nome, username, `jobTitle`, `roleInDept`, `startedAt`, etiqueta Curador) com busca e paginação (> 50), mais o histórico de lotações encerradas; quem não é chefe vê só a lista pública (RF14) e a API de gestão responde `403 ACESSO_NEGADO`. | ABAS §7.b, RF28.CA02 |
+| **RF9.CA02** (CA a confirmar) | Dado o modo gestão, quando **adiciono** um usuário (busca por nome/username na mesma `Company`, `AccountStatus ACTIVE`), então nasce um `DepartmentMembership` MEMBRO com `startedAt`, a lotação vigente anterior (em outro departamento) é encerrada com `endedAt` e `reason TRANSFERENCIA` e `User.departmentId` passa a ser o meu departamento; já membro vigente → `409 MEMBRO_DUPLICADO`; usuário de outra empresa, não ACTIVE ou perfil EMPRESA → `422 VALIDACAO`. | RF28.CA02 (1 lotação por vez) |
+| **RF9.CA03** (CA a confirmar) | Dado um membro vigente, quando **removo** informando `reason` (obrigatório, `422 VALIDACAO`), então o `DepartmentMembership` recebe `endedAt` e `reason` (sem apagar), `User.departmentId` fica nulo, o `CuratorAppointment` vigente dele é revogado (`revokeReason` = saída do departamento) e suas tarefas/projetos **permanecem** com o dono; remover o próprio chefe (`headUserId`) → `409 CHEFE_NAO_REMOVIVEL` (trocar o chefe é RF28). | RF28.CA02/CA03 |
+| **RF9.CA04** (CA a confirmar) | Dado que o removido tem pendências (responsável em `ProjectTask` aberta, `TaskItem` EM_USO/BLOQUEADA como responsável, `SessionParticipant` em sessão ATIVA, `SealBond` EM_REVISAO de que é alvo, `Assignment` ACEITA), quando confirmo a remoção, então o sistema lista as pendências (`GET …/pending`) e oferece **gerar Dossiê de Transição** (`HandoffDossier` reason TRANSFERENCIA/SAIDA, RF36) ou **transferir** para outro membro; sem escolha, a remoção prossegue e as pendências ficam marcadas "sem responsável no departamento". | RF36, RF10 |
+| **RF9.CA05** (CA a confirmar) | Dado a inclusão ou remoção, então `MemberAdded`/`MemberRemoved` (AFTER_COMMIT) gravam `AuditLog MEMBER_ADDED/MEMBER_REMOVED` com `correlationId`, notificam o empregado (`Notification` tipo SISTEMA, categoria SISTEMA: "você foi adicionado/removido do departamento X", com motivo), invalidam o cache Redis de métricas/contadores do departamento e atualizam a aba pública Equipe e a página da empresa (RF14/RF15). | RF28.CA03 |
+| **RF9.CA06** (CA a confirmar) | Dado o histórico, então re-adicionar alguém cria um **novo** `DepartmentMembership` (o anterior permanece encerrado), a linha do tempo de lotações aparece no modo gestão e no perfil do empregado (empresa/departamento atual, RF16), e todas as mensagens são i18n (pt-BR/en/es). | RF28.CA02 (histórico) |
 
 ## 1. Diagrama de classes
 
@@ -21,379 +21,369 @@
 classDiagram
   direction LR
 
-  namespace ws_domain {
-    class DeciaSession {
-      <<entity>>
-      +id: UUID
-      +adminUserId: UUID
-      +companyId: UUID
-      +departmentId: UUID
-      +accessMode: SessionAccess
-      +status: SessionStatus
-      +participantCount: int
-      +version: long
-    }
-    class SessionParticipant {
-      <<entity>>
-      +id: UUID
-      +sessionId: UUID
-      +userId: UUID
-      +role: ParticipantRole
-      +joinedAt: Instant
-      +leftAt: Instant
-      +addedBy: UUID
-      +removedBy: UUID
-      +removeReason: String
-      +canReplyDivergence: boolean
-      +lastReadAt: Instant
-    }
-    class User {
-      <<entity>>
-      +id: UUID
-      +username: String
-      +displayName: String
-      +role: Role
-      +status: AccountStatus
-      +companyId: UUID
-      +departmentId: UUID
-      +avatarUrl: String
-    }
-    class Notification {
-      <<entity>>
-      +recipientId: UUID
-      +actorId: UUID
-      +type: NotificationType
-      +category: String
-      +resourceId: UUID
-      +body: String
-    }
-    class AuditLog {
-      <<entity>>
-      +actorId: UUID
-      +action: String
-      +resourceType: String
-      +resourceId: UUID
-      +metadataJson: String
-      +correlationId: String
-    }
-    class ParticipantRole {
-      <<enum>>
-      ADMIN
-      MEMBRO
-      OBSERVADOR
-      IA
-    }
-    class SessionAccess {
-      <<enum>>
-      FECHADA
-      DEPARTAMENTO
-      EMPRESA
-    }
-    class SessionStatus {
-      <<enum>>
-      PROPOSTA
-      ATIVA
-      EM_RESUMO
-      EM_DECISAO
-      EM_REVISAO
-      REABERTA
-      ENCERRADA
-      ARQUIVADA
-    }
-    class SessionAccessPolicy {
-      <<service>>
-      +inScope(user User, session DeciaSession) boolean
-      +canAdminister(user User, session DeciaSession) boolean
-      +participantsEditable(status SessionStatus) boolean
-    }
+  class DepartmentMembersController {
+    <<controller>>
+    +list(deptId, q, page, CurrentUser) Page~MemberView~
+    +history(deptId, page, CurrentUser) Page~MembershipView~
+    +add(deptId, AddMemberRequest, CurrentUser, ctx) MemberView
+    +pending(deptId, userId, CurrentUser) PendingSummary
+    +remove(deptId, userId, RemoveMemberRequest, CurrentUser, ctx) void
+  }
+  class TeamService {
+    <<service>>
+    +listMembers(deptId, q, page, actor) Page
+    +history(deptId, page, actor) Page
+    +addMember(deptId, userId, actor, ctx) DepartmentMembership
+    +removeMember(deptId, userId, reason, handoff, actor, ctx) void
+    +pendingOf(deptId, userId) PendingSummary
+  }
+  class Guard {
+    <<service>>
+    +requireRole(CurrentUser, Role) void
+    +ownerOrAdmin(CurrentUser, ownerId) void
+    +requireDeptHead(CurrentUser, Department) void
+  }
+  class CuratorService {
+    <<service>>
+    +revokeOnLeave(userId, deptId, reason) void
+  }
+  class HandoffService {
+    <<service>>
+    +generate(subjectUserId, reason, requestedBy) HandoffDossier
+  }
+  class DepartmentRepositoryPort {
+    <<port>>
+    +findById(id) Optional
+    +findBySlug(slug) Optional
+  }
+  class MembershipRepositoryPort {
+    <<port>>
+    +findCurrent(userId) Optional
+    +findCurrentByDept(deptId, q, page) Page
+    +findHistoryByDept(deptId, page) Page
+    +save(DepartmentMembership) DepartmentMembership
+  }
+  class UserRepositoryPort {
+    <<port>>
+    +findById(id) Optional
+    +searchInCompany(companyId, q) List
+    +save(User) User
+  }
+  class PendingWorkPort {
+    <<port>>
+    +openProjectTasks(userId) int
+    +tasksInUse(userId) int
+    +activeSessions(userId) int
+    +sealBondsInReview(userId) int
+    +acceptedAssignments(userId) int
+  }
+  class NotificationPort {
+    <<port>>
+    +notify(Notification) void
+  }
+  class CounterCachePort {
+    <<port>>
+    +evict(key) void
   }
 
-  namespace ws_application {
-    class ParticipantService {
-      <<service>>
-      +add(current CurrentUser, sessionId, cmd AddParticipantCommand) ParticipantView
-      +remove(current CurrentUser, sessionId, userId, reason) ParticipantView
-      +changeRole(current CurrentUser, sessionId, userId, role ParticipantRole) ParticipantView
-      +enableReplyDivergence(current CurrentUser, sessionId, userId, enabled) ParticipantView
-      +list(current CurrentUser, sessionId, page) Page~ParticipantView~
-      +searchCandidates(current CurrentUser, sessionId, query) List~UserCard~
-      -requireActive(sessionId, userId) SessionParticipant
-    }
-    class Guard {
-      <<service>>
-      +requireSessionAdmin(current CurrentUser, session DeciaSession) void
-    }
-    class MessageService {
-      <<service>>
-      +postSystemMessage(sessionId, bodyMd, correlationId) SessionMessage
-    }
-    class NotificationPort {
-      <<port>>
-      +notify(recipients List~UUID~, notification Notification) void
-    }
-    class RealtimePublisherPort {
-      <<port>>
-      +publish(sessionId, event SessionEvent) void
-      +disconnect(sessionId, userId) void
-    }
-    class DomainEventPublisherPort {
-      <<port>>
-      +publish(event DomainEvent) void
-    }
+  class Company {
+    <<entity>>
+    +UUID id
+    +UUID ownerUserId
+    +String legalName
+    +String slug
+    +String status
+  }
+  class Department {
+    <<entity>>
+    +UUID id
+    +UUID companyId
+    +String name
+    +String acronym
+    +String slug
+    +String color
+    +String monogram
+    +UUID headUserId
+    +boolean active
+  }
+  class DepartmentMembership {
+    <<entity>>
+    +UUID id
+    +UUID userId
+    +UUID departmentId
+    +DeptRole roleInDept
+    +Instant startedAt
+    +Instant endedAt
+    +String reason
+  }
+  class User {
+    <<entity>>
+    +UUID id
+    +String username
+    +String fullName
+    +String jobTitle
+    +ProfileType profileType
+    +AccountStatus status
+    +UUID companyId
+    +UUID departmentId
+  }
+  class CuratorAppointment {
+    <<entity>>
+    +UUID departmentId
+    +UUID curatorUserId
+    +Instant revokedAt
+    +String revokeReason
+    +CuratorScope scope
+  }
+  class HandoffDossier {
+    <<entity>>
+    +UUID subjectUserId
+    +HandoffReason reason
+    +HandoffStatus status
+    +UUID successorUserId
+  }
+  class Notification {
+    <<entity>>
+    +UUID recipientId
+    +NotificationType type
+    +String category
+    +String title
+    +String body
+  }
+  class AuditLog {
+    <<entity>>
+    +UUID actorId
+    +String action
+    +String resourceType
+    +String resourceId
+    +String correlationId
+  }
+  class DeptRole {
+    <<enum>>
+    MEMBRO
+    CHEFE
+    CURADOR
+  }
+  class HandoffReason {
+    <<enum>>
+    SAIDA
+    TRANSFERENCIA
+    FIM_GESTAO
+    TROCA_CHEFE
+  }
+  class ProfileType {
+    <<enum>>
+    EMPREGADO
+    EMPRESA
+    CHEFE_DEPARTAMENTO
   }
 
-  namespace ws_web {
-    class DeciaSessionController {
-      <<controller>>
-      +participants(sessionId, page) Page~ParticipantView~
-      +addParticipant(sessionId, cmd AddParticipantCommand) ParticipantView
-      +removeParticipant(sessionId, userId, body RemoveRequest) ParticipantView
-      +changeRole(sessionId, userId, body RoleRequest) ParticipantView
-      +searchCandidates(sessionId, q) List~UserCard~
-    }
-    class SessionStreamController {
-      <<controller>>
-      +stream(sessionId) SseEmitter
-    }
-  }
-
-  namespace ws_infrastructure {
-    class CassandraNotificationProjector {
-      <<adapter>>
-    }
-    class RedisRealtimePublisher {
-      <<adapter>>
-      +channel: String
-    }
-    class OutboxEventPublisher {
-      <<adapter>>
-    }
-  }
-
-  DeciaSessionController --> ParticipantService
-  SessionStreamController --> RealtimePublisherPort : subscribe por participante ativo
-  ParticipantService --> Guard
-  ParticipantService --> SessionAccessPolicy
-  ParticipantService --> MessageService : mensagem de sistema
-  ParticipantService --> NotificationPort
-  ParticipantService --> RealtimePublisherPort
-  ParticipantService --> DomainEventPublisherPort
-  CassandraNotificationProjector ..|> NotificationPort
-  RedisRealtimePublisher ..|> RealtimePublisherPort
-  OutboxEventPublisher ..|> DomainEventPublisherPort
-  DeciaSession "1" --> "*" SessionParticipant : participantes (histórico)
-  SessionParticipant ..> User : userId, addedBy, removedBy
-  SessionParticipant --> ParticipantRole
-  DeciaSession --> SessionAccess
-  DeciaSession --> SessionStatus
-  Notification ..> SessionParticipant : PARTICIPANTE_ADICIONADO, PARTICIPANTE_REMOVIDO
-  AuditLog ..> SessionParticipant : PARTICIPANT_ADDED, PARTICIPANT_REMOVED
-
-  note for SessionParticipant "tabela session_participants (RF5, RF9) · ativo = leftAt nulo · readmissão cria novo registro · índice único (sessionId, userId) WHERE leftAt IS NULL"
-  note for SessionAccessPolicy "inScope: DEPARTAMENTO → mesmo departmentId · EMPRESA/FECHADA → mesma companyId (RF4.CA04)"
+  DepartmentMembersController --> TeamService
+  TeamService --> Guard
+  TeamService --> CuratorService
+  TeamService --> HandoffService
+  TeamService --> DepartmentRepositoryPort
+  TeamService --> MembershipRepositoryPort
+  TeamService --> UserRepositoryPort
+  TeamService --> PendingWorkPort
+  TeamService --> NotificationPort
+  TeamService --> CounterCachePort
+  Company "1" *-- "1..*" Department
+  Company "1" --> "1" User : ownerUserId (EMPRESA)
+  Department "1" --> "1" User : headUserId (CHEFE)
+  Department "1" --> "0..*" DepartmentMembership : histórico de lotações
+  User "1" --> "0..*" DepartmentMembership : no máximo 1 vigente (endedAt nulo)
+  User "0..*" --> "0..1" Department : departmentId = lotação atual
+  Department "1" --> "0..*" CuratorAppointment
+  HandoffDossier "0..*" --> "1" User : subjectUserId
+  DepartmentMembership --> DeptRole
+  HandoffDossier --> HandoffReason
+  User --> ProfileType
+  TeamService ..> Notification
+  TeamService ..> AuditLog : MEMBER_ADDED / MEMBER_REMOVED
+  note for DepartmentMembership "Invariante: por userId existe no máximo uma linha com endedAt nulo. Re-adicionar cria linha nova (CA06). FK users.department_id → departments RESTRICT entra no RF28 (D-23)."
 ```
 
 ## 2. Diagrama de atividades
 
-Raias: Administrador da sessão · Participante afetado · Web/BFF · `ws-application` · Persistência (o RF9 não usa o AiEngine).
-
 ```mermaid
 flowchart TD
-  subgraph L1["Ator humano — Administrador da sessão"]
-    A1(["Abre o painel de participantes"]) --> A2{"Ação?"}
-    A2 -->|adicionar| A3["Busca colega por nome/username e escolhe MEMBRO ou OBSERVADOR"]
-    A2 -->|remover| A4["Escolhe o participante e informa o motivo"]
-    A2 -->|trocar papel| A5["MEMBRO ↔ OBSERVADOR ou habilita resposta a divergência (RF10)"]
-    A20(["Painel atualizado com a lista e os papéis"])
+  subgraph ATOR["Chefe de departamento (headUserId) · EMPRESA dona · ADMIN"]
+    A1["Abre /departments/{slug}/team?mode=manage (atalho Minha equipe no grupo Gestão)"]
+    A2["Busca um colega da mesma empresa e clica Adicionar"]
+    A3["Clica Remover num membro vigente e informa o motivo"]
+    A4["Escolhe o destino das pendências: gerar Dossiê de Transição · transferir para colega · prosseguir"]
+  end
+  subgraph FE["Next.js (App Router) · BFF"]
+    F1["GET /api/departments/{id}/members?q=&page= · GET …/members/history"]
+    F2["GET /api/users/search?companyId=&q= (ACTIVE)"]
+    F3["POST /api/departments/{id}/members {userId}"]
+    F4["GET /api/departments/{id}/members/{userId}/pending → Dialog com pendências"]
+    F5["DELETE /api/departments/{id}/members/{userId} {reason, handoff: DOSSIE | TRANSFER:{toUserId} | NONE}"]
+    F6["Lista com Avatar/Monogram, jobTitle, roleInDept, Tag Curador, startedAt · linha do tempo do histórico"]
+  end
+  subgraph WEB["ws-web"]
+    W1["JWT + SessionActiveFilter + CurrentUserArgumentResolver"]
+    W2["DepartmentMembersController"]
+    E403["403 ACESSO_NEGADO (não é headUserId, nem dono da Company, nem ADMIN)"]
+    E422["422 VALIDACAO (outra empresa · não ACTIVE · perfil EMPRESA · reason vazio)"]
+    E409D["409 MEMBRO_DUPLICADO"]
+    E409C["409 CHEFE_NAO_REMOVIVEL"]
+    E404["404 DEPARTAMENTO_NAO_ENCONTRADO / USUARIO_NAO_ENCONTRADO"]
+  end
+  subgraph APP["ws-application · TeamService"]
+    S1["Guard.requireDeptHead(actor, department)"]
+    S2{"autorizado?"}
+    S3["listMembers / history (MembershipRepositoryPort)"]
+    ADD1["Valida alvo: mesma companyId · ACTIVE · profileType != EMPRESA"]
+    ADD2{"já vigente neste departamento?"}
+    ADD3["Encerra lotação vigente em outro departamento (endedAt, reason TRANSFERENCIA)"]
+    ADD4["DepartmentMembership(MEMBRO, startedAt) · User.departmentId = deptId · AuditLog MEMBER_ADDED"]
+    REM1{"userId == headUserId?"}
+    REM2["pendingOf: ProjectTask abertas · TaskItem EM_USO/BLOQUEADA · SessionParticipant ATIVA · SealBond EM_REVISAO · Assignment ACEITA"]
+    REM3{"há pendências?"}
+    REM4["HandoffService.generate(SAIDA | TRANSFERENCIA) (RF36) ou transferência de responsáveis · ou marca 'sem responsável no departamento'"]
+    REM5["membership.endedAt + reason · User.departmentId = null · CuratorService.revokeOnLeave · AuditLog MEMBER_REMOVED · tarefas/projetos ficam com o dono"]
+    EV["AFTER_COMMIT: MemberAdded/MemberRemoved → Notification SISTEMA ao empregado (com motivo) · CounterCachePort.evict(metrics:department:{id}) · reindexa aba Equipe (RF14) e página da empresa (RF15)"]
+  end
+  subgraph PERS["Persistência"]
+    P1[("MySQL: departments, department_memberships, users (department_id), curator_appointments, handoff_dossiers, audit_log")]
+    P2[("Redis: metrics:department:{id}:* · contadores")]
+    P3[("Cassandra notifications_by_user · timeline_by_user")]
   end
 
-  subgraph L1b["Ator humano — Participante afetado"]
-    H1["Recebe notificação: você foi adicionado"] --> H2["Abre a sessão e lê as mensagens"]
-    H3["Recebe notificação: você foi removido (motivo)"] --> H4["Perde acesso: SSE encerrado, 403 nas próximas chamadas"]
-  end
-
-  subgraph L2["Web / BFF (Next.js App Router)"]
-    B1["GET /api/decia/sessions/{id}/participants/candidates?q="]
-    B2["POST /api/decia/sessions/{id}/participants {userId, role}"]
-    B3["DELETE /api/decia/sessions/{id}/participants/{userId} {reason}"]
-    B4["PATCH /api/decia/sessions/{id}/participants/{userId} {role | canReplyDivergence}"]
-    B5["SSE ParticipantAdded/Removed → lista e presença online"]
-  end
-
-  subgraph L3["ws-application — ParticipantService"]
-    C1{"É adminUserId ou Role ADMIN?"}
-    C1 -->|não| E403["403 ACESSO_NEGADO"]
-    C1 -->|sim| C2{"Sessão ATIVA ou REABERTA?"}
-    C2 -->|não| E409["409 SESSAO_NAO_ATIVA"]
-    C2 -->|sim| C3{"Operação?"}
-    C3 -->|adicionar| C4{"Usuário ACTIVE?"}
-    C4 -->|não| E422a["422 USUARIO_INATIVO"]
-    C4 -->|sim| C5{"Dentro do accessMode? (departamento/empresa)"}
-    C5 -->|não| E422b["422 FORA_DO_ESCOPO_ACESSO"]
-    C5 -->|sim| C6{"Já é participante ativo?"}
-    C6 -->|sim| E409b["409 PARTICIPANTE_DUPLICADO"]
-    C6 -->|não| C7["Cria SessionParticipant (role, joinedAt, addedBy) — novo registro mesmo se já foi removido antes"]
-    C7 --> C8["participantCount++ (lock otimista version)"]
-    C8 --> C9["Mensagem de sistema: Fulano entrou · publica ParticipantAdded (AFTER_COMMIT)"]
-    C3 -->|remover| C10{"Alvo é o adminUserId ou o participante IA?"}
-    C10 -->|sim| E422c["422 VALIDACAO (não remove admin nem IA)"]
-    C10 -->|não| C11{"Motivo informado e alvo ativo?"}
-    C11 -->|não| E422c
-    C11 -->|sim| C12["leftAt=now, removedBy, removeReason (mensagens permanecem)"]
-    C12 --> C13["participantCount-- · desconecta SSE do removido"]
-    C13 --> C14["Mensagem de sistema: Fulano saiu · publica ParticipantRemoved (AFTER_COMMIT)"]
-    C3 -->|trocar papel| C15["Atualiza role ou canReplyDivergence (sem novo registro)"]
-    C15 --> C16["Publica ParticipantRoleChanged (AFTER_COMMIT)"]
-    C17["AFTER_COMMIT: Notification ao afetado · AuditLog PARTICIPANT_ADDED/REMOVED · realtime para o painel"]
-  end
-
-  subgraph L5["Persistência"]
-    D1[("MySQL: session_participants, decia_sessions.participant_count, users, audit_log, domain_events")]
-    D2[("Cassandra: messages_by_session (mensagem de sistema), notifications_by_user")]
-    D3[("Redis: pub/sub decia.session.{id} · presença online")]
-  end
-
-  A3 --> B1 --> D1
-  A3 --> B2 --> C1
-  A4 --> B3 --> C1
-  A5 --> B4 --> C1
-  C7 --> D1
-  C8 --> D1
-  C12 --> D1
-  C13 --> D1
-  C15 --> D1
-  C9 --> D2
-  C14 --> D2
-  C9 --> C17
-  C14 --> C17
-  C16 --> C17
-  C17 --> D2
-  C17 --> D3
-  D3 --> B5 --> A20
-  C17 --> H1
-  C17 --> H3
-  C13 --> H4
-
-  classDef erro fill:#fde2e2,stroke:#c0392b,color:#7b1d1d;
-  class E403,E409,E409b,E422a,E422b,E422c erro;
+  A1 --> F1 --> W1 --> W2 --> S1 --> S2
+  S2 -->|"não"| E403
+  S2 -->|"sim"| S3 --> F6
+  S3 --> P1
+  A2 --> F2 --> F3 --> W2 --> ADD1
+  ADD1 -->|"inválido"| E422
+  ADD1 --> ADD2
+  ADD2 -->|"sim"| E409D
+  ADD2 -->|"não"| ADD3 --> ADD4 --> P1
+  ADD4 --> EV
+  A3 --> F4 --> REM2
+  F4 --> F5 --> W2 --> REM1
+  REM1 -->|"sim"| E409C
+  REM1 -->|"não"| REM2 --> REM3
+  REM3 -->|"sim"| A4 --> REM4 --> REM5
+  REM3 -->|"não"| REM5
+  F5 -->|"reason vazio"| E422
+  REM5 --> P1
+  REM5 --> EV
+  EV --> P2
+  EV --> P3
+  W2 -->|"slug/usuário inexistente"| E404
 ```
 
 ## 3. Diagrama de sequência
 
-Caminho feliz de adicionar e remover, com os `alt` de erro do CA03 (403, 409, 422) e a readmissão (CA04) em `opt`. Sem ponto e vírgula nas mensagens.
-
 ```mermaid
 sequenceDiagram
   autonumber
-  actor A as Administrador da sessão
-  actor P as Participante afetado
-  participant N as Next.js (App Router) /decia/[id]/participants
-  participant C as DeciaSessionController (ws-web)
-  participant S as ParticipantService (ws-application)
-  participant DB as Repository/MySQL
+  actor U as Usuário (chefe)
+  participant N as Next.js (App Router)
+  participant C as Controller (ws-web)
+  participant S as Service (ws-application)
+  participant R as Repository/MySQL
+  participant RD as Redis
   participant CS as Cassandra
-  participant R as Redis
-  participant DE as DomainEvents (AFTER_COMMIT)
+  participant EV as DomainEvents (AFTER_COMMIT)
 
-  A->>N: busca "Maria" e escolhe MEMBRO
-  N->>C: GET /api/decia/sessions/{id}/participants/candidates?q=maria
-  C->>S: searchCandidates(currentUser, sessionId, "maria")
-  S->>DB: SELECT users WHERE company_id (e department_id se DEPARTAMENTO) AND status=ACTIVE AND nome LIKE
-  S-->>C: lista de UserCard (sem quem já está ativo)
-  C-->>N: 200
-
-  N->>C: POST /api/decia/sessions/{id}/participants {userId, role=MEMBRO}
-  C->>S: add(currentUser, sessionId, AddParticipantCommand)
-  S->>DB: SELECT decia_sessions WHERE id (admin_user_id, status, access_mode, version)
-  alt não é adminUserId nem ADMIN (CA03)
+  U->>N: abre Minha equipe (modo gestão)
+  N->>C: GET /api/departments/{id}/members?q=&page=0
+  C->>S: TeamService.listMembers(deptId, q, page, actor)
+  S->>R: departments.findById
+  S->>S: Guard.requireDeptHead(actor, department)
+  alt não é chefe, dona da empresa nem ADMIN
     S-->>C: 403 ACESSO_NEGADO
-    C-->>N: 403
-  else status fora de ATIVA/REABERTA (CA03)
-    S-->>C: 409 SESSAO_NAO_ATIVA
+    C-->>N: 403 (tela mostra só a lista pública, RF14)
+  else autorizado
+    S->>R: department_memberships vigentes (endedAt nulo) + users + curator_appointments
+    S-->>C: Page MemberView
+    C-->>N: 200 (lista com busca e paginação)
+  end
+
+  U->>N: busca "maria" e clica Adicionar
+  N->>C: POST /api/departments/{id}/members {userId}
+  C->>S: TeamService.addMember(deptId, userId, actor, ctx)
+  S->>R: users.findById(userId)
+  alt outra empresa, não ACTIVE ou perfil EMPRESA
+    S-->>C: 422 VALIDACAO details.userId
+    C-->>N: 422
+  else já membro vigente deste departamento
+    S->>R: findCurrent(userId) = mesmo deptId
+    S-->>C: 409 MEMBRO_DUPLICADO
     C-->>N: 409
-  else usuário fora do accessMode (CA01)
-    S->>DB: SELECT users WHERE id (company_id, department_id, status)
-    S-->>C: 422 FORA_DO_ESCOPO_ACESSO
-  else já é participante ativo (CA03)
-    S->>DB: SELECT session_participants WHERE session_id AND user_id AND left_at IS NULL
-    S-->>C: 409 PARTICIPANTE_DUPLICADO
-  else pode adicionar (CA01)
-    S->>DB: BEGIN · INSERT session_participants (role=MEMBRO, joined_at, added_by) · UPDATE decia_sessions SET participant_count+1, version+1 · INSERT domain_events ParticipantAdded · COMMIT
-    S->>CS: INSERT messages_by_session (authorKind=IA, "Maria entrou na sessão")
-    S-->>C: 201 ParticipantView
+  else ok
+    S->>R: findCurrent(userId) em outro departamento → endedAt = now, reason TRANSFERENCIA
+    S->>R: insert department_memberships (MEMBRO, startedAt = now)
+    S->>R: update users.department_id = deptId
+    S->>R: insert audit_log MEMBER_ADDED {deptId, userId, correlationId}
+    S-->>C: MemberView
     C-->>N: 201
-    N-->>A: Maria aparece no painel como MEMBRO
-    DE->>CS: AFTER_COMMIT → notifications_by_user (Maria: PARTICIPANTE_ADICIONADO) (CA05)
-    DE->>DB: AFTER_COMMIT → INSERT audit_log PARTICIPANT_ADDED (correlationId) (CA05)
-    DE->>R: AFTER_COMMIT → PUBLISH decia.session.{id} ParticipantAdded (CA05)
-    R-->>N: SSE → painel e presença atualizados (CA06)
-    DE-->>P: notificação "você foi adicionado à sessão X"
-    P->>N: abre a sessão e lê as mensagens conforme o accessMode
+    EV->>CS: notifications_by_user SISTEMA "você foi adicionado ao departamento X"
+    EV->>RD: evict metrics:department:{id}:*
   end
 
-  A->>N: remove João com motivo "mudou de departamento"
-  N->>C: DELETE /api/decia/sessions/{id}/participants/{joaoId} {reason}
-  C->>S: remove(currentUser, sessionId, joaoId, reason)
-  alt alvo é o adminUserId ou o participante IA (CA03)
-    S-->>C: 422 VALIDACAO (não é possível remover admin ou IA)
-  else motivo vazio (CA02)
-    S-->>C: 422 VALIDACAO (details.reason)
-  else pode remover (CA02)
-    S->>DB: BEGIN · UPDATE session_participants SET left_at=now, removed_by, remove_reason · UPDATE decia_sessions SET participant_count-1 · INSERT domain_events ParticipantRemoved · COMMIT
-    S->>R: disconnect(sessionId, joaoId) → encerra o SSE do removido
-    S->>CS: INSERT messages_by_session (authorKind=IA, "João saiu da sessão")
-    S-->>C: 200 ParticipantView (leftAt preenchido)
-    C-->>N: 200
-    DE->>CS: AFTER_COMMIT → notifications_by_user (João: PARTICIPANTE_REMOVIDO + motivo) (CA05)
-    DE->>DB: AFTER_COMMIT → INSERT audit_log PARTICIPANT_REMOVED (CA05)
-    DE->>R: AFTER_COMMIT → PUBLISH ParticipantRemoved → painel dos demais (CA06)
-    P->>N: João tenta POST messages
-    N->>C: POST /api/decia/sessions/{id}/messages
-    C-->>N: 403 ACESSO_NEGADO (não é participante ativo) (CA02)
-  end
-
-  opt Readmitir João depois (CA04)
-    A->>N: adiciona João de novo como OBSERVADOR
-    N->>C: POST /api/decia/sessions/{id}/participants {userId=joaoId, role=OBSERVADOR}
-    C->>S: add(currentUser, sessionId, cmd)
-    S->>DB: INSERT session_participants (novo registro, lastReadAt nulo) — o antigo com left_at permanece
-    S-->>C: 201 ParticipantView
+  U->>N: clica Remover em um membro
+  N->>C: GET /api/departments/{id}/members/{userId}/pending
+  C->>S: TeamService.pendingOf(deptId, userId)
+  S->>R: PendingWorkPort (ProjectTask abertas, EM_USO/BLOQUEADA, sessões ATIVAS, SealBond EM_REVISAO, Assignment ACEITA)
+  S-->>C: PendingSummary
+  C-->>N: 200 → Dialog "pendências encontradas"
+  U->>N: informa motivo e escolhe "gerar Dossiê de Transição"
+  N->>C: DELETE /api/departments/{id}/members/{userId} {reason, handoff: DOSSIE}
+  C->>S: TeamService.removeMember(deptId, userId, reason, DOSSIE, actor, ctx)
+  alt userId é o próprio headUserId
+    S-->>C: 409 CHEFE_NAO_REMOVIVEL (trocar o chefe é RF28)
+    C-->>N: 409
+  else reason vazio
+    S-->>C: 422 VALIDACAO details.reason
+    C-->>N: 422
+  else ok
+    S->>S: HandoffService.generate(userId, TRANSFERENCIA, actor) (RF36)
+    S->>R: insert handoff_dossiers
+    S->>R: update department_memberships.endedAt, reason
+    S->>R: update users.department_id = null
+    S->>R: update curator_appointments.revokedAt, revokeReason = "saída do departamento"
+    S->>R: insert audit_log MEMBER_REMOVED {reason, handoffId, correlationId}
+    Note over S,R: tarefas e projetos permanecem com o dono (ownerId não muda)
+    S-->>C: 204
+    C-->>N: 204 (linha vai para o histórico)
+    EV->>CS: notifications_by_user SISTEMA "você foi removido do departamento X" + motivo
+    EV->>RD: evict metrics:department:{id}:*
   end
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: `SessionParticipant`. Não há enum de status na TAXONOMIA; o ciclo é implícito por `joinedAt`/`leftAt` e `role`. A guarda da sessão (`SessionStatus` ATIVA/REABERTA) condiciona toda operação do RF9.
+Entidade central: **`DepartmentMembership`** (TAXONOMIA §1.6) — estados derivados de `endedAt` (não há enum): **VIGENTE** (`endedAt` nulo) e **ENCERRADA** (`endedAt` + `reason`). A invariante "no máximo uma VIGENTE por `userId`" é garantida pelo `TeamService` (e, no RF28, por índice parcial). `DeptRole` muda por nomeação (CHEFE/CURADOR, RF28), não por este RF.
 
 ```mermaid
 stateDiagram-v2
   direction LR
-  [*] --> ATIVO : add (RF9.CA01) ou proposta/início da sessão (RF5)
+  state "SEM_LOTACAO (User.departmentId nulo)" as SEM
+  state "VIGENTE (DepartmentMembership.endedAt nulo)" as VIG
+  state "ENCERRADA (endedAt + reason)" as ENC
+  state "VIGENTE em outro departamento" as OUTRO
 
-  state "ATIVO (leftAt nulo)" as ATIVO {
-    [*] --> MEMBRO
-    MEMBRO --> OBSERVADOR : admin troca o papel (RF9.CA04)
-    OBSERVADOR --> MEMBRO : admin troca o papel
-    MEMBRO --> MEMBRO_RESPONDE_DIVERGENCIA : admin habilita canReplyDivergence (RF10)
-    MEMBRO_RESPONDE_DIVERGENCIA --> MEMBRO : admin desabilita
-  }
-
-  ATIVO --> REMOVIDO : admin remove com motivo (RF9.CA02) — leftAt, removedBy, removeReason
-  ATIVO --> SAIU : participante sai por conta própria (a confirmar)
-  ATIVO --> ENCERRADO : sessão vai a ENCERRADA/ARQUIVADA (RF17) — registro preservado
-  REMOVIDO --> [*] : registro histórico permanece
-  SAIU --> [*]
-  ENCERRADO --> [*]
-
-  note right of REMOVIDO
-    Readmissão (RF9.CA04) cria um NOVO SessionParticipant
-    em ATIVO, não reabre este. Mensagens do removido
-    continuam no histórico e no DecisionTrace.
+  [*] --> SEM : cadastro EMPREGADO (RF1) · intendedDepartmentId não lota (RF1.CA23)
+  SEM --> VIG : POST /api/departments/{id}/members pelo chefe (CA02) · MEMBRO · User.departmentId = deptId · MEMBER_ADDED
+  OUTRO --> ENC : chefe de outro departamento adiciona → lotação anterior encerra com reason TRANSFERENCIA (CA02)
+  VIG --> ENC : DELETE …/members/{userId} com reason (CA03) · User.departmentId = null · curadoria revogada · MEMBER_REMOVED
+  ENC --> SEM : efeito imediato da remoção
+  ENC --> VIG : re-adicionar cria NOVA linha (CA06) — a encerrada permanece no histórico
+  VIG --> VIG : nomeação CHEFE/CURADOR (RF28) muda roleInDept, não a lotação
+  VIG --> OUTRO : transferência iniciada pelo chefe de outro departamento
+  note right of VIG
+    headUserId não pode ser removido aqui:
+    409 CHEFE_NAO_REMOVIVEL (troca de chefe = RF28).
   end note
-  note left of ATIVO
-    Guarda: add/remove/changeRole só com
-    DeciaSession.status ATIVA ou REABERTA
-    (409 SESSAO_NAO_ATIVA). ADMIN e IA não são removíveis.
+  note right of ENC
+    Pendências do removido → HandoffDossier (RF36)
+    ou transferência de responsável (CA04).
+    Tarefas e projetos ficam com o dono.
   end note
 ```
 
@@ -401,74 +391,63 @@ stateDiagram-v2
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend Next.js (App Router)"]
-    FE1["app/(app)/decia/[sessionId]/participants/page.tsx (painel)"]
-    FE2["components/ui (ParticipantList, UserSearchCombobox, RoleSelect, RemoveDialog com motivo, PresenceDot)"]
-    FE3["lib/decia/useSessionStream.ts (ParticipantAdded/Removed/RoleChanged)"]
+  subgraph FE["Frontend · Next.js 15 App Router"]
+    PG["app/(shell)/departments/[slug]/team · ?mode=manage"]
+    UI["packages/ui: Tabs (Equipe · Histórico), Input (busca), Avatar/Monogram, Tag (Curador), Button, Dialog (motivo + pendências), Toast, EmptyState"]
+    SN["SidebarNav › Gestão › Minha equipe (só CHEFE / EMPRESA / ADMIN, P-15)"]
+    BFF["app/bff/departments/*"]
+    PG --> UI
+    PG --> BFF
+    SN --> PG
   end
-
-  subgraph WEB["ws-web"]
-    W1["DeciaSessionController /api/decia/sessions/{id}/participants · /{userId} · /candidates"]
-    W2["SessionStreamController (SSE, encerra conexão do removido)"]
-    W3["SecurityConfig (JWT) · CurrentUserResolver · CorrelationIdFilter"]
+  subgraph WSWEB["ws-web"]
+    SEC["SecurityConfig · SessionActiveFilter · CurrentUserArgumentResolver"]
+    DC["DepartmentMembersController"]
+    GEH["GlobalExceptionHandler (403, 404, 409, 422)"]
   end
-
-  subgraph APP["ws-application"]
-    S1["ParticipantService"]
-    S2["Guard.requireSessionAdmin"]
-    S3["MessageService.postSystemMessage"]
-    P1["NotificationPort · RealtimePublisherPort · DomainEventPublisherPort"]
+  subgraph WSAPP["ws-application"]
+    TS["identity/org: TeamService"]
+    GD["security.Guard (real: requireRole, ownerOrAdmin · planejado: requireDeptHead)"]
+    CUR["seals: CuratorService.revokeOnLeave"]
+    HO["handoff: HandoffService (RF36)"]
+    PORTS["ports: DepartmentRepositoryPort · MembershipRepositoryPort · UserRepositoryPort (real) · PendingWorkPort · NotificationPort · CounterCachePort · AuditLogPort (real)"]
+    EVT["events: MemberAdded · MemberRemoved (AFTER_COMMIT)"]
+    TS --> GD
+    TS --> CUR
+    TS --> HO
+    TS --> PORTS
+    TS --> EVT
   end
-
-  subgraph DOM["ws-domain"]
-    D1["DeciaSession · SessionParticipant · User · Notification · AuditLog"]
-    D2["ParticipantRole · SessionAccess · SessionStatus · AccountStatus"]
-    D3["SessionAccessPolicy (inScope, participantsEditable)"]
-    D4["SessionParticipantRepository · DeciaSessionRepository · UserRepository"]
+  subgraph WSDOM["ws-domain"]
+    DOM["identity: User (real) · Company · Department · DepartmentMembership · CuratorAppointment · enums DeptRole/CuratorScope · handoff: HandoffDossier · social: Notification"]
   end
-
   subgraph INFRA["ws-infrastructure"]
-    I1["persistence-mysql (session_participants, decia_sessions, users, audit_log, domain_events)"]
-    I2["persistence-cassandra (messages_by_session mensagem de sistema, notifications_by_user)"]
-    I3["cache-redis (RedisRealtimePublisher pub/sub, presença online)"]
-    I4["platform (OutboxEventPublisher, NotificationDispatcher, AuditLogWriter)"]
+    MY["persistence-mysql: UserEntity (real) · JpaDepartmentRepository · JpaMembershipRepository · Flyway V__rf28_companies_departments (FK RESTRICT em users.department_id, D-23)"]
+    RDS["cache-redis: metrics:department:{id}, contadores"]
+    CAS["persistence-cassandra: notifications_by_user, timeline_by_user"]
+    OSE["search-opensearch: ws-people (lotação atual)"]
   end
 
-  MY[("MySQL 8")]
-  CA[("Cassandra")]
-  RD[("Redis")]
-
-  FE1 --> FE2
-  FE1 --> FE3
-  FE1 -->|HTTPS/JSON| W1
-  FE3 -->|SSE| W2
-  W3 -.-> W1
-  W1 --> S1
-  S1 --> S2
-  S1 --> S3
-  S2 --> D3
-  S1 --> D3
-  S1 --> P1
-  S1 --> D1
-  S1 --> D4
-  I2 -.->|implementa| P1
-  I3 -.->|implementa| P1
-  I4 -.->|implementa| P1
-  W2 --> I3
-  D4 --> I1
-  I1 --> MY
-  I2 --> CA
-  I3 --> RD
-  BOOT["ws-bootstrap (flags cassandra.enabled, redis.enabled; paginação 50)"] -.-> INFRA
+  BFF -->|"REST JSON"| SEC --> DC --> TS
+  DC --> GEH
+  MY -.implementa.-> PORTS
+  RDS -.implementa.-> PORTS
+  CAS -.implementa.-> PORTS
+  OSE -.implementa.-> PORTS
+  TS --> DOM
+  MY --> DB[("MySQL 8.4")]
+  RDS --> RD[("Redis 7")]
+  CAS --> CDB[("Cassandra 4.1")]
+  OSE --> OSX[("OpenSearch 2.19")]
 ```
 
 ## 6. Rastreabilidade
 
-| CA | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) |
-|---|---|---|---|---|---|
-| RF9.CA01 | `ParticipantService.add/searchCandidates`, `SessionParticipant.joinedAt/addedBy/role`, `SessionAccessPolicy.inScope`, `DeciaSession.participantCount/accessMode` | `A3`, `B1`, `B2`, `C4`–`C8` | 1–9, 18–22 (candidatos, `POST participants`, 201) | `[*] → ATIVO (MEMBRO)` | `FE2 UserSearchCombobox`, `W1`, `S1`, `D3`, `I1` |
-| RF9.CA02 | `ParticipantService.remove`, `SessionParticipant.leftAt/removedBy/removeReason`, `RealtimePublisherPort.disconnect` | `A4`, `B3`, `C11`–`C13`, `H3`, `H4` | 30–41 (`DELETE participants`, disconnect, 403 na mensagem) | `ATIVO → REMOVIDO` | `W2` (encerra SSE), `I3`, `FE2 RemoveDialog` |
-| RF9.CA03 | `Guard.requireSessionAdmin`, `SessionAccessPolicy.participantsEditable`, `User.status`, `ParticipantService.requireActive` | `C1` → `E403`, `C2` → `E409`, `C4` → `E422a`, `C6` → `E409b`, `C10` → `E422c` | 10–17 (403, 409, 422), 32–33 | guarda em `ATIVO` | `S2 Guard`, `W3` |
-| RF9.CA04 | `ParticipantService.changeRole/enableReplyDivergence`, `SessionParticipant.canReplyDivergence/lastReadAt` | `A5`, `B4`, `C15`, `C16`, `C7` (novo registro) | 42–47 (`opt` readmissão) | `MEMBRO ↔ OBSERVADOR`, `→ MEMBRO_RESPONDE_DIVERGENCIA`, nota de readmissão | `W1 PATCH`, `FE2 RoleSelect` |
-| RF9.CA05 | `DomainEventPublisherPort` (`ParticipantAdded/Removed`), `NotificationPort`, `Notification`, `AuditLog`, `MessageService.postSystemMessage` | `C9`, `C14`, `C17`, `H1`, `H3` | 20, 23–27, 36, 38–40 | — | `I4 OutboxEventPublisher/NotificationDispatcher/AuditLogWriter`, `I2` |
-| RF9.CA06 | `ParticipantService.list`, `SessionParticipant.role/joinedAt/canReplyDivergence`, `RealtimePublisherPort` | `A1`, `B5`, `A20` | 26–27 (SSE → painel e presença) | — | `FE1`, `FE2 ParticipantList/PresenceDot`, `FE3`, `I3` (presença) |
+| CA | Classe (§1) | Passo da atividade (§2) | Mensagem da sequência (§3) | Transição de estado (§4) | Componente (§5) | Situação |
+|---|---|---|---|---|---|---|
+| RF9.CA01 | `DepartmentMembersController.list/history`, `TeamService.listMembers/history`, `Guard.requireDeptHead`, `MembershipRepositoryPort.findCurrentByDept` | `A1`→`F1`→`S1`→`S2`→`S3`→`F6`, `E403` | 1–11 | — | `PG`, `SN`, `GD`, `UI` | planejado (`Guard` base real) |
+| RF9.CA02 | `TeamService.addMember`, `DepartmentMembership`, `User.departmentId`, `UserRepositoryPort.searchInCompany` | `A2`→`F2`→`F3`→`ADD1`→`ADD4`, `E422`, `E409D` | 12–26 | `SEM`→`VIG`, `OUTRO`→`ENC` | `TS`, `MY` | planejado (RF28.CA02) |
+| RF9.CA03 | `TeamService.removeMember`, `CuratorService.revokeOnLeave`, `CuratorAppointment.revokeReason` | `A3`→`F5`→`REM1`→`REM5`, `E409C`, `E422` | 36–47 | `VIG`→`ENC`→`SEM` | `TS`, `CUR` | planejado (RF28.CA03) |
+| RF9.CA04 | `TeamService.pendingOf`, `PendingWorkPort`, `HandoffService.generate`, `HandoffDossier` | `F4`→`REM2`→`REM3`→`A4`→`REM4` | 29–35, 43–44 | nota de `ENC` | `HO`, `PORTS` | planejado (RF36, RF10) |
+| RF9.CA05 | eventos `MemberAdded`/`MemberRemoved`, `AuditLogPort` (`MEMBER_ADDED`/`MEMBER_REMOVED`), `NotificationPort`, `CounterCachePort.evict` | `EV` | 23, 27–28, 47, 51–52 | — | `EVT`, `CAS`, `RDS`, `OSE` | planejado (`AuditLogPort` real) |
+| RF9.CA06 | `MembershipRepositoryPort.findHistoryByDept`, invariante de 1 vigente, `lib/i18n` | `F1` (history), `F6` | 10–11 | `ENC`→`VIG` (nova linha) | `UI` (linha do tempo), `PG` | planejado |

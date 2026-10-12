@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Work Station"><title>Work Station</title>
+  <circle cx="12" cy="12" r="11.5" fill="#242525"/>
+  <circle cx="12" cy="12" r="9.5" fill="#F28222"/>
+  <circle cx="12" cy="12" r="9.5" fill="none" stroke="#AB2C16" stroke-width=".75"/>
+  <circle cx="12" cy="12" r="5.75" fill="#F1DEC0"/>
+  <rect x="8.25" y="9" width="7.5" height="5.25" rx="1.1" fill="#242525"/>
+  <rect x="10.75" y="14.25" width="2.5" height="1.5" fill="#212223"/>
+  <path d="M10 10.6l1.1 1.05-1.1 1.05" fill="none" stroke="#F1DEC0" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M12.1 12.9h1.9" fill="none" stroke="#F1DEC0" stroke-width=".9" stroke-linecap="round"/>
+  <circle cx="12" cy="3.6" r="1" fill="#FC4E2B"/><circle cx="19.3" cy="7.8" r="1" fill="#F6B507"/><circle cx="19.3" cy="16.2" r="1" fill="#7DC549"/>
+  <circle cx="12" cy="20.4" r="1" fill="#019FF4"/><circle cx="4.7" cy="16.2" r="1" fill="#8B4628"/><circle cx="4.7" cy="7.8" r="1" fill="#FCB809"/>
+</svg>

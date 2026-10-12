@@ -38,3 +38,7 @@ Thumbs.db
 
 # ---- agentes ----
 .claude/worktrees/
+
+# Playwright
+playwright-report/
+test-results/

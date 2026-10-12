@@ -37,8 +37,31 @@
             <artifactId>mysql-connector-j</artifactId>
         </dependency>
         <dependency>
+            <!-- Boot 4: a autoconfiguração do Jackson 3 (ObjectMapper usado por JpaAuditLog) vive em spring-boot-jackson;
+                 em produção ela chega pelo starter webmvc do ws-web — aqui só os testes de contexto precisam dela -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jackson</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Testcontainers 2 (versões do BOM do Boot 4): ForeignKeyPolicyTest sobe um MySQL 8.4 real e roda o Flyway do zero -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers-mysql</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -1,0 +1,29 @@
+/* Preferências do usuário aplicadas no <html> pelo PreferencesProvider (RF3.CA03, TAXONOMIA §1.2):
+   data-density (compacta · normal · confortavel) · data-font-scale (90 · 100 · 112 · 125) · data-reduce-motion (tokens-ws.css §7)
+   · data-theme (tokens-ws.css §2–§5). Só medidas: nenhuma cor aqui. */
+
+:root {
+  --ws-density: 1;
+  --ws-gap: calc(var(--ws-space-4) * var(--ws-density));
+  --ws-gap-sm: calc(var(--ws-space-2) * var(--ws-density));
+  --ws-gap-lg: calc(var(--ws-space-6) * var(--ws-density));
+}
+
+:root[data-density="compacta"] {
+  --ws-density: 0.75;
+  --ws-control-sm: 30px;
+  --ws-control-md: 34px;
+  --ws-control-lg: 40px;
+}
+
+:root[data-density="confortavel"] {
+  --ws-density: 1.25;
+  --ws-control-sm: 38px;
+  --ws-control-md: 44px;
+  --ws-control-lg: 52px;
+}
+
+:root[data-font-scale="90"] { font-size: 90%; }
+:root[data-font-scale="100"] { font-size: 100%; }
+:root[data-font-scale="112"] { font-size: 112.5%; }
+:root[data-font-scale="125"] { font-size: 125%; }

@@ -8,3 +8,13 @@
 # usa valores de baixa entropia e estas entradas cobrem só o commit em que nasceram.
 65e11187816a9979d580fc9f61d1b4266a641269:ws-bootstrap/src/test/java/br/gov/pr/secid/workstation/bootstrap/logging/SensitiveDataMaskingConverterTest.java:generic-api-key:22
 65e11187816a9979d580fc9f61d1b4266a641269:ws-bootstrap/src/test/java/br/gov/pr/secid/workstation/bootstrap/logging/SensitiveDataMaskingConverterTest.java:generic-api-key:23
+
+# PEM falso de teste (corpo "SEGREDO-FALSO") em JwtKeysAndIssuerTest, commit 609592d; corrigido em c64cfcc (montado em partes). Não é chave.
+609592d9f36fa853a94764b0594858c933b51c7b:ws-web/src/test/java/br/gov/pr/secid/workstation/web/config/JwtKeysAndIssuerTest.java:private-key:146
+
+# Histórico deste branch (PR #15), implementação substituída pela main no merge: marcadores PEM do leitor de chave
+# (JwtTokenIssuer.readPrivateKey, só para removê-los do arquivo), "PEM" inválido inventado no teste do leitor e segredo
+# de teste de baixa entropia do IP assinado (ClientIpResolverTest). Nenhum é chave.
+beb5cce55c251cdbec429bcddd4bf1880f569921:ws-web/src/main/java/br/gov/pr/secid/workstation/web/security/JwtTokenIssuer.java:private-key:115
+beb5cce55c251cdbec429bcddd4bf1880f569921:ws-web/src/test/java/br/gov/pr/secid/workstation/web/security/JwtTokenIssuerTest.java:private-key:104
+52041e2bf0430ad1b5705886ebf89d316ea5cba5:ws-web/src/test/java/br/gov/pr/secid/workstation/web/support/ClientIpResolverTest.java:generic-api-key:15

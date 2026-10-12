@@ -1,19 +1,174 @@
-/* Estilos globais: Tailwind 4 + tokens do design system DECIA (styles/tokens.css, 4 temas via data-theme).
-   Nenhuma cor literal aqui — só var(--token) (stylelint: color-no-hex / function-disallowed-list). */
+/* Estilos globais: Tailwind 4 + tokens v2 do design system (styles/tokens-ws.css, namespace --ws-*, temas claro ·
+   escuro · contraste · terminal via data-theme) + preferências do usuário (densidade, escala da fonte, movimento).
+   Nenhuma cor literal aqui — só var(--ws-*) (stylelint: color-no-hex / function-disallowed-list / allowed-list). */
 @import "tailwindcss";
-@import "../styles/tokens.css";
+@import "../styles/tokens-ws.css";
+@import "../styles/preferences.css";
+
+/* Tailwind consome os tokens: `bg-ws-surface-1`, `text-ws-text-muted`, `border-ws-border`… (cor sempre por token). */
+@theme inline {
+  --color-ws-surface-0: var(--ws-surface-0);
+  --color-ws-surface-1: var(--ws-surface-1);
+  --color-ws-surface-2: var(--ws-surface-2);
+  --color-ws-surface-3: var(--ws-surface-3);
+  --color-ws-container: var(--ws-container);
+  --color-ws-text: var(--ws-text);
+  --color-ws-text-muted: var(--ws-text-muted);
+  --color-ws-text-faint: var(--ws-text-faint);
+  --color-ws-border: var(--ws-border);
+  --color-ws-border-strong: var(--ws-border-strong);
+  --color-ws-focus: var(--ws-focus);
+  --color-ws-ink: var(--ws-ink);
+  --color-ws-cream: var(--ws-cream);
+  --color-ws-accent: var(--ws-accent);
+  --color-ws-accent-strong: var(--ws-accent-strong);
+  --color-ws-accent-ink: var(--ws-accent-ink);
+  --color-ws-accent-soft: var(--ws-accent-soft);
+  --color-ws-on-accent: var(--ws-on-accent);
+  --color-ws-success: var(--ws-success);
+  --color-ws-success-ink: var(--ws-success-ink);
+  --color-ws-success-soft: var(--ws-success-soft);
+  --color-ws-on-success: var(--ws-on-success);
+  --color-ws-warning: var(--ws-warning);
+  --color-ws-warning-ink: var(--ws-warning-ink);
+  --color-ws-warning-soft: var(--ws-warning-soft);
+  --color-ws-on-warning: var(--ws-on-warning);
+  --color-ws-danger: var(--ws-danger);
+  --color-ws-danger-ink: var(--ws-danger-ink);
+  --color-ws-danger-soft: var(--ws-danger-soft);
+  --color-ws-on-danger: var(--ws-on-danger);
+  --color-ws-info: var(--ws-info);
+  --color-ws-info-ink: var(--ws-info-ink);
+  --color-ws-info-soft: var(--ws-info-soft);
+  --color-ws-on-info: var(--ws-on-info);
+  --color-ws-ai-spark: var(--ws-ai-spark);
+  --color-ws-ai-spark-ink: var(--ws-ai-spark-ink);
+  --color-ws-ai-spark-soft: var(--ws-ai-spark-soft);
+  --color-ws-on-ai-spark: var(--ws-on-ai-spark);
+  --color-ws-node-red: var(--ws-node-red);
+  --color-ws-node-yellow: var(--ws-node-yellow);
+  --color-ws-node-green: var(--ws-node-green);
+  --color-ws-node-blue: var(--ws-node-blue);
+  --color-ws-node-brown: var(--ws-node-brown);
+  --color-ws-node-orange: var(--ws-node-orange);
+  --color-ws-node-red-soft: var(--ws-node-red-soft);
+  --color-ws-node-yellow-soft: var(--ws-node-yellow-soft);
+  --color-ws-node-green-soft: var(--ws-node-green-soft);
+  --color-ws-node-blue-soft: var(--ws-node-blue-soft);
+  --color-ws-node-brown-soft: var(--ws-node-brown-soft);
+  --color-ws-node-orange-soft: var(--ws-node-orange-soft);
+  --color-ws-node-red-ink: var(--ws-node-red-ink);
+  --color-ws-node-yellow-ink: var(--ws-node-yellow-ink);
+  --color-ws-node-green-ink: var(--ws-node-green-ink);
+  --color-ws-node-blue-ink: var(--ws-node-blue-ink);
+  --color-ws-node-brown-ink: var(--ws-node-brown-ink);
+  --color-ws-node-orange-ink: var(--ws-node-orange-ink);
+  --color-ws-glass-border: var(--ws-glass-border);
+  --color-ws-decision-critical: var(--ws-decision-critical);
+  --color-ws-decision-node-evidence: var(--ws-decision-node-evidence);
+  --color-ws-decision-node-assumption: var(--ws-decision-node-assumption);
+  --color-ws-decision-node-criteria: var(--ws-decision-node-criteria);
+  --color-ws-decision-node-tradeoff: var(--ws-decision-node-tradeoff);
+  --color-ws-decision-node-risk: var(--ws-decision-node-risk);
+  --color-ws-decision-node-rejected: var(--ws-decision-node-rejected);
+  --font-ws-display: var(--ws-font-display);
+  --font-ws-body: var(--ws-font-body);
+  --font-ws-mono: var(--ws-font-mono);
+  --radius-ws-sm: var(--ws-radius-sm);
+  --radius-ws-md: var(--ws-radius-md);
+  --radius-ws-lg: var(--ws-radius-lg);
+  --radius-ws-pill: var(--ws-radius-pill);
+  --shadow-ws-1: var(--ws-shadow-1);
+  --shadow-ws-2: var(--ws-shadow-2);
+  --shadow-ws-clay: var(--ws-shadow-clay);
+}
 
 html,
 body {
   min-height: 100%;
-  background: var(--surface);
-  color: var(--ink);
-  font-family: var(--font-ui);
-  font-size: var(--text-body);
-  line-height: var(--text-body--lh);
+  background: var(--ws-surface-0);
+  color: var(--ws-text);
+  font-family: var(--ws-body-font);
+  font-size: var(--ws-text-body);
+  line-height: var(--ws-text-body--lh);
+  -webkit-text-size-adjust: 100%;
 }
 
-:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
+/* Medidas do shell (não são tokens de marca: vivem aqui, TOKENS.md §8). */
+:root {
+  --ws-shell-header: 56px;
+  --ws-shell-sidebar: 264px;
+  --ws-shell-sidebar-rail: 72px;
+  --ws-shell-bottomnav: 60px;
 }
+
+/* Vidro do shell (ANATOMIAS_E_ESTUDIO.md: blur/glass por token; no alto contraste --ws-blur-glass é 0). */
+.ws-shell-glass {
+  background: var(--ws-glass-bg);
+  border-color: var(--ws-glass-border);
+  backdrop-filter: blur(var(--ws-blur-glass)) saturate(var(--ws-scrim-saturate));
+  -webkit-backdrop-filter: blur(var(--ws-blur-glass)) saturate(var(--ws-scrim-saturate));
+}
+
+/* Animações dos glifos (GLYPHS.md §Movimento) — desligadas por prefers-reduced-motion / data-reduce-motion (tokens-ws.css §7). */
+@keyframes ws-blink {
+  50% { opacity: 0; }
+}
+@keyframes ws-pulse {
+  0% { transform: scale(0.85); opacity: 0.9; }
+  100% { transform: scale(1.25); opacity: 0; }
+}
+@keyframes ws-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.ws-moji[data-animated="true"] text { animation: ws-blink var(--ws-duration-blink) steps(1) infinite; }
+.ws-glyph[data-name="notificacoes"][data-live="true"] circle:first-of-type {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: ws-pulse var(--ws-duration-pulse) var(--ws-ease) infinite;
+}
+.ws-skeleton {
+  background: linear-gradient(90deg, var(--ws-surface-2) 25%, var(--ws-surface-3) 50%, var(--ws-surface-2) 75%);
+  background-size: 200% 100%;
+  animation: ws-shimmer 1.6s var(--ws-ease-in-out) infinite;
+}
+
+/* Nome do estado também em texto: :focus-visible vem de tokens-ws.css (anel --ws-focus-ring). */
+.ws-skip-link {
+  position: absolute;
+  left: var(--ws-space-3);
+  top: -100px;
+  z-index: var(--ws-z-toast);
+  padding: var(--ws-space-2) var(--ws-space-4);
+  border-radius: var(--ws-radius-md);
+  background: var(--ws-accent);
+  color: var(--ws-on-accent);
+  font-weight: 600;
+}
+.ws-skip-link:focus-visible { top: var(--ws-space-3); }
+
+/* Fonte do tema terminal também no shell (tokens-ws.css já troca --ws-body-font). */
+:root[data-theme="terminal"] .ws-shell-glass { border-style: dashed; }
+
+/* DECIA Decision Card — flip (docs/decia/04_DECISION_CARD.md §7). As duas faces ficam sobrepostas na mesma célula de
+   grid: a altura é a da face maior (sem layout shift). 3D só em data-motion="3d"; com prefers-reduced-motion ou a
+   preferência "Reduzir movimento" (data-reduce-motion) a troca é simples, sem rotação. */
+.ws-decision-flip__inner { display: grid; }
+.ws-decision-flip__inner > .ws-decision-face { grid-area: 1 / 1; min-width: 0; }
+.ws-decision-flip[data-motion="3d"] { perspective: 1600px; }
+.ws-decision-flip[data-motion="3d"] .ws-decision-flip__inner {
+  transform-style: preserve-3d;
+  transition: transform var(--ws-decision-flip-duration) var(--ws-ease-in-out);
+}
+.ws-decision-flip[data-motion="3d"][data-flipped="true"] .ws-decision-flip__inner { transform: rotateY(180deg); }
+.ws-decision-flip[data-motion="3d"] .ws-decision-face { backface-visibility: hidden; }
+.ws-decision-flip[data-motion="3d"] .ws-decision-face--back { transform: rotateY(180deg); }
+.ws-decision-flip[data-motion="reduced"] .ws-decision-face[aria-hidden="true"] { visibility: hidden; }
+@media (prefers-reduced-motion: reduce) {
+  .ws-decision-flip .ws-decision-flip__inner, .ws-decision-flip .ws-decision-face { transform: none !important; transition: none !important; }
+  .ws-decision-flip .ws-decision-face[aria-hidden="true"] { visibility: hidden; }
+}
+:root[data-reduce-motion="true"] .ws-decision-flip .ws-decision-flip__inner,
+:root[data-reduce-motion="true"] .ws-decision-flip .ws-decision-face { transform: none !important; transition: none !important; }
+:root[data-reduce-motion="true"] .ws-decision-flip .ws-decision-face[aria-hidden="true"] { visibility: hidden; }

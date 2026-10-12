@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anatomias e Estúdio — wireframe</title>
+<meta name="description" content="Wireframe estático (lab, não produto) das zonas dos cards de tarefa e de projeto, dos layouts propostos, das zonas do lacre, dos estilos de fundo, das skins com contraste automático e dos segmentos do Estúdio do card. Fonte: docs/design-system/ANATOMIAS_E_ESTUDIO.md.">
+<link rel="stylesheet" href="design-system/tokens.css">
+<link rel="stylesheet" href="design-system/components.css">
+<style>
+/* Laboratório (prefixo lab-): só tokens, nenhum hex solto fora das skins documentadas. */
+body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--font-ui); font-size: var(--text-body); line-height: 1.5; }
+.lab-controls { position: sticky; top: 0; z-index: var(--z-header); display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; align-items: center; padding: .6rem 1rem; background: var(--surface-2); border-bottom: 1px dashed var(--line-soft); font-size: var(--text-body-sm); }
+.lab-controls .lab-k { color: var(--muted); font-family: var(--font-data); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; margin-right: .25rem; }
+.lab-controls [role="radiogroup"] { display: inline-flex; gap: .25rem; flex-wrap: wrap; }
+.lab-main { padding: 1.25rem 1.5rem 5rem; display: grid; gap: 1.5rem; max-width: 1240px; margin: 0 auto; }
+@media (max-width: 640px) { .lab-main { padding: 1rem 16px 5rem; } }
+h1, h2, h3 { font-family: var(--font-editorial); margin: 0; }
+h1 { font-size: var(--text-h1); } h2 { font-size: var(--text-h2); } h3 { font-size: var(--text-h3); font-family: var(--font-ui); }
+.lab-lead { color: var(--muted); max-width: 70ch; margin: .25rem 0 0; }
+.lab-section { display: grid; gap: .75rem; padding: 1rem; background: var(--surface); border: 1px solid var(--line-soft); border-radius: var(--radius-lg); }
+.lab-section > header { display: flex; align-items: baseline; gap: .75rem; flex-wrap: wrap; }
+.lab-section > header small { font-family: var(--font-data); color: var(--muted); font-size: 11px; }
+.lab-note { font-size: var(--text-caption); color: var(--muted); margin: 0; }
+.lab-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); align-items: start; }
+.lab-grid--wide { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.lab-cap { font-size: var(--text-caption); color: var(--muted); margin: .35rem 0 0; }
+.lab-cap b { color: var(--ink); font-family: var(--font-data); font-weight: 600; }
+.lab-pill { display: inline-flex; align-items: center; gap: .3rem; padding: 0 .5rem; height: 20px; border-radius: var(--radius-pill); border: 1px solid var(--line-soft); font-family: var(--font-data); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); }
+.lab-pill--b { border-color: var(--spark); color: var(--spark-ink); background: var(--spark-soft); }
+
+/* callouts numerados sobre o card (zonas) */
+.lab-anno { position: relative; }
+.lab-zone { position: absolute; z-index: 5; display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--class-pergunta); color: #fff; font-family: var(--font-data); font-size: 11px; font-weight: 700; box-shadow: 0 0 0 2px var(--surface); pointer-events: none; }
+.lab-legend { display: grid; gap: .25rem; font-size: var(--text-caption); }
+.lab-legend li { display: flex; gap: .5rem; align-items: baseline; }
+.lab-legend i { flex: none; display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--class-pergunta); color: #fff; font-style: normal; font-family: var(--font-data); font-size: 10px; font-weight: 700; }
+.lab-legend code { font-family: var(--font-data); font-size: 11px; color: var(--primary-ink); }
+
+/* card: complementos do lab sobre .ws-card */
+.ws-card { display: block; }
+.ws-card__spark { position: absolute; top: calc(var(--top) + 6px); right: calc(var(--x) + 6px); z-index: 2; width: var(--card-spark); height: var(--card-spark); color: var(--spark); }
+.ws-card__fav { position: absolute; z-index: 3; top: calc(var(--top) + var(--card-pad) + 2px); left: calc(var(--x) + var(--card-pad) + 30px); color: var(--spark); font-size: 11px; }
+.lab-meta { display: flex; flex-wrap: wrap; gap: .3rem .5rem; align-items: center; font-size: 10.5px; color: var(--muted); }
+.lab-meta b { color: var(--ink); font-weight: 600; }
+.lab-resp { display: inline-flex; align-items: center; gap: .3rem; }
+.lab-chips { display: flex; flex-wrap: wrap; gap: .25rem; }
+.lab-chip { font-family: var(--font-data); font-size: 9px; letter-spacing: .05em; text-transform: uppercase; padding: 1px 6px; border-radius: var(--radius-pill); background: var(--surface-2); color: var(--muted); border: 1px solid var(--line-soft); }
+.lab-access { font-family: var(--font-data); font-size: 9px; letter-spacing: .05em; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; background: var(--dept-ardosia-soft); color: var(--dept-ardosia-ink); }
+.lab-ext { position: absolute; left: 6px; top: 6px; font-family: var(--font-data); font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 3px; background: var(--ext-pdf, var(--class-risco)); color: #fff; }
+.lab-doc { width: 68%; height: 82%; background: var(--surface); border: .8px solid var(--line-soft); box-shadow: var(--shadow-1); display: grid; gap: 4px; padding: 8px; align-content: start; }
+.lab-doc i { display: block; height: 3px; background: var(--line-soft); border-radius: 2px; } .lab-doc i:first-child { width: 55%; height: 5px; background: var(--muted); }
+.lab-doc i:nth-child(odd) { width: 92%; } .lab-doc i:nth-child(even) { width: 78%; }
+.ws-card__media { position: relative; }
+.lab-stamp { position: absolute; inset: 0; display: grid; place-items: center; }
+.lab-row { display: grid; grid-template-columns: var(--card-thumb-mini) 1fr auto; gap: .5rem; align-items: center; font-size: 11px; padding: 3px 0; border-top: 1px dashed var(--line-soft); }
+.lab-row .t { width: var(--card-thumb-mini); height: calc(var(--card-thumb-mini) * .66); background: var(--surface-2); border: .8px solid var(--line-soft); border-radius: 2px; display: grid; place-items: center; }
+.lab-row em { font-style: normal; color: var(--muted); font-size: 10px; display: block; }
+.lab-cover { position: relative; aspect-ratio: 3/2; border: .8px solid var(--line-soft); overflow: hidden; }
+.ws-mosaic { height: 100%; }
+.lab-tile { font-family: var(--font-data); font-size: 10px; color: var(--muted); }
+.lab-tile[data-type] { background: var(--tt-soft, var(--surface-2)); color: var(--tt, var(--muted)); }
+
+/* layouts específicos */
+.lab-grade { display: grid; grid-template-columns: repeat(3, 1fr); gap: .25rem; }
+.lab-grade div { background: var(--surface-2); border-radius: 4px; padding: 4px 6px; display: grid; }
+.lab-grade b { font-family: var(--font-data); font-size: 13px; } .lab-grade span { font-size: 9px; color: var(--muted); }
+.lab-spark { height: 36px; display: block; }
+.lab-mensagem { display: grid; gap: .3rem; font-size: 11px; }
+.lab-mensagem .from { display: flex; gap: .4rem; align-items: center; }
+.lab-mensagem .thread { font-size: 10px; color: var(--muted); padding-left: .5rem; border-left: 2px solid var(--line-soft); }
+.lab-ficha { font-family: var(--font-data); display: grid; gap: .2rem; }
+.lab-ficha .num { font-size: 16px; font-weight: 700; letter-spacing: .04em; }
+.lab-ficha .k { font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.lab-ficha .v { font-size: 11px; }
+.lab-gantt { display: grid; gap: 3px; }
+.lab-gantt .bar { height: 8px; border-radius: 4px; background: var(--primary-soft); position: relative; }
+.lab-gantt .bar i { position: absolute; top: 0; bottom: 0; border-radius: 4px; background: var(--primary); }
+.lab-gantt .bar[data-critical] i { background: var(--class-risco); }
+.lab-gantt .today { position: relative; height: 0; } .lab-gantt .today::before { content: "hoje"; position: absolute; left: 46%; top: -2px; font-family: var(--font-data); font-size: 8px; color: var(--spark-ink); border-left: 1px dashed var(--spark); padding-left: 2px; height: 70px; }
+.lab-kanban { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.lab-kanban div { display: grid; gap: 2px; align-content: start; padding: 2px; background: var(--surface-2); border-radius: 3px; min-height: 42px; }
+.lab-kanban div[aria-current] { outline: 1.5px solid var(--primary); }
+.lab-kanban i { display: block; height: 6px; border-radius: 2px; background: var(--primary-soft); border: .5px solid var(--primary); }
+.lab-kanban b { font-family: var(--font-data); font-size: 8px; text-align: center; color: var(--muted); }
+.lab-gauges { display: grid; grid-template-columns: repeat(3, 1fr); gap: .35rem; }
+.lab-gauge { display: grid; justify-items: center; gap: 1px; font-size: 9px; color: var(--muted); }
+.lab-gauge svg { width: 100%; max-width: 64px; }
+.lab-gauge b { font-family: var(--font-data); font-size: 11px; color: var(--ink); }
+.lab-lock { font-size: 9px; color: var(--muted); font-style: italic; }
+
+/* lacre: zonas */
+.lab-sealzone { display: grid; grid-template-columns: 42px 1fr; gap: .5rem; align-items: start; font-size: var(--text-caption); }
+.lab-sealzone svg { border: 1px solid var(--line-soft); border-radius: 3px; background: var(--surface); }
+.lab-sealzone b { display: block; font-family: var(--font-data); font-size: 11px; }
+.lab-sealzone span { color: var(--muted); }
+
+/* estilos de fundo (faixas) */
+.lab-art { position: relative; aspect-ratio: 3/2; border-radius: var(--card-r-out); overflow: hidden; border: 2px solid var(--dept-gralha-azul); background: var(--surface-2); }
+.lab-art > .faixa { position: absolute; inset: 0; z-index: 0; }
+.lab-art > .box { position: absolute; inset: 22% 14%; z-index: 1; background: var(--surface); border-radius: var(--card-r-in); box-shadow: var(--shadow-1); display: grid; place-items: center; font-size: 10px; color: var(--muted); }
+.lab-art[data-kind="terminal"] > .faixa { background: #0B1410; background-image: repeating-linear-gradient(0deg, rgba(120,255,160,.08) 0 1px, transparent 1px 10px); color: #7CFFA0; }
+.lab-art[data-kind="terminal"] > .faixa::after { content: "> ws run parecer --fase ELABORACAO_"; position: absolute; left: 8px; bottom: 4px; font-family: var(--font-data); font-size: 8px; }
+.lab-art[data-kind="papel"] > .faixa { background: var(--skin-papel, var(--surface-2)); background-image: repeating-linear-gradient(0deg, color-mix(in srgb, var(--ink) 6%, transparent) 0 1px, transparent 1px 8px); }
+.lab-art[data-kind="cortica"] > .faixa { background: var(--skin-cortica, var(--type-pasta-soft)); background-image: radial-gradient(color-mix(in srgb, var(--type-pasta) 30%, transparent) 1px, transparent 1.5px); background-size: 7px 7px; }
+.lab-art[data-kind="blueprint"] > .faixa { background: var(--skin-blueprint, #0F3260); background-image: linear-gradient(rgba(255,255,255,.14) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.14) 1px, transparent 1px); background-size: 12px 12px; }
+.lab-art[data-kind="monograma"] > .faixa { background: var(--type-documento-soft); }
+.lab-art[data-kind="monograma"] > .faixa::after { content: "PT"; position: absolute; right: 2px; bottom: -14px; font-family: var(--font-editorial); font-weight: 700; font-size: 86px; letter-spacing: -.06em; color: var(--type-documento); opacity: .22; }
+.lab-art[data-kind="gradient"] > .faixa { background: var(--primary-gradient); }
+.lab-art[data-kind="color"] > .faixa { background: var(--dept-araucaria); }
+.lab-art[data-kind="mosaic"] > .faixa { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); gap: 2px; opacity: .45; }
+.lab-art[data-kind="mosaic"] > .faixa i { background: var(--surface-3); }
+.lab-art[data-kind="ai"] > .faixa { background: linear-gradient(160deg, var(--spark-soft), var(--primary-soft)); }
+.lab-art[data-kind="ai"] > .faixa::after { content: "✦ ilustração IA"; position: absolute; left: 8px; top: 6px; font-size: 9px; color: var(--spark-ink); }
+.lab-art[data-kind="upload"] > .faixa { background: repeating-linear-gradient(45deg, var(--surface-3) 0 6px, var(--surface-2) 6px 12px); }
+.lab-art svg.mesh { position: absolute; inset: 0; width: 100%; height: 100%; }
+:root[data-theme="contraste"] .lab-art > .faixa { background: #000 !important; background-image: none !important; }
+:root[data-theme="contraste"] .lab-art svg.mesh { display: none; }
+
+/* skins × inkOn */
+.lab-skin { border-radius: var(--r, 10px); border: 1.5px solid var(--b); background: var(--bg); color: var(--ink2); padding: .6rem .75rem; display: grid; gap: .25rem; }
+.lab-skin b { font-family: var(--font-editorial); font-weight: var(--w, 600); font-size: 14px; }
+.lab-skin small { font-family: var(--font-data); font-size: 10px; opacity: .85; }
+.lab-skin .acc { display: inline-block; width: 36px; height: 4px; border-radius: 2px; background: var(--acc); }
+.lab-ink { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: .4rem; }
+.lab-ink div { height: 52px; border-radius: 6px; display: grid; place-items: center; font-family: var(--font-data); font-size: 10px; border: 1px solid var(--line-soft); }
+
+/* estúdio */
+.lab-studio { display: grid; grid-template-columns: 1fr 260px; gap: 1rem; align-items: start; }
+@media (max-width: 860px) { .lab-studio { grid-template-columns: 1fr; } }
+.lab-seg { display: inline-flex; border: 1px solid var(--line); border-radius: var(--radius-pill); padding: 2px; gap: 2px; background: var(--surface-2); }
+.lab-seg button { all: unset; cursor: pointer; padding: .25rem .8rem; border-radius: var(--radius-pill); font-size: var(--text-body-sm); font-weight: 600; }
+.lab-seg button[aria-selected="true"] { background: var(--primary); color: var(--on-primary); }
+.lab-panel { display: none; gap: .75rem; } .lab-panel[data-on] { display: grid; }
+.lab-opt { display: grid; gap: .35rem; }
+.lab-opt > .k { font-family: var(--font-data); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.lab-opt > .row { display: flex; flex-wrap: wrap; gap: .35rem; }
+.lab-dot { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--line-soft); }
+.lab-dot.sq { border-radius: 5px; }
+.lab-tile-opt { display: grid; gap: .25rem; width: 96px; padding: 4px; border: 1.5px solid var(--line-soft); border-radius: var(--radius-sm); background: var(--surface); font-size: 10px; text-align: center; }
+.lab-tile-opt[aria-pressed="true"] { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-soft); }
+.lab-tile-opt[aria-disabled="true"] { opacity: .5; }
+.lab-tile-opt .th { height: 40px; border-radius: 3px; background: var(--surface-2); }
+.lab-tile-opt small { color: var(--muted); font-size: 9px; }
+.lab-switch { display: flex; align-items: center; gap: .5rem; font-size: var(--text-body-sm); }
+.lab-switch i { width: 28px; height: 16px; border-radius: 8px; background: var(--line-soft); position: relative; } .lab-switch i::after { content: ""; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--surface); }
+.lab-switch[data-on] i { background: var(--primary); } .lab-switch[data-on] i::after { left: 14px; }
+.lab-preview { display: grid; gap: .5rem; }
+.lab-preview .k { font-family: var(--font-data); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+/* contextos */
+.ws-card--mini .ws-card__content { display: grid; grid-template-columns: var(--card-thumb-mini) auto 1fr auto; align-items: center; gap: .5rem; padding: 6px 8px; }
+.ws-card--mini { --x: 0; --top: 0; --bottom: 0; border-width: 1px; border-color: var(--line-soft); }
+.ws-card--mini .ws-card__media { aspect-ratio: 3/2; width: var(--card-thumb-mini); }
+.ws-card--mini .ws-card__title { -webkit-line-clamp: 1; font-size: 12px; }
+.ws-card--mini[aria-disabled="true"] { opacity: .55; } .ws-card--mini[aria-disabled="true"] em { font-size: 10px; color: var(--muted); }
+.lab-attach { --x: 0; --top: 0; --bottom: 0; border-width: 1px; border-left: 3px solid var(--class-argumento); border-color: var(--line-soft); border-left-color: var(--class-argumento); max-width: 360px; }
+.lab-attach .ws-card__content { display: grid; grid-template-columns: 66px 1fr auto; gap: .5rem; align-items: center; padding: 6px; }
+.lab-attach .ws-card__media { width: 66px; height: 44px; aspect-ratio: auto; }
+.lab-daily { border: 1.5px solid var(--primary); border-radius: var(--radius-md); padding: .75rem; display: grid; gap: .5rem; background: var(--surface); position: relative; overflow: hidden; }
+.lab-daily::before { content: "FICHA DE PROTOCOLO · TAREFA DO DIA"; font-family: var(--font-data); font-size: 9px; letter-spacing: .1em; color: var(--primary-ink); }
+.lab-daily .hse { display: flex; gap: .75rem; align-items: center; }
+.lab-daily .hse b { font-family: var(--font-data); font-size: 22px; }
+.lab-daily .fb { display: flex; gap: .3rem; flex-wrap: wrap; }
+.lab-daily .fb span { font-size: 10px; padding: 2px 8px; border: 1px solid var(--line); border-radius: var(--radius-pill); }
+.lab-sizes { display: grid; grid-template-columns: 240px 1fr; gap: 1rem; align-items: start; }
+@media (max-width: 700px) { .lab-sizes { grid-template-columns: 1fr; } }
+.lab-hero { position: relative; display: grid; grid-template-columns: 390px 1fr; gap: 1rem; border: 2px solid var(--dept-gralha-azul); border-radius: var(--card-r-out); padding: 12px; background: var(--surface); }
+.lab-hero .lab-cover { aspect-ratio: 16/9; max-height: 220px; }
+@media (max-width: 700px) { .lab-hero { grid-template-columns: 1fr; } }
+.lab-hero h3 { font-family: var(--font-editorial); font-size: var(--text-h2); }
+
+/* movimento: demonstração do pulso (desliga com reduce-motion) */
+.lab-pulse { animation: ws-pulse var(--dur-pulse) var(--ease-out) infinite; }
+:root[data-reduce-motion="true"] .lab-pulse { animation: none; }
+@media (prefers-reduced-motion: reduce) { .lab-pulse { animation: none; } }
+.ws-icon { width: 14px; height: 14px; }
+</style>
+</head>
+<body>
+<div class="lab-controls" role="toolbar" aria-label="Controles do laboratório">
+  <span><span class="lab-k">Tema</span>
+    <span role="radiogroup" aria-label="Tema">
+      <button class="ws-btn ws-btn--sm" data-set-theme="claro" role="radio" aria-checked="true">Claro</button>
+      <button class="ws-btn ws-btn--sm" data-set-theme="escuro" role="radio" aria-checked="false">Escuro</button>
+      <button class="ws-btn ws-btn--sm" data-set-theme="contraste" role="radio" aria-checked="false">Alto contraste</button>
+      <button class="ws-btn ws-btn--sm" data-set-theme="blueprint" role="radio" aria-checked="false">Blueprint</button>
+    </span></span>
+  <span><span class="lab-k">Densidade</span>
+    <span role="radiogroup" aria-label="Densidade">
+      <button class="ws-btn ws-btn--sm" data-set-density="" role="radio" aria-checked="true">Confortável</button>
+      <button class="ws-btn ws-btn--sm" data-set-density="compacta" role="radio" aria-checked="false">Compacta</button>
+    </span></span>
+  <span><label class="lab-switch" id="rm"><input type="checkbox" id="rm-in" style="position:absolute;opacity:0"><i aria-hidden="true"></i> Reduzir animações</label></span>
+</div>
+
+<main class="lab-main">
+  <div>
+    <h1>Anatomias dos esquemas e Estúdio do card — wireframes</h1>
+    <p class="lab-lead">Lab estático, sem build: zonas dos cards de tarefa e de projeto, layouts propostos, zona do lacre por layout, estilos de fundo, skins com tinta automática (<code>inkOn</code>) e os quatro segmentos do Estúdio. Diagramas, não capturas do produto. Especificação em <code>docs/design-system/ANATOMIAS_E_ESTUDIO.md</code>.</p>
+  </div>
+
+  <!-- 1. ZONAS DO CARD DE TAREFA -->
+  <section class="lab-section" aria-labelledby="s1">
+    <header><h2 id="s1">1. Zonas do card de tarefa</h2><small>§4.2 · compacto 240 px · layout PAGINA</small></header>
+    <div class="lab-sizes">
+      <div class="lab-anno">
+        <span class="lab-zone" style="left:-6px;top:-6px" aria-hidden="true">1</span>
+        <span class="lab-zone" style="left:-6px;top:60px" aria-hidden="true">2</span>
+        <span class="lab-zone" style="left:-6px;top:120px" aria-hidden="true">3</span>
+        <span class="lab-zone" style="left:-6px;top:236px" aria-hidden="true">4</span>
+        <span class="lab-zone" style="right:-6px;top:266px" aria-hidden="true">5</span>
+        <span class="lab-zone" style="right:-6px;top:14px" aria-hidden="true">6</span>
+        <span class="lab-zone" style="right:-6px;top:52px" aria-hidden="true">7</span>
+        <span class="lab-zone" style="left:-6px;bottom:4px" aria-hidden="true">8</span>
+        <article class="ws-card" data-state="disponivel" style="width:240px">
+          <div class="ws-card__art" data-family="protocolo" aria-hidden="true"></div>
+          <svg class="ws-card__spark" viewBox="0 0 24 24" role="img" aria-label="Gerado por IA em 02/10/2026, revisado por M. H."><path d="M12 2l2.2 6.3L21 11l-6.8 2.7L12 20l-2.2-6.3L3 11l6.8-2.7z" fill="currentColor"/></svg>
+          <span class="ws-card__fav" aria-label="Favorita">★</span>
+          <div class="ws-card__frame"><div class="ws-card__content">
+            <div class="ws-card__head">
+              <span class="ws-card__typechip" style="--tt-soft:var(--type-documento-soft);--tt:var(--type-documento)"><svg class="ws-icon" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></span>
+              <span style="display:grid"><span class="ws-card__cat">Parecer técnico</span><span class="ws-card__sub">SECID-UTS · PDF</span></span>
+              <span class="ws-tag" data-state="disponivel" style="margin-left:auto">Disponível</span>
+            </div>
+            <div class="ws-card__media"><span class="lab-ext">PDF</span><div class="lab-doc" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+            <h3 class="ws-card__title"><a href="#">Parecer técnico — pavimentação da PR-445, lote 2 (Londrina)</a></h3>
+            <div class="lab-meta">
+              <span class="ws-due" data-due="soon">⏱ 12 out</span>
+              <span class="lab-resp"><span class="ws-avatar">MH</span> Matheus H.</span>
+              <span>M · 6 h</span>
+              <span class="lab-access">Interno</span>
+            </div>
+            <div class="lab-chips"><span class="lab-chip">Obra</span><span class="lab-chip">Técnica</span><span class="ws-seal ws-seal--sm" title="Chancela SECID-UTS · modelo match" aria-label="Chancela do departamento SECID-UTS">L</span></div>
+            <div class="ws-card__foot"><span class="ws-card__counters">
+              <button aria-pressed="false" aria-label="Curtir, 12"><svg class="ws-icon" viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.5-7 10-7 10z"/></svg>12</button>
+              <button aria-label="Comentar, 3"><svg class="ws-icon" viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/></svg>3</button>
+              <button aria-label="Compartilhar, 1"><svg class="ws-icon" viewBox="0 0 24 24"><path d="M4 12v7h16v-7M12 3v12M8 7l4-4 4 4"/></svg>1</button>
+            </span><button class="ws-card__counters" aria-label="Salvar, 5"><svg class="ws-icon" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg>5</button></div>
+          </div></div>
+        </article>
+      </div>
+      <ol class="lab-legend" aria-label="Legenda das zonas">
+        <li><i>1</i><span><code>TOPO</code> — toggles de estado: ⭐ favorito (só dono) e etiqueta de protocolo com o nome do estado em texto (RF38.CA05; RF6.CA11 do FAI).</span></li>
+        <li><i>2</i><span><code>CAB</code> — glifo do tipo (chip 24 px, cor da família) · categoria em mono · departamento · formato · título serif de 2 linhas (único link, cobre o container).</span></li>
+        <li><i>3</i><span><code>MIDIA</code> — thumbnail automático 3:2 com selo da extensão (RF38.CA02); nada da arte passa por cima.</span></li>
+        <li><i>4</i><span><code>META</code> — prazo (⚖ se legal; âmbar ≤ 3 dias, vermelho vencido) · responsável · porte · classificação de acesso (texto) · chips processo/natureza.</span></li>
+        <li><i>5</i><span><code>SELO</code> — zona do lacre do layout (PAGINA = <code>META_BLOCK</code>, 22 px). Lugar reservado invisível no feed; visível só na prévia do Estúdio.</span></li>
+        <li><i>6</i><span><code>FAISCA</code> — ✦ 14 px quando <code>aiGenerated</code>; tooltip "gerado por IA em … · revisado por …" (RF38.CA04).</span></li>
+        <li><i>7</i><span>Borda 2 px na cor do <b>departamento</b> (RF38.CA09); as faixas entre borda e container são a área artística (estilo "papel" aqui).</span></li>
+        <li><i>8</i><span><code>RODAPE</code> — curtir · comentar · compartilhar com contagem; salvar isolado à direita; reações e remixar só no detalhe (RF26).</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 2. ZONAS DO CARD DE PROJETO -->
+  <section class="lab-section" aria-labelledby="s2">
+    <header><h2 id="s2">2. Zonas do card de projeto</h2><small>§4.2 · compacto 260 px · layout MOSAICO</small></header>
+    <div class="lab-sizes">
+      <div class="lab-anno" style="width:260px">
+        <span class="lab-zone" style="left:-6px;top:-6px" aria-hidden="true">1</span>
+        <span class="lab-zone" style="left:-6px;top:52px" aria-hidden="true">3</span>
+        <span class="lab-zone" style="right:-6px;top:52px" aria-hidden="true">5</span>
+        <span class="lab-zone" style="left:-6px;top:232px" aria-hidden="true">2</span>
+        <span class="lab-zone" style="left:-6px;top:272px" aria-hidden="true">9</span>
+        <span class="lab-zone" style="left:-6px;top:300px" aria-hidden="true">4</span>
+        <span class="lab-zone" style="left:-6px;bottom:4px" aria-hidden="true">8</span>
+        <article class="ws-card ws-project" data-status="publicado" style="width:260px">
+          <div class="ws-card__art" data-family="blueprint" aria-hidden="true"></div>
+          <div class="ws-card__frame"><div class="ws-card__content">
+            <div class="ws-card__head"><span class="ws-monogram" style="--d:var(--dept-gralha-azul)">UTS</span><span class="ws-card__cat">SECID-UTS · 2026</span><span class="ws-tag" data-status="publicado" style="margin-left:auto">Publicado</span></div>
+            <div class="lab-cover">
+              <div class="ws-mosaic" aria-label="Capa: mosaico das 6 tarefas principais">
+                <div class="lab-tile" data-type style="--tt-soft:var(--type-documento-soft);--tt:var(--type-documento)">PDF</div><div class="lab-tile" data-type style="--tt-soft:var(--type-planilha-soft);--tt:var(--type-planilha)">XLSX</div><div class="lab-tile" data-type style="--tt-soft:var(--type-desenho-tecnico-soft);--tt:var(--type-desenho-tecnico)">DWG</div>
+                <div class="lab-tile" data-type style="--tt-soft:var(--type-texto-ia-soft);--tt:var(--type-texto-ia)">TR ✦</div><div class="lab-tile" data-type style="--tt-soft:var(--type-cronograma-soft);--tt:var(--type-cronograma)">GANTT</div><div class="lab-tile" data-type style="--tt-soft:var(--type-ata-registro-soft);--tt:var(--type-ata-registro)">ATA</div>
+              </div>
+              <span class="ws-ring" style="--p:43" data-label="43%" role="img" aria-label="43% concluído"></span>
+              <span class="ws-seal" style="position:absolute;top:6px;right:6px" title="Chancela da empresa · Excelência" aria-label="Chancela da empresa, Excelência">E</span>
+            </div>
+            <h3 class="ws-card__title"><a href="#">🛣️ Pavimentação urbana — PR-445, lote 2</a></h3>
+            <div class="ws-phasebar" aria-label="Fase atual: Elaboração (3 de 7)">
+              <div class="ws-phasebar__track"><span class="ws-phasebar__seg" data-done></span><span class="ws-phasebar__seg" data-done></span><span class="ws-phasebar__seg" aria-current="step"></span><span class="ws-phasebar__seg"></span><span class="ws-phasebar__seg"></span><span class="ws-phasebar__seg"></span><span class="ws-phasebar__seg"></span></div>
+              <span class="ws-phasebar__label">Elaboração · 3/7</span>
+            </div>
+            <div class="lab-meta"><span class="ws-due" data-due="ok">◆ 18 out · entrega do TR</span><span><b>7</b> tarefas · <b>4</b> pessoas</span><span style="color:var(--class-consenso-ink)">● decisão validada há 2 dias</span></div>
+            <div class="ws-card__foot"><span class="ws-card__counters"><button aria-label="Curtir, 24">♡ 24</button><button aria-label="Comentar, 9">💬 9</button><button aria-label="Compartilhar, 2">➤ 2</button></span><button class="ws-card__counters" aria-label="Salvar, 11">🔖 11</button></div>
+          </div></div>
+        </article>
+      </div>
+      <ol class="lab-legend" aria-label="Legenda das zonas do projeto">
+        <li><i>1</i><span><code>TOPO/CAB</code> — monograma + sigla do departamento na cor · exercício · etiqueta de status (sólida; pulso roxo em EM_DECISÃO; carimbo VALIDADO/DEVOLVIDO sobre a capa).</span></li>
+        <li><i>3</i><span><code>MIDIA</code> — capa-mosaico 2×3 dos thumbnails (recalculada quando as tarefas mudam) + anel de progresso 36 px (RF38.CA03); FOTO ou IA quando <code>coverMode</code> pedir.</span></li>
+        <li><i>5</i><span><code>SELO</code> — zona <code>COVER_CORNER</code>: lacre 36 px no canto da capa; lacres das tarefas (22 px) nas linhas da lista.</span></li>
+        <li><i>2</i><span><code>CAB</code> — emoji/ícone escolhido pelo dono + título serif (link do card).</span></li>
+        <li><i>9</i><span><code>FASES</code> — barra de 7 fases DEMANDA→ENCERRAMENTO, atual em aro, <b>nome em texto</b>; é a "forma" do projeto (substitui Espectro/Silhueta).</span></li>
+        <li><i>4</i><span><code>META</code> — próximo marco (relógio) · "n tarefas · n pessoas" · último evento DECIA na cor da classe · conformidade % e ⛔ quando houver.</span></li>
+        <li><i>8</i><span><code>RODAPE</code> — social; na Vitrine o "remixar" fica visível.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 3. LAYOUTS DE TAREFA -->
+  <section class="lab-section" aria-labelledby="s3">
+    <header><h2 id="s3">3. Layouts do card de tarefa</h2><small>§5.1 · catálogo = SCHEME_ANATOMIES/PIECE_ANATOMIES do FAI</small></header>
+    <p class="lab-note">Seção A sempre disponível; seção B exige dado e cai em PAGINA (<code>effectiveLayout</code>). Só o container muda; cabeçalho, faixas e rodapé seguem o contrato.</p>
+    <div class="lab-grid">
+      <div><article class="ws-card" style="width:100%"><div class="ws-card__art" aria-hidden="true"></div><div class="ws-card__frame"><div class="ws-card__content">
+        <div class="ws-card__head"><span class="ws-card__typechip" style="--tt-soft:var(--type-documento-soft);--tt:var(--type-documento)">▣</span><span class="ws-card__cat">Ofício · DOCX</span></div>
+        <div class="ws-card__media"><span class="lab-ext" style="background:var(--ext-docx, var(--class-argumento))">DOCX</span><div class="lab-doc" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div></div>
+        <h3 class="ws-card__title">Ofício 231/2026 — solicitação de anuência ambiental</h3>
+        <div class="lab-meta"><span class="ws-due" data-due="ok">⏱ 30 out</span><span class="lab-resp"><span class="ws-avatar">AR</span> Ana R.</span><span class="lab-chip">Convênio</span><span class="ws-seal ws-seal--sm ws-seal--broken" aria-label="lugar reservado do lacre"></span></div>
+      </div></div></article><p class="lab-cap"><b>PAGINA</b> · A · zona META_BLOCK · padrão (= PECA_AMPLIADO / LISTA_VERTICAL)</p></div>
+
+      <div><article class="ws-card" data-emphasis="topo" style="width:100%"><div class="ws-card__art" style="background-image:linear-gradient(var(--line-soft) .5px, transparent .5px),linear-gradient(90deg,var(--line-soft) .5px,transparent .5px);background-size:10px 10px" aria-hidden="true"></div><div class="ws-card__frame"><div class="ws-card__content">
+        <div class="ws-card__head"><span class="ws-card__typechip" style="--tt-soft:var(--type-planilha-soft);--tt:var(--type-planilha)">▦</span><span class="ws-card__cat">Planilha orçamentária · XLSX</span></div>
+        <svg class="lab-spark" viewBox="0 0 200 36" role="img" aria-label="mini-gráfico: 6 meses, tendência de alta"><polyline points="4,30 36,24 70,26 104,14 138,16 172,6 196,10" fill="none" stroke="var(--type-planilha)" stroke-width="2"/><polyline points="4,30 36,24 70,26 104,14 138,16 172,6 196,10 196,36 4,36" fill="var(--type-planilha-soft)"/></svg>
+        <div class="lab-grade"><div><b>142</b><span>linhas</span></div><div><b>R$ 2,4 mi</b><span>total</span></div><div><b>ontem</b><span>atualizado</span></div></div>
+        <h3 class="ws-card__title">Planilha orçamentária v2 — lote 2</h3>
+        <div class="lab-meta"><span class="ws-due" data-due="over">⏱ 28 set · vencido</span><span class="ws-seal ws-seal--sm ws-seal--navy" aria-label="Chancela do chefe">C</span></div>
+      </div></div></article><p class="lab-cap"><b>GRADE</b> · B · arte própria (quadriculado) · zona META_BLOCK · exige dados tabulares (= BENTO da peça)</p></div>
+
+      <div><article class="ws-card" data-emphasis="base" style="width:100%"><div class="ws-card__art" data-family="blueprint" aria-hidden="true"></div><div class="ws-card__frame"><div class="ws-card__content">
+        <div class="ws-card__head"><span class="ws-card__typechip" style="--tt-soft:var(--type-desenho-tecnico-soft);--tt:var(--type-desenho-tecnico)">◳</span><span class="ws-card__cat">Projeto básico · DWG</span><span class="ws-seal ws-seal--sm" style="margin-left:auto" aria-label="Chancela da empresa">E</span></div>
+        <div class="ws-card__media"><svg viewBox="0 0 120 80" width="100%" height="100%" role="img" aria-label="silhueta do desenho técnico"><rect x="8" y="10" width="104" height="60" fill="none" stroke="var(--muted)" stroke-width="1"/><path d="M8 50 L60 20 L112 50" fill="none" stroke="var(--type-desenho-tecnico)" stroke-width="1.4"/><path d="M30 70V40M90 70V40" stroke="var(--muted)" stroke-dasharray="2 2"/><text x="12" y="66" font-size="6" font-family="monospace" fill="var(--muted)">① drenagem km 12 ② meio-fio ③ base</text></svg></div>
+        <h3 class="ws-card__title">Seção transversal — drenagem km 12</h3>
+        <div class="lab-meta" style="font-family:var(--font-data);font-size:9px">FL. 01 · ESC. 1:500 · 2026/0931-SECID</div>
+      </div></div></article><p class="lab-cap"><b>PRANCHA</b> · B · arte própria (blueprint, ênfase na base) · zona COVER_CORNER · só DESENHO_TECNICO/MAPA (= RAIO_X)</p></div>
+
+      <div><article class="ws-card" style="width:100%"><div class="ws-card__art" style="background:var(--type-email-soft, var(--surface-2))" aria-hidden="true"></div><div class="ws-card__frame"><div class="ws-card__content">
+        <div class="ws-card__head"><span class="ws-card__typechip" style="--tt-soft:var(--type-email-soft);--tt:var(--type-email)">✉</span><span class="ws-card__cat">E-mail · Outlook</span><span class="ws-seal ws-seal--sm ws-seal--broken" style="margin-left:auto" aria-label="lugar do lacre (HEADER)"></span></div>
+        <div class="lab-mensagem"><div class="from"><span class="ws-avatar">DER</span><b>DER-PR · licitacoes@der.pr.gov.br</b></div><h3 class="ws-card__title">RE: Pedido de esclarecimento — edital 12/2026</h3><div class="thread">3 mensagens na thread · 2 anexos → tarefas filhas</div></div>
+        <div class="lab-meta"><span class="ws-due" data-due="soon">⏱ 05 out · ⚖ 5 dias úteis</span><span class="lab-access">Restrito</span></div>
+      </div></div></article><p class="lab-cap"><b>MENSAGEM</b> · B · zona HEADER · só tipo EMAIL (RF20.CA08)</p></div>
+
+      <div><article class="ws-card" style="width:100%"><div class="ws-card__art" data-family="protocolo" aria-hidden="true"></div><div class="ws-card__frame"><div class="ws-card__content">
+        <div class="ws-card__head"><span class="ws-card__typechip" style="--tt-soft:var(--type-protocolo-soft);--tt:var(--type-protocolo)">⌸</span><span class="ws-card__cat">Protocolo · e-Protocolo</span><span class="ws-seal ws-seal--sm ws-seal--navy" style="margin-left:auto" aria-label="Chancela do chefe">C</span></div>
+        <div class="lab-ficha"><span class="num">2026/0931-SECID</span><span class="k">Situação</span><span class="v">ASSINADO · <span class="ws-stamp ws-stamp--mini">validado</span></span><span class="k">Prazo legal</span><span class="v">15 dias úteis a partir do recebimento — Lei 9.784/99 art. 24</span><span class="k">Origem</span><span class="v">DER-PR (órgão externo)</span></div>
+        <h3 class="ws-card__title">Processo de anuência — trecho urbano</h3>
+      </div></div></article><p class="lab-cap"><b>FICHA</b> · B · zona HEADER · exige nº de protocolo (= ETIQUETA)</p></div>
+
+      <div><article class="ws-card ws-card--list" style="width:100%"><div class="ws-card__frame"><div class="ws-card__content">
+        <div class="ws-card__media"><span class="lab-ext">PDF</span></div>
+        <span style="display:grid;gap:2px"><h3 class="ws-card__title">Parecer técnico — PR-445, lote 2</h3><span class="ws-card__cat">Parecer técnico · SECID-UTS</span></span>
+        <span class="ws-tag" data-state="em-uso"><i class="lab-pulse" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor"></i>Em uso</span>
+        <span class="ws-due" data-due="soon">12 out</span>
+        <span class="ws-seal ws-seal--sm" aria-label="Chancela">L</span>
+      </div></div></article><p class="lab-cap"><b>LINHA</b> · A (forçado por contexto) · zona TITLE_ROW · thumb 64 px · listas, Mural, fila de revisão</p></div>
+    </div>
+  </section>
+
+  <!-- 4. LAYOUTS DE PROJETO -->
+  <section class="lab-section" aria-labelledby="s4">
+    <header><h2 id="s4">4. Layouts do card de projeto</h2><small>§5.1</small></header>
+    <div class="lab-grid lab-grid--wide">
+      <div><article class="ws-card" style="width:100%"><div class="ws-card__art" aria-hidden="true"></div><div class="ws-card__frame"><div class="ws-card__content">
+        <div class="ws-card__head"><span class="ws-monogram">UTS</span><span class="ws-card__cat">SECID-UTS · 2026</span></div>
+        <div class="lab-cover"><div class="ws-mosaic"><div class="lab-tile">PDF</div><div class="lab-tile">XLSX</div><div class="lab-tile">DWG</div><div class="lab-tile">TR ✦</div><div class="lab-tile">GANTT</div><div class="lab-tile">ATA</div></div><span class="ws-ring" style="--p:43" data-label="43%"></span><span class="ws-seal" style="position:absolute;top:6px;right:6px" aria-label="Chancela">E</span></div>
+        <h3 class="ws-card__title">Pavimentação urbana — PR-445, lote 2</h3>
+        <div class="ws-phasebar"><div class="ws-phasebar__track"><span class="ws-phasebar__seg" data-done></span><span class="ws-phasebar__seg" data-done></span><span class="ws-phasebar__seg" aria-current="step"></span><span class="ws-phasebar__seg"></span><span class="ws-phasebar__seg"></span><span class="ws-phasebar__seg"></span><span class="ws-phasebar__seg"></span></div><span class="ws-phasebar__label">Elaboração · 3/7</span></div>
+        <div class="lab-row"><span class="t">PDF</span><span>Parecer técnico lote 2<em>Elaboração · 12 out</em></span><span class="ws-seal ws-seal--sm" aria-label="lacre da tarefa">L</span></div>
+        <div class="lab-row"><span class="t">XLSX</span><span>Planilha orçamentária v2<em>Elaboração · 28 set</em></span><span></span></div>
+      </div></div></article><p class="lab-cap"><b>MOSAICO</b> · A · padrão · zona COVER_CORNER + lacre por tarefa nas linhas (= LISTA_VERTICAL/GRADE_PECAS/BENTO)</p></div>
+
+      <div><article class="ws-card" style="width:100%"><div class="ws-card__art" style="background-image:repeating-linear-gradient(90deg,var(--line-soft) 0 .5px,transparent .5px 24px)" aria-hidden="true"></div><div class="ws-card__frame"><div class="ws-card__content">
+        <div class="ws-card__head"><span class="ws-monogram">UTS</span><span class="ws-card__cat">Linha do tempo · set–dez 2026</span></div>
+        <h3 class="ws-card__title">Pavimentação urbana — PR-445, lote 2 <span class="ws-seal ws-seal--sm" aria-label="Chancela">E</span></h3>
+        <div class="lab-gantt" role="img" aria-label="5 tarefas; caminho crítico: TR → Projeto básico → Licitação"><div class="today"></div>
+          <div class="bar"><i style="left:0;width:18%"></i></div><div class="bar" data-critical><i style="left:16%;width:22%"></i></div><div class="bar" data-critical><i style="left:36%;width:30%"></i></div><div class="bar"><i style="left:40%;width:20%"></i></div><div class="bar" data-critical><i style="left:64%;width:34%"></i></div></div>
+        <div class="lab-meta"><span style="color:var(--class-risco-ink)">▬ caminho crítico</span><span class="ws-due" data-due="soon">◆ 18 out</span></div>
+      </div></div></article><p class="lab-cap"><b>LINHA_TEMPO</b> · B · arte própria (régua) · zona TITLE_ROW · exige ≥2 prazos (= SILHUETA/RAIO-X)</p></div>
+
+      <div><article class="ws-card" style="width:100%"><div class="ws-card__art" aria-hidden="true"></div><div class="ws-card__frame"><div class="ws-card__content">
+        <div class="ws-card__head"><span class="ws-monogram">UTS</span><span class="ws-card__cat">Kanban · 7 fases</span><span class="ws-seal ws-seal--sm" style="margin-left:auto" aria-label="Chancela">E</span></div>
+        <div class="lab-kanban" role="img" aria-label="Demanda 1, Planejamento 2, Elaboração 3 (atual), Análise 1, Aprovação 0, Execução 0, Encerramento 0"><div><i></i><b>DEM</b></div><div><i></i><i></i><b>PLA</b></div><div aria-current="step"><i></i><i></i><i></i><b>ELA</b></div><div><i></i><b>ANA</b></div><div><b>APR</b></div><div><b>EXE</b></div><div><b>ENC</b></div></div>
+        <h3 class="ws-card__title">Pavimentação urbana — PR-445, lote 2</h3>
+        <div class="lab-meta"><span><b>7</b> tarefas · <b>4</b> pessoas</span><span class="ws-tag ws-tag--pulse" data-status="em-decisao">Em decisão</span></div>
+      </div></div></article><p class="lab-cap"><b>KANBAN_MINI</b> · B · zona HEADER · largura por fase = nº de tarefas (= ESPECTRO)</p></div>
+
+      <div><article class="ws-card" style="width:100%"><div class="ws-card__art" aria-hidden="true"></div><div class="ws-card__frame"><div class="ws-card__content">
+        <div class="ws-card__head"><span class="ws-monogram">UTS</span><span class="ws-card__cat">Painel de métricas</span><span class="lab-lock" style="margin-left:auto">só você vê</span><span class="ws-seal ws-seal--sm" aria-label="Chancela">E</span></div>
+        <div class="lab-gauges">
+          <div class="lab-gauge"><svg viewBox="0 0 92 54"><path d="M8 48A38 38 0 0 1 84 48" fill="none" stroke="var(--line-soft)" stroke-width="9" stroke-linecap="round"/><path d="M8 48A38 38 0 0 1 84 48" fill="none" stroke="var(--class-consenso)" stroke-width="9" stroke-linecap="round" stroke-dasharray="104 200"/></svg><b>SPI 0,96</b>prazo</div>
+          <div class="lab-gauge"><svg viewBox="0 0 92 54"><path d="M8 48A38 38 0 0 1 84 48" fill="none" stroke="var(--line-soft)" stroke-width="9" stroke-linecap="round"/><path d="M8 48A38 38 0 0 1 84 48" fill="none" stroke="var(--due-soon, var(--spark))" stroke-width="9" stroke-linecap="round" stroke-dasharray="70 200"/></svg><b>CPI 0,88</b>custo</div>
+          <div class="lab-gauge"><svg viewBox="0 0 92 54"><path d="M8 48A38 38 0 0 1 84 48" fill="none" stroke="var(--line-soft)" stroke-width="9" stroke-linecap="round"/><path d="M8 48A38 38 0 0 1 84 48" fill="none" stroke="var(--class-consenso)" stroke-width="9" stroke-linecap="round" stroke-dasharray="110 200"/></svg><b>92 %</b>conforme</div>
+        </div>
+        <h3 class="ws-card__title">Pavimentação urbana — PR-445, lote 2</h3>
+        <div class="lab-meta"><span>↻ <b>3</b> reutilizações</span><span>HSE médio da equipe <b>71</b></span></div>
+      </div></div></article><p class="lab-cap"><b>PAINEL_METRICAS</b> · B · só dono/departamento · zona HEADER · exige evmJson (= CUSTO_POR_USO + HYPE_FOCUS)</p></div>
+
+      <div><article class="ws-card" style="width:100%"><div class="ws-card__art" aria-hidden="true"></div><div class="ws-card__frame"><div class="ws-card__content">
+        <div class="ws-card__head"><span class="ws-monogram">UTS</span><span class="ws-card__cat">Capa IA ✦</span></div>
+        <div class="lab-cover" style="background:linear-gradient(160deg,var(--spark-soft),var(--primary-soft));display:grid;place-items:center;color:var(--spark-ink);font-size:11px"><span>✦ ilustração flat: "pavimentação urbana"</span><span class="ws-seal" style="position:absolute;top:6px;right:6px" aria-label="Chancela">E</span><div style="position:absolute;left:8px;right:8px;bottom:8px" class="ws-phasebar"><div class="ws-phasebar__track"><span class="ws-phasebar__seg" data-done></span><span class="ws-phasebar__seg" data-done></span><span class="ws-phasebar__seg" aria-current="step"></span><span class="ws-phasebar__seg"></span><span class="ws-phasebar__seg"></span><span class="ws-phasebar__seg"></span><span class="ws-phasebar__seg"></span></div></div></div>
+        <h3 class="ws-card__title">Pavimentação urbana — PR-445, lote 2</h3>
+        <div class="lab-meta"><span class="ws-due" data-due="ok">◆ 18 out</span><span class="ws-spark-note">✦ gerado por IA em 01/10 · revisado por M. H.</span></div>
+      </div></div></article><p class="lab-cap"><b>CAPA_FOTO</b> · B · zona COVER_CORNER · exige coverUrl (FOTO ou IA) (= PASSARELA/CARTELA)</p></div>
+
+      <div><article class="ws-card ws-card--list" style="width:100%"><div class="ws-card__frame"><div class="ws-card__content">
+        <div class="ws-card__media"><div class="ws-mosaic" style="font-size:7px"><div>PDF</div><div>XLS</div><div>DWG</div><div>TR</div><div>GT</div><div>ATA</div></div></div>
+        <span style="display:grid;gap:2px"><h3 class="ws-card__title">Pavimentação urbana — PR-445, lote 2 <span class="ws-seal ws-seal--sm" aria-label="Chancela">E</span></h3><span class="ws-card__cat">Elaboração 3/7 · ◆ 18 out</span></span>
+        <span style="display:inline-flex;gap:2px" aria-label="assinatura: 7 fases">●●◉○○○○</span>
+        <span class="ws-tag" data-status="publicado">Publicado</span>
+        <span></span>
+      </div></div></article><p class="lab-cap"><b>COMPACTO</b> · A (contexto) · zona TITLE_ROW · mosaico 64 px + assinatura do layout (= compacto do look)</p></div>
+    </div>
+  </section>
+
+  <!-- 5. ZONA DO LACRE -->
+  <section class="lab-section" aria-labelledby="s5">
+    <header><h2 id="s5">5. Zona do lacre por layout</h2><small>§4.3 · = SEAL_PLACEMENT + SealZoneDiagram (60×90)</small></header>
+    <div class="lab-grid" id="sealzones"></div>
+  </section>
+
+  <!-- 6. ESTILOS DE FUNDO -->
+  <section class="lab-section" aria-labelledby="s6">
+    <header><h2 id="s6">6. Estilos de fundo (= ArtKind)</h2><small>§5.3 · a arte só ocupa as quatro faixas; o container fica por cima</small></header>
+    <div class="lab-grid">
+      <div><div class="lab-art" data-kind="none"><div class="faixa"></div><div class="box">container</div></div><p class="lab-cap"><b>none</b> · sem arte (padrão)</p></div>
+      <div><div class="lab-art" data-kind="color"><div class="faixa"></div><div class="box">container</div></div><p class="lab-cap"><b>color</b> · cor sólida (catálogo: departamentos + neutras)</p></div>
+      <div><div class="lab-art" data-kind="gradient"><div class="faixa"></div><div class="box">container</div></div><p class="lab-cap"><b>gradient</b> · gradiente da marca (135°)</p></div>
+      <div><div class="lab-art" data-kind="mesh"><div class="faixa"></div><svg class="mesh" viewBox="0 0 240 160" aria-hidden="true"><g stroke="var(--line-soft)" stroke-width="1"><line x1="18" y1="22" x2="60" y2="40"/><line x1="60" y1="40" x2="110" y2="18"/><line x1="18" y1="22" x2="30" y2="80"/><line x1="30" y1="80" x2="20" y2="140"/><line x1="110" y1="18" x2="200" y2="26"/><line x1="200" y1="26" x2="226" y2="70"/><line x1="226" y1="70" x2="210" y2="130"/><line x1="210" y1="130" x2="150" y2="148"/><line x1="150" y1="148" x2="90" y2="146"/><line x1="90" y1="146" x2="20" y2="140"/></g><g><circle cx="18" cy="22" r="5" fill="var(--class-argumento)"/><circle cx="60" cy="40" r="5" fill="var(--class-divergencia)"/><circle cx="110" cy="18" r="5" fill="var(--class-argumento)"/><circle cx="30" cy="80" r="5" fill="var(--class-pergunta)"/><circle cx="20" cy="140" r="5" fill="var(--class-consenso)"/><circle cx="200" cy="26" r="5" fill="var(--class-risco)"/><circle cx="226" cy="70" r="5" fill="var(--class-argumento)"/><circle cx="210" cy="130" r="5" fill="var(--class-consenso)"/><circle cx="150" cy="148" r="5" fill="var(--class-consenso)"/><circle cx="90" cy="146" r="5" fill="var(--class-argumento)"/></g></svg><div class="box">container</div></div><p class="lab-cap"><b>mesh</b> · malha de nós (o fio de decisão como padrão; = aura)</p></div>
+      <div><div class="lab-art" data-kind="terminal"><div class="faixa"></div><div class="box">container</div></div><p class="lab-cap"><b>terminal</b> · "outra matéria" (substitui LEGO/Blocos)</p></div>
+      <div><div class="lab-art" data-kind="papel"><div class="faixa"></div><div class="box">container</div></div><p class="lab-cap"><b>texture:papel</b> · pautado + picote (= material)</p></div>
+      <div><div class="lab-art" data-kind="cortica"><div class="faixa"></div><div class="box">container</div></div><p class="lab-cap"><b>texture:cortica</b></p></div>
+      <div><div class="lab-art" data-kind="blueprint"><div class="faixa"></div><div class="box">container</div></div><p class="lab-cap"><b>texture:blueprint</b> · grade de engenharia</p></div>
+      <div><div class="lab-art" data-kind="monograma"><div class="faixa"></div><div class="box">container</div></div><p class="lab-cap"><b>monograma</b> · iniciais do título na cor do tipo</p></div>
+      <div><div class="lab-art" data-kind="mosaic"><div class="faixa"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="box">container</div></div><p class="lab-cap"><b>mosaic</b> · mosaico automático esmaecido nas faixas</p></div>
+      <div><div class="lab-art" data-kind="ai"><div class="faixa"></div><div class="box">container</div></div><p class="lab-cap"><b>ai</b> · ilustração gerada (prompt gravado, ✦)</p></div>
+      <div><div class="lab-art" data-kind="upload"><div class="faixa"></div><div class="box">container</div></div><p class="lab-cap"><b>upload</b> · imagem enviada, validada e recortada</p></div>
+    </div>
+    <p class="lab-note">No tema <b>Alto contraste</b> todas as faixas viram preto/branco (o <code>resolveCardArt</code> devolve <code>color</code>). Movimento (<b>pulse</b>, <b>thread</b>) só no ampliado e desligado por "reduzir animações".</p>
+  </section>
+
+  <!-- 7. SKINS E inkOn -->
+  <section class="lab-section" aria-labelledby="s7">
+    <header><h2 id="s7">7. Skins e cor do container com tinta automática</h2><small>§5.4 · = CARD_SKINS + containerColorOf + inkOn</small></header>
+    <div class="lab-grid" id="skins"></div>
+    <h3>inkOn(hex): luminância 0,299R + 0,587G + 0,114B &gt; 140 → tinta escura, senão clara</h3>
+    <div class="lab-ink" id="inkon"></div>
+  </section>
+
+  <!-- 8. ESTÚDIO -->
+  <section class="lab-section" aria-labelledby="s8">
+    <header><h2 id="s8">8. Estúdio do card — Fundo · Layout · Container · Destaques</h2><small>§5.5 · = Cor · Aura &amp; Material · Layout &amp; Estilo · Container do FAI</small></header>
+    <div class="lab-studio">
+      <div style="display:grid;gap:.75rem">
+        <div class="lab-seg" role="tablist" aria-label="Segmentos do Estúdio">
+          <button role="tab" aria-selected="true" data-seg="fundo">Fundo</button><button role="tab" aria-selected="false" data-seg="layout">Layout</button><button role="tab" aria-selected="false" data-seg="container">Container</button><button role="tab" aria-selected="false" data-seg="destaques">Destaques</button>
+        </div>
+        <div class="lab-panel" data-on data-panel="fundo" role="tabpanel">
+          <div class="lab-opt"><span class="k">Cor</span><div class="row"><span class="lab-dot" style="background:var(--dept-gralha-azul)"></span><span class="lab-dot" style="background:var(--dept-araucaria)"></span><span class="lab-dot" style="background:var(--dept-ipe-roxo)"></span><span class="lab-dot" style="background:var(--dept-ipe-amarelo)"></span><span class="lab-dot" style="background:var(--dept-terracota)"></span><span class="lab-dot" style="background:var(--dept-ardosia)"></span><span class="lab-dot" style="background:var(--dept-pinhao)"></span><span class="lab-dot" style="background:var(--surface-3)"></span></div></div>
+          <div class="lab-opt"><span class="k">Gradiente</span><div class="row"><span class="lab-tile-opt" aria-pressed="true"><span class="th" style="background:var(--primary-gradient)"></span>Marca</span><span class="lab-tile-opt"><span class="th" style="background:linear-gradient(135deg,var(--dept-gralha-azul),var(--primary))"></span>Departamento</span><span class="lab-tile-opt"><span class="th" style="background:linear-gradient(135deg,var(--spark-soft),var(--spark))"></span>Faísca</span></div></div>
+          <div class="lab-opt"><span class="k">Textura · Malha · Terminal · Monograma</span><div class="row"><span class="lab-tile-opt"><span class="th"></span>Papel</span><span class="lab-tile-opt"><span class="th" style="background:var(--type-pasta-soft)"></span>Cortiça</span><span class="lab-tile-opt"><span class="th" style="background:#0F3260"></span>Blueprint</span><span class="lab-tile-opt"><span class="th"></span>Malha de nós<small>densidade 1–3</small></span><span class="lab-tile-opt"><span class="th" style="background:#0B1410"></span>Terminal</span><span class="lab-tile-opt"><span class="th" style="display:grid;place-items:center;font-family:var(--font-editorial);font-weight:700">PT</span>Monograma</span></div></div>
+          <div class="lab-opt"><span class="k">Arte própria</span><div class="row"><span class="ws-btn ws-btn--sm ws-btn--spark">✦ Gerar fundo com IA</span><span class="ws-btn ws-btn--sm">Enviar imagem</span><span class="ws-btn ws-btn--sm ws-btn--ghost">Sem arte</span></div></div>
+        </div>
+        <div class="lab-panel" data-panel="layout" role="tabpanel">
+          <div class="lab-opt"><span class="k">Layout (seção A · seção B ✦ traz arte própria)</span><div class="row" id="layout-tiles"></div></div>
+          <p class="lab-note"><b>Lacre neste layout:</b> linha categoria · departamento · formato (zona META_BLOCK, 22 px). <span class="lab-pill">posição escrita na anatomia</span></p>
+          <div class="lab-opt"><span class="k">Skin</span><div class="row" id="skin-tiles"></div></div>
+        </div>
+        <div class="lab-panel" data-panel="container" role="tabpanel">
+          <div class="lab-opt"><span class="k">Cor do container</span><div class="row"><span class="lab-pill lab-pill--b">Nativa da skin</span><span class="lab-dot sq" style="background:#FFFFFF"></span><span class="lab-dot sq" style="background:#F4F2EC"></span><span class="lab-dot sq" style="background:#FBF7EF"></span><span class="lab-dot sq" style="background:#0F3260"></span><span class="lab-dot sq" style="background:#1C1F24"></span><span class="lab-dot sq" style="background:conic-gradient(red,yellow,lime,cyan,blue,magenta,red)" title="cor livre (skins compradas)"></span></div></div>
+          <div class="lab-opt"><span class="k">Acabamento</span><div class="row"><span class="lab-pill lab-pill--b">Sólido</span><span class="lab-pill">Vidro fosco (desfoque só no ampliado)</span></div></div>
+          <div class="lab-opt"><span class="k">Fundo da área da mídia</span><p class="lab-note">Estúdio de Documento (endireitar · recortar · contraste · OCR); versão nova fica pendente até aprovar.</p></div>
+        </div>
+        <div class="lab-panel" data-panel="destaques" role="tabpanel">
+          <label class="lab-switch" data-on><i aria-hidden="true"></i> Lacre — mostrar lugar reservado na prévia</label>
+          <label class="lab-switch" data-on><i aria-hidden="true"></i> Faísca ✦ — tooltip completo (a faísca em si não pode ser ocultada)</label>
+          <label class="lab-switch" data-on><i aria-hidden="true"></i> Barra de fases — com nomes</label>
+          <label class="lab-switch"><i aria-hidden="true"></i> Carimbo de estado — no canto</label>
+          <label class="lab-switch"><i aria-hidden="true"></i> Hype do autor (respeita a preferência PÚBLICO/EMPRESA/SÓ EU)</label>
+          <label class="lab-switch"><i aria-hidden="true"></i> Movimento — pulso (só no ampliado; desliga com "reduzir animações")</label>
+          <p class="lab-note" aria-live="polite">0 de 2 destaques decorativos ligados (carimbo e movimento contam; lacre, faísca e barra são informação).</p>
+        </div>
+      </div>
+      <aside class="lab-preview" aria-label="Prévia">
+        <span class="k">Prévia no feed (idêntica à grade)</span>
+        <article class="ws-card" style="width:240px"><div class="ws-card__art" style="background:var(--primary-gradient)" aria-hidden="true"></div><div class="ws-card__frame"><div class="ws-card__content">
+          <div class="ws-card__head"><span class="ws-card__typechip" style="--tt-soft:var(--type-documento-soft);--tt:var(--type-documento)">▣</span><span style="display:grid"><span class="ws-card__cat">Parecer técnico</span><span class="ws-card__sub">SECID-UTS · PDF</span></span></div>
+          <div class="ws-card__media"><span class="lab-ext">PDF</span><div class="lab-doc" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div></div>
+          <h3 class="ws-card__title">Parecer técnico — pavimentação da PR-445, lote 2</h3>
+          <div class="lab-meta"><span class="ws-due" data-due="soon">⏱ 12 out</span><span class="lab-resp"><span class="ws-avatar">MH</span> Matheus H.</span><span class="ws-seal ws-seal--sm ws-seal--broken" aria-label="lugar reservado do lacre"></span></div>
+        </div></div></article>
+        <span class="k">Ampliado</span>
+        <p class="lab-note">Mesma arte com faixas <code>--card-x-lg</code>; aqui o movimento roda (se ligado).</p>
+        <div class="row" style="display:flex;gap:.4rem"><span class="ws-btn ws-btn--sm ws-btn--ghost">Restaurar padrão</span><span class="ws-btn ws-btn--sm">Cancelar</span><span class="ws-btn ws-btn--sm ws-btn--primary">Aplicar</span></div>
+        <p class="lab-note">Aplicar grava com <code>baseRev</code>; se outra janela aplicou antes → 409 e aviso (nada é sobrescrito).</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 9. TAMANHOS E CONTEXTOS -->
+  <section class="lab-section" aria-labelledby="s9">
+    <header><h2 id="s9">9. Tamanhos e contextos</h2><small>§4.4 · §4.6</small></header>
+    <div style="display:grid;gap:1rem">
+      <div><span class="lab-pill">Mini · SelectList do Criador (RF21.CA03)</span>
+        <article class="ws-card ws-card--mini" style="margin-top:.4rem;max-width:420px"><div class="ws-card__frame"><div class="ws-card__content"><div class="ws-card__media"><span style="font-size:7px;font-family:var(--font-data)">PDF</span></div><span class="ws-card__typechip" style="--tt-soft:var(--type-documento-soft);--tt:var(--type-documento)">▣</span><span style="display:grid"><h3 class="ws-card__title">Parecer técnico — PR-445, lote 2</h3><span class="ws-card__cat">Disponível · Parecer técnico · 12 out</span></span><span>☐</span></div></div></article>
+        <article class="ws-card ws-card--mini" aria-disabled="true" style="margin-top:.3rem;max-width:420px"><div class="ws-card__frame"><div class="ws-card__content"><div class="ws-card__media"><span style="font-size:7px;font-family:var(--font-data)">XLS</span></div><span class="ws-card__typechip" style="--tt-soft:var(--type-planilha-soft);--tt:var(--type-planilha)">▦</span><span style="display:grid"><h3 class="ws-card__title">Planilha orçamentária v1</h3><em>Bloqueada — aguarda parecer do DER-PR</em></span><span>☐</span></div></div></article>
+      </div>
+      <div><span class="lab-pill">Anexo no DECIA (RF29.CA03) · borda na cor da classificação da mensagem</span>
+        <article class="ws-card lab-attach" style="margin-top:.4rem"><div class="ws-card__frame"><div class="ws-card__content"><div class="ws-card__media"><span class="lab-ext">PDF</span></div><span style="display:grid"><h3 class="ws-card__title">Parecer técnico — PR-445, lote 2</h3><span class="ws-card__cat">Parecer técnico · Disponível</span></span><span class="ws-btn ws-btn--sm ws-btn--ghost">abrir</span></div></div></article>
+      </div>
+      <div><span class="lab-pill">Tarefa do Dia (RF44) · ficha de protocolo no topo do perfil, Acervo e Mesa</span>
+        <div class="lab-daily" style="margin-top:.4rem;max-width:560px">
+          <div style="display:flex;gap:.6rem;align-items:center"><span class="ws-card__typechip" style="--tt-soft:var(--type-documento-soft);--tt:var(--type-documento)">▣</span><b style="font-family:var(--font-editorial)">Parecer técnico — PR-445, lote 2</b><span class="ws-due" data-due="soon" style="margin-left:auto">⏱ 12 out</span></div>
+          <div class="lab-meta"><span>Eisenhower <b>urgente·importante</b></span><span>WSJF <b>4,2</b></span><span>folga CPM <b>0 d</b></span><span>MoSCoW <b>Must</b></span><span class="ws-spark-note">✦ índice explicado</span></div>
+          <div class="hse"><span>HSE previsto <b>78</b></span><span style="font-size:10px;color:var(--muted)">eficiência 20 · eficácia 20 · valor 12 · pontualidade 15 · qualidade 11 · equipe 0 · foco 0</span></div>
+          <div class="fb"><span>CONCLUÍ</span><span>ADIEI</span><span>BLOQUEADA</span><span>DELEGUEI</span></div>
+        </div>
+      </div>
+      <div><span class="lab-pill">Destaque · hero da Vitrine (RF27 / RF35) — contexto que substitui a Passarela</span>
+        <div class="lab-hero" style="margin-top:.4rem">
+          <div class="lab-cover"><div class="ws-mosaic"><div class="lab-tile">PDF</div><div class="lab-tile">XLSX</div><div class="lab-tile">DWG</div><div class="lab-tile">TR ✦</div><div class="lab-tile">GANTT</div><div class="lab-tile">ATA</div></div><span class="ws-seal ws-seal--ribbon" style="position:absolute;top:8px;right:8px" aria-label="Chancela de Excelência">E</span><span class="ws-ring" style="--p:100" data-label="100%"></span></div>
+          <div style="display:grid;gap:.5rem;align-content:start"><span class="ws-tag" data-status="concluido">Concluído · modelo oficial</span><h3>Pavimentação urbana — PR-445, lote 2</h3><p class="lab-note" style="font-size:var(--text-body-sm);color:var(--ink)">Entregar o projeto executivo e licitar a obra até dezembro de 2026.</p><div class="ws-phasebar"><div class="ws-phasebar__track"><span class="ws-phasebar__seg" data-done></span><span class="ws-phasebar__seg" data-done></span><span class="ws-phasebar__seg" data-done></span><span class="ws-phasebar__seg" data-done></span><span class="ws-phasebar__seg" data-done></span><span class="ws-phasebar__seg" data-done></span><span class="ws-phasebar__seg" data-done aria-current="step"></span></div><span class="ws-phasebar__label">Encerramento · 7/7 · <span class="ws-seal ws-seal--sm" aria-label="lacre na barra de fases (zona PHASE_BAR)">E</span></span></div><div class="lab-meta"><span class="ws-btn ws-btn--sm ws-btn--primary">Remixar</span><span>↻ 12 remixes · ♡ 240</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  // tema (mesma chave da galeria do design system)
+  function setTheme(t) { root.dataset.theme = t; try { localStorage.setItem('ws.theme', t); } catch (e) {} document.querySelectorAll('[data-set-theme]').forEach(function (b) { b.setAttribute('aria-checked', String(b.dataset.setTheme === t)); }); renderInk(); }
+  document.querySelectorAll('[data-set-theme]').forEach(function (b) { b.addEventListener('click', function () { setTheme(b.dataset.setTheme); }); });
+  try { var s = localStorage.getItem('ws.theme'); if (s && ['claro', 'escuro', 'contraste', 'blueprint'].indexOf(s) >= 0) setTheme(s); } catch (e) {}
+  var q = new URLSearchParams(location.search).get('theme'); if (q) setTheme(q);
+  document.querySelectorAll('[data-set-density]').forEach(function (b) { b.addEventListener('click', function () { if (b.dataset.setDensity) root.dataset.density = b.dataset.setDensity; else delete root.dataset.density; document.querySelectorAll('[data-set-density]').forEach(function (x) { x.setAttribute('aria-checked', String(x === b)); }); }); });
+  var rm = document.getElementById('rm'), rmIn = document.getElementById('rm-in');
+  rmIn.addEventListener('change', function () { if (rmIn.checked) { root.dataset.reduceMotion = 'true'; rm.dataset.on = ''; } else { delete root.dataset.reduceMotion; delete rm.dataset.on; } });
+
+  // 5. zonas do lacre (= SealZoneDiagram, viewBox 60×90)
+  var zones = [
+    ['tarefa PAGINA', 'META_BLOCK', 'linha categoria · departamento · formato', 'anatomia'],
+    ['tarefa GRADE', 'META_BLOCK', 'bloco de números', 'derivada'],
+    ['tarefa PRANCHA', 'COVER_CORNER', 'canto superior direito da prancha', 'derivada'],
+    ['tarefa MENSAGEM', 'HEADER', 'ao lado do remetente', 'derivada'],
+    ['tarefa FICHA', 'HEADER', 'ao lado do nº de protocolo', 'derivada'],
+    ['tarefa LINHA', 'TITLE_ROW', 'fim da linha, antes das ações', 'anatomia'],
+    ['projeto MOSAICO', 'COVER_CORNER', 'canto da capa + lacre por tarefa nas linhas', 'anatomia', true],
+    ['projeto LINHA_TEMPO', 'TITLE_ROW', 'linha do título, antes do marco', 'derivada'],
+    ['projeto KANBAN_MINI', 'HEADER', 'ao lado da sigla do departamento', 'derivada'],
+    ['projeto PAINEL_METRICAS', 'HEADER', 'ao lado do medidor principal', 'derivada'],
+    ['projeto CAPA_FOTO', 'COVER_CORNER', 'canto da foto', 'derivada'],
+    ['projeto COMPACTO', 'TITLE_ROW', 'linha título + marco', 'anatomia'],
+    ['projeto concluído + chancelado', 'PHASE_BAR', 'fim da barra de fases (zona nova)', 'proposta']
+  ];
+  function dot(x, y, r) { return '<circle cx="' + x + '" cy="' + y + '" r="' + (r || 5) + '" fill="var(--seal-gold)" stroke="var(--ink)" stroke-width="1"/>'; }
+  function diagram(z, rows) {
+    var s = '<svg viewBox="0 0 60 90" width="42" height="63" aria-hidden="true">' +
+      '<rect x="4" y="4" width="52" height="6" rx="1.5" fill="var(--line-soft)"/>' +
+      '<rect x="4" y="13" width="52" height="30" rx="2" fill="var(--surface-3)" stroke="var(--line-soft)"/>' +
+      '<rect x="4" y="47" width="36" height="5" rx="1.5" fill="var(--line-soft)"/>' +
+      '<rect x="4" y="56" width="52" height="4" rx="1.5" fill="var(--line-soft)" opacity=".7"/>';
+    [64, 71, 78].forEach(function (y) { s += '<rect x="4" y="' + y + '" width="40" height="4.5" rx="1.5" fill="var(--line-soft)" opacity=".55"/>'; });
+    if (z === 'TITLE_ROW') s += dot(50, 49.5);
+    if (z === 'COVER_CORNER') s += dot(49, 20);
+    if (z === 'HEADER') s += dot(50, 7, 4.5);
+    if (z === 'META_BLOCK') s += dot(50, 58);
+    if (z === 'PHASE_BAR') s += '<rect x="4" y="84" width="44" height="3" rx="1.5" fill="var(--primary)"/>' + dot(53, 85.5, 4);
+    if (rows) [64, 71, 78].forEach(function (y) { s += dot(52, y + 2.2, 2.4); });
+    return s + '</svg>';
+  }
+  document.getElementById('sealzones').innerHTML = zones.map(function (z) { return '<div class="lab-sealzone">' + diagram(z[1], z[4]) + '<div><b>' + z[0] + '</b><span>' + z[1] + ' · ' + z[2] + ' <em>(' + z[3] + ')</em></span></div></div>'; }).join('');
+
+  // 7. skins (§5.4) e inkOn (= card-art.ts:116-119)
+  function inkOn(hex) { var n = parseInt(hex.replace('#', ''), 16); var r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255; return (0.299 * r + 0.587 * g + 0.114 * b) > 140 ? '#1A1714' : '#F5F2EC'; }
+  var skins = [
+    ['timbrado', '#FFFFFF', '#1B1F26', '#1B4F8A', '#D9D5CA', 10, 600, 'padrão (= atelier)'],
+    ['protocolo', '#FBFAF6', '#1B1F26', '#1B4F8A', '#1B1F26', 4, 600, 'mono, borda forte (= index)'],
+    ['carimbo', '#FBF7EF', '#2A241C', '#B3202E', '#2A241C', 2, 700, '(= stub)'],
+    ['blueprint', '#0F3260', '#EAF2FF', '#FFD166', 'rgba(255,255,255,.22)', 4, 600, 'escura (= show_notes)'],
+    ['noturno', '#1C1F24', '#ECEAE4', '#8DBFF2', 'rgba(255,255,255,.18)', 10, 500, 'escura (= terracotta/glass)'],
+    ['contraste', '#000000', '#FFFFFF', '#FFFF00', '#FFFFFF', 0, 700, 'forçada pelo tema']
+  ];
+  document.getElementById('skins').innerHTML = skins.map(function (s) { return '<div class="lab-skin" style="--bg:' + s[1] + ';--ink2:' + s[2] + ';--acc:' + s[3] + ';--b:' + s[4] + ';--r:' + s[5] + 'px;--w:' + s[6] + '"><b>' + s[0] + '</b><span class="acc"></span><small>bg ' + s[1] + ' · ink ' + s[2] + ' · inkOn → ' + inkOn(s[1]) + '</small><small>' + s[7] + '</small></div>'; }).join('');
+  var samples = ['#FFFFFF', '#F4F2EC', '#FBF7EF', '#0F3260', '#1C1F24', '#1B4F8A', '#1F7A4B', '#C78810', '#E8751C', '#8C939B', '#D9D5CA', '#000000'];
+  function renderInk() { document.getElementById('inkon').innerHTML = samples.map(function (h) { var i = inkOn(h); return '<div style="background:' + h + ';color:' + i + '">' + h + '<br>' + (i === '#1A1714' ? 'escura' : 'clara') + '</div>'; }).join(''); }
+  renderInk();
+
+  // 8. estúdio: tabs e tiles
+  var layouts = [['PAGINA', 'A', 'padrão'], ['GRADE', 'B ✦', 'exige dados tabulares'], ['PRANCHA', 'B ✦', 'só desenho/mapa'], ['MENSAGEM', 'B', 'só e-mail'], ['FICHA', 'B', 'exige nº de protocolo'], ['LINHA', 'A', 'contexto de lista']];
+  document.getElementById('layout-tiles').innerHTML = layouts.map(function (l, i) { return '<span class="lab-tile-opt" aria-pressed="' + (i === 0) + '"' + (i === 2 ? ' aria-disabled="true" title="Só para DESENHO_TECNICO e MAPA"' : '') + '>' + diagram(['META_BLOCK', 'META_BLOCK', 'COVER_CORNER', 'HEADER', 'HEADER', 'TITLE_ROW'][i]) + '<span><span class="lab-pill" style="height:14px;font-size:8px">' + l[1] + '</span> ' + l[0] + '</span><small>' + (i === 2 ? 'não disponível: tipo ≠ desenho' : l[2]) + '</small></span>'; }).join('');
+  document.getElementById('skin-tiles').innerHTML = skins.slice(0, 5).map(function (s, i) { return '<span class="lab-tile-opt" aria-pressed="' + (i === 0) + '" style="background:' + s[1] + ';color:' + s[2] + ';border-color:' + s[4] + '"><span style="font-family:var(--font-editorial);font-weight:' + s[6] + '">' + s[0] + '</span></span>'; }).join('');
+  document.querySelectorAll('[data-seg]').forEach(function (b) { b.addEventListener('click', function () { document.querySelectorAll('[data-seg]').forEach(function (x) { x.setAttribute('aria-selected', String(x === b)); }); document.querySelectorAll('[data-panel]').forEach(function (p) { if (p.dataset.panel === b.dataset.seg) p.dataset.on = ''; else delete p.dataset.on; }); }); });
+  var seg = new URLSearchParams(location.search).get('seg'); if (seg) { var btn = document.querySelector('[data-seg="' + seg + '"]'); if (btn) btn.click(); }
+})();
+</script>
+</body>
+</html>
