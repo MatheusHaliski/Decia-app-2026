@@ -24,3 +24,9 @@
 | `testes/` | Evidências de teste por RF (preenchido a cada PR) |
 
 Fonte de verdade dos requisitos: board Trello **Work Station** (ex-DECIA SECIDPR).
+
+## Nova proposta de cooperação — RF49
+
+[Estudo aprofundado do Work Station e proposta](produto/ESTUDO_WORK_STATION_RF49.md) · [RF49: Pactos de Desbloqueio e critérios de aceite](diagramas/RF49/README.md). A proposta liga dependências entre equipes a compromissos negociados e entregas verificáveis. Estado: especificado, implementação pendente.
+
+[Arquivos da auditoria e pacote completo para download](auditoria/2026-10-11/README.md). A matriz histórica contém os 48 RF originais; o RF49 é acompanhado separadamente.

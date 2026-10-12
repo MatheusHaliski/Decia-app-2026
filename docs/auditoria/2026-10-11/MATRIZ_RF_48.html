@@ -1,0 +1,329 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Matriz dos 48 RF · DECIA</title><style>*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f5f1e9;color:#282b2e;font:16px/1.65 system-ui,sans-serif}main{max-width:1120px;margin:auto;padding:60px 28px}h1,h2,h3{font-family:Georgia,serif;line-height:1.2}h1{font-size:48px;max-width:750px}h2{font-size:29px;margin-top:64px;border-top:1px solid #d7d0c2;padding-top:30px}h3{font-size:22px;margin-top:34px}p{max-width:88ch}a{color:#954418}code{background:#ede7dc;border-radius:4px;padding:2px 5px;font-size:.88em;overflow-wrap:anywhere}table{border-collapse:collapse;width:100%;font-size:14px;background:white;display:block;overflow-x:auto}th,td{text-align:left;vertical-align:top;padding:14px;border-bottom:1px solid #e5ded3;min-width:120px}th{background:#ebe3d4;font-weight:700}tr:hover td{background:#fcfaf6}nav{position:sticky;top:0;background:#282b2ef5;padding:14px 22px;display:flex;gap:20px;flex-wrap:wrap;z-index:2}nav a{color:white;font-size:14px;text-decoration:none}.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.gallery a{background:white;padding:12px;border:1px solid #ddd5c6;border-radius:12px;display:grid;gap:8px}.gallery img{width:100%;height:280px;object-fit:cover;object-position:top}.note{padding:24px;background:#e9e0cf;border-left:5px solid #b85c22}button{background:#fff;color:#282b2e;border:1px solid #aaa;border-radius:5px;padding:7px 12px;cursor:pointer}@media(max-width:700px){main{padding:28px 18px}h1{font-size:34px}.gallery{grid-template-columns:1fr 1fr}nav{position:static}}@media print{nav,.gallery{display:none}main{max-width:none;padding:0}body{background:white;font-size:11pt}h2{break-before:page}table{display:table;font-size:9pt}a{color:inherit}}</style><body><nav><a href="AUDITORIA_DECIA.html">Auditoria</a><a href="MATRIZ_RF_48.md">Markdown</a></nav><main><h1>Matriz de cobertura dos 48 RF — revisão do board e código</h1>
+<p><strong>11/10/2026 · baseline <code>1932b73</code> · fonte: 48 cartões ativos do Trello, consultados ao vivo, e documentos locais.</strong></p>
+<p>Nenhum RF foi classificado como completamente implementado nesta revisão. Entidades, migrations, telas e testes de regras não equivalem a uma jornada real completa. Os documentos locais contêm critérios “CA a confirmar”; os cartões sem descrição exigem critérios derivados explícitos para declarar aceite integral.</p>
+<p>A classificação indica o nível de evidência encontrado, não ausência de todos os componentes de uma funcionalidade. A revisão de cada CA deve registrar endpoint/caso de uso, política de acesso, teste e resultado.</p>
+<table>
+<thead>
+<tr>
+<th>RF</th>
+<th>Requisito local</th>
+<th>Evidência/estado conservador</th>
+<th>Próxima entrega necessária</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RF1</td>
+<td>Cadastrar usuário na plataforma com dados de acesso</td>
+<td>Parcial com API de identidade</td>
+<td>Concluir aceite/versões de políticas, validação institucional e envio real de e-mail</td>
+</tr>
+<tr>
+<td>RF2</td>
+<td>Autenticar usuário na plataforma com credenciais de acesso</td>
+<td>Parcial com API de identidade</td>
+<td>Validar sessão real, 2FA/OIDC conforme board; corrigir binding JWT e envio nativo seguro</td>
+</tr>
+<tr>
+<td>RF3</td>
+<td>Editar informações pessoais e preferências do perfil do usuário</td>
+<td>Parcial com API de identidade</td>
+<td>Concluir direitos do titular, exportação, anonimização e preferências persistidas</td>
+</tr>
+<tr>
+<td>RF4</td>
+<td>Utilizar o criador de tarefas, escolhendo o tipo do arquivo e editando detalhes, em modo manual ou com IA</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>API do criador de tarefas, edição/upload e modo assistido governado</td>
+</tr>
+<tr>
+<td>RF5</td>
+<td>Utilizar o criador de projetos, escolhendo em cada fase do projeto as unidades de tarefa, em modo manual ou com IA</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>API do construtor por fases, versões e validação de composição</td>
+</tr>
+<tr>
+<td>RF6</td>
+<td>Acessar e gerenciar o Perfil Empresarial (Acervo Digital + Projetos Salvos)</td>
+<td>UI/regras DEMO; integração real pendente</td>
+<td>Perfil empresarial e acervo/projetos persistidos com autorização</td>
+</tr>
+<tr>
+<td>RF7</td>
+<td>Abrir um esquema de tarefa a partir da lista de um esquema de projeto</td>
+<td>UI/regras DEMO; integração real pendente</td>
+<td>Abrir tarefa vinculada ao projeto com autorização e contexto</td>
+</tr>
+<tr>
+<td>RF8</td>
+<td>Editar arquivos de tarefas ou projetos dentro de meu perfil do Work Station</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Editor persistente, upload seguro e concorrência</td>
+</tr>
+<tr>
+<td>RF9</td>
+<td>Permitir que um chefe de departamento possa adicionar ou remover um usuário da sua lista de empregados atuais</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Gestão real de vínculos departamento–empregado e trilha</td>
+</tr>
+<tr>
+<td>RF10</td>
+<td>Permitir que o chefe de departamento possa atribuir uma tarefa ou projeto a um usuário</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Atribuição persistente, aceite e notificações sem exposição indevida</td>
+</tr>
+<tr>
+<td>RF11</td>
+<td>Utilizar o editor de arte de fundo para personalizar esquemas de tarefas e projetos</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Persistir aparência e versões; validar acessibilidade e exportação</td>
+</tr>
+<tr>
+<td>RF12</td>
+<td>Editar um esquema de tarefa ou projeto de meu perfil</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Edição real de tarefa/projeto, histórico e controle de versão</td>
+</tr>
+<tr>
+<td>RF13</td>
+<td>Utilizar a funcionalidade gerar artefato dentro de esquemas, chats, abas e feed do Work Station</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Geração de artefatos com fontes, limites de acesso e aceite humano</td>
+</tr>
+<tr>
+<td>RF14</td>
+<td>Visualizar perfil de um chefe de departamento</td>
+<td>UI/regras DEMO; integração real pendente</td>
+<td>Perfil do chefe com dados reais e filtragem por autorização</td>
+</tr>
+<tr>
+<td>RF15</td>
+<td>Visualizar perfil de um empresa ou órgão público/privado</td>
+<td>UI/regras DEMO; integração real pendente</td>
+<td>Página institucional real, vínculo/verificação e visibilidade</td>
+</tr>
+<tr>
+<td>RF16</td>
+<td>Visualizar perfil de um usuário comum que é empregado dentro de uma empresa</td>
+<td>UI/regras DEMO; integração real pendente</td>
+<td>Perfil empregado real e política de visibilidade</td>
+</tr>
+<tr>
+<td>RF17</td>
+<td>Visualizar esquemas de tarefa &amp; projetos criados por outros usuários na rede social do Work Station, através da aba "Buscar"</td>
+<td>UI/regras DEMO; integração real pendente</td>
+<td>Busca de conteúdo persistente com filtro de autorização</td>
+</tr>
+<tr>
+<td>RF18</td>
+<td>Interagir socialmente com tarefas e projetos: curtir, comentar, salvar, compartilhar, remixar, retornar e atribuir</td>
+<td>UI/regras DEMO; integração real pendente</td>
+<td>Interações persistentes, autoria, deduplicação e isolamento</td>
+</tr>
+<tr>
+<td>RF19</td>
+<td>Curtir, comentar, salvar, compartilhar, retornar, atribuir e remixar tarefas, esquemas de projeto e planos anuais (interações sociais)</td>
+<td>UI/regras DEMO; integração real pendente</td>
+<td>Integrar todas as interações sociais à API e testar por tipo de alvo</td>
+</tr>
+<tr>
+<td>RF20</td>
+<td>Utilizar o construtor de projetos do Work Station para compreender se as tarefas de meu acervo são adequadas dentro de meu ambiente empresarial</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Validar adequação de tarefas ao contexto empresarial com critérios explicáveis</td>
+</tr>
+<tr>
+<td>RF21</td>
+<td>Utilizar a mesa de trabalho digital de meu perfil</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Mesa persistente com ações reais e recuperação de edição</td>
+</tr>
+<tr>
+<td>RF22</td>
+<td>Editar um Esquema de Projeto na Mesa de Trabalho (quadro por fase, linha do tempo e canvas livre) com versões e histórico</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Quadro/timeline/canvas com histórico e conflitos de versão</td>
+</tr>
+<tr>
+<td>RF23</td>
+<td>Importar tarefas ou projetos de outros provedores para dentro de meu perfil do Work Station</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Importadores com limites, sanitização, proveniência e idempotência</td>
+</tr>
+<tr>
+<td>RF24</td>
+<td>Visualizar a aba metas &amp; objetivos de minha equipe com insights analíticos gerados por IA</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Metas de equipe persistentes, analytics e insights governados</td>
+</tr>
+<tr>
+<td>RF25</td>
+<td>Agrupar projetos e tarefas em Programas, Exercícios e Gestões (agrupamentos institucionais)</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Agrupamentos institucionais com autorização e regras de vínculo</td>
+</tr>
+<tr>
+<td>RF26</td>
+<td>Utilizar o Copilot do WS para criar sugestões de tarefas e projetos de maneira mais prática e funcional</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Copilot com sugestões fundamentadas, autorização e aceite explícito</td>
+</tr>
+<tr>
+<td>RF27</td>
+<td>Navegar no Mural (mural da empresa e vitrine de projetos) e Buscar projetos, tarefas, pessoas, empresas e chefes de departamento</td>
+<td>UI/regras DEMO; integração real pendente</td>
+<td>Mural/busca reais, paginação e isolamento institucional</td>
+</tr>
+<tr>
+<td>RF28</td>
+<td>Gerir perfis de empresa e chefe de departamento (departamentos, página institucional, chancela de tarefas/projetos e emissão de reconhecimentos)</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Aprovação/gestão institucional, perfis e reconhecimentos reais</td>
+</tr>
+<tr>
+<td>RF29</td>
+<td>Integrar o DECIA ao Criador de Projetos — compartilhar tarefas/artefatos na sessão, abrir sessão a partir de um projeto, transformar argumentos/divergências/decisões em tarefas e manter o Rastro de Decisão</td>
+<td>UI/regras DEMO; integração real pendente</td>
+<td>API de decisão + integração projetos/sessões/tarefas + rastro imutável</td>
+</tr>
+<tr>
+<td>RF30</td>
+<td>Gerar um Esquema de Projeto completo com o Autopiloto de Projeto a partir de uma demanda (ofício, e-mail ou frase), reutilizando modelos chancelados</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Autopiloto com modelos autorizados, fontes e revisão humana</td>
+</tr>
+<tr>
+<td>RF31</td>
+<td>Simular cenários sobre um Esquema de Projeto (corte de orçamento, atraso, troca de fornecedor, mudança de escopo) antes de enviá-lo à aprovação</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Simulação de cenários reproducível com premissas e limites explícitos</td>
+</tr>
+<tr>
+<td>RF32</td>
+<td>Verificar a conformidade de um Esquema de Projeto no Espelho de Conformidade (checklists legais e do departamento) e sugerir as tarefas faltantes</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Conformidade por checklist versionado, evidência e aprovação humana</td>
+</tr>
+<tr>
+<td>RF33</td>
+<td>Consultar a Memória Institucional (busca semântica sobre sessões encerradas, artefatos, projetos e tarefas) e fazer a IA do DECIA citar fontes institucionais</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Memória indexada com fontes/citações e isolamento de sigilo</td>
+</tr>
+<tr>
+<td>RF34</td>
+<td>Extrair informações de desenhos técnicos e documentos (dwg/dxf/ifc/glb/pdf) com IA para gerar quantitativos, planilha orçamentária e cronograma pré-preenchidos</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Extração segura por formato, rastreio da fonte e correção humana</td>
+</tr>
+<tr>
+<td>RF35</td>
+<td>Participar de Metas coletivas, aparecer nos Destaques e receber Reconhecimentos (gamificação ligada ao perfil deliberativo, com DECIA Points como moeda)</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Metas e reconhecimentos reais; validar incentivos e privacidade</td>
+</tr>
+<tr>
+<td>RF36</td>
+<td>Gerar o Dossiê de Transição (handoff) quando um empregado muda de departamento, sai ou uma gestão encerra, transferindo projetos, tarefas e pendências com contexto</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Dossiê de transição com pendências, autorização e trilha de transferência</td>
+</tr>
+<tr>
+<td>RF37</td>
+<td>Registrar reuniões com a Ata Viva (transcrição ou gravação → ata como tarefa + tarefas de encaminhamento com responsável e prazo dentro do projeto)</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Gravação/transcrição com consentimento, retenção e encaminhamentos reais</td>
+</tr>
+<tr>
+<td>RF38</td>
+<td>Aplicar a identidade visual do Work AI — ícones por tipo de tarefa, thumbnails automáticos, capa-mosaico de projeto, fio de decisão, lacres, etiquetas de estado, temas e skins da Mesa</td>
+<td>Base visual implementada; auditoria incompleta</td>
+<td>Remover jargão do modo normal; auditar temas, semântica e performance</td>
+</tr>
+<tr>
+<td>RF39</td>
+<td>Criar chancelas (EMPRESA / CHEFE DE DEPARTAMENTO) e concedê-las a tarefas, projetos e planos por vínculo sugerido pela IA, por política de critérios ou por premiação; habilitar benefícios resgatáveis</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Chancelas/políticas/benefícios reais com trilha de concessão e resgate</td>
+</tr>
+<tr>
+<td>RF40</td>
+<td>Oferecer tarefas, projetos e kits como modelos no Balcão de Modelos (marketplace interno em DECIA Points, sem dinheiro) e reutilizá-los com crédito ao autor</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Marketplace interno com crédito ao autor e transações idempotentes</td>
+</tr>
+<tr>
+<td>RF41</td>
+<td>Gerir o Acervo de Tarefas (inventário do usuário): estados, sub-filtros, ordenação, prazos legais, anexos &amp; evidências e ações rápidas</td>
+<td>UI/regras DEMO; integração real pendente</td>
+<td>API do acervo, filtros, prazos, anexos e ações rápidas persistentes</td>
+</tr>
+<tr>
+<td>RF42</td>
+<td>Acumular DECIA Points por participação de qualidade no chat DECIA e usá-los em compras dentro do app (Loja Work AI: modelos do Balcão, créditos de IA, capas/skins, impulsos, kits)</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Ledger de pontos, antifraude, idempotência e compras atômicas</td>
+</tr>
+<tr>
+<td>RF43</td>
+<td>Usar a IA do sistema — insights do Acervo e do Perfil, ranking de usuários, motor do DECIA e Autopilot para criar tarefas e sugerir novos projetos com custo, tempo, prazo e viabilidade (EVM, CPM, PERT, Monte Carlo, ROI, matriz de risco)</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Clientes de IA, orçamento, sigilo, avaliação e motores quantitativos rastreáveis</td>
+</tr>
+<tr>
+<td>RF44</td>
+<td>Receber a Tarefa do Dia sugerida pela IA e acompanhar o Hype Score de Eficiência (previsto × realizado), calculado por princípios de gestão empresarial e de projetos, com feedback diário e semana planejada</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Planejamento diário e eficiência com métricas justas e contestação</td>
+</tr>
+<tr>
+<td>RF45</td>
+<td>Calcular com a IA o Hype Score do Perfil (0–1000) a partir de tudo o que o usuário produziu, das interações recebidas (curtidas, reações, comentários, salvos, remixes) e da participação no DECIA — exibível ou oculto a critério do usuário, sempre explicável</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Hype explicável, privacidade/opt-out e proteção contra incentivo a volume</td>
+</tr>
+<tr>
+<td>RF46</td>
+<td>Utilizar chats de mensageria para comunicar-se com outros usuários e atribuir ou receber tarefas e projetos</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Mensageria real, entrega autorizada, histórico e atribuições</td>
+</tr>
+<tr>
+<td>RF47</td>
+<td>Encontrar palavras-chave em documentos — varrer documentos longos de tarefas e projetos para localizar e extrair termos, frases e palavras (com contexto e fonte)</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>OCR/extração + índice autorizado e contexto da fonte</td>
+</tr>
+<tr>
+<td>RF48</td>
+<td>Utilizar a aba Agentes (Copilot de testes) para testar uma contratação antes do início e durante a execução — testes contratuais, orçamentários, comportamentais, de integridade e Score do Contrato, sempre com fundamentação bibliográfica</td>
+<td>Especificação/domínio/tela não comprovam entrega ponta a ponta</td>
+<td>Agentes de testes com fundamentação, gate de sigilo e revisão humana</td>
+</tr>
+</tbody>
+</table>
+<h2>Ordem de execução</h2>
+<ol>
+<li>Identidade/segurança: carregamento JWT, envio seguro dos formulários, direitos/termos e controles de autorização.</li>
+<li>Núcleo: acervo/tarefas, projetos e API decisória persistente, com outbox, versão e snapshots.</li>
+<li>Institucional/colaboração: vínculos, atribuições, mensageria e notificações.</li>
+<li>Planejamento, simulação, conformidade e memória, com fontes e isolamento de acesso.</li>
+<li>IA e agentes: governança, avaliação, custo e aceite humano.</li>
+<li>Gamificação/marketplace: ledger, antifraude e revisão de incentivos.</li>
+<li>Acessibilidade, performance, operação e aceite por RF/CA.</li>
+</ol>
+<h2>Definição de completamente implementado</h2>
+<p>Cada CA confirmado no board deve ter fluxo real, persistência quando necessária, autenticação/autorização, erros/estados e acessibilidade, testes unitários/integração/E2E pertinentes, evidência de execução e nenhum bloqueador aberto. Confirmar também operação, retenção, concorrência e privacidade conforme o RF.</p>
+<h2>Melhorias posteriores ao cenário inicial</h2>
+<ul>
+<li>RF1/RF2: binding JWT corrigido e formulários POST; testes de regressão aprovados. Outros critérios continuam abertos.</li>
+<li>RF4/RF8/RF12/RF41: núcleo de tarefas manuais com API, persistência, versionamento e histórico; interface conectada. Histórico e restauração passaram com MySQL e navegador, incluindo login real e reinício da API; isolamento empresarial e sigilo validados. Estes RF permanecem parciais.</li>
+<li>Evidências e limites: <a href="VALIDACAO.md">VALIDACAO.md</a>.</li>
+</ul>
+<h2>Acesso externo confirmado</h2>
+<p>Configurar <code>TRELLO_API_KEY</code> e <code>TRELLO_TOKEN</code> em segredos do ambiente, com destinos <code>api.trello.com</code>; liberar <code>api.trello.com</code> e <code>trello.com</code>. Não usar o token do convite como token de API e não enviar valores pelo chat. A leitura autenticada funcionou após o usuário configurar as variáveis. 48 RF ativos foram reconciliados; as implementações permanecem em andamento.</p>
+<h2>Reconciliação com o Trello</h2>
+<p>Foram lidos 203 cartões do board, incluindo arquivados. A lista Requisitos Funcionais tem 48 RF ativos e dois cartões RF17/RF18 arquivados. Os 18 cartões antigos nas listas Sprint Backlog também estão arquivados. A numeração atual RF1–RF48 é a fonte desta matriz. As descrições ativas e seus links estão em <code>TRELLO_RF_ATIVOS.md</code>.</p>
+<ul>
+<li>Q-166 resolvida pelo usuário: administração exige concessão explícita para SIGILOSO (D-107). Nome/perfil no shell passam a vir da conta real (D-108). Resultados atuais em <code>VALIDACAO.md</code>.</li>
+</ul></main></body></html>
