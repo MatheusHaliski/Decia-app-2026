@@ -72,11 +72,13 @@ export function parseReadme(id, md) {
       if (c.length < 2) continue;
       m = CA_ID.exec(plain(c[0]));
       text = plain(c[1]);
-    } else if (/^-\s+\*\*RF\d+\.(CA|A)\d+\*\*/.test(line)) {
-      const stripped = plain(line.replace(/^-\s+/, ""));
+    } else if (/^-\s+\*\*RF\d+\.(CA|A)\d+(?:\s*\([^)*]*\))?\*\*/.test(line)) {
+      // `- **RF47.CA11 (Opção A — tela principal)** Dado …`: o parêntese dentro do negrito é rótulo do card (vira `note`)
+      const label = /^-\s+\*\*RF\d+\.(?:CA|A)\d+\s*\(([^)*]*)\)\*\*/.exec(line);
+      const stripped = plain(line.replace(/^-\s+/, "").replace(/^(\*\*RF\d+\.(?:CA|A)\d+)\s*\([^)*]*\)\*\*/, "$1**"));
       m = CA_ID.exec(stripped);
       text = m ? m[2] : "";
-      if (m) m = [m[0], m[1], ""];
+      if (m) m = [m[0], m[1], label ? label[1] : ""];
     }
     if (!m || !text || /^-+$/.test(text)) continue;
     const caId = m[1];
@@ -103,7 +105,7 @@ export function gerar() {
   const dirs = fs.readdirSync(DIAGRAMAS).filter((d) => /^RF\d+$/.test(d) && fs.existsSync(path.join(DIAGRAMAS, d, "README.md")));
   dirs.sort((a, b) => Number(a.slice(2)) - Number(b.slice(2)));
   const items = dirs.map((d) => parseReadme(d, fs.readFileSync(path.join(DIAGRAMAS, d, "README.md"), "utf8")));
-  if (items.length < 46) throw new Error(`esperava ≥ 46 READMEs de RF, achei ${items.length}`);
+  if (items.length < 48) throw new Error(`esperava ≥ 48 READMEs de RF, achei ${items.length}`);
   return [
     "// GERADO por scripts/rf/gerar-catalogo.mjs a partir de docs/diagramas/RFnn/README.md — não editar à mão.",
     "// Título, HU, Aba/rota, cobertura e CAs copiados dos READMEs (texto-fonte em pt-BR). Teste: lib/rf/catalog.test.ts.",

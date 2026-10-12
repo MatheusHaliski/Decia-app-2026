@@ -83,6 +83,11 @@ public class ClientIpResolver {
         this.nowEpochSeconds = nowEpochSeconds;
     }
 
+    /** Proxies de confiança já interpretados (visível para testes). */
+    List<Cidr> trustedProxies() {
+        return trustedProxies;
+    }
+
     /** O cabeçalho da borda está ligado (nome configurado e ao menos um proxy de confiança). */
     public boolean edgeHeaderEnabled() {
         return !header.isEmpty() && !trustedProxies.isEmpty();
@@ -256,6 +261,10 @@ public class ClientIpResolver {
                 }
             }
             return new Cidr(addr, bits);
+        }
+
+        int prefix() {
+            return bits;
         }
 
         boolean contains(InetAddress candidate) {

@@ -475,3 +475,29 @@ flowchart LR
 | RF16.CA04 | `ProfileService.hypeFor`, `AccessPolicy.canSeeHype`, `User.hypeVisibility`, `HypeScorePort`, `DeliberativeProfilePort` (`publicIndicatorsJson`, `badgesJson`) | `S6` | 9–15 | bloco `HYPE` | `PF`, `RDS` | `hypeVisibility` real (Bloco 3); exposição planejada (RF45.CA06/CA10) |
 | RF16.CA05 | URL `?tab=&fase=&categoria=&page=&size=`, `InteractionService` (RF18/RF19), `TaskExtractionService` (RF7), `FollowService` (RF14) | `A2`→`F2`, `A3`→`F4` | 21–27 | — | `UI` (`TaskCard`, `Counters`), `SOC` | planejado |
 | RF16.CA06 | `ProfileService.header` (`institutionalTag`), `User.profileType`, `Department.headUserId`, `Company.ownerUserId` | `S7`→`S8`, `A4` | 32–36 | — | `UI` (`Tag`, `Monogram`), `PG` | planejado (`ProfileType` real) |
+
+## 7. Front implementado (onda Social, DEMO)
+
+Rota `/u/[username]` funcional sobre o repositório **DEMO** em memória (`lib/social/repository.ts`, sem API até os Blocos 4–5): `app/(shell)/u/[username]/page.tsx` (servidor: username desconhecido → `notFound()` = 404, CA01) → `components/social/ProfileView.tsx`. Regras puras em `lib/social/rules.ts` (`canView`, `profileTasks`, `profileProjects`, `canSeeHype`, `toggleFollow`) e view models em `lib/social/view-model.ts` (`toProfileHeaderViewModel`, `profileTabsFor`).
+
+| CA | O que a tela faz |
+|---|---|
+| RF16.CA01 | Cabeçalho com avatar, nome, cargo, departamento (monograma, link RF14), empresa (link RF15), contadores reais (tarefas e projetos que **o viewer** vê, decisões, seguidores ATIVO) e **Seguir** (`Follow` ATIVO ⇄ REMOVIDO no mesmo registro); 404 para username inexistente. |
+| RF16.CA02 | Só as sub-abas 1–5 (`profileTabsFor`); dono EMPRESA sem a 5; independe do perfil de quem olha. |
+| RF16.CA03 | Acervo e Projetos passam por `canView` (PUBLICA · EMPRESA mesma empresa · DEPARTAMENTO lotação · nunca PRIVADA/RASCUNHO; RESTRITO/SIGILOSO só o departamento dono — D-93). |
+| RF16.CA04 | DECIA Points nunca para terceiros ("—" com texto oculto para leitor de tela); Hype conforme `hypeVisibility`. |
+| RF16.CA05 | Cada card traz a barra social inline (curtir, reagir, comentar, salvar, compartilhar, remixar, delegar, retornar) com motivo quando indisponível. Filtros por estado e grade/lista locais (URL fica para a API). |
+| RF16.CA06 | Chefe: etiqueta "Chefe de {sigla}" + atalho `/departments/[slug]`; EMPRESA: etiqueta institucional + atalho `/companies/[slug]`, sem DP/Hype. |
+
+```mermaid
+flowchart LR
+  P["/u/username (servidor)"] -->|"desconhecido"| N404["404"]
+  P --> V["ProfileView"]
+  V --> H["SocialProfileHeader"]
+  V --> T["Sub-abas 1 a 5"]
+  T --> C["TaskSchemeCard + SocialBar"]
+  C --> R["lib/social/rules (canView)"]
+  R --> D["Repositorio DEMO em memoria"]
+```
+
+Testes: `lib/social/rules.test.ts`, `lib/social/view-model.test.ts`, `components/social/social.test.tsx`, `e2e/social.spec.ts`; capturas `41-perfil-terceiros.png`, `47-remixar.png`, `49-perfil-mobile.png`.

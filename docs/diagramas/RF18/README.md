@@ -534,3 +534,17 @@ flowchart LR
 | RF18.CA04 | `AssignmentService.accept/refuse`, `AssignmentStateMachine`, `TaskStateMachine`, `DailyTaskPort` | `A4`→`F4`→`R1`→`R2`/`R3`, `E403`, `E409R`, `E422M` | 34–47 | `PROP`→`ACE`, `PROP`→`REC` | `ASG`, `ACV`, `GAM` | planejado (RF44) |
 | RF18.CA05 | `AssignmentService.giveBack`, `Assignment.reason/previousResponsibleId`, `TaskStateLog`, `AuditLogPort` (`ASSIGNMENT_RESPONDED`) | `A5`→`F5`→`G1`→`G2`, `E404`, `E422M` | 48–59 | `ACE`→`DEV` | `ASG`, `UI` (`Stamp` DEVOLVIDO) | planejado |
 | RF18.CA06 | `AssignmentController.historyFor`, `AssignmentService.historyFor`, `AssignmentRepositoryPort.findByTarget`, etiqueta no RF16 | `A6`→`F6`→`H1` | 60–65 | nota de `DEV` | `PG`, `UI` (`Tag`) | planejado (RF16, RF44 DELEGUEI, RF46.CA03–CA05) |
+
+## 7. Front implementado (onda Social, DEMO) — "Delegar"
+
+No produto o botão "atribuir" aparece como **Delegar** (pt-BR/es "Delegar", en "Delegate"), na barra social de tarefas e projetos e no detalhe `/tasks/[id]`. `DelegateDialog` busca pessoas da mesma empresa (nome, @usuário, sigla), mostra desabilitadas com motivo as que não podem receber, aceita mensagem (≤ 1000) e prazo (≥ hoje). Regras em `lib/social/rules.ts`: `delegatePermission` (CA03: quem vê o item, mesma empresa, item não fechado; SIGILOSO só o dono — D-92), `recipientPermission` (a si mesmo, outra empresa, conta institucional, já responsável, classificação RESTRITO/SIGILOSO fora do departamento, duplicata PROPOSTA/ACEITA), `delegate` (origem `MINHA_EQUIPE` se o ator chefia o departamento do destinatário, senão `BOTAO_ESQUEMA`; `previousResponsibleId`; **uma** notificação `ATRIBUICAO_PROPOSTA`), `respond` (espelho de `Assignment.respond` do Java, mesma ordem de erros) e `respondToAssignment` (CA04: ACEITA → responsável = destinatário, DISPONIVEL → EM_USO; CA05: DEVOLVIDA com motivo ≥ 20 → responsável volta ao anterior). "Delegadas a mim" (`AssignmentInbox`, em `/profile`) tem Aceitar · Recusar (motivo) e, depois de aceita, Devolver; o card do remetente mostra "Delegada a Y · aguardando" e o histórico (CA06) fica no detalhe.
+
+```mermaid
+stateDiagram-v2
+  [*] --> PROPOSTA: Delegar
+  PROPOSTA --> ACEITA: Aceitar
+  PROPOSTA --> RECUSADA: Recusar com motivo
+  ACEITA --> DEVOLVIDA: Retornar com motivo de 20 ou mais
+```
+
+Capturas `50-delegar-dialogo.png` e `51-delegadas-a-mim.png`; e2e "delegar … aceita" em `e2e/social.spec.ts`.

@@ -8,6 +8,7 @@ public final class AuditActions {
     public static final String LOGOUT = "LOGOUT";
     public static final String REFRESH_REUSO = "REFRESH_REUSO";
     public static final String SESSIONS_REVOKED = "SESSIONS_REVOKED";
+    public static final String SESSION_REVOKED = "SESSION_REVOKED";
     public static final String PASSWORD_CHANGED = "PASSWORD_CHANGED";
     public static final String PASSWORD_RESET_REQUESTED = "PASSWORD_RESET_REQUESTED";
     public static final String PASSWORD_RESET_COMPLETED = "PASSWORD_RESET_COMPLETED";

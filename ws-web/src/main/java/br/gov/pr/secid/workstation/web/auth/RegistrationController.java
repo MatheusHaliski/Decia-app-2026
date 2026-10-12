@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import br.gov.pr.secid.workstation.web.security.AuthorizationExempt;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,6 +69,7 @@ public class RegistrationController {
 
     @Operation(summary = "RF1.CA02/CA26 Disponibilidade do username normalizado (FORMATO | RESERVADO | EM_USO) com sugestões")
     @GetMapping("/api/usernames/{username}/availability")
+    @AuthorizationExempt(reason = "Disponibilidade pública de nome de usuário (RF1.CA03): só diz livre/ocupado, limitada por IP; não lê recurso de ninguém")
     public RegistrationService.Availability availability(@PathVariable @Size(max = 80) String username) {
         return registration.availability(username);
     }

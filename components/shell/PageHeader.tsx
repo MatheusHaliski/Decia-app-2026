@@ -21,7 +21,7 @@ export function PageHeader({ title, description, glyph, rfs = [], actions, propo
   return (
     <header className={cn("mb-[var(--ws-space-5)] flex flex-wrap items-start gap-[var(--ws-space-4)]", className)}>
       {glyph ? <Glyph name={glyph} variant="clay" size={48} decorative className="mt-0.5 hidden sm:block" /> : null}
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1 basis-64">
         {eyebrow ? <p className="font-[family-name:var(--ws-font-mono)] text-[length:var(--ws-text-label)] uppercase tracking-[var(--ws-text-label--tracking)] text-ws-text-muted">{eyebrow}</p> : null}
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h1)] font-semibold leading-[var(--ws-text-h1--lh)] tracking-[var(--ws-text-display--tracking)]">{title}</h1>

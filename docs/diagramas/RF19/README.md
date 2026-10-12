@@ -594,3 +594,33 @@ flowchart LR
 | RF26.CA08 | `AccessPolicy.canInteract` | `S1`→`S2`→`E403` | 5–7 | nota de `PUB` | `SECU`, `GEH` | planejado |
 | RF26.CA09 | eventos `Reacted`/`Commented`/`Mentioned`/`Remixed`, `NotificationPort`, `Notification.groupKey`, `DeliberativeProfilePort.recordInteraction` | `EV`→`A5` | 12–14, 23, 57 | nota de `PUB` | `EVT`, `GAM`, `CAS` | planejado (objetivo 2) |
 | (título) retornar · atribuir | `AssignmentService`, `Assignment` | — | — | `AssignmentStatus` (RF18 §4) | `ASG` no RF18 | modelado no RF18.CA03–CA06 (remissão) |
+
+## 7. Front implementado (onda Social, DEMO)
+
+Barra social e diálogos em `components/social/` (SocialBar, ReactionPicker, CommentThread, ShareSheet, RemixDialog, DelegateDialog/GiveBackDialog, AssignmentInbox) sobre regras puras em `lib/social/rules.ts` e o repositório **DEMO** em memória (`SocialRepository`, mesmo padrão do DECIA; a API `/api/interactions/...` vem depois dos Blocos 4–5). Tipos espelham `domain/social/*` (V16) e `domain/mensageria/Assignment` (V20) — `lib/social/types.test.ts` compara os enums com os `.java`.
+
+| CA | Implementação |
+|---|---|
+| RF26.CA01 | `react(…, "CURTIR")` liga/desliga; contador `countersOf`. |
+| RF26.CA02 | Qualitativas excludentes entre si, CURTIR independente (D-90); reação do dono grava `ignoredReason AUTO_INTERACAO`. |
+| RF26.CA03 | `addComment` (resposta de 1 nível, D-91), `editComment` (só autor, `editedAt`), `deleteComment` (autor ou chefe do departamento; lógica `active=false`, `deletedBy`), @menções → `MENCAO` só para quem vê o item; limite 1000 caracteres. |
+| RF26.CA04 | `toggleSave` / `toggleFavorite`; sub-abas Tarefas/Projetos salvos com "indisponível" quando o alvo saiu da visibilidade. |
+| RF26.CA05 | `share` nos três `ShareChannel`: MURAL (cria `MuralEntry COMPARTILHAMENTO`), SESSAO_DECIA (exige sessão), LINK_EXTERNO (token + validade 1–30 dias). Classificação e visibilidade limitam os canais (D-94). |
+| RF26.CA06 | `remix`: cópia RASCUNHO/PRIVADA no Acervo do ator com `originalTaskId`/`originalProjectId`, `reuseCount+1`, `Remix`, notificação ao autor e ao autor do original; remix de remix mantém a cadeia (`remixChain`); RESTRITO/SIGILOSO nunca (D-92). |
+| RF26.CA07 | Contadores derivados dos registros a cada mudança (sem Redis no DEMO). |
+| RF26.CA08 | `canInteract` = login + `canView`; toda ação indisponível fica `aria-disabled` com o motivo no nome acessível. |
+| RF26.CA09 | `notify`: nunca para si mesmo; agrupada por tipo + alvo + hora (`groupKey`); atribuições individuais (uma por `Assignment`). |
+| retornar · atribuir | "Delegar" = `Assignment PROPOSTA` (RF18.CA03); "Retornar" = ACEITA → DEVOLVIDA com motivo ≥ 20 (RF18.CA05). Ver RF18 §7. |
+
+```mermaid
+flowchart LR
+  B["SocialBar"] --> A{"Permissao?"}
+  A -->|"nao"| M["aria-disabled + motivo"]
+  A -->|"sim"| C["Comando puro em lib/social/rules"]
+  C --> S["Novo SocialState"]
+  S --> N["notify agrupado por hora"]
+  S --> R["Repositorio DEMO"]
+  R --> U["Cards e contadores atualizados"]
+```
+
+Rotas: `/tasks/[id]` (layout ampliado + comentários), `/mural`, perfis. Capturas `44`–`48`.

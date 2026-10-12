@@ -26,6 +26,8 @@ import br.gov.pr.secid.workstation.application.identity.UserRepositoryPort;
 import br.gov.pr.secid.workstation.application.identity.UserView;
 import br.gov.pr.secid.workstation.application.identity.VerificationCode;
 import br.gov.pr.secid.workstation.application.identity.VerificationCodeRepositoryPort;
+import br.gov.pr.secid.workstation.application.security.AuthorizationTrail;
+import br.gov.pr.secid.workstation.application.security.ResourceAuthorizer;
 import br.gov.pr.secid.workstation.domain.identity.AccountStatus;
 import br.gov.pr.secid.workstation.domain.identity.ProfileType;
 import br.gov.pr.secid.workstation.domain.identity.Role;
@@ -171,7 +173,8 @@ class AccountServiceTest {
         RegistrationService registration = new RegistrationService(users, prefs, codes, emailHasher, hasher, rateLimit, mails::add, audit,
                 identity, LegalProperties.defaults(), Clock.systemUTC(),
                 new br.gov.pr.secid.workstation.application.identity.AccountInserter(users, prefs));
-        account = new AccountService(users, prefs, emailHasher, identity, registration, audit, Clock.systemUTC());
+        account = new AccountService(users, prefs, emailHasher, identity, registration, audit, Clock.systemUTC(),
+                new ResourceAuthorizer(users, Optional.empty()));
         maria = new User();
         maria.setUsername("maria");
         maria.setFullName("Maria da Silva");
@@ -190,17 +193,48 @@ class AccountServiceTest {
         return audited.stream().map(AuditEvent::action).toList();
     }
 
+    private User persisted(String username, Role role) {
+        User u = new User();
+        u.setUsername(username);
+        u.setFullName(username);
+        u.setEmail(username + "@exemplo.gov.br");
+        u.setEmailHash(emailHasher.hash(username + "@exemplo.gov.br"));
+        u.setProfileType(ProfileType.EMPREGADO);
+        u.setStatus(AccountStatus.ACTIVE);
+        u.setRole(role);
+        return users.save(u);
+    }
+
     @Test
     void perfilPorIdSoParaODonoOuAdmin() {
+        AuthorizationTrail.clear();
         assertThat(account.me(me).username()).isEqualTo("maria");
+        assertThat(AuthorizationTrail.last()).isEqualTo("SELF");
         assertThat(account.profile(me, maria.getId()).id()).isEqualTo(maria.getId());
-        CurrentUser outro = new CurrentUser(UUID.randomUUID(), Role.USER, UUID.randomUUID());
+        CurrentUser outro = new CurrentUser(persisted("joao", Role.USER).getId(), Role.USER, UUID.randomUUID());
         ApiException e = catchThrowableOfType(ApiException.class, () -> account.profile(outro, maria.getId()));
         assertThat(e.status()).isEqualTo(403);
         assertThat(e.code()).isEqualTo(ApiException.ACESSO_NEGADO);
-        CurrentUser admin = new CurrentUser(UUID.randomUUID(), Role.ADMIN, UUID.randomUUID());
+        assertThat(catchThrowableOfType(ApiException.class, () -> account.profile(outro, UUID.randomUUID())).status())
+                .as("id inexistente recebe o mesmo 403 — sem oráculo de existência").isEqualTo(403);
+        CurrentUser admin = new CurrentUser(persisted("chefia", Role.ADMIN).getId(), Role.ADMIN, UUID.randomUUID());
         assertThat(account.profile(admin, maria.getId()).username()).isEqualTo("maria");
         assertThat(catchThrowableOfType(ApiException.class, () -> account.profile(admin, UUID.randomUUID())).status()).isEqualTo(404);
+        AuthorizationTrail.clear();
+    }
+
+    @Test
+    void papelAdminDoTokenSemAdminNoBancoNaoAbreContaDeTerceiro() {
+        // BFLA (D-66): token emitido quando a pessoa era ADMIN, rebaixada depois — o papel relido do banco manda
+        CurrentUser rebaixado = new CurrentUser(persisted("exadmin", Role.USER).getId(), Role.ADMIN, UUID.randomUUID());
+        assertThat(catchThrowableOfType(ApiException.class, () -> account.profile(rebaixado, maria.getId())).status()).isEqualTo(403);
+        // e o contrário também: ADMIN no banco com token de USER não ganha privilégio
+        CurrentUser tokenUser = new CurrentUser(persisted("promovido", Role.ADMIN).getId(), Role.USER, UUID.randomUUID());
+        assertThat(catchThrowableOfType(ApiException.class, () -> account.profile(tokenUser, maria.getId())).status()).isEqualTo(403);
+        CurrentUser fantasma = new CurrentUser(UUID.randomUUID(), Role.ADMIN, UUID.randomUUID());
+        assertThat(catchThrowableOfType(ApiException.class, () -> account.profile(fantasma, maria.getId())).status())
+                .as("conta que não existe mais não age").isEqualTo(401);
+        assertThat(catchThrowableOfType(ApiException.class, () -> account.preferences(fantasma)).status()).isEqualTo(404);
     }
 
     @Test

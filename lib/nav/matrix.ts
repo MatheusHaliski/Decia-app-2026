@@ -80,6 +80,25 @@ export const MESSAGES_TABS: readonly SubTab[] = [
   { slug: "conversas", labelKey: "tabs.messages.conversas" },
   { slug: "atribuicoes", labelKey: "tabs.messages.atribuicoes" },
 ];
+/** Encontrar (RF47): as quatro ferramentas do card e do RF47.CA14 — A busca com palavra no contexto · B leitor com mapa ·
+ * C extrair termos e entidades · lista de termos — as mesmas usadas no dossiê do RF48. */
+export const FIND_TABS: readonly SubTab[] = [
+  { slug: "encontrar", labelKey: "tabs.find.encontrar" },
+  { slug: "ler", labelKey: "tabs.find.ler" },
+  { slug: "extrair", labelKey: "tabs.find.extrair" },
+  { slug: "lista", labelKey: "tabs.find.lista" },
+];
+/** Agentes — Copilot de testes: catálogo por fase (RF48.CA01) + ferramentas do dossiê em abas (RF48.CA17: Encontrar ·
+ * Ler com mapa · Extrair · Lista de termos, escopo fixo nos documentos da contratação). */
+export const AGENTS_TABS: readonly SubTab[] = [
+  { slug: "antes", labelKey: "tabs.agents.antes" },
+  { slug: "execucao", labelKey: "tabs.agents.execucao" },
+  { slug: "transversais", labelKey: "tabs.agents.transversais" },
+  { slug: "encontrar-no-dossie", labelKey: "tabs.agents.encontrar" },
+  { slug: "ler-com-mapa", labelKey: "tabs.agents.ler" },
+  { slug: "extrair-do-dossie", labelKey: "tabs.agents.extrair" },
+  { slug: "lista-de-termos", labelKey: "tabs.agents.lista" },
+];
 export const SETTINGS_TABS: readonly SubTab[] = [
   { slug: "aparencia", labelKey: "tabs.settings.aparencia" },
   { slug: "notificacoes", labelKey: "tabs.settings.notificacoes" },
@@ -96,7 +115,15 @@ export const POINTS_TABS: readonly SubTab[] = [
   { slug: "regras", labelKey: "tabs.points.regras" },
   { slug: "departamentos", labelKey: "tabs.points.departamentos", hiddenFor: ["EMPREGADO", "CURADOR", "VISITANTE"] },
 ];
+/** /decia (docs/decia/05_WORKSPACE_E_NAVEGACAO.md §2, RF29): a unidade de navegação passa a ser a decisão; as sessões em grupo continuam em "Sessões". */
 export const DECIA_TABS: readonly SubTab[] = [
+  { slug: "atencao", labelKey: "tabs.decia.atencao" },
+  { slug: "decisoes", labelKey: "tabs.decia.decisoes" },
+  { slug: "sessoes", labelKey: "tabs.decia.sessoes" },
+  { slug: "revisoes", labelKey: "tabs.decia.revisoes" },
+];
+/** Sub-abas de DECIA › Sessões (as abas originais da sessão deliberativa). */
+export const DECIA_SESSION_TABS: readonly SubTab[] = [
   { slug: "abertas", labelKey: "tabs.decia.abertas" },
   { slug: "minhas", labelKey: "tabs.decia.minhas" },
   { slug: "encerradas", labelKey: "tabs.decia.encerradas" },
@@ -108,6 +135,9 @@ export const SESSION_TABS: readonly SubTab[] = [
   { slug: "decisao", labelKey: "tabs.session.decisao" },
   { slug: "participantes", labelKey: "tabs.session.participantes" },
 ];
+
+/** RF48 (D-130): EMPREGADO/EMPRESA/CHEFE/CURADOR rodam sobre projetos que veem; ADMIN só lê; visitante sem acesso. */
+export const AGENTS_ACCESS = access({ EMPREGADO: "E", EMPRESA: "E", CHEFE: "E", CURADOR: "E", ADMIN: "V" });
 
 const companyHref = (u: ViewerUser) => `/companies/${u.companySlug ?? "secretaria-exemplo"}`;
 const departmentHref = (u: ViewerUser) => `/departments/${u.departmentSlug ?? "secid-uts"}`;
@@ -124,6 +154,8 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       { id: "models", labelKey: "nav.models", glyph: "balcao", href: "/models", rfs: ["RF40"], access: access({ EMPREGADO: "E", EMPRESA: "E", CHEFE: "E", CURADOR: "V", ADMIN: "V", VISITANTE: "V" }), subTabs: MODELS_TABS },
       // P-14/P-15 (ABAS_POR_PERFIL §8): Mensagens (RF46) no grupo Descobrir + ícone na barra superior — proposta
       { id: "messages", labelKey: "nav.messages", glyph: "sessao-decia", href: "/messages", rfs: ["RF46"], access: logged("E"), badge: "messages", proposal: true, subTabs: MESSAGES_TABS },
+      // RF47 Encontrar: busca dentro do texto dos anexos; visitante sem acesso (D-128)
+      { id: "find", labelKey: "nav.find", glyph: "buscar", href: "/find", rfs: ["RF47"], access: logged("E"), subTabs: FIND_TABS },
     ],
   },
   {
@@ -137,6 +169,8 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       // Espelho e Simulador exigem um projeto (Q-101): o atalho abre o projeto de exemplo até existir o seletor
       { id: "mirror", labelKey: "nav.mirror", glyph: "insights-ia", href: "/projects/exemplo/mirror", activeOn: ["/projects/"], rfs: ["RF32"], access: logged("E") },
       { id: "simulate", labelKey: "nav.simulate", glyph: "hype", href: "/projects/exemplo/simulate", rfs: ["RF31"], access: logged("E") },
+      // RF48 Agentes — Copilot de testes sobre o dossiê de uma contratação (D-130: quem vê o projeto roda; ADMIN só vê)
+      { id: "agents", labelKey: "nav.agents", glyph: "chancela", href: "/agents", rfs: ["RF48"], access: AGENTS_ACCESS, subTabs: AGENTS_TABS },
     ],
   },
   {
@@ -217,7 +251,7 @@ export function bottomNav(user: ViewerUser): (BottomDest | "create")[] {
 }
 
 export interface CreateOption { id: string; labelKey: string; hintKey: string; glyph: GlyphName; href: string; rf: string }
-/** §2.6 folha "+ Criar": Tarefa · Projeto · Plano Anual/Trilha · Nova sessão DECIA; EMPRESA/CHEFE: + Nova chancela (RF39.CA01). */
+/** §2.6 folha "+ Criar": Tarefa · Projeto · Plano Anual/Trilha · Nova decisão DECIA (05 §4: abre o fluxo "Nova decisão"); EMPRESA/CHEFE: + Nova chancela (RF39.CA01). */
 export function createOptions(profile: ViewerProfile): CreateOption[] {
   const base: CreateOption[] = [
     { id: "task", labelKey: "create.task", hintKey: "create.taskHint", glyph: "criar-tarefa", href: "/tasks/new", rf: "RF4" },

@@ -4,7 +4,7 @@
 
 > Fonte de verdade dos requisitos: board Trello **Work Station** (ex-"Decisão com Inteligência Artificial - DECIA - SECIDPR"), listas *Work Station + DECIA*, *Requisitos Funcionais* (RF1–RF45) e *Product Backlog* (HU1–HU45).
 > Esqueleto reaproveitado do **Fashion AI (FAI)** (`matheushaliski/tcc-2026-fashion-ai-backend`, módulo `fai-domain`). Cada entidade indica a equivalente no FAI e o RF que a origina.
-> **Implementação (D-40):** cada entidade abaixo é um record de `ws-domain` anotado com `@DomainEntity`/`@Attr`; nomes de coluna, tipos SQL, nulidade, CHECKs, FKs e store ficam em [`catalogo-entidades.json`](catalogo-entidades.json) (gerado, 123 entidades / 1522 atributos) e nas migrations `V10`–`V21` geradas dele — ver §17. Quando este texto e o catálogo divergirem, vale o catálogo.
+> **Implementação (D-40):** cada entidade abaixo é um record de `ws-domain` anotado com `@DomainEntity`/`@Attr`; nomes de coluna, tipos SQL, nulidade, CHECKs, FKs e store ficam em [`catalogo-entidades.json`](catalogo-entidades.json) (gerado, 142 entidades / 1780 atributos) e nas migrations `V10`–`V22` geradas dele — ver §17. Quando este texto e o catálogo divergirem, vale o catálogo.
 > Convenções: identificadores `UUID` (BINARY(16) no MySQL), auditoria herdada de `AuditableEntity` (`createdAt`, `updatedAt`, `createdBy`, `updatedBy`) e, quando houver concorrência, `VersionedAuditableEntity` (`@Version version`). Campos `*Json` são colunas `JSON` do MySQL 8. Campos sensíveis (LGPD) usam o conversor `AesGcmStringConverter`.
 
 ## 0. Mapa de contextos (bounded contexts)
@@ -16,6 +16,7 @@
 | 3 | **Criador de Projetos** | ProjectScheme, ProjectTask, ProjectVersion, ProjectScenario, ComplianceChecklist, ComplianceItem, ComplianceResult, ProcessKit, KitItem | RF21, RF22, RF30, RF31, RF32 | MySQL |
 | 4 | **Planejamento institucional** | AnnualPlan, PlanAxis, PlanAxisProject, Grouping, GroupingItem | RF24, RF25 | MySQL |
 | 5 | **DECIA** (centro do app) | DeciaSession, SessionParticipant, SessionMessage, MessageClassification, MessageAttachment, Divergence, DivergenceReply, AiQuestion, AnalyticalSummary, SummaryScenario, FinalDecision, DecisionReview, ReopenRequest, SessionArtifact, DecisionTrace, DecisionTraceNode, DecisionTraceEdge, Meeting, MeetingTranscript, RecordingConsent | RF4–RF17, RF29, RF37 | MySQL (estado) + Cassandra (mensagens/rastro append-only) |
+| 5b | **DECIA — decisão estruturada** (V22, §5b) | Decision, DecisionParticipant, DecisionAlternative, DecisionCriterion, CriterionAssessment, DecisionEvidence, EvidenceLink, DecisionAssumption, DecisionRisk, DecisionScenario, DecisionForecast, DecisionRecommendation, DecisionTrigger, DecisionSnapshot, DecisionCheckpoint, DecisionOutcome, DecisionRetrospective, DecisionWorkLink, DecisionEvent | RF29, RF31, RF33, RF43 | MySQL |
 | 6 | **Chancelas & Benefícios** | Seal (Chancela), SealPolicy, SealBond (VínculoChancela), SealProposal, Benefit, BenefitRedemption, Recognition | RF39, RF35, RF28 | MySQL |
 | 7 | **Balcão & Loja & DECIA Points** | ModelOffer, ModelLicense, DeciaPointsLedgerEntry, DeciaPointsRule, StoreItem, StorePurchase, AiCreditLedgerEntry, PointsDonation | RF40, RF42 | MySQL + Redis (saldos/cache) |
 | 8 | **Social & Descoberta** | Reaction, Comment, SavedItem, Share, Remix, Follow, MuralEntry, Notification, TimelineEvent | RF26, RF27 | MySQL + Cassandra (timeline/notificações) |
@@ -362,6 +363,62 @@ id · meetingId · text (AES) · segmentsJson [{speaker, start, end, classLabel}
 
 ### 5.18 `RecordingConsent` — `recording_consents` (RF37.CA05)
 id · meetingId · userId · consented · at · ip.
+
+---
+
+## 5b. DECIA — decisão estruturada (RF29, RF31, RF33, RF43; migration V22)
+
+> Fonte: [`docs/decia/03_MODELO_FUNCIONAL.md`](../decia/03_MODELO_FUNCIONAL.md) §4 (contrato funcional) e
+> [`contracts/decia/vetores.json`](../../contracts/decia/vetores.json) (regras de cálculo do §6). Pacote `ws-domain`
+> `br.gov.pr.secid.workstation.domain.decisao` (records) + `decisao.analise` (serviços puros, sem Spring); JPA em
+> `persistence-mysql/…/mysql/decisao`. A sessão em grupo (§5) continua existindo e passa a ser **um dos modos** de construir uma
+> decisão (Q-155). A validação formal RF29 continua no `FinalDecision` (§5.11), ligado por `decisions.final_decision_id` (D-54).
+> **Nenhuma API de decisão é exposta antes dos Blocos 4/5 de segurança (BOLA/BFLA)** — D-55.
+
+Política de FK (D-52): filhos → CASCADE na decisão, **exceto** `decision_snapshots` e `decision_events`, que são append-only e
+**RESTRICT** (decisão com histórico não se apaga); usuários sempre RESTRICT; referências opcionais (sessão, projeto, `final_decisions`,
+`summary_scenarios`, `project_scenarios`, `media_objects`, `tasks`, `ai_inference_log`, alternativa selecionada, decisão substituída)
+→ SET NULL. Alvos polimórficos (`decision_evidence_links.target_*`, `decision_work_links.target_*`) sem FK (D-41).
+
+### 5b.1 `Decision` — `decisions` (agregado raiz, versionado)
+id · title(160) · question(500) · contextMd · objective · constraintsMd · scope · stakeholdersJson · resourcesMd · dependenciesMd ·
+targetDate · ownerUserId · createdByUserId · companyId · departmentId? · sessionId? · projectId? · finalDecisionId? ·
+supersedesDecisionId? · status `DecisionLifecycle` · complexity `DecisionComplexity` (RAPIDA · PADRAO · PROFUNDA) · kind
+`DecisionKind` (ESTRATEGICA · TATICA · OPERACIONAL · TECNICA · FINANCEIRA · PRODUTO · PESSOAS · CONTRATACAO · RISCO) · impact/urgency `DecisionLevel` (BAIXO · MEDIO · ALTO · CRITICO) · visibility
+(PRIVADA por padrão) · accessClass · weightingEnabled · independentScoring · templateKey? · selectedAlternativeId? (estado atual) ·
+decidedAt? · decisionConfidencePct? (0–100, passo 5) · rationale? · reviewEveryDays?.
+Ciclo `DecisionLifecycle`: RASCUNHO → ENQUADRAMENTO → PESQUISA → COMPARACAO → AGUARDANDO_DECISAO → DECIDIDA → EM_EXECUCAO → RESOLVIDA →
+REVISADA → ARQUIVADA; REABERTA (de DECIDIDA, EM_EXECUCAO, RESOLVIDA, REVISADA) volta só para COMPARACAO. DECIDIDA só por
+`Decision.decide(...)` (guarda §6.10, só o responsável ou APROVADOR com delegação); REABERTA só por `Decision.reopen(...)`.
+
+### 5b.2 Filhos da decisão
+
+| Entidade → tabela | Atributos principais | Observações |
+|---|---|---|
+| `DecisionParticipant` → `decision_participants` | decisionId · userId · role `DecisionRole` (CONDUTOR · APROVADOR · CONTRIBUIDOR · INFORMADO) · joinedAt · assessmentsSubmittedAt? | único (decisão, usuário); G5 |
+| `DecisionAlternative` → `decision_alternatives` | label · title · description · doNothing · prosJson · consJson · estimatedCost? · estimatedDurationDays? · dependenciesMd? · status (ATIVA · DESCARTADA) · discardReason? · origin `ContentOrigin` · aiInferenceId? · summaryScenarioId? · projectScenarioId? · position | DESCARTADA exige motivo; único (decisão, rótulo) |
+| `DecisionCriterion` → `decision_criteria` | name · description · direction (MAIOR_MELHOR · MENOR_MELHOR, dica) · weightPct? DECIMAL(5,2) 0–100 · catalogKey? · origin · aiInferenceId? · position | único (decisão, nome) |
+| `CriterionAssessment` → `criterion_assessments` | alternativeId · criterionId · assessorUserId · score 1–5 · rationale? · submittedAt · origin | único (alternativa, critério, avaliador) |
+| `DecisionEvidence` → `decision_evidence` | nature (FATO · EVIDENCIA · OPINIAO) · kind `EvidenceKind` · title · summary · sourceLabel · sourceUrl? · mediaId? · taskId? · authorLabel? · observedAt? · retrievedAt? · sourceQuality `SourceQuality` · relevance/reliability `RelevanceLevel` (ALTA · MEDIA · BAIXA) · origin · aiInferenceId? · addedByUserId · supersededAt? | nunca apagada, só substituída |
+| `EvidenceLink` → `decision_evidence_links` | evidenceId · targetType (ALTERNATIVA · CRITERIO · PREMISSA · RISCO · AVALIACAO) · targetId · stance (SUSTENTA · CONTRADIZ · CONTEXTO) · note? | alvo polimórfico |
+| `DecisionAssumption` → `decision_assumptions` | statement · importance `DecisionLevel` · confidencePct? · validationStatus (NAO_VALIDADA · EM_VALIDACAO · VALIDADA · INVALIDADA) · ownerUserId? · alternativeId? · validationNote? · validatedAt? · origin · aiInferenceId? | crítica = CRITICO |
+| `DecisionRisk` → `decision_risks` | title · description? · alternativeId? · likelihood (RARA · POSSIVEL · PROVAVEL · QUASE_CERTA) · impact · mitigation? · ownerUserId? · source (MANUAL · PRE_MORTEM · RED_TEAM · IA) · status (ABERTO · MITIGADO · ACEITO · OCORREU · ENCERRADO) · origin · aiInferenceId? | severidade calculada (§6.6), sem coluna |
+| `DecisionScenario` → `decision_scenarios` | alternativeId? · scenarioCase (MELHOR · BASE · PIOR; `case` é palavra reservada) · description · likelihood · assumptionIdsJson? · expectedResult · projectScenarioId? | |
+| `DecisionForecast` → `decision_forecasts` | alternativeId? · statement · probabilityPct 5–95 passo 5 · resolveBy · forecasterUserId · resolution (PENDENTE · OCORREU · NAO_OCORREU · ANULADA) · resolvedAt? · resolvedByUserId? | base do Brier |
+| `DecisionRecommendation` → `decision_recommendations` | alternativeId? · source (MODELO · IA) · reasoningMd · supportingJson · contradictingJson · criticalAssumptionIdsJson · limitationsMd · whatWouldChangeMd · modelVersion · aiInferenceId? · status (SUGERIDA · ACEITA · DESCARTADA) | sem "sustenta" E "contradiz" → rejeitada (§7) |
+| `DecisionTrigger` → `decision_triggers` | conditionText · metricKey? · comparator? (`<` `<=` `>` `>=` `=` `!=`) · threshold? · status (ATIVO · DISPARADO · ARQUIVADO) · firedAt? | |
+| `DecisionSnapshot` → `decision_snapshots` | kind (DECISAO · REABERTURA · CHECKPOINT) · versionNumber · takenAt · takenByUserId · contentJson MEDIUMTEXT · contentSha256 CHAR(64) · rationale · confidencePct? · selectedAlternativeLabel? · modelVersion | **append-only, RESTRICT**; JSON canônico + SHA-256 (§6.12) |
+| `DecisionCheckpoint` → `decision_checkpoints` | dueAt · kind (PROGRAMADO · GATILHO) · status (AGENDADO · CONCLUIDO · PERDIDO · CANCELADO) · completedAt? · completedByUserId? · stillValid? · assumptionsChanged? · newEvidence? · confidencePctAfter? · action (MANTER · AJUSTAR · REABRIR)? · note? | CONCLUIDO exige ação |
+| `DecisionOutcome` → `decision_outcomes` | result (SUCESSO · PARCIAL · FALHOU · CANCELADA · SUBSTITUIDA) · observedAt · summary · metricsJson? · recordedByUserId | único por decisão |
+| `DecisionRetrospective` → `decision_retrospectives` | outcomeId? · whatHappened · whatExpected · whatWasRight · whatWasWrong · failedAssumptionIdsJson? · processQuality (ADEQUADA · PARCIAL · INADEQUADA) · lessonsMd · shareAsLesson · reviewedByUserId · reviewedAt | nome distinto de `DecisionReview` (§5.12) |
+| `DecisionWorkLink` → `decision_work_links` | targetType (TAREFA · PROJETO · MARCO) · targetId · createdByUserId · createdAt | alvo polimórfico |
+| `DecisionEvent` → `decision_events` | actorUserId? (nulo = IA/sistema) · type `DecisionEventType` (os 14 eventos do §9) · payloadJson? · at · correlationId | **append-only, RESTRICT** |
+
+### 5b.3 Serviços de domínio (`decisao.analise`, sem Spring)
+`WeightedScoring` (§6.1, `decia-scoring-v1`) · `DivergenceAnalysis` (§6.2) · `DominanceAnalysis` (§6.3) · `SensitivityAnalysis` (§6.4) ·
+`EvidenceStrength` (§6.5) · `RiskSeverity` (§6.6) · `Readiness` (§6.7) · `Health` (§6.8, sem nota geral) · `ConfidenceBand` e
+`Calibration` (§6.9) · `PreDecisionGuard` (§6.10) · `Freshness` (§6.11, relógio injetado) · `SnapshotCanonicalizer` (§6.12) ·
+`RecommendationValidator` (§7). Todos os vetores de `contracts/decia/vetores.json` são conferidos por `DeciaVectorsTest`.
 
 ---
 
@@ -772,5 +829,6 @@ Mapa seção → migration → pacote de `ws-domain` → pacote JPA (`persistenc
 | §7.1, §7.4–7.5, §12.7 | `V19__rf40_balcao_loja` | `balcao` | `UserSkin` aqui (compra/benefício), não em Plataforma |
 | §12b | `V20__rf46_mensageria_atribuicao` | `mensageria` | `DirectConversation.messagingPolicy` → `messaging_ttl_days`; `DirectMessage` só Cassandra |
 | §10, §12.2–12.5, §12.9 | `V21__rf43_ia_plataforma` (+ V2) | `ia`, `plataforma` | `AiInferenceLog`, `DomainEventOutbox`, `FeatureFlag`, `MediaObject` descrevem as tabelas do V2 (sem SQL novo, Q-131); `metric_snapshots.metric_code` → FK `metric_definitions(code)`; `UsageIndicator` (§12.8) adiado (Q-130); `PersonalDataSource`, `Citation`, `TaskSnapshot` são valores só em código (`store: code`) |
+| §5b | `V22__rf29_decisao_estruturada` | `decisao` (+ `decisao.analise`) | 19 tabelas do `03_MODELO_FUNCIONAL.md` §4.2; snapshots/eventos append-only com decisão RESTRICT (D-52); `ScenarioCase` → coluna `scenario_case`; severidade do risco calculada, sem coluna; valores de `DecisionKind`/`EvidenceKind`/`SourceQuality` propostos (D-53) |
 | §1.1–1.3, §12.1 | `V2`/`V3` (Bloco 3) | `identity` (Bloco 3) | fora deste catálogo por decisão de escopo; `users.company_id`/`department_id` ganham FK no V10 |
 

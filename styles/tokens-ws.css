@@ -67,6 +67,17 @@
   --ws-z-popover: 50;
   --ws-z-dialog: 60;
   --ws-z-toast: 70;
+  --ws-decision-card-radius: var(--ws-radius-lg);
+  --ws-decision-card-pad: var(--ws-space-4);
+  --ws-decision-status-bar: 4px;
+  --ws-decision-flip-duration: var(--ws-duration-slow);
+  --ws-decision-critical: var(--ws-danger);
+  --ws-decision-node-evidence: var(--ws-node-blue);
+  --ws-decision-node-assumption: var(--ws-node-yellow);
+  --ws-decision-node-criteria: var(--ws-node-green);
+  --ws-decision-node-tradeoff: var(--ws-node-orange);
+  --ws-decision-node-risk: var(--ws-node-red);
+  --ws-decision-node-rejected: var(--ws-node-brown);
   --ws-blur-scrim-base: 12px;
   --ws-blur-glass-base: 20px;
 }
