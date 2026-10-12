@@ -30,3 +30,11 @@ Fonte de verdade dos requisitos: board Trello **Work Station** (ex-DECIA SECIDPR
 [Estudo aprofundado do Work Station e proposta](produto/ESTUDO_WORK_STATION_RF49.md) · [RF49: Pactos de Desbloqueio e critérios de aceite](diagramas/RF49/README.md). A proposta liga dependências entre equipes a compromissos negociados e entregas verificáveis. Estado: especificado, implementação pendente.
 
 [Arquivos da auditoria e pacote completo para download](auditoria/2026-10-11/README.md). A matriz histórica contém os 48 RF originais; o RF49 é acompanhado separadamente.
+
+## Super Editor e Work Station Letters
+
+[Desenho funcional do Super Editor de Peças e do Letters](produto/WORK_STATION_LETTERS.md): edição técnica/operacional, documentos ligados à execução, assistência de IA durante a edição, revisão, custo, confidencialidade e plano incremental. Proposta ainda não implementada.
+
+## Análise de Perfil — RF50
+
+[RF50: recomendações no Copilot a partir do perfil](diagramas/RF50/README.md): tarefas, projetos, pessoas com perfil semelhante na rede e caminhos profissionais, com justificativas, consentimento, fontes e aceite explícito. Estado: especificado, implementação pendente.
