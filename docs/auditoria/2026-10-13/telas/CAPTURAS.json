@@ -1,0 +1,13 @@
+{
+  "scope": "Prévias visuais com dados sintéticos; API interceptada no Copilot e repositório DEMO no DECIA. Não comprova fluxo real ponta a ponta.",
+  "paidAiCalls": 0,
+  "mobileOverflow": false,
+  "pageErrors": [],
+  "files": [
+    "01-copilot-perfil-desktop.png",
+    "02-direcionamento-revisao-desktop.png",
+    "03-copilot-perfil-mobile.png",
+    "04-decia-workspace-desktop.png",
+    "05-decia-modal-evidencia.png"
+  ]
+}

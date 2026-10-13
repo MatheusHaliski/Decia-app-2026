@@ -42,3 +42,7 @@ Fonte de verdade dos requisitos: board Trello **Work Station** (ex-DECIA SECIDPR
 ## Plano integrado dos três objetivos
 
 [Plano de execução da jornada](produto/PLANO_INTEGRADO_TRES_OBJETIVOS.md) · [Reestruturação dos 50 RF](produto/MATRIZ_REESTRUTURACAO_RF.md) · [Páginas e abas](produto/MATRIZ_PAGINAS_ABAS.md) · [Rede profissional e visibilidade](produto/REDE_PROFISSIONAL_VISIBILIDADE.md) · [Drawer e editores de peças](produto/DRAWER_EDITOR_DE_PECAS.md). Estado: plano/especificação; não representa conclusão de implementação.
+
+## Prévias visuais — 13/10/2026
+
+[Prints do Copilot de perfil e do DECIA](auditoria/2026-10-13/telas/README.md), com dados sintéticos e limitações identificadas. As capturas não comprovam integração ponta a ponta nem uso de IA real.
