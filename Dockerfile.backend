@@ -3,7 +3,7 @@
 #   docker build -f Dockerfile.backend -t work-station-api .
 #   docker run --env-file .env -p 8080:8080 work-station-api
 # Variáveis: ver .env.example (só nomes) e docs/seguranca/SEGURANCA.md. Nenhum segredo entra na imagem.
-FROM maven:3-eclipse-temurin-25 AS build
+FROM maven:3-eclipse-temurin-27 AS build
 WORKDIR /src
 COPY pom.xml .
 COPY config config
