@@ -1,0 +1,404 @@
+{
+  "format": "ws-asset-v1",
+  "config": {
+    "kind": "person",
+    "width": 600,
+    "depth": 350,
+    "height": 1800,
+    "seats": 3
+  },
+  "camera": {
+    "view": "iso3d",
+    "yaw": 45,
+    "pitch": 35.26438968,
+    "zoom": 1
+  },
+  "parts": [
+    {
+      "id": "62e02d81-9780-40d6-aeeb-606655a6929f:head",
+      "name": "Cabeça",
+      "role": "cabeça",
+      "center": [
+        0,
+        120,
+        0
+      ],
+      "size": [
+        180,
+        240,
+        180
+      ],
+      "radius": 0,
+      "color": "#cbb58c",
+      "visible": true,
+      "primitive": "sphere",
+      "group": "Objeto 2",
+      "layer": "Principal",
+      "wireframe": false
+    },
+    {
+      "id": "62e02d81-9780-40d6-aeeb-606655a6929f:head/eye-left",
+      "name": "Olho esquerdo",
+      "role": "olho",
+      "parentId": "62e02d81-9780-40d6-aeeb-606655a6929f:head",
+      "group": "Objeto 2",
+      "layer": "Principal",
+      "center": [
+        -39.6,
+        148.8,
+        93
+      ],
+      "size": [
+        28.8,
+        10.799999999999999,
+        6
+      ],
+      "radius": 2,
+      "color": "#334155",
+      "visible": true,
+      "wireframe": false
+    },
+    {
+      "id": "62e02d81-9780-40d6-aeeb-606655a6929f:head/eye-right",
+      "name": "Olho direito",
+      "role": "olho",
+      "parentId": "62e02d81-9780-40d6-aeeb-606655a6929f:head",
+      "group": "Objeto 2",
+      "layer": "Principal",
+      "center": [
+        39.6,
+        148.8,
+        93
+      ],
+      "size": [
+        28.8,
+        10.799999999999999,
+        6
+      ],
+      "radius": 2,
+      "color": "#334155",
+      "visible": true,
+      "wireframe": false
+    },
+    {
+      "id": "62e02d81-9780-40d6-aeeb-606655a6929f:head/lips",
+      "name": "Lábios",
+      "role": "lábios",
+      "parentId": "62e02d81-9780-40d6-aeeb-606655a6929f:head",
+      "group": "Objeto 2",
+      "layer": "Principal",
+      "center": [
+        0,
+        72,
+        94
+      ],
+      "size": [
+        57.6,
+        10.799999999999999,
+        8
+      ],
+      "radius": 3,
+      "color": "#a17648",
+      "visible": true,
+      "wireframe": false
+    },
+    {
+      "id": "62e02d81-9780-40d6-aeeb-606655a6929f:head/nose",
+      "name": "Nariz",
+      "role": "detalhe",
+      "parentId": "62e02d81-9780-40d6-aeeb-606655a6929f:head",
+      "group": "Objeto 2",
+      "layer": "Principal",
+      "center": [
+        0,
+        111.6,
+        97
+      ],
+      "size": [
+        18,
+        38.4,
+        14
+      ],
+      "radius": 6,
+      "color": "#cbb58c",
+      "visible": true,
+      "wireframe": false
+    },
+    {
+      "id": "6ce94a75-a2f9-4410-b464-ab2654512c2c:trunk",
+      "name": "Tronco",
+      "role": "tronco",
+      "center": [
+        800,
+        300,
+        0
+      ],
+      "size": [
+        180,
+        600,
+        126
+      ],
+      "radius": 0,
+      "color": "#a17648",
+      "visible": true,
+      "primitive": "cylinder",
+      "group": "Objeto 2",
+      "layer": "Natureza · fundo",
+      "wireframe": false
+    },
+    {
+      "id": "6ce94a75-a2f9-4410-b464-ab2654512c2c:crown",
+      "name": "Copa",
+      "role": "copa",
+      "center": [
+        800,
+        720,
+        0
+      ],
+      "size": [
+        1000,
+        560,
+        700
+      ],
+      "radius": 0,
+      "color": "#398f88",
+      "visible": true,
+      "primitive": "sphere",
+      "group": "Objeto 2",
+      "layer": "Natureza · fundo",
+      "wireframe": false
+    },
+    {
+      "id": "2a6c0f33-0b5f-4095-996d-3c30144da412:head",
+      "name": "Cabeça",
+      "role": "cabeça",
+      "center": [
+        480,
+        1687.5,
+        0
+      ],
+      "size": [
+        191.25,
+        225,
+        180
+      ],
+      "color": "#cbb58c",
+      "radius": 85.5,
+      "visible": true,
+      "primitive": "sphere",
+      "group": "Objeto 2",
+      "layer": "Pessoas · frente",
+      "wireframe": false
+    },
+    {
+      "id": "2a6c0f33-0b5f-4095-996d-3c30144da412:torso",
+      "name": "Tronco",
+      "role": "tronco",
+      "center": [
+        480,
+        1323,
+        0
+      ],
+      "size": [
+        420,
+        504.00000000000006,
+        175
+      ],
+      "color": "#398f88",
+      "radius": 55,
+      "visible": true,
+      "group": "Objeto 2",
+      "layer": "Pessoas · frente",
+      "wireframe": false
+    },
+    {
+      "id": "2a6c0f33-0b5f-4095-996d-3c30144da412:pelvis",
+      "name": "Pelve",
+      "role": "pelve",
+      "center": [
+        480,
+        906.75,
+        0
+      ],
+      "size": [
+        330,
+        157.5,
+        175
+      ],
+      "color": "#398f88",
+      "radius": 40,
+      "visible": true,
+      "group": "Objeto 2",
+      "layer": "Pessoas · frente",
+      "wireframe": false
+    },
+    {
+      "id": "2a6c0f33-0b5f-4095-996d-3c30144da412:arm-1",
+      "name": "Braço 1",
+      "role": "membro superior",
+      "center": [
+        207,
+        1272.6,
+        0
+      ],
+      "size": [
+        78.75,
+        630.0000000000001,
+        78.75
+      ],
+      "color": "#73bcb1",
+      "radius": 36,
+      "visible": true,
+      "group": "Objeto 2",
+      "layer": "Pessoas · frente",
+      "wireframe": false
+    },
+    {
+      "id": "2a6c0f33-0b5f-4095-996d-3c30144da412:hand-1",
+      "name": "Mão 1",
+      "role": "mão",
+      "center": [
+        207,
+        919.8,
+        0
+      ],
+      "size": [
+        72,
+        94.5,
+        45
+      ],
+      "color": "#cbb58c",
+      "radius": 20.25,
+      "visible": true,
+      "group": "Objeto 2",
+      "layer": "Pessoas · frente",
+      "wireframe": false
+    },
+    {
+      "id": "2a6c0f33-0b5f-4095-996d-3c30144da412:arm-2",
+      "name": "Braço 2",
+      "role": "membro superior",
+      "center": [
+        753,
+        1272.6,
+        0
+      ],
+      "size": [
+        78.75,
+        630.0000000000001,
+        78.75
+      ],
+      "color": "#73bcb1",
+      "radius": 36,
+      "visible": true,
+      "group": "Objeto 2",
+      "layer": "Pessoas · frente",
+      "wireframe": false
+    },
+    {
+      "id": "2a6c0f33-0b5f-4095-996d-3c30144da412:hand-2",
+      "name": "Mão 2",
+      "role": "mão",
+      "center": [
+        753,
+        919.8,
+        0
+      ],
+      "size": [
+        72,
+        94.5,
+        45
+      ],
+      "color": "#cbb58c",
+      "radius": 20.25,
+      "visible": true,
+      "group": "Objeto 2",
+      "layer": "Pessoas · frente",
+      "wireframe": false
+    },
+    {
+      "id": "2a6c0f33-0b5f-4095-996d-3c30144da412:leg-1",
+      "name": "Perna 1",
+      "role": "membro inferior",
+      "center": [
+        390,
+        447.75,
+        0
+      ],
+      "size": [
+        99,
+        828,
+        99
+      ],
+      "color": "#334155",
+      "radius": 45,
+      "visible": true,
+      "group": "Objeto 2",
+      "layer": "Pessoas · frente",
+      "wireframe": false
+    },
+    {
+      "id": "2a6c0f33-0b5f-4095-996d-3c30144da412:foot-1",
+      "name": "Pé 1",
+      "role": "pé",
+      "center": [
+        390,
+        27,
+        40.5
+      ],
+      "size": [
+        101.25,
+        54,
+        180
+      ],
+      "color": "#a17648",
+      "radius": 20,
+      "visible": true,
+      "group": "Objeto 2",
+      "layer": "Pessoas · frente",
+      "wireframe": false
+    },
+    {
+      "id": "2a6c0f33-0b5f-4095-996d-3c30144da412:leg-2",
+      "name": "Perna 2",
+      "role": "membro inferior",
+      "center": [
+        570,
+        447.75,
+        0
+      ],
+      "size": [
+        99,
+        828,
+        99
+      ],
+      "color": "#334155",
+      "radius": 45,
+      "visible": true,
+      "group": "Objeto 2",
+      "layer": "Pessoas · frente",
+      "wireframe": false
+    },
+    {
+      "id": "2a6c0f33-0b5f-4095-996d-3c30144da412:foot-2",
+      "name": "Pé 2",
+      "role": "pé",
+      "center": [
+        570,
+        27,
+        40.5
+      ],
+      "size": [
+        101.25,
+        54,
+        180
+      ],
+      "color": "#a17648",
+      "radius": 20,
+      "visible": true,
+      "group": "Objeto 2",
+      "layer": "Pessoas · frente",
+      "wireframe": false
+    }
+  ]
+}
