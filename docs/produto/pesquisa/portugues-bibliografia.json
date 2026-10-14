@@ -1,0 +1,153 @@
+{
+  "queried_at_utc": "2026-10-14T16:46:37.408562+00:00",
+  "method": "Public catalog metadata; no full-text consultation, no edition inferred from first publication year",
+  "records": [
+    {
+      "query_title": "Nova gramática do português contemporâneo",
+      "query_author": "Celso Cunha",
+      "source_url": "https://openlibrary.org/search.json?title=Nova+gram%C3%A1tica+do+portugu%C3%AAs+contempor%C3%A2neo&author=Celso+Cunha&limit=3&fields=key%2Ctitle%2Cauthor_name%2Cfirst_publish_year%2Cedition_count",
+      "status": "ok",
+      "matches": [
+        {
+          "author_name": [
+            "Celso Ferreira da Cunha"
+          ],
+          "edition_count": 7,
+          "first_publish_year": 1984,
+          "key": "/works/OL4934681W",
+          "title": "Nova gramática do português contemporâneo"
+        },
+        {
+          "author_name": [
+            "Celso Cunha"
+          ],
+          "edition_count": 2,
+          "first_publish_year": 1985,
+          "key": "/works/OL9130696W",
+          "title": "Nova Gramatica Do Portugues Contemporaneo"
+        },
+        {
+          "author_name": [
+            "Celso Cunha",
+            "Luís F. Lindley Cintra"
+          ],
+          "edition_count": 1,
+          "first_publish_year": 1984,
+          "key": "/works/OL46053456W",
+          "title": "Nova gramática do português contemporâneo"
+        }
+      ]
+    },
+    {
+      "query_title": "Moderna gramática portuguesa",
+      "query_author": "Evanildo Bechara",
+      "source_url": "https://openlibrary.org/search.json?title=Moderna+gram%C3%A1tica+portuguesa&author=Evanildo+Bechara&limit=3&fields=key%2Ctitle%2Cauthor_name%2Cfirst_publish_year%2Cedition_count",
+      "status": "ok",
+      "matches": [
+        {
+          "author_name": [
+            "Evanildo Bechara"
+          ],
+          "edition_count": 2,
+          "first_publish_year": 1999,
+          "key": "/works/OL1008663W",
+          "title": "Moderna gramática portuguesa"
+        },
+        {
+          "author_name": [
+            "Evanildo Bechara"
+          ],
+          "edition_count": 1,
+          "first_publish_year": 1969,
+          "key": "/works/OL11917511W",
+          "title": "Moderna gramática portuguêsa"
+        },
+        {
+          "author_name": [
+            "Evanildo Cavalcante Bechara"
+          ],
+          "edition_count": 2,
+          "first_publish_year": 1968,
+          "key": "/works/OL12168554W",
+          "title": "Moderna gramática portuguêsa"
+        }
+      ]
+    },
+    {
+      "query_title": "Gramática de usos do português",
+      "query_author": "Maria Helena de Moura Neves",
+      "source_url": "https://openlibrary.org/search.json?title=Gram%C3%A1tica+de+usos+do+portugu%C3%AAs&author=Maria+Helena+de+Moura+Neves&limit=3&fields=key%2Ctitle%2Cauthor_name%2Cfirst_publish_year%2Cedition_count",
+      "status": "ok",
+      "matches": [
+        {
+          "author_name": [
+            "Maria Helena de Moura Neves"
+          ],
+          "edition_count": 1,
+          "first_publish_year": 2011,
+          "key": "/works/OL16654978W",
+          "title": "Gramática de usos do português"
+        },
+        {
+          "author_name": [
+            "Maria Helena de Moura Neves"
+          ],
+          "edition_count": 1,
+          "first_publish_year": 2000,
+          "key": "/works/OL5058747W",
+          "title": "Gramática de usos do português"
+        }
+      ]
+    },
+    {
+      "query_title": "Nova gramática do português brasileiro",
+      "query_author": "Ataliba de Castilho",
+      "source_url": "https://openlibrary.org/search.json?title=Nova+gram%C3%A1tica+do+portugu%C3%AAs+brasileiro&author=Ataliba+de+Castilho&limit=3&fields=key%2Ctitle%2Cauthor_name%2Cfirst_publish_year%2Cedition_count",
+      "status": "ok",
+      "matches": [
+        {
+          "author_name": [
+            "Ataliba Teixeira de Castilho"
+          ],
+          "edition_count": 1,
+          "first_publish_year": 2010,
+          "key": "/works/OL15417280W",
+          "title": "Nova gramática do português brasileiro"
+        },
+        {
+          "author_name": [
+            "Ataliba Teixeira de Castilho"
+          ],
+          "edition_count": 1,
+          "first_publish_year": 2010,
+          "key": "/works/OL15445869W",
+          "title": "Nova gramática do português brasileiro"
+        }
+      ]
+    },
+    {
+      "query_title": "A coerência textual",
+      "query_author": "Ingedore Koch",
+      "source_url": "https://openlibrary.org/search.json?title=A+coer%C3%AAncia+textual&author=Ingedore+Koch&limit=3&fields=key%2Ctitle%2Cauthor_name%2Cfirst_publish_year%2Cedition_count",
+      "status": "ok",
+      "matches": [
+        {
+          "author_name": [
+            "Ingedore Grunfeld Villaça Koch"
+          ],
+          "edition_count": 1,
+          "first_publish_year": 2002,
+          "key": "/works/OL37489346W",
+          "title": "A Coerência Textual"
+        }
+      ]
+    },
+    {
+      "query_title": "Produção textual análise de gêneros e compreensão",
+      "query_author": "Luiz Antônio Marcuschi",
+      "source_url": "https://openlibrary.org/search.json?title=Produ%C3%A7%C3%A3o+textual+an%C3%A1lise+de+g%C3%AAneros+e+compreens%C3%A3o&author=Luiz+Ant%C3%B4nio+Marcuschi&limit=3&fields=key%2Ctitle%2Cauthor_name%2Cfirst_publish_year%2Cedition_count",
+      "status": "ok",
+      "matches": []
+    }
+  ]
+}
