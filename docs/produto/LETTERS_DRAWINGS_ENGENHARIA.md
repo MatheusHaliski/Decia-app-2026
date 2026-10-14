@@ -118,3 +118,9 @@ A aplicação integrada usa módulos React/TypeScript e Tailwind do repositório
 Aceites da fundação: conflito de proposta; propagação em cadeia; ciclos/controle duplicado; round-trip; geometria adversa; edição/undo/redo; importação; exportação PNG válido; navegação responsiva. Aceites de produção adicionais: salvar/reabrir após reinício, duas contas e revogação, concorrência, recuperação, quatro níveis de execução real, análise portuguesa em corpus revisado, narratologia com evidências, benchmarks, orçamento, acessibilidade e fidelidade dos formatos.
 
 Ordem: fundação canônica → persistência/ACL de peças → editor documental e geometria → diagnóstico local validado → propostas LLM → autonomia limitada → colaboração/exportação avançada → CAD/3D/cores. Cada avanço exige provas próprias; esta fundação não encerra RF4/RF8/RF12/RF43 nem o conjunto dos RF.
+
+## Incremento de 14/10 — jornada Drawings com IA real
+
+A interface agora tem objetivo final, instrução, consentimento por solicitação, proposta com proveniência e versão-base, revisão e rejeição, trilha local e confirmação de entrega. Cenas suportam retângulos, elipses, texto, segmentos, cores sRGB, gradientes de dois stops, hachuras orientáveis, opacidade e traçados. Unidade/fator de conversão e cotas conceituais podem ser informados; JSON e PNG preservam estilos. Endpoint `POST /api/me/drawing-proposals` usa conta autenticada e AiGateway, sem ler peças/anexos por identificadores do cliente. O serviço valida formato, limites e geometria; classificação se refere aos dados fornecidos pela própria pessoa. Não é persistência de peças nem liberação para enviar recursos protegidos do servidor.
+
+O estudo técnico atualizado está em `DRAWINGS_ESTUDO_TECNICO_ACADEMICO.md`. A primeira tentativa real retornou uma cena recusada pelo validador; o esquema remoto foi alinhado aos limites do editor antes de novo teste. Não ocultar essa tentativa nos custos ou representá-la como proposta aplicada.
