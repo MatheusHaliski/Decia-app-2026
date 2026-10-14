@@ -1,0 +1,131 @@
+{
+  "format": "ws-studio",
+  "schemaVersion": 1,
+  "revision": 4,
+  "title": "Revisão da planta conceitual da sala de trabalho",
+  "blocks": [
+    {
+      "id": "b1",
+      "kind": "heading",
+      "text": "Objetivo do trabalho"
+    },
+    {
+      "id": "b2",
+      "kind": "paragraph",
+      "text": "Descreva o problema, os fatos disponíveis e o resultado esperado."
+    }
+  ],
+  "shapes": [
+    {
+      "id": "sala",
+      "x": 160,
+      "y": 160,
+      "width": 400,
+      "height": 300,
+      "label": "Sala",
+      "layer": "Limites",
+      "kind": "rect",
+      "style": {
+        "fillMode": "none",
+        "fill": "#FFFFFF",
+        "fillEnd": "#FFFFFF",
+        "stroke": "#2F2F2F",
+        "strokeWidth": 2,
+        "dash": "solid",
+        "opacity": 1,
+        "angle": 0,
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "sofa",
+      "x": 160,
+      "y": 160,
+      "width": 180,
+      "height": 80,
+      "label": "Sofá",
+      "layer": "Mobiliário",
+      "kind": "rect",
+      "style": {
+        "fillMode": "linear",
+        "fill": "#40C8B0",
+        "fillEnd": "#B2F0E6",
+        "stroke": "#12342f",
+        "strokeWidth": 2.5,
+        "dash": "solid",
+        "opacity": 1,
+        "angle": 0,
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "mesa",
+      "x": 440,
+      "y": 300,
+      "width": 120,
+      "height": 60,
+      "label": "Mesa",
+      "layer": "Mobiliário",
+      "kind": "rect",
+      "style": {
+        "fillMode": "linear",
+        "fill": "#C7D6E2",
+        "fillEnd": "#A9B8C7",
+        "stroke": "#263445",
+        "strokeWidth": 1.8,
+        "dash": "solid",
+        "opacity": 1,
+        "angle": 0,
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "cadeira",
+      "x": 440,
+      "y": 365,
+      "width": 50,
+      "height": 30,
+      "label": "Cadeira",
+      "layer": "Mobiliário",
+      "kind": "ellipse",
+      "style": {
+        "fillMode": "solid",
+        "fill": "#E8D4B0",
+        "fillEnd": "#E8D4B0",
+        "stroke": "#3d3224",
+        "strokeWidth": 1.5,
+        "dash": "solid",
+        "opacity": 1,
+        "angle": 0,
+        "fontSize": 14
+      }
+    },
+    {
+      "id": "titulo",
+      "x": 300,
+      "y": 130,
+      "width": 200,
+      "height": 30,
+      "label": "Sala de Trabalho",
+      "layer": "Texto",
+      "kind": "text",
+      "style": {
+        "fillMode": "none",
+        "fill": "#000000",
+        "fillEnd": "#000000",
+        "stroke": "#000000",
+        "strokeWidth": 0,
+        "dash": "solid",
+        "opacity": 1,
+        "angle": 0,
+        "fontSize": 14
+      }
+    }
+  ],
+  "constraints": [],
+  "drawingSpec": {
+    "unit": "mm",
+    "unitsPerPixel": 10,
+    "dimensioned": true
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "baseRevision": 0,
+  "inferenceId": "a9d99886-dba3-4b49-b077-ef1d2c58fc1d",
+  "provider": "OPENAI",
+  "model": "gpt-4.1-mini-2025-04-14",
+  "scene": {
+    "title": "Planta Conceitual Sala de Trabalho",
+    "rationale": "A cena apresenta uma vista de cima da sala de trabalho de 4m x 3m conforme solicitado, com contorno da sala, sofá, mesa de trabalho e cadeira elíptica posicionados de acordo com a instrução. As cores suaves e o texto em tamanho 14 proporcionam legibilidade e clareza visual, respeitando o espaço livre e a escala dada.",
+    "notes": [
+      "Escala adotada 1 unidade = 10 mm conforme convenção.",
+      "Sofá posicionado no alto à esquerda dentro do contorno da sala.",
+      "Mesa posicionada à direita, com dimensão 120x60 unidades.",
+      "Cadeira representada como elipse próxima à mesa.",
+      "Contorno da sala desenhado na camada Limites com traçado sólido e sem preenchimento para destacar área útil."
+    ],
+    "shapes": [
+      {
+        "id": "sala",
+        "kind": "rect",
+        "x": 160,
+        "y": 160,
+        "width": 400,
+        "height": 300,
+        "label": "Sala",
+        "layer": "Limites",
+        "style": {
+          "fillMode": "none",
+          "fill": "#FFFFFF",
+          "fillEnd": "#FFFFFF",
+          "stroke": "#4A4A4A",
+          "strokeWidth": 2,
+          "dash": "solid",
+          "opacity": 1,
+          "angle": 0,
+          "fontSize": 14
+        }
+      },
+      {
+        "id": "sofa",
+        "kind": "rect",
+        "x": 160,
+        "y": 160,
+        "width": 180,
+        "height": 80,
+        "label": "Sofá",
+        "layer": "Mobiliário",
+        "style": {
+          "fillMode": "solid",
+          "fill": "#A3C1AD",
+          "fillEnd": "#A3C1AD",
+          "stroke": "#65997A",
+          "strokeWidth": 1.5,
+          "dash": "solid",
+          "opacity": 0.7,
+          "angle": 0,
+          "fontSize": 14
+        }
+      },
+      {
+        "id": "mesa",
+        "kind": "rect",
+        "x": 440,
+        "y": 300,
+        "width": 120,
+        "height": 60,
+        "label": "Mesa",
+        "layer": "Mobiliário",
+        "style": {
+          "fillMode": "linear",
+          "fill": "#D3DEE6",
+          "fillEnd": "#B7C9D9",
+          "stroke": "#648297",
+          "strokeWidth": 1.5,
+          "dash": "solid",
+          "opacity": 0.7,
+          "angle": 0,
+          "fontSize": 14
+        }
+      },
+      {
+        "id": "cadeira",
+        "kind": "ellipse",
+        "x": 440,
+        "y": 365,
+        "width": 50,
+        "height": 30,
+        "label": "Cadeira",
+        "layer": "Mobiliário",
+        "style": {
+          "fillMode": "solid",
+          "fill": "#E8D4B0",
+          "fillEnd": "#E8D4B0",
+          "stroke": "#AC9B6B",
+          "strokeWidth": 1.5,
+          "dash": "solid",
+          "opacity": 0.7,
+          "angle": 0,
+          "fontSize": 14
+        }
+      },
+      {
+        "id": "titulo",
+        "kind": "text",
+        "x": 300,
+        "y": 130,
+        "width": 200,
+        "height": 30,
+        "label": "Sala de Trabalho",
+        "layer": "Texto",
+        "style": {
+          "fillMode": "none",
+          "fill": "#000000",
+          "fillEnd": "#000000",
+          "stroke": "#000000",
+          "strokeWidth": 0,
+          "dash": "solid",
+          "opacity": 1,
+          "angle": 0,
+          "fontSize": 14
+        }
+      }
+    ]
+  }
+}

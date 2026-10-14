@@ -50,3 +50,7 @@ Fonte de verdade dos requisitos: board Trello **Work Station** (ex-DECIA SECIDPR
 ## Letters & Drawings — arquitetura e prévia de 14/10/2026
 
 [Especificação de engenharia](produto/LETTERS_DRAWINGS_ENGENHARIA.md) · [Capturas e exportação PNG](auditoria/2026-10-14/letters-drawings/README.md). Prévia local; não representa entrega integral dos motores de IA ou dos editores.
+
+## Drawings — jornada real de objetivo à entrega
+
+[Etapas, prints e evidências](auditoria/2026-10-14/drawings-jornada-real/README.md) · [PDF](auditoria/2026-10-14/drawings-jornada-real/JORNADA_DRAWINGS.pdf) · [Pacote completo](auditoria/2026-10-14/drawings-jornada-real/PACOTE_JORNADA_DRAWINGS.zip) · [PNG final](auditoria/2026-10-14/drawings-jornada-real/PROPOSTA_FINAL.png) · [Estudo técnico e acadêmico](produto/DRAWINGS_ESTUDO_TECNICO_ACADEMICO.md). Cenário fictício com OpenAI real; revisão automatizada, sem certificação normativa.

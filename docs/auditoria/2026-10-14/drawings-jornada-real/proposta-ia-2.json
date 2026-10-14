@@ -1,0 +1,124 @@
+{
+  "baseRevision": 7,
+  "inferenceId": "5cf68749-edcf-4fa7-a517-3df5bd0d8af9",
+  "provider": "OPENAI",
+  "model": "gpt-4.1-mini-2025-04-14",
+  "scene": {
+    "title": "Revisão da planta conceitual da sala de trabalho",
+    "rationale": "Melhoria da legibilidade da cena através do uso de gradientes suaves, contornos contínuos e melhor hierarquia visual, preservando IDs, posições e a estrutura original, conforme solicitado.",
+    "notes": [
+      "Sofá com gradiente suave verde-água da cor base para uma tonalidade clara, contorno contínuo e opacidade adequada.",
+      "Mesa com preenchimento suave em cinza-azulado, sem opacidade reduzida para melhorar visibilidade, contorno sólido escuro.",
+      "Cadeira mantida com cores neutras suaves, contorno sólido.",
+      "Contorno da sala preservado sem preenchimento para manter foco no mobiliário.",
+      "Texto de título mantido, sem alteração."
+    ],
+    "shapes": [
+      {
+        "id": "sala",
+        "kind": "rect",
+        "x": 160,
+        "y": 160,
+        "width": 400,
+        "height": 300,
+        "label": "Sala",
+        "layer": "Limites",
+        "style": {
+          "fillMode": "none",
+          "fill": "#FFFFFF",
+          "fillEnd": "#FFFFFF",
+          "stroke": "#2F2F2F",
+          "strokeWidth": 2,
+          "dash": "solid",
+          "opacity": 1,
+          "angle": 0,
+          "fontSize": 14
+        }
+      },
+      {
+        "id": "sofa",
+        "kind": "rect",
+        "x": 160,
+        "y": 160,
+        "width": 180,
+        "height": 80,
+        "label": "Sofá",
+        "layer": "Mobiliário",
+        "style": {
+          "fillMode": "linear",
+          "fill": "#40C8B0",
+          "fillEnd": "#B2F0E6",
+          "stroke": "#1E5A50",
+          "strokeWidth": 2.5,
+          "dash": "solid",
+          "opacity": 1,
+          "angle": 0,
+          "fontSize": 14
+        }
+      },
+      {
+        "id": "mesa",
+        "kind": "rect",
+        "x": 440,
+        "y": 300,
+        "width": 120,
+        "height": 60,
+        "label": "Mesa",
+        "layer": "Mobiliário",
+        "style": {
+          "fillMode": "linear",
+          "fill": "#C7D6E2",
+          "fillEnd": "#A9B8C7",
+          "stroke": "#4A5E73",
+          "strokeWidth": 1.8,
+          "dash": "solid",
+          "opacity": 1,
+          "angle": 0,
+          "fontSize": 14
+        }
+      },
+      {
+        "id": "cadeira",
+        "kind": "ellipse",
+        "x": 440,
+        "y": 365,
+        "width": 50,
+        "height": 30,
+        "label": "Cadeira",
+        "layer": "Mobiliário",
+        "style": {
+          "fillMode": "solid",
+          "fill": "#E8D4B0",
+          "fillEnd": "#E8D4B0",
+          "stroke": "#AC9B6B",
+          "strokeWidth": 1.5,
+          "dash": "solid",
+          "opacity": 1,
+          "angle": 0,
+          "fontSize": 14
+        }
+      },
+      {
+        "id": "titulo",
+        "kind": "text",
+        "x": 300,
+        "y": 130,
+        "width": 200,
+        "height": 30,
+        "label": "Sala de Trabalho",
+        "layer": "Texto",
+        "style": {
+          "fillMode": "none",
+          "fill": "#000000",
+          "fillEnd": "#000000",
+          "stroke": "#000000",
+          "strokeWidth": 0,
+          "dash": "solid",
+          "opacity": 1,
+          "angle": 0,
+          "fontSize": 14
+        }
+      }
+    ]
+  }
+}

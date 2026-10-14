@@ -1,0 +1,44 @@
+{
+  "scope": "Roteiro automatizado com login real, API real e OpenAI real, sem interceptação. Conta e cenário fictícios. Aceites/revisão simulados pelo roteiro; não homologação humana profissional. Edição local; peças ainda não sincronizam com servidor.",
+  "paidRequests": 3,
+  "successfulBrowserRequests": 2,
+  "rejectedPriorAttempts": 1,
+  "inferences": [
+    {
+      "model": "gpt-4.1-mini-2025-04-14",
+      "result": "OK",
+      "provider": "OPENAI",
+      "inferenceId": "b7a9bcda-c355-4773-8a39-c7e1f3c60f33",
+      "inputTokens": 582,
+      "outputTokens": 586
+    },
+    {
+      "model": "gpt-4.1-mini-2025-04-14",
+      "result": "OK",
+      "provider": "OPENAI",
+      "inferenceId": "a9d99886-dba3-4b49-b077-ef1d2c58fc1d",
+      "inputTokens": 581,
+      "outputTokens": 637
+    },
+    {
+      "model": "gpt-4.1-mini-2025-04-14",
+      "result": "OK",
+      "provider": "OPENAI",
+      "inferenceId": "5cf68749-edcf-4fa7-a517-3df5bd0d8af9",
+      "inputTokens": 1117,
+      "outputTokens": 695
+    }
+  ],
+  "firstInference": "a9d99886-dba3-4b49-b077-ef1d2c58fc1d",
+  "secondInference": "5cf68749-edcf-4fa7-a517-3df5bd0d8af9",
+  "finalRevision": 11,
+  "pngSignature": "89504e470d0a1a0a",
+  "pageErrors": [],
+  "generatedAt": "2026-10-14T03:35:10.711Z",
+  "finalReview": {
+    "paidRequests": 0,
+    "action": "Importação do projeto exportado, conferência visual pelo assistente e ajuste manual de contraste dos contornos/textos, sem nova IA. Confirmação na interface executada por roteiro automatizado.",
+    "priorRevision": 11,
+    "reimportedRevision": 4
+  }
+}
