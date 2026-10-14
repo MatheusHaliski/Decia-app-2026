@@ -46,3 +46,7 @@ Fonte de verdade dos requisitos: board Trello **Work Station** (ex-DECIA SECIDPR
 ## Prévias visuais — 13/10/2026
 
 [Prints do Copilot de perfil e do DECIA](auditoria/2026-10-13/telas/README.md), com dados sintéticos e limitações identificadas. As capturas não comprovam integração ponta a ponta nem uso de IA real.
+
+## Letters & Drawings — arquitetura e prévia de 14/10/2026
+
+[Especificação de engenharia](produto/LETTERS_DRAWINGS_ENGENHARIA.md) · [Capturas e exportação PNG](auditoria/2026-10-14/letters-drawings/README.md). Prévia local; não representa entrega integral dos motores de IA ou dos editores.
