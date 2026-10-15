@@ -6,6 +6,7 @@
  * UUID viram string; Instant/LocalDate viram ISO-8601. Só os campos que a UI usa saem dos records grandes (TaskItem,
  * ProjectScheme) — o subconjunto está documentado em cada interface.
  */
+import type { AuthorshipSummary } from "./authorship";
 
 /* ── Enums (valores idênticos aos do Java) ─────────────────────────────────────────────────────────────────── */
 export const TARGET_TYPES = ["TASK", "PROJECT", "PLAN", "KIT", "PROJECT_TASK", "MESSAGE", "RECOGNITION"] as const;
@@ -155,6 +156,8 @@ export interface SocialTask {
   visibility: Visibility;
   favorite: boolean;
   aiGenerated: boolean;
+  /** Proveniência auditável da versão publicada; null/ausente não permite inferir percentual de autoria. */
+  authorship?: AuthorshipSummary | null;
   coverMode: CoverMode;
   cardSkin: string | null;
   /** tarefa original (crédito de remix) */
@@ -188,6 +191,8 @@ export interface SocialProject {
   responsibleId: string | null;
   seals: readonly { issuer: "EMPRESA" | "CHEFE"; label: string }[];
   createdAt: string;
+  /** Proveniência auditável da versão publicada; null/ausente não permite inferir percentual de autoria. */
+  authorship?: AuthorshipSummary | null;
 }
 
 /* ── Interações (records de domain/social) ───────────────────────────────────────────────────────────────── */

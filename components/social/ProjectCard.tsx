@@ -9,6 +9,7 @@ import { useI18n } from "@/lib/i18n/useI18n";
 import { PROJECT_PHASES } from "@/lib/social/types";
 import type { ProjectCardViewModel } from "@/lib/social/view-model";
 import { NODE_BORDER, TONE_SOFT, formatDay } from "./meta";
+import { AuthorshipBadge } from "./AuthorshipBadge";
 import { PersonLink, Seal, Spark, Stamp } from "./Primitives";
 import { SocialBar } from "./SocialBar";
 import { DelegationLine } from "./TaskSchemeCard";
@@ -66,7 +67,7 @@ export function ProjectCard({ vm, layout = "mosaic", className }: { vm: ProjectC
       <article aria-label={aria} data-layout="mural" data-variant={[...vm.variants].join(" ")} data-testid="project-card" className={cn(shell, "grid grid-cols-[64px_minmax(0,1fr)] gap-x-3 gap-y-2 p-2.5")}>
         <Mosaic vm={vm} className="size-16 overflow-hidden rounded-[var(--ws-radius-sm)] [&>div]:text-[0.75rem]" />
         <div className="grid min-w-0 gap-1">
-          <div className="flex flex-wrap items-center gap-1.5">{status}{vm.aiGenerated ? <Spark /> : null}{vm.seals.map((s) => <Seal key={s.label} issuer={s.issuer} label={s.label} size={22} />)}</div>
+          <div className="flex flex-wrap items-center gap-1.5">{status}{vm.aiGenerated ? <Spark /> : null}{vm.authorship ? <AuthorshipBadge summary={vm.authorship} /> : null}{vm.seals.map((s) => <Seal key={s.label} issuer={s.issuer} label={s.label} size={22} />)}</div>
           {title}
           {facts}
           {vm.delegation ? <DelegationLine d={vm.delegation} compact /> : null}
@@ -89,6 +90,7 @@ export function ProjectCard({ vm, layout = "mosaic", className }: { vm: ProjectC
         <div className="flex flex-wrap items-center gap-1.5">
           {status}
           {vm.department ? <span className="font-[family-name:var(--ws-font-mono)] text-[length:var(--ws-text-label)] uppercase tracking-[var(--ws-text-label--tracking)] text-ws-text-muted">{vm.department.acronym}</span> : null}
+          {vm.authorship ? <AuthorshipBadge summary={vm.authorship} /> : null}
         </div>
         {title}
         <PhaseBar index={vm.phaseIndex} phase={vm.phase} />

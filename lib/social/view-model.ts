@@ -104,6 +104,7 @@ export interface TaskCardViewModel {
   dueKind: DueKind | null;
   legal: boolean;
   aiGenerated: boolean;
+  authorship: SocialTask["authorship"] | null;
   seals: SocialTask["seals"];
   blockReason: string | null;
   counters: Counters;
@@ -135,6 +136,7 @@ export interface ProjectCardViewModel {
   nextMilestoneAt: string | null;
   lastDeciaEventLabel: string | null;
   aiGenerated: boolean;
+  authorship: SocialProject["authorship"] | null;
   seals: SocialProject["seals"];
   counters: Counters;
   viewer: ViewerFlags;
@@ -224,7 +226,7 @@ export function toTaskCardViewModel(s: SocialState, viewer: ViewerId, task: Soci
     family, category: task.category, format: task.format, state: task.state, stateTone: TASK_STATE_TONE[task.state], visibility: task.visibility, accessClass: task.accessClass,
     author: personRef(s, task.ownerId), department: deptRef(s, task.departmentId),
     responsible: task.responsibleId && task.responsibleId !== task.ownerId ? personRef(s, task.responsibleId) : null,
-    dueAt: due, dueKind: dueKindOf(due, now), legal: !!task.legalDueAt, aiGenerated: task.aiGenerated, seals: task.seals, blockReason: task.blockReason,
+    dueAt: due, dueKind: dueKindOf(due, now), legal: !!task.legalDueAt, aiGenerated: task.aiGenerated, authorship: task.authorship ?? null, seals: task.seals, blockReason: task.blockReason,
     counters: countersOf(s, ref), viewer: flags, perms: permissions(s, viewer, item), credit: creditOf(s, ref), remixedBy: remixedByCount(s, ref), delegation, variants,
   };
 }
@@ -252,7 +254,7 @@ export function toProjectCardViewModel(s: SocialState, viewer: ViewerId, project
     kind: "PROJECT", id: project.id, ref, href: `/projects/${project.id}`, title: project.title, objective: project.objective, status: project.status,
     statusTone: PROJECT_STATUS_TONE[project.status], phase: project.currentPhase, phaseIndex: PROJECT_PHASES.indexOf(project.currentPhase), visibility: project.visibility,
     author: personRef(s, project.ownerId), department: deptRef(s, project.departmentId), mosaic, tasksCount: project.taskIds.length, peopleCount: project.peopleCount,
-    nextMilestoneAt: project.nextMilestoneAt, lastDeciaEventLabel: project.lastDeciaEventLabel, aiGenerated: project.aiGenerated, seals: project.seals,
+    nextMilestoneAt: project.nextMilestoneAt, lastDeciaEventLabel: project.lastDeciaEventLabel, aiGenerated: project.aiGenerated, authorship: project.authorship ?? null, seals: project.seals,
     counters: countersOf(s, ref), viewer: flags, perms: permissions(s, viewer, item), credit: creditOf(s, ref), remixedBy: remixedByCount(s, ref), delegation, variants,
   };
 }
