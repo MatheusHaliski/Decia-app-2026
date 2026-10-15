@@ -1,0 +1,32 @@
+# Catálogos desejados × implementação inspecionada
+
+Os JSONs `catalogo-*.json` são inventários e vocabulários de produto. A matriz abaixo é avaliação separada do checkout local em 15/10/2026; não é saída dos scripts nem prova de que o código já está em `main`.
+
+| Seletor desejado | Estado no editor local | Evidência e lacuna |
+| --- | --- | --- |
+| Cor | Implementado | `StyleInspector` e materiais das partes; seletor de cor; não é uma grade curada de paletas |
+| Gradiente | Implementado parcialmente | Linear/radial 2D e gradiente de partes 3D; sem gestão ICC/CMYK validada |
+| Objeto | Implementado parcialmente | Catálogo paramétrico com busca; ainda sem grade visual de thumbnails |
+| Pessoa | Implementado parcialmente | Manequim, cabeça, personagens e detalhes compatíveis; não reconhecimento anatômico de imagem |
+| Traço | Implementado | Seis padrões, largura, opacidade, terminações e junções; sem certificação de normas |
+| Geometria | Implementado | Regulares, irregulares, Bézier e livre; primitivas 3D na biblioteca de assets |
+| Estilo de desenho | Pendente como motor global | Trocar traçado/preenchimento não equivale a renderizar grafite ou aquarela |
+| Camada | Implementado parcialmente | Isolamento e visibilidade locais; no compartilhado 2D, camadas são definidas na criação |
+| Renderização | Implementado parcialmente | Wireframe/preenchido e câmeras de assets; sem motor PBR completo |
+
+| Conteúdo importável desejado | Estado no canvas |
+| --- | --- |
+| ws-studio | Parser validado de projeto JSON; importação local operacional |
+| ws-asset | Formato adicional de assets JSON local; não listado pelo script original |
+| SVG | Importador de vetores externos pendente; SVG interno da renderização não comprova importação |
+| PNG/JPEG/WebP | Importação editável pendente; exportar PNG ou anexar mídia à tarefa é outro fluxo |
+| PDF | Pendente |
+| DXF | Pendente; exportar GLB não implementa CAD/DXF |
+| Paleta JSON | Pendente como importador de paletas de terceiros |
+| Fonte WOFF2 | Pendente como importação de fonte pelo usuário |
+| Referência visual | Pendente como camada/referência no editor |
+| Texto TXT | Exportação existente; importação direta no Letters ainda pendente |
+
+`lib/studio/assets.ts` usa o registro de 42 modelos em `ws-application/src/main/resources/studio/asset-registry.json`. Isso demonstra cobertura de presets testados, não geração IA irrestrita de qualquer pessoa/objeto. O modelo de seleção do PR #60 ainda é puro e não equivale a ferramentas de caixa/laço conectadas à UI. Reservas do módulo TS em memória não substituem as reservas transacionais do backend em desenvolvimento.
+
+Autoria, classificação de desenho e classificação de acesso são eixos distintos. Não inferir autoria humana pela ausência de chamada IA registrada, nem permissão de acesso por camada visível, nem conformidade técnica pela escolha de um estilo.

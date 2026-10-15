@@ -1,0 +1,16 @@
+{
+  "deterministic": true,
+  "hashes": {
+    "catalogo-conteudo-importavel.json": "05a59295359d9fd8add2f39f2e574ffe8e47c95726a041389f10fe3a5a80b8ab",
+    "catalogo-elementos-ia.json": "5ed60295f304cb7170387e336d62fb8454d3cd468433151eb833e6c831d1cdb1",
+    "catalogo-seletores.json": "5406808bc48991aa255214d76cfed5fb22ba6b9c6777aa12ef8250b1834bce28"
+  },
+  "date": "2026-10-15",
+  "commands": [
+    "python3 -B scripts/drawings/catalogar_elementos_ia.py",
+    "python3 -B scripts/drawings/catalogar_seletores.py",
+    "python3 -B scripts/drawings/catalogar_conteudo_importavel.py"
+  ],
+  "interpretation": "Seletores e importáveis são requisitos de produto, não cobertura funcional.",
+  "paidAiCalls": 0
+}
