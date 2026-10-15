@@ -62,3 +62,8 @@ Ainda faltam importadores reais de SVG/raster/PDF/DXF/fontes, seleção avançad
 - Zero chamadas de IA nesta etapa; o exemplo gráfico foi preparado manualmente como fixture sintética.
 
 As [capturas e seu registro](colaboracao-2d/README.md), a [matriz de implementação](MATRIZ_CATALOGOS_IMPLEMENTACAO.md) e o [registro de validação](VALIDACAO_INCREMENTAL.json) documentam essa fase. Esses resultados não equivalem à conclusão de todos os RF nem à validação de todos os formatos previstos nos catálogos.
+
+
+### Evidências adicionais de wireframe e edição avançada (15/10)
+
+[Fluxo de 12 etapas, arquivos editáveis, PDF e pacote](jardim-wireframe/README.md): jardim com 149 elementos, cinco camadas, dois usuários e reserva espacial em três níveis; escritório 3D com 43 partes. Divisórias e rótulos podem ser ocultados; isolamento de camada e foco da reserva são controles visuais. Patches preservam a ordem dos elementos. A colaboração demonstrada é 2D persistida; o estudo 3D é local. Código da aplicação ainda não publicado neste PR de documentação. Não houve chamadas pagas de IA. Os demais estados e lacunas desta matriz permanecem válidos.

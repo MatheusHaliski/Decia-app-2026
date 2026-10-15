@@ -30,3 +30,8 @@ Os JSONs `catalogo-*.json` são inventários e vocabulários de produto. A matri
 `lib/studio/assets.ts` usa o registro de 42 modelos em `ws-application/src/main/resources/studio/asset-registry.json`. Isso demonstra cobertura de presets testados, não geração IA irrestrita de qualquer pessoa/objeto. O modelo de seleção do PR #60 ainda é puro e não equivale a ferramentas de caixa/laço conectadas à UI. Reservas do módulo TS em memória não substituem as reservas transacionais do backend em desenvolvimento.
 
 Autoria, classificação de desenho e classificação de acesso são eixos distintos. Não inferir autoria humana pela ausência de chamada IA registrada, nem permissão de acesso por camada visível, nem conformidade técnica pela escolha de um estilo.
+
+
+### Evidências adicionais de wireframe e edição avançada (15/10)
+
+[Fluxo de 12 etapas, arquivos editáveis, PDF e pacote](jardim-wireframe/README.md): jardim com 149 elementos, cinco camadas, dois usuários e reserva espacial em três níveis; escritório 3D com 43 partes. Divisórias e rótulos podem ser ocultados; isolamento de camada e foco da reserva são controles visuais. Patches preservam a ordem dos elementos. A colaboração demonstrada é 2D persistida; o estudo 3D é local. Código da aplicação ainda não publicado neste PR de documentação. Não houve chamadas pagas de IA. Os demais estados e lacunas desta matriz permanecem válidos.

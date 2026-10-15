@@ -9,3 +9,8 @@ Os três scripts foram executados e seus arquivos gerados são [elementos IA](ca
 [Validação incremental](VALIDACAO_INCREMENTAL.json): 491 testes de frontend, 22 verificações direcionadas de backend, lint, tipos e build aprovados. O fluxo de navegador usou tarefa SIGILOSO com concessão explícita e endpoints reais, sem chamadas de IA. A auditoria original do Copilot permanece em [AUDITORIA_DRAWINGS_LETTERS.md](AUDITORIA_DRAWINGS_LETTERS.md); a revisão diferencia sua árvore publicada do desenvolvimento local adicional.
 
 Ainda há RF pendentes. O PR desta pasta contém documentação e evidências; o código da aplicação permanece no checkout até a conclusão dos RF, conforme solicitado.
+
+
+### Evidências adicionais de wireframe e edição avançada (15/10)
+
+[Fluxo de 12 etapas, arquivos editáveis, PDF e pacote](jardim-wireframe/README.md): jardim com 149 elementos, cinco camadas, dois usuários e reserva espacial em três níveis; escritório 3D com 43 partes. Divisórias e rótulos podem ser ocultados; isolamento de camada e foco da reserva são controles visuais. Patches preservam a ordem dos elementos. A colaboração demonstrada é 2D persistida; o estudo 3D é local. Código da aplicação ainda não publicado neste PR de documentação. Não houve chamadas pagas de IA. Os demais estados e lacunas desta matriz permanecem válidos.
