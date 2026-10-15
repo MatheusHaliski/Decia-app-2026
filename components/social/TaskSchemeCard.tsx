@@ -10,6 +10,7 @@ import { Avatar, Badge, Link, Tag, cn } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/useI18n";
 import type { DelegationInfo, TaskCardViewModel } from "@/lib/social/view-model";
 import { NODE_BORDER, formatDay } from "./meta";
+import { AuthorshipBadge } from "./AuthorshipBadge";
 import { CoverArt, Due, PersonLink, Seal, Spark, Stamp, TypeChip, VisibilityTag } from "./Primitives";
 import { SocialBar } from "./SocialBar";
 
@@ -192,6 +193,7 @@ export function TaskSchemeCard({ vm, layout = "compact", onComment, primaryActio
               <PersonLink person={vm.author} size={24} />
               {vm.department ? <Link href={`/departments/${vm.department.slug}`} variant="plain" className="inline-flex items-center gap-1 hover:underline"><Avatar name={vm.department.acronym} monogram={vm.department.acronym.replace(/^SECID-/, "").slice(0, 3)} node={vm.department.color} shape="monitor" size={20} />{vm.department.acronym}</Link> : null}
             </div>
+            {vm.authorship ? <AuthorshipBadge summary={vm.authorship} /> : null}
             {vm.aiGenerated ? <p className="rounded-[var(--ws-radius-md)] bg-ws-ai-spark-soft px-3 py-2 text-[length:var(--ws-text-caption)] text-ws-ai-spark-ink" data-testid="ai-transparency"><span aria-hidden>✦ </span>{t("social.card.aiTransparency")}</p> : null}
             {vm.summary ? <p className="text-[length:var(--ws-text-body)] [overflow-wrap:anywhere]">{vm.summary}</p> : null}
             <CreditLine vm={vm} />
@@ -221,6 +223,7 @@ export function TaskSchemeCard({ vm, layout = "compact", onComment, primaryActio
           <TypeChip type={vm.type} symbol={vm.typeSymbol} tone={vm.typeTone} />
           <StateTag vm={vm} />
           {vm.accessClass === "RESTRITO" || vm.accessClass === "SIGILOSO" ? <Tag tone="danger"><span aria-hidden>⛨</span>{t(`social.access.${vm.accessClass}`)}</Tag> : null}
+          {vm.authorship ? <AuthorshipBadge summary={vm.authorship} /> : null}
         </div>
         {label ? <p className="truncate font-[family-name:var(--ws-font-mono)] text-[length:var(--ws-text-label)] uppercase tracking-[var(--ws-text-label--tracking)] text-ws-text-muted">{label}</p> : null}
         <Title vm={vm} className="line-clamp-2 text-[length:var(--ws-text-body-lg)]" />
@@ -242,4 +245,3 @@ export function CardGrid({ children, label }: { children: ReactNode; label: stri
 export function CardList({ children, label }: { children: ReactNode; label: string }) {
   return <ul aria-label={label} className="grid gap-[var(--ws-space-3)]">{children}</ul>;
 }
-

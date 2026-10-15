@@ -7,6 +7,7 @@ import { buildDemoSocial, DEMO_TASK_IDS as T, DEMO_USERS as U } from "@/lib/soci
 import { pageByRoute } from "@/lib/pages/registry";
 import { createMemoryRepository } from "@/lib/social/repository";
 import { taskById } from "@/lib/social/rules";
+import { calculateAuthorship } from "@/lib/social/authorship";
 import type { ViewerId } from "@/lib/social/types";
 import { toTaskCardViewModel } from "@/lib/social/view-model";
 import type { ViewerProfile } from "@/lib/viewer/profiles";
@@ -61,6 +62,17 @@ describe("TaskSchemeCard — layouts e estados (ANATOMIA_CARDS §3)", () => {
     const draft = screen.getAllByTestId("task-card")[1]!;
     expect(draft.className).toContain("border-dashed");
     expect(draft.getAttribute("data-variant")).toContain("RASCUNHO");
+  });
+  it("mostra autoria estimada acessível no card do acervo sem depender só da cor", () => {
+    const { render } = setup();
+    const task = taskById(buildDemoSocial(NOW), T.anaEtp)!;
+    const summary = calculateAuthorship([
+      { id: "paragraph-1", humanWeight: 5, aiWeight: 3, includedInFinal: true },
+    ]);
+    const vm = toTaskCardViewModel(buildDemoSocial(NOW), U.pessoa, task, NOW);
+    render(<TaskSchemeCard vm={{ ...vm, authorship: summary }} />);
+    expect(screen.getByRole("img", { name: /Humano \+ IA · 37,5% IA estimada/ })).toBeTruthy();
+    expect(screen.getByTestId("authorship-badge").textContent).toContain("37,5%");
   });
   it("prazo vencido em texto (nunca só cor)", () => {
     const { render } = setup();
@@ -292,4 +304,3 @@ describe("correções da revisão (PR #35)", () => {
     expect(within(done).queryAllByRole("link").some((a) => (a.getAttribute("href") ?? "").startsWith("/projects/"))).toBe(false);
   });
 });
-
