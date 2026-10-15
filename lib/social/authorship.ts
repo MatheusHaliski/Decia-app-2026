@@ -10,6 +10,22 @@ export interface AuthorshipSummary {
   algorithmVersion: string | null;
 }
 
+export function isAuthorshipSummary(value: unknown): value is AuthorshipSummary {
+  if (!value || typeof value !== "object") return false;
+  const summary = value as Partial<AuthorshipSummary>;
+  if (!["HUMAN", "HUMAN_AI", "AI", "UNVERIFIED"].includes(summary.category ?? "")
+    || !["TRACE", "SELF_DECLARED", "UNVERIFIED"].includes(summary.evidence ?? "")) return false;
+  if (summary.aiPercentage !== null && (typeof summary.aiPercentage !== "number"
+    || !Number.isFinite(summary.aiPercentage) || summary.aiPercentage < 0 || summary.aiPercentage > 100)) return false;
+  if (summary.evidence === "TRACE" && (!summary.algorithmVersion || summary.aiPercentage === null)) return false;
+  if (summary.evidence !== "TRACE" && summary.algorithmVersion !== null) return false;
+  if (summary.category === "UNVERIFIED") return summary.aiPercentage === null && summary.evidence === "UNVERIFIED";
+  if (summary.aiPercentage === null) return summary.evidence === "SELF_DECLARED";
+  if (summary.category === "HUMAN") return summary.aiPercentage === 0;
+  if (summary.category === "AI") return summary.aiPercentage === 100;
+  return summary.aiPercentage > 0 && summary.aiPercentage < 100;
+}
+
 export interface FinalAuthorshipUnit {
   id: string;
   humanWeight: number;

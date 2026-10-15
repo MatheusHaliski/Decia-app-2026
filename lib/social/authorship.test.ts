@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AUTHORSHIP_ALGORITHM_VERSION, calculateAuthorship } from "./authorship";
+import { AUTHORSHIP_ALGORITHM_VERSION, calculateAuthorship, isAuthorshipSummary } from "./authorship";
 
 describe("authorship calculation", () => {
   it("calculates a weighted estimate from final content units only", () => {
@@ -28,5 +28,11 @@ describe("authorship calculation", () => {
       { id: "same", humanWeight: 0, aiWeight: 1, includedInFinal: true },
     ])).toThrow("unique");
     expect(() => calculateAuthorship([{ id: "bad", humanWeight: -1, aiWeight: 0, includedInFinal: true }])).toThrow("finite and non-negative");
+  });
+
+  it("validates externally supplied summaries before they are rendered", () => {
+    expect(isAuthorshipSummary(calculateAuthorship([{ id: "a", humanWeight: 0, aiWeight: 1, includedInFinal: true }]))).toBe(true);
+    expect(isAuthorshipSummary({ category: "AI", aiPercentage: 120, evidence: "TRACE", algorithmVersion: "unit-weighted-v1" })).toBe(false);
+    expect(isAuthorshipSummary({ category: "HUMAN", aiPercentage: 30, evidence: "TRACE", algorithmVersion: "unit-weighted-v1" })).toBe(false);
   });
 });
