@@ -1,0 +1,174 @@
+{
+  "format": "ws-studio",
+  "schemaVersion": 1,
+  "revision": 13,
+  "title": "Nova peça",
+  "blocks": [
+    {
+      "id": "b1",
+      "kind": "heading",
+      "text": "Objetivo do trabalho"
+    },
+    {
+      "id": "b2",
+      "kind": "paragraph",
+      "text": "Descreva o problema, os fatos disponíveis e o resultado esperado."
+    }
+  ],
+  "shapes": [
+    {
+      "id": "dbecdf47-377e-4caa-8bc2-6b3e343f0760",
+      "x": 290,
+      "y": 450,
+      "width": 220,
+      "height": 35,
+      "label": "ELLIPSE",
+      "layer": "Andaime",
+      "kind": "ellipse",
+      "style": {
+        "fillMode": "solid",
+        "fill": "#375465",
+        "fillEnd": "#ffffff",
+        "stroke": "#263445",
+        "strokeWidth": 2,
+        "dash": "solid",
+        "opacity": 1,
+        "angle": 0,
+        "fontSize": 16
+      }
+    },
+    {
+      "id": "b8ffeeab-9dec-4c13-8f8a-5e2044562986",
+      "x": 390,
+      "y": 230,
+      "width": 20,
+      "height": 225,
+      "label": "RECTANG",
+      "layer": "Andaime",
+      "kind": "rect",
+      "style": {
+        "fillMode": "solid",
+        "fill": "#8e9c9e",
+        "fillEnd": "#ffffff",
+        "stroke": "#263445",
+        "strokeWidth": 2,
+        "dash": "solid",
+        "opacity": 1,
+        "angle": 0,
+        "fontSize": 16
+      }
+    },
+    {
+      "id": "4bf626c6-88fa-4a22-8a84-35b6b9b2af8e",
+      "x": 290,
+      "y": 124.73720558371176,
+      "width": 220,
+      "height": 190.52558883257652,
+      "label": "POLYGON",
+      "layer": "Andaime",
+      "kind": "path",
+      "style": {
+        "fillMode": "linear",
+        "fill": "#d8ae70",
+        "fillEnd": "#fbdf9f",
+        "stroke": "#263445",
+        "strokeWidth": 2,
+        "dash": "dashed",
+        "opacity": 1,
+        "angle": 0,
+        "fontSize": 16
+      },
+      "points": [
+        {
+          "x": 1,
+          "y": 0.49999999999999994
+        },
+        {
+          "x": 0.75,
+          "y": 0.9999999999999997
+        },
+        {
+          "x": 0.25,
+          "y": 1
+        },
+        {
+          "x": 0,
+          "y": 0.49999999999999994
+        },
+        {
+          "x": 0.24999999999999975,
+          "y": 1.4917528718611888e-16
+        },
+        {
+          "x": 0.75,
+          "y": 0
+        }
+      ],
+      "closed": true,
+      "pathMode": "linear"
+    },
+    {
+      "id": "1d018d1c-425a-40d4-a534-21fee4be5f48",
+      "x": 372,
+      "y": 192,
+      "width": 56,
+      "height": 56,
+      "label": "CIRCLE",
+      "layer": "Andaime",
+      "kind": "ellipse",
+      "style": {
+        "fillMode": "solid",
+        "fill": "#fff3b8",
+        "fillEnd": "#ffffff",
+        "stroke": "#263445",
+        "strokeWidth": 2,
+        "dash": "solid",
+        "opacity": 1,
+        "angle": 0,
+        "fontSize": 16
+      }
+    },
+    {
+      "id": "6135f441-924a-43f8-8a89-b2e6a7bf5d84",
+      "x": 100,
+      "y": 350,
+      "width": 160,
+      "height": 150,
+      "label": "SPLINE",
+      "layer": "Andaime",
+      "kind": "path",
+      "style": {
+        "fillMode": "none",
+        "fill": "#e8edf2",
+        "fillEnd": "#ffffff",
+        "stroke": "#263445",
+        "strokeWidth": 2,
+        "dash": "solid",
+        "opacity": 1,
+        "angle": 0,
+        "fontSize": 16
+      },
+      "points": [
+        {
+          "x": 0,
+          "y": 0.5333333333333333
+        },
+        {
+          "x": 0.125,
+          "y": 0.2
+        },
+        {
+          "x": 0.625,
+          "y": 1
+        },
+        {
+          "x": 1,
+          "y": 0.4666666666666667
+        }
+      ],
+      "closed": false,
+      "pathMode": "bezier"
+    }
+  ],
+  "constraints": []
+}

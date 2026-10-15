@@ -1,0 +1,216 @@
+{
+  "cards": [
+    {
+      "rf": 51,
+      "name": "RF51: Controlar autonomia, escopo e execução da IA em Letters e Drawings",
+      "url": "https://trello.com/c/InihQDYu/206-rf51-controlar-autonomia-escopo-e-execu%C3%A7%C3%A3o-da-ia-em-letters-e-drawings",
+      "cardId": "6ad1122335ae56ddd53b502f",
+      "criteria": 7,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 52,
+      "name": "RF52: Editar documentos estruturados no Work Station Letters",
+      "url": "https://trello.com/c/hgmw0n9D/207-rf52-editar-documentos-estruturados-no-work-station-letters",
+      "cardId": "6ad112243573e594f547a269",
+      "criteria": 7,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 53,
+      "name": "RF53: Analisar língua, morfossintaxe e gramática no Letters",
+      "url": "https://trello.com/c/3pwmmut7/208-rf53-analisar-l%C3%ADngua-morfossintaxe-e-gram%C3%A1tica-no-letters",
+      "cardId": "6ad11226090c94d09a110d83",
+      "criteria": 7,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 54,
+      "name": "RF54: Analisar coerência, narrativa, gênero e fontes no Letters",
+      "url": "https://trello.com/c/k4opcYDi/209-rf54-analisar-coer%C3%AAncia-narrativa-g%C3%AAnero-e-fontes-no-letters",
+      "cardId": "6ad11227600f043b0821ef7f",
+      "criteria": 7,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 55,
+      "name": "RF55: Revisar, completar e reescrever texto com IA no Letters",
+      "url": "https://trello.com/c/mxLJwMp0/210-rf55-revisar-completar-e-reescrever-texto-com-ia-no-letters",
+      "cardId": "6ad112290bade1d38c45c6d0",
+      "criteria": 7,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 56,
+      "name": "RF56: Colaborar, comentar e resolver conflitos em documentos Letters no DECIA",
+      "url": "https://trello.com/c/zGJrunlc/211-rf56-colaborar-comentar-e-resolver-conflitos-em-documentos-letters-no-decia",
+      "cardId": "6ad1122ad1c92f4fbf9cfec5",
+      "criteria": 7,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 57,
+      "name": "RF57: Selecionar objetos, pontos e regiões no Drawings",
+      "url": "https://trello.com/c/JwUzyuj2/212-rf57-selecionar-objetos-pontos-e-regi%C3%B5es-no-drawings",
+      "cardId": "6ad1122c673e61d76cf70539",
+      "criteria": 7,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 58,
+      "name": "RF58: Criar e editar geometria vetorial e desenho técnico 2D",
+      "url": "https://trello.com/c/jUDUldhK/213-rf58-criar-e-editar-geometria-vetorial-e-desenho-t%C3%A9cnico-2d",
+      "cardId": "6ad1122e9f65940cce8d4be4",
+      "criteria": 7,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 59,
+      "name": "RF59: Construir, dividir e desmembrar contornos vetoriais",
+      "url": "https://trello.com/c/DZOhrIe7/214-rf59-construir-dividir-e-desmembrar-contornos-vetoriais",
+      "cardId": "6ad112307d595d630f6c43b2",
+      "criteria": 7,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 60,
+      "name": "RF60: Modelar sólidos, superfícies e malhas 3D no Drawings",
+      "url": "https://trello.com/c/VU3OKOLn/215-rf60-modelar-s%C3%B3lidos-superf%C3%ADcies-e-malhas-3d-no-drawings",
+      "cardId": "6ad11231aaf81c488661623c",
+      "criteria": 7,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 61,
+      "name": "RF61: Desmembrar e converter estruturas 3D preservando intenção",
+      "url": "https://trello.com/c/e4kUGFvA/216-rf61-desmembrar-e-converter-estruturas-3d-preservando-inten%C3%A7%C3%A3o",
+      "cardId": "6ad11233d8ef9131a898873c",
+      "criteria": 8,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 62,
+      "name": "RF62: Controlar vistas, câmera, perspectiva e coordenadas no Drawings",
+      "url": "https://trello.com/c/jOj9IQc6/217-rf62-controlar-vistas-c%C3%A2mera-perspectiva-e-coordenadas-no-drawings",
+      "cardId": "6ad11234f46d06e7c0e60ba4",
+      "criteria": 8,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 63,
+      "name": "RF63: Editar cores, gradientes, materiais e estilos de traço",
+      "url": "https://trello.com/c/m15sbErL/218-rf63-editar-cores-gradientes-materiais-e-estilos-de-tra%C3%A7o",
+      "cardId": "6ad112362919ed0f102d18a0",
+      "criteria": 7,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 64,
+      "name": "RF64: Gerar assets, wireframes e detalhes internos parametrizados",
+      "url": "https://trello.com/c/ll1eGUJc/219-rf64-gerar-assets-wireframes-e-detalhes-internos-parametrizados",
+      "cardId": "6ad11238d90f77d6340f55cf",
+      "criteria": 7,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 65,
+      "name": "RF65: Editar regiões hierárquicas e camadas sobrepostas no Drawings",
+      "url": "https://trello.com/c/v8vLheYX/220-rf65-editar-regi%C3%B5es-hier%C3%A1rquicas-e-camadas-sobrepostas-no-drawings",
+      "cardId": "6ad1123ada3585be699113d6",
+      "criteria": 7,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 66,
+      "name": "RF66: Editar desenhos simultaneamente no DECIA com reservas transacionais",
+      "url": "https://trello.com/c/YwiW5NJQ/221-rf66-editar-desenhos-simultaneamente-no-decia-com-reservas-transacionais",
+      "cardId": "6ad1123b3e0c51f9f4be2bbc",
+      "criteria": 8,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 67,
+      "name": "RF67: Completar geometria e prever traçados no Drawings",
+      "url": "https://trello.com/c/1NGN5s8V/222-rf67-completar-geometria-e-prever-tra%C3%A7ados-no-drawings",
+      "cardId": "6ad1123d5b88a50154906d52",
+      "criteria": 7,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 68,
+      "name": "RF68: Gerar, auditar, estilizar, otimizar e converter desenhos com IA",
+      "url": "https://trello.com/c/oswZXeHs/223-rf68-gerar-auditar-estilizar-otimizar-e-converter-desenhos-com-ia",
+      "cardId": "6ad1123e009b1292809aa0ed",
+      "criteria": 7,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 69,
+      "name": "RF69: Salvar, exportar, recuperar e navegar no histórico das peças",
+      "url": "https://trello.com/c/L8woXcvG/224-rf69-salvar-exportar-recuperar-e-navegar-no-hist%C3%B3rico-das-pe%C3%A7as",
+      "cardId": "6ad11240cd8cd303c236ead7",
+      "criteria": 8,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 70,
+      "name": "RF70: Importar, exportar e referenciar conteúdo técnico nas peças",
+      "url": "https://trello.com/c/85gOKL4Q/225-rf70-importar-exportar-e-referenciar-conte%C3%BAdo-t%C3%A9cnico-nas-pe%C3%A7as",
+      "cardId": "6ad11241b0606305f4e35e5e",
+      "criteria": 7,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 71,
+      "name": "RF71: Integrar peças Letters e Drawings à jornada de tarefas, projetos e DECIA",
+      "url": "https://trello.com/c/uoGoZ6Bi/226-rf71-integrar-pe%C3%A7as-letters-e-drawings-%C3%A0-jornada-de-tarefas-projetos-e-decia",
+      "cardId": "6ad11244957e2f7936e13599",
+      "criteria": 7,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    },
+    {
+      "rf": 72,
+      "name": "RF72: Validar qualidade, desempenho e evidências dos editores",
+      "url": "https://trello.com/c/XJwKcia2/227-rf72-validar-qualidade-desempenho-e-evid%C3%AAncias-dos-editores",
+      "cardId": "6ad112456595eea234aefdaf",
+      "criteria": 7,
+      "verified": true,
+      "status": "ESPECIFICADO_NAO_CONCLUIDO"
+    }
+  ],
+  "complete": true,
+  "linkedExistingRFs": [
+    4,
+    8,
+    13,
+    22,
+    26,
+    29,
+    34,
+    43
+  ],
+  "totalCriteria": 158,
+  "allCriteriaInitiallyUnchecked": true,
+  "applicationComplete": false
+}

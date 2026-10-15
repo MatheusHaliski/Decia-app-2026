@@ -1,0 +1,952 @@
+{
+  "format": "ws-asset-v1",
+  "config": {
+    "kind": "desk",
+    "width": 1800,
+    "depth": 900,
+    "height": 740,
+    "seats": 1
+  },
+  "camera": {
+    "view": "iso3d",
+    "yaw": 45,
+    "pitch": 35.26438968,
+    "zoom": 1
+  },
+  "parts": [
+    {
+      "id": "desk:top",
+      "name": "Escrivaninha · Tampo",
+      "role": "superfície de trabalho",
+      "center": [
+        85,
+        715,
+        0
+      ],
+      "size": [
+        1850,
+        50,
+        900
+      ],
+      "radius": 12,
+      "color": "#876345",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Escrivaninha",
+      "wireframe": false,
+      "rotation": [
+        0,
+        6,
+        0
+      ],
+      "colorEnd": "#d8b988",
+      "gradient": true
+    },
+    {
+      "id": "desk:leg-1",
+      "name": "Escrivaninha · Perna 1",
+      "role": "apoio",
+      "center": [
+        -795,
+        345,
+        -345
+      ],
+      "size": [
+        70,
+        690,
+        70
+      ],
+      "radius": 8,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Escrivaninha",
+      "wireframe": false
+    },
+    {
+      "id": "desk:leg-2",
+      "name": "Escrivaninha · Perna 2",
+      "role": "apoio",
+      "center": [
+        795,
+        345,
+        -345
+      ],
+      "size": [
+        70,
+        690,
+        70
+      ],
+      "radius": 8,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Escrivaninha",
+      "wireframe": false
+    },
+    {
+      "id": "desk:leg-3",
+      "name": "Escrivaninha · Perna 3",
+      "role": "apoio",
+      "center": [
+        -795,
+        345,
+        345
+      ],
+      "size": [
+        70,
+        690,
+        70
+      ],
+      "radius": 8,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Escrivaninha",
+      "wireframe": false
+    },
+    {
+      "id": "desk:leg-4",
+      "name": "Escrivaninha · Perna 4",
+      "role": "apoio",
+      "center": [
+        795,
+        345,
+        345
+      ],
+      "size": [
+        70,
+        690,
+        70
+      ],
+      "radius": 8,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Escrivaninha",
+      "wireframe": false
+    },
+    {
+      "id": "desk:apron-1",
+      "name": "Escrivaninha · Travessa longitudinal 1",
+      "role": "ligação do quadro",
+      "center": [
+        0,
+        640,
+        -345
+      ],
+      "size": [
+        1590,
+        100,
+        38.5
+      ],
+      "radius": 4,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Escrivaninha",
+      "wireframe": false
+    },
+    {
+      "id": "desk:apron-2",
+      "name": "Escrivaninha · Travessa longitudinal 2",
+      "role": "ligação do quadro",
+      "center": [
+        0,
+        640,
+        345
+      ],
+      "size": [
+        1590,
+        100,
+        38.5
+      ],
+      "radius": 4,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Escrivaninha",
+      "wireframe": false
+    },
+    {
+      "id": "desk:cross-1",
+      "name": "Escrivaninha · Travessa transversal 1",
+      "role": "ligação do quadro",
+      "center": [
+        -795,
+        640,
+        0
+      ],
+      "size": [
+        38.5,
+        100,
+        690
+      ],
+      "radius": 4,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Escrivaninha",
+      "wireframe": false
+    },
+    {
+      "id": "desk:cross-2",
+      "name": "Escrivaninha · Travessa transversal 2",
+      "role": "ligação do quadro",
+      "center": [
+        795,
+        640,
+        0
+      ],
+      "size": [
+        38.5,
+        100,
+        690
+      ],
+      "radius": 4,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Escrivaninha",
+      "wireframe": false
+    },
+    {
+      "id": "desk:top/drawer",
+      "name": "Escrivaninha · Gaveta",
+      "role": "gaveta",
+      "center": [
+        85,
+        635,
+        297
+      ],
+      "size": [
+        990.0000000000001,
+        90,
+        180
+      ],
+      "radius": 44,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "parentId": "desk:top",
+      "group": "Escrivaninha",
+      "wireframe": false
+    },
+    {
+      "id": "desk:top/handle",
+      "name": "Escrivaninha · Puxador",
+      "role": "detalhe",
+      "center": [
+        85,
+        635,
+        397
+      ],
+      "size": [
+        288,
+        12,
+        15
+      ],
+      "radius": 5,
+      "color": "#334155",
+      "visible": true,
+      "layer": "Principal",
+      "parentId": "desk:top",
+      "group": "Escrivaninha",
+      "wireframe": false
+    },
+    {
+      "id": "chair:seat",
+      "name": "Cadeira · Assento",
+      "role": "assento",
+      "center": [
+        0,
+        432,
+        800
+      ],
+      "size": [
+        550,
+        72,
+        385
+      ],
+      "radius": 25,
+      "color": "#73bcb1",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Cadeira",
+      "wireframe": false,
+      "primitive": "box"
+    },
+    {
+      "id": "chair:back",
+      "name": "Cadeira · Encosto",
+      "role": "encosto",
+      "center": [
+        0,
+        684,
+        618.5
+      ],
+      "size": [
+        467.5,
+        360,
+        66
+      ],
+      "radius": 25,
+      "color": "#398f88",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Cadeira",
+      "wireframe": false,
+      "primitive": "box"
+    },
+    {
+      "id": "chair:leg-1",
+      "name": "Cadeira · Perna 1",
+      "role": "apoio",
+      "center": [
+        -192.5,
+        207,
+        646
+      ],
+      "size": [
+        44,
+        414,
+        44
+      ],
+      "radius": 6,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Cadeira",
+      "wireframe": false,
+      "primitive": "box"
+    },
+    {
+      "id": "chair:leg-2",
+      "name": "Cadeira · Perna 2",
+      "role": "apoio",
+      "center": [
+        192.5,
+        207,
+        646
+      ],
+      "size": [
+        44,
+        414,
+        44
+      ],
+      "radius": 6,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Cadeira",
+      "wireframe": false,
+      "primitive": "box"
+    },
+    {
+      "id": "chair:leg-3",
+      "name": "Cadeira · Perna 3",
+      "role": "apoio",
+      "center": [
+        -192.5,
+        207,
+        954
+      ],
+      "size": [
+        44,
+        414,
+        44
+      ],
+      "radius": 6,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Cadeira",
+      "wireframe": false,
+      "primitive": "box"
+    },
+    {
+      "id": "chair:leg-4",
+      "name": "Cadeira · Perna 4",
+      "role": "apoio",
+      "center": [
+        192.5,
+        207,
+        954
+      ],
+      "size": [
+        44,
+        414,
+        44
+      ],
+      "radius": 6,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Cadeira",
+      "wireframe": false,
+      "primitive": "box"
+    },
+    {
+      "id": "monitor:base",
+      "name": "Monitor · Base",
+      "role": "base",
+      "center": [
+        0,
+        765.2,
+        -220
+      ],
+      "size": [
+        550,
+        50.4,
+        200
+      ],
+      "radius": 8,
+      "color": "#334155",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Monitor",
+      "wireframe": false,
+      "primitive": "box"
+    },
+    {
+      "id": "monitor:screen",
+      "name": "Monitor · Tela",
+      "role": "tela",
+      "center": [
+        0,
+        983.6,
+        -296
+      ],
+      "size": [
+        550,
+        336,
+        12
+      ],
+      "radius": 8,
+      "color": "#73bcb1",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Monitor",
+      "wireframe": false,
+      "primitive": "box"
+    },
+    {
+      "id": "monitor:stand",
+      "name": "Monitor · Haste",
+      "role": "haste",
+      "center": [
+        0,
+        866,
+        -220
+      ],
+      "size": [
+        44,
+        210,
+        20
+      ],
+      "radius": 6,
+      "color": "#334155",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Monitor",
+      "wireframe": false,
+      "primitive": "box"
+    },
+    {
+      "id": "laptop:base",
+      "name": "Notebook · Base",
+      "role": "base",
+      "center": [
+        -480,
+        753.2,
+        100
+      ],
+      "size": [
+        330,
+        26.4,
+        230
+      ],
+      "radius": 8,
+      "color": "#334155",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Notebook",
+      "wireframe": false,
+      "primitive": "box"
+    },
+    {
+      "id": "laptop:screen",
+      "name": "Notebook · Tela",
+      "role": "tela",
+      "center": [
+        -480,
+        867.6,
+        12.599999999999994
+      ],
+      "size": [
+        330,
+        176,
+        13.799999999999999
+      ],
+      "radius": 8,
+      "color": "#73bcb1",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Notebook",
+      "wireframe": false,
+      "primitive": "box"
+    },
+    {
+      "id": "lamp:base",
+      "name": "Luminária · Base",
+      "role": "apoio",
+      "center": [
+        630,
+        765,
+        -240
+      ],
+      "size": [
+        110,
+        50,
+        110
+      ],
+      "radius": 0,
+      "color": "#334155",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Luminária",
+      "wireframe": false,
+      "primitive": "cylinder"
+    },
+    {
+      "id": "lamp:stem",
+      "name": "Luminária · Haste",
+      "role": "haste",
+      "center": [
+        630,
+        987.5,
+        -240
+      ],
+      "size": [
+        35,
+        467.5,
+        35
+      ],
+      "radius": 0,
+      "color": "#334155",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Luminária",
+      "wireframe": false,
+      "primitive": "cylinder"
+    },
+    {
+      "id": "lamp:shade",
+      "name": "Luminária · Cúpula",
+      "role": "cúpula",
+      "center": [
+        630,
+        1224,
+        -240
+      ],
+      "size": [
+        220,
+        121,
+        220
+      ],
+      "radius": 0,
+      "color": "#cbb58c",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Luminária",
+      "wireframe": false,
+      "primitive": "cylinder"
+    },
+    {
+      "id": "shelf:left",
+      "name": "Estante · Lateral esquerda",
+      "role": "painel",
+      "center": [
+        -1830,
+        900,
+        -300
+      ],
+      "size": [
+        40,
+        1800,
+        350
+      ],
+      "radius": 6,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Estante",
+      "wireframe": false,
+      "primitive": "box"
+    },
+    {
+      "id": "shelf:right",
+      "name": "Estante · Lateral direita",
+      "role": "painel",
+      "center": [
+        -970,
+        900,
+        -300
+      ],
+      "size": [
+        40,
+        1800,
+        350
+      ],
+      "radius": 6,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Estante",
+      "wireframe": false,
+      "primitive": "box"
+    },
+    {
+      "id": "shelf:back",
+      "name": "Estante · Fundo",
+      "role": "painel",
+      "center": [
+        -1400,
+        900,
+        -465
+      ],
+      "size": [
+        900,
+        1800,
+        20
+      ],
+      "radius": 6,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Estante",
+      "wireframe": false,
+      "primitive": "box"
+    },
+    {
+      "id": "shelf:shelf-0",
+      "name": "Estante · Prateleira 1",
+      "role": "superfície de trabalho",
+      "center": [
+        -1400,
+        20,
+        -300
+      ],
+      "size": [
+        820,
+        30,
+        350
+      ],
+      "radius": 6,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Estante",
+      "wireframe": false,
+      "primitive": "box"
+    },
+    {
+      "id": "shelf:shelf-1",
+      "name": "Estante · Prateleira 2",
+      "role": "superfície de trabalho",
+      "center": [
+        -1400,
+        606.6666666666666,
+        -300
+      ],
+      "size": [
+        820,
+        30,
+        350
+      ],
+      "radius": 6,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Estante",
+      "wireframe": false,
+      "primitive": "box"
+    },
+    {
+      "id": "shelf:shelf-2",
+      "name": "Estante · Prateleira 3",
+      "role": "superfície de trabalho",
+      "center": [
+        -1400,
+        1193.3333333333333,
+        -300
+      ],
+      "size": [
+        820,
+        30,
+        350
+      ],
+      "radius": 6,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Estante",
+      "wireframe": false,
+      "primitive": "box"
+    },
+    {
+      "id": "shelf:shelf-3",
+      "name": "Estante · Prateleira 4",
+      "role": "superfície de trabalho",
+      "center": [
+        -1400,
+        1780,
+        -300
+      ],
+      "size": [
+        820,
+        30,
+        350
+      ],
+      "radius": 6,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Estante",
+      "wireframe": false,
+      "primitive": "box"
+    },
+    {
+      "id": "person:head",
+      "name": "Pessoa · Cabeça",
+      "role": "cabeça",
+      "center": [
+        1100,
+        1640.625,
+        500
+      ],
+      "size": [
+        185.9375,
+        218.75,
+        175
+      ],
+      "radius": 83.125,
+      "color": "#cbb58c",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Pessoa",
+      "wireframe": false,
+      "primitive": "sphere"
+    },
+    {
+      "id": "person:torso",
+      "name": "Pessoa · Tronco",
+      "role": "tronco",
+      "center": [
+        1100,
+        1286.25,
+        500
+      ],
+      "size": [
+        406,
+        490.00000000000006,
+        175
+      ],
+      "radius": 55,
+      "color": "#398f88",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Pessoa",
+      "wireframe": false
+    },
+    {
+      "id": "person:pelvis",
+      "name": "Pessoa · Pelve",
+      "role": "pelve",
+      "center": [
+        1100,
+        881.5625,
+        500
+      ],
+      "size": [
+        319,
+        153.125,
+        175
+      ],
+      "radius": 40,
+      "color": "#398f88",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Pessoa",
+      "wireframe": false
+    },
+    {
+      "id": "person:arm-1",
+      "name": "Pessoa · Braço 1",
+      "role": "membro superior",
+      "center": [
+        836.0999999999999,
+        1237.25,
+        500
+      ],
+      "size": [
+        76.5625,
+        612.5000000000001,
+        76.5625
+      ],
+      "radius": 35,
+      "color": "#73bcb1",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Pessoa",
+      "wireframe": false
+    },
+    {
+      "id": "person:hand-1",
+      "name": "Pessoa · Mão 1",
+      "role": "mão",
+      "center": [
+        836.0999999999999,
+        894.2499999999999,
+        500
+      ],
+      "size": [
+        70,
+        91.875,
+        43.75
+      ],
+      "radius": 19.6875,
+      "color": "#cbb58c",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Pessoa",
+      "wireframe": false
+    },
+    {
+      "id": "person:arm-2",
+      "name": "Pessoa · Braço 2",
+      "role": "membro superior",
+      "center": [
+        1363.9,
+        1237.25,
+        500
+      ],
+      "size": [
+        76.5625,
+        612.5000000000001,
+        76.5625
+      ],
+      "radius": 35,
+      "color": "#73bcb1",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Pessoa",
+      "wireframe": false
+    },
+    {
+      "id": "person:hand-2",
+      "name": "Pessoa · Mão 2",
+      "role": "mão",
+      "center": [
+        1363.9,
+        894.2499999999999,
+        500
+      ],
+      "size": [
+        70,
+        91.875,
+        43.75
+      ],
+      "radius": 19.6875,
+      "color": "#cbb58c",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Pessoa",
+      "wireframe": false
+    },
+    {
+      "id": "person:leg-1",
+      "name": "Pessoa · Perna 1",
+      "role": "membro inferior",
+      "center": [
+        1013,
+        435.3125,
+        500
+      ],
+      "size": [
+        96.25,
+        805,
+        96.25
+      ],
+      "radius": 43.75,
+      "color": "#334155",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Pessoa",
+      "wireframe": false
+    },
+    {
+      "id": "person:foot-1",
+      "name": "Pessoa · Pé 1",
+      "role": "pé",
+      "center": [
+        1013,
+        26.25,
+        539.375
+      ],
+      "size": [
+        98.4375,
+        52.5,
+        175
+      ],
+      "radius": 20,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Pessoa",
+      "wireframe": false
+    },
+    {
+      "id": "person:leg-2",
+      "name": "Pessoa · Perna 2",
+      "role": "membro inferior",
+      "center": [
+        1187,
+        435.3125,
+        500
+      ],
+      "size": [
+        96.25,
+        805,
+        96.25
+      ],
+      "radius": 43.75,
+      "color": "#334155",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Pessoa",
+      "wireframe": false
+    },
+    {
+      "id": "person:foot-2",
+      "name": "Pessoa · Pé 2",
+      "role": "pé",
+      "center": [
+        1187,
+        26.25,
+        539.375
+      ],
+      "size": [
+        98.4375,
+        52.5,
+        175
+      ],
+      "radius": 20,
+      "color": "#a17648",
+      "visible": true,
+      "layer": "Principal",
+      "group": "Pessoa",
+      "wireframe": false
+    }
+  ]
+}

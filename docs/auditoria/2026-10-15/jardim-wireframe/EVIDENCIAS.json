@@ -1,0 +1,19 @@
+{
+  "capturedAt": "2026-10-15T16:57:39.749Z",
+  "actors": 2,
+  "layers": [
+    "Atmosfera",
+    "Paisagem",
+    "Vegetação",
+    "Arquitetura",
+    "Primeiro plano"
+  ],
+  "shapes": 149,
+  "finalRevision": 4,
+  "regionDepth": 3,
+  "regionPath": "root/5/3/1",
+  "sceneSource": "Exemplo vetorial curado em código; manual, não geração por IA.",
+  "officeSource": "Composição importada de sete geradores paramétricos reais, editada na interface local.",
+  "blockedAiRequests": 0,
+  "pageErrors": []
+}
