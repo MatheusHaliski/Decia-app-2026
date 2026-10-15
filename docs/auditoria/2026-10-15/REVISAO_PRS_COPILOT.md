@@ -67,3 +67,8 @@ As [capturas e seu registro](colaboracao-2d/README.md), a [matriz de implementa�
 ### Evidências adicionais de wireframe e edição avançada (15/10)
 
 [Fluxo de 12 etapas, arquivos editáveis, PDF e pacote](jardim-wireframe/README.md): jardim com 149 elementos, cinco camadas, dois usuários e reserva espacial em três níveis; escritório 3D com 43 partes. Divisórias e rótulos podem ser ocultados; isolamento de camada e foco da reserva são controles visuais. Patches preservam a ordem dos elementos. A colaboração demonstrada é 2D persistida; o estudo 3D é local. Código da aplicação ainda não publicado neste PR de documentação. Não houve chamadas pagas de IA. Os demais estados e lacunas desta matriz permanecem válidos.
+
+
+### Ampliação de comandos e novos RF (15/10)
+
+[Auditoria do zero em 15 etapas](comandos-do-zero/README.md), [pesquisa de comandos](pesquisa-comandos/COMANDOS_ADICIONAIS.md) e [IA nos quatro níveis](pesquisa-comandos/IA_QUATRO_NIVEIS.md). O Trello recebeu RF51 a RF72, com 158 critérios não concluídos; [especificação](../../produto/requisitos-studio/README.md). Seleção direcional, laço/polígono e atributos foram conectados a uma oficina local da mesma peça; há operações 2D e um novo motor de malhas 3D com booleanas, corte e desmembramento. Não se trata de compatibilidade integral com Illustrator/AutoCAD. Furos compostos, máscaras, UCS, Xrefs e demais lacunas estão explícitos no relatório. Código da aplicação permanece local.

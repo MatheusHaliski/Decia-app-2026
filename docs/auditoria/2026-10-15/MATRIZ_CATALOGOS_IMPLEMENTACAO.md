@@ -27,7 +27,7 @@ Os JSONs `catalogo-*.json` são inventários e vocabulários de produto. A matri
 | Referência visual | Pendente como camada/referência no editor |
 | Texto TXT | Exportação existente; importação direta no Letters ainda pendente |
 
-`lib/studio/assets.ts` usa o registro de 42 modelos em `ws-application/src/main/resources/studio/asset-registry.json`. Isso demonstra cobertura de presets testados, não geração IA irrestrita de qualquer pessoa/objeto. O modelo de seleção do PR #60 ainda é puro e não equivale a ferramentas de caixa/laço conectadas à UI. Reservas do módulo TS em memória não substituem as reservas transacionais do backend em desenvolvimento.
+`lib/studio/assets.ts` usa o registro de 42 modelos em `ws-application/src/main/resources/studio/asset-registry.json`. Isso demonstra cobertura de presets testados, não geração IA irrestrita de qualquer pessoa/objeto. O modelo de seleção do PR #60 fornece a base geométrica. A nova oficina local conecta seleção direcional, laço e polígono à UI, com curvas amostradas e escopo filtrado; gizmos completos e edição direta de segmentos permanecem parciais. Reservas do módulo TS em memória não substituem as reservas transacionais do backend em desenvolvimento.
 
 Autoria, classificação de desenho e classificação de acesso são eixos distintos. Não inferir autoria humana pela ausência de chamada IA registrada, nem permissão de acesso por camada visível, nem conformidade técnica pela escolha de um estilo.
 
@@ -35,3 +35,8 @@ Autoria, classificação de desenho e classificação de acesso são eixos disti
 ### Evidências adicionais de wireframe e edição avançada (15/10)
 
 [Fluxo de 12 etapas, arquivos editáveis, PDF e pacote](jardim-wireframe/README.md): jardim com 149 elementos, cinco camadas, dois usuários e reserva espacial em três níveis; escritório 3D com 43 partes. Divisórias e rótulos podem ser ocultados; isolamento de camada e foco da reserva são controles visuais. Patches preservam a ordem dos elementos. A colaboração demonstrada é 2D persistida; o estudo 3D é local. Código da aplicação ainda não publicado neste PR de documentação. Não houve chamadas pagas de IA. Os demais estados e lacunas desta matriz permanecem válidos.
+
+
+### Ampliação de comandos e novos RF (15/10)
+
+[Auditoria do zero em 15 etapas](comandos-do-zero/README.md), [pesquisa de comandos](pesquisa-comandos/COMANDOS_ADICIONAIS.md) e [IA nos quatro níveis](pesquisa-comandos/IA_QUATRO_NIVEIS.md). O Trello recebeu RF51 a RF72, com 158 critérios não concluídos; [especificação](../../produto/requisitos-studio/README.md). Seleção direcional, laço/polígono e atributos foram conectados a uma oficina local da mesma peça; há operações 2D e um novo motor de malhas 3D com booleanas, corte e desmembramento. Não se trata de compatibilidade integral com Illustrator/AutoCAD. Furos compostos, máscaras, UCS, Xrefs e demais lacunas estão explícitos no relatório. Código da aplicação permanece local.

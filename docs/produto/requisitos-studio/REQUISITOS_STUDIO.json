@@ -1,0 +1,1056 @@
+[
+  {
+    "number": 51,
+    "title": "Controlar autonomia, escopo e execução da IA em Letters e Drawings",
+    "story": "Selecionar e compreender o nível de atuação da IA antes de analisar ou modificar uma peça.",
+    "criteria": [
+      "Dado o nível 1, quando a análise termina, então somente diagnósticos e métricas explicáveis são exibidos; texto e geometria permanecem idênticos.",
+      "Dado o nível 2, quando uma proposta é gerada, então mostra diff e prévia, e só altera conteúdo após aceite explícito; rejeitar preserva o original.",
+      "Dado o nível 3, quando executa uma transformação local autorizada, então restringe objetos/blocos à seleção e registra checkpoint, validações e rollback.",
+      "Dado o nível 4, quando recebe um objetivo, então apresenta plano, ferramentas permitidas, escopo e orçamento; para ao atingir limite, conflito ou incerteza impeditiva.",
+      "Dada uma revisão ou reserva alterada, quando uma proposta antiga é aplicada, então rejeita a proposta sem perder o rascunho e solicita nova análise.",
+      "Dado um documento ou imagem contendo instruções, quando entra no contexto, então é tratado como dado e não altera permissões, ferramentas ou política do agente.",
+      "Dada uma inferência paga, quando é solicitada, então informa envio de dados, provedor e limite; registra tokens/custo quando disponíveis, permite cancelamento e não faz repetição automática ilimitada."
+    ],
+    "marker": "WS-STUDIO-RF-51-20261015",
+    "name": "RF51: Controlar autonomia, escopo e execução da IA em Letters e Drawings",
+    "acceptance": [
+      {
+        "id": "RF51.CA01",
+        "text": "Dado o nível 1, quando a análise termina, então somente diagnósticos e métricas explicáveis são exibidos; texto e geometria permanecem idênticos."
+      },
+      {
+        "id": "RF51.CA02",
+        "text": "Dado o nível 2, quando uma proposta é gerada, então mostra diff e prévia, e só altera conteúdo após aceite explícito; rejeitar preserva o original."
+      },
+      {
+        "id": "RF51.CA03",
+        "text": "Dado o nível 3, quando executa uma transformação local autorizada, então restringe objetos/blocos à seleção e registra checkpoint, validações e rollback."
+      },
+      {
+        "id": "RF51.CA04",
+        "text": "Dado o nível 4, quando recebe um objetivo, então apresenta plano, ferramentas permitidas, escopo e orçamento; para ao atingir limite, conflito ou incerteza impeditiva."
+      },
+      {
+        "id": "RF51.CA05",
+        "text": "Dada uma revisão ou reserva alterada, quando uma proposta antiga é aplicada, então rejeita a proposta sem perder o rascunho e solicita nova análise."
+      },
+      {
+        "id": "RF51.CA06",
+        "text": "Dado um documento ou imagem contendo instruções, quando entra no contexto, então é tratado como dado e não altera permissões, ferramentas ou política do agente."
+      },
+      {
+        "id": "RF51.CA07",
+        "text": "Dada uma inferência paga, quando é solicitada, então informa envio de dados, provedor e limite; registra tokens/custo quando disponíveis, permite cancelamento e não faz repetição automática ilimitada."
+      }
+    ],
+    "description": "# RF51 — Controlar autonomia, escopo e execução da IA em Letters e Drawings\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero selecionar e compreender o nível de atuação da IA antes de analisar ou modificar uma peça.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF51.CA01** Dado o nível 1, quando a análise termina, então somente diagnósticos e métricas explicáveis são exibidos; texto e geometria permanecem idênticos.\n\n- **RF51.CA02** Dado o nível 2, quando uma proposta é gerada, então mostra diff e prévia, e só altera conteúdo após aceite explícito; rejeitar preserva o original.\n\n- **RF51.CA03** Dado o nível 3, quando executa uma transformação local autorizada, então restringe objetos/blocos à seleção e registra checkpoint, validações e rollback.\n\n- **RF51.CA04** Dado o nível 4, quando recebe um objetivo, então apresenta plano, ferramentas permitidas, escopo e orçamento; para ao atingir limite, conflito ou incerteza impeditiva.\n\n- **RF51.CA05** Dada uma revisão ou reserva alterada, quando uma proposta antiga é aplicada, então rejeita a proposta sem perder o rascunho e solicita nova análise.\n\n- **RF51.CA06** Dado um documento ou imagem contendo instruções, quando entra no contexto, então é tratado como dado e não altera permissões, ferramentas ou política do agente.\n\n- **RF51.CA07** Dada uma inferência paga, quando é solicitada, então informa envio de dados, provedor e limite; registra tokens/custo quando disponíveis, permite cancelamento e não faz repetição automática ilimitada.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF51.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-51-20261015`."
+  },
+  {
+    "number": 52,
+    "title": "Editar documentos estruturados no Work Station Letters",
+    "story": "Produzir documentos profissionais vinculados a tarefas e projetos com estrutura editável.",
+    "criteria": [
+      "Dado um documento, quando insere e reorganiza títulos, parágrafos, listas, tabelas, referências e imagens, então mantém estrutura semântica e ordem na reabertura.",
+      "Dada seleção de texto, quando formata estilo, fonte, tamanho, alinhamento, recuo e espaçamento, então afeta apenas o trecho e permite desfazer.",
+      "Dado documento longo, quando navega no sumário, busca ou numeração de parágrafos, então foca o trecho correto sem perder seleção.",
+      "Dada importação de formato suportado, quando valida e abre, então informa limitações de fidelidade e não descarta conteúdo silenciosamente.",
+      "Dada exportação TXT, PDF, DOCX ou formato nativo, quando o formato está habilitado, então preserva o conteúdo previsto e tem teste de ida e volta; formatos pendentes não aparecem como operacionais.",
+      "Dado uso por teclado e leitor de tela, quando percorre ferramentas e editor, então há rótulos, foco visível e ações acessíveis.",
+      "Dado conteúdo malformado ou excessivo, quando é importado, então rejeita com motivo, preserva o documento atual e não executa scripts."
+    ],
+    "marker": "WS-STUDIO-RF-52-20261015",
+    "name": "RF52: Editar documentos estruturados no Work Station Letters",
+    "acceptance": [
+      {
+        "id": "RF52.CA01",
+        "text": "Dado um documento, quando insere e reorganiza títulos, parágrafos, listas, tabelas, referências e imagens, então mantém estrutura semântica e ordem na reabertura."
+      },
+      {
+        "id": "RF52.CA02",
+        "text": "Dada seleção de texto, quando formata estilo, fonte, tamanho, alinhamento, recuo e espaçamento, então afeta apenas o trecho e permite desfazer."
+      },
+      {
+        "id": "RF52.CA03",
+        "text": "Dado documento longo, quando navega no sumário, busca ou numeração de parágrafos, então foca o trecho correto sem perder seleção."
+      },
+      {
+        "id": "RF52.CA04",
+        "text": "Dada importação de formato suportado, quando valida e abre, então informa limitações de fidelidade e não descarta conteúdo silenciosamente."
+      },
+      {
+        "id": "RF52.CA05",
+        "text": "Dada exportação TXT, PDF, DOCX ou formato nativo, quando o formato está habilitado, então preserva o conteúdo previsto e tem teste de ida e volta; formatos pendentes não aparecem como operacionais."
+      },
+      {
+        "id": "RF52.CA06",
+        "text": "Dado uso por teclado e leitor de tela, quando percorre ferramentas e editor, então há rótulos, foco visível e ações acessíveis."
+      },
+      {
+        "id": "RF52.CA07",
+        "text": "Dado conteúdo malformado ou excessivo, quando é importado, então rejeita com motivo, preserva o documento atual e não executa scripts."
+      }
+    ],
+    "description": "# RF52 — Editar documentos estruturados no Work Station Letters\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero produzir documentos profissionais vinculados a tarefas e projetos com estrutura editável.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF52.CA01** Dado um documento, quando insere e reorganiza títulos, parágrafos, listas, tabelas, referências e imagens, então mantém estrutura semântica e ordem na reabertura.\n\n- **RF52.CA02** Dada seleção de texto, quando formata estilo, fonte, tamanho, alinhamento, recuo e espaçamento, então afeta apenas o trecho e permite desfazer.\n\n- **RF52.CA03** Dado documento longo, quando navega no sumário, busca ou numeração de parágrafos, então foca o trecho correto sem perder seleção.\n\n- **RF52.CA04** Dada importação de formato suportado, quando valida e abre, então informa limitações de fidelidade e não descarta conteúdo silenciosamente.\n\n- **RF52.CA05** Dada exportação TXT, PDF, DOCX ou formato nativo, quando o formato está habilitado, então preserva o conteúdo previsto e tem teste de ida e volta; formatos pendentes não aparecem como operacionais.\n\n- **RF52.CA06** Dado uso por teclado e leitor de tela, quando percorre ferramentas e editor, então há rótulos, foco visível e ações acessíveis.\n\n- **RF52.CA07** Dado conteúdo malformado ou excessivo, quando é importado, então rejeita com motivo, preserva o documento atual e não executa scripts.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF52.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-52-20261015`."
+  },
+  {
+    "number": 53,
+    "title": "Analisar língua, morfossintaxe e gramática no Letters",
+    "story": "Revisar a linguagem selecionada com diagnósticos fundamentados e contextualizados.",
+    "criteria": [
+      "Dado português selecionado, quando analisa, então diferencia substantivos, verbos, adjetivos, pronomes, advérbios, preposições, conjunções, artigos, numerais e interjeições com legenda e posições no texto.",
+      "Dado um corpus de referência anotado, quando identifica sujeito, predicado, regência, concordância, crase e flexões, então mede desempenho por categoria e expõe casos incertos.",
+      "Dado tratamento tu/você e tempos/modos distintos, quando há inconsistência contextual, então explica a hipótese e oferece alternativa preservando intenção.",
+      "Dada uma correção, quando informa a justificativa, então identifica regra e referência bibliográfica consultada; não inventa edição, página ou citação.",
+      "Dada outra língua, quando troca o idioma, então carrega recursos compatíveis ou informa indisponibilidade, sem aplicar regras portuguesas como universais.",
+      "Dada análise em tempo real, quando o texto muda, então atualiza somente achados da revisão correta e não reenvia a cada tecla sem controle de frequência/custo.",
+      "Dado nome próprio, variedade regional ou falso positivo, quando o usuário ignora ou adiciona ao dicionário pessoal, então respeita a preferência e permite reversão."
+    ],
+    "marker": "WS-STUDIO-RF-53-20261015",
+    "name": "RF53: Analisar língua, morfossintaxe e gramática no Letters",
+    "acceptance": [
+      {
+        "id": "RF53.CA01",
+        "text": "Dado português selecionado, quando analisa, então diferencia substantivos, verbos, adjetivos, pronomes, advérbios, preposições, conjunções, artigos, numerais e interjeições com legenda e posições no texto."
+      },
+      {
+        "id": "RF53.CA02",
+        "text": "Dado um corpus de referência anotado, quando identifica sujeito, predicado, regência, concordância, crase e flexões, então mede desempenho por categoria e expõe casos incertos."
+      },
+      {
+        "id": "RF53.CA03",
+        "text": "Dado tratamento tu/você e tempos/modos distintos, quando há inconsistência contextual, então explica a hipótese e oferece alternativa preservando intenção."
+      },
+      {
+        "id": "RF53.CA04",
+        "text": "Dada uma correção, quando informa a justificativa, então identifica regra e referência bibliográfica consultada; não inventa edição, página ou citação."
+      },
+      {
+        "id": "RF53.CA05",
+        "text": "Dada outra língua, quando troca o idioma, então carrega recursos compatíveis ou informa indisponibilidade, sem aplicar regras portuguesas como universais."
+      },
+      {
+        "id": "RF53.CA06",
+        "text": "Dada análise em tempo real, quando o texto muda, então atualiza somente achados da revisão correta e não reenvia a cada tecla sem controle de frequência/custo."
+      },
+      {
+        "id": "RF53.CA07",
+        "text": "Dado nome próprio, variedade regional ou falso positivo, quando o usuário ignora ou adiciona ao dicionário pessoal, então respeita a preferência e permite reversão."
+      }
+    ],
+    "description": "# RF53 — Analisar língua, morfossintaxe e gramática no Letters\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero revisar a linguagem selecionada com diagnósticos fundamentados e contextualizados.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF53.CA01** Dado português selecionado, quando analisa, então diferencia substantivos, verbos, adjetivos, pronomes, advérbios, preposições, conjunções, artigos, numerais e interjeições com legenda e posições no texto.\n\n- **RF53.CA02** Dado um corpus de referência anotado, quando identifica sujeito, predicado, regência, concordância, crase e flexões, então mede desempenho por categoria e expõe casos incertos.\n\n- **RF53.CA03** Dado tratamento tu/você e tempos/modos distintos, quando há inconsistência contextual, então explica a hipótese e oferece alternativa preservando intenção.\n\n- **RF53.CA04** Dada uma correção, quando informa a justificativa, então identifica regra e referência bibliográfica consultada; não inventa edição, página ou citação.\n\n- **RF53.CA05** Dada outra língua, quando troca o idioma, então carrega recursos compatíveis ou informa indisponibilidade, sem aplicar regras portuguesas como universais.\n\n- **RF53.CA06** Dada análise em tempo real, quando o texto muda, então atualiza somente achados da revisão correta e não reenvia a cada tecla sem controle de frequência/custo.\n\n- **RF53.CA07** Dado nome próprio, variedade regional ou falso positivo, quando o usuário ignora ou adiciona ao dicionário pessoal, então respeita a preferência e permite reversão.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF53.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-53-20261015`."
+  },
+  {
+    "number": 54,
+    "title": "Analisar coerência, narrativa, gênero e fontes no Letters",
+    "story": "Avaliar adequação textual e continuidade sem substituir julgamento do autor.",
+    "criteria": [
+      "Dado gênero técnico, acadêmico, jornalístico ou narrativo, quando analisa, então usa critérios do gênero escolhido e explica mudanças de tom.",
+      "Dada notícia neutra com primeira pessoa, quando detecta subjetividade, então sinaliza o trecho sem declarar todo uso como erro obrigatório.",
+      "Dado personagem morto que reaparece depois, quando não há explicação narrativa identificada, então aponta as duas passagens e pede revisão de continuidade.",
+      "Dadas cronologia e entidades ao longo de capítulos, quando analisa, então diferencia contradição demonstrável de hipótese e contexto insuficiente.",
+      "Dado indicador por parágrafo de coerência, clareza, sintaxe e tom, quando apresenta nota, então informa rubrica e evidência; heurística não aparece como nota calibrada de IA.",
+      "Dadas citações e afirmações factuais, quando verifica fontes, então distingue referência acessível, indisponível e não verificada.",
+      "Dado documento longo, quando segmenta contexto, então mantém vínculos entre achados e trechos e informa limites da cobertura."
+    ],
+    "marker": "WS-STUDIO-RF-54-20261015",
+    "name": "RF54: Analisar coerência, narrativa, gênero e fontes no Letters",
+    "acceptance": [
+      {
+        "id": "RF54.CA01",
+        "text": "Dado gênero técnico, acadêmico, jornalístico ou narrativo, quando analisa, então usa critérios do gênero escolhido e explica mudanças de tom."
+      },
+      {
+        "id": "RF54.CA02",
+        "text": "Dada notícia neutra com primeira pessoa, quando detecta subjetividade, então sinaliza o trecho sem declarar todo uso como erro obrigatório."
+      },
+      {
+        "id": "RF54.CA03",
+        "text": "Dado personagem morto que reaparece depois, quando não há explicação narrativa identificada, então aponta as duas passagens e pede revisão de continuidade."
+      },
+      {
+        "id": "RF54.CA04",
+        "text": "Dadas cronologia e entidades ao longo de capítulos, quando analisa, então diferencia contradição demonstrável de hipótese e contexto insuficiente."
+      },
+      {
+        "id": "RF54.CA05",
+        "text": "Dado indicador por parágrafo de coerência, clareza, sintaxe e tom, quando apresenta nota, então informa rubrica e evidência; heurística não aparece como nota calibrada de IA."
+      },
+      {
+        "id": "RF54.CA06",
+        "text": "Dadas citações e afirmações factuais, quando verifica fontes, então distingue referência acessível, indisponível e não verificada."
+      },
+      {
+        "id": "RF54.CA07",
+        "text": "Dado documento longo, quando segmenta contexto, então mantém vínculos entre achados e trechos e informa limites da cobertura."
+      }
+    ],
+    "description": "# RF54 — Analisar coerência, narrativa, gênero e fontes no Letters\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero avaliar adequação textual e continuidade sem substituir julgamento do autor.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF54.CA01** Dado gênero técnico, acadêmico, jornalístico ou narrativo, quando analisa, então usa critérios do gênero escolhido e explica mudanças de tom.\n\n- **RF54.CA02** Dada notícia neutra com primeira pessoa, quando detecta subjetividade, então sinaliza o trecho sem declarar todo uso como erro obrigatório.\n\n- **RF54.CA03** Dado personagem morto que reaparece depois, quando não há explicação narrativa identificada, então aponta as duas passagens e pede revisão de continuidade.\n\n- **RF54.CA04** Dadas cronologia e entidades ao longo de capítulos, quando analisa, então diferencia contradição demonstrável de hipótese e contexto insuficiente.\n\n- **RF54.CA05** Dado indicador por parágrafo de coerência, clareza, sintaxe e tom, quando apresenta nota, então informa rubrica e evidência; heurística não aparece como nota calibrada de IA.\n\n- **RF54.CA06** Dadas citações e afirmações factuais, quando verifica fontes, então distingue referência acessível, indisponível e não verificada.\n\n- **RF54.CA07** Dado documento longo, quando segmenta contexto, então mantém vínculos entre achados e trechos e informa limites da cobertura.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF54.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-54-20261015`."
+  },
+  {
+    "number": 55,
+    "title": "Revisar, completar e reescrever texto com IA no Letters",
+    "story": "Aceitar mudanças desde uma palavra até um documento completo com controle de versão.",
+    "criteria": [
+      "Dado nível básico, quando revisa ortografia, então não reescreve estilo, argumento ou parágrafos sem autorização adicional.",
+      "Dada sugestão, quando abre o diff inline, então distingue removido/adicionado, permite aceitar, rejeitar, explicar motivo e pedir alternativa.",
+      "Dado modo completar, quando escolhe palavra, frase, parágrafo ou documento, então gera continuação a partir do cursor e preserva o texto fora do escopo.",
+      "Dada revisão avançada autorizada, quando substitui parágrafos ou documento, então preserva original e permite rollback integral da operação.",
+      "Dado foco/cursor ou seleção alterado durante inferência, quando a resposta retorna, então não a insere automaticamente em outro trecho.",
+      "Dada reescrita com números, nomes e citações, quando propõe mudanças factuais, então destaca essas mudanças e não apresenta invenções como fatos.",
+      "Dada proposta rejeitada ou cancelada, quando o usuário segue escrevendo, então mantém seu rascunho e não dispara nova chamada paga automaticamente."
+    ],
+    "marker": "WS-STUDIO-RF-55-20261015",
+    "name": "RF55: Revisar, completar e reescrever texto com IA no Letters",
+    "acceptance": [
+      {
+        "id": "RF55.CA01",
+        "text": "Dado nível básico, quando revisa ortografia, então não reescreve estilo, argumento ou parágrafos sem autorização adicional."
+      },
+      {
+        "id": "RF55.CA02",
+        "text": "Dada sugestão, quando abre o diff inline, então distingue removido/adicionado, permite aceitar, rejeitar, explicar motivo e pedir alternativa."
+      },
+      {
+        "id": "RF55.CA03",
+        "text": "Dado modo completar, quando escolhe palavra, frase, parágrafo ou documento, então gera continuação a partir do cursor e preserva o texto fora do escopo."
+      },
+      {
+        "id": "RF55.CA04",
+        "text": "Dada revisão avançada autorizada, quando substitui parágrafos ou documento, então preserva original e permite rollback integral da operação."
+      },
+      {
+        "id": "RF55.CA05",
+        "text": "Dado foco/cursor ou seleção alterado durante inferência, quando a resposta retorna, então não a insere automaticamente em outro trecho."
+      },
+      {
+        "id": "RF55.CA06",
+        "text": "Dada reescrita com números, nomes e citações, quando propõe mudanças factuais, então destaca essas mudanças e não apresenta invenções como fatos."
+      },
+      {
+        "id": "RF55.CA07",
+        "text": "Dada proposta rejeitada ou cancelada, quando o usuário segue escrevendo, então mantém seu rascunho e não dispara nova chamada paga automaticamente."
+      }
+    ],
+    "description": "# RF55 — Revisar, completar e reescrever texto com IA no Letters\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero aceitar mudanças desde uma palavra até um documento completo com controle de versão.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF55.CA01** Dado nível básico, quando revisa ortografia, então não reescreve estilo, argumento ou parágrafos sem autorização adicional.\n\n- **RF55.CA02** Dada sugestão, quando abre o diff inline, então distingue removido/adicionado, permite aceitar, rejeitar, explicar motivo e pedir alternativa.\n\n- **RF55.CA03** Dado modo completar, quando escolhe palavra, frase, parágrafo ou documento, então gera continuação a partir do cursor e preserva o texto fora do escopo.\n\n- **RF55.CA04** Dada revisão avançada autorizada, quando substitui parágrafos ou documento, então preserva original e permite rollback integral da operação.\n\n- **RF55.CA05** Dado foco/cursor ou seleção alterado durante inferência, quando a resposta retorna, então não a insere automaticamente em outro trecho.\n\n- **RF55.CA06** Dada reescrita com números, nomes e citações, quando propõe mudanças factuais, então destaca essas mudanças e não apresenta invenções como fatos.\n\n- **RF55.CA07** Dada proposta rejeitada ou cancelada, quando o usuário segue escrevendo, então mantém seu rascunho e não dispara nova chamada paga automaticamente.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF55.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-55-20261015`."
+  },
+  {
+    "number": 56,
+    "title": "Colaborar, comentar e resolver conflitos em documentos Letters no DECIA",
+    "story": "Editar documentos em equipe sem perda de trabalho e com autoria por contribuição.",
+    "criteria": [
+      "Dados dois editores autorizados, quando alteram blocos diferentes, então as alterações convergem e são persistidas.",
+      "Dados dois editores no mesmo bloco, quando há concorrência, então usa política explícita de bloqueio ou merge e não sobrescreve silenciosamente.",
+      "Dada reserva expirada, desconexão ou revogação, quando tenta gravar, então servidor rejeita e preserva rascunho recuperável.",
+      "Dado comentário ou sugestão, quando é resolvido, então mantém autor, data, trecho de origem e estado de resolução.",
+      "Dada sessão DECIA vinculada, quando compartilha documento, então aplica simultaneamente ACL da tarefa e participação/papel válido da sessão.",
+      "Dado usuário observador, quando tenta editar ou aceitar proposta, então bloqueia no servidor.",
+      "Dada versão aprovada, quando vira evidência de decisão, então mantém vínculo imutável à revisão, sem publicar o documento automaticamente."
+    ],
+    "marker": "WS-STUDIO-RF-56-20261015",
+    "name": "RF56: Colaborar, comentar e resolver conflitos em documentos Letters no DECIA",
+    "acceptance": [
+      {
+        "id": "RF56.CA01",
+        "text": "Dados dois editores autorizados, quando alteram blocos diferentes, então as alterações convergem e são persistidas."
+      },
+      {
+        "id": "RF56.CA02",
+        "text": "Dados dois editores no mesmo bloco, quando há concorrência, então usa política explícita de bloqueio ou merge e não sobrescreve silenciosamente."
+      },
+      {
+        "id": "RF56.CA03",
+        "text": "Dada reserva expirada, desconexão ou revogação, quando tenta gravar, então servidor rejeita e preserva rascunho recuperável."
+      },
+      {
+        "id": "RF56.CA04",
+        "text": "Dado comentário ou sugestão, quando é resolvido, então mantém autor, data, trecho de origem e estado de resolução."
+      },
+      {
+        "id": "RF56.CA05",
+        "text": "Dada sessão DECIA vinculada, quando compartilha documento, então aplica simultaneamente ACL da tarefa e participação/papel válido da sessão."
+      },
+      {
+        "id": "RF56.CA06",
+        "text": "Dado usuário observador, quando tenta editar ou aceitar proposta, então bloqueia no servidor."
+      },
+      {
+        "id": "RF56.CA07",
+        "text": "Dada versão aprovada, quando vira evidência de decisão, então mantém vínculo imutável à revisão, sem publicar o documento automaticamente."
+      }
+    ],
+    "description": "# RF56 — Colaborar, comentar e resolver conflitos em documentos Letters no DECIA\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero editar documentos em equipe sem perda de trabalho e com autoria por contribuição.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF56.CA01** Dados dois editores autorizados, quando alteram blocos diferentes, então as alterações convergem e são persistidas.\n\n- **RF56.CA02** Dados dois editores no mesmo bloco, quando há concorrência, então usa política explícita de bloqueio ou merge e não sobrescreve silenciosamente.\n\n- **RF56.CA03** Dada reserva expirada, desconexão ou revogação, quando tenta gravar, então servidor rejeita e preserva rascunho recuperável.\n\n- **RF56.CA04** Dado comentário ou sugestão, quando é resolvido, então mantém autor, data, trecho de origem e estado de resolução.\n\n- **RF56.CA05** Dada sessão DECIA vinculada, quando compartilha documento, então aplica simultaneamente ACL da tarefa e participação/papel válido da sessão.\n\n- **RF56.CA06** Dado usuário observador, quando tenta editar ou aceitar proposta, então bloqueia no servidor.\n\n- **RF56.CA07** Dada versão aprovada, quando vira evidência de decisão, então mantém vínculo imutável à revisão, sem publicar o documento automaticamente.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF56.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-56-20261015`."
+  },
+  {
+    "number": 57,
+    "title": "Selecionar objetos, pontos e regiões no Drawings",
+    "story": "Selecionar com precisão por janela, cruzamento, laço, polígono e atributos.",
+    "criteria": [
+      "Dado arraste esquerda-direita, quando termina, então seleciona somente objetos totalmente contidos; direita-esquerda inclui objetos que cruzam ou tocam a borda.",
+      "Dado laço livre ou WP/CP, quando conclui, então aplica contenção/cruzamento conforme modo visível e desenha prévia azul/verde.",
+      "Dado QSELECT/FILTER ou seleção semelhante, quando filtra por camada, cor, espessura, opacidade, tipo, raio ou bloco, então usa tolerância explícita e mostra a contagem.",
+      "Dado V, quando transforma seleção múltipla, então move/escala/rotaciona o conjunto no escopo permitido e permite desfazer.",
+      "Dado A, quando seleciona âncora ou segmento, então edita somente os pontos/controladores escolhidos e preserva os demais.",
+      "Dado Ctrl+A, quando há camadas ocultas, bloqueadas ou regiões de outra pessoa, então não autoriza modificá-las; seleção e permissão são eixos distintos.",
+      "Dado perfil de atalhos CAD ou vetor, quando L/A têm significados diferentes, então resolve por perfil e não intercepta digitação em campos de texto."
+    ],
+    "marker": "WS-STUDIO-RF-57-20261015",
+    "name": "RF57: Selecionar objetos, pontos e regiões no Drawings",
+    "acceptance": [
+      {
+        "id": "RF57.CA01",
+        "text": "Dado arraste esquerda-direita, quando termina, então seleciona somente objetos totalmente contidos; direita-esquerda inclui objetos que cruzam ou tocam a borda."
+      },
+      {
+        "id": "RF57.CA02",
+        "text": "Dado laço livre ou WP/CP, quando conclui, então aplica contenção/cruzamento conforme modo visível e desenha prévia azul/verde."
+      },
+      {
+        "id": "RF57.CA03",
+        "text": "Dado QSELECT/FILTER ou seleção semelhante, quando filtra por camada, cor, espessura, opacidade, tipo, raio ou bloco, então usa tolerância explícita e mostra a contagem."
+      },
+      {
+        "id": "RF57.CA04",
+        "text": "Dado V, quando transforma seleção múltipla, então move/escala/rotaciona o conjunto no escopo permitido e permite desfazer."
+      },
+      {
+        "id": "RF57.CA05",
+        "text": "Dado A, quando seleciona âncora ou segmento, então edita somente os pontos/controladores escolhidos e preserva os demais."
+      },
+      {
+        "id": "RF57.CA06",
+        "text": "Dado Ctrl+A, quando há camadas ocultas, bloqueadas ou regiões de outra pessoa, então não autoriza modificá-las; seleção e permissão são eixos distintos."
+      },
+      {
+        "id": "RF57.CA07",
+        "text": "Dado perfil de atalhos CAD ou vetor, quando L/A têm significados diferentes, então resolve por perfil e não intercepta digitação em campos de texto."
+      }
+    ],
+    "description": "# RF57 — Selecionar objetos, pontos e regiões no Drawings\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero selecionar com precisão por janela, cruzamento, laço, polígono e atributos.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF57.CA01** Dado arraste esquerda-direita, quando termina, então seleciona somente objetos totalmente contidos; direita-esquerda inclui objetos que cruzam ou tocam a borda.\n\n- **RF57.CA02** Dado laço livre ou WP/CP, quando conclui, então aplica contenção/cruzamento conforme modo visível e desenha prévia azul/verde.\n\n- **RF57.CA03** Dado QSELECT/FILTER ou seleção semelhante, quando filtra por camada, cor, espessura, opacidade, tipo, raio ou bloco, então usa tolerância explícita e mostra a contagem.\n\n- **RF57.CA04** Dado V, quando transforma seleção múltipla, então move/escala/rotaciona o conjunto no escopo permitido e permite desfazer.\n\n- **RF57.CA05** Dado A, quando seleciona âncora ou segmento, então edita somente os pontos/controladores escolhidos e preserva os demais.\n\n- **RF57.CA06** Dado Ctrl+A, quando há camadas ocultas, bloqueadas ou regiões de outra pessoa, então não autoriza modificá-las; seleção e permissão são eixos distintos.\n\n- **RF57.CA07** Dado perfil de atalhos CAD ou vetor, quando L/A têm significados diferentes, então resolve por perfil e não intercepta digitação em campos de texto.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF57.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-57-20261015`."
+  },
+  {
+    "number": 58,
+    "title": "Criar e editar geometria vetorial e desenho técnico 2D",
+    "story": "Construir traçados e perfis com coordenadas, precisão e ferramentas de edição.",
+    "criteria": [
+      "Dados LINE, PLINE, CIRCLE, ARC, RECTANG, POLYGON, ELLIPSE, SPLINE, XLINE e POINT, quando executados com parâmetros válidos, então criam a geometria esperada e rejeitam degenerações.",
+      "Dado círculo, quando escolhe raio, diâmetro, 2P, 3P ou TTR, então resolve o método e informa ambiguidade ou impossibilidade.",
+      "Dada caneta Bézier ou lápis livre, quando edita controles e simplifica, então informa tolerância/erro máximo e preserva fechamento e pontos protegidos.",
+      "Dados TRIM, EXTEND, OFFSET, JOIN/PEDIT, BREAK, tesoura e reversão, quando aplicados, então preservam topologia prevista e mantêm histórico.",
+      "Dados largura variável e pincel de mancha, quando expande, então gera contornos editáveis e mantém aparência dentro da tolerância declarada.",
+      "Dados OSNAP, ORTHO, POLAR, SNAP/GRID, quando habilitados, então mostram ponto/alinhamento proposto sem deslocar objetos fora do escopo.",
+      "Dados DIST, AREA, cotas, unidades e escala, quando mede, então calcula sobre geometria real e distingue medida de valor textual digitado."
+    ],
+    "marker": "WS-STUDIO-RF-58-20261015",
+    "name": "RF58: Criar e editar geometria vetorial e desenho técnico 2D",
+    "acceptance": [
+      {
+        "id": "RF58.CA01",
+        "text": "Dados LINE, PLINE, CIRCLE, ARC, RECTANG, POLYGON, ELLIPSE, SPLINE, XLINE e POINT, quando executados com parâmetros válidos, então criam a geometria esperada e rejeitam degenerações."
+      },
+      {
+        "id": "RF58.CA02",
+        "text": "Dado círculo, quando escolhe raio, diâmetro, 2P, 3P ou TTR, então resolve o método e informa ambiguidade ou impossibilidade."
+      },
+      {
+        "id": "RF58.CA03",
+        "text": "Dada caneta Bézier ou lápis livre, quando edita controles e simplifica, então informa tolerância/erro máximo e preserva fechamento e pontos protegidos."
+      },
+      {
+        "id": "RF58.CA04",
+        "text": "Dados TRIM, EXTEND, OFFSET, JOIN/PEDIT, BREAK, tesoura e reversão, quando aplicados, então preservam topologia prevista e mantêm histórico."
+      },
+      {
+        "id": "RF58.CA05",
+        "text": "Dados largura variável e pincel de mancha, quando expande, então gera contornos editáveis e mantém aparência dentro da tolerância declarada."
+      },
+      {
+        "id": "RF58.CA06",
+        "text": "Dados OSNAP, ORTHO, POLAR, SNAP/GRID, quando habilitados, então mostram ponto/alinhamento proposto sem deslocar objetos fora do escopo."
+      },
+      {
+        "id": "RF58.CA07",
+        "text": "Dados DIST, AREA, cotas, unidades e escala, quando mede, então calcula sobre geometria real e distingue medida de valor textual digitado."
+      }
+    ],
+    "description": "# RF58 — Criar e editar geometria vetorial e desenho técnico 2D\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero construir traçados e perfis com coordenadas, precisão e ferramentas de edição.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF58.CA01** Dados LINE, PLINE, CIRCLE, ARC, RECTANG, POLYGON, ELLIPSE, SPLINE, XLINE e POINT, quando executados com parâmetros válidos, então criam a geometria esperada e rejeitam degenerações.\n\n- **RF58.CA02** Dado círculo, quando escolhe raio, diâmetro, 2P, 3P ou TTR, então resolve o método e informa ambiguidade ou impossibilidade.\n\n- **RF58.CA03** Dada caneta Bézier ou lápis livre, quando edita controles e simplifica, então informa tolerância/erro máximo e preserva fechamento e pontos protegidos.\n\n- **RF58.CA04** Dados TRIM, EXTEND, OFFSET, JOIN/PEDIT, BREAK, tesoura e reversão, quando aplicados, então preservam topologia prevista e mantêm histórico.\n\n- **RF58.CA05** Dados largura variável e pincel de mancha, quando expande, então gera contornos editáveis e mantém aparência dentro da tolerância declarada.\n\n- **RF58.CA06** Dados OSNAP, ORTHO, POLAR, SNAP/GRID, quando habilitados, então mostram ponto/alinhamento proposto sem deslocar objetos fora do escopo.\n\n- **RF58.CA07** Dados DIST, AREA, cotas, unidades e escala, quando mede, então calcula sobre geometria real e distingue medida de valor textual digitado.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF58.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-58-20261015`."
+  },
+  {
+    "number": 59,
+    "title": "Construir, dividir e desmembrar contornos vetoriais",
+    "story": "Unir, subtrair, dividir e expandir formas sem perder furos ou atributos.",
+    "criteria": [
+      "Dados UNION/Shape Builder, SUBTRACT e INTERSECT, quando combina perfis fechados, então o resultado corresponde à área geométrica esperada.",
+      "Dado Pathfinder Divide ou pintura por regiões, quando cruza contornos, então produz regiões independentes selecionáveis e coloríveis.",
+      "Dado caminho composto com furo, quando exporta/reabre, então mantém o furo; liberar caminho composto separa contornos explicitamente.",
+      "Dado grupo, quando UNGROUP é executado, então remove apenas o vínculo de agrupamento e preserva geometria, texto e ordem.",
+      "Dada máscara, quando libera recorte, então mantém os vetores originais e torna os elementos liberados selecionáveis.",
+      "Dado Expand/Expand Appearance, quando converte traços ou efeitos, então informa perda de parametrização e preserva versão anterior.",
+      "Dada operação não representável no formato nativo, quando é solicitada, então bloqueia sem descartar furos, faces ou conteúdo silenciosamente."
+    ],
+    "marker": "WS-STUDIO-RF-59-20261015",
+    "name": "RF59: Construir, dividir e desmembrar contornos vetoriais",
+    "acceptance": [
+      {
+        "id": "RF59.CA01",
+        "text": "Dados UNION/Shape Builder, SUBTRACT e INTERSECT, quando combina perfis fechados, então o resultado corresponde à área geométrica esperada."
+      },
+      {
+        "id": "RF59.CA02",
+        "text": "Dado Pathfinder Divide ou pintura por regiões, quando cruza contornos, então produz regiões independentes selecionáveis e coloríveis."
+      },
+      {
+        "id": "RF59.CA03",
+        "text": "Dado caminho composto com furo, quando exporta/reabre, então mantém o furo; liberar caminho composto separa contornos explicitamente."
+      },
+      {
+        "id": "RF59.CA04",
+        "text": "Dado grupo, quando UNGROUP é executado, então remove apenas o vínculo de agrupamento e preserva geometria, texto e ordem."
+      },
+      {
+        "id": "RF59.CA05",
+        "text": "Dada máscara, quando libera recorte, então mantém os vetores originais e torna os elementos liberados selecionáveis."
+      },
+      {
+        "id": "RF59.CA06",
+        "text": "Dado Expand/Expand Appearance, quando converte traços ou efeitos, então informa perda de parametrização e preserva versão anterior."
+      },
+      {
+        "id": "RF59.CA07",
+        "text": "Dada operação não representável no formato nativo, quando é solicitada, então bloqueia sem descartar furos, faces ou conteúdo silenciosamente."
+      }
+    ],
+    "description": "# RF59 — Construir, dividir e desmembrar contornos vetoriais\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero unir, subtrair, dividir e expandir formas sem perder furos ou atributos.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF59.CA01** Dados UNION/Shape Builder, SUBTRACT e INTERSECT, quando combina perfis fechados, então o resultado corresponde à área geométrica esperada.\n\n- **RF59.CA02** Dado Pathfinder Divide ou pintura por regiões, quando cruza contornos, então produz regiões independentes selecionáveis e coloríveis.\n\n- **RF59.CA03** Dado caminho composto com furo, quando exporta/reabre, então mantém o furo; liberar caminho composto separa contornos explicitamente.\n\n- **RF59.CA04** Dado grupo, quando UNGROUP é executado, então remove apenas o vínculo de agrupamento e preserva geometria, texto e ordem.\n\n- **RF59.CA05** Dada máscara, quando libera recorte, então mantém os vetores originais e torna os elementos liberados selecionáveis.\n\n- **RF59.CA06** Dado Expand/Expand Appearance, quando converte traços ou efeitos, então informa perda de parametrização e preserva versão anterior.\n\n- **RF59.CA07** Dada operação não representável no formato nativo, quando é solicitada, então bloqueia sem descartar furos, faces ou conteúdo silenciosamente.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF59.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-59-20261015`."
+  },
+  {
+    "number": 60,
+    "title": "Modelar sólidos, superfícies e malhas 3D no Drawings",
+    "story": "Gerar e transformar modelos 3D com representação e limites identificados.",
+    "criteria": [
+      "Dados BOX, CYLINDER, SPHERE, CONE, WEDGE e TORUS, quando dimensiona, então gera malhas válidas com normais e escala consistente.",
+      "Dados EXTRUDE/PRESSPULL e perfil fechado, quando aplica profundidade, então gera volume e rejeita perfil degenerado ou autointersectante.",
+      "Dados REVOLVE, LOFT e SWEEP, quando fornece eixo, seções ou trajetória, então informa correspondência/orientação e valida continuidade e fechamento.",
+      "Dado Inflate, quando cria volume almofadado, então identifica se é aproximação geométrica ou simulação e permite refino.",
+      "Dadas UNION, SUBTRACT e INTERSECT, quando opera sólidos, então valida resultado vazio, fechamento e interseções antes de gravar.",
+      "Dados FILLETEDGE e CHAMFEREDGE, quando seleciona arestas, então aplica raio/chanfro nas arestas suportadas e não promete kernel B-rep onde há apenas malha.",
+      "Dados 3DMOVE, 3DROTATE e 3DSCALE, quando usa campos ou gizmos XYZ, então permite seleção múltipla, pivô explícito, limites e desfazer."
+    ],
+    "marker": "WS-STUDIO-RF-60-20261015",
+    "name": "RF60: Modelar sólidos, superfícies e malhas 3D no Drawings",
+    "acceptance": [
+      {
+        "id": "RF60.CA01",
+        "text": "Dados BOX, CYLINDER, SPHERE, CONE, WEDGE e TORUS, quando dimensiona, então gera malhas válidas com normais e escala consistente."
+      },
+      {
+        "id": "RF60.CA02",
+        "text": "Dados EXTRUDE/PRESSPULL e perfil fechado, quando aplica profundidade, então gera volume e rejeita perfil degenerado ou autointersectante."
+      },
+      {
+        "id": "RF60.CA03",
+        "text": "Dados REVOLVE, LOFT e SWEEP, quando fornece eixo, seções ou trajetória, então informa correspondência/orientação e valida continuidade e fechamento."
+      },
+      {
+        "id": "RF60.CA04",
+        "text": "Dado Inflate, quando cria volume almofadado, então identifica se é aproximação geométrica ou simulação e permite refino."
+      },
+      {
+        "id": "RF60.CA05",
+        "text": "Dadas UNION, SUBTRACT e INTERSECT, quando opera sólidos, então valida resultado vazio, fechamento e interseções antes de gravar."
+      },
+      {
+        "id": "RF60.CA06",
+        "text": "Dados FILLETEDGE e CHAMFEREDGE, quando seleciona arestas, então aplica raio/chanfro nas arestas suportadas e não promete kernel B-rep onde há apenas malha."
+      },
+      {
+        "id": "RF60.CA07",
+        "text": "Dados 3DMOVE, 3DROTATE e 3DSCALE, quando usa campos ou gizmos XYZ, então permite seleção múltipla, pivô explícito, limites e desfazer."
+      }
+    ],
+    "description": "# RF60 — Modelar sólidos, superfícies e malhas 3D no Drawings\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero gerar e transformar modelos 3D com representação e limites identificados.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF60.CA01** Dados BOX, CYLINDER, SPHERE, CONE, WEDGE e TORUS, quando dimensiona, então gera malhas válidas com normais e escala consistente.\n\n- **RF60.CA02** Dados EXTRUDE/PRESSPULL e perfil fechado, quando aplica profundidade, então gera volume e rejeita perfil degenerado ou autointersectante.\n\n- **RF60.CA03** Dados REVOLVE, LOFT e SWEEP, quando fornece eixo, seções ou trajetória, então informa correspondência/orientação e valida continuidade e fechamento.\n\n- **RF60.CA04** Dado Inflate, quando cria volume almofadado, então identifica se é aproximação geométrica ou simulação e permite refino.\n\n- **RF60.CA05** Dadas UNION, SUBTRACT e INTERSECT, quando opera sólidos, então valida resultado vazio, fechamento e interseções antes de gravar.\n\n- **RF60.CA06** Dados FILLETEDGE e CHAMFEREDGE, quando seleciona arestas, então aplica raio/chanfro nas arestas suportadas e não promete kernel B-rep onde há apenas malha.\n\n- **RF60.CA07** Dados 3DMOVE, 3DROTATE e 3DSCALE, quando usa campos ou gizmos XYZ, então permite seleção múltipla, pivô explícito, limites e desfazer.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF60.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-60-20261015`."
+  },
+  {
+    "number": 61,
+    "title": "Desmembrar e converter estruturas 3D preservando intenção",
+    "story": "Explodir faces, separar corpos e projetar aparência como operações diferentes.",
+    "criteria": [
+      "Dado EXPLODE/X ou MESHELEMENTS, quando desmembra malha, então gera faces independentes e identifica que superfícies abertas não são sólidos.",
+      "Dado CONVTOSURFACE, quando converte, então preserva coordenadas, materiais e correspondência com objeto de origem.",
+      "Dado SEPARATE/SOLIDEDIT Body Separate, quando há corpos disjuntos, então separa componentes mantendo-os volumétricos quando fechados.",
+      "Dado SLICE, quando define plano por normal/posição ou pontos, então cria partes corretas, preserva original recuperável e informa corte sem interseção.",
+      "Dado CONVTOSOLID, quando recebe malha aberta/não manifold, então recusa ou oferece reparo revisável; não presume volume válido.",
+      "Dado BURST, quando existem atributos de bloco, então converte seus valores para texto sem perda; sem suporte a blocos deve informar indisponibilidade.",
+      "Dado BREP, quando consolida representação suportada, então explica o que é removido; malha consolidada não é rotulada como sólido B-rep.",
+      "Dado FLATTEN/Expand Appearance, quando projeta na câmera/plano escolhido, então cria vetores 2D editáveis com profundidade zero e sem remover o 3D original sem confirmação."
+    ],
+    "marker": "WS-STUDIO-RF-61-20261015",
+    "name": "RF61: Desmembrar e converter estruturas 3D preservando intenção",
+    "acceptance": [
+      {
+        "id": "RF61.CA01",
+        "text": "Dado EXPLODE/X ou MESHELEMENTS, quando desmembra malha, então gera faces independentes e identifica que superfícies abertas não são sólidos."
+      },
+      {
+        "id": "RF61.CA02",
+        "text": "Dado CONVTOSURFACE, quando converte, então preserva coordenadas, materiais e correspondência com objeto de origem."
+      },
+      {
+        "id": "RF61.CA03",
+        "text": "Dado SEPARATE/SOLIDEDIT Body Separate, quando há corpos disjuntos, então separa componentes mantendo-os volumétricos quando fechados."
+      },
+      {
+        "id": "RF61.CA04",
+        "text": "Dado SLICE, quando define plano por normal/posição ou pontos, então cria partes corretas, preserva original recuperável e informa corte sem interseção."
+      },
+      {
+        "id": "RF61.CA05",
+        "text": "Dado CONVTOSOLID, quando recebe malha aberta/não manifold, então recusa ou oferece reparo revisável; não presume volume válido."
+      },
+      {
+        "id": "RF61.CA06",
+        "text": "Dado BURST, quando existem atributos de bloco, então converte seus valores para texto sem perda; sem suporte a blocos deve informar indisponibilidade."
+      },
+      {
+        "id": "RF61.CA07",
+        "text": "Dado BREP, quando consolida representação suportada, então explica o que é removido; malha consolidada não é rotulada como sólido B-rep."
+      },
+      {
+        "id": "RF61.CA08",
+        "text": "Dado FLATTEN/Expand Appearance, quando projeta na câmera/plano escolhido, então cria vetores 2D editáveis com profundidade zero e sem remover o 3D original sem confirmação."
+      }
+    ],
+    "description": "# RF61 — Desmembrar e converter estruturas 3D preservando intenção\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero explodir faces, separar corpos e projetar aparência como operações diferentes.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF61.CA01** Dado EXPLODE/X ou MESHELEMENTS, quando desmembra malha, então gera faces independentes e identifica que superfícies abertas não são sólidos.\n\n- **RF61.CA02** Dado CONVTOSURFACE, quando converte, então preserva coordenadas, materiais e correspondência com objeto de origem.\n\n- **RF61.CA03** Dado SEPARATE/SOLIDEDIT Body Separate, quando há corpos disjuntos, então separa componentes mantendo-os volumétricos quando fechados.\n\n- **RF61.CA04** Dado SLICE, quando define plano por normal/posição ou pontos, então cria partes corretas, preserva original recuperável e informa corte sem interseção.\n\n- **RF61.CA05** Dado CONVTOSOLID, quando recebe malha aberta/não manifold, então recusa ou oferece reparo revisável; não presume volume válido.\n\n- **RF61.CA06** Dado BURST, quando existem atributos de bloco, então converte seus valores para texto sem perda; sem suporte a blocos deve informar indisponibilidade.\n\n- **RF61.CA07** Dado BREP, quando consolida representação suportada, então explica o que é removido; malha consolidada não é rotulada como sólido B-rep.\n\n- **RF61.CA08** Dado FLATTEN/Expand Appearance, quando projeta na câmera/plano escolhido, então cria vetores 2D editáveis com profundidade zero e sem remover o 3D original sem confirmação.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF61.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-61-20261015`."
+  },
+  {
+    "number": 62,
+    "title": "Controlar vistas, câmera, perspectiva e coordenadas no Drawings",
+    "story": "Alternar representação sem alterar indevidamente a geometria.",
+    "criteria": [
+      "Dado PLAN, quando executa, então orienta vista superior do sistema de coordenadas de trabalho, identificando o UCS utilizado.",
+      "Dado VPOINT, quando informa vetor válido, então orienta a câmera e rejeita vetor nulo.",
+      "Dado VIEW, quando salva/restaura planta, frontal, lateral ou isométricas SW/SE/NE/NW, então mantém câmera e projeção associadas.",
+      "Dado 3DORBIT/Shift+botão do meio, quando arrasta, então orbita sem mover objetos e permite sair do modo.",
+      "Dado NAVVCUBE/UCSICON, quando alterna, então controla guias visuais e não altera permissões nem geometrias.",
+      "Dado VISUALSTYLES/VS, quando escolhe wireframe, sombreado, raios X, conceitual ou realista, então só habilita modos implementados e identifica limitações de materiais/PBR.",
+      "Dado UCS, quando orienta plano de trabalho por face/eixos, então novas geometrias usam esse plano, com conversão consistente para o espaço global.",
+      "Dada grade de perspectiva 1/2/3 pontos ou plano isométrico/cavaleiro, quando desenha, então aplica transformação correta; ocultar grade não remove alinhamentos existentes."
+    ],
+    "marker": "WS-STUDIO-RF-62-20261015",
+    "name": "RF62: Controlar vistas, câmera, perspectiva e coordenadas no Drawings",
+    "acceptance": [
+      {
+        "id": "RF62.CA01",
+        "text": "Dado PLAN, quando executa, então orienta vista superior do sistema de coordenadas de trabalho, identificando o UCS utilizado."
+      },
+      {
+        "id": "RF62.CA02",
+        "text": "Dado VPOINT, quando informa vetor válido, então orienta a câmera e rejeita vetor nulo."
+      },
+      {
+        "id": "RF62.CA03",
+        "text": "Dado VIEW, quando salva/restaura planta, frontal, lateral ou isométricas SW/SE/NE/NW, então mantém câmera e projeção associadas."
+      },
+      {
+        "id": "RF62.CA04",
+        "text": "Dado 3DORBIT/Shift+botão do meio, quando arrasta, então orbita sem mover objetos e permite sair do modo."
+      },
+      {
+        "id": "RF62.CA05",
+        "text": "Dado NAVVCUBE/UCSICON, quando alterna, então controla guias visuais e não altera permissões nem geometrias."
+      },
+      {
+        "id": "RF62.CA06",
+        "text": "Dado VISUALSTYLES/VS, quando escolhe wireframe, sombreado, raios X, conceitual ou realista, então só habilita modos implementados e identifica limitações de materiais/PBR."
+      },
+      {
+        "id": "RF62.CA07",
+        "text": "Dado UCS, quando orienta plano de trabalho por face/eixos, então novas geometrias usam esse plano, com conversão consistente para o espaço global."
+      },
+      {
+        "id": "RF62.CA08",
+        "text": "Dada grade de perspectiva 1/2/3 pontos ou plano isométrico/cavaleiro, quando desenha, então aplica transformação correta; ocultar grade não remove alinhamentos existentes."
+      }
+    ],
+    "description": "# RF62 — Controlar vistas, câmera, perspectiva e coordenadas no Drawings\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero alternar representação sem alterar indevidamente a geometria.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF62.CA01** Dado PLAN, quando executa, então orienta vista superior do sistema de coordenadas de trabalho, identificando o UCS utilizado.\n\n- **RF62.CA02** Dado VPOINT, quando informa vetor válido, então orienta a câmera e rejeita vetor nulo.\n\n- **RF62.CA03** Dado VIEW, quando salva/restaura planta, frontal, lateral ou isométricas SW/SE/NE/NW, então mantém câmera e projeção associadas.\n\n- **RF62.CA04** Dado 3DORBIT/Shift+botão do meio, quando arrasta, então orbita sem mover objetos e permite sair do modo.\n\n- **RF62.CA05** Dado NAVVCUBE/UCSICON, quando alterna, então controla guias visuais e não altera permissões nem geometrias.\n\n- **RF62.CA06** Dado VISUALSTYLES/VS, quando escolhe wireframe, sombreado, raios X, conceitual ou realista, então só habilita modos implementados e identifica limitações de materiais/PBR.\n\n- **RF62.CA07** Dado UCS, quando orienta plano de trabalho por face/eixos, então novas geometrias usam esse plano, com conversão consistente para o espaço global.\n\n- **RF62.CA08** Dada grade de perspectiva 1/2/3 pontos ou plano isométrico/cavaleiro, quando desenha, então aplica transformação correta; ocultar grade não remove alinhamentos existentes.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF62.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-62-20261015`."
+  },
+  {
+    "number": 63,
+    "title": "Editar cores, gradientes, materiais e estilos de traço",
+    "story": "Refinar aparência com controle local e fundamentação técnica.",
+    "criteria": [
+      "Dada seleção de objeto, região ou camada, quando altera cor sólida, gradiente linear/radial e preenchimento, então afeta somente o escopo autorizado.",
+      "Dado traço, quando ajusta largura, padrão, opacidade, terminações e junções, então renderiza e exporta a mesma aparência dentro das capacidades declaradas.",
+      "Dadas hachuras de seção, cotas e hierarquia de linhas, quando usa preset técnico, então referencia norma/edição aplicável e não declara conformidade sem validação.",
+      "Dadas harmonias Itten e controles inspirados em Munsell, quando recomenda paleta, então identifica o modelo e não confunde HSL/RGB com Munsell calibrado.",
+      "Dado RGB/CMYK/ICC, quando converte ou exporta, então informa perfil utilizado e só habilita conversão efetivamente suportada.",
+      "Dado material de parte 3D, quando edita, então conserva geometria, seleção e ordem de camadas.",
+      "Dada alternância wireframe/preenchido, quando ocorre, então mantém estruturas selecionáveis e permite recuperar o estado anterior pelo histórico."
+    ],
+    "marker": "WS-STUDIO-RF-63-20261015",
+    "name": "RF63: Editar cores, gradientes, materiais e estilos de traço",
+    "acceptance": [
+      {
+        "id": "RF63.CA01",
+        "text": "Dada seleção de objeto, região ou camada, quando altera cor sólida, gradiente linear/radial e preenchimento, então afeta somente o escopo autorizado."
+      },
+      {
+        "id": "RF63.CA02",
+        "text": "Dado traço, quando ajusta largura, padrão, opacidade, terminações e junções, então renderiza e exporta a mesma aparência dentro das capacidades declaradas."
+      },
+      {
+        "id": "RF63.CA03",
+        "text": "Dadas hachuras de seção, cotas e hierarquia de linhas, quando usa preset técnico, então referencia norma/edição aplicável e não declara conformidade sem validação."
+      },
+      {
+        "id": "RF63.CA04",
+        "text": "Dadas harmonias Itten e controles inspirados em Munsell, quando recomenda paleta, então identifica o modelo e não confunde HSL/RGB com Munsell calibrado."
+      },
+      {
+        "id": "RF63.CA05",
+        "text": "Dado RGB/CMYK/ICC, quando converte ou exporta, então informa perfil utilizado e só habilita conversão efetivamente suportada."
+      },
+      {
+        "id": "RF63.CA06",
+        "text": "Dado material de parte 3D, quando edita, então conserva geometria, seleção e ordem de camadas."
+      },
+      {
+        "id": "RF63.CA07",
+        "text": "Dada alternância wireframe/preenchido, quando ocorre, então mantém estruturas selecionáveis e permite recuperar o estado anterior pelo histórico."
+      }
+    ],
+    "description": "# RF63 — Editar cores, gradientes, materiais e estilos de traço\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero refinar aparência com controle local e fundamentação técnica.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF63.CA01** Dada seleção de objeto, região ou camada, quando altera cor sólida, gradiente linear/radial e preenchimento, então afeta somente o escopo autorizado.\n\n- **RF63.CA02** Dado traço, quando ajusta largura, padrão, opacidade, terminações e junções, então renderiza e exporta a mesma aparência dentro das capacidades declaradas.\n\n- **RF63.CA03** Dadas hachuras de seção, cotas e hierarquia de linhas, quando usa preset técnico, então referencia norma/edição aplicável e não declara conformidade sem validação.\n\n- **RF63.CA04** Dadas harmonias Itten e controles inspirados em Munsell, quando recomenda paleta, então identifica o modelo e não confunde HSL/RGB com Munsell calibrado.\n\n- **RF63.CA05** Dado RGB/CMYK/ICC, quando converte ou exporta, então informa perfil utilizado e só habilita conversão efetivamente suportada.\n\n- **RF63.CA06** Dado material de parte 3D, quando edita, então conserva geometria, seleção e ordem de camadas.\n\n- **RF63.CA07** Dada alternância wireframe/preenchido, quando ocorre, então mantém estruturas selecionáveis e permite recuperar o estado anterior pelo histórico.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF63.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-63-20261015`."
+  },
+  {
+    "number": 64,
+    "title": "Gerar assets, wireframes e detalhes internos parametrizados",
+    "story": "Começar por estruturas reconhecíveis e refinar objetos e personagens.",
+    "criteria": [
+      "Dado catálogo, quando busca por objeto, pessoa, personagem ou geometria, então oferece nomes, categorias, dimensões e prévia de modelos disponíveis.",
+      "Dado sofá, mesa ou pessoa, quando gera, então cria estrutura específica com partes semanticamente nomeadas, sem substituí-la por caixa genérica.",
+      "Dado objeto reservado, quando entra no wireframe, então seleciona partes internas e oferece somente detalhes compatíveis, como olhos, lábios, puxadores e gavetas.",
+      "Dada parte, quando move, rotaciona, substitui ou redimensiona, então preserva relações explícitas com componentes dependentes.",
+      "Dado wireframe de área inteira, quando aplica, então abrange objetos das subáreas autorizadas e exclui camadas/regiões alheias.",
+      "Dada sugestão de substituição por IA, quando aprovada, então valida limites, revisão, hierarquia e escopo antes de aplicar.",
+      "Dado asset importado/exportado, quando reabre, então mantém estrutura, materiais, nomes, dimensões e câmera em formato nativo suportado."
+    ],
+    "marker": "WS-STUDIO-RF-64-20261015",
+    "name": "RF64: Gerar assets, wireframes e detalhes internos parametrizados",
+    "acceptance": [
+      {
+        "id": "RF64.CA01",
+        "text": "Dado catálogo, quando busca por objeto, pessoa, personagem ou geometria, então oferece nomes, categorias, dimensões e prévia de modelos disponíveis."
+      },
+      {
+        "id": "RF64.CA02",
+        "text": "Dado sofá, mesa ou pessoa, quando gera, então cria estrutura específica com partes semanticamente nomeadas, sem substituí-la por caixa genérica."
+      },
+      {
+        "id": "RF64.CA03",
+        "text": "Dado objeto reservado, quando entra no wireframe, então seleciona partes internas e oferece somente detalhes compatíveis, como olhos, lábios, puxadores e gavetas."
+      },
+      {
+        "id": "RF64.CA04",
+        "text": "Dada parte, quando move, rotaciona, substitui ou redimensiona, então preserva relações explícitas com componentes dependentes."
+      },
+      {
+        "id": "RF64.CA05",
+        "text": "Dado wireframe de área inteira, quando aplica, então abrange objetos das subáreas autorizadas e exclui camadas/regiões alheias."
+      },
+      {
+        "id": "RF64.CA06",
+        "text": "Dada sugestão de substituição por IA, quando aprovada, então valida limites, revisão, hierarquia e escopo antes de aplicar."
+      },
+      {
+        "id": "RF64.CA07",
+        "text": "Dado asset importado/exportado, quando reabre, então mantém estrutura, materiais, nomes, dimensões e câmera em formato nativo suportado."
+      }
+    ],
+    "description": "# RF64 — Gerar assets, wireframes e detalhes internos parametrizados\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero começar por estruturas reconhecíveis e refinar objetos e personagens.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF64.CA01** Dado catálogo, quando busca por objeto, pessoa, personagem ou geometria, então oferece nomes, categorias, dimensões e prévia de modelos disponíveis.\n\n- **RF64.CA02** Dado sofá, mesa ou pessoa, quando gera, então cria estrutura específica com partes semanticamente nomeadas, sem substituí-la por caixa genérica.\n\n- **RF64.CA03** Dado objeto reservado, quando entra no wireframe, então seleciona partes internas e oferece somente detalhes compatíveis, como olhos, lábios, puxadores e gavetas.\n\n- **RF64.CA04** Dada parte, quando move, rotaciona, substitui ou redimensiona, então preserva relações explícitas com componentes dependentes.\n\n- **RF64.CA05** Dado wireframe de área inteira, quando aplica, então abrange objetos das subáreas autorizadas e exclui camadas/regiões alheias.\n\n- **RF64.CA06** Dada sugestão de substituição por IA, quando aprovada, então valida limites, revisão, hierarquia e escopo antes de aplicar.\n\n- **RF64.CA07** Dado asset importado/exportado, quando reabre, então mantém estrutura, materiais, nomes, dimensões e câmera em formato nativo suportado.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF64.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-64-20261015`."
+  },
+  {
+    "number": 65,
+    "title": "Editar regiões hierárquicas e camadas sobrepostas no Drawings",
+    "story": "Controlar contexto espacial, profundidade e visibilidade sem confundir seleção com autorização.",
+    "criteria": [
+      "Dada grade M×N, quando subdivide região, então cria caminho hierárquico estável e permite focar qualquer nível.",
+      "Dada reserva de região menor, quando edita, então limita objetos e geometria à região e camada permitidas.",
+      "Dada reserva de região maior, quando transforma, então considera as subáreas incluídas, sem ignorar reservas conflitantes.",
+      "Dadas camadas profundas/superficiais, quando isola uma, então preserva objetos das demais e mantém composição e ordem na reabertura.",
+      "Dadas divisórias, rótulos e badges, quando oculta, então limpa a visualização sem liberar reservas ou alterar a geometria.",
+      "Dada alteração local, quando atualiza métricas globais, então usa fórmula/rubrica declarada, distingue heurística de qualidade profissional e explica a contribuição de cada métrica.",
+      "Dado movimento/rotação, quando o limite físico ultrapassa reserva, então servidor rejeita considerando a geometria transformada, não apenas o centro."
+    ],
+    "marker": "WS-STUDIO-RF-65-20261015",
+    "name": "RF65: Editar regiões hierárquicas e camadas sobrepostas no Drawings",
+    "acceptance": [
+      {
+        "id": "RF65.CA01",
+        "text": "Dada grade M×N, quando subdivide região, então cria caminho hierárquico estável e permite focar qualquer nível."
+      },
+      {
+        "id": "RF65.CA02",
+        "text": "Dada reserva de região menor, quando edita, então limita objetos e geometria à região e camada permitidas."
+      },
+      {
+        "id": "RF65.CA03",
+        "text": "Dada reserva de região maior, quando transforma, então considera as subáreas incluídas, sem ignorar reservas conflitantes."
+      },
+      {
+        "id": "RF65.CA04",
+        "text": "Dadas camadas profundas/superficiais, quando isola uma, então preserva objetos das demais e mantém composição e ordem na reabertura."
+      },
+      {
+        "id": "RF65.CA05",
+        "text": "Dadas divisórias, rótulos e badges, quando oculta, então limpa a visualização sem liberar reservas ou alterar a geometria."
+      },
+      {
+        "id": "RF65.CA06",
+        "text": "Dada alteração local, quando atualiza métricas globais, então usa fórmula/rubrica declarada, distingue heurística de qualidade profissional e explica a contribuição de cada métrica."
+      },
+      {
+        "id": "RF65.CA07",
+        "text": "Dado movimento/rotação, quando o limite físico ultrapassa reserva, então servidor rejeita considerando a geometria transformada, não apenas o centro."
+      }
+    ],
+    "description": "# RF65 — Editar regiões hierárquicas e camadas sobrepostas no Drawings\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero controlar contexto espacial, profundidade e visibilidade sem confundir seleção com autorização.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF65.CA01** Dada grade M×N, quando subdivide região, então cria caminho hierárquico estável e permite focar qualquer nível.\n\n- **RF65.CA02** Dada reserva de região menor, quando edita, então limita objetos e geometria à região e camada permitidas.\n\n- **RF65.CA03** Dada reserva de região maior, quando transforma, então considera as subáreas incluídas, sem ignorar reservas conflitantes.\n\n- **RF65.CA04** Dadas camadas profundas/superficiais, quando isola uma, então preserva objetos das demais e mantém composição e ordem na reabertura.\n\n- **RF65.CA05** Dadas divisórias, rótulos e badges, quando oculta, então limpa a visualização sem liberar reservas ou alterar a geometria.\n\n- **RF65.CA06** Dada alteração local, quando atualiza métricas globais, então usa fórmula/rubrica declarada, distingue heurística de qualidade profissional e explica a contribuição de cada métrica.\n\n- **RF65.CA07** Dado movimento/rotação, quando o limite físico ultrapassa reserva, então servidor rejeita considerando a geometria transformada, não apenas o centro.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF65.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-65-20261015`."
+  },
+  {
+    "number": 66,
+    "title": "Editar desenhos simultaneamente no DECIA com reservas transacionais",
+    "story": "Trabalhar em paralelo com conflitos claros e proteção de conteúdo.",
+    "criteria": [
+      "Dados usuários autorizados em áreas/camadas disjuntas, quando enviam patches simultâneos, então preserva ambos e mantém ordem visual.",
+      "Dados escopos sobrepostos ou ancestrais/descendentes na mesma camada, quando o segundo tenta reservar, então rejeita com mensagem sem revelar conteúdo não autorizado.",
+      "Dada reserva, quando renova/libera/expira, então usa relógio do servidor e token de fencing; cliente antigo não escreve depois da expiração.",
+      "Dada revisão de objeto alterada, quando chega patch antigo, então rejeita sem sobrescrever e preserva rascunho para reconciliação.",
+      "Dada revogação de acesso durante edição, quando tenta gravar, então autorização é revalidada transacionalmente.",
+      "Dado desenho SIGILOSO, quando administrador sem concessão explícita tenta acessar, então nega; proprietário e colaboradores autorizados seguem a política definida.",
+      "Dada sessão DECIA, quando entra observador/não participante, então só recebe operações compatíveis com papel e acesso à tarefa; URLs diretas não contornam a regra.",
+      "Dada colaboração 3D, quando é oferecida, então implementa as mesmas garantias no servidor; demonstração 3D local não satisfaz esse aceite."
+    ],
+    "marker": "WS-STUDIO-RF-66-20261015",
+    "name": "RF66: Editar desenhos simultaneamente no DECIA com reservas transacionais",
+    "acceptance": [
+      {
+        "id": "RF66.CA01",
+        "text": "Dados usuários autorizados em áreas/camadas disjuntas, quando enviam patches simultâneos, então preserva ambos e mantém ordem visual."
+      },
+      {
+        "id": "RF66.CA02",
+        "text": "Dados escopos sobrepostos ou ancestrais/descendentes na mesma camada, quando o segundo tenta reservar, então rejeita com mensagem sem revelar conteúdo não autorizado."
+      },
+      {
+        "id": "RF66.CA03",
+        "text": "Dada reserva, quando renova/libera/expira, então usa relógio do servidor e token de fencing; cliente antigo não escreve depois da expiração."
+      },
+      {
+        "id": "RF66.CA04",
+        "text": "Dada revisão de objeto alterada, quando chega patch antigo, então rejeita sem sobrescrever e preserva rascunho para reconciliação."
+      },
+      {
+        "id": "RF66.CA05",
+        "text": "Dada revogação de acesso durante edição, quando tenta gravar, então autorização é revalidada transacionalmente."
+      },
+      {
+        "id": "RF66.CA06",
+        "text": "Dado desenho SIGILOSO, quando administrador sem concessão explícita tenta acessar, então nega; proprietário e colaboradores autorizados seguem a política definida."
+      },
+      {
+        "id": "RF66.CA07",
+        "text": "Dada sessão DECIA, quando entra observador/não participante, então só recebe operações compatíveis com papel e acesso à tarefa; URLs diretas não contornam a regra."
+      },
+      {
+        "id": "RF66.CA08",
+        "text": "Dada colaboração 3D, quando é oferecida, então implementa as mesmas garantias no servidor; demonstração 3D local não satisfaz esse aceite."
+      }
+    ],
+    "description": "# RF66 — Editar desenhos simultaneamente no DECIA com reservas transacionais\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero trabalhar em paralelo com conflitos claros e proteção de conteúdo.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF66.CA01** Dados usuários autorizados em áreas/camadas disjuntas, quando enviam patches simultâneos, então preserva ambos e mantém ordem visual.\n\n- **RF66.CA02** Dados escopos sobrepostos ou ancestrais/descendentes na mesma camada, quando o segundo tenta reservar, então rejeita com mensagem sem revelar conteúdo não autorizado.\n\n- **RF66.CA03** Dada reserva, quando renova/libera/expira, então usa relógio do servidor e token de fencing; cliente antigo não escreve depois da expiração.\n\n- **RF66.CA04** Dada revisão de objeto alterada, quando chega patch antigo, então rejeita sem sobrescrever e preserva rascunho para reconciliação.\n\n- **RF66.CA05** Dada revogação de acesso durante edição, quando tenta gravar, então autorização é revalidada transacionalmente.\n\n- **RF66.CA06** Dado desenho SIGILOSO, quando administrador sem concessão explícita tenta acessar, então nega; proprietário e colaboradores autorizados seguem a política definida.\n\n- **RF66.CA07** Dada sessão DECIA, quando entra observador/não participante, então só recebe operações compatíveis com papel e acesso à tarefa; URLs diretas não contornam a regra.\n\n- **RF66.CA08** Dada colaboração 3D, quando é oferecida, então implementa as mesmas garantias no servidor; demonstração 3D local não satisfaz esse aceite.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF66.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-66-20261015`."
+  },
+  {
+    "number": 67,
+    "title": "Completar geometria e prever traçados no Drawings",
+    "story": "Receber continuação plausível de traçados, objetos e leiautes com revisão.",
+    "criteria": [
+      "Dado AI_COMPLETE/AICOMP, quando escolhe objeto, wireframe, região menor ou maior, então fixa escopo, revisão e elementos preservados.",
+      "Dado arco parcial ou traço linear, quando prevê continuação, então mostra pontos fantasma com hipótese/confiança e só aplica conforme nível autorizado.",
+      "Dada fachada simétrica ou curva Bézier, quando completa, então valida continuidade, tangência e simetria dentro de tolerância informada.",
+      "Dado arranjo de mobiliário, quando sugere layout, então recebe dimensões e restrições explícitas e verifica colisões e circulação; não inventa medidas ou normas.",
+      "Dado roteamento MEP, quando sugere percurso, então usa obstáculos, conexões e regras da disciplina, identifica fontes e exige validação profissional aplicável.",
+      "Dado usuário que rejeita a predição, quando continua desenhando, então não altera o traço nem repete chamadas pagas sem controle.",
+      "Dado custo/rede indisponível, quando usa hipótese algorítmica local, então identifica sua origem e não a rotula como inferência de LLM."
+    ],
+    "marker": "WS-STUDIO-RF-67-20261015",
+    "name": "RF67: Completar geometria e prever traçados no Drawings",
+    "acceptance": [
+      {
+        "id": "RF67.CA01",
+        "text": "Dado AI_COMPLETE/AICOMP, quando escolhe objeto, wireframe, região menor ou maior, então fixa escopo, revisão e elementos preservados."
+      },
+      {
+        "id": "RF67.CA02",
+        "text": "Dado arco parcial ou traço linear, quando prevê continuação, então mostra pontos fantasma com hipótese/confiança e só aplica conforme nível autorizado."
+      },
+      {
+        "id": "RF67.CA03",
+        "text": "Dada fachada simétrica ou curva Bézier, quando completa, então valida continuidade, tangência e simetria dentro de tolerância informada."
+      },
+      {
+        "id": "RF67.CA04",
+        "text": "Dado arranjo de mobiliário, quando sugere layout, então recebe dimensões e restrições explícitas e verifica colisões e circulação; não inventa medidas ou normas."
+      },
+      {
+        "id": "RF67.CA05",
+        "text": "Dado roteamento MEP, quando sugere percurso, então usa obstáculos, conexões e regras da disciplina, identifica fontes e exige validação profissional aplicável."
+      },
+      {
+        "id": "RF67.CA06",
+        "text": "Dado usuário que rejeita a predição, quando continua desenhando, então não altera o traço nem repete chamadas pagas sem controle."
+      },
+      {
+        "id": "RF67.CA07",
+        "text": "Dado custo/rede indisponível, quando usa hipótese algorítmica local, então identifica sua origem e não a rotula como inferência de LLM."
+      }
+    ],
+    "description": "# RF67 — Completar geometria e prever traçados no Drawings\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero receber continuação plausível de traçados, objetos e leiautes com revisão.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF67.CA01** Dado AI_COMPLETE/AICOMP, quando escolhe objeto, wireframe, região menor ou maior, então fixa escopo, revisão e elementos preservados.\n\n- **RF67.CA02** Dado arco parcial ou traço linear, quando prevê continuação, então mostra pontos fantasma com hipótese/confiança e só aplica conforme nível autorizado.\n\n- **RF67.CA03** Dada fachada simétrica ou curva Bézier, quando completa, então valida continuidade, tangência e simetria dentro de tolerância informada.\n\n- **RF67.CA04** Dado arranjo de mobiliário, quando sugere layout, então recebe dimensões e restrições explícitas e verifica colisões e circulação; não inventa medidas ou normas.\n\n- **RF67.CA05** Dado roteamento MEP, quando sugere percurso, então usa obstáculos, conexões e regras da disciplina, identifica fontes e exige validação profissional aplicável.\n\n- **RF67.CA06** Dado usuário que rejeita a predição, quando continua desenhando, então não altera o traço nem repete chamadas pagas sem controle.\n\n- **RF67.CA07** Dado custo/rede indisponível, quando usa hipótese algorítmica local, então identifica sua origem e não a rotula como inferência de LLM.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF67.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-67-20261015`."
+  },
+  {
+    "number": 68,
+    "title": "Gerar, auditar, estilizar, otimizar e converter desenhos com IA",
+    "story": "Usar comandos de IA rastreáveis, com validação antes de modificar peças.",
+    "criteria": [
+      "Dado AI_GENERATE/AIGEN, quando envia intenção e restrições, então recebe proposta estruturada de geometrias compatíveis com o motor e uma prévia revisável.",
+      "Dado AI_AUDIT/AIAUD, quando analisa, então aponta duplicatas, perfis abertos, colisões e achados técnicos com localização, regra, tolerância e grau de certeza.",
+      "Dado AI_STYLE/AISTY, quando seleciona referência, então propõe materiais/traços/hachuras sem modificar topologia ou acesso silenciosamente.",
+      "Dado AI_OPTIMIZE/AIOPT, quando simplifica, então mede erro máximo, redução de tamanho e preserva cotas, conectividade, furos e partes protegidas.",
+      "Dado AI_CONVERT/AICONV, quando vetoriza raster/croqui, então mantém referência, escala declarada e incertezas; permite corrigir contornos antes de gravar.",
+      "Dado nível 1 a 4, quando executa esses comandos, então respeita RF51 e não amplia autonomia por causa do nome do comando.",
+      "Dado resultado não verificável, quando conclui, então informa pendências e não publica certificação ABNT, aprovação técnica ou autoria humana presumida."
+    ],
+    "marker": "WS-STUDIO-RF-68-20261015",
+    "name": "RF68: Gerar, auditar, estilizar, otimizar e converter desenhos com IA",
+    "acceptance": [
+      {
+        "id": "RF68.CA01",
+        "text": "Dado AI_GENERATE/AIGEN, quando envia intenção e restrições, então recebe proposta estruturada de geometrias compatíveis com o motor e uma prévia revisável."
+      },
+      {
+        "id": "RF68.CA02",
+        "text": "Dado AI_AUDIT/AIAUD, quando analisa, então aponta duplicatas, perfis abertos, colisões e achados técnicos com localização, regra, tolerância e grau de certeza."
+      },
+      {
+        "id": "RF68.CA03",
+        "text": "Dado AI_STYLE/AISTY, quando seleciona referência, então propõe materiais/traços/hachuras sem modificar topologia ou acesso silenciosamente."
+      },
+      {
+        "id": "RF68.CA04",
+        "text": "Dado AI_OPTIMIZE/AIOPT, quando simplifica, então mede erro máximo, redução de tamanho e preserva cotas, conectividade, furos e partes protegidas."
+      },
+      {
+        "id": "RF68.CA05",
+        "text": "Dado AI_CONVERT/AICONV, quando vetoriza raster/croqui, então mantém referência, escala declarada e incertezas; permite corrigir contornos antes de gravar."
+      },
+      {
+        "id": "RF68.CA06",
+        "text": "Dado nível 1 a 4, quando executa esses comandos, então respeita RF51 e não amplia autonomia por causa do nome do comando."
+      },
+      {
+        "id": "RF68.CA07",
+        "text": "Dado resultado não verificável, quando conclui, então informa pendências e não publica certificação ABNT, aprovação técnica ou autoria humana presumida."
+      }
+    ],
+    "description": "# RF68 — Gerar, auditar, estilizar, otimizar e converter desenhos com IA\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero usar comandos de IA rastreáveis, com validação antes de modificar peças.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF68.CA01** Dado AI_GENERATE/AIGEN, quando envia intenção e restrições, então recebe proposta estruturada de geometrias compatíveis com o motor e uma prévia revisável.\n\n- **RF68.CA02** Dado AI_AUDIT/AIAUD, quando analisa, então aponta duplicatas, perfis abertos, colisões e achados técnicos com localização, regra, tolerância e grau de certeza.\n\n- **RF68.CA03** Dado AI_STYLE/AISTY, quando seleciona referência, então propõe materiais/traços/hachuras sem modificar topologia ou acesso silenciosamente.\n\n- **RF68.CA04** Dado AI_OPTIMIZE/AIOPT, quando simplifica, então mede erro máximo, redução de tamanho e preserva cotas, conectividade, furos e partes protegidas.\n\n- **RF68.CA05** Dado AI_CONVERT/AICONV, quando vetoriza raster/croqui, então mantém referência, escala declarada e incertezas; permite corrigir contornos antes de gravar.\n\n- **RF68.CA06** Dado nível 1 a 4, quando executa esses comandos, então respeita RF51 e não amplia autonomia por causa do nome do comando.\n\n- **RF68.CA07** Dado resultado não verificável, quando conclui, então informa pendências e não publica certificação ABNT, aprovação técnica ou autoria humana presumida.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF68.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-68-20261015`."
+  },
+  {
+    "number": 69,
+    "title": "Salvar, exportar, recuperar e navegar no histórico das peças",
+    "story": "Proteger o trabalho de Letters e Drawings contra falhas e alterações indesejadas.",
+    "criteria": [
+      "Dados QSAVE/Ctrl+S e SAVEAS/Save a Copy, quando executa, então salva versão persistida ou exporta formato identificado, sem simular escrita em servidor.",
+      "Dado SAVETIME/autosalvamento, quando configurado, então registra checkpoints no intervalo, identifica onde estão armazenados e aplica política de acesso e retenção.",
+      "Dado UNDO/REDO ou painel histórico, quando retorna a um estado, então preserva versões e reaplica autorizações/reservas atuais.",
+      "Dado OOPS, quando restaura última exclusão, então não desfaz edições posteriores nem duplica IDs ou recria conteúdo fora de permissão.",
+      "Dado LAYERP, quando restaura visibilidade/configuração anterior, então não altera geometria nem concede acesso.",
+      "Dado Revert/F12, quando volta à última versão salva, então mostra o que será descartado e mantém ponto recuperável.",
+      "Dado RECOVER/RECOVERALL/DRAWINGRECOVERY, quando arquivo/checkpoint falha, então valida integridade, oferece versões recuperáveis e não promete reparar DWG sem suporte real.",
+      "Dada exportação para telas, quando otimiza, então mantém original editável e informa resolução, perfil e perdas."
+    ],
+    "marker": "WS-STUDIO-RF-69-20261015",
+    "name": "RF69: Salvar, exportar, recuperar e navegar no histórico das peças",
+    "acceptance": [
+      {
+        "id": "RF69.CA01",
+        "text": "Dados QSAVE/Ctrl+S e SAVEAS/Save a Copy, quando executa, então salva versão persistida ou exporta formato identificado, sem simular escrita em servidor."
+      },
+      {
+        "id": "RF69.CA02",
+        "text": "Dado SAVETIME/autosalvamento, quando configurado, então registra checkpoints no intervalo, identifica onde estão armazenados e aplica política de acesso e retenção."
+      },
+      {
+        "id": "RF69.CA03",
+        "text": "Dado UNDO/REDO ou painel histórico, quando retorna a um estado, então preserva versões e reaplica autorizações/reservas atuais."
+      },
+      {
+        "id": "RF69.CA04",
+        "text": "Dado OOPS, quando restaura última exclusão, então não desfaz edições posteriores nem duplica IDs ou recria conteúdo fora de permissão."
+      },
+      {
+        "id": "RF69.CA05",
+        "text": "Dado LAYERP, quando restaura visibilidade/configuração anterior, então não altera geometria nem concede acesso."
+      },
+      {
+        "id": "RF69.CA06",
+        "text": "Dado Revert/F12, quando volta à última versão salva, então mostra o que será descartado e mantém ponto recuperável."
+      },
+      {
+        "id": "RF69.CA07",
+        "text": "Dado RECOVER/RECOVERALL/DRAWINGRECOVERY, quando arquivo/checkpoint falha, então valida integridade, oferece versões recuperáveis e não promete reparar DWG sem suporte real."
+      },
+      {
+        "id": "RF69.CA08",
+        "text": "Dada exportação para telas, quando otimiza, então mantém original editável e informa resolução, perfil e perdas."
+      }
+    ],
+    "description": "# RF69 — Salvar, exportar, recuperar e navegar no histórico das peças\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero proteger o trabalho de Letters e Drawings contra falhas e alterações indesejadas.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF69.CA01** Dados QSAVE/Ctrl+S e SAVEAS/Save a Copy, quando executa, então salva versão persistida ou exporta formato identificado, sem simular escrita em servidor.\n\n- **RF69.CA02** Dado SAVETIME/autosalvamento, quando configurado, então registra checkpoints no intervalo, identifica onde estão armazenados e aplica política de acesso e retenção.\n\n- **RF69.CA03** Dado UNDO/REDO ou painel histórico, quando retorna a um estado, então preserva versões e reaplica autorizações/reservas atuais.\n\n- **RF69.CA04** Dado OOPS, quando restaura última exclusão, então não desfaz edições posteriores nem duplica IDs ou recria conteúdo fora de permissão.\n\n- **RF69.CA05** Dado LAYERP, quando restaura visibilidade/configuração anterior, então não altera geometria nem concede acesso.\n\n- **RF69.CA06** Dado Revert/F12, quando volta à última versão salva, então mostra o que será descartado e mantém ponto recuperável.\n\n- **RF69.CA07** Dado RECOVER/RECOVERALL/DRAWINGRECOVERY, quando arquivo/checkpoint falha, então valida integridade, oferece versões recuperáveis e não promete reparar DWG sem suporte real.\n\n- **RF69.CA08** Dada exportação para telas, quando otimiza, então mantém original editável e informa resolução, perfil e perdas.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF69.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-69-20261015`."
+  },
+  {
+    "number": 70,
+    "title": "Importar, exportar e referenciar conteúdo técnico nas peças",
+    "story": "Usar formatos e referências externas com fidelidade e limites verificáveis.",
+    "criteria": [
+      "Dados formatos nativos ws-studio/ws-asset, quando exporta e reimporta, então preserva IDs, topologia, camadas, materiais, metadados e câmera suportados.",
+      "Dados SVG, PNG/JPEG/WebP, PDF, DXF/DWG, GLB/IFC, quando o formato está habilitado, então existe parser/conversor validado, limites e mensagem clara para recursos não suportados.",
+      "Dadas fontes WOFF2, paletas JSON e referências visuais, quando importa, então valida origem/formato, não executa conteúdo ativo e mantém associação ao projeto.",
+      "Dado XOPEN/Xref, quando abre referência externa, então preserva vínculo, versão e permissão, sem acesso arbitrário a arquivos ou URLs.",
+      "Dado arquivo malformado, excessivo ou com dependências ausentes, quando abre, então rejeita/solicita correção sem destruir o projeto existente.",
+      "Dada perda de fidelidade, quando converte, então informa o que será achatado, aproximado ou descartado antes do aceite.",
+      "Dada exportação GLB, quando valida, então passa validador de formato e preserva unidades, normais e materiais compatíveis; isso não certifica fabricação ou projeto."
+    ],
+    "marker": "WS-STUDIO-RF-70-20261015",
+    "name": "RF70: Importar, exportar e referenciar conteúdo técnico nas peças",
+    "acceptance": [
+      {
+        "id": "RF70.CA01",
+        "text": "Dados formatos nativos ws-studio/ws-asset, quando exporta e reimporta, então preserva IDs, topologia, camadas, materiais, metadados e câmera suportados."
+      },
+      {
+        "id": "RF70.CA02",
+        "text": "Dados SVG, PNG/JPEG/WebP, PDF, DXF/DWG, GLB/IFC, quando o formato está habilitado, então existe parser/conversor validado, limites e mensagem clara para recursos não suportados."
+      },
+      {
+        "id": "RF70.CA03",
+        "text": "Dadas fontes WOFF2, paletas JSON e referências visuais, quando importa, então valida origem/formato, não executa conteúdo ativo e mantém associação ao projeto."
+      },
+      {
+        "id": "RF70.CA04",
+        "text": "Dado XOPEN/Xref, quando abre referência externa, então preserva vínculo, versão e permissão, sem acesso arbitrário a arquivos ou URLs."
+      },
+      {
+        "id": "RF70.CA05",
+        "text": "Dado arquivo malformado, excessivo ou com dependências ausentes, quando abre, então rejeita/solicita correção sem destruir o projeto existente."
+      },
+      {
+        "id": "RF70.CA06",
+        "text": "Dada perda de fidelidade, quando converte, então informa o que será achatado, aproximado ou descartado antes do aceite."
+      },
+      {
+        "id": "RF70.CA07",
+        "text": "Dada exportação GLB, quando valida, então passa validador de formato e preserva unidades, normais e materiais compatíveis; isso não certifica fabricação ou projeto."
+      }
+    ],
+    "description": "# RF70 — Importar, exportar e referenciar conteúdo técnico nas peças\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero usar formatos e referências externas com fidelidade e limites verificáveis.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF70.CA01** Dados formatos nativos ws-studio/ws-asset, quando exporta e reimporta, então preserva IDs, topologia, camadas, materiais, metadados e câmera suportados.\n\n- **RF70.CA02** Dados SVG, PNG/JPEG/WebP, PDF, DXF/DWG, GLB/IFC, quando o formato está habilitado, então existe parser/conversor validado, limites e mensagem clara para recursos não suportados.\n\n- **RF70.CA03** Dadas fontes WOFF2, paletas JSON e referências visuais, quando importa, então valida origem/formato, não executa conteúdo ativo e mantém associação ao projeto.\n\n- **RF70.CA04** Dado XOPEN/Xref, quando abre referência externa, então preserva vínculo, versão e permissão, sem acesso arbitrário a arquivos ou URLs.\n\n- **RF70.CA05** Dado arquivo malformado, excessivo ou com dependências ausentes, quando abre, então rejeita/solicita correção sem destruir o projeto existente.\n\n- **RF70.CA06** Dada perda de fidelidade, quando converte, então informa o que será achatado, aproximado ou descartado antes do aceite.\n\n- **RF70.CA07** Dada exportação GLB, quando valida, então passa validador de formato e preserva unidades, normais e materiais compatíveis; isso não certifica fabricação ou projeto.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF70.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-70-20261015`."
+  },
+  {
+    "number": 71,
+    "title": "Integrar peças Letters e Drawings à jornada de tarefas, projetos e DECIA",
+    "story": "Transformar produção e decisões em trabalho rastreável e compartilhável.",
+    "criteria": [
+      "Dada tarefa/projeto, quando cria peça Letters/Drawings, então mantém vínculo, proprietário, visibilidade e revisão persistida.",
+      "Dada decisão DECIA, quando gera trabalho, então cria tarefa com objetivo, responsável proposto, critério de aceite e referência à evidência revisada.",
+      "Dado perfil profissional, quando publica peça, então exige escolha explícita da revisão e audiência; salvar, seguir, curtir ou compartilhar não concede acesso.",
+      "Dado remix, quando autorizado, então cria derivação com origem, licença, autores e mudanças; não infere porcentagens de autoria como prova.",
+      "Dado comentário, curtida ou compartilhamento, quando a visibilidade muda, então revalida acesso aos derivados e evita vazamento por prévias e contagens.",
+      "Dado chefe/departamento, quando acompanha entregas, então vê apenas dados autorizados e distingue rascunho, revisado, aprovado e publicado.",
+      "Dado usuário de qualquer área profissional, quando percorre o fluxo, então recebe exemplos e instruções claros sem exigir terminologia técnica não explicada."
+    ],
+    "marker": "WS-STUDIO-RF-71-20261015",
+    "name": "RF71: Integrar peças Letters e Drawings à jornada de tarefas, projetos e DECIA",
+    "acceptance": [
+      {
+        "id": "RF71.CA01",
+        "text": "Dada tarefa/projeto, quando cria peça Letters/Drawings, então mantém vínculo, proprietário, visibilidade e revisão persistida."
+      },
+      {
+        "id": "RF71.CA02",
+        "text": "Dada decisão DECIA, quando gera trabalho, então cria tarefa com objetivo, responsável proposto, critério de aceite e referência à evidência revisada."
+      },
+      {
+        "id": "RF71.CA03",
+        "text": "Dado perfil profissional, quando publica peça, então exige escolha explícita da revisão e audiência; salvar, seguir, curtir ou compartilhar não concede acesso."
+      },
+      {
+        "id": "RF71.CA04",
+        "text": "Dado remix, quando autorizado, então cria derivação com origem, licença, autores e mudanças; não infere porcentagens de autoria como prova."
+      },
+      {
+        "id": "RF71.CA05",
+        "text": "Dado comentário, curtida ou compartilhamento, quando a visibilidade muda, então revalida acesso aos derivados e evita vazamento por prévias e contagens."
+      },
+      {
+        "id": "RF71.CA06",
+        "text": "Dado chefe/departamento, quando acompanha entregas, então vê apenas dados autorizados e distingue rascunho, revisado, aprovado e publicado."
+      },
+      {
+        "id": "RF71.CA07",
+        "text": "Dado usuário de qualquer área profissional, quando percorre o fluxo, então recebe exemplos e instruções claros sem exigir terminologia técnica não explicada."
+      }
+    ],
+    "description": "# RF71 — Integrar peças Letters e Drawings à jornada de tarefas, projetos e DECIA\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero transformar produção e decisões em trabalho rastreável e compartilhável.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF71.CA01** Dada tarefa/projeto, quando cria peça Letters/Drawings, então mantém vínculo, proprietário, visibilidade e revisão persistida.\n\n- **RF71.CA02** Dada decisão DECIA, quando gera trabalho, então cria tarefa com objetivo, responsável proposto, critério de aceite e referência à evidência revisada.\n\n- **RF71.CA03** Dado perfil profissional, quando publica peça, então exige escolha explícita da revisão e audiência; salvar, seguir, curtir ou compartilhar não concede acesso.\n\n- **RF71.CA04** Dado remix, quando autorizado, então cria derivação com origem, licença, autores e mudanças; não infere porcentagens de autoria como prova.\n\n- **RF71.CA05** Dado comentário, curtida ou compartilhamento, quando a visibilidade muda, então revalida acesso aos derivados e evita vazamento por prévias e contagens.\n\n- **RF71.CA06** Dado chefe/departamento, quando acompanha entregas, então vê apenas dados autorizados e distingue rascunho, revisado, aprovado e publicado.\n\n- **RF71.CA07** Dado usuário de qualquer área profissional, quando percorre o fluxo, então recebe exemplos e instruções claros sem exigir terminologia técnica não explicada.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF71.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-71-20261015`."
+  },
+  {
+    "number": 72,
+    "title": "Validar qualidade, desempenho e evidências dos editores",
+    "story": "Aceitar funcionalidades com testes reais, rubricas e cobertura documentada.",
+    "criteria": [
+      "Dada entrega de RF, quando é marcada como concluída, então cada CA tem evidência, versão/commit e teste ou validação manual reproduzível.",
+      "Dadas notas de qualidade, quando publica auditoria, então usa rubrica explícita; nota superior a 8 exige medição e não apenas novo rótulo.",
+      "Dados cenários complexos, quando demonstra Drawings, então mostra etapas de criação, wireframe, refino, câmera e resultado final com capturas reais do editor.",
+      "Dada colaboração, quando valida, então usa duas sessões autenticadas e testa concorrência, expiração, revogação e escopos sobrepostos.",
+      "Dados modelos de IA, quando avalia, então usa corpus/benchmark versionado, orçamento de testes e métricas por nível, sem confundir mocks com integração real.",
+      "Dados acessibilidade e desempenho, quando valida, então registra teclado/leitor de tela e orçamento de latência/memória em tamanhos de documento/cena definidos.",
+      "Dado catálogo de funcionalidades desejadas, quando gera relatório, então distingue implementado local, publicado, validado, parcial e pendente; script de inventário não conta como prova de implementação."
+    ],
+    "marker": "WS-STUDIO-RF-72-20261015",
+    "name": "RF72: Validar qualidade, desempenho e evidências dos editores",
+    "acceptance": [
+      {
+        "id": "RF72.CA01",
+        "text": "Dada entrega de RF, quando é marcada como concluída, então cada CA tem evidência, versão/commit e teste ou validação manual reproduzível."
+      },
+      {
+        "id": "RF72.CA02",
+        "text": "Dadas notas de qualidade, quando publica auditoria, então usa rubrica explícita; nota superior a 8 exige medição e não apenas novo rótulo."
+      },
+      {
+        "id": "RF72.CA03",
+        "text": "Dados cenários complexos, quando demonstra Drawings, então mostra etapas de criação, wireframe, refino, câmera e resultado final com capturas reais do editor."
+      },
+      {
+        "id": "RF72.CA04",
+        "text": "Dada colaboração, quando valida, então usa duas sessões autenticadas e testa concorrência, expiração, revogação e escopos sobrepostos."
+      },
+      {
+        "id": "RF72.CA05",
+        "text": "Dados modelos de IA, quando avalia, então usa corpus/benchmark versionado, orçamento de testes e métricas por nível, sem confundir mocks com integração real."
+      },
+      {
+        "id": "RF72.CA06",
+        "text": "Dados acessibilidade e desempenho, quando valida, então registra teclado/leitor de tela e orçamento de latência/memória em tamanhos de documento/cena definidos."
+      },
+      {
+        "id": "RF72.CA07",
+        "text": "Dado catálogo de funcionalidades desejadas, quando gera relatório, então distingue implementado local, publicado, validado, parcial e pendente; script de inventário não conta como prova de implementação."
+      }
+    ],
+    "description": "# RF72 — Validar qualidade, desempenho e evidências dos editores\n\nEstado: ESPECIFICADO — implementação e validação por critério pendentes. Recursos locais parciais não equivalem a RF concluído.\n\nHistória: Como usuário autorizado do Work Station, quero aceitar funcionalidades com testes reais, rubricas e cobertura documentada.\n\nIntegração: complementa RF4, RF8, RF13, RF22, RF26, RF29, RF34 e RF43. Objetivos: criar trabalho com IA, construir portfólio e colaborar no DECIA.\n\n## Critérios de aceite\n\n- **RF72.CA01** Dada entrega de RF, quando é marcada como concluída, então cada CA tem evidência, versão/commit e teste ou validação manual reproduzível.\n\n- **RF72.CA02** Dadas notas de qualidade, quando publica auditoria, então usa rubrica explícita; nota superior a 8 exige medição e não apenas novo rótulo.\n\n- **RF72.CA03** Dados cenários complexos, quando demonstra Drawings, então mostra etapas de criação, wireframe, refino, câmera e resultado final com capturas reais do editor.\n\n- **RF72.CA04** Dada colaboração, quando valida, então usa duas sessões autenticadas e testa concorrência, expiração, revogação e escopos sobrepostos.\n\n- **RF72.CA05** Dados modelos de IA, quando avalia, então usa corpus/benchmark versionado, orçamento de testes e métricas por nível, sem confundir mocks com integração real.\n\n- **RF72.CA06** Dados acessibilidade e desempenho, quando valida, então registra teclado/leitor de tela e orçamento de latência/memória em tamanhos de documento/cena definidos.\n\n- **RF72.CA07** Dado catálogo de funcionalidades desejadas, quando gera relatório, então distingue implementado local, publicado, validado, parcial e pendente; script de inventário não conta como prova de implementação.\n\n## Regras transversais\n\nAutorização no servidor; SIGILOSO somente proprietário e colaboradores explícitos, sem acesso administrativo implícito. Identificar heurística, mock e IA real. Respeitar nível, revisão e reserva. Não executar instruções de documentos como comandos de sistema. Não marcar checklist concluída sem evidência. Nenhuma publicação automática.\n\n## Dependências e evidências\n\nRF51 controla autonomia. RF65/RF66 controlam escopo e colaboração. RF69 controla recuperação. RF72 define prova de conclusão. Fontes e estudos: docs/auditoria/2026-10-15/pesquisa-comandos/. Especificação versionável: docs/produto/requisitos-studio/RF72.md.\n\nIdentificador de sincronização: `WS-STUDIO-RF-72-20261015`."
+  }
+]

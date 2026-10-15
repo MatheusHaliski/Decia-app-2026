@@ -1,0 +1,178 @@
+{
+  "executadoEm": "2026-10-15T17:45:32.139337+00:00",
+  "metodo": "HTTP público com TLS verificado, extração HTML e localização literal; sem inferência de IA",
+  "limite": "Termo encontrado não prova semântica nem implementação; falhas e termos ausentes preservados.",
+  "fontes": [
+    {
+      "nome": "OpenAI — segurança em agentes",
+      "url": "https://platform.openai.com/docs/guides/agent-builder-safety",
+      "consultadoEm": "2026-10-15T17:45:30.797810+00:00",
+      "status": 200,
+      "urlFinal": "https://developers.openai.com/api/docs/guides/agent-builder-safety",
+      "sha256": "7e50629db1673a1b6ee03e9563990565eb85bdb85af96bfe26a0188adef87e65",
+      "titulo": "Safety in building agents | OpenAI API",
+      "caracteresTexto": 17930,
+      "trechos": [
+        {
+          "termo": "approval",
+          "texto": "er commands Developer settings Overview Permissions Profiles Sandboxing Auto-review Agent approvals & security Codex Security Overview Codex Security plugin Quickstart Run a security scan Run a deep scan Review code changes Use the Security workbench Triage a backlog Fix findin"
+        },
+        {
+          "termo": "structured",
+          "texto": "alog Choose a model Pricing Model selection Text and code Text generation Code generation Structured output Prompting Overview Prompt engineering Citation formatting Migration guide Prompt generation Frontend prompting Reasoning Reasoning models Reasoning best practices Images Im"
+        },
+        {
+          "termo": "injection",
+          "texto": "ctices Assistants API Migration guide Copy Page Safety in building agents Minimize prompt injections and other risks when building agents. Copy Page As you build and deploy agents with Agent Builder , it’s important to understand the risks. Learn about risk types and how to miti"
+        },
+        {
+          "termo": "human",
+          "texto": "review and confirm every operation, including reads and writes. In Agent Builder, use the human approval node. Use guardrails for user inputs Sanitize incoming inputs using built-in guardrails to redact personally identifiable information (PII) and detect jailbreak attempts."
+        }
+      ],
+      "resultado": "texto_obtido",
+      "termosNaoLocalizados": []
+    },
+    {
+      "nome": "OpenAI — avaliações de agentes",
+      "url": "https://platform.openai.com/docs/guides/agent-evals",
+      "consultadoEm": "2026-10-15T17:45:30.798476+00:00",
+      "status": 200,
+      "urlFinal": "https://developers.openai.com/api/docs/guides/agent-evals",
+      "sha256": "5f1ad961b3f45d70d14591c99ebe2af13f26744fcee22d539f41a83cb38e9e11",
+      "titulo": "Evaluate agent workflows | OpenAI API",
+      "caracteresTexto": 15029,
+      "trechos": [
+        {
+          "termo": "eval",
+          "texto": "Evaluate agent workflows | OpenAI API For the complete documentation index, see llms.txt . Markdown versions of documentation pages are available by appending .md to the page URL. Chat"
+        },
+        {
+          "termo": "trace",
+          "texto": "ew Customize Widgets Actions Advanced integrations Copy Page Evaluate agent workflows Use traces, graders, datasets, and eval runs to improve agent quality. Copy Page The OpenAI Platform offers a suite of evaluation tools to help you ensure your agents perform consistently a"
+        },
+        {
+          "termo": "dataset",
+          "texto": "ets Actions Advanced integrations Copy Page Evaluate agent workflows Use traces, graders, datasets, and eval runs to improve agent quality. Copy Page The OpenAI Platform offers a suite of evaluation tools to help you ensure your agents perform consistently and accurately. Use "
+        }
+      ],
+      "resultado": "texto_obtido",
+      "termosNaoLocalizados": []
+    },
+    {
+      "nome": "Microsoft — diretrizes de interação humano-IA",
+      "url": "https://www.microsoft.com/en-us/research/publication/guidelines-for-human-ai-interaction/",
+      "consultadoEm": "2026-10-15T17:45:30.798888+00:00",
+      "status": 200,
+      "urlFinal": "https://www.microsoft.com/en-us/research/publication/guidelines-for-human-ai-interaction/",
+      "sha256": "8c1a7ffa0b8c3c11c134559b68278f6675fdb9c6d5bbd6aaea67ac687a495791",
+      "titulo": "Guidelines for Human-AI Interaction - Microsoft Research",
+      "caracteresTexto": 6707,
+      "trechos": [
+        {
+          "termo": "interaction",
+          "texto": "Guidelines for Human-AI Interaction - Microsoft Research Skip to main content Research Publications Code, datasets and models Artificial intelligence Audio & acoustics Computer vision Graphics & multimedia Human-com"
+        },
+        {
+          "termo": "guidelines",
+          "texto": "Guidelines for Human-AI Interaction - Microsoft Research Skip to main content Research Publications Code, datasets and models Artificial intelligence Audio & acoustics Computer vision Graphi"
+        }
+      ],
+      "resultado": "texto_obtido",
+      "termosNaoLocalizados": [
+        "control",
+        "errors"
+      ]
+    },
+    {
+      "nome": "SketchGraphs — restrições geométricas em CAD",
+      "url": "https://arxiv.org/abs/2007.08506",
+      "consultadoEm": "2026-10-15T17:45:30.799365+00:00",
+      "status": 200,
+      "urlFinal": "https://arxiv.org/abs/2007.08506",
+      "sha256": "8d2764e087593a784244ce4fa7b50b869b119fc2e5f4211c84a26a44ef95d329",
+      "titulo": "[2007.08506] SketchGraphs: A Large-Scale Dataset for Modeling Relational Geometry in Computer-Aided Design",
+      "caracteresTexto": 4879,
+      "trechos": [
+        {
+          "termo": "SketchGraphs",
+          "texto": "[2007.08506] SketchGraphs: A Large-Scale Dataset for Modeling Relational Geometry in Computer-Aided Design Skip to main content Search Submit Donate Log in Search arXiv Press Enter to search · Advanced sea"
+        },
+        {
+          "termo": "constraints",
+          "texto": "onal sketches consisting of geometric primitives (e.g., line segments, arcs) and explicit constraints between them (e.g., coincidence, perpendicularity) that form the basis for three-dimensional construction operations. Training machine learning models to reason about and synthesi"
+        },
+        {
+          "termo": "CAD",
+          "texto": " 3 other authors View PDF HTML (experimental) Abstract: Parametric computer-aided design (CAD) is the dominant paradigm in mechanical engineering for physical design. Distinguished by relational geometry, parametric CAD models begin as two-dimensional sketches consisting o"
+        },
+        {
+          "termo": "graph",
+          "texto": "[2007.08506] SketchGraphs: A Large-Scale Dataset for Modeling Relational Geometry in Computer-Aided Design Skip to main content Search Submit Donate Log in Search arXiv Press Enter to search · Advanced se"
+        }
+      ],
+      "resultado": "texto_obtido",
+      "termosNaoLocalizados": []
+    },
+    {
+      "nome": "Text2CAD — geração paramétrica por texto",
+      "url": "https://arxiv.org/abs/2409.17106",
+      "consultadoEm": "2026-10-15T17:45:31.098342+00:00",
+      "status": 200,
+      "urlFinal": "https://arxiv.org/abs/2409.17106",
+      "sha256": "984d812c6fddd8757667f0573228c33495f9d96be27fb8c4a955da8ef9163853",
+      "titulo": "[2409.17106] Text2CAD: Generating Sequential CAD Models from Beginner-to-Expert Level Text Prompts",
+      "caracteresTexto": 4824,
+      "trechos": [
+        {
+          "termo": "Text2CAD",
+          "texto": "[2409.17106] Text2CAD: Generating Sequential CAD Models from Beginner-to-Expert Level Text Prompts Skip to main content Search Submit Donate Log in Search arXiv Press Enter to search · Advanced search "
+        },
+        {
+          "termo": "parametric",
+          "texto": "er intermediate parts. We propose Text2CAD, the first AI framework for generating text-to-parametric CAD models using designer-friendly instructions for all skill levels. Furthermore, we introduce a data annotation pipeline for generating text prompts based on natural language in"
+        },
+        {
+          "termo": "CAD",
+          "texto": "[2409.17106] Text2CAD: Generating Sequential CAD Models from Beginner-to-Expert Level Text Prompts Skip to main content Search Submit Donate Log in Search arXiv Press Enter to search · Advanced search "
+        },
+        {
+          "termo": "text",
+          "texto": "[2409.17106] Text2CAD: Generating Sequential CAD Models from Beginner-to-Expert Level Text Prompts Skip to main content Search Submit Donate Log in Search arXiv Press Enter to search · Advanced sea"
+        }
+      ],
+      "resultado": "texto_obtido",
+      "termosNaoLocalizados": []
+    },
+    {
+      "nome": "Adobe — preenchimento generativo de formas",
+      "url": "https://helpx.adobe.com/illustrator/using/generative-shape-fill.html",
+      "consultadoEm": "2026-10-15T17:45:31.169765+00:00",
+      "status": 200,
+      "urlFinal": "https://helpx.adobe.com/illustrator/desktop/use-generative-ai/generate-shape-fills.html",
+      "sha256": "83cd2b8491b800bf968d9ae18c3e8cf98f3d6b8e801dfb1d0864bf88d597dcb3",
+      "titulo": "Generate shape fills in Adobe Illustrator | Illustrator",
+      "caracteresTexto": 38656,
+      "trechos": [
+        {
+          "termo": "generative",
+          "texto": "l overview Relink, replace, or update linked files Embed and unembed images and files Use generative AI Common questions about generative AI features in Adobe Illustrator Partner models in Adobe Illustrator Generate scenes, subjects, and icons Use Auto Select Generate similar var"
+        },
+        {
+          "termo": "reference",
+          "texto": "xtual Task Bar overview Discover panel overview Learn faster with the Discover panel App preferences and settings Set app preferences Customize keyboard shortcuts Find custom keyboard shortcut files Export keyboard shortcuts list as a text document Delete keyboard shortcuts Acce"
+        },
+        {
+          "termo": "shape",
+          "texto": "Generate shape fills in Adobe Illustrator | Illustrator Illustrator Help Desktop Desktop Tablet Web Open on Desktop Adobe Help Center Illustrator Desktop Help What’s new What’s new in Adobe Illu"
+        },
+        {
+          "termo": "detail",
+          "texto": "te shape fills Last updated on Feb 12, 2026 Learn how to use Generative Shape Fill to add detailed vector graphics to shapes. Generative Shape Fill , powered by Adobe Firefly, lets you fill shapes with detail and color in your own style. Try it yourself Follow along with a sa"
+        }
+      ],
+      "resultado": "texto_obtido",
+      "termosNaoLocalizados": []
+    }
+  ]
+}
