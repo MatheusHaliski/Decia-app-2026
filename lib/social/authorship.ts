@@ -20,6 +20,7 @@ export function isAuthorshipSummary(value: unknown): value is AuthorshipSummary 
   if (summary.evidence === "TRACE" && (!summary.algorithmVersion || summary.aiPercentage === null)) return false;
   if (summary.evidence !== "TRACE" && summary.algorithmVersion !== null) return false;
   if (summary.category === "UNVERIFIED") return summary.aiPercentage === null && summary.evidence === "UNVERIFIED";
+  if (summary.evidence === "UNVERIFIED") return false;
   if (summary.aiPercentage === null) return summary.evidence === "SELF_DECLARED";
   if (summary.category === "HUMAN") return summary.aiPercentage === 0;
   if (summary.category === "AI") return summary.aiPercentage === 100;

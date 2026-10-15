@@ -71,7 +71,7 @@ describe("TaskSchemeCard — layouts e estados (ANATOMIA_CARDS §3)", () => {
     ]);
     const vm = toTaskCardViewModel(buildDemoSocial(NOW), U.pessoa, task, NOW);
     render(<TaskSchemeCard vm={{ ...vm, authorship: summary }} />);
-    expect(screen.getByRole("img", { name: /Humano \+ IA · 37,5% IA estimada · trilha de contribuições/ })).toBeTruthy();
+    expect(screen.getByRole("img", { name: /Humano \+ IA · 37,5% IA estimada/ })).toBeTruthy();
     expect(screen.getByTestId("authorship-badge").textContent).toContain("37,5%");
   });
   it("prazo vencido em texto (nunca só cor)", () => {

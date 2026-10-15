@@ -5,20 +5,15 @@ import type { AuthorshipSummary } from "@/lib/social/authorship";
 import { cn } from "@/components/ui";
 
 function labelFor(summary: AuthorshipSummary, t: (key: string, values?: Record<string, string | number>) => string) {
+  if (summary.category === "UNVERIFIED") return t("social.authorship.unverified");
   const percentage = summary.aiPercentage;
-  const category = summary.category === "HUMAN"
-    ? t("social.authorship.human")
+  const prefix = summary.evidence === "SELF_DECLARED" ? "declared" : "tracked";
+  const key = summary.category === "HUMAN"
+    ? `social.authorship.human.${prefix}`
     : summary.category === "HUMAN_AI"
-      ? t("social.authorship.mixed", { percentage: percentage ?? "—" })
-      : summary.category === "AI"
-        ? t("social.authorship.ai", { percentage: percentage ?? "—" })
-        : t("social.authorship.unverified");
-  const evidence = summary.evidence === "TRACE"
-    ? t("social.authorship.trace")
-    : summary.evidence === "SELF_DECLARED"
-      ? t("social.authorship.selfDeclared")
-      : t("social.authorship.unverifiedEvidence");
-  return `${category} · ${evidence}`;
+      ? `social.authorship.mixed.${prefix}`
+      : `social.authorship.ai.${prefix}`;
+  return t(key, percentage === null ? undefined : { percentage });
 }
 
 export function AuthorshipBadge({ summary }: { summary: AuthorshipSummary }) {
