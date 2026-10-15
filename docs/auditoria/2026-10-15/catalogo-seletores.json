@@ -1,0 +1,81 @@
+{
+  "encontradosNosPrototipos": [
+    {
+      "arquivo": "docs/exemplo_drawings_letters/work_station_app.tsx",
+      "ocorrencias": 1,
+      "tipo": "grade"
+    },
+    {
+      "arquivo": "docs/exemplo_drawings_letters/work_station_letters_drawings.tsx",
+      "ocorrencias": 3,
+      "tipo": "grade"
+    }
+  ],
+  "necessarios": {
+    "camada": "select",
+    "cor": "grade",
+    "estilo-de-desenho": "grade",
+    "geometria": "grade",
+    "gradiente": "grade",
+    "modo-de-renderizacao": "select",
+    "objeto": "grade",
+    "pessoa": "grade",
+    "traco-de-linha": "select"
+  },
+  "vocabularios": {
+    "balance": [
+      "SIMETRICO",
+      "ASSIMETRICO",
+      "RADIAL"
+    ],
+    "finish": [
+      "ESBOCO",
+      "EM_DESENVOLVIMENTO",
+      "FINALIZADO",
+      "PRONTO_PARA_IMPRESSAO"
+    ],
+    "genre": [
+      "RETRATO",
+      "FIGURA_HUMANA",
+      "PAISAGEM",
+      "NATUREZA_MORTA",
+      "ARQUITETURA",
+      "ABSTRATO",
+      "NARRATIVO"
+    ],
+    "projection": [
+      "PLANA",
+      "UM_PONTO_DE_FUGA",
+      "DOIS_PONTOS_DE_FUGA",
+      "TRES_PONTOS_DE_FUGA",
+      "ISOMETRICA",
+      "ORTOGONAL",
+      "AXONOMETRICA",
+      "SEM_SISTEMA"
+    ],
+    "purpose": [
+      "CROQUI",
+      "ESTUDO",
+      "ILUSTRACAO",
+      "PROJETO_TECNICO",
+      "STORYBOARD",
+      "CONCEPT_ART",
+      "ANOTACAO"
+    ],
+    "support": [
+      "PAPEL",
+      "TELA",
+      "DIGITAL"
+    ],
+    "technique": [
+      "GRAFITE",
+      "NANQUIM",
+      "AQUARELA",
+      "DIGITAL_VETORIAL",
+      "DIGITAL_RASTER",
+      "TRES_D",
+      "COLAGEM",
+      "MISTO"
+    ]
+  }
+}

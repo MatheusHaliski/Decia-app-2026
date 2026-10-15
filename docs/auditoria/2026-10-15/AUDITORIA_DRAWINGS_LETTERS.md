@@ -42,3 +42,12 @@ Nunca só cor: forma + ícone + texto (WCAG 1.4.1; contraste 4,5:1 texto e 3:1 �
 
 ## 7. Entregue nesta alteração
 `lib/pieces/authorship.ts`, `lib/pieces/classification.ts`, `lib/pieces/authorship.test.ts` (módulos puros, ainda não integrados à UI nem à API). Os testes foram executados com vitest isolado, pois `npm ci` falha neste checkout (lock fora de sincronia com `package.json`).
+
+## 8. Camadas, edição em grupo e wireframe (implementado)
+- **Camadas** (`lib/pieces/layers.ts`): `depth` 0 = mais profunda (ex.: natureza); camadas à frente (pessoas, objetos). Só a camada ativa é editável; camada travada não pode ser ativada nem editada; edição manual e patches de IA usam a mesma checagem (`lib/drawings/selection.ts`).
+- **Edição em grupo** (`lib/pieces/collab.ts`): reserva (lock) por peça + camada + regiões, com lease de 60 s renovável pelo dono; qualquer interseção de regiões com a trava de outro usuário bloqueia o acesso; travas expiradas são descartadas. O servidor serializa as chamadas por peça (fonte de verdade).
+- **Wireframe** (`lib/pieces/wireframe.ts`): objeto/pessoa só com traçado inicial (`toWireframe` remove preenchimento e detalhes e lista as pendências do usuário; `completeWireframe` converte em FILLED).
+- **API de peças** (`lib/pieces/service.ts`): serviço independente de transporte (repositório em memória) para camadas, travas, eventos de autoria, autoria pública e manifesto. Rotas HTTP autenticadas e persistência seguem pendentes (backend).
+- **Manifesto C2PA/IPTC** (`lib/pieces/provenance.ts`): conteúdo do manifesto com IPTC Digital Source Type (URIs a verificar) e vínculo ao hash da cadeia de eventos; **não assinado** (`signed: false`).
+- **AuthorshipBadge / TaskSchemeCard**: já integrados no checkout (`components/social/AuthorshipBadge.tsx`, `TaskSchemeCard.tsx`).
+- **Scripts Python** (`scripts/drawings/`): `catalogar_elementos_ia.py`, `catalogar_seletores.py`, `catalogar_conteudo_importavel.py` geram `catalogo-*.json` nesta pasta (elementos sugeríveis × FILLED/WIREFRAME; seletores de formulário; tipos de conteúdo importável). O catálogo de seletores/importação lista o que o editor deve oferecer, não o que já existe como código.
