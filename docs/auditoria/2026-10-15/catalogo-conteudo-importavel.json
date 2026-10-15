@@ -1,0 +1,83 @@
+{
+  "observacao": "Importado entra como IMPORTED até haver log completo.",
+  "origemAutoria": "IMPORT",
+  "tipos": [
+    {
+      "id": "svg",
+      "kind": "vetor",
+      "layerable": true,
+      "mime": "image/svg+xml",
+      "sanitize": true
+    },
+    {
+      "id": "png",
+      "kind": "raster",
+      "layerable": true,
+      "mime": "image/png",
+      "sanitize": false
+    },
+    {
+      "id": "jpeg",
+      "kind": "raster",
+      "layerable": true,
+      "mime": "image/jpeg",
+      "sanitize": false
+    },
+    {
+      "id": "webp",
+      "kind": "raster",
+      "layerable": true,
+      "mime": "image/webp",
+      "sanitize": false
+    },
+    {
+      "id": "pdf",
+      "kind": "documento",
+      "layerable": false,
+      "mime": "application/pdf",
+      "sanitize": true
+    },
+    {
+      "id": "dxf",
+      "kind": "cad",
+      "layerable": true,
+      "mime": "image/vnd.dxf",
+      "sanitize": true
+    },
+    {
+      "id": "paleta",
+      "kind": "cores",
+      "layerable": false,
+      "mime": "application/json",
+      "sanitize": false
+    },
+    {
+      "id": "fonte",
+      "kind": "tipografia",
+      "layerable": false,
+      "mime": "font/woff2",
+      "sanitize": false
+    },
+    {
+      "id": "referencia",
+      "kind": "referencia",
+      "layerable": false,
+      "mime": "image/*",
+      "sanitize": false
+    },
+    {
+      "id": "texto",
+      "kind": "letters",
+      "layerable": false,
+      "mime": "text/plain",
+      "sanitize": false
+    },
+    {
+      "id": "ws-studio",
+      "kind": "peça",
+      "layerable": true,
+      "mime": "application/json",
+      "sanitize": true
+    }
+  ]
+}

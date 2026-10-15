@@ -1,0 +1,89 @@
+{
+  "drawingStyles": [
+    "3d",
+    "blueprint",
+    "ink_nanquim",
+    "lineart",
+    "sketch",
+    "technical_cad",
+    "watercolor"
+  ],
+  "renderModes": [
+    "FILLED",
+    "WIREFRAME"
+  ],
+  "shapes": [
+    "circle",
+    "line",
+    "rect",
+    "text",
+    "triangle"
+  ],
+  "sources": [
+    "docs/exemplo_drawings_letters/work_station_app.tsx",
+    "docs/exemplo_drawings_letters/work_station_letters_drawings.tsx"
+  ],
+  "subjectKinds": [
+    "object",
+    "person"
+  ],
+  "variations": [
+    {
+      "element": "circle",
+      "mode": "FILLED"
+    },
+    {
+      "element": "circle",
+      "mode": "WIREFRAME"
+    },
+    {
+      "element": "line",
+      "mode": "FILLED"
+    },
+    {
+      "element": "line",
+      "mode": "WIREFRAME"
+    },
+    {
+      "element": "object",
+      "mode": "FILLED"
+    },
+    {
+      "element": "object",
+      "mode": "WIREFRAME"
+    },
+    {
+      "element": "person",
+      "mode": "FILLED"
+    },
+    {
+      "element": "person",
+      "mode": "WIREFRAME"
+    },
+    {
+      "element": "rect",
+      "mode": "FILLED"
+    },
+    {
+      "element": "rect",
+      "mode": "WIREFRAME"
+    },
+    {
+      "element": "text",
+      "mode": "FILLED"
+    },
+    {
+      "element": "text",
+      "mode": "WIREFRAME"
+    },
+    {
+      "element": "triangle",
+      "mode": "FILLED"
+    },
+    {
+      "element": "triangle",
+      "mode": "WIREFRAME"
+    }
+  ],
+  "wireframeDefinition": "Versão esqueleto: só traçado inicial; preenchimento e detalhes ficam a cargo do usuário."
+}
