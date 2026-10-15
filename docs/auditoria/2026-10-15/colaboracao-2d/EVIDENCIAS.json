@@ -1,0 +1,17 @@
+{
+  "capturedAt": "2026-10-15T12:26:24.408Z",
+  "actors": 2,
+  "captures": 7,
+  "source": "Login real, duas sessões de navegador isoladas, tarefa SIGILOSO com concessão explícita, fixture geométrica manual; sem simulação dos endpoints de reservas ou patches.",
+  "finalRevision": 2,
+  "scenario": [
+    "reserva A1",
+    "conflito ao tentar região ancestral",
+    "reserva C1 independente",
+    "patch A recebido por B",
+    "patch B recebido por A",
+    "reload preserva ambos"
+  ],
+  "blockedAiRequests": 0,
+  "pageErrors": []
+}

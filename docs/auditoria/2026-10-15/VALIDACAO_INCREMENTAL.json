@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-15",
+  "frontend": {
+    "tests": 491,
+    "files": 56,
+    "failures": 0,
+    "lint": "passed",
+    "typecheck": "passed",
+    "build": "passed"
+  },
+  "backendTargeted": {
+    "SharedDrawingServiceTest": 4,
+    "TaskInventoryApiIT": 8,
+    "ForeignKeyPolicyTest": 6,
+    "PathVariableAuthorizationTest": 2,
+    "OpenApiContractIT": 2,
+    "failures": 0,
+    "skipped": 0
+  },
+  "allRfComplete": false,
+  "paidAiCalls": 0,
+  "applicationCodePublished": false
+}
