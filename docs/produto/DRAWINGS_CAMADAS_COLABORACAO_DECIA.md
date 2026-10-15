@@ -4,9 +4,9 @@
 
 Um desenho mantém quatro eixos independentes: camada, região espacial, objeto e detalhe. Camadas expressam organização autoral, não classificação de acesso. Céu e campos podem ocupar Fundo; árvores, Meio; pessoas e mobiliário, Frente. A ordem é explícita e pode diferir da profundidade física de uma cena 3D. A análise não deve deduzir automaticamente que toda árvore fica atrás de toda pessoa.
 
-O painel permite selecionar uma camada para edição e mostrar/ocultar as outras como referência. Ocultar não apaga objetos nem altera quem pode acessar o arquivo. Ao travar uma região, o alcance passa a ser a interseção entre camada ativa e região; entrar num objeto restringe ainda mais às suas partes. Em Visualizar composição, nenhum objeto é editável. Uma alteração não pode modificar, remover ou substituir objetos de outra camada.
+Contrato de interação: o painel permite selecionar uma camada para edição e mostrar/ocultar as outras como referência. Ocultar não apaga objetos nem altera quem pode acessar o arquivo. Ao travar uma região, o alcance passa a ser a interseção entre camada ativa e região; entrar num objeto restringe ainda mais às suas partes. Em Visualizar composição, nenhum objeto é editável. Uma alteração não pode modificar, remover ou substituir objetos de outra camada.
 
-A prévia local implementa seleção, isolamento, visibilidade e criação de camadas tanto no canvas 2D quanto nos assets projetados. O campo `layer` é exportado para objetos/partes e preservado na reabertura. Camadas vazias, preferências de visibilidade e ordem independente ainda precisam de metadados persistentes; a prévia deriva a ordem dos elementos. Sua trava local não reserva região para outra pessoa.
+Esse comportamento não deve ser confundido com persistência ou colaboração. O campo `layer` dos assets pode ser exportado e reaberto; camadas vazias, preferências de visibilidade e ordem independente precisam de metadados persistentes. Uma trava local limita edição no cliente, mas não reserva região para outra pessoa.
 
 ## Fluxo coletivo proposto
 
@@ -38,6 +38,10 @@ Movimentar camada, reordenar camadas, alterar câmera global, dimensões globais
 
 ## Código e estado real
 
-`DrawingLeaseRegistry` implementa um núcleo de reserva de processo único, com conflito espacial por camada, renovação, liberação, expiração, validação do proprietário e token monotônico. Testes cobrem dois pedidos simultâneos, regiões ancestrais, camadas independentes, gravação externa ao escopo e tokens expirados.
+`lib/studio/selection.ts` implementa primitivas puras de seleção local: hit-test de retângulo, círculo, segmento, polígono e path poligonal; seleção por caixa ou polígono; resolução de descendentes de grupos; filtros por camada visível/travada, nó ancestral travado e região local travada. `snapPoint` aplica snap a uma grade somente quando explicitamente habilitado. Testes em `lib/studio/selection.test.ts` cobrem esses comportamentos.
 
-Esse núcleo NÃO está exposto como API nem é usado pela mesa DECIA. Não resolve múltiplas instâncias, autorização de peça ou persistência. A integração deverá cumprir os contratos acima antes de apresentar edição colaborativa como disponível. O editor atual permanece um rascunho local de uma pessoa.
+Esse motor ainda não está conectado a um canvas/estado de editor nesta árvore do repositório. Não há componente Drawings ativo nem store de desenho localizado, portanto o motor não constitui uma experiência de UI completa: controles para alternar modos, desenhar a caixa/laço, escolher camada ou travar/destravar escopo ainda precisam ser integrados. A resolução espacial de path usa seus pontos/segmentos; curvas Bézier e transformações de câmera não fazem parte deste modelo. A seleção de caixa/laço é geométrica aproximada por segmentos e pontos da geometria.
+
+`DrawingLeaseRegistry` é especificação pretendida, não implementação localizada neste checkout. O código atual não oferece reserva de processo único, renovação ou token de lease.
+
+O motor de seleção não é exposto como API nem usado pela mesa DECIA. Não resolve múltiplas instâncias, autorização de peça ou persistência. A integração deverá cumprir os contratos acima antes de apresentar edição colaborativa como disponível. A interface atual não oferece um editor Drawings integrado neste checkout.
