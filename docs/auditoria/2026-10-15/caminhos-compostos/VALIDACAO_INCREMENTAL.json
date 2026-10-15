@@ -1,0 +1,22 @@
+{
+  "frontend": {
+    "passed": 519,
+    "files": 61
+  },
+  "types": "PASSOU",
+  "lint": "PASSOU",
+  "build": "PASSOU",
+  "browserStages": 14,
+  "paidAiCalls": 0,
+  "applicationCodePublished": false,
+  "allRfComplete": false,
+  "checks": [
+    "preservação de furo no arquivo",
+    "seleção dentro do furo",
+    "agrupamento e movimento conjunto",
+    "desagrupamento sem alterar geometria",
+    "volume de perfil vazado",
+    "reabertura pela interface",
+    "bloqueio de envio incompatível"
+  ]
+}

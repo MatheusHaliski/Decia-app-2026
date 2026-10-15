@@ -1,0 +1,8 @@
+{
+  "volume": 5525225.223604751,
+  "expectedPolygonVolume": 5525256.3573624855,
+  "relativeError": 0.000005634807820897869,
+  "limit": 0.00001,
+  "passed": true,
+  "outerDiameter": 299.99867333333333
+}

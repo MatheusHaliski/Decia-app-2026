@@ -39,4 +39,9 @@ Autoria, classificação de desenho e classificação de acesso são eixos disti
 
 ### Ampliação de comandos e novos RF (15/10)
 
-[Auditoria do zero em 15 etapas](comandos-do-zero/README.md), [pesquisa de comandos](pesquisa-comandos/COMANDOS_ADICIONAIS.md) e [IA nos quatro níveis](pesquisa-comandos/IA_QUATRO_NIVEIS.md). O Trello recebeu RF51 a RF72, com 158 critérios não concluídos; [especificação](../../produto/requisitos-studio/README.md). Seleção direcional, laço/polígono e atributos foram conectados a uma oficina local da mesma peça; há operações 2D e um novo motor de malhas 3D com booleanas, corte e desmembramento. Não se trata de compatibilidade integral com Illustrator/AutoCAD. Furos compostos, máscaras, UCS, Xrefs e demais lacunas estão explícitos no relatório. Código da aplicação permanece local.
+[Auditoria do zero em 15 etapas](comandos-do-zero/README.md), [pesquisa de comandos](pesquisa-comandos/COMANDOS_ADICIONAIS.md) e [IA nos quatro níveis](pesquisa-comandos/IA_QUATRO_NIVEIS.md). O Trello recebeu RF51 a RF72, com 158 critérios não concluídos; [especificação](../../produto/requisitos-studio/README.md). Seleção direcional, laço/polígono e atributos foram conectados a uma oficina local da mesma peça; há operações 2D e um novo motor de malhas 3D com booleanas, corte e desmembramento. Não se trata de compatibilidade integral com Illustrator/AutoCAD. Máscaras, UCS, Xrefs e demais lacunas estão explícitos no relatório. O suporte local a furos foi acrescentado na continuidade abaixo; persistência compartilhada desses metadados permanece pendente. Código da aplicação permanece local.
+
+
+### Continuidade: caminhos compostos e grupos
+
+[Auditoria em 14 etapas](caminhos-compostos/README.md): operações 2D preservam furos; liberar contornos, agrupar/desagrupar, mover conjunto, tesoura por âncora e expansão de traçado aberto têm fluxo local demonstrado. Extrusão de perfil vazado recebeu correção de orientação e teste de volume. 519 testes frontend passaram. Compartilhamento e IA remota desses metadados permanecem bloqueados até atualização do contrato do servidor; não há conclusão integral dos RF.
