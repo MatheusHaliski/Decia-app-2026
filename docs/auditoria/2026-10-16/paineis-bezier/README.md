@@ -82,3 +82,21 @@ O editor de alças trabalha com curvas cúbicas abertas. Recolher um controle n�
 Captura PNG local e overlay estão operacionais. Backend multimodal com entrada de imagem, geração de duas variantes PNG transparentes, máscara de resposta, vetorização de raster e ancoragem de assets de imagem **continuam pendentes**. O provedor OpenAI já escolhido não foi trocado por Gemini. Consentimento e orçamento não são dispensados pela captura local. A fixture desta auditoria testa a interface, não capacidade generativa real.
 
 O código da aplicação permanece local. Este PR publica documentação, evidências, arquivos editáveis e script de reprodução. RFs e critérios não demonstrados continuam abertos.
+
+## Reexecutar a auditoria
+
+Execute a partir da raiz do repositório, com a aplicação compatível disponível em `http://localhost:3000`, API em `http://localhost:8080`, Chromium em `/usr/bin/chromium` e dependências `@playwright/test` e `@axe-core/playwright` instaladas. Prepare uma fixture sintética local com `owner.username` e `owner.password` válidos; não publique credenciais.
+
+```sh
+WS_AUDIT_FIXTURE_PATH=/caminho/fixture-sintetica.json node docs/auditoria/2026-10-16/paineis-bezier/scripts/auditar-paineis-bezier.cjs
+```
+
+Sem `WS_AUDIT_OUTPUT`, cada execução cria um diretório vazio exclusivo no diretório temporário do sistema (`ws-audit-paineis-bezier-*`) e imprime o caminho antes de iniciar o navegador. Os artefatos publicados nesta pasta permanecem preservados. Copie os resultados se precisar conservá-los além da limpeza dos temporários.
+
+Para escolher o destino, defina `WS_AUDIT_OUTPUT=/caminho/nova-execucao`: o diretório será criado se necessário e deverá estar vazio, inclusive sem arquivos de tentativas anteriores. Um destino ocupado é rejeitado sem sobrescrever arquivos. A fixture padrão, quando a variável não é informada, é `/tmp/ws-synthetic-audit-fixture.json`.
+
+Validação isolada da escolha de destino, sem navegador nem chamadas de IA:
+
+```sh
+node --test docs/auditoria/2026-10-16/paineis-bezier/scripts/audit-output.test.cjs
+```
