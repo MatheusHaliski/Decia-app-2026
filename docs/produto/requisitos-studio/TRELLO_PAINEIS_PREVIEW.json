@@ -5,14 +5,18 @@
       "url": "https://trello.com/c/wO3QpkE5/228-rf73-separar-editor-determin%C3%ADstico-e-assistente-ia-com-navega%C3%A7%C3%A3o-acess%C3%ADvel",
       "criteria": 10,
       "verified": true,
-      "status": "ESPECIFICADO_PARCIAL"
+      "status": "ESPECIFICADO_PARCIAL",
+      "evidenceUrl": "https://github.com/MatheusHaliski/Decia-app-2026/blob/codex/editor-panels-png-16out/docs/auditoria/2026-10-16/paineis-bezier/README.md",
+      "evidenceLinkVerified": true
     },
     {
       "rf": 74,
       "url": "https://trello.com/c/fw42DN9W/229-rf74-capturar-png-e-oferecer-pr%C3%A9via-fantasma-multimodal-no-drawings",
       "criteria": 12,
       "verified": true,
-      "status": "ESPECIFICADO_PARCIAL"
+      "status": "ESPECIFICADO_PARCIAL",
+      "evidenceUrl": "https://github.com/MatheusHaliski/Decia-app-2026/blob/codex/editor-panels-png-16out/docs/auditoria/2026-10-16/paineis-bezier/README.md",
+      "evidenceLinkVerified": true
     },
     {
       "rf": 57,
