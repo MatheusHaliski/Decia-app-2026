@@ -45,3 +45,8 @@ Autoria, classificação de desenho e classificação de acesso são eixos disti
 ### Continuidade: caminhos compostos e grupos
 
 [Auditoria em 14 etapas](caminhos-compostos/README.md): operações 2D preservam furos; liberar contornos, agrupar/desagrupar, mover conjunto, tesoura por âncora e expansão de traçado aberto têm fluxo local demonstrado. Extrusão de perfil vazado recebeu correção de orientação e teste de volume. 519 testes frontend passaram. Compartilhamento e IA remota desses metadados permanecem bloqueados até atualização do contrato do servidor; não há conclusão integral dos RF.
+
+
+### Continuidade de 16/10 — painéis, alças e PNG
+
+[Auditoria atual](../2026-10-16/paineis-bezier/README.md): painel de ferramentas separado do assistente lateral, curva cúbica com alças editáveis, atalhos de aparência, captura PNG local e overlay com origem explícita. 529 testes passaram e Axe não encontrou violações nos dois painéis avaliados. Backend multimodal, geração de PNG pelo modelo e vetorização de raster continuam pendentes no RF74. Código da aplicação ainda local.

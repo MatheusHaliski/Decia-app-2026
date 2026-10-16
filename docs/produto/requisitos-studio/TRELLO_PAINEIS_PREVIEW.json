@@ -1,0 +1,48 @@
+{
+  "updated": [
+    {
+      "rf": 73,
+      "url": "https://trello.com/c/wO3QpkE5/228-rf73-separar-editor-determin%C3%ADstico-e-assistente-ia-com-navega%C3%A7%C3%A3o-acess%C3%ADvel",
+      "criteria": 10,
+      "verified": true,
+      "status": "ESPECIFICADO_PARCIAL"
+    },
+    {
+      "rf": 74,
+      "url": "https://trello.com/c/fw42DN9W/229-rf74-capturar-png-e-oferecer-pr%C3%A9via-fantasma-multimodal-no-drawings",
+      "criteria": 12,
+      "verified": true,
+      "status": "ESPECIFICADO_PARCIAL"
+    },
+    {
+      "rf": 57,
+      "url": "https://trello.com/c/JwUzyuj2/212-rf57-selecionar-objetos-pontos-e-regi%C3%B5es-no-drawings",
+      "addedCriteria": [
+        {
+          "id": "RF57.CA08",
+          "text": "Dados pontos de ancoragem e hastes Bézier, quando converte canto/suave com Shift+C, move âncora ou manipula alça com Alt/Option e Shift, então preserva vizinhos, permite alças independentes, recolher um controle e restringir a múltiplos de 45 graus; cada arraste é uma ação reversível e não causa salto de rolagem."
+        },
+        {
+          "id": "RF57.CA09",
+          "text": "Dado guia de pontos e alças, quando utiliza teclado ou leitor de tela, então identifica âncora, entrada, saída e coordenadas, com controles equivalentes ao arraste e indicação clara dos tipos de curva suportados."
+        }
+      ],
+      "verified": true,
+      "status": "PARCIAL"
+    },
+    {
+      "rf": 63,
+      "url": "https://trello.com/c/m15sbErL/218-rf63-editar-cores-gradientes-materiais-e-estilos-de-tra%C3%A7o",
+      "addedCriteria": [
+        {
+          "id": "RF63.CA08",
+          "text": "Dada seleção e atributo ativo (preenchimento ou traço), quando usa Shift+X, D ou /, então troca os atributos suportados, restaura branco/preto de 1 unidade ou aplica nenhum ao atributo escolhido; não intercepta texto em campos e rejeita conversões não suportadas sem perda da aparência."
+        }
+      ],
+      "verified": true,
+      "status": "PARCIAL"
+    }
+  ],
+  "paidAiCalls": 0,
+  "allRfComplete": false
+}

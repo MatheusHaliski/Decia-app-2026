@@ -1,0 +1,106 @@
+[
+  {
+    "number": 73,
+    "name": "RF73: Separar editor determinístico e Assistente IA com navegação acessível",
+    "description": "# RF73 — Separar editor determinístico e Assistente IA com navegação acessível\n\nEstado: ESPECIFICADO — implementação parcial; conclusão depende de todos os critérios e evidências.\n\nOrigem: solicitação de 16/10/2026. Complementa RF51, RF55, RF57, RF63, RF67–RF69 e RF72.\n\n## Critérios de aceite\n\n- **RF73.CA01** Dado um documento aberto, quando abre o Assistente IA, então mantém editor e seleção visíveis, com região complementar retrátil identificada e sem iniciar inferência.\n\n- **RF73.CA02** Dados os comandos manuais, quando executa seleção, geometria, aparência ou histórico, então aplica deterministicamente no documento e não aciona o provedor de IA.\n\n- **RF73.CA03** Dada proposta de IA, quando apresenta, então distingue original, prévia, feedback, aprovar, rejeitar e refinar; estado assíncrono explicita idle/loading/suggesting/diff/error.\n\n- **RF73.CA04** Dado uso por teclado, quando abre/fecha o drawer ou conclui proposta, então gerencia foco de forma previsível e preserva navegação Tab sem armadilha.\n\n- **RF73.CA05** Dada sugestão aceita ou rejeitada, quando a operação termina, então devolve foco ao texto, objeto ou prancheta correspondente; falhas permanecem anunciadas no assistente.\n\n- **RF73.CA06** Dados carregamento e erro, quando surgem, então os anuncia respectivamente por aria-live polite e assertive; controles possuem nomes acessíveis.\n\n- **RF73.CA07** Dada troca de painel ou fechamento do assistente, quando reabre, então mantém rascunho, seleção, histórico e proposta ainda válida; alterações de revisão invalidam propostas antigas.\n\n- **RF73.CA08** Dado um arraste contínuo, quando solta ou cancela, então registra uma única ação reversível ou descarta o rascunho temporário; comandos devem usar histórico unitário.\n\n- **RF73.CA09** Dados componentes, quando altera matemática geométrica, transporte de IA ou acessibilidade, então testes isolados cobrem o módulo e os fluxos integrados cobrem foco, concorrência e rejeição de resposta obsoleta.\n\n- **RF73.CA10** Dados comandos e cards, quando testa a UI, então usa identificadores editor-cmd-{comando}, ai-suggestion-card-{id}, ai-btn-apply/reject e seletores por papel/nome; critérios WCAG são verificados no escopo declarado sem alegar certificação global.\n\n## Evidência e pendências\n\nVer docs/auditoria/2026-10-16/paineis-bezier/. Código da aplicação ainda local. Captura e overlay PNG locais não comprovam geração multimodal remota. Sem consumo de créditos nesta validação. SIGILOSO exige proprietário ou colaborador explicitamente autorizado; ADMIN não tem acesso implícito.\n\nIdentificador de sincronização: `WS-STUDIO-RF-73-20261016`.\n",
+    "acceptance": [
+      {
+        "id": "RF73.CA01",
+        "text": "Dado um documento aberto, quando abre o Assistente IA, então mantém editor e seleção visíveis, com região complementar retrátil identificada e sem iniciar inferência."
+      },
+      {
+        "id": "RF73.CA02",
+        "text": "Dados os comandos manuais, quando executa seleção, geometria, aparência ou histórico, então aplica deterministicamente no documento e não aciona o provedor de IA."
+      },
+      {
+        "id": "RF73.CA03",
+        "text": "Dada proposta de IA, quando apresenta, então distingue original, prévia, feedback, aprovar, rejeitar e refinar; estado assíncrono explicita idle/loading/suggesting/diff/error."
+      },
+      {
+        "id": "RF73.CA04",
+        "text": "Dado uso por teclado, quando abre/fecha o drawer ou conclui proposta, então gerencia foco de forma previsível e preserva navegação Tab sem armadilha."
+      },
+      {
+        "id": "RF73.CA05",
+        "text": "Dada sugestão aceita ou rejeitada, quando a operação termina, então devolve foco ao texto, objeto ou prancheta correspondente; falhas permanecem anunciadas no assistente."
+      },
+      {
+        "id": "RF73.CA06",
+        "text": "Dados carregamento e erro, quando surgem, então os anuncia respectivamente por aria-live polite e assertive; controles possuem nomes acessíveis."
+      },
+      {
+        "id": "RF73.CA07",
+        "text": "Dada troca de painel ou fechamento do assistente, quando reabre, então mantém rascunho, seleção, histórico e proposta ainda válida; alterações de revisão invalidam propostas antigas."
+      },
+      {
+        "id": "RF73.CA08",
+        "text": "Dado um arraste contínuo, quando solta ou cancela, então registra uma única ação reversível ou descarta o rascunho temporário; comandos devem usar histórico unitário."
+      },
+      {
+        "id": "RF73.CA09",
+        "text": "Dados componentes, quando altera matemática geométrica, transporte de IA ou acessibilidade, então testes isolados cobrem o módulo e os fluxos integrados cobrem foco, concorrência e rejeição de resposta obsoleta."
+      },
+      {
+        "id": "RF73.CA10",
+        "text": "Dados comandos e cards, quando testa a UI, então usa identificadores editor-cmd-{comando}, ai-suggestion-card-{id}, ai-btn-apply/reject e seletores por papel/nome; critérios WCAG são verificados no escopo declarado sem alegar certificação global."
+      }
+    ],
+    "marker": "WS-STUDIO-RF-73-20261016"
+  },
+  {
+    "number": 74,
+    "name": "RF74: Capturar PNG e oferecer prévia fantasma multimodal no Drawings",
+    "description": "# RF74 — Capturar PNG e oferecer prévia fantasma multimodal no Drawings\n\nEstado: ESPECIFICADO — implementação parcial; conclusão depende de todos os critérios e evidências.\n\nOrigem: solicitação de 16/10/2026. Complementa RF51, RF55, RF57, RF63, RF67–RF69 e RF72.\n\n## Critérios de aceite\n\n- **RF74.CA01** Dado modo explicitamente ativado, quando há pausa de 1,5 segundo na edição, então captura PNG transparente da área autorizada e metadados de revisão, dimensão, transformação e bounding box, sem capturar overlays ou interfaces.\n\n- **RF74.CA02** Dada imagem pronta, quando solicita inferência remota, então backend revalida autenticação, ACL, classificação, consentimento, escopo, tamanho, limites e orçamento; captura local não equivale a autorização de envio.\n\n- **RF74.CA03** Dado provedor com suporte efetivo a entrada de imagem e saída PNG transparente, quando executa, então envia imagem e contexto autorizados e retorna variantes para completar objeto e completar cena; capacidades não suportadas produzem erro explícito.\n\n- **RF74.CA04** Dada resposta, quando valida, então verifica formato, alpha, dimensões, limites e coordenadas; não confia em coordenadas do modelo sem validação e não executa conteúdo ativo ou URLs arbitrárias.\n\n- **RF74.CA05** Dada proposta válida, quando exibe, então coloca PNG sobre a prancheta com opacidade configurável próxima a 50%, borda e máscara da área; imagem não intercepta ações de desenho.\n\n- **RF74.CA06** Dadas variantes, quando navega ou refina, então preserva original e contexto, mostra origem/provedor e distingue rasterização local de vetores de PNG efetivamente gerado por modelo multimodal.\n\n- **RF74.CA07** Dado aceite, quando aprova, então converte em vetor por pipeline validado ou insere asset raster suportado com ancoragem explícita; sem suporte não promete vetor editável nem insere imagem como vetor fictício.\n\n- **RF74.CA08** Dado Enter, Escape e Tab, quando usa ações, então Enter aceita no alvo correto, Escape rejeita e Tab mantém navegação por padrão; aceitar via Tab exige ativação e foco na prancheta.\n\n- **RF74.CA09** Dada revisão, região, camada ou acesso alterado enquanto processa, quando a resposta chega, então descarta ou invalida a prévia, cancela trabalho pendente quando suportado e impede sobrescrita de conteúdo novo.\n\n- **RF74.CA10** Dados níveis 1–4, quando utiliza a prévia, então respeita RF51: leitura/sugestão/transformação local/plano agêntico autorizados, checkpoints e limites; publicar ou ampliar escopo não ocorre automaticamente.\n\n- **RF74.CA11** Dados indisponibilidade, custo limite, timeout ou falha de vetorização, quando ocorrer, então mantém rascunho, anuncia estado e não inicia ciclos pagos ilimitados; registra uso sem vazar PNG ou segredos em logs.\n\n- **RF74.CA12** Dada auditoria, quando valida integração, então separa mock, captura local, PNG gerado por modelo e integração real; testa alpha, alinhamento, revisão obsoleta, aceitação/rejeição, acessibilidade e orçamento com evidências reproduzíveis.\n\n## Evidência e pendências\n\nVer docs/auditoria/2026-10-16/paineis-bezier/. Código da aplicação ainda local. Captura e overlay PNG locais não comprovam geração multimodal remota. Sem consumo de créditos nesta validação. SIGILOSO exige proprietário ou colaborador explicitamente autorizado; ADMIN não tem acesso implícito.\n\nIdentificador de sincronização: `WS-STUDIO-RF-74-20261016`.\n",
+    "acceptance": [
+      {
+        "id": "RF74.CA01",
+        "text": "Dado modo explicitamente ativado, quando há pausa de 1,5 segundo na edição, então captura PNG transparente da área autorizada e metadados de revisão, dimensão, transformação e bounding box, sem capturar overlays ou interfaces."
+      },
+      {
+        "id": "RF74.CA02",
+        "text": "Dada imagem pronta, quando solicita inferência remota, então backend revalida autenticação, ACL, classificação, consentimento, escopo, tamanho, limites e orçamento; captura local não equivale a autorização de envio."
+      },
+      {
+        "id": "RF74.CA03",
+        "text": "Dado provedor com suporte efetivo a entrada de imagem e saída PNG transparente, quando executa, então envia imagem e contexto autorizados e retorna variantes para completar objeto e completar cena; capacidades não suportadas produzem erro explícito."
+      },
+      {
+        "id": "RF74.CA04",
+        "text": "Dada resposta, quando valida, então verifica formato, alpha, dimensões, limites e coordenadas; não confia em coordenadas do modelo sem validação e não executa conteúdo ativo ou URLs arbitrárias."
+      },
+      {
+        "id": "RF74.CA05",
+        "text": "Dada proposta válida, quando exibe, então coloca PNG sobre a prancheta com opacidade configurável próxima a 50%, borda e máscara da área; imagem não intercepta ações de desenho."
+      },
+      {
+        "id": "RF74.CA06",
+        "text": "Dadas variantes, quando navega ou refina, então preserva original e contexto, mostra origem/provedor e distingue rasterização local de vetores de PNG efetivamente gerado por modelo multimodal."
+      },
+      {
+        "id": "RF74.CA07",
+        "text": "Dado aceite, quando aprova, então converte em vetor por pipeline validado ou insere asset raster suportado com ancoragem explícita; sem suporte não promete vetor editável nem insere imagem como vetor fictício."
+      },
+      {
+        "id": "RF74.CA08",
+        "text": "Dado Enter, Escape e Tab, quando usa ações, então Enter aceita no alvo correto, Escape rejeita e Tab mantém navegação por padrão; aceitar via Tab exige ativação e foco na prancheta."
+      },
+      {
+        "id": "RF74.CA09",
+        "text": "Dada revisão, região, camada ou acesso alterado enquanto processa, quando a resposta chega, então descarta ou invalida a prévia, cancela trabalho pendente quando suportado e impede sobrescrita de conteúdo novo."
+      },
+      {
+        "id": "RF74.CA10",
+        "text": "Dados níveis 1–4, quando utiliza a prévia, então respeita RF51: leitura/sugestão/transformação local/plano agêntico autorizados, checkpoints e limites; publicar ou ampliar escopo não ocorre automaticamente."
+      },
+      {
+        "id": "RF74.CA11",
+        "text": "Dados indisponibilidade, custo limite, timeout ou falha de vetorização, quando ocorrer, então mantém rascunho, anuncia estado e não inicia ciclos pagos ilimitados; registra uso sem vazar PNG ou segredos em logs."
+      },
+      {
+        "id": "RF74.CA12",
+        "text": "Dada auditoria, quando valida integração, então separa mock, captura local, PNG gerado por modelo e integração real; testa alpha, alinhamento, revisão obsoleta, aceitação/rejeição, acessibilidade e orçamento com evidências reproduzíveis."
+      }
+    ],
+    "marker": "WS-STUDIO-RF-74-20261016"
+  }
+]
