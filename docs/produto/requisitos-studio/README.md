@@ -24,3 +24,8 @@ Especificação de 15/10/2026. Estado: especificado; implementação parcial nã
 - [RF70 — Importar, exportar e referenciar conteúdo técnico nas peças](RF70.md) (7 critérios)
 - [RF71 — Integrar peças Letters e Drawings à jornada de tarefas, projetos e DECIA](RF71.md) (7 critérios)
 - [RF72 — Validar qualidade, desempenho e evidências dos editores](RF72.md) (7 critérios)
+
+## Ampliação de 16/10/2026
+
+- [RF73 — Separar editor determinístico e Assistente IA com navegação acessível](RF73.md): 10 critérios, implementação parcial.
+- [RF74 — Capturar PNG e oferecer prévia fantasma multimodal no Drawings](RF74.md): 12 critérios, implementação parcial.

@@ -1,0 +1,123 @@
+{
+  "format": "ws-studio",
+  "schemaVersion": 1,
+  "revision": 10,
+  "title": "Estudo de curva e prévia",
+  "blocks": [
+    {
+      "id": "b1",
+      "kind": "heading",
+      "text": "Objetivo do trabalho"
+    },
+    {
+      "id": "b2",
+      "kind": "paragraph",
+      "text": "Descreva o problema, os fatos disponíveis e o resultado esperado."
+    }
+  ],
+  "shapes": [
+    {
+      "id": "30418362-51a6-4d73-81f9-0a1e15366fde",
+      "x": 100,
+      "y": 100,
+      "width": 400,
+      "height": 400,
+      "label": "SPLINE",
+      "layer": "Andaime",
+      "kind": "path",
+      "style": {
+        "fillMode": "none",
+        "fill": "#e8edf2",
+        "fillEnd": "#ffffff",
+        "stroke": "#263445",
+        "strokeWidth": 2,
+        "dash": "solid",
+        "opacity": 1,
+        "angle": 0,
+        "fontSize": 16
+      },
+      "points": [
+        {
+          "x": 0,
+          "y": 0.5
+        },
+        {
+          "x": 0.125,
+          "y": 0
+        },
+        {
+          "x": 0.5,
+          "y": 0.5
+        },
+        {
+          "x": 0.5,
+          "y": 0.5
+        },
+        {
+          "x": 0.7899353499237465,
+          "y": 0.7899353499237464
+        },
+        {
+          "x": 0.875,
+          "y": 1
+        },
+        {
+          "x": 1,
+          "y": 0.5
+        }
+      ],
+      "closed": false,
+      "pathMode": "bezier",
+      "rotation": 0
+    },
+    {
+      "id": "3b5dba07-60ca-4b78-a100-79a6eed198d4",
+      "x": 550,
+      "y": 400,
+      "width": 100,
+      "height": 60,
+      "label": "RECTANG",
+      "layer": "Andaime",
+      "kind": "rect",
+      "style": {
+        "fillMode": "solid",
+        "fill": "#263445",
+        "fillEnd": "#263445",
+        "stroke": "#e8edf2",
+        "strokeWidth": 0,
+        "dash": "solid",
+        "opacity": 1,
+        "angle": 0,
+        "fontSize": 16
+      },
+      "closed": false,
+      "rotation": 0,
+      "points": null,
+      "pathMode": null
+    },
+    {
+      "id": "ghost_circle",
+      "kind": "ellipse",
+      "x": 550,
+      "y": 180,
+      "width": 120,
+      "height": 120,
+      "label": "Sugestão de teste",
+      "layer": "Andaime",
+      "style": {
+        "fillMode": "solid",
+        "fill": "#a0cbbb",
+        "fillEnd": "#ffffff",
+        "stroke": "#335577",
+        "strokeWidth": 2,
+        "dash": "solid",
+        "opacity": 1,
+        "angle": 0,
+        "fontSize": 16
+      },
+      "closed": false,
+      "rotation": 0
+    }
+  ],
+  "constraints": []
+}
