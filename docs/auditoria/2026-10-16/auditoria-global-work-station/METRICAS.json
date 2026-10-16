@@ -1,0 +1,43 @@
+{
+  "participantesHumanos": 0,
+  "tipo": "automação com contas sintéticas; revisão heurística de um avaliador técnico",
+  "tarefasProfissionais": {
+    "casos": 6,
+    "concluidos": 6,
+    "taxa": 1.0,
+    "temposAutomacaoMs": {
+      "software": 2438,
+      "administracao": 2167,
+      "design": 2319,
+      "pesquisa": 2300,
+      "marketing": 2241,
+      "planejamento": 2339
+    },
+    "errosJavaScript": 0,
+    "necessidadeAjudaHumana": "não medida",
+    "tempoHumano": "não medido"
+  },
+  "navegacaoDesktop": {
+    "rotas": 10,
+    "errosJavaScript": 0,
+    "regrasAxeComViolacao": 0,
+    "overflowHorizontal": 0
+  },
+  "navegacaoMobile": {
+    "viewport": "390x844",
+    "rotas": 3,
+    "overflowHorizontal": 0
+  },
+  "colaboracao": {
+    "verificacoes": 5,
+    "passaram": 5,
+    "corridaConcorrenteEstrita": "não testada"
+  },
+  "ia": {
+    "chamadasPagas": 0,
+    "qualidadeGerativa": "não verificada",
+    "autonomiaAgenteCompleto": "ausente",
+    "SUS": "não aplicado",
+    "satisfacao": "não medida"
+  }
+}

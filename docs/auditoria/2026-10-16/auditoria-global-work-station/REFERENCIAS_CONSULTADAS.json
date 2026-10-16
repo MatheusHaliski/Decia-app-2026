@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Nielsen",
+    "url": "https://www.nngroup.com/articles/ten-usability-heuristics/",
+    "status": 200,
+    "title": "10 Usability Heuristics for User Interface Design - NN/G"
+  },
+  {
+    "name": "WCAG 2.2",
+    "url": "https://www.w3.org/TR/WCAG22/",
+    "status": 200,
+    "title": "Web Content Accessibility Guidelines (WCAG) 2.2"
+  },
+  {
+    "name": "Human-AI Interaction",
+    "url": "https://www.microsoft.com/en-us/research/publication/guidelines-for-human-ai-interaction/",
+    "status": 200,
+    "title": "Guidelines for Human-AI Interaction - Microsoft Research"
+  }
+]

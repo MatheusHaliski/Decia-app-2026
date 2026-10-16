@@ -1,0 +1,3619 @@
+{
+  "data": "2026-10-16",
+  "fuso": "America/Sao_Paulo",
+  "rubrica": "Específica do projeto; não escala oficial Nielsen/WCAG",
+  "pesos": {
+    "funcionalidade": 0.3,
+    "eficiencia": 0.2,
+    "visual": 0.15,
+    "recuperacao": 0.15,
+    "acessibilidade": 0.1,
+    "feedback": 0.1
+  },
+  "rfCount": 74,
+  "rfComAceiteIntegral": 0,
+  "requisitos": [
+    {
+      "rf": "RF1",
+      "n": 1,
+      "objetivo": "Cadastrar usuário na plataforma com dados de acesso",
+      "trello": "https://trello.com/c/qnpw5aBJ/2-rf1-cadastrar-usu%C3%A1rio-na-plataforma-com-dados-de-acesso",
+      "modulo": "Identidade",
+      "telaFluxo": "/register; /login; /settings",
+      "componentes": [
+        "components/auth/AuthForms.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/IdentityService.java"
+      ],
+      "api": "/api/auth/*; /api/me",
+      "estado": "PARCIAL_API",
+      "subnotasIniciais": {
+        "funcionalidade": 6.0,
+        "eficiencia": 6.0,
+        "visual": 6.0,
+        "recuperacao": 8.0,
+        "acessibilidade": 7.0,
+        "feedback": 6.0
+      },
+      "notaInicial": 6.4,
+      "principalErro": "SMTP e validação institucional não comprovados ponta a ponta.",
+      "melhoria": "Testar envio real, expiração, reenvio e aceite por tipo de conta.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 6.0,
+        "eficiencia": 6.0,
+        "visual": 6.0,
+        "recuperacao": 8.0,
+        "acessibilidade": 7.0,
+        "feedback": 6.0
+      },
+      "notaApos": 6.4,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF1/README.md",
+        "components/auth/AuthForms.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/IdentityService.java"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF2",
+      "n": 2,
+      "objetivo": "Autenticar usuário na plataforma com credenciais de acesso",
+      "trello": "https://trello.com/c/iu9I5vEk/3-rf2-autenticar-usu%C3%A1rio-na-plataforma-com-credenciais-de-acesso",
+      "modulo": "Identidade",
+      "telaFluxo": "/register; /login; /settings",
+      "componentes": [
+        "components/auth/AuthForms.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/IdentityService.java"
+      ],
+      "api": "/api/auth/*; /api/me",
+      "estado": "PARCIAL_API",
+      "subnotasIniciais": {
+        "funcionalidade": 8.0,
+        "eficiencia": 7.0,
+        "visual": 7.0,
+        "recuperacao": 8.0,
+        "acessibilidade": 7.0,
+        "feedback": 7.0
+      },
+      "notaInicial": 7.45,
+      "principalErro": "Sessão funciona, mas OIDC/2FA e recuperação completos não foram revalidados nesta rodada.",
+      "melhoria": "Concluir matriz de sessão, bloqueio, recuperação e provedor institucional em ambiente de teste.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 8.0,
+        "eficiencia": 7.0,
+        "visual": 7.0,
+        "recuperacao": 8.0,
+        "acessibilidade": 7.0,
+        "feedback": 7.0
+      },
+      "notaApos": 7.45,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF2/README.md",
+        "components/auth/AuthForms.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/IdentityService.java"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF3",
+      "n": 3,
+      "objetivo": "Editar informações pessoais e preferências do perfil do usuário",
+      "trello": "https://trello.com/c/hzE41lcX/4-rf3-editar-informa%C3%A7%C3%B5es-pessoais-e-prefer%C3%AAncias-do-perfil-do-usu%C3%A1rio",
+      "modulo": "Perfil",
+      "telaFluxo": "/profile; /u/[username]",
+      "componentes": [
+        "components/social/RegisteredProfile.tsx",
+        "components/social/ProfileView.tsx",
+        "lib/social/repository.ts"
+      ],
+      "api": "/api/me; /api/tasks (somente própria conta); sem API de perfil público",
+      "estado": "PARCIAL_API",
+      "subnotasIniciais": {
+        "funcionalidade": 5.0,
+        "eficiencia": 6.0,
+        "visual": 6.0,
+        "recuperacao": 7.0,
+        "acessibilidade": 7.0,
+        "feedback": 6.0
+      },
+      "notaInicial": 5.95,
+      "principalErro": "Preferências e conta existem; foto e todos os direitos do titular não compõem um perfil profissional completo.",
+      "melhoria": "Integrar foto segura, biografia, especialidades e controles de publicação com API de conta.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Cabeçalho real e limites de foto/contadores explícitos.",
+      "subnotasApos": {
+        "funcionalidade": 5,
+        "eficiencia": 6,
+        "visual": 6,
+        "recuperacao": 7,
+        "acessibilidade": 7,
+        "feedback": 7
+      },
+      "notaApos": 6.05,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF3/README.md",
+        "components/social/RegisteredProfile.tsx",
+        "components/social/ProfileView.tsx",
+        "lib/social/repository.ts",
+        "evidencias/jornadas/JORNADAS.json",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF4",
+      "n": 4,
+      "objetivo": "Utilizar o criador de tarefas, escolhendo o tipo do arquivo e editando detalhes, em modo manual ou com IA",
+      "trello": "https://trello.com/c/ISf39fut/5-rf4-utilizar-o-criador-de-tarefas-escolhendo-o-tipo-do-arquivo-e-editando-detalhes-em-modo-manual-ou-com-ia",
+      "modulo": "Tarefas",
+      "telaFluxo": "/tasks; /tasks/new; /tasks/[id]",
+      "componentes": [
+        "components/tasks/TaskEditor.tsx",
+        "components/tasks/PersistedTaskDetail.tsx",
+        "lib/tasks/client.ts"
+      ],
+      "api": "/api/tasks/*",
+      "estado": "PARCIAL_API",
+      "subnotasIniciais": {
+        "funcionalidade": 5.0,
+        "eficiencia": 5.0,
+        "visual": 6.0,
+        "recuperacao": 7.0,
+        "acessibilidade": 7.0,
+        "feedback": 6.0
+      },
+      "notaInicial": 5.75,
+      "principalErro": "Criação persistente ainda não integra peças Letters/Drawings, entregáveis e dependências estruturadas.",
+      "melhoria": "Unificar tarefa e peças versionadas; ampliar campos comuns e extensões profissionais sem impor domínio único.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Tipo, categoria, especialidade e formato descritivo editáveis; 6 áreas testadas.",
+      "subnotasApos": {
+        "funcionalidade": 6,
+        "eficiencia": 6,
+        "visual": 6,
+        "recuperacao": 7,
+        "acessibilidade": 7,
+        "feedback": 7
+      },
+      "notaApos": 6.35,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF4/README.md",
+        "components/tasks/TaskEditor.tsx",
+        "components/tasks/PersistedTaskDetail.tsx",
+        "lib/tasks/client.ts",
+        "evidencias/jornadas/JORNADAS.json",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF5",
+      "n": 5,
+      "objetivo": "Utilizar o criador de projetos, escolhendo em cada fase do projeto as unidades de tarefa, em modo manual ou com IA",
+      "trello": "https://trello.com/c/4S3KEMrU/88-rf5-utilizar-o-criador-de-projetos-escolhendo-em-cada-fase-do-projeto-as-unidades-de-tarefa-em-modo-manual-ou-com-ia",
+      "modulo": "Projetos",
+      "telaFluxo": "/projects/new (estrutural/demonstração)",
+      "componentes": [
+        "app/(shell)/projects/new/page.tsx",
+        "app/(shell)/projects/new/page.tsx",
+        "app/(shell)/projects/[id]/page.tsx"
+      ],
+      "api": "Sem controller de projetos operacional localizado",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Criador de projetos é página estrutural; não constrói projeto persistido por fases.",
+      "melhoria": "Implementar agregado Projeto, fases, vínculos de tarefas, histórico, ACL e teste completo com recarga.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF5/README.md",
+        "app/(shell)/projects/new/page.tsx",
+        "app/(shell)/projects/new/page.tsx",
+        "app/(shell)/projects/[id]/page.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF6",
+      "n": 6,
+      "objetivo": "Acessar e gerenciar o Perfil  Empresarial (Acervo Digital + Projetos Salvos)",
+      "trello": "https://trello.com/c/B6vdEe08/21-rf6-acessar-e-gerenciar-o-perfil-empresarial-acervo-digital-projetos-salvos",
+      "modulo": "Perfil",
+      "telaFluxo": "/profile; /u/[username]",
+      "componentes": [
+        "components/social/RegisteredProfile.tsx",
+        "components/social/ProfileView.tsx",
+        "lib/social/repository.ts"
+      ],
+      "api": "/api/me; /api/tasks (somente própria conta); sem API de perfil público",
+      "estado": "PARCIAL_API",
+      "subnotasIniciais": {
+        "funcionalidade": 3.0,
+        "eficiencia": 4.0,
+        "visual": 6.0,
+        "recuperacao": 5.0,
+        "acessibilidade": 5.0,
+        "feedback": 4.0
+      },
+      "notaInicial": 4.25,
+      "principalErro": "Perfil empresarial não integra acervo institucional e projetos reais; perfil pessoal antes usava fixture.",
+      "melhoria": "Integrar API institucional e separar portfólio publicado de atividade privada, mantendo totais autorizados.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Conta cadastrada deixou de usar perfil DEMO; acervo próprio usa API. Perfil empresarial integral pendente.",
+      "subnotasApos": {
+        "funcionalidade": 4,
+        "eficiencia": 5,
+        "visual": 6,
+        "recuperacao": 5,
+        "acessibilidade": 6,
+        "feedback": 6
+      },
+      "notaApos": 5.05,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF6/README.md",
+        "components/social/RegisteredProfile.tsx",
+        "components/social/ProfileView.tsx",
+        "lib/social/repository.ts",
+        "evidencias/jornadas/JORNADAS.json",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF7",
+      "n": 7,
+      "objetivo": "Abrir um esquema de tarefa a partir da lista de um esquema de projeto",
+      "trello": "https://trello.com/c/HPpVyor2/8-rf7-abrir-um-esquema-de-tarefa-a-partir-da-lista-de-um-esquema-de-projeto",
+      "modulo": "Projetos",
+      "telaFluxo": "/projects/new; /projects/[id]; /desk",
+      "componentes": [
+        "app/(shell)/projects/new/page.tsx",
+        "app/(shell)/projects/[id]/page.tsx"
+      ],
+      "api": "Sem controller de projetos operacional localizado",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 2.0,
+        "eficiencia": 3.0,
+        "visual": 5.0,
+        "recuperacao": 3.0,
+        "acessibilidade": 5.0,
+        "feedback": 3.0
+      },
+      "notaInicial": 3.2,
+      "principalErro": "Links de tarefas existem em cards demonstrativos; detalhe real de projeto é estrutural.",
+      "melhoria": "Persistir composição e navegar projeto→tarefa preservando fase, contexto e autorização.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Card demonstrativo ganhou objetivo e lista de tarefas autorizadas com links; projeto real pendente.",
+      "subnotasApos": {
+        "funcionalidade": 2,
+        "eficiencia": 4,
+        "visual": 6,
+        "recuperacao": 4,
+        "acessibilidade": 5,
+        "feedback": 4
+      },
+      "notaApos": 3.8,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF7/README.md",
+        "app/(shell)/projects/new/page.tsx",
+        "app/(shell)/projects/[id]/page.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF8",
+      "n": 8,
+      "objetivo": "Editar arquivos de tarefas ou projetos dentro de meu perfil do Work Station",
+      "trello": "https://trello.com/c/9IrAGN3O/9-rf8-editar-arquivos-de-tarefas-ou-projetos-dentro-de-meu-perfil-do-work-station",
+      "modulo": "Peças",
+      "telaFluxo": "/studio; /tasks/[id]",
+      "componentes": [
+        "components/studio/Studio.tsx",
+        "components/tasks/TaskEditor.tsx"
+      ],
+      "api": "/api/me/letters-suggestions; /api/me/drawing-proposals; /api/tasks/*/drawings (subconjuntos)",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 4.0,
+        "eficiencia": 4.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 6.0,
+        "feedback": 5.0
+      },
+      "notaInicial": 4.75,
+      "principalErro": "Edição local dos estúdios e tarefa persistente usam estruturas separadas.",
+      "melhoria": "Vincular documento e desenho à tarefa com revisões, anexos e recuperação, sem exportação manual obrigatória.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 4.0,
+        "eficiencia": 4.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 6.0,
+        "feedback": 5.0
+      },
+      "notaApos": 4.75,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF8/README.md",
+        "components/studio/Studio.tsx",
+        "components/tasks/TaskEditor.tsx",
+        "evidencias/jornadas/JORNADAS.json",
+        "evidencias/colaboracao/COLABORACAO.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF9",
+      "n": 9,
+      "objetivo": "Permitir que um chefe de departamento possa adicionar ou remover um usuário da sua lista de empregados atuais",
+      "trello": "https://trello.com/c/ru5aCEvH/10-rf9-permitir-que-um-chefe-de-departamento-possa-adicionar-ou-remover-um-usu%C3%A1rio-da-sua-lista-de-empregados-atuais",
+      "modulo": "Institucional",
+      "telaFluxo": "/departments/[slug]/team; páginas institucionais",
+      "componentes": [
+        "components/institutional/DepartmentTeam.tsx",
+        "app/(shell)/handoffs/page.tsx"
+      ],
+      "api": "/api/departments/*/team (subconjunto); sem API para os demais fluxos ausentes",
+      "estado": "PARCIAL_API",
+      "subnotasIniciais": {
+        "funcionalidade": 6.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 7.0,
+        "acessibilidade": 6.0,
+        "feedback": 6.0
+      },
+      "notaInicial": 5.8,
+      "principalErro": "Gestão de equipe tem serviço e UI; vínculo institucional real não foi testado nesta auditoria de navegador.",
+      "melhoria": "Validar chefe/membro com duas contas, lotação, remoção e revogação em todos os recursos.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 6.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 7.0,
+        "acessibilidade": 6.0,
+        "feedback": 6.0
+      },
+      "notaApos": 5.8,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF9/README.md",
+        "components/institutional/DepartmentTeam.tsx",
+        "app/(shell)/handoffs/page.tsx"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF10",
+      "n": 10,
+      "objetivo": "Permitir que o chefe de departamento possa atribuir uma tarefa ou projeto a um usuário",
+      "trello": "https://trello.com/c/oxQoqqxs/11-rf10-permitir-que-o-chefe-de-departamento-possa-atribuir-uma-tarefa-ou-projeto-a-um-usu%C3%A1rio",
+      "modulo": "Institucional",
+      "telaFluxo": "/departments/[slug]/team; páginas institucionais",
+      "componentes": [
+        "components/institutional/DepartmentTeam.tsx",
+        "app/(shell)/handoffs/page.tsx"
+      ],
+      "api": "/api/departments/*/team (subconjunto); sem API para os demais fluxos ausentes",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 2.0,
+        "eficiencia": 3.0,
+        "visual": 5.0,
+        "recuperacao": 3.0,
+        "acessibilidade": 5.0,
+        "feedback": 3.0
+      },
+      "notaInicial": 3.2,
+      "principalErro": "Atribuições sociais em memória não comprovam atribuição real de tarefa/projeto pelo chefe.",
+      "melhoria": "Implementar proposta/aceite persistentes, responsável e notificações com autorização institucional.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 2.0,
+        "eficiencia": 3.0,
+        "visual": 5.0,
+        "recuperacao": 3.0,
+        "acessibilidade": 5.0,
+        "feedback": 3.0
+      },
+      "notaApos": 3.2,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF10/README.md",
+        "components/institutional/DepartmentTeam.tsx",
+        "app/(shell)/handoffs/page.tsx"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF11",
+      "n": 11,
+      "objetivo": "Utilizar o editor de arte de fundo para personalizar esquemas de tarefas e projetos",
+      "trello": "https://trello.com/c/FJGkolM1/12-rf11-utilizar-o-editor-de-arte-de-fundo-para-personalizar-esquemas-de-tarefas-e-projetos",
+      "modulo": "Visual",
+      "telaFluxo": "/profile; /mural; /settings",
+      "componentes": [
+        "components/social/TaskSchemeCard.tsx",
+        "components/social/ProjectCard.tsx",
+        "components/ui/Badge.tsx"
+      ],
+      "api": "Aparência de esquemas reais ainda parcial",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 3.0,
+        "eficiencia": 4.0,
+        "visual": 6.0,
+        "recuperacao": 4.0,
+        "acessibilidade": 5.0,
+        "feedback": 4.0
+      },
+      "notaInicial": 4.1,
+      "principalErro": "Preferência visual existe; aparência de cada tarefa/projeto não está integrada à persistência real.",
+      "melhoria": "Persistir capa e tema por esquema e validar contraste e imagem após reabertura.",
+      "prioridade": "P2",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 3.0,
+        "eficiencia": 4.0,
+        "visual": 6.0,
+        "recuperacao": 4.0,
+        "acessibilidade": 5.0,
+        "feedback": 4.0
+      },
+      "notaApos": 4.1,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF11/README.md",
+        "components/social/TaskSchemeCard.tsx",
+        "components/social/ProjectCard.tsx",
+        "components/ui/Badge.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF12",
+      "n": 12,
+      "objetivo": "Editar um esquema de tarefa ou projeto de meu perfil",
+      "trello": "https://trello.com/c/RLpHskWj/13-rf12-editar-um-esquema-de-tarefa-ou-projeto-de-meu-perfil",
+      "modulo": "Tarefas",
+      "telaFluxo": "/tasks; /tasks/new; /tasks/[id]",
+      "componentes": [
+        "components/tasks/TaskEditor.tsx",
+        "components/tasks/PersistedTaskDetail.tsx",
+        "lib/tasks/client.ts"
+      ],
+      "api": "/api/tasks/*",
+      "estado": "PARCIAL_API",
+      "subnotasIniciais": {
+        "funcionalidade": 5.0,
+        "eficiencia": 5.0,
+        "visual": 6.0,
+        "recuperacao": 7.0,
+        "acessibilidade": 7.0,
+        "feedback": 6.0
+      },
+      "notaInicial": 5.75,
+      "principalErro": "Histórico de tarefas é real; projetos e edição das peças não compartilham essa trilha.",
+      "melhoria": "Consolidar revisões de tarefa, projeto e peças com conflito otimista, diff e restauração.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Metadados profissionais acessíveis na edição persistente; trilha de projeto pendente.",
+      "subnotasApos": {
+        "funcionalidade": 5,
+        "eficiencia": 6,
+        "visual": 6,
+        "recuperacao": 7,
+        "acessibilidade": 7,
+        "feedback": 7
+      },
+      "notaApos": 6.05,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF12/README.md",
+        "components/tasks/TaskEditor.tsx",
+        "components/tasks/PersistedTaskDetail.tsx",
+        "lib/tasks/client.ts",
+        "evidencias/jornadas/JORNADAS.json",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF13",
+      "n": 13,
+      "objetivo": "Utilizar a funcionalidade gerar artefato dentro de esquemas, chats, abas e feed do Work Station",
+      "trello": "https://trello.com/c/DA9c7j6d/14-rf13-utilizar-a-funcionalidade-gerar-artefato-dentro-de-esquemas-chats-abas-e-feed-do-work-station",
+      "modulo": "Peças",
+      "telaFluxo": "/studio; /tasks/[id]",
+      "componentes": [
+        "components/studio/Studio.tsx",
+        "components/tasks/TaskEditor.tsx"
+      ],
+      "api": "/api/me/letters-suggestions; /api/me/drawing-proposals; /api/tasks/*/drawings (subconjuntos)",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 1.0,
+        "eficiencia": 2.0,
+        "visual": 3.0,
+        "recuperacao": 3.0,
+        "acessibilidade": 4.0,
+        "feedback": 3.0
+      },
+      "notaInicial": 2.3,
+      "principalErro": "Não há fluxo geral de gerar artefato em chats, esquemas e feed com proveniência persistida.",
+      "melhoria": "Criar serviço de artefatos com fonte/versão/ACL e aceite humano antes de anexar ou publicar.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 1.0,
+        "eficiencia": 2.0,
+        "visual": 3.0,
+        "recuperacao": 3.0,
+        "acessibilidade": 4.0,
+        "feedback": 3.0
+      },
+      "notaApos": 2.3,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF13/README.md",
+        "components/studio/Studio.tsx",
+        "components/tasks/TaskEditor.tsx"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF14",
+      "n": 14,
+      "objetivo": "Visualizar perfil de um chefe de departamento",
+      "trello": "https://trello.com/c/JYwGI5GL/15-rf14-visualizar-perfil-de-um-chefe-de-departamento",
+      "modulo": "Rede",
+      "telaFluxo": "/mural; /find; /u/[username]",
+      "componentes": [
+        "lib/social/repository.ts",
+        "components/social/MuralFeed.tsx",
+        "components/social/ProfileView.tsx"
+      ],
+      "api": "Interações e feed sem API persistente; DEMO",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 2.0,
+        "eficiencia": 3.0,
+        "visual": 6.0,
+        "recuperacao": 3.0,
+        "acessibilidade": 5.0,
+        "feedback": 3.0
+      },
+      "notaInicial": 3.35,
+      "principalErro": "Página de chefia usa pessoas e vínculos demonstrativos.",
+      "melhoria": "Servir perfil público autorizado de chefia com lotação e indicadores reais.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 2.0,
+        "eficiencia": 3.0,
+        "visual": 6.0,
+        "recuperacao": 3.0,
+        "acessibilidade": 5.0,
+        "feedback": 3.0
+      },
+      "notaApos": 3.35,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF14/README.md",
+        "lib/social/repository.ts",
+        "components/social/MuralFeed.tsx",
+        "components/social/ProfileView.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF15",
+      "n": 15,
+      "objetivo": "Visualizar perfil de um empresa ou órgão público/privado",
+      "trello": "https://trello.com/c/dfTwNxaE/16-rf15-visualizar-perfil-de-um-empresa-ou-%C3%B3rg%C3%A3o-p%C3%BAblico-privado",
+      "modulo": "Rede",
+      "telaFluxo": "/mural; /find; /u/[username]",
+      "componentes": [
+        "lib/social/repository.ts",
+        "components/social/MuralFeed.tsx",
+        "components/social/ProfileView.tsx"
+      ],
+      "api": "Interações e feed sem API persistente; DEMO",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 2.0,
+        "eficiencia": 3.0,
+        "visual": 6.0,
+        "recuperacao": 3.0,
+        "acessibilidade": 5.0,
+        "feedback": 3.0
+      },
+      "notaInicial": 3.35,
+      "principalErro": "Página institucional usa dados demonstrativos, não um portfólio persistente.",
+      "melhoria": "Conectar identidade institucional verificada, equipe, projetos e publicações à API.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 2.0,
+        "eficiencia": 3.0,
+        "visual": 6.0,
+        "recuperacao": 3.0,
+        "acessibilidade": 5.0,
+        "feedback": 3.0
+      },
+      "notaApos": 3.35,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF15/README.md",
+        "lib/social/repository.ts",
+        "components/social/MuralFeed.tsx",
+        "components/social/ProfileView.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF16",
+      "n": 16,
+      "objetivo": "Visualizar perfil de um usuário comum que é empregado dentro de uma empresa",
+      "trello": "https://trello.com/c/mwNWoE9a/17-rf16-visualizar-perfil-de-um-usu%C3%A1rio-comum-que-%C3%A9-empregado-dentro-de-uma-empresa",
+      "modulo": "Perfil",
+      "telaFluxo": "/profile; /u/[username]",
+      "componentes": [
+        "components/social/RegisteredProfile.tsx",
+        "components/social/ProfileView.tsx",
+        "lib/social/repository.ts"
+      ],
+      "api": "/api/me; /api/tasks (somente própria conta); sem API de perfil público",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 2.0,
+        "eficiencia": 3.0,
+        "visual": 6.0,
+        "recuperacao": 3.0,
+        "acessibilidade": 4.0,
+        "feedback": 3.0
+      },
+      "notaInicial": 3.25,
+      "principalErro": "Perfil de terceiros não tem API social; contagens, foto e trajetória pública não estão integradas.",
+      "melhoria": "Disponibilizar endpoint público filtrado por ACL, seguir/seguindo, foto e feed de entregas revisadas.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Dados fictícios não substituem conta real; perfil público sem API exibe indisponibilidade.",
+      "subnotasApos": {
+        "funcionalidade": 2,
+        "eficiencia": 4,
+        "visual": 6,
+        "recuperacao": 5,
+        "acessibilidade": 6,
+        "feedback": 5
+      },
+      "notaApos": 4.15,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF16/README.md",
+        "components/social/RegisteredProfile.tsx",
+        "components/social/ProfileView.tsx",
+        "lib/social/repository.ts",
+        "evidencias/jornadas/JORNADAS.json",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF17",
+      "n": 17,
+      "objetivo": "Visualizar esquemas de tarefa & projetos criados por outros usuários na rede social do Work Station, através da aba \"Buscar\"",
+      "trello": "https://trello.com/c/fAcLoTSo/7-rf17-visualizar-esquemas-de-tarefa-projetos-criados-por-outros-usu%C3%A1rios-na-rede-social-do-work-station-atrav%C3%A9s-da-aba-buscar",
+      "modulo": "Rede",
+      "telaFluxo": "/mural; /find; /u/[username]",
+      "componentes": [
+        "lib/social/repository.ts",
+        "components/social/MuralFeed.tsx",
+        "components/social/ProfileView.tsx"
+      ],
+      "api": "Interações e feed sem API persistente; DEMO",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 2.0,
+        "eficiencia": 3.0,
+        "visual": 6.0,
+        "recuperacao": 3.0,
+        "acessibilidade": 5.0,
+        "feedback": 3.0
+      },
+      "notaInicial": 3.35,
+      "principalErro": "Busca de tarefas/projetos de terceiros depende do repositório DEMO.",
+      "melhoria": "Criar busca paginada com autorização no servidor e sem vazamento de títulos, miniaturas e contagens.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Card de projeto filtra metadados e contagem de tarefas inacessíveis.",
+      "subnotasApos": {
+        "funcionalidade": 2,
+        "eficiencia": 3,
+        "visual": 6,
+        "recuperacao": 5,
+        "acessibilidade": 5,
+        "feedback": 4
+      },
+      "notaApos": 3.75,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF17/README.md",
+        "lib/social/repository.ts",
+        "components/social/MuralFeed.tsx",
+        "components/social/ProfileView.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF18",
+      "n": 18,
+      "objetivo": "Interagir socialmente com tarefas e projetos: curtir,comentar,salvar, compartilhar, remixar,retornar e atribuir",
+      "trello": "https://trello.com/c/I4irBZDT/20-rf18-interagir-socialmente-com-tarefas-e-projetos-curtircomentarsalvar-compartilhar-remixarretornar-e-atribuir",
+      "modulo": "Rede",
+      "telaFluxo": "/mural; /find; /u/[username]",
+      "componentes": [
+        "lib/social/repository.ts",
+        "components/social/MuralFeed.tsx",
+        "components/social/ProfileView.tsx"
+      ],
+      "api": "Interações e feed sem API persistente; DEMO",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 2.0,
+        "eficiencia": 4.0,
+        "visual": 6.0,
+        "recuperacao": 4.0,
+        "acessibilidade": 5.0,
+        "feedback": 4.0
+      },
+      "notaInicial": 3.8,
+      "principalErro": "Curtir/comentar/salvar/compartilhar/remixar operam em memória e se perdem no reload.",
+      "melhoria": "Implementar endpoints sociais idempotentes e testar persistência entre duas contas e visitante.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sigilo no modelo social exige vínculo explícito; títulos indisponíveis removidos inclusive do texto oculto.",
+      "subnotasApos": {
+        "funcionalidade": 2,
+        "eficiencia": 4,
+        "visual": 6,
+        "recuperacao": 5,
+        "acessibilidade": 5,
+        "feedback": 4
+      },
+      "notaApos": 3.95,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF18/README.md",
+        "lib/social/repository.ts",
+        "components/social/MuralFeed.tsx",
+        "components/social/ProfileView.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF19",
+      "n": 19,
+      "objetivo": "Curtir, comentar, salvar, compartilhar, retornar, atribuir e remixar tarefas, esquemas de projeto e planos anuais (interações sociais)",
+      "trello": "https://trello.com/c/4auPFPMJ/93-rf19-curtir-comentar-salvar-compartilhar-retornar-atribuir-e-remixar-tarefas-esquemas-de-projeto-e-planos-anuais-intera%C3%A7%C3%B5es-soci",
+      "modulo": "Rede",
+      "telaFluxo": "/mural; /find; /u/[username]",
+      "componentes": [
+        "lib/social/repository.ts",
+        "components/social/MuralFeed.tsx",
+        "components/social/ProfileView.tsx"
+      ],
+      "api": "Interações e feed sem API persistente; DEMO",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 2.0,
+        "eficiencia": 4.0,
+        "visual": 6.0,
+        "recuperacao": 4.0,
+        "acessibilidade": 5.0,
+        "feedback": 4.0
+      },
+      "notaInicial": 3.8,
+      "principalErro": "Interações não persistem por tipo de recurso nem contemplam planos reais.",
+      "melhoria": "Reutilizar contrato social persistente por TASK/PROJECT/PLAN, com moderação e proveniência do remix.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Mesmas correções transversais de sigilo; persistência social continua ausente.",
+      "subnotasApos": {
+        "funcionalidade": 2,
+        "eficiencia": 4,
+        "visual": 6,
+        "recuperacao": 5,
+        "acessibilidade": 5,
+        "feedback": 4
+      },
+      "notaApos": 3.95,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF19/README.md",
+        "lib/social/repository.ts",
+        "components/social/MuralFeed.tsx",
+        "components/social/ProfileView.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF20",
+      "n": 20,
+      "objetivo": "Utilizar o construtor de projetos do Work Station para compreender se as tarefas de meu acervo são adequadas dentro de meu ambiente empresarial",
+      "trello": "https://trello.com/c/iT3DdKaH/87-rf20-utilizar-o-construtor-de-projetos-do-work-station-para-compreender-se-as-tarefas-de-meu-acervo-s%C3%A3o-adequadas-dentro-de-meu",
+      "modulo": "Projetos",
+      "telaFluxo": "/projects/new (estrutural/demonstração)",
+      "componentes": [
+        "app/(shell)/projects/new/page.tsx",
+        "app/(shell)/projects/new/page.tsx",
+        "app/(shell)/projects/[id]/page.tsx"
+      ],
+      "api": "Sem controller de projetos operacional localizado",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Não há construtor operacional que avalie adequação empresarial das tarefas.",
+      "melhoria": "Adicionar objetivos, restrições e critérios explicáveis à composição do projeto, com revisão humana.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF20/README.md",
+        "app/(shell)/projects/new/page.tsx",
+        "app/(shell)/projects/new/page.tsx",
+        "app/(shell)/projects/[id]/page.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF21",
+      "n": 21,
+      "objetivo": "Utilizar a mesa de trabalho digital de meu perfil",
+      "trello": "https://trello.com/c/45z7hrqa/6-rf21-utilizar-a-mesa-de-trabalho-digital-de-meu-perfil",
+      "modulo": "Projetos",
+      "telaFluxo": "/projects/new; /projects/[id]; /desk",
+      "componentes": [
+        "app/(shell)/projects/new/page.tsx",
+        "app/(shell)/projects/[id]/page.tsx"
+      ],
+      "api": "Sem controller de projetos operacional localizado",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 1.0,
+        "eficiencia": 2.0,
+        "visual": 5.0,
+        "recuperacao": 2.0,
+        "acessibilidade": 4.0,
+        "feedback": 3.0
+      },
+      "notaInicial": 2.45,
+      "principalErro": "Mesa visual não é uma visão persistente unificada da execução real.",
+      "melhoria": "Ligar mesa aos projetos e tarefas reais, salvar posições e oferecer ações recuperáveis.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 1.0,
+        "eficiencia": 2.0,
+        "visual": 5.0,
+        "recuperacao": 2.0,
+        "acessibilidade": 4.0,
+        "feedback": 3.0
+      },
+      "notaApos": 2.45,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF21/README.md",
+        "app/(shell)/projects/new/page.tsx",
+        "app/(shell)/projects/[id]/page.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF22",
+      "n": 22,
+      "objetivo": "Editar um Esquema de Projeto na Mesa de Trabalho (quadro por fase, linha do tempo e canvas livre) com versões e histórico",
+      "trello": "https://trello.com/c/B7IrvxlZ/89-rf22-editar-um-esquema-de-projeto-na-mesa-de-trabalho-quadro-por-fase-linha-do-tempo-e-canvas-livre-com-vers%C3%B5es-e-hist%C3%B3rico",
+      "modulo": "Projetos",
+      "telaFluxo": "/desk (estrutural/demonstração)",
+      "componentes": [
+        "app/(shell)/desk/page.tsx",
+        "app/(shell)/projects/new/page.tsx",
+        "app/(shell)/projects/[id]/page.tsx"
+      ],
+      "api": "Sem controller de projetos operacional localizado",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Quadro por fase, timeline e canvas não editam um projeto real versionado.",
+      "melhoria": "Construir três visões do mesmo agregado com dependências, conflitos e histórico.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF22/README.md",
+        "app/(shell)/desk/page.tsx",
+        "app/(shell)/projects/new/page.tsx",
+        "app/(shell)/projects/[id]/page.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF23",
+      "n": 23,
+      "objetivo": "Importar tarefas ou projetos outros provedores para dentro de meu perfil do Work Station",
+      "trello": "https://trello.com/c/tZTRC1CU/90-rf23-importar-tarefas-ou-projetos-outros-provedores-para-dentro-de-meu-perfil-do-work-station",
+      "modulo": "Conectores",
+      "telaFluxo": "/tasks/new; /studio",
+      "componentes": [
+        "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/SourceKind.java",
+        "docs/diagramas/RF23/README.md",
+        "lib/studio/glb.ts"
+      ],
+      "api": "Sem adapters externos de importação operacional localizados",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "SourceKind GOOGLE/MICROSOFT/EMAIL/PROTOCOLO é enum; não há adapters operacionais de importação.",
+      "melhoria": "Implementar um conector de cada vez com OAuth, scopes, revogação, idempotência e prova UI→provedor→tarefa.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF23/README.md",
+        "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/SourceKind.java",
+        "docs/diagramas/RF23/README.md",
+        "lib/studio/glb.ts"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF24",
+      "n": 24,
+      "objetivo": "Visualizar a aba metas & objetivos de minha equipe com insights analíticos gerados por IA",
+      "trello": "https://trello.com/c/hwTL1zla/91-rf24-visualizar-a-aba-metas-objetivos-de-minha-equipe-com-insights-anal%C3%ADticos-gerados-por-ia",
+      "modulo": "Institucional",
+      "telaFluxo": "/goals (estrutural/demonstração)",
+      "componentes": [
+        "app/(shell)/goals/page.tsx",
+        "components/institutional/DepartmentTeam.tsx",
+        "app/(shell)/handoffs/page.tsx"
+      ],
+      "api": "/api/departments/*/team (subconjunto); sem API para os demais fluxos ausentes",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Metas de equipe e insights não têm jornada real persistida.",
+      "melhoria": "Criar metas, responsáveis e métricas calculáveis, depois insights fundamentados por período.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF24/README.md",
+        "app/(shell)/goals/page.tsx",
+        "components/institutional/DepartmentTeam.tsx",
+        "app/(shell)/handoffs/page.tsx"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF25",
+      "n": 25,
+      "objetivo": "Agrupar projetos e tarefas em Programas, Exercícios e Gestões (agrupamentos institucionais)",
+      "trello": "https://trello.com/c/xK0i4VC9/92-rf25-agrupar-projetos-e-tarefas-em-programas-exerc%C3%ADcios-e-gest%C3%B5es-agrupamentos-institucionais",
+      "modulo": "Institucional",
+      "telaFluxo": "/plans (estrutural/demonstração)",
+      "componentes": [
+        "app/(shell)/plans/page.tsx",
+        "components/institutional/DepartmentTeam.tsx",
+        "app/(shell)/handoffs/page.tsx"
+      ],
+      "api": "/api/departments/*/team (subconjunto); sem API para os demais fluxos ausentes",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Programas/exercícios/gestões estão modelados/documentados sem gestão operacional comprovada.",
+      "melhoria": "Implementar agrupamentos com regras de vínculo, ciclo de gestão, autorização e consulta real.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF25/README.md",
+        "app/(shell)/plans/page.tsx",
+        "components/institutional/DepartmentTeam.tsx",
+        "app/(shell)/handoffs/page.tsx"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF26",
+      "n": 26,
+      "objetivo": "Utilizar o Copilot do WS para criar sugestões de tarefas e projetos de maneira mais prática e funcional",
+      "trello": "https://trello.com/c/O2bl1Xsh/86-rf26-utilizar-o-copilot-do-ws-para-criar-sugest%C3%B5es-de-tarefas-e-projetos-de-maneira-mais-pr%C3%A1tica-e-funcional",
+      "modulo": "IA",
+      "telaFluxo": "/copilot/profile; /studio; /decia",
+      "componentes": [
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiGateway.java",
+        "components/studio/LettersAgent.tsx",
+        "components/studio/DrawingJourney.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentService.java"
+      ],
+      "api": "/api/me/profile-development/*; /api/me/letters-suggestions; /api/me/drawing-proposals; /api/me/asset-suggestions; /api/tasks/*/ai-suggestions (subconjuntos)",
+      "estado": "PARCIAL_API",
+      "subnotasIniciais": {
+        "funcionalidade": 4.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 6.0,
+        "feedback": 6.0
+      },
+      "notaInicial": 5.05,
+      "principalErro": "Copilot de perfil propõe tarefas; projetos e direcionamento transversal seguem parciais.",
+      "melhoria": "Ampliar proposta estruturada para projetos e permitir revisão de tarefas, vínculo e premissas antes do aceite.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 4.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 6.0,
+        "feedback": 6.0
+      },
+      "notaApos": 5.05,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF26/README.md",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiGateway.java",
+        "components/studio/LettersAgent.tsx",
+        "components/studio/DrawingJourney.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentService.java",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    },
+    {
+      "rf": "RF27",
+      "n": 27,
+      "objetivo": "Navegar no Mural (mural da empresa e vitrine de projetos) e Buscar projetos, tarefas, pessoas, empresas e chefes de departamento",
+      "trello": "https://trello.com/c/IpnAnbDh/94-rf27-navegar-no-mural-mural-da-empresa-e-vitrine-de-projetos-e-buscar-projetos-tarefas-pessoas-empresas-e-chefes-de-departamento",
+      "modulo": "Rede",
+      "telaFluxo": "/mural; /find; /u/[username]",
+      "componentes": [
+        "lib/social/repository.ts",
+        "components/social/MuralFeed.tsx",
+        "components/social/ProfileView.tsx"
+      ],
+      "api": "Interações e feed sem API persistente; DEMO",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 2.0,
+        "eficiencia": 4.0,
+        "visual": 6.0,
+        "recuperacao": 4.0,
+        "acessibilidade": 5.0,
+        "feedback": 4.0
+      },
+      "notaInicial": 3.8,
+      "principalErro": "Mural e busca mostram exemplos, não carreira e publicações reais do usuário.",
+      "melhoria": "Criar eventos de publicação explícita e feed paginado, distinguindo atividade privada e marco público.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Removida opacidade de cards arquivados e pulso do texto; sem API nova de mural.",
+      "subnotasApos": {
+        "funcionalidade": 2,
+        "eficiencia": 4,
+        "visual": 6,
+        "recuperacao": 5,
+        "acessibilidade": 6,
+        "feedback": 4
+      },
+      "notaApos": 4.05,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF27/README.md",
+        "lib/social/repository.ts",
+        "components/social/MuralFeed.tsx",
+        "components/social/ProfileView.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF28",
+      "n": 28,
+      "objetivo": "Gerir perfis de empresa e chefe de departamento (departamentos, página institucional, chancela de tarefas/projetos e emissão de reconhecimentos)",
+      "trello": "https://trello.com/c/PvEX1Blq/95-rf28-gerir-perfis-de-empresa-e-chefe-de-departamento-departamentos-p%C3%A1gina-institucional-chancela-de-tarefas-projetos-e-emiss%C3%A3o-d",
+      "modulo": "Institucional",
+      "telaFluxo": "/departments/[slug]/team; páginas institucionais",
+      "componentes": [
+        "components/institutional/DepartmentTeam.tsx",
+        "app/(shell)/handoffs/page.tsx"
+      ],
+      "api": "/api/departments/*/team (subconjunto); sem API para os demais fluxos ausentes",
+      "estado": "PARCIAL_API",
+      "subnotasIniciais": {
+        "funcionalidade": 3.0,
+        "eficiencia": 4.0,
+        "visual": 5.0,
+        "recuperacao": 5.0,
+        "acessibilidade": 5.0,
+        "feedback": 4.0
+      },
+      "notaInicial": 4.1,
+      "principalErro": "Gestão de equipe cobre parte; aprovação, chancelas e reconhecimentos institucionais continuam incompletos.",
+      "melhoria": "Completar ciclo institucional e concessões auditáveis; verificar revogação de todos os poderes.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 3.0,
+        "eficiencia": 4.0,
+        "visual": 5.0,
+        "recuperacao": 5.0,
+        "acessibilidade": 5.0,
+        "feedback": 4.0
+      },
+      "notaApos": 4.1,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF28/README.md",
+        "components/institutional/DepartmentTeam.tsx",
+        "app/(shell)/handoffs/page.tsx"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF29",
+      "n": 29,
+      "objetivo": "Integrar o DECIA ao Criador de Projetos — compartilhar tarefas/artefatos na sessão, abrir sessão a partir de um projeto, transformar argumentos/divergências/decisões em tarefas e manter o Rastro de Decisão",
+      "trello": "https://trello.com/c/9tKndHWU/96-rf29-integrar-o-decia-ao-criador-de-projetos-compartilhar-tarefas-artefatos-na-sess%C3%A3o-abrir-sess%C3%A3o-a-partir-de-um-projeto-transf",
+      "modulo": "DECIA",
+      "telaFluxo": "/decia; /decia/decisoes/[decisionId]; /decia/[sessionId]",
+      "componentes": [
+        "app/(shell)/decia/page.tsx",
+        "lib/decia/repository.ts",
+        "components/decia/WorkspaceSections.tsx"
+      ],
+      "api": "Decisões/chat sem API operacional; desenho compartilhado possui API separada",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 2.0,
+        "eficiencia": 4.0,
+        "visual": 6.0,
+        "recuperacao": 5.0,
+        "acessibilidade": 6.0,
+        "feedback": 4.0
+      },
+      "notaInicial": 4.05,
+      "principalErro": "Decisões ficam em memória; projeto→sessão→encaminhamento→tarefa não fecha com dados reais.",
+      "melhoria": "Persistir decisões, participantes, evidências e encaminhamentos com idempotência e autorização.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 2.0,
+        "eficiencia": 4.0,
+        "visual": 6.0,
+        "recuperacao": 5.0,
+        "acessibilidade": 6.0,
+        "feedback": 4.0
+      },
+      "notaApos": 4.05,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF29/README.md",
+        "app/(shell)/decia/page.tsx",
+        "lib/decia/repository.ts",
+        "components/decia/WorkspaceSections.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    },
+    {
+      "rf": "RF30",
+      "n": 30,
+      "objetivo": "Gerar um Esquema de Projeto completo com o Autopiloto de Projeto a partir de uma demanda (ofício, e-mail ou frase), reutilizando modelos chancelados",
+      "trello": "https://trello.com/c/Y2jWtOg2/97-rf30-gerar-um-esquema-de-projeto-completo-com-o-autopiloto-de-projeto-a-partir-de-uma-demanda-of%C3%ADcio-e-mail-ou-frase-reutilizand",
+      "modulo": "IA",
+      "telaFluxo": "/autopilot (estrutural/demonstração)",
+      "componentes": [
+        "app/(shell)/autopilot/page.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiGateway.java",
+        "components/studio/LettersAgent.tsx",
+        "components/studio/DrawingJourney.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentService.java"
+      ],
+      "api": "/api/me/profile-development/*; /api/me/letters-suggestions; /api/me/drawing-proposals; /api/me/asset-suggestions; /api/tasks/*/ai-suggestions (subconjuntos)",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Autopiloto não gera projeto operacional persistido a partir da demanda.",
+      "melhoria": "Criar proposta com tarefas/fases/modelos autorizados, premissas e aceite explícito antes de salvar.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF30/README.md",
+        "app/(shell)/autopilot/page.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiGateway.java",
+        "components/studio/LettersAgent.tsx",
+        "components/studio/DrawingJourney.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentService.java",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    },
+    {
+      "rf": "RF31",
+      "n": 31,
+      "objetivo": "Simular cenários sobre um Esquema de Projeto (corte de orçamento, atraso, troca de fornecedor, mudança de escopo) antes de enviá-lo à aprovação",
+      "trello": "https://trello.com/c/6FEDQHDN/98-rf31-simular-cen%C3%A1rios-sobre-um-esquema-de-projeto-corte-de-or%C3%A7amento-atraso-troca-de-fornecedor-mudan%C3%A7a-de-escopo-antes-de-envi%C3%A1",
+      "modulo": "Projetos",
+      "telaFluxo": "/projects/[id]/simulate (estrutural/demonstração)",
+      "componentes": [
+        "app/(shell)/projects/[id]/simulate/page.tsx",
+        "app/(shell)/projects/new/page.tsx",
+        "app/(shell)/projects/[id]/page.tsx"
+      ],
+      "api": "Sem controller de projetos operacional localizado",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Simulador de cenários não executa cálculos rastreáveis em projetos reais.",
+      "melhoria": "Implementar motor determinístico com premissas versionadas, baseline e comparação reproduzível.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF31/README.md",
+        "app/(shell)/projects/[id]/simulate/page.tsx",
+        "app/(shell)/projects/new/page.tsx",
+        "app/(shell)/projects/[id]/page.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF32",
+      "n": 32,
+      "objetivo": "Verificar a conformidade de um Esquema de Projeto no Espelho de Conformidade (checklists legais e do departamento) e sugerir as tarefas faltantes",
+      "trello": "https://trello.com/c/0a2bcFbp/99-rf32-verificar-a-conformidade-de-um-esquema-de-projeto-no-espelho-de-conformidade-checklists-legais-e-do-departamento-e-sugerir",
+      "modulo": "Projetos",
+      "telaFluxo": "/projects/[id]/mirror (estrutural/demonstração)",
+      "componentes": [
+        "app/(shell)/projects/[id]/mirror/page.tsx",
+        "app/(shell)/projects/new/page.tsx",
+        "app/(shell)/projects/[id]/page.tsx"
+      ],
+      "api": "Sem controller de projetos operacional localizado",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Espelho de conformidade não aplica checklists versionados com evidência real.",
+      "melhoria": "Implementar obrigação/fonte/edição/evidência/avaliador, sem transformar recomendação de IA em certificação.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF32/README.md",
+        "app/(shell)/projects/[id]/mirror/page.tsx",
+        "app/(shell)/projects/new/page.tsx",
+        "app/(shell)/projects/[id]/page.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF33",
+      "n": 33,
+      "objetivo": "Consultar a Memória Institucional (busca semântica sobre sessões encerradas, artefatos, projetos e tarefas) e fazer a IA do DECIA citar fontes institucionais",
+      "trello": "https://trello.com/c/N4hj9RCT/100-rf33-consultar-a-mem%C3%B3ria-institucional-busca-sem%C3%A2ntica-sobre-sess%C3%B5es-encerradas-artefatos-projetos-e-tarefas-e-fazer-a-ia-do-dec",
+      "modulo": "DECIA",
+      "telaFluxo": "/memory (estrutural/demonstração)",
+      "componentes": [
+        "app/(shell)/memory/page.tsx",
+        "app/(shell)/decia/page.tsx",
+        "lib/decia/repository.ts",
+        "components/decia/WorkspaceSections.tsx"
+      ],
+      "api": "Decisões/chat sem API operacional; desenho compartilhado possui API separada",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Memória institucional não fornece busca semântica operacional com citações autorizadas.",
+      "melhoria": "Indexar recursos por versão e ACL, retornar trecho e fonte, testar revogação e ausência de evidência.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF33/README.md",
+        "app/(shell)/memory/page.tsx",
+        "app/(shell)/decia/page.tsx",
+        "lib/decia/repository.ts",
+        "components/decia/WorkspaceSections.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    },
+    {
+      "rf": "RF34",
+      "n": 34,
+      "objetivo": "Extrair informações de desenhos técnicos e documentos (dwg/dxf/ifc/glb/pdf) com IA para gerar quantitativos, planilha orçamentária e cronograma pré-preenchidos",
+      "trello": "https://trello.com/c/Ns4jDNtt/101-rf34-extrair-informa%C3%A7%C3%B5es-de-desenhos-t%C3%A9cnicos-e-documentos-dwg-dxf-ifc-glb-pdf-com-ia-para-gerar-quantitativos-planilha-or%C3%A7ament",
+      "modulo": "Conectores",
+      "telaFluxo": "/tasks/new; /studio",
+      "componentes": [
+        "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/SourceKind.java",
+        "docs/diagramas/RF23/README.md",
+        "lib/studio/glb.ts"
+      ],
+      "api": "Sem adapters externos de importação operacional localizados",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Leitura de DWG/DXF/IFC/PDF e extração de quantitativos não estão implementadas como pipeline completo.",
+      "melhoria": "Definir suporte por formato, parser isolado, unidades, confiança e conferência humana dos quantitativos.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF34/README.md",
+        "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/SourceKind.java",
+        "docs/diagramas/RF23/README.md",
+        "lib/studio/glb.ts"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    },
+    {
+      "rf": "RF35",
+      "n": 35,
+      "objetivo": "Participar de Metas coletivas, aparecer nos Destaques e receber Reconhecimentos (gamificação ligada ao perfil deliberativo, com DECIA Points como moeda)",
+      "trello": "https://trello.com/c/zVcjU9KW/102-rf35-participar-de-metas-coletivas-aparecer-nos-destaques-e-receber-reconhecimentos-gamifica%C3%A7%C3%A3o-ligada-ao-perfil-deliberativo-co",
+      "modulo": "Rede",
+      "telaFluxo": "/highlights (estrutural/demonstração)",
+      "componentes": [
+        "app/(shell)/highlights/page.tsx",
+        "lib/social/repository.ts",
+        "components/social/MuralFeed.tsx",
+        "components/social/ProfileView.tsx"
+      ],
+      "api": "Interações e feed sem API persistente; DEMO",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Metas coletivas e reconhecimentos não possuem fluxo operacional persistido.",
+      "melhoria": "Implementar contribuição validada, regras transparentes e prevenção de recompensa por volume artificial.",
+      "prioridade": "P2",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF35/README.md",
+        "app/(shell)/highlights/page.tsx",
+        "lib/social/repository.ts",
+        "components/social/MuralFeed.tsx",
+        "components/social/ProfileView.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF36",
+      "n": 36,
+      "objetivo": "Gerar o Dossiê de Transição (handoff) quando um empregado muda de departamento, sai ou uma gestão encerra, transferindo projetos, tarefas e pendências com contexto",
+      "trello": "https://trello.com/c/Jtjj31Iv/103-rf36-gerar-o-dossi%C3%AA-de-transi%C3%A7%C3%A3o-handoff-quando-um-empregado-muda-de-departamento-sai-ou-uma-gest%C3%A3o-encerra-transferindo-projeto",
+      "modulo": "Institucional",
+      "telaFluxo": "/handoffs (estrutural/demonstração)",
+      "componentes": [
+        "app/(shell)/handoffs/page.tsx",
+        "components/institutional/DepartmentTeam.tsx",
+        "app/(shell)/handoffs/page.tsx"
+      ],
+      "api": "/api/departments/*/team (subconjunto); sem API para os demais fluxos ausentes",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Dossiê de transição não transfere trabalho real com contexto e controle de acesso.",
+      "melhoria": "Criar snapshot revisável de pendências, responsáveis e fontes, seguido de transferência autorizada.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF36/README.md",
+        "app/(shell)/handoffs/page.tsx",
+        "components/institutional/DepartmentTeam.tsx",
+        "app/(shell)/handoffs/page.tsx"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF37",
+      "n": 37,
+      "objetivo": "Registrar reuniões com a Ata Viva (transcrição ou gravação → ata como tarefa + tarefas de encaminhamento com responsável e prazo dentro do projeto)",
+      "trello": "https://trello.com/c/I8z01AoM/104-rf37-registrar-reuni%C3%B5es-com-a-ata-viva-transcri%C3%A7%C3%A3o-ou-grava%C3%A7%C3%A3o-%E2%86%92-ata-como-tarefa-tarefas-de-encaminhamento-com-respons%C3%A1vel-e-pra",
+      "modulo": "DECIA",
+      "telaFluxo": "/decia/[sessionId] (estrutural/demonstração)",
+      "componentes": [
+        "app/(shell)/decia/[sessionId]/page.tsx",
+        "app/(shell)/decia/page.tsx",
+        "lib/decia/repository.ts",
+        "components/decia/WorkspaceSections.tsx"
+      ],
+      "api": "Decisões/chat sem API operacional; desenho compartilhado possui API separada",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Ata Viva não grava/transcreve reunião nem gera encaminhamentos persistentes.",
+      "melhoria": "Implementar consentimento, transcrição, revisão da ata e criação idempotente de tarefas com responsáveis.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF37/README.md",
+        "app/(shell)/decia/[sessionId]/page.tsx",
+        "app/(shell)/decia/page.tsx",
+        "lib/decia/repository.ts",
+        "components/decia/WorkspaceSections.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    },
+    {
+      "rf": "RF38",
+      "n": 38,
+      "objetivo": "Aplicar a identidade visual do Work AI — ícones por tipo de tarefa, thumbnails automáticos, capa-mosaico de projeto, fio de decisão, lacres, etiquetas de estado, temas e skins da Mesa",
+      "trello": "https://trello.com/c/LvMBvGkU/105-rf38-aplicar-a-identidade-visual-do-work-ai-%C3%ADcones-por-tipo-de-tarefa-thumbnails-autom%C3%A1ticos-capa-mosaico-de-projeto-fio-de-deci",
+      "modulo": "Visual",
+      "telaFluxo": "/profile; /mural; /settings",
+      "componentes": [
+        "components/social/TaskSchemeCard.tsx",
+        "components/social/ProjectCard.tsx",
+        "components/ui/Badge.tsx"
+      ],
+      "api": "Aparência de esquemas reais ainda parcial",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 5.0,
+        "eficiencia": 5.0,
+        "visual": 7.0,
+        "recuperacao": 5.0,
+        "acessibilidade": 5.0,
+        "feedback": 5.0
+      },
+      "notaInicial": 5.3,
+      "principalErro": "Identidade visual é consistente em partes, mas opacidade animada prejudicava contraste e capas são genéricas.",
+      "melhoria": "Manter texto estável e contrastante, thumbnails reais com ACL e ícones que expressem capacidade verdadeira.",
+      "prioridade": "P2",
+      "correcaoNestaRodada": "Texto de estado não pulsa; cards arquivados preservam contraste.",
+      "subnotasApos": {
+        "funcionalidade": 5,
+        "eficiencia": 6,
+        "visual": 7,
+        "recuperacao": 6,
+        "acessibilidade": 7,
+        "feedback": 6
+      },
+      "notaApos": 5.95,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF38/README.md",
+        "components/social/TaskSchemeCard.tsx",
+        "components/social/ProjectCard.tsx",
+        "components/ui/Badge.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF39",
+      "n": 39,
+      "objetivo": "Criar chancelas (EMPRESA / CHEFE DE DEPARTAMENTO) e concedê-las a tarefas, projetos e planos por vínculo sugerido pela IA, por política de critérios ou por premiação; habilitar benefícios resgatáveis",
+      "trello": "https://trello.com/c/5qnmmRgz/127-rf39-criar-chancelas-empresa-chefe-de-departamento-e-conced%C3%AA-las-a-tarefas-projetos-e-planos-por-v%C3%ADnculo-sugerido-pela-ia-por-po",
+      "modulo": "Institucional",
+      "telaFluxo": "/seals (estrutural/demonstração)",
+      "componentes": [
+        "app/(shell)/seals/page.tsx",
+        "components/institutional/DepartmentTeam.tsx",
+        "app/(shell)/handoffs/page.tsx"
+      ],
+      "api": "/api/departments/*/team (subconjunto); sem API para os demais fluxos ausentes",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Lacres visuais não demonstram concessão, política, benefício e resgate reais.",
+      "melhoria": "Implementar ciclo de chancela com emissor, evidência, validade, revogação e trilha de resgate.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF39/README.md",
+        "app/(shell)/seals/page.tsx",
+        "components/institutional/DepartmentTeam.tsx",
+        "app/(shell)/handoffs/page.tsx"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF40",
+      "n": 40,
+      "objetivo": "Oferecer tarefas, projetos e kits como modelos no Balcão de Modelos (marketplace interno em DECIA Points, sem dinheiro) e reutilizá-los com crédito ao autor",
+      "trello": "https://trello.com/c/rcxdmCBb/128-rf40-oferecer-tarefas-projetos-e-kits-como-modelos-no-balc%C3%A3o-de-modelos-marketplace-interno-em-decia-points-sem-dinheiro-e-reuti",
+      "modulo": "Rede",
+      "telaFluxo": "/models (estrutural/demonstração)",
+      "componentes": [
+        "app/(shell)/models/page.tsx",
+        "lib/social/repository.ts",
+        "components/social/MuralFeed.tsx",
+        "components/social/ProfileView.tsx"
+      ],
+      "api": "Interações e feed sem API persistente; DEMO",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Balcão não entrega compra/reutilização persistente com crédito e transação.",
+      "melhoria": "Implementar licença, versão, snapshot autorizado e transação atômica de pontos sem duplicidade.",
+      "prioridade": "P2",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF40/README.md",
+        "app/(shell)/models/page.tsx",
+        "lib/social/repository.ts",
+        "components/social/MuralFeed.tsx",
+        "components/social/ProfileView.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF41",
+      "n": 41,
+      "objetivo": "Gerir o Acervo de Tarefas (inventário do usuário): estados, sub-filtros, ordenação, prazos legais, anexos & evidências e ações rápidas",
+      "trello": "https://trello.com/c/fzZ0vq5I/139-rf41-gerir-o-acervo-de-tarefas-invent%C3%A1rio-do-usu%C3%A1rio-estados-sub-filtros-ordena%C3%A7%C3%A3o-prazos-legais-anexos-evid%C3%AAncias-e-a%C3%A7%C3%B5es-r%C3%A1pid",
+      "modulo": "Tarefas",
+      "telaFluxo": "/tasks; /tasks/new; /tasks/[id]",
+      "componentes": [
+        "components/tasks/TaskEditor.tsx",
+        "components/tasks/PersistedTaskDetail.tsx",
+        "lib/tasks/client.ts"
+      ],
+      "api": "/api/tasks/*",
+      "estado": "PARCIAL_API",
+      "subnotasIniciais": {
+        "funcionalidade": 6.0,
+        "eficiencia": 6.0,
+        "visual": 6.0,
+        "recuperacao": 7.0,
+        "acessibilidade": 7.0,
+        "feedback": 7.0
+      },
+      "notaInicial": 6.35,
+      "principalErro": "Acervo real possui filtros/estados; anexos, evidências, prazos legais e ações completas seguem parciais.",
+      "melhoria": "Ampliar card/detalhe com contexto técnico, anexos seguros, dependências e filtros persistentes.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 6.0,
+        "eficiencia": 6.0,
+        "visual": 6.0,
+        "recuperacao": 7.0,
+        "acessibilidade": 7.0,
+        "feedback": 7.0
+      },
+      "notaApos": 6.35,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF41/README.md",
+        "components/tasks/TaskEditor.tsx",
+        "components/tasks/PersistedTaskDetail.tsx",
+        "lib/tasks/client.ts",
+        "evidencias/jornadas/JORNADAS.json",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF42",
+      "n": 42,
+      "objetivo": "Acumular DECIA Points por participação de qualidade no chat DECIA e usá-los em compras dentro do app (Loja Work AI: modelos do Balcão, créditos de IA, capas/skins, impulsos, kits)",
+      "trello": "https://trello.com/c/t0EVs5qI/141-rf42-acumular-decia-points-por-participa%C3%A7%C3%A3o-de-qualidade-no-chat-decia-e-us%C3%A1-los-em-compras-dentro-do-app-loja-work-ai-modelos-d",
+      "modulo": "Rede",
+      "telaFluxo": "/points (estrutural/demonstração)",
+      "componentes": [
+        "app/(shell)/points/page.tsx",
+        "lib/social/repository.ts",
+        "components/social/MuralFeed.tsx",
+        "components/social/ProfileView.tsx"
+      ],
+      "api": "Interações e feed sem API persistente; DEMO",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Ledger/pontos/loja não compõem um fluxo transacional operacional verificado.",
+      "melhoria": "Implementar extrato e eventos idempotentes com limites, antifraude e compras atômicas.",
+      "prioridade": "P2",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF42/README.md",
+        "app/(shell)/points/page.tsx",
+        "lib/social/repository.ts",
+        "components/social/MuralFeed.tsx",
+        "components/social/ProfileView.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF43",
+      "n": 43,
+      "objetivo": "Usar a IA do sistema — insights do Acervo e do Perfil, ranking de usuários, motor do DECIA e Autopilot para criar tarefas e sugerir novos projetos com custo, tempo, prazo e viabilidade (EVM, CPM, PERT, Monte Carlo, ROI, matriz de risco)",
+      "trello": "https://trello.com/c/3SKhDCb1/143-rf43-usar-a-ia-do-sistema-insights-do-acervo-e-do-perfil-ranking-de-usu%C3%A1rios-motor-do-decia-e-autopilot-para-criar-tarefas-e-sug",
+      "modulo": "IA",
+      "telaFluxo": "/copilot/profile; /studio; /decia",
+      "componentes": [
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiGateway.java",
+        "components/studio/LettersAgent.tsx",
+        "components/studio/DrawingJourney.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentService.java"
+      ],
+      "api": "/api/me/profile-development/*; /api/me/letters-suggestions; /api/me/drawing-proposals; /api/me/asset-suggestions; /api/tasks/*/ai-suggestions (subconjuntos)",
+      "estado": "PARCIAL_API",
+      "subnotasIniciais": {
+        "funcionalidade": 4.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 7.0,
+        "acessibilidade": 6.0,
+        "feedback": 6.0
+      },
+      "notaInicial": 5.2,
+      "principalErro": "Gateway real existe; qualidade técnica, fontes e motores quantitativos por módulo não estão validados.",
+      "melhoria": "Criar avaliação por domínio e conectar DECIA/Letters/Drawings a fontes verificáveis e ferramentas calculáveis.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 4.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 7.0,
+        "acessibilidade": 6.0,
+        "feedback": 6.0
+      },
+      "notaApos": 5.2,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF43/README.md",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiGateway.java",
+        "components/studio/LettersAgent.tsx",
+        "components/studio/DrawingJourney.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentService.java",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    },
+    {
+      "rf": "RF44",
+      "n": 44,
+      "objetivo": "Receber a Tarefa do Dia sugerida pela IA e acompanhar o Hype Score de Eficiência (previsto × realizado), calculado por princípios de gestão empresarial e de projetos, com feedback diário e semana planejada",
+      "trello": "https://trello.com/c/86403c3G/145-rf44-receber-a-tarefa-do-dia-sugerida-pela-ia-e-acompanhar-o-hype-score-de-efici%C3%AAncia-previsto-%C3%97-realizado-calculado-por-princ%C3%ADp",
+      "modulo": "IA",
+      "telaFluxo": "/profile (estrutural/demonstração)",
+      "componentes": [
+        "app/(shell)/profile/page.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiGateway.java",
+        "components/studio/LettersAgent.tsx",
+        "components/studio/DrawingJourney.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentService.java"
+      ],
+      "api": "/api/me/profile-development/*; /api/me/letters-suggestions; /api/me/drawing-proposals; /api/me/asset-suggestions; /api/tasks/*/ai-suggestions (subconjuntos)",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Tarefa do Dia e comparação previsto×realizado não têm fluxo real completo.",
+      "melhoria": "Implementar planejamento diário explicável ligado à capacidade e objetivos aceitos, com contestação.",
+      "prioridade": "P2",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF44/README.md",
+        "app/(shell)/profile/page.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiGateway.java",
+        "components/studio/LettersAgent.tsx",
+        "components/studio/DrawingJourney.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentService.java",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    },
+    {
+      "rf": "RF45",
+      "n": 45,
+      "objetivo": "Calcular com a IA o Hype Score do Perfil (0–1000) a partir de tudo o que o usuário produziu, das interações recebidas (curtidas, reações, comentários, salvos, remixes) e da participação no DECIA — exibível ou oculto a critério do usuário, sempre explicável",
+      "trello": "https://trello.com/c/Fs2RtK6q/147-rf45-calcular-com-a-ia-o-hype-score-do-perfil-0-1000-a-partir-de-tudo-o-que-o-usu%C3%A1rio-produziu-das-intera%C3%A7%C3%B5es-recebidas-curtidas",
+      "modulo": "Perfil",
+      "telaFluxo": "/profile (estrutural/demonstração)",
+      "componentes": [
+        "app/(shell)/profile/page.tsx",
+        "components/social/RegisteredProfile.tsx",
+        "components/social/ProfileView.tsx",
+        "lib/social/repository.ts"
+      ],
+      "api": "/api/me; /api/tasks (somente própria conta); sem API de perfil público",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Hype de perfil é demonstrativo e não representa reputação calculada e auditável.",
+      "melhoria": "Definir fórmula, fontes, privacidade e opt-out; não inferir carreira a partir de popularidade.",
+      "prioridade": "P2",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF45/README.md",
+        "app/(shell)/profile/page.tsx",
+        "components/social/RegisteredProfile.tsx",
+        "components/social/ProfileView.tsx",
+        "lib/social/repository.ts",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF46",
+      "n": 46,
+      "objetivo": "Utilizar chats de mensageria para comunicar-se com outros usuários e atribuir ou receber tarefas e projetos",
+      "trello": "https://trello.com/c/IVrvZvpO/152-rf46-utilizar-chats-de-mensageria-para-comunicar-se-com-outros-usu%C3%A1rios-e-atribuir-ou-receber-tarefas-e-projetos",
+      "modulo": "DECIA",
+      "telaFluxo": "/messages (estrutural/demonstração)",
+      "componentes": [
+        "app/(shell)/messages/page.tsx",
+        "app/(shell)/decia/page.tsx",
+        "lib/decia/repository.ts",
+        "components/decia/WorkspaceSections.tsx"
+      ],
+      "api": "Decisões/chat sem API operacional; desenho compartilhado possui API separada",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Mensageria profissional não entrega chat real persistente entre usuários.",
+      "melhoria": "Implementar canais autorizados, histórico, anexos, entrega e atribuições revisadas.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF46/README.md",
+        "app/(shell)/messages/page.tsx",
+        "app/(shell)/decia/page.tsx",
+        "lib/decia/repository.ts",
+        "components/decia/WorkspaceSections.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    },
+    {
+      "rf": "RF47",
+      "n": 47,
+      "objetivo": "Encontrar palavras-chave em documentos — varrer documentos longos de tarefas e projetos para localizar e extrair termos, frases e palavras (com contexto e fonte)",
+      "trello": "https://trello.com/c/Z4umYwGm/200-rf47-encontrar-palavras-chave-em-documentos-varrer-documentos-longos-de-tarefas-e-projetos-para-localizar-e-extrair-termos-frase",
+      "modulo": "Peças",
+      "telaFluxo": "/studio; /tasks/[id]",
+      "componentes": [
+        "components/studio/Studio.tsx",
+        "components/tasks/TaskEditor.tsx"
+      ],
+      "api": "/api/me/letters-suggestions; /api/me/drawing-proposals; /api/tasks/*/drawings (subconjuntos)",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 1.0,
+        "eficiencia": 2.0,
+        "visual": 4.0,
+        "recuperacao": 3.0,
+        "acessibilidade": 4.0,
+        "feedback": 3.0
+      },
+      "notaInicial": 2.45,
+      "principalErro": "Encontrar palavras possui UI de exploração; não extrai termos de documentos reais longos com fonte.",
+      "melhoria": "Implementar extração/OCR e índice por versão com trecho verificável e ACL.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 1.0,
+        "eficiencia": 2.0,
+        "visual": 4.0,
+        "recuperacao": 3.0,
+        "acessibilidade": 4.0,
+        "feedback": 3.0
+      },
+      "notaApos": 2.45,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF47/README.md",
+        "components/studio/Studio.tsx",
+        "components/tasks/TaskEditor.tsx"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF48",
+      "n": 48,
+      "objetivo": "Utilizar a aba Agentes (Copilot de testes) para testar uma contratação antes do início e durante a execução — testes contratuais, orçamentários, comportamentais, de integridade e Score do Contrato, sempre com fundamentação bibliográfica",
+      "trello": "https://trello.com/c/uhSouFfk/201-rf48-utilizar-a-aba-agentes-copilot-de-testes-para-testar-uma-contrata%C3%A7%C3%A3o-antes-do-in%C3%ADcio-e-durante-a-execu%C3%A7%C3%A3o-testes-contratuai",
+      "modulo": "IA",
+      "telaFluxo": "/copilot/profile; /studio; /decia",
+      "componentes": [
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiGateway.java",
+        "components/studio/LettersAgent.tsx",
+        "components/studio/DrawingJourney.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentService.java"
+      ],
+      "api": "/api/me/profile-development/*; /api/me/letters-suggestions; /api/me/drawing-proposals; /api/me/asset-suggestions; /api/tasks/*/ai-suggestions (subconjuntos)",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 1.0,
+        "eficiencia": 2.0,
+        "visual": 4.0,
+        "recuperacao": 3.0,
+        "acessibilidade": 4.0,
+        "feedback": 3.0
+      },
+      "notaInicial": 2.45,
+      "principalErro": "Aba Agentes apresenta áreas de teste; não executa avaliação técnica contratual fundamentada.",
+      "melhoria": "Construir casos de avaliação com evidências, bibliografia e limites; nunca automatizar decisão de contratação por score.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 1.0,
+        "eficiencia": 2.0,
+        "visual": 4.0,
+        "recuperacao": 3.0,
+        "acessibilidade": 4.0,
+        "feedback": 3.0
+      },
+      "notaApos": 2.45,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF48/README.md",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiGateway.java",
+        "components/studio/LettersAgent.tsx",
+        "components/studio/DrawingJourney.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentService.java",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    },
+    {
+      "rf": "RF49",
+      "n": 49,
+      "objetivo": "Coordenar Pactos de Desbloqueio entre usuários, chefes e departamentos",
+      "trello": "https://trello.com/c/S9YYpa32/204-rf49-coordenar-pactos-de-desbloqueio-entre-usu%C3%A1rios-chefes-e-departamentos",
+      "modulo": "Institucional",
+      "telaFluxo": "/departments/[slug]/team; páginas institucionais",
+      "componentes": [
+        "components/institutional/DepartmentTeam.tsx",
+        "app/(shell)/handoffs/page.tsx"
+      ],
+      "api": "/api/departments/*/team (subconjunto); sem API para os demais fluxos ausentes",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Pactos de Desbloqueio permanecem uma especificação sem jornada operacional.",
+      "melhoria": "Implementar compromisso bilateral, prazo, impedimento, evidência de solução e histórico sem ampliar ACL.",
+      "prioridade": "P2",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF49/README.md",
+        "components/institutional/DepartmentTeam.tsx",
+        "app/(shell)/handoffs/page.tsx"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF50",
+      "n": 50,
+      "objetivo": "Analisar o perfil no Copilot e recomendar tarefas, projetos, pessoas da rede e caminhos profissionais",
+      "trello": "https://trello.com/c/5c7pGk9p/205-rf50-analisar-o-perfil-no-copilot-e-recomendar-tarefas-projetos-pessoas-da-rede-e-caminhos-profissionais",
+      "modulo": "IA",
+      "telaFluxo": "/copilot/profile; /studio; /decia",
+      "componentes": [
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiGateway.java",
+        "components/studio/LettersAgent.tsx",
+        "components/studio/DrawingJourney.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentService.java"
+      ],
+      "api": "/api/me/profile-development/*; /api/me/letters-suggestions; /api/me/drawing-proposals; /api/me/asset-suggestions; /api/tasks/*/ai-suggestions (subconjuntos)",
+      "estado": "PARCIAL_API",
+      "subnotasIniciais": {
+        "funcionalidade": 5.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 7.0,
+        "acessibilidade": 6.0,
+        "feedback": 6.0
+      },
+      "notaInicial": 5.5,
+      "principalErro": "Análise usa perfil declarado e gera tarefas; rede semelhante, projetos e carreira não são fluxos completos.",
+      "melhoria": "Ampliar sugestões por objetivos e fontes declaradas, sem inventar pessoas/vagas; criar rascunhos após revisão.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 5.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 7.0,
+        "acessibilidade": 6.0,
+        "feedback": 6.0
+      },
+      "notaApos": 5.5,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/diagramas/RF50/README.md",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiGateway.java",
+        "components/studio/LettersAgent.tsx",
+        "components/studio/DrawingJourney.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentService.java",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    },
+    {
+      "rf": "RF51",
+      "n": 51,
+      "objetivo": "Controlar autonomia, escopo e execução da IA em Letters e Drawings",
+      "trello": "https://trello.com/c/InihQDYu/206-rf51-controlar-autonomia-escopo-e-execu%C3%A7%C3%A3o-da-ia-em-letters-e-drawings",
+      "modulo": "IA",
+      "telaFluxo": "/copilot/profile; /studio; /decia",
+      "componentes": [
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiGateway.java",
+        "components/studio/LettersAgent.tsx",
+        "components/studio/DrawingJourney.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentService.java"
+      ],
+      "api": "/api/me/profile-development/*; /api/me/letters-suggestions; /api/me/drawing-proposals; /api/me/asset-suggestions; /api/tasks/*/ai-suggestions (subconjuntos)",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 4.0,
+        "eficiencia": 4.0,
+        "visual": 5.0,
+        "recuperacao": 5.0,
+        "acessibilidade": 6.0,
+        "feedback": 4.0
+      },
+      "notaInicial": 4.5,
+      "principalErro": "Níveis são seletores de escopo; nível 4 não é agente e proposta antiga podia sobreviver à troca de nível.",
+      "melhoria": "Invalidar proposta em mudança de política; implementar modos reais com plano, orçamento, interrupção e trilha compartilhada.",
+      "prioridade": "P0",
+      "correcaoNestaRodada": "Troca de nível/instrução/classificação invalida proposta Drawings; rótulo deixa explícito que não há agente.",
+      "subnotasApos": {
+        "funcionalidade": 4,
+        "eficiencia": 5,
+        "visual": 5,
+        "recuperacao": 7,
+        "acessibilidade": 6,
+        "feedback": 6
+      },
+      "notaApos": 5.2,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF51.md",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiGateway.java",
+        "components/studio/LettersAgent.tsx",
+        "components/studio/DrawingJourney.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentService.java",
+        "evidencias/colaboracao/COLABORACAO.json",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    },
+    {
+      "rf": "RF52",
+      "n": 52,
+      "objetivo": "Editar documentos estruturados no Work Station Letters",
+      "trello": "https://trello.com/c/hgmw0n9D/207-rf52-editar-documentos-estruturados-no-work-station-letters",
+      "modulo": "Letters",
+      "telaFluxo": "/studio → Letters",
+      "componentes": [
+        "components/studio/Studio.tsx",
+        "components/studio/LettersAgent.tsx",
+        "lib/studio/letters.ts",
+        "lib/studio/analysis.ts"
+      ],
+      "api": "/api/me/letters-suggestions; sem documento colaborativo persistente",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 4.0,
+        "eficiencia": 4.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 6.0,
+        "feedback": 5.0
+      },
+      "notaInicial": 4.75,
+      "principalErro": "Letters é editor de blocos de texto simples, sem formatação profissional e salvamento associado à tarefa.",
+      "melhoria": "Introduzir modelo rico estável, estilos, tabelas e referências; persistir revisões com exportação fiel.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 4.0,
+        "eficiencia": 4.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 6.0,
+        "feedback": 5.0
+      },
+      "notaApos": 4.75,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF52.md",
+        "components/studio/Studio.tsx",
+        "components/studio/LettersAgent.tsx",
+        "lib/studio/letters.ts",
+        "lib/studio/analysis.ts",
+        "evidencias/jornadas/JORNADAS.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    },
+    {
+      "rf": "RF53",
+      "n": 53,
+      "objetivo": "Analisar língua, morfossintaxe e gramática no Letters",
+      "trello": "https://trello.com/c/3pwmmut7/208-rf53-analisar-l%C3%ADngua-morfossintaxe-e-gram%C3%A1tica-no-letters",
+      "modulo": "Letters",
+      "telaFluxo": "/studio → Letters",
+      "componentes": [
+        "components/studio/Studio.tsx",
+        "components/studio/LettersAgent.tsx",
+        "lib/studio/letters.ts",
+        "lib/studio/analysis.ts"
+      ],
+      "api": "/api/me/letters-suggestions; sem documento colaborativo persistente",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 2.0,
+        "eficiencia": 3.0,
+        "visual": 4.0,
+        "recuperacao": 4.0,
+        "acessibilidade": 5.0,
+        "feedback": 4.0
+      },
+      "notaInicial": 3.3,
+      "principalErro": "Análise linguística local cobre poucos padrões; não há motor completo de português validado.",
+      "melhoria": "Integrar analisador linguístico avaliado em corpus por classe/sintaxe/tempo e informar confiança e limites.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 2.0,
+        "eficiencia": 3.0,
+        "visual": 4.0,
+        "recuperacao": 4.0,
+        "acessibilidade": 5.0,
+        "feedback": 4.0
+      },
+      "notaApos": 3.3,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF53.md",
+        "components/studio/Studio.tsx",
+        "components/studio/LettersAgent.tsx",
+        "lib/studio/letters.ts",
+        "lib/studio/analysis.ts",
+        "evidencias/jornadas/JORNADAS.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    },
+    {
+      "rf": "RF54",
+      "n": 54,
+      "objetivo": "Analisar coerência, narrativa, gênero e fontes no Letters",
+      "trello": "https://trello.com/c/k4opcYDi/209-rf54-analisar-coer%C3%AAncia-narrativa-g%C3%AAnero-e-fontes-no-letters",
+      "modulo": "Letters",
+      "telaFluxo": "/studio → Letters",
+      "componentes": [
+        "components/studio/Studio.tsx",
+        "components/studio/LettersAgent.tsx",
+        "lib/studio/letters.ts",
+        "lib/studio/analysis.ts"
+      ],
+      "api": "/api/me/letters-suggestions; sem documento colaborativo persistente",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 2.0,
+        "eficiencia": 3.0,
+        "visual": 4.0,
+        "recuperacao": 4.0,
+        "acessibilidade": 5.0,
+        "feedback": 4.0
+      },
+      "notaInicial": 3.3,
+      "principalErro": "Alertas de gênero são heurísticos; continuidade narrativa e fontes não são analisadas de forma completa.",
+      "melhoria": "Extrair entidades/afirmações por trecho e confrontar fontes e cronologia com evidência e revisão.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 2.0,
+        "eficiencia": 3.0,
+        "visual": 4.0,
+        "recuperacao": 4.0,
+        "acessibilidade": 5.0,
+        "feedback": 4.0
+      },
+      "notaApos": 3.3,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF54.md",
+        "components/studio/Studio.tsx",
+        "components/studio/LettersAgent.tsx",
+        "lib/studio/letters.ts",
+        "lib/studio/analysis.ts"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    },
+    {
+      "rf": "RF55",
+      "n": 55,
+      "objetivo": "Revisar, completar e reescrever texto com IA no Letters",
+      "trello": "https://trello.com/c/mxLJwMp0/210-rf55-revisar-completar-e-reescrever-texto-com-ia-no-letters",
+      "modulo": "Letters",
+      "telaFluxo": "/studio → Letters",
+      "componentes": [
+        "components/studio/Studio.tsx",
+        "components/studio/LettersAgent.tsx",
+        "lib/studio/letters.ts",
+        "lib/studio/analysis.ts"
+      ],
+      "api": "/api/me/letters-suggestions; sem documento colaborativo persistente",
+      "estado": "PARCIAL_API",
+      "subnotasIniciais": {
+        "funcionalidade": 5.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 7.0,
+        "acessibilidade": 6.0,
+        "feedback": 6.0
+      },
+      "notaInicial": 5.5,
+      "principalErro": "Revisão e completar têm propostas/diff; precisão técnica e citação de fontes reais não foram avaliadas.",
+      "melhoria": "Avaliar casos por área, preservar seleção/fatos e registrar inferência, diff, aceite e rollback no servidor.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 5,
+        "eficiencia": 5,
+        "visual": 5,
+        "recuperacao": 7,
+        "acessibilidade": 6,
+        "feedback": 6
+      },
+      "notaApos": 5.5,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF55.md",
+        "components/studio/Studio.tsx",
+        "components/studio/LettersAgent.tsx",
+        "lib/studio/letters.ts",
+        "lib/studio/analysis.ts",
+        "evidencias/jornadas/JORNADAS.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    },
+    {
+      "rf": "RF56",
+      "n": 56,
+      "objetivo": "Colaborar, comentar e resolver conflitos em documentos Letters no DECIA",
+      "trello": "https://trello.com/c/zGJrunlc/211-rf56-colaborar-comentar-e-resolver-conflitos-em-documentos-letters-no-decia",
+      "modulo": "Letters",
+      "telaFluxo": "/studio → Letters",
+      "componentes": [
+        "components/studio/Studio.tsx",
+        "components/studio/LettersAgent.tsx",
+        "lib/studio/letters.ts",
+        "lib/studio/analysis.ts"
+      ],
+      "api": "/api/me/letters-suggestions; sem documento colaborativo persistente",
+      "estado": "AUSENTE_FLUXO_OPERACIONAL",
+      "subnotasIniciais": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaInicial": 0.0,
+      "principalErro": "Não há colaboração Letters com permissões, comentários, conflitos e reconexão no DECIA.",
+      "melhoria": "Criar documento compartilhado versionado, ACL por ação e protocolo de concorrência com reconexão e sugestões.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 0.0,
+        "eficiencia": 0.0,
+        "visual": 0.0,
+        "recuperacao": 0.0,
+        "acessibilidade": 0.0,
+        "feedback": 0.0
+      },
+      "notaApos": 0.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF56.md",
+        "components/studio/Studio.tsx",
+        "components/studio/LettersAgent.tsx",
+        "lib/studio/letters.ts",
+        "lib/studio/analysis.ts"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    },
+    {
+      "rf": "RF57",
+      "n": 57,
+      "objetivo": "Selecionar objetos, pontos e regiões no Drawings",
+      "trello": "https://trello.com/c/JwUzyuj2/212-rf57-selecionar-objetos-pontos-e-regi%C3%B5es-no-drawings",
+      "modulo": "Drawings",
+      "telaFluxo": "/studio → Drawings; /decia/[sessionId]",
+      "componentes": [
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts"
+      ],
+      "api": "/api/tasks/*/drawings; /api/me/drawing-proposals; /api/me/asset-suggestions (subconjuntos)",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 6.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 6.0,
+        "feedback": 6.0
+      },
+      "notaInicial": 5.65,
+      "principalErro": "Seleção e Bézier existem; equivalência acessível e geometria de seleção complexa ainda são parciais.",
+      "melhoria": "Validar curvas, máscaras e seleção por atributo em casos complexos; oferecer alternativa numérica a cada arraste.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 6.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 6.0,
+        "feedback": 6.0
+      },
+      "notaApos": 5.65,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF57.md",
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF58",
+      "n": 58,
+      "objetivo": "Criar e editar geometria vetorial e desenho técnico 2D",
+      "trello": "https://trello.com/c/jUDUldhK/213-rf58-criar-e-editar-geometria-vetorial-e-desenho-t%C3%A9cnico-2d",
+      "modulo": "Drawings",
+      "telaFluxo": "/studio → Drawings; /decia/[sessionId]",
+      "componentes": [
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts"
+      ],
+      "api": "/api/tasks/*/drawings; /api/me/drawing-proposals; /api/me/asset-suggestions (subconjuntos)",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 5.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 5.0,
+        "feedback": 5.0
+      },
+      "notaInicial": 5.15,
+      "principalErro": "Canvas vetorial 2D oferece comandos; rigor técnico não equivale a CAD normativo completo.",
+      "melhoria": "Definir unidades/escala/tolerâncias, cotagem associativa e suíte geométrica com exportação fiel.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 5.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 5.0,
+        "feedback": 5.0
+      },
+      "notaApos": 5.15,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF58.md",
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts",
+        "evidencias/jornadas/JORNADAS.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF59",
+      "n": 59,
+      "objetivo": "Construir, dividir e desmembrar contornos vetoriais",
+      "trello": "https://trello.com/c/DZOhrIe7/214-rf59-construir-dividir-e-desmembrar-contornos-vetoriais",
+      "modulo": "Drawings",
+      "telaFluxo": "/studio → Drawings; /decia/[sessionId]",
+      "componentes": [
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts"
+      ],
+      "api": "/api/tasks/*/drawings; /api/me/drawing-proposals; /api/me/asset-suggestions (subconjuntos)",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 6.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 5.0,
+        "feedback": 6.0
+      },
+      "notaInicial": 5.55,
+      "principalErro": "Booleanas/agrupamento locais existem; certos efeitos, máscaras e operações não têm semântica equivalente completa.",
+      "melhoria": "Explicitar matriz de comandos, preservar topologia e testar degenerações e desfazer unitário.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 6.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 5.0,
+        "feedback": 6.0
+      },
+      "notaApos": 5.55,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF59.md",
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF60",
+      "n": 60,
+      "objetivo": "Modelar sólidos, superfícies e malhas 3D no Drawings",
+      "trello": "https://trello.com/c/VU3OKOLn/215-rf60-modelar-s%C3%B3lidos-superf%C3%ADcies-e-malhas-3d-no-drawings",
+      "modulo": "Drawings",
+      "telaFluxo": "/studio → Drawings; /decia/[sessionId]",
+      "componentes": [
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts"
+      ],
+      "api": "/api/tasks/*/drawings; /api/me/drawing-proposals; /api/me/asset-suggestions (subconjuntos)",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 5.0,
+        "eficiencia": 4.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 4.0,
+        "feedback": 5.0
+      },
+      "notaInicial": 4.85,
+      "principalErro": "Ambiente 3D usa malhas locais separado da peça e colaboração 2D.",
+      "melhoria": "Persistir B-rep/malha com unidades e tolerâncias, integrar histórico e avaliar operações e faces inválidas.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 5.0,
+        "eficiencia": 4.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 4.0,
+        "feedback": 5.0
+      },
+      "notaApos": 4.85,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF60.md",
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF61",
+      "n": 61,
+      "objetivo": "Desmembrar e converter estruturas 3D preservando intenção",
+      "trello": "https://trello.com/c/e4kUGFvA/216-rf61-desmembrar-e-converter-estruturas-3d-preservando-inten%C3%A7%C3%A3o",
+      "modulo": "Drawings",
+      "telaFluxo": "/studio → Drawings; /decia/[sessionId]",
+      "componentes": [
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts"
+      ],
+      "api": "/api/tasks/*/drawings; /api/me/drawing-proposals; /api/me/asset-suggestions (subconjuntos)",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 5.0,
+        "eficiencia": 4.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 4.0,
+        "feedback": 5.0
+      },
+      "notaInicial": 4.85,
+      "principalErro": "Explodir e recompor malhas locais não cobrem toda conversão de sólidos/superfícies CAD.",
+      "melhoria": "Preservar volume e intenção, validar malha fechada e documentar operações sem equivalência exata.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 5.0,
+        "eficiencia": 4.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 4.0,
+        "feedback": 5.0
+      },
+      "notaApos": 4.85,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF61.md",
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF62",
+      "n": 62,
+      "objetivo": "Controlar vistas, câmera, perspectiva e coordenadas no Drawings",
+      "trello": "https://trello.com/c/jOj9IQc6/217-rf62-controlar-vistas-c%C3%A2mera-perspectiva-e-coordenadas-no-drawings",
+      "modulo": "Drawings",
+      "telaFluxo": "/studio → Drawings; /decia/[sessionId]",
+      "componentes": [
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts"
+      ],
+      "api": "/api/tasks/*/drawings; /api/me/drawing-proposals; /api/me/asset-suggestions (subconjuntos)",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 6.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 5.0,
+        "feedback": 6.0
+      },
+      "notaInicial": 5.55,
+      "principalErro": "Câmera/vistas funcionam em assets; UCS e perspectiva do documento não formam sistema completo.",
+      "melhoria": "Unificar câmera e coordenadas por peça, salvar vistas e testar profundidade e seleção após transformação.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 6.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 5.0,
+        "feedback": 6.0
+      },
+      "notaApos": 5.55,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF62.md",
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF63",
+      "n": 63,
+      "objetivo": "Editar cores, gradientes, materiais e estilos de traço",
+      "trello": "https://trello.com/c/m15sbErL/218-rf63-editar-cores-gradientes-materiais-e-estilos-de-tra%C3%A7o",
+      "modulo": "Drawings",
+      "telaFluxo": "/studio → Drawings; /decia/[sessionId]",
+      "componentes": [
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts"
+      ],
+      "api": "/api/tasks/*/drawings; /api/me/drawing-proposals; /api/me/asset-suggestions (subconjuntos)",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 6.0,
+        "eficiencia": 6.0,
+        "visual": 6.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 6.0,
+        "feedback": 6.0
+      },
+      "notaInicial": 6.0,
+      "principalErro": "Cores/gradientes/traços existem; CMYK/ICC e Munsell calibrado não estão implementados.",
+      "melhoria": "Manter atalhos sem perda e declarar suporte; implementar perfis de cor com conversão medida e exportação fiel.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 6.0,
+        "eficiencia": 6.0,
+        "visual": 6.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 6.0,
+        "feedback": 6.0
+      },
+      "notaApos": 6.0,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF63.md",
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF64",
+      "n": 64,
+      "objetivo": "Gerar assets, wireframes e detalhes internos parametrizados",
+      "trello": "https://trello.com/c/ll1eGUJc/219-rf64-gerar-assets-wireframes-e-detalhes-internos-parametrizados",
+      "modulo": "Drawings",
+      "telaFluxo": "/studio → Drawings; /decia/[sessionId]",
+      "componentes": [
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts"
+      ],
+      "api": "/api/tasks/*/drawings; /api/me/drawing-proposals; /api/me/asset-suggestions (subconjuntos)",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 6.0,
+        "eficiencia": 5.0,
+        "visual": 6.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 5.0,
+        "feedback": 6.0
+      },
+      "notaInicial": 5.7,
+      "principalErro": "Catálogo de assets e detalhes é parametrizado, mas não uma biblioteca completa de todos os domínios.",
+      "melhoria": "Expandir assets por caso profissional e validar componentes internos, escala e edições com fontes técnicas.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 6.0,
+        "eficiencia": 5.0,
+        "visual": 6.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 5.0,
+        "feedback": 6.0
+      },
+      "notaApos": 5.7,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF64.md",
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF65",
+      "n": 65,
+      "objetivo": "Editar regiões hierárquicas e camadas sobrepostas no Drawings",
+      "trello": "https://trello.com/c/v8vLheYX/220-rf65-editar-regi%C3%B5es-hier%C3%A1rquicas-e-camadas-sobrepostas-no-drawings",
+      "modulo": "Drawings",
+      "telaFluxo": "/studio → Drawings; /decia/[sessionId]",
+      "componentes": [
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts"
+      ],
+      "api": "/api/tasks/*/drawings; /api/me/drawing-proposals; /api/me/asset-suggestions (subconjuntos)",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 6.0,
+        "eficiencia": 5.0,
+        "visual": 6.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 5.0,
+        "feedback": 6.0
+      },
+      "notaInicial": 5.7,
+      "principalErro": "Regiões/camadas locais e compartilhadas divergem em capacidades e vínculos.",
+      "melhoria": "Unificar árvore cena→camada→região→objeto, escopos e transformações em um modelo persistente.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 6.0,
+        "eficiencia": 5.0,
+        "visual": 6.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 5.0,
+        "feedback": 6.0
+      },
+      "notaApos": 5.7,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF65.md",
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts",
+        "evidencias/colaboracao/COLABORACAO.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF66",
+      "n": 66,
+      "objetivo": "Editar desenhos simultaneamente no DECIA com reservas transacionais",
+      "trello": "https://trello.com/c/YwiW5NJQ/221-rf66-editar-desenhos-simultaneamente-no-decia-com-reservas-transacionais",
+      "modulo": "Drawings",
+      "telaFluxo": "/studio → Drawings; /decia/[sessionId]",
+      "componentes": [
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts"
+      ],
+      "api": "/api/tasks/*/drawings; /api/me/drawing-proposals; /api/me/asset-suggestions (subconjuntos)",
+      "estado": "PARCIAL_API",
+      "subnotasIniciais": {
+        "funcionalidade": 6.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 7.0,
+        "acessibilidade": 5.0,
+        "feedback": 6.0
+      },
+      "notaInicial": 5.7,
+      "principalErro": "Reservas e patches 2D são reais; edição avançada/3D e política de IA compartilhada não integram o fluxo.",
+      "melhoria": "Integrar edição e IA às mesmas reservas, validar concorrência estrita, reconexão e sessão DECIA real.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 6.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 7.0,
+        "acessibilidade": 5.0,
+        "feedback": 6.0
+      },
+      "notaApos": 5.7,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF66.md",
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts",
+        "evidencias/colaboracao/COLABORACAO.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF67",
+      "n": 67,
+      "objetivo": "Completar geometria e prever traçados no Drawings",
+      "trello": "https://trello.com/c/1NGN5s8V/222-rf67-completar-geometria-e-prever-tra%C3%A7ados-no-drawings",
+      "modulo": "Drawings",
+      "telaFluxo": "/studio → Drawings; /decia/[sessionId]",
+      "componentes": [
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts"
+      ],
+      "api": "/api/tasks/*/drawings; /api/me/drawing-proposals; /api/me/asset-suggestions (subconjuntos)",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 4.0,
+        "eficiencia": 4.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 5.0,
+        "feedback": 5.0
+      },
+      "notaInicial": 4.65,
+      "principalErro": "Previsão é geométrica local; intenção semântica e completar cenas complexas não estão validados.",
+      "melhoria": "Separar inferência geométrica e semântica, apresentar confiança e testar previsões de círculo, luminária e rotas.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 4.0,
+        "eficiencia": 4.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 5.0,
+        "feedback": 5.0
+      },
+      "notaApos": 4.65,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF67.md",
+        "components/studio/DrawingCommands.tsx",
+        "components/studio/AssetWorkbench.tsx",
+        "components/studio/SharedDrawingEditor.tsx",
+        "lib/studio/cad-2d.ts",
+        "lib/studio/cad-solid.ts"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    },
+    {
+      "rf": "RF68",
+      "n": 68,
+      "objetivo": "Gerar, auditar, estilizar, otimizar e converter desenhos com IA",
+      "trello": "https://trello.com/c/oswZXeHs/223-rf68-gerar-auditar-estilizar-otimizar-e-converter-desenhos-com-ia",
+      "modulo": "IA",
+      "telaFluxo": "/copilot/profile; /studio; /decia",
+      "componentes": [
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiGateway.java",
+        "components/studio/LettersAgent.tsx",
+        "components/studio/DrawingJourney.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentService.java"
+      ],
+      "api": "/api/me/profile-development/*; /api/me/letters-suggestions; /api/me/drawing-proposals; /api/me/asset-suggestions; /api/tasks/*/ai-suggestions (subconjuntos)",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 3.0,
+        "eficiencia": 4.0,
+        "visual": 5.0,
+        "recuperacao": 5.0,
+        "acessibilidade": 5.0,
+        "feedback": 4.0
+      },
+      "notaInicial": 4.1,
+      "principalErro": "Proposta vetorial limitada não implementa todo AI_AUDIT/STYLE/OPTIMIZE/CONVERT.",
+      "melhoria": "Criar ferramentas determinísticas por comando, contratos de IA e validação de topologia/fontes/custo.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Proposta antiga bloqueada quando muda política de IA; demais comandos de IA permanecem pendentes.",
+      "subnotasApos": {
+        "funcionalidade": 3,
+        "eficiencia": 4,
+        "visual": 5,
+        "recuperacao": 7,
+        "acessibilidade": 5,
+        "feedback": 5
+      },
+      "notaApos": 4.5,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF68.md",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiGateway.java",
+        "components/studio/LettersAgent.tsx",
+        "components/studio/DrawingJourney.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentService.java",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    },
+    {
+      "rf": "RF69",
+      "n": 69,
+      "objetivo": "Salvar, exportar, recuperar e navegar no histórico das peças",
+      "trello": "https://trello.com/c/L8woXcvG/224-rf69-salvar-exportar-recuperar-e-navegar-no-hist%C3%B3rico-das-pe%C3%A7as",
+      "modulo": "Peças",
+      "telaFluxo": "/studio; /tasks/[id]",
+      "componentes": [
+        "components/studio/Studio.tsx",
+        "components/tasks/TaskEditor.tsx"
+      ],
+      "api": "/api/me/letters-suggestions; /api/me/drawing-proposals; /api/tasks/*/drawings (subconjuntos)",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 5.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 5.0,
+        "feedback": 6.0
+      },
+      "notaInicial": 5.25,
+      "principalErro": "Exportação e histórico local funcionam; reload perde peça sem exportar e histórico 2D/3D é fragmentado.",
+      "melhoria": "Persistir documento e revisões com autosave recuperável, backup e importação/exportação auditáveis.",
+      "prioridade": "P0",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 5.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 5.0,
+        "feedback": 6.0
+      },
+      "notaApos": 5.25,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF69.md",
+        "components/studio/Studio.tsx",
+        "components/tasks/TaskEditor.tsx",
+        "evidencias/jornadas/JORNADAS.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF70",
+      "n": 70,
+      "objetivo": "Importar, exportar e referenciar conteúdo técnico nas peças",
+      "trello": "https://trello.com/c/85gOKL4Q/225-rf70-importar-exportar-e-referenciar-conte%C3%BAdo-t%C3%A9cnico-nas-pe%C3%A7as",
+      "modulo": "Conectores",
+      "telaFluxo": "/tasks/new; /studio",
+      "componentes": [
+        "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/SourceKind.java",
+        "docs/diagramas/RF23/README.md",
+        "lib/studio/glb.ts"
+      ],
+      "api": "Sem adapters externos de importação operacional localizados",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 3.0,
+        "eficiencia": 4.0,
+        "visual": 5.0,
+        "recuperacao": 5.0,
+        "acessibilidade": 5.0,
+        "feedback": 5.0
+      },
+      "notaInicial": 4.2,
+      "principalErro": "JSON nativo e GLB locais não equivalem a importação DWG/DXF/IFC/PDF/Office.",
+      "melhoria": "Publicar matriz de leitura/escrita/fidelidade e implementar parsers isolados por formato com proveniência.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 3.0,
+        "eficiencia": 4.0,
+        "visual": 5.0,
+        "recuperacao": 5.0,
+        "acessibilidade": 5.0,
+        "feedback": 5.0
+      },
+      "notaApos": 4.2,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF70.md",
+        "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/SourceKind.java",
+        "docs/diagramas/RF23/README.md",
+        "lib/studio/glb.ts",
+        "evidencias/jornadas/JORNADAS.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF71",
+      "n": 71,
+      "objetivo": "Integrar peças Letters e Drawings à jornada de tarefas, projetos e DECIA",
+      "trello": "https://trello.com/c/uoGoZ6Bi/226-rf71-integrar-pe%C3%A7as-letters-e-drawings-%C3%A0-jornada-de-tarefas-projetos-e-decia",
+      "modulo": "Peças",
+      "telaFluxo": "/studio; /tasks/[id]",
+      "componentes": [
+        "components/studio/Studio.tsx",
+        "components/tasks/TaskEditor.tsx"
+      ],
+      "api": "/api/me/letters-suggestions; /api/me/drawing-proposals; /api/tasks/*/drawings (subconjuntos)",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 2.0,
+        "eficiencia": 3.0,
+        "visual": 5.0,
+        "recuperacao": 4.0,
+        "acessibilidade": 5.0,
+        "feedback": 4.0
+      },
+      "notaInicial": 3.45,
+      "principalErro": "Estúdios, tarefa, projeto e decisão não compartilham uma peça e um histórico únicos.",
+      "melhoria": "Criar vínculo persistente peça→tarefa→projeto→sessão e manter origem, revisão e acesso em cada transição.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 2.0,
+        "eficiencia": 3.0,
+        "visual": 5.0,
+        "recuperacao": 4.0,
+        "acessibilidade": 5.0,
+        "feedback": 4.0
+      },
+      "notaApos": 3.45,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF71.md",
+        "components/studio/Studio.tsx",
+        "components/tasks/TaskEditor.tsx",
+        "evidencias/jornadas/JORNADAS.json",
+        "evidencias/colaboracao/COLABORACAO.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF72",
+      "n": 72,
+      "objetivo": "Validar qualidade, desempenho e evidências dos editores",
+      "trello": "https://trello.com/c/XJwKcia2/227-rf72-validar-qualidade-desempenho-e-evid%C3%AAncias-dos-editores",
+      "modulo": "Qualidade",
+      "telaFluxo": "/studio",
+      "componentes": [
+        "components/studio/EditorPanels.tsx",
+        "components/studio/Studio.test.tsx",
+        "components/studio/SharedDrawingEditor.test.tsx"
+      ],
+      "api": "Testes e contratos; não implica aceite de todos os CA",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 5.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 6.0,
+        "feedback": 6.0
+      },
+      "notaInicial": 5.35,
+      "principalErro": "Há testes e capturas, mas não todos os CA, cenários profissionais ou desempenho de escala.",
+      "melhoria": "Manter matriz CA→teste→evidência, benchmarks e amostra com usuários reais por domínio e acessibilidade.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 5.0,
+        "eficiencia": 5.0,
+        "visual": 5.0,
+        "recuperacao": 6.0,
+        "acessibilidade": 6.0,
+        "feedback": 6.0
+      },
+      "notaApos": 5.35,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF72.md",
+        "components/studio/EditorPanels.tsx",
+        "components/studio/Studio.test.tsx",
+        "components/studio/SharedDrawingEditor.test.tsx",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF73",
+      "n": 73,
+      "objetivo": "Separar editor determinístico e Assistente IA com navegação acessível",
+      "trello": "https://trello.com/c/wO3QpkE5/228-rf73-separar-editor-determin%C3%ADstico-e-assistente-ia-com-navega%C3%A7%C3%A3o-acess%C3%ADvel",
+      "modulo": "Qualidade",
+      "telaFluxo": "/studio",
+      "componentes": [
+        "components/studio/EditorPanels.tsx",
+        "components/studio/Studio.test.tsx",
+        "components/studio/SharedDrawingEditor.test.tsx"
+      ],
+      "api": "Testes e contratos; não implica aceite de todos os CA",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 7.0,
+        "eficiencia": 7.0,
+        "visual": 6.0,
+        "recuperacao": 7.0,
+        "acessibilidade": 7.0,
+        "feedback": 7.0
+      },
+      "notaInicial": 6.85,
+      "principalErro": "Painéis separados são acessíveis na amostra; nem todo comando foi migrado e testado nas superfícies.",
+      "melhoria": "Consolidar contratos de comandos/estados e testes de foco, responsividade e preservação de rascunho.",
+      "prioridade": "P2",
+      "correcaoNestaRodada": "Filtros sem conteúdo usam botões pressionados e não aria-controls inválido.",
+      "subnotasApos": {
+        "funcionalidade": 7,
+        "eficiencia": 7,
+        "visual": 6,
+        "recuperacao": 7,
+        "acessibilidade": 8,
+        "feedback": 7
+      },
+      "notaApos": 6.95,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF73.md",
+        "components/studio/EditorPanels.tsx",
+        "components/studio/Studio.test.tsx",
+        "components/studio/SharedDrawingEditor.test.tsx",
+        "evidencias/jornadas/JORNADAS.json",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "Não avaliada neste requisito"
+    },
+    {
+      "rf": "RF74",
+      "n": 74,
+      "objetivo": "Capturar PNG e oferecer prévia fantasma multimodal no Drawings",
+      "trello": "https://trello.com/c/fw42DN9W/229-rf74-capturar-png-e-oferecer-pr%C3%A9via-fantasma-multimodal-no-drawings",
+      "modulo": "IA",
+      "telaFluxo": "/copilot/profile; /studio; /decia",
+      "componentes": [
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiGateway.java",
+        "components/studio/LettersAgent.tsx",
+        "components/studio/DrawingJourney.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentService.java"
+      ],
+      "api": "/api/me/profile-development/*; /api/me/letters-suggestions; /api/me/drawing-proposals; /api/me/asset-suggestions; /api/tasks/*/ai-suggestions (subconjuntos)",
+      "estado": "PARCIAL_LOCAL_OU_DEMO",
+      "subnotasIniciais": {
+        "funcionalidade": 3.0,
+        "eficiencia": 4.0,
+        "visual": 5.0,
+        "recuperacao": 5.0,
+        "acessibilidade": 6.0,
+        "feedback": 5.0
+      },
+      "notaInicial": 4.3,
+      "principalErro": "PNG fantasma é rasterização local de proposta vetorial, não geração multimodal de PNG transparente.",
+      "melhoria": "Implementar captura→backend multimodal→duas variantes alpha→ancoragem→aceite com custo/versão/ACL testados.",
+      "prioridade": "P1",
+      "correcaoNestaRodada": "Sem alteração funcional específica nesta rodada.",
+      "subnotasApos": {
+        "funcionalidade": 3.0,
+        "eficiencia": 4.0,
+        "visual": 5.0,
+        "recuperacao": 5.0,
+        "acessibilidade": 6.0,
+        "feedback": 5.0
+      },
+      "notaApos": 4.3,
+      "tipoNota": "TÉCNICA PROVISÓRIA; não validada com usuários",
+      "evidencias": [
+        "REQUISITOS_FONTES.json",
+        "docs/produto/requisitos-studio/RF74.md",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiGateway.java",
+        "components/studio/LettersAgent.tsx",
+        "components/studio/DrawingJourney.tsx",
+        "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentService.java",
+        "evidencias/depois/BROWSER.json"
+      ],
+      "aceiteIntegral": false,
+      "qualidadeGerativaReal": "NÃO VERIFICADA; nenhuma chamada paga nesta rodada"
+    }
+  ]
+}

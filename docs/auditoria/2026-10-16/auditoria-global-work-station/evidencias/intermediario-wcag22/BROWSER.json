@@ -1,0 +1,308 @@
+{
+  "at": "2026-10-16T17:23:01.491Z",
+  "mockResponses": 0,
+  "paidCalls": 0,
+  "blockedAiCalls": 0,
+  "routes": [
+    {
+      "name": "perfil",
+      "url": "/profile",
+      "status": 200,
+      "durationMs": 1954,
+      "headings": [
+        "Meu perfil",
+        "Teste fictício de desenho conceitual",
+        "Atividade recente em tarefas",
+        "Auditoria global · colaboração de camadas",
+        "Cronograma de implantação de serviço",
+        "Planejamento de campanha educativa",
+        "Protocolo de revisão bibliográfica",
+        "Estudo de mobiliário de uma sala",
+        "Organização do atendimento de um departamento",
+        "Validação de uma API de estoque",
+        "Colaboração 2D - auditoria 15/10",
+        "Colaboração 2D - auditoria 15/10"
+      ],
+      "buttons": [
+        "Anterior",
+        "Próxima"
+      ],
+      "demo": 0,
+      "overflow": false,
+      "axe": {
+        "violations": [],
+        "passes": 20,
+        "incomplete": 1
+      }
+    },
+    {
+      "name": "mural",
+      "url": "/mural",
+      "status": 200,
+      "durationMs": 2027,
+      "headings": [
+        "Mural",
+        "Estudo técnico preliminar — calçadas acessíveis no centro",
+        "Drenagem urbana da bacia norte",
+        "Plano de mobilidade ativa do centro",
+        "Programa Calçada Segura",
+        "Reforma da sede regional",
+        "Portaria de designação de fiscais de contrato"
+      ],
+      "buttons": [
+        "♡2Curtir (2)",
+        "☆1Salvar (1)",
+        "⤴1Compartilhar (1)",
+        "⇄0Remixar (0)",
+        "⋯",
+        "♡0Curtir (0)",
+        "☆0Salvar (0)",
+        "⤴0Compartilhar (0)",
+        "⇄0Remixar (0)",
+        "⋯",
+        "♥2Curtir (2)",
+        "★1Salvo (1)",
+        "⤴0Compartilhar (0)",
+        "⇄0Remixar (0)",
+        "⋯",
+        "♡0Curtir (0)",
+        "☆0Salvar (0)",
+        "⤴0Compartilhar (0)",
+        "⇄0Remixar (0)",
+        "⋯",
+        "♡0Curtir (0)",
+        "☆0Salvar (0)",
+        "⤴0Compartilhar (0)",
+        "⇄0Remixar (0)",
+        "⋯",
+        "♡1Curtir (1)",
+        "★1Salvo (1)",
+        "⤴0Compartilhar (0)",
+        "⇄0Remixar (0)",
+        "⋯"
+      ],
+      "demo": 2,
+      "overflow": false,
+      "axe": {
+        "violations": [
+          {
+            "id": "target-size",
+            "impact": "serious",
+            "description": "Ensure touch targets have sufficient size and space",
+            "nodes": [
+              {
+                "target": [
+                  ".text-ws-text-muted.gap-1.min-w-0 > .hover\\:underline.gap-1\\.5[href$=\"ana.exemplo\"]"
+                ],
+                "failureSummary": "Fix any of the following:\n  Target has insufficient size (97.5px by 18px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of 23.6px instead of at least 24px."
+              }
+            ]
+          }
+        ],
+        "passes": 23,
+        "incomplete": 1
+      }
+    },
+    {
+      "name": "tarefas",
+      "url": "/tasks",
+      "status": 200,
+      "durationMs": 1505,
+      "headings": [
+        "Acervo de Tarefas",
+        "Auditoria global · colaboração de camadas",
+        "Cronograma de implantação de serviço",
+        "Planejamento de campanha educativa",
+        "Protocolo de revisão bibliográfica",
+        "Estudo de mobiliário de uma sala",
+        "Organização do atendimento de um departamento",
+        "Validação de uma API de estoque",
+        "Colaboração 2D - auditoria 15/10",
+        "Colaboração 2D - auditoria 15/10"
+      ],
+      "buttons": [
+        "Anterior",
+        "Próxima"
+      ],
+      "demo": 0,
+      "overflow": false,
+      "axe": {
+        "violations": [],
+        "passes": 15,
+        "incomplete": 1
+      }
+    },
+    {
+      "name": "criar-tarefa",
+      "url": "/tasks/new",
+      "status": 200,
+      "durationMs": 1467,
+      "headings": [
+        "Criar Tarefa"
+      ],
+      "buttons": [
+        "Salvar tarefa"
+      ],
+      "demo": 0,
+      "overflow": false,
+      "axe": {
+        "violations": [],
+        "passes": 15,
+        "incomplete": 1
+      }
+    },
+    {
+      "name": "criar-projeto",
+      "url": "/projects/new",
+      "status": 200,
+      "durationMs": 1407,
+      "headings": [
+        "Criar Projeto"
+      ],
+      "buttons": [],
+      "demo": 0,
+      "overflow": false,
+      "axe": {
+        "violations": [],
+        "passes": 13,
+        "incomplete": 1
+      }
+    },
+    {
+      "name": "decia",
+      "url": "/decia",
+      "status": 200,
+      "durationMs": 1702,
+      "headings": [
+        "DECIA",
+        "Aguardando sua decisão 1",
+        "Qual funcionalidade entra na Sprint 5?",
+        "Precisa de evidência 1",
+        "Qual infraestrutura devemos usar para suportar o crescimento previsto do produto pelos próximos 12 meses?",
+        "Revisões e checkpoints devidos 1",
+        "Qual fornecedor de suporte devemos contratar?"
+      ],
+      "buttons": [
+        "+ Nova decisão",
+        "Por quê? ↻",
+        "Por quê?",
+        "Por quê?"
+      ],
+      "demo": 2,
+      "overflow": false,
+      "axe": {
+        "violations": [],
+        "passes": 22,
+        "incomplete": 1
+      }
+    },
+    {
+      "name": "copilot",
+      "url": "/copilot/profile",
+      "status": 200,
+      "durationMs": 1378,
+      "headings": [
+        "Análise de perfil"
+      ],
+      "buttons": [
+        "Salvar perfil privado",
+        "Gerar direcionamento"
+      ],
+      "demo": 0,
+      "overflow": false,
+      "axe": {
+        "violations": [],
+        "passes": 17,
+        "incomplete": 1
+      }
+    },
+    {
+      "name": "studio",
+      "url": "/studio",
+      "status": 200,
+      "durationMs": 1614,
+      "headings": [
+        "Work Station · Letters & Drawings",
+        "Inspetor de edição"
+      ],
+      "buttons": [
+        "Letters",
+        "Drawings",
+        "Desfazer",
+        "Refazer",
+        "Exportar projeto",
+        "Importar projeto",
+        "Assistente IA",
+        "Adicionar parágrafo",
+        "Exportar TXT"
+      ],
+      "demo": 0,
+      "overflow": false,
+      "axe": {
+        "violations": [],
+        "passes": 17,
+        "incomplete": 1
+      }
+    },
+    {
+      "name": "anexos",
+      "url": "/attachments",
+      "status": 200,
+      "durationMs": 1430,
+      "headings": [
+        "Anexos & Evidências"
+      ],
+      "buttons": [],
+      "demo": 0,
+      "overflow": false,
+      "axe": {
+        "violations": [],
+        "passes": 13,
+        "incomplete": 1
+      }
+    },
+    {
+      "name": "conectores",
+      "url": "/settings?tab=conexoes",
+      "status": 200,
+      "durationMs": 1956,
+      "headings": [
+        "Preferências",
+        "Tema",
+        "Idioma",
+        "Densidade",
+        "Tamanho da fonte",
+        "Movimento",
+        "Skin da Mesa",
+        "Arte de fundo"
+      ],
+      "buttons": [
+        "Restaurar padrões",
+        "Salvar"
+      ],
+      "demo": 0,
+      "overflow": false,
+      "axe": {
+        "violations": [],
+        "passes": 18,
+        "incomplete": 0
+      }
+    },
+    {
+      "url": "/profile",
+      "viewport": "390x844",
+      "overflow": false
+    },
+    {
+      "url": "/tasks/new",
+      "viewport": "390x844",
+      "overflow": false
+    },
+    {
+      "url": "/studio",
+      "viewport": "390x844",
+      "overflow": false
+    }
+  ],
+  "pageErrors": []
+}

@@ -1,0 +1,90 @@
+{
+  "at": "2026-10-16T17:08:10.799Z",
+  "paidCalls": 0,
+  "mockResponses": 0,
+  "tasks": [
+    {
+      "area": "software",
+      "title": "Validação de uma API de estoque",
+      "status": 201,
+      "saveReloadEdit": true,
+      "durationMs": 2438,
+      "type": "TEXTO_MANUAL",
+      "category": "OUTRO",
+      "format": "md",
+      "limits": "Entregáveis, critérios e referências registrados na descrição; não são campos estruturados de projeto, dependência ou anexo."
+    },
+    {
+      "area": "administracao",
+      "title": "Organização do atendimento de um departamento",
+      "status": 201,
+      "saveReloadEdit": true,
+      "durationMs": 2167,
+      "type": "DOCUMENTO",
+      "category": "OFICIO_MEMORANDO",
+      "format": "txt",
+      "limits": "Entregáveis, critérios e referências registrados na descrição; não são campos estruturados de projeto, dependência ou anexo."
+    },
+    {
+      "area": "design",
+      "title": "Estudo de mobiliário de uma sala",
+      "status": 201,
+      "saveReloadEdit": true,
+      "durationMs": 2319,
+      "type": "DESENHO_TECNICO",
+      "category": "PROJETO_BASICO_EXECUTIVO",
+      "format": "svg",
+      "limits": "Entregáveis, critérios e referências registrados na descrição; não são campos estruturados de projeto, dependência ou anexo."
+    },
+    {
+      "area": "pesquisa",
+      "title": "Protocolo de revisão bibliográfica",
+      "status": 201,
+      "saveReloadEdit": true,
+      "durationMs": 2300,
+      "type": "DOCUMENTO",
+      "category": "PARECER_TECNICO",
+      "format": "txt",
+      "limits": "Entregáveis, critérios e referências registrados na descrição; não são campos estruturados de projeto, dependência ou anexo."
+    },
+    {
+      "area": "marketing",
+      "title": "Planejamento de campanha educativa",
+      "status": 201,
+      "saveReloadEdit": true,
+      "durationMs": 2241,
+      "type": "TEXTO_MANUAL",
+      "category": "OUTRO",
+      "format": "txt",
+      "limits": "Entregáveis, critérios e referências registrados na descrição; não são campos estruturados de projeto, dependência ou anexo."
+    },
+    {
+      "area": "planejamento",
+      "title": "Cronograma de implantação de serviço",
+      "status": 201,
+      "saveReloadEdit": true,
+      "durationMs": 2339,
+      "type": "CRONOGRAMA",
+      "category": "CRONOGRAMA",
+      "format": "csv",
+      "limits": "Entregáveis, critérios e referências registrados na descrição; não são campos estruturados de projeto, dependência ou anexo."
+    }
+  ],
+  "letters": {
+    "localSpellingApplied": true,
+    "undoRedo": true,
+    "editableExport": true,
+    "persistentTaskBinding": false,
+    "remoteQuality": "não verificada",
+    "collaborativeSession": "ausente"
+  },
+  "drawings": {
+    "type": "SVG vetorial 2D com ambiente 3D separado",
+    "shapes": 4,
+    "commands": 4,
+    "exportImportPreservesShapes": true,
+    "persistentTaskBinding": "somente editor compartilhado separado",
+    "remoteQuality": "não verificada"
+  },
+  "errors": []
+}
