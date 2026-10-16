@@ -1,0 +1,30 @@
+{
+  "at": "2026-10-16T17:26:44.451Z",
+  "paidCalls": 0,
+  "checks": [
+    {
+      "name": "sigilo sem concessão explícita",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "name": "região e camada sobrepostas bloqueiam colega",
+      "passed": true,
+      "status": 409
+    },
+    {
+      "name": "profundidades independentes podem ser reservadas",
+      "passed": true
+    },
+    {
+      "name": "patches de duas pessoas preservam ambas as alterações",
+      "passed": true
+    },
+    {
+      "name": "revogação bloqueia leitura do desenho",
+      "passed": true,
+      "status": 404
+    }
+  ],
+  "limits": "Duas contas reais, API e MySQL reais. Canvas 2D vinculado à tarefa; não comprova sessão DECIA, colaboração Letters, assets 3D, IA ou concorrência temporal estrita. Patches enviados em sequência a partir de versões independentes."
+}

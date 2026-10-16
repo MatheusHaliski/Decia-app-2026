@@ -1,0 +1,86 @@
+{
+  "data": "2026-10-16",
+  "fuso": "America/Sao_Paulo",
+  "frontend": {
+    "command": "npm run test",
+    "files": 65,
+    "tests": 540,
+    "failed": 0,
+    "status": "PASSOU"
+  },
+  "backend": {
+    "command": "mvn -pl ws-application -am test (JAVA_HOME JDK21; Maven local repo em /workspace/.cache/maven)",
+    "domainTests": 270,
+    "applicationTests": 169,
+    "failed": 0,
+    "skipped": 0,
+    "status": "PASSOU"
+  },
+  "openaiAdapter": {
+    "command": "mvn -pl ws-infrastructure/ai-providers -am -Dtest=OpenAiEngineTest -Dsurefire.failIfNoSpecifiedTests=false test",
+    "tests": 7,
+    "failed": 0,
+    "externalRequests": "servidor HTTP controlado de teste; nenhuma chamada ao provedor real",
+    "status": "PASSOU"
+  },
+  "checks": [
+    {
+      "command": "npm run typecheck",
+      "status": "PASSOU"
+    },
+    {
+      "command": "npm run lint",
+      "status": "PASSOU"
+    },
+    {
+      "command": "npm run build",
+      "status": "PASSOU"
+    },
+    {
+      "command": "node scripts/rf/gerar-catalogo.mjs --check",
+      "status": "PASSOU",
+      "rfs": 74
+    },
+    {
+      "command": "git diff --check",
+      "status": "PASSOU"
+    },
+    {
+      "command": "python scripts/validar-auditoria.py",
+      "status": "PASSOU",
+      "rfs": 74,
+      "criteriosUnicos": 634
+    }
+  ],
+  "browser": {
+    "desktopRoutes": 10,
+    "mobileRoutes": 3,
+    "viewportDesktop": "1440x1000",
+    "viewportMobile": "390x844",
+    "javascriptErrors": 0,
+    "mainAxeViolationsFinal": 0,
+    "horizontalOverflowFinal": 0,
+    "axeTags": [
+      "wcag2a",
+      "wcag2aa",
+      "wcag21a",
+      "wcag21aa",
+      "wcag22aa"
+    ],
+    "limits": "Axe limitado a main; não certifica WCAG nem inclui testes completos assistivos, de todos os temas ou dispositivos."
+  },
+  "jornadas": {
+    "areas": 6,
+    "saveReloadEditPassed": 6,
+    "lettersLocalReviewUndoRedoExport": true,
+    "drawingsRoundTripShapes": 4,
+    "collaborationChecks": 5,
+    "collaborationChecksPassed": 5
+  },
+  "paidAiCalls": 0,
+  "humanParticipants": 0,
+  "qualityOfRealAi": "NÃO VERIFICADA",
+  "fullCriterionAcceptance": false,
+  "applicationChangesPublished": false,
+  "environmentRecovery": "Primeira tentativa Maven tentou cache fora da área gravável; corrigida com repositório local em /workspace e execução concluída, sem desativar testes ou verificação TLS."
+}

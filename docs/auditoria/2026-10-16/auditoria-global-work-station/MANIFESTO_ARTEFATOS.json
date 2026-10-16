@@ -1,0 +1,426 @@
+{
+  "pdfPages": 40,
+  "excludes": "Manifesto e ZIP excluídos de seus próprios hashes; conteúdo da aplicação não incluído.",
+  "files": [
+    {
+      "path": "ANTES_DEPOIS.md",
+      "bytes": 3981,
+      "sha256": "4c848169ada3bf8db5f9397cbd0860957012fd1bd4ae5c1862149ffa7a297eb1"
+    },
+    {
+      "path": "AUDITORIA_WORK_STATION.html",
+      "bytes": 52283,
+      "sha256": "3418bda0b1eb64fcc59b464e397c32b6d278380cdbbf9500c86c163a708bd8af"
+    },
+    {
+      "path": "AUDITORIA_WORK_STATION.pdf",
+      "bytes": 126933,
+      "sha256": "ba72d938cc9caac8131d46b10da77d590046bfdc385cb53ba891b16ebba2dbdf"
+    },
+    {
+      "path": "CONECTORES.md",
+      "bytes": 8387,
+      "sha256": "25c1348397a480c51d78f9f4ad5aba48a7f0b2360b6b08ddb3f3f34841cef684"
+    },
+    {
+      "path": "CRITERIOS_ACEITE.json",
+      "bytes": 550495,
+      "sha256": "89ac453d0b0e390eadf7a48f5e361c764dfaf6d7282a518dd413190b214f15e3"
+    },
+    {
+      "path": "MANIFESTO_FONTES.json",
+      "bytes": 172299,
+      "sha256": "545f1ee92a921a5c02dfc0858feaac951e23d96658c9ce7a02980bcc0c6411f9"
+    },
+    {
+      "path": "MATRIZ_RF.csv",
+      "bytes": 38711,
+      "sha256": "79f24de316093b95015a45d799519cf40c037d5cee65cc3b0a2efc6df87bc71d"
+    },
+    {
+      "path": "MATRIZ_RF.json",
+      "bytes": 150538,
+      "sha256": "22bf40cbfcb7743205334162ac8a198444f2ac08706e69913fd95191c9deadeb"
+    },
+    {
+      "path": "MATRIZ_RF.md",
+      "bytes": 71230,
+      "sha256": "059932940e2ac58a17b39f973f6a7d15855a21a31d832ad3e26e6c8e067179ee"
+    },
+    {
+      "path": "METRICAS.json",
+      "bytes": 1032,
+      "sha256": "bd9086d9482ad36ebc51d4f5895e47e90b3d9cef2df41e012fcf2b670352a01d"
+    },
+    {
+      "path": "PLANO_CORRECAO.md",
+      "bytes": 10290,
+      "sha256": "b50c037be13d53ffef6069a8a53fd698cf12834808fec918b132c7fd5a2b9c06"
+    },
+    {
+      "path": "PROBLEMAS.md",
+      "bytes": 6870,
+      "sha256": "b5a53d9f50d31d4630e530f5a19de3a7e1c69139b440a740d12070f3e45fbc0c"
+    },
+    {
+      "path": "README.md",
+      "bytes": 7125,
+      "sha256": "5971c03cc18c29187007b548f58c8b72b06ea61070b5608f5a241a5db96637ed"
+    },
+    {
+      "path": "REFERENCIAS_CONSULTADAS.json",
+      "bytes": 598,
+      "sha256": "2801067f2e845215d5bd957dfa3886d58bb47594dfe3a35309a68cb2afc126e1"
+    },
+    {
+      "path": "RELATORIO.md",
+      "bytes": 20540,
+      "sha256": "d2f9749b3b635495a357557f3e6e1e3f35c91d6c9ec76da123c8a52619d9b2c8"
+    },
+    {
+      "path": "REQUISITOS_FONTES.json",
+      "bytes": 316540,
+      "sha256": "8849c21d5567e485000ad70f4656666549038b9c44cfeb5959a66028335ad87c"
+    },
+    {
+      "path": "RESUMO_MODULOS.md",
+      "bytes": 1323,
+      "sha256": "4979ba01905fc8888e1baf9c39eb6a18a156f471e8fac2c79f29a389b3305689"
+    },
+    {
+      "path": "TRELLO_RF_SNAPSHOT.json",
+      "bytes": 267120,
+      "sha256": "f26bb7d1f08624e1f56f5a3decdfecfc857132d71b2f9afb2a24917597ee2a3d"
+    },
+    {
+      "path": "VALIDACAO.json",
+      "bytes": 2360,
+      "sha256": "0c261e936a0f272769c59e4c7578f2d460da66175cdb45bba5fd5b5d340bb7d0"
+    },
+    {
+      "path": "evidencias/antes/BROWSER.json",
+      "bytes": 10513,
+      "sha256": "7f654f5c6dd41b8ab13fa8367765c6ddf955a032e6bf05bc8d1f3d6467700031"
+    },
+    {
+      "path": "evidencias/antes/conectores.png",
+      "bytes": 383805,
+      "sha256": "a35a83fa9102848b16cfaae5d5d29714a71f4ff44096490e5aa77eeac2ea592c"
+    },
+    {
+      "path": "evidencias/antes/copilot.png",
+      "bytes": 172561,
+      "sha256": "059ccada7f7908dc153665c9766514eef6929f1cc6f94ca3c56154b641c4fd92"
+    },
+    {
+      "path": "evidencias/antes/criar-projeto.png",
+      "bytes": 124340,
+      "sha256": "5160e9fbd44bb94cbf17ca17136dfe2e0bb9f09f5f1f097dddd85f899ed493fe"
+    },
+    {
+      "path": "evidencias/antes/criar-tarefa.png",
+      "bytes": 127818,
+      "sha256": "ef888c562111f3c57fafe779fbaf569bd279ec00bdb2f3d5e3067f4429d1eeb6"
+    },
+    {
+      "path": "evidencias/antes/decia.png",
+      "bytes": 219732,
+      "sha256": "13aebb3e821f302258fa5880edb01f68a8158386cd0ea3b90e427d33186ef77b"
+    },
+    {
+      "path": "evidencias/antes/importar.png",
+      "bytes": 28631,
+      "sha256": "75ccb761c4df8f57c5faa30cd434cfa660bef3d2481d4116cd825e0595483e47"
+    },
+    {
+      "path": "evidencias/antes/mobile-profile.png",
+      "bytes": 224136,
+      "sha256": "38389ee6cd9b0c2952ed7d6f77877a4526c9e9f068f736e8150eab975409eb67"
+    },
+    {
+      "path": "evidencias/antes/mobile-studio.png",
+      "bytes": 111374,
+      "sha256": "257982703e463e21425aea6c75d273d052afcbdbce0bd3fe46679ff7508d9e3b"
+    },
+    {
+      "path": "evidencias/antes/mobile-tasks-new.png",
+      "bytes": 48832,
+      "sha256": "1cb4c85df5907ef38c19718fd98ab5c49e91683eac58f8e32ddc936cb37c9539"
+    },
+    {
+      "path": "evidencias/antes/mural.png",
+      "bytes": 202245,
+      "sha256": "27a107d3402a6dbeb4292122c695744335c04f469c37057547bdd46fb8b18b55"
+    },
+    {
+      "path": "evidencias/antes/perfil.png",
+      "bytes": 294523,
+      "sha256": "e9c0d9a6685d3ed5a8dd1fb7ef9a55ad53bf71fa0c8ba0e32d771bac96e70b20"
+    },
+    {
+      "path": "evidencias/antes/studio.png",
+      "bytes": 188079,
+      "sha256": "219f8b806b93a8e990ddeb61c1f3f026aa9aaf7309084ed2ea0d77a6463270b2"
+    },
+    {
+      "path": "evidencias/antes/tarefas.png",
+      "bytes": 145603,
+      "sha256": "34510bb7bf354617c8bae76529472505691013dbc429f346dbbdb2752c56e863"
+    },
+    {
+      "path": "evidencias/colaboracao/COLABORACAO.json",
+      "bytes": 868,
+      "sha256": "8b5d01d7f4638b2c5f8feb7973b978ae6511894a30de9af9595aadbe743162a0"
+    },
+    {
+      "path": "evidencias/depois/BROWSER.json",
+      "bytes": 6796,
+      "sha256": "dff8fb0d1e5983a79886df2da0af3bc0d1b1f659e163d59721198baad38904a8"
+    },
+    {
+      "path": "evidencias/depois/anexos.png",
+      "bytes": 125238,
+      "sha256": "551725e0c7f60eaf09044bfb8ee692e271ed30a576e15057c65a575d21e7ba7b"
+    },
+    {
+      "path": "evidencias/depois/conectores.png",
+      "bytes": 383805,
+      "sha256": "a35a83fa9102848b16cfaae5d5d29714a71f4ff44096490e5aa77eeac2ea592c"
+    },
+    {
+      "path": "evidencias/depois/copilot.png",
+      "bytes": 172563,
+      "sha256": "5bd744da639138ed5e524cae03181b290648a63c7e1d51cb82306c25b8fed4d2"
+    },
+    {
+      "path": "evidencias/depois/criar-projeto.png",
+      "bytes": 124331,
+      "sha256": "91f2e15bccae989cd567883da87aea9a12b54e43be1ebef8d617671fd76b2352"
+    },
+    {
+      "path": "evidencias/depois/criar-tarefa.png",
+      "bytes": 146049,
+      "sha256": "48fbe0b84025c5db5954e096ca4a6f6ea0bba358afb72811591098d879a64aea"
+    },
+    {
+      "path": "evidencias/depois/decia-riscos-ia.png",
+      "bytes": 236240,
+      "sha256": "e97a97e6c910e50526a900cd59348b7f2a916770ce68a9be45c76a714786bcc5"
+    },
+    {
+      "path": "evidencias/depois/decia.png",
+      "bytes": 219732,
+      "sha256": "13aebb3e821f302258fa5880edb01f68a8158386cd0ea3b90e427d33186ef77b"
+    },
+    {
+      "path": "evidencias/depois/mobile-profile.png",
+      "bytes": 287144,
+      "sha256": "2a54926d9585d957f35ffdec66ac13a1bcd50e0a639b612e4362a7ee7dd71116"
+    },
+    {
+      "path": "evidencias/depois/mobile-studio.png",
+      "bytes": 126564,
+      "sha256": "9543ca914ed00a743268a97ea8f5e37d58c57de1f1d9717c420ae82fe0b638cb"
+    },
+    {
+      "path": "evidencias/depois/mobile-tasks-new.png",
+      "bytes": 67500,
+      "sha256": "fa254b95f1169039ffe8e5c05af970f2a1d8f5172ceb138e08147e7e1b02bfa9"
+    },
+    {
+      "path": "evidencias/depois/mural.png",
+      "bytes": 202284,
+      "sha256": "b40982a5fd2e8b9cccc50dab317ad68c112b81c1e7e1c17e2d14ad62c1d7dcb2"
+    },
+    {
+      "path": "evidencias/depois/perfil.png",
+      "bytes": 353174,
+      "sha256": "d2ba49cc57aa81e7c6275aa17891d227f4be9454f3716c5d6f21d5ad4b9e2dcc"
+    },
+    {
+      "path": "evidencias/depois/studio.png",
+      "bytes": 203376,
+      "sha256": "816953fef00771b88022ebf36c360301705f3e943ce2b50514e3ba697691a20c"
+    },
+    {
+      "path": "evidencias/depois/tarefas.png",
+      "bytes": 177234,
+      "sha256": "1183beab7dfc93556225c17ea4c48ee5ef60259396a56eeebcaf129a45f80c98"
+    },
+    {
+      "path": "evidencias/intermediario-wcag22/BROWSER.json",
+      "bytes": 7476,
+      "sha256": "5a0dd945c80bbe0f946dd410c54ec6f8b8713c9fad45c69efa3cafc6d13b6a11"
+    },
+    {
+      "path": "evidencias/intermediario-wcag22/anexos.png",
+      "bytes": 125238,
+      "sha256": "5dc88a84fa6ae3201d48d86e8878834ed14e27021c31ebd04011e9cf95e52936"
+    },
+    {
+      "path": "evidencias/intermediario-wcag22/conectores.png",
+      "bytes": 383805,
+      "sha256": "a35a83fa9102848b16cfaae5d5d29714a71f4ff44096490e5aa77eeac2ea592c"
+    },
+    {
+      "path": "evidencias/intermediario-wcag22/copilot.png",
+      "bytes": 172563,
+      "sha256": "5bd744da639138ed5e524cae03181b290648a63c7e1d51cb82306c25b8fed4d2"
+    },
+    {
+      "path": "evidencias/intermediario-wcag22/criar-projeto.png",
+      "bytes": 124336,
+      "sha256": "79f1d4ff14790380852b2a39cace7f7344cf498602a5e57f581a2442b78d261f"
+    },
+    {
+      "path": "evidencias/intermediario-wcag22/criar-tarefa.png",
+      "bytes": 146084,
+      "sha256": "47dddcf83cb3ba7fc4e3f05362ac74b51ac81b8e63739d94cc7947a57c0a1ad4"
+    },
+    {
+      "path": "evidencias/intermediario-wcag22/decia-riscos-ia.png",
+      "bytes": 236239,
+      "sha256": "569bf5bf20a563c94cd430fb0abe14ce3975229b89726125f7899fc9e391a98b"
+    },
+    {
+      "path": "evidencias/intermediario-wcag22/decia.png",
+      "bytes": 219735,
+      "sha256": "5eff995c6c9f59147054a5ddb685efcb255f8d0891f32be7c38973637380e4ca"
+    },
+    {
+      "path": "evidencias/intermediario-wcag22/mobile-profile.png",
+      "bytes": 287147,
+      "sha256": "78e4823928e1c637fbb08997f4e037da825c16ae50e8c5cec8de52bb20776506"
+    },
+    {
+      "path": "evidencias/intermediario-wcag22/mobile-studio.png",
+      "bytes": 126564,
+      "sha256": "1d6860c7badcfaceff770088eaf4dbfa09a44cf806551edd634836b43725b761"
+    },
+    {
+      "path": "evidencias/intermediario-wcag22/mobile-tasks-new.png",
+      "bytes": 67503,
+      "sha256": "c358b3c3a401308ae873b0c422f45a2c0016faca73be958df9c67cb8a7ef39a6"
+    },
+    {
+      "path": "evidencias/intermediario-wcag22/mural.png",
+      "bytes": 202301,
+      "sha256": "301e02eca40e594c262a34d5d40f0564f32597d7312bc41d544cd42bf9da029f"
+    },
+    {
+      "path": "evidencias/intermediario-wcag22/perfil.png",
+      "bytes": 353176,
+      "sha256": "912fa1e4039259c995ad461794009e6e3087c8b78a1aecc9f8e1d6080a79ca61"
+    },
+    {
+      "path": "evidencias/intermediario-wcag22/studio.png",
+      "bytes": 203377,
+      "sha256": "dd4fb836cbcbe23dd4a542229a2279589f1d5e28d0d3a8495b3caeb574f226f4"
+    },
+    {
+      "path": "evidencias/intermediario-wcag22/tarefas.png",
+      "bytes": 177227,
+      "sha256": "a7286e455d6d69b0dd6eb208c7dc56e71822aa4c6e346c39bf0c26a5d6c5f831"
+    },
+    {
+      "path": "evidencias/jornadas/DRAWINGS.ws-studio.json",
+      "bytes": 2829,
+      "sha256": "90ceb838e8960b8df03a42803e98e73cf6d21d8385dd90a49f83da0d8e08569d"
+    },
+    {
+      "path": "evidencias/jornadas/DRAWINGS_REABERTO.ws-studio.json",
+      "bytes": 2829,
+      "sha256": "bbdeca3a44c0eeddf34730a590886cc7561f3be75aedc3d807db888b829798dc"
+    },
+    {
+      "path": "evidencias/jornadas/JORNADAS.json",
+      "bytes": 3057,
+      "sha256": "17080cb3aac07580918822fc59d745c6403a793bfb36ab07d9f39ea4c33d988f"
+    },
+    {
+      "path": "evidencias/jornadas/LETTERS.ws-studio.json",
+      "bytes": 411,
+      "sha256": "9728cebf500dd0fb1fa392be418cd0ec7a47029648db609040febc70ae0f54b5"
+    },
+    {
+      "path": "evidencias/jornadas/drawings-luminaria.png",
+      "bytes": 510765,
+      "sha256": "23fabc7c59ddcd990f921f889d9bb071e19dcbb3b2b0033daea1f704c39353de"
+    },
+    {
+      "path": "evidencias/jornadas/letters-revisao-local.png",
+      "bytes": 257697,
+      "sha256": "695db95a260e57ce632c73210effead5e1bf40e0c8e80df1ffdfc06d7040e7e1"
+    },
+    {
+      "path": "evidencias/jornadas/perfil-real-com-tarefas.png",
+      "bytes": 279332,
+      "sha256": "903821c8180297330ec4ff5c1c0daba821f575d8a67b7353d3a93aab50643677"
+    },
+    {
+      "path": "evidencias/jornadas/tarefa-administracao.png",
+      "bytes": 162551,
+      "sha256": "ed41bc32ba43a3fd7a31de3ed1f736577c3a575794261ca1bc13280fc1883183"
+    },
+    {
+      "path": "evidencias/jornadas/tarefa-design.png",
+      "bytes": 162488,
+      "sha256": "dc6f43efb064bb198a174515d5cf23f93160aa0d6f035df8b4ade4825ec0360f"
+    },
+    {
+      "path": "evidencias/jornadas/tarefa-marketing.png",
+      "bytes": 159409,
+      "sha256": "aff1e3d947874d2dce6696c91febee7811eb5a276b7019ee76b2ec7042b40795"
+    },
+    {
+      "path": "evidencias/jornadas/tarefa-pesquisa.png",
+      "bytes": 161811,
+      "sha256": "840f298effd1a188848d3253fa6dad73ff49347336af5abd44243a0f173285d8"
+    },
+    {
+      "path": "evidencias/jornadas/tarefa-planejamento.png",
+      "bytes": 160455,
+      "sha256": "d87e0a12a367b30362bdcc341102f7d8e4e6ee0919273c3a0a64bf9a10614eae"
+    },
+    {
+      "path": "evidencias/jornadas/tarefa-software.png",
+      "bytes": 162710,
+      "sha256": "8000b0a2b1cf3fe6cced7d47731e29971b5d1ae9ebed92386c7e54f37a9ce426"
+    },
+    {
+      "path": "scripts/auditar-colaboracao.cjs",
+      "bytes": 4382,
+      "sha256": "7fa6e8c5975bd442a930370d954b6c34c292f50c82eaf100a436883028420d9e"
+    },
+    {
+      "path": "scripts/auditar-jornadas.cjs",
+      "bytes": 8607,
+      "sha256": "d24b6c95625d2b579f5a4d3e5e5aa844cea9bcb3ebd1c8f054a6b717a07e53ae"
+    },
+    {
+      "path": "scripts/auditar-navegacao.cjs",
+      "bytes": 3990,
+      "sha256": "09f91516f19f591b624e9116ff3bca6aad267f0d10c89b0b945a4679df918865"
+    },
+    {
+      "path": "scripts/gerar-pacote.py",
+      "bytes": 6879,
+      "sha256": "c92a68f22d9436012a98cd5b7f5b6cf87ec0e2a4cc7a3e6f704c8782aafa262c"
+    },
+    {
+      "path": "scripts/output.cjs",
+      "bytes": 525,
+      "sha256": "6fe5e94bf2a1225ed4ea444892fe695bdbb49607a57e6b82260db93eb796098c"
+    },
+    {
+      "path": "scripts/output.test.cjs",
+      "bytes": 1370,
+      "sha256": "18546048b67d3bec2ebbcf4e39c8d03381ce279293f27466f6fd7800fdba0789"
+    },
+    {
+      "path": "scripts/validar-auditoria.py",
+      "bytes": 1600,
+      "sha256": "8d20df641a61f59bde0b9bf7132977a49044908fd8cfed981c170b3b180e734e"
+    }
+  ]
+}

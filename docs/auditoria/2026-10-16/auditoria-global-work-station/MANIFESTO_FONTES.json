@@ -1,0 +1,3843 @@
+{
+  "baseline": "1932b73dca3a422e58547ecc592c0542d42e3a38",
+  "workingTree": "alterado, com implementações locais não publicadas",
+  "applicationChangesPublished": false,
+  "files": [
+    {
+      "path": "app/(auth)/layout.tsx",
+      "sha256": "45098bb0df7cccea631e135b21c3dcd2ef0c7f22414fa174fc6f6b0956d2e7fd"
+    },
+    {
+      "path": "app/(auth)/login/page.tsx",
+      "sha256": "dc71805750f32c297584a260fe8bf4865cbacbd084738b5a305da190d17cd87f"
+    },
+    {
+      "path": "app/(auth)/password-reset/page.tsx",
+      "sha256": "131e45add4bb6a858abc78cfe518bf9ab82c677e5e84c5d3ea197d3b33df4ddd"
+    },
+    {
+      "path": "app/(auth)/register/page.tsx",
+      "sha256": "70607142cc17f1d1b7ed37bdd78b16d37b7cd440c3f3dc11f0d55d4d5fb79e92"
+    },
+    {
+      "path": "app/(auth)/verify-email/page.tsx",
+      "sha256": "135c5cca1ed10c3e9062d5c8a8b99031d15e3b1cc0e1724a0dddec0d2a482863"
+    },
+    {
+      "path": "app/(shell)/admin/page.tsx",
+      "sha256": "49ed2401201fb55feec2fe98d7e9712c4cb302f273ae230a32c95917269a11e6"
+    },
+    {
+      "path": "app/(shell)/agents/page.tsx",
+      "sha256": "78e46c9f953c19041a7b200deef8c2cc45839f207ff64e0e16663bf0219c3ac6"
+    },
+    {
+      "path": "app/(shell)/attachments/page.tsx",
+      "sha256": "48321495955bbf75a8f10ef53dbbb99da6d7d0b6666b8adad6987365dc08c476"
+    },
+    {
+      "path": "app/(shell)/autopilot/page.tsx",
+      "sha256": "4cf4f46f460bdde242a5f436b8d35f3c9367d03891edf7f4a201aeb6ab2fac75"
+    },
+    {
+      "path": "app/(shell)/benefits/page.tsx",
+      "sha256": "981494171ebf8a3c6f9b5710229925f3c0ee5d6eb69c051ab5a8f0e8d0a9d5f1"
+    },
+    {
+      "path": "app/(shell)/companies/[slug]/manage/departments/page.tsx",
+      "sha256": "41674bcf4d40f014a47909d00ea7ac3dc9b47745357fd1559c9fc906a7098a53"
+    },
+    {
+      "path": "app/(shell)/companies/[slug]/page.tsx",
+      "sha256": "24e7cc9ded1fe445996d248d65173bf5689808ce8a93fd8a019def9daa591272"
+    },
+    {
+      "path": "app/(shell)/companies/page.tsx",
+      "sha256": "a6f40f6398929ed858b05a01703293d27b14f74ed4f0cfc6d1af7b913293c483"
+    },
+    {
+      "path": "app/(shell)/copilot/profile/page.tsx",
+      "sha256": "ccc244029f5debb9aab627405723fcaf8a5feaa9d135074d9420a4edad1daaff"
+    },
+    {
+      "path": "app/(shell)/curation/page.tsx",
+      "sha256": "871e40a42d71089906a234575d5b22ef1b9f1e05664b67ba4fd8c0354aee9135"
+    },
+    {
+      "path": "app/(shell)/decia/[sessionId]/page.tsx",
+      "sha256": "b82633490bff8e25e87e7c77eedcd3f28226a0412a3d2ce916756b276b75a809"
+    },
+    {
+      "path": "app/(shell)/decia/decisoes/[decisionId]/WorkspaceClient.tsx",
+      "sha256": "2767c89984937fd18865fdd4f3448a0458e5c6d9ea9657d82810897027a26124"
+    },
+    {
+      "path": "app/(shell)/decia/decisoes/[decisionId]/page.tsx",
+      "sha256": "c41e77fc0ac09d433cdd07aed5482798cc26bce023bec37bf52c8b2173b2de56"
+    },
+    {
+      "path": "app/(shell)/decia/page.tsx",
+      "sha256": "5562257e00575555b0609c6f46a4fdd12c04d9cba00b65f1daa4a00025e1f923"
+    },
+    {
+      "path": "app/(shell)/decia/review/page.tsx",
+      "sha256": "9f0fc449548b9484246f7668dbcc2c58b29992462170e0ff70f53c37ba970bdc"
+    },
+    {
+      "path": "app/(shell)/departments/[slug]/page.tsx",
+      "sha256": "043e3599b934c4dc49206899dfd05649fc7eb628fad64522074bc52c3c09165e"
+    },
+    {
+      "path": "app/(shell)/departments/[slug]/team/page.tsx",
+      "sha256": "0eae122664ce8eecc86b8570f1782dbe9b9ad916df62428819a264b25ba62d31"
+    },
+    {
+      "path": "app/(shell)/desk/page.tsx",
+      "sha256": "0ea86516c3bb8b83185557f8bf18618a44e1ac41df015c4fafdd5ee672d4b518"
+    },
+    {
+      "path": "app/(shell)/find/page.tsx",
+      "sha256": "b5c0ddfbf42f119c7979d382614dc70d33460d88f7820e88a307274b68c117b5"
+    },
+    {
+      "path": "app/(shell)/goals/page.tsx",
+      "sha256": "50376639447e8a87b6cf724afa52022e7784713a50e2e60753a82b9a3432c25e"
+    },
+    {
+      "path": "app/(shell)/handoffs/page.tsx",
+      "sha256": "bb5c2744c5e529a790acae6ef47d29cb173d860a4047532737f0e7ce45090d1a"
+    },
+    {
+      "path": "app/(shell)/highlights/page.tsx",
+      "sha256": "115ad84b1e0a09154df6a7c1fee7f797d509e05045888caea656546f79bc5c19"
+    },
+    {
+      "path": "app/(shell)/insights/page.tsx",
+      "sha256": "754715617441eeeacec1860e987f94afd16809407b08f1cda9693227de079899"
+    },
+    {
+      "path": "app/(shell)/issuer/dashboard/page.tsx",
+      "sha256": "49854101a5c0b8b0b085d6722e58307951cd9f303c3a56a41a4f4d637d97d016"
+    },
+    {
+      "path": "app/(shell)/lab/anatomias/page.tsx",
+      "sha256": "8a45b2dd03fa67e5f5912fa3703c2b2b1d55c082f26a390b6c88c101b614caa7"
+    },
+    {
+      "path": "app/(shell)/lab/decia/page.tsx",
+      "sha256": "7dec811cc14aab82e660d2c60ecb583aeed54f97183c35146ecd6f3578ee43b8"
+    },
+    {
+      "path": "app/(shell)/lab/design-system/page.tsx",
+      "sha256": "e2291c49de8ff29a1692425182ad9b14c3b2f9dc522027cacb19809a7bf50c12"
+    },
+    {
+      "path": "app/(shell)/lab/perfis/page.tsx",
+      "sha256": "5767e96c355ce8f03dd2addfbabb982c032cbc5a8a9dc0c26cbbc1b1dd516908"
+    },
+    {
+      "path": "app/(shell)/layout.tsx",
+      "sha256": "069facd3e4b120f20acf0ce918e8236fcd07b33194dc97f6aa4b1cff397e3a45"
+    },
+    {
+      "path": "app/(shell)/memory/page.tsx",
+      "sha256": "43c5c1f066f6eeb95e4bd4381f6431b4296c721a16d221baadb50b1674c80333"
+    },
+    {
+      "path": "app/(shell)/messages/[conversationId]/page.tsx",
+      "sha256": "b676200022bd962354e132420d745828a867826e5ea103c4814c8a90fc409ec3"
+    },
+    {
+      "path": "app/(shell)/messages/page.tsx",
+      "sha256": "39a8e34857b2f61ba36745496d2bcf51dd2708cb5a4edb13deca6351c4c035f2"
+    },
+    {
+      "path": "app/(shell)/models/page.tsx",
+      "sha256": "7fc8919d0a4cfa2e21f5032d84fc658554f538be202b74d57aee3ceade57adc6"
+    },
+    {
+      "path": "app/(shell)/mural/page.tsx",
+      "sha256": "44c559e8b89f7e8d5078fbab82724411db5f5ad03cf0b776c458a70bbc45404e"
+    },
+    {
+      "path": "app/(shell)/notifications/page.tsx",
+      "sha256": "97d2bc4f12bdba4ac1628e7b6a57b928364904d42e39fcef4df35af878a97817"
+    },
+    {
+      "path": "app/(shell)/plans/page.tsx",
+      "sha256": "7e3c9a782263dfb57156da316d93e5bbe53def7c95b2602eec9264559cefe5d4"
+    },
+    {
+      "path": "app/(shell)/points/page.tsx",
+      "sha256": "34d6996b375346c79f4ede297cce8cc84c54e1e99a799789a5da29e0a4425418"
+    },
+    {
+      "path": "app/(shell)/profile/page.tsx",
+      "sha256": "98b096095e42573fa3151bb22ef1b511ddde209dccd0dcfbb1c4f7aa217ca6b7"
+    },
+    {
+      "path": "app/(shell)/projects/[id]/edit/page.tsx",
+      "sha256": "1f4123de1aa97bfa1f3f47e13f494ddfd4c98607ad53639a941ffdb6a62acb46"
+    },
+    {
+      "path": "app/(shell)/projects/[id]/mirror/page.tsx",
+      "sha256": "19afb3235a70c8a94473613802ce82d59de6e5661d7bcc3da60cfd164ad26d2a"
+    },
+    {
+      "path": "app/(shell)/projects/[id]/page.tsx",
+      "sha256": "6ca0cbf4c4b679bcfd6ab47e03095a57a85e534b4bbf6fdc76d0b89e3290f993"
+    },
+    {
+      "path": "app/(shell)/projects/[id]/simulate/page.tsx",
+      "sha256": "5d50c05851fe7d28d39b749e37c893dc54d874e038be9396ea51f5d94ba14eda"
+    },
+    {
+      "path": "app/(shell)/projects/new/page.tsx",
+      "sha256": "c2343f8caddfd758dcfa525fd11ce583a6a0da6e530f2a90fc87da57d65d7f5e"
+    },
+    {
+      "path": "app/(shell)/recognitions/page.tsx",
+      "sha256": "2687007facab6f0a1b6a04bd13d6533c7373ab51c90b77157ec52d4b44f09aa9"
+    },
+    {
+      "path": "app/(shell)/seals/page.tsx",
+      "sha256": "5e8267d598793ac76b14eb0a020f52c14bfc5b43ce84d04c3fe3c476beb1b15f"
+    },
+    {
+      "path": "app/(shell)/seals/review/page.tsx",
+      "sha256": "5b23d91ec9a728ad14a3a68310dcc7fdeea567d5fe944a976e68e135c202d403"
+    },
+    {
+      "path": "app/(shell)/search/page.tsx",
+      "sha256": "ba93d704880f17e01e15419a35476da3aba036c82858016f4ec435516ce09442"
+    },
+    {
+      "path": "app/(shell)/settings/page.tsx",
+      "sha256": "3c71bb2232608e930e027189f917d37cd80338cb8ce3f94c16a85948d0f132e9"
+    },
+    {
+      "path": "app/(shell)/store/page.tsx",
+      "sha256": "0e32aa8fcb44608ca34a58d13c59e15ff765ad7f6bc061a3a3d53025c5fe3f87"
+    },
+    {
+      "path": "app/(shell)/studio/page.tsx",
+      "sha256": "967f331a0df8a4c2f7179fbc4674cc86c55f80d6842ea15cf5ea75e3da3c4ecd"
+    },
+    {
+      "path": "app/(shell)/tasks/[id]/TaskPageClient.tsx",
+      "sha256": "d1ede5822d98e70ce7cfb15c5e1ec826eacd216773d80a5fe4ea4009d9664c24"
+    },
+    {
+      "path": "app/(shell)/tasks/[id]/edit/page.tsx",
+      "sha256": "76f53046e2ce2edd6d6cd2406fc54c18e64cfb5ce6860ea7b63ae41d268b8caa"
+    },
+    {
+      "path": "app/(shell)/tasks/[id]/page.tsx",
+      "sha256": "6e73cc6fe0263f48eea80d181d0aa9e5de766d299000e472ecd429f136424898"
+    },
+    {
+      "path": "app/(shell)/tasks/new/page.tsx",
+      "sha256": "947c1d717e1e0eafad287fab850e8499b990de66782676222ade1434556db09a"
+    },
+    {
+      "path": "app/(shell)/tasks/page.tsx",
+      "sha256": "e975c662059d5ac267877e2372560c44f17953c109d1fc28ce013a61055a9b4e"
+    },
+    {
+      "path": "app/(shell)/u/[username]/UserProfileClient.tsx",
+      "sha256": "19d1f4decc76f0b816b1c35be65f105ce0c09785d73f39b5fb0c54fcb4a899c9"
+    },
+    {
+      "path": "app/(shell)/u/[username]/page.tsx",
+      "sha256": "118cd6a0b9783131d5b2b723d33276af9e08e408c50433318e6039b9f85339ba"
+    },
+    {
+      "path": "app/bff/auth/[action]/route.ts",
+      "sha256": "1cca81d4e5aae7d7edb713511d89e9fc7f081fe636f5491c0676f1a726e0f254"
+    },
+    {
+      "path": "app/bff/auth/bff-session.ts",
+      "sha256": "3f45db92e6fa935242309459701fa5b097b58dfc2fc438dcf9ad6e2189c47e8d"
+    },
+    {
+      "path": "app/bff/auth/edge-ip.test.ts",
+      "sha256": "2415b7c68e02c1c8a509fe9bb427692ebb6c2c4af4a5059959030cbcc274324e"
+    },
+    {
+      "path": "app/bff/auth/edge-ip.ts",
+      "sha256": "ce375889704fac3cbc8b7575db96e9b5c444204a1ab9d4d6eb7d94c8600c18a8"
+    },
+    {
+      "path": "app/bff/auth/oidc.test.ts",
+      "sha256": "a6f31d3b1a3a81a513958ff0bca440e74bf72d529c209f6c7938b8b82f4fc04f"
+    },
+    {
+      "path": "app/bff/auth/oidc/callback/route.ts",
+      "sha256": "ea0be3142a0dc3cd5b1ad2a0ea9a5b2359a7b336c16886692dae1169b95fc1f4"
+    },
+    {
+      "path": "app/bff/auth/oidc/oidc.ts",
+      "sha256": "d5e15bf9ec346f07e718d611d19737426de398cc2ea8ac4c182d0a88096f866b"
+    },
+    {
+      "path": "app/bff/auth/oidc/start/route.ts",
+      "sha256": "dbd617e088b5e7b720f1d24d3e41c2e19f82036ea43c9955e15418ca8639f271"
+    },
+    {
+      "path": "app/bff/auth/route.test.ts",
+      "sha256": "b4aa432d96b632acf1a6bf1366c7b550d15a1548ebffe6a080707a56f9fd0d4d"
+    },
+    {
+      "path": "app/layout.tsx",
+      "sha256": "ba060b749b42cb8cd1b4c80e23684cc557ac79c60ac1d0b0297e13380f14dd57"
+    },
+    {
+      "path": "app/not-found.tsx",
+      "sha256": "bc20a4c8fe19b7eedfa8b4cde1802b673ac6ec98b8a437378667b62e0c71a5f4"
+    },
+    {
+      "path": "app/page.tsx",
+      "sha256": "5d699666d4d521105ad6841c6259b775bb925106717afe265a6cd2b9592c0bff"
+    },
+    {
+      "path": "components/auth/AuthForms.tsx",
+      "sha256": "cfd6196c58c21f64713491edb26a486b712ecebd937cdf1b3f530e1922f0dc35"
+    },
+    {
+      "path": "components/auth/VerifyEmailForm.tsx",
+      "sha256": "d35d123d5a348eeefe5b1d842e994477baa090adffb69fc914aeb1b81e9c2a76"
+    },
+    {
+      "path": "components/decia/AiSuggestion.tsx",
+      "sha256": "8ded1a4819bda35db2ab0e6912aa3a635f52ca770ea7219a9aacf652ed785a85"
+    },
+    {
+      "path": "components/decia/Analysis.tsx",
+      "sha256": "72d5e91df5faaae2e1d29c3944c5b96612f39e4679128e243493c86b16d51186"
+    },
+    {
+      "path": "components/decia/Badges.tsx",
+      "sha256": "bf2a209f9e6df4e04388e661c0b431768fbc21e18de12a26ea7018af4620c4db"
+    },
+    {
+      "path": "components/decia/CriteriaMatrix.tsx",
+      "sha256": "953cdabe7396276f7415e544509a882366c9983b02a43933497db120e3630b8b"
+    },
+    {
+      "path": "components/decia/DecisionCard.tsx",
+      "sha256": "6a69660b591bf0f62e57e3e5c83fa490cb563aee242269e54ecbdbc3319f79a6"
+    },
+    {
+      "path": "components/decia/DecisionWorkspace.tsx",
+      "sha256": "4250d109eddddfd3c610a612908404ca4c8797b0731154d671c0eeaed0b2ae08"
+    },
+    {
+      "path": "components/decia/Dialogs.tsx",
+      "sha256": "c1b9e834d17ce58c9905b4720446a3fde1ce584835a3f39a082438db339bd9a6"
+    },
+    {
+      "path": "components/decia/ReadinessCheck.tsx",
+      "sha256": "6b2e570cf77e53b553ed1700936632f2dbc4ffc20aed0c310033ae19e416ff70"
+    },
+    {
+      "path": "components/decia/Views.tsx",
+      "sha256": "94da25de6bbaad3685fc56717644712b946f061123111e05f3c819452742ea31"
+    },
+    {
+      "path": "components/decia/WorkspaceSections.tsx",
+      "sha256": "c3c2e2ae38cba837d60c1d40b11f81a2ece0fa0f6f929e91913bf68e0b1a209d"
+    },
+    {
+      "path": "components/decia/decia.test.tsx",
+      "sha256": "e5013887a0e7e0333622c261816d6bbb1ae9d249ec8425b3e147e608724d770f"
+    },
+    {
+      "path": "components/decia/hooks.ts",
+      "sha256": "e831a9658e37938a3cbd023a1a2dcee313c80ef36b0f15f71b7e8c2c7fa64371"
+    },
+    {
+      "path": "components/decia/index.ts",
+      "sha256": "9cab88f3989aec134f4a2f99e6386353c087dff00e32252451f94c6524e6d4b1"
+    },
+    {
+      "path": "components/decia/meta.ts",
+      "sha256": "577081cd3bbd75afb163afb45d743ec5490495da31314a57567eab4b9cb9beed"
+    },
+    {
+      "path": "components/development/ProfileCopilot.test.tsx",
+      "sha256": "a2bc4ae04b730c0326d68b63fede1ce435d6ff676f69fcc97e5b3c88d5d5b271"
+    },
+    {
+      "path": "components/development/ProfileCopilot.tsx",
+      "sha256": "65e1e2908ab78e482b32b254bc686fe537c2fea1efb3d3fc18be9efbe52ecc3e"
+    },
+    {
+      "path": "components/institutional/DepartmentTeam.test.tsx",
+      "sha256": "b7318622cfd8d36994018d814b79e859dcac653a671fd3134a33ada08eca9966"
+    },
+    {
+      "path": "components/institutional/DepartmentTeam.tsx",
+      "sha256": "e100d707d80694de3979f7b4cb6cb90351f8e92d425ba057e5379d4f8d0fb4a8"
+    },
+    {
+      "path": "components/settings/SessionsPanel.test.tsx",
+      "sha256": "2b84b0b22e6e7b15189cdf3a6a40b17d2489e420f6c34c6ad2fe5dfe3220c939"
+    },
+    {
+      "path": "components/settings/SessionsPanel.tsx",
+      "sha256": "ebe8fc1ede228ae8731691cf4d836a858f41b771c441e4fb930f5eb481b3f941"
+    },
+    {
+      "path": "components/shell/AppShell.test.tsx",
+      "sha256": "4ee7c30df41363c106d6775b74da0631292a256f860fcc2f6dc386f59ec5bfc1"
+    },
+    {
+      "path": "components/shell/AppShell.tsx",
+      "sha256": "0e24879ccc997935c06b866fd72e22d2962ea23e23626451bc8fbb847956f14b"
+    },
+    {
+      "path": "components/shell/AreaPreview.tsx",
+      "sha256": "f6524c9cd927495958362d7246d5b1bda4b2f18fa49cce5068863be2d924d524"
+    },
+    {
+      "path": "components/shell/BottomNav.tsx",
+      "sha256": "79e810919677c2bf0b169c3973a91fca61ef446f9eccee74f2c5dcc1ca23451c"
+    },
+    {
+      "path": "components/shell/CreateSheet.tsx",
+      "sha256": "9101fccf128316c483a556bd5057f1ce817b872e9947eaaff0ea1dbdd31b3d2b"
+    },
+    {
+      "path": "components/shell/DossierLink.test.tsx",
+      "sha256": "54ca343fd8d982a7f44ffcb54eb2f852b4ab382a79b23adc5aff4f3007065c14"
+    },
+    {
+      "path": "components/shell/DossierLink.tsx",
+      "sha256": "31126078dcd635a0cff193fe7379436d6cedc7418abd640ac00b69d0d5d562db"
+    },
+    {
+      "path": "components/shell/LabEmbed.tsx",
+      "sha256": "55fa94c2da652e2f0792002b399c208b9ba7598c0334c146dec8c076dc6e05fb"
+    },
+    {
+      "path": "components/shell/NotificationsBell.tsx",
+      "sha256": "496b485f28f4e20b252a3e9cc64543e76cd19dce380c303474256947e091c702"
+    },
+    {
+      "path": "components/shell/PageHeader.tsx",
+      "sha256": "e1dcbd163cbbefd9617c8f280518fe53acb4f52dd091df7365d96d4a4d3e44cf"
+    },
+    {
+      "path": "components/shell/ProfileHeader.tsx",
+      "sha256": "6b6656fca53f7d316668c6b19a9cb33b912d5d58cfa706c3675dd3e695ce22bc"
+    },
+    {
+      "path": "components/shell/Providers.tsx",
+      "sha256": "6178d0bd2eb2dce934961590464423aaa5b23d9dd81b88b59274496e2bb5224d"
+    },
+    {
+      "path": "components/shell/RfPage.tsx",
+      "sha256": "6230e05268c4b7ebe23dbd8ae1ba1afee2092e4ba46066e30696fa4cc70fd3f4"
+    },
+    {
+      "path": "components/shell/SessionWatcher.tsx",
+      "sha256": "0c9a3aeee1626f3f01358d5225d76c92bad3d694a47c99efee5d3a14998eb3eb"
+    },
+    {
+      "path": "components/shell/SidebarNav.tsx",
+      "sha256": "0d807b1f41b9876b17d2f8164960da75b564d5746694b8dc3dad6a95f65e7f52"
+    },
+    {
+      "path": "components/shell/ThemeLanguageMenu.tsx",
+      "sha256": "24f38740fe989d8d0733f381f1b7ccad091f9c9b626dcb7d2440fc62d62c2415"
+    },
+    {
+      "path": "components/shell/TopBar.tsx",
+      "sha256": "4f30c6bae6493af926e29b7ceadc0676f4061c693bbdabbdf5b7facd04309c47"
+    },
+    {
+      "path": "components/shell/UserPanel.tsx",
+      "sha256": "5d1545c40b279a467cd56cde96211c7ba33c4820d4bd06a0d771ea9e207ec192"
+    },
+    {
+      "path": "components/social/AssignmentInbox.tsx",
+      "sha256": "b99cb7e0d8a51892c224f0674686595c2940a0ef955016d9f4fee68a0f98394e"
+    },
+    {
+      "path": "components/social/AuthorshipBadge.tsx",
+      "sha256": "477ea44f355c345bfc14069cb32bf492d38f7c2945f9832bf989c48ba7421310"
+    },
+    {
+      "path": "components/social/CommentThread.tsx",
+      "sha256": "d489cbced885cb9c86cd13e702275f88fac7e45563f5b125fc9bac885dc7d236"
+    },
+    {
+      "path": "components/social/DelegateDialog.tsx",
+      "sha256": "12cdc7984771a41fcdc0d86b60edbd45872ddb8caa2b72b153aea919e222d54a"
+    },
+    {
+      "path": "components/social/FollowButton.tsx",
+      "sha256": "35a59935d494a05c83ca02b8f61cdacf65e19538eb9e1beaaf872d69bb2f779b"
+    },
+    {
+      "path": "components/social/InstitutionalHeader.tsx",
+      "sha256": "7dcb03ddf34e201b432b7642ac032f2f7804ada9e5d0b0a9e4c68daf84d3fe8e"
+    },
+    {
+      "path": "components/social/MuralFeed.tsx",
+      "sha256": "eb89acbf7b06b3fd86d9f7681939382a73c80c6f8d82a720b373156150e10519"
+    },
+    {
+      "path": "components/social/Primitives.tsx",
+      "sha256": "b3fd6cea98e534f5d083a391c9fd1b8777845650be914fd5df0acf1717cf7c10"
+    },
+    {
+      "path": "components/social/ProfileHeader.tsx",
+      "sha256": "30558b69f243646ee5e3f82dc87e4fe0c028fe17639f1773770fd45907363a3a"
+    },
+    {
+      "path": "components/social/ProfileView.tsx",
+      "sha256": "c66585ea1ebbbcc02286c90f20d4620e5319ec548fa7ffcc2170a8ca090f8e5d"
+    },
+    {
+      "path": "components/social/ProjectCard.tsx",
+      "sha256": "1cb2551931e7530d9e4221f5a4da4e7aafa72c3ff35c70ef8304565483213da3"
+    },
+    {
+      "path": "components/social/RegisteredProfile.test.tsx",
+      "sha256": "3926c5520bf7681da01b6801b17ffdf4f7314adeffcd420d8e4dfeec9a2cdfef"
+    },
+    {
+      "path": "components/social/RegisteredProfile.tsx",
+      "sha256": "2d7423f7763436380a3f3892137af0cd0574df93616b8b86bc01723566ee39a7"
+    },
+    {
+      "path": "components/social/RemixDialog.tsx",
+      "sha256": "d5c2924103cd86a951a6e14a42fbeffb32aaae7bd78eda02f35e3f3827e2c07d"
+    },
+    {
+      "path": "components/social/ShareSheet.tsx",
+      "sha256": "0e2700066771a1a5273ccc2d65e1db2c2a2639c575d8e31d7a199ec30165bd98"
+    },
+    {
+      "path": "components/social/SocialBar.tsx",
+      "sha256": "f95388f8cf9adc4a775da2eb3b31017d499ec7fe483063d2b1393fb5c92c1519"
+    },
+    {
+      "path": "components/social/TaskDetail.tsx",
+      "sha256": "75e10138b6dc4ae5a222d8eedbc496d967c2f7ecb1035acd25397309fee99ac0"
+    },
+    {
+      "path": "components/social/TaskSchemeCard.tsx",
+      "sha256": "cbc75b17d705a523e3cafac968b4a4bb58254c5421495ae2a2e2204de0193113"
+    },
+    {
+      "path": "components/social/context.tsx",
+      "sha256": "ed92b9c6169b05bc9ee8ad0455b0093a8fb2f50e01a6d451bb086ad2fc6ac86f"
+    },
+    {
+      "path": "components/social/index.ts",
+      "sha256": "962276025853bd7c5d05ea69cf5f17a0cc5c55052af85bf2d45bbd7a477e007c"
+    },
+    {
+      "path": "components/social/meta.ts",
+      "sha256": "e2e6ffee16c33673f6768535c4542e09ce3340d3e69ff9328f6086400405ab72"
+    },
+    {
+      "path": "components/social/social.test.tsx",
+      "sha256": "c6301e3456e6bebd3d2c2ac4604575500f9745b6eba2e30373f57d0e106ca9e9"
+    },
+    {
+      "path": "components/studio/AssetWorkbench.tsx",
+      "sha256": "7cde05e2b2281da9a3dba29ff7e75099972b0126f4b961239977aea4505745ef"
+    },
+    {
+      "path": "components/studio/BezierEditor.test.tsx",
+      "sha256": "5408e91c6469e6d3cfd03403690e034765945f717d1249c7a839a7804642de48"
+    },
+    {
+      "path": "components/studio/BezierEditor.tsx",
+      "sha256": "2a41f835f789c44e44f204904481fa94596c7587ef9560510d603db1efa69765"
+    },
+    {
+      "path": "components/studio/BezierGuide.tsx",
+      "sha256": "f5520d1d240f09b2dcbb9ced27c6f8e4c3e35ce84cb363050946c43d4ffc5e3c"
+    },
+    {
+      "path": "components/studio/DrawingCanvas.test.tsx",
+      "sha256": "a3f4066b6571c9f590e8ad10606ad8eabe3150536e5225aff7f7c91302c1d3cc"
+    },
+    {
+      "path": "components/studio/DrawingCanvas.tsx",
+      "sha256": "380f0ce8b33a51361a0462d2cca1b41457cec0780fb57e9598e96e61ef704139"
+    },
+    {
+      "path": "components/studio/DrawingCommands.test.tsx",
+      "sha256": "89256fb8c48e4a6a722300036cc00c188ae94204239124861bc0bb9907f3973a"
+    },
+    {
+      "path": "components/studio/DrawingCommands.tsx",
+      "sha256": "798342420f5553cf699327c0dc460b5669c62852bbdbf46276abaef3a8aed996"
+    },
+    {
+      "path": "components/studio/DrawingJourney.test.tsx",
+      "sha256": "811ce2f339a36233e23f53d628c92aca71144de778a18eb215feb37b20e98d22"
+    },
+    {
+      "path": "components/studio/DrawingJourney.tsx",
+      "sha256": "4672a349cb9b474d0d19ba7a233264fe8b2f908f614d62459561db390e654b0c"
+    },
+    {
+      "path": "components/studio/EditorPanels.test.tsx",
+      "sha256": "f2c17af8ec722e17dc342ae22212230f10575e36180e304cd9af1449490076ae"
+    },
+    {
+      "path": "components/studio/EditorPanels.tsx",
+      "sha256": "f0dcbc2bd53a4704aaa0b8fe78e470718147509e884a2b47a773e2a982e297d5"
+    },
+    {
+      "path": "components/studio/GeometryComposer.tsx",
+      "sha256": "505cb4fff4bb9caa249257a65cd7a71de68e8aa41aae9f2c7b69fa994c2e5470"
+    },
+    {
+      "path": "components/studio/LayerPanel.tsx",
+      "sha256": "4b89b7457c080d239a13e443719ededb95bdf450a799bb8d93c25573d141f5ee"
+    },
+    {
+      "path": "components/studio/LettersAgent.test.tsx",
+      "sha256": "d88b93d64e6275cb210a8644d3f2594524342f96cd1217e036f6527197559d54"
+    },
+    {
+      "path": "components/studio/LettersAgent.tsx",
+      "sha256": "a7efdc22d55d8fb2ae3be7bcfd22916cb9dcbe05c135370bbdd06b37583d6bd0"
+    },
+    {
+      "path": "components/studio/RegionSelector.tsx",
+      "sha256": "87bb9d327ce3b070f16da62b12a2682ac52dd63e014f4b5ad5a15cb95cd0af9f"
+    },
+    {
+      "path": "components/studio/SharedDrawingEditor.test.tsx",
+      "sha256": "69ac6932e2bced69621010e945c4eda63e5788d172adb200d7fdfc7e11770ca0"
+    },
+    {
+      "path": "components/studio/SharedDrawingEditor.tsx",
+      "sha256": "19e99e94f2978858650a3029605f27a782a2874d8316d0feb1660c8e5fc1723a"
+    },
+    {
+      "path": "components/studio/SolidCommands.tsx",
+      "sha256": "55ec12adae5212716cb0ac7e4edce0cdfc0e65fe0231c77e40410a082e1fe345"
+    },
+    {
+      "path": "components/studio/Studio.test.tsx",
+      "sha256": "e9a8bb1a21c48f84a96bb8b0392bcac7e8d7195be9ae241056ac7262e6caabc5"
+    },
+    {
+      "path": "components/studio/Studio.tsx",
+      "sha256": "21b0b21552e564ec3620f57d847e1a03b59455b6f2d1ac6a8251ccff365be9e7"
+    },
+    {
+      "path": "components/studio/StyleInspector.tsx",
+      "sha256": "99de5858847fc3ad4b497d8ab0895b6fad0a41133b40c9eb5438577f4cebea28"
+    },
+    {
+      "path": "components/tasks/PersistedTaskDetail.tsx",
+      "sha256": "b361eff307b0bdb52b3de850eaa9221e02d9c0a80d3d7e34b8e7d814154f3fdb"
+    },
+    {
+      "path": "components/tasks/TaskAiAssistant.test.tsx",
+      "sha256": "818e12ad222e029c7eaeb1e47e451616660be8cb7682b47b4a1cc5fc71f835b7"
+    },
+    {
+      "path": "components/tasks/TaskAiAssistant.tsx",
+      "sha256": "4ddf085a9fe34cd275e0c94d32471bc3a35c8cbc2ec860cfee2b5002e9fe1038"
+    },
+    {
+      "path": "components/tasks/TaskCollaborators.test.tsx",
+      "sha256": "b71c1496d60ea17f2f2202ac58a1fc4a75ed912626c16a14ea9765a0ac5b1ccc"
+    },
+    {
+      "path": "components/tasks/TaskCollaborators.tsx",
+      "sha256": "5b69cc9a412d36e0c7d2d941b101012680aa2d1368882c2c1873e86637143022"
+    },
+    {
+      "path": "components/tasks/TaskEditor.test.tsx",
+      "sha256": "6f05ea037b519ec02285b0656d2782c8644a32af7835cfde7d7a44b6b3164c95"
+    },
+    {
+      "path": "components/tasks/TaskEditor.tsx",
+      "sha256": "881b64370566d8983bf2a6cdf60cb08d80224d2332db32e298dd52e6bbf4125b"
+    },
+    {
+      "path": "components/tasks/TaskHistory.test.tsx",
+      "sha256": "87f54f7b7bbcc8c4ab507a233d4447a5f243120d579926574fb209f14baa2d3f"
+    },
+    {
+      "path": "components/tasks/TaskHistory.tsx",
+      "sha256": "56db443c65ad4c86a662e9d74a050651af8ee6228d8d73c9f1749225d96c5c6e"
+    },
+    {
+      "path": "components/tasks/TaskInventory.tsx",
+      "sha256": "768a7150dc0be9c36790ffd92d8b8647520199981b887f6e7b45f3b203f01cdb"
+    },
+    {
+      "path": "components/ui/Avatar.tsx",
+      "sha256": "0871e6162a375fe990f045991f1d66a78221ec6eff4d2994869a214b82e39603"
+    },
+    {
+      "path": "components/ui/BackgroundArt.tsx",
+      "sha256": "07aa0495c2f4b1b9896413d72f16318ca6eadf8c841c9b082943bacd943d4629"
+    },
+    {
+      "path": "components/ui/Badge.tsx",
+      "sha256": "72e746fa60ff6810c990f8b9a09436255a78bd3b37baf88312efbb2723b20d93"
+    },
+    {
+      "path": "components/ui/Button.test.tsx",
+      "sha256": "80f857ad59d84904ae4d5356ba30308b88a4c082f609920e5342dc9ba1d50dc0"
+    },
+    {
+      "path": "components/ui/Button.tsx",
+      "sha256": "da0259b979d397a6f707a19ae6a8d19eec5409037bc76e51a9f94aea1154f14b"
+    },
+    {
+      "path": "components/ui/Card.tsx",
+      "sha256": "1bb3cb5d416ad540640c08f381c83b84b71cc88d9f3bda84ed2e5dac12fcdaa1"
+    },
+    {
+      "path": "components/ui/Dialog.tsx",
+      "sha256": "8e3a9a36f90717989f81cbfa086dc7e6abaa05d358ad9ea9b133e20bcbb471f4"
+    },
+    {
+      "path": "components/ui/Form.tsx",
+      "sha256": "27458ff6f29e8d395ab0d367853f63864015c1eeb7f2c19d21d00d0e650a2aaa"
+    },
+    {
+      "path": "components/ui/Link.tsx",
+      "sha256": "4e2f5590f5cdfa0f69ccc7523e274a73d2525bd6a2732d289faa7cd20830bb85"
+    },
+    {
+      "path": "components/ui/Menu.tsx",
+      "sha256": "7a3ae33de5197b55d539a424ca9ac095f475cc0c037557402539e25e3c9121d9"
+    },
+    {
+      "path": "components/ui/PercentBar.tsx",
+      "sha256": "cbca853df75c3d28bb9eb5e2b64d28cf2664aa2a22140d145bb10cc6997a4230"
+    },
+    {
+      "path": "components/ui/Popover.tsx",
+      "sha256": "b09d50c0cf685179fdbe6f2414f21cae40e195c0901c56f8646c74d576ad5dff"
+    },
+    {
+      "path": "components/ui/Skeleton.tsx",
+      "sha256": "67bf5cd5c6b4bdce3fd4fa58e7f9e53eea5edf40da57eb98be6ccb1c756a41a0"
+    },
+    {
+      "path": "components/ui/States.tsx",
+      "sha256": "c72d09d7aa7882a4e17e13cd8a012badc3804f39dbc9ed76d5a1f5f1f19b8b5d"
+    },
+    {
+      "path": "components/ui/Tabs.tsx",
+      "sha256": "4938d061589ebc8cb0e0b68a025c2f4b8c1edc5ce7b1919c91573782c159fb00"
+    },
+    {
+      "path": "components/ui/Toast.tsx",
+      "sha256": "af586c3546c32c07b4ed087a1af6e79255637020ebe2aa8ae5317c0772bcea43"
+    },
+    {
+      "path": "components/ui/Tooltip.tsx",
+      "sha256": "89b4e34853fca2084b35604d7a471d267952f250c04fdf8f40ab98f169ba0fcb"
+    },
+    {
+      "path": "components/ui/backgrounds/aura.gen.ts",
+      "sha256": "f1cd58e220d474fee6c5aee772ee78c6d0b81fb2411360f3274c190ee3713ed4"
+    },
+    {
+      "path": "components/ui/cn.ts",
+      "sha256": "febf55eeafce7165c638f66df3170609f1faec20a08786106f8e359a2b4d4459"
+    },
+    {
+      "path": "components/ui/glyphs/Glyph.test.tsx",
+      "sha256": "7f8d06d57ce7cb2e7bc27436c5e83b0279812f648c53f558e87acaf2149cffe1"
+    },
+    {
+      "path": "components/ui/glyphs/Glyph.tsx",
+      "sha256": "a3b0ac6e8591e4c52afdad792dcfaff9e596ac0fd0b457c4ed7a61fc115d80d5"
+    },
+    {
+      "path": "components/ui/glyphs/sprite.gen.ts",
+      "sha256": "9e0399424b9d46d35d198845d03aaef6821497f95c7eba659a74a7c48122dfd0"
+    },
+    {
+      "path": "components/ui/index.ts",
+      "sha256": "385665f870de72f0266e0b0b0c152c131d17f8585e13742afe6073aa5068f43d"
+    },
+    {
+      "path": "components/ui/ui.test.tsx",
+      "sha256": "a7d5482d41d4e85c456859ac669fe205268f39a759f2e01d7c20dab4ccd836c3"
+    },
+    {
+      "path": "docs/diagramas/RF1/README.md",
+      "sha256": "d4584b28afaf9b9f6ccc539c01b5b0211452f92f4b0ba4915ee96310138e1d61"
+    },
+    {
+      "path": "docs/diagramas/RF10/README.md",
+      "sha256": "c3315d7748b012476a9e154226f89cfb8b57aa2fa4f132661e270d6a198ccfc5"
+    },
+    {
+      "path": "docs/diagramas/RF11/README.md",
+      "sha256": "4dd16e5357bd7ba8f30e3be38aced9d89ce749b1be86f5599555e1e1d5e3bd85"
+    },
+    {
+      "path": "docs/diagramas/RF12/README.md",
+      "sha256": "dcbfd75f4e9d5cc855bfca58d52e7f1792b4adb1342ccc6556ec87b4d9ed7e57"
+    },
+    {
+      "path": "docs/diagramas/RF13/README.md",
+      "sha256": "6d16b229f678f12c8cfd7ada14dac9c247e59c8b1a4f875425982bd1c4021082"
+    },
+    {
+      "path": "docs/diagramas/RF14/README.md",
+      "sha256": "560cec418f61c3d61eb81e2a57dc77f3716b53fd7cb8939e3dc50771caa1bf5e"
+    },
+    {
+      "path": "docs/diagramas/RF15/README.md",
+      "sha256": "d0ddd7848211d3a697cab40f3c745cf9ec96f5bf807af98ced9679ed4f8bc9d1"
+    },
+    {
+      "path": "docs/diagramas/RF16/README.md",
+      "sha256": "9d505b92c82339fe73590453002346954d7ed3e2d7b8a91964f4ab21a0aa66dd"
+    },
+    {
+      "path": "docs/diagramas/RF17/README.md",
+      "sha256": "3f73a84069f87c3e23a8abaf51f55c8be3345c8e228fccdc133b501703b807d3"
+    },
+    {
+      "path": "docs/diagramas/RF18/README.md",
+      "sha256": "b3108a46024a2fac22dc9737c2030f0a90735c304bb5032d1e1dacb8caa12866"
+    },
+    {
+      "path": "docs/diagramas/RF19/README.md",
+      "sha256": "01e6014dd8f461ebec3279c31a000d9726bd75c6faa824c47523322f1a1ccab8"
+    },
+    {
+      "path": "docs/diagramas/RF2/README.md",
+      "sha256": "d8643f2d8bedc4e5449a696fe99c881a0c2dc66d2f785911681775ae96750b01"
+    },
+    {
+      "path": "docs/diagramas/RF20/README.md",
+      "sha256": "2e8e4b22740b556c8fe2968b5572847eae16eff77db05b138427cb745070a150"
+    },
+    {
+      "path": "docs/diagramas/RF21/README.md",
+      "sha256": "b3a5bde35441de3ac86950066c9b74aee42aca4447d04963936fd160d10e8597"
+    },
+    {
+      "path": "docs/diagramas/RF22/README.md",
+      "sha256": "8bbac16280385539e859c351a30c106dc30d63200870b16af0fa4c94ef503d97"
+    },
+    {
+      "path": "docs/diagramas/RF23/README.md",
+      "sha256": "6661ce5a00d8aa5e70af6dcdd58a5825ff87d813a85f3b79d86fb4d2325cde11"
+    },
+    {
+      "path": "docs/diagramas/RF24/README.md",
+      "sha256": "c4a04cb16a7c59ba5755d0c20d7b10f0a533df8a18159fec107b99582b871d0d"
+    },
+    {
+      "path": "docs/diagramas/RF25/README.md",
+      "sha256": "c11c59246c39b80a924a2d076d079ba900182c5e9f27012a883e1b6e5a3b7c8b"
+    },
+    {
+      "path": "docs/diagramas/RF26/README.md",
+      "sha256": "f285c9c59cbc3c232a925f3d1a96cedc7753278c37a93adf9803b812a11743b7"
+    },
+    {
+      "path": "docs/diagramas/RF27/README.md",
+      "sha256": "db2a629c5133e6f8c7e901f69e4d4f83a811f7da3b12f9214214ce4657df1f42"
+    },
+    {
+      "path": "docs/diagramas/RF28/README.md",
+      "sha256": "a9ff3774b64645dd762885fbf914a812a32b7498f3401c971ca52954e870bf7b"
+    },
+    {
+      "path": "docs/diagramas/RF29/README.md",
+      "sha256": "ae04fae8317ba7b98f7b330c3e691dc6098e99f577b4a7aa68da1408f8812a67"
+    },
+    {
+      "path": "docs/diagramas/RF3/README.md",
+      "sha256": "4effc512f826010e20a233f2973efc2cc713f8d9594d5b505d8993f556bd89f5"
+    },
+    {
+      "path": "docs/diagramas/RF30/README.md",
+      "sha256": "7413a64eefe3dbb0c4b2ff45e8debf8126a5bc4c98b628a893a4ea6674cd964d"
+    },
+    {
+      "path": "docs/diagramas/RF31/README.md",
+      "sha256": "0deb9eae86e8227fdd607c1a9d84de5efd7e2a9987c24562b266b1e4d2be581c"
+    },
+    {
+      "path": "docs/diagramas/RF32/README.md",
+      "sha256": "f4dff26130b89630966c6c7f96b68d5151ed62786147b69579cd212ace0698b1"
+    },
+    {
+      "path": "docs/diagramas/RF33/README.md",
+      "sha256": "bb82a15b9e2bfd7fe9c230f39d11c3dea34ecbc11c065bb726242e62dc0c2da4"
+    },
+    {
+      "path": "docs/diagramas/RF34/README.md",
+      "sha256": "7696f102447f6d18a43de28f45955d7645d9bbcd9093ba6c018d9a0725adc04c"
+    },
+    {
+      "path": "docs/diagramas/RF35/README.md",
+      "sha256": "750d01a2bf54de4f617c7ec62a813a08b4f59269cc074cad77507b901d3ec6af"
+    },
+    {
+      "path": "docs/diagramas/RF36/README.md",
+      "sha256": "c1c8d71312d3644666f7eb282d0b875ba469a9110ba4b6dc8375e4c9eb59a408"
+    },
+    {
+      "path": "docs/diagramas/RF37/README.md",
+      "sha256": "eaa0e897677a72c68b958da5abde9664ab97b9395ae19059a90d40f89610378a"
+    },
+    {
+      "path": "docs/diagramas/RF38/README.md",
+      "sha256": "1a522423a5d45dcc7ba83068ff6c047a9909b1e87e628f46e68a1319b522db91"
+    },
+    {
+      "path": "docs/diagramas/RF39/README.md",
+      "sha256": "b33d5d6f8006640b5a6ca887619b9746597d50ce994a0c0e976cf0686250c730"
+    },
+    {
+      "path": "docs/diagramas/RF4/README.md",
+      "sha256": "9ec3dbafff1666b3080f4049e50c9ce8b1243d64565c316732fd84fe88e108ba"
+    },
+    {
+      "path": "docs/diagramas/RF40/README.md",
+      "sha256": "351a4d526390890230192b32b9e81f884594d9e286eda2c4cadda1ce827b1cf6"
+    },
+    {
+      "path": "docs/diagramas/RF41/README.md",
+      "sha256": "627ae63d098c2512d6d8202d67e3217b1ec014ce8b93a1dfad6d6c35b0629b6a"
+    },
+    {
+      "path": "docs/diagramas/RF42/README.md",
+      "sha256": "78edc5a5d466929b4cb8506d0bc6df59ad19c0f502566a9c48b02b065fa91281"
+    },
+    {
+      "path": "docs/diagramas/RF43/README.md",
+      "sha256": "f2842aed9ce11137c936de9c6490dbdee6a426447f01a7360bfbe27eb84b96dd"
+    },
+    {
+      "path": "docs/diagramas/RF44/README.md",
+      "sha256": "c8c4dcaffd75ae0ee4d93a51694fd88713b79bdafcd43143eee27d5b9835189b"
+    },
+    {
+      "path": "docs/diagramas/RF45/README.md",
+      "sha256": "c5d940129de11cb7529bb8d7b3e94d68e3f81cc632103dcc3981e7cbe7d48199"
+    },
+    {
+      "path": "docs/diagramas/RF46/README.md",
+      "sha256": "c1c70e83ba811205884f382fc8f401ca89ae61a6aeda8363fbc3aefee8c053cc"
+    },
+    {
+      "path": "docs/diagramas/RF47/README.md",
+      "sha256": "74fd4a0c1ad27de253d72319bfe023dd879d0904b3bee501f1a4a8d1de47857f"
+    },
+    {
+      "path": "docs/diagramas/RF48/README.md",
+      "sha256": "2acb2567af249e5d85af551a6efa54c3d1dd36a16e40b31e1dfac7b1eb7d0cc5"
+    },
+    {
+      "path": "docs/diagramas/RF49/README.md",
+      "sha256": "b8afd2e9dc773526916e1bb051db6dbe9ea09ddcaeac650ad84431135bf27eee"
+    },
+    {
+      "path": "docs/diagramas/RF5/README.md",
+      "sha256": "1e83acce334fd0361c1d1a137d40f157cb716266dff27759b687e599467ac4bc"
+    },
+    {
+      "path": "docs/diagramas/RF50/README.md",
+      "sha256": "ec787f1c2d2d131acb30fc33b959560237fed1274e8f77db3524de2b24ed0f27"
+    },
+    {
+      "path": "docs/diagramas/RF6/README.md",
+      "sha256": "b844401690258864025f27d6c8e63f85d2e34d781c43469d21a949bde4d4480e"
+    },
+    {
+      "path": "docs/diagramas/RF7/README.md",
+      "sha256": "0c84fac35fa8af5dd7734f38ed5cc26a53d5510a3ab27bca4c22876016394c30"
+    },
+    {
+      "path": "docs/diagramas/RF8/README.md",
+      "sha256": "9d5fbc197e4dcbd27b4966770bafb67ed62e3cecb1dffef87c87902a593d14ab"
+    },
+    {
+      "path": "docs/diagramas/RF9/README.md",
+      "sha256": "3d5e520d086c6f780d62c1e3e8ac78194e534153db6fb94d076d12e890ed7b2d"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF51.md",
+      "sha256": "26d56d0bc4454a3e234728ddbcb84c34a93d7b02acd82871769bfb0a72fa134a"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF52.md",
+      "sha256": "9251dccfaa5cbb0e49cb6a659a0b93e50ca4188866737dd354d3f2595a0ee4ec"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF53.md",
+      "sha256": "2c6ac4fa30a64bea2123b0b78afd4a24dda28743dd395e3e51463af71493e452"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF54.md",
+      "sha256": "080e070a50b9cfd081e5318c1138ac440ffabf20442bf55a49d11c9bdb6ca33d"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF55.md",
+      "sha256": "94ec444673900c3386e1fea46062db81bf715215a101977f78ee835532c41af0"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF56.md",
+      "sha256": "4bb847069325193124c7ab050817da89f50662bc7af136e4a4533817cd641e31"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF57.md",
+      "sha256": "ec0cb18d540fe535f6538e86366879d431fd5e6836414e480ea242e9fceb1080"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF58.md",
+      "sha256": "9e50ecabc72acc77e850f6fd83753f09cd52779ff33fecccd566732d416ed520"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF59.md",
+      "sha256": "267cd738aad64fb15e9f2f3b5d082777f9055a6e4e57d6d2b1a1afcac8491b04"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF60.md",
+      "sha256": "3e34fdbaf93e3c9a8eb61a04ae10f47e882572291e5db2e94fc2b1d88b729abf"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF61.md",
+      "sha256": "b68747e274f166fabe1564a0dd2a3c442cb840bea628e0de82a6379b72467c8f"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF62.md",
+      "sha256": "b8655d406dd5cb441778732cf007aa08c88fdbfda865665dd0f107fd1da67c71"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF63.md",
+      "sha256": "f6947215c13f70f479f73795aa04839c86b3f173767b86474762ab0bf14166cf"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF64.md",
+      "sha256": "fe1b6400adf86a0750be6c32adbd4be9b830e1e05b5b1c285eeccb4f2bda8d93"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF65.md",
+      "sha256": "1c5dae0405279066e25205164296617f9c1ba34b85cf303cad7e7de3608799ea"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF66.md",
+      "sha256": "abff7e69f364d462c989c62783e9342a0f07141e4415c08ed94b139f16fd6aa5"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF67.md",
+      "sha256": "50123353c5ff946fe4beaf9c665dabdc4d42ec10d53ad1e66f7efcb8699817db"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF68.md",
+      "sha256": "34d08579bbaa33666a286ab19a5f5ca15028978d3e1f3d6bfd13c52a580e051b"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF69.md",
+      "sha256": "4b4909ca5136f22adc5a5a1bb29cbb98b99f56dcfb4188ac8a2f1377e344e778"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF70.md",
+      "sha256": "8bd80edc384766eac8df000cbb2be16b5748362ec8ea5bd1173c39b2593adf5c"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF71.md",
+      "sha256": "63876546c766dee2ff820b36b18182cd47cae5e68aec20d8c07c083acf85c3d4"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF72.md",
+      "sha256": "9b95df8b926d6e72ee7be0b0ab81bd3dd0a59d2d4ffd6f9a4495c201a5f298c0"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF73.md",
+      "sha256": "06adb6fd075f1ac29da54b9ea2c1cc9b54cc4d03767560eeb1a4c9f95fe81a3c"
+    },
+    {
+      "path": "docs/produto/requisitos-studio/RF74.md",
+      "sha256": "82d3f14ceae324f1a4922d82c9958f58202902087b060f9dc60207899b8d5405"
+    },
+    {
+      "path": "lib/api/client.test.ts",
+      "sha256": "452d5362ccb25e6cdfe32dcb37edf7777838e956704bb7a8f8dbe4ed210735b4"
+    },
+    {
+      "path": "lib/api/client.ts",
+      "sha256": "746eb6e78c5e04fcf6c2336cdd9dfbe1c29c7c48d1822f069240ebfe68edeb8c"
+    },
+    {
+      "path": "lib/api/schema.d.ts",
+      "sha256": "7d0f2396fe162fd52281c0ab1ca6ef1752430bac8817807658f5af6f298fd677"
+    },
+    {
+      "path": "lib/api/schema.test.ts",
+      "sha256": "e27fd9179d100f6cd028ec91267f16e757c090df62854ff373db74a8d07cab9e"
+    },
+    {
+      "path": "lib/auth/bus.test.ts",
+      "sha256": "b465c2db8b98579ccb7a1d6d1073a577b6be56f24bccffa3d0f06cf0dfa87d4a"
+    },
+    {
+      "path": "lib/auth/bus.ts",
+      "sha256": "d2d101fa6ea1038fd1fde5653a5883ce3d42f23677a704f44376fe12d5da123e"
+    },
+    {
+      "path": "lib/auth/guard.ts",
+      "sha256": "2ced33a00a863e2b5fc3d7d9dc728d1c950493c96dbc3c9d8cd28ca00eca5329"
+    },
+    {
+      "path": "lib/auth/lease.test.ts",
+      "sha256": "733f330cfc57a8f7f1ee0b80e18b1c7e37f56d1aae5acb3bb43ca9f81f2215f1"
+    },
+    {
+      "path": "lib/auth/lease.ts",
+      "sha256": "e878a288939a14fbd91f322e99c2c6380a72702b64674c03b9c1c8f78f9cb8ca"
+    },
+    {
+      "path": "lib/auth/next.test.ts",
+      "sha256": "eb5a947726abcf2419ddb3e8c3e748a96cf0be5450a08a9e79234639018b638d"
+    },
+    {
+      "path": "lib/auth/next.ts",
+      "sha256": "a02d891bd7e7297d038c44f364686489445b694a96a46787c3445a847276e8dc"
+    },
+    {
+      "path": "lib/decia/analytics.test.ts",
+      "sha256": "ca2eaa6cba30c46a2da82fb5fa0a5fb557f2122eff742aecb59557dcbb4b6e31"
+    },
+    {
+      "path": "lib/decia/analytics.ts",
+      "sha256": "bd502c124e69ae819c5829d6ddb7e9fe5663a91a96e6fdd62a718c597ccfd615"
+    },
+    {
+      "path": "lib/decia/commands.ts",
+      "sha256": "4070eb3fba9756c8b2338a547d6b8fdffb31ba109a515912ec890bbbf5b74019"
+    },
+    {
+      "path": "lib/decia/fixtures.ts",
+      "sha256": "95593a3c917be888f632a379f312be80836a49c6938c71e5b3419e6e5cb058df"
+    },
+    {
+      "path": "lib/decia/repository.ts",
+      "sha256": "654d1a967c7c680c3e7a6f7fc53d240e883397f13fda84a970adaa6618441c1b"
+    },
+    {
+      "path": "lib/decia/rules.test.ts",
+      "sha256": "8d00ba93d187d53a5877a0642a7f8edb4a8fa67925f0ea04a44f47e30ad49066"
+    },
+    {
+      "path": "lib/decia/rules.ts",
+      "sha256": "1df5c5d73c36678ffea873e86cfa36a035988dcdba691ebf2c0a063d69d7d34b"
+    },
+    {
+      "path": "lib/decia/stages.ts",
+      "sha256": "29f35e070ec955b4a81852b755cbe4a4a1539de4a189704dccb19cd23d0a8a32"
+    },
+    {
+      "path": "lib/decia/types.ts",
+      "sha256": "f2bb67f2264f5232c879fa7d2f7545c00aaed142e54e2f1b332ed4f6b50bbc05"
+    },
+    {
+      "path": "lib/decia/view-model.test.ts",
+      "sha256": "fdb4b7bbf4f76d5a203c4cc8f75e2d1bf0616ec1db673d2cb7943bf7d464c7b4"
+    },
+    {
+      "path": "lib/decia/view-model.ts",
+      "sha256": "13ad06a4a12bd5671eb2b981a0a278a5bbbb82be23e8ea9976989617082081e5"
+    },
+    {
+      "path": "lib/development/client.ts",
+      "sha256": "30cd8a05d80e8b494f5f12d8da1a7df8787515e4607a1559aebd7df295495267"
+    },
+    {
+      "path": "lib/drawings/selection.test.ts",
+      "sha256": "ceeb262a2ad6bca738a31acc3789214734834e6a6dac1a537bf5956d0ae86f33"
+    },
+    {
+      "path": "lib/drawings/selection.ts",
+      "sha256": "0ae733ef204cf02a25b0ebe0289766c8012eda4413bd374ffb9831b27af99793"
+    },
+    {
+      "path": "lib/drawings/taxonomy.test.ts",
+      "sha256": "e337d1dbbf54216f11f6d4c940dc1bbf6b0ff90099b1620d87e953a7b5f57d52"
+    },
+    {
+      "path": "lib/drawings/taxonomy.ts",
+      "sha256": "6f7161bd6d54ff548591e271d02a2132970332795d7cb4b9f92f39492d8e159e"
+    },
+    {
+      "path": "lib/i18n/core.test.ts",
+      "sha256": "199c942e603e3ce430fd925744f7fd3aea429d9afce92fbecfea889ee3e751b9"
+    },
+    {
+      "path": "lib/i18n/core.ts",
+      "sha256": "045cd8b18b89fc3dbfade5902f2abbd0db158086ad040e6fd2692dbcaeba3788"
+    },
+    {
+      "path": "lib/i18n/messages/en.json",
+      "sha256": "8cf9e2298f1d430276d400d297fe8431bf57f37723ae2bb3ef1de797cad5f55e"
+    },
+    {
+      "path": "lib/i18n/messages/es.json",
+      "sha256": "edbcd5bc6baca061304181b6d291a32dd42541272067740df4cda62ac2c4bafb"
+    },
+    {
+      "path": "lib/i18n/messages/pt-BR.json",
+      "sha256": "542de0491772d30b27709e7de8d693db566930e7c95822979e5bb0f8dc214bca"
+    },
+    {
+      "path": "lib/i18n/pseudo.ts",
+      "sha256": "877b54a7f15e15ba5a78084e42d1a033a64bdaf6df63c0bcf746965be2e9f128"
+    },
+    {
+      "path": "lib/i18n/state.ts",
+      "sha256": "b9ad3cbbef88f2f411ce37496047660682018eb07cd1da52d3aae7398837216a"
+    },
+    {
+      "path": "lib/i18n/useI18n.ts",
+      "sha256": "5d840cca812f5aebb4d7784bce3a5e6691190699b75006eb6414d1668b353560"
+    },
+    {
+      "path": "lib/nav/matrix.test.ts",
+      "sha256": "06a695cf8b880e8e291194122c146a3ac0b364666955dd7525560108dc8624c3"
+    },
+    {
+      "path": "lib/nav/matrix.ts",
+      "sha256": "29590914204a71f2343cf027ba8ed93cade8028831d184d5dcfffade97e7d400"
+    },
+    {
+      "path": "lib/notifications/NotificationsProvider.tsx",
+      "sha256": "e260f5bb32ed611903351056f9e9162e5be2f598bb8095b0355c3191c113fd53"
+    },
+    {
+      "path": "lib/notifications/mock.ts",
+      "sha256": "cc31e7dde564043695f8c9aa50b94e1104a6941d25a0aebfd357708f81dff67a"
+    },
+    {
+      "path": "lib/notifications/notifications-real.test.tsx",
+      "sha256": "f52179c74e1717f3d060fd8bcc754d811cdc841d0ab241f1afd98cde726062fd"
+    },
+    {
+      "path": "lib/notifications/notifications.test.tsx",
+      "sha256": "e14f05652324fe3f067a56cf89a95af4c2f84d0d104a65ce1a0fc630b01e1487"
+    },
+    {
+      "path": "lib/notifications/useNotifications.ts",
+      "sha256": "35ce6fc8743e883c4cc000090d3677b767517fd9a67d5fc76664eede8243667b"
+    },
+    {
+      "path": "lib/pages/registry.ts",
+      "sha256": "81e65c125811b5a10441e2b7356dad0c7af62e358b8b3ac1043f9118eb9eb4b5"
+    },
+    {
+      "path": "lib/pieces/authorship.test.ts",
+      "sha256": "453402d6f90bc2936277ec18db584939a33fcaf244598a94111ab29fbb1a9281"
+    },
+    {
+      "path": "lib/pieces/authorship.ts",
+      "sha256": "a58541214725e7ada7ba0a0faf22fa3af356f2bc38a59f90edc538c1993151f8"
+    },
+    {
+      "path": "lib/pieces/classification.ts",
+      "sha256": "5e509b7c3c1b7fde7e74f6c579577b0c50cfe940419200b56f29595dbed6d8e2"
+    },
+    {
+      "path": "lib/pieces/collab.ts",
+      "sha256": "2728eddc261555d7b3fbd21bf77881be89103d889b0d590a0aff4479433081b5"
+    },
+    {
+      "path": "lib/pieces/layers.ts",
+      "sha256": "c058950f4238178424ec7fe204cbcf64361466e781019f5e4fcfe0542f83a1ec"
+    },
+    {
+      "path": "lib/pieces/pieces.test.ts",
+      "sha256": "cfe64adef1ef3633cf24e39642ade4ce2a9e5f786c8f0b6e5bb58bc043a3c72d"
+    },
+    {
+      "path": "lib/pieces/provenance.ts",
+      "sha256": "4b6358a3e3d352b897db6bd0b44342a3dde20e139e07042ae51a796f1328bf3c"
+    },
+    {
+      "path": "lib/pieces/service.ts",
+      "sha256": "3ad615d61733e981a08d51c25c37689930eee7e940a0db61abc3f07105a97bf2"
+    },
+    {
+      "path": "lib/pieces/wireframe.ts",
+      "sha256": "2629cfc23722a632c0fe618eda89fd9371bd8c97f22f730acacb2d4031d22fbe"
+    },
+    {
+      "path": "lib/preferences/PreferencesProvider.tsx",
+      "sha256": "693df7f82c57df9434cc352500abfda6630602532731ac93a5edbdcd81550924"
+    },
+    {
+      "path": "lib/preferences/preferences.test.tsx",
+      "sha256": "0463520ba814db6993afc56a006cb9c67d240421b6f421179c8fdd53f106f057"
+    },
+    {
+      "path": "lib/preferences/storage.ts",
+      "sha256": "9684be53660f3c5d62dc45139b6785f948dd6a413e6c9ff736aeba8cd070c6c8"
+    },
+    {
+      "path": "lib/preferences/types.ts",
+      "sha256": "2f97875b1513186450bc00bfd8cc31f712ac4f152b12598c8dba4af4c08ce436"
+    },
+    {
+      "path": "lib/rf/catalog.gen.ts",
+      "sha256": "c0a163c949754ef3106e9ce3d87bd59fc25b3140437a17fb7d75c2dd8162fa10"
+    },
+    {
+      "path": "lib/rf/catalog.test.ts",
+      "sha256": "8fc01a84ed1fcf8d4bf6b6dd9d0dc91e02d1669e220ff0e5b2ad4253414d0bed"
+    },
+    {
+      "path": "lib/social/authorship.test.ts",
+      "sha256": "897f22cc2d8e7c810e3c6341d687a7bc03e6d8ddb558bc0ba53828cc81fb61d2"
+    },
+    {
+      "path": "lib/social/authorship.ts",
+      "sha256": "c5c8462676cc9a6c82675211683a7aa4e9cae3a669c3714e77289f8110a29a7a"
+    },
+    {
+      "path": "lib/social/fixtures.ts",
+      "sha256": "819aa91509b5f5cbaa2279ee1d58bd3224e355116aac2816221660e14b4ff29a"
+    },
+    {
+      "path": "lib/social/repository.ts",
+      "sha256": "3d45e89dc73d19479557618dc1ed624c2b922738647acfdf7ea7c551bfd7666f"
+    },
+    {
+      "path": "lib/social/rules.test.ts",
+      "sha256": "3757c6e08cab1a7d53b6ff169657f44a4c7dc245e5206d361001b47aa3e3340e"
+    },
+    {
+      "path": "lib/social/rules.ts",
+      "sha256": "7991fcae397eeef57383c3f65567d25343643d13d2312fe9e517905f8c4ce13b"
+    },
+    {
+      "path": "lib/social/types.test.ts",
+      "sha256": "914717ca7c4801134cf907d301b73d4590ae237b16d966da9330123c6000d349"
+    },
+    {
+      "path": "lib/social/types.ts",
+      "sha256": "1750b5cf5daa749a4ad1b8644bf54ac52e94d1412da2adea6b19760ff1cc49d3"
+    },
+    {
+      "path": "lib/social/view-model.test.ts",
+      "sha256": "aae669a6a135c854f859015a223a58afc74d93aca9262d8ad69fbe5760dd676a"
+    },
+    {
+      "path": "lib/social/view-model.ts",
+      "sha256": "f2053dd6133e099308648b0dbf4c834a1c85fc7351f944cbec6f3f9ca8a0c38d"
+    },
+    {
+      "path": "lib/studio/analysis.test.ts",
+      "sha256": "c812ccf7a8e72688ec080efa4500a5d3824594c2ba53b88e9cc6b5d0ad860300"
+    },
+    {
+      "path": "lib/studio/analysis.ts",
+      "sha256": "3ff8067db22b52c68cd45b61064ed8c787d0a28b86cecc17bc92db2419e22d91"
+    },
+    {
+      "path": "lib/studio/appearance-defaults.json",
+      "sha256": "880edb9a2e02389bf8506fe143c178f474e9ba207a564cadc71339dd5745db2d"
+    },
+    {
+      "path": "lib/studio/appearance.ts",
+      "sha256": "9bf6e0053a01db5543d5049ce05822469843f96c755ec9706ed0b3f479bde886"
+    },
+    {
+      "path": "lib/studio/asset-client.ts",
+      "sha256": "25912fcf5194a1944aa36290a5588ff1b2feef92d0b99b93e65a4fb4c1f4d0ef"
+    },
+    {
+      "path": "lib/studio/asset-palette.json",
+      "sha256": "8ff6727704ae17a445655fe984d4e0d697e3c5e899b25cafa3de31b769c10e54"
+    },
+    {
+      "path": "lib/studio/assets.test.ts",
+      "sha256": "f180f90df990913fdbebd90d43fc89719bffc39c8dc3166db2f258c73ca23fb8"
+    },
+    {
+      "path": "lib/studio/assets.ts",
+      "sha256": "112260dc15f36030d85a32fea1f00230e1e8d128dff32f314689a835faa5d5b4"
+    },
+    {
+      "path": "lib/studio/bezier-edit.test.ts",
+      "sha256": "adeddab36f1b7ee71d2b18a5624f01b00285c7b45690ddfc42016520b3df3acb"
+    },
+    {
+      "path": "lib/studio/bezier-edit.ts",
+      "sha256": "5662cbbc3d570122cd805b0a653ffb4277ea40db685aa617458c78b51babaad6"
+    },
+    {
+      "path": "lib/studio/botanical-palette.json",
+      "sha256": "e4c0427f2f412d788f2e966c2e655d4aa74ce91a87b94a3ead23802d5f150b64"
+    },
+    {
+      "path": "lib/studio/botanical-scene.test.ts",
+      "sha256": "6237f0021e0ddba418fec40fde62c400747dc116ead5d08069727c613b503a4c"
+    },
+    {
+      "path": "lib/studio/botanical-scene.ts",
+      "sha256": "049188b2c8fa32646a507ffd79c3ddc99be09b539a2d4ee782c3ec682abdb362"
+    },
+    {
+      "path": "lib/studio/cad-2d.ts",
+      "sha256": "fb26d044bfaf55f4e32c77884eebe2bb902b02489eb6de51dc53fc7a605d2195"
+    },
+    {
+      "path": "lib/studio/cad-commands.test.ts",
+      "sha256": "e24d7596b96f9744ecf49a78799c084bf5b1f7cb6e1db2a848845196cd6c0a58"
+    },
+    {
+      "path": "lib/studio/cad-solid.ts",
+      "sha256": "aa396865622c16ddb6067f9648b243a3a2374a411c1508ec8fe1fa21b558b199"
+    },
+    {
+      "path": "lib/studio/client.ts",
+      "sha256": "d395440295f20b302e8db384b11eadfa51f23a757e268abcc2aa24c500d470e7"
+    },
+    {
+      "path": "lib/studio/compound.test.ts",
+      "sha256": "511061f2f403e82793b5182e439a69c51ea28469c7cd75363a4ec6a913a16c0e"
+    },
+    {
+      "path": "lib/studio/contours.ts",
+      "sha256": "66342df8abd0cadf1357a7a11e471c16111027fa0fe3f6a9e69193cc5e02485c"
+    },
+    {
+      "path": "lib/studio/default-style.json",
+      "sha256": "831c6b18afecfad027da2f79396a1fbfb560b8fbdf9aed140a5f0b0f8a685224"
+    },
+    {
+      "path": "lib/studio/geometry.ts",
+      "sha256": "96c86f63b7054a961f49001767433fd2f098041b3be8c27c2cf586378f6cec6f"
+    },
+    {
+      "path": "lib/studio/glb.ts",
+      "sha256": "d0fbe1929ffcd57a6c211143c12752b781af2edca33b96b5cfe8e50ac277a381"
+    },
+    {
+      "path": "lib/studio/layers.test.ts",
+      "sha256": "b2e2fa613a8463ea0ac5b6a0ee4eeb8212716faf428a3aca57b6bb84bdfb3fad"
+    },
+    {
+      "path": "lib/studio/layers.ts",
+      "sha256": "f6db205c747e68361cbe3f8122858097c880e1865941ce59eeb684639d1254dd"
+    },
+    {
+      "path": "lib/studio/letters-client.ts",
+      "sha256": "22667c42930bf2ddc9966319e10e10320b216eb9adb43c7c9015923f8361cfa4"
+    },
+    {
+      "path": "lib/studio/letters.test.ts",
+      "sha256": "f1a09e7db21bffe026e4db30a2c5662a3c8dd89a338c00face88d29ce95f974e"
+    },
+    {
+      "path": "lib/studio/letters.ts",
+      "sha256": "b505b1c9fae85a83a0bcfe46316309f71cb880604a5b8738344468e66a1971c1"
+    },
+    {
+      "path": "lib/studio/model.test.ts",
+      "sha256": "5130bab0fe7268ef0365cf4a16fc86dee92abd75d7b347a677f895a2d407e61f"
+    },
+    {
+      "path": "lib/studio/model.ts",
+      "sha256": "5f89779459bb0930a5bfddc2c982c33841fff07a74237985172371c4cf6a6966"
+    },
+    {
+      "path": "lib/studio/png-preview.ts",
+      "sha256": "69b6d20d2a36de7c638164a1b1270f35a4904b2540126277003afd30165145e5"
+    },
+    {
+      "path": "lib/studio/regions.ts",
+      "sha256": "0abdba977f31ebac3e8efb48e2cc7a35f850829c6acae2f7fda137720141ebac"
+    },
+    {
+      "path": "lib/studio/selection.test.ts",
+      "sha256": "7ad51c08d68c2dd238f8245edf9408626c30b0653c0a33be21c1e4824e5c5ada"
+    },
+    {
+      "path": "lib/studio/selection.ts",
+      "sha256": "529eac68f51e87cc64dd402d1bad721c3fc8ea90bcb037fbfd5c0631ef260d90"
+    },
+    {
+      "path": "lib/studio/shared-client.ts",
+      "sha256": "b58305da76f680c22f03b31bf26c198006d421478d3b2836c402650d41c70e2f"
+    },
+    {
+      "path": "lib/studio/stroke-prediction.test.ts",
+      "sha256": "9572ab11ab7b24cd913f9edd2b162e35b3361b567ad7738f64e204fdfdc2c48d"
+    },
+    {
+      "path": "lib/studio/stroke-prediction.ts",
+      "sha256": "9ec9841f243fb31cffeaf7493cfd61f9ae527ce1a66cd0fe85b60e788c05f03d"
+    },
+    {
+      "path": "lib/tasks/client.ts",
+      "sha256": "6a6a20628bbe6e3048ca9612420775e1a81121c3e377109400161ce63efdbeaf"
+    },
+    {
+      "path": "lib/viewer/ViewerProvider.test.tsx",
+      "sha256": "fc57186dc5c855ba88f19d9c9dc9b2c46a7684f4b49de94e852a2046aa441bd2"
+    },
+    {
+      "path": "lib/viewer/ViewerProvider.tsx",
+      "sha256": "ff0d7c4843d6d60ad58bd3dc00fb6771d45608426841e3823f1cb8f3b681655d"
+    },
+    {
+      "path": "lib/viewer/profiles.ts",
+      "sha256": "1595e84b7521c7d840edc4e6fc06776fa3866f27c8bcb7b087f6b68c0be25e8a"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "e729a24fe9adfe43ba02a316780378c977c99217fa426b54f74f8c264f5a2da3"
+    },
+    {
+      "path": "package.json",
+      "sha256": "ee06f24e1fa4c723eef101cad240c87b634acc1580d92a738b3e06ddbd755eca"
+    },
+    {
+      "path": "scripts/rf/gerar-catalogo.mjs",
+      "sha256": "958cefd3c3f3525c90775ca344ad2c5ff5d25dec7a299b4f17c84b440b987676"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/account/AccountService.java",
+      "sha256": "4c6dbc521f6703035ac84089bc583fb075a2323e54e3d205c7e9657d93116e09"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/acervo/TaskAiSuggestionPort.java",
+      "sha256": "c3f906c55d24415df8ead5ccc8739b743c088716f3ec90c0c512db390f6372a9"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/acervo/TaskAiSuggestionService.java",
+      "sha256": "99d44ed0d6a76656cde3c53ceef67103b18a3bee780cbf4e8597efe9b89b2773"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/acervo/TaskDraft.java",
+      "sha256": "551eda6e6698a87d13cd809f72982575857768f771aa3d428e7ab1fdf6c6811f"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/acervo/TaskInventoryPort.java",
+      "sha256": "a61c110d0985ea7c0c4615aedd9d75d1d65704522dc5f48007b7922d36ccc9b5"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/acervo/TaskInventoryService.java",
+      "sha256": "8cc71e91c6a58dcb5f7f71b4dcfa33d8215a4e28daa1fb92c2b3420f02e41073"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiBudget.java",
+      "sha256": "3bdaa9356818f9a021f610567b517992addee6e5727edaa564d91e47bf1b194c"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiBudgetCounterPort.java",
+      "sha256": "73b1c9573f160b66b8549f2b12181a04d96e933f54510e55aa9c7744d2d5d7ac"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiControlProperties.java",
+      "sha256": "43ceb3629daf81d5fd8d1fd997f46f22a2b7db4f3565c6898b13a69513dfe727"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiEnginePort.java",
+      "sha256": "f337d185721a4d4d1eb873c4e640c81136c0faf0c17a43382f78cef45a2e53ba"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiGateway.java",
+      "sha256": "46d8e1e737b65ff64abd287eaa493d5a81d3c9573f9b975a940dce145d1dde92"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/AiInferenceLogPort.java",
+      "sha256": "6eabf76105941c0f50bc83546640a154f7634f3ea9f205e13af3e497dd2c7a76"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/InMemoryAiBudgetCounter.java",
+      "sha256": "e1bb916f71a3944651842237056c40ca52b86c5b0bc19857bfaec0f6016513a4"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/ai/PersonalDataMasker.java",
+      "sha256": "a29b777ad9eb9738d3868d683ba31ac452376518c97515bb9a9b4a8d5cf0cc3e"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/audit/AuditActions.java",
+      "sha256": "2ee3ecf3f4ba81ed39a3c286eeeb81cdda4fb24e5f904cdaee25417310b56697"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/audit/AuditEvent.java",
+      "sha256": "648ebe06019b3b72ba105bbfb1ce82f19da4cbc343039611e92ae7c242f0f2c0"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/audit/AuditLogPort.java",
+      "sha256": "1a312160997ccd9924e805bd8ff3f4c4e359b455fc91493428ee430ec34d4a29"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/common/ApiException.java",
+      "sha256": "c9b65fea08c26fad3b1e5f63fdf754dc153b2b4cf2aa3cc1ce362635d5ee60d0"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/common/ClockConfig.java",
+      "sha256": "bde34fc0fe986d7024e86dcb0e97f2ad7b6b310a59b553c9c146ab5f70c652c7"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/common/Hashing.java",
+      "sha256": "56dd97ef5b17d1ea7bbf431e8f709c89685f12bf3147060420be694878171db3"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/common/Masking.java",
+      "sha256": "8827970fffd473b65fc49b44e253c52d6dd76c1912c4bd3ea35ab4c6a9e90ed4"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileData.java",
+      "sha256": "da57037ac337e3dcc252da9f87a3aed049f6e20675526fb87bceff0ea62e8b16"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentPort.java",
+      "sha256": "6d874abdae12e095f6b81899045be49f2d79675c4e6496bb01c41d37776ed912"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentService.java",
+      "sha256": "79dc0286203d413717692deb2b35c8971f64afa027753b4778bc88ec6947b340"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/AccountInserter.java",
+      "sha256": "8499b344ee3d617490b7efcc7776a56aea941a611e6d1aa28254381f1df0d913"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/AdminBootstrap.java",
+      "sha256": "ea22afeca63f20c1e2de7003d50fd66a3a6b77c06930908ee9a4ea4c44077719"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/AdminProperties.java",
+      "sha256": "7d9c78693d469ea8b2cd3c08aaeca85e4ecaa7edfdd1fee83a2962b9b8e848ca"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/AuthCodes.java",
+      "sha256": "643584191f5589a2497c13673a9f8736b9844323e520092e4d1726c0a7dd25fb"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/CurrentUser.java",
+      "sha256": "c5e54f54fcb3b796d7d8accd3ad60dc1de93e160dff29cbf22719e63100861c8"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/EmailHasher.java",
+      "sha256": "b721c76865ff964695b569a2d049cf8bbae5cc80daab22b7ee322e44c1d79b4b"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/IdTokenVerifier.java",
+      "sha256": "a6a42ac6351492ecf6b6885b21dd5b59391c409a557a0f2c5bb89a82f905c49e"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/IdentityService.java",
+      "sha256": "4067749b7d1fbe69bb9046c599c564720652c5c34813acb37169c95c9d8710f2"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/InMemoryRateLimit.java",
+      "sha256": "2508876cd9a1842ceaf077ebf54ad205854d5c338b0ee6055b15701bd07b0043"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/InMemorySessionStore.java",
+      "sha256": "1463e248ef6d5bd8695a8469e500914dde206ceb8658456a85c0f463bf06a837"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/LegalProperties.java",
+      "sha256": "e9dc662d382cdad973702c049ecc2bbcecc6d8f7f47400732f52fe545eb6dca1"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/LoggingMailAdapter.java",
+      "sha256": "716656f5b6ea4d7ccca23c8e5daf3f286795a7ff5e3a4a0b7148d7f72cafb727"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/MailMessage.java",
+      "sha256": "2454bd5ed909aae075a73f537eed68870684f7e34b91527e8d621418a828670c"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/MailPort.java",
+      "sha256": "f1f7502139da4a8b81bdd51a94ad3e7cb2f94c9ce8094122909e8582127b8bbc"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/OidcAccountLinker.java",
+      "sha256": "d38a12272ce5f748384e2e1fb13255135424f557475a4397b04337a81e398e6d"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/OidcProperties.java",
+      "sha256": "e3f2b13986beea5f379f968b29aea3548479a0475ea0229d118b7a29e95065ef"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/OidcService.java",
+      "sha256": "b369d5f6aacd263242b36ca42d4877bd209af2657540b8a89e283ccf905105db"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/PasswordHasher.java",
+      "sha256": "597878ea2ecb00a3fe0ff10943859da346fd293fdcd21463456767ea80775faf"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/PasswordResetService.java",
+      "sha256": "679fa100765384c570d8a48f65022499072f7359bf512ac284130ee0ca6dce85"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/Passwords.java",
+      "sha256": "d6468fde25634c4c9ae0f2cbef3a36e19156b1ec3d57d74ebb6246b924fb5925"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/RateLimitPort.java",
+      "sha256": "e73f33bf8897aa297351e54ac388882febd40efd85b10ba204b05f02c2fb3e87"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/RefreshRecord.java",
+      "sha256": "04682472650179b272df10f37fbe3c4f6282e087d3a964027f4c0a89d26d69dd"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/RefreshTokenMirrorPort.java",
+      "sha256": "9159b5e9b190f8b625e2ac742172aa709f8260159f4d191846645af154a86f5d"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/RegistrationService.java",
+      "sha256": "ff3253a739ae8e6db07d00afcbd18c42ec1b04aaf1c493ef741426be88ff1e7c"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/RequestContext.java",
+      "sha256": "647bfbad121b87a3aa9a83357f18f236cdf93d5882b9aa3c93daa6ef1017ffd9"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/Session.java",
+      "sha256": "68ab5b2e1df76dc263d327c5069d253b8188dfe7162959682487b9f4490c1596"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/SessionPolicy.java",
+      "sha256": "790cd2a1f65938bf639542c35a9788e304a6adb845d0204178bd73c230723d2b"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/SessionService.java",
+      "sha256": "23ed65fe4f72623d50f70f5c1bd672302a4df3b4d4ce438b907c5e8deab3284d"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/SessionStorePort.java",
+      "sha256": "ebf991067021c06f7c0df20b66fbbb2a629829c96b200a668eef54cf767b3f9d"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/TokenIssuerPort.java",
+      "sha256": "70610f49ae0adbea881fa7a182c5231d29f8153e38d77aaba7b7475f1052af8f"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/UserPreferencesRepositoryPort.java",
+      "sha256": "d31a3627841e258dd1513753db40f28b32fdcb40b7118846bdc2974ebffea5f2"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/UserRepositoryPort.java",
+      "sha256": "09661af39114b9e1ba51eb66b67b8ecc6d06a5ae232ae1cc9c68bc7f813cba40"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/UserView.java",
+      "sha256": "d3b7d31a47ba66e27c56f6a17ca62004aaecfd532bfe3b73a77958e3660b3218"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/Usernames.java",
+      "sha256": "51addf914e921ff4871dab6f671e4d9279e5564a1224bed5ca30720b9355ff99"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/VerificationCode.java",
+      "sha256": "d07c8dde2b2458b4bd25781424512e49a05722d5f84d586add536b70ef68c566"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/VerificationCodeRepositoryPort.java",
+      "sha256": "deff8741fc4adb80e57dfa1c9ad0e063dc03816c0ce587ea1fd200e7c113c7b1"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/institutional/DepartmentTeamPort.java",
+      "sha256": "23a14da3a3a913a2903380053f03592cfeb53f4cb5ce5b06baedbfb5337f5024"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/institutional/DepartmentTeamService.java",
+      "sha256": "d165c5b6ad8d9069ccc45049391f9edacb6aa849f405eace56878efadcb41657"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/media/AntivirusPort.java",
+      "sha256": "706539e1bc02294e8933a52c89332315eddd9ca0fcc6d99ef4af957d7a03d461"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/media/DetectedType.java",
+      "sha256": "af261d4d342e18741db73293cb58fd46abecc285b89c796414dabad7470b99b6"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/media/FileNames.java",
+      "sha256": "a9051985aa7663969f4097302f65497c6342d905c834f1cb76a194ed8acd48bb"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/media/ImageDimensions.java",
+      "sha256": "a37cb6bd389aeb3eca07456d5c05089f8b06af6ff57293c11a0f5e5021664c7e"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/media/MagicBytes.java",
+      "sha256": "f46a1993bc514d1235250c8841870290ef2b75f0f860ce09de9e01a70d15dbff"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/media/MediaKeys.java",
+      "sha256": "5bba9024cde4ed7b9e83f2f1ab686c20a32a037b6a6b4953e320d2a517706ce2"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/media/MediaObjectRepositoryPort.java",
+      "sha256": "e17f63dae099f072d2b065edb3ea7781c3d23080bc01b9f30cc547d05d87d74f"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/media/MediaStoragePort.java",
+      "sha256": "d7d8b1b416b373d53f9aa61ec8f9a53e4720f9004f071eebb17dab387c8e0682"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/media/MediaUploadInspector.java",
+      "sha256": "38ecf41a365a9b3d5a91fd9ca4e8d71e4a2b5c6944b27d3d72c1483e282e49f9"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/media/MediaUploadProperties.java",
+      "sha256": "fc4f084ff1870bc51445519f987ebe8f2721867574233875783d3bddbe6dd070"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/media/MediaUploadService.java",
+      "sha256": "3ad9f9aa7e2f11d03b8ddfabf449f7d9ee425546ea1afb09d4b8ba0a2b421296"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/media/ZipInspector.java",
+      "sha256": "bdac82800c42d5e08bf703742ddde0015071a259d44402d76253f14b4d2b281d"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/security/AuthorizationTrail.java",
+      "sha256": "0a97dff75767519551b486f00f75ab8b03d86a54e8d62b31ebe84ca1b1143d43"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/security/Guard.java",
+      "sha256": "3503561608760945f09e3551622ea3f3213accc918d994dbbc7eafab609d6554"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/security/MembershipPort.java",
+      "sha256": "32f0f823e50abbf8e0da9bcbceb9baec0179c70dcca51b8bb522ea3d91361cb1"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/security/ResourceAuthorizer.java",
+      "sha256": "f493604caac826641246bf162a7023f4280dfee8cd32bf9f0fcf898fa97094bd"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/social/NotificationPort.java",
+      "sha256": "87e0fd06ecfde0b81694869ace107b9ad2c2debabc843d678f144bf7a2164c6a"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/social/NotificationService.java",
+      "sha256": "4118604a24e3c400414d8e113c17c3a4da2422f8ae44cbc8110a5f42ce6093ed"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/studio/AssetSuggestionService.java",
+      "sha256": "5903f61f9c53bf4c94403f3ffec0dc6fd75d38bf661cb9a6e7d3b2033803b452"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/studio/DrawingLeaseRegistry.java",
+      "sha256": "98ba296b84368108be501c99d1b10f5e7bb3a060ef1101a87ecf41f795be4636"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/studio/DrawingProposalService.java",
+      "sha256": "78f97e44dfa88b82cb31868e83a80c4216d56783cf6e59eff188e090ce9e7332"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/studio/LettersSuggestionService.java",
+      "sha256": "d2c395a91fc8dcbe33e923c37854b377cd733e589dc5abdb7cfd9719b935e9d5"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/studio/SharedDrawingPort.java",
+      "sha256": "3b392ee991a4e45a87942bae26cfb6925250e08789a4f76f3252ee181591553e"
+    },
+    {
+      "path": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/studio/SharedDrawingService.java",
+      "sha256": "8339a2de15a2924727f54f0d19f18d9dab3643c1a55fde042f33e873c53b7665"
+    },
+    {
+      "path": "ws-application/src/main/resources/studio/asset-registry.json",
+      "sha256": "22b8b318c46aa02f442fadd90828dbbec2aa2afb874b46f30d3ec6c8be254c00"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/account/AccountServiceTest.java",
+      "sha256": "87a04b42f5a633ee65492486572887fa27c29bc7ba6f7c4bfa8557b5f7c96825"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/acervo/TaskAiSuggestionServiceTest.java",
+      "sha256": "12d888114f9b81b5a0a8cc0b1505b08b8fed7b872799858e04ed3e04278fd2fd"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/acervo/TaskInventoryServiceTest.java",
+      "sha256": "85cf2aa158544ebded8a7ece76f243a4f8c787552baa7973faa1e43f8c8f620c"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/ai/AiBudgetAndMaskingTest.java",
+      "sha256": "ebb5ee97370679792351a0998c459339607b78d2edc086a47e1f7c871c298a0f"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/ai/AiGatewayTest.java",
+      "sha256": "7abf4f3d5c0ad0566f3522477703507881c8bbf734b05f6d9a80a64494b28d35"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/ai/Bloco5ContextTest.java",
+      "sha256": "961bfa172c72eaf53498db6abe2c0ad33d69819679ac1f44745f4e7a371e0e78"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/audit/AuditEventTest.java",
+      "sha256": "63ea5a3b72d0cd295a49fce0de4b4e0f6c1e6a908682cc357c65604951acc577"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/common/ApiExceptionTest.java",
+      "sha256": "521bd28a1586e71a5215547cffb4af1467fd208f457b04394b873c50791b33dd"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/common/MaskingTest.java",
+      "sha256": "c050286b104c5054e95348b511931ae80dec1c286bdb30e6417aeac13faa0356"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/development/ProfileDevelopmentServiceTest.java",
+      "sha256": "2b222bec762bf7a6754452e91301abd26cc6a1368fa28bd9f34ae02a6ebdf8c7"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/identity/AdminBootstrapTest.java",
+      "sha256": "e68d73294a010e008d0ecf82cbf7c3f6933aca973bd8325687dc5d42a96c77f0"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/identity/Fakes.java",
+      "sha256": "f9e73b59077bfdb6ad50312724b8de011c9dc9f1167a0e9ce48d3617b7483dae"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/identity/IdentityServiceTest.java",
+      "sha256": "dc321e1f893c8e85129dcce52c138b28c4e3bf4b92a8955bea031b109f977e4d"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/identity/InMemoryCodes.java",
+      "sha256": "5f50bf381251ce7b0dfec6732a87744e5b71827b84a476d58d787e6ddc89d866"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/identity/InMemoryRateLimitTest.java",
+      "sha256": "78394d72d936fa8b4583cbe6f44dfdc4e650c35183b0d38f8c92d72dd1eb1147"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/identity/InMemorySessionStoreTest.java",
+      "sha256": "69f239fbf9b7c1e90ff8a41aab1eb4609484bbcb1cb343c001fcbc3a4aa73b96"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/identity/OidcTest.java",
+      "sha256": "782fa619deaf2e604274aa05e3b12029f04100cf47f366a5e9a319f97517e70f"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/identity/PasswordResetServiceTest.java",
+      "sha256": "108127939948993c1cd52f0216a63dac7f2a11688fa9ba1484cf9f60bd45d463"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/identity/RegistrationServiceTest.java",
+      "sha256": "f900e8779bc17affee5947aafcf941ac28961b607f58cccbaf9504d67454773c"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/identity/SessionServiceTest.java",
+      "sha256": "0201d240c55ca495988d9fdb24888fffe92e5b3bae8b1a35289bfc0238edfa6e"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/identity/UsernamesAndPasswordsTest.java",
+      "sha256": "ce0110c5def6f9067b1372ac52313f98886c0c024297adf82093dbcac9eb456f"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/media/Fixtures.java",
+      "sha256": "7ef81c270076eb3408d368799ceabc36dc80a69abedf7f83ba0f5f1ada5e30fd"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/media/MediaPrimitivesTest.java",
+      "sha256": "e5fb18a28876e772e3d164a62c72b0974d14bb56f26347c5e7f81b660680173d"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/media/MediaUploadInspectorTest.java",
+      "sha256": "5172c7b9fb5d26396f317f0724d378864ebee0676c318e615a0814c6665a391f"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/media/MediaUploadServiceTest.java",
+      "sha256": "9c54063f07f114d0b452ccab3abbe83ddd7b374260f27b446763afe8e303b252"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/security/GuardTest.java",
+      "sha256": "554100b7e57dbe2102c2c006dbcaff7e492586f6d2e904e0e673cdb53ed9c046"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/security/ResourceAuthorizerTest.java",
+      "sha256": "72cfb7f0ecc688875bea53e93ea35d83c2d09888083ae94d4ab3e72fb7e890f4"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/social/NotificationServiceTest.java",
+      "sha256": "c592c860d53043a66fcb01de9b11a2b073c212d84d28dde24b4c3d6cea20b9fb"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/studio/DrawingLeaseRegistryTest.java",
+      "sha256": "9ee7763a5fbccca3a2315d8d9a3b240652a04a34e64fda610694c7fb23a563b6"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/studio/DrawingProposalServiceTest.java",
+      "sha256": "83e013e123caf673bb151a7b08400fef0013fd7a7d3921ad2246ad2d673b87be"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/studio/LettersSuggestionServiceTest.java",
+      "sha256": "e82aaff0a0485c42c200136e745343722755f4582420d4f3ad86213248abb00a"
+    },
+    {
+      "path": "ws-application/src/test/java/br/gov/pr/secid/workstation/application/studio/SharedDrawingServiceTest.java",
+      "sha256": "4334eaac021dadab8a9279fac2feedeb80b7cde83de2617bb1fa041696799f93"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/AntivirusStatus.java",
+      "sha256": "b8d65f00a1424285c0741eb36198336c9c111db33b4b65ce8c3eef3c20dc51f8"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/CoverMode.java",
+      "sha256": "c3c9c2da6ab8dc19b667c6069aab915172537ba3fbc6e2e0df8f79da852e2470"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/DocSituation.java",
+      "sha256": "28484ab1c9fbfd44a6ff273745c355f8c5835b3194015937ffc7b50e61657af5"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/EffortSize.java",
+      "sha256": "8183c4c4eb9ebdb04d576f2f79f851f782355f0e638c51550a4a022859e7254f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/Evidence.java",
+      "sha256": "60c9b94b7eb166b099c5bb3468e8b70d871b31260ae802939b6f675379d4ea0f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/LegalDeadlineRule.java",
+      "sha256": "5a6a5ad4254f3db6fcb3d57657e57188df207b66becbd3d5a6e76951582fd441"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/LinkMode.java",
+      "sha256": "99f0bce1f55863662b5ae9e6f8e73e801408317fc0ece5ac07f9ea5ae1aa4f6b"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/NatureTag.java",
+      "sha256": "06f3b0e1fe296dcdbf99947b821a4e760fdc8aa32047fcb98fe0a6be93d0b840"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/OcrStatus.java",
+      "sha256": "2a80ea42bce1ddfc0c85cf04c91db6a3d1a94186ce37c444f6dcf05f2c896f9b"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/OrgEntity.java",
+      "sha256": "69886ed8787052f5221dee31b15578e33323fb41a90080680a77bf0efafe45a9"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/OrgEntityKind.java",
+      "sha256": "f16901741fb7cb1d606330b359e54f647cbbcdab258ebfa60548b1f8cc4e8418"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/OrgEntitySource.java",
+      "sha256": "d5bc153313439baa8ade3067a2b7c390b1e19bf36116f3ee3cbc29497a782497"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/ProcessTag.java",
+      "sha256": "fc6c719d6989c596003740848ef5d39fcfa2c9a1fbf8053d624dce7cf0fed717"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/SourceKind.java",
+      "sha256": "d4fea16a0c0a046b64fb61c606f2bf63d5b462e33471fffad42ab1dea8e51ac7"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/StudioStatus.java",
+      "sha256": "5063d0f13403a189e89e25c8d54927c2a024d1671d04e1b1233334ad7a45eac0"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/TaskAiSuggestion.java",
+      "sha256": "889c331886255533ac3a77ada50fc168d54b9fedfa38a20c15262412f969a2b9"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/TaskAiSuggestionStatus.java",
+      "sha256": "bc5e31ed7cc72271c0671d7bc2ec96e4fbc7f0965501be37701eeb480d9ecadc"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/TaskAttachment.java",
+      "sha256": "3b45efdef3db761d4ead1f267dcf99ef5c70c9e9aefce3c637fc965352a86853"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/TaskCategory.java",
+      "sha256": "0e34ed81b956040ae71c3c75728642e2f98feec733e6ce736cd200392481471e"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/TaskCollaborationEvent.java",
+      "sha256": "015f236c8f7312d3bcdde9d6718e9231cde37850684446eef3806fce9c6d57cc"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/TaskCollaborationGrant.java",
+      "sha256": "8c16b96bc72f2e4984733b20de6db5350cdcf5db0c4b387d6b95aa4c388e6bdc"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/TaskContentRevision.java",
+      "sha256": "094008b299edcc5fd0d0e2dba3c93b5ef3a72ebf89e63c7e10613e4880b6102f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/TaskItem.java",
+      "sha256": "3383095df633691320fffe45d7d66a19734a5839f0eff79e181b9d2c643fab5f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/TaskOrigin.java",
+      "sha256": "3fb2df2c173112101acac4947ea5ac85cce06cd58c4d1dd3fc93016e23192bf3"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/TaskSharingScope.java",
+      "sha256": "cf063d219c3c01838fa0ac4cfe62ee41a3dc687c04661954f4ddf6b48fb9d154"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/TaskSnapshot.java",
+      "sha256": "bbeecf9e8a8d691aa082ba26f11b79436af536cdca519913de48d03cf56bb5f8"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/TaskState.java",
+      "sha256": "a4fb9cc24ae5cb3c003e7d989eec00de0d35e107afda5f6b5ac722cba3fe02a5"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/TaskStateLog.java",
+      "sha256": "5e758ced13de3f3d9cc074fe2064164fa39729b85c7feab615d7d3afd6836db9"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/TaskType.java",
+      "sha256": "e89ce9f1b562b8fbe53a96391823084d2f6fb2894aaa41cf4528a01e5df126eb"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/acervo/TaskVersion.java",
+      "sha256": "57aad980b7ff10a5a097ab7b5067d62c7eca95ebb4ddd820407741288d77320d"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/balcao/AcquiredVia.java",
+      "sha256": "96f28b76a51f5ef7c4f64a7c7e96628db76a0d66f30931307b452531759c583a"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/balcao/ModelLicense.java",
+      "sha256": "6ddf4c7f8e2b1ed84196e94ae79ff30c6343eba8edb0d5fc33118e302d06d2f4"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/balcao/ModelOffer.java",
+      "sha256": "0e172ccd966aa0cd95123c3f677ef8d207d196805d6077bdfb1b898253decad1"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/balcao/OfferStatus.java",
+      "sha256": "60c59225414f60dca749cb040b4dd0a2753b5fe95afe79f67ac32bf1aa2039b4"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/balcao/OfferTargetType.java",
+      "sha256": "b6b04f43263b42bc02860d6c72930e58fbf1167f60ec4eb00b56eb55f6d2c94c"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/balcao/OfferVisibility.java",
+      "sha256": "d20080567c3c0bd89ed8b7bb6e7d6ab7b664f16e26bdeadf58caafac132bb7e8"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/balcao/PurchaseStatus.java",
+      "sha256": "b1fd0ba420a486b35ea7315d5545141ca9ea00e403746775708af560acd72a53"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/balcao/Shelf.java",
+      "sha256": "2f0ad801815f97301a64471bcbc1b249eaedf967035f65239d45b7a05039b992"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/balcao/SkinKind.java",
+      "sha256": "65e0ad17779a4c53d87326a2bea30326aa4183365e9828a42ffeb05ceaa987bf"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/balcao/StoreItem.java",
+      "sha256": "59571642083d6f77f857273ccfda84980060b8b0a93f6e525686c8b540469a00"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/balcao/StoreItemKind.java",
+      "sha256": "da40a1489945e1e2bf9f28456a6dd603dbf249e5d563087dafccb962a1ca363a"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/balcao/StorePurchase.java",
+      "sha256": "ba84a83255b86e77274ada10509485ce3e6a1d2df6a609c9e65711fd8debd84b"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/balcao/UserSkin.java",
+      "sha256": "d3ccbea0616c2854cf62154d43f1d4221db6507b44558c7e34ae32a808b6c216"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/catalog/Attr.java",
+      "sha256": "dcd187ae9ea0fb502922f1fc853c366f732805c205c6d033974166ccaf84c913"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/catalog/AttributeDescriptor.java",
+      "sha256": "4743e9e258fcbeb06e7d2bd528e0a9e3bb91e64928308ab7eb5c39f9f8c7b479"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/catalog/Audit.java",
+      "sha256": "78cdc7d66c60b484c8f4a86a9cce8a334bf7a5ea7e684e5c929509bf8daffac8"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/catalog/CatalogJson.java",
+      "sha256": "1ed625f31353f5180ed4ecc4db07b05d6f0fbdb9513d9a1d6f20e6914e28abed"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/catalog/Describer.java",
+      "sha256": "ae8dceb531191a27026a5f191c266c5facd68c81081920a02ae4de9f85ff8858"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/catalog/DomainCatalog.java",
+      "sha256": "812b540a90a1f8e436f4e53d62c41e0df3c66326541bba4bb8412613e86a6c81"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/catalog/DomainEntity.java",
+      "sha256": "7db9a68bc8d86ece4b262fb253a40239ae1d842e9460a9fe008fe55ad9954e83"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/catalog/EntityDescriptor.java",
+      "sha256": "eca96fdb601d5088c1f17a107326dab5b1606467960d913021a2e17013d4bd5c"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/catalog/OnDelete.java",
+      "sha256": "04b88ae0b148af1955f5df036948f8e4df4e0ec4f6cf5eb3a47f7c8b3d29d1de"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/catalog/Store.java",
+      "sha256": "8ec48cca6d82ad489b2cee7846ad76fd53c6e0da150dcc15331af43ea3f1bdc1"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/chancelas/Benefit.java",
+      "sha256": "acd730b4641eb70b77ac00dfd551c0cf0083d0c9e8cdac06afe299a79a4c93be"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/chancelas/BenefitRedemption.java",
+      "sha256": "ccae0b0d789e25adfad0c40ae0f12ab3c9c980dc2dbcc4f02285de1f03778c68"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/chancelas/BenefitStatus.java",
+      "sha256": "ae1f794ba1cbbd5ee8116eaab2546c9bea189748a12608d3154bf54fadea3180"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/chancelas/BenefitType.java",
+      "sha256": "e62cc0073802ce20a8c57acfe96a073540a18ee3f69f19f68eca7b51adeba9c4"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/chancelas/IssuerKind.java",
+      "sha256": "31084eb2a699bc954eef016ba144fa1572a6134b7be1eb311a2d5544c95ceaff"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/chancelas/PolicyMode.java",
+      "sha256": "e5aa3be2cee87425ede112e037d178ad15ee2f639230cab14d5a463e67533dbf"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/chancelas/RedemptionStatus.java",
+      "sha256": "5b1b214b27681ab66acd3070cbb97390cfe65a4fc7809e194f50aad0554781c2"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/chancelas/Seal.java",
+      "sha256": "746317d742d9a07b7d5235d916e9ed687b3a5f8f1d57ecb4e205c9d33369e3aa"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/chancelas/SealBond.java",
+      "sha256": "bcd13cff430a1feb568dbac408d902469309d414dc8a202c8a97d4b651d81860"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/chancelas/SealBondBasis.java",
+      "sha256": "e1fb1859aec1ab4f237ab46f9af72a92cce2384680dfc90dd1ea3d37af59038a"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/chancelas/SealBondOrigin.java",
+      "sha256": "7efad99484ee28188606624458c3c41fad4481847be9e9a243ac1ecd307a86db"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/chancelas/SealBondStatus.java",
+      "sha256": "0da81d2304c3d0c7216009bc51641e268a8445f523cb7d24f450d6c66fb39ef8"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/chancelas/SealCriterion.java",
+      "sha256": "f4c7bacf4be69e680d139e94fba7daff9dcdcfa3a2af1caa8cdfbcecef89050d"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/chancelas/SealPolicy.java",
+      "sha256": "05910ca8b66446b8960a79d593f40e82965ed8713d6430128ff9073bac0648c4"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/chancelas/SealProposal.java",
+      "sha256": "187b98b77eef5a498baece94f9d877279509b3e271f96354b85166e7f7a45da4"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/chancelas/SealProposalStatus.java",
+      "sha256": "8ce2c7b9c855a7d648144ab23fa0bf86dcc0b9a98ab114b3fd9d505a0bde8070"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/chancelas/SealStatus.java",
+      "sha256": "714d40cd6e0dab05770ace2f1aa78f8a81dfa1c98c4043e4e8e34833ed72ae96"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/chancelas/SealTargetType.java",
+      "sha256": "be607f6bbeb424c7806623be639eac38abcb9737f87d7ad168c5091f5f805f50"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/chancelas/SealTier.java",
+      "sha256": "53ef5516638f853994e69440f89b82746fe9f3174d5a15d9db496476605c7562"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/common/AccessClassification.java",
+      "sha256": "5b9c4f95eb76c3a194a087c9cd6b5d27e778ded017116ccda77de10d703bf4df"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/common/AiMode.java",
+      "sha256": "e6c8981707689138ad87d894f6f420e5291df3f2a9d60891167a5e712bfa5b20"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/common/AuditableEntity.java",
+      "sha256": "91d07255e28178e3c857a06755ad5ba240291aca591ecd67343020f4276829ff"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/common/CreationMode.java",
+      "sha256": "1aa7ce361377bfbac2b0d00ae509707ca8449abdc80e2cd5c1bc0d9f05ab527f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/common/DomainRuleException.java",
+      "sha256": "c20f1cf596ff330f2e7b9c2e44ba4716266d99845d59f322478666f690393ce7"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/common/InvalidTransitionException.java",
+      "sha256": "11128f0ebb2024aa80a76a006de90b5d95e6d141ea11d7056d81854ee6dc78e6"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/common/MiniJson.java",
+      "sha256": "f86d28597bc4a0a995929615204b85f9ad3891f625fa5042c1ad3fbb9f095ed9"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/common/Period.java",
+      "sha256": "67ffb11d3f1fd059f88bff7b79606d3c9d760a61bf2a0ac7fd52c7096f76c55f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/common/Points.java",
+      "sha256": "7ebe3e66794b5b5bfeec04e6d1760e0ac865b9c60b814c1bd8682344d4732d8c"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/common/Priority.java",
+      "sha256": "238806d516080d67ea7edb3947c12c83d4ac35925eda5c4c905fa96a023e9e14"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/common/RiskLevel.java",
+      "sha256": "bcf13528b8799b49075abd5cf062fbc1740db49f1698e43e609081adba7e05d5"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/common/StateMachine.java",
+      "sha256": "6186ddb476c2a190128acd476233fd9e7e64d25f8ffccbbd2925f5015d09e2f4"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/common/TargetRef.java",
+      "sha256": "84cab292adc917ddb29c2827a4abfb5c1ea7f11bfeefa4311caf012f118928f8"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/common/TargetType.java",
+      "sha256": "0a1da4983e0e22f22b2203859188b70d53dbd6817424143f02113b17bd8b389e"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/common/UiLanguage.java",
+      "sha256": "ad385771c06672c203ffeb405808c690741e1529734b2a7aa3160bc37ac46c98"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/common/Visibility.java",
+      "sha256": "52c75f7efd353c22bf0c28ffd8a53cff0137e10ae4faac661d46b12722f762d6"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/AiQuestion.java",
+      "sha256": "922bcb37ba359a216338202a9d309a7ad071c48744310266189ec193434d38e7"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/AiQuestionKind.java",
+      "sha256": "172a6c214e72ca869e1db3d6e533fa1105364aee5c26c2d9bdb21a6bd1e1eb18"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/AiQuestionStatus.java",
+      "sha256": "2f9ee318e87abfe216c18764d98d7ac29b592a5d5a207e38cc6f6a7342663ab1"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/AnalyticalSummary.java",
+      "sha256": "8f3efb45d6711417e6c4b88ff8057a8c912bb9ee216c057ab20162a92980a598"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/ArtifactKind.java",
+      "sha256": "29201fd4192bc254686618f5151a3d435fdd4811a80c02528c509797152bc7e2"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/ArtifactOrigin.java",
+      "sha256": "0ea053b98e0464cbaf6bcee39b8dc56bb24e97f71e2e51790ace3e592f8c2fc6"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/ArtifactStatus.java",
+      "sha256": "3b3a2364a091be9b2e10425174ea5a332537185ad6776d6197a8f8dccbea1908"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/AttachmentTargetType.java",
+      "sha256": "73119a3b7b7df264565ccc2d6b1df90b11c5c297af7f5857ab3feb59fabbc8c0"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/AuthorKind.java",
+      "sha256": "acda4df1e728067360bf97fcc081077859421cacdcc8012508625b1a8f05db13"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/DeciaSession.java",
+      "sha256": "a7c9b9aff6265ff5c9b68dc38ecd90371b66d3e01e044bf5e67fc0441d0183f4"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/DecisionReview.java",
+      "sha256": "5d6c013015ba562e7b805d4888dafa4f62931dc01d88c8ce01cf7b79214f6b63"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/DecisionStatus.java",
+      "sha256": "6d808027b609ba596e08f6ee3517e2a7fdfd89d5922609f5c0d82c20c0cee7f4"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/Divergence.java",
+      "sha256": "06e8f61cff33f8774611501364970c2661c1dad94dfb72b52ff985a4ab9181d4"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/DivergenceReply.java",
+      "sha256": "a08d89cbbc54bd8190746cdbc1b12b6c5fe101e39a7550deb68e7ba523ffa015"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/DivergenceStatus.java",
+      "sha256": "6dc0c7927c66279d2631353921b893615577ebecbf826ddf9c412b71b83ce022"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/FinalDecision.java",
+      "sha256": "fea069f110047ef0810807cd5c689ad96f2428c7243a53573e7f327ebd319f43"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/Meeting.java",
+      "sha256": "4039aef734ce40f26b946f5b739dd7613bcb2917d8fcaa61ea7cf8532887cd11"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/MeetingSource.java",
+      "sha256": "5b8d7e1880c6b0724904525aaac7e3ca58496acf51675de0a5724250e225bd33"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/MeetingStatus.java",
+      "sha256": "4bf884a3b922293b9fa1be0154fb9187e3d14b410eba9ad530f05f3b017d1e29"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/MeetingTranscript.java",
+      "sha256": "b161752de2cf650b38a8322a81a8d60e9953cc60a17bdd626956fac1e004577b"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/MessageAttachment.java",
+      "sha256": "6f1182eca212d8dcae3e066948ee03c607a2275071793fa0f3bddc654b748bf5"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/MessageClass.java",
+      "sha256": "a55033d1455558179b73b6d759e3c7b85bcc4041f21ed9b9d242b9fcfa1517d8"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/MessageClassification.java",
+      "sha256": "b7dea7b320c7250330153bb00de85deaf4eec9594566a1e254d114799216e468"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/ParticipantRole.java",
+      "sha256": "b927b65fbacd84bd16ea0aa78926c03584220f94652bede93b386e90fe303115"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/RecordingConsent.java",
+      "sha256": "609ca97b522c77e34ffc3c5f89ae782e91af5ab5d41a4ac9ada8165ec3573b32"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/ReopenRequest.java",
+      "sha256": "9985158beb459c4c0cab8dd9736b77e01178d094accbb72aa35f9c09d8ff856f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/ReopenStatus.java",
+      "sha256": "dab1cb91feaa5543052a7560b0a388b27409a2edffdeef889ced7b81022fbaf6"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/ReviewOutcome.java",
+      "sha256": "4a99332df4f659c2adb6e1f2b56fe15f5dab52aeb94685e1894ef81bb223cd4d"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/SessionAccess.java",
+      "sha256": "5823461daea1b86f4bc4fbe18d7c0aa69bbfdadcbf8d1512b8fc8149902ce01e"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/SessionArtifact.java",
+      "sha256": "4c971cd01ef8fdc913fbe1a46121b31feb4f3109409c7d1f56f39da5475106b1"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/SessionMessage.java",
+      "sha256": "034e3eaa7e739bda855100cf7704ec4de18c411e201074678058a93bdb3cf69e"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/SessionMessageIndex.java",
+      "sha256": "e90625c82d9eca1c05fbdaad78dc5b7b30557a5547b9411ff001720f3893b0f6"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/SessionParticipant.java",
+      "sha256": "ceebc016f474c2d085356f82fb0d2dcb55caa0cbe4db4c345773a25e0686294e"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/SessionStatus.java",
+      "sha256": "dfcf75a6e28562a2f07e45e9a787819178f2a5abdf263ac56fd9ec2d3f16f2fd"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/SummaryScenario.java",
+      "sha256": "fb9b354ff3b16b3e20d282fe1dfbf91d8fe5ff178c0f437294702c72d8e13cf2"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decia/SummaryStatus.java",
+      "sha256": "e1bfb2dec513c21a91dc4ceb033458af4737bc0b4fcbfc64d04d7c579a293d9a"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/AlternativeStatus.java",
+      "sha256": "88bc9b92a1abc6d563dee06aa4891fb44e20396ec7e7af81e3b9a7eb61d147f8"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/AssumptionStatus.java",
+      "sha256": "659713c2b817ef4bbc840598cfd8fb39013cdfd20084bfeba6332896e3fb2fb9"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/CheckpointAction.java",
+      "sha256": "11adde043a11e3a53da99a86e2a77180d0bbdadbb0818119cb6bb9502f5ff7bf"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/CheckpointKind.java",
+      "sha256": "77d0a8737c80a3dad0edf35a70706e3423f3cc1eb327a3bbc0bd86181265de43"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/CheckpointStatus.java",
+      "sha256": "b67cc4bf1d41ed6799798e30b88c4af9650f5b7b1d94d2e988b6bacd29a19f78"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/ContentOrigin.java",
+      "sha256": "f3e450c7c716a026ada5df13fb2d139b1680ceb7595371980a8199ebc37ad1dd"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/CriterionAssessment.java",
+      "sha256": "94955b01e72cdbebcb54b4eb92406b38403e6ec24a993e6957b6ae4bf673cc40"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/CriterionDirection.java",
+      "sha256": "3c9e2372ee18dd617c937424af5999b54b81f3aed8d5dcb4756d38362ea69965"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/Decision.java",
+      "sha256": "f96c66287349829ea17c8972ab161f2e773526cd5dc5fd4e4a5eb6d9a50f7dc8"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionAlternative.java",
+      "sha256": "5df3ca3ad0fcbef2e56c39e02ade8e1550d278b40e895f843a99233cadca8fe7"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionAssumption.java",
+      "sha256": "51c4782a86a2ea7d1c854d7f6e161ef6211ab7f30e0c1f4be55c77ed4574be1c"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionCheckpoint.java",
+      "sha256": "1e6031446c73449eef2bf2c980810853c41aa823324a2a61b9e25c777c7dbd96"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionComplexity.java",
+      "sha256": "96957ea307f9926b6a760495eae2b06d2ad14bed495243571786b1851380c1ce"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionCriterion.java",
+      "sha256": "44b9f95d05676f132396768eed4e26f824aebdc16ac502ca53edb1bf7575f95f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionEvent.java",
+      "sha256": "15c91c3bb631372c1dd21d857f147186652e6c61723ed40c9b32348ad3940538"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionEventType.java",
+      "sha256": "cd19b2041741f3f0f27de2febf1a545fc8b844f48f4762f87dd15d8fd9582caf"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionEvidence.java",
+      "sha256": "c2a1b112af551538a10f839fb08edd4dd71d4f64f38fa8e53a9274faf2b37012"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionForecast.java",
+      "sha256": "6c2ea8be60817f4039cb6cc1cfa91d094779fdf4bab3297b686ad46d69827813"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionKind.java",
+      "sha256": "f029c0c019aaab3e8ad70c28c4227c857e536fa769fd7d24e0d17a886c477786"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionLevel.java",
+      "sha256": "02094581d966059d332e08a84f0a0badebb8fe404212c0a3cc46526dfe84ef8d"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionLifecycle.java",
+      "sha256": "9aaa216280d46bedf729bd8a17852980a8bcc5ee9a31ad8868fcf6fab0de6384"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionOutcome.java",
+      "sha256": "c7e5d69ad228626f603a8484ce45cec3af485779113323d4c14446375dcc6fd2"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionParticipant.java",
+      "sha256": "bc31c56252dcf02fcf6964ed218adefb13b44f61199ec03ba58e6f0dab97b83c"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionRecommendation.java",
+      "sha256": "ac5b442adf05a8e5a6453083755b08deb88c77da95efbe1fe0f661403e8e2a53"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionRetrospective.java",
+      "sha256": "7b745ce70a902522c1f713ba9cbd4bdae47fcbaab3b7602e6a7fb1f826785748"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionRisk.java",
+      "sha256": "123c15629aed8ce3a4581c6a262b4e73d0bbe7941487e29e3e4161f4b26b4eb9"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionRole.java",
+      "sha256": "e6195e1b70ff2c4f6789202fac9b297f74a75c012fdababc1347579b784d51ff"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionRules.java",
+      "sha256": "2203b0f7a9ec52649eb079d34c0c9e7a6c8a360e096932ebb4d7abba83f766f6"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionScenario.java",
+      "sha256": "1b579765a41d6b5a45fa0c72be53cda9b4363a8ee56388ea886f796ac5b42a55"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionSnapshot.java",
+      "sha256": "889ac331cdccf7e5dfea7fc98a9d4be9657db528886274273117ab7bcd918584"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionTrigger.java",
+      "sha256": "8b49f8e0732badf9285f3fc3a4cbaa9b11bb3c82f9ee587ebd504b075c105a14"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/DecisionWorkLink.java",
+      "sha256": "e4d0b82d72d2c816dc6aeb37cf75aa27573a0ffd833dc5c8c07d61657392936d"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/EvidenceKind.java",
+      "sha256": "87db54b368dafb36d218ed63468c3ae1757a489a359c2efcbc942e299d3676f2"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/EvidenceLink.java",
+      "sha256": "eb013d927f16336a634036583cc8749677ef398ea395884d627b2daffc67c000"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/EvidenceNature.java",
+      "sha256": "f1ffbd2517b246dfeb9cf41793690adfdefa92def1de77a3a5055aa7268e4703"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/EvidenceStance.java",
+      "sha256": "abc1f5726cb8b627757424a05d1ff2e75d729eb8618d605c7da5674b4d6712b1"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/EvidenceTarget.java",
+      "sha256": "54df49a01e27a95620c3219ad117928fa084e6ad2bedb71923b636d9cf583f5f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/ForecastResolution.java",
+      "sha256": "2317c46bbe79a8443bed3fc5a84430ad5f0478d1fa078775f84ef2f0da12d543"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/Likelihood.java",
+      "sha256": "10e9cb4d76519874d35e687dbb4f48f79b7410005c10993dd38adbdc089b57ab"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/OutcomeResult.java",
+      "sha256": "96d162a671dbc283186ef0f347c8334a87b954d438b462a3e001364ec58921e8"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/ProcessQuality.java",
+      "sha256": "02b2b693bd8cbf71e4a4bdbcaa792660f2d7f88f95281769abe22d40d3576652"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/RecommendationSource.java",
+      "sha256": "d44ff7d9413e425758c7ee30720ff7e4b649d473089805753f3d121e68dfa2fe"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/RecommendationStatus.java",
+      "sha256": "c5ea500f969885d46c3b0f52e1cc81965134f0346c491f7c0722a0fc96f65dfb"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/RelevanceLevel.java",
+      "sha256": "b56cac70d191d78fba51b0eeab5dab630d3055248a0daa3e5cf5479831776cf7"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/RiskSource.java",
+      "sha256": "3273bb5f97f91e8398ca7ca47e7365ec8cfc3add295cc124f5b38dc7a7639d4c"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/RiskStatus.java",
+      "sha256": "b5e5133ef4b082c844983e2982b6adc6066a369b8ef1d438600c3ec61bfb1721"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/ScenarioCase.java",
+      "sha256": "e4b545eea1dd507adbb9b9b0aa8b4f20f90e797118c9c98e00828c3518f2eaf5"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/SnapshotKind.java",
+      "sha256": "fb034f0d1a08bf85709048a345236128dc1d836a77463687422abbfc17b1a629"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/SourceQuality.java",
+      "sha256": "fe1d96ab735596c6f23198a039c0bdcff8c319896d1c097873ca4bfaf5206c84"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/TriggerStatus.java",
+      "sha256": "175c7f22603486ce74f1012bf6320eaba39613c40becfaf37b896fdd69800e87"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/WorkLinkTarget.java",
+      "sha256": "1cf6c629d140eb825eb3372a5307687fe5eec94387a9afcb44998efab34ade06"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/analise/Calibration.java",
+      "sha256": "59db118932e8ac35ec76b84ce6fb3749705349dfefec12f28e8a79212fc8a703"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/analise/ConfidenceBand.java",
+      "sha256": "dd13ae870afa8abcc1ff79364fbbf9bcfb36b434fd9559ad62a55af9b25dcef1"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/analise/DivergenceAnalysis.java",
+      "sha256": "e403c64e84da27184848c98d8785e4175d18155ed519c4f7d188ef3e9bcb81db"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/analise/DominanceAnalysis.java",
+      "sha256": "2a85f5e58b053bdb7d2f09f0e6f286f057ace76f1f17f40ec92a842c27cda180"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/analise/EvidenceStrength.java",
+      "sha256": "3938cebae32b7b68c3837f0a1107510a4bcc0423d4468cf2b2be79b24333667a"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/analise/Freshness.java",
+      "sha256": "922d07c62eec1e68a0dc3cf03bbc65d3a2f51add2471a62929ea52ff4b8dcc8f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/analise/Health.java",
+      "sha256": "44a30a48460eb48e4f76d2fb3183f042e34c2d737046e89533c2c0f04919a909"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/analise/MatrixInput.java",
+      "sha256": "586007a16cea2d1c27fd714037b40ddf336d8f822db5d62218ab505b2edb2312"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/analise/PreDecisionGuard.java",
+      "sha256": "2f2534c9cbec54445571ca11243223f2a0fdc4473250303951c66f8e37ea4ce7"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/analise/Readiness.java",
+      "sha256": "964a2bd16ba93822e3582e9b4851a738b6ffee5d5825d5db3a6e9e676864d3de"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/analise/RecommendationValidator.java",
+      "sha256": "d1254f7825a19285ae9cfc6ddea9b9c7334fdcac4fa3034351972318c3ecc6d8"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/analise/RiskSeverity.java",
+      "sha256": "5c411c6a5328419008b4ac43932d2140b5312e04d3db725a5ce9a6cc2addb5ab"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/analise/SensitivityAnalysis.java",
+      "sha256": "0a494b9470b71d0c6559fb6d8e283d7e92f6540c224408a6f324d4838395c6e6"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/analise/SnapshotCanonicalizer.java",
+      "sha256": "bfd2a75427891da5bb98f38fef98ed7d52bf32986f85e28b89a6f8f1e6e76440"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/decisao/analise/WeightedScoring.java",
+      "sha256": "e2e40543e25864ba8bb613d051fd9c4bb8596cad931676dfc9a94d889007cadc"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/development/DevelopmentProfile.java",
+      "sha256": "77a5cb139456d94d3cb5ddd539ef18c0f774bbcb15a558c1f19f33bb4cb2d17f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/development/ProfileGuidance.java",
+      "sha256": "789fd99a40c58e18daf6afd90339b90547835661a854c581e10ded5696919b32"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/AiCreditLedgerEntry.java",
+      "sha256": "8d08a9138bebb79363346a88e4b50a38d24eab21fa0b2c1f180d0d8d18d86048"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/AiCreditSource.java",
+      "sha256": "17fe407f8eab6c85533d5c5b0bfafc8ead1047d4579a5cdbecb60a02e20045dc"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/CollectiveGoal.java",
+      "sha256": "4eda76dba35189b0456c202dd54998b93ad48be53f03ca4a0e55a4e76bc59eab"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/DailyFeedback.java",
+      "sha256": "ae5f13d3dc07a655c9671697e5806ea4d80bef9621bc576b845e2b83b1da853d"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/DailyTask.java",
+      "sha256": "360f1d0881ea6ca17fc3aa5e72de3753db1d118c48202ebf3967c69822bd7bdf"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/DeciaPointsLedgerEntry.java",
+      "sha256": "ac29ace03b58ec1c87d2b602146767aa2299be855bf4b36885bd66720708f144"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/DeciaPointsRule.java",
+      "sha256": "6aa04ddca0d0074998b0e96ccc6bc61070095bbb34a5c99c8d3384ae9eb8f678"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/DeliberativeProfile.java",
+      "sha256": "5570697533c3e001e0b2a9e4d744638ce3bdc39a9bcbde2bae36355fa1c4b56f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/EfficiencyScoreSnapshot.java",
+      "sha256": "165ca6095295dbebdd18102b9b50c862630d2c9a28d4aaff8214ee484efaeaab"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/GoalParticipant.java",
+      "sha256": "910455f11351be755af9fca6400cf7f9dca5e862142bbda9a52ea635bcb5df4a"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/GoalStatus.java",
+      "sha256": "d107e47624d18ead338db51dcbbcb93bcb577706f43df2f3af8a952c20c3134c"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/Highlight.java",
+      "sha256": "3bb32271670921e2ba40d1d7f5179b9cd41e4bccdb26274c2aedd617c557ee68"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/HighlightTargetType.java",
+      "sha256": "59cba36fe309740b701005c01160c96ae776e50e55db94d1c534a1a47535d0db"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/HseWeights.java",
+      "sha256": "79d7e24d3260106b98e02f21c655ba81144070313be25c5cbda967323dc7cac1"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/HypeBand.java",
+      "sha256": "8601ccadd68e4dcb6d949252a0c8bef570f7649c315326cac479b25574e0cbda"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/HypeIgnoredEvent.java",
+      "sha256": "fcf139f214925fe55734d8a9fedf59a11673edbe59f6fa01d9e09f636e6887fb"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/LedgerStatus.java",
+      "sha256": "bc53629ed7d6282c2fccdf8f105f0835b49c13f32b9eb9d79a7acdce0052d469"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/PointsDonation.java",
+      "sha256": "505ed666cebaf31782d9813fcb1ee3ef16f3e35e27cfcdfec25b3c324e7ce98c"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/PointsEvent.java",
+      "sha256": "8510e060c440d601bee8a7cd5160d48430ecf268c34856138dcaba3cc618dff3"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/ProfileHypeScore.java",
+      "sha256": "d871f83f45e1390f31c53f13eee508cdae012d7d67336875ba22c408f4ba9271"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/RankingDimension.java",
+      "sha256": "dcf44a0cf2c9ce620736cc5f418cb12c696c6e4086b0b95358a4b9bf3527a8a6"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/RankingEntry.java",
+      "sha256": "1d8ec8f4576c24d6563ff700faec22b50644f613246c23235e5e7f1d45d4cb9a"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/RankingScope.java",
+      "sha256": "ee58f01aefc8e1c346e8529bf96802a88c4c9771f5e579d1251a0c82a365e888"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/RankingWeights.java",
+      "sha256": "4e4f3c6f8085e270b755d74f703383831c5868db1351f9c63db0402975051678"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/Recognition.java",
+      "sha256": "12d0d5c88fc8aec03f3519881feb6dd983d16e86899b76ed6b954ae2c2c4ad77"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/RecognitionSource.java",
+      "sha256": "21f38201769c2d3c416a2893340889a2a48a9e88e268017aef5bbc82b8d68489"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/WeekPlan.java",
+      "sha256": "7a4c679502db945f117fb845a97b951189c6f7f796e8366ebd63ddc630824541"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/WeekPlanDay.java",
+      "sha256": "4d9307758ab13eeec5312204c2a650d350b7abd1df8d48e06eebc05d8d2c62cb"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/AiCapability.java",
+      "sha256": "c7cb360d8cbcdae3f1484b54fe153040275c8f54987a8a50ddd0707788e52a71"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/AiInferenceLog.java",
+      "sha256": "a33190060943b9ecd397c68a4156e9b4426973e9d78c8349e64a4bf21edf8de8"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/AiProvider.java",
+      "sha256": "001b96b3f490c7287f3ca038d29e38f2a90795baaf47afc3849813b808a4e5a2"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/AiProviderCircuitState.java",
+      "sha256": "e291a32c64b96a3dd3f71b4aa09a462648be6af0b8ba9c23c98e4ef1ef92ca2c"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/AiQuota.java",
+      "sha256": "1323c62994221d5206fadbf3e9794cae9be12d8c10d245877a37110c194c0ce2"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/CircuitState.java",
+      "sha256": "0916c1d02c84021745075dd5388e41185a196743d5eff77f57a4fd36e2a1d087"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/Citation.java",
+      "sha256": "c9b731c808792c128213199a881a181a397fba09f0adf6298daec9f35333f984"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/ExtractionCorrection.java",
+      "sha256": "87f25c48808adf79488848674989d14e9ad0b4b89fcabd701db0757d8d62792b"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/ExtractionKind.java",
+      "sha256": "391101b5d86a081caca606408da53106124322efbe265e7e3f6fdf03129502e1"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/ExtractionResult.java",
+      "sha256": "d5cf3ca641f803d974c01ed8b63af2edf623a79f42371cae6f36ca5a34890d4d"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/ExtractionStatus.java",
+      "sha256": "dd097590f296ab3d0f01e1b55d732aa321bfddef28d68c1b144ce032c6aebc2d"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/FeasibilitySheet.java",
+      "sha256": "7e71b1525e3742cc927e59b33a7440437ef99a1c18d62556766703d5e2038020"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/InferenceResult.java",
+      "sha256": "4620e135aca53d3ca1f98eb40e549d39aca69072e0b17877619f22fda13d6f58"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/Insight.java",
+      "sha256": "38240ba0e38990d8a8db37ae74bb5a880c60c3bc3e630c0d28b07f2210899ba9"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/InsightScope.java",
+      "sha256": "54d11a150c220476ee2177820d1dfdcfbebaa2a40ead3c9cedd60930ac0e7321"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/InsightSeverity.java",
+      "sha256": "92d0334117c1daa3ed0a405ac3ee8d894ba7aaeabbaa55fe07294863f4326372"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/InstitutionalMemoryDocument.java",
+      "sha256": "4179243acff99cd638078f4a446dc9ea87c602e8ef69588939802795dea37c60"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/MemoryQuery.java",
+      "sha256": "569cf89cfb2a8b37b3355f4fe9331488d2a6c91eb1cb19d5d4c3749740d3ee8f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/MemorySourceType.java",
+      "sha256": "5297d1ab8805ac28cf08bb83a81aae59d8a662f14706f9b78dc424c9b090021f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/MetricDefinition.java",
+      "sha256": "5901bdfdde3696ef36a7dfdca3170baeb03b69e08275218ce1b85d3752d18d8f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/MetricDomain.java",
+      "sha256": "e0ec44de34de73ec8a6dd3667b0e99e08bc1e2505b048466d76274f68c7a8404"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/MetricScope.java",
+      "sha256": "a582e0e5124109aa5bd1faa50e97e0c413a79e45861370b889a429bc3c461805"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/MetricSnapshot.java",
+      "sha256": "e4aa4b325d24b823a0b1afb33c0a3d18058f9afca23e7dca4fd3524f7d0886bf"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/QuotaScope.java",
+      "sha256": "41899e7a8424988bcf31866b745eddb4a02b7e5ea34bc8bcafd5f731f7e2e25c"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/QuotaSource.java",
+      "sha256": "2d745818a6c3071e2a044cc60520b5f5e58e9326898c9499274cadce680fd357"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/ia/SheetStatus.java",
+      "sha256": "205e6e770ee2686071b32c5f8e1c58ed70382276155240d1b6576530427a22da"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/identity/AccountOrigin.java",
+      "sha256": "c03e9f0e8176fd182ba6ae65c2ac4454b52322e03cdddf9667e7fd03bbd3903e"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/identity/AccountStatus.java",
+      "sha256": "709a99eed5ab6da275d484e76a57f91ba8d74f41f87bdd548ecfe63f055a2095"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/identity/Density.java",
+      "sha256": "20f3fd336a0569e38be9b05055784719e4369a5e4ad1d51faa3e9b27534cbd94"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/identity/DeskSkin.java",
+      "sha256": "6d0e84958590028fe4a37b9f0cb27455079a60073d736c3c6f4e779de28415d5"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/identity/HypeVisibility.java",
+      "sha256": "ae44726b05979595de46307face4c4f8d440b2689f73f547a32b686e3f7610c5"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/identity/ProfileType.java",
+      "sha256": "f599f384a8a35cde52cc99dc8014c9e07c1e4e4bda01c66f58271c084d359e9d"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/identity/Role.java",
+      "sha256": "fdd352b12ce7e75885c31800f1ba69fee334fea628ac1f4b884399e7cf06e34f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/identity/ThemeMode.java",
+      "sha256": "d30c9aee70ecd68faa299484f807502b8ed4bff1cda4b6ac9a1cf529135f5069"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/identity/User.java",
+      "sha256": "dd892b152bad6630bf0248f4ac334303c3ddc370def2ae4b87875db9899c7b18"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/identity/UserPreferences.java",
+      "sha256": "571fce5a479b50398240308e261e070d1c61c5e69301bcda0ef5f5ba153edb23"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/identity/VerificationPurpose.java",
+      "sha256": "0e5d9262e2b9d863a0658250f938c67a9b2a00596efa62b9a534708308db7a0c"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/ApprovalCriteria.java",
+      "sha256": "cca95ee4ae0ae51569af4ccdd6560e7b4c7993be25197e010408178e710622fe"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/ApprovalRequest.java",
+      "sha256": "fc36a3025e9c271a3c8e052fe50703db1c51450f49399c0d5698c1ba0e381d87"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/ApprovalStatus.java",
+      "sha256": "5fec3aecb16403e2d0a8a38283150ee1ee481f788b640558df0d5e37bd4ae41a"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/ChefeProfileExtension.java",
+      "sha256": "ba3a78ad68f5a9200b254deb709028ce05c4e0cac5b4139018c334e88e66c7a6"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/Company.java",
+      "sha256": "9fa11abbc31062a35f7e2b69c2da81b54f3b855f4969a8cfc6d35fffdc9ab75c"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/CompanyStatus.java",
+      "sha256": "dd8e8618468ba5104cd42e3ee0696242823d7a8195ddd89d2172ee522462b2e2"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/CriterionAuto.java",
+      "sha256": "051a20bb5a95b6b678330cd922863c853d3127c61cd81eaab2553dae0aa28d14"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/CuratorAppointment.java",
+      "sha256": "aab5bbb6776d9de22eae110842a93a04e706a0ecb8335e0508a9997e7d720b78"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/CuratorScope.java",
+      "sha256": "05b0624d3b73962aaa584fd7eb66a8968203caf68988a1bdcaefe83902c2032b"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/Department.java",
+      "sha256": "b04152da111f620ac5143d3569db13f3babb4f3f4d39da38033c4ef3c65af98a"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/DepartmentMembership.java",
+      "sha256": "55ac829627047d640344d853ea55b9547bc7e74881bfbc05c2cff2752f20c832"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/DeptRole.java",
+      "sha256": "dee736b13555b35d05e6e9b1c0992e5175a14d63abed307adc8fe53d538450ad"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/EmpresaProfileExtension.java",
+      "sha256": "dc16b60c334b302a995b322811512ab20e26dcb7aafe89ed2c0550df25997d73"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/PendingUpload.java",
+      "sha256": "b5c12d3d9f4fcb1cee2715d9bf01c798cf6d29b1a456d374e3ae51976af61994"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/PolicyStatus.java",
+      "sha256": "26b4196322b6a4394b7c0dd1f77d52c270ce4b71d1a3940f57db4d0ceeb9364f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/ReviewDecision.java",
+      "sha256": "1f0386f64c52e092d20df6f6faec3e42f18c6088ea92054312c93406a0cbecf6"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/UploadKind.java",
+      "sha256": "a4ec15a96cb2845544b1b9e7bec9f276b9fc160c58eea4232f96beea6041fe0f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/VerificationPolicy.java",
+      "sha256": "94fcc983a18d8ea8ff28dc40df9554ec9f480e982138c4688afada1de2f44141"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/lgpd/AcceptanceChannel.java",
+      "sha256": "bb076ac6004dd99835b4df7819afb3539e4e937b4f2469b7361bbb4e30fb08a5"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/lgpd/ConsentAction.java",
+      "sha256": "5590e46863a91c2e2c5fc4fb3b04a66a4a37e317178f883ef958ce27cea81192"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/lgpd/ConsentChannel.java",
+      "sha256": "7aad56e14b364926144e56426c41906453952b0a025a32bf2c8b940f372635c0"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/lgpd/ConsentEvent.java",
+      "sha256": "c1d861699a0c0f16d155e1cba8405fbc1f319bb394b2efd8086f4fe71e91ca0f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/lgpd/ConsentPurpose.java",
+      "sha256": "f2d35a52fa4c3c677ccda825c7cb3168ba7716a9b8b460ddcfaebedf588f974d"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/lgpd/DataExportRequest.java",
+      "sha256": "38228879eec0619030b8be538db704dafe12e2b9d83af22a307e2d457f8de814"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/lgpd/DataSubjectRequest.java",
+      "sha256": "d084d6811d338130b5c348d5b976105c29b6b529d681889e5e5949d7c0dd9483"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/lgpd/DsrKind.java",
+      "sha256": "0052898e76f7c3856d4f0438be5c4435bbf46282f8f51a1bfa4c48824d2e6404"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/lgpd/DsrStatus.java",
+      "sha256": "01fb7123b5afeecf76ecdb400eb64925348b16f252d018237a417bf91c6b866c"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/lgpd/DsrTarget.java",
+      "sha256": "adb35500ea20cc33da725da0baab39cf4e33ce19edd3d033368a9dcc22e76e92"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/lgpd/ExportFormat.java",
+      "sha256": "f65bdff8b0f0665bdffaa2ac9f41cedc1729d102a982a82782d1f57e1e930469"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/lgpd/ExportStatus.java",
+      "sha256": "2395448773af15f4e4e1bca2c43c50833f9b0c633fd2bf7654348b7100e7cf22"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/lgpd/PolicyAcceptance.java",
+      "sha256": "b82cc552f50f8c0d68dae79f51b7638312d02950e7390df890386c6673d93b66"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/lgpd/PolicyDocument.java",
+      "sha256": "c2787fab5b4f18001635977ed522f274cfd5e019db8c70ce7524c824dcb41d85"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/lgpd/PolicyDocumentKind.java",
+      "sha256": "750d2d9a73aa79fbfe6b8f1263fe702a3d862e2f0ae188d40b47dff994de6a86"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/lgpd/UserConsent.java",
+      "sha256": "42f19527f606207e35858e06cbf1a12dc6fd70d8e5f8a7ba9d4426c05f2d66ba"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/mensageria/Assignment.java",
+      "sha256": "381f63a75169c21ba366b688de1f8077ee1e4e7bad10950734296e29243eb38a"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/mensageria/AssignmentOrigin.java",
+      "sha256": "cbf4acc137eff6c1bae86a8e35b7b3f0cffc979d0d083c89563a8f8abcf0ca7c"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/mensageria/AssignmentStatus.java",
+      "sha256": "f59e576e6613c2796511767dff7d2124010ac31f1f92e4f718e5e111db2f4a61"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/mensageria/AssignmentTargetType.java",
+      "sha256": "bbf3dfee25359689157cd7c66cee17f5770163df54809bb499aa9575bfa8e1e3"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/mensageria/ConversationKind.java",
+      "sha256": "3351f7db8a720eb0e9d99286756b0e944d5cce617db2b2af6e1a784ce3391d36"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/mensageria/DirectConversation.java",
+      "sha256": "1991242710e0b06b05bb781ab8ea4a867b3e1fe654e8477af9ee139440576ff0"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/mensageria/DirectConversationParticipant.java",
+      "sha256": "1b746e30d1c20470d92361fda2dc3bd9c8352b7a4bdc6d246d39497f5cea76ca"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/mensageria/DirectMessage.java",
+      "sha256": "f6637f5f363d2853f858359516eda06cf9e8887490f4a35e4db118bce363260b"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/planejamento/AnnualPlan.java",
+      "sha256": "441d09968410e94724f9b0c94c73bf9d6917534fe15533a156221974c95b82fa"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/planejamento/CompareBucket.java",
+      "sha256": "50f22ba83966571cc5396c5730680e4d2edaf44b5217e5746e2bdbd0af7e53d0"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/planejamento/Grouping.java",
+      "sha256": "b082d74a9f9e049d62a1c7f2409fcddc325d9b3c9d73cfc7e9178506b0c1791f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/planejamento/GroupingItem.java",
+      "sha256": "80061d5f301cbc9fc7e090828c94d873222b417fd75e1a4c92aee96c9e5a9f4d"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/planejamento/GroupingStatus.java",
+      "sha256": "d836b998cc83d8d0f91387cc6e9c20a61e69ba4cebee9fae8572a80933c93ccf"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/planejamento/GroupingTargetType.java",
+      "sha256": "89bd5f99bccaca4de89509710b9b0826b61a33e4b621da3b01f75a76d70c71d1"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/planejamento/GroupingType.java",
+      "sha256": "39531bfd56cb7a87613b06ab6acaaeda69f1e665d300952a76972fa3578ce18e"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/planejamento/PlanAxis.java",
+      "sha256": "24a8978dcfb63e4244a660b56cf24fadfb2050aa7e3623ca986ccf66a9fa8bc5"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/planejamento/PlanAxisProject.java",
+      "sha256": "8dc9d509b222cfb92c96fe721131c57b1795006317069df9b2b2ec2a52b435a8"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/planejamento/PlanScope.java",
+      "sha256": "7a5dd74314c91f2edb3f434c59ab1284dfdc900dbaf70221795901bdff9a4fb9"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/planejamento/PlanStatus.java",
+      "sha256": "3fa7970925064f2055939be3c57e02565168a8339a81cd2c45b272cc3720dab7"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/plataforma/DataSharing.java",
+      "sha256": "02c5556e95e86d59e418c1b3c092f48149848cf636d37aaffddf33020cee96a3"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/plataforma/DomainEventOutbox.java",
+      "sha256": "a2af16ef498055157fffbe6eec3a26bfb020fc8bdd652a95b543c6b672eff280"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/plataforma/FeatureFlag.java",
+      "sha256": "46c2021a5c8eef1f407739fe61fbfe59210a24f0767dc1bcfd82b43acc8ebd85"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/plataforma/FeatureFlagScope.java",
+      "sha256": "9f362a108e02e04f76dfaf17482584f52a206506fd2d776351e9d03781bead29"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/plataforma/MediaAccessClass.java",
+      "sha256": "04e7bedaf16a517858b44385f50c68ccaa9e448db7eb30ff80b7412fe2b2ec03"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/plataforma/MediaObject.java",
+      "sha256": "8e0f4ef86ee8cad17260d296c53d47166c33e851afae0bddefcf9d55485952ae"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/plataforma/MediaScan.java",
+      "sha256": "b82e3ad0ecfe3477c87c6b992e6cd1ba5b29aae72906561e36009b54f62e01d6"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/plataforma/MediaScanStatus.java",
+      "sha256": "4883d7977ead1e601ec2a1495c3a219146cd372ec092e654370d1483f3efa795"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/plataforma/OnAnonymization.java",
+      "sha256": "9e2a0d35fe9916abbfd01ae5ac355aabb682b114db63def6d2929e6b0b168712"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/plataforma/PersonalDataCategory.java",
+      "sha256": "ab01126a6b44c5e14a0a3f9e9eba00ee420473645bb206c07f0eb6ab7ae29482"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/plataforma/PersonalDataSource.java",
+      "sha256": "c9abd17742b20a9e577b31edf1987ec41ff1f2df7b55193306fef556cab2bcba"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/plataforma/PipelineJob.java",
+      "sha256": "fbe077afa05b9c311000d2074298d3e10c2488e6177714442d0560145a133755"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/plataforma/PipelineJobStatus.java",
+      "sha256": "331f00272ced611028c918217a28b3e63ae11a3da75aec2979866e7aa7c78f63"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/plataforma/PipelineJobType.java",
+      "sha256": "bb5c6d7075ceb0d95b46b97b6b862869f20bd79c8608eff398a5bc6fa96d8224"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/ComplianceChecklist.java",
+      "sha256": "5a917e94766b58fdd63d8351355bcbbde23415d3ef2bb8214457906a3b8068f2"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/ComplianceItem.java",
+      "sha256": "8c108c3b7daf69d2393182c9503a3a4c10cc277d41b338587509948e4960267b"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/ComplianceItemStatus.java",
+      "sha256": "adaa6fb53f7dd8b0da236645a2335756f94a1500f79888e46e80174fcab9546b"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/ComplianceResult.java",
+      "sha256": "7b1a3921f2df6af1d47a9112681ef5d2f02d720d7a32beb6e2c5dc52b41c11e6"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/DependencyType.java",
+      "sha256": "04029e6149e7ccb26f9e242129c2389a89890d5520e478c4ea4a754cd2e31b5a"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/DeskNote.java",
+      "sha256": "149d605749d17263f1e8f42da3fd59f625b7a49f695aaa0eeaa731fe553ebd3a"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/DeskScope.java",
+      "sha256": "3d2920bb6d08949b78f2f3d9c496f4026a5def582b5f62eb3a794df41c8b0603"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/KitItem.java",
+      "sha256": "f487208e3e3381192ece52d94dcd7df0837f5705c4647847f59c8ab40ff8ffea"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/Moscow.java",
+      "sha256": "6694f22420b754c36e0fad546ca865d6d3861d33ada41e1546c637c31b24bce8"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/ProcessKit.java",
+      "sha256": "1fbed31059029a9874ad2f012f6de5b7e1404b6ee40f9123c5a746db03cd7cff"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/ProjectCoverMode.java",
+      "sha256": "556a0ce3c8a24c03eea6692309f6bd8824825585307a80c4022cbccf96ebe188"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/ProjectPhase.java",
+      "sha256": "ab182f3c1da7d9d354b776f393f71729526ce446d24fda3fde615c9d944e76f2"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/ProjectScenario.java",
+      "sha256": "842afe9520c44c958ee8206d7e05cf79b78edaecab004b54f35571d780f4aafe"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/ProjectScheme.java",
+      "sha256": "2278825b008169103ff4627a25651e60b81329f4b966b147ad29984f222d6bcc"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/ProjectStatus.java",
+      "sha256": "47ec829c9f76212fed45b9336266d56842cbf96dea0c300ee6b5e7741bb0601a"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/ProjectTask.java",
+      "sha256": "bf79e22f3cdb9648f661989f4b68e04afc03e929b232847808614e7b82e72dd9"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/ProjectTaskDependency.java",
+      "sha256": "35d61c3d248eea0557bc3dd61a821c621392c9f6479b92bf129313f5ed454afb"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/ProjectVersion.java",
+      "sha256": "41a5bd4e90e0b4904761f2f5a1d9ec8908b4908c46e4cd52d67651b552d6886b"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/Requirement.java",
+      "sha256": "b17364c6b9a4ae4634173abe0575309d7ee9e331e40bd83b3bfdb5f4fd71667a"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/ScenarioStatus.java",
+      "sha256": "375a26acdfe8480bcc07effa7be6fc1b0147e916ba83f5462ec2c1f8d5b879ab"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/SchemeOrigin.java",
+      "sha256": "a6cd662af98a20ccb86c6090b9114f0d4f5abd6e67a9a5ae2d1bfa0d45f1239d"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/projetos/TeamDesk.java",
+      "sha256": "795736bed7d2945331e853bc7a4a71392efd4048a4583fc31a3ab154c0616e38"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/rastro/DecisionTraceEdge.java",
+      "sha256": "0ce3e6286470fad32a851cd320026e8b425036e91fdcc94324bbb2bd5a2cf748"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/rastro/DecisionTraceNode.java",
+      "sha256": "e140ce8035204899cacaa542efeff0177779679858dc565f88c97ac91ff9c6c7"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/rastro/HandoffDossier.java",
+      "sha256": "e6452c25a197960b4977dd33ffd3f46186c8664152c09282c943b4f6d6ae5b16"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/rastro/HandoffItem.java",
+      "sha256": "3f41e7749eeecfb570be705ba6c4029f01692211c2d83b0c9916d912e8773a08"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/rastro/HandoffReason.java",
+      "sha256": "5530263fae0f85fd48a9304d68e5c079de5fc85b78eabea1e08192080e16e7c8"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/rastro/HandoffStatus.java",
+      "sha256": "e33f774364f5cf83ec01cf25f00264e761bf88054d427bbd204c4d00931088bd"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/rastro/HandoffSubjectType.java",
+      "sha256": "16f39e73af46ecb747d8ee3e46fd28d5fc81054264bfe4fab203f4779ee4bd67"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/rastro/HandoffTargetType.java",
+      "sha256": "298e8078c72c06c2ef7e40819cf859bcb544a3c29c2eef15e9147bfbeacae39f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/rastro/SessionArchive.java",
+      "sha256": "ab4e15f6e3d56bd0401f416002544e478a7a4616b95a53a4704fba25b8c3a49a"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/rastro/TraceNodeType.java",
+      "sha256": "a05d4f53b08bdd8e427ca0c326992240be5f4ed8de0b27a5be2c3d4ba535a034"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/rastro/TraceRelation.java",
+      "sha256": "088b4f98fd01eb44484736df92d413ed0df5e786aa10c5e24692f043c85dd538"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/security/AccessDecision.java",
+      "sha256": "50278733a0805368ea892f903f20234fc7ebee083e313bcafd4fcd4fbc7bb3f0"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/security/AccessPolicy.java",
+      "sha256": "fb1ce300fe664fb797355cee9a16c5dffb3d12163f14d55caaa6b91361dbd08f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/security/DecisionAccessPolicy.java",
+      "sha256": "7bbfff2b96d78004178c88b026d09428e1c33d5f2083da0610bbf13c47167a66"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/security/MediaAccessPolicy.java",
+      "sha256": "05f14b6a378549d3f9be76ba213534bf36ae43f360b62dbfabca233d22622141"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/security/ResourceAction.java",
+      "sha256": "7b40ad06e216b5705fa8ad7e81378a33df5d50d0d79998e5608c50583a120fc2"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/security/ScopedResource.java",
+      "sha256": "48732f797b2a97ef903bcd2f4b41fbce87ed8624ec6710c3bf4630a4375351c1"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/security/Viewer.java",
+      "sha256": "09152c5687ce54c881dad4cb98b788bc5f34299b860a7d7e07305496d10499a4"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/Announcement.java",
+      "sha256": "b124fdd199970df3efb7bc44a4b19191c85aa91bbf4208887a65a332fc9190e8"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/AnnouncementStatus.java",
+      "sha256": "8def994f04419967f688c2e0127d508ef33a76ed446c1bb0f83b658675ff761e"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/AnnouncementVisibility.java",
+      "sha256": "0a99a3df93b1fb8db223b6fc9e2c79b0f750f9dafbdd0e7ef5dbb5df2ba59da4"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/Comment.java",
+      "sha256": "f2bee913753fb181de31caa6fb6a6ab24ad1b1f3f907a23db6fc6360ed76e668"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/Follow.java",
+      "sha256": "0a258621917e50903e0f6bdc01cc5f2f768a688a4264061706518ec960e91e36"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/FollowStatus.java",
+      "sha256": "8773d71c23fc4b97d69b1e517f880dbfac3f0478b19c23810109405a390a4ee6"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/FollowTargetType.java",
+      "sha256": "793092703e91c9b59170dfa600b516d90d5d2144ebe765725a6ebfb11ba7a852"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/IgnoredReason.java",
+      "sha256": "c7aff414ef61d3a8872782155ebb876eb9092c3b0907fb6886ad1acbf22213cb"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/MuralEntry.java",
+      "sha256": "0335bc47d56062d7c5be294f684139f655d04bf2b93631fed453ee4431cb3197"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/MuralKind.java",
+      "sha256": "63f5e12c894cf522ed8ecadbbe8c21be6312177f208d9c22a09cbae981643eef"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/Notification.java",
+      "sha256": "e64563d4ae6304bdb514ec457a76e509e2687400c355875bbaca71e2a6bd1727"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/NotificationCategory.java",
+      "sha256": "1233c06a1ebf0c01513514e56837a556716298a1795b25c1ea41bd7c0e31e2cf"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/NotificationType.java",
+      "sha256": "2ccf3bf28e1d79a1fcd081de9e4a37dc4d3f1f00e1e591faac5047cb5d40b3b8"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/Reaction.java",
+      "sha256": "29423baf1a3d45cf17bef001fff73e9fb7a407000dce46055f63e083f1f484be"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/ReactionType.java",
+      "sha256": "ea5e3c925224db5175a3561ddf43cbd1a9d61b8d6af82fb0568eda7af3cb23ec"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/Remix.java",
+      "sha256": "21a22787bdfd176b525da6c6289a9979be4e3773db1532bf2f71215eb07a35d2"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/SavedItem.java",
+      "sha256": "b642b2b797c710df5428c5ceee63552166678e9d0ac2070e760cdd758118f341"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/Share.java",
+      "sha256": "312cb547d470a8d7aa8a6875c391aaaf29011eea5bd7b36d17467137d2ff5621"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/ShareChannel.java",
+      "sha256": "9850121717ff25e175250d36f3e84d541fdda84d1b356f8a3f2346c9abb5fb89"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/TimelineEvent.java",
+      "sha256": "9b678676865e4028da3ffb0953234a2120cb49266ced819842f01e21cda71ebd"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/studio/SharedDrawing.java",
+      "sha256": "fa93fd0a1540dcbb6b9cd2ec21e131a943bc014d6ebeaac6b9709aca64cfc6ed"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/studio/SharedDrawingEvent.java",
+      "sha256": "acb14615f5a06832a3b5852b526f14dd3cf36b294a8c1696ba25c1fb23411f8f"
+    },
+    {
+      "path": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/studio/SharedDrawingLease.java",
+      "sha256": "de1b30f32254f80d37fdf88eacbb4fa7604b3dc97a7fa4e0d9b39f140fb3b2fb"
+    },
+    {
+      "path": "ws-domain/src/test/java/br/gov/pr/secid/workstation/domain/catalog/EntityCatalogTest.java",
+      "sha256": "7eeb89f7a6d95bd0a9c68de59a1cc1f194c868460df6cd92f0c2c5940317e1cf"
+    },
+    {
+      "path": "ws-domain/src/test/java/br/gov/pr/secid/workstation/domain/catalog/SchemaGenerator.java",
+      "sha256": "3ddbf02c76fce66c03711b4c7902d574c1f753dba833142b93eed8e47681cf09"
+    },
+    {
+      "path": "ws-domain/src/test/java/br/gov/pr/secid/workstation/domain/common/AccountOriginTest.java",
+      "sha256": "08c8788475d10843a7e833f3d5e36505ce291acf15f3315e3fd9498789a030bc"
+    },
+    {
+      "path": "ws-domain/src/test/java/br/gov/pr/secid/workstation/domain/common/MiniJsonTest.java",
+      "sha256": "67689695c84142f10e9bc9541d2e6d57d7ee7593ba3471bc99b3214e728698da"
+    },
+    {
+      "path": "ws-domain/src/test/java/br/gov/pr/secid/workstation/domain/common/StateMachineTest.java",
+      "sha256": "17bf0631dd31d044843ddd4b942d6c8fed4b2d70f348c47285c39a5e97c495b0"
+    },
+    {
+      "path": "ws-domain/src/test/java/br/gov/pr/secid/workstation/domain/decisao/DecisionAggregateTest.java",
+      "sha256": "6ea32b77370a804f7e15473370b0b767d9eabf218656be9dd7a6b65d0a59ef19"
+    },
+    {
+      "path": "ws-domain/src/test/java/br/gov/pr/secid/workstation/domain/decisao/DecisionLifecycleTest.java",
+      "sha256": "1406398981cdabcd678009ea89930d1187cf9d9a53ce5bd71440d8400a81eaed"
+    },
+    {
+      "path": "ws-domain/src/test/java/br/gov/pr/secid/workstation/domain/decisao/analise/DeciaVectorsTest.java",
+      "sha256": "4227f68c9bcae49f8d7719e96248a79447b0eda977bbb14c09d58b7d3aace430"
+    },
+    {
+      "path": "ws-domain/src/test/java/br/gov/pr/secid/workstation/domain/decisao/analise/DecisionRulesTest.java",
+      "sha256": "1a896a036aff26c991c82d1900a443ea29d3f9779aa21dce059543c3b4e564dd"
+    },
+    {
+      "path": "ws-domain/src/test/java/br/gov/pr/secid/workstation/domain/security/AccessPolicyMatrixTest.java",
+      "sha256": "d30dcebe96f4e8c992f63460cbb111a91c8e6702f99226d86f51f1a591f21af9"
+    },
+    {
+      "path": "ws-domain/src/test/java/br/gov/pr/secid/workstation/domain/statemachine/DomainStateMachinesTest.java",
+      "sha256": "cf024207b41517d5b464969157917b681137a27bc5fcf0f621a7fc4d00604aa1"
+    },
+    {
+      "path": "ws-domain/src/test/java/br/gov/pr/secid/workstation/domain/statemachine/EntityInvariantsTest.java",
+      "sha256": "ffae1621c46ec9d3cf585381c820d84cb12804649686fcb52348e749bf43dff0"
+    },
+    {
+      "path": "ws-domain/src/test/java/br/gov/pr/secid/workstation/domain/statemachine/ReviewFindingsPr22Test.java",
+      "sha256": "3b4212bd9614843ccddd1203f01b1d74614250a03b06f4fbb1b1b23671e5b83b"
+    },
+    {
+      "path": "ws-infrastructure/ai-providers/src/main/java/br/gov/pr/secid/workstation/infrastructure/ai/AiProvidersConfig.java",
+      "sha256": "d97f0b066dbdc16235a06a03351875a9bbcfbc716eebae45dbf00cd4a40ed466"
+    },
+    {
+      "path": "ws-infrastructure/ai-providers/src/main/java/br/gov/pr/secid/workstation/infrastructure/ai/OpenAiEngine.java",
+      "sha256": "f05cf3d8b8cafd1509dcdad03de3db7035f4ba9aa892237042f8a1588a763c47"
+    },
+    {
+      "path": "ws-infrastructure/ai-providers/src/main/java/br/gov/pr/secid/workstation/infrastructure/ai/OpenAiProperties.java",
+      "sha256": "bf67506223f113698ec01b12cbb815a13ec00246f8da41ddd3a9b34e28eb1bec"
+    },
+    {
+      "path": "ws-infrastructure/ai-providers/src/test/java/br/gov/pr/secid/workstation/infrastructure/ai/OpenAiEngineTest.java",
+      "sha256": "680fbeb6aaacb84a0ee6d134d0eac851f2f4cd12faf1e36e1907418c27ea3ebe"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/account/MeController.java",
+      "sha256": "fa67b1a4ac3bee6a61704f58f9ecec76d08d0e4c60b8fad848082df2b7eaa4c4"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/acervo/TaskAiSuggestionController.java",
+      "sha256": "1636e81ced7cfb5a6b2daf3d5c1d863914b907112a06d24d328ed17a3bc9a3ea"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/acervo/TaskInventoryController.java",
+      "sha256": "2a45f01a9fc793a1973e50a897ed83ed60bdf816b2a103cc3d0d86a882547541"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/auth/AuthController.java",
+      "sha256": "899c0f3d41c62e9ae8b21afb562051b8deca0c2f0af1622023f976235e686af6"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/auth/PasswordResetController.java",
+      "sha256": "011d598fcf6c12fad81378884faf1b3d0b5df39e09589aa84cdc89f43e28f9ca"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/auth/RegistrationController.java",
+      "sha256": "bfa7af41b07478da79c98ab38206a6f19c4b48596923a7846a89f9ac6f751a30"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/auth/SessionsController.java",
+      "sha256": "49f18bb0aaa59f07bd5d1b2d441f518b8d4f84efd53493548f01c5e3da40199d"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/config/JwtConfig.java",
+      "sha256": "292734f70b716b6b29bb4bcb23c4601b0f43dee760040cd8a863b175a43b196e"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/config/JwtKeys.java",
+      "sha256": "ba9be04e0116f605156504f6dbe1002a4b2c2f227589d3135656377801966d4d"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/config/OpenApiConfig.java",
+      "sha256": "50b4756f8966ffeff2a21c444bde9c71b9f9e8409d3c2105ee551e2a1484fcde"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/config/SecurityConfig.java",
+      "sha256": "d6d0d98e359c8fa62772dc55a058e8def1c01fa82570410e54350f94eec85350"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/config/WsSecurityProperties.java",
+      "sha256": "a4fcde215e980150648f771e401ca5f969a435075c1f4c6d094fe168c913132c"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/development/ProfileDevelopmentController.java",
+      "sha256": "65b89deb807b1eb6f3e4ffaa282405d90f0b45c53319f0d7e9583f76e392fd44"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/error/ApiError.java",
+      "sha256": "35b817e68c1ae836a01504788e65792f7b6c2a475c040e26d3f9d456facfab40"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/error/ErrorWriter.java",
+      "sha256": "77c1f717e5f4f50137fb7c25852a2a118e67bf9b09af9e85973b717f75e3cf55"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/error/GlobalExceptionHandler.java",
+      "sha256": "5c586a70e9029092492d1f5f2111efcb6501975d8702eec485c821dc90fc995c"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/institutional/DepartmentTeamController.java",
+      "sha256": "3186e16cfedba213339b65508bbf88f9a60ef75f750fa532c3fe7ce11a13973f"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/oidc/NimbusIdTokenVerifier.java",
+      "sha256": "d79f6e1aa9fef56c4f3d9b0ccec6f8a34ae352a7e354c4bff0c15391ed63baec"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/oidc/OidcConfig.java",
+      "sha256": "51487a885d330d97baaec72111ba051964597f8e447af315b7d94a04905caa7d"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/oidc/OidcController.java",
+      "sha256": "4621fd210a08643006564bc93410dc6f391fb6b2eee0880440da04e0ad98ea66"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/security/ApiErrorAccessDeniedHandler.java",
+      "sha256": "a0ca775a504b2c776b1000f64b93abc2d28a6a432813f496a05b594d1fa1bb7b"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/security/ApiErrorAuthenticationEntryPoint.java",
+      "sha256": "3b2e387860e0631e95ff09fa01f4120cdf1b2b44ec7fb5d747b56165f1c6272f"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/security/Argon2PasswordHasher.java",
+      "sha256": "c3094ca04d1fd8534209ffbb1bb9aa0b55c07012a18962cf1cef2f4e9ad4a972"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/security/AuthorizationEnforcementAdvice.java",
+      "sha256": "f21a60ae5863e058b0c70c5fb9c2e447750cabe0b77086750394f6a6d00ef4d9"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/security/AuthorizationExempt.java",
+      "sha256": "a7b7f8ba332ea52b698c0327485471f8365552d0b8898e8912caf837dfa120e0"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/security/AuthorizedBy.java",
+      "sha256": "703fe60ece5409bc2fd06da80cc5a80fde6544cbd06f33bb633288cac697e003"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/security/CurrentUserArgumentResolver.java",
+      "sha256": "8559b21a943b721727205c4492d6b997b0c914aa69f342de9fae2d0d008bb17c"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/security/HashBulkhead.java",
+      "sha256": "65798e3a626aa6b3c4c7def7aadaaf9c279f84b47b149b716e4496bf759b83c6"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/security/JwtTokenIssuer.java",
+      "sha256": "49c43ac40a1655b525e4bd38d3ce87890b0962848c65b39c018c44892e9d8c44"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/security/SessionActiveFilter.java",
+      "sha256": "054a66867cfda482e549b2478277932811ab630782a3181ec1d3241531daf80c"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/social/NotificationController.java",
+      "sha256": "f80e2fe686b7ebb66c519a6c529272d2eeba857a0465780e8bf502984b65ae3d"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/studio/AssetSuggestionController.java",
+      "sha256": "f4949cdcd4611c56e13db25db66a3777e69610b375e4027f7d560c707e94f3b1"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/studio/DrawingProposalController.java",
+      "sha256": "03d4f2b8da2332bb092d431b9919e4bd80fb9a77e83fc80eb09b27fe75890b58"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/studio/LettersSuggestionController.java",
+      "sha256": "7ad3c333638d4d55e2f6639d5c363c3fc83063f83c36726ba4d78b9d404d1b80"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/studio/SharedDrawingController.java",
+      "sha256": "bf3fd4b2dca612816bb6c3a023373b96c3ce5b7a55d430f99a0b55c290813045"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/support/AuthRateLimitFilter.java",
+      "sha256": "e779aa7069e1fce4de05498a28b3bbbb644eb0578c5a352b05115d02734ce63e"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/support/ClientIpResolver.java",
+      "sha256": "42835017386f58ca548c7c7c59ce878eefd76f898151bf9a5fe6d788f74d236a"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/support/CorrelationIdFilter.java",
+      "sha256": "1454338fede53b8306e05c12fcfc37b202e5c8eaeb75c4e0329fc41d6bbaeafd"
+    },
+    {
+      "path": "ws-web/src/main/java/br/gov/pr/secid/workstation/web/support/RequestPaths.java",
+      "sha256": "2b96192dcd0e76c29c6b5513e24304e2dd86c6e61a299f979d32121c52d6096c"
+    },
+    {
+      "path": "ws-web/src/test/java/br/gov/pr/secid/workstation/web/WebTestApplication.java",
+      "sha256": "dfc3767edbdbd0ebd5a730f89baf2063eaaa7f6210eaec5458b1cc84f5c6a2ea"
+    },
+    {
+      "path": "ws-web/src/test/java/br/gov/pr/secid/workstation/web/account/AuthorizationMatrixWebTest.java",
+      "sha256": "c12df4cc0de388ba59e3855203672f74b3296f5e37d5fb1326f4dc630a6a9334"
+    },
+    {
+      "path": "ws-web/src/test/java/br/gov/pr/secid/workstation/web/account/MeControllerWebTest.java",
+      "sha256": "af5c100de0eae7b03259f3e44cc58e5e3f03a13d26302c753a5cb0188e195284"
+    },
+    {
+      "path": "ws-web/src/test/java/br/gov/pr/secid/workstation/web/auth/AuthControllerWebTest.java",
+      "sha256": "9addf4229df5b152bcc2f66a2f0e9f817f5926b525798fd1d74e983dee89458e"
+    },
+    {
+      "path": "ws-web/src/test/java/br/gov/pr/secid/workstation/web/auth/RegistrationAndResetControllerWebTest.java",
+      "sha256": "c0af36dd78d6cf5a99b1e809273f2a17ec512958d2773d69079e8851f16550dd"
+    },
+    {
+      "path": "ws-web/src/test/java/br/gov/pr/secid/workstation/web/auth/SessionsControllerWebTest.java",
+      "sha256": "b3eff6a97ded161d306e2aac39e43fb9d28ea8fd247f610fe2e6c9625beb462c"
+    },
+    {
+      "path": "ws-web/src/test/java/br/gov/pr/secid/workstation/web/config/JwtKeysAndIssuerTest.java",
+      "sha256": "e30d2ac908c70db5248a5c2872359ccb5e680077a80008672f742c202cedf924"
+    },
+    {
+      "path": "ws-web/src/test/java/br/gov/pr/secid/workstation/web/config/WsSecurityPropertiesBindingTest.java",
+      "sha256": "8ef3f8b98ad4431b44c9bf7a528da3558537bfa3d64c01909f647389d9d9b13d"
+    },
+    {
+      "path": "ws-web/src/test/java/br/gov/pr/secid/workstation/web/error/GlobalExceptionHandlerUnitTest.java",
+      "sha256": "92e3ead945c376e4550f59e2572bb2a6926838670271bab869284abab561cdd8"
+    },
+    {
+      "path": "ws-web/src/test/java/br/gov/pr/secid/workstation/web/error/GlobalExceptionHandlerWebTest.java",
+      "sha256": "2569297cac049db55aeeaf05066a5e8c5cecfb99779cbb8601898a8cf6b0d5ab"
+    },
+    {
+      "path": "ws-web/src/test/java/br/gov/pr/secid/workstation/web/error/ProbeController.java",
+      "sha256": "61fa1092a6d486690b14ed35a61e364edf2f4917f7ab8b744170296cf2e05751"
+    },
+    {
+      "path": "ws-web/src/test/java/br/gov/pr/secid/workstation/web/oidc/OidcWebTest.java",
+      "sha256": "cd999a33ccc6a28a94706307cb49d5c4fb0118a5ff309214d8f465f8afb3e186"
+    },
+    {
+      "path": "ws-web/src/test/java/br/gov/pr/secid/workstation/web/security/Argon2PasswordHasherTest.java",
+      "sha256": "01c89a211dc0cef5cbf811bdf757dc1b0d27cacefb002d6ba3e9731348cc4792"
+    },
+    {
+      "path": "ws-web/src/test/java/br/gov/pr/secid/workstation/web/security/PathVariableAuthorizationTest.java",
+      "sha256": "7de606e411117c80bcc6bdd1b6f14ede40f9735db20a4d61499bb4dcfab520fa"
+    },
+    {
+      "path": "ws-web/src/test/java/br/gov/pr/secid/workstation/web/security/SessionActiveFilterTest.java",
+      "sha256": "1db39739798bc9ac9394ff8388e746ed0014c49cebccd8affd270dbfed7988b8"
+    },
+    {
+      "path": "ws-web/src/test/java/br/gov/pr/secid/workstation/web/support/AuthRateLimitFilterTest.java",
+      "sha256": "cc21254148ee675351faa9661ba2719a1aeb7651ce95b59c9ded0852ae11c98b"
+    },
+    {
+      "path": "ws-web/src/test/java/br/gov/pr/secid/workstation/web/support/ClientIpResolverTest.java",
+      "sha256": "8a7bc335d0d6747f9ee1d952d0c5761fa06796ffa2bcbd2dc712f16df4185786"
+    },
+    {
+      "path": "ws-web/src/test/java/br/gov/pr/secid/workstation/web/support/CorrelationIdFilterTest.java",
+      "sha256": "457a94b8378c63c75e0e17d22adeeb02f7a896fd98d387a848188b941597a208"
+    },
+    {
+      "path": "ws-web/src/test/java/br/gov/pr/secid/workstation/web/support/RequestPathsTest.java",
+      "sha256": "ac5cb0009ed43a13ecc95b6e300f5952100a66ea4b0b88497aa50360b2eb13cd"
+    }
+  ]
+}
