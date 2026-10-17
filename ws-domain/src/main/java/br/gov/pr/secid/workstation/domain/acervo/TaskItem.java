@@ -134,6 +134,30 @@ public record TaskItem(
         return accessClass.allowsExternalAi();
     }
 
+    /**
+     * Tarefa criada à mão no criador (RF4; auditoria 17/10/2026): RASCUNHO, dono e departamento do autor, origem INTERNA e fonte
+     * COLAR (texto digitado/colado — mapeamento do RF4 para TEXTO_MANUAL; Q-235). Contadores e carimbos sociais começam zerados.
+     */
+    public static TaskItem create(UUID ownerId, UUID departmentId, String title, String descriptionMd, TaskType type, TaskCategory category,
+                                  Priority priority, LocalDate dueAt, UUID responsibleId, AccessClassification accessClass, Visibility visibility) {
+        return new TaskItem(null, ownerId, departmentId, title, null, descriptionMd, type, category, null, Set.of(), Set.of(), accessClass, null,
+                null, null, BigDecimal.ZERO, TaskOrigin.INTERNA, SourceKind.COLAR, null, null, null, responsibleId, dueAt, null, null, null, null,
+                priority, TaskState.RASCUNHO, null, null, null, null, null, null, null, null, visibility, false, false, false, null, null, null,
+                null, CoverMode.AUTO, null, Set.of(), null, null, null, null, 0, 0, 0, 0, 0, 0, 0, 0, null);
+    }
+
+    /** Campos que o criador/edição altera (RF12); o resto — estado, origem, contadores, IA — é preservado. */
+    public TaskItem withDetails(String newTitle, String newDescriptionMd, TaskType newType, TaskCategory newCategory, Priority newPriority,
+                                LocalDate newDueAt, UUID newResponsibleId, AccessClassification newAccessClass, Visibility newVisibility) {
+        return new TaskItem(id, ownerId, departmentId, newTitle, summary, newDescriptionMd, newType, newCategory, subcategory, processTags,
+                natureTags, newAccessClass, format, effortSize, estimatedHours, amountInvolved, origin, sourceKind, sourceRef, linkMode, orgEntityId,
+                newResponsibleId, newDueAt, legalDeadlineRuleId, legalDeadlineBaseDate, legalDueAt, legalOverrideReason, newPriority, state,
+                blockedByTaskId, blockedByUserId, blockReason, docSituation, receivedAt, senderOrigin, protocolNumber, retentionPolicyJson,
+                newVisibility, favorite, offeredInCounter, aiGenerated, aiInferenceId, aiConfidenceJson, thumbnailUrl, coverUrl, coverMode, cardSkin,
+                tags, notes, originalTaskId, sourceProjectId, checklistItemId, reuseCount, projectUsageCount, likesCount, commentsCount, savesCount,
+                sharesCount, remixesCount, viewsCount, sealIdsJson);
+    }
+
     private TaskItem withState(TaskState next, UUID byTask, UUID byUser, String reason) {
         return new TaskItem(id, ownerId, departmentId, title, summary, descriptionMd, type, category, subcategory, processTags, natureTags,
                 accessClass, format, effortSize, estimatedHours, amountInvolved, origin, sourceKind, sourceRef, linkMode, orgEntityId, responsibleId,

@@ -241,7 +241,7 @@ export interface paths {
         options?: never;
         head?: never;
         /** RF3.CA01/CA04/CA06 Edita campos não sensíveis (422 VALIDACAO por campo); 403 EXCLUSAO_AGENDADA durante o prazo */
-        patch: operations["update"];
+        patch: operations["update_1"];
         trace?: never;
     };
     "/api/me/deletion": {
@@ -295,6 +295,59 @@ export interface paths {
         head?: never;
         /** RF3.CA02/CA08 E-mail/telefone com step-up da senha atual no mesmo bloqueio do login (401 REAUTENTICACAO_FALHOU, 6º erro → 429 MUITAS_TENTATIVAS); e-mail novo volta a 'não confirmado' e recebe código */
         patch: operations["sensitive"];
+        trace?: never;
+    };
+    "/api/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF41.CA01 Minhas tarefas (mais recentes primeiro) */
+        get: operations["mine"];
+        put?: never;
+        /** RF4.CA01 Criar tarefa (campos comuns + briefing por área) */
+        post: operations["create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF12.CA01 Abrir tarefa */
+        get: operations["get"];
+        /** RF12.CA02 Editar tarefa (versão obrigatória; 409 EDICAO_CONCORRENTE) */
+        put: operations["update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{id}/transitions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF41.CA02 Mudar estado da tarefa (tabela do TaskState; bloqueio exige causa e motivo) */
+        post: operations["transition"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/usernames/{username}/availability": {
@@ -356,6 +409,10 @@ export interface components {
             deviceName?: string;
             email: string;
         };
+        Criterion: {
+            done?: boolean;
+            text?: string;
+        };
         DeletionBody: {
             currentPassword: string;
             reason?: string;
@@ -367,6 +424,9 @@ export interface components {
             /** Format: date-time */
             deletionScheduledAt?: string;
             status?: string;
+        };
+        Deliverable: {
+            text?: string;
         };
         EmailRequest: {
             email: string;
@@ -413,6 +473,10 @@ export interface components {
             nextStep?: string;
             status?: string;
         };
+        Reference: {
+            label?: string;
+            url?: string;
+        };
         RefreshRequest: {
             refreshToken: string;
         };
@@ -457,6 +521,94 @@ export interface components {
             /** Format: date-time */
             lastActiveAt?: string;
             persistent?: boolean;
+        };
+        TaskRequest: {
+            acceptanceCriteria?: components["schemas"]["Criterion"][];
+            /** @enum {string} */
+            accessClass?: "PUBLICO" | "INTERNO" | "RESTRITO" | "SIGILOSO";
+            /** @enum {string} */
+            area?: "SOFTWARE" | "ADMINISTRACAO" | "DESIGN" | "PESQUISA" | "MARKETING" | "PLANEJAMENTO" | "ENGENHARIA" | "JURIDICO" | "OUTRA";
+            /** @enum {string} */
+            category?: "OFICIO_MEMORANDO" | "PARECER_TECNICO" | "ETP" | "TERMO_REFERENCIA" | "PLANILHA_ORCAMENTARIA" | "PROJETO_BASICO_EXECUTIVO" | "CRONOGRAMA" | "ATA" | "PORTARIA_RESOLUCAO" | "CONTRATO_CONVENIO" | "VISTORIA_RELATORIO_FOTOGRAFICO" | "LICENCA_ANUENCIA" | "MAPA_GEORREFERENCIA" | "FORMULARIO" | "OUTRO";
+            deliverables?: components["schemas"]["Deliverable"][];
+            descriptionMd?: string;
+            draft?: boolean;
+            /** Format: date */
+            dueAt?: string;
+            extensions?: {
+                [key: string]: string;
+            };
+            objective?: string;
+            /** @enum {string} */
+            priority?: "BAIXA" | "MEDIA" | "ALTA" | "CRITICA";
+            references?: components["schemas"]["Reference"][];
+            /** Format: uuid */
+            responsibleId?: string;
+            title?: string;
+            /** @enum {string} */
+            type?: "TEXTO_MANUAL" | "TEXTO_IA" | "IMAGEM_WEB" | "IMAGEM_EDITADA" | "PLANILHA" | "DOCUMENTO" | "PASTA" | "LINK" | "DESENHO_TECNICO" | "FORMULARIO" | "ATA_REGISTRO" | "EMAIL" | "PROTOCOLO" | "CRONOGRAMA" | "ESTUDO_TECNICO_PRELIMINAR";
+            /** Format: int64 */
+            version?: number;
+            /** @enum {string} */
+            visibility?: "PRIVADA" | "DEPARTAMENTO" | "EMPRESA" | "PUBLICA";
+        };
+        TaskView: {
+            acceptanceCriteria?: components["schemas"]["Criterion"][];
+            /** @enum {string} */
+            accessClass?: "PUBLICO" | "INTERNO" | "RESTRITO" | "SIGILOSO";
+            /** @enum {string} */
+            area?: "SOFTWARE" | "ADMINISTRACAO" | "DESIGN" | "PESQUISA" | "MARKETING" | "PLANEJAMENTO" | "ENGENHARIA" | "JURIDICO" | "OUTRA";
+            blockReason?: string;
+            /** Format: uuid */
+            blockedByTaskId?: string;
+            /** Format: uuid */
+            blockedByUserId?: string;
+            /** @enum {string} */
+            category?: "OFICIO_MEMORANDO" | "PARECER_TECNICO" | "ETP" | "TERMO_REFERENCIA" | "PLANILHA_ORCAMENTARIA" | "PROJETO_BASICO_EXECUTIVO" | "CRONOGRAMA" | "ATA" | "PORTARIA_RESOLUCAO" | "CONTRATO_CONVENIO" | "VISTORIA_RELATORIO_FOTOGRAFICO" | "LICENCA_ANUENCIA" | "MAPA_GEORREFERENCIA" | "FORMULARIO" | "OUTRO";
+            /** Format: date-time */
+            createdAt?: string;
+            deliverables?: components["schemas"]["Deliverable"][];
+            /** Format: uuid */
+            departmentId?: string;
+            descriptionMd?: string;
+            /** Format: date */
+            dueAt?: string;
+            editable?: boolean;
+            extensions?: {
+                [key: string]: string;
+            };
+            /** Format: uuid */
+            id?: string;
+            objective?: string;
+            /** Format: uuid */
+            ownerId?: string;
+            /** @enum {string} */
+            priority?: "BAIXA" | "MEDIA" | "ALTA" | "CRITICA";
+            references?: components["schemas"]["Reference"][];
+            /** Format: uuid */
+            responsibleId?: string;
+            /** @enum {string} */
+            state?: "RASCUNHO" | "DISPONIVEL" | "EM_USO" | "BLOQUEADA" | "CONCLUIDA" | "ARQUIVADA" | "MODELO_PUBLICO" | "OFERECIDA";
+            title?: string;
+            /** @enum {string} */
+            type?: "TEXTO_MANUAL" | "TEXTO_IA" | "IMAGEM_WEB" | "IMAGEM_EDITADA" | "PLANILHA" | "DOCUMENTO" | "PASTA" | "LINK" | "DESENHO_TECNICO" | "FORMULARIO" | "ATA_REGISTRO" | "EMAIL" | "PROTOCOLO" | "CRONOGRAMA" | "ESTUDO_TECNICO_PRELIMINAR";
+            /** Format: date-time */
+            updatedAt?: string;
+            /** Format: int64 */
+            version?: number;
+            /** @enum {string} */
+            visibility?: "PRIVADA" | "DEPARTAMENTO" | "EMPRESA" | "PUBLICA";
+        };
+        TransitionRequest: {
+            /** Format: uuid */
+            blockedByTaskId?: string;
+            /** Format: uuid */
+            blockedByUserId?: string;
+            reason?: string;
+            /** @enum {string} */
+            to: "RASCUNHO" | "DISPONIVEL" | "EM_USO" | "BLOQUEADA" | "CONCLUIDA" | "ARQUIVADA" | "MODELO_PUBLICO" | "OFERECIDA";
+            /** Format: int64 */
+            version: number;
         };
         UserPreferences: {
             aiModeDefault?: string;
@@ -859,7 +1011,7 @@ export interface operations {
             };
         };
     };
-    update: {
+    update_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -991,6 +1143,126 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["UserView"];
+                };
+            };
+        };
+    };
+    mine: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TaskView"][];
+                };
+            };
+        };
+    };
+    create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TaskView"];
+                };
+            };
+        };
+    };
+    get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TaskView"];
+                };
+            };
+        };
+    };
+    update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TaskView"];
+                };
+            };
+        };
+    };
+    transition: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TransitionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TaskView"];
                 };
             };
         };

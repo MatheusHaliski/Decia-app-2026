@@ -521,7 +521,9 @@ public final class ForeignKeyPolicy {
             new Fk("decision_events", "decision_id", "decisions", "RESTRICT"),
             new Fk("decision_events", "actor_user_id", "users", "RESTRICT"),
             // V24 — seg_bloco5_quarentena_midia
-            new Fk("media_scans", "media_id", "media_objects", "CASCADE")
+            new Fk("media_scans", "media_id", "media_objects", "CASCADE"),
+            // V36 — acervo_briefing_tarefas
+            new Fk("task_briefs", "task_id", "tasks", "CASCADE")
     );
     // <<< gerado
 

@@ -25,6 +25,10 @@ public final class AuditActions {
     public static final String OIDC_LOGIN = "OIDC_LOGIN";
     public static final String OIDC_LINK_RECUSADO = "OIDC_LINK_RECUSADO";
     public static final String ACESSO_NEGADO = "ACESSO_NEGADO";
+    /** Acervo (RF4/RF12/RF41): criação, edição e transição de estado da tarefa. */
+    public static final String TASK_CREATED = "TASK_CREATED";
+    public static final String TASK_UPDATED = "TASK_UPDATED";
+    public static final String TASK_STATE_CHANGED = "TASK_STATE_CHANGED";
 
     private AuditActions() {
     }
