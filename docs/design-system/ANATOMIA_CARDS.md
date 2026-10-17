@@ -14,7 +14,7 @@ O wrapper genérico [`components/ui/Card.tsx`](../../components/ui/Card.tsx) (su
 |---|---|---|---|---|---|---|
 | 1 | Card de tarefa (esquema) | `components/social/TaskSchemeCard.tsx` (`TaskSchemeCard`, layouts compact · list · expanded · attachment · mini) | `TaskItem` (`TaskCardViewModel`) | DEMO | `tarefa-*` (28 pranchas) | §1–§4, §6–§8 |
 | 2 | Card de projeto (esquema) | `components/social/ProjectCard.tsx` (`ProjectCard`, layouts mosaic · mural) | `ProjectScheme` (`ProjectCardViewModel`) | DEMO (hero, postit, visões e esquemas compostos: planejado) | `projeto-*` (22 pranchas, com visões e esquemas compostos) | §5–§8 |
-| 3 | Card da tarefa real | `components/tasks/PersistedTasks.tsx` (`PersistedTaskCard`) | `TaskView` de `/api/tasks` | **real** | `tarefa-real-a-realizar` · `tarefa-real-concluida` · `tarefa-real-bloqueada` | §9 |
+| 3 | Card da tarefa real | `components/tasks/PersistedTasks.tsx` (`PersistedTaskCard`) → `TaskSchemeCard` compacto **sem a barra social** (adaptador `lib/tasks/card.ts`, `toTaskCardViewModelFromApi`) | `TaskView` de `/api/tasks` (`PlainTaskCardViewModel`, `social: false`) | **real** | `tarefa-compacto` (anatomia); `tarefa-real-a-realizar` · `tarefa-real-concluida` · `tarefa-real-bloqueada` mostram o desenho anterior (não regeneradas) | §9 |
 | 4 | Decision Card (frente · verso · compacto) | `components/decia/DecisionCard.tsx` (`DecisionCard`, `DecisionCardFront`, `DecisionCardBack`) | `Decision` (`DecisionCardViewModel`) | DEMO | `decisao-frente` · `decisao-verso` · `decisao-compacta` | §10 |
 | 5 | Card de evidência | `components/decia/WorkspaceSections.tsx` (`EvidenceSection`) | `Evidence` + `EvidenceLink` | DEMO | `evidencia-decia` | §11 |
 | 6 | Sugestão da IA | `components/decia/AiSuggestion.tsx` (`AiSuggestion`) | sugestão da IA (sem entidade própria) | DEMO (sem motor de IA) | `sugestao-ia` | §11 |
@@ -35,7 +35,7 @@ O wrapper genérico [`components/ui/Card.tsx`](../../components/ui/Card.tsx) (su
 
 **Sem prancha própria (e por quê):** o detalhe `/tasks/[id]` (`components/social/TaskDetail.tsx`) é o card de tarefa no layout ampliado (`tarefa-ampliado`); o card "Decisões" do perfil (`DecisionsTab` em `ProfileView.tsx`) e os cards "Gestão"/"Minha equipe" de empresa e departamento (`app/(shell)/companies/[slug]`, `departments/[slug]`) são painéis de atalho (título, texto, botão) sem dado de entidade; os painéis de Configurações (`app/(shell)/settings/page.tsx`: tema, idioma, densidade, fonte, movimento, skin, fundo, notificações, fuso, WIP, autonomia e modo da IA) e o card de perfil da conta (`components/account/AccountPanel.tsx`) são formulários sobre o wrapper `Card`; os cards de `/lab/*` são vitrines do design system; fio de comentários, checklist de prontidão, matriz de critérios e estados vazio/erro/carregando são partes de tela, não cards.
 
-**Achados do inventário:** (1) a tarefa tem **dois desenhos**: o `TaskSchemeCard` (identidade visual completa, dados DEMO) e o `PersistedTaskCard` (dados reais, só o wrapper `Card`, sem borda do departamento, mídia, arte nem barra social); unificar é decisão de produto. (2) O `PersistedTaskCard` mostra "Bloqueado", mas o **motivo do bloqueio** só aparece no detalhe. (3) O card de pessoa da busca e o card da sessão DECIA **não existem no código**. (4) "Perfil privado" não existe no domínio (D-90: seguir é imediato; invisível = inexistente); a prancha `pessoa-resultado-restrito` fica como proposta. (5) As notificações do sino ainda são MOCK (D-36).
+**Achados do inventário:** (1) a tarefa tinha **dois desenhos**: o `TaskSchemeCard` (identidade visual completa, dados DEMO) e o `PersistedTaskCard` (dados reais, só o wrapper `Card`, sem borda do departamento, mídia, arte nem barra social). **Resolvido (17/10/2026, decisão do dono do produto):** o card real passa a usar a anatomia do `TaskSchemeCard` (compacto) **sem a barra social** — a API não tem curtidas, comentários, remixes, selos, chancelas nem crédito, e o card não mostra contadores zerados nem ações que não funcionam; ver §9. (2) O `PersistedTaskCard` mostrava "Bloqueado", mas o **motivo do bloqueio** só aparecia no detalhe. **Resolvido:** o motivo aparece no próprio card (⊘ + texto, `data-testid="block-reason"`). (3) O card de pessoa da busca e o card da sessão DECIA **não existem no código**. (4) "Perfil privado" não existe no domínio (D-90: seguir é imediato; invisível = inexistente); a prancha `pessoa-resultado-restrito` fica como proposta. (5) As notificações do sino ainda são MOCK (D-36).
 
 ## 1. Camadas, empilhamento e recorte (iguais nos dois cards)
 | # | Camada | Classe | Regra |
@@ -146,29 +146,34 @@ Regra de empilhamento: cada variação ativa acrescenta no máximo **uma linha**
 
 ## 9. Card da tarefa real — `PersistedTaskCard`
 
-![Card da tarefa real — A realizar](anatomias/svg/tarefa-real-a-realizar--claro.svg)
+![Card de tarefa — compacto (anatomia que o card real usa)](anatomias/svg/tarefa-compacto--claro.svg)
 
-Arquivo `components/tasks/PersistedTasks.tsx` · lista "Minhas tarefas" (`MyTasks`, `/tasks`) em grade de 1/2/3 colunas · dados **reais** de `GET /api/tasks` (`tasksApi.mine`). É o card de reconhecimento rápido: diz o que é, em que pé está e qual o próximo passo; o trabalho (transições, bloqueio com motivo, critérios) acontece no detalhe `PersistedTaskDetail`.
+Arquivo `components/tasks/PersistedTasks.tsx` · lista "Minhas tarefas" (`MyTasks`, `/tasks` e Acervo Digital de `/profile`) em `CardGrid` (mín. 240 px, 1 coluna no celular) · dados **reais** de `GET /api/tasks` (`tasksApi.mine`). É o card de reconhecimento rápido: diz o que é, em que pé está e qual o próximo passo; o trabalho (transições, bloqueio com motivo, critérios) acontece no detalhe `PersistedTaskDetail`.
 
-**Camadas:** **1** superfície `ui/Card as="article"` (tom surface: borda 1 px `--ws-border`, raio lg, padding md), `aria-labelledby` = id do título. Não tem área artística, mídia nem efeitos (diferença do card de esquema, §1).
+**Unificado com o card de esquema (17/10/2026):** o `PersistedTaskCard` renderiza o `TaskSchemeCard` no layout **compacto** (§1–§4) a partir do adaptador puro `toTaskCardViewModelFromApi(task, { viewerId, now })` (`lib/tasks/card.ts`), que reaproveita `TASK_TYPE_META`, `TASK_STATE_TONE` e `dueKindOf` do DEMO. O view model é `PlainTaskCardViewModel` (`social: false`, em `lib/social/view-model.ts`): **sem a barra social** e sem contadores — a API não tem curtidas, comentários, remixes, selos, chancelas, crédito nem delegação, e o card não mostra zeros nem ações que não funcionam. A raiz é o `article` do esquema com `data-testid="persisted-task-card"` e `data-social="off"`. As pranchas `tarefa-real-*` mostram o desenho anterior (wrapper `Card`) e não foram regeneradas.
+
+**Camadas:** as do §1 — **1** superfície com borda de 2 px (`--ws-border`, porque a API só traz `departmentId`, sem nome nem cor: `department: null`), RASCUNHO tracejado, ARQUIVADA esmaecida; **2** arte da família do tipo; **3** container; **4** mídia 3:2 com o glifo do tipo e carimbo "Concluída". Efeitos: pulso em EM_USO.
 
 | Letra | Elemento | Atributo de origem | Categoria |
 |---|---|---|---|
-| a | Tipo de registro | Badge fixo "Tarefa" | derivado (constante) |
-| b | Tipo · área | `TaskView.type` → `social.taskType`; `TaskView.area` → `tasks.area` | Conteúdo autoral |
-| c | Título (link `/tasks/[id]`) | `TaskView.title` (h3) | Identificação |
-| d | Objetivo (2 linhas) | `TaskView.objective`; vazio = "Objetivo não informado" | Conteúdo autoral |
-| e | Estado de execução | `workStatusOf(TaskView.state)` → `WorkStatusTag` | Estado e ciclo de vida |
-| f | Prioridade (só ≠ MÉDIA) | `TaskView.priority` | Conteúdo autoral |
-| g | Prazo | `TaskView.dueAt` (data média, UTC) | Conteúdo autoral |
-| h | Progresso pelos critérios | `criteriaProgress(acceptanceCriteria)` → barra `role="progressbar"` + "n de N critérios atendidos" | derivado de Conteúdo autoral |
-| i | Próxima ação | `nextActionOf(state)` (Iniciar · Concluir · Retomar · Revisar e publicar) | derivado de Estado e ciclo de vida |
+| a | Tipo (chip com glifo e tom) | `TaskView.type` → `TASK_TYPE_META` | Conteúdo autoral |
+| b | Estado de execução | `workStatusOf(TaskView.state)` → "A realizar · Em andamento · Bloqueado · Concluído · Arquivado" (+ "· Rascunho"); publicação (`MODELO_PUBLICO`/`OFERECIDA`) com o rótulo do domínio; tom de `TASK_STATE_TONE` | Estado e ciclo de vida |
+| c | Classificação (só RESTRITO/SIGILOSO, ⛨) | `TaskView.accessClass` | Classificação e visibilidade |
+| d | Categoria (rótulo mono) | `TaskView.category` | Conteúdo autoral |
+| e | Título (h3, link `/tasks/[id]`) | `TaskView.title` | Identificação |
+| f | Objetivo (2 linhas, `showSummary`) | `TaskView.objective`; vazio = omitido | Conteúdo autoral |
+| g | Prazo (◷, em dia · vence em breve · atrasado) | `TaskView.dueAt` + `dueKindOf` | Conteúdo autoral |
+| h | Motivo do bloqueio (só BLOQUEADA, ⊘) | `TaskView.blockReason` | Estado e ciclo de vida |
+| i | Rodapé de trabalho (na zona da barra social): progresso pelos critérios | `criteriaProgress(acceptanceCriteria)` → barra `role="progressbar"` + "n de N critérios atendidos" | derivado de Conteúdo autoral |
+| j | Rodapé: próxima ação · prioridade (só ≠ MÉDIA) | `nextActionOf(state)`; `TaskView.priority` | derivado de Estado e ciclo de vida |
 
-**Estados e variações:** A realizar (`DISPONIVEL`, tom accent) · Em andamento (`EM_USO`) · **Bloqueado** (`BLOQUEADA`, tom danger, próxima ação "Retomar (desbloquear)") — [`tarefa-real-bloqueada`](anatomias/svg/tarefa-real-bloqueada--claro.svg) · **Concluído** (`CONCLUIDA`, tom success, barra cheia, sem próxima ação) — [`tarefa-real-concluida`](anatomias/svg/tarefa-real-concluida--claro.svg) · Arquivado · Rascunho ("A realizar · Rascunho", etiqueta tracejada, próxima ação "Revisar e publicar no acervo") · Publicado como modelo / Oferecida (`MODELO_PUBLICO`/`OFERECIDA`: etiqueta âmbar de publicação, sem progresso inventado). Sem critérios: "Sem critérios de conclusão: sem percentual". Lista: carregando (`LoadingState`), erro com motivo e caminho (sem sessão: "entre para ver"), vazio com "Criar tarefa".
+**Fica de fora (a API não tem):** autor e responsável por nome (só ids: `author`/`responsible` nulos, o card não mostra), departamento, faísca de IA, selos/chancelas, crédito de remix, delegação, favorita e toda a barra social. A área profissional (`TaskView.area`) aparece só no detalhe.
 
-**Ações:** o título é o único link (abre o detalhe). Filtros por estado acima da grade (botões com `aria-pressed` e contagem).
+**Estados e variações:** A realizar (`DISPONIVEL`, accent) · Em andamento (`EM_USO`, info, pulso) · **Bloqueado** (`BLOQUEADA`, danger, motivo no card, próxima ação "Retomar (desbloquear)") · **Concluído** (`CONCLUIDA`, success, carimbo na mídia, sem próxima ação) · Arquivado (esmaecido) · Rascunho (borda e etiqueta tracejadas, "A realizar · Rascunho", próxima ação "Revisar e publicar no acervo") · Publicado como modelo / Oferecida (sem progresso inventado). `data-variant` traz o estado e ATRIBUIDA quando a tarefa de outra pessoa está sob a responsabilidade de quem olha (com `viewerId`). Sem critérios: "Sem critérios de conclusão: sem percentual". Lista: carregando (`LoadingState`), erro com motivo e caminho (sem sessão: "entre para ver"), vazio com "Criar tarefa".
 
-**Acessibilidade:** estado sempre em texto (nunca só cor); progresso com `aria-valuenow`/`aria-valuemin`/`aria-valuemax` e rótulo "Progresso pelos critérios: n de N"; o motivo do bloqueio **não** aparece no card (só no detalhe, `role="status"`) — lacuna registrada no §0.
+**Ações:** o título é o único link (abre o detalhe); o card não tem botões. Filtros por estado acima da grade (botões com `aria-pressed` e contagem).
+
+**Acessibilidade:** estado sempre em texto (nunca só cor); `aria-label` do `article` com título, tipo e estado; progresso com `aria-valuenow`/`aria-valuemin`/`aria-valuemax` e rótulo "Progresso pelos critérios: n de N"; glifos `aria-hidden`. **Celular:** grade de uma coluna a 390 px, `min-w-0` e quebra de palavras longas no título, objetivo, motivo e rodapé (sem rolagem horizontal).
 
 ## 10. Decision Card — `DecisionCard` (frente · verso · compacto)
 
