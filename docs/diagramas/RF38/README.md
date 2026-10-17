@@ -14,16 +14,17 @@ flowchart LR
   classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
   classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
   classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  classDef ucDemo fill:#fff8e6,stroke:#b26a00,stroke-dasharray:2 2,color:#1b1b1b
   visitante["«ator» Visitante"]:::ator
   autenticado["«ator» Pessoa autenticada"]:::ator
   dono["«ator» Dono do recurso"]:::ator
   subgraph SIS["Work Station — RF38 Identidade visual"]
     direction TB
-    UC1(["UC1 Reconhecer o tipo da tarefa pelo ícone"]):::uc
-    UC2(["UC2 Ler estado e prazo no card"]):::uc
-    UC3(["UC3 Ver a capa-mosaico do projeto"]):::uc
-    UC4(["UC4 Reconhecer lacres, carimbos e monogramas"]):::uc
-    UC5(["UC5 Identificar conteúdo gerado pela IA"]):::uc
+    UC1(["UC1 Reconhecer o tipo da tarefa pelo ícone"]):::ucDemo
+    UC2(["UC2 Ler estado e prazo no card"]):::ucDemo
+    UC3(["UC3 Ver a capa-mosaico do projeto"]):::ucDemo
+    UC4(["UC4 Reconhecer lacres, carimbos e monogramas"]):::ucDemo
+    UC5(["UC5 Identificar conteúdo gerado pela IA"]):::ucDemo
     UC6(["UC6 Ver a miniatura automática da tarefa"]):::ucPlan
     UC7(["UC7 Trocar a capa da tarefa"]):::ucPlan
     UC8(["UC8 Seguir o fio de decisão"]):::ucPlan
@@ -53,11 +54,11 @@ flowchart LR
 
 | Caso de uso | Ator(es) | CAs | Situação |
 |---|---|---|---|
-| UC1 Reconhecer o tipo da tarefa pelo ícone | `visitante`, `autenticado` | RF38.CA01 | real · DEMO (`TypeChip` em `TaskSchemeCard`) |
-| UC2 Ler estado e prazo no card | `visitante`, `autenticado` | RF38.CA05 | real · DEMO (`Tag`, `Due` com prazo legal) |
-| UC3 Ver a capa-mosaico do projeto | `visitante`, `autenticado` | RF38.CA03 | real · DEMO (`ProjectCard` com mosaico 2×3; recálculo no servidor planejado) |
-| UC4 Reconhecer lacres, carimbos e monogramas | `visitante`, `autenticado` | RF38.CA06, RF38.CA09 | real · DEMO (`Seal`, `Stamp`, `Monogram`; `Medal` planejada) |
-| UC5 Identificar conteúdo gerado pela IA | `autenticado` | RF38.CA04 | real · DEMO (`Spark`) |
+| UC1 Reconhecer o tipo da tarefa pelo ícone | `visitante`, `autenticado` | RF38.CA01 | DEMO no front, sem API (`TypeChip` em `TaskSchemeCard`) |
+| UC2 Ler estado e prazo no card | `visitante`, `autenticado` | RF38.CA05 | DEMO no front, sem API (`Tag`, `Due` com prazo legal) |
+| UC3 Ver a capa-mosaico do projeto | `visitante`, `autenticado` | RF38.CA03 | DEMO no front, sem API (`ProjectCard` com mosaico 2×3; recálculo no servidor planejado) |
+| UC4 Reconhecer lacres, carimbos e monogramas | `visitante`, `autenticado` | RF38.CA06, RF38.CA09 | DEMO no front, sem API (`Seal`, `Stamp`, `Monogram`; `Medal` planejada) |
+| UC5 Identificar conteúdo gerado pela IA | `autenticado` | RF38.CA04 | DEMO no front, sem API (`Spark`) |
 | UC6 Ver a miniatura automática da tarefa | `autenticado` | RF38.CA02 | planejado (hoje só a arte da família, `CoverArt`) |
 | UC7 Trocar a capa da tarefa | `dono`, `ia` | RF38.CA02 | planejado (manual ou por IA) |
 | UC8 Seguir o fio de decisão | `autenticado` | RF38.CA07 | planejado |

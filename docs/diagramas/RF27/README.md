@@ -14,17 +14,18 @@ flowchart LR
   classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
   classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
   classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  classDef ucDemo fill:#fff8e6,stroke:#b26a00,stroke-dasharray:2 2,color:#1b1b1b
   autenticado["«ator» Pessoa autenticada"]:::ator
   subgraph SIS["Work Station — RF27 Mural e Buscar"]
     direction TB
-    UC1(["UC1 Navegar pelo Mural da empresa"]):::ucPlan
-    UC2(["UC2 Ver a Vitrine de projetos"]):::ucPlan
-    UC3(["UC3 Acompanhar quem sigo"]):::ucPlan
-    UC4(["UC4 Filtrar o que a pessoa pode ver"]):::ucPlan
+    UC1(["UC1 Navegar pelo Mural da empresa"]):::ucDemo
+    UC2(["UC2 Ver a Vitrine de projetos"]):::ucDemo
+    UC3(["UC3 Acompanhar quem sigo"]):::ucDemo
+    UC4(["UC4 Filtrar o que a pessoa pode ver"]):::ucDemo
     UC5(["UC5 Buscar projetos, tarefas, pessoas, empresas e chefes"]):::ucPlan
-    UC6(["UC6 Interagir com o item sem sair do Mural"]):::ucPlan
+    UC6(["UC6 Interagir com o item sem sair do Mural"]):::ucDemo
     UC7(["UC7 Ver projetos parecidos"]):::ucPlan
-    UC8(["UC8 Seguir ou deixar de seguir"]):::ucPlan
+    UC8(["UC8 Seguir ou deixar de seguir"]):::ucDemo
   end
   ia["«ator» IA (AiGateway)"]:::atorSis
   autenticado --- UC1

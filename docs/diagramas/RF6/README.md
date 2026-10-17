@@ -29,16 +29,17 @@ flowchart LR
   classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
   classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
   classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  classDef ucDemo fill:#fff8e6,stroke:#b26a00,stroke-dasharray:2 2,color:#1b1b1b
   autenticado["«ator» Pessoa autenticada"]:::ator
   dono["«ator» Dono do recurso"]:::ator
   subgraph SIS["Work Station — RF6 Perfil Empresarial"]
     direction TB
-    UC1(["UC1 Abrir meu perfil"]):::ucPlan
+    UC1(["UC1 Abrir meu perfil"]):::ucDemo
     UC2(["UC2 Listar meu Acervo Digital"]):::uc
     UC3(["UC3 Mudar o estado de uma tarefa do Acervo"]):::uc
     UC4(["UC4 Ver meus projetos"]):::ucPlan
     UC5(["UC5 Gerir projetos e tarefas salvos"]):::ucPlan
-    UC6(["UC6 Ver o Acervo de outra pessoa"]):::ucPlan
+    UC6(["UC6 Ver o Acervo de outra pessoa"]):::ucDemo
     UC7(["UC7 Filtrar pelo que posso ver"]):::uc
     UC8(["UC8 Levar tarefa ao meu acervo"]):::ucPlan
   end

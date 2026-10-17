@@ -29,17 +29,18 @@ flowchart LR
   classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
   classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
   classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  classDef ucDemo fill:#fff8e6,stroke:#b26a00,stroke-dasharray:2 2,color:#1b1b1b
   autenticado["«ator» Pessoa autenticada"]:::ator
   subgraph SIS["Work Station — RF16 Perfil de um colega"]
     direction TB
     UC1(["UC1 Abrir o perfil público de um colega"]):::uc
     UC2(["UC2 Verificar se o perfil pode ser visto"]):::uc
     UC3(["UC3 Listar as tarefas que posso ver do colega"]):::uc
-    UC4(["UC4 Navegar pelas sub-abas públicas 1 a 5"]):::ucPlan
+    UC4(["UC4 Navegar pelas sub-abas públicas 1 a 5"]):::ucDemo
     UC5(["UC5 Filtrar e paginar a sub-aba"]):::ucPlan
     UC6(["UC6 Ver o Hype e o perfil deliberativo público"]):::ucPlan
-    UC7(["UC7 Seguir o colega"]):::ucPlan
-    UC8(["UC8 Interagir com um item ou levá-lo ao meu acervo"]):::ucPlan
+    UC7(["UC7 Seguir o colega"]):::ucDemo
+    UC8(["UC8 Interagir com um item ou levá-lo ao meu acervo"]):::ucDemo
     UC9(["UC9 Ir à página do departamento ou da empresa"]):::ucPlan
   end
   autenticado --- UC1

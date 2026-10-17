@@ -14,6 +14,7 @@ flowchart LR
   classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
   classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
   classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  classDef ucDemo fill:#fff8e6,stroke:#b26a00,stroke-dasharray:2 2,color:#1b1b1b
   empresa["«ator» Empresa ou órgão"]:::ator
   chefe["«ator» Chefe de departamento"]:::ator
   dono["«ator» Dono do recurso"]:::ator
@@ -33,7 +34,7 @@ flowchart LR
     UC8(["UC8 Revogar ou recertificar chancela"]):::ucPlan
     UC9(["UC9 Publicar benefício da chancela"]):::ucPlan
     UC10(["UC10 Resgatar benefício"]):::ucPlan
-    UC11(["UC11 Ver o lacre nos itens chancelados"]):::uc
+    UC11(["UC11 Ver o lacre nos itens chancelados"]):::ucDemo
   end
   ia["«ator» IA (AiGateway)"]:::atorSis
   agendador["«ator» Agendador de trabalhos"]:::atorSis
@@ -72,7 +73,7 @@ flowchart LR
 | UC8 Revogar ou recertificar chancela | `empresa`, `chefe`, `agendador` | RF39.CA08 | planejado |
 | UC9 Publicar benefício da chancela | `empresa`, `chefe` | RF39.CA09 | planejado |
 | UC10 Resgatar benefício | `dono` | RF39.CA10 | planejado (idempotente; 409 sem chancela válida) |
-| UC11 Ver o lacre nos itens chancelados | `visitante`, `autenticado` | RF39.CA11 | real · DEMO (`Seal` em `TaskSchemeCard` e `ProjectCard`) |
+| UC11 Ver o lacre nos itens chancelados | `visitante`, `autenticado` | RF39.CA11 | DEMO no front, sem API (`Seal` em `TaskSchemeCard` e `ProjectCard`) |
 
 ## 1. Diagrama de classes
 

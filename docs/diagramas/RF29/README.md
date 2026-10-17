@@ -14,6 +14,7 @@ flowchart LR
   classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
   classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
   classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  classDef ucDemo fill:#fff8e6,stroke:#b26a00,stroke-dasharray:2 2,color:#1b1b1b
   dono["«ator» Dono do recurso"]:::ator
   participante_sessao["«ator» Admin · Membro · Observador da sessão"]:::ator
   chefe["«ator» Chefe de departamento"]:::ator
@@ -32,8 +33,8 @@ flowchart LR
     UC7(["UC7 Exportar o Rastro de Decisão"]):::ucPlan
     UC8(["UC8 Ligar recomendações do resumo a tarefas e projetos"]):::ucPlan
     UC9(["UC9 Acompanhar o indicador de decisões com rastro"]):::ucPlan
-    UC10(["UC10 Construir a decisão estruturada"]):::uc
-    UC11(["UC11 Decidir e registrar o resultado"]):::uc
+    UC10(["UC10 Construir a decisão estruturada"]):::ucDemo
+    UC11(["UC11 Decidir e registrar o resultado"]):::ucDemo
   end
   ia["«ator» IA (AiGateway)"]:::atorSis
   dono --- UC1
@@ -63,8 +64,8 @@ flowchart LR
 | UC7 Exportar o Rastro de Decisão | `autenticado` | RF29.CA07 | planejado |
 | UC8 Ligar recomendações do resumo a tarefas e projetos | `ia` | RF29.CA08 | planejado |
 | UC9 Acompanhar o indicador de decisões com rastro | `admin` | RF29.CA09 | planejado |
-| UC10 Construir a decisão estruturada | `participante_daci`, `decisor` | — (§7, sem CA numerado) | real · DEMO (evidências, alternativas, critérios, pesos e avaliação na área de trabalho da decisão) |
-| UC11 Decidir e registrar o resultado | `decisor` | — (§7, sem CA numerado) | real · DEMO (guarda pré-decisão, snapshot e resultado em `lib/decia/commands.ts`) |
+| UC10 Construir a decisão estruturada | `participante_daci`, `decisor` | — (§7, sem CA numerado) | DEMO no front, sem API (evidências, alternativas, critérios, pesos e avaliação na área de trabalho da decisão) |
+| UC11 Decidir e registrar o resultado | `decisor` | — (§7, sem CA numerado) | DEMO no front, sem API (guarda pré-decisão, snapshot e resultado em `lib/decia/commands.ts`) |
 
 ## 1. Diagrama de classes
 

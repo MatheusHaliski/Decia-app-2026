@@ -57,7 +57,7 @@ flowchart TB
 | `dono` | Dono do recurso | Um recurso | Vê, edita, apaga e gere. | `ScopedResource.ownerId` | real |
 | `colaborador` | Colaborador explícito | Um recurso | Vê e edita; não apaga nem gere. Único jeito de terceiros verem SIGILOSO. | `ScopedResource.collaborators` | real (regra) · planejado (tela) |
 | `responsavel` | Responsável atribuído | Uma atribuição | Recebe, aceita ou devolve tarefa ou projeto atribuído. | `Assignment` (mensageria) | planejado |
-| `decisor` | Responsável pela decisão | Uma decisão DECIA | Único que decide e reabre (ou o APROVADOR com delegação registrada). | `Decision.responsibleId`, `DecisionAccessPolicy` | real (DEMO no front) |
+| `decisor` | Responsável pela decisão | Uma decisão DECIA | Único que decide e reabre (ou o APROVADOR com delegação registrada). | `Decision.responsibleId`, `DecisionAccessPolicy` | DEMO no front (regra real no domínio) |
 | `participante_daci` | Condutor · Aprovador · Contribuidor · Informado | Uma decisão | Condutor e Aprovador editam a estrutura; com o Contribuidor, avaliam; Informado só lê. | `DecisionRole` | real (regra) |
 | `participante_sessao` | Admin · Membro · Observador da sessão | Uma sessão DECIA | Conduz, participa ou só observa. | `ParticipantRole` | planejado |
 

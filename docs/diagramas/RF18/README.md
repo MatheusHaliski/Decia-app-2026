@@ -27,17 +27,18 @@ flowchart LR
   classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
   classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
   classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  classDef ucDemo fill:#fff8e6,stroke:#b26a00,stroke-dasharray:2 2,color:#1b1b1b
   responsavel["«ator» Responsável atribuído"]:::ator
   autenticado["«ator» Pessoa autenticada"]:::ator
   subgraph SIS["Work Station — RF18 Interagir e atribuir"]
     direction TB
-    UC1(["UC1 Curtir, comentar, salvar, compartilhar ou remixar"]):::ucPlan
-    UC2(["UC2 Verificar o acesso ao item"]):::ucPlan
-    UC3(["UC3 Atribuir o item a um colega da mesma empresa"]):::ucPlan
-    UC4(["UC4 Aceitar a atribuição"]):::ucPlan
-    UC5(["UC5 Recusar a atribuição com motivo"]):::ucPlan
-    UC6(["UC6 Retornar a atribuição aceita com motivo"]):::ucPlan
-    UC7(["UC7 Ver o histórico de atribuições e retornos"]):::ucPlan
+    UC1(["UC1 Curtir, comentar, salvar, compartilhar ou remixar"]):::ucDemo
+    UC2(["UC2 Verificar o acesso ao item"]):::ucDemo
+    UC3(["UC3 Atribuir o item a um colega da mesma empresa"]):::ucDemo
+    UC4(["UC4 Aceitar a atribuição"]):::ucDemo
+    UC5(["UC5 Recusar a atribuição com motivo"]):::ucDemo
+    UC6(["UC6 Retornar a atribuição aceita com motivo"]):::ucDemo
+    UC7(["UC7 Ver o histórico de atribuições e retornos"]):::ucDemo
     UC8(["UC8 Delegar pela Tarefa do Dia"]):::ucPlan
   end
   responsavel -- "é um" --> autenticado

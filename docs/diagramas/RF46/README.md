@@ -32,6 +32,7 @@ flowchart LR
   classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
   classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
   classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  classDef ucDemo fill:#fff8e6,stroke:#b26a00,stroke-dasharray:2 2,color:#1b1b1b
   empregado["«ator» Empregado"]:::ator
   chefe["«ator» Chefe de departamento"]:::ator
   participante_sessao["«ator» Admin · Membro · Observador da sessão"]:::ator
@@ -41,8 +42,8 @@ flowchart LR
     UC1(["UC1 Conversar com colegas da mesma empresa"]):::ucPlan
     UC2(["UC2 Anexar tarefa ou projeto à conversa"]):::ucPlan
     UC3(["UC3 Conferir o acesso dos participantes ao item"]):::ucPlan
-    UC4(["UC4 Atribuir tarefa ou projeto"]):::ucPlan
-    UC5(["UC5 Aceitar ou recusar a atribuição"]):::ucPlan
+    UC4(["UC4 Atribuir tarefa ou projeto"]):::ucDemo
+    UC5(["UC5 Aceitar ou recusar a atribuição"]):::ucDemo
     UC6(["UC6 Devolver a atribuição aceita"]):::ucPlan
     UC7(["UC7 Arquivar ou sair da conversa"]):::ucPlan
   end

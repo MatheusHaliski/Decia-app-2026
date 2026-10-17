@@ -29,6 +29,7 @@ flowchart LR
   classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
   classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
   classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  classDef ucDemo fill:#fff8e6,stroke:#b26a00,stroke-dasharray:2 2,color:#1b1b1b
   visitante["«ator» Visitante"]:::ator
   autenticado["«ator» Pessoa autenticada"]:::ator
   empregado["«ator» Empregado"]:::ator
@@ -37,12 +38,12 @@ flowchart LR
   curador["«ator» Curador"]:::ator
   subgraph SIS["Work Station — RF14 Página do departamento"]
     direction TB
-    UC1(["UC1 Buscar e abrir a página do departamento"]):::ucPlan
+    UC1(["UC1 Buscar e abrir a página do departamento"]):::ucDemo
     UC2(["UC2 Navegar pelas sub-abas públicas"]):::ucPlan
     UC3(["UC3 Filtrar itens pela visibilidade"]):::ucPlan
     UC4(["UC4 Ver as métricas públicas"]):::ucPlan
-    UC5(["UC5 Seguir o departamento"]):::ucPlan
-    UC6(["UC6 Ver o perfil pessoal do chefe"]):::ucPlan
+    UC5(["UC5 Seguir o departamento"]):::ucDemo
+    UC6(["UC6 Ver o perfil pessoal do chefe"]):::ucDemo
     UC7(["UC7 Enviar mensagem ao chefe"]):::ucPlan
     UC8(["UC8 Pedir ou propor chancela e indicar colega"]):::ucPlan
     UC9(["UC9 Gerir o departamento"]):::ucPlan

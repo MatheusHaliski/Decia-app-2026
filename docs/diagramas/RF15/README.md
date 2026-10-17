@@ -29,6 +29,7 @@ flowchart LR
   classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
   classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
   classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  classDef ucDemo fill:#fff8e6,stroke:#b26a00,stroke-dasharray:2 2,color:#1b1b1b
   visitante["«ator» Visitante"]:::ator
   autenticado["«ator» Pessoa autenticada"]:::ator
   empregado["«ator» Empregado"]:::ator
@@ -36,10 +37,10 @@ flowchart LR
   empresa["«ator» Empresa ou órgão"]:::ator
   subgraph SIS["Work Station — RF15 Página da empresa"]
     direction TB
-    UC1(["UC1 Buscar e abrir a página da empresa"]):::ucPlan
+    UC1(["UC1 Buscar e abrir a página da empresa"]):::ucDemo
     UC2(["UC2 Navegar pelas sub-abas públicas"]):::ucPlan
     UC3(["UC3 Ver as métricas públicas"]):::ucPlan
-    UC4(["UC4 Seguir a empresa"]):::ucPlan
+    UC4(["UC4 Seguir a empresa"]):::ucDemo
     UC5(["UC5 Usar recurso oficial da empresa"]):::ucPlan
     UC6(["UC6 Propor chancela"]):::ucPlan
     UC7(["UC7 Reagir e comentar comunicado"]):::ucPlan

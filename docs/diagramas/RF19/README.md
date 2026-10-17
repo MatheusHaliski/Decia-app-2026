@@ -30,21 +30,22 @@ flowchart LR
   classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
   classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
   classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  classDef ucDemo fill:#fff8e6,stroke:#b26a00,stroke-dasharray:2 2,color:#1b1b1b
   autenticado["«ator» Pessoa autenticada"]:::ator
   chefe["«ator» Chefe de departamento"]:::ator
   dono["«ator» Dono do recurso"]:::ator
   subgraph SIS["Work Station — RF19 Interações sociais"]
     direction TB
-    UC1(["UC1 Curtir ou descurtir"]):::ucPlan
-    UC2(["UC2 Reagir com uma reação qualitativa"]):::ucPlan
-    UC3(["UC3 Comentar e responder com menções"]):::ucPlan
-    UC4(["UC4 Editar ou excluir um comentário"]):::ucPlan
-    UC5(["UC5 Salvar e marcar como favorito"]):::ucPlan
-    UC6(["UC6 Compartilhar no Mural, numa sessão DECIA ou por link"]):::ucPlan
-    UC7(["UC7 Remixar uma tarefa ou projeto público"]):::ucPlan
-    UC8(["UC8 Verificar a visibilidade do alvo"]):::ucPlan
-    UC9(["UC9 Ver os contadores em tempo quase real"]):::ucPlan
-    UC10(["UC10 Receber notificações agrupadas por hora"]):::ucPlan
+    UC1(["UC1 Curtir ou descurtir"]):::ucDemo
+    UC2(["UC2 Reagir com uma reação qualitativa"]):::ucDemo
+    UC3(["UC3 Comentar e responder com menções"]):::ucDemo
+    UC4(["UC4 Editar ou excluir um comentário"]):::ucDemo
+    UC5(["UC5 Salvar e marcar como favorito"]):::ucDemo
+    UC6(["UC6 Compartilhar no Mural, numa sessão DECIA ou por link"]):::ucDemo
+    UC7(["UC7 Remixar uma tarefa ou projeto público"]):::ucDemo
+    UC8(["UC8 Verificar a visibilidade do alvo"]):::ucDemo
+    UC9(["UC9 Ver os contadores em tempo quase real"]):::ucDemo
+    UC10(["UC10 Receber notificações agrupadas por hora"]):::ucDemo
   end
   autenticado --- UC1
   autenticado --- UC2

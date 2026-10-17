@@ -14,7 +14,7 @@ Cada RF tem a pasta `docs/diagramas/RFnn/` com um único `README.md` contendo, n
 
 - **Atores** só do catálogo de [`../arquitetura/ATORES_E_ATRIBUTOS.md`](../arquitetura/ATORES_E_ATRIBUTOS.md) §2: o id do nó é o id do catálogo (`empregado`, `chefe`, `empresa`, `visitante`, `autenticado`, `admin`, `curador`, `dono`, `colaborador`, `responsavel`, `decisor`, `participante_daci`, `participante_sessao`, `ia`, `agendador`, `oidc`, `autenticador`, `email`, `conectores`) e o rótulo é `«ator» Nome`. Pessoas e papéis com a classe `ator`, declarados **antes** do limite do sistema (ficam à esquerda); IA, agendador e externos com a classe `atorSis`, declarados **depois** (ficam à direita). O verificador recusa ator fora do catálogo.
 - **Limite do sistema**: um `subgraph` com o título `Work Station — RFnn <nome curto>`.
-- **Casos de uso**: nós em forma de pílula `UCn(["UCn Verbo + objeto"])`, numerados no RF. Classe `uc` quando existe no código; `ucPlan` (tracejado) quando é planejado.
+- **Casos de uso**: nós em forma de pílula `UCn(["UCn Verbo + objeto"])`, numerados no RF. Três classes: `uc` quando funciona com a API real; `ucDemo` (borda âmbar pontilhada) quando funciona na tela só com dados de demonstração em memória, sem API nem persistência; `ucPlan` (tracejado cinza) quando é planejado. A coluna Situação repete a classificação ("real", "DEMO no front, sem API", "planejado").
 - **Ligações**: ator–caso com linha simples `---`; `«include»` do caso base para o incluído e `«extend»` da extensão para o caso base, ambos tracejados com rótulo (`-. "«include»" .->`); generalização entre atores com `-- "é um" -->`.
 - Logo abaixo do diagrama, uma tabela `| Caso de uso | Ator(es) | CAs | Situação |` (a primeira coluna é o `UCn`, nunca o id do CA, para não confundir o gerador do catálogo).
 
@@ -24,6 +24,7 @@ flowchart LR
   classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
   classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
   classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  classDef ucDemo fill:#fff8e6,stroke:#b26a00,stroke-dasharray:2 2,color:#1b1b1b
   visitante["«ator» Visitante"]:::ator
   empregado["«ator» Empregado"]:::ator
   subgraph SIS["Work Station — RF2 Autenticar"]

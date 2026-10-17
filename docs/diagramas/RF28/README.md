@@ -14,6 +14,7 @@ flowchart LR
   classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
   classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
   classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  classDef ucDemo fill:#fff8e6,stroke:#b26a00,stroke-dasharray:2 2,color:#1b1b1b
   admin["«ator» Administrador"]:::ator
   empresa["«ator» Empresa ou órgão"]:::ator
   chefe["«ator» Chefe de departamento"]:::ator
@@ -31,8 +32,8 @@ flowchart LR
     UC8(["UC8 Nomear ou revogar curador"]):::ucPlan
     UC9(["UC9 Emitir reconhecimento"]):::ucPlan
     UC10(["UC10 Consultar o painel do emissor"]):::ucPlan
-    UC11(["UC11 Consultar a página da empresa ou do departamento"]):::uc
-    UC12(["UC12 Seguir empresa ou departamento"]):::uc
+    UC11(["UC11 Consultar a página da empresa ou do departamento"]):::ucDemo
+    UC12(["UC12 Seguir empresa ou departamento"]):::ucDemo
   end
   email["«ator» Serviço de e-mail"]:::atorSis
   admin --- UC1
@@ -71,8 +72,8 @@ flowchart LR
 | UC8 Nomear ou revogar curador | `empresa`, `chefe` | RF28.CA03 | planejado |
 | UC9 Emitir reconhecimento | `empresa`, `chefe` | RF28.CA05, RF28.CA08 | planejado |
 | UC10 Consultar o painel do emissor | `empresa`, `chefe` | RF28.CA06, RF28.CA08 | planejado (item de menu por perfil já existe em `lib/nav/matrix.ts`; a página é esqueleto) |
-| UC11 Consultar a página da empresa ou do departamento | `visitante`, `autenticado` | RF28.CA04 | real · DEMO (`/companies/[slug]`, `/departments/[slug]` com `CompanyHeader`/`DepartmentHeader` e projetos publicados; sem API) |
-| UC12 Seguir empresa ou departamento | `autenticado` | RF28.CA04 | real · DEMO (`FollowButton` no cabeçalho institucional) |
+| UC11 Consultar a página da empresa ou do departamento | `visitante`, `autenticado` | RF28.CA04 | DEMO no front, sem API (`/companies/[slug]`, `/departments/[slug]` com `CompanyHeader`/`DepartmentHeader` e projetos publicados; sem API) |
+| UC12 Seguir empresa ou departamento | `autenticado` | RF28.CA04 | DEMO no front, sem API (`FollowButton` no cabeçalho institucional) |
 
 ## 1. Diagrama de classes
 
