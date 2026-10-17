@@ -6,11 +6,12 @@
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useOptionalCurrentUser, type SessionStatus } from "@/lib/session/CurrentUserProvider";
+import { labMode } from "./lab";
 import { VIEWER_USERS, isViewerProfile, viewerUserOf, type ViewerProfile, type ViewerUser } from "./profiles";
 
 export const VIEWER_STORAGE_KEY = "ws.lab.viewer";
 /** Laboratório: o seletor de perfis troca o perfil exibido mesmo com sessão real (só em ambiente de demonstração). */
-export const labMode = () => (process.env.NEXT_PUBLIC_WS_LAB ?? "").trim().toLowerCase() === "on";
+export { labMode };
 
 interface ViewerContextValue {
   profile: ViewerProfile;
