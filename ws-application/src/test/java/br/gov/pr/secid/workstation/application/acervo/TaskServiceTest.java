@@ -12,6 +12,8 @@ import br.gov.pr.secid.workstation.application.common.ApiException;
 import br.gov.pr.secid.workstation.application.identity.CurrentUser;
 import br.gov.pr.secid.workstation.application.identity.RequestContext;
 import br.gov.pr.secid.workstation.application.identity.UserRepositoryPort;
+import br.gov.pr.secid.workstation.application.notifications.MemoryNotifications;
+import br.gov.pr.secid.workstation.application.notifications.NotificationService;
 import br.gov.pr.secid.workstation.application.security.AuthorizationTrail;
 import br.gov.pr.secid.workstation.application.security.ResourceAuthorizer;
 import br.gov.pr.secid.workstation.domain.acervo.TaskBrief;
@@ -23,6 +25,8 @@ import br.gov.pr.secid.workstation.domain.acervo.WorkArea;
 import br.gov.pr.secid.workstation.domain.common.AccessClassification;
 import br.gov.pr.secid.workstation.domain.common.Priority;
 import br.gov.pr.secid.workstation.domain.common.Visibility;
+import br.gov.pr.secid.workstation.domain.social.NotificationType;
+import br.gov.pr.secid.workstation.domain.identity.AccountStatus;
 import br.gov.pr.secid.workstation.domain.identity.ProfileType;
 import br.gov.pr.secid.workstation.domain.identity.Role;
 import br.gov.pr.secid.workstation.domain.identity.User;
@@ -60,6 +64,7 @@ class TaskServiceTest {
     final UserRepositoryPort users = mock(UserRepositoryPort.class);
     final AuditLogPort audit = mock(AuditLogPort.class);
     final MemoryTasks repo = new MemoryTasks();
+    final MemoryNotifications notes = new MemoryNotifications();
     final UUID company = UUID.randomUUID();
     final UUID otherCompany = UUID.randomUUID();
     final UUID dept = UUID.randomUUID();
@@ -67,7 +72,9 @@ class TaskServiceTest {
 
     {
         when(users.findById(any())).thenAnswer(inv -> Optional.ofNullable(people.get(inv.<UUID>getArgument(0))));
-        service = new TaskService(repo, users, new ResourceAuthorizer(users, Optional.empty()), audit, Clock.fixed(NOW, ZoneOffset.UTC));
+        ResourceAuthorizer authorizer = new ResourceAuthorizer(users, Optional.empty());
+        Clock clock = Clock.fixed(NOW, ZoneOffset.UTC);
+        service = new TaskService(repo, users, authorizer, audit, new NotificationService(notes, users, authorizer, clock), clock);
     }
 
     @AfterEach
@@ -82,6 +89,7 @@ class TaskServiceTest {
         u.setProfileType(ProfileType.EMPREGADO);
         u.setCompanyId(companyId);
         u.setDepartmentId(dept);
+        u.setStatus(AccountStatus.ACTIVE);
         people.put(u.getId(), u);
         return u;
     }
@@ -243,6 +251,29 @@ class TaskServiceTest {
                 v.version()), CTX)).isInstanceOf(ApiException.class);
         assertThatThrownBy(() -> service.transition(cu(me), v.id(), new TransitionInput(null, null, null, null, v.version()), CTX))
                 .isInstanceOf(ApiException.class);
+    }
+
+
+    @Test
+    void responsavelETransicaoGeramNotificacaoParaQuemPodeVerMenosQuemAgiu() {
+        User me = person(company, Role.USER);
+        User colleague = person(company, Role.USER);
+        TaskInput base = input("Parecer sobre o contrato", WorkArea.JURIDICO, Map.of());
+        TaskInput withResp = new TaskInput(base.title(), base.descriptionMd(), base.type(), base.category(), base.priority(), base.dueAt(),
+                colleague.getId(), base.accessClass(), Visibility.PRIVADA, base.objective(), base.area(), base.deliverables(),
+                base.acceptanceCriteria(), base.references(), base.extensions(), false);
+        TaskView created = service.create(cu(me), withResp, CTX);
+        assertThat(notes.of(colleague.getId())).singleElement().satisfies(n -> {
+            assertThat(n.type()).isEqualTo(NotificationType.ATRIBUICAO_PROPOSTA);
+            assertThat(n.resourceId()).isEqualTo(created.id());
+            assertThat(n.actorId()).isEqualTo(me.getId());
+        });
+        assertThat(notes.of(me.getId())).as("quem criou não é avisado").isEmpty();
+        TaskView started = service.transition(cu(colleague), created.id(), new TransitionInput(TaskState.EM_USO, null, null, null,
+                created.version()), CTX);
+        assertThat(started.state()).isEqualTo(TaskState.EM_USO);
+        assertThat(notes.of(me.getId())).singleElement().satisfies(n -> assertThat(n.type()).isEqualTo(NotificationType.TRANSICAO));
+        assertThat(notes.of(colleague.getId())).as("quem mudou o estado não é avisado de novo").hasSize(1);
     }
 
     /** Repositório em memória com a mesma semântica de versão do adaptador JPA (incrementa em toda atualização). */

@@ -4,6 +4,48 @@
 
 Índice OpenSearch `ws-memory` (`InstitutionalMemoryDocument`: `sourceType` SESSAO · ARTEFATO · DECISAO · PROJETO · TAREFA · DOCUMENTO, `embedding dense_vector`, metadados empresa/departamento/categoria/exercício/autor/data, `visibility`, `accessClass`). Indexação **assíncrona** por `PipelineJob INDEXAR_MEMORIA` disparado AFTER_COMMIT quando algo é encerrado/publicado (sessão ARQUIVADA, artefato, decisão VALIDADA, projeto CONCLUIDO, tarefa MODELO_PUBLICO, documento indexável); falha não bloqueia o negócio (`PipelineJob FALHA/REPROCESSAR`, log em `ai_inference_log`). Toda consulta passa pelo filtro de visibilidade/perfil; RESTRITO/SIGILOSO nunca é embeddado por provedor externo (só `LocalEngine`). Respostas carregam `Citation[]` (sourceType, sourceId, excerpt, url, score); vazio = **"sem precedente"**. Flag `opensearch.enabled`; sem ela, `/memory` mostra EmptyState "índice desligado" e a IA marca tudo "sem precedente".
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Todos são planejados: `/memory` é página-esqueleto e não há índice `ws-memory` nem `MemoryService`.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  participante_sessao["«ator» Admin · Membro · Observador da sessão"]:::ator
+  admin["«ator» Administrador"]:::ator
+  subgraph SIS["Work Station — RF33 Memória Institucional"]
+    direction TB
+    UC1(["UC1 Indexar o que foi encerrado ou publicado"]):::ucPlan
+    UC2(["UC2 Perguntar à Memória em linguagem natural"]):::ucPlan
+    UC3(["UC3 Explorar por departamento, categoria e exercício"]):::ucPlan
+    UC4(["UC4 Ver projetos parecidos"]):::ucPlan
+    UC5(["UC5 Ler recomendação com fontes ou sem precedente"]):::ucPlan
+    UC6(["UC6 Acompanhar a proporção de decisões com fontes"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  autenticado --- UC2
+  autenticado --- UC3
+  autenticado --- UC4
+  participante_sessao --- UC5
+  admin --- UC6
+  UC1 --- ia
+  UC2 --- ia
+  UC5 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Indexar o que foi encerrado ou publicado | `ia` | RF33.CA01, RF33.CA06 | planejado (assíncrono; falha não bloqueia o negócio) |
+| UC2 Perguntar à Memória em linguagem natural | `autenticado`, `ia` | RF33.CA02 | planejado |
+| UC3 Explorar por departamento, categoria e exercício | `autenticado` | RF33.CA04 | planejado |
+| UC4 Ver projetos parecidos | `autenticado` | RF33.CA04 | planejado (em `/search`, RF27.CA05) |
+| UC5 Ler recomendação com fontes ou sem precedente | `participante_sessao`, `ia` | RF33.CA03 | planejado |
+| UC6 Acompanhar a proporção de decisões com fontes | `admin` | RF33.CA05 | planejado |
+
 ## 1. Diagrama de classes
 
 ```mermaid

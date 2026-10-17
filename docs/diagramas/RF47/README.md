@@ -28,6 +28,56 @@ O Encontrar complementa o **Buscar** (RF27, que acha *itens*), a **Memória Inst
 
 Entidades **propostas** (TAXONOMIA ainda não as tem; entram na onda do RF47 com a migration reservada V44, `docs/PLANO_EXECUCAO.md` §6): `DocumentText` (texto extraído por anexo e página, `IndexingStatus`), `TextEntity` (entidade reconhecida, valor mascarado), `KeywordGlossary`/`GlossaryTerm`, `SavedFind`. O conteúdo indexado vive no OpenSearch (`ws-find-*`); o MySQL guarda só metadados, status e hash.
 
+## 0. Diagrama de casos de uso
+
+Quem usa o Encontrar e para quê. Atores do catálogo de [`ATORES_E_ATRIBUTOS.md`](../../arquitetura/ATORES_E_ATRIBUTOS.md) §2 e permissões de [`ABAS_POR_PERFIL.md`](../../produto/ABAS_POR_PERFIL.md) (todos os perfis autenticados; visitante não vê, D-128); todos os casos são planejados — `/find` é página-esqueleto com as quatro ferramentas descritas e o link "Testar esta contratação".
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  dono["«ator» Dono do recurso"]:::ator
+  subgraph SIS["Work Station — RF47 Encontrar"]
+    direction TB
+    UC1(["UC1 Encontrar termos nos documentos"]):::ucPlan
+    UC2(["UC2 Filtrar pelos documentos que posso ver"]):::ucPlan
+    UC3(["UC3 Ler o documento com mapa de ocorrências"]):::ucPlan
+    UC4(["UC4 Extrair termos e entidades"]):::ucPlan
+    UC5(["UC5 Aplicar uma lista de termos"]):::ucPlan
+    UC6(["UC6 Exportar, salvar a busca ou anexar como evidência"]):::ucPlan
+    UC7(["UC7 Resumir os achados com IA"]):::ucPlan
+    UC8(["UC8 Indexar o texto do documento anexado"]):::ucPlan
+    UC9(["UC9 Testar esta contratação na aba Agentes"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  autenticado --- UC1
+  autenticado --- UC3
+  autenticado --- UC4
+  autenticado --- UC5
+  autenticado --- UC6
+  autenticado --- UC9
+  dono --- UC8
+  UC1 -. "«include»" .-> UC2
+  UC4 -. "«include»" .-> UC2
+  UC7 -. "«extend»" .-> UC4
+  UC7 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Encontrar termos nos documentos (palavra no contexto) | Pessoa autenticada | RF47.CA01, RF47.CA08, RF47.CA09, RF47.CA10, RF47.CA11 | planejado |
+| UC2 Filtrar pelos documentos que posso ver (dentro da consulta ao índice) | — (incluído por UC1 e UC4) | RF47.CA02, RF47.CA07 | planejado |
+| UC3 Ler o documento com mapa de ocorrências | Pessoa autenticada | RF47.CA11, RF47.CA14 | planejado |
+| UC4 Extrair termos e entidades | Pessoa autenticada | RF47.CA04, RF47.CA10, RF47.CA12 | planejado |
+| UC5 Aplicar uma lista de termos | Pessoa autenticada | RF47.CA05 | planejado |
+| UC6 Exportar, salvar a busca ou anexar como evidência | Pessoa autenticada | RF47.CA06 | planejado |
+| UC7 Resumir os achados com IA (opcional) | — (estende UC4), IA (AiGateway) | RF47.CA07, RF47.CA12 | planejado (RESTRITO e SIGILOSO nunca vão a provedor externo) |
+| UC8 Indexar o texto do documento anexado (com OCR) | Dono do recurso | RF47.CA03 | planejado |
+| UC9 Testar esta contratação na aba Agentes | Pessoa autenticada | RF47.CA13, RF47.CA14 | planejado (o esqueleto só tem o link `DossierLink`) |
+
 ## 1. Diagrama de classes
 
 ```mermaid

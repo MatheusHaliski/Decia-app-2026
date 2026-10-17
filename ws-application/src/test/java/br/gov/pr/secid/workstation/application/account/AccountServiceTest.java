@@ -109,6 +109,14 @@ class AccountServiceTest {
             return 0;
         }
 
+        public java.util.List<User> searchInCompany(UUID companyId, String query, int limit) {
+            return java.util.List.of();
+        }
+
+        public java.util.List<User> findDeletionDue(java.time.Instant now, int limit) {
+            return userRows.values().stream().filter(u -> u.isDeletionScheduled() && !u.getDeletionScheduledAt().isAfter(now)).limit(limit).toList();
+        }
+
         public User save(User u) {
             if (u.getId() == null) {
                 u.setId(UUID.randomUUID());
@@ -312,6 +320,34 @@ class AccountServiceTest {
         maria.setProfileType(ProfileType.EMPRESA);
         account.requestDeletion(me, new AccountService.DeletionRequest(password, null), ctx);
         assertThat(account.cancelDeletion(me, ctx).status()).isEqualTo("PENDING_VALIDATION");
+    }
+
+    @Test
+    void depoisDosTrintaDiasNaoReativaNaoEntraEAContaEAnonimizada() {
+        account.requestDeletion(me, new AccountService.DeletionRequest(password, "motivo pessoal"), ctx);
+        assertThat(identity.login(new IdentityService.LoginCommand("maria", password, false, null, null), ctx).accessToken())
+                .as("dentro do prazo a pessoa entra para reativar").isNotBlank();
+        AccountAnonymizer anonymizer = new AccountAnonymizer(users, emailHasher, identity, audited::add, Clock.systemUTC());
+        assertThat(anonymizer.anonymizeDue()).as("ainda no prazo").isZero();
+
+        maria.setDeletionScheduledAt(Instant.now().minusSeconds(1));
+        assertThat(catchThrowableOfType(ApiException.class, () -> account.cancelDeletion(me, ctx)).code()).isEqualTo(AuthCodes.PRAZO_REATIVACAO_ENCERRADO);
+        ApiException login = catchThrowableOfType(ApiException.class,
+                () -> identity.login(new IdentityService.LoginCommand("maria", password, false, null, null), ctx));
+        assertThat(login.status()).isEqualTo(403);
+        assertThat(login.code()).isEqualTo(AuthCodes.CONTA_INDISPONIVEL);
+
+        assertThat(anonymizer.anonymizeDue()).isEqualTo(1);
+        assertThat(maria.getStatus()).isEqualTo(AccountStatus.ANONYMIZED);
+        assertThat(maria.getUsername()).startsWith("removido-");
+        assertThat(maria.getFullName()).isEqualTo("Conta removida");
+        assertThat(maria.getEmail()).doesNotContain("maria@").endsWith("@anonimizado.invalid");
+        assertThat(maria.getPasswordHash()).isNull();
+        assertThat(maria.getDeletionReason()).isNull();
+        assertThat(maria.getAnonymizedAt()).isNotNull();
+        assertThat(identity.sessionActive(me.sessionId())).as("todas as sessões caem").isFalse();
+        assertThat(anonymizer.anonymizeDue()).as("idempotente").isZero();
+        assertThat(actions()).contains(AuditActions.ACCOUNT_ANONYMIZED);
     }
 
     @Test

@@ -17,6 +17,47 @@ A entidade **`Assignment`** (TAXONOMIA §12b.4) é compartilhada por três entra
 | **RF10.CA05** (CA a confirmar) | Dado o atribuído, então `/me/assignments` (`AssignmentService.listForMe`) lista as atribuições PROPOSTA e ACEITA (filtros: tipo, prazo, quem atribuiu) com o alvo em `TaskCard`/`ProjectCard` compacto; a `Assignment` ACEITA entra no `priorityIndexJson` da Tarefa do Dia (RF44) com o fator "atribuída pelo chefe" e no Dossiê de Transição (RF36) como item pendente; o chefe vê, por pessoa, as atribuições abertas e vencidas (`Due`). |
 | **RF10.CA06** (CA a confirmar) | Dado o atribuído com `Assignment` ACEITA, quando **devolve** com motivo (`POST /api/assignments/{id}/give-back`), então `status DEVOLVIDA`, `reason` obrigatório (`422 MOTIVO_OBRIGATORIO`), o `responsibleId` volta a `previousResponsibleId`, `TaskStateLog` registra a volta e o chefe recebe ATRIBUICAO_DEVOLVIDA; DELEGUEI da Tarefa do Dia (RF44) e "Atribuir" no chat (RF46) chamam o mesmo `AssignmentService` com outra `origin`. |
 
+## 0. Diagrama de casos de uso
+
+Quem atribui uma tarefa ou projeto e o que a pessoa atribuída pode fazer. Borda contínua: existe no código em 17/10/2026; tracejada: planejado (não há `AssignmentService`; "Delegadas a mim" do perfil é DEMO).
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  chefe["«ator» Chefe de departamento"]:::ator
+  responsavel["«ator» Responsável atribuído"]:::ator
+  subgraph SIS["Work Station — RF10 Atribuir tarefa ou projeto"]
+    direction TB
+    UC1(["UC1 Atribuir tarefa ou projeto"]):::ucPlan
+    UC2(["UC2 Verificar chefia e alvo"]):::ucPlan
+    UC3(["UC3 Acompanhar as atribuições da equipe"]):::ucPlan
+    UC4(["UC4 Ver o que foi atribuído a mim"]):::ucPlan
+    UC5(["UC5 Aceitar atribuição"]):::ucPlan
+    UC6(["UC6 Recusar atribuição"]):::ucPlan
+    UC7(["UC7 Devolver atribuição"]):::ucPlan
+  end
+  chefe --- UC1
+  chefe --- UC3
+  responsavel --- UC4
+  responsavel --- UC5
+  responsavel --- UC6
+  responsavel --- UC7
+  UC1 -. "«include»" .-> UC2
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Atribuir tarefa ou projeto | chefe | RF10.CA01 | planejado (`POST /api/assignments`, origem `MINHA_EQUIPE` ou `BOTAO_ESQUEMA`) |
+| UC2 Verificar chefia e alvo | — (incluído por UC1) | RF10.CA02 | planejado (`Guard.requireDeptHead`, lotação vigente, alvo visível e aberto, sem duplicata) |
+| UC3 Acompanhar as atribuições da equipe | chefe | RF10.CA03, RF10.CA05 | planejado (`GET /api/departments/{id}/assignments`) |
+| UC4 Ver o que foi atribuído a mim | responsavel | RF10.CA03, RF10.CA05 | planejado (`/me/assignments`, Tarefa do Dia RF44) |
+| UC5 Aceitar atribuição | responsavel | RF10.CA04 | planejado (passa a ser o responsável; DISPONIVEL → EM_USO) |
+| UC6 Recusar atribuição | responsavel | RF10.CA04 | planejado (motivo obrigatório) |
+| UC7 Devolver atribuição | responsavel | RF10.CA06 | planejado (volta ao responsável anterior) |
+
 ## 1. Diagrama de classes
 
 ```mermaid

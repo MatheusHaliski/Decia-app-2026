@@ -14,6 +14,7 @@ import type {
   AccessClassification, AssignmentStatus, NodeColor, ProjectPhase, ProjectStatus, QualitativeReaction, ShareChannel, SocialPerson, SocialProject,
   SocialState, SocialTask, TargetRef, TaskCategory, TaskState, TaskType, ViewerId, Visibility,
 } from "./types";
+import type { WorkStatus } from "@/lib/tasks/status";
 import { isAuthorshipSummary } from "./authorship";
 import { PROJECT_PHASES, SHARE_CHANNELS } from "./types";
 
@@ -81,7 +82,11 @@ export interface CreditInfo { originalAuthor: PersonRef; originalTitle: string; 
 
 export type DueKind = "ok" | "soon" | "over";
 
-export interface TaskCardViewModel {
+/**
+ * O que o card de tarefa sabe em qualquer fonte (DEMO em memória ou API real): identidade, tipo, estado, prazo, classificação.
+ * Autor e responsável podem faltar quando a fonte só tem ids (a API real não traz nome): o card não mostra, não inventa.
+ */
+export interface TaskCardBase {
   kind: "TASK";
   id: string;
   ref: TargetRef;
@@ -98,7 +103,7 @@ export interface TaskCardViewModel {
   stateTone: Tone;
   visibility: Visibility;
   accessClass: AccessClassification;
-  author: PersonRef;
+  author: PersonRef | null;
   department: DepartmentRef | null;
   responsible: PersonRef | null;
   dueAt: string | null;
@@ -108,14 +113,32 @@ export interface TaskCardViewModel {
   authorship: SocialTask["authorship"] | null;
   seals: SocialTask["seals"];
   blockReason: string | null;
-  counters: Counters;
-  viewer: ViewerFlags;
-  perms: SocialPermissions;
   credit: CreditInfo | null;
-  remixedBy: number;
   delegation: DelegationInfo | null;
   variants: ReadonlySet<TaskCardVariant>;
 }
+
+/** Card da rede social (DEMO): com contadores, flags do viewer e permissões — o `TaskSchemeCard` mostra a barra social. */
+export interface TaskCardViewModel extends TaskCardBase {
+  social: true;
+  author: PersonRef;
+  counters: Counters;
+  viewer: ViewerFlags;
+  perms: SocialPermissions;
+  remixedBy: number;
+}
+
+/**
+ * Card sem camada social (tarefa real de `/api/tasks`): não há curtidas, comentários, remixes, selos nem crédito na fonte,
+ * então o view model não carrega contadores e o `TaskSchemeCard` não desenha a barra social nem ações que não funcionam.
+ */
+export interface PlainTaskCardViewModel extends TaskCardBase {
+  social: false;
+  /** eixo de execução padronizado (A realizar · Em andamento · Bloqueado · Concluído · Arquivado); `null` = publicação */
+  workStatus: WorkStatus | null;
+}
+
+export type AnyTaskCardViewModel = TaskCardViewModel | PlainTaskCardViewModel;
 
 export interface ProjectCardViewModel {
   kind: "PROJECT";
@@ -223,7 +246,7 @@ export function toTaskCardViewModel(s: SocialState, viewer: ViewerId, task: Soci
   if (task.legalDueAt) variants.add("PRAZO_LEGAL");
   const family: ArtFamily = (["protocolo", "carimbo", "pasta", "blueprint", "monograma"] as const).find((f) => f === task.cardSkin) ?? meta.family;
   return {
-    kind: "TASK", id: task.id, ref, href: `/tasks/${task.id}`, title: task.title, summary: task.summary, type: task.type, typeSymbol: meta.symbol, typeTone: meta.tone,
+    kind: "TASK", social: true, id: task.id, ref, href: `/tasks/${task.id}`, title: task.title, summary: task.summary, type: task.type, typeSymbol: meta.symbol, typeTone: meta.tone,
     family, category: task.category, format: task.format, state: task.state, stateTone: TASK_STATE_TONE[task.state], visibility: task.visibility, accessClass: task.accessClass,
     author: personRef(s, task.ownerId), department: deptRef(s, task.departmentId),
     responsible: task.responsibleId && task.responsibleId !== task.ownerId ? personRef(s, task.responsibleId) : null,

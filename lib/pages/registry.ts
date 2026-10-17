@@ -1,7 +1,7 @@
 /**
  * Registro das páginas-esqueleto: rota → título (i18n) → RFs citados (docs/diagramas/RFnn/README.md "Aba/rota") →
  * visibilidade por perfil (ABAS_POR_PERFIL.md Matrizes A–E) → sub-abas. É a tabela do §11 "Implementado em" e a
- * fonte do teste que exige uma página para cada RF do catálogo (RF1–RF50) (lib/rf/catalog.test.ts).
+ * fonte do teste que exige uma página para cada RF do catálogo (RF1–RF74) (lib/rf/catalog.test.ts).
  */
 import type { GlyphName, MojiName } from "@/components/ui/glyphs/sprite.gen";
 import { ADMIN_TABS, AGENTS_ACCESS, AGENTS_TABS, DECIA_TABS, DESK_TABS, FIND_TABS, INSIGHTS_TABS, MESSAGES_TABS, MODELS_TABS, MURAL_TABS, POINTS_TABS, SEARCH_TABS, SESSION_TABS, SETTINGS_TABS, type SubTab } from "@/lib/nav/matrix";
@@ -113,6 +113,9 @@ export const PAGES: readonly PageEntry[] = [
   p("/decia/decisoes/[decisionId]", "app/(shell)/decia/decisoes/[decisionId]/page.tsx", "page.decision", ["RF29"], logged("E"), "sessao-decia", "A"),
   p("/decia/[sessionId]", "app/(shell)/decia/[sessionId]/page.tsx", "page.session", ["RF29", "RF13", "RF37", "RF46"], logged("E"), "sessao-decia", "A", { tabs: SESSION_TABS, note: "sessionCards" }),
   p("/insights", "app/(shell)/insights/page.tsx", "nav.insights", ["RF43", "RF20", "RF26", "RF50"], logged("V"), "insights-ia", "E", { tabs: INSIGHTS_TABS }),
+  // Editores de peças (PLANO_ONDAS 17/10/2026, Ondas 4 e 5): páginas-esqueleto com os CAs até o editor existir; RF51/RF69–RF72 são transversais às duas
+  p("/letters", "app/(shell)/letters/page.tsx", "nav.letters", ["RF52", "RF53", "RF54", "RF55", "RF56", "RF51", "RF69", "RF70", "RF71", "RF72"], logged("E"), "criar-tarefa", "A"),
+  p("/drawings", "app/(shell)/drawings/page.tsx", "nav.drawings", ["RF57", "RF58", "RF59", "RF60", "RF61", "RF62", "RF63", "RF64", "RF65", "RF66", "RF67", "RF68", "RF73", "RF74", "RF51", "RF69", "RF70", "RF71", "RF72"], logged("E"), "mesa", "A"),
   // Jogar e ganhar (§2.4 / Matriz E)
   p("/goals", "app/(shell)/goals/page.tsx", "nav.goals", ["RF35", "RF24", "RF49"], access({ EMPREGADO: "V", EMPRESA: "E", CHEFE: "E", CURADOR: "V", ADMIN: "V" }), "hype", "E"),
   p("/points", "app/(shell)/points/page.tsx", "nav.points", ["RF42"], logged("V"), "decia-points", "E", { tabs: POINTS_TABS }),
@@ -138,6 +141,9 @@ export const PAGES: readonly PageEntry[] = [
   p("/register", "app/(auth)/register/page.tsx", "auth.register.title", ["RF1"], everyone("V"), "perfil", "auth"),
   p("/password-reset", "app/(auth)/password-reset/page.tsx", "auth.reset.title", ["RF2"], everyone("V"), "perfil", "auth"),
   p("/verify-email", "app/(auth)/verify-email/page.tsx", "auth.verify.title", ["RF1"], everyone("V"), "perfil", "auth"),
+  // Textos legais públicos da Velion (D-143): sem login, lidos de docs/legal
+  p("/termos", "app/(legal)/termos/page.tsx", "legal.terms", ["RF1"], everyone("V"), "configuracoes", "auth"),
+  p("/privacidade", "app/(legal)/privacidade/page.tsx", "legal.privacy", ["RF1"], everyone("V"), "configuracoes", "auth"),
   // Lab
   p("/lab/design-system", "app/(shell)/lab/design-system/page.tsx", "lab.designSystem", ["RF38"], everyone("V"), "configuracoes", "lab"),
   p("/lab/anatomias", "app/(shell)/lab/anatomias/page.tsx", "lab.anatomias", ["RF38", "RF11"], everyone("V"), "mesa", "lab"),

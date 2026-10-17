@@ -22,6 +22,54 @@ HU46: *como usuário do Work Station posso enviar mensagens e atribuir tarefas o
 - **RF46.CA05** CHEFE atribui a membros do seu departamento (RF10, `requireDeptHead`); EMPREGADO **propõe** a colegas da mesma empresa (sempre com aceite); toda atribuição grava `AuditLog`, e com origem `CHAT_DECIA` também um nó `DecisionTraceNode TAREFA/PROJETO` ligado à mensagem (RF29.CA04).
 - **RF46.CA06** Mensagens têm TTL por empresa (`Company.messagingPolicyJson`, proposta), não entram em busca nem na Memória Institucional, e o usuário pode arquivar/sair da conversa; lista e não lidas em tempo real (Redis pub/sub → SSE/WebSocket).
 
+## 0. Diagrama de casos de uso
+
+Quem conversa e quem atribui ou recebe trabalho pelo chat. Atores do catálogo de [`ATORES_E_ATRIBUTOS.md`](../../arquitetura/ATORES_E_ATRIBUTOS.md) §2 (o Responsável atribuído é o papel de quem recebe a atribuição); todos os casos são planejados — `/messages` é página-esqueleto e a caixa de atribuições de `components/social` roda só sobre o repositório DEMO.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  classDef ucDemo fill:#fff8e6,stroke:#b26a00,stroke-dasharray:2 2,color:#1b1b1b
+  empregado["«ator» Empregado"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  participante_sessao["«ator» Admin · Membro · Observador da sessão"]:::ator
+  responsavel["«ator» Responsável atribuído"]:::ator
+  subgraph SIS["Work Station — RF46 Mensagens e atribuições"]
+    direction TB
+    UC1(["UC1 Conversar com colegas da mesma empresa"]):::ucPlan
+    UC2(["UC2 Anexar tarefa ou projeto à conversa"]):::ucPlan
+    UC3(["UC3 Conferir o acesso dos participantes ao item"]):::ucPlan
+    UC4(["UC4 Atribuir tarefa ou projeto"]):::ucDemo
+    UC5(["UC5 Aceitar ou recusar a atribuição"]):::ucDemo
+    UC6(["UC6 Devolver a atribuição aceita"]):::ucPlan
+    UC7(["UC7 Arquivar ou sair da conversa"]):::ucPlan
+  end
+  empregado --- UC1
+  empregado --- UC4
+  empregado --- UC7
+  chefe --- UC1
+  chefe --- UC4
+  chefe --- UC7
+  participante_sessao --- UC4
+  responsavel --- UC5
+  UC2 -. "«extend»" .-> UC1
+  UC2 -. "«include»" .-> UC3
+  UC6 -. "«extend»" .-> UC5
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Conversar com colegas da mesma empresa (1:1 ou grupo, sem IA e sem pontos) | Empregado, Chefe de departamento | RF46.CA01, RF46.CA06 | planejado |
+| UC2 Anexar tarefa ou projeto à conversa | — (estende UC1) | RF46.CA01 | planejado |
+| UC3 Conferir o acesso dos participantes ao item (RESTRITO e SIGILOSO) | — (incluído por UC2) | RF46.CA02 | planejado |
+| UC4 Atribuir tarefa ou projeto (chat do WS, chat do DECIA ou botão no card) | Empregado (propõe), Chefe de departamento (sua equipe), Admin · Membro · Observador da sessão | RF46.CA03, RF46.CA05 | planejado (DEMO em `components/social/DelegateDialog.tsx`) |
+| UC5 Aceitar ou recusar a atribuição com motivo | Responsável atribuído | RF46.CA04 | planejado (DEMO em `components/social/AssignmentInbox.tsx`) |
+| UC6 Devolver a atribuição aceita | — (estende UC5) | RF46.CA04 | planejado |
+| UC7 Arquivar ou sair da conversa | Empregado, Chefe de departamento | RF46.CA06 | planejado |
+
 ## 1. Diagrama de classes
 
 ```mermaid

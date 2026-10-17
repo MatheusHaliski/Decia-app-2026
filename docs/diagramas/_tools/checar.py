@@ -5,8 +5,10 @@ Uso: python3 docs/diagramas/_tools/checar.py docs/diagramas/RF1/README.md [...]
 
 Para cada README confere:
   1. cabeçalho obrigatório (título `# RFnn — …`, linha `**HU:**`, linha `**Critérios de aceite cobertos:**`);
-  2. as cinco seções numeradas `## 1.` … `## 5.` na ordem da CONVENCOES e a `## 6. Rastreabilidade`;
-  3. um bloco ```mermaid em cada uma das seções 1–5 com o tipo de diagrama esperado;
+  2. as seis seções numeradas `## 0.` … `## 5.` na ordem da CONVENCOES e a `## 6. Rastreabilidade`;
+  3. um bloco ```mermaid em cada uma das seções 0–5 com o tipo de diagrama esperado;
+     na seção 0 (casos de uso): limite do sistema (`subgraph`), casos de uso em pílula e atores só do catálogo
+     de docs/arquitetura/ATORES_E_ATRIBUTOS.md (classes `ator`/`atorSis`);
   4. todo CA citado no cabeçalho (RFnn.CAnn, RFnn.Ann ou RNnn.nn) aparece na tabela da seção 6;
   5. nenhum `;` dentro de mensagem de sequenceDiagram e nenhum `<br>` em classDiagram.
 A renderização dos blocos Mermaid é feita por outro script (mmdc); este só olha a estrutura.
@@ -16,12 +18,17 @@ import sys
 import pathlib
 
 SECOES = [
+    ("## 0. Diagrama de casos de uso", "flowchart"),
     ("## 1. Diagrama de classes", "classDiagram"),
     ("## 2. Diagrama de atividades", "flowchart"),
     ("## 3. Diagrama de sequência", "sequenceDiagram"),
     ("## 4. Máquina de estados", "stateDiagram-v2"),
     ("## 5. Diagrama de componentes", "flowchart"),
 ]
+# ids de ator permitidos nos casos de uso (docs/arquitetura/ATORES_E_ATRIBUTOS.md §2)
+ATORES = {"visitante", "autenticado", "empregado", "chefe", "empresa", "admin", "curador", "dono", "colaborador", "responsavel",
+          "decisor", "participante_daci", "participante_sessao", "ia", "agendador", "oidc", "autenticador", "email", "conectores"}
+ATOR_RE = re.compile(r"^\s*([A-Za-z0-9_]+)\s*\[[^\]]*\]\s*:::(ator|atorSis)\b", re.M)
 CA_RE = re.compile(r"\b(RF\d+\.(?:CA|A)\d+|RN\d+\.\d+|CA\d{2})\b")
 
 
@@ -78,6 +85,18 @@ def checar(path):
             falhas.append(f"`{titulo}` sem bloco ```mermaid")
         elif not any(b.lstrip().startswith(tipo) for b in blocos):
             falhas.append(f"`{titulo}` sem diagrama `{tipo}`")
+        if titulo.startswith("## 0.") and blocos:
+            b = blocos[0]
+            if "subgraph" not in b:
+                falhas.append("`## 0.`: falta o limite do sistema (`subgraph`)")
+            if not re.search(r"\(\[\s*\"?UC\d+", b):
+                falhas.append("`## 0.`: nenhum caso de uso em pílula `UCn([\"UCn …\"])`")
+            atores = ATOR_RE.findall(b)
+            if not atores:
+                falhas.append("`## 0.`: nenhum ator com classe `ator`/`atorSis`")
+            fora = sorted({a for a, _ in atores if a not in ATORES})
+            if fora:
+                falhas.append("`## 0.`: atores fora do catálogo: " + ", ".join(fora))
         for b in blocos:
             if b.lstrip().startswith("classDiagram") and "<br" in b:
                 falhas.append(f"`{titulo}`: `<br>` em classDiagram")

@@ -4,6 +4,58 @@
 
 Tipos (`GroupingType`): **PROGRAMA** (= coleção, EMPRESA/CHEFE), **EXERCICIO** (= temporada, ano orçamentário), **GESTAO** (= era, período de um chefe ou de uma gestão), **FRENTE** (= linha de estilo; a única que o EMPREGADO cria, pessoal). Um projeto aponta direto para até três agrupamentos (`ProjectScheme.programGroupingId / exerciseGroupingId / managementGroupingId`) e `GroupingItem` registra qualquer item (PROJECT · TASK). Encerrar uma GESTAO dispara o **Dossiê de Transição** (RF36) por evento AFTER_COMMIT.
 
+## 0. Diagrama de casos de uso
+
+Quem cria, alimenta, consulta e encerra Programas, Exercícios, Gestões e Frentes. Pílulas cheias existem no código hoje; tracejadas são planejadas.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  empresa["«ator» Empresa ou órgão"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  empregado["«ator» Empregado"]:::ator
+  dono["«ator» Dono do recurso"]:::ator
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  subgraph SIS["Work Station — RF25 Programas e agrupamentos"]
+    direction TB
+    UC1(["UC1 Criar programa, exercício ou gestão"]):::ucPlan
+    UC2(["UC2 Criar uma frente pessoal"]):::ucPlan
+    UC3(["UC3 Verificar o perfil para o tipo de agrupamento"]):::ucPlan
+    UC4(["UC4 Adicionar projeto ou tarefa ao agrupamento"]):::ucPlan
+    UC5(["UC5 Acompanhar o progresso e a linha do tempo de decisões"]):::ucPlan
+    UC6(["UC6 Encontrar o agrupamento na busca e nas páginas institucionais"]):::ucPlan
+    UC7(["UC7 Encerrar uma gestão"]):::ucPlan
+    UC8(["UC8 Gerar o Dossiê de Transição"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  empresa --- UC1
+  chefe --- UC1
+  empregado --- UC2
+  dono --- UC4
+  autenticado --- UC5
+  autenticado --- UC6
+  empresa --- UC7
+  chefe --- UC7
+  UC1 -. "«include»" .-> UC3
+  UC2 -. "«include»" .-> UC3
+  UC7 -. "«include»" .-> UC8
+  UC8 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Criar programa, exercício ou gestão | Empresa ou órgão · Chefe de departamento | RF25.CA01 | planejado |
+| UC2 Criar uma frente pessoal | Empregado | RF25.CA01 | planejado — FRENTE é o único tipo que o EMPREGADO cria |
+| UC3 Verificar o perfil para o tipo de agrupamento | (incluído por UC1, UC2) | RF25.CA01 | planejado — `403 ACESSO_NEGADO` e `400 PERIODO_INVALIDO` |
+| UC4 Adicionar projeto ou tarefa ao agrupamento | Dono do recurso | RF25.CA02 | planejado — `409 TIPO_JA_VINCULADO` |
+| UC5 Acompanhar o progresso e a linha do tempo de decisões | Pessoa autenticada | RF25.CA03 | planejado |
+| UC6 Encontrar o agrupamento na busca e nas páginas institucionais | Pessoa autenticada | RF25.CA04 | planejado |
+| UC7 Encerrar uma gestão | Empresa ou órgão · Chefe de departamento | RF25.CA05 | planejado |
+| UC8 Gerar o Dossiê de Transição | IA (AiGateway) (incluído por UC7) | RF25.CA05 | planejado — evento AFTER_COMMIT → RF36 |
+
 ## 1. Diagrama de classes
 
 ```mermaid

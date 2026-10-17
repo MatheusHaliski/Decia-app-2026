@@ -83,7 +83,8 @@ export function parseReadme(id, md) {
     if (!m || !text || /^-+$/.test(text)) continue;
     const caId = m[1];
     const note = (m[2] ?? "").replace(/^[\s(]+|[\s)]+$/g, "");
-    const kind = /^Dado\b/i.test(text) ? "enunciado" : "rastreabilidade";
+    // "Dado", "Dada", "Dados", "Dadas": a concordância segue o substantivo do CA (RF52–RF74 usam as quatro formas)
+    const kind = /^Dad[oa]s?\b/i.test(text) ? "enunciado" : "rastreabilidade";
     const prev = found.get(caId);
     if (!prev || (prev.kind === "rastreabilidade" && kind === "enunciado")) found.set(caId, { id: caId, text, note, kind });
   }

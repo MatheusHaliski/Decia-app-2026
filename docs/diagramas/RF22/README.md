@@ -11,6 +11,68 @@ Três visões do **mesmo** `ProjectScheme`: **Quadro** (kanban por `ProjectPhase
 | Comentar tarefa | não | não | `comments` (PROJECT_TASK) |
 | Reabrir projeto CONCLUÍDO/ARQUIVADO | sim | sim, com `reason` obrigatório (CA06) | `project_versions`, `audit_log` |
 
+## 0. Diagrama de casos de uso
+
+Quem lê e quem edita um Esquema de Projeto em `/projects/[id]/edit`: editam o dono, o responsável por tarefa do projeto e o chefe do departamento; os demais que veem o projeto ficam em modo leitura. Pílulas cheias existem no código hoje; tracejadas são planejadas.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  dono["«ator» Dono do recurso"]:::ator
+  responsavel["«ator» Responsável atribuído"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  subgraph SIS["Work Station — RF22 Editar projeto na Mesa"]
+    direction TB
+    UC1(["UC1 Abrir o projeto em quadro, linha do tempo ou canvas"]):::ucPlan
+    UC2(["UC2 Verificar a permissão de edição"]):::ucPlan
+    UC3(["UC3 Alterar a estrutura do projeto"]):::ucPlan
+    UC4(["UC4 Registrar uma versão do projeto"]):::ucPlan
+    UC5(["UC5 Comparar e restaurar versões"]):::ucPlan
+    UC6(["UC6 Arrumar cartões no canvas e trocar a skin"]):::ucPlan
+    UC7(["UC7 Resolver conflito de edição simultânea"]):::ucPlan
+    UC8(["UC8 Reabrir projeto concluído ou arquivado com justificativa"]):::ucPlan
+    UC9(["UC9 Comentar uma tarefa e ver o fio de decisão"]):::ucPlan
+    UC10(["UC10 Exportar o projeto em PDF ou ZIP"]):::ucPlan
+  end
+  autenticado --- UC1
+  dono --- UC3
+  responsavel --- UC3
+  chefe --- UC3
+  dono --- UC5
+  chefe --- UC5
+  dono --- UC6
+  responsavel --- UC6
+  chefe --- UC6
+  dono --- UC8
+  chefe --- UC8
+  autenticado --- UC9
+  autenticado --- UC10
+  UC3 -. "«include»" .-> UC2
+  UC3 -. "«include»" .-> UC4
+  UC5 -. "«include»" .-> UC2
+  UC5 -. "«include»" .-> UC4
+  UC6 -. "«include»" .-> UC2
+  UC7 -. "«extend»" .-> UC3
+  UC8 -. "«include»" .-> UC4
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Abrir o projeto em quadro, linha do tempo ou canvas | Pessoa autenticada | RF22.CA01, RF22.CA03 | planejado — `/projects/[id]/edit` é esqueleto; sem permissão de edição, modo leitura |
+| UC2 Verificar a permissão de edição | (incluído por UC3, UC5, UC6) | RF22.CA01, RF22.CA06 | planejado — `ProjectDeskService.canEdit`; `403 ACESSO_NEGADO` e `409 PROJETO_BLOQUEADO` |
+| UC3 Alterar a estrutura do projeto | Dono do recurso · Responsável atribuído · Chefe de departamento | RF22.CA02, RF22.CA06 | planejado — tarefas, fases, prazos, responsáveis e dependências |
+| UC4 Registrar uma versão do projeto | (incluído por UC3, UC5, UC8) | RF22.CA02 | planejado — `ProjectVersion` com autor, data e `diffJson` legível |
+| UC5 Comparar e restaurar versões | Dono do recurso · Chefe de departamento | RF22.CA02 | planejado |
+| UC6 Arrumar cartões no canvas e trocar a skin | Dono do recurso · Responsável atribuído · Chefe de departamento | RF22.CA03 | planejado — não gera versão |
+| UC7 Resolver conflito de edição simultânea | (estende UC3) | RF22.CA04 | planejado — propagação em até 3 s, último-vence com aviso |
+| UC8 Reabrir projeto concluído ou arquivado com justificativa | Dono do recurso · Chefe de departamento | RF22.CA06 | planejado — `AuditLog PROJECT_REOPEN` |
+| UC9 Comentar uma tarefa e ver o fio de decisão | Pessoa autenticada | RF22.CA05 | planejado |
+| UC10 Exportar o projeto em PDF ou ZIP | Pessoa autenticada | RF22.CA07 | planejado — `PipelineJob EXPORT_PDF` ou `EXPORT_ZIP` |
+
 ## 1. Diagrama de classes
 
 ```mermaid

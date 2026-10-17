@@ -4,6 +4,62 @@
 
 `ProfileHypeScore` (único `userId + scoreDate`; `score` 0–1000; `bandCode` → `HypeBand` Iniciante · Contribuinte · Referência · Líder de prática · Lenda do departamento, nomes editáveis pela EMPRESA; `blocksJson` produção 25 % · reconhecimento social 25 % · participação no DECIA 25 % · eficiência e impacto 15 % · reconhecimentos e chancelas 10 %; `bayesianPriorsJson`, `halfLifeDays` 180, `percentileInDept`, `topPositiveEventsJson`, `topNegativeEventsJson`, `suggestionsJson`, `weightsVersion`, `aiInferenceId`, `idempotencyKey`). Regras estatísticas em `HypeCalculator` (determinístico, D-12, `METRICAS_GESTAO.md` seção Hype): **média bayesiana** por bloco, **decaimento** meia-vida 180 d, **normalização por departamento/empresa** (percentil), tetos por dia, ponderação **PageRank** pela reputação de quem interage (`Reaction.actorHypeAtTime` do mês anterior, ≤ 3× o peso base), **antifraude** compartilhado com RF42 (`HypeIgnoredEvent` NAO_VERIFICADO · AUTO_INTERACAO · ANTIFRAUDE, só `User.verified`). Exibição: `User.hypeVisibility` PUBLICO · EMPRESA · SO_EU (padrão; **existe no main**: `HypeVisibility`) — a API omite o campo ou responde 403 a quem não pode ver; ocultar não impede o cálculo nem o ranking (RF43, que respeita `rankingOptOut`). A IA (`HYPE_PERFIL`) **só redige** a explicação ✦. Política de uso (LGPD): indicador de reputação e desenvolvimento, não instrumento disciplinar (`Company.hypePolicyJson`); revisão de decisão automatizada via `DataSubjectRequest` target HYPE (RF3).
 
+## 0. Diagrama de casos de uso
+
+Quem vê, controla e governa o Hype Score do Perfil. Atores do catálogo de [`ATORES_E_ATRIBUTOS.md`](../../arquitetura/ATORES_E_ATRIBUTOS.md) §2 e permissões de [`ABAS_POR_PERFIL.md`](../../produto/ABAS_POR_PERFIL.md) (sub-aba 14: só o dono; a conta EMPRESA não tem Hype). O caso com borda contínua existe no código (`hypeVisibility` em `PATCH /api/me`); os tracejados são planejados — `HypeBand` e `HypeIgnoredEvent` existem só como entidades.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  visitante["«ator» Visitante"]:::ator
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  empregado["«ator» Empregado"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  empresa["«ator» Empresa ou órgão"]:::ator
+  admin["«ator» Administrador"]:::ator
+  subgraph SIS["Work Station — RF45 Hype Score do Perfil"]
+    direction TB
+    UC1(["UC1 Recalcular o Hype Score"]):::ucPlan
+    UC2(["UC2 Ver o meu Hype e por que ele é X"]):::ucPlan
+    UC3(["UC3 Ver as interações ignoradas"]):::ucPlan
+    UC4(["UC4 Escolher quem vê o meu Hype"]):::uc
+    UC5(["UC5 Ver o Hype de outra pessoa"]):::ucPlan
+    UC6(["UC6 Ajustar política, pesos e faixas do Hype"]):::ucPlan
+    UC7(["UC7 Consultar como o Hype é calculado"]):::ucPlan
+    UC8(["UC8 Ver a distribuição anonimizada do Hype"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  agendador["«ator» Agendador de trabalhos"]:::atorSis
+  visitante --- UC7
+  autenticado --- UC5
+  autenticado --- UC7
+  empregado --- UC2
+  empregado --- UC4
+  chefe --- UC2
+  chefe --- UC4
+  chefe --- UC8
+  empresa --- UC6
+  empresa --- UC8
+  admin --- UC8
+  UC3 -. "«extend»" .-> UC2
+  UC1 --- agendador
+  UC2 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Recalcular o Hype Score (diário, determinístico, com antifraude) | Agendador de trabalhos | RF45.CA01, RF45.CA02, RF45.CA03, RF45.CA04, RF45.CA09 | planejado |
+| UC2 Ver o meu Hype e por que ele é X | Empregado, Chefe de departamento, IA (AiGateway) | RF45.CA05 | planejado |
+| UC3 Ver as interações ignoradas | — (estende UC2) | RF45.CA03 | planejado |
+| UC4 Escolher quem vê o meu Hype (PUBLICO · EMPRESA · SO_EU) | Empregado, Chefe de departamento | RF45.CA06 | real parcial (`PATCH /api/me` grava `hypeVisibility`; controle em `/settings` planejado) |
+| UC5 Ver o Hype de outra pessoa no perfil ou no ranking | Pessoa autenticada | RF45.CA06, RF45.CA08 | planejado |
+| UC6 Ajustar política, pesos e faixas do Hype | Empresa ou órgão | RF45.CA07 | planejado |
+| UC7 Consultar como o Hype é calculado | Visitante, Pessoa autenticada | RF45.CA07, RF45.CA09 | planejado |
+| UC8 Ver a distribuição anonimizada do Hype | Chefe de departamento, Empresa ou órgão, Administrador | RF45.CA10 | planejado |
+
 ## 1. Diagrama de classes
 
 ```mermaid

@@ -4,6 +4,47 @@
 
 Referências de execução: `docs/auditoria/2026-10-16/.../PLANO_CORRECAO.md` (incrementos 1–7 e gates), `docs/produto/requisitos-studio/RF51–RF74.md` (CAs), `docs/auditoria/2026-10-15/*` (comandos, colaboração 2D, painéis Bézier), `referencias/COMANDOS_REFERENCIA_ILLUSTRATOR_AUTOCAD.md`.
 
+## Diagrama das ondas (dependências e RF por onda)
+
+Cada card RF do board Work Station (lista *Requisitos Funcionais*) recebeu em 17/10/2026 a seção "Auditoria 17/10/2026 — plano de correção" e a checklist "Correção — Onda n"; a lista *Plano por ondas — auditoria 17/10/2026* tem um card por onda com a checklist dos RF. Os diagramas por RF estão em `docs/diagramas/RF1…RF74/README.md` (RF51–RF74 criados nesta data) e o catálogo `lib/rf/catalog.gen.ts` alimenta as páginas-esqueleto `/letters` e `/drawings`.
+
+```mermaid
+flowchart LR
+  O0["Onda 0 · decisões D-138–D-142\nRF2 (sessão)"] --> O1
+  O1["Onda 1 · perfil real e pessoas\nRF3 RF6 RF14 RF15 RF16 RF45"] --> O2
+  O1 --> O3
+  O2["Onda 2 · projetos (agregado, 3 visões, mesa)\nRF5 RF7 RF10 RF20 RF21 RF22"] --> O3
+  O3["Onda 3 · anexos, peças versionadas, vínculo peça→tarefa→projeto→sessão\nRF4 RF8 RF11 RF12 RF13 RF41 RF69 RF71"] --> O4
+  O3 --> O5
+  O4["Onda 4 · Letters\nRF52 RF53 RF54 RF55 RF56"] --> O6
+  O5["Onda 5 · Drawings\nRF57–RF67 RF73 RF74"] --> O6
+  O6["Onda 6 · IA no servidor\nRF26 RF30 RF43 RF44 RF48 RF50 RF51 RF68"] --> O7
+  O2 --> O7
+  O7["Onda 7 · DECIA persistido, memória, ata, mensagens\nRF29 RF33 RF37 RF46"] --> O8
+  O1 --> O8
+  O8["Onda 8 · institucional, rede social persistida, gamificação\nRF9 RF17 RF18 RF19 RF24 RF25 RF27 RF28 RF35 RF36 RF39 RF40 RF42 RF49"] --> O9
+  O3 --> O9
+  O9["Onda 9 · conectores, documentos técnicos, busca, simulação, espelho\nRF23 RF31 RF32 RF34 RF47 RF70"]
+  T["Transversal · qualidade, identidade visual, e-mail\nRF1 RF38 RF72"] -.-> O1 & O4 & O5 & O9
+  classDef feita fill:#dff5e1,stroke:#2e7d32,color:#1b1b1b
+  classDef curso fill:#fff4d6,stroke:#b26a00,color:#1b1b1b
+  class O0 feita
+  class O1 curso
+```
+
+```mermaid
+stateDiagram-v2
+  direction LR
+  [*] --> pendente
+  pendente --> em_curso : onda aberta (branch claude/upbeat-dirac-7sa5n3)
+  em_curso --> verificada : testes + jornada real (UI→BFF→API→MySQL) + capturas desktop/celular
+  verificada --> concluida : nota acima de 8,5 na MATRIZ_RF (rubrica do projeto) e checklist do card no Trello marcada
+  verificada --> em_curso : evidência insuficiente ou regressão
+  concluida --> [*]
+```
+
+Legenda: verde = onda concluída e verificada; amarelo = em curso. O gate de cada onda é o da coluna *Situação*: `pendente` → `em curso` → `verificada` → `concluída`.
+
 ## Onda 0 — decisões (D-138–D-142)
 
 | RF | Nota 16/10 | Principal erro (16/10) | Melhoria exigida | Situação |
@@ -15,10 +56,10 @@ Referências de execução: `docs/auditoria/2026-10-16/.../PLANO_CORRECAO.md` (i
 | RF | Nota 16/10 | Principal erro (16/10) | Melhoria exigida | Situação |
 |---|---:|---|---|---|
 | RF3 — Editar informações pessoais e preferências do perfil do usuário | 6.05 | Preferências e conta existem; foto e todos os direitos do titular não compõem um perfil profissional completo. | Integrar foto segura, biografia, especialidades e controles de publicação com API de conta. | pendente |
-| RF6 — Acessar e gerenciar o Perfil  Empresarial (Acervo Digital + Projetos S | 5.05 | Perfil empresarial não integra acervo institucional e projetos reais; perfil pessoal antes usava fixture. | Integrar API institucional e separar portfólio publicado de atividade privada, mantendo totais autorizados. | pendente |
+| RF6 — Acessar e gerenciar o Perfil  Empresarial (Acervo Digital + Projetos S | 5.05 | Perfil empresarial não integra acervo institucional e projetos reais; perfil pessoal antes usava fixture. | Integrar API institucional e separar portfólio publicado de atividade privada, mantendo totais autorizados. | parcial — `/profile` real desde 17/10 (cabeçalho por `/api/me`, Acervo Digital e contadores por `/api/tasks`, P19); API institucional e demais sub-abas pendentes |
 | RF14 — Visualizar perfil de um chefe de departamento | 3.35 | Página de chefia usa pessoas e vínculos demonstrativos. | Servir perfil público autorizado de chefia com lotação e indicadores reais. | pendente |
 | RF15 — Visualizar perfil de um empresa ou órgão público/privado | 3.35 | Página institucional usa dados demonstrativos, não um portfólio persistente. | Conectar identidade institucional verificada, equipe, projetos e publicações à API. | pendente |
-| RF16 — Visualizar perfil de um usuário comum que é empregado dentro de uma em | 4.15 | Perfil de terceiros não tem API social; contagens, foto e trajetória pública não estão integradas. | Disponibilizar endpoint público filtrado por ACL, seguir/seguindo, foto e feed de entregas revisadas. | pendente |
+| RF16 — Visualizar perfil de um usuário comum que é empregado dentro de uma em | 4.15 | Perfil de terceiros não tem API social; contagens, foto e trajetória pública não estão integradas. | Disponibilizar endpoint público filtrado por ACL, seguir/seguindo, foto e feed de entregas revisadas. | parcial — fora do laboratório `/u/[username]` é real desde 17/10 (`components/people/PublicProfile`): cabeçalho por `GET /api/people/by-username/{username}` (404 uniforme → "perfil não encontrado"; sem sessão → Entrar; o próprio @usuário vai para `/profile`), Acervo Digital e contador de tarefas visíveis por `GET /api/people/{id}/tasks`; a busca de pessoas que leva a ele é real (RF17, aba PESSOAS de `/search`). Pendentes: seguir/seguindo, foto/capa enviadas pela pessoa, lotação por nome, sub-abas 2–5 (Projetos, Programas, Decisões, Deliberativo) e o feed de entregas revisadas |
 | RF45 — Calcular com a IA o Hype Score do Perfil (0–1000) a partir de tudo o q | 0.0 | Hype de perfil é demonstrativo e não representa reputação calculada e auditável. | Definir fórmula, fontes, privacidade e opt-out; não inferir carreira a partir de popularidade. | pendente |
 
 ## Onda 2 — projetos (agregado, três visões, mesa)
@@ -100,12 +141,12 @@ Referências de execução: `docs/auditoria/2026-10-16/.../PLANO_CORRECAO.md` (i
 | RF | Nota 16/10 | Principal erro (16/10) | Melhoria exigida | Situação |
 |---|---:|---|---|---|
 | RF9 — Permitir que um chefe de departamento possa adicionar ou remover um us | 5.8 | Gestão de equipe tem serviço e UI; vínculo institucional real não foi testado nesta auditoria de navegador. | Validar chefe/membro com duas contas, lotação, remoção e revogação em todos os recursos. | pendente |
-| RF17 — Visualizar esquemas de tarefa & projetos criados por outros usuários n | 3.75 | Busca de tarefas/projetos de terceiros depende do repositório DEMO. | Criar busca paginada com autorização no servidor e sem vazamento de títulos, miniaturas e contagens. | pendente |
+| RF17 — Visualizar esquemas de tarefa & projetos criados por outros usuários n | 3.75 | Busca de tarefas/projetos de terceiros depende do repositório DEMO. | Criar busca paginada com autorização no servidor e sem vazamento de títulos, miniaturas e contagens. | parcial — aba PESSOAS de `/search` real desde 17/10 (`GET /api/people`, card `PersonResultCard` com link para o perfil real, Onda 1/RF16); tarefas e projetos de terceiros na busca, chefes, empresas e paginação seguem pendentes |
 | RF18 — Interagir socialmente com tarefas e projetos: curtir,comentar,salvar,  | 3.95 | Curtir/comentar/salvar/compartilhar/remixar operam em memória e se perdem no reload. | Implementar endpoints sociais idempotentes e testar persistência entre duas contas e visitante. | pendente |
 | RF19 — Curtir, comentar, salvar, compartilhar, retornar, atribuir e remixar t | 3.95 | Interações não persistem por tipo de recurso nem contemplam planos reais. | Reutilizar contrato social persistente por TASK/PROJECT/PLAN, com moderação e proveniência do remix. | pendente |
 | RF24 — Visualizar a aba metas & objetivos de minha equipe com insights analít | 0.0 | Metas de equipe e insights não têm jornada real persistida. | Criar metas, responsáveis e métricas calculáveis, depois insights fundamentados por período. | pendente |
 | RF25 — Agrupar projetos e tarefas em Programas, Exercícios e Gestões (agrupam | 0.0 | Programas/exercícios/gestões estão modelados/documentados sem gestão operacional comprovada. | Implementar agrupamentos com regras de vínculo, ciclo de gestão, autorização e consulta real. | pendente |
-| RF27 — Navegar no Mural (mural da empresa e vitrine de projetos) e Buscar pro | 4.05 | Mural e busca mostram exemplos, não carreira e publicações reais do usuário. | Criar eventos de publicação explícita e feed paginado, distinguindo atividade privada e marco público. | pendente |
+| RF27 — Navegar no Mural (mural da empresa e vitrine de projetos) e Buscar pro | 4.05 | Mural e busca mostram exemplos, não carreira e publicações reais do usuário. | Criar eventos de publicação explícita e feed paginado, distinguindo atividade privada e marco público. | parcial — notificações reais desde 17/10 (`/api/notifications`: responsável definido, mudança de estado da tarefa, 2FA; só para quem pode ver o recurso; sino relê a cada minuto). Mural e feed seguem pendentes |
 | RF28 — Gerir perfis de empresa e chefe de departamento (departamentos, página | 4.1 | Gestão de equipe cobre parte; aprovação, chancelas e reconhecimentos institucionais continuam incompletos. | Completar ciclo institucional e concessões auditáveis; verificar revogação de todos os poderes. | pendente |
 | RF35 — Participar de Metas coletivas, aparecer nos Destaques e receber Reconh | 0.0 | Metas coletivas e reconhecimentos não possuem fluxo operacional persistido. | Implementar contribuição validada, regras transparentes e prevenção de recompensa por volume artificial. | pendente |
 | RF36 — Gerar o Dossiê de Transição (handoff) quando um empregado muda de depa | 0.0 | Dossiê de transição não transfere trabalho real com contexto e controle de acesso. | Criar snapshot revisável de pendências, responsáveis e fontes, seguido de transferência autorizada. | pendente |

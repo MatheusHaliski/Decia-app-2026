@@ -33,6 +33,63 @@
 
 Entidades **propostas** (TAXONOMIA ainda não as tem; migration reservada V45, `docs/PLANO_EXECUCAO.md` §6): `ContractDossier` (projeto + documentos + regime legal), `TestAgentDefinition` (17 agentes, versão), `ContractTestRun`, `TestFinding` (`FindingResult` CONFORME · ATENCAO · NAO_CONFORME · NAO_VERIFICAVEL), `FindingEvidence`, `ExternalQueryRecord` (fonte, data/hora, hash), `CuratedReference` (base bibliográfica curada e versionada), `UnfoundedHypothesis`, `FindingContestation` (contraditório), `ContractScore` + `ContractScoreWeights` (versionados). Os achados usam o índice de texto e a extração do RF47 (escopo `DOSSIE`) para localizar cláusulas e trechos; `FindingEvidence` guarda `extractedRowId` (linha extraída) e o trecho de origem (CA14).
 
+## 0. Diagrama de casos de uso
+
+Quem usa a aba Agentes e para quê. Atores do catálogo de [`ATORES_E_ATRIBUTOS.md`](../../arquitetura/ATORES_E_ATRIBUTOS.md) §2 (agente de contratação, gestor, fiscal e controle interno são pessoas autenticadas com acesso ao projeto; os pesos do Score são de EMPRESA e CHEFE); todos os casos são planejados — `/agents` é página-esqueleto (o modo de tela vale só na visita).
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  empresa["«ator» Empresa ou órgão"]:::ator
+  subgraph SIS["Work Station — RF48 Agentes"]
+    direction TB
+    UC1(["UC1 Rodar agentes de teste sobre o dossiê"]):::ucPlan
+    UC2(["UC2 Consultar fontes externas oficiais"]):::ucPlan
+    UC3(["UC3 Revisar o Relatório de Testes"]):::ucPlan
+    UC4(["UC4 Anexar contraditório a um achado"]):::ucPlan
+    UC5(["UC5 Ver o Score do Contrato e os portões"]):::ucPlan
+    UC6(["UC6 Definir os pesos do Score"]):::ucPlan
+    UC7(["UC7 Reexecutar os testes por gatilho da execução"]):::ucPlan
+    UC8(["UC8 Exportar ou anexar o relatório"]):::ucPlan
+    UC9(["UC9 Usar as ferramentas do dossiê"]):::ucPlan
+    UC10(["UC10 Escolher o modo de tela"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  agendador["«ator» Agendador de trabalhos"]:::atorSis
+  conectores["«ator» Google · Microsoft · e-Protocolo"]:::atorSis
+  autenticado --- UC1
+  autenticado --- UC3
+  autenticado --- UC5
+  autenticado --- UC8
+  autenticado --- UC9
+  autenticado --- UC10
+  chefe --- UC6
+  empresa --- UC6
+  UC1 -. "«include»" .-> UC2
+  UC4 -. "«extend»" .-> UC3
+  UC1 --- ia
+  UC7 --- agendador
+  UC8 --- conectores
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Rodar agentes de teste sobre o dossiê (um, um grupo ou todos) | Pessoa autenticada (com acesso ao projeto), IA (AiGateway) | RF48.CA01, RF48.CA09, RF48.CA11, RF48.CA12 | planejado |
+| UC2 Consultar fontes externas oficiais (sanções, certidões) | — (incluído por UC1) | RF48.CA05, RF48.CA06 | planejado |
+| UC3 Revisar o Relatório de Testes (achado só com evidência e referência) | Pessoa autenticada | RF48.CA02, RF48.CA03, RF48.CA04 | planejado |
+| UC4 Anexar contraditório a um achado | — (estende UC3) | RF48.CA06 | planejado |
+| UC5 Ver o Score do Contrato e os portões | Pessoa autenticada | RF48.CA07 | planejado |
+| UC6 Definir os pesos do Score (versionados) | Chefe de departamento, Empresa ou órgão | RF48.CA07 | planejado |
+| UC7 Reexecutar os testes por gatilho da execução | Agendador de trabalhos | RF48.CA08 | planejado |
+| UC8 Exportar ou anexar o relatório (projeto, protocolo ou sessão DECIA) | Pessoa autenticada, Google · Microsoft · e-Protocolo | RF48.CA10 | planejado |
+| UC9 Usar as ferramentas do dossiê (Encontrar, Ler com mapa, Extrair, Lista de termos) | Pessoa autenticada | RF48.CA13, RF48.CA14, RF48.CA15, RF48.CA16, RF48.CA17, RF48.CA19 | planejado (abas descritas no esqueleto) |
+| UC10 Escolher o modo de tela (Mesa, Assistente, Carteira, Matriz) | Pessoa autenticada | RF48.CA18 | planejado (o esqueleto alterna o modo sem salvar por pessoa) |
+
 ## 1. Diagrama de classes
 
 ```mermaid

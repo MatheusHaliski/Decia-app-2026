@@ -3,7 +3,7 @@
 > **Nome do produto:** **Work Station** (os cards do board ainda citam o nome antigo "Work AI"; leia-os como Work Station). Prefixo dos módulos: `ws-`.
 
 > Produto da SECID-PR. O **Work Station** é o app; o **DECIA** (Decisão com Inteligência Artificial) é o centro: mensageria deliberativa em grupo assistida por IA, ligada ao **Criador de Projetos** (tarefas compostas em esquemas de projeto). Requisitos: board Trello **Work Station** (RF1–RF45, HU1–HU45). Esqueleto herdado do **Fashion AI (FAI)**.
-> Documentos irmãos: [`TAXONOMIA.md`](TAXONOMIA.md) (entidades e atributos), [`DIAGRAMA_CLASSES_v1.md`](DIAGRAMA_CLASSES_v1.md), [`../diagramas/`](../diagramas/) (5 diagramas por RF), [`../design-system/`](../design-system/), [`../DECISOES.md`](../DECISOES.md).
+> Documentos irmãos: [`TAXONOMIA.md`](TAXONOMIA.md) (entidades e atributos), [`DIAGRAMA_CLASSES_v1.md`](DIAGRAMA_CLASSES_v1.md), [`../diagramas/`](../diagramas/) (6 diagramas por RF, a começar pelos casos de uso), [`ATORES_E_ATRIBUTOS.md`](ATORES_E_ATRIBUTOS.md) (taxonomia de atores e de atributos), [`../design-system/`](../design-system/), [`../DECISOES.md`](../DECISOES.md).
 
 ## 1. Objetivos que a arquitetura precisa provar (board, card principal)
 | Objetivo | Métrica verificável | Onde nasce na arquitetura |
@@ -16,15 +16,16 @@
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend · Next.js 15 App Router · TypeScript · Tailwind · packages/ui (design system DECIA)"]
+  subgraph FE["Frontend · Next.js 16 App Router · React 19 · TypeScript · Tailwind 4 · components/ui (design system DECIA)"]
     APP["app/ (rotas por aba)"] --> BFF["app/bff (proxy autenticado, cookies httpOnly)"]
-    UI["packages/ui · tokens.css · componentes"] --> APP
+    UI["components/ui · tokens.css · glyphs"] --> APP
+    EDIT["Letters (/letters) e Drawings (/drawings)\nlib/studio · lib/pieces · lib/drawings · lib/ai/autonomy\n(esqueleto até as Ondas 4–5)"] --> APP
   end
   BFF -->|REST JSON · JWT| WEB
   subgraph BE["Backend · Java 21 (bytecode) · Spring Boot 4.1.x · JVM 25 LTS na imagem · Maven multi-módulo hexagonal"]
     WEB["ws-web · controllers por RF · Spring Security · GlobalExceptionHandler · springdoc"]
-    APPL["ws-application · casos de uso (services) · AiEngine · ports · DomainEvents · Guard"]
-    DOM["ws-domain · entidades JPA · enums · repositórios · AES-GCM"]
+    APPL["ws-application · casos de uso (TaskService, PeopleService, IdentityService, AccountService…) · ResourceAuthorizer · AiGateway · ports · DomainEvents"]
+    DOM["ws-domain · records @DomainEntity (fonte única, D-40) · enums · AccessPolicy (SIGILOSO = PRIVADA, D-139) · AES-GCM"]
     INFRA["ws-infrastructure/* · adapters"]
     BOOT["ws-bootstrap · Spring Boot app · application.yml · schedulers"]
     WEB --> APPL --> DOM
