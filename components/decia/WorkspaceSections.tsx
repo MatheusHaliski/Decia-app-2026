@@ -1,6 +1,7 @@
 "use client";
 import { useState, type ReactNode } from "react";
 import { Badge, Button, Card, EmptyState, Tag, cn } from "@/components/ui";
+import { evaluateAiAction, personalPolicy } from "@/lib/ai/autonomy";
 import { track } from "@/lib/decia/analytics";
 import { addCriteria, DECISION_TEMPLATES, setRecommendationStatus, setScore, setWeight } from "@/lib/decia/commands";
 import {
@@ -10,6 +11,7 @@ import type { DecisionAggregate, DecisionLevel, EvidenceNature, Likelihood, Peop
 import { DECISION_LEVEL, isStructureEditable, LIKELIHOOD } from "@/lib/decia/types";
 import { toDecisionCardViewModel } from "@/lib/decia/view-model";
 import { useI18n } from "@/lib/i18n/useI18n";
+import { usePreferences } from "@/lib/preferences/PreferencesProvider";
 import { AiSuggestion } from "./AiSuggestion";
 import { DecisionTimeline, SensitivityPanel, TradeOffView } from "./Analysis";
 import { DecisionStatusBadge, EvidenceStrengthBadge, FreshnessBadge, LevelChip, StatementNatureChip } from "./Badges";
@@ -431,6 +433,13 @@ export function DecisionSection({ aggregate, people, onDecide, isOwner, currentU
   const ai = aggregate.recommendations.filter((r) => r.source === "IA");
   // depois de decidir, a sugestão da IA não entra mais no registro: botões indisponíveis com o motivo (Amershi G2/G9)
   const aiEditable = isStructureEditable(aggregate.decision.status);
+  // modo de autonomia (RF51): sugestão espontânea só nos modos que permitem; "Sob solicitação" mostra após pedido explícito
+  const { prefs } = usePreferences();
+  const aiPolicy = personalPolicy(prefs.aiAutonomyDefault);
+  const [aiRequested, setAiRequested] = useState(false);
+  const spontaneous = evaluateAiAction(aiPolicy, "SUGESTAO_ESPONTANEA", { requestedByUser: false }).ok;
+  const onRequest = evaluateAiAction(aiPolicy, "RESPONDER", { requestedByUser: true }).ok;
+  const showAi = ai.length > 0 && (spontaneous || (onRequest && aiRequested));
   const snap = [...aggregate.snapshots].filter((s) => s.kind === "DECISAO").sort((a, b) => b.versionNumber - a.versionNumber)[0];
   const decided = !!snap;
   const assumptionText = (id: string) => aggregate.assumptions.find((a) => a.id === id)?.statement ?? id;
@@ -453,7 +462,13 @@ export function DecisionSection({ aggregate, people, onDecide, isOwner, currentU
               ]} />
             </div>
           )) : <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{sc.leader ? t("decia.decision.leaderOnly", { alt: altName(sc.leader) }) : t("decia.decision.noRecommendation")}</p>}
-          {ai.map((r) => (
+          {ai.length && !showAi ? (
+            <div className="flex flex-wrap items-center gap-2 text-[length:var(--ws-text-body-sm)] text-ws-text-muted" data-testid="ai-gated" data-mode={aiPolicy.mode}>
+              <span>{t(onRequest ? "decia.ai.gatedOnRequest" : "decia.ai.gatedManual", { mode: t(`aiAutonomy.${aiPolicy.mode}`) })}</span>
+              {onRequest ? <Button size="sm" variant="ghost" onClick={() => setAiRequested(true)}>{t("decia.ai.request")}</Button> : null}
+            </div>
+          ) : null}
+          {(showAi ? ai : []).map((r) => (
             <AiSuggestion
               key={r.id}
               title={r.reasoningMd}

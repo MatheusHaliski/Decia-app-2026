@@ -258,6 +258,25 @@ describe("DecisionWorkspace", () => {
     expect(screen.getByTestId("risks").textContent).toContain("Limite de região do provedor");
   });
 
+  it("autonomia da IA (RF51): Sugestões mostra; Sob solicitação pede; Manual desliga com motivo", () => {
+    const arq = demo()[DEMO_DECISION_IDS.arquitetura]!; // tem sugestão IA SUGERIDA
+    const render = (mode: "SUGESTOES" | "SOB_SOLICITACAO" | "MANUAL") =>
+      renderWithProviders(<DecisionWorkspace aggregate={arq} now={NOW} currentUserId="u-pessoa" people={DEMO_PEOPLE} onSave={vi.fn()} initialSection="decisao" />, { prefs: { aiAutonomyDefault: mode } });
+    const a = render("SUGESTOES");
+    expect(document.querySelector('[data-origin="IA"]')).toBeTruthy();
+    expect(screen.queryByTestId("ai-gated")).toBeNull();
+    a.unmount();
+    const b = render("SOB_SOLICITACAO");
+    expect(document.querySelector('[data-origin="IA"]')).toBeNull();
+    fireEvent.click(within(screen.getByTestId("ai-gated")).getByRole("button", { name: "Mostrar sugestões da IA" }));
+    expect(document.querySelector('[data-origin="IA"]')).toBeTruthy();
+    b.unmount();
+    render("MANUAL");
+    expect(document.querySelector('[data-origin="IA"]')).toBeNull();
+    expect(screen.getByTestId("ai-gated").textContent).toContain("Manual");
+    expect(within(screen.getByTestId("ai-gated")).queryByRole("button")).toBeNull();
+  });
+
   it("estados vazios com próxima ação (decisão de UX)", () => {
     const ux = demo()[DEMO_DECISION_IDS.navegacao]!;
     const a = ws(ux, "comparar");
