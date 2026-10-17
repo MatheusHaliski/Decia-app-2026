@@ -45,7 +45,7 @@ describe("TaskSchemeCard — layouts e estados (ANATOMIA_CARDS §3)", () => {
     const card = screen.getByTestId("task-card");
     expect(card.getAttribute("data-layout")).toBe(layout);
     expect(screen.getByRole("link", { name: /Estudo técnico preliminar — calçadas/ }).getAttribute("href")).toBe(`/tasks/${T.anaEtp}`);
-    expect(card.getAttribute("aria-label")).toContain("Disponível");
+    expect(card.getAttribute("aria-label")).toContain("A realizar");
     if (layout !== "mini" && layout !== "attachment") expect(screen.getByTestId("social-bar")).toBeTruthy();
     else expect(screen.queryByTestId("social-bar")).toBeNull();
   });

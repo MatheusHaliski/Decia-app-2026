@@ -11,7 +11,8 @@ import { RfPage } from "@/components/shell/RfPage";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { PROFILE_TABS, type PageEntry } from "@/lib/pages/registry";
 import { itemOf, personById, personByUsername, profileProjects, profileTasks, savedListOf, toggleSave, titleOf } from "@/lib/social/rules";
-import { TASK_STATES, type TaskState } from "@/lib/social/types";
+import type { TaskState } from "@/lib/social/types";
+import { WORK_STATUSES, workStatusOf, type WorkStatus } from "@/lib/tasks/status";
 import { profileTabsFor, toProfileHeaderViewModel, toProjectCardViewModel, toTaskCardViewModel } from "@/lib/social/view-model";
 import { useViewer } from "@/lib/viewer/ViewerProvider";
 import { AssignmentInbox, SocialNotifications } from "./AssignmentInbox";
@@ -23,12 +24,15 @@ import { CardGrid, CardList, TaskSchemeCard } from "./TaskSchemeCard";
 function AcervoTab({ ownerId }: { ownerId: string }) {
   const { t } = useI18n();
   const { state, viewerId, now } = useSocial();
-  const [filter, setFilter] = useState<"todos" | TaskState>("todos");
+  // filtro pelo eixo de execução padronizado (A realizar · Em andamento · Bloqueado · Concluído · Arquivado) + publicados
+  const [filter, setFilter] = useState<"todos" | WorkStatus | "PUBLICADO">("todos");
   const [view, setView] = useState<"grade" | "lista">("grade");
   const all = profileTasks(state, viewerId, ownerId);
-  const counts = Object.fromEntries(TASK_STATES.map((s) => [s, all.filter((x) => x.state === s).length])) as Record<TaskState, number>;
-  const tasks = filter === "todos" ? all : all.filter((x) => x.state === filter);
-  const filters = [{ slug: "todos", label: t("social.acervo.all"), badge: <Badge tone="neutral">{all.length}</Badge> }, ...TASK_STATES.filter((s) => counts[s] > 0).map((s) => ({ slug: s, label: t(`social.taskState.${s}`), badge: <Badge tone="neutral">{counts[s]}</Badge> }))];
+  const groupOf = (state: TaskState) => workStatusOf(state) ?? "PUBLICADO";
+  const groups = [...WORK_STATUSES, "PUBLICADO"] as const;
+  const counts = Object.fromEntries(groups.map((g) => [g, all.filter((x) => groupOf(x.state) === g).length])) as Record<(typeof groups)[number], number>;
+  const tasks = filter === "todos" ? all : all.filter((x) => groupOf(x.state) === filter);
+  const filters = [{ slug: "todos", label: t("social.acervo.all"), badge: <Badge tone="neutral">{all.length}</Badge> }, ...groups.filter((g) => counts[g] > 0).map((g) => ({ slug: g, label: t(`social.workStatus.${g}`), badge: <Badge tone="neutral">{counts[g]}</Badge> }))];
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-3" data-testid="tab-acervo">
       <div className="flex flex-wrap items-center justify-between gap-2">
