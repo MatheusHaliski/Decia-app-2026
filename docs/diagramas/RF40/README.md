@@ -4,6 +4,55 @@
 
 `ModelOffer` (targetType TASK · PROJECT · KIT, `pricePoints` 0 = grátis, `license` `ModelLicense` COPIA_LIVRE · ATRIBUICAO · SOMENTE_LEITURA, `visibility`, `shelf` COMUNIDADE · CHANCELADO, `isHandover` repasse, `status` `OfferStatus` ATIVA · RETIRADA · ESGOTADA, contadores). O item passa a `TaskItem.offeredInCounter = true` + `TaskState OFERECIDA` mantendo o estado de trabalho (`TaskStateLog`). **Remixar** = `Remix` + cópia respeitando a licença + **1 lançamento** no ledger que debita o comprador e credita o autor (`DeciaPointsLedgerEntry COMPRA_LOJA` com `counterpartyUserId`, `idempotencyKey`; `VENDA_BALCAO` espelho) — grátis credita só `reuseCount`. Saldo insuficiente → `409 SALDO_INSUFICIENTE`. **Nenhum campo de moeda real, nenhum gateway** (CA08). Destacar/converter em chancelado passa pelo fluxo RF39 (indicação → chancela) preservando `originalTaskId/originalProjectId`.
 
+## 0. Diagrama de casos de uso
+
+Quem usa o Balcão de Modelos e para quê. Atores do catálogo de [`ATORES_E_ATRIBUTOS.md`](../../arquitetura/ATORES_E_ATRIBUTOS.md) §2 e permissões da Matriz A de [`ABAS_POR_PERFIL.md`](../../produto/ABAS_POR_PERFIL.md) (6.1); casos tracejados são planejados — hoje só existem as entidades `ModelOffer` e `StoreItem`, sem serviço nem tela.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  dono["«ator» Dono do recurso"]:::ator
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  empregado["«ator» Empregado"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  empresa["«ator» Empresa ou órgão"]:::ator
+  subgraph SIS["Work Station — RF40 Balcão de Modelos"]
+    direction TB
+    UC1(["UC1 Oferecer tarefa, projeto ou kit como modelo"]):::ucPlan
+    UC2(["UC2 Navegar nas prateleiras do Balcão"]):::ucPlan
+    UC3(["UC3 Reutilizar (remixar) um modelo"]):::ucPlan
+    UC4(["UC4 Copiar conforme a licença com crédito ao autor"]):::ucPlan
+    UC5(["UC5 Pagar o modelo em DECIA Points"]):::ucPlan
+    UC6(["UC6 Repassar a tarefa ao Balcão ao arquivar"]):::ucPlan
+    UC7(["UC7 Acompanhar e retirar meus modelos oferecidos"]):::ucPlan
+    UC8(["UC8 Destacar modelo da comunidade para chancela"]):::ucPlan
+  end
+  dono --- UC1
+  dono --- UC6
+  dono --- UC7
+  autenticado --- UC2
+  empregado --- UC3
+  chefe --- UC8
+  empresa --- UC8
+  UC3 -. "«include»" .-> UC4
+  UC5 -. "«extend»" .-> UC3
+  UC6 -. "«extend»" .-> UC1
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Oferecer tarefa, projeto ou kit como modelo | Dono do recurso | RF40.CA01, RF40.CA08 | planejado |
+| UC2 Navegar nas prateleiras do Balcão (Chancelados · Comunidade) | Pessoa autenticada | RF40.CA02 | planejado (`/models` é página-esqueleto) |
+| UC3 Reutilizar (remixar) um modelo | Empregado | RF40.CA03, RF40.CA08 | planejado |
+| UC4 Copiar conforme a licença com crédito ao autor | — (incluído por UC3) | RF40.CA04 | planejado |
+| UC5 Pagar o modelo em DECIA Points (só quando o preço é maior que 0) | — (estende UC3) | RF40.CA03, RF40.CA08 | planejado |
+| UC6 Repassar a tarefa ao Balcão ao arquivar (preço 0, etiqueta repasse) | Dono do recurso | RF40.CA05 | planejado |
+| UC7 Acompanhar e retirar meus modelos oferecidos | Dono do recurso | RF40.CA06 | planejado |
+| UC8 Destacar modelo da comunidade para chancela (RF39) | Chefe de departamento, Empresa ou órgão | RF40.CA07 | planejado |
+
 ## 1. Diagrama de classes
 
 ```mermaid

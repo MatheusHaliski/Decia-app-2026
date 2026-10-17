@@ -28,6 +28,64 @@
 | RF49.CA13 | Dado um pacto validado, quando o solicitante deseja reconhecer a ajuda, então pode registrar reconhecimento contextual vinculado à entrega, integrado ao RF35. Não distribui pontos por criar solicitações nem gera classificação individual de velocidade. |
 | RF49.CA14 | Dado mudanças relevantes, quando notificadas, então participantes autorizados recebem mensagens genéricas e agrupadas; lembretes respeitam preferências e limites de frequência. Cancelamento, recusa e devolução exigem motivo, com histórico auditável. |
 
+## 0. Diagrama de casos de uso
+
+Quem coordena um Pacto de Desbloqueio e para quê. Atores do catálogo de [`ATORES_E_ATRIBUTOS.md`](../../arquitetura/ATORES_E_ATRIBUTOS.md) §2 (o executor do pacto é o Responsável atribuído); todos os casos são planejados — `/goals` é página-esqueleto e a jornada não foi implementada.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  empregado["«ator» Empregado"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  responsavel["«ator» Responsável atribuído"]:::ator
+  subgraph SIS["Work Station — RF49 Pactos de Desbloqueio"]
+    direction TB
+    UC1(["UC1 Solicitar uma entrega a outro departamento"]):::ucPlan
+    UC2(["UC2 Negociar o pedido"]):::ucPlan
+    UC3(["UC3 Confirmar o compromisso"]):::ucPlan
+    UC4(["UC4 Autorizar exceção ao limite de compromissos"]):::ucPlan
+    UC5(["UC5 Entregar com evidência"]):::ucPlan
+    UC6(["UC6 Validar ou devolver a entrega"]):::ucPlan
+    UC7(["UC7 Reconhecer a ajuda recebida"]):::ucPlan
+    UC8(["UC8 Renegociar data ou escopo"]):::ucPlan
+    UC9(["UC9 Encaminhar conflito às chefias"]):::ucPlan
+    UC10(["UC10 Acompanhar a fila de cooperação"]):::ucPlan
+    UC11(["UC11 Consultar métricas de espera e desbloqueio"]):::ucPlan
+  end
+  empregado --- UC1
+  empregado --- UC6
+  empregado --- UC8
+  empregado --- UC10
+  chefe --- UC1
+  chefe --- UC2
+  chefe --- UC8
+  chefe --- UC9
+  chefe --- UC10
+  chefe --- UC11
+  responsavel --- UC2
+  responsavel --- UC3
+  responsavel --- UC5
+  UC4 -. "«extend»" .-> UC3
+  UC7 -. "«extend»" .-> UC6
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Solicitar uma entrega a outro departamento | Empregado, Chefe de departamento | RF49.CA01, RF49.CA09, RF49.CA10 | planejado |
+| UC2 Negociar o pedido (aceitar, propor data, esclarecer, recusar) | Chefe de departamento, Responsável atribuído | RF49.CA02, RF49.CA14 | planejado |
+| UC3 Confirmar o compromisso | Responsável atribuído | RF49.CA03, RF49.CA04 | planejado |
+| UC4 Autorizar exceção ao limite de compromissos | — (estende UC3; decisão do chefe) | RF49.CA04 | planejado |
+| UC5 Entregar com evidência | Responsável atribuído | RF49.CA05 | planejado |
+| UC6 Validar ou devolver a entrega | Empregado (solicitante) | RF49.CA05, RF49.CA06, RF49.CA14 | planejado |
+| UC7 Reconhecer a ajuda recebida | — (estende UC6) | RF49.CA13 | planejado |
+| UC8 Renegociar data ou escopo | Empregado, Chefe de departamento | RF49.CA07 | planejado |
+| UC9 Encaminhar conflito ou dependência circular às chefias | Chefe de departamento | RF49.CA08 | planejado |
+| UC10 Acompanhar a fila de cooperação | Empregado, Chefe de departamento | RF49.CA11, RF49.CA14 | planejado |
+| UC11 Consultar métricas de espera e desbloqueio | Chefe de departamento | RF49.CA12 | planejado |
+
 ## Fluxo principal
 
 ```mermaid

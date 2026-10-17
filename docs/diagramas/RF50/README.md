@@ -53,6 +53,62 @@ A pessoa pode perguntar “Que projeto demonstra essa habilidade?”, “Como de
 
 O MVP utiliza pareamento explicável sobre campos autorizados, sem precisar enviar os perfis de terceiros ao provedor de IA. A ajuda textual do Copilot pode orientar critérios de busca, mas a lista final deve ser filtrada pelo servidor. Sugerir uma pessoa não concede acesso às tarefas, projetos ou documentos dela.
 
+## 0. Diagrama de casos de uso
+
+Quem usa a Análise de Perfil e para quê. Atores do catálogo de [`ATORES_E_ATRIBUTOS.md`](../../arquitetura/ATORES_E_ATRIBUTOS.md) §2 (a análise é privada da própria pessoa; chefe, empresa e administrador não têm acesso automático); todos os casos são planejados — `/insights` é página-esqueleto e a jornada não foi implementada.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  subgraph SIS["Work Station — RF50 Análise de Perfil"]
+    direction TB
+    UC1(["UC1 Iniciar a Análise de Perfil"]):::ucPlan
+    UC2(["UC2 Importar currículo ou portfólio"]):::ucPlan
+    UC3(["UC3 Consentir o uso de provedor externo"]):::ucPlan
+    UC4(["UC4 Revisar a síntese de competências e lacunas"]):::ucPlan
+    UC5(["UC5 Pedir sugestões de tarefas e projetos"]):::ucPlan
+    UC6(["UC6 Aceitar a sugestão como rascunho"]):::ucPlan
+    UC7(["UC7 Explorar caminhos profissionais"]):::ucPlan
+    UC8(["UC8 Encontrar pessoas com perfil semelhante"]):::ucPlan
+    UC9(["UC9 Abrir, salvar ou convidar a pessoa sugerida"]):::ucPlan
+    UC10(["UC10 Compartilhar uma saída da análise"]):::ucPlan
+    UC11(["UC11 Excluir a análise ou exportar os dados"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  autenticado --- UC1
+  autenticado --- UC4
+  autenticado --- UC5
+  autenticado --- UC7
+  autenticado --- UC8
+  autenticado --- UC10
+  autenticado --- UC11
+  UC2 -. "«extend»" .-> UC1
+  UC4 -. "«include»" .-> UC3
+  UC6 -. "«extend»" .-> UC5
+  UC9 -. "«extend»" .-> UC8
+  UC4 --- ia
+  UC5 --- ia
+  UC7 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Iniciar a Análise de Perfil (objetivo, escopo e dados escolhidos) | Pessoa autenticada | RF50.CA01 | planejado |
+| UC2 Importar currículo ou portfólio (ficha editável) | — (estende UC1) | RF50.CA02 | planejado |
+| UC3 Consentir o uso de provedor externo (categorias, minimização, custo) | — (incluído por UC4) | RF50.CA10 | planejado |
+| UC4 Revisar a síntese de competências e lacunas | Pessoa autenticada, IA (AiGateway) | RF50.CA03, RF50.CA11, RF50.CA12, RF50.CA15 | planejado |
+| UC5 Pedir sugestões de tarefas e projetos | Pessoa autenticada, IA (AiGateway) | RF50.CA04, RF50.CA05 | planejado |
+| UC6 Aceitar a sugestão como rascunho | — (estende UC5) | RF50.CA08, RF50.CA13 | planejado |
+| UC7 Explorar caminhos profissionais (com fontes de mercado identificadas) | Pessoa autenticada, IA (AiGateway) | RF50.CA06, RF50.CA07 | planejado |
+| UC8 Encontrar pessoas com perfil semelhante | Pessoa autenticada | RF50.CA16, RF50.CA17 | planejado |
+| UC9 Abrir, salvar ou convidar a pessoa sugerida | — (estende UC8) | RF50.CA18 | planejado |
+| UC10 Compartilhar uma saída da análise | Pessoa autenticada | RF50.CA09 | planejado |
+| UC11 Excluir a análise ou exportar os dados | Pessoa autenticada | RF50.CA13, RF50.CA14 | planejado |
+
 ## Integração com o Work Station
 
 - RF3 fornece dados de perfil editáveis; RF41 e RF21/RF22 fornecem evidências e rascunhos autorizados.

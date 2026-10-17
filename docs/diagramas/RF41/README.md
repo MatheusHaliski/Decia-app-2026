@@ -12,6 +12,63 @@ Estados (`TaskState`): RASCUNHO · DISPONIVEL · EM_USO (em ≥ 1 projeto ativo,
 - **(real) acesso** — `ResourceAuthorizer` + `AccessPolicy` (SIGILOSO = PRIVADA; ADMIN sem acesso implícito a SIGILOSO, D-139); invisível → `404 NAO_ENCONTRADO`, e a tela diz «não existe ou você não tem acesso» sem revelar qual. Acervo de terceiros: `TaskService.listOf` filtra item a item por `AccessPolicy.visible` e é exposto em `GET /api/people/{id}/tasks` — ambos publicados no commit 381b452 (Onda 1).
 - **(planejado)** — sub-filtros Favoritas, Disponíveis/Em uso como `filtro=`, Modelos públicos, Chanceladas e Oferecidas; filtros de categoria/tipo/processo/natureza/departamento/prazo/origem, ordenação e página na querystring (CA09) e contadores em cache; prazos legais e notificações (CA04); exclusão com `snapshotJson` e bloqueio por decisão (CA05); **Anexos & Evidências** (`/attachments`, `EvidenceService`, CA06); ações rápidas (favoritar, duplicar, levar ao projeto, compartilhar na sessão, pedir chancela, oferecer no Balcão — CA07); EM_USO/DISPONIVEL automáticos por projeto e MODELO_PUBLICO só via chancela (hoje a tabela aceita essas transições à mão e a tela as oferece em «Mover para»); `AcervoService`, `TaskStateMachine`, `LegalDeadlineService`, `EvidenceService`, `VisibilityFilter`, `UploadGuard`, `AcervoController`, `EvidenceController`. Onda 3 do `PLANO_ONDAS.md`: anexos, dependências estruturadas, responsável por busca (`/api/people?q=`), vínculo com projeto e peças.
 
+## 0. Diagrama de casos de uso
+
+Quem usa o Acervo de Tarefas e para quê. Atores do catálogo de [`ATORES_E_ATRIBUTOS.md`](../../arquitetura/ATORES_E_ATRIBUTOS.md) §2; casos com borda contínua existem no código (`TaskController`, `TaskService`, `components/tasks/PersistedTasks.tsx`) e os tracejados são planejados. Editar e mudar o estado exige `ResourceAction.EDIT` (dono ou colaborador explícito); ver exige `AccessPolicy.visible` (invisível responde `404 NAO_ENCONTRADO`).
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  dono["«ator» Dono do recurso"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  subgraph SIS["Work Station — RF41 Acervo de Tarefas"]
+    direction TB
+    UC1(["UC1 Listar e filtrar o meu acervo"]):::uc
+    UC2(["UC2 Abrir o detalhe da tarefa"]):::uc
+    UC3(["UC3 Mudar o estado da tarefa"]):::uc
+    UC4(["UC4 Bloquear com motivo e causa"]):::uc
+    UC5(["UC5 Acompanhar prazos legais"]):::ucPlan
+    UC6(["UC6 Excluir ou arquivar a tarefa"]):::ucPlan
+    UC7(["UC7 Anexar fotos e evidências"]):::ucPlan
+    UC8(["UC8 Usar as ações rápidas do card"]):::ucPlan
+    UC9(["UC9 Ver o acervo de outra pessoa"]):::uc
+    UC10(["UC10 Levar o item ao meu acervo"]):::ucPlan
+  end
+  agendador["«ator» Agendador de trabalhos"]:::atorSis
+  dono --- UC1
+  dono --- UC2
+  dono --- UC3
+  dono --- UC5
+  dono --- UC6
+  dono --- UC7
+  dono --- UC8
+  colaborador --- UC2
+  colaborador --- UC3
+  colaborador --- UC7
+  autenticado --- UC2
+  autenticado --- UC9
+  UC4 -. "«extend»" .-> UC3
+  UC10 -. "«extend»" .-> UC9
+  UC5 --- agendador
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Listar e filtrar o meu acervo | Dono do recurso | RF41.CA01, RF41.CA09 | real parcial (`GET /api/tasks?limit=`, `MyTasks` com filtro por estado no cliente; sub-filtros, querystring, ordenação e página planejados) |
+| UC2 Abrir o detalhe da tarefa | Dono do recurso, Colaborador explícito, Pessoa autenticada (só o que pode ver) | RF41.CA03, RF41.CA08 | real parcial (`GET /api/tasks/{id}`, `PersistedTaskDetail`; versões, projetos em uso e fio de decisão planejados) |
+| UC3 Mudar o estado da tarefa (publicar, iniciar, retomar, concluir) | Dono do recurso, Colaborador explícito | RF41.CA02 | real (`POST /api/tasks/{id}/transitions`; EM_USO automático por projeto planejado) |
+| UC4 Bloquear com motivo e causa | — (estende UC3) | RF41.CA02 | real (`422 TAREFA_BLOQUEIO_SEM_CAUSA`) |
+| UC5 Acompanhar prazos legais | Dono do recurso, Agendador de trabalhos | RF41.CA04 | planejado (o real mostra só `dueAt`) |
+| UC6 Excluir ou arquivar a tarefa | Dono do recurso | RF41.CA05 | planejado (não há `DELETE /api/tasks/{id}`) |
+| UC7 Anexar fotos e evidências | Dono do recurso, Colaborador explícito | RF41.CA06 | planejado (`/attachments` é página-esqueleto) |
+| UC8 Usar as ações rápidas do card (favoritar, duplicar, levar ao projeto, pedir chancela, oferecer no Balcão) | Dono do recurso | RF41.CA07 | planejado |
+| UC9 Ver o acervo de outra pessoa | Pessoa autenticada | RF41.CA08 | real parcial (`GET /api/people/{id}/tasks` filtra item a item; tela de terceiros planejada) |
+| UC10 Levar o item ao meu acervo | — (estende UC9) | RF41.CA08 | planejado |
+
 ## 1. Diagrama de classes
 
 ```mermaid

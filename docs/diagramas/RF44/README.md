@@ -4,6 +4,65 @@
 
 `DailyTask` (único `userId + taskDate`; `taskId` entre as DISPONIVEL/EM_USO; `priorityIndexJson` {eisenhower, wsjf, cpmSlack, moscow, pareto, wipAdvice}; `hsePredictedJson` / `hseRealizedJson` {total, components[]}; `feedback` `DailyFeedback` CONCLUI · ADIEI · BLOQUEADA · DELEGUEI; `actualHours`, `swapReason`, `swappedFromTaskId`, `delegatedToUserId`, `blockedByRef`, `aiInferenceId`). O **índice de prioridade** (Eisenhower × WSJF × folga CPM × MoSCoW/Pareto × WIP/Little's Law, `UserPreferences.wipLimit` padrão 3) e o **HSE** (0–100: eficiência 20 · eficácia 20 · valor WSJF 15 · pontualidade SPI 15 · qualidade 15 · impacto na equipe 10 · foco 5, `HseWeights` por EMPRESA com versão) são **serviços de domínio determinísticos** (`PriorityIndexService`, `HseCalculator`, D-12, `METRICAS_GESTAO.md`); a IA (`TAREFA_DO_DIA`, `HSE`) só redige a explicação ✦. `EfficiencyScoreSnapshot` guarda o HSE diário e a média móvel de 7 dias; `WeekPlan`/`WeekPlanDay` a semana (prazos legais, reuniões Google/Microsoft, carga ≤ 80 %, streak, fechamento de sexta). Feedback CONCLUI → `TaskStateMachine` CONCLUIDA (RF41) e notifica dependentes; BLOQUEADA cria dependência; DELEGUEI cria `Assignment` (RF46) com rastro.
 
+## 0. Diagrama de casos de uso
+
+Quem recebe e governa a Tarefa do Dia e o HSE. Atores do catálogo de [`ATORES_E_ATRIBUTOS.md`](../../arquitetura/ATORES_E_ATRIBUTOS.md) §2 e permissões de [`ABAS_POR_PERFIL.md`](../../produto/ABAS_POR_PERFIL.md) (a Tarefa do Dia é só de contas pessoa, EMPREGADO e CHEFE; a EMPRESA define os pesos do HSE). O caso com borda contínua existe no código (preferências em `/settings?tab=trabalho` e `?tab=notificacoes`); os tracejados são planejados — `DailyTask` existe só como entidade.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  empregado["«ator» Empregado"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  empresa["«ator» Empresa ou órgão"]:::ator
+  subgraph SIS["Work Station — RF44 Tarefa do Dia e HSE"]
+    direction TB
+    UC1(["UC1 Receber a Tarefa do Dia"]):::ucPlan
+    UC2(["UC2 Calcular o índice de prioridade e o HSE previsto"]):::ucPlan
+    UC3(["UC3 Trocar a tarefa sugerida com motivo"]):::ucPlan
+    UC4(["UC4 Registrar que concluí a tarefa"]):::ucPlan
+    UC5(["UC5 Adiar, marcar bloqueada ou delegar"]):::ucPlan
+    UC6(["UC6 Definir o limite de WIP e o horário da Tarefa do Dia"]):::uc
+    UC7(["UC7 Planejar a semana"]):::ucPlan
+    UC8(["UC8 Ver o histórico de 30 dias e o HSE"]):::ucPlan
+    UC9(["UC9 Definir os pesos do HSE da empresa"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  agendador["«ator» Agendador de trabalhos"]:::atorSis
+  conectores["«ator» Google · Microsoft · e-Protocolo"]:::atorSis
+  empregado --- UC1
+  empregado --- UC4
+  empregado --- UC6
+  empregado --- UC7
+  empregado --- UC8
+  chefe --- UC1
+  chefe --- UC4
+  chefe --- UC6
+  chefe --- UC7
+  chefe --- UC8
+  empresa --- UC9
+  UC1 -. "«include»" .-> UC2
+  UC3 -. "«extend»" .-> UC1
+  UC5 -. "«extend»" .-> UC4
+  UC1 --- agendador
+  UC2 --- ia
+  UC7 --- conectores
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Receber a Tarefa do Dia (widget e notificação no horário escolhido) | Empregado, Chefe de departamento, Agendador de trabalhos | RF44.CA01, RF44.CA10 | planejado |
+| UC2 Calcular o índice de prioridade e o HSE previsto (IA só redige a explicação) | IA (AiGateway) | RF44.CA01, RF44.CA05, RF44.CA09 | planejado |
+| UC3 Trocar a tarefa sugerida com motivo | — (estende UC1) | RF44.CA02 | planejado |
+| UC4 Registrar que concluí a tarefa (HSE realizado) | Empregado, Chefe de departamento | RF44.CA03 | planejado |
+| UC5 Adiar, marcar bloqueada ou delegar | — (estende UC4) | RF44.CA04 | planejado (delegar cria a atribuição do RF46) |
+| UC6 Definir o limite de WIP e o horário da Tarefa do Dia | Empregado, Chefe de departamento | RF44.CA05, RF44.CA10 | real (`wipLimit` e `notificationPrefs.dailyTaskAt` em `/settings`, `PUT /api/me/preferences`) |
+| UC7 Planejar a semana (prazos, reuniões da agenda, carga) | Empregado, Chefe de departamento, Google · Microsoft · e-Protocolo | RF44.CA06 | planejado |
+| UC8 Ver o histórico de 30 dias e o HSE | Empregado, Chefe de departamento | RF44.CA07 | planejado |
+| UC9 Definir os pesos do HSE da empresa (versionados) | Empresa ou órgão | RF44.CA08 | planejado |
+
 ## 1. Diagrama de classes
 
 ```mermaid
@@ -437,7 +496,7 @@ Entidade central: `DailyTask.feedback` (`DailyFeedback`) — ciclo de um dia; a 
 ```mermaid
 stateDiagram-v2
   state "SUGERIDA (sem feedback)" as SUGERIDA
-  [*] --> SUGERIDA: job 06:00 ou primeiro acesso do dia → 1 por usuário+data · índice e HSE previsto ✦ (CA01)
+  [*] --> SUGERIDA: job das 6h ou primeiro acesso do dia → 1 por usuário+data · índice e HSE previsto ✦ (CA01)
   SUGERIDA --> SUGERIDA: troca por outra tarefa com motivo → swappedFromTaskId (CA02)
   SUGERIDA --> CONCLUI: esforço real → HSE realizado (7 componentes) · tarefa CONCLUIDA · dependentes notificados (CA03)
   SUGERIDA --> ADIEI: motivo (prioridade mudou · falta de tempo · dependência) · só componentes aplicáveis (CA04)
