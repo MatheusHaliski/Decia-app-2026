@@ -6,6 +6,7 @@
 import { appendEvent, computeAuthorship, publicAuthorship, verifyChain, type AuthorshipDisplay, type ContributionEvent, type FinalUnit, type NewContributionEvent } from "./authorship";
 import { acquireLock, canEditRegions, releaseLocks, type RegionLock } from "./collab";
 import { createLayerStack, switchActiveLayer, type LayerStack } from "./layers";
+import { authorizePatch, type PatchRequest, type PatchVerdict } from "./patch";
 import { buildProvenanceManifest, type ProvenanceManifest } from "./provenance";
 
 export interface WorkPiece {
@@ -59,6 +60,12 @@ export class PiecesService {
   canEdit(id: string, actorId: string, layerId: string, regionIds: readonly string[]): boolean {
     const p = this.get(id);
     return canEditRegions(p.locks, { pieceId: id, layerId, regionIds, userId: actorId }, this.clock());
+  }
+
+  /** Autoriza um patch manual ou de IA contra camada ativa, seleção e reservas (mesma regra para os dois). */
+  authorizePatch(id: string, req: Omit<PatchRequest, "pieceId">): PatchVerdict {
+    const p = this.get(id);
+    return authorizePatch(p.stack, p.locks, { ...req, pieceId: id }, this.clock());
   }
 
   async recordEvent(id: string, e: Omit<NewContributionEvent, "pieceId" | "revisionId" | "acceptedAt">): Promise<ContributionEvent[]> {
