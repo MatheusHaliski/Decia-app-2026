@@ -11,6 +11,7 @@ import { useI18n } from "@/lib/i18n/useI18n";
 import type { Locale } from "@/lib/i18n/state";
 import { pageByRoute } from "@/lib/pages/registry";
 import { usePreferences } from "@/lib/preferences/PreferencesProvider";
+import { AUTONOMY_MODES, type AutonomyMode } from "@/lib/ai/autonomy";
 import { AI_MODES, DENSITIES, DESK_SKINS, FONT_SCALES, THEMES, type AiMode, type Density, type DeskSkin, type FontScale, type Theme } from "@/lib/preferences/types";
 
 const PAGE = pageByRoute("/settings")!;
@@ -116,6 +117,11 @@ function Work() {
             <Input id={id} aria-describedby={describedBy} invalid={invalid} type="number" min={1} max={20} value={wip} onChange={(e) => { setWip(e.target.value); const v = Number(e.target.value); if (v >= 1 && v <= 20) update({ wipLimit: v }); }} className="max-w-32" />
           )}
         </Field>
+      </Card>
+      <Card title={t("settings.aiAutonomy")} eyebrow="RF51" className="md:col-span-2">
+        <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{t("settings.aiAutonomyIntro")}</p>
+        <RadioCards label={t("settings.aiAutonomy")} value={prefs.aiAutonomyDefault} onValueChange={(v) => update({ aiAutonomyDefault: v as AutonomyMode })} columns={1} options={AUTONOMY_MODES.map((m) => ({ value: m, label: t(`aiAutonomy.${m}`), hint: t(`aiAutonomy.${m}Hint`) }))} />
+        <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted" data-testid="autonomy-shared-note">{t("settings.aiAutonomyShared")}</p>
       </Card>
       <Card title={t("settings.aiMode")} eyebrow="RF43.CA06" className="md:col-span-2">
         <RadioCards label={t("settings.aiMode")} value={prefs.aiModeDefault} onValueChange={(v) => update({ aiModeDefault: v as AiMode })} columns={2} options={AI_MODES.map((m) => ({ value: m, label: t(`aiMode.${m}`), hint: t(`aiMode.${m}Hint`) }))} />

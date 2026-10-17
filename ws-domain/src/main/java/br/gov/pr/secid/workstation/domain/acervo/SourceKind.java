@@ -2,6 +2,8 @@ package br.gov.pr.secid.workstation.domain.acervo;
 
 /** Como a tarefa entrou no acervo (RF20, RF23, RF34, RF36, RF37). */
 public enum SourceKind {
+    /** Digitada no criador de tarefas (RF4; Q-235, V37). */
+    MANUAL,
     ARQUIVO,
     COLAR,
     GOOGLE,

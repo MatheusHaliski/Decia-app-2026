@@ -93,7 +93,8 @@ export const openAssignmentFor = (s: SocialState, ref: TargetRef, userId: string
 /**
  * Quem vê o item: dono e responsável sempre; destinatário de atribuição em aberto; RASCUNHO e PRIVADA nunca para
  * terceiros; PUBLICA todos (inclusive visitante); EMPRESA mesma empresa; DEPARTAMENTO lotação vigente no departamento do
- * item. RESTRITO e SIGILOSO restringem ainda mais: só quem é do departamento dono (RF17.CA03; D-93).
+ * item. A classificação só restringe, como `AccessPolicy.effectiveVisibility` no backend: RESTRITO nunca passa do
+ * departamento dono (RF17.CA03) e SIGILOSO equivale a PRIVADA — só vínculo explícito, nunca a lotação (D-93, rev. 17/10).
  */
 export function canView(s: SocialState, viewer: ViewerId, item: Item): boolean {
   const owner = ownerOf(item);
@@ -101,7 +102,9 @@ export function canView(s: SocialState, viewer: ViewerId, item: Item): boolean {
   if (isDraft(item)) return false;
   const v = visibilityOf(item);
   const person = personById(s, viewer);
-  if (isRestricted(accessClassOf(item)) && (!person || person.departmentId !== departmentOf(item))) return false;
+  const accessClass = accessClassOf(item);
+  if (accessClass === "SIGILOSO") return false;
+  if (accessClass === "RESTRITO" && (!person || person.departmentId !== departmentOf(item))) return false;
   if (v === "PUBLICA") return true;
   if (!person) return false;
   if (v === "EMPRESA") return person.companyId !== null && person.companyId === companyOfItem(s, item);
@@ -512,6 +515,8 @@ export const followOf = (s: SocialState, viewer: ViewerId, targetType: FollowTar
   viewer ? s.follows.find((f) => f.followerId === viewer && f.targetType === targetType && f.targetId === targetId) : undefined;
 export const isFollowing = (s: SocialState, viewer: ViewerId, targetType: FollowTargetType, targetId: string) => followOf(s, viewer, targetType, targetId)?.status === "ATIVO";
 export const followersCount = (s: SocialState, targetType: FollowTargetType, targetId: string) => s.follows.filter((f) => f.targetType === targetType && f.targetId === targetId && f.status === "ATIVO").length;
+/** "Seguindo" no cabeçalho do perfil: follows ATIVO feitos pela pessoa (usuários, departamentos e empresas). */
+export const followingCount = (s: SocialState, followerId: string) => s.follows.filter((f) => f.followerId === followerId && f.status === "ATIVO").length;
 
 /** Liga/desliga o Follow: cria ATIVO; ATIVO → REMOVIDO; REMOVIDO → ATIVO no MESMO registro (único por follower+alvo). */
 export function toggleFollow(s: SocialState, viewer: ViewerId, targetType: FollowTargetType, targetId: string, now: Date): Result<{ following: boolean }> {

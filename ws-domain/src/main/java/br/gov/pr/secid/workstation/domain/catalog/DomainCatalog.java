@@ -6,6 +6,7 @@ import br.gov.pr.secid.workstation.domain.acervo.OrgEntity;
 import br.gov.pr.secid.workstation.domain.acervo.TaskAttachment;
 import br.gov.pr.secid.workstation.domain.acervo.TaskItem;
 import br.gov.pr.secid.workstation.domain.acervo.TaskSnapshot;
+import br.gov.pr.secid.workstation.domain.acervo.TaskBrief;
 import br.gov.pr.secid.workstation.domain.acervo.TaskStateLog;
 import br.gov.pr.secid.workstation.domain.acervo.TaskVersion;
 import br.gov.pr.secid.workstation.domain.balcao.ModelOffer;
@@ -176,7 +177,8 @@ public final class DomainCatalog {
             Map.entry(20, "rf46_mensageria_atribuicao"),
             Map.entry(21, "rf43_ia_plataforma"),
             Map.entry(22, "rf29_decisao_estruturada"),
-            Map.entry(24, "seg_bloco5_quarentena_midia"));
+            Map.entry(24, "seg_bloco5_quarentena_midia"),
+            Map.entry(36, "acervo_briefing_tarefas"));
 
     /**
      * FKs de tabelas que NÃO são geradas pelo catálogo (V2/Bloco 3) e que passam a existir quando a tabela-pai nasce:
@@ -232,6 +234,8 @@ public final class DomainCatalog {
             DecisionRetrospective.class, DecisionWorkLink.class, DecisionEvent.class,
             // V24 — Segurança Bloco 5: quarentena/antivírus de mídia (D-67). V23 é reservada à mensageria do DECIA.
             MediaScan.class,
+            // V36 — Onda Acervo: briefing profissional da tarefa (auditoria 17/10/2026). V25–V35 seguem reservadas no PLANO_EXECUCAO.
+            TaskBrief.class,
             // V2 — já existem (só domínio + catálogo)
             AiInferenceLog.class, DomainEventOutbox.class, FeatureFlag.class, MediaObject.class);
 

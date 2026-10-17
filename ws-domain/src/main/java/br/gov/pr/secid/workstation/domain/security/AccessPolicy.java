@@ -9,7 +9,7 @@ import br.gov.pr.secid.workstation.domain.common.Visibility;
  * <p><b>Visibilidade</b> (quem sabe que o recurso existe): dono, colaboradores explícitos e ADMIN sempre; os demais pela
  * {@link Visibility} efetiva — PUBLICA = qualquer autenticado, EMPRESA = mesma empresa, DEPARTAMENTO = lotado no departamento,
  * PRIVADA = ninguém mais. A {@link AccessClassification} limita a visibilidade: RESTRITO nunca passa de DEPARTAMENTO e SIGILOSO
- * equivale a PRIVADA (só dono, colaboradores e ADMIN — Q-166 pergunta se o ADMIN deve sair do SIGILOSO).
+ * equivale a PRIVADA — só dono e colaboradores explícitos; o ADMIN não tem acesso implícito a SIGILOSO (Q-166/Q-238, RF51; D-139).
  *
  * <p><b>Ações</b> (sobre recurso visível): VIEW = todos que veem; EDIT = dono, colaborador, ADMIN; DELETE = dono, ADMIN;
  * MANAGE = dono, ADMIN, CHEFE/CURADOR do departamento do recurso quando a visibilidade efetiva não é PRIVADA. Ações de decisão
@@ -44,7 +44,7 @@ public final class AccessPolicy {
         if (viewer == null || r == null) {
             return false;
         }
-        if (explicit(viewer, r) || viewer.isAdmin()) {
+        if (explicit(viewer, r) || (viewer.isAdmin() && !sigiloso(r))) {
             return true;
         }
         return switch (effectiveVisibility(r.visibility(), r.classification())) {
@@ -55,13 +55,18 @@ public final class AccessPolicy {
         };
     }
 
+    /** SIGILOSO: nenhum papel administrativo entra sem vínculo explícito (D-139). */
+    static boolean sigiloso(ScopedResource r) {
+        return r.classification() == AccessClassification.SIGILOSO;
+    }
+
     public static AccessDecision decide(Viewer viewer, ScopedResource r, ResourceAction action) {
         boolean visible = visible(viewer, r);
         if (!visible) {
             return AccessDecision.NOT_FOUND;
         }
         boolean owner = viewer.is(r.ownerId());
-        boolean admin = viewer.isAdmin();
+        boolean admin = viewer.isAdmin() && !sigiloso(r);
         boolean permitted = switch (action) {
             case VIEW -> true;
             case EDIT -> owner || admin || r.collaborators().contains(viewer.userId());

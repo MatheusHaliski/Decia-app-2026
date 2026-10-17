@@ -7,6 +7,8 @@ public final class AuditActions {
     public static final String LOGIN_BLOQUEADO_TENTATIVAS = "LOGIN_BLOQUEADO_TENTATIVAS";
     public static final String LOGOUT = "LOGOUT";
     public static final String REFRESH_REUSO = "REFRESH_REUSO";
+    /** Reuso dentro da janela de tolerância (D-140): irmão emitido, família preservada. */
+    public static final String REFRESH_REUSO_TOLERADO = "REFRESH_REUSO_TOLERADO";
     public static final String SESSIONS_REVOKED = "SESSIONS_REVOKED";
     public static final String SESSION_REVOKED = "SESSION_REVOKED";
     public static final String PASSWORD_CHANGED = "PASSWORD_CHANGED";
@@ -25,6 +27,10 @@ public final class AuditActions {
     public static final String OIDC_LOGIN = "OIDC_LOGIN";
     public static final String OIDC_LINK_RECUSADO = "OIDC_LINK_RECUSADO";
     public static final String ACESSO_NEGADO = "ACESSO_NEGADO";
+    /** Acervo (RF4/RF12/RF41): criação, edição e transição de estado da tarefa. */
+    public static final String TASK_CREATED = "TASK_CREATED";
+    public static final String TASK_UPDATED = "TASK_UPDATED";
+    public static final String TASK_STATE_CHANGED = "TASK_STATE_CHANGED";
 
     private AuditActions() {
     }

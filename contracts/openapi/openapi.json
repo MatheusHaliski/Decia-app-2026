@@ -84,6 +84,17 @@
         "required" : [ "code", "email" ],
         "type" : "object"
       },
+      "Criterion" : {
+        "properties" : {
+          "done" : {
+            "type" : "boolean"
+          },
+          "text" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
       "DeletionBody" : {
         "properties" : {
           "currentPassword" : {
@@ -114,6 +125,14 @@
             "type" : "string"
           },
           "status" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "Deliverable" : {
+        "properties" : {
+          "text" : {
             "type" : "string"
           }
         },
@@ -279,6 +298,17 @@
         },
         "type" : "object"
       },
+      "Reference" : {
+        "properties" : {
+          "label" : {
+            "type" : "string"
+          },
+          "url" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
       "RefreshRequest" : {
         "properties" : {
           "refreshToken" : {
@@ -424,6 +454,228 @@
             "type" : "boolean"
           }
         },
+        "type" : "object"
+      },
+      "TaskRequest" : {
+        "properties" : {
+          "acceptanceCriteria" : {
+            "items" : {
+              "$ref" : "#/components/schemas/Criterion"
+            },
+            "type" : "array"
+          },
+          "accessClass" : {
+            "enum" : [ "PUBLICO", "INTERNO", "RESTRITO", "SIGILOSO" ],
+            "type" : "string"
+          },
+          "area" : {
+            "enum" : [ "SOFTWARE", "ADMINISTRACAO", "DESIGN", "PESQUISA", "MARKETING", "PLANEJAMENTO", "ENGENHARIA", "JURIDICO", "OUTRA" ],
+            "type" : "string"
+          },
+          "category" : {
+            "enum" : [ "OFICIO_MEMORANDO", "PARECER_TECNICO", "ETP", "TERMO_REFERENCIA", "PLANILHA_ORCAMENTARIA", "PROJETO_BASICO_EXECUTIVO", "CRONOGRAMA", "ATA", "PORTARIA_RESOLUCAO", "CONTRATO_CONVENIO", "VISTORIA_RELATORIO_FOTOGRAFICO", "LICENCA_ANUENCIA", "MAPA_GEORREFERENCIA", "FORMULARIO", "OUTRO" ],
+            "type" : "string"
+          },
+          "deliverables" : {
+            "items" : {
+              "$ref" : "#/components/schemas/Deliverable"
+            },
+            "type" : "array"
+          },
+          "descriptionMd" : {
+            "maxLength" : 20000,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "draft" : {
+            "type" : "boolean"
+          },
+          "dueAt" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "extensions" : {
+            "additionalProperties" : {
+              "type" : "string"
+            },
+            "type" : "object"
+          },
+          "objective" : {
+            "maxLength" : 500,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "priority" : {
+            "enum" : [ "BAIXA", "MEDIA", "ALTA", "CRITICA" ],
+            "type" : "string"
+          },
+          "references" : {
+            "items" : {
+              "$ref" : "#/components/schemas/Reference"
+            },
+            "type" : "array"
+          },
+          "responsibleId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "title" : {
+            "maxLength" : 200,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "type" : {
+            "enum" : [ "TEXTO_MANUAL", "TEXTO_IA", "IMAGEM_WEB", "IMAGEM_EDITADA", "PLANILHA", "DOCUMENTO", "PASTA", "LINK", "DESENHO_TECNICO", "FORMULARIO", "ATA_REGISTRO", "EMAIL", "PROTOCOLO", "CRONOGRAMA", "ESTUDO_TECNICO_PRELIMINAR" ],
+            "type" : "string"
+          },
+          "version" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "visibility" : {
+            "enum" : [ "PRIVADA", "DEPARTAMENTO", "EMPRESA", "PUBLICA" ],
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "TaskView" : {
+        "properties" : {
+          "acceptanceCriteria" : {
+            "items" : {
+              "$ref" : "#/components/schemas/Criterion"
+            },
+            "type" : "array"
+          },
+          "accessClass" : {
+            "enum" : [ "PUBLICO", "INTERNO", "RESTRITO", "SIGILOSO" ],
+            "type" : "string"
+          },
+          "area" : {
+            "enum" : [ "SOFTWARE", "ADMINISTRACAO", "DESIGN", "PESQUISA", "MARKETING", "PLANEJAMENTO", "ENGENHARIA", "JURIDICO", "OUTRA" ],
+            "type" : "string"
+          },
+          "blockReason" : {
+            "type" : "string"
+          },
+          "blockedByTaskId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "blockedByUserId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "category" : {
+            "enum" : [ "OFICIO_MEMORANDO", "PARECER_TECNICO", "ETP", "TERMO_REFERENCIA", "PLANILHA_ORCAMENTARIA", "PROJETO_BASICO_EXECUTIVO", "CRONOGRAMA", "ATA", "PORTARIA_RESOLUCAO", "CONTRATO_CONVENIO", "VISTORIA_RELATORIO_FOTOGRAFICO", "LICENCA_ANUENCIA", "MAPA_GEORREFERENCIA", "FORMULARIO", "OUTRO" ],
+            "type" : "string"
+          },
+          "createdAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "deliverables" : {
+            "items" : {
+              "$ref" : "#/components/schemas/Deliverable"
+            },
+            "type" : "array"
+          },
+          "departmentId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "descriptionMd" : {
+            "type" : "string"
+          },
+          "dueAt" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "editable" : {
+            "type" : "boolean"
+          },
+          "extensions" : {
+            "additionalProperties" : {
+              "type" : "string"
+            },
+            "type" : "object"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "objective" : {
+            "type" : "string"
+          },
+          "ownerId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "priority" : {
+            "enum" : [ "BAIXA", "MEDIA", "ALTA", "CRITICA" ],
+            "type" : "string"
+          },
+          "references" : {
+            "items" : {
+              "$ref" : "#/components/schemas/Reference"
+            },
+            "type" : "array"
+          },
+          "responsibleId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "state" : {
+            "enum" : [ "RASCUNHO", "DISPONIVEL", "EM_USO", "BLOQUEADA", "CONCLUIDA", "ARQUIVADA", "MODELO_PUBLICO", "OFERECIDA" ],
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "type" : {
+            "enum" : [ "TEXTO_MANUAL", "TEXTO_IA", "IMAGEM_WEB", "IMAGEM_EDITADA", "PLANILHA", "DOCUMENTO", "PASTA", "LINK", "DESENHO_TECNICO", "FORMULARIO", "ATA_REGISTRO", "EMAIL", "PROTOCOLO", "CRONOGRAMA", "ESTUDO_TECNICO_PRELIMINAR" ],
+            "type" : "string"
+          },
+          "updatedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "version" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "visibility" : {
+            "enum" : [ "PRIVADA", "DEPARTAMENTO", "EMPRESA", "PUBLICA" ],
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "TransitionRequest" : {
+        "properties" : {
+          "blockedByTaskId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "blockedByUserId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "reason" : {
+            "maxLength" : 500,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "to" : {
+            "enum" : [ "RASCUNHO", "DISPONIVEL", "EM_USO", "BLOQUEADA", "CONCLUIDA", "ARQUIVADA", "MODELO_PUBLICO", "OFERECIDA" ],
+            "type" : "string"
+          },
+          "version" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "to", "version" ],
         "type" : "object"
       },
       "UserPreferences" : {
@@ -951,7 +1203,7 @@
         "tags" : [ "RF3 Conta" ]
       },
       "patch" : {
-        "operationId" : "update",
+        "operationId" : "update_1",
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -1097,6 +1349,167 @@
         },
         "summary" : "RF3.CA02/CA08 E-mail/telefone com step-up da senha atual no mesmo bloqueio do login (401 REAUTENTICACAO_FALHOU, 6º erro → 429 MUITAS_TENTATIVAS); e-mail novo volta a 'não confirmado' e recebe código",
         "tags" : [ "RF3 Conta" ]
+      }
+    },
+    "/api/tasks" : {
+      "get" : {
+        "operationId" : "mine",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "limit",
+          "required" : false,
+          "schema" : {
+            "default" : 50,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/TaskView"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF41.CA01 Minhas tarefas (mais recentes primeiro)",
+        "tags" : [ "RF4 Tarefas" ]
+      },
+      "post" : {
+        "operationId" : "create",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TaskRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TaskView"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "summary" : "RF4.CA01 Criar tarefa (campos comuns + briefing por área)",
+        "tags" : [ "RF4 Tarefas" ]
+      }
+    },
+    "/api/tasks/{id}" : {
+      "get" : {
+        "operationId" : "get",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TaskView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF12.CA01 Abrir tarefa",
+        "tags" : [ "RF4 Tarefas" ]
+      },
+      "put" : {
+        "operationId" : "update",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TaskRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TaskView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF12.CA02 Editar tarefa (versão obrigatória; 409 EDICAO_CONCORRENTE)",
+        "tags" : [ "RF4 Tarefas" ]
+      }
+    },
+    "/api/tasks/{id}/transitions" : {
+      "post" : {
+        "operationId" : "transition",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TransitionRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TaskView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF41.CA02 Mudar estado da tarefa (tabela do TaskState; bloqueio exige causa e motivo)",
+        "tags" : [ "RF4 Tarefas" ]
       }
     },
     "/api/usernames/{username}/availability" : {

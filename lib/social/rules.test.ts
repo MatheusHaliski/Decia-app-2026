@@ -38,9 +38,23 @@ describe("visibilidade (RF16.CA03, RF6.CA06, RF26.CA08; D-93)", () => {
     expect(canView(s, U.ana, item(s, task(T.anaPrivada)))).toBe(true);
     expect(canView(s, U.ana, item(s, proj("p-pessoa-rascunho")))).toBe(false);
   });
-  it("RESTRITO/SIGILOSO só para o departamento dono", () => {
-    expect(canView(s, U.pessoa, item(s, task(T.anaSigiloso)))).toBe(true);
+  it("SIGILOSO equivale a PRIVADA: só vínculo explícito; lotação, chefia e ADMIN não concedem leitura (AccessPolicy.java)", () => {
+    expect(canView(s, U.ana, item(s, task(T.anaSigiloso)))).toBe(true); // dono
+    expect(canView(s, U.pessoa, item(s, task(T.anaSigiloso)))).toBe(true); // responsável designada
+    expect(canView(s, U.diego, item(s, task(T.anaSigiloso)))).toBe(false); // chefe do mesmo departamento, sem vínculo
+    expect(canView(s, U.admin, item(s, task(T.anaSigiloso)))).toBe(false); // ADMIN sem vínculo (RF51: sem acesso implícito)
     expect(canView(s, U.bruno, item(s, task(T.anaSigiloso)))).toBe(false); // EMPRESA, mas CPOE
+    expect(canView(s, null, item(s, task(T.anaSigiloso)))).toBe(false);
+    expect(profileTasks(s, U.diego, U.ana).map((t) => t.id)).not.toContain(T.anaSigiloso); // nem conta no perfil
+  });
+  it("RESTRITO nunca passa do departamento dono, mesmo marcado PUBLICA", () => {
+    const base = item(s, task(T.pessoaProtocolo));
+    if (base?.kind !== "TASK") throw new Error("fixture");
+    const publico = { kind: "TASK" as const, task: { ...base.task, visibility: "PUBLICA" as const } };
+    expect(publico.task.accessClass).toBe("RESTRITO");
+    expect(canView(s, U.ana, publico)).toBe(true); // mesmo departamento
+    expect(canView(s, U.bruno, publico)).toBe(false);
+    expect(canView(s, null, publico)).toBe(false);
   });
   it("responsável e destinatário de atribuição em aberto veem o item", () => {
     expect(canView(s, U.pessoa, item(s, task(T.diegoChecklist)))).toBe(true);

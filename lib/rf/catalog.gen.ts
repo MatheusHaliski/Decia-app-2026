@@ -3143,5 +3143,219 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "kind": "enunciado"
       }
     ]
+  },
+  {
+    "id": "RF49",
+    "n": 49,
+    "title": "Coordenar Pactos de Desbloqueio entre usuários, chefes e departamentos",
+    "hu": null,
+    "summary": "Trello: RF49 Coordenar Pactos de Desbloqueio entre usuários, chefes e departamentos.",
+    "route": "Metas & objetivos (/goals; pacto vinculado a tarefas/projetos dependentes)",
+    "coverage": null,
+    "cas": [
+      {
+        "id": "RF49.CA01",
+        "text": "Dado um usuário ativo com acesso ao recurso dependente, quando solicita uma entrega a outro departamento ativo da mesma empresa, então informa entrega esperada, justificativa, critério de aceitação e prazo desejado; o servidor deriva identidade e empresa da sessão e registra SOLICITADO. Alvos inacessíveis não revelam existência.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA02",
+        "text": "Dado um pedido, quando o destinatário responde, então aceita, propõe outra data, pede esclarecimento ou recusa com motivo. Só participantes autorizados e chefias atuais dos departamentos envolvidos podem negociar. Propor data não equivale a compromisso aceito.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA03",
+        "text": "Dado o acordo das equipes e o aceite explícito do executor autorizado, quando o pacto é confirmado, então registra COMPROMETIDO, responsável e data acordada. Não substitui atribuições ou lotações existentes.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA04",
+        "text": "Dado o limite configurado de compromissos simultâneos da equipe, quando uma aceitação o excederia, então bloqueia com conflito explicável. Exceção exige decisão justificada do chefe; a contagem exclui pactos encerrados.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA05",
+        "text": "Dado um pacto comprometido, quando o executor apresenta evidência a que os envolvidos possuem acesso, então registra ENTREGUE e a versão do recurso entregue. O solicitante valida ou devolve com critério não atendido e justificativa; cada tentativa permanece no histórico.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA06",
+        "text": "Dado o recebimento, quando o solicitante valida a entrega, então registra VALIDADO e permite confirmar separadamente se o trabalho dependente voltou a avançar. Não conclui tarefas nem remove bloqueios automaticamente.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA07",
+        "text": "Dado um compromisso vigente, quando alguém propõe outra data ou escopo, então requer novo aceite dos envolvidos, preservando acordo anterior, motivo e autoria. O instante de criação não é reiniciado para reduzir artificialmente o tempo de espera.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA08",
+        "text": "Dado uma dependência circular ou um conflito de prioridade não resolvido, quando o sistema o identifica, então informa a causa com dados autorizados e permite encaminhar o conflito às chefias. Dependências circulares são rejeitadas antes do commit. Prioridade não é decidida automaticamente pela IA.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA09",
+        "text": "Dado uma conta ou chefia que perdeu vínculo, quando tenta agir, então as permissões são relidas no servidor. SIGILOSO exige concessão explícita do proprietário também para chefes, administradores e colaboradores do pacto. Agregações e notificações não expõem conteúdo protegido.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA10",
+        "text": "Dado edições simultâneas ou repetição de requisição, quando o servidor processa uma operação, então utiliza controle de versão e idempotência, sem duplicar compromisso, evidência ou notificação. Evento, alteração de estado e notificação ficam atomicamente persistidos.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA11",
+        "text": "Dado o usuário autenticado, quando abre a fila de cooperação, então vê apenas pactos autorizados, com filtros por recebidos/enviados, departamento, estado e prazo, paginação, estados vazio/erro/carregamento e ações operáveis por teclado. “Quem eu posso destravar hoje?” exibe demandas compatíveis com vínculos e permissões atuais.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA12",
+        "text": "Dado pactos com datas e eventos verificáveis, quando consulta métricas autorizadas, então mostra mediana/p90 de espera, amostra, devoluções, renegociações e desbloqueios confirmados. Casos abertos/cancelados ficam visíveis no agregado. Ausência de dados não vira zero; atraso evitado estimado não vira resultado comprovado.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA13",
+        "text": "Dado um pacto validado, quando o solicitante deseja reconhecer a ajuda, então pode registrar reconhecimento contextual vinculado à entrega, integrado ao RF35. Não distribui pontos por criar solicitações nem gera classificação individual de velocidade.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA14",
+        "text": "Dado mudanças relevantes, quando notificadas, então participantes autorizados recebem mensagens genéricas e agrupadas; lembretes respeitam preferências e limites de frequência. Cancelamento, recusa e devolução exigem motivo, com histórico auditável.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF50",
+    "n": 50,
+    "title": "Analisar o perfil no Copilot e recomendar tarefas, projetos, pessoas da rede e caminhos profissionais",
+    "hu": null,
+    "summary": "Estado: requisito especificado; implementação pendente. Nome de produto: Análise de Perfil. Origem: solicitação do usuário em 12/10/2026.",
+    "route": "Insights da IA (/insights; Análise de Perfil a partir de /profile)",
+    "coverage": null,
+    "cas": [
+      {
+        "id": "RF50.CA01",
+        "text": "Dado o usuário autenticado, quando inicia Análise de Perfil, então escolhe objetivo da análise, escopo profissional/pessoal e dados que deseja utilizar. O servidor deriva identidade da sessão; a pessoa pode editar e excluir campos antes de confirmar.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA02",
+        "text": "Dado currículo, portfólio ou conteúdo selecionado, quando importado, então valida tamanho/formato, sanitiza conteúdo e apresenta dados extraídos para confirmação. Não executa macros, instruções embutidas ou URLs fornecidas como comandos. Recurso inacessível não integra o contexto.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA03",
+        "text": "Dado o perfil confirmado, quando analisado, então gera síntese com competências declaradas/evidenciadas, interesses, objetivos, lacunas e incertezas. Cada afirmação referencia campo ou evidência autorizada; informações insuficientes geram perguntas. Inferências ficam identificadas e podem ser corrigidas pelo usuário.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA04",
+        "text": "Dado competências e objetivos selecionados, quando pede sugestões de tarefas, então recebe propostas com título, finalidade, competência trabalhada, esforço estimado, pré-requisitos e critério verificável de aceite. Estimativa é identificada como tal; não cria tarefas automaticamente.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA05",
+        "text": "Dado disponibilidade e objetivo, quando pede sugestões de projetos, então recebe propostas com escopo, resultado, fases, tarefas, riscos e dependências, distinguindo trabalho institucional de projeto pessoal. Não atribui colegas nem compromete recursos da empresa sem autorização e confirmação nos fluxos correspondentes.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA06",
+        "text": "Dado interesses, experiência e competências, quando pede caminhos de carreira, então apresenta alternativas com justificativa, requisitos, lacunas e ações de desenvolvimento. A pessoa compara, discorda, refina e escolhe alternativas; não há classificação automática de empregabilidade, aptidão definitiva ou promessa de contratação.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA07",
+        "text": "Dado uma afirmação sobre vagas, demanda de mercado, remuneração ou requisito atual, quando apresentada, então cita fonte, data e abrangência geográfica verificáveis. Sem fonte atual disponível, informa a limitação e não apresenta conhecimento geral do modelo como pesquisa atual de mercado. Faixas e projeções são explicitamente estimativas.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA08",
+        "text": "Dado uma proposta, quando a pessoa aceita, então revisa campos e confirma a criação de rascunho, com proveniência da análise, versão do perfil e inferência utilizada. Aceitar novamente a mesma proposta é idempotente. Sugestão baseada em perfil alterado exige atualização ou confirmação explícita da divergência.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA09",
+        "text": "Dado dados de perfil e recomendações pessoais, quando armazenados ou consultados, então permanecem privados por padrão. Chefes, empresa e administradores não recebem acesso automático. Compartilhar uma saída exige seleção explícita de destinatário e conteúdo; não amplia acesso às fontes.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA10",
+        "text": "Dado uso de provedor externo, quando uma análise é solicitada, então pede consentimento contextual, mostra quais categorias de dados serão enviadas, aplica minimização, política de classificação e limites de custo. Conteúdo RESTRITO/SIGILOSO não vai ao provedor externo na política atual. Edição do perfil permanece disponível sem saldo ou com IA indisponível.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA11",
+        "text": "Dado dados sensíveis ou características protegidas, quando presentes no material, então não os usa para inferir aptidão ou restringir possibilidades de carreira. O Copilot não infere saúde, religião, orientação sexual ou outras características sensíveis. Necessidades de acessibilidade podem orientar preferências informadas, sem reduzir oportunidades por presunção de incapacidade.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA12",
+        "text": "Dado resposta da IA, quando exibida, então apresenta propostas separadas de fatos confirmados, fontes, limitações e controles para corrigir, rejeitar ou pedir explicação. Não utiliza Hype Score, pontos ou popularidade como medida de potencial profissional. Não transforma a análise em avaliação de desempenho ou decisão de contratação.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA13",
+        "text": "Dado conta trocada, sessão encerrada ou concessão revogada, quando há resposta pendente, então descarta atualizações da sessão anterior e relê autorização antes de persistir ou aplicar propostas. Eventos guardam autoria e referência de inferência sem copiar currículo ou texto sensível para logs.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA14",
+        "text": "Dado o usuário, quando deseja excluir análise ou revogar uso futuro dos dados, então consegue fazê-lo nas regras de retenção documentadas. Exportação informa os dados fornecidos e as recomendações produzidas. Histórico e propostas não ficam disponíveis a outra conta no mesmo dispositivo.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA15",
+        "text": "Dado análise incompleta, falha de provedor ou limite de uso, quando ocorre, então preserva o perfil, informa o estado e oferece nova tentativa explícita, sem repetir automaticamente chamadas cobradas. A interface funciona por teclado, tem estrutura semântica e distingue visualmente informação, hipótese e proposta.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA16",
+        "text": "Dado um perfil confirmado, quando solicita pessoas semelhantes, então recomenda somente usuários descobríveis na rede autorizada, não bloqueados e que permitem uso dos campos exibidos para descoberta. Usa competências, interesses, objetivos e experiências compartilhados para esse fim; análise privada de carreira, currículo privado, Hype Score e características sensíveis não entram no pareamento. Não revela nomes, contagens ou evidências de perfis inacessíveis.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA17",
+        "text": "Dado uma pessoa recomendada, quando a sugestão aparece, então explica a afinidade com campos visíveis — por exemplo “ambos trabalham com orçamento e têm interesse em BIM” — e pode propor atividade colaborativa concreta. Similaridade é afinidade por critérios declarados, não percentual de personalidade, aptidão ou valor profissional. A pessoa filtra critérios, descarta sugestão e pode explorar perfis complementares para não limitar a descoberta a um grupo homogêneo.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA18",
+        "text": "Dado uma recomendação de pessoa, quando o usuário decide interagir, então pode abrir o perfil autorizado, salvar a sugestão ou enviar convite pelos mecanismos de rede/mensageria com confirmação. Não cria vínculo, segue, atribui trabalho, envia mensagem ou compartilha sua análise automaticamente. Revogação da descoberta, alteração de visibilidade, bloqueio ou perda de acesso remove elegibilidade e invalida recomendações pendentes no servidor.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
   }
 ];

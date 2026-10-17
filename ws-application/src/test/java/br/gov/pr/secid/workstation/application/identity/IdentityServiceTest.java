@@ -10,6 +10,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -32,13 +36,42 @@ class IdentityServiceTest {
     final Fakes.Audit audit = new Fakes.Audit();
     final InMemoryRateLimit rateLimit = new InMemoryRateLimit();
     final InMemorySessionStore sessions = new InMemorySessionStore();
+    /** Relógio controlável: a janela de tolerância ao reuso (D-140) depende do tempo entre rotação e reuso. */
+    final MutableClock clock = new MutableClock(Instant.now());
     IdentityService identity;
     User maria;
+
+    static final class MutableClock extends Clock {
+        private volatile Instant now;
+
+        MutableClock(Instant start) {
+            this.now = start;
+        }
+
+        void advance(Duration d) {
+            now = now.plus(d);
+        }
+
+        @Override
+        public ZoneId getZone() {
+            return ZoneOffset.UTC;
+        }
+
+        @Override
+        public Clock withZone(ZoneId zone) {
+            return this;
+        }
+
+        @Override
+        public Instant instant() {
+            return now;
+        }
+    }
 
     @BeforeEach
     void setUp() {
         identity = new IdentityService(users, Fakes.EMAIL_HASHER, hasher, rateLimit, sessions, Fakes.NO_MIRROR, Fakes.TOKENS,
-                audit, SessionPolicy.defaults(), Clock.systemUTC());
+                audit, SessionPolicy.defaults(), clock);
         maria = users.add(Fakes.user("maria.silva", "Maria.Silva@Exemplo.gov.br", hasher.hash(password)));
         hasher.matchesCalls.set(0);
     }
@@ -162,6 +195,7 @@ class IdentityServiceTest {
         assertThat(s2.refreshToken()).isNotEqualTo(s1.refreshToken());
         assertThat(identity.sessionActive(s1.sessionId())).isTrue();
 
+        clock.advance(SessionPolicy.defaults().reuseGraceWindow().plusSeconds(1)); // fora da janela de tolerância (D-140)
         ApiException reuso = catchThrowableOfType(ApiException.class, () -> identity.refresh(s1.refreshToken(), ctx));
         assertThat(reuso.status()).isEqualTo(401);
         assertThat(reuso.code()).isEqualTo(AuthCodes.SESSAO_INVALIDA);
@@ -174,6 +208,45 @@ class IdentityServiceTest {
         assertThat(catchThrowableOfType(ApiException.class, () -> identity.refresh("nao-existe", ctx)).code()).isEqualTo(AuthCodes.SESSAO_INVALIDA);
         assertThat(catchThrowableOfType(ApiException.class, () -> identity.refresh(" ", ctx)).code()).isEqualTo(AuthCodes.SESSAO_INVALIDA);
         assertThat(identity.sessionActive(null)).isFalse();
+    }
+
+    /** D-140 (Q-237): resposta da rotação perdida → reuso dentro da janela emite um irmão sem derrubar a família; só uma vez. */
+    @Test
+    void reusoDentroDaJanelaEhToleradoUmaVezESemFamiliaVivaNunca() {
+        Session s1 = identity.login(new IdentityService.LoginCommand("maria.silva", password, false, null, null), ctx);
+        Session s2 = identity.refresh(s1.refreshToken(), ctx);
+        clock.advance(Duration.ofSeconds(5));
+        Session sibling = identity.refresh(s1.refreshToken(), ctx);
+        assertThat(sibling.sessionId()).isEqualTo(s1.sessionId());
+        assertThat(sibling.refreshToken()).isNotEqualTo(s2.refreshToken());
+        assertThat(identity.sessionActive(s1.sessionId())).as("família preservada").isTrue();
+        assertThat(audit.actions()).contains(AuditActions.REFRESH_REUSO_TOLERADO).doesNotContain(AuditActions.REFRESH_REUSO);
+
+        // segundo reuso do mesmo token, ainda na janela: a reivindicação já foi usada → revogação normal
+        clock.advance(Duration.ofSeconds(1));
+        ApiException again = catchThrowableOfType(ApiException.class, () -> identity.refresh(s1.refreshToken(), ctx));
+        assertThat(again.code()).isEqualTo(AuthCodes.SESSAO_INVALIDA);
+        assertThat(identity.sessionActive(s1.sessionId())).isFalse();
+        assertThat(audit.actions()).contains(AuditActions.REFRESH_REUSO);
+
+        // depois do logout, reuso recente nunca revive a sessão
+        Session t1 = identity.login(new IdentityService.LoginCommand("maria.silva", password, false, null, null), ctx);
+        Session t2 = identity.refresh(t1.refreshToken(), ctx);
+        identity.logout(new CurrentUser(maria.getId(), maria.getRole(), t2.sessionId()), ctx);
+        clock.advance(Duration.ofSeconds(2));
+        assertThat(catchThrowableOfType(ApiException.class, () -> identity.refresh(t1.refreshToken(), ctx)).code()).isEqualTo(AuthCodes.SESSAO_INVALIDA);
+        assertThat(identity.sessionActive(t1.sessionId())).isFalse();
+    }
+
+    @Test
+    void janelaDeToleranciaTemTetoEZeroDesliga() {
+        assertThat(catchThrowableOfType(IllegalArgumentException.class, () -> new SessionPolicy(null, null, 0, null, Duration.ofMinutes(5)))).isNotNull();
+        IdentityService strict = new IdentityService(users, Fakes.EMAIL_HASHER, hasher, rateLimit, sessions, Fakes.NO_MIRROR, Fakes.TOKENS,
+                audit, new SessionPolicy(null, null, 0, null, Duration.ZERO), clock);
+        Session s1 = strict.login(new IdentityService.LoginCommand("maria.silva", password, false, null, null), ctx);
+        strict.refresh(s1.refreshToken(), ctx);
+        assertThat(catchThrowableOfType(ApiException.class, () -> strict.refresh(s1.refreshToken(), ctx)).code()).isEqualTo(AuthCodes.SESSAO_INVALIDA);
+        assertThat(strict.sessionActive(s1.sessionId())).isFalse();
     }
 
     /**
@@ -211,11 +284,13 @@ class IdentityServiceTest {
         } finally {
             pool.shutdownNow();
         }
-        assertThat(ok.get()).as("no máximo um consumo vence; nunca dois").isLessThanOrEqualTo(1);
+        // um consumo vence; a tolerância (D-140) admite no máximo UM irmão (reivindicação atômica); os demais revogam a família
+        assertThat(ok.get()).as("no máximo o rotacionado e um tolerado; nunca três").isLessThanOrEqualTo(2);
         assertThat(ok.get() + invalid.get()).as("toda requisição terminou com sucesso ou SESSAO_INVALIDA").isEqualTo(threads);
-        assertThat(identity.sessionActive(s.sessionId())).as("reuso detectado: família inteira revogada").isFalse();
+        assertThat(identity.sessionActive(s.sessionId())).as("reuso em massa: família inteira revogada").isFalse();
         assertThat(audit.actions()).filteredOn(AuditActions.REFRESH_REUSO::equals)
-                .as("cada perdedora do consume audita o reuso").hasSizeGreaterThanOrEqualTo(threads - 1);
+                .as("cada perdedora do consume audita o reuso").hasSizeGreaterThanOrEqualTo(threads - 2);
+        assertThat(audit.actions()).filteredOn(AuditActions.REFRESH_REUSO_TOLERADO::equals).as("tolerância vale uma vez").hasSizeLessThanOrEqualTo(1);
     }
 
     /**
@@ -256,6 +331,11 @@ class IdentityServiceTest {
             }
 
             @Override
+            public boolean claimReuseGrace(String h) {
+                return sessions.claimReuseGrace(h);
+            }
+
+            @Override
             public void revokeFamily(UUID f, java.time.Instant at) {
                 sessions.revokeFamily(f, at);
             }
@@ -276,7 +356,7 @@ class IdentityServiceTest {
             }
         };
         IdentityService racing = new IdentityService(users, Fakes.EMAIL_HASHER, hasher, rateLimit, instrumented, Fakes.NO_MIRROR, Fakes.TOKENS,
-                audit, SessionPolicy.defaults(), Clock.systemUTC());
+                audit, SessionPolicy.defaults(), clock);
         Session s = racing.login(new IdentityService.LoginCommand("maria.silva", password, false, null, null), ctx);
         ExecutorService pool = Executors.newSingleThreadExecutor();
         try {

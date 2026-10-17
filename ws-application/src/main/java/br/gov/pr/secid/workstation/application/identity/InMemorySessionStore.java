@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,6 +28,7 @@ public class InMemorySessionStore implements SessionStorePort {
 
     private final Map<String, RefreshRecord> byHash = new ConcurrentHashMap<>();
     private final Map<UUID, Tombstone> revokedFamilies = new ConcurrentHashMap<>();
+    private final Set<String> graceClaimed = ConcurrentHashMap.newKeySet();
 
     @Override
     public void save(RefreshRecord record) {
@@ -73,6 +75,11 @@ public class InMemorySessionStore implements SessionStorePort {
             return r.revoked(now);
         });
         return result[0];
+    }
+
+    @Override
+    public boolean claimReuseGrace(String tokenHash) {
+        return byHash.containsKey(tokenHash) && graceClaimed.add(tokenHash);
     }
 
     @Override

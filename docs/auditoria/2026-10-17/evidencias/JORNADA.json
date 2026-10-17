@@ -1,0 +1,209 @@
+{
+  "base": "http://localhost:3000",
+  "startedAt": "2026-10-17T13:47:31.073Z",
+  "steps": [
+    {
+      "name": "login pela interface",
+      "ok": true,
+      "url": "http://localhost:3000/mural"
+    },
+    {
+      "name": "criar tarefa SOFTWARE",
+      "ok": true,
+      "ms": 9870
+    },
+    {
+      "name": "criar tarefa ADMINISTRACAO",
+      "ok": true,
+      "ms": 6888
+    },
+    {
+      "name": "criar tarefa DESIGN",
+      "ok": true,
+      "ms": 9576
+    },
+    {
+      "name": "criar tarefa PESQUISA",
+      "ok": true,
+      "ms": 7228
+    },
+    {
+      "name": "criar tarefa MARKETING",
+      "ok": true,
+      "ms": 3537
+    },
+    {
+      "name": "criar tarefa PLANEJAMENTO",
+      "ok": true,
+      "ms": 8035
+    },
+    {
+      "name": "Minhas tarefas lista as seis",
+      "ok": true,
+      "cards": 38
+    },
+    {
+      "name": "sair, entrar de novo e reabrir: título, objetivo, critério e campo da área preservados",
+      "ok": true
+    },
+    {
+      "name": "editar objetivo mantém entregável, critérios e referências",
+      "ok": true
+    },
+    {
+      "name": "conflito entre abas: 409 mostrado e texto da aba B preservado",
+      "ok": true
+    },
+    {
+      "name": "Iniciar → Bloquear (motivo) → Retomar → marcar critério → Concluir; concluída fica somente leitura",
+      "ok": true
+    },
+    {
+      "name": "outra conta recebe 'não existe ou sem acesso' para tarefa privada",
+      "ok": true
+    },
+    {
+      "name": "acervo da outra conta não lista tarefas alheias",
+      "ok": true
+    },
+    {
+      "name": "telas principais no celular sem rolagem horizontal",
+      "ok": true,
+      "overflow": [
+        {
+          "label": "/tasks",
+          "scroll": 390,
+          "inner": 390,
+          "ok": true
+        },
+        {
+          "label": "/tasks/new",
+          "scroll": 390,
+          "inner": 390,
+          "ok": true
+        },
+        {
+          "label": "/tasks/80a0d70e-56bb-475c-aec9-defb9205cbf3",
+          "scroll": 390,
+          "inner": 390,
+          "ok": true
+        },
+        {
+          "label": "/settings?tab=trabalho",
+          "scroll": 390,
+          "inner": 390,
+          "ok": true
+        },
+        {
+          "label": "/decia/decisoes/d-arquitetura?secao=decisao",
+          "scroll": 390,
+          "inner": 390,
+          "ok": true
+        },
+        {
+          "label": "/profile",
+          "scroll": 390,
+          "inner": 390,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "name": "DECIA em 'Sob solicitação': sugestão da IA só aparece após o pedido",
+      "ok": true
+    },
+    {
+      "name": "perfil exibe contador Seguindo",
+      "ok": true
+    }
+  ],
+  "consoleErrors": [
+    {
+      "url": "http://localhost:3000/tasks/4cfb4c15-dbf5-4374-a162-2fde0438b56b",
+      "text": "Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+      "url": "http://localhost:3000/tasks/4cfb4c15-dbf5-4374-a162-2fde0438b56b",
+      "text": "Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+      "url": "http://localhost:3000/settings?tab=trabalho",
+      "text": "A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:\n\n- A server/client branch `if (typeof window !== 'undefined')`.\n- Variable input such as `Date.now()` or `Math.random()` wh"
+    },
+    {
+      "url": "http://localhost:3000/settings?tab=trabalho",
+      "text": "A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:\n\n- A server/client branch `if (typeof window !== 'undefined')`.\n- Variable input such as `Date.now()` or `Math.random()` wh"
+    }
+  ],
+  "overflow": [
+    {
+      "label": "/tasks",
+      "scroll": 390,
+      "inner": 390,
+      "ok": true
+    },
+    {
+      "label": "/tasks/new",
+      "scroll": 390,
+      "inner": 390,
+      "ok": true
+    },
+    {
+      "label": "/tasks/80a0d70e-56bb-475c-aec9-defb9205cbf3",
+      "scroll": 390,
+      "inner": 390,
+      "ok": true
+    },
+    {
+      "label": "/settings?tab=trabalho",
+      "scroll": 390,
+      "inner": 390,
+      "ok": true
+    },
+    {
+      "label": "/decia/decisoes/d-arquitetura?secao=decisao",
+      "scroll": 390,
+      "inner": 390,
+      "ok": true
+    },
+    {
+      "label": "/profile",
+      "scroll": 390,
+      "inner": 390,
+      "ok": true
+    }
+  ],
+  "tasks": [
+    {
+      "area": "SOFTWARE",
+      "id": "242539f1-46b2-4b7f-89fb-d7c30bf13c55",
+      "ms": 9869
+    },
+    {
+      "area": "ADMINISTRACAO",
+      "id": "4cfb4c15-dbf5-4374-a162-2fde0438b56b",
+      "ms": 6888
+    },
+    {
+      "area": "DESIGN",
+      "id": "14db3953-b849-4fdd-a55e-f79875fb72ad",
+      "ms": 9576
+    },
+    {
+      "area": "PESQUISA",
+      "id": "80a0d70e-56bb-475c-aec9-defb9205cbf3",
+      "ms": 7228
+    },
+    {
+      "area": "MARKETING",
+      "id": "83c6e69f-e33c-4c63-9beb-1ba055ff4183",
+      "ms": 3537
+    },
+    {
+      "area": "PLANEJAMENTO",
+      "id": "141528d9-6364-447b-904b-699b0e94e473",
+      "ms": 8035
+    }
+  ],
+  "finishedAt": "2026-10-17T13:51:20.269Z"
+}
