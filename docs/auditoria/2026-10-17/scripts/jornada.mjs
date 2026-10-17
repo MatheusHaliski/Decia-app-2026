@@ -181,6 +181,7 @@ try {
     await page.getByTestId(wait).first().waitFor({ timeout: 20000 });
     // não navegar com a renovação do token em voo: interromper a resposta rotaciona no servidor sem gravar o cookie (P18)
     await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
+    await page.waitForTimeout(3000); // a renovação pode começar depois da hidratação (ver P18)
     await overflow(page, route);
     await shot(page, file, true);
   }
@@ -207,7 +208,7 @@ try {
   await page.goto(`${BASE}/profile`);
   await page.getByTestId("profile-counters").waitFor();
   await shot(page, "18-perfil-contadores-desktop.png");
-  step("perfil exibe contador Seguindo", (await page.getByTestId("profile-counters").innerText()).includes("Seguindo"));
+  step("perfil exibe contador Seguindo", (await page.getByTestId("profile-counters").innerText()).toLowerCase().includes("seguindo"));
   await ctx.close();
 } catch (e) {
   step("execução interrompida", false, { error: String(e).slice(0, 500) });
