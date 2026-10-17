@@ -16,15 +16,16 @@
 
 ```mermaid
 flowchart LR
-  subgraph FE["Frontend · Next.js 15 App Router · TypeScript · Tailwind · packages/ui (design system DECIA)"]
+  subgraph FE["Frontend · Next.js 16 App Router · React 19 · TypeScript · Tailwind 4 · components/ui (design system DECIA)"]
     APP["app/ (rotas por aba)"] --> BFF["app/bff (proxy autenticado, cookies httpOnly)"]
-    UI["packages/ui · tokens.css · componentes"] --> APP
+    UI["components/ui · tokens.css · glyphs"] --> APP
+    EDIT["Letters (/letters) e Drawings (/drawings)\nlib/studio · lib/pieces · lib/drawings · lib/ai/autonomy\n(esqueleto até as Ondas 4–5)"] --> APP
   end
   BFF -->|REST JSON · JWT| WEB
   subgraph BE["Backend · Java 21 (bytecode) · Spring Boot 4.1.x · JVM 25 LTS na imagem · Maven multi-módulo hexagonal"]
     WEB["ws-web · controllers por RF · Spring Security · GlobalExceptionHandler · springdoc"]
-    APPL["ws-application · casos de uso (services) · AiEngine · ports · DomainEvents · Guard"]
-    DOM["ws-domain · entidades JPA · enums · repositórios · AES-GCM"]
+    APPL["ws-application · casos de uso (TaskService, PeopleService, IdentityService, AccountService…) · ResourceAuthorizer · AiGateway · ports · DomainEvents"]
+    DOM["ws-domain · records @DomainEntity (fonte única, D-40) · enums · AccessPolicy (SIGILOSO = PRIVADA, D-139) · AES-GCM"]
     INFRA["ws-infrastructure/* · adapters"]
     BOOT["ws-bootstrap · Spring Boot app · application.yml · schedulers"]
     WEB --> APPL --> DOM

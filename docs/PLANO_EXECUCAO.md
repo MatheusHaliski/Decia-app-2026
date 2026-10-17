@@ -80,6 +80,8 @@ teste que falharia sem ele, segredos só pelo nome, nunca editar migration aplic
 
 ## 5. Ondas de execução (paralelo só onde não há dependência)
 
+> **Revisão de 17/10/2026:** a auditoria dos 74 RF reorganizou a execução em dez ondas (0–9) mais um eixo transversal, com meta de nota acima de 8,5 em todos os RF; o plano vigente, com as observações de 16/10 por RF, o diagrama das ondas e a coluna *Situação*, está em `docs/auditoria/2026-10-17/PLANO_ONDAS.md`. A tabela abaixo é o plano anterior (05–06/10) e fica como histórico.
+
 | Onda | Em paralelo | Saída |
 |---|---|---|
 | 1 (agora) | Mensageria · Perfil + rede social + Delegar (RF6, RF14–RF19, RF27) · Bloco 5 · Bloco 4 · CI Trivy + OpenAPI→TS | 5 PRs |
@@ -195,6 +197,18 @@ cuidam do jurídico".
 | RF46 | Chats de mensageria | domínio + esqueleto | onda Mensageria/Social | 3 |
 | RF47 | Encontrar palavras-chave em documentos (`/find`) | diagramas + matriz bibliográfica + esqueleto (sem domínio) | onda Encontrar (após Acervo e Bloco 5) | 4 |
 | RF48 | Agentes — Copilot de testes de contratação (`/agents`) | diagramas + catálogo dos 17 agentes + matriz bibliográfica + esqueleto (sem domínio) | onda Agentes (após RF47, DECIA 7 e onda IA) | 5 |
+| RF49 | Pactos de Desbloqueio (`/goals`) | diagramas + esqueleto | Onda 8 (PLANO_ONDAS 17/10) | 8 |
+| RF50 | Análise de Perfil no Copilot (`/insights`) | diagramas + esqueleto | Onda 6 (IA no servidor) | 6 |
+| RF51 | Autonomia, escopo e execução da IA (Letters/Drawings) | `lib/ai/autonomy.ts` (5 modos, efeito no DECIA) + diagramas | Onda 6: política aplicada no servidor | 6 |
+| RF52–RF56 | Letters (`/letters`) | esqueleto + diagramas RF52–RF56; sem editor | Onda 4 | 4 |
+| RF57–RF67 | Drawings (`/drawings`) | bibliotecas puras `lib/studio`, `lib/pieces`, `lib/drawings` (seleção só do visível, `authorizePatch`) + diagramas; sem canvas | Onda 5 | 5 |
+| RF68 | IA sobre desenhos (gerar, auditar, estilizar, otimizar, converter) | diagramas; sem motor registrado | Onda 6 | 6 |
+| RF69 | Salvar, exportar, recuperar e histórico das peças | `lib/pieces/service.ts` (WorkPiece) + diagramas | Onda 3 (peças versionadas) | 3 |
+| RF70 | Importar/exportar/referenciar conteúdo técnico | diagramas; nenhum parser | Onda 9 | 9 |
+| RF71 | Vínculo peça→tarefa→projeto→sessão | diagramas; tarefas reais (V36) sem peça | Onda 3 | 3 |
+| RF72 | Qualidade, desempenho e evidências dos editores | matriz e jornada em `docs/auditoria/2026-10-17` | transversal | — |
+| RF73 | Editor determinístico × Assistente IA (painéis acessíveis) | diagramas; `docs/auditoria/2026-10-16/paineis-bezier` | Onda 5 | 5 |
+| RF74 | PNG e prévia fantasma multimodal (`/drawings`) | diagramas; `docs/produto/PREVIEW_PNG_MULTIMODAL_DRAWINGS.md` | Onda 5 | 5 |
 
 Ondas temáticas: **Social** (RF6, RF14–RF19, RF27, cards de tarefa RF38) · **Acervo** (RF4, RF8, RF11, RF12, RF23, RF41) · **Projetos** (RF5, RF7, RF20–RF22, RF25, RF30–RF32, RF34) · **Institucional** (RF9, RF10, RF28, RF36, RF39) · **Planejamento** (RF24) · **Gamificação** (RF35, RF40, RF42, RF44, RF45) · **IA** (RF13, RF26, RF43) · **DECIA** (RF29, RF33, RF37) · **Mensageria** (RF46) · **Encontrar** (RF47) · **Agentes** (RF48). Cada onda entrega primeiro UI funcional com repositório de demonstração rotulado (como o DECIA) e regras puras testadas; a API entra depois dos Blocos 4–5.
 

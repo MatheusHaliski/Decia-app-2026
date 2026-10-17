@@ -4,6 +4,47 @@
 
 Referências de execução: `docs/auditoria/2026-10-16/.../PLANO_CORRECAO.md` (incrementos 1–7 e gates), `docs/produto/requisitos-studio/RF51–RF74.md` (CAs), `docs/auditoria/2026-10-15/*` (comandos, colaboração 2D, painéis Bézier), `referencias/COMANDOS_REFERENCIA_ILLUSTRATOR_AUTOCAD.md`.
 
+## Diagrama das ondas (dependências e RF por onda)
+
+Cada card RF do board Work Station (lista *Requisitos Funcionais*) recebeu em 17/10/2026 a seção "Auditoria 17/10/2026 — plano de correção" e a checklist "Correção — Onda n"; a lista *Plano por ondas — auditoria 17/10/2026* tem um card por onda com a checklist dos RF. Os diagramas por RF estão em `docs/diagramas/RF1…RF74/README.md` (RF51–RF74 criados nesta data) e o catálogo `lib/rf/catalog.gen.ts` alimenta as páginas-esqueleto `/letters` e `/drawings`.
+
+```mermaid
+flowchart LR
+  O0["Onda 0 · decisões D-138–D-142\nRF2 (sessão)"] --> O1
+  O1["Onda 1 · perfil real e pessoas\nRF3 RF6 RF14 RF15 RF16 RF45"] --> O2
+  O1 --> O3
+  O2["Onda 2 · projetos (agregado, 3 visões, mesa)\nRF5 RF7 RF10 RF20 RF21 RF22"] --> O3
+  O3["Onda 3 · anexos, peças versionadas, vínculo peça→tarefa→projeto→sessão\nRF4 RF8 RF11 RF12 RF13 RF41 RF69 RF71"] --> O4
+  O3 --> O5
+  O4["Onda 4 · Letters\nRF52 RF53 RF54 RF55 RF56"] --> O6
+  O5["Onda 5 · Drawings\nRF57–RF67 RF73 RF74"] --> O6
+  O6["Onda 6 · IA no servidor\nRF26 RF30 RF43 RF44 RF48 RF50 RF51 RF68"] --> O7
+  O2 --> O7
+  O7["Onda 7 · DECIA persistido, memória, ata, mensagens\nRF29 RF33 RF37 RF46"] --> O8
+  O1 --> O8
+  O8["Onda 8 · institucional, rede social persistida, gamificação\nRF9 RF17 RF18 RF19 RF24 RF25 RF27 RF28 RF35 RF36 RF39 RF40 RF42 RF49"] --> O9
+  O3 --> O9
+  O9["Onda 9 · conectores, documentos técnicos, busca, simulação, espelho\nRF23 RF31 RF32 RF34 RF47 RF70"]
+  T["Transversal · qualidade, identidade visual, e-mail\nRF1 RF38 RF72"] -.-> O1 & O4 & O5 & O9
+  classDef feita fill:#dff5e1,stroke:#2e7d32,color:#1b1b1b
+  classDef curso fill:#fff4d6,stroke:#b26a00,color:#1b1b1b
+  class O0 feita
+  class O1 curso
+```
+
+```mermaid
+stateDiagram-v2
+  direction LR
+  [*] --> pendente
+  pendente --> em_curso : onda aberta (branch claude/upbeat-dirac-7sa5n3)
+  em_curso --> verificada : testes + jornada real (UI→BFF→API→MySQL) + capturas desktop/celular
+  verificada --> concluida : nota acima de 8,5 na MATRIZ_RF (rubrica do projeto) e checklist do card no Trello marcada
+  verificada --> em_curso : evidência insuficiente ou regressão
+  concluida --> [*]
+```
+
+Legenda: verde = onda concluída e verificada; amarelo = em curso. O gate de cada onda é o da coluna *Situação*: `pendente` → `em curso` → `verificada` → `concluída`.
+
 ## Onda 0 — decisões (D-138–D-142)
 
 | RF | Nota 16/10 | Principal erro (16/10) | Melhoria exigida | Situação |
