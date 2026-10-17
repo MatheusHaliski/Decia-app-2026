@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { Avatar, Badge, Button, Card, EmptyState, ErrorState, LoadingState } from "@/components/ui";
 import { RfPage } from "@/components/shell/RfPage";
 import { ownCounters } from "@/components/account/OwnProfile";
+import { CardGrid } from "@/components/social/TaskSchemeCard";
 import { PersistedTaskCard } from "@/components/tasks/PersistedTasks";
 import { ApiError, describeError } from "@/lib/api/client";
 import { loginUrl } from "@/lib/auth/next";
@@ -107,8 +108,8 @@ function PublicAcervo({ person, list }: { person: PublicProfileView; list: TaskL
   if (!list.tasks) return <LoadingState />;
   if (!list.tasks.length) return <EmptyState moji="vazio" title={t("social.acervo.emptyTitle")} description={t("social.profile.noVisibleTasks", { name })} />;
   return (
-    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3" data-testid="public-profile-tasks">
-      {list.tasks.map((x) => <PersistedTaskCard key={x.id} task={x} />)}
+    <div data-testid="public-profile-tasks">
+      <CardGrid label={t("tabs.profile.acervo")}>{list.tasks.map((x) => <li key={x.id}><PersistedTaskCard task={x} /></li>)}</CardGrid>
     </div>
   );
 }
