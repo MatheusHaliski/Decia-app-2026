@@ -42,7 +42,14 @@ if (cards) {
   for (const f of readdirSync(dir)) if (f.endsWith('.svg')) unlinkSync(join(dir, f));
   for (const theme of THEME_IDS) for (const varn of cards.VARIACOES) { out(`svg/${varn.id}--${theme}.svg`, cards.render(varn, theme)); svgCount++; }
   console.log(`${svgCount} anatomias SVG (${cards.VARIACOES.length} variações × ${THEME_IDS.length} temas)`);
+  // 4b. demais cards (tarefa real, Decision Card, Mural, atribuição, notificação, perfis, busca, sessão DECIA, conta, shell)
+  const extra = await import('./lib/cards-extra.mjs').catch((e) => { console.warn('cards-extra.mjs indisponível:', e.message); return null; });
+  let extraCount = 0;
+  if (extra) {
+    for (const theme of THEME_IDS) for (const varn of extra.VARIACOES_EXTRA) { out(`svg/${varn.id}--${theme}.svg`, extra.render(varn, theme)); extraCount++; }
+    console.log(`${extraCount} anatomias SVG dos demais cards (${extra.VARIACOES_EXTRA.length} pranchas × ${THEME_IDS.length} temas)`);
+  }
   // 5. galeria
   const gal = await import('./lib/galeria.mjs').catch((e) => { console.warn('galeria.mjs indisponível:', e.message); return null; });
-  if (gal) { out('index.html', gal.renderIndex(cards.VARIACOES)); console.log('index.html escrito'); }
+  if (gal) { out('index.html', gal.renderIndex(cards.VARIACOES, extra ? extra.VARIACOES_EXTRA : [])); console.log('index.html escrito'); }
 }
