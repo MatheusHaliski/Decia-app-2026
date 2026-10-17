@@ -23,6 +23,61 @@ O RF66 leva a edição de uma mesma peça do Drawings para várias pessoas ao me
 
 Endpoints propostos em `DRAWINGS_CAMADAS_COLABORACAO_DECIA.md`, ainda não publicados: `POST /api/decia/sessions/{sessionId}/drawings/{drawingId}/leases` (reservar), `PATCH …/leases/{leaseId}` (renovar com token vigente), `DELETE …/leases/{leaseId}` (liberar), `POST …/patches` (revisão esperada, token e chave idempotente) e `GET …/events` (presença, reservas e patches autorizados por SSE/WebSocket). A gravação bloqueia a peça (`SELECT … FOR UPDATE`), relê a ACL, confere reserva, token e revisão do objeto e só então grava; Redis transmite presença, mas não substitui o controle transacional. Mensagens de conflito dizem “região reservada por outra pessoa até hh:mm” sem mostrar o conteúdo nem o nome quando a pessoa não pode vê-lo. Presença usa cor com nome em texto.
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Todos são planejados: reservas e patch são funções puras com `PiecesService` em memória, sem endpoints nem sessão DECIA real.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  participante_sessao["«ator» Admin · Membro · Observador da sessão"]:::ator
+  dono["«ator» Dono do recurso"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  admin["«ator» Administrador"]:::ator
+  subgraph SIS["Work Station — RF66 Edição simultânea no DECIA"]
+    direction TB
+    UC1(["UC1 Reservar camada e região na sessão"]):::ucPlan
+    UC2(["UC2 Renovar ou liberar a reserva"]):::ucPlan
+    UC3(["UC3 Enviar patch na região reservada"]):::ucPlan
+    UC4(["UC4 Reconciliar rascunho após patch recusado"]):::ucPlan
+    UC5(["UC5 Revalidar acesso a cada gravação"]):::ucPlan
+    UC6(["UC6 Abrir desenho SIGILOSO"]):::ucPlan
+    UC7(["UC7 Acompanhar a edição como observador"]):::ucPlan
+    UC8(["UC8 Propor patch pela IA sob as mesmas reservas"]):::ucPlan
+    UC9(["UC9 Editar em 3D com as mesmas garantias"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  participante_sessao --- UC1
+  participante_sessao --- UC2
+  participante_sessao --- UC3
+  participante_sessao --- UC4
+  dono --- UC6
+  colaborador --- UC6
+  admin --- UC6
+  participante_sessao --- UC7
+  participante_sessao --- UC9
+  UC3 -. "«include»" .-> UC1
+  UC3 -. "«include»" .-> UC5
+  UC8 -. "«include»" .-> UC1
+  UC4 -. "«extend»" .-> UC3
+  UC8 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Reservar camada e região na sessão | `participante_sessao` | RF66.CA02, RF66.CA03 | planejado (lease puro em `lib/pieces/collab.ts`) |
+| UC2 Renovar ou liberar a reserva | `participante_sessao` | RF66.CA03 | planejado |
+| UC3 Enviar patch na região reservada | `participante_sessao` | RF66.CA01, RF66.CA04 | planejado |
+| UC4 Reconciliar rascunho após patch recusado | `participante_sessao` | RF66.CA04 | planejado |
+| UC5 Revalidar acesso a cada gravação | — (incluído por UC3) | RF66.CA05, RF66.CA06 | planejado (regra real em `AccessPolicy`, D-139; sem transação de peça) |
+| UC6 Abrir desenho SIGILOSO | `dono`, `colaborador`, `admin` | RF66.CA06 | planejado (administrador sem concessão explícita é negado) |
+| UC7 Acompanhar a edição como observador | `participante_sessao` | RF66.CA07 | planejado |
+| UC8 Propor patch pela IA sob as mesmas reservas | `ia` | RF66.CA01, RF66.CA02 | planejado (nenhum motor registrado) |
+| UC9 Editar em 3D com as mesmas garantias | `participante_sessao` | RF66.CA08 | planejado (não oferecido antes das garantias no servidor) |
+
 ## 1. Diagrama de classes
 
 ```mermaid

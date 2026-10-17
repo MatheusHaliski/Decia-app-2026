@@ -26,6 +26,66 @@ O RF65 organiza o contexto espacial de uma peça do Drawings em quatro eixos ind
 - Métricas globais (equilíbrio, densidade, ocupação) são heurísticas com fórmula e `rubricVersion` publicadas; dimensão não avaliada aparece como “não avaliado”, nunca como zero.
 - Mover e girar oferecem campos numéricos (posição, ângulo, pivô) além do arraste (WCAG 2.5.7); a validação usa a caixa transformada do objeto com filhos.
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Todos são planejados: camadas, reservas e patch existem só como funções puras em `lib/pieces/`, sem editor nem servidor.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  dono["«ator» Dono do recurso"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  subgraph SIS["Work Station — RF65 Regiões e camadas"]
+    direction TB
+    UC1(["UC1 Subdividir região em grade M×N"]):::ucPlan
+    UC2(["UC2 Focar um nível da hierarquia de regiões"]):::ucPlan
+    UC3(["UC3 Reservar região menor ou maior"]):::ucPlan
+    UC4(["UC4 Editar objetos na região reservada"]):::ucPlan
+    UC5(["UC5 Mover ou girar objetos de região maior"]):::ucPlan
+    UC6(["UC6 Isolar camada profunda ou superficial"]):::ucPlan
+    UC7(["UC7 Ocultar divisórias, rótulos e badges"]):::ucPlan
+    UC8(["UC8 Consultar métricas globais com fórmula declarada"]):::ucPlan
+    UC9(["UC9 Validar o limite pela geometria transformada"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono --- UC1
+  colaborador --- UC1
+  dono --- UC2
+  colaborador --- UC2
+  dono --- UC3
+  colaborador --- UC3
+  dono --- UC4
+  colaborador --- UC4
+  dono --- UC5
+  colaborador --- UC5
+  dono --- UC6
+  colaborador --- UC6
+  dono --- UC7
+  colaborador --- UC7
+  dono --- UC8
+  colaborador --- UC8
+  UC4 -. "«include»" .-> UC3
+  UC4 -. "«include»" .-> UC9
+  UC5 -. "«include»" .-> UC9
+  UC2 -. "«extend»" .-> UC1
+  UC8 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Subdividir região em grade M×N | `dono`, `colaborador` | RF65.CA01 | planejado |
+| UC2 Focar um nível da hierarquia de regiões | `dono`, `colaborador` | RF65.CA01 | planejado |
+| UC3 Reservar região menor ou maior | `dono`, `colaborador` | RF65.CA02, RF65.CA03 | planejado (reserva pura em `lib/pieces/collab.ts`) |
+| UC4 Editar objetos na região reservada | `dono`, `colaborador` | RF65.CA02 | planejado |
+| UC5 Mover ou girar objetos de região maior | `dono`, `colaborador` | RF65.CA03, RF65.CA07 | planejado |
+| UC6 Isolar camada profunda ou superficial | `dono`, `colaborador` | RF65.CA04 | planejado (camada ativa e travada em `lib/pieces/layers.ts`) |
+| UC7 Ocultar divisórias, rótulos e badges | `dono`, `colaborador` | RF65.CA05 | planejado |
+| UC8 Consultar métricas globais com fórmula declarada | `dono`, `colaborador`, `ia` | RF65.CA06 | planejado (IA só explica, como proposta revisável) |
+| UC9 Validar o limite pela geometria transformada | — (incluído por UC4, UC5) | RF65.CA07 | planejado |
+
 ## 1. Diagrama de classes
 
 ```mermaid

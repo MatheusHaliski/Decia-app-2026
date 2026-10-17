@@ -46,6 +46,69 @@ Matriz de escrita usada pelo `SALVAR_COMO`. Formato pendente não aparece como o
 | GLB | não há | pendente (RF70) | unidades, normais e materiais compatíveis |
 | DWG | não há | sem motor/SDK validado: não oferecido | — |
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Todos são planejados: não há rota de editor, autosave, exportação nem recuperação; os nomes dos comandos são do Work Station, sem promessa de paridade com Illustrator ou AutoCAD.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  dono["«ator» Dono do recurso"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  subgraph SIS["Work Station — RF69 Salvar e recuperar peças"]
+    direction TB
+    UC1(["UC1 Salvar revisão (SALVAR)"]):::ucPlan
+    UC2(["UC2 Salvar cópia ou exportar formato (SALVAR_COMO)"]):::ucPlan
+    UC3(["UC3 Configurar checkpoint periódico"]):::ucPlan
+    UC4(["UC4 Desfazer, refazer ou navegar no histórico"]):::ucPlan
+    UC5(["UC5 Restaurar a última exclusão (RESTAURAR_APAGADO)"]):::ucPlan
+    UC6(["UC6 Restaurar camadas anteriores (CAMADAS_ANTERIOR)"]):::ucPlan
+    UC7(["UC7 Reverter ao salvo (REVERTER_AO_SALVO)"]):::ucPlan
+    UC8(["UC8 Recuperar rascunho ou checkpoint"]):::ucPlan
+    UC9(["UC9 Exportar para telas"]):::ucPlan
+    UC10(["UC10 Reaplicar autorização e reservas atuais"]):::ucPlan
+  end
+  agendador["«ator» Agendador de trabalhos"]:::atorSis
+  dono --- UC1
+  colaborador --- UC1
+  dono --- UC2
+  colaborador --- UC2
+  dono --- UC3
+  colaborador --- UC3
+  dono --- UC4
+  colaborador --- UC4
+  dono --- UC5
+  colaborador --- UC5
+  dono --- UC6
+  colaborador --- UC6
+  dono --- UC7
+  colaborador --- UC7
+  dono --- UC8
+  colaborador --- UC8
+  dono --- UC9
+  colaborador --- UC9
+  UC4 -. "«include»" .-> UC10
+  UC5 -. "«include»" .-> UC10
+  UC9 -. "«extend»" .-> UC2
+  UC3 --- agendador
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Salvar revisão (SALVAR) | `dono`, `colaborador` | RF69.CA01 | planejado |
+| UC2 Salvar cópia ou exportar formato (SALVAR_COMO) | `dono`, `colaborador` | RF69.CA01, RF69.CA08 | planejado |
+| UC3 Configurar checkpoint periódico | `dono`, `colaborador`, `agendador` | RF69.CA02 | planejado |
+| UC4 Desfazer, refazer ou navegar no histórico | `dono`, `colaborador` | RF69.CA03 | planejado |
+| UC5 Restaurar a última exclusão (RESTAURAR_APAGADO) | `dono`, `colaborador` | RF69.CA04 | planejado |
+| UC6 Restaurar camadas anteriores (CAMADAS_ANTERIOR) | `dono`, `colaborador` | RF69.CA05 | planejado |
+| UC7 Reverter ao salvo (REVERTER_AO_SALVO) | `dono`, `colaborador` | RF69.CA06 | planejado |
+| UC8 Recuperar rascunho ou checkpoint | `dono`, `colaborador` | RF69.CA07 | planejado |
+| UC9 Exportar para telas | `dono`, `colaborador` | RF69.CA08 | planejado |
+| UC10 Reaplicar autorização e reservas atuais | — (incluído por UC4, UC5) | RF69.CA03, RF69.CA04 | planejado (regra pura `authorizePatch`) |
+
 ## 1. Diagrama de classes
 
 Legenda: **(real)** = código no repositório em 17/10/2026; demais classes **(planejado)**. `WorkPiece`, `PieceRevision` e `PieceLink` seguem `docs/produto/LETTERS_DRAWINGS_ENGENHARIA.md` §3 e ainda não estão na TAXONOMIA; `TaskItem`, `MediaObject`, `DeciaSession` e `ProjectScheme` usam os nomes e atributos da TAXONOMIA.

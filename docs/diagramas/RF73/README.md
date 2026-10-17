@@ -35,6 +35,65 @@ Separa a edição determinística das propostas de IA sem trocar de documento. O
 
 O assistente não é modal: não prende o foco nem torna o editor inerte, e a página não ganha um segundo landmark `main`. Campos de texto não disparam atalhos de comando.
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Todos são planejados: não há rota de editor; são reais só a regra única de patch, a validade de proposta por revisão e o cartão de sugestão do DECIA.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  dono["«ator» Dono do recurso"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  admin["«ator» Administrador"]:::ator
+  subgraph SIS["Work Station — RF73 Editor e Assistente IA"]
+    direction TB
+    UC1(["UC1 Abrir ou fechar o Assistente IA"]):::ucPlan
+    UC2(["UC2 Executar comando manual no documento"]):::ucPlan
+    UC3(["UC3 Pedir proposta ao assistente"]):::ucPlan
+    UC4(["UC4 Aprovar, rejeitar ou refinar a proposta"]):::ucPlan
+    UC5(["UC5 Invalidar proposta de revisão antiga"]):::ucPlan
+    UC6(["UC6 Navegar por teclado com foco previsível"]):::ucPlan
+    UC7(["UC7 Retomar rascunho e proposta ao reabrir"]):::ucPlan
+    UC8(["UC8 Arrastar como uma única ação reversível"]):::ucPlan
+    UC9(["UC9 Verificar o editor com testes por papel e nome"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono --- UC1
+  colaborador --- UC1
+  dono --- UC2
+  colaborador --- UC2
+  dono --- UC3
+  colaborador --- UC3
+  dono --- UC4
+  colaborador --- UC4
+  dono --- UC6
+  colaborador --- UC6
+  dono --- UC7
+  colaborador --- UC7
+  dono --- UC8
+  colaborador --- UC8
+  admin --- UC9
+  UC4 -. "«include»" .-> UC5
+  UC7 -. "«extend»" .-> UC1
+  UC8 -. "«extend»" .-> UC2
+  UC3 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Abrir ou fechar o Assistente IA | `dono`, `colaborador` | RF73.CA01, RF73.CA04 | planejado |
+| UC2 Executar comando manual no documento | `dono`, `colaborador` | RF73.CA02 | planejado |
+| UC3 Pedir proposta ao assistente | `dono`, `colaborador`, `ia` | RF73.CA03, RF73.CA06 | planejado (nenhum motor registrado) |
+| UC4 Aprovar, rejeitar ou refinar a proposta | `dono`, `colaborador` | RF73.CA03, RF73.CA05 | planejado (aceitar e descartar reais só no cartão do DECIA) |
+| UC5 Invalidar proposta de revisão antiga | — (incluído por UC4) | RF73.CA07 | planejado (regra pura `proposalValidity`, `PROPOSTA_OBSOLETA_REVISAO`) |
+| UC6 Navegar por teclado com foco previsível | `dono`, `colaborador` | RF73.CA04, RF73.CA05, RF73.CA06 | planejado |
+| UC7 Retomar rascunho e proposta ao reabrir | `dono`, `colaborador` | RF73.CA07 | planejado |
+| UC8 Arrastar como uma única ação reversível | `dono`, `colaborador` | RF73.CA08 | planejado |
+| UC9 Verificar o editor com testes por papel e nome | `admin` | RF73.CA09, RF73.CA10 | planejado (só `decia.test.tsx` é real) |
+
 ## 1. Diagrama de classes
 
 Legenda: **(real)** = código no repositório em 17/10/2026; demais classes **(planejado)**. As classes de interface seguem a tabela de responsabilidades de `ARQUITETURA_PAINEIS_EDITOR_IA.md`; `PieceRevision` segue `LETTERS_DRAWINGS_ENGENHARIA.md` §3.

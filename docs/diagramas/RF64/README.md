@@ -26,6 +26,67 @@ O RF64 cobre o catálogo de assets parametrizados do Drawings: buscar objetos, p
 - Mover, girar, substituir ou redimensionar parte tem alternativa numérica (posição, ângulo, largura, altura) além do arraste (WCAG 2.5.7).
 - Conteúdo RESTRITO/SIGILOSO nunca vai a provedor externo: a geração por IA usa motor local ou é recusada; o catálogo determinístico continua disponível.
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Todos são planejados: só a conversão para esqueleto (`lib/pieces/wireframe.ts`) existe, sem catálogo nem editor.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  dono["«ator» Dono do recurso"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  subgraph SIS["Work Station — RF64 Assets e wireframes"]
+    direction TB
+    UC1(["UC1 Buscar asset no catálogo"]):::ucPlan
+    UC2(["UC2 Gerar estrutura com partes nomeadas"]):::ucPlan
+    UC3(["UC3 Editar partes internas no wireframe"]):::ucPlan
+    UC4(["UC4 Acrescentar detalhe compatível à parte"]):::ucPlan
+    UC5(["UC5 Transformar parte preservando relações"]):::ucPlan
+    UC6(["UC6 Aplicar wireframe à área inteira"]):::ucPlan
+    UC7(["UC7 Revisar sugestão de substituição da IA"]):::ucPlan
+    UC8(["UC8 Reabrir asset importado ou exportado"]):::ucPlan
+    UC9(["UC9 Verificar o escopo autorizado do patch"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono --- UC1
+  colaborador --- UC1
+  dono --- UC2
+  colaborador --- UC2
+  dono --- UC3
+  colaborador --- UC3
+  dono --- UC4
+  colaborador --- UC4
+  dono --- UC5
+  colaborador --- UC5
+  dono --- UC6
+  colaborador --- UC6
+  dono --- UC7
+  colaborador --- UC7
+  dono --- UC8
+  colaborador --- UC8
+  UC5 -. "«include»" .-> UC9
+  UC6 -. "«include»" .-> UC9
+  UC7 -. "«include»" .-> UC9
+  UC4 -. "«extend»" .-> UC3
+  UC2 --- ia
+  UC7 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Buscar asset no catálogo | `dono`, `colaborador` | RF64.CA01 | planejado |
+| UC2 Gerar estrutura com partes nomeadas | `dono`, `colaborador`, `ia` | RF64.CA02 | planejado (gerador sem modelo declara a lacuna) |
+| UC3 Editar partes internas no wireframe | `dono`, `colaborador` | RF64.CA03 | planejado |
+| UC4 Acrescentar detalhe compatível à parte | `dono`, `colaborador` | RF64.CA03 | planejado |
+| UC5 Transformar parte preservando relações | `dono`, `colaborador` | RF64.CA04 | planejado |
+| UC6 Aplicar wireframe à área inteira | `dono`, `colaborador` | RF64.CA05 | planejado |
+| UC7 Revisar sugestão de substituição da IA | `dono`, `colaborador`, `ia` | RF64.CA06 | planejado (proposta revisável; nenhum motor registrado) |
+| UC8 Reabrir asset importado ou exportado | `dono`, `colaborador` | RF64.CA07 | planejado |
+| UC9 Verificar o escopo autorizado do patch | — (incluído por UC5, UC6, UC7) | RF64.CA05, RF64.CA06 | planejado (regra pura `authorizePatch` e `canEditRegions`, sem editor) |
+
 ## 1. Diagrama de classes
 
 ```mermaid

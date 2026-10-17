@@ -29,6 +29,63 @@ Transforma produção e decisões em trabalho rastreável e compartilhável. Uma
 | peça → perfil (publicar) | `PiecePublication` com autor e data | revisão escolhida explicitamente | audiência escolhida; nunca automática |
 | peça → remix | `PieceDerivation` (origem, licença, autores, mudanças) | revisão de origem fixada | só se a licença e a ACL permitirem; derivado não amplia acesso à fonte |
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. A tarefa com briefing e a verificação de acesso já são reais; a peça, o vínculo, a publicação e o remix são planejados.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  dono["«ator» Dono do recurso"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  decisor["«ator» Responsável pela decisão"]:::ator
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  subgraph SIS["Work Station — RF71 Peças na jornada"]
+    direction TB
+    UC1(["UC1 Vincular peça à tarefa, ao projeto ou à sessão DECIA"]):::ucPlan
+    UC2(["UC2 Verificar acesso à tarefa ou ao projeto"]):::uc
+    UC3(["UC3 Gerar trabalho a partir da decisão DECIA"]):::ucPlan
+    UC4(["UC4 Criar tarefa com briefing"]):::uc
+    UC5(["UC5 Publicar peça no perfil"]):::ucPlan
+    UC6(["UC6 Remixar peça de outra pessoa"]):::ucPlan
+    UC7(["UC7 Alterar a visibilidade da peça"]):::ucPlan
+    UC8(["UC8 Revalidar acesso a derivados, prévias e contagens"]):::ucPlan
+    UC9(["UC9 Acompanhar entregas do departamento"]):::ucPlan
+    UC10(["UC10 Consultar exemplos e instruções por área"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono --- UC1
+  colaborador --- UC1
+  decisor --- UC3
+  dono --- UC5
+  autenticado --- UC6
+  dono --- UC7
+  chefe --- UC9
+  autenticado --- UC10
+  UC1 -. "«include»" .-> UC2
+  UC3 -. "«include»" .-> UC4
+  UC7 -. "«include»" .-> UC8
+  UC10 -. "«extend»" .-> UC1
+  UC3 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Vincular peça à tarefa, ao projeto ou à sessão DECIA | `dono`, `colaborador` | RF71.CA01 | planejado |
+| UC2 Verificar acesso à tarefa ou ao projeto | — (incluído por UC1) | RF71.CA01, RF71.CA06 | real (`ResourceAuthorizer` no `TaskService`; invisível responde 404, D-141) |
+| UC3 Gerar trabalho a partir da decisão DECIA | `decisor`, `ia` | RF71.CA02 | planejado (IA só redige sob pedido, RF51) |
+| UC4 Criar tarefa com briefing | — (incluído por UC3) | RF71.CA02 | real (`TaskController`, `components/tasks/TaskForm.tsx`, D-135) |
+| UC5 Publicar peça no perfil | `dono` | RF71.CA03 | planejado |
+| UC6 Remixar peça de outra pessoa | `autenticado` | RF71.CA04 | planejado |
+| UC7 Alterar a visibilidade da peça | `dono` | RF71.CA05 | planejado |
+| UC8 Revalidar acesso a derivados, prévias e contagens | — (incluído por UC7) | RF71.CA05 | planejado |
+| UC9 Acompanhar entregas do departamento | `chefe` | RF71.CA06 | planejado |
+| UC10 Consultar exemplos e instruções por área | `autenticado` | RF71.CA07 | planejado |
+
 ## 1. Diagrama de classes
 
 Legenda: **(real)** = código no repositório em 17/10/2026; demais classes **(planejado)**. `WorkPiece`, `PieceRevision` e `PieceLink` seguem `LETTERS_DRAWINGS_ENGENHARIA.md` §3; `TaskItem`, `ProjectScheme`, `DeciaSession`, `FinalDecision` e `Remix` usam os nomes e atributos da TAXONOMIA.

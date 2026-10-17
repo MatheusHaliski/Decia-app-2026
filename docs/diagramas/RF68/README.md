@@ -30,6 +30,63 @@ O RF68 reúne os cinco comandos de IA do Drawings — gerar (AI_GENERATE/AIGEN),
 
 O nível de autonomia vem da política da peça ou sessão (cinco modos de `lib/ai/autonomy.ts`, D-136, que substituem os níveis 1 a 4 da especificação): o nome do comando nunca muda o modo. Revisar a prévia tem equivalente por teclado e campos numéricos para cada ajuste de contorno (WCAG 2.5.7).
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Todos são planejados: o `AiGateway` existe e é testado, mas não tem chamador de produção nem motor registrado.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  dono["«ator» Dono do recurso"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  subgraph SIS["Work Station — RF68 Comandos de IA"]
+    direction TB
+    UC1(["UC1 Gerar proposta de geometria"]):::ucPlan
+    UC2(["UC2 Auditar o desenho"]):::ucPlan
+    UC3(["UC3 Estilizar por referência"]):::ucPlan
+    UC4(["UC4 Otimizar e simplificar a geometria"]):::ucPlan
+    UC5(["UC5 Vetorizar raster ou croqui"]):::ucPlan
+    UC6(["UC6 Revisar a proposta conforme a autonomia"]):::ucPlan
+    UC7(["UC7 Consultar pendências do resultado"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono --- UC1
+  colaborador --- UC1
+  dono --- UC2
+  colaborador --- UC2
+  dono --- UC3
+  colaborador --- UC3
+  dono --- UC4
+  colaborador --- UC4
+  dono --- UC5
+  colaborador --- UC5
+  dono --- UC7
+  colaborador --- UC7
+  UC1 -. "«include»" .-> UC6
+  UC3 -. "«include»" .-> UC6
+  UC4 -. "«include»" .-> UC6
+  UC5 -. "«include»" .-> UC6
+  UC7 -. "«extend»" .-> UC2
+  UC1 --- ia
+  UC2 --- ia
+  UC3 --- ia
+  UC4 --- ia
+  UC5 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Gerar proposta de geometria | `dono`, `colaborador`, `ia` | RF68.CA01 | planejado |
+| UC2 Auditar o desenho | `dono`, `colaborador`, `ia` | RF68.CA02 | planejado |
+| UC3 Estilizar por referência | `dono`, `colaborador`, `ia` | RF68.CA03 | planejado |
+| UC4 Otimizar e simplificar a geometria | `dono`, `colaborador`, `ia` | RF68.CA04 | planejado |
+| UC5 Vetorizar raster ou croqui | `dono`, `colaborador`, `ia` | RF68.CA05 | planejado |
+| UC6 Revisar a proposta conforme a autonomia | — (incluído por UC1, UC3, UC4, UC5) | RF68.CA01, RF68.CA05, RF68.CA06 | planejado (modos e validade reais em `lib/ai/autonomy.ts`) |
+| UC7 Consultar pendências do resultado | `dono`, `colaborador` | RF68.CA07 | planejado |
+
 ## 1. Diagrama de classes
 
 ```mermaid

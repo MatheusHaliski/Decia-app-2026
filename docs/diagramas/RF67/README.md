@@ -30,6 +30,64 @@ O RF67 define o comando de completar (AI_COMPLETE/AICOMP) e a previsão de traç
 
 O nome do comando não amplia autonomia. Aceitar pontos fantasma tem alternativa por teclado (Tab percorre os pontos, Enter aceita, Esc rejeita) e campos numéricos para ajustar cada ponto (WCAG 2.5.7).
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Todos são planejados: só a autonomia em cinco modos (`lib/ai/autonomy.ts`) e a exigência de seleção para IA (`aiScopeIsBounded`) existem.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  dono["«ator» Dono do recurso"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  subgraph SIS["Work Station — RF67 Completar e prever traçados"]
+    direction TB
+    UC1(["UC1 Escolher o escopo do completar"]):::ucPlan
+    UC2(["UC2 Prever continuação de traço com pontos fantasma"]):::ucPlan
+    UC3(["UC3 Completar fachada simétrica ou curva Bézier"]):::ucPlan
+    UC4(["UC4 Sugerir leiaute de mobiliário"]):::ucPlan
+    UC5(["UC5 Sugerir roteamento MEP"]):::ucPlan
+    UC6(["UC6 Aceitar ou rejeitar a previsão"]):::ucPlan
+    UC7(["UC7 Usar hipótese algorítmica local"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono --- UC1
+  colaborador --- UC1
+  dono --- UC2
+  colaborador --- UC2
+  dono --- UC3
+  colaborador --- UC3
+  dono --- UC4
+  colaborador --- UC4
+  dono --- UC5
+  colaborador --- UC5
+  dono --- UC6
+  colaborador --- UC6
+  dono --- UC7
+  colaborador --- UC7
+  UC2 -. "«include»" .-> UC1
+  UC3 -. "«include»" .-> UC1
+  UC4 -. "«include»" .-> UC1
+  UC5 -. "«include»" .-> UC1
+  UC7 -. "«extend»" .-> UC2
+  UC2 --- ia
+  UC3 --- ia
+  UC4 --- ia
+  UC5 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Escolher o escopo do completar | `dono`, `colaborador` | RF67.CA01 | planejado |
+| UC2 Prever continuação de traço com pontos fantasma | `dono`, `colaborador`, `ia` | RF67.CA02 | planejado |
+| UC3 Completar fachada simétrica ou curva Bézier | `dono`, `colaborador`, `ia` | RF67.CA03 | planejado |
+| UC4 Sugerir leiaute de mobiliário | `dono`, `colaborador`, `ia` | RF67.CA04 | planejado |
+| UC5 Sugerir roteamento MEP | `dono`, `colaborador`, `ia` | RF67.CA05 | planejado (exige validação profissional) |
+| UC6 Aceitar ou rejeitar a previsão | `dono`, `colaborador` | RF67.CA02, RF67.CA06 | planejado (validade por modo e revisão em `proposalValidity`) |
+| UC7 Usar hipótese algorítmica local | `dono`, `colaborador` | RF67.CA07 | planejado |
+
 ## 1. Diagrama de classes
 
 ```mermaid

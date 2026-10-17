@@ -37,6 +37,60 @@ Fontes: `docs/auditoria/2026-10-15/catalogo-conteudo-importavel.json` (tipos e s
 | Referência visual (`image/*`) | sim (PNG/JPEG/WEBP/GIF) | pendente: referência, não geometria | — | associação ao projeto e à revisão | pendente |
 | DOCX / XLSX | sim (subtipo pelo conteúdo) | pendente | pendente | estilos e fórmulas aproximados; macros nunca executadas | pendente |
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Todos são planejados: não há importador, conversor nem conector; existe só a detecção do tipo real no upload (D-67), ainda sem serviço ativo.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  dono["«ator» Dono do recurso"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  subgraph SIS["Work Station — RF70 Importar e exportar conteúdo"]
+    direction TB
+    UC1(["UC1 Exportar e reimportar formato nativo"]):::ucPlan
+    UC2(["UC2 Importar arquivo técnico ou imagem"]):::ucPlan
+    UC3(["UC3 Importar fonte, paleta ou referência visual"]):::ucPlan
+    UC4(["UC4 Abrir referência externa (Xref)"]):::ucPlan
+    UC5(["UC5 Revisar perdas de fidelidade antes do aceite"]):::ucPlan
+    UC6(["UC6 Corrigir arquivo recusado"]):::ucPlan
+    UC7(["UC7 Exportar GLB validado"]):::ucPlan
+    UC8(["UC8 Verificar o tipo real do arquivo"]):::ucPlan
+  end
+  conectores["«ator» Google Workspace · Microsoft 365 · e-Protocolo"]:::atorSis
+  dono --- UC1
+  colaborador --- UC1
+  dono --- UC2
+  colaborador --- UC2
+  dono --- UC3
+  colaborador --- UC3
+  dono --- UC4
+  colaborador --- UC4
+  dono --- UC6
+  colaborador --- UC6
+  dono --- UC7
+  colaborador --- UC7
+  UC2 -. "«include»" .-> UC8
+  UC3 -. "«include»" .-> UC8
+  UC2 -. "«include»" .-> UC5
+  UC6 -. "«extend»" .-> UC2
+  UC4 --- conectores
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Exportar e reimportar formato nativo | `dono`, `colaborador` | RF70.CA01 | planejado |
+| UC2 Importar arquivo técnico ou imagem | `dono`, `colaborador` | RF70.CA02, RF70.CA05 | planejado |
+| UC3 Importar fonte, paleta ou referência visual | `dono`, `colaborador` | RF70.CA03 | planejado |
+| UC4 Abrir referência externa (Xref) | `dono`, `colaborador`, `conectores` | RF70.CA04 | planejado (conectores na Onda 9) |
+| UC5 Revisar perdas de fidelidade antes do aceite | — (incluído por UC2) | RF70.CA06 | planejado |
+| UC6 Corrigir arquivo recusado | `dono`, `colaborador` | RF70.CA05 | planejado |
+| UC7 Exportar GLB validado | `dono`, `colaborador` | RF70.CA07 | planejado |
+| UC8 Verificar o tipo real do arquivo | — (incluído por UC2, UC3) | RF70.CA02, RF70.CA03, RF70.CA05 | planejado (detecção real em `MagicBytes`; `MediaUploadService` ainda não é bean, D-67) |
+
 ## 1. Diagrama de classes
 
 Legenda: **(real)** = código no repositório em 17/10/2026; demais classes **(planejado)**. `WorkPiece` e `PieceRevision` seguem `LETTERS_DRAWINGS_ENGENHARIA.md` §3; `MediaObject` e `TaskAttachment` seguem a TAXONOMIA.

@@ -34,6 +34,65 @@ O RF63 define como a pessoa autorizada refina a aparência de uma peça do Drawi
 
 Cada arraste (alças de gradiente, vetor, ponto de stop, espessura) tem alternativa numérica equivalente por teclado e campo (WCAG 2.5.7). Cor nunca é o único sinal: reservas, erros e estados aparecem com texto.
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Todos são planejados: o editor do Drawings ainda não existe, só as regras puras de `lib/pieces/` e `lib/drawings/`.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  dono["«ator» Dono do recurso"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  subgraph SIS["Work Station — RF63 Cores e traço"]
+    direction TB
+    UC1(["UC1 Aplicar cor, gradiente e preenchimento à seleção"]):::ucPlan
+    UC2(["UC2 Ajustar o estilo do traço"]):::ucPlan
+    UC3(["UC3 Aplicar hachura ou preset técnico"]):::ucPlan
+    UC4(["UC4 Pedir paleta por harmonia de cor"]):::ucPlan
+    UC5(["UC5 Converter ou exportar com perfil de cor"]):::ucPlan
+    UC6(["UC6 Editar material de parte 3D"]):::ucPlan
+    UC7(["UC7 Alternar wireframe e preenchido"]):::ucPlan
+    UC8(["UC8 Trocar ou restaurar preenchimento e traço por atalho"]):::ucPlan
+    UC9(["UC9 Verificar o escopo autorizado do patch"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono --- UC1
+  colaborador --- UC1
+  dono --- UC2
+  colaborador --- UC2
+  dono --- UC3
+  colaborador --- UC3
+  dono --- UC4
+  colaborador --- UC4
+  dono --- UC5
+  colaborador --- UC5
+  dono --- UC6
+  colaborador --- UC6
+  dono --- UC7
+  colaborador --- UC7
+  dono --- UC8
+  colaborador --- UC8
+  UC1 -. "«include»" .-> UC9
+  UC6 -. "«include»" .-> UC9
+  UC8 -. "«include»" .-> UC9
+  UC4 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Aplicar cor, gradiente e preenchimento à seleção | `dono`, `colaborador` | RF63.CA01 | planejado |
+| UC2 Ajustar o estilo do traço | `dono`, `colaborador` | RF63.CA02 | planejado |
+| UC3 Aplicar hachura ou preset técnico | `dono`, `colaborador` | RF63.CA03 | planejado |
+| UC4 Pedir paleta por harmonia de cor | `dono`, `colaborador`, `ia` | RF63.CA04 | planejado (IA só como proposta revisável; nenhum motor registrado) |
+| UC5 Converter ou exportar com perfil de cor | `dono`, `colaborador` | RF63.CA05 | planejado (só sRGB no plano; CMYK e ICC desabilitados) |
+| UC6 Editar material de parte 3D | `dono`, `colaborador` | RF63.CA06 | planejado |
+| UC7 Alternar wireframe e preenchido | `dono`, `colaborador` | RF63.CA07 | planejado (conversão pura em `lib/pieces/wireframe.ts`) |
+| UC8 Trocar ou restaurar preenchimento e traço por atalho | `dono`, `colaborador` | RF63.CA08 | planejado |
+| UC9 Verificar o escopo autorizado do patch | — (incluído por UC1, UC6, UC8) | RF63.CA01, RF63.CA06, RF63.CA08 | planejado (regra pura `authorizePatch` em `lib/pieces/patch.ts`, sem editor) |
+
 ## 1. Diagrama de classes
 
 ```mermaid

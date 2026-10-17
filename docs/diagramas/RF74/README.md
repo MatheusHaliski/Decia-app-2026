@@ -34,6 +34,62 @@ Com o modo ativado explicitamente, uma pausa de 1,5 s na edição captura um PNG
 
 Os níveis 1–4 da especificação (`LETTERS_DRAWINGS_ENGENHARIA.md` §2) convivem com os cinco modos de `lib/ai/autonomy.ts` (D-136). Este é o mapeamento proposto, a confirmar no RF51: MANUAL = prévia desligada; nível 1 leitura = SOB_SOLICITACAO; nível 2 sugestão = SUGESTOES; nível 3 transformação local = ASSISTIDO (aplica só a proposta revisada na mesma revisão); nível 4 plano agêntico = AGENTE (mandato, checkpoint antes de cada passo, `AGENT_LIMITS`). Em nenhum nível há publicação nem ampliação de escopo.
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Todos são planejados: nenhum provedor multimodal está registrado e a prévia local de 16/10 não está no repositório.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  dono["«ator» Dono do recurso"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  admin["«ator» Administrador"]:::ator
+  subgraph SIS["Work Station — RF74 Prévia fantasma PNG"]
+    direction TB
+    UC1(["UC1 Ativar a prévia fantasma"]):::ucPlan
+    UC2(["UC2 Capturar PNG da área autorizada"]):::ucPlan
+    UC3(["UC3 Pedir variantes ao modelo multimodal"]):::ucPlan
+    UC4(["UC4 Revalidar acesso, consentimento e orçamento"]):::ucPlan
+    UC5(["UC5 Validar formato, alpha e coordenadas da resposta"]):::ucPlan
+    UC6(["UC6 Navegar e refinar variantes na prancheta"]):::ucPlan
+    UC7(["UC7 Aceitar variante como vetor ou raster ancorado"]):::ucPlan
+    UC8(["UC8 Rejeitar ou descartar prévia obsoleta"]):::ucPlan
+    UC9(["UC9 Auditar a integração multimodal"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono --- UC1
+  colaborador --- UC1
+  dono --- UC3
+  colaborador --- UC3
+  dono --- UC6
+  colaborador --- UC6
+  dono --- UC7
+  colaborador --- UC7
+  dono --- UC8
+  colaborador --- UC8
+  admin --- UC9
+  UC3 -. "«include»" .-> UC2
+  UC3 -. "«include»" .-> UC4
+  UC3 -. "«include»" .-> UC5
+  UC8 -. "«extend»" .-> UC6
+  UC3 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Ativar a prévia fantasma | `dono`, `colaborador` | RF74.CA01, RF74.CA10 | planejado |
+| UC2 Capturar PNG da área autorizada | — (incluído por UC3) | RF74.CA01 | planejado (captura local não autoriza envio) |
+| UC3 Pedir variantes ao modelo multimodal | `dono`, `colaborador`, `ia` | RF74.CA03, RF74.CA11 | planejado (nenhum provedor registrado) |
+| UC4 Revalidar acesso, consentimento e orçamento | — (incluído por UC3) | RF74.CA02, RF74.CA11 | planejado (regras reais em `AiGateway` e `AiBudget`) |
+| UC5 Validar formato, alpha e coordenadas da resposta | — (incluído por UC3) | RF74.CA04, RF74.CA09 | planejado |
+| UC6 Navegar e refinar variantes na prancheta | `dono`, `colaborador` | RF74.CA05, RF74.CA06, RF74.CA08 | planejado |
+| UC7 Aceitar variante como vetor ou raster ancorado | `dono`, `colaborador` | RF74.CA07, RF74.CA08 | planejado |
+| UC8 Rejeitar ou descartar prévia obsoleta | `dono`, `colaborador` | RF74.CA08, RF74.CA09 | planejado |
+| UC9 Auditar a integração multimodal | `admin` | RF74.CA12 | planejado (separa mock, captura local e modelo real) |
+
 ## 1. Diagrama de classes
 
 Legenda: **(real)** = código no repositório em 17/10/2026; demais classes **(planejado)**. `MediaObject` e `AiInferenceLog` seguem a TAXONOMIA; `PieceRevision` segue `LETTERS_DRAWINGS_ENGENHARIA.md` §3.

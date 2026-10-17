@@ -31,6 +31,56 @@ Cada README de RF dos editores traz, na §6, a coluna "Prova exigida (RF72)". O 
 | Origem da IA | `NENHUMA`, `TESTE_MOCK` ou provedor real com modelo e data | jornada sem IA |
 | Estado | PENDENTE · IMPLEMENTADO_LOCAL · PUBLICADO · VALIDADO · PARCIAL | ver §4 |
 
+## 0. Diagrama de casos de uso
+
+Casos de uso de quem audita, derivados dos CAs. São reais a matriz com rubrica (`gerar-matriz.py`), a jornada com duas contas (`jornada.mjs`) e o inventário do catálogo; o resto é planejado.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  admin["«ator» Administrador"]:::ator
+  subgraph SIS["Work Station — RF72 Qualidade e evidências"]
+    direction TB
+    UC1(["UC1 Marcar RF como concluído"]):::ucPlan
+    UC2(["UC2 Registrar prova CA → teste → evidência"]):::uc
+    UC3(["UC3 Publicar notas com rubrica explícita"]):::uc
+    UC4(["UC4 Demonstrar cenário do Drawings com capturas reais"]):::ucPlan
+    UC5(["UC5 Executar jornada com duas contas autenticadas"]):::uc
+    UC6(["UC6 Validar colaboração no editor"]):::ucPlan
+    UC7(["UC7 Avaliar IA com corpus versionado"]):::ucPlan
+    UC8(["UC8 Validar acessibilidade e desempenho com orçamento"]):::ucPlan
+    UC9(["UC9 Gerar relatório de funcionalidades por estado"]):::uc
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  admin --- UC1
+  admin --- UC2
+  admin --- UC3
+  admin --- UC4
+  admin --- UC5
+  admin --- UC6
+  admin --- UC7
+  admin --- UC8
+  admin --- UC9
+  UC1 -. "«include»" .-> UC2
+  UC6 -. "«include»" .-> UC5
+  UC7 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Marcar RF como concluído | `admin` | RF72.CA01 | planejado (sem portão automático de conclusão) |
+| UC2 Registrar prova CA → teste → evidência | `admin` | RF72.CA01 | real, parcial (coluna "Prova exigida" da §6 e `docs/auditoria/2026-10-17/evidencias/`) |
+| UC3 Publicar notas com rubrica explícita | `admin` | RF72.CA02 | real (`docs/auditoria/2026-10-17/scripts/gerar-matriz.py`) |
+| UC4 Demonstrar cenário do Drawings com capturas reais | `admin` | RF72.CA03 | planejado (não há editor publicado) |
+| UC5 Executar jornada com duas contas autenticadas | `admin` | RF72.CA04 | real (`jornada.mjs`, 17 de 17 passos, sem IA) |
+| UC6 Validar colaboração no editor | `admin` | RF72.CA04 | planejado (concorrência, expiração, revogação e escopos sobrepostos) |
+| UC7 Avaliar IA com corpus versionado | `admin`, `ia` | RF72.CA05 | planejado (nenhum motor registrado) |
+| UC8 Validar acessibilidade e desempenho com orçamento | `admin` | RF72.CA06 | planejado |
+| UC9 Gerar relatório de funcionalidades por estado | `admin` | RF72.CA07 | real, parcial (`gerar-catalogo.mjs` e `checar.py` são inventário; os cinco estados são planejados) |
+
 ## 1. Diagrama de classes
 
 Legenda: **(real)** = scripts, testes e CI no repositório em 17/10/2026; demais classes **(planejado)**. Os registros de prova não são entidades da TAXONOMIA (vivem no repositório de documentação); `AiInferenceLog` é da TAXONOMIA e alimenta o benchmark.
