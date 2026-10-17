@@ -3151,7 +3151,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": null,
     "summary": "Trello: RF49 Coordenar Pactos de Desbloqueio entre usuários, chefes e departamentos.",
     "route": "Metas & objetivos (/goals; pacto vinculado a tarefas/projetos dependentes)",
-    "coverage": null,
+    "coverage": "RF49.CA01 … RF49.CA14 — CAs da especificação deste README (requisito novo do estudo de 12/10/2026, sem HU no board), sem alteração; todos planejados: no código só existem o domínio de apoio (lotações, tarefas, dependências, evidências, reconhecimento, notificação) e as guardas de acesso.",
     "cas": [
       {
         "id": "RF49.CA01",
@@ -3246,7 +3246,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": null,
     "summary": "Estado: requisito especificado; implementação pendente. Nome de produto: Análise de Perfil. Origem: solicitação do usuário em 12/10/2026.",
     "route": "Insights da IA (/insights; Análise de Perfil a partir de /profile)",
-    "coverage": null,
+    "coverage": "RF50.CA01 … RF50.CA18 — CA01–CA15 da tabela principal e CA16–CA18 de \"Pessoas com perfil semelhante\", sem alteração (requisito solicitado pelo usuário em 12/10/2026, sem HU no board); reais só o perfil e as preferências em /api/me, a busca em /api/people e o AiGateway, que não tem motor registrado.",
     "cas": [
       {
         "id": "RF50.CA01",
