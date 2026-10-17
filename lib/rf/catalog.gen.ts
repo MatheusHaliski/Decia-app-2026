@@ -12,8 +12,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "title": "Cadastrar usuário na plataforma com dados de acesso",
     "hu": "COMO visitante do sistema POSSO realizar meu cadastro na plataforma informando meus dados de acesso PARA obter uma conta e acessar as funcionalidades do DECIA.",
     "summary": "O cadastro local é o Bloco 3 do plano de segurança (ARQUITETURA §6 (c)). Classes marcadas (real) existem em origin/main (Bloco 3, PR #16); as marcadas (planejado) vêm da TAXONOMIA §1.8–1.15 e do CADASTRO_E_LGPD.md (blocos A/B).",
-    "route": "/register → /verify-email (BFF app/bff/auth/register → POST /api/auth/register); /termos e /privacidade (D-15)",
-    "coverage": "RF1.CA01 … RF1.CA06 (corpo do card vazio → derivados do título + HU1, todos \"(CA a confirmar)\") · RF1.CA07 … RF1.CA13 (§7, controles de segurança D-14) · RF1.CA14 … RF1.CA27 (§8, aceite dos termos e tipos de perfil, D-15…D-22) — regra: o título do card define o RF; os CAs foram atualizados para o código real do Bloco 3 (RegistrationController, RegistrationService, V3__rf1_rf2_autenticacao.sql)",
+    "route": "/register → /verify-email (BFF app/bff/auth/register → POST /api/auth/register); /termos e /privacidade (D-15) — real desde 17/10/2026 (D-143): páginas públicas app/(legal)/termos e app/(legal)/privacidade, lidas de docs/legal/*.md",
+    "coverage": "RF1.CA01 … RF1.CA06 (corpo do card vazio → derivados do título + HU1, todos \"(CA a confirmar)\") · RF1.CA07 … RF1.CA13 (§7, controles de segurança D-14) · RF1.CA14 … RF1.CA27 (§8, aceite dos termos e tipos de perfil, D-15…D-22) — regra: o título do card define o RF; os CAs foram atualizados para o código real do Bloco 3 (RegistrationController, RegistrationService, V3__rf1_rf2_autenticacao.sql); atualização de 17/10/2026 (D-143): tipo de usuário explicado em cada opção, aceite dos Termos de Uso e da Política de Privacidade da Velion com links para /termos e /privacidade, versões 0.2",
     "cas": [
       {
         "id": "RF1.CA01",
@@ -95,7 +95,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF1.CA14",
-        "text": "Dado o formulário, então o Checkbox \"Li e aceito os Termos de Uso e a Política de Privacidade\" vem desmarcado, com links para os dois documentos (abrem em Sheet ou nova aba sem perder o formulário); \"Criar conta\" fica disabled até marcar.",
+        "text": "Dado o formulário, então o Checkbox \"Li e aceito os Termos de Uso e a Política de Privacidade\" vem desmarcado, com links para os dois documentos (abrem em Sheet ou nova aba sem perder o formulário); \"Criar conta\" fica disabled até marcar. Real (D-143): desmarcado, texto com a Velion e links que abrem /termos e /privacidade em nova aba; sem marcar, o envio volta com 422 details.fields.acceptTerms (o disabled e o Sheet seguem planejados).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -125,7 +125,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF1.CA19",
-        "text": "Dado /termos e /privacidade, então funcionam sem login e pelo gate, mostram a versão vigente e o histórico (GET /api/legal/{TERMOS|PRIVACIDADE}/current e /versions); PolicyTextGuardTest recusa texto com marcador […] ou \"validar com jurídico\".",
+        "text": "Dado /termos e /privacidade, então funcionam sem login e pelo gate, mostram a versão vigente e o histórico (GET /api/legal/{TERMOS|PRIVACIDADE}/current e /versions); PolicyTextGuardTest recusa texto com marcador […] ou \"validar com jurídico\". Real (D-143): as duas páginas são públicas e mostram a versão do cabeçalho YAML de docs/legal/*.md (0.2, rascunho); histórico, API e o guarda de texto seguem planejados.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -143,7 +143,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF1.CA22",
-        "text": "Dado a escolha do tipo com RadioCard, então profileType fora de EMPREGADO/EMPRESA/CHEFE_DEPARTAMENTO (inclusive ADMIN) recebe 422 VALIDACAO details.fields.profileType (real, parseProfileType); CURADOR não é tipo (D-09).",
+        "text": "Dado a escolha do tipo com RadioCard, então profileType fora de EMPREGADO/EMPRESA/CHEFE_DEPARTAMENTO (inclusive ADMIN) recebe 422 VALIDACAO details.fields.profileType (real, parseProfileType); CURADOR não é tipo (D-09). Real (D-143): cada opção traz a explicação do tipo.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -184,19 +184,19 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 2,
     "title": "Autenticar usuário na plataforma com credenciais de acesso",
     "hu": "COMO usuário cadastrado no sistema POSSO autenticar-me na plataforma com minhas credenciais de acesso PARA acessar minha área pessoal de forma segura.",
-    "summary": "Classes (real) existem em origin/main (Bloco 3, PR #16); RedisSessionStore (ws-infrastructure/cache-redis, ativo com ws.redis.enabled=true; Q-85 resolvida) é (real) e o InMemorySessionStore fica como padrão sem Redis, ambos com espelho JPA refresh_tokens; (planejado): conferência TOTP do 2FA (Q-83), SMTP real (Q-84), PolicyGateFilter (D-16). Números adotados: D-25 (TTLs), D-26 (Argon2id e bulkhead), D-27 (cadastro sem oráculo). Bloco 4 (real, D-60–D-64): proteção de rotas no middleware.ts, renovação silenciosa e logout entre abas, OIDC Authorization Code + PKCE S256/state/nonce no BFF e GET/DELETE /api/auth/sessions com a aba Sessões — §8.",
-    "route": "/login (BFF app/bff/auth/login → POST /api/auth/login), /login/institucional (POST /api/auth/oidc/login), /forgot-password (POST /api/auth/password-reset/request|confirm); todas as rotas autenticadas passam pelo SessionActiveFilter",
-    "coverage": "RF2.CA01 … RF2.CA06 (corpo do card vazio → derivados do título + HU2, todos \"(CA a confirmar)\") · RF2.CA07 … RF2.CA14 (§7, controles de segurança D-14) — regra: o título do card define o RF; CAs alinhados ao código real do Bloco 3 (AuthController, IdentityService, AuthRateLimitFilter, HashBulkhead, SessionActiveFilter, JwtTokenIssuer, OidcService, PasswordResetService)",
+    "summary": "Classes (real) existem em origin/main (Bloco 3, PR #16); RedisSessionStore (ws-infrastructure/cache-redis, ativo com ws.redis.enabled=true; Q-85 resolvida) é (real) e o InMemorySessionStore fica como padrão sem Redis, ambos com espelho JPA refresh_tokens; (planejado): SMTP real (Q-84), PolicyGateFilter (D-16); a conferência TOTP do 2FA (Q-83) é real desde 17/10/2026 (D-144, §9). Números adotados: D-25 (TTLs), D-26 (Argon2id e bulkhead), D-27 (cadastro sem oráculo). Bloco 4 (real, D-60–D-64): proteção de rotas no middleware.ts, renovação silenciosa e logout entre abas, OIDC Authorization Code + PKCE S256/state/nonce no BFF e GET/DELETE /api/auth/sessions com a aba Sessões — §8.",
+    "route": "/login (BFF app/bff/auth/login → POST /api/auth/login), /login/institucional (POST /api/auth/oidc/login), /forgot-password (POST /api/auth/password-reset/request|confirm); todas as rotas autenticadas passam pelo SessionActiveFilter; real desde 17/10/2026: passo do código do 2FA no /login e cartão do 2FA em /settings?tab=conta (GET /api/me/2fa, POST /api/me/2fa/setup|enable|disable|recovery-codes, D-144)",
+    "coverage": "RF2.CA01 … RF2.CA06 (corpo do card vazio → derivados do título + HU2, todos \"(CA a confirmar)\") · RF2.CA07 … RF2.CA14 (§7, controles de segurança D-14) — regra: o título do card define o RF; CAs alinhados ao código real do Bloco 3 (AuthController, IdentityService, AuthRateLimitFilter, HashBulkhead, SessionActiveFilter, JwtTokenIssuer, OidcService, PasswordResetService); atualização de 17/10/2026: 2FA por aplicativo (D-144: Totp, TwoFactorVerifier, TwoFactorService, TwoFactorController) e sessão no navegador (D-146)",
     "cas": [
       {
         "id": "RF2.CA01",
-        "text": "Dado identifier (username ou e-mail) e password, quando faço POST /api/auth/login, então a senha é conferida contra o hash Argon2id (PasswordHasher.matches, re-hash transparente por needsRehash) e recebo Session {accessToken RS256 15 min (D-25; claims iss, aud, sub, sid=familyId, role, profile_type, username, jti), tokenType Bearer, expiresIn, refreshToken opaco, refreshExpiresAt, family, user, warnings}; o refresh (30 d se rememberMe, 24 h se não — SessionPolicy) é guardado só como SHA-256 (RefreshRecord.tokenHash) com espelho em refresh_tokens; o BFF devolve o refresh só no cookie ws_rt (HttpOnly, Secure, SameSite=Strict).",
+        "text": "Dado identifier (username ou e-mail) e password, quando faço POST /api/auth/login, então a senha é conferida contra o hash Argon2id (PasswordHasher.matches, re-hash transparente por needsRehash) e recebo Session {accessToken RS256 15 min (D-25; claims iss, aud, sub, sid=familyId, role, profile_type, username, jti), tokenType Bearer, expiresIn, refreshToken opaco, refreshExpiresAt, family, user, warnings}; o refresh (30 d se rememberMe, 24 h se não — SessionPolicy) é guardado só como SHA-256 (RefreshRecord.tokenHash) com espelho em refresh_tokens; o BFF devolve o refresh só no cookie ws_rt (HttpOnly, Secure, SameSite=Strict). Real (D-146, 17/10/2026): sem rememberMe, ws_rt e ws_rt_h são cookies de sessão do navegador (sem Max-Age, setSessionCookies em app/bff/auth/bff-session.ts); com rememberMe, valem até refreshExpiresAt.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF2.CA02",
-        "text": "Dado conta inexistente, senha errada ou conta bloqueada, então 401 CREDENCIAIS_INVALIDAS com a mesma mensagem e tempo (hash falso dummyHash); conta SUSPENDED/ANONYMIZED (AccountStatus.blocksLogin) → 403 CONTA_INDISPONIVEL depois da senha certa; PENDING_VALIDATION e DELETION_SCHEDULED entram com warnings (Q-82; PENDING_EMAIL_VERIFICATION só tem sessão após confirmar o código, D-27); twoFactorEnabled → 401 DOIS_FATORES_NECESSARIO {twoFactorRequired} (conferência TOTP é a Q-83).",
+        "text": "Dado conta inexistente, senha errada ou conta bloqueada, então 401 CREDENCIAIS_INVALIDAS com a mesma mensagem e tempo (hash falso dummyHash); conta SUSPENDED/ANONYMIZED (AccountStatus.blocksLogin) → 403 CONTA_INDISPONIVEL depois da senha certa; PENDING_VALIDATION e DELETION_SCHEDULED entram com warnings (Q-82; PENDING_EMAIL_VERIFICATION só tem sessão após confirmar o código, D-27); twoFactorEnabled → 401 DOIS_FATORES_NECESSARIO {twoFactorRequired} (conferência TOTP é a Q-83, respondida pela D-144). Real (D-144, 17/10/2026): LoginCommand.twoFactorCode; IdentityService.verifySecondFactor — sem código → 401 DOIS_FATORES_NECESSARIO (LOGIN_FALHA reason 2fa_pendente) e o LoginForm mostra o campo do código; com código, o balde login-fail é reservado antes de conferir (bloqueado → 401 CREDENCIAIS_INVALIDAS genérico + LOGIN_BLOQUEADO_TENTATIVAS via 2fa); código errado → 401 DOIS_FATORES_INVALIDO (LOGIN_FALHA reason 2fa_codigo, a reserva fica); certo → release e sessão; código de recuperação é consumido e audita TWO_FACTOR_RECOVERY_USED {recoveryCodesLeft}. Conta com prazo de reativação vencido (IdentityService.reactivationExpired, D-145) → 403 CONTA_INDISPONIVEL, como blocksLogin(). Gestão do 2FA (/api/me/2fa/*, erros 409 DOIS_FATORES_JA_ATIVO · 409 DOIS_FATORES_INATIVO · 409 DOIS_FATORES_SEM_CONFIGURACAO · 422 DOIS_FATORES_INVALIDO) em §9.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -208,13 +208,13 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF2.CA04",
-        "text": "Dado um refresh válido, quando o BFF chama POST /api/auth/refresh, então ocorre rotação: novo token da mesma familyId, o anterior recebe revokedAt/rotatedFromHash; reuso de token já rotacionado revoga a família inteira, grava AuditLog REFRESH_REUSO e responde 401 SESSAO_INVALIDA; expirado ou desconhecido → 401 SESSAO_INVALIDA; conta que passou a blocksLogin() → família revogada. Exceção (real, D-140, 17/10/2026): o consumo é atômico (SessionStorePort.consume → ROTATED · REUSED · EXPIRED · UNKNOWN); no REUSED, se o token foi rotacionado há no máximo SessionPolicy.reuseGraceWindow (padrão 15 s, teto 60 s, 0s desliga), a família segue viva com um só token vivo e claimReuseGrace(tokenHash) é a 1ª reivindicação, o IdentityService.toleratedReuse emite um irmão do sucessor na mesma família e audita REFRESH_REUSO_TOLERADO (resposta perdida na navegação, P18); 2º reuso, fora da janela ou após logout → revogação da família e REFRESH_REUSO como acima.",
+        "text": "Dado um refresh válido, quando o BFF chama POST /api/auth/refresh, então ocorre rotação: novo token da mesma familyId, o anterior recebe revokedAt/rotatedFromHash; reuso de token já rotacionado revoga a família inteira, grava AuditLog REFRESH_REUSO e responde 401 SESSAO_INVALIDA; expirado ou desconhecido → 401 SESSAO_INVALIDA; conta que passou a blocksLogin() → família revogada. Exceção (real, D-140, 17/10/2026): o consumo é atômico (SessionStorePort.consume → ROTATED · REUSED · EXPIRED · UNKNOWN); no REUSED, se o token foi rotacionado há no máximo SessionPolicy.reuseGraceWindow (padrão 15 s, teto 60 s, 0s desliga), a família segue viva com um só token vivo e claimReuseGrace(tokenHash) é a 1ª reivindicação, o IdentityService.toleratedReuse emite um irmão do sucessor na mesma família e audita REFRESH_REUSO_TOLERADO (resposta perdida na navegação, P18); 2º reuso, fora da janela ou após logout → revogação da família e REFRESH_REUSO como acima. Real (D-145): conta com exclusão agendada cujo prazo venceu (reactivationExpired) → família revogada e 401 SESSAO_INVALIDA.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF2.CA05",
-        "text": "Dado o usuário autenticado, então POST /api/auth/logout revoga a família (AuditLog LOGOUT); PUT /api/auth/password exige a senha atual (mesmo bloqueio do login), grava PASSWORD_CHANGED e revoga as outras famílias (SESSIONS_REVOKED); o SessionActiveFilter recusa a cada requisição access tokens cuja família foi revogada (sid → 401 SESSAO_ENCERRADA). GET /api/auth/sessions e DELETE /api/auth/sessions/{familyId} são planejados (aba Sessões do RF3 §7).",
+        "text": "Dado o usuário autenticado, então POST /api/auth/logout revoga a família (AuditLog LOGOUT); PUT /api/auth/password exige a senha atual (mesmo bloqueio do login), grava PASSWORD_CHANGED e revoga as outras famílias (SESSIONS_REVOKED); o SessionActiveFilter recusa a cada requisição access tokens cuja família foi revogada (sid → 401 SESSAO_ENCERRADA). GET /api/auth/sessions e DELETE /api/auth/sessions/{familyId} são planejados (aba Sessões do RF3 §7). Real (D-146, 17/10/2026): logout em uma aba encerra as outras pelo canal do Bloco 4 e onSessionChange (lib/api/client.ts) faz o CurrentUserProvider voltar a barra para VISITANTE em todas; ativar o 2FA também encerra as outras sessões (revokeOtherSessions, D-144).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -226,13 +226,13 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF2.CA07",
-        "text": "IdentityService.login (ordem das checagens), dummyHash",
+        "text": "IdentityService.login (ordem das checagens), dummyHash, verifySecondFactor",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF2.CA08",
-        "text": "RateLimitPort.tryAcquire/release/reset, RedisRateLimit (Lua), SessionPolicy.maxLoginFailures/lockWindow",
+        "text": "RateLimitPort.tryAcquire/release/reset, RedisRateLimit (Lua), SessionPolicy.maxLoginFailures/lockWindow, IdentityService.verifySecondFactor",
         "note": "",
         "kind": "rastreabilidade"
       },
@@ -268,7 +268,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF2.CA14",
-        "text": "AuditActions.LOGIN_OK/LOGIN_FALHA/LOGIN_BLOQUEADO_TENTATIVAS/REFRESH_REUSO/REFRESH_REUSO_TOLERADO/LOGOUT, AuditEvent, Masking",
+        "text": "AuditActions.LOGIN_OK/LOGIN_FALHA/LOGIN_BLOQUEADO_TENTATIVAS/REFRESH_REUSO/REFRESH_REUSO_TOLERADO/LOGOUT/TWO_FACTOR_SETUP_STARTED/TWO_FACTOR_ENABLED/TWO_FACTOR_DISABLED/TWO_FACTOR_RECOVERY_REGENERATED/TWO_FACTOR_RECOVERY_USED, AuditEvent, Masking",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -279,9 +279,9 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 3,
     "title": "Editar informações pessoais e preferências do perfil do usuário",
     "hu": "COMO usuário autenticado no sistema POSSO editar minhas informações pessoais e preferências de perfil PARA manter meus dados atualizados e personalizar minha experiência na plataforma.",
-    "summary": "Classes (real) existem em origin/main (Bloco 3, PR #16); (planejado): UserConsent/ConsentEvent/ConsentChecks, DataExportRequest/DataExportWorker, DataSubjectRequest, PersonalDataRegistry, AccountAnonymizationJob, upload de avatar (PendingUpload/MediaObject, D-22), GET/DELETE /api/auth/sessions, PolicyGateFilter.",
-    "route": "/settings com abas na URL ?tab=conta|aparencia|privacidade|dados|sessoes|termos|validacao (ABAS_POR_PERFIL §9); API GET|PATCH /api/me, PATCH /api/me/sensitive, GET|PUT /api/me/preferences, POST|DELETE /api/me/deletion",
-    "coverage": "RF3.CA01 … RF3.CA06 (corpo do card vazio → derivados do título + HU3, todos \"(CA a confirmar)\") · RF3.CA07 … RF3.CA24 (§7, configurações e direitos do titular, D-15…D-21) — regra: o título do card define o RF; CAs alinhados ao código real do Bloco 3 (MeController, AccountService, UserPreferences, Guard.requireNotDeletionScheduled)",
+    "summary": "Classes (real) existem em origin/main (Bloco 3, PR #16); (planejado): UserConsent/ConsentEvent/ConsentChecks, DataExportRequest/DataExportWorker, DataSubjectRequest, PersonalDataRegistry, upload de avatar (PendingUpload/MediaObject, D-22), PolicyGateFilter. GET/DELETE /api/auth/sessions e a aba Sessões são reais desde o Bloco 4 (RF2 §8); o AccountAnonymizationJob do plano é real como AccountAnonymizer (D-145).",
+    "route": "/settings com abas na URL ?tab=conta|aparencia|privacidade|dados|sessoes|termos|validacao (ABAS_POR_PERFIL §9); API GET|PATCH /api/me, PATCH /api/me/sensitive, GET|PUT /api/me/preferences, POST|DELETE /api/me/deletion; real desde 17/10/2026: abas Conta (AccountPanel + TwoFactorCard, GET /api/me/2fa, POST /api/me/2fa/setup|enable|disable|recovery-codes), Dados (DataPanel) e Termos (TermsPanel) e o aviso DeletionBanner em todas as páginas (D-144, D-145)",
+    "coverage": "RF3.CA01 … RF3.CA06 (corpo do card vazio → derivados do título + HU3, todos \"(CA a confirmar)\") · RF3.CA07 … RF3.CA24 (§7, configurações e direitos do titular, D-15…D-21) — regra: o título do card define o RF; CAs alinhados ao código real do Bloco 3 (MeController, AccountService, UserPreferences, Guard.requireNotDeletionScheduled); atualização de 17/10/2026: fim do prazo de 30 dias (AccountService.cancelDeletion → 409 PRAZO_REATIVACAO_ENCERRADO, IdentityService.reactivationExpired, AccountAnonymizer, D-145) e 2FA na aba Conta (D-144)",
     "cas": [
       {
         "id": "RF3.CA01",
@@ -393,19 +393,19 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF3.CA19",
-        "text": "Dado \"Encerrar minha conta\", então o pedido exige a senha atual com bloqueio (real: POST /api/me/deletion {currentPassword, reason}, AuditLog ACCOUNT_DELETION_REQUESTED, deletionScheduledAt = +30 d, DeletionReceipt.cancelable); antes de confirmar, o Dialog mostra o que será anonimizado e o que fica (planejado); já agendada → 409 EXCLUSAO_AGENDADA.",
+        "text": "Dado \"Encerrar minha conta\", então o pedido exige a senha atual com bloqueio (real: POST /api/me/deletion {currentPassword, reason}, AuditLog ACCOUNT_DELETION_REQUESTED, deletionScheduledAt = +30 d, DeletionReceipt.cancelable); antes de confirmar, o Dialog mostra o que será anonimizado e o que fica (real, D-145: DataPanel lista as consequências e exige a senha atual, \"entendi\" e a palavra EXCLUIR); já agendada → 409 EXCLUSAO_AGENDADA.",
         "note": "CA a confirmar, Q-68",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA20",
-        "text": "Dado DELETION_SCHEDULED, então o login devolve warnings com a data (real), o Banner mostra a data e o botão cancelar (DELETE /api/me/deletion, real, ACCOUNT_DELETION_CANCELLED; sem agendamento → 409 EXCLUSAO_NAO_AGENDADA), editar o perfil recebe 403 EXCLUSAO_AGENDADA (Guard.requireNotDeletionScheduled, real) e criar conteúdo receberá o mesmo 403 quando as rotas existirem (D-18); o pedido também encerra as outras sessões.",
+        "text": "Dado DELETION_SCHEDULED, então o login devolve warnings com a data (real), o Banner mostra a data e o botão cancelar (DELETE /api/me/deletion, real, ACCOUNT_DELETION_CANCELLED; sem agendamento → 409 EXCLUSAO_NAO_AGENDADA), editar o perfil recebe 403 EXCLUSAO_AGENDADA (Guard.requireNotDeletionScheduled, real) e criar conteúdo receberá o mesmo 403 quando as rotas existirem (D-18); o pedido também encerra as outras sessões. Real (D-145): o DeletionBanner aparece em todas as páginas com a data e \"Reativar conta\"; depois do prazo o cancelamento recebe 409 PRAZO_REATIVACAO_ENCERRADO, o login 403 CONTA_INDISPONIVEL e o refresh 401 SESSAO_INVALIDA (IdentityService.reactivationExpired).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA21",
-        "text": "Dado o prazo vencido, então o AccountAnonymizationJob roda por @Scheduled com lock (ShedLock); teste 1 prova o agendamento; teste 2 (Testcontainers) prova a anonimização no MySQL, S3 restricted/, Cassandra e OpenSearch, a revogação das sessões e ACCOUNT_DELETION_COMPLETED, mantendo policy_acceptances, consent_events e documentos públicos.",
+        "text": "Dado o prazo vencido, então o AccountAnonymizationJob roda por @Scheduled com lock (ShedLock); teste 1 prova o agendamento; teste 2 (Testcontainers) prova a anonimização no MySQL, S3 restricted/, Cassandra e OpenSearch, a revogação das sessões e ACCOUNT_DELETION_COMPLETED, mantendo policy_acceptances, consent_events e documentos públicos. Real (parcial, D-145): AccountAnonymizer.run com @Scheduled (de hora em hora, ws.jobs.anonymize.every; SchedulingConfig liga com ws.jobs.enabled), lote de 100, idempotente; anonimiza nome, nome de exibição, e-mail, telefone, senha, OIDC, 2FA, cargo, bio e imagens, troca o usuário por removido-xxxxxxxx, grava anonymizedAt, encerra todas as sessões e audita ACCOUNT_ANONYMIZED (não ACCOUNT_DELETION_COMPLETED); sem ShedLock (réplicas extras usam ws.jobs.enabled=false); S3, Cassandra, OpenSearch e o teste com Testcontainers seguem planejados.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
