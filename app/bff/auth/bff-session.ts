@@ -43,12 +43,20 @@ export function sameOrigin(req: NextRequest): boolean {
 
 export const secureCookie = (req: NextRequest) => process.env.NODE_ENV === "production" || req.nextUrl.protocol === "https:";
 
+/** Acima disto o refresh é de "Manter conectado" (30 d); abaixo, de sessão curta (24 h) — `SessionPolicy` no backend. */
+export const PERSISTENT_THRESHOLD_MS = 48 * 60 * 60 * 1000;
+
+/**
+ * Grava o refresh (HttpOnly) e o sinal. Sem "Manter conectado" os dois são cookies de SESSÃO do navegador (sem Max-Age): fechar o
+ * navegador — ou a janela anônima — encerra a sessão neste aparelho (D-146). Com "Manter conectado" valem até o fim do refresh.
+ */
 export function setSessionCookies(res: NextResponse, req: NextRequest, refreshToken: string, refreshExpiresAt: unknown) {
   const until = typeof refreshExpiresAt === "string" ? Date.parse(refreshExpiresAt) : NaN;
-  const maxAge = Number.isFinite(until) ? Math.max(60, Math.floor((until - Date.now()) / 1000)) : 24 * 60 * 60;
+  const persistent = Number.isFinite(until) && until - Date.now() > PERSISTENT_THRESHOLD_MS;
+  const life = persistent ? { maxAge: Math.max(60, Math.floor((until - Date.now()) / 1000)) } : {};
   const secure = secureCookie(req);
-  res.cookies.set(RT_COOKIE, refreshToken, { httpOnly: true, secure, sameSite: "strict", path: RT_PATH, maxAge });
-  res.cookies.set(RT_HINT_COOKIE, "1", { httpOnly: false, secure, sameSite: "strict", path: "/", maxAge });
+  res.cookies.set(RT_COOKIE, refreshToken, { httpOnly: true, secure, sameSite: "strict", path: RT_PATH, ...life });
+  res.cookies.set(RT_HINT_COOKIE, "1", { httpOnly: false, secure, sameSite: "strict", path: "/", ...life });
 }
 
 export function clearSessionCookies(res: NextResponse) {

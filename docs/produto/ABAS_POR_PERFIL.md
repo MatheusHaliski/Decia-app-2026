@@ -423,6 +423,8 @@ Fonte: `lib/pages/registry.ts` (rota → arquivo → RFs → visibilidade por pe
 | Criar conta | `/register` | `app/(auth)/register/page.tsx` | RF1 | auth |
 | Recuperar senha | `/password-reset` | `app/(auth)/password-reset/page.tsx` | RF2 | auth |
 | Confirmar e-mail | `/verify-email` | `app/(auth)/verify-email/page.tsx` | RF1 | auth |
+| Termos de Uso (Velion) | `/termos` | `app/(legal)/termos/page.tsx` | RF1 | auth |
+| Política de Privacidade (Velion) | `/privacidade` | `app/(legal)/privacidade/page.tsx` | RF1 | auth |
 | Design system | `/lab/design-system` | `app/(shell)/lab/design-system/page.tsx` | RF38 | lab |
 | Anatomias e Estúdio | `/lab/anatomias` | `app/(shell)/lab/anatomias/page.tsx` | RF38 RF11 | lab |
 | Abas por perfil | `/lab/perfis` | `app/(shell)/lab/perfis/page.tsx` | RF14 RF15 RF16 | lab |

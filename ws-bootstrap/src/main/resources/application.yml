@@ -179,8 +179,8 @@ ws:
   legal:
     # versões vigentes gravadas em users.terms_version/privacy_version no cadastro (gancho do bloco LGPD A; PolicyDocument depois)
     current-versions:
-      terms: ${WS_LEGAL_TERMS_VERSION:1.0}
-      privacy: ${WS_LEGAL_PRIVACY_VERSION:1.0}
+      terms: ${WS_LEGAL_TERMS_VERSION:0.2}         # docs/legal/TERMOS_DE_USO.md (rascunho da Velion, D-143)
+      privacy: ${WS_LEGAL_PRIVACY_VERSION:0.2}     # docs/legal/POLITICA_DE_PRIVACIDADE.md
   mail:
     # Bloco 3: adaptador de LOG mascarado (sem SMTP). Variáveis WS_SMTP_* ficam reservadas para o adaptador real (Q-84).
     echo-body: ${WS_MAIL_ECHO_BODY:false}               # true só em dev: imprime o corpo (com o código) no log local
