@@ -4,7 +4,9 @@
 
 > **HU2** — COMO usuário cadastrado no sistema POSSO autenticar-me na plataforma com minhas credenciais de acesso PARA acessar minha área pessoal de forma segura.
 
-Classes **(real)** existem em `origin/main` (Bloco 3, PR #16); **(planejado)**: `RedisSessionStore` (hoje `InMemorySessionStore` + espelho JPA `refresh_tokens`, Q-85), conferência TOTP do 2FA (Q-83), SMTP real (Q-84), `PolicyGateFilter` (D-16). Números adotados: D-25 (TTLs), D-26 (Argon2id e bulkhead), D-27 (cadastro sem oráculo). **Bloco 4 (real, D-60–D-64):** proteção de rotas no `middleware.ts`, renovação silenciosa e logout entre abas, OIDC Authorization Code + PKCE S256/`state`/`nonce` no BFF e `GET/DELETE /api/auth/sessions` com a aba Sessões — §8.
+Classes **(real)** existem em `origin/main` (Bloco 3, PR #16); `RedisSessionStore` (`ws-infrastructure/cache-redis`, ativo com `ws.redis.enabled=true`; Q-85 resolvida) é **(real)** e o `InMemorySessionStore` fica como padrão sem Redis, ambos com espelho JPA `refresh_tokens`; **(planejado)**: conferência TOTP do 2FA (Q-83), SMTP real (Q-84), `PolicyGateFilter` (D-16). Números adotados: D-25 (TTLs), D-26 (Argon2id e bulkhead), D-27 (cadastro sem oráculo). **Bloco 4 (real, D-60–D-64):** proteção de rotas no `middleware.ts`, renovação silenciosa e logout entre abas, OIDC Authorization Code + PKCE S256/`state`/`nonce` no BFF e `GET/DELETE /api/auth/sessions` com a aba Sessões — §8.
+
+**Atualização 17/10/2026 (real):** tolerância ao reuso do refresh (**D-140**, Q-237, achado **P18** de `docs/auditoria/2026-10-17/PROBLEMAS.md`) — `SessionPolicy.reuseGraceWindow` (padrão 15 s, teto `MAX_REUSE_GRACE` = 60 s, `0s` desliga; `ws.security.session.reuse-grace-window` / `WS_REFRESH_REUSE_GRACE` em `ws-bootstrap/src/main/resources/application.yml`), `SessionStorePort.claimReuseGrace(tokenHash)` atômico (`InMemorySessionStore`, `RedisSessionStore` por `HSETNX graceUsed`) e `IdentityService.refresh` → `toleratedReuse(...)` no `case REUSED`; no front, `lib/api/client.ts` aguarda a renovação única (`refreshOnce`) antes da 1ª chamada da página (`772257d`, `lib/api/client.restore.test.ts`; P18 mitigado). **P20** corrigido: `WsSecurityProperties.Jwt` ganhou `@ConstructorBinding` (`b47945c`, `WsSecurityPropertiesBindingTest`) — sem isso as chaves RS256 ficavam vazias e o login respondia `503 AUTENTICACAO_INDISPONIVEL`.
 
 ## Critérios de aceite derivados da HU2 (todos "CA a confirmar")
 
@@ -13,7 +15,7 @@ Classes **(real)** existem em `origin/main` (Bloco 3, PR #16); **(planejado)**: 
 | **RF2.CA01** (CA a confirmar) | Dado `identifier` (username ou e-mail) e `password`, quando faço `POST /api/auth/login`, então a senha é conferida contra o hash **Argon2id** (`PasswordHasher.matches`, re-hash transparente por `needsRehash`) e recebo `Session {accessToken RS256 15 min (D-25; claims iss, aud, sub, sid=familyId, role, profile_type, username, jti), tokenType Bearer, expiresIn, refreshToken opaco, refreshExpiresAt, family, user, warnings}`; o refresh (30 d se `rememberMe`, 24 h se não — `SessionPolicy`) é guardado só como SHA-256 (`RefreshRecord.tokenHash`) com espelho em `refresh_tokens`; o BFF devolve o refresh **só** no cookie `ws_rt` (HttpOnly, Secure, SameSite=Strict). |
 | **RF2.CA02** (CA a confirmar) | Dado conta inexistente, senha errada ou conta bloqueada, então `401 CREDENCIAIS_INVALIDAS` com a mesma mensagem e tempo (hash falso `dummyHash`); conta `SUSPENDED`/`ANONYMIZED` (`AccountStatus.blocksLogin`) → `403 CONTA_INDISPONIVEL` **depois** da senha certa; `PENDING_VALIDATION` e `DELETION_SCHEDULED` entram com `warnings` (Q-82; `PENDING_EMAIL_VERIFICATION` só tem sessão após confirmar o código, D-27); `twoFactorEnabled` → `401 DOIS_FATORES_NECESSARIO {twoFactorRequired}` (conferência TOTP é a Q-83). |
 | **RF2.CA03** (CA a confirmar) | Dado "Entrar com conta institucional", então o front faz OIDC Authorization Code + PKCE e envia `POST /api/auth/oidc/login {idToken, nonce}`; `OidcService` exige `ws.oidc.enabled` (`404 OIDC_DESLIGADO`), `IdTokenVerifier` (Nimbus) valida assinatura JWKS, `iss`, `aud`, `nonce`, `exp` (`401 OIDC_TOKEN_INVALIDO`); `OidcAccountLinker` vincula `oidcSubject/oidcIssuer` ao `User` de mesmo `emailHash` só com `email_verified=true` (`401 OIDC_EMAIL_NAO_VERIFICADO`, `AuditLog OIDC_LINK_RECUSADO`) ou cria conta `ACTIVE` sem senha; emite a mesma `Session` (`AuditLog OIDC_LOGIN`). |
-| **RF2.CA04** (CA a confirmar) | Dado um refresh válido, quando o BFF chama `POST /api/auth/refresh`, então ocorre **rotação**: novo token da mesma `familyId`, o anterior recebe `revokedAt`/`rotatedFromHash`; reuso de token já rotacionado **revoga a família inteira**, grava `AuditLog REFRESH_REUSO` e responde `401 SESSAO_INVALIDA`; expirado ou desconhecido → `401 SESSAO_INVALIDA`; conta que passou a `blocksLogin()` → família revogada. |
+| **RF2.CA04** (CA a confirmar) | Dado um refresh válido, quando o BFF chama `POST /api/auth/refresh`, então ocorre **rotação**: novo token da mesma `familyId`, o anterior recebe `revokedAt`/`rotatedFromHash`; reuso de token já rotacionado **revoga a família inteira**, grava `AuditLog REFRESH_REUSO` e responde `401 SESSAO_INVALIDA`; expirado ou desconhecido → `401 SESSAO_INVALIDA`; conta que passou a `blocksLogin()` → família revogada. **Exceção (real, D-140, 17/10/2026):** o consumo é atômico (`SessionStorePort.consume` → `ROTATED · REUSED · EXPIRED · UNKNOWN`); no `REUSED`, se o token foi rotacionado há no máximo `SessionPolicy.reuseGraceWindow` (padrão 15 s, teto 60 s, `0s` desliga), a família segue viva com **um só** token vivo e `claimReuseGrace(tokenHash)` é a 1ª reivindicação, o `IdentityService.toleratedReuse` emite um **irmão** do sucessor na mesma família e audita `REFRESH_REUSO_TOLERADO` (resposta perdida na navegação, P18); 2º reuso, fora da janela ou após logout → revogação da família e `REFRESH_REUSO` como acima. |
 | **RF2.CA05** (CA a confirmar) | Dado o usuário autenticado, então `POST /api/auth/logout` revoga a família (`AuditLog LOGOUT`); `PUT /api/auth/password` exige a senha atual (mesmo bloqueio do login), grava `PASSWORD_CHANGED` e revoga as **outras** famílias (`SESSIONS_REVOKED`); o `SessionActiveFilter` recusa a cada requisição access tokens cuja família foi revogada (`sid` → `401 SESSAO_ENCERRADA`). `GET /api/auth/sessions` e `DELETE /api/auth/sessions/{familyId}` são **planejados** (aba Sessões do RF3 §7). |
 | **RF2.CA06** (CA a confirmar) | Dado tentativas repetidas, então há limite por IP (`AuthRateLimitFilter`) e por conta (`RateLimitPort` `login-fail`), `AuditLog LOGIN_OK / LOGIN_FALHA / LOGIN_BLOQUEADO_TENTATIVAS / REFRESH_REUSO / LOGOUT` com `correlationId`, e-mail mascarado e sem senha ou token; `User.lastLoginAt` é atualizado; mensagens i18n (pt-BR/en/es). Redefinição por e-mail: `POST /api/auth/password-reset/request` (resposta igual exista ou não a conta, 5/h por pessoa) e `/confirm {token, newPassword}` (`422 LINK_INVALIDO`), que tira a conta do bloqueio. |
 
@@ -49,6 +51,7 @@ classDiagram
     +openSession(User, persistent, deviceName, RequestContext) Session
     +sessionActive(familyId) boolean
     -issue(User, family, rotatedFromHash, persistent, deviceName, ctx) Session
+    -toleratedReuse(RefreshRecord, now) boolean
   }
   class OidcService {
     <<service>>
@@ -70,6 +73,8 @@ classDiagram
     +Duration refreshShortTtl
     +int maxLoginFailures
     +Duration lockWindow
+    +Duration reuseGraceWindow
+    +Duration MAX_REUSE_GRACE$
   }
   class Session {
     <<value>>
@@ -112,6 +117,8 @@ classDiagram
     +save(RefreshRecord) void
     +find(tokenHash) Optional
     +revoke(tokenHash, at) void
+    +consume(tokenHash, now) Consume
+    +claimReuseGrace(tokenHash) boolean
     +revokeFamily(familyId, at) void
     +familyActive(familyId, now) boolean
   }
@@ -166,10 +173,11 @@ classDiagram
   }
   class InMemorySessionStore {
     <<adapter>>
+    padrão sem Redis, graceClaimed
   }
   class RedisSessionStore {
     <<adapter>>
-    planejado
+    real, ws.redis.enabled, HSETNX graceUsed
   }
   class JpaIdentityAdapters {
     <<adapter>>
@@ -280,6 +288,7 @@ classDiagram
   User "1" --> "0..*" VerificationCode : PASSWORD_RESET
   User --> AccountStatus
   RefreshRecord ..> RefreshToken : espelho
+  note for SessionPolicy "reuseGraceWindow (D-140) padrão 15 s, teto 60 s, 0 desliga · ws.security.session.reuse-grace-window = WS_REFRESH_REUSE_GRACE"
   note for IdentityService "login: findByIdentifier → tryAcquire(login-fail, 5, 15 min) ANTES do hash → matches → release → blocksLogin → needsRehash → 2FA → reset → LOGIN_OK → openSession"
 ```
 
@@ -324,7 +333,10 @@ flowchart TD
     S9["needsRehash → hash novo · twoFactorEnabled?"]
     S10["rateLimit.reset · lastLoginAt · LOGIN_OK"]
     S11["openSession → issue: RefreshRecord(sha256, familyId, TTL por rememberMe) · SessionStorePort.save · mirror.saved · issueAccessToken(sid)"]
-    R1["refresh: find(sha256) · revokedAt != null → revokeFamily + REFRESH_REUSO · expirado → SESSAO_INVALIDA · revoke(antigo) → issue(mesma família)"]
+    R1["refresh: consume(sha256) atômico (ROTATED · REUSED · EXPIRED · UNKNOWN) → find · ROTATED → mirror.revoked(antigo) → issue(mesma família)"]
+    R2{"REUSED: rotacionado há ≤ reuseGraceWindow (15 s), família viva com 1 só token vivo e claimReuseGrace na 1ª vez? (D-140)"}
+    R3["toleratedReuse → irmão do sucessor na mesma família · REFRESH_REUSO_TOLERADO (real)"]
+    R4["revokeFamily + mirror.familyRevoked + REFRESH_REUSO"]
     O1["OidcService: enabled? → IdTokenVerifier.verify(iss, aud, nonce, exp) → OidcAccountLinker (email_verified) → openSession · OIDC_LOGIN"]
   end
   subgraph PERS["Persistência"]
@@ -356,8 +368,11 @@ flowchart TD
   W5 --> O1 --> S11
   A2 --> F3 --> W1
   W5 --> R1
-  R1 -->|"reuso ou expirado"| E401S
-  R1 -->|"ok"| S11
+  R1 -->|"REUSED"| R2
+  R2 -->|"sim"| R3 --> S11
+  R2 -->|"não (fora da janela, 2º reuso, após logout ou janela 0)"| R4 --> E401S
+  R1 -->|"EXPIRED ou UNKNOWN"| E401S
+  R1 -->|"ROTATED"| S11
   W2 --> P2
   F2 --> W6
 ```
@@ -425,14 +440,20 @@ sequenceDiagram
   Note over U,AU: Renovação (BFF, ao recarregar ou access vencido)
   N->>C: POST /api/auth/refresh {refreshToken do cookie}
   C->>S: IdentityService.refresh(raw, ctx)
-  S->>RD: SessionStorePort.find(sha256(raw))
-  alt token já rotacionado (reuso)
+  S->>RD: SessionStorePort.consume(sha256(raw), now) atômico e find
+  alt REUSED dentro de reuseGraceWindow, família viva e 1 só token vivo (D-140, real)
+    S->>RD: claimReuseGrace(tokenHash) = true (1ª reivindicação)
+    S->>AU: record(REFRESH_REUSO_TOLERADO, OK, graceSeconds)
+    S->>S: issue(mesma família, rotatedFromHash) → irmão do sucessor
+    S-->>C: Session nova (irmã)
+    C-->>N: 200 (cookie ws_rt do irmão)
+  else REUSED fora da janela, 2º reuso ou após logout (reuso revogado)
     S->>RD: revokeFamily(familyId)
     S->>R: mirror.familyRevoked
     S->>AU: record(REFRESH_REUSO, NEGADO)
     S-->>C: 401 SESSAO_INVALIDA
     C-->>N: 401 → /login
-  else token válido
+  else ROTATED (token válido)
     S->>RD: revoke(tokenHash antigo)
     S->>R: mirror.revoked
     S->>S: issue(mesma família, rotatedFromHash)
@@ -465,7 +486,8 @@ stateDiagram-v2
     [*] --> ATIVA : login, confirmEmail ou OIDC → openSession (familyId novo)
     ATIVA --> ROT : POST /api/auth/refresh válido → revoke(antigo) + issue(novo, rotatedFromHash)
     ROT --> ATIVA : o novo token passa a ser o corrente
-    ROT --> REV : reuso do token antigo → revokeFamily + REFRESH_REUSO + 401 SESSAO_INVALIDA
+    ROT --> ATIVA : reuso tolerado 1× na janela (≤ reuseGraceWindow 15 s, família viva, 1 token vivo, claimReuseGrace) → irmão + REFRESH_REUSO_TOLERADO (D-140)
+    ROT --> REV : reuso do token antigo fora da janela, 2º reuso ou após logout → revokeFamily + REFRESH_REUSO + 401 SESSAO_INVALIDA
     ATIVA --> REV : logout · changePassword (outras famílias, SESSIONS_REVOKED) · status.blocksLogin() · password-reset confirm
     ATIVA --> REV : DELETE /api/auth/sessions/{id} (SESSION_REVOKED) · DELETE /api/auth/sessions (outras, SESSIONS_REVOKED) — Bloco 4
     ATIVA --> EXP : expiresAt vencido (30 d persistente, 24 h sessão) → 401 SESSAO_INVALIDA
@@ -506,7 +528,7 @@ flowchart LR
     BFF["app/bff/auth/* · cookie ws_rt · access em memória · X-Correlation-Id · HMAC EDGE_PROXY_SECRET → X-Ws-Client-Ip/Ts/Sig"]
     MW["middleware.ts: CSP nonce, HSTS, frame-ancestors none · rota protegida → /login?next= (safeNext)"]
     OB["app/bff/auth/oidc/start|callback: PKCE S256 · state · nonce · cookie __Host-ws_oidc"]
-    SW["SessionWatcher + lib/auth/bus: BroadcastChannel/storage · renovação silenciosa"]
+    SW["SessionWatcher + lib/auth/bus: BroadcastChannel/storage · renovação silenciosa · lib/api/client.ts renova antes da 1ª chamada (772257d, P18)"]
     PG --> OB
     PG --> SW
     PG --> UI
@@ -519,7 +541,7 @@ flowchart LR
     SAF["SessionActiveFilter (após BearerTokenAuthenticationFilter)"]
     CUR["CurrentUserArgumentResolver → CurrentUser, RequestContext"]
     AC["AuthController · OidcController · PasswordResetController · SessionsController"]
-    JWT["JwtConfig + JwtKeys + JwtTokenIssuer (RS256)"]
+    JWT["JwtConfig + JwtKeys + JwtTokenIssuer (RS256) · WsSecurityProperties.Jwt com @ConstructorBinding (b47945c, P20)"]
     NIM["NimbusIdTokenVerifier + OidcConfig"]
     A2["Argon2PasswordHasher"]
     GEH["GlobalExceptionHandler · ApiErrorAuthenticationEntryPoint · ApiErrorAccessDeniedHandler"]
@@ -528,7 +550,7 @@ flowchart LR
     IS["IdentityService (login, refresh, logout, changePassword, openSession, sessionActive) · SessionService (list, revoke, revokeOthers)"]
     OS["OidcService + OidcAccountLinker + OidcProperties"]
     PR["PasswordResetService"]
-    SP["SessionPolicy · AuthCodes · AuditActions · Guard"]
+    SP["SessionPolicy (reuseGraceWindow, D-140) · AuthCodes · AuditActions (REFRESH_REUSO, REFRESH_REUSO_TOLERADO) · Guard"]
     PORTS["ports: RateLimitPort · SessionStorePort · RefreshTokenMirrorPort · TokenIssuerPort · IdTokenVerifier · PasswordHasher · UserRepositoryPort · AuditLogPort · MailPort"]
     IS --> PORTS
     OS --> IS
@@ -540,8 +562,9 @@ flowchart LR
   end
   subgraph INFRA["ws-infrastructure"]
     MY["persistence-mysql: JpaIdentityAdapters (RefreshTokenEntity espelho, UserEntity, VerificationCodeEntity), JpaAuditLog, AesGcmStringConverter, V3"]
-    RDS["cache-redis: RedisRateLimit (Lua) · RedisSessionStore (planejado, flag redis.enabled)"]
-    MEM["InMemoryRateLimit · InMemorySessionStore (padrão sem Redis)"]
+    RDS["cache-redis: RedisRateLimit (Lua) · RedisSessionStore (real, flag ws.redis.enabled · claimReuseGrace por HSETNX)"]
+    MEM["InMemoryRateLimit · InMemorySessionStore (padrão sem Redis · claimReuseGrace)"]
+    CFG["ws-bootstrap application.yml: ws.security.session.reuse-grace-window = WS_REFRESH_REUSE_GRACE (15s)"]
     PLT["platform: MailPort (redefinição de senha)"]
   end
   subgraph EXT["Externos"]
@@ -568,6 +591,7 @@ flowchart LR
   PG -->|"Authorization Code + PKCE"| IDP
   NIM -->|"JWKS"| IDP
   SEC --> JWT
+  CFG -.-> SP
 ```
 
 ## 6. Rastreabilidade
@@ -577,8 +601,8 @@ flowchart LR
 | RF2.CA01 | `IdentityService.login/openSession/issue`, `SessionPolicy`, `RefreshRecord`, `JwtTokenIssuer`, `Session` | `S1`→`S10`→`S11`→`F2` | 4–5, 27–38 | `[*]`→`ATIVA` | `AC`, `IS`, `JWT`, `BFF` (`ws_rt`) | real |
 | RF2.CA02 | `IdentityService.dummyHash`, `AccountStatus.blocksLogin`, `AuthCodes` | `S2`→`S3`→`E401`, `S6`→`S7`→`E401`, `S8`→`E403`, `S9`→`E2FA` | 6–9, 15–19, 22–26 | nota de `BLOQ` | `IS`, `GEH` | real (TOTP: Q-83) |
 | RF2.CA03 | `OidcController`, `OidcService`, `IdTokenVerifier`/`NimbusIdTokenVerifier`, `OidcAccountLinker` | `F4`→`O1`→`S11` | — (mesma emissão 32–38) | `[*]`→`ATIVA` | `OS`, `NIM`, `IDP`, BFF `oidc/*` | real (`OidcTest`, `OidcWebTest`, `app/bff/auth/oidc.test.ts` — §8, D-63) |
-| RF2.CA04 | `IdentityService.refresh`, `SessionStorePort.revoke/revokeFamily`, `RefreshTokenMirrorPort` | `A2`→`F3`→`R1`→`E401S`/`S11` | 39–52 | `ATIVA`→`ROT`→`ATIVA`, `ROT`→`REV`, `ATIVA`→`EXP` | `IS`, `RDS`/`MEM`, `MY` | real |
-| RF2.CA05 | `IdentityService.logout/changePassword/revokeOtherSessions/activeSessions/sessionActive`, `SessionActiveFilter`, `CurrentUser` | `W6` | 53–58 | `ATIVA`→`REV` | `SAF`, `CUR`, `AC` | real; `SessionService` + `SessionsController` `GET/DELETE /api/auth/sessions[/{id}]` e aba Sessões (Bloco 4, §8, D-62) |
+| RF2.CA04 | `IdentityService.refresh/toleratedReuse`, `SessionPolicy.reuseGraceWindow`, `SessionStorePort.consume/claimReuseGrace/revoke/revokeFamily`, `RefreshTokenMirrorPort` | `A2`→`F3`→`R1`→`R2`→`R3`→`S11` (tolerado) · `R2`→`R4`→`E401S` (revogado) · `R1`→`S11` (ROTATED) | 37–54 (alt tolerado 40–44 · revogado 45–49 · ROTATED 50–54) | `ATIVA`→`ROT`→`ATIVA`, `ROT`→`ATIVA` (reuso tolerado 1× na janela), `ROT`→`REV`, `ATIVA`→`EXP` | `IS`, `SP`, `CFG`, `RDS`/`MEM`, `MY`, `SW` | real; tolerância D-140 (17/10/2026): `IdentityServiceTest.reusoDentroDaJanelaEhToleradoUmaVezESemFamiliaVivaNunca`, `IdentityServiceTest.janelaDeToleranciaTemTetoEZeroDesliga`; front `772257d` (`lib/api/client.restore.test.ts`) — P18 |
+| RF2.CA05 | `IdentityService.logout/changePassword/revokeOtherSessions/activeSessions/sessionActive`, `SessionActiveFilter`, `CurrentUser` | `W6` | 55–57 | `ATIVA`→`REV` | `SAF`, `CUR`, `AC` | real; `SessionService` + `SessionsController` `GET/DELETE /api/auth/sessions[/{id}]` e aba Sessões (Bloco 4, §8, D-62) |
 | RF2.CA06 | `AuthRateLimitFilter`, `RateLimitPort`, `AuditActions`, `PasswordResetService` (`clearLockout`), `Masking` | `W2`→`E429`, `S5`, `S7`, `S10` | 3, 8, 12–13, 17, 30, 44 | `LOCK` inteiro | `ARL`, `RDS`, `PR`, `PLT` | real |
 | RF2.CA07 | `IdentityService.login` (ordem das checagens), `dummyHash` | `S3`, `S5`, `S7`, `S8`→`E403`, `S9`→`E2FA` | 6–26 | nota de `BLOQ` | `IS` | real (§7) |
 | RF2.CA08 | `RateLimitPort.tryAcquire/release/reset`, `RedisRateLimit` (Lua), `SessionPolicy.maxLoginFailures/lockWindow` | `S4`→`S5`, `S8`, `S10` | 11, 16, 21, 29 | `LIVRE`→`CONT`→`BLOQ`→`LIVRE` | `RDS`, `MEM` | real |
@@ -586,8 +610,8 @@ flowchart LR
 | RF2.CA10 | `AuthRateLimitFilter.RULES`, `ClientIpResolver` | `W2`→`W3`→`E429` | 3 | — | `ARL`, `BFF` | real |
 | RF2.CA11 | `HashBulkhead` | `W4`→`E503` | 3 | — | `ARL` | real |
 | RF2.CA12 | `OidcAccountLinker` (`email_verified`), `AuthCodes.OIDC_EMAIL_NAO_VERIFICADO` | `O1` | — | — | `OS`, `NIM` | real |
-| RF2.CA13 | `JwtTokenIssuer`, `JwtKeys`, `SessionActiveFilter`, BFF `ws_rt` | `F2`, `W6`, `E503J` | 35–38, 53–58 | nota de `REV` | `JWT`, `SAF`, `BFF`, `MW` | real (D-24, D-25) |
-| RF2.CA14 | `AuditActions.LOGIN_OK/LOGIN_FALHA/LOGIN_BLOQUEADO_TENTATIVAS/REFRESH_REUSO/LOGOUT`, `AuditEvent`, `Masking` | `S3`, `S5`, `S7`, `S10`, `R1` | 7, 12, 17, 23, 30, 44 | — | `MY` (`audit_log` RESTRICT), `CIF` | real |
+| RF2.CA13 | `JwtTokenIssuer`, `JwtKeys`, `WsSecurityProperties.Jwt` (`@ConstructorBinding`), `SessionActiveFilter`, BFF `ws_rt` | `F2`, `W6`, `E503J` | 33–36, 55–57 | nota de `REV` | `JWT`, `SAF`, `BFF`, `MW` | real (D-24, D-25); P20 corrigido em `b47945c` (`WsSecurityPropertiesBindingTest`) |
+| RF2.CA14 | `AuditActions.LOGIN_OK/LOGIN_FALHA/LOGIN_BLOQUEADO_TENTATIVAS/REFRESH_REUSO/REFRESH_REUSO_TOLERADO/LOGOUT`, `AuditEvent`, `Masking` | `S3`, `S5`, `S7`, `S10`, `R3`, `R4` | 6, 10, 15, 21, 29, 41, 47 | — | `MY` (`audit_log` RESTRICT), `CIF` | real |
 
 ## 7. Controles de segurança (D-14)
 
@@ -601,8 +625,8 @@ Herdados do RF49 do FAI pela **D-14**; camadas de defesa e rastreabilidade RN/CA
 | **RF2.CA10** (CA a confirmar) | **Limite por IP + método + rota** (`AuthRateLimitFilter`, antes do Spring Security): `POST /api/auth/login` 30/10 min · `register` 10/h · `refresh` 120/10 min · `password-reset/request` 10/h · `password-reset/confirm` 20/h · `PUT /api/auth/password` 20/h · `oidc/login` 30/10 min · `two-factor/verify` 20/10 min · `email-verification/*` · `username-suggestions` 60/10 min · `uploads` 40/h. IP = `X-Ws-Client-Ip` assinado (HMAC-SHA256 `EDGE_PROXY_SECRET`, `X-Ws-Proxy-Ts` 60 s) › `X-Real-IP` › TCP; **nunca** `X-Forwarded-For`; IPv6 por /64. | `AuthRateLimitFilter.RULES`, `ClientIpResolver`, `RequestPaths`, `AuthRateLimitFilterTest`, `ClientIpResolverTest` |
 | **RF2.CA11** (CA a confirmar) | **Bulkhead de hashes.** Dado um pico de logins, então o `HashBulkhead` (`Semaphore` justo, permits = `max(1, min(max(2, núcleos), pool/2))`, espera `ws.security.auth-hash-wait-ms` = 2 s) devolve `503 AUTENTICACAO_OCUPADA` + `Retry-After` ao excedente; 60 logins paralelos geram zero HTTP 500. | `HashBulkhead`, regras com `hashes=true` |
 | **RF2.CA12** (CA a confirmar) | **OIDC.** Dado o `id_token` válido (PKCE, `state`, `nonce`, `iss`, `aud`, `exp`), então ele só é **vinculado a conta existente** de mesmo `emailHash` se o IdP marcar `email_verified=true`; sem isso `401 OIDC_EMAIL_NAO_VERIFICADO` e `AuditLog OIDC_LINK_RECUSADO` (evita takeover). Instância sem OIDC → `404 OIDC_DESLIGADO`. | `OidcService`, `OidcAccountLinker`, `NimbusIdTokenVerifier`, `OidcTest` |
-| **RF2.CA13** (CA a confirmar) | **Tokens.** Access JWT RS256 com `iss`, `aud`, `sub`, `sid`, `role`, `profile_type`, `username`, `jti`; TTL **15 min** (`WS_JWT_ACCESS_TTL_MINUTES`, D-25 — padrão da Q-49); chaves por caminho **ou** conteúdo PEM (`JwtKeys`, D-24); sem chave privada configurada → `503 AUTENTICACAO_INDISPONIVEL` (nunca token sem assinatura). `SessionActiveFilter` recusa token de família revogada. Refresh só no cookie `ws_rt`; access só em memória (teste do front falha se aparecer em `localStorage`/`sessionStorage`). | `JwtTokenIssuer`, `JwtKeys`, `JwtKeysAndIssuerTest`, `SessionActiveFilter`, `SessionActiveFilterTest` |
-| **RF2.CA14** (CA a confirmar) | **Auditoria.** Eventos `LOGIN_OK`, `LOGIN_FALHA` (`reason` usuario_inexistente · senha · conta_indisponivel · 2fa), `LOGIN_BLOQUEADO_TENTATIVAS` (`resetAt`), `REFRESH_REUSO`, `LOGOUT`, `PASSWORD_CHANGED`, `SESSIONS_REVOKED`, `OIDC_LOGIN`, todos com `correlationId`, e-mail mascarado e sem senha, token ou código. | `AuditActions`, `AuditEvent`, `JpaAuditLog`, `AuditEventTest` |
+| **RF2.CA13** (CA a confirmar) | **Tokens.** Access JWT RS256 com `iss`, `aud`, `sub`, `sid`, `role`, `profile_type`, `username`, `jti`; TTL **15 min** (`WS_JWT_ACCESS_TTL_MINUTES`, D-25 — padrão da Q-49); chaves por caminho **ou** conteúdo PEM (`JwtKeys`, D-24); sem chave privada configurada → `503 AUTENTICACAO_INDISPONIVEL` (nunca token sem assinatura). `SessionActiveFilter` recusa token de família revogada. Refresh só no cookie `ws_rt`; access só em memória (teste do front falha se aparecer em `localStorage`/`sessionStorage`). | `JwtTokenIssuer`, `JwtKeys`, `JwtKeysAndIssuerTest`, `SessionActiveFilter`, `SessionActiveFilterTest`; `WsSecurityProperties.Jwt` com `@ConstructorBinding` + `WsSecurityPropertiesBindingTest` (`b47945c`, P20) |
+| **RF2.CA14** (CA a confirmar) | **Auditoria.** Eventos `LOGIN_OK`, `LOGIN_FALHA` (`reason` usuario_inexistente · senha · conta_indisponivel · 2fa), `LOGIN_BLOQUEADO_TENTATIVAS` (`resetAt`), `REFRESH_REUSO`, `REFRESH_REUSO_TOLERADO` (`graceSeconds`, D-140 — real em 17/10/2026), `LOGOUT`, `PASSWORD_CHANGED`, `SESSIONS_REVOKED`, `OIDC_LOGIN`, todos com `correlationId`, e-mail mascarado e sem senha, token ou código. | `AuditActions`, `AuditEvent`, `JpaAuditLog`, `AuditEventTest` |
 
 Tela/aba: `/login` (esqueleto em `app/(auth)/login/page.tsx`) · `/password-reset` (esqueleto em `app/(auth)/password-reset/page.tsx`)
 

@@ -184,7 +184,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 2,
     "title": "Autenticar usuário na plataforma com credenciais de acesso",
     "hu": "COMO usuário cadastrado no sistema POSSO autenticar-me na plataforma com minhas credenciais de acesso PARA acessar minha área pessoal de forma segura.",
-    "summary": "Classes (real) existem em origin/main (Bloco 3, PR #16); (planejado): RedisSessionStore (hoje InMemorySessionStore + espelho JPA refresh_tokens, Q-85), conferência TOTP do 2FA (Q-83), SMTP real (Q-84), PolicyGateFilter (D-16). Números adotados: D-25 (TTLs), D-26 (Argon2id e bulkhead), D-27 (cadastro sem oráculo). Bloco 4 (real, D-60–D-64): proteção de rotas no middleware.ts, renovação silenciosa e logout entre abas, OIDC Authorization Code + PKCE S256/state/nonce no BFF e GET/DELETE /api/auth/sessions com a aba Sessões — §8.",
+    "summary": "Classes (real) existem em origin/main (Bloco 3, PR #16); RedisSessionStore (ws-infrastructure/cache-redis, ativo com ws.redis.enabled=true; Q-85 resolvida) é (real) e o InMemorySessionStore fica como padrão sem Redis, ambos com espelho JPA refresh_tokens; (planejado): conferência TOTP do 2FA (Q-83), SMTP real (Q-84), PolicyGateFilter (D-16). Números adotados: D-25 (TTLs), D-26 (Argon2id e bulkhead), D-27 (cadastro sem oráculo). Bloco 4 (real, D-60–D-64): proteção de rotas no middleware.ts, renovação silenciosa e logout entre abas, OIDC Authorization Code + PKCE S256/state/nonce no BFF e GET/DELETE /api/auth/sessions com a aba Sessões — §8.",
     "route": "/login (BFF app/bff/auth/login → POST /api/auth/login), /login/institucional (POST /api/auth/oidc/login), /forgot-password (POST /api/auth/password-reset/request|confirm); todas as rotas autenticadas passam pelo SessionActiveFilter",
     "coverage": "RF2.CA01 … RF2.CA06 (corpo do card vazio → derivados do título + HU2, todos \"(CA a confirmar)\") · RF2.CA07 … RF2.CA14 (§7, controles de segurança D-14) — regra: o título do card define o RF; CAs alinhados ao código real do Bloco 3 (AuthController, IdentityService, AuthRateLimitFilter, HashBulkhead, SessionActiveFilter, JwtTokenIssuer, OidcService, PasswordResetService)",
     "cas": [
@@ -208,7 +208,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF2.CA04",
-        "text": "Dado um refresh válido, quando o BFF chama POST /api/auth/refresh, então ocorre rotação: novo token da mesma familyId, o anterior recebe revokedAt/rotatedFromHash; reuso de token já rotacionado revoga a família inteira, grava AuditLog REFRESH_REUSO e responde 401 SESSAO_INVALIDA; expirado ou desconhecido → 401 SESSAO_INVALIDA; conta que passou a blocksLogin() → família revogada.",
+        "text": "Dado um refresh válido, quando o BFF chama POST /api/auth/refresh, então ocorre rotação: novo token da mesma familyId, o anterior recebe revokedAt/rotatedFromHash; reuso de token já rotacionado revoga a família inteira, grava AuditLog REFRESH_REUSO e responde 401 SESSAO_INVALIDA; expirado ou desconhecido → 401 SESSAO_INVALIDA; conta que passou a blocksLogin() → família revogada. Exceção (real, D-140, 17/10/2026): o consumo é atômico (SessionStorePort.consume → ROTATED · REUSED · EXPIRED · UNKNOWN); no REUSED, se o token foi rotacionado há no máximo SessionPolicy.reuseGraceWindow (padrão 15 s, teto 60 s, 0s desliga), a família segue viva com um só token vivo e claimReuseGrace(tokenHash) é a 1ª reivindicação, o IdentityService.toleratedReuse emite um irmão do sucessor na mesma família e audita REFRESH_REUSO_TOLERADO (resposta perdida na navegação, P18); 2º reuso, fora da janela ou após logout → revogação da família e REFRESH_REUSO como acima.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -262,13 +262,13 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF2.CA13",
-        "text": "JwtTokenIssuer, JwtKeys, SessionActiveFilter, BFF ws_rt",
+        "text": "JwtTokenIssuer, JwtKeys, WsSecurityProperties.Jwt (@ConstructorBinding), SessionActiveFilter, BFF ws_rt",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF2.CA14",
-        "text": "AuditActions.LOGIN_OK/LOGIN_FALHA/LOGIN_BLOQUEADO_TENTATIVAS/REFRESH_REUSO/LOGOUT, AuditEvent, Masking",
+        "text": "AuditActions.LOGIN_OK/LOGIN_FALHA/LOGIN_BLOQUEADO_TENTATIVAS/REFRESH_REUSO/REFRESH_REUSO_TOLERADO/LOGOUT, AuditEvent, Masking",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -632,17 +632,17 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": "COMO usuário autenticado dentro do sistema POSSO visualizar meu perfil com tudo o que criei (tarefas, projetos, planos, decisões) em sub-abas e o meu perfil deliberativo gerado pela IA PARA acompanhar e mostrar minha produção e minha evolução desde que entrei no sistema.",
     "summary": "O título do card recorta, das 15 sub-abas do perfil (Matriz B), as quatro do Perfil Empresarial: Acervo Digital (= Closet: inventário TaskItem com sub-filtros por TaskState), Projetos (ProjectScheme do dono), Projetos salvos e Tarefas salvas (SavedItem). As demais sub-abas (planos, decisões, perfil deliberativo, pontos…) ficam no RF16 (terceiros) e nos RFs de origem (RF24, RF29, RF42, RF45).",
     "route": "Meu perfil (/profile, sub-abas ?tab=acervo|projetos|projetos-salvos|tarefas-salvas, Matriz B de ABAS_POR_PERFIL §3), perfil de terceiros /u/[username] (RF16); Acervo também em /tasks (RF41); API GET /api/me (real), GET /api/me/tasks, GET /api/me/projects, GET /api/me/saved?type=, POST /api/tasks/{id}/state",
-    "coverage": "RF6.CA01 … RF6.CA06 — todos \"(CA a confirmar)\": o corpo do card está vazio; os CAs foram derivados do título + HU6 e reaproveitam _anterior/RF19 (sub-abas 1–2 e 7–8), RF41 (estados do Acervo) e RF26.CA04 (salvar). Real: MeController.me, AccountService.me/profile, UserView (Bloco 3); o resto (planejado).",
+    "coverage": "RF6.CA01 … RF6.CA06 — todos \"(CA a confirmar)\": o corpo do card está vazio; os CAs foram derivados do título + HU6 e reaproveitam _anterior/RF19 (sub-abas 1–2 e 7–8), RF41 (estados do Acervo) e RF26.CA04 (salvar). Real: MeController.me, AccountService.me/profile, UserView (Bloco 3); o resto (planejado). Atualização 17/10/2026: TaskController.mine/TaskService.listMine (real); PeopleService, PeopleController e TaskService.listOf (real, em curso, Onda 1) — achado P19.",
     "cas": [
       {
         "id": "RF6.CA01",
-        "text": "Dado um usuário autenticado, quando abre /profile, então vê o cabeçalho (UserView: avatar, nome, jobTitle, empresa, departamento; contadores de tarefas, projetos e salvos via Redis) e as sub-abas Acervo Digital, Projetos, Projetos salvos e Tarefas salvas; em /u/[username] um terceiro vê só Acervo Digital e Projetos, filtrados por Visibility (RF16); sub-aba reservada ao dono → 403 ACESSO_NEGADO (Guard.ownerOrAdmin).",
+        "text": "Dado um usuário autenticado, quando abre /profile, então vê o cabeçalho (UserView: avatar, nome, jobTitle, empresa, departamento; contadores de tarefas, projetos e salvos via Redis) e as sub-abas Acervo Digital, Projetos, Projetos salvos e Tarefas salvas; em /u/[username] um terceiro vê só Acervo Digital e Projetos, filtrados por Visibility (RF16); sub-aba reservada ao dono → 403 ACESSO_NEGADO (Guard.ownerOrAdmin). Real (em curso, Onda 1, P19): cabeçalho do dono por GET /api/me; cabeçalho de terceiro por GET /api/people/by-username/{username} (PublicProfileView, sem contato; conta não ACTIVE → 404 NAO_ENCONTRADO); contadores pela API planejados (no front já contam só o que o viewer vê, b602d34).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF6.CA02",
-        "text": "Dado a sub-aba Acervo Digital, então ela lista os TaskItem do dono em grade compacta (TaskCard compact) com sub-filtros por estado (TaskState: RASCUNHO · DISPONIVEL · EM_USO · BLOQUEADA · CONCLUIDA · ARQUIVADA · MODELO_PUBLICO · OFERECIDA) com contadores, filtros por categoria/tipo/processo/natureza, ordenação (recentes, mais usadas, nome, prazo), busca (OpenSearch ws-tasks) e paginação (20); a URL reflete filtros e página.",
+        "text": "Dado a sub-aba Acervo Digital, então ela lista os TaskItem do dono em grade compacta (TaskCard compact) com sub-filtros por estado (TaskState: RASCUNHO · DISPONIVEL · EM_USO · BLOQUEADA · CONCLUIDA · ARQUIVADA · MODELO_PUBLICO · OFERECIDA) com contadores, filtros por categoria/tipo/processo/natureza, ordenação (recentes, mais usadas, nome, prazo), busca (OpenSearch ws-tasks) e paginação (20); a URL reflete filtros e página. Real (base): GET /api/tasks?limit (TaskController.mine → TaskService.listMine, mais recentes primeiro, sem filtros nem contadores por estado); a sub-aba sobre ela está em curso (Onda 1).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -666,7 +666,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF6.CA06",
-        "text": "Dado o perfil de um terceiro, quando vejo seu Acervo Digital, então só aparecem tarefas com visibility compatível (AccessPolicy.visibilityFilter: PUBLICA; EMPRESA se mesma empresa; DEPARTAMENTO se membro), nunca PRIVADA; cada card oferece \"Levar ao meu acervo\" (RF7/RF23) e interações sociais (RF18/RF19); item fora da visibilidade → 403 ACESSO_NEGADO.",
+        "text": "Dado o perfil de um terceiro, quando vejo seu Acervo Digital, então só aparecem tarefas com visibility compatível (AccessPolicy.visibilityFilter: PUBLICA; EMPRESA se mesma empresa; DEPARTAMENTO se membro), nunca PRIVADA; cada card oferece \"Levar ao meu acervo\" (RF7/RF23) e interações sociais (RF18/RF19); item fora da visibilidade → 403 ACESSO_NEGADO. Real (17/10/2026): GET /api/people/{id}/tasks → TaskService.listOf devolve só o que AccessPolicy.visible admite (SIGILOSO só dono e colaboradores explícitos, nem ADMIN — AccessPolicy.sigiloso, D-139) (em curso, Onda 1); abrir item invisível responde 404 NAO_ENCONTRADO uniforme, não 403 (GET /api/tasks/{id}, front components/social/TaskDetail.tsx, D-141).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
@@ -1008,11 +1008,11 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": "COMO usuário dentro do sistema Work Station POSSO procurar o perfil de um chefe de departamento PARA obter informação relevante ou realizar alguma funcionalidade.",
     "summary": "O \"perfil do chefe\" é a página do departamento (Department, TAXONOMIA §1.5) que ele chefia (headUserId): cabeçalho institucional, sub-abas públicas e ações por papel (AccessPolicy); a conta pessoal do chefe (/u/[username]) é o RF16. Métricas vêm de MetricSnapshot (scope DEPARTAMENTO) e nunca expõem dados nominais de desempenho (RF45.CA10).",
     "route": "página do departamento /departments/[slug] (Matriz D de ABAS_POR_PERFIL §5 — é o que o board chama de \"perfil do chefe\"), alcançada pela aba Buscar (RF17), por /companies/[slug] › Departamentos (RF15) ou pelo perfil pessoal do chefe (/u/[username], RF16); API GET /api/departments/{slug}, GET /api/departments/{id}/tabs/{tab}, GET /api/departments/{id}/metrics?period=, POST|DELETE /api/follows",
-    "coverage": "RF14.CA01 · RF14.CA02 · RF14.CA03 · RF14.CA04 · RF14.CA05 · RF14.CA06 — corpo do card vazio: CAs derivados do título + HU14 + RF28.CA02/CA03/CA04/CA06/CA08 (docs/diagramas/RF28/README.md) + RF27.CA06 (seguir) + RF45.CA06/CA10 (Hype) + Matriz D, marcados (CA a confirmar). Todas as classes do RF são (planejado); reais: User (companyId/departmentId sem FK até o RF28, D-23), Guard, SecurityConfig.",
+    "coverage": "RF14.CA01 · RF14.CA02 · RF14.CA03 · RF14.CA04 · RF14.CA05 · RF14.CA06 — corpo do card vazio: CAs derivados do título + HU14 + RF28.CA02/CA03/CA04/CA06/CA08 (docs/diagramas/RF28/README.md) + RF27.CA06 (seguir) + RF45.CA06/CA10 (Hype) + Matriz D, marcados (CA a confirmar). Todas as classes do RF são (planejado); reais: User (companyId/departmentId sem FK até o RF28, D-23), Guard, SecurityConfig. Atualização 17/10/2026: o cabeçalho público de pessoa do chefe já tem fonte real em GET /api/people/by-username/{username} (PeopleController → PeopleService.byUsername → PublicProfileView, em curso, Onda 1); a API institucional do departamento segue (planejado).",
     "cas": [
       {
         "id": "RF14.CA01",
-        "text": "Dado qualquer usuário (inclusive visitante), quando busca um chefe/departamento (aba Buscar por nome, sigla ou nome do chefe; lista de departamentos da empresa; menção @sigla) e abre /departments/[slug], então vê o cabeçalho: Department.acronym, name, color, monogram, coverUrl, about, chefe (User de headUserId: avatar, fullName, jobTitle → \"Chefe de {acronym}\"), Company (logo + link para RF15), contadores (pessoas com DepartmentMembership vigente, projetos publicados, decisões validadas, chancelas emitidas, seguidores) e botão Seguir; slug inexistente ou active = false → 404 DEPARTAMENTO_NAO_ENCONTRADO.",
+        "text": "Dado qualquer usuário (inclusive visitante), quando busca um chefe/departamento (aba Buscar por nome, sigla ou nome do chefe; lista de departamentos da empresa; menção @sigla) e abre /departments/[slug], então vê o cabeçalho: Department.acronym, name, color, monogram, coverUrl, about, chefe (User de headUserId: avatar, fullName, jobTitle → \"Chefe de {acronym}\"), Company (logo + link para RF15), contadores (pessoas com DepartmentMembership vigente, projetos publicados, decisões validadas, chancelas emitidas, seguidores) e botão Seguir; slug inexistente ou active = false → 404 DEPARTAMENTO_NAO_ENCONTRADO. Fonte real do bloco do chefe (em curso, Onda 1): PublicProfileView de GET /api/people/by-username/{username} (avatar, fullName, jobTitle, profileType); o cabeçalho do departamento segue planejado.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -1042,7 +1042,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF14.CA06",
-        "text": "Dado o viewer, então a visibilidade por item segue AccessPolicy.visibilityFilter: anônimo/outra empresa → só PUBLICA; mesma empresa → + EMPRESA; membro → + DEPARTAMENTO; sub-abas de gestão → 403 ACESSO_NEGADO no serviço para quem não é headUserId nem Company.ownerUserId (curador com escopo FILA_REVISAO/PREMIACAO vê só a fila/premiação); dados pessoais (email, phone) nunca saem na API da equipe; página em pt-BR/en/es e responsiva.",
+        "text": "Dado o viewer, então a visibilidade por item segue AccessPolicy.visibilityFilter: anônimo/outra empresa → só PUBLICA; mesma empresa → + EMPRESA; membro → + DEPARTAMENTO; sub-abas de gestão → 403 ACESSO_NEGADO no serviço para quem não é headUserId nem Company.ownerUserId (curador com escopo FILA_REVISAO/PREMIACAO vê só a fila/premiação); dados pessoais (email, phone) nunca saem na API da equipe; página em pt-BR/en/es e responsiva. Real (17/10/2026): a projeção pública de pessoa (PublicProfileView) já não carrega contato; no front, contadores e composição de projeto contam só o que o viewer vê (b602d34, lib/social/rules.ts).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
@@ -1055,11 +1055,11 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": "COMO usuário dentro do sistema Work Station POSSO procurar o perfil de uma empresa ou órgão público/privado PARA obter informação relevante ou realizar alguma funcionalidade.",
     "summary": "A página da empresa (Company, TAXONOMIA §1.4; ownerUserId = conta EMPRESA aprovada, RF28.CA01) agrega departamentos (RF14), programas (RF25), plano anual oficial (RF24), chancelas e modelos oficiais (RF39/RF40), benefícios (RF39.CA09), destaques (RF35), pessoas e Comunicados (proposta §7.a). A aba Gestão só existe para Company.ownerUserId e é negada no serviço.",
     "route": "página da empresa /companies/[slug] (Matriz C de ABAS_POR_PERFIL §4), alcançada pela lista /companies, pela aba Buscar (RF17), pelo cabeçalho de qualquer perfil/departamento ou pela barra inferior (5º destino para EMPRESA e visitante); API GET /api/companies, GET /api/companies/{slug}, GET /api/companies/{id}/tabs/{tab}, GET /api/companies/{id}/metrics?period=&dept=, POST|DELETE /api/follows, POST /api/companies/{id}/announcements (proposta)",
-    "coverage": "RF15.CA01 · RF15.CA02 · RF15.CA03 · RF15.CA04 · RF15.CA05 · RF15.CA06 — corpo do card vazio: CAs derivados do título + HU15 + RF28.CA01/CA04/CA06/CA08 (docs/diagramas/RF28/README.md) + RF24.CA04 + RF39.CA09/CA11 + RF27.CA06 + Matriz C e §7.a (Comunicados), marcados (CA a confirmar). Todas as classes do RF são (planejado); reais: User.profileType EMPRESA, AccountStatus.PENDING_VALIDATION, Guard, SecurityConfig.",
+    "coverage": "RF15.CA01 · RF15.CA02 · RF15.CA03 · RF15.CA04 · RF15.CA05 · RF15.CA06 — corpo do card vazio: CAs derivados do título + HU15 + RF28.CA01/CA04/CA06/CA08 (docs/diagramas/RF28/README.md) + RF24.CA04 + RF39.CA09/CA11 + RF27.CA06 + Matriz C e §7.a (Comunicados), marcados (CA a confirmar). Todas as classes do RF são (planejado); reais: User.profileType EMPRESA, AccountStatus.PENDING_VALIDATION, Guard, SecurityConfig. Atualização 17/10/2026: o cabeçalho público de pessoa (inclusive da conta EMPRESA dona e dos chefes) já tem fonte real em GET /api/people/by-username/{username} (PeopleController → PeopleService.byUsername → PublicProfileView, em curso, Onda 1); a API institucional da empresa segue (planejado).",
     "cas": [
       {
         "id": "RF15.CA01",
-        "text": "Dado qualquer usuário (inclusive visitante), quando busca uma empresa/órgão (Buscar por legalName/sigla, lista /companies, link em perfil ou departamento) e abre /companies/[slug], então vê o cabeçalho: Company.logoUrl, coatOfArmsUrl, legalName, about, websiteUrl, accentColor como cor de destaque, e contadores institucionais (departamentos ativos, pessoas, projetos publicados, modelos oficiais, decisões validadas, seguidores) — sem cargo, departamento, Hype, Tarefa do Dia ou DP; slug inexistente, Company.status inativo ou dona ainda PENDING_VALIDATION → 404 EMPRESA_NAO_ENCONTRADA.",
+        "text": "Dado qualquer usuário (inclusive visitante), quando busca uma empresa/órgão (Buscar por legalName/sigla, lista /companies, link em perfil ou departamento) e abre /companies/[slug], então vê o cabeçalho: Company.logoUrl, coatOfArmsUrl, legalName, about, websiteUrl, accentColor como cor de destaque, e contadores institucionais (departamentos ativos, pessoas, projetos publicados, modelos oficiais, decisões validadas, seguidores) — sem cargo, departamento, Hype, Tarefa do Dia ou DP; slug inexistente, Company.status inativo ou dona ainda PENDING_VALIDATION → 404 EMPRESA_NAO_ENCONTRADA. Real (17/10/2026): o cabeçalho público da pessoa dona tem fonte em PublicProfileView (GET /api/people/by-username/{username}, em curso, Onda 1; não ACTIVE → 404 NAO_ENCONTRADO); os contadores do front contam só o que o viewer vê (b602d34); o cabeçalho institucional segue planejado.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -1089,7 +1089,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF15.CA06",
-        "text": "Dado o viewer, então a aba Gestão (Departamentos & chefes, Pessoas & lotações, Chancelas & políticas, Benefícios, Plano oficial, Programas, Políticas, Dashboard do emissor, Insights da empresa, Dossiês, Comunicados) só aparece para Company.ownerUserId e é negada no serviço (403 ACESSO_NEGADO) para qualquer outro, inclusive CHEFE e ADMIN em escrita; visibilidade por item segue AccessPolicy.visibilityFilter (anônimo/outra empresa → PUBLICA; mesma empresa → + EMPRESA); cnpj (AES) só para a dona e ADMIN; página em pt-BR/en/es e responsiva.",
+        "text": "Dado o viewer, então a aba Gestão (Departamentos & chefes, Pessoas & lotações, Chancelas & políticas, Benefícios, Plano oficial, Programas, Políticas, Dashboard do emissor, Insights da empresa, Dossiês, Comunicados) só aparece para Company.ownerUserId e é negada no serviço (403 ACESSO_NEGADO) para qualquer outro, inclusive CHEFE e ADMIN em escrita; visibilidade por item segue AccessPolicy.visibilityFilter (anônimo/outra empresa → PUBLICA; mesma empresa → + EMPRESA); cnpj (AES) só para a dona e ADMIN; página em pt-BR/en/es e responsiva. Real (17/10/2026): no front, contadores e composição de projeto já seguem a ACL do viewer (SIGILOSO = PRIVADA, lib/social/rules.ts, b602d34); a projeção pública de pessoa (PublicProfileView) não carrega contato.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
@@ -1102,11 +1102,11 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": "COMO usuário dentro do sistema Work Station POSSO visualizar o perfil de um usuário que trabalha dentro uma organização PARA realizar alguma funcionalidade.",
     "summary": "O perfil de terceiros é o mesmo /u/[username] do RF6, mas com viewer != owner: só as sub-abas 1–5 (Acervo Digital, Projetos, Planos, Decisões, Perfil deliberativo público), itens filtrados por AccessPolicy.visibilityFilter, Hype conforme User.hypeVisibility e ações sociais inline (RF18/RF19) + \"Levar ao meu acervo\" (RF7). Contas institucionais (EMPRESA/CHEFE) recebem a etiqueta e o atalho para a página da empresa (RF15) ou do departamento (RF14).",
     "route": "perfil de terceiros /u/[username] (Matriz B de ABAS_POR_PERFIL §3, colunas \"terceiros\"); API GET /api/users/{username} (real como GET /api/users/{id} → UserView), GET /api/users/{username}/tabs, GET /api/users/{username}/tabs/{tab}, POST|DELETE /api/follows",
-    "coverage": "RF16.CA01 … RF16.CA06 — corpo do card vazio: CAs derivados do título + HU16 + _anterior/RF19 CA02 (perfil de terceiros) e Matriz B (colunas \"terceiros\"); todos marcados \"(CA a confirmar)\". Real (Bloco 3): MeController.profile (GET /api/users/{id}, Guard.ownerOrAdmin para campos privados), AccountService.profile, UserView, User.hypeVisibility; o resto (planejado).",
+    "coverage": "RF16.CA01 … RF16.CA06 — corpo do card vazio: CAs derivados do título + HU16 + _anterior/RF19 CA02 (perfil de terceiros) e Matriz B (colunas \"terceiros\"); todos marcados \"(CA a confirmar)\". Real (Bloco 3): MeController.profile (GET /api/users/{id}, Guard.ownerOrAdmin para campos privados), AccountService.profile, UserView, User.hypeVisibility; o resto (planejado). Atualização 17/10/2026 (real, em curso, Onda 1, P19): PeopleService (PublicProfileView, byUsername, visibleById, search), PeopleController, ResourceAuthorizer.requireProfileVisible, TaskService.listOf e AccessPolicy.sigiloso (D-139).",
     "cas": [
       {
         "id": "RF16.CA01",
-        "text": "Dado um usuário autenticado, quando abre /u/{username} de um EMPREGADO, então vê o cabeçalho público: avatar, nome, cargo (jobTitle), empresa, departamento (sigla, cor, monograma), contadores (tarefas, projetos, decisões, seguidores) e o botão Seguir; username inexistente → 404 USUARIO_NAO_ENCONTRADO; conta SUSPENDED/DELETION_SCHEDULED/ANONYMIZED → 404 (não enumera contas); email/phone nunca saem (UserView público).",
+        "text": "Dado um usuário autenticado, quando abre /u/{username} de um EMPREGADO, então vê o cabeçalho público: avatar, nome, cargo (jobTitle), empresa, departamento (sigla, cor, monograma), contadores (tarefas, projetos, decisões, seguidores) e o botão Seguir; username inexistente → 404 USUARIO_NAO_ENCONTRADO; conta SUSPENDED/DELETION_SCHEDULED/ANONYMIZED → 404 (não enumera contas); email/phone nunca saem (UserView público). Real (em curso, Onda 1): GET /api/people/by-username/{username} → PeopleService.byUsername → PublicProfileView (sem contato); o código real da recusa é 404 NAO_ENCONTRADO, igual para inexistente e para qualquer conta não ACTIVE (ResourceAuthorizer.requireProfileVisible). Contadores servidos pela API: (planejado).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -1118,7 +1118,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF16.CA03",
-        "text": "Dado uma sub-aba 1–4, quando listo os itens, então cada TaskItem, ProjectScheme, AnnualPlan/Grouping e FinalDecision passa pelo visibilityFilter: PUBLICA sempre; EMPRESA se viewer.companyId == owner.companyId; DEPARTAMENTO se o viewer tem DepartmentMembership vigente no departamento do item; PRIVADA nunca; RASCUNHO nunca. Contadores do cabeçalho contam só o que o viewer pode ver.",
+        "text": "Dado uma sub-aba 1–4, quando listo os itens, então cada TaskItem, ProjectScheme, AnnualPlan/Grouping e FinalDecision passa pelo visibilityFilter: PUBLICA sempre; EMPRESA se viewer.companyId == owner.companyId; DEPARTAMENTO se o viewer tem DepartmentMembership vigente no departamento do item; PRIVADA nunca; RASCUNHO nunca. Contadores do cabeçalho contam só o que o viewer pode ver. Real (17/10/2026): GET /api/people/{id}/tasks → TaskService.listOf filtra por AccessPolicy.visible (nome real do visibilityFilter); SIGILOSO equivale a PRIVADA — só dono e colaboradores explícitos, sem acesso implícito do ADMIN (AccessPolicy.sigiloso, D-139, AccessPolicyMatrixTest); no front, contadores e composição de projeto já não contam nem titulam tarefas ocultas (b602d34).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -1149,7 +1149,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": "COMO usuário autenticado no sistema POSSO visualizar esquemas de tarefa ou projeto criados por outros usuários, chefes ou empresas na aba \"Buscar/Explorar\" PARA me inspirar em outras combinações e ampliar minhas referências de projetos.",
     "summary": "A busca lê os índices OpenSearch ws-tasks, ws-projects, ws-people e ws-orgs (ARQUITETURA §3.2) com o mesmo AccessPolicy.visibilityFilter dos perfis (RF16), devolve 5 abas com contadores e abre o esquema de terceiro em modo leitura com crédito do autor. \"Projetos parecidos\" usa AiEngine capability MEMORIA_BUSCA (embedding) e kNN em ws-memory (RF33), com fallback textual. A indexação é assíncrona (PipelineJob INDEXAR_BUSCA, proposta) a partir dos eventos de publicação/alteração/arquivamento.",
     "route": "Buscar (/search, abas PROJETOS · TAREFAS · PESSOAS · EMPRESAS · CHEFES DE DEPARTAMENTO) e páginas de leitura de esquema de terceiros (/tasks/[id], /projects/[id]); API GET /api/search?q=&tab=&filters…&page=, GET /api/search/suggestions, GET /api/projects/{id}/similar, GET /api/tasks/{id}, GET /api/projects/{id}",
-    "coverage": "RF17.CA01 … RF17.CA06 — corpo do card vazio: CAs derivados do título + HU17 + RF27 (CA03 busca, CA04 visibilidade, CA05 semântica); todos marcados \"(CA a confirmar)\". O Mural (RF27.CA01/CA02/CA06) continua no RF27. Todas as classes do RF são (planejado); reais: OpenSearchAdaptersConfig (flag opensearch.enabled), AiProvidersConfig, Guard, SecurityConfig.",
+    "coverage": "RF17.CA01 … RF17.CA06 — corpo do card vazio: CAs derivados do título + HU17 + RF27 (CA03 busca, CA04 visibilidade, CA05 semântica); todos marcados \"(CA a confirmar)\". O Mural (RF27.CA01/CA02/CA06) continua no RF27. Todas as classes do RF são (planejado); reais: OpenSearchAdaptersConfig (flag opensearch.enabled), AiProvidersConfig, Guard, SecurityConfig. Atualização 17/10/2026 (real): regra de leitura AccessPolicy.visible/decide/sigiloso (D-139), TaskController.get → TaskService.get → ResourceAuthorizer.require com 404 NAO_ENCONTRADO uniforme, TaskService.listOf (em curso, Onda 1) e components/social/TaskDetail.tsx com o mesmo 404 (D-141).",
     "cas": [
       {
         "id": "RF17.CA01",
@@ -1165,13 +1165,13 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF17.CA03",
-        "text": "Dado os resultados, quando são devolvidos, então só contêm itens que o viewer pode ver (AccessPolicy.visibilityFilter aplicado como filtro da query): PUBLICA sempre; EMPRESA se mesma empresa; DEPARTAMENTO se membro; PRIVADA só os meus; RASCUNHO nunca aparece para terceiros; accessClass SIGILOSO nunca é indexado e RESTRITO só para o departamento dono. Resultados de outra empresa só se PUBLICA.",
+        "text": "Dado os resultados, quando são devolvidos, então só contêm itens que o viewer pode ver (AccessPolicy.visibilityFilter aplicado como filtro da query): PUBLICA sempre; EMPRESA se mesma empresa; DEPARTAMENTO se membro; PRIVADA só os meus; RASCUNHO nunca aparece para terceiros; accessClass SIGILOSO nunca é indexado e RESTRITO só para o departamento dono. Resultados de outra empresa só se PUBLICA. Real (17/10/2026): a regra item a item já existe em AccessPolicy.visible/decide — SIGILOSO só para dono e colaboradores explícitos, sem acesso implícito do ADMIN (AccessPolicy.sigiloso, D-139, AccessPolicyMatrixTest); a busca que a aplicará segue planejada.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF17.CA04",
-        "text": "Dado um resultado de tarefa ou projeto de outro usuário, quando o abro, então vejo o esquema completo em modo leitura (ficha, fases e tarefas do projeto, capa, chancelas) com o crédito do autor (avatar + link para RF16/RF14/RF15), as ações inline do RF18/RF19 e \"Levar ao meu acervo\" (RF7/RF41.CA08); edição é 403 ACESSO_NEGADO; item que ficou PRIVADA depois de indexado responde 404 e sai do índice.",
+        "text": "Dado um resultado de tarefa ou projeto de outro usuário, quando o abro, então vejo o esquema completo em modo leitura (ficha, fases e tarefas do projeto, capa, chancelas) com o crédito do autor (avatar + link para RF16/RF14/RF15), as ações inline do RF18/RF19 e \"Levar ao meu acervo\" (RF7/RF41.CA08); edição é 403 ACESSO_NEGADO; item que ficou PRIVADA depois de indexado responde 404 e sai do índice. Real (17/10/2026): GET /api/tasks/{id} → invisível = 404 NAO_ENCONTRADO uniforme (ResourceAuthorizer.require → AccessDecision.NOT_FOUND), também no front (components/social/TaskDetail.tsx, D-141, revisa a D-93); editar sem permissão → PUT /api/tasks/{id} 403 ACESSO_NEGADO; o card de projeto não mostra título nem total de tarefa oculta (lib/social/view-model.ts, b602d34). Leitura de projeto pela API segue planejada (Onda 2).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
