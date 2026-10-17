@@ -3,7 +3,7 @@
 > **Nome do produto:** **Work Station** (os cards do board ainda citam o nome antigo "Work AI"; leia-os como Work Station). Prefixo dos módulos: `ws-`.
 
 > Produto da SECID-PR. O **Work Station** é o app; o **DECIA** (Decisão com Inteligência Artificial) é o centro: mensageria deliberativa em grupo assistida por IA, ligada ao **Criador de Projetos** (tarefas compostas em esquemas de projeto). Requisitos: board Trello **Work Station** (RF1–RF45, HU1–HU45). Esqueleto herdado do **Fashion AI (FAI)**.
-> Documentos irmãos: [`TAXONOMIA.md`](TAXONOMIA.md) (entidades e atributos), [`DIAGRAMA_CLASSES_v1.md`](DIAGRAMA_CLASSES_v1.md), [`../diagramas/`](../diagramas/) (5 diagramas por RF), [`../design-system/`](../design-system/), [`../DECISOES.md`](../DECISOES.md).
+> Documentos irmãos: [`TAXONOMIA.md`](TAXONOMIA.md) (entidades e atributos), [`DIAGRAMA_CLASSES_v1.md`](DIAGRAMA_CLASSES_v1.md), [`../diagramas/`](../diagramas/) (6 diagramas por RF, a começar pelos casos de uso), [`ATORES_E_ATRIBUTOS.md`](ATORES_E_ATRIBUTOS.md) (taxonomia de atores e de atributos), [`../design-system/`](../design-system/), [`../DECISOES.md`](../DECISOES.md).
 
 ## 1. Objetivos que a arquitetura precisa provar (board, card principal)
 | Objetivo | Métrica verificável | Onde nasce na arquitetura |
