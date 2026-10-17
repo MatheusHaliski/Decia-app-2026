@@ -19,6 +19,50 @@ Corpo do card (criador de tarefas, modelado no RF4): RF20.CA01 formatos e limite
 | **RF20.A05** (CA a confirmar) | Dado um resultado com conformidade ≥ limiar do checklist e sem ⛔, quando clico **Compor projeto com estas tarefas**, então o compositor (RF5) abre com as fases pré-preenchidas pelo projeto hipotético e o `ProjectScheme` nasce RASCUNHO com `aiOrientation` = processo escolhido; com ⛔ o botão fica disponível com aviso "projeto nascerá com pendência bloqueante" (`hasBlockingPending`) — aviso, não impedimento (RF32.CA04). |
 | **RF20.A06** (CA a confirmar) | Dado o painel, quando a avaliação termina, então um `Insight` (scope ACERVO, kind ADEQUACAO_PROCESSO, `metricRefsJson`, `actionsJson`, `severity`) é gravado para o usuário e aparece em Insights › Acervo (RF43) até ser dispensado (`dismissedAt`) ou até o próximo recálculo; avaliação de acervo de **terceiro** → `403 ACESSO_NEGADO` (RF43.CA04 "só o dono"); checklist inexistente para o processo → `404 CHECKLIST_NAO_ENCONTRADO` com sugestão de propor um (RF32). |
 
+## 0. Diagrama de casos de uso
+
+O painel Adequação do acervo do Criador de Projetos, usado só pelo dono do acervo, com a IA redigindo as explicações. Pílulas cheias existem no código hoje; tracejadas são planejadas.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  dono["«ator» Dono do recurso"]:::ator
+  subgraph SIS["Work Station — RF20 Adequação do acervo"]
+    direction TB
+    UC1(["UC1 Ver o Score do Acervo e o mapa de lacunas"]):::ucPlan
+    UC2(["UC2 Avaliar a adequação do acervo a um processo"]):::ucPlan
+    UC3(["UC3 Verificar que o acervo é do próprio usuário"]):::ucPlan
+    UC4(["UC4 Redigir a explicação das lacunas"]):::ucPlan
+    UC5(["UC5 Resolver uma lacuna com ação de 1 clique"]):::ucPlan
+    UC6(["UC6 Compor projeto com as tarefas avaliadas"]):::ucPlan
+    UC7(["UC7 Consultar ou dispensar o insight de adequação"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono --- UC1
+  dono --- UC2
+  dono --- UC7
+  UC1 -. "«include»" .-> UC3
+  UC2 -. "«include»" .-> UC3
+  UC2 -. "«include»" .-> UC4
+  UC5 -. "«extend»" .-> UC2
+  UC6 -. "«extend»" .-> UC2
+  UC7 -. "«include»" .-> UC3
+  UC4 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Ver o Score do Acervo e o mapa de lacunas | Dono do recurso | RF20.A01 | planejado |
+| UC2 Avaliar a adequação do acervo a um processo | Dono do recurso | RF20.A02 | planejado — projeto hipotético, nada persistido |
+| UC3 Verificar que o acervo é do próprio usuário | (incluído por UC1, UC2, UC7) | RF20.A06 | planejado — `Guard.ownerOrAdmin` existe; o fluxo do painel é planejado |
+| UC4 Redigir a explicação das lacunas | IA (AiGateway) (incluído por UC2) | RF20.A03 | planejado — `AiEngine INSIGHT`; sem IA, sem cota ou com RESTRITO/SIGILOSO, texto-padrão do `LocalEngine` |
+| UC5 Resolver uma lacuna com ação de 1 clique | (estende UC2) | RF20.A04 | planejado |
+| UC6 Compor projeto com as tarefas avaliadas | (estende UC2) | RF20.A05 | planejado — abre o compositor do RF5 |
+| UC7 Consultar ou dispensar o insight de adequação | Dono do recurso | RF20.A06 | planejado — Insights › Acervo (RF43) |
+
 ## 1. Diagrama de classes
 
 ```mermaid

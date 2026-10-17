@@ -19,6 +19,55 @@ A busca lê os índices OpenSearch `ws-tasks`, `ws-projects`, `ws-people` e `ws-
 | **RF17.CA05** (CA a confirmar) | Dado um projeto aberto, quando clico em "projetos parecidos com este", então o sistema gera o embedding (`AiEngine MEMORIA_BUSCA`) e faz kNN em `ws-memory` com o mesmo `visibilityFilter`, devolvendo até 10 projetos com score e motivo ("mesmo processo, 4 tarefas em comum"); sem IA disponível cai para "mais do mesmo processo/departamento" (busca textual); `AiInferenceLog` registra a inferência. |
 | **RF17.CA06** (CA a confirmar) | Dado que um autor publica, altera a visibilidade ou arquiva uma tarefa/projeto, quando a transação é confirmada, então o evento AFTER_COMMIT agenda `PipelineJob INDEXAR_BUSCA` (tipo proposto) e o índice reflete a mudança em ≤ 60 s; falha deixa o job `REPROCESSAR` sem afetar a operação do autor. |
 
+## 0. Diagrama de casos de uso
+
+Como uma pessoa autenticada encontra e lê, em modo leitura, esquemas de tarefa e de projeto de outras pessoas pela aba Buscar. Pílulas cheias existem no código hoje; tracejadas são planejadas.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  dono["«ator» Dono do recurso"]:::ator
+  subgraph SIS["Work Station — RF17 Buscar esquemas de terceiros"]
+    direction TB
+    UC1(["UC1 Buscar por termo nas cinco abas"]):::ucPlan
+    UC2(["UC2 Ver sugestões com o termo vazio"]):::ucPlan
+    UC3(["UC3 Filtrar e paginar os resultados"]):::ucPlan
+    UC4(["UC4 Verificar o acesso ao esquema"]):::uc
+    UC5(["UC5 Abrir uma tarefa de terceiro em modo leitura"]):::uc
+    UC6(["UC6 Abrir um projeto de terceiro em modo leitura"]):::ucPlan
+    UC7(["UC7 Ver projetos parecidos com este"]):::ucPlan
+    UC8(["UC8 Atualizar o índice após mudança do autor"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  autenticado --- UC1
+  autenticado --- UC5
+  autenticado --- UC6
+  dono --- UC8
+  UC1 -. "«include»" .-> UC4
+  UC2 -. "«extend»" .-> UC1
+  UC3 -. "«extend»" .-> UC1
+  UC5 -. "«include»" .-> UC4
+  UC6 -. "«include»" .-> UC4
+  UC7 -. "«include»" .-> UC4
+  UC7 -. "«extend»" .-> UC6
+  UC7 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Buscar por termo nas cinco abas | Pessoa autenticada | RF17.CA01, RF17.CA03 | planejado — `/search` é esqueleto; `SearchService` e índices OpenSearch não existem |
+| UC2 Ver sugestões com o termo vazio | (estende UC1) | RF17.CA01 | planejado |
+| UC3 Filtrar e paginar os resultados | (estende UC1) | RF17.CA02 | planejado |
+| UC4 Verificar o acesso ao esquema | (incluído por UC1, UC5, UC6, UC7) | RF17.CA03, RF17.CA04 | real — `AccessPolicy.visible/decide/sigiloso` (D-139) e `ResourceAuthorizer.require`: invisível = `404 NAO_ENCONTRADO`, sem edição = `403 ACESSO_NEGADO`; como filtro da busca, planejado |
+| UC5 Abrir uma tarefa de terceiro em modo leitura | Pessoa autenticada | RF17.CA04 | real — `GET /api/tasks/{id}` (`TaskController.get` → `TaskService.get`) e `PersistedTaskDetail` em `/tasks/[id]` (D-141) |
+| UC6 Abrir um projeto de terceiro em modo leitura | Pessoa autenticada | RF17.CA04 | planejado — `GET /api/projects/{id}` ainda não existe |
+| UC7 Ver projetos parecidos com este | IA (AiGateway) (estende UC6) | RF17.CA05 | planejado — `AiEngine MEMORIA_BUSCA` + kNN em `ws-memory`, com recuo para busca textual |
+| UC8 Atualizar o índice após mudança do autor | Dono do recurso | RF17.CA06 | planejado — `PipelineJob INDEXAR_BUSCA` (tipo proposto) disparado AFTER_COMMIT |
+
 ## 1. Diagrama de classes
 
 ```mermaid

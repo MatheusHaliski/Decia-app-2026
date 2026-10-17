@@ -17,6 +17,52 @@ A barra de interações do card tem **sete** ações. As cinco sociais (`Reactio
 | **RF18.CA05** (CA a confirmar) | Dado uma `Assignment ACEITA` minha, quando clico **Retornar** e informo o motivo (≥ 20 caracteres), então ela vai a DEVOLVIDA, `responsibleId` volta a `previousResponsibleId`, `TaskStateLog` registra com o motivo, `AuditLog ASSIGNMENT_RESPONDED` grava e o remetente recebe `ATRIBUICAO_DEVOLVIDA`; o card do remetente mostra `Stamp DEVOLVIDO` + motivo até ele reatribuir ou retomar; sem `Assignment ACEITA` para mim → `404 SEM_ATRIBUICAO`; motivo curto → `422 MOTIVO_OBRIGATORIO`. |
 | **RF18.CA06** (CA a confirmar) | Dado o card, quando o abro, então vejo o histórico de atribuições e retornos (`Assignment` por alvo: com quem, quando, status e motivo) ao lado dos contadores sociais; o perfil do destinatário (RF16) mostra a etiqueta "atribuída por …" nos itens visíveis; DELEGUEI da Tarefa do Dia (RF44) cria uma nova `Assignment PROPOSTA` (caminho inverso) — regras completas em RF46.CA03–CA05. |
 
+## 0. Diagrama de casos de uso
+
+As sete ações da barra de interações de um card: as cinco sociais (detalhadas no RF19) e as duas novas, atribuir ("Delegar") e retornar, que usam `Assignment`. Pílulas cheias existem no código hoje; tracejadas são planejadas.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  responsavel["«ator» Responsável atribuído"]:::ator
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  subgraph SIS["Work Station — RF18 Interagir e atribuir"]
+    direction TB
+    UC1(["UC1 Curtir, comentar, salvar, compartilhar ou remixar"]):::ucPlan
+    UC2(["UC2 Verificar o acesso ao item"]):::ucPlan
+    UC3(["UC3 Atribuir o item a um colega da mesma empresa"]):::ucPlan
+    UC4(["UC4 Aceitar a atribuição"]):::ucPlan
+    UC5(["UC5 Recusar a atribuição com motivo"]):::ucPlan
+    UC6(["UC6 Retornar a atribuição aceita com motivo"]):::ucPlan
+    UC7(["UC7 Ver o histórico de atribuições e retornos"]):::ucPlan
+    UC8(["UC8 Delegar pela Tarefa do Dia"]):::ucPlan
+  end
+  responsavel -- "é um" --> autenticado
+  autenticado --- UC1
+  autenticado --- UC3
+  responsavel --- UC4
+  responsavel --- UC5
+  responsavel --- UC6
+  autenticado --- UC7
+  UC1 -. "«include»" .-> UC2
+  UC3 -. "«include»" .-> UC2
+  UC8 -. "«extend»" .-> UC3
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Curtir, comentar, salvar, compartilhar ou remixar | Pessoa autenticada | RF18.CA01, RF18.CA02 | planejado — regras completas no RF19; front DEMO (`lib/social/rules.ts`), sem API |
+| UC2 Verificar o acesso ao item | (incluído por UC1, UC3) | RF18.CA02, RF18.CA03 | planejado — `AccessPolicy.canInteract` planejado; o front DEMO usa `canView` (`lib/social/rules.ts`) |
+| UC3 Atribuir o item a um colega da mesma empresa | Pessoa autenticada | RF18.CA03 | planejado — `DelegateDialog` ("Delegar") no front DEMO (`lib/social/rules.ts`), sem API; a entidade `Assignment` existe em `ws-domain` |
+| UC4 Aceitar a atribuição | Responsável atribuído | RF18.CA04 | planejado — `AssignmentInbox` no front DEMO (`lib/social/rules.ts`), sem API |
+| UC5 Recusar a atribuição com motivo | Responsável atribuído | RF18.CA04 | planejado — `AssignmentInbox` no front DEMO (`lib/social/rules.ts`), sem API |
+| UC6 Retornar a atribuição aceita com motivo | Responsável atribuído | RF18.CA05 | planejado — motivo com 20 ou mais caracteres; front DEMO (`lib/social/rules.ts`), sem API |
+| UC7 Ver o histórico de atribuições e retornos | Pessoa autenticada | RF18.CA06 | planejado — no detalhe `/tasks/[id]` do front DEMO (`lib/social/rules.ts`), sem API |
+| UC8 Delegar pela Tarefa do Dia | (estende UC3) | RF18.CA06 | planejado — DELEGUEI do RF44 (regras no RF46) |
+
 ## 1. Diagrama de classes
 
 ```mermaid

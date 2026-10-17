@@ -19,6 +19,54 @@ O perfil de terceiros é o mesmo `/u/[username]` do RF6, mas com `viewer != owne
 | **RF16.CA05** (CA a confirmar) | Dado uma sub-aba aberta, quando aplico filtros e paginação (`?tab=&fase=&categoria=&page=&size=20`), então a URL reflete o estado e cada card traz as ações inline do RF18/RF19 (curtir, comentar, salvar, compartilhar, remixar, atribuir) e, no Acervo, "Levar ao meu acervo" (RF7/RF41.CA08) — todas respeitando a visibilidade do item. |
 | **RF16.CA06** (CA a confirmar) | Dado que o `username` pertence a uma conta `EMPRESA` ou `CHEFE_DEPARTAMENTO`, quando abro o perfil, então o cabeçalho mostra a etiqueta institucional ("Chefe de {sigla}" com monograma, ou logo da empresa) e o atalho para a página do departamento (RF14) ou da empresa (RF15); textos em pt-BR/en/es e layout responsivo. |
 
+## 0. Diagrama de casos de uso
+
+O que uma pessoa autenticada faz no perfil de um colega (`/u/[username]`, visão de terceiros). Pílulas cheias existem no código hoje; tracejadas são planejadas.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  subgraph SIS["Work Station — RF16 Perfil de um colega"]
+    direction TB
+    UC1(["UC1 Abrir o perfil público de um colega"]):::uc
+    UC2(["UC2 Verificar se o perfil pode ser visto"]):::uc
+    UC3(["UC3 Listar as tarefas que posso ver do colega"]):::uc
+    UC4(["UC4 Navegar pelas sub-abas públicas 1 a 5"]):::ucPlan
+    UC5(["UC5 Filtrar e paginar a sub-aba"]):::ucPlan
+    UC6(["UC6 Ver o Hype e o perfil deliberativo público"]):::ucPlan
+    UC7(["UC7 Seguir o colega"]):::ucPlan
+    UC8(["UC8 Interagir com um item ou levá-lo ao meu acervo"]):::ucPlan
+    UC9(["UC9 Ir à página do departamento ou da empresa"]):::ucPlan
+  end
+  autenticado --- UC1
+  autenticado --- UC3
+  autenticado --- UC4
+  autenticado --- UC7
+  UC1 -. "«include»" .-> UC2
+  UC3 -. "«include»" .-> UC2
+  UC4 -. "«include»" .-> UC2
+  UC5 -. "«extend»" .-> UC4
+  UC6 -. "«extend»" .-> UC1
+  UC8 -. "«extend»" .-> UC3
+  UC9 -. "«extend»" .-> UC1
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Abrir o perfil público de um colega | Pessoa autenticada | RF16.CA01 | real — `GET /api/people/by-username/{username}` → `PeopleService.byUsername` → `PublicProfileView` sem contato (em curso, Onda 1); contadores pela API planejados |
+| UC2 Verificar se o perfil pode ser visto | (incluído por UC1, UC3, UC4) | RF16.CA01, RF16.CA02 | real — `ResourceAuthorizer.requireProfileVisible`: `404 NAO_ENCONTRADO` igual para conta inexistente ou não `ACTIVE`; bloqueio das sub-abas 6–15 planejado |
+| UC3 Listar as tarefas que posso ver do colega | Pessoa autenticada | RF16.CA03 | real — `GET /api/people/{id}/tasks` → `TaskService.listOf` filtra por `AccessPolicy.visible` (SIGILOSO só dono e colaboradores, D-139) |
+| UC4 Navegar pelas sub-abas públicas 1 a 5 | Pessoa autenticada | RF16.CA02, RF16.CA03 | planejado — `GET /api/users/{username}/tabs` ainda não existe; o front usa dados DEMO |
+| UC5 Filtrar e paginar a sub-aba | (estende UC4) | RF16.CA05 | planejado |
+| UC6 Ver o Hype e o perfil deliberativo público | (estende UC1) | RF16.CA04 | planejado — depende de `User.hypeVisibility` e `DeliberativeProfile.publicIndicatorsJson` |
+| UC7 Seguir o colega | Pessoa autenticada | RF16.CA01 | planejado — `FollowButton` só no front DEMO (`lib/social/rules.ts`), sem API |
+| UC8 Interagir com um item ou levá-lo ao meu acervo | (estende UC3) | RF16.CA05 | planejado — ações do RF18/RF19 e do RF7; front DEMO (`lib/social/rules.ts`), sem API |
+| UC9 Ir à página do departamento ou da empresa | (estende UC1) | RF16.CA06 | planejado — só para contas EMPRESA e CHEFE_DEPARTAMENTO (RF14/RF15) |
+
 ## 1. Diagrama de classes
 
 ```mermaid
