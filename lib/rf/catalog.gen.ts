@@ -436,7 +436,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": "COMO usuário logado dentro do sistema WS POSSO acessar a aba criar nova tarefa PARA criar um esquema de tarefa único e personalizado conforme as diretrizes de minha equipe de trabalho.",
     "summary": "A tarefa (TaskItem, TAXONOMIA §2.1) é a unidade mínima do Work Station (= peça de roupa). O título do card destaca o que o corpo (RF20) detalha em 5 etapas: (1) Fonte — a aba escolhida define SourceKind e o TaskType sugerido; (2) Detecção por IA — AiEngine capability PREENCHER_TAREFA pré-preenche com confiança por campo e faísca ✦ (pulada no modo Manual ou quando a IA falha, CA03); (3) Dados da tarefa — taxonomia oficial, prazo legal (LegalDeadlineRule), órgão (OrgEntity via busca web); (4) Mais detalhes — chancelas sugeridas (RF39), visibilidade, estado inicial, situação do documento, protocolo, guarda, Balcão (RF40), tags, dependências, projeto/fase; (5) Arte do card — thumbnail assíncrono (RF38/RF11). Antivírus, OCR e thumbnail rodam como PipelineJob após o commit e a tarefa entra no Acervo (RF6/RF41).",
     "route": "Criar Tarefa (/tasks/new; folha \"+ Criar\" do SidebarNav; botão \"Cadastrar nova tarefa\" do Criador de Projetos, RF5); API POST /api/tasks, POST /api/tasks/uploads, POST /api/tasks/detect, GET /api/org-entities/search, GET /api/legal-deadlines/compute",
-    "coverage": "RF20.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 · CA15 — corpo do card = card RF20 (o card RF4 está vazio; o criador de tarefas está descrito no corpo do card RF20, cujos CAs são citados aqui como estão escritos; ver RENUMERACAO.md). Nenhuma classe deste RF existe ainda no código: tudo (planejado), exceto os transversais do Bloco 1–3 (SecurityConfig, CorrelationIdFilter, Guard, AuditLogPort, AuthRateLimitFilter, S3StorageConfig, AiProvidersConfig).",
+    "coverage": "RF20.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 · CA15 — corpo do card = card RF20 (o card RF4 está vazio; o criador de tarefas está descrito no corpo do card RF20, cujos CAs são citados aqui como estão escritos; ver RENUMERACAO.md). Situação em 17/10/2026 (auditoria docs/auditoria/2026-10-17/, MATRIZ_RF: AUSENTE → API REAL PARCIAL): (real) a criação manual ponta a ponta — /tasks/new (components/tasks/TaskForm.tsx, tasksApi.create em lib/tasks/client.ts) → POST /api/tasks (TaskController.create, TaskRequest) → TaskService.create (TaskInput, ResourceAuthorizer.viewer, erros de campo juntos em 422 VALIDACAO) → TaskItem.create (RASCUNHO, SourceKind.MANUAL — V37) + TaskBrief (V36 task_briefs: objetivo, WorkArea, entregáveis, critérios, referências, extensões opcionais por área) → TaskRepositoryPort.insert → task_state_log → AuditLogPort TASK_CREATED → 201 TaskView (commits 97611a0, 013657a, 474b6cb; jornada real 17/17 com tarefas de 6 áreas), mais os transversais do Bloco 1–3 (SecurityConfig, CorrelationIdFilter, Guard, AuditLogPort, AuthRateLimitFilter, S3StorageConfig, AiProvidersConfig); (planejado) uploads e anexos (UploadService; MediaUploadService existe mas ainda não é bean), detecção por IA (TaskDetectionService, AiEngine), órgãos (/api/org-entities/search), prazos legais (/api/legal-deadlines/compute), lote/.zip, chancelas, Balcão, dependências, escolha de outro responsável (busca /api/people?q=) e vínculo com projeto/peças (Onda 3 do PLANO_ONDAS.md); as fontes ARQUIVO, COLAR, GOOGLE, MICROSOFT, EMAIL, LINK, PROTOCOLO, FOTO e TEXTO_IA existem só como valores do enum SourceKind, sem adaptador.",
     "cas": [
       {
         "id": "RF20.CA01",
@@ -458,7 +458,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF20.CA04",
-        "text": "TaskCreationService.create/validate, TaskRepositoryPort, ProjectTask (RF5)",
+        "text": "TaskCreationService.create/validate, TaskRepositoryPort, ProjectTask (RF5); real: TaskController.create, TaskService.create, TaskRepositoryPort.insert, TaskBrief",
         "note": "",
         "kind": "rastreabilidade"
       },
@@ -518,7 +518,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF20.CA14",
-        "text": "TaskCreationService.validate, GlobalExceptionHandler (ApiError.details)",
+        "text": "TaskCreationService.validate, GlobalExceptionHandler (ApiError.details); real: TaskService.validate (privado), TaskBriefJson.invalid",
         "note": "",
         "kind": "rastreabilidade"
       },
@@ -914,7 +914,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": "COMO usuário visualizando um esquema de tarefa ou projeto POSSO editar os dados deste esquema PARA atualizar minha gestão pessoal e empresarial.",
     "summary": "Este RF cobre a edição dos dados (ficha) da TaskItem e do ProjectScheme: validação igual à do criador (RF4/RF5), lock otimista para tarefa e último-vence com aviso para projeto (RF22.CA04), versões (ProjectVersion, TaskStateLog), autosave e bloqueio de itens encerrados. A edição de arquivos (anexos, versões, provedor externo) é o RF8 e a arte do card é o RF11.",
     "route": "Meu perfil (/profile) › sub-abas Acervo Digital e Projetos (RF6) › card › Editar → /tasks/[id]/edit e /projects/[id]/edit (a Mesa completa — Quadro, Linha do tempo, canvas — é o RF21/RF22; os arquivos são o RF8); API GET /api/tasks/{id}/edit-form, PATCH /api/tasks/{id}, PATCH /api/projects/{id}, PUT /api/tasks/{id}/draft, POST /api/tasks/{id}/reopen, POST /api/projects/{id}/reopen",
-    "coverage": "RF12.CA01 · RF12.CA02 · RF12.CA03 · RF12.CA04 · RF12.CA05 · RF12.CA06 — corpo do card vazio: CAs derivados do título + HU12 + RF22 (CA01 permissão, CA02 ProjectVersion, CA04 concorrência, CA06 bloqueio) + RF20.CA07/CA11 + RF21.CA14 (autosave) + RF41.CA02 (TaskStateLog), marcados (CA a confirmar). Todas as classes do RF são (planejado); reais: Guard, AuditLogPort, SecurityConfig, SessionActiveFilter, RedisAdaptersConfig.",
+    "coverage": "RF12.CA01 · RF12.CA02 · RF12.CA03 · RF12.CA04 · RF12.CA05 · RF12.CA06 — corpo do card vazio: CAs derivados do título + HU12 + RF22 (CA01 permissão, CA02 ProjectVersion, CA04 concorrência, CA06 bloqueio) + RF20.CA07/CA11 + RF21.CA14 (autosave) + RF41.CA02 (TaskStateLog), marcados (CA a confirmar). Classes (real) desde 17/10/2026 (97611a0, 013657a, 474b6cb): TaskController.get/update (@AuthorizedBy(\"require\")), TaskRequest, TaskService.get/update (TaskInput, TaskView com version e editable), TaskRepositoryPort.update (versão obrigatória), ResourceAuthorizer, AccessPolicy, TaskState.isReadOnly/locksVisibility, GlobalExceptionHandler (409 EDICAO_CONCORRENTE) e a tela /tasks/[id]/edit com TaskForm modo edit; as demais (projeto, rascunho/autosave, reabrir, prazo legal, eventos AFTER_COMMIT) seguem (planejado); transversais reais: Guard, AuditLogPort, SecurityConfig, SessionActiveFilter, RedisAdaptersConfig.",
     "cas": [
       {
         "id": "RF12.CA01",
@@ -924,7 +924,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF12.CA02",
-        "text": "Dado o envio (PATCH /api/tasks/{id} ou PATCH /api/projects/{id} com If-Match: version), então o serviço valida: título ≤ 200, ≤ 2 tags por eixo, categoria compatível com o tipo, prazo legal recalculado por LegalDeadlineRule quando a categoria tem prazo (legalOverrideReason obrigatório para sobrescrever, RF20.CA11), projeto com ≥ 1 tarefa em DEMANDA + 1 em outra fase (RF21.CA05) e sem ciclo de dependências → 422 VALIDACAO; version divergente → 409 CONFLITO_VERSAO para tarefa e último-vence com aviso CONFLITO_ULTIMO_VENCE para projeto (RF22.CA04).",
+        "text": "Dado o envio (PATCH /api/tasks/{id} ou PATCH /api/projects/{id} com If-Match: version), então o serviço valida: título ≤ 200, ≤ 2 tags por eixo, categoria compatível com o tipo, prazo legal recalculado por LegalDeadlineRule quando a categoria tem prazo (legalOverrideReason obrigatório para sobrescrever, RF20.CA11), projeto com ≥ 1 tarefa em DEMANDA + 1 em outra fase (RF21.CA05) e sem ciclo de dependências → 422 VALIDACAO; version divergente → 409 CONFLITO_VERSAO para tarefa e último-vence com aviso CONFLITO_ULTIMO_VENCE para projeto (RF22.CA04). Contrato real da tarefa (17/10/2026): PUT /api/tasks/{id} com o TaskRequest completo e version no corpo (não PATCH + If-Match) e 409 EDICAO_CONCORRENTE (não CONFLITO_VERSAO); categoria×tipo, tags por eixo e prazo legal ainda não são validados.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -2505,17 +2505,17 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": null,
     "summary": "Estados (TaskState): RASCUNHO · DISPONIVEL · EM_USO (em ≥ 1 projeto ativo, automático) · BLOQUEADA · CONCLUIDA · ARQUIVADA · MODELO_PUBLICO (só via chancela RF39 ou publicação explícita) · OFERECIDA (Balcão RF40); toda transição em TaskStateLog (TaskStateMachine com tabela testada). Sub-filtros: Todas · Favoritas · Disponíveis · Em uso · Bloqueadas · Concluídas · Modelos públicos · Chanceladas · Oferecidas (+ filtros categoria, tipo, processo, natureza, departamento, accessClass, prazo, origem; ordenação recentes, mais/menos usadas, nome, prazo, valor), tudo na querystring (CA09). Prazo legal (legalDueAt, LegalDeadlineRule): card âmbar a 3 dias, vermelho vencido, ⚖, notificação PRAZO_PROXIMO/PRAZO_VENCIDO (job diário) e sugestão na Tarefa do Dia (RF44). Evidências (Evidence: foto com takenAt, geolocalização opcional AES, vínculo a tarefa/projeto, studioStatus) podem virar IMAGEM_EDITADA pelo Estúdio (RF4). Exclusão: projetos de outros mantêm ProjectTask.snapshotJson (RF23) e donos são avisados; tarefa ligada a decisão VALIDADA (FinalDecision.resultingTaskId ou nó TAREFA do rastro) não é excluída, só arquivada (409). Acervo de terceiros: VisibilityFilter + Guard (403 no resto).",
     "route": "Acervo de Tarefas (/tasks?filtro=&categoria=&ordem=&page=), detalhe (/tasks/[id]), Anexos & Evidências (/attachments), acervo de terceiros (/u/[username]?tab=acervo)",
-    "coverage": "RF41.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs. A criação de tarefas é o RF4 (corpo em RF20); o Acervo alimenta os selects do Criador de Projetos (RF5) e os anexos do DECIA (RF29).",
+    "coverage": "RF41.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs. A criação de tarefas é o RF4 (corpo em RF20); o Acervo alimenta os selects do Criador de Projetos (RF5) e os anexos do DECIA (RF29). Situação em 17/10/2026 (MATRIZ_RF: DEMO EM MEMÓRIA → API REAL PARCIAL): ver «Real × planejado» abaixo.",
     "cas": [
       {
         "id": "RF41.CA01",
-        "text": "AcervoService.list/counters, TaskCardView, contadores por sub-filtro em CachePort",
+        "text": "AcervoService.list/counters, TaskCardView, contadores por sub-filtro em CachePort; real: TaskController.mine, TaskService.listMine, TaskRepositoryPort.findByOwner, PersistedTaskCard, workStatusOf",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF41.CA02",
-        "text": "TaskStateMachine.transition/onProjectActivated/onProjectLeft, TaskState, TaskStateLog, MODELO_PUBLICO só via chancela/publicação",
+        "text": "TaskStateMachine.transition/onProjectActivated/onProjectLeft, TaskState, TaskStateLog, MODELO_PUBLICO só via chancela/publicação; real: TaskController.transition, TransitionRequest, TaskService.transition, TaskItem.transition/block, TaskState.machine(), TASK_TRANSITIONS",
         "note": "",
         "kind": "rastreabilidade"
       },

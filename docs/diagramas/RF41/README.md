@@ -1,8 +1,16 @@
 # RF41 — Gerir o Acervo de Tarefas (inventário do usuário): estados, sub-filtros, ordenação, prazos legais, anexos & evidências e ações rápidas
-**HU:** HU41 · **Sprint (board Work Station):** Product Backlog (não comprometido na Sprint 4; o Acervo é entregue junto com RF4/RF6 na fase (d) da ARQUITETURA §6) · **Equivalente FAI:** Closet Digital (RF6) + RF31 Estados do acervo + RF12 Minhas Fotos + RF7 detalhe da peça · **Aba/rota:** Acervo de Tarefas (`/tasks?filtro=&categoria=&ordem=&page=`), detalhe (`/tasks/[id]`), Anexos & Evidências (`/attachments`), acervo de terceiros (`/u/[username]?tab=acervo`)
-**Critérios de aceite cobertos:** RF41.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 (corpo do card, inalterado) — regra: o **título do card** define o RF e o corpo traz os próprios CAs. A criação de tarefas é o RF4 (corpo em RF20); o Acervo alimenta os selects do Criador de Projetos (RF5) e os anexos do DECIA (RF29).
+**HU:** HU41 · **Sprint (board Work Station):** Product Backlog (não comprometido na Sprint 4; o Acervo é entregue junto com RF4/RF6 na fase (d) da ARQUITETURA §6) · **Equivalente FAI:** Closet Digital (RF6) + RF31 Estados do acervo + RF12 Minhas Fotos + RF7 detalhe da peça · **Aba/rota:** Acervo de Tarefas (`/tasks?filtro=&categoria=&ordem=&page=`), detalhe (`/tasks/[id]`), Anexos & Evidências (`/attachments`), acervo de terceiros (`/u/[username]?tab=acervo`) · **real em 17/10/2026:** `/tasks` («Minhas tarefas», `MyTasks`), `/tasks/[id]` (`PersistedTaskDetail`), `GET /api/tasks?limit=`, `GET /api/tasks/{id}` e `POST /api/tasks/{id}/transitions`; querystring de filtros, contadores, ações rápidas, `/attachments` e acervo de terceiros seguem **(planejado)**
+**Critérios de aceite cobertos:** RF41.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 (corpo do card, inalterado) — regra: o **título do card** define o RF e o corpo traz os próprios CAs. A criação de tarefas é o RF4 (corpo em RF20); o Acervo alimenta os selects do Criador de Projetos (RF5) e os anexos do DECIA (RF29). Situação em 17/10/2026 (MATRIZ_RF: DEMO EM MEMÓRIA → API REAL PARCIAL): ver «Real × planejado» abaixo.
 
 Estados (`TaskState`): RASCUNHO · DISPONIVEL · EM_USO (em ≥ 1 projeto ativo, automático) · BLOQUEADA · CONCLUIDA · ARQUIVADA · MODELO_PUBLICO (só via chancela RF39 ou publicação explícita) · OFERECIDA (Balcão RF40); toda transição em `TaskStateLog` (`TaskStateMachine` com tabela testada). Sub-filtros: Todas · Favoritas · Disponíveis · Em uso · Bloqueadas · Concluídas · Modelos públicos · Chanceladas · Oferecidas (+ filtros categoria, tipo, processo, natureza, departamento, `accessClass`, prazo, origem; ordenação recentes, mais/menos usadas, nome, prazo, valor), tudo na querystring (CA09). Prazo legal (`legalDueAt`, `LegalDeadlineRule`): card âmbar a 3 dias, vermelho vencido, ⚖, notificação `PRAZO_PROXIMO/PRAZO_VENCIDO` (job diário) e sugestão na Tarefa do Dia (RF44). Evidências (`Evidence`: foto com `takenAt`, geolocalização opcional AES, vínculo a tarefa/projeto, `studioStatus`) podem virar IMAGEM_EDITADA pelo Estúdio (RF4). Exclusão: projetos de outros mantêm `ProjectTask.snapshotJson` (RF23) e donos são avisados; tarefa ligada a decisão VALIDADA (`FinalDecision.resultingTaskId` ou nó TAREFA do rastro) **não é excluída, só arquivada** (409). Acervo de terceiros: `VisibilityFilter` + `Guard` (403 no resto).
+
+**Real × planejado (17/10/2026; commits `5ad78ae`, `97611a0`, `013657a`, `474b6cb`; jornada real 17/17 em `docs/auditoria/2026-10-17/README.md`):**
+
+- **(real) estados** — `TaskState` com os 8 valores acima e a tabela `TaskState.machine()` (código `TAREFA_TRANSICAO_INVALIDA`), espelhada em `lib/tasks/status.ts` (`TASK_TRANSITIONS`; `lib/tasks/status.test.ts` lê o Java). A tela mostra o eixo de execução (`workStatusOf`): RASCUNHO e DISPONIVEL → **A realizar** (rascunho com tag tracejada «A realizar · Rascunho»), EM_USO → **Em andamento**, BLOQUEADA → **Bloqueado**, CONCLUIDA → **Concluído**, ARQUIVADA → **Arquivado**; MODELO_PUBLICO e OFERECIDA são eixo de publicação («Modelo público», «Oferecida»), sem progresso inventado.
+- **(real) transições na tela** (`PersistedTaskDetail` → `tasksApi.transition` → `POST /api/tasks/{id}/transitions` com `TransitionRequest` e `version`): **Revisar e publicar no acervo** (RASCUNHO → DISPONIVEL), **Iniciar** (DISPONIVEL → EM_USO), **Bloquear** com motivo (causa = responsável da tarefa em `blockedByUserId`; sem motivo ou causa → `422 TAREFA_BLOQUEIO_SEM_CAUSA`), **Retomar (desbloquear)** (BLOQUEADA → EM_USO), **Concluir** (EM_USO → CONCLUIDA) e «Mover para: …» nas demais transições da tabela; concluída ou arquivada → `TaskView.editable = false`, **somente leitura**. Cada transição grava `task_state_log` e `AuditLog TASK_STATE_CHANGED`; versão superada → `409 EDICAO_CONCORRENTE`. Critérios marcáveis no detalhe usam `PUT /api/tasks/{id}` (RF12) e o progresso é `criteriaProgress` (atendidos ÷ total).
+- **(real) lista** — `GET /api/tasks?limit=` (`TaskController.mine` → `TaskService.listMine`, mais recentes primeiro, até 100) e filtro **no cliente** por estado de execução com contagem: Todos · A realizar · Em andamento · Bloqueado · Concluído · Arquivado (só os que têm tarefas); card `PersistedTaskCard` com tipo, área, objetivo, estado, prioridade, prazo, próxima ação e progresso.
+- **(real) acesso** — `ResourceAuthorizer` + `AccessPolicy` (SIGILOSO = PRIVADA; ADMIN sem acesso implícito a SIGILOSO, D-139); invisível → `404 NAO_ENCONTRADO`, e a tela diz «não existe ou você não tem acesso» sem revelar qual. Acervo de terceiros: `TaskService.listOf` filtra item a item por `AccessPolicy.visible` e é exposto em `GET /api/people/{id}/tasks` — ambos publicados no commit 381b452 (Onda 1).
+- **(planejado)** — sub-filtros Favoritas, Disponíveis/Em uso como `filtro=`, Modelos públicos, Chanceladas e Oferecidas; filtros de categoria/tipo/processo/natureza/departamento/prazo/origem, ordenação e página na querystring (CA09) e contadores em cache; prazos legais e notificações (CA04); exclusão com `snapshotJson` e bloqueio por decisão (CA05); **Anexos & Evidências** (`/attachments`, `EvidenceService`, CA06); ações rápidas (favoritar, duplicar, levar ao projeto, compartilhar na sessão, pedir chancela, oferecer no Balcão — CA07); EM_USO/DISPONIVEL automáticos por projeto e MODELO_PUBLICO só via chancela (hoje a tabela aceita essas transições à mão e a tela as oferece em «Mover para»); `AcervoService`, `TaskStateMachine`, `LegalDeadlineService`, `EvidenceService`, `VisibilityFilter`, `UploadGuard`, `AcervoController`, `EvidenceController`. Onda 3 do `PLANO_ONDAS.md`: anexos, dependências estruturadas, responsável por busca (`/api/people?q=`), vínculo com projeto e peças.
 
 ## 1. Diagrama de classes
 
@@ -41,6 +49,8 @@ namespace ws_domain_acervo {
     +sealIdsJson: JSON
     +version: long
     .. +30 campos ..
+    +transition(TaskState) TaskItem
+    +block(byTaskId, byUserId, reason) TaskItem
   }
   class TaskStateLog {
     <<entity>>
@@ -103,6 +113,9 @@ namespace ws_domain_acervo {
     ARQUIVADA
     MODELO_PUBLICO
     OFERECIDA
+    +canTransitionTo(TaskState) boolean
+    +isReadOnly() boolean
+    +locksVisibility() boolean
   }
   class StudioStatus {
     <<enum>>
@@ -150,7 +163,44 @@ namespace ws_domain_relacionados {
   }
 }
 
+namespace ws_domain_security {
+  class AccessPolicy {
+    <<service>>
+    +visible(Viewer, ScopedResource) boolean
+    +decide(Viewer, ScopedResource, ResourceAction) AccessDecision
+    +effectiveVisibility(Visibility, AccessClassification) Visibility
+  }
+}
+
 namespace ws_application {
+  class TaskService {
+    <<service>>
+    +listMine(CurrentUser, limit) List~TaskView~
+    +listOf(CurrentUser, ownerId, limit) List~TaskView~
+    +get(CurrentUser, id) TaskView
+    +transition(CurrentUser, id, TransitionInput, ctx) TaskView
+    -requireBlockCause(Viewer, taskId, TransitionInput) void
+  }
+  class TaskView {
+    +id: UUID
+    +version: long
+    +state: TaskState
+    +blockReason: String
+    +acceptanceCriteria: List~Criterion~
+    +editable: boolean
+  }
+  class ResourceAuthorizer {
+    <<service>>
+    +viewer(CurrentUser) Viewer
+    +require(Viewer, ScopedResource, ResourceAction) void
+  }
+  class TaskRepositoryPort {
+    <<port>>
+    +findByOwner(ownerId, limit) List~StoredTask~
+    +findById(id) Optional~StoredTask~
+    +update(TaskItem, TaskBrief, expectedVersion) StoredTask
+    +appendStateLog(TaskStateLog) void
+  }
   class AcervoService {
     <<service>>
     +list(viewer, ownerId, AcervoQuery) Page~TaskCardView~
@@ -210,6 +260,19 @@ namespace ws_application {
 }
 
 namespace ws_web {
+  class TaskController {
+    <<controller>>
+    +mine(CurrentUser, limit) List~TaskView~
+    +get(CurrentUser, id) TaskView
+    +transition(CurrentUser, id, TransitionRequest, RequestContext) TaskView
+  }
+  class TransitionRequest {
+    +to: TaskState
+    +reason: String
+    +blockedByTaskId: UUID
+    +blockedByUserId: UUID
+    +version: Long
+  }
   class AcervoController {
     <<controller>>
     +GET_api_tasks(filtro, filtros, ordem, page)
@@ -253,6 +316,19 @@ EvidenceService --> UploadGuard
 EvidenceService --> OwnMedia
 LegalDeadlineService ..> Notification : PRAZO_PROXIMO PRAZO_VENCIDO
 DomainEvents ..> TaskStateMachine : ProjectActivated ProjectTaskRemoved
+TaskController --> TaskService : real
+TaskController ..> TransitionRequest
+TaskService --> ResourceAuthorizer
+ResourceAuthorizer --> AccessPolicy
+TaskService --> TaskRepositoryPort
+TaskService ..> TaskView
+TaskService ..> TaskStateLog : grava toda transicao real
+TaskItem ..> TaskState : transition e block
+note for TaskController "(real) GET /api/tasks, GET /api/tasks/{id}, POST /api/tasks/{id}/transitions"
+note for TaskService "(real) listOf publicado em 381b452 (Onda 1)"
+note for AcervoController "(planejado) counters, actions, DELETE, filtros na querystring, acervo de terceiros"
+note for TaskStateMachine "(planejado) no real a tabela é TaskState.machine()"
+note for EvidenceService "(planejado) Anexos e Evidências"
 ```
 
 ## 2. Diagrama de atividades
@@ -285,6 +361,9 @@ flowchart TD
     F5["Due âmbar a 3 dias, vermelho vencido, ⚖ prazo legal"]
     F6["EvidenceUploader (EXIF data/GPS com consentimento) · POST /api/evidences"]
     F7["Dialog de exclusão: lista projetos de outros que usam a tarefa"]
+    FR1["(real) /tasks · MyTasks: GET /api/tasks?limit=100 · filtro no cliente Todos · A realizar · Em andamento · Bloqueado · Concluído · Arquivado com contagem · PersistedTaskCard"]
+    FR2["(real) /tasks/[id] · PersistedTaskDetail: Iniciar · Retomar · Concluir · Revisar e publicar · Bloquear com motivo · Mover para · critérios marcáveis · concluída somente leitura"]
+    FR3["(real) POST /api/tasks/{id}/transitions com to, reason, blockedByUserId e version"]
   end
 
   subgraph WEB["ws-web"]
@@ -293,25 +372,32 @@ flowchart TD
   end
 
   subgraph APP["ws-application"]
-    P1["AcervoService.list: VisibilityFilter + Guard (próprio ou terceiro) + SearchIndexPort + contadores em cache"]
+    P1["(planejado) AcervoService.list: VisibilityFilter + Guard (próprio ou terceiro) + SearchIndexPort + contadores em cache"]
     P2{"Ator é dono?"}
     P2 -->|não| P3["Só visibilidade compatível · ação Levar ao meu acervo (RF23) se permitida · resto 403"]
-    P4["TaskStateMachine.transition: RASCUNHO→DISPONIVEL→EM_USO⇄BLOQUEADA→CONCLUIDA→ARQUIVADA"]
+    P4["(planejado) TaskStateMachine.transition: RASCUNHO→DISPONIVEL→EM_USO⇄BLOQUEADA→CONCLUIDA→ARQUIVADA"]
     P4 --> P5{"Transição permitida?"}
-    P5 -->|não| E1["409 TRANSICAO_INVALIDA"]
+    P5 -->|não| E1["409 TAREFA_TRANSICAO_INVALIDA"]
     P5 -->|sim| P6["TaskStateLog (from, to, actor, reason, projectId, correlationId)"]
-    P7["AFTER_COMMIT ProjectActivated → EM_USO automático · ProjectTaskRemoved ou projeto encerrado → volta a DISPONIVEL"]
+    P7["(planejado) AFTER_COMMIT ProjectActivated → EM_USO automático · ProjectTaskRemoved ou projeto encerrado → volta a DISPONIVEL"]
     P8{"MODELO_PUBLICO?"}
     P8 -->|só via chancela aprovada ou publicação explícita| P6
-    P9["LegalDeadlineService.scanDueSoon (job diário): legalDueAt em 3 dias ou vencido → Notification PRAZO_PROXIMO/PRAZO_VENCIDO · sugere na Tarefa do Dia (RF44)"]
-    P10{"Guard.requireOwner(tarefa)?"}
+    P9["(planejado) LegalDeadlineService.scanDueSoon (job diário): legalDueAt em 3 dias ou vencido → Notification PRAZO_PROXIMO/PRAZO_VENCIDO · sugere na Tarefa do Dia (RF44)"]
+    P10{"(planejado) Guard.requireOwner(tarefa)?"}
     P10 -->|não| E2["403 ACESSO_NEGADO"]
     P11{"Tarefa ligada a decisão VALIDADA?"}
     P11 -->|sim| E3["409 TAREFA_EM_DECISAO: só arquivar"]
-    P11 -->|não| P12["Projetos de outros mantêm ProjectTask.snapshotJson (removedByAuthor) · Notification TAREFA_REUTILIZADA aos donos · delete"]
-    P13["UploadGuard (magic bytes, teto de pixels) · reencode · geolocalização AES opcional · Evidence · OwnMedia"]
-    P14["toStudio: Evidence → TaskItem IMAGEM_EDITADA (RF4) · derivedTaskId"]
-    P15["archive: ARQUIVADA · oferece repassar ao Balcão (RF40.CA05)"]
+    P11 -->|não| P12["(planejado) Projetos de outros mantêm ProjectTask.snapshotJson (removedByAuthor) · Notification TAREFA_REUTILIZADA aos donos · delete"]
+    P13["(planejado) UploadGuard (magic bytes, teto de pixels) · reencode · geolocalização AES opcional · Evidence · OwnMedia"]
+    P14["(planejado) toStudio: Evidence → TaskItem IMAGEM_EDITADA (RF4) · derivedTaskId"]
+    P15["(planejado) archive: ARQUIVADA · oferece repassar ao Balcão (RF40.CA05)"]
+    PR4["(real) TaskService.listMine: TaskRepositoryPort.findByOwner, mais recentes primeiro, até 100 · TaskView com version e editable"]
+    PR1["(real) TaskService.transition: ResourceAuthorizer.require EDIT · BLOQUEADA exige motivo e causa visível · TaskItem.block ou TaskItem.transition pela TaskState.machine()"]
+    PR2{"permitida?"}
+    ER1["409 TAREFA_TRANSICAO_INVALIDA (real)"]
+    ER2["422 TAREFA_BLOQUEIO_SEM_CAUSA (real)"]
+    PR3["(real) TaskRepositoryPort.update com version · task_state_log from, to, actor, reason · AuditLog TASK_STATE_CHANGED"]
+    ER3["409 EDICAO_CONCORRENTE (version superada, real)"]
   end
 
   subgraph DB["Persistência"]
@@ -345,6 +431,19 @@ flowchart TD
   E1 --> W2
   E2 --> W2
   E3 --> W2
+  A0 -->|"real"| FR1 --> W1
+  W1 -->|"real GET /api/tasks"| PR4 --> D1
+  PR4 --> FR1
+  A3 -->|"real"| FR2 --> FR3 --> W1
+  W1 -->|"real transitions"| PR1 --> PR2
+  PR2 -->|"fora da tabela"| ER1
+  PR2 -->|"bloqueio sem motivo ou causa"| ER2
+  PR2 -->|"sim"| PR3 --> D1
+  PR3 -->|"versão antiga"| ER3
+  PR3 --> FR2
+  ER1 --> W2
+  ER2 --> W2
+  ER3 --> W2
 ```
 
 ## 3. Diagrama de sequência
@@ -422,23 +521,64 @@ sequenceDiagram
   FE->>C: POST /api/tasks/{idPrivada}/actions {FAVORITAR}
   C->>S: Guard.requireOwner
   S-->>C: 403 ACESSO_NEGADO
+
+  Note over U,EV: Caminho REAL em 17/10/2026 — jornada Iniciar, Bloquear (motivo), Retomar, marcar critério, Concluir
+  U->>FE: abre /tasks (Minhas tarefas)
+  FE->>C: GET /api/tasks?limit=100
+  C->>S: TaskService.listMine(user, 100)
+  S->>DB: TaskRepositoryPort.findByOwner (mais recentes primeiro)
+  S-->>FE: lista de TaskView (state, version, editable, critérios)
+  FE->>FE: workStatusOf agrupa em A realizar, Em andamento, Bloqueado, Concluído e Arquivado e filtra no cliente
+  U->>FE: abre /tasks/{id} e clica Iniciar
+  FE->>C: POST /api/tasks/{id}/transitions {to EM_USO, version n}
+  C->>S: TaskService.transition(user, id, TransitionInput, ctx)
+  S->>S: ResourceAuthorizer.require(viewer, tarefa, EDIT) e TaskItem.transition(EM_USO) pela TaskState.machine()
+  S->>DB: TaskRepositoryPort.update(version n) e appendStateLog(DISPONIVEL → EM_USO)
+  S->>DB: AuditLog TASK_STATE_CHANGED (from, to)
+  S-->>FE: TaskView EM_USO, Em andamento, version n+1
+  U->>FE: Bloquear com motivo
+  FE->>C: POST /api/tasks/{id}/transitions {to BLOQUEADA, reason, blockedByUserId do responsável, version}
+  C->>S: TaskService.transition
+  alt sem motivo ou sem causa
+    S-->>FE: 422 TAREFA_BLOQUEIO_SEM_CAUSA
+  else causa invisível ou de outra empresa
+    S-->>FE: 422 VALIDACAO details.fields
+  else ok
+    S->>DB: TaskItem.block, update e appendStateLog(EM_USO → BLOQUEADA, reason)
+    S-->>FE: TaskView BLOQUEADA, Bloqueado, motivo exibido
+  end
+  U->>FE: marca um critério de conclusão
+  FE->>C: PUT /api/tasks/{id} (requestFromView com o critério e a version atual, RF12)
+  C-->>FE: 200 TaskView e progresso por criteriaProgress
+  U->>FE: Retomar e depois Concluir
+  FE->>C: POST /api/tasks/{id}/transitions {to EM_USO} e depois {to CONCLUIDA}
+  C->>S: TaskService.transition
+  alt fora da tabela do TaskState
+    S-->>FE: 409 TAREFA_TRANSICAO_INVALIDA
+  else versão superada em outra aba
+    S-->>FE: 409 EDICAO_CONCORRENTE (aviso e recarga)
+  else ok
+    S->>DB: update e appendStateLog(BLOQUEADA → EM_USO → CONCLUIDA)
+    S-->>FE: TaskView CONCLUIDA com editable falso
+    FE-->>U: Concluído e somente leitura, sem Editar nem ações
+  end
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: `TaskItem.state` (`TaskState`, `TaskStateMachine` com tabela de transições testada; toda transição em `TaskStateLog`).
+Entidade central: `TaskItem.state` (`TaskState`, `TaskStateMachine` com tabela de transições testada; toda transição em `TaskStateLog`). **Real (17/10/2026):** não há `TaskStateMachine`; a tabela é `TaskState.machine()`, espelhada em `lib/tasks/status.ts` (`TASK_TRANSITIONS`) e conferida por `status.test.ts` «transições espelham TaskState.java exatamente». As seis transições marcadas **(real)** abaixo estavam na tabela do código e faltavam no diagrama; os rótulos «(real) …» dizem o botão da tela. Os gatilhos automáticos (projeto ativo, chancela) seguem **(planejado)**: hoje essas transições são manuais.
 
 ```mermaid
 stateDiagram-v2
   [*] --> RASCUNHO: criada (RF4) · Copilot/Autopilot/extração (RF26, RF34)
-  RASCUNHO --> DISPONIVEL: dono conclui o cadastro
-  DISPONIVEL --> EM_USO: entra em projeto ativo (automático, AFTER_COMMIT)
+  RASCUNHO --> DISPONIVEL: dono conclui o cadastro · (real) Revisar e publicar no acervo
+  DISPONIVEL --> EM_USO: entra em projeto ativo (automático, AFTER_COMMIT) · (real) Iniciar
   EM_USO --> DISPONIVEL: sai do projeto ou projeto encerra (automático)
-  EM_USO --> BLOQUEADA: aguarda outra tarefa ou pessoa (blockedByTaskId / blockedByUserId, blockReason)
-  BLOQUEADA --> EM_USO: dependência resolvida
+  EM_USO --> BLOQUEADA: aguarda outra tarefa ou pessoa (blockedByTaskId / blockedByUserId, blockReason) · (real) Bloquear com motivo
+  BLOQUEADA --> EM_USO: dependência resolvida · (real) Retomar
   DISPONIVEL --> BLOQUEADA: bloqueio registrado
   BLOQUEADA --> DISPONIVEL: desbloqueada fora de projeto
-  EM_USO --> CONCLUIDA: concluída (também pelo feedback CONCLUI da Tarefa do Dia, RF44)
+  EM_USO --> CONCLUIDA: concluída (também pelo feedback CONCLUI da Tarefa do Dia, RF44) · (real) Concluir
   DISPONIVEL --> CONCLUIDA: concluída
   CONCLUIDA --> ARQUIVADA: arquivar (oferece repassar ao Balcão, RF40.CA05)
   DISPONIVEL --> ARQUIVADA: arquivar
@@ -450,13 +590,25 @@ stateDiagram-v2
   CONCLUIDA --> OFERECIDA: Oferecer no Balcão
   OFERECIDA --> DISPONIVEL: oferta retirada (volta ao estado de trabalho registrado)
   ARQUIVADA --> DISPONIVEL: desarquivar
+  CONCLUIDA --> EM_USO: (real) Mover para Em andamento (reabrir sem justificativa)
+  CONCLUIDA --> DISPONIVEL: (real) Mover para A realizar
+  ARQUIVADA --> OFERECIDA: (real) na tabela, Balcão (RF40) planejado
+  MODELO_PUBLICO --> ARQUIVADA: (real) arquivar modelo
+  MODELO_PUBLICO --> OFERECIDA: (real) na tabela, Balcão (RF40) planejado
+  OFERECIDA --> MODELO_PUBLICO: (real) oferta retirada de um modelo
   ARQUIVADA --> [*]
   note right of ARQUIVADA
     Tarefa ligada a decisão VALIDADA não é excluída: só arquivada (CA05).
     Exclusão em outros estados preserva snapshotJson nos projetos de terceiros.
   end note
+  note right of CONCLUIDA
+    Rótulos reais (lib/tasks/status.ts) RASCUNHO e DISPONIVEL = A realizar,
+    EM_USO = Em andamento, BLOQUEADA = Bloqueado, CONCLUIDA = Concluído,
+    ARQUIVADA = Arquivado, MODELO_PUBLICO e OFERECIDA = publicação.
+    CONCLUIDA e ARQUIVADA ficam somente leitura (TaskState.isReadOnly).
+  end note
   note left of EM_USO
-    Transição inválida → 409 TRANSICAO_INVALIDA.
+    Transição inválida → 409 TAREFA_TRANSICAO_INVALIDA (real).
     Toda transição → TaskStateLog (CA02).
   end note
 ```
@@ -466,33 +618,35 @@ stateDiagram-v2
 ```mermaid
 flowchart LR
   subgraph FRONT["Frontend Next.js 15"]
-    R1["app/(shell)/tasks (grade + querystring) · tasks/[id] · attachments · u/[username] (acervo de terceiro)"]
-    R2["components: TaskCard (TaskCardLayout compact/list/expanded · TaskCardVariant por TaskState, FAVORITA, PRAZO_LEGAL, CHANCELADA, NO_BALCAO, COM_EVIDENCIA) · Tag · Due · TypeChip · Seal · Counters · DecisionThread · EvidenceUploader · Skeleton · EmptyState · ErrorState · Dialog"]
+    R1["app/(shell)/tasks (real: MyTasks, filtro no cliente · querystring planejada) · tasks/[id] (real: PersistedTaskDetail) · attachments · u/[username] (planejado)"]
+    RR["(real) components/tasks/PersistedTasks.tsx (MyTasks, PersistedTaskCard, PersistedTaskDetail, WorkStatusTag) · lib/tasks/status.ts (workStatusOf, TASK_TRANSITIONS, nextActionOf) · lib/tasks/client.ts (tasksApi.mine, get, transition)"]
+    R2["(planejado) components: TaskCard (TaskCardLayout compact/list/expanded · TaskCardVariant por TaskState, FAVORITA, PRAZO_LEGAL, CHANCELADA, NO_BALCAO, COM_EVIDENCIA) · Tag · Due · TypeChip · Seal · Counters · DecisionThread · EvidenceUploader · Skeleton · EmptyState · ErrorState · Dialog"]
     BFF["app/bff"]
     R1 --> R2 --> BFF
+    R1 --> RR --> BFF
   end
   subgraph WEB["ws-web"]
-    AC["AcervoController · EvidenceController (@Operation RF41.CA01-CA09)"]
+    AC["TaskController (real: GET /api/tasks, GET /api/tasks/{id}, POST /api/tasks/{id}/transitions, @AuthorizedBy require) · AcervoController · EvidenceController (planejado, @Operation RF41.CA01-CA09)"]
     SEC["SecurityConfig · CorrelationIdFilter · AuthRateLimitFilter · GlobalExceptionHandler (main)"]
   end
   subgraph APPL["ws-application"]
-    AS["acervo/AcervoService"]
-    TSM["acervo/TaskStateMachine (tabela testada)"]
-    LDS["acervo/LegalDeadlineService (job diário)"]
-    ES["acervo/EvidenceService"]
-    VF["social/VisibilityFilter"]
+    AS["acervo/TaskService (real) · AcervoService (planejado)"]
+    TSM["TaskState.machine() (real, ws-domain) · acervo/TaskStateMachine (planejado)"]
+    LDS["(planejado) acervo/LegalDeadlineService (job diário)"]
+    ES["(planejado) acervo/EvidenceService"]
+    VF["security: AccessPolicy.visible + ResourceAuthorizer (real) · social/VisibilityFilter (planejado)"]
     GD["security/Guard (main: ownerOrAdmin · requireRole)"]
     OM["security/OwnMedia (restricted/)"]
-    UG["security/UploadGuard (magic bytes · teto de pixels)"]
+    UG["(planejado) security/UploadGuard (magic bytes · teto de pixels)"]
     DE["events/DomainEvents AFTER_COMMIT (ProjectActivated · ProjectTaskRemoved · TaskDeleted)"]
     PORTS["ports: SearchIndexPort · CachePort · StoragePort · NotificationPort"]
     SCH["schedulers (ws-bootstrap): prazos legais 06:00"]
   end
   subgraph DOM["ws-domain"]
-    ENT["TaskItem · TaskState · TaskStateLog · TaskAttachment · TaskVersion · LegalDeadlineRule · Evidence · StudioStatus (planejado) · MediaObject (V2)"]
+    ENT["TaskItem · TaskState · TaskStateLog · TaskBrief (real, V36) · TaskAttachment · TaskVersion · LegalDeadlineRule · Evidence · StudioStatus (planejado) · MediaObject (V2)"]
   end
   subgraph INFRA["ws-infrastructure"]
-    MY["persistence-mysql tasks · task_state_log · evidences (V__rf4/rf41)"]
+    MY["persistence-mysql JpaAcervoAdapters (real) · tasks e task_state_log (V11) · task_briefs (V36) · evidences (V11, sem serviço)"]
     OSA["search-opensearch ws-tasks (flag opensearch.enabled)"]
     RD["cache-redis contadores (flag redis.enabled)"]
     S3A["storage-s3 anexos · evidências (flag storage.s3)"]
@@ -521,14 +675,14 @@ flowchart LR
 
 ## 6. Rastreabilidade
 
-| CA | Classe | Passo | Mensagem | Transição | Componente |
-|---|---|---|---|---|---|
-| RF41.CA01 | `AcervoService.list/counters`, `TaskCardView`, contadores por sub-filtro em `CachePort` | A0 → A1 → F1 → P1 → F2 | 1–11 | — | `TaskCard compact`, `Skeleton · EmptyState · ErrorState`, `RD`, `OSA` |
-| RF41.CA02 | `TaskStateMachine.transition/onProjectActivated/onProjectLeft`, `TaskState`, `TaskStateLog`, MODELO_PUBLICO só via chancela/publicação | P4 → P5 (409) → P6 · P7 · P8 | 12–20 | toda a máquina + nota de EM_USO | `TSM`, `DE`, `MY` |
-| RF41.CA03 | `AcervoService.detail` (preview, metadados RF4, `TaskVersion`, `ProjectTask` em uso, `DecisionTraceNode`, `SealBond`, interações, `TaskStateLog`) | A3 → A4 → F3 | — (GET /api/tasks/{id}) | — | `TaskCard expanded`, `DecisionThread`, `Seal`, `Counters` |
-| RF41.CA04 | `LegalDeadlineRule`, `TaskItem.legalDueAt`, `LegalDeadlineService.scanDueSoon`, `Notification PRAZO_PROXIMO/PRAZO_VENCIDO`, `Due` (âmbar · vermelho · ⚖), RF44 | P9 → F5 | 39–41 | — | `LDS`, `SCH`, `Due`, `CASA` |
-| RF41.CA05 | `AcervoService.delete`, `ProjectTask.snapshotJson/removedByAuthor` (RF23), `FinalDecision.resultingTaskId`, 409 TAREFA_EM_DECISAO, `Notification TAREFA_REUTILIZADA` | A13 → A14 → F7 → P10 → P11 (409) → P12 | 21–29 | nota de ARQUIVADA | `AS`, `Dialog` |
-| RF41.CA06 | `Evidence` (takenAt, latitude/longitude AES, linkedTaskId/ProjectId, studioStatus), `EvidenceService.upload/link/toStudio`, `UploadGuard`, `OwnMedia`, IMAGEM_EDITADA (RF4) | A15 → A16 → F6 → P13 → P14 | 30–36 | — | `ES`, `UG`, `OM`, `EvidenceUploader`, `S3A` |
-| RF41.CA07 | `AcervoService.quickAction` (FAVORITAR · DUPLICAR · LEVAR_AO_PROJETO · COMPARTILHAR_SESSAO · PEDIR_CHANCELA · OFERECER_BALCAO · ARQUIVAR/REPASSAR), `AcervoService.archive` | A5 → A6 → A7..A12 → F4 → P10 → P4/P15 | 12–17 | `→ ARQUIVADA / OFERECIDA / EM_USO` | `F4 menu do card`, `TSM` |
-| RF41.CA08 | `VisibilityFilter.allowedFor`, `Guard.requireOwner` (403), ação Levar ao meu acervo (RF23) | A17 → F1 → P2 → P3 | 42–49 | — | `VF`, `GD`, `R1 u/[username]` |
-| RF41.CA09 | querystring (filtro, filtros, ordem, page), 20 por página, i18n, `AcervoQuery` | A2 → F1 | 1–3 | — | `R1 /tasks`, `lib/i18n` |
+| CA | Classe | Passo | Mensagem | Transição | Componente | Situação (17/10/2026) |
+|---|---|---|---|---|---|---|
+| RF41.CA01 | `AcervoService.list/counters`, `TaskCardView`, contadores por sub-filtro em `CachePort`; real: `TaskController.mine`, `TaskService.listMine`, `TaskRepositoryPort.findByOwner`, `PersistedTaskCard`, `workStatusOf` | A0 → A1 → F1 → P1 → F2; real: A0 → FR1 → W1 → PR4 → FR1 | 1–11; real: 47–52 | — | `TaskCard compact`, `Skeleton · EmptyState · ErrorState`, `RD`, `OSA`, `RR` | **real parcial**: lista e filtro por estado de execução no cliente, com contagem, `LoadingState`/`EmptyState`/`ErrorState` (`tasks.test.tsx` «card mostra tipo, objetivo, estado padronizado, progresso e próxima ação; filtro por estado» e «sem sessão explica o motivo»; `013657a`); sub-filtros Favoritas/Modelos públicos/Chanceladas/Oferecidas e contadores em cache planejados |
+| RF41.CA02 | `TaskStateMachine.transition/onProjectActivated/onProjectLeft`, `TaskState`, `TaskStateLog`, MODELO_PUBLICO só via chancela/publicação; real: `TaskController.transition`, `TransitionRequest`, `TaskService.transition`, `TaskItem.transition/block`, `TaskState.machine()`, `TASK_TRANSITIONS` | P4 → P5 (409) → P6 · P7 · P8; real: A3 → FR2 → FR3 → W1 → PR1 → PR2 → PR3 · ER1 · ER2 · ER3 | 12–20; real: 53–66, 70–77 | toda a máquina + nota de EM_USO + seis transições (real) | `TSM`, `DE`, `MY`, `RR` | **real**: Iniciar, Bloquear com motivo, Retomar, Concluir (somente leitura) e `task_state_log` + `TASK_STATE_CHANGED` (`TaskServiceTest.transicoesSeguemATabelaEBloqueioExigeCausa`, `causaDoBloqueioPrecisaExistirESerVisivel`; `TaskControllerWebTest.transicaoValidaCorpoEDevolveNovoEstado`; `status.test.ts` «transições espelham TaskState.java exatamente»; `tasks.test.tsx` «próxima ação transiciona com a versão atual e o bloqueio exige motivo»; jornada, capturas 05 e 06; `5ad78ae`, `97611a0`, `013657a`); EM_USO automático por projeto e MODELO_PUBLICO só via chancela planejados |
+| RF41.CA03 | `AcervoService.detail` (preview, metadados RF4, `TaskVersion`, `ProjectTask` em uso, `DecisionTraceNode`, `SealBond`, interações, `TaskStateLog`) | A3 → A4 → F3 | — (GET /api/tasks/{id}); real: 53 (abre /tasks/{id}) | — | `TaskCard expanded`, `DecisionThread`, `Seal`, `Counters`, `RR` | **real parcial**: `PersistedTaskDetail` com objetivo, descrição, critérios marcáveis e progresso, entregáveis, referências, campos da área, prioridade, prazo, classificação, visibilidade e versão (`TaskService.get`; `tasks.test.tsx` «404 diz que não existe ou não há acesso»); preview, versões, projetos em uso, fio de decisão, chancelas e histórico na tela planejados |
+| RF41.CA04 | `LegalDeadlineRule`, `TaskItem.legalDueAt`, `LegalDeadlineService.scanDueSoon`, `Notification PRAZO_PROXIMO/PRAZO_VENCIDO`, `Due` (âmbar · vermelho · ⚖), RF44 | P9 → F5 | 39–41 | — | `LDS`, `SCH`, `Due`, `CASA` | planejado (o real mostra só `dueAt` simples) |
+| RF41.CA05 | `AcervoService.delete`, `ProjectTask.snapshotJson/removedByAuthor` (RF23), `FinalDecision.resultingTaskId`, 409 TAREFA_EM_DECISAO, `Notification TAREFA_REUTILIZADA` | A13 → A14 → F7 → P10 → P11 (409) → P12 | 21–29 | nota de ARQUIVADA | `AS`, `Dialog` | planejado (não há `DELETE /api/tasks/{id}`) |
+| RF41.CA06 | `Evidence` (takenAt, latitude/longitude AES, linkedTaskId/ProjectId, studioStatus), `EvidenceService.upload/link/toStudio`, `UploadGuard`, `OwnMedia`, IMAGEM_EDITADA (RF4) | A15 → A16 → F6 → P13 → P14 | 30–36 | — | `ES`, `UG`, `OM`, `EvidenceUploader`, `S3A` | planejado (Anexos & Evidências, Onda 3; `MediaUploadService` ainda não é bean) |
+| RF41.CA07 | `AcervoService.quickAction` (FAVORITAR · DUPLICAR · LEVAR_AO_PROJETO · COMPARTILHAR_SESSAO · PEDIR_CHANCELA · OFERECER_BALCAO · ARQUIVAR/REPASSAR), `AcervoService.archive` | A5 → A6 → A7..A12 → F4 → P10 → P4/P15 | 12–17 | `→ ARQUIVADA / OFERECIDA / EM_USO` | `F4 menu do card`, `TSM` | planejado (favoritar, duplicar, levar ao projeto, sessão, chancela, Balcão); o real oferece só as transições do detalhe |
+| RF41.CA08 | `VisibilityFilter.allowedFor`, `Guard.requireOwner` (403), ação Levar ao meu acervo (RF23) | A17 → F1 → P2 → P3 | 39–46 | — | `VF`, `GD`, `R1 u/[username]` | **parcial**: `AccessPolicy` real (SIGILOSO = PRIVADA, ADMIN sem acesso implícito, D-139; 404 igual a inexistente — `TaskServiceTest.sigilosoNaoEhVistoPorColegaNemAdminSemVinculo`, `colegaDaEmpresaVeMasNaoEdita`); `TaskService.listOf` e `GET /api/people/{id}/tasks` publicados em 381b452 (Onda 1); tela de terceiros e Levar ao meu acervo planejados |
+| RF41.CA09 | querystring (filtro, filtros, ordem, page), 20 por página, i18n, `AcervoQuery` | A2 → F1 | 1–3; real: 52 | — | `R1 /tasks`, `lib/i18n` | **parcial**: filtro por estado no cliente e i18n pt-BR/en/es reais; querystring, ordenação e paginação (20 por página) planejadas — a API real só aceita `limit` |
