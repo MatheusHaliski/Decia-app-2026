@@ -19,6 +19,74 @@ Estado real (MATRIZ_RF de 17/10/2026: AUSENTE, 0,00): não há código 3D nesta 
 | **RF61.CA07** | Dado BREP, quando consolida representação suportada, então explica o que é removido; malha consolidada não é rotulada como sólido B-rep. |
 | **RF61.CA08** | Dado FLATTEN/Expand Appearance, quando projeta na câmera/plano escolhido, então cria vetores 2D editáveis com profundidade zero e sem remover o 3D original sem confirmação. |
 
+## 0. Diagrama de casos de uso
+
+O colaborador explícito (e o dono) desmembra e converte estruturas 3D; toda operação passa pelo relatório de preservação, que exige confirmação do que se perde antes da verificação de escopo e reserva. Toda operação é capacidade futura: não há código 3D no app.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  colaborador["«ator» Colaborador explícito"]:::ator
+  dono["«ator» Dono da peça"]:::ator
+  subgraph SIS["Work Station — RF61 Desmembrar e converter 3D"]
+    direction TB
+    UC1(["UC1 Explodir malha em faces"]):::ucPlan
+    UC2(["UC2 Converter em superfície"]):::ucPlan
+    UC3(["UC3 Separar corpos disjuntos"]):::ucPlan
+    UC4(["UC4 Fatiar por plano"]):::ucPlan
+    UC5(["UC5 Recompor em sólido"]):::ucPlan
+    UC6(["UC6 Revisar reparo proposto da malha"]):::ucPlan
+    UC7(["UC7 Explodir bloco preservando atributos"]):::ucPlan
+    UC8(["UC8 Consolidar representação"]):::ucPlan
+    UC9(["UC9 Projetar 3D em vetores 2D"]):::ucPlan
+    UC10(["UC10 Confirmar o relatório de preservação"]):::ucPlan
+    UC11(["UC11 Verificar escopo e reserva (authorizePatch)"]):::ucPlan
+    UC12(["UC12 Pedir proposta de conversão à IA"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono -- "é um" --> colaborador
+  colaborador --- UC1
+  colaborador --- UC2
+  colaborador --- UC3
+  colaborador --- UC4
+  colaborador --- UC5
+  colaborador --- UC6
+  colaborador --- UC7
+  colaborador --- UC8
+  colaborador --- UC9
+  colaborador --- UC12
+  UC1 -. "«include»" .-> UC10
+  UC2 -. "«include»" .-> UC10
+  UC3 -. "«include»" .-> UC10
+  UC4 -. "«include»" .-> UC10
+  UC5 -. "«include»" .-> UC10
+  UC6 -. "«extend»" .-> UC5
+  UC7 -. "«include»" .-> UC10
+  UC8 -. "«include»" .-> UC10
+  UC9 -. "«include»" .-> UC10
+  UC10 -. "«include»" .-> UC11
+  UC12 -. "«extend»" .-> UC5
+  UC12 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Explodir malha em faces | `colaborador` | RF61.CA01 | planejado |
+| UC2 Converter em superfície | `colaborador` | RF61.CA02 | planejado |
+| UC3 Separar corpos disjuntos | `colaborador` | RF61.CA03 | planejado |
+| UC4 Fatiar por plano | `colaborador` | RF61.CA04 | planejado |
+| UC5 Recompor em sólido | `colaborador` | RF61.CA05 | planejado |
+| UC6 Revisar reparo proposto da malha | `colaborador` (estende UC5) | RF61.CA05 | planejado |
+| UC7 Explodir bloco preservando atributos | `colaborador` | RF61.CA06 | planejado |
+| UC8 Consolidar representação | `colaborador` | RF61.CA07 | planejado |
+| UC9 Projetar 3D em vetores 2D | `colaborador` | RF61.CA08 | planejado |
+| UC10 Confirmar o relatório de preservação | — (incluído por UC1, UC2, UC3, UC4, UC5, UC7, UC8, UC9) | RF61.CA01 · CA02 · CA04 · CA06 · CA07 · CA08 | planejado |
+| UC11 Verificar escopo e reserva (authorizePatch) | — (incluído por UC10) | RF61.CA04 · CA08 | planejado — função pura `lib/pieces/patch.ts` |
+| UC12 Pedir proposta de conversão à IA | `colaborador`, `ia` (estende UC5) | RF61.CA05 | planejado — `evaluateAiAction`/`proposalValidity` reais, sem editor |
+
 ## 1. Diagrama de classes
 
 **(real)**: `PatchAuthorizer`, `RegionLock`, `AutonomyPolicy`. Demais **(planejado)**; `SolidBody` e `OperationCapability` são os mesmos do RF60 e não constam de `docs/arquitetura/TAXONOMIA.md`.

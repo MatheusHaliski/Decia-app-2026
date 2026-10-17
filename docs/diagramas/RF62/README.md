@@ -19,6 +19,61 @@ Estado real (MATRIZ_RF de 17/10/2026: AUSENTE, 0,00): não há câmera nem vista
 | **RF62.CA07** | Dado UCS, quando orienta plano de trabalho por face/eixos, então novas geometrias usam esse plano, com conversão consistente para o espaço global. |
 | **RF62.CA08** | Dada grade de perspectiva 1/2/3 pontos ou plano isométrico/cavaleiro, quando desenha, então aplica transformação correta; ocultar grade não remove alinhamentos existentes. |
 
+## 0. Diagrama de casos de uso
+
+Quem tem acesso à peça muda a própria câmera, a vista e o estilo visual sem gerar patch; salvar vista na peça, orientar o plano de trabalho e desenhar sobre a grade são edições do colaborador explícito (e do dono) e passam pela verificação de escopo e reserva. Não há câmera nem vistas no app.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  dono["«ator» Dono da peça"]:::ator
+  subgraph SIS["Work Station — RF62 Vistas e coordenadas"]
+    direction TB
+    UC1(["UC1 Ver em planta do sistema de trabalho"]):::ucPlan
+    UC2(["UC2 Definir ponto de vista por vetor"]):::ucPlan
+    UC3(["UC3 Salvar e restaurar vistas nomeadas"]):::ucPlan
+    UC4(["UC4 Orbitar a cena"]):::ucPlan
+    UC5(["UC5 Alternar cubo de navegação e ícone do UCS"]):::ucPlan
+    UC6(["UC6 Escolher estilo visual"]):::ucPlan
+    UC7(["UC7 Orientar o plano de trabalho (UCS)"]):::ucPlan
+    UC8(["UC8 Desenhar sobre grade de perspectiva"]):::ucPlan
+    UC9(["UC9 Navegar por teclado e campos numéricos"]):::ucPlan
+    UC10(["UC10 Verificar escopo e reserva (authorizePatch)"]):::ucPlan
+  end
+  dono -- "é um" --> colaborador
+  colaborador -- "é um" --> autenticado
+  autenticado --- UC1
+  autenticado --- UC2
+  colaborador --- UC3
+  autenticado --- UC4
+  autenticado --- UC5
+  autenticado --- UC6
+  colaborador --- UC7
+  colaborador --- UC8
+  autenticado --- UC9
+  UC3 -. "«include»" .-> UC10
+  UC7 -. "«include»" .-> UC10
+  UC8 -. "«include»" .-> UC10
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Ver em planta do sistema de trabalho | `autenticado` | RF62.CA01 | planejado |
+| UC2 Definir ponto de vista por vetor | `autenticado` | RF62.CA02 | planejado |
+| UC3 Salvar e restaurar vistas nomeadas | `colaborador` | RF62.CA03 | planejado |
+| UC4 Orbitar a cena | `autenticado` | RF62.CA04 | planejado |
+| UC5 Alternar cubo de navegação e ícone do UCS | `autenticado` | RF62.CA05 | planejado |
+| UC6 Escolher estilo visual | `autenticado` | RF62.CA06 | planejado — base `RenderMode` FILLED/WIREFRAME em `lib/pieces/wireframe.ts` |
+| UC7 Orientar o plano de trabalho (UCS) | `colaborador` | RF62.CA07 | planejado |
+| UC8 Desenhar sobre grade de perspectiva | `colaborador` | RF62.CA08 | planejado |
+| UC9 Navegar por teclado e campos numéricos | `autenticado` | RF62.CA01 · CA02 · CA04 | planejado |
+| UC10 Verificar escopo e reserva (authorizePatch) | — (incluído por UC3, UC7, UC8) | RF62.CA03 · CA07 · CA08 | planejado — função pura `lib/pieces/patch.ts` |
+
 ## 1. Diagrama de classes
 
 **(real)**: `RenderMode`, `DrawingClassification`, `DrawingEditScope`, `SelectionEngine`, `PatchAuthorizer`. Demais **(planejado)**; câmera, vistas e UCS não constam de `docs/arquitetura/TAXONOMIA.md`.

@@ -22,6 +22,67 @@ Comandos com nomes do próprio produto (não prometem paridade com outros editor
 | **RF52.CA06** | Dado uso por teclado e leitor de tela, quando percorre ferramentas e editor, então há rótulos, foco visível e ações acessíveis. |
 | **RF52.CA07** | Dado conteúdo malformado ou excessivo, quando é importado, então rejeita com motivo, preserva o documento atual e não executa scripts. |
 
+## 0. Diagrama de casos de uso
+
+Quem tem acesso à peça abre, navega e exporta o documento; o colaborador explícito (e o dono, que pode tudo o que ele pode) edita blocos, formata e importa. Nenhum caso existe em tela hoje: só a página-esqueleto `/letters` e o `PiecesService` em memória.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  dono["«ator» Dono da peça"]:::ator
+  subgraph SIS["Work Station — RF52 Editar no Letters"]
+    direction TB
+    UC1(["UC1 Abrir documento vinculado a tarefa ou sessão"]):::ucPlan
+    UC2(["UC2 Inserir e reorganizar blocos"]):::ucPlan
+    UC3(["UC3 Formatar o trecho selecionado"]):::ucPlan
+    UC4(["UC4 Desfazer e refazer a última ação"]):::ucPlan
+    UC5(["UC5 Navegar por sumário, busca e parágrafo"]):::ucPlan
+    UC6(["UC6 Importar documento"]):::ucPlan
+    UC7(["UC7 Validar arquivo importado"]):::ucPlan
+    UC8(["UC8 Exportar em formato habilitado"]):::ucPlan
+    UC9(["UC9 Usar o editor por teclado e leitor de tela"]):::ucPlan
+    UC10(["UC10 Gravar revisão versionada"]):::ucPlan
+    UC11(["UC11 Verificar acesso à peça (ResourceAuthorizer)"]):::ucPlan
+  end
+  conectores["«ator» Google · Microsoft · e-Protocolo"]:::atorSis
+  dono -- "é um" --> colaborador
+  colaborador -- "é um" --> autenticado
+  autenticado --- UC1
+  colaborador --- UC2
+  colaborador --- UC3
+  colaborador --- UC4
+  autenticado --- UC5
+  colaborador --- UC6
+  autenticado --- UC8
+  autenticado --- UC9
+  UC1 -. "«include»" .-> UC11
+  UC2 -. "«include»" .-> UC10
+  UC3 -. "«include»" .-> UC10
+  UC6 -. "«include»" .-> UC7
+  UC10 -. "«include»" .-> UC11
+  UC6 --- conectores
+  UC8 --- conectores
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Abrir documento vinculado a tarefa ou sessão | `autenticado` | RF52.CA01 | planejado |
+| UC2 Inserir e reorganizar blocos | `colaborador` | RF52.CA01 | planejado |
+| UC3 Formatar o trecho selecionado | `colaborador` | RF52.CA02 | planejado |
+| UC4 Desfazer e refazer a última ação | `colaborador` | RF52.CA02 | planejado |
+| UC5 Navegar por sumário, busca e parágrafo | `autenticado` | RF52.CA03 | planejado |
+| UC6 Importar documento | `colaborador`, `conectores` | RF52.CA04 · CA07 | planejado |
+| UC7 Validar arquivo importado | — (incluído por UC6) | RF52.CA04 · CA07 | planejado |
+| UC8 Exportar em formato habilitado | `autenticado`, `conectores` | RF52.CA05 | planejado |
+| UC9 Usar o editor por teclado e leitor de tela | `autenticado` | RF52.CA06 | planejado |
+| UC10 Gravar revisão versionada | — (incluído por UC2, UC3) | RF52.CA01 · CA02 | planejado — `409 EDICAO_CONCORRENTE` já existe em `TaskService` |
+| UC11 Verificar acesso à peça (ResourceAuthorizer) | — (incluído por UC1, UC10) | RF52.CA01 | planejado — `ResourceAuthorizer` real, sem rota de peça |
+
 ## 1. Diagrama de classes
 
 ```mermaid

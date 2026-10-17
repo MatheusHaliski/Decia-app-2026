@@ -18,6 +18,74 @@ Estado real (MATRIZ_RF de 17/10/2026: AUSENTE, 0,00): nesta árvore só existe a
 | **RF59.CA06** | Dado Expand/Expand Appearance, quando converte traços ou efeitos, então informa perda de parametrização e preserva versão anterior. |
 | **RF59.CA07** | Dada operação não representável no formato nativo, quando é solicitada, então bloqueia sem descartar furos, faces ou conteúdo silenciosamente. |
 
+## 0. Diagrama de casos de uso
+
+O colaborador explícito (e o dono) combina, divide e desmembra contornos 2D; cada operação confere antes se o formato nativo representa o resultado e passa pela verificação de escopo e reserva. Nenhuma dessas operações existe no app.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  colaborador["«ator» Colaborador explícito"]:::ator
+  dono["«ator» Dono da peça"]:::ator
+  subgraph SIS["Work Station — RF59 Contornos vetoriais"]
+    direction TB
+    UC1(["UC1 Unir, subtrair ou intersectar perfis"]):::ucPlan
+    UC2(["UC2 Dividir contornos em regiões"]):::ucPlan
+    UC3(["UC3 Criar caminho composto com furo"]):::ucPlan
+    UC4(["UC4 Separar caminho composto"]):::ucPlan
+    UC5(["UC5 Desagrupar objetos"]):::ucPlan
+    UC6(["UC6 Liberar máscara de recorte"]):::ucPlan
+    UC7(["UC7 Expandir traço ou aparência"]):::ucPlan
+    UC8(["UC8 Exportar e reabrir mantendo furos"]):::ucPlan
+    UC9(["UC9 Verificar representação no formato nativo"]):::ucPlan
+    UC10(["UC10 Verificar escopo e reserva (authorizePatch)"]):::ucPlan
+    UC11(["UC11 Pedir proposta de operação à IA"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono -- "é um" --> colaborador
+  colaborador --- UC1
+  colaborador --- UC2
+  colaborador --- UC3
+  colaborador --- UC4
+  colaborador --- UC5
+  colaborador --- UC6
+  colaborador --- UC7
+  colaborador --- UC8
+  colaborador --- UC11
+  UC1 -. "«include»" .-> UC9
+  UC1 -. "«include»" .-> UC10
+  UC2 -. "«include»" .-> UC9
+  UC2 -. "«include»" .-> UC10
+  UC3 -. "«include»" .-> UC9
+  UC3 -. "«include»" .-> UC10
+  UC4 -. "«include»" .-> UC9
+  UC4 -. "«include»" .-> UC10
+  UC5 -. "«include»" .-> UC10
+  UC6 -. "«include»" .-> UC9
+  UC6 -. "«include»" .-> UC10
+  UC7 -. "«include»" .-> UC9
+  UC7 -. "«include»" .-> UC10
+  UC11 -. "«extend»" .-> UC1
+  UC11 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Unir, subtrair ou intersectar perfis | `colaborador` | RF59.CA01 | planejado |
+| UC2 Dividir contornos em regiões | `colaborador` | RF59.CA02 | planejado |
+| UC3 Criar caminho composto com furo | `colaborador` | RF59.CA03 | planejado |
+| UC4 Separar caminho composto | `colaborador` | RF59.CA03 | planejado |
+| UC5 Desagrupar objetos | `colaborador` | RF59.CA04 | planejado — hierarquia `parentId` em `lib/studio/selection.ts` |
+| UC6 Liberar máscara de recorte | `colaborador` | RF59.CA05 | planejado |
+| UC7 Expandir traço ou aparência | `colaborador` | RF59.CA06 | planejado |
+| UC8 Exportar e reabrir mantendo furos | `colaborador` | RF59.CA03 | planejado |
+| UC9 Verificar representação no formato nativo | — (incluído por UC1, UC2, UC3, UC4, UC6, UC7) | RF59.CA06 · CA07 | planejado |
+| UC10 Verificar escopo e reserva (authorizePatch) | — (incluído por UC1, UC2, UC3, UC4, UC5, UC6, UC7) | RF59.CA01 · CA04 | planejado — função pura `lib/pieces/patch.ts` |
+| UC11 Pedir proposta de operação à IA | `colaborador`, `ia` (estende UC1) | RF59.CA01 · CA07 | planejado — `evaluateAiAction`/`proposalValidity` reais, sem editor |
+
 ## 1. Diagrama de classes
 
 **(real)**: `Geometry`, `DrawingNode`, `SelectionEngine`, `PatchAuthorizer`. Demais **(planejado)**; as entidades de servidor não constam de `docs/arquitetura/TAXONOMIA.md`.

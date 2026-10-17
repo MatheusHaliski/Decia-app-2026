@@ -20,6 +20,68 @@ Editores autorizados de uma tarefa abrem o mesmo documento Letters dentro de uma
 | **RF56.CA06** | Dado usuário observador, quando tenta editar ou aceitar proposta, então bloqueia no servidor. |
 | **RF56.CA07** | Dada versão aprovada, quando vira evidência de decisão, então mantém vínculo imutável à revisão, sem publicar o documento automaticamente. |
 
+## 0. Diagrama de casos de uso
+
+Na sessão DECIA, editar exige ao mesmo tempo o vínculo de colaborador na tarefa e o papel na sessão; o observador só lê e o responsável pela decisão fixa a versão aprovada como evidência. Reserva e autorização existem como funções puras; a coedição em tela é planejada.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  colaborador["«ator» Colaborador explícito"]:::ator
+  dono["«ator» Dono da peça"]:::ator
+  participante_sessao["«ator» Participante da sessão"]:::ator
+  decisor["«ator» Responsável pela decisão"]:::ator
+  subgraph SIS["Work Station — RF56 Coedição Letters no DECIA"]
+    direction TB
+    UC1(["UC1 Abrir documento na sessão DECIA"]):::ucPlan
+    UC2(["UC2 Editar blocos em paralelo"]):::ucPlan
+    UC3(["UC3 Reservar bloco antes de editar"]):::ucPlan
+    UC4(["UC4 Recuperar rascunho após gravação rejeitada"]):::ucPlan
+    UC5(["UC5 Comentar ou sugerir em trecho"]):::ucPlan
+    UC6(["UC6 Resolver comentário ou sugestão"]):::ucPlan
+    UC7(["UC7 Acompanhar a sessão como observador"]):::ucPlan
+    UC8(["UC8 Fixar versão aprovada como evidência"]):::ucPlan
+    UC9(["UC9 Verificar ACL da tarefa e papel na sessão"]):::ucPlan
+    UC10(["UC10 Verificar escopo e reserva (authorizePatch)"]):::ucPlan
+  end
+  dono -- "é um" --> colaborador
+  participante_sessao --- UC1
+  colaborador --- UC2
+  participante_sessao --- UC2
+  colaborador --- UC3
+  participante_sessao --- UC3
+  colaborador --- UC4
+  participante_sessao --- UC4
+  colaborador --- UC5
+  participante_sessao --- UC5
+  colaborador --- UC6
+  participante_sessao --- UC6
+  participante_sessao --- UC7
+  decisor --- UC8
+  UC1 -. "«include»" .-> UC9
+  UC2 -. "«include»" .-> UC9
+  UC2 -. "«include»" .-> UC10
+  UC5 -. "«include»" .-> UC9
+  UC6 -. "«include»" .-> UC9
+  UC8 -. "«include»" .-> UC9
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Abrir documento na sessão DECIA | `participante_sessao` | RF56.CA05 | planejado |
+| UC2 Editar blocos em paralelo | `colaborador`, `participante_sessao` | RF56.CA01 · CA02 | planejado |
+| UC3 Reservar bloco antes de editar | `colaborador`, `participante_sessao` | RF56.CA02 | planejado — `acquireLock` (`lib/pieces/collab.ts`), sem tela |
+| UC4 Recuperar rascunho após gravação rejeitada | `colaborador`, `participante_sessao` | RF56.CA03 | planejado |
+| UC5 Comentar ou sugerir em trecho | `colaborador`, `participante_sessao` | RF56.CA04 | planejado |
+| UC6 Resolver comentário ou sugestão | `colaborador`, `participante_sessao` | RF56.CA04 | planejado |
+| UC7 Acompanhar a sessão como observador | `participante_sessao` | RF56.CA06 | planejado |
+| UC8 Fixar versão aprovada como evidência | `decisor` | RF56.CA07 | planejado — `DecisionTraceNode` imutável no `ws-domain` |
+| UC9 Verificar ACL da tarefa e papel na sessão | — (incluído por UC1, UC2, UC5, UC6, UC8) | RF56.CA05 · CA06 | planejado — `ResourceAuthorizer` e `ParticipantRole` reais, sem tela |
+| UC10 Verificar escopo e reserva (authorizePatch) | — (incluído por UC2) | RF56.CA02 · CA03 | planejado — função pura `lib/pieces/patch.ts` |
+
 ## 1. Diagrama de classes
 
 ```mermaid

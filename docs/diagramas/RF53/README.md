@@ -20,6 +20,68 @@ A pessoa seleciona um trecho em português no Letters e pede a análise linguís
 | **RF53.CA06** | Dada análise em tempo real, quando o texto muda, então atualiza somente achados da revisão correta e não reenvia a cada tecla sem controle de frequência/custo. |
 | **RF53.CA07** | Dado nome próprio, variedade regional ou falso positivo, quando o usuário ignora ou adiciona ao dicionário pessoal, então respeita a preferência e permite reversão. |
 
+## 0. Diagrama de casos de uso
+
+Quem tem acesso à peça pede a análise linguística de um trecho e consulta os achados; só o colaborador explícito (ou o dono) aplica a alternativa no texto. A explicação contextual pela IA estende a revisão dos achados e depende do modo de autonomia. Nada disto existe em tela hoje.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  dono["«ator» Dono da peça"]:::ator
+  subgraph SIS["Work Station — RF53 Análise linguística"]
+    direction TB
+    UC1(["UC1 Pedir análise linguística do trecho"]):::ucPlan
+    UC2(["UC2 Consultar classes de palavras com legenda"]):::ucPlan
+    UC3(["UC3 Revisar achados de sintaxe e concordância"]):::ucPlan
+    UC4(["UC4 Consultar regra e referência da correção"]):::ucPlan
+    UC5(["UC5 Aplicar alternativa sugerida"]):::ucPlan
+    UC6(["UC6 Trocar o idioma da análise"]):::ucPlan
+    UC7(["UC7 Ativar análise em tempo real"]):::ucPlan
+    UC8(["UC8 Ignorar achado ou adicionar ao dicionário pessoal"]):::ucPlan
+    UC9(["UC9 Reverter preferência do dicionário"]):::ucPlan
+    UC10(["UC10 Pedir explicação contextual à IA"]):::ucPlan
+    UC11(["UC11 Verificar escopo e reserva (authorizePatch)"]):::ucPlan
+    UC12(["UC12 Verificar o modo de autonomia (evaluateAiAction)"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono -- "é um" --> colaborador
+  colaborador -- "é um" --> autenticado
+  autenticado --- UC1
+  autenticado --- UC2
+  autenticado --- UC3
+  autenticado --- UC4
+  colaborador --- UC5
+  autenticado --- UC6
+  autenticado --- UC7
+  autenticado --- UC8
+  autenticado --- UC9
+  autenticado --- UC10
+  UC5 -. "«include»" .-> UC11
+  UC10 -. "«include»" .-> UC12
+  UC10 -. "«extend»" .-> UC3
+  UC10 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Pedir análise linguística do trecho | `autenticado` | RF53.CA01 · CA02 | planejado |
+| UC2 Consultar classes de palavras com legenda | `autenticado` | RF53.CA01 | planejado |
+| UC3 Revisar achados de sintaxe e concordância | `autenticado` | RF53.CA02 · CA03 | planejado |
+| UC4 Consultar regra e referência da correção | `autenticado` | RF53.CA04 | planejado |
+| UC5 Aplicar alternativa sugerida | `colaborador` | RF53.CA03 | planejado |
+| UC6 Trocar o idioma da análise | `autenticado` | RF53.CA05 | planejado |
+| UC7 Ativar análise em tempo real | `autenticado` | RF53.CA06 | planejado |
+| UC8 Ignorar achado ou adicionar ao dicionário pessoal | `autenticado` | RF53.CA07 | planejado |
+| UC9 Reverter preferência do dicionário | `autenticado` | RF53.CA07 | planejado |
+| UC10 Pedir explicação contextual à IA | `autenticado`, `ia` (estende UC3) | RF53.CA03 · CA04 | planejado |
+| UC11 Verificar escopo e reserva (authorizePatch) | — (incluído por UC5) | RF53.CA03 | planejado — função pura `lib/pieces/patch.ts` |
+| UC12 Verificar o modo de autonomia (evaluateAiAction) | — (incluído por UC10) | RF53.CA06 | planejado — função real `lib/ai/autonomy.ts`, sem editor |
+
 ## 1. Diagrama de classes
 
 ```mermaid

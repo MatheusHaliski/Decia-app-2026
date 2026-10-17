@@ -20,6 +20,59 @@ A pessoa escolhe o gênero do texto (técnico, acadêmico, jornalístico ou narr
 | **RF54.CA06** | Dadas citações e afirmações factuais, quando verifica fontes, então distingue referência acessível, indisponível e não verificada. |
 | **RF54.CA07** | Dado documento longo, quando segmenta contexto, então mantém vínculos entre achados e trechos e informa limites da cobertura. |
 
+## 0. Diagrama de casos de uso
+
+Quem tem acesso à peça escolhe o gênero e pede a leitura de coerência, continuidade e fontes; o relatório aponta evidências e limites sem reescrever o texto. A análise contextual pela IA estende a leitura e depende do modo de autonomia. Nada disto existe em tela hoje.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  subgraph SIS["Work Station — RF54 Coerência e fontes"]
+    direction TB
+    UC1(["UC1 Escolher o gênero do texto"]):::ucPlan
+    UC2(["UC2 Pedir leitura de coerência e tom"]):::ucPlan
+    UC3(["UC3 Revisar trechos de subjetividade sinalizados"]):::ucPlan
+    UC4(["UC4 Revisar continuidade narrativa e cronologia"]):::ucPlan
+    UC5(["UC5 Consultar indicadores por parágrafo com rubrica"]):::ucPlan
+    UC6(["UC6 Verificar citações e fontes"]):::ucPlan
+    UC7(["UC7 Consultar limites da cobertura do relatório"]):::ucPlan
+    UC8(["UC8 Pedir análise contextual à IA"]):::ucPlan
+    UC9(["UC9 Verificar acesso à fonte vinculada (ResourceAuthorizer)"]):::ucPlan
+    UC10(["UC10 Verificar o modo de autonomia (evaluateAiAction)"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  autenticado --- UC1
+  autenticado --- UC2
+  autenticado --- UC3
+  autenticado --- UC4
+  autenticado --- UC5
+  autenticado --- UC6
+  autenticado --- UC7
+  autenticado --- UC8
+  UC2 -. "«include»" .-> UC1
+  UC6 -. "«include»" .-> UC9
+  UC8 -. "«include»" .-> UC10
+  UC8 -. "«extend»" .-> UC2
+  UC8 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Escolher o gênero do texto | `autenticado` (incluído por UC2) | RF54.CA01 | planejado |
+| UC2 Pedir leitura de coerência e tom | `autenticado` | RF54.CA01 · CA02 | planejado |
+| UC3 Revisar trechos de subjetividade sinalizados | `autenticado` | RF54.CA02 | planejado |
+| UC4 Revisar continuidade narrativa e cronologia | `autenticado` | RF54.CA03 · CA04 | planejado |
+| UC5 Consultar indicadores por parágrafo com rubrica | `autenticado` | RF54.CA05 | planejado |
+| UC6 Verificar citações e fontes | `autenticado` | RF54.CA06 | planejado |
+| UC7 Consultar limites da cobertura do relatório | `autenticado` | RF54.CA07 | planejado |
+| UC8 Pedir análise contextual à IA | `autenticado`, `ia` (estende UC2) | RF54.CA04 · CA05 | planejado |
+| UC9 Verificar acesso à fonte vinculada (ResourceAuthorizer) | — (incluído por UC6) | RF54.CA06 | planejado — `ResourceAuthorizer` real; fonte invisível = indisponível |
+| UC10 Verificar o modo de autonomia (evaluateAiAction) | — (incluído por UC8) | RF54.CA05 | planejado — função real `lib/ai/autonomy.ts`, sem editor |
+
 ## 1. Diagrama de classes
 
 ```mermaid

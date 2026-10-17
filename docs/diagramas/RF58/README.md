@@ -18,6 +18,66 @@ Estado real (MATRIZ_RF de 17/10/2026: AUSENTE, 0,00): nenhuma ferramenta de dese
 | **RF58.CA06** | Dados OSNAP, ORTHO, POLAR, SNAP/GRID, quando habilitados, então mostram ponto/alinhamento proposto sem deslocar objetos fora do escopo. |
 | **RF58.CA07** | Dados DIST, AREA, cotas, unidades e escala, quando mede, então calcula sobre geometria real e distingue medida de valor textual digitado. |
 
+## 0. Diagrama de casos de uso
+
+O colaborador explícito (e o dono) desenha e edita geometria 2D com entrada numérica e auxílios de precisão; medir é leitura e vale para quem tem acesso à peça. Toda gravação passa pela verificação de escopo e reserva. Não há ferramenta de desenho no app.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  dono["«ator» Dono da peça"]:::ator
+  subgraph SIS["Work Station — RF58 Geometria vetorial 2D"]
+    direction TB
+    UC1(["UC1 Desenhar linha, polilinha, retângulo, elipse ou polígono"]):::ucPlan
+    UC2(["UC2 Desenhar círculo por raio, diâmetro, 2P, 3P ou TTR"]):::ucPlan
+    UC3(["UC3 Traçar caminho Bézier ou lápis livre"]):::ucPlan
+    UC4(["UC4 Aparar, estender, deslocar, unir ou quebrar"]):::ucPlan
+    UC5(["UC5 Expandir largura variável e pincel de mancha"]):::ucPlan
+    UC6(["UC6 Usar OSNAP, ORTHO, POLAR e GRADE"]):::ucPlan
+    UC7(["UC7 Medir distância, área e cotas"]):::ucPlan
+    UC8(["UC8 Informar coordenadas por comando ou campos"]):::ucPlan
+    UC9(["UC9 Pedir proposta de geometria à IA"]):::ucPlan
+    UC10(["UC10 Verificar escopo e reserva (authorizePatch)"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono -- "é um" --> colaborador
+  colaborador -- "é um" --> autenticado
+  colaborador --- UC1
+  colaborador --- UC2
+  colaborador --- UC3
+  colaborador --- UC4
+  colaborador --- UC5
+  colaborador --- UC6
+  autenticado --- UC7
+  colaborador --- UC8
+  colaborador --- UC9
+  UC1 -. "«include»" .-> UC10
+  UC2 -. "«include»" .-> UC10
+  UC3 -. "«include»" .-> UC10
+  UC4 -. "«include»" .-> UC10
+  UC5 -. "«include»" .-> UC10
+  UC9 -. "«extend»" .-> UC4
+  UC9 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Desenhar linha, polilinha, retângulo, elipse ou polígono | `colaborador` | RF58.CA01 | planejado |
+| UC2 Desenhar círculo por raio, diâmetro, 2P, 3P ou TTR | `colaborador` | RF58.CA02 | planejado |
+| UC3 Traçar caminho Bézier ou lápis livre | `colaborador` | RF58.CA03 | planejado |
+| UC4 Aparar, estender, deslocar, unir ou quebrar | `colaborador` | RF58.CA04 | planejado |
+| UC5 Expandir largura variável e pincel de mancha | `colaborador` | RF58.CA05 | planejado |
+| UC6 Usar OSNAP, ORTHO, POLAR e GRADE | `colaborador` | RF58.CA06 | planejado — `snapPoint` de grade em `lib/studio/selection.ts` |
+| UC7 Medir distância, área e cotas | `autenticado` | RF58.CA07 | planejado |
+| UC8 Informar coordenadas por comando ou campos | `colaborador` | RF58.CA01 · CA02 | planejado |
+| UC9 Pedir proposta de geometria à IA | `colaborador`, `ia` (estende UC4) | RF58.CA04 · CA06 | planejado — `evaluateAiAction` real, sem editor |
+| UC10 Verificar escopo e reserva (authorizePatch) | — (incluído por UC1, UC2, UC3, UC4, UC5) | RF58.CA04 · CA06 | planejado — função pura `lib/pieces/patch.ts` |
+
 ## 1. Diagrama de classes
 
 **(real)**: `Geometry`, `SelectionEngine` (funções de `lib/studio/selection.ts`), `PatchAuthorizer`, `DrawingClassification`, `WireframeSuggestion`. Demais classes **(planejado)**; não constam de `docs/arquitetura/TAXONOMIA.md` e são proposta da Onda 5.

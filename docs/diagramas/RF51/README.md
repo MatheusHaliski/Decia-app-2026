@@ -30,6 +30,71 @@ Correspondência entre os níveis do card e os modos implementados (D-136):
 | **RF51.CA06** | Dado um documento ou imagem contendo instruções, quando entra no contexto, então é tratado como dado e não altera permissões, ferramentas ou política do agente. |
 | **RF51.CA07** | Dada uma inferência paga, quando é solicitada, então informa envio de dados, provedor e limite; registra tokens/custo quando disponíveis, permite cancelamento e não faz repetição automática ilimitada. |
 
+## 0. Diagrama de casos de uso
+
+A pessoa escolhe em Configurações › Trabalho o modo de autonomia da IA, e o DECIA já respeita esse modo ao oferecer sugestões; revisão de propostas, transformação local, agente e inferência paga nos editores Letters e Drawings são planejados. A IA só propõe; nada é publicado sem aceite humano.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  dono["«ator» Dono da peça"]:::ator
+  subgraph SIS["Work Station — RF51 Autonomia da IA"]
+    direction TB
+    UC1(["UC1 Escolher o modo de autonomia da IA"]):::uc
+    UC2(["UC2 Consultar o que cada modo permite"]):::uc
+    UC3(["UC3 Pedir sugestão à IA no DECIA"]):::uc
+    UC4(["UC4 Verificar o modo antes da ação da IA"]):::uc
+    UC5(["UC5 Revisar proposta com diff e prévia"]):::ucPlan
+    UC6(["UC6 Aplicar transformação local com checkpoint"]):::ucPlan
+    UC7(["UC7 Delegar objetivo ao agente com mandato"]):::ucPlan
+    UC8(["UC8 Parar ou cancelar a execução da IA"]):::ucPlan
+    UC9(["UC9 Verificar escopo e reserva (authorizePatch)"]):::ucPlan
+    UC10(["UC10 Autorizar inferência paga e ver o custo"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono -- "é um" --> colaborador
+  colaborador -- "é um" --> autenticado
+  autenticado --- UC1
+  autenticado --- UC2
+  autenticado --- UC3
+  colaborador --- UC5
+  dono --- UC6
+  dono --- UC7
+  dono --- UC8
+  autenticado --- UC10
+  UC3 -. "«include»" .-> UC4
+  UC5 -. "«include»" .-> UC4
+  UC5 -. "«include»" .-> UC9
+  UC6 -. "«include»" .-> UC4
+  UC6 -. "«include»" .-> UC9
+  UC7 -. "«include»" .-> UC4
+  UC7 -. "«include»" .-> UC9
+  UC8 -. "«extend»" .-> UC7
+  UC10 -. "«extend»" .-> UC3
+  UC3 --- ia
+  UC5 --- ia
+  UC6 --- ia
+  UC7 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Escolher o modo de autonomia da IA | `autenticado` | RF51.CA01 · CA02 · CA03 · CA04 | real — `/settings?tab=trabalho`, `aiAutonomyDefault` |
+| UC2 Consultar o que cada modo permite | `autenticado` | RF51.CA01 · CA04 | real — `MODE_CAPABILITIES` nas dicas do seletor |
+| UC3 Pedir sugestão à IA no DECIA | `autenticado`, `ia` | RF51.CA01 · CA02 | real — `WorkspaceSections` + `AiSuggestion` (sem motor registrado: `503 IA_INDISPONIVEL`) |
+| UC4 Verificar o modo antes da ação da IA | — (incluído por UC3, UC5, UC6, UC7) | RF51.CA01 · CA02 · CA03 · CA04 | real — `evaluateAiAction` (`lib/ai/autonomy.ts`) |
+| UC5 Revisar proposta com diff e prévia | `colaborador`, `ia` | RF51.CA02 · CA05 · CA06 | planejado — `AiProposal`/`proposalValidity` sem tela |
+| UC6 Aplicar transformação local com checkpoint | `dono`, `ia` | RF51.CA03 | planejado |
+| UC7 Delegar objetivo ao agente com mandato | `dono`, `ia` | RF51.CA04 · CA06 | planejado — `validateCharter` sem tela |
+| UC8 Parar ou cancelar a execução da IA | `dono` (estende UC7) | RF51.CA04 · CA07 | planejado |
+| UC9 Verificar escopo e reserva (authorizePatch) | — (incluído por UC5, UC6, UC7) | RF51.CA03 · CA05 | planejado — função pura `lib/pieces/patch.ts` |
+| UC10 Autorizar inferência paga e ver o custo | `autenticado` (estende UC3) | RF51.CA07 | planejado — `AiBudget` no servidor, sem tela |
+
 ## 1. Diagrama de classes
 
 ```mermaid

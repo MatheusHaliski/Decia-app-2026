@@ -20,6 +20,66 @@ Estado real (MATRIZ_RF de 17/10/2026: LÓGICA SEM INTERFACE, 0,30): existem só 
 | **RF57.CA08** | Dados pontos de ancoragem e hastes Bézier, quando converte canto/suave com Shift+C, move âncora ou manipula alça com Alt/Option e Shift, então preserva vizinhos, permite alças independentes, recolher um controle e restringir a múltiplos de 45 graus; cada arraste é uma ação reversível e não causa salto de rolagem. |
 | **RF57.CA09** | Dado guia de pontos e alças, quando utiliza teclado ou leitor de tela, então identifica âncora, entrada, saída e coordenadas, com controles equivalentes ao arraste e indicação clara dos tipos de curva suportados. |
 
+## 0. Diagrama de casos de uso
+
+Selecionar e ter permissão são eixos distintos: quem tem acesso à peça seleciona, mas só o colaborador explícito (e o dono) transforma, e sempre pela mesma verificação de escopo e reserva. A lógica existe em bibliotecas puras; não há canvas.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  dono["«ator» Dono da peça"]:::ator
+  subgraph SIS["Work Station — RF57 Seleção no Drawings"]
+    direction TB
+    UC1(["UC1 Selecionar por clique, janela ou cruzamento"]):::ucPlan
+    UC2(["UC2 Selecionar por laço ou polígono WP/CP"]):::ucPlan
+    UC3(["UC3 Selecionar objetos semelhantes"]):::ucPlan
+    UC4(["UC4 Selecionar tudo (Ctrl+A)"]):::ucPlan
+    UC5(["UC5 Transformar a seleção (mover, escalar, girar)"]):::ucPlan
+    UC6(["UC6 Editar âncoras, segmentos e alças Bézier"]):::ucPlan
+    UC7(["UC7 Escolher perfil de atalhos CAD ou vetor"]):::ucPlan
+    UC8(["UC8 Percorrer âncoras e alças por teclado"]):::ucPlan
+    UC9(["UC9 Desfazer a transformação"]):::ucPlan
+    UC10(["UC10 Verificar escopo e reserva (authorizePatch)"]):::ucPlan
+    UC11(["UC11 Pedir proposta à IA sobre a seleção"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono -- "é um" --> colaborador
+  colaborador -- "é um" --> autenticado
+  autenticado --- UC1
+  autenticado --- UC2
+  autenticado --- UC3
+  autenticado --- UC4
+  colaborador --- UC5
+  colaborador --- UC6
+  autenticado --- UC7
+  autenticado --- UC8
+  colaborador --- UC9
+  colaborador --- UC11
+  UC5 -. "«include»" .-> UC10
+  UC6 -. "«include»" .-> UC10
+  UC11 -. "«extend»" .-> UC5
+  UC11 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Selecionar por clique, janela ou cruzamento | `autenticado` | RF57.CA01 | planejado — `selectAtPoint`/`selectInBounds` em `lib/studio/selection.ts` |
+| UC2 Selecionar por laço ou polígono WP/CP | `autenticado` | RF57.CA02 | planejado — `selectInPolygon` em `lib/studio/selection.ts` |
+| UC3 Selecionar objetos semelhantes | `autenticado` | RF57.CA03 | planejado |
+| UC4 Selecionar tudo (Ctrl+A) | `autenticado` | RF57.CA06 | planejado — `selectedNodeIds` × `editableNodeIds` |
+| UC5 Transformar a seleção (mover, escalar, girar) | `colaborador` | RF57.CA04 · CA06 | planejado |
+| UC6 Editar âncoras, segmentos e alças Bézier | `colaborador` | RF57.CA05 · CA08 | planejado |
+| UC7 Escolher perfil de atalhos CAD ou vetor | `autenticado` | RF57.CA07 | planejado |
+| UC8 Percorrer âncoras e alças por teclado | `autenticado` | RF57.CA09 | planejado |
+| UC9 Desfazer a transformação | `colaborador` | RF57.CA04 · CA08 | planejado |
+| UC10 Verificar escopo e reserva (authorizePatch) | — (incluído por UC5, UC6) | RF57.CA04 · CA06 | planejado — função pura `lib/pieces/patch.ts` |
+| UC11 Pedir proposta à IA sobre a seleção | `colaborador`, `ia` (estende UC5) | RF57.CA06 | planejado — `evaluateAiAction` real, sem editor |
+
 ## 1. Diagrama de classes
 
 Classes do front marcadas **(real)** existem hoje em `lib/`; as demais são **(planejado)**. `DrawingScene`/`DrawingNode` ainda não constam de `docs/arquitetura/TAXONOMIA.md`: as entidades de servidor abaixo são proposta para a Onda 5.

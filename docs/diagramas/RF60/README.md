@@ -18,6 +18,69 @@ Estado real (MATRIZ_RF de 17/10/2026: AUSENTE, 0,00): não há código 3D nesta 
 | **RF60.CA06** | Dados FILLETEDGE e CHAMFEREDGE, quando seleciona arestas, então aplica raio/chanfro nas arestas suportadas e não promete kernel B-rep onde há apenas malha. |
 | **RF60.CA07** | Dados 3DMOVE, 3DROTATE e 3DSCALE, quando usa campos ou gizmos XYZ, então permite seleção múltipla, pivô explícito, limites e desfazer. |
 
+## 0. Diagrama de casos de uso
+
+O colaborador explícito (e o dono) modela sólidos e malhas; cada operação declara se está disponível, parcial ou futura e valida a geometria antes de gravar. Toda a modelagem 3D é capacidade futura: não há código 3D no app.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  colaborador["«ator» Colaborador explícito"]:::ator
+  dono["«ator» Dono da peça"]:::ator
+  subgraph SIS["Work Station — RF60 Modelagem 3D"]
+    direction TB
+    UC1(["UC1 Criar caixa, cilindro, esfera, cone, cunha ou toro"]):::ucPlan
+    UC2(["UC2 Extrudar perfil fechado"]):::ucPlan
+    UC3(["UC3 Revolver, transicionar ou varrer perfis"]):::ucPlan
+    UC4(["UC4 Criar volume almofadado"]):::ucPlan
+    UC5(["UC5 Unir, subtrair ou intersectar sólidos"]):::ucPlan
+    UC6(["UC6 Arredondar ou chanfrar arestas"]):::ucPlan
+    UC7(["UC7 Mover, girar e escalar em XYZ"]):::ucPlan
+    UC8(["UC8 Consultar disponibilidade e limites da operação"]):::ucPlan
+    UC9(["UC9 Validar geometria antes de gravar"]):::ucPlan
+    UC10(["UC10 Verificar escopo e reserva (authorizePatch)"]):::ucPlan
+    UC11(["UC11 Pedir proposta de modelagem à IA"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono -- "é um" --> colaborador
+  colaborador --- UC1
+  colaborador --- UC2
+  colaborador --- UC3
+  colaborador --- UC4
+  colaborador --- UC5
+  colaborador --- UC6
+  colaborador --- UC7
+  colaborador --- UC8
+  colaborador --- UC11
+  UC1 -. "«include»" .-> UC9
+  UC2 -. "«include»" .-> UC9
+  UC3 -. "«include»" .-> UC9
+  UC4 -. "«include»" .-> UC9
+  UC5 -. "«include»" .-> UC9
+  UC6 -. "«include»" .-> UC9
+  UC7 -. "«include»" .-> UC10
+  UC9 -. "«include»" .-> UC10
+  UC11 -. "«extend»" .-> UC5
+  UC11 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Criar caixa, cilindro, esfera, cone, cunha ou toro | `colaborador` | RF60.CA01 | planejado |
+| UC2 Extrudar perfil fechado | `colaborador` | RF60.CA02 | planejado |
+| UC3 Revolver, transicionar ou varrer perfis | `colaborador` | RF60.CA03 | planejado |
+| UC4 Criar volume almofadado | `colaborador` | RF60.CA04 | planejado |
+| UC5 Unir, subtrair ou intersectar sólidos | `colaborador` | RF60.CA05 | planejado |
+| UC6 Arredondar ou chanfrar arestas | `colaborador` | RF60.CA06 | planejado |
+| UC7 Mover, girar e escalar em XYZ | `colaborador` | RF60.CA07 | planejado |
+| UC8 Consultar disponibilidade e limites da operação | `colaborador` | RF60.CA04 · CA06 | planejado |
+| UC9 Validar geometria antes de gravar | — (incluído por UC1, UC2, UC3, UC4, UC5, UC6) | RF60.CA01 · CA02 · CA05 | planejado |
+| UC10 Verificar escopo e reserva (authorizePatch) | — (incluído por UC7, UC9) | RF60.CA05 · CA07 | planejado — função pura `lib/pieces/patch.ts` |
+| UC11 Pedir proposta de modelagem à IA | `colaborador`, `ia` (estende UC5) | RF60.CA05 | planejado — `evaluateAiAction` real, sem editor |
+
 ## 1. Diagrama de classes
 
 **(real)**: `PatchAuthorizer`, `RegionLock`, `DrawingClassification`, `AutonomyPolicy`. Todo o modelo 3D é **(planejado)** e não consta de `docs/arquitetura/TAXONOMIA.md`.

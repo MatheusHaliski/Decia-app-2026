@@ -20,6 +20,70 @@ A pessoa pede ao Letters uma revisão (ortografia, gramática, parágrafo ou doc
 | **RF55.CA06** | Dada reescrita com números, nomes e citações, quando propõe mudanças factuais, então destaca essas mudanças e não apresenta invenções como fatos. |
 | **RF55.CA07** | Dada proposta rejeitada ou cancelada, quando o usuário segue escrevendo, então mantém seu rascunho e não dispara nova chamada paga automaticamente. |
 
+## 0. Diagrama de casos de uso
+
+O colaborador explícito (e o dono, que pode tudo o que ele pode) pede à IA revisão, continuação ou reescrita e decide cada proposta no diff; a proposta só vale na mesma política, revisão e trecho. Hoje o cartão `AiSuggestion` existe só no DECIA; no Letters todos os casos são planejados.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  colaborador["«ator» Colaborador explícito"]:::ator
+  dono["«ator» Dono da peça"]:::ator
+  subgraph SIS["Work Station — RF55 Revisar e completar com IA"]
+    direction TB
+    UC1(["UC1 Pedir revisão ortográfica básica"]):::ucPlan
+    UC2(["UC2 Comparar sugestão no diff inline"]):::ucPlan
+    UC3(["UC3 Aceitar ou rejeitar sugestão"]):::ucPlan
+    UC4(["UC4 Pedir explicação ou alternativa"]):::ucPlan
+    UC5(["UC5 Completar texto a partir do cursor"]):::ucPlan
+    UC6(["UC6 Reescrever parágrafos ou documento"]):::ucPlan
+    UC7(["UC7 Desfazer a operação inteira"]):::ucPlan
+    UC8(["UC8 Conferir mudanças em números, nomes e citações"]):::ucPlan
+    UC9(["UC9 Cancelar pedido em andamento"]):::ucPlan
+    UC10(["UC10 Verificar modo e validade da proposta"]):::ucPlan
+    UC11(["UC11 Verificar escopo e reserva (authorizePatch)"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono -- "é um" --> colaborador
+  colaborador --- UC1
+  colaborador --- UC2
+  colaborador --- UC3
+  colaborador --- UC4
+  colaborador --- UC5
+  colaborador --- UC6
+  colaborador --- UC7
+  colaborador --- UC8
+  colaborador --- UC9
+  UC1 -. "«include»" .-> UC10
+  UC3 -. "«include»" .-> UC10
+  UC3 -. "«include»" .-> UC11
+  UC4 -. "«extend»" .-> UC2
+  UC5 -. "«include»" .-> UC10
+  UC6 -. "«include»" .-> UC10
+  UC8 -. "«extend»" .-> UC2
+  UC1 --- ia
+  UC4 --- ia
+  UC5 --- ia
+  UC6 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Pedir revisão ortográfica básica | `colaborador`, `ia` | RF55.CA01 | planejado |
+| UC2 Comparar sugestão no diff inline | `colaborador` | RF55.CA02 · CA06 | planejado |
+| UC3 Aceitar ou rejeitar sugestão | `colaborador` | RF55.CA02 · CA05 · CA07 | planejado — reaproveita `AiSuggestion` e `AI_PROPOSAL_ACCEPTED` |
+| UC4 Pedir explicação ou alternativa | `colaborador`, `ia` (estende UC2) | RF55.CA02 | planejado |
+| UC5 Completar texto a partir do cursor | `colaborador`, `ia` | RF55.CA03 · CA05 | planejado |
+| UC6 Reescrever parágrafos ou documento | `colaborador`, `ia` | RF55.CA04 · CA06 | planejado |
+| UC7 Desfazer a operação inteira | `colaborador` | RF55.CA04 | planejado |
+| UC8 Conferir mudanças em números, nomes e citações | `colaborador` (estende UC2) | RF55.CA06 | planejado |
+| UC9 Cancelar pedido em andamento | `colaborador` | RF55.CA05 · CA07 | planejado |
+| UC10 Verificar modo e validade da proposta | — (incluído por UC1, UC3, UC5, UC6) | RF55.CA01 · CA05 · CA07 | planejado — `evaluateAiAction`/`proposalValidity` reais, sem editor |
+| UC11 Verificar escopo e reserva (authorizePatch) | — (incluído por UC3) | RF55.CA04 · CA05 | planejado — função pura `lib/pieces/patch.ts` |
+
 ## 1. Diagrama de classes
 
 ```mermaid
