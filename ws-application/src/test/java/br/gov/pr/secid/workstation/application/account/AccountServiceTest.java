@@ -109,6 +109,10 @@ class AccountServiceTest {
             return 0;
         }
 
+        public java.util.List<User> searchInCompany(UUID companyId, String query, int limit) {
+            return java.util.List.of();
+        }
+
         public User save(User u) {
             if (u.getId() == null) {
                 u.setId(UUID.randomUUID());

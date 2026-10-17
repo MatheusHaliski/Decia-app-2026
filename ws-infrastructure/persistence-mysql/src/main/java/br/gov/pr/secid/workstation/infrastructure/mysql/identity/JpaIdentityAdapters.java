@@ -13,10 +13,12 @@ import br.gov.pr.secid.workstation.domain.identity.UserPreferences;
 import br.gov.pr.secid.workstation.domain.identity.VerificationPurpose;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -60,6 +62,15 @@ public class JpaIdentityAdapters {
             @Override
             public long countByRole(Role role) {
                 return repo.countByRole(role);
+            }
+
+            @Override
+            public List<User> searchInCompany(UUID companyId, String query, int limit) {
+                if (companyId == null || query == null || query.isBlank()) {
+                    return List.of();
+                }
+                String like = "%" + query.trim().toLowerCase(Locale.ROOT).replace("%", "\\%").replace("_", "\\_") + "%";
+                return repo.searchInCompany(companyId, like, PageRequest.of(0, Math.max(1, limit))).stream().map(UserEntity::toDomain).toList();
             }
 
             @Override

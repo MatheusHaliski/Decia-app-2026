@@ -297,6 +297,57 @@ export interface paths {
         patch: operations["sensitive"];
         trace?: never;
     };
+    "/api/people": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF4/RF10 Buscar pessoas da minha empresa (≥ 2 caracteres; só contas ativas) */
+        get: operations["search"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/people/by-username/{username}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF16.CA01 Perfil público por nome de usuário */
+        get: operations["byUsername"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/people/{id}/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF16/RF17 Tarefas de uma pessoa que eu posso ver */
+        get: operations["tasksOf"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/tasks": {
         parameters: {
             query?: never;
@@ -443,6 +494,16 @@ export interface components {
             idToken: string;
             nonce: string;
         };
+        PersonView: {
+            avatarUrl?: string;
+            /** Format: uuid */
+            departmentId?: string;
+            /** Format: uuid */
+            id?: string;
+            jobTitle?: string;
+            name?: string;
+            username?: string;
+        };
         PreferencesRequest: {
             aiModeDefault?: string;
             dashboardLayoutJson?: string;
@@ -467,6 +528,24 @@ export interface components {
             hypeVisibility?: string;
             jobTitle?: string;
             rankingOptOut?: boolean;
+        };
+        PublicProfileView: {
+            avatarUrl?: string;
+            bio?: string;
+            /** Format: uuid */
+            companyId?: string;
+            coverUrl?: string;
+            /** Format: uuid */
+            departmentId?: string;
+            fullName?: string;
+            /** Format: uuid */
+            id?: string;
+            jobTitle?: string;
+            name?: string;
+            profileType?: string;
+            self?: boolean;
+            username?: string;
+            verified?: boolean;
         };
         Receipt: {
             maskedEmail?: string;
@@ -1143,6 +1222,75 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["UserView"];
+                };
+            };
+        };
+    };
+    search: {
+        parameters: {
+            query?: {
+                q?: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PersonView"][];
+                };
+            };
+        };
+    };
+    byUsername: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PublicProfileView"];
+                };
+            };
+        };
+    };
+    tasksOf: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TaskView"][];
                 };
             };
         };

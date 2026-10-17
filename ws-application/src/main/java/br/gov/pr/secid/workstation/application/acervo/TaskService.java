@@ -114,6 +114,15 @@ public class TaskService {
         return tasks.findByOwner(actor.id(), Math.max(1, Math.min(limit, MAX_LIST))).stream().map(s -> view(viewer, s)).toList();
     }
 
+    /** Tarefas de outra pessoa que o viewer pode ver (perfil de terceiros, RF16/RF17): filtro item a item pela AccessPolicy. */
+    public List<TaskView> listOf(CurrentUser actor, UUID ownerId, int limit) {
+        Viewer viewer = authorizer.viewer(actor);
+        int size = Math.max(1, Math.min(limit, MAX_LIST));
+        return tasks.findByOwner(ownerId, size).stream()
+                .filter(s -> AccessPolicy.visible(viewer, scoped(s.task())))
+                .map(s -> view(viewer, s)).toList();
+    }
+
     public TaskView get(CurrentUser actor, UUID id) {
         Viewer viewer = authorizer.viewer(actor);
         StoredTask stored = load(id);

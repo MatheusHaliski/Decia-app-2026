@@ -5,6 +5,7 @@ import br.gov.pr.secid.workstation.application.identity.CurrentUser;
 import br.gov.pr.secid.workstation.application.identity.UserRepositoryPort;
 import br.gov.pr.secid.workstation.domain.decisao.Decision;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionRole;
+import br.gov.pr.secid.workstation.domain.identity.AccountStatus;
 import br.gov.pr.secid.workstation.domain.identity.ProfileType;
 import br.gov.pr.secid.workstation.domain.identity.Role;
 import br.gov.pr.secid.workstation.domain.identity.User;
@@ -87,6 +88,20 @@ public class ResourceAuthorizer {
         AuthorizationTrail.record("USER:" + targetUserId);
         if (targetUserId == null || (!v.isAdmin() && !v.is(targetUserId))) {
             throw Guard.denied();
+        }
+        return v;
+    }
+
+    /**
+     * Perfil público de outra pessoa ({@code GET /api/people/by-username/{username}}, RF16.CA01): qualquer conta autenticada vê a
+     * projeção pública de uma conta ATIVA; conta inexistente, pendente, suspensa ou em exclusão responde o MESMO 404 (não enumera).
+     * O que a pessoa produziu continua filtrado item a item pela {@code AccessPolicy}.
+     */
+    public Viewer requireProfileVisible(CurrentUser actor, User target) {
+        Viewer v = viewer(actor);
+        AuthorizationTrail.record("PROFILE:" + (target == null ? "?" : target.getId()));
+        if (target == null || target.getStatus() != AccountStatus.ACTIVE) {
+            throw ApiException.notFound("Perfil");
         }
         return v;
     }

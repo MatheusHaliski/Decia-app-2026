@@ -199,6 +199,31 @@
         "required" : [ "idToken", "nonce" ],
         "type" : "object"
       },
+      "PersonView" : {
+        "properties" : {
+          "avatarUrl" : {
+            "type" : "string"
+          },
+          "departmentId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "jobTitle" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "username" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
       "PreferencesRequest" : {
         "properties" : {
           "aiModeDefault" : {
@@ -279,6 +304,53 @@
             "type" : "string"
           },
           "rankingOptOut" : {
+            "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
+      "PublicProfileView" : {
+        "properties" : {
+          "avatarUrl" : {
+            "type" : "string"
+          },
+          "bio" : {
+            "type" : "string"
+          },
+          "companyId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "coverUrl" : {
+            "type" : "string"
+          },
+          "departmentId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "fullName" : {
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "jobTitle" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "profileType" : {
+            "type" : "string"
+          },
+          "self" : {
+            "type" : "boolean"
+          },
+          "username" : {
+            "type" : "string"
+          },
+          "verified" : {
             "type" : "boolean"
           }
         },
@@ -1349,6 +1421,113 @@
         },
         "summary" : "RF3.CA02/CA08 E-mail/telefone com step-up da senha atual no mesmo bloqueio do login (401 REAUTENTICACAO_FALHOU, 6º erro → 429 MUITAS_TENTATIVAS); e-mail novo volta a 'não confirmado' e recebe código",
         "tags" : [ "RF3 Conta" ]
+      }
+    },
+    "/api/people" : {
+      "get" : {
+        "operationId" : "search",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "q",
+          "required" : false,
+          "schema" : {
+            "default" : "",
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "limit",
+          "required" : false,
+          "schema" : {
+            "default" : 10,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/PersonView"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF4/RF10 Buscar pessoas da minha empresa (≥ 2 caracteres; só contas ativas)",
+        "tags" : [ "RF16 Pessoas" ]
+      }
+    },
+    "/api/people/by-username/{username}" : {
+      "get" : {
+        "operationId" : "byUsername",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "username",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PublicProfileView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF16.CA01 Perfil público por nome de usuário",
+        "tags" : [ "RF16 Pessoas" ]
+      }
+    },
+    "/api/people/{id}/tasks" : {
+      "get" : {
+        "operationId" : "tasksOf",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "limit",
+          "required" : false,
+          "schema" : {
+            "default" : 50,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/TaskView"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF16/RF17 Tarefas de uma pessoa que eu posso ver",
+        "tags" : [ "RF16 Pessoas" ]
       }
     },
     "/api/tasks" : {
