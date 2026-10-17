@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -183,6 +184,17 @@ public class IdentityService {
         RefreshRecord rt = sessions.find(hash).orElseThrow(IdentityService::sessionInvalid);
         switch (outcome) {
             case REUSED -> {
+                if (toleratedReuse(rt, now)) {
+                    // D-140 (Q-237): a resposta da rotação pode ter se perdido (navegação abortada); dentro da janela e com a
+                    // família ainda viva e só um sucessor, emite um irmão em vez de derrubar a pessoa de todos os dispositivos
+                    User u = users.findById(rt.userId()).orElseThrow(IdentityService::sessionInvalid);
+                    if (u.getStatus().blocksLogin()) {
+                        throw sessionInvalid();
+                    }
+                    audit.record(AuditEvent.of(rt.userId(), AuditActions.REFRESH_REUSO_TOLERADO, "session", rt.familyId().toString(), AuditEvent.OK,
+                            ctx.ip(), ctx.userAgent(), Map.of("graceSeconds", policy.reuseGraceWindow().toSeconds())));
+                    return issue(u, rt.familyId(), rt.tokenHash(), rt.persistent(), rt.deviceName(), ctx);
+                }
                 sessions.revokeFamily(rt.familyId(), now);
                 mirror.familyRevoked(rt.familyId(), now);
                 audit.record(AuditEvent.of(rt.userId(), AuditActions.REFRESH_REUSO, "session", rt.familyId().toString(), AuditEvent.NEGADO,
@@ -202,6 +214,20 @@ public class IdentityService {
         }
         mirror.revoked(rt.tokenHash(), now);
         return issue(u, rt.familyId(), rt.tokenHash(), rt.persistent(), rt.deviceName(), ctx);
+    }
+
+    /**
+     * Reuso tolerável: o token foi consumido por rotação há menos que a janela, a família continua viva e tem exatamente um
+     * token vivo (o sucessor legítimo); a reivindicação atômica no store garante um único irmão por rotação, inclusive com reusos
+     * paralelos. Logout/revogação zera os vivos e nunca é tolerado.
+     */
+    private boolean toleratedReuse(RefreshRecord rt, Instant now) {
+        Duration grace = policy.reuseGraceWindow();
+        if (grace.isZero() || rt.revokedAt() == null || now.isAfter(rt.revokedAt().plus(grace)) || !rt.expiresAt().isAfter(now)) {
+            return false;
+        }
+        long live = sessions.activeOfUser(rt.userId(), now).stream().filter(r -> r.familyId().equals(rt.familyId())).count();
+        return live == 1 && sessions.claimReuseGrace(rt.tokenHash());
     }
 
     static ApiException sessionInvalid() {

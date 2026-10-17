@@ -40,6 +40,11 @@ public interface SessionStorePort {
         }
     }
 
+    /**
+     * Reivindica, de forma ATÔMICA, a tolerância ao reuso de um token já rotacionado (D-140): devolve {@code true} só na primeira
+     * chamada para aquele hash. Garante um único irmão por rotação mesmo com reusos paralelos; nunca cria nem revive tokens.
+     */
+    boolean claimReuseGrace(String tokenHash);
     /** Revoga a família inteira (logout, reuso detectado, troca de senha). */
     void revokeFamily(UUID familyId, Instant at);
 

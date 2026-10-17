@@ -25,7 +25,8 @@ export function TaskDetail({ taskId }: { taskId: string }) {
     return <EmptyState title={t("social.task.notInMemory")} description={t("social.task.notInMemoryHint")} action={<Button variant="primary" href="/profile?tab=acervo">{t("social.task.backToAcervo")}</Button>} />;
   }
   if (!canView(state, viewerId, { kind: "TASK", task })) {
-    return <ErrorState title={t("forbidden.title")} description={t("social.error.ACESSO_NEGADO")} code="403 ACESSO_NEGADO" />;
+    // D-141 (Q-239): invisível responde igual a inexistente, como o backend (NOT_FOUND) — 403 revelaria que um SIGILOSO existe
+    return <ErrorState title={t("tasks.detail.notFound")} description={t("tasks.detail.notFoundHint")} code="404 NAO_ENCONTRADO" action={<Button variant="primary" href="/profile?tab=acervo">{t("social.task.backToAcervo")}</Button>} />;
   }
   const vm = toTaskCardViewModel(state, viewerId, task, now);
   const history = assignmentsOf(state, vm.ref);

@@ -199,6 +199,13 @@ public class RedisSessionStore implements SessionStorePort {
 
     /** Tombstone primeiro (bloqueia qualquer sucessor em voo), depois os membros conhecidos. */
     @Override
+    public boolean claimReuseGrace(String tokenHash) {
+        // HSETNX: só a primeira reivindicação ganha; o campo some com o próprio token (mesmo TTL)
+        return Boolean.TRUE.equals(redis.hasKey(tokenKey(tokenHash)))
+                && Boolean.TRUE.equals(redis.opsForHash().putIfAbsent(tokenKey(tokenHash), "graceUsed", "1"));
+    }
+
+    @Override
     public void revokeFamily(UUID familyId, Instant at) {
         String meta = metaKey(familyId);
         if (Boolean.TRUE.equals(redis.opsForHash().putIfAbsent(meta, "revokedAt", String.valueOf(at.toEpochMilli())))) {

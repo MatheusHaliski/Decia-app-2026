@@ -77,13 +77,13 @@ test("delegar: Pessoa delega o cronograma ao Chefe; com o perfil CHEFE, aceita e
   await expect(acervo.getByTestId("delegation-line")).toContainText("Delegada por Pessoa Exemplo · aceita por Chefe Exemplo");
 });
 
-test("visitante lê tarefa PUBLICA (ações pedem login) e recebe 403 numa tarefa da empresa", async ({ page }) => {
+test("visitante lê tarefa PUBLICA (ações pedem login) e recebe 404 numa tarefa da empresa (D-141)", async ({ page }) => {
   await page.addInitScript(() => { try { localStorage.setItem("ws.lab.viewer", "VISITANTE"); } catch { /* ignore */ } });
   await page.goto("/tasks/t-ana-etp");
   await expect(page.getByTestId("task-detail")).toBeVisible();
   await expect(page.getByTestId("action-like").first()).toHaveAttribute("aria-disabled", "true");
   await page.goto("/tasks/t-ana-planilha");
-  await expect(page.getByRole("alert").filter({ hasText: "403 ACESSO_NEGADO" })).toBeVisible();
+  await expect(page.getByRole("alert").filter({ hasText: "404 NAO_ENCONTRADO" })).toBeVisible();
   await expect(page.getByTestId("task-detail")).toHaveCount(0);
 });
 

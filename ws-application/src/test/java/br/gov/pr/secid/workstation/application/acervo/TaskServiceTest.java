@@ -177,7 +177,7 @@ class TaskServiceTest {
     }
 
     @Test
-    void sigilosoNaoEhVistoPorColegaSemVinculo() {
+    void sigilosoNaoEhVistoPorColegaNemAdminSemVinculo() {
         User owner = person(company, Role.USER);
         User colleague = person(company, Role.USER);
         User admin = person(company, Role.ADMIN);
@@ -186,8 +186,9 @@ class TaskServiceTest {
         TaskView v = service.create(cu(owner), sig, CTX);
         assertThatThrownBy(() -> service.get(cu(colleague), v.id())).isInstanceOfSatisfying(ApiException.class,
                 e -> assertThat(e.status()).isEqualTo(404));
-        // AccessPolicy ainda concede SIGILOSO ao ADMIN (Q-166 aberta); a regra transversal do RF51 pede o contrário — decisão pendente
-        assertThat(service.get(cu(admin), v.id()).editable()).isTrue();
+        // D-139 (Q-166/Q-238): ADMIN sem vínculo explícito não lê SIGILOSO — mesma resposta de inexistente
+        assertThatThrownBy(() -> service.get(cu(admin), v.id())).isInstanceOfSatisfying(ApiException.class,
+                e -> assertThat(e.status()).isEqualTo(404));
         assertThat(service.get(cu(owner), v.id()).title()).isEqualTo("Parecer sigiloso");
     }
 

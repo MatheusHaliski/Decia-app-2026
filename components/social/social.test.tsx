@@ -283,7 +283,7 @@ describe("ProfileView — sub-abas por viewer (Matriz B)", () => {
 });
 
 describe("correções da revisão (PR #35)", () => {
-  it("visitante abre tarefa PUBLICA só para leitura (ações pedem login) e recebe 403 nas não públicas", () => {
+  it("visitante abre tarefa PUBLICA só para leitura (ações pedem login) e recebe 404 nas não públicas (D-141)", () => {
     const { render } = setup(null);
     const { unmount } = render(<TaskDetail taskId={T.anaEtp} />, "VISITANTE");
     expect(screen.getByTestId("task-detail")).toBeTruthy();
@@ -292,7 +292,8 @@ describe("correções da revisão (PR #35)", () => {
     unmount();
     render(<TaskDetail taskId={T.anaPlanilha} />, "VISITANTE");
     expect(screen.queryByTestId("task-detail")).toBeNull();
-    expect(screen.getByText(/403 ACESSO_NEGADO/)).toBeTruthy();
+    expect(screen.getByText(/404 NAO_ENCONTRADO/)).toBeTruthy();
+    expect(screen.queryByText(/403/)).toBeNull();
   });
   it("remix de projeto não leva à página-esqueleto /projects/[id]; leva à sub-aba Projetos do perfil", () => {
     const { render, repo } = setup();

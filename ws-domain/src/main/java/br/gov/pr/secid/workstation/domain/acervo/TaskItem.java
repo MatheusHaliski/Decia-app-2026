@@ -136,12 +136,12 @@ public record TaskItem(
 
     /**
      * Tarefa criada à mão no criador (RF4; auditoria 17/10/2026): RASCUNHO, dono e departamento do autor, origem INTERNA e fonte
-     * COLAR (texto digitado/colado — mapeamento do RF4 para TEXTO_MANUAL; Q-235). Contadores e carimbos sociais começam zerados.
+     * MANUAL (Q-235, V37). Contadores e carimbos sociais começam zerados.
      */
     public static TaskItem create(UUID ownerId, UUID departmentId, String title, String descriptionMd, TaskType type, TaskCategory category,
                                   Priority priority, LocalDate dueAt, UUID responsibleId, AccessClassification accessClass, Visibility visibility) {
         return new TaskItem(null, ownerId, departmentId, title, null, descriptionMd, type, category, null, Set.of(), Set.of(), accessClass, null,
-                null, null, BigDecimal.ZERO, TaskOrigin.INTERNA, SourceKind.COLAR, null, null, null, responsibleId, dueAt, null, null, null, null,
+                null, null, BigDecimal.ZERO, TaskOrigin.INTERNA, SourceKind.MANUAL, null, null, null, responsibleId, dueAt, null, null, null, null,
                 priority, TaskState.RASCUNHO, null, null, null, null, null, null, null, null, visibility, false, false, false, null, null, null,
                 null, CoverMode.AUTO, null, Set.of(), null, null, null, null, 0, 0, 0, 0, 0, 0, 0, 0, null);
     }
