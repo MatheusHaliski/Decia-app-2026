@@ -44,7 +44,7 @@ export function SocialProfileHeader({ vm }: { vm: ProfileHeaderViewModel }) {
           </div>
         </div>
       </div>
-      <dl className="grid grid-cols-3 gap-x-4 gap-y-3 text-center sm:grid-cols-6 md:min-w-[22rem]" data-testid="profile-counters">
+      <dl className="grid grid-cols-3 gap-x-4 gap-y-3 text-center sm:grid-cols-7 md:min-w-[24rem]" data-testid="profile-counters">
         {vm.counters.map((c) => (
           <div key={c.key} className="min-w-0" data-counter={c.key}>
             <dt className="truncate text-[length:var(--ws-text-label)] uppercase tracking-[var(--ws-text-label--tracking)] text-ws-text-muted">{t(`profile.counter.${c.key}`)}</dt>
