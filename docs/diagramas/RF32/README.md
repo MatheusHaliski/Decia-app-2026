@@ -4,6 +4,54 @@
 
 `ComplianceChecklist` (por `processTag`, empresa ou departamento, com `legalBasis`, ex.: Lei 14.133/2021) tem `ComplianceItem`s (OBRIGATORIO · RECOMENDADO, `expectedPhase`, `expectedCategory`, `expectedType`, `mustPrecedeItemId`). Abrir o Espelho gera um `ComplianceResult` (`itemsJson` com ATENDIDO · RECOMENDADO_AUSENTE · OBRIGATORIO_AUSENTE · FORA_DE_ORDEM, `percent`, `blockingCount`). O cruzamento é **determinístico** (`ComplianceService`); a IA (`CONFORMIDADE`) só sugere qual tarefa atende cada item e redige a explicação ✦. O selo (%) vai para `ProjectScheme.conformityPercent/hasBlockingPending`; a passagem para APROVACAO com ⛔ pendente exige **justificativa do chefe** (`overrideByUserId/overrideReason`, autoridade humana). O resultado entra no resumo analítico (`AnalyticalSummary.complianceResultId`) e no rastro (nó CONFORMIDADE → VERIFICOU).
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Todos são planejados: `/projects/[id]/mirror` é página-esqueleto e a gestão de checklists ainda não tem rota.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  empresa["«ator» Empresa ou órgão"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  dono["«ator» Dono do recurso"]:::ator
+  subgraph SIS["Work Station — RF32 Espelho de Conformidade"]
+    direction TB
+    UC1(["UC1 Manter checklists de conformidade"]):::ucPlan
+    UC2(["UC2 Abrir o Espelho de Conformidade do projeto"]):::ucPlan
+    UC3(["UC3 Sugerir a tarefa que atende cada item"]):::ucPlan
+    UC4(["UC4 Criar a tarefa faltante"]):::ucPlan
+    UC5(["UC5 Enviar o projeto à aprovação com o selo"]):::ucPlan
+    UC6(["UC6 Liberar a aprovação com justificativa"]):::ucPlan
+    UC7(["UC7 Registrar a verificação no resumo e no rastro"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  empresa --- UC1
+  chefe --- UC1
+  chefe --- UC2
+  chefe --- UC6
+  dono --- UC2
+  dono --- UC4
+  dono --- UC5
+  UC2 -. "«include»" .-> UC3
+  UC2 -. "«include»" .-> UC7
+  UC4 -. "«extend»" .-> UC2
+  UC6 -. "«extend»" .-> UC5
+  UC3 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Manter checklists de conformidade | `empresa`, `chefe` | RF32.CA01 | planejado |
+| UC2 Abrir o Espelho de Conformidade do projeto | `dono`, `chefe` | RF32.CA02, RF32.CA06 | planejado (o chefe revisor só lê) |
+| UC3 Sugerir a tarefa que atende cada item | `ia` | RF32.CA02 | planejado |
+| UC4 Criar a tarefa faltante | `dono` | RF32.CA03, RF32.CA06 | planejado |
+| UC5 Enviar o projeto à aprovação com o selo | `dono` | RF32.CA04 | planejado |
+| UC6 Liberar a aprovação com justificativa | `chefe` | RF32.CA04 | planejado |
+| UC7 Registrar a verificação no resumo e no rastro | — (incluído por UC2) | RF32.CA05 | planejado |
+
 ## 1. Diagrama de classes
 
 ```mermaid

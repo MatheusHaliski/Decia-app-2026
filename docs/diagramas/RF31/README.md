@@ -4,6 +4,51 @@
 
 Um `ProjectScenario` guarda as variáveis (`variablesJson`: `budgetDeltaPct`, `scheduleDeltaDays`, `removedTaskIds`, `addedTasksJson`, `responsibleSwaps`, `supplierSwaps`, `scopeChangeText`) e o **relatório de impacto** (`impactReportJson`) no mesmo formato dos cenários do resumo analítico (RF11, `SummaryScenario`). O recálculo de linha do tempo, caminho crítico e risco por fase é **determinístico** (`CriticalPathService`, `RiskMatrixService`, D-12); a IA (`SIMULAR_CENARIO`) só redige vantagens/desvantagens e cruza com o Espelho (RF32). **Salvar** cria uma variante (não altera o original); **aplicar** gera `ProjectVersion` com `sourceScenarioId` (RF22). Compartilhar na sessão cria `MessageAttachment` tipo SCENARIO e `SummaryScenario.linkedProjectScenarioId`.
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Todos são planejados: `/projects/[id]/simulate` é página-esqueleto. Só quem tem acesso de edição ao projeto (dono ou colaborador) simula.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  dono["«ator» Dono do recurso"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  subgraph SIS["Work Station — RF31 Simulador de Cenários"]
+    direction TB
+    UC1(["UC1 Montar um cenário sobre o projeto"]):::ucPlan
+    UC2(["UC2 Calcular o impacto e redigir vantagens e desvantagens"]):::ucPlan
+    UC3(["UC3 Comparar até três cenários"]):::ucPlan
+    UC4(["UC4 Salvar o cenário como variante"]):::ucPlan
+    UC5(["UC5 Aplicar o cenário ao projeto"]):::ucPlan
+    UC6(["UC6 Compartilhar o cenário na sessão DECIA"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono --- UC1
+  dono --- UC3
+  dono --- UC4
+  dono --- UC5
+  dono --- UC6
+  colaborador --- UC1
+  colaborador --- UC3
+  colaborador --- UC4
+  colaborador --- UC5
+  colaborador --- UC6
+  UC1 -. "«include»" .-> UC2
+  UC2 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Montar um cenário sobre o projeto | `dono`, `colaborador` | RF31.CA01 | planejado |
+| UC2 Calcular o impacto e redigir vantagens e desvantagens | `ia` | RF31.CA02, RF31.CA05 | planejado (recálculo determinístico; a IA só redige) |
+| UC3 Comparar até três cenários | `dono`, `colaborador` | RF31.CA03 | planejado |
+| UC4 Salvar o cenário como variante | `dono`, `colaborador` | RF31.CA03 | planejado |
+| UC5 Aplicar o cenário ao projeto | `dono`, `colaborador` | RF31.CA03 | planejado (gera `ProjectVersion`) |
+| UC6 Compartilhar o cenário na sessão DECIA | `dono`, `colaborador` | RF31.CA04 | planejado |
+
 ## 1. Diagrama de classes
 
 ```mermaid

@@ -4,6 +4,50 @@
 
 `HandoffDossier` (`subjectType` EMPREGADO · GESTAO; `reason` `HandoffReason` SAIDA · TRANSFERENCIA · FIM_GESTAO · TROCA_CHEFE; `status` `HandoffStatus` GERADO · AGUARDANDO_SUCESSOR · TRANSFERIDO · RECUSADO · CANCELADO) compila em `contentJson` projetos abertos por fase, tarefas pendentes/bloqueadas com prazos, sessões DECIA em andamento, decisões pendentes de revisão, contatos/fornecedores (`OrgEntity`) citados e um **resumo de contexto** por projeto redigido pela IA (`DOSSIE`) **sobre dados do sistema**. Materializa-se em `TaskItem` DOCUMENTO (PDF, `sourceKind DOSSIE`, faísca ✦) e `ProjectScheme` "Transição de [nome]" (`origin DOSSIE`) com as tarefas de encaminhamento, ligados ao rastro (nó TAREFA/PROJETO). O sucessor aceita → `HandoffItem`s transferem `responsibleId` (antigo fica `previousResponsibleId`), sessões ativas notificam a troca de participante (RF9), histórico intacto. Itens PRIVADOS só com `consentForPrivateItems`; saída nunca apaga tarefas usadas por outros (snapshot RF23).
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Todos são planejados: `/handoffs` é página-esqueleto e não há `HandoffService`. O sucessor aparece como Responsável atribuído.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  chefe["«ator» Chefe de departamento"]:::ator
+  empresa["«ator» Empresa ou órgão"]:::ator
+  empregado["«ator» Empregado"]:::ator
+  responsavel["«ator» Responsável atribuído"]:::ator
+  subgraph SIS["Work Station — RF36 Dossiê de Transição"]
+    direction TB
+    UC1(["UC1 Gerar o Dossiê de Transição"]):::ucPlan
+    UC2(["UC2 Redigir o resumo de contexto por projeto"]):::ucPlan
+    UC3(["UC3 Materializar o dossiê em documento e projeto de transição"]):::ucPlan
+    UC4(["UC4 Consentir com a transferência de itens privados"]):::ucPlan
+    UC5(["UC5 Aceitar ou recusar a responsabilidade"]):::ucPlan
+    UC6(["UC6 Trocar o participante nas sessões DECIA ativas"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  chefe --- UC1
+  empresa --- UC1
+  empregado --- UC4
+  responsavel --- UC5
+  UC1 -. "«include»" .-> UC2
+  UC1 -. "«include»" .-> UC3
+  UC5 -. "«include»" .-> UC6
+  UC4 -. "«extend»" .-> UC1
+  UC2 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Gerar o Dossiê de Transição | `chefe`, `empresa` | RF36.CA01 | planejado (também por gatilho: fim de GESTAO, troca de chefe) |
+| UC2 Redigir o resumo de contexto por projeto | `ia` | RF36.CA01 | planejado (só sobre dados do sistema) |
+| UC3 Materializar o dossiê em documento e projeto de transição | — (incluído por UC1) | RF36.CA02 | planejado |
+| UC4 Consentir com a transferência de itens privados | `empregado` | RF36.CA05 | planejado |
+| UC5 Aceitar ou recusar a responsabilidade | `responsavel` | RF36.CA03 | planejado |
+| UC6 Trocar o participante nas sessões DECIA ativas | — (incluído por UC5) | RF36.CA04 | planejado |
+
 ## 1. Diagrama de classes
 
 ```mermaid

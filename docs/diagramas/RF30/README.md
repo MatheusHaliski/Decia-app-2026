@@ -4,6 +4,50 @@
 
 Fluxo: demanda (texto, ofício/e-mail colado ou `TaskItem` DOCUMENTO do acervo) → `AiEngine` capability `AUTOPILOT_PROJETO` extrai objetivo, prazo, departamento provável e categoria (CA01) → compõe fases, tarefas, dependências, responsáveis sugeridos e prazos **remixando modelos chancelados** (`SealBond APROVADA`, `ModelOffer shelf CHANCELADO`) e projetos semelhantes da Memória Institucional (RF33) com **crédito** a cada modelo (`ProjectScheme.originalProjectId`, `TaskItem.originalTaskId`, `Remix`) (CA02) → proposta mostrada na Mesa em **rascunho não persistido** (`ProjectDraft` em Redis com TTL; flag `redis.enabled`, fallback em memória) até o usuário confirmar (CA03) → `ProjectScheme origin AUTOPILOTO`, faísca ✦ e `AiInferenceLog` (CA04). Sem chave externa: `LocalEngine` (regras + modelos chancelados) com aviso (CA05).
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Todos são planejados: `/autopilot` é página-esqueleto e não há `AutopilotService` nem motor de IA registrado.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  subgraph SIS["Work Station — RF30 Autopiloto de Projeto"]
+    direction TB
+    UC1(["UC1 Gerar proposta de projeto a partir de uma demanda"]):::ucPlan
+    UC2(["UC2 Extrair objetivo, prazo, departamento e categoria"]):::ucPlan
+    UC3(["UC3 Compor fases e tarefas remixando modelos chancelados"]):::ucPlan
+    UC4(["UC4 Gerar a proposta pelo motor local, sem IA externa"]):::ucPlan
+    UC5(["UC5 Revisar o rascunho na Mesa"]):::ucPlan
+    UC6(["UC6 Confirmar e salvar o Esquema de Projeto"]):::ucPlan
+    UC7(["UC7 Abrir sessão DECIA sobre a proposta"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  autenticado --- UC1
+  autenticado --- UC5
+  autenticado --- UC6
+  autenticado --- UC7
+  UC1 -. "«include»" .-> UC2
+  UC1 -. "«include»" .-> UC3
+  UC4 -. "«extend»" .-> UC1
+  UC7 -. "«extend»" .-> UC5
+  UC2 --- ia
+  UC3 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Gerar proposta de projeto a partir de uma demanda | `autenticado` | RF30.CA01, RF30.CA02 | planejado |
+| UC2 Extrair objetivo, prazo, departamento e categoria | `ia` | RF30.CA01 | planejado |
+| UC3 Compor fases e tarefas remixando modelos chancelados | `ia` | RF30.CA02 | planejado |
+| UC4 Gerar a proposta pelo motor local, sem IA externa | — (estende UC1) | RF30.CA05 | planejado |
+| UC5 Revisar o rascunho na Mesa | `autenticado` | RF30.CA03 | planejado |
+| UC6 Confirmar e salvar o Esquema de Projeto | `autenticado` | RF30.CA04 | planejado |
+| UC7 Abrir sessão DECIA sobre a proposta | `autenticado` | RF30.CA06 | planejado |
+
 ## 1. Diagrama de classes
 
 ```mermaid

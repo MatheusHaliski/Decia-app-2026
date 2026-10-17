@@ -4,6 +4,68 @@
 
 O **Rastro de Decisão** (`DecisionTrace`) é um grafo append-only — `DecisionTraceNode` (MENSAGEM · CLASSIFICACAO · DIVERGENCIA · PERGUNTA · RESUMO · CENARIO · DECISAO · REVISAO · TAREFA · PROJETO · ARTEFATO · ATA_VIVA · CONFORMIDADE) e `DecisionTraceEdge` (ORIGINOU · CLASSIFICOU · RESPONDEU · RESUMIU · DECIDIU · REVISOU · TRANSFORMOU_EM · ANEXOU · VERIFICOU) — gravado no MySQL e espelhado em Cassandra `trace_by_entity` (flag `cassandra.enabled`). Renderiza-se como o **fio de decisão** (`DecisionThread`, RF38.CA07): linha vertical, nós coloridos por `classLabel` (ARGUMENTO azul · DIVERGENCIA laranja · RISCO vermelho · CONSENSO verde · PERGUNTA roxo), carimbo VALIDADO/DEVOLVIDO no fim (`Stamp`). Imutável: nenhuma API de UPDATE/DELETE; exclusão de tarefa mantém o nó via `snapshotJson` (RF23).
 
+## 0. Diagrama de casos de uso
+
+Casos de uso da ponte entre a sessão DECIA e o Criador de Projetos (CA01–CA09) e da decisão estruturada da §7. A ponte e o Rastro de Decisão são planejados (as rotas são esqueletos); a decisão estruturada funciona hoje como DEMO em `/decia/decisoes/[decisionId]` (`components/decia`, `lib/decia`, repositório em memória).
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  dono["«ator» Dono do recurso"]:::ator
+  participante_sessao["«ator» Admin · Membro · Observador da sessão"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  admin["«ator» Administrador"]:::ator
+  participante_daci["«ator» Condutor · Aprovador · Contribuidor · Informado"]:::ator
+  decisor["«ator» Responsável pela decisão"]:::ator
+  subgraph SIS["Work Station — RF29 DECIA e Criador de Projetos"]
+    direction TB
+    UC1(["UC1 Abrir sessão DECIA a partir do projeto"]):::ucPlan
+    UC2(["UC2 Anexar tarefas e artefatos à mensagem"]):::ucPlan
+    UC3(["UC3 Transformar mensagem classificada em tarefa"]):::ucPlan
+    UC4(["UC4 Criar projeto a partir da sessão"]):::ucPlan
+    UC5(["UC5 Validar ou devolver a decisão final"]):::ucPlan
+    UC6(["UC6 Consultar o painel Por que isto existe"]):::ucPlan
+    UC7(["UC7 Exportar o Rastro de Decisão"]):::ucPlan
+    UC8(["UC8 Ligar recomendações do resumo a tarefas e projetos"]):::ucPlan
+    UC9(["UC9 Acompanhar o indicador de decisões com rastro"]):::ucPlan
+    UC10(["UC10 Construir a decisão estruturada"]):::uc
+    UC11(["UC11 Decidir e registrar o resultado"]):::uc
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono --- UC1
+  participante_sessao --- UC2
+  participante_sessao --- UC3
+  participante_sessao --- UC4
+  chefe --- UC5
+  autenticado --- UC6
+  autenticado --- UC7
+  admin --- UC9
+  participante_daci --- UC10
+  decisor --- UC10
+  decisor --- UC11
+  UC7 -. "«extend»" .-> UC6
+  UC4 --- ia
+  UC8 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Abrir sessão DECIA a partir do projeto | `dono` | RF29.CA01 | planejado |
+| UC2 Anexar tarefas e artefatos à mensagem | `participante_sessao` | RF29.CA03 | planejado |
+| UC3 Transformar mensagem classificada em tarefa | `participante_sessao` | RF29.CA04 | planejado |
+| UC4 Criar projeto a partir da sessão | `participante_sessao`, `ia` | RF29.CA02 | planejado |
+| UC5 Validar ou devolver a decisão final | `chefe` | RF29.CA05 | planejado (a revisão em si é do RF15; aqui nasce a tarefa ATA_REGISTRO com o carimbo) |
+| UC6 Consultar o painel Por que isto existe | `autenticado` | RF29.CA06 | planejado |
+| UC7 Exportar o Rastro de Decisão | `autenticado` | RF29.CA07 | planejado |
+| UC8 Ligar recomendações do resumo a tarefas e projetos | `ia` | RF29.CA08 | planejado |
+| UC9 Acompanhar o indicador de decisões com rastro | `admin` | RF29.CA09 | planejado |
+| UC10 Construir a decisão estruturada | `participante_daci`, `decisor` | — (§7, sem CA numerado) | real · DEMO (evidências, alternativas, critérios, pesos e avaliação na área de trabalho da decisão) |
+| UC11 Decidir e registrar o resultado | `decisor` | — (§7, sem CA numerado) | real · DEMO (guarda pré-decisão, snapshot e resultado em `lib/decia/commands.ts`) |
+
 ## 1. Diagrama de classes
 
 ```mermaid

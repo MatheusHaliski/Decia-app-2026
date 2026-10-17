@@ -4,6 +4,67 @@
 
 Regra do design system: **nenhum HTML/CSS solto** nas telas (D-11); todo elemento visual vem de `packages/ui` com tokens `--ws-*` e 4 temas via `data-theme` (claro · escuro · contraste · blueprint). As **variações** dos cards são **flags derivadas dos dados** (`taskVariants(TaskView, viewer)`, `projectVariants(ProjectView, viewer)`), nunca escritas à mão; tipos vêm do OpenAPI (D-21). O backend contribui com: `TaskType` → glifo/cor (`TypeChip`), `PipelineJob THUMBNAIL` assíncrono (`TaskItem.thumbnailUrl/coverMode`), `ProjectScheme.mosaicJson/coverMode` (mosaico 2×3 recomputado AFTER_COMMIT), `aiGenerated/aiInferenceId/reviewedBy` (faísca ✦), `TaskState`/`ProjectStatus` (etiquetas com nome em texto), `legalDueAt` (⚖), `SealBond`/`Seal.artJson` (lacre), `Recognition.medalArtJson` (medalha), `FinalDecision.stampJson` (carimbo), `DecisionTraceNode.classLabel` (fio), `Department.color/monogram`, `Company.logoUrl`, `UserPreferences.theme/deskSkin/reduceMotion`, `UserSkin` (skins compradas, RF42) e `CardArtConfig` (`card_art_json`, Estúdio, proposta Q-58).
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Ícones por tipo, etiquetas de estado e prazo, capa-mosaico, faísca, lacre, carimbo, monograma, preferências de aparência e a galeria do design system já existem no front (cards sobre o repositório DEMO social); miniatura renderizada, capa por IA, medalha, fio de decisão e animações de feedback são planejados.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  visitante["«ator» Visitante"]:::ator
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  dono["«ator» Dono do recurso"]:::ator
+  subgraph SIS["Work Station — RF38 Identidade visual"]
+    direction TB
+    UC1(["UC1 Reconhecer o tipo da tarefa pelo ícone"]):::uc
+    UC2(["UC2 Ler estado e prazo no card"]):::uc
+    UC3(["UC3 Ver a capa-mosaico do projeto"]):::uc
+    UC4(["UC4 Reconhecer lacres, carimbos e monogramas"]):::uc
+    UC5(["UC5 Identificar conteúdo gerado pela IA"]):::uc
+    UC6(["UC6 Ver a miniatura automática da tarefa"]):::ucPlan
+    UC7(["UC7 Trocar a capa da tarefa"]):::ucPlan
+    UC8(["UC8 Seguir o fio de decisão"]):::ucPlan
+    UC9(["UC9 Escolher tema, skin da Mesa e menos movimento"]):::uc
+    UC10(["UC10 Ver animações de feedback"]):::ucPlan
+    UC11(["UC11 Consultar a galeria do design system"]):::uc
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  visitante --- UC1
+  visitante --- UC2
+  visitante --- UC3
+  visitante --- UC4
+  autenticado --- UC1
+  autenticado --- UC2
+  autenticado --- UC3
+  autenticado --- UC4
+  autenticado --- UC5
+  autenticado --- UC6
+  autenticado --- UC8
+  autenticado --- UC9
+  autenticado --- UC10
+  autenticado --- UC11
+  dono --- UC7
+  UC7 -. "«extend»" .-> UC6
+  UC7 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Reconhecer o tipo da tarefa pelo ícone | `visitante`, `autenticado` | RF38.CA01 | real · DEMO (`TypeChip` em `TaskSchemeCard`) |
+| UC2 Ler estado e prazo no card | `visitante`, `autenticado` | RF38.CA05 | real · DEMO (`Tag`, `Due` com prazo legal) |
+| UC3 Ver a capa-mosaico do projeto | `visitante`, `autenticado` | RF38.CA03 | real · DEMO (`ProjectCard` com mosaico 2×3; recálculo no servidor planejado) |
+| UC4 Reconhecer lacres, carimbos e monogramas | `visitante`, `autenticado` | RF38.CA06, RF38.CA09 | real · DEMO (`Seal`, `Stamp`, `Monogram`; `Medal` planejada) |
+| UC5 Identificar conteúdo gerado pela IA | `autenticado` | RF38.CA04 | real · DEMO (`Spark`) |
+| UC6 Ver a miniatura automática da tarefa | `autenticado` | RF38.CA02 | planejado (hoje só a arte da família, `CoverArt`) |
+| UC7 Trocar a capa da tarefa | `dono`, `ia` | RF38.CA02 | planejado (manual ou por IA) |
+| UC8 Seguir o fio de decisão | `autenticado` | RF38.CA07 | planejado |
+| UC9 Escolher tema, skin da Mesa e menos movimento | `autenticado` | RF38.CA08, RF38.CA10 | real (`/settings?tab=aparencia`, `PreferencesProvider`) |
+| UC10 Ver animações de feedback | `autenticado` | RF38.CA10 | planejado (confete, encaixe, faísca animada) |
+| UC11 Consultar a galeria do design system | `autenticado` | RF38.CA01, RF38.CA05, RF38.CA06 | real (`/lab/design-system`) |
+
 ## 1. Diagrama de classes
 
 ```mermaid
