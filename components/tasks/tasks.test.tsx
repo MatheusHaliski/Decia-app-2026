@@ -69,6 +69,24 @@ describe("criador e edição de tarefa (RF4/RF12)", () => {
     });
   });
 
+  it("editar antes de /api/me responder não apaga o responsável", async () => {
+    const bodies: Record<string, unknown>[] = [];
+    let releaseMe: (r: Response) => void = () => {};
+    fetchMock.mockImplementation(async (url, init) => {
+      const u = String(url);
+      if (u.endsWith("/api/me")) return new Promise<Response>((r) => { releaseMe = r; });
+      if (init?.method === "PUT") { bodies.push(JSON.parse(String(init.body))); return json(200, view({ responsibleId: ME, version: 4 })); }
+      return json(404, {});
+    });
+    const onSaved = vi.fn();
+    renderWithProviders(<TaskForm mode="edit" initial={view({ responsibleId: ME }) as never} onSaved={onSaved} />);
+    fireEvent.change(screen.getByLabelText(/Título/), { target: { value: "Editado rápido" } });
+    fireEvent.click(screen.getByTestId("task-submit"));
+    await waitFor(() => expect(onSaved).toHaveBeenCalled());
+    expect(bodies[0]).toMatchObject({ title: "Editado rápido", responsibleId: ME });
+    releaseMe(json(200, { id: ME }));
+  });
+
   it("422 do servidor aparece junto do campo; 409 mantém o texto e oferece recarregar", async () => {
     let call = 0;
     fetchMock.mockImplementation(async (url, init) => {

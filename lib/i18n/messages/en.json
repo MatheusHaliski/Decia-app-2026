@@ -1575,5 +1575,6 @@
   "tasks.list.empty": "You have no saved tasks yet",
   "tasks.list.emptyHint": "Create the first one with objective, deliverables and completion criteria.",
   "tasks.list.error": "Could not load tasks",
-  "tasks.list.needSession": "Sign in to see and save tasks. Profile and Mural examples are demos and are not saved."
+  "tasks.list.needSession": "Sign in to see and save tasks. Profile and Mural examples are demos and are not saved.",
+  "tasks.form.responsibleOther": "Current responsible: another person (kept on save)."
 }

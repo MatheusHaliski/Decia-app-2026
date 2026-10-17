@@ -1575,5 +1575,6 @@
   "tasks.list.empty": "Aún no tiene tareas guardadas",
   "tasks.list.emptyHint": "Cree la primera con objetivo, entregables y criterios de conclusión.",
   "tasks.list.error": "No fue posible cargar las tareas",
-  "tasks.list.needSession": "Inicie sesión para ver y guardar tareas. Los ejemplos del perfil y del Mural son demostración y no se guardan."
+  "tasks.list.needSession": "Inicie sesión para ver y guardar tareas. Los ejemplos del perfil y del Mural son demostración y no se guardan.",
+  "tasks.form.responsibleOther": "Responsable actual: otra persona (se mantiene al guardar)."
 }

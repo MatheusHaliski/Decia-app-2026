@@ -22,7 +22,8 @@ interface FormState {
   descriptionMd: string;
   priority: PriorityName;
   dueAt: string;
-  responsibleMe: boolean;
+  /** responsável persistido; só muda quando a pessoa usa a opção (nunca por depender de /api/me ter respondido) */
+  responsibleId: string;
   accessClass: AccessClassName;
   visibility: VisibilityName;
   deliverables: Deliverable[];
@@ -32,14 +33,14 @@ interface FormState {
 }
 
 const empty: FormState = {
-  title: "", type: "", area: "", objective: "", descriptionMd: "", priority: "MEDIA", dueAt: "", responsibleMe: false,
+  title: "", type: "", area: "", objective: "", descriptionMd: "", priority: "MEDIA", dueAt: "", responsibleId: "",
   accessClass: "INTERNO", visibility: "PRIVADA", deliverables: [], criteria: [], references: [], extensions: {},
 };
 
-function fromView(v: TaskView, me: string | null): FormState {
+function fromView(v: TaskView): FormState {
   return {
     title: v.title ?? "", type: v.type ?? "", area: v.area ?? "", objective: v.objective ?? "", descriptionMd: v.descriptionMd ?? "",
-    priority: v.priority ?? "MEDIA", dueAt: v.dueAt ?? "", responsibleMe: !!me && v.responsibleId === me, accessClass: v.accessClass ?? "INTERNO",
+    priority: v.priority ?? "MEDIA", dueAt: v.dueAt ?? "", responsibleId: v.responsibleId ?? "", accessClass: v.accessClass ?? "INTERNO",
     visibility: v.visibility ?? "PRIVADA", deliverables: (v.deliverables as Deliverable[]) ?? [], criteria: (v.acceptanceCriteria as Criterion[]) ?? [],
     references: (v.references as Reference[]) ?? [], extensions: { ...(v.extensions ?? {}) },
   };
@@ -55,8 +56,8 @@ export function TaskForm({ mode, initial, onSaved }: TaskFormProps) {
   const { t } = useI18n();
   const { toast } = useToast();
   const [me, setMe] = useState<string | null>(null);
-  const [form, setForm] = useState<FormState>(() => (initial ? fromView(initial, null) : empty));
-  const [baseline, setBaseline] = useState<string>(() => JSON.stringify(initial ? fromView(initial, null) : empty));
+  const [form, setForm] = useState<FormState>(() => (initial ? fromView(initial) : empty));
+  const [baseline, setBaseline] = useState<string>(() => JSON.stringify(initial ? fromView(initial) : empty));
   const [version, setVersion] = useState<number | undefined>(initial?.version);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
@@ -69,7 +70,7 @@ export function TaskForm({ mode, initial, onSaved }: TaskFormProps) {
       if (!alive) return;
       setMe(u.id);
       if (initial) {
-        const f = fromView(initial, u.id);
+        const f = fromView(initial);
         setForm((cur) => (JSON.stringify(cur) === baseline ? f : cur));
         setBaseline(JSON.stringify(f));
       }
@@ -92,7 +93,7 @@ export function TaskForm({ mode, initial, onSaved }: TaskFormProps) {
     return {
       title: form.title, type: form.type || undefined, area: form.area || undefined, objective: form.objective || undefined,
       descriptionMd: form.descriptionMd || undefined, priority: form.priority, dueAt: form.dueAt || undefined,
-      responsibleId: form.responsibleMe && me ? me : undefined, accessClass: form.accessClass, visibility: form.visibility,
+      responsibleId: form.responsibleId || undefined, accessClass: form.accessClass, visibility: form.visibility,
       deliverables: form.deliverables.filter((d) => d.text.trim()), acceptanceCriteria: form.criteria.filter((c) => c.text.trim()),
       references: form.references.filter((r) => r.url.trim()), extensions, draft, version,
     };
@@ -125,7 +126,7 @@ export function TaskForm({ mode, initial, onSaved }: TaskFormProps) {
   async function reloadServer() {
     if (!initial?.id) return;
     const fresh = await tasksApi.get(initial.id);
-    const f = fromView(fresh, me);
+    const f = fromView(fresh);
     setForm(f);
     setBaseline(JSON.stringify(f));
     setVersion(fresh.version);
@@ -176,7 +177,8 @@ export function TaskForm({ mode, initial, onSaved }: TaskFormProps) {
             {({ id, describedBy, invalid }) => <Input id={id} type="date" aria-describedby={describedBy} invalid={invalid} value={form.dueAt} onChange={(e) => set("dueAt", e.target.value)} />}
           </Field>
           <div className="self-end">
-            <Checkbox checked={form.responsibleMe} onCheckedChange={(v) => set("responsibleMe", v)} label={t("tasks.form.responsibleMe")} hint={t("tasks.form.responsibleHint")} disabled={!me} />
+            <Checkbox checked={!!me && form.responsibleId === me} onCheckedChange={(v) => set("responsibleId", v && me ? me : "")} label={t("tasks.form.responsibleMe")} hint={t("tasks.form.responsibleHint")} disabled={!me} />
+            {form.responsibleId && me && form.responsibleId !== me ? <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted" data-testid="responsible-other">{t("tasks.form.responsibleOther")}</p> : null}
             {err("responsibleId") ? <p className="text-[length:var(--ws-text-caption)] text-ws-danger-ink">{err("responsibleId")}</p> : null}
           </div>
         </div>
