@@ -73,6 +73,18 @@ public class ResourceAuthorizer {
         }
         User u = users.findById(actor.id()).orElseThrow(() -> ApiException.unauthorized("Sessão inválida. Faça login novamente."));
         Role effective = actor.role() == Role.ADMIN && u.getRole() == Role.ADMIN ? Role.ADMIN : Role.USER;
+        return viewerFrom(u, effective);
+    }
+
+    /**
+     * {@link Viewer} de outra conta ATIVA, sem sessão (ex.: destinatário de uma notificação, RF27): papel, perfil e lotação lidos do banco.
+     * Conta inexistente ou não ativa → vazio (não recebe nada).
+     */
+    public Optional<Viewer> viewerOf(UUID userId) {
+        return users.findById(userId).filter(u -> u.getStatus() == AccountStatus.ACTIVE).map(u -> viewerFrom(u, u.getRole()));
+    }
+
+    private Viewer viewerFrom(User u, Role effective) {
         Map<UUID, DeptRole> roles = memberships.map(m -> m.activeRoles(u.getId())).orElse(Map.of());
         return new Viewer(u.getId(), effective, u.getProfileType(), u.getCompanyId(), u.getDepartmentId(), roles);
     }
@@ -119,6 +131,22 @@ public class ResourceAuthorizer {
         AuthorizationTrail.record("SESSION");
         if (sessionOwnerId == null || !sessionOwnerId.equals(actor.id())) {
             throw notFound(ScopedResource.Kind.SESSION);
+        }
+    }
+
+    // ------------------------------------------------------------------------------------------------ notificações (RF27)
+
+    /**
+     * Notificação da própria pessoa ({@code POST /api/notifications/{id}/read}). A de outra pessoa é invisível: responde o MESMO
+     * {@code 404} de um id inexistente ({@code recipientId} nulo), nunca 403.
+     */
+    public void requireOwnNotification(CurrentUser actor, UUID recipientId) {
+        if (actor == null) {
+            throw ApiException.unauthorized("Faça login para continuar.");
+        }
+        AuthorizationTrail.record("NOTIFICATION");
+        if (recipientId == null || !recipientId.equals(actor.id())) {
+            throw ApiException.notFound("Notificação");
         }
     }
 

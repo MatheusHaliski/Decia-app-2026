@@ -189,6 +189,60 @@
         "required" : [ "identifier", "password" ],
         "type" : "object"
       },
+      "NotificationView" : {
+        "properties" : {
+          "actorId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "actorName" : {
+            "type" : "string"
+          },
+          "body" : {
+            "type" : "string"
+          },
+          "category" : {
+            "enum" : [ "SOCIAL", "DECIA", "PRAZO", "CHANCELA", "PONTOS", "SISTEMA" ],
+            "type" : "string"
+          },
+          "createdAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "payload" : {
+            "additionalProperties" : {
+              "type" : "string"
+            },
+            "type" : "object"
+          },
+          "read" : {
+            "type" : "boolean"
+          },
+          "readAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "resourceId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "resourceType" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "type" : {
+            "enum" : [ "SESSAO_PROPOSTA", "SESSAO_INICIADA", "PARTICIPANTE_ADICIONADO", "PARTICIPANTE_REMOVIDO", "DIVERGENCIA_DETECTADA", "PERGUNTA_IA", "RESUMO_PUBLICADO", "DECISAO_PROPOSTA", "DECISAO_VALIDADA", "DECISAO_DEVOLVIDA", "REABERTURA", "ARTEFATO", "PRAZO_PROXIMO", "PRAZO_VENCIDO", "REACAO", "COMENTARIO", "MENCAO", "REMIX", "CHANCELA_ESTADO", "INDICACAO", "BENEFICIO", "PONTOS", "META", "RECONHECIMENTO", "TAREFA_DO_DIA", "TRANSICAO", "MENSAGEM_DIRETA", "ATRIBUICAO_PROPOSTA", "ATRIBUICAO_ACEITA", "ATRIBUICAO_RECUSADA", "ATRIBUICAO_DEVOLVIDA", "TAREFA_REUTILIZADA", "SISTEMA" ],
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
       "OidcLoginRequest" : {
         "properties" : {
           "deviceName" : {
@@ -390,6 +444,15 @@
           },
           "verified" : {
             "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
+      "ReadAll" : {
+        "properties" : {
+          "updated" : {
+            "format" : "int32",
+            "type" : "integer"
           }
         },
         "type" : "object"
@@ -843,6 +906,15 @@
         "required" : [ "to", "version" ],
         "type" : "object"
       },
+      "UnreadCount" : {
+        "properties" : {
+          "count" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
       "UserPreferences" : {
         "properties" : {
           "aiModeDefault" : {
@@ -1272,7 +1344,7 @@
         "tags" : [ "RF2 Autenticação" ]
       },
       "get" : {
-        "operationId" : "list",
+        "operationId" : "list_1",
         "responses" : {
           "200" : {
             "content" : {
@@ -1649,6 +1721,97 @@
         },
         "summary" : "RF3.CA02/CA08 E-mail/telefone com step-up da senha atual no mesmo bloqueio do login (401 REAUTENTICACAO_FALHOU, 6º erro → 429 MUITAS_TENTATIVAS); e-mail novo volta a 'não confirmado' e recebe código",
         "tags" : [ "RF3 Conta" ]
+      }
+    },
+    "/api/notifications" : {
+      "get" : {
+        "operationId" : "list",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "limit",
+          "required" : false,
+          "schema" : {
+            "default" : 30,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/NotificationView"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF27 Minhas notificações, mais recentes primeiro (até 50)",
+        "tags" : [ "RF27 Notificações" ]
+      }
+    },
+    "/api/notifications/read-all" : {
+      "post" : {
+        "operationId" : "markAllRead",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReadAll"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF27 Marca todas as minhas notificações como lidas",
+        "tags" : [ "RF27 Notificações" ]
+      }
+    },
+    "/api/notifications/unread-count" : {
+      "get" : {
+        "operationId" : "unreadCount",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UnreadCount"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF27 Quantas notificações não lidas eu tenho",
+        "tags" : [ "RF27 Notificações" ]
+      }
+    },
+    "/api/notifications/{id}/read" : {
+      "post" : {
+        "operationId" : "markRead",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF27 Marca uma notificação minha como lida (de outra pessoa → 404 NAO_ENCONTRADO)",
+        "tags" : [ "RF27 Notificações" ]
       }
     },
     "/api/people" : {

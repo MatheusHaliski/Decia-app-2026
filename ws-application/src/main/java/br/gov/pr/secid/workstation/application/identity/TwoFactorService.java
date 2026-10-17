@@ -3,6 +3,7 @@ package br.gov.pr.secid.workstation.application.identity;
 import br.gov.pr.secid.workstation.application.audit.AuditActions;
 import br.gov.pr.secid.workstation.application.audit.AuditEvent;
 import br.gov.pr.secid.workstation.application.audit.AuditLogPort;
+import br.gov.pr.secid.workstation.application.notifications.NotificationService;
 import br.gov.pr.secid.workstation.application.common.ApiException;
 import br.gov.pr.secid.workstation.application.security.ResourceAuthorizer;
 import br.gov.pr.secid.workstation.domain.identity.User;
@@ -36,16 +37,19 @@ public class TwoFactorService {
     private final IdentityService identity;
     private final ResourceAuthorizer authorizer;
     private final AuditLogPort audit;
+    private final NotificationService notifications;
     private final Clock clock;
     private final String issuer;
     private final SecureRandom random = new SecureRandom();
 
-    public TwoFactorService(UserRepositoryPort users, IdentityService identity, ResourceAuthorizer authorizer, AuditLogPort audit, Clock clock,
+    public TwoFactorService(UserRepositoryPort users, IdentityService identity, ResourceAuthorizer authorizer, AuditLogPort audit,
+                            NotificationService notifications, Clock clock,
                             @Value("${ws.security.two-factor.issuer:Work Station}") String issuer) {
         this.users = users;
         this.identity = identity;
         this.authorizer = authorizer;
         this.audit = audit;
+        this.notifications = notifications;
         this.clock = clock;
         this.issuer = issuer == null || issuer.isBlank() ? "Work Station" : issuer.strip();
     }
@@ -102,6 +106,7 @@ public class TwoFactorService {
         int ended = identity.revokeOtherSessions(u.getId(), current.sessionId());
         audit.record(AuditEvent.of(u.getId(), AuditActions.TWO_FACTOR_ENABLED, USER, u.getId().toString(), AuditEvent.OK, ctx.ip(),
                 ctx.userAgent(), Map.of("sessionsEnded", ended)));
+        notifications.accountSecurity(u.getId(), "TWO_FACTOR_ENABLED");
         return new RecoveryCodes(codes);
     }
 
@@ -122,6 +127,7 @@ public class TwoFactorService {
         users.save(u);
         audit.record(AuditEvent.of(u.getId(), AuditActions.TWO_FACTOR_DISABLED, USER, u.getId().toString(), AuditEvent.OK, ctx.ip(),
                 ctx.userAgent(), Map.of("via", outcome.name())));
+        notifications.accountSecurity(u.getId(), "TWO_FACTOR_DISABLED");
         return new Status(false, null, 0, false);
     }
 

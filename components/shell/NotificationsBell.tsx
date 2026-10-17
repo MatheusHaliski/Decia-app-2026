@@ -15,6 +15,8 @@ export function relativeTime(minutesAgo: number, intl: string): string {
 
 export function NotificationRow({ n, onOpen }: { n: AppNotification; onOpen?: (id: string) => void }) {
   const { t, intl } = useI18n();
+  // sem nome de quem agiu (conta removida), a API manda `who` vazio
+  const vars = n.vars && n.vars.who === "" ? { ...n.vars, who: t("notif.someone") } : n.vars;
   return (
     <li>
       <Link href={n.href} variant="card" onClick={() => onOpen?.(n.id)} className={cn("flex items-start gap-3 p-2", !n.read && "bg-ws-accent-soft/60")}>
@@ -22,7 +24,7 @@ export function NotificationRow({ n, onOpen }: { n: AppNotification; onOpen?: (i
           <Glyph name={KIND_GLYPH[n.kind]} size={20} decorative />
         </span>
         <span className="min-w-0 flex-1">
-          <span className={cn("block text-[length:var(--ws-text-body-sm)] leading-snug", !n.read && "font-semibold")}>{t(n.titleKey, n.vars)}</span>
+          <span className={cn("block text-[length:var(--ws-text-body-sm)] leading-snug", !n.read && "font-semibold")}>{t(n.titleKey, vars)}</span>
           <span className="block text-[length:var(--ws-text-caption)] text-ws-text-muted">{relativeTime(n.minutesAgo, intl)}</span>
         </span>
         {!n.read ? <span className="mt-2 size-2 shrink-0 rounded-full bg-ws-accent" aria-label={t("notif.unread")} /> : null}
@@ -34,9 +36,9 @@ export function NotificationRow({ n, onOpen }: { n: AppNotification; onOpen?: (i
 /** Corpo compartilhado pelo Popover do sino e pela página /notifications. */
 export function NotificationsList({ limit, className }: { limit?: number; className?: string }) {
   const { t } = useI18n();
-  const { status, items, markRead, retry } = useNotificationsState();
+  const { status, items, markRead, retry, errorCode } = useNotificationsState();
   if (status === "loading") return <LoadingState className={className} />;
-  if (status === "error") return <ErrorState className={className} title={t("notif.errorTitle")} description={t("notif.errorDescription")} code="MOCK_ERRO" onRetry={retry} />;
+  if (status === "error") return <ErrorState className={className} title={t("notif.errorTitle")} description={t("notif.errorDescription")} code={errorCode ?? undefined} onRetry={retry} />;
   if (items.length === 0) return <EmptyState compact className={className} title={t("notif.emptyTitle")} description={t("notif.emptyDescription")} moji="ok" />;
   const list = limit ? items.slice(0, limit) : items;
   return (

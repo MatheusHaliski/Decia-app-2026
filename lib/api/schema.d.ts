@@ -182,7 +182,7 @@ export interface paths {
             cookie?: never;
         };
         /** RF2.CA05 Minhas sessões vivas (dispositivo, última atividade, expiração; a atual marcada com current=true) */
-        get: operations["list"];
+        get: operations["list_1"];
         put?: never;
         post?: never;
         /** RF2.CA05 Sai de todos os outros dispositivos (mantém a sessão atual) */
@@ -382,6 +382,74 @@ export interface paths {
         patch: operations["sensitive"];
         trace?: never;
     };
+    "/api/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF27 Minhas notificações, mais recentes primeiro (até 50) */
+        get: operations["list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF27 Marca todas as minhas notificações como lidas */
+        post: operations["markAllRead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF27 Quantas notificações não lidas eu tenho */
+        get: operations["unreadCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/{id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF27 Marca uma notificação minha como lida (de outra pessoa → 404 NAO_ENCONTRADO) */
+        post: operations["markRead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/people": {
         parameters: {
             query?: never;
@@ -577,6 +645,30 @@ export interface components {
             rememberMe?: boolean;
             twoFactorCode?: string;
         };
+        NotificationView: {
+            /** Format: uuid */
+            actorId?: string;
+            actorName?: string;
+            body?: string;
+            /** @enum {string} */
+            category?: "SOCIAL" | "DECIA" | "PRAZO" | "CHANCELA" | "PONTOS" | "SISTEMA";
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: uuid */
+            id?: string;
+            payload?: {
+                [key: string]: string;
+            };
+            read?: boolean;
+            /** Format: date-time */
+            readAt?: string;
+            /** Format: uuid */
+            resourceId?: string;
+            resourceType?: string;
+            title?: string;
+            /** @enum {string} */
+            type?: "SESSAO_PROPOSTA" | "SESSAO_INICIADA" | "PARTICIPANTE_ADICIONADO" | "PARTICIPANTE_REMOVIDO" | "DIVERGENCIA_DETECTADA" | "PERGUNTA_IA" | "RESUMO_PUBLICADO" | "DECISAO_PROPOSTA" | "DECISAO_VALIDADA" | "DECISAO_DEVOLVIDA" | "REABERTURA" | "ARTEFATO" | "PRAZO_PROXIMO" | "PRAZO_VENCIDO" | "REACAO" | "COMENTARIO" | "MENCAO" | "REMIX" | "CHANCELA_ESTADO" | "INDICACAO" | "BENEFICIO" | "PONTOS" | "META" | "RECONHECIMENTO" | "TAREFA_DO_DIA" | "TRANSICAO" | "MENSAGEM_DIRETA" | "ATRIBUICAO_PROPOSTA" | "ATRIBUICAO_ACEITA" | "ATRIBUICAO_RECUSADA" | "ATRIBUICAO_DEVOLVIDA" | "TAREFA_REUTILIZADA" | "SISTEMA";
+        };
         OidcLoginRequest: {
             deviceName?: string;
             idToken: string;
@@ -641,6 +733,10 @@ export interface components {
             self?: boolean;
             username?: string;
             verified?: boolean;
+        };
+        ReadAll: {
+            /** Format: int32 */
+            updated?: number;
         };
         Receipt: {
             maskedEmail?: string;
@@ -804,6 +900,10 @@ export interface components {
             to: "RASCUNHO" | "DISPONIVEL" | "EM_USO" | "BLOQUEADA" | "CONCLUIDA" | "ARQUIVADA" | "MODELO_PUBLICO" | "OFERECIDA";
             /** Format: int64 */
             version: number;
+        };
+        UnreadCount: {
+            /** Format: int64 */
+            count?: number;
         };
         UserPreferences: {
             aiModeDefault?: string;
@@ -1100,7 +1200,7 @@ export interface operations {
             };
         };
     };
-    list: {
+    list_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -1455,6 +1555,88 @@ export interface operations {
                 content: {
                     "*/*": components["schemas"]["UserView"];
                 };
+            };
+        };
+    };
+    list: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["NotificationView"][];
+                };
+            };
+        };
+    };
+    markAllRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ReadAll"];
+                };
+            };
+        };
+    };
+    unreadCount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UnreadCount"];
+                };
+            };
+        };
+    };
+    markRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

@@ -11,6 +11,7 @@ import br.gov.pr.secid.workstation.application.common.ApiException;
 import br.gov.pr.secid.workstation.application.identity.CurrentUser;
 import br.gov.pr.secid.workstation.application.identity.RequestContext;
 import br.gov.pr.secid.workstation.application.identity.UserRepositoryPort;
+import br.gov.pr.secid.workstation.application.notifications.NotificationService;
 import br.gov.pr.secid.workstation.application.security.ResourceAuthorizer;
 import br.gov.pr.secid.workstation.domain.acervo.TaskBrief;
 import br.gov.pr.secid.workstation.domain.acervo.TaskCategory;
@@ -47,6 +48,7 @@ import java.util.UUID;
  * leitura por {@code VIEW}, edição e transição por {@code EDIT} — invisível responde 404 igual a inexistente (D-65/D-66). Campos
  * comuns a qualquer profissão e extensões opcionais por área ({@link WorkArea}); nada de software é obrigatório para as demais.
  * Concorrência por versão (409 EDICAO_CONCORRENTE); toda transição grava {@code task_state_log}; criação e edição vão ao audit_log.
+ * Responsável definido por outra pessoa e mudança de estado geram notificação (RF27) para quem pode ver a tarefa.
  */
 @Service
 public class TaskService {
@@ -60,13 +62,16 @@ public class TaskService {
     private final UserRepositoryPort users;
     private final ResourceAuthorizer authorizer;
     private final AuditLogPort audit;
+    private final NotificationService notifications;
     private final Clock clock;
 
-    public TaskService(TaskRepositoryPort tasks, UserRepositoryPort users, ResourceAuthorizer authorizer, AuditLogPort audit, Clock clock) {
+    public TaskService(TaskRepositoryPort tasks, UserRepositoryPort users, ResourceAuthorizer authorizer, AuditLogPort audit,
+                       NotificationService notifications, Clock clock) {
         this.tasks = tasks;
         this.users = users;
         this.authorizer = authorizer;
         this.audit = audit;
+        this.notifications = notifications;
         this.clock = clock;
     }
 
@@ -106,6 +111,7 @@ public class TaskService {
         }
         audit.record(AuditEvent.of(actor.id(), AuditActions.TASK_CREATED, "task", id.toString(), AuditEvent.OK, ctx.ip(), ctx.userAgent(),
                 Map.of("state", stored.task().state().name(), "area", in.area() == null ? "-" : in.area().name())));
+        notifications.taskResponsibleSet(actor.id(), scoped(stored.task()), stored.task(), null);
         return view(viewer, stored);
     }
 
@@ -148,6 +154,7 @@ public class TaskService {
         StoredTask saved = tasks.update(changed, v.brief(id), version);
         audit.record(AuditEvent.of(actor.id(), AuditActions.TASK_UPDATED, "task", id.toString(), AuditEvent.OK, ctx.ip(), ctx.userAgent(),
                 Map.of("version", saved.version())));
+        notifications.taskResponsibleSet(actor.id(), scoped(saved.task()), saved.task(), current.responsibleId());
         return view(viewer, saved);
     }
 
@@ -183,6 +190,7 @@ public class TaskService {
         tasks.appendStateLog(new TaskStateLog(UUID.randomUUID(), id, current.state(), next.state(), actor.id(), reason, null, null, clock.instant()));
         audit.record(AuditEvent.of(actor.id(), AuditActions.TASK_STATE_CHANGED, "task", id.toString(), AuditEvent.OK, ctx.ip(), ctx.userAgent(),
                 Map.of("from", current.state().name(), "to", next.state().name())));
+        notifications.taskStateChanged(actor.id(), scoped(saved.task()), current.state(), saved.task(), reason);
         return view(viewer, saved);
     }
 

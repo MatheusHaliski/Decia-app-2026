@@ -4,6 +4,9 @@ import br.gov.pr.secid.workstation.application.audit.AuditActions;
 import br.gov.pr.secid.workstation.application.common.ApiException;
 import br.gov.pr.secid.workstation.application.security.AuthorizationTrail;
 import br.gov.pr.secid.workstation.application.security.ResourceAuthorizer;
+import br.gov.pr.secid.workstation.application.notifications.MemoryNotifications;
+import br.gov.pr.secid.workstation.application.notifications.NotificationService;
+import br.gov.pr.secid.workstation.domain.social.Notification;
 import br.gov.pr.secid.workstation.domain.identity.Role;
 import br.gov.pr.secid.workstation.domain.identity.User;
 import org.junit.jupiter.api.AfterEach;
@@ -24,6 +27,7 @@ class TwoFactorServiceTest {
     final String password = "pw-" + UUID.randomUUID();
     final RequestContext ctx = new RequestContext("203.0.113.7", "JUnit/5");
     final Fakes.Users users = new Fakes.Users();
+    final MemoryNotifications notes = new MemoryNotifications();
     final Fakes.SpyHasher hasher = new Fakes.SpyHasher();
     final Fakes.Audit audit = new Fakes.Audit();
     final InMemoryRateLimit rateLimit = new InMemoryRateLimit();
@@ -37,7 +41,9 @@ class TwoFactorServiceTest {
     void setUp() {
         identity = new IdentityService(users, Fakes.EMAIL_HASHER, hasher, rateLimit, sessions, Fakes.NO_MIRROR, Fakes.TOKENS, audit,
                 SessionPolicy.defaults(), clock);
-        twoFactor = new TwoFactorService(users, identity, new ResourceAuthorizer(users, Optional.empty()), audit, clock, "Work Station");
+        ResourceAuthorizer authorizer = new ResourceAuthorizer(users, Optional.empty());
+        twoFactor = new TwoFactorService(users, identity, authorizer, audit, new NotificationService(notes, users, authorizer, clock), clock,
+                "Work Station");
         maria = users.add(Fakes.user("maria.silva", "maria@exemplo.gov.br", hasher.hash(password)));
     }
 
@@ -153,5 +159,7 @@ class TwoFactorServiceTest {
         assertThat(catchThrowableOfType(ApiException.class, () -> twoFactor.disable(me, password, "123456", ctx)).code())
                 .isEqualTo(AuthCodes.DOIS_FATORES_INATIVO);
         assertThat(audit.actions()).contains(AuditActions.TWO_FACTOR_RECOVERY_REGENERATED, AuditActions.TWO_FACTOR_DISABLED);
+        assertThat(notes.of(maria.getId())).as("ligar e desligar avisam a própria conta (RF27)")
+                .extracting(Notification::payloadJson).containsExactly("{\"event\":\"TWO_FACTOR_ENABLED\"}", "{\"event\":\"TWO_FACTOR_DISABLED\"}");
     }
 }
