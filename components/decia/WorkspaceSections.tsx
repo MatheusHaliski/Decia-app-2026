@@ -62,7 +62,7 @@ function AiUnavailable() {
  * 1. Visão geral
  * ================================================================================================ */
 export function OverviewSection({ aggregate, now, people, defaultFlipped }: SectionProps) {
-  const { t } = useI18n();
+  const { t, intl } = useI18n();
   const d = aggregate.decision;
   const vm = toDecisionCardViewModel(aggregate, now, { people, includeBack: true });
   const h = health(aggregate, now);
@@ -117,6 +117,18 @@ export function OverviewSection({ aggregate, now, people, defaultFlipped }: Sect
           <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("decia.overview.noAggregate")}</p>
         </Block>
         <Block title={t("decia.timeline.title")}><DecisionTimeline items={vm.timeline} /></Block>
+        <Block title={t("decia.changes.title")} testId="structure-changes">
+          {vm.changes.length ? (
+            <ol className="grid gap-1.5 text-[length:var(--ws-text-body-sm)]" aria-label={t("decia.changes.title")}>
+              {vm.changes.map((c, i) => (
+                <li key={`${c.type}-${c.at}-${i}`} className="grid grid-cols-[1fr_auto] gap-2" data-change={c.type}>
+                  <span>{t(`decia.changes.${c.type}`, { actor: c.actor, subject: c.subject ?? "—", value: c.value === null ? "—" : String(c.value) })}</span>
+                  <span className="font-[family-name:var(--ws-font-mono)] text-[length:var(--ws-text-caption)] text-ws-text-muted">{formatDateTime(c.at, intl)}</span>
+                </li>
+              ))}
+            </ol>
+          ) : <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{t("decia.changes.empty")}</p>}
+        </Block>
       </div>
     </div>
   );
@@ -417,6 +429,8 @@ export function DecisionSection({ aggregate, people, onDecide, isOwner, currentU
   const altName = (id?: string | null) => { const a = aggregate.alternatives.find((x) => x.id === id); return a ? `${a.label} — ${a.title}` : "—"; };
   const model = aggregate.recommendations.filter((r) => r.source === "MODELO");
   const ai = aggregate.recommendations.filter((r) => r.source === "IA");
+  // depois de decidir, a sugestão da IA não entra mais no registro: botões indisponíveis com o motivo (Amershi G2/G9)
+  const aiEditable = isStructureEditable(aggregate.decision.status);
   const snap = [...aggregate.snapshots].filter((s) => s.kind === "DECISAO").sort((a, b) => b.versionNumber - a.versionNumber)[0];
   const decided = !!snap;
   const assumptionText = (id: string) => aggregate.assumptions.find((a) => a.id === id)?.statement ?? id;
@@ -444,10 +458,12 @@ export function DecisionSection({ aggregate, people, onDecide, isOwner, currentU
               key={r.id}
               title={r.reasoningMd}
               status={r.status}
+              disabled={!aiEditable}
               onAccept={() => { onSave(setRecommendationStatus(aggregate, r.id, "ACEITA", currentUserId, new Date())); track("ai_suggestion_accepted", { decisionId: d.id, suggestionId: r.id }); }}
               onDismiss={() => { onSave(setRecommendationStatus(aggregate, r.id, "DESCARTADA", currentUserId, new Date())); track("ai_suggestion_dismissed", { decisionId: d.id, suggestionId: r.id }); }}
             >
               <span className="text-ws-text-muted">{t("decia.decision.whyChange")}: {r.whatWouldChangeMd}</span>
+              {!aiEditable && r.status === "SUGERIDA" ? <span className="block text-ws-text-muted" data-testid="ai-locked">{t("decia.ai.lockedAfterDecision")}</span> : null}
             </AiSuggestion>
           ))}
         </Block>

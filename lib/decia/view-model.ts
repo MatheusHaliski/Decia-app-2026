@@ -57,7 +57,21 @@ export interface DecisionCardViewModel {
   stakeholders: string[];
   back: CardBack | null;
   timeline: { status: DecisionLifecycle; at: string }[];
+  /** Mudanças de estrutura e de origem IA (pesos, critérios, notas, alternativas, sugestões) — nada muda em silêncio. */
+  changes: StructureChange[];
   nextAction: NextAction;
+}
+
+export const STRUCTURE_CHANGE_TYPES = ["CRITERIO_ATUALIZADO", "AVALIACAO_REGISTRADA", "ALTERNATIVA_CRIADA", "EVIDENCIA_ADICIONADA", "SUGESTAO_IA_ACEITA", "SUGESTAO_IA_DESCARTADA", "DECISAO_REABERTA"] as const;
+export type StructureChangeType = (typeof STRUCTURE_CHANGE_TYPES)[number];
+export interface StructureChange {
+  type: StructureChangeType;
+  at: string;
+  actor: string;
+  /** critério, alternativa ou sugestão afetada, já resolvida para rótulo legível */
+  subject: string | null;
+  /** novo peso (%), nota 1–5 ou quantidade adicionada; `null` = removido/sem valor */
+  value: number | null;
 }
 
 const DAY = 86_400_000;
@@ -177,6 +191,32 @@ export function toDecisionCardViewModel(agg: DecisionAggregate, now: Date, opts:
     stakeholders: d.stakeholders,
     back,
     timeline: agg.events.filter((e) => e.type === "ESTADO_ALTERADO").map((e) => ({ status: e.payload.to as DecisionLifecycle, at: e.at })),
+    changes: structureChanges(agg, people),
     nextAction: nextActionOf(agg, r, now),
   };
+}
+
+/** Trilha legível das mudanças de estrutura, da mais recente para a mais antiga (últimas 12). */
+export function structureChanges(agg: DecisionAggregate, people: PeopleDirectory = {}): StructureChange[] {
+  const crit = new Map(agg.criteria.map((c) => [c.id, c.name]));
+  const alt = new Map(agg.alternatives.map((a) => [a.id, `${a.label} — ${a.title}`]));
+  const rec = new Map(agg.recommendations.map((r) => [r.id, r.alternativeId ? alt.get(r.alternativeId) ?? r.id : r.id]));
+  const types: readonly string[] = STRUCTURE_CHANGE_TYPES;
+  return agg.events
+    .filter((e): e is typeof e & { type: StructureChangeType } => types.includes(e.type))
+    .map((e) => {
+      const p = e.payload as Record<string, unknown>;
+      const num = (k: string) => (typeof p[k] === "number" ? (p[k] as number) : null);
+      const subject =
+        e.type === "CRITERIO_ATUALIZADO" ? (typeof p.critId === "string" ? crit.get(p.critId) ?? p.critId : null)
+        : e.type === "AVALIACAO_REGISTRADA" ? [alt.get(String(p.altId)), crit.get(String(p.critId))].filter(Boolean).join(" · ") || null
+        : e.type === "ALTERNATIVA_CRIADA" ? (typeof p.label === "string" ? p.label : null)
+        : e.type === "SUGESTAO_IA_ACEITA" || e.type === "SUGESTAO_IA_DESCARTADA" ? rec.get(String(p.recId)) ?? null
+        : null;
+      const value = e.type === "CRITERIO_ATUALIZADO" ? (num("weightPct") ?? num("added")) : e.type === "AVALIACAO_REGISTRADA" ? num("score") : null;
+      const actor = e.actorUserId ? people[e.actorUserId]?.name ?? e.actorUserId : "—";
+      return { type: e.type, at: e.at, actor, subject, value };
+    })
+    .reverse()
+    .slice(0, 12);
 }

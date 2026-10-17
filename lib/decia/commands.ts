@@ -63,13 +63,31 @@ export function addCriteria(agg: DecisionAggregate, names: readonly string[], ac
   return touch({ ...agg, criteria }, now, actor, "CRITERIO_ATUALIZADO", { added: names.length });
 }
 
+/**
+ * Aceitar/descartar uma sugestão só enquanto a estrutura é editável e só a partir de SUGERIDA: depois de decidir, a IA
+ * não pode mais entrar no registro, e uma resposta já dada não vira o oposto sem rastro (reabrir/nova sugestão).
+ */
 export function setRecommendationStatus(agg: DecisionAggregate, recId: string, status: "ACEITA" | "DESCARTADA", actor: string, now: Date): DecisionAggregate {
+  requireEditable(agg);
+  const current = agg.recommendations.find((r) => r.id === recId);
+  if (!current) throw new RecommendationStateError(recId, "INEXISTENTE");
+  if (current.status !== "SUGERIDA") throw new RecommendationStateError(recId, current.status);
   const recommendations = agg.recommendations.map((r) => (r.id === recId ? { ...r, status } : r));
   return touch({ ...agg, recommendations }, now, actor, status === "ACEITA" ? "SUGESTAO_IA_ACEITA" : "SUGESTAO_IA_DESCARTADA", { recId });
 }
 
+/** Transição manual de estado: valida contra LIFECYCLE_TRANSITIONS; DECIDIDA só por `decide` (com guarda e snapshot). */
 export function setStatus(agg: DecisionAggregate, to: DecisionLifecycle, actor: string, now: Date): DecisionAggregate {
+  const from = agg.decision.status;
+  if (to === "DECIDIDA" || !LIFECYCLE_TRANSITIONS[from].includes(to)) throw new DecisionLifecycleError(from, to);
   return touch({ ...agg, decision: { ...agg.decision, status: to } }, now, actor, "ESTADO_ALTERADO", { to });
+}
+
+export class RecommendationStateError extends Error {
+  readonly code = "RECOMENDACAO_ESTADO_INVALIDO";
+  constructor(recId: string, state: string) {
+    super(`RECOMENDACAO_ESTADO_INVALIDO: ${recId} (${state})`);
+  }
 }
 
 export class DecisionIncompleteError extends Error {
@@ -121,7 +139,8 @@ export function decide(agg: DecisionAggregate, draft: DecisionDraft & { warnings
   }
   const decided: DecisionAggregate = {
     ...walked,
-    decision: { ...agg.decision, status: "DECIDIDA", selectedAlternativeId: selected.id, decidedAt: now.toISOString(), rationale: draft.rationale.trim(), decisionConfidencePct: confidencePct },
+    // parte do `walked`: as transições intermediárias já incrementaram a versão (concorrência otimista não pode regredir)
+    decision: { ...walked.decision, status: "DECIDIDA", selectedAlternativeId: selected.id, decidedAt: now.toISOString(), rationale: draft.rationale.trim(), decisionConfidencePct: confidencePct },
     snapshots: [...agg.snapshots, snapshot],
   };
   const withTrail = touch(touch(decided, now, actor, "DECISAO_FINALIZADA", { snapshotId: snapshot.id, warnings: guard.warnings, sha256: snapshot.contentSha256 }), now, actor, "ESTADO_ALTERADO", { from: "AGUARDANDO_DECISAO", to: "DECIDIDA" });
@@ -130,6 +149,7 @@ export function decide(agg: DecisionAggregate, draft: DecisionDraft & { warnings
 
 /** Registrar o resultado observado (único por decisão) e mover para RESOLVIDA. */
 export function recordOutcome(agg: DecisionAggregate, input: { result: OutcomeResult; summary: string }, actor: string, now: Date): DecisionAggregate {
+  if (!LIFECYCLE_TRANSITIONS[agg.decision.status].includes("RESOLVIDA")) throw new DecisionLifecycleError(agg.decision.status, "RESOLVIDA");
   const outcome = { id: nextId("out"), result: input.result, summary: input.summary.trim(), observedAt: now.toISOString(), recordedByUserId: actor };
   const withOutcome = touch({ ...agg, outcome, decision: { ...agg.decision, status: "RESOLVIDA" } }, now, actor, "RESULTADO_REGISTRADO", { result: input.result });
   return touch(withOutcome, now, actor, "ESTADO_ALTERADO", { to: "RESOLVIDA" });
