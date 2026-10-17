@@ -1669,5 +1669,20 @@
   "account.terms.intro": "O Work Station é oferecido pela Velion, dona da Orange Social. Estas são as versões que você aceitou no cadastro.",
   "account.terms.accepted": "versão aceita: {version}",
   "account.terms.rights": "Para exercer seus direitos da LGPD (acesso, correção, portabilidade, exclusão), use as abas Conta e Dados ou fale com o encarregado indicado na Política.",
-  "auth.register.validationNote": "Antes de agir em nome da organização, a conta passa por validação da equipe."
+  "auth.register.validationNote": "Antes de agir em nome da organização, a conta passa por validação da equipe.",
+  "ownProfile.signInTitle": "Entre para ver seu perfil",
+  "ownProfile.signInHint": "Meu perfil mostra a sua conta. Numa aba anônima ou depois de sair, é preciso entrar de novo.",
+  "ownProfile.edit": "Editar perfil",
+  "ownProfile.verified": "Verificado",
+  "ownProfile.noBio": "Sem biografia. Escreva uma em Configurações › Conta.",
+  "ownProfile.twoFactorOn": "2FA ativo",
+  "ownProfile.twoFactorOnHint": "Verificação em duas etapas ligada nesta conta",
+  "ownProfile.twoFactorOff": "2FA desligado",
+  "ownProfile.twoFactorOffHint": "Ligue a verificação em duas etapas em Configurações › Conta",
+  "ownProfile.twoFactorEnable": "Ativar 2FA",
+  "ownProfile.counter.tasks": "Tarefas",
+  "ownProfile.counter.inProgress": "Em andamento",
+  "ownProfile.counter.done": "Concluídas",
+  "ownProfile.counterLoading": "carregando",
+  "ownProfile.countersHint": "Números das suas tarefas reais. Seguidores, projetos, DP e Hype aparecem quando tiverem fonte real."
 }

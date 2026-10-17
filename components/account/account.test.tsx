@@ -9,6 +9,8 @@ import { UserPanel } from "@/components/shell/UserPanel";
 import { LoginForm, RegisterForm } from "@/components/auth/AuthForms";
 import { DataPanel, DELETE_CONFIRM_WORD } from "./DataPanel";
 import { DeletionBanner } from "./DeletionBanner";
+import { OwnProfile, ownCounters } from "./OwnProfile";
+import { pageByRoute } from "@/lib/pages/registry";
 
 const push = vi.fn();
 vi.mock("next/navigation", () => ({
@@ -127,5 +129,49 @@ describe("login com 2FA e cadastro com os termos da Velion", () => {
     expect(within(terms).getByText(/Velion, dona da Orange Social/)).toBeTruthy();
     expect(within(terms).getByRole("link", { name: "Termos de Uso" }).getAttribute("href")).toBe("/termos");
     expect(within(terms).getByRole("link", { name: "Política de Privacidade" }).getAttribute("href")).toBe("/privacidade");
+  });
+});
+
+describe("Meu perfil com a conta real (P19, RF6.CA01)", () => {
+  const fetchMock = vi.fn<typeof fetch>();
+  const PAGE = pageByRoute("/profile")!;
+  const task = (id: string, state: string) => ({ id: `00000000-0000-4000-8000-00000000000${id}`, title: `Tarefa ${id}`, type: "DOCUMENTO", state, version: 0 });
+  beforeEach(() => { vi.stubGlobal("fetch", fetchMock); fetchMock.mockReset(); });
+  afterEach(() => { act(() => tokenStore.clear()); vi.unstubAllGlobals(); document.cookie = "ws_rt_h=; max-age=0; path=/"; });
+
+  it("sem sessão pede para entrar, sem pessoa de exemplo e sem chamar a API", async () => {
+    renderWithProviders(withSession(<OwnProfile page={PAGE} />));
+    expect(await screen.findByText("Entre para ver seu perfil")).toBeTruthy();
+    expect(screen.getByTestId("profile-sign-in").getAttribute("href")).toBe("/login?next=%2Fprofile");
+    expect(screen.queryByText(/Pessoa Exemplo|pessoa\.exemplo/)).toBeNull();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("com sessão mostra o nome, o usuário, a biografia e contadores das tarefas reais", async () => {
+    fetchMock.mockImplementation(async (url) => {
+      const u = String(url);
+      if (u.endsWith("/api/me")) return json(200, { ...ME, bio: "Cuido de contratos.", twoFactorEnabled: false });
+      if (u.includes("/api/tasks")) return json(200, [task("1", "EM_USO"), task("2", "CONCLUIDA"), task("3", "DISPONIVEL")]);
+      return json(404, {});
+    });
+    tokenStore.set("jwt-de-teste");
+    renderWithProviders(withSession(<OwnProfile page={PAGE} />));
+    await waitFor(() => expect(screen.getByTestId("profile-name").textContent).toBe("Maria"));
+    expect(screen.getByTestId("profile-handle").textContent).toBe("@maria.silva · Analista");
+    expect(screen.getByTestId("profile-bio").textContent).toBe("Cuido de contratos.");
+    expect(screen.getByText("2FA desligado")).toBeTruthy();
+    const counters = screen.getByTestId("profile-counters");
+    await waitFor(() => expect(within(counters).getByText("3")).toBeTruthy());
+    expect(counters.querySelector('[data-counter="inProgress"] dd')?.textContent).toBe("1");
+    expect(counters.querySelector('[data-counter="done"] dd')?.textContent).toBe("1");
+    expect(counters.querySelector('[data-counter="followers"]')).toBeNull();
+    expect(await screen.findAllByTestId("persisted-task-card")).toHaveLength(3);
+    expect(fetchMock.mock.calls.filter(([u]) => String(u).includes("/api/tasks"))).toHaveLength(1);
+    expect(screen.queryByText(/Pessoa Exemplo|1\.240/)).toBeNull();
+  });
+
+  it("contadores só contam o que a API devolveu", () => {
+    expect(ownCounters(null)).toBeNull();
+    expect(ownCounters([])).toEqual({ tasks: 0, inProgress: 0, done: 0 });
   });
 });

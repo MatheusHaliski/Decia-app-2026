@@ -4,6 +4,7 @@
  * salvos, Tarefas salvas, Decisões → DECIA, e "Delegadas a mim") e de terceiros (`/u/[username]`, RF16: sub-abas 1–5,
  * itens filtrados pela visibilidade, Seguir, ações sociais inline; contas institucionais com etiqueta e atalho para
  * RF14/RF15). As sub-abas ainda sem RF funcional mantêm o EmptyState do RfPage; os CAs continuam abaixo.
+ * Fora do laboratório (`NEXT_PUBLIC_WS_LAB`), o próprio perfil usa a conta real: `components/account/OwnProfile` (P19).
  */
 import { useState } from "react";
 import { Badge, Button, Card, EmptyState, LoadingState, Tabs } from "@/components/ui";
@@ -14,7 +15,9 @@ import { itemOf, personById, personByUsername, profileProjects, profileTasks, sa
 import type { TaskState } from "@/lib/social/types";
 import { WORK_STATUSES, workStatusOf, type WorkStatus } from "@/lib/tasks/status";
 import { profileTabsFor, toProfileHeaderViewModel, toProjectCardViewModel, toTaskCardViewModel } from "@/lib/social/view-model";
-import { useViewer } from "@/lib/viewer/ViewerProvider";
+import { useOptionalCurrentUser } from "@/lib/session/CurrentUserProvider";
+import { labMode, useViewer } from "@/lib/viewer/ViewerProvider";
+import { OwnProfile } from "@/components/account/OwnProfile";
 import { AssignmentInbox, SocialNotifications } from "./AssignmentInbox";
 import { useMounted, useSocial } from "./context";
 import { SocialProfileHeader } from "./ProfileHeader";
@@ -115,6 +118,9 @@ export function ProfileView({ page, username }: { page: PageEntry; username?: st
   const self = !!ownerId && ownerId === viewerId;
   const header = mounted && ownerId ? toProfileHeaderViewModel(state, viewerId, ownerId) : null;
   const tabs = ownerId ? profileTabsFor(state, viewerId, ownerId) : PROFILE_TABS.filter((x) => x.thirdParty);
+  // P19: `/profile` mostra a conta logada (API real); o repositório DEMO fica para o laboratório e para os testes sem provider
+  const session = useOptionalCurrentUser();
+  if (!username && session && !labMode()) return <OwnProfile page={page} />;
 
   return (
     <RfPage

@@ -71,16 +71,28 @@ function loadError(e: unknown, t: (k: string) => string) {
   return describeError(e);
 }
 
-export function MyTasks() {
+/** Lista "minhas tarefas" da API; `enabled = false` não busca (quem chama já tem a lista). */
+export function useMyTaskList(enabled = true) {
   const { t } = useI18n();
   const [tasks, setTasks] = useState<TaskView[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [filter, setFilter] = useState<WorkStatus | "todos">("todos");
-  const load = useCallback(() => {
+  const reload = useCallback(() => {
+    if (!enabled) return;
     setError(null);
     tasksApi.mine(100).then(setTasks).catch((e) => setError(loadError(e, t)));
-  }, [t]);
-  useEffect(load, [load]);
+  }, [t, enabled]);
+  useEffect(reload, [reload]);
+  return { tasks, error, reload };
+}
+
+export type MyTaskList = ReturnType<typeof useMyTaskList>;
+
+/** Lista com filtro por estado. Recebe `list` quando a página já carregou as tarefas (ex.: Meu perfil, que conta no cabeçalho). */
+export function MyTasks({ list }: { list?: MyTaskList } = {}) {
+  const { t } = useI18n();
+  const own = useMyTaskList(!list);
+  const { tasks, error, reload: load } = list ?? own;
+  const [filter, setFilter] = useState<WorkStatus | "todos">("todos");
   if (error) return <ErrorState title={t("tasks.list.error")} description={error} onRetry={load} />;
   if (!tasks) return <LoadingState />;
   if (!tasks.length) return <EmptyState title={t("tasks.list.empty")} description={t("tasks.list.emptyHint")} action={<Button variant="primary" href="/tasks/new">{t("tasks.list.create")}</Button>} />;
