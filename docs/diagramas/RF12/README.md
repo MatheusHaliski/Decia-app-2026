@@ -33,6 +33,58 @@ A MATRIZ_RF de 17/10/2026 (`docs/auditoria/2026-10-17/MATRIZ_RF.md`, linha RF12)
 | Auditoria e histórico | `AuditLog TASK_UPDATED`, `TaskStateLog` se o estado mudou | `TASK_UPDATED` com a nova `version`; a edição não muda estado (estado só por `/transitions`, que grava `task_state_log` e `TASK_STATE_CHANGED`) |
 | Eventos AFTER_COMMIT | reindexar, mosaico, `snapshotJson`, notificação | não existem — **(planejado)** |
 
+## 0. Diagrama de casos de uso
+
+Quem edita os dados de uma tarefa ou projeto e o que consegue fazer. Borda contínua: existe no código em 17/10/2026; tracejada: planejado (projeto, rascunho, reabertura e eventos).
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  dono["«ator» Dono do recurso"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  admin["«ator» Administrador"]:::ator
+  responsavel["«ator» Responsável atribuído"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  subgraph SIS["Work Station — RF12 Editar esquema"]
+    direction TB
+    UC1(["UC1 Editar dados da tarefa"]):::uc
+    UC2(["UC2 Verificar permissão e estado editável"]):::uc
+    UC3(["UC3 Resolver conflito de versão"]):::uc
+    UC4(["UC4 Editar dados do projeto"]):::ucPlan
+    UC5(["UC5 Recuperar rascunho automático"]):::ucPlan
+    UC6(["UC6 Reabrir tarefa ou projeto encerrado"]):::ucPlan
+    UC7(["UC7 Propagar a alteração"]):::ucPlan
+  end
+  dono --- UC1
+  colaborador --- UC1
+  admin --- UC1
+  responsavel --- UC1
+  dono --- UC4
+  responsavel --- UC4
+  chefe --- UC4
+  dono --- UC6
+  UC1 -. "«include»" .-> UC2
+  UC4 -. "«include»" .-> UC2
+  UC3 -. "«extend»" .-> UC1
+  UC5 -. "«extend»" .-> UC1
+  UC5 -. "«extend»" .-> UC4
+  UC1 -. "«include»" .-> UC7
+  UC4 -. "«include»" .-> UC7
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Editar dados da tarefa | dono, colaborador, admin fora de SIGILOSO (real); responsavel (planejado) | RF12.CA01, RF12.CA02, RF12.CA03 | real: `/tasks/[id]/edit` (`TaskForm` modo edit) → `PUT /api/tasks/{id}` com `version` → `TaskService.update`, `TASK_UPDATED` |
+| UC2 Verificar permissão e estado editável | — (incluído por UC1 e UC4) | RF12.CA01, RF12.CA05 | real para tarefa: `ResourceAuthorizer.require(EDIT)` (invisível → `404`, sem permissão → `403`), `TaskState.isReadOnly` → `409 TAREFA_BLOQUEADA`, `locksVisibility` → `409 OFERTA_ATIVA` |
+| UC3 Resolver conflito de versão | dono, colaborador | RF12.CA02 | real: `409 EDICAO_CONCORRENTE` e «Recarregar versão atual» sem perder o texto |
+| UC4 Editar dados do projeto | dono, responsavel, chefe | RF12.CA01, RF12.CA02, RF12.CA03 | planejado (sem API de projetos; `ProjectVersion`, último-vence com aviso) |
+| UC5 Recuperar rascunho automático | dono | RF12.CA04 | planejado (o `TaskForm` só avisa ao sair com alterações) |
+| UC6 Reabrir tarefa ou projeto encerrado | dono | RF12.CA05 | planejado (justificativa ≥ 10 caracteres) |
+| UC7 Propagar a alteração | — (incluído por UC1 e UC4) | RF12.CA06 | planejado (reindexar, mosaico, `snapshotJson`, notificar o responsável) |
+
 ## 1. Diagrama de classes
 
 ```mermaid

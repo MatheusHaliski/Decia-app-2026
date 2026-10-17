@@ -19,6 +19,65 @@ O "perfil do chefe" é a **página do departamento** (`Department`, TAXONOMIA §
 | **RF14.CA05** (CA a confirmar) | Dado o viewer, então as **ações** da página dependem do papel: membro do departamento → "Pedir chancela", "Indicar colega", "Propor chancela" (RF39.CA06), "Mensagem ao chefe" (RF46); mesma empresa → "Levar ao meu acervo" nos modelos oficiais (RF41.CA08), "Mensagem"; chefe (`headUserId`) e EMPRESA dona → "Gerir" (Minha equipe RF9/RF10, Dashboard do emissor RF28.CA06, Insights da Equipe RF43.CA14); link "Ver perfil pessoal" abre `/u/[username]` do chefe (RF16). |
 | **RF14.CA06** (CA a confirmar) | Dado o viewer, então a **visibilidade por item** segue `AccessPolicy.visibilityFilter`: anônimo/outra empresa → só `PUBLICA`; mesma empresa → + `EMPRESA`; membro → + `DEPARTAMENTO`; sub-abas de gestão → `403 ACESSO_NEGADO` no serviço para quem não é `headUserId` nem `Company.ownerUserId` (curador com escopo FILA_REVISAO/PREMIACAO vê só a fila/premiação); dados pessoais (`email`, `phone`) nunca saem na API da equipe; página em pt-BR/en/es e responsiva. **Real (17/10/2026):** a projeção pública de pessoa (`PublicProfileView`) já não carrega contato; no front, contadores e composição de projeto contam só o que o viewer vê (`b602d34`, `lib/social/rules.ts`). |
 
+## 0. Diagrama de casos de uso
+
+Quem visita a página do departamento (o "perfil do chefe") e o que cada um pode fazer nela. Borda contínua: existe no código em 17/10/2026; tracejada: planejado ou em curso (a página roda sobre o repositório DEMO e a API `/api/departments/*` não existe).
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  visitante["«ator» Visitante"]:::ator
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  empregado["«ator» Empregado"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  empresa["«ator» Empresa ou órgão"]:::ator
+  curador["«ator» Curador"]:::ator
+  subgraph SIS["Work Station — RF14 Página do departamento"]
+    direction TB
+    UC1(["UC1 Buscar e abrir a página do departamento"]):::ucPlan
+    UC2(["UC2 Navegar pelas sub-abas públicas"]):::ucPlan
+    UC3(["UC3 Filtrar itens pela visibilidade"]):::ucPlan
+    UC4(["UC4 Ver as métricas públicas"]):::ucPlan
+    UC5(["UC5 Seguir o departamento"]):::ucPlan
+    UC6(["UC6 Ver o perfil pessoal do chefe"]):::ucPlan
+    UC7(["UC7 Enviar mensagem ao chefe"]):::ucPlan
+    UC8(["UC8 Pedir ou propor chancela e indicar colega"]):::ucPlan
+    UC9(["UC9 Gerir o departamento"]):::ucPlan
+  end
+  empregado -- "é um" --> autenticado
+  chefe -- "é um" --> autenticado
+  empresa -- "é um" --> autenticado
+  visitante --- UC1
+  visitante --- UC2
+  visitante --- UC4
+  autenticado --- UC1
+  autenticado --- UC2
+  autenticado --- UC4
+  autenticado --- UC5
+  autenticado --- UC6
+  autenticado --- UC7
+  empregado --- UC8
+  chefe --- UC9
+  empresa --- UC9
+  curador --- UC9
+  UC2 -. "«include»" .-> UC3
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Buscar e abrir a página do departamento | visitante, autenticado | RF14.CA01 | planejado (`GET /api/departments/{slug}`); cabeçalho DEMO no front |
+| UC2 Navegar pelas sub-abas públicas | visitante, autenticado | RF14.CA02 | planejado (Sobre, Projetos, Sessões DECIA, Chancelas, Reconhecimentos, Equipe) |
+| UC3 Filtrar itens pela visibilidade | — (incluído por UC2) | RF14.CA06 | planejado na página; a regra existe em `AccessPolicy.visible` (real para tarefas) |
+| UC4 Ver as métricas públicas | visitante, autenticado | RF14.CA03 | planejado (`MetricSnapshot`; nunca dados nominais) |
+| UC5 Seguir o departamento | autenticado | RF14.CA04 | planejado (`Follow`); botão DEMO no front |
+| UC6 Ver o perfil pessoal do chefe | autenticado | RF14.CA01, RF14.CA05 | em curso (Onda 1): `GET /api/people/by-username/{username}` é real; `/u/[username]` ainda é DEMO |
+| UC7 Enviar mensagem ao chefe | autenticado | RF14.CA05 | planejado (RF46) |
+| UC8 Pedir ou propor chancela e indicar colega | empregado (membro do departamento) | RF14.CA05 | planejado (RF39.CA06) |
+| UC9 Gerir o departamento | chefe, empresa (dona); curador só fila e premiação | RF14.CA05, RF14.CA06 | planejado (Minha equipe RF9/RF10, Dashboard do emissor, Insights da Equipe; `403` no serviço para os demais) |
+
 ## 1. Diagrama de classes
 
 ```mermaid

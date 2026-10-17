@@ -18,6 +18,61 @@ A **tarefa** (`TaskItem`, TAXONOMIA §2.1) é a unidade mínima do Work Station 
 | Foto/scanner do celular (QR) + Estúdio de Documento | FOTO | IMAGEM_EDITADA · DOCUMENTO (OCR) | `OcrPort`, `MediaStoragePort` |
 | Texto com IA (pedido + ≤ 5 tarefas de referência) | TEXTO_IA | TEXTO_IA | `AiEngine` |
 
+## 0. Diagrama de casos de uso
+
+Quem usa o criador de tarefas e o que consegue fazer nele. Borda contínua: existe no código em 17/10/2026; tracejada: planejado.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  subgraph SIS["Work Station — RF4 Criador de tarefas"]
+    direction TB
+    UC1(["UC1 Criar tarefa no modo manual"]):::uc
+    UC2(["UC2 Salvar tarefa como rascunho"]):::uc
+    UC3(["UC3 Validar os campos da tarefa"]):::uc
+    UC4(["UC4 Anexar arquivo ou colar conteúdo"]):::ucPlan
+    UC5(["UC5 Pré-preencher a tarefa com IA"]):::ucPlan
+    UC6(["UC6 Importar de serviço externo"]):::ucPlan
+    UC7(["UC7 Criar tarefas em lote"]):::ucPlan
+    UC8(["UC8 Informar órgão e prazo legal"]):::ucPlan
+    UC9(["UC9 Aceitar chancela sugerida"]):::ucPlan
+    UC10(["UC10 Oferecer no Balcão de Modelos"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  conectores["«ator» Google · Microsoft · e-Protocolo"]:::atorSis
+  email["«ator» Serviço de e-mail"]:::atorSis
+  autenticado --- UC1
+  autenticado --- UC4
+  autenticado --- UC6
+  autenticado --- UC7
+  UC1 -. "«include»" .-> UC3
+  UC2 -. "«extend»" .-> UC1
+  UC5 -. "«extend»" .-> UC1
+  UC8 -. "«extend»" .-> UC1
+  UC9 -. "«extend»" .-> UC1
+  UC10 -. "«extend»" .-> UC1
+  UC5 --- ia
+  UC6 --- conectores
+  UC6 --- email
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Criar tarefa no modo manual | autenticado | RF20.CA04, RF20.CA14 | real: `/tasks/new` (`TaskForm`) → `POST /api/tasks` → `TaskService.create`, sem projeto/fase, anexos nem IA |
+| UC2 Salvar tarefa como rascunho | autenticado | RF20.CA04, RF20.CA05 | real: `draft: true` deixa a tarefa em `RASCUNHO` |
+| UC3 Validar os campos da tarefa | — (incluído por UC1) | RF20.CA14 | real: `422 VALIDACAO` com todos os campos juntos; categoria, processo, natureza e prazo legal planejados |
+| UC4 Anexar arquivo ou colar conteúdo | autenticado | RF20.CA01, RF20.CA06, RF20.CA12 | planejado (`UploadService`, antivírus, OCR; `ARQUIVO`/`COLAR` só no enum) |
+| UC5 Pré-preencher a tarefa com IA | autenticado, ia | RF20.CA02, RF20.CA03 | planejado (`TaskDetectionService`, `PREENCHER_TAREFA`; sem motor registrado) |
+| UC6 Importar de serviço externo | autenticado, conectores, email | RF20.CA07, RF20.CA08, RF20.CA09 | planejado (Google, Microsoft, e-mail encaminhado, e-Protocolo; só valores de `SourceKind`) |
+| UC7 Criar tarefas em lote | autenticado | RF20.CA05 | planejado (vários arquivos ou .zip) |
+| UC8 Informar órgão e prazo legal | autenticado | RF20.CA10, RF20.CA11 | planejado (`/api/org-entities/search`, `/api/legal-deadlines/compute`) |
+| UC9 Aceitar chancela sugerida | autenticado | RF20.CA13 | planejado (RF39) |
+| UC10 Oferecer no Balcão de Modelos | autenticado | RF20.CA15 | planejado (RF40) |
+
 ## 1. Diagrama de classes
 
 Legenda (17/10/2026): **(real)** `TaskController` (só `create` neste RF; `get`/`update` são do RF12 e `mine`/`transition` do RF41), `TaskRequest`, `TaskService` (`TaskInput`, `TaskView`), `TaskRepositoryPort` (`insert`, `update`, `appendStateLog`; adaptador `JpaAcervoAdapters`), `ResourceAuthorizer`, `AccessPolicy`, `AuditLogPort`, `TaskItem`, `TaskBrief`, `WorkArea`, `TaskStateLog` e os enums; `TaskAttachment`, `TaskVersion`, `LegalDeadlineRule`, `OrgEntity`, `MediaObject`, `PipelineJob`, `AiInferenceLog`, `SealBond` e `ModelOffer` existem só como entidade de domínio + tabela, sem serviço; `MediaStoragePort`/`AntivirusPort` existem (Bloco 5, D-67) sem rota de tarefa. **(planejado)** `TaskController.upload/detect/createBatch`, `OrgEntityController`, `LegalDeadlineController`, `TaskCreationService`, `TaskDetectionService`, `DeadlineService`, `OrgEntityLookupService`, `UploadService`, `AiEngine`, `TaskStateMachine` (no real a tabela é `TaskState.machine()`), `OcrPort`, `ExternalDocPort`, `ProtocolPort`, `OrgLookupPort`, `PipelineJobPort`, `SearchIndexPort`, `SealSuggestionService`.

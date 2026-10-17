@@ -19,6 +19,51 @@ O título do card recorta, das 15 sub-abas do perfil (Matriz B), as quatro do **
 | **RF6.CA05** (CA a confirmar) | Dado a sub-aba Projetos salvos ou Tarefas salvas, então ela lista os `SavedItem` do dono (`targetType` PROJECT ou TASK) com marcador `favorite`, respeitando a visibilidade atual do alvo (alvo que ficou PRIVADA aparece como "indisponível"); "Remover dos salvos" apaga o `SavedItem` e decrementa `savesCount`; só o dono acessa. | RF26.CA04, `_anterior/RF19` sub-abas 7–8 |
 | **RF6.CA06** (CA a confirmar) | Dado o perfil de um terceiro, quando vejo seu Acervo Digital, então só aparecem tarefas com `visibility` compatível (`AccessPolicy.visibilityFilter`: PUBLICA; EMPRESA se mesma empresa; DEPARTAMENTO se membro), nunca PRIVADA; cada card oferece **"Levar ao meu acervo"** (RF7/RF23) e interações sociais (RF18/RF19); item fora da visibilidade → `403 ACESSO_NEGADO`. **Real (17/10/2026):** `GET /api/people/{id}/tasks` → `TaskService.listOf` devolve só o que `AccessPolicy.visible` admite (SIGILOSO só dono e colaboradores explícitos, nem ADMIN — `AccessPolicy.sigiloso`, D-139) **(em curso, Onda 1)**; abrir item invisível responde `404 NAO_ENCONTRADO` uniforme, não 403 (`GET /api/tasks/{id}`, front `components/social/TaskDetail.tsx`, D-141). | RF41.CA08, RF26.CA08 |
 
+## 0. Diagrama de casos de uso
+
+Quem usa o Perfil Empresarial e o que consegue fazer nele. Borda contínua: existe no código em 17/10/2026; tracejada: planejado ou em curso (a tela `/profile` ainda lê a fixture DEMO, achado P19).
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  dono["«ator» Dono do recurso"]:::ator
+  subgraph SIS["Work Station — RF6 Perfil Empresarial"]
+    direction TB
+    UC1(["UC1 Abrir meu perfil"]):::ucPlan
+    UC2(["UC2 Listar meu Acervo Digital"]):::uc
+    UC3(["UC3 Mudar o estado de uma tarefa do Acervo"]):::uc
+    UC4(["UC4 Ver meus projetos"]):::ucPlan
+    UC5(["UC5 Gerir projetos e tarefas salvos"]):::ucPlan
+    UC6(["UC6 Ver o Acervo de outra pessoa"]):::ucPlan
+    UC7(["UC7 Filtrar pelo que posso ver"]):::uc
+    UC8(["UC8 Levar tarefa ao meu acervo"]):::ucPlan
+  end
+  dono -- "é um" --> autenticado
+  autenticado --- UC1
+  autenticado --- UC6
+  dono --- UC2
+  dono --- UC3
+  dono --- UC4
+  dono --- UC5
+  UC6 -. "«include»" .-> UC7
+  UC8 -. "«extend»" .-> UC6
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Abrir meu perfil | autenticado | RF6.CA01 | em curso (Onda 1): `GET /api/me` é real; a tela ainda mostra a fixture DEMO |
+| UC2 Listar meu Acervo Digital | dono | RF6.CA02 | real parcial: `/tasks` lista as tarefas do dono por `GET /api/tasks` (`TaskService.listMine`); sub-filtros, contadores e busca planejados |
+| UC3 Mudar o estado de uma tarefa do Acervo | dono | RF6.CA03 | real parcial: `POST /api/tasks/{id}/transitions` no detalhe da tarefa; favoritar, duplicar e levar ao projeto planejados |
+| UC4 Ver meus projetos | dono | RF6.CA04 | planejado (sem API de projetos) |
+| UC5 Gerir projetos e tarefas salvos | dono | RF6.CA05 | planejado (`SavedItem`) |
+| UC6 Ver o Acervo de outra pessoa | autenticado | RF6.CA06 | em curso (Onda 1): `GET /api/people/{id}/tasks` é real; a tela `/u/[username]` ainda é DEMO |
+| UC7 Filtrar pelo que posso ver | — (incluído por UC6) | RF6.CA06 | real: `TaskService.listOf` filtra por `AccessPolicy.visible` (SIGILOSO só dono e colaboradores, D-139) |
+| UC8 Levar tarefa ao meu acervo | autenticado | RF6.CA06 | planejado (RF7/RF23) |
+
 ## 1. Diagrama de classes
 
 ```mermaid

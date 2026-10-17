@@ -15,6 +15,50 @@
 | **RF9.CA05** (CA a confirmar) | Dado a inclusão ou remoção, então `MemberAdded`/`MemberRemoved` (AFTER_COMMIT) gravam `AuditLog MEMBER_ADDED/MEMBER_REMOVED` com `correlationId`, notificam o empregado (`Notification` tipo SISTEMA, categoria SISTEMA: "você foi adicionado/removido do departamento X", com motivo), invalidam o cache Redis de métricas/contadores do departamento e atualizam a aba pública Equipe e a página da empresa (RF14/RF15). | RF28.CA03 |
 | **RF9.CA06** (CA a confirmar) | Dado o histórico, então re-adicionar alguém cria um **novo** `DepartmentMembership` (o anterior permanece encerrado), a linha do tempo de lotações aparece no modo gestão e no perfil do empregado (empresa/departamento atual, RF16), e todas as mensagens são i18n (pt-BR/en/es). | RF28.CA02 (histórico) |
 
+## 0. Diagrama de casos de uso
+
+Quem gere a lista de empregados de um departamento e o que cada um consegue fazer. Borda contínua: existe no código em 17/10/2026; tracejada: planejado (a gestão de equipe é escopo novo e a aba Minha equipe ainda é esqueleto).
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  chefe["«ator» Chefe de departamento"]:::ator
+  empresa["«ator» Empresa ou órgão"]:::ator
+  admin["«ator» Administrador"]:::ator
+  empregado["«ator» Empregado"]:::ator
+  subgraph SIS["Work Station — RF9 Minha equipe"]
+    direction TB
+    UC1(["UC1 Ver minha equipe e o histórico"]):::ucPlan
+    UC2(["UC2 Adicionar empregado ao departamento"]):::ucPlan
+    UC3(["UC3 Remover empregado do departamento"]):::ucPlan
+    UC4(["UC4 Tratar as pendências de quem sai"]):::ucPlan
+    UC5(["UC5 Verificar a chefia do departamento"]):::ucPlan
+    UC6(["UC6 Ver minhas lotações"]):::ucPlan
+  end
+  chefe --- UC1
+  chefe --- UC2
+  chefe --- UC3
+  empresa --- UC1
+  admin --- UC1
+  empregado --- UC6
+  UC1 -. "«include»" .-> UC5
+  UC2 -. "«include»" .-> UC5
+  UC3 -. "«include»" .-> UC5
+  UC4 -. "«extend»" .-> UC3
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Ver minha equipe e o histórico | chefe; empresa e admin só veem (ABAS_POR_PERFIL §2.5) | RF9.CA01, RF9.CA06 | planejado (`GET /api/departments/{id}/members`) |
+| UC2 Adicionar empregado ao departamento | chefe | RF9.CA02, RF9.CA05, RF9.CA06 | planejado (`DepartmentMembership`; `409 MEMBRO_DUPLICADO`) |
+| UC3 Remover empregado do departamento | chefe | RF9.CA03, RF9.CA05 | planejado (motivo obrigatório; revoga o curador; `409 CHEFE_NAO_REMOVIVEL`) |
+| UC4 Tratar as pendências de quem sai | chefe | RF9.CA04 | planejado (Dossiê de Transição RF36 ou transferência) |
+| UC5 Verificar a chefia do departamento | — (incluído por UC1, UC2, UC3) | RF9.CA01 | planejado (`Guard.requireDeptHead`; o CA também admite a EMPRESA dona e o ADMIN) |
+| UC6 Ver minhas lotações | empregado | RF9.CA05, RF9.CA06 | planejado (linha do tempo no perfil, RF16; aviso por notificação) |
+
 ## 1. Diagrama de classes
 
 ```mermaid

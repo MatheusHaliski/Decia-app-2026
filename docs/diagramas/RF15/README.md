@@ -19,6 +19,66 @@ A **página da empresa** (`Company`, TAXONOMIA §1.4; `ownerUserId` = conta `EMP
 | **RF15.CA05** (CA a confirmar) | Dado o viewer autenticado, então as **ações** são: **Seguir** (`Follow` COMPANY, único e idempotente; eventos no Seguindo do Mural, RF27.CA06), **Derivar** o plano oficial (mesma empresa; plano não PUBLICADO → `422 DERIVACAO_INVALIDA`, RF24.CA04), **Resgatar** benefício (exige `SealBond` APROVADA → senão `409 CHANCELA_INVALIDA`, RF39.CA10), **Levar ao meu acervo** um modelo oficial (RF41.CA08), **Propor chancela** (EMPREGADO da empresa, RF39.CA06), **Mensagem** (RF46), abrir departamento (RF14); visitante anônimo → `401 NAO_AUTENTICADO` nas ações. |
 | **RF15.CA06** (CA a confirmar) | Dado o viewer, então a aba **Gestão** (Departamentos & chefes, Pessoas & lotações, Chancelas & políticas, Benefícios, Plano oficial, Programas, Políticas, Dashboard do emissor, Insights da empresa, Dossiês, Comunicados) só aparece para `Company.ownerUserId` e é **negada no serviço** (`403 ACESSO_NEGADO`) para qualquer outro, inclusive CHEFE e ADMIN em escrita; visibilidade por item segue `AccessPolicy.visibilityFilter` (anônimo/outra empresa → `PUBLICA`; mesma empresa → + `EMPRESA`); `cnpj` (AES) só para a dona e ADMIN; página em pt-BR/en/es e responsiva. **Real (17/10/2026):** no front, contadores e composição de projeto já seguem a ACL do viewer (SIGILOSO = PRIVADA, `lib/social/rules.ts`, `b602d34`); a projeção pública de pessoa (`PublicProfileView`) não carrega contato. |
 
+## 0. Diagrama de casos de uso
+
+Quem visita a página de uma empresa ou órgão e o que cada um pode fazer nela. Borda contínua: existe no código em 17/10/2026; tracejada: planejado ou em curso (a página roda sobre o repositório DEMO e a API `/api/companies/*` não existe).
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  visitante["«ator» Visitante"]:::ator
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  empregado["«ator» Empregado"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  empresa["«ator» Empresa ou órgão"]:::ator
+  subgraph SIS["Work Station — RF15 Página da empresa"]
+    direction TB
+    UC1(["UC1 Buscar e abrir a página da empresa"]):::ucPlan
+    UC2(["UC2 Navegar pelas sub-abas públicas"]):::ucPlan
+    UC3(["UC3 Ver as métricas públicas"]):::ucPlan
+    UC4(["UC4 Seguir a empresa"]):::ucPlan
+    UC5(["UC5 Usar recurso oficial da empresa"]):::ucPlan
+    UC6(["UC6 Propor chancela"]):::ucPlan
+    UC7(["UC7 Reagir e comentar comunicado"]):::ucPlan
+    UC8(["UC8 Publicar comunicado"]):::ucPlan
+    UC9(["UC9 Gerir a empresa"]):::ucPlan
+    UC10(["UC10 Verificar a dona da empresa"]):::ucPlan
+  end
+  empregado -- "é um" --> autenticado
+  chefe -- "é um" --> autenticado
+  empresa -- "é um" --> autenticado
+  visitante --- UC1
+  visitante --- UC2
+  visitante --- UC3
+  autenticado --- UC1
+  autenticado --- UC2
+  autenticado --- UC3
+  autenticado --- UC4
+  autenticado --- UC5
+  autenticado --- UC7
+  empregado --- UC6
+  chefe --- UC8
+  empresa --- UC8
+  empresa --- UC9
+  UC9 -. "«include»" .-> UC10
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Buscar e abrir a página da empresa | visitante, autenticado | RF15.CA01 | planejado (`GET /api/companies/{slug}`); cabeçalho DEMO no front |
+| UC2 Navegar pelas sub-abas públicas | visitante, autenticado | RF15.CA02, RF15.CA06 | planejado (Sobre, Departamentos, Programas, Plano Anual, Chancelas, Benefícios, Destaques, Pessoas, Comunicados; visibilidade por item) |
+| UC3 Ver as métricas públicas | visitante, autenticado | RF15.CA04 | planejado (`MetricSnapshot`; nunca dados nominais) |
+| UC4 Seguir a empresa | autenticado | RF15.CA05 | planejado (`Follow`); botão DEMO no front |
+| UC5 Usar recurso oficial da empresa | autenticado | RF15.CA05 | planejado (derivar o plano oficial, resgatar benefício, levar modelo oficial ao acervo, mensagem) |
+| UC6 Propor chancela | empregado (da empresa) | RF15.CA05 | planejado (RF39.CA06) |
+| UC7 Reagir e comentar comunicado | autenticado | RF15.CA03 | planejado (só quando `commentsEnabled`) |
+| UC8 Publicar comunicado | empresa (dona), chefe | RF15.CA03 | planejado (`Announcement`; empregado ou curador → `403`) |
+| UC9 Gerir a empresa | empresa (dona) | RF15.CA06 | planejado (aba Gestão; aparece só para `Company.ownerUserId`) |
+| UC10 Verificar a dona da empresa | — (incluído por UC9) | RF15.CA06 | planejado (negado no serviço com `403`, inclusive para chefe e admin em escrita) |
+
 ## 1. Diagrama de classes
 
 ```mermaid
