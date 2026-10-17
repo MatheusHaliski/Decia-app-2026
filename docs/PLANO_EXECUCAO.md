@@ -124,6 +124,7 @@ teste que falharia sem ele, segredos só pelo nome, nunca editar migration aplic
 | RF30 + RF34 | D-125–D-126 | Q-225–Q-226 | V43 |
 | RF47 Encontrar | D-127–D-129 | Q-227–Q-229 | V44 |
 | RF48 Agentes (Copilot de testes) | D-130–D-134 | Q-230–Q-234 | V45 |
+| Identidade: 2FA, exclusão em 30 dias e termos da Velion (RF1–RF3, 17/10/2026) | D-143–D-146 | Q-241–Q-243 | V46 |
 
 Faixa não usada fica livre (o `MigrationVersionsTest` só proíbe versão repetida e aceita lacunas; se um trabalho precisar
 de mais de uma migration, pede uma faixa nova neste quadro antes de criar).

@@ -244,6 +244,91 @@ export interface paths {
         patch: operations["update_1"];
         trace?: never;
     };
+    "/api/me/2fa": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF2.CA02 Situação do 2FA (ativo, desde quando, códigos de recuperação restantes, configuração pendente) */
+        get: operations["status"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/2fa/disable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF2.CA02 Desliga o 2FA: senha atual + código do aplicativo ou de recuperação */
+        post: operations["disable"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/2fa/enable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF2.CA02 Confirma com o primeiro código do aplicativo: liga o 2FA, devolve 10 códigos de recuperação uma única vez e encerra as outras sessões (422 DOIS_FATORES_INVALIDO) */
+        post: operations["enable"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/2fa/recovery-codes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF2.CA02 Gera novos códigos de recuperação (os antigos deixam de valer): senha atual + código do aplicativo */
+        post: operations["regenerate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/2fa/setup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF2.CA02 Começa a ativação: senha atual → segredo e URI otpauth:// para o aplicativo autenticador (409 DOIS_FATORES_JA_ATIVO) */
+        post: operations["setup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/deletion": {
         parameters: {
             query?: never;
@@ -450,6 +535,9 @@ export interface components {
             currentPassword: string;
             newPassword: string;
         };
+        CodeBody: {
+            code: string;
+        };
         ConfirmBodyDto: {
             confirmPassword: string;
             newPassword: string;
@@ -493,6 +581,13 @@ export interface components {
             deviceName?: string;
             idToken: string;
             nonce: string;
+        };
+        PasswordAndCodeBody: {
+            code: string;
+            currentPassword: string;
+        };
+        PasswordBody: {
+            currentPassword: string;
         };
         PersonView: {
             avatarUrl?: string;
@@ -552,6 +647,9 @@ export interface components {
             nextStep?: string;
             status?: string;
         };
+        RecoveryCodes: {
+            recoveryCodes?: string[];
+        };
         Reference: {
             label?: string;
             url?: string;
@@ -600,6 +698,24 @@ export interface components {
             /** Format: date-time */
             lastActiveAt?: string;
             persistent?: boolean;
+        };
+        Setup: {
+            account?: string;
+            /** Format: int32 */
+            digits?: number;
+            issuer?: string;
+            otpauthUri?: string;
+            /** Format: int64 */
+            periodSeconds?: number;
+            secret?: string;
+        };
+        Status: {
+            enabled?: boolean;
+            /** Format: date-time */
+            enabledAt?: string;
+            pendingSetup?: boolean;
+            /** Format: int32 */
+            recoveryCodesLeft?: number;
         };
         TaskRequest: {
             acceptanceCriteria?: components["schemas"]["Criterion"][];
@@ -1110,6 +1226,122 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["UserView"];
+                };
+            };
+        };
+    };
+    status: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    disable: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PasswordAndCodeBody"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    enable: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CodeBody"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RecoveryCodes"];
+                };
+            };
+        };
+    };
+    regenerate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PasswordAndCodeBody"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RecoveryCodes"];
+                };
+            };
+        };
+    };
+    setup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PasswordBody"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["Setup"];
                 };
             };
         };

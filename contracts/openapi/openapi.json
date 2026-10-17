@@ -42,6 +42,17 @@
         "required" : [ "confirmPassword", "currentPassword", "newPassword" ],
         "type" : "object"
       },
+      "CodeBody" : {
+        "properties" : {
+          "code" : {
+            "maxLength" : 12,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "required" : [ "code" ],
+        "type" : "object"
+      },
       "ConfirmBodyDto" : {
         "properties" : {
           "confirmPassword" : {
@@ -197,6 +208,33 @@
           }
         },
         "required" : [ "idToken", "nonce" ],
+        "type" : "object"
+      },
+      "PasswordAndCodeBody" : {
+        "properties" : {
+          "code" : {
+            "maxLength" : 12,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "currentPassword" : {
+            "maxLength" : 128,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "required" : [ "code", "currentPassword" ],
+        "type" : "object"
+      },
+      "PasswordBody" : {
+        "properties" : {
+          "currentPassword" : {
+            "maxLength" : 128,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "required" : [ "currentPassword" ],
         "type" : "object"
       },
       "PersonView" : {
@@ -370,6 +408,17 @@
         },
         "type" : "object"
       },
+      "RecoveryCodes" : {
+        "properties" : {
+          "recoveryCodes" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          }
+        },
+        "type" : "object"
+      },
       "Reference" : {
         "properties" : {
           "label" : {
@@ -524,6 +573,50 @@
           },
           "persistent" : {
             "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
+      "Setup" : {
+        "properties" : {
+          "account" : {
+            "type" : "string"
+          },
+          "digits" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "issuer" : {
+            "type" : "string"
+          },
+          "otpauthUri" : {
+            "type" : "string"
+          },
+          "periodSeconds" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "secret" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "Status" : {
+        "properties" : {
+          "enabled" : {
+            "type" : "boolean"
+          },
+          "enabledAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "pendingSetup" : {
+            "type" : "boolean"
+          },
+          "recoveryCodesLeft" : {
+            "format" : "int32",
+            "type" : "integer"
           }
         },
         "type" : "object"
@@ -1300,6 +1393,141 @@
         },
         "summary" : "RF3.CA01/CA04/CA06 Edita campos não sensíveis (422 VALIDACAO por campo); 403 EXCLUSAO_AGENDADA durante o prazo",
         "tags" : [ "RF3 Conta" ]
+      }
+    },
+    "/api/me/2fa" : {
+      "get" : {
+        "operationId" : "status",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Status"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF2.CA02 Situação do 2FA (ativo, desde quando, códigos de recuperação restantes, configuração pendente)",
+        "tags" : [ "RF2 Autenticação" ]
+      }
+    },
+    "/api/me/2fa/disable" : {
+      "post" : {
+        "operationId" : "disable",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PasswordAndCodeBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Status"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF2.CA02 Desliga o 2FA: senha atual + código do aplicativo ou de recuperação",
+        "tags" : [ "RF2 Autenticação" ]
+      }
+    },
+    "/api/me/2fa/enable" : {
+      "post" : {
+        "operationId" : "enable",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CodeBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RecoveryCodes"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF2.CA02 Confirma com o primeiro código do aplicativo: liga o 2FA, devolve 10 códigos de recuperação uma única vez e encerra as outras sessões (422 DOIS_FATORES_INVALIDO)",
+        "tags" : [ "RF2 Autenticação" ]
+      }
+    },
+    "/api/me/2fa/recovery-codes" : {
+      "post" : {
+        "operationId" : "regenerate",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PasswordAndCodeBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RecoveryCodes"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF2.CA02 Gera novos códigos de recuperação (os antigos deixam de valer): senha atual + código do aplicativo",
+        "tags" : [ "RF2 Autenticação" ]
+      }
+    },
+    "/api/me/2fa/setup" : {
+      "post" : {
+        "operationId" : "setup",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PasswordBody"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Setup"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF2.CA02 Começa a ativação: senha atual → segredo e URI otpauth:// para o aplicativo autenticador (409 DOIS_FATORES_JA_ATIVO)",
+        "tags" : [ "RF2 Autenticação" ]
       }
     },
     "/api/me/deletion" : {

@@ -31,4 +31,8 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
             order by u.username
             """)
     List<UserEntity> searchInCompany(@Param("company") UUID companyId, @Param("q") String likePattern, Pageable page);
+
+    @Query("select u from UserEntity u where u.status = br.gov.pr.secid.workstation.domain.identity.AccountStatus.DELETION_SCHEDULED "
+            + "and u.deletionScheduledAt <= :now order by u.deletionScheduledAt")
+    List<UserEntity> findDeletionDue(@Param("now") java.time.Instant now, Pageable page);
 }

@@ -74,6 +74,11 @@ public class JpaIdentityAdapters {
             }
 
             @Override
+            public List<User> findDeletionDue(java.time.Instant now, int limit) {
+                return repo.findDeletionDue(now, PageRequest.of(0, Math.max(1, limit))).stream().map(UserEntity::toDomain).toList();
+            }
+
+            @Override
             @Transactional
             public User save(User user) {
                 UserEntity entity = user.getId() == null ? null : repo.findById(user.getId()).orElse(null);

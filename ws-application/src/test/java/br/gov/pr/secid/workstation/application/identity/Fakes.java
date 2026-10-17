@@ -82,6 +82,12 @@ final class Fakes {
         }
 
         @Override
+        public List<User> findDeletionDue(java.time.Instant now, int limit) {
+            return rows.values().stream().filter(u -> u.getStatus() == AccountStatus.DELETION_SCHEDULED && u.getDeletionScheduledAt() != null
+                    && !u.getDeletionScheduledAt().isAfter(now)).limit(limit).toList();
+        }
+
+        @Override
         public User save(User user) {
             return add(user);
         }

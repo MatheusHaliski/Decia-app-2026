@@ -24,6 +24,8 @@ public interface UserRepositoryPort {
     long countByRole(Role role);
     /** Pessoas ATIVAS da empresa cujo usuário, nome ou nome de exibição contém {@code query} (sem acento/caixa a cargo do banco); até {@code limit}. */
     List<User> searchInCompany(UUID companyId, String query, int limit);
+    /** Contas em DELETION_SCHEDULED cujo prazo terminou até {@code now} (D-145), até {@code limit}. */
+    List<User> findDeletionDue(java.time.Instant now, int limit);
 
     User save(User user);
 }
