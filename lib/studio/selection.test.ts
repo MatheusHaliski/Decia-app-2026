@@ -43,8 +43,10 @@ describe("drawing selection", () => {
     expect(selectedNodeIds(scene, crossing)).toContain("segment");
 
     const contained = selectInBounds(scene, { x: 0, y: 0, width: 20, height: 20 }, "contained");
-    expect(selectedNodeIds(scene, contained)).toContain("hidden-node");
+    // Camada oculta não entra em seleção espacial: o que a contagem mostra é o que está na tela.
+    expect(selectedNodeIds(scene, contained)).not.toContain("hidden-node");
     expect(selectedNodeIds(scene, contained)).not.toContain("group");
+    expect(selectedNodeIds(scene, { kind: "region", geometry: { kind: "rect", x: 0, y: 0, width: 20, height: 20 } })).not.toContain("hidden-node");
   });
 
   it("selects geometry crossing a polygon even when no vertex is inside", () => {
@@ -63,6 +65,21 @@ describe("drawing selection", () => {
     expect(editableNodeIds(scene, { kind: "layer", id: "front" })).toEqual(new Set(["group", "child"]));
     expect(editableNodeIds(scene, { kind: "object", id: "locked-node" })).toEqual(new Set());
     expect(editableNodeIds(scene, { kind: "object", id: "region-node" })).toEqual(new Set());
+  });
+
+  it("does not pick or area-select a child whose ancestor sits on a hidden layer", () => {
+    const nested: DrawingScene = {
+      layers: [{ id: "shown" }, { id: "off", visible: false }],
+      nodes: [
+        { id: "parent", layerId: "off", geometry: { kind: "rect", x: 0, y: 0, width: 50, height: 50 } },
+        { id: "kid", layerId: "shown", parentId: "parent", geometry: { kind: "rect", x: 10, y: 10, width: 10, height: 10 } },
+      ],
+    };
+    expect(selectAtPoint(nested, { x: 15, y: 15 })).toEqual({ kind: "none" });
+    expect(selectedNodeIds(nested, selectInBounds(nested, { x: 0, y: 0, width: 60, height: 60 }))).toEqual(new Set());
+    // Seleção nomeada continua possível (painel de camadas), mas não é editável enquanto oculta.
+    expect(selectedNodeIds(nested, { kind: "object", id: "kid" })).toEqual(new Set(["kid"]));
+    expect(editableNodeIds(nested, { kind: "object", id: "kid" })).toEqual(new Set());
   });
 
   it("keeps grid snapping independent and leaves invalid grid sizes unapplied", () => {

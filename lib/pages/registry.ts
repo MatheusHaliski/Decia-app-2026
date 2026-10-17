@@ -1,7 +1,7 @@
 /**
  * Registro das páginas-esqueleto: rota → título (i18n) → RFs citados (docs/diagramas/RFnn/README.md "Aba/rota") →
  * visibilidade por perfil (ABAS_POR_PERFIL.md Matrizes A–E) → sub-abas. É a tabela do §11 "Implementado em" e a
- * fonte do teste que exige uma página para cada RF1–RF48 (lib/rf/catalog.test.ts).
+ * fonte do teste que exige uma página para cada RF do catálogo (RF1–RF50) (lib/rf/catalog.test.ts).
  */
 import type { GlyphName, MojiName } from "@/components/ui/glyphs/sprite.gen";
 import { ADMIN_TABS, AGENTS_ACCESS, AGENTS_TABS, DECIA_TABS, DESK_TABS, FIND_TABS, INSIGHTS_TABS, MESSAGES_TABS, MODELS_TABS, MURAL_TABS, POINTS_TABS, SEARCH_TABS, SESSION_TABS, SETTINGS_TABS, type SubTab } from "@/lib/nav/matrix";
@@ -112,9 +112,9 @@ export const PAGES: readonly PageEntry[] = [
   p("/decia", "app/(shell)/decia/page.tsx", "nav.decia", ["RF29", "RF37"], logged("E"), "sessao-decia", "A", { tabs: DECIA_TABS }),
   p("/decia/decisoes/[decisionId]", "app/(shell)/decia/decisoes/[decisionId]/page.tsx", "page.decision", ["RF29"], logged("E"), "sessao-decia", "A"),
   p("/decia/[sessionId]", "app/(shell)/decia/[sessionId]/page.tsx", "page.session", ["RF29", "RF13", "RF37", "RF46"], logged("E"), "sessao-decia", "A", { tabs: SESSION_TABS, note: "sessionCards" }),
-  p("/insights", "app/(shell)/insights/page.tsx", "nav.insights", ["RF43", "RF20", "RF26"], logged("V"), "insights-ia", "E", { tabs: INSIGHTS_TABS }),
+  p("/insights", "app/(shell)/insights/page.tsx", "nav.insights", ["RF43", "RF20", "RF26", "RF50"], logged("V"), "insights-ia", "E", { tabs: INSIGHTS_TABS }),
   // Jogar e ganhar (§2.4 / Matriz E)
-  p("/goals", "app/(shell)/goals/page.tsx", "nav.goals", ["RF35", "RF24"], access({ EMPREGADO: "V", EMPRESA: "E", CHEFE: "E", CURADOR: "V", ADMIN: "V" }), "hype", "E"),
+  p("/goals", "app/(shell)/goals/page.tsx", "nav.goals", ["RF35", "RF24", "RF49"], access({ EMPREGADO: "V", EMPRESA: "E", CHEFE: "E", CURADOR: "V", ADMIN: "V" }), "hype", "E"),
   p("/points", "app/(shell)/points/page.tsx", "nav.points", ["RF42"], logged("V"), "decia-points", "E", { tabs: POINTS_TABS }),
   p("/store", "app/(shell)/store/page.tsx", "nav.store", ["RF42", "RF40"], logged("E"), "balcao", "E"),
   p("/highlights", "app/(shell)/highlights/page.tsx", "nav.highlights", ["RF35"], access({ EMPREGADO: "V", EMPRESA: "E", CHEFE: "E", CURADOR: "E", ADMIN: "V" }), "hype", "E"),

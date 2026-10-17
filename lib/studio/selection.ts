@@ -87,9 +87,11 @@ export function selectAtPoint(
   point: Point,
   tolerance = 6,
 ): Selection {
-  const hiddenLayers = new Set(scene.layers.filter((layer) => layer.visible === false).map((layer) => layer.id));
+  const nodesById = new Map(scene.nodes.map((node) => [node.id, node]));
+  const layersById = new Map(scene.layers.map((layer) => [layer.id, layer]));
+  // Ancestral em camada oculta também esconde o filho: clicar não pode escolher o que não está na tela.
   const node = [...scene.nodes].reverse().find((candidate) =>
-    !hiddenLayers.has(candidate.layerId) && hitTest(candidate.geometry, point, tolerance),
+    isVisible(candidate, nodesById, layersById) && hitTest(candidate.geometry, point, tolerance),
   );
   return node ? { kind: "object", id: node.id } : { kind: "none" };
 }
@@ -110,9 +112,15 @@ export function selectInPolygon(
   return { kind: "polygon", points, mode };
 }
 
+/**
+ * Seleção explícita (objeto, objetos, camada) devolve o que foi nomeado; seleção espacial (região, retângulo,
+ * laço) só alcança o que está visível, para que a contagem exibida corresponda ao que o usuário vê.
+ * A edição continua passando por `editableNodeIds`, que também exclui ocultos e travados.
+ */
 export function selectedNodeIds(scene: DrawingScene, selection: Selection): Set<string> {
-  const visibleLayers = new Set(scene.layers.filter((layer) => layer.visible !== false).map((layer) => layer.id));
   const nodesById = new Map(scene.nodes.map((node) => [node.id, node]));
+  const layersById = new Map(scene.layers.map((layer) => [layer.id, layer]));
+  const visibleNodes = scene.nodes.filter((node) => isVisible(node, nodesById, layersById));
 
   switch (selection.kind) {
     case "none":
@@ -124,19 +132,19 @@ export function selectedNodeIds(scene: DrawingScene, selection: Selection): Set<
     case "layer":
       return new Set(scene.nodes.filter((node) => node.layerId === selection.id).map((node) => node.id));
     case "region":
-      return new Set(scene.nodes
+      return new Set(visibleNodes
         .filter((node) => selection.layerId === undefined || node.layerId === selection.layerId)
         .filter((node) => geometryIntersects(node.geometry, selection.geometry))
         .map((node) => node.id));
     case "bounds": {
       const polygon = boundsToPolygon(selection.bounds);
-      return new Set(scene.nodes
+      return new Set(visibleNodes
         .filter((node) => selectionMatches(node.geometry, polygon, selection.mode ?? "crossing"))
         .map((node) => node.id));
     }
     case "polygon":
       if (selection.points.length < 3 || selection.points.some((point) => !isFinitePoint(point))) return new Set();
-      return new Set(scene.nodes
+      return new Set(visibleNodes
         .filter((node) => selectionMatches(node.geometry, selection.points, selection.mode ?? "crossing"))
         .map((node) => node.id));
   }

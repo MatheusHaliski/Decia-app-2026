@@ -1,4 +1,5 @@
 # RF50 — Analisar o perfil no Copilot e recomendar tarefas, projetos, pessoas da rede e caminhos profissionais
+**HU:** — · **Aba/rota:** Insights da IA (`/insights`; Análise de Perfil a partir de `/profile`) · **Página-esqueleto:** registrada em 17/10/2026; jornada ainda não implementada.
 
 **Trello:** [Análise de Perfil — RF50](https://trello.com/c/5c7pGk9p/205-rf50-analisar-o-perfil-da-pessoa-no-copilot-e-sugerir-tarefas-projetos-e-caminhos-profissionais).
 

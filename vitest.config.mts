@@ -5,7 +5,8 @@ import { fileURLToPath } from "node:url";
 // `// @vitest-environment jsdom` no topo do arquivo). `npm test`; cobertura com `npm run test:coverage`.
 export default defineConfig({
   resolve: { alias: { "@": fileURLToPath(new URL(".", import.meta.url)) } },
-  esbuild: { jsx: "automatic" },
+  // Vite 8 (Vitest 5) transforma com oxc; `esbuild.jsx` deixou de ser lido.
+  oxc: { jsx: { runtime: "automatic" } },
   test: {
     include: ["**/*.test.{ts,tsx}"],
     exclude: ["node_modules/**", ".next/**", "ws-*/**", "docs/**", ".claude/**"],
