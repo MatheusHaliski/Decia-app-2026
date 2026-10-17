@@ -97,7 +97,7 @@ class AccessPolicyMatrixTest {
             "PROJECT, DEPARTAMENTO, INTERNO, VIEW, AAAANNA",
             "PROJECT, EMPRESA, INTERNO, DELETE, AFFFFNA",
             "PROJECT, PUBLICA, INTERNO, MANAGE, AFFAFFA",
-            "MEDIA, PRIVADA, SIGILOSO, VIEW, AANNNNA",
+            "MEDIA, PRIVADA, SIGILOSO, VIEW, AANNNNN",   // D-139: ADMIN sem acesso implícito a SIGILOSO
     })
     void matrizGenerica(ScopedResource.Kind kind, Visibility v, AccessClassification c, ResourceAction action, String expected) {
         ScopedResource r = resource(kind, v, c);
@@ -189,7 +189,7 @@ class AccessPolicyMatrixTest {
             "PRIVADA, INTERNO, DELETE, AFFFFFNNA",
             "DEPARTAMENTO, INTERNO, VIEW, AAAAAAANA",
             "DEPARTAMENTO, INTERNO, ASSESS, AAAAAFFNF",
-            "EMPRESA, SIGILOSO, VIEW, AAAAAANNA",
+            "EMPRESA, SIGILOSO, VIEW, AAAAAANNN",   // D-139: ADMIN fora de SIGILOSO também na decisão
             "PUBLICA, RESTRITO, VIEW, AAAAAAANA",
             "PUBLICA, INTERNO, MANAGE, AFFFFFFFA",
     })
