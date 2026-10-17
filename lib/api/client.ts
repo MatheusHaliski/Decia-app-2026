@@ -206,6 +206,9 @@ async function request<T>(method: string, path: string, body?: unknown, opts: Re
   const headers: Record<string, string> = { Accept: "application/json", "Accept-Language": acceptLanguage(getCurrentLocale()), ...(opts.headers ?? {}) };
   const isForm = typeof FormData !== "undefined" && body instanceof FormData;
   if (body !== undefined && !isForm) headers["Content-Type"] = "application/json";
+  // Sem token mas com sessão restaurável: espera a renovação única ANTES de chamar a API. Antes, cada carga de página enviava as
+  // chamadas sem token, colhia 401 e disparava renovações em cascata — mais chances de navegar com uma rotação em voo (P18).
+  if (!opts.anonymous && !bff && !tokenStore.access && tokenStore.restorable) await refreshOnce();
   const token = opts.anonymous ? null : tokenStore.access;
   if (token) headers.Authorization = `Bearer ${token}`;
   let res: Response;
