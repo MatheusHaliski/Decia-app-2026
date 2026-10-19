@@ -41,7 +41,7 @@
         <jackson-2-bom.version>2.21.7</jackson-2-bom.version>
 
         <jacoco.version>0.8.15</jacoco.version>
-        <spotbugs-plugin.version>4.10.4.1</spotbugs-plugin.version>
+        <spotbugs-plugin.version>4.10.5.0</spotbugs-plugin.version>
         <checkstyle-plugin.version>3.6.0</checkstyle-plugin.version>
         <checkstyle.version>14.3.0</checkstyle.version>
         <dependency-check.version>13.0.0</dependency-check.version>
@@ -175,7 +175,7 @@
         <dependency>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-annotations</artifactId>
-            <version>4.10.4</version>
+            <version>4.10.5</version>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
