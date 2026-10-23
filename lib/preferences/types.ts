@@ -3,6 +3,7 @@
  * (tokens-ws.css: claro · escuro · contraste · terminal). Mapa para o enum do servidor em `toServer/fromServer`
  * (ThemeMode AUTO·CLARO·ESCURO·ALTO_CONTRASTE·BLUEPRINT — "terminal" × BLUEPRINT em aberto, Q-100).
  */
+import { AUTONOMY_MODES, type AutonomyMode } from "@/lib/ai/autonomy";
 import { DEFAULT_LOCALE, fromServerLanguage, isLocale, toServerLanguage, type Locale } from "@/lib/i18n/state";
 
 export const THEMES = ["auto", "claro", "escuro", "contraste", "terminal"] as const;
@@ -42,6 +43,11 @@ export interface UserPreferences {
   /** limite WIP pessoal, 1–20 (RF44.CA05; Q-79) */
   wipLimit: number;
   aiModeDefault: AiMode;
+  /**
+   * Autonomia padrão da IA nas peças que a própria pessoa cria (lib/ai/autonomy). Em sessão compartilhada vale o modo do
+   * proprietário. Viaja dentro de `notificationPrefsJson` (mesmo caminho do `backgroundId`, Q-100) até haver coluna própria.
+   */
+  aiAutonomyDefault: AutonomyMode;
 }
 
 export const DEFAULT_PREFERENCES: UserPreferences = {
@@ -56,6 +62,8 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
   timezone: "America/Sao_Paulo",
   wipLimit: 3,
   aiModeDefault: "economia",
+  // conservador: a IA só responde quando acionada (RF51; nenhuma intervenção espontânea sem escolha da pessoa)
+  aiAutonomyDefault: "SOB_SOLICITACAO",
 };
 
 const inList = <T extends readonly unknown[]>(list: T, v: unknown): v is T[number] => list.includes(v);
@@ -98,6 +106,7 @@ export function sanitizePreferences(raw: unknown): UserPreferences {
     timezone: isTimezone(r.timezone) ? r.timezone : DEFAULT_PREFERENCES.timezone,
     wipLimit: Number.isInteger(wip) && wip >= 1 && wip <= 20 ? wip : DEFAULT_PREFERENCES.wipLimit,
     aiModeDefault: inList(AI_MODES, r.aiModeDefault) ? r.aiModeDefault : DEFAULT_PREFERENCES.aiModeDefault,
+    aiAutonomyDefault: inList(AUTONOMY_MODES, r.aiAutonomyDefault) ? r.aiAutonomyDefault : DEFAULT_PREFERENCES.aiAutonomyDefault,
   };
 }
 
@@ -115,7 +124,7 @@ export function toServer(p: UserPreferences) {
     fontScale: Number((p.fontScale / 100).toFixed(2)),
     reduceMotion: p.reduceMotion,
     deskSkin: p.deskSkin.toUpperCase().replace("-", "_"),
-    notificationPrefsJson: JSON.stringify({ ...p.notificationPrefs, backgroundId: p.backgroundId }),
+    notificationPrefsJson: JSON.stringify({ ...p.notificationPrefs, backgroundId: p.backgroundId, aiAutonomyDefault: p.aiAutonomyDefault }),
     timezone: p.timezone,
     wipLimit: p.wipLimit,
     aiModeDefault: p.aiModeDefault.toUpperCase(),
@@ -131,6 +140,7 @@ export function fromServer(raw: unknown): UserPreferences {
   const fs = Number(r.fontScale);
   const fontScale = Number.isFinite(fs) ? (fs <= 2 ? Math.round(fs * 100) : fs) : undefined;
   const nb = (notif && typeof notif === "object" ? (notif as Record<string, unknown>).backgroundId : undefined);
+  const autonomy = (notif && typeof notif === "object" ? (notif as Record<string, unknown>).aiAutonomyDefault : undefined);
   return sanitizePreferences({
     ...r,
     theme,
@@ -141,5 +151,6 @@ export function fromServer(raw: unknown): UserPreferences {
     notificationPrefs: notif,
     backgroundId: typeof nb === "string" ? nb : undefined,
     aiModeDefault: typeof r.aiModeDefault === "string" ? r.aiModeDefault.toLowerCase() : undefined,
+    aiAutonomyDefault: autonomy,
   });
 }

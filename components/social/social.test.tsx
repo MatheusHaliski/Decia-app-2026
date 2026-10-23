@@ -7,6 +7,7 @@ import { buildDemoSocial, DEMO_TASK_IDS as T, DEMO_USERS as U } from "@/lib/soci
 import { pageByRoute } from "@/lib/pages/registry";
 import { createMemoryRepository } from "@/lib/social/repository";
 import { taskById } from "@/lib/social/rules";
+import { calculateAuthorship } from "@/lib/social/authorship";
 import type { ViewerId } from "@/lib/social/types";
 import { toTaskCardViewModel } from "@/lib/social/view-model";
 import type { ViewerProfile } from "@/lib/viewer/profiles";
@@ -44,7 +45,7 @@ describe("TaskSchemeCard — layouts e estados (ANATOMIA_CARDS §3)", () => {
     const card = screen.getByTestId("task-card");
     expect(card.getAttribute("data-layout")).toBe(layout);
     expect(screen.getByRole("link", { name: /Estudo técnico preliminar — calçadas/ }).getAttribute("href")).toBe(`/tasks/${T.anaEtp}`);
-    expect(card.getAttribute("aria-label")).toContain("Disponível");
+    expect(card.getAttribute("aria-label")).toContain("A realizar");
     if (layout !== "mini" && layout !== "attachment") expect(screen.getByTestId("social-bar")).toBeTruthy();
     else expect(screen.queryByTestId("social-bar")).toBeNull();
   });
@@ -61,6 +62,17 @@ describe("TaskSchemeCard — layouts e estados (ANATOMIA_CARDS §3)", () => {
     const draft = screen.getAllByTestId("task-card")[1]!;
     expect(draft.className).toContain("border-dashed");
     expect(draft.getAttribute("data-variant")).toContain("RASCUNHO");
+  });
+  it("mostra autoria estimada acessível no card do acervo sem depender só da cor", () => {
+    const { render } = setup();
+    const task = taskById(buildDemoSocial(NOW), T.anaEtp)!;
+    const summary = calculateAuthorship([
+      { id: "paragraph-1", humanWeight: 5, aiWeight: 3, includedInFinal: true },
+    ]);
+    const vm = toTaskCardViewModel(buildDemoSocial(NOW), U.pessoa, task, NOW);
+    render(<TaskSchemeCard vm={{ ...vm, authorship: summary }} />);
+    expect(screen.getByRole("img", { name: /Humano \+ IA · 37,5% IA estimada/ })).toBeTruthy();
+    expect(screen.getByTestId("authorship-badge").textContent).toContain("37,5%");
   });
   it("prazo vencido em texto (nunca só cor)", () => {
     const { render } = setup();
@@ -271,7 +283,7 @@ describe("ProfileView — sub-abas por viewer (Matriz B)", () => {
 });
 
 describe("correções da revisão (PR #35)", () => {
-  it("visitante abre tarefa PUBLICA só para leitura (ações pedem login) e recebe 403 nas não públicas", () => {
+  it("visitante abre tarefa PUBLICA só para leitura (ações pedem login) e recebe 404 nas não públicas (D-141)", () => {
     const { render } = setup(null);
     const { unmount } = render(<TaskDetail taskId={T.anaEtp} />, "VISITANTE");
     expect(screen.getByTestId("task-detail")).toBeTruthy();
@@ -280,7 +292,8 @@ describe("correções da revisão (PR #35)", () => {
     unmount();
     render(<TaskDetail taskId={T.anaPlanilha} />, "VISITANTE");
     expect(screen.queryByTestId("task-detail")).toBeNull();
-    expect(screen.getByText(/403 ACESSO_NEGADO/)).toBeTruthy();
+    expect(screen.getByText(/404 NAO_ENCONTRADO/)).toBeTruthy();
+    expect(screen.queryByText(/403/)).toBeNull();
   });
   it("remix de projeto não leva à página-esqueleto /projects/[id]; leva à sub-aba Projetos do perfil", () => {
     const { render, repo } = setup();
@@ -292,4 +305,3 @@ describe("correções da revisão (PR #35)", () => {
     expect(within(done).queryAllByRole("link").some((a) => (a.getAttribute("href") ?? "").startsWith("/projects/"))).toBe(false);
   });
 });
-

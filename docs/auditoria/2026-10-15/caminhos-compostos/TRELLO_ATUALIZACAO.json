@@ -1,0 +1,25 @@
+{
+  "updated": [
+    {
+      "rf": 58,
+      "url": "https://trello.com/c/jUDUldhK/213-rf58-criar-e-editar-geometria-vetorial-e-desenho-t%C3%A9cnico-2d",
+      "verified": true,
+      "state": "PARCIAL",
+      "checklistChanged": false
+    },
+    {
+      "rf": 59,
+      "url": "https://trello.com/c/DZOhrIe7/214-rf59-construir-dividir-e-desmembrar-contornos-vetoriais",
+      "verified": true,
+      "state": "PARCIAL",
+      "checklistChanged": false
+    },
+    {
+      "rf": 60,
+      "url": "https://trello.com/c/VU3OKOLn/215-rf60-modelar-s%C3%B3lidos-superf%C3%ADcies-e-malhas-3d-no-drawings",
+      "verified": true,
+      "state": "PARCIAL",
+      "checklistChanged": false
+    }
+  ]
+}

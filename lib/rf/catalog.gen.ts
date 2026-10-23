@@ -12,8 +12,8 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "title": "Cadastrar usuário na plataforma com dados de acesso",
     "hu": "COMO visitante do sistema POSSO realizar meu cadastro na plataforma informando meus dados de acesso PARA obter uma conta e acessar as funcionalidades do DECIA.",
     "summary": "O cadastro local é o Bloco 3 do plano de segurança (ARQUITETURA §6 (c)). Classes marcadas (real) existem em origin/main (Bloco 3, PR #16); as marcadas (planejado) vêm da TAXONOMIA §1.8–1.15 e do CADASTRO_E_LGPD.md (blocos A/B).",
-    "route": "/register → /verify-email (BFF app/bff/auth/register → POST /api/auth/register); /termos e /privacidade (D-15)",
-    "coverage": "RF1.CA01 … RF1.CA06 (corpo do card vazio → derivados do título + HU1, todos \"(CA a confirmar)\") · RF1.CA07 … RF1.CA13 (§7, controles de segurança D-14) · RF1.CA14 … RF1.CA27 (§8, aceite dos termos e tipos de perfil, D-15…D-22) — regra: o título do card define o RF; os CAs foram atualizados para o código real do Bloco 3 (RegistrationController, RegistrationService, V3__rf1_rf2_autenticacao.sql)",
+    "route": "/register → /verify-email (BFF app/bff/auth/register → POST /api/auth/register); /termos e /privacidade (D-15) — real desde 17/10/2026 (D-143): páginas públicas app/(legal)/termos e app/(legal)/privacidade, lidas de docs/legal/*.md",
+    "coverage": "RF1.CA01 … RF1.CA06 (corpo do card vazio → derivados do título + HU1, todos \"(CA a confirmar)\") · RF1.CA07 … RF1.CA13 (§7, controles de segurança D-14) · RF1.CA14 … RF1.CA27 (§8, aceite dos termos e tipos de perfil, D-15…D-22) — regra: o título do card define o RF; os CAs foram atualizados para o código real do Bloco 3 (RegistrationController, RegistrationService, V3__rf1_rf2_autenticacao.sql); atualização de 17/10/2026 (D-143): tipo de usuário explicado em cada opção, aceite dos Termos de Uso e da Política de Privacidade da Velion com links para /termos e /privacidade, versões 0.2",
     "cas": [
       {
         "id": "RF1.CA01",
@@ -95,7 +95,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF1.CA14",
-        "text": "Dado o formulário, então o Checkbox \"Li e aceito os Termos de Uso e a Política de Privacidade\" vem desmarcado, com links para os dois documentos (abrem em Sheet ou nova aba sem perder o formulário); \"Criar conta\" fica disabled até marcar.",
+        "text": "Dado o formulário, então o Checkbox \"Li e aceito os Termos de Uso e a Política de Privacidade\" vem desmarcado, com links para os dois documentos (abrem em Sheet ou nova aba sem perder o formulário); \"Criar conta\" fica disabled até marcar. Real (D-143): desmarcado, texto com a Velion e links que abrem /termos e /privacidade em nova aba; sem marcar, o envio volta com 422 details.fields.acceptTerms (o disabled e o Sheet seguem planejados).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -125,7 +125,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF1.CA19",
-        "text": "Dado /termos e /privacidade, então funcionam sem login e pelo gate, mostram a versão vigente e o histórico (GET /api/legal/{TERMOS|PRIVACIDADE}/current e /versions); PolicyTextGuardTest recusa texto com marcador […] ou \"validar com jurídico\".",
+        "text": "Dado /termos e /privacidade, então funcionam sem login e pelo gate, mostram a versão vigente e o histórico (GET /api/legal/{TERMOS|PRIVACIDADE}/current e /versions); PolicyTextGuardTest recusa texto com marcador […] ou \"validar com jurídico\". Real (D-143): as duas páginas são públicas e mostram a versão do cabeçalho YAML de docs/legal/*.md (0.2, rascunho); histórico, API e o guarda de texto seguem planejados.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -143,7 +143,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF1.CA22",
-        "text": "Dado a escolha do tipo com RadioCard, então profileType fora de EMPREGADO/EMPRESA/CHEFE_DEPARTAMENTO (inclusive ADMIN) recebe 422 VALIDACAO details.fields.profileType (real, parseProfileType); CURADOR não é tipo (D-09).",
+        "text": "Dado a escolha do tipo com RadioCard, então profileType fora de EMPREGADO/EMPRESA/CHEFE_DEPARTAMENTO (inclusive ADMIN) recebe 422 VALIDACAO details.fields.profileType (real, parseProfileType); CURADOR não é tipo (D-09). Real (D-143): cada opção traz a explicação do tipo.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -184,19 +184,19 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 2,
     "title": "Autenticar usuário na plataforma com credenciais de acesso",
     "hu": "COMO usuário cadastrado no sistema POSSO autenticar-me na plataforma com minhas credenciais de acesso PARA acessar minha área pessoal de forma segura.",
-    "summary": "Classes (real) existem em origin/main (Bloco 3, PR #16); (planejado): RedisSessionStore (hoje InMemorySessionStore + espelho JPA refresh_tokens, Q-85), conferência TOTP do 2FA (Q-83), SMTP real (Q-84), PolicyGateFilter (D-16). Números adotados: D-25 (TTLs), D-26 (Argon2id e bulkhead), D-27 (cadastro sem oráculo). Bloco 4 (real, D-60–D-64): proteção de rotas no middleware.ts, renovação silenciosa e logout entre abas, OIDC Authorization Code + PKCE S256/state/nonce no BFF e GET/DELETE /api/auth/sessions com a aba Sessões — §8.",
-    "route": "/login (BFF app/bff/auth/login → POST /api/auth/login), /login/institucional (POST /api/auth/oidc/login), /forgot-password (POST /api/auth/password-reset/request|confirm); todas as rotas autenticadas passam pelo SessionActiveFilter",
-    "coverage": "RF2.CA01 … RF2.CA06 (corpo do card vazio → derivados do título + HU2, todos \"(CA a confirmar)\") · RF2.CA07 … RF2.CA14 (§7, controles de segurança D-14) — regra: o título do card define o RF; CAs alinhados ao código real do Bloco 3 (AuthController, IdentityService, AuthRateLimitFilter, HashBulkhead, SessionActiveFilter, JwtTokenIssuer, OidcService, PasswordResetService)",
+    "summary": "Classes (real) existem em origin/main (Bloco 3, PR #16); RedisSessionStore (ws-infrastructure/cache-redis, ativo com ws.redis.enabled=true; Q-85 resolvida) é (real) e o InMemorySessionStore fica como padrão sem Redis, ambos com espelho JPA refresh_tokens; (planejado): SMTP real (Q-84), PolicyGateFilter (D-16); a conferência TOTP do 2FA (Q-83) é real desde 17/10/2026 (D-144, §9). Números adotados: D-25 (TTLs), D-26 (Argon2id e bulkhead), D-27 (cadastro sem oráculo). Bloco 4 (real, D-60–D-64): proteção de rotas no middleware.ts, renovação silenciosa e logout entre abas, OIDC Authorization Code + PKCE S256/state/nonce no BFF e GET/DELETE /api/auth/sessions com a aba Sessões — §8.",
+    "route": "/login (BFF app/bff/auth/login → POST /api/auth/login), /login/institucional (POST /api/auth/oidc/login), /forgot-password (POST /api/auth/password-reset/request|confirm); todas as rotas autenticadas passam pelo SessionActiveFilter; real desde 17/10/2026: passo do código do 2FA no /login e cartão do 2FA em /settings?tab=conta (GET /api/me/2fa, POST /api/me/2fa/setup|enable|disable|recovery-codes, D-144)",
+    "coverage": "RF2.CA01 … RF2.CA06 (corpo do card vazio → derivados do título + HU2, todos \"(CA a confirmar)\") · RF2.CA07 … RF2.CA14 (§7, controles de segurança D-14) — regra: o título do card define o RF; CAs alinhados ao código real do Bloco 3 (AuthController, IdentityService, AuthRateLimitFilter, HashBulkhead, SessionActiveFilter, JwtTokenIssuer, OidcService, PasswordResetService); atualização de 17/10/2026: 2FA por aplicativo (D-144: Totp, TwoFactorVerifier, TwoFactorService, TwoFactorController) e sessão no navegador (D-146)",
     "cas": [
       {
         "id": "RF2.CA01",
-        "text": "Dado identifier (username ou e-mail) e password, quando faço POST /api/auth/login, então a senha é conferida contra o hash Argon2id (PasswordHasher.matches, re-hash transparente por needsRehash) e recebo Session {accessToken RS256 15 min (D-25; claims iss, aud, sub, sid=familyId, role, profile_type, username, jti), tokenType Bearer, expiresIn, refreshToken opaco, refreshExpiresAt, family, user, warnings}; o refresh (30 d se rememberMe, 24 h se não — SessionPolicy) é guardado só como SHA-256 (RefreshRecord.tokenHash) com espelho em refresh_tokens; o BFF devolve o refresh só no cookie ws_rt (HttpOnly, Secure, SameSite=Strict).",
+        "text": "Dado identifier (username ou e-mail) e password, quando faço POST /api/auth/login, então a senha é conferida contra o hash Argon2id (PasswordHasher.matches, re-hash transparente por needsRehash) e recebo Session {accessToken RS256 15 min (D-25; claims iss, aud, sub, sid=familyId, role, profile_type, username, jti), tokenType Bearer, expiresIn, refreshToken opaco, refreshExpiresAt, family, user, warnings}; o refresh (30 d se rememberMe, 24 h se não — SessionPolicy) é guardado só como SHA-256 (RefreshRecord.tokenHash) com espelho em refresh_tokens; o BFF devolve o refresh só no cookie ws_rt (HttpOnly, Secure, SameSite=Strict). Real (D-146, 17/10/2026): sem rememberMe, ws_rt e ws_rt_h são cookies de sessão do navegador (sem Max-Age, setSessionCookies em app/bff/auth/bff-session.ts); com rememberMe, valem até refreshExpiresAt.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF2.CA02",
-        "text": "Dado conta inexistente, senha errada ou conta bloqueada, então 401 CREDENCIAIS_INVALIDAS com a mesma mensagem e tempo (hash falso dummyHash); conta SUSPENDED/ANONYMIZED (AccountStatus.blocksLogin) → 403 CONTA_INDISPONIVEL depois da senha certa; PENDING_VALIDATION e DELETION_SCHEDULED entram com warnings (Q-82; PENDING_EMAIL_VERIFICATION só tem sessão após confirmar o código, D-27); twoFactorEnabled → 401 DOIS_FATORES_NECESSARIO {twoFactorRequired} (conferência TOTP é a Q-83).",
+        "text": "Dado conta inexistente, senha errada ou conta bloqueada, então 401 CREDENCIAIS_INVALIDAS com a mesma mensagem e tempo (hash falso dummyHash); conta SUSPENDED/ANONYMIZED (AccountStatus.blocksLogin) → 403 CONTA_INDISPONIVEL depois da senha certa; PENDING_VALIDATION e DELETION_SCHEDULED entram com warnings (Q-82; PENDING_EMAIL_VERIFICATION só tem sessão após confirmar o código, D-27); twoFactorEnabled → 401 DOIS_FATORES_NECESSARIO {twoFactorRequired} (conferência TOTP é a Q-83, respondida pela D-144). Real (D-144, 17/10/2026): LoginCommand.twoFactorCode; IdentityService.verifySecondFactor — sem código → 401 DOIS_FATORES_NECESSARIO (LOGIN_FALHA reason 2fa_pendente) e o LoginForm mostra o campo do código; com código, o balde login-fail é reservado antes de conferir (bloqueado → 401 CREDENCIAIS_INVALIDAS genérico + LOGIN_BLOQUEADO_TENTATIVAS via 2fa); código errado → 401 DOIS_FATORES_INVALIDO (LOGIN_FALHA reason 2fa_codigo, a reserva fica); certo → release e sessão; código de recuperação é consumido e audita TWO_FACTOR_RECOVERY_USED {recoveryCodesLeft}. Conta com prazo de reativação vencido (IdentityService.reactivationExpired, D-145) → 403 CONTA_INDISPONIVEL, como blocksLogin(). Gestão do 2FA (/api/me/2fa/*, erros 409 DOIS_FATORES_JA_ATIVO · 409 DOIS_FATORES_INATIVO · 409 DOIS_FATORES_SEM_CONFIGURACAO · 422 DOIS_FATORES_INVALIDO) em §9.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -208,13 +208,13 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF2.CA04",
-        "text": "Dado um refresh válido, quando o BFF chama POST /api/auth/refresh, então ocorre rotação: novo token da mesma familyId, o anterior recebe revokedAt/rotatedFromHash; reuso de token já rotacionado revoga a família inteira, grava AuditLog REFRESH_REUSO e responde 401 SESSAO_INVALIDA; expirado ou desconhecido → 401 SESSAO_INVALIDA; conta que passou a blocksLogin() → família revogada.",
+        "text": "Dado um refresh válido, quando o BFF chama POST /api/auth/refresh, então ocorre rotação: novo token da mesma familyId, o anterior recebe revokedAt/rotatedFromHash; reuso de token já rotacionado revoga a família inteira, grava AuditLog REFRESH_REUSO e responde 401 SESSAO_INVALIDA; expirado ou desconhecido → 401 SESSAO_INVALIDA; conta que passou a blocksLogin() → família revogada. Exceção (real, D-140, 17/10/2026): o consumo é atômico (SessionStorePort.consume → ROTATED · REUSED · EXPIRED · UNKNOWN); no REUSED, se o token foi rotacionado há no máximo SessionPolicy.reuseGraceWindow (padrão 15 s, teto 60 s, 0s desliga), a família segue viva com um só token vivo e claimReuseGrace(tokenHash) é a 1ª reivindicação, o IdentityService.toleratedReuse emite um irmão do sucessor na mesma família e audita REFRESH_REUSO_TOLERADO (resposta perdida na navegação, P18); 2º reuso, fora da janela ou após logout → revogação da família e REFRESH_REUSO como acima. Real (D-145): conta com exclusão agendada cujo prazo venceu (reactivationExpired) → família revogada e 401 SESSAO_INVALIDA.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF2.CA05",
-        "text": "Dado o usuário autenticado, então POST /api/auth/logout revoga a família (AuditLog LOGOUT); PUT /api/auth/password exige a senha atual (mesmo bloqueio do login), grava PASSWORD_CHANGED e revoga as outras famílias (SESSIONS_REVOKED); o SessionActiveFilter recusa a cada requisição access tokens cuja família foi revogada (sid → 401 SESSAO_ENCERRADA). GET /api/auth/sessions e DELETE /api/auth/sessions/{familyId} são planejados (aba Sessões do RF3 §7).",
+        "text": "Dado o usuário autenticado, então POST /api/auth/logout revoga a família (AuditLog LOGOUT); PUT /api/auth/password exige a senha atual (mesmo bloqueio do login), grava PASSWORD_CHANGED e revoga as outras famílias (SESSIONS_REVOKED); o SessionActiveFilter recusa a cada requisição access tokens cuja família foi revogada (sid → 401 SESSAO_ENCERRADA). GET /api/auth/sessions e DELETE /api/auth/sessions/{familyId} são planejados (aba Sessões do RF3 §7). Real (D-146, 17/10/2026): logout em uma aba encerra as outras pelo canal do Bloco 4 e onSessionChange (lib/api/client.ts) faz o CurrentUserProvider voltar a barra para VISITANTE em todas; ativar o 2FA também encerra as outras sessões (revokeOtherSessions, D-144).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -226,13 +226,13 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF2.CA07",
-        "text": "IdentityService.login (ordem das checagens), dummyHash",
+        "text": "IdentityService.login (ordem das checagens), dummyHash, verifySecondFactor",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF2.CA08",
-        "text": "RateLimitPort.tryAcquire/release/reset, RedisRateLimit (Lua), SessionPolicy.maxLoginFailures/lockWindow",
+        "text": "RateLimitPort.tryAcquire/release/reset, RedisRateLimit (Lua), SessionPolicy.maxLoginFailures/lockWindow, IdentityService.verifySecondFactor",
         "note": "",
         "kind": "rastreabilidade"
       },
@@ -262,13 +262,13 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF2.CA13",
-        "text": "JwtTokenIssuer, JwtKeys, SessionActiveFilter, BFF ws_rt",
+        "text": "JwtTokenIssuer, JwtKeys, WsSecurityProperties.Jwt (@ConstructorBinding), SessionActiveFilter, BFF ws_rt",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF2.CA14",
-        "text": "AuditActions.LOGIN_OK/LOGIN_FALHA/LOGIN_BLOQUEADO_TENTATIVAS/REFRESH_REUSO/LOGOUT, AuditEvent, Masking",
+        "text": "AuditActions.LOGIN_OK/LOGIN_FALHA/LOGIN_BLOQUEADO_TENTATIVAS/REFRESH_REUSO/REFRESH_REUSO_TOLERADO/LOGOUT/TWO_FACTOR_SETUP_STARTED/TWO_FACTOR_ENABLED/TWO_FACTOR_DISABLED/TWO_FACTOR_RECOVERY_REGENERATED/TWO_FACTOR_RECOVERY_USED, AuditEvent, Masking",
         "note": "",
         "kind": "rastreabilidade"
       }
@@ -279,9 +279,9 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 3,
     "title": "Editar informações pessoais e preferências do perfil do usuário",
     "hu": "COMO usuário autenticado no sistema POSSO editar minhas informações pessoais e preferências de perfil PARA manter meus dados atualizados e personalizar minha experiência na plataforma.",
-    "summary": "Classes (real) existem em origin/main (Bloco 3, PR #16); (planejado): UserConsent/ConsentEvent/ConsentChecks, DataExportRequest/DataExportWorker, DataSubjectRequest, PersonalDataRegistry, AccountAnonymizationJob, upload de avatar (PendingUpload/MediaObject, D-22), GET/DELETE /api/auth/sessions, PolicyGateFilter.",
-    "route": "/settings com abas na URL ?tab=conta|aparencia|privacidade|dados|sessoes|termos|validacao (ABAS_POR_PERFIL §9); API GET|PATCH /api/me, PATCH /api/me/sensitive, GET|PUT /api/me/preferences, POST|DELETE /api/me/deletion",
-    "coverage": "RF3.CA01 … RF3.CA06 (corpo do card vazio → derivados do título + HU3, todos \"(CA a confirmar)\") · RF3.CA07 … RF3.CA24 (§7, configurações e direitos do titular, D-15…D-21) — regra: o título do card define o RF; CAs alinhados ao código real do Bloco 3 (MeController, AccountService, UserPreferences, Guard.requireNotDeletionScheduled)",
+    "summary": "Classes (real) existem em origin/main (Bloco 3, PR #16); (planejado): UserConsent/ConsentEvent/ConsentChecks, DataExportRequest/DataExportWorker, DataSubjectRequest, PersonalDataRegistry, upload de avatar (PendingUpload/MediaObject, D-22), PolicyGateFilter. GET/DELETE /api/auth/sessions e a aba Sessões são reais desde o Bloco 4 (RF2 §8); o AccountAnonymizationJob do plano é real como AccountAnonymizer (D-145).",
+    "route": "/settings com abas na URL ?tab=conta|aparencia|privacidade|dados|sessoes|termos|validacao (ABAS_POR_PERFIL §9); API GET|PATCH /api/me, PATCH /api/me/sensitive, GET|PUT /api/me/preferences, POST|DELETE /api/me/deletion; real desde 17/10/2026: abas Conta (AccountPanel + TwoFactorCard, GET /api/me/2fa, POST /api/me/2fa/setup|enable|disable|recovery-codes), Dados (DataPanel) e Termos (TermsPanel) e o aviso DeletionBanner em todas as páginas (D-144, D-145)",
+    "coverage": "RF3.CA01 … RF3.CA06 (corpo do card vazio → derivados do título + HU3, todos \"(CA a confirmar)\") · RF3.CA07 … RF3.CA24 (§7, configurações e direitos do titular, D-15…D-21) — regra: o título do card define o RF; CAs alinhados ao código real do Bloco 3 (MeController, AccountService, UserPreferences, Guard.requireNotDeletionScheduled); atualização de 17/10/2026: fim do prazo de 30 dias (AccountService.cancelDeletion → 409 PRAZO_REATIVACAO_ENCERRADO, IdentityService.reactivationExpired, AccountAnonymizer, D-145) e 2FA na aba Conta (D-144)",
     "cas": [
       {
         "id": "RF3.CA01",
@@ -393,19 +393,19 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF3.CA19",
-        "text": "Dado \"Encerrar minha conta\", então o pedido exige a senha atual com bloqueio (real: POST /api/me/deletion {currentPassword, reason}, AuditLog ACCOUNT_DELETION_REQUESTED, deletionScheduledAt = +30 d, DeletionReceipt.cancelable); antes de confirmar, o Dialog mostra o que será anonimizado e o que fica (planejado); já agendada → 409 EXCLUSAO_AGENDADA.",
+        "text": "Dado \"Encerrar minha conta\", então o pedido exige a senha atual com bloqueio (real: POST /api/me/deletion {currentPassword, reason}, AuditLog ACCOUNT_DELETION_REQUESTED, deletionScheduledAt = +30 d, DeletionReceipt.cancelable); antes de confirmar, o Dialog mostra o que será anonimizado e o que fica (real, D-145: DataPanel lista as consequências e exige a senha atual, \"entendi\" e a palavra EXCLUIR); já agendada → 409 EXCLUSAO_AGENDADA.",
         "note": "CA a confirmar, Q-68",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA20",
-        "text": "Dado DELETION_SCHEDULED, então o login devolve warnings com a data (real), o Banner mostra a data e o botão cancelar (DELETE /api/me/deletion, real, ACCOUNT_DELETION_CANCELLED; sem agendamento → 409 EXCLUSAO_NAO_AGENDADA), editar o perfil recebe 403 EXCLUSAO_AGENDADA (Guard.requireNotDeletionScheduled, real) e criar conteúdo receberá o mesmo 403 quando as rotas existirem (D-18); o pedido também encerra as outras sessões.",
+        "text": "Dado DELETION_SCHEDULED, então o login devolve warnings com a data (real), o Banner mostra a data e o botão cancelar (DELETE /api/me/deletion, real, ACCOUNT_DELETION_CANCELLED; sem agendamento → 409 EXCLUSAO_NAO_AGENDADA), editar o perfil recebe 403 EXCLUSAO_AGENDADA (Guard.requireNotDeletionScheduled, real) e criar conteúdo receberá o mesmo 403 quando as rotas existirem (D-18); o pedido também encerra as outras sessões. Real (D-145): o DeletionBanner aparece em todas as páginas com a data e \"Reativar conta\"; depois do prazo o cancelamento recebe 409 PRAZO_REATIVACAO_ENCERRADO, o login 403 CONTA_INDISPONIVEL e o refresh 401 SESSAO_INVALIDA (IdentityService.reactivationExpired).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF3.CA21",
-        "text": "Dado o prazo vencido, então o AccountAnonymizationJob roda por @Scheduled com lock (ShedLock); teste 1 prova o agendamento; teste 2 (Testcontainers) prova a anonimização no MySQL, S3 restricted/, Cassandra e OpenSearch, a revogação das sessões e ACCOUNT_DELETION_COMPLETED, mantendo policy_acceptances, consent_events e documentos públicos.",
+        "text": "Dado o prazo vencido, então o AccountAnonymizationJob roda por @Scheduled com lock (ShedLock); teste 1 prova o agendamento; teste 2 (Testcontainers) prova a anonimização no MySQL, S3 restricted/, Cassandra e OpenSearch, a revogação das sessões e ACCOUNT_DELETION_COMPLETED, mantendo policy_acceptances, consent_events e documentos públicos. Real (parcial, D-145): AccountAnonymizer.run com @Scheduled (de hora em hora, ws.jobs.anonymize.every; SchedulingConfig liga com ws.jobs.enabled), lote de 100, idempotente; anonimiza nome, nome de exibição, e-mail, telefone, senha, OIDC, 2FA, cargo, bio e imagens, troca o usuário por removido-xxxxxxxx, grava anonymizedAt, encerra todas as sessões e audita ACCOUNT_ANONYMIZED (não ACCOUNT_DELETION_COMPLETED); sem ShedLock (réplicas extras usam ws.jobs.enabled=false); S3, Cassandra, OpenSearch e o teste com Testcontainers seguem planejados.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -436,7 +436,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": "COMO usuário logado dentro do sistema WS POSSO acessar a aba criar nova tarefa PARA criar um esquema de tarefa único e personalizado conforme as diretrizes de minha equipe de trabalho.",
     "summary": "A tarefa (TaskItem, TAXONOMIA §2.1) é a unidade mínima do Work Station (= peça de roupa). O título do card destaca o que o corpo (RF20) detalha em 5 etapas: (1) Fonte — a aba escolhida define SourceKind e o TaskType sugerido; (2) Detecção por IA — AiEngine capability PREENCHER_TAREFA pré-preenche com confiança por campo e faísca ✦ (pulada no modo Manual ou quando a IA falha, CA03); (3) Dados da tarefa — taxonomia oficial, prazo legal (LegalDeadlineRule), órgão (OrgEntity via busca web); (4) Mais detalhes — chancelas sugeridas (RF39), visibilidade, estado inicial, situação do documento, protocolo, guarda, Balcão (RF40), tags, dependências, projeto/fase; (5) Arte do card — thumbnail assíncrono (RF38/RF11). Antivírus, OCR e thumbnail rodam como PipelineJob após o commit e a tarefa entra no Acervo (RF6/RF41).",
     "route": "Criar Tarefa (/tasks/new; folha \"+ Criar\" do SidebarNav; botão \"Cadastrar nova tarefa\" do Criador de Projetos, RF5); API POST /api/tasks, POST /api/tasks/uploads, POST /api/tasks/detect, GET /api/org-entities/search, GET /api/legal-deadlines/compute",
-    "coverage": "RF20.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 · CA15 — corpo do card = card RF20 (o card RF4 está vazio; o criador de tarefas está descrito no corpo do card RF20, cujos CAs são citados aqui como estão escritos; ver RENUMERACAO.md). Nenhuma classe deste RF existe ainda no código: tudo (planejado), exceto os transversais do Bloco 1–3 (SecurityConfig, CorrelationIdFilter, Guard, AuditLogPort, AuthRateLimitFilter, S3StorageConfig, AiProvidersConfig).",
+    "coverage": "RF20.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 · CA15 — corpo do card = card RF20 (o card RF4 está vazio; o criador de tarefas está descrito no corpo do card RF20, cujos CAs são citados aqui como estão escritos; ver RENUMERACAO.md). Situação em 17/10/2026 (auditoria docs/auditoria/2026-10-17/, MATRIZ_RF: AUSENTE → API REAL PARCIAL): (real) a criação manual ponta a ponta — /tasks/new (components/tasks/TaskForm.tsx, tasksApi.create em lib/tasks/client.ts) → POST /api/tasks (TaskController.create, TaskRequest) → TaskService.create (TaskInput, ResourceAuthorizer.viewer, erros de campo juntos em 422 VALIDACAO) → TaskItem.create (RASCUNHO, SourceKind.MANUAL — V37) + TaskBrief (V36 task_briefs: objetivo, WorkArea, entregáveis, critérios, referências, extensões opcionais por área) → TaskRepositoryPort.insert → task_state_log → AuditLogPort TASK_CREATED → 201 TaskView (commits 97611a0, 013657a, 474b6cb; jornada real 17/17 com tarefas de 6 áreas), mais os transversais do Bloco 1–3 (SecurityConfig, CorrelationIdFilter, Guard, AuditLogPort, AuthRateLimitFilter, S3StorageConfig, AiProvidersConfig); (planejado) uploads e anexos (UploadService; MediaUploadService existe mas ainda não é bean), detecção por IA (TaskDetectionService, AiEngine), órgãos (/api/org-entities/search), prazos legais (/api/legal-deadlines/compute), lote/.zip, chancelas, Balcão, dependências, escolha de outro responsável (busca /api/people?q=) e vínculo com projeto/peças (Onda 3 do PLANO_ONDAS.md); as fontes ARQUIVO, COLAR, GOOGLE, MICROSOFT, EMAIL, LINK, PROTOCOLO, FOTO e TEXTO_IA existem só como valores do enum SourceKind, sem adaptador.",
     "cas": [
       {
         "id": "RF20.CA01",
@@ -458,7 +458,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF20.CA04",
-        "text": "TaskCreationService.create/validate, TaskRepositoryPort, ProjectTask (RF5)",
+        "text": "TaskCreationService.create/validate, TaskRepositoryPort, ProjectTask (RF5); real: TaskController.create, TaskService.create, TaskRepositoryPort.insert, TaskBrief",
         "note": "",
         "kind": "rastreabilidade"
       },
@@ -518,7 +518,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF20.CA14",
-        "text": "TaskCreationService.validate, GlobalExceptionHandler (ApiError.details)",
+        "text": "TaskCreationService.validate, GlobalExceptionHandler (ApiError.details); real: TaskService.validate (privado), TaskBriefJson.invalid",
         "note": "",
         "kind": "rastreabilidade"
       },
@@ -632,17 +632,17 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": "COMO usuário autenticado dentro do sistema POSSO visualizar meu perfil com tudo o que criei (tarefas, projetos, planos, decisões) em sub-abas e o meu perfil deliberativo gerado pela IA PARA acompanhar e mostrar minha produção e minha evolução desde que entrei no sistema.",
     "summary": "O título do card recorta, das 15 sub-abas do perfil (Matriz B), as quatro do Perfil Empresarial: Acervo Digital (= Closet: inventário TaskItem com sub-filtros por TaskState), Projetos (ProjectScheme do dono), Projetos salvos e Tarefas salvas (SavedItem). As demais sub-abas (planos, decisões, perfil deliberativo, pontos…) ficam no RF16 (terceiros) e nos RFs de origem (RF24, RF29, RF42, RF45).",
     "route": "Meu perfil (/profile, sub-abas ?tab=acervo|projetos|projetos-salvos|tarefas-salvas, Matriz B de ABAS_POR_PERFIL §3), perfil de terceiros /u/[username] (RF16); Acervo também em /tasks (RF41); API GET /api/me (real), GET /api/me/tasks, GET /api/me/projects, GET /api/me/saved?type=, POST /api/tasks/{id}/state",
-    "coverage": "RF6.CA01 … RF6.CA06 — todos \"(CA a confirmar)\": o corpo do card está vazio; os CAs foram derivados do título + HU6 e reaproveitam _anterior/RF19 (sub-abas 1–2 e 7–8), RF41 (estados do Acervo) e RF26.CA04 (salvar). Real: MeController.me, AccountService.me/profile, UserView (Bloco 3); o resto (planejado).",
+    "coverage": "RF6.CA01 … RF6.CA06 — todos \"(CA a confirmar)\": o corpo do card está vazio; os CAs foram derivados do título + HU6 e reaproveitam _anterior/RF19 (sub-abas 1–2 e 7–8), RF41 (estados do Acervo) e RF26.CA04 (salvar). Real: MeController.me, AccountService.me/profile, UserView (Bloco 3); o resto (planejado). Atualização 17/10/2026: TaskController.mine/TaskService.listMine (real); PeopleService, PeopleController e TaskService.listOf (real, em curso, Onda 1) — achado P19.",
     "cas": [
       {
         "id": "RF6.CA01",
-        "text": "Dado um usuário autenticado, quando abre /profile, então vê o cabeçalho (UserView: avatar, nome, jobTitle, empresa, departamento; contadores de tarefas, projetos e salvos via Redis) e as sub-abas Acervo Digital, Projetos, Projetos salvos e Tarefas salvas; em /u/[username] um terceiro vê só Acervo Digital e Projetos, filtrados por Visibility (RF16); sub-aba reservada ao dono → 403 ACESSO_NEGADO (Guard.ownerOrAdmin).",
+        "text": "Dado um usuário autenticado, quando abre /profile, então vê o cabeçalho (UserView: avatar, nome, jobTitle, empresa, departamento; contadores de tarefas, projetos e salvos via Redis) e as sub-abas Acervo Digital, Projetos, Projetos salvos e Tarefas salvas; em /u/[username] um terceiro vê só Acervo Digital e Projetos, filtrados por Visibility (RF16); sub-aba reservada ao dono → 403 ACESSO_NEGADO (Guard.ownerOrAdmin). Real (em curso, Onda 1, P19): cabeçalho do dono por GET /api/me; cabeçalho de terceiro por GET /api/people/by-username/{username} (PublicProfileView, sem contato; conta não ACTIVE → 404 NAO_ENCONTRADO); contadores pela API planejados (no front já contam só o que o viewer vê, b602d34).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF6.CA02",
-        "text": "Dado a sub-aba Acervo Digital, então ela lista os TaskItem do dono em grade compacta (TaskCard compact) com sub-filtros por estado (TaskState: RASCUNHO · DISPONIVEL · EM_USO · BLOQUEADA · CONCLUIDA · ARQUIVADA · MODELO_PUBLICO · OFERECIDA) com contadores, filtros por categoria/tipo/processo/natureza, ordenação (recentes, mais usadas, nome, prazo), busca (OpenSearch ws-tasks) e paginação (20); a URL reflete filtros e página.",
+        "text": "Dado a sub-aba Acervo Digital, então ela lista os TaskItem do dono em grade compacta (TaskCard compact) com sub-filtros por estado (TaskState: RASCUNHO · DISPONIVEL · EM_USO · BLOQUEADA · CONCLUIDA · ARQUIVADA · MODELO_PUBLICO · OFERECIDA) com contadores, filtros por categoria/tipo/processo/natureza, ordenação (recentes, mais usadas, nome, prazo), busca (OpenSearch ws-tasks) e paginação (20); a URL reflete filtros e página. Real (base): GET /api/tasks?limit (TaskController.mine → TaskService.listMine, mais recentes primeiro, sem filtros nem contadores por estado); a sub-aba sobre ela está em curso (Onda 1).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -666,7 +666,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF6.CA06",
-        "text": "Dado o perfil de um terceiro, quando vejo seu Acervo Digital, então só aparecem tarefas com visibility compatível (AccessPolicy.visibilityFilter: PUBLICA; EMPRESA se mesma empresa; DEPARTAMENTO se membro), nunca PRIVADA; cada card oferece \"Levar ao meu acervo\" (RF7/RF23) e interações sociais (RF18/RF19); item fora da visibilidade → 403 ACESSO_NEGADO.",
+        "text": "Dado o perfil de um terceiro, quando vejo seu Acervo Digital, então só aparecem tarefas com visibility compatível (AccessPolicy.visibilityFilter: PUBLICA; EMPRESA se mesma empresa; DEPARTAMENTO se membro), nunca PRIVADA; cada card oferece \"Levar ao meu acervo\" (RF7/RF23) e interações sociais (RF18/RF19); item fora da visibilidade → 403 ACESSO_NEGADO. Real (17/10/2026): GET /api/people/{id}/tasks → TaskService.listOf devolve só o que AccessPolicy.visible admite (SIGILOSO só dono e colaboradores explícitos, nem ADMIN — AccessPolicy.sigiloso, D-139) (em curso, Onda 1); abrir item invisível responde 404 NAO_ENCONTRADO uniforme, não 403 (GET /api/tasks/{id}, front components/social/TaskDetail.tsx, D-141).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
@@ -914,7 +914,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": "COMO usuário visualizando um esquema de tarefa ou projeto POSSO editar os dados deste esquema PARA atualizar minha gestão pessoal e empresarial.",
     "summary": "Este RF cobre a edição dos dados (ficha) da TaskItem e do ProjectScheme: validação igual à do criador (RF4/RF5), lock otimista para tarefa e último-vence com aviso para projeto (RF22.CA04), versões (ProjectVersion, TaskStateLog), autosave e bloqueio de itens encerrados. A edição de arquivos (anexos, versões, provedor externo) é o RF8 e a arte do card é o RF11.",
     "route": "Meu perfil (/profile) › sub-abas Acervo Digital e Projetos (RF6) › card › Editar → /tasks/[id]/edit e /projects/[id]/edit (a Mesa completa — Quadro, Linha do tempo, canvas — é o RF21/RF22; os arquivos são o RF8); API GET /api/tasks/{id}/edit-form, PATCH /api/tasks/{id}, PATCH /api/projects/{id}, PUT /api/tasks/{id}/draft, POST /api/tasks/{id}/reopen, POST /api/projects/{id}/reopen",
-    "coverage": "RF12.CA01 · RF12.CA02 · RF12.CA03 · RF12.CA04 · RF12.CA05 · RF12.CA06 — corpo do card vazio: CAs derivados do título + HU12 + RF22 (CA01 permissão, CA02 ProjectVersion, CA04 concorrência, CA06 bloqueio) + RF20.CA07/CA11 + RF21.CA14 (autosave) + RF41.CA02 (TaskStateLog), marcados (CA a confirmar). Todas as classes do RF são (planejado); reais: Guard, AuditLogPort, SecurityConfig, SessionActiveFilter, RedisAdaptersConfig.",
+    "coverage": "RF12.CA01 · RF12.CA02 · RF12.CA03 · RF12.CA04 · RF12.CA05 · RF12.CA06 — corpo do card vazio: CAs derivados do título + HU12 + RF22 (CA01 permissão, CA02 ProjectVersion, CA04 concorrência, CA06 bloqueio) + RF20.CA07/CA11 + RF21.CA14 (autosave) + RF41.CA02 (TaskStateLog), marcados (CA a confirmar). Classes (real) desde 17/10/2026 (97611a0, 013657a, 474b6cb): TaskController.get/update (@AuthorizedBy(\"require\")), TaskRequest, TaskService.get/update (TaskInput, TaskView com version e editable), TaskRepositoryPort.update (versão obrigatória), ResourceAuthorizer, AccessPolicy, TaskState.isReadOnly/locksVisibility, GlobalExceptionHandler (409 EDICAO_CONCORRENTE) e a tela /tasks/[id]/edit com TaskForm modo edit; as demais (projeto, rascunho/autosave, reabrir, prazo legal, eventos AFTER_COMMIT) seguem (planejado); transversais reais: Guard, AuditLogPort, SecurityConfig, SessionActiveFilter, RedisAdaptersConfig.",
     "cas": [
       {
         "id": "RF12.CA01",
@@ -924,7 +924,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF12.CA02",
-        "text": "Dado o envio (PATCH /api/tasks/{id} ou PATCH /api/projects/{id} com If-Match: version), então o serviço valida: título ≤ 200, ≤ 2 tags por eixo, categoria compatível com o tipo, prazo legal recalculado por LegalDeadlineRule quando a categoria tem prazo (legalOverrideReason obrigatório para sobrescrever, RF20.CA11), projeto com ≥ 1 tarefa em DEMANDA + 1 em outra fase (RF21.CA05) e sem ciclo de dependências → 422 VALIDACAO; version divergente → 409 CONFLITO_VERSAO para tarefa e último-vence com aviso CONFLITO_ULTIMO_VENCE para projeto (RF22.CA04).",
+        "text": "Dado o envio (PATCH /api/tasks/{id} ou PATCH /api/projects/{id} com If-Match: version), então o serviço valida: título ≤ 200, ≤ 2 tags por eixo, categoria compatível com o tipo, prazo legal recalculado por LegalDeadlineRule quando a categoria tem prazo (legalOverrideReason obrigatório para sobrescrever, RF20.CA11), projeto com ≥ 1 tarefa em DEMANDA + 1 em outra fase (RF21.CA05) e sem ciclo de dependências → 422 VALIDACAO; version divergente → 409 CONFLITO_VERSAO para tarefa e último-vence com aviso CONFLITO_ULTIMO_VENCE para projeto (RF22.CA04). Contrato real da tarefa (17/10/2026): PUT /api/tasks/{id} com o TaskRequest completo e version no corpo (não PATCH + If-Match) e 409 EDICAO_CONCORRENTE (não CONFLITO_VERSAO); categoria×tipo, tags por eixo e prazo legal ainda não são validados.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -1008,11 +1008,11 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": "COMO usuário dentro do sistema Work Station POSSO procurar o perfil de um chefe de departamento PARA obter informação relevante ou realizar alguma funcionalidade.",
     "summary": "O \"perfil do chefe\" é a página do departamento (Department, TAXONOMIA §1.5) que ele chefia (headUserId): cabeçalho institucional, sub-abas públicas e ações por papel (AccessPolicy); a conta pessoal do chefe (/u/[username]) é o RF16. Métricas vêm de MetricSnapshot (scope DEPARTAMENTO) e nunca expõem dados nominais de desempenho (RF45.CA10).",
     "route": "página do departamento /departments/[slug] (Matriz D de ABAS_POR_PERFIL §5 — é o que o board chama de \"perfil do chefe\"), alcançada pela aba Buscar (RF17), por /companies/[slug] › Departamentos (RF15) ou pelo perfil pessoal do chefe (/u/[username], RF16); API GET /api/departments/{slug}, GET /api/departments/{id}/tabs/{tab}, GET /api/departments/{id}/metrics?period=, POST|DELETE /api/follows",
-    "coverage": "RF14.CA01 · RF14.CA02 · RF14.CA03 · RF14.CA04 · RF14.CA05 · RF14.CA06 — corpo do card vazio: CAs derivados do título + HU14 + RF28.CA02/CA03/CA04/CA06/CA08 (docs/diagramas/RF28/README.md) + RF27.CA06 (seguir) + RF45.CA06/CA10 (Hype) + Matriz D, marcados (CA a confirmar). Todas as classes do RF são (planejado); reais: User (companyId/departmentId sem FK até o RF28, D-23), Guard, SecurityConfig.",
+    "coverage": "RF14.CA01 · RF14.CA02 · RF14.CA03 · RF14.CA04 · RF14.CA05 · RF14.CA06 — corpo do card vazio: CAs derivados do título + HU14 + RF28.CA02/CA03/CA04/CA06/CA08 (docs/diagramas/RF28/README.md) + RF27.CA06 (seguir) + RF45.CA06/CA10 (Hype) + Matriz D, marcados (CA a confirmar). Todas as classes do RF são (planejado); reais: User (companyId/departmentId sem FK até o RF28, D-23), Guard, SecurityConfig. Atualização 17/10/2026: o cabeçalho público de pessoa do chefe já tem fonte real em GET /api/people/by-username/{username} (PeopleController → PeopleService.byUsername → PublicProfileView, em curso, Onda 1); a API institucional do departamento segue (planejado).",
     "cas": [
       {
         "id": "RF14.CA01",
-        "text": "Dado qualquer usuário (inclusive visitante), quando busca um chefe/departamento (aba Buscar por nome, sigla ou nome do chefe; lista de departamentos da empresa; menção @sigla) e abre /departments/[slug], então vê o cabeçalho: Department.acronym, name, color, monogram, coverUrl, about, chefe (User de headUserId: avatar, fullName, jobTitle → \"Chefe de {acronym}\"), Company (logo + link para RF15), contadores (pessoas com DepartmentMembership vigente, projetos publicados, decisões validadas, chancelas emitidas, seguidores) e botão Seguir; slug inexistente ou active = false → 404 DEPARTAMENTO_NAO_ENCONTRADO.",
+        "text": "Dado qualquer usuário (inclusive visitante), quando busca um chefe/departamento (aba Buscar por nome, sigla ou nome do chefe; lista de departamentos da empresa; menção @sigla) e abre /departments/[slug], então vê o cabeçalho: Department.acronym, name, color, monogram, coverUrl, about, chefe (User de headUserId: avatar, fullName, jobTitle → \"Chefe de {acronym}\"), Company (logo + link para RF15), contadores (pessoas com DepartmentMembership vigente, projetos publicados, decisões validadas, chancelas emitidas, seguidores) e botão Seguir; slug inexistente ou active = false → 404 DEPARTAMENTO_NAO_ENCONTRADO. Fonte real do bloco do chefe (em curso, Onda 1): PublicProfileView de GET /api/people/by-username/{username} (avatar, fullName, jobTitle, profileType); o cabeçalho do departamento segue planejado.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -1042,7 +1042,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF14.CA06",
-        "text": "Dado o viewer, então a visibilidade por item segue AccessPolicy.visibilityFilter: anônimo/outra empresa → só PUBLICA; mesma empresa → + EMPRESA; membro → + DEPARTAMENTO; sub-abas de gestão → 403 ACESSO_NEGADO no serviço para quem não é headUserId nem Company.ownerUserId (curador com escopo FILA_REVISAO/PREMIACAO vê só a fila/premiação); dados pessoais (email, phone) nunca saem na API da equipe; página em pt-BR/en/es e responsiva.",
+        "text": "Dado o viewer, então a visibilidade por item segue AccessPolicy.visibilityFilter: anônimo/outra empresa → só PUBLICA; mesma empresa → + EMPRESA; membro → + DEPARTAMENTO; sub-abas de gestão → 403 ACESSO_NEGADO no serviço para quem não é headUserId nem Company.ownerUserId (curador com escopo FILA_REVISAO/PREMIACAO vê só a fila/premiação); dados pessoais (email, phone) nunca saem na API da equipe; página em pt-BR/en/es e responsiva. Real (17/10/2026): a projeção pública de pessoa (PublicProfileView) já não carrega contato; no front, contadores e composição de projeto contam só o que o viewer vê (b602d34, lib/social/rules.ts).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
@@ -1055,11 +1055,11 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": "COMO usuário dentro do sistema Work Station POSSO procurar o perfil de uma empresa ou órgão público/privado PARA obter informação relevante ou realizar alguma funcionalidade.",
     "summary": "A página da empresa (Company, TAXONOMIA §1.4; ownerUserId = conta EMPRESA aprovada, RF28.CA01) agrega departamentos (RF14), programas (RF25), plano anual oficial (RF24), chancelas e modelos oficiais (RF39/RF40), benefícios (RF39.CA09), destaques (RF35), pessoas e Comunicados (proposta §7.a). A aba Gestão só existe para Company.ownerUserId e é negada no serviço.",
     "route": "página da empresa /companies/[slug] (Matriz C de ABAS_POR_PERFIL §4), alcançada pela lista /companies, pela aba Buscar (RF17), pelo cabeçalho de qualquer perfil/departamento ou pela barra inferior (5º destino para EMPRESA e visitante); API GET /api/companies, GET /api/companies/{slug}, GET /api/companies/{id}/tabs/{tab}, GET /api/companies/{id}/metrics?period=&dept=, POST|DELETE /api/follows, POST /api/companies/{id}/announcements (proposta)",
-    "coverage": "RF15.CA01 · RF15.CA02 · RF15.CA03 · RF15.CA04 · RF15.CA05 · RF15.CA06 — corpo do card vazio: CAs derivados do título + HU15 + RF28.CA01/CA04/CA06/CA08 (docs/diagramas/RF28/README.md) + RF24.CA04 + RF39.CA09/CA11 + RF27.CA06 + Matriz C e §7.a (Comunicados), marcados (CA a confirmar). Todas as classes do RF são (planejado); reais: User.profileType EMPRESA, AccountStatus.PENDING_VALIDATION, Guard, SecurityConfig.",
+    "coverage": "RF15.CA01 · RF15.CA02 · RF15.CA03 · RF15.CA04 · RF15.CA05 · RF15.CA06 — corpo do card vazio: CAs derivados do título + HU15 + RF28.CA01/CA04/CA06/CA08 (docs/diagramas/RF28/README.md) + RF24.CA04 + RF39.CA09/CA11 + RF27.CA06 + Matriz C e §7.a (Comunicados), marcados (CA a confirmar). Todas as classes do RF são (planejado); reais: User.profileType EMPRESA, AccountStatus.PENDING_VALIDATION, Guard, SecurityConfig. Atualização 17/10/2026: o cabeçalho público de pessoa (inclusive da conta EMPRESA dona e dos chefes) já tem fonte real em GET /api/people/by-username/{username} (PeopleController → PeopleService.byUsername → PublicProfileView, em curso, Onda 1); a API institucional da empresa segue (planejado).",
     "cas": [
       {
         "id": "RF15.CA01",
-        "text": "Dado qualquer usuário (inclusive visitante), quando busca uma empresa/órgão (Buscar por legalName/sigla, lista /companies, link em perfil ou departamento) e abre /companies/[slug], então vê o cabeçalho: Company.logoUrl, coatOfArmsUrl, legalName, about, websiteUrl, accentColor como cor de destaque, e contadores institucionais (departamentos ativos, pessoas, projetos publicados, modelos oficiais, decisões validadas, seguidores) — sem cargo, departamento, Hype, Tarefa do Dia ou DP; slug inexistente, Company.status inativo ou dona ainda PENDING_VALIDATION → 404 EMPRESA_NAO_ENCONTRADA.",
+        "text": "Dado qualquer usuário (inclusive visitante), quando busca uma empresa/órgão (Buscar por legalName/sigla, lista /companies, link em perfil ou departamento) e abre /companies/[slug], então vê o cabeçalho: Company.logoUrl, coatOfArmsUrl, legalName, about, websiteUrl, accentColor como cor de destaque, e contadores institucionais (departamentos ativos, pessoas, projetos publicados, modelos oficiais, decisões validadas, seguidores) — sem cargo, departamento, Hype, Tarefa do Dia ou DP; slug inexistente, Company.status inativo ou dona ainda PENDING_VALIDATION → 404 EMPRESA_NAO_ENCONTRADA. Real (17/10/2026): o cabeçalho público da pessoa dona tem fonte em PublicProfileView (GET /api/people/by-username/{username}, em curso, Onda 1; não ACTIVE → 404 NAO_ENCONTRADO); os contadores do front contam só o que o viewer vê (b602d34); o cabeçalho institucional segue planejado.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -1089,7 +1089,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF15.CA06",
-        "text": "Dado o viewer, então a aba Gestão (Departamentos & chefes, Pessoas & lotações, Chancelas & políticas, Benefícios, Plano oficial, Programas, Políticas, Dashboard do emissor, Insights da empresa, Dossiês, Comunicados) só aparece para Company.ownerUserId e é negada no serviço (403 ACESSO_NEGADO) para qualquer outro, inclusive CHEFE e ADMIN em escrita; visibilidade por item segue AccessPolicy.visibilityFilter (anônimo/outra empresa → PUBLICA; mesma empresa → + EMPRESA); cnpj (AES) só para a dona e ADMIN; página em pt-BR/en/es e responsiva.",
+        "text": "Dado o viewer, então a aba Gestão (Departamentos & chefes, Pessoas & lotações, Chancelas & políticas, Benefícios, Plano oficial, Programas, Políticas, Dashboard do emissor, Insights da empresa, Dossiês, Comunicados) só aparece para Company.ownerUserId e é negada no serviço (403 ACESSO_NEGADO) para qualquer outro, inclusive CHEFE e ADMIN em escrita; visibilidade por item segue AccessPolicy.visibilityFilter (anônimo/outra empresa → PUBLICA; mesma empresa → + EMPRESA); cnpj (AES) só para a dona e ADMIN; página em pt-BR/en/es e responsiva. Real (17/10/2026): no front, contadores e composição de projeto já seguem a ACL do viewer (SIGILOSO = PRIVADA, lib/social/rules.ts, b602d34); a projeção pública de pessoa (PublicProfileView) não carrega contato.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       }
@@ -1102,11 +1102,11 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": "COMO usuário dentro do sistema Work Station POSSO visualizar o perfil de um usuário que trabalha dentro uma organização PARA realizar alguma funcionalidade.",
     "summary": "O perfil de terceiros é o mesmo /u/[username] do RF6, mas com viewer != owner: só as sub-abas 1–5 (Acervo Digital, Projetos, Planos, Decisões, Perfil deliberativo público), itens filtrados por AccessPolicy.visibilityFilter, Hype conforme User.hypeVisibility e ações sociais inline (RF18/RF19) + \"Levar ao meu acervo\" (RF7). Contas institucionais (EMPRESA/CHEFE) recebem a etiqueta e o atalho para a página da empresa (RF15) ou do departamento (RF14).",
     "route": "perfil de terceiros /u/[username] (Matriz B de ABAS_POR_PERFIL §3, colunas \"terceiros\"); API GET /api/users/{username} (real como GET /api/users/{id} → UserView), GET /api/users/{username}/tabs, GET /api/users/{username}/tabs/{tab}, POST|DELETE /api/follows",
-    "coverage": "RF16.CA01 … RF16.CA06 — corpo do card vazio: CAs derivados do título + HU16 + _anterior/RF19 CA02 (perfil de terceiros) e Matriz B (colunas \"terceiros\"); todos marcados \"(CA a confirmar)\". Real (Bloco 3): MeController.profile (GET /api/users/{id}, Guard.ownerOrAdmin para campos privados), AccountService.profile, UserView, User.hypeVisibility; o resto (planejado).",
+    "coverage": "RF16.CA01 … RF16.CA06 — corpo do card vazio: CAs derivados do título + HU16 + _anterior/RF19 CA02 (perfil de terceiros) e Matriz B (colunas \"terceiros\"); todos marcados \"(CA a confirmar)\". Real (Bloco 3): MeController.profile (GET /api/users/{id}, Guard.ownerOrAdmin para campos privados), AccountService.profile, UserView, User.hypeVisibility; o resto (planejado). Atualização 17/10/2026 (real, em curso, Onda 1, P19): PeopleService (PublicProfileView, byUsername, visibleById, search), PeopleController, ResourceAuthorizer.requireProfileVisible, TaskService.listOf e AccessPolicy.sigiloso (D-139).",
     "cas": [
       {
         "id": "RF16.CA01",
-        "text": "Dado um usuário autenticado, quando abre /u/{username} de um EMPREGADO, então vê o cabeçalho público: avatar, nome, cargo (jobTitle), empresa, departamento (sigla, cor, monograma), contadores (tarefas, projetos, decisões, seguidores) e o botão Seguir; username inexistente → 404 USUARIO_NAO_ENCONTRADO; conta SUSPENDED/DELETION_SCHEDULED/ANONYMIZED → 404 (não enumera contas); email/phone nunca saem (UserView público).",
+        "text": "Dado um usuário autenticado, quando abre /u/{username} de um EMPREGADO, então vê o cabeçalho público: avatar, nome, cargo (jobTitle), empresa, departamento (sigla, cor, monograma), contadores (tarefas, projetos, decisões, seguidores) e o botão Seguir; username inexistente → 404 USUARIO_NAO_ENCONTRADO; conta SUSPENDED/DELETION_SCHEDULED/ANONYMIZED → 404 (não enumera contas); email/phone nunca saem (UserView público). Real (em curso, Onda 1): GET /api/people/by-username/{username} → PeopleService.byUsername → PublicProfileView (sem contato); o código real da recusa é 404 NAO_ENCONTRADO, igual para inexistente e para qualquer conta não ACTIVE (ResourceAuthorizer.requireProfileVisible). Contadores servidos pela API: (planejado).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -1118,7 +1118,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF16.CA03",
-        "text": "Dado uma sub-aba 1–4, quando listo os itens, então cada TaskItem, ProjectScheme, AnnualPlan/Grouping e FinalDecision passa pelo visibilityFilter: PUBLICA sempre; EMPRESA se viewer.companyId == owner.companyId; DEPARTAMENTO se o viewer tem DepartmentMembership vigente no departamento do item; PRIVADA nunca; RASCUNHO nunca. Contadores do cabeçalho contam só o que o viewer pode ver.",
+        "text": "Dado uma sub-aba 1–4, quando listo os itens, então cada TaskItem, ProjectScheme, AnnualPlan/Grouping e FinalDecision passa pelo visibilityFilter: PUBLICA sempre; EMPRESA se viewer.companyId == owner.companyId; DEPARTAMENTO se o viewer tem DepartmentMembership vigente no departamento do item; PRIVADA nunca; RASCUNHO nunca. Contadores do cabeçalho contam só o que o viewer pode ver. Real (17/10/2026): GET /api/people/{id}/tasks → TaskService.listOf filtra por AccessPolicy.visible (nome real do visibilityFilter); SIGILOSO equivale a PRIVADA — só dono e colaboradores explícitos, sem acesso implícito do ADMIN (AccessPolicy.sigiloso, D-139, AccessPolicyMatrixTest); no front, contadores e composição de projeto já não contam nem titulam tarefas ocultas (b602d34).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -1149,7 +1149,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": "COMO usuário autenticado no sistema POSSO visualizar esquemas de tarefa ou projeto criados por outros usuários, chefes ou empresas na aba \"Buscar/Explorar\" PARA me inspirar em outras combinações e ampliar minhas referências de projetos.",
     "summary": "A busca lê os índices OpenSearch ws-tasks, ws-projects, ws-people e ws-orgs (ARQUITETURA §3.2) com o mesmo AccessPolicy.visibilityFilter dos perfis (RF16), devolve 5 abas com contadores e abre o esquema de terceiro em modo leitura com crédito do autor. \"Projetos parecidos\" usa AiEngine capability MEMORIA_BUSCA (embedding) e kNN em ws-memory (RF33), com fallback textual. A indexação é assíncrona (PipelineJob INDEXAR_BUSCA, proposta) a partir dos eventos de publicação/alteração/arquivamento.",
     "route": "Buscar (/search, abas PROJETOS · TAREFAS · PESSOAS · EMPRESAS · CHEFES DE DEPARTAMENTO) e páginas de leitura de esquema de terceiros (/tasks/[id], /projects/[id]); API GET /api/search?q=&tab=&filters…&page=, GET /api/search/suggestions, GET /api/projects/{id}/similar, GET /api/tasks/{id}, GET /api/projects/{id}",
-    "coverage": "RF17.CA01 … RF17.CA06 — corpo do card vazio: CAs derivados do título + HU17 + RF27 (CA03 busca, CA04 visibilidade, CA05 semântica); todos marcados \"(CA a confirmar)\". O Mural (RF27.CA01/CA02/CA06) continua no RF27. Todas as classes do RF são (planejado); reais: OpenSearchAdaptersConfig (flag opensearch.enabled), AiProvidersConfig, Guard, SecurityConfig.",
+    "coverage": "RF17.CA01 … RF17.CA06 — corpo do card vazio: CAs derivados do título + HU17 + RF27 (CA03 busca, CA04 visibilidade, CA05 semântica); todos marcados \"(CA a confirmar)\". O Mural (RF27.CA01/CA02/CA06) continua no RF27. Todas as classes do RF são (planejado); reais: OpenSearchAdaptersConfig (flag opensearch.enabled), AiProvidersConfig, Guard, SecurityConfig. Atualização 17/10/2026 (real): regra de leitura AccessPolicy.visible/decide/sigiloso (D-139), TaskController.get → TaskService.get → ResourceAuthorizer.require com 404 NAO_ENCONTRADO uniforme, TaskService.listOf (em curso, Onda 1) e components/social/TaskDetail.tsx com o mesmo 404 (D-141).",
     "cas": [
       {
         "id": "RF17.CA01",
@@ -1165,13 +1165,13 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF17.CA03",
-        "text": "Dado os resultados, quando são devolvidos, então só contêm itens que o viewer pode ver (AccessPolicy.visibilityFilter aplicado como filtro da query): PUBLICA sempre; EMPRESA se mesma empresa; DEPARTAMENTO se membro; PRIVADA só os meus; RASCUNHO nunca aparece para terceiros; accessClass SIGILOSO nunca é indexado e RESTRITO só para o departamento dono. Resultados de outra empresa só se PUBLICA.",
+        "text": "Dado os resultados, quando são devolvidos, então só contêm itens que o viewer pode ver (AccessPolicy.visibilityFilter aplicado como filtro da query): PUBLICA sempre; EMPRESA se mesma empresa; DEPARTAMENTO se membro; PRIVADA só os meus; RASCUNHO nunca aparece para terceiros; accessClass SIGILOSO nunca é indexado e RESTRITO só para o departamento dono. Resultados de outra empresa só se PUBLICA. Real (17/10/2026): a regra item a item já existe em AccessPolicy.visible/decide — SIGILOSO só para dono e colaboradores explícitos, sem acesso implícito do ADMIN (AccessPolicy.sigiloso, D-139, AccessPolicyMatrixTest); a busca que a aplicará segue planejada.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
       {
         "id": "RF17.CA04",
-        "text": "Dado um resultado de tarefa ou projeto de outro usuário, quando o abro, então vejo o esquema completo em modo leitura (ficha, fases e tarefas do projeto, capa, chancelas) com o crédito do autor (avatar + link para RF16/RF14/RF15), as ações inline do RF18/RF19 e \"Levar ao meu acervo\" (RF7/RF41.CA08); edição é 403 ACESSO_NEGADO; item que ficou PRIVADA depois de indexado responde 404 e sai do índice.",
+        "text": "Dado um resultado de tarefa ou projeto de outro usuário, quando o abro, então vejo o esquema completo em modo leitura (ficha, fases e tarefas do projeto, capa, chancelas) com o crédito do autor (avatar + link para RF16/RF14/RF15), as ações inline do RF18/RF19 e \"Levar ao meu acervo\" (RF7/RF41.CA08); edição é 403 ACESSO_NEGADO; item que ficou PRIVADA depois de indexado responde 404 e sai do índice. Real (17/10/2026): GET /api/tasks/{id} → invisível = 404 NAO_ENCONTRADO uniforme (ResourceAuthorizer.require → AccessDecision.NOT_FOUND), também no front (components/social/TaskDetail.tsx, D-141, revisa a D-93); editar sem permissão → PUT /api/tasks/{id} 403 ACESSO_NEGADO; o card de projeto não mostra título nem total de tarefa oculta (lib/social/view-model.ts, b602d34). Leitura de projeto pela API segue planejada (Onda 2).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -2505,17 +2505,17 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": null,
     "summary": "Estados (TaskState): RASCUNHO · DISPONIVEL · EM_USO (em ≥ 1 projeto ativo, automático) · BLOQUEADA · CONCLUIDA · ARQUIVADA · MODELO_PUBLICO (só via chancela RF39 ou publicação explícita) · OFERECIDA (Balcão RF40); toda transição em TaskStateLog (TaskStateMachine com tabela testada). Sub-filtros: Todas · Favoritas · Disponíveis · Em uso · Bloqueadas · Concluídas · Modelos públicos · Chanceladas · Oferecidas (+ filtros categoria, tipo, processo, natureza, departamento, accessClass, prazo, origem; ordenação recentes, mais/menos usadas, nome, prazo, valor), tudo na querystring (CA09). Prazo legal (legalDueAt, LegalDeadlineRule): card âmbar a 3 dias, vermelho vencido, ⚖, notificação PRAZO_PROXIMO/PRAZO_VENCIDO (job diário) e sugestão na Tarefa do Dia (RF44). Evidências (Evidence: foto com takenAt, geolocalização opcional AES, vínculo a tarefa/projeto, studioStatus) podem virar IMAGEM_EDITADA pelo Estúdio (RF4). Exclusão: projetos de outros mantêm ProjectTask.snapshotJson (RF23) e donos são avisados; tarefa ligada a decisão VALIDADA (FinalDecision.resultingTaskId ou nó TAREFA do rastro) não é excluída, só arquivada (409). Acervo de terceiros: VisibilityFilter + Guard (403 no resto).",
     "route": "Acervo de Tarefas (/tasks?filtro=&categoria=&ordem=&page=), detalhe (/tasks/[id]), Anexos & Evidências (/attachments), acervo de terceiros (/u/[username]?tab=acervo)",
-    "coverage": "RF41.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs. A criação de tarefas é o RF4 (corpo em RF20); o Acervo alimenta os selects do Criador de Projetos (RF5) e os anexos do DECIA (RF29).",
+    "coverage": "RF41.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 (corpo do card, inalterado) — regra: o título do card define o RF e o corpo traz os próprios CAs. A criação de tarefas é o RF4 (corpo em RF20); o Acervo alimenta os selects do Criador de Projetos (RF5) e os anexos do DECIA (RF29). Situação em 17/10/2026 (MATRIZ_RF: DEMO EM MEMÓRIA → API REAL PARCIAL): ver «Real × planejado» abaixo.",
     "cas": [
       {
         "id": "RF41.CA01",
-        "text": "AcervoService.list/counters, TaskCardView, contadores por sub-filtro em CachePort",
+        "text": "AcervoService.list/counters, TaskCardView, contadores por sub-filtro em CachePort; real: TaskController.mine, TaskService.listMine, TaskRepositoryPort.findByOwner, PersistedTaskCard, workStatusOf",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF41.CA02",
-        "text": "TaskStateMachine.transition/onProjectActivated/onProjectLeft, TaskState, TaskStateLog, MODELO_PUBLICO só via chancela/publicação",
+        "text": "TaskStateMachine.transition/onProjectActivated/onProjectLeft, TaskState, TaskStateLog, MODELO_PUBLICO só via chancela/publicação; real: TaskController.transition, TransitionRequest, TaskService.transition, TaskItem.transition/block, TaskState.machine(), TASK_TRANSITIONS",
         "note": "",
         "kind": "rastreabilidade"
       },
@@ -3140,6 +3140,1582 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "id": "RF48.CA19",
         "text": "Dado qualquer tela do RF48, quando aciono \"Abrir no Encontrar\", então o RF47 abre com o escopo do dossiê; e, dado o RF47 aberto num projeto de categoria Licitação/Contrato, quando aciono \"Testar esta contratação\", então a aba Agentes abre com aquele dossiê. \"Ver no documento\" num achado abre o leitor (B) na posição exata; uma linha do Extrair (C) leva ao achado que a usou.",
         "note": "Conexão RF47 ↔ RF48",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF49",
+    "n": 49,
+    "title": "Coordenar Pactos de Desbloqueio entre usuários, chefes e departamentos",
+    "hu": null,
+    "summary": "Trello: RF49 Coordenar Pactos de Desbloqueio entre usuários, chefes e departamentos.",
+    "route": "Metas & objetivos (/goals; pacto vinculado a tarefas/projetos dependentes)",
+    "coverage": "RF49.CA01 … RF49.CA14 — CAs da especificação deste README (requisito novo do estudo de 12/10/2026, sem HU no board), sem alteração; todos planejados: no código só existem o domínio de apoio (lotações, tarefas, dependências, evidências, reconhecimento, notificação) e as guardas de acesso.",
+    "cas": [
+      {
+        "id": "RF49.CA01",
+        "text": "Dado um usuário ativo com acesso ao recurso dependente, quando solicita uma entrega a outro departamento ativo da mesma empresa, então informa entrega esperada, justificativa, critério de aceitação e prazo desejado; o servidor deriva identidade e empresa da sessão e registra SOLICITADO. Alvos inacessíveis não revelam existência.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA02",
+        "text": "Dado um pedido, quando o destinatário responde, então aceita, propõe outra data, pede esclarecimento ou recusa com motivo. Só participantes autorizados e chefias atuais dos departamentos envolvidos podem negociar. Propor data não equivale a compromisso aceito.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA03",
+        "text": "Dado o acordo das equipes e o aceite explícito do executor autorizado, quando o pacto é confirmado, então registra COMPROMETIDO, responsável e data acordada. Não substitui atribuições ou lotações existentes.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA04",
+        "text": "Dado o limite configurado de compromissos simultâneos da equipe, quando uma aceitação o excederia, então bloqueia com conflito explicável. Exceção exige decisão justificada do chefe; a contagem exclui pactos encerrados.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA05",
+        "text": "Dado um pacto comprometido, quando o executor apresenta evidência a que os envolvidos possuem acesso, então registra ENTREGUE e a versão do recurso entregue. O solicitante valida ou devolve com critério não atendido e justificativa; cada tentativa permanece no histórico.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA06",
+        "text": "Dado o recebimento, quando o solicitante valida a entrega, então registra VALIDADO e permite confirmar separadamente se o trabalho dependente voltou a avançar. Não conclui tarefas nem remove bloqueios automaticamente.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA07",
+        "text": "Dado um compromisso vigente, quando alguém propõe outra data ou escopo, então requer novo aceite dos envolvidos, preservando acordo anterior, motivo e autoria. O instante de criação não é reiniciado para reduzir artificialmente o tempo de espera.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA08",
+        "text": "Dado uma dependência circular ou um conflito de prioridade não resolvido, quando o sistema o identifica, então informa a causa com dados autorizados e permite encaminhar o conflito às chefias. Dependências circulares são rejeitadas antes do commit. Prioridade não é decidida automaticamente pela IA.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA09",
+        "text": "Dado uma conta ou chefia que perdeu vínculo, quando tenta agir, então as permissões são relidas no servidor. SIGILOSO exige concessão explícita do proprietário também para chefes, administradores e colaboradores do pacto. Agregações e notificações não expõem conteúdo protegido.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA10",
+        "text": "Dado edições simultâneas ou repetição de requisição, quando o servidor processa uma operação, então utiliza controle de versão e idempotência, sem duplicar compromisso, evidência ou notificação. Evento, alteração de estado e notificação ficam atomicamente persistidos.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA11",
+        "text": "Dado o usuário autenticado, quando abre a fila de cooperação, então vê apenas pactos autorizados, com filtros por recebidos/enviados, departamento, estado e prazo, paginação, estados vazio/erro/carregamento e ações operáveis por teclado. “Quem eu posso destravar hoje?” exibe demandas compatíveis com vínculos e permissões atuais.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA12",
+        "text": "Dado pactos com datas e eventos verificáveis, quando consulta métricas autorizadas, então mostra mediana/p90 de espera, amostra, devoluções, renegociações e desbloqueios confirmados. Casos abertos/cancelados ficam visíveis no agregado. Ausência de dados não vira zero; atraso evitado estimado não vira resultado comprovado.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA13",
+        "text": "Dado um pacto validado, quando o solicitante deseja reconhecer a ajuda, então pode registrar reconhecimento contextual vinculado à entrega, integrado ao RF35. Não distribui pontos por criar solicitações nem gera classificação individual de velocidade.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF49.CA14",
+        "text": "Dado mudanças relevantes, quando notificadas, então participantes autorizados recebem mensagens genéricas e agrupadas; lembretes respeitam preferências e limites de frequência. Cancelamento, recusa e devolução exigem motivo, com histórico auditável.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF50",
+    "n": 50,
+    "title": "Analisar o perfil no Copilot e recomendar tarefas, projetos, pessoas da rede e caminhos profissionais",
+    "hu": null,
+    "summary": "Estado: requisito especificado; implementação pendente. Nome de produto: Análise de Perfil. Origem: solicitação do usuário em 12/10/2026.",
+    "route": "Insights da IA (/insights; Análise de Perfil a partir de /profile)",
+    "coverage": "RF50.CA01 … RF50.CA18 — CA01–CA15 da tabela principal e CA16–CA18 de \"Pessoas com perfil semelhante\", sem alteração (requisito solicitado pelo usuário em 12/10/2026, sem HU no board); reais só o perfil e as preferências em /api/me, a busca em /api/people e o AiGateway, que não tem motor registrado.",
+    "cas": [
+      {
+        "id": "RF50.CA01",
+        "text": "Dado o usuário autenticado, quando inicia Análise de Perfil, então escolhe objetivo da análise, escopo profissional/pessoal e dados que deseja utilizar. O servidor deriva identidade da sessão; a pessoa pode editar e excluir campos antes de confirmar.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA02",
+        "text": "Dado currículo, portfólio ou conteúdo selecionado, quando importado, então valida tamanho/formato, sanitiza conteúdo e apresenta dados extraídos para confirmação. Não executa macros, instruções embutidas ou URLs fornecidas como comandos. Recurso inacessível não integra o contexto.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA03",
+        "text": "Dado o perfil confirmado, quando analisado, então gera síntese com competências declaradas/evidenciadas, interesses, objetivos, lacunas e incertezas. Cada afirmação referencia campo ou evidência autorizada; informações insuficientes geram perguntas. Inferências ficam identificadas e podem ser corrigidas pelo usuário.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA04",
+        "text": "Dado competências e objetivos selecionados, quando pede sugestões de tarefas, então recebe propostas com título, finalidade, competência trabalhada, esforço estimado, pré-requisitos e critério verificável de aceite. Estimativa é identificada como tal; não cria tarefas automaticamente.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA05",
+        "text": "Dado disponibilidade e objetivo, quando pede sugestões de projetos, então recebe propostas com escopo, resultado, fases, tarefas, riscos e dependências, distinguindo trabalho institucional de projeto pessoal. Não atribui colegas nem compromete recursos da empresa sem autorização e confirmação nos fluxos correspondentes.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA06",
+        "text": "Dado interesses, experiência e competências, quando pede caminhos de carreira, então apresenta alternativas com justificativa, requisitos, lacunas e ações de desenvolvimento. A pessoa compara, discorda, refina e escolhe alternativas; não há classificação automática de empregabilidade, aptidão definitiva ou promessa de contratação.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA07",
+        "text": "Dado uma afirmação sobre vagas, demanda de mercado, remuneração ou requisito atual, quando apresentada, então cita fonte, data e abrangência geográfica verificáveis. Sem fonte atual disponível, informa a limitação e não apresenta conhecimento geral do modelo como pesquisa atual de mercado. Faixas e projeções são explicitamente estimativas.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA08",
+        "text": "Dado uma proposta, quando a pessoa aceita, então revisa campos e confirma a criação de rascunho, com proveniência da análise, versão do perfil e inferência utilizada. Aceitar novamente a mesma proposta é idempotente. Sugestão baseada em perfil alterado exige atualização ou confirmação explícita da divergência.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA09",
+        "text": "Dado dados de perfil e recomendações pessoais, quando armazenados ou consultados, então permanecem privados por padrão. Chefes, empresa e administradores não recebem acesso automático. Compartilhar uma saída exige seleção explícita de destinatário e conteúdo; não amplia acesso às fontes.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA10",
+        "text": "Dado uso de provedor externo, quando uma análise é solicitada, então pede consentimento contextual, mostra quais categorias de dados serão enviadas, aplica minimização, política de classificação e limites de custo. Conteúdo RESTRITO/SIGILOSO não vai ao provedor externo na política atual. Edição do perfil permanece disponível sem saldo ou com IA indisponível.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA11",
+        "text": "Dado dados sensíveis ou características protegidas, quando presentes no material, então não os usa para inferir aptidão ou restringir possibilidades de carreira. O Copilot não infere saúde, religião, orientação sexual ou outras características sensíveis. Necessidades de acessibilidade podem orientar preferências informadas, sem reduzir oportunidades por presunção de incapacidade.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA12",
+        "text": "Dado resposta da IA, quando exibida, então apresenta propostas separadas de fatos confirmados, fontes, limitações e controles para corrigir, rejeitar ou pedir explicação. Não utiliza Hype Score, pontos ou popularidade como medida de potencial profissional. Não transforma a análise em avaliação de desempenho ou decisão de contratação.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA13",
+        "text": "Dado conta trocada, sessão encerrada ou concessão revogada, quando há resposta pendente, então descarta atualizações da sessão anterior e relê autorização antes de persistir ou aplicar propostas. Eventos guardam autoria e referência de inferência sem copiar currículo ou texto sensível para logs.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA14",
+        "text": "Dado o usuário, quando deseja excluir análise ou revogar uso futuro dos dados, então consegue fazê-lo nas regras de retenção documentadas. Exportação informa os dados fornecidos e as recomendações produzidas. Histórico e propostas não ficam disponíveis a outra conta no mesmo dispositivo.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA15",
+        "text": "Dado análise incompleta, falha de provedor ou limite de uso, quando ocorre, então preserva o perfil, informa o estado e oferece nova tentativa explícita, sem repetir automaticamente chamadas cobradas. A interface funciona por teclado, tem estrutura semântica e distingue visualmente informação, hipótese e proposta.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA16",
+        "text": "Dado um perfil confirmado, quando solicita pessoas semelhantes, então recomenda somente usuários descobríveis na rede autorizada, não bloqueados e que permitem uso dos campos exibidos para descoberta. Usa competências, interesses, objetivos e experiências compartilhados para esse fim; análise privada de carreira, currículo privado, Hype Score e características sensíveis não entram no pareamento. Não revela nomes, contagens ou evidências de perfis inacessíveis.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA17",
+        "text": "Dado uma pessoa recomendada, quando a sugestão aparece, então explica a afinidade com campos visíveis — por exemplo “ambos trabalham com orçamento e têm interesse em BIM” — e pode propor atividade colaborativa concreta. Similaridade é afinidade por critérios declarados, não percentual de personalidade, aptidão ou valor profissional. A pessoa filtra critérios, descarta sugestão e pode explorar perfis complementares para não limitar a descoberta a um grupo homogêneo.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF50.CA18",
+        "text": "Dado uma recomendação de pessoa, quando o usuário decide interagir, então pode abrir o perfil autorizado, salvar a sugestão ou enviar convite pelos mecanismos de rede/mensageria com confirmação. Não cria vínculo, segue, atribui trabalho, envia mensagem ou compartilha sua análise automaticamente. Revogação da descoberta, alteração de visibilidade, bloqueio ou perda de acesso remove elegibilidade e invalida recomendações pendentes no servidor.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF51",
+    "n": 51,
+    "title": "Controlar autonomia, escopo e execução da IA em Letters e Drawings",
+    "hu": null,
+    "summary": "A pessoa escolhe, antes de qualquer análise ou alteração de uma peça Letters ou Drawings, em que modo a IA pode atuar (Manual, Sob solicitação, Sugestões, Assistido ou Agente, D-136), vê o que cada modo pode fazer, recebe só diagnósticos, propostas com diff ou execuções limitadas conforme o modo, e qualquer troca de modo, revisão ou reserva invalida as propostas pendentes sem perder o rascunho; a autorização e a política valem no servidor, e nada é publicado automaticamente.",
+    "route": "Configurações › Trabalho › Autonomia da IA (/settings?tab=trabalho), Letters (/letters) e Drawings (/drawings)",
+    "coverage": "RF51.CA01 … RF51.CA07 — corpo do card = especificação de docs/produto/requisitos-studio/RF51.md (CAs copiados como estão escritos); classes reais: lib/ai/autonomy.ts (AiPolicy, AgentCharter, AgentRun, AiProposal, evaluateAiAction, proposalValidity, changeMode), lib/pieces/patch.ts (authorizePatch), lib/pieces/authorship.ts, lib/preferences/types.ts (aiAutonomyDefault), components/decia/WorkspaceSections.tsx, AiGateway/AiBudget/AiEnginePort (sem motor registrado), ResourceAuthorizer, AccessPolicy; o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF51.CA01",
+        "text": "Dado o nível 1, quando a análise termina, então somente diagnósticos e métricas explicáveis são exibidos; texto e geometria permanecem idênticos.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF51.CA02",
+        "text": "Dado o nível 2, quando uma proposta é gerada, então mostra diff e prévia, e só altera conteúdo após aceite explícito; rejeitar preserva o original.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF51.CA03",
+        "text": "Dado o nível 3, quando executa uma transformação local autorizada, então restringe objetos/blocos à seleção e registra checkpoint, validações e rollback.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF51.CA04",
+        "text": "Dado o nível 4, quando recebe um objetivo, então apresenta plano, ferramentas permitidas, escopo e orçamento; para ao atingir limite, conflito ou incerteza impeditiva.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF51.CA05",
+        "text": "Dada uma revisão ou reserva alterada, quando uma proposta antiga é aplicada, então rejeita a proposta sem perder o rascunho e solicita nova análise.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF51.CA06",
+        "text": "Dado um documento ou imagem contendo instruções, quando entra no contexto, então é tratado como dado e não altera permissões, ferramentas ou política do agente.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF51.CA07",
+        "text": "Dada uma inferência paga, quando é solicitada, então informa envio de dados, provedor e limite; registra tokens/custo quando disponíveis, permite cancelamento e não faz repetição automática ilimitada.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF52",
+    "n": 52,
+    "title": "Editar documentos estruturados no Work Station Letters",
+    "hu": null,
+    "summary": "A pessoa abre no Letters um documento vinculado a uma tarefa ou a uma sessão DECIA, insere e reorganiza títulos, parágrafos, listas, tabelas, referências e imagens em blocos com identificador estável, formata só o trecho selecionado com desfazer, navega por sumário, busca e numeração de parágrafos sem perder a seleção, importa e exporta apenas formatos habilitados com relatório de fidelidade, e cada gravação é uma revisão autorizada e versionada no servidor.",
+    "route": "Letters (/letters, /letters/[pieceId]; peça aberta a partir de /tasks/[id] e da sessão DECIA /decia/[sessionId])",
+    "coverage": "RF52.CA01 … RF52.CA07 — corpo do card = especificação de docs/produto/requisitos-studio/RF52.md (CAs copiados como estão escritos); classes reais: lib/pieces/service.ts (WorkPiece, PiecesService em memória), lib/pieces/authorship.ts, TaskService, ResourceAuthorizer, AccessPolicy, página-esqueleto app/(shell)/letters/page.tsx; o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF52.CA01",
+        "text": "Dado um documento, quando insere e reorganiza títulos, parágrafos, listas, tabelas, referências e imagens, então mantém estrutura semântica e ordem na reabertura.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF52.CA02",
+        "text": "Dada seleção de texto, quando formata estilo, fonte, tamanho, alinhamento, recuo e espaçamento, então afeta apenas o trecho e permite desfazer.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF52.CA03",
+        "text": "Dado documento longo, quando navega no sumário, busca ou numeração de parágrafos, então foca o trecho correto sem perder seleção.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF52.CA04",
+        "text": "Dada importação de formato suportado, quando valida e abre, então informa limitações de fidelidade e não descarta conteúdo silenciosamente.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF52.CA05",
+        "text": "Dada exportação TXT, PDF, DOCX ou formato nativo, quando o formato está habilitado, então preserva o conteúdo previsto e tem teste de ida e volta; formatos pendentes não aparecem como operacionais.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF52.CA06",
+        "text": "Dado uso por teclado e leitor de tela, quando percorre ferramentas e editor, então há rótulos, foco visível e ações acessíveis.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF52.CA07",
+        "text": "Dado conteúdo malformado ou excessivo, quando é importado, então rejeita com motivo, preserva o documento atual e não executa scripts.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF53",
+    "n": 53,
+    "title": "Analisar língua, morfossintaxe e gramática no Letters",
+    "hu": null,
+    "summary": "A pessoa seleciona um trecho em português no Letters e pede a análise linguística: o painel marca as classes de palavras com legenda e posição, aponta sujeito, predicado, regência, concordância, crase, flexões, tratamento e tempos verbais como achados ancorados à revisão analisada, explica cada hipótese com regra e referência verificável, troca de idioma só quando há recursos compatíveis e respeita o que a pessoa ignora ou adiciona ao dicionário pessoal, sem enviar cada tecla a um provedor.",
+    "route": "Letters (/letters, /letters/[pieceId]; peça aberta a partir de /tasks/[id] e da sessão DECIA /decia/[sessionId])",
+    "coverage": "RF53.CA01 … RF53.CA07 — corpo do card = especificação de docs/produto/requisitos-studio/RF53.md (CAs copiados como estão escritos); classes reais: AiGateway/AiBudget (sem motor registrado), ResourceAuthorizer, AccessPolicy, lib/ai/autonomy.ts (evaluateAiAction), página-esqueleto app/(shell)/letters/page.tsx; o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF53.CA01",
+        "text": "Dado português selecionado, quando analisa, então diferencia substantivos, verbos, adjetivos, pronomes, advérbios, preposições, conjunções, artigos, numerais e interjeições com legenda e posições no texto.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF53.CA02",
+        "text": "Dado um corpus de referência anotado, quando identifica sujeito, predicado, regência, concordância, crase e flexões, então mede desempenho por categoria e expõe casos incertos.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF53.CA03",
+        "text": "Dado tratamento tu/você e tempos/modos distintos, quando há inconsistência contextual, então explica a hipótese e oferece alternativa preservando intenção.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF53.CA04",
+        "text": "Dada uma correção, quando informa a justificativa, então identifica regra e referência bibliográfica consultada; não inventa edição, página ou citação.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF53.CA05",
+        "text": "Dada outra língua, quando troca o idioma, então carrega recursos compatíveis ou informa indisponibilidade, sem aplicar regras portuguesas como universais.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF53.CA06",
+        "text": "Dada análise em tempo real, quando o texto muda, então atualiza somente achados da revisão correta e não reenvia a cada tecla sem controle de frequência/custo.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF53.CA07",
+        "text": "Dado nome próprio, variedade regional ou falso positivo, quando o usuário ignora ou adiciona ao dicionário pessoal, então respeita a preferência e permite reversão.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF54",
+    "n": 54,
+    "title": "Analisar coerência, narrativa, gênero e fontes no Letters",
+    "hu": null,
+    "summary": "A pessoa escolhe o gênero do texto (técnico, acadêmico, jornalístico ou narrativo) e pede ao Letters uma leitura de coerência, tom, continuidade e fontes: cada achado aponta os trechos de evidência, separa contradição demonstrável de hipótese e de contexto insuficiente, cada indicador por parágrafo mostra rubrica e evidência, cada citação recebe o estado acessível, indisponível ou não verificada, e o relatório declara o que ficou fora da cobertura, sem substituir o julgamento do autor nem reescrever o texto.",
+    "route": "Letters (/letters, /letters/[pieceId]; peça aberta a partir de /tasks/[id] e da sessão DECIA /decia/[sessionId])",
+    "coverage": "RF54.CA01 … RF54.CA07 — corpo do card = especificação de docs/produto/requisitos-studio/RF54.md (CAs copiados como estão escritos); classes reais: AiGateway/AiBudget (sem motor registrado), ResourceAuthorizer, AccessPolicy, lib/ai/autonomy.ts (evaluateAiAction), página-esqueleto app/(shell)/letters/page.tsx; o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF54.CA01",
+        "text": "Dado gênero técnico, acadêmico, jornalístico ou narrativo, quando analisa, então usa critérios do gênero escolhido e explica mudanças de tom.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF54.CA02",
+        "text": "Dada notícia neutra com primeira pessoa, quando detecta subjetividade, então sinaliza o trecho sem declarar todo uso como erro obrigatório.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF54.CA03",
+        "text": "Dado personagem morto que reaparece depois, quando não há explicação narrativa identificada, então aponta as duas passagens e pede revisão de continuidade.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF54.CA04",
+        "text": "Dadas cronologia e entidades ao longo de capítulos, quando analisa, então diferencia contradição demonstrável de hipótese e contexto insuficiente.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF54.CA05",
+        "text": "Dado indicador por parágrafo de coerência, clareza, sintaxe e tom, quando apresenta nota, então informa rubrica e evidência; heurística não aparece como nota calibrada de IA.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF54.CA06",
+        "text": "Dadas citações e afirmações factuais, quando verifica fontes, então distingue referência acessível, indisponível e não verificada.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF54.CA07",
+        "text": "Dado documento longo, quando segmenta contexto, então mantém vínculos entre achados e trechos e informa limites da cobertura.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF55",
+    "n": 55,
+    "title": "Revisar, completar e reescrever texto com IA no Letters",
+    "hu": null,
+    "summary": "A pessoa pede ao Letters uma revisão (ortografia, gramática, parágrafo ou documento), uma continuação a partir do cursor (palavra, frase, parágrafo ou documento) ou uma reescrita autorizada; recebe uma proposta ancorada à revisão e ao trecho de origem, compara removido e adicionado no diff inline, vê destacadas as mudanças em números, nomes e citações, aceita, rejeita, pede explicação ou alternativa, e pode desfazer a operação inteira; proposta desatualizada nunca é inserida em outro trecho e nenhuma nova chamada paga é feita sem pedido.",
+    "route": "Letters (/letters, /letters/[pieceId]; peça aberta a partir de /tasks/[id] e da sessão DECIA /decia/[sessionId])",
+    "coverage": "RF55.CA01 … RF55.CA07 — corpo do card = especificação de docs/produto/requisitos-studio/RF55.md (CAs copiados como estão escritos); classes reais: lib/ai/autonomy.ts (AiProposal, evaluateAiAction, proposalValidity), lib/pieces/authorship.ts (ContributionEvent, AI_PROPOSAL_ACCEPTED), components/decia/AiSuggestion.tsx, AiGateway/AiBudget (sem motor registrado), ResourceAuthorizer, AccessPolicy; o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF55.CA01",
+        "text": "Dado nível básico, quando revisa ortografia, então não reescreve estilo, argumento ou parágrafos sem autorização adicional.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF55.CA02",
+        "text": "Dada sugestão, quando abre o diff inline, então distingue removido/adicionado, permite aceitar, rejeitar, explicar motivo e pedir alternativa.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF55.CA03",
+        "text": "Dado modo completar, quando escolhe palavra, frase, parágrafo ou documento, então gera continuação a partir do cursor e preserva o texto fora do escopo.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF55.CA04",
+        "text": "Dada revisão avançada autorizada, quando substitui parágrafos ou documento, então preserva original e permite rollback integral da operação.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF55.CA05",
+        "text": "Dado foco/cursor ou seleção alterado durante inferência, quando a resposta retorna, então não a insere automaticamente em outro trecho.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF55.CA06",
+        "text": "Dada reescrita com números, nomes e citações, quando propõe mudanças factuais, então destaca essas mudanças e não apresenta invenções como fatos.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF55.CA07",
+        "text": "Dada proposta rejeitada ou cancelada, quando o usuário segue escrevendo, então mantém seu rascunho e não dispara nova chamada paga automaticamente.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF56",
+    "n": 56,
+    "title": "Colaborar, comentar e resolver conflitos em documentos Letters no DECIA",
+    "hu": null,
+    "summary": "Editores autorizados de uma tarefa abrem o mesmo documento Letters dentro de uma sessão DECIA: alterações em blocos diferentes convergem e são persistidas, o mesmo bloco segue uma política explícita de reserva ou merge sem sobrescrita silenciosa, gravações com reserva expirada, desconexão ou acesso revogado são rejeitadas no servidor com rascunho recuperável, comentários e sugestões guardam autor, data, trecho e resolução, observadores só leem, e a versão aprovada vira evidência imutável da decisão sem ser publicada automaticamente.",
+    "route": "Letters (/letters, /letters/[pieceId]; peça aberta a partir de /tasks/[id] e da sessão DECIA /decia/[sessionId])",
+    "coverage": "RF56.CA01 … RF56.CA07 — corpo do card = especificação de docs/produto/requisitos-studio/RF56.md (CAs copiados como estão escritos); classes reais: lib/pieces/collab.ts (RegionLock, acquireLock, canEditRegions, LOCK_TTL_MS), lib/pieces/patch.ts (authorizePatch, REGIAO_RESERVADA), lib/pieces/authorship.ts, lib/ai/autonomy.ts (SessionRole), ws-domain SessionParticipant/ParticipantRole/DecisionTraceNode, TaskService, ResourceAuthorizer, AccessPolicy, components/decia/*; o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF56.CA01",
+        "text": "Dados dois editores autorizados, quando alteram blocos diferentes, então as alterações convergem e são persistidas.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF56.CA02",
+        "text": "Dados dois editores no mesmo bloco, quando há concorrência, então usa política explícita de bloqueio ou merge e não sobrescreve silenciosamente.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF56.CA03",
+        "text": "Dada reserva expirada, desconexão ou revogação, quando tenta gravar, então servidor rejeita e preserva rascunho recuperável.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF56.CA04",
+        "text": "Dado comentário ou sugestão, quando é resolvido, então mantém autor, data, trecho de origem e estado de resolução.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF56.CA05",
+        "text": "Dada sessão DECIA vinculada, quando compartilha documento, então aplica simultaneamente ACL da tarefa e participação/papel válido da sessão.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF56.CA06",
+        "text": "Dado usuário observador, quando tenta editar ou aceitar proposta, então bloqueia no servidor.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF56.CA07",
+        "text": "Dada versão aprovada, quando vira evidência de decisão, então mantém vínculo imutável à revisão, sem publicar o documento automaticamente.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF57",
+    "n": 57,
+    "title": "Selecionar objetos, pontos e regiões no Drawings",
+    "hu": null,
+    "summary": "O RF57 define como a pessoa escolhe o que vai editar no Drawings: clique, janela (arraste esquerda→direita, só objetos totalmente contidos), cruzamento (direita→esquerda, objetos que tocam ou cruzam a borda), laço livre e polígono WP/CP, seleção por atributo (SELECIONAR_SEMELHANTES, com tolerância e contagem), SELECIONAR_TUDO e seleção direta de âncoras, segmentos e alças Bézier. Seleção e permissão são eixos distintos: selectedNodeIds só devolve o que está visível e editableNodeIds ainda retira camadas e nós travados e regiões reservadas por outra pessoa; o servidor repete a decisão com a mesma regra de authorizePatch antes de gravar qualquer transformação (MOVER, REDIMENSIONAR, GIRAR). Todo gesto de arraste tem alternativa por teclado e campos numéricos (WCAG 2.5.7) e o resultado é anunciado ao leitor de tela. Os nomes de comando são inspiração semântica de Illustrator/AutoCAD (referência de 17/10/2026), nunca promessa de paridade.",
+    "route": "Drawings (/drawings, /drawings/[pieceId]; peça aberta a partir de /tasks/[id] e da sessão DECIA /decia/[sessionId])",
+    "coverage": "RF57.CA01 … RF57.CA09 — corpo do card = especificação de docs/produto/requisitos-studio/RF57.md (CAs copiados como estão escritos); classes reais: DrawingScene, DrawingNode, DrawingLayer, Selection, selectAtPoint, selectInBounds, selectInPolygon, selectedNodeIds, editableNodeIds, snapPoint (lib/studio/selection.ts), DrawingEditScope/canEditDrawingTarget (lib/drawings/selection.ts), LayerStack (lib/pieces/layers.ts), RegionLock (lib/pieces/collab.ts), authorizePatch (lib/pieces/patch.ts), evaluateAiAction (lib/ai/autonomy.ts); o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF57.CA01",
+        "text": "Dado arraste esquerda-direita, quando termina, então seleciona somente objetos totalmente contidos; direita-esquerda inclui objetos que cruzam ou tocam a borda.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF57.CA02",
+        "text": "Dado laço livre ou WP/CP, quando conclui, então aplica contenção/cruzamento conforme modo visível e desenha prévia azul/verde.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF57.CA03",
+        "text": "Dado QSELECT/FILTER ou seleção semelhante, quando filtra por camada, cor, espessura, opacidade, tipo, raio ou bloco, então usa tolerância explícita e mostra a contagem.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF57.CA04",
+        "text": "Dado V, quando transforma seleção múltipla, então move/escala/rotaciona o conjunto no escopo permitido e permite desfazer.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF57.CA05",
+        "text": "Dado A, quando seleciona âncora ou segmento, então edita somente os pontos/controladores escolhidos e preserva os demais.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF57.CA06",
+        "text": "Dado Ctrl+A, quando há camadas ocultas, bloqueadas ou regiões de outra pessoa, então não autoriza modificá-las; seleção e permissão são eixos distintos.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF57.CA07",
+        "text": "Dado perfil de atalhos CAD ou vetor, quando L/A têm significados diferentes, então resolve por perfil e não intercepta digitação em campos de texto.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF57.CA08",
+        "text": "Dados pontos de ancoragem e hastes Bézier, quando converte canto/suave com Shift+C, move âncora ou manipula alça com Alt/Option e Shift, então preserva vizinhos, permite alças independentes, recolher um controle e restringir a múltiplos de 45 graus; cada arraste é uma ação reversível e não causa salto de rolagem.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF57.CA09",
+        "text": "Dado guia de pontos e alças, quando utiliza teclado ou leitor de tela, então identifica âncora, entrada, saída e coordenadas, com controles equivalentes ao arraste e indicação clara dos tipos de curva suportados.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF58",
+    "n": 58,
+    "title": "Criar e editar geometria vetorial e desenho técnico 2D",
+    "hu": null,
+    "summary": "O RF58 cobre a construção de traçados e perfis 2D com coordenadas e precisão: o núcleo da primeira entrega são os comandos LINHA, POLILINHA, RETANGULO, ELIPSE, POLIGONO, CAMINHO (Bézier) e TEXTO, seguidos de círculo por raio, diâmetro, 2P, 3P e TTR, arco, linha de construção e ponto; edição por aparar, estender, deslocar, unir, quebrar, CORTAR_NO_PONTO e reverter; largura variável e pincel de mancha expandidos em contornos editáveis; auxílios de precisão (OSNAP, ORTHO, POLAR, GRADE, ORIGEM) que só propõem pontos; e medição (DIST, AREA, cotas) calculada sobre a geometria real, nunca sobre o texto digitado. Cada comando aceita entrada numérica por linha de comando ou campos (alternativa ao arraste, WCAG 2.5.7), anuncia o resultado ao leitor de tela e passa pela mesma autorização de patch (camada ativa, escopo, reserva). Nomes como LINE, PLINE e TRIM são inspiração semântica de AutoCAD/Illustrator, sem promessa de paridade.",
+    "route": "Drawings (/drawings, /drawings/[pieceId]; peça aberta a partir de /tasks/[id] e da sessão DECIA /decia/[sessionId])",
+    "coverage": "RF58.CA01 … RF58.CA07 — corpo do card = especificação de docs/produto/requisitos-studio/RF58.md (CAs copiados como estão escritos); classes reais: Geometry (rect, circle, segment, polygon, path), geometryBounds, hitTest, snapPoint (lib/studio/selection.ts), authorizePatch (lib/pieces/patch.ts), DrawingClassification.scale (lib/pieces/classification.ts), toWireframe/RenderMode (lib/pieces/wireframe.ts), evaluateAiAction (lib/ai/autonomy.ts); o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF58.CA01",
+        "text": "Dados LINE, PLINE, CIRCLE, ARC, RECTANG, POLYGON, ELLIPSE, SPLINE, XLINE e POINT, quando executados com parâmetros válidos, então criam a geometria esperada e rejeitam degenerações.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF58.CA02",
+        "text": "Dado círculo, quando escolhe raio, diâmetro, 2P, 3P ou TTR, então resolve o método e informa ambiguidade ou impossibilidade.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF58.CA03",
+        "text": "Dada caneta Bézier ou lápis livre, quando edita controles e simplifica, então informa tolerância/erro máximo e preserva fechamento e pontos protegidos.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF58.CA04",
+        "text": "Dados TRIM, EXTEND, OFFSET, JOIN/PEDIT, BREAK, tesoura e reversão, quando aplicados, então preservam topologia prevista e mantêm histórico.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF58.CA05",
+        "text": "Dados largura variável e pincel de mancha, quando expande, então gera contornos editáveis e mantém aparência dentro da tolerância declarada.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF58.CA06",
+        "text": "Dados OSNAP, ORTHO, POLAR, SNAP/GRID, quando habilitados, então mostram ponto/alinhamento proposto sem deslocar objetos fora do escopo.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF58.CA07",
+        "text": "Dados DIST, AREA, cotas, unidades e escala, quando mede, então calcula sobre geometria real e distingue medida de valor textual digitado.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF59",
+    "n": 59,
+    "title": "Construir, dividir e desmembrar contornos vetoriais",
+    "hu": null,
+    "summary": "O RF59 trata as operações que constroem, dividem e desmembram contornos 2D: booleanas UNIR, SUBTRAIR e INTERSECTAR (Shape Builder fica como CONSTRUTOR_DE_FORMAS, fase posterior), DIVIDIR em regiões independentes, caminho composto com furo (regra par/ímpar) e SEPARAR_CAMINHO_COMPOSTO, DESAGRUPAR que só remove o vínculo de grupo, LIBERAR_MASCARA que devolve os vetores selecionáveis, e EXPANDIR traço ou aparência com aviso de perda de parametrização e versão anterior preservada. Regra central, comum ao RF61: desmembrar nunca descarta propriedades (furos, faces, texto, ordem, estilo) sem avisar; operação que o formato nativo não representa é bloqueada antes de qualquer alteração. Toda operação é acionável por menu, paleta e teclado sobre a seleção corrente (sem exigir arraste, WCAG 2.5.7), com o relatório de preservação lido pelo leitor de tela. Nomes de comando inspirados em Illustrator (Pathfinder, Release Compound Path) e AutoCAD (UNION, EXPLODE), sem promessa de paridade.",
+    "route": "Drawings (/drawings, /drawings/[pieceId]; peça aberta a partir de /tasks/[id] e da sessão DECIA /decia/[sessionId])",
+    "coverage": "RF59.CA01 … RF59.CA07 — corpo do card = especificação de docs/produto/requisitos-studio/RF59.md (CAs copiados como estão escritos); classes reais: Geometry e DrawingNode.parentId com resolução de descendentes de grupo em selectedNodeIds (lib/studio/selection.ts), authorizePatch (lib/pieces/patch.ts), LayerStack (lib/pieces/layers.ts), evaluateAiAction/proposalValidity (lib/ai/autonomy.ts); o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF59.CA01",
+        "text": "Dados UNION/Shape Builder, SUBTRACT e INTERSECT, quando combina perfis fechados, então o resultado corresponde à área geométrica esperada.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF59.CA02",
+        "text": "Dado Pathfinder Divide ou pintura por regiões, quando cruza contornos, então produz regiões independentes selecionáveis e coloríveis.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF59.CA03",
+        "text": "Dado caminho composto com furo, quando exporta/reabre, então mantém o furo; liberar caminho composto separa contornos explicitamente.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF59.CA04",
+        "text": "Dado grupo, quando UNGROUP é executado, então remove apenas o vínculo de agrupamento e preserva geometria, texto e ordem.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF59.CA05",
+        "text": "Dada máscara, quando libera recorte, então mantém os vetores originais e torna os elementos liberados selecionáveis.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF59.CA06",
+        "text": "Dado Expand/Expand Appearance, quando converte traços ou efeitos, então informa perda de parametrização e preserva versão anterior.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF59.CA07",
+        "text": "Dada operação não representável no formato nativo, quando é solicitada, então bloqueia sem descartar furos, faces ou conteúdo silenciosamente.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF60",
+    "n": 60,
+    "title": "Modelar sólidos, superfícies e malhas 3D no Drawings",
+    "hu": null,
+    "summary": "O RF60 descreve a modelagem 3D do Drawings: primitivas (caixa, cilindro, esfera, cone, cunha, toro), operações de perfil (extrusão/PRESSPULL, revolução, loft e varredura), volume almofadado (Inflate) identificado como aproximação ou simulação, booleanas de sólidos (UNIR, SUBTRAIR, INTERSECTAR) validadas antes de gravar, acabamento de arestas apenas onde suportado, e transformações 3D (MOVER, GIRAR, REDIMENSIONAR em XYZ) com seleção múltipla, pivô explícito, limites e desfazer. Toda a modelagem 3D é capacidade futura declarada por operação: cada comando expõe na interface se está disponível, parcial ou futuro, qual representação usa (malha poligonal; B-rep só quando houver kernel) e suas limitações, sem prometer equivalência com AutoCAD ou Illustrator. Cada parâmetro tem campo numérico equivalente ao gizmo (WCAG 2.5.7) e o resultado (dimensões, volume, fechamento) é anunciado ao leitor de tela.",
+    "route": "Drawings (/drawings, /drawings/[pieceId]; peça aberta a partir de /tasks/[id] e da sessão DECIA /decia/[sessionId])",
+    "coverage": "RF60.CA01 … RF60.CA07 — corpo do card = especificação de docs/produto/requisitos-studio/RF60.md (CAs copiados como estão escritos); classes reais: authorizePatch (lib/pieces/patch.ts), LayerStack (lib/pieces/layers.ts), RegionLock (lib/pieces/collab.ts), DrawingClassification com técnica TRES_D (lib/pieces/classification.ts), evaluateAiAction (lib/ai/autonomy.ts); o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF60.CA01",
+        "text": "Dados BOX, CYLINDER, SPHERE, CONE, WEDGE e TORUS, quando dimensiona, então gera malhas válidas com normais e escala consistente.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF60.CA02",
+        "text": "Dados EXTRUDE/PRESSPULL e perfil fechado, quando aplica profundidade, então gera volume e rejeita perfil degenerado ou autointersectante.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF60.CA03",
+        "text": "Dados REVOLVE, LOFT e SWEEP, quando fornece eixo, seções ou trajetória, então informa correspondência/orientação e valida continuidade e fechamento.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF60.CA04",
+        "text": "Dado Inflate, quando cria volume almofadado, então identifica se é aproximação geométrica ou simulação e permite refino.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF60.CA05",
+        "text": "Dadas UNION, SUBTRACT e INTERSECT, quando opera sólidos, então valida resultado vazio, fechamento e interseções antes de gravar.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF60.CA06",
+        "text": "Dados FILLETEDGE e CHAMFEREDGE, quando seleciona arestas, então aplica raio/chanfro nas arestas suportadas e não promete kernel B-rep onde há apenas malha.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF60.CA07",
+        "text": "Dados 3DMOVE, 3DROTATE e 3DSCALE, quando usa campos ou gizmos XYZ, então permite seleção múltipla, pivô explícito, limites e desfazer.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF61",
+    "n": 61,
+    "title": "Desmembrar e converter estruturas 3D preservando intenção",
+    "hu": null,
+    "summary": "O RF61 separa operações que a referência CAD costuma misturar: EXPLODIR uma malha em faces independentes (superfícies abertas não são sólidos), converter em superfície preservando coordenadas e materiais, SEPARAR_DISJUNTOS corpos mantendo-os volumétricos, fatiar por plano (SLICE) com original recuperável, recompor em sólido só com malha fechada ou reparo revisável, explodir blocos preservando atributos como texto (BURST), consolidar representação explicando o que se remove e projetar o 3D em vetores 2D editáveis com profundidade zero (FLATTEN/Expand Appearance). Regra central: desmembrar nunca descarta propriedades sem avisar — cada operação gera um relatório de preservação (o que fica, o que se perde, o que exige confirmação) e mantém vínculo de proveniência com o objeto de origem. Toda operação é capacidade futura declarada por operação: a interface informa disponível, parcial, futura ou não suportada (por exemplo, blocos com atributos ainda sem modelo). Plano de corte e câmera de projeção têm campos numéricos equivalentes ao arraste (WCAG 2.5.7) e o relatório é lido pelo leitor de tela. Nomes AutoCAD (EXPLODE, CONVTOSURFACE, SOLIDEDIT, BREP) são inspiração semântica, sem paridade.",
+    "route": "Drawings (/drawings, /drawings/[pieceId]; peça aberta a partir de /tasks/[id] e da sessão DECIA /decia/[sessionId])",
+    "coverage": "RF61.CA01 … RF61.CA08 — corpo do card = especificação de docs/produto/requisitos-studio/RF61.md (CAs copiados como estão escritos); classes reais: authorizePatch (lib/pieces/patch.ts), LayerStack (lib/pieces/layers.ts), RegionLock (lib/pieces/collab.ts), evaluateAiAction/proposalValidity (lib/ai/autonomy.ts); o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF61.CA01",
+        "text": "Dado EXPLODE/X ou MESHELEMENTS, quando desmembra malha, então gera faces independentes e identifica que superfícies abertas não são sólidos.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF61.CA02",
+        "text": "Dado CONVTOSURFACE, quando converte, então preserva coordenadas, materiais e correspondência com objeto de origem.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF61.CA03",
+        "text": "Dado SEPARATE/SOLIDEDIT Body Separate, quando há corpos disjuntos, então separa componentes mantendo-os volumétricos quando fechados.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF61.CA04",
+        "text": "Dado SLICE, quando define plano por normal/posição ou pontos, então cria partes corretas, preserva original recuperável e informa corte sem interseção.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF61.CA05",
+        "text": "Dado CONVTOSOLID, quando recebe malha aberta/não manifold, então recusa ou oferece reparo revisável; não presume volume válido.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF61.CA06",
+        "text": "Dado BURST, quando existem atributos de bloco, então converte seus valores para texto sem perda; sem suporte a blocos deve informar indisponibilidade.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF61.CA07",
+        "text": "Dado BREP, quando consolida representação suportada, então explica o que é removido; malha consolidada não é rotulada como sólido B-rep.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF61.CA08",
+        "text": "Dado FLATTEN/Expand Appearance, quando projeta na câmera/plano escolhido, então cria vetores 2D editáveis com profundidade zero e sem remover o 3D original sem confirmação.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF62",
+    "n": 62,
+    "title": "Controlar vistas, câmera, perspectiva e coordenadas no Drawings",
+    "hu": null,
+    "summary": "O RF62 garante que alternar a representação nunca altera a geometria: VISTA orienta a câmera em planta (superior do sistema de coordenadas de trabalho, com o UCS identificado), ponto de vista por vetor (vetor nulo rejeitado), vistas nomeadas (planta, frontal, lateral, isométricas SW/SE/NE/NW) salvas com câmera e projeção, órbita que não move objetos e tem saída explícita, guias visuais (cubo de navegação, ícone do UCS) que não mexem em permissões, ESTILO_VISUAL que só habilita modos implementados (hoje a base é wireframe × preenchido), ORIGEM/UCS orientado por face ou eixos com conversão consistente para o espaço global, e GRADE/grade de perspectiva de 1, 2 ou 3 pontos, isométrica ou cavaleira, cuja ocultação não remove alinhamentos. Câmera pessoal é estado de visualização (não gera patch); salvar uma vista na peça é edição do documento e passa pela reserva de escopo. Toda navegação tem alternativa por teclado e campos numéricos (WCAG 2.5.7) e a vista ativa é anunciada ao leitor de tela. 3D: órbita, estilos sombreado/realista e UCS por face são capacidade futura declarada por operação; nomes PLAN, VPOINT, VIEW e 3DORBIT são inspiração semântica de AutoCAD, sem paridade.",
+    "route": "Drawings (/drawings, /drawings/[pieceId]; peça aberta a partir de /tasks/[id] e da sessão DECIA /decia/[sessionId])",
+    "coverage": "RF62.CA01 … RF62.CA08 — corpo do card = especificação de docs/produto/requisitos-studio/RF62.md (CAs copiados como estão escritos); classes reais: RenderMode/toWireframe (lib/pieces/wireframe.ts), DrawingClassification.projection (lib/pieces/classification.ts), DRAWING_TAXONOMY.perspective (lib/drawings/taxonomy.ts), DrawingEditScope modo VIEW (lib/drawings/selection.ts), snapPoint e selectedNodeIds (lib/studio/selection.ts), authorizePatch (lib/pieces/patch.ts); o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF62.CA01",
+        "text": "Dado PLAN, quando executa, então orienta vista superior do sistema de coordenadas de trabalho, identificando o UCS utilizado.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF62.CA02",
+        "text": "Dado VPOINT, quando informa vetor válido, então orienta a câmera e rejeita vetor nulo.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF62.CA03",
+        "text": "Dado VIEW, quando salva/restaura planta, frontal, lateral ou isométricas SW/SE/NE/NW, então mantém câmera e projeção associadas.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF62.CA04",
+        "text": "Dado 3DORBIT/Shift+botão do meio, quando arrasta, então orbita sem mover objetos e permite sair do modo.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF62.CA05",
+        "text": "Dado NAVVCUBE/UCSICON, quando alterna, então controla guias visuais e não altera permissões nem geometrias.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF62.CA06",
+        "text": "Dado VISUALSTYLES/VS, quando escolhe wireframe, sombreado, raios X, conceitual ou realista, então só habilita modos implementados e identifica limitações de materiais/PBR.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF62.CA07",
+        "text": "Dado UCS, quando orienta plano de trabalho por face/eixos, então novas geometrias usam esse plano, com conversão consistente para o espaço global.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF62.CA08",
+        "text": "Dada grade de perspectiva 1/2/3 pontos ou plano isométrico/cavaleiro, quando desenha, então aplica transformação correta; ocultar grade não remove alinhamentos existentes.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF63",
+    "n": 63,
+    "title": "Editar cores, gradientes, materiais e estilos de traço",
+    "hu": null,
+    "summary": "O RF63 define como a pessoa autorizada refina a aparência de uma peça do Drawings — cor sólida, gradientes linear e radial, preenchimento, traço (largura, padrão, opacidade, terminações e junções), hachuras e presets técnicos, paletas inspiradas em Itten, materiais de partes 3D e a alternância wireframe/preenchido — sempre dentro do escopo autorizado pela mesma porta de patch (authorizePatch) que vale para edição manual e para propostas de IA. Toda conversão de cor declara o perfil usado e só é oferecida quando é de fato suportada.",
+    "route": "Drawings (/drawings, /drawings/[pieceId]; peça aberta a partir de /tasks/[id] e da sessão DECIA /decia/[sessionId])",
+    "coverage": "RF63.CA01 … RF63.CA08 — corpo do card = especificação de docs/produto/requisitos-studio/RF63.md (CAs copiados como estão escritos); classes reais: authorizePatch/PatchOrigin/PatchDenial (lib/pieces/patch.ts), PieceLayer/LayerStack (lib/pieces/layers.ts), canEditDrawingTarget (lib/drawings/selection.ts), editableNodeIds (lib/studio/selection.ts), RenderMode/toWireframe (lib/pieces/wireframe.ts), DrawingClassification.accessibility (lib/pieces/classification.ts), AiGateway/AiEnginePort/AiBudget (ws-application, sem motor registrado); o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF63.CA01",
+        "text": "Dada seleção de objeto, região ou camada, quando altera cor sólida, gradiente linear/radial e preenchimento, então afeta somente o escopo autorizado.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF63.CA02",
+        "text": "Dado traço, quando ajusta largura, padrão, opacidade, terminações e junções, então renderiza e exporta a mesma aparência dentro das capacidades declaradas.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF63.CA03",
+        "text": "Dadas hachuras de seção, cotas e hierarquia de linhas, quando usa preset técnico, então referencia norma/edição aplicável e não declara conformidade sem validação.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF63.CA04",
+        "text": "Dadas harmonias Itten e controles inspirados em Munsell, quando recomenda paleta, então identifica o modelo e não confunde HSL/RGB com Munsell calibrado.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF63.CA05",
+        "text": "Dado RGB/CMYK/ICC, quando converte ou exporta, então informa perfil utilizado e só habilita conversão efetivamente suportada.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF63.CA06",
+        "text": "Dado material de parte 3D, quando edita, então conserva geometria, seleção e ordem de camadas.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF63.CA07",
+        "text": "Dada alternância wireframe/preenchido, quando ocorre, então mantém estruturas selecionáveis e permite recuperar o estado anterior pelo histórico.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF63.CA08",
+        "text": "Dada seleção e atributo ativo (preenchimento ou traço), quando usa Shift+X, D ou /, então troca os atributos suportados, restaura branco/preto de 1 unidade ou aplica nenhum ao atributo escolhido; não intercepta texto em campos e rejeita conversões não suportadas sem perda da aparência.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF64",
+    "n": 64,
+    "title": "Gerar assets, wireframes e detalhes internos parametrizados",
+    "hu": null,
+    "summary": "O RF64 cobre o catálogo de assets parametrizados do Drawings: buscar objetos, pessoas, personagens e geometrias com nome, categoria, dimensões e prévia; gerar estruturas específicas (sofá, mesa, pessoa) com partes semanticamente nomeadas, nunca uma caixa genérica; entrar no wireframe de um objeto reservado para editar partes internas e acrescentar só detalhes compatíveis; transformar partes preservando relações explícitas; aplicar wireframe a uma área inteira respeitando subáreas autorizadas; e reabrir assets importados ou exportados sem perder estrutura.",
+    "route": "Drawings (/drawings, /drawings/[pieceId]; peça aberta a partir de /tasks/[id] e da sessão DECIA /decia/[sessionId])",
+    "coverage": "RF64.CA01 … RF64.CA07 — corpo do card = especificação de docs/produto/requisitos-studio/RF64.md (CAs copiados como estão escritos); classes reais: SuggestedElement/RenderMode/SubjectKind/toWireframe/completeWireframe (lib/pieces/wireframe.ts), authorizePatch/PatchOrigin (lib/pieces/patch.ts), RegionLock/canEditRegions (lib/pieces/collab.ts), DrawingEditTarget.objectPath (lib/drawings/selection.ts), DrawingNode.parentId/editableNodeIds (lib/studio/selection.ts), AiProposal/proposalValidity (lib/ai/autonomy.ts), AiGateway (ws-application, sem motor registrado); o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF64.CA01",
+        "text": "Dado catálogo, quando busca por objeto, pessoa, personagem ou geometria, então oferece nomes, categorias, dimensões e prévia de modelos disponíveis.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF64.CA02",
+        "text": "Dado sofá, mesa ou pessoa, quando gera, então cria estrutura específica com partes semanticamente nomeadas, sem substituí-la por caixa genérica.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF64.CA03",
+        "text": "Dado objeto reservado, quando entra no wireframe, então seleciona partes internas e oferece somente detalhes compatíveis, como olhos, lábios, puxadores e gavetas.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF64.CA04",
+        "text": "Dada parte, quando move, rotaciona, substitui ou redimensiona, então preserva relações explícitas com componentes dependentes.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF64.CA05",
+        "text": "Dado wireframe de área inteira, quando aplica, então abrange objetos das subáreas autorizadas e exclui camadas/regiões alheias.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF64.CA06",
+        "text": "Dada sugestão de substituição por IA, quando aprovada, então valida limites, revisão, hierarquia e escopo antes de aplicar.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF64.CA07",
+        "text": "Dado asset importado/exportado, quando reabre, então mantém estrutura, materiais, nomes, dimensões e câmera em formato nativo suportado.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF65",
+    "n": 65,
+    "title": "Editar regiões hierárquicas e camadas sobrepostas no Drawings",
+    "hu": null,
+    "summary": "O RF65 organiza o contexto espacial de uma peça do Drawings em quatro eixos independentes — camada, região, objeto e detalhe (DRAWINGS_CAMADAS_COLABORACAO_DECIA.md): subdividir regiões em grades M×N com caminho hierárquico estável, reservar regiões menores ou maiores respeitando reservas alheias, isolar camadas profundas ou superficiais sem perder as demais, ocultar divisórias e rótulos sem liberar reservas e recalcular métricas globais com fórmula declarada. Seleção nunca é autorização: o servidor decide pela geometria transformada inteira, não pelo centro.",
+    "route": "Drawings (/drawings, /drawings/[pieceId]; peça aberta a partir de /tasks/[id] e da sessão DECIA /decia/[sessionId])",
+    "coverage": "RF65.CA01 … RF65.CA07 — corpo do card = especificação de docs/produto/requisitos-studio/RF65.md (CAs copiados como estão escritos); classes reais: PieceLayer/LayerStack/switchActiveLayer/setLayerLocked/canEditInActiveLayer (lib/pieces/layers.ts), RegionLock/acquireLock/canEditRegions (lib/pieces/collab.ts), authorizePatch/PatchDenial (lib/pieces/patch.ts), DrawingEditScope/DrawingEditTarget (lib/drawings/selection.ts), geometryBounds/editableNodeIds (lib/studio/selection.ts), ClassifiedField.rubricVersion (lib/pieces/classification.ts); o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF65.CA01",
+        "text": "Dada grade M×N, quando subdivide região, então cria caminho hierárquico estável e permite focar qualquer nível.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF65.CA02",
+        "text": "Dada reserva de região menor, quando edita, então limita objetos e geometria à região e camada permitidas.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF65.CA03",
+        "text": "Dada reserva de região maior, quando transforma, então considera as subáreas incluídas, sem ignorar reservas conflitantes.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF65.CA04",
+        "text": "Dadas camadas profundas/superficiais, quando isola uma, então preserva objetos das demais e mantém composição e ordem na reabertura.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF65.CA05",
+        "text": "Dadas divisórias, rótulos e badges, quando oculta, então limpa a visualização sem liberar reservas ou alterar a geometria.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF65.CA06",
+        "text": "Dada alteração local, quando atualiza métricas globais, então usa fórmula/rubrica declarada, distingue heurística de qualidade profissional e explica a contribuição de cada métrica.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF65.CA07",
+        "text": "Dado movimento/rotação, quando o limite físico ultrapassa reserva, então servidor rejeita considerando a geometria transformada, não apenas o centro.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF66",
+    "n": 66,
+    "title": "Editar desenhos simultaneamente no DECIA com reservas transacionais",
+    "hu": null,
+    "summary": "O RF66 leva a edição de uma mesma peça do Drawings para várias pessoas ao mesmo tempo, dentro de uma sessão DECIA, com reservas transacionais por camada e região: patches em escopos disjuntos convivem e mantêm a ordem visual; reservas sobrepostas, ancestrais ou descendentes são recusadas sem revelar conteúdo; renovação, liberação e expiração usam relógio do servidor e token de fencing; patch antigo nunca sobrescreve revisão nova; revogação de acesso, SIGILOSO e papel de observador são revalidados no servidor em cada gravação. A IA participa só como proponente, sob as mesmas reservas.",
+    "route": "Drawings (/drawings, /drawings/[pieceId]; peça aberta a partir de /tasks/[id] e da sessão DECIA /decia/[sessionId])",
+    "coverage": "RF66.CA01 … RF66.CA08 — corpo do card = especificação de docs/produto/requisitos-studio/RF66.md (CAs copiados como estão escritos); classes reais: RegionLock/acquireLock/releaseLocks/canEditRegions/LOCK_TTL_MS (lib/pieces/collab.ts), authorizePatch/PatchOrigin/PatchDenial (lib/pieces/patch.ts), LayerStack (lib/pieces/layers.ts), PiecesService em memória (lib/pieces/service.ts), SessionRole/AiProposal/proposalValidity (lib/ai/autonomy.ts), ResourceAuthorizer (ws-application) e AccessPolicy (ws-domain, D-139), DecisionWorkspace/AiSuggestion (components/decia/*), AiGateway (sem motor registrado); o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF66.CA01",
+        "text": "Dados usuários autorizados em áreas/camadas disjuntas, quando enviam patches simultâneos, então preserva ambos e mantém ordem visual.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF66.CA02",
+        "text": "Dados escopos sobrepostos ou ancestrais/descendentes na mesma camada, quando o segundo tenta reservar, então rejeita com mensagem sem revelar conteúdo não autorizado.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF66.CA03",
+        "text": "Dada reserva, quando renova/libera/expira, então usa relógio do servidor e token de fencing; cliente antigo não escreve depois da expiração.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF66.CA04",
+        "text": "Dada revisão de objeto alterada, quando chega patch antigo, então rejeita sem sobrescrever e preserva rascunho para reconciliação.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF66.CA05",
+        "text": "Dada revogação de acesso durante edição, quando tenta gravar, então autorização é revalidada transacionalmente.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF66.CA06",
+        "text": "Dado desenho SIGILOSO, quando administrador sem concessão explícita tenta acessar, então nega; proprietário e colaboradores autorizados seguem a política definida.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF66.CA07",
+        "text": "Dada sessão DECIA, quando entra observador/não participante, então só recebe operações compatíveis com papel e acesso à tarefa; URLs diretas não contornam a regra.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF66.CA08",
+        "text": "Dada colaboração 3D, quando é oferecida, então implementa as mesmas garantias no servidor; demonstração 3D local não satisfaz esse aceite.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF67",
+    "n": 67,
+    "title": "Completar geometria e prever traçados no Drawings",
+    "hu": null,
+    "summary": "O RF67 define o comando de completar (AI_COMPLETE/AICOMP) e a previsão de traçados no Drawings: o escopo (objeto, wireframe, região menor ou maior) fixa revisão e elementos preservados; arcos e traços lineares recebem pontos fantasma com hipótese e confiança heurística; fachadas simétricas e curvas Bézier são validadas por continuidade, tangência e simetria com tolerância informada; leiautes de mobiliário e roteamentos MEP só usam dimensões, restrições, obstáculos e regras explícitas, com fontes e validação profissional. Nada é aplicado além do nível de autonomia autorizado.",
+    "route": "Drawings (/drawings, /drawings/[pieceId]; peça aberta a partir de /tasks/[id] e da sessão DECIA /decia/[sessionId])",
+    "coverage": "RF67.CA01 … RF67.CA07 — corpo do card = especificação de docs/produto/requisitos-studio/RF67.md (CAs copiados como estão escritos); classes reais: AutonomyMode/MODE_CAPABILITIES/AiProposal/proposalValidity/evaluateAiAction (lib/ai/autonomy.ts), authorizePatch/aiScopeIsBounded (lib/pieces/patch.ts), DrawingEditScope (lib/drawings/selection.ts), Geometry/snapPoint/editableNodeIds (lib/studio/selection.ts), ContributionEvent/ContributionOrigin (lib/pieces/authorship.ts), AiGateway/AiBudget (ws-application, sem motor registrado); o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF67.CA01",
+        "text": "Dado AI_COMPLETE/AICOMP, quando escolhe objeto, wireframe, região menor ou maior, então fixa escopo, revisão e elementos preservados.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF67.CA02",
+        "text": "Dado arco parcial ou traço linear, quando prevê continuação, então mostra pontos fantasma com hipótese/confiança e só aplica conforme nível autorizado.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF67.CA03",
+        "text": "Dada fachada simétrica ou curva Bézier, quando completa, então valida continuidade, tangência e simetria dentro de tolerância informada.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF67.CA04",
+        "text": "Dado arranjo de mobiliário, quando sugere layout, então recebe dimensões e restrições explícitas e verifica colisões e circulação; não inventa medidas ou normas.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF67.CA05",
+        "text": "Dado roteamento MEP, quando sugere percurso, então usa obstáculos, conexões e regras da disciplina, identifica fontes e exige validação profissional aplicável.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF67.CA06",
+        "text": "Dado usuário que rejeita a predição, quando continua desenhando, então não altera o traço nem repete chamadas pagas sem controle.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF67.CA07",
+        "text": "Dado custo/rede indisponível, quando usa hipótese algorítmica local, então identifica sua origem e não a rotula como inferência de LLM.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF68",
+    "n": 68,
+    "title": "Gerar, auditar, estilizar, otimizar e converter desenhos com IA",
+    "hu": null,
+    "summary": "O RF68 reúne os cinco comandos de IA do Drawings — gerar (AI_GENERATE/AIGEN), auditar (AI_AUDIT/AIAUD), estilizar (AI_STYLE/AISTY), otimizar (AI_OPTIMIZE/AIOPT) e converter raster ou croqui em vetor (AI_CONVERT/AICONV) — como pedidos rastreáveis que devolvem propostas estruturadas e revisáveis, validadas por ferramentas determinísticas antes de tocar a peça. Cada comando respeita o nível de autonomia do RF51, passa por authorizePatch com origem IA, registra custo, provedor, modelo e versão e nunca publica certificação, aprovação técnica ou autoria humana presumida.",
+    "route": "Drawings (/drawings, /drawings/[pieceId]; peça aberta a partir de /tasks/[id] e da sessão DECIA /decia/[sessionId])",
+    "coverage": "RF68.CA01 … RF68.CA07 — corpo do card = especificação de docs/produto/requisitos-studio/RF68.md (CAs copiados como estão escritos); classes reais: AiGateway/AiEnginePort/AiBudget/AiInferenceLogPort/PersonalDataMasker (ws-application, sem motor registrado), AutonomyMode/evaluateAiAction/proposalValidity (lib/ai/autonomy.ts), authorizePatch/PatchOrigin (lib/pieces/patch.ts), computeAuthorship/ContributionEvent (lib/pieces/authorship.ts), buildProvenanceManifest (lib/pieces/provenance.ts), ClassifiedField (lib/pieces/classification.ts), DrawingAnnotation (lib/drawings/taxonomy.ts), AiSuggestion (components/decia); o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF68.CA01",
+        "text": "Dado AI_GENERATE/AIGEN, quando envia intenção e restrições, então recebe proposta estruturada de geometrias compatíveis com o motor e uma prévia revisável.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF68.CA02",
+        "text": "Dado AI_AUDIT/AIAUD, quando analisa, então aponta duplicatas, perfis abertos, colisões e achados técnicos com localização, regra, tolerância e grau de certeza.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF68.CA03",
+        "text": "Dado AI_STYLE/AISTY, quando seleciona referência, então propõe materiais/traços/hachuras sem modificar topologia ou acesso silenciosamente.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF68.CA04",
+        "text": "Dado AI_OPTIMIZE/AIOPT, quando simplifica, então mede erro máximo, redução de tamanho e preserva cotas, conectividade, furos e partes protegidas.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF68.CA05",
+        "text": "Dado AI_CONVERT/AICONV, quando vetoriza raster/croqui, então mantém referência, escala declarada e incertezas; permite corrigir contornos antes de gravar.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF68.CA06",
+        "text": "Dado nível 1 a 4, quando executa esses comandos, então respeita RF51 e não amplia autonomia por causa do nome do comando.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF68.CA07",
+        "text": "Dado resultado não verificável, quando conclui, então informa pendências e não publica certificação ABNT, aprovação técnica ou autoria humana presumida.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF69",
+    "n": 69,
+    "title": "Salvar, exportar, recuperar e navegar no histórico das peças",
+    "hu": null,
+    "summary": "Protege o trabalho de Letters e Drawings contra falhas e alterações indesejadas. SALVAR grava uma PieceRevision imutável no servidor e a interface só mostra \"Salvo\" depois do ACK. SALVAR_COMO cria uma cópia com origem ou exporta um formato identificado. Checkpoints periódicos ficam em local declarado, com política de acesso e retenção. DESFAZER, REFAZER, RESTAURAR_APAGADO, CAMADAS_ANTERIOR, REVERTER_AO_SALVO e a recuperação de rascunho nunca apagam a trilha, nunca duplicam IDs e nunca concedem acesso. Toda transição registra autoria (ContributionEvent) e proveniência.",
+    "route": "Letters (/letters, /letters/[pieceId]) e Drawings (/drawings, /drawings/[pieceId]); peça aberta a partir de /tasks/[id], /projects/[id] e da sessão DECIA /decia/[sessionId]",
+    "coverage": "RF69.CA01 … RF69.CA08 — corpo do card = especificação de docs/produto/requisitos-studio/RF69.md (CAs copiados como estão escritos); classes reais: TaskItem.version e o 409 EDICAO_CONCORRENTE do TaskService/TaskController (padrão de concorrência a reutilizar), ResourceAuthorizer, AccessPolicy, MediaAccessPolicy, MediaObject, MediaUploadService (escrito, ainda não é bean — D-67), lib/pieces/service.ts (WorkPiece/PiecesService em memória), lib/pieces/authorship.ts, lib/pieces/provenance.ts, lib/pieces/patch.ts; o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF69.CA01",
+        "text": "Dados QSAVE/Ctrl+S e SAVEAS/Save a Copy, quando executa, então salva versão persistida ou exporta formato identificado, sem simular escrita em servidor.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF69.CA02",
+        "text": "Dado SAVETIME/autosalvamento, quando configurado, então registra checkpoints no intervalo, identifica onde estão armazenados e aplica política de acesso e retenção.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF69.CA03",
+        "text": "Dado UNDO/REDO ou painel histórico, quando retorna a um estado, então preserva versões e reaplica autorizações/reservas atuais.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF69.CA04",
+        "text": "Dado OOPS, quando restaura última exclusão, então não desfaz edições posteriores nem duplica IDs ou recria conteúdo fora de permissão.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF69.CA05",
+        "text": "Dado LAYERP, quando restaura visibilidade/configuração anterior, então não altera geometria nem concede acesso.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF69.CA06",
+        "text": "Dado Revert/F12, quando volta à última versão salva, então mostra o que será descartado e mantém ponto recuperável.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF69.CA07",
+        "text": "Dado RECOVER/RECOVERALL/DRAWINGRECOVERY, quando arquivo/checkpoint falha, então valida integridade, oferece versões recuperáveis e não promete reparar DWG sem suporte real.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF69.CA08",
+        "text": "Dada exportação para telas, quando otimiza, então mantém original editável e informa resolução, perfil e perdas.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF70",
+    "n": 70,
+    "title": "Importar, exportar e referenciar conteúdo técnico nas peças",
+    "hu": null,
+    "summary": "Permite usar formatos e referências externas nas peças com fidelidade e limites verificáveis. Cada formato tem parser ou conversor validado, limites e mensagem clara para o que não é suportado. O original importado nunca é sobrescrito pela conversão, e as perdas (achatado, aproximado, descartado) aparecem antes do aceite. Referências externas (Xref) guardam vínculo, versão e permissão, sem acesso arbitrário a arquivos ou URLs. Conteúdo ativo (scripts SVG, macros, links remotos) não é executado, e instruções dentro de documentos são dados, nunca comandos.",
+    "route": "Letters (/letters, /letters/[pieceId]) e Drawings (/drawings, /drawings/[pieceId]); peça aberta a partir de /tasks/[id], /projects/[id] e da sessão DECIA /decia/[sessionId]",
+    "coverage": "RF70.CA01 … RF70.CA07 — corpo do card = especificação de docs/produto/requisitos-studio/RF70.md (CAs copiados como estão escritos); classes reais: MediaUploadService (escrito, ainda não é bean — D-67), MediaUploadInspector e MagicBytes (tipo real por assinatura, limites por categoria), MediaAccessPolicy, MediaObject, TaskAttachment, ResourceAuthorizer, AccessPolicy, lib/pieces/authorship.ts (origem IMPORT, categoria IMPORTED), lib/pieces/provenance.ts (c2pa.opened); o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF70.CA01",
+        "text": "Dados formatos nativos ws-studio/ws-asset, quando exporta e reimporta, então preserva IDs, topologia, camadas, materiais, metadados e câmera suportados.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF70.CA02",
+        "text": "Dados SVG, PNG/JPEG/WebP, PDF, DXF/DWG, GLB/IFC, quando o formato está habilitado, então existe parser/conversor validado, limites e mensagem clara para recursos não suportados.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF70.CA03",
+        "text": "Dadas fontes WOFF2, paletas JSON e referências visuais, quando importa, então valida origem/formato, não executa conteúdo ativo e mantém associação ao projeto.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF70.CA04",
+        "text": "Dado XOPEN/Xref, quando abre referência externa, então preserva vínculo, versão e permissão, sem acesso arbitrário a arquivos ou URLs.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF70.CA05",
+        "text": "Dado arquivo malformado, excessivo ou com dependências ausentes, quando abre, então rejeita/solicita correção sem destruir o projeto existente.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF70.CA06",
+        "text": "Dada perda de fidelidade, quando converte, então informa o que será achatado, aproximado ou descartado antes do aceite.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF70.CA07",
+        "text": "Dada exportação GLB, quando valida, então passa validador de formato e preserva unidades, normais e materiais compatíveis; isso não certifica fabricação ou projeto.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF71",
+    "n": 71,
+    "title": "Integrar peças Letters e Drawings à jornada de tarefas, projetos e DECIA",
+    "hu": null,
+    "summary": "Transforma produção e decisões em trabalho rastreável e compartilhável. Uma peça Letters ou Drawings nasce de uma tarefa ou projeto, ou é levada a eles, e pode chegar à sessão DECIA, sempre com o mesmo histórico. O vínculo persistente peça → tarefa → projeto → sessão (PieceLink) guarda origem, revisão e acesso em cada transição. Vincular nunca concede acesso: a classificação só restringe, e cada leitura reavalia a ACL do recurso de destino. Uma decisão DECIA vira tarefa proposta, que só é criada com confirmação humana. Publicar no perfil exige escolher a revisão e a audiência. Remix gera derivação com origem, licença, autores e mudanças.",
+    "route": "Letters (/letters, /letters/[pieceId]) e Drawings (/drawings, /drawings/[pieceId]); peça aberta a partir de /tasks/[id], /projects/[id] e da sessão DECIA /decia/[sessionId]",
+    "coverage": "RF71.CA01 … RF71.CA07 — corpo do card = especificação de docs/produto/requisitos-studio/RF71.md (CAs copiados como estão escritos); classes reais: TaskItem, TaskBrief (V36 task_briefs), TaskService, TaskController, ResourceAuthorizer, AccessPolicy, ScopedResource, SourceKind.DECIA, lib/tasks/client.ts, components/tasks/TaskForm.tsx, components/decia/*, lib/pieces/service.ts, lib/pieces/authorship.ts, lib/pieces/provenance.ts, lib/ai/autonomy.ts; o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF71.CA01",
+        "text": "Dada tarefa/projeto, quando cria peça Letters/Drawings, então mantém vínculo, proprietário, visibilidade e revisão persistida.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF71.CA02",
+        "text": "Dada decisão DECIA, quando gera trabalho, então cria tarefa com objetivo, responsável proposto, critério de aceite e referência à evidência revisada.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF71.CA03",
+        "text": "Dado perfil profissional, quando publica peça, então exige escolha explícita da revisão e audiência; salvar, seguir, curtir ou compartilhar não concede acesso.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF71.CA04",
+        "text": "Dado remix, quando autorizado, então cria derivação com origem, licença, autores e mudanças; não infere porcentagens de autoria como prova.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF71.CA05",
+        "text": "Dado comentário, curtida ou compartilhamento, quando a visibilidade muda, então revalida acesso aos derivados e evita vazamento por prévias e contagens.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF71.CA06",
+        "text": "Dado chefe/departamento, quando acompanha entregas, então vê apenas dados autorizados e distingue rascunho, revisado, aprovado e publicado.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF71.CA07",
+        "text": "Dado usuário de qualquer área profissional, quando percorre o fluxo, então recebe exemplos e instruções claros sem exigir terminologia técnica não explicada.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF72",
+    "n": 72,
+    "title": "Validar qualidade, desempenho e evidências dos editores",
+    "hu": null,
+    "summary": "Define a prova de conclusão de todo RF dos editores: cada CA aponta para um teste automatizado ou uma validação manual reproduzível, com versão/commit e evidência guardada. Uma funcionalidade só é \"concluída\" quando todos os CAs do RF têm essa tripla CA → teste → evidência. Notas de qualidade usam rubrica explícita; nota acima de 8 exige medição. Demonstrações do Drawings usam capturas reais do editor. Colaboração se prova com duas sessões autenticadas. IA se avalia com corpus versionado, sem confundir mock com integração real. Acessibilidade e desempenho têm orçamento declarado por tamanho de documento ou cena. O relatório de funcionalidades distingue implementado local, publicado, validado, parcial e pendente; script de inventário não prova implementação.",
+    "route": "Letters (/letters, /letters/[pieceId]) e Drawings (/drawings, /drawings/[pieceId]); peça aberta a partir de /tasks/[id], /projects/[id] e da sessão DECIA /decia/[sessionId]",
+    "coverage": "RF72.CA01 … RF72.CA07 — corpo do card = especificação de docs/produto/requisitos-studio/RF72.md (CAs copiados como estão escritos); classes reais: .github/workflows/ci.yml (mvn verify, vitest, lint, typecheck, build, contrato OpenAPI, Trivy), docs/diagramas/_tools/checar.py, scripts/rf/gerar-catalogo.mjs (parseReadme) e lib/rf/catalog.test.ts, docs/auditoria/2026-10-17/scripts/gerar-matriz.py (rubrica explícita) e jornada.mjs (Playwright, duas contas, evidencias/JORNADA.json), AiGatewayTest, lib/ai/autonomy.test.ts, lib/pieces/*.test.ts, lib/studio/selection.test.ts, components/tasks/tasks.test.tsx; o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF72.CA01",
+        "text": "Dada entrega de RF, quando é marcada como concluída, então cada CA tem evidência, versão/commit e teste ou validação manual reproduzível.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF72.CA02",
+        "text": "Dadas notas de qualidade, quando publica auditoria, então usa rubrica explícita; nota superior a 8 exige medição e não apenas novo rótulo.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF72.CA03",
+        "text": "Dados cenários complexos, quando demonstra Drawings, então mostra etapas de criação, wireframe, refino, câmera e resultado final com capturas reais do editor.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF72.CA04",
+        "text": "Dada colaboração, quando valida, então usa duas sessões autenticadas e testa concorrência, expiração, revogação e escopos sobrepostos.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF72.CA05",
+        "text": "Dados modelos de IA, quando avalia, então usa corpus/benchmark versionado, orçamento de testes e métricas por nível, sem confundir mocks com integração real.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF72.CA06",
+        "text": "Dados acessibilidade e desempenho, quando valida, então registra teclado/leitor de tela e orçamento de latência/memória em tamanhos de documento/cena definidos.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF72.CA07",
+        "text": "Dado catálogo de funcionalidades desejadas, quando gera relatório, então distingue implementado local, publicado, validado, parcial e pendente; script de inventário não conta como prova de implementação.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF73",
+    "n": 73,
+    "title": "Separar editor determinístico e Assistente IA com navegação acessível",
+    "hu": null,
+    "summary": "Separa a edição determinística das propostas de IA sem trocar de documento. O editor e a seleção continuam visíveis enquanto o Assistente IA ocupa uma região complementar lateral, retrátil e nomeada. Abrir o assistente não inicia inferência. Comandos manuais de seleção, geometria, aparência e histórico aplicam direto no documento e nunca chamam o provedor. Cada proposta mostra original, prévia, feedback, aprovar, rejeitar e refinar, com estado assíncrono explícito (idle, loading, suggesting, diff, error). O foco é previsível, carregamento e erro são anunciados por aria-live, um arraste vira uma única ação reversível e a mudança de revisão invalida propostas antigas.",
+    "route": "Letters (/letters, /letters/[pieceId]) e Drawings (/drawings, /drawings/[pieceId]); peça aberta a partir de /tasks/[id], /projects/[id] e da sessão DECIA /decia/[sessionId]",
+    "coverage": "RF73.CA01 … RF73.CA10 — corpo do card = especificação de docs/produto/requisitos-studio/RF73.md (CAs copiados como estão escritos); classes reais: lib/ai/autonomy.ts (AiProposal, proposalValidity, evaluateAiAction, MODE_CAPABILITIES), lib/pieces/patch.ts (authorizePatch único para MANUAL e IA), lib/pieces/layers.ts, lib/studio/selection.ts, components/decia/AiSuggestion.tsx e decia.test.tsx, AiGateway; o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF73.CA01",
+        "text": "Dado um documento aberto, quando abre o Assistente IA, então mantém editor e seleção visíveis, com região complementar retrátil identificada e sem iniciar inferência.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF73.CA02",
+        "text": "Dados os comandos manuais, quando executa seleção, geometria, aparência ou histórico, então aplica deterministicamente no documento e não aciona o provedor de IA.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF73.CA03",
+        "text": "Dada proposta de IA, quando apresenta, então distingue original, prévia, feedback, aprovar, rejeitar e refinar; estado assíncrono explicita idle/loading/suggesting/diff/error.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF73.CA04",
+        "text": "Dado uso por teclado, quando abre/fecha o drawer ou conclui proposta, então gerencia foco de forma previsível e preserva navegação Tab sem armadilha.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF73.CA05",
+        "text": "Dada sugestão aceita ou rejeitada, quando a operação termina, então devolve foco ao texto, objeto ou prancheta correspondente; falhas permanecem anunciadas no assistente.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF73.CA06",
+        "text": "Dados carregamento e erro, quando surgem, então os anuncia respectivamente por aria-live polite e assertive; controles possuem nomes acessíveis.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF73.CA07",
+        "text": "Dada troca de painel ou fechamento do assistente, quando reabre, então mantém rascunho, seleção, histórico e proposta ainda válida; alterações de revisão invalidam propostas antigas.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF73.CA08",
+        "text": "Dado um arraste contínuo, quando solta ou cancela, então registra uma única ação reversível ou descarta o rascunho temporário; comandos devem usar histórico unitário.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF73.CA09",
+        "text": "Dados componentes, quando altera matemática geométrica, transporte de IA ou acessibilidade, então testes isolados cobrem o módulo e os fluxos integrados cobrem foco, concorrência e rejeição de resposta obsoleta.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF73.CA10",
+        "text": "Dados comandos e cards, quando testa a UI, então usa identificadores editor-cmd-{comando}, ai-suggestion-card-{id}, ai-btn-apply/reject e seletores por papel/nome; critérios WCAG são verificados no escopo declarado sem alegar certificação global.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF74",
+    "n": 74,
+    "title": "Capturar PNG e oferecer prévia fantasma multimodal no Drawings",
+    "hu": null,
+    "summary": "Com o modo ativado explicitamente, uma pausa de 1,5 s na edição captura um PNG transparente só da área autorizada, junto com revisão, dimensão, transformação e bounding box, sem overlays nem interface. Capturar não é enviar. A inferência remota só acontece depois que o backend revalida autenticação, ACL, classificação, consentimento, escopo, tamanho, limites e orçamento. Um provedor com suporte efetivo a imagem de entrada e PNG transparente de saída devolve duas variantes (\"completar objeto\" e \"completar cena\"). As variantes são verificadas em formato, alpha, dimensões e coordenadas, e aparecem sobre a prancheta a cerca de 50% de opacidade, com borda e máscara, sem interceptar o desenho. O aceite converte por vetorizador validado ou insere asset raster ancorado. Nunca promete vetor editável que não existe.",
+    "route": "Drawings (/drawings, /drawings/[pieceId]); peça aberta a partir de /tasks/[id], /projects/[id] e da sessão DECIA /decia/[sessionId]",
+    "coverage": "RF74.CA01 … RF74.CA12 — corpo do card = especificação de docs/produto/requisitos-studio/RF74.md (CAs copiados como estão escritos); classes reais: AiGateway (503 IA_INDISPONIVEL, 422 IA_CONTEUDO_RESTRITO), AiBudget (429 IA_ORCAMENTO_ESGOTADO), AiInferenceLogPort, MediaUploadService e MagicBytes (PNG pelo conteúdo, teto de 40 MP; ainda não é bean — D-67), MediaAccessPolicy, MediaObject, ResourceAuthorizer, AccessPolicy, lib/ai/autonomy.ts, lib/pieces/patch.ts (authorizePatch, aiScopeIsBounded), lib/pieces/provenance.ts (IPTC_DIGITAL_SOURCE), lib/pieces/authorship.ts; o restante (planejado)",
+    "cas": [
+      {
+        "id": "RF74.CA01",
+        "text": "Dado modo explicitamente ativado, quando há pausa de 1,5 segundo na edição, então captura PNG transparente da área autorizada e metadados de revisão, dimensão, transformação e bounding box, sem capturar overlays ou interfaces.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF74.CA02",
+        "text": "Dada imagem pronta, quando solicita inferência remota, então backend revalida autenticação, ACL, classificação, consentimento, escopo, tamanho, limites e orçamento; captura local não equivale a autorização de envio.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF74.CA03",
+        "text": "Dado provedor com suporte efetivo a entrada de imagem e saída PNG transparente, quando executa, então envia imagem e contexto autorizados e retorna variantes para completar objeto e completar cena; capacidades não suportadas produzem erro explícito.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF74.CA04",
+        "text": "Dada resposta, quando valida, então verifica formato, alpha, dimensões, limites e coordenadas; não confia em coordenadas do modelo sem validação e não executa conteúdo ativo ou URLs arbitrárias.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF74.CA05",
+        "text": "Dada proposta válida, quando exibe, então coloca PNG sobre a prancheta com opacidade configurável próxima a 50%, borda e máscara da área; imagem não intercepta ações de desenho.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF74.CA06",
+        "text": "Dadas variantes, quando navega ou refina, então preserva original e contexto, mostra origem/provedor e distingue rasterização local de vetores de PNG efetivamente gerado por modelo multimodal.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF74.CA07",
+        "text": "Dado aceite, quando aprova, então converte em vetor por pipeline validado ou insere asset raster suportado com ancoragem explícita; sem suporte não promete vetor editável nem insere imagem como vetor fictício.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF74.CA08",
+        "text": "Dado Enter, Escape e Tab, quando usa ações, então Enter aceita no alvo correto, Escape rejeita e Tab mantém navegação por padrão; aceitar via Tab exige ativação e foco na prancheta.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF74.CA09",
+        "text": "Dada revisão, região, camada ou acesso alterado enquanto processa, quando a resposta chega, então descarta ou invalida a prévia, cancela trabalho pendente quando suportado e impede sobrescrita de conteúdo novo.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF74.CA10",
+        "text": "Dados níveis 1–4, quando utiliza a prévia, então respeita RF51: leitura/sugestão/transformação local/plano agêntico autorizados, checkpoints e limites; publicar ou ampliar escopo não ocorre automaticamente.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF74.CA11",
+        "text": "Dados indisponibilidade, custo limite, timeout ou falha de vetorização, quando ocorrer, então mantém rascunho, anuncia estado e não inicia ciclos pagos ilimitados; registra uso sem vazar PNG ou segredos em logs.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF74.CA12",
+        "text": "Dada auditoria, quando valida integração, então separa mock, captura local, PNG gerado por modelo e integração real; testa alpha, alinhamento, revisão obsoleta, aceitação/rejeição, acessibilidade e orçamento com evidências reproduzíveis.",
+        "note": "",
         "kind": "enunciado"
       }
     ]

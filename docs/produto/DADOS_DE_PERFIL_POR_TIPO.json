@@ -1,0 +1,5725 @@
+{
+  "titulo": "Dados de perfil por tipo — Work Station",
+  "versao_catalogo": "1.0",
+  "gerado_por": "scripts/pesquisa/perfis/campos.py",
+  "data_de_acesso_das_fontes": "2026-10-17",
+  "perfis": [
+    "EMPREGADO",
+    "EMPRESA",
+    "CHEFE_DEPARTAMENTO",
+    "CURADOR",
+    "ADMIN",
+    "VISITANTE"
+  ],
+  "legenda": {
+    "exigencia": {
+      "O": "obrigatorio",
+      "P": "opcional",
+      "N": "nao_se_aplica"
+    },
+    "grupos": {
+      "identificacao": "Identificação",
+      "contato": "Contato",
+      "profissional": "Profissional",
+      "portfolio": "Portfólio",
+      "social": "Social",
+      "privacidade": "Privacidade",
+      "seguranca": "Segurança",
+      "preferencias": "Preferências",
+      "institucional": "Institucional"
+    },
+    "lgpd": {
+      "nao_pessoal": "Dado de pessoa jurídica ou configuração sem titular identificável (fora do art. 5º, I).",
+      "pessoal": "Dado pessoal comum (art. 5º, I), coletado com finalidade declarada (art. 6º, I).",
+      "pessoal_protegido": "Dado pessoal comum que pede proteção reforçada — cifragem, acesso mínimo e trilha (art. 46): credenciais, contato, IP, documentos.",
+      "sensivel": "Dado pessoal sensível (art. 5º, II). NÃO coletar; só nas hipóteses estritas do art. 11.",
+      "proibido_sem_base_legal": "Dado pessoal sem finalidade no produto: coleta vedada pelos princípios da finalidade e da necessidade (art. 6º, I e III) até haver base legal (art. 7º) e finalidade documentadas."
+    },
+    "visibilidade": {
+      "publico": "Qualquer pessoa, inclusive visitante — respeitada a descoberta do perfil.",
+      "empresa": "Pessoas logadas da mesma empresa (RF19.CA02).",
+      "so_eu": "Só o titular; ADMIN apenas por fluxo auditado.",
+      "interno": "Nunca exibido, nem ao titular (hash, segredo, log técnico)."
+    },
+    "prioridades": {
+      "P1": "alta",
+      "P2": "média",
+      "P3": "baixa"
+    }
+  },
+  "modelo_lido": {
+    "User": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/identity/User.java",
+    "UserView": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/identity/UserView.java",
+    "ProfileUpdate": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/account/AccountService.java",
+    "SensitiveUpdate": "ws-application/src/main/java/br/gov/pr/secid/workstation/application/account/AccountService.java",
+    "UserPreferences": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/identity/UserPreferences.java",
+    "PreferenciasFront": "lib/preferences/types.ts",
+    "Company": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/Company.java",
+    "Department": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/Department.java",
+    "DepartmentMembership": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/DepartmentMembership.java",
+    "CuratorAppointment": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/CuratorAppointment.java",
+    "EmpresaProfileExtension": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/EmpresaProfileExtension.java",
+    "ChefeProfileExtension": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/ChefeProfileExtension.java",
+    "ApprovalRequest": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/institutional/ApprovalRequest.java",
+    "UserConsent": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/lgpd/UserConsent.java",
+    "PolicyAcceptance": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/lgpd/PolicyAcceptance.java",
+    "DataExportRequest": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/lgpd/DataExportRequest.java",
+    "DeliberativeProfile": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/gamificacao/DeliberativeProfile.java",
+    "Follow": "ws-domain/src/main/java/br/gov/pr/secid/workstation/domain/social/Follow.java",
+    "RefreshToken": "ws-infrastructure/persistence-mysql/src/main/java/br/gov/pr/secid/workstation/infrastructure/mysql/identity/RefreshTokenEntity.java"
+  },
+  "modelo_arquivos_ausentes": [],
+  "resumo_por_perfil": {
+    "EMPREGADO": {
+      "obrigatorios": 25,
+      "opcionais": 66,
+      "total_aplicavel": 91,
+      "ja_existem": 44,
+      "parciais": 8,
+      "lacunas": 47
+    },
+    "EMPRESA": {
+      "obrigatorios": 35,
+      "opcionais": 40,
+      "total_aplicavel": 75,
+      "ja_existem": 45,
+      "parciais": 5,
+      "lacunas": 30
+    },
+    "CHEFE_DEPARTAMENTO": {
+      "obrigatorios": 39,
+      "opcionais": 56,
+      "total_aplicavel": 95,
+      "ja_existem": 48,
+      "parciais": 8,
+      "lacunas": 47
+    },
+    "CURADOR": {
+      "obrigatorios": 30,
+      "opcionais": 62,
+      "total_aplicavel": 92,
+      "ja_existem": 46,
+      "parciais": 8,
+      "lacunas": 46
+    },
+    "ADMIN": {
+      "obrigatorios": 29,
+      "opcionais": 62,
+      "total_aplicavel": 91,
+      "ja_existem": 44,
+      "parciais": 8,
+      "lacunas": 47
+    },
+    "VISITANTE": {
+      "obrigatorios": 1,
+      "opcionais": 6,
+      "total_aplicavel": 7,
+      "ja_existem": 5,
+      "parciais": 1,
+      "lacunas": 2
+    }
+  },
+  "campos": [
+    {
+      "id": "nome_usuario",
+      "rotulo": "Nome de usuário (@)",
+      "tipo": "texto 3–80, único; imutável após verificação",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "github",
+        "x",
+        "instagram",
+        "slack"
+      ],
+      "modelo_referencias": [
+        "User.username"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.username"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "nome_completo",
+      "rotulo": "Nome completo (civil ou social)",
+      "tipo": "texto 3–160",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {
+        "EMPRESA": "so_eu"
+      },
+      "fontes": [
+        "linkedin",
+        "xing",
+        "govbr",
+        "lattes",
+        "orcid",
+        "github",
+        "nome_social"
+      ],
+      "modelo_referencias": [
+        "User.fullName"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.fullName"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": true
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Aceitar nome social. Na conta EMPRESA é o nome da pessoa responsável (só ela e o ADMIN veem); a página pública usa o nome da organização."
+    },
+    {
+      "id": "nome_exibicao",
+      "rotulo": "Nome de exibição",
+      "tipo": "texto ≤80",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "slack",
+        "github",
+        "x",
+        "instagram"
+      ],
+      "modelo_referencias": [
+        "User.displayName"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.displayName"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": true
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "pronomes",
+      "rotulo": "Pronomes",
+      "tipo": "texto curto (sugestões + livre)",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "empresa",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "github",
+        "slack",
+        "teams"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "User.pronouns (≤40) + ProfileUpdate",
+        "ordem": 99
+      },
+      "nota": "Opcional e livre; nunca perguntar sexo/gênero. GitHub mostra só a quem está logado; Slack deixa oculto até o admin habilitar."
+    },
+    {
+      "id": "pronuncia_nome",
+      "rotulo": "Pronúncia do nome",
+      "tipo": "texto ≤80 (áudio opcional)",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "empresa",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "slack",
+        "teams"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "User.namePronunciation",
+        "ordem": 99
+      },
+      "nota": ""
+    },
+    {
+      "id": "foto_perfil",
+      "rotulo": "Foto de perfil",
+      "tipo": "imagem (URL interna, sem EXIF)",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "github",
+        "instagram",
+        "slack",
+        "teams"
+      ],
+      "modelo_referencias": [
+        "User.avatarUrl"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.avatarUrl"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": true
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Nunca usar para reconhecimento facial (biometria é dado sensível). EMPRESA usa o logotipo."
+    },
+    {
+      "id": "capa",
+      "rotulo": "Imagem de capa",
+      "tipo": "imagem",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin"
+      ],
+      "modelo_referencias": [
+        "User.coverUrl"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.coverUrl"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": true
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "tipo_perfil",
+      "rotulo": "Tipo de perfil",
+      "tipo": "enum EMPREGADO · EMPRESA · CHEFE_DEPARTAMENTO",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "linkedin_page",
+        "github",
+        "github_org",
+        "facebook"
+      ],
+      "modelo_referencias": [
+        "User.profileType"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.profileType"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Perfil de pessoa × página de organização, como LinkedIn, GitHub e Facebook separam."
+    },
+    {
+      "id": "membro_desde",
+      "rotulo": "Membro desde",
+      "tipo": "data (sistema)",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "User.createdAt"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.createdAt"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "localizacao",
+      "rotulo": "Localização (cidade/UF, país)",
+      "tipo": "texto ou código IBGE",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "empresa",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "github",
+        "dribbble",
+        "x"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "User.locationCity/UF (nunca endereço)",
+        "ordem": 99
+      },
+      "nota": "Só cidade/região; guias do LinkedIn desaconselham endereço. EMPRESA usa a sede (grupo institucional)."
+    },
+    {
+      "id": "selo_verificado",
+      "rotulo": "Selo de verificação",
+      "tipo": "booleano (sistema)",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "github_org",
+        "instagram",
+        "govbr"
+      ],
+      "modelo_referencias": [
+        "User.verified"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.verified"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "EMPRESA e CHEFE só ficam ACTIVE depois da validação do ADMIN (RF28)."
+    },
+    {
+      "id": "verificacao_metodo",
+      "rotulo": "Método e data da verificação",
+      "tipo": "enum (EMAIL_INSTITUCIONAL, DOMINIO, ATO_OFICIAL, CNPJ, GOVBR) + data",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "govbr",
+        "github_org"
+      ],
+      "modelo_referencias": [
+        "ApprovalRequest.reviewedAt",
+        "ApprovalRequest.policyVersion"
+      ],
+      "modelo_atual": {
+        "estado": "parcial",
+        "referencias_encontradas": [
+          "ApprovalRequest.reviewedAt",
+          "ApprovalRequest.policyVersion"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "User.verifiedAt + User.verificationMethod (derivados do ApprovalRequest aprovado)",
+        "ordem": 99
+      },
+      "nota": "LinkedIn mostra o tipo de verificação (identidade, local de trabalho, instituição); o gov.br mostra selos por nível. Hoje o dado está só no pedido de validação, não no perfil."
+    },
+    {
+      "id": "email_institucional_verificado",
+      "rotulo": "Vínculo verificado por e-mail institucional",
+      "tipo": "data + domínio",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "empresa",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "User.workEmailVerifiedAt + domínio (VerificationPolicy.freeMailDomainsJson recusa domínios gratuitos)",
+        "ordem": 99
+      },
+      "nota": "Equivale à verificação de local de trabalho do LinkedIn."
+    },
+    {
+      "id": "identificadores_academicos",
+      "rotulo": "ORCID iD / Currículo Lattes",
+      "tipo": "URL validada",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "github",
+        "orcid",
+        "lattes"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "user_links (tipo ORCID, LATTES)",
+        "ordem": 99
+      },
+      "nota": ""
+    },
+    {
+      "id": "data_nascimento",
+      "rotulo": "Data de nascimento",
+      "tipo": "data",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "proibido_sem_base_legal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "x",
+        "instagram",
+        "lattes"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "nao_coletar",
+      "lacuna": null,
+      "nota": "Só se a Q-63 admitir menores (aprendizes, estagiários): então obrigatória no servidor e cifrada, para aplicar o art. 14. Sem isso, basta a declaração 'tenho 18 anos ou mais'."
+    },
+    {
+      "id": "cpf",
+      "rotulo": "CPF",
+      "tipo": "11 dígitos",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "proibido_sem_base_legal",
+      "visibilidade_padrao": "interno",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "govbr",
+        "lattes"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "nao_coletar",
+      "lacuna": null,
+      "nota": "Nenhuma função do produto precisa do CPF. Exceção: login gov.br, cujo identificador do titular é o CPF — guardar só como oidcSubject cifrado, sem exibir nem usar como chave de negócio."
+    },
+    {
+      "id": "documento_identidade",
+      "rotulo": "Documento de identidade (número ou imagem)",
+      "tipo": "arquivo/texto",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "proibido_sem_base_legal",
+      "visibilidade_padrao": "interno",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "instagram"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "nao_coletar",
+      "lacuna": null,
+      "nota": "LinkedIn e Meta verificam com documento via parceiro; aqui a verificação é por vínculo (e-mail institucional, ato oficial, CNPJ). O UploadKind 'identity' não deve ser usado para pessoas sem base legal."
+    },
+    {
+      "id": "sexo_genero",
+      "rotulo": "Sexo / gênero",
+      "tipo": "enum",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "proibido_sem_base_legal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "lattes"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "nao_coletar",
+      "lacuna": null,
+      "nota": "Sem finalidade. O Lattes exige 'sexo'; aqui bastam pronomes livres e opcionais."
+    },
+    {
+      "id": "cor_raca",
+      "rotulo": "Cor, raça ou origem étnica",
+      "tipo": "enum",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "sensivel",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "lattes",
+        "lgpd"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "nao_coletar",
+      "lacuna": null,
+      "nota": "Obrigatório no Lattes; sensível pelo art. 5º, II. Não coletar."
+    },
+    {
+      "id": "religiao_politica_sindicato",
+      "rotulo": "Religião, opinião política, filiação sindical ou partidária",
+      "tipo": "texto",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "sensivel",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "lgpd"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "nao_coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "saude_deficiencia",
+      "rotulo": "Saúde ou deficiência",
+      "tipo": "texto",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "sensivel",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "lattes",
+        "lgpd"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "nao_coletar",
+      "lacuna": null,
+      "nota": "Necessidades de acessibilidade entram como preferências (fonte, contraste, movimento), sem declarar condição."
+    },
+    {
+      "id": "vida_sexual",
+      "rotulo": "Orientação ou vida sexual",
+      "tipo": "texto",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "sensivel",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "lgpd"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "nao_coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "biometria",
+      "rotulo": "Biometria (facial, digital, voz)",
+      "tipo": "modelo biométrico",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "sensivel",
+      "visibilidade_padrao": "interno",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "govbr",
+        "instagram",
+        "lgpd"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "nao_coletar",
+      "lacuna": null,
+      "nota": "O gov.br usa reconhecimento facial nos níveis prata/ouro; se o produto precisar de nível alto, delegar ao gov.br e guardar só o nível retornado, nunca a biometria."
+    },
+    {
+      "id": "nome_mae",
+      "rotulo": "Nome da mãe",
+      "tipo": "texto",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "proibido_sem_base_legal",
+      "visibilidade_padrao": "interno",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "lattes"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "nao_coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "estado_civil",
+      "rotulo": "Estado civil / relacionamento",
+      "tipo": "enum",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "proibido_sem_base_legal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "facebook"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "nao_coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "endereco_residencial",
+      "rotulo": "Endereço residencial",
+      "tipo": "endereço",
+      "grupo": "identificacao",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "proibido_sem_base_legal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "lattes"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "nao_coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "email_login",
+      "rotulo": "E-mail de acesso",
+      "tipo": "e-mail (cifrado + hash para busca)",
+      "grupo": "contato",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal_protegido",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "github",
+        "orcid",
+        "x",
+        "slack",
+        "linkedin"
+      ],
+      "modelo_referencias": [
+        "User.email",
+        "User.emailHash"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.email",
+          "User.emailHash"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": true
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Para EMPRESA e CHEFE, e-mail do domínio institucional: domínio gratuito não prova representação."
+    },
+    {
+      "id": "email_confirmado",
+      "rotulo": "E-mail confirmado",
+      "tipo": "booleano (sistema)",
+      "grupo": "contato",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "github",
+        "orcid",
+        "linkedin"
+      ],
+      "modelo_referencias": [
+        "User.emailVerified"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.emailVerified"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "email_recuperacao",
+      "rotulo": "E-mail secundário de recuperação",
+      "tipo": "e-mail (cifrado)",
+      "grupo": "contato",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal_protegido",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "orcid"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "User.recoveryEmail (cifrado) ou tabela user_emails",
+        "ordem": 99
+      },
+      "nota": "ORCID recomenda e-mail de backup para não perder o acesso."
+    },
+    {
+      "id": "email_contato_publico",
+      "rotulo": "E-mail de contato exibido no perfil",
+      "tipo": "e-mail",
+      "grupo": "contato",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "github_org"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "user_links (tipo EMAIL)",
+        "ordem": 99
+      },
+      "nota": "Diferente do e-mail de acesso, que nunca é exibido."
+    },
+    {
+      "id": "telefone",
+      "rotulo": "Telefone celular (E.164)",
+      "tipo": "texto E.164 (cifrado)",
+      "grupo": "contato",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal_protegido",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "slack",
+        "teams",
+        "x"
+      ],
+      "modelo_referencias": [
+        "User.phone"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.phone"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": true
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Opcional. O X nunca exibe telefone; aqui também não por padrão. SMS como 2FA é o fator mais fraco."
+    },
+    {
+      "id": "site_pessoal",
+      "rotulo": "Site ou portfólio externo",
+      "tipo": "URL https",
+      "grupo": "contato",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "github",
+        "behance",
+        "dribbble",
+        "x"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "user_links (tipo SITE)",
+        "ordem": 99
+      },
+      "nota": ""
+    },
+    {
+      "id": "redes_sociais",
+      "rotulo": "Links profissionais (até 4)",
+      "tipo": "lista de URL https",
+      "grupo": "contato",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "github",
+        "dribbble",
+        "lattes",
+        "slack"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "user_links (userId, tipo, url, ordem, visibilidade)",
+        "ordem": 99
+      },
+      "nota": "GitHub limita a 4 links; Slack permite campo personalizado de redes."
+    },
+    {
+      "id": "cargo",
+      "rotulo": "Cargo / função",
+      "tipo": "texto ≤120",
+      "grupo": "profissional",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "teams",
+        "slack",
+        "viva_engage"
+      ],
+      "modelo_referencias": [
+        "User.jobTitle"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.jobTitle"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": true
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Recomendado ao EMPREGADO, sem bloquear o cadastro. Na conta EMPRESA guarda o cargo do responsável (privado). Para o CHEFE aparece como 'Chefe de {departamento}'."
+    },
+    {
+      "id": "headline",
+      "rotulo": "Título profissional (headline)",
+      "tipo": "texto ≤120",
+      "grupo": "profissional",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "xing"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "User.headline + ProfileUpdate",
+        "ordem": 99
+      },
+      "nota": "No LinkedIn aparece na busca ao lado do nome e é gerado do cargo atual quando vazio."
+    },
+    {
+      "id": "empresa_atual",
+      "rotulo": "Empresa / órgão atual",
+      "tipo": "referência (lotação)",
+      "grupo": "profissional",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "teams",
+        "viva_engage"
+      ],
+      "modelo_referencias": [
+        "User.companyId"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.companyId"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Definida pela lotação (RF28), nunca autodeclarada."
+    },
+    {
+      "id": "departamento",
+      "rotulo": "Departamento (lotação)",
+      "tipo": "referência",
+      "grupo": "profissional",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "teams",
+        "viva_engage"
+      ],
+      "modelo_referencias": [
+        "User.departmentId"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.departmentId"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "departamento_pretendido",
+      "rotulo": "Departamento pretendido no cadastro",
+      "tipo": "referência",
+      "grupo": "profissional",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "User.intendedDepartmentId (proposta da TAXONOMIA §1.1)",
+        "ordem": 99
+      },
+      "nota": "Não lota ninguém: quem lota é o chefe (RF28.CA02)."
+    },
+    {
+      "id": "periodo_lotacao",
+      "rotulo": "Início e fim da lotação / chefia",
+      "tipo": "datas (sistema)",
+      "grupo": "profissional",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "empresa",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "slack",
+        "linkedin"
+      ],
+      "modelo_referencias": [
+        "DepartmentMembership.startedAt",
+        "DepartmentMembership.endedAt"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "DepartmentMembership.startedAt",
+          "DepartmentMembership.endedAt"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "experiencia",
+      "rotulo": "Experiência profissional anterior",
+      "tipo": "lista (cargo, organização, período, descrição)",
+      "grupo": "profissional",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "xing",
+        "lattes"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "ProfileExperience (userId, título, organização, início, fim, descrição, visibilidade)",
+        "ordem": 99
+      },
+      "nota": ""
+    },
+    {
+      "id": "formacao",
+      "rotulo": "Formação acadêmica",
+      "tipo": "lista (curso, instituição, período)",
+      "grupo": "profissional",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "lattes",
+        "orcid"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "ProfileEducation (userId, curso, instituição, período)",
+        "ordem": 99
+      },
+      "nota": ""
+    },
+    {
+      "id": "competencias",
+      "rotulo": "Competências",
+      "tipo": "lista (vocabulário controlado + termo livre)",
+      "grupo": "profissional",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "viva_engage",
+        "xing",
+        "ws_docs"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P1",
+        "prioridade_rotulo": "alta",
+        "onde": "UserSkill (userId, skillId, origem DECLARADA/CHANCELADA, visibilidade)",
+        "ordem": 1
+      },
+      "nota": "Base da descoberta e das sugestões de pessoas (RF50): 'competências compartilhadas', separadas da análise de carreira privada (REDE_PROFISSIONAL_VISIBILIDADE)."
+    },
+    {
+      "id": "idiomas",
+      "rotulo": "Idiomas e nível",
+      "tipo": "lista (ISO 639 + nível)",
+      "grupo": "profissional",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "lattes"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "ProfileLanguage",
+        "ordem": 99
+      },
+      "nota": ""
+    },
+    {
+      "id": "certificacoes",
+      "rotulo": "Certificações e licenças",
+      "tipo": "lista (nome, emissor, data, URL)",
+      "grupo": "profissional",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "ProfileCertification",
+        "ordem": 99
+      },
+      "nota": ""
+    },
+    {
+      "id": "bio",
+      "rotulo": "Sobre (bio)",
+      "tipo": "texto ≤1000",
+      "grupo": "profissional",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "github",
+        "x",
+        "facebook",
+        "dribbble"
+      ],
+      "modelo_referencias": [
+        "User.bio"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.bio"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": true
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "GitHub limita a 160 caracteres; a EMPRESA usa 'Sobre a organização'."
+    },
+    {
+      "id": "interesses",
+      "rotulo": "Áreas de interesse / atuação",
+      "tipo": "lista",
+      "grupo": "profissional",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "viva_engage",
+        "lattes"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "UserSkill com tipo INTERESSE",
+        "ordem": 99
+      },
+      "nota": ""
+    },
+    {
+      "id": "aberto_a_colaborar",
+      "rotulo": "Aberto a colaborar / mentorar",
+      "tipo": "conjunto (PROJETOS, DECIA, MENTORIA, REVISAO)",
+      "grupo": "profissional",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "empresa",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "behance",
+        "dribbble"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "User.openToJson",
+        "ordem": 99
+      },
+      "nota": "Equivale ao 'Open to'/'Hire me' das referências, restrito a colaboração interna — nunca 'procurando emprego'."
+    },
+    {
+      "id": "status_presenca",
+      "rotulo": "Status e disponibilidade (ocupado, ausente até)",
+      "tipo": "texto ≤80 + expiração",
+      "grupo": "profissional",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "empresa",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "github",
+        "slack",
+        "teams"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "user_status (mensagem, ocupado, expiraEm, visivelPara)",
+        "ordem": 99
+      },
+      "nota": "GitHub permite restringir o status a uma organização."
+    },
+    {
+      "id": "local_trabalho",
+      "rotulo": "Local de trabalho (unidade, remoto, presencial)",
+      "tipo": "enum + unidade",
+      "grupo": "profissional",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "empresa",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "teams",
+        "slack"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "user_status.workLocation",
+        "ordem": 99
+      },
+      "nota": ""
+    },
+    {
+      "id": "matricula",
+      "rotulo": "Matrícula funcional",
+      "tipo": "texto",
+      "grupo": "profissional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "proibido_sem_base_legal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "teams"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "nao_coletar",
+      "lacuna": null,
+      "nota": "Só com integração de RH/folha e base legal (art. 7º, II/V, ou art. 23 no setor público)."
+    },
+    {
+      "id": "pretensao_salarial",
+      "rotulo": "Pretensão salarial / remuneração",
+      "tipo": "valor",
+      "grupo": "profissional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "proibido_sem_base_legal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "indeed",
+        "dribbble"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "nao_coletar",
+      "lacuna": null,
+      "nota": "O Indeed esconde a pretensão dos empregadores; aqui não há finalidade."
+    },
+    {
+      "id": "procurando_emprego",
+      "rotulo": "Sinal 'procurando emprego'",
+      "tipo": "booleano",
+      "grupo": "profissional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "proibido_sem_base_legal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "xing",
+        "indeed"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "nao_coletar",
+      "lacuna": null,
+      "nota": "Numa rede da própria empresa, expõe a pessoa ao empregador; XING e LinkedIn o restringem a recrutadores."
+    },
+    {
+      "id": "destaques",
+      "rotulo": "Destaques do perfil (itens fixados)",
+      "tipo": "lista ordenada de produções publicadas",
+      "grupo": "portfolio",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "github",
+        "behance",
+        "dribbble"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "ProfileFeatured (userId, targetType, targetId, ordem)",
+        "ordem": 99
+      },
+      "nota": "Só itens já publicados; fixar não amplia o público do item."
+    },
+    {
+      "id": "conquistas_visiveis",
+      "rotulo": "Exibir conquistas, chancelas e indicadores",
+      "tipo": "seleção",
+      "grupo": "portfolio",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "github"
+      ],
+      "modelo_referencias": [
+        "DeliberativeProfile.publicIndicatorsJson"
+      ],
+      "modelo_atual": {
+        "estado": "parcial",
+        "referencias_encontradas": [
+          "DeliberativeProfile.publicIndicatorsJson"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "interruptor geral 'mostrar conquistas' no perfil",
+        "ordem": 99
+      },
+      "nota": "GitHub oculta conquistas sem tornar o perfil privado."
+    },
+    {
+      "id": "licenca_reuso",
+      "rotulo": "Política padrão de reuso / remix",
+      "tipo": "enum (só leitura, remix com crédito…)",
+      "grupo": "portfolio",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "UserPreferences.defaultRemixPolicy",
+        "ordem": 99
+      },
+      "nota": "REDE_PROFISSIONAL_VISIBILIDADE pede política explícita e conservadora."
+    },
+    {
+      "id": "quem_pode_seguir",
+      "rotulo": "Quem pode me seguir",
+      "tipo": "enum TODOS · MESMA_EMPRESA · COM_APROVACAO",
+      "grupo": "social",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "instagram"
+      ],
+      "modelo_referencias": [
+        "Follow.status"
+      ],
+      "modelo_atual": {
+        "estado": "parcial",
+        "referencias_encontradas": [
+          "Follow.status"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "User.followPolicy + FollowStatus PENDENTE",
+        "ordem": 99
+      },
+      "nota": "FollowStatus hoje só tem ATIVO/REMOVIDO: não há pedido pendente nem aprovação."
+    },
+    {
+      "id": "quem_pode_mencionar",
+      "rotulo": "Quem pode me mencionar / marcar",
+      "tipo": "enum TODOS · MESMA_EMPRESA · NINGUEM",
+      "grupo": "social",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "instagram",
+        "x"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "User.mentionPolicy",
+        "ordem": 99
+      },
+      "nota": "LinkedIn: desligar não apaga menções existentes; Instagram oferece revisão de marcações."
+    },
+    {
+      "id": "quem_pode_atribuir",
+      "rotulo": "Quem pode me atribuir tarefas e convidar para DECIA",
+      "tipo": "enum MEU_DEPARTAMENTO · MINHA_EMPRESA · QUEM_EU_SIGO",
+      "grupo": "social",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P1",
+        "prioridade_rotulo": "alta",
+        "onde": "User.assignmentPolicy + User.inviteDeciaPolicy",
+        "ordem": 5
+      },
+      "nota": "A atribuição formal pelo chefe segue o fluxo institucional (RF10) e não depende desta opção; convite é sempre revisável (REDE_PROFISSIONAL_VISIBILIDADE)."
+    },
+    {
+      "id": "quem_pode_mensagem",
+      "rotulo": "Quem pode me enviar mensagem direta",
+      "tipo": "enum TODOS · MESMA_EMPRESA · QUEM_EU_SIGO",
+      "grupo": "social",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "instagram"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "User.directMessagePolicy",
+        "ordem": 99
+      },
+      "nota": "Company.messagingPolicyJson cobre só o prazo de retenção das mensagens."
+    },
+    {
+      "id": "sugestoes_de_pessoas",
+      "rotulo": "Aparecer em sugestões de pessoas (RF50)",
+      "tipo": "booleano",
+      "grupo": "social",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "x",
+        "linkedin",
+        "ws_docs"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P1",
+        "prioridade_rotulo": "alta",
+        "onde": "User.peopleSuggestionsOptIn",
+        "ordem": 6
+      },
+      "nota": "Listado como controle de privacidade em REDE_PROFISSIONAL_VISIBILIDADE; usa só campos descobríveis."
+    },
+    {
+      "id": "encontrar_por_contato",
+      "rotulo": "Ser encontrado por e-mail ou telefone",
+      "tipo": "booleano (padrão não)",
+      "grupo": "social",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "x"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "User.findableByContact",
+        "ordem": 99
+      },
+      "nota": "O X separa essa descoberta e nunca exibe e-mail ou telefone."
+    },
+    {
+      "id": "status_online",
+      "rotulo": "Mostrar quando estou online",
+      "tipo": "booleano (padrão não)",
+      "grupo": "social",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "instagram",
+        "teams"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "UserPreferences.showPresence",
+        "ordem": 99
+      },
+      "nota": "Instagram: quem esconde o próprio status também deixa de ver o dos outros."
+    },
+    {
+      "id": "bloqueios",
+      "rotulo": "Pessoas bloqueadas e silenciadas",
+      "tipo": "lista",
+      "grupo": "social",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P1",
+        "prioridade_rotulo": "alta",
+        "onde": "UserBlock (userId, blockedUserId, tipo BLOQUEIO·SILENCIO, criadoEm)",
+        "ordem": 7
+      },
+      "nota": "REDE_PROFISSIONAL_VISIBILIDADE exige bloquear contato e silenciar; não há entidade para isso."
+    },
+    {
+      "id": "revisao_marcacoes",
+      "rotulo": "Revisar marcações antes de aparecerem",
+      "tipo": "booleano",
+      "grupo": "social",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "instagram",
+        "x"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "User.tagReview",
+        "ordem": 99
+      },
+      "nota": ""
+    },
+    {
+      "id": "compartilhar_edicoes",
+      "rotulo": "Avisar a rede sobre mudanças no perfil",
+      "tipo": "booleano (padrão não)",
+      "grupo": "social",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "UserPreferences.announceProfileEdits",
+        "ordem": 99
+      },
+      "nota": ""
+    },
+    {
+      "id": "visitas_ao_perfil",
+      "rotulo": "Registro de quem visitou meu perfil",
+      "tipo": "lista",
+      "grupo": "social",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "proibido_sem_base_legal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "nao_coletar",
+      "lacuna": null,
+      "nota": "Não implementar: cria monitoramento entre colegas e chefias sem finalidade."
+    },
+    {
+      "id": "descoberta_perfil",
+      "rotulo": "Quem encontra meu perfil na busca",
+      "tipo": "enum PUBLICO · EMPRESA · NINGUEM (padrão EMPRESA)",
+      "grupo": "privacidade",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "github",
+        "instagram"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P1",
+        "prioridade_rotulo": "alta",
+        "onde": "User.discoverability",
+        "ordem": 2
+      },
+      "nota": "LinkedIn separa perfil público e indexável; GitHub tem perfil privado; Instagram, conta privada. A EMPRESA é sempre pública."
+    },
+    {
+      "id": "indexacao_externa",
+      "rotulo": "Permitir buscadores externos",
+      "tipo": "booleano (padrão não)",
+      "grupo": "privacidade",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin",
+        "x"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "User.searchEngineIndexing + meta robots na página /u/[username]",
+        "ordem": 99
+      },
+      "nota": "O X avisa que bio e posts públicos podem ser indexados."
+    },
+    {
+      "id": "visibilidade_por_campo",
+      "rotulo": "Visibilidade por campo do perfil",
+      "tipo": "mapa campo → PUBLICO · EMPRESA · SO_EU",
+      "grupo": "privacidade",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "orcid",
+        "x",
+        "xing"
+      ],
+      "modelo_referencias": [
+        "User.hypeVisibility"
+      ],
+      "modelo_atual": {
+        "estado": "parcial",
+        "referencias_encontradas": [
+          "User.hypeVisibility"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": true
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P1",
+        "prioridade_rotulo": "alta",
+        "onde": "User.profileFieldVisibilityJson (ou tabela profile_field_visibility)",
+        "ordem": 3
+      },
+      "nota": "Hoje só o Hype tem visibilidade própria. ORCID usa Todos/Partes confiáveis/Só eu por item; X separa ano e dia/mês do aniversário."
+    },
+    {
+      "id": "publico_padrao",
+      "rotulo": "Público padrão das novas produções",
+      "tipo": "enum PRIVADA · DEPARTAMENTO · EMPRESA · PUBLICA",
+      "grupo": "privacidade",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "facebook",
+        "ws_docs"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P1",
+        "prioridade_rotulo": "alta",
+        "onde": "UserPreferences.defaultVisibility (padrão PRIVADA)",
+        "ordem": 4
+      },
+      "nota": "O Facebook lembra o último público; aqui o padrão é conservador e mudar o padrão não republica o acervo."
+    },
+    {
+      "id": "hype_visibilidade",
+      "rotulo": "Visibilidade do Hype",
+      "tipo": "enum PUBLICO · EMPRESA · SO_EU (padrão SO_EU)",
+      "grupo": "privacidade",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "User.hypeVisibility"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.hypeVisibility"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": true
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "sair_do_ranking",
+      "rotulo": "Sair dos rankings",
+      "tipo": "booleano",
+      "grupo": "privacidade",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs",
+        "lgpd"
+      ],
+      "modelo_referencias": [
+        "User.rankingOptOut"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.rankingOptOut"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": true
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Direito de oposição (art. 18, §2º) e revisão de decisão automatizada (art. 20)."
+    },
+    {
+      "id": "aceite_termos",
+      "rotulo": "Versão aceita dos Termos de Uso",
+      "tipo": "texto (sistema) + histórico",
+      "grupo": "privacidade",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "lgpd",
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "User.termsVersion",
+        "PolicyAcceptance.version"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.termsVersion",
+          "PolicyAcceptance.version"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "aceite_privacidade",
+      "rotulo": "Versão aceita da Política de Privacidade",
+      "tipo": "texto (sistema) + histórico",
+      "grupo": "privacidade",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "lgpd",
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "User.privacyVersion",
+        "PolicyAcceptance.version"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.privacyVersion",
+          "PolicyAcceptance.version"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "consentimentos",
+      "rotulo": "Consentimentos opcionais por finalidade",
+      "tipo": "lista (finalidade, concedido, data)",
+      "grupo": "privacidade",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "lgpd"
+      ],
+      "modelo_referencias": [
+        "UserConsent.purpose",
+        "UserConsent.granted"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "UserConsent.purpose",
+          "UserConsent.granted"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Nunca pré-marcado; revogar com o mesmo gesto de conceder (art. 8º, §5º)."
+    },
+    {
+      "id": "exclusao_conta",
+      "rotulo": "Pedido de exclusão (datas e motivo)",
+      "tipo": "datas + texto ≤500",
+      "grupo": "privacidade",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "lgpd"
+      ],
+      "modelo_referencias": [
+        "User.deletionRequestedAt",
+        "User.deletionScheduledAt",
+        "User.deletionReason"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.deletionRequestedAt",
+          "User.deletionScheduledAt",
+          "User.deletionReason"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "exportacao_dados",
+      "rotulo": "Pedidos de exportação (portabilidade e acesso)",
+      "tipo": "lista",
+      "grupo": "privacidade",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "lgpd"
+      ],
+      "modelo_referencias": [
+        "DataExportRequest.status",
+        "DataExportRequest.format"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "DataExportRequest.status",
+          "DataExportRequest.format"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Art. 18, II e V."
+    },
+    {
+      "id": "cookies",
+      "rotulo": "Consentimento de cookies não essenciais",
+      "tipo": "registro (finalidade, data)",
+      "grupo": "privacidade",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "opcional"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "lgpd"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "armazenamento local + ConsentEvent quando logado",
+        "ordem": 99
+      },
+      "nota": "Só necessário se houver cookies ou métricas não essenciais; com cookies estritamente necessários basta aviso."
+    },
+    {
+      "id": "senha",
+      "rotulo": "Senha (hash Argon2id)",
+      "tipo": "hash",
+      "grupo": "seguranca",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal_protegido",
+      "visibilidade_padrao": "interno",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "github",
+        "orcid",
+        "govbr"
+      ],
+      "modelo_referencias": [
+        "User.passwordHash"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.passwordHash"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Nula em conta só OIDC."
+    },
+    {
+      "id": "login_institucional",
+      "rotulo": "Vínculo de login institucional (emissor + sujeito OIDC)",
+      "tipo": "texto",
+      "grupo": "seguranca",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal_protegido",
+      "visibilidade_padrao": "interno",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "govbr"
+      ],
+      "modelo_referencias": [
+        "User.oidcIssuer",
+        "User.oidcSubject"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.oidcIssuer",
+          "User.oidcSubject"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "No gov.br o sujeito é o CPF: cifrar e não exibir."
+    },
+    {
+      "id": "nivel_govbr",
+      "rotulo": "Nível da conta gov.br (bronze, prata, ouro)",
+      "tipo": "enum (do provedor)",
+      "grupo": "seguranca",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "govbr"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "User.oidcAssuranceLevel (a partir do acr/amr do token)",
+        "ordem": 99
+      },
+      "nota": "Permite exigir nível prata/ouro para ações críticas sem guardar biometria nem documento."
+    },
+    {
+      "id": "dois_fatores",
+      "rotulo": "Verificação em duas etapas ativa",
+      "tipo": "booleano + data de ativação",
+      "grupo": "seguranca",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "opcional",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal_protegido",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "github",
+        "govbr",
+        "instagram"
+      ],
+      "modelo_referencias": [
+        "User.twoFactorEnabled"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.twoFactorEnabled"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Obrigatória para EMPRESA, CHEFE e ADMIN (emitem chancelas ou acessam dados de terceiros). O gov.br só libera 2FA a partir do nível prata; a Meta exige 2FA para o selo."
+    },
+    {
+      "id": "totp_segredo",
+      "rotulo": "Segredo TOTP (cifrado)",
+      "tipo": "Base32 cifrado",
+      "grupo": "seguranca",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "opcional",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal_protegido",
+      "visibilidade_padrao": "interno",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "github"
+      ],
+      "modelo_referencias": [
+        "User.twoFactorSecret"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.twoFactorSecret"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Sem o segredo, a conta com 2FA ligado não consegue entrar (IdentityService)."
+    },
+    {
+      "id": "codigos_recuperacao",
+      "rotulo": "Códigos de recuperação (hash, uso único)",
+      "tipo": "lista de hashes",
+      "grupo": "seguranca",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "opcional",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal_protegido",
+      "visibilidade_padrao": "interno",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "github"
+      ],
+      "modelo_referencias": [
+        "User.twoFactorRecoveryHashes"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.twoFactorRecoveryHashes"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "GitHub: cada código vale uma vez; gerar um novo conjunto invalida o anterior."
+    },
+    {
+      "id": "chaves_de_acesso",
+      "rotulo": "Chaves de acesso (passkeys / WebAuthn)",
+      "tipo": "credencial pública",
+      "grupo": "seguranca",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal_protegido",
+      "visibilidade_padrao": "interno",
+      "visibilidade_por_perfil": {},
+      "fontes": [],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "user_webauthn_credentials",
+        "ordem": 99
+      },
+      "nota": "Não pesquisado nesta rodada; segundo fator resistente a phishing."
+    },
+    {
+      "id": "sessoes_ativas",
+      "rotulo": "Sessões ativas (dispositivo, IP, último uso, revogar)",
+      "tipo": "lista (sistema)",
+      "grupo": "seguranca",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal_protegido",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "github"
+      ],
+      "modelo_referencias": [
+        "RefreshToken.deviceName",
+        "RefreshToken.userAgent",
+        "RefreshToken.createdIp",
+        "RefreshToken.lastUsedAt",
+        "RefreshToken.revokedAt"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "RefreshToken.deviceName",
+          "RefreshToken.userAgent",
+          "RefreshToken.createdIp",
+          "RefreshToken.lastUsedAt",
+          "RefreshToken.revokedAt"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "GitHub lista sessões e dispositivos e permite revogar cada um."
+    },
+    {
+      "id": "historico_login",
+      "rotulo": "Histórico de login (sucessos e falhas)",
+      "tipo": "lista (data, IP aproximado, dispositivo, resultado)",
+      "grupo": "seguranca",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal_protegido",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "github"
+      ],
+      "modelo_referencias": [
+        "User.lastLoginAt"
+      ],
+      "modelo_atual": {
+        "estado": "parcial",
+        "referencias_encontradas": [
+          "User.lastLoginAt"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "login_events (ou leitura filtrada do AuditLog) em /api/me/security-log",
+        "ordem": 8
+      },
+      "nota": "O GitHub mantém um log de segurança visível ao titular; hoje só existe o último login."
+    },
+    {
+      "id": "registros_acesso",
+      "rotulo": "Registros de acesso à aplicação (IP, data e hora)",
+      "tipo": "log técnico",
+      "grupo": "seguranca",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "obrigatorio"
+      },
+      "lgpd": "pessoal_protegido",
+      "visibilidade_padrao": "interno",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "marco_civil"
+      ],
+      "modelo_referencias": [
+        "RefreshToken.createdIp"
+      ],
+      "modelo_atual": {
+        "estado": "parcial",
+        "referencias_encontradas": [
+          "RefreshToken.createdIp"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "access_log com retenção de 6 meses e acesso restrito",
+        "ordem": 99
+      },
+      "nota": "Marco Civil, art. 15: obrigação legal (base do art. 7º, II), inclusive para visitante."
+    },
+    {
+      "id": "alerta_novo_dispositivo",
+      "rotulo": "Aviso de login em novo dispositivo",
+      "tipo": "booleano (padrão sim)",
+      "grupo": "seguranca",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "evento de segurança em notificationPrefsJson (não desligável para ADMIN)",
+        "ordem": 99
+      },
+      "nota": "Prática comum; não conferida nas fontes desta rodada."
+    },
+    {
+      "id": "situacao_conta",
+      "rotulo": "Situação da conta",
+      "tipo": "enum AccountStatus",
+      "grupo": "seguranca",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "User.status"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.status"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Terceiros veem só 'perfil indisponível' quando a conta não está ACTIVE."
+    },
+    {
+      "id": "papel_global",
+      "rotulo": "Papel global (USER / ADMIN)",
+      "tipo": "enum Role",
+      "grupo": "seguranca",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "slack"
+      ],
+      "modelo_referencias": [
+        "User.role"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.role"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": true,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "origem_conta",
+      "rotulo": "Origem da conta (real, seed, demo, sistema)",
+      "tipo": "enum AccountOrigin",
+      "grupo": "seguranca",
+      "por_perfil": {
+        "EMPREGADO": "obrigatorio",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "interno",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "User.accountOrigin"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "User.accountOrigin"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "admin_motivo_acesso",
+      "rotulo": "Motivo registrado ao abrir dado de terceiro",
+      "tipo": "texto na trilha de auditoria",
+      "grupo": "seguranca",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "obrigatorio",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "interno",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "lgpd",
+        "ws_docs"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "AuditLog com 'reason' obrigatório nas rotas /api/admin/*/documents e de suporte",
+        "ordem": 99
+      },
+      "nota": "Registro das operações de tratamento (art. 37)."
+    },
+    {
+      "id": "tema",
+      "rotulo": "Tema",
+      "tipo": "enum AUTO · CLARO · ESCURO · ALTO_CONTRASTE · BLUEPRINT",
+      "grupo": "preferencias",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "opcional"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "UserPreferences.theme",
+        "PreferenciasFront.theme"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "UserPreferences.theme",
+          "PreferenciasFront.theme"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Visitante: só no armazenamento local do navegador."
+    },
+    {
+      "id": "idioma",
+      "rotulo": "Idioma da interface",
+      "tipo": "enum PT_BR · EN · ES",
+      "grupo": "preferencias",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "opcional"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "UserPreferences.language",
+        "PreferenciasFront.language"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "UserPreferences.language",
+          "PreferenciasFront.language"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "densidade",
+      "rotulo": "Densidade",
+      "tipo": "enum COMPACTA · NORMAL · CONFORTAVEL",
+      "grupo": "preferencias",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "opcional"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "UserPreferences.density",
+        "PreferenciasFront.density"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "UserPreferences.density",
+          "PreferenciasFront.density"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "escala_fonte",
+      "rotulo": "Escala da fonte",
+      "tipo": "decimal 0,50–2,00",
+      "grupo": "preferencias",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "opcional"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "UserPreferences.fontScale",
+        "PreferenciasFront.fontScale"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "UserPreferences.fontScale",
+          "PreferenciasFront.fontScale"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "reduzir_movimento",
+      "rotulo": "Reduzir movimento",
+      "tipo": "booleano",
+      "grupo": "preferencias",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "opcional"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "UserPreferences.reduceMotion",
+        "PreferenciasFront.reduceMotion"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "UserPreferences.reduceMotion",
+          "PreferenciasFront.reduceMotion"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "pele_da_mesa",
+      "rotulo": "Pele da mesa",
+      "tipo": "enum PAPEL · CORTICA · BLUEPRINT · PAPEL_TIMBRADO",
+      "grupo": "preferencias",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "UserPreferences.deskSkin",
+        "PreferenciasFront.deskSkin"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "UserPreferences.deskSkin",
+          "PreferenciasFront.deskSkin"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "arte_de_fundo",
+      "rotulo": "Arte de fundo",
+      "tipo": "identificador",
+      "grupo": "preferencias",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "PreferenciasFront.backgroundId"
+      ],
+      "modelo_atual": {
+        "estado": "parcial",
+        "referencias_encontradas": [
+          "PreferenciasFront.backgroundId"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "coluna UserPreferences.backgroundId (hoje viaja dentro de notificationPrefsJson, Q-100)",
+        "ordem": 99
+      },
+      "nota": ""
+    },
+    {
+      "id": "fuso_horario",
+      "rotulo": "Fuso horário",
+      "tipo": "IANA (America/Sao_Paulo)",
+      "grupo": "preferencias",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "github",
+        "slack"
+      ],
+      "modelo_referencias": [
+        "UserPreferences.timezone",
+        "PreferenciasFront.timezone"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "UserPreferences.timezone",
+          "PreferenciasFront.timezone"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "O GitHub permite exibir a hora local no perfil; aqui fica privado salvo escolha."
+    },
+    {
+      "id": "notificacoes",
+      "rotulo": "Notificações (canais e eventos)",
+      "tipo": "JSON (email, push, menções, DECIA, chancelas, pontos, resumo)",
+      "grupo": "preferencias",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "UserPreferences.notificationPrefsJson",
+        "PreferenciasFront.email",
+        "PreferenciasFront.mentions",
+        "PreferenciasFront.weeklyDigest"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "UserPreferences.notificationPrefsJson",
+          "PreferenciasFront.email",
+          "PreferenciasFront.mentions",
+          "PreferenciasFront.weeklyDigest"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "horario_silencio",
+      "rotulo": "Horário de silêncio (não perturbe)",
+      "tipo": "intervalo HH:mm",
+      "grupo": "preferencias",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "notificationPrefsJson.quietHours",
+        "ordem": 99
+      },
+      "nota": "Prática comum; não conferida nas fontes desta rodada."
+    },
+    {
+      "id": "horario_tarefa_do_dia",
+      "rotulo": "Horário da Tarefa do Dia",
+      "tipo": "HH:mm",
+      "grupo": "preferencias",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "PreferenciasFront.dailyTaskAt"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "PreferenciasFront.dailyTaskAt"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "limite_wip",
+      "rotulo": "Limite pessoal de trabalho em andamento (WIP)",
+      "tipo": "inteiro 1–20",
+      "grupo": "preferencias",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "UserPreferences.wipLimit",
+        "PreferenciasFront.wipLimit"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "UserPreferences.wipLimit",
+          "PreferenciasFront.wipLimit"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "modo_ia",
+      "rotulo": "Modo padrão da IA",
+      "tipo": "enum ECONOMIA · AVANCADO",
+      "grupo": "preferencias",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "UserPreferences.aiModeDefault",
+        "PreferenciasFront.aiModeDefault"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "UserPreferences.aiModeDefault",
+          "PreferenciasFront.aiModeDefault"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "autonomia_ia",
+      "rotulo": "Autonomia padrão da IA",
+      "tipo": "enum (SOB_SOLICITACAO…)",
+      "grupo": "preferencias",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "PreferenciasFront.aiAutonomyDefault"
+      ],
+      "modelo_atual": {
+        "estado": "parcial",
+        "referencias_encontradas": [
+          "PreferenciasFront.aiAutonomyDefault"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "coluna UserPreferences.aiAutonomyDefault (hoje dentro de notificationPrefsJson)",
+        "ordem": 99
+      },
+      "nota": ""
+    },
+    {
+      "id": "layout_painel",
+      "rotulo": "Layout do painel",
+      "tipo": "JSON",
+      "grupo": "preferencias",
+      "por_perfil": {
+        "EMPREGADO": "opcional",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "opcional",
+        "ADMIN": "opcional",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "UserPreferences.dashboardLayoutJson"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "UserPreferences.dashboardLayoutJson"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "razao_social",
+      "rotulo": "Razão social",
+      "tipo": "texto ≤200",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "glassdoor",
+        "linkedin_page"
+      ],
+      "modelo_referencias": [
+        "Company.legalName",
+        "EmpresaProfileExtension.legalName"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "Company.legalName",
+          "EmpresaProfileExtension.legalName"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "nome_organizacao",
+      "rotulo": "Nome de exibição da organização (fantasia ou sigla)",
+      "tipo": "texto ≤120",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin_page",
+        "facebook"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "Company.displayName",
+        "ordem": 99
+      },
+      "nota": "Hoje a Company tem só razão social e slug; órgãos públicos são conhecidos pela sigla (ex.: SECID)."
+    },
+    {
+      "id": "slug_pagina",
+      "rotulo": "Endereço da página (slug)",
+      "tipo": "texto ≤80, único",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin_page"
+      ],
+      "modelo_referencias": [
+        "Company.slug"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "Company.slug"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "cnpj",
+      "rotulo": "CNPJ",
+      "tipo": "14 dígitos (dígitos verificadores + situação cadastral)",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "lgpd",
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "Company.cnpj",
+        "EmpresaProfileExtension.companyCnpj"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "Company.cnpj",
+          "EmpresaProfileExtension.companyCnpj"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Obrigatório para validar a EMPRESA. É dado de PJ, mas de empresário individual/MEI identifica a pessoa: por isso cifrado e exibido só se a organização quiser."
+    },
+    {
+      "id": "tipo_organizacao",
+      "rotulo": "Natureza da organização (órgão público, autarquia, estatal, empresa privada, terceiro setor)",
+      "tipo": "enum",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin_page",
+        "glassdoor"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P1",
+        "prioridade_rotulo": "alta",
+        "onde": "Company.organizationType + EmpresaProfileExtension (no cadastro)",
+        "ordem": 9
+      },
+      "nota": "Define o critério de validação (ato no Diário Oficial × contrato social/procuração) e a base legal (art. 23 para o poder público)."
+    },
+    {
+      "id": "setor",
+      "rotulo": "Setor / área de atuação",
+      "tipo": "lista controlada (CNAE opcional)",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin_page",
+        "glassdoor"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "Company.sector",
+        "ordem": 99
+      },
+      "nota": ""
+    },
+    {
+      "id": "porte",
+      "rotulo": "Porte (faixa de pessoas)",
+      "tipo": "enum de faixas",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin_page",
+        "glassdoor"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "Company.sizeRange",
+        "ordem": 99
+      },
+      "nota": "Faixa, nunca número exato."
+    },
+    {
+      "id": "site_oficial",
+      "rotulo": "Site oficial",
+      "tipo": "URL https",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin_page",
+        "github_org",
+        "glassdoor",
+        "facebook"
+      ],
+      "modelo_referencias": [
+        "Company.websiteUrl",
+        "EmpresaProfileExtension.officialSite"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "Company.websiteUrl",
+          "EmpresaProfileExtension.officialSite"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "dominio_verificado",
+      "rotulo": "Domínio institucional verificado (DNS TXT)",
+      "tipo": "domínio + data",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "github_org"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "Company.verifiedDomain + verifiedDomainAt",
+        "ordem": 99
+      },
+      "nota": "GitHub só mostra o selo quando site e e-mail exibidos estão em domínios verificados."
+    },
+    {
+      "id": "logotipo",
+      "rotulo": "Logotipo",
+      "tipo": "imagem",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin_page",
+        "glassdoor"
+      ],
+      "modelo_referencias": [
+        "Company.logoUrl"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "Company.logoUrl"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "brasao",
+      "rotulo": "Brasão (órgão público)",
+      "tipo": "imagem",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "Company.coatOfArmsUrl"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "Company.coatOfArmsUrl"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "sobre_organizacao",
+      "rotulo": "Sobre a organização",
+      "tipo": "texto",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin_page",
+        "glassdoor",
+        "facebook"
+      ],
+      "modelo_referencias": [
+        "Company.about"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "Company.about"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "slogan",
+      "rotulo": "Slogan",
+      "tipo": "texto ≤120",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin_page"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "Company.tagline",
+        "ordem": 99
+      },
+      "nota": ""
+    },
+    {
+      "id": "sede",
+      "rotulo": "Sede (cidade/UF; endereço opcional)",
+      "tipo": "município IBGE + endereço",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "glassdoor",
+        "facebook"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "Company.headquartersCity/UF (+ endereço)",
+        "ordem": 99
+      },
+      "nota": "A cidade também alimenta o calendário de dias úteis dos prazos (feriados locais)."
+    },
+    {
+      "id": "ano_fundacao",
+      "rotulo": "Ano de fundação / criação",
+      "tipo": "ano",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "glassdoor"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "Company.foundedYear",
+        "ordem": 99
+      },
+      "nota": ""
+    },
+    {
+      "id": "email_contato_organizacao",
+      "rotulo": "E-mail institucional de contato",
+      "tipo": "e-mail",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "facebook",
+        "github_org"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "Company.contactEmail",
+        "ordem": 99
+      },
+      "nota": "Caixa institucional (contato@, ouvidoria@), nunca e-mail pessoal."
+    },
+    {
+      "id": "telefone_organizacao",
+      "rotulo": "Telefone institucional",
+      "tipo": "E.164",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "facebook"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P3",
+        "prioridade_rotulo": "baixa",
+        "onde": "Company.contactPhone",
+        "ordem": 99
+      },
+      "nota": ""
+    },
+    {
+      "id": "cor_destaque",
+      "rotulo": "Cor de destaque",
+      "tipo": "token de cor",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "Company.accentColor"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "Company.accentColor"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "responsavel_conta",
+      "rotulo": "Pessoa responsável pela conta",
+      "tipo": "referência a User",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin_page"
+      ],
+      "modelo_referencias": [
+        "Company.ownerUserId"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "Company.ownerUserId"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Equivale ao 'representante autorizado' da LinkedIn Page."
+    },
+    {
+      "id": "documento_representacao",
+      "rotulo": "Documento de representação (ato de nomeação, procuração, contrato social)",
+      "tipo": "arquivo em restricted/",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal_protegido",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin_page",
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "EmpresaProfileExtension.representationDocId"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "EmpresaProfileExtension.representationDocId"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Aberto só pelo ADMIN validador, com auditoria; descartar após a decisão e o prazo de recurso."
+    },
+    {
+      "id": "coadministradores",
+      "rotulo": "Administradores adicionais da página",
+      "tipo": "lista (pessoa, papel, desde)",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "opcional",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "empresa",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "linkedin_page"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P1",
+        "prioridade_rotulo": "alta",
+        "onde": "CompanyAdmin (companyId, userId, papel, desde, até)",
+        "ordem": 10
+      },
+      "nota": "Hoje a conta institucional depende de uma só pessoa (ownerUserId): risco de continuidade. Recomendar ≥ 2."
+    },
+    {
+      "id": "politicas_organizacao",
+      "rotulo": "Políticas da organização (pontos, Hype, ranking, gravação, mensagens)",
+      "tipo": "JSON",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "empresa",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "Company.pointsPolicyJson",
+        "Company.hypePolicyJson",
+        "Company.messagingPolicyJson",
+        "Company.recordingRetentionPolicy"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "Company.pointsPolicyJson",
+          "Company.hypePolicyJson",
+          "Company.messagingPolicyJson",
+          "Company.recordingRetentionPolicy"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "situacao_organizacao",
+      "rotulo": "Situação da organização / validação",
+      "tipo": "enum",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "obrigatorio",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "nao_pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "Company.status",
+        "ApprovalRequest.status"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "Company.status",
+          "ApprovalRequest.status"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "orgao_do_chefe",
+      "rotulo": "Órgão / empresa do departamento",
+      "tipo": "referência a Company",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "ChefeProfileExtension.companyId"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "ChefeProfileExtension.companyId"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "departamento_chefiado",
+      "rotulo": "Departamento chefiado",
+      "tipo": "referência ou nome",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "teams"
+      ],
+      "modelo_referencias": [
+        "ChefeProfileExtension.departmentId",
+        "ChefeProfileExtension.departmentName",
+        "Department.headUserId"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "ChefeProfileExtension.departmentId",
+          "ChefeProfileExtension.departmentName",
+          "Department.headUserId"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "O Teams mostra gestor e subordinados no organograma."
+    },
+    {
+      "id": "ato_nomeacao",
+      "rotulo": "Link do ato de nomeação (Diário Oficial)",
+      "tipo": "URL https",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "ChefeProfileExtension.appointmentLink"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "ChefeProfileExtension.appointmentLink"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Ato público, mas o perfil mostra só o selo 'chefia verificada'."
+    },
+    {
+      "id": "confirmacao_chefia",
+      "rotulo": "Confirmação pelo chefe atual ou pela EMPRESA",
+      "tipo": "pessoa + data (sistema)",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "obrigatorio",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "so_eu",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "ApprovalRequest.confirmedBy",
+        "ApprovalRequest.confirmedAt"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "ApprovalRequest.confirmedBy",
+          "ApprovalRequest.confirmedAt"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    },
+    {
+      "id": "substituto_eventual",
+      "rotulo": "Substituto(a) eventual / delegação",
+      "tipo": "pessoa + período + escopo",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "opcional",
+        "CURADOR": "nao_se_aplica",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "empresa",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "orcid"
+      ],
+      "modelo_referencias": [],
+      "modelo_atual": {
+        "estado": "ausente",
+        "referencias_encontradas": [],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": {
+        "prioridade": "P2",
+        "prioridade_rotulo": "média",
+        "onde": "DepartmentDelegate (departmentId, userId, início, fim, escopo)",
+        "ordem": 99
+      },
+      "nota": "O ORCID admite delegados; garante continuidade nas ausências e na transição (RF36)."
+    },
+    {
+      "id": "curadoria_escopo",
+      "rotulo": "Departamento e escopo da curadoria",
+      "tipo": "referência + enum FILA_REVISAO · PREMIACAO · AMBOS",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "publico",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "CuratorAppointment.departmentId",
+        "CuratorAppointment.scope"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "CuratorAppointment.departmentId",
+          "CuratorAppointment.scope"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": "Etiqueta pública 'Curador de {sigla}'."
+    },
+    {
+      "id": "curadoria_nomeacao",
+      "rotulo": "Quem nomeou, quando e revogação",
+      "tipo": "pessoa + datas + motivo",
+      "grupo": "institucional",
+      "por_perfil": {
+        "EMPREGADO": "nao_se_aplica",
+        "EMPRESA": "nao_se_aplica",
+        "CHEFE_DEPARTAMENTO": "nao_se_aplica",
+        "CURADOR": "obrigatorio",
+        "ADMIN": "nao_se_aplica",
+        "VISITANTE": "nao_se_aplica"
+      },
+      "lgpd": "pessoal",
+      "visibilidade_padrao": "empresa",
+      "visibilidade_por_perfil": {},
+      "fontes": [
+        "ws_docs"
+      ],
+      "modelo_referencias": [
+        "CuratorAppointment.appointedBy",
+        "CuratorAppointment.appointedAt",
+        "CuratorAppointment.revokedAt",
+        "CuratorAppointment.revokeReason"
+      ],
+      "modelo_atual": {
+        "estado": "existe",
+        "referencias_encontradas": [
+          "CuratorAppointment.appointedBy",
+          "CuratorAppointment.appointedAt",
+          "CuratorAppointment.revokedAt",
+          "CuratorAppointment.revokeReason"
+        ],
+        "referencias_nao_encontradas": [],
+        "na_api_userview": false,
+        "editavel_pelo_titular": false
+      },
+      "recomendacao": "coletar",
+      "lacuna": null,
+      "nota": ""
+    }
+  ],
+  "nao_coletar": [
+    "data_nascimento",
+    "cpf",
+    "documento_identidade",
+    "sexo_genero",
+    "cor_raca",
+    "religiao_politica_sindicato",
+    "saude_deficiencia",
+    "vida_sexual",
+    "biometria",
+    "nome_mae",
+    "estado_civil",
+    "endereco_residencial",
+    "matricula",
+    "pretensao_salarial",
+    "procurando_emprego",
+    "visitas_ao_perfil"
+  ],
+  "referencias": {
+    "linkedin": {
+      "nome": "LinkedIn (perfil pessoal)",
+      "categoria": "rede profissional",
+      "cadastro": "e-mail ou telefone, senha, nome e sobrenome (não conferido nesta rodada)",
+      "publico": "Intro: nome, foto, foto de fundo, headline, cargo atual (vem de Experiência), formação, localização, setor (um só), informações de contato e 'Open to' (trabalho, contratação, serviços)",
+      "privacidade": "opções de visualização de perfil (nome+headline, características privadas, modo privado); perfil público editável e indexação por buscadores; quem pode seguir (todos ou conexões); compartilhar edições do perfil; permitir menções, marcações e colaborações (desligar não apaga as existentes)",
+      "seguranca": "verificação em duas etapas e sessões (não conferido nesta rodada)",
+      "verificacao": "gratuita: identidade (documento oficial via CLEAR, Persona ou DigiLocker), local de trabalho (e-mail corporativo, Microsoft Entra Verified ID ou licença LinkedIn Learning) e instituição de ensino",
+      "urls": [
+        "linkedin_intro",
+        "linkedin_verif",
+        "linkedin_verif2",
+        "linkedin_mentions",
+        "linkedin_privacy"
+      ]
+    },
+    "linkedin_page": {
+      "nome": "LinkedIn (Company Page)",
+      "categoria": "página de organização",
+      "cadastro": "nome, URL da página, setor, porte (faixa), tipo de organização e declaração de representante autorizado (caixa de seleção); site, logo e slogan (≤120 caracteres) opcionais",
+      "publico": "nome, logo, slogan, sobre, site, setor, porte, tipo",
+      "privacidade": "—",
+      "seguranca": "administração da página por pessoas com vínculo e e-mail verificado (fonte secundária)",
+      "verificacao": "declaração de representante; vínculo do empregado verificável por e-mail corporativo",
+      "urls": [
+        "linkedin_page_g2",
+        "linkedin_page_claim",
+        "linkedin_verif"
+      ]
+    },
+    "xing": {
+      "nome": "XING",
+      "categoria": "rede profissional (DACH)",
+      "cadastro": "não conferido nesta rodada",
+      "publico": "carreira (cargos com descrição das atribuições), formação, 'desejos de emprego'; muitos dados ficam visíveis inclusive a não membros",
+      "privacidade": "desejos de emprego visíveis só a recrutadores ou a todos os membros; restrições no menu Privacidade",
+      "seguranca": "não conferido",
+      "verificacao": "não conferido",
+      "urls": [
+        "xing_leuphana",
+        "xing_mannheim"
+      ]
+    },
+    "behance": {
+      "nome": "Behance",
+      "categoria": "portfólio criativo",
+      "cadastro": "conta Adobe (não conferido)",
+      "publico": "dados do perfil da comunidade Adobe: ocupação, site, empregador, localização; projetos",
+      "privacidade": "interruptor 'mostrar todas as informações no perfil da comunidade'",
+      "seguranca": "herdada da conta Adobe (não conferido)",
+      "verificacao": "—; disponibilidade 'Hire me' (tempo integral, freelance) leva o perfil à página de contratação",
+      "urls": [
+        "behance_hire",
+        "behance_adobe"
+      ]
+    },
+    "dribbble": {
+      "nome": "Dribbble",
+      "categoria": "portfólio criativo",
+      "cadastro": "não conferido",
+      "publico": "nome, localização, bio, links sociais e site; botão 'hire me' (Pro)",
+      "privacidade": "interruptor de disponibilidade (freelance ou tempo integral)",
+      "seguranca": "não conferido",
+      "verificacao": "—; guia de 2019 cita salário mínimo e valor por hora (pode estar desatualizado)",
+      "urls": [
+        "dribbble_discovered",
+        "dribbble_work"
+      ]
+    },
+    "github": {
+      "nome": "GitHub (perfil pessoal)",
+      "categoria": "rede técnica",
+      "cadastro": "nome de usuário, e-mail e senha (não conferido); o 'nome do perfil' é obrigatório e não precisa ser o civil",
+      "publico": "foto, nome, bio (≤160), pronomes (só para logados), localização, hora local opcional com fuso, até 4 redes sociais, ORCID iD, status (mensagem, 'ocupado', expiração)",
+      "privacidade": "perfil privado (oculta conquistas, atividade, gráfico de contribuições, contadores e botão seguir; README, bio e foto seguem públicos; não vale para atividade passada); ocultar conquistas; status visível só a uma organização",
+      "seguranca": "2FA com códigos de recuperação de uso único (gerar novo conjunto invalida o anterior); lista de sessões e dispositivos com revogação; log de segurança que não apaga eventos",
+      "verificacao": "e-mails verificados (não há selo pessoal)",
+      "urls": [
+        "github_profile",
+        "github_private",
+        "github_2fa",
+        "github_sessions"
+      ]
+    },
+    "github_org": {
+      "nome": "GitHub (organização)",
+      "categoria": "página de organização",
+      "cadastro": "não conferido",
+      "publico": "nome, e-mail e site exibidos no perfil",
+      "privacidade": "—",
+      "seguranca": "proprietários da organização (não conferido)",
+      "verificacao": "domínio verificado por registro DNS TXT dá o selo 'Verified'; site e e-mail exibidos devem estar em domínios verificados",
+      "urls": [
+        "github_org_domain"
+      ]
+    },
+    "glassdoor": {
+      "nome": "Glassdoor (empresa)",
+      "categoria": "reputação de empregador",
+      "cadastro": "perfil de empregador reivindicado (não conferido)",
+      "publico": "site, total de empregados, cidade da sede, ano de fundação, receita anual, setor, indústria, tipo de empresa, situação, concorrentes, locais, história; logo, dados básicos, locais e líder (CEO) compartilhados em todos os perfis",
+      "privacidade": "—",
+      "seguranca": "não conferido",
+      "verificacao": "não conferido",
+      "urls": [
+        "glassdoor_profile"
+      ]
+    },
+    "indeed": {
+      "nome": "Indeed (candidato)",
+      "categoria": "busca de emprego",
+      "cadastro": "não conferido",
+      "publico": "preferências: cargos, áreas, tipo de vaga, jornada, remuneração, deslocamento, mudança, remoto",
+      "privacidade": "lista 'não interessado'; empregadores não veem pretensão salarial nem 'não interessado' (varia por país); opção que decide se empregadores podem encontrar o perfil",
+      "seguranca": "não conferido",
+      "verificacao": "—",
+      "urls": [
+        "indeed_prefs",
+        "indeed_privacy"
+      ]
+    },
+    "viva_engage": {
+      "nome": "Microsoft Viva Engage (ex-Yammer)",
+      "categoria": "rede social corporativa",
+      "cadastro": "conta do Microsoft 365 / Entra ID (provisionada pela organização)",
+      "publico": "nome, departamento e demais propriedades sincronizadas do Entra ID",
+      "privacidade": "quem tem conta M365 não edita o perfil no Engage; propriedades 'About Me' não sincronizadas (escolas, expertise, interesses) foram aposentadas",
+      "seguranca": "herdada do Entra ID",
+      "verificacao": "vínculo garantido pelo diretório",
+      "urls": [
+        "viva_lifecycle"
+      ]
+    },
+    "slack": {
+      "nome": "Slack (perfil de membro)",
+      "categoria": "comunicação corporativa",
+      "cadastro": "convite do workspace (não conferido)",
+      "publico": "nome completo, nome de exibição, gravação e pronúncia do nome, telefone, fuso, cargo; pronomes ocultos até o admin habilitar; campos personalizados pelo admin (local, data de início, redes sociais)",
+      "privacidade": "campos com cadeado só o admin edita; campo personalizado pode ou não aparecer na busca; sincronização SCIM com o provedor de identidade",
+      "seguranca": "não conferido",
+      "verificacao": "vínculo pelo workspace",
+      "urls": [
+        "slack_edit",
+        "slack_custom"
+      ]
+    },
+    "teams": {
+      "nome": "Microsoft Teams / cartão de perfil M365",
+      "categoria": "comunicação corporativa",
+      "cadastro": "conta do Microsoft 365 / Entra ID",
+      "publico": "foto, nome, pronúncia do nome, pronomes, contato, disponibilidade, local de trabalho, organograma (gestor e subordinados), cargo, departamento, escritório",
+      "privacidade": "parte do cartão é controlada pela organização; o que o admin não sincroniza não aparece",
+      "seguranca": "herdada do Entra ID",
+      "verificacao": "vínculo garantido pelo diretório",
+      "urls": [
+        "teams_card"
+      ]
+    },
+    "govbr": {
+      "nome": "gov.br (conta do cidadão)",
+      "categoria": "identidade digital pública",
+      "cadastro": "formulário validado nas bases da Receita Federal ou do INSS (identificador CPF), ou presencial",
+      "publico": "—",
+      "privacidade": "—",
+      "seguranca": "verificação em duas etapas só a partir do nível prata",
+      "verificacao": "níveis bronze (cadastro validado), prata (facial na base da CNH, internet banking credenciado ou SIGEPE) e ouro (facial na base do TSE, QR Code da CIN ou certificado ICP-Brasil) — 'selos de confiabilidade'",
+      "urls": [
+        "govbr_niveis"
+      ]
+    },
+    "lattes": {
+      "nome": "Currículo Lattes (CNPq)",
+      "categoria": "currículo acadêmico",
+      "cadastro": "manual de 2018: foto, nomes, data e país de nascimento, cor ou raça, sexo e nome da mãe obrigatórios; CPF e nome da mãe conferidos na Receita Federal",
+      "publico": "texto de apresentação, formação, atuação profissional (só com vínculo), produção, idiomas, prêmios",
+      "privacidade": "identificação pessoal geralmente não divulgada ao público",
+      "seguranca": "não conferido",
+      "verificacao": "cruzamento com a Receita Federal",
+      "urls": [
+        "lattes_manual",
+        "lattes_ufgd"
+      ]
+    },
+    "orcid": {
+      "nome": "ORCID",
+      "categoria": "identificador de pesquisador",
+      "cadastro": "nome (sobrenome opcional), e-mail principal confirmado, senha e visibilidade padrão obrigatória; e-mail de backup recomendado",
+      "publico": "nome, biografia, emprego, educação, obras (cada item com visibilidade própria); o iD é sempre público",
+      "privacidade": "por item: Todos, Partes confiáveis, Só eu; e-mail privado por padrão; delegados podem gerir o registro",
+      "seguranca": "não conferido",
+      "verificacao": "afirmações feitas por organizações confiáveis",
+      "urls": [
+        "orcid_visibility",
+        "orcid_register"
+      ]
+    },
+    "instagram": {
+      "nome": "Instagram",
+      "categoria": "rede social geral",
+      "cadastro": "não conferido",
+      "publico": "nome, @, foto, bio; conta profissional com categoria",
+      "privacidade": "conta privada (só seguidores aprovados; fora do Explorar e das hashtags); status de atividade (desligar também oculta o dos outros); revisão de marcações; contas profissionais não podem ser privadas (fonte secundária)",
+      "seguranca": "2FA exigido para o Meta Verified",
+      "verificacao": "Meta Verified: ≥18 anos, nome completo, foto com rosto, atividade mínima, documento oficial compatível e 2FA; depois de verificado, mudar nome, foto, @ ou data de nascimento exige nova verificação",
+      "urls": [
+        "instagram_verified",
+        "instagram_privacy"
+      ]
+    },
+    "x": {
+      "nome": "X (ex-Twitter)",
+      "categoria": "rede social geral",
+      "cadastro": "não conferido",
+      "publico": "bio, localização, site e foto sempre públicos; data de nascimento com visibilidade própria",
+      "privacidade": "ano e dia/mês do nascimento com públicos separados (Público, Seguidores, Quem você segue, Seguem-se mutuamente, Só você — padrão 'Só você' desde 2022); ser encontrado por e-mail/telefone desligável (e-mail e telefone nunca exibidos); perfil e posts públicos podem ser indexados",
+      "seguranca": "não conferido",
+      "verificacao": "não conferido",
+      "urls": [
+        "x_birthday",
+        "x_profile",
+        "x_discover"
+      ]
+    },
+    "facebook": {
+      "nome": "Facebook (perfil e Página)",
+      "categoria": "rede social geral",
+      "cadastro": "Página: nome, categoria (até 3), bio (≤101 caracteres, opcional); depois contato, localização, horários; a Página é gerida a partir de um perfil pessoal (fontes secundárias)",
+      "publico": "perfil: dados do Intro com público por item; Página: nome, categoria, bio, site, telefone, e-mail, endereço",
+      "privacidade": "seletor de público (Público, Amigos, Só eu, listas) lembrado entre publicações (página de 2016)",
+      "seguranca": "não conferido",
+      "verificacao": "Meta Verified (ver Instagram)",
+      "urls": [
+        "facebook_audience",
+        "facebook_page",
+        "instagram_verified"
+      ]
+    },
+    "lgpd": {
+      "nome": "LGPD (Lei 13.709/2018)",
+      "categoria": "norma",
+      "urls": [
+        "lgpd"
+      ]
+    },
+    "anpd": {
+      "nome": "ANPD",
+      "categoria": "orientação",
+      "urls": [
+        "anpd_poder_publico"
+      ]
+    },
+    "marco_civil": {
+      "nome": "Marco Civil da Internet",
+      "categoria": "norma",
+      "urls": [
+        "marco_civil"
+      ]
+    },
+    "nome_social": {
+      "nome": "Decreto 8.727/2016",
+      "categoria": "norma",
+      "urls": [
+        "decreto_nome_social"
+      ]
+    },
+    "ws_docs": {
+      "nome": "Documentos do Work Station",
+      "categoria": "interno",
+      "urls": []
+    }
+  },
+  "urls": {
+    "linkedin_intro": {
+      "titulo": "LinkedIn Help — Information displayed on the introduction section of your profile",
+      "url": "https://www.linkedin.com/help/billing/answer/38579",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "linkedin_verif": {
+      "titulo": "LinkedIn Help — Verifications on LinkedIn (identidade, local de trabalho, instituição)",
+      "url": "https://www.linkedin.com/help/linkedin/answer/a1492056",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "linkedin_verif2": {
+      "titulo": "LinkedIn Help — Verification on your LinkedIn profile",
+      "url": "https://www.linkedin.com/help/linkedin/answer/140551",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "linkedin_mentions": {
+      "titulo": "LinkedIn Help — Mentions, tags, and collaborations setting",
+      "url": "https://www.linkedin.com/help/learning/answer/85430",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "linkedin_privacy": {
+      "titulo": "LinkedIn Privacy Settings: How to Control Who Sees Your Posts (2026 Guide)",
+      "url": "https://linkedinpreview.com/blog/linkedin-privacy-settings-2026",
+      "tipo": "secundária",
+      "acesso": "2026-10-17"
+    },
+    "linkedin_page_claim": {
+      "titulo": "LinkedIn Help — Claim a LinkedIn Listing Page (representante autorizado)",
+      "url": "https://www.linkedin.com/help/linkedin/answer/55962",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "linkedin_page_g2": {
+      "titulo": "G2 — How to Create a LinkedIn Page for Your Business in 4 Steps",
+      "url": "https://learn.g2.com/linkedin-business-page",
+      "tipo": "secundária",
+      "acesso": "2026-10-17"
+    },
+    "xing_leuphana": {
+      "titulo": "Leuphana Career Service — Your digital profile (XING)",
+      "url": "https://www.leuphana.de/en/services/career-service/application/your-digital-profile.html",
+      "tipo": "secundária",
+      "acesso": "2026-10-17"
+    },
+    "xing_mannheim": {
+      "titulo": "Universität Mannheim — XING information (privacidade)",
+      "url": "https://www.uni-mannheim.de/en/data-protection-declaration/xing-information/",
+      "tipo": "secundária",
+      "acesso": "2026-10-17"
+    },
+    "behance_hire": {
+      "titulo": "Behance Help — Guide: Hire Me",
+      "url": "https://help.behance.net/hc/en-us/articles/8832406918811-Guide-Hire-Me",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "behance_adobe": {
+      "titulo": "Adobe Community — Changing your profile information",
+      "url": "https://community.adobe.com/announcements-34/changing-your-profile-information-20262",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "dribbble_discovered": {
+      "titulo": "Dribbble Stories — Let's get discovered (2020)",
+      "url": "https://dribbble.com/stories/2020/04/16/lets-get-discovered",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "dribbble_work": {
+      "titulo": "Dribbble Stories — How to get the work you love on Dribbble (2019)",
+      "url": "https://dribbble.com/stories/2019/09/20/how-to-get-the-work-you-love-on-dribbble",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "github_profile": {
+      "titulo": "GitHub Docs — Personalize your profile",
+      "url": "https://docs.github.com/en/account-and-profile/tutorials/personalize-your-profile",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "github_private": {
+      "titulo": "GitHub Docs — Setting your profile to private",
+      "url": "https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/customizing-your-profile/setting-your-profile-to-private",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "github_2fa": {
+      "titulo": "GitHub Docs — Configuring two-factor authentication recovery methods",
+      "url": "https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa/configuring-two-factor-authentication-recovery-methods",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "github_sessions": {
+      "titulo": "GitHub Docs — Viewing and managing your sessions",
+      "url": "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/viewing-and-managing-your-sessions",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "github_org_domain": {
+      "titulo": "GitHub Docs — Verifying or approving a domain for your organization",
+      "url": "https://docs.github.com/en/enterprise-server@3.20/organizations/managing-organization-settings/verifying-or-approving-a-domain-for-your-organization",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "glassdoor_profile": {
+      "titulo": "Glassdoor for Employers — Free employer profile guide",
+      "url": "https://www.guide.glassdoor.com/gdprofile",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "indeed_prefs": {
+      "titulo": "Indeed Help — Adding or editing job search preferences",
+      "url": "https://www.indeed.com/help/job-seekers/articles/32603395892109-adding-or-editing-job-search-preferences",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "indeed_privacy": {
+      "titulo": "Indeed Help (CA) — preferências visíveis a empregadores",
+      "url": "https://support.indeed.com/hc/en-ca/articles/360051197532",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "viva_lifecycle": {
+      "titulo": "Microsoft Learn — Manage Viva Engage users across their lifecycle",
+      "url": "https://learn.microsoft.com/viva/engage/manage-viva-engage-users/manage-users-across-their-lifecycle",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "slack_edit": {
+      "titulo": "Slack Help — Edit your profile",
+      "url": "https://slack.com/help/articles/204092246",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "slack_custom": {
+      "titulo": "Slack Help — Customize member profiles",
+      "url": "https://slack.com/help/articles/212281478-Customize-member-profiles",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "teams_card": {
+      "titulo": "Microsoft Support — Profile cards in Microsoft 365",
+      "url": "https://support.microsoft.com/en-us/Outlook/profile-cards-in-microsoft-365",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "govbr_niveis": {
+      "titulo": "gov.br — Níveis da conta gov.br (bronze, prata, ouro)",
+      "url": "https://www.gov.br/governodigital/pt-br/identidade/conta-gov-br/niveis-da-conta-govbr",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "lattes_manual": {
+      "titulo": "CNPq — Manual da Plataforma Lattes",
+      "url": "https://www.gov.br/cnpq/pt-br/teste-nova-capa-2024/manuais-de-uso-das-plataformas-do-cnpq/FINAL_Manual_Lattes.pdf",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "lattes_ufgd": {
+      "titulo": "UFGD — Manual de cadastramento de Currículo Lattes (2018)",
+      "url": "https://files.ufgd.edu.br/arquivos/arquivos/78/INICIACAO-CIENTIFICA-PROPP/Manual%20de%20cadastramento%20de%20Curr%C3%ADculo%20Lattes-CNPq%20-%202018.pdf",
+      "tipo": "secundária",
+      "acesso": "2026-10-17"
+    },
+    "orcid_visibility": {
+      "titulo": "ORCID Support — Visibility settings",
+      "url": "https://support.orcid.org/hc/articles/360006897614",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "orcid_register": {
+      "titulo": "ORCID Support — Register your ORCID iD",
+      "url": "https://support.orcid.org/hc/articles/360006897454",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "instagram_verified": {
+      "titulo": "Instagram Help — Eligibility requirements for Meta Verified profiles",
+      "url": "https://help.instagram.com/2419286908233223/",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "instagram_privacy": {
+      "titulo": "Dummies — Managing your Instagram privacy settings",
+      "url": "https://www.dummies.com/article/technology/social-media/general-social-media/managing-your-instagrams-privacy-settings-261592/",
+      "tipo": "secundária",
+      "acesso": "2026-10-17"
+    },
+    "x_birthday": {
+      "titulo": "X Help — About profile visibility settings (data de nascimento)",
+      "url": "https://help.x.com/en/safety-and-security/birthday-visibility-settings",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "x_profile": {
+      "titulo": "X Help — How to customize your profile",
+      "url": "https://help.x.com/en/managing-your-account/how-to-customize-your-profile",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "x_discover": {
+      "titulo": "X Help — Email and phone discoverability settings",
+      "url": "https://help.x.com/en/safety-and-security/email-and-phone-discoverability-settings",
+      "tipo": "oficial",
+      "acesso": "2026-10-17"
+    },
+    "facebook_audience": {
+      "titulo": "Facebook Help (arquivo de 2016) — Basic privacy settings & tools",
+      "url": "https://web-wp.archive.org/web/20160601070649/https:/www.facebook.com/help/325807937506242?ref=6pack",
+      "tipo": "oficial (arquivada)",
+      "acesso": "2026-10-17"
+    },
+    "facebook_page": {
+      "titulo": "Website Builder Expert — How to create a Facebook business page",
+      "url": "https://www.websitebuilderexpert.com/news/create-facebook-business-page/",
+      "tipo": "secundária",
+      "acesso": "2026-10-17"
+    },
+    "lgpd": {
+      "titulo": "Lei 13.709/2018 (LGPD) — texto compilado no Planalto",
+      "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm",
+      "tipo": "norma",
+      "obs": "O servidor do Planalto respondeu HTTP 503 na data de acesso; os artigos citados seguem o texto legal vigente e devem ser reconferidos na fonte.",
+      "acesso": "2026-10-17"
+    },
+    "anpd_poder_publico": {
+      "titulo": "ANPD — Guia orientativo: tratamento de dados pessoais pelo Poder Público (v2.0, jun/2023), cópia institucional",
+      "url": "https://privacidade.unicamp.br/arquivo/uploads/guia-poder-publico-anpd-versao-final/",
+      "tipo": "oficial (cópia)",
+      "acesso": "2026-10-17"
+    },
+    "marco_civil": {
+      "titulo": "Lei 12.965/2014 (Marco Civil da Internet), art. 15 — guarda de registros de acesso por 6 meses",
+      "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l12965.htm",
+      "tipo": "norma",
+      "obs": "Referência normativa; página não acessada nesta rodada.",
+      "acesso": "2026-10-17"
+    },
+    "decreto_nome_social": {
+      "titulo": "Decreto 8.727/2016 — uso do nome social na administração pública federal",
+      "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2016/decreto/d8727.htm",
+      "tipo": "norma",
+      "obs": "Referência normativa; página não acessada nesta rodada.",
+      "acesso": "2026-10-17"
+    }
+  }
+}

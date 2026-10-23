@@ -4,6 +4,47 @@
 
 `ExtractionResult` (kind QUANTITATIVOS · ITENS_PRAZOS · ESTRUTURAL; `rowsJson` com confiança por linha; `layersJson`; `status` `ExtractionStatus` PROCESSANDO · PRONTA · REVISADA · CONVERTIDA · FALHA) nasce de uma `TaskItem` DESENHO_TECNICO (.dwg/.dxf/.ifc) ou DOCUMENTO (.pdf/.docx). A leitura **estrutural** (camadas/blocos/entidades, OCR) é feita pelo `platform` (parsers + OCR) e pelo `LocalEngine`; a **interpretação semântica** (item, unidade, quantidade, datas, responsáveis) usa `AiEngine` capabilities `EXTRAIR_DESENHO`/`EXTRAIR_DOCUMENTO`; sem provedor externo só a estrutural, com aviso (CA06). O arquivo passa por `OwnMedia` (`restricted/` quando RESTRITO/SIGILOSO), magic bytes, limite por formato e **teto de pixels** antes de alocar (SEG). Correções do usuário (`ExtractionCorrection`) ficam por departamento e alimentam as próximas extrações (few-shot/regras locais). Converter cria `TaskItem` PLANILHA (PLANILHA_ORCAMENTARIA) ou CRONOGRAMA com `sourceKind EXTRACAO`, `originalTaskId` = tarefa de origem, faísca ✦, e `ProjectTask` no mesmo projeto.
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Todos são planejados: o detalhe da tarefa existe, mas não há `ExtractionPanel`, visualizador 3D nem `ExtractionService`. Só o dono da tarefa extrai.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  dono["«ator» Dono do recurso"]:::ator
+  subgraph SIS["Work Station — RF34 Extração com IA"]
+    direction TB
+    UC1(["UC1 Extrair quantitativos de desenho técnico"]):::ucPlan
+    UC2(["UC2 Extrair itens e prazos de documento"]):::ucPlan
+    UC3(["UC3 Fazer só a leitura estrutural, sem IA externa"]):::ucPlan
+    UC4(["UC4 Revisar e corrigir a tabela extraída"]):::ucPlan
+    UC5(["UC5 Converter em planilha orçamentária ou cronograma"]):::ucPlan
+    UC6(["UC6 Medir e capturar no visualizador 3D"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono --- UC1
+  dono --- UC2
+  dono --- UC4
+  dono --- UC5
+  dono --- UC6
+  UC3 -. "«extend»" .-> UC1
+  UC3 -. "«extend»" .-> UC2
+  UC1 --- ia
+  UC2 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Extrair quantitativos de desenho técnico | `dono`, `ia` | RF34.CA01 | planejado |
+| UC2 Extrair itens e prazos de documento | `dono`, `ia` | RF34.CA02 | planejado |
+| UC3 Fazer só a leitura estrutural, sem IA externa | — (estende UC2) | RF34.CA06 | planejado |
+| UC4 Revisar e corrigir a tabela extraída | `dono` | RF34.CA04 | planejado |
+| UC5 Converter em planilha orçamentária ou cronograma | `dono` | RF34.CA03 | planejado |
+| UC6 Medir e capturar no visualizador 3D | `dono` | RF34.CA05 | planejado |
+
 ## 1. Diagrama de classes
 
 ```mermaid

@@ -33,6 +33,13 @@ public class User {
     private String bio;
     private boolean verified;
     private boolean twoFactorEnabled;
+    /** Segredo TOTP em Base32 (RF2.CA02, D-144): cifrado em repouso pelo adaptador; existe com {@code twoFactorEnabled=false} durante a ativação. */
+    private String twoFactorSecret;
+    /** SHA-256 dos códigos de recuperação ainda não usados, separados por vírgula. */
+    private String twoFactorRecoveryHashes;
+    /** Último passo TOTP aceito: o mesmo código não entra duas vezes. */
+    private Long twoFactorLastStep;
+    private Instant twoFactorEnabledAt;
     private HypeVisibility hypeVisibility = HypeVisibility.SO_EU;
     private boolean rankingOptOut;
     private Instant lastLoginAt;
@@ -229,6 +236,38 @@ public class User {
 
     public void setTwoFactorEnabled(boolean twoFactorEnabled) {
         this.twoFactorEnabled = twoFactorEnabled;
+    }
+
+    public String getTwoFactorSecret() {
+        return twoFactorSecret;
+    }
+
+    public void setTwoFactorSecret(String twoFactorSecret) {
+        this.twoFactorSecret = twoFactorSecret;
+    }
+
+    public String getTwoFactorRecoveryHashes() {
+        return twoFactorRecoveryHashes;
+    }
+
+    public void setTwoFactorRecoveryHashes(String twoFactorRecoveryHashes) {
+        this.twoFactorRecoveryHashes = twoFactorRecoveryHashes;
+    }
+
+    public Long getTwoFactorLastStep() {
+        return twoFactorLastStep;
+    }
+
+    public void setTwoFactorLastStep(Long twoFactorLastStep) {
+        this.twoFactorLastStep = twoFactorLastStep;
+    }
+
+    public Instant getTwoFactorEnabledAt() {
+        return twoFactorEnabledAt;
+    }
+
+    public void setTwoFactorEnabledAt(Instant twoFactorEnabledAt) {
+        this.twoFactorEnabledAt = twoFactorEnabledAt;
     }
 
     public HypeVisibility getHypeVisibility() {

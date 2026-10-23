@@ -1,0 +1,20 @@
+{
+  "capturadoEm": "2026-10-16T13:00:31.519Z",
+  "realProviderCalls": 0,
+  "mockResponses": 2,
+  "blockedUnexpectedAiCalls": 0,
+  "pageErrors": [],
+  "bezierDragHistorySteps": 1,
+  "altPreservedOppositeHandle": true,
+  "shiftAngle45": true,
+  "appearanceStrokeNone": true,
+  "acceptRestoredCanvasFocus": true,
+  "escapeRejectedWithoutMutation": true,
+  "lettersLocalApplyRestoredTextFocus": true,
+  "axe": {
+    "scope": "Somente painel Bézier e painel Assistente IA; WCAG A/AA 2.0/2.1",
+    "violations": 0
+  },
+  "pngSource": "Rasterização local de proposta vetorial mock; não é PNG gerado por modelo multimodal.",
+  "multimodalBackend": "PENDENTE"
+}

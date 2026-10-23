@@ -72,6 +72,22 @@ final class Fakes {
         }
 
         @Override
+        public List<User> searchInCompany(UUID companyId, String query, int limit) {
+            String q = query.toLowerCase(java.util.Locale.ROOT);
+            return rows.values().stream()
+                    .filter(u -> companyId != null && companyId.equals(u.getCompanyId()) && u.getStatus() == AccountStatus.ACTIVE)
+                    .filter(u -> (u.getUsername() + " " + u.getFullName() + " " + (u.getDisplayName() == null ? "" : u.getDisplayName()))
+                            .toLowerCase(java.util.Locale.ROOT).contains(q))
+                    .sorted(java.util.Comparator.comparing(User::getUsername)).limit(limit).toList();
+        }
+
+        @Override
+        public List<User> findDeletionDue(java.time.Instant now, int limit) {
+            return rows.values().stream().filter(u -> u.getStatus() == AccountStatus.DELETION_SCHEDULED && u.getDeletionScheduledAt() != null
+                    && !u.getDeletionScheduledAt().isAfter(now)).limit(limit).toList();
+        }
+
+        @Override
         public User save(User user) {
             return add(user);
         }

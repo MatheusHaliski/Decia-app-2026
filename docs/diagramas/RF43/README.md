@@ -4,6 +4,72 @@
 
 **Motor** (`AiEngine`, ARQUITETURA §3.1): `AiRequest(capability, hostRf, userId, deptId, accessClass, payload, mode)` → governança (feature flag por função, `AccessClassification` RESTRITO/SIGILOSO só `LocalEngine`, `Masking` de dados pessoais — existe no main —, `AiQuota` em Redis, `AiBudget` teto diário Q-50, consentimento) → Claude (primário) → Gemini (alternativo) → `LocalEngine` (regras, embeddings locais, PERT/CPM/Monte Carlo/EVM); circuit breaker + retry + timeout (Resilience4j, `AiProviderCircuitState`); **sempre** `AiInferenceLog` (`ai_inference_log` já existe no V2). **Regra de ouro (D-12):** a IA só **interpreta números calculados pelo sistema** — `MetricCalculator` + `MetricDefinition` (catálogo §8 em `docs/arquitetura/METRICAS_GESTAO.md`: fórmula, fonte, proxy, `minSamples`) → `MetricSnapshot` → `Insight` (ACERVO · PERFIL · EQUIPE · PROJETO, `metricRefsJson`, `actionsJson`), `RankingEntry` (dimensões separadas, `RankingWeights` públicos, `rankingOptOut`, "Explique minha posição"), `FeasibilitySheet` (custo P10/P50/P90, PERT/CPM, Monte Carlo 1.000 execuções, score decomposto, top 5 riscos, WBS, RACI, premissas e desconhecidos). Nada vira decisão, chancela, ranking oficial ou projeto sem confirmação humana.
 
+## 0. Diagrama de casos de uso
+
+Quem usa a IA do sistema e para quê. Atores do catálogo de [`ATORES_E_ATRIBUTOS.md`](../../arquitetura/ATORES_E_ATRIBUTOS.md) §2 e permissões da Matriz A de [`ABAS_POR_PERFIL.md`](../../produto/ABAS_POR_PERFIL.md) (6.7: Perfil só do dono, Equipe só de CHEFE e EMPRESA). Casos com borda contínua existem no código (preferências e campos de `PATCH /api/me`); os tracejados são planejados — `AiGateway` e `AiBudget` existem, mas nenhum motor está registrado.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  empregado["«ator» Empregado"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  empresa["«ator» Empresa ou órgão"]:::ator
+  admin["«ator» Administrador"]:::ator
+  subgraph SIS["Work Station — RF43 IA do sistema"]
+    direction TB
+    UC1(["UC1 Ver insights do Acervo"]):::ucPlan
+    UC2(["UC2 Ver insights do Perfil"]):::ucPlan
+    UC3(["UC3 Consultar o ranking e explicar minha posição"]):::ucPlan
+    UC4(["UC4 Sair do ranking"]):::uc
+    UC5(["UC5 Definir os pesos do ranking"]):::ucPlan
+    UC6(["UC6 Ver insights da Equipe"]):::ucPlan
+    UC7(["UC7 Escolher o modo Básico ou Avançado da IA"]):::uc
+    UC8(["UC8 Criar tarefas com o Autopilot"]):::ucPlan
+    UC9(["UC9 Receber projetos sugeridos com viabilidade"]):::ucPlan
+    UC10(["UC10 Aceitar ou descartar o projeto sugerido"]):::ucPlan
+    UC11(["UC11 Passar pela governança da IA"]):::ucPlan
+    UC12(["UC12 Acompanhar a IA do sistema"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  autenticado --- UC1
+  autenticado --- UC3
+  autenticado --- UC7
+  autenticado --- UC8
+  autenticado --- UC9
+  empregado --- UC2
+  chefe --- UC2
+  chefe --- UC6
+  empresa --- UC5
+  empresa --- UC6
+  admin --- UC12
+  UC4 -. "«extend»" .-> UC3
+  UC10 -. "«extend»" .-> UC9
+  UC1 -. "«include»" .-> UC11
+  UC2 -. "«include»" .-> UC11
+  UC8 -. "«include»" .-> UC11
+  UC9 -. "«include»" .-> UC11
+  UC11 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Ver insights do Acervo | Pessoa autenticada | RF43.CA03, RF43.CA13, RF43.CA15 | planejado (`/insights` é página-esqueleto) |
+| UC2 Ver insights do Perfil (só o dono, com consentimento) | Empregado, Chefe de departamento | RF43.CA04 | planejado |
+| UC3 Consultar o ranking e explicar minha posição | Pessoa autenticada | RF43.CA05 | planejado |
+| UC4 Sair do ranking | — (estende UC3) | RF43.CA05 | real parcial (`PATCH /api/me` grava `rankingOptOut`; controle na tela planejado) |
+| UC5 Definir os pesos do ranking | Empresa ou órgão | RF43.CA05 | planejado |
+| UC6 Ver insights da Equipe (CHEFE: seus departamentos; EMPRESA: toda a empresa) | Chefe de departamento, Empresa ou órgão | RF43.CA14, RF43.CA15 | planejado |
+| UC7 Escolher o modo Básico ou Avançado da IA | Pessoa autenticada | RF43.CA06 | real parcial (preferência `aiModeDefault` em `/settings?tab=trabalho`, `PUT /api/me/preferences`; modo Avançado na sessão DECIA planejado) |
+| UC8 Criar tarefas com o Autopilot (rascunhos revisáveis) | Pessoa autenticada | RF43.CA07 | planejado (`/autopilot` é página-esqueleto) |
+| UC9 Receber projetos sugeridos com custo, prazo e viabilidade | Pessoa autenticada | RF43.CA08, RF43.CA09, RF43.CA11 | planejado |
+| UC10 Aceitar ou descartar o projeto sugerido | — (estende UC9) | RF43.CA10 | planejado |
+| UC11 Passar pela governança da IA (classificação, mascaramento, cota, cadeia de provedores) | IA (AiGateway) | RF43.CA01, RF43.CA02, RF43.CA11, RF43.CA13 | planejado (`AiGateway`/`AiBudget` sem motor registrado) |
+| UC12 Acompanhar a IA do sistema (custo, fallback, aceitação) | Administrador | RF43.CA12 | planejado |
+
 ## 1. Diagrama de classes
 
 ```mermaid

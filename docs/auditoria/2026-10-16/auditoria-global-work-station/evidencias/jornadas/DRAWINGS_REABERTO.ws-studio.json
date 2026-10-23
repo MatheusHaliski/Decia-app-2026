@@ -1,0 +1,133 @@
+{
+  "format": "ws-studio",
+  "schemaVersion": 1,
+  "revision": 1,
+  "title": "Nova peça",
+  "blocks": [
+    {
+      "id": "b1",
+      "kind": "heading",
+      "text": "Objetivo do trabalho"
+    },
+    {
+      "id": "b2",
+      "kind": "paragraph",
+      "text": "Com certeza a equipe publicará o relatório. Entrega: procedimento com critérios verificáveis."
+    }
+  ],
+  "shapes": [
+    {
+      "id": "1af2071c-eba1-4e5c-add3-c6fcd7f7080a",
+      "x": 290,
+      "y": 450,
+      "width": 220,
+      "height": 35,
+      "label": "ELLIPSE",
+      "layer": "Andaime",
+      "kind": "ellipse",
+      "style": {
+        "fillMode": "solid",
+        "fill": "#e8edf2",
+        "fillEnd": "#ffffff",
+        "stroke": "#263445",
+        "strokeWidth": 2,
+        "dash": "solid",
+        "opacity": 1,
+        "angle": 0,
+        "fontSize": 16
+      }
+    },
+    {
+      "id": "0e5dd47e-8454-47aa-910c-edcae3ed3706",
+      "x": 390,
+      "y": 230,
+      "width": 20,
+      "height": 225,
+      "label": "RECTANG",
+      "layer": "Andaime",
+      "kind": "rect",
+      "style": {
+        "fillMode": "solid",
+        "fill": "#e8edf2",
+        "fillEnd": "#ffffff",
+        "stroke": "#263445",
+        "strokeWidth": 2,
+        "dash": "solid",
+        "opacity": 1,
+        "angle": 0,
+        "fontSize": 16
+      }
+    },
+    {
+      "id": "4daed127-36c6-4a3b-b1fe-22aee19a6ecf",
+      "x": 290,
+      "y": 124.73720558371176,
+      "width": 220,
+      "height": 190.52558883257652,
+      "label": "POLYGON",
+      "layer": "Andaime",
+      "kind": "path",
+      "style": {
+        "fillMode": "solid",
+        "fill": "#e8edf2",
+        "fillEnd": "#ffffff",
+        "stroke": "#263445",
+        "strokeWidth": 2,
+        "dash": "solid",
+        "opacity": 1,
+        "angle": 0,
+        "fontSize": 16
+      },
+      "points": [
+        {
+          "x": 1,
+          "y": 0.49999999999999994
+        },
+        {
+          "x": 0.75,
+          "y": 0.9999999999999997
+        },
+        {
+          "x": 0.25,
+          "y": 1
+        },
+        {
+          "x": 0,
+          "y": 0.49999999999999994
+        },
+        {
+          "x": 0.24999999999999975,
+          "y": 1.4917528718611888e-16
+        },
+        {
+          "x": 0.75,
+          "y": 0
+        }
+      ],
+      "closed": true,
+      "pathMode": "linear"
+    },
+    {
+      "id": "61536797-d90d-4510-91f0-ecfc59ab4ff3",
+      "x": 372,
+      "y": 192,
+      "width": 56,
+      "height": 56,
+      "label": "CIRCLE",
+      "layer": "Andaime",
+      "kind": "ellipse",
+      "style": {
+        "fillMode": "solid",
+        "fill": "#e8edf2",
+        "fillEnd": "#ffffff",
+        "stroke": "#263445",
+        "strokeWidth": 2,
+        "dash": "solid",
+        "opacity": 1,
+        "angle": 0,
+        "fontSize": 16
+      }
+    }
+  ],
+  "constraints": []
+}

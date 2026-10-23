@@ -6,7 +6,7 @@
 import type { SubTab } from "@/lib/nav/matrix";
 import { PROFILE_TABS } from "@/lib/pages/registry";
 import {
-  assignmentsOf, canInteract, canSeeHype, countersOf, delegatePermission, departmentById, followersCount, giveBackPermission, hasLiked, isDraft,
+  assignmentsOf, canInteract, canView, canSeeHype, countersOf, delegatePermission, departmentById, followersCount, followingCount, giveBackPermission, hasLiked, isDraft,
   isFollowing, myQualitative, personById, profileProjects, profileTasks, remixChain, remixPermission, remixedByCount, savedOf, shareChannelPermission,
   companyById, taskById, type Counters, type Item, type Permission,
 } from "./rules";
@@ -14,6 +14,8 @@ import type {
   AccessClassification, AssignmentStatus, NodeColor, ProjectPhase, ProjectStatus, QualitativeReaction, ShareChannel, SocialPerson, SocialProject,
   SocialState, SocialTask, TargetRef, TaskCategory, TaskState, TaskType, ViewerId, Visibility,
 } from "./types";
+import type { WorkStatus } from "@/lib/tasks/status";
+import { isAuthorshipSummary } from "./authorship";
 import { PROJECT_PHASES, SHARE_CHANNELS } from "./types";
 
 /* ── Metadados visuais por tipo/estado (texto sempre acompanha; cor só por token) ──────────────────────── */
@@ -80,7 +82,11 @@ export interface CreditInfo { originalAuthor: PersonRef; originalTitle: string; 
 
 export type DueKind = "ok" | "soon" | "over";
 
-export interface TaskCardViewModel {
+/**
+ * O que o card de tarefa sabe em qualquer fonte (DEMO em memória ou API real): identidade, tipo, estado, prazo, classificação.
+ * Autor e responsável podem faltar quando a fonte só tem ids (a API real não traz nome): o card não mostra, não inventa.
+ */
+export interface TaskCardBase {
   kind: "TASK";
   id: string;
   ref: TargetRef;
@@ -97,23 +103,42 @@ export interface TaskCardViewModel {
   stateTone: Tone;
   visibility: Visibility;
   accessClass: AccessClassification;
-  author: PersonRef;
+  author: PersonRef | null;
   department: DepartmentRef | null;
   responsible: PersonRef | null;
   dueAt: string | null;
   dueKind: DueKind | null;
   legal: boolean;
   aiGenerated: boolean;
+  authorship: SocialTask["authorship"] | null;
   seals: SocialTask["seals"];
   blockReason: string | null;
-  counters: Counters;
-  viewer: ViewerFlags;
-  perms: SocialPermissions;
   credit: CreditInfo | null;
-  remixedBy: number;
   delegation: DelegationInfo | null;
   variants: ReadonlySet<TaskCardVariant>;
 }
+
+/** Card da rede social (DEMO): com contadores, flags do viewer e permissões — o `TaskSchemeCard` mostra a barra social. */
+export interface TaskCardViewModel extends TaskCardBase {
+  social: true;
+  author: PersonRef;
+  counters: Counters;
+  viewer: ViewerFlags;
+  perms: SocialPermissions;
+  remixedBy: number;
+}
+
+/**
+ * Card sem camada social (tarefa real de `/api/tasks`): não há curtidas, comentários, remixes, selos nem crédito na fonte,
+ * então o view model não carrega contadores e o `TaskSchemeCard` não desenha a barra social nem ações que não funcionam.
+ */
+export interface PlainTaskCardViewModel extends TaskCardBase {
+  social: false;
+  /** eixo de execução padronizado (A realizar · Em andamento · Bloqueado · Concluído · Arquivado); `null` = publicação */
+  workStatus: WorkStatus | null;
+}
+
+export type AnyTaskCardViewModel = TaskCardViewModel | PlainTaskCardViewModel;
 
 export interface ProjectCardViewModel {
   kind: "PROJECT";
@@ -135,6 +160,7 @@ export interface ProjectCardViewModel {
   nextMilestoneAt: string | null;
   lastDeciaEventLabel: string | null;
   aiGenerated: boolean;
+  authorship: SocialProject["authorship"] | null;
   seals: SocialProject["seals"];
   counters: Counters;
   viewer: ViewerFlags;
@@ -220,11 +246,11 @@ export function toTaskCardViewModel(s: SocialState, viewer: ViewerId, task: Soci
   if (task.legalDueAt) variants.add("PRAZO_LEGAL");
   const family: ArtFamily = (["protocolo", "carimbo", "pasta", "blueprint", "monograma"] as const).find((f) => f === task.cardSkin) ?? meta.family;
   return {
-    kind: "TASK", id: task.id, ref, href: `/tasks/${task.id}`, title: task.title, summary: task.summary, type: task.type, typeSymbol: meta.symbol, typeTone: meta.tone,
+    kind: "TASK", social: true, id: task.id, ref, href: `/tasks/${task.id}`, title: task.title, summary: task.summary, type: task.type, typeSymbol: meta.symbol, typeTone: meta.tone,
     family, category: task.category, format: task.format, state: task.state, stateTone: TASK_STATE_TONE[task.state], visibility: task.visibility, accessClass: task.accessClass,
     author: personRef(s, task.ownerId), department: deptRef(s, task.departmentId),
     responsible: task.responsibleId && task.responsibleId !== task.ownerId ? personRef(s, task.responsibleId) : null,
-    dueAt: due, dueKind: dueKindOf(due, now), legal: !!task.legalDueAt, aiGenerated: task.aiGenerated, seals: task.seals, blockReason: task.blockReason,
+    dueAt: due, dueKind: dueKindOf(due, now), legal: !!task.legalDueAt, aiGenerated: task.aiGenerated, authorship: isAuthorshipSummary(task.authorship) ? task.authorship : null, seals: task.seals, blockReason: task.blockReason,
     counters: countersOf(s, ref), viewer: flags, perms: permissions(s, viewer, item), credit: creditOf(s, ref), remixedBy: remixedByCount(s, ref), delegation, variants,
   };
 }
@@ -243,22 +269,24 @@ export function toProjectCardViewModel(s: SocialState, viewer: ViewerId, project
   if (project.visibility === "PRIVADA") variants.add("PRIVADO");
   if (project.visibility === "DEPARTAMENTO") variants.add("DEPARTAMENTO");
   if (project.visibility === "EMPRESA") variants.add("EMPRESA");
-  const mosaic = project.taskIds
+  // Composição só com tarefas que o viewer vê: título, id e total de uma tarefa oculta não podem vazar pelo card.
+  const visibleTasks = project.taskIds
     .map((id) => taskById(s, id))
-    .filter((t): t is SocialTask => !!t)
+    .filter((t): t is SocialTask => !!t && canView(s, viewer, { kind: "TASK", task: t }));
+  const mosaic = visibleTasks
     .slice(0, 6)
     .map((t) => ({ id: t.id, symbol: TASK_TYPE_META[t.type].symbol, tone: TASK_TYPE_META[t.type].tone, title: t.title }));
   return {
     kind: "PROJECT", id: project.id, ref, href: `/projects/${project.id}`, title: project.title, objective: project.objective, status: project.status,
     statusTone: PROJECT_STATUS_TONE[project.status], phase: project.currentPhase, phaseIndex: PROJECT_PHASES.indexOf(project.currentPhase), visibility: project.visibility,
-    author: personRef(s, project.ownerId), department: deptRef(s, project.departmentId), mosaic, tasksCount: project.taskIds.length, peopleCount: project.peopleCount,
-    nextMilestoneAt: project.nextMilestoneAt, lastDeciaEventLabel: project.lastDeciaEventLabel, aiGenerated: project.aiGenerated, seals: project.seals,
+    author: personRef(s, project.ownerId), department: deptRef(s, project.departmentId), mosaic, tasksCount: visibleTasks.length, peopleCount: project.peopleCount,
+    nextMilestoneAt: project.nextMilestoneAt, lastDeciaEventLabel: project.lastDeciaEventLabel, aiGenerated: project.aiGenerated, authorship: isAuthorshipSummary(project.authorship) ? project.authorship : null, seals: project.seals,
     counters: countersOf(s, ref), viewer: flags, perms: permissions(s, viewer, item), credit: creditOf(s, ref), remixedBy: remixedByCount(s, ref), delegation, variants,
   };
 }
 
 /* ── Cabeçalho do perfil (Matriz B; RF6.CA01, RF16.CA01/CA04/CA06) ────────────────────────────────────── */
-export type ProfileCounterKey = "tasks" | "projects" | "decisions" | "followers" | "points" | "hype";
+export type ProfileCounterKey = "tasks" | "projects" | "decisions" | "followers" | "following" | "points" | "hype";
 export interface ProfileHeaderViewModel {
   person: PersonRef & { jobTitle: string | null; profileType: SocialPerson["profileType"] };
   isSelf: boolean;
@@ -285,8 +313,10 @@ export function toProfileHeaderViewModel(s: SocialState, viewer: ViewerId, owner
   const counters: ProfileHeaderViewModel["counters"] = [
     { key: "tasks", value: profileTasks(s, viewer, ownerId).filter((t) => t.ownerId === ownerId).length },
     { key: "projects", value: profileProjects(s, viewer, ownerId).filter((x) => x.ownerId === ownerId).length },
-    { key: "decisions", value: p.decisionsCount },
+    // Contagem bruta de decisões incluiria sessões DECIA que o viewer não vê; até haver filtro por sessão, só o dono.
+    { key: "decisions", value: isSelf ? p.decisionsCount : null },
     { key: "followers", value: followersCount(s, "USER", ownerId) },
+    { key: "following", value: followingCount(s, ownerId) },
   ];
   // EMPRESA: sem DECIA Points nem Hype (§7.d); DP só para o dono (sub-aba 13); Hype conforme hypeVisibility (RF16.CA04)
   if (p.profileType !== "EMPRESA") {

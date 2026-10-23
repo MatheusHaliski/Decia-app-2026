@@ -182,7 +182,7 @@ export interface paths {
             cookie?: never;
         };
         /** RF2.CA05 Minhas sessões vivas (dispositivo, última atividade, expiração; a atual marcada com current=true) */
-        get: operations["list"];
+        get: operations["list_1"];
         put?: never;
         post?: never;
         /** RF2.CA05 Sai de todos os outros dispositivos (mantém a sessão atual) */
@@ -241,7 +241,92 @@ export interface paths {
         options?: never;
         head?: never;
         /** RF3.CA01/CA04/CA06 Edita campos não sensíveis (422 VALIDACAO por campo); 403 EXCLUSAO_AGENDADA durante o prazo */
-        patch: operations["update"];
+        patch: operations["update_1"];
+        trace?: never;
+    };
+    "/api/me/2fa": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF2.CA02 Situação do 2FA (ativo, desde quando, códigos de recuperação restantes, configuração pendente) */
+        get: operations["status"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/2fa/disable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF2.CA02 Desliga o 2FA: senha atual + código do aplicativo ou de recuperação */
+        post: operations["disable"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/2fa/enable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF2.CA02 Confirma com o primeiro código do aplicativo: liga o 2FA, devolve 10 códigos de recuperação uma única vez e encerra as outras sessões (422 DOIS_FATORES_INVALIDO) */
+        post: operations["enable"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/2fa/recovery-codes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF2.CA02 Gera novos códigos de recuperação (os antigos deixam de valer): senha atual + código do aplicativo */
+        post: operations["regenerate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/2fa/setup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF2.CA02 Começa a ativação: senha atual → segredo e URI otpauth:// para o aplicativo autenticador (409 DOIS_FATORES_JA_ATIVO) */
+        post: operations["setup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/me/deletion": {
@@ -297,6 +382,178 @@ export interface paths {
         patch: operations["sensitive"];
         trace?: never;
     };
+    "/api/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF27 Minhas notificações, mais recentes primeiro (até 50) */
+        get: operations["list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF27 Marca todas as minhas notificações como lidas */
+        post: operations["markAllRead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF27 Quantas notificações não lidas eu tenho */
+        get: operations["unreadCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/{id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF27 Marca uma notificação minha como lida (de outra pessoa → 404 NAO_ENCONTRADO) */
+        post: operations["markRead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/people": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF4/RF10 Buscar pessoas da minha empresa (≥ 2 caracteres; só contas ativas) */
+        get: operations["search"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/people/by-username/{username}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF16.CA01 Perfil público por nome de usuário */
+        get: operations["byUsername"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/people/{id}/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF16/RF17 Tarefas de uma pessoa que eu posso ver */
+        get: operations["tasksOf"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF41.CA01 Minhas tarefas (mais recentes primeiro) */
+        get: operations["mine"];
+        put?: never;
+        /** RF4.CA01 Criar tarefa (campos comuns + briefing por área) */
+        post: operations["create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF12.CA01 Abrir tarefa */
+        get: operations["get"];
+        /** RF12.CA02 Editar tarefa (versão obrigatória; 409 EDICAO_CONCORRENTE) */
+        put: operations["update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{id}/transitions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF41.CA02 Mudar estado da tarefa (tabela do TaskState; bloqueio exige causa e motivo) */
+        post: operations["transition"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/usernames/{username}/availability": {
         parameters: {
             query?: never;
@@ -346,6 +603,9 @@ export interface components {
             currentPassword: string;
             newPassword: string;
         };
+        CodeBody: {
+            code: string;
+        };
         ConfirmBodyDto: {
             confirmPassword: string;
             newPassword: string;
@@ -355,6 +615,10 @@ export interface components {
             code: string;
             deviceName?: string;
             email: string;
+        };
+        Criterion: {
+            done?: boolean;
+            text?: string;
         };
         DeletionBody: {
             currentPassword: string;
@@ -368,6 +632,9 @@ export interface components {
             deletionScheduledAt?: string;
             status?: string;
         };
+        Deliverable: {
+            text?: string;
+        };
         EmailRequest: {
             email: string;
         };
@@ -378,10 +645,51 @@ export interface components {
             rememberMe?: boolean;
             twoFactorCode?: string;
         };
+        NotificationView: {
+            /** Format: uuid */
+            actorId?: string;
+            actorName?: string;
+            body?: string;
+            /** @enum {string} */
+            category?: "SOCIAL" | "DECIA" | "PRAZO" | "CHANCELA" | "PONTOS" | "SISTEMA";
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: uuid */
+            id?: string;
+            payload?: {
+                [key: string]: string;
+            };
+            read?: boolean;
+            /** Format: date-time */
+            readAt?: string;
+            /** Format: uuid */
+            resourceId?: string;
+            resourceType?: string;
+            title?: string;
+            /** @enum {string} */
+            type?: "SESSAO_PROPOSTA" | "SESSAO_INICIADA" | "PARTICIPANTE_ADICIONADO" | "PARTICIPANTE_REMOVIDO" | "DIVERGENCIA_DETECTADA" | "PERGUNTA_IA" | "RESUMO_PUBLICADO" | "DECISAO_PROPOSTA" | "DECISAO_VALIDADA" | "DECISAO_DEVOLVIDA" | "REABERTURA" | "ARTEFATO" | "PRAZO_PROXIMO" | "PRAZO_VENCIDO" | "REACAO" | "COMENTARIO" | "MENCAO" | "REMIX" | "CHANCELA_ESTADO" | "INDICACAO" | "BENEFICIO" | "PONTOS" | "META" | "RECONHECIMENTO" | "TAREFA_DO_DIA" | "TRANSICAO" | "MENSAGEM_DIRETA" | "ATRIBUICAO_PROPOSTA" | "ATRIBUICAO_ACEITA" | "ATRIBUICAO_RECUSADA" | "ATRIBUICAO_DEVOLVIDA" | "TAREFA_REUTILIZADA" | "SISTEMA";
+        };
         OidcLoginRequest: {
             deviceName?: string;
             idToken: string;
             nonce: string;
+        };
+        PasswordAndCodeBody: {
+            code: string;
+            currentPassword: string;
+        };
+        PasswordBody: {
+            currentPassword: string;
+        };
+        PersonView: {
+            avatarUrl?: string;
+            /** Format: uuid */
+            departmentId?: string;
+            /** Format: uuid */
+            id?: string;
+            jobTitle?: string;
+            name?: string;
+            username?: string;
         };
         PreferencesRequest: {
             aiModeDefault?: string;
@@ -408,10 +716,39 @@ export interface components {
             jobTitle?: string;
             rankingOptOut?: boolean;
         };
+        PublicProfileView: {
+            avatarUrl?: string;
+            bio?: string;
+            /** Format: uuid */
+            companyId?: string;
+            coverUrl?: string;
+            /** Format: uuid */
+            departmentId?: string;
+            fullName?: string;
+            /** Format: uuid */
+            id?: string;
+            jobTitle?: string;
+            name?: string;
+            profileType?: string;
+            self?: boolean;
+            username?: string;
+            verified?: boolean;
+        };
+        ReadAll: {
+            /** Format: int32 */
+            updated?: number;
+        };
         Receipt: {
             maskedEmail?: string;
             nextStep?: string;
             status?: string;
+        };
+        RecoveryCodes: {
+            recoveryCodes?: string[];
+        };
+        Reference: {
+            label?: string;
+            url?: string;
         };
         RefreshRequest: {
             refreshToken: string;
@@ -457,6 +794,116 @@ export interface components {
             /** Format: date-time */
             lastActiveAt?: string;
             persistent?: boolean;
+        };
+        Setup: {
+            account?: string;
+            /** Format: int32 */
+            digits?: number;
+            issuer?: string;
+            otpauthUri?: string;
+            /** Format: int64 */
+            periodSeconds?: number;
+            secret?: string;
+        };
+        Status: {
+            enabled?: boolean;
+            /** Format: date-time */
+            enabledAt?: string;
+            pendingSetup?: boolean;
+            /** Format: int32 */
+            recoveryCodesLeft?: number;
+        };
+        TaskRequest: {
+            acceptanceCriteria?: components["schemas"]["Criterion"][];
+            /** @enum {string} */
+            accessClass?: "PUBLICO" | "INTERNO" | "RESTRITO" | "SIGILOSO";
+            /** @enum {string} */
+            area?: "SOFTWARE" | "ADMINISTRACAO" | "DESIGN" | "PESQUISA" | "MARKETING" | "PLANEJAMENTO" | "ENGENHARIA" | "JURIDICO" | "OUTRA";
+            /** @enum {string} */
+            category?: "OFICIO_MEMORANDO" | "PARECER_TECNICO" | "ETP" | "TERMO_REFERENCIA" | "PLANILHA_ORCAMENTARIA" | "PROJETO_BASICO_EXECUTIVO" | "CRONOGRAMA" | "ATA" | "PORTARIA_RESOLUCAO" | "CONTRATO_CONVENIO" | "VISTORIA_RELATORIO_FOTOGRAFICO" | "LICENCA_ANUENCIA" | "MAPA_GEORREFERENCIA" | "FORMULARIO" | "OUTRO";
+            deliverables?: components["schemas"]["Deliverable"][];
+            descriptionMd?: string;
+            draft?: boolean;
+            /** Format: date */
+            dueAt?: string;
+            extensions?: {
+                [key: string]: string;
+            };
+            objective?: string;
+            /** @enum {string} */
+            priority?: "BAIXA" | "MEDIA" | "ALTA" | "CRITICA";
+            references?: components["schemas"]["Reference"][];
+            /** Format: uuid */
+            responsibleId?: string;
+            title?: string;
+            /** @enum {string} */
+            type?: "TEXTO_MANUAL" | "TEXTO_IA" | "IMAGEM_WEB" | "IMAGEM_EDITADA" | "PLANILHA" | "DOCUMENTO" | "PASTA" | "LINK" | "DESENHO_TECNICO" | "FORMULARIO" | "ATA_REGISTRO" | "EMAIL" | "PROTOCOLO" | "CRONOGRAMA" | "ESTUDO_TECNICO_PRELIMINAR";
+            /** Format: int64 */
+            version?: number;
+            /** @enum {string} */
+            visibility?: "PRIVADA" | "DEPARTAMENTO" | "EMPRESA" | "PUBLICA";
+        };
+        TaskView: {
+            acceptanceCriteria?: components["schemas"]["Criterion"][];
+            /** @enum {string} */
+            accessClass?: "PUBLICO" | "INTERNO" | "RESTRITO" | "SIGILOSO";
+            /** @enum {string} */
+            area?: "SOFTWARE" | "ADMINISTRACAO" | "DESIGN" | "PESQUISA" | "MARKETING" | "PLANEJAMENTO" | "ENGENHARIA" | "JURIDICO" | "OUTRA";
+            blockReason?: string;
+            /** Format: uuid */
+            blockedByTaskId?: string;
+            /** Format: uuid */
+            blockedByUserId?: string;
+            /** @enum {string} */
+            category?: "OFICIO_MEMORANDO" | "PARECER_TECNICO" | "ETP" | "TERMO_REFERENCIA" | "PLANILHA_ORCAMENTARIA" | "PROJETO_BASICO_EXECUTIVO" | "CRONOGRAMA" | "ATA" | "PORTARIA_RESOLUCAO" | "CONTRATO_CONVENIO" | "VISTORIA_RELATORIO_FOTOGRAFICO" | "LICENCA_ANUENCIA" | "MAPA_GEORREFERENCIA" | "FORMULARIO" | "OUTRO";
+            /** Format: date-time */
+            createdAt?: string;
+            deliverables?: components["schemas"]["Deliverable"][];
+            /** Format: uuid */
+            departmentId?: string;
+            descriptionMd?: string;
+            /** Format: date */
+            dueAt?: string;
+            editable?: boolean;
+            extensions?: {
+                [key: string]: string;
+            };
+            /** Format: uuid */
+            id?: string;
+            objective?: string;
+            /** Format: uuid */
+            ownerId?: string;
+            /** @enum {string} */
+            priority?: "BAIXA" | "MEDIA" | "ALTA" | "CRITICA";
+            references?: components["schemas"]["Reference"][];
+            /** Format: uuid */
+            responsibleId?: string;
+            /** @enum {string} */
+            state?: "RASCUNHO" | "DISPONIVEL" | "EM_USO" | "BLOQUEADA" | "CONCLUIDA" | "ARQUIVADA" | "MODELO_PUBLICO" | "OFERECIDA";
+            title?: string;
+            /** @enum {string} */
+            type?: "TEXTO_MANUAL" | "TEXTO_IA" | "IMAGEM_WEB" | "IMAGEM_EDITADA" | "PLANILHA" | "DOCUMENTO" | "PASTA" | "LINK" | "DESENHO_TECNICO" | "FORMULARIO" | "ATA_REGISTRO" | "EMAIL" | "PROTOCOLO" | "CRONOGRAMA" | "ESTUDO_TECNICO_PRELIMINAR";
+            /** Format: date-time */
+            updatedAt?: string;
+            /** Format: int64 */
+            version?: number;
+            /** @enum {string} */
+            visibility?: "PRIVADA" | "DEPARTAMENTO" | "EMPRESA" | "PUBLICA";
+        };
+        TransitionRequest: {
+            /** Format: uuid */
+            blockedByTaskId?: string;
+            /** Format: uuid */
+            blockedByUserId?: string;
+            reason?: string;
+            /** @enum {string} */
+            to: "RASCUNHO" | "DISPONIVEL" | "EM_USO" | "BLOQUEADA" | "CONCLUIDA" | "ARQUIVADA" | "MODELO_PUBLICO" | "OFERECIDA";
+            /** Format: int64 */
+            version: number;
+        };
+        UnreadCount: {
+            /** Format: int64 */
+            count?: number;
         };
         UserPreferences: {
             aiModeDefault?: string;
@@ -753,7 +1200,7 @@ export interface operations {
             };
         };
     };
-    list: {
+    list_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -859,7 +1306,7 @@ export interface operations {
             };
         };
     };
-    update: {
+    update_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -879,6 +1326,122 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["UserView"];
+                };
+            };
+        };
+    };
+    status: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    disable: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PasswordAndCodeBody"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["Status"];
+                };
+            };
+        };
+    };
+    enable: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CodeBody"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RecoveryCodes"];
+                };
+            };
+        };
+    };
+    regenerate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PasswordAndCodeBody"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RecoveryCodes"];
+                };
+            };
+        };
+    };
+    setup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PasswordBody"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["Setup"];
                 };
             };
         };
@@ -991,6 +1554,277 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["UserView"];
+                };
+            };
+        };
+    };
+    list: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["NotificationView"][];
+                };
+            };
+        };
+    };
+    markAllRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ReadAll"];
+                };
+            };
+        };
+    };
+    unreadCount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UnreadCount"];
+                };
+            };
+        };
+    };
+    markRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    search: {
+        parameters: {
+            query?: {
+                q?: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PersonView"][];
+                };
+            };
+        };
+    };
+    byUsername: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PublicProfileView"];
+                };
+            };
+        };
+    };
+    tasksOf: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TaskView"][];
+                };
+            };
+        };
+    };
+    mine: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TaskView"][];
+                };
+            };
+        };
+    };
+    create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TaskView"];
+                };
+            };
+        };
+    };
+    get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TaskView"];
+                };
+            };
+        };
+    };
+    update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TaskView"];
+                };
+            };
+        };
+    };
+    transition: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TransitionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TaskView"];
                 };
             };
         };

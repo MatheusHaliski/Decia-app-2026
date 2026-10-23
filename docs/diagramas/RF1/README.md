@@ -1,10 +1,12 @@
 # RF1 — Cadastrar usuário na plataforma com dados de acesso
-**HU:** HU1 · **Sprint (board Work Station):** 1 (card "SPRINT 1 — Cadastro, autenticação, perfil e abertura de sessão") · **Equivalente FAI:** RF1 Cadastro (`AuthController POST /api/auth/register`, `IdentityService.register`, `Argon2PasswordHasher`) · **Aba/rota:** `/register` → `/verify-email` (BFF `app/bff/auth/register` → `POST /api/auth/register`); `/termos` e `/privacidade` (D-15)
-**Critérios de aceite cobertos:** RF1.CA01 … RF1.CA06 (corpo do card vazio → derivados do título + HU1, todos "(CA a confirmar)") · RF1.CA07 … RF1.CA13 (§7, controles de segurança D-14) · RF1.CA14 … RF1.CA27 (§8, aceite dos termos e tipos de perfil, D-15…D-22) — regra: o título do card define o RF; os CAs foram atualizados para o código real do Bloco 3 (`RegistrationController`, `RegistrationService`, `V3__rf1_rf2_autenticacao.sql`)
+**HU:** HU1 · **Sprint (board Work Station):** 1 (card "SPRINT 1 — Cadastro, autenticação, perfil e abertura de sessão") · **Equivalente FAI:** RF1 Cadastro (`AuthController POST /api/auth/register`, `IdentityService.register`, `Argon2PasswordHasher`) · **Aba/rota:** `/register` → `/verify-email` (BFF `app/bff/auth/register` → `POST /api/auth/register`); `/termos` e `/privacidade` (D-15) — **real desde 17/10/2026 (D-143):** páginas públicas `app/(legal)/termos` e `app/(legal)/privacidade`, lidas de `docs/legal/*.md`
+**Critérios de aceite cobertos:** RF1.CA01 … RF1.CA06 (corpo do card vazio → derivados do título + HU1, todos "(CA a confirmar)") · RF1.CA07 … RF1.CA13 (§7, controles de segurança D-14) · RF1.CA14 … RF1.CA27 (§8, aceite dos termos e tipos de perfil, D-15…D-22) — regra: o título do card define o RF; os CAs foram atualizados para o código real do Bloco 3 (`RegistrationController`, `RegistrationService`, `V3__rf1_rf2_autenticacao.sql`); atualização de 17/10/2026 (D-143): tipo de usuário explicado em cada opção, aceite dos Termos de Uso e da Política de Privacidade da Velion com links para `/termos` e `/privacidade`, versões 0.2
 
 > **HU1** — COMO visitante do sistema POSSO realizar meu cadastro na plataforma informando meus dados de acesso PARA obter uma conta e acessar as funcionalidades do DECIA.
 
 O cadastro local é o Bloco 3 do plano de segurança (ARQUITETURA §6 (c)). Classes marcadas **(real)** existem em `origin/main` (Bloco 3, PR #16); as marcadas **(planejado)** vêm da TAXONOMIA §1.8–1.15 e do `CADASTRO_E_LGPD.md` (blocos A/B).
+
+**Atualização 17/10/2026 (real, D-143):** no `RegisterForm` (`components/auth/AuthForms.tsx`) cada tipo de usuário do `RadioCards` traz uma explicação (`auth.register.typeHint.EMPREGADO|EMPRESA|CHEFE_DEPARTAMENTO`; EMPRESA e CHEFE_DEPARTAMENTO somam `auth.register.validationNote`, a validação do RF28). O `Checkbox` do aceite diz "Li e aceito os Termos de Uso e a Política de Privacidade da **Velion, dona da Orange Social**", com links que abrem em nova aba as páginas públicas `/termos` e `/privacidade` (`app/(legal)/layout.tsx`, `app/(legal)/termos/page.tsx`, `app/(legal)/privacidade/page.tsx`, `components/legal/LegalDocument.tsx`). As páginas leem `docs/legal/TERMOS_DE_USO.md` e `docs/legal/POLITICA_DE_PRIVACIDADE.md` com `lib/legal/markdown.ts`, que monta uma árvore de dados sem HTML cru, tira as seções internas e destaca os campos `{{...}}` ainda não preenchidos (lista em `docs/legal/CAMPOS_A_PREENCHER.md`; texto v0.2 em rascunho, Q-243). O erro `422 details.fields.acceptTerms` aparece abaixo dos links. As versões gravadas em `users.terms_version/privacy_version` vêm de `ws.legal.current-versions` (`WS_LEGAL_TERMS_VERSION`/`WS_LEGAL_PRIVACY_VERSION`, padrão **0.2**) pela `LegalProperties`. Teste: `components/account/account.test.tsx` ("cadastro: tipo de usuário com explicação e links para os Termos e a Política da Velion"). Evidência: `docs/auditoria/2026-10-17/evidencias/IDENTIDADE.json` passos 3–5 (cadastro exige o aceite, `/termos` público com 25 campos destacados, `/privacidade` público) e capturas `id-02-cadastro-tipo-termos-celular.png` e `id-03-termos-desktop.png` (roteiro `docs/auditoria/2026-10-17/scripts/identidade.mjs`). Continuam **planejados**: `PolicyAcceptance`/`policy_acceptances`, `LegalController` (`GET /api/legal/...`), `PolicyGateFilter` e o histórico de versões.
 
 ## Critérios de aceite derivados da HU1 (todos "CA a confirmar")
 
@@ -16,6 +18,70 @@ O cadastro local é o Bloco 3 do plano de segurança (ARQUITETURA §6 (c)). Clas
 | **RF1.CA04** (CA a confirmar) | Dado o cadastro criado, então a conta nasce `AccountStatus PENDING_EMAIL_VERIFICATION`, `accountOrigin REAL`, com `UserPreferences` padrão e um `VerificationCode` (6 dígitos, só o hash, TTL) enviado por `MailPort`; ao confirmar em `POST /api/auth/email-verification/confirm`, EMPREGADO → `ACTIVE` e EMPRESA/CHEFE_DEPARTAMENTO → `PENDING_VALIDATION` com `ApprovalRequest PENDENTE` (planejado, RF28.CA01, D-19). |
 | **RF1.CA05** (CA a confirmar) | Dado o código confirmado, então `RegistrationService.confirmEmail` grava `emailVerified`, `AuditLog EMAIL_VERIFIED` e abre a sessão pelo `IdentityService.openSession` (access JWT RS256 + refresh em `ws_rt`, como no RF2), levando ao shell do app; antes disso o cadastro responde só `202 Receipt {status VERIFICACAO_ENVIADA, maskedEmail, nextStep}` e redireciona para `/verify-email` **sem sessão** (emitir no `register` revelaria se a conta era nova, D-27/Q-86). |
 | **RF1.CA06** (CA a confirmar) | Dado tentativas repetidas, então o `AuthRateLimitFilter` limita por IP (`register` 10/h, `resend` 10/h, `confirm` 20/h → `429 MUITAS_TENTATIVAS` + `Retry-After`), o reenvio é silencioso e limitado por pessoa (`RateLimitPort` `email-verification-send`), e `AuditLog USER_REGISTERED` / `EMAIL_VERIFIED` / `EMAIL_VERIFICATION_FALHA` são gravados com e-mail mascarado e `correlationId`. |
+
+## 0. Diagrama de casos de uso
+
+Quem se cadastra é sempre um visitante: escolhe o tipo de conta, aceita os termos da Velion e confirma o e-mail. Contas EMPRESA e CHEFE ainda dependem da validação do administrador. Atores do catálogo em [`ATORES_E_ATRIBUTOS.md`](../../arquitetura/ATORES_E_ATRIBUTOS.md).
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  classDef ucDemo fill:#fff8e6,stroke:#b26a00,stroke-dasharray:2 2,color:#1b1b1b
+  visitante["«ator» Visitante"]:::ator
+  admin["«ator» Administrador"]:::ator
+  subgraph SIS["Work Station — RF1 Cadastrar usuário"]
+    direction TB
+    UC1(["UC1 Escolher o tipo de conta"]):::uc
+    UC2(["UC2 Informar nome, usuário, e-mail e senha"]):::uc
+    UC3(["UC3 Aceitar os Termos e a Política da Velion"]):::uc
+    UC4(["UC4 Ler os Termos de Uso e a Política"]):::uc
+    UC5(["UC5 Confirmar o e-mail com o código"]):::uc
+    UC6(["UC6 Reenviar o código"]):::uc
+    UC7(["UC7 Limitar tentativas e picos de cadastro"]):::uc
+    UC8(["UC8 Consultar se o nome de usuário está livre"]):::ucPlan
+    UC9(["UC9 Enviar documentos de representação"]):::ucPlan
+    UC10(["UC10 Validar conta de empresa ou de chefia"]):::ucPlan
+    UC11(["UC11 Aceitar nova versão dos termos"]):::ucPlan
+    UC12(["UC12 Criar a conta pelo login institucional"]):::ucPlan
+  end
+  email["«ator» Serviço de e-mail"]:::atorSis
+  oidc["«ator» Provedor de login institucional (OIDC)"]:::atorSis
+  visitante --- UC1
+  visitante --- UC2
+  visitante --- UC4
+  visitante --- UC5
+  visitante --- UC12
+  UC2 -. "«include»" .-> UC1
+  UC2 -. "«include»" .-> UC3
+  UC2 -. "«include»" .-> UC7
+  UC3 -. "«include»" .-> UC4
+  UC6 -. "«extend»" .-> UC5
+  UC8 -. "«extend»" .-> UC2
+  UC9 -. "«extend»" .-> UC2
+  UC11 -. "«extend»" .-> UC3
+  admin --- UC10
+  UC5 --- email
+  UC6 --- email
+  UC12 --- oidc
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Escolher o tipo de conta | Visitante | RF1.CA01, RF1.CA22, RF1.CA23 | real: `RegisterForm` com explicação de cada tipo; EMPRESA e CHEFE nascem em validação |
+| UC2 Informar nome, usuário, e-mail e senha | Visitante | RF1.CA01, RF1.CA02, RF1.CA03, RF1.CA04, RF1.CA07, RF1.CA10, RF1.CA12, RF1.CA13, RF1.CA21 | real: `POST /api/auth/register` (`RegistrationService.register`); idade mínima depende da Q-63 |
+| UC3 Aceitar os Termos e a Política da Velion | Visitante | RF1.CA14, RF1.CA15, RF1.CA16, RF1.CA20 | real: checkbox com links e `422` sem aceite; versão padrão 0.2 (D-143); `policy_acceptances` planejado |
+| UC4 Ler os Termos de Uso e a Política | Visitante | RF1.CA19 | real: `/termos` e `/privacidade` públicos com os campos `{{...}}` destacados; `/api/legal` planejado |
+| UC5 Confirmar o e-mail com o código | Visitante, Serviço de e-mail | RF1.CA05, RF1.CA11 | real: `RegistrationService.confirmEmail`, 5 tentativas por código; e-mail só em log (sem SMTP) |
+| UC6 Reenviar o código | Visitante, Serviço de e-mail | RF1.CA06 | real: `POST /api/auth/email-verification/resend` |
+| UC7 Limitar tentativas e picos de cadastro | (sistema) | RF1.CA06, RF1.CA08, RF1.CA09 | real: `AuthRateLimitFilter`, `ClientIpResolver`, `HashBulkhead` |
+| UC8 Consultar se o nome de usuário está livre | Visitante | RF1.CA26 | planejado: a API de disponibilidade existe, a tela ainda não consulta |
+| UC9 Enviar documentos de representação | Visitante | RF1.CA24, RF1.CA25 | planejado (D-22, Q-62) |
+| UC10 Validar conta de empresa ou de chefia | Administrador | RF1.CA27 | planejado (`ApprovalRequest` só no domínio) |
+| UC11 Aceitar nova versão dos termos | Visitante | RF1.CA18 | planejado (gate `403 ACEITE_PENDENTE`) |
+| UC12 Criar a conta pelo login institucional | Visitante, Provedor OIDC | RF1.CA17 | planejado: OIDC existe e está desligado por padrão; captura do aceite no primeiro login planejada |
 
 ## 1. Diagrama de classes
 
@@ -98,6 +164,8 @@ classDiagram
   }
   class LegalProperties {
     <<config>>
+    +String terms
+    +String privacy
     +currentVersions() Versions
   }
   class Argon2PasswordHasher {
@@ -259,6 +327,7 @@ classDiagram
   User --> AccountOrigin
   User --> Role
   VerificationCode --> VerificationPurpose
+  note for LegalProperties "(real, D-143) ws.legal.current-versions com terms 0.2 e privacy 0.2, textos da Velion em docs/legal, copiados para users.terms_version e privacy_version no cadastro"
   note for User "AuditableEntity + lock otimista (version). +18 campos (jobTitle, companyId, departmentId, avatarUrl, coverUrl, bio, verified, twoFactorEnabled, hypeVisibility, rankingOptOut, lastLoginAt, fixtureKey, testAccount gerada, deletion*, anonymizedAt...). PolicyAcceptance, ApprovalRequest e PendingUpload: planejado (D-16, D-19, D-22)."
 ```
 
@@ -267,12 +336,13 @@ classDiagram
 ```mermaid
 flowchart TD
   subgraph ATOR["Visitante"]
-    A1["Abre /register e escolhe o tipo de perfil (RadioCard)"]
-    A2["Preenche nome, username, e-mail, senha, confirmação, telefone opcional e marca acceptTerms"]
+    A1["Abre /register e escolhe o tipo de perfil (RadioCards com a explicação de cada tipo, real D-143)"]
+    A2["Preenche nome, username, e-mail, senha, confirmação, telefone opcional e marca acceptTerms (Termos e Política da Velion, dona da Orange Social)"]
     A3["Lê o e-mail e digita o código de 6 dígitos em /verify-email"]
   end
   subgraph FE["Next.js (App Router) · BFF app/bff/auth"]
     F1["Debounce 400 ms: GET /api/usernames/{username}/availability"]
+    F0["Links do aceite abrem em nova aba as páginas públicas /termos e /privacidade: app/(legal) lê docs/legal/*.md com lib/legal/markdown.ts, v0.2 com os campos a preencher destacados (real, D-143)"]
     F2["POST /bff/auth/register → POST /api/auth/register (X-Correlation-Id, IP assinado X-Ws-*)"]
     F3["Mostra Receipt {maskedEmail, nextStep} e vai para /verify-email"]
     F4["POST /api/auth/email-verification/confirm"]
@@ -316,6 +386,7 @@ flowchart TD
   end
 
   A1 --> A2 --> F1
+  A2 -.->|"lê antes de aceitar"| F0
   F1 --> F2 --> W1 --> W2 --> W3
   W3 -->|"não"| E429
   W3 -->|"sim"| W4
@@ -356,6 +427,7 @@ sequenceDiagram
   participant M as MailPort
   participant AU as AuditLogPort
 
+  Note over U,N: (real, D-143) RegisterForm explica cada tipo de usuário e o aceite cita a Velion com links para /termos e /privacidade (app/(legal), públicas)
   U->>N: preenche /register e envia
   N->>C: POST /api/auth/register (X-Correlation-Id, X-Ws-Client-Ip assinado)
   Note over C: CorrelationIdFilter → AuthRateLimitFilter (10/h por IP) → HashBulkhead
@@ -434,9 +506,9 @@ stateDiagram-v2
   SUS --> ACT : ADMIN reativa
   ACT --> DEL : POST /api/me/deletion (RF3 §7, D-18)
   PEV --> DEL : POST /api/me/deletion com conta não confirmada
-  DEL --> ACT : DELETE /api/me/deletion dentro de 30 d
+  DEL --> ACT : DELETE /api/me/deletion dentro de 30 d (Reativar conta, D-145) · depois do prazo 409 PRAZO_REATIVACAO_ENCERRADO
   DEL --> PEV : cancelamento com e-mail ainda não confirmado
-  DEL --> ANO : AccountAnonymizationJob (planejado)
+  DEL --> ANO : fim do prazo de 30 d · AccountAnonymizer de hora em hora · ACCOUNT_ANONYMIZED (real, D-145, RF3 §4)
   ANO --> [*]
 
   note right of PEV
@@ -462,7 +534,10 @@ flowchart LR
   subgraph FE["Frontend · Next.js 15 App Router"]
     PG["app/(auth)/register · app/(auth)/verify-email"]
     UI["packages/ui: RadioCard, Input, Checkbox, Button, Sheet, Toast"]
-    LEG["app/termos · app/privacidade (planejado, D-15)"]
+    LEG["app/(legal)/termos · app/(legal)/privacidade · components/legal/LegalDocument (real, D-143; planejado na D-15)"]
+    LMD["lib/legal/markdown.ts lê docs/legal: TERMOS_DE_USO.md · POLITICA_DE_PRIVACIDADE.md v0.2 · CAMPOS_A_PREENCHER.md"]
+    PG -->|"links do aceite"| LEG
+    LEG --> LMD
     BFF["app/bff/auth/* · cookies httpOnly · X-Correlation-Id · HMAC X-Ws-Client-Ip"]
     PG --> UI
     PG --> BFF
@@ -479,7 +554,7 @@ flowchart LR
     RS["identity.RegistrationService"]
     IS["identity.IdentityService.openSession"]
     PORTS["ports: UserRepositoryPort · UserPreferencesRepositoryPort · VerificationCodeRepositoryPort · PasswordHasher · MailPort · AuditLogPort · RateLimitPort · SessionStorePort"]
-    LP["LegalProperties (versões vigentes dos termos)"]
+    LP["LegalProperties (versões vigentes dos termos · ws.legal.current-versions 0.2, D-143)"]
     MK["common.Masking · Hashing · EmailHasher"]
     RS --> PORTS
     RS --> LP
@@ -529,15 +604,15 @@ flowchart LR
 | RF1.CA11 | `VerificationCode.attempts`, `RegistrationService.requireCodeAttemptQuota` | `C1`→`C2`→`E422C`/`E429C` | 27–33 | `PEV`→`PEV` | `MY` (V3), `RDS` | real (§7) |
 | RF1.CA12 | `AccountOrigin`, `User.accountOrigin/fixtureKey/testAccount` | `S7` | 17 | — | `MY` (V2 CHECK, coluna gerada) | real (§7) |
 | RF1.CA13 | `Masking.maskEmail`, `SensitiveDataMaskingConverter`, `AuditEvent` | `S6`, `S10`, `C4` | 11, 20, 31, 37 | — | `MK`, `B1`, `CIF` | real (§7) |
-| RF1.CA14 | `Checkbox`, `Sheet` (`packages/ui`) | `A2` | 1 | — | `UI`, `LEG` | planejado (§8) |
-| RF1.CA15 | `RegistrationService.register` (`acceptTerms`), `LegalProperties.currentVersions` | `S1`→`E422` | 5–7 | — | `RS`, `LP` | real (`acceptTerms`); `409 VERSAO_DOS_TERMOS_DESATUALIZADA` planejado |
+| RF1.CA14 | `Checkbox`, `Sheet` (`packages/ui`), `RegisterForm` (`components/auth/AuthForms.tsx`) | `A2`, `F0` | 1 (nota D-143) | — | `UI`, `LEG`, `LMD` | parcial real (D-143): `Checkbox` desmarcado cita a Velion, links para `/termos` e `/privacidade` em nova aba, erro `acceptTerms` abaixo; botão `disabled` e `Sheet` planejados — teste `account.test.tsx` "cadastro: tipo de usuário…"; evidência `IDENTIDADE.json` passo 3, `id-02` |
+| RF1.CA15 | `RegistrationService.register` (`acceptTerms`), `LegalProperties.currentVersions` | `S1`→`E422` | 5–7 | — | `RS`, `LP` | real (`acceptTerms`; versões 0.2 de `ws.legal.current-versions`, D-143; evidência `IDENTIDADE.json` passo 3 "cadastro exige aceitar os termos"); `409 VERSAO_DOS_TERMOS_DESATUALIZADA` planejado |
 | RF1.CA16 | `PolicyAcceptance`, `User.termsVersion/privacyVersion` | `S7` | 17, 20 | — | `MY` (`policy_acceptances`, planejado) | parcial: cópia em `users` real, tabela planejada |
 | RF1.CA17 | `AcceptanceChannel`, `OidcAccountLinker`, `AdminBootstrap` | — | — | `[*]`→`PEV` | `RS`, `B1` | planejado |
 | RF1.CA18 | `PolicyGateFilter` (planejado) | — | — | nota de `ACT` | `SEC` | planejado |
-| RF1.CA19 | `PolicyDocument`, `LegalController` (planejado) | — | — | — | `LEG`, `API_LEGAL` | planejado |
+| RF1.CA19 | `PolicyDocument`, `LegalController` (planejado); `app/(legal)/termos`, `app/(legal)/privacidade`, `lib/legal/markdown.ts` (real) | `F0` | 1 (nota D-143) | — | `LEG`, `LMD`, `API_LEGAL` | parcial real (D-143): páginas públicas sem login lendo `docs/legal/*.md` v0.2 (evidência `IDENTIDADE.json` passos 4–5, `id-03-termos-desktop.png`); `GET /api/legal/...`, histórico e `PolicyTextGuardTest` planejados (os campos pendentes usam `{{...}}`, `CAMPOS_A_PREENCHER.md`) |
 | RF1.CA20 | `UserConsent` (RF3 §7) | — | — | — | — | planejado |
 | RF1.CA21 | `User.birthDate` (condicional Q-63) | `S1` | 5 | — | `RS` | planejado |
-| RF1.CA22 | `RegistrationService.parseProfileType`, `RadioCard` | `A1`, `S1`→`E422` | 5–7 | — | `UI`, `RS` | real (`details.fields.profileType`) |
+| RF1.CA22 | `RegistrationService.parseProfileType`, `RadioCard`, `RegisterForm` | `A1`, `S1`→`E422` | 5–7 | — | `UI`, `RS` | real (`details.fields.profileType`); explicação de cada tipo em `RadioCards` (D-143, `account.test.tsx`, `id-02`) |
 | RF1.CA23 | `EmpresaProfileExtension`, `ChefeProfileExtension` (TAXONOMIA §1.1) | `S1` | 5 | — | `RS` | planejado (Q-64) |
 | RF1.CA24 | `VerificationPolicy.freeMailDomainsJson` | `S1` | 5 | — | `RS` | planejado (Q-62) |
 | RF1.CA25 | `PendingUpload`, `PendingUploadCleanupJob` | — | — | — | `S3`, `ARL` (uploads 40/h) | planejado (D-22); regra de IP já em `AuthRateLimitFilter.RULES` |
@@ -560,18 +635,18 @@ Herdados do RF49 do FAI pela **D-14**; detalhes e rastreabilidade por bloco em [
 
 ## 8. Aceite dos termos e tipos de perfil no cadastro (CA a confirmar, D-15…D-22)
 
-Blocos **A** (aceite dos Termos de Uso e da Política de Privacidade) e **B** (tipos de perfil, campos por tipo e envios do cadastro) de `docs/produto/CADASTRO_E_LGPD.md`. Entidades em `TAXONOMIA.md` §1.8–1.15 (**proposta**); dúvidas Q-60…Q-73. O que já existe no Bloco 3: `acceptTerms` obrigatório (`422 details.fields.acceptTerms`), cópia das versões vigentes em `users.terms_version/privacy_version` (`LegalProperties`) e `USER_REGISTERED` com as versões. O resto (tabela `policy_acceptances`, `PolicyGateFilter`, `LegalController`, `PendingUpload`, extensões de perfil) é **planejado**.
+Blocos **A** (aceite dos Termos de Uso e da Política de Privacidade) e **B** (tipos de perfil, campos por tipo e envios do cadastro) de `docs/produto/CADASTRO_E_LGPD.md`. Entidades em `TAXONOMIA.md` §1.8–1.15 (**proposta**); dúvidas Q-60…Q-73. O que já existe no Bloco 3: `acceptTerms` obrigatório (`422 details.fields.acceptTerms`), cópia das versões vigentes em `users.terms_version/privacy_version` (`LegalProperties`) e `USER_REGISTERED` com as versões. O resto (tabela `policy_acceptances`, `PolicyGateFilter`, `LegalController`, `PendingUpload`, extensões de perfil) é **planejado**. **Desde 17/10/2026 (D-143, real):** links do aceite para `/termos` e `/privacidade` (páginas públicas em `app/(legal)/*` lendo `docs/legal/`, controladora **Velion, dona da Orange Social**), versões gravadas 0.2 e explicação de cada tipo de usuário.
 
 ### 8.1 Bloco A — aceite (RF1.CA14–CA21)
 
 | CA | Enunciado (Dado / Quando / Então) |
 |---|---|
-| **RF1.CA14** (CA a confirmar) | Dado o formulário, então o `Checkbox` "Li e aceito os Termos de Uso e a Política de Privacidade" vem **desmarcado**, com links para os dois documentos (abrem em `Sheet` ou nova aba sem perder o formulário); "Criar conta" fica `disabled` até marcar. |
+| **RF1.CA14** (CA a confirmar) | Dado o formulário, então o `Checkbox` "Li e aceito os Termos de Uso e a Política de Privacidade" vem **desmarcado**, com links para os dois documentos (abrem em `Sheet` ou nova aba sem perder o formulário); "Criar conta" fica `disabled` até marcar. **Real (D-143):** desmarcado, texto com a Velion e links que abrem `/termos` e `/privacidade` em nova aba; sem marcar, o envio volta com `422 details.fields.acceptTerms` (o `disabled` e o `Sheet` seguem planejados). |
 | **RF1.CA15** (CA a confirmar) | Dado o pedido sem `acceptTerms=true`, então `422 VALIDACAO` com `details.fields.acceptTerms` (**real**); o cliente envia `termsVersion`/`privacyVersion` exibidas e, se alguma não for a `VIGENTE`, recebe `409 VERSAO_DOS_TERMOS_DESATUALIZADA` (planejado, Q-70). |
 | **RF1.CA16** (CA a confirmar) | Dado o cadastro aceito, então são gravadas **duas** linhas em `policy_acceptances` (TERMOS e PRIVACIDADE com `version`, `accepted_at`, `ip`, `user_agent`, `channel`), a cópia em `users.terms_version/privacy_version` (**real**) e `AuditLog POLICY_ACCEPTED`; a tabela é append-only, FK `RESTRICT`, e **sobrevive à anonimização** (art. 8º §2º). |
 | **RF1.CA17** (CA a confirmar) | Dado qualquer caminho que cria conta, então o aceite é capturado: `CADASTRO_LOCAL`, **primeiro login OIDC** numa tela de conclusão (`OIDC`, `OidcAccountLinker`) e seed (`SEED`); o admin do `AdminBootstrap` passa pelo gate (CA18) no primeiro login. |
 | **RF1.CA18** (CA a confirmar) | Dado versão `VIGENTE` mais nova que a aceita, então `Dialog` bloqueante com o `changelog` e `403 ACEITE_PENDENTE` a tudo, **exceto** `GET /api/me/policies`, `POST /api/me/policies/accept`, logout, exportação e pedido de exclusão (`PolicyGateFilter` depois do JWT). |
-| **RF1.CA19** (CA a confirmar) | Dado `/termos` e `/privacidade`, então funcionam sem login e pelo gate, mostram a versão vigente e o histórico (`GET /api/legal/{TERMOS\|PRIVACIDADE}/current` e `/versions`); `PolicyTextGuardTest` recusa texto com marcador `[`…`]` ou "validar com jurídico". |
+| **RF1.CA19** (CA a confirmar) | Dado `/termos` e `/privacidade`, então funcionam sem login e pelo gate, mostram a versão vigente e o histórico (`GET /api/legal/{TERMOS\|PRIVACIDADE}/current` e `/versions`); `PolicyTextGuardTest` recusa texto com marcador `[`…`]` ou "validar com jurídico". **Real (D-143):** as duas páginas são públicas e mostram a versão do cabeçalho YAML de `docs/legal/*.md` (0.2, rascunho); histórico, API e o guarda de texto seguem planejados. |
 | **RF1.CA20** (CA a confirmar) | Dado o cadastro, então **nenhum** consentimento opcional (`ConsentPurpose`) é pedido junto com o aceite; `user_consents` nasce vazio (RF3.CA10). |
 | **RF1.CA21** (CA a confirmar, Q-63) | Dado a resposta à Q-63: se menores não podem usar, `birthDate` não é coletada; se podem, é **obrigatória no servidor** (`422 details.fields.birthDate`) e a regra do art. 14 é aplicada. |
 
@@ -579,7 +654,7 @@ Blocos **A** (aceite dos Termos de Uso e da Política de Privacidade) e **B** (t
 
 | CA | Enunciado (Dado / Quando / Então) |
 |---|---|
-| **RF1.CA22** (CA a confirmar) | Dado a escolha do tipo com `RadioCard`, então `profileType` fora de EMPREGADO/EMPRESA/CHEFE_DEPARTAMENTO (inclusive `ADMIN`) recebe `422 VALIDACAO details.fields.profileType` (**real**, `parseProfileType`); CURADOR não é tipo (D-09). |
+| **RF1.CA22** (CA a confirmar) | Dado a escolha do tipo com `RadioCard`, então `profileType` fora de EMPREGADO/EMPRESA/CHEFE_DEPARTAMENTO (inclusive `ADMIN`) recebe `422 VALIDACAO details.fields.profileType` (**real**, `parseProfileType`); CURADOR não é tipo (D-09). **Real (D-143):** cada opção traz a explicação do tipo. |
 | **RF1.CA23** (CA a confirmar, Q-64) | Dado o tipo, então os campos extras são: EMPREGADO `jobTitle` e `intendedDepartmentId` opcional (não lota); EMPRESA `legalName`, `companyCnpj`, `officialSite` **obrigatório** (`https://`, recusa `@perfil`), `representationDocId`; CHEFE `companyId` existente, departamento e `appointmentLink`. Erros `422 VALIDACAO` por campo. |
 | **RF1.CA24** (CA a confirmar, Q-62) | Dado a resposta à Q-62, então EMPREGADO pode exigir domínio institucional; para EMPRESA, e-mail no domínio do `officialSite` (fora de `freeMailDomainsJson`) marca o critério `REPRESENTACAO` automaticamente (RF28.CA15). |
 | **RF1.CA25** (CA a confirmar) | Dado `POST /api/auth/uploads?kind=avatar\|identity\|representation`, então tipo real por magic bytes, limite de bytes e de pixels, reencode sem EXIF/GPS, documentos em `restricted/pending/…`, `PendingUpload.expiresAt = +24 h`; o cadastro só aceita upload **do mesmo `kind`** e não consumido; `PendingUploadCleanupJob` apaga os abandonados (teste prova o `@Scheduled`). A regra de IP (40/h) já está em `AuthRateLimitFilter.RULES`. |
@@ -620,4 +695,4 @@ stateDiagram-v2
   end note
 ```
 
-Tela/aba: `/register` (esqueleto em `app/(auth)/register/page.tsx`) · `/verify-email` (esqueleto em `app/(auth)/verify-email/page.tsx`)
+Tela/aba: `/register` (esqueleto em `app/(auth)/register/page.tsx`) · `/verify-email` (esqueleto em `app/(auth)/verify-email/page.tsx`) · `/termos` e `/privacidade` (`app/(legal)/*`, real, D-143)

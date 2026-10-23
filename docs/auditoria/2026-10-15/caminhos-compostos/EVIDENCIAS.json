@@ -1,0 +1,49 @@
+{
+  "capturadoEm": "2026-10-15T21:58:32.440Z",
+  "startShapes": 0,
+  "finalShapes": 5,
+  "holes": 1,
+  "groupMovement": {
+    "dx": 20,
+    "dy": 10,
+    "verified": true
+  },
+  "nativeRoundTrip": true,
+  "aiCalls": 0,
+  "pageErrors": [],
+  "events": [
+    {
+      "command": "CIRCLE 400 300 150",
+      "status": "CIRCLE executado em coordenadas do desenho. · 1 selecionado(s)."
+    },
+    {
+      "command": "CIRCLE 400 300 70",
+      "status": "CIRCLE executado em coordenadas do desenho. · 1 selecionado(s)."
+    },
+    {
+      "command": "EXTRUDE",
+      "status": "EXTRUDE gerou 768 faces. Malha local editável e exportável. · 1 partes · 1 selecionadas."
+    },
+    {
+      "command": "VPOINT 0.2 0.2 1",
+      "status": "EXTRUDE gerou 768 faces. Malha local editável e exportável. · 1 partes · 1 selecionadas."
+    },
+    {
+      "command": "VPOINT 0 0 1",
+      "status": "EXTRUDE gerou 768 faces. Malha local editável e exportável. · 1 partes · 1 selecionadas."
+    },
+    {
+      "command": "RECTANG 180 470 100 40",
+      "status": "RECTANG executado em coordenadas do desenho. · 1 selecionado(s)."
+    },
+    {
+      "command": "POLYGON 620 480 40 5",
+      "status": "POLYGON executado em coordenadas do desenho. · 1 selecionado(s)."
+    },
+    {
+      "command": "PLINE 80 150 160 100 220 160",
+      "status": "PLINE executado em coordenadas do desenho. · 1 selecionado(s)."
+    }
+  ],
+  "scope": "Edição local. Grupos e caminhos compostos ainda não persistem no servidor compartilhado nem são enviados à IA remota."
+}

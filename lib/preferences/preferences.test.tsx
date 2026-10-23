@@ -33,6 +33,13 @@ describe("preferências: tipos e contrato do servidor (RF3.CA03)", () => {
     expect(sanitizePreferences({ timezone: "GMT" }).timezone).toBe("America/Sao_Paulo");
   });
 
+  it("autonomia da IA: padrão conservador, ida e volta pelo notificationPrefsJson e valor inválido cai no padrão", () => {
+    expect(DEFAULT_PREFERENCES.aiAutonomyDefault).toBe("SOB_SOLICITACAO");
+    const body = toServer({ ...DEFAULT_PREFERENCES, aiAutonomyDefault: "ASSISTIDO" });
+    expect(JSON.parse(body.notificationPrefsJson).aiAutonomyDefault).toBe("ASSISTIDO");
+    expect(fromServer(body).aiAutonomyDefault).toBe("ASSISTIDO");
+    expect(sanitizePreferences({ aiAutonomyDefault: "TOTAL" }).aiAutonomyDefault).toBe("SOB_SOLICITACAO");
+  });
   it("toServer/fromServer seguem MeController.PreferencesRequest (fontScale decimal, enum maiúsculo, JSON em texto)", () => {
     const body = toServer({ ...DEFAULT_PREFERENCES, theme: "contraste", language: "en", fontScale: 125, deskSkin: "papel-timbrado", backgroundId: "aura-geometry-01" });
     expect(body).toMatchObject({ theme: "ALTO_CONTRASTE", language: "EN", density: "NORMAL", fontScale: 1.25, deskSkin: "PAPEL_TIMBRADO", aiModeDefault: "ECONOMIA", wipLimit: 3 });

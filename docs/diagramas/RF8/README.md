@@ -15,6 +15,62 @@
 | **RF8.CA05** (CA a confirmar) | Dado uma tarefa `EM_USO` ou `DISPONIVEL`, quando marco "Concluir" (`POST /api/tasks/{id}/complete`), então `TaskStateMachine` leva a `CONCLUIDA` com `TaskStateLog`; se era a última `ProjectTask` pendente de um projeto, `ProjectScheme.status` passa a `CONCLUIDO` e `percentComplete = 100`; transição inválida → `422 TRANSICAO_INVALIDA`; `BLOQUEADA` precisa ser desbloqueada antes. | RF41.CA02, RF5 §4 |
 | **RF8.CA06** (CA a confirmar) | Dado um salvamento bem-sucedido, então após o commit a IA gera um **`Insight` de qualidade** (`scope` ACERVO para tarefa, PROJETO para projeto; `metricRefsJson` com completude, clareza, prazo, conformidade RF32; `actionsJson` com correções em 1 clique), exibido com faísca ✦ e "Por que isto?", registrado em `ai_inference_log` (capability `INSIGHT`, `hostRf RF8`); `accessClass` RESTRITO/SIGILOSO → `LocalEngine`; sem cota → sem insight (nunca bloqueia o salvamento). | RF43 §2–4, RF43.CA02 |
 
+## 0. Diagrama de casos de uso
+
+Quem edita os arquivos de uma tarefa ou projeto do próprio perfil e o que consegue fazer. Borda contínua: existe no código em 17/10/2026; tracejada: planejado.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  dono["«ator» Dono do recurso"]:::ator
+  colaborador["«ator» Colaborador explícito"]:::ator
+  responsavel["«ator» Responsável atribuído"]:::ator
+  subgraph SIS["Work Station — RF8 Editar arquivos"]
+    direction TB
+    UC1(["UC1 Editar dados da tarefa"]):::uc
+    UC2(["UC2 Verificar permissão de edição"]):::uc
+    UC3(["UC3 Substituir ou adicionar anexo"]):::ucPlan
+    UC4(["UC4 Editar no provedor externo"]):::ucPlan
+    UC5(["UC5 Converter vínculo em cópia"]):::ucPlan
+    UC6(["UC6 Editar ficha e arquivos do projeto"]):::ucPlan
+    UC7(["UC7 Concluir tarefa"]):::uc
+    UC8(["UC8 Receber insight de qualidade"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  conectores["«ator» Google · Microsoft · e-Protocolo"]:::atorSis
+  dono --- UC1
+  dono --- UC3
+  dono --- UC4
+  dono --- UC6
+  dono --- UC7
+  colaborador --- UC1
+  colaborador --- UC3
+  colaborador --- UC7
+  responsavel --- UC1
+  responsavel --- UC7
+  UC1 -. "«include»" .-> UC2
+  UC3 -. "«include»" .-> UC2
+  UC6 -. "«include»" .-> UC2
+  UC5 -. "«extend»" .-> UC4
+  UC8 -. "«extend»" .-> UC1
+  UC4 --- conectores
+  UC8 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Editar dados da tarefa | dono, colaborador (real); responsavel (planejado) | RF8.CA01 | real: `PUT /api/tasks/{id}` com `version` (detalhe no RF12); conflito → `409 EDICAO_CONCORRENTE` |
+| UC2 Verificar permissão de edição | — (incluído por UC1, UC3, UC6) | RF8.CA01, RF8.CA04 | real para tarefa: `ResourceAuthorizer.require(EDIT)` → `AccessPolicy.decide`; projeto planejado |
+| UC3 Substituir ou adicionar anexo | dono, colaborador | RF8.CA02 | planejado (`MediaStoragePort`, `AntivirusPort`, `TaskVersion`) |
+| UC4 Editar no provedor externo | dono, conectores | RF8.CA03 | planejado (`ExternalDocPort.watch`) |
+| UC5 Converter vínculo em cópia | dono | RF8.CA03 | planejado (`convertLinkToSnapshot`) |
+| UC6 Editar ficha e arquivos do projeto | dono | RF8.CA04 | planejado (`ProjectVersion`; sem API de projetos) |
+| UC7 Concluir tarefa | dono, colaborador (real); responsavel (planejado) | RF8.CA05 | real parcial: `POST /api/tasks/{id}/transitions` para `CONCLUIDA` (RF41), com a mesma permissão de edição; fechar o projeto ao concluir a última tarefa é planejado |
+| UC8 Receber insight de qualidade | dono, ia | RF8.CA06 | planejado (`Insight`, capability `INSIGHT`; sem motor registrado) |
+
 ## 1. Diagrama de classes
 
 ```mermaid

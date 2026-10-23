@@ -1,6 +1,7 @@
 package br.gov.pr.secid.workstation.web.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
 import java.util.List;
 
@@ -24,6 +25,11 @@ public record WsSecurityProperties(Jwt jwt, Cors cors) {
                       String privateKeyPem, long accessTtlMinutes) {
         public static final long DEFAULT_ACCESS_TTL_MINUTES = 15;   // Q-49: padrão até a resposta
 
+        /**
+         * Construtor ligado às propriedades. Sem esta marca, o segundo construtor (compatibilidade) deixa o Spring sem saber qual
+         * usar, a ligação cai para setters inexistentes e as chaves ficam vazias: login 503 e nenhum token aceito (auditoria 17/10).
+         */
+        @ConstructorBinding
         public Jwt {
             issuer = blankToDefault(issuer, "work-station");
             audience = blankToDefault(audience, "work-station-api");

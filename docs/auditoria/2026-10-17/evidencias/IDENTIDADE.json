@@ -1,0 +1,76 @@
+{
+  "base": "http://localhost:3000",
+  "startedAt": "2026-10-17T21:15:30.979Z",
+  "steps": [
+    {
+      "name": "aba anônima mostra Visitante (sem conta de demonstração)",
+      "ok": true,
+      "handle": "Verificando sessão…"
+    },
+    {
+      "name": "rota protegida sem sessão leva ao login",
+      "ok": true,
+      "url": "http://localhost:3000/login?next=%2Fsettings"
+    },
+    {
+      "name": "cadastro exige aceitar os termos da Velion e escolhe o tipo de usuário",
+      "ok": true,
+      "blockedWithoutTerms": true
+    },
+    {
+      "name": "/termos público, rascunho da Velion com as tags destacadas",
+      "ok": true,
+      "tags": 25
+    },
+    {
+      "name": "/privacidade público",
+      "ok": true
+    },
+    {
+      "name": "sem 'manter conectado' o refresh é cookie de sessão (fechar o navegador encerra)",
+      "ok": true,
+      "expires": -1
+    },
+    {
+      "name": "2FA ativado: segredo, link otpauth e 10 códigos de recuperação",
+      "ok": true,
+      "otpauthScheme": "otpauth://totp/"
+    },
+    {
+      "name": "login com código de recuperação; restam 9",
+      "ok": true,
+      "summary": "Ativa desde 17/10/2026. Códigos de recuperação restantes: 9."
+    },
+    {
+      "name": "logout encerra a sessão em todas as abas",
+      "ok": true,
+      "url": "http://localhost:3000/login?next=%2Fsettings%3Ftab%3Dsessoes&reason=signed-out"
+    },
+    {
+      "name": "login com o código do aplicativo",
+      "ok": true
+    },
+    {
+      "name": "exclusão agendada com modal de consequências e confirmação",
+      "ok": true
+    },
+    {
+      "name": "conta reativada dentro do prazo",
+      "ok": true
+    },
+    {
+      "name": "2FA desativado com código de recuperação (conta volta ao estado inicial)",
+      "ok": true
+    }
+  ],
+  "consoleErrors": [
+    "A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:\n\n- A server/client branch `if (typeof window !== 'undefined')`.\n- Variable input such as `Date.now()` or `Math.random()` wh",
+    "Failed to load resource: the server responded with a status of 422 (Unprocessable Entity)",
+    "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+  ],
+  "overflow": [],
+  "finishedAt": "2026-10-17T21:18:01.899Z",
+  "account": "conta sintética local (ativada no banco descartável; nome e senha fora do repositório)"
+}

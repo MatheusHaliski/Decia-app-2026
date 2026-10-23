@@ -17,6 +17,48 @@ O **Estúdio de Arte do card** grava `cardArtJson` (`CardArtConfig`, **proposta*
 | **RF11.CA05** (CA a confirmar) | Dado o segmento **Destaques**, então o usuário configura lacre (lugar reservado), tooltip da faísca (curto/completo), barra de fases (projeto), carimbo de estado/decisão (canto/centro/oculto), Hype do autor (respeita `HypeVisibility`) e **movimento** (`none`, `pulse`, `thread`); no máximo **2 destaques decorativos** → `422 LIMITE_DESTAQUES`; o movimento só roda no card ampliado e é desligado por `prefers-reduced-motion` ou `UserPreferences.reduceMotion` (RF38.CA10). |
 | **RF11.CA06** (CA a confirmar) | Dado `cardArtJson` gravado, então a API entrega `cardArt` no view da tarefa/projeto, a leitura é tolerante (config sem `v` lê como v1 com padrões PAGINA/MOSAICO + `timbrado`; valor desconhecido → padrão; `color` inválido → null); o mesmo `resolveCardArt` renderiza feed, Mural, Vitrine, Balcão e Mesa; o cache Redis do card é invalidado (`DEL card:task:{id}` / `card:project:{id}`) e `CardArtChanged` (AFTER_COMMIT) dispara `CardArtService.rebuildMosaic` nos projetos que contêm a tarefa (RF38.CA03). |
 
+## 0. Diagrama de casos de uso
+
+Quem personaliza a arte do card de uma tarefa ou projeto e o que consegue fazer no Estúdio. Borda contínua: existe no código em 17/10/2026; tracejada: planejado (o Estúdio não existe; só a skin padrão em `UserPreferences` é real, no RF3).
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  dono["«ator» Dono do recurso"]:::ator
+  subgraph SIS["Work Station — RF11 Estúdio de arte do card"]
+    direction TB
+    UC1(["UC1 Aplicar a arte do card"]):::ucPlan
+    UC2(["UC2 Verificar dono e revisão"]):::ucPlan
+    UC3(["UC3 Escolher fundo e layout"]):::ucPlan
+    UC4(["UC4 Gerar arte de fundo com IA"]):::ucPlan
+    UC5(["UC5 Enviar imagem de fundo"]):::ucPlan
+    UC6(["UC6 Escolher skin e cor do container"]):::ucPlan
+    UC7(["UC7 Configurar destaques e movimento"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono --- UC1
+  dono --- UC3
+  dono --- UC6
+  dono --- UC7
+  UC1 -. "«include»" .-> UC2
+  UC4 -. "«extend»" .-> UC3
+  UC5 -. "«extend»" .-> UC3
+  UC4 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Aplicar a arte do card | dono | RF11.CA01, RF11.CA06 | planejado (`PUT /api/tasks/{id}/card-art`, `PUT /api/projects/{id}/card-art`) |
+| UC2 Verificar dono e revisão | — (incluído por UC1) | RF11.CA01 | planejado (`403 ACESSO_NEGADO`, `409 REVISAO_DESATUALIZADA`, `422 VALIDACAO`) |
+| UC3 Escolher fundo e layout | dono | RF11.CA02 | planejado (`resolveCardArt`) |
+| UC4 Gerar arte de fundo com IA | dono, ia | RF11.CA04 | planejado (`CAPA_IA`, cota; RESTRITO/SIGILOSO só motor local) |
+| UC5 Enviar imagem de fundo | dono | RF11.CA04 | planejado (MIME real, tamanho, antivírus) |
+| UC6 Escolher skin e cor do container | dono | RF11.CA03 | planejado (skin premium exige compra, RF42; padrão vem de `UserPreferences.defaultCardSkin`, real) |
+| UC7 Configurar destaques e movimento | dono | RF11.CA05 | planejado (no máximo 2 destaques; respeita movimento reduzido) |
+
 ## 1. Diagrama de classes
 
 ```mermaid

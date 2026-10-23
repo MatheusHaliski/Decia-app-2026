@@ -4,6 +4,56 @@
 
 `CollectiveGoal` (criador EMPRESA/CHEFE; `criterionJson {metricCode, operator, target}` sobre o catálogo `MetricDefinition`; `minEffortCheck` anti-trivial; `progress` 0–1 calculado por `MetricCalculator` em job agendado e AFTER_COMMIT dos eventos relevantes) com `GoalParticipant`s. Meta ATINGIDA → `DeciaPointsLedgerEntry META_ATINGIDA` por participante com `idempotencyKey` (`ledgerBatchId`) e `Recognition source META`. `Highlight` do mês por departamento: algoritmo **transparente** (`algorithmScoreJson` com critérios visíveis: reações BEM_FUNDAMENTADO/CONFORME, reutilizações, rastro completo, conformidade) + curadoria do chefe (`curatedBy`); aparece na Vitrine (RF27) e alimenta a Chancela de Excelência (RF39.CA05). `Recognition` (= cupom/medalha) emitido manualmente, por meta ou por benefício; limite por emissor/mês (`Company.pointsPolicyJson`) e tudo em `AuditLog`.
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Todos são planejados: `/goals`, `/highlights` e `/recognitions` são páginas-esqueleto.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  empresa["«ator» Empresa ou órgão"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  empregado["«ator» Empregado"]:::ator
+  curador["«ator» Curador"]:::ator
+  subgraph SIS["Work Station — RF35 Metas, Destaques e Reconhecimentos"]
+    direction TB
+    UC1(["UC1 Criar meta coletiva"]):::ucPlan
+    UC2(["UC2 Participar de meta e acompanhar o progresso"]):::ucPlan
+    UC3(["UC3 Recalcular o progresso e premiar a meta atingida"]):::ucPlan
+    UC4(["UC4 Propor os Destaques do mês"]):::ucPlan
+    UC5(["UC5 Curar e publicar os Destaques"]):::ucPlan
+    UC6(["UC6 Emitir reconhecimento"]):::ucPlan
+    UC7(["UC7 Exibir metas, destaques e reconhecimentos no perfil"]):::ucPlan
+  end
+  agendador["«ator» Agendador de trabalhos"]:::atorSis
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  empresa --- UC1
+  empresa --- UC5
+  empresa --- UC6
+  chefe --- UC1
+  chefe --- UC5
+  chefe --- UC6
+  empregado --- UC2
+  empregado --- UC7
+  curador --- UC5
+  UC3 --- agendador
+  UC4 --- agendador
+  UC4 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Criar meta coletiva | `empresa`, `chefe` | RF35.CA01, RF35.CA06 | planejado |
+| UC2 Participar de meta e acompanhar o progresso | `empregado` | RF35.CA01 | planejado |
+| UC3 Recalcular o progresso e premiar a meta atingida | `agendador` | RF35.CA01, RF35.CA02 | planejado (DP com `idempotencyKey`) |
+| UC4 Propor os Destaques do mês | `agendador`, `ia` | RF35.CA03 | planejado (algoritmo transparente) |
+| UC5 Curar e publicar os Destaques | `empresa`, `chefe`, `curador` | RF35.CA03 | planejado (curador só com escopo PREMIACAO) |
+| UC6 Emitir reconhecimento | `empresa`, `chefe` | RF35.CA04, RF35.CA06 | planejado |
+| UC7 Exibir metas, destaques e reconhecimentos no perfil | `empregado` | RF35.CA05 | planejado |
+
 ## 1. Diagrama de classes
 
 ```mermaid

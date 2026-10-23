@@ -23,6 +23,10 @@ spring:
     enabled: true
     baseline-on-migrate: false
     validate-on-migrate: true
+    # D-138 (Q-236): as versões são reservadas por onda no PLANO_EXECUCAO (V23 mensageria, V25–V35, V36 Acervo…), então uma
+    # migration mais nova pode chegar antes de uma reservada mais antiga. out-of-order aplica a reservada quando ela chegar,
+    # em vez de recusar o arranque; cada migration continua idempotente e sem depender da ordem (só de suas FKs).
+    out-of-order: true
   servlet:
     multipart:
       max-file-size: 15MB
@@ -117,6 +121,8 @@ ws:
     base-url: ${WS_APP_BASE_URL:http://localhost:8080}
     frontend-url: ${WS_FRONTEND_URL:http://localhost:3000}
   security:
+    two-factor:
+      issuer: ${WS_2FA_ISSUER:Work Station}        # nome mostrado no aplicativo autenticador (D-144)
     jwt:
       issuer: ${WS_JWT_ISSUER:work-station}
       audience: ${WS_JWT_AUDIENCE:work-station-api}
@@ -132,6 +138,9 @@ ws:
       refresh-short-ttl: ${WS_REFRESH_SHORT_TTL:24h}             # sem "lembrar-me"
       max-login-failures: 5                                      # bloqueio por conta (D-14): 5 em 15 min
       lock-window: 15m
+      # D-140 (Q-237): reuso do refresh recém-rotacionado tolerado uma vez por até N segundos (resposta perdida na navegação);
+      # 0s desliga e volta à revogação imediata da família. Teto 60s.
+      reuse-grace-window: ${WS_REFRESH_REUSE_GRACE:15s}
     # IP do cliente (D-14): assinado pelo BFF com EDGE_PROXY_SECRET (HMAC-SHA256, >= 32 chars) > cabeçalho único da borda > TCP.
     # Nunca X-Forwarded-For. Vazio desliga a assinatura (WARN).
     edge-proxy-secret: ${EDGE_PROXY_SECRET:}
@@ -162,11 +171,16 @@ ws:
     username: ${WS_ADMIN_USERNAME:admin}
     initial-password: ${WS_ADMIN_INITIAL_PASSWORD:}      # segredo; só usado na criação; nunca tem valor padrão
     promote-existing: ${WS_ADMIN_PROMOTE_EXISTING:false}
+  jobs:
+    enabled: ${WS_JOBS_ENABLED:true}
+    anonymize:
+      every: ${WS_JOBS_ANONYMIZE_EVERY:PT1H}       # D-145: anonimiza contas cujo prazo de 30 dias para reativar terminou
+      initial-delay: ${WS_JOBS_ANONYMIZE_DELAY:PT2M}
   legal:
     # versões vigentes gravadas em users.terms_version/privacy_version no cadastro (gancho do bloco LGPD A; PolicyDocument depois)
     current-versions:
-      terms: ${WS_LEGAL_TERMS_VERSION:1.0}
-      privacy: ${WS_LEGAL_PRIVACY_VERSION:1.0}
+      terms: ${WS_LEGAL_TERMS_VERSION:0.2}         # docs/legal/TERMOS_DE_USO.md (rascunho da Velion, D-143)
+      privacy: ${WS_LEGAL_PRIVACY_VERSION:0.2}     # docs/legal/POLITICA_DE_PRIVACIDADE.md
   mail:
     # Bloco 3: adaptador de LOG mascarado (sem SMTP). Variáveis WS_SMTP_* ficam reservadas para o adaptador real (Q-84).
     echo-body: ${WS_MAIL_ECHO_BODY:false}               # true só em dev: imprime o corpo (com o código) no log local

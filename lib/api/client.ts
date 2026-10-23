@@ -56,6 +56,10 @@ let refreshTimer: ReturnType<typeof setTimeout> | null = null;
 
 type Listener = () => void;
 const unauthorizedListeners = new Set<Listener>();
+const sessionListeners = new Set<(signedIn: boolean) => void>();
+/** Entrou (login nesta aba ou em outra) ou saiu (logout, sessão encerrada): a barra e o perfil trocam de conta na hora. */
+export function onSessionChange(l: (signedIn: boolean) => void) { sessionListeners.add(l); return () => sessionListeners.delete(l); }
+const notifySession = (signedIn: boolean) => sessionListeners.forEach((l) => l(signedIn));
 /** Chamado quando a sessão acabou (logout em outra aba, sessão encerrada em Configurações › Sessões, refresh recusado). */
 export function onUnauthorized(l: Listener) { unauthorizedListeners.add(l); return () => unauthorizedListeners.delete(l); }
 
@@ -79,10 +83,11 @@ function sessionEnded(broadcast: boolean) {
   stopTimer();
   if (broadcast) bus.post({ type: "logout" });
   unauthorizedListeners.forEach((l) => l());
+  notifySession(false);
 }
 
 function onBusMessage(msg: AuthMessage) {
-  if (msg.type === "access") { accessToken = msg.token; sharedAt = Date.now(); schedule(msg.token); }
+  if (msg.type === "access") { const was = !!accessToken; accessToken = msg.token; sharedAt = Date.now(); schedule(msg.token); if (!was) notifySession(true); }
   if (msg.type === "refreshed") sharedAt = Date.now();
   // logout em outra aba sai nesta também — mesmo sem token em memória (a aba pode nem ter chamado a API ainda)
   if (msg.type === "logout") sessionEnded(false);
@@ -100,16 +105,19 @@ export function attachAuthBus(next: AuthBus) {
 export const tokenStore = {
   get access() { return accessToken; },
   set(access: string) {
+    const was = !!accessToken;
     accessToken = access;
     sharedAt = Date.now();
     schedule(access);
     bus.post({ type: "access", token: access });
+    if (!was) notifySession(true);
   },
   /** Saída feita NESTA aba (logout): limpa e avisa as outras abas; quem chamou cuida da navegação. */
   clear() {
     accessToken = null;
     stopTimer();
     bus.post({ type: "logout" });
+    notifySession(false);
   },
   /** Há sessão para restaurar? (cookie-sinal sem segredo gravado pelo BFF) */
   get restorable() {
@@ -206,6 +214,9 @@ async function request<T>(method: string, path: string, body?: unknown, opts: Re
   const headers: Record<string, string> = { Accept: "application/json", "Accept-Language": acceptLanguage(getCurrentLocale()), ...(opts.headers ?? {}) };
   const isForm = typeof FormData !== "undefined" && body instanceof FormData;
   if (body !== undefined && !isForm) headers["Content-Type"] = "application/json";
+  // Sem token mas com sessão restaurável: espera a renovação única ANTES de chamar a API. Antes, cada carga de página enviava as
+  // chamadas sem token, colhia 401 e disparava renovações em cascata — mais chances de navegar com uma rotação em voo (P18).
+  if (!opts.anonymous && !bff && !tokenStore.access && tokenStore.restorable) await refreshOnce();
   const token = opts.anonymous ? null : tokenStore.access;
   if (token) headers.Authorization = `Bearer ${token}`;
   let res: Response;

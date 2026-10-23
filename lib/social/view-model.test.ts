@@ -76,6 +76,12 @@ describe("cabeçalho do perfil (Matriz B; RF16.CA01/CA04/CA06)", () => {
     expect(counter(byPessoa, "tasks")).toBe(5);
     expect(counter(byCarla, "tasks")).toBe(2);
     expect(counter(byPessoa, "points")).toBeNull();
+    // decisões: a contagem bruta incluiria sessões que o viewer não vê → só o dono
+    expect(counter(byPessoa, "decisions")).toBeNull();
+    expect(counter(toProfileHeaderViewModel(s, U.ana, U.ana)!, "decisions")).not.toBeNull();
+    // seguindo: follows ATIVO feitos pela própria pessoa, coerente com followersCount do outro lado
+    const following = s.follows.filter((f) => f.followerId === U.ana && f.status === "ATIVO").length;
+    expect(counter(byPessoa, "following")).toBe(following);
     expect(counter(byPessoa, "hype")).toBe(712);
     expect(counter(toProfileHeaderViewModel(s, U.pessoa, U.bruno)!, "hype")).toBeNull();
     expect(byPessoa.following).toBe(true);
@@ -83,7 +89,7 @@ describe("cabeçalho do perfil (Matriz B; RF16.CA01/CA04/CA06)", () => {
   it("institucionais: EMPRESA → badge + /companies, sem DP/Hype; chefe → /departments", () => {
     const emp = toProfileHeaderViewModel(s, U.pessoa, U.secretaria)!;
     expect(emp.institutional).toMatchObject({ kind: "EMPRESA", href: "/companies/secretaria-exemplo" });
-    expect(emp.counters.map((c) => c.key)).toEqual(["tasks", "projects", "decisions", "followers"]);
+    expect(emp.counters.map((c) => c.key)).toEqual(["tasks", "projects", "decisions", "followers", "following"]);
     expect(toProfileHeaderViewModel(s, U.pessoa, U.chefe)!.institutional).toMatchObject({ kind: "CHEFE", href: "/departments/cpoe", acronym: "CPOE" });
     expect(toProfileHeaderViewModel(s, U.pessoa, "u-nao-existe")).toBeNull();
   });
@@ -93,5 +99,19 @@ describe("cabeçalho do perfil (Matriz B; RF16.CA01/CA04/CA06)", () => {
     expect(third.map((t) => t.slug)).toEqual(["acervo", "projetos", "programas", "decisoes", "deliberativo"]);
     expect(third.every((t) => !t.hiddenFor)).toBe(true);
     expect(profileTabsFor(s, U.pessoa, U.secretaria).map((t) => t.slug)).toEqual(["acervo", "projetos", "programas", "decisoes"]);
+  });
+});
+
+describe("composição do card de projeto não vaza tarefas ocultas (RF7/RF17)", () => {
+  it("mosaico e total contam só o que o viewer vê", () => {
+    const base = projectById(s, P.anaMobilidade)!;
+    const withSecret = { ...s, projects: s.projects.map((p) => (p.id === base.id ? { ...p, taskIds: [...p.taskIds, T.anaSigiloso, T.anaPrivada] } : p)) };
+    const project = projectById(withSecret, base.id)!;
+    const byDiego = toProjectCardViewModel(withSecret, U.diego, project);
+    expect(byDiego.mosaic.map((m) => m.id)).not.toContain(T.anaSigiloso);
+    expect(byDiego.mosaic.map((m) => m.id)).not.toContain(T.anaPrivada);
+    expect(JSON.stringify(byDiego)).not.toContain(taskById(s, T.anaSigiloso)!.title);
+    const byOwner = toProjectCardViewModel(withSecret, U.ana, project);
+    expect(byOwner.tasksCount).toBe(byDiego.tasksCount + 2);
   });
 });

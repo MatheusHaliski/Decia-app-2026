@@ -1,21 +1,25 @@
 "use client";
 // Preferências (RF3.CA03): tema, idioma, densidade, tamanho da fonte, reduzir movimento, skin da Mesa, arte de fundo,
 // notificações, fuso, WIP e modo de IA — aplicadas imediatamente e persistidas (local agora; API no Bloco 3).
-// Sessões (RF2.CA05) já fala com a API (Bloco 4, D-62); Conta · Privacidade · Dados · Termos seguem como esqueleto
-// (LGPD A/C, RF3.CA07–CA24).
+// Sessões (RF2.CA05) já fala com a API (Bloco 4, D-62); Conta (perfil + 2FA, D-144), Dados (excluir com 30 dias para reativar,
+// D-145) e Termos (Velion, D-143) também. Privacidade segue como esqueleto (LGPD C, RF3.CA07–CA24).
 import { useState } from "react";
 import { BackgroundArt, Badge, Button, Card, Checkbox, EmptyState, Field, Input, RadioCards, Select, Switch, WS_BACKGROUNDS, useToast } from "@/components/ui";
 import { RfPage } from "@/components/shell/RfPage";
 import { SessionsPanel } from "@/components/settings/SessionsPanel";
+import { AccountPanel } from "@/components/account/AccountPanel";
+import { DataPanel } from "@/components/account/DataPanel";
+import { TermsPanel } from "@/components/account/TermsPanel";
 import { useI18n } from "@/lib/i18n/useI18n";
 import type { Locale } from "@/lib/i18n/state";
 import { pageByRoute } from "@/lib/pages/registry";
 import { usePreferences } from "@/lib/preferences/PreferencesProvider";
+import { AUTONOMY_MODES, type AutonomyMode } from "@/lib/ai/autonomy";
 import { AI_MODES, DENSITIES, DESK_SKINS, FONT_SCALES, THEMES, type AiMode, type Density, type DeskSkin, type FontScale, type Theme } from "@/lib/preferences/types";
 
 const PAGE = pageByRoute("/settings")!;
 const TIMEZONES = ["America/Sao_Paulo", "America/Manaus", "America/Rio_Branco", "America/Noronha", "America/Belem", "America/Fortaleza", "America/Recife", "America/Bahia", "America/Cuiaba", "America/Campo_Grande", "America/Boa_Vista", "UTC"];
-const SKELETON_TABS = new Set(["conta", "privacidade", "dados", "termos"]);
+const SKELETON_TABS = new Set(["privacidade"]);
 
 function Appearance() {
   const { t, locales } = useI18n();
@@ -117,6 +121,11 @@ function Work() {
           )}
         </Field>
       </Card>
+      <Card title={t("settings.aiAutonomy")} eyebrow="RF51" className="md:col-span-2">
+        <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{t("settings.aiAutonomyIntro")}</p>
+        <RadioCards label={t("settings.aiAutonomy")} value={prefs.aiAutonomyDefault} onValueChange={(v) => update({ aiAutonomyDefault: v as AutonomyMode })} columns={1} options={AUTONOMY_MODES.map((m) => ({ value: m, label: t(`aiAutonomy.${m}`), hint: t(`aiAutonomy.${m}Hint`) }))} />
+        <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted" data-testid="autonomy-shared-note">{t("settings.aiAutonomyShared")}</p>
+      </Card>
       <Card title={t("settings.aiMode")} eyebrow="RF43.CA06" className="md:col-span-2">
         <RadioCards label={t("settings.aiMode")} value={prefs.aiModeDefault} onValueChange={(v) => update({ aiModeDefault: v as AiMode })} columns={2} options={AI_MODES.map((m) => ({ value: m, label: t(`aiMode.${m}`), hint: t(`aiMode.${m}Hint`) }))} />
       </Card>
@@ -135,6 +144,9 @@ export default function SettingsPage() {
         if (tab === "notificacoes") return <Notifications />;
         if (tab === "trabalho") return <Work />;
         if (tab === "sessoes") return <SessionsPanel />;
+        if (tab === "conta") return <AccountPanel />;
+        if (tab === "dados") return <DataPanel />;
+        if (tab === "termos") return <TermsPanel />;
         if (SKELETON_TABS.has(tab)) {
           return (
             <EmptyState

@@ -1,0 +1,75 @@
+{
+  "format": "ws-studio",
+  "schemaVersion": 1,
+  "revision": 5,
+  "title": "Nova peça",
+  "blocks": [
+    {
+      "id": "b1",
+      "kind": "heading",
+      "text": "Objetivo do trabalho"
+    },
+    {
+      "id": "b2",
+      "kind": "paragraph",
+      "text": "Descreva o problema, os fatos disponíveis e o resultado esperado."
+    }
+  ],
+  "shapes": [
+    {
+      "id": "30418362-51a6-4d73-81f9-0a1e15366fde",
+      "x": 100,
+      "y": 100,
+      "width": 400,
+      "height": 400,
+      "label": "SPLINE",
+      "layer": "Andaime",
+      "kind": "path",
+      "style": {
+        "fillMode": "none",
+        "fill": "#e8edf2",
+        "fillEnd": "#ffffff",
+        "stroke": "#263445",
+        "strokeWidth": 2,
+        "dash": "solid",
+        "opacity": 1,
+        "angle": 0,
+        "fontSize": 16
+      },
+      "points": [
+        {
+          "x": 0,
+          "y": 0.5
+        },
+        {
+          "x": 0.125,
+          "y": 0
+        },
+        {
+          "x": 0.33333333333333326,
+          "y": 0.5
+        },
+        {
+          "x": 0.5,
+          "y": 0.5
+        },
+        {
+          "x": 0.7899353499237465,
+          "y": 0.7899353499237464
+        },
+        {
+          "x": 0.875,
+          "y": 1
+        },
+        {
+          "x": 1,
+          "y": 0.5
+        }
+      ],
+      "closed": false,
+      "pathMode": "bezier",
+      "rotation": 0
+    }
+  ],
+  "constraints": []
+}

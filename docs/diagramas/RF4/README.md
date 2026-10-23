@@ -1,6 +1,6 @@
 # RF4 — Utilizar o criador de tarefas, escolhendo o tipo do arquivo e editando detalhes, em modo manual ou com IA
-**HU:** HU4 · **Sprint (board Work Station):** lista *Requisitos Funcionais* sem sprint atribuída (o card "SPRINT 1" cita "RF4 Tema e acesso da sessão", escopo antigo — ver `RENUMERACAO.md`; fase (d) da ARQUITETURA §6) · **Equivalente FAI:** RF4 Adicionar peça (foto → IA pré-preenche → formulário com taxonomia oficial → "Mais detalhes" → Closet) + RF11 Background Studio + buscador web de marcas · **Aba/rota:** Criar Tarefa (`/tasks/new`; folha "+ Criar" do `SidebarNav`; botão "Cadastrar nova tarefa" do Criador de Projetos, RF5); API `POST /api/tasks`, `POST /api/tasks/uploads`, `POST /api/tasks/detect`, `GET /api/org-entities/search`, `GET /api/legal-deadlines/compute`
-**Critérios de aceite cobertos:** RF20.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 · CA15 — **corpo do card = card RF20** (o card RF4 está vazio; o criador de tarefas está descrito no corpo do card RF20, cujos CAs são citados aqui como estão escritos; ver `RENUMERACAO.md`). Nenhuma classe deste RF existe ainda no código: tudo **(planejado)**, exceto os transversais do Bloco 1–3 (`SecurityConfig`, `CorrelationIdFilter`, `Guard`, `AuditLogPort`, `AuthRateLimitFilter`, `S3StorageConfig`, `AiProvidersConfig`).
+**HU:** HU4 · **Sprint (board Work Station):** lista *Requisitos Funcionais* sem sprint atribuída (o card "SPRINT 1" cita "RF4 Tema e acesso da sessão", escopo antigo — ver `RENUMERACAO.md`; fase (d) da ARQUITETURA §6) · **Equivalente FAI:** RF4 Adicionar peça (foto → IA pré-preenche → formulário com taxonomia oficial → "Mais detalhes" → Closet) + RF11 Background Studio + buscador web de marcas · **Aba/rota:** Criar Tarefa (`/tasks/new`; folha "+ Criar" do `SidebarNav`; botão "Cadastrar nova tarefa" do Criador de Projetos, RF5); API `POST /api/tasks`, `POST /api/tasks/uploads`, `POST /api/tasks/detect`, `GET /api/org-entities/search`, `GET /api/legal-deadlines/compute` · **real em 17/10/2026:** só `/tasks/new` (`TaskForm` modo create) e `POST /api/tasks`; `uploads`, `detect`, `org-entities` e `legal-deadlines` seguem **(planejado)**
+**Critérios de aceite cobertos:** RF20.CA01 · CA02 · CA03 · CA04 · CA05 · CA06 · CA07 · CA08 · CA09 · CA10 · CA11 · CA12 · CA13 · CA14 · CA15 — **corpo do card = card RF20** (o card RF4 está vazio; o criador de tarefas está descrito no corpo do card RF20, cujos CAs são citados aqui como estão escritos; ver `RENUMERACAO.md`). **Situação em 17/10/2026 (auditoria `docs/auditoria/2026-10-17/`, MATRIZ_RF: AUSENTE → API REAL PARCIAL):** **(real)** a criação **manual** ponta a ponta — `/tasks/new` (`components/tasks/TaskForm.tsx`, `tasksApi.create` em `lib/tasks/client.ts`) → `POST /api/tasks` (`TaskController.create`, `TaskRequest`) → `TaskService.create` (`TaskInput`, `ResourceAuthorizer.viewer`, erros de campo juntos em `422 VALIDACAO`) → `TaskItem.create` (`RASCUNHO`, `SourceKind.MANUAL` — V37) + `TaskBrief` (V36 `task_briefs`: objetivo, `WorkArea`, entregáveis, critérios, referências, extensões opcionais por área) → `TaskRepositoryPort.insert` → `task_state_log` → `AuditLogPort` `TASK_CREATED` → `201 TaskView` (commits `97611a0`, `013657a`, `474b6cb`; jornada real 17/17 com tarefas de 6 áreas), mais os transversais do Bloco 1–3 (`SecurityConfig`, `CorrelationIdFilter`, `Guard`, `AuditLogPort`, `AuthRateLimitFilter`, `S3StorageConfig`, `AiProvidersConfig`); **(planejado)** uploads e anexos (`UploadService`; `MediaUploadService` existe mas ainda não é bean), detecção por IA (`TaskDetectionService`, `AiEngine`), órgãos (`/api/org-entities/search`), prazos legais (`/api/legal-deadlines/compute`), lote/.zip, chancelas, Balcão, dependências, escolha de outro responsável (busca `/api/people?q=`) e vínculo com projeto/peças (Onda 3 do `PLANO_ONDAS.md`); as fontes ARQUIVO, COLAR, GOOGLE, MICROSOFT, EMAIL, LINK, PROTOCOLO, FOTO e TEXTO_IA existem **só como valores do enum `SourceKind`**, sem adaptador.
 
 > **HU4** — COMO usuário logado dentro do sistema WS POSSO acessar a aba criar nova tarefa PARA criar um esquema de tarefa único e personalizado conforme as diretrizes de minha equipe de trabalho.
 
@@ -18,7 +18,64 @@ A **tarefa** (`TaskItem`, TAXONOMIA §2.1) é a unidade mínima do Work Station 
 | Foto/scanner do celular (QR) + Estúdio de Documento | FOTO | IMAGEM_EDITADA · DOCUMENTO (OCR) | `OcrPort`, `MediaStoragePort` |
 | Texto com IA (pedido + ≤ 5 tarefas de referência) | TEXTO_IA | TEXTO_IA | `AiEngine` |
 
+## 0. Diagrama de casos de uso
+
+Quem usa o criador de tarefas e o que consegue fazer nele. Borda contínua: existe no código em 17/10/2026; tracejada: planejado.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  subgraph SIS["Work Station — RF4 Criador de tarefas"]
+    direction TB
+    UC1(["UC1 Criar tarefa no modo manual"]):::uc
+    UC2(["UC2 Salvar tarefa como rascunho"]):::uc
+    UC3(["UC3 Validar os campos da tarefa"]):::uc
+    UC4(["UC4 Anexar arquivo ou colar conteúdo"]):::ucPlan
+    UC5(["UC5 Pré-preencher a tarefa com IA"]):::ucPlan
+    UC6(["UC6 Importar de serviço externo"]):::ucPlan
+    UC7(["UC7 Criar tarefas em lote"]):::ucPlan
+    UC8(["UC8 Informar órgão e prazo legal"]):::ucPlan
+    UC9(["UC9 Aceitar chancela sugerida"]):::ucPlan
+    UC10(["UC10 Oferecer no Balcão de Modelos"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  conectores["«ator» Google · Microsoft · e-Protocolo"]:::atorSis
+  email["«ator» Serviço de e-mail"]:::atorSis
+  autenticado --- UC1
+  autenticado --- UC4
+  autenticado --- UC6
+  autenticado --- UC7
+  UC1 -. "«include»" .-> UC3
+  UC2 -. "«extend»" .-> UC1
+  UC5 -. "«extend»" .-> UC1
+  UC8 -. "«extend»" .-> UC1
+  UC9 -. "«extend»" .-> UC1
+  UC10 -. "«extend»" .-> UC1
+  UC5 --- ia
+  UC6 --- conectores
+  UC6 --- email
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Criar tarefa no modo manual | autenticado | RF20.CA04, RF20.CA14 | real: `/tasks/new` (`TaskForm`) → `POST /api/tasks` → `TaskService.create`, sem projeto/fase, anexos nem IA |
+| UC2 Salvar tarefa como rascunho | autenticado | RF20.CA04, RF20.CA05 | real: `draft: true` deixa a tarefa em `RASCUNHO` |
+| UC3 Validar os campos da tarefa | — (incluído por UC1) | RF20.CA14 | real: `422 VALIDACAO` com todos os campos juntos; categoria, processo, natureza e prazo legal planejados |
+| UC4 Anexar arquivo ou colar conteúdo | autenticado | RF20.CA01, RF20.CA06, RF20.CA12 | planejado (`UploadService`, antivírus, OCR; `ARQUIVO`/`COLAR` só no enum) |
+| UC5 Pré-preencher a tarefa com IA | autenticado, ia | RF20.CA02, RF20.CA03 | planejado (`TaskDetectionService`, `PREENCHER_TAREFA`; sem motor registrado) |
+| UC6 Importar de serviço externo | autenticado, conectores, email | RF20.CA07, RF20.CA08, RF20.CA09 | planejado (Google, Microsoft, e-mail encaminhado, e-Protocolo; só valores de `SourceKind`) |
+| UC7 Criar tarefas em lote | autenticado | RF20.CA05 | planejado (vários arquivos ou .zip) |
+| UC8 Informar órgão e prazo legal | autenticado | RF20.CA10, RF20.CA11 | planejado (`/api/org-entities/search`, `/api/legal-deadlines/compute`) |
+| UC9 Aceitar chancela sugerida | autenticado | RF20.CA13 | planejado (RF39) |
+| UC10 Oferecer no Balcão de Modelos | autenticado | RF20.CA15 | planejado (RF40) |
+
 ## 1. Diagrama de classes
+
+Legenda (17/10/2026): **(real)** `TaskController` (só `create` neste RF; `get`/`update` são do RF12 e `mine`/`transition` do RF41), `TaskRequest`, `TaskService` (`TaskInput`, `TaskView`), `TaskRepositoryPort` (`insert`, `update`, `appendStateLog`; adaptador `JpaAcervoAdapters`), `ResourceAuthorizer`, `AccessPolicy`, `AuditLogPort`, `TaskItem`, `TaskBrief`, `WorkArea`, `TaskStateLog` e os enums; `TaskAttachment`, `TaskVersion`, `LegalDeadlineRule`, `OrgEntity`, `MediaObject`, `PipelineJob`, `AiInferenceLog`, `SealBond` e `ModelOffer` existem só como entidade de domínio + tabela, sem serviço; `MediaStoragePort`/`AntivirusPort` existem (Bloco 5, D-67) sem rota de tarefa. **(planejado)** `TaskController.upload/detect/createBatch`, `OrgEntityController`, `LegalDeadlineController`, `TaskCreationService`, `TaskDetectionService`, `DeadlineService`, `OrgEntityLookupService`, `UploadService`, `AiEngine`, `TaskStateMachine` (no real a tabela é `TaskState.machine()`), `OcrPort`, `ExternalDocPort`, `ProtocolPort`, `OrgLookupPort`, `PipelineJobPort`, `SearchIndexPort`, `SealSuggestionService`.
 
 ```mermaid
 classDiagram
@@ -26,10 +83,69 @@ classDiagram
 
   class TaskController {
     <<controller>>
+    +create(CurrentUser, TaskRequest, RequestContext) TaskView
     +upload(MultipartFile, CurrentUser) UploadReceipt
     +detect(DetectRequest, CurrentUser) DetectionResult
-    +create(CreateTaskRequest, CurrentUser, ctx) TaskView
     +createBatch(BatchRequest, CurrentUser, ctx) List
+  }
+  class TaskRequest {
+    +String title
+    +String descriptionMd
+    +TaskType type
+    +TaskCategory category
+    +Priority priority
+    +LocalDate dueAt
+    +UUID responsibleId
+    +AccessClassification accessClass
+    +Visibility visibility
+    +String objective
+    +WorkArea area
+    +List~Deliverable~ deliverables
+    +List~Criterion~ acceptanceCriteria
+    +List~Reference~ references
+    +Map extensions
+    +Boolean draft
+    +Long version
+  }
+  class TaskService {
+    <<service>>
+    +create(CurrentUser, TaskInput, RequestContext) TaskView
+    +listMine(CurrentUser, limit) List
+    +get(CurrentUser, id) TaskView
+    +update(CurrentUser, id, TaskInput, version, ctx) TaskView
+    +transition(CurrentUser, id, TransitionInput, ctx) TaskView
+    -validate(Viewer, TaskInput) Validated
+  }
+  class ResourceAuthorizer {
+    <<service>>
+    +viewer(CurrentUser) Viewer
+    +require(Viewer, ScopedResource, ResourceAction) void
+  }
+  class AuditLogPort {
+    <<port>>
+    +record(AuditEvent) void
+  }
+  class TaskBrief {
+    <<entity>>
+    +UUID taskId
+    +String objective
+    +WorkArea area
+    +JSON deliverablesJson
+    +JSON acceptanceCriteriaJson
+    +JSON referencesJson
+    +JSON extensionsJson
+  }
+  class WorkArea {
+    <<enum>>
+    SOFTWARE
+    ADMINISTRACAO
+    DESIGN
+    PESQUISA
+    MARKETING
+    PLANEJAMENTO
+    ENGENHARIA
+    JURIDICO
+    OUTRA
   }
   class OrgEntityController {
     <<controller>>
@@ -105,7 +221,11 @@ classDiagram
   }
   class TaskRepositoryPort {
     <<port>>
-    +save(TaskItem) TaskItem
+    +insert(TaskItem, TaskBrief) StoredTask
+    +update(TaskItem, TaskBrief, expectedVersion) StoredTask
+    +findById(id) Optional
+    +findByOwner(ownerId, limit) List
+    +appendStateLog(TaskStateLog) void
   }
   class PipelineJobPort {
     <<port>>
@@ -262,6 +382,7 @@ classDiagram
   }
   class SourceKind {
     <<enum>>
+    MANUAL
     ARQUIVO
     COLAR
     GOOGLE
@@ -275,6 +396,9 @@ classDiagram
     REMIX
     DECIA
     AUTOPILOT
+    ATA_VIVA
+    DOSSIE
+    EXTRACAO
   }
   class AccessClassification {
     <<enum>>
@@ -289,6 +413,13 @@ classDiagram
     COPIADO
   }
 
+  TaskController --> TaskService : create real
+  TaskController ..> TaskRequest
+  TaskService --> ResourceAuthorizer
+  TaskService --> TaskRepositoryPort
+  TaskService --> AuditLogPort
+  TaskItem "1" --> "0..1" TaskBrief : task_briefs V36
+  TaskBrief --> WorkArea
   TaskController --> TaskCreationService
   TaskController --> TaskDetectionService
   TaskController --> UploadService
@@ -320,6 +451,11 @@ classDiagram
   TaskItem --> SourceKind
   TaskItem --> AccessClassification
   TaskItem --> LinkMode
+  note for TaskController "(real) ws-web acervo, POST /api/tasks 201 · upload, detect e createBatch (planejado)"
+  note for TaskService "(real) ws-application acervo · TaskInput = TaskRequest sem version · TaskView traz version e editable · audita TASK_CREATED, TASK_UPDATED, TASK_STATE_CHANGED"
+  note for TaskCreationService "(planejado) hoje POST /api/tasks vai a TaskService.create, só fonte MANUAL"
+  note for TaskStateMachine "(planejado) no real a tabela é TaskState.machine() e o TaskService grava task_state_log"
+  note for SourceKind "MANUAL é a única fonte real (V37) · as demais são só valores do enum (planejado)"
   note for TaskItem "+22 campos (descriptionMd, receivedAt, senderOrigin, retentionPolicyJson, favorite, cardSkin, tags, notes, originalTaskId, sourceProjectId, checklistItemId, reuseCount, projectUsageCount, contadores sociais, sealIdsJson, blocked*). TaskCategory: OFICIO_MEMORANDO … OUTRO (15 valores)."
 ```
 
@@ -340,10 +476,13 @@ flowchart TD
     F4["Formulário com faísca ✦ e confiança por campo · erro por campo (422 details)"]
     F5["GET /api/org-entities/search?q= · GET /api/legal-deadlines/compute"]
     F6["POST /api/tasks (ou /batch) → TaskCard no Acervo"]
+    FM1["(real) TaskForm modo create em /tasks/new: campos comuns + extensões só da área escolhida · Criar tarefa ou Salvar como rascunho"]
+    FM2["(real) tasksApi.create → POST /api/tasks TaskRequest · 201 TaskView → /tasks/id · 422 aparece junto do campo"]
   end
   subgraph WEB["ws-web"]
     W1["JWT + SessionActiveFilter + Guard.requireCanCreate (não DELETION_SCHEDULED)"]
     W2["TaskController.upload / detect / create"]
+    WM1["(real) TaskController.create: @Valid TaskRequest, CurrentUser, RequestContext"]
     E415["415 FORMATO_NAO_SUPORTADO"]
     E413["413 ARQUIVO_GRANDE (50 MB, zip 200 MB)"]
     E422M["422 ARQUIVO_MALICIOSO"]
@@ -369,6 +508,12 @@ flowchart TD
     V6["TaskItem state RASCUNHO ou DISPONIVEL · linkMode VINCULADO/COPIADO · offeredInCounter → ModelOffer (RF40)"]
     V7["save · TaskStateLog · AuditLog TASK_CREATED · opcional ProjectTask na fase escolhida (RF5)"]
     B1["Lote/.zip: um rascunho por arquivo ou PASTA com 'explodir em N tarefas' · revisão antes de confirmar"]
+    RM1["(real) TaskService.create: ResourceAuthorizer.viewer → validate (título ≤ 200, tipo, objetivo ≤ 500, descrição ≤ 20000, responsável da mesma empresa, prazo, listas do briefing)"]
+    RM2{"válido?"}
+    RM3["(real) TaskItem.create RASCUNHO, SourceKind MANUAL, origem INTERNA + TaskBrief → TaskRepositoryPort.insert · task_state_log null → RASCUNHO"]
+    RM4{"draft?"}
+    RM5["(real) transition DISPONIVEL (A realizar) · TaskRepositoryPort.update · task_state_log RASCUNHO → DISPONIVEL"]
+    RM6["(real) AuditLogPort TASK_CREATED (state, area) · 201 TaskView"]
     AC["AFTER_COMMIT: PipelineJob THUMBNAIL · OCR · ANTIVIRUS (se pendente) · SYNC_EXTERNO (VINCULADO) · SearchIndexPort.index"]
   end
   subgraph IA["AiEngine"]
@@ -376,7 +521,7 @@ flowchart TD
     I2["Claude → Gemini → LocalEngine (circuit breaker) · AiInferenceLog capability PREENCHER_TAREFA, hostRf RF4"]
   end
   subgraph PERS["Persistência"]
-    P1[("MySQL: tasks, task_attachments, task_versions, legal_deadline_rules, org_entities, media_objects, pipeline_jobs, ai_inference_log, audit_log")]
+    P1[("MySQL: tasks, task_briefs (V36, real), task_state_log (real), task_attachments, task_versions, legal_deadline_rules, org_entities, media_objects, pipeline_jobs, ai_inference_log, audit_log")]
     P2[("S3/MinIO: quarentena → bucket de anexos · thumbnails")]
     P3[("OpenSearch ws-tasks (+ texto OCR)")]
     P4[("Redis: AiQuota · cache de busca web de órgãos")]
@@ -410,6 +555,13 @@ flowchart TD
   F2 -->|"vários arquivos ou .zip"| B1 --> F4
   W1 -->|"sem permissão"| E403
   F2 -->|"Google/Microsoft"| P5
+  A1 -->|"modo Manual (real)"| FM1 --> FM2 --> WM1 --> RM1 --> RM2
+  RM2 -->|"não"| E422
+  RM2 -->|"sim"| RM3 --> RM4
+  RM4 -->|"sim (rascunho)"| RM6
+  RM4 -->|"não"| RM5 --> RM6
+  RM3 --> P1
+  RM6 --> P1
 ```
 
 ## 3. Diagrama de sequência
@@ -508,11 +660,32 @@ sequenceDiagram
     EV->>S3: thumbnail / preview
     Note over EV,S3: OCR indisponível → job REPROCESSAR, aviso no card (CA12)
   end
+
+  Note over U,R: Caminho REAL em 17/10/2026 (modo Manual, sem anexo nem IA) — commits 97611a0 e 013657a
+  U->>N: preenche o TaskForm em /tasks/new (título, tipo, área, objetivo, entregáveis, critérios, referências, extensões da área) e clica Criar tarefa
+  N->>C: POST /api/tasks TaskRequest (draft falso)
+  C->>S: TaskService.create(user, TaskInput, ctx)
+  S->>S: ResourceAuthorizer.viewer(actor) e validate (título, tipo, objetivo, descrição, responsável da mesma empresa, prazo, listas do briefing)
+  alt inválido
+    S-->>C: 422 VALIDACAO details.fields com todos os campos de uma vez
+    C-->>N: 422
+    N-->>U: erro junto de cada campo, nada é gravado
+  else válido
+    S->>R: TaskRepositoryPort.insert(TaskItem.create RASCUNHO e SourceKind MANUAL, TaskBrief) em tasks e task_briefs
+    S->>R: appendStateLog(null → RASCUNHO)
+    opt draft falso (Criar tarefa)
+      S->>R: TaskRepositoryPort.update(DISPONIVEL, version) e appendStateLog(RASCUNHO → DISPONIVEL)
+    end
+    S->>R: AuditLogPort.record TASK_CREATED (state, area)
+    S-->>C: TaskView (version, editable)
+    C-->>N: 201 TaskView
+    N-->>U: abre /tasks/id com estado A realizar (ou Rascunho)
+  end
 ```
 
 ## 4. Máquina de estados
 
-Entidade central: **`TaskItem.state`** (`TaskState`, TAXONOMIA §2.1/§13), governada pelo `TaskStateMachine` (ARQUITETURA §3 "State Machine explícita"); toda transição grava `TaskStateLog`. O criador cria em `RASCUNHO` ou `DISPONIVEL` (CA04); os demais estados são operados pelo Acervo (RF6/RF41), pelo Criador de Projetos (RF5) e pelo Balcão (RF40).
+Entidade central: **`TaskItem.state`** (`TaskState`, TAXONOMIA §2.1/§13), governada pelo `TaskStateMachine` (ARQUITETURA §3 "State Machine explícita"); toda transição grava `TaskStateLog`. O criador cria em `RASCUNHO` ou `DISPONIVEL` (CA04); os demais estados são operados pelo Acervo (RF6/RF41), pelo Criador de Projetos (RF5) e pelo Balcão (RF40). **Real (17/10/2026):** não há `TaskStateMachine`; a tabela é `TaskState.machine()` e `TaskService.create` grava sempre `RASCUNHO` (`task_state_log` de `null` → `RASCUNHO`) e, sem `draft`, passa na mesma transação a `DISPONIVEL` (rótulo «A realizar» em `lib/tasks/status.ts`); «Salvar como rascunho» (`draft: true`) mantém `RASCUNHO`. Transição fora da tabela responde `409 TAREFA_TRANSICAO_INVALIDA`.
 
 ```mermaid
 stateDiagram-v2
@@ -553,7 +726,7 @@ stateDiagram-v2
     e não aparece para terceiros (RF17.CA03).
   end note
   note right of DIS
-    Transição inválida: 422 TRANSICAO_INVALIDA.
+    Transição inválida: 409 TAREFA_TRANSICAO_INVALIDA (real).
     EM_USO e MODELO_PUBLICO só por evento, nunca à mão.
   end note
 ```
@@ -563,7 +736,8 @@ stateDiagram-v2
 ```mermaid
 flowchart LR
   subgraph FE["Frontend · Next.js 15 App Router"]
-    PG["app/(shell)/tasks/new · etapas 1–5 · modal reutilizado por /projects/new (RF5)"]
+    PG["app/(shell)/tasks/new (real: TaskForm modo create) · etapas 1–5 e modal reutilizado por /projects/new, RF5 (planejado)"]
+    TFM["(real) components/tasks/TaskForm.tsx · lib/tasks/client.ts tasksApi.create · lib/api/schema.d.ts (OpenAPI)"]
     UI["packages/ui: TypeChip, Select, Input, Textarea, Checkbox, Spark ✦, Due (⚖ prazo legal), Seal, TaskCard (prévia), Dialog, Toast"]
     SN["SidebarNav › folha + Criar · TopBar"]
     ST["Estúdio de Documento / Arte do card (RF11, RF38)"]
@@ -571,20 +745,22 @@ flowchart LR
     PG --> UI
     PG --> ST
     PG --> BFF
+    PG --> TFM
+    TFM --> BFF
     SN --> PG
   end
   subgraph WSWEB["ws-web"]
     SEC["SecurityConfig · SessionActiveFilter · CurrentUserArgumentResolver · CorrelationIdFilter"]
-    TC["TaskController · OrgEntityController · LegalDeadlineController"]
+    TC["TaskController (real: POST /api/tasks) · OrgEntityController · LegalDeadlineController (planejado)"]
     GEH["GlobalExceptionHandler (413, 415, 422, 409, 403)"]
   end
   subgraph WSAPP["ws-application"]
-    AC["acervo: TaskCreationService · TaskDetectionService · UploadService · DeadlineService · OrgEntityLookupService · TaskStateMachine"]
+    AC["acervo: TaskService (real) · TaskCreationService · TaskDetectionService · UploadService · DeadlineService · OrgEntityLookupService · TaskStateMachine (planejado)"]
     AIE["ai: AiEngine (Strategy + Chain: Claude → Gemini → LocalEngine) · AiQuota · governança accessClass/mascaramento"]
     SEAL["seals: SealSuggestionService (RF39)"]
-    PORTS["ports: TaskRepositoryPort · MediaStoragePort · AntivirusPort · OcrPort · ExternalDocPort · ProtocolPort · OrgLookupPort · PipelineJobPort · SearchIndexPort · AuditLogPort"]
+    PORTS["ports: TaskRepositoryPort · AuditLogPort (real) · MediaStoragePort · AntivirusPort (reais, sem rota de tarefa) · OcrPort · ExternalDocPort · ProtocolPort · OrgLookupPort · PipelineJobPort · SearchIndexPort (planejado)"]
     EVT["events: TaskCreated (AFTER_COMMIT) → SideEffectRunner"]
-    GD["security.Guard.requireCanCreate"]
+    GD["security: ResourceAuthorizer + AccessPolicy (real) · Guard.requireCanCreate (planejado)"]
     AC --> PORTS
     AC --> AIE
     AC --> SEAL
@@ -592,10 +768,10 @@ flowchart LR
     AC --> GD
   end
   subgraph WSDOM["ws-domain"]
-    DOM["acervo: TaskItem · TaskAttachment · TaskVersion · TaskStateLog · LegalDeadlineRule · OrgEntity · enums TaskType/TaskCategory/TaskState/SourceKind/AccessClassification · platform: MediaObject · PipelineJob · AiInferenceLog"]
+    DOM["acervo: TaskItem · TaskBrief e WorkArea (real, V36) · SourceKind com MANUAL (real, V37) · TaskAttachment · TaskVersion · TaskStateLog · LegalDeadlineRule · OrgEntity · enums TaskType/TaskCategory/TaskState/SourceKind/AccessClassification · platform: MediaObject · PipelineJob · AiInferenceLog"]
   end
   subgraph INFRA["ws-infrastructure"]
-    MY["persistence-mysql: Jpa*Repository, Flyway V__rf4_tasks (planejado)"]
+    MY["persistence-mysql (real): JpaAcervoAdapters (TaskRepositoryPort), TaskItemRepository, TaskBriefRepository · Flyway V11 tasks, V36 task_briefs, V37 ck_tasks_source_kind com MANUAL"]
     S3["storage-s3 (S3StorageConfig, flag storage.s3): quarentena, anexos, thumbnails"]
     OSE["search-opensearch (flag opensearch.enabled): índice ws-tasks"]
     RDS["cache-redis: AiQuota, cache de busca web"]
@@ -637,17 +813,28 @@ flowchart LR
 | RF20.CA01 | `UploadService`, `MediaStoragePort`, `AntivirusPort`, `MediaObject`, `ExternalDocPort` | `F2`→`U1`→`U4`, `E415`, `E413`, `E422M` | 2–15 | — | `S3`, `PLT` (ClamAV, Drive, Graph), `GEH` | planejado |
 | RF20.CA02 | `TaskDetectionService`, `AiEngine` (PREENCHER_TAREFA), `AiInferenceLog`, `TaskItem.aiConfidenceJson/aiGenerated` | `D1`→`D2`→`I1`→`I2`→`D5`→`F4` | 16–32, 35–36 | — | `AIE`, `AIP`, `UI` (`Spark`) | planejado |
 | RF20.CA03 | `TaskDetectionService` (fallback vazio) | `D3`→`D4`→`F4` | 33–34 | — | `AIE` (LocalEngine/circuit breaker) | planejado |
-| RF20.CA04 | `TaskCreationService.create/validate`, `TaskRepositoryPort`, `ProjectTask` (RF5) | `V1`→`V2`→`V6`→`V7` | 49–58 | `[*]`→`DIS` / `RAS` | `TC`, `AC`, `MY` | planejado |
-| RF20.CA05 | `TaskCreationService.createBatch`, `TaskType.PASTA` | `B1` | — | `[*]`→`RAS` | `TC.createBatch` | planejado |
-| RF20.CA06 | `TaskCreationService.fromPaste`, `SourceKind.COLAR` | `F1` (aba Colar) → `V6` | — | `[*]`→`DIS` | `PG` | planejado |
-| RF20.CA07 | `ExternalDocPort.watch`, `TaskVersion`, `LinkMode`, `PipelineJob SYNC_EXTERNO` | `F2` (Google/Microsoft) → `V6` → `AC` | 59 | — | `PLT` (`GoogleDriveAdapter`, `MicrosoftGraphAdapter`), `BFF` (OAuth) | planejado |
-| RF20.CA08 | `TaskCreationService.fromEmail`, `EmailInboundAdapter`, `TaskAttachment` | `F1` (aba E-mail) | — | — | `PLT` | planejado |
-| RF20.CA09 | `TaskCreationService.fromProtocol`, `ProtocolPort`, `TaskType.PROTOCOLO`, `TaskItem.protocolNumber` | `F1` (aba Protocolo) | — | — | `PLT` (`EProtocoloAdapter`), `EP` | planejado |
+| RF20.CA04 | `TaskCreationService.create/validate`, `TaskRepositoryPort`, `ProjectTask` (RF5); real: `TaskController.create`, `TaskService.create`, `TaskRepositoryPort.insert`, `TaskBrief` | `V1`→`V2`→`V6`→`V7`; real: `FM1`→`FM2`→`WM1`→`RM1`→`RM2`→`RM3`→`RM4`→`RM5`→`RM6` | 49–58; real: 61–64, 68–74 | `[*]`→`DIS` / `RAS` | `TC`, `AC`, `MY`, `TFM` | **real parcial** (manual, sem projeto/fase, anexos nem IA) — ver tabela abaixo |
+| RF20.CA05 | `TaskCreationService.createBatch`, `TaskType.PASTA` | `B1` | — | `[*]`→`RAS` | `TC.createBatch` | planejado (o real só cria uma tarefa por vez; «Salvar como rascunho» = `draft: true`) |
+| RF20.CA06 | `TaskCreationService.fromPaste`, `SourceKind.COLAR` | `F1` (aba Colar) → `V6` | — | `[*]`→`DIS` | `PG` | planejado (`COLAR` só no enum; texto digitado é `MANUAL` desde V37, Q-235) |
+| RF20.CA07 | `ExternalDocPort.watch`, `TaskVersion`, `LinkMode`, `PipelineJob SYNC_EXTERNO` | `F2` (Google/Microsoft) → `V6` → `AC` | 59 | — | `PLT` (`GoogleDriveAdapter`, `MicrosoftGraphAdapter`), `BFF` (OAuth) | planejado (`GOOGLE`/`MICROSOFT` só no enum) |
+| RF20.CA08 | `TaskCreationService.fromEmail`, `EmailInboundAdapter`, `TaskAttachment` | `F1` (aba E-mail) | — | — | `PLT` | planejado (`EMAIL` só no enum) |
+| RF20.CA09 | `TaskCreationService.fromProtocol`, `ProtocolPort`, `TaskType.PROTOCOLO`, `TaskItem.protocolNumber` | `F1` (aba Protocolo) | — | — | `PLT` (`EProtocoloAdapter`), `EP` | planejado (`PROTOCOLO` só no enum) |
 | RF20.CA10 | `OrgEntityLookupService`, `OrgLookupPort`, `OrgEntity` | `F5`→`V4`→`P5` | 43–46 | — | `PLT` (`WikidataCnpjAdapter`), `RDS` (cache) | planejado |
 | RF20.CA11 | `DeadlineService`, `LegalDeadlineRule`, `TaskItem.legalDueAt/legalOverrideReason` | `F5`→`V3` | 37–42 | — | `UI` (`Due` ⚖), `MY` | planejado |
 | RF20.CA12 | `OcrPort`, `PipelineJob OCR` (REPROCESSAR), `TaskAttachment.ocrStatus` | `AC` | 59–61 | `[*]`→`RAS` | `PLT` (OCR), `EVT` | planejado |
 | RF20.CA13 | `SealSuggestionService`, `SealBond` SUGERIDA→ACEITA | `V5` | 51 | — | `SEAL` | planejado (RF39) |
-| RF20.CA14 | `TaskCreationService.validate`, `GlobalExceptionHandler` (`ApiError.details`) | `V2`→`E422` | 48–50 | — | `GEH`, `UI` (erro por campo i18n) | `GlobalExceptionHandler` real (Bloco 1); regras planejadas |
+| RF20.CA14 | `TaskCreationService.validate`, `GlobalExceptionHandler` (`ApiError.details`); real: `TaskService.validate` (privado), `TaskBriefJson.invalid` | `V2`→`E422`; real: `RM2`→`E422` | 48–50; real: 64–67 | — | `GEH`, `UI` (erro por campo i18n), `TFM` | **real** para as regras do criador manual (título, tipo, objetivo, descrição, responsável, prazo, listas); categoria/processo/natureza/prazo legal planejados |
 | RF20.CA15 | `ModelOffer`, `TaskItem.offeredInCounter` | `V6` | 51 | `DIS`→`OFE`, `MOD`→`OFE` | `AC`, `MY` | planejado (RF40) |
 
-Tela/aba: `/tasks/new` (esqueleto em `app/(shell)/tasks/new/page.tsx`)
+### Caminho real de criação manual (17/10/2026)
+
+| Elemento | Classe / arquivo real | Teste | Commit | CA |
+|---|---|---|---|---|
+| Tela `/tasks/new` | `app/(shell)/tasks/new/page.tsx`, `components/tasks/TaskForm.tsx` (modo create, extensões por área, rascunho), `lib/tasks/client.ts` (`tasksApi.create`, `AREA_EXTENSIONS`) | `components/tasks/tasks.test.tsx` «valida localmente, mostra só os campos da área e envia o briefing» · «editar antes de /api/me responder não apaga o responsável» | `013657a`, `474b6cb` | RF20.CA04, RF20.CA14 |
+| `POST /api/tasks` → 201 | `TaskController.create`, `TaskRequest`, `@Tag RF4 Tarefas` | `TaskControllerWebTest.criaComBriefingEDevolve201` · `semTokenRecebe401EPapelDesconhecido403` | `97611a0` | RF20.CA04 |
+| Serviço e validação (422) | `TaskService.create`, `TaskInput`, `TaskView`, `ResourceAuthorizer.viewer`, `TaskBriefJson` | `TaskServiceTest.criaTarefasDeSeisAreasSemExigirCamposDeSoftware` · `rascunhoFicaEmRascunhoEValidacaoVoltaComTodosOsCampos` · `responsavelPrecisaSerDaMesmaEmpresa` | `97611a0` | RF20.CA04, RF20.CA14 |
+| Persistência | `TaskRepositoryPort.insert/update/appendStateLog`, `JpaAcervoAdapters`, `TaskBrief` (V36 `task_briefs`), `SourceKind.MANUAL` (V37) | `TaskPersistenceIT.salvaReabreEditaOBriefingESobeAVersao` | `97611a0`, `3e7aa9f` (V37) | RF20.CA04 |
+| Auditoria | `AuditActions.TASK_CREATED` via `AuditLogPort` | — | `97611a0` | RF20.CA04 |
+| Evidência | jornada real 17/17 (`docs/auditoria/2026-10-17/evidencias/JORNADA.json`), capturas 01 e 09 | — | `203244a` | RF20.CA04 |
+
+Tela/aba: `/tasks/new` (real desde `013657a`: `app/(shell)/tasks/new/page.tsx` com `TaskForm` modo create; antes, esqueleto)

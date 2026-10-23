@@ -10,8 +10,9 @@ describe("catálogo de RFs gerado dos READMEs", () => {
     expect(fs.readFileSync(OUT, "utf8")).toBe(gerar());
   });
 
-  it("tem RF1…RF48, cada um com título, rota e pelo menos um CA ou linha de cobertura", () => {
-    expect(RF_CATALOG.map((r) => r.n)).toEqual(Array.from({ length: 48 }, (_, i) => i + 1));
+  it("tem RF1…RFn contíguos (todo docs/diagramas/RFnn), cada um com título, rota e pelo menos um CA ou linha de cobertura", () => {
+    expect(RF_CATALOG.length).toBeGreaterThanOrEqual(50);
+    expect(RF_CATALOG.map((r) => r.n)).toEqual(Array.from({ length: RF_CATALOG.length }, (_, i) => i + 1));
     for (const rf of RF_CATALOG) {
       expect(rf.title.length, rf.id).toBeGreaterThan(10);
       expect(rf.route, rf.id).toBeTruthy();
@@ -48,9 +49,14 @@ describe("catálogo de RFs gerado dos READMEs", () => {
     // rótulo entre parênteses dentro do negrito (cards RF47/RF48: "Opção A — tela principal") vira nota do CA
     const rotulado = parseReadme("RF98", "# RF98 — T\n- **RF98.CA11 (Opção A — tela principal)** Dado a aba, quando busco, então vejo **linhas**.");
     expect(rotulado.cas[0]).toMatchObject({ id: "RF98.CA11", kind: "enunciado", note: "Opção A — tela principal", text: "Dado a aba, quando busco, então vejo linhas." });
+    // concordância: "Dada", "Dados" e "Dadas" também abrem um enunciado (RF52–RF74)
+    for (const abertura of ["Dada a seleção", "Dados dois objetos", "Dadas camadas ocultas"]) {
+      expect(parseReadme("RF97", `# RF97 — T\n- **RF97.CA01** ${abertura}, quando ajo, então algo.`).cas[0].kind, abertura).toBe("enunciado");
+    }
+    expect(parseReadme("RF96", "# RF96 — T\n- **RF96.CA01** Dadosx não é abertura.").cas[0].kind).toBe("rastreabilidade");
   });
 
-  it("toda página-esqueleto cita RFs do catálogo e todo RF1–RF48 tem pelo menos uma página", () => {
+  it("toda página-esqueleto cita RFs do catálogo e todo RF do catálogo tem pelo menos uma página", () => {
     const ids = new Set(RF_CATALOG.map((r) => r.id));
     const cited = new Set<string>();
     for (const page of PAGES) for (const rf of rfsOf(page)) {

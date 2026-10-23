@@ -1,6 +1,7 @@
 // Rede social do Work Station (RF6, RF14–RF19, RF27, RF38 cards): componentes sobre lib/social (regras puras + view
 // models + repositório DEMO). Só componentes de components/ui e tokens --ws-*.
 export { AssignmentInbox, SocialNotifications } from "./AssignmentInbox";
+export { AuthorshipBadge } from "./AuthorshipBadge";
 export { CommentThread } from "./CommentThread";
 export { SocialScope, useMounted, useSocial } from "./context";
 export type { SocialApi } from "./context";

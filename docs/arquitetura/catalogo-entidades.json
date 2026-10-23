@@ -474,7 +474,7 @@
         {"name": "estimatedHours", "type": "BigDecimal", "column": "estimated_hours", "sqlType": "DECIMAL(8,2)", "nullable": true, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "horas estimadas"},
         {"name": "amountInvolved", "type": "BigDecimal", "column": "amount_involved", "sqlType": "DECIMAL(16,2)", "nullable": false, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "0", "encrypted": false, "description": "valor envolvido em R$ (0 se não se aplica)"},
         {"name": "origin", "type": "TaskOrigin", "column": "origin", "sqlType": "VARCHAR(20)", "nullable": false, "pk": false, "constraint": "INTERNA · ORGAO_EXTERNO · FORNECEDOR · CIDADAO", "enumValues": ["INTERNA", "ORGAO_EXTERNO", "FORNECEDOR", "CIDADAO"], "ref": "", "onDelete": "", "default": "'INTERNA'", "encrypted": false, "description": "origem institucional"},
-        {"name": "sourceKind", "type": "SourceKind", "column": "source_kind", "sqlType": "VARCHAR(20)", "nullable": false, "pk": false, "constraint": "ARQUIVO · COLAR · GOOGLE · MICROSOFT · EMAIL · LINK · PROTOCOLO · FOTO · TEXTO_IA · EXTRAIDA_DE_PROJETO · REMIX · DECIA · AUTOPILOT · ATA_VIVA · DOSSIE · EXTRACAO", "enumValues": ["ARQUIVO", "COLAR", "GOOGLE", "MICROSOFT", "EMAIL", "LINK", "PROTOCOLO", "FOTO", "TEXTO_IA", "EXTRAIDA_DE_PROJETO", "REMIX", "DECIA", "AUTOPILOT", "ATA_VIVA", "DOSSIE", "EXTRACAO"], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "como entrou no acervo"},
+        {"name": "sourceKind", "type": "SourceKind", "column": "source_kind", "sqlType": "VARCHAR(20)", "nullable": false, "pk": false, "constraint": "MANUAL · ARQUIVO · COLAR · GOOGLE · MICROSOFT · EMAIL · LINK · PROTOCOLO · FOTO · TEXTO_IA · EXTRAIDA_DE_PROJETO · REMIX · DECIA · AUTOPILOT · ATA_VIVA · DOSSIE · EXTRACAO", "enumValues": ["MANUAL", "ARQUIVO", "COLAR", "GOOGLE", "MICROSOFT", "EMAIL", "LINK", "PROTOCOLO", "FOTO", "TEXTO_IA", "EXTRAIDA_DE_PROJETO", "REMIX", "DECIA", "AUTOPILOT", "ATA_VIVA", "DOSSIE", "EXTRACAO"], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "como entrou no acervo"},
         {"name": "sourceRef", "type": "String", "column": "source_ref", "sqlType": "VARCHAR(500)", "nullable": true, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "id Drive/OneDrive, URL, protocolo, messageId"},
         {"name": "linkMode", "type": "LinkMode", "column": "link_mode", "sqlType": "VARCHAR(20)", "nullable": true, "pk": false, "constraint": "VINCULADO · COPIADO", "enumValues": ["VINCULADO", "COPIADO"], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "vinculado ou copiado (RF20.CA07)"},
         {"name": "orgEntityId", "type": "UUID", "column": "org_entity_id", "sqlType": "BINARY(16)", "nullable": true, "pk": false, "constraint": "FK org_entities.id ON DELETE RESTRICT", "enumValues": [], "ref": "org_entities.id", "onDelete": "RESTRICT", "default": "", "encrypted": false, "description": "órgão/fornecedor"},
@@ -3687,6 +3687,29 @@
         {"name": "threatName", "type": "String", "column": "threat_name", "sqlType": "VARCHAR(200)", "nullable": true, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "ameaça detectada"},
         {"name": "scannedAt", "type": "Instant", "column": "scanned_at", "sqlType": "TIMESTAMP(6)", "nullable": true, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "varrido em"},
         {"name": "createdAt", "type": "Instant", "column": "created_at", "sqlType": "TIMESTAMP(6)", "nullable": false, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "CURRENT_TIMESTAMP(6)", "encrypted": false, "description": "criação (UTC)"}
+      ]
+    },
+    {
+      "context": "2 Acervo de Tarefas",
+      "entity": "TaskBrief",
+      "table": "task_briefs",
+      "rfs": ["RF4", "RF12", "RF41"],
+      "store": "mysql",
+      "migration": "V36",
+      "pk": "task_id",
+      "doc": "Briefing 1:1 da tarefa (objetivo, entregáveis, critérios, referências, extensões por área). Some com a tarefa (CASCADE).",
+      "indexes": ["area"],
+      "uniques": [],
+      "attributes": [
+        {"name": "taskId", "type": "UUID", "column": "task_id", "sqlType": "BINARY(16)", "nullable": false, "pk": true, "constraint": "FK tasks.id ON DELETE CASCADE", "enumValues": [], "ref": "tasks.id", "onDelete": "CASCADE", "default": "", "encrypted": false, "description": "tarefa (PK)"},
+        {"name": "objective", "type": "String", "column": "objective", "sqlType": "VARCHAR(500)", "nullable": true, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "objetivo: o resultado esperado em uma frase"},
+        {"name": "area", "type": "WorkArea", "column": "area", "sqlType": "VARCHAR(20)", "nullable": true, "pk": false, "constraint": "SOFTWARE · ADMINISTRACAO · DESIGN · PESQUISA · MARKETING · PLANEJAMENTO · ENGENHARIA · JURIDICO · OUTRA", "enumValues": ["SOFTWARE", "ADMINISTRACAO", "DESIGN", "PESQUISA", "MARKETING", "PLANEJAMENTO", "ENGENHARIA", "JURIDICO", "OUTRA"], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "área profissional (define extensões oferecidas)"},
+        {"name": "deliverablesJson", "type": "JSON", "column": "deliverables_json", "sqlType": "JSON", "nullable": true, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "entregáveis [{text}]"},
+        {"name": "acceptanceCriteriaJson", "type": "JSON", "column": "acceptance_criteria_json", "sqlType": "JSON", "nullable": true, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "critérios de conclusão [{text, done}]"},
+        {"name": "referencesJson", "type": "JSON", "column": "references_json", "sqlType": "JSON", "nullable": true, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "referências [{label, url}]"},
+        {"name": "extensionsJson", "type": "JSON", "column": "extensions_json", "sqlType": "JSON", "nullable": true, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "extensões da área {chave: texto}"},
+        {"name": "createdAt", "type": "Instant", "column": "created_at", "sqlType": "TIMESTAMP(6)", "nullable": false, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "CURRENT_TIMESTAMP(6)", "encrypted": false, "description": "criação (UTC)"},
+        {"name": "updatedAt", "type": "Instant", "column": "updated_at", "sqlType": "TIMESTAMP(6)", "nullable": false, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)", "encrypted": false, "description": "última alteração (UTC)"}
       ]
     },
     {

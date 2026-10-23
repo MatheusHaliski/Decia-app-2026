@@ -50,12 +50,21 @@ export function LoginForm({ next, reason, oidcEnabled = false }: { next?: string
   const { t } = useI18n();
   const router = useRouter();
   const [rememberMe, setRememberMe] = useState(false);
+  // RF2.CA02 / D-144: conta com verificação em duas etapas — a API responde 401 DOIS_FATORES_NECESSARIO e a tela pede o código
+  const [needCode, setNeedCode] = useState(false);
   // D-60: o destino vem de ?next= e passa por safeNext (só caminho relativo da própria origem)
   const target = safeNext(next);
   const { status, run, reset } = useSubmit(async (f: FormData) => {
-    await auth.login({ identifier: String(f.get("identifier") ?? ""), password: String(f.get("password") ?? ""), rememberMe });
+    try {
+      const code = String(f.get("twoFactorCode") ?? "").trim();
+      await auth.login({ identifier: String(f.get("identifier") ?? ""), password: String(f.get("password") ?? ""), rememberMe, twoFactorCode: code || undefined });
+    } catch (e) {
+      if (e instanceof ApiError && (e.code === "DOIS_FATORES_NECESSARIO" || e.code === "DOIS_FATORES_INVALIDO")) setNeedCode(true);
+      throw e;
+    }
     router.push(target);
   });
+  const askingCode = status.kind === "error" && status.error instanceof ApiError && status.error.code === "DOIS_FATORES_NECESSARIO";
   const fields = status.kind === "error" && status.error instanceof ApiError ? status.error.fields : {};
   const onSubmit = (e: FormEvent<HTMLFormElement>) => { e.preventDefault(); void run(new FormData(e.currentTarget)); };
   return (
@@ -76,8 +85,15 @@ export function LoginForm({ next, reason, oidcEnabled = false }: { next?: string
           <Field label={t("auth.password")} error={fields.password} required>
             {({ id, describedBy, invalid }) => <Input id={id} name="password" type="password" autoComplete="current-password" required aria-describedby={describedBy} invalid={invalid} />}
           </Field>
+          {needCode ? (
+            <Field label={t("auth.login.twoFactorCode")} hint={t("auth.login.twoFactorHint")} required>
+              {({ id, describedBy }) => <Input id={id} name="twoFactorCode" inputMode="text" autoComplete="one-time-code" maxLength={12} autoFocus aria-describedby={describedBy} data-testid="login-2fa-code" />}
+            </Field>
+          ) : null}
           <Checkbox checked={rememberMe} onCheckedChange={setRememberMe} label={t("auth.login.rememberMe")} hint={t("auth.login.rememberMeHint")} />
-          {status.kind === "error" ? <Failure error={status.error} onRetry={reset} /> : null}
+          {askingCode ? (
+            <p role="status" className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted" data-testid="login-2fa-asked">{t("auth.login.twoFactorAsked")}</p>
+          ) : status.kind === "error" ? <Failure error={status.error} onRetry={reset} /> : null}
           <Button type="submit" variant="primary" size="lg" busy={status.kind === "busy"}>{t("auth.login.submit")}</Button>
           <div className="flex flex-wrap justify-between gap-2 text-[length:var(--ws-text-body-sm)]">
             <Link href="/password-reset">{t("auth.login.forgot")}</Link>
@@ -117,7 +133,7 @@ export function RegisterForm() {
     <div className="grid gap-[var(--ws-space-4)]">
       <Card tone="clay" padding="lg" title={t("auth.register.title")} eyebrow={<Badge tone="accent">RF1</Badge>}>
         <form onSubmit={onSubmit} className="grid gap-[var(--ws-space-4)]" noValidate>
-          <RadioCards label={t("auth.register.profileType")} value={profileType} onValueChange={(v) => setProfileType(v as typeof profileType)} columns={1} options={PROFILE_TYPES.map((p) => ({ value: p, label: t(`profileType.${p}`), hint: p === "EMPREGADO" ? undefined : t("auth.register.pendingValidation") }))} />
+          <RadioCards label={t("auth.register.profileType")} value={profileType} onValueChange={(v) => setProfileType(v as typeof profileType)} columns={1} options={PROFILE_TYPES.map((p) => ({ value: p, label: t(`profileType.${p}`), hint: p === "EMPREGADO" ? t("auth.register.typeHint.EMPREGADO") : `${t(`auth.register.typeHint.${p}`)} ${t("auth.register.validationNote")}` }))} />
           <Field label={t("auth.fullName")} error={fields.fullName} required>
             {({ id, describedBy, invalid }) => <Input id={id} name="fullName" autoComplete="name" required aria-describedby={describedBy} invalid={invalid} />}
           </Field>
@@ -135,7 +151,15 @@ export function RegisterForm() {
               {({ id, describedBy, invalid }) => <Input id={id} name="confirm" type="password" autoComplete="new-password" required aria-describedby={describedBy} invalid={invalid} />}
             </Field>
           </div>
-          <Checkbox checked={acceptTerms} onCheckedChange={setAcceptTerms} label={t("auth.register.terms")} hint={t("auth.register.termsHint")} />
+          <div className="grid gap-1" data-testid="register-terms">
+            <Checkbox checked={acceptTerms} onCheckedChange={setAcceptTerms} label={t("auth.register.terms")} hint={t("auth.register.termsHint")} />
+            <p className="pl-8 text-[length:var(--ws-text-caption)]">
+              <Link href="/termos" target="_blank" rel="noopener">{t("legal.terms")}</Link>
+              {" · "}
+              <Link href="/privacidade" target="_blank" rel="noopener">{t("legal.privacy")}</Link>
+            </p>
+            {fields.acceptTerms ? <p role="alert" className="pl-8 text-[length:var(--ws-text-caption)] text-ws-danger-ink">{fields.acceptTerms}</p> : null}
+          </div>
           {status.kind === "error" ? <Failure error={status.error} onRetry={reset} /> : null}
           <Button type="submit" variant="primary" size="lg" busy={status.kind === "busy"}>{t("auth.register.submit")}</Button>
           <p className="text-[length:var(--ws-text-body-sm)]"><Link href="/login">{t("auth.register.hasAccount")}</Link></p>

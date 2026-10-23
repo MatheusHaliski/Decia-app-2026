@@ -1,0 +1,17 @@
+{
+  "frontend": {
+    "passed": 529,
+    "files": 64
+  },
+  "typecheck": "PASSOU",
+  "lint": "PASSOU",
+  "build": "PASSOU",
+  "browserStages": 12,
+  "mockResponses": 2,
+  "paidAiCalls": 0,
+  "axeScope": "painel Bézier e Assistente IA; regras WCAG 2.0/2.1 A/AA",
+  "axeViolations": 0,
+  "backendMultimodal": "PENDENTE",
+  "applicationCodePublished": false,
+  "allRFComplete": false
+}

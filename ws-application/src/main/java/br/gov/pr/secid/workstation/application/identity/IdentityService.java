@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +98,7 @@ public class IdentityService {
             throw invalidCredentials();                                          // a reserva fica: conta como falha
         }
         rateLimit.release(u.getId(), LOGIN_FAIL_BUCKET);                           // senha certa não é falha
-        if (u.getStatus().blocksLogin()) {
+        if (u.getStatus().blocksLogin() || reactivationExpired(u, clock.instant())) {
             audit.record(AuditEvent.of(u.getId(), AuditActions.LOGIN_FALHA, AUTH, null, AuditEvent.NEGADO, ctx.ip(), ctx.userAgent(),
                     Map.of("reason", "conta_indisponivel", "status", u.getStatus().name())));
             throw new ApiException(AuthCodes.CONTA_INDISPONIVEL, 403, "Esta conta não está disponível.");
@@ -106,11 +107,7 @@ public class IdentityService {
             u.setPasswordHash(hasher.hash(password));                             // parâmetros do Argon2 atualizados
         }
         if (u.isTwoFactorEnabled()) {
-            // contrato/estado do 2FA (RF2.CA02); a conferência TOTP é a Q-83 — até lá, conta com 2FA não entra
-            audit.record(AuditEvent.of(u.getId(), AuditActions.LOGIN_FALHA, AUTH, null, AuditEvent.FALHA, ctx.ip(), ctx.userAgent(),
-                    Map.of("reason", "2fa")));
-            throw new ApiException(AuthCodes.DOIS_FATORES_NECESSARIO, 401, "Informe o código do segundo fator.",
-                    Map.of("twoFactorRequired", true));
+            verifySecondFactor(u, cmd.twoFactorCode(), ctx);
         }
         rateLimit.reset(u.getId(), LOGIN_FAIL_BUCKET);
         u.setLastLoginAt(clock.instant());
@@ -118,6 +115,41 @@ public class IdentityService {
         audit.record(AuditEvent.of(u.getId(), AuditActions.LOGIN_OK, AUTH, null, AuditEvent.OK, ctx.ip(), ctx.userAgent(),
                 Map.of("email", Masking.maskEmail(EmailHasher.normalize(u.getEmail())), "rememberMe", cmd.rememberMe())));
         return openSession(u, cmd.rememberMe(), cmd.deviceName(), ctx);
+    }
+
+    /**
+     * Segundo fator do login (RF2.CA02, D-144): sem código → {@code 401 DOIS_FATORES_NECESSARIO} (a tela pede o código); código errado
+     * conta como falha no MESMO bloqueio da senha → {@code 401 DOIS_FATORES_INVALIDO} e, no limite, a resposta genérica de bloqueio.
+     * Aceita o código do aplicativo (sem reuso) ou um código de recuperação, que é consumido.
+     */
+    private void verifySecondFactor(User u, String code, RequestContext ctx) {
+        if (code == null || code.isBlank()) {
+            audit.record(AuditEvent.of(u.getId(), AuditActions.LOGIN_FALHA, AUTH, null, AuditEvent.FALHA, ctx.ip(), ctx.userAgent(),
+                    Map.of("reason", "2fa_pendente")));
+            throw new ApiException(AuthCodes.DOIS_FATORES_NECESSARIO, 401, "Informe o código do aplicativo autenticador.",
+                    Map.of("twoFactorRequired", true));
+        }
+        if (!rateLimit.tryAcquire(u.getId(), LOGIN_FAIL_BUCKET, policy.maxLoginFailures(), policy.lockWindow())) {
+            audit.record(AuditEvent.of(u.getId(), AuditActions.LOGIN_BLOQUEADO_TENTATIVAS, AUTH, null, AuditEvent.NEGADO, ctx.ip(),
+                    ctx.userAgent(), Map.of("via", "2fa")));
+            throw invalidCredentials();
+        }
+        TwoFactorVerifier.Outcome outcome = TwoFactorVerifier.verify(u, code, clock.instant());
+        if (outcome == TwoFactorVerifier.Outcome.INVALID) {
+            audit.record(AuditEvent.of(u.getId(), AuditActions.LOGIN_FALHA, AUTH, null, AuditEvent.FALHA, ctx.ip(), ctx.userAgent(),
+                    Map.of("reason", "2fa_codigo")));
+            throw new ApiException(AuthCodes.DOIS_FATORES_INVALIDO, 401, "Código inválido ou já usado.", Map.of("twoFactorRequired", true));
+        }
+        rateLimit.release(u.getId(), LOGIN_FAIL_BUCKET);
+        if (outcome == TwoFactorVerifier.Outcome.RECOVERY) {
+            audit.record(AuditEvent.of(u.getId(), AuditActions.TWO_FACTOR_RECOVERY_USED, AUTH, null, AuditEvent.OK, ctx.ip(), ctx.userAgent(),
+                    Map.of("recoveryCodesLeft", TwoFactorVerifier.recoveryCodesLeft(u))));
+        }
+    }
+
+    /** Exclusão agendada cujo prazo de 30 dias acabou: não entra mais, nem para reativar (D-145). */
+    public static boolean reactivationExpired(User u, Instant now) {
+        return u.isDeletionScheduled() && u.getDeletionScheduledAt() != null && !now.isBefore(u.getDeletionScheduledAt());
     }
 
     private java.util.Optional<User> findByIdentifier(String id) {
@@ -183,6 +215,17 @@ public class IdentityService {
         RefreshRecord rt = sessions.find(hash).orElseThrow(IdentityService::sessionInvalid);
         switch (outcome) {
             case REUSED -> {
+                if (toleratedReuse(rt, now)) {
+                    // D-140 (Q-237): a resposta da rotação pode ter se perdido (navegação abortada); dentro da janela e com a
+                    // família ainda viva e só um sucessor, emite um irmão em vez de derrubar a pessoa de todos os dispositivos
+                    User u = users.findById(rt.userId()).orElseThrow(IdentityService::sessionInvalid);
+                    if (u.getStatus().blocksLogin() || reactivationExpired(u, now)) {
+                        throw sessionInvalid();
+                    }
+                    audit.record(AuditEvent.of(rt.userId(), AuditActions.REFRESH_REUSO_TOLERADO, "session", rt.familyId().toString(), AuditEvent.OK,
+                            ctx.ip(), ctx.userAgent(), Map.of("graceSeconds", policy.reuseGraceWindow().toSeconds())));
+                    return issue(u, rt.familyId(), rt.tokenHash(), rt.persistent(), rt.deviceName(), ctx);
+                }
                 sessions.revokeFamily(rt.familyId(), now);
                 mirror.familyRevoked(rt.familyId(), now);
                 audit.record(AuditEvent.of(rt.userId(), AuditActions.REFRESH_REUSO, "session", rt.familyId().toString(), AuditEvent.NEGADO,
@@ -195,13 +238,27 @@ public class IdentityService {
             }
         }
         User u = users.findById(rt.userId()).orElseThrow(IdentityService::sessionInvalid);
-        if (u.getStatus().blocksLogin()) {
+        if (u.getStatus().blocksLogin() || reactivationExpired(u, clock.instant())) {
             sessions.revokeFamily(rt.familyId(), now);
             mirror.familyRevoked(rt.familyId(), now);
             throw sessionInvalid();
         }
         mirror.revoked(rt.tokenHash(), now);
         return issue(u, rt.familyId(), rt.tokenHash(), rt.persistent(), rt.deviceName(), ctx);
+    }
+
+    /**
+     * Reuso tolerável: o token foi consumido por rotação há menos que a janela, a família continua viva e tem exatamente um
+     * token vivo (o sucessor legítimo); a reivindicação atômica no store garante um único irmão por rotação, inclusive com reusos
+     * paralelos. Logout/revogação zera os vivos e nunca é tolerado.
+     */
+    private boolean toleratedReuse(RefreshRecord rt, Instant now) {
+        Duration grace = policy.reuseGraceWindow();
+        if (grace.isZero() || rt.revokedAt() == null || now.isAfter(rt.revokedAt().plus(grace)) || !rt.expiresAt().isAfter(now)) {
+            return false;
+        }
+        long live = sessions.activeOfUser(rt.userId(), now).stream().filter(r -> r.familyId().equals(rt.familyId())).count();
+        return live == 1 && sessions.claimReuseGrace(rt.tokenHash());
     }
 
     static ApiException sessionInvalid() {

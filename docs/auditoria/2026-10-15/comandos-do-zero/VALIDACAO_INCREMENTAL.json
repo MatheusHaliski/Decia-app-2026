@@ -1,0 +1,22 @@
+{
+  "frontendIntegral": {
+    "passed": 508,
+    "files": 59
+  },
+  "frontendIncrementalFinal": {
+    "passed": 16,
+    "files": 3
+  },
+  "lint": "PASSOU",
+  "build": "PASSOU",
+  "browserStages": 15,
+  "startShapes": 0,
+  "finalShapes": 5,
+  "gltf": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "paidAiCalls": 0,
+  "applicationCodePublished": false,
+  "allRFComplete": false
+}

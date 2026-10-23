@@ -1,0 +1,237 @@
+{
+  "executadoEm": "2026-10-15T17:45:21.901483+00:00",
+  "metodo": "HTTP público com TLS verificado, extração HTML e localização literal; sem inferência de IA",
+  "limite": "Termo encontrado não prova semântica nem implementação; falhas e termos ausentes preservados.",
+  "fontes": [
+    {
+      "nome": "Adobe — atalhos Illustrator",
+      "url": "https://helpx.adobe.com/illustrator/using/default-keyboard-shortcuts.html",
+      "consultadoEm": "2026-10-15T17:45:20.556388+00:00",
+      "status": 200,
+      "urlFinal": "https://helpx.adobe.com/illustrator/using/default-keyboard-shortcuts.html",
+      "sha256": "75cc1e4dab5ec739fcc215a2e1af9ce9a6f96da6ce819138093eaef89ebe0e05",
+      "titulo": "Default keyboard shortcuts for Illustrator | Illustrator",
+      "caracteresTexto": 40686,
+      "trechos": [
+        {
+          "termo": "Join",
+          "texto": "h horizontally or vertically Shift Shift Switch through drawing modes Shift + D Shift + D Join two or more paths Select the paths, then press Ctrl + J Select the paths, then press Command + J Average two or more paths Select the paths, then press Alt + Ctrl + J Select the p"
+        },
+        {
+          "termo": "Smooth",
+          "texto": "K Eraser tool Shift + E Shift + E Scissors tool C C Hand tool H H Zoom tool Z Z Switch to Smooth tool while using Blob Brush tool Press Alt Press Option View artwork Shortcuts Windows macOS Toggle between screen modes: Normal Screen Mode, Full Screen Mode with Menu Bar, Full "
+        },
+        {
+          "termo": "Scissors",
+          "texto": "lice Modify tools Rotate Reflect Scale Shear Width Free Transform Eyedropper Blend Eraser Scissors Dimension Generative AI (not available in mainland China) Illustrator generative AI FAQs Generate scenes, subjects, and icons using text prompts Generate vector patterns using tex"
+        },
+        {
+          "termo": "Perspective",
+          "texto": "ls and symbol sets Adjust path segments Design a flower in 5 easy steps Create and edit a perspective grid Draw and modify objects on a perspective grid Use objects as symbols for repeat use Draw pixel-aligned paths for web workflows Measurement Measure distance and area Measure a"
+        },
+        {
+          "termo": "Shape Builder",
+          "texto": " Magic Wand Lasso Artboard Navigate tools Hand Rotate View Zoom Paint tools Gradient Mesh Shape Builder Text tools Type Type on a Path Vertical Type Draw tools Pen Add Anchor Point Delete Anchor Point Anchor Point Curvature Line Segment Rectangle Rounded Rectangle Ellipse Polygon St"
+        },
+        {
+          "termo": "Live Paint",
+          "texto": "or Themes panel Recolor your artwork Painting About painting Paint with fills and strokes Live Paint groups Gradients Brushes Transparency and blending modes Apply stroke on an object Create and edit patterns Meshes Patterns Select and arrange objects Select objects Layers Expand"
+        },
+        {
+          "termo": "Reflect",
+          "texto": "tangle Ellipse Polygon Star Paintbrush Blob Brush Pencil Shaper Slice Modify tools Rotate Reflect Scale Shear Width Free Transform Eyedropper Blend Eraser Scissors Dimension Generative AI (not available in mainland China) Illustrator generative AI FAQs Generate scenes, subject"
+        },
+        {
+          "termo": "Blend",
+          "texto": "ncil Shaper Slice Modify tools Rotate Reflect Scale Shear Width Free Transform Eyedropper Blend Eraser Scissors Dimension Generative AI (not available in mainland China) Illustrator generative AI FAQs Generate scenes, subjects, and icons using text prompts Generate vector pa"
+        },
+        {
+          "termo": "Eyedropper",
+          "texto": "ob Brush Pencil Shaper Slice Modify tools Rotate Reflect Scale Shear Width Free Transform Eyedropper Blend Eraser Scissors Dimension Generative AI (not available in mainland China) Illustrator generative AI FAQs Generate scenes, subjects, and icons using text prompts Generate vec"
+        },
+        {
+          "termo": "Artboard",
+          "texto": " Task Bar Toolbar Default keyboard shortcuts Customize keyboard shortcuts Introduction to artboards Manage artboards Customize the workspace Properties panel Set preferences Touch Workspace Microsoft Surface Dial support in Illustrator Undo edits and manage design history Rotat"
+        }
+      ],
+      "resultado": "texto_obtido",
+      "termosNaoLocalizados": []
+    },
+    {
+      "nome": "Adobe — selecionar objetos",
+      "url": "https://helpx.adobe.com/illustrator/using/selecting-objects.html",
+      "consultadoEm": "2026-10-15T17:45:20.557213+00:00",
+      "status": 200,
+      "urlFinal": "https://helpx.adobe.com/illustrator/desktop/manage-objects/select-objects/object-selection-methods-and-preferences.html",
+      "sha256": "c39097dc30575ee437a406cdbaaa622d0af3df52aca04e76bd2a4219305c0e66",
+      "titulo": "Select objects in Illustrator | Illustrator",
+      "caracteresTexto": 37545,
+      "trechos": [
+        {
+          "termo": "Lasso",
+          "texto": "acity. Artboard ( Shift + O ) tool Selects, creates, and resizes artboards on the canvas. Lasso ( Q ) tool Selects objects, anchor points, or path segments by dragging around all or part of the object. Perspective selection tool Selects, moves, and transforms objects in pers"
+        },
+        {
+          "termo": "Magic Wand",
+          "texto": "ject selections Select objects using layers and nested selection Select objects using the Magic Wand tool Select objects Arrange objects Move objects Move multiple objects at once Move objects by specific distances Move or duplicate an object by pasting Paste an object relative t"
+        },
+        {
+          "termo": "similar",
+          "texto": "models in Adobe Illustrator Generate scenes, subjects, and icons Use Auto Select Generate similar variations without text prompts Generate patterns Manage pattern variations Edit generated patterns Generate shape fills Scenarios with repeat shape fill generation Recolor artwor"
+        }
+      ],
+      "resultado": "texto_obtido",
+      "termosNaoLocalizados": [
+        "isolation"
+      ]
+    },
+    {
+      "nome": "Adobe — combinar objetos",
+      "url": "https://helpx.adobe.com/illustrator/using/combining-objects.html",
+      "consultadoEm": "2026-10-15T17:45:20.557661+00:00",
+      "status": 200,
+      "urlFinal": "https://helpx.adobe.com/illustrator/desktop/manage-objects/reshape-transform-objects/pathfinder-panel-overview.html",
+      "sha256": "6e0f9cf6e9abeb137ddb9470fe87caf97b60b100a7d9cc153b444fddaffe14c5",
+      "titulo": "Use Pathfinder panel options in Illustrator | Illustrator",
+      "caracteresTexto": 38044,
+      "trechos": [
+        {
+          "termo": "Pathfinder",
+          "texto": "Use Pathfinder panel options in Illustrator | Illustrator Illustrator Help Desktop Desktop Tablet Web Open on Desktop Adobe Help Center Illustrator Desktop Help What’s new What’s new in Adobe Il"
+        },
+        {
+          "termo": "compound",
+          "texto": "bjects Pathfinder panel overview Edit areas of overlapping objects with Pathfinder Create compound shapes with Pathfinder Create compound paths Transform objects Transform panel overview Scale objects Scale multiple objects Distort object Distort objects with envelopes Edit the"
+        },
+        {
+          "termo": "Divide",
+          "texto": "cts by specific angles Reflect or flip objects Reflect objects along an axis Edit objects Divide or split objects Cut objects using the Knife and Scissors tools Duplicate objects Create duplicate objects using Offset Path Edit similar objects Edit groups with similar objects "
+        },
+        {
+          "termo": "Exclude",
+          "texto": "rview Create new actions Insert non-recordable tasks into actions Insert stops in actions Exclude commands from actions Specify playback speed Add commands to actions Re-record actions Manage a set of actions Play actions on a batch of files Batch options Install and run scrip"
+        },
+        {
+          "termo": "Merge",
+          "texto": "ths Remove fills or strokes Select objects with same fill and stroke Paint tools overview Merge paths using the Blob Brush tool Blob brush options and best practices About Live Paint Create Live Paint groups Paint with the Live Paint Bucket tool Modify Live Paint groups Find"
+        },
+        {
+          "termo": "Trim",
+          "texto": "arate piece and inherits the attributes and effects of the frontmost object in that area. Trim Subtracts the overlapping areas from back objects, and removes the Stroke from all objects. Merge Combines the paths of overlapping objects that share the same Fill , Opacity , an"
+        }
+      ],
+      "resultado": "texto_obtido",
+      "termosNaoLocalizados": []
+    },
+    {
+      "nome": "Adobe — editar caminhos",
+      "url": "https://helpx.adobe.com/illustrator/using/editing-paths.html",
+      "consultadoEm": "2026-10-15T17:45:20.558085+00:00",
+      "status": 200,
+      "urlFinal": "https://helpx.adobe.com/illustrator/desktop/draw-shapes-and-paths/modify-paths/select-anchor-points-in-paths.html",
+      "sha256": "67bb4bb4d07d7698a7e1cc01c491976bf01907175075281c4f4f7a382ad11ffd",
+      "titulo": "Select anchor points to modify paths in Illustrator | Illustrator",
+      "caracteresTexto": 35350,
+      "trechos": [
+        {
+          "termo": "Simplify",
+          "texto": "addition or deletion of anchor points Find and delete stray anchor points Copy paths Auto simplify paths Manually simplify paths Simplify paths advanced options overview Simplify path benefits Cut paths Erase paths using the Eraser tool Erase parts of a path Adjust path smoothn"
+        },
+        {
+          "termo": "Join",
+          "texto": "rt brushes Create brushes Create dotted or dashed lines Modify brushes Change the caps or joins of a line Convert brush strokes to outlines Create and edit gradients Gradients overview Apply predefined gradients Apply linear gradients Apply radial gradients Apply freeform g"
+        },
+        {
+          "termo": "Average",
+          "texto": "d edit path segments Select anchor points to modify paths Convert anchor points on a path Average the position of the anchor points Add or remove anchor points Turn off automatic addition or deletion of anchor points Find and delete stray anchor points Copy paths Auto simplify"
+        },
+        {
+          "termo": "anchor",
+          "texto": "Select anchor points to modify paths in Illustrator | Illustrator Illustrator Help Desktop Desktop Tablet Web Open on Desktop Adobe Help Center Illustrator Desktop Help What’s new What’s new in"
+        },
+        {
+          "termo": "Smooth",
+          "texto": "er radii of stars Add or remove sides from polygons Create pie shapes Modify paths Create smooth paths with the Smooth tool Refine path segments with the Smooth slider Select and edit path segments Select anchor points to modify paths Convert anchor points on a path Average t"
+        }
+      ],
+      "resultado": "texto_obtido",
+      "termosNaoLocalizados": []
+    },
+    {
+      "nome": "Autodesk — comandos AutoCAD",
+      "url": "https://www.autodesk.com/shortcuts/autocad",
+      "consultadoEm": "2026-10-15T17:45:21.130828+00:00",
+      "status": 200,
+      "urlFinal": "https://www.autodesk.com/shortcuts/autocad",
+      "sha256": "3c90eaaa9fd906b5ec363161d68896ab083dc18012d30a8686184698f5b2c2ec",
+      "titulo": "AutoCAD Keyboard Commands &amp; Shortcuts Guide | Autodesk",
+      "caracteresTexto": 21515,
+      "trechos": [
+        {
+          "termo": "OFFSET",
+          "texto": "ack when viewed with ShowMotion. NVIEW NEWVIEW / Creates a named view with no motion. O O OFFSET / Creates concentric circles, parallel lines, and parallel curves. OP OPTIONS / Customizes the program settings. ORBIT 3DORBIT / Rotates the view in 3D space, but constrained to h"
+        },
+        {
+          "termo": "TRIM",
+          "texto": "S / Creates a donut-shaped 3D solid. TP TOOLPALETTES / Opens the Tool Palettes window. TR TRIM / Trims objects to meet the edges of other objects. TS TABLESTYLE / Creates, modifies, or specifies table styles. U UC UCSMAN / Manages defined user coordinate systems. UN UNITS /"
+        },
+        {
+          "termo": "EXTEND",
+          "texto": "Exports drawing to PDF. ER EXTERNALREFERENCES / Opens the External References palette. EX EXTEND / Extends objects to meet the edges of other objects. EXIT QUIT / Exits the program. EXP EXPORT / Saves the objects in a drawing to a different file format. EXT EXTRUDE / Extends "
+        },
+        {
+          "termo": "FILLET",
+          "texto": "format. EXT EXTRUDE / Extends the dimensions of a 2D object or 3D face into 3D space. F F FILLET / Rounds and fillets the edges of objects. FI FILTER / Creates a list of requirements that an object must meet to be included in a selection set. FS FSMODE / Creates a selection s"
+        },
+        {
+          "termo": "CHAMFER",
+          "texto": "ic constraints on an object. CH PROPERTIES / Controls properties of existing objects. CHA CHAMFER / Bevels the edges of objects. CHK CHECKSTANDARDS / Checks the current drawing for standards violations. CLI COMMANDLINE / Displays the Command Line window. COL COLOR / Sets the c"
+        },
+        {
+          "termo": "ARRAY",
+          "texto": "ALIGN / Aligns objects with other objects in 2D and 3D. AP APPLOAD / Load Application. AR ARRAY / Creates multiple copies of objects in a pattern. ARR ACTRECORD / Starts the Action Recorder. ARM ACTUSERMESSAGE / Inserts a user message into an action macro. ARU ACTUSERINPUT /"
+        },
+        {
+          "termo": "MIRROR",
+          "texto": "e distance, radius, angle, area, and volume of selected objects or sequence of points. MI MIRROR / Creates a mirrored copy of selected objects. ML MLINE / Creates multiple parallel lines.. MLA MLEADERALIGN / Aligns and spaces selected multileader objects. MLC MLEADERCOLLECT /"
+        },
+        {
+          "termo": "PEDIT",
+          "texto": "r and provides the option of saving the recorded actions to an action macro file. ATI ATTIPEDIT / Changes the textual content of an attribute within a block. ATT ATTDEF / Redefines a block and updates associated attributes. ATE ATTEDIT / Changes attribute information in a bl"
+        },
+        {
+          "termo": "PURGE",
+          "texto": "el space viewport to paper space. PSOLID POLYSOLID / Creates a 3D wall-like polysolid. PU PURGE / Removes unused items, such as block definitions and layers, from the drawing. PYR PYRAMID / Creates a 3D solid pyramid. Q QC QUICKCALC / Opens the QuickCalc calculator. QCUI QUI"
+        },
+        {
+          "termo": "OSNAP",
+          "texto": "rawing Modes F1 Display Help F2 Toggle text screen F3 Toggle object snap mode F4 Toggle 3DOsnap F5 Toggle Isoplane F6 Toggle Dynamic UCS F7 Toggle grid mode F8 Toggle ortho mode F9 Toggle snap mode F10 Toggle polar mode F11 Toggle object snap tracking F12 Toggle dynamic inpu"
+        },
+        {
+          "termo": "DIST",
+          "texto": " window. COL COLOR / Sets the color for new objects. CO COPY / Copies objects a specified distance in a specified direction. CT CTABLESTYLE / Sets the name of the current table style. CUBE NAVVCUBE / Controls the visibility and display properties of the ViewCube tool. CYL C"
+        },
+        {
+          "termo": "AREA",
+          "texto": "t drawing Ctrl+q Exit Ctrl+a Select all objects HOT KEYS A–C A A ARC / Creates an arc. AA AREA / Calculates the area and perimeter of objects or of defined areas. ADC ADCENTER / Manages and inserts content such as blocks, xrefs, and hatch patterns. AL ALIGN / Aligns objects"
+        },
+        {
+          "termo": "MATCHPROP",
+          "texto": ". HOT KEYS M-O M M MOVE / Moves objects a specified distance in a specified direction. MA MATCHPROP / Applies the properties of a selected object to other objects. MAT MATERIALS / Shows or hides the Materials window. ME MEASURE / Creates point objects or blocks at measured inter"
+        },
+        {
+          "termo": "ALIGN",
+          "texto": " ADC ADCENTER / Manages and inserts content such as blocks, xrefs, and hatch patterns. AL ALIGN / Aligns objects with other objects in 2D and 3D. AP APPLOAD / Load Application. AR ARRAY / Creates multiple copies of objects in a pattern. ARR ACTRECORD / Starts the Action Reco"
+        },
+        {
+          "termo": "ISOLATEOBJECTS",
+          "texto": "UNITS / Controls coordinate and angle display formats and precision. UNHIDE / UNISOLATE UNISOLATEOBJECTS / Displays objects previously hidden with the ISOLATEOBJECTS or HIDEOBJECTS command. UNI UNION / Unions two solid or two region objects. HOT KEYS V-X V V VIEW / Saves and restores"
+        }
+      ],
+      "resultado": "texto_obtido",
+      "termosNaoLocalizados": [
+        "OVERKILL"
+      ]
+    }
+  ]
+}

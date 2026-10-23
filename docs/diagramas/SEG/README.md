@@ -31,6 +31,54 @@
 | **CA09** | Um deploy que não sobe não tira a versão anterior do ar (healthcheck `/actuator/health` com timeout cobrindo o Flyway). | 1, 7 |
 | **CA10** | Seed demo idempotente (upsert por `fixture_key`); o reset exige `dryRun` → `planHash` → `confirm=<planHash>` e nunca apaga conta `REAL`; `DemoEnvironmentGuard` desligado por padrão e, em produção, exige `WS_DEMO_ALLOW_PRODUCTION=true`. | 6 |
 
+## 0. Diagrama de casos de uso
+
+Os casos de uso de segurança atravessam todos os RF: proteger a conta, negar acesso a recurso alheio, tratar mídia e IA com cuidado e garantir que a operação não perca dados. Atores do catálogo em [`ATORES_E_ATRIBUTOS.md`](../../arquitetura/ATORES_E_ATRIBUTOS.md).
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  classDef ucDemo fill:#fff8e6,stroke:#b26a00,stroke-dasharray:2 2,color:#1b1b1b
+  visitante["«ator» Visitante"]:::ator
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  admin["«ator» Administrador"]:::ator
+  subgraph SIS["Work Station — SEG Segurança e operação"]
+    direction TB
+    UC1(["UC1 Entrar sem revelar se a conta existe"]):::uc
+    UC2(["UC2 Bloquear força bruta por conta e por IP"]):::uc
+    UC3(["UC3 Manter a sessão só em cookie HttpOnly"]):::uc
+    UC4(["UC4 Negar recurso alheio com 404 uniforme"]):::uc
+    UC5(["UC5 Abrir mídia privada só pelo proxy da API"]):::ucPlan
+    UC6(["UC6 Mascarar dados pessoais antes da IA"]):::uc
+    UC7(["UC7 Registrar auditoria sem segredo"]):::uc
+    UC8(["UC8 Recusar migração repetida, segredo no histórico ou contrato quebrado"]):::uc
+    UC9(["UC9 Recriar dados de demonstração sem tocar contas reais"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  visitante --- UC1
+  autenticado --- UC3
+  autenticado --- UC4
+  autenticado --- UC5
+  admin --- UC9
+  UC1 -. "«include»" .-> UC2
+  UC6 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Entrar sem revelar se a conta existe | Visitante | RN49.02, CA02 | real: hash falso e mesma resposta (`IdentityService.login`) |
+| UC2 Bloquear força bruta por conta e por IP | (sistema) | RN49.03, RN49.04, RN49.05, CA01, CA03, CA04 | real: `RateLimitPort`, `AuthRateLimitFilter`, `HashBulkhead` |
+| UC3 Manter a sessão só em cookie HttpOnly | Pessoa autenticada | RN49.01, CA05 | real: `ws_rt` HttpOnly; access token só em memória |
+| UC4 Negar recurso alheio com 404 uniforme | Pessoa autenticada | CA06 | real: `ResourceAuthorizer`, `AccessPolicy`, `AuthorizationEnforcementAdvice` |
+| UC5 Abrir mídia privada só pelo proxy da API | Pessoa autenticada | RN49.06, CA06 | planejado: `MediaAccessPolicy` existe; `MediaUploadService` ainda não é bean |
+| UC6 Mascarar dados pessoais antes da IA | IA | RN49.07 | real: `PersonalDataMasker` no `AiGateway`; nenhum motor registrado |
+| UC7 Registrar auditoria sem segredo | (sistema) | RN49.07 | real: `AuditLogPort` com e-mail mascarado |
+| UC8 Recusar migração repetida, segredo no histórico ou contrato quebrado | (sistema) | RN49.08, RN49.09, RN49.12, CA07, CA08, CA09 | real: CI (`MigrationVersionsTest`, gitleaks, contrato OpenAPI, `ForeignKeyPolicyTest`) |
+| UC9 Recriar dados de demonstração sem tocar contas reais | Administrador | RN49.10, RN49.11, CA10 | planejado (seed demo) |
+
 ## 1. Diagrama de classes
 
 Freios de autenticação (`ws-web/support` e `ws-web/security`), contador atômico (`RateLimitPort` e adaptadores), identidade e autorização (`ws-application`), origem da conta e política de FKs (`ws-domain`, `ws-infrastructure/persistence-mysql`) e dados demo. Entidades conforme `docs/arquitetura/TAXONOMIA.md` §1 e §12 (subconjunto de atributos).
@@ -689,16 +737,16 @@ Cada regra (RN49.01–12) e critério (CA01–CA10) do RF49 do FAI → elemento 
 | RN49.10 | `AccountOrigin`, `User.accountOrigin/testAccount`, `DemoDataAdminPort.realAccountsAmong/deleteTestAccounts` | — | — | — | `S4`, `I2` | 2, 6 |
 | RN49.11 | `IdentityService.RESERVED_USERNAMES/reservedUsername`, `DemoEnvironmentGuard` | — | — | — | `S4`, `I5` (e-mail recusa domínios reservados) | 6 |
 | RN49.12 | — | — | — | — | `CI` (`MigrationVersionsTest`), `DEP`, `API` (JVM 25 LTS, D-13) | 0, 1 |
-| CA01 | `HashBulkhead`, `RateLimitPort.tryAcquire` antes do hash | `D6`→`E503`, `F4`→`F5` | 10–12, 19–20 | `Contando`→`Bloqueada` "inclui pedidos em paralelo" | `W3`, `I1` | 3 |
-| CA02 | `IdentityService.login`, `RateLimitPort.status/reset` | `F6`→`F7`→`E401b`, `F15` | 19–22, 29 | `Bloqueada`→`Livre` (janela vence, redefinição por e-mail) | `S1` | 3 |
-| CA03 | `IdentityService.passwordMatchesWithLockout/changePassword/reauthenticate`, `Rule` (PUT password, PATCH me/sensitive, POST me/deletion) | `A1`, `E401b` | nota após 38 | nota de `Bloqueada` (429 na reconferência) | `W3`, `S1` | 3 |
-| CA04 | `AuthRateLimitFilter.RULES/bucketKey`, `ClientIpResolver` | `D2`–`D4`→`E429` | 3–9 | — | `W2`, `W3`, `BFF` | 3 |
-| CA05 | `JwtTokenIssuer`, `SessionActiveFilter` | `C8` | 38, 39–55 (refresh pelo cookie) | bloco 2 (`ATIVA`→`ROTACIONADA`→`ATIVA`) | `BFF`, `APP` | 4 |
-| CA06 | `ResourceAuthorizer`, `AccessPolicy`, `MediaAccessPolicy`, `AuthorizationEnforcementAdvice` (testes `PathVariableAuthorizationTest`, `AuthorizationMatrixWebTest`) | §7.1 | §7.2 | — | `S2`, `I3` | 5 |
-| CA07 | `ForeignKeyPolicy.divergences` | — | — | — | `I2`, `CI` | 2 |
-| CA08 | — | — | — | — | `CI`, `BP`, `DEPLOY` | 1 |
-| CA09 | — | — | — | — | `DEPLOY` | 1, 7 |
-| CA10 | `DemoEnvironmentGuard`, `DemoDataAdminPort.plan/lockAccounts/integrityProblems`, `MysqlDemoDataAdminAdapter` | — | — | — | `S4`, `I2` | 6 |
+| RF49.CA01 | `HashBulkhead`, `RateLimitPort.tryAcquire` antes do hash | `D6`→`E503`, `F4`→`F5` | 10–12, 19–20 | `Contando`→`Bloqueada` "inclui pedidos em paralelo" | `W3`, `I1` | 3 |
+| RF49.CA02 | `IdentityService.login`, `RateLimitPort.status/reset` | `F6`→`F7`→`E401b`, `F15` | 19–22, 29 | `Bloqueada`→`Livre` (janela vence, redefinição por e-mail) | `S1` | 3 |
+| RF49.CA03 | `IdentityService.passwordMatchesWithLockout/changePassword/reauthenticate`, `Rule` (PUT password, PATCH me/sensitive, POST me/deletion) | `A1`, `E401b` | nota após 38 | nota de `Bloqueada` (429 na reconferência) | `W3`, `S1` | 3 |
+| RF49.CA04 | `AuthRateLimitFilter.RULES/bucketKey`, `ClientIpResolver` | `D2`–`D4`→`E429` | 3–9 | — | `W2`, `W3`, `BFF` | 3 |
+| RF49.CA05 | `JwtTokenIssuer`, `SessionActiveFilter` | `C8` | 38, 39–55 (refresh pelo cookie) | bloco 2 (`ATIVA`→`ROTACIONADA`→`ATIVA`) | `BFF`, `APP` | 4 |
+| RF49.CA06 | `ResourceAuthorizer`, `AccessPolicy`, `MediaAccessPolicy`, `AuthorizationEnforcementAdvice` (testes `PathVariableAuthorizationTest`, `AuthorizationMatrixWebTest`) | §7.1 | §7.2 | — | `S2`, `I3` | 5 |
+| RF49.CA07 | `ForeignKeyPolicy.divergences` | — | — | — | `I2`, `CI` | 2 |
+| RF49.CA08 | — | — | — | — | `CI`, `BP`, `DEPLOY` | 1 |
+| RF49.CA09 | — | — | — | — | `DEPLOY` | 1, 7 |
+| RF49.CA10 | `DemoEnvironmentGuard`, `DemoDataAdminPort.plan/lockAccounts/integrityProblems`, `MysqlDemoDataAdminAdapter` | — | — | — | `S4`, `I2` | 6 |
 | (RF2) reuso de refresh | `IdentityService.refresh/revokeFamily`, `SessionActiveFilter` | — | 39–50 (`REFRESH_REUSO`, `401 SESSAO_INVALIDA`), 51–55 (rotação) | `ROTACIONADA`→`REVOGADA` | `W4`, `I1` | 3 |
 
 ### Ações que só o time pode fazer (fora do repo)

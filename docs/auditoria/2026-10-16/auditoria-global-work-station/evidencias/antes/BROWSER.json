@@ -1,0 +1,377 @@
+{
+  "at": "2026-10-16T13:58:16.272Z",
+  "mockResponses": 0,
+  "paidCalls": 0,
+  "blockedAiCalls": 0,
+  "routes": [
+    {
+      "name": "perfil",
+      "url": "/profile",
+      "status": 200,
+      "durationMs": 2415,
+      "headings": [
+        "Meu perfil",
+        "Delegadas a mim 1",
+        "Notificações da rede 2",
+        "Esboço de termo de referência",
+        "Cronograma de obras do segundo semestre",
+        "Relatório fotográfico de vistoria da escola",
+        "Protocolo 2026/1234 — pedido de informação",
+        "Checklist de entrega de sistemas",
+        "Painel de indicadores de obras"
+      ],
+      "buttons": [
+        "Aceitar",
+        "Recusar",
+        "Devolver",
+        "Marcar como lidas",
+        "Grade",
+        "Lista",
+        "♡0Curtir (0)",
+        "☆0Salvar (0)",
+        "⤴0Compartilhar (0)",
+        "⇄0Remixar (0) — Indisponível: o item já é seu (use Duplicar no Acervo).",
+        "⋯",
+        "♡0Curtir (0)",
+        "☆0Salvar (0)",
+        "⤴0Compartilhar (0)",
+        "⇄0Remixar (0) — Indisponível: o item já é seu (use Duplicar no Acervo).",
+        "⋯",
+        "♡0Curtir (0)",
+        "☆0Salvar (0)",
+        "⤴0Compartilhar (0)",
+        "⇄0Remixar (0) — Indisponível: o item já é seu (use Duplicar no Acervo).",
+        "⋯",
+        "♡0Curtir (0)",
+        "☆0Salvar (0)",
+        "⤴0Compartilhar (0)",
+        "⇄0Remixar (0) — Indisponível: o item já é seu (use Duplicar no Acervo).",
+        "⋯",
+        "♡0Curtir (0)",
+        "☆0Salvar (0)",
+        "⤴0Compartilhar (0)",
+        "⇄0Remixar (0) — Indisponível: só itens públicos ou da empresa (não rascunho).",
+        "⋯",
+        "♡1Curtir (1)",
+        "☆0Salvar (0)",
+        "⤴0Compartilhar (0)",
+        "⇄0Remixar (0) — Indisponível: o item já é seu (use Duplicar no Acervo).",
+        "⋯"
+      ],
+      "demo": 3,
+      "overflow": false,
+      "axe": {
+        "violations": [
+          {
+            "id": "aria-valid-attr-value",
+            "impact": "critical",
+            "description": "Ensure all ARIA attributes have valid values",
+            "nodes": [
+              {
+                "target": [
+                  "#_r_18_-tab-todos"
+                ],
+                "failureSummary": "Fix all of the following:\n  Invalid ARIA attribute value: aria-controls=\"_r_18_-panel-todos\""
+              }
+            ]
+          },
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+            "nodes": [
+              {
+                "target": [
+                  "article[data-variant=\"EM_USO PRAZO_LEGAL\"] > .content-start.p-2\\.5.gap-2 > .flex-wrap.gap-1\\.5.flex > .motion-safe\\:animate-pulse.bg-ws-info-soft[data-pulse=\"true\"]"
+                ],
+                "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.71 (foreground color: #529dc5, background color: #e6f6fe, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+              },
+              {
+                "target": [
+                  "article[data-variant=\"EM_USO ATRIBUIDA\"] > .content-start.p-2\\.5.gap-2 > .flex-wrap.gap-1\\.5.flex > .motion-safe\\:animate-pulse.bg-ws-info-soft[data-pulse=\"true\"]"
+                ],
+                "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.71 (foreground color: #529dc5, background color: #e6f6fe, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          }
+        ],
+        "passes": 24,
+        "incomplete": 1
+      }
+    },
+    {
+      "name": "mural",
+      "url": "/mural",
+      "status": 200,
+      "durationMs": 2135,
+      "headings": [
+        "Mural",
+        "Estudo técnico preliminar — calçadas acessíveis no centro",
+        "Drenagem urbana da bacia norte",
+        "Plano de mobilidade ativa do centro",
+        "Programa Calçada Segura",
+        "Reforma da sede regional",
+        "Portaria de designação de fiscais de contrato"
+      ],
+      "buttons": [
+        "♡2Curtir (2)",
+        "☆1Salvar (1)",
+        "⤴1Compartilhar (1)",
+        "⇄0Remixar (0)",
+        "⋯",
+        "♡0Curtir (0)",
+        "☆0Salvar (0)",
+        "⤴0Compartilhar (0)",
+        "⇄0Remixar (0)",
+        "⋯",
+        "♥2Curtir (2)",
+        "★1Salvo (1)",
+        "⤴0Compartilhar (0)",
+        "⇄0Remixar (0)",
+        "⋯",
+        "♡0Curtir (0)",
+        "☆0Salvar (0)",
+        "⤴0Compartilhar (0)",
+        "⇄0Remixar (0)",
+        "⋯",
+        "♡0Curtir (0)",
+        "☆0Salvar (0)",
+        "⤴0Compartilhar (0)",
+        "⇄0Remixar (0)",
+        "⋯",
+        "♡1Curtir (1)",
+        "★1Salvo (1)",
+        "⤴0Compartilhar (0)",
+        "⇄0Remixar (0)",
+        "⋯"
+      ],
+      "demo": 2,
+      "overflow": false,
+      "axe": {
+        "violations": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+            "nodes": [
+              {
+                "target": [
+                  ".bg-ws-ai-spark-soft"
+                ],
+                "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 3.5 (foreground color: #a17c34, background color: #fcf3e4, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          }
+        ],
+        "passes": 22,
+        "incomplete": 1
+      }
+    },
+    {
+      "name": "tarefas",
+      "url": "/tasks",
+      "status": 200,
+      "durationMs": 1474,
+      "headings": [
+        "Acervo de Tarefas",
+        "Colaboração 2D - auditoria 15/10",
+        "Colaboração 2D - auditoria 15/10"
+      ],
+      "buttons": [
+        "Anterior",
+        "Próxima"
+      ],
+      "demo": 0,
+      "overflow": false,
+      "axe": {
+        "violations": [],
+        "passes": 19,
+        "incomplete": 3
+      }
+    },
+    {
+      "name": "criar-tarefa",
+      "url": "/tasks/new",
+      "status": 200,
+      "durationMs": 1465,
+      "headings": [
+        "Criar Tarefa"
+      ],
+      "buttons": [
+        "Salvar tarefa"
+      ],
+      "demo": 0,
+      "overflow": false,
+      "axe": {
+        "violations": [],
+        "passes": 9,
+        "incomplete": 1
+      }
+    },
+    {
+      "name": "criar-projeto",
+      "url": "/projects/new",
+      "status": 200,
+      "durationMs": 1399,
+      "headings": [
+        "Criar Projeto"
+      ],
+      "buttons": [],
+      "demo": 0,
+      "overflow": false,
+      "axe": {
+        "violations": [],
+        "passes": 13,
+        "incomplete": 1
+      }
+    },
+    {
+      "name": "decia",
+      "url": "/decia",
+      "status": 200,
+      "durationMs": 1654,
+      "headings": [
+        "DECIA",
+        "Aguardando sua decisão 1",
+        "Qual funcionalidade entra na Sprint 5?",
+        "Precisa de evidência 1",
+        "Qual infraestrutura devemos usar para suportar o crescimento previsto do produto pelos próximos 12 meses?",
+        "Revisões e checkpoints devidos 1",
+        "Qual fornecedor de suporte devemos contratar?"
+      ],
+      "buttons": [
+        "+ Nova decisão",
+        "Por quê? ↻",
+        "Por quê?",
+        "Por quê?"
+      ],
+      "demo": 2,
+      "overflow": false,
+      "axe": {
+        "violations": [],
+        "passes": 21,
+        "incomplete": 1
+      }
+    },
+    {
+      "name": "copilot",
+      "url": "/copilot/profile",
+      "status": 200,
+      "durationMs": 1417,
+      "headings": [
+        "Análise de perfil"
+      ],
+      "buttons": [
+        "Salvar perfil privado",
+        "Gerar direcionamento"
+      ],
+      "demo": 0,
+      "overflow": false,
+      "axe": {
+        "violations": [],
+        "passes": 16,
+        "incomplete": 1
+      }
+    },
+    {
+      "name": "studio",
+      "url": "/studio",
+      "status": 200,
+      "durationMs": 1613,
+      "headings": [
+        "Work Station · Letters & Drawings",
+        "Inspetor de edição"
+      ],
+      "buttons": [
+        "Letters",
+        "Drawings",
+        "Desfazer",
+        "Refazer",
+        "Exportar projeto",
+        "Importar projeto",
+        "Assistente IA",
+        "Adicionar parágrafo",
+        "Exportar TXT"
+      ],
+      "demo": 0,
+      "overflow": false,
+      "axe": {
+        "violations": [],
+        "passes": 16,
+        "incomplete": 1
+      }
+    },
+    {
+      "name": "importar",
+      "url": "/imports",
+      "status": 404,
+      "durationMs": 1112,
+      "headings": [],
+      "buttons": [],
+      "demo": 0,
+      "overflow": false,
+      "axe": {
+        "violations": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+            "nodes": [
+              {
+                "target": [
+                  "a"
+                ],
+                "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.27 (foreground color: #242525, background color: #ab2c16, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          }
+        ],
+        "passes": 13,
+        "incomplete": 1
+      }
+    },
+    {
+      "name": "conectores",
+      "url": "/settings?tab=conexoes",
+      "status": 200,
+      "durationMs": 1841,
+      "headings": [
+        "Preferências",
+        "Tema",
+        "Idioma",
+        "Densidade",
+        "Tamanho da fonte",
+        "Movimento",
+        "Skin da Mesa",
+        "Arte de fundo"
+      ],
+      "buttons": [
+        "Restaurar padrões",
+        "Salvar"
+      ],
+      "demo": 0,
+      "overflow": false,
+      "axe": {
+        "violations": [],
+        "passes": 17,
+        "incomplete": 0
+      }
+    },
+    {
+      "url": "/profile",
+      "viewport": "390x844",
+      "overflow": false
+    },
+    {
+      "url": "/tasks/new",
+      "viewport": "390x844",
+      "overflow": false
+    },
+    {
+      "url": "/studio",
+      "viewport": "390x844",
+      "overflow": false
+    }
+  ],
+  "pageErrors": []
+}
