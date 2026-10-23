@@ -4,11 +4,13 @@
  * do departamento → arte da família → container → mídia), elementos a…i (tipo, categoria, título, estado, prazo,
  * responsável, contadores, faísca ✦, lacre) e os layouts compact · list · expanded · attachment · mini. Variações
  * derivadas no view model (`data-variant`); RASCUNHO = borda tracejada; ARQUIVADA esmaecida; CONCLUIDA com carimbo.
+ * Tarefa real da API (`PlainTaskCardViewModel`, `social: false`): mesma anatomia sem a barra social, estado no eixo de execução
+ * padronizado e, no compacto, um rodapé de trabalho (`footer`) no lugar da barra social.
  */
 import type { ReactNode } from "react";
 import { Avatar, Badge, Link, Tag, cn } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/useI18n";
-import type { DelegationInfo, TaskCardViewModel } from "@/lib/social/view-model";
+import type { AnyTaskCardViewModel, DelegationInfo, TaskCardBase } from "@/lib/social/view-model";
 import { NODE_BORDER, formatDay } from "./meta";
 import { AuthorshipBadge } from "./AuthorshipBadge";
 import { CoverArt, Due, PersonLink, Seal, Spark, Stamp, TypeChip, VisibilityTag } from "./Primitives";
@@ -16,13 +18,23 @@ import { SocialBar } from "./SocialBar";
 
 export type TaskCardLayout = "compact" | "list" | "expanded" | "attachment" | "mini";
 
-export function StateTag({ vm }: { vm: TaskCardViewModel }) {
+/**
+ * Rótulo do estado: DEMO usa o estado do domínio; a tarefa real usa o eixo de execução padronizado (A realizar · Em andamento ·
+ * Bloqueado · Concluído · Arquivado), o mesmo dos filtros de "Minhas tarefas", com "· Rascunho" e a publicação à parte.
+ */
+function useStateLabel(vm: AnyTaskCardViewModel) {
   const { t } = useI18n();
+  if (vm.social || !vm.workStatus) return t(`social.taskState.${vm.state}`);
+  return `${t(`social.workStatus.${vm.workStatus}`)}${vm.state === "RASCUNHO" ? ` · ${t("social.taskState.RASCUNHO")}` : ""}`;
+}
+
+export function StateTag({ vm }: { vm: AnyTaskCardViewModel }) {
   const s = vm.state;
+  const label = useStateLabel(vm);
   return (
     <Tag tone={vm.stateTone} dashed={s === "RASCUNHO"} pulse={s === "EM_USO"} filled={s === "CONCLUIDA"} className="shrink-0" >
       {s === "BLOQUEADA" ? <span aria-hidden>⊘</span> : s === "MODELO_PUBLICO" ? <span aria-hidden>★</span> : null}
-      {t(`social.taskState.${s}`)}
+      {label}
     </Tag>
   );
 }
@@ -40,7 +52,7 @@ export function DelegationLine({ d, compact = false }: { d: DelegationInfo; comp
   );
 }
 
-function CreditLine({ vm }: { vm: TaskCardViewModel }) {
+function CreditLine({ vm }: { vm: TaskCardBase }) {
   const { t } = useI18n();
   if (!vm.credit) return null;
   return (
@@ -50,7 +62,7 @@ function CreditLine({ vm }: { vm: TaskCardViewModel }) {
   );
 }
 
-function Title({ vm, as = "h3", className }: { vm: TaskCardViewModel; as?: "h2" | "h3"; className?: string }) {
+function Title({ vm, as = "h3", className }: { vm: TaskCardBase; as?: "h2" | "h3"; className?: string }) {
   const H = as;
   return (
     <H className={cn("min-w-0 font-[family-name:var(--ws-font-display)] font-semibold leading-snug text-ws-text [overflow-wrap:break-word] [hyphens:auto]", className)}>
@@ -59,15 +71,17 @@ function Title({ vm, as = "h3", className }: { vm: TaskCardViewModel; as?: "h2" 
   );
 }
 
-function Shell({ vm, layout, children, className }: { vm: TaskCardViewModel; layout: TaskCardLayout; children: ReactNode; className?: string }) {
+function Shell({ vm, layout, children, className, testId = "task-card" }: { vm: AnyTaskCardViewModel; layout: TaskCardLayout; children: ReactNode; className?: string; testId?: string }) {
   const { t } = useI18n();
+  const state = useStateLabel(vm);
   const draft = vm.state === "RASCUNHO";
   return (
     <article
-      aria-label={t("social.card.taskAria", { title: vm.title, type: t(`social.taskType.${vm.type}`), state: t(`social.taskState.${vm.state}`) })}
+      aria-label={t("social.card.taskAria", { title: vm.title, type: t(`social.taskType.${vm.type}`), state })}
       data-layout={layout}
       data-variant={[...vm.variants].join(" ")}
-      data-testid="task-card"
+      data-social={vm.social ? undefined : "off"}
+      data-testid={testId}
       data-task-id={vm.id}
       className={cn(
         "relative min-w-0 overflow-hidden rounded-[var(--ws-radius-md)] border-2 bg-ws-surface-1 text-ws-text shadow-ws-1 [container-type:inline-size]",
@@ -82,7 +96,7 @@ function Shell({ vm, layout, children, className }: { vm: TaskCardViewModel; lay
   );
 }
 
-function Media({ vm, className, children, size }: { vm: TaskCardViewModel; className?: string; children?: ReactNode; size?: "xs" | "sm" | "md" | "lg" }) {
+function Media({ vm, className, children, size }: { vm: TaskCardBase; className?: string; children?: ReactNode; size?: "xs" | "sm" | "md" | "lg" }) {
   return (
     <CoverArt family={vm.family} symbol={vm.typeSymbol} tone={vm.typeTone} title={vm.title} format={vm.format} className={className} size={size}>
       {children}
@@ -90,7 +104,7 @@ function Media({ vm, className, children, size }: { vm: TaskCardViewModel; class
   );
 }
 
-function MediaOverlays({ vm }: { vm: TaskCardViewModel }) {
+function MediaOverlays({ vm }: { vm: TaskCardBase }) {
   const { t } = useI18n();
   return (
     <>
@@ -101,23 +115,32 @@ function MediaOverlays({ vm }: { vm: TaskCardViewModel }) {
   );
 }
 
-function Meta({ vm }: { vm: TaskCardViewModel }) {
+function Meta({ vm }: { vm: TaskCardBase }) {
   const { t } = useI18n();
   return (
     <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-[length:var(--ws-text-caption)]">
       {vm.dueAt ? <Due date={vm.dueAt} kind={vm.dueKind} legal={vm.legal} /> : null}
-      <span className="inline-flex min-w-0 items-center gap-1 text-ws-text-muted">
-        <span className="sr-only">{t("social.card.author")}</span>
-        <PersonLink person={vm.author} size={18} />
-      </span>
+      {vm.author ? (
+        <span className="inline-flex min-w-0 items-center gap-1 text-ws-text-muted">
+          <span className="sr-only">{t("social.card.author")}</span>
+          <PersonLink person={vm.author} size={18} />
+        </span>
+      ) : null}
       {vm.responsible ? <span className="min-w-0 truncate text-ws-text-muted">{t("social.card.responsible", { name: vm.responsible.name })}</span> : null}
     </div>
   );
 }
 
 export interface TaskSchemeCardProps {
-  vm: TaskCardViewModel;
+  /** `social: false` (tarefa real da API) = sem barra social, contadores nem ações sociais */
+  vm: AnyTaskCardViewModel;
   layout?: TaskCardLayout;
+  /** compacto: mostra o resumo (2 linhas) entre o título e os metadados */
+  showSummary?: boolean;
+  /** compacto sem barra social: rodapé de trabalho (próxima ação, progresso) na zona da barra social */
+  footer?: ReactNode;
+  /** `data-testid` da raiz (padrão `task-card`) */
+  testId?: string;
   /** no detalhe: foca o campo de comentário */
   onComment?: () => void;
   /** ação principal única do layout ampliado (ANATOMIA_CARDS §3) */
@@ -125,18 +148,19 @@ export interface TaskSchemeCardProps {
   className?: string;
 }
 
-export function TaskSchemeCard({ vm, layout = "compact", onComment, primaryAction, className }: TaskSchemeCardProps) {
+export function TaskSchemeCard({ vm, layout = "compact", showSummary = false, footer, testId, onComment, primaryAction, className }: TaskSchemeCardProps) {
   const { t, intl } = useI18n();
+  const stateLabel = useStateLabel(vm);
   const category = vm.category ? t(`social.category.${vm.category}`) : null;
   const label = [category, vm.department?.acronym].filter(Boolean).join(" · ");
 
   if (layout === "mini") {
     return (
-      <Shell vm={vm} layout={layout} className={cn("flex items-center gap-2 p-1.5 shadow-none", className)}>
+      <Shell vm={vm} layout={layout} testId={testId} className={cn("flex items-center gap-2 p-1.5 shadow-none", className)}>
         <Media vm={vm} size="xs" className="size-8 shrink-0 rounded-[var(--ws-radius-sm)]" />
         <div className="min-w-0 flex-1">
           <Title vm={vm} className="truncate text-[length:var(--ws-text-body-sm)]" />
-          <p className="truncate text-[length:var(--ws-text-caption)] text-ws-text-muted">{t(`social.taskState.${vm.state}`)}{category ? ` · ${category}` : ""}</p>
+          <p className="truncate text-[length:var(--ws-text-caption)] text-ws-text-muted">{stateLabel}{category ? ` · ${category}` : ""}</p>
         </div>
       </Shell>
     );
@@ -144,7 +168,7 @@ export function TaskSchemeCard({ vm, layout = "compact", onComment, primaryActio
 
   if (layout === "attachment") {
     return (
-      <Shell vm={vm} layout={layout} className={cn("flex max-w-sm items-center gap-2 p-2", className)}>
+      <Shell vm={vm} layout={layout} testId={testId} className={cn("flex max-w-sm items-center gap-2 p-2", className)}>
         <Media vm={vm} size="xs" className="h-11 w-[66px] shrink-0 rounded-[var(--ws-radius-sm)]" />
         <div className="min-w-0 flex-1">
           <Title vm={vm} className="truncate text-[length:var(--ws-text-body-sm)]" />
@@ -156,7 +180,7 @@ export function TaskSchemeCard({ vm, layout = "compact", onComment, primaryActio
 
   if (layout === "list") {
     return (
-      <Shell vm={vm} layout={layout} className={cn("grid grid-cols-[64px_minmax(0,1fr)] gap-x-3 gap-y-2 p-2.5 sm:grid-cols-[64px_minmax(0,1fr)_auto] sm:items-center", className)}>
+      <Shell vm={vm} layout={layout} testId={testId} className={cn("grid grid-cols-[64px_minmax(0,1fr)] gap-x-3 gap-y-2 p-2.5 sm:grid-cols-[64px_minmax(0,1fr)_auto] sm:items-center", className)}>
         <Media vm={vm} size="sm" className="size-16 rounded-[var(--ws-radius-sm)]">{vm.aiGenerated ? <span className="sr-only">{t("social.card.ai")}</span> : null}</Media>
         <div className="grid min-w-0 gap-1">
           <div className="flex min-w-0 flex-wrap items-center gap-1.5">
@@ -170,14 +194,14 @@ export function TaskSchemeCard({ vm, layout = "compact", onComment, primaryActio
           <Meta vm={vm} />
           {vm.delegation ? <DelegationLine d={vm.delegation} compact /> : null}
         </div>
-        <SocialBar vm={vm} className="col-span-2 sm:col-span-1 sm:justify-end" />
+        {vm.social ? <SocialBar vm={vm} className="col-span-2 sm:col-span-1 sm:justify-end" /> : null}
       </Shell>
     );
   }
 
   if (layout === "expanded") {
     return (
-      <Shell vm={vm} layout={layout} className={cn("rounded-[var(--ws-radius-lg)]", className)}>
+      <Shell vm={vm} layout={layout} testId={testId} className={cn("rounded-[var(--ws-radius-lg)]", className)}>
         <div className="grid gap-0 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
           <Media vm={vm} size="lg" className="aspect-[3/2] md:aspect-auto md:min-h-64"><MediaOverlays vm={vm} /></Media>
           <div className="grid min-w-0 content-start gap-3 p-[var(--ws-space-4)] md:p-[var(--ws-space-5)]">
@@ -188,26 +212,25 @@ export function TaskSchemeCard({ vm, layout = "compact", onComment, primaryActio
             </div>
             {label ? <p className="font-[family-name:var(--ws-font-mono)] text-[length:var(--ws-text-label)] uppercase tracking-[var(--ws-text-label--tracking)] text-ws-text-muted">{label}</p> : null}
             <Title vm={vm} as="h2" className="text-[length:var(--ws-text-h2)] leading-[var(--ws-text-h2--lh)]" />
-            <div className="flex flex-wrap items-center gap-2 text-[length:var(--ws-text-body-sm)]">
-              <span className="text-ws-text-muted">{t("social.card.by")}</span>
-              <PersonLink person={vm.author} size={24} />
+            {vm.author || vm.department ? <div className="flex flex-wrap items-center gap-2 text-[length:var(--ws-text-body-sm)]">
+              {vm.author ? <><span className="text-ws-text-muted">{t("social.card.by")}</span><PersonLink person={vm.author} size={24} /></> : null}
               {vm.department ? <Link href={`/departments/${vm.department.slug}`} variant="plain" className="inline-flex items-center gap-1 hover:underline"><Avatar name={vm.department.acronym} monogram={vm.department.acronym.replace(/^SECID-/, "").slice(0, 3)} node={vm.department.color} shape="monitor" size={20} />{vm.department.acronym}</Link> : null}
-            </div>
+            </div> : null}
             {vm.authorship ? <AuthorshipBadge summary={vm.authorship} /> : null}
             {vm.aiGenerated ? <p className="rounded-[var(--ws-radius-md)] bg-ws-ai-spark-soft px-3 py-2 text-[length:var(--ws-text-caption)] text-ws-ai-spark-ink" data-testid="ai-transparency"><span aria-hidden>✦ </span>{t("social.card.aiTransparency")}</p> : null}
             {vm.summary ? <p className="text-[length:var(--ws-text-body)] [overflow-wrap:anywhere]">{vm.summary}</p> : null}
             <CreditLine vm={vm} />
-            {vm.remixedBy ? <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted" data-testid="remixed-by">{t("social.card.remixedBy", { n: vm.remixedBy })}</p> : null}
+            {vm.social && vm.remixedBy ? <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted" data-testid="remixed-by">{t("social.card.remixedBy", { n: vm.remixedBy })}</p> : null}
             <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-[length:var(--ws-text-body-sm)] sm:grid-cols-3">
               <div><dt className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("social.card.due")}</dt><dd>{vm.dueAt ? <Due date={vm.dueAt} kind={vm.dueKind} legal={vm.legal} /> : "—"}</dd></div>
               <div><dt className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("social.card.accessClass")}</dt><dd>{t(`social.access.${vm.accessClass}`)}</dd></div>
-              <div><dt className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("social.card.responsibleLabel")}</dt><dd className="min-w-0 truncate">{(vm.responsible ?? vm.author).name}</dd></div>
+              {vm.responsible ?? vm.author ? <div><dt className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("social.card.responsibleLabel")}</dt><dd className="min-w-0 truncate">{(vm.responsible ?? vm.author)?.name}</dd></div> : null}
               {vm.blockReason ? <div className="col-span-2 sm:col-span-3"><dt className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("social.card.blockedBy")}</dt><dd className="text-ws-danger-ink">{vm.blockReason}</dd></div> : null}
             </dl>
             {vm.delegation ? <DelegationLine d={vm.delegation} /> : null}
             {vm.delegation?.dueAt ? <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("social.delegation.due", { date: formatDay(vm.delegation.dueAt, intl) })}</p> : null}
             {primaryAction ? <div className="flex flex-wrap gap-2">{primaryAction}</div> : null}
-            <div className="border-t border-ws-border pt-2"><SocialBar vm={vm} variant="full" onComment={onComment} /></div>
+            {vm.social ? <div className="border-t border-ws-border pt-2"><SocialBar vm={vm} variant="full" onComment={onComment} /></div> : null}
           </div>
         </div>
       </Shell>
@@ -216,7 +239,7 @@ export function TaskSchemeCard({ vm, layout = "compact", onComment, primaryActio
 
   // compact (grade do Acervo, Buscar, Mural)
   return (
-    <Shell vm={vm} layout="compact" className={cn("flex flex-col", className)}>
+    <Shell vm={vm} layout="compact" testId={testId} className={cn("flex flex-col", className)}>
       <Media vm={vm} className="aspect-[3/2] w-full"><MediaOverlays vm={vm} /></Media>
       <div className="grid min-w-0 flex-1 content-start gap-2 p-2.5">
         <div className="flex min-w-0 flex-wrap items-center gap-1.5">
@@ -227,12 +250,14 @@ export function TaskSchemeCard({ vm, layout = "compact", onComment, primaryActio
         </div>
         {label ? <p className="truncate font-[family-name:var(--ws-font-mono)] text-[length:var(--ws-text-label)] uppercase tracking-[var(--ws-text-label--tracking)] text-ws-text-muted">{label}</p> : null}
         <Title vm={vm} className="line-clamp-2 text-[length:var(--ws-text-body-lg)]" />
+        {showSummary && vm.summary ? <p className="line-clamp-2 text-[length:var(--ws-text-body-sm)] text-ws-text-muted [overflow-wrap:anywhere]" data-testid="task-card-summary">{vm.summary}</p> : null}
         <Meta vm={vm} />
-        {vm.state === "BLOQUEADA" && vm.blockReason ? <p className="text-[length:var(--ws-text-caption)] text-ws-danger-ink"><span aria-hidden>⊘ </span>{vm.blockReason}</p> : null}
+        {vm.state === "BLOQUEADA" && vm.blockReason ? <p className="text-[length:var(--ws-text-caption)] text-ws-danger-ink [overflow-wrap:anywhere]" data-testid="block-reason"><span aria-hidden>⊘ </span>{vm.blockReason}</p> : null}
         <CreditLine vm={vm} />
         {vm.delegation ? <DelegationLine d={vm.delegation} compact /> : null}
       </div>
-      <div className="border-t border-ws-border px-1.5 py-1"><SocialBar vm={vm} /></div>
+      {vm.social ? <div className="border-t border-ws-border px-1.5 py-1"><SocialBar vm={vm} /></div>
+        : footer ? <div className="grid min-w-0 gap-1.5 border-t border-ws-border px-2.5 py-2" data-testid="task-card-footer">{footer}</div> : null}
     </Shell>
   );
 }

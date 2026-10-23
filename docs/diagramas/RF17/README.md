@@ -1,10 +1,12 @@
 # RF17 — Visualizar esquemas de tarefa & projetos criados por outros usuários na rede social do Work Station, através da aba "Buscar"
-**HU:** HU17 · **Sprint (board Work Station):** lista *Requisitos Funcionais* sem sprint atribuída (card renomeado em 2026-10-02; origem RF27 = Sprint 4; o card "SPRINT 3" cita "RF17 Encerrar sessão", escopo antigo preservado em `_anterior/RF17` — `RENUMERACAO.md`) · **Equivalente FAI:** RF8 Buscar/Explorar (busca textual com abas e contadores, "looks parecidos com este") · **Aba/rota:** Buscar (`/search`, abas PROJETOS · TAREFAS · PESSOAS · EMPRESAS · CHEFES DE DEPARTAMENTO) e páginas de leitura de esquema de terceiros (`/tasks/[id]`, `/projects/[id]`); API `GET /api/search?q=&tab=&filters…&page=`, `GET /api/search/suggestions`, `GET /api/projects/{id}/similar`, `GET /api/tasks/{id}`, `GET /api/projects/{id}`
-**Critérios de aceite cobertos:** RF17.CA01 … RF17.CA06 — corpo do card vazio: CAs derivados do título + HU17 + RF27 (CA03 busca, CA04 visibilidade, CA05 semântica); todos marcados "(CA a confirmar)". O Mural (RF27.CA01/CA02/CA06) continua no RF27. Todas as classes do RF são **(planejado)**; reais: `OpenSearchAdaptersConfig` (flag `opensearch.enabled`), `AiProvidersConfig`, `Guard`, `SecurityConfig`.
+**HU:** HU17 · **Sprint (board Work Station):** lista *Requisitos Funcionais* sem sprint atribuída (card renomeado em 2026-10-02; origem RF27 = Sprint 4; o card "SPRINT 3" cita "RF17 Encerrar sessão", escopo antigo preservado em `_anterior/RF17` — `RENUMERACAO.md`) · **Equivalente FAI:** RF8 Buscar/Explorar (busca textual com abas e contadores, "looks parecidos com este") · **Aba/rota:** Buscar (`/search`, abas PROJETOS · TAREFAS · PESSOAS · EMPRESAS · CHEFES DE DEPARTAMENTO) e páginas de leitura de esquema de terceiros (`/tasks/[id]`, `/projects/[id]`); API `GET /api/search?q=&tab=&filters…&page=`, `GET /api/search/suggestions`, `GET /api/projects/{id}/similar`, `GET /api/tasks/{id}`, `GET /api/projects/{id}` · **real:** `GET /api/tasks/{id}` (`TaskController.get`, `@AuthorizedBy("require")`) e `GET /api/people/{id}/tasks` (`PeopleController`, em curso, Onda 1)
+**Critérios de aceite cobertos:** RF17.CA01 … RF17.CA06 — corpo do card vazio: CAs derivados do título + HU17 + RF27 (CA03 busca, CA04 visibilidade, CA05 semântica); todos marcados "(CA a confirmar)". O Mural (RF27.CA01/CA02/CA06) continua no RF27. Todas as classes do RF são **(planejado)**; reais: `OpenSearchAdaptersConfig` (flag `opensearch.enabled`), `AiProvidersConfig`, `Guard`, `SecurityConfig`. Atualização 17/10/2026 **(real)**: regra de leitura `AccessPolicy.visible/decide/sigiloso` (D-139), `TaskController.get` → `TaskService.get` → `ResourceAuthorizer.require` com `404 NAO_ENCONTRADO` uniforme, `TaskService.listOf` (em curso, Onda 1) e `components/social/TaskDetail.tsx` com o mesmo 404 (D-141).
 
 > **HU17** — COMO usuário autenticado no sistema POSSO visualizar esquemas de tarefa ou projeto criados por outros usuários, chefes ou empresas na aba "Buscar/Explorar" PARA me inspirar em outras combinações e ampliar minhas referências de projetos.
 
 A busca lê os índices OpenSearch `ws-tasks`, `ws-projects`, `ws-people` e `ws-orgs` (ARQUITETURA §3.2) com o mesmo `AccessPolicy.visibilityFilter` dos perfis (RF16), devolve 5 abas com contadores e abre o esquema de terceiro em **modo leitura** com crédito do autor. "Projetos parecidos" usa `AiEngine` capability `MEMORIA_BUSCA` (embedding) e kNN em `ws-memory` (RF33), com fallback textual. A indexação é assíncrona (`PipelineJob INDEXAR_BUSCA`, proposta) a partir dos eventos de publicação/alteração/arquivamento.
+
+**Atualização 17/10/2026.** A busca segue **(planejado)**, mas a regra de leitura que ela vai aplicar já é **(real)** no domínio: `ws-domain/.../security/AccessPolicy.java` — `visible` e `decide` só admitem ADMIN fora de SIGILOSO (`sigiloso(ScopedResource)`, **D-139**; `AccessPolicyMatrixTest`); SIGILOSO equivale a PRIVADA (só dono e colaboradores explícitos) e RESTRITO nunca passa de DEPARTAMENTO. A leitura de tarefa de terceiro já é real em `GET /api/tasks/{id}` (`TaskController.get` → `TaskService.get` → `ResourceAuthorizer.require(VIEW)`): invisível responde **`404 NAO_ENCONTRADO`** com a mesma mensagem de id inexistente; visível sem permissão de edição → `PUT /api/tasks/{id}` `403 ACESSO_NEGADO`. O front faz o mesmo: `components/social/TaskDetail.tsx` mostra `404 NAO_ENCONTRADO` para tarefa invisível (**D-141**, Q-239, revisa a D-93). A composição de projeto no front não vaza títulos nem a contagem de tarefas ocultas (`lib/social/view-model.ts`, commit `b602d34`). As tarefas de uma pessoa (`GET /api/people/{id}/tasks` → `TaskService.listOf`, filtro por `AccessPolicy.visible`) estão **(em curso, Onda 1)** — RF16.
 
 ## Critérios de aceite derivados da HU17 (todos "CA a confirmar")
 
@@ -12,10 +14,59 @@ A busca lê os índices OpenSearch `ws-tasks`, `ws-projects`, `ws-people` e `ws-
 |---|---|
 | **RF17.CA01** (CA a confirmar) | Dado um usuário autenticado em `/search`, quando digita um termo, então o sistema busca em título, descrição, tags e texto OCR (OpenSearch `ws-tasks`, `ws-projects`, `ws-people`, `ws-orgs`) e devolve **5 abas com contadores** (PROJETOS · TAREFAS · PESSOAS · EMPRESAS · CHEFES DE DEPARTAMENTO) em ≤ 1 s p95; termo vazio mostra sugestões (recentes, em alta, chancelados) via `GET /api/search/suggestions`. |
 | **RF17.CA02** (CA a confirmar) | Dado uma aba, quando aplico filtros (categoria, tipo, fase, departamento, exercício, chancelado, prazo) e pagino (20 por página), então a URL reflete `q`, `tab`, filtros e `page`; a tela mostra `Skeleton` ao carregar, `EmptyState` ilustrado e `ErrorState` com "tentar de novo" em erro (`503 BUSCA_INDISPONIVEL` quando o OpenSearch está fora ou a flag está desligada). |
-| **RF17.CA03** (CA a confirmar) | Dado os resultados, quando são devolvidos, então só contêm itens que o viewer pode ver (`AccessPolicy.visibilityFilter` aplicado como filtro da query): `PUBLICA` sempre; `EMPRESA` se mesma empresa; `DEPARTAMENTO` se membro; `PRIVADA` só os meus; `RASCUNHO` nunca aparece para terceiros; `accessClass` SIGILOSO nunca é indexado e RESTRITO só para o departamento dono. Resultados de outra empresa só se `PUBLICA`. |
-| **RF17.CA04** (CA a confirmar) | Dado um resultado de tarefa ou projeto de outro usuário, quando o abro, então vejo o esquema completo em **modo leitura** (ficha, fases e tarefas do projeto, capa, chancelas) com o **crédito do autor** (avatar + link para RF16/RF14/RF15), as ações inline do RF18/RF19 e "Levar ao meu acervo" (RF7/RF41.CA08); edição é `403 ACESSO_NEGADO`; item que ficou PRIVADA depois de indexado responde `404` e sai do índice. |
+| **RF17.CA03** (CA a confirmar) | Dado os resultados, quando são devolvidos, então só contêm itens que o viewer pode ver (`AccessPolicy.visibilityFilter` aplicado como filtro da query): `PUBLICA` sempre; `EMPRESA` se mesma empresa; `DEPARTAMENTO` se membro; `PRIVADA` só os meus; `RASCUNHO` nunca aparece para terceiros; `accessClass` SIGILOSO nunca é indexado e RESTRITO só para o departamento dono. Resultados de outra empresa só se `PUBLICA`. **Real (17/10/2026):** a regra item a item já existe em `AccessPolicy.visible/decide` — SIGILOSO só para dono e colaboradores explícitos, sem acesso implícito do ADMIN (`AccessPolicy.sigiloso`, D-139, `AccessPolicyMatrixTest`); a busca que a aplicará segue planejada. |
+| **RF17.CA04** (CA a confirmar) | Dado um resultado de tarefa ou projeto de outro usuário, quando o abro, então vejo o esquema completo em **modo leitura** (ficha, fases e tarefas do projeto, capa, chancelas) com o **crédito do autor** (avatar + link para RF16/RF14/RF15), as ações inline do RF18/RF19 e "Levar ao meu acervo" (RF7/RF41.CA08); edição é `403 ACESSO_NEGADO`; item que ficou PRIVADA depois de indexado responde `404` e sai do índice. **Real (17/10/2026):** `GET /api/tasks/{id}` → invisível = `404 NAO_ENCONTRADO` uniforme (`ResourceAuthorizer.require` → `AccessDecision.NOT_FOUND`), também no front (`components/social/TaskDetail.tsx`, D-141, revisa a D-93); editar sem permissão → `PUT /api/tasks/{id}` `403 ACESSO_NEGADO`; o card de projeto não mostra título nem total de tarefa oculta (`lib/social/view-model.ts`, `b602d34`). Leitura de projeto pela API segue planejada (Onda 2). |
 | **RF17.CA05** (CA a confirmar) | Dado um projeto aberto, quando clico em "projetos parecidos com este", então o sistema gera o embedding (`AiEngine MEMORIA_BUSCA`) e faz kNN em `ws-memory` com o mesmo `visibilityFilter`, devolvendo até 10 projetos com score e motivo ("mesmo processo, 4 tarefas em comum"); sem IA disponível cai para "mais do mesmo processo/departamento" (busca textual); `AiInferenceLog` registra a inferência. |
 | **RF17.CA06** (CA a confirmar) | Dado que um autor publica, altera a visibilidade ou arquiva uma tarefa/projeto, quando a transação é confirmada, então o evento AFTER_COMMIT agenda `PipelineJob INDEXAR_BUSCA` (tipo proposto) e o índice reflete a mudança em ≤ 60 s; falha deixa o job `REPROCESSAR` sem afetar a operação do autor. |
+
+## 0. Diagrama de casos de uso
+
+Como uma pessoa autenticada encontra e lê, em modo leitura, esquemas de tarefa e de projeto de outras pessoas pela aba Buscar. Pílulas cheias existem no código hoje; tracejadas são planejadas.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  dono["«ator» Dono do recurso"]:::ator
+  subgraph SIS["Work Station — RF17 Buscar esquemas de terceiros"]
+    direction TB
+    UC1(["UC1 Buscar por termo nas cinco abas"]):::ucPlan
+    UC2(["UC2 Ver sugestões com o termo vazio"]):::ucPlan
+    UC3(["UC3 Filtrar e paginar os resultados"]):::ucPlan
+    UC4(["UC4 Verificar o acesso ao esquema"]):::uc
+    UC5(["UC5 Abrir uma tarefa de terceiro em modo leitura"]):::uc
+    UC6(["UC6 Abrir um projeto de terceiro em modo leitura"]):::ucPlan
+    UC7(["UC7 Ver projetos parecidos com este"]):::ucPlan
+    UC8(["UC8 Atualizar o índice após mudança do autor"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  autenticado --- UC1
+  autenticado --- UC5
+  autenticado --- UC6
+  dono --- UC8
+  UC1 -. "«include»" .-> UC4
+  UC2 -. "«extend»" .-> UC1
+  UC3 -. "«extend»" .-> UC1
+  UC5 -. "«include»" .-> UC4
+  UC6 -. "«include»" .-> UC4
+  UC7 -. "«include»" .-> UC4
+  UC7 -. "«extend»" .-> UC6
+  UC7 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Buscar por termo nas cinco abas | Pessoa autenticada | RF17.CA01, RF17.CA03 | planejado — `/search` é esqueleto; `SearchService` e índices OpenSearch não existem |
+| UC2 Ver sugestões com o termo vazio | (estende UC1) | RF17.CA01 | planejado |
+| UC3 Filtrar e paginar os resultados | (estende UC1) | RF17.CA02 | planejado |
+| UC4 Verificar o acesso ao esquema | (incluído por UC1, UC5, UC6, UC7) | RF17.CA03, RF17.CA04 | real — `AccessPolicy.visible/decide/sigiloso` (D-139) e `ResourceAuthorizer.require`: invisível = `404 NAO_ENCONTRADO`, sem edição = `403 ACESSO_NEGADO`; como filtro da busca, planejado |
+| UC5 Abrir uma tarefa de terceiro em modo leitura | Pessoa autenticada | RF17.CA04 | real — `GET /api/tasks/{id}` (`TaskController.get` → `TaskService.get`) e `PersistedTaskDetail` em `/tasks/[id]` (D-141) |
+| UC6 Abrir um projeto de terceiro em modo leitura | Pessoa autenticada | RF17.CA04 | planejado — `GET /api/projects/{id}` ainda não existe |
+| UC7 Ver projetos parecidos com este | IA (AiGateway) (estende UC6) | RF17.CA05 | planejado — `AiEngine MEMORIA_BUSCA` + kNN em `ws-memory`, com recuo para busca textual |
+| UC8 Atualizar o índice após mudança do autor | Dono do recurso | RF17.CA06 | planejado — `PipelineJob INDEXAR_BUSCA` (tipo proposto) disparado AFTER_COMMIT |
 
 ## 1. Diagrama de classes
 
@@ -62,6 +113,29 @@ classDiagram
     <<service>>
     +visibilityFilter(viewer) VisibilityScope
     +canView(viewer, item) boolean
+    +visible(Viewer, ScopedResource)$ boolean
+    +decide(Viewer, ScopedResource, ResourceAction)$ AccessDecision
+    -sigiloso(ScopedResource)$ boolean
+  }
+  class AccessDecision {
+    <<enum>>
+    ALLOW
+    FORBIDDEN
+    NOT_FOUND
+  }
+  class TaskController {
+    <<controller>>
+    +get(CurrentUser, UUID id) TaskView
+    +update(CurrentUser, UUID id, TaskRequest, RequestContext) TaskView
+  }
+  class TaskService {
+    <<service>>
+    +get(CurrentUser, UUID id) TaskView
+    +listOf(CurrentUser, ownerId, limit) List~TaskView~
+  }
+  class ResourceAuthorizer {
+    <<service>>
+    +require(Viewer, ScopedResource, ResourceAction) void
   }
   class AiEngine {
     <<service>>
@@ -205,6 +279,12 @@ classDiagram
   SearchController --> SimilarProjectsService
   ReadOnlySchemeController --> SchemeReadService
   SearchService --> AccessPolicy
+  TaskController --> TaskService
+  TaskService --> ResourceAuthorizer : require VIEW ou EDIT
+  ResourceAuthorizer --> AccessPolicy : decide
+  AccessPolicy ..> AccessDecision
+  note for AccessPolicy "Real em ws-domain: visible e decide só admitem ADMIN fora de SIGILOSO (D-139, AccessPolicyMatrixTest). visibilityFilter e canView seguem planejados para a busca."
+  note for ResourceAuthorizer "Real: NOT_FOUND vira 404 NAO_ENCONTRADO com a mesma mensagem de id inexistente. FORBIDDEN vira 403 ACESSO_NEGADO."
   SearchService --> SearchIndexPort
   SearchService ..> SearchQuery
   SearchService ..> VisibilityScope
@@ -255,6 +335,7 @@ flowchart TD
     E503["503 BUSCA_INDISPONIVEL (OpenSearch fora / flag opensearch.enabled off)"]
     E403["403 ACESSO_NEGADO (tentar editar esquema de terceiro)"]
     E404["404 (item que ficou PRIVADA ou foi arquivado)"]
+    E404U["404 NAO_ENCONTRADO uniforme (real): invisível = inexistente · front TaskDetail.tsx igual (D-141)"]
   end
   subgraph APP["ws-application"]
     S1["AccessPolicy.visibilityFilter(viewer) → VisibilityScope {companyId, departmentIds, visibilities}"]
@@ -267,6 +348,7 @@ flowchart TD
     SIM2{"IA disponível?"}
     SIM3["kNN em ws-memory (k=10) com o mesmo VisibilityScope · score + motivo (processo, tarefas em comum)"]
     SIM4["fallback textual: mesmo processo/departamento"]
+    RT1["GET /api/tasks/{id} (real): TaskController.get → TaskService.get → ResourceAuthorizer.require(VIEW) → AccessPolicy.decide · SIGILOSO sem vínculo explícito = NOT_FOUND, inclusive ADMIN (D-139)"]
     IDX["SearchIndexer (AFTER_COMMIT de TaskPublished/ProjectPublished/VisibilityChanged/Archived) → PipelineJob INDEXAR_BUSCA → index/delete ≤ 60 s · falha → REPROCESSAR"]
   end
   subgraph PERS["Persistência"]
@@ -291,6 +373,9 @@ flowchart TD
   SIM1 --> P2
   P2 -.eventos de publicação/visibilidade/arquivamento.-> IDX --> P1
   IDX --> P2
+  F4 -.->|"tarefa (real)"| RT1
+  RT1 -->|"NOT_FOUND"| E404U
+  RT1 -->|"ALLOW"| F4
 ```
 
 ## 3. Diagrama de sequência
@@ -364,6 +449,20 @@ sequenceDiagram
   Note over R,OS: Indexação assíncrona (CA06)
   EV->>R: ProjectPublished / VisibilityChanged / Archived → enqueue PipelineJob INDEXAR_BUSCA
   R->>OS: index ou delete (≤ 60 s) — falha → attempts++ e REPROCESSAR
+
+  Note over U,R: Real (17/10/2026) — leitura de tarefa de terceiro
+  U->>N: abre /tasks/{id} de outra pessoa
+  N->>C: GET /api/tasks/{id}
+  C->>S: TaskService.get e ResourceAuthorizer.require(viewer, tarefa, VIEW)
+  S->>R: tasks.findById
+  S->>S: AccessPolicy.decide (SIGILOSO sem vínculo explícito = NOT_FOUND, inclusive ADMIN, D-139)
+  alt NOT_FOUND (invisível ou inexistente)
+    S-->>C: 404 NAO_ENCONTRADO (mesma mensagem de id inexistente)
+    C-->>N: 404 e TaskDetail.tsx mostra 404 NAO_ENCONTRADO (D-141)
+  else ALLOW
+    S-->>C: TaskView
+    C-->>N: 200 (modo leitura)
+  end
 ```
 
 ## 4. Máquina de estados
@@ -389,6 +488,10 @@ stateDiagram-v2
   IDX --> REMP : visibility → PRIVADA · ARQUIVADA/ARQUIVADO · accessClass → SIGILOSO
   REMP --> NAO : delete OK (quem abrir o link antigo recebe 404)
   REMP --> REP : erro
+  note left of NAO
+    Real (D-139): SIGILOSO também fica fora da leitura
+    do ADMIN sem vínculo explícito (AccessPolicy.sigiloso).
+  end note
   note right of IDX
     A query sempre aplica VisibilityScope do viewer:
     PUBLICA · +EMPRESA · +DEPARTAMENTO · PRIVADA só os meus ·
@@ -401,7 +504,7 @@ stateDiagram-v2
 ```mermaid
 flowchart LR
   subgraph FE["Frontend · Next.js 15 App Router"]
-    PG["app/(shell)/search · ?q=&tab=&filtros&page= · páginas de leitura tasks/[id] e projects/[id] (readOnly)"]
+    PG["app/(shell)/search · ?q=&tab=&filtros&page= · páginas de leitura tasks/[id] e projects/[id] (readOnly) · components/social/TaskDetail.tsx 404 NAO_ENCONTRADO (real, D-141) · lib/social/view-model.ts sem vazar oculto (b602d34)"]
     UI["packages/ui: Input (busca), Tabs (com contadores), TaskCard, ProjectCard, Avatar/Monogram, Seal, Counters, Skeleton, EmptyState, ErrorState (tentar de novo), Button (Levar ao meu acervo)"]
     SN["TopBar (busca global → /search) · SidebarNav › Descobrir › Buscar"]
     BFF["app/bff/search/* · app/bff/tasks/* · app/bff/projects/*"]
@@ -412,13 +515,16 @@ flowchart LR
   subgraph WSWEB["ws-web"]
     SEC["SecurityConfig · SessionActiveFilter · CurrentUserArgumentResolver"]
     SC["SearchController · ReadOnlySchemeController"]
+    TC["TaskController GET /api/tasks/{id} (real) · PeopleController GET /api/people/{id}/tasks (em curso, Onda 1)"]
     GEH["GlobalExceptionHandler (403, 404, 503)"]
   end
   subgraph WSAPP["ws-application"]
     SRCH["search: SearchService · SimilarProjectsService · SearchIndexer"]
     RD["acervo/projects: SchemeReadService"]
     AIE["ai: AiEngine MEMORIA_BUSCA (embeddings) · circuit breaker"]
-    SECU["security: AccessPolicy.visibilityFilter/canView"]
+    SECU["security: AccessPolicy.visibilityFilter/canView (planejado) · AccessPolicy.visible/decide/sigiloso em ws-domain (real, D-139) · ResourceAuthorizer.require (real)"]
+    TS["acervo: TaskService.get (real) · TaskService.listOf (real, em curso, Onda 1)"]
+    TS --> SECU
     PORTS["ports: SearchIndexPort · PipelineJobPort · TaskRepositoryPort · ProjectRepositoryPort · UserRepositoryPort · CounterCachePort"]
     EVT["events: TaskPublished · ProjectPublished · VisibilityChanged · Archived (AFTER_COMMIT) → SearchIndexer"]
     SRCH --> SECU
@@ -442,6 +548,8 @@ flowchart LR
   BFF -->|"REST JSON"| SEC --> SC --> SRCH
   SC --> RD
   SC --> GEH
+  SEC --> TC --> TS
+  TC --> GEH
   OSE -.implementa SearchIndexPort.-> PORTS
   MY -.implementa.-> PORTS
   RDS -.implementa.-> PORTS
@@ -460,7 +568,7 @@ flowchart LR
 |---|---|---|---|---|---|---|
 | RF17.CA01 | `SearchController.search/suggestions`, `SearchService.search/countersPerTab`, `SearchQuery`, `SearchTab`, `SearchIndexPort.search/count` | `A1`→`F1`/`F2`→`S2`→`S3`→`S4`→`F3` | 1–10, 14–18 | — | `PG`, `UI` (`Tabs`), `SRCH`, `OSE`, `RDS` | planejado (`OpenSearchAdaptersConfig` real) |
 | RF17.CA02 | URL `?q=&tab=&filtros&page=`, `Skeleton`/`EmptyState`/`ErrorState`, `503 BUSCA_INDISPONIVEL` | `A2`→`F2`→`F3`, `E503` | 11–13 | — | `UI`, `GEH`, `OSE` (flag) | planejado |
-| RF17.CA03 | `AccessPolicy.visibilityFilter`, `VisibilityScope`, `SearchIndexer` (SIGILOSO nunca, RESTRITO por departamento, RASCUNHO nunca) | `S1`→`S2` | 4–9 | nota de `IDX`, `NAO` | `SECU`, `OSE` | planejado |
-| RF17.CA04 | `ReadOnlySchemeController`, `SchemeReadService.task/project/creditOf`, `AccessPolicy.canView` | `A3`→`F4`→`R1`→`R2`, `E403`, `E404` | 19–29 | `IDX`→`REMP`→`NAO` | `RD`, `UI` (`ProjectCard`, `Seal`, `Counters`) | planejado (RF7, RF16, RF18/RF19) |
+| RF17.CA03 | `AccessPolicy.visibilityFilter`, `VisibilityScope`, `SearchIndexer` (SIGILOSO nunca, RESTRITO por departamento, RASCUNHO nunca) | `S1`→`S2`, `RT1` | 4–9, 46 | nota de `IDX`, `NAO` (nota D-139) | `SECU`, `OSE`, `TS` | planejado (busca); **real**: `AccessPolicy.visible/decide/sigiloso` (classe `AccessPolicy`, D-139, `AccessPolicyMatrixTest`) |
+| RF17.CA04 | `ReadOnlySchemeController`, `SchemeReadService.task/project/creditOf`, `AccessPolicy.canView` | `A3`→`F4`→`R1`→`R2`, `E403`, `E404`, `F4`→`RT1`→`E404U` | 19–29, 42–50 | `IDX`→`REMP`→`NAO` | `RD`, `UI` (`ProjectCard`, `Seal`, `Counters`), `TC`, `TS`, `PG` | planejado (RF7, RF16, RF18/RF19); **real**: `TaskController.get` → `TaskService.get` → `ResourceAuthorizer.require` (`404 NAO_ENCONTRADO` uniforme), `components/social/TaskDetail.tsx` (D-141), composição de projeto sem vazamento (`lib/social/view-model.ts`, `b602d34`) |
 | RF17.CA05 | `SimilarProjectsService.similar/fallbackTextual`, `AiEngine` (MEMORIA_BUSCA), `SearchIndexPort.knn`, `InstitutionalMemoryDocument`, `AiInferenceLog` | `A4`→`F5`→`SIM1`→`SIM2`→`SIM3`/`SIM4` | 30–42 | — | `AIE`, `AIP`, `OSE` (`ws-memory`) | planejado (RF33) |
 | RF17.CA06 | `SearchIndexer.onPublished/onVisibilityChanged/onArchived/run`, `PipelineJob INDEXAR_BUSCA`, `PipelineJobPort` | `IDX` | 43–44 | `NAO`→`PEN`→`IDX`, `IDX`→`REMP`, `REP` | `EVT`, `PLT`, `MY` | planejado |

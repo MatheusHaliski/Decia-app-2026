@@ -28,6 +28,65 @@ A **Mesa de Trabalho do perfil** é o painel pessoal/da equipe que reúne, sobre
 | Atividade dos colegas | contínuo | `TimelineEvent`, `MuralEntry` | RF27 | sim |
 | Post-its (`DeskNote`, proposta) | livre | `DeskNote` | RF21 | sim, com `pinned` pelo chefe |
 
+## 0. Diagrama de casos de uso
+
+O que cada perfil faz na Mesa de Trabalho (`/desk`): a Minha mesa e a Mesa da equipe do departamento. Pílulas cheias existem no código hoje; tracejadas são planejadas.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  empregado["«ator» Empregado"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  empresa["«ator» Empresa ou órgão"]:::ator
+  subgraph SIS["Work Station — RF21 Mesa de Trabalho do perfil"]
+    direction TB
+    UC1(["UC1 Abrir a Minha mesa com os widgets do dia, da semana e do mês"]):::ucPlan
+    UC2(["UC2 Escolher a skin da mesa"]):::uc
+    UC3(["UC3 Abrir a Mesa da equipe"]):::ucPlan
+    UC4(["UC4 Verificar a lotação no departamento"]):::ucPlan
+    UC5(["UC5 Arrumar widgets e post-its no canvas"]):::ucPlan
+    UC6(["UC6 Editar a Mesa da equipe com os colegas em tempo real"]):::ucPlan
+    UC7(["UC7 Ir da Mesa ao projeto ou à sessão DECIA"]):::ucPlan
+    UC8(["UC8 Dar o retorno da Tarefa do Dia pela Mesa"]):::ucPlan
+    UC9(["UC9 Fixar uma nota e definir a skin padrão da equipe"]):::ucPlan
+    UC10(["UC10 Restaurar o layout padrão ou exportar a Mesa"]):::ucPlan
+  end
+  empregado --- UC1
+  chefe --- UC1
+  empregado --- UC2
+  chefe --- UC2
+  empregado --- UC3
+  chefe --- UC3
+  empresa --- UC3
+  empregado --- UC5
+  chefe --- UC5
+  empregado --- UC6
+  chefe --- UC6
+  chefe --- UC9
+  empregado --- UC10
+  chefe --- UC10
+  UC3 -. "«include»" .-> UC4
+  UC6 -. "«include»" .-> UC4
+  UC7 -. "«extend»" .-> UC3
+  UC8 -. "«extend»" .-> UC1
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Abrir a Minha mesa com os widgets do dia, da semana e do mês | Empregado · Chefe de departamento | RF21.CA01, RF21.CA02 | planejado — `/desk` é esqueleto (só a prévia da skin) |
+| UC2 Escolher a skin da mesa | Empregado · Chefe de departamento | RF21.CA01, RF21.CA04 | real — `UserPreferences.deskSkin` em `PUT /api/me/preferences`; prévia em `/desk` e troca em `/settings?tab=aparencia`; `UserSkin` comprada planejada |
+| UC3 Abrir a Mesa da equipe | Empregado · Chefe de departamento · Empresa ou órgão | RF21.CA01, RF21.CA03 | planejado — a conta EMPRESA só lê |
+| UC4 Verificar a lotação no departamento | (incluído por UC3, UC6) | RF21.CA01, RF21.CA05 | planejado — `DepartmentMembership` vigente ou chefe |
+| UC5 Arrumar widgets e post-its no canvas | Empregado · Chefe de departamento | RF21.CA04 | planejado |
+| UC6 Editar a Mesa da equipe com os colegas em tempo real | Empregado · Chefe de departamento | RF21.CA05 | planejado — Redis pub/sub em até 3 s, último-vence com aviso |
+| UC7 Ir da Mesa ao projeto ou à sessão DECIA | (estende UC3) | RF21.CA06 | planejado — leva ao RF22 ou à Mesa do DECIA |
+| UC8 Dar o retorno da Tarefa do Dia pela Mesa | (estende UC1) | RF21.CA06 | planejado — feedback do RF44 |
+| UC9 Fixar uma nota e definir a skin padrão da equipe | Chefe de departamento | RF21.CA07 | planejado |
+| UC10 Restaurar o layout padrão ou exportar a Mesa | Empregado · Chefe de departamento | RF21.CA07 | planejado — exportação por `PipelineJob EXPORT_PDF` |
+
 ## 1. Diagrama de classes
 
 ```mermaid

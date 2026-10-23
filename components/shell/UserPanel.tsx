@@ -29,16 +29,19 @@ export function ViewerProfileSelect({ className }: { className?: string }) {
 
 export function UserPanel() {
   const { t } = useI18n();
-  const { user, profile } = useViewer();
+  const { user, profile, session, canSwitch } = useViewer();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [leaving, setLeaving] = useState(false);
-  const name = t(user.nameKey);
+  const name = user.name ?? t(user.nameKey);
+  const role = user.roleLabel ?? t(user.roleKey);
   const visitor = profile === "VISITANTE";
+  const loading = session === "loading";
 
   const signOut = async () => {
     setLeaving(true);
-    try { await auth.logout(); } catch { /* sem backend ainda: limpa só o estado local */ }
+    // o BFF encerra a sessão na API e apaga os cookies mesmo com a API fora do ar; as outras abas saem pelo canal do Bloco 4
+    try { await auth.logout(); } catch { /* sem backend: limpa só o estado local */ }
     setLeaving(false);
     setOpen(false);
     router.push("/login");
@@ -52,8 +55,8 @@ export function UserPanel() {
       width="w-[min(92vw,20rem)]"
       trigger={
         <Button variant="ghost" size="sm" className="gap-2 px-1.5" aria-haspopup="dialog" aria-expanded={open} aria-label={t("userPanel.open", { name })} data-testid="user-panel">
-          <Avatar name={name} node={user.departmentNode} monogram={visitor ? "?" : undefined} size={30} />
-          <span className="hidden max-w-[9rem] truncate text-[length:var(--ws-text-body-sm)] font-medium md:inline">{visitor ? t("profile.VISITANTE") : `@${user.username}`}</span>
+          <Avatar name={name} node={user.departmentNode} monogram={visitor ? (loading ? "…" : "?") : undefined} size={30} />
+          <span className="hidden max-w-[9rem] truncate text-[length:var(--ws-text-body-sm)] font-medium md:inline" data-testid="user-panel-handle">{loading ? t("viewer.loading") : visitor ? t("profile.VISITANTE") : `@${user.username}`}</span>
         </Button>
       }
     >
@@ -62,7 +65,7 @@ export function UserPanel() {
           <Avatar name={name} node={user.departmentNode} size={44} monogram={visitor ? "?" : undefined} />
           <div className="min-w-0 flex-1">
             <p className="truncate font-semibold">{name}</p>
-            <p className="truncate text-[length:var(--ws-text-caption)] text-ws-text-muted">{visitor ? t("viewer.notLogged") : `@${user.username} · ${t(user.roleKey)}`}</p>
+            <p className="truncate text-[length:var(--ws-text-caption)] text-ws-text-muted">{visitor ? t(loading ? "viewer.loading" : "viewer.notLogged") : `@${user.username} · ${role}`}</p>
           </div>
           <Badge tone="accent">{t(`profile.${profile}`)}</Badge>
         </div>
@@ -92,13 +95,15 @@ export function UserPanel() {
             <Button size="sm" href="/register" className="flex-1" onClick={() => setOpen(false)}>{t("nav.register")}</Button>
           </div>
         )}
-        <div className="grid gap-1 border-t border-ws-border pt-2">
-          <p className="flex items-center gap-1 text-[length:var(--ws-text-caption)] text-ws-text-muted">
-            <Badge tone="spark">{t("common.lab")}</Badge>
-            {t("viewer.switchHint")}
-          </p>
-          <ViewerProfileSelect />
-        </div>
+        {canSwitch ? (
+          <div className="grid gap-1 border-t border-ws-border pt-2">
+            <p className="flex items-center gap-1 text-[length:var(--ws-text-caption)] text-ws-text-muted">
+              <Badge tone="spark">{t("common.lab")}</Badge>
+              {t("viewer.switchHint")}
+            </p>
+            <ViewerProfileSelect />
+          </div>
+        ) : null}
       </div>
     </Popover>
   );

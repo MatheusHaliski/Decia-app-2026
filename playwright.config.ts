@@ -43,6 +43,7 @@ export default defineConfig({
     url: "http://localhost:3000/mural",
     reuseExistingServer: true,
     timeout: 300_000, // inclui o `next build` (o tempo de cada teste não muda)
-    env: { PORT: "3000", NEXT_PUBLIC_API_BASE_URL: "http://127.0.0.1:9", NEXT_TELEMETRY_DISABLED: "1" },
+    // as specs exercitam o laboratório (repositório DEMO e seletor de perfis), que só existe com NEXT_PUBLIC_WS_LAB=on (D-146)
+    env: { PORT: "3000", NEXT_PUBLIC_API_BASE_URL: "http://127.0.0.1:9", NEXT_PUBLIC_WS_LAB: "on", NEXT_TELEMETRY_DISABLED: "1" },
   },
 });

@@ -400,6 +400,8 @@ Fonte: `lib/pages/registry.ts` (rota → arquivo → RFs → visibilidade por pe
 | DECIA | `/decia` | `app/(shell)/decia/page.tsx` | RF29 RF37 | A |
 | Sessão DECIA | `/decia/[sessionId]` | `app/(shell)/decia/[sessionId]/page.tsx` | RF29 RF13 RF37 RF46 | A |
 | Insights | `/insights` | `app/(shell)/insights/page.tsx` | RF43 RF20 RF26 | E |
+| Letters (editor de documentos; esqueleto até a Onda 4) | `/letters` | `app/(shell)/letters/page.tsx` | RF52 RF53 RF54 RF55 RF56 RF51 RF69 RF70 RF71 RF72 | A |
+| Drawings (editor vetorial 2D; esqueleto até a Onda 5) | `/drawings` | `app/(shell)/drawings/page.tsx` | RF57 RF58 RF59 RF60 RF61 RF62 RF63 RF64 RF65 RF66 RF67 RF68 RF73 RF74 RF51 RF69 RF70 RF71 RF72 | A |
 | Metas coletivas | `/goals` | `app/(shell)/goals/page.tsx` | RF35 RF24 | E |
 | DECIA Points | `/points` | `app/(shell)/points/page.tsx` | RF42 | E |
 | Loja Work Station | `/store` | `app/(shell)/store/page.tsx` | RF42 RF40 | E |
@@ -421,6 +423,8 @@ Fonte: `lib/pages/registry.ts` (rota → arquivo → RFs → visibilidade por pe
 | Criar conta | `/register` | `app/(auth)/register/page.tsx` | RF1 | auth |
 | Recuperar senha | `/password-reset` | `app/(auth)/password-reset/page.tsx` | RF2 | auth |
 | Confirmar e-mail | `/verify-email` | `app/(auth)/verify-email/page.tsx` | RF1 | auth |
+| Termos de Uso (Velion) | `/termos` | `app/(legal)/termos/page.tsx` | RF1 | auth |
+| Política de Privacidade (Velion) | `/privacidade` | `app/(legal)/privacidade/page.tsx` | RF1 | auth |
 | Design system | `/lab/design-system` | `app/(shell)/lab/design-system/page.tsx` | RF38 | lab |
 | Anatomias e Estúdio | `/lab/anatomias` | `app/(shell)/lab/anatomias/page.tsx` | RF38 RF11 | lab |
 | Abas por perfil | `/lab/perfis` | `app/(shell)/lab/perfis/page.tsx` | RF14 RF15 RF16 | lab |

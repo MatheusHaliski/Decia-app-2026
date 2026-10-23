@@ -1,10 +1,13 @@
 ---
 document: TERMOS
-version: "0.1"
+version: "0.2"
 status: rascunho
 language: pt-BR
 effectiveFrom: null
 changelog:
+  - version: "0.2"
+    date: 2026-10-17
+    summary: "Troca de controlador. O Work Station passa a ser um produto da Velion, empresa privada dona da marca e plataforma Orange Social, e estes Termos foram reescritos para essa realidade. Entram a relação de consumo com pessoas físicas e o contrato com empresas, a licença de uso do conteúdo, os modos de autonomia da IA, a verificação em duas etapas e a reativação da conta em até 30 dias. Os dados da empresa ficam em campos a preencher antes da publicação."
   - version: "0.1"
     date: 2026-10-05
     summary: Primeiro rascunho dos Termos de Uso do Work Station, escrito para órgão público (SECID-PR) a partir da estrutura dos Termos do FAI; aguarda validação do encarregado e do jurídico (Q-60, Q-61).
@@ -12,226 +15,290 @@ changelog:
 
 # Termos de Uso do Work Station
 
-**Versão 0.1 — rascunho, ainda sem vigência**
+**Versão 0.2 — rascunho, ainda sem vigência.** Vigente a partir de {{DATA_VIGENCIA}}.
 
-Estes Termos regulam o uso do **Work Station**, plataforma de trabalho colaborativo e de apoio à decisão (centro
-**DECIA**) mantida pela **Secretaria de Estado das Cidades do Paraná (SECID-PR)**, órgão da administração direta do
-Estado do Paraná, aqui chamada de "SECID" ou "nós". Eles valem para o site, o aplicativo web e a API do Work Station.
-A forma como tratamos dados pessoais está na **Política de Privacidade**, publicada em /privacidade, que tem versão
-própria e deve ser lida junto com estes Termos.
+Estes Termos são o contrato entre você e a **{{VELION_RAZAO_SOCIAL}}** ("**{{VELION_NOME_FANTASIA}}**", "Velion" ou
+"nós"), inscrita no CNPJ sob o nº {{VELION_CNPJ}}, com sede em {{VELION_ENDERECO}}, {{VELION_CIDADE_UF}}, CEP
+{{VELION_CEP}}. A Velion é dona da marca e da plataforma **Orange Social** ({{ORANGE_SOCIAL_SITE}}). O **Work
+Station** é a rede profissional e de trabalho da Orange Social.
 
-O encarregado pelo tratamento de dados pessoais da SECID é **{{WS_LEGAL_DPO_NAME}}**, e o canal para falar com ele é
-**{{WS_LEGAL_DPO_CONTACT}}** (LGPD, art. 41).
+Estes Termos valem para o site, o aplicativo web e a API do Work Station. Como tratamos seus dados pessoais está na
+**Política de Privacidade**, em /privacidade. Ela tem versão própria e deve ser lida junto com estes Termos.
 
 ---
 
 ## Resumo em um minuto
 
-- **O Work Station é uma ferramenta de trabalho do serviço público.** Ele existe para organizar tarefas, projetos,
-  planos anuais e decisões da SECID e dos órgãos que ela convidar, com apoio de inteligência artificial.
-- **Quem usa são servidores e colaboradores.** Perfis de órgão (EMPRESA) e de chefia (CHEFE DE DEPARTAMENTO) passam
-  por validação humana antes de ganhar seus poderes.
-- **A IA ajuda, mas não decide.** Resumos, classificações, rankings e índices são apoio; a decisão é sempre de pessoas
-  e fica registrada com quem decidiu.
-- **Decisões e atas são documentos públicos.** O que é produzido como ato administrativo segue as regras de guarda do
-  Estado e não desaparece quando uma conta é encerrada.
-- **Seus dados pessoais têm regras próprias.** O que é opcional depende de um interruptor seu; o resto tem base legal
-  informada na Política de Privacidade.
-- **DECIA Points não são dinheiro.** São reconhecimento interno, sem valor financeiro e sem transferência fora da
-  plataforma.
-- **Você pode encerrar sua conta.** Os dados pessoais são anonimizados depois de 30 dias; os documentos públicos de que
-  você participou ficam, sem o seu nome como dado de contato.
+- **O Work Station é uma rede profissional e de trabalho.** Serve para organizar tarefas, projetos, planos e decisões
+  em equipe, com apoio de inteligência artificial.
+- **É para maiores de idade.** Você precisa ter pelo menos {{IDADE_MINIMA}} anos (sugestão: 18).
+- **Há três tipos de conta.** EMPREGADO, EMPRESA e CHEFE DE DEPARTAMENTO. Contas de EMPRESA e de CHEFE passam por
+  validação antes de ganhar seus poderes.
+- **O conteúdo é seu.** Você só nos dá a licença necessária para operar o serviço. O que você produz para um
+  empregador segue o que foi combinado com ele.
+- **A IA sugere, você decide.** Nada é publicado sozinho. Você escolhe quanto a IA pode fazer, em cinco modos.
+- **DECIA Points não são dinheiro.** São reconhecimento dentro da plataforma.
+- **Você pode excluir sua conta.** Ela fica desativada por 30 dias e você pode reativá-la nesse prazo. Depois, os
+  dados pessoais são anonimizados.
+- **Seus direitos de consumidor continuam valendo.** Nada aqui reduz o que o Código de Defesa do Consumidor garante a
+  quem é consumidor.
 
 ---
 
 ## 1. O que é o Work Station
 
-O Work Station é a plataforma interna da SECID para:
+O Work Station é a área profissional da Orange Social. Nele você pode:
 
-- cadastrar e organizar **tarefas** (ofícios, pareceres, planilhas, projetos básicos, atas, portarias e outros
-  documentos do trabalho público) num acervo com classificação de acesso;
-- montar **esquemas de projeto**, planos anuais e agrupamentos institucionais;
-- deliberar em **sessões DECIA**, um chat classificado por IA que organiza argumentos, divergências, riscos e consensos
-  até uma decisão validada, com rastro completo (Rastro de Decisão);
-- emitir **chancelas** e reconhecimentos a tarefas, projetos e planos, e acompanhar indicadores de gestão;
-- participar da **Memória Institucional**, que permite reutilizar decisões e documentos anteriores.
+- cadastrar e organizar **tarefas** e documentos de trabalho, com classificação de acesso;
+- montar **projetos**, planos anuais e grupos de trabalho;
+- participar de **sessões DECIA**, um espaço de deliberação em que a IA organiza argumentos, riscos e consensos até
+  uma decisão registrada por pessoas;
+- emitir e receber **chancelas** e reconhecimentos, e acompanhar indicadores de trabalho;
+- montar seu **perfil profissional** e se conectar com outras pessoas e empresas.
 
-Os recursos podem mudar, ganhar versões ou ser desativados com aviso (seção 12).
+Os recursos podem mudar, ganhar versões ou ser desativados. Mudanças relevantes são avisadas antes (seção 13).
 
 ## 2. Aceite destes Termos
 
-Ao marcar a caixa "Li e aceito os Termos de Uso e a Política de Privacidade" e criar sua conta, ou ao concluir o seu
-primeiro acesso pelo login institucional, você declara que leu e concorda com estes Termos. Registramos a versão
-aceita, a data e a hora, o endereço IP, o navegador e o canal do aceite. O aceite dos Termos é separado de qualquer
-consentimento para finalidades opcionais: nenhum interruptor de privacidade vem ligado por você ter aceitado os Termos.
+Você aceita estes Termos ao marcar a caixa "Li e aceito os Termos de Uso e a Política de Privacidade" e criar sua
+conta. Se entrar pela primeira vez com uma conta de outro provedor, o aceite é pedido na tela que conclui o cadastro.
 
-Quando publicarmos uma versão nova, mostraremos o resumo das mudanças e pediremos novo aceite antes de você continuar.
-Enquanto não aceitar, você continua podendo sair, exportar seus dados e pedir o encerramento da conta.
+Registramos a versão aceita, a data e a hora, o endereço IP, o navegador e o canal do aceite. Guardamos esse registro
+como prova, inclusive depois que a conta é anonimizada.
+
+O aceite dos Termos não é consentimento para nada opcional. Nenhum recurso opcional e nenhuma comunicação de marketing
+vêm ligados porque você aceitou os Termos.
 
 ## 3. Quem pode usar
 
-**3.1. Vínculo.** O Work Station destina-se a servidores, empregados públicos, estagiários, residentes técnicos e
-colaboradores com vínculo com a SECID ou com os órgãos por ela convidados. A SECID pode exigir e-mail de domínio
-institucional para o cadastro.
+**3.1. Idade mínima.** Você precisa ter pelo menos **{{IDADE_MINIMA}} anos** completos (sugestão: 18). O Work Station
+não se destina a crianças nem a adolescentes. Se soubermos que uma conta pertence a alguém abaixo da idade mínima,
+ela será encerrada.
 
-**3.2. Idade.** Os usuários são pessoas com vínculo de trabalho ou estágio. A regra para menores de dezoito anos
-(aprendizes e estagiários) está em aberto na seção "Pendências para o jurídico"; enquanto não for definida, o cadastro
-não coleta data de nascimento.
+**3.2. Tipos de conta.**
 
-**3.3. Capacidade de representação.** Quem cria um perfil de órgão (EMPRESA) ou de chefia (CHEFE DE DEPARTAMENTO)
-declara que tem poderes para representar o órgão ou exercer a chefia, e apresenta a prova pedida na validação
-(seção 4.3).
+- **EMPREGADO:** pessoa que usa o Work Station para trabalhar, sozinha ou dentro de uma empresa. Informa nome, nome de
+  usuário, e-mail, senha e cargo. A conta fica ativa depois que o e-mail é confirmado.
+- **EMPRESA:** representa uma empresa ou organização. Informa razão social, CNPJ, site e um documento que prove a
+  representação. A conta nasce **pendente de validação**.
+- **CHEFE DE DEPARTAMENTO:** chefia um departamento de uma empresa já cadastrada. Informa a empresa, o departamento e
+  a prova da chefia. A conta também nasce **pendente de validação**.
 
-## 4. Sua conta
+O perfil de administração não pode ser escolhido no cadastro.
 
-**4.1. Tipos de perfil.**
+**3.3. Validação de EMPRESA e CHEFE.** Enquanto a validação não termina, a conta só pode ler. A análise segue uma
+política publicada, com critérios fixos, motivos padronizados para pedir ajustes ou recusar e um limite de cinco
+envios. A aprovação confirma que o perfil é oficial. Ela não é endosso da Velion à empresa nem às decisões tomadas na
+plataforma.
 
-- **EMPREGADO:** servidor ou colaborador. Informa nome, nome de usuário, e-mail, senha e cargo. A conta fica ativa
-  após a confirmação do e-mail.
-- **EMPRESA (órgão):** representa um órgão ou entidade. Informa razão social, CNPJ, site oficial e um documento de
-  representação (ato de nomeação ou portaria). Passa por validação humana da administração do Work Station.
-- **CHEFE DE DEPARTAMENTO:** chefia um departamento de um órgão já cadastrado. Informa o órgão, o departamento e o
-  link oficial do ato de nomeação publicado no Diário Oficial. Passa por validação humana, com confirmação do órgão.
+**3.4. Representação.** Quem cria uma conta de EMPRESA ou de CHEFE declara que tem poderes para isso. Se você usa o
+Work Station em nome de uma empresa, a empresa também fica obrigada por estes Termos.
 
-O perfil de administração do sistema não pode ser escolhido no cadastro. O papel de curador é uma nomeação do chefe
-dentro de um departamento, não um tipo de perfil.
+## 4. Consumidor ou empresa
 
-**4.2. Dados corretos.** Informe dados verdadeiros e mantenha-os atualizados. É proibido criar conta em nome de outra
-pessoa ou se apresentar como órgão ou chefia que não representa.
+**4.1. Pessoa física.** Se você usa o Work Station como pessoa física, para uso próprio, pode haver relação de
+consumo. Nesse caso vale o Código de Defesa do Consumidor (Lei 8.078/1990). Nenhuma cláusula destes Termos retira ou
+reduz direitos que essa lei garante.
 
-**4.3. Validação de perfis institucionais.** Enquanto a validação não termina, a conta tem acesso só de leitura. A
-análise segue uma política de verificação publicada, com critérios obrigatórios, motivos padronizados para pedidos de
-ajuste e recusas, limite de cinco envios e prazo contado em dias úteis a partir da confirmação do e-mail. A aprovação
-diz que o perfil é o oficial; não é endosso do órgão a qualquer decisão tomada na plataforma.
+**4.2. Empresa.** Contas de EMPRESA e o uso em nome de uma organização formam uma relação entre empresas. Nesse caso
+valem estes Termos e o contrato assinado com a Velion, se houver. Onde o contrato for mais específico, ele prevalece.
 
-**4.4. Segurança.** Você é responsável por guardar sua senha e por encerrar sessões que não reconheça na aba Sessões.
-Operações sensíveis (troca de e-mail ou de senha, encerramento da conta) pedem a senha atual de novo. Se notar acesso
-indevido, troque a senha e avise pelo canal **{{WS_LEGAL_DPO_CONTACT}}** ou pela chefia imediata.
+**4.3. Planos pagos.** Se algum recurso for pago, o preço e as condições aparecem antes da contratação. Quem contrata
+pela internet como consumidor pode desistir em até 7 dias, como prevê o art. 49 do CDC.
 
-**4.5. Uma conta por pessoa.** Contas adicionais para acumular pontos, reações ou vantagens são proibidas.
+## 5. Sua conta
 
-## 5. Conteúdo produzido na plataforma
+**5.1. Dados corretos.** Informe dados verdadeiros e mantenha-os atualizados. É proibido criar conta em nome de outra
+pessoa ou se apresentar como empresa ou chefia que você não representa.
 
-**5.1. Natureza pública do trabalho.** Tarefas, projetos, atas, decisões validadas, rastros de decisão, chancelas e
-indicadores produzidos no exercício da função são **documentos e registros da administração pública**. Eles pertencem
-ao órgão, seguem a Lei de Acesso à Informação (Lei 12.527/2011) e a tabela de temporalidade documental do Estado do
-Paraná, e podem ser mantidos, publicados ou entregues a quem a lei determinar, independentemente do encerramento da
-conta de quem os produziu.
+**5.2. Uma conta por pessoa.** Contas extras para acumular pontos, reações ou vantagens são proibidas.
 
-**5.2. Autoria e crédito.** O Work Station registra quem criou, revisou e decidiu cada item. Esse registro é parte do
-documento público e serve à rastreabilidade das decisões; ele não é um dado de contato e permanece depois da
-anonimização da conta, na forma descrita na Política de Privacidade.
+**5.3. Senha.** Use uma senha forte e só sua. Nunca a compartilhe. Guardamos a senha apenas em forma protegida
+(hash), e ninguém da Velion consegue lê-la.
 
-**5.3. Classificação de acesso.** Cada tarefa e documento tem uma classificação (PÚBLICO, INTERNO, RESTRITO ou
-SIGILOSO). Você é responsável por classificar corretamente o que publica e por não compartilhar fora da plataforma
-conteúdo RESTRITO ou SIGILOSO. Conteúdo RESTRITO e SIGILOSO nunca é enviado a provedores externos de IA.
+**5.4. Verificação em duas etapas.** Você pode ligar a verificação em duas etapas em Configurações › Conta. Ela usa
+um aplicativo autenticador no celular. Ao ligar, você recebe **códigos de recuperação**. Guarde-os em lugar seguro:
+eles são a forma de entrar se perder o celular.
 
-**5.4. Mensagens das sessões DECIA.** As mensagens são parte do rastro da decisão. Elas podem ser lidas pelos
-participantes da sessão, resumidas pela IA e citadas na decisão final. Ao encerrar a conta, as suas mensagens são
-desvinculadas do seu nome, mas o conteúdo necessário ao rastro permanece.
+**5.5. Sessões.** Em Configurações › Sessões você vê onde sua conta está aberta. Pode encerrar uma sessão específica
+ou **sair em todos os dispositivos** de uma vez.
 
-**5.5. Material de terceiros.** Ao anexar documentos, imagens ou links, você declara que pode usá-los no trabalho
-público e que eles não violam direitos de terceiros.
+**5.6. Operações sensíveis.** Trocar e-mail ou senha e pedir a exclusão da conta exigem a senha atual de novo.
 
-## 6. Inteligência artificial
+**5.7. Acesso indevido.** Se notar algo estranho, troque a senha, saia em todos os dispositivos e avise em
+{{VELION_EMAIL_CONTATO}}. Você responde pelo que for feito com sua conta enquanto não nos avisar, salvo se a falha
+for nossa.
 
-**6.1. Como é usada.** A IA classifica mensagens, resume discussões, propõe redações, sugere chancelas, extrai dados de
-desenhos técnicos e redige insights sobre indicadores. Parte disso roda em motores locais; parte usa provedores
-externos, sempre com mascaramento de dados pessoais e nunca com conteúdo RESTRITO ou SIGILOSO.
+## 6. Conteúdo e propriedade intelectual
 
-**6.2. A IA não decide.** Rankings, Hype do Perfil, índice de eficiência (HSE) e índice de prioridade são cálculos
-determinísticos a partir de regras publicadas; a IA apenas redige a explicação. Toda decisão tem uma pessoa responsável
-e um carimbo de validação.
+**6.1. O conteúdo é seu.** Você mantém os direitos sobre o que publica: textos, arquivos, imagens, comentários e
+mensagens.
 
-**6.3. Revisão.** Você pode pedir a revisão de qualquer classificação, índice ou ranking que o afete (LGPD, art. 20)
-pela aba "Seus dados". O pedido vai ao encarregado, tem prazo e é registrado.
+**6.2. Licença para operar o serviço.** Para o Work Station funcionar, você dá à Velion uma licença gratuita, não
+exclusiva e limitada para guardar, copiar, exibir, converter formatos e transmitir o seu conteúdo. Essa licença serve
+só para prestar o serviço a você e às pessoas com quem você compartilha. Ela termina quando o conteúdo é apagado,
+respeitado o ciclo das cópias de segurança. Não usamos seu conteúdo em publicidade.
 
-**6.4. Limites.** A IA pode errar. Resumos e sugestões são apoio ao trabalho e não substituem a análise técnica ou
-jurídica exigida pelo processo administrativo.
+**6.3. Conteúdo produzido no trabalho.** O que você cria para um empregador ou contratante pertence a quem o contrato
+entre vocês e a lei determinarem. O Work Station não muda esse acordo. Se você produz dentro do espaço de uma
+EMPRESA, essa empresa pode ter acesso e controle sobre o conteúdo, conforme as regras dela.
 
-## 7. DECIA Points, chancelas e reconhecimentos
+**6.4. Conteúdo de terceiros.** Só publique o que você pode usar. Ao anexar documentos, imagens ou links, você
+declara que eles não violam direitos de outras pessoas. Se alguém achar que um conteúdo viola seus direitos, pode
+avisar em {{VELION_EMAIL_CONTATO}}. Vamos analisar e podemos remover o conteúdo. Nossa responsabilidade por conteúdo
+de terceiros segue o Marco Civil da Internet (Lei 12.965/2014).
 
-**7.1.** DECIA Points são pontos internos de reconhecimento por objetivos cumpridos, esquemas chancelados e
-participação qualificada nas sessões DECIA. Eles **não são dinheiro**, não têm valor financeiro, não são vendidos nem
-transferíveis fora da plataforma e não geram direito a qualquer pagamento.
+**6.5. Classificação de acesso.** Cada tarefa e documento tem uma classificação: PÚBLICO, INTERNO, RESTRITO ou
+SIGILOSO. Você é responsável por classificar bem o que publica e por não levar para fora conteúdo RESTRITO ou
+SIGILOSO.
 
-**7.2.** Chancelas e reconhecimentos são emitidos por órgãos e chefias segundo políticas próprias, podem ser revogados
-com motivo e aparecem no seu perfil enquanto você permitir, respeitadas as regras de visibilidade.
+**6.6. Marca e plataforma.** A marca Orange Social, o nome Work Station, o software e o design pertencem à Velion.
+Estes Termos não dão a você nenhum direito sobre eles além de usar o serviço.
 
-**7.3.** Pontos obtidos por fraude, contas múltiplas, automação ou abuso de falhas são estornados, e o caso é
-encaminhado à chefia.
+## 7. Inteligência artificial
 
-## 8. Regras de conduta
+**7.1. Sugestões revisáveis.** A IA resume discussões, classifica mensagens, propõe textos e sugere chancelas. Tudo o
+que ela produz é uma sugestão que você pode ler, mudar ou descartar.
+
+**7.2. Nenhuma publicação automática.** A IA nunca publica, envia ou valida nada em seu nome. Publicar um conteúdo,
+enviar uma mensagem ou registrar uma decisão é sempre um ato de uma pessoa.
+
+**7.3. Modos de autonomia.** Você escolhe quanto a IA pode fazer, em Configurações › Trabalho e IA:
+
+- **Manual:** a IA não age nem responde.
+- **Sob solicitação:** responde e propõe só quando você pede. Nunca altera o conteúdo.
+- **Sugestões:** pode sugerir melhorias por conta própria, como prévia ou comentário. Nada muda sem o seu aceite.
+- **Assistido:** aplica alterações só no trecho selecionado, depois da sua revisão, e você pode desfazer.
+- **Agente automático:** executa um objetivo que você autorizou, com escopo, ferramentas, limite de passos e prazo.
+  Cada passo fica registrado e você pode parar a qualquer momento.
+
+Em sessões compartilhadas vale o modo escolhido pelo dono da sessão. Toda troca de modo é avisada aos participantes.
+Compartilhar uma sessão nunca dá à IA acesso às conexões privadas dos outros participantes.
+
+**7.4. Dados protegidos.** Conteúdo RESTRITO ou SIGILOSO **nunca** é enviado a provedor externo de IA. O que for
+enviado sai com nomes, e-mails, telefones e identificadores mascarados.
+
+**7.5. Rankings e índices.** Rankings, Hype do Perfil, índice de eficiência (HSE) e índice de prioridade são
+calculados por regras fixas e publicadas. A IA só redige a explicação. Você pode pedir revisão de qualquer
+classificação, índice ou ranking que o afete (LGPD, art. 20).
+
+**7.6. Limites.** A IA pode errar. Confira o resultado antes de usá-lo. Ela não substitui a análise técnica ou
+jurídica que o seu trabalho exige.
+
+## 8. DECIA Points, chancelas e reconhecimentos
+
+**8.1.** DECIA Points são pontos de reconhecimento por objetivos cumpridos, projetos chancelados e boa participação
+nas sessões DECIA. Eles **não são dinheiro**, não têm valor financeiro, não podem ser vendidos nem transferidos para
+fora da plataforma e não dão direito a pagamento.
+
+**8.2.** As regras dos pontos podem mudar. Mudanças relevantes são avisadas antes. Pontos já obtidos não são
+retirados sem motivo.
+
+**8.3.** Chancelas e reconhecimentos são emitidos por empresas e chefias, segundo regras próprias. Podem ser
+revogados com motivo registrado. Aparecem no seu perfil conforme as suas escolhas de visibilidade.
+
+**8.4.** Pontos e chancelas obtidos por fraude, contas múltiplas, automação ou abuso de falhas são estornados.
+
+## 9. Regras de conduta
 
 É proibido:
 
-- publicar conteúdo ofensivo, discriminatório, de assédio ou que exponha dados pessoais de terceiros sem necessidade;
-- usar a plataforma para fins alheios ao trabalho público ou para qualquer fim ilegal;
-- se passar por outra pessoa, órgão ou chefia;
-- tentar burlar a segurança, os limites de uso, a classificação de acesso ou a moderação;
-- usar robôs, raspadores ou acesso não autorizado à API;
-- manipular rankings, reações ou DECIA Points.
+- publicar conteúdo ofensivo, discriminatório, de assédio ou que exponha dados pessoais de outras pessoas sem
+  necessidade;
+- usar o Work Station para qualquer fim ilegal;
+- se passar por outra pessoa, empresa ou chefia;
+- burlar a segurança, os limites de uso, a classificação de acesso ou a moderação;
+- usar robôs, raspagem de dados ou acesso não autorizado à API;
+- manipular rankings, reações ou DECIA Points;
+- enviar spam ou publicidade não pedida a outros usuários.
 
-A administração do Work Station pode remover conteúdo, limitar recursos, suspender ou encerrar contas de forma
-proporcional à gravidade, com motivo registrado e direito de revisão. Infrações funcionais seguem também o regime
-disciplinar aplicável ao servidor.
+Podemos remover conteúdo, limitar recursos, suspender ou encerrar contas, de forma proporcional à gravidade. Você
+recebe o motivo e pode pedir revisão, salvo quando a lei ou uma ordem judicial impedir o aviso.
 
-## 9. Privacidade
+## 10. Privacidade
 
-O tratamento de dados pessoais segue a Política de Privacidade (versão própria, em /privacidade), que informa as
-finalidades, as bases legais, os compartilhamentos, os prazos de guarda e como exercer seus direitos. Na plataforma,
-a aba "Seus dados" concentra transparência, exportação, consentimentos, pedidos ao encarregado e o encerramento da
-conta.
+O tratamento de dados pessoais segue a Política de Privacidade, em /privacidade. Lá estão as finalidades, as bases
+legais, os compartilhamentos, os prazos de guarda e como exercer seus direitos. Na plataforma, use Configurações ›
+Privacidade e Configurações › Dados.
 
-## 10. Encerramento da conta
+## 11. Encerramento e exclusão da conta
 
-**10.1. Por você.** Você pode pedir o encerramento na aba "Seus dados". A conta entra em carência de **30 dias**,
-durante os quais o perfil fica oculto, você só pode ler e pode desistir. Terminado o prazo, os dados pessoais são
-anonimizados e os arquivos pessoais apagados, conforme a Política de Privacidade.
+**11.1. Pedido de exclusão.** Você pode pedir a exclusão em Configurações › Dados. O pedido exige a sua senha atual.
 
-**10.2. O que permanece.** Permanecem, por obrigação legal e guarda documental, os documentos públicos de que você
-participou (atas, decisões validadas, rastro de decisão, chancelas emitidas, lançamentos de pontos), com o seu nome
-substituído por um identificador quando a lei permitir, e o registro do aceite destes Termos e da Política.
+**11.2. Conta desativada por 30 dias.** A exclusão fica **agendada**. Durante 30 dias a conta fica **desativada e
+oculta**: ninguém vê seu perfil e você não cria conteúdo novo.
 
-**10.3. Pela SECID.** A conta pode ser suspensa ou encerrada em caso de desligamento do órgão, violação grave destes
-Termos, ordem judicial ou risco à segurança da plataforma.
+**11.3. Reativação.** Nesses 30 dias, só você pode reativar a conta: entre com seu e-mail e senha e escolha
+**Reativar**. Tudo volta como estava. Nesse período você também pode baixar uma cópia dos seus dados.
 
-## 11. Disponibilidade
+**11.4. Depois de 30 dias.** Os dados pessoais são **anonimizados** e os arquivos pessoais são apagados. A
+anonimização não pode ser desfeita. O que a lei obriga a guardar, como os registros de acesso e a prova do seu aceite,
+é mantido só pelo prazo legal. Os prazos estão na Política de Privacidade.
 
-Trabalhamos para manter o Work Station no ar, mas ele pode ficar indisponível por manutenção, falhas técnicas,
-indisponibilidade de fornecedores ou força maior. Recursos que dependem de provedores externos (IA, Google Workspace,
-Microsoft 365, e-Protocolo) podem funcionar de forma limitada quando eles estiverem fora.
+**11.5. Conteúdo em espaços de empresa.** O que você produziu dentro do espaço de uma EMPRESA continua com ela, com o
+seu nome trocado por um identificador anônimo, salvo se o contrato com a empresa ou a lei exigir outra coisa.
 
-## 12. Mudanças nestes Termos
+**11.6. Pela Velion.** Podemos suspender ou encerrar uma conta por violação grave destes Termos, ordem judicial,
+risco à segurança da plataforma ou fim do contrato da empresa a que a conta está ligada. Sempre que a lei permitir,
+avisamos antes e informamos o motivo.
 
-Cada versão tem número, data de vigência e resumo das mudanças, visíveis em /termos. Mudanças relevantes exigem novo
-aceite antes de continuar usando a plataforma; as versões anteriores ficam acessíveis no histórico.
+## 12. Disponibilidade e responsabilidade
 
-## 13. Lei aplicável
+**12.1.** Trabalhamos para manter o Work Station no ar, mas ele pode ficar fora por manutenção, falhas técnicas,
+problemas de fornecedores ou força maior. Recursos que dependem de serviços externos, como a IA, podem funcionar de
+forma limitada quando esses serviços falharem.
 
-Estes Termos seguem as leis do Brasil e do Estado do Paraná, em especial a Lei 13.709/2018 (LGPD), a Lei 12.527/2011
-(Acesso à Informação), a Lei 12.965/2014 (Marco Civil da Internet) e as normas de gestão documental do Estado.
+**12.2.** Para empresas, níveis de serviço e compensações seguem o contrato, quando houver.
 
-## 14. Contato
+**12.3.** Respondemos pelos danos que causarmos, nos limites da lei. Para consumidores, não excluímos nenhuma
+responsabilidade que o CDC proíbe excluir. Não respondemos por decisões que você ou sua empresa tomem com base em
+sugestões da IA sem a devida revisão.
 
-- Controlador: Secretaria de Estado das Cidades do Paraná (SECID-PR).
-- Encarregado pelo tratamento de dados pessoais: **{{WS_LEGAL_DPO_NAME}}**.
-- Canal do encarregado: **{{WS_LEGAL_DPO_CONTACT}}**.
-- Autoridade Nacional de Proteção de Dados: https://www.gov.br/anpd
+## 13. Mudanças nestes Termos
+
+Cada versão tem número, data de vigência e resumo das mudanças, visíveis em /termos. Mudanças relevantes são
+avisadas antes de valer e exigem novo aceite para continuar usando a plataforma. Enquanto não aceitar, você ainda
+pode sair, baixar seus dados e pedir a exclusão da conta. As versões anteriores ficam no histórico.
+
+## 14. Lei aplicável e foro
+
+Estes Termos seguem as leis do Brasil, em especial o Código Civil, o Código de Defesa do Consumidor, a LGPD (Lei
+13.709/2018) e o Marco Civil da Internet (Lei 12.965/2014).
+
+- **Consumidor:** pode propor ação no foro do seu domicílio.
+- **Empresa:** fica eleito o foro da comarca de {{FORO_COMARCA}}, salvo regra diferente no contrato.
+
+Antes de ir à Justiça, procure a gente nos canais da seção 15. Resolver por conversa costuma ser mais rápido.
+
+## 15. Contato
+
+- Empresa: {{VELION_RAZAO_SOCIAL}} ({{VELION_NOME_FANTASIA}}), CNPJ {{VELION_CNPJ}}.
+- Endereço: {{VELION_ENDERECO}}, {{VELION_CIDADE_UF}}, CEP {{VELION_CEP}}.
+- E-mail: {{VELION_EMAIL_CONTATO}}.
+- Telefone: {{VELION_TELEFONE}}.
+- Site da Velion: {{VELION_SITE}}.
+- Orange Social: {{ORANGE_SOCIAL_SITE}}.
+- Encarregado pelo tratamento de dados pessoais: {{DPO_NOME}}, {{DPO_EMAIL}}.
 
 ---
 
 ## Pendências para o jurídico
 
-Esta seção não é publicada. Cada item cita a dúvida em `docs/DECISOES.md`.
+Esta seção não é publicada. A dúvida registrada é a **Q-243** de `docs/DECISOES.md`; quando um item também depende
+de uma dúvida anterior, ela aparece junto.
 
 | Item | Pendência | Q |
 |---|---|---|
-| Encarregado | Nome e canal oficial que preencherão `WS_LEGAL_DPO_NAME` e `WS_LEGAL_DPO_CONTACT`. | Q-60 |
-| Texto | Revisão integral deste rascunho, inclusive a identificação completa do controlador (CNPJ, endereço) a inserir na seção 14. | Q-61 |
-| Vínculo | Lista de domínios institucionais aceitos e se o cadastro local continua em produção ou só o login institucional. | Q-62, Q-02 |
-| Idade | Menores (aprendizes, estagiários) podem usar? Define a seção 3.2 e a coleta de data de nascimento. | Q-63 |
-| Perfis | Campos exigidos por tipo de perfil e quem confirma o CHEFE DE DEPARTAMENTO. | Q-64, Q-66 |
-| Encerramento | Limites legais do "excluir" para o órgão público e tabela de temporalidade aplicável (seção 10.2). | Q-68 |
-| Traduções | Publicar traduções de cortesia em inglês e espanhol com aviso de prevalência do pt-BR. | Q-69 |
-| Prazos | Prazo de resposta aos pedidos de revisão e oposição e SLA da validação em dias úteis. | Q-71 |
+| Identificação | Razão social, nome fantasia, CNPJ, endereço, telefone e sites da Velion e da Orange Social (campos `VELION_*` e `ORANGE_SOCIAL_SITE`). | Q-243 |
+| Encarregado | Nome e e-mail do encarregado da Velion (`DPO_NOME`, `DPO_EMAIL`). Pode ser pessoa da empresa ou serviço contratado. | Q-243 |
+| Idade mínima | Confirmar 18 anos (`IDADE_MINIMA`) e se basta a declaração no cadastro ou se é preciso verificar a idade. A regra muda a coleta de data de nascimento (seção 3.1). | Q-243, Q-63 |
+| Consumidor e empresa | Confirmar o enquadramento da seção 4: quando o EMPREGADO é consumidor, quando a relação é entre empresas e se haverá contrato separado para EMPRESA. | Q-243 |
+| Planos pagos | Haverá cobrança? Se sim, onde ficam preços, renovação, cancelamento e arrependimento (seção 4.3). | Q-243 |
+| Foro | Comarca eleita para empresas (`FORO_COMARCA`). Para consumidores vale o domicílio do consumidor. | Q-243 |
+| Conteúdo de trabalho | Quem fica com o conteúdo produzido no espaço de uma EMPRESA quando o autor exclui a conta ou sai da empresa (seções 6.3 e 11.5). | Q-243 |
+| Validação | Que prova de chefia vale para CHEFE DE DEPARTAMENTO numa empresa privada e quem a confirma (seção 3.2). | Q-243, Q-64, Q-66 |
+| Verificação em duas etapas | A seção 5.4 segue a implementação em andamento (aplicativo autenticador, 10 códigos de recuperação). Conferir o texto quando ela entrar no `main`. | Q-243, Q-83 |
+| IA | Confirmar o compromisso de não usar o conteúdo dos usuários para treinar modelos, inclusive pelos provedores. | Q-243 |
+| Aviso de mudanças | Antecedência mínima para avisar mudanças relevantes nos Termos e nas regras dos DECIA Points (seções 8.2 e 13). | Q-243 |
+| Traduções | Traduções de cortesia em inglês e espanhol com aviso de prevalência do pt-BR. | Q-243, Q-69 |
+| Prazos | Prazo de resposta aos pedidos de revisão e de remoção de conteúdo de terceiros. | Q-243, Q-71 |

@@ -17,6 +17,48 @@ A lista do projeto é a lista de `ProjectTask` por fase (quadro, linha do tempo 
 | **RF7.CA05** (CA a confirmar) | Dado que sou o dono da tarefa ou responsável no projeto, então a ação principal é **"Editar"** (abre RF8/RF12) e a alternativa "Abrir no Acervo" (`/tasks/[id]`); para os demais a ação principal é "Levar ao meu acervo" e as interações sociais (RF18/RF19); toda abertura incrementa `viewsCount` (contador desnormalizado, Redis → MySQL em lote). | RF41.CA07, RF26.CA07 |
 | **RF7.CA06** (CA a confirmar) | Dado a folha aberta, quando fecho ou uso "voltar", então retorno à lista do projeto na mesma fase e posição de rolagem; a folha carrega com `Skeleton`, respeita i18n pt-BR/en/es e layout responsivo (`Sheet` lateral no desktop, tela cheia no celular). | RF19.CA03, RF19.CA07 |
 
+## 0. Diagrama de casos de uso
+
+Quem abre uma tarefa a partir da lista de um projeto e o que cada um pode fazer com ela. Borda contínua: existe no código em 17/10/2026; tracejada: planejado (não há API de projetos).
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  dono["«ator» Dono do recurso"]:::ator
+  responsavel["«ator» Responsável atribuído"]:::ator
+  subgraph SIS["Work Station — RF7 Tarefa a partir do projeto"]
+    direction TB
+    UC1(["UC1 Abrir tarefa da lista do projeto"]):::ucPlan
+    UC2(["UC2 Verificar acesso à tarefa"]):::uc
+    UC3(["UC3 Ver tarefa removida pelo autor"]):::ucPlan
+    UC4(["UC4 Levar tarefa ao meu acervo"]):::ucPlan
+    UC5(["UC5 Editar a tarefa a partir do projeto"]):::ucPlan
+    UC6(["UC6 Abrir a tarefa no Acervo"]):::ucPlan
+  end
+  autenticado --- UC1
+  autenticado --- UC4
+  dono --- UC5
+  dono --- UC6
+  responsavel --- UC5
+  responsavel --- UC6
+  UC1 -. "«include»" .-> UC2
+  UC3 -. "«extend»" .-> UC1
+  UC4 -. "«extend»" .-> UC1
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Abrir tarefa da lista do projeto | autenticado | RF7.CA01, RF7.CA06 | planejado (`/projects/[id]/tasks/[ptId]`) |
+| UC2 Verificar acesso à tarefa | — (incluído por UC1) | RF7.CA03 | real para a tarefa: `GET /api/tasks/{id}` com `ResourceAuthorizer`/`AccessPolicy` (invisível → `404 NAO_ENCONTRADO`, D-141); no contexto do projeto, planejado |
+| UC3 Ver tarefa removida pelo autor | autenticado | RF7.CA02 | planejado (`TaskSnapshot`) |
+| UC4 Levar tarefa ao meu acervo | autenticado | RF7.CA04 | planejado (`EXTRAIDA_DE_PROJETO`, RF23) |
+| UC5 Editar a tarefa a partir do projeto | dono, responsavel | RF7.CA05 | planejado (a edição em si é real no RF12 para dono e colaborador) |
+| UC6 Abrir a tarefa no Acervo | dono, responsavel | RF7.CA05 | planejado (o destino `/tasks/[id]` já é real; o atalho a partir do projeto não) |
+
 ## 1. Diagrama de classes
 
 ```mermaid

@@ -49,6 +49,25 @@ UI → BFF → API Java → MySQL 8.4, com duas contas sintéticas e sem IA. Rot
 
 Erros de console da jornada: dois 404 esperados (outra conta) e dois avisos de hidratação em `/tasks/new` no modo dev (pendente, P3).
 
+## Identidade: cadastro, sessão, 2FA e exclusão (RF1–RF3)
+
+Roteiro em [`scripts/identidade.mjs`](scripts/identidade.mjs); resultado em [`evidencias/IDENTIDADE.json`](evidencias/IDENTIDADE.json): **13 de 13 passos ✓** na pilha real (UI → BFF → API → MySQL), conta sintética local. Decisões D-143 a D-146.
+
+| Verificação | Resultado | Captura |
+|---|---|---|
+| Aba anônima mostra Visitante; rota protegida leva ao login | ✓ antes a barra mostrava `@pessoa.exemplo` sem login (P19) | [id-01](evidencias/id-01-anonima-login-desktop.png) |
+| Cadastro com tipo de usuário explicado e aceite dos termos da Velion, dona da Orange Social | ✓ sem o aceite: 422 com a mensagem no campo | [id-02](evidencias/id-02-cadastro-tipo-termos-celular.png) |
+| `/termos` e `/privacidade` públicos, rascunho 0.2 com os campos `{{...}}` destacados | ✓ | [id-03](evidencias/id-03-termos-desktop.png) |
+| Sem "Manter conectado" o refresh é cookie de sessão do navegador | ✓ fechar o navegador encerra (D-146) | — |
+| Ativar 2FA: senha → segredo e link `otpauth://` → primeiro código → 10 códigos de recuperação | ✓ | [id-04](evidencias/id-04-2fa-configurar-desktop.png) · [id-05](evidencias/id-05-2fa-codigos-desktop.png) |
+| Outro aparelho: só a senha não entra; código de recuperação entra uma vez | ✓ restam 9 | [id-06](evidencias/id-06-login-pede-codigo-desktop.png) |
+| Logout em uma aba encerra a outra aba | ✓ `reason=signed-out` | [id-07](evidencias/id-07-logout-outra-aba-desktop.png) |
+| Login com o código do aplicativo | ✓ | — |
+| Excluir conta: modal com consequências, senha, "entendi" e EXCLUIR; aviso com "Reativar conta" | ✓ reativada dentro do prazo | [id-08](evidencias/id-08-excluir-modal-desktop.png) · [id-09](evidencias/id-09-exclusao-agendada-desktop.png) |
+| Celular 390 px: conta com 2FA e modal de exclusão | ✓ sem rolagem horizontal | [id-10](evidencias/id-10-conta-2fa-celular.png) · [id-11](evidencias/id-11-excluir-modal-celular.png) |
+
+O fim do prazo de 30 dias (login, refresh e reativação recusados; anonimização pelo trabalho agendado) foi verificado por teste automatizado, não na pilha real, porque exigiria esperar o prazo. A pesquisa de dados de perfil por tipo está em [`docs/produto/DADOS_DE_PERFIL_POR_TIPO.md`](../../produto/DADOS_DE_PERFIL_POR_TIPO.md).
+
 ## Capturas
 
 | Fluxo | Desktop | Celular |

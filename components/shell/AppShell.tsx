@@ -7,6 +7,7 @@ import { BottomNav } from "./BottomNav";
 import { CreateSheet } from "./CreateSheet";
 import { NavGroups, SidebarNav } from "./SidebarNav";
 import { TopBar } from "./TopBar";
+import { DeletionBanner } from "@/components/account/DeletionBanner";
 
 const SIDEBAR_KEY = "ws.sidebar";
 const DESKTOP = "(min-width: 1024px)";
@@ -59,7 +60,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="mx-auto flex max-w-[1600px]">
         <SidebarNav collapsed={collapsed} />
         <main id="conteudo" tabIndex={-1} className={cn("min-w-0 flex-1 px-[var(--ws-space-4)] pb-[calc(var(--ws-shell-bottomnav)+var(--ws-space-8))] pt-[var(--ws-space-5)] sm:px-[var(--ws-space-6)] lg:pb-[var(--ws-space-8)]", "focus-visible:outline-none")}>
-          <div className="mx-auto w-full max-w-[1180px]">{children}</div>
+          <div className="mx-auto w-full max-w-[1180px]"><DeletionBanner />{children}</div>
         </main>
       </div>
       <Sheet open={drawer} onOpenChange={setDrawer} side="left" title={t("a11y.mainMenu")} hideTitle className="p-[var(--ws-space-3)]">

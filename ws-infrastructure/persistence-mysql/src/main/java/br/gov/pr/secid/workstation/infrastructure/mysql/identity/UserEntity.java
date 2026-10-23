@@ -100,6 +100,19 @@ public class UserEntity {
     @Column(name = "two_factor_enabled", nullable = false)
     private boolean twoFactorEnabled;
 
+    @Convert(converter = AesGcmStringConverter.class)
+    @Column(name = "two_factor_secret_enc", length = 512)
+    private String twoFactorSecret;
+
+    @Column(name = "two_factor_recovery_hashes", length = 1024)
+    private String twoFactorRecoveryHashes;
+
+    @Column(name = "two_factor_last_step")
+    private Long twoFactorLastStep;
+
+    @Column(name = "two_factor_enabled_at")
+    private Instant twoFactorEnabledAt;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "hype_visibility", nullable = false, length = 20)
     private HypeVisibility hypeVisibility;
@@ -178,6 +191,10 @@ public class UserEntity {
         bio = u.getBio();
         verified = u.isVerified();
         twoFactorEnabled = u.isTwoFactorEnabled();
+        twoFactorSecret = u.getTwoFactorSecret();
+        twoFactorRecoveryHashes = u.getTwoFactorRecoveryHashes();
+        twoFactorLastStep = u.getTwoFactorLastStep();
+        twoFactorEnabledAt = u.getTwoFactorEnabledAt();
         hypeVisibility = u.getHypeVisibility() == null ? HypeVisibility.SO_EU : u.getHypeVisibility();
         rankingOptOut = u.isRankingOptOut();
         lastLoginAt = u.getLastLoginAt();
@@ -217,6 +234,10 @@ public class UserEntity {
         u.setBio(bio);
         u.setVerified(verified);
         u.setTwoFactorEnabled(twoFactorEnabled);
+        u.setTwoFactorSecret(twoFactorSecret);
+        u.setTwoFactorRecoveryHashes(twoFactorRecoveryHashes);
+        u.setTwoFactorLastStep(twoFactorLastStep);
+        u.setTwoFactorEnabledAt(twoFactorEnabledAt);
         u.setHypeVisibility(hypeVisibility);
         u.setRankingOptOut(rankingOptOut);
         u.setLastLoginAt(lastLoginAt);

@@ -20,6 +20,64 @@ Alvos: `TargetType` TASK · PROJECT · PLAN (TAXONOMIA §8). Entidades: `Reactio
 | **RF26.CA08** | Interações respeitam a visibilidade: item PRIVADO não recebe interações de terceiros; item DEPARTAMENTO só de membros do departamento. |
 | **RF26.CA09** | Toda interação gera notificação ao dono (agrupada por hora) e alimenta o perfil deliberativo (objetivo 2) — reações BEM FUNDAMENTADO e CONFORME pesam na métrica de qualidade. |
 
+## 0. Diagrama de casos de uso
+
+As interações sociais sobre tarefas, projetos e planos anuais (CAs do card escritos como RF26). Atribuir e retornar estão no RF18. Pílulas cheias existem no código hoje; tracejadas são planejadas.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  classDef ucDemo fill:#fff8e6,stroke:#b26a00,stroke-dasharray:2 2,color:#1b1b1b
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  dono["«ator» Dono do recurso"]:::ator
+  subgraph SIS["Work Station — RF19 Interações sociais"]
+    direction TB
+    UC1(["UC1 Curtir ou descurtir"]):::ucDemo
+    UC2(["UC2 Reagir com uma reação qualitativa"]):::ucDemo
+    UC3(["UC3 Comentar e responder com menções"]):::ucDemo
+    UC4(["UC4 Editar ou excluir um comentário"]):::ucDemo
+    UC5(["UC5 Salvar e marcar como favorito"]):::ucDemo
+    UC6(["UC6 Compartilhar no Mural, numa sessão DECIA ou por link"]):::ucDemo
+    UC7(["UC7 Remixar uma tarefa ou projeto público"]):::ucDemo
+    UC8(["UC8 Verificar a visibilidade do alvo"]):::ucDemo
+    UC9(["UC9 Ver os contadores em tempo quase real"]):::ucDemo
+    UC10(["UC10 Receber notificações agrupadas por hora"]):::ucDemo
+  end
+  autenticado --- UC1
+  autenticado --- UC2
+  autenticado --- UC3
+  autenticado --- UC4
+  chefe --- UC4
+  autenticado --- UC5
+  autenticado --- UC6
+  autenticado --- UC7
+  autenticado --- UC9
+  dono --- UC10
+  UC1 -. "«include»" .-> UC8
+  UC2 -. "«include»" .-> UC8
+  UC3 -. "«include»" .-> UC8
+  UC5 -. "«include»" .-> UC8
+  UC6 -. "«include»" .-> UC8
+  UC7 -. "«include»" .-> UC8
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Curtir ou descurtir | Pessoa autenticada | RF26.CA01, RF26.CA07 | planejado — front DEMO (`lib/social/rules.ts`), sem API |
+| UC2 Reagir com uma reação qualitativa | Pessoa autenticada | RF26.CA02, RF26.CA09 | planejado — front DEMO (`lib/social/rules.ts`), sem API |
+| UC3 Comentar e responder com menções | Pessoa autenticada | RF26.CA03, RF26.CA09 | planejado — front DEMO (`lib/social/rules.ts`), sem API |
+| UC4 Editar ou excluir um comentário | Pessoa autenticada · Chefe de departamento | RF26.CA03 | planejado — o autor edita e exclui; o chefe do departamento só exclui; front DEMO (`lib/social/rules.ts`), sem API |
+| UC5 Salvar e marcar como favorito | Pessoa autenticada | RF26.CA04 | planejado — front DEMO (`lib/social/rules.ts`), sem API |
+| UC6 Compartilhar no Mural, numa sessão DECIA ou por link | Pessoa autenticada | RF26.CA05 | planejado — front DEMO (`lib/social/rules.ts`), sem API |
+| UC7 Remixar uma tarefa ou projeto público | Pessoa autenticada | RF26.CA06 | planejado — front DEMO (`lib/social/rules.ts`), sem API |
+| UC8 Verificar a visibilidade do alvo | (incluído por UC1, UC2, UC3, UC5, UC6, UC7) | RF26.CA08 | planejado — `canInteract` no front DEMO (`lib/social/rules.ts`), sem API |
+| UC9 Ver os contadores em tempo quase real | Pessoa autenticada | RF26.CA07 | planejado — no DEMO os contadores são derivados dos registros, sem Redis |
+| UC10 Receber notificações agrupadas por hora | Dono do recurso | RF26.CA09 | planejado — `notify` com `groupKey` no front DEMO (`lib/social/rules.ts`), sem API |
+
 ## 1. Diagrama de classes
 
 ```mermaid

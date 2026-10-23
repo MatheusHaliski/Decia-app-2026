@@ -49,6 +49,11 @@ describe("catálogo de RFs gerado dos READMEs", () => {
     // rótulo entre parênteses dentro do negrito (cards RF47/RF48: "Opção A — tela principal") vira nota do CA
     const rotulado = parseReadme("RF98", "# RF98 — T\n- **RF98.CA11 (Opção A — tela principal)** Dado a aba, quando busco, então vejo **linhas**.");
     expect(rotulado.cas[0]).toMatchObject({ id: "RF98.CA11", kind: "enunciado", note: "Opção A — tela principal", text: "Dado a aba, quando busco, então vejo linhas." });
+    // concordância: "Dada", "Dados" e "Dadas" também abrem um enunciado (RF52–RF74)
+    for (const abertura of ["Dada a seleção", "Dados dois objetos", "Dadas camadas ocultas"]) {
+      expect(parseReadme("RF97", `# RF97 — T\n- **RF97.CA01** ${abertura}, quando ajo, então algo.`).cas[0].kind, abertura).toBe("enunciado");
+    }
+    expect(parseReadme("RF96", "# RF96 — T\n- **RF96.CA01** Dadosx não é abertura.").cas[0].kind).toBe("rastreabilidade");
   });
 
   it("toda página-esqueleto cita RFs do catálogo e todo RF do catálogo tem pelo menos uma página", () => {

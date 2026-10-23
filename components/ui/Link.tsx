@@ -31,6 +31,14 @@ export function Link({ href, children, variant = "inline", current, className, .
       </a>
     );
   }
+  // esquemas que abrem outro aplicativo (otpauth: do autenticador, mailto:, tel:): <a> simples, sem roteador nem nova aba
+  if (/^(otpauth|mailto|tel):/i.test(href)) {
+    return (
+      <a href={href} className={classes} {...rest}>
+        {children}
+      </a>
+    );
+  }
   return (
     <NextLink href={href} className={classes} aria-current={current ? "page" : undefined} {...rest}>
       {children}

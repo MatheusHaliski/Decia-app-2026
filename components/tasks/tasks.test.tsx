@@ -3,7 +3,7 @@ import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "@/test-utils/render";
 import { criteriaProgress } from "@/lib/tasks/client";
-import { MyTasks, PersistedTaskDetail } from "./PersistedTasks";
+import { MyTasks, PersistedTaskCard, PersistedTaskDetail } from "./PersistedTasks";
 import { TaskForm } from "./TaskForm";
 
 vi.mock("next/navigation", () => ({
@@ -160,5 +160,35 @@ describe("Minhas tarefas e detalhe (RF41)", () => {
     fetchMock.mockResolvedValue(json(404, { code: "NAO_ENCONTRADO", message: "Tarefa não encontrado(a)" }));
     renderWithProviders(<PersistedTaskDetail id={ID} />);
     expect(await screen.findByText("Ela não existe ou você não tem acesso a ela.")).toBeTruthy();
+  });
+});
+
+describe("card da tarefa real com a anatomia do TaskSchemeCard (sem barra social)", () => {
+  it("bloqueada mostra o motivo no card; link para o detalhe, título h3 e nenhuma ação ou contador social", () => {
+    renderWithProviders(<PersistedTaskCard task={view({ state: "BLOQUEADA", blockReason: "Aguardando laudo da Defesa Civil" }) as never} />);
+    const card = screen.getByTestId("persisted-task-card");
+    expect(card.tagName).toBe("ARTICLE");
+    expect(card.getAttribute("data-social")).toBe("off");
+    expect(within(card).getByTestId("block-reason").textContent).toContain("Aguardando laudo da Defesa Civil");
+    expect(card.textContent).toContain("Bloqueado");
+    expect(card.textContent).toContain("Retomar (desbloquear)");
+    const h3 = within(card).getByRole("heading", { level: 3 });
+    expect(h3.textContent).toBe("Relatório de vistoria");
+    expect(within(h3).getByRole("link").getAttribute("href")).toBe(`/tasks/${ID}`);
+    expect(within(card).queryByTestId("social-bar")).toBeNull();
+    expect(within(card).queryByTestId("action-like")).toBeNull();
+    expect(within(card).queryByRole("button")).toBeNull();
+    expect(within(card).getByTestId("criteria-progress").textContent).toContain("1 de 2 critérios atendidos");
+    expect(within(card).getByTestId("task-card-summary").textContent).toBe("Registrar as condições da obra");
+  });
+
+  it("rascunho com borda tracejada; SIGILOSO com o sinal ⛨ do DEMO; sem motivo fora de BLOQUEADA", () => {
+    renderWithProviders(<PersistedTaskCard task={view({ state: "RASCUNHO", accessClass: "SIGILOSO", blockReason: "antigo" }) as never} />);
+    const card = screen.getByTestId("persisted-task-card");
+    expect(card.className).toContain("border-dashed");
+    expect(card.getAttribute("data-variant")).toBe("RASCUNHO");
+    expect(card.textContent).toContain("A realizar · Rascunho");
+    expect(card.textContent).toContain("⛨Sigiloso");
+    expect(within(card).queryByTestId("block-reason")).toBeNull();
   });
 });

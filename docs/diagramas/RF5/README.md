@@ -6,6 +6,57 @@
 
 O **Esquema de Projeto** (`ProjectScheme`, TAXONOMIA §3.1) é a composição ordenada de tarefas (`ProjectTask`) por **7 fases** (`ProjectPhase`: DEMANDA · PLANEJAMENTO · ELABORAÇÃO · ANÁLISE · APROVAÇÃO · EXECUÇÃO · ENCERRAMENTO). Os selects de cada fase listam **somente as unidades de tarefa do Acervo do usuário** (RF6/RF41) compatíveis com a fase (mapa categoria → fase, `PhaseCompatibility`, como `SLOT_BY_CATEGORY` do FAI): Ofício/Protocolo → DEMANDA; ETP/TR/Cronograma → PLANEJAMENTO; Projeto básico/Planilha/Parecer → ELABORAÇÃO/ANÁLISE; Ata/Portaria → APROVAÇÃO; Contrato/Vistoria → EXECUÇÃO; Relatório final → ENCERRAMENTO; OUTRO em qualquer fase. Layout: **Acervo filtrável** (esquerda) · **slots por fase** (centro, `SelectList` + arrastar) · **Ficha do projeto** (direita: título, emoji, objetivo, processo ≤ 2, natureza ≤ 2, departamento, exercício, programa RF25, eixo RF24, prioridade, visibilidade herdada do perfil RF3, **Manual / Com IA**, orientação livre, foto, chancelas vindas das tarefas RF39, pré-visualização com capa-mosaico e `PhaseBar` RF38).
 
+## 0. Diagrama de casos de uso
+
+Quem usa o criador de projetos e o que consegue fazer nele. Borda contínua: existe no código em 17/10/2026; tracejada: planejado (hoje `/projects/new` é só esqueleto e não há API de projetos).
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  dono["«ator» Dono do recurso"]:::ator
+  subgraph SIS["Work Station — RF5 Criador de projetos"]
+    direction TB
+    UC1(["UC1 Montar projeto por fases no modo manual"]):::ucPlan
+    UC2(["UC2 Validar fases mínimas e dependências"]):::ucPlan
+    UC3(["UC3 Compor o projeto com IA"]):::ucPlan
+    UC4(["UC4 Cadastrar nova tarefa durante a montagem"]):::ucPlan
+    UC5(["UC5 Escolher a capa do projeto"]):::ucPlan
+    UC6(["UC6 Criar projeto a partir de modelo"]):::ucPlan
+    UC7(["UC7 Recuperar rascunho salvo automaticamente"]):::ucPlan
+    UC8(["UC8 Publicar o projeto no Mural"]):::ucPlan
+    UC9(["UC9 Abrir sessão DECIA do projeto"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  dono -- "é um" --> autenticado
+  autenticado --- UC1
+  autenticado --- UC6
+  autenticado --- UC7
+  dono --- UC8
+  dono --- UC9
+  UC1 -. "«include»" .-> UC2
+  UC6 -. "«include»" .-> UC2
+  UC3 -. "«extend»" .-> UC1
+  UC4 -. "«extend»" .-> UC1
+  UC5 -. "«extend»" .-> UC1
+  UC3 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Montar projeto por fases no modo manual | autenticado | RF21.CA01, RF21.CA02, RF21.CA03, RF21.CA04, RF21.CA08 | planejado (`ProjectCompositionService`, `PhaseCompatibility`; selects só com tarefas do meu Acervo) |
+| UC2 Validar fases mínimas e dependências | — (incluído por UC1 e UC6) | RF21.CA05, RF21.CA08 | planejado (`422 VALIDACAO`, `422 CICLO_DEPENDENCIA`) |
+| UC3 Compor o projeto com IA | autenticado, ia | RF21.CA06 | planejado (`ProjectAutopilotService`, `COMPOR_PROJETO`, cota) |
+| UC4 Cadastrar nova tarefa durante a montagem | autenticado | RF21.CA07 | planejado (abre o criador do RF4 em modal; o RF4 manual já é real) |
+| UC5 Escolher a capa do projeto | autenticado | RF21.CA09, RF21.CA10 | planejado (foto ou mosaico; chancelas herdadas das tarefas) |
+| UC6 Criar projeto a partir de modelo | autenticado | RF21.CA13 | planejado (`ModelImportService`, RF26/RF40) |
+| UC7 Recuperar rascunho salvo automaticamente | autenticado | RF21.CA14 | planejado (`DraftService`, Redis) |
+| UC8 Publicar o projeto no Mural | dono | RF21.CA11 | planejado (RF27) |
+| UC9 Abrir sessão DECIA do projeto | dono | RF21.CA12 | planejado (RF29) |
+
 ## 1. Diagrama de classes
 
 ```mermaid

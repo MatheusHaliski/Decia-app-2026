@@ -261,6 +261,9 @@ public class AccountService {
         if (!u.isDeletionScheduled()) {
             throw new ApiException(AuthCodes.EXCLUSAO_NAO_AGENDADA, 409, "Não há exclusão agendada para esta conta.");
         }
+        if (IdentityService.reactivationExpired(u, clock.instant())) {
+            throw new ApiException(AuthCodes.PRAZO_REATIVACAO_ENCERRADO, 409, "O prazo de 30 dias para reativar esta conta terminou.");
+        }
         u.setStatus(!u.isEmailVerified() ? AccountStatus.PENDING_EMAIL_VERIFICATION
                 : u.getProfileType().requiresValidation() && !u.isVerified() ? AccountStatus.PENDING_VALIDATION : AccountStatus.ACTIVE);
         u.setDeletionRequestedAt(null);
