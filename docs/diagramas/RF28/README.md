@@ -4,6 +4,77 @@
 
 Perfis: **EMPREGADO** (= PESSOAL), **EMPRESA** (= MARCA), **CHEFE_DEPARTAMENTO** (= CELEBRIDADE), **ADMIN**; papel contextual **CURADOR** (`CuratorAppointment`). EMPRESA e CHEFE nascem `PENDING_VALIDATION` e passam pelo ADMIN (`ApprovalRequest` + `VerificationPolicy`). A EMPRESA cria `Department`s e lota pessoas (`DepartmentMembership`, 1 lotação ativa por vez, histórico preservado). A troca de chefe (`Department.headUserId`) move sessões DECIA, filas de revisão e chancelas pendentes e gera o Dossiê de Transição (RF36). O que já existe em código (`sec-b3`): `User` com `profileType`/`status`/`verified`, `ProfileType`, `AccountStatus`, `Guard.requireRole/ownerOrAdmin`, `AuditLogPort`; `Company`, `Department` e o restante são **planejados** (`users.company_id`/`department_id` sem FK até a migration deste RF, D-23).
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs do card (CA01–CA08) e da validação institucional (§7, CA09–CA17). Só a página institucional e o botão Seguir existem hoje, como DEMO sobre o repositório social do front; validação, departamentos, curadores, reconhecimentos e painel do emissor são planejados (o domínio `ApprovalRequest`/`VerificationPolicy` já está em `ws-domain`, sem serviço nem tela).
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  classDef ucDemo fill:#fff8e6,stroke:#b26a00,stroke-dasharray:2 2,color:#1b1b1b
+  admin["«ator» Administrador"]:::ator
+  empresa["«ator» Empresa ou órgão"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  visitante["«ator» Visitante"]:::ator
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  subgraph SIS["Work Station — RF28 Empresas e departamentos"]
+    direction TB
+    UC1(["UC1 Validar conta EMPRESA ou CHEFE"]):::ucPlan
+    UC2(["UC2 Conferir critério de controle pelo link oficial"]):::ucPlan
+    UC3(["UC3 Confirmar o pedido de um novo chefe"]):::ucPlan
+    UC4(["UC4 Acompanhar e reenviar a própria validação"]):::ucPlan
+    UC5(["UC5 Notificar o envio e a decisão"]):::ucPlan
+    UC6(["UC6 Criar departamentos e lotar pessoas"]):::ucPlan
+    UC7(["UC7 Trocar o chefe do departamento"]):::ucPlan
+    UC8(["UC8 Nomear ou revogar curador"]):::ucPlan
+    UC9(["UC9 Emitir reconhecimento"]):::ucPlan
+    UC10(["UC10 Consultar o painel do emissor"]):::ucPlan
+    UC11(["UC11 Consultar a página da empresa ou do departamento"]):::ucDemo
+    UC12(["UC12 Seguir empresa ou departamento"]):::ucDemo
+  end
+  email["«ator» Serviço de e-mail"]:::atorSis
+  admin --- UC1
+  admin --- UC2
+  empresa --- UC3
+  empresa --- UC4
+  empresa --- UC6
+  empresa --- UC7
+  empresa --- UC8
+  empresa --- UC9
+  empresa --- UC10
+  chefe --- UC3
+  chefe --- UC4
+  chefe --- UC8
+  chefe --- UC9
+  chefe --- UC10
+  visitante --- UC11
+  autenticado --- UC11
+  autenticado --- UC12
+  UC1 -. "«include»" .-> UC5
+  UC4 -. "«include»" .-> UC5
+  UC2 -. "«extend»" .-> UC1
+  UC12 -. "«extend»" .-> UC11
+  UC5 --- email
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Validar conta EMPRESA ou CHEFE | `admin` | RF28.CA01, RF28.CA09, RF28.CA10, RF28.CA13, RF28.CA16, RF28.CA17 | planejado (`/admin` é esqueleto e `/admin/approvals` não existe; entidades só no domínio) |
+| UC2 Conferir critério de controle pelo link oficial | `admin` | RF28.CA15 | planejado |
+| UC3 Confirmar o pedido de um novo chefe | `empresa`, `chefe` | RF28.CA16 | planejado |
+| UC4 Acompanhar e reenviar a própria validação | `empresa`, `chefe` | RF28.CA11, RF28.CA12 | planejado (aba `validacao` de `/settings` ainda não existe) |
+| UC5 Notificar o envio e a decisão | `email` | RF28.CA14 | planejado (`MailPort` só registra em log) |
+| UC6 Criar departamentos e lotar pessoas | `empresa` | RF28.CA02, RF28.CA08 | planejado (`/companies/[slug]/manage/departments` é esqueleto) |
+| UC7 Trocar o chefe do departamento | `empresa` | RF28.CA07 | planejado (gera o Dossiê de Transição do RF36) |
+| UC8 Nomear ou revogar curador | `empresa`, `chefe` | RF28.CA03 | planejado |
+| UC9 Emitir reconhecimento | `empresa`, `chefe` | RF28.CA05, RF28.CA08 | planejado |
+| UC10 Consultar o painel do emissor | `empresa`, `chefe` | RF28.CA06, RF28.CA08 | planejado (item de menu por perfil já existe em `lib/nav/matrix.ts`; a página é esqueleto) |
+| UC11 Consultar a página da empresa ou do departamento | `visitante`, `autenticado` | RF28.CA04 | DEMO no front, sem API (`/companies/[slug]`, `/departments/[slug]` com `CompanyHeader`/`DepartmentHeader` e projetos publicados; sem API) |
+| UC12 Seguir empresa ou departamento | `autenticado` | RF28.CA04 | DEMO no front, sem API (`FollowButton` no cabeçalho institucional) |
+
 ## 1. Diagrama de classes
 
 ```mermaid

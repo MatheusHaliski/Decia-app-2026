@@ -4,6 +4,70 @@
 
 Os **DECIA Points** são a única moeda (sem dinheiro real, sem gateway, CA10). Ganha-se **só por participar bem no DECIA**: `PointsEvent` ARGUMENTO_EVIDENCIA (+5, teto 10 msgs/dia/sessão) · CONSENSO (+3) · DIVERGENCIA_RESOLVIDA (+8) · PERGUNTA_RESPONDIDA (+4) · ARTEFATO_USADO (+6 ao autor) · DECISAO_VALIDADA (+15 × multiplicador 0,5–2,0 do perfil deliberativo) · PRESENCA_ENCERRADA (+2) · REACAO_QUALIDADE (+2, teto 20/dia) · ATA_RATIFICADA/ENCAMINHAMENTO_CUMPRIDO (+3/+5) · BENEFICIO_BONUS · META_ATINGIDA; não pontuam ruído, auto-reação, sessão de teste (`User.testAccount`), repetidas (`similarityHash` > 90 %). Cada evento confirmado pela IA vira **1 `DeciaPointsLedgerEntry` idempotente** (`idempotencyKey` = tipo + id do evento + usuário, `correlationId`, `ruleVersionId`); regras em `DeciaPointsRule` versionada (ADMIN/EMPRESA, vigência; não altera o passado). Gasto: `StoreItem` (`StoreItemKind`) → `StorePurchase` transacional (409 SALDO_INSUFICIENTE / ITEM_INDISPONIVEL) com entrega (modelo copiado, `AiCreditLedgerEntry`, `UserSkin`, impulso `MuralEntry.boostUntil`); Balcão credita o autor no mesmo lançamento (RF40). Antifraude suspende (`LedgerStatus SUSPENSO`) para o chefe confirmar/estornar; expiração (`expiresAt`, aviso 30 dias) e doação com limite mensal (`PointsDonation`).
 
+## 0. Diagrama de casos de uso
+
+Quem ganha, gasta e governa os DECIA Points. Atores do catálogo de [`ATORES_E_ATRIBUTOS.md`](../../arquitetura/ATORES_E_ATRIBUTOS.md) §2 e permissões da Matriz A de [`ABAS_POR_PERFIL.md`](../../produto/ABAS_POR_PERFIL.md) (6.2 e 6.8: a conta EMPRESA não acumula pontos); todos os casos são planejados — hoje só existem as entidades `DeciaPointsLedgerEntry`, `DeciaPointsRule` e `StoreItem`, sem serviço nem tela.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  participante_sessao["«ator» Admin · Membro · Observador da sessão"]:::ator
+  empregado["«ator» Empregado"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  empresa["«ator» Empresa ou órgão"]:::ator
+  admin["«ator» Administrador"]:::ator
+  subgraph SIS["Work Station — RF42 DECIA Points e Loja"]
+    direction TB
+    UC1(["UC1 Ganhar pontos por participação de qualidade no DECIA"]):::ucPlan
+    UC2(["UC2 Conferir antifraude do lançamento"]):::ucPlan
+    UC3(["UC3 Consultar saldo, extrato e regras"]):::ucPlan
+    UC4(["UC4 Comprar item na Loja Work AI"]):::ucPlan
+    UC5(["UC5 Comprar modelo do Balcão creditando o autor"]):::ucPlan
+    UC6(["UC6 Comprar créditos de IA"]):::ucPlan
+    UC7(["UC7 Doar pontos a um colega"]):::ucPlan
+    UC8(["UC8 Revisar lançamentos suspensos"]):::ucPlan
+    UC9(["UC9 Editar regras, tetos e expiração dos pontos"]):::ucPlan
+    UC10(["UC10 Acompanhar pontos por departamento e custo de IA"]):::ucPlan
+    UC11(["UC11 Expirar pontos vencidos"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  agendador["«ator» Agendador de trabalhos"]:::atorSis
+  participante_sessao --- UC1
+  empregado --- UC3
+  empregado --- UC4
+  empregado --- UC7
+  chefe --- UC3
+  chefe --- UC4
+  chefe --- UC7
+  chefe --- UC8
+  empresa --- UC9
+  empresa --- UC10
+  admin --- UC9
+  admin --- UC10
+  UC1 -. "«include»" .-> UC2
+  UC5 -. "«extend»" .-> UC4
+  UC6 -. "«extend»" .-> UC4
+  UC1 --- ia
+  UC11 --- agendador
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Ganhar pontos por participação de qualidade no DECIA | Admin · Membro · Observador da sessão, IA (AiGateway) | RF42.CA01, RF42.CA02, RF42.CA10 | planejado |
+| UC2 Conferir antifraude do lançamento | — (incluído por UC1) | RF42.CA07 | planejado |
+| UC3 Consultar saldo, extrato e regras | Empregado, Chefe de departamento | RF42.CA03, RF42.CA08 | planejado (`/points` é página-esqueleto) |
+| UC4 Comprar item na Loja Work AI | Empregado, Chefe de departamento | RF42.CA04, RF42.CA10 | planejado (`/store` é página-esqueleto) |
+| UC5 Comprar modelo do Balcão creditando o autor | — (estende UC4) | RF42.CA05 | planejado |
+| UC6 Comprar créditos de IA | — (estende UC4) | RF42.CA06 | planejado |
+| UC7 Doar pontos a um colega | Empregado, Chefe de departamento | RF42.CA09 | planejado |
+| UC8 Revisar lançamentos suspensos (confirmar ou estornar) | Chefe de departamento | RF42.CA07 | planejado |
+| UC9 Editar regras, tetos e expiração dos pontos | Empresa ou órgão, Administrador | RF42.CA02, RF42.CA09 | planejado |
+| UC10 Acompanhar pontos por departamento e custo de IA | Empresa ou órgão, Administrador | RF42.CA08 | planejado |
+| UC11 Expirar pontos vencidos | Agendador de trabalhos | RF42.CA09 | planejado |
+
 ## 1. Diagrama de classes
 
 ```mermaid

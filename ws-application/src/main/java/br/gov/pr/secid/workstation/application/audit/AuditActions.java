@@ -23,6 +23,12 @@ public final class AuditActions {
     public static final String PREFERENCES_UPDATED = "PREFERENCES_UPDATED";
     public static final String ACCOUNT_DELETION_REQUESTED = "ACCOUNT_DELETION_REQUESTED";
     public static final String ACCOUNT_DELETION_CANCELLED = "ACCOUNT_DELETION_CANCELLED";
+    public static final String ACCOUNT_ANONYMIZED = "ACCOUNT_ANONYMIZED";
+    public static final String TWO_FACTOR_SETUP_STARTED = "TWO_FACTOR_SETUP_STARTED";
+    public static final String TWO_FACTOR_ENABLED = "TWO_FACTOR_ENABLED";
+    public static final String TWO_FACTOR_DISABLED = "TWO_FACTOR_DISABLED";
+    public static final String TWO_FACTOR_RECOVERY_REGENERATED = "TWO_FACTOR_RECOVERY_REGENERATED";
+    public static final String TWO_FACTOR_RECOVERY_USED = "TWO_FACTOR_RECOVERY_USED";
     public static final String ADMIN_BOOTSTRAP = "ADMIN_BOOTSTRAP";
     public static final String OIDC_LOGIN = "OIDC_LOGIN";
     public static final String OIDC_LINK_RECUSADO = "OIDC_LINK_RECUSADO";

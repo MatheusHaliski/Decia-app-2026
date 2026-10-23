@@ -4,6 +4,55 @@
 
 `Meeting` (`sessionId` ou `projectId`, `source` GRAVACAO_NAVEGADOR · ARQUIVO · TRANSCRICAO_COLADA, `status` `MeetingStatus` GRAVANDO · TRANSCREVENDO · ATA_PROPOSTA · CONFIRMADA · CONTESTADA, `audioMediaId`, `minutesTaskId`, `followUpTaskIdsJson`, `ratificationDeadlineAt` 48 h) com `MeetingTranscript` (texto AES-GCM, `segmentsJson` por falante classificado como no RF7) e `RecordingConsent` por participante (LGPD). Áudio vai para `restricted/` (`OwnMedia`), passa por magic bytes e limite por formato, e é **apagado após a transcrição** por padrão (`Company.recordingRetentionPolicy`). A IA (`TRANSCREVER`, `ATA_VIVA`) gera a **ata estruturada** (participantes, pauta, deliberações, encaminhamentos o quê/quem/quando, divergências, pendências); o usuário **confirma antes de persistir**: ata → `TaskItem` ATA_REGISTRO (`sourceKind ATA_VIVA`) no projeto; cada encaminhamento → `TaskItem` com `responsibleId` e `dueAt` + `ProjectTaskDependency` para a ata. A ata é publicada na sessão como mensagem com anexos (RF29) e entra no rastro (nó ATA_VIVA); participantes ratificam ou contestam em 48 h (`Notification`), e ratificação credita DP (`ATA_RATIFICADA`, RF42).
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Todos são planejados: não há rota `/meetings` nem `MeetingService`. A reunião nasce numa sessão DECIA ou num projeto.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  participante_sessao["«ator» Admin · Membro · Observador da sessão"]:::ator
+  dono["«ator» Dono do recurso"]:::ator
+  empresa["«ator» Empresa ou órgão"]:::ator
+  subgraph SIS["Work Station — RF37 Ata Viva"]
+    direction TB
+    UC1(["UC1 Registrar uma reunião"]):::ucPlan
+    UC2(["UC2 Consentir com a gravação"]):::ucPlan
+    UC3(["UC3 Transcrever e propor a ata estruturada"]):::ucPlan
+    UC4(["UC4 Revisar e confirmar a ata e os encaminhamentos"]):::ucPlan
+    UC5(["UC5 Publicar a ata na sessão e no rastro"]):::ucPlan
+    UC6(["UC6 Ratificar ou contestar a ata em 48 h"]):::ucPlan
+    UC7(["UC7 Apagar o áudio depois da transcrição"]):::ucPlan
+    UC8(["UC8 Definir a política de retenção de gravações"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  participante_sessao --- UC1
+  participante_sessao --- UC2
+  participante_sessao --- UC4
+  participante_sessao --- UC6
+  dono --- UC1
+  dono --- UC4
+  empresa --- UC8
+  UC1 -. "«include»" .-> UC3
+  UC3 -. "«include»" .-> UC7
+  UC4 -. "«include»" .-> UC5
+  UC3 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Registrar uma reunião | `participante_sessao`, `dono` | RF37.CA01 | planejado (gravar, subir áudio ou colar transcrição) |
+| UC2 Consentir com a gravação | `participante_sessao` | RF37.CA05 | planejado |
+| UC3 Transcrever e propor a ata estruturada | `ia` | RF37.CA02 | planejado |
+| UC4 Revisar e confirmar a ata e os encaminhamentos | `participante_sessao`, `dono` | RF37.CA03 | planejado |
+| UC5 Publicar a ata na sessão e no rastro | — (incluído por UC4) | RF37.CA04 | planejado |
+| UC6 Ratificar ou contestar a ata em 48 h | `participante_sessao` | RF37.CA04 | planejado |
+| UC7 Apagar o áudio depois da transcrição | — (incluído por UC3) | RF37.CA05 | planejado |
+| UC8 Definir a política de retenção de gravações | `empresa` | RF37.CA05 | planejado |
+
 ## 1. Diagrama de classes
 
 ```mermaid

@@ -15,6 +15,60 @@ O título fala de **importar tarefas ou projetos de outros provedores**; o corpo
 
 Regras comuns: a cópia nasce `DISPONIVEL` e `PRIVADA`, herda tipo, categoria e tags; `accessClass` RESTRITO/SIGILOSO nunca vai a IA externa; o item VINCULADO ganha `TaskVersion` a cada revisão externa (webhook) e, se o usuário revoga o OAuth, vira COPIADO com o último snapshot. Quando o dono exclui uma tarefa usada em projetos de outros, cada `ProjectTask` guarda `TaskSnapshot` em `snapshotJson` e mostra "removida pelo autor" sem quebrar fases nem dependências.
 
+## 0. Diagrama de casos de uso
+
+Os dois caminhos que trazem uma tarefa para o meu Acervo, importar de um provedor externo ou extrair de um projeto, e o que o dono da tarefa original vê. Pílulas cheias existem no código hoje; tracejadas são planejadas.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  dono["«ator» Dono do recurso"]:::ator
+  subgraph SIS["Work Station — RF23 Importar e extrair tarefas"]
+    direction TB
+    UC1(["UC1 Importar arquivo ou mensagem do Google ou da Microsoft"]):::ucPlan
+    UC2(["UC2 Manter a tarefa vinculada sincronizada com a origem"]):::ucPlan
+    UC3(["UC3 Importar e-mail encaminhado ou arquivo .eml"]):::ucPlan
+    UC4(["UC4 Importar processo do e-Protocolo"]):::ucPlan
+    UC5(["UC5 Importar pasta ou plano como projeto"]):::ucPlan
+    UC6(["UC6 Levar uma tarefa de projeto ao meu acervo"]):::ucPlan
+    UC7(["UC7 Verificar o acesso à tarefa e ao projeto"]):::ucPlan
+    UC8(["UC8 Ver quantas vezes minha tarefa foi reaproveitada"]):::ucPlan
+    UC9(["UC9 Excluir tarefa usada em projetos de outros"]):::ucPlan
+  end
+  conectores["«ator» Google Workspace · Microsoft 365 · e-Protocolo"]:::atorSis
+  email["«ator» Serviço de e-mail"]:::atorSis
+  autenticado --- UC1
+  autenticado --- UC3
+  autenticado --- UC4
+  autenticado --- UC5
+  autenticado --- UC6
+  dono --- UC8
+  dono --- UC9
+  UC2 -. "«extend»" .-> UC1
+  UC6 -. "«include»" .-> UC7
+  UC1 --- conectores
+  UC2 --- conectores
+  UC3 --- email
+  UC4 --- conectores
+  UC5 --- conectores
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Importar arquivo ou mensagem do Google ou da Microsoft | Pessoa autenticada · Google Workspace · Microsoft 365 · e-Protocolo | RF20.CA07 | planejado — `SourceKind` GOOGLE e MICROSOFT existem só como enum; `ExternalDocPort` não existe |
+| UC2 Manter a tarefa vinculada sincronizada com a origem | Google Workspace · Microsoft 365 · e-Protocolo (estende UC1) | RF20.CA07 | planejado — `TaskVersion` por webhook; revogar o OAuth vira COPIADO |
+| UC3 Importar e-mail encaminhado ou arquivo .eml | Pessoa autenticada · Serviço de e-mail | RF20.CA08 | planejado |
+| UC4 Importar processo do e-Protocolo | Pessoa autenticada · Google Workspace · Microsoft 365 · e-Protocolo | RF20.CA09 | planejado |
+| UC5 Importar pasta ou plano como projeto | Pessoa autenticada · Google Workspace · Microsoft 365 · e-Protocolo | RF23.CA06 | planejado — CA a confirmar |
+| UC6 Levar uma tarefa de projeto ao meu acervo | Pessoa autenticada | RF23.CA01, RF23.CA02 | planejado — cópia DISPONIVEL e PRIVADA, anexos por referência |
+| UC7 Verificar o acesso à tarefa e ao projeto | (incluído por UC6) | RF23.CA05 | planejado — tarefa PRIVADA ou projeto invisível: ação oculta e `403 ACESSO_NEGADO` |
+| UC8 Ver quantas vezes minha tarefa foi reaproveitada | Dono do recurso | RF23.CA04 | planejado |
+| UC9 Excluir tarefa usada em projetos de outros | Dono do recurso | RF23.CA03 | planejado — `TaskSnapshot` e card "removida pelo autor" |
+
 ## 1. Diagrama de classes
 
 ```mermaid

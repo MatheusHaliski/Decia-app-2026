@@ -5,6 +5,11 @@ public final class AuthCodes {
     public static final String CREDENCIAIS_INVALIDAS = "CREDENCIAIS_INVALIDAS";
     public static final String CONTA_INDISPONIVEL = "CONTA_INDISPONIVEL";
     public static final String DOIS_FATORES_NECESSARIO = "DOIS_FATORES_NECESSARIO";
+    public static final String DOIS_FATORES_INVALIDO = "DOIS_FATORES_INVALIDO";
+    public static final String DOIS_FATORES_JA_ATIVO = "DOIS_FATORES_JA_ATIVO";
+    public static final String DOIS_FATORES_INATIVO = "DOIS_FATORES_INATIVO";
+    public static final String DOIS_FATORES_SEM_CONFIGURACAO = "DOIS_FATORES_SEM_CONFIGURACAO";
+    public static final String PRAZO_REATIVACAO_ENCERRADO = "PRAZO_REATIVACAO_ENCERRADO";
     public static final String MUITAS_TENTATIVAS = "MUITAS_TENTATIVAS";
     public static final String SESSAO_INVALIDA = "SESSAO_INVALIDA";
     public static final String SESSAO_ENCERRADA = "SESSAO_ENCERRADA";

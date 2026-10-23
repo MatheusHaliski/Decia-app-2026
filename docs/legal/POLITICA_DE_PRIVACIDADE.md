@@ -1,10 +1,13 @@
 ---
 document: PRIVACIDADE
-version: "0.1"
+version: "0.2"
 status: rascunho
 language: pt-BR
 effectiveFrom: null
 changelog:
+  - version: "0.2"
+    date: 2026-10-17
+    summary: "Troca de controlador. A controladora passa a ser a Velion, empresa privada dona da marca e plataforma Orange Social, e esta Política foi reescrita para essa realidade. As bases legais passam a ser contrato, obrigação legal, legítimo interesse com direito de oposição e consentimento só para o que é opcional, como marketing. Entram a transferência internacional, a lista de cookies, a cifragem do segredo do 2FA e a reativação da conta em até 30 dias. Os dados da empresa e do encarregado ficam em campos a preencher antes da publicação."
   - version: "0.1"
     date: 2026-10-05
     summary: Primeiro rascunho da Política de Privacidade do Work Station, escrito para órgão público (controlador SECID-PR, LGPD art. 23) a partir da estrutura da Política do FAI; finalidades, bases legais e prazos são propostas da engenharia e aguardam o encarregado e o jurídico (Q-60, Q-61, Q-68).
@@ -12,239 +15,289 @@ changelog:
 
 # Política de Privacidade do Work Station
 
-**Versão 0.1 — rascunho, ainda sem vigência**
+**Versão 0.2 — rascunho, ainda sem vigência.** Vigente a partir de {{DATA_VIGENCIA}}.
 
 Esta Política explica quais dados pessoais o **Work Station** trata, para quê, com que base legal, com quem
 compartilha, por quanto tempo guarda e como você exerce seus direitos. Ela segue a **Lei Geral de Proteção de Dados
-(LGPD, Lei 13.709/2018)**, em especial as regras para o poder público (art. 23 a 30), a **Lei de Acesso à Informação
-(Lei 12.527/2011)** e o **Marco Civil da Internet (Lei 12.965/2014)**.
+(LGPD, Lei 13.709/2018)** e o **Marco Civil da Internet (Lei 12.965/2014)**.
 
-O **controlador** é a **Secretaria de Estado das Cidades do Paraná (SECID-PR)**, órgão da administração direta do
-Estado do Paraná. O **encarregado** pelo tratamento de dados pessoais (LGPD, art. 41) é **{{WS_LEGAL_DPO_NAME}}**,
-e o canal para falar com ele é **{{WS_LEGAL_DPO_CONTACT}}**. Esses dois valores vêm da configuração do sistema e são
-atualizados sem nova versão desta Política.
+**Quem é a controladora.** A **{{VELION_RAZAO_SOCIAL}}** ("**{{VELION_NOME_FANTASIA}}**" ou "Velion"), CNPJ
+{{VELION_CNPJ}}, com sede em {{VELION_ENDERECO}}, {{VELION_CIDADE_UF}}, CEP {{VELION_CEP}}. A Velion é dona da marca e
+da plataforma **Orange Social** ({{ORANGE_SOCIAL_SITE}}). O Work Station é a rede profissional e de trabalho da
+Orange Social.
+
+**Quem é o encarregado.** O encarregado pelo tratamento de dados pessoais (LGPD, art. 41) é **{{DPO_NOME}}**. Fale
+com ele em **{{DPO_EMAIL}}**.
 
 ---
 
 ## Resumo em um minuto
 
-- **Tratamos o necessário para a plataforma de trabalho funcionar:** sua identificação, seu vínculo, o que você produz
-  no trabalho e como usa o sistema.
-- **A base legal principal não é consentimento.** Por sermos órgão público, a maior parte do tratamento se apoia na
-  execução de políticas públicas e no cumprimento de obrigação legal (art. 7º, II e III; art. 23).
-- **O que é opcional depende de um interruptor seu**, desligado por padrão e revogável a qualquer momento, no mesmo
-  lugar e com o mesmo esforço.
-- **Provedores de IA só recebem dados com mascaramento**, nunca conteúdo RESTRITO ou SIGILOSO.
-- **Integrações com Google Workspace e Microsoft 365** só acontecem quando você as conecta, e só para os documentos que
-  você vincula.
-- **Documentos públicos ficam.** Atas, decisões validadas, rastro de decisão e chancelas seguem a guarda documental do
-  Estado mesmo depois do encerramento da conta.
-- **Você pode baixar seus dados** em formato legível por máquina e **encerrar sua conta**, com carência de 30 dias e
-  anonimização ao fim.
-- **Usamos só cookies essenciais.** Nenhum cookie de publicidade ou de rastreamento de terceiros.
+- **Tratamos o necessário para o Work Station funcionar:** sua identificação, seu perfil profissional, o que você
+  produz e como usa o sistema.
+- **Não pedimos dados sensíveis.** Nem CPF no cadastro. O CNPJ só é pedido na validação de contas de EMPRESA.
+- **A maior parte do tratamento serve para cumprir o contrato com você** (os Termos de Uso). Algumas coisas a lei
+  obriga. Outras se apoiam em legítimo interesse, e você pode se opor.
+- **O que é opcional depende de você.** Marketing e recursos extras só com o seu consentimento, desligado por padrão
+  e revogável a qualquer momento.
+- **Provedores de IA só recebem dados mascarados**, nunca conteúdo RESTRITO ou SIGILOSO.
+- **Não vendemos dados pessoais** e não usamos cookies de publicidade.
+- **Você pode baixar seus dados e excluir a conta.** A conta fica desativada por 30 dias, e você pode reativá-la nesse
+  prazo. Depois, os dados pessoais são anonimizados.
 
 ---
 
 ## 1. Quais dados tratamos
 
-A lista completa, por categoria, com finalidade, base legal, prazo e compartilhamento, aparece na aba **Seus dados →
-"Quais dados temos"** e sai do mesmo registro que alimenta a exportação (seção 9). Em resumo:
+A lista completa, com finalidade, base legal, prazo e compartilhamento de cada dado, aparece em **Configurações ›
+Dados**, na parte "Quais dados temos". Ela sai do mesmo registro que alimenta a exportação (seção 11).
 
-**1.1. Dados que você informa**
+**1.1. Todos os perfis**
 
-- **Cadastro:** nome completo, nome de exibição, nome de usuário, e-mail, senha (guardada apenas como hash Argon2id),
-  cargo, telefone (opcional), tipo de perfil, foto (opcional) e bio (opcional).
-- **Perfil de órgão (EMPRESA):** razão social, CNPJ, site oficial e documento de representação (ato de nomeação ou
-  portaria), usados só na validação do perfil.
-- **Perfil de chefia (CHEFE DE DEPARTAMENTO):** órgão, departamento e link oficial do ato de nomeação no Diário Oficial.
-- **Conteúdo do trabalho:** tarefas, anexos, projetos, planos, mensagens das sessões DECIA, comentários, reações,
-  propostas de chancela e os textos que você escreve para a IA.
-- **Preferências:** tema, idioma, fuso, densidade, notificações, skins e limites de trabalho.
+- **Cadastro:** nome completo, nome de exibição, nome de usuário, e-mail, senha (guardada só como hash), cargo e tipo
+  de perfil.
+- **Opcionais:** telefone, foto e bio.
+- **Segurança da conta:** se a verificação em duas etapas está ligada, o segredo do aplicativo autenticador e os
+  códigos de recuperação (guardados protegidos).
+- **Preferências:** tema, idioma, fuso, notificações, modo de autonomia da IA e limites de trabalho.
 
-**1.2. Dados gerados pelo uso**
+**1.2. EMPREGADO**
 
-- lotações e nomeações (departamento, chefia, curadoria), histórico de estados das tarefas e projetos;
-- decisões de que você participou, rastro de decisão, chancelas recebidas e emitidas, DECIA Points, reconhecimentos;
-- indicadores calculados a partir do seu trabalho: índice de eficiência (HSE), Hype do Perfil, perfil deliberativo e
-  posição em rankings, com as regras publicadas;
-- inferências de IA sobre o que você escreveu (classificação de mensagens, resumos, insights), com o registro de qual
-  modelo as gerou;
-- **registros de acesso:** endereço IP, data e hora, navegador e identificador de sessão, exigidos pelo Marco Civil;
-- registros de auditoria das ações que você faz e das que outras pessoas fazem sobre os seus dados.
+- Cargo e, se você quiser, o departamento ou a empresa em que trabalha.
 
-**1.3. Dados sensíveis.** O Work Station não pede dados sensíveis (art. 5º, II). Se um documento anexado ao trabalho
-contiver dado sensível de terceiros, ele deve ser classificado como RESTRITO ou SIGILOSO e nunca é enviado a provedor
-externo de IA.
+**1.3. EMPRESA**
 
-**1.4. Data de nascimento.** Só será coletada se o uso por menores de dezoito anos for autorizado (seção "Pendências
-para o jurídico"); nesse caso servirá apenas à verificação da idade e à aplicação do art. 14.
+- Razão social, CNPJ, site e documento que prova a representação. O CNPJ e o documento servem só à validação da conta.
+- Nome e e-mail da pessoa que cria e administra a conta da empresa.
+
+**1.4. CHEFE DE DEPARTAMENTO**
+
+- Empresa, departamento e prova da chefia, usados na validação.
+
+**1.5. Dados gerados pelo uso**
+
+- o que você produz: tarefas, anexos, projetos, planos, mensagens das sessões DECIA, comentários, reações e textos
+  que você escreve para a IA;
+- vínculos com empresas e departamentos, histórico de tarefas e projetos;
+- decisões de que você participou, chancelas, DECIA Points e reconhecimentos;
+- indicadores calculados a partir do seu trabalho: índice de eficiência (HSE), Hype do Perfil e posição em rankings;
+- resultados da IA sobre o que você escreveu (classificações, resumos, sugestões), com registro de qual modelo os
+  gerou;
+- **registros de acesso:** endereço IP, data e hora, navegador e identificador da sessão;
+- registros de auditoria das ações feitas por você e sobre os seus dados.
+
+**1.6. O que não coletamos**
+
+- **Dados sensíveis** (LGPD, art. 5º, II), como origem racial, religião, opinião política, saúde, vida sexual, dado
+  genético ou biométrico. Não pedimos e não queremos esses dados. Se um anexo contiver dado sensível de outra pessoa,
+  ele deve ser classificado como RESTRITO ou SIGILOSO.
+- **CPF.** Não é pedido no cadastro. Só seria pedido se uma obrigação legal ou um plano pago exigisse, e isso seria
+  avisado antes.
+- **Data de nascimento.** Não é coletada. No cadastro você declara ter a idade mínima.
 
 ## 2. Para que usamos e com qual base legal
 
 | Finalidade | Exemplos | Base legal (LGPD) |
 |---|---|---|
-| Executar as atribuições da SECID e dos órgãos convidados por meio da plataforma | cadastro e autenticação, acervo de tarefas, projetos, planos anuais, sessões DECIA, chancelas, rastro de decisão | execução de políticas públicas previstas em lei e regulamento (art. 7º, III; art. 23) |
-| Cumprir obrigações legais e regulatórias | guarda de atos administrativos e atas, Lei de Acesso à Informação, registros de acesso do Marco Civil, auditoria | cumprimento de obrigação legal ou regulatória (art. 7º, II) |
-| Validar perfis de órgão e de chefia | conferência de CNPJ, ato de nomeação, site oficial e documento de representação | execução de políticas públicas e prevenção à fraude (art. 7º, III; art. 23) |
-| Segurança da plataforma e prevenção a fraude | bloqueio por tentativas, limites por IP, detecção de contas múltiplas, auditoria | execução de políticas públicas e garantia da segurança (art. 6º, VII; art. 7º, III; art. 23) |
-| Indicadores de gestão e reconhecimento | HSE, Hype do Perfil, rankings por departamento, DECIA Points, destaques | execução de políticas públicas (art. 7º, III; art. 23), com regras determinísticas publicadas e direito de revisão (art. 20) |
-| Apoio de IA ao trabalho | classificação de mensagens, resumos, sugestões de redação e de chancela, extração de dados de desenhos técnicos | execução de políticas públicas (art. 7º, III; art. 23), com mascaramento antes de qualquer envio externo |
-| Comunicações do serviço | códigos de verificação, avisos de segurança, notificações de prazo e de decisão | execução de políticas públicas (art. 7º, III) |
-| Recursos opcionais | ver a seção 3 | consentimento (art. 7º, I), específico por finalidade |
+| Criar e manter sua conta e prestar o serviço | cadastro, login, tarefas, projetos, sessões DECIA, chancelas, perfil profissional | execução de contrato (art. 7º, V) |
+| Validar contas de EMPRESA e de CHEFE | conferência do CNPJ, do site e da prova de representação ou de chefia | execução de contrato (art. 7º, V) e legítimo interesse na prevenção a fraude (art. 7º, IX) |
+| Apoio da IA ao trabalho | resumos, classificação de mensagens, sugestões de texto e de chancela, no modo de autonomia que você escolher | execução de contrato (art. 7º, V), com mascaramento antes de qualquer envio externo |
+| Comunicações do serviço | códigos de verificação, avisos de segurança, prazos e decisões | execução de contrato (art. 7º, V) |
+| Guardar registros de acesso | IP, data e hora de cada acesso por 6 meses | obrigação legal (art. 7º, II; Marco Civil, art. 15) |
+| Provar aceites e consentimentos | versão aceita, data, IP e navegador | obrigação legal (art. 7º, II; art. 8º, § 2º) e exercício regular de direitos (art. 7º, VI) |
+| Atender autoridades e defender direitos | ordens judiciais, pedidos da ANPD, processos | obrigação legal (art. 7º, II) e exercício regular de direitos (art. 7º, VI) |
+| Atender seus pedidos de titular | acesso, correção, exportação, exclusão | obrigação legal (art. 7º, II; art. 18) |
+| Segurança e prevenção a fraude | limites de tentativas, bloqueio por IP, detecção de contas múltiplas, auditoria | legítimo interesse (art. 7º, IX) |
+| Indicadores e reconhecimento | HSE, Hype do Perfil, rankings, DECIA Points | legítimo interesse (art. 7º, IX), com regras publicadas e direito de revisão (art. 20) |
+| Melhorar o serviço | métricas de uso de recursos, de preferência agregadas ou anonimizadas | legítimo interesse (art. 7º, IX) |
+| Comunicações de marketing | novidades e ofertas da Orange Social por e-mail | consentimento (art. 7º, I) |
+| Recursos opcionais | ver a seção 4 | consentimento (art. 7º, I) |
 
-A SECID não usa legítimo interesse (art. 7º, IX) como base para o tratamento nesta plataforma; essa hipótese não se
-aplica ao poder público no exercício de suas atribuições.
+## 3. Legítimo interesse e seu direito de oposição
 
-## 3. Seus consentimentos
+Usamos legítimo interesse só nas finalidades marcadas assim na tabela. Para cada uma fizemos um **teste de
+balanceamento**:
 
-Só o que é **opcional** depende de consentimento. Cada finalidade tem um **interruptor próprio** em **Configurações →
-Privacidade**, começa **desligado**, pode ser revogado no mesmo lugar e com o mesmo esforço (art. 8º, § 5º) e nunca é
-pedido junto com o aceite dos Termos (art. 8º, § 4º). A revogação vale dali em diante e fica registrada com data e
-hora, junto com a concessão.
+- **Finalidade legítima:** proteger a plataforma, reconhecer o trabalho e melhorar o serviço.
+- **Necessidade:** usamos só os dados indispensáveis para isso.
+- **Expectativa:** são usos que uma pessoa espera de uma rede profissional.
+- **Proteções:** regras publicadas, visibilidade dos indicadores no padrão "só eu", dados agregados sempre que
+  possível e direito de revisão.
 
-| Interruptor | O que permite | Onde é conferido |
+O resumo de cada teste pode ser pedido ao encarregado. Você pode **se opor** a esses tratamentos em Configurações ›
+Privacidade ou pelo e-mail {{DPO_EMAIL}}. Atendemos a oposição, salvo quando o tratamento for indispensável para a
+segurança da conta ou de outros usuários. Nesse caso explicamos o motivo.
+
+## 4. Seus consentimentos
+
+Só o que é **opcional** depende de consentimento. Cada finalidade tem um **interruptor próprio** em Configurações ›
+Privacidade. Ele começa **desligado**, pode ser desligado no mesmo lugar e com o mesmo esforço (art. 8º, § 5º) e
+nunca é pedido junto com o aceite dos Termos (art. 8º, § 4º). Registramos data e hora de cada concessão e revogação.
+
+| Interruptor | O que permite |
+|---|---|
+| **Comunicações de marketing** | receber por e-mail novidades e ofertas da Orange Social; todo e-mail traz um link para sair da lista |
+| **Resumo profissional por IA** | gerar, com IA, um resumo do seu trabalho e dos seus indicadores para o seu perfil |
+| **Gravação de reuniões como padrão** | marcar por padrão a sua anuência à gravação de reuniões; cada reunião continua pedindo o consentimento dela |
+
+Finalidades novas só entram com nova versão desta Política e com interruptor próprio.
+
+## 5. Com quem compartilhamos
+
+**5.1. Operadores de infraestrutura.** Hospedagem, banco de dados, armazenamento de arquivos e envio de e-mails ficam
+com {{PROVEDORES_INFRAESTRUTURA}}. Eles tratam dados só para operar o serviço, sob contrato e seguindo nossas
+instruções.
+
+**5.2. Provedores de IA.** Quando um recurso usa um provedor externo de IA, os dados vão para
+{{PROVEDORES_IA}}. Antes do envio, nomes, e-mails, telefones e identificadores são **mascarados**. Conteúdo RESTRITO
+ou SIGILOSO **nunca** sai da plataforma. Exigimos por contrato que esses provedores não usem os dados para treinar
+modelos e que os descartem depois da resposta.
+
+**5.3. Sua empresa ou organização, dentro da plataforma.** Se você trabalha no espaço de uma EMPRESA, ela e as
+chefias do seu departamento veem o que você produz ali, seu perfil e os indicadores que a visibilidade permitir. A
+empresa só vê o que está dentro do espaço dela. Ela não recebe sua senha, seus consentimentos nem seus dados de outros
+espaços.
+
+**5.4. Outras pessoas da plataforma.** O que você publica aparece conforme a classificação de acesso e a visibilidade
+de cada item. Seu nome, cargo e foto aparecem no seu perfil. Indicadores pessoais começam visíveis só para você.
+
+**5.5. Autoridades.** Quando houver obrigação legal ou ordem judicial, entregamos apenas o que for exigido.
+
+**5.6. Mudança societária.** Se a Velion passar por fusão, aquisição ou venda do Work Station, os dados podem ir para
+a nova controladora, que fica obrigada a esta Política. Avisamos antes.
+
+A Velion **não vende** dados pessoais e não os usa para publicidade de terceiros.
+
+## 6. Transferência internacional
+
+Alguns operadores podem tratar dados fora do Brasil, em {{PAISES_TRANSFERENCIA}}. Essas transferências seguem o
+art. 33 da LGPD. Usamos as cláusulas-padrão contratuais aprovadas pela ANPD ou outra garantia que a lei reconheça. Os
+dados enviados a provedores de IA saem sempre mascarados, como descrito em 5.2.
+
+## 7. Cookies e armazenamento no navegador
+
+Usamos só o **necessário** para você entrar e continuar conectado:
+
+| Nome | Para que serve | Duração |
 |---|---|---|
-| **Resumo profissional por IA** (`RESUMO_PROFISSIONAL_IA`) | gerar, com IA, um resumo narrativo do seu trabalho e dos seus indicadores para o seu perfil e para a sua chefia | antes de cada geração do resumo |
-| **Gravação de reuniões como padrão** (`GRAVACAO_REUNIOES_PADRAO`) | marcar por padrão a sua anuência à gravação nas reuniões de que participa; o consentimento específico de cada reunião continua sendo pedido na própria reunião | ao abrir a gravação de cada reunião |
+| `ws_rt` | mantém sua sessão; é HttpOnly, então scripts da página não conseguem lê-lo | até a sessão expirar ou você sair |
+| `ws_rt_h` | sinal sem segredo que avisa ao app que existe uma sessão | igual ao `ws_rt` |
 
-Finalidades que o sistema não usa não aparecem na tela. Novas finalidades só entram com nova versão desta Política e
-seu próprio interruptor.
+Tema, idioma e outras preferências ficam no armazenamento local do navegador. O token de acesso fica só na memória
+da página. **Não usamos cookies de publicidade**, de medição de audiência de terceiros nem de rastreamento entre sites.
 
-## 4. Com quem compartilhamos
+## 8. Como protegemos seus dados
 
-**4.1. Provedores de IA (operadores).** Anthropic (Claude) e Google (Gemini), conforme o recurso. Antes de qualquer
-envio, nomes, e-mails, telefones e identificadores são **mascarados**, e conteúdo classificado como RESTRITO ou
-SIGILOSO **nunca** sai da plataforma. Exigimos contratualmente que esses provedores não usem os dados para treinar
-seus modelos e que os descartem após a resposta. Há um teto de gasto e um registro de cada inferência.
+- conexões cifradas (TLS) do navegador até os nossos servidores e entre eles;
+- senhas guardadas só como hash **Argon2id**;
+- e-mail, telefone, CNPJ e o segredo da verificação em duas etapas **cifrados com AES-GCM** no banco de dados;
+- documentos de validação, exportações e anexos RESTRITOS ou SIGILOSOS numa área restrita, entregue só a quem tem
+  direito, com registro de cada acesso;
+- metadados de localização removidos das imagens enviadas;
+- limites de tentativas, bloqueio progressivo e nova conferência de senha em operações sensíveis;
+- verificação em duas etapas opcional e "sair em todos os dispositivos";
+- acesso interno mínimo e auditoria.
 
-**4.2. Integrações com Google Workspace e Microsoft 365.** Só quando você conecta a sua conta institucional e vincula
-um documento, pasta ou calendário a uma tarefa. Os provedores recebem o necessário para abrir, sincronizar e versionar
-aquele item; o Work Station recebe metadados e versões do item vinculado.
+Se houver um incidente de segurança que possa causar risco ou dano relevante, avisamos a ANPD e as pessoas afetadas
+(art. 48).
 
-**4.3. e-Protocolo e sistemas do Estado.** Quando uma tarefa é protocolada ou um documento é publicado, os dados
-necessários seguem para o sistema de destino, por obrigação legal.
-
-**4.4. Hospedagem e infraestrutura (operadores).** Os servidores, bancos de dados e armazenamento de arquivos ficam
-com os fornecedores de infraestrutura contratados pela SECID, sob contrato, só para operar o serviço. A lista atual de
-fornecedores está disponível mediante pedido ao encarregado.
-
-**4.5. Outras pessoas da plataforma.** O que você produz no trabalho é visível conforme a classificação de acesso e a
-visibilidade de cada item (privada, departamento, órgão ou pública). Seu nome, cargo, departamento e foto aparecem no
-seu perfil e nos documentos de que você participa. Indicadores pessoais (HSE, Hype) têm visibilidade controlada por
-você; o padrão é "só eu".
-
-**4.6. Autoridades e acesso à informação.** Quando houver obrigação legal, ordem judicial ou pedido fundado na Lei de
-Acesso à Informação, respeitadas as restrições de sigilo.
-
-**4.7. Transferência internacional.** Os provedores de IA e parte da infraestrutura podem processar dados fora do
-Brasil. Essas transferências se apoiam no art. 33 da LGPD, com cláusulas contratuais e as demais salvaguardas
-reconhecidas pela ANPD, sempre com os dados mascarados descritos em 4.1.
-
-A SECID **não vende** dados pessoais e não os usa para publicidade.
-
-## 5. Por quanto tempo guardamos
+## 9. Por quanto tempo guardamos
 
 | Dado | Prazo |
 |---|---|
-| Conta, perfil, preferências e conteúdo pessoal | enquanto a conta existir; depois do pedido de encerramento, 30 dias de carência e então anonimização |
-| Documentos públicos de que você participou (atas, decisões validadas, rastro de decisão, chancelas, lançamentos de pontos) | prazo da tabela de temporalidade documental do Estado do Paraná; o seu nome é substituído por identificador quando a guarda não exigir a identificação |
-| Registros de acesso (IP, data e hora) | 6 meses, conforme o art. 15 do Marco Civil, ou mais por ordem judicial |
-| Registros de auditoria sobre dados pessoais | 5 anos a partir do fato, para responsabilização (art. 6º, X) |
-| Registro dos aceites e dos consentimentos | pelo tempo necessário para comprovar que foram dados, inclusive após a anonimização (art. 8º, § 2º) |
-| Documentos de validação de perfil (ato de nomeação, documento de representação) | até a decisão da validação e por 2 anos para eventual contestação; depois são apagados |
-| Arquivo de exportação dos seus dados | 7 dias; depois o arquivo é apagado e o pedido fica como expirado |
-| Envios abandonados no cadastro | 24 horas |
+| Conta, perfil, preferências e conteúdo | enquanto a conta existir; depois do pedido de exclusão, 30 dias para reativar e então anonimização |
+| Conteúdo produzido no espaço de uma EMPRESA | fica com a empresa conforme o contrato dela; o seu nome é trocado por um identificador anônimo |
+| Registros de acesso (IP, data e hora) | 6 meses (Marco Civil, art. 15), ou mais se houver ordem judicial |
+| Prova do aceite dos Termos e da Política | mantida mesmo após a anonimização, pelo tempo necessário para comprovar o aceite (art. 8º, § 2º) |
+| Histórico de consentimentos | mantido mesmo após a anonimização, para comprovar concessões e revogações |
+| Registros de auditoria sobre dados pessoais | 5 anos a partir do fato |
+| Documentos de validação de EMPRESA e CHEFE | até a decisão e por mais 2 anos para eventual contestação; depois são apagados |
+| Dados de contrato e cobrança de EMPRESA, se houver | prazo exigido pela legislação fiscal e contábil |
+| Arquivo de exportação dos seus dados | 7 dias |
+| Arquivos enviados num cadastro não concluído | 24 horas |
 | Notificações | cerca de 90 dias |
-| Cópias de segurança | ciclo normal de rotação dos backups, em área restrita |
+| Cópias de segurança | ciclo normal de rotação dos backups |
 
-Dados anonimizados podem ser mantidos para estatística e indicadores agregados (art. 12).
+Dados anonimizados podem ser usados em estatísticas, porque deixam de ser dados pessoais (art. 12).
 
-## 6. Como protegemos seus dados
+## 10. Seus direitos
 
-- conexões cifradas (TLS) do navegador à API e da API aos bancos de dados;
-- e-mail, telefone, CNPJ e data de nascimento (se coletada) cifrados em repouso; senhas com hash Argon2id;
-- documentos de validação, exportações, anexos RESTRITOS e SIGILOSOS e áudio de reuniões em **área restrita**, servida
-  só pela API e só a quem tem direito, com cada abertura registrada na auditoria;
-- imagens recodificadas na entrada, com remoção de metadados EXIF e de localização;
-- limites por tentativa, por IP e por conta, bloqueio progressivo e reconferência de senha em operações sensíveis;
-- segregação de ambientes, acesso administrativo mínimo e registro de auditoria.
+Pela LGPD (art. 18) você pode:
 
-Se houver incidente de segurança que possa acarretar risco ou dano relevante, comunicaremos a ANPD e os titulares
-afetados (art. 48).
-
-## 7. Seus direitos
-
-Pela LGPD (art. 18) você pode, pela aba **Seus dados** ou pelo canal do encarregado:
-
-- **confirmar** o tratamento e **acessar** seus dados ("Quais dados temos");
-- **corrigir** dados incompletos ou desatualizados (aba Conta; o que não for editável vira pedido ao encarregado);
-- **exportar** seus dados em formato legível por máquina (portabilidade);
-- pedir **anonimização, bloqueio ou eliminação** de dados desnecessários ou tratados em desconformidade;
+- **confirmar** se tratamos seus dados e **acessá-los**;
+- **corrigir** dados incompletos, inexatos ou desatualizados;
+- pedir **anonimização, bloqueio ou eliminação** de dados desnecessários, excessivos ou tratados fora da lei;
+- **levar seus dados** para outro serviço (portabilidade), num arquivo legível por máquina;
+- pedir a **eliminação** dos dados tratados com consentimento;
 - saber **com quem** compartilhamos seus dados;
-- **revogar consentimentos** nos interruptores de Privacidade;
-- **opor-se** a um tratamento que considere irregular;
-- pedir a **revisão de decisões automatizadas** que afetem seus interesses (art. 20): classificação de mensagens por IA,
-  índice de eficiência, Hype do Perfil e rankings;
-- **encerrar a conta** (seção 8);
-- apresentar reclamação à Autoridade Nacional de Proteção de Dados.
+- saber o que acontece se **não der** um consentimento;
+- **revogar** consentimentos;
+- **se opor** a tratamentos baseados em legítimo interesse (seção 3);
+- pedir **revisão** de decisões tomadas só com tratamento automatizado que afetem seus interesses (art. 20);
+- reclamar à **Autoridade Nacional de Proteção de Dados**, em https://www.gov.br/anpd.
 
-Pedidos de revisão, oposição e informação de compartilhamento abrem uma solicitação registrada, com prazo e resposta
-pelo encarregado. Podemos pedir confirmação de identidade para proteger você.
+**Como exercer.** Quase tudo está em **Configurações › Dados**: ver "Quais dados temos", baixar seus dados, abrir um
+pedido ao encarregado e excluir a conta. Consentimentos e oposição ficam em **Configurações › Privacidade**. Você
+também pode escrever para {{DPO_EMAIL}}.
 
-## 8. Encerramento da conta
+Cada pedido fica registrado, com prazo e resposta. Podemos pedir uma confirmação de identidade para proteger você.
 
-O pedido exige a senha atual e coloca a conta em carência de **30 dias**, durante os quais o perfil fica oculto, a conta
-só pode ler e você pode desistir. Antes de confirmar, a tela mostra o que será anonimizado e o que ficará guardado, e
-por quê. Terminado o prazo, um processo automático:
+## 11. Exclusão da conta
 
-- substitui nome, nome de usuário, e-mail, telefone, foto, bio e cargo por valores anonimizados e invalida a senha;
-- apaga arquivos pessoais (avatar, documentos de validação, exportações) e as projeções de busca e de linha do tempo;
-- encerra todas as sessões;
-- mantém, por obrigação legal, os documentos públicos de que você participou e o registro dos aceites e consentimentos;
-- registra a conclusão na auditoria.
+1. Você pede a exclusão em Configurações › Dados, com a sua senha atual. A tela mostra o que será anonimizado e o que
+   ficará guardado, e por quê.
+2. A conta fica **desativada e oculta por 30 dias**.
+3. Nesse prazo, você pode **reativar**: entre com seu e-mail e senha e escolha **Reativar**. Também pode baixar seus
+   dados.
+4. Depois de 30 dias, um processo automático:
+   - troca nome, nome de usuário, e-mail, telefone, foto, bio e cargo por valores anônimos e invalida a senha;
+   - apaga arquivos pessoais, como foto, documentos de validação e exportações;
+   - remove seus dados das buscas e das linhas do tempo;
+   - encerra todas as sessões;
+   - mantém só o que a lei obriga, pelo prazo legal (seção 9).
 
-Como órgão público, a SECID não pode eliminar documentos sujeitos a guarda legal (art. 16, I e III). O que fica e por
-quanto tempo está na seção 5.
+A anonimização não pode ser desfeita.
 
-## 9. Transparência e registro de dados pessoais
+## 12. Crianças e adolescentes
 
-Todas as categorias de dados pessoais desta plataforma estão num **registro único** mantido no código do sistema. Ele
-alimenta a página "Quais dados temos", o conteúdo da exportação e o plano de anonimização, e é conferido
-automaticamente a cada versão: uma entidade nova com dado pessoal fora do registro impede a publicação da versão.
+O Work Station **não se destina a menores de {{IDADE_MINIMA}} anos** (sugestão: 18). Não coletamos dados de crianças
+nem de adolescentes de propósito. Se descobrirmos uma conta de alguém abaixo da idade mínima, ela será encerrada e os
+dados serão eliminados, exceto o que a lei obrigar a guardar.
 
-## 10. Cookies e armazenamento local
-
-Usamos apenas cookies e armazenamento local **essenciais**: a sessão de acesso (cookie HttpOnly), a proteção contra
-requisições forjadas, o idioma e o tema. Não usamos cookies de publicidade, de medição de audiência de terceiros ou de
-rastreamento entre sites. O token de acesso fica apenas na memória do navegador.
-
-## 11. Mudanças nesta Política
+## 13. Mudanças nesta Política
 
 Cada versão tem número, data de vigência e resumo das mudanças, visíveis em /privacidade. Mudanças relevantes, como
-nova finalidade, novo compartilhamento ou novo prazo de guarda, exigem novo aceite antes de continuar usando a
-plataforma, e nova finalidade opcional exige novo consentimento próprio. Versões anteriores ficam no histórico.
+nova finalidade, novo compartilhamento ou novo prazo de guarda, são avisadas antes e pedem novo aceite. Uma nova
+finalidade opcional pede um novo consentimento. As versões anteriores ficam no histórico.
 
-## 12. Contato
+## 14. Contato
 
-- Controlador: Secretaria de Estado das Cidades do Paraná (SECID-PR).
-- Encarregado pelo tratamento de dados pessoais: **{{WS_LEGAL_DPO_NAME}}**.
-- Canal do encarregado: **{{WS_LEGAL_DPO_CONTACT}}**.
+- Controladora: {{VELION_RAZAO_SOCIAL}} ({{VELION_NOME_FANTASIA}}), CNPJ {{VELION_CNPJ}}.
+- Endereço: {{VELION_ENDERECO}}, {{VELION_CIDADE_UF}}, CEP {{VELION_CEP}}.
+- E-mail geral: {{VELION_EMAIL_CONTATO}}. Telefone: {{VELION_TELEFONE}}.
+- Sites: {{VELION_SITE}} e {{ORANGE_SOCIAL_SITE}}.
+- Encarregado: {{DPO_NOME}}, {{DPO_EMAIL}}.
 - Autoridade Nacional de Proteção de Dados: https://www.gov.br/anpd
 
 ---
 
 ## Pendências para o jurídico
 
-Esta seção não é publicada. Cada item cita a dúvida em `docs/DECISOES.md`.
+Esta seção não é publicada. A dúvida registrada é a **Q-243** de `docs/DECISOES.md`; quando um item também depende
+de uma dúvida anterior, ela aparece junto.
 
 | Item | Pendência | Q |
 |---|---|---|
-| Encarregado | Nome e canal oficial que preencherão `WS_LEGAL_DPO_NAME` e `WS_LEGAL_DPO_CONTACT`. | Q-60 |
-| Texto e bases legais | Revisão integral; confirmar o enquadramento no art. 7º, II e III, e art. 23 (em vez de contrato e legítimo interesse, usados pelo FAI) e a identificação completa do controlador na seção 12. | Q-61 |
-| Idade | Menores (aprendizes, estagiários) podem usar? Define a seção 1.4 e a coleta de data de nascimento. | Q-63 |
-| Consentimentos | Confirmar as duas finalidades opcionais da seção 3 e se existe alguma outra. | Q-67 |
-| Guarda e eliminação | Tabela de temporalidade aplicável, o que é documento público no Work Station e os prazos propostos na seção 5 (auditoria 5 anos, documentos de validação 2 anos). | Q-68 |
-| Traduções | Publicar traduções de cortesia em inglês e espanhol com aviso de prevalência do pt-BR. | Q-69 |
-| Prazos de resposta | Prazo das solicitações de revisão, oposição e informação (seção 7). | Q-71 |
-| Documentos de validação | Retenção dos documentos após a aprovação e quem pode reabrí-los. | Q-72 |
-| Fornecedores | Lista nominal de operadores de infraestrutura e provedores de IA a publicar na seção 4, conforme a hospedagem escolhida. | Q-51, Q-73 |
+| Identificação | Dados completos da Velion e da Orange Social (campos `VELION_*` e `ORANGE_SOCIAL_SITE`). Confirmar se a controladora é a própria Velion ou outra empresa do grupo. | Q-243 |
+| Encarregado | Nome e e-mail do encarregado (`DPO_NOME`, `DPO_EMAIL`). Pessoa interna ou serviço contratado. | Q-243 |
+| Papel da empresa cliente | No espaço de uma EMPRESA, a Velion é controladora de tudo ou operadora do conteúdo de trabalho, com a EMPRESA como controladora? Define as seções 5.3 e 9 e o contrato com as empresas. | Q-243 |
+| Bases legais | Confirmar a tabela da seção 2, em especial legítimo interesse para indicadores e rankings e os testes de balanceamento da seção 3. | Q-243 |
+| Provedores | Lista nominal de operadores de infraestrutura e de provedores de IA (`PROVEDORES_INFRAESTRUTURA`, `PROVEDORES_IA`). Hoje nenhum provedor de IA está ligado em produção. | Q-243 |
+| Transferência internacional | Países de destino (`PAISES_TRANSFERENCIA`) e o mecanismo do art. 33 para cada operador. Se nenhum operador estiver fora do Brasil, a seção 6 sai. | Q-243 |
+| Idade mínima | Confirmar 18 anos (`IDADE_MINIMA`) e se a declaração no cadastro basta. Avaliar se o Work Station pode ser considerado de acesso provável por adolescentes, para fins da Lei 15.211/2025 (ECA Digital). | Q-243, Q-63 |
+| Consentimentos | Confirmar as três finalidades opcionais da seção 4. Marketing ainda não existe no código e precisa de interruptor próprio e ponto de verificação. | Q-243, Q-67 |
+| Conta única na Orange Social | A conta do Work Station é a mesma de outros produtos da Orange Social? Se for, a Política precisa dizer quais dados circulam entre eles. | Q-243 |
+| Prazos de guarda | Auditoria 5 anos, documentos de validação 2 anos, dados fiscais de EMPRESA e o destino do conteúdo de trabalho após a anonimização (seção 9). | Q-243, Q-72 |
+| Segurança | A seção 8 segue a implementação em andamento do 2FA (segredo cifrado com AES-GCM, códigos de recuperação guardados só como hash) e da cifragem do CNPJ. Conferir quando entrar no `main`. | Q-243, Q-83 |
+| Prazo de resposta | Prazo para responder aos pedidos de titular (seção 10). | Q-243, Q-71 |
+| Traduções | Traduções de cortesia em inglês e espanhol com aviso de prevalência do pt-BR. | Q-243, Q-69 |

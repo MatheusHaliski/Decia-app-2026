@@ -158,9 +158,12 @@ function componentDemos() {
 </div>`;
 }
 
-export function renderIndex(variacoes) {
+export function renderIndex(variacoes, extras = []) {
   const themeBtns = THEME_IDS.map((t) => `<button type="button" data-set-theme="${t}" aria-pressed="${t === 'claro'}">${THEMES[t].label}</button>`).join('');
   const groups = (kind) => [...new Set(variacoes.filter((v) => v.kind === kind).map((v) => v.grupo))];
+  // demais cards (cards-extra.mjs): agrupados por grupo, com a situação (real · DEMO · MOCK · planejado) na legenda
+  const extraGroups = [...new Set(extras.map((v) => v.grupo))];
+  const anatExtra = () => extraGroups.map((gname) => `<h3>${esc(gname)}</h3><div class="an-grid">` + extras.filter((v) => v.grupo === gname).map((v) => `<figure class="an"><img data-svg="${v.id}" src="svg/${v.id}--claro.svg" alt="Anatomia: ${esc(v.titulo)} — ${esc(v.nome)}" loading="lazy"><figcaption><b>${esc(v.titulo)} — ${esc(v.nome)}</b> — ${esc(v.uso)} · <i>${esc(v.situacao)}</i> · <a href="svg/${v.id}--claro.svg" data-href="${v.id}">SVG</a></figcaption></figure>`).join('') + '</div>').join('');
   const anat = (kind) => groups(kind).map((gname) => `<h3>${gname}</h3><div class="an-grid">` + variacoes.filter((v) => v.kind === kind && v.grupo === gname).map((v) => `<figure class="an"><img data-svg="${v.id}" src="svg/${v.id}--claro.svg" alt="Anatomia: ${esc(v.nome)}" loading="lazy"><figcaption><b>${esc(v.nome)}</b> — ${esc(v.uso)} · <a href="svg/${v.id}--claro.svg" data-href="${v.id}">SVG</a></figcaption></figure>`).join('') + '</div>').join('');
   return `<!doctype html>
 <html lang="pt-BR" data-theme="claro">
@@ -210,7 +213,7 @@ ${iconSprite()}
 <div class="bar"><span class="seg" role="group" aria-label="Tema">${themeBtns}</span>
 <span class="seg" role="group" aria-label="Densidade"><button type="button" data-set-density="confortavel" aria-pressed="true">Confortável</button><button type="button" data-set-density="compacta" aria-pressed="false">Compacta</button></span>
 <label><input type="checkbox" id="rm"> reduzir movimento</label></div>
-<ol class="toc"><li><a href="#tokens">Tokens</a></li><li><a href="#tipografia">Tipografia</a></li><li><a href="#icones">Ícones</a></li><li><a href="#componentes">Componentes</a></li><li><a href="#anat-tarefa">Anatomias · card de tarefa</a></li><li><a href="#anat-projeto">Anatomias · card de projeto</a></li></ol>
+<ol class="toc"><li><a href="#tokens">Tokens</a></li><li><a href="#tipografia">Tipografia</a></li><li><a href="#icones">Ícones</a></li><li><a href="#componentes">Componentes</a></li><li><a href="#anat-tarefa">Anatomias · card de tarefa</a></li><li><a href="#anat-projeto">Anatomias · card de projeto</a></li>${extras.length ? '<li><a href="#anat-outros">Anatomias · demais cards</a></li>' : ''}</ol>
 
 <h2 id="tokens">1. Tokens de cor (<code>tokens.css</code>)</h2>
 <p class="lead">Cada família traz <code>fill</code> (glifo/borda, ≥ 3:1), <code>-ink</code> (texto, ≥ 4,5:1 sobre surface, surface-2 e o <code>-soft</code>), <code>-soft</code> (fundo de etiqueta) e <code>-nome</code> (nome da cor em texto). Os hex abaixo são lidos do tema ativo.</p>
@@ -226,6 +229,9 @@ ${componentDemos()}
 ${anat('tarefa')}
 <h2 id="anat-projeto">6. Anatomias · card de projeto (${variacoes.filter((v) => v.kind === 'projeto').length} variações × 4 temas)</h2>
 ${anat('projeto')}
+${extras.length ? `<h2 id="anat-outros">7. Anatomias · demais cards (${extras.length} pranchas × 4 temas)</h2>
+<p class="lead">Tarefa real da API, Decision Card, Mural, atribuição, notificação, cabeçalhos, busca, sessão DECIA, conta e shell (ANATOMIA_CARDS.md v2, §9–§20). Números = camadas (calha à esquerda), letras = elementos de conteúdo (calha à direita), ligados por linhas-guia. Cards planejados aparecem com a borda tracejada.</p>
+${anatExtra()}` : ''}
 </main>
 <script>
 (function(){

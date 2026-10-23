@@ -26,6 +26,9 @@ export interface ViewerUser {
   departmentNode: "red" | "yellow" | "green" | "blue" | "brown" | "orange" | null;
   /** saldo fictício da ficha DP (RF42); null = conta sem saldo próprio (EMPRESA, §7.d) */
   points: number | null;
+  /** Conta real (P19): nome e cargo vêm de `/api/me` e não passam pela tradução */
+  name?: string;
+  roleLabel?: string;
 }
 
 const COMPANY = { companySlug: "secretaria-exemplo", companyNameKey: "viewer.company.exemplo" } as const;
@@ -54,4 +57,31 @@ export const everyone = (a: Access = "V"): AccessMatrix => logged(a, a);
 export function monogramOf(user: ViewerUser): string {
   if (user.departmentAcronym) return user.departmentAcronym.replace(/^SECID-/, "").slice(0, 3);
   return user.username.split(".").map((p) => p[0]?.toUpperCase() ?? "").join("").slice(0, 2) || "WS";
+}
+
+/** Perfil de visualização de uma conta real: ADMIN pelo papel; senão pelo tipo escolhido no cadastro. */
+export function viewerProfileOf(me: { role?: string | null; profileType?: string | null }): ViewerProfile {
+  if (me.role === "ADMIN") return "ADMIN";
+  if (me.profileType === "EMPRESA") return "EMPRESA";
+  if (me.profileType === "CHEFE_DEPARTAMENTO") return "CHEFE";
+  return "EMPREGADO";
+}
+
+/** Usuário da barra a partir de `/api/me`: sem empresa, departamento nem pontos de demonstração. */
+export function viewerUserOf(me: { username?: string | null; fullName?: string | null; displayName?: string | null; jobTitle?: string | null; role?: string | null; profileType?: string | null }): ViewerUser {
+  const profile = viewerProfileOf(me);
+  return {
+    profile,
+    nameKey: `profile.${profile}`,
+    name: me.displayName?.trim() || me.fullName?.trim() || me.username || "",
+    username: me.username ?? "",
+    roleKey: `profile.${profile}`,
+    roleLabel: me.jobTitle?.trim() || undefined,
+    companySlug: null,
+    companyNameKey: null,
+    departmentSlug: null,
+    departmentAcronym: null,
+    departmentNode: null,
+    points: null,
+  };
 }

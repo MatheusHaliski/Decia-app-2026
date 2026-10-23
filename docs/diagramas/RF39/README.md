@@ -4,6 +4,77 @@
 
 Entidades: `Seal` (emissor EMPRESA|CHEFE, `tier` TAREFA|PROJETO|PLANO, `artJson` do lacre, `excellence`, ciclo `availableFrom/Until`, `usageLimit/usageCount`, `autoIssued`), `SealPolicy` (`mode` AUTO|REVISAO, `criteriaJson` com `SealCriterion` CONFORMIDADE_MIN · RASTRO_COMPLETO · PRAZO_CUMPRIDO · REACOES_MIN · REUTILIZACOES_MIN · DECISAO_VALIDADA · SEM_PENDENCIA, `recertifyEveryDays`), `SealBond` (item × emissor, único; `basis` MODELO_MATCH · DEPARTAMENTO_MATCH · PLANO_MATCH · DECISAO_MATCH · POLITICA · INDICACAO · PREMIACAO; `status` `SealBondStatus` SUGERIDA → ACEITA/EDITADA/RECUSADA → EM_REVISAO → APROVADA/APROVADA_PRIVADA/REJEITADA → REVOGADA/EXPIRADA; `authorConsent`; `aiInferenceId`), `SealProposal`, `Benefit` (`BenefitType`), `BenefitRedemption` (idempotente, QR, `ledgerEntryId`). Guards D-14: `requireIssuerOrCurator` (criar/editar/revisar), `requireOwner` (aceitar/editar/recusar/consentir), EMPREGADO → 403 no criador. Os critérios são **calculados pelo sistema** (`MetricCalculator`); a IA (`SUGERIR_CHANCELA`, `AVALIAR_POLITICA`) só sugere/justifica. Tudo em `AuditLog` com `correlationId`.
 
+## 0. Diagrama de casos de uso
+
+Casos de uso derivados dos CAs. Só o lacre nos itens chancelados existe hoje, como DEMO nos cards; criador, fila de revisão, políticas, curadoria e benefícios são planejados (`/seals`, `/seals/review`, `/benefits` e `/curation` são páginas-esqueleto).
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  classDef ucDemo fill:#fff8e6,stroke:#b26a00,stroke-dasharray:2 2,color:#1b1b1b
+  empresa["«ator» Empresa ou órgão"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  dono["«ator» Dono do recurso"]:::ator
+  curador["«ator» Curador"]:::ator
+  empregado["«ator» Empregado"]:::ator
+  visitante["«ator» Visitante"]:::ator
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  subgraph SIS["Work Station — RF39 Chancelas e benefícios"]
+    direction TB
+    UC1(["UC1 Criar chancela com política de critérios"]):::ucPlan
+    UC2(["UC2 Responder às chancelas sugeridas"]):::ucPlan
+    UC3(["UC3 Avaliar a política e conceder a chancela"]):::ucPlan
+    UC4(["UC4 Revisar a fila de chancelas"]):::ucPlan
+    UC5(["UC5 Consentir em exibir o lacre e virar modelo oficial"]):::ucPlan
+    UC6(["UC6 Conceder chancela de Excelência"]):::ucPlan
+    UC7(["UC7 Indicar item de colega ou propor chancela"]):::ucPlan
+    UC8(["UC8 Revogar ou recertificar chancela"]):::ucPlan
+    UC9(["UC9 Publicar benefício da chancela"]):::ucPlan
+    UC10(["UC10 Resgatar benefício"]):::ucPlan
+    UC11(["UC11 Ver o lacre nos itens chancelados"]):::ucDemo
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  agendador["«ator» Agendador de trabalhos"]:::atorSis
+  empresa --- UC1
+  empresa --- UC4
+  empresa --- UC8
+  empresa --- UC9
+  chefe --- UC1
+  chefe --- UC4
+  chefe --- UC6
+  chefe --- UC8
+  chefe --- UC9
+  dono --- UC2
+  dono --- UC5
+  dono --- UC10
+  curador --- UC4
+  curador --- UC6
+  empregado --- UC7
+  visitante --- UC11
+  autenticado --- UC11
+  UC5 -. "«extend»" .-> UC4
+  UC2 --- ia
+  UC3 --- ia
+  UC8 --- agendador
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Criar chancela com política de critérios | `empresa`, `chefe` | RF39.CA01, RF39.CA02 | planejado (EMPREGADO recebe 403) |
+| UC2 Responder às chancelas sugeridas | `dono`, `ia` | RF39.CA03, RF39.CA12 | planejado (aceitar, editar ou recusar) |
+| UC3 Avaliar a política e conceder a chancela | `ia` | RF39.CA04 | planejado (critérios calculados pelo sistema; a IA só justifica) |
+| UC4 Revisar a fila de chancelas | `empresa`, `chefe`, `curador` | RF39.CA04, RF39.CA07, RF39.CA12 | planejado (curador com escopo FILA_REVISAO) |
+| UC5 Consentir em exibir o lacre e virar modelo oficial | `dono` | RF39.CA07, RF39.CA11 | planejado |
+| UC6 Conceder chancela de Excelência | `curador`, `chefe` | RF39.CA05 | planejado (a partir dos Destaques do RF35) |
+| UC7 Indicar item de colega ou propor chancela | `empregado` | RF39.CA06, RF39.CA12 | planejado |
+| UC8 Revogar ou recertificar chancela | `empresa`, `chefe`, `agendador` | RF39.CA08 | planejado |
+| UC9 Publicar benefício da chancela | `empresa`, `chefe` | RF39.CA09 | planejado |
+| UC10 Resgatar benefício | `dono` | RF39.CA10 | planejado (idempotente; 409 sem chancela válida) |
+| UC11 Ver o lacre nos itens chancelados | `visitante`, `autenticado` | RF39.CA11 | DEMO no front, sem API (`Seal` em `TaskSchemeCard` e `ProjectCard`) |
+
 ## 1. Diagrama de classes
 
 ```mermaid

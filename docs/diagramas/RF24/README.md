@@ -11,6 +11,58 @@ O **Plano Anual** (`AnnualPlan`, = DNA de Estilo) tem 6 eixos (`PlanAxis`) com m
 | Social e chancela | `Reaction`, `Comment`, `SavedItem`, `Share`, `SealBond` tier PLANO | todos | CA06 |
 | Eixo citado pelo DECIA · projetos sem eixo | `DeciaSession.planAxisId`, `AnalyticalSummary.recommendationsJson[].planAxisId`, `Insight PROJETO_SEM_EIXO` | todos | CA07 |
 
+## 0. Diagrama de casos de uso
+
+O Plano Anual de 6 eixos: a EMPRESA publica o oficial, CHEFE e EMPREGADO derivam, o dono do plano liga projetos aos eixos e a IA interpreta os números calculados. Pílulas cheias existem no código hoje; tracejadas são planejadas.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  empresa["«ator» Empresa ou órgão"]:::ator
+  chefe["«ator» Chefe de departamento"]:::ator
+  empregado["«ator» Empregado"]:::ator
+  dono["«ator» Dono do recurso"]:::ator
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  subgraph SIS["Work Station — RF24 Plano Anual e metas da equipe"]
+    direction TB
+    UC1(["UC1 Criar o plano oficial com seis eixos"]):::ucPlan
+    UC2(["UC2 Derivar o plano do departamento ou a trilha pessoal"]):::ucPlan
+    UC3(["UC3 Validar os seis eixos"]):::ucPlan
+    UC4(["UC4 Ligar um projeto a um eixo"]):::ucPlan
+    UC5(["UC5 Ver a grade de eixos com o risco agregado"]):::ucPlan
+    UC6(["UC6 Comparar dois exercícios"]):::ucPlan
+    UC7(["UC7 Curtir, comentar, salvar ou pedir chancela do plano"]):::ucPlan
+    UC8(["UC8 Ver o eixo citado pelo DECIA e os projetos sem eixo"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  empresa --- UC1
+  chefe --- UC2
+  empregado --- UC2
+  dono --- UC4
+  autenticado --- UC5
+  autenticado --- UC6
+  autenticado --- UC7
+  autenticado --- UC8
+  UC1 -. "«include»" .-> UC3
+  UC2 -. "«include»" .-> UC3
+  UC5 --- ia
+  UC8 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Criar o plano oficial com seis eixos | Empresa ou órgão | RF24.CA01, RF24.CA04 | planejado — `/plans` é esqueleto |
+| UC2 Derivar o plano do departamento ou a trilha pessoal | Chefe de departamento · Empregado | RF24.CA04 | planejado |
+| UC3 Validar os seis eixos | (incluído por UC1, UC2) | RF24.CA01 | planejado — `422 VALIDACAO` por campo |
+| UC4 Ligar um projeto a um eixo | Dono do recurso | RF24.CA02 | planejado — `409 PROJETO_JA_NO_PLANO` |
+| UC5 Ver a grade de eixos com o risco agregado | Pessoa autenticada · IA (AiGateway) | RF24.CA03 | planejado — a IA só interpreta números do sistema (D-12) |
+| UC6 Comparar dois exercícios | Pessoa autenticada | RF24.CA05 | planejado |
+| UC7 Curtir, comentar, salvar ou pedir chancela do plano | Pessoa autenticada | RF24.CA06 | planejado — ações do RF19 com `TargetType PLAN` |
+| UC8 Ver o eixo citado pelo DECIA e os projetos sem eixo | Pessoa autenticada · IA (AiGateway) | RF24.CA07 | planejado |
+
 ## 1. Diagrama de classes
 
 ```mermaid

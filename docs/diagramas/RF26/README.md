@@ -9,6 +9,57 @@
 - **RF26.CA04** Tarefas RESTRITO/SIGILOSO no contexto nunca saem para provedor externo (só `LocalEngine`, com aviso); sem chave externa o Copilot usa regras + modelos chancelados e avisa o fallback (= RF30.CA05, RF43.CA02).
 - **RF26.CA05** Aceitar cria `TaskItem` RASCUNHO com `sourceKind AUTOPILOT` ou `ProjectScheme` RASCUNHO com `origin AUTOPILOTO` e abre o item no criador correspondente (RF4/RF5) ou na Mesa (RF22); cota de IA (`AiQuota`) é debitada e, sem cota, o botão oferece a Loja (RF42.CA06).
 
+## 0. Diagrama de casos de uso
+
+O Copilot que sugere tarefas e projetos (CAs do título) e, do corpo do card (antigo RF19), a consulta ao perfil. Pílulas cheias existem no código hoje; tracejadas são planejadas.
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  subgraph SIS["Work Station — RF26 Copilot de sugestões"]
+    direction TB
+    UC1(["UC1 Pedir ao Copilot sugestões de tarefas"]):::ucPlan
+    UC2(["UC2 Pedir ao Copilot sugestões de projetos inteiros"]):::ucPlan
+    UC3(["UC3 Proteger o contexto RESTRITO ou SIGILOSO"]):::ucPlan
+    UC4(["UC4 Aceitar uma sugestão como rascunho"]):::ucPlan
+    UC5(["UC5 Editar a sugestão antes de aceitar"]):::ucPlan
+    UC6(["UC6 Descartar uma sugestão com motivo"]):::ucPlan
+    UC7(["UC7 Comprar créditos de IA quando a cota acaba"]):::ucPlan
+    UC8(["UC8 Ver meu perfil e portfólio"]):::uc
+    UC9(["UC9 Ver o perfil de outra pessoa"]):::uc
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  autenticado --- UC1
+  autenticado --- UC2
+  autenticado --- UC4
+  autenticado --- UC6
+  autenticado --- UC8
+  autenticado --- UC9
+  UC1 -. "«include»" .-> UC3
+  UC2 -. "«include»" .-> UC3
+  UC5 -. "«extend»" .-> UC4
+  UC7 -. "«extend»" .-> UC1
+  UC7 -. "«extend»" .-> UC2
+  UC1 --- ia
+  UC2 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Pedir ao Copilot sugestões de tarefas | Pessoa autenticada · IA (AiGateway) | RF26.CA01, RF26.CA03 | planejado — `/autopilot` é esqueleto |
+| UC2 Pedir ao Copilot sugestões de projetos inteiros | Pessoa autenticada · IA (AiGateway) | RF26.CA02, RF26.CA03 | planejado — com Ficha de Viabilidade |
+| UC3 Proteger o contexto RESTRITO ou SIGILOSO | (incluído por UC1, UC2) | RF26.CA04 | planejado — só `LocalEngine`, com aviso |
+| UC4 Aceitar uma sugestão como rascunho | Pessoa autenticada | RF26.CA05 | planejado — debita `AiQuota` |
+| UC5 Editar a sugestão antes de aceitar | (estende UC4) | RF26.CA03 | planejado |
+| UC6 Descartar uma sugestão com motivo | Pessoa autenticada | RF26.CA03 | planejado |
+| UC7 Comprar créditos de IA quando a cota acaba | (estende UC1, UC2) | RF26.CA05 | planejado — Loja (RF42) |
+| UC8 Ver meu perfil e portfólio | Pessoa autenticada | RF19.CA01, RF19.CA03, RF19.CA04, RF19.CA05, RF19.CA07 | real — em parte: cabeçalho por `GET /api/me`; sub-abas e contadores planejados; modelado no RF6 |
+| UC9 Ver o perfil de outra pessoa | Pessoa autenticada | RF19.CA02, RF19.CA06 | real — em parte: `GET /api/people/by-username/{username}` (em curso, Onda 1); modelado no RF16 |
+
 ## 1. Diagrama de classes
 
 ```mermaid

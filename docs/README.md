@@ -4,8 +4,9 @@
 |---|---|
 | [`arquitetura/ARQUITETURA.md`](arquitetura/ARQUITETURA.md) | Plano de arquitetura v1: módulos `ws-*`, persistência poliglota, segurança, gate de CI, AiEngine, ordem de implementação |
 | [`arquitetura/TAXONOMIA.md`](arquitetura/TAXONOMIA.md) | Taxonomia completa: 12 contextos, todas as entidades e atributos, enums, equivalência FAI → Work Station |
+| [`arquitetura/ATORES_E_ATRIBUTOS.md`](arquitetura/ATORES_E_ATRIBUTOS.md) | Taxonomia de atores (pessoas, papéis globais e contextuais, IA, agendador, sistemas externos) e de atributos (12 categorias, 8 facetas, LGPD); ids de ator dos diagramas de casos de uso |
 | [`arquitetura/DIAGRAMA_CLASSES_v1.md`](arquitetura/DIAGRAMA_CLASSES_v1.md) | Diagrama de classes v1 do núcleo (Tarefa, Esquema de Projeto, ProjectTask, Plano Anual, Chancela/Vínculo/Benefício, DecisionTrace, DECIA Points) |
-| [`diagramas/`](diagramas/) | Um `README.md` por RF (RF1–RF45) com 5 diagramas Mermaid: classes, atividades, sequência, máquina de estados, componentes + rastreabilidade CA → elemento. Regras em [`diagramas/CONVENCOES.md`](diagramas/CONVENCOES.md) |
+| [`diagramas/`](diagramas/) | Um `README.md` por RF (RF1–RF74) com 6 diagramas Mermaid: casos de uso, classes, atividades, sequência, máquina de estados, componentes + rastreabilidade CA → elemento. Atores dos casos de uso em [`arquitetura/ATORES_E_ATRIBUTOS.md`](arquitetura/ATORES_E_ATRIBUTOS.md). Regras em [`diagramas/CONVENCOES.md`](diagramas/CONVENCOES.md) |
 | [`design-system/DESIGN_SYSTEM.md`](design-system/DESIGN_SYSTEM.md) | Tokens (4 temas, contraste verificado), catálogo de componentes, ícones próprios, estrutura `packages/ui`, página `/lab/design-system` |
 | [`design-system/ANATOMIA_CARDS.md`](design-system/ANATOMIA_CARDS.md) | Anatomia dos cards de tarefa e de projeto: camadas, dimensões, zonas, famílias de arte; §8 aponta para as variações (50 pranchas) |
 | [`design-system/anatomias/index.html`](design-system/anatomias/index.html) | Galeria estática (tokens, ícones, componentes, 200 pranchas SVG = 50 variações × 4 temas, incl. Variações · Visões · Esquemas compostos) com seletor de tema; capturas em `anatomias/capturas/` |

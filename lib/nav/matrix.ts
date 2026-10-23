@@ -183,6 +183,9 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       { id: "autopilot", labelKey: "nav.autopilot", glyph: "insights-ia", href: "/autopilot", rfs: ["RF30", "RF26", "RF43"], access: logged("E") },
       { id: "decia", labelKey: "nav.decia", glyph: "sessao-decia", href: "/decia", activeOn: ["/decia"], rfs: ["RF29"], access: logged("E"), subTabs: DECIA_TABS },
       { id: "insights", labelKey: "nav.insights", glyph: "insights-ia", href: "/insights", rfs: ["RF43"], access: logged("V"), subTabs: INSIGHTS_TABS },
+      // Editores de peças (PLANO_ONDAS 17/10/2026, Ondas 4 e 5): Letters (RF52–RF56) e Drawings (RF57–RF68, RF73, RF74), esqueleto até o editor existir
+      { id: "letters", labelKey: "nav.letters", glyph: "criar-tarefa", href: "/letters", rfs: ["RF52", "RF51"], access: logged("E") },
+      { id: "drawings", labelKey: "nav.drawings", glyph: "mesa", href: "/drawings", rfs: ["RF57", "RF51"], access: logged("E") },
     ],
   },
   {

@@ -37,6 +37,17 @@ describe("POST /bff/auth/[action]", () => {
     expect(String(fetchMock.mock.calls[0]![0])).toMatch(/\/api\/auth\/login$/);
   });
 
+  it("D-146: sem 'Manter conectado' os cookies são de sessão do navegador (fechar o navegador ou a janela anônima encerra); com ele, valem até o fim do refresh", async () => {
+    fetchMock.mockResolvedValueOnce(upstream(200, { accessToken: "a", refreshToken: "r", refreshExpiresAt: new Date(Date.now() + 86400_000).toISOString() }));
+    const curta = await call("login", { identifier: "x", password: "y", rememberMe: false });
+    expect(curta.cookies.get("ws_rt")!.maxAge).toBeUndefined();
+    expect(curta.cookies.get("ws_rt_h")!.maxAge).toBeUndefined();
+    fetchMock.mockResolvedValueOnce(upstream(200, { accessToken: "a", refreshToken: "r2", refreshExpiresAt: new Date(Date.now() + 30 * 86400_000).toISOString() }));
+    const longa = await call("login", { identifier: "x", password: "y", rememberMe: true });
+    expect(longa.cookies.get("ws_rt")!.maxAge).toBeGreaterThan(29 * 86400);
+    expect(longa.cookies.get("ws_rt_h")!.maxAge).toBeGreaterThan(29 * 86400);
+  });
+
   it("register repassa 202 Receipt; confirm abre sessão por /email-verification/confirm; ação desconhecida 404", async () => {
     fetchMock.mockResolvedValueOnce(upstream(202, { status: "PENDING", maskedEmail: "p***@x" }));
     const r = await call("register", { email: "p@x" });

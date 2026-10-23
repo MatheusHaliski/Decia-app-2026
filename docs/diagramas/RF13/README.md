@@ -17,6 +17,59 @@
 | **RF13.CA05** (CA a confirmar) | Dado o artefato pronto, então `Notification ARTEFATO` vai ao requerente (e a todos os participantes quando a origem é chat, `groupKey = originId`); o artefato aparece **na origem** (painel Artefatos do esquema, aba Artefatos da sessão, mensagem SISTEMA no chat, bloco da aba, comentário do item do feed) e em `/me/artifacts`; ações: baixar (URL assinada), **Transformar em tarefa** (`TaskItem` com `sourceKind DECIA` se origem for sessão, senão TEXTO_IA; ATA → ATA_REGISTRO, RELATORIO/MINUTA → DOCUMENTO, CHECKLIST → FORMULARIO, PLANILHA → PLANILHA, CRONOGRAMA → CRONOGRAMA; `convertedTaskId`; repetir → `409 ARTEFATO_JA_CONVERTIDO`), **Regerar** com ajuste (nova linha, anterior preservada, `supersedesArtifactId`), compartilhar no Mural (RF26.CA05); anexado numa sessão e usado na decisão → `MessageAttachment.usedInDecision` e DP `ARTEFATO_USADO` (RF42). |
 | **RF13.CA06** (CA a confirmar) | Dado o pedido, então `403 ACESSO_NEGADO` quando o requerente não pode ver a origem (não participante da sessão/chat, item PRIVADO de terceiro, aba de gestão sem `requireDeptHead`); a visibilidade do artefato herda a da origem (`Visibility` da tarefa/projeto, participantes do chat, dono da aba); artefatos de origem SIGILOSA nunca vão ao Mural nem à Memória pública; `AuditLog ARTIFACT_GENERATED` com `correlationId`. |
 
+## 0. Diagrama de casos de uso
+
+Quem gera artefatos com IA a partir de esquemas, chats, abas e feed, e o que faz com o resultado. Borda contínua: existe no código em 17/10/2026; tracejada: planejado (só há as entidades de domínio `SessionArtifact` e `ArtifactKind`).
+
+```mermaid
+flowchart LR
+  classDef ator fill:#fde7d3,stroke:#b4531a,color:#1b1b1b
+  classDef atorSis fill:#f1ecf9,stroke:#6a4bb3,color:#1b1b1b
+  classDef uc fill:#ffffff,stroke:#3557a6,color:#1b1b1b
+  classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
+  autenticado["«ator» Pessoa autenticada"]:::ator
+  participante_sessao["«ator» Admin · Membro · Observador da sessão"]:::ator
+  subgraph SIS["Work Station — RF13 Gerar artefato"]
+    direction TB
+    UC1(["UC1 Gerar artefato a partir de uma origem"]):::ucPlan
+    UC2(["UC2 Verificar acesso à origem"]):::ucPlan
+    UC3(["UC3 Montar o contexto com os objetivos da equipe"]):::ucPlan
+    UC4(["UC4 Receber o artefato pronto"]):::ucPlan
+    UC5(["UC5 Baixar o artefato"]):::ucPlan
+    UC6(["UC6 Transformar artefato em tarefa"]):::ucPlan
+    UC7(["UC7 Regerar artefato com ajuste"]):::ucPlan
+    UC8(["UC8 Compartilhar artefato no Mural"]):::ucPlan
+    UC9(["UC9 Listar meus artefatos"]):::ucPlan
+  end
+  ia["«ator» IA (AiGateway)"]:::atorSis
+  participante_sessao -- "é um" --> autenticado
+  autenticado --- UC1
+  autenticado --- UC4
+  autenticado --- UC5
+  autenticado --- UC6
+  autenticado --- UC7
+  autenticado --- UC8
+  autenticado --- UC9
+  participante_sessao --- UC4
+  UC1 -. "«include»" .-> UC2
+  UC1 -. "«include»" .-> UC3
+  UC7 -. "«extend»" .-> UC1
+  UC1 --- ia
+  UC7 --- ia
+```
+
+| Caso de uso | Ator(es) | CAs | Situação |
+|---|---|---|---|
+| UC1 Gerar artefato a partir de uma origem | autenticado, ia | RF13.CA01, RF13.CA03 | planejado (`POST /api/artifacts`, capability `ARTEFATO`, cota e limite por hora) |
+| UC2 Verificar acesso à origem | — (incluído por UC1) | RF13.CA02, RF13.CA06 | planejado (`AccessPolicy.canView` por item; só participantes geram a partir de uma sessão ou conversa) |
+| UC3 Montar o contexto com os objetivos da equipe | — (incluído por UC1) | RF13.CA02 | planejado (`ArtifactContextBuilder`, `goalAlignmentJson`; RESTRITO/SIGILOSO só motor local) |
+| UC4 Receber o artefato pronto | autenticado, participante_sessao | RF13.CA04, RF13.CA05 | planejado (`Notification ARTEFATO`; numa sessão ou conversa, todos os participantes recebem) |
+| UC5 Baixar o artefato | autenticado | RF13.CA04, RF13.CA05 | planejado (PDF ou XLSX, URL assinada) |
+| UC6 Transformar artefato em tarefa | autenticado | RF13.CA05 | planejado (`409 ARTEFATO_JA_CONVERTIDO`) |
+| UC7 Regerar artefato com ajuste | autenticado, ia | RF13.CA05 | planejado (nova versão; a anterior fica preservada) |
+| UC8 Compartilhar artefato no Mural | autenticado | RF13.CA05, RF13.CA06 | planejado (origem SIGILOSA nunca vai ao Mural) |
+| UC9 Listar meus artefatos | autenticado | RF13.CA05 | planejado (`/me/artifacts`) |
+
 ## 1. Diagrama de classes
 
 ```mermaid
@@ -458,7 +511,7 @@ stateDiagram-v2
   GER --> FAL : provedores e LocalEngine falharam (AiInferenceLog ERRO)
   GRD --> PRO : EXPORT_PDF/XLSX OK → mediaObjectId (CA04) · INDEXAR_MEMORIA (não bloqueia) · Notification ARTEFATO (CA05)
   GRD --> GRD : render falhou → PipelineJob REPROCESSAR, contentMd continua legível (CA04)
-  PRO --> PRO : Transformar em tarefa → convertedTaskId (repetir: 409 ARTEFATO_JA_CONVERTIDO) · compartilhar no Mural · usedInDecision → DP ARTEFATO_USADO
+  PRO --> PRO : Transformar em tarefa → convertedTaskId (repetir → 409 ARTEFATO_JA_CONVERTIDO) · compartilhar no Mural · usedInDecision → DP ARTEFATO_USADO
   PRO --> SUB : Regerar com ajuste → novo artefato com supersedesArtifactId (CA05)
   GRD --> SUB : Regerar antes do render
   FAL --> SOL : usuário pede de novo (nova linha)

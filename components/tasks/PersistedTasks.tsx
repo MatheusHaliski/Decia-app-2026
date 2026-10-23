@@ -5,9 +5,11 @@
  * Dados da API real (`/api/tasks`); sem sessão, o erro diz o motivo e o caminho.
  */
 import { useCallback, useEffect, useState } from "react";
+import { CardGrid, TaskSchemeCard } from "@/components/social/TaskSchemeCard";
 import { Badge, Button, Card, Checkbox, EmptyState, ErrorState, Field, Link, LoadingState, Tag, Textarea, useToast } from "@/components/ui";
 import { ApiError, describeError } from "@/lib/api/client";
 import { useI18n } from "@/lib/i18n/useI18n";
+import { toTaskCardViewModelFromApi } from "@/lib/tasks/card";
 import { criteriaProgress, requestFromView, tasksApi, type Criterion, type TaskStateName, type TaskView } from "@/lib/tasks/client";
 import { canTransitionTask, nextActionOf, publicationOf, TASK_TRANSITIONS, WORK_STATUSES, workStatusOf, type WorkStatus } from "@/lib/tasks/status";
 
@@ -39,31 +41,28 @@ function Progress({ criteria }: { criteria?: Criterion[] }) {
   );
 }
 
-/** Card de tarefa: tipo, título, finalidade, estado, prazo/prioridade, próxima ação e progresso pelos critérios. */
+/**
+ * Card da tarefa real: a anatomia do `TaskSchemeCard` (compacto) sem a barra social — a API não tem curtidas, comentários,
+ * remixes, selos nem crédito, e o card não finge tê-los. Na zona da barra social fica o rodapé de trabalho: prioridade (≠ média),
+ * progresso pelos critérios e próxima ação. Bloqueada mostra o motivo no próprio card.
+ */
 export function PersistedTaskCard({ task }: { task: TaskView }) {
-  const { t, intl } = useI18n();
-  const state = task.state ?? "RASCUNHO";
-  const next = nextActionOf(state);
-  return (
-    <Card as="article" className="grid gap-2" data-testid="persisted-task-card" aria-labelledby={`task-${task.id}`}>
-      <div className="flex flex-wrap items-center gap-2 text-[length:var(--ws-text-caption)] text-ws-text-muted">
-        <Badge tone="neutral">{t("tasks.card.kind")}</Badge>
-        <span>{t(`social.taskType.${task.type}`)}</span>
-        {task.area ? <span>· {t(`tasks.area.${task.area}`)}</span> : null}
-      </div>
-      <h3 id={`task-${task.id}`} className="text-[length:var(--ws-text-h4)] font-semibold leading-snug">
-        <Link href={`/tasks/${task.id}`} variant="plain" className="hover:underline">{task.title}</Link>
-      </h3>
-      <p className="line-clamp-2 text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{task.objective || t("tasks.card.noObjective")}</p>
-      <div className="flex flex-wrap items-center gap-2">
-        <WorkStatusTag state={state} />
-        {task.priority && task.priority !== "MEDIA" ? <Tag tone={task.priority === "BAIXA" ? "neutral" : "warning"}>{t(`tasks.priority.${task.priority}`)}</Tag> : null}
-        {task.dueAt ? <span className="text-[length:var(--ws-text-caption)]">{t("tasks.card.due", { date: new Intl.DateTimeFormat(intl, { dateStyle: "medium", timeZone: "UTC" }).format(new Date(`${task.dueAt}T00:00:00Z`)) })}</span> : null}
-      </div>
+  const { t } = useI18n();
+  const [now] = useState(() => new Date());
+  const vm = toTaskCardViewModelFromApi(task, { now });
+  const next = nextActionOf(vm.state);
+  const footer = (
+    <>
       <Progress criteria={task.acceptanceCriteria as Criterion[]} />
-      {next ? <p className="text-[length:var(--ws-text-caption)]"><span className="font-semibold">{t("tasks.card.next")}:</span> {t(`tasks.next.${next}`)}</p> : null}
-    </Card>
+      {next || (task.priority && task.priority !== "MEDIA") ? (
+        <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[length:var(--ws-text-caption)]">
+          {next ? <p className="min-w-0 flex-1 [overflow-wrap:anywhere]" data-testid="task-card-next"><span className="font-semibold">{t("tasks.card.next")}:</span> {t(`tasks.next.${next}`)}</p> : null}
+          {task.priority && task.priority !== "MEDIA" ? <Tag tone={task.priority === "BAIXA" ? "neutral" : "warning"}>{t(`tasks.priority.${task.priority}`)}</Tag> : null}
+        </div>
+      ) : null}
+    </>
   );
+  return <TaskSchemeCard vm={vm} showSummary footer={footer} testId="persisted-task-card" />;
 }
 
 function loadError(e: unknown, t: (k: string) => string) {
@@ -71,16 +70,28 @@ function loadError(e: unknown, t: (k: string) => string) {
   return describeError(e);
 }
 
-export function MyTasks() {
+/** Lista "minhas tarefas" da API; `enabled = false` não busca (quem chama já tem a lista). */
+export function useMyTaskList(enabled = true) {
   const { t } = useI18n();
   const [tasks, setTasks] = useState<TaskView[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [filter, setFilter] = useState<WorkStatus | "todos">("todos");
-  const load = useCallback(() => {
+  const reload = useCallback(() => {
+    if (!enabled) return;
     setError(null);
     tasksApi.mine(100).then(setTasks).catch((e) => setError(loadError(e, t)));
-  }, [t]);
-  useEffect(load, [load]);
+  }, [t, enabled]);
+  useEffect(reload, [reload]);
+  return { tasks, error, reload };
+}
+
+export type MyTaskList = ReturnType<typeof useMyTaskList>;
+
+/** Lista com filtro por estado. Recebe `list` quando a página já carregou as tarefas (ex.: Meu perfil, que conta no cabeçalho). */
+export function MyTasks({ list }: { list?: MyTaskList } = {}) {
+  const { t } = useI18n();
+  const own = useMyTaskList(!list);
+  const { tasks, error, reload: load } = list ?? own;
+  const [filter, setFilter] = useState<WorkStatus | "todos">("todos");
   if (error) return <ErrorState title={t("tasks.list.error")} description={error} onRetry={load} />;
   if (!tasks) return <LoadingState />;
   if (!tasks.length) return <EmptyState title={t("tasks.list.empty")} description={t("tasks.list.emptyHint")} action={<Button variant="primary" href="/tasks/new">{t("tasks.list.create")}</Button>} />;
@@ -96,7 +107,7 @@ export function MyTasks() {
         <span className="flex-1" />
         <Button size="sm" variant="primary" href="/tasks/new">{t("tasks.list.create")}</Button>
       </div>
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{shown.map((x) => <PersistedTaskCard key={x.id} task={x} />)}</div>
+      <CardGrid label={t("tasks.list.label")}>{shown.map((x) => <li key={x.id}><PersistedTaskCard task={x} /></li>)}</CardGrid>
     </div>
   );
 }
