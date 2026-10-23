@@ -36,7 +36,7 @@
         <!-- Correções de segurança à frente do BOM do Boot 4.1.1 (D-70, gate Trivy): o Boot 4.1.1 traz Tomcat 11.0.24 e
              Jackson 3.1.5 / 2.21.5, com CVEs HIGH/CRITICAL já corrigidas em patch. Remover cada linha quando o BOM do Boot
              alcançar (ou passar) a versão daqui (Q-170). Só patch dentro da mesma minor. -->
-        <tomcat.version>11.0.26</tomcat.version>
+        <tomcat.version>11.0.27</tomcat.version>
         <jackson-bom.version>3.1.7</jackson-bom.version>
         <jackson-2-bom.version>2.21.7</jackson-2-bom.version>
 
