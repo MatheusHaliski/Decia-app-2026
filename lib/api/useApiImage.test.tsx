@@ -65,9 +65,10 @@ describe("useApiImage / ProfileAvatar (RF3.CA05: foto autenticada)", () => {
     expect(createObjectURL).not.toHaveBeenCalled();
   });
 
-  it("URL https antiga passa direto, sem fetch", () => {
+  it("URL https externa antiga não é carregada (rastreamento): mostra as iniciais, sem fetch", () => {
     const { container } = render(<ProfileAvatar name="Ana" src="https://cdn.example/ana.png" />);
-    expect(container.querySelector("img")?.getAttribute("src")).toBe("https://cdn.example/ana.png");
+    expect(container.querySelector("img")).toBeNull();
+    expect(container.querySelector("[role=img]")?.textContent).toBe("A");
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -95,7 +96,7 @@ describe("useApiImage / ProfileAvatar (RF3.CA05: foto autenticada)", () => {
     expect(apiImageKind("http://insecure.example/a.png")).toBe("none");
     expect(apiImageKind("//evil.example/a.png")).toBe("none");
     expect(apiImageKind("javascript:alert(1)")).toBe("none");
-    expect(apiImageKind("https://cdn.example/a.png")).toBe("direct");
+    expect(apiImageKind("https://cdn.example/a.png")).toBe("none");
     expect(apiImageKind(AVATAR)).toBe("api");
   });
 

@@ -8,7 +8,8 @@
  * - Resposta fora de ordem é descartada: cada componente lê só a entrada da URL que mostra AGORA; um download antigo que chega
  *   depois não troca a foto, e um download apagado do cache (logout) não volta a ele.
  * - Enquanto carrega ou em erro, `src` é `undefined` (o `Avatar` mostra as iniciais).
- * - `https://` absoluta (fotos antigas) passa direto, como antes. Qualquer outra coisa é ignorada.
+ * - URL externa (inclusive `https://` gravada antes do upload) não é exibida: carregá-la deixaria um site de terceiros saber quem
+ *   abriu a tela (RF3.CA05; o servidor já não aceita foto por link). Mostra as iniciais até a pessoa enviar uma foto.
  * - Ao sair da sessão o cache é esvaziado: a foto de uma conta não fica disponível para a próxima.
  */
 import { useEffect, useSyncExternalStore } from "react";
@@ -99,15 +100,13 @@ function subscribe(l: () => void) {
   return () => { listeners.delete(l); };
 }
 
-export type ApiImageKind = "none" | "direct" | "api";
+export type ApiImageKind = "none" | "api";
 
-/** `/api/...` é baixada com o token; `https://` passa direto; o resto (vazio, `http:`, `javascript:`, `//host`) não vira foto. */
+/** Só `/api/...` vira foto (baixada com o token); vazio, `https:`/`http:` externos, `javascript:` e `//host` mostram as iniciais. */
 export function apiImageKind(url: string | null | undefined): ApiImageKind {
   const u = url?.trim();
   if (!u) return "none";
-  if (u.startsWith("/api/")) return "api";
-  if (/^https:\/\//i.test(u)) return "direct";
-  return "none";
+  return u.startsWith("/api/") ? "api" : "none";
 }
 
 /** Fonte exibível para uma foto da API ou externa (`src` indefinido enquanto carrega, em erro ou sem foto). */
@@ -120,7 +119,6 @@ export function useApiImage(url: string | null | undefined): { src: string | und
     acquire(key);
     return () => release(key);
   }, [key]);
-  if (kind === "direct") return { src: url!.trim(), status: "ready" };
   if (!key) return { src: undefined, status: "idle" };
   if (!entry) return { src: undefined, status: "loading" };
   return { src: entry.status === "ready" ? entry.src : undefined, status: entry.status };

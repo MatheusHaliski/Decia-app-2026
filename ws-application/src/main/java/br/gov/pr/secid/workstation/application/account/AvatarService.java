@@ -102,6 +102,10 @@ public class AvatarService {
     public AvatarBytes read(CurrentUser actor, UUID userId) {
         User target = userId == null ? null : users.findById(userId).orElse(null);
         Viewer viewer = authorizer.requireProfileVisible(actor, target);
+        if (target == null) {
+            // o autorizador já recusou com 404; a guarda deixa isso explícito para quem lê (e para a análise estática)
+            throw ApiException.notFound("Foto");
+        }
         UUID mediaId = mediaIdOf(target).orElseThrow(() -> ApiException.notFound("Foto"));
         MediaUploadService.ReadGrant grant = media.authorizeRead(viewer, mediaId, true);
         if (!grant.media().ownerId().equals(target.getId())) {
