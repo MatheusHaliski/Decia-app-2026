@@ -329,6 +329,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/avatar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF3.CA05 Envia a foto (multipart, campo file): PNG/JPEG/WEBP até 5 MB, reprocessada para JPEG 512 px sem EXIF (413 ARQUIVO_GRANDE_DEMAIS, 415 TIPO_NAO_PERMITIDO, 422 IMAGEM_INVALIDA); a anterior é apagada */
+        post: operations["upload"];
+        /** RF3.CA05 Remove a foto (o arquivo é apagado) */
+        delete: operations["remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/deletion": {
         parameters: {
             query?: never;
@@ -476,6 +494,23 @@ export interface paths {
         };
         /** RF16.CA01 Perfil público por nome de usuário */
         get: operations["byUsername"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/people/{id}/avatar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF3.CA05/RF16 Foto de uma conta ativa (404 NAO_ENCONTRADO sem foto ou conta não ativa) */
+        get: operations["read"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1446,6 +1481,53 @@ export interface operations {
             };
         };
     };
+    upload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UserView"];
+                };
+            };
+        };
+    };
+    remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UserView"];
+                };
+            };
+        };
+    };
     requestDeletion: {
         parameters: {
             query?: never;
@@ -1681,6 +1763,28 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["PublicProfileView"];
+                };
+            };
+        };
+    };
+    read: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/jpeg": string;
                 };
             };
         };

@@ -26,6 +26,7 @@ import br.gov.pr.secid.workstation.application.identity.UserRepositoryPort;
 import br.gov.pr.secid.workstation.application.identity.UserView;
 import br.gov.pr.secid.workstation.application.identity.VerificationCode;
 import br.gov.pr.secid.workstation.application.identity.VerificationCodeRepositoryPort;
+import br.gov.pr.secid.workstation.application.media.MemoryMedia;
 import br.gov.pr.secid.workstation.application.security.AuthorizationTrail;
 import br.gov.pr.secid.workstation.application.security.ResourceAuthorizer;
 import br.gov.pr.secid.workstation.domain.identity.AccountStatus;
@@ -247,8 +248,13 @@ class AccountServiceTest {
 
     @Test
     void atualizaCamposNaoSensiveisComValidacaoEAuditoria() {
-        UserView v = account.update(me, new AccountService.ProfileUpdate("Maria S.", "Mari", "Analista", "oi", "https://cdn/x.png", "", "PUBLICO", true), ctx);
+        UserView v = account.update(me, new AccountService.ProfileUpdate("Maria S.", "Mari", "Analista", "oi", "", "", "PUBLICO", true), ctx);
         assertThat(v.fullName()).isEqualTo("Maria S.");
+        assertThat(v.avatarUrl()).as("limpar a foto pelo PATCH continua valendo").isNull();
+        ApiException external = catchThrowableOfType(ApiException.class, () -> account.update(me,
+                new AccountService.ProfileUpdate(null, null, null, null, "https://cdn.exemplo.com/rastreio.png", null, null, null), ctx));
+        assertThat(((Map<?, ?>) external.details().get("fields")).keySet().stream().map(String::valueOf).toList())
+                .as("RF3.CA05: foto externa não entra mais").containsExactly("avatarUrl");
         assertThat(v.displayName()).isEqualTo("Mari");
         assertThat(v.hypeVisibility()).isEqualTo("PUBLICO");
         assertThat(v.rankingOptOut()).isTrue();
@@ -327,7 +333,10 @@ class AccountServiceTest {
         account.requestDeletion(me, new AccountService.DeletionRequest(password, "motivo pessoal"), ctx);
         assertThat(identity.login(new IdentityService.LoginCommand("maria", password, false, null, null), ctx).accessToken())
                 .as("dentro do prazo a pessoa entra para reativar").isNotBlank();
-        AccountAnonymizer anonymizer = new AccountAnonymizer(users, emailHasher, identity, audited::add, Clock.systemUTC());
+        ResourceAuthorizer authz = new ResourceAuthorizer(users, Optional.empty());
+        MemoryMedia media = new MemoryMedia();
+        AvatarService avatars = new AvatarService(users, authz, media.inspector, media.service(authz), audited::add);
+        AccountAnonymizer anonymizer = new AccountAnonymizer(users, emailHasher, identity, audited::add, avatars, Clock.systemUTC());
         assertThat(anonymizer.anonymizeDue()).as("ainda no prazo").isZero();
 
         maria.setDeletionScheduledAt(Instant.now().minusSeconds(1));

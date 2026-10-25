@@ -34,13 +34,16 @@ public class AccountAnonymizer {
     private final EmailHasher emailHasher;
     private final IdentityService identity;
     private final AuditLogPort audit;
+    private final AvatarService avatars;
     private final Clock clock;
 
-    public AccountAnonymizer(UserRepositoryPort users, EmailHasher emailHasher, IdentityService identity, AuditLogPort audit, Clock clock) {
+    public AccountAnonymizer(UserRepositoryPort users, EmailHasher emailHasher, IdentityService identity, AuditLogPort audit,
+                             AvatarService avatars, Clock clock) {
         this.users = users;
         this.emailHasher = emailHasher;
         this.identity = identity;
         this.audit = audit;
+        this.avatars = avatars;
         this.clock = clock;
     }
 
@@ -81,6 +84,7 @@ public class AccountAnonymizer {
         u.setOidcIssuer(null);
         u.setJobTitle(null);
         u.setBio(null);
+        avatars.purge(u);
         u.setAvatarUrl(null);
         u.setCoverUrl(null);
         u.setTwoFactorEnabled(false);

@@ -1602,6 +1602,58 @@
         "tags" : [ "RF2 Autenticação" ]
       }
     },
+    "/api/me/avatar" : {
+      "delete" : {
+        "operationId" : "remove",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF3.CA05 Remove a foto (o arquivo é apagado)",
+        "tags" : [ "RF3 Conta" ]
+      },
+      "post" : {
+        "operationId" : "upload",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "properties" : {
+                  "file" : {
+                    "format" : "binary",
+                    "type" : "string"
+                  }
+                },
+                "required" : [ "file" ],
+                "type" : "object"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF3.CA05 Envia a foto (multipart, campo file): PNG/JPEG/WEBP até 5 MB, reprocessada para JPEG 512 px sem EXIF (413 ARQUIVO_GRANDE_DEMAIS, 415 TIPO_NAO_PERMITIDO, 422 IMAGEM_INVALIDA); a anterior é apagada",
+        "tags" : [ "RF3 Conta" ]
+      }
+    },
     "/api/me/deletion" : {
       "delete" : {
         "operationId" : "cancelDeletion",
@@ -1879,6 +1931,35 @@
         },
         "summary" : "RF16.CA01 Perfil público por nome de usuário",
         "tags" : [ "RF16 Pessoas" ]
+      }
+    },
+    "/api/people/{id}/avatar" : {
+      "get" : {
+        "operationId" : "read",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "image/jpeg" : {
+                "schema" : {
+                  "format" : "byte",
+                  "type" : "string"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF3.CA05/RF16 Foto de uma conta ativa (404 NAO_ENCONTRADO sem foto ou conta não ativa)",
+        "tags" : [ "RF3 Conta" ]
       }
     },
     "/api/people/{id}/tasks" : {

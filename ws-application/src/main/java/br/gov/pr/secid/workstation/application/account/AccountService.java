@@ -144,10 +144,13 @@ public class AccountService {
             }
         }
         if (cmd.avatarUrl() != null) {
-            url(cmd.avatarUrl(), "avatarUrl", fields).ifPresent(v -> {
-                u.setAvatarUrl(v);
+            // RF3.CA05: a foto só entra pelo upload (POST /api/me/avatar), reprocessada e sem EXIF; aqui só se aceita limpar
+            if (cmd.avatarUrl().isBlank()) {
+                u.setAvatarUrl(null);
                 changed.add("avatarUrl");
-            });
+            } else {
+                fields.put("avatarUrl", "Envie a foto pelo botão Enviar foto; links externos não são aceitos.");
+            }
         }
         if (cmd.coverUrl() != null) {
             url(cmd.coverUrl(), "coverUrl", fields).ifPresent(v -> {

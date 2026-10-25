@@ -33,6 +33,8 @@
         <resilience4j.version>2.4.0</resilience4j.version>
         <lombok.version>1.18.48</lombok.version>
         <bouncycastle.version>1.86</bouncycastle.version>
+        <!-- leitura de WEBP no ImageIO (RF3.CA05: a foto é reprocessada para JPEG sem EXIF) -->
+        <twelvemonkeys.version>3.12.0</twelvemonkeys.version>
         <!-- Correções de segurança à frente do BOM do Boot 4.1.1 (D-70, gate Trivy): o Boot 4.1.1 traz Tomcat 11.0.24 e
              Jackson 3.1.5 / 2.21.5, com CVEs HIGH/CRITICAL já corrigidas em patch. Remover cada linha quando o BOM do Boot
              alcançar (ou passar) a versão daqui (Q-170). Só patch dentro da mesma minor. -->
@@ -55,6 +57,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.twelvemonkeys.imageio</groupId>
+                <artifactId>imageio-webp</artifactId>
+                <version>${twelvemonkeys.version}</version>
+            </dependency>
             <!-- BOMs importados ANTES do Boot vencem (primeira importação ganha): Jackson 3 e Jackson 2 corrigidos (D-70) -->
             <dependency>
                 <groupId>tools.jackson</groupId>

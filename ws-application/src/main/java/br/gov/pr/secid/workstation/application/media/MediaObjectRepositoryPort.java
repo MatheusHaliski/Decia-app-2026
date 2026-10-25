@@ -6,7 +6,7 @@ import br.gov.pr.secid.workstation.domain.plataforma.MediaScan;
 import java.util.Optional;
 import java.util.UUID;
 
-/** Metadados de mídia ({@code media_objects}, V2) e quarentena ({@code media_scans}, V24). O adaptador JPA entra com a 1ª rota de upload. */
+/** Metadados de mídia ({@code media_objects}, V2) e quarentena ({@code media_scans}, V24). Adaptador JPA: {@code JpaMediaAdapters} (persistence-mysql). */
 public interface MediaObjectRepositoryPort {
 
     Optional<MediaObject> findById(UUID id);
@@ -19,4 +19,7 @@ public interface MediaObjectRepositoryPort {
     Optional<MediaScan> findScan(UUID mediaId);
 
     MediaScan saveScan(MediaScan scan);
+
+    /** Remove os metadados (a varredura vai junto por CASCADE); o binário é apagado pelo chamador no {@link MediaStoragePort}. */
+    void delete(UUID id);
 }
