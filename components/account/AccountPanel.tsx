@@ -5,9 +5,10 @@ import { accountApi } from "@/lib/account/client";
 import { ApiError, describeError } from "@/lib/api/client";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { useCurrentUser } from "@/lib/session/CurrentUserProvider";
+import { AvatarSection } from "./AvatarSection";
 import { TwoFactorCard } from "./TwoFactorCard";
 
-/** Configurações › Conta (RF3.CA01/CA04, RF2.CA02): dados do perfil e verificação em duas etapas da conta real. */
+/** Configurações › Conta (RF3.CA01/CA04/CA05, RF2.CA02): foto e dados do perfil e verificação em duas etapas da conta real. */
 export function AccountPanel() {
   const { t } = useI18n();
   const { toast } = useToast();
@@ -18,6 +19,7 @@ export function AccountPanel() {
   if (!me) return <ErrorState title={t("account.signedOut")} description={t("account.signedOutHint")} />;
   const fields = error instanceof ApiError ? error.fields : {};
   const locked = me.status === "DELETION_SCHEDULED";
+  const name = me.displayName?.trim() || me.fullName || me.username || "";
 
   const save = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,6 +42,7 @@ export function AccountPanel() {
     <div className="grid gap-[var(--ws-space-4)] md:grid-cols-2">
       <Card title={t("account.profileTitle")} eyebrow="RF3.CA01" data-testid="account-profile"
         actions={<Badge tone="accent">{t(`profile.${me.profileType === "CHEFE_DEPARTAMENTO" ? "CHEFE" : me.profileType ?? "EMPREGADO"}`)}</Badge>}>
+        <AvatarSection me={me} name={name} locked={locked} reload={reload} />
         <form onSubmit={save} className="grid gap-[var(--ws-space-3)]" noValidate>
           <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">@{me.username} · {me.email}</p>
           <Field label={t("account.fullName")} error={fields.fullName} required>

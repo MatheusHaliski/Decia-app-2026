@@ -29,6 +29,8 @@ export interface ViewerUser {
   /** Conta real (P19): nome e cargo vêm de `/api/me` e não passam pela tradução */
   name?: string;
   roleLabel?: string;
+  /** Foto da conta real (`/api/people/{id}/avatar?v=…`, exibida por ProfileAvatar); o laboratório não tem foto */
+  avatarUrl?: string;
 }
 
 const COMPANY = { companySlug: "secretaria-exemplo", companyNameKey: "viewer.company.exemplo" } as const;
@@ -68,7 +70,7 @@ export function viewerProfileOf(me: { role?: string | null; profileType?: string
 }
 
 /** Usuário da barra a partir de `/api/me`: sem empresa, departamento nem pontos de demonstração. */
-export function viewerUserOf(me: { username?: string | null; fullName?: string | null; displayName?: string | null; jobTitle?: string | null; role?: string | null; profileType?: string | null }): ViewerUser {
+export function viewerUserOf(me: { username?: string | null; fullName?: string | null; displayName?: string | null; jobTitle?: string | null; role?: string | null; profileType?: string | null; avatarUrl?: string | null }): ViewerUser {
   const profile = viewerProfileOf(me);
   return {
     profile,
@@ -77,6 +79,7 @@ export function viewerUserOf(me: { username?: string | null; fullName?: string |
     username: me.username ?? "",
     roleKey: `profile.${profile}`,
     roleLabel: me.jobTitle?.trim() || undefined,
+    avatarUrl: me.avatarUrl?.trim() || undefined,
     companySlug: null,
     companyNameKey: null,
     departmentSlug: null,

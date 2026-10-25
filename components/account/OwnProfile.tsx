@@ -4,10 +4,11 @@
  * tarefas (`/api/tasks`): nada de "Pessoa Exemplo" nem de contadores de demonstração. Sem sessão (aba anônima, depois do logout)
  * a página pede para entrar. Seguidores, projetos, DP e Hype não aparecem até terem fonte real nas próximas ondas.
  */
-import { Avatar, Badge, Button, Card, EmptyState, LoadingState } from "@/components/ui";
+import { Badge, Button, Card, EmptyState, LoadingState } from "@/components/ui";
 import { RfPage } from "@/components/shell/RfPage";
 import { MyTasks, useMyTaskList } from "@/components/tasks/PersistedTasks";
 import type { Me } from "@/lib/account/client";
+import { ProfileAvatar } from "./ProfileAvatar";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { PROFILE_TABS, type PageEntry } from "@/lib/pages/registry";
 import { useCurrentUser } from "@/lib/session/CurrentUserProvider";
@@ -39,7 +40,7 @@ function OwnProfileHeader({ me, tasks }: { me: Me; tasks: readonly TaskView[] | 
   return (
     <Card tone="clay" className="grid gap-[var(--ws-space-4)] md:grid-cols-[minmax(0,1fr)_auto] md:items-center" data-testid="own-profile-header">
       <div className="flex min-w-0 items-start gap-[var(--ws-space-4)]">
-        <Avatar name={name} src={me.avatarUrl || undefined} size={64} />
+        <ProfileAvatar name={name} src={me.avatarUrl} size={64} />
         <div className="grid min-w-0 gap-1">
           <p className="font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h2)] font-semibold leading-tight [overflow-wrap:anywhere]" data-testid="profile-name">{name}</p>
           <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted [overflow-wrap:anywhere]" data-testid="profile-handle">@{me.username}{role ? ` · ${role}` : ""}</p>

@@ -8,7 +8,8 @@
  */
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Avatar, Badge, Button, Card, EmptyState, ErrorState, LoadingState } from "@/components/ui";
+import { ProfileAvatar } from "@/components/account/ProfileAvatar";
+import { Badge, Button, Card, EmptyState, ErrorState, LoadingState } from "@/components/ui";
 import { RfPage } from "@/components/shell/RfPage";
 import { ownCounters } from "@/components/account/OwnProfile";
 import { CardGrid } from "@/components/social/TaskSchemeCard";
@@ -68,7 +69,7 @@ function PublicProfileHeader({ person, tasks }: { person: PublicProfileView; tas
   return (
     <Card tone="clay" className="grid gap-[var(--ws-space-4)] md:grid-cols-[minmax(0,1fr)_auto] md:items-center" data-testid="public-profile-header">
       <div className="flex min-w-0 items-start gap-[var(--ws-space-4)]">
-        <Avatar name={name} src={person.avatarUrl || undefined} size={64} shape={isCompany(person) ? "monitor" : "circle"} />
+        <ProfileAvatar name={name} src={person.avatarUrl} size={64} shape={isCompany(person) ? "monitor" : "circle"} />
         <div className="grid min-w-0 gap-1">
           <h2 className="font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h2)] font-semibold leading-tight [overflow-wrap:anywhere]" data-testid="profile-name">{name}</h2>
           <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted [overflow-wrap:anywhere]" data-testid="profile-handle">@{username}{role ? ` · ${role}` : ""}</p>

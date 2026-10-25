@@ -1,7 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Avatar, Badge, Button, Glyph, Link, Monogram, Popover, Select, cn } from "@/components/ui";
+import { ProfileAvatar } from "@/components/account/ProfileAvatar";
+import { Badge, Button, Glyph, Link, Monogram, Popover, Select, cn } from "@/components/ui";
 import { auth } from "@/lib/api/client";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { VIEWER_PROFILES, monogramOf, type ViewerProfile } from "@/lib/viewer/profiles";
@@ -55,14 +56,14 @@ export function UserPanel() {
       width="w-[min(92vw,20rem)]"
       trigger={
         <Button variant="ghost" size="sm" className="gap-2 px-1.5" aria-haspopup="dialog" aria-expanded={open} aria-label={t("userPanel.open", { name })} data-testid="user-panel">
-          <Avatar name={name} node={user.departmentNode} monogram={visitor ? (loading ? "…" : "?") : undefined} size={30} />
+          <ProfileAvatar name={name} src={visitor ? undefined : user.avatarUrl} node={user.departmentNode} monogram={visitor ? (loading ? "…" : "?") : undefined} size={30} />
           <span className="hidden max-w-[9rem] truncate text-[length:var(--ws-text-body-sm)] font-medium md:inline" data-testid="user-panel-handle">{loading ? t("viewer.loading") : visitor ? t("profile.VISITANTE") : `@${user.username}`}</span>
         </Button>
       }
     >
       <div className="grid gap-[var(--ws-space-3)] p-1">
         <div className="flex items-center gap-3">
-          <Avatar name={name} node={user.departmentNode} size={44} monogram={visitor ? "?" : undefined} />
+          <ProfileAvatar name={name} src={visitor ? undefined : user.avatarUrl} node={user.departmentNode} size={44} monogram={visitor ? "?" : undefined} />
           <div className="min-w-0 flex-1">
             <p className="truncate font-semibold">{name}</p>
             <p className="truncate text-[length:var(--ws-text-caption)] text-ws-text-muted">{visitor ? t(loading ? "viewer.loading" : "viewer.notLogged") : `@${user.username} · ${role}`}</p>
