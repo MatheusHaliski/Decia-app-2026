@@ -126,7 +126,9 @@ jobs:
 
   e2e:
     name: "E2E do shell (Playwright · Chromium)"
-    runs-on: ubuntu-latest
+    # ubuntu-latest virou 26.04 e o Playwright 1.56 não instala o Chromium nele ("does not support chromium on ubuntu26.04-x64");
+    # fixado na 24.04 até a atualização do Playwright
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     needs: frontend
     steps:
