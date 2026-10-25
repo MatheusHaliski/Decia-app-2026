@@ -92,7 +92,9 @@ describe("busca de pessoas (RF17, aba PESSOAS)", () => {
     expect(cards[0]!.getAttribute("href")).toBe("/u/ana.souza");
     expect(cards[1]!.getAttribute("href")).toBe("/u/andre.lima");
     expect(within(cards[0]!).getByTestId("person-result-handle").textContent).toBe("@ana.souza · Analista de contratos");
-    expect(cards[0]!.querySelector("img")?.getAttribute("src")).toBe(ANA.avatarUrl);
+    // foto por link externo (gravada antes do upload) não é carregada: mostra as iniciais (RF3.CA05)
+    expect(cards[0]!.querySelector("img")).toBeNull();
+    expect(cards[0]!.querySelector("[role=img]")?.textContent).toBe("AS");
     expect(within(cards[1]!).getByRole("img", { hidden: true }).getAttribute("aria-label")).toBe("André Lima");
     expect(screen.getByRole("list", { name: "Pessoas encontradas" }).querySelectorAll("li")).toHaveLength(2);
     const status = screen.getByTestId("people-search-status");
