@@ -1305,6 +1305,11 @@
   "social.delegation.due": "delegation due: {date}",
   "social.follow.follow": "Follow",
   "social.follow.following": "Following",
+  "people.follow.followAria": "Follow {name}",
+  "people.follow.unfollowAria": "Unfollow {name}",
+  "people.follow.toastFollowing": "You are now following this person",
+  "people.follow.toastUnfollowed": "You unfollowed this person",
+  "people.follow.error": "Could not update",
   "social.follow.followHint": "Follow {name}",
   "social.follow.unfollowHint": "Unfollow {name}",
   "social.follow.followers": "{n} followers",
@@ -1375,7 +1380,7 @@
   "social.profile.openCompany": "Open company page",
   "social.profile.openDepartment": "Open {acronym} page",
   "social.profile.visibleTasks": "Visible tasks",
-  "social.profile.countersHint": "Only the tasks you can see. Followers, projects, DP and Hype appear once they have a real source.",
+  "social.profile.countersHint": "Only the tasks you can see. Followers and following are real; projects, DP and Hype appear once they have a real source.",
   "social.profile.tasksCapped": "Showing the first {n}.",
   "social.profile.thirdParty": "Third-party view",
   "social.profile.thirdPartyHint": "You only see what this person made visible to you",
@@ -1747,5 +1752,5 @@
   "ownProfile.counter.inProgress": "In progress",
   "ownProfile.counter.done": "Done",
   "ownProfile.counterLoading": "loading",
-  "ownProfile.countersHint": "Counts from your real tasks. Followers, projects, DP and Hype appear once they have a real source."
+  "ownProfile.countersHint": "Counts from your real tasks, followers and who you follow. Projects, DP and Hype appear once they have a real source."
 }

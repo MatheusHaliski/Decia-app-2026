@@ -9,6 +9,7 @@ import { ProfileView } from "@/components/social/ProfileView";
 import { pageByRoute } from "@/lib/pages/registry";
 import { PeopleSearch, PEOPLE_SEARCH_DEBOUNCE_MS } from "./PeopleSearch";
 import { PublicProfile, publicProfileTabs } from "./PublicProfile";
+import { OwnProfile } from "@/components/account/OwnProfile";
 
 const replace = vi.fn();
 let currentSearch = new URLSearchParams();
@@ -174,6 +175,55 @@ describe("perfil de terceiros com dados reais (RF16)", () => {
     const tabs = screen.getAllByRole("tab").map((x) => x.textContent);
     expect(tabs).toHaveLength(5);
     expect(tabs).not.toContain("Tarefas salvas");
+  });
+
+  it("seguir (RF16.CA01): Seguir → PUT, vira 'Seguindo' com aria-pressed e os contadores reais; de novo → DELETE", async () => {
+    let following = false;
+    let followers = 4;
+    const calls: string[] = [];
+    fetchMock.mockImplementation(async (url, init) => {
+      const u = String(url);
+      const m = init?.method ?? "GET";
+      if (u.endsWith("/api/me")) return json(200, ME);
+      if (u.includes("/api/people/by-username/ana.souza")) return json(200, PROFILE);
+      if (u.includes(`/api/people/${ANA.id}/tasks`)) return json(200, []);
+      if (u.includes(`/api/people/${ANA.id}/follow`)) {
+        calls.push(m);
+        if (m === "PUT") { following = true; followers += 1; }
+        if (m === "DELETE") { following = false; followers -= 1; }
+        return json(200, { following, self: false, followers, followingCount: 2 });
+      }
+      return json(404, {});
+    });
+    tokenStore.set("jwt-de-teste");
+    renderWithProviders(withSession(<PublicProfile page={PAGE} username="ana.souza" />));
+    const button = await screen.findByTestId("follow-person");
+    expect(button.textContent).toBe("Seguir");
+    expect(button.getAttribute("aria-pressed")).toBe("false");
+    const counters = screen.getByTestId("follow-counters");
+    expect(counters.querySelector('[data-counter="followers"] dd')?.textContent).toBe("4");
+    expect(counters.querySelector('[data-counter="following"] dd')?.textContent).toBe("2");
+    fireEvent.click(button);
+    await waitFor(() => expect(screen.getByTestId("follow-person").getAttribute("aria-pressed")).toBe("true"));
+    expect(screen.getByTestId("follow-person").textContent).toBe("Seguindo");
+    expect(counters.querySelector('[data-counter="followers"] dd')?.textContent).toBe("5");
+    fireEvent.click(screen.getByTestId("follow-person"));
+    await waitFor(() => expect(screen.getByTestId("follow-person").getAttribute("aria-pressed")).toBe("false"));
+    expect(calls).toEqual(["GET", "PUT", "DELETE"]);
+  });
+
+  it("no próprio perfil não há botão de seguir, só os contadores", async () => {
+    fetchMock.mockImplementation(async (url) => {
+      const u = String(url);
+      if (u.endsWith("/api/me")) return json(200, ME);
+      if (u.includes("/api/tasks")) return json(200, []);
+      if (u.includes(`/api/people/${ME.id}/follow`)) return json(200, { following: false, self: true, followers: 7, followingCount: 3 });
+      return json(404, {});
+    });
+    tokenStore.set("jwt-de-teste");
+    renderWithProviders(withSession(<OwnProfile page={pageByRoute("/profile")!} />));
+    await waitFor(() => expect(screen.getByTestId("follow-counters").querySelector('[data-counter="followers"] dd')?.textContent).toBe("7"));
+    expect(screen.queryByTestId("follow-person")).toBeNull();
   });
 
   it("404 do servidor mostra 'perfil não encontrado' sem detalhes e sem buscar tarefas", async () => {

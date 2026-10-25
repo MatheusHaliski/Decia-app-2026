@@ -6,6 +6,7 @@ import br.gov.pr.secid.workstation.application.audit.AuditLogPort;
 import br.gov.pr.secid.workstation.application.identity.EmailHasher;
 import br.gov.pr.secid.workstation.application.identity.IdentityService;
 import br.gov.pr.secid.workstation.application.identity.UserRepositoryPort;
+import br.gov.pr.secid.workstation.application.social.FollowService;
 import br.gov.pr.secid.workstation.domain.identity.AccountStatus;
 import br.gov.pr.secid.workstation.domain.identity.User;
 import org.slf4j.Logger;
@@ -35,15 +36,17 @@ public class AccountAnonymizer {
     private final IdentityService identity;
     private final AuditLogPort audit;
     private final AvatarService avatars;
+    private final FollowService follows;
     private final Clock clock;
 
     public AccountAnonymizer(UserRepositoryPort users, EmailHasher emailHasher, IdentityService identity, AuditLogPort audit,
-                             AvatarService avatars, Clock clock) {
+                             AvatarService avatars, FollowService follows, Clock clock) {
         this.users = users;
         this.emailHasher = emailHasher;
         this.identity = identity;
         this.audit = audit;
         this.avatars = avatars;
+        this.follows = follows;
         this.clock = clock;
     }
 
@@ -85,6 +88,7 @@ public class AccountAnonymizer {
         u.setJobTitle(null);
         u.setBio(null);
         avatars.purge(u);
+        follows.purge(u.getId());
         u.setAvatarUrl(null);
         u.setCoverUrl(null);
         u.setTwoFactorEnabled(false);

@@ -1305,6 +1305,11 @@
   "social.delegation.due": "plazo de la delegación: {date}",
   "social.follow.follow": "Seguir",
   "social.follow.following": "Siguiendo",
+  "people.follow.followAria": "Seguir a {name}",
+  "people.follow.unfollowAria": "Dejar de seguir a {name}",
+  "people.follow.toastFollowing": "Ahora sigues a esta persona",
+  "people.follow.toastUnfollowed": "Dejaste de seguir a esta persona",
+  "people.follow.error": "No se pudo actualizar",
   "social.follow.followHint": "Seguir a {name}",
   "social.follow.unfollowHint": "Dejar de seguir a {name}",
   "social.follow.followers": "{n} seguidores",
@@ -1375,7 +1380,7 @@
   "social.profile.openCompany": "Abrir página de la empresa",
   "social.profile.openDepartment": "Abrir página de {acronym}",
   "social.profile.visibleTasks": "Tareas visibles",
-  "social.profile.countersHint": "Solo las tareas que puedes ver. Seguidores, proyectos, DP y Hype aparecen cuando tengan una fuente real.",
+  "social.profile.countersHint": "Solo las tareas que puedes ver. Seguidores y seguidos son reales; proyectos, DP y Hype aparecen cuando tengan una fuente real.",
   "social.profile.tasksCapped": "Mostrando las primeras {n}.",
   "social.profile.thirdParty": "Vista de terceros",
   "social.profile.thirdPartyHint": "Solo ves lo que esta persona dejó visible para ti",
@@ -1747,5 +1752,5 @@
   "ownProfile.counter.inProgress": "En curso",
   "ownProfile.counter.done": "Concluidas",
   "ownProfile.counterLoading": "cargando",
-  "ownProfile.countersHint": "Cifras de tus tareas reales. Seguidores, proyectos, DP y Hype aparecen cuando tengan una fuente real."
+  "ownProfile.countersHint": "Cifras de tus tareas reales, seguidores y a quién sigues. Proyectos, DP y Hype aparecen cuando tengan una fuente real."
 }

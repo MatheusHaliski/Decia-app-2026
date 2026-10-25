@@ -160,6 +160,25 @@
         "required" : [ "email" ],
         "type" : "object"
       },
+      "FollowView" : {
+        "properties" : {
+          "followers" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "following" : {
+            "type" : "boolean"
+          },
+          "followingCount" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "self" : {
+            "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
       "LoginRequest" : {
         "properties" : {
           "deviceName" : {
@@ -1960,6 +1979,86 @@
         },
         "summary" : "RF3.CA05/RF16 Foto de uma conta ativa (404 NAO_ENCONTRADO sem foto ou conta não ativa)",
         "tags" : [ "RF3 Conta" ]
+      }
+    },
+    "/api/people/{id}/follow" : {
+      "delete" : {
+        "operationId" : "unfollow",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FollowView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF16.CA01 Deixar de seguir (idempotente)",
+        "tags" : [ "RF16 Pessoas" ]
+      },
+      "get" : {
+        "operationId" : "followStatus",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FollowView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF16.CA01 Sigo esta pessoa? Quantos a seguem e quantas ela segue",
+        "tags" : [ "RF16 Pessoas" ]
+      },
+      "put" : {
+        "operationId" : "follow",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FollowView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF16.CA01 Seguir (idempotente; 422 SEGUIR_A_SI_MESMO; conta não ativa → 404)",
+        "tags" : [ "RF16 Pessoas" ]
       }
     },
     "/api/people/{id}/tasks" : {

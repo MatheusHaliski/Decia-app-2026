@@ -519,6 +519,25 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/people/{id}/follow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF16.CA01 Sigo esta pessoa? Quantos a seguem e quantas ela segue */
+        get: operations["followStatus"];
+        /** RF16.CA01 Seguir (idempotente; 422 SEGUIR_A_SI_MESMO; conta não ativa → 404) */
+        put: operations["follow"];
+        post?: never;
+        /** RF16.CA01 Deixar de seguir (idempotente) */
+        delete: operations["unfollow"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/people/{id}/tasks": {
         parameters: {
             query?: never;
@@ -672,6 +691,14 @@ export interface components {
         };
         EmailRequest: {
             email: string;
+        };
+        FollowView: {
+            /** Format: int64 */
+            followers?: number;
+            following?: boolean;
+            /** Format: int64 */
+            followingCount?: number;
+            self?: boolean;
         };
         LoginRequest: {
             deviceName?: string;
@@ -1785,6 +1812,72 @@ export interface operations {
                 };
                 content: {
                     "image/jpeg": string;
+                };
+            };
+        };
+    };
+    followStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
+    follow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
+    unfollow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowView"];
                 };
             };
         };

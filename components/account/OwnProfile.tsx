@@ -6,6 +6,7 @@
  */
 import { Badge, Button, Card, EmptyState, LoadingState } from "@/components/ui";
 import { RfPage } from "@/components/shell/RfPage";
+import { FollowCounters, useFollow } from "@/components/people/FollowPerson";
 import { MyTasks, useMyTaskList } from "@/components/tasks/PersistedTasks";
 import type { Me } from "@/lib/account/client";
 import { ProfileAvatar } from "./ProfileAvatar";
@@ -37,6 +38,7 @@ function OwnProfileHeader({ me, tasks }: { me: Me; tasks: readonly TaskView[] | 
   const fmt = new Intl.NumberFormat(intl);
   const typeKey = `profileType.${me.profileType}`;
   const typeLabel = t(typeKey);
+  const follow = useFollow(me.id);
   return (
     <Card tone="clay" className="grid gap-[var(--ws-space-4)] md:grid-cols-[minmax(0,1fr)_auto] md:items-center" data-testid="own-profile-header">
       <div className="flex min-w-0 items-start gap-[var(--ws-space-4)]">
@@ -71,6 +73,7 @@ function OwnProfileHeader({ me, tasks }: { me: Me; tasks: readonly TaskView[] | 
             </div>
           ))}
         </dl>
+        <FollowCounters view={follow.view} />
         <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("ownProfile.countersHint")}</p>
       </div>
     </Card>

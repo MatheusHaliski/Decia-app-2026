@@ -29,6 +29,8 @@ import br.gov.pr.secid.workstation.application.identity.VerificationCodeReposito
 import br.gov.pr.secid.workstation.application.media.MemoryMedia;
 import br.gov.pr.secid.workstation.application.security.AuthorizationTrail;
 import br.gov.pr.secid.workstation.application.security.ResourceAuthorizer;
+import br.gov.pr.secid.workstation.application.social.FollowService;
+import br.gov.pr.secid.workstation.application.social.MemoryFollows;
 import br.gov.pr.secid.workstation.domain.identity.AccountStatus;
 import br.gov.pr.secid.workstation.domain.identity.ProfileType;
 import br.gov.pr.secid.workstation.domain.identity.Role;
@@ -336,7 +338,9 @@ class AccountServiceTest {
         ResourceAuthorizer authz = new ResourceAuthorizer(users, Optional.empty());
         MemoryMedia media = new MemoryMedia();
         AvatarService avatars = new AvatarService(users, authz, media.inspector, media.service(authz), audited::add);
-        AccountAnonymizer anonymizer = new AccountAnonymizer(users, emailHasher, identity, audited::add, avatars, Clock.systemUTC());
+        MemoryFollows follows = new MemoryFollows();
+        AccountAnonymizer anonymizer = new AccountAnonymizer(users, emailHasher, identity, audited::add, avatars,
+                new FollowService(follows, users, authz, Clock.systemUTC()), Clock.systemUTC());
         assertThat(anonymizer.anonymizeDue()).as("ainda no prazo").isZero();
 
         maria.setDeletionScheduledAt(Instant.now().minusSeconds(1));
