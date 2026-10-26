@@ -28,7 +28,7 @@
 
         <!-- Boot 4 = Jackson 3 (tools.jackson), Spring Framework 7, Security 7, Hibernate 7, Flyway 12, Testcontainers 2.
              Armadilhas e nomes novos: docs/arquitetura/ARQUITETURA.md §3 e docs/seguranca/SEGURANCA.md -->
-        <spring-boot.version>4.1.1</spring-boot.version>
+        <spring-boot.version>4.1.2</spring-boot.version>
         <springdoc.version>3.1.1</springdoc.version>
         <resilience4j.version>2.4.0</resilience4j.version>
         <lombok.version>1.18.48</lombok.version>
