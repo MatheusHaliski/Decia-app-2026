@@ -45,7 +45,7 @@
         <checkstyle-plugin.version>3.6.0</checkstyle-plugin.version>
         <checkstyle.version>14.3.0</checkstyle.version>
         <dependency-check.version>13.0.0</dependency-check.version>
-        <surefire.version>3.6.0</surefire.version>
+        <surefire.version>3.6.1</surefire.version>
         <compiler-plugin.version>3.16.0</compiler-plugin.version>
 
         <!-- Cobertura mínima de linhas (ARQUITETURA §3.4). Os módulos ws-application e ws-web ligam o check. -->
