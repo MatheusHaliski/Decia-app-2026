@@ -1,6 +1,6 @@
 # RF75 — Work Station Career Guidance: guiar a pessoa em transição de carreira com perguntas, tarefas-guia e evidências
 **HU:** — · **Aba/rota:** Guia de Carreira (`/profile?tab=carreira`; guia inicial em `/welcome`; Tarefa do Dia em `/profile?tab=tarefa-do-dia`; caminhos em `/insights?tab=perfil`; controles em `/settings?tab=carreira`, `ia` e `privacidade`; painel Guia dentro de `/letters` e `/drawings`) · **Página-esqueleto:** a registrar; jornada ainda não implementada.
-**Critérios de aceite cobertos:** RF75.CA01 … RF75.CA18 — requisito novo pedido pelo usuário em 31/10/2026 ("Work Station Career Guidance — Guia de Carreira do Work Station"), derivado da auditoria [`GUIA_DE_CARREIRA.md`](../../auditoria/2026-10-31/GUIA_DE_CARREIRA.md); todos planejados. No código existem só as bases: tipos de conta e perfil (RF1, RF3), especialidades e visibilidade (`lib/account/publication.ts`), modos de autonomia (RF51, `lib/ai/autonomy.ts`), consentimentos (`ConsentPurpose.RESUMO_PROFISSIONAL_IA`), tarefas reais (RF4), seguir (RF16), editores Letters (esqueleto) e Drawings (3D real).
+**Critérios de aceite cobertos:** RF75.CA01 … RF75.CA19 — requisito novo pedido pelo usuário em 31/10/2026 ("Work Station Career Guidance — Guia de Carreira do Work Station"), derivado da auditoria [`GUIA_DE_CARREIRA.md`](../../auditoria/2026-10-31/GUIA_DE_CARREIRA.md); todos planejados. No código existem só as bases: tipos de conta e perfil (RF1, RF3), especialidades e visibilidade (`lib/account/publication.ts`), modos de autonomia (RF51, `lib/ai/autonomy.ts`), consentimentos (`ConsentPurpose.RESUMO_PROFISSIONAL_IA`), tarefas reais (RF4), seguir (RF16), editores Letters (esqueleto) e Drawings (3D real).
 
 **Trello:** [RF75 Work Station Career Guidance (Guia de Carreira do Work Station)](https://trello.com/c/IbMkAppV/241-rf75-work-station-career-guidance-guia-de-carreira-do-work-station-guiar-a-pessoa-em-transi%C3%A7%C3%A3o-de-carreira-com-perguntas-tarefas) (card 241, criado em 31/10/2026).
 
@@ -34,6 +34,7 @@
 | RF75.CA16 | Dado as mensagens do guia, quando enviadas, então a primeira interação diz "Sou uma IA; minhas sugestões não garantem entrevista, emprego nem salário"; há no máximo um lembrete proativo por dia, dentro do horário escolhido, com pausa de sete dias após duas dispensas; nenhuma mensagem culpa a pessoa, usa contagem regressiva falsa ou "confirmshaming"; os modos Manual e Sob solicitação não geram lembretes. |
 | RF75.CA17 | Dado o histórico do guia (respostas, análises, sugestões, evidências), quando a pessoa pede, então exporta tudo e exclui análises e respostas dentro das regras de retenção; revogar um consentimento invalida sugestões pendentes no servidor; conta trocada no mesmo aparelho não vê nada da anterior; eventos guardam autoria e referência de inferência sem copiar currículo ou texto sensível. |
 | RF75.CA18 | Dado qualquer tela da jornada, quando renderizada, então não mostra identificadores internos (selos "RFnn", "Q-30", "Bloco 3", "Esqueleto da etapa"), nem jargão técnico ("tokens", "ponto de restauração", "ferramentas determinísticas") fora de "mais opções"; funciona por teclado, com estrutura semântica, e distingue informação confirmada, inferência e proposta (RF50.CA15). |
+| RF75.CA19 | Dado o campo **profissão preferida** (`User.preferredOccupation`: código CBO/ESCO + rótulo, opcional, privado por padrão, editável em Conta e no guia), quando preenchido, então o guia e a Análise de Perfil (RF50) passam a operar no **escopo dessa profissão**: as perguntas ganham variantes específicas (competências, ferramentas e entregas típicas da ocupação, vindas do pacote de domínio), as tarefas-guia são filtradas e parametrizadas pelo pacote (ex.: Arquitetura → planta, detalhe e prancha; Direito → parecer, POP e estudo de caso; Desenvolvimento → relatório técnico, diagrama e wireframe), a pré-checagem e a rubrica usam critérios da profissão (normas, estrutura, vocabulário), as respostas do Copilot recebem o contexto do domínio e citam fontes do campo, pessoas semelhantes e caminhos partem de ocupações iguais ou vizinhas na CBO/ESCO. Sem o campo, vale o pacote genérico e o guia oferece o teste de interesses; trocar a profissão regenera o plano e preserva evidências; o campo nunca aparece a terceiros sem opt-in e nunca é tratado como sinal de busca de emprego (D-147). |
 
 ## Perguntas, abas e tarefas
 
@@ -102,7 +103,7 @@ flowchart LR
 ## Integração com o Work Station
 
 - **RF1/RF3:** tipo de conta Em transição e preferências; `/welcome` entra como destino pós-cadastro e pós-login quando `careerProfile.status = GUIA_EM_ANDAMENTO`.
-- **RF50:** recebe o `CareerProfile` como a ficha do CA01; devolve tarefas, projetos, caminhos e pessoas; as quatro saídas passam pelo plano (CA05) antes de virar rascunho (RF50.CA08).
+- **RF50:** recebe `User.preferredOccupation` e o `CareerProfile` como a ficha do CA01 e usa o mesmo `OccupationPack` para escopo das perguntas, análise e caminhos; devolve tarefas, projetos, caminhos e pessoas; as quatro saídas passam pelo plano (CA05) antes de virar rascunho (RF50.CA08).
 - **RF4/RF41:** cada tarefa-guia aceita é uma `TaskItem` real (origem GUIA_DE_CARREIRA) com `Evidence` (RF41.CA06).
 - **RF52–RF56 e RF57–RF74:** o painel Guia dentro dos editores; a peça vinculada à tarefa (RF71); a captura PNG do Drawings (RF74) serve de evidência visual.
 - **RF51:** os três controles simples mapeiam para os cinco modos; a regra "IA nunca publica sozinha" vale aqui.
@@ -112,18 +113,18 @@ flowchart LR
 
 ## Modelo e plano propostos
 
-`CareerProfile` (dono, status, momento, objetivo CBO/ESCO, prazo, regime, modelo, cidade, nível, horas por semana, aparelho, lista "não quero", versão — sem salário, D-147) · `CareerAnswer` (pergunta, resposta, quando, contexto) — append-only · `GuidedTaskTemplate` (catálogo L1–L10, D1–D10: competência, editor, critérios objetivos e subjetivos, rubrica, tempo, nível, pergunta-gatilho) · `CareerPlan` (semana, itens, horas previstas) · `GuidedTask` (template, `TaskItem` real, estado, resposta a "serve para você?") · `CompetencyEvidence` (liga `Evidence` à competência: URL, versão, critérios atendidos, autoria declarada, validação, badge) · `GuidanceNudge` (tipo, quando, dispensas) · `CareerCheckin` (quatro dimensões, semana).
+`User.preferredOccupation` (**profissão preferida**: código CBO/ESCO + rótulo + visibilidade, atributo da pessoa, lido por RF50 e RF75) · `OccupationPack` (**pacote de domínio** por família de ocupação: vocabulário, competências ESCO típicas, variantes de perguntas, templates de tarefa aplicáveis e seus parâmetros, critérios de rubrica, fontes de mercado, trecho de contexto para a IA; versão) · `CareerProfile` (dono, status, momento, até 4 áreas secundárias CBO/ESCO, prazo, regime, modelo, cidade, nível, horas por semana, aparelho, lista "não quero", versão — sem salário, D-147) · `CareerAnswer` (pergunta, resposta, quando, contexto) — append-only · `GuidedTaskTemplate` (catálogo L1–L10, D1–D10: competência, editor, critérios objetivos e subjetivos, rubrica, tempo, nível, pergunta-gatilho) · `CareerPlan` (semana, itens, horas previstas) · `GuidedTask` (template, `TaskItem` real, estado, resposta a "serve para você?") · `CompetencyEvidence` (liga `Evidence` à competência: URL, versão, critérios atendidos, autoria declarada, validação, badge) · `GuidanceNudge` (tipo, quando, dispensas) · `CareerCheckin` (quatro dimensões, semana).
 
 ### Plano de implementação (etapas, cada uma entregável e testável)
 
 | Etapa | Entrega | CAs | Onde no código | Verificação |
 |---|---|---|---|---|
-| **E1 Porta de entrada** | `ProfileType.EM_TRANSICAO` + pergunta "O que descreve seu momento?" no cadastro; migração `V60__em_transicao.sql`; textos pt-BR/en/es; mudança de tipo sem perda | CA01, CA12, CA18 | `ws-domain/.../identity/ProfileType.java`, `ws-application/.../IdentityService`, `components/auth/AuthForms.tsx`, `lib/i18n/messages/*` | teste de integração do cadastro; e2e `register.spec` com o tipo novo |
+| **E1 Porta de entrada** | `ProfileType.EM_TRANSICAO` + pergunta "O que descreve seu momento?" no cadastro; `users.preferred_occupation_code/label/visibility` (profissão preferida, editável em Conta); migração `V60__em_transicao.sql`; textos pt-BR/en/es; mudança de tipo sem perda | CA01, CA12, CA18, CA19 | `ws-domain/.../identity/ProfileType.java`, `ws-application/.../IdentityService`, `components/auth/AuthForms.tsx`, `lib/i18n/messages/*` | teste de integração do cadastro; e2e `register.spec` com o tipo novo |
 | **E2 Perfil de carreira e guia inicial** | `career_profiles` + `career_answers` (`V61`); `GET/PUT /api/me/career`; rota `/welcome` (registry + página); redirecionamento pós-cadastro e pós-login; aviso "n/8"; aba Carreira no perfil (n.16, privada) | CA02, CA03, CA04 | `ws-application/career/`, `ws-infrastructure/persistence-mysql`, `app/(shell)/welcome`, `lib/pages/registry.ts`, `lib/nav/matrix.ts`, `components/career/` | contrato OpenAPI regenerado; teste de autorização (chefe/empresa/admin → 404); e2e do guia pulável e retomável |
 | **E3 Controles de IA e rede** | Configurações › IA e dados (e1–e6) sobre as preferências já persistidas no servidor; Configurações › Privacidade real (f3–f7) com "quem verá?"; descoberta e pessoas semelhantes por opt-in; consentimento `GUIA_DE_CARREIRA` (`V62`); perfil público e busca idênticos aos de uma conta Empregado (D-147) | CA10, CA11, CA14, CA15, CA17 | `app/(shell)/settings`, `lib/preferences`, `ws-application/.../PublicationService`, `PeopleService.search` (filtro de descoberta), `ConsentPurpose` | teste com duas contas (nenhum campo de carreira nem o tipo Em transição aparece a terceiros, chefe, empresa ou admin); e2e das abas |
-| **E4 Catálogo e plano** | `guided_task_templates` semeados com L1–L10 e D1–D10 (`V63`); gerador de plano semanal (puro, testado) a partir do perfil; Tarefa do Dia real no perfil; "serve para você?" e pausa após duas dispensas; nudges com horário e teto diário | CA05, CA08, CA16 | `lib/career/plan.ts` (Strategy por momento), `ws-application/career/CareerPlanService`, `components/career/TaskOfTheDay`, notificações (RF27) | testes do gerador (horas, aparelho, dispensas); e2e da Tarefa do Dia |
+| **E4 Catálogo, pacotes de domínio e plano** | `guided_task_templates` semeados com L1–L10 e D1–D10 e `occupation_packs` com os primeiros 8 pacotes (Arquitetura e Urbanismo, Engenharia Civil, Direito, Administração, Desenvolvimento de Software, Design, Contabilidade, genérico) (`V63`); gerador de plano semanal (puro, testado) a partir do perfil e do pacote da profissão preferida; Tarefa do Dia real no perfil; "serve para você?" e pausa após duas dispensas; nudges com horário e teto diário | CA05, CA08, CA16, CA19 | `lib/career/plan.ts` (Strategy por momento), `ws-application/career/CareerPlanService`, `components/career/TaskOfTheDay`, notificações (RF27) | testes do gerador (horas, aparelho, dispensas); e2e da Tarefa do Dia |
 | **E5 Painel Guia nos editores e evidência** | Painel lateral no Letters e no Drawings; pré-checagem objetiva (contagem de palavras, campos, cotas, vistas); `CompetencyEvidence` (`V64`) ao concluir; fila de validação do curador; exportação Open Badge 3.0 | CA06, CA07 | `components/letters/GuidePanel`, `components/drawings3d/GuidePanel`, `lib/career/checks/*` (uma Strategy por critério), `ws-application/career/EvidenceService` | testes das checagens; e2e: concluir D3 gera evidência com GLB e PNG; selo só após validação |
-| **E6 IA explicável** | "Por que esta sugestão" e "discordo/contestar" em toda saída; perguntas em vez de inferência; `MarketClaim` com fonte, data e região ou "estimativa"; aviso fixo da primeira interação; sub-aba Caminhos em `/insights` sobre o RF50 | CA09, CA13 | `AiGateway` (RF43), `ProfileAnalysisService` (RF50), `components/career/WhyThis`, `components/insights/CareerPaths` | teste de que toda saída carrega campos usados; e2e com motor simulado |
+| **E6 IA explicável e por domínio** | "Por que esta sugestão" e "discordo/contestar" em toda saída; perguntas em vez de inferência; composição do prompt = base + pacote da profissão preferida (RF50 e RF75 usam o mesmo `OccupationPack`); `MarketClaim` com fonte, data e região ou "estimativa"; aviso fixo da primeira interação; sub-aba Caminhos em `/insights` sobre ocupações vizinhas na CBO/ESCO | CA09, CA13, CA19 | `AiGateway` (RF43), `ProfileAnalysisService` (RF50), `components/career/WhyThis`, `components/insights/CareerPaths` | teste de que toda saída carrega campos usados; e2e com motor simulado |
 | **E7 Fechamento** | Jargão interno removido das telas; acessibilidade (Axe, teclado, leitor de tela); jornada real UI→BFF→API→MySQL com capturas; matriz, catálogo e Trello atualizados | CA18 e todos | `RfPage` (selos só no laboratório), `docs/auditoria`, `MATRIZ_RF` | nota acima de 8,5 na rubrica; e2e completo em duas contas |
 
 Ordem: E1 → E2 → E3 → E4 → E5 → E6 → E7. E3 e E4 podem andar em paralelo depois de E2. Cada etapa fecha com contrato regenerado (`OpenApiContractIT` + `npm run api:types`), catálogo (`node scripts/rf/gerar-catalogo.mjs`), `verify` do backend, bateria do front e e2e. Nenhuma chamada paga de IA é necessária até E6, e lá o motor simulado basta para os testes.
@@ -132,7 +133,7 @@ Validar com perfis: sem emprego há 4 meses, primeiro emprego, mudando de área,
 
 ## 1. Diagrama de classes
 
-Entidades novas do Guia de Carreira e as reais que elas reutilizam (`User`, `UserConsent`, `TaskItem`, `Evidence`). Sem salário nem status de busca (D-147).
+Entidades novas do Guia de Carreira e as reais que elas reutilizam (`User` ganha a profissão preferida, `UserConsent`, `TaskItem`, `Evidence`). Sem salário nem status de busca (D-147).
 
 ```mermaid
 classDiagram
@@ -140,6 +141,21 @@ classDiagram
     +UUID id
     +ProfileType profileType
     +AccountStatus status
+    +String jobTitle
+    +String preferredOccupationCode
+    +String preferredOccupationLabel
+    +boolean preferredOccupationVisible
+  }
+  class OccupationPack {
+    +String familyCode
+    +String name
+    +String[] typicalSkills
+    +String[] questionVariants
+    +String[] templateCodes
+    +String[] rubricCriteria
+    +String[] marketSources
+    +String aiContext
+    +int version
   }
   class ProfileType {
     <<enumeration>>
@@ -153,7 +169,7 @@ classDiagram
     +UUID ownerId
     +CareerProfileStatus status
     +CareerMoment moment
-    +String targetOccupationCode
+    +String[] secondaryOccupationCodes
     +String targetHorizon
     +String[] contractTypes
     +String[] workModels
@@ -241,6 +257,8 @@ classDiagram
   }
   User "1" --> "1" ProfileType
   User "1" --> "0..1" CareerProfile : dono
+  User "*" --> "0..1" OccupationPack : profissão preferida → pacote
+  GuidedTaskTemplate "*" --> "*" OccupationPack : aplicável a
   CareerProfile "1" --> "1" CareerMoment
   CareerProfile "1" --> "*" CareerAnswer : append-only
   CareerProfile "1" --> "*" CareerPlan
@@ -276,7 +294,7 @@ flowchart TD
   subgraph S["ws-application"]
     P1["P1 IdentityService.register cria CareerProfile RASCUNHO"]
     P2["P2 CareerProfileService.answer grava CareerAnswer, nunca repete"]
-    P3["P3 CareerPlanService.generate: horas, aparelho, nível, não quero"]
+    P3["P3 CareerPlanService.generate: pacote da profissão preferida, horas, aparelho, nível, não quero"]
     P4["P4 GuidedTaskService.accept cria TaskItem origem GUIA"]
     P5{"P5 2 dispensas seguidas?"}
     P6["P6 Pausa sugestões 7 dias"]
@@ -345,8 +363,8 @@ sequenceDiagram
   U->>N: pula o resto
   N->>C: POST /api/me/career/plan
   C->>S: CareerPlanService.generate
-  S->>R: select guided_task_templates (nível, editor, aparelho)
-  S->>AI: explain(template, campos do perfil)
+  S->>R: select occupation_packs (users.preferred_occupation_code) e guided_task_templates do pacote (nível, editor, aparelho)
+  S->>AI: explain(template, campos do perfil, contexto do pacote)
   AI-->>S: "por que esta tarefa" com campos usados
   S->>R: insert career_plans, guided_tasks
   S-->>C: 200 plano da semana + Tarefa do Dia
@@ -414,7 +432,7 @@ flowchart LR
     CAR["components/career/CareerTab · TaskOfTheDay · WhyThis"]
     SET["app/(shell)/settings: Carreira · IA e dados · Privacidade"]
     GUI["components/letters/GuidePanel · components/drawings3d/GuidePanel"]
-    PLN["lib/career/plan (Strategy por momento) · lib/career/checks"]
+    PLN["lib/career/plan (Strategy por momento e por pacote de domínio) · lib/career/checks"]
   end
   subgraph WSWEB["ws-web"]
     AC["AuthController (register)"]
@@ -433,7 +451,7 @@ flowchart LR
   end
   subgraph DOM["ws-domain"]
     PT["ProfileType + EM_TRANSICAO"]
-    CPR["CareerProfile · GuidedTaskTemplate · CompetencyEvidence"]
+    CPR["User.preferredOccupation · OccupationPack · CareerProfile · GuidedTaskTemplate · CompetencyEvidence"]
     CONS["ConsentPurpose (+ GUIA_DE_CARREIRA)"]
   end
   subgraph INFRA["ws-infrastructure"]
@@ -480,3 +498,4 @@ Mensagens = números do `autonumber` da §3. Passos = nós da §2. Componentes =
 | RF75.CA16 | `GuidanceNudge` (kind, sentAt, dismissals), `NotificationService` com horário e teto diário, aviso fixo da 1ª interação | P3 → A2, P5 → P6 | 22–27 | `ATIVO → PAUSADO` | `NOTIF`, `CPL` |
 | RF75.CA17 | `DataExportRequest` (real), exclusão de `career_*`, revogação de `UserConsent` invalida `GuidedTask` pendentes, `CurrentUserProvider` (real) | — | — | `ATIVO/ENCERRADO → EXCLUIDO` | `CPS`, `CONS`, `MYSQL` |
 | RF75.CA18 | `RfPage` sem selos fora do laboratório, textos simples em `lib/i18n`, "mais opções" para o técnico; Axe e teclado | A1, A2, A6 | — | — | `WEL`, `CAR`, `SET` |
+| RF75.CA19 | `User.preferredOccupation{Code,Label,Visible}`, `OccupationPack` (familyCode, questionVariants, templateCodes, rubricCriteria, aiContext), `CareerPlanService.generate` e `AiGateway.explain` com o pacote, `PeerMatcher`/caminhos por vizinhança CBO/ESCO | P3 → I1 → A2 · F3 → I2 | 21–23 | `ATIVO → ATIVO` (troca regenera o plano) | `REG` (Conta), `PLN`, `CPL`, `AIG`, `PAS`, `CPR` |

@@ -4727,7 +4727,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "hu": null,
     "summary": "Trello: RF75 Work Station Career Guidance (Guia de Carreira do Work Station) (card 241, criado em 31/10/2026).",
     "route": "Guia de Carreira (/profile?tab=carreira; guia inicial em /welcome; Tarefa do Dia em /profile?tab=tarefa-do-dia; caminhos em /insights?tab=perfil; controles em /settings?tab=carreira, ia e privacidade; painel Guia dentro de /letters e /drawings)",
-    "coverage": "RF75.CA01 … RF75.CA18 — requisito novo pedido pelo usuário em 31/10/2026 (\"Work Station Career Guidance — Guia de Carreira do Work Station\"), derivado da auditoria GUIA_DE_CARREIRA.md; todos planejados. No código existem só as bases: tipos de conta e perfil (RF1, RF3), especialidades e visibilidade (lib/account/publication.ts), modos de autonomia (RF51, lib/ai/autonomy.ts), consentimentos (ConsentPurpose.RESUMO_PROFISSIONAL_IA), tarefas reais (RF4), seguir (RF16), editores Letters (esqueleto) e Drawings (3D real).",
+    "coverage": "RF75.CA01 … RF75.CA19 — requisito novo pedido pelo usuário em 31/10/2026 (\"Work Station Career Guidance — Guia de Carreira do Work Station\"), derivado da auditoria GUIA_DE_CARREIRA.md; todos planejados. No código existem só as bases: tipos de conta e perfil (RF1, RF3), especialidades e visibilidade (lib/account/publication.ts), modos de autonomia (RF51, lib/ai/autonomy.ts), consentimentos (ConsentPurpose.RESUMO_PROFISSIONAL_IA), tarefas reais (RF4), seguir (RF16), editores Letters (esqueleto) e Drawings (3D real).",
     "cas": [
       {
         "id": "RF75.CA01",
@@ -4834,6 +4834,12 @@ export const RF_CATALOG: readonly RfEntry[] = [
       {
         "id": "RF75.CA18",
         "text": "Dado qualquer tela da jornada, quando renderizada, então não mostra identificadores internos (selos \"RFnn\", \"Q-30\", \"Bloco 3\", \"Esqueleto da etapa\"), nem jargão técnico (\"tokens\", \"ponto de restauração\", \"ferramentas determinísticas\") fora de \"mais opções\"; funciona por teclado, com estrutura semântica, e distingue informação confirmada, inferência e proposta (RF50.CA15).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA19",
+        "text": "Dado o campo profissão preferida (User.preferredOccupation: código CBO/ESCO + rótulo, opcional, privado por padrão, editável em Conta e no guia), quando preenchido, então o guia e a Análise de Perfil (RF50) passam a operar no escopo dessa profissão: as perguntas ganham variantes específicas (competências, ferramentas e entregas típicas da ocupação, vindas do pacote de domínio), as tarefas-guia são filtradas e parametrizadas pelo pacote (ex.: Arquitetura → planta, detalhe e prancha; Direito → parecer, POP e estudo de caso; Desenvolvimento → relatório técnico, diagrama e wireframe), a pré-checagem e a rubrica usam critérios da profissão (normas, estrutura, vocabulário), as respostas do Copilot recebem o contexto do domínio e citam fontes do campo, pessoas semelhantes e caminhos partem de ocupações iguais ou vizinhas na CBO/ESCO. Sem o campo, vale o pacote genérico e o guia oferece o teste de interesses; trocar a profissão regenera o plano e preserva evidências; o campo nunca aparece a terceiros sem opt-in e nunca é tratado como sinal de busca de emprego (D-147).",
         "note": "",
         "kind": "enunciado"
       }

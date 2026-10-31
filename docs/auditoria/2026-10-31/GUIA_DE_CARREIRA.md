@@ -77,7 +77,7 @@ Onde: **C** cadastro · **P** primeiro acesso (até 5 min, pode pular) · **X** 
 | a3 | A mudança foi planejada ou inesperada? | Escolha | Não | P | Eixo "situação" do modelo 4S (Schlossberg); ajusta o tom do Copilot. Privada. |
 | a4 | Último cargo ou área (autocompletar CBO) | CBO | Não* | P | Ponto de partida das lacunas. *Dispensada no primeiro emprego. |
 | a5 | Quer registrar uma pausa na carreira? (cuidado de familiar, estudos, corte de vaga, mudança, outro) | Escolha + texto | Não | X (ao montar o perfil) | Categoria neutra, como o LinkedIn Career Break. Privada por padrão. |
-| b1 | **Cargo(s) ou área(s) alvo (até 5)** | CBO/ESCO + "não sei" | Sim | P | Base de todas as sugestões: tarefas, pessoas, caminhos. |
+| b1 | **Profissão preferida** (`User.preferredOccupation`, CBO/ESCO + rótulo; até 4 áreas secundárias no perfil de carreira) | CBO/ESCO + "não sei" | Sim | P (ou Conta) | Define o **escopo** do guia e da IA (RF75.CA19): perguntas, tarefas, rubricas, respostas, pessoas e caminhos vêm do pacote de domínio dessa profissão. |
 | b2 | Teste de interesses (30 itens, Mini-IP RIASEC) | Questionário | Não | X (se "não sei") | Sugere 3–5 famílias de ocupação com justificativa. |
 | b3 | Em quanto tempo quer estar trabalhando? | Faixas | Sim | P | Define cadência e prazo das tarefas. |
 | b4 | Regime (CLT, PJ, estágio, temporário, freela, concurso) | Múltipla | Não | P | Filtra sugestões (ex.: edital de concurso vira tarefa). |
@@ -129,6 +129,21 @@ Onde: **C** cadastro · **P** primeiro acesso (até 5 min, pode pular) · **X** 
 - **Primeiro acesso (tela "Vamos montar seu guia", pulável, retomável):** b1, b3, b4, d1, e1, e2, f3, f4. Mostra o ganho de cada resposta ("com isso já posso sugerir sua primeira tarefa").
 - **Contextuais:** b2 ao responder "não sei"; b8 ao ver sugestões; c3 por competência; d6 e e6 em cada sugestão; f5/f7 na primeira publicação; c6 semanal; a5 ao montar o perfil.
 - **Configurações:** tudo revisável em Carreira, IA e Privacidade (§6).
+
+### 4.6 Profissão preferida: o campo que dá escopo à IA
+
+Decisão de 31/10/2026: a pessoa tem **um** campo `profissão_preferida` na própria entidade `User` (código CBO/ESCO, rótulo e visibilidade; opcional; privado por padrão; editável em Conta e no guia). O RF50 e o RF75 leem esse campo e carregam o **pacote de domínio** correspondente (`OccupationPack`, por família de ocupação). Na prática:
+
+| Onde | Sem profissão preferida | Com profissão preferida (ex.: Arquitetura e Urbanismo) |
+|---|---|---|
+| Perguntas | "Que competência quer desenvolver?" com busca livre na ESCO | "Quer desenvolver Revit/BIM, aprovação de projetos, orçamento de obra ou detalhamento?" (competências típicas do pacote) |
+| Tarefas-guia | catálogo genérico (L1–L10, D1–D10) | D1 planta, D6 detalhe, D2 prancha e L4 relatório técnico entram primeiro, com parâmetros do campo ("planta baixa residencial 1:50 com NBR 6492") |
+| Pré-checagem e rubrica | critérios objetivos gerais | critérios da profissão (escala e cotas; estrutura de parecer; cobertura de testes) |
+| Respostas do Copilot | contexto base | contexto base + trecho do pacote (vocabulário, normas, fontes do campo); cita fontes da área |
+| Pessoas semelhantes e caminhos | por competências declaradas | por ocupação igual ou vizinha na CBO/ESCO, com a explicação da afinidade |
+| Fallback | oferece o teste de interesses (b2) e segue genérico | trocar a profissão regenera o plano e preserva as evidências |
+
+Pacotes iniciais (E4): Arquitetura e Urbanismo, Engenharia Civil, Direito, Administração, Desenvolvimento de Software, Design, Contabilidade e genérico. Cada pacote é dado (tabela `occupation_packs`, versionada), não código: adicionar uma profissão não exige nova tela. O campo não é sinal de busca de emprego (D-147): um Empregado que quer crescer na própria área também o preenche.
 
 ## 5. Requisito funcional: RF75 Work Station Career Guidance
 
