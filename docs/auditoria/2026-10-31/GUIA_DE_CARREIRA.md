@@ -24,7 +24,7 @@ Percurso no build de produção (`next start`, modo laboratório, sem backend), 
 - **Depois do cadastro:** a confirmação de e-mail e o login levam ao `/mural` (`components/auth/VerifyEmailForm.tsx:26`, `lib/auth/next.ts:6`). Não há primeiro acesso, checklist nem "complete seu perfil".
 - **Perfil:** nome, nome de exibição, cargo, "Sobre você" e até 10 especialidades livres, visíveis a qualquer conta autenticada por padrão (`components/account/AccountPanel.tsx`, `lib/account/publication.ts:9-16`). Nada de objetivo, situação, experiência, formação, disponibilidade, localização ou currículo (lacunas 1, 11, 17–20, 39–41 de `DADOS_DE_PERFIL_POR_TIPO.md` §12).
 - **Vocabulário:** "Acervo de Tarefas", "Perfil deliberativo", "DP", "Hype", "Plano Anual", "chancelas" — tudo institucional; o catálogo de textos pt-BR não contém "carreira", "emprego" nem "vaga".
-- **Conflito de produto:** a especificação proíbe o sinal "procurando emprego" e a pretensão salarial (`DADOS_DE_PERFIL_POR_TIPO.md` §4 e §10.7). A persona contraria a regra atual — resolvido pela decisão D-147 no RF75.
+- **Conflito de produto, decidido (D-147, 31/10/2026 — manter o padrão atual):** a especificação proíbe o sinal "procurando emprego" e a pretensão salarial (`DADOS_DE_PERFIL_POR_TIPO.md` §4 e §10.7). O dono do produto manteve a regra: o RF75 não tem status "Em busca", visibilidade para recrutadores, bloqueio de empresas, disponibilidade nem salário; o momento de carreira fica só no perfil privado e a conta Em transição aparece a terceiros como pessoa comum.
 
 ### 2.2 Sugestão de tarefas — nota 1,0
 
@@ -47,7 +47,7 @@ Percurso no build de produção (`next start`, modo laboratório, sem backend), 
 
 ### 2.5 Lacunas priorizadas
 
-- **P0:** decisão de produto sobre o sinal "em busca" (D-147); primeiro acesso e questionário inexistentes; RF50 não implementado; Privacidade esqueleto e especialidades visíveis por padrão; jargão interno nas telas.
+- **P0:** primeiro acesso e questionário inexistentes; RF50 não implementado; Privacidade esqueleto e especialidades visíveis por padrão; jargão interno nas telas. (A decisão sobre o sinal "em busca" foi tomada: D-147, manter o padrão.)
 - **P1:** autonomia da IA não cobre carreira e o modo Avançado não lista os dados enviados; preferências só no navegador; Hype visível a terceiros e "Ranking" planejado; busca e Mural presos à empresa; campos estruturados ausentes.
 - **P2:** ícones sociais sem rótulo; Tarefa do Dia sem conteúdo; Drawings 3D e Letters no menu sem uso para a persona; bloquear, silenciar e "quem pode me contatar".
 
@@ -57,7 +57,7 @@ Vêm das plataformas e dos frameworks pesquisados (fontes na §9):
 
 1. **Objetivo antes de dados pessoais.** LinkedIn Open to Work, Indeed, Catho e Duolingo perguntam primeiro "o que você quer" e só depois quem você é.
 2. **Progressivo, nunca um formulário gigante.** Cadastro com uma pergunta a mais; primeiro acesso com até 7 perguntas (5 minutos); o resto nos momentos em que a resposta faz diferença, sem repetir o que já foi respondido (perfilamento progressivo).
-3. **Privado por padrão, visibilidade em níveis.** Status de busca "só eu / recrutadores verificados / toda a rede" (modelo LinkedIn). Salário, lista de "não quero", pausa na carreira e check-ins de prontidão nunca aparecem a terceiros.
+3. **Privado por padrão, sem sinal de busca.** O LinkedIn e o Indeed expõem "aberto a vagas" em níveis; o WS, por decisão de produto (D-147), **não** armazena nem exibe sinal de busca de emprego nem pretensão salarial. Lista de "não quero", pausa na carreira, momento e check-ins ficam no perfil de carreira privado e nunca aparecem a terceiros.
 4. **Perguntar em vez de inferir** (Amershi et al., G10). A IA não deduz área, senioridade nem situação a partir de textos ou desenhos; pergunta e deixa corrigir.
 5. **Cada pergunta diz por que existe e o que muda.** "Pergunto sua área-alvo para sugerir tarefas que provem competências dessa área." Sem isso, a persona pula ou mente.
 6. **Nada de dados sensíveis nem proxies.** LGPD art. 5º II e art. 11; Lei 9.029/1995 art. 1º (sexo, origem, raça, cor, estado civil, situação familiar, deficiência, idade); CLT art. 373-A. Acessibilidade entra como "o que deixa o WS mais fácil para você", nunca como diagnóstico.
@@ -77,14 +77,12 @@ Onde: **C** cadastro · **P** primeiro acesso (até 5 min, pode pular) · **X** 
 | a3 | A mudança foi planejada ou inesperada? | Escolha | Não | P | Eixo "situação" do modelo 4S (Schlossberg); ajusta o tom do Copilot. Privada. |
 | a4 | Último cargo ou área (autocompletar CBO) | CBO | Não* | P | Ponto de partida das lacunas. *Dispensada no primeiro emprego. |
 | a5 | Quer registrar uma pausa na carreira? (cuidado de familiar, estudos, corte de vaga, mudança, outro) | Escolha + texto | Não | X (ao montar o perfil) | Categoria neutra, como o LinkedIn Career Break. Privada por padrão. |
-| a6 | Precisa de sigilo em relação ao empregador atual? | Sim/Não | Sim se "trabalho e quero mudar" | P | Liga "só recrutadores" e bloqueia a empresa atual na descoberta (f2). |
 | b1 | **Cargo(s) ou área(s) alvo (até 5)** | CBO/ESCO + "não sei" | Sim | P | Base de todas as sugestões: tarefas, pessoas, caminhos. |
 | b2 | Teste de interesses (30 itens, Mini-IP RIASEC) | Questionário | Não | X (se "não sei") | Sugere 3–5 famílias de ocupação com justificativa. |
 | b3 | Em quanto tempo quer estar trabalhando? | Faixas | Sim | P | Define cadência e prazo das tarefas. |
 | b4 | Regime (CLT, PJ, estágio, temporário, freela, concurso) | Múltipla | Não | P | Filtra sugestões (ex.: edital de concurso vira tarefa). |
 | b5 | Modelo (presencial, híbrido, remoto) | Múltipla | Não | P | Filtro. |
 | b6 | Cidade, raio ou tempo de deslocamento; aceita mudar? | Local + escala | Não | P | Filtro. Só cidade, nunca endereço. |
-| b7 | Salário mínimo aceitável | Faixa | Não | X (ao ver oportunidades) | Filtro privado, nunca exibido. Explica o uso antes de pedir. |
 | b8 | O que você **não** quer (cargos, setores, tarefas) | Lista | Não | X | Só filtra; nunca é exibido (modelo Indeed "não tenho interesse"). |
 | b9 | Nível pretendido (primeiro emprego, júnior, pleno, sênior, gestão) | Escolha | Não | P | Ajusta senioridade das tarefas e das pessoas sugeridas. |
 | c1 | Importar currículo (PDF/DOCX) ou preencher à mão? | Upload | Não | P | Extrai experiências e competências em **ficha editável**; a pessoa confirma item a item (RF50.CA02). |
@@ -100,7 +98,6 @@ Onde: **C** cadastro · **P** primeiro acesso (até 5 min, pode pular) · **X** 
 |---|---|---|---|---|---|
 | d1 | Quantas horas por semana pode dedicar? | Faixas | Recomendada | P | Dimensiona o plano semanal (ex.: 4 h → 2 tarefas curtas). |
 | d2 | Dias e horários para lembretes | Grade | Não | P/S | Agenda a Tarefa do Dia; nada fora desse horário. |
-| d3 | Quando poderia começar? | Imediato / aviso prévio / data | Não | P | Equivale ao "Ready to work"; aparece só nos níveis de visibilidade escolhidos. |
 | d4 | Como você acessa o WS? (celular, computador) | Escolha | Não | P | Tarefas de Drawings 3D só com computador; textos curtos no celular. |
 | d5 | O que deixa o WS mais fácil para você? (fonte, contraste, leitor de tela, menos animação, legendas) | Interruptores | Não | P/S | Só ajusta a interface (já existe em Aparência). Nunca entra no perfil nem vai a recrutadores. |
 | d6 | "Esta tarefa serve para você?" (sim / agora não / nunca este tipo) | Escolha | — | X (em cada sugestão) | Feedback granular (G15); "nunca" alimenta b8; duas dispensas seguidas pausam sugestões por 7 dias. |
@@ -120,9 +117,7 @@ Onde: **C** cadastro · **P** primeiro acesso (até 5 min, pode pular) · **X** 
 
 | # | Pergunta | Tipo | Obrig. | Onde | Por quê → o que o sistema faz |
 |---|---|---|---|---|---|
-| f1 | **Quem vê que você está em busca?** Só eu · Recrutadores verificados · Toda a rede | Escolha | Sim (padrão: só eu) | P/S | Status "Em busca" com três níveis; "recrutadores verificados" exige conta EMPRESA validada (RF28). |
-| f2 | Ocultar seu perfil de empresas específicas | Lista | Não | P (se a6) | Bloqueio de descoberta; aviso honesto: "não garantimos sigilo total". |
-| f3 | Quem pode te mandar mensagem? Conexões · Conexões e recrutadores · Todos | Escolha | Sim (padrão: conexões e recrutadores) | P/S | Permissão de contato (RF46). |
+| f3 | Quem pode te mandar mensagem? Conexões · Todos | Escolha | Sim (padrão: conexões) | P/S | Permissão de contato (RF46). |
 | f4 | Aparecer em buscas e em "pessoas semelhantes"? Mostrar atividade (tarefas concluídas, selos)? | Interruptores | Não (padrão: desligado) | X/S | Descoberta (RF50.CA16) e feed; ligar não republica o acervo antigo. |
 | f5 | Público padrão das novas produções: Privado · Rede · Público | Escolha | Não (padrão: privado) | X (na 1ª publicação) | Publicar é sempre ação explícita; rascunho salvo nunca vira post. |
 | f6 | Quer mentoria ou um grupo de pessoas na mesma situação? | Sim/Não + tema | Não | X | Eixo "apoio" do 4S; sugere grupos e pessoas (RF50.CA17), sem seguir automaticamente. |
@@ -131,8 +126,8 @@ Onde: **C** cadastro · **P** primeiro acesso (até 5 min, pode pular) · **X** 
 ### 4.5 Ordem
 
 - **Cadastro:** a1 + dados de conta atuais. Nada mais.
-- **Primeiro acesso (tela "Vamos montar seu guia", pulável, retomável):** b1, b3, a6 (se couber), d1, e1, e2, f1, f3. Mostra o ganho de cada resposta ("com isso já posso sugerir sua primeira tarefa").
-- **Contextuais:** b2 ao responder "não sei"; b7/b8 ao ver oportunidades; c3 por competência; d6 e e6 em cada sugestão; f5/f7 na primeira publicação; c6 semanal; a5 ao montar o perfil.
+- **Primeiro acesso (tela "Vamos montar seu guia", pulável, retomável):** b1, b3, b4, d1, e1, e2, f3, f4. Mostra o ganho de cada resposta ("com isso já posso sugerir sua primeira tarefa").
+- **Contextuais:** b2 ao responder "não sei"; b8 ao ver sugestões; c3 por competência; d6 e e6 em cada sugestão; f5/f7 na primeira publicação; c6 semanal; a5 ao montar o perfil.
 - **Configurações:** tudo revisável em Carreira, IA e Privacidade (§6).
 
 ## 5. Requisito funcional: RF75 Work Station Career Guidance
@@ -145,7 +140,7 @@ A pedido do usuário (31/10/2026), as seis frentes abaixo viraram **um único re
 | **E2** | Guia inicial de carreira (onboarding progressivo) | Tela pós-cadastro com as perguntas P da §4.5, pulável e retomável; respostas em `career_profile` (privado); banner "Seu guia está 3/8" até concluir; nunca bloqueia o uso. | E1, RF3 |
 | **E4** | Plano de recolocação e Tarefa do Dia guiada | A partir do perfil de carreira gera um plano semanal com tarefas do catálogo (§7), cada uma com competência, critério de aceite, evidência e "por que esta tarefa"; d6 em cada item; progresso por evidência; sem streak punitivo (pausa gratuita). Dá conteúdo à sub-aba "Tarefa do Dia" (perfil n.9). | E2, RF4, RF26, RF50 |
 | **E5** | Evidência de competência e selo validado | Concluir uma tarefa gera `Evidence` (URL da Letter/Drawing, versão, critérios atendidos, quem validou); selo por validação de par/mentor/curador, nunca só pela IA; exportável como Open Badge 3.0; "como foi calculado" e "contestar" em todo rótulo inferido. | E4, RF24, RF25, RF40 |
-| **E3** | Status "Em busca" com visibilidade em níveis e bloqueio de empresas | f1, f2, d3; três níveis; recrutador verificado = EMPRESA validada; aviso de sigilo não garantido; nunca usado para ranquear. | E1, RF28, RF16 |
+| **E3** | Controles de IA e rede (sem sinal de busca, D-147) | e1–e6 e f3–f7 reais e persistidos; descoberta e pessoas semelhantes por opt-in; perfil público e busca idênticos aos de uma conta Empregado; nenhum status "Em busca", bloqueio de empresas ou disponibilidade. | E1, RF28, RF16 |
 | **E3/E6** | Painel de IA e dados para a pessoa (consentimentos, escopo, provedor, histórico) | e1–e6 numa aba única; histórico de análises com "excluir" e "exportar" (RF50.CA14); consentimento externo contextual (RF50.CA10); log do que a IA leu. | RF51, RF50, RF3 |
 
 O RF50 (Análise de Perfil) permanece como está: o RF75 fornece o **perfil de carreira** que o CA01 dele pede e consome as saídas 1–4 (tarefas, projetos, caminhos, pessoas).
@@ -161,9 +156,9 @@ Convenção: `lib/nav/matrix.ts` e `lib/pages/registry.ts`, visibilidade por per
 | `/insights` | Perfil | reaproveitar | Análise de Perfil (RF50): síntese, lacunas, caminhos com fonte e data, pessoas semelhantes. | EMPREGADO, EM_TRANSICAO, CHEFE |
 | `/insights` | Projetos sugeridos | reaproveitar | Projetos pessoais de portfólio (RF50 saída 2). | idem |
 | `/insights` | **Caminhos** (nova) | novo | Alternativas de ocupação (CBO/ESCO) com requisitos, lacunas e próximos passos; comparar e descartar. | idem |
-| `/settings` | **Carreira** (nova) | novo | Revisão de a1–d4, status "Em busca" (f1, f2, d3), lista "não quero". | EMPREGADO, EM_TRANSICAO |
+| `/settings` | **Carreira** (nova) | novo | Revisão de a1–d4 (sem salário, sem status de busca — D-147), lista "não quero". | EMPREGADO, EM_TRANSICAO |
 | `/settings` | Trabalho → renomear **IA e dados** | reaproveitar | e1–e6 em linguagem simples; "Mais opções" guarda os cinco modos técnicos. | todos logados |
-| `/settings` | Privacidade | reaproveitar (esqueleto) | f1–f7 com "quem verá? o que muda? vale para itens antigos?" em cada opção. | todos logados |
+| `/settings` | Privacidade | reaproveitar (esqueleto) | f3–f7 com "quem verá? o que muda? vale para itens antigos?" em cada opção. | todos logados |
 | `/mural` | **Minha trilha** (nova) | novo | Feed só das tarefas, evidências e conquistas da própria pessoa e do grupo de apoio (f6). | EM_TRANSICAO, EMPREGADO |
 | `/letters`, `/drawings` | Painel lateral **Guia** | novo | Dentro do editor: a tarefa aberta, os critérios com pré-checagem da IA, "concluir e gerar evidência". | idem |
 | Barra superior | Banner de guia | novo | "Seu guia está 3/8 — continuar" até concluir o primeiro acesso; some ao concluir ou ao dispensar 2×. | EM_TRANSICAO |
@@ -216,8 +211,7 @@ Regras: linguagem humana, perto do ponto de ação, sem culpa, sem "confirmshami
 |---|---|---|
 | Primeira interação com o guia | "Sou uma IA. Minhas sugestões ajudam você a se preparar, mas não garantem entrevista, emprego nem salário." | Fixa (AI Act art. 50) |
 | Antes de cada pergunta do onboarding | "Pergunto isso para [ganho concreto]. Você pode pular." | Inline |
-| Salário (b7) | "Fica só com você e serve para filtrar oportunidades. Nunca aparece no seu perfil." | Inline |
-| Visibilidade (f1) | "Com 'Só eu', ninguém vê que você está em busca. Com 'Recrutadores verificados', só contas de empresa validadas veem. Não conseguimos garantir sigilo total do seu empregador atual." | Inline |
+| Aba Carreira (ao abrir) | "Tudo aqui é só seu. Ninguém — nem sua empresa, chefe ou recrutadores — vê seu momento, seus objetivos ou suas respostas. Seu perfil público continua o mesmo." | Fixa (D-147) |
 | Sugestão de tarefa | "Por que esta tarefa: comprova [competência], que [cargo-alvo] pede. Evidência: [tipo]. Leva cerca de [tempo]." | Card |
 | Dispensa de sugestão | "Entendi. Quer que eu pare de sugerir [tipo]?" (sim / só por agora) | Inline, sem culpa |
 | Caminhos de carreira | "Estas são alternativas para explorar, não previsões. Dados de mercado: [fonte, data, região] ou 'sem fonte atual; estimativa'." | Fixa (RF50.CA06–07) |

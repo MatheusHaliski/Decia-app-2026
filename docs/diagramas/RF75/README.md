@@ -10,16 +10,16 @@
 
 **Experiência central:** "O que descreve seu momento?" no cadastro; "Vamos montar seu guia" em cinco minutos no primeiro acesso; uma Tarefa do Dia com "por que esta tarefa", critério de aceite e a peça aberta no editor; ao concluir, uma evidência com URL e versão no perfil de carreira, privado por padrão; a pessoa escolhe quem vê que está em busca.
 
-**Decisão de dados (D-147, proposta neste RF):** `DADOS_DE_PERFIL_POR_TIPO.md` §4 e §10.7 classificam o sinal "procurando emprego" e a pretensão salarial como "proibido sem base". O RF75 dá a base: **finalidade** declarada (orientação da própria pessoa), **consentimento** específico ao ativar o guia, armazenamento em área privada (`career_profiles`) fora do perfil público, visibilidade do status só nos níveis que a pessoa escolher (padrão "só eu") e salário nunca exibido a terceiros nem usado para ordenar. Quem não ativa o guia não tem esses campos.
+**Decisão de dados (D-147, decidida pelo dono do produto em 31/10/2026 — manter o padrão atual):** `DADOS_DE_PERFIL_POR_TIPO.md` §4 e §10.7 continuam valendo: o Work Station **não coleta** sinal "procurando emprego" nem pretensão salarial. Consequências para este RF: não existe status "Em busca", nível de visibilidade para recrutadores, bloqueio de empresas nem disponibilidade; não há pergunta de salário mínimo; o momento de carreira ("estou sem emprego", "volto de uma pausa"…) fica só no perfil de carreira privado e nunca é exibido a terceiros; o tipo de conta Em transição aparece a terceiros como uma pessoa comum (sem selo, sem empresa), e a empresa onde a pessoa trabalha nunca recebe nenhum sinal. O guia filtra sugestões por área, regime, modelo e cidade — não por salário.
 
 ## Critérios de aceite
 
 | CA | Dado / quando / então |
 |---|---|
-| RF75.CA01 | Dado o cadastro, quando a pessoa escolhe o tipo de conta, então além de Empregado, Empresa e Chefe existe **Em transição** (`ProfileType.EM_TRANSICAO`, sem validação, ativa ao confirmar o e-mail) e a pergunta "O que descreve seu momento?" (trabalho e quero mudar · estou sem emprego · primeiro emprego · volto depois de uma pausa · mudo de área · por conta própria · só explorando). Uma conta Em transição vira Empregado (vínculo a empresa) sem perder dados; a dica de Empregado deixa de ser a única opção para pessoa física. |
-| RF75.CA02 | Dado o primeiro acesso de uma conta com o guia ativado, quando a confirmação de e-mail ou o login termina, então a pessoa vai para `/welcome` com até oito perguntas (cargo ou área alvo, prazo, sigilo do empregador atual se couber, horas por semana, quanto a IA faz sozinha, que dados a IA lê, quem vê que está em busca, quem pode enviar mensagem), cada uma com "por que pergunto" e "pular"; o guia é retomável e um aviso "Seu guia está n/8" aparece até concluir ou ser dispensado duas vezes; nada bloqueia o uso do sistema. |
-| RF75.CA03 | Dado o guia iniciado, quando uma resposta só faz diferença num momento (teste de interesses ao responder "não sei", salário mínimo e lista "não quero" ao ver oportunidades, "tem prova disso?" por competência, público padrão na primeira publicação, check-in semanal de prontidão), então a pergunta aparece nesse momento, uma vez, e nunca repete o que já foi respondido. |
-| RF75.CA04 | Dado o perfil de carreira (momento, objetivo, competências, evidências, pausa, salário, lista "não quero", check-ins), quando armazenado ou consultado, então é privado por padrão: chefe, empresa, administrador e curador não têm acesso automático; aparece a terceiros só o que a pessoa marcar campo a campo; `404 NAO_ENCONTRADO` para quem não pode ver. |
+| RF75.CA01 | Dado o cadastro, quando a pessoa escolhe o tipo de conta, então além de Empregado, Empresa e Chefe existe **Em transição** (`ProfileType.EM_TRANSICAO`, sem validação, ativa ao confirmar o e-mail) e a pergunta "O que descreve seu momento?" (trabalho e quero mudar · estou sem emprego · primeiro emprego · volto depois de uma pausa · mudo de área · por conta própria · só explorando). Uma conta Em transição vira Empregado (vínculo a empresa) sem perder dados; a terceiros ela aparece como pessoa comum, sem selo de tipo nem de momento (D-147); a dica de Empregado deixa de ser a única opção para pessoa física. |
+| RF75.CA02 | Dado o primeiro acesso de uma conta com o guia ativado, quando a confirmação de e-mail ou o login termina, então a pessoa vai para `/welcome` com até oito perguntas (cargo ou área alvo, prazo, regime e modelo, horas por semana, quanto a IA faz sozinha, que dados a IA lê, quem pode enviar mensagem, aparecer em buscas e em pessoas semelhantes), cada uma com "por que pergunto" e "pular"; o guia é retomável e um aviso "Seu guia está n/8" aparece até concluir ou ser dispensado duas vezes; nada bloqueia o uso do sistema. |
+| RF75.CA03 | Dado o guia iniciado, quando uma resposta só faz diferença num momento (teste de interesses ao responder "não sei", lista "não quero" ao ver sugestões, "tem prova disso?" por competência, público padrão na primeira publicação, check-in semanal de prontidão), então a pergunta aparece nesse momento, uma vez, e nunca repete o que já foi respondido. |
+| RF75.CA04 | Dado o perfil de carreira (momento, objetivo, competências, evidências, pausa, lista "não quero", check-ins), quando armazenado ou consultado, então é privado por padrão: chefe, empresa, administrador e curador não têm acesso automático; aparece a terceiros só o que a pessoa marcar campo a campo; `404 NAO_ENCONTRADO` para quem não pode ver. |
 | RF75.CA05 | Dado o perfil de carreira confirmado, quando o plano é gerado, então a pessoa recebe um plano semanal e uma Tarefa do Dia do catálogo de tarefas-guia, cada uma com competência comprovada, critério de aceite verificável, evidência esperada, tempo estimado e "por que esta tarefa"; o plano respeita horas por semana e aparelho (tarefas 3D só com computador); "serve para você?" (sim · agora não · nunca este tipo) alimenta o plano e duas dispensas seguidas pausam sugestões por sete dias. |
 | RF75.CA06 | Dado uma tarefa-guia aceita, quando a pessoa a abre, então o Letters ou o Drawings abre com um painel lateral Guia (enunciado, critérios, rubrica, "concluir e gerar evidência"); a IA pré-checa só os critérios objetivos (tamanho, campos presentes, cotas que fecham, vistas renderizadas) e nunca os subjetivos; a peça fica na pasta da tarefa e vinculada a ela (RF71). |
 | RF75.CA07 | Dado uma tarefa concluída, quando a pessoa confirma, então nasce uma `Evidence` com URL da peça, versão, critérios atendidos, declaração de autoria e de ausência de dado confidencial; o selo de competência só é emitido com validação humana (par, mentor ou curador) e pode ser exportado como Open Badge 3.0; todo rótulo que a IA inferiu mostra "como foi calculado" e "contestar". |
@@ -29,7 +29,7 @@
 | RF75.CA11 | Dado o controle "que dados o guia pode ler" (perfil · currículo · minhas Letters · meus Drawings · mensagens) e "onde a IA roda" (padrão do WS · provedor externo · desligada), quando a IA é chamada, então lê só o escopo marcado; o provedor externo exige consentimento contextual que lista as categorias enviadas e o custo; mensagens e itens RESTRITO/SIGILOSO nunca vão ao provedor externo; "Economia/Avançado" passa a dizer o que sai e o que custa. |
 | RF75.CA12 | Dado o perfil de carreira e o material da pessoa, quando coletados ou analisados, então o sistema não pergunta nem infere idade, gênero, estado civil, filhos, gravidez, religião, opinião política, sindicato, raça ou cor, saúde ou deficiência, endereço completo, motivo da demissão ou foto obrigatória; acessibilidade entra como "o que deixa o WS mais fácil para você", gravada como preferência de interface, fora do perfil e da descoberta. |
 | RF75.CA13 | Dado uma afirmação sobre vagas, demanda, remuneração ou requisito de mercado, quando exibida, então cita fonte, data e região; sem fonte, diz "estimativa sem fonte atual"; caminhos de carreira são alternativas para explorar e nunca prometem emprego, salário ou prazo. |
-| RF75.CA14 | Dado o status "Em busca", quando a pessoa o ativa, então escolhe quem o vê (só eu · recrutadores verificados = contas Empresa validadas pelo RF28 · toda a rede), pode ocultar o perfil de empresas específicas e informar disponibilidade; o padrão é "só eu"; a tela avisa que o sigilo em relação ao empregador atual não é garantido; o status nunca entra em ranking, ordenação ou recomendação a empregadores. |
+| RF75.CA14 | Dado qualquer tela, busca, recomendação ou notificação, quando a pessoa tem uma conta Em transição ou respondeu que está sem emprego, então nenhum sinal de "procurando emprego", disponibilidade, pretensão salarial ou momento de carreira é armazenado fora de `career_profiles`, exibido a terceiros (inclusive Empresa validada, chefe e administrador), usado em ranking, ordenação ou sugestão de pessoas, nem enviado à empresa à qual a conta se vincular depois; o perfil público e o resultado da busca de pessoas são idênticos aos de uma conta Empregado sem empresa (D-147). |
 | RF75.CA15 | Dado os controles de rede (quem pode enviar mensagem, aparecer em buscas e em pessoas semelhantes, mostrar atividade, público padrão das produções, comentários e remix por item), quando exibidos, então cada opção responde "quem verá?", "o que muda?" e "vale para itens antigos?"; mudar o padrão não republica o acervo; a pessoa só é sugerida a outras se marcou participar (RF50.CA16). |
 | RF75.CA16 | Dado as mensagens do guia, quando enviadas, então a primeira interação diz "Sou uma IA; minhas sugestões não garantem entrevista, emprego nem salário"; há no máximo um lembrete proativo por dia, dentro do horário escolhido, com pausa de sete dias após duas dispensas; nenhuma mensagem culpa a pessoa, usa contagem regressiva falsa ou "confirmshaming"; os modos Manual e Sob solicitação não geram lembretes. |
 | RF75.CA17 | Dado o histórico do guia (respostas, análises, sugestões, evidências), quando a pessoa pede, então exporta tudo e exclui análises e respostas dentro das regras de retenção; revogar um consentimento invalida sugestões pendentes no servidor; conta trocada no mesmo aparelho não vê nada da anterior; eventos guardam autoria e referência de inferência sem copiar currículo ou texto sensível. |
@@ -41,7 +41,7 @@ O banco de 40 perguntas (perfil, tarefas, IA, rede), a ordem (cadastro → prime
 
 ## 0. Diagrama de casos de uso
 
-Quem usa o Guia de Carreira e para quê. Atores do catálogo de [`ATORES_E_ATRIBUTOS.md`](../../arquitetura/ATORES_E_ATRIBUTOS.md) §2. O guia é da própria pessoa: chefe, empresa e administrador não aparecem como atores; a Empresa validada só recebe o status "Em busca" quando a pessoa escolhe "recrutadores verificados". Todos os casos são planejados.
+Quem usa o Guia de Carreira e para quê. Atores do catálogo de [`ATORES_E_ATRIBUTOS.md`](../../arquitetura/ATORES_E_ATRIBUTOS.md) §2. O guia é da própria pessoa: chefe, empresa e administrador não aparecem como atores e não recebem nenhum sinal (D-147). Todos os casos são planejados.
 
 ```mermaid
 flowchart LR
@@ -51,7 +51,6 @@ flowchart LR
   classDef ucPlan fill:#ffffff,stroke:#8a8a8a,stroke-dasharray:4 3,color:#555555
   visitante["«ator» Visitante"]:::ator
   autenticado["«ator» Pessoa autenticada"]:::ator
-  empresa["«ator» Empresa (recrutador verificado)"]:::ator
   curador["«ator» Curador"]:::ator
   subgraph SIS["Work Station — RF75 Guia de Carreira"]
     direction TB
@@ -64,10 +63,8 @@ flowchart LR
     UC7(["UC7 Validar a evidência e emitir o selo"]):::ucPlan
     UC8(["UC8 Explorar caminhos de carreira com fontes"]):::ucPlan
     UC9(["UC9 Ajustar a IA (autonomia, dados, provedor)"]):::ucPlan
-    UC10(["UC10 Definir quem vê que estou em busca"]):::ucPlan
     UC11(["UC11 Ajustar contato, descoberta e publicação"]):::ucPlan
     UC12(["UC12 Exportar ou excluir o histórico do guia"]):::ucPlan
-    UC13(["UC13 Ver o status Em busca de quem o liberou"]):::ucPlan
   end
   ia["«ator» IA (AiGateway)"]:::atorSis
   visitante --- UC1
@@ -76,11 +73,9 @@ flowchart LR
   autenticado --- UC5
   autenticado --- UC8
   autenticado --- UC9
-  autenticado --- UC10
   autenticado --- UC11
   autenticado --- UC12
   curador --- UC7
-  empresa --- UC13
   UC3 -. "«extend»" .-> UC2
   UC3 -. "«extend»" .-> UC4
   UC6 -. "«extend»" .-> UC5
@@ -93,7 +88,7 @@ flowchart LR
 | Caso de uso | Ator(es) | CAs | Situação |
 |---|---|---|---|
 | UC1 Escolher o momento de carreira no cadastro (tipo Em transição) | Visitante | RF75.CA01 | planejado |
-| UC2 Montar o guia inicial (até 8 perguntas, pulável, retomável) | Pessoa autenticada | RF75.CA02, RF75.CA04, RF75.CA12, RF75.CA18 | planejado |
+| UC2 Montar o guia inicial (até 8 perguntas, pulável, retomável) | Pessoa autenticada | RF75.CA02, RF75.CA04, RF75.CA12, RF75.CA14, RF75.CA18 | planejado |
 | UC3 Responder uma pergunta contextual (uma vez, no momento certo) | — (estende UC2 e UC4) | RF75.CA03 | planejado |
 | UC4 Ver o plano semanal e a Tarefa do Dia ("por que esta tarefa", "serve para você?") | Pessoa autenticada, IA (AiGateway) | RF75.CA05, RF75.CA08, RF75.CA09, RF75.CA16 | planejado |
 | UC5 Fazer a tarefa-guia no Letters ou no Drawings (painel Guia, pré-checagem objetiva) | Pessoa autenticada, IA (AiGateway) | RF75.CA06 | planejado |
@@ -101,10 +96,8 @@ flowchart LR
 | UC7 Validar a evidência e emitir o selo (par, mentor ou curador; Open Badge 3.0) | Curador | RF75.CA07 | planejado |
 | UC8 Explorar caminhos de carreira com fontes identificadas | Pessoa autenticada, IA (AiGateway) | RF75.CA13 | planejado |
 | UC9 Ajustar a IA (quanto faz sozinha, que dados lê, onde roda) | Pessoa autenticada | RF75.CA10, RF75.CA11 | planejado |
-| UC10 Definir quem vê que estou em busca (três níveis, bloqueio de empresas) | Pessoa autenticada | RF75.CA14 | planejado |
 | UC11 Ajustar contato, descoberta e publicação ("quem verá? o que muda?") | Pessoa autenticada | RF75.CA15 | planejado |
 | UC12 Exportar ou excluir o histórico do guia | Pessoa autenticada | RF75.CA17 | planejado |
-| UC13 Ver o status Em busca de quem o liberou para recrutadores verificados | Empresa (validada, RF28) | RF75.CA14 | planejado |
 
 ## Integração com o Work Station
 
@@ -113,13 +106,13 @@ flowchart LR
 - **RF4/RF41:** cada tarefa-guia aceita é uma `TaskItem` real (origem GUIA_DE_CARREIRA) com `Evidence` (RF41.CA06).
 - **RF52–RF56 e RF57–RF74:** o painel Guia dentro dos editores; a peça vinculada à tarefa (RF71); a captura PNG do Drawings (RF74) serve de evidência visual.
 - **RF51:** os três controles simples mapeiam para os cinco modos; a regra "IA nunca publica sozinha" vale aqui.
-- **RF16, RF46, RF28:** status Em busca com níveis; recrutador verificado = Empresa validada; mensagens só com permissão de contato.
+- **RF16, RF46:** mensagens só com permissão de contato; descoberta e pessoas semelhantes só com opt-in; nenhum sinal de busca de emprego (D-147).
 - **RF24/RF25/RF40:** selos de competência por validação humana; nunca por pontos.
 - **RF3 bloco C (LGPD):** consentimentos (`ConsentPurpose.GUIA_DE_CARREIRA`, `RESUMO_PROFISSIONAL_IA`), exportação e exclusão.
 
 ## Modelo e plano propostos
 
-`CareerProfile` (dono, status, momento, objetivo CBO/ESCO, prazo, regime, modelo, cidade, nível, horas por semana, aparelho, salário mínimo cifrado, lista "não quero", versão) · `CareerAnswer` (pergunta, resposta, quando, contexto) — append-only · `GuidedTaskTemplate` (catálogo L1–L10, D1–D10: competência, editor, critérios objetivos e subjetivos, rubrica, tempo, nível, pergunta-gatilho) · `CareerPlan` (semana, itens, horas previstas) · `GuidedTask` (template, `TaskItem` real, estado, resposta a "serve para você?") · `CompetencyEvidence` (liga `Evidence` à competência: URL, versão, critérios atendidos, autoria declarada, validação, badge) · `JobSearchStatus` (nível de visibilidade, empresas bloqueadas, disponibilidade) · `GuidanceNudge` (tipo, quando, dispensas) · `CareerCheckin` (quatro dimensões, semana).
+`CareerProfile` (dono, status, momento, objetivo CBO/ESCO, prazo, regime, modelo, cidade, nível, horas por semana, aparelho, lista "não quero", versão — sem salário, D-147) · `CareerAnswer` (pergunta, resposta, quando, contexto) — append-only · `GuidedTaskTemplate` (catálogo L1–L10, D1–D10: competência, editor, critérios objetivos e subjetivos, rubrica, tempo, nível, pergunta-gatilho) · `CareerPlan` (semana, itens, horas previstas) · `GuidedTask` (template, `TaskItem` real, estado, resposta a "serve para você?") · `CompetencyEvidence` (liga `Evidence` à competência: URL, versão, critérios atendidos, autoria declarada, validação, badge) · `GuidanceNudge` (tipo, quando, dispensas) · `CareerCheckin` (quatro dimensões, semana).
 
 ### Plano de implementação (etapas, cada uma entregável e testável)
 
@@ -127,7 +120,7 @@ flowchart LR
 |---|---|---|---|---|
 | **E1 Porta de entrada** | `ProfileType.EM_TRANSICAO` + pergunta "O que descreve seu momento?" no cadastro; migração `V60__em_transicao.sql`; textos pt-BR/en/es; mudança de tipo sem perda | CA01, CA12, CA18 | `ws-domain/.../identity/ProfileType.java`, `ws-application/.../IdentityService`, `components/auth/AuthForms.tsx`, `lib/i18n/messages/*` | teste de integração do cadastro; e2e `register.spec` com o tipo novo |
 | **E2 Perfil de carreira e guia inicial** | `career_profiles` + `career_answers` (`V61`); `GET/PUT /api/me/career`; rota `/welcome` (registry + página); redirecionamento pós-cadastro e pós-login; aviso "n/8"; aba Carreira no perfil (n.16, privada) | CA02, CA03, CA04 | `ws-application/career/`, `ws-infrastructure/persistence-mysql`, `app/(shell)/welcome`, `lib/pages/registry.ts`, `lib/nav/matrix.ts`, `components/career/` | contrato OpenAPI regenerado; teste de autorização (chefe/empresa/admin → 404); e2e do guia pulável e retomável |
-| **E3 Controles de IA e rede** | Configurações › IA e dados (e1–e6) sobre as preferências já persistidas no servidor; Configurações › Privacidade real (f1–f7) com "quem verá?"; `JobSearchStatus` (`V62`) com três níveis e bloqueio de empresas; consentimento `GUIA_DE_CARREIRA` | CA10, CA11, CA14, CA15, CA17 | `app/(shell)/settings`, `lib/preferences`, `ws-application/.../PublicationService`, `PeopleService.search` (filtro de descoberta), `ConsentPurpose` | teste com duas contas (status invisível por padrão; recrutador verificado vê; empresa bloqueada não vê); e2e das abas |
+| **E3 Controles de IA e rede** | Configurações › IA e dados (e1–e6) sobre as preferências já persistidas no servidor; Configurações › Privacidade real (f3–f7) com "quem verá?"; descoberta e pessoas semelhantes por opt-in; consentimento `GUIA_DE_CARREIRA` (`V62`); perfil público e busca idênticos aos de uma conta Empregado (D-147) | CA10, CA11, CA14, CA15, CA17 | `app/(shell)/settings`, `lib/preferences`, `ws-application/.../PublicationService`, `PeopleService.search` (filtro de descoberta), `ConsentPurpose` | teste com duas contas (nenhum campo de carreira nem o tipo Em transição aparece a terceiros, chefe, empresa ou admin); e2e das abas |
 | **E4 Catálogo e plano** | `guided_task_templates` semeados com L1–L10 e D1–D10 (`V63`); gerador de plano semanal (puro, testado) a partir do perfil; Tarefa do Dia real no perfil; "serve para você?" e pausa após duas dispensas; nudges com horário e teto diário | CA05, CA08, CA16 | `lib/career/plan.ts` (Strategy por momento), `ws-application/career/CareerPlanService`, `components/career/TaskOfTheDay`, notificações (RF27) | testes do gerador (horas, aparelho, dispensas); e2e da Tarefa do Dia |
 | **E5 Painel Guia nos editores e evidência** | Painel lateral no Letters e no Drawings; pré-checagem objetiva (contagem de palavras, campos, cotas, vistas); `CompetencyEvidence` (`V64`) ao concluir; fila de validação do curador; exportação Open Badge 3.0 | CA06, CA07 | `components/letters/GuidePanel`, `components/drawings3d/GuidePanel`, `lib/career/checks/*` (uma Strategy por critério), `ws-application/career/EvidenceService` | testes das checagens; e2e: concluir D3 gera evidência com GLB e PNG; selo só após validação |
 | **E6 IA explicável** | "Por que esta sugestão" e "discordo/contestar" em toda saída; perguntas em vez de inferência; `MarketClaim` com fonte, data e região ou "estimativa"; aviso fixo da primeira interação; sub-aba Caminhos em `/insights` sobre o RF50 | CA09, CA13 | `AiGateway` (RF43), `ProfileAnalysisService` (RF50), `components/career/WhyThis`, `components/insights/CareerPaths` | teste de que toda saída carrega campos usados; e2e com motor simulado |
@@ -139,7 +132,7 @@ Validar com perfis: sem emprego há 4 meses, primeiro emprego, mudando de área,
 
 ## 1. Diagrama de classes
 
-Entidades novas do Guia de Carreira e as reais que elas reutilizam (`User`, `UserPreferences`, `UserConsent`, `TaskItem`, `Evidence`, `Company`).
+Entidades novas do Guia de Carreira e as reais que elas reutilizam (`User`, `UserConsent`, `TaskItem`, `Evidence`). Sem salário nem status de busca (D-147).
 
 ```mermaid
 classDiagram
@@ -168,7 +161,6 @@ classDiagram
     +String level
     +int hoursPerWeek
     +String device
-    +String minSalaryEncrypted
     +String[] notWanted
     +int version
     +Instant updatedAt
@@ -223,17 +215,6 @@ classDiagram
     +UUID validatedBy
     +String badgeJson
   }
-  class JobSearchStatus {
-    +SearchVisibility visibility
-    +UUID[] hiddenFromCompanyIds
-    +String availability
-  }
-  class SearchVisibility {
-    <<enumeration>>
-    SO_EU
-    RECRUTADORES_VERIFICADOS
-    TODA_A_REDE
-  }
   class GuidanceNudge {
     +String kind
     +Instant sentAt
@@ -258,10 +239,6 @@ classDiagram
     +UUID id
     +String url
   }
-  class Company {
-    +UUID id
-    +boolean validated
-  }
   User "1" --> "1" ProfileType
   User "1" --> "0..1" CareerProfile : dono
   CareerProfile "1" --> "1" CareerMoment
@@ -272,9 +249,6 @@ classDiagram
   GuidedTask "1" --> "1" TaskItem : tarefa real
   GuidedTask "1" --> "0..1" CompetencyEvidence
   CompetencyEvidence "1" --> "1" Evidence
-  CareerProfile "1" --> "0..1" JobSearchStatus
-  JobSearchStatus "1" --> "1" SearchVisibility
-  JobSearchStatus "*" --> "*" Company : oculto de
   CareerProfile "1" --> "*" GuidanceNudge
   CareerProfile "1" --> "*" CareerCheckin
   User "1" --> "*" UserConsent
@@ -293,7 +267,6 @@ flowchart TD
     A3{"A3 Serve para você?"}
     A4["A4 Faz a peça no Letters ou no Drawings"]
     A5["A5 Confirma conclusão, autoria e sem dado confidencial"]
-    A6["A6 Escolhe quem vê que está em busca"]
   end
   subgraph W["Web/BFF"]
     F1["F1 Cadastro envia profileType e moment"]
@@ -309,7 +282,6 @@ flowchart TD
     P6["P6 Pausa sugestões 7 dias"]
     P7["P7 EvidenceService.conclude: Evidence + CompetencyEvidence"]
     P8["P8 Fila de validação do curador"]
-    P9["P9 JobSearchStatusService.set: nível e bloqueios"]
   end
   subgraph I["IA (AiEngine)"]
     I1["I1 Explica a pergunta e a sugestão (campos usados)"]
@@ -319,7 +291,6 @@ flowchart TD
     D1[("users, career_profiles, career_answers")]
     D2[("career_plans, guided_tasks, tasks")]
     D3[("evidences, competency_evidences")]
-    D4[("job_search_status")]
   end
   A0 --> F1 --> P1 --> D1
   P1 --> F2 --> A1 --> P2 --> D1
@@ -331,7 +302,6 @@ flowchart TD
   A3 -- sim --> P4 --> D2
   P4 --> F3 --> A4 --> I2 --> A5 --> P7 --> D3
   P7 --> P8
-  A1 --> A6 --> P9 --> D4
   P2 -- "422 VALIDACAO (resposta fora das opções)" --> A1
   P4 -- "409 TAREFA_JA_ACEITA" --> A2
   P7 -- "422 CRITERIO_OBJETIVO_PENDENTE" --> A4
@@ -406,13 +376,7 @@ sequenceDiagram
     S-->>C: 201 evidência com URL e versão
   end
   N-->>U: "Evidência salva no seu perfil de carreira (privado). O selo depende de uma revisão humana."
-  U->>N: Configurações › Carreira: "Recrutadores verificados", oculta empresa X
-  N->>C: PUT /api/me/career/search-status
-  C->>S: JobSearchStatusService.set
-  S->>R: upsert job_search_status
-  S-->>C: 200
-  N-->>U: "Contas Empresa validadas veem seu status. Não garantimos sigilo do empregador atual."
-  Note over S,R: chefe, empresa e admin em GET /api/me/career de outra pessoa → 404 NAO_ENCONTRADO
+  Note over S,R: chefe, empresa e admin em GET /api/me/career de outra pessoa → 404 NAO_ENCONTRADO. Perfil público e busca de pessoas não carregam tipo Em transição, momento nem campo de carreira (D-147)
 ```
 
 ## 4. Máquina de estados
@@ -435,8 +399,8 @@ stateDiagram-v2
   ATIVO --> EXCLUIDO : excluir histórico (CA17)
   EXCLUIDO --> [*]
   note right of ATIVO
-    JobSearchStatus é ortogonal: SO_EU (padrão),
-    RECRUTADORES_VERIFICADOS, TODA_A_REDE (CA14)
+    Nenhum estado é visível a terceiros:
+    o perfil público é o de uma pessoa comum (CA14, D-147)
   end note
 ```
 
@@ -463,13 +427,13 @@ flowchart LR
     CPL["CareerPlanService"]
     GTS["GuidedTaskService → TaskService (real)"]
     EVS["EvidenceService → fila do curador"]
-    JSS["JobSearchStatusService → PeopleService.search (real)"]
+    PUB["PublicationService (real) → PeopleService.search (real): descoberta por opt-in, sem sinal de busca"]
     PAS["ProfileAnalysisService (RF50)"]
     RA["ResourceAuthorizer (real)"]
   end
   subgraph DOM["ws-domain"]
     PT["ProfileType + EM_TRANSICAO"]
-    CPR["CareerProfile · GuidedTaskTemplate · CompetencyEvidence · JobSearchStatus"]
+    CPR["CareerProfile · GuidedTaskTemplate · CompetencyEvidence"]
     CONS["ConsentPurpose (+ GUIA_DE_CARREIRA)"]
   end
   subgraph INFRA["ws-infrastructure"]
@@ -484,7 +448,7 @@ flowchart LR
   CAR --> GTS --> MYSQL
   GUI --> EC --> EVS --> MYSQL
   EVS --> AIG
-  SET --> CC --> JSS --> MYSQL
+  SET --> CC --> PUB --> MYSQL
   CPS --> RA
   CPL --> PAS
   CPS --> CONS
@@ -501,7 +465,7 @@ Mensagens = números do `autonumber` da §3. Passos = nós da §2. Componentes =
 | RF75.CA01 | `ProfileType.EM_TRANSICAO`, `CareerProfile.moment` (`CareerMoment`), `IdentityService.register` (real, campo novo) | A0 → F1 → P1 → D1 | 1–7 | `[*] → RASCUNHO` | `REG`, `AC`, `IDS`, `PT` |
 | RF75.CA02 | `CareerProfile.status`, `CareerProfileService.get/answer`, `CareerAnswer` | P1 → F2 → A1 → P2 | 9–20 | `RASCUNHO → GUIA_EM_ANDAMENTO → ATIVO` | `WEL`, `CC`, `CPS` |
 | RF75.CA03 | `CareerAnswer.context`, `questionKey` único por pessoa | A1 → P2 (nunca repete) | 15–20 | `GUIA_EM_ANDAMENTO → GUIA_EM_ANDAMENTO` | `CPS` |
-| RF75.CA04 | `CareerProfile.ownerId`, `ResourceAuthorizer` (real, 404 uniforme), `minSalaryEncrypted` | P2 → D1 | 11–12, nota final | — | `CPS`, `RA`, `MYSQL` |
+| RF75.CA04 | `CareerProfile.ownerId`, `ResourceAuthorizer` (real, 404 uniforme) | P2 → D1 | 11–12, nota final | — | `CPS`, `RA`, `MYSQL` |
 | RF75.CA05 | `CareerPlanService.generate`, `GuidedTaskTemplate` (level, minutes, editor), `GuidedTask.fitAnswer`, `GuidanceNudge.dismissals` | P3 → I1 → A2 → A3 → P5 → P6 | 22–27 | `ATIVO → PAUSADO → ATIVO` | `CAR`, `CPL`, `PLN` |
 | RF75.CA06 | `GuidedTaskService.accept` → `TaskItem.origin = GUIA_DE_CARREIRA`, `EvidenceService.precheck`, `objectiveChecks` | P4 → F3 → A4 → I2 | 28–39 | `ATIVO → ATIVO` | `GUI`, `GTS`, `EVS`, `AIG` |
 | RF75.CA07 | `EvidenceService.conclude`, `CompetencyEvidence` (artifactUrl, artifactVersion, criteriaMet, authorshipDeclared, validatedBy, badgeJson), fila do curador | A5 → P7 → D3 → P8 | 40–47 | — | `EC`, `EVS` |
@@ -511,8 +475,8 @@ Mensagens = números do `autonumber` da §3. Passos = nós da §2. Componentes =
 | RF75.CA11 | escopo de leitura em `UserPreferences`, `UserConsent`/`ConsentPurpose.GUIA_DE_CARREIRA`, `AiGateway` classificação e `PersonalDataMasker` (real) | A1 → P2 → I1 | 15–18, 23 | — | `SET`, `CONS`, `AIG` |
 | RF75.CA12 | `CareerProfile` sem campos sensíveis, `SensitiveTraitFilter` (RF50.CA11), acessibilidade em `UserPreferences` | A1 → P2 | 15–18 | — | `WEL`, `CPS` |
 | RF75.CA13 | `MarketClaim` (RF50.CA07: citation, sourceDate, geography, estimate) | I1 | 23 | — | `AIG`, `PAS` |
-| RF75.CA14 | `JobSearchStatus` (visibility, hiddenFromCompanyIds, availability), `Company.validated` (RF28), `PeopleService.search` filtra | A6 → P9 → D4 | 48–52 | nota de `ATIVO` | `SET`, `JSS` |
-| RF75.CA15 | `PublicationService` (real) estendido: contato, descoberta, público padrão, por item; textos "quem verá / o que muda / vale para antigos" | A6 → P9 | 48–52 | — | `SET`, `JSS` |
+| RF75.CA14 | `CareerProfile` só em `career_profiles` (sem coluna de salário nem status de busca), `UserView`/`PeopleService.search` (reais) sem `profileType` Em transição nem campos de carreira para terceiros, `PeerMatcher` (RF50.CA16) sem momento | P1 → D1 | nota final | nota de `ATIVO` | `CPS`, `PUB`, `RA` |
+| RF75.CA15 | `PublicationService` (real) estendido: contato, descoberta, público padrão, por item; textos "quem verá / o que muda / vale para antigos" | A1 → P2 | 15–18 | — | `SET`, `PUB` |
 | RF75.CA16 | `GuidanceNudge` (kind, sentAt, dismissals), `NotificationService` com horário e teto diário, aviso fixo da 1ª interação | P3 → A2, P5 → P6 | 22–27 | `ATIVO → PAUSADO` | `NOTIF`, `CPL` |
 | RF75.CA17 | `DataExportRequest` (real), exclusão de `career_*`, revogação de `UserConsent` invalida `GuidedTask` pendentes, `CurrentUserProvider` (real) | — | — | `ATIVO/ENCERRADO → EXCLUIDO` | `CPS`, `CONS`, `MYSQL` |
 | RF75.CA18 | `RfPage` sem selos fora do laboratório, textos simples em `lib/i18n`, "mais opções" para o técnico; Axe e teclado | A1, A2, A6 | — | — | `WEL`, `CAR`, `SET` |
