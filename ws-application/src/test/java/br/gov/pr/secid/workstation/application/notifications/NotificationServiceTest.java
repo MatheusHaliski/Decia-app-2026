@@ -158,4 +158,22 @@ class NotificationServiceTest {
         assertThat(n.title()).isEqualTo("Verificação em duas etapas desativada");
         assertThat(n.payload()).containsEntry("event", "TWO_FACTOR_DISABLED");
     }
+
+    @Test
+    void produtorGenericoPulaQuemAgiuContaNaoAtivaEQuemNaoVeORecurso() {
+        User owner = person("Ana Lima", AccountStatus.ACTIVE);
+        User other = person("Bruno Costa", AccountStatus.ACTIVE);
+        User gone = person("Carla Dias", AccountStatus.SUSPENDED);
+        TaskItem privateTask = task(owner, null, Visibility.PRIVADA, AccessClassification.INTERNO);
+        service.notifyAbout(java.util.Set.of(owner.getId(), other.getId(), gone.getId()), owner.getId(), scoped(privateTask),
+                NotificationType.ATRIBUICAO_PROPOSTA, NotificationCategory.SOCIAL, "project", null, "Projeto", Map.of("k", "v"));
+        assertThat(repo.rows).as("dono agiu; Bruno não vê a tarefa privada; Carla não está ativa").isEmpty();
+        service.notifyAbout(java.util.Set.of(other.getId(), gone.getId()), owner.getId(), null, NotificationType.MENSAGEM_DIRETA,
+                NotificationCategory.SOCIAL, "conversation", null, "Nova mensagem", Map.of("preview", "oi"));
+        assertThat(repo.of(other.getId())).singleElement().satisfies(n -> {
+            assertThat(n.type()).isEqualTo(NotificationType.MENSAGEM_DIRETA);
+            assertThat(n.groupKey()).isNull();
+        });
+        assertThat(repo.of(gone.getId())).isEmpty();
+    }
 }
