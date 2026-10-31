@@ -104,8 +104,10 @@ import br.gov.pr.secid.workstation.domain.lgpd.PolicyDocument;
 import br.gov.pr.secid.workstation.domain.lgpd.UserConsent;
 import br.gov.pr.secid.workstation.domain.mensageria.Assignment;
 import br.gov.pr.secid.workstation.domain.mensageria.DirectConversation;
+import br.gov.pr.secid.workstation.domain.mensageria.DirectConversationPair;
 import br.gov.pr.secid.workstation.domain.mensageria.DirectConversationParticipant;
 import br.gov.pr.secid.workstation.domain.mensageria.DirectMessage;
+import br.gov.pr.secid.workstation.domain.mensageria.DirectMessageRecord;
 import br.gov.pr.secid.workstation.domain.planejamento.AnnualPlan;
 import br.gov.pr.secid.workstation.domain.planejamento.Grouping;
 import br.gov.pr.secid.workstation.domain.planejamento.GroupingItem;
@@ -178,7 +180,8 @@ public final class DomainCatalog {
             Map.entry(21, "rf43_ia_plataforma"),
             Map.entry(22, "rf29_decisao_estruturada"),
             Map.entry(24, "seg_bloco5_quarentena_midia"),
-            Map.entry(36, "acervo_briefing_tarefas"));
+            Map.entry(36, "acervo_briefing_tarefas"),
+            Map.entry(59, "rf46_mensagens_diretas"));
 
     /**
      * FKs de tabelas que NÃO são geradas pelo catálogo (V2/Bloco 3) e que passam a existir quando a tabela-pai nasce:
@@ -236,6 +239,8 @@ public final class DomainCatalog {
             MediaScan.class,
             // V36 — Onda Acervo: briefing profissional da tarefa (auditoria 17/10/2026). V25–V35 seguem reservadas no PLANO_EXECUCAO.
             TaskBrief.class,
+            // V59 — Onda 7: mensagens diretas em MySQL (fallback do Cassandra) e o par único da conversa 1:1 (RF46). V38–V45 reservadas.
+            DirectMessageRecord.class, DirectConversationPair.class,
             // V2 — já existem (só domínio + catálogo)
             AiInferenceLog.class, DomainEventOutbox.class, FeatureFlag.class, MediaObject.class);
 

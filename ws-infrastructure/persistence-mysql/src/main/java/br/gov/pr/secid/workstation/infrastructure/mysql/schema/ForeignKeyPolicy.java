@@ -523,7 +523,11 @@ public final class ForeignKeyPolicy {
             // V24 — seg_bloco5_quarentena_midia
             new Fk("media_scans", "media_id", "media_objects", "CASCADE"),
             // V36 — acervo_briefing_tarefas
-            new Fk("task_briefs", "task_id", "tasks", "CASCADE")
+            new Fk("task_briefs", "task_id", "tasks", "CASCADE"),
+            // V59 — rf46_mensagens_diretas
+            new Fk("direct_messages", "conversation_id", "direct_conversations", "CASCADE"),
+            new Fk("direct_messages", "author_id", "users", "CASCADE"),
+            new Fk("direct_conversation_pairs", "conversation_id", "direct_conversations", "CASCADE")
     );
     // <<< gerado
 

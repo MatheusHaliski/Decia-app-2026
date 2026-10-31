@@ -27,6 +27,10 @@ import br.gov.pr.secid.workstation.application.identity.UserView;
 import br.gov.pr.secid.workstation.application.identity.VerificationCode;
 import br.gov.pr.secid.workstation.application.identity.VerificationCodeRepositoryPort;
 import br.gov.pr.secid.workstation.application.media.MemoryMedia;
+import br.gov.pr.secid.workstation.application.messaging.ConversationService;
+import br.gov.pr.secid.workstation.application.messaging.MemoryConversations;
+import br.gov.pr.secid.workstation.application.notifications.MemoryNotifications;
+import br.gov.pr.secid.workstation.application.notifications.NotificationService;
 import br.gov.pr.secid.workstation.application.security.AuthorizationTrail;
 import br.gov.pr.secid.workstation.application.security.ResourceAuthorizer;
 import br.gov.pr.secid.workstation.application.social.FollowService;
@@ -339,8 +343,11 @@ class AccountServiceTest {
         MemoryMedia media = new MemoryMedia();
         AvatarService avatars = new AvatarService(users, authz, media.inspector, media.service(authz), audited::add);
         MemoryFollows follows = new MemoryFollows();
+        MemoryNotifications notifications = new MemoryNotifications();
+        ConversationService conversations = new ConversationService(new MemoryConversations(notifications), users, authz,
+                new NotificationService(notifications, users, authz, Clock.systemUTC()), audited::add, new InMemoryRateLimit(), Clock.systemUTC());
         AccountAnonymizer anonymizer = new AccountAnonymizer(users, emailHasher, identity, audited::add, avatars,
-                new FollowService(follows, users, authz, null /* o anonimizador só usa purge */, Clock.systemUTC()), Clock.systemUTC());
+                new FollowService(follows, users, authz, null /* o anonimizador só usa purge */, Clock.systemUTC()), conversations, Clock.systemUTC());
         assertThat(anonymizer.anonymizeDue()).as("ainda no prazo").isZero();
 
         maria.setDeletionScheduledAt(Instant.now().minusSeconds(1));

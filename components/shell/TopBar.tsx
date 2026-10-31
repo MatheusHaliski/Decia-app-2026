@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, type FormEvent } from "react";
 import { Badge, Glyph, IconButton, Input, Link, Tooltip, cn } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/useI18n";
+import { useMessagesUnread } from "@/lib/messages/unread";
 import { useViewer } from "@/lib/viewer/ViewerProvider";
 import { NotificationsBell } from "./NotificationsBell";
 import { ThemeLanguageMenu } from "./ThemeLanguageMenu";
@@ -36,6 +37,10 @@ export function TopBar({ onToggleMenu, menuExpanded, menuControls }: TopBarProps
   const { user, profile } = useViewer();
   const router = useRouter();
   const searchRef = useRef<HTMLInputElement>(null);
+  // RF46: não lidas reais com sessão fora do laboratório; no laboratório, o valor DEMO
+  const realUnread = useMessagesUnread();
+  const dmUnread = realUnread ?? 2;
+  const dmLabel = realUnread ? t("dm.navWithCount", { n: realUnread }) : t("nav.messages");
 
   // atalho "/" foca a busca (fora de campos editáveis)
   useEffect(() => {
@@ -74,8 +79,8 @@ export function TopBar({ onToggleMenu, menuExpanded, menuControls }: TopBarProps
           {!visitor && user.points !== null ? <DpChip points={user.points} /> : null}
           {!visitor ? (
             <span className="relative hidden sm:inline-flex">
-              <IconButton icon="sessao-decia" label={t("nav.messages")} onClick={() => router.push("/messages")} />
-              <Badge count className="pointer-events-none absolute -right-0.5 -top-0.5" aria-hidden>2</Badge>
+              <IconButton icon="sessao-decia" label={dmLabel} onClick={() => router.push("/messages")} data-testid="messages-button" />
+              {dmUnread > 0 ? <Badge count className="pointer-events-none absolute -right-0.5 -top-0.5" aria-hidden>{dmUnread > 99 ? "99+" : dmUnread}</Badge> : null}
             </span>
           ) : null}
           {!visitor ? <NotificationsBell /> : null}

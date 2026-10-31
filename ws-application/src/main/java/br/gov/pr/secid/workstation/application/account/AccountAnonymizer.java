@@ -6,6 +6,7 @@ import br.gov.pr.secid.workstation.application.audit.AuditLogPort;
 import br.gov.pr.secid.workstation.application.identity.EmailHasher;
 import br.gov.pr.secid.workstation.application.identity.IdentityService;
 import br.gov.pr.secid.workstation.application.identity.UserRepositoryPort;
+import br.gov.pr.secid.workstation.application.messaging.ConversationService;
 import br.gov.pr.secid.workstation.application.social.FollowService;
 import br.gov.pr.secid.workstation.domain.identity.AccountStatus;
 import br.gov.pr.secid.workstation.domain.identity.User;
@@ -37,16 +38,18 @@ public class AccountAnonymizer {
     private final AuditLogPort audit;
     private final AvatarService avatars;
     private final FollowService follows;
+    private final ConversationService conversations;
     private final Clock clock;
 
     public AccountAnonymizer(UserRepositoryPort users, EmailHasher emailHasher, IdentityService identity, AuditLogPort audit,
-                             AvatarService avatars, FollowService follows, Clock clock) {
+                             AvatarService avatars, FollowService follows, ConversationService conversations, Clock clock) {
         this.users = users;
         this.emailHasher = emailHasher;
         this.identity = identity;
         this.audit = audit;
         this.avatars = avatars;
         this.follows = follows;
+        this.conversations = conversations;
         this.clock = clock;
     }
 
@@ -91,6 +94,7 @@ public class AccountAnonymizer {
         u.setProfileVisibility(null);
         avatars.purge(u);
         follows.purge(u.getId());
+        conversations.purge(u.getId());   // RF46: texto das mensagens zerado ("mensagem removida") e saída de todas as conversas
         u.setAvatarUrl(null);
         u.setCoverUrl(null);
         u.setTwoFactorEnabled(false);

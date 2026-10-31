@@ -198,6 +198,22 @@ public class ResourceAuthorizer {
         }
     }
 
+    // ------------------------------------------------------------------------------------------------ mensagens diretas (RF46)
+
+    /**
+     * Conversa direta ({@code /api/conversations/{id}…}, RF46): só quem participa (e não saiu), na empresa da conversa, lê e escreve. Quem
+     * não participa recebe o MESMO {@code 404} de um id inexistente, nunca 403 — não confirma que a conversa existe.
+     */
+    public void requireConversationParticipant(CurrentUser actor, boolean participant) {
+        if (actor == null) {
+            throw ApiException.unauthorized("Faça login para continuar.");
+        }
+        AuthorizationTrail.record("CONVERSATION");
+        if (!participant) {
+            throw ApiException.notFound("Conversa");
+        }
+    }
+
     // ------------------------------------------------------------------------------------------------ recursos
 
     public void require(Viewer viewer, ScopedResource resource, ResourceAction action) {

@@ -1,10 +1,7 @@
 "use client";
-// Página-esqueleto gerada para a rota /messages (ABAS_POR_PERFIL.md / docs/diagramas). Conteúdo real chega no RF correspondente.
-import { RfPage } from "@/components/shell/RfPage";
-import { pageByRoute } from "@/lib/pages/registry";
-
-const PAGE = pageByRoute("/messages")!;
+// Mensagens (RF46): fora do laboratório e com sessão, as conversas reais (components/messages); no laboratório, o esqueleto DEMO.
+import { MessagesPage } from "@/components/messages/MessagesPage";
 
 export default function Page() {
-  return <RfPage page={PAGE} />;
+  return <MessagesPage />;
 }
