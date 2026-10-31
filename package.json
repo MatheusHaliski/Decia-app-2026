@@ -31,7 +31,10 @@
     "@radix-ui/react-tooltip": "1.4.1",
     "next": "^16.4.2",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "three": "0.186.1",
+    "three-gpu-pathtracer": "0.0.27",
+    "three-mesh-bvh": "0.9.16"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.3",
@@ -44,6 +47,7 @@
     "@types/node": "^26.6.5",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
+    "@types/three": "0.186.0",
     "@vitest/coverage-v8": "^5.0.5",
     "eslint": "^10.13.0",
     "jsdom": "^30.1.3",

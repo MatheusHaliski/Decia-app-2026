@@ -60,7 +60,12 @@ Causas e correções:
 
 ## 3D
 
-Não há código 3D neste repositório (malhas, câmera, vistas, conversões). RF60, RF61 e RF62 continuam AUSENTES; não há o que testar. Testar o 3D exige publicar o editor do checkout local ou reimplementá-lo.
+Na revisão não havia código 3D. Depois dela, o modelo 3D foi implementado no `/drawings`, com render fisicamente baseado e path tracing. A arquitetura, os padrões e as decisões verificadas em captura de tela estão em `docs/arquitetura/padroes/drawings-3d.md`.
+
+Cobertura de testes:
+- **Unitários:** 16 testes em `lib/drawings3d/drawings3d.test.ts` e `components/drawings3d/Outliner3D.test.ts`. Cobrem a árvore com ciclo, a validação de transformação, a leitura de rascunho corrompido, a plausibilidade física dos materiais, desfazer/refazer, o teto do histórico e a direção dos softboxes no HDRI.
+- **Capturas** (Chromium headless, sem GPU): `drawings-3d-alta.png` (modo Alta, tempo real) e `drawings-3d-fotorrealista.png` (path tracing, 125 amostras).
+- **E2E:** `e2e/drawings3d.spec.ts` cobre adicionar, renomear, trocar material, editar posição, desfazer/refazer, excluir pelo teclado, rascunho após recarregar, viewport com contraste real, PNG e GLB.
 
 ## Situação dos RF do Drawings
 
