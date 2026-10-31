@@ -53,6 +53,66 @@
         "required" : [ "code" ],
         "type" : "object"
       },
+      "CompanyPageView" : {
+        "properties" : {
+          "about" : {
+            "type" : "string"
+          },
+          "accentColor" : {
+            "type" : "string"
+          },
+          "account" : {
+            "$ref" : "#/components/schemas/PersonCard"
+          },
+          "departments" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "followers" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "owner" : {
+            "type" : "boolean"
+          },
+          "people" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "slug" : {
+            "type" : "string"
+          },
+          "websiteUrl" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "CompanyRef" : {
+        "properties" : {
+          "accentColor" : {
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "slug" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
       "ConfirmBodyDto" : {
         "properties" : {
           "confirmPassword" : {
@@ -149,6 +209,84 @@
         },
         "type" : "object"
       },
+      "DepartmentPageView" : {
+        "properties" : {
+          "about" : {
+            "type" : "string"
+          },
+          "acronym" : {
+            "type" : "string"
+          },
+          "color" : {
+            "type" : "string"
+          },
+          "company" : {
+            "$ref" : "#/components/schemas/CompanyRef"
+          },
+          "coverUrl" : {
+            "type" : "string"
+          },
+          "followers" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "head" : {
+            "$ref" : "#/components/schemas/PersonCard"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "member" : {
+            "type" : "boolean"
+          },
+          "members" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "monogram" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "slug" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "DepartmentSummary" : {
+        "properties" : {
+          "acronym" : {
+            "type" : "string"
+          },
+          "color" : {
+            "type" : "string"
+          },
+          "companySlug" : {
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "members" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "monogram" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "slug" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
       "EmailRequest" : {
         "properties" : {
           "email" : {
@@ -206,6 +344,30 @@
           }
         },
         "required" : [ "identifier", "password" ],
+        "type" : "object"
+      },
+      "MyInstitutionView" : {
+        "properties" : {
+          "company" : {
+            "$ref" : "#/components/schemas/CompanyRef"
+          },
+          "companyStatus" : {
+            "type" : "string"
+          },
+          "departments" : {
+            "items" : {
+              "$ref" : "#/components/schemas/DepartmentSummary"
+            },
+            "type" : "array"
+          },
+          "owner" : {
+            "type" : "boolean"
+          },
+          "people" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
         "type" : "object"
       },
       "NotificationView" : {
@@ -308,6 +470,30 @@
           }
         },
         "required" : [ "currentPassword" ],
+        "type" : "object"
+      },
+      "PersonCard" : {
+        "properties" : {
+          "avatarUrl" : {
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "jobTitle" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "role" : {
+            "type" : "string"
+          },
+          "username" : {
+            "type" : "string"
+          }
+        },
         "type" : "object"
       },
       "PersonView" : {
@@ -458,11 +644,51 @@
           "self" : {
             "type" : "boolean"
           },
+          "specialties" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
           "username" : {
             "type" : "string"
           },
           "verified" : {
             "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
+      "PublicationRequest" : {
+        "properties" : {
+          "profileVisibility" : {
+            "maxLength" : 20,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "specialties" : {
+            "items" : {
+              "maxLength" : 200,
+              "minLength" : 0,
+              "type" : "string"
+            },
+            "maxItems" : 30,
+            "minItems" : 0,
+            "type" : "array"
+          }
+        },
+        "type" : "object"
+      },
+      "PublicationView" : {
+        "properties" : {
+          "profileVisibility" : {
+            "type" : "string"
+          },
+          "specialties" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
           }
         },
         "type" : "object"
@@ -1440,6 +1666,309 @@
         "tags" : [ "RF1 Cadastro" ]
       }
     },
+    "/api/companies/{slug}" : {
+      "get" : {
+        "operationId" : "company",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CompanyPageView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF15.CA01 Cabeçalho da empresa (nome, sobre, site, cor, departamentos ativos, pessoas ativas, seguidores)",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      }
+    },
+    "/api/companies/{slug}/departments" : {
+      "get" : {
+        "operationId" : "departments",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/DepartmentSummary"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF15.CA02 Departamentos ativos da empresa",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      }
+    },
+    "/api/companies/{slug}/follow" : {
+      "delete" : {
+        "operationId" : "unfollowCompany",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FollowView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF15.CA05 Deixar de seguir a empresa (idempotente)",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      },
+      "get" : {
+        "operationId" : "companyFollow",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FollowView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF15.CA05 Sigo esta empresa? Quantos a seguem",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      },
+      "put" : {
+        "operationId" : "followCompany",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FollowView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF15.CA05 Seguir a empresa (idempotente)",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      }
+    },
+    "/api/departments/{slug}" : {
+      "get" : {
+        "operationId" : "department",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "company",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DepartmentPageView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF14.CA01 Cabeçalho do departamento (sigla, nome, cor, monograma, sobre, capa, chefe, empresa, pessoas, seguidores)",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      }
+    },
+    "/api/departments/{slug}/follow" : {
+      "delete" : {
+        "operationId" : "unfollowDepartment",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "company",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FollowView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF14.CA04 Deixar de seguir o departamento (idempotente)",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      },
+      "get" : {
+        "operationId" : "departmentFollow",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "company",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FollowView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF14.CA04 Sigo este departamento? Quantos o seguem",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      },
+      "put" : {
+        "operationId" : "followDepartment",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "company",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FollowView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF14.CA04 Seguir o departamento (idempotente)",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      }
+    },
+    "/api/departments/{slug}/members" : {
+      "get" : {
+        "operationId" : "members",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "company",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/PersonCard"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF14.CA02 Equipe (modo público): pessoas ativas com lotação vigente, sem contato",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      }
+    },
     "/api/me" : {
       "get" : {
         "operationId" : "me",
@@ -1459,7 +1988,7 @@
         "tags" : [ "RF3 Conta" ]
       },
       "patch" : {
-        "operationId" : "update_1",
+        "operationId" : "update_2",
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -1719,6 +2248,25 @@
         "tags" : [ "RF3 Conta" ]
       }
     },
+    "/api/me/institution" : {
+      "get" : {
+        "operationId" : "mine_2",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MyInstitutionView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF6 Parte institucional do meu perfil: empresa (dona ou da lotação) e departamentos ativos",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      }
+    },
     "/api/me/preferences" : {
       "get" : {
         "operationId" : "preferences",
@@ -1762,6 +2310,52 @@
           }
         },
         "summary" : "RF3.CA03 Salva as preferências (valores validados contra os CHECKs do V2; 422 VALIDACAO por campo)",
+        "tags" : [ "RF3 Conta" ]
+      }
+    },
+    "/api/me/publication" : {
+      "get" : {
+        "operationId" : "mine",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PublicationView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF3 Minhas especialidades e quem vê meu perfil público (AUTENTICADOS | EMPRESA)",
+        "tags" : [ "RF3 Conta" ]
+      },
+      "put" : {
+        "operationId" : "update_1",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PublicationRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PublicationView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF3 Altera especialidades (até 10, 2–40 caracteres, sem repetir) e quem vê o perfil público; 422 VALIDACAO por campo",
         "tags" : [ "RF3 Conta" ]
       }
     },
@@ -2103,7 +2697,7 @@
     },
     "/api/tasks" : {
       "get" : {
-        "operationId" : "mine",
+        "operationId" : "mine_1",
         "parameters" : [ {
           "in" : "query",
           "name" : "limit",

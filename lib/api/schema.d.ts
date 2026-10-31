@@ -226,6 +226,112 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/companies/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF15.CA01 Cabeçalho da empresa (nome, sobre, site, cor, departamentos ativos, pessoas ativas, seguidores) */
+        get: operations["company"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/companies/{slug}/departments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF15.CA02 Departamentos ativos da empresa */
+        get: operations["departments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/companies/{slug}/follow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF15.CA05 Sigo esta empresa? Quantos a seguem */
+        get: operations["companyFollow"];
+        /** RF15.CA05 Seguir a empresa (idempotente) */
+        put: operations["followCompany"];
+        post?: never;
+        /** RF15.CA05 Deixar de seguir a empresa (idempotente) */
+        delete: operations["unfollowCompany"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/departments/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF14.CA01 Cabeçalho do departamento (sigla, nome, cor, monograma, sobre, capa, chefe, empresa, pessoas, seguidores) */
+        get: operations["department"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/departments/{slug}/follow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF14.CA04 Sigo este departamento? Quantos o seguem */
+        get: operations["departmentFollow"];
+        /** RF14.CA04 Seguir o departamento (idempotente) */
+        put: operations["followDepartment"];
+        post?: never;
+        /** RF14.CA04 Deixar de seguir o departamento (idempotente) */
+        delete: operations["unfollowDepartment"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/departments/{slug}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF14.CA02 Equipe (modo público): pessoas ativas com lotação vigente, sem contato */
+        get: operations["members"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me": {
         parameters: {
             query?: never;
@@ -241,7 +347,7 @@ export interface paths {
         options?: never;
         head?: never;
         /** RF3.CA01/CA04/CA06 Edita campos não sensíveis (422 VALIDACAO por campo); 403 EXCLUSAO_AGENDADA durante o prazo */
-        patch: operations["update_1"];
+        patch: operations["update_2"];
         trace?: never;
     };
     "/api/me/2fa": {
@@ -365,6 +471,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/institution": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF6 Parte institucional do meu perfil: empresa (dona ou da lotação) e departamentos ativos */
+        get: operations["mine_2"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/preferences": {
         parameters: {
             query?: never;
@@ -376,6 +499,24 @@ export interface paths {
         get: operations["preferences"];
         /** RF3.CA03 Salva as preferências (valores validados contra os CHECKs do V2; 422 VALIDACAO por campo) */
         put: operations["updatePreferences"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/publication": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF3 Minhas especialidades e quem vê meu perfil público (AUTENTICADOS | EMPRESA) */
+        get: operations["mine"];
+        /** RF3 Altera especialidades (até 10, 2–40 caracteres, sem repetir) e quem vê o perfil público; 422 VALIDACAO por campo */
+        put: operations["update_1"];
         post?: never;
         delete?: never;
         options?: never;
@@ -563,7 +704,7 @@ export interface paths {
             cookie?: never;
         };
         /** RF41.CA01 Minhas tarefas (mais recentes primeiro) */
-        get: operations["mine"];
+        get: operations["mine_1"];
         put?: never;
         /** RF4.CA01 Criar tarefa (campos comuns + briefing por área) */
         post: operations["create"];
@@ -660,6 +801,30 @@ export interface components {
         CodeBody: {
             code: string;
         };
+        CompanyPageView: {
+            about?: string;
+            accentColor?: string;
+            account?: components["schemas"]["PersonCard"];
+            /** Format: int64 */
+            departments?: number;
+            /** Format: int64 */
+            followers?: number;
+            /** Format: uuid */
+            id?: string;
+            name?: string;
+            owner?: boolean;
+            /** Format: int64 */
+            people?: number;
+            slug?: string;
+            websiteUrl?: string;
+        };
+        CompanyRef: {
+            accentColor?: string;
+            /** Format: uuid */
+            id?: string;
+            name?: string;
+            slug?: string;
+        };
         ConfirmBodyDto: {
             confirmPassword: string;
             newPassword: string;
@@ -689,6 +854,36 @@ export interface components {
         Deliverable: {
             text?: string;
         };
+        DepartmentPageView: {
+            about?: string;
+            acronym?: string;
+            color?: string;
+            company?: components["schemas"]["CompanyRef"];
+            coverUrl?: string;
+            /** Format: int64 */
+            followers?: number;
+            head?: components["schemas"]["PersonCard"];
+            /** Format: uuid */
+            id?: string;
+            member?: boolean;
+            /** Format: int64 */
+            members?: number;
+            monogram?: string;
+            name?: string;
+            slug?: string;
+        };
+        DepartmentSummary: {
+            acronym?: string;
+            color?: string;
+            companySlug?: string;
+            /** Format: uuid */
+            id?: string;
+            /** Format: int64 */
+            members?: number;
+            monogram?: string;
+            name?: string;
+            slug?: string;
+        };
         EmailRequest: {
             email: string;
         };
@@ -706,6 +901,14 @@ export interface components {
             password: string;
             rememberMe?: boolean;
             twoFactorCode?: string;
+        };
+        MyInstitutionView: {
+            company?: components["schemas"]["CompanyRef"];
+            companyStatus?: string;
+            departments?: components["schemas"]["DepartmentSummary"][];
+            owner?: boolean;
+            /** Format: int64 */
+            people?: number;
         };
         NotificationView: {
             /** Format: uuid */
@@ -742,6 +945,15 @@ export interface components {
         };
         PasswordBody: {
             currentPassword: string;
+        };
+        PersonCard: {
+            avatarUrl?: string;
+            /** Format: uuid */
+            id?: string;
+            jobTitle?: string;
+            name?: string;
+            role?: string;
+            username?: string;
         };
         PersonView: {
             avatarUrl?: string;
@@ -793,8 +1005,17 @@ export interface components {
             name?: string;
             profileType?: string;
             self?: boolean;
+            specialties?: string[];
             username?: string;
             verified?: boolean;
+        };
+        PublicationRequest: {
+            profileVisibility?: string;
+            specialties?: string[];
+        };
+        PublicationView: {
+            profileVisibility?: string;
+            specialties?: string[];
         };
         ReadAll: {
             /** Format: int32 */
@@ -1348,6 +1569,236 @@ export interface operations {
             };
         };
     };
+    company: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CompanyPageView"];
+                };
+            };
+        };
+    };
+    departments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DepartmentSummary"][];
+                };
+            };
+        };
+    };
+    companyFollow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
+    followCompany: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
+    unfollowCompany: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
+    department: {
+        parameters: {
+            query?: {
+                company?: string;
+            };
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DepartmentPageView"];
+                };
+            };
+        };
+    };
+    departmentFollow: {
+        parameters: {
+            query?: {
+                company?: string;
+            };
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
+    followDepartment: {
+        parameters: {
+            query?: {
+                company?: string;
+            };
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
+    unfollowDepartment: {
+        parameters: {
+            query?: {
+                company?: string;
+            };
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
+    members: {
+        parameters: {
+            query?: {
+                company?: string;
+            };
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PersonCard"][];
+                };
+            };
+        };
+    };
     me: {
         parameters: {
             query?: never;
@@ -1368,7 +1819,7 @@ export interface operations {
             };
         };
     };
-    update_1: {
+    update_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -1599,6 +2050,26 @@ export interface operations {
             };
         };
     };
+    mine_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MyInstitutionView"];
+                };
+            };
+        };
+    };
     preferences: {
         parameters: {
             query?: never;
@@ -1639,6 +2110,50 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["UserPreferences"];
+                };
+            };
+        };
+    };
+    mine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PublicationView"];
+                };
+            };
+        };
+    };
+    update_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PublicationRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PublicationView"];
                 };
             };
         };
@@ -1906,7 +2421,7 @@ export interface operations {
             };
         };
     };
-    mine: {
+    mine_1: {
         parameters: {
             query?: {
                 limit?: number;
