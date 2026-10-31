@@ -87,6 +87,8 @@ public class AccountAnonymizer {
         u.setOidcIssuer(null);
         u.setJobTitle(null);
         u.setBio(null);
+        u.setSpecialties(java.util.List.of());
+        u.setProfileVisibility(null);
         avatars.purge(u);
         follows.purge(u.getId());
         u.setAvatarUrl(null);

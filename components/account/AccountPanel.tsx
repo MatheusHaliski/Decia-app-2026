@@ -6,9 +6,13 @@ import { ApiError, describeError } from "@/lib/api/client";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { useCurrentUser } from "@/lib/session/CurrentUserProvider";
 import { AvatarSection } from "./AvatarSection";
+import { PublicationCard } from "./PublicationCard";
 import { TwoFactorCard } from "./TwoFactorCard";
 
-/** Configurações › Conta (RF3.CA01/CA04/CA05, RF2.CA02): foto e dados do perfil e verificação em duas etapas da conta real. */
+/**
+ * Configurações › Conta (RF3.CA01/CA04/CA05, RF2.CA02): foto e dados do perfil, especialidades e quem vê o perfil público (RF3) e
+ * verificação em duas etapas da conta real.
+ */
 export function AccountPanel() {
   const { t } = useI18n();
   const { toast } = useToast();
@@ -62,6 +66,7 @@ export function AccountPanel() {
           <Button type="submit" variant="primary" className="justify-self-start" busy={busy} disabled={locked}>{t("account.saveProfile")}</Button>
         </form>
       </Card>
+      <PublicationCard locked={locked} />
       <TwoFactorCard />
     </div>
   );

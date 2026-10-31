@@ -340,7 +340,7 @@ class AccountServiceTest {
         AvatarService avatars = new AvatarService(users, authz, media.inspector, media.service(authz), audited::add);
         MemoryFollows follows = new MemoryFollows();
         AccountAnonymizer anonymizer = new AccountAnonymizer(users, emailHasher, identity, audited::add, avatars,
-                new FollowService(follows, users, authz, Clock.systemUTC()), Clock.systemUTC());
+                new FollowService(follows, users, authz, null /* o anonimizador só usa purge */, Clock.systemUTC()), Clock.systemUTC());
         assertThat(anonymizer.anonymizeDue()).as("ainda no prazo").isZero();
 
         maria.setDeletionScheduledAt(Instant.now().minusSeconds(1));

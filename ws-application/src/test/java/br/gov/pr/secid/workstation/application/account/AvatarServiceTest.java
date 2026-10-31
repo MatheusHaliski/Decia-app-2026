@@ -240,4 +240,24 @@ class AvatarServiceTest {
         assertThat(media.rows).isEmpty();
         assertThat(media.blobs).isEmpty();
     }
+
+    @Test
+    void fotoDePerfilSoDaEmpresaResponde404DeForaIgualAContaInexistente() throws IOException {
+        UUID secid = UUID.randomUUID();
+        User ana = person(AccountStatus.ACTIVE);
+        ana.setCompanyId(secid);
+        User colega = person(AccountStatus.ACTIVE);
+        colega.setCompanyId(secid);
+        User fora = person(AccountStatus.ACTIVE);
+        service.upload(cu(ana), encode(halves(64, 64, BufferedImage.TYPE_INT_RGB), "png"), "a.png", "image/png", CTX);
+        ana.setProfileVisibility(br.gov.pr.secid.workstation.domain.identity.ProfileVisibility.EMPRESA);
+
+        assertThat(service.read(cu(colega), ana.getId()).mimeType()).isEqualTo("image/jpeg");
+        assertThat(service.read(cu(ana), ana.getId()).mimeType()).isEqualTo("image/jpeg");
+        ApiException hidden = catchThrowableOfType(ApiException.class, () -> service.read(cu(fora), ana.getId()));
+        ApiException ghost = catchThrowableOfType(ApiException.class, () -> service.read(cu(fora), UUID.randomUUID()));
+        assertThat(hidden.status()).isEqualTo(404);
+        assertThat(hidden.getMessage()).isEqualTo(ghost.getMessage());
+        assertThat(hidden.code()).isEqualTo(ghost.code());
+    }
 }

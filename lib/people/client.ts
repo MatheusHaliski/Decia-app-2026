@@ -9,7 +9,8 @@ import type { components } from "@/lib/api/schema";
 import type { TaskView } from "@/lib/tasks/client";
 
 export type PersonView = components["schemas"]["PersonView"];
-export type PublicProfileView = components["schemas"]["PublicProfileView"];
+/** `specialties` (RF3, 31/10) espelha o campo novo do DTO PublicProfileView; trocar pelo tipo gerado quando o contrato for regenerado. */
+export type PublicProfileView = components["schemas"]["PublicProfileView"] & { specialties?: string[] | null };
 export type FollowView = components["schemas"]["FollowView"];
 
 /** Mínimo de caracteres para buscar (abaixo disso o servidor devolve vazio; o front nem chama). */

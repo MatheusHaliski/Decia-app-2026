@@ -9,6 +9,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ProfileAvatar } from "@/components/account/ProfileAvatar";
+import { SpecialtyTags } from "@/components/account/Specialties";
 import { Badge, Button, Card, EmptyState, ErrorState, LoadingState } from "@/components/ui";
 import { RfPage } from "@/components/shell/RfPage";
 import { ownCounters } from "@/components/account/OwnProfile";
@@ -84,6 +85,7 @@ function PublicProfileHeader({ person, tasks }: { person: PublicProfileView; tas
           <p className="max-w-prose text-[length:var(--ws-text-body-sm)] [overflow-wrap:anywhere]" data-testid="profile-bio">
             {person.bio?.trim() ? person.bio : <span className="text-ws-text-muted">{t("social.profile.noBio")}</span>}
           </p>
+          <SpecialtyTags items={person.specialties} />
         </div>
       </div>
       <div className="grid gap-2 md:min-w-[18rem]">

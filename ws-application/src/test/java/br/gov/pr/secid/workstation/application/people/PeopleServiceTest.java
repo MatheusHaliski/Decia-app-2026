@@ -112,4 +112,29 @@ class PeopleServiceTest {
         assertThatThrownBy(() -> service.visibleById(cu(me), UUID.randomUUID())).isInstanceOf(ApiException.class);
         assertThat(AuthorizationTrail.checked()).isTrue();
     }
+
+    @Test
+    void perfilSoDaEmpresaResponde404DeForaEMostraEspecialidadesParaQuemPodeVer() {
+        User ana = person("ana.silva", company, AccountStatus.ACTIVE);
+        ana.setProfileVisibility(br.gov.pr.secid.workstation.domain.identity.ProfileVisibility.EMPRESA);
+        ana.setSpecialties(java.util.List.of("Licitações", "BIM"));
+        User colega = person("bruno.lima", company, AccountStatus.ACTIVE);
+        User fora = person("carla.fora", other, AccountStatus.ACTIVE);
+        User semEmpresa = person("diego.solo", null, AccountStatus.ACTIVE);
+
+        assertThat(service.byUsername(cu(colega), "ana.silva").specialties()).containsExactly("Licitações", "BIM");
+        assertThat(service.byUsername(cu(ana), "ana.silva").self()).as("a própria pessoa sempre se vê").isTrue();
+        for (User viewer : new User[] {fora, semEmpresa}) {
+            ApiException byName = org.assertj.core.api.Assertions.catchThrowableOfType(ApiException.class,
+                    () -> service.byUsername(cu(viewer), "ana.silva"));
+            ApiException byId = org.assertj.core.api.Assertions.catchThrowableOfType(ApiException.class,
+                    () -> service.visibleById(cu(viewer), ana.getId()));
+            ApiException ghost = org.assertj.core.api.Assertions.catchThrowableOfType(ApiException.class,
+                    () -> service.byUsername(cu(viewer), "nao-existe"));
+            assertThat(byName.status()).isEqualTo(404);
+            assertThat(byId.status()).isEqualTo(404);
+            assertThat(byName.getMessage()).as("mesma recusa de uma conta inexistente").isEqualTo(ghost.getMessage()).isEqualTo(byId.getMessage());
+            assertThat(byName.code()).isEqualTo(ghost.code());
+        }
+    }
 }
