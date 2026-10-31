@@ -4719,5 +4719,124 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "kind": "enunciado"
       }
     ]
+  },
+  {
+    "id": "RF75",
+    "n": 75,
+    "title": "Work Station Career Guidance: guiar a pessoa em transição de carreira com perguntas, tarefas-guia e evidências",
+    "hu": null,
+    "summary": "Trello: RF75 Work Station Career Guidance (Guia de Carreira do Work Station) (card 241, criado em 31/10/2026).",
+    "route": "Guia de Carreira (/profile?tab=carreira; guia inicial em /welcome; Tarefa do Dia em /profile?tab=tarefa-do-dia; caminhos em /insights?tab=perfil; controles em /settings?tab=carreira, ia e privacidade; painel Guia dentro de /letters e /drawings)",
+    "coverage": "RF75.CA01 … RF75.CA18 — requisito novo pedido pelo usuário em 31/10/2026 (\"Work Station Career Guidance — Guia de Carreira do Work Station\"), derivado da auditoria GUIA_DE_CARREIRA.md; todos planejados. No código existem só as bases: tipos de conta e perfil (RF1, RF3), especialidades e visibilidade (lib/account/publication.ts), modos de autonomia (RF51, lib/ai/autonomy.ts), consentimentos (ConsentPurpose.RESUMO_PROFISSIONAL_IA), tarefas reais (RF4), seguir (RF16), editores Letters (esqueleto) e Drawings (3D real).",
+    "cas": [
+      {
+        "id": "RF75.CA01",
+        "text": "Dado o cadastro, quando a pessoa escolhe o tipo de conta, então além de Empregado, Empresa e Chefe existe Em transição (ProfileType.EM_TRANSICAO, sem validação, ativa ao confirmar o e-mail) e a pergunta \"O que descreve seu momento?\" (trabalho e quero mudar · estou sem emprego · primeiro emprego · volto depois de uma pausa · mudo de área · por conta própria · só explorando). Uma conta Em transição vira Empregado (vínculo a empresa) sem perder dados; a dica de Empregado deixa de ser a única opção para pessoa física.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA02",
+        "text": "Dado o primeiro acesso de uma conta com o guia ativado, quando a confirmação de e-mail ou o login termina, então a pessoa vai para /welcome com até oito perguntas (cargo ou área alvo, prazo, sigilo do empregador atual se couber, horas por semana, quanto a IA faz sozinha, que dados a IA lê, quem vê que está em busca, quem pode enviar mensagem), cada uma com \"por que pergunto\" e \"pular\"; o guia é retomável e um aviso \"Seu guia está n/8\" aparece até concluir ou ser dispensado duas vezes; nada bloqueia o uso do sistema.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA03",
+        "text": "Dado o guia iniciado, quando uma resposta só faz diferença num momento (teste de interesses ao responder \"não sei\", salário mínimo e lista \"não quero\" ao ver oportunidades, \"tem prova disso?\" por competência, público padrão na primeira publicação, check-in semanal de prontidão), então a pergunta aparece nesse momento, uma vez, e nunca repete o que já foi respondido.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA04",
+        "text": "Dado o perfil de carreira (momento, objetivo, competências, evidências, pausa, salário, lista \"não quero\", check-ins), quando armazenado ou consultado, então é privado por padrão: chefe, empresa, administrador e curador não têm acesso automático; aparece a terceiros só o que a pessoa marcar campo a campo; 404 NAO_ENCONTRADO para quem não pode ver.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA05",
+        "text": "Dado o perfil de carreira confirmado, quando o plano é gerado, então a pessoa recebe um plano semanal e uma Tarefa do Dia do catálogo de tarefas-guia, cada uma com competência comprovada, critério de aceite verificável, evidência esperada, tempo estimado e \"por que esta tarefa\"; o plano respeita horas por semana e aparelho (tarefas 3D só com computador); \"serve para você?\" (sim · agora não · nunca este tipo) alimenta o plano e duas dispensas seguidas pausam sugestões por sete dias.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA06",
+        "text": "Dado uma tarefa-guia aceita, quando a pessoa a abre, então o Letters ou o Drawings abre com um painel lateral Guia (enunciado, critérios, rubrica, \"concluir e gerar evidência\"); a IA pré-checa só os critérios objetivos (tamanho, campos presentes, cotas que fecham, vistas renderizadas) e nunca os subjetivos; a peça fica na pasta da tarefa e vinculada a ela (RF71).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA07",
+        "text": "Dado uma tarefa concluída, quando a pessoa confirma, então nasce uma Evidence com URL da peça, versão, critérios atendidos, declaração de autoria e de ausência de dado confidencial; o selo de competência só é emitido com validação humana (par, mentor ou curador) e pode ser exportado como Open Badge 3.0; todo rótulo que a IA inferiu mostra \"como foi calculado\" e \"contestar\".",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA08",
+        "text": "Dado o progresso da pessoa, quando exibido, então é por evidências e critérios (\"3 de 5\"), sem score, percentual de empregabilidade, ranking entre pessoas, contagem regressiva ou perda de progresso; sequência, se existir, é semanal e tem pausa sem custo; Hype Score, pontos e popularidade não entram em nenhuma sugestão.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA09",
+        "text": "Dado qualquer pergunta ou sugestão da IA, quando apresentada, então a IA pergunta em vez de inferir área, senioridade ou situação; explica por que pergunta; cada sugestão traz \"por que recebi isto\" com os campos usados e \"discordo\", que corrige o perfil ou descarta a sugestão; inferências ficam marcadas e corrigíveis.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA10",
+        "text": "Dado o controle \"quanto o guia pode fazer sozinho\" (só sugerir · rascunhar para eu aprovar · executar rotinas avisando), quando escolhido, então mapeia para SUGESTOES, ASSISTIDO ou AGENTE do RF51 (Manual e Sob solicitação ficam em \"mais opções\"); em nenhum modo a IA publica, segue, envia mensagem, compartilha ou se candidata sem confirmação explícita; o agente para antes dessas ações.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA11",
+        "text": "Dado o controle \"que dados o guia pode ler\" (perfil · currículo · minhas Letters · meus Drawings · mensagens) e \"onde a IA roda\" (padrão do WS · provedor externo · desligada), quando a IA é chamada, então lê só o escopo marcado; o provedor externo exige consentimento contextual que lista as categorias enviadas e o custo; mensagens e itens RESTRITO/SIGILOSO nunca vão ao provedor externo; \"Economia/Avançado\" passa a dizer o que sai e o que custa.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA12",
+        "text": "Dado o perfil de carreira e o material da pessoa, quando coletados ou analisados, então o sistema não pergunta nem infere idade, gênero, estado civil, filhos, gravidez, religião, opinião política, sindicato, raça ou cor, saúde ou deficiência, endereço completo, motivo da demissão ou foto obrigatória; acessibilidade entra como \"o que deixa o WS mais fácil para você\", gravada como preferência de interface, fora do perfil e da descoberta.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA13",
+        "text": "Dado uma afirmação sobre vagas, demanda, remuneração ou requisito de mercado, quando exibida, então cita fonte, data e região; sem fonte, diz \"estimativa sem fonte atual\"; caminhos de carreira são alternativas para explorar e nunca prometem emprego, salário ou prazo.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA14",
+        "text": "Dado o status \"Em busca\", quando a pessoa o ativa, então escolhe quem o vê (só eu · recrutadores verificados = contas Empresa validadas pelo RF28 · toda a rede), pode ocultar o perfil de empresas específicas e informar disponibilidade; o padrão é \"só eu\"; a tela avisa que o sigilo em relação ao empregador atual não é garantido; o status nunca entra em ranking, ordenação ou recomendação a empregadores.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA15",
+        "text": "Dado os controles de rede (quem pode enviar mensagem, aparecer em buscas e em pessoas semelhantes, mostrar atividade, público padrão das produções, comentários e remix por item), quando exibidos, então cada opção responde \"quem verá?\", \"o que muda?\" e \"vale para itens antigos?\"; mudar o padrão não republica o acervo; a pessoa só é sugerida a outras se marcou participar (RF50.CA16).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA16",
+        "text": "Dado as mensagens do guia, quando enviadas, então a primeira interação diz \"Sou uma IA; minhas sugestões não garantem entrevista, emprego nem salário\"; há no máximo um lembrete proativo por dia, dentro do horário escolhido, com pausa de sete dias após duas dispensas; nenhuma mensagem culpa a pessoa, usa contagem regressiva falsa ou \"confirmshaming\"; os modos Manual e Sob solicitação não geram lembretes.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA17",
+        "text": "Dado o histórico do guia (respostas, análises, sugestões, evidências), quando a pessoa pede, então exporta tudo e exclui análises e respostas dentro das regras de retenção; revogar um consentimento invalida sugestões pendentes no servidor; conta trocada no mesmo aparelho não vê nada da anterior; eventos guardam autoria e referência de inferência sem copiar currículo ou texto sensível.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA18",
+        "text": "Dado qualquer tela da jornada, quando renderizada, então não mostra identificadores internos (selos \"RFnn\", \"Q-30\", \"Bloco 3\", \"Esqueleto da etapa\"), nem jargão técnico (\"tokens\", \"ponto de restauração\", \"ferramentas determinísticas\") fora de \"mais opções\"; funciona por teclado, com estrutura semântica, e distingue informação confirmada, inferência e proposta (RF50.CA15).",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
   }
 ];

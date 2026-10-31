@@ -120,7 +120,7 @@ layout do painel.
 **Não coletar.** CPF (salvo o caso gov.br acima) · número ou imagem de documento de identidade · data de nascimento
 (salvo Q-63) · sexo/gênero · cor/raça · religião, opinião política, filiação sindical · saúde ou deficiência · vida
 sexual · biometria · nome da mãe · estado civil · endereço residencial · matrícula funcional (sem integração com base
-legal) · pretensão salarial · sinal "procurando emprego" · registro de quem visitou o perfil.
+legal) · pretensão salarial e sinal "procurando emprego" (salvo no Guia de Carreira, RF75, com finalidade, consentimento e área privada — D-147) · registro de quem visitou o perfil.
 
 ## 5. EMPRESA
 
@@ -442,8 +442,8 @@ Valem para todos os tipos de perfil. Sensível = art. 5º, II (tratamento só na
 | `estado_civil` | Estado civil / relacionamento | **proibido s/ base** | Facebook | Dado pessoal sem finalidade no produto: coleta vedada pelos princípios da finalidade e da necessidade (art. 6º, I e III) até haver base legal (art. 7º) e finalidade documentadas. |
 | `endereco_residencial` | Endereço residencial | **proibido s/ base** | Currículo Lattes | Dado pessoal sem finalidade no produto: coleta vedada pelos princípios da finalidade e da necessidade (art. 6º, I e III) até haver base legal (art. 7º) e finalidade documentadas. |
 | `matricula` | Matrícula funcional | **proibido s/ base** | Microsoft Teams / cartão de perfil M365 | Só com integração de RH/folha e base legal (art. 7º, II/V, ou art. 23 no setor público). |
-| `pretensao_salarial` | Pretensão salarial / remuneração | **proibido s/ base** | Indeed, Dribbble | O Indeed esconde a pretensão dos empregadores; aqui não há finalidade. |
-| `procurando_emprego` | Sinal 'procurando emprego' | **proibido s/ base** | LinkedIn, XING, Indeed | Numa rede da própria empresa, expõe a pessoa ao empregador; XING e LinkedIn o restringem a recrutadores. |
+| `pretensao_salarial` | Pretensão salarial / remuneração | **proibido s/ base**; **permitido no RF75** (D-147) | Indeed, Dribbble | O Indeed esconde a pretensão dos empregadores. No Guia de Carreira (RF75) é salário mínimo aceitável, cifrado, privado, só para filtrar sugestões; nunca exibido nem usado para ordenar. |
+| `procurando_emprego` | Sinal 'procurando emprego' | **proibido s/ base**; **permitido no RF75** (D-147) | LinkedIn, XING, Indeed | Numa rede da própria empresa, expõe a pessoa ao empregador; XING e LinkedIn o restringem a recrutadores. No RF75 é o status "Em busca" com três níveis (padrão "só eu"), bloqueio de empresas e consentimento ao ativar o guia. |
 | `visitas_ao_perfil` | Registro de quem visitou meu perfil | **proibido s/ base** | LinkedIn | Não implementar: cria monitoramento entre colegas e chefias sem finalidade. |
 
 ## 12. Lacunas no modelo atual

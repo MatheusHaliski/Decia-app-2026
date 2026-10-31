@@ -12,11 +12,44 @@ Método: leitura do código e dos requisitos (RF1–RF3, RF6, RF18, RF19, RF26, 
 - **A rede social tem regras, mas sem painel.** Visibilidade do perfil existe no backend (`profileVisibility`), seguir e mural funcionam em demonstração, mas a aba Configurações › Privacidade é esqueleto. A pessoa não consegue responder "quem vê que estou procurando emprego?".
 - **A especificação já aponta o caminho.** O RF50 (Análise de Perfil) tem 18 critérios que cobrem objetivo da análise, escopo, dados usados, caminhos de carreira com fonte, pessoas semelhantes e privacidade por padrão. O que falta é a camada de **perguntas** que alimenta esse RF e as **tarefas-guia** no Letters e no Drawings que transformam respostas em evidências.
 
-Notas por dimensão (0–10, estado atual): perfil **2,5**; sugestão de tarefas **1,0**; ajuste da IA **4,0**; regulação da rede **3,0**. Detalhe na §2.
+Notas por dimensão (0–10, estado atual): perfil **2,5**; sugestão de tarefas **1,0**; ajuste da IA **4,0**; regulação da rede **2,0**. Detalhe na §2. O requisito que responde à auditoria é o **RF75 Work Station Career Guidance** (§5).
 
 ## 2. O que a persona encontra hoje
 
-_(seção preenchida com o percurso real e as capturas; ver `capturas/`)_
+Percurso no build de produção (`next start`, modo laboratório, sem backend), como visitante e com sessão simulada. Capturas em `capturas/`.
+
+### 2.1 Perfil — nota 2,5
+
+- **Cadastro:** a única pergunta de perfil é o tipo de conta (`components/auth/AuthForms.tsx:115-136`); "Empregado" é descrito como "Pessoa que trabalha em uma empresa ou órgão" (`pt-BR.json:1733`). A tela mostra os selos internos "RF1" e "política do RF1.CA01" (`capturas/g-register.png`); o login mostra "RF2" e "(Q-30)" (`capturas/g-login.png`).
+- **Depois do cadastro:** a confirmação de e-mail e o login levam ao `/mural` (`components/auth/VerifyEmailForm.tsx:26`, `lib/auth/next.ts:6`). Não há primeiro acesso, checklist nem "complete seu perfil".
+- **Perfil:** nome, nome de exibição, cargo, "Sobre você" e até 10 especialidades livres, visíveis a qualquer conta autenticada por padrão (`components/account/AccountPanel.tsx`, `lib/account/publication.ts:9-16`). Nada de objetivo, situação, experiência, formação, disponibilidade, localização ou currículo (lacunas 1, 11, 17–20, 39–41 de `DADOS_DE_PERFIL_POR_TIPO.md` §12).
+- **Vocabulário:** "Acervo de Tarefas", "Perfil deliberativo", "DP", "Hype", "Plano Anual", "chancelas" — tudo institucional; o catálogo de textos pt-BR não contém "carreira", "emprego" nem "vaga".
+- **Conflito de produto:** a especificação proíbe o sinal "procurando emprego" e a pretensão salarial (`DADOS_DE_PERFIL_POR_TIPO.md` §4 e §10.7). A persona contraria a regra atual — resolvido pela decisão D-147 no RF75.
+
+### 2.2 Sugestão de tarefas — nota 1,0
+
+- `/tasks/new` é real (RF4), mas a pessoa preenche tudo; nada é sugerido (`capturas/u-tasks-new.png`).
+- `/insights` (Acervo, Perfil, Ranking, Projetos sugeridos), `/plans` e `/goals` são esqueleto `RfPage` com o bloco "O que esta aba vai fazer" cheio de jargão ("AiRequest(capability…)", "Resilience4j", "EVM/CPM/PERT") (`capturas/u-insights.png`).
+- "Horário da Tarefa do Dia" existe em Notificações, mas a sub-aba Tarefa do Dia não tem conteúdo.
+- Risco: a sub-aba "Ranking" planejada tende a ser lida como avaliação de empregabilidade, o que o RF50.CA06/CA12 proíbe.
+
+### 2.3 Ajuste da IA — nota 4,0 (o ponto mais maduro)
+
+- Cinco modos de autonomia com efeito verificável (`lib/ai/autonomy.ts`), padrão "Sob solicitação", textos claros; "Motor e custo": Economia ou Avançado (`capturas/u-settings-trabalho.png`).
+- Mas: vale só para Letters, Drawings e DECIA; não há consentimento contextual de dados de perfil (`ConsentPurpose.RESUMO_PROFISSIONAL_IA` existe no domínio e não aparece em tela); no modo Avançado a tela não diz quais dados saem (RF50.CA10); o botão Salvar grava só no navegador ("Sincronizam com a conta quando a API… entrar (Bloco 3)"); "Limite WIP", "ferramentas determinísticas" e "tokens" confundem.
+
+### 2.4 Regulação da rede — nota 2,0
+
+- Existem: visibilidade do perfil com duas opções, seguir pela API real, busca de pessoas limitada à própria empresa, 7 interruptores de notificação, regras puras de visibilidade (`lib/social/rules.ts`).
+- Faltam: a aba Privacidade é esqueleto ("Bloco 3 / LGPD C", `capturas/u-settings-privacidade.png`); não há descoberta, quem pode seguir, mencionar ou enviar mensagem, bloquear, silenciar, público padrão nem "quem verá?".
+- Confunde: sem empresa, "Mural da empresa" e "Buscar pessoas da sua empresa" não fazem sentido; as ações do Mural são ícones sem rótulo (`capturas/u-mural.png`).
+- Risco: o Hype aparece no perfil de terceiros (`capturas/u-ana.png`), contra o padrão "só eu" e o RF50.CA12.
+
+### 2.5 Lacunas priorizadas
+
+- **P0:** decisão de produto sobre o sinal "em busca" (D-147); primeiro acesso e questionário inexistentes; RF50 não implementado; Privacidade esqueleto e especialidades visíveis por padrão; jargão interno nas telas.
+- **P1:** autonomia da IA não cobre carreira e o modo Avançado não lista os dados enviados; preferências só no navegador; Hype visível a terceiros e "Ranking" planejado; busca e Mural presos à empresa; campos estruturados ausentes.
+- **P2:** ícones sociais sem rótulo; Tarefa do Dia sem conteúdo; Drawings 3D e Letters no menu sem uso para a persona; bloquear, silenciar e "quem pode me contatar".
 
 ## 3. Princípios que organizam as perguntas
 
@@ -102,20 +135,20 @@ Onde: **C** cadastro · **P** primeiro acesso (até 5 min, pode pular) · **X** 
 - **Contextuais:** b2 ao responder "não sei"; b7/b8 ao ver oportunidades; c3 por competência; d6 e e6 em cada sugestão; f5/f7 na primeira publicação; c6 semanal; a5 ao montar o perfil.
 - **Configurações:** tudo revisável em Carreira, IA e Privacidade (§6).
 
-## 5. Novos requisitos funcionais propostos (RF75–RF80)
+## 5. Requisito funcional: RF75 Work Station Career Guidance
 
-Seguem a numeração de `docs/diagramas` (último: RF74) e as convenções de `CONVENCOES.md` (pasta `RFnn/README.md` com seis diagramas; entrada em `requisitos-studio`). Todos **planejados**; nenhum existe no código.
+A pedido do usuário (31/10/2026), as seis frentes abaixo viraram **um único requisito**, o **RF75 — Work Station Career Guidance (Guia de Carreira do Work Station)**, com 18 critérios de aceite, seis diagramas e plano de implementação em sete etapas: [`docs/diagramas/RF75/README.md`](../../diagramas/RF75/README.md) · [card 241 no Trello](https://trello.com/c/IbMkAppV/241-rf75-work-station-career-guidance-guia-de-carreira-do-work-station-guiar-a-pessoa-em-transi%C3%A7%C3%A3o-de-carreira-com-perguntas-tarefas). As linhas da tabela correspondem às etapas E1–E6 do plano; ficam aqui como leitura por frente.
 
-| RF | Nome | Resumo | Depende de |
+| Frente | Nome | Resumo | Depende de |
 |---|---|---|---|
-| **RF75** | Tipo de conta "Em transição" e momento de carreira | Novo `ProfileType.EM_TRANSICAO` sem validação; pergunta a1 no cadastro; migração `V60`; a conta pode mudar para EMPREGADO sem perder dados; textos do cadastro revisados ("Pessoa que trabalha…" deixa de ser a única opção para pessoa física). | RF1, RF3 |
-| **RF76** | Guia inicial de carreira (onboarding progressivo) | Tela pós-cadastro com as perguntas P da §4.5, pulável e retomável; respostas em `career_profile` (privado); banner "Seu guia está 3/8" até concluir; nunca bloqueia o uso. | RF75, RF3 |
-| **RF77** | Plano de recolocação e Tarefa do Dia guiada | A partir do perfil de carreira gera um plano semanal com tarefas do catálogo (§7), cada uma com competência, critério de aceite, evidência e "por que esta tarefa"; d6 em cada item; progresso por evidência; sem streak punitivo (pausa gratuita). Dá conteúdo à sub-aba "Tarefa do Dia" (perfil n.9). | RF76, RF4, RF26, RF50 |
-| **RF78** | Evidência de competência e selo validado | Concluir uma tarefa gera `Evidence` (URL da Letter/Drawing, versão, critérios atendidos, quem validou); selo por validação de par/mentor/curador, nunca só pela IA; exportável como Open Badge 3.0; "como foi calculado" e "contestar" em todo rótulo inferido. | RF77, RF24, RF25, RF40 |
-| **RF79** | Status "Em busca" com visibilidade em níveis e bloqueio de empresas | f1, f2, d3; três níveis; recrutador verificado = EMPRESA validada; aviso de sigilo não garantido; nunca usado para ranquear. | RF75, RF28, RF16 |
-| **RF80** | Painel de IA e dados para a pessoa (consentimentos, escopo, provedor, histórico) | e1–e6 numa aba única; histórico de análises com "excluir" e "exportar" (RF50.CA14); consentimento externo contextual (RF50.CA10); log do que a IA leu. | RF51, RF50, RF3 |
+| **E1** | Tipo de conta "Em transição" e momento de carreira | Novo `ProfileType.EM_TRANSICAO` sem validação; pergunta a1 no cadastro; migração `V60`; a conta pode mudar para EMPREGADO sem perder dados; textos do cadastro revisados ("Pessoa que trabalha…" deixa de ser a única opção para pessoa física). | RF1, RF3 |
+| **E2** | Guia inicial de carreira (onboarding progressivo) | Tela pós-cadastro com as perguntas P da §4.5, pulável e retomável; respostas em `career_profile` (privado); banner "Seu guia está 3/8" até concluir; nunca bloqueia o uso. | E1, RF3 |
+| **E4** | Plano de recolocação e Tarefa do Dia guiada | A partir do perfil de carreira gera um plano semanal com tarefas do catálogo (§7), cada uma com competência, critério de aceite, evidência e "por que esta tarefa"; d6 em cada item; progresso por evidência; sem streak punitivo (pausa gratuita). Dá conteúdo à sub-aba "Tarefa do Dia" (perfil n.9). | E2, RF4, RF26, RF50 |
+| **E5** | Evidência de competência e selo validado | Concluir uma tarefa gera `Evidence` (URL da Letter/Drawing, versão, critérios atendidos, quem validou); selo por validação de par/mentor/curador, nunca só pela IA; exportável como Open Badge 3.0; "como foi calculado" e "contestar" em todo rótulo inferido. | E4, RF24, RF25, RF40 |
+| **E3** | Status "Em busca" com visibilidade em níveis e bloqueio de empresas | f1, f2, d3; três níveis; recrutador verificado = EMPRESA validada; aviso de sigilo não garantido; nunca usado para ranquear. | E1, RF28, RF16 |
+| **E3/E6** | Painel de IA e dados para a pessoa (consentimentos, escopo, provedor, histórico) | e1–e6 numa aba única; histórico de análises com "excluir" e "exportar" (RF50.CA14); consentimento externo contextual (RF50.CA10); log do que a IA leu. | RF51, RF50, RF3 |
 
-O RF50 (Análise de Perfil) permanece como está: RF76 fornece o **perfil de carreira** que o CA01 pede, e RF77 consome as saídas 1–4 (tarefas, projetos, caminhos, pessoas).
+O RF50 (Análise de Perfil) permanece como está: o RF75 fornece o **perfil de carreira** que o CA01 dele pede e consome as saídas 1–4 (tarefas, projetos, caminhos, pessoas).
 
 ## 6. Abas, sub-abas e pontos de entrada
 
@@ -124,7 +157,7 @@ Convenção: `lib/nav/matrix.ts` e `lib/pages/registry.ts`, visibilidade por per
 | Onde | Sub-aba | Estado | Conteúdo | Perfis |
 |---|---|---|---|---|
 | `/profile` | **Carreira** (nova, n.16) | novo | Momento, objetivo, competências com evidência, pausa, plano; só o dono vê; "o que os outros veem" com prévia por nível. | EMPREGADO, EM_TRANSICAO |
-| `/profile` | Tarefa do Dia (n.9) | reaproveitar | A tarefa guiada de hoje (RF77) com "por que", critério, abrir no Letters/Drawings, "serve para você?". | idem |
+| `/profile` | Tarefa do Dia (n.9) | reaproveitar | A tarefa guiada de hoje (RF75.CA05) com "por que", critério, abrir no Letters/Drawings, "serve para você?". | idem |
 | `/insights` | Perfil | reaproveitar | Análise de Perfil (RF50): síntese, lacunas, caminhos com fonte e data, pessoas semelhantes. | EMPREGADO, EM_TRANSICAO, CHEFE |
 | `/insights` | Projetos sugeridos | reaproveitar | Projetos pessoais de portfólio (RF50 saída 2). | idem |
 | `/insights` | **Caminhos** (nova) | novo | Alternativas de ocupação (CBO/ESCO) com requisitos, lacunas e próximos passos; comparar e descartar. | idem |
@@ -139,7 +172,7 @@ Menu lateral (grupo "Meu trabalho"): item **Guia de carreira** → `/profile?tab
 
 ## 7. Catálogo de tarefas-guia no Letters e no Drawings
 
-Formato: competência · critério de aceite verificável · evidência · tempo · pergunta da IA que a desencadeia. Regras comuns: a IA pré-checa só critérios objetivos; a pessoa declara autoria e ausência de dados confidenciais; selo exige validação humana (RF78); publicar é opt-in (f5).
+Formato: competência · critério de aceite verificável · evidência · tempo · pergunta da IA que a desencadeia. Regras comuns: a IA pré-checa só critérios objetivos; a pessoa declara autoria e ausência de dados confidenciais; selo exige validação humana (RF75.CA07); publicar é opt-in (f5).
 
 ### 7.1 Letters
 

@@ -18,7 +18,7 @@ flowchart LR
   O3 --> O5
   O4["Onda 4 · Letters\nRF52 RF53 RF54 RF55 RF56"] --> O6
   O5["Onda 5 · Drawings\nRF57–RF67 RF73 RF74"] --> O6
-  O6["Onda 6 · IA no servidor\nRF26 RF30 RF43 RF44 RF48 RF50 RF51 RF68"] --> O7
+  O6["Onda 6 · IA no servidor\nRF26 RF30 RF43 RF44 RF48 RF50 RF51 RF68 RF75"] --> O7
   O2 --> O7
   O7["Onda 7 · DECIA persistido, memória, ata, mensagens\nRF29 RF33 RF37 RF46"] --> O8
   O1 --> O8
@@ -126,6 +126,7 @@ Legenda: verde = onda concluída e verificada; amarelo = em curso. O gate de cad
 | RF50 — Analisar o perfil no Copilot e recomendar tarefas, projetos, pessoas d | 5.5 | Análise usa perfil declarado e gera tarefas; rede semelhante, projetos e carreira não são fluxos completos. | Ampliar sugestões por objetivos e fontes declaradas, sem inventar pessoas/vagas; criar rascunhos após revisão. | pendente |
 | RF51 — Controlar autonomia, escopo e execução da IA em Letters e Drawings | 5.2 | Níveis são seletores de escopo; nível 4 não é agente e proposta antiga podia sobreviver à troca de nível. | Invalidar proposta em mudança de política; implementar modos reais com plano, orçamento, interrupção e trilha compartilhada. | pendente |
 | RF68 — Gerar, auditar, estilizar, otimizar e converter desenhos com IA | 4.5 | Proposta vetorial limitada não implementa todo AI_AUDIT/STYLE/OPTIMIZE/CONVERT. | Criar ferramentas determinísticas por comando, contratos de IA e validação de topologia/fontes/custo. | pendente |
+| RF75 — Work Station Career Guidance (Guia de Carreira do Work Station) | — | Requisito novo de 31/10/2026: não há porta de entrada, perguntas, plano de tarefas-guia nem evidências para quem está em transição de carreira. | Implementar as etapas E1–E7 de `docs/diagramas/RF75/README.md` (E1–E3 podem começar na Onda 1, por dependerem só de RF1/RF3/RF16; E4–E6 dependem do RF50). | pendente |
 
 ## Onda 7 — DECIA persistido, memória, ata, mensagens
 
