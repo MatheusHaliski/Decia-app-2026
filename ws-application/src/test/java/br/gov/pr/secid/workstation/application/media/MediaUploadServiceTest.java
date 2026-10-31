@@ -77,6 +77,11 @@ class MediaUploadServiceTest {
             scans.put(scan.mediaId(), scan);
             return scan;
         }
+
+        public void delete(UUID id) {
+            rows.remove(id);
+            scans.remove(id);
+        }
     };
 
     MediaUploadService service(AntivirusPort av, boolean requireAv) {

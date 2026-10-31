@@ -1,13 +1,18 @@
 "use client";
 // Página da EMPRESA (RF15/RF28; Matriz C, ABAS_POR_PERFIL §4): abas públicas + "Gestão" só da dona (§7.c, opção C).
-// Cabeçalho RF15.CA01 (contadores institucionais, Seguir) e projetos publicados em "Sobre", sobre o repositório DEMO social.
+// No laboratório (NEXT_PUBLIC_WS_LAB=on) e sem provedor de sessão: cabeçalho RF15.CA01 (contadores institucionais, Seguir) e projetos
+// publicados em "Sobre", sobre o repositório DEMO social. Fora do laboratório, com sessão: dados reais
+// (`components/institutional/CompanyPage`, `GET /api/companies/{slug}`).
 import { useParams } from "next/navigation";
+import { CompanyPageReal } from "@/components/institutional/CompanyPage";
 import { CompanyHeader, PublishedProjects, useCompanyProjects, useSocial } from "@/components/social";
 import { Badge, Card, Glyph, Link, Monogram } from "@/components/ui";
 import { RfPage } from "@/components/shell/RfPage";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { pageByRoute } from "@/lib/pages/registry";
 import { companyBySlug } from "@/lib/social/rules";
+import { useOptionalCurrentUser } from "@/lib/session/CurrentUserProvider";
+import { labMode } from "@/lib/viewer/lab";
 import { useViewer } from "@/lib/viewer/ViewerProvider";
 
 const PAGE = pageByRoute("/companies/[slug]")!;
@@ -15,6 +20,12 @@ const GESTAO_ITEMS = ["departamentos", "pessoas", "chancelas", "beneficios", "pl
 
 export default function CompanyPage() {
   const { slug } = useParams<{ slug: string }>();
+  const session = useOptionalCurrentUser();
+  if (session && !labMode()) return <CompanyPageReal page={PAGE} slug={slug} />;
+  return <DemoCompanyPage slug={slug} />;
+}
+
+function DemoCompanyPage({ slug }: { slug: string }) {
   const { t } = useI18n();
   const { profile, user } = useViewer();
   const owner = profile === "EMPRESA" && user.companySlug === slug;

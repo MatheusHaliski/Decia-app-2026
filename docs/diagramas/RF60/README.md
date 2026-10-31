@@ -6,6 +6,8 @@ O RF60 descreve a modelagem 3D do Drawings: primitivas (caixa, cilindro, esfera,
 
 Estado real (MATRIZ_RF de 17/10/2026: AUSENTE, 0,00): não há código 3D nesta árvore. A evidência local de 15/10 (`docs/auditoria/2026-10-15/comandos-do-zero/` e `caminhos-compostos/`: BOX, CYLINDER, SUBTRACT, extrusão vazada com teste de volume e GLB validado pelo Khronos) usa malhas poligonais em código ainda fora do repositório, separado da peça e da colaboração 2D. Fontes: `COMANDOS_REFERENCIA_ILLUSTRATOR_AUTOCAD.md` §5, `DRAWINGS_ESTUDO_TECNICO_ACADEMICO.md` (volume exige geometria 3D e câmera; retângulo com sombra não é volume), PLANO_ONDAS Onda 5 (persistir malha/B-rep com unidades e tolerâncias).
 
+**Atualização 31/10/2026 (parcial):** o `/drawings` ganhou o modelo 3D (`lib/drawings3d`, `components/drawings3d`; arquitetura em `docs/arquitetura/padroes/drawings-3d.md`). Há 8 primitivas paramétricas (caixa e placa arredondadas, esfera, cilindro com filete, cone, toro, nó toroidal e vaso torneado com parede), hierarquia pai/filho, transformação por gizmo ou inspetor com validação, desfazer/refazer e exportação GLB. Ainda faltam extrusão, operações booleanas (SUBTRACT/UNION), B-rep com unidades e tolerâncias e persistência no servidor (o rascunho fica no `localStorage`).
+
 ## Critérios de aceite
 
 | CA | Enunciado (Dado / Quando / Então) |

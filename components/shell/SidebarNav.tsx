@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation";
 import { Badge, Glyph, Link, Tooltip, cn } from "@/components/ui";
 import { useI18n } from "@/lib/i18n/useI18n";
+import { useMessagesUnread } from "@/lib/messages/unread";
 import { isActivePath, resolveHref, visibleGroups, type NavItem } from "@/lib/nav/matrix";
 import { useNotificationsState } from "@/lib/notifications/NotificationsProvider";
 import { useViewer } from "@/lib/viewer/ViewerProvider";
@@ -16,13 +17,15 @@ export interface SidebarNavProps {
   className?: string;
 }
 
-/** Contadores de pendência por item (mock até os RFs correspondentes). */
+/** Contadores de pendência por item (notificações e mensagens reais com sessão; os demais mock até os RFs correspondentes). */
 function useBadges(): Partial<Record<NonNullable<NavItem["badge"]>, number>> {
   const { unread } = useNotificationsState();
   const { profile } = useViewer();
+  // RF46: conversas com não lidas pela API com sessão; DEMO (2) no laboratório
+  const messages = useMessagesUnread();
   return {
     notifications: unread,
-    messages: profile === "VISITANTE" ? 0 : 2,
+    messages: profile === "VISITANTE" ? 0 : messages ?? 2,
     reviewQueue: profile === "CHEFE" || profile === "EMPRESA" || profile === "CURADOR" ? 3 : 0,
     curation: profile === "CURADOR" ? 4 : 0,
     approvals: profile === "ADMIN" ? 2 : 0,

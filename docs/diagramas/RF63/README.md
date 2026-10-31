@@ -6,6 +6,8 @@ O RF63 define como a pessoa autorizada refina a aparência de uma peça do Drawi
 
 **Estado em 17/10/2026:** a MATRIZ_RF registra RF63 como AUSENTE (nota 0.00) neste repositório; a nota 6.0 do PLANO_ONDAS (Onda 5) refere-se ao protótipo local (`docs/exemplo_drawings_letters/work_station_letters_drawings.tsx`: cor, espessura e opacidade de traço em um painel de propriedades), que não é o editor do produto. A rota `/drawings` é só página-esqueleto (`app/(shell)/drawings/page.tsx`, `RfPage`). As referências a Illustrator/AutoCAD (`COMANDOS_REFERENCIA_ILLUSTRATOR_AUTOCAD.md`) são inspiração semântica, nunca promessa de paridade. Nenhum motor de IA está registrado (`CONECTORES.md`: `AiGateway` sem chamador de produção, `AiProvidersConfig` vazio).
 
+**Atualização 31/10/2026 (parcial):** o modelo 3D do `/drawings` tem 15 materiais fisicamente baseados (metais, vidro, cerâmica, mármore, madeira, concreto, plástico, borracha, veludo). Os valores são físicos e testados, e madeira, concreto, aço escovado e mármore têm texturas procedurais. A visualização vai de PBR em tempo real a path tracing fotorrealista. Gradientes e estilos de traço 2D continuam ausentes.
+
 ## Critérios de aceite
 
 | CA | Enunciado (Dado / Quando / Então) |

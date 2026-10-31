@@ -38,13 +38,15 @@ public class PeopleService {
         }
     }
 
-    /** Perfil público (RF16.CA01): identidade profissional e vínculo institucional, sem dados de contato. */
+    /** Perfil público (RF16.CA01): identidade profissional, especialidades (RF3) e vínculo institucional, sem dados de contato. */
     public record PublicProfileView(UUID id, String username, String name, String fullName, String profileType, String jobTitle, String bio,
-                                    String avatarUrl, String coverUrl, boolean verified, UUID companyId, UUID departmentId, boolean self) {
+                                    String avatarUrl, String coverUrl, boolean verified, UUID companyId, UUID departmentId, boolean self,
+                                    List<String> specialties) {
         static PublicProfileView of(User u, boolean self) {
             String profileType = u.getProfileType() == null ? null : u.getProfileType().name();
             return new PublicProfileView(u.getId(), u.getUsername(), displayName(u), u.getFullName(), profileType,
-                    u.getJobTitle(), u.getBio(), u.getAvatarUrl(), u.getCoverUrl(), u.isVerified(), u.getCompanyId(), u.getDepartmentId(), self);
+                    u.getJobTitle(), u.getBio(), u.getAvatarUrl(), u.getCoverUrl(), u.isVerified(), u.getCompanyId(), u.getDepartmentId(), self,
+                    List.copyOf(u.getSpecialties()));
         }
     }
 

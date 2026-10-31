@@ -9,7 +9,9 @@ import type { components } from "@/lib/api/schema";
 import type { TaskView } from "@/lib/tasks/client";
 
 export type PersonView = components["schemas"]["PersonView"];
-export type PublicProfileView = components["schemas"]["PublicProfileView"];
+/** `specialties` (RF3, 31/10) espelha o campo novo do DTO PublicProfileView; trocar pelo tipo gerado quando o contrato for regenerado. */
+export type PublicProfileView = components["schemas"]["PublicProfileView"] & { specialties?: string[] | null };
+export type FollowView = components["schemas"]["FollowView"];
 
 /** Mínimo de caracteres para buscar (abaixo disso o servidor devolve vazio; o front nem chama). */
 export const PEOPLE_MIN_QUERY = 2;
@@ -31,4 +33,8 @@ export const peopleApi = {
     api.get<PublicProfileView>(`/api/people/by-username/${encodeURIComponent(username)}`, { signal }),
   tasksOf: (id: string, limit = PROFILE_TASKS_LIMIT, signal?: AbortSignal) =>
     api.get<TaskView[]>(`/api/people/${encodeURIComponent(id)}/tasks${qs({ limit })}`, { signal }),
+  /** RF16.CA01: sigo esta pessoa? Quantos a seguem e quantas ela segue. */
+  followStatus: (id: string, signal?: AbortSignal) => api.get<FollowView>(`/api/people/${encodeURIComponent(id)}/follow`, { signal }),
+  follow: (id: string) => api.put<FollowView>(`/api/people/${encodeURIComponent(id)}/follow`, {}),
+  unfollow: (id: string) => api.delete<FollowView>(`/api/people/${encodeURIComponent(id)}/follow`),
 };

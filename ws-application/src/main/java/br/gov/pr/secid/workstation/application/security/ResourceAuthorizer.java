@@ -7,6 +7,7 @@ import br.gov.pr.secid.workstation.domain.decisao.Decision;
 import br.gov.pr.secid.workstation.domain.decisao.DecisionRole;
 import br.gov.pr.secid.workstation.domain.identity.AccountStatus;
 import br.gov.pr.secid.workstation.domain.identity.ProfileType;
+import br.gov.pr.secid.workstation.domain.identity.ProfileVisibility;
 import br.gov.pr.secid.workstation.domain.identity.Role;
 import br.gov.pr.secid.workstation.domain.identity.User;
 import br.gov.pr.secid.workstation.domain.institutional.DeptRole;
@@ -107,15 +108,62 @@ public class ResourceAuthorizer {
     /**
      * Perfil público de outra pessoa ({@code GET /api/people/by-username/{username}}, RF16.CA01): qualquer conta autenticada vê a
      * projeção pública de uma conta ATIVA; conta inexistente, pendente, suspensa ou em exclusão responde o MESMO 404 (não enumera).
+     * O controle de publicação da pessoa (RF3, {@link ProfileVisibility}) vale aqui: perfil "só minha empresa" visto de fora da empresa
+     * também responde esse 404 — e, como perfil, foto, tarefas e seguir passam por este método, a regra vale em todas essas rotas.
      * O que a pessoa produziu continua filtrado item a item pela {@code AccessPolicy}.
      */
     public Viewer requireProfileVisible(CurrentUser actor, User target) {
         Viewer v = viewer(actor);
         AuthorizationTrail.record("PROFILE:" + (target == null ? "?" : target.getId()));
-        if (target == null || target.getStatus() != AccountStatus.ACTIVE) {
+        if (target == null || target.getStatus() != AccountStatus.ACTIVE || !profileVisibleTo(v, target)) {
             throw ApiException.notFound("Perfil");
         }
         return v;
+    }
+
+    /**
+     * Regra pura do controle de publicação (RF3): a própria pessoa sempre se vê; {@code AUTENTICADOS} → qualquer conta; {@code EMPRESA} →
+     * só quem tem a mesma {@code users.company_id} (sem empresa, só a própria pessoa). Não marca a trilha: serve para filtrar listas
+     * (ex.: equipe de um departamento) depois que o recurso-pai já foi autorizado.
+     */
+    public static boolean profileVisibleTo(Viewer viewer, User target) {
+        if (viewer == null || target == null) {
+            return false;
+        }
+        if (viewer.is(target.getId()) || target.getProfileVisibility() != ProfileVisibility.EMPRESA) {
+            return true;
+        }
+        return target.getCompanyId() != null && target.getCompanyId().equals(viewer.companyId());
+    }
+
+    // ------------------------------------------------------------------------------------------------ institucional (RF14, RF15)
+
+    /**
+     * Página pública de departamento ({@code /api/departments/{slug}}, RF14.CA01): qualquer conta autenticada vê um departamento ATIVO de
+     * empresa visível; inexistente, inativo, ambíguo ou de empresa inativa responde o MESMO 404.
+     */
+    public void requireDepartmentVisible(Viewer viewer, boolean visible) {
+        AuthorizationTrail.record("DEPARTMENT");
+        if (viewer == null) {
+            throw ApiException.unauthorized("Faça login para continuar.");
+        }
+        if (!visible) {
+            throw ApiException.notFound("Departamento");
+        }
+    }
+
+    /**
+     * Página pública de empresa ({@code /api/companies/{slug}}, RF15.CA01): qualquer conta autenticada vê empresa ATIVA cuja conta dona
+     * está ATIVA; inexistente, suspensa, encerrada ou com a dona pendente responde o MESMO 404.
+     */
+    public void requireCompanyVisible(Viewer viewer, boolean visible) {
+        AuthorizationTrail.record("COMPANY");
+        if (viewer == null) {
+            throw ApiException.unauthorized("Faça login para continuar.");
+        }
+        if (!visible) {
+            throw ApiException.notFound("Empresa");
+        }
     }
 
     // ------------------------------------------------------------------------------------------------ sessões (RF2.CA05)
@@ -147,6 +195,22 @@ public class ResourceAuthorizer {
         AuthorizationTrail.record("NOTIFICATION");
         if (recipientId == null || !recipientId.equals(actor.id())) {
             throw ApiException.notFound("Notificação");
+        }
+    }
+
+    // ------------------------------------------------------------------------------------------------ mensagens diretas (RF46)
+
+    /**
+     * Conversa direta ({@code /api/conversations/{id}…}, RF46): só quem participa (e não saiu), na empresa da conversa, lê e escreve. Quem
+     * não participa recebe o MESMO {@code 404} de um id inexistente, nunca 403 — não confirma que a conversa existe.
+     */
+    public void requireConversationParticipant(CurrentUser actor, boolean participant) {
+        if (actor == null) {
+            throw ApiException.unauthorized("Faça login para continuar.");
+        }
+        AuthorizationTrail.record("CONVERSATION");
+        if (!participant) {
+            throw ApiException.notFound("Conversa");
         }
     }
 

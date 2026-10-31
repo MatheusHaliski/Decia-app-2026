@@ -3,12 +3,20 @@
  * Meu perfil com a conta real (P19, RF6.CA01; auditoria 17/10/2026). O cabeçalho vem de `/api/me` e o Acervo Digital da API de
  * tarefas (`/api/tasks`): nada de "Pessoa Exemplo" nem de contadores de demonstração. Sem sessão (aba anônima, depois do logout)
  * a página pede para entrar. Seguidores, projetos, DP e Hype não aparecem até terem fonte real nas próximas ondas.
+ * Desde 31/10 (RF3/RF6): especialidades por `GET /api/me/publication` e, abaixo do cabeçalho e separada do portfólio, a parte
+ * institucional (`MyInstitution`, `GET /api/me/institution`) — para a conta EMPRESA, a empresa e os departamentos ativos.
  */
-import { Avatar, Badge, Button, Card, EmptyState, LoadingState } from "@/components/ui";
+import { useEffect, useState } from "react";
+import { Badge, Button, Card, EmptyState, LoadingState } from "@/components/ui";
 import { RfPage } from "@/components/shell/RfPage";
+import { FollowCounters, useFollow } from "@/components/people/FollowPerson";
 import { MyTasks, useMyTaskList } from "@/components/tasks/PersistedTasks";
 import type { Me } from "@/lib/account/client";
+import { MyInstitution } from "./MyInstitution";
+import { ProfileAvatar } from "./ProfileAvatar";
+import { SpecialtyTags } from "./Specialties";
 import { useI18n } from "@/lib/i18n/useI18n";
+import { publicationApi } from "@/lib/account/publication";
 import { PROFILE_TABS, type PageEntry } from "@/lib/pages/registry";
 import { useCurrentUser } from "@/lib/session/CurrentUserProvider";
 import type { TaskView } from "@/lib/tasks/client";
@@ -28,6 +36,17 @@ export function ownCounters(tasks: readonly TaskView[] | null) {
   return { tasks: tasks.length, inProgress: of("EM_ANDAMENTO"), done: of("CONCLUIDO") };
 }
 
+/** Especialidades da própria conta (RF3); vazio enquanto carrega ou se a leitura falhar (o cabeçalho não depende delas). */
+function useOwnSpecialties(): string[] {
+  const [items, setItems] = useState<string[]>([]);
+  useEffect(() => {
+    const ctrl = new AbortController();
+    publicationApi.get(ctrl.signal).then((v) => { if (!ctrl.signal.aborted) setItems(v?.specialties ?? []); }, () => { /* sem especialidades */ });
+    return () => ctrl.abort();
+  }, []);
+  return items;
+}
+
 function OwnProfileHeader({ me, tasks }: { me: Me; tasks: readonly TaskView[] | null }) {
   const { t, intl } = useI18n();
   const name = me.displayName?.trim() || me.fullName || me.username || "";
@@ -36,10 +55,12 @@ function OwnProfileHeader({ me, tasks }: { me: Me; tasks: readonly TaskView[] | 
   const fmt = new Intl.NumberFormat(intl);
   const typeKey = `profileType.${me.profileType}`;
   const typeLabel = t(typeKey);
+  const follow = useFollow(me.id);
+  const specialties = useOwnSpecialties();
   return (
     <Card tone="clay" className="grid gap-[var(--ws-space-4)] md:grid-cols-[minmax(0,1fr)_auto] md:items-center" data-testid="own-profile-header">
       <div className="flex min-w-0 items-start gap-[var(--ws-space-4)]">
-        <Avatar name={name} src={me.avatarUrl || undefined} size={64} />
+        <ProfileAvatar name={name} src={me.avatarUrl} size={64} />
         <div className="grid min-w-0 gap-1">
           <p className="font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h2)] font-semibold leading-tight [overflow-wrap:anywhere]" data-testid="profile-name">{name}</p>
           <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted [overflow-wrap:anywhere]" data-testid="profile-handle">@{me.username}{role ? ` · ${role}` : ""}</p>
@@ -53,6 +74,7 @@ function OwnProfileHeader({ me, tasks }: { me: Me; tasks: readonly TaskView[] | 
           <p className="max-w-prose text-[length:var(--ws-text-body-sm)] [overflow-wrap:anywhere]" data-testid="profile-bio">
             {me.bio?.trim() ? me.bio : <span className="text-ws-text-muted">{t("ownProfile.noBio")}</span>}
           </p>
+          <SpecialtyTags items={specialties} />
           <div className="mt-1 flex flex-wrap gap-2">
             <Button size="sm" variant="secondary" href="/settings?tab=conta" data-testid="edit-profile">{t("ownProfile.edit")}</Button>
             {!me.twoFactorEnabled ? <Button size="sm" variant="ghost" href="/settings?tab=conta">{t("ownProfile.twoFactorEnable")}</Button> : null}
@@ -70,6 +92,7 @@ function OwnProfileHeader({ me, tasks }: { me: Me; tasks: readonly TaskView[] | 
             </div>
           ))}
         </dl>
+        <FollowCounters view={follow.view} />
         <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("ownProfile.countersHint")}</p>
       </div>
     </Card>
@@ -91,6 +114,7 @@ function SignedInProfile({ page, me }: { page: PageEntry; me: Me }) {
       renderTab={(slug) => (slug === "acervo" ? <MyTasks list={list} /> : undefined)}
     >
       <OwnProfileHeader me={me} tasks={list.tasks} />
+      <MyInstitution isCompany={isCompany(me)} />
     </RfPage>
   );
 }

@@ -1,6 +1,7 @@
 package br.gov.pr.secid.workstation.domain.identity;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -31,6 +32,10 @@ public class User {
     private String avatarUrl;
     private String coverUrl;
     private String bio;
+    /** Especialidades (RF3): até 10 rótulos curtos, normalizados e sem repetição ({@code users.specialties_json}, V47). */
+    private List<String> specialties = List.of();
+    /** Quem vê o perfil público (RF3, V47); padrão: qualquer conta autenticada. */
+    private ProfileVisibility profileVisibility = ProfileVisibility.AUTENTICADOS;
     private boolean verified;
     private boolean twoFactorEnabled;
     /** Segredo TOTP em Base32 (RF2.CA02, D-144): cifrado em repouso pelo adaptador; existe com {@code twoFactorEnabled=false} durante a ativação. */
@@ -220,6 +225,22 @@ public class User {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public List<String> getSpecialties() {
+        return specialties;
+    }
+
+    public void setSpecialties(List<String> specialties) {
+        this.specialties = specialties == null ? List.of() : List.copyOf(specialties);
+    }
+
+    public ProfileVisibility getProfileVisibility() {
+        return profileVisibility;
+    }
+
+    public void setProfileVisibility(ProfileVisibility profileVisibility) {
+        this.profileVisibility = profileVisibility == null ? ProfileVisibility.AUTENTICADOS : profileVisibility;
     }
 
     public boolean isVerified() {

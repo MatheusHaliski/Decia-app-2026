@@ -100,6 +100,20 @@ public class MediaUploadService {
         return new ReadGrant(media, storage.signedReadUrl(media.objectKey(), ttl), ttl);
     }
 
+    /** Metadados por id, sem autorização: só para o chamador que já conferiu o vínculo (ex.: a foto atual de uma conta). */
+    public Optional<MediaObject> find(UUID mediaId) {
+        return mediaId == null ? Optional.empty() : repository.findById(mediaId);
+    }
+
+    /**
+     * Apaga metadados e binário de um objeto que o chamador já conferiu (ex.: foto substituída do próprio dono, RF3.CA05). Os metadados
+     * saem primeiro: se o armazenamento falhar, a exceção desfaz a transação do chamador e nada fica apontando para um arquivo sumido.
+     */
+    public void delete(MediaObject media) {
+        repository.delete(media.id());
+        storage.delete(media.objectKey());
+    }
+
     /** Bytes de uma leitura já autorizada por {@link #authorizeRead}. */
     public byte[] read(ReadGrant grant) {
         return storage.read(grant.media().objectKey());

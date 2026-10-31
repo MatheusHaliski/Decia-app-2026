@@ -182,7 +182,7 @@ export interface paths {
             cookie?: never;
         };
         /** RF2.CA05 Minhas sessões vivas (dispositivo, última atividade, expiração; a atual marcada com current=true) */
-        get: operations["list_1"];
+        get: operations["list_2"];
         put?: never;
         post?: never;
         /** RF2.CA05 Sai de todos os outros dispositivos (mantém a sessão atual) */
@@ -226,6 +226,251 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/companies/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF15.CA01 Cabeçalho da empresa (nome, sobre, site, cor, departamentos ativos, pessoas ativas, seguidores) */
+        get: operations["company"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/companies/{slug}/departments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF15.CA02 Departamentos ativos da empresa */
+        get: operations["departments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/companies/{slug}/follow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF15.CA05 Sigo esta empresa? Quantos a seguem */
+        get: operations["companyFollow"];
+        /** RF15.CA05 Seguir a empresa (idempotente) */
+        put: operations["followCompany"];
+        post?: never;
+        /** RF15.CA05 Deixar de seguir a empresa (idempotente) */
+        delete: operations["unfollowCompany"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF46.CA06 Minhas conversas por atividade, com última mensagem e não lidas (até 100) */
+        get: operations["list"];
+        put?: never;
+        /** RF46.CA01 Iniciar conversa (201 nova; 200 = a 1:1 que já existia; 422 PARTICIPANTE_INDISPONIVEL uniforme) */
+        post: operations["start"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations/unread": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF46.CA06 Quantas conversas e mensagens não lidas eu tenho */
+        get: operations["unread"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF46.CA01 Abrir conversa (não participa → 404 NAO_ENCONTRADO) */
+        get: operations["get_1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations/{id}/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF46.CA01 Mensagens por cursor, mais recentes primeiro (before = nextCursor da página anterior) */
+        get: operations["messages"];
+        put?: never;
+        /** RF46.CA01 Enviar texto puro (422 MENSAGEM_VAZIA/MENSAGEM_LONGA/CONVERSA_SEM_DESTINATARIO; 429 por minuto) */
+        post: operations["send"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations/{id}/messages/changes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF46.CA06 Novas, editadas e apagadas desde since (serverTime da leitura anterior) — polling leve */
+        get: operations["changes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations/{id}/messages/{messageId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** RF46.CA01 Editar a própria mensagem (de outra pessoa → 403; apagada → 409 MENSAGEM_APAGADA) */
+        put: operations["edit"];
+        post?: never;
+        /** RF46.CA01 Apagar a própria mensagem (fica "mensagem removida"; idempotente) */
+        delete: operations["delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations/{id}/participants/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** RF46.CA06 Sair do grupo (1:1 → 422 SAIR_SO_DE_GRUPO) */
+        delete: operations["leave"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations/{id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF46.CA06 Marcar a conversa como lida (devolve os totais de não lidas) */
+        post: operations["markRead_1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/departments/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF14.CA01 Cabeçalho do departamento (sigla, nome, cor, monograma, sobre, capa, chefe, empresa, pessoas, seguidores) */
+        get: operations["department"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/departments/{slug}/follow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF14.CA04 Sigo este departamento? Quantos o seguem */
+        get: operations["departmentFollow"];
+        /** RF14.CA04 Seguir o departamento (idempotente) */
+        put: operations["followDepartment"];
+        post?: never;
+        /** RF14.CA04 Deixar de seguir o departamento (idempotente) */
+        delete: operations["unfollowDepartment"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/departments/{slug}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF14.CA02 Equipe (modo público): pessoas ativas com lotação vigente, sem contato */
+        get: operations["members"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me": {
         parameters: {
             query?: never;
@@ -241,7 +486,7 @@ export interface paths {
         options?: never;
         head?: never;
         /** RF3.CA01/CA04/CA06 Edita campos não sensíveis (422 VALIDACAO por campo); 403 EXCLUSAO_AGENDADA durante o prazo */
-        patch: operations["update_1"];
+        patch: operations["update_2"];
         trace?: never;
     };
     "/api/me/2fa": {
@@ -329,6 +574,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/avatar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF3.CA05 Envia a foto (multipart, campo file): PNG/JPEG/WEBP até 5 MB, reprocessada para JPEG 512 px sem EXIF (413 ARQUIVO_GRANDE_DEMAIS, 415 TIPO_NAO_PERMITIDO, 422 IMAGEM_INVALIDA); a anterior é apagada */
+        post: operations["upload"];
+        /** RF3.CA05 Remove a foto (o arquivo é apagado) */
+        delete: operations["remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/deletion": {
         parameters: {
             query?: never;
@@ -347,6 +610,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/institution": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF6 Parte institucional do meu perfil: empresa (dona ou da lotação) e departamentos ativos */
+        get: operations["mine_2"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/preferences": {
         parameters: {
             query?: never;
@@ -358,6 +638,24 @@ export interface paths {
         get: operations["preferences"];
         /** RF3.CA03 Salva as preferências (valores validados contra os CHECKs do V2; 422 VALIDACAO por campo) */
         put: operations["updatePreferences"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/publication": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF3 Minhas especialidades e quem vê meu perfil público (AUTENTICADOS | EMPRESA) */
+        get: operations["mine"];
+        /** RF3 Altera especialidades (até 10, 2–40 caracteres, sem repetir) e quem vê o perfil público; 422 VALIDACAO por campo */
+        put: operations["update_1"];
         post?: never;
         delete?: never;
         options?: never;
@@ -390,7 +688,7 @@ export interface paths {
             cookie?: never;
         };
         /** RF27 Minhas notificações, mais recentes primeiro (até 50) */
-        get: operations["list"];
+        get: operations["list_1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -484,6 +782,42 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/people/{id}/avatar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF3.CA05/RF16 Foto de uma conta ativa (404 NAO_ENCONTRADO sem foto ou conta não ativa) */
+        get: operations["read"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/people/{id}/follow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF16.CA01 Sigo esta pessoa? Quantos a seguem e quantas ela segue */
+        get: operations["followStatus"];
+        /** RF16.CA01 Seguir (idempotente; 422 SEGUIR_A_SI_MESMO; conta não ativa → 404) */
+        put: operations["follow"];
+        post?: never;
+        /** RF16.CA01 Deixar de seguir (idempotente) */
+        delete: operations["unfollow"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/people/{id}/tasks": {
         parameters: {
             query?: never;
@@ -509,7 +843,7 @@ export interface paths {
             cookie?: never;
         };
         /** RF41.CA01 Minhas tarefas (mais recentes primeiro) */
-        get: operations["mine"];
+        get: operations["mine_1"];
         put?: never;
         /** RF4.CA01 Criar tarefa (campos comuns + briefing por área) */
         post: operations["create"];
@@ -606,6 +940,30 @@ export interface components {
         CodeBody: {
             code: string;
         };
+        CompanyPageView: {
+            about?: string;
+            accentColor?: string;
+            account?: components["schemas"]["PersonCard"];
+            /** Format: int64 */
+            departments?: number;
+            /** Format: int64 */
+            followers?: number;
+            /** Format: uuid */
+            id?: string;
+            name?: string;
+            owner?: boolean;
+            /** Format: int64 */
+            people?: number;
+            slug?: string;
+            websiteUrl?: string;
+        };
+        CompanyRef: {
+            accentColor?: string;
+            /** Format: uuid */
+            id?: string;
+            name?: string;
+            slug?: string;
+        };
         ConfirmBodyDto: {
             confirmPassword: string;
             newPassword: string;
@@ -615,6 +973,20 @@ export interface components {
             code: string;
             deviceName?: string;
             email: string;
+        };
+        ConversationView: {
+            canSend?: boolean;
+            /** Format: uuid */
+            id?: string;
+            /** @enum {string} */
+            kind?: "DIRETA" | "GRUPO";
+            /** Format: date-time */
+            lastActivityAt?: string;
+            lastMessage?: components["schemas"]["LastMessageView"];
+            participants?: components["schemas"]["ParticipantView"][];
+            title?: string;
+            /** Format: int64 */
+            unread?: number;
         };
         Criterion: {
             done?: boolean;
@@ -635,8 +1007,56 @@ export interface components {
         Deliverable: {
             text?: string;
         };
+        DepartmentPageView: {
+            about?: string;
+            acronym?: string;
+            color?: string;
+            company?: components["schemas"]["CompanyRef"];
+            coverUrl?: string;
+            /** Format: int64 */
+            followers?: number;
+            head?: components["schemas"]["PersonCard"];
+            /** Format: uuid */
+            id?: string;
+            member?: boolean;
+            /** Format: int64 */
+            members?: number;
+            monogram?: string;
+            name?: string;
+            slug?: string;
+        };
+        DepartmentSummary: {
+            acronym?: string;
+            color?: string;
+            companySlug?: string;
+            /** Format: uuid */
+            id?: string;
+            /** Format: int64 */
+            members?: number;
+            monogram?: string;
+            name?: string;
+            slug?: string;
+        };
         EmailRequest: {
             email: string;
+        };
+        FollowView: {
+            /** Format: int64 */
+            followers?: number;
+            following?: boolean;
+            /** Format: int64 */
+            followingCount?: number;
+            self?: boolean;
+        };
+        LastMessageView: {
+            /** Format: uuid */
+            authorId?: string;
+            deleted?: boolean;
+            /** Format: uuid */
+            id?: string;
+            preview?: string;
+            /** Format: date-time */
+            sentAt?: string;
         };
         LoginRequest: {
             deviceName?: string;
@@ -644,6 +1064,47 @@ export interface components {
             password: string;
             rememberMe?: boolean;
             twoFactorCode?: string;
+        };
+        MessageChanges: {
+            items?: components["schemas"]["MessageView"][];
+            /** Format: date-time */
+            serverTime?: string;
+            truncated?: boolean;
+        };
+        MessagePage: {
+            items?: components["schemas"]["MessageView"][];
+            nextCursor?: string;
+            /** Format: date-time */
+            serverTime?: string;
+        };
+        MessageRequest: {
+            body?: string;
+        };
+        MessageView: {
+            /** Format: uuid */
+            authorId?: string;
+            body?: string;
+            /** Format: date-time */
+            changedAt?: string;
+            /** Format: uuid */
+            conversationId?: string;
+            deleted?: boolean;
+            edited?: boolean;
+            /** Format: date-time */
+            editedAt?: string;
+            /** Format: uuid */
+            id?: string;
+            mine?: boolean;
+            /** Format: date-time */
+            sentAt?: string;
+        };
+        MyInstitutionView: {
+            company?: components["schemas"]["CompanyRef"];
+            companyStatus?: string;
+            departments?: components["schemas"]["DepartmentSummary"][];
+            owner?: boolean;
+            /** Format: int64 */
+            people?: number;
         };
         NotificationView: {
             /** Format: uuid */
@@ -674,12 +1135,30 @@ export interface components {
             idToken: string;
             nonce: string;
         };
+        ParticipantView: {
+            active?: boolean;
+            avatarUrl?: string;
+            /** Format: uuid */
+            id?: string;
+            name?: string;
+            self?: boolean;
+            username?: string;
+        };
         PasswordAndCodeBody: {
             code: string;
             currentPassword: string;
         };
         PasswordBody: {
             currentPassword: string;
+        };
+        PersonCard: {
+            avatarUrl?: string;
+            /** Format: uuid */
+            id?: string;
+            jobTitle?: string;
+            name?: string;
+            role?: string;
+            username?: string;
         };
         PersonView: {
             avatarUrl?: string;
@@ -731,8 +1210,17 @@ export interface components {
             name?: string;
             profileType?: string;
             self?: boolean;
+            specialties?: string[];
             username?: string;
             verified?: boolean;
+        };
+        PublicationRequest: {
+            profileVisibility?: string;
+            specialties?: string[];
+        };
+        PublicationView: {
+            profileVisibility?: string;
+            specialties?: string[];
         };
         ReadAll: {
             /** Format: int32 */
@@ -804,6 +1292,10 @@ export interface components {
             /** Format: int64 */
             periodSeconds?: number;
             secret?: string;
+        };
+        StartRequest: {
+            participantIds?: string[];
+            title?: string;
         };
         Status: {
             enabled?: boolean;
@@ -904,6 +1396,12 @@ export interface components {
         UnreadCount: {
             /** Format: int64 */
             count?: number;
+        };
+        UnreadSummary: {
+            /** Format: int64 */
+            conversations?: number;
+            /** Format: int64 */
+            messages?: number;
         };
         UserPreferences: {
             aiModeDefault?: string;
@@ -1200,7 +1698,7 @@ export interface operations {
             };
         };
     };
-    list_1: {
+    list_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -1286,6 +1784,491 @@ export interface operations {
             };
         };
     };
+    company: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CompanyPageView"];
+                };
+            };
+        };
+    };
+    departments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DepartmentSummary"][];
+                };
+            };
+        };
+    };
+    companyFollow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
+    followCompany: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
+    unfollowCompany: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
+    list: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConversationView"][];
+                };
+            };
+        };
+    };
+    start: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StartRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConversationView"];
+                };
+            };
+        };
+    };
+    unread: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UnreadSummary"];
+                };
+            };
+        };
+    };
+    get_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConversationView"];
+                };
+            };
+        };
+    };
+    messages: {
+        parameters: {
+            query?: {
+                before?: string;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MessagePage"];
+                };
+            };
+        };
+    };
+    send: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MessageRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MessageView"];
+                };
+            };
+        };
+    };
+    changes: {
+        parameters: {
+            query?: {
+                since?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MessageChanges"];
+                };
+            };
+        };
+    };
+    edit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                messageId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MessageRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MessageView"];
+                };
+            };
+        };
+    };
+    delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                messageId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MessageView"];
+                };
+            };
+        };
+    };
+    leave: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    markRead_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UnreadSummary"];
+                };
+            };
+        };
+    };
+    department: {
+        parameters: {
+            query?: {
+                company?: string;
+            };
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DepartmentPageView"];
+                };
+            };
+        };
+    };
+    departmentFollow: {
+        parameters: {
+            query?: {
+                company?: string;
+            };
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
+    followDepartment: {
+        parameters: {
+            query?: {
+                company?: string;
+            };
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
+    unfollowDepartment: {
+        parameters: {
+            query?: {
+                company?: string;
+            };
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
+    members: {
+        parameters: {
+            query?: {
+                company?: string;
+            };
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PersonCard"][];
+                };
+            };
+        };
+    };
     me: {
         parameters: {
             query?: never;
@@ -1306,7 +2289,7 @@ export interface operations {
             };
         };
     };
-    update_1: {
+    update_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -1446,6 +2429,53 @@ export interface operations {
             };
         };
     };
+    upload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UserView"];
+                };
+            };
+        };
+    };
+    remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UserView"];
+                };
+            };
+        };
+    };
     requestDeletion: {
         parameters: {
             query?: never;
@@ -1486,6 +2516,26 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["DeletionReceipt"];
+                };
+            };
+        };
+    };
+    mine_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MyInstitutionView"];
                 };
             };
         };
@@ -1534,6 +2584,50 @@ export interface operations {
             };
         };
     };
+    mine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PublicationView"];
+                };
+            };
+        };
+    };
+    update_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PublicationRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PublicationView"];
+                };
+            };
+        };
+    };
     sensitive: {
         parameters: {
             query?: never;
@@ -1558,7 +2652,7 @@ export interface operations {
             };
         };
     };
-    list: {
+    list_1: {
         parameters: {
             query?: {
                 limit?: number;
@@ -1685,6 +2779,94 @@ export interface operations {
             };
         };
     };
+    read: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/jpeg": string;
+                };
+            };
+        };
+    };
+    followStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
+    follow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
+    unfollow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
     tasksOf: {
         parameters: {
             query?: {
@@ -1709,7 +2891,7 @@ export interface operations {
             };
         };
     };
-    mine: {
+    mine_1: {
         parameters: {
             query?: {
                 limit?: number;

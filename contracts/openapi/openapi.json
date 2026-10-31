@@ -53,6 +53,66 @@
         "required" : [ "code" ],
         "type" : "object"
       },
+      "CompanyPageView" : {
+        "properties" : {
+          "about" : {
+            "type" : "string"
+          },
+          "accentColor" : {
+            "type" : "string"
+          },
+          "account" : {
+            "$ref" : "#/components/schemas/PersonCard"
+          },
+          "departments" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "followers" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "owner" : {
+            "type" : "boolean"
+          },
+          "people" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "slug" : {
+            "type" : "string"
+          },
+          "websiteUrl" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "CompanyRef" : {
+        "properties" : {
+          "accentColor" : {
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "slug" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
       "ConfirmBodyDto" : {
         "properties" : {
           "confirmPassword" : {
@@ -93,6 +153,42 @@
           }
         },
         "required" : [ "code", "email" ],
+        "type" : "object"
+      },
+      "ConversationView" : {
+        "properties" : {
+          "canSend" : {
+            "type" : "boolean"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "kind" : {
+            "enum" : [ "DIRETA", "GRUPO" ],
+            "type" : "string"
+          },
+          "lastActivityAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "lastMessage" : {
+            "$ref" : "#/components/schemas/LastMessageView"
+          },
+          "participants" : {
+            "items" : {
+              "$ref" : "#/components/schemas/ParticipantView"
+            },
+            "type" : "array"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "unread" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
         "type" : "object"
       },
       "Criterion" : {
@@ -149,6 +245,84 @@
         },
         "type" : "object"
       },
+      "DepartmentPageView" : {
+        "properties" : {
+          "about" : {
+            "type" : "string"
+          },
+          "acronym" : {
+            "type" : "string"
+          },
+          "color" : {
+            "type" : "string"
+          },
+          "company" : {
+            "$ref" : "#/components/schemas/CompanyRef"
+          },
+          "coverUrl" : {
+            "type" : "string"
+          },
+          "followers" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "head" : {
+            "$ref" : "#/components/schemas/PersonCard"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "member" : {
+            "type" : "boolean"
+          },
+          "members" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "monogram" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "slug" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "DepartmentSummary" : {
+        "properties" : {
+          "acronym" : {
+            "type" : "string"
+          },
+          "color" : {
+            "type" : "string"
+          },
+          "companySlug" : {
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "members" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "monogram" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "slug" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
       "EmailRequest" : {
         "properties" : {
           "email" : {
@@ -158,6 +332,48 @@
           }
         },
         "required" : [ "email" ],
+        "type" : "object"
+      },
+      "FollowView" : {
+        "properties" : {
+          "followers" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "following" : {
+            "type" : "boolean"
+          },
+          "followingCount" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "self" : {
+            "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
+      "LastMessageView" : {
+        "properties" : {
+          "authorId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "deleted" : {
+            "type" : "boolean"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "preview" : {
+            "type" : "string"
+          },
+          "sentAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          }
+        },
         "type" : "object"
       },
       "LoginRequest" : {
@@ -187,6 +403,117 @@
           }
         },
         "required" : [ "identifier", "password" ],
+        "type" : "object"
+      },
+      "MessageChanges" : {
+        "properties" : {
+          "items" : {
+            "items" : {
+              "$ref" : "#/components/schemas/MessageView"
+            },
+            "type" : "array"
+          },
+          "serverTime" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "truncated" : {
+            "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
+      "MessagePage" : {
+        "properties" : {
+          "items" : {
+            "items" : {
+              "$ref" : "#/components/schemas/MessageView"
+            },
+            "type" : "array"
+          },
+          "nextCursor" : {
+            "type" : "string"
+          },
+          "serverTime" : {
+            "format" : "date-time",
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "MessageRequest" : {
+        "properties" : {
+          "body" : {
+            "maxLength" : 20000,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "MessageView" : {
+        "properties" : {
+          "authorId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "body" : {
+            "type" : "string"
+          },
+          "changedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "conversationId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "deleted" : {
+            "type" : "boolean"
+          },
+          "edited" : {
+            "type" : "boolean"
+          },
+          "editedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "mine" : {
+            "type" : "boolean"
+          },
+          "sentAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "MyInstitutionView" : {
+        "properties" : {
+          "company" : {
+            "$ref" : "#/components/schemas/CompanyRef"
+          },
+          "companyStatus" : {
+            "type" : "string"
+          },
+          "departments" : {
+            "items" : {
+              "$ref" : "#/components/schemas/DepartmentSummary"
+            },
+            "type" : "array"
+          },
+          "owner" : {
+            "type" : "boolean"
+          },
+          "people" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
         "type" : "object"
       },
       "NotificationView" : {
@@ -264,6 +591,30 @@
         "required" : [ "idToken", "nonce" ],
         "type" : "object"
       },
+      "ParticipantView" : {
+        "properties" : {
+          "active" : {
+            "type" : "boolean"
+          },
+          "avatarUrl" : {
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "self" : {
+            "type" : "boolean"
+          },
+          "username" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
       "PasswordAndCodeBody" : {
         "properties" : {
           "code" : {
@@ -289,6 +640,30 @@
           }
         },
         "required" : [ "currentPassword" ],
+        "type" : "object"
+      },
+      "PersonCard" : {
+        "properties" : {
+          "avatarUrl" : {
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "jobTitle" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "role" : {
+            "type" : "string"
+          },
+          "username" : {
+            "type" : "string"
+          }
+        },
         "type" : "object"
       },
       "PersonView" : {
@@ -439,11 +814,51 @@
           "self" : {
             "type" : "boolean"
           },
+          "specialties" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
           "username" : {
             "type" : "string"
           },
           "verified" : {
             "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
+      "PublicationRequest" : {
+        "properties" : {
+          "profileVisibility" : {
+            "maxLength" : 20,
+            "minLength" : 0,
+            "type" : "string"
+          },
+          "specialties" : {
+            "items" : {
+              "maxLength" : 200,
+              "minLength" : 0,
+              "type" : "string"
+            },
+            "maxItems" : 30,
+            "minItems" : 0,
+            "type" : "array"
+          }
+        },
+        "type" : "object"
+      },
+      "PublicationView" : {
+        "properties" : {
+          "profileVisibility" : {
+            "type" : "string"
+          },
+          "specialties" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
           }
         },
         "type" : "object"
@@ -660,6 +1075,25 @@
             "type" : "integer"
           },
           "secret" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "StartRequest" : {
+        "properties" : {
+          "participantIds" : {
+            "items" : {
+              "format" : "uuid",
+              "type" : "string"
+            },
+            "maxItems" : 50,
+            "minItems" : 0,
+            "type" : "array"
+          },
+          "title" : {
+            "maxLength" : 1000,
+            "minLength" : 0,
             "type" : "string"
           }
         },
@@ -909,6 +1343,19 @@
       "UnreadCount" : {
         "properties" : {
           "count" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "UnreadSummary" : {
+        "properties" : {
+          "conversations" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "messages" : {
             "format" : "int64",
             "type" : "integer"
           }
@@ -1344,7 +1791,7 @@
         "tags" : [ "RF2 Autenticação" ]
       },
       "get" : {
-        "operationId" : "list_1",
+        "operationId" : "list_2",
         "responses" : {
           "200" : {
             "content" : {
@@ -1421,6 +1868,659 @@
         "tags" : [ "RF1 Cadastro" ]
       }
     },
+    "/api/companies/{slug}" : {
+      "get" : {
+        "operationId" : "company",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CompanyPageView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF15.CA01 Cabeçalho da empresa (nome, sobre, site, cor, departamentos ativos, pessoas ativas, seguidores)",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      }
+    },
+    "/api/companies/{slug}/departments" : {
+      "get" : {
+        "operationId" : "departments",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/DepartmentSummary"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF15.CA02 Departamentos ativos da empresa",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      }
+    },
+    "/api/companies/{slug}/follow" : {
+      "delete" : {
+        "operationId" : "unfollowCompany",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FollowView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF15.CA05 Deixar de seguir a empresa (idempotente)",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      },
+      "get" : {
+        "operationId" : "companyFollow",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FollowView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF15.CA05 Sigo esta empresa? Quantos a seguem",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      },
+      "put" : {
+        "operationId" : "followCompany",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FollowView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF15.CA05 Seguir a empresa (idempotente)",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      }
+    },
+    "/api/conversations" : {
+      "get" : {
+        "operationId" : "list",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "limit",
+          "required" : false,
+          "schema" : {
+            "default" : 50,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/ConversationView"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA06 Minhas conversas por atividade, com última mensagem e não lidas (até 100)",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      },
+      "post" : {
+        "operationId" : "start",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/StartRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ConversationView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA01 Iniciar conversa (201 nova; 200 = a 1:1 que já existia; 422 PARTICIPANTE_INDISPONIVEL uniforme)",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      }
+    },
+    "/api/conversations/unread" : {
+      "get" : {
+        "operationId" : "unread",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UnreadSummary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA06 Quantas conversas e mensagens não lidas eu tenho",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      }
+    },
+    "/api/conversations/{id}" : {
+      "get" : {
+        "operationId" : "get_1",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ConversationView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA01 Abrir conversa (não participa → 404 NAO_ENCONTRADO)",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      }
+    },
+    "/api/conversations/{id}/messages" : {
+      "get" : {
+        "operationId" : "messages",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "before",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "limit",
+          "required" : false,
+          "schema" : {
+            "default" : 30,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MessagePage"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA01 Mensagens por cursor, mais recentes primeiro (before = nextCursor da página anterior)",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      },
+      "post" : {
+        "operationId" : "send",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MessageRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MessageView"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "summary" : "RF46.CA01 Enviar texto puro (422 MENSAGEM_VAZIA/MENSAGEM_LONGA/CONVERSA_SEM_DESTINATARIO; 429 por minuto)",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      }
+    },
+    "/api/conversations/{id}/messages/changes" : {
+      "get" : {
+        "operationId" : "changes",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "since",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MessageChanges"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA06 Novas, editadas e apagadas desde since (serverTime da leitura anterior) — polling leve",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      }
+    },
+    "/api/conversations/{id}/messages/{messageId}" : {
+      "delete" : {
+        "operationId" : "delete",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        }, {
+          "in" : "path",
+          "name" : "messageId",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MessageView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA01 Apagar a própria mensagem (fica \"mensagem removida\"; idempotente)",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      },
+      "put" : {
+        "operationId" : "edit",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        }, {
+          "in" : "path",
+          "name" : "messageId",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MessageRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MessageView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA01 Editar a própria mensagem (de outra pessoa → 403; apagada → 409 MENSAGEM_APAGADA)",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      }
+    },
+    "/api/conversations/{id}/participants/me" : {
+      "delete" : {
+        "operationId" : "leave",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA06 Sair do grupo (1:1 → 422 SAIR_SO_DE_GRUPO)",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      }
+    },
+    "/api/conversations/{id}/read" : {
+      "post" : {
+        "operationId" : "markRead_1",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UnreadSummary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA06 Marcar a conversa como lida (devolve os totais de não lidas)",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      }
+    },
+    "/api/departments/{slug}" : {
+      "get" : {
+        "operationId" : "department",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "company",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DepartmentPageView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF14.CA01 Cabeçalho do departamento (sigla, nome, cor, monograma, sobre, capa, chefe, empresa, pessoas, seguidores)",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      }
+    },
+    "/api/departments/{slug}/follow" : {
+      "delete" : {
+        "operationId" : "unfollowDepartment",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "company",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FollowView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF14.CA04 Deixar de seguir o departamento (idempotente)",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      },
+      "get" : {
+        "operationId" : "departmentFollow",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "company",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FollowView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF14.CA04 Sigo este departamento? Quantos o seguem",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      },
+      "put" : {
+        "operationId" : "followDepartment",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "company",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FollowView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF14.CA04 Seguir o departamento (idempotente)",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      }
+    },
+    "/api/departments/{slug}/members" : {
+      "get" : {
+        "operationId" : "members",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "slug",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "company",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/PersonCard"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF14.CA02 Equipe (modo público): pessoas ativas com lotação vigente, sem contato",
+        "tags" : [ "RF14/RF15 Institucional" ]
+      }
+    },
     "/api/me" : {
       "get" : {
         "operationId" : "me",
@@ -1440,7 +2540,7 @@
         "tags" : [ "RF3 Conta" ]
       },
       "patch" : {
-        "operationId" : "update_1",
+        "operationId" : "update_2",
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -1602,6 +2702,58 @@
         "tags" : [ "RF2 Autenticação" ]
       }
     },
+    "/api/me/avatar" : {
+      "delete" : {
+        "operationId" : "remove",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF3.CA05 Remove a foto (o arquivo é apagado)",
+        "tags" : [ "RF3 Conta" ]
+      },
+      "post" : {
+        "operationId" : "upload",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "properties" : {
+                  "file" : {
+                    "format" : "binary",
+                    "type" : "string"
+                  }
+                },
+                "required" : [ "file" ],
+                "type" : "object"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF3.CA05 Envia a foto (multipart, campo file): PNG/JPEG/WEBP até 5 MB, reprocessada para JPEG 512 px sem EXIF (413 ARQUIVO_GRANDE_DEMAIS, 415 TIPO_NAO_PERMITIDO, 422 IMAGEM_INVALIDA); a anterior é apagada",
+        "tags" : [ "RF3 Conta" ]
+      }
+    },
     "/api/me/deletion" : {
       "delete" : {
         "operationId" : "cancelDeletion",
@@ -1646,6 +2798,25 @@
         },
         "summary" : "RF3.CA19 Pede a exclusão (senha atual com bloqueio): DELETION_SCHEDULED por 30 dias, cancelável; a anonimização é o job do bloco LGPD C",
         "tags" : [ "RF3 Conta" ]
+      }
+    },
+    "/api/me/institution" : {
+      "get" : {
+        "operationId" : "mine_2",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MyInstitutionView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF6 Parte institucional do meu perfil: empresa (dona ou da lotação) e departamentos ativos",
+        "tags" : [ "RF14/RF15 Institucional" ]
       }
     },
     "/api/me/preferences" : {
@@ -1694,6 +2865,52 @@
         "tags" : [ "RF3 Conta" ]
       }
     },
+    "/api/me/publication" : {
+      "get" : {
+        "operationId" : "mine",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PublicationView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF3 Minhas especialidades e quem vê meu perfil público (AUTENTICADOS | EMPRESA)",
+        "tags" : [ "RF3 Conta" ]
+      },
+      "put" : {
+        "operationId" : "update_1",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PublicationRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PublicationView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF3 Altera especialidades (até 10, 2–40 caracteres, sem repetir) e quem vê o perfil público; 422 VALIDACAO por campo",
+        "tags" : [ "RF3 Conta" ]
+      }
+    },
     "/api/me/sensitive" : {
       "patch" : {
         "operationId" : "sensitive",
@@ -1725,7 +2942,7 @@
     },
     "/api/notifications" : {
       "get" : {
-        "operationId" : "list",
+        "operationId" : "list_1",
         "parameters" : [ {
           "in" : "query",
           "name" : "limit",
@@ -1881,6 +3098,115 @@
         "tags" : [ "RF16 Pessoas" ]
       }
     },
+    "/api/people/{id}/avatar" : {
+      "get" : {
+        "operationId" : "read",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "image/jpeg" : {
+                "schema" : {
+                  "format" : "byte",
+                  "type" : "string"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF3.CA05/RF16 Foto de uma conta ativa (404 NAO_ENCONTRADO sem foto ou conta não ativa)",
+        "tags" : [ "RF3 Conta" ]
+      }
+    },
+    "/api/people/{id}/follow" : {
+      "delete" : {
+        "operationId" : "unfollow",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FollowView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF16.CA01 Deixar de seguir (idempotente)",
+        "tags" : [ "RF16 Pessoas" ]
+      },
+      "get" : {
+        "operationId" : "followStatus",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FollowView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF16.CA01 Sigo esta pessoa? Quantos a seguem e quantas ela segue",
+        "tags" : [ "RF16 Pessoas" ]
+      },
+      "put" : {
+        "operationId" : "follow",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FollowView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF16.CA01 Seguir (idempotente; 422 SEGUIR_A_SI_MESMO; conta não ativa → 404)",
+        "tags" : [ "RF16 Pessoas" ]
+      }
+    },
     "/api/people/{id}/tasks" : {
       "get" : {
         "operationId" : "tasksOf",
@@ -1923,7 +3249,7 @@
     },
     "/api/tasks" : {
       "get" : {
-        "operationId" : "mine",
+        "operationId" : "mine_1",
         "parameters" : [ {
           "in" : "query",
           "name" : "limit",

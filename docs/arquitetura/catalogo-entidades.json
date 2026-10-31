@@ -3713,6 +3713,45 @@
       ]
     },
     {
+      "context": "12b Mensageria & Atribuição",
+      "entity": "DirectMessageRecord",
+      "table": "direct_messages",
+      "rfs": ["RF46"],
+      "store": "mysql",
+      "migration": "V59",
+      "pk": "id",
+      "doc": "Mensagens diretas em MySQL (fallback do Cassandra). Texto cifrado; apagar zera o texto e marca deleted_at. Some com a conversa.",
+      "indexes": ["conversation_id, sent_at", "conversation_id, changed_at", "author_id"],
+      "uniques": [],
+      "attributes": [
+        {"name": "id", "type": "UUID", "column": "id", "sqlType": "BINARY(16)", "nullable": false, "pk": true, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "identificador"},
+        {"name": "conversationId", "type": "UUID", "column": "conversation_id", "sqlType": "BINARY(16)", "nullable": false, "pk": false, "constraint": "FK direct_conversations.id ON DELETE CASCADE", "enumValues": [], "ref": "direct_conversations.id", "onDelete": "CASCADE", "default": "", "encrypted": false, "description": "conversa"},
+        {"name": "authorId", "type": "UUID", "column": "author_id", "sqlType": "BINARY(16)", "nullable": false, "pk": false, "constraint": "FK users.id ON DELETE CASCADE", "enumValues": [], "ref": "users.id", "onDelete": "CASCADE", "default": "", "encrypted": false, "description": "autor"},
+        {"name": "body", "type": "String", "column": "body_enc", "sqlType": "TEXT", "nullable": true, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": true, "description": "texto cifrado (nulo quando apagada)"},
+        {"name": "sentAt", "type": "Instant", "column": "sent_at", "sqlType": "TIMESTAMP(6)", "nullable": false, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "enviada em (cursor; crescente por conversa)"},
+        {"name": "editedAt", "type": "Instant", "column": "edited_at", "sqlType": "TIMESTAMP(6)", "nullable": true, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "editada em"},
+        {"name": "deletedAt", "type": "Instant", "column": "deleted_at", "sqlType": "TIMESTAMP(6)", "nullable": true, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "apagada em (texto zerado)"},
+        {"name": "changedAt", "type": "Instant", "column": "changed_at", "sqlType": "TIMESTAMP(6)", "nullable": false, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "última mudança (envio, edição ou remoção)"}
+      ]
+    },
+    {
+      "context": "12b Mensageria & Atribuição",
+      "entity": "DirectConversationPair",
+      "table": "direct_conversation_pairs",
+      "rfs": ["RF46"],
+      "store": "mysql",
+      "migration": "V59",
+      "pk": "pair_key",
+      "doc": "Uma conversa DIRETA por par de pessoas (chave menorId:maiorId). Some com a conversa.",
+      "indexes": [],
+      "uniques": ["conversation_id"],
+      "attributes": [
+        {"name": "pairKey", "type": "String", "column": "pair_key", "sqlType": "VARCHAR(80)", "nullable": false, "pk": true, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "par (menorId:maiorId)"},
+        {"name": "conversationId", "type": "UUID", "column": "conversation_id", "sqlType": "BINARY(16)", "nullable": false, "pk": false, "constraint": "FK direct_conversations.id ON DELETE CASCADE", "enumValues": [], "ref": "direct_conversations.id", "onDelete": "CASCADE", "default": "", "encrypted": false, "description": "conversa DIRETA"},
+        {"name": "createdAt", "type": "Instant", "column": "created_at", "sqlType": "TIMESTAMP(6)", "nullable": false, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "CURRENT_TIMESTAMP(6)", "encrypted": false, "description": "criação (UTC)"}
+      ]
+    },
+    {
       "context": "10 IA do sistema",
       "entity": "AiInferenceLog",
       "table": "ai_inference_log",

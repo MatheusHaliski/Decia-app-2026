@@ -6,6 +6,8 @@ O RF62 garante que alternar a representação nunca altera a geometria: `VISTA` 
 
 Estado real (MATRIZ_RF de 17/10/2026: AUSENTE, 0,00): não há câmera nem vistas nesta árvore. Existem o `RenderMode` FILLED/WIREFRAME (base do estilo visual), os vocabulários de projeção e perspectiva usados só para **classificar** desenhos (não controlam câmera), o modo `VIEW` do escopo de edição (nada editável ao visualizar composição) e o `snapPoint` de grade. A evidência local de 15/10 (`comandos-do-zero`: VS wireframe, PLAN, VPOINT; NAVVCUBE só como botões; sem UCS orientável nem grade de perspectiva) está fora do repositório. Fontes: `COMANDOS_REFERENCIA_ILLUSTRATOR_AUTOCAD.md` §2, `DRAWINGS_ESTUDO_TECNICO_ACADEMICO.md` (zoom muda a vista, nunca a dimensão da peça), `DRAWINGS_CAMADAS_COLABORACAO_DECIA.md` (câmera global exige reserva de escopo).
 
+**Atualização 31/10/2026 (parcial):** o modelo 3D do `/drawings` tem câmera em perspectiva com órbita, zoom e pan (com amortecimento e sem atravessar o piso), enquadramento do todo ou do selecionado (F) e coordenadas numéricas no inspetor. Ainda faltam vistas ortográficas nomeadas (topo, frente, lateral), cubo de navegação, UCS orientável e reserva de escopo para a câmera global.
+
 ## Critérios de aceite
 
 | CA | Enunciado (Dado / Quando / Então) |

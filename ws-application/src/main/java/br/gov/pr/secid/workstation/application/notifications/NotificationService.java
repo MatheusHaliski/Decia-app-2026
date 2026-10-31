@@ -136,6 +136,28 @@ public class NotificationService {
                 title, null, json(payload), null, false, null, null), clock.instant());
     }
 
+    /**
+     * Produtor genérico para outros serviços (projetos, atribuições, mensagens…): avisa cada destinatário, menos quem agiu, que
+     * pode VER o recurso agora ({@code resource}; nulo = sem recurso protegido, ex.: conversa já conferida pelo chamador) e tem conta
+     * ativa. O texto final é montado no front por {@code type} + {@code payload}; {@code title} é a reserva em português.
+     */
+    public void notifyAbout(Set<UUID> recipients, UUID actorId, ScopedResource resource, NotificationType type, NotificationCategory category,
+                            String resourceType, UUID resourceId, String title, Map<String, String> payload) {
+        Instant now = clock.instant();
+        String data = json(payload == null ? Map.of() : payload);
+        for (UUID recipient : recipients) {
+            if (recipient == null || recipient.equals(actorId)) {
+                continue;
+            }
+            boolean canSee = authorizer.viewerOf(recipient).map(v -> resource == null || AccessPolicy.visible(v, resource)).orElse(false);
+            if (!canSee) {
+                continue;
+            }
+            repo.insert(new Notification(UUID.randomUUID(), recipient, actorId, type, category, resourceType, resourceId, clip(title), null, data,
+                    resourceType == null || resourceId == null ? null : resourceType + ":" + resourceId, false, null, null), now);
+        }
+    }
+
     private void sendAboutTask(Set<UUID> recipients, UUID actorId, ScopedResource resource, TaskItem task, NotificationType type, String title,
                                Map<String, String> payload) {
         Instant now = clock.instant();

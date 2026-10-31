@@ -4,6 +4,7 @@ import br.gov.pr.secid.workstation.domain.identity.AccountOrigin;
 import br.gov.pr.secid.workstation.domain.identity.AccountStatus;
 import br.gov.pr.secid.workstation.domain.identity.HypeVisibility;
 import br.gov.pr.secid.workstation.domain.identity.ProfileType;
+import br.gov.pr.secid.workstation.domain.identity.ProfileVisibility;
 import br.gov.pr.secid.workstation.domain.identity.Role;
 import br.gov.pr.secid.workstation.domain.identity.User;
 import br.gov.pr.secid.workstation.infrastructure.mysql.crypto.AesGcmStringConverter;
@@ -17,6 +18,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 /** Linha de {@code users} (V2). {@code email_enc}/{@code phone_enc} cifrados pelo {@link AesGcmStringConverter}. */
@@ -93,6 +95,16 @@ public class UserEntity {
 
     @Column(name = "bio", length = 1000)
     private String bio;
+
+    /** RF3 (V47): especialidades já normalizadas pela aplicação. */
+    @Convert(converter = StringListJsonConverter.class)
+    @Column(name = "specialties_json", columnDefinition = "JSON")
+    private List<String> specialties;
+
+    /** RF3 (V47): quem vê o perfil público. */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "profile_visibility", nullable = false, length = 20)
+    private ProfileVisibility profileVisibility;
 
     @Column(name = "verified", nullable = false)
     private boolean verified;
@@ -189,6 +201,8 @@ public class UserEntity {
         avatarUrl = u.getAvatarUrl();
         coverUrl = u.getCoverUrl();
         bio = u.getBio();
+        specialties = u.getSpecialties() == null ? List.of() : List.copyOf(u.getSpecialties());
+        profileVisibility = u.getProfileVisibility() == null ? ProfileVisibility.AUTENTICADOS : u.getProfileVisibility();
         verified = u.isVerified();
         twoFactorEnabled = u.isTwoFactorEnabled();
         twoFactorSecret = u.getTwoFactorSecret();
@@ -232,6 +246,8 @@ public class UserEntity {
         u.setAvatarUrl(avatarUrl);
         u.setCoverUrl(coverUrl);
         u.setBio(bio);
+        u.setSpecialties(specialties);
+        u.setProfileVisibility(profileVisibility);
         u.setVerified(verified);
         u.setTwoFactorEnabled(twoFactorEnabled);
         u.setTwoFactorSecret(twoFactorSecret);

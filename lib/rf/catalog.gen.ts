@@ -279,7 +279,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "n": 3,
     "title": "Editar informações pessoais e preferências do perfil do usuário",
     "hu": "COMO usuário autenticado no sistema POSSO editar minhas informações pessoais e preferências de perfil PARA manter meus dados atualizados e personalizar minha experiência na plataforma.",
-    "summary": "Classes (real) existem em origin/main (Bloco 3, PR #16); (planejado): UserConsent/ConsentEvent/ConsentChecks, DataExportRequest/DataExportWorker, DataSubjectRequest, PersonalDataRegistry, upload de avatar (PendingUpload/MediaObject, D-22), PolicyGateFilter. GET/DELETE /api/auth/sessions e a aba Sessões são reais desde o Bloco 4 (RF2 §8); o AccountAnonymizationJob do plano é real como AccountAnonymizer (D-145).",
+    "summary": "Classes (real) existem em origin/main (Bloco 3, PR #16); (planejado): UserConsent/ConsentEvent/ConsentChecks, DataExportRequest/DataExportWorker, DataSubjectRequest, PersonalDataRegistry, upload de capa (PendingUpload, D-22; o avatar é real desde 25/10/2026, RF3.CA05), PolicyGateFilter. GET/DELETE /api/auth/sessions e a aba Sessões são reais desde o Bloco 4 (RF2 §8); o AccountAnonymizationJob do plano é real como AccountAnonymizer (D-145).",
     "route": "/settings com abas na URL ?tab=conta|aparencia|privacidade|dados|sessoes|termos|validacao (ABAS_POR_PERFIL §9); API GET|PATCH /api/me, PATCH /api/me/sensitive, GET|PUT /api/me/preferences, POST|DELETE /api/me/deletion; real desde 17/10/2026: abas Conta (AccountPanel + TwoFactorCard, GET /api/me/2fa, POST /api/me/2fa/setup|enable|disable|recovery-codes), Dados (DataPanel) e Termos (TermsPanel) e o aviso DeletionBanner em todas as páginas (D-144, D-145)",
     "coverage": "RF3.CA01 … RF3.CA06 (corpo do card vazio → derivados do título + HU3, todos \"(CA a confirmar)\") · RF3.CA07 … RF3.CA24 (§7, configurações e direitos do titular, D-15…D-21) — regra: o título do card define o RF; CAs alinhados ao código real do Bloco 3 (MeController, AccountService, UserPreferences, Guard.requireNotDeletionScheduled); atualização de 17/10/2026: fim do prazo de 30 dias (AccountService.cancelDeletion → 409 PRAZO_REATIVACAO_ENCERRADO, IdentityService.reactivationExpired, AccountAnonymizer, D-145) e 2FA na aba Conta (D-144)",
     "cas": [
@@ -309,7 +309,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
       },
       {
         "id": "RF3.CA05",
-        "text": "Dado o upload de avatar ou capa (planejado, D-22), então o arquivo (≤ 5 MB, mime por magic bytes png/jpg/webp, reencode sem EXIF) vira PendingUpload → MediaObject com accessClass PUBLIC, PipelineJob THUMBNAIL gera as variantes e avatarUrl/coverUrl apontam para a variante; o anterior é removido quando substituído.",
+        "text": "Dado o upload de avatar ou capa (planejado, D-22), então o arquivo (≤ 5 MB, mime por magic bytes png/jpg/webp, reencode sem EXIF) vira PendingUpload → MediaObject com accessClass PUBLIC, PipelineJob THUMBNAIL gera as variantes e avatarUrl/coverUrl apontam para a variante; o anterior é removido quando substituído. Real para o avatar (25/10/2026): POST /api/me/avatar (multipart file) → MediaUploadInspector (magic bytes, teto de pixels) → AvatarImage (orientação EXIF aplicada, recorte quadrado, até 512 px, JPEG novo sem EXIF/GPS; WEBP lido pelo plugin imageio-webp) → MediaUploadService (antivírus, dedupe por dono, MediaObject PUBLIC); avatarUrl = /api/people/{id}/avatar?v={mídia}, lido por GET /api/people/{id}/avatar (regra do perfil público, 404 uniforme); DELETE /api/me/avatar; a anterior é apagada ao trocar, remover e anonimizar; PATCH /api/me só limpa a foto (URL externa recusada). Síncrono, sem PendingUpload/PipelineJob nem variantes múltiplas; capa segue planejada.",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -1106,7 +1106,7 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "cas": [
       {
         "id": "RF16.CA01",
-        "text": "Dado um usuário autenticado, quando abre /u/{username} de um EMPREGADO, então vê o cabeçalho público: avatar, nome, cargo (jobTitle), empresa, departamento (sigla, cor, monograma), contadores (tarefas, projetos, decisões, seguidores) e o botão Seguir; username inexistente → 404 USUARIO_NAO_ENCONTRADO; conta SUSPENDED/DELETION_SCHEDULED/ANONYMIZED → 404 (não enumera contas); email/phone nunca saem (UserView público). Real (em curso, Onda 1): GET /api/people/by-username/{username} → PeopleService.byUsername → PublicProfileView (sem contato); o código real da recusa é 404 NAO_ENCONTRADO, igual para inexistente e para qualquer conta não ACTIVE (ResourceAuthorizer.requireProfileVisible). Contadores servidos pela API: (planejado).",
+        "text": "Dado um usuário autenticado, quando abre /u/{username} de um EMPREGADO, então vê o cabeçalho público: avatar, nome, cargo (jobTitle), empresa, departamento (sigla, cor, monograma), contadores (tarefas, projetos, decisões, seguidores) e o botão Seguir; username inexistente → 404 USUARIO_NAO_ENCONTRADO; conta SUSPENDED/DELETION_SCHEDULED/ANONYMIZED → 404 (não enumera contas); email/phone nunca saem (UserView público). Real (em curso, Onda 1): GET /api/people/by-username/{username} → PeopleService.byUsername → PublicProfileView (sem contato); o código real da recusa é 404 NAO_ENCONTRADO, igual para inexistente e para qualquer conta não ACTIVE (ResourceAuthorizer.requireProfileVisible). Seguir real (25/10/2026): GET/PUT/DELETE /api/people/{id}/follow → FollowService (idempotente e reativável, uma linha por par em follows; 422 SEGUIR_A_SI_MESMO; conta não ativa → o mesmo 404), botão \"Seguir\"/\"Seguindo\" com aria-pressed e contadores Seguidores e Seguindo só de vínculos ATIVOS; a anonimização desliga os vínculos. Foto real pelo GET /api/people/{id}/avatar (RF3.CA05). Contadores de projetos e decisões: (planejado).",
         "note": "CA a confirmar",
         "kind": "enunciado"
       },
@@ -2888,37 +2888,37 @@ export const RF_CATALOG: readonly RfEntry[] = [
     "cas": [
       {
         "id": "RF46.CA01",
-        "text": "Posso abrir uma conversa direta (1:1) ou em grupo com usuários da mesma empresa, enviar texto e anexar tarefa/projeto como cartão (attachmentsJson com targetType TASK · PROJECT e snapshot); sem IA e sem DECIA Points. Usuário de outra empresa: 403 EMPRESA_DIFERENTE.",
+        "text": "Posso abrir uma conversa direta (1:1) ou em grupo com usuários da mesma empresa, enviar texto e anexar tarefa/projeto como cartão (attachmentsJson com targetType TASK · PROJECT e snapshot); sem IA e sem DECIA Points. Usuário de outra empresa: 403 EMPRESA_DIFERENTE. Real (31/10/2026): conversa 1:1 ou em grupo (até 10 pessoas) entre contas ATIVAS da mesma empresa por POST /api/conversations (ConversationService, V20 + V59 direct_messages/direct_conversation_pairs); a 1:1 de um par é única (iniciar de novo devolve a mesma, 200; a corrida é resolvida pelo INSERT IGNORE no par). Outra empresa, conta não ativa ou inexistente → a MESMA recusa 422 PARTICIPANTE_INDISPONIVEL, sem dizer quem nem por quê (no lugar de 403 EMPRESA_DIFERENTE, que confirmaria a conta). Texto puro até 4000 caracteres (nunca HTML; links aparecem como texto), cifrado em repouso; editar e apagar só a própria mensagem (marca \"editada\"; apagar deixa \"mensagem removida\"; de outra pessoa → 403). Só participantes leem e escrevem: quem não participa recebe o mesmo 404 de uma conversa inexistente (ResourceAuthorizer.requireConversationParticipant). Tela /messages real fora do laboratório (components/messages), DEMO igual no laboratório. Sem IA e sem DECIA Points. O cartão de tarefa/projeto anexado fica para depois da Onda 3.",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF46.CA02",
-        "text": "Anexo com accessClass RESTRITO ou SIGILOSO só é aceito se todos os participantes têm acesso ao item; caso contrário 403 ACESSO_NEGADO e o cartão não é enviado.",
+        "text": "Anexo com accessClass RESTRITO ou SIGILOSO só é aceito se todos os participantes têm acesso ao item; caso contrário 403 ACESSO_NEGADO e o cartão não é enviado. Real (31/10/2026): pendente — nesta entrega as mensagens são só texto; anexos dependem da Onda 3.",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF46.CA03",
-        "text": "A ação Atribuir — pelo chat do WS (CHAT_WS), pela sessão DECIA (CHAT_DECIA) ou pelo botão no card (BOTAO_ESQUEMA) — cria Assignment PROPOSTA com destinatário, prazo e nota, gera DirectMessage de sistema na conversa e Notification ATRIBUICAO_PROPOSTA.",
+        "text": "A ação Atribuir — pelo chat do WS (CHAT_WS), pela sessão DECIA (CHAT_DECIA) ou pelo botão no card (BOTAO_ESQUEMA) — cria Assignment PROPOSTA com destinatário, prazo e nota, gera DirectMessage de sistema na conversa e Notification ATRIBUICAO_PROPOSTA. Real (31/10/2026): pendente — a atribuição pelo chat não entrou nesta entrega (só a conversa).",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF46.CA04",
-        "text": "O destinatário aceita (ACEITA → TaskItem.responsibleId / ProjectTask.responsibleId, TaskStateLog, alimenta a Tarefa do Dia RF44), recusa com motivo (RECUSADA, 422 MOTIVO_OBRIGATORIO) ou, depois de aceitar, devolve com motivo (DEVOLVIDA); quem atribuiu é notificado. Só o destinatário responde (403); atribuição já respondida não muda (409 ATRIBUICAO_JA_RESPONDIDA).",
+        "text": "O destinatário aceita (ACEITA → TaskItem.responsibleId / ProjectTask.responsibleId, TaskStateLog, alimenta a Tarefa do Dia RF44), recusa com motivo (RECUSADA, 422 MOTIVO_OBRIGATORIO) ou, depois de aceitar, devolve com motivo (DEVOLVIDA); quem atribuiu é notificado. Só o destinatário responde (403); atribuição já respondida não muda (409 ATRIBUICAO_JA_RESPONDIDA). Real (31/10/2026): pendente.",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF46.CA05",
-        "text": "CHEFE atribui a membros do seu departamento (RF10, requireDeptHead); EMPREGADO propõe a colegas da mesma empresa (sempre com aceite); toda atribuição grava AuditLog, e com origem CHAT_DECIA também um nó DecisionTraceNode TAREFA/PROJETO ligado à mensagem (RF29.CA04).",
+        "text": "CHEFE atribui a membros do seu departamento (RF10, requireDeptHead); EMPREGADO propõe a colegas da mesma empresa (sempre com aceite); toda atribuição grava AuditLog, e com origem CHAT_DECIA também um nó DecisionTraceNode TAREFA/PROJETO ligado à mensagem (RF29.CA04). Real (31/10/2026): pendente para atribuições; as conversas já gravam AuditLog (CONVERSATION_STARTED, CONVERSATION_LEFT, DIRECT_MESSAGE_EDITED, DIRECT_MESSAGE_DELETED) só com ids e contagens, nunca o texto.",
         "note": "",
         "kind": "rastreabilidade"
       },
       {
         "id": "RF46.CA06",
-        "text": "Mensagens têm TTL por empresa (Company.messagingPolicyJson, proposta), não entram em busca nem na Memória Institucional, e o usuário pode arquivar/sair da conversa; lista e não lidas em tempo real (Redis pub/sub → SSE/WebSocket).",
+        "text": "Mensagens têm TTL por empresa (Company.messagingPolicyJson, proposta), não entram em busca nem na Memória Institucional, e o usuário pode arquivar/sair da conversa; lista e não lidas em tempo real (Redis pub/sub → SSE/WebSocket). Real (31/10/2026): sair de grupo (DELETE /api/conversations/{id}/participants/me; a 1:1 não tem saída → 422 SAIR_SO_DE_GRUPO); as mensagens não vão a busca, Memória, notificação, log nem auditoria; lista por atividade com última mensagem e não lidas por participante (lastReadAt, POST …/read); contador real na barra superior e na sidebar (GET /api/conversations/unread, a cada 30 s com a aba visível). \"Tempo real\" sem infraestrutura nova: polling leve de 5 s com a aba visível (GET …/messages/changes?since= com o serverTime anterior e 5 s de sobreposição; parado com a aba oculta), não Redis/SSE. Notificação MENSAGEM_DIRETA agrupada: no máximo UMA não lida por (destinatário, remetente, conversa) — a próxima só nasce depois que a anterior foi lida no sino ou ao ler a conversa (que marca as dela como lidas); nunca leva o texto. A anonimização da conta zera o texto das mensagens da pessoa (\"mensagem removida\") e a tira de todas as conversas. TTL por empresa (messagingPolicyJson) e arquivar seguem pendentes.",
         "note": "",
         "kind": "rastreabilidade"
       }

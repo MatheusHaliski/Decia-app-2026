@@ -18,3 +18,14 @@
 beb5cce55c251cdbec429bcddd4bf1880f569921:ws-web/src/main/java/br/gov/pr/secid/workstation/web/security/JwtTokenIssuer.java:private-key:115
 beb5cce55c251cdbec429bcddd4bf1880f569921:ws-web/src/test/java/br/gov/pr/secid/workstation/web/security/JwtTokenIssuerTest.java:private-key:104
 52041e2bf0430ad1b5705886ebf89d316ea5cba5:ws-web/src/test/java/br/gov/pr/secid/workstation/web/support/ClientIpResolverTest.java:generic-api-key:15
+
+# Drawings 3D (commit 657c089): a regra generic-api-key confunde "labelKey"/"hintKey" seguidos de chaves de tradução
+# (d3.mat.*, d3.q.*, d3.cmd.*), o nome da chave do rascunho no localStorage ("ws.drawings3d.rascunho.v1") e
+# a variável da luz-chave da cena (uma DirectionalLight) com segredos. Nenhum é credencial: são identificadores de texto.
+657c089d50db0ffad624e3ca9937b58ce5764dbf:lib/drawings3d/commands.ts:generic-api-key:48
+657c089d50db0ffad624e3ca9937b58ce5764dbf:lib/drawings3d/engine/stage.ts:generic-api-key:80
+657c089d50db0ffad624e3ca9937b58ce5764dbf:lib/drawings3d/materials.ts:generic-api-key:46
+657c089d50db0ffad624e3ca9937b58ce5764dbf:lib/drawings3d/materials.ts:generic-api-key:48
+657c089d50db0ffad624e3ca9937b58ce5764dbf:lib/drawings3d/materials.ts:generic-api-key:52
+657c089d50db0ffad624e3ca9937b58ce5764dbf:lib/drawings3d/quality.ts:generic-api-key:27
+657c089d50db0ffad624e3ca9937b58ce5764dbf:lib/drawings3d/useEditor3D.ts:generic-api-key:12

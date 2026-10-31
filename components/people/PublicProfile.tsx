@@ -8,11 +8,14 @@
  */
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Avatar, Badge, Button, Card, EmptyState, ErrorState, LoadingState } from "@/components/ui";
+import { ProfileAvatar } from "@/components/account/ProfileAvatar";
+import { SpecialtyTags } from "@/components/account/Specialties";
+import { Badge, Button, Card, EmptyState, ErrorState, LoadingState } from "@/components/ui";
 import { RfPage } from "@/components/shell/RfPage";
 import { ownCounters } from "@/components/account/OwnProfile";
 import { CardGrid } from "@/components/social/TaskSchemeCard";
 import { PersistedTaskCard } from "@/components/tasks/PersistedTasks";
+import { FollowCounters, FollowPersonButton, useFollow } from "./FollowPerson";
 import { ApiError, describeError } from "@/lib/api/client";
 import { loginUrl } from "@/lib/auth/next";
 import { useI18n } from "@/lib/i18n/useI18n";
@@ -65,10 +68,11 @@ function PublicProfileHeader({ person, tasks }: { person: PublicProfileView; tas
   const typeKey = `profileType.${person.profileType}`;
   const typeLabel = t(typeKey);
   const labels = { tasks: t("social.profile.visibleTasks"), inProgress: t("ownProfile.counter.inProgress"), done: t("ownProfile.counter.done") };
+  const follow = useFollow(person.id);
   return (
     <Card tone="clay" className="grid gap-[var(--ws-space-4)] md:grid-cols-[minmax(0,1fr)_auto] md:items-center" data-testid="public-profile-header">
       <div className="flex min-w-0 items-start gap-[var(--ws-space-4)]">
-        <Avatar name={name} src={person.avatarUrl || undefined} size={64} shape={isCompany(person) ? "monitor" : "circle"} />
+        <ProfileAvatar name={name} src={person.avatarUrl} size={64} shape={isCompany(person) ? "monitor" : "circle"} />
         <div className="grid min-w-0 gap-1">
           <h2 className="font-[family-name:var(--ws-font-display)] text-[length:var(--ws-text-h2)] font-semibold leading-tight [overflow-wrap:anywhere]" data-testid="profile-name">{name}</h2>
           <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted [overflow-wrap:anywhere]" data-testid="profile-handle">@{username}{role ? ` · ${role}` : ""}</p>
@@ -77,9 +81,11 @@ function PublicProfileHeader({ person, tasks }: { person: PublicProfileView; tas
             {person.verified ? <Badge tone="success">{t("ownProfile.verified")}</Badge> : null}
             <Badge tone="neutral" title={t("social.profile.thirdPartyHint")}>{t("social.profile.thirdParty")}</Badge>
           </div>
+          <div className="mt-1 flex flex-wrap gap-2"><FollowPersonButton name={name} state={follow} /></div>
           <p className="max-w-prose text-[length:var(--ws-text-body-sm)] [overflow-wrap:anywhere]" data-testid="profile-bio">
             {person.bio?.trim() ? person.bio : <span className="text-ws-text-muted">{t("social.profile.noBio")}</span>}
           </p>
+          <SpecialtyTags items={person.specialties} />
         </div>
       </div>
       <div className="grid gap-2 md:min-w-[18rem]">
@@ -93,6 +99,7 @@ function PublicProfileHeader({ person, tasks }: { person: PublicProfileView; tas
             </div>
           ))}
         </dl>
+        <FollowCounters view={follow.view} />
         <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted">
           {t("social.profile.countersHint")}{capped ? ` ${t("social.profile.tasksCapped", { n: PROFILE_TASKS_LIMIT })}` : ""}
         </p>

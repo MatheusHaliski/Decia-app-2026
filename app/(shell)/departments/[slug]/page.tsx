@@ -1,19 +1,31 @@
 "use client";
 // Página do DEPARTAMENTO / CHEFE (RF14/RF28; Matriz D, ABAS_POR_PERFIL §5). Equipe = público; "Minha equipe" = gestão (§7.b).
-// Cabeçalho RF14.CA01 (contadores, chefe, Seguir) e projetos publicados (RF14.CA02) sobre o repositório DEMO da rede social.
-import { useParams } from "next/navigation";
+// No laboratório (NEXT_PUBLIC_WS_LAB=on) e sem provedor de sessão: cabeçalho RF14.CA01 (contadores, chefe, Seguir) e projetos publicados
+// (RF14.CA02) sobre o repositório DEMO da rede social. Fora do laboratório, com sessão: dados reais (`components/institutional/
+// DepartmentPage`, `GET /api/departments/{slug}`; `?company=` desambigua o slug, que só é único dentro da empresa).
+import { useParams, useSearchParams } from "next/navigation";
+import { DepartmentPageReal } from "@/components/institutional/DepartmentPage";
 import { DepartmentHeader, PublishedProjects, useDepartmentProjects, useSocial } from "@/components/social";
 import { Badge, Button, Card, Monogram } from "@/components/ui";
 import { RfPage } from "@/components/shell/RfPage";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { pageByRoute } from "@/lib/pages/registry";
 import { departmentBySlug } from "@/lib/social/rules";
+import { useOptionalCurrentUser } from "@/lib/session/CurrentUserProvider";
+import { labMode } from "@/lib/viewer/lab";
 import { useViewer } from "@/lib/viewer/ViewerProvider";
 
 const PAGE = pageByRoute("/departments/[slug]")!;
 
 export default function DepartmentPage() {
   const { slug } = useParams<{ slug: string }>();
+  const company = useSearchParams()?.get("company") ?? null;
+  const session = useOptionalCurrentUser();
+  if (session && !labMode()) return <DepartmentPageReal page={PAGE} slug={slug} company={company} />;
+  return <DemoDepartmentPage slug={slug} />;
+}
+
+function DemoDepartmentPage({ slug }: { slug: string }) {
   const { t } = useI18n();
   const { profile, user } = useViewer();
   const head = profile === "CHEFE" && user.departmentSlug === slug;

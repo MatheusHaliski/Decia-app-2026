@@ -48,6 +48,13 @@ export function toAppNotification(n: NotificationView, now: number): AppNotifica
         vars: { who, title: p.taskTitle ?? "", reason: p.reason ?? "" }, href: taskHref,
       };
     }
+    case "MENSAGEM_DIRETA": {
+      // RF46: uma notificação por (remetente, conversa) até ser lida; nunca traz o texto da mensagem
+      const group = p.conversationKind === "GRUPO";
+      const titleKey = !group ? "notif.dm.direct" : p.conversationTitle ? "notif.dm.group" : "notif.dm.groupUntitled";
+      return { ...base, kind: "MENCAO", titleKey, vars: { who, title: p.conversationTitle ?? "" },
+        href: n.resourceType === "conversation" && n.resourceId ? `/messages/${n.resourceId}` : "/messages" };
+    }
     case "SISTEMA":
       if (p.event === "TWO_FACTOR_ENABLED" || p.event === "TWO_FACTOR_DISABLED") {
         return { ...base, kind: "SEGURANCA", titleKey: p.event === "TWO_FACTOR_ENABLED" ? "notif.security.twoFactorOn" : "notif.security.twoFactorOff",
