@@ -155,6 +155,42 @@
         "required" : [ "code", "email" ],
         "type" : "object"
       },
+      "ConversationView" : {
+        "properties" : {
+          "canSend" : {
+            "type" : "boolean"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "kind" : {
+            "enum" : [ "DIRETA", "GRUPO" ],
+            "type" : "string"
+          },
+          "lastActivityAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "lastMessage" : {
+            "$ref" : "#/components/schemas/LastMessageView"
+          },
+          "participants" : {
+            "items" : {
+              "$ref" : "#/components/schemas/ParticipantView"
+            },
+            "type" : "array"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "unread" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
       "Criterion" : {
         "properties" : {
           "done" : {
@@ -317,6 +353,29 @@
         },
         "type" : "object"
       },
+      "LastMessageView" : {
+        "properties" : {
+          "authorId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "deleted" : {
+            "type" : "boolean"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "preview" : {
+            "type" : "string"
+          },
+          "sentAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
       "LoginRequest" : {
         "properties" : {
           "deviceName" : {
@@ -344,6 +403,93 @@
           }
         },
         "required" : [ "identifier", "password" ],
+        "type" : "object"
+      },
+      "MessageChanges" : {
+        "properties" : {
+          "items" : {
+            "items" : {
+              "$ref" : "#/components/schemas/MessageView"
+            },
+            "type" : "array"
+          },
+          "serverTime" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "truncated" : {
+            "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
+      "MessagePage" : {
+        "properties" : {
+          "items" : {
+            "items" : {
+              "$ref" : "#/components/schemas/MessageView"
+            },
+            "type" : "array"
+          },
+          "nextCursor" : {
+            "type" : "string"
+          },
+          "serverTime" : {
+            "format" : "date-time",
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "MessageRequest" : {
+        "properties" : {
+          "body" : {
+            "maxLength" : 20000,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "MessageView" : {
+        "properties" : {
+          "authorId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "body" : {
+            "type" : "string"
+          },
+          "changedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "conversationId" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "deleted" : {
+            "type" : "boolean"
+          },
+          "edited" : {
+            "type" : "boolean"
+          },
+          "editedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "mine" : {
+            "type" : "boolean"
+          },
+          "sentAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          }
+        },
         "type" : "object"
       },
       "MyInstitutionView" : {
@@ -443,6 +589,30 @@
           }
         },
         "required" : [ "idToken", "nonce" ],
+        "type" : "object"
+      },
+      "ParticipantView" : {
+        "properties" : {
+          "active" : {
+            "type" : "boolean"
+          },
+          "avatarUrl" : {
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "self" : {
+            "type" : "boolean"
+          },
+          "username" : {
+            "type" : "string"
+          }
+        },
         "type" : "object"
       },
       "PasswordAndCodeBody" : {
@@ -910,6 +1080,25 @@
         },
         "type" : "object"
       },
+      "StartRequest" : {
+        "properties" : {
+          "participantIds" : {
+            "items" : {
+              "format" : "uuid",
+              "type" : "string"
+            },
+            "maxItems" : 50,
+            "minItems" : 0,
+            "type" : "array"
+          },
+          "title" : {
+            "maxLength" : 1000,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
       "Status" : {
         "properties" : {
           "enabled" : {
@@ -1154,6 +1343,19 @@
       "UnreadCount" : {
         "properties" : {
           "count" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "UnreadSummary" : {
+        "properties" : {
+          "conversations" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "messages" : {
             "format" : "int64",
             "type" : "integer"
           }
@@ -1589,7 +1791,7 @@
         "tags" : [ "RF2 Autenticação" ]
       },
       "get" : {
-        "operationId" : "list_1",
+        "operationId" : "list_2",
         "responses" : {
           "200" : {
             "content" : {
@@ -1798,6 +2000,356 @@
         },
         "summary" : "RF15.CA05 Seguir a empresa (idempotente)",
         "tags" : [ "RF14/RF15 Institucional" ]
+      }
+    },
+    "/api/conversations" : {
+      "get" : {
+        "operationId" : "list",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "limit",
+          "required" : false,
+          "schema" : {
+            "default" : 50,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/ConversationView"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA06 Minhas conversas por atividade, com última mensagem e não lidas (até 100)",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      },
+      "post" : {
+        "operationId" : "start",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/StartRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ConversationView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA01 Iniciar conversa (201 nova; 200 = a 1:1 que já existia; 422 PARTICIPANTE_INDISPONIVEL uniforme)",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      }
+    },
+    "/api/conversations/unread" : {
+      "get" : {
+        "operationId" : "unread",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UnreadSummary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA06 Quantas conversas e mensagens não lidas eu tenho",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      }
+    },
+    "/api/conversations/{id}" : {
+      "get" : {
+        "operationId" : "get_1",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ConversationView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA01 Abrir conversa (não participa → 404 NAO_ENCONTRADO)",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      }
+    },
+    "/api/conversations/{id}/messages" : {
+      "get" : {
+        "operationId" : "messages",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "before",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "limit",
+          "required" : false,
+          "schema" : {
+            "default" : 30,
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MessagePage"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA01 Mensagens por cursor, mais recentes primeiro (before = nextCursor da página anterior)",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      },
+      "post" : {
+        "operationId" : "send",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MessageRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MessageView"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "summary" : "RF46.CA01 Enviar texto puro (422 MENSAGEM_VAZIA/MENSAGEM_LONGA/CONVERSA_SEM_DESTINATARIO; 429 por minuto)",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      }
+    },
+    "/api/conversations/{id}/messages/changes" : {
+      "get" : {
+        "operationId" : "changes",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "since",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MessageChanges"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA06 Novas, editadas e apagadas desde since (serverTime da leitura anterior) — polling leve",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      }
+    },
+    "/api/conversations/{id}/messages/{messageId}" : {
+      "delete" : {
+        "operationId" : "delete",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        }, {
+          "in" : "path",
+          "name" : "messageId",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MessageView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA01 Apagar a própria mensagem (fica \"mensagem removida\"; idempotente)",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      },
+      "put" : {
+        "operationId" : "edit",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        }, {
+          "in" : "path",
+          "name" : "messageId",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MessageRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MessageView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA01 Editar a própria mensagem (de outra pessoa → 403; apagada → 409 MENSAGEM_APAGADA)",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      }
+    },
+    "/api/conversations/{id}/participants/me" : {
+      "delete" : {
+        "operationId" : "leave",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA06 Sair do grupo (1:1 → 422 SAIR_SO_DE_GRUPO)",
+        "tags" : [ "RF46 Mensagens diretas" ]
+      }
+    },
+    "/api/conversations/{id}/read" : {
+      "post" : {
+        "operationId" : "markRead_1",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UnreadSummary"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "RF46.CA06 Marcar a conversa como lida (devolve os totais de não lidas)",
+        "tags" : [ "RF46 Mensagens diretas" ]
       }
     },
     "/api/departments/{slug}" : {
@@ -2390,7 +2942,7 @@
     },
     "/api/notifications" : {
       "get" : {
-        "operationId" : "list",
+        "operationId" : "list_1",
         "parameters" : [ {
           "in" : "query",
           "name" : "limit",

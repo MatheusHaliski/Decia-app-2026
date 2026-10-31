@@ -182,7 +182,7 @@ export interface paths {
             cookie?: never;
         };
         /** RF2.CA05 Minhas sessões vivas (dispositivo, última atividade, expiração; a atual marcada com current=true) */
-        get: operations["list_1"];
+        get: operations["list_2"];
         put?: never;
         post?: never;
         /** RF2.CA05 Sai de todos os outros dispositivos (mantém a sessão atual) */
@@ -274,6 +274,145 @@ export interface paths {
         post?: never;
         /** RF15.CA05 Deixar de seguir a empresa (idempotente) */
         delete: operations["unfollowCompany"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF46.CA06 Minhas conversas por atividade, com última mensagem e não lidas (até 100) */
+        get: operations["list"];
+        put?: never;
+        /** RF46.CA01 Iniciar conversa (201 nova; 200 = a 1:1 que já existia; 422 PARTICIPANTE_INDISPONIVEL uniforme) */
+        post: operations["start"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations/unread": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF46.CA06 Quantas conversas e mensagens não lidas eu tenho */
+        get: operations["unread"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF46.CA01 Abrir conversa (não participa → 404 NAO_ENCONTRADO) */
+        get: operations["get_1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations/{id}/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF46.CA01 Mensagens por cursor, mais recentes primeiro (before = nextCursor da página anterior) */
+        get: operations["messages"];
+        put?: never;
+        /** RF46.CA01 Enviar texto puro (422 MENSAGEM_VAZIA/MENSAGEM_LONGA/CONVERSA_SEM_DESTINATARIO; 429 por minuto) */
+        post: operations["send"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations/{id}/messages/changes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** RF46.CA06 Novas, editadas e apagadas desde since (serverTime da leitura anterior) — polling leve */
+        get: operations["changes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations/{id}/messages/{messageId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** RF46.CA01 Editar a própria mensagem (de outra pessoa → 403; apagada → 409 MENSAGEM_APAGADA) */
+        put: operations["edit"];
+        post?: never;
+        /** RF46.CA01 Apagar a própria mensagem (fica "mensagem removida"; idempotente) */
+        delete: operations["delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations/{id}/participants/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** RF46.CA06 Sair do grupo (1:1 → 422 SAIR_SO_DE_GRUPO) */
+        delete: operations["leave"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations/{id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** RF46.CA06 Marcar a conversa como lida (devolve os totais de não lidas) */
+        post: operations["markRead_1"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -549,7 +688,7 @@ export interface paths {
             cookie?: never;
         };
         /** RF27 Minhas notificações, mais recentes primeiro (até 50) */
-        get: operations["list"];
+        get: operations["list_1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -835,6 +974,20 @@ export interface components {
             deviceName?: string;
             email: string;
         };
+        ConversationView: {
+            canSend?: boolean;
+            /** Format: uuid */
+            id?: string;
+            /** @enum {string} */
+            kind?: "DIRETA" | "GRUPO";
+            /** Format: date-time */
+            lastActivityAt?: string;
+            lastMessage?: components["schemas"]["LastMessageView"];
+            participants?: components["schemas"]["ParticipantView"][];
+            title?: string;
+            /** Format: int64 */
+            unread?: number;
+        };
         Criterion: {
             done?: boolean;
             text?: string;
@@ -895,12 +1048,55 @@ export interface components {
             followingCount?: number;
             self?: boolean;
         };
+        LastMessageView: {
+            /** Format: uuid */
+            authorId?: string;
+            deleted?: boolean;
+            /** Format: uuid */
+            id?: string;
+            preview?: string;
+            /** Format: date-time */
+            sentAt?: string;
+        };
         LoginRequest: {
             deviceName?: string;
             identifier: string;
             password: string;
             rememberMe?: boolean;
             twoFactorCode?: string;
+        };
+        MessageChanges: {
+            items?: components["schemas"]["MessageView"][];
+            /** Format: date-time */
+            serverTime?: string;
+            truncated?: boolean;
+        };
+        MessagePage: {
+            items?: components["schemas"]["MessageView"][];
+            nextCursor?: string;
+            /** Format: date-time */
+            serverTime?: string;
+        };
+        MessageRequest: {
+            body?: string;
+        };
+        MessageView: {
+            /** Format: uuid */
+            authorId?: string;
+            body?: string;
+            /** Format: date-time */
+            changedAt?: string;
+            /** Format: uuid */
+            conversationId?: string;
+            deleted?: boolean;
+            edited?: boolean;
+            /** Format: date-time */
+            editedAt?: string;
+            /** Format: uuid */
+            id?: string;
+            mine?: boolean;
+            /** Format: date-time */
+            sentAt?: string;
         };
         MyInstitutionView: {
             company?: components["schemas"]["CompanyRef"];
@@ -938,6 +1134,15 @@ export interface components {
             deviceName?: string;
             idToken: string;
             nonce: string;
+        };
+        ParticipantView: {
+            active?: boolean;
+            avatarUrl?: string;
+            /** Format: uuid */
+            id?: string;
+            name?: string;
+            self?: boolean;
+            username?: string;
         };
         PasswordAndCodeBody: {
             code: string;
@@ -1088,6 +1293,10 @@ export interface components {
             periodSeconds?: number;
             secret?: string;
         };
+        StartRequest: {
+            participantIds?: string[];
+            title?: string;
+        };
         Status: {
             enabled?: boolean;
             /** Format: date-time */
@@ -1187,6 +1396,12 @@ export interface components {
         UnreadCount: {
             /** Format: int64 */
             count?: number;
+        };
+        UnreadSummary: {
+            /** Format: int64 */
+            conversations?: number;
+            /** Format: int64 */
+            messages?: number;
         };
         UserPreferences: {
             aiModeDefault?: string;
@@ -1483,7 +1698,7 @@ export interface operations {
             };
         };
     };
-    list_1: {
+    list_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -1675,6 +1890,261 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
+    list: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConversationView"][];
+                };
+            };
+        };
+    };
+    start: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StartRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConversationView"];
+                };
+            };
+        };
+    };
+    unread: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UnreadSummary"];
+                };
+            };
+        };
+    };
+    get_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConversationView"];
+                };
+            };
+        };
+    };
+    messages: {
+        parameters: {
+            query?: {
+                before?: string;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MessagePage"];
+                };
+            };
+        };
+    };
+    send: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MessageRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MessageView"];
+                };
+            };
+        };
+    };
+    changes: {
+        parameters: {
+            query?: {
+                since?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MessageChanges"];
+                };
+            };
+        };
+    };
+    edit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                messageId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MessageRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MessageView"];
+                };
+            };
+        };
+    };
+    delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                messageId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MessageView"];
+                };
+            };
+        };
+    };
+    leave: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    markRead_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["UnreadSummary"];
                 };
             };
         };
@@ -2182,7 +2652,7 @@ export interface operations {
             };
         };
     };
-    list: {
+    list_1: {
         parameters: {
             query?: {
                 limit?: number;
