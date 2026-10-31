@@ -40,6 +40,9 @@ export function geometryBounds(geometry: Geometry): Bounds {
     case "rect":
       return normalizedBounds(geometry);
     case "circle":
+      if (!Number.isFinite(geometry.radius) || geometry.radius < 0 || !Number.isFinite(geometry.cx) || !Number.isFinite(geometry.cy)) {
+        return { x: 0, y: 0, width: 0, height: 0 };
+      }
       return {
         x: geometry.cx - geometry.radius,
         y: geometry.cy - geometry.radius,
@@ -74,7 +77,7 @@ export function hitTest(
       return distanceToSegment(point, geometry.start, geometry.end) <= tolerance;
     case "polygon":
       return geometry.points.length >= 3 && (
-        pointInPolygon(point, geometry.points) ||
+        pointInPolygonSimple(point, geometry.points) ||
         pathHitTest(geometry.points, point, tolerance, true)
       );
     case "path":
@@ -89,9 +92,10 @@ export function selectAtPoint(
 ): Selection {
   const nodesById = new Map(scene.nodes.map((node) => [node.id, node]));
   const layersById = new Map(scene.layers.map((layer) => [layer.id, layer]));
+  const visibility = visibilityMap(scene.nodes, nodesById, layersById);
   // Ancestral em camada oculta também esconde o filho: clicar não pode escolher o que não está na tela.
   const node = [...scene.nodes].reverse().find((candidate) =>
-    isVisible(candidate, nodesById, layersById) && hitTest(candidate.geometry, point, tolerance),
+    visibility.get(candidate.id) === true && hitTest(candidate.geometry, point, tolerance),
   );
   return node ? { kind: "object", id: node.id } : { kind: "none" };
 }
@@ -120,33 +124,41 @@ export function selectInPolygon(
 export function selectedNodeIds(scene: DrawingScene, selection: Selection): Set<string> {
   const nodesById = new Map(scene.nodes.map((node) => [node.id, node]));
   const layersById = new Map(scene.layers.map((layer) => [layer.id, layer]));
-  const visibleNodes = scene.nodes.filter((node) => isVisible(node, nodesById, layersById));
+  const visibility = visibilityMap(scene.nodes, nodesById, layersById);
+  const visibleNodes = scene.nodes.filter((node) => visibility.get(node.id) === true);
 
   switch (selection.kind) {
     case "none":
       return new Set();
     case "object":
-      return descendantsOf(nodesById, [selection.id]);
+      return descendantsOf(scene.nodes, nodesById, [selection.id]);
     case "objects":
-      return descendantsOf(nodesById, selection.ids);
+      return descendantsOf(scene.nodes, nodesById, selection.ids);
     case "layer":
       return new Set(scene.nodes.filter((node) => node.layerId === selection.id).map((node) => node.id));
-    case "region":
+    case "region": {
+      const region = preparePolygon(geometryPoints(selection.geometry));
+      if (!region) return new Set();
       return new Set(visibleNodes
         .filter((node) => selection.layerId === undefined || node.layerId === selection.layerId)
-        .filter((node) => geometryIntersects(node.geometry, selection.geometry))
+        .filter((node) => selectionMatches(node.geometry, region, "crossing"))
         .map((node) => node.id));
+    }
     case "bounds": {
-      const polygon = boundsToPolygon(selection.bounds);
+      const polygon = preparePolygon(boundsToPolygon(selection.bounds), true);
+      if (!polygon) return new Set();
       return new Set(visibleNodes
         .filter((node) => selectionMatches(node.geometry, polygon, selection.mode ?? "crossing"))
         .map((node) => node.id));
     }
-    case "polygon":
+    case "polygon": {
       if (selection.points.length < 3 || selection.points.some((point) => !isFinitePoint(point))) return new Set();
+      const polygon = preparePolygon(selection.points);
+      if (!polygon) return new Set();
       return new Set(visibleNodes
-        .filter((node) => selectionMatches(node.geometry, selection.points, selection.mode ?? "crossing"))
+        .filter((node) => selectionMatches(node.geometry, polygon, selection.mode ?? "crossing"))
         .map((node) => node.id));
+    }
   }
 }
 
@@ -154,20 +166,28 @@ export function editableNodeIds(scene: DrawingScene, selection: Selection): Set<
   const selected = selectedNodeIds(scene, selection);
   const nodesById = new Map(scene.nodes.map((node) => [node.id, node]));
   const layersById = new Map(scene.layers.map((layer) => [layer.id, layer]));
+  const visibility = visibilityMap(scene.nodes, nodesById, layersById);
+  const lockedRegions = (scene.lockedRegions ?? [])
+    .map((region) => ({ layerId: region.layerId, polygon: preparePolygon(geometryPoints(region.geometry)) }))
+    .filter((region): region is { layerId: string | undefined; polygon: PreparedPolygon } => region.polygon !== null);
 
   return new Set([...selected].filter((id) => {
     const node = nodesById.get(id);
-    if (!node || !isVisible(node, nodesById, layersById)) return false;
+    if (!node || visibility.get(id) !== true) return false;
 
+    // ancestral travado (objeto ou camada) trava o filho; ciclo de grupos é dado corrompido e não se edita
+    const seen = new Set<string>();
     let current: DrawingNode | undefined = node;
     while (current) {
+      if (seen.has(current.id)) return false;
+      seen.add(current.id);
       if (current.locked || layersById.get(current.layerId)?.locked) return false;
       current = current.parentId ? nodesById.get(current.parentId) : undefined;
     }
 
-    return !(scene.lockedRegions ?? []).some((region) =>
+    return !lockedRegions.some((region) =>
       (region.layerId === undefined || region.layerId === node.layerId) &&
-      geometryIntersects(node.geometry, region.geometry),
+      selectionMatches(node.geometry, region.polygon, "crossing"),
     );
   }));
 }
@@ -182,51 +202,177 @@ export function snapPoint(point: Point, gridSize: number, enabled: boolean): Poi
   };
 }
 
-function isVisible(
-  node: DrawingNode,
-  nodes: Map<string, DrawingNode>,
+/**
+ * Visível = a camada do objeto e as de todos os ancestrais estão visíveis. Calculado uma vez por cena (memorizado); um ciclo de
+ * grupos (A dentro de B dentro de A, dado corrompido) deixa os envolvidos invisíveis em vez de travar a tela num laço infinito.
+ */
+function visibilityMap(
+  nodes: readonly DrawingNode[],
+  nodesById: Map<string, DrawingNode>,
   layers: Map<string, DrawingLayer>,
-): boolean {
-  if (layers.get(node.layerId)?.visible === false) return false;
-  let current = node;
-  while (current.parentId) {
-    const parent = nodes.get(current.parentId);
-    if (!parent || layers.get(parent.layerId)?.visible === false) return false;
-    current = parent;
+): Map<string, boolean> {
+  const result = new Map<string, boolean>();
+  for (const start of nodes) {
+    if (result.has(start.id)) continue;
+    const chain: string[] = [];
+    const onChain = new Set<string>();
+    let current: DrawingNode | undefined = start;
+    let verdict = false;
+    for (;;) {
+      if (!current) break; // pai inexistente: não se exibe
+      const known = result.get(current.id);
+      if (known !== undefined) {
+        verdict = known;
+        break;
+      }
+      if (onChain.has(current.id)) break; // ciclo
+      chain.push(current.id);
+      onChain.add(current.id);
+      if (layers.get(current.layerId)?.visible === false) break;
+      if (!current.parentId) {
+        verdict = true;
+        break;
+      }
+      current = nodesById.get(current.parentId);
+    }
+    for (const id of chain) result.set(id, verdict);
   }
-  return true;
+  return result;
 }
 
-function descendantsOf(nodes: Map<string, DrawingNode>, roots: string[]): Set<string> {
+/** O nomeado e toda a sua descendência, com um índice de filhos (linear no tamanho da cena, mesmo com grupos enormes). */
+function descendantsOf(nodes: readonly DrawingNode[], byId: Map<string, DrawingNode>, roots: string[]): Set<string> {
+  const children = new Map<string, string[]>();
+  for (const node of nodes) {
+    if (!node.parentId) continue;
+    const list = children.get(node.parentId);
+    if (list) list.push(node.id);
+    else children.set(node.parentId, [node.id]);
+  }
   const selected = new Set<string>();
-  const queue = roots.filter((id) => nodes.has(id));
-  while (queue.length) {
-    const id = queue.shift()!;
+  const stack = roots.filter((id) => byId.has(id));
+  while (stack.length) {
+    const id = stack.pop()!;
     if (selected.has(id)) continue;
     selected.add(id);
-    for (const node of nodes.values()) {
-      if (node.parentId === id) queue.push(node.id);
-    }
+    for (const child of children.get(id) ?? []) stack.push(child);
   }
   return selected;
 }
 
+/**
+ * "contained": todos os vértices dentro do polígono E nenhuma aresta da forma cruzando a borda — num laço côncavo (em U) uma linha
+ * pode ter as duas pontas dentro e passar pelo vão, fora da área laçada. "crossing": algum vértice dentro, algum vértice do laço
+ * sobre a forma ou alguma aresta cruzando. A caixa envolvente descarta antes os objetos longe da seleção.
+ */
 function selectionMatches(
   geometry: Geometry,
-  polygon: Point[],
+  polygon: PreparedPolygon,
   mode: "crossing" | "contained",
 ): boolean {
   const shape = geometryPoints(geometry);
   if (shape.length === 0) return false;
-  if (mode === "contained") return shape.every((point) => pointInPolygon(point, polygon));
-  if (shape.some((point) => pointInPolygon(point, polygon))) return true;
-  if (polygon.some((point) => hitTest(geometry, point, 0))) return true;
-  return polylinesIntersect(shape, isClosed(geometry), polygon, true);
+  const box = boundsFromPoints(shape);
+  if (!boxesOverlap(box, polygon.bounds)) return false;
+  const closed = isClosed(geometry);
+  if (mode === "contained") {
+    if (!boxInside(box, polygon.bounds)) return false;
+    return shape.every((point) => pointInPrepared(point, polygon)) && !edgesCross(shape, closed, polygon, true);
+  }
+  if (shape.some((point) => pointInPrepared(point, polygon))) return true;
+  if (polygon.points.some((point) => containsPoint(box, point) && hitTest(geometry, point, 0))) return true;
+  return edgesCross(shape, closed, polygon, false);
 }
 
-function geometryIntersects(left: Geometry, right: Geometry): boolean {
-  const polygon = geometryPoints(right);
-  return polygon.length >= 3 && selectionMatches(left, polygon, "crossing");
+/**
+ * Polígono de seleção pronto para consultas repetidas: caixa envolvente e arestas distribuídas em faixas horizontais, de modo que o
+ * teste de ponto e o de cruzamento só olham as arestas da faixa do ponto (antes: todas as arestas, para cada vértice de cada forma).
+ * Polígono sem área (pontos alinhados ou repetidos) não seleciona nada.
+ */
+type PreparedPolygon = {
+  points: Point[];
+  bounds: Bounds;
+  strips: number[][];
+  stripHeight: number;
+  marks: Int32Array;
+  stamp: { value: number };
+};
+
+function preparePolygon(points: Point[], allowZeroArea = false): PreparedPolygon | null {
+  const valid = points.filter(isFinitePoint);
+  if (valid.length < 3) return null;
+  const bounds = boundsFromPoints(valid);
+  const scale = Math.max(bounds.width, bounds.height, 1);
+  if (!allowZeroArea && Math.abs(signedArea(valid)) <= EPSILON * scale * scale) return null;
+  const stripCount = Math.max(1, Math.min(512, Math.ceil(Math.sqrt(valid.length)) * 2));
+  const stripHeight = bounds.height > 0 ? bounds.height / stripCount : 1;
+  const strips: number[][] = Array.from({ length: stripCount }, () => []);
+  for (let index = 0; index < valid.length; index += 1) {
+    const a = valid[index]!;
+    const b = valid[(index + 1) % valid.length]!;
+    const first = stripOf(Math.min(a.y, b.y), bounds.y, stripHeight, stripCount);
+    const last = stripOf(Math.max(a.y, b.y), bounds.y, stripHeight, stripCount);
+    for (let strip = first; strip <= last; strip += 1) strips[strip]!.push(index);
+  }
+  return { points: valid, bounds, strips, stripHeight, marks: new Int32Array(valid.length), stamp: { value: 0 } };
+}
+
+function stripOf(y: number, top: number, height: number, count: number): number {
+  return Math.max(0, Math.min(count - 1, Math.floor((y - top) / height)));
+}
+
+function signedArea(points: Point[]): number {
+  let twice = 0;
+  for (let index = 0; index < points.length; index += 1) {
+    const a = points[index]!;
+    const b = points[(index + 1) % points.length]!;
+    twice += a.x * b.y - b.x * a.y;
+  }
+  return twice / 2;
+}
+
+function pointInPrepared(point: Point, polygon: PreparedPolygon): boolean {
+  const { bounds, points } = polygon;
+  if (point.x < bounds.x - EPSILON || point.x > bounds.x + bounds.width + EPSILON ||
+    point.y < bounds.y - EPSILON || point.y > bounds.y + bounds.height + EPSILON) return false;
+  let inside = false;
+  for (const index of polygon.strips[stripOf(point.y, bounds.y, polygon.stripHeight, polygon.strips.length)]!) {
+    const previousPoint = points[index]!;
+    const currentPoint = points[(index + 1) % points.length]!;
+    if (distanceToSegment(point, previousPoint, currentPoint) <= EPSILON) return true;
+    const crosses = (currentPoint.y > point.y) !== (previousPoint.y > point.y) &&
+      point.x < ((previousPoint.x - currentPoint.x) * (point.y - currentPoint.y)) /
+        (previousPoint.y - currentPoint.y) + currentPoint.x;
+    if (crosses) inside = !inside;
+  }
+  return inside;
+}
+
+/** Alguma aresta da forma cruza alguma aresta do polígono? `strict` = só cruzamento próprio (encostar na borda não conta). */
+function edgesCross(shape: Point[], closed: boolean, polygon: PreparedPolygon, strict: boolean): boolean {
+  const edges = closed ? shape.length : shape.length - 1;
+  const { bounds, points, strips, stripHeight, marks, stamp } = polygon;
+  for (let index = 0; index < edges; index += 1) {
+    const a = shape[index]!;
+    const b = shape[(index + 1) % shape.length]!;
+    const top = Math.min(a.y, b.y);
+    const bottom = Math.max(a.y, b.y);
+    if (bottom < bounds.y - EPSILON || top > bounds.y + bounds.height + EPSILON ||
+      Math.max(a.x, b.x) < bounds.x - EPSILON || Math.min(a.x, b.x) > bounds.x + bounds.width + EPSILON) continue;
+    stamp.value += 1;
+    const first = stripOf(top, bounds.y, stripHeight, strips.length);
+    const last = stripOf(bottom, bounds.y, stripHeight, strips.length);
+    for (let strip = first; strip <= last; strip += 1) {
+      for (const edge of strips[strip]!) {
+        if (marks[edge] === stamp.value) continue;
+        marks[edge] = stamp.value;
+        const c = points[edge]!;
+        const d = points[(edge + 1) % points.length]!;
+        if (strict ? segmentsCrossProperly(a, b, c, d) : segmentsIntersect(a, b, c, d)) return true;
+      }
+    }
+  }
+  return false;
 }
 
 function geometryPoints(geometry: Geometry): Point[] {
@@ -260,27 +406,6 @@ function pathHitTest(points: Point[], point: Point, tolerance: number, closed: b
   return false;
 }
 
-function polylinesIntersect(
-  first: Point[],
-  closeFirst: boolean,
-  second: Point[],
-  closeSecond: boolean,
-): boolean {
-  const firstEdges = closeFirst ? first.length : first.length - 1;
-  const secondEdges = closeSecond ? second.length : second.length - 1;
-  for (let a = 0; a < firstEdges; a += 1) {
-    const a1 = first[a];
-    const a2 = first[(a + 1) % first.length];
-    if (!a1 || !a2) continue;
-    for (let b = 0; b < secondEdges; b += 1) {
-      const b1 = second[b];
-      const b2 = second[(b + 1) % second.length];
-      if (b1 && b2 && segmentsIntersect(a1, a2, b1, b2)) return true;
-    }
-  }
-  return false;
-}
-
 function segmentsIntersect(a: Point, b: Point, c: Point, d: Point): boolean {
   const orient = (p: Point, q: Point, r: Point) =>
     (q.x - p.x) * (r.y - p.y) - (q.y - p.y) * (r.x - p.x);
@@ -295,26 +420,25 @@ function segmentsIntersect(a: Point, b: Point, c: Point, d: Point): boolean {
     ((o1 > 0) !== (o2 > 0) && (o3 > 0) !== (o4 > 0));
 }
 
+/** Cruzamento próprio: cada segmento tem uma ponta de cada lado do outro (tocar ou ser colinear não conta). */
+function segmentsCrossProperly(a: Point, b: Point, c: Point, d: Point): boolean {
+  const orient = (p: Point, q: Point, r: Point) =>
+    (q.x - p.x) * (r.y - p.y) - (q.y - p.y) * (r.x - p.x);
+  const scale = Math.max(Math.abs(b.x - a.x), Math.abs(b.y - a.y), Math.abs(d.x - c.x), Math.abs(d.y - c.y), 1);
+  const tolerance = EPSILON * scale * scale;
+  const o1 = orient(a, b, c);
+  const o2 = orient(a, b, d);
+  const o3 = orient(c, d, a);
+  const o4 = orient(c, d, b);
+  return ((o1 > tolerance && o2 < -tolerance) || (o1 < -tolerance && o2 > tolerance)) &&
+    ((o3 > tolerance && o4 < -tolerance) || (o3 < -tolerance && o4 > tolerance));
+}
+
 function onSegment(a: Point, b: Point, point: Point): boolean {
   return point.x >= Math.min(a.x, b.x) - EPSILON &&
     point.x <= Math.max(a.x, b.x) + EPSILON &&
     point.y >= Math.min(a.y, b.y) - EPSILON &&
     point.y <= Math.max(a.y, b.y) + EPSILON;
-}
-
-function pointInPolygon(point: Point, polygon: Point[]): boolean {
-  let inside = false;
-  for (let index = 0, previous = polygon.length - 1; index < polygon.length; previous = index, index += 1) {
-    const currentPoint = polygon[index];
-    const previousPoint = polygon[previous];
-    if (!currentPoint || !previousPoint) continue;
-    if (distanceToSegment(point, previousPoint, currentPoint) <= EPSILON) return true;
-    const crosses = (currentPoint.y > point.y) !== (previousPoint.y > point.y) &&
-      point.x < ((previousPoint.x - currentPoint.x) * (point.y - currentPoint.y)) /
-        (previousPoint.y - currentPoint.y) + currentPoint.x;
-    if (crosses) inside = !inside;
-  }
-  return inside;
 }
 
 function distanceToSegment(point: Point, start: Point, end: Point): number {
@@ -366,8 +490,37 @@ function boundsToPolygon(bounds: Bounds): Point[] {
 }
 
 function isClosed(geometry: Geometry): boolean {
-  return geometry.kind === "polygon" || (geometry.kind === "path" && geometry.closed === true);
+  return geometry.kind === "polygon" || geometry.kind === "rect" || geometry.kind === "circle" ||
+    (geometry.kind === "path" && geometry.closed === true);
 }
+
+function boxesOverlap(a: Bounds, b: Bounds): boolean {
+  return a.x <= b.x + b.width + EPSILON && b.x <= a.x + a.width + EPSILON &&
+    a.y <= b.y + b.height + EPSILON && b.y <= a.y + a.height + EPSILON;
+}
+
+function boxInside(inner: Bounds, outer: Bounds): boolean {
+  return inner.x >= outer.x - EPSILON && inner.y >= outer.y - EPSILON &&
+    inner.x + inner.width <= outer.x + outer.width + EPSILON && inner.y + inner.height <= outer.y + outer.height + EPSILON;
+}
+
+/** Ponto em polígono para o clique (polígono da própria forma, consultado uma vez). Par-ímpar; sobre a borda conta como dentro. */
+function pointInPolygonSimple(point: Point, polygon: Point[]): boolean {
+  const valid = polygon.filter(isFinitePoint);
+  if (valid.length < 3) return false;
+  let inside = false;
+  for (let index = 0, previous = valid.length - 1; index < valid.length; previous = index, index += 1) {
+    const currentPoint = valid[index]!;
+    const previousPoint = valid[previous]!;
+    if (distanceToSegment(point, previousPoint, currentPoint) <= EPSILON) return true;
+    const crosses = (currentPoint.y > point.y) !== (previousPoint.y > point.y) &&
+      point.x < ((previousPoint.x - currentPoint.x) * (point.y - currentPoint.y)) /
+        (previousPoint.y - currentPoint.y) + currentPoint.x;
+    if (crosses) inside = !inside;
+  }
+  return inside;
+}
+
 
 function isFinitePoint(point: Point): boolean {
   return Number.isFinite(point.x) && Number.isFinite(point.y);
