@@ -86,7 +86,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: "22"
@@ -108,7 +108,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Build da imagem (Dockerfile.backend)
         run: docker build -f Dockerfile.backend -t work-station-api:ci .
       # D-70: falha em HIGH/CRITICAL que JÁ TÊM correção (pacote do SO ou jar do app). Sem upload SARIF: exigiria
