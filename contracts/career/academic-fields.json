@@ -4,6 +4,209 @@
   "generatedAt": "2026-11-02",
   "fields": [
     {
+      "code": "administracao",
+      "label": {
+        "pt-BR": "Administração",
+        "en": "Business Administration",
+        "es": "Administración de Empresas"
+      },
+      "cine": {
+        "broad": "04",
+        "broadName": "Negócios, administração e direito",
+        "detail": "0413",
+        "detailName": "Gestão e administração"
+      },
+      "degrees": [
+        "bacharelado",
+        "tecnologo"
+      ],
+      "aliases": [
+        "Administração",
+        "Administrador",
+        "Administradora",
+        "Administração de Empresas",
+        "Gestão de Empresas",
+        "Gestão Empresarial",
+        "Analista Administrativo",
+        "Analista Administrativa",
+        "Assistente Administrativo",
+        "Assistente Administrativa",
+        "Gestor",
+        "Gestora",
+        "Gerente",
+        "Gerente Administrativo",
+        "Consultor Empresarial",
+        "Consultora Empresarial",
+        "Business Administration",
+        "ADM"
+      ],
+      "cbo": [
+        {
+          "code": "2521",
+          "title": "Administradores"
+        },
+        {
+          "code": "1421",
+          "title": "Gerentes administrativos, financeiros, de riscos e afins"
+        },
+        {
+          "code": "3513",
+          "title": "Técnicos em administração"
+        },
+        {
+          "code": "4110",
+          "title": "Agentes, assistentes e auxiliares administrativos"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2421",
+          "title": "Management and organisation analysts"
+        },
+        {
+          "code": "1219",
+          "title": "Business services and administration managers not elsewhere classified"
+        },
+        {
+          "code": "1120",
+          "title": "Managing directors and chief executives"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/544cd9cf-e2ee-4ac0-8a02-7147af6b97d7",
+          "label": "business manager"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/6a29d804-f775-446c-bec7-35fc4e28ac97",
+          "label": "business consultant"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/6c3fd65e-2d24-47d8-bc22-9e93512bdcc2",
+          "label": "chief executive officer"
+        }
+      ],
+      "council": {
+        "name": "CRA",
+        "federal": "CFA – Conselho Federal de Administração",
+        "law": "Lei 4.769/1965",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (microdados, rótulo CINE 0413A01 Administração; presencial 214.639 + EaD 438.295); cruzado com CNN Brasil/Resumo Técnico 2024 (653,1 mil)",
+        "matriculas": 652934,
+        "rank": 3,
+        "year": 2024,
+        "naoConferido": false
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "informações estratégicas, financeiras e comerciais de empregadores e clientes sob confidencialidade (Código de Ética do Administrador, Res. CFA 537/2018)",
+        "dados pessoais de colaboradores, clientes e fornecedores (LGPD)",
+        "planos de negócio e contratos de clientes de consultoria sob NDA"
+      ],
+      "neighbors": [
+        "processos-gerenciais",
+        "gestao-de-recursos-humanos",
+        "marketing",
+        "logistica",
+        "gestao-financeira",
+        "gestao-comercial",
+        "ciencias-contabeis",
+        "gestao-publica"
+      ],
+      "notes": "2023: 654.791 (3º). Dois terços das matrículas em EaD. Registro no CRA obrigatório para exercer como Administrador (Lei 4.769/1965 art. 14).",
+      "group": "04-negocios-administracao-e-direito"
+    },
+    {
+      "code": "agronomia",
+      "label": {
+        "pt-BR": "Agronomia",
+        "en": "Agronomy",
+        "es": "Agronomía"
+      },
+      "cine": {
+        "broad": "08",
+        "broadName": "Agricultura, silvicultura, pesca e veterinária",
+        "detail": "0811",
+        "detailName": "Produção agrícola e pecuária"
+      },
+      "degrees": [
+        "bacharelado",
+        "tecnologo"
+      ],
+      "aliases": [
+        "Agronomia",
+        "Engenharia Agronômica",
+        "Engenheiro agrônomo",
+        "Engenheira agrônoma",
+        "Agrônomo",
+        "Agrônoma",
+        "Agroecologia",
+        "Agronegócio",
+        "Tecnólogo em Agronegócio",
+        "Engenharia Agrícola",
+        "Produção Agrícola"
+      ],
+      "cbo": [
+        {
+          "code": "2221",
+          "title": "Engenheiros agrossilvipecuários"
+        },
+        {
+          "code": "3211",
+          "title": "Técnicos agrícolas"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2132",
+          "title": "Farming, forestry and fisheries advisers"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/c40ef517-d4ab-4932-b184-9c2ea5b24fe2",
+          "label": "agronomist"
+        }
+      ],
+      "council": {
+        "name": "CREA",
+        "federal": "CONFEA",
+        "law": "Lei 5.194/1966",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP via Semesp, Mapa do Ensino Superior 16ª ed. (2024): 53.471 só na rede pública presencial (2º maior curso público); total nacional não localizado",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "dados de propriedades rurais, produtores e CAR/ITR identificáveis (LGPD)",
+        "receituário agronômico e laudos de clientes",
+        "coordenadas e produtividade de talhões de terceiros"
+      ],
+      "neighbors": [
+        "zootecnia",
+        "engenharia-florestal",
+        "medicina-veterinaria",
+        "ciencias-biologicas",
+        "gestao-ambiental",
+        "engenharia-ambiental-e-sanitaria"
+      ],
+      "notes": "Agroecologia e Tecnólogo em Agronegócio entram como aliases (sem ramo próprio). Semesp 2024: 53.471 matrículas só na rede pública presencial.",
+      "group": "05-08-10-ciencias-agrarias-servicos"
+    },
+    {
       "code": "arquitetura-e-urbanismo",
       "label": {
         "pt-BR": "Arquitetura e Urbanismo",
@@ -71,10 +274,217 @@
       "neighbors": [
         "engenharia-civil",
         "construcao-de-edificios",
+        "design",
+        "design-de-interiores",
         "engenharia-ambiental-e-sanitaria"
       ],
       "notes": "Profissão própria desde a Lei 12.378/2010 (CAU). Último número oficial visto: >167 mil matrículas em 2016 (Censo/MEC, via ead.com.br).",
       "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "artes-visuais",
+      "label": {
+        "pt-BR": "Artes Visuais",
+        "en": "Visual Arts",
+        "es": "Artes Visuales"
+      },
+      "cine": {
+        "broad": "02",
+        "broadName": "Artes e humanidades",
+        "detail": "0213",
+        "detailName": "Belas artes"
+      },
+      "degrees": [
+        "licenciatura",
+        "bacharelado",
+        "tecnologo"
+      ],
+      "aliases": [
+        "Artes Visuais",
+        "Artes",
+        "Artes Plásticas",
+        "Artista visual",
+        "Artista plástico",
+        "Artista plástica",
+        "Professor de artes",
+        "Professora de artes",
+        "Arte-educador",
+        "Arte-educadora",
+        "Ilustrador",
+        "Ilustradora",
+        "Pintor",
+        "Escultor",
+        "Gravura",
+        "História da Arte",
+        "Educação artística"
+      ],
+      "cbo": [
+        {
+          "code": "2624",
+          "title": "Artistas visuais, desenhistas industriais e conservadores-restauradores de bens culturais"
+        },
+        {
+          "code": "2321",
+          "title": "Professores do ensino médio"
+        },
+        {
+          "code": "2313",
+          "title": "Professores de nível superior no ensino fundamental de quinta a oitava série"
+        },
+        {
+          "code": "2349",
+          "title": "Professores de artes do ensino superior"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2651",
+          "title": "Visual artists"
+        },
+        {
+          "code": "2330",
+          "title": "Secondary education teachers"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/374d925a-107b-4c99-bc8b-75483441f062",
+          "label": "artistic painter"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/94d94bd0-9ac3-4bd8-81c0-c3fdf551aa16",
+          "label": "sculptor"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/80ec8f3e-2cda-4ea6-a382-ece99589ccdd",
+          "label": "art teacher secondary school"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/1b949bae-882f-40ff-9fe7-3c8ede5e38b5",
+          "label": "illustrator"
+        }
+      ],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024, microdados, soma de 6 rótulos CINE (0114A02, 0213A03, 0114A01, 0213A02, 0213A01, 0213H01); 2023: 43.218",
+        "matriculas": 44838,
+        "rank": 60,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "alta"
+      },
+      "sensitiveData": [
+        "dados de alunos menores de idade: nomes, notas, laudos e fotos (ECA; LGPD art. 14)",
+        "imagem de modelos e pessoas retratadas sem autorização de uso de imagem (CC art. 20)",
+        "obras de terceiros reproduzidas sem licença (Lei 9.610/1998)"
+      ],
+      "neighbors": [
+        "design",
+        "pedagogia",
+        "cinema-e-audiovisual",
+        "arquitetura-e-urbanismo",
+        "musica"
+      ],
+      "notes": "Licenciatura é CINE 0114A02 (29.898 matr., rank 60); bacharelado 0213A03 (7.217); soma inclui Artes, Artes Plásticas e História da Arte. Profissão não regulamentada.",
+      "group": "01-02-03-educacao-humanidades-artes-comunicacao"
+    },
+    {
+      "code": "biblioteconomia",
+      "label": {
+        "pt-BR": "Biblioteconomia",
+        "en": "Library and Information Science",
+        "es": "Bibliotecología"
+      },
+      "cine": {
+        "broad": "03",
+        "broadName": "Ciências sociais, comunicação e informação",
+        "detail": "0322",
+        "detailName": "Biblioteconomia, informação e arquivos"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Biblioteconomia",
+        "Bibliotecário",
+        "Bibliotecária",
+        "Ciência da Informação",
+        "Gestão da Informação",
+        "Arquivologia",
+        "Arquivista",
+        "Museologia",
+        "Museólogo",
+        "Museóloga",
+        "Documentalista",
+        "Gestão documental",
+        "Curadoria"
+      ],
+      "cbo": [
+        {
+          "code": "2612",
+          "title": "Profissionais da informação"
+        },
+        {
+          "code": "2613",
+          "title": "Arquivistas e museólogos"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2622",
+          "title": "Librarians and related information professionals"
+        },
+        {
+          "code": "2621",
+          "title": "Archivists and curators"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/60f7eb23-a7ea-4cbe-98a5-1248291f62d5",
+          "label": "librarian"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/e3b08984-19fe-4d51-a1b0-990676fc7234",
+          "label": "archivist"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/691d30cc-6b2c-4025-89b4-3e719fe664c7",
+          "label": "exhibition curator"
+        }
+      ],
+      "council": {
+        "name": "CRB (bibliotecário)",
+        "federal": "CFB",
+        "law": "Lei 4.084/1962; Lei 9.674/1998",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024, microdados por rótulo CINE: Biblioteconomia (0322B01) + Arquivologia (0322A01) + Museologia (0322M01) + Gestão da informação (0322G01); 2023: 23.299",
+        "matriculas": 21885,
+        "rank": 93,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "dados de usuários e histórico de empréstimos/consultas (sigilo)",
+        "documentos de arquivo com restrição de acesso (Lei 12.527/2011; Lei 8.159/1991)",
+        "dados pessoais e sensíveis presentes em acervos e fichas catalográficas"
+      ],
+      "neighbors": [
+        "historia",
+        "letras",
+        "jornalismo"
+      ],
+      "notes": "Agrupa Biblioteconomia (0322B01, 14.186, rank 93), Arquivologia (4.374) e Museologia (2.453) como aliases. Museólogo: COREM/COFEM, Lei 7.287/1984; arquivista: registro no MTE, Lei 6.546/1978.",
+      "group": "01-02-03-educacao-humanidades-artes-comunicacao"
     },
     {
       "code": "biomedicina",
@@ -139,6 +549,7 @@
       "neighbors": [
         "farmacia",
         "medicina",
+        "ciencias-biologicas",
         "enfermagem"
       ],
       "notes": "Área detalhada 0914 presumida (rótulo 0914B01 não verificado). Res. CFBM 330/2020 revogou a 198/2011.",
@@ -215,10 +626,753 @@
       ],
       "neighbors": [
         "engenharia-de-software",
+        "estatistica",
+        "matematica",
+        "administracao",
         "redes-de-computadores"
       ],
       "notes": "Ramo novo, em expansão (EAD). Área CINE incerta (0688, 0613 ou 0542); sem CBO específica confirmada para cientista de dados.",
       "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "ciencias-aeronauticas",
+      "label": {
+        "pt-BR": "Ciências Aeronáuticas",
+        "en": "Aeronautical Sciences",
+        "es": "Ciencias Aeronáuticas"
+      },
+      "cine": {
+        "broad": "10",
+        "broadName": "Serviços",
+        "detail": "1041",
+        "detailName": "Serviços de transporte"
+      },
+      "degrees": [
+        "bacharelado",
+        "tecnologo"
+      ],
+      "aliases": [
+        "Ciências Aeronáuticas",
+        "Piloto de avião",
+        "Piloto de aeronaves",
+        "Piloto comercial",
+        "Piloto de linha aérea",
+        "Aviação Civil",
+        "Tecnólogo em Pilotagem Profissional de Aeronaves",
+        "Pilotagem Profissional",
+        "Aviador",
+        "Aviadora"
+      ],
+      "cbo": [
+        {
+          "code": "2153",
+          "title": "Profissionais da pilotagem aeronáutica"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "3153",
+          "title": "Aircraft pilots and related associate professionals"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "ANAC (licença e habilitação de piloto)",
+        "law": "Lei 7.565/1986 (CBA); Lei 13.475/2017 (aeronauta); RBAC 61",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 (número não localizado em fonte secundária)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "dados de passageiros e tripulação, manifestos e escalas (LGPD)",
+        "relatórios de ocorrência e segurança operacional de empresas aéreas (sigilo CENIPA/SGSO)",
+        "procedimentos e manuais operacionais proprietários"
+      ],
+      "neighbors": [
+        "engenharia-mecanica",
+        "logistica",
+        "turismo"
+      ],
+      "notes": "Não há conselho de classe; a licença da ANAC é obrigatória para voar profissionalmente, por isso registrationRequired true.",
+      "group": "05-08-10-ciencias-agrarias-servicos"
+    },
+    {
+      "code": "ciencias-atuariais",
+      "label": {
+        "pt-BR": "Ciências Atuariais",
+        "en": "Actuarial Science",
+        "es": "Ciencias Actuariales"
+      },
+      "cine": {
+        "broad": "05",
+        "broadName": "Ciências naturais, matemática e estatística",
+        "detail": "0542",
+        "detailName": "Estatística"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Ciências Atuariais",
+        "Atuário",
+        "Atuária",
+        "Atuarial",
+        "Analista Atuarial",
+        "Analista de Riscos",
+        "Cálculo Atuarial",
+        "Previdência",
+        "Seguros e Previdência",
+        "Subscritor de Riscos",
+        "Subscritora de Riscos"
+      ],
+      "cbo": [
+        {
+          "code": "2111",
+          "title": "Profissionais da matemática"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2120",
+          "title": "Mathematicians, actuaries and statisticians"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/068c2787-58ff-468e-bbb6-c4e5dd6ee482",
+          "label": "actuarial consultant"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/e937449a-d9e0-4ab7-9ea5-4d3ac673be6d",
+          "label": "insurance underwriter"
+        }
+      ],
+      "council": {
+        "name": "Registro profissional no Ministério do Trabalho (sem conselho); IBA (MIBA) é a entidade de classe",
+        "federal": "IBA – Instituto Brasileiro de Atuária (associação, não conselho)",
+        "law": "Decreto-Lei 806/1969; Decreto 66.408/1970",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (microdados, rótulo CINE 0542C01 Ciências atuariais; 100% presencial)",
+        "matriculas": 2412,
+        "rank": 175,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "bases de segurados, participantes e beneficiários com dados de saúde, idade e sinistros (LGPD art. 11)",
+        "notas técnicas atuariais, reservas e tábuas internas de seguradoras e fundos de pensão sob confidencialidade",
+        "dados de planos de saúde e previdência de pessoas identificáveis"
+      ],
+      "neighbors": [
+        "ciencias-economicas",
+        "estatistica",
+        "matematica",
+        "ciencias-contabeis",
+        "gestao-financeira"
+      ],
+      "notes": "2023: 2.492 (171º). Grande área CINE 05; incluído por ser profissão regulamentada da área financeira. Curso pequeno, mas distinto.",
+      "group": "04-negocios-administracao-e-direito"
+    },
+    {
+      "code": "ciencias-biologicas",
+      "label": {
+        "pt-BR": "Ciências Biológicas",
+        "en": "Biological Sciences",
+        "es": "Ciencias Biológicas"
+      },
+      "cine": {
+        "broad": "05",
+        "broadName": "Ciências naturais, matemática e estatística",
+        "detail": "0511",
+        "detailName": "Biologia"
+      },
+      "degrees": [
+        "bacharelado",
+        "licenciatura"
+      ],
+      "aliases": [
+        "Ciências Biológicas",
+        "Biologia",
+        "Biólogo",
+        "Bióloga",
+        "Biologia Marinha",
+        "Ecologia",
+        "Genética",
+        "Microbiologia",
+        "Zoologia",
+        "Botânica"
+      ],
+      "cbo": [
+        {
+          "code": "2211",
+          "title": "Biólogos e afins"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2131",
+          "title": "Biologists, botanists, zoologists and related professionals"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CRBio",
+        "federal": "CFBio",
+        "law": "Lei 6.684/1979",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 (número não localizado em fonte secundária; conferir Sinopse 2023 / Painel INEP)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "dados genéticos e amostras biológicas humanas identificáveis (LGPD art. 5º, II e art. 11)",
+        "localização exata de espécies ameaçadas e de sítios de coleta protegidos (SisGen/SISBIO)",
+        "dados de pacientes em análises clínicas"
+      ],
+      "neighbors": [
+        "biomedicina",
+        "medicina-veterinaria",
+        "agronomia",
+        "gestao-ambiental",
+        "quimica"
+      ],
+      "notes": "Licenciatura em Ciências Biológicas é a maior parte das matrículas e fica no grupo Educação; aqui vale sobretudo o bacharelado (biólogo).",
+      "group": "05-08-10-ciencias-agrarias-servicos"
+    },
+    {
+      "code": "ciencias-contabeis",
+      "label": {
+        "pt-BR": "Ciências Contábeis",
+        "en": "Accounting",
+        "es": "Ciencias Contables"
+      },
+      "cine": {
+        "broad": "04",
+        "broadName": "Negócios, administração e direito",
+        "detail": "0411",
+        "detailName": "Contabilidade e tributação"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Ciências Contábeis",
+        "Contabilidade",
+        "Contador",
+        "Contadora",
+        "Contabilista",
+        "Analista Contábil",
+        "Analista Fiscal",
+        "Analista Tributário",
+        "Analista Tributária",
+        "Auditor",
+        "Auditora",
+        "Auditoria",
+        "Perito Contábil",
+        "Perita Contábil",
+        "Controller",
+        "Controladoria",
+        "Gestão Fiscal e Tributária",
+        "Técnico em Contabilidade"
+      ],
+      "cbo": [
+        {
+          "code": "2522",
+          "title": "Contadores e afins"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2411",
+          "title": "Accountants"
+        },
+        {
+          "code": "3313",
+          "title": "Accounting associate professionals"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/eda0d957-3c3c-4139-b89a-a18bc9e18897",
+          "label": "accountant"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/5e5b1b61-1351-4d3b-a293-deb3661715dd",
+          "label": "financial controller"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/59c22779-4d89-4bc9-ba8b-d64bea236723",
+          "label": "tax advisor"
+        }
+      ],
+      "council": {
+        "name": "CRC",
+        "federal": "CFC – Conselho Federal de Contabilidade",
+        "law": "Decreto-Lei 9.295/1946 (alterado pela Lei 12.249/2010)",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (microdados, rótulo CINE 0411C01 Contabilidade; presencial 106.654 + EaD 216.127); imprensa cita 322.837",
+        "matriculas": 322781,
+        "rank": 7,
+        "year": 2024,
+        "naoConferido": false
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "demonstrações contábeis, balancetes e dados fiscais de clientes sob sigilo profissional (Código de Ética Profissional do Contador – NBC PG 01)",
+        "dados bancários, folha de pagamento e obrigações tributárias de terceiros (sigilo fiscal, CTN art. 198)",
+        "senhas e certificados digitais (e-CNPJ, e-CAC) de clientes"
+      ],
+      "neighbors": [
+        "administracao",
+        "ciencias-economicas",
+        "gestao-financeira",
+        "direito",
+        "ciencias-atuariais"
+      ],
+      "notes": "2023: 324.659 (7º). Rótulo do Censo é 'Contabilidade'; nome de curso usual é Ciências Contábeis. Registro no CRC exige Exame de Suficiência.",
+      "group": "04-negocios-administracao-e-direito"
+    },
+    {
+      "code": "ciencias-economicas",
+      "label": {
+        "pt-BR": "Ciências Econômicas",
+        "en": "Economics",
+        "es": "Ciencias Económicas"
+      },
+      "cine": {
+        "broad": "03",
+        "broadName": "Ciências sociais, comunicação e informação",
+        "detail": "0311",
+        "detailName": "Economia"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Ciências Econômicas",
+        "Economia",
+        "Economista",
+        "Analista Econômico",
+        "Analista Econômica",
+        "Analista de Mercado",
+        "Analista de Conjuntura",
+        "Econometria",
+        "Economia Internacional",
+        "Analista de Investimentos",
+        "Pesquisador em Economia"
+      ],
+      "cbo": [
+        {
+          "code": "2512",
+          "title": "Economistas"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2631",
+          "title": "Economists"
+        },
+        {
+          "code": "2413",
+          "title": "Financial analysts"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/99492920-e5a5-4dba-9e5a-93193147198c",
+          "label": "economist"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/12ff7f9c-c5b5-4d4a-b585-c350dd1400eb",
+          "label": "business economics researcher"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/8d586ee9-0ab1-4155-a3b0-2ca786c8e48c",
+          "label": "financial analyst"
+        }
+      ],
+      "council": {
+        "name": "CORECON",
+        "federal": "COFECON – Conselho Federal de Economia",
+        "law": "Lei 1.411/1951",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (microdados, rótulo CINE 0311E01 Economia; presencial 45.090 + EaD 22.724)",
+        "matriculas": 67814,
+        "rank": 39,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "dados confidenciais de clientes, empresas e carteiras sob sigilo profissional (Código de Ética do Economista – Res. COFECON)",
+        "informação privilegiada sobre mercado de capitais (Lei 6.385/1976 art. 27-D)",
+        "projeções e relatórios internos não publicados de empregadores"
+      ],
+      "neighbors": [
+        "administracao",
+        "ciencias-contabeis",
+        "gestao-financeira",
+        "relacoes-internacionais",
+        "ciencias-atuariais",
+        "estatistica"
+      ],
+      "notes": "2023: 67.603 (38º). Grande área CINE 03 (não 04); agregado a este grupo por decisão do produto.",
+      "group": "04-negocios-administracao-e-direito"
+    },
+    {
+      "code": "ciencias-sociais",
+      "label": {
+        "pt-BR": "Ciências Sociais",
+        "en": "Social Sciences (Sociology)",
+        "es": "Ciencias Sociales"
+      },
+      "cine": {
+        "broad": "03",
+        "broadName": "Ciências sociais, comunicação e informação",
+        "detail": "0312",
+        "detailName": "Ciências sociais: sociologia, ciência política e geografia"
+      },
+      "degrees": [
+        "licenciatura",
+        "bacharelado"
+      ],
+      "aliases": [
+        "Ciências Sociais",
+        "Sociologia",
+        "Sociólogo",
+        "Socióloga",
+        "Cientista social",
+        "Antropologia",
+        "Antropólogo",
+        "Antropóloga",
+        "Ciência Política",
+        "Cientista político",
+        "Cientista política",
+        "Professor de sociologia",
+        "Professora de sociologia"
+      ],
+      "cbo": [
+        {
+          "code": "2511",
+          "title": "Profissionais em pesquisa e análise antropológica sociológica"
+        },
+        {
+          "code": "2321",
+          "title": "Professores do ensino médio"
+        },
+        {
+          "code": "2035",
+          "title": "Pesquisadores das ciências sociais e humanas"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2632",
+          "title": "Sociologists, anthropologists and related professionals"
+        },
+        {
+          "code": "2633",
+          "title": "Philosophers, historians and political scientists"
+        },
+        {
+          "code": "2330",
+          "title": "Secondary education teachers"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/11df8941-508c-4103-ad40-52cdf9430a59",
+          "label": "sociologist"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/acf69cab-8629-45c8-ae10-c8fb15f474b6",
+          "label": "anthropologist"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/4f89b0d2-b666-4890-af01-25d1d60da1f3",
+          "label": "political scientist"
+        }
+      ],
+      "council": {
+        "name": "Registro profissional de sociólogo (Ministério do Trabalho)",
+        "law": "Lei 6.888/1980, art. 6º; Decreto 89.531/1984",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024, microdados, soma de 5 rótulos CINE (0114C03, 0312C02, 0312S01, 0312A01, 0312C01); 2023: 34.667",
+        "matriculas": 33559,
+        "rank": 88,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "dados de participantes de pesquisa (entrevistas, etnografias, surveys) sem consentimento e parecer de CEP",
+        "dados de alunos menores de idade: nomes, notas, laudos e fotos (ECA; LGPD art. 14)",
+        "opinião política, religião e origem étnica de pessoas identificáveis (LGPD art. 5º, II)"
+      ],
+      "neighbors": [
+        "historia",
+        "filosofia",
+        "geografia",
+        "servico-social",
+        "relacoes-internacionais",
+        "psicologia"
+      ],
+      "notes": "Agrupa Ciências Sociais (lic. 0114C03 + bach. 0312C02), Sociologia, Antropologia e Ciência Política (0312) como aliases. Registro de sociólogo no MTE: art. 6º teve revogação por MP 905/2019 que caducou; situação a conferir.",
+      "group": "01-02-03-educacao-humanidades-artes-comunicacao"
+    },
+    {
+      "code": "cinema-e-audiovisual",
+      "label": {
+        "pt-BR": "Cinema e Audiovisual",
+        "en": "Film and Audiovisual Media",
+        "es": "Cine y Audiovisual"
+      },
+      "cine": {
+        "broad": "02",
+        "broadName": "Artes e humanidades",
+        "detail": "0211",
+        "detailName": "Técnicas audiovisuais e produção de mídia"
+      },
+      "degrees": [
+        "bacharelado",
+        "tecnologo"
+      ],
+      "aliases": [
+        "Cinema e Audiovisual",
+        "Cinema",
+        "Audiovisual",
+        "Produção Audiovisual",
+        "Rádio e TV",
+        "Rádio, TV e Internet",
+        "Produção Multimídia",
+        "Fotografia",
+        "Fotógrafo",
+        "Fotógrafa",
+        "Cineasta",
+        "Diretor de cinema",
+        "Diretora de cinema",
+        "Roteirista",
+        "Editor de vídeo",
+        "Editora de vídeo",
+        "Videomaker",
+        "Produtor audiovisual",
+        "Produtora audiovisual",
+        "Direção de fotografia",
+        "Cinegrafista",
+        "Produtor cultural"
+      ],
+      "cbo": [
+        {
+          "code": "2621",
+          "title": "Produtores artísticos e culturais"
+        },
+        {
+          "code": "2622",
+          "title": "Diretores de espetáculos e afins"
+        },
+        {
+          "code": "2618",
+          "title": "Fotógrafos profissionais"
+        },
+        {
+          "code": "3744",
+          "title": "Técnicos em montagem, edição e finalização de filme e vídeo"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2654",
+          "title": "Film, stage and related directors and producers"
+        },
+        {
+          "code": "3431",
+          "title": "Photographers"
+        },
+        {
+          "code": "2656",
+          "title": "Announcers on radio, television and other media"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/3b6bea7d-36f4-44fb-ac73-d1cc8a198dcb",
+          "label": "video and motion picture producer"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/6ba25e0f-7fb8-4879-a1f9-d4f8945966be",
+          "label": "director of photography"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/66542dd6-05a6-4d9e-97ff-3f4858c31ff9",
+          "label": "photographer"
+        }
+      ],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024, microdados, soma de 5 rótulos CINE (0211C01, 0211P01, 0211F01, 0321R01, 0211P05); 2023: 24.277",
+        "matriculas": 25728,
+        "rank": 110,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "imagens e vozes de pessoas sem autorização de uso de imagem, sobretudo menores",
+        "material bruto, roteiros e cortes inéditos de produções sob NDA",
+        "dados e depoimentos de entrevistados de documentários sem consentimento"
+      ],
+      "neighbors": [
+        "jornalismo",
+        "design",
+        "artes-visuais",
+        "publicidade-e-propaganda",
+        "musica"
+      ],
+      "notes": "Agrupa Cinema e Audiovisual (0211C01, 8.664), Produção Audiovisual, Fotografia (0211F01, 4.595), Rádio/TV/Internet (0321R01) e Produção Multimídia como aliases. Sem regulamentação.",
+      "group": "01-02-03-educacao-humanidades-artes-comunicacao"
+    },
+    {
+      "code": "comercio-exterior",
+      "label": {
+        "pt-BR": "Comércio Exterior",
+        "en": "International Trade",
+        "es": "Comercio Exterior"
+      },
+      "cine": {
+        "broad": "04",
+        "broadName": "Negócios, administração e direito",
+        "detail": "0413",
+        "detailName": "Gestão e administração"
+      },
+      "degrees": [
+        "tecnologo",
+        "bacharelado"
+      ],
+      "aliases": [
+        "Comércio Exterior",
+        "Comex",
+        "Analista de Comércio Exterior",
+        "Importação e Exportação",
+        "Analista de Importação",
+        "Analista de Exportação",
+        "Despachante Aduaneiro",
+        "Despachante Aduaneira",
+        "Negócios Internacionais",
+        "Gestão de Negócios Internacionais",
+        "Trade",
+        "Câmbio",
+        "Tecnólogo em Comércio Exterior",
+        "Logística Internacional"
+      ],
+      "cbo": [
+        {
+          "code": "3543",
+          "title": "Analistas de comércio exterior"
+        },
+        {
+          "code": "3422",
+          "title": "Despachantes aduaneiros"
+        },
+        {
+          "code": "3421",
+          "title": "Especialistas em logística de transportes"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "3331",
+          "title": "Clearing and forwarding agents"
+        },
+        {
+          "code": "1324",
+          "title": "Supply, distribution and related managers"
+        },
+        {
+          "code": "3339",
+          "title": "Business services agents not elsewhere classified"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/61b859ed-24d8-48cf-9c1b-67d7a6c62bb5",
+          "label": "import export specialist"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/b87a7a27-ee74-4e5e-b274-84a3cab27bf4",
+          "label": "import export manager"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/56fa783a-cca4-42ef-8862-1fb6e43f215c",
+          "label": "international forwarding operations coordinator"
+        }
+      ],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (microdados, rótulo CINE 0413C01 Comércio exterior; presencial 5.465 + EaD 17.388)",
+        "matriculas": 22853,
+        "rank": 73,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "declarações de importação/exportação, faturas e documentos aduaneiros de clientes (sigilo fiscal, CTN art. 198)",
+        "contratos, preços e condições de negociação internacional confidenciais",
+        "dados de acesso a sistemas da Receita Federal (Siscomex) de terceiros"
+      ],
+      "neighbors": [
+        "logistica",
+        "relacoes-internacionais",
+        "administracao",
+        "ciencias-economicas",
+        "direito"
+      ],
+      "notes": "2023: 22.122 (70º). Sem conselho; despachante aduaneiro depende de habilitação na Receita Federal (Decreto 6.759/2009 art. 808).",
+      "group": "04-negocios-administracao-e-direito"
     },
     {
       "code": "construcao-de-edificios",
@@ -293,6 +1447,308 @@
       "group": "06-07-engenharia-e-tic"
     },
     {
+      "code": "design",
+      "label": {
+        "pt-BR": "Design",
+        "en": "Design",
+        "es": "Diseño"
+      },
+      "cine": {
+        "broad": "02",
+        "broadName": "Artes e humanidades",
+        "detail": "0212",
+        "detailName": "Design"
+      },
+      "degrees": [
+        "bacharelado",
+        "tecnologo"
+      ],
+      "aliases": [
+        "Design",
+        "Designer",
+        "Design Gráfico",
+        "Designer gráfico",
+        "Designer gráfica",
+        "Design de Produto",
+        "Designer de produto",
+        "Desenho Industrial",
+        "Design de Moda",
+        "Moda",
+        "Estilista",
+        "Designer de moda",
+        "Design Digital",
+        "Design de Interação",
+        "UX Design",
+        "UI Design",
+        "Designer UX/UI",
+        "Animação",
+        "Animador",
+        "Motion design",
+        "Ilustração digital",
+        "Direção de arte",
+        "Design editorial"
+      ],
+      "cbo": [
+        {
+          "code": "2624",
+          "title": "Artistas visuais, desenhistas industriais e conservadores-restauradores de bens culturais"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2166",
+          "title": "Graphic and multimedia designers"
+        },
+        {
+          "code": "2163",
+          "title": "Product and garment designers"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/69bcbb0a-8d80-4ecd-b0a4-9adea2a40de2",
+          "label": "graphic designer"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/ab7bccb2-6f81-4a3d-a0c0-fca5d47d2775",
+          "label": "industrial designer"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/77bfd6e7-5598-4818-84cb-31e2651eb046",
+          "label": "fashion designer"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/48c8eccb-4bd0-487e-a187-4953cbbe956e",
+          "label": "animator"
+        }
+      ],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024, microdados, soma de 6 rótulos CINE (0211D01, 0212M01, 0212D02, 0211A01, 0212D04, 0212D01); 2023: 94.113",
+        "matriculas": 96466,
+        "rank": 45,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "alta"
+      },
+      "sensitiveData": [
+        "identidades visuais, produtos e coleções de clientes antes do lançamento (NDA)",
+        "fontes, fotos e ilustrações licenciadas de terceiros sem direito de redistribuição",
+        "dados pessoais reais em mockups e protótipos de interfaces"
+      ],
+      "neighbors": [
+        "artes-visuais",
+        "publicidade-e-propaganda",
+        "design-de-interiores",
+        "arquitetura-e-urbanismo",
+        "cinema-e-audiovisual",
+        "engenharia-de-software"
+      ],
+      "notes": "Um ramo com aliases para Gráfico (0211D01, 40.941), Design (0212D02), Moda (0212M01, 23.336), Produto, Animação e Desenho Industrial: mesma família CBO 2624 e ISCO 2166/2163. Interiores é ramo à parte. Sem regulamentação.",
+      "group": "01-02-03-educacao-humanidades-artes-comunicacao"
+    },
+    {
+      "code": "design-de-interiores",
+      "label": {
+        "pt-BR": "Design de Interiores",
+        "en": "Interior Design",
+        "es": "Diseño de Interiores"
+      },
+      "cine": {
+        "broad": "02",
+        "broadName": "Artes e humanidades",
+        "detail": "0212",
+        "detailName": "Design"
+      },
+      "degrees": [
+        "tecnologo",
+        "bacharelado"
+      ],
+      "aliases": [
+        "Design de Interiores",
+        "Designer de interiores",
+        "Design de Ambientes",
+        "Designer de ambientes",
+        "Decoração de interiores",
+        "Decorador",
+        "Decoradora",
+        "Projeto de interiores",
+        "Visual merchandising",
+        "Designer de vitrines"
+      ],
+      "cbo": [
+        {
+          "code": "2629",
+          "title": "Designer de interiores de nível superior"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "3432",
+          "title": "Interior designers and decorators"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/73e776fb-4d99-4031-bad4-7716f121155d",
+          "label": "interior designer"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/773e5ea3-235b-4e72-afc5-290dd841eed8",
+          "label": "interior planner"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/35eb0aa6-b40d-449d-9390-719be8912277",
+          "label": "visual merchandiser"
+        }
+      ],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024, microdados por rótulo CINE: Design de interiores (0212D03); 2023: 27.820",
+        "matriculas": 24715,
+        "rank": 64,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "baixa",
+        "drawings": "alta"
+      },
+      "sensitiveData": [
+        "plantas, endereços e fotos do interior de residências de clientes sem autorização",
+        "orçamentos, contratos e dados de fornecedores de clientes",
+        "projetos sob NDA antes da entrega"
+      ],
+      "neighbors": [
+        "arquitetura-e-urbanismo",
+        "design",
+        "construcao-de-edificios",
+        "engenharia-civil"
+      ],
+      "notes": "CINE 0212D03 (24.715 matr., rank 64), majoritariamente tecnólogo. Lei 13.369/2016 reconhece a profissão sem registro obrigatório em conselho (registro facultativo no CFT); PLs 2.375/2022 e 1.271/2023 tramitam.",
+      "group": "01-02-03-educacao-humanidades-artes-comunicacao"
+    },
+    {
+      "code": "direito",
+      "label": {
+        "pt-BR": "Direito",
+        "en": "Law",
+        "es": "Derecho"
+      },
+      "cine": {
+        "broad": "04",
+        "broadName": "Negócios, administração e direito",
+        "detail": "0421",
+        "detailName": "Direito"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Direito",
+        "Advogado",
+        "Advogada",
+        "Ciências Jurídicas",
+        "Ciências Jurídicas e Sociais",
+        "Bacharel em Direito",
+        "Jurista",
+        "Procurador",
+        "Procuradora",
+        "Defensor Público",
+        "Defensora Pública",
+        "Promotor de Justiça",
+        "Promotora de Justiça",
+        "Juiz",
+        "Juíza",
+        "Assessor Jurídico",
+        "Assessora Jurídica",
+        "Paralegal",
+        "Serviços Jurídicos e Cartoriais",
+        "Serviços Jurídicos e Notariais"
+      ],
+      "cbo": [
+        {
+          "code": "2410",
+          "title": "Advogados"
+        },
+        {
+          "code": "2412",
+          "title": "Procuradores e advogados públicos"
+        },
+        {
+          "code": "1113",
+          "title": "Magistrados"
+        },
+        {
+          "code": "2413",
+          "title": "Tabeliães e registradores"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2611",
+          "title": "Lawyers"
+        },
+        {
+          "code": "2612",
+          "title": "Judges"
+        },
+        {
+          "code": "2619",
+          "title": "Legal professionals not elsewhere classified"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/974d4eab-fbee-4c52-b16e-73bdd8c25b53",
+          "label": "lawyer"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/31854d78-3615-43a4-aa3a-c597ecb20ceb",
+          "label": "legal consultant"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/acf462a3-9c34-46cb-952a-c612c38299f4",
+          "label": "prosecutor"
+        }
+      ],
+      "council": {
+        "name": "OAB",
+        "federal": "Conselho Federal da OAB",
+        "law": "Lei 8.906/1994 (Estatuto da Advocacia e da OAB)",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (microdados, rótulo CINE 0421D01 Direito; presencial + EaD); cruzado com CNN Brasil/Resumo Técnico 2024 (652,9 mil)",
+        "matriculas": 652996,
+        "rank": 2,
+        "year": 2024,
+        "naoConferido": false
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "dados de clientes, partes e processos sob sigilo profissional (Lei 8.906/1994 art. 7º, II e art. 34; Código de Ética e Disciplina da OAB)",
+        "peças, pareceres e documentos de processos em segredo de justiça (CPC art. 189)",
+        "dados pessoais de terceiros em contratos, petições e procurações (LGPD)"
+      ],
+      "neighbors": [
+        "administracao",
+        "gestao-publica",
+        "ciencias-contabeis",
+        "relacoes-internacionais",
+        "ciencias-economicas",
+        "servico-social"
+      ],
+      "notes": "2023: 658.587 (2º). Inscrição na OAB exigida apenas para advogar (Exame de Ordem). Tecnólogo em Serviços jurídicos e cartoriais (0421S01; 23.041 matrículas em 2024) tratado como alias.",
+      "group": "04-negocios-administracao-e-direito"
+    },
+    {
       "code": "educacao-fisica",
       "label": {
         "pt-BR": "Educação Física (bacharelado)",
@@ -359,7 +1815,8 @@
       ],
       "neighbors": [
         "fisioterapia",
-        "nutricao"
+        "nutricao",
+        "pedagogia"
       ],
       "notes": "Glossário Rede Unida registra rótulo 0915E01; ISCED-F colocaria em 1014 (Esportes). Licenciatura pertence ao grupo Educação (01).",
       "group": "09-saude-e-bem-estar"
@@ -490,7 +1947,9 @@
       ],
       "neighbors": [
         "engenharia-civil",
-        "engenharia-quimica"
+        "engenharia-quimica",
+        "gestao-ambiental",
+        "geografia"
       ],
       "notes": "CBO vazia: família 2140 (Engenheiros ambientais) não foi confirmada na fonte; engenheiro sanitarista costuma constar na 2142.",
       "group": "06-07-engenharia-e-tic"
@@ -808,7 +2267,9 @@
         "segredos industriais"
       ],
       "neighbors": [
+        "administracao",
         "engenharia-mecanica",
+        "logistica",
         "engenharia-civil",
         "engenharia-quimica"
       ],
@@ -911,7 +2372,8 @@
         "ciencia-de-dados",
         "engenharia-de-computacao",
         "redes-de-computadores",
-        "seguranca-da-informacao"
+        "seguranca-da-informacao",
+        "design"
       ],
       "notes": "Uma só opção para CC, SI, ADS e Eng. de Software: mesma profissão-alvo (desenvolvimento), mesma CBO 2124 e CINE 0613. Eng. de Computação ficou separada (CREA, CBO 2122).",
       "group": "06-07-engenharia-e-tic"
@@ -997,10 +2459,78 @@
       "neighbors": [
         "engenharia-de-controle-e-automacao",
         "engenharia-de-computacao",
-        "engenharia-mecanica"
+        "engenharia-mecanica",
+        "fisica"
       ],
       "notes": "Agrupa Eletrônica, Telecomunicações e Energia como aliases; Eletrotécnica (tecnólogo, CINE 0713) entrou como alias em vez de ramo próprio.",
       "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "engenharia-florestal",
+      "label": {
+        "pt-BR": "Engenharia Florestal",
+        "en": "Forest Engineering",
+        "es": "Ingeniería Forestal"
+      },
+      "cine": {
+        "broad": "08",
+        "broadName": "Agricultura, silvicultura, pesca e veterinária",
+        "detail": "0821",
+        "detailName": "Silvicultura"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Engenharia Florestal",
+        "Engenheiro florestal",
+        "Engenheira florestal",
+        "Silvicultura",
+        "Ciências Florestais",
+        "Manejo Florestal"
+      ],
+      "cbo": [
+        {
+          "code": "2221",
+          "title": "Engenheiros agrossilvipecuários"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2132",
+          "title": "Farming, forestry and fisheries advisers"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CREA",
+        "federal": "CONFEA",
+        "law": "Lei 5.194/1966",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 (número não localizado em fonte secundária)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "inventários florestais e planos de manejo de clientes antes do protocolo no órgão ambiental",
+        "localização de áreas de supressão autorizada e de espécies protegidas"
+      ],
+      "neighbors": [
+        "agronomia",
+        "engenharia-ambiental-e-sanitaria",
+        "gestao-ambiental",
+        "ciencias-biologicas"
+      ],
+      "notes": "Não consta no grupo Engenharias (g2), por isso registrada aqui. Engenheiro florestal pertence à mesma família CBO 2221 do engenheiro agrônomo.",
+      "group": "05-08-10-ciencias-agrarias-servicos"
     },
     {
       "code": "engenharia-mecanica",
@@ -1143,11 +2673,79 @@
       ],
       "neighbors": [
         "engenharia-ambiental-e-sanitaria",
+        "quimica",
         "engenharia-de-producao",
         "farmacia"
       ],
       "notes": "Engenharia de Alimentos (CINE 0721) ficou fora por baixo volume; aparece só como vizinha.",
       "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "estatistica",
+      "label": {
+        "pt-BR": "Estatística",
+        "en": "Statistics",
+        "es": "Estadística"
+      },
+      "cine": {
+        "broad": "05",
+        "broadName": "Ciências naturais, matemática e estatística",
+        "detail": "0542",
+        "detailName": "Estatística"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Estatística",
+        "Estatístico",
+        "Bacharelado em Estatística",
+        "Bioestatística",
+        "Analista estatístico"
+      ],
+      "cbo": [
+        {
+          "code": "2112",
+          "title": "Profissionais de estatística"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2120",
+          "title": "Mathematicians, actuaries and statisticians"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CONRE",
+        "federal": "CONFE",
+        "law": "Lei 4.739/1965",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 (número não localizado em fonte secundária)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "alta"
+      },
+      "sensitiveData": [
+        "microdados identificáveis de pesquisas e cadastros (LGPD; sigilo estatístico, Lei 5.534/1968)",
+        "bases de clientes e resultados de modelos sob contrato de confidencialidade"
+      ],
+      "neighbors": [
+        "matematica",
+        "ciencia-de-dados",
+        "ciencias-economicas",
+        "ciencias-atuariais",
+        "administracao"
+      ],
+      "notes": "Drawings alta pelo peso de gráficos e infográficos no portfólio.",
+      "group": "05-08-10-ciencias-agrarias-servicos"
     },
     {
       "code": "estetica-e-cosmetica",
@@ -1213,6 +2811,75 @@
       "group": "09-saude-e-bem-estar"
     },
     {
+      "code": "eventos",
+      "label": {
+        "pt-BR": "Eventos",
+        "en": "Event Management",
+        "es": "Organización de Eventos"
+      },
+      "cine": {
+        "broad": "10",
+        "broadName": "Serviços",
+        "detail": "1015",
+        "detailName": "Viagens, turismo e lazer"
+      },
+      "degrees": [
+        "tecnologo"
+      ],
+      "aliases": [
+        "Eventos",
+        "Tecnólogo em Eventos",
+        "Gestão de Eventos",
+        "Organizador de eventos",
+        "Organizadora de eventos",
+        "Produção de Eventos",
+        "Produtor de eventos",
+        "Cerimonialista"
+      ],
+      "cbo": [
+        {
+          "code": "3548",
+          "title": "Técnicos em serviços de turismo e organização de eventos"
+        },
+        {
+          "code": "1225",
+          "title": "Diretores de serviços de turismo, de alojamento e de alimentação"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "3332",
+          "title": "Conference and event planners"
+        }
+      ],
+      "esco": [],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 (número não localizado em fonte secundária)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "alta"
+      },
+      "sensitiveData": [
+        "listas de convidados e participantes com dados pessoais (LGPD)",
+        "orçamentos, contratos e cachês de clientes e fornecedores sob sigilo"
+      ],
+      "neighbors": [
+        "turismo",
+        "hotelaria",
+        "gastronomia",
+        "marketing",
+        "publicidade-e-propaganda"
+      ],
+      "notes": "Drawings alta por plantas de layout, mapas de evento e peças visuais. Profissão não regulamentada.",
+      "group": "05-08-10-ciencias-agrarias-servicos"
+    },
+    {
       "code": "farmacia",
       "label": {
         "pt-BR": "Farmácia",
@@ -1272,11 +2939,162 @@
       ],
       "neighbors": [
         "biomedicina",
+        "quimica",
         "medicina",
         "nutricao"
       ],
       "notes": "Número parcial (rede privada). Rótulo CINE presumido 0916F01, não verificado.",
       "group": "09-saude-e-bem-estar"
+    },
+    {
+      "code": "filosofia",
+      "label": {
+        "pt-BR": "Filosofia",
+        "en": "Philosophy",
+        "es": "Filosofía"
+      },
+      "cine": {
+        "broad": "02",
+        "broadName": "Artes e humanidades",
+        "detail": "0223",
+        "detailName": "Filosofia e ética"
+      },
+      "degrees": [
+        "licenciatura",
+        "bacharelado"
+      ],
+      "aliases": [
+        "Filosofia",
+        "Filósofo",
+        "Filósofa",
+        "Professor de filosofia",
+        "Professora de filosofia",
+        "Ética",
+        "Lógica"
+      ],
+      "cbo": [
+        {
+          "code": "2321",
+          "title": "Professores do ensino médio"
+        },
+        {
+          "code": "2514",
+          "title": "Filósofos"
+        },
+        {
+          "code": "2347",
+          "title": "Professores de ciências humanas do ensino superior"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2330",
+          "title": "Secondary education teachers"
+        },
+        {
+          "code": "2633",
+          "title": "Philosophers, historians and political scientists"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/bfc92738-128b-44f5-92d4-51b10df17961",
+          "label": "philosopher"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/e8b93ce7-e39b-4261-a25a-9b84764eb724",
+          "label": "philosophy teacher secondary school"
+        }
+      ],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024, microdados por rótulo CINE: Filosofia formação de professor (0114F01) + Filosofia (0223F01); 2023: 30.374",
+        "matriculas": 29358,
+        "rank": 77,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "dados de alunos menores de idade: nomes, notas, laudos e fotos (ECA; LGPD art. 14)"
+      ],
+      "neighbors": [
+        "historia",
+        "ciencias-sociais",
+        "teologia",
+        "letras",
+        "pedagogia",
+        "direito"
+      ],
+      "notes": "Licenciatura é CINE 0114F01 (20.803 matr., rank 77); bacharelado 0223F01 (8.555). Profissão não regulamentada.",
+      "group": "01-02-03-educacao-humanidades-artes-comunicacao"
+    },
+    {
+      "code": "fisica",
+      "label": {
+        "pt-BR": "Física",
+        "en": "Physics",
+        "es": "Física"
+      },
+      "cine": {
+        "broad": "05",
+        "broadName": "Ciências naturais, matemática e estatística",
+        "detail": "0533",
+        "detailName": "Física"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Física",
+        "Físico",
+        "Bacharelado em Física",
+        "Física Médica",
+        "Astronomia",
+        "Astrofísica",
+        "Física Computacional"
+      ],
+      "cbo": [
+        {
+          "code": "2131",
+          "title": "Físicos"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2111",
+          "title": "Physicists and astronomers"
+        }
+      ],
+      "esco": [],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 (não localizado; Estratégia Vestibulares cita 29.903 só para a licenciatura, ano não informado)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "dados de pacientes em física médica e dosimetria (LGPD art. 11)",
+        "resultados de pesquisa não publicados ou sob acordo de confidencialidade"
+      ],
+      "neighbors": [
+        "matematica",
+        "engenharia-eletrica",
+        "quimica",
+        "ciencia-de-dados",
+        "engenharia-mecanica"
+      ],
+      "notes": "Profissão sem conselho próprio. A licenciatura em Física está no grupo Educação.",
+      "group": "05-08-10-ciencias-agrarias-servicos"
     },
     {
       "code": "fisioterapia",
@@ -1397,11 +3215,1613 @@
       ],
       "neighbors": [
         "psicologia",
+        "pedagogia",
         "fisioterapia",
         "enfermagem"
       ],
       "notes": "Rótulo CINE 0915F02 (glossário Rede Unida). Incluída por ser profissão regulamentada com conselho próprio.",
       "group": "09-saude-e-bem-estar"
+    },
+    {
+      "code": "gastronomia",
+      "label": {
+        "pt-BR": "Gastronomia",
+        "en": "Gastronomy",
+        "es": "Gastronomía"
+      },
+      "cine": {
+        "broad": "10",
+        "broadName": "Serviços",
+        "detail": "1013",
+        "detailName": "Hotelaria e restaurantes"
+      },
+      "degrees": [
+        "tecnologo",
+        "bacharelado"
+      ],
+      "aliases": [
+        "Gastronomia",
+        "Tecnólogo em Gastronomia",
+        "Chef de cozinha",
+        "Chefe de cozinha",
+        "Cozinheiro",
+        "Cozinheira",
+        "Culinária",
+        "Confeitaria",
+        "Panificação",
+        "Gastrônomo"
+      ],
+      "cbo": [
+        {
+          "code": "2711",
+          "title": "Chefes de cozinha e afins"
+        },
+        {
+          "code": "5132",
+          "title": "Cozinheiros"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "3434",
+          "title": "Chefs"
+        },
+        {
+          "code": "5120",
+          "title": "Cooks"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/1009be17-7efd-45f1-a033-566bf179c588",
+          "label": "chef"
+        }
+      ],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 (número não localizado em fonte secundária; artigo SIIEPE 2025 cita o Censo 2023 mas o host foi bloqueado)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "receitas e fichas técnicas de empregadores protegidas por sigilo contratual",
+        "fotos de clientes e de bastidores de estabelecimentos sem autorização"
+      ],
+      "neighbors": [
+        "hotelaria",
+        "turismo",
+        "nutricao",
+        "eventos"
+      ],
+      "notes": "Profissão não regulamentada. CBO 2711-10 Tecnólogo em gastronomia; 2711-05 chefe de cozinha.",
+      "group": "05-08-10-ciencias-agrarias-servicos"
+    },
+    {
+      "code": "geografia",
+      "label": {
+        "pt-BR": "Geografia",
+        "en": "Geography",
+        "es": "Geografía"
+      },
+      "cine": {
+        "broad": "03",
+        "broadName": "Ciências sociais, comunicação e informação",
+        "detail": "0312",
+        "detailName": "Ciências sociais: sociologia, ciência política e geografia"
+      },
+      "degrees": [
+        "licenciatura",
+        "bacharelado"
+      ],
+      "aliases": [
+        "Geografia",
+        "Geógrafo",
+        "Geógrafa",
+        "Professor de geografia",
+        "Professora de geografia",
+        "Geoprocessamento",
+        "Cartografia",
+        "Análise ambiental",
+        "Planejamento territorial"
+      ],
+      "cbo": [
+        {
+          "code": "2321",
+          "title": "Professores do ensino médio"
+        },
+        {
+          "code": "2313",
+          "title": "Professores de nível superior no ensino fundamental de quinta a oitava série"
+        },
+        {
+          "code": "2513",
+          "title": "Profissionais em pesquisa e análise geográfica"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2330",
+          "title": "Secondary education teachers"
+        },
+        {
+          "code": "2632",
+          "title": "Sociologists, anthropologists and related professionals"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/bac64fa2-dcd6-47bb-8e5c-04e04a86a199",
+          "label": "geographer"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/89a3b3af-7264-4e00-9a14-21e5fbd4ee87",
+          "label": "geography teacher secondary school"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/9af8907f-56a7-4170-83b1-3c6ba0997cfa",
+          "label": "geographic information systems specialist"
+        }
+      ],
+      "council": {
+        "name": "CREA (só para o bacharel que exerce como geógrafo)",
+        "federal": "CONFEA",
+        "law": "Lei 6.664/1979; Decreto 85.138/1980",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024, microdados por rótulo CINE: Geografia formação de professor (0114G01) + Geografia (0312G01); 2023: 59.651",
+        "matriculas": 56710,
+        "rank": 43,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "dados de alunos menores de idade: nomes, notas, laudos e fotos (ECA; LGPD art. 14)",
+        "bases geoespaciais e cadastros de órgãos/clientes sob sigilo",
+        "localização e endereço de pessoas identificáveis em mapas e levantamentos"
+      ],
+      "neighbors": [
+        "historia",
+        "ciencias-sociais",
+        "pedagogia",
+        "engenharia-ambiental-e-sanitaria",
+        "arquitetura-e-urbanismo"
+      ],
+      "notes": "Licenciatura é CINE 0114G01 (47.299 matr., rank 43); bacharelado 0312G01 (9.411). Registro no CREA só para o geógrafo (bacharel); o licenciado docente não precisa.",
+      "group": "01-02-03-educacao-humanidades-artes-comunicacao"
+    },
+    {
+      "code": "geologia",
+      "label": {
+        "pt-BR": "Geologia",
+        "en": "Geology",
+        "es": "Geología"
+      },
+      "cine": {
+        "broad": "05",
+        "broadName": "Ciências naturais, matemática e estatística",
+        "detail": "0532",
+        "detailName": "Ciências da Terra"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Geologia",
+        "Geólogo",
+        "Geóloga",
+        "Engenharia Geológica",
+        "Engenheiro geólogo",
+        "Geofísica",
+        "Geofísico",
+        "Oceanografia",
+        "Oceanógrafo"
+      ],
+      "cbo": [
+        {
+          "code": "2134",
+          "title": "Geólogos, oceanógrafos, geofísicos e afins"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2114",
+          "title": "Geologists and geophysicists"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CREA",
+        "federal": "CONFEA",
+        "law": "Lei 4.076/1962",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 (número não localizado em fonte secundária)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "alta"
+      },
+      "sensitiveData": [
+        "dados de prospecção, reservas e poços sob sigilo (ANM/ANP) e de clientes de mineração e petróleo",
+        "coordenadas de jazidas e áreas requeridas antes da publicação oficial"
+      ],
+      "neighbors": [
+        "engenharia-civil",
+        "engenharia-ambiental-e-sanitaria",
+        "fisica",
+        "gestao-ambiental"
+      ],
+      "notes": "Oceanografia (Lei 11.760/2008, sem conselho) foi absorvida aqui como alias por ter poucas matrículas; mesma família CBO 2134.",
+      "group": "05-08-10-ciencias-agrarias-servicos"
+    },
+    {
+      "code": "gestao-ambiental",
+      "label": {
+        "pt-BR": "Gestão Ambiental",
+        "en": "Environmental Management",
+        "es": "Gestión Ambiental"
+      },
+      "cine": {
+        "broad": "05",
+        "broadName": "Ciências naturais, matemática e estatística",
+        "detail": "0521",
+        "detailName": "Ciências ambientais"
+      },
+      "degrees": [
+        "tecnologo",
+        "bacharelado"
+      ],
+      "aliases": [
+        "Gestão Ambiental",
+        "Tecnólogo em Gestão Ambiental",
+        "Gestor ambiental",
+        "Gestora ambiental",
+        "Ciências Ambientais",
+        "Tecnólogo em Meio Ambiente",
+        "Saneamento Ambiental",
+        "Processos Ambientais",
+        "Ecologia"
+      ],
+      "cbo": [
+        {
+          "code": "2140",
+          "title": "Engenheiros ambientais e afins"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2133",
+          "title": "Environmental protection professionals"
+        }
+      ],
+      "esco": [],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 (número não localizado em fonte secundária)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "estudos de impacto e dados de licenciamento de clientes antes da publicação",
+        "autuações, passivos ambientais e dados de fiscalização identificando empresas ou pessoas"
+      ],
+      "neighbors": [
+        "engenharia-ambiental-e-sanitaria",
+        "ciencias-biologicas",
+        "engenharia-florestal",
+        "geologia",
+        "agronomia"
+      ],
+      "notes": "CBO 2140-10 'Tecnólogo em meio ambiente' lista 'Tecnólogo em gestão ambiental' como sinônimo. Registro em CREA só para alguns tecnólogos (Res. CONFEA 313/1986).",
+      "group": "05-08-10-ciencias-agrarias-servicos"
+    },
+    {
+      "code": "gestao-comercial",
+      "label": {
+        "pt-BR": "Gestão Comercial",
+        "en": "Sales Management",
+        "es": "Gestión Comercial"
+      },
+      "cine": {
+        "broad": "04",
+        "broadName": "Negócios, administração e direito",
+        "detail": "0416",
+        "detailName": "Vendas no atacado e varejo"
+      },
+      "degrees": [
+        "tecnologo"
+      ],
+      "aliases": [
+        "Gestão Comercial",
+        "Vendas",
+        "Gestão de Vendas",
+        "Gerente Comercial",
+        "Gerente de Vendas",
+        "Vendedor",
+        "Vendedora",
+        "Consultor Comercial",
+        "Consultora Comercial",
+        "Consultor de Vendas",
+        "Consultora de Vendas",
+        "Executivo de Contas",
+        "Executiva de Contas",
+        "Representante Comercial",
+        "Varejo",
+        "Gestão de Varejo",
+        "Supervisor de Vendas",
+        "Supervisora de Vendas",
+        "Negócios Imobiliários",
+        "Corretor de Imóveis",
+        "Corretora de Imóveis",
+        "Tecnólogo em Gestão Comercial"
+      ],
+      "cbo": [
+        {
+          "code": "1423",
+          "title": "Gerentes de comercialização, marketing e comunicação"
+        },
+        {
+          "code": "3541",
+          "title": "Especialistas em promoção de produtos e vendas"
+        },
+        {
+          "code": "5201",
+          "title": "Supervisores de vendas e de prestação de serviços"
+        },
+        {
+          "code": "1414",
+          "title": "Gerentes de operações comerciais e de assistência técnica"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "1221",
+          "title": "Sales and marketing managers"
+        },
+        {
+          "code": "3322",
+          "title": "Commercial sales representatives"
+        },
+        {
+          "code": "1420",
+          "title": "Retail and wholesale trade managers"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/a7594892-ff23-4e2a-aedf-2f967ebca15c",
+          "label": "sales manager"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/2d3d7188-47ab-49b9-9045-e452d9db06f1",
+          "label": "commercial director"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/2eac08c2-a81a-46fc-8d75-eb0e0f3e0f6d",
+          "label": "sales account manager"
+        }
+      ],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (microdados, rótulo CINE 0416G01 Gestão comercial; presencial 6.457 + EaD 79.810)",
+        "matriculas": 86267,
+        "rank": 31,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "carteiras de clientes, tabelas de preço e condições comerciais confidenciais",
+        "dados pessoais e de pagamento de clientes (LGPD)",
+        "metas, comissões e resultados internos de equipes de vendas"
+      ],
+      "neighbors": [
+        "marketing",
+        "administracao",
+        "processos-gerenciais",
+        "logistica",
+        "gestao-financeira"
+      ],
+      "notes": "2023: 83.408 (32º). Sem conselho próprio; representante comercial autônomo registra-se no CORE (Lei 4.886/1965) e corretor de imóveis no CRECI (Lei 6.530/1978).",
+      "group": "04-negocios-administracao-e-direito"
+    },
+    {
+      "code": "gestao-da-qualidade",
+      "label": {
+        "pt-BR": "Gestão da Qualidade",
+        "en": "Quality Management",
+        "es": "Gestión de la Calidad"
+      },
+      "cine": {
+        "broad": "04",
+        "broadName": "Negócios, administração e direito",
+        "detail": "0413",
+        "detailName": "Gestão e administração"
+      },
+      "degrees": [
+        "tecnologo"
+      ],
+      "aliases": [
+        "Gestão da Qualidade",
+        "Qualidade",
+        "Analista da Qualidade",
+        "Analista de Qualidade",
+        "Controle de Qualidade",
+        "Garantia da Qualidade",
+        "Auditor da Qualidade",
+        "Auditora da Qualidade",
+        "ISO 9001",
+        "Gestão de Processos e Qualidade",
+        "Melhoria Contínua",
+        "Lean Six Sigma",
+        "Inspetor de Qualidade",
+        "Inspetora de Qualidade",
+        "Tecnólogo em Gestão da Qualidade"
+      ],
+      "cbo": [
+        {
+          "code": "3912",
+          "title": "Técnicos de controle da produção"
+        },
+        {
+          "code": "2149",
+          "title": "Engenheiros de produção, qualidade, segurança e afins"
+        },
+        {
+          "code": "3523",
+          "title": "Agentes fiscais metrológicos e de qualidade"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "1219",
+          "title": "Business services and administration managers not elsewhere classified"
+        },
+        {
+          "code": "3119",
+          "title": "Physical and engineering science technicians not elsewhere classified"
+        },
+        {
+          "code": "2141",
+          "title": "Industrial and production engineers"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/109e0a5d-203d-4af6-8f70-692111335ec3",
+          "label": "quality services manager"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/30c0943c-caa1-411d-b273-26f475971273",
+          "label": "quality engineer"
+        }
+      ],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (microdados, rótulo CINE 0413G02 Gestão da qualidade; presencial 2.177 + EaD 33.411)",
+        "matriculas": 35588,
+        "rank": 52,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "alta"
+      },
+      "sensitiveData": [
+        "relatórios de não conformidade, auditorias internas e dados de fornecedores confidenciais",
+        "registros de produção, reclamações de clientes e recalls identificáveis",
+        "procedimentos e know-how de processo protegidos como segredo industrial"
+      ],
+      "neighbors": [
+        "engenharia-de-producao",
+        "processos-gerenciais",
+        "administracao",
+        "logistica"
+      ],
+      "notes": "2023: 35.298 (52º). Drawings útil para fluxogramas, diagramas de Ishikawa e mapas de processo. Sem conselho; registro no CRA não confirmado.",
+      "group": "04-negocios-administracao-e-direito"
+    },
+    {
+      "code": "gestao-de-recursos-humanos",
+      "label": {
+        "pt-BR": "Gestão de Recursos Humanos",
+        "en": "Human Resources Management",
+        "es": "Gestión de Recursos Humanos"
+      },
+      "cine": {
+        "broad": "04",
+        "broadName": "Negócios, administração e direito",
+        "detail": "0413",
+        "detailName": "Gestão e administração"
+      },
+      "degrees": [
+        "tecnologo"
+      ],
+      "aliases": [
+        "Gestão de Recursos Humanos",
+        "Recursos Humanos",
+        "RH",
+        "Gestão de Pessoas",
+        "Analista de Recursos Humanos",
+        "Analista de RH",
+        "Gerente de RH",
+        "Gerente de Recursos Humanos",
+        "Departamento Pessoal",
+        "Recrutamento e Seleção",
+        "Recrutador",
+        "Recrutadora",
+        "Business Partner de RH",
+        "Tecnólogo em Gestão de Recursos Humanos",
+        "Desenvolvimento de Recursos Humanos",
+        "Treinamento e Desenvolvimento"
+      ],
+      "cbo": [
+        {
+          "code": "2524",
+          "title": "Profissionais de recursos humanos"
+        },
+        {
+          "code": "1422",
+          "title": "Gerentes de recursos humanos e de relações do trabalho"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2423",
+          "title": "Personnel and careers professionals"
+        },
+        {
+          "code": "1212",
+          "title": "Human resource managers"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/d3e32e5e-7f24-48e3-b939-e4f800eb62fb",
+          "label": "human resources officer"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/f605bcd2-90b6-45a0-a558-d05016d68a77",
+          "label": "human resources manager"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/068370e0-9c27-4814-87d0-44fbb3140815",
+          "label": "recruitment consultant"
+        }
+      ],
+      "council": {
+        "name": "CRA (registro facultativo do tecnólogo em área conexa à Administração)",
+        "federal": "CFA – Conselho Federal de Administração",
+        "law": "Lei 4.769/1965; RN CFA 505/2017; Res. CFA 649/2024",
+        "registrationRequired": false
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (microdados, rótulo CINE 0413G07 Gestão de pessoas; presencial 22.972 + EaD 198.264)",
+        "matriculas": 221236,
+        "rank": 12,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "dados pessoais e funcionais de colaboradores e candidatos: salários, avaliações de desempenho, saúde ocupacional, afastamentos (LGPD arts. 5º e 11)",
+        "currículos, entrevistas e resultados de processos seletivos identificáveis",
+        "denúncias e processos disciplinares internos"
+      ],
+      "neighbors": [
+        "administracao",
+        "processos-gerenciais",
+        "psicologia",
+        "gestao-publica",
+        "servico-social"
+      ],
+      "notes": "2023: 223.870 (10º). No Censo o curso aparece sob o rótulo CINE 'Gestão de pessoas' (0413G07); o CNCST usa 'Gestão de Recursos Humanos'. 90% das matrículas em EaD.",
+      "group": "04-negocios-administracao-e-direito"
+    },
+    {
+      "code": "gestao-financeira",
+      "label": {
+        "pt-BR": "Gestão Financeira",
+        "en": "Financial Management",
+        "es": "Gestión Financiera"
+      },
+      "cine": {
+        "broad": "04",
+        "broadName": "Negócios, administração e direito",
+        "detail": "0412",
+        "detailName": "Finanças, bancos e seguros"
+      },
+      "degrees": [
+        "tecnologo",
+        "bacharelado"
+      ],
+      "aliases": [
+        "Gestão Financeira",
+        "Finanças",
+        "Analista Financeiro",
+        "Analista Financeira",
+        "Gerente Financeiro",
+        "Gerente Financeira",
+        "Controladoria",
+        "Tesouraria",
+        "Planejamento Financeiro",
+        "Analista de Crédito",
+        "Bancário",
+        "Bancária",
+        "Gestão Bancária",
+        "Mercado Financeiro",
+        "Seguros",
+        "Gestão de Seguros",
+        "Tecnólogo em Gestão Financeira",
+        "Contas a Pagar e Receber"
+      ],
+      "cbo": [
+        {
+          "code": "1421",
+          "title": "Gerentes administrativos, financeiros, de riscos e afins"
+        },
+        {
+          "code": "2525",
+          "title": "Profissionais de administração econômico-financeira"
+        },
+        {
+          "code": "2532",
+          "title": "Profissionais de comercialização e consultoria de serviços bancários"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "1211",
+          "title": "Finance managers"
+        },
+        {
+          "code": "2413",
+          "title": "Financial analysts"
+        },
+        {
+          "code": "2412",
+          "title": "Financial and investment advisers"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/30f3ea93-882a-4525-841c-1d5b4b64076f",
+          "label": "financial manager"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/8d586ee9-0ab1-4155-a3b0-2ca786c8e48c",
+          "label": "financial analyst"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/44e0c015-309d-4f67-98a3-1e036966ed7f",
+          "label": "budget manager"
+        }
+      ],
+      "council": {
+        "name": "CRA (registro facultativo do tecnólogo em área conexa à Administração)",
+        "federal": "CFA – Conselho Federal de Administração",
+        "law": "Lei 4.769/1965; RN CFA 505/2017; Res. CFA 649/2024",
+        "registrationRequired": false
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (microdados, rótulo CINE 0412G01 Gestão financeira; presencial 5.558 + EaD 75.592)",
+        "matriculas": 81150,
+        "rank": 33,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "dados bancários, de crédito e de investimentos de clientes (sigilo bancário – LC 105/2001)",
+        "demonstrações, fluxos de caixa e projeções internas não publicadas",
+        "informação privilegiada sobre mercado de capitais (Lei 6.385/1976 art. 27-D)"
+      ],
+      "neighbors": [
+        "ciencias-contabeis",
+        "ciencias-economicas",
+        "administracao",
+        "processos-gerenciais",
+        "ciencias-atuariais",
+        "gestao-comercial"
+      ],
+      "notes": "2023: 79.284 (33º). CBO grafa 'ecônomico-financeira' e 'comercializacão' com erro; títulos normalizados aqui.",
+      "group": "04-negocios-administracao-e-direito"
+    },
+    {
+      "code": "gestao-publica",
+      "label": {
+        "pt-BR": "Gestão Pública",
+        "en": "Public Administration",
+        "es": "Gestión Pública"
+      },
+      "cine": {
+        "broad": "04",
+        "broadName": "Negócios, administração e direito",
+        "detail": "0413",
+        "detailName": "Gestão e administração"
+      },
+      "degrees": [
+        "tecnologo",
+        "bacharelado"
+      ],
+      "aliases": [
+        "Gestão Pública",
+        "Administração Pública",
+        "Gestor Público",
+        "Gestora Pública",
+        "Servidor Público",
+        "Servidora Pública",
+        "Políticas Públicas",
+        "Gestão de Políticas Públicas",
+        "Analista de Políticas Públicas",
+        "Gestão Governamental",
+        "Gestão Municipal",
+        "Tecnólogo em Gestão Pública",
+        "Analista Administrativo (setor público)",
+        "Planejamento e Orçamento"
+      ],
+      "cbo": [
+        {
+          "code": "1115",
+          "title": "Gestores públicos"
+        },
+        {
+          "code": "1114",
+          "title": "Dirigentes do serviço público"
+        },
+        {
+          "code": "2521",
+          "title": "Administradores"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "1112",
+          "title": "Senior government officials"
+        },
+        {
+          "code": "2422",
+          "title": "Policy administration professionals"
+        },
+        {
+          "code": "1213",
+          "title": "Policy and planning managers"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/0752ed49-03e7-4d75-8314-a051b3771a1d",
+          "label": "public administration manager"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/ffade2f4-2528-4dfd-b36a-6e4092be08ed",
+          "label": "civil service administrative officer"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/caf7b8fb-b2d6-46b7-bffa-bea7f8e4aed8",
+          "label": "policy officer"
+        }
+      ],
+      "council": {
+        "name": "CRA (bacharel em Administração Pública registrável; tecnólogo em Gestão Pública facultativo)",
+        "federal": "CFA – Conselho Federal de Administração",
+        "law": "Lei 4.769/1965; RN CFA 505/2017; Res. CFA 649/2024",
+        "registrationRequired": false
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (microdados, rótulo CINE 0413G12 Gestão pública; presencial 6.878 + EaD 72.468). Administração pública (0413A02): mais 17.378",
+        "matriculas": 79346,
+        "rank": 34,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "dados pessoais de cidadãos e servidores em processos administrativos (LGPD; Lei 12.527/2011 art. 31)",
+        "documentos classificados ou sigilosos da administração pública (LAI arts. 23 e 24)",
+        "informações de licitações em andamento e propostas antes da abertura (Lei 14.133/2021)"
+      ],
+      "neighbors": [
+        "administracao",
+        "direito",
+        "ciencias-economicas",
+        "servico-social",
+        "ciencias-sociais",
+        "gestao-de-recursos-humanos"
+      ],
+      "notes": "2023: 78.686 (34º). Cobre o tecnólogo em Gestão Pública e o bacharelado em Administração Pública (rótulos CINE distintos).",
+      "group": "04-negocios-administracao-e-direito"
+    },
+    {
+      "code": "historia",
+      "label": {
+        "pt-BR": "História",
+        "en": "History",
+        "es": "Historia"
+      },
+      "cine": {
+        "broad": "02",
+        "broadName": "Artes e humanidades",
+        "detail": "0222",
+        "detailName": "História e arqueologia"
+      },
+      "degrees": [
+        "licenciatura",
+        "bacharelado"
+      ],
+      "aliases": [
+        "História",
+        "Historiador",
+        "Historiadora",
+        "Professor de história",
+        "Professora de história",
+        "Pesquisador em história",
+        "Patrimônio histórico",
+        "Memória e patrimônio"
+      ],
+      "cbo": [
+        {
+          "code": "2321",
+          "title": "Professores do ensino médio"
+        },
+        {
+          "code": "2313",
+          "title": "Professores de nível superior no ensino fundamental de quinta a oitava série"
+        },
+        {
+          "code": "2035",
+          "title": "Pesquisadores das ciências sociais e humanas"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2330",
+          "title": "Secondary education teachers"
+        },
+        {
+          "code": "2633",
+          "title": "Philosophers, historians and political scientists"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/0cd729a6-ed11-4338-ac4b-d4b924390128",
+          "label": "historian"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/27e16eef-c7a6-4577-bc3f-727d01ec1958",
+          "label": "history teacher secondary school"
+        }
+      ],
+      "council": {
+        "name": "Registro profissional de historiador (Ministério do Trabalho)",
+        "law": "Lei 14.038/2020, art. 7º",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024, microdados por rótulo CINE: História formação de professor (0114H01) + História (0222H01); 2023: 104.317",
+        "matriculas": 100507,
+        "rank": 29,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "dados de alunos menores de idade: nomes, notas, laudos e fotos (ECA; LGPD art. 14)",
+        "documentos de arquivos privados ou com restrição de acesso (Lei 12.527/2011; Lei 8.159/1991)",
+        "entrevistas de história oral e dados pessoais de depoentes sem consentimento"
+      ],
+      "neighbors": [
+        "geografia",
+        "pedagogia",
+        "ciencias-sociais",
+        "filosofia",
+        "letras",
+        "biblioteconomia"
+      ],
+      "notes": "Licenciatura é CINE 0114H01 (92.081 matr., rank 29); bacharelado 0222H01 (8.426). CBO: Historiador é sinônimo de 2035-20. Registro no MTE exigido pela Lei 14.038/2020 (sem conselho).",
+      "group": "01-02-03-educacao-humanidades-artes-comunicacao"
+    },
+    {
+      "code": "hotelaria",
+      "label": {
+        "pt-BR": "Hotelaria",
+        "en": "Hospitality Management",
+        "es": "Hotelería"
+      },
+      "cine": {
+        "broad": "10",
+        "broadName": "Serviços",
+        "detail": "1013",
+        "detailName": "Hotelaria e restaurantes"
+      },
+      "degrees": [
+        "tecnologo",
+        "bacharelado"
+      ],
+      "aliases": [
+        "Hotelaria",
+        "Tecnólogo em Hotelaria",
+        "Hoteleiro",
+        "Hoteleira",
+        "Gestão Hoteleira",
+        "Hospitalidade",
+        "Gerente de hotel",
+        "Hotelaria e Turismo"
+      ],
+      "cbo": [
+        {
+          "code": "1415",
+          "title": "Gerentes de operações de serviços em empresa de turismo, de alojamento e alimentação"
+        },
+        {
+          "code": "1225",
+          "title": "Diretores de serviços de turismo, de alojamento e de alimentação"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "1411",
+          "title": "Hotel managers"
+        }
+      ],
+      "esco": [],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 (número não localizado em fonte secundária)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "dados de hóspedes, FNRH e registros de hospedagem (LGPD)",
+        "tarifários e indicadores de ocupação sob sigilo do empregador"
+      ],
+      "neighbors": [
+        "turismo",
+        "gastronomia",
+        "eventos",
+        "administracao"
+      ],
+      "notes": "CBO 1415-05 gerente de hotel lista 'Tecnólogo em hotelaria' como sinônimo.",
+      "group": "05-08-10-ciencias-agrarias-servicos"
+    },
+    {
+      "code": "jornalismo",
+      "label": {
+        "pt-BR": "Jornalismo",
+        "en": "Journalism",
+        "es": "Periodismo"
+      },
+      "cine": {
+        "broad": "03",
+        "broadName": "Ciências sociais, comunicação e informação",
+        "detail": "0321",
+        "detailName": "Jornalismo e reportagem"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Jornalismo",
+        "Jornalista",
+        "Repórter",
+        "Comunicação Social",
+        "Comunicação Social – Jornalismo",
+        "Editor",
+        "Editora",
+        "Redator",
+        "Redatora",
+        "Assessor de imprensa",
+        "Assessora de imprensa",
+        "Apresentador",
+        "Apresentadora",
+        "Produtor de conteúdo",
+        "Produtora de conteúdo",
+        "Repórter fotográfico",
+        "Fotojornalista"
+      ],
+      "cbo": [
+        {
+          "code": "2611",
+          "title": "Profissionais do jornalismo"
+        },
+        {
+          "code": "2617",
+          "title": "Locutores, comentaristas e repórteres de rádio e televisão"
+        },
+        {
+          "code": "2616",
+          "title": "Editores"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2642",
+          "title": "Journalists"
+        },
+        {
+          "code": "2656",
+          "title": "Announcers on radio, television and other media"
+        },
+        {
+          "code": "2641",
+          "title": "Authors and related writers"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/a47f82d3-4cf7-4abf-bb36-2c8cbad28234",
+          "label": "journalist"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/b65530b8-0b50-49da-8e9e-331b161374a5",
+          "label": "broadcast news editor"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/cbdb80db-c760-4b68-b074-88c397650ef5",
+          "label": "editor-in-chief"
+        }
+      ],
+      "council": {
+        "name": "Registro profissional de jornalista (Ministério do Trabalho)",
+        "law": "Decreto-Lei 972/1969 (diploma não exigível: STF, RE 511.961/2009)",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024, microdados por rótulo CINE: Jornalismo (0321J01) + Comunicação social (0321C01); 2023: 47.158",
+        "matriculas": 46495,
+        "rank": 44,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "identidade de fontes sigilosas (CF art. 5º, XIV)",
+        "material apurado e não publicado, pautas e embargos do veículo",
+        "dados pessoais de entrevistados e de menores; imagens sem autorização"
+      ],
+      "neighbors": [
+        "publicidade-e-propaganda",
+        "relacoes-publicas",
+        "letras",
+        "cinema-e-audiovisual",
+        "ciencias-sociais",
+        "historia"
+      ],
+      "notes": "Soma Jornalismo (0321J01) e Comunicação Social genérica (0321C01). Registro no MTE existe e é usado por empregadores, mas sua obrigatoriedade pós-STF 2009 é controversa (naoConferido).",
+      "group": "01-02-03-educacao-humanidades-artes-comunicacao"
+    },
+    {
+      "code": "letras",
+      "label": {
+        "pt-BR": "Letras",
+        "en": "Languages and Literature (Letters)",
+        "es": "Letras"
+      },
+      "cine": {
+        "broad": "02",
+        "broadName": "Artes e humanidades",
+        "detail": "0231",
+        "detailName": "Línguas e literaturas (Letras)"
+      },
+      "degrees": [
+        "licenciatura",
+        "bacharelado"
+      ],
+      "aliases": [
+        "Letras",
+        "Letras Português",
+        "Letras Português-Inglês",
+        "Letras Inglês",
+        "Letras Espanhol",
+        "Letras Libras",
+        "Letras Tradução",
+        "Tradução",
+        "Tradutor",
+        "Tradutora",
+        "Intérprete",
+        "Intérprete de Libras",
+        "Professor de português",
+        "Professora de português",
+        "Professor de inglês",
+        "Professora de inglês",
+        "Professor de espanhol",
+        "Revisor de texto",
+        "Revisora de texto",
+        "Linguística",
+        "Linguista",
+        "Literatura",
+        "Redator",
+        "Escritor"
+      ],
+      "cbo": [
+        {
+          "code": "2321",
+          "title": "Professores do ensino médio"
+        },
+        {
+          "code": "2313",
+          "title": "Professores de nível superior no ensino fundamental de quinta a oitava série"
+        },
+        {
+          "code": "2614",
+          "title": "Filólogos, tradutores, intérpretes e afins"
+        },
+        {
+          "code": "2615",
+          "title": "Profissionais da escrita"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2330",
+          "title": "Secondary education teachers"
+        },
+        {
+          "code": "2643",
+          "title": "Translators, interpreters and other linguists"
+        },
+        {
+          "code": "2641",
+          "title": "Authors and related writers"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/c011a88b-95ab-46ad-ad30-539e3fc56092",
+          "label": "literature teacher at secondary school"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/fb0c7da2-6d0e-4a3f-be3e-344f58f0e82d",
+          "label": "modern languages teacher secondary school"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/1a07bd7d-2e1d-4930-a84a-1a442b8f2a44",
+          "label": "translator"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/9a2147aa-a72f-4f83-8653-c3f50d4e1e73",
+          "label": "sign language interpreter"
+        }
+      ],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024, microdados, soma de 9 rótulos CINE (0115L13, 0115L15, 0115L04, 0115L07, 0115L12, 0231L12, 0115L02, 0231L22, 0231L08); 2023: 199.779",
+        "matriculas": 196429,
+        "rank": 32,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "dados de alunos menores de idade: nomes, notas, laudos e fotos (ECA; LGPD art. 14)",
+        "textos e documentos de clientes de tradução/revisão sob sigilo ou NDA",
+        "originais inéditos de autores terceiros (direito autoral, Lei 9.610/1998)"
+      ],
+      "neighbors": [
+        "pedagogia",
+        "jornalismo",
+        "historia",
+        "publicidade-e-propaganda",
+        "filosofia",
+        "biblioteconomia"
+      ],
+      "notes": "Um só ramo: licenciaturas (CINE 0115, área 01) + bacharelados (0231), incl. Libras e Tradução como aliases. Tradutor público: matrícula na Junta Comercial (Lei 14.195/2021), sem conselho.",
+      "group": "01-02-03-educacao-humanidades-artes-comunicacao"
+    },
+    {
+      "code": "logistica",
+      "label": {
+        "pt-BR": "Logística",
+        "en": "Logistics",
+        "es": "Logística"
+      },
+      "cine": {
+        "broad": "04",
+        "broadName": "Negócios, administração e direito",
+        "detail": "0413",
+        "detailName": "Gestão e administração"
+      },
+      "degrees": [
+        "tecnologo",
+        "bacharelado"
+      ],
+      "aliases": [
+        "Logística",
+        "Analista de Logística",
+        "Gestão de Logística",
+        "Gestão Logística",
+        "Logística Empresarial",
+        "Supply Chain",
+        "Cadeia de Suprimentos",
+        "Gestão da Cadeia de Suprimentos",
+        "Gerente de Logística",
+        "Suprimentos",
+        "Compras",
+        "Comprador",
+        "Compradora",
+        "Transportes",
+        "Gestão de Transportes",
+        "Armazenagem",
+        "Tecnólogo em Logística"
+      ],
+      "cbo": [
+        {
+          "code": "3421",
+          "title": "Especialistas em logística de transportes"
+        },
+        {
+          "code": "1424",
+          "title": "Gerentes de suprimentos e afins"
+        },
+        {
+          "code": "1416",
+          "title": "Gerentes de operações de serviços em empresa de transporte, de comunicação e de logística (armazenagem e distribuição)"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "1324",
+          "title": "Supply, distribution and related managers"
+        },
+        {
+          "code": "3331",
+          "title": "Clearing and forwarding agents"
+        },
+        {
+          "code": "4323",
+          "title": "Transport clerks"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/823db06f-25e1-4658-b063-d6ef956b41f5",
+          "label": "logistics and distribution manager"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/aacc3918-b5d3-484b-9480-5d29aa550d74",
+          "label": "supply chain manager"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/51cd3a7a-eae6-4dc6-9f24-179d7ec6d230",
+          "label": "logistics analyst"
+        }
+      ],
+      "council": {
+        "name": "CRA (registro facultativo do tecnólogo em área conexa à Administração)",
+        "federal": "CFA – Conselho Federal de Administração",
+        "law": "Lei 4.769/1965; RN CFA 505/2017; Res. CFA 649/2024",
+        "registrationRequired": false
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (microdados, rótulo CINE 0413L01 Logística; presencial 16.869 + EaD 122.733)",
+        "matriculas": 139602,
+        "rank": 19,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "alta"
+      },
+      "sensitiveData": [
+        "contratos, tabelas de frete e dados de fornecedores sob confidencialidade",
+        "rotas, endereços e dados de clientes e destinatários (LGPD)",
+        "níveis de estoque e planos operacionais internos de empregadores"
+      ],
+      "neighbors": [
+        "administracao",
+        "comercio-exterior",
+        "engenharia-de-producao",
+        "processos-gerenciais",
+        "gestao-comercial",
+        "gestao-da-qualidade"
+      ],
+      "notes": "2023: 140.251 (18º). Drawings útil para fluxogramas, layout de armazém e mapas de rota.",
+      "group": "04-negocios-administracao-e-direito"
+    },
+    {
+      "code": "marketing",
+      "label": {
+        "pt-BR": "Marketing",
+        "en": "Marketing",
+        "es": "Marketing"
+      },
+      "cine": {
+        "broad": "04",
+        "broadName": "Negócios, administração e direito",
+        "detail": "0414",
+        "detailName": "Marketing e propaganda"
+      },
+      "degrees": [
+        "tecnologo",
+        "bacharelado"
+      ],
+      "aliases": [
+        "Marketing",
+        "Analista de Marketing",
+        "Marketing Digital",
+        "Gestão de Marketing",
+        "Profissional de Marketing",
+        "Gerente de Marketing",
+        "Branding",
+        "Inteligência de Mercado",
+        "Pesquisa de Mercado",
+        "Social Media",
+        "Gestor de Tráfego",
+        "Gestora de Tráfego",
+        "Growth",
+        "Tecnólogo em Marketing",
+        "Mercadologia",
+        "Comunicação e Marketing",
+        "Trade Marketing"
+      ],
+      "cbo": [
+        {
+          "code": "1423",
+          "title": "Gerentes de comercialização, marketing e comunicação"
+        },
+        {
+          "code": "2531",
+          "title": "Profissionais de publicidade"
+        },
+        {
+          "code": "3541",
+          "title": "Especialistas em promoção de produtos e vendas"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2431",
+          "title": "Advertising and marketing professionals"
+        },
+        {
+          "code": "1221",
+          "title": "Sales and marketing managers"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/6fcf4638-e7c7-4978-9302-9a7b63a3d57c",
+          "label": "marketing manager"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/dc97adbe-f807-4ad8-8f3c-c24b3416cdef",
+          "label": "digital marketing manager"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/de80bbf0-447d-4a6a-845a-fdba4e0dc30c",
+          "label": "brand manager"
+        }
+      ],
+      "council": {
+        "name": "CRA (registro facultativo; bacharelado em Marketing listado na Res. CFA 649/2024)",
+        "federal": "CFA – Conselho Federal de Administração",
+        "law": "Lei 4.769/1965; Res. CFA 649/2024",
+        "registrationRequired": false
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (microdados, rótulo CINE 0414M01 Marketing; presencial 13.078 + EaD 95.296)",
+        "matriculas": 108374,
+        "rank": 25,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "alta"
+      },
+      "sensitiveData": [
+        "dados pessoais de leads e clientes em bases de CRM e campanhas (LGPD)",
+        "resultados de campanhas, orçamentos e estratégias de clientes sob NDA",
+        "marcas, imagens e peças de terceiros sem licença de uso (Lei 9.610/1998)"
+      ],
+      "neighbors": [
+        "publicidade-e-propaganda",
+        "gestao-comercial",
+        "administracao",
+        "processos-gerenciais"
+      ],
+      "notes": "2023: 107.707 (25º). Publicidade e Propaganda (0414P01, 48.652 matrículas) é ramo distinto, esperado no grupo de Comunicação.",
+      "group": "04-negocios-administracao-e-direito"
+    },
+    {
+      "code": "matematica",
+      "label": {
+        "pt-BR": "Matemática",
+        "en": "Mathematics",
+        "es": "Matemáticas"
+      },
+      "cine": {
+        "broad": "05",
+        "broadName": "Ciências naturais, matemática e estatística",
+        "detail": "0541",
+        "detailName": "Matemática"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Matemática",
+        "Matemático",
+        "Matemática Aplicada",
+        "Matemática Aplicada e Computacional",
+        "Bacharelado em Matemática",
+        "Matemática Industrial",
+        "Pesquisa Operacional"
+      ],
+      "cbo": [
+        {
+          "code": "2111",
+          "title": "Profissionais da matemática"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2120",
+          "title": "Mathematicians, actuaries and statisticians"
+        }
+      ],
+      "esco": [],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 (número do bacharelado não localizado em fonte secundária)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "modelos e dados proprietários de clientes (finanças, seguros, logística) sob sigilo contratual"
+      ],
+      "neighbors": [
+        "estatistica",
+        "ciencia-de-dados",
+        "fisica",
+        "engenharia-de-software",
+        "ciencias-contabeis"
+      ],
+      "notes": "Só o bacharelado: a licenciatura em Matemática (maioria das matrículas) está no grupo Educação. Ciências Atuariais fica em Negócios.",
+      "group": "05-08-10-ciencias-agrarias-servicos"
+    },
+    {
+      "code": "matematica-licenciatura",
+      "label": {
+        "pt-BR": "Matemática (licenciatura)",
+        "en": "Mathematics Teaching",
+        "es": "Matemáticas (profesorado)"
+      },
+      "cine": {
+        "broad": "01",
+        "broadName": "Educação",
+        "detail": "0114",
+        "detailName": "Formação de professor em áreas específicas"
+      },
+      "degrees": [
+        "licenciatura"
+      ],
+      "aliases": [
+        "Matemática (licenciatura)",
+        "Matemática",
+        "Licenciatura em Matemática",
+        "Professor de matemática",
+        "Professora de matemática",
+        "Educação matemática",
+        "Matemático",
+        "Matemática aplicada"
+      ],
+      "cbo": [
+        {
+          "code": "2321",
+          "title": "Professores do ensino médio"
+        },
+        {
+          "code": "2313",
+          "title": "Professores de nível superior no ensino fundamental de quinta a oitava série"
+        },
+        {
+          "code": "2111",
+          "title": "Profissionais da matemática"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2330",
+          "title": "Secondary education teachers"
+        },
+        {
+          "code": "2120",
+          "title": "Mathematicians, actuaries and statisticians"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/f0e1cc13-48e0-4995-8699-ee43467bce0d",
+          "label": "mathematics teacher at secondary school"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/72628f3a-fd49-499a-9741-870b0a1fcef2",
+          "label": "mathematician"
+        }
+      ],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024, microdados por rótulo CINE: Matemática formação de professor (0114M01); 2023: 92.353",
+        "matriculas": 86284,
+        "rank": 30,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "dados de alunos menores de idade: nomes, notas, laudos e fotos (ECA; LGPD art. 14)",
+        "gabaritos e provas de avaliações externas sob sigilo (ENEM, concursos)"
+      ],
+      "neighbors": [
+        "pedagogia",
+        "matematica",
+        "estatistica",
+        "fisica"
+      ],
+      "notes": "Só a licenciatura (0114M01, rank 30). O bacharelado em Matemática (0541M01, 4.077 matr.) pertence à área 05 e deve vir de outro grupo; o alias 'Matemática' pode colidir na consolidação.",
+      "group": "01-02-03-educacao-humanidades-artes-comunicacao"
     },
     {
       "code": "medicina",
@@ -1547,10 +4967,120 @@
         "laudos, exames e receituários identificáveis"
       ],
       "neighbors": [
-        "biomedicina"
+        "zootecnia",
+        "biomedicina",
+        "ciencias-biologicas",
+        "agronomia"
       ],
       "notes": "Na CINE Brasil fica na área geral 08 (Veterinária), não em 09; agrupado em Saúde por decisão do produto. Curso quase todo presencial.",
       "group": "09-saude-e-bem-estar"
+    },
+    {
+      "code": "musica",
+      "label": {
+        "pt-BR": "Música",
+        "en": "Music",
+        "es": "Música"
+      },
+      "cine": {
+        "broad": "02",
+        "broadName": "Artes e humanidades",
+        "detail": "0215",
+        "detailName": "Música e artes cênicas"
+      },
+      "degrees": [
+        "licenciatura",
+        "bacharelado",
+        "tecnologo"
+      ],
+      "aliases": [
+        "Música",
+        "Músico",
+        "Musicista",
+        "Professor de música",
+        "Professora de música",
+        "Educação musical",
+        "Regente",
+        "Regência",
+        "Compositor",
+        "Compositora",
+        "Cantor",
+        "Cantora",
+        "Instrumentista",
+        "Produção musical",
+        "Musicologia"
+      ],
+      "cbo": [
+        {
+          "code": "2626",
+          "title": "Músicos compositores, arranjadores, regentes e musicólogos"
+        },
+        {
+          "code": "2627",
+          "title": "Músicos intérpretes"
+        },
+        {
+          "code": "2321",
+          "title": "Professores do ensino médio"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2652",
+          "title": "Musicians, singers and composers"
+        },
+        {
+          "code": "2330",
+          "title": "Secondary education teachers"
+        },
+        {
+          "code": "2354",
+          "title": "Other music teachers"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/f6803a58-91d9-4251-9a07-09fc387cec16",
+          "label": "musician"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/7dc05fcc-b079-45ed-b5d4-74c75f99976c",
+          "label": "composer"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/f235bc5a-dbf6-4f9e-bbdb-cf313d32b75b",
+          "label": "music teacher"
+        }
+      ],
+      "council": {
+        "name": "OMB (Ordem dos Músicos do Brasil)",
+        "federal": "Conselho Federal da OMB",
+        "law": "Lei 3.857/1960",
+        "registrationRequired": false
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024, microdados por rótulo CINE: Música formação de professor (0114M02) + Música (0215M01); 2023: 26.160",
+        "matriculas": 26018,
+        "rank": 82,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "dados de alunos menores de idade: nomes, notas, laudos e fotos (ECA; LGPD art. 14)",
+        "gravações, partituras e arranjos de terceiros sem licença (Lei 9.610/1998)",
+        "gravações inéditas de contratantes sob sigilo"
+      ],
+      "neighbors": [
+        "artes-visuais",
+        "pedagogia",
+        "cinema-e-audiovisual"
+      ],
+      "notes": "Licenciatura é CINE 0114M02 (20.297 matr., rank 82); bacharelado 0215M01 (5.721). Inscrição na OMB não é exigível (STF, RE 795.467, Tema 738).",
+      "group": "01-02-03-educacao-humanidades-artes-comunicacao"
     },
     {
       "code": "nutricao",
@@ -1609,7 +5139,8 @@
       "neighbors": [
         "educacao-fisica",
         "enfermagem",
-        "farmacia"
+        "farmacia",
+        "gastronomia"
       ],
       "notes": "Rótulo CINE 0915N01 (glossário Rede Unida).",
       "group": "09-saude-e-bem-estar"
@@ -1680,6 +5211,218 @@
       "group": "09-saude-e-bem-estar"
     },
     {
+      "code": "pedagogia",
+      "label": {
+        "pt-BR": "Pedagogia",
+        "en": "Pedagogy (Education)",
+        "es": "Pedagogía"
+      },
+      "cine": {
+        "broad": "01",
+        "broadName": "Educação",
+        "detail": "0113",
+        "detailName": "Formação de professor sem áreas específicas"
+      },
+      "degrees": [
+        "licenciatura",
+        "bacharelado"
+      ],
+      "aliases": [
+        "Pedagogia",
+        "Pedagogo",
+        "Pedagoga",
+        "Professor de educação infantil",
+        "Professora de educação infantil",
+        "Professor dos anos iniciais",
+        "Professor alfabetizador",
+        "Coordenador pedagógico",
+        "Coordenadora pedagógica",
+        "Orientador educacional",
+        "Supervisor de ensino",
+        "Gestão escolar",
+        "Educação especial",
+        "Designer educacional",
+        "Designer instrucional"
+      ],
+      "cbo": [
+        {
+          "code": "2394",
+          "title": "Programadores, avaliadores e orientadores de ensino"
+        },
+        {
+          "code": "2312",
+          "title": "Professores de nível superior do ensino fundamental (primeira a quarta séries)"
+        },
+        {
+          "code": "2311",
+          "title": "Professores de nível superior na educação infantil"
+        },
+        {
+          "code": "2392",
+          "title": "Professores de educação especial"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2341",
+          "title": "Primary school teachers"
+        },
+        {
+          "code": "2342",
+          "title": "Early childhood educators"
+        },
+        {
+          "code": "2351",
+          "title": "Education methods specialists"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/03d79393-7b30-4159-945b-01963eddd302",
+          "label": "primary school teacher"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/55d60ead-0343-4008-b9e4-fb4b5a179c83",
+          "label": "early years teacher"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/2412bbb1-29ca-4e17-a2b8-70694f0cb14f",
+          "label": "educational counsellor"
+        }
+      ],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024, microdados por rótulo CINE: Pedagogia (0113P01); 2023: 852.240",
+        "matriculas": 887502,
+        "rank": 1,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "dados de alunos menores de idade: nomes, notas, laudos e fotos (ECA; LGPD art. 14)",
+        "relatórios de acompanhamento, pareceres e planos individualizados (PEI/AEE) de alunos",
+        "fotos e vídeos de crianças em sala sem autorização dos responsáveis"
+      ],
+      "neighbors": [
+        "psicopedagogia",
+        "letras",
+        "historia",
+        "educacao-fisica",
+        "psicologia",
+        "servico-social"
+      ],
+      "notes": "Maior curso do país (rank 1). Sem conselho: habilitação pela LDB (Lei 9.394/1996, art. 62/64). Inclui Educação Especial (0113E02, 20.349 matr.) só como alias.",
+      "group": "01-02-03-educacao-humanidades-artes-comunicacao"
+    },
+    {
+      "code": "processos-gerenciais",
+      "label": {
+        "pt-BR": "Processos Gerenciais",
+        "en": "Business Management (Technology Degree)",
+        "es": "Procesos Gerenciales"
+      },
+      "cine": {
+        "broad": "04",
+        "broadName": "Negócios, administração e direito",
+        "detail": "0413",
+        "detailName": "Gestão e administração"
+      },
+      "degrees": [
+        "tecnologo",
+        "bacharelado"
+      ],
+      "aliases": [
+        "Processos Gerenciais",
+        "Gestão de Negócios",
+        "Gestão Empresarial",
+        "Gestão de Pequenas e Médias Empresas",
+        "Empreendedorismo",
+        "Empreendedor",
+        "Empreendedora",
+        "Gestão Estratégica",
+        "Analista de Processos",
+        "Analista de Negócios",
+        "Gestão de Cooperativas",
+        "Tecnólogo em Processos Gerenciais",
+        "Gestão de Pequenos Negócios"
+      ],
+      "cbo": [
+        {
+          "code": "3513",
+          "title": "Técnicos em administração"
+        },
+        {
+          "code": "2521",
+          "title": "Administradores"
+        },
+        {
+          "code": "1421",
+          "title": "Gerentes administrativos, financeiros, de riscos e afins"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2421",
+          "title": "Management and organisation analysts"
+        },
+        {
+          "code": "3341",
+          "title": "Office supervisors"
+        },
+        {
+          "code": "1219",
+          "title": "Business services and administration managers not elsewhere classified"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/544cd9cf-e2ee-4ac0-8a02-7147af6b97d7",
+          "label": "business manager"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/60082a99-d8ef-4e84-9290-78902681b6ed",
+          "label": "business analyst"
+        }
+      ],
+      "council": {
+        "name": "CRA (registro facultativo do tecnólogo em área conexa à Administração)",
+        "federal": "CFA – Conselho Federal de Administração",
+        "law": "Lei 4.769/1965; Res. CFA 649/2024",
+        "registrationRequired": false
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (microdados, rótulo CINE 0413G05 Gestão de negócios; presencial 14.068 + EaD 81.732)",
+        "matriculas": 95800,
+        "rank": 28,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "alta"
+      },
+      "sensitiveData": [
+        "informações financeiras, operacionais e de clientes de empresas atendidas sob confidencialidade",
+        "dados pessoais de colaboradores e clientes (LGPD)",
+        "planos de negócio e segredos comerciais de terceiros"
+      ],
+      "neighbors": [
+        "administracao",
+        "gestao-de-recursos-humanos",
+        "gestao-financeira",
+        "gestao-comercial",
+        "logistica",
+        "marketing",
+        "gestao-da-qualidade"
+      ],
+      "notes": "2023: 96.262 (28º). No Censo o curso aparece sob o rótulo CINE 'Gestão de negócios' (0413G05). Empreendedorismo (0413E01; 7.865 matrículas em 2024) tratado como alias, não como ramo.",
+      "group": "04-negocios-administracao-e-direito"
+    },
+    {
       "code": "psicologia",
       "label": {
         "pt-BR": "Psicologia",
@@ -1737,10 +5480,252 @@
       ],
       "neighbors": [
         "servico-social",
-        "medicina"
+        "pedagogia",
+        "medicina",
+        "administracao"
       ],
       "notes": "Inep classifica em 0313P01 (área 03), posição contestada pelo CFP; agrupada em Saúde por decisão do produto. Maior curso presencial da saúde.",
       "group": "09-saude-e-bem-estar"
+    },
+    {
+      "code": "psicopedagogia",
+      "label": {
+        "pt-BR": "Psicopedagogia",
+        "en": "Educational Psychology (Psychopedagogy)",
+        "es": "Psicopedagogía"
+      },
+      "cine": {
+        "broad": "01",
+        "broadName": "Educação",
+        "detail": "0111",
+        "detailName": "Ciências da educação"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Psicopedagogia",
+        "Psicopedagogo",
+        "Psicopedagoga",
+        "Psicopedagogia clínica",
+        "Psicopedagogia institucional",
+        "Dificuldades de aprendizagem"
+      ],
+      "cbo": [
+        {
+          "code": "2394",
+          "title": "Programadores, avaliadores e orientadores de ensino"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2359",
+          "title": "Teaching professionals not elsewhere classified"
+        },
+        {
+          "code": "2351",
+          "title": "Education methods specialists"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/2412bbb1-29ca-4e17-a2b8-70694f0cb14f",
+          "label": "educational counsellor"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/114c5a6c-1869-4a67-8ec0-660ec303f8cc",
+          "label": "learning support teacher"
+        }
+      ],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024, microdados por rótulo CINE: Psicopedagogia (0111P02); 2023: 19.669",
+        "matriculas": 24071,
+        "rank": 67,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "laudos, avaliações e relatórios psicopedagógicos de alunos (dados de saúde, LGPD art. 11)",
+        "dados de alunos menores de idade: nomes, notas, laudos e fotos (ECA; LGPD art. 14)",
+        "diagnósticos de transtornos de aprendizagem (TDAH, dislexia, TEA) de pessoas identificáveis"
+      ],
+      "neighbors": [
+        "pedagogia",
+        "psicologia",
+        "fonoaudiologia",
+        "letras"
+      ],
+      "notes": "CBO 2394-25 Psicopedagogo. Profissão em regulamentação: PL 1675/2023 aprovado na Câmara e enviado à sanção (set/2026); publicação não conferida. Também muito ofertada como pós lato sensu.",
+      "group": "01-02-03-educacao-humanidades-artes-comunicacao"
+    },
+    {
+      "code": "publicidade-e-propaganda",
+      "label": {
+        "pt-BR": "Publicidade e Propaganda",
+        "en": "Advertising",
+        "es": "Publicidad y Propaganda"
+      },
+      "cine": {
+        "broad": "04",
+        "broadName": "Negócios, administração e direito",
+        "detail": "0414",
+        "detailName": "Marketing e publicidade"
+      },
+      "degrees": [
+        "bacharelado",
+        "tecnologo"
+      ],
+      "aliases": [
+        "Publicidade e Propaganda",
+        "Publicidade",
+        "Propaganda",
+        "Publicitário",
+        "Publicitária",
+        "Comunicação Social – Publicidade",
+        "Diretor de arte",
+        "Diretora de arte",
+        "Diretor de criação",
+        "Redator publicitário",
+        "Redatora publicitária",
+        "Planejamento de comunicação",
+        "Mídia",
+        "Social media",
+        "Branding",
+        "Comunicação digital"
+      ],
+      "cbo": [
+        {
+          "code": "2531",
+          "title": "Profissionais de publicidade"
+        },
+        {
+          "code": "1423",
+          "title": "Gerentes de comercialização, marketing e comunicação"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2431",
+          "title": "Advertising and marketing professionals"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/e01719f4-d7dd-42fe-b504-93128520f84a",
+          "label": "advertising specialist"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/b1ab3572-fa2f-4624-8eac-3c3d986d237b",
+          "label": "advertising copywriter"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/cb93fd23-1f51-4495-867a-936c1967066b",
+          "label": "art director"
+        }
+      ],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024, microdados por rótulo CINE: Publicidade e propaganda (0414P01); 2023: 69.382",
+        "matriculas": 73333,
+        "rank": 36,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "alta"
+      },
+      "sensitiveData": [
+        "campanhas, briefings e lançamentos de clientes sob NDA ou embargo",
+        "dados pessoais de consumidores em bases de mídia/CRM",
+        "imagens de pessoas e marcas de terceiros sem licença"
+      ],
+      "neighbors": [
+        "relacoes-publicas",
+        "jornalismo",
+        "design",
+        "marketing",
+        "cinema-e-audiovisual",
+        "administracao"
+      ],
+      "notes": "Na CINE Brasil fica em 0414 (área 04), não em 03; agrupado aqui por decisão do produto. Lei 4.680/1965 disciplina a profissão sem conselho nem registro obrigatório (art. 19 vetado).",
+      "group": "01-02-03-educacao-humanidades-artes-comunicacao"
+    },
+    {
+      "code": "quimica",
+      "label": {
+        "pt-BR": "Química",
+        "en": "Chemistry",
+        "es": "Química"
+      },
+      "cine": {
+        "broad": "05",
+        "broadName": "Ciências naturais, matemática e estatística",
+        "detail": "0531",
+        "detailName": "Química"
+      },
+      "degrees": [
+        "bacharelado",
+        "tecnologo"
+      ],
+      "aliases": [
+        "Química",
+        "Químico",
+        "Química Industrial",
+        "Químico Industrial",
+        "Bacharelado em Química",
+        "Tecnólogo em Processos Químicos",
+        "Processos Químicos",
+        "Química Tecnológica"
+      ],
+      "cbo": [
+        {
+          "code": "2132",
+          "title": "Químicos"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2113",
+          "title": "Chemists"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CRQ",
+        "federal": "CFQ",
+        "law": "Lei 2.800/1956",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 (não localizado; Estratégia Vestibulares cita 37.090 só para a licenciatura, ano não informado)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "formulações, rotas de síntese e laudos sob segredo industrial ou NDA",
+        "dados de controle de qualidade e não conformidades identificando clientes ou lotes"
+      ],
+      "neighbors": [
+        "engenharia-quimica",
+        "farmacia",
+        "ciencias-biologicas",
+        "fisica",
+        "biomedicina"
+      ],
+      "notes": "Licenciatura em Química registrada no grupo Educação. CBO 2132 inclui químico (2132-05), químico industrial (2132-10) e tecnólogo em processos químicos (2132-15).",
+      "group": "05-08-10-ciencias-agrarias-servicos"
     },
     {
       "code": "radiologia",
@@ -1804,7 +5789,8 @@
       "neighbors": [
         "biomedicina",
         "enfermagem",
-        "medicina"
+        "medicina",
+        "fisica"
       ],
       "notes": "CBO 3241-20 Tecnólogo em radiologia (3241-15 é o técnico). Rótulo CINE presumido 0914R01, não verificado.",
       "group": "09-saude-e-bem-estar"
@@ -1888,6 +5874,276 @@
       "group": "06-07-engenharia-e-tic"
     },
     {
+      "code": "relacoes-internacionais",
+      "label": {
+        "pt-BR": "Relações Internacionais",
+        "en": "International Relations",
+        "es": "Relaciones Internacionales"
+      },
+      "cine": {
+        "broad": "03",
+        "broadName": "Ciências sociais, comunicação e informação",
+        "detail": "0312",
+        "detailName": "Ciências sociais e políticas"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Relações Internacionais",
+        "RI",
+        "Internacionalista",
+        "Analista de Relações Internacionais",
+        "Analista Internacional",
+        "Diplomata",
+        "Diplomacia",
+        "Cooperação Internacional",
+        "Relações Exteriores",
+        "Negócios Internacionais",
+        "Analista de Riscos Políticos",
+        "Organismos Internacionais"
+      ],
+      "cbo": [
+        {
+          "code": "3543",
+          "title": "Analistas de comércio exterior"
+        },
+        {
+          "code": "1114",
+          "title": "Dirigentes do serviço público"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2422",
+          "title": "Policy administration professionals"
+        },
+        {
+          "code": "1112",
+          "title": "Senior government officials"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/7819669b-30c2-42e6-a1c4-0bcd6f0379ff",
+          "label": "international relations officer"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/f7450c1f-20b7-45dd-b3bb-25095830bf3f",
+          "label": "foreign affairs officer"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/caf7b8fb-b2d6-46b7-bffa-bea7f8e4aed8",
+          "label": "policy officer"
+        }
+      ],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (microdados, rótulo CINE 0312R01 Relações internacionais; presencial 21.167 + EaD 9.140)",
+        "matriculas": 30307,
+        "rank": 57,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "informações diplomáticas e documentos classificados (Lei 12.527/2011 arts. 23 e 24)",
+        "dados de negociações, contratos e parceiros internacionais sob confidencialidade",
+        "dados pessoais de beneficiários de programas de cooperação (LGPD)"
+      ],
+      "neighbors": [
+        "ciencias-economicas",
+        "direito",
+        "comercio-exterior",
+        "ciencias-sociais",
+        "gestao-publica",
+        "jornalismo"
+      ],
+      "notes": "2023: 29.309 (56º). Grande área CINE 03; agregado a este grupo por decisão do produto. Profissão não regulamentada; sem família CBO própria (famílias listadas são aproximações).",
+      "group": "04-negocios-administracao-e-direito"
+    },
+    {
+      "code": "relacoes-publicas",
+      "label": {
+        "pt-BR": "Relações Públicas",
+        "en": "Public Relations",
+        "es": "Relaciones Públicas"
+      },
+      "cine": {
+        "broad": "04",
+        "broadName": "Negócios, administração e direito",
+        "detail": "0414",
+        "detailName": "Marketing e publicidade"
+      },
+      "degrees": [
+        "bacharelado",
+        "tecnologo"
+      ],
+      "aliases": [
+        "Relações Públicas",
+        "Relações-públicas",
+        "RP",
+        "Profissional de relações públicas",
+        "Comunicação organizacional",
+        "Comunicação corporativa",
+        "Comunicação institucional",
+        "Assessoria de comunicação",
+        "Gestão de crise",
+        "Cerimonial e protocolo",
+        "Comunicação interna"
+      ],
+      "cbo": [
+        {
+          "code": "1423",
+          "title": "Gerentes de comercialização, marketing e comunicação"
+        },
+        {
+          "code": "2531",
+          "title": "Profissionais de publicidade"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2432",
+          "title": "Public relations professionals"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/c0489e22-6a1b-4e52-974a-eb71bbb42134",
+          "label": "public relations officer"
+        }
+      ],
+      "council": {
+        "name": "CONRERP",
+        "federal": "CONFERP",
+        "law": "Lei 5.377/1967; Decreto-Lei 860/1969",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024, microdados por rótulo CINE: Relações públicas (0414R01); 2023: 10.602",
+        "matriculas": 10188,
+        "rank": 101,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "informações estratégicas, planos de crise e resultados não divulgados de clientes/empregadores",
+        "mailings e dados pessoais de stakeholders, jornalistas e públicos",
+        "comunicados sob embargo"
+      ],
+      "neighbors": [
+        "publicidade-e-propaganda",
+        "jornalismo",
+        "marketing",
+        "administracao"
+      ],
+      "notes": "CINE 0414R01 (área 04), agrupado aqui pelo produto. CBO: Relações públicas é 1423-25. Lei 5.377/1967, art. 2º §3º: falta de registro torna ilegal o exercício.",
+      "group": "01-02-03-educacao-humanidades-artes-comunicacao"
+    },
+    {
+      "code": "secretariado-executivo",
+      "label": {
+        "pt-BR": "Secretariado Executivo",
+        "en": "Executive Secretarial Studies",
+        "es": "Secretariado Ejecutivo"
+      },
+      "cine": {
+        "broad": "04",
+        "broadName": "Negócios, administração e direito",
+        "detail": "0415",
+        "detailName": "Secretariado e trabalho de escritório"
+      },
+      "degrees": [
+        "bacharelado",
+        "tecnologo"
+      ],
+      "aliases": [
+        "Secretariado Executivo",
+        "Secretariado",
+        "Secretária Executiva",
+        "Secretário Executivo",
+        "Secretária",
+        "Secretário",
+        "Assistente Executiva",
+        "Assistente Executivo",
+        "Assessoria Executiva",
+        "Assistente de Diretoria",
+        "Assessor de Diretoria",
+        "Assessora de Diretoria",
+        "Secretariado Trilíngue",
+        "Secretariado Bilíngue",
+        "Tecnólogo em Secretariado"
+      ],
+      "cbo": [
+        {
+          "code": "2523",
+          "title": "Secretárias(os) executivas(os) e afins"
+        },
+        {
+          "code": "3515",
+          "title": "Técnicos em secretariado, taquígrafos e estenotipistas"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "3343",
+          "title": "Administrative and executive secretaries"
+        },
+        {
+          "code": "4120",
+          "title": "Secretaries (general)"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/2a04a1df-a3b9-403e-a245-e7f93fdddd44",
+          "label": "executive assistant"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/8cce40c1-4479-47e7-b5fc-c976631d919f",
+          "label": "management assistant"
+        }
+      ],
+      "council": {
+        "name": "Registro profissional no Ministério do Trabalho (SRTE), sem conselho",
+        "federal": "FENASSEC (federação sindical, não conselho)",
+        "law": "Lei 7.377/1985 (alterada pela Lei 9.261/1996)",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (microdados, rótulo CINE 0415S01 Secretariado; presencial 4.011 + EaD 9.183)",
+        "matriculas": 13194,
+        "rank": 94,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "agendas, correspondência e decisões da diretoria sob sigilo (Código de Ética do Profissional de Secretariado)",
+        "dados pessoais e de contato de executivos, clientes e parceiros (LGPD)",
+        "atas, contratos e documentos internos não publicados"
+      ],
+      "neighbors": [
+        "administracao",
+        "processos-gerenciais",
+        "gestao-de-recursos-humanos",
+        "letras"
+      ],
+      "notes": "2023: 14.083 (92º). Profissão regulamentada sem conselho; projeto de lei para criar conselho não confirmado como aprovado.",
+      "group": "04-negocios-administracao-e-direito"
+    },
+    {
       "code": "seguranca-da-informacao",
       "label": {
         "pt-BR": "Segurança da Informação",
@@ -1949,7 +6205,8 @@
       "neighbors": [
         "redes-de-computadores",
         "engenharia-de-software",
-        "ciencia-de-dados"
+        "ciencia-de-dados",
+        "direito"
       ],
       "notes": "Área CINE incerta (0612 ou 0619). Sem conselho. ESCO tem 'ICT security administrator' e 'ethical hacker', mas as URIs não foram obtidas.",
       "group": "06-07-engenharia-e-tic"
@@ -2021,10 +6278,93 @@
         "engenharia-civil",
         "engenharia-de-producao",
         "enfermagem",
-        "engenharia-ambiental-e-sanitaria"
+        "engenharia-ambiental-e-sanitaria",
+        "administracao"
       ],
       "notes": "CINE a coloca em Serviços (provável 1022), não em 07; incluída aqui pela ligação com engenharia (CBO 2149-35, CREA). Técnico de nível médio registra-se no MTE.",
       "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "seguranca-publica",
+      "label": {
+        "pt-BR": "Segurança Pública",
+        "en": "Public Safety Management",
+        "es": "Seguridad Pública"
+      },
+      "cine": {
+        "broad": "10",
+        "broadName": "Serviços",
+        "detail": "1032",
+        "detailName": "Proteção de pessoas e propriedades"
+      },
+      "degrees": [
+        "tecnologo",
+        "bacharelado"
+      ],
+      "aliases": [
+        "Segurança Pública",
+        "Gestão de Segurança",
+        "Gestão de Segurança Pública",
+        "Tecnólogo em Segurança Pública",
+        "Gestão de Segurança Privada",
+        "Gestor de segurança",
+        "Gestora de segurança",
+        "Segurança Privada",
+        "Policial",
+        "Guarda municipal",
+        "Vigilante",
+        "Ciências Policiais"
+      ],
+      "cbo": [
+        {
+          "code": "2526",
+          "title": "Gestores em segurança"
+        },
+        {
+          "code": "5173",
+          "title": "Vigilantes e guardas de segurança"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "3355",
+          "title": "Police inspectors and detectives"
+        },
+        {
+          "code": "5412",
+          "title": "Police officers"
+        },
+        {
+          "code": "5414",
+          "title": "Security guards"
+        }
+      ],
+      "esco": [],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 (número não localizado em fonte secundária; curso majoritariamente EaD)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "dados de ocorrências, inquéritos, vítimas e suspeitos (sigilo legal, LGPD art. 4º, III)",
+        "planos de segurança, rotas, efetivo e posicionamento de câmeras de clientes ou órgãos",
+        "imagens de pessoas em operações sem autorização"
+      ],
+      "neighbors": [
+        "direito",
+        "seguranca-do-trabalho",
+        "administracao",
+        "gestao-publica"
+      ],
+      "notes": "CBO 2526-05 'Gestor em segurança' lista como sinônimos os tecnólogos em gestão de segurança empresarial/privada; não há título CBO 'tecnólogo em segurança pública'.",
+      "group": "05-08-10-ciencias-agrarias-servicos"
     },
     {
       "code": "servico-social",
@@ -2081,10 +6421,262 @@
         "relatórios, pareceres e prontuários sociais de usuários (sigilo, Código de Ética do Assistente Social – Res. CFESS 273/1993; LGPD art. 5º, II)"
       ],
       "neighbors": [
-        "psicologia"
+        "psicologia",
+        "pedagogia",
+        "direito"
       ],
       "notes": "Área específica 092 (Bem-estar). Rótulo presumido 0923S01, não verificado. Curso majoritariamente EaD.",
       "group": "09-saude-e-bem-estar"
+    },
+    {
+      "code": "teologia",
+      "label": {
+        "pt-BR": "Teologia",
+        "en": "Theology",
+        "es": "Teología"
+      },
+      "cine": {
+        "broad": "02",
+        "broadName": "Artes e humanidades",
+        "detail": "0221",
+        "detailName": "Religião e teologia"
+      },
+      "degrees": [
+        "bacharelado",
+        "tecnologo",
+        "licenciatura"
+      ],
+      "aliases": [
+        "Teologia",
+        "Teólogo",
+        "Teóloga",
+        "Ciências da Religião",
+        "Ensino Religioso",
+        "Pastor",
+        "Pastora",
+        "Padre",
+        "Ministro de culto",
+        "Missionário",
+        "Missionária",
+        "Capelão",
+        "Capelania"
+      ],
+      "cbo": [
+        {
+          "code": "2631",
+          "title": "Ministros de culto, missionários, teólogos e profissionais assemelhados"
+        },
+        {
+          "code": "2321",
+          "title": "Professores do ensino médio"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2636",
+          "title": "Religious professionals"
+        },
+        {
+          "code": "2330",
+          "title": "Secondary education teachers"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/ed256ed0-0432-4969-8544-3e5e01a517a9",
+          "label": "minister of religion"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/35e42c87-faf7-465f-abe4-f26717996dd1",
+          "label": "religious education teacher at secondary school"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/c90a6ebe-adcc-4395-9f5b-ff3e96e93cef",
+          "label": "religious studies lecturer"
+        }
+      ],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024, microdados por rótulo CINE: Teologia (0221T01) + Ensino religioso formação de professor (0114E07) + Ciências da religião (0221C01); 2023: 48.343",
+        "matriculas": 51240,
+        "rank": 42,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "conteúdo de aconselhamento pastoral e confissões (sigilo)",
+        "convicção religiosa e dados de fiéis identificáveis (LGPD art. 5º, II)",
+        "dados de alunos menores de idade: nomes, notas, laudos e fotos (ECA; LGPD art. 14)"
+      ],
+      "neighbors": [
+        "filosofia",
+        "historia",
+        "pedagogia",
+        "servico-social",
+        "ciencias-sociais"
+      ],
+      "notes": "Teologia (0221T01) tem 48.468 matr. (rank 42), 42º maior curso do país; soma inclui Ensino Religioso (lic., 0114E07) e Ciências da Religião. Profissão não regulamentada.",
+      "group": "01-02-03-educacao-humanidades-artes-comunicacao"
+    },
+    {
+      "code": "turismo",
+      "label": {
+        "pt-BR": "Turismo",
+        "en": "Tourism",
+        "es": "Turismo"
+      },
+      "cine": {
+        "broad": "10",
+        "broadName": "Serviços",
+        "detail": "1015",
+        "detailName": "Viagens, turismo e lazer"
+      },
+      "degrees": [
+        "bacharelado",
+        "tecnologo"
+      ],
+      "aliases": [
+        "Turismo",
+        "Turismólogo",
+        "Turismóloga",
+        "Gestão de Turismo",
+        "Tecnólogo em Gestão de Turismo",
+        "Agente de viagens",
+        "Guia de turismo",
+        "Bacharelado em Turismo",
+        "Turismo e Hospitalidade",
+        "Ecoturismo"
+      ],
+      "cbo": [
+        {
+          "code": "1225",
+          "title": "Diretores de serviços de turismo, de alojamento e de alimentação"
+        },
+        {
+          "code": "3548",
+          "title": "Técnicos em serviços de turismo e organização de eventos"
+        },
+        {
+          "code": "5114",
+          "title": "Guias de turismo"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "1439",
+          "title": "Services managers not elsewhere classified"
+        },
+        {
+          "code": "4221",
+          "title": "Travel consultants and clerks"
+        },
+        {
+          "code": "5113",
+          "title": "Travel guides"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "Cadastur (Ministério do Turismo)",
+        "law": "Lei 12.591/2012 (turismólogo); Lei 8.623/1993 (guia de turismo)",
+        "registrationRequired": false
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 (número não localizado em fonte secundária)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "dados de passageiros, documentos e itinerários de clientes (LGPD)",
+        "dados de cartão e reservas de hóspedes e viajantes"
+      ],
+      "neighbors": [
+        "hotelaria",
+        "eventos",
+        "gastronomia",
+        "administracao",
+        "marketing"
+      ],
+      "notes": "Turismólogo reconhecido pela Lei 12.591/2012, sem conselho. Cadastur é obrigatório só para guia de turismo e prestadores (Lei 11.771/2008); turismólogo CBO 1225-20.",
+      "group": "05-08-10-ciencias-agrarias-servicos"
+    },
+    {
+      "code": "zootecnia",
+      "label": {
+        "pt-BR": "Zootecnia",
+        "en": "Animal Science",
+        "es": "Zootecnia"
+      },
+      "cine": {
+        "broad": "08",
+        "broadName": "Agricultura, silvicultura, pesca e veterinária",
+        "detail": "0811",
+        "detailName": "Produção agrícola e pecuária"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Zootecnia",
+        "Zootecnista",
+        "Produção Animal",
+        "Bacharelado em Zootecnia"
+      ],
+      "cbo": [
+        {
+          "code": "2233",
+          "title": "Veterinários e zootecnistas"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2132",
+          "title": "Farming, forestry and fisheries advisers"
+        },
+        {
+          "code": "2131",
+          "title": "Biologists, botanists, zoologists and related professionals"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CRMV",
+        "federal": "CFMV",
+        "law": "Lei 5.550/1968",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 (número não localizado em fonte secundária; CRMV-SP cita Sinopse 2022 sem total nacional)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "dados de rebanhos, produtores e propriedades identificáveis (LGPD)",
+        "formulações de ração e índices zootécnicos de clientes sob sigilo"
+      ],
+      "neighbors": [
+        "medicina-veterinaria",
+        "agronomia",
+        "ciencias-biologicas"
+      ],
+      "notes": "Zootecnista é inscrito no CRMV (mesmo sistema CFMV da Medicina Veterinária).",
+      "group": "05-08-10-ciencias-agrarias-servicos"
     }
   ],
   "sources": [
@@ -2502,6 +7094,346 @@
       "title": "SBC — Resposta a manifesto sobre a Classificação dos Cursos de Graduação (INEP/CINE Brasil)",
       "url": "https://www.sbc.org.br/wp-content/uploads/2024/07/Resposta-a-manifesto-sobre-a-Classifica-o-dos-Cursos-de-Gradua-o-INEP.pdf",
       "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "INEP – Censo da Educação Superior: resultados (Resumo Técnico 2024, Notas Estatísticas, Sinopse 2023)",
+      "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-da-educacao-superior/resultados",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "INEP – Microdados do Censo da Educação Superior (2016–2024), base do espelho local dl/inep (Observatório Nacional da Educação Superior; rótulos CINE e matrículas por curso)",
+      "url": "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/censo-da-educacao-superior",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Observatório Nacional da Formação Farmacêutica (projeto de origem do ETL do espelho local dos microdados INEP)",
+      "url": "https://github.com/esidiao/observatorio-formacao-farmaceutica",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Quero Bolsa – Censo da Educação Superior 2024: Pedagogia lidera entre ingressantes e concluintes",
+      "url": "https://querobolsa.com.br/revista/censo-da-educacao-superior-2024-pedagogia-lidera-entre-ingressantes-e-concluintes",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "AMDJUS – Curso de Ciências Contábeis entre os favoritos (322.837 matrículas, Censo 2024)",
+      "url": "https://amdjus.com.br/descubra-por-que-o-curso-de-ciencias-contabeis-e-um-dos-favoritos-dos-brasileiros/",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "UNIRIO – Metodologia de Classificação dos Cursos de Graduação e Sequenciais (Cine Brasil 2018)",
+      "url": "https://www.unirio.br/ib/proplan/dainf/Metodologia_Classificacao_dos_Cursos_de_Graduacao_e_Sequenciais.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "IFMG – PPC Processos Gerenciais 2024 (área detalhada 0413 Gestão e Administração; rótulo 0413G05 Gestão de Negócios)",
+      "url": "https://plone.ifmg.edu.br/pontenova/cursos-1/superior-1/docs-curso-superior/PPCProcessosGerenciaisatualizado2024.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "IFRS Restinga – PPC Tecnólogo em Processos Gerenciais (Código Cine 0413G05)",
+      "url": "https://ifrs.edu.br/wp-content/uploads/2025/06/25_ANEXO_RESOLUCAO_25-2025_Alt-PPC_CTPG_Restinga.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "MTE – Classificação Brasileira de Ocupações (CBO 2002), consultada via cópia local dl/cbo/lista.csv e Base dos Dados (br_me_cbo)",
+      "url": "https://cbo.mte.gov.br/cbosite/pages/home.jsf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Base dos Dados – CBO 2002 (famílias e ocupações)",
+      "url": "https://basedosdados.org/dataset/br-me-cbo",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ILO – ISCO-08 structure and group definitions (títulos via ISCOGroups_en.csv da ESCO)",
+      "url": "https://www.ilo.org/public/english/bureau/stat/isco/isco08/",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ESCO – European Skills, Competences, Qualifications and Occupations (occupations_en.csv, cópia local dl/esco)",
+      "url": "https://esco.ec.europa.eu/en/classification/occupation_main",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 8.906/1994 – Estatuto da Advocacia e da OAB",
+      "url": "https://www.planalto.gov.br/ccivil_03/leis/l8906.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 4.769/1965 – Exercício da profissão de Administrador (CFA/CRAs)",
+      "url": "https://www.planalto.gov.br/ccivil_03/leis/l4769.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Decreto-Lei 9.295/1946 – Conselho Federal de Contabilidade e profissão de contador",
+      "url": "https://www.planalto.gov.br/ccivil_03/decreto-lei/del9295.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 1.411/1951 – Profissão de Economista (COFECON/CORECON)",
+      "url": "https://www.planalto.gov.br/ccivil_03/leis/l1411.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 7.377/1985 – Exercício da profissão de Secretário",
+      "url": "https://www.planalto.gov.br/ccivil_03/leis/L7377.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 9.261/1996 – Altera a Lei 7.377/1985 (Secretário-Executivo e Técnico em Secretariado)",
+      "url": "https://planalto.gov.br/ccivil_03/leis/L9261.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Decreto-Lei 806/1969 – Profissão de Atuário",
+      "url": "https://www.planalto.gov.br/ccivil_03/decreto-lei/1965-1988/del0806.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Decreto 66.408/1970 – Regulamenta o exercício da profissão de Atuário",
+      "url": "https://www.planalto.gov.br/ccivil_03/decreto/1970-1979/d66408.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "IBA – Manifestação do IBA sobre o PL 1542/20 (registro MIBA, papel da entidade)",
+      "url": "https://atuarios.org.br/manifestacao-do-iba-sobre-pl-1542-20",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Resolução Normativa CFA 505/2017 – Registro de tecnólogos em áreas conexas (Gestão de RH, Gestão Financeira, Gestão Pública, Logística)",
+      "url": "https://xn--caador-xua.ifsc.edu.br/documents/30681/2982447/Resolucao_Normativa___CFA___505_2017___Registro_Tecg_101925+%281%29.pdf/7f7e245e-f234-48aa-a491-fb136f04cd00",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Resolução CFA 649/2024 – Regulamento de registro do Sistema CFA/CRAs (via Legisweb)",
+      "url": "https://www.legisweb.com.br/legislacao/?id=480409",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CFA – Guia do Tecnólogo (registro de tecnólogos nos CRAs)",
+      "url": "https://cfa.org.br/wp-content/uploads/2018/02/guia_tecnologo.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Senado – e-Cidadania: ideia legislativa sobre habilitação de formados em Relações Internacionais (profissão não regulamentada)",
+      "url": "https://www12.senado.leg.br/ecidadania/visualizacaoideia?id=193826",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ead.com.br — Curso superior EaD mais procurado (Pedagogia EaD 733.253 matrículas, Censo 2024)",
+      "url": "https://www.ead.com.br/blog/curso-superior-ead-mais-procurado",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "MTE — CBO 2002, lista de famílias, ocupações e sinônimos (cópia local dl/cbo/lista.csv; cbo.mte.gov.br bloqueado)",
+      "url": "http://www.mtecbo.gov.br/cbosite/pages/home.jsf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ESCO v1.2 — occupations_en.csv e ISCOGroups_en.csv (cópia local dl/esco; esco.ec.europa.eu bloqueado)",
+      "url": "https://esco.ec.europa.eu/en/use-esco/download",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Planalto — Lei 14.038/2020 (profissão de historiador)",
+      "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/L14038.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Senado — Lei 6.664/1979 (profissão de geógrafo; fiscalização pelo CREA)",
+      "url": "https://legis.senado.leg.br/norma/548540/publicacao/15784021",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Planalto — Lei 6.888/1980 (profissão de sociólogo)",
+      "url": "https://www.planalto.gov.br/ccivil_03/leis/1980-1988/l6888.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "STF — julgamento RE 511.961 (diploma de jornalismo, 2009)",
+      "url": "https://noticias.stf.jus.br/postsnoticias/tv-justica-reapresenta-julgamento-sobre-exigencia-de-diploma-para-exercicio-do-jornalismo/",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Planalto — Lei 5.377/1967 (profissão de relações públicas)",
+      "url": "https://planalto.gov.br/ccivil_03/LEIS/1950-1969/L5377.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Planalto — Lei 4.084/1962 (profissão de bibliotecário)",
+      "url": "https://planalto.gov.br/ccivil_03/LEIS/1950-1969/L4084.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Planalto — Lei 3.857/1960 (Ordem dos Músicos do Brasil)",
+      "url": "https://www.planalto.gov.br/ccivil_03/leis/l3857.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Trilhante — STF Tema 738 (RE 795.467: inscrição na OMB não exigível)",
+      "url": "https://informativos.trilhante.com.br/temas-stf/tema-738-stf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Planalto — Lei 13.369/2016 (profissão de designer de interiores e ambientes)",
+      "url": "https://www.planalto.gov.br/ccivil_03/_Ato2015-2018/2016/Lei/L13369.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CONFEA — Designers de interiores querem estar no Sistema Confea/Crea (registro facultativo)",
+      "url": "https://www.confea.org.br/node/232038",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Câmara — Lei 4.680/1965 (profissão de publicitário)",
+      "url": "https://www2.camara.leg.br/legin/fed/lei/1960-1969/lei-4680-18-junho-1965-377833-normaatualizada-pl.html",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Senado — PL 1675/2023 (exercício da psicopedagogia)",
+      "url": "https://www25.senado.leg.br/web/atividade/materias/-/materia/156730",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Agência Senado — Regulamentação da psicopedagogia aprovada em primeiro turno na CAS (mar/2026)",
+      "url": "https://www12.senado.leg.br/noticias/materias/2026/03/19/regulamentacao-da-psicopedagogia-e-aprovada-em-primeiro-turno-na-cas",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "INEP – Apresentação dos resultados do Censo da Educação Superior 2023 (espelho Poder360) — host bloqueado na sessão",
+      "url": "https://static.poder360.com.br/2024/10/Inep-censo-Superior-4-outubro-2024.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "INEP – Censo da Educação Superior 2023: Notas Estatísticas (espelho ABMES)",
+      "url": "https://abmes.org.br/arquivos/documentos/notas_estatisticas_censo_escolar_2023-siteabmes.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Itatiaia – Saiba quais são os cursos superiores mais procurados do Brasil (Mapa Semesp 16ª ed., dados 2024: Agronomia 53.471 na rede pública presencial)",
+      "url": "https://www.itatiaia.com.br/educacao/saiba-quais-sao-os-cursos-superiores-mais-procurados-do-brasil/",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Estratégia Vestibulares – 25 cursos mais procurados do Brasil segundo o MEC (Química 37.090 e Física 29.903, licenciaturas, ano não informado)",
+      "url": "https://vestibulares.estrategia.com/portal/enem-e-vestibulares/vestibulares/cursos-mais-procurados-do-brasil-segundo-o-mec/",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2211-05 Biólogo (família 2211 Biólogos e afins) — espelho VRI Consulting",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=221105",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2132-05 Químico (família 2132 Químicos) — espelho VRI Consulting",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=213205",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2131-25 Físico (família 2131 Físicos) — espelho VRI Consulting",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=213125",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2111-15 Matemático (família 2111; subgrupo 211 lista 2112 Profissionais de estatística) — espelho VRI Consulting",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=211115",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2134-05 Geólogo e 2134-40 Oceanógrafo — espelho VRI Consulting",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=213405",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2221-10 Engenheiro agrônomo (família 2221 Engenheiros agrossilvipecuários) — espelho VRI Consulting",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=222110",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2233-10 Zootecnista (família 2233 Veterinários e zootecnistas) — espelho VRI Consulting",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=223310",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2140-10 Tecnólogo em meio ambiente (sinônimo: tecnólogo em gestão ambiental) — espelho VRI Consulting",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=214010",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2711-10 Tecnólogo em gastronomia (família 2711 Chefes de cozinha e afins) — espelho VRI Consulting",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=271110",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 1225-20 Turismólogo (família 1225) — espelho VRI Consulting",
+      "url": "https://vriconsulting.com.br/trabalhista/ocupacao.php?cbo=122520",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 1415-05 Gerente de hotel (sinônimo: tecnólogo em hotelaria) e 1415-25 Tecnólogo em gestão de turismo — espelho VRI Consulting",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=141505",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 3548-05 Técnico em turismo (família 3548 Técnicos em serviços de turismo e organização de eventos) — espelho NCM Buscador",
+      "url": "https://buscadorncm.com.br/cbo/354805",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2526-05 Gestor em segurança (sinônimos: tecnólogo em gestão de segurança empresarial/privada) — espelho VRI Consulting",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=252605",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2153-05 Piloto de aeronaves (família 2153 Profissionais da pilotagem aeronáutica) — espelho VRI Consulting",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=215305",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 6.684/1979 – profissões de Biólogo e Biomédico; CFBio/CRBio (coletânea CFBio)",
+      "url": "https://cfbio.gov.br/wp-content/uploads/2019/09/Legislacao-do-Biologo.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 2.800/1956 – Conselhos Federal e Regionais de Química (Senado)",
+      "url": "https://legis.senado.leg.br/norma/544623",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 4.739/1965 – profissão de estatístico (Câmara)",
+      "url": "https://www2.camara.leg.br/legin/fed/lei/1960-1969/lei-4739-15-julho-1965-368408-norma-pl.html",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 4.076/1962 – profissão de geólogo (Planalto)",
+      "url": "https://planalto.gov.br/ccivil_03/LEIS/1950-1969/L4076.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 5.550/1968 – profissão de zootecnista (Senado)",
+      "url": "https://legis.senado.leg.br/norma/547420/publicacao/15642150",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 12.591/2012 – reconhece a profissão de Turismólogo (Planalto)",
+      "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/L12591.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 11.760/2008 – profissão de Oceanógrafo (Câmara)",
+      "url": "https://www2.camara.leg.br/legin/fed/lei/2008/lei-11760-31-julho-2008-578735-publicacaooriginal-101634-pl.html",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ESCO – agronomist (ISCO 2132), espelho World of Taxonomy",
+      "url": "https://worldoftaxonomy.com/codes/esco_occupations/c40ef517-d4ab-4932-b184-9c2ea5b24fe2",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ESCO – chef, espelho World of Taxonomy (crosswalk ISCO-08)",
+      "url": "https://worldoftaxonomy.com/crosswalks/esco_occupations/1009be17-7efd-45f1-a033-566bf179c588/isco_08",
+      "accessedAt": "2026-11-02"
     }
   ],
   "naoConferido": [
@@ -2534,6 +7466,45 @@
     "[06-07-engenharia-e-tic] ISCO-08: 2263 Environmental and occupational health and hygiene professionals (engenheiro de segurança do trabalho) e 2164 Town and traffic planners (urbanista) não conferidos e deixados fora; o título de 3257 não foi citado literalmente na fonte (só 'Environmental Health...",
     "[06-07-engenharia-e-tic] ESCO: URIs não obtidas (campo esco vazio) para civil engineer, architect, electrical engineer, industrial engineer, chemical engineer, environmental engineer, automation engineer, ICT network engineer, ICT security consultant/administrator, data scientist, occupational he...",
     "[06-07-engenharia-e-tic] Conselhos: Lei 5.194/1966 (CONFEA/CREA), Resolução CONFEA 313/1986 (registro de tecnólogos) e Lei 7.410/1985 (segurança do trabalho) citadas de memória; só a Lei 12.378/2010 (CAU/BR) apareceu nas fontes.",
-    "[06-07-engenharia-e-tic] Excluídos: Logística (CINE 1041, Serviços — tratar no grupo de Negócios/Serviços), Engenharia Agrícola (CBO 2221-05 conferida, mas CINE provável na área 08 Agricultura e baixo volume), Engenharia de Alimentos (0721, baixo volume); Eletrotécnica virou alias de Engenharia E..."
+    "[06-07-engenharia-e-tic] Excluídos: Logística (CINE 1041, Serviços — tratar no grupo de Negócios/Serviços), Engenharia Agrícola (CBO 2221-05 conferida, mas CINE provável na área 08 Agricultura e baixo volume), Engenharia de Alimentos (0721, baixo volume); Eletrotécnica virou alias de Engenharia E...",
+    "[04-negocios-administracao-e-direito] Nomes das áreas detalhadas CINE 0411, 0412, 0414, 0415, 0416, 0311, 0312 e 0542 vêm da CINE Brasil 2018/CINE-F 2013 de memória; só 0413 'Gestão e administração' confirmado (PPC IFMG). Manual do INEP bloqueado pela rede. Códigos de 4 dígitos derivados dos rótu...",
+    "[04-negocios-administracao-e-direito] Detalhe CINE 0312 nomeado 'Ciências sociais e políticas' com base em resumo de documento da UNIR (não lido na íntegra); CINE-F 2013 chamaria 'Ciência política e educação cívica'.",
+    "[04-negocios-administracao-e-direito] Matrículas 2024 de todos os ramos calculadas (presencial + EaD) a partir do espelho local dos microdados INEP (dl/inep), não do Resumo Técnico. Só Direito, Administração e Ciências Contábeis cruzados com a imprensa (CNN 652,9 mil/653,1 mil; AMDJUS 322.837 vs ...",
+    "[04-negocios-administracao-e-direito] Ranks 2024 calculados sobre todos os rótulos CINE do espelho (Pedagogia 1º, Direito 2º, Administração 3º, Enfermagem 4º — coerentes com a imprensa); ranks acima de 10 não têm confirmação externa.",
+    "[04-negocios-administracao-e-direito] Res. CFA 649/2024: lista vigente de tecnólogos registráveis no CRA não lida (sites bloqueados). Base: RN CFA 505/2017 (Gestão de RH, Gestão Financeira, Gestão Pública, Logística). Marketing, Processos Gerenciais, Gestão Comercial, Comércio Exterior e Gestão d...",
+    "[04-negocios-administracao-e-direito] CBO consultada em cópia local (dl/cbo/lista.csv e Base dos Dados), não em cbo.mte.gov.br; títulos de família conferidos nessa cópia. Títulos com erro de grafia na CBO (2525, 2532) foram normalizados.",
+    "[04-negocios-administracao-e-direito] ESCO: URIs tiradas do CSV local occupations_en.csv (versão da ESCO não verificada); não conferidas em esco.ec.europa.eu, bloqueado pela rede.",
+    "[04-negocios-administracao-e-direito] ISCO-08: títulos tirados de ISCOGroups_en.csv (ESCO), não do site da OIT (bloqueado).",
+    "[04-negocios-administracao-e-direito] Relações Internacionais: sem família CBO própria; 3543 (Analistas de comércio exterior) e 1114 (Dirigentes do serviço público, inclui carreira diplomática) usados como aproximação.",
+    "[04-negocios-administracao-e-direito] Gestão Pública: matrículas só do rótulo 'Gestão pública' (79.346); 'Administração pública' (17.378, 85º) não somado embora coberto pelo mesmo ramo.",
+    "[04-negocios-administracao-e-direito] Processos Gerenciais: correspondência com o rótulo CINE 'Gestão de negócios' (0413G05) confirmada em PPCs do IFMG e IFRS, não na tabela oficial do INEP.",
+    "[04-negocios-administracao-e-direito] Gestão de Recursos Humanos: correspondência com o rótulo CINE 'Gestão de pessoas' (0413G07) inferida do CNCST (nomes equivalentes) e do espelho; não confirmada em documento do INEP.",
+    "[04-negocios-administracao-e-direito] Secretariado Executivo: projeto de lei de criação de Conselho Federal de Secretariado não confirmado como aprovado; registro continua na SRTE/MTE conforme Lei 7.377/1985.",
+    "[04-negocios-administracao-e-direito] Publicidade e Propaganda (CINE 0414P01, área 04, 48.652 matrículas em 2024) não incluído aqui por ser esperado no grupo de Comunicação; conferir na consolidação para evitar lacuna.",
+    "[04-negocios-administracao-e-direito] Orçamento de busca web da sessão esgotou-se antes de confirmar os nomes CINE; WebFetch bloqueado para gov.br, legisweb, normasbrasil, cnnbrasil, unirio, ufes e unir.",
+    "[01-02-03-educacao-humanidades-artes-comunicacao] Matrículas 2024/2023 vêm de agregação local dos microdados do INEP feita por outro agente (dl/inep), não da Sinopse/Resumo Técnico: Pedagogia dá 887.502 contra 878,7 mil na CNN Brasil (~1%); todos os enrollment estão naoConferido.",
+    "[01-02-03-educacao-humanidades-artes-comunicacao] Rank em enrollment é a posição do rótulo CINE principal no ranking 2024 dos microdados locais, não a posição da soma de rótulos; ramos somados (Letras, Design, Artes Visuais etc.) ficariam mais acima.",
+    "[01-02-03-educacao-humanidades-artes-comunicacao] Nomes das áreas detalhadas CINE Brasil não conferidos no manual do INEP (hosts bloqueados): 0115, 0231 e 0312 são descritivos (microdados colocam Geografia, Sociologia, Antropologia e Ciência Política em 0312); demais seguem a ISCED-F 2013.",
+    "[01-02-03-educacao-humanidades-artes-comunicacao] Títulos de famílias CBO conferidos só na cópia local lista.csv (cbo.mte.gov.br bloqueado); família 3751 (Designer de interiores de nível médio) não constava na cópia e foi omitida.",
+    "[01-02-03-educacao-humanidades-artes-comunicacao] Jornalismo: registro profissional no MTE (DL 972/1969) marcado como exigido, mas após o RE 511.961/2009 há divergência sobre sua obrigatoriedade; não conferido no acórdão.",
+    "[01-02-03-educacao-humanidades-artes-comunicacao] Ciências Sociais: art. 6º da Lei 6.888/1980 (registro no MTE) foi revogado pela MP 905/2019, que caducou (MP 955/2020); vigência atual do registro não conferida no texto consolidado.",
+    "[01-02-03-educacao-humanidades-artes-comunicacao] Psicopedagogia: notícias dizem que o PL 1675/2023 foi à sanção em set/2026; publicação de lei não conferida no DOU/Planalto. Mantido council null.",
+    "[01-02-03-educacao-humanidades-artes-comunicacao] Design de Interiores: registro facultativo no CFT citado por fontes secundárias; não conferido no CFT. PLs 2.375/2022 e 1.271/2023 (registro obrigatório) sem status conferido.",
+    "[01-02-03-educacao-humanidades-artes-comunicacao] ESCO: URIs conferidas na cópia local v1.2 (occupations_en.csv); ESCO não tem 'film director', 'theologian' nem 'product designer', usados equivalentes (video and motion picture producer, minister of religion, industrial designer).",
+    "[01-02-03-educacao-humanidades-artes-comunicacao] Bibliotecário: Lei 9.674/1998 e Decreto 56.725/1965 citados por fontes secundárias; COREM (Lei 7.287/1984) e registro de arquivista (Lei 6.546/1978) vêm de conhecimento geral, não conferidos nesta sessão.",
+    "[01-02-03-educacao-humanidades-artes-comunicacao] Cota de busca web da sessão esgotou antes de conferir: Teologia 48 mil matrículas em fonte secundária, nomes CINE 0221/0222/0223 e Lei 14.195/2021 (tradutor público).",
+    "[05-08-10-ciencias-agrarias-servicos] Rede da sessão bloqueou download.inep.gov.br, gov.br, ps.ufes.br, unirio.br, static.poder360.com.br, anais-siiepe.ufpel.edu.br, ilo.org, esco.ec.europa.eu e worldoftaxonomy.com; tudo veio de resumos de busca. Cota de ~35 buscas esgotada antes de fechar matríc...",
+    "[05-08-10-ciencias-agrarias-servicos] Matrículas: nenhum total nacional por curso foi localizado para os 16 ramos (Sinopse/Painel INEP inacessíveis). Todos ficam com matriculas 0 e naoConferido true; rank 0. Conferir Sinopse Estatística 2023 (tabela por curso) ou Painel da Educação Superior.",
+    "[05-08-10-ciencias-agrarias-servicos] Agronomia: Semesp (Mapa 16ª ed., dados 2024, via Itatiaia) dá 53.471 matrículas só na rede pública presencial (2º curso público); outra edição cita 51.142. Total nacional (pública+privada, presencial+EaD) não localizado.",
+    "[05-08-10-ciencias-agrarias-servicos] Química (37.090) e Física (29.903) citados por Estratégia Vestibulares referem-se às licenciaturas e sem ano; não foram usados nos campos (bacharelados).",
+    "[05-08-10-ciencias-agrarias-servicos] Códigos CINE detalhados (0511, 0521, 0531, 0532, 0533, 0541, 0542, 0811, 0821, 1013, 1015, 1032, 1041) e nomes seguem a ISCED-F 2013 adotada pela CINE Brasil; tabela oficial (ps.ufes.br/INEP) não abriu. Conferir Gestão Ambiental (0521 vs 0712), Segurança Públ...",
+    "[05-08-10-ciencias-agrarias-servicos] Títulos de família CBO conferidos em espelhos (VRI Consulting/NCM Buscador): 2211, 2131, 2132, 2111, 2112, 2134, 2221, 2233, 2711, 1225, 3548, 2153. Não conferidos: 2140 'Engenheiros ambientais e afins', 1415 (título exato), 2526 'Gestores em segurança', 5173...",
+    "[05-08-10-ciencias-agrarias-servicos] ISCO-08: todos os títulos foram escritos de memória (ilo.org bloqueado); códigos 2131, 2113, 2111, 2120, 2114, 2132, 2133, 3434, 5120, 1439, 4221, 5113, 1411, 3332, 3355, 5412, 5414, 3153 a conferir na tabela oficial.",
+    "[05-08-10-ciencias-agrarias-servicos] ESCO: URI de 'agronomist' (c40ef517-...) vem de espelho World of Taxonomy (snippet); URI de 'chef' (1009be17-...) vem só de página de crosswalk no mesmo espelho e seu rótulo não foi lido diretamente. Demais ramos ficaram sem ESCO.",
+    "[05-08-10-ciencias-agrarias-servicos] Leis conferidas por snippet oficial (Senado/Câmara/Planalto): 2.800/1956, 4.739/1965, 4.076/1962, 5.550/1968, 12.591/2012, 11.760/2008, 6.684/1979. Lei 5.194/1966 (CREA), Lei 8.623/1993 (guia), Lei 11.771/2008, Lei 13.475/2017 e RBAC 61 (ANAC) citados de memó...",
+    "[05-08-10-ciencias-agrarias-servicos] Turismo: Lei 12.591/2012 não cria conselho; 'council' registra o Cadastur como cadastro (obrigatório só para guia de turismo e prestadores), com registrationRequired false para o turismólogo.",
+    "[05-08-10-ciencias-agrarias-servicos] Ciências Aeronáuticas: 'council' registra a ANAC (licença de piloto, não conselho de classe); decisão de modelagem a validar com o produto.",
+    "[05-08-10-ciencias-agrarias-servicos] Oceanografia e Agroecologia não viraram ramos próprios (poucas matrículas): Oceanografia é alias de Geologia (mesma CBO 2134) e Agroecologia é alias de Agronomia; rever se o produto quiser opções separadas.",
+    "[05-08-10-ciencias-agrarias-servicos] Vizinhos citados de outros grupos ainda não consolidados: direito, administracao, marketing, publicidade-e-propaganda, gestao-publica, logistica, ciencias-economicas, ciencias-atuariais, ciencias-contabeis, engenharia-de-minas, engenharia-aeronautica, engenha..."
   ]
 }
