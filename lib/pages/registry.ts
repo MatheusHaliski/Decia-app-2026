@@ -91,7 +91,7 @@ export const PAGES: readonly PageEntry[] = [
   p("/messages/[conversationId]", "app/(shell)/messages/[conversationId]/page.tsx", "page.conversation", ["RF46", "RF13"], logged("E"), "sessao-decia", "A", { note: "proposal" }),
   p("/find", "app/(shell)/find/page.tsx", "nav.find", ["RF47", "RF48", "RF27", "RF33", "RF20"], logged("E"), "buscar", "A", { tabs: FIND_TABS }),
   // Meu trabalho (§2.2)
-  p("/profile", "app/(shell)/profile/page.tsx", "nav.profile", ["RF6", "RF19", "RF12", "RF25", "RF44", "RF45", "RF40"], logged("E"), "perfil", "B", { tabs: PROFILE_TABS }),
+  p("/profile", "app/(shell)/profile/page.tsx", "nav.profile", ["RF6", "RF19", "RF12", "RF25", "RF44", "RF45", "RF40", "RF75"], logged("E"), "perfil", "B", { tabs: PROFILE_TABS }),
   p("/u/[username]", "app/(shell)/u/[username]/page.tsx", "page.userProfile", ["RF16", "RF6", "RF18", "RF19"], everyone("V"), "perfil", "B", { tabs: PROFILE_TABS }),
   p("/tasks", "app/(shell)/tasks/page.tsx", "nav.tasks", ["RF41", "RF44", "RF18", "RF13"], logged("E"), "acervo", "A"),
   // visitante lê só tarefas PUBLICA (perfis públicos, Mural, Buscar — RF16/RF17.CA04/RF27); o resto 403 no TaskDetail (D-93)
@@ -112,7 +112,7 @@ export const PAGES: readonly PageEntry[] = [
   p("/decia", "app/(shell)/decia/page.tsx", "nav.decia", ["RF29", "RF37"], logged("E"), "sessao-decia", "A", { tabs: DECIA_TABS }),
   p("/decia/decisoes/[decisionId]", "app/(shell)/decia/decisoes/[decisionId]/page.tsx", "page.decision", ["RF29"], logged("E"), "sessao-decia", "A"),
   p("/decia/[sessionId]", "app/(shell)/decia/[sessionId]/page.tsx", "page.session", ["RF29", "RF13", "RF37", "RF46"], logged("E"), "sessao-decia", "A", { tabs: SESSION_TABS, note: "sessionCards" }),
-  p("/insights", "app/(shell)/insights/page.tsx", "nav.insights", ["RF43", "RF20", "RF26", "RF50"], logged("V"), "insights-ia", "E", { tabs: INSIGHTS_TABS }),
+  p("/insights", "app/(shell)/insights/page.tsx", "nav.insights", ["RF43", "RF20", "RF26", "RF50", "RF75"], logged("V"), "insights-ia", "E", { tabs: INSIGHTS_TABS }),
   // Editores de peças (PLANO_ONDAS 17/10/2026, Ondas 4 e 5): páginas-esqueleto com os CAs até o editor existir; RF51/RF69–RF72 são transversais às duas
   p("/letters", "app/(shell)/letters/page.tsx", "nav.letters", ["RF52", "RF53", "RF54", "RF55", "RF56", "RF51", "RF69", "RF70", "RF71", "RF72"], logged("E"), "criar-tarefa", "A"),
   p("/drawings", "app/(shell)/drawings/page.tsx", "nav.drawings", ["RF57", "RF58", "RF59", "RF60", "RF61", "RF62", "RF63", "RF64", "RF65", "RF66", "RF67", "RF68", "RF73", "RF74", "RF51", "RF69", "RF70", "RF71", "RF72"], logged("E"), "mesa", "A"),
