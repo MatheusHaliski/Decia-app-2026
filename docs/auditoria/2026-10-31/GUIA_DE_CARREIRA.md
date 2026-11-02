@@ -77,7 +77,7 @@ Onde: **C** cadastro · **P** primeiro acesso (até 5 min, pode pular) · **X** 
 | a3 | A mudança foi planejada ou inesperada? | Escolha | Não | P | Eixo "situação" do modelo 4S (Schlossberg); ajusta o tom do Copilot. Privada. |
 | a4 | Último cargo ou área (autocompletar CBO) | CBO | Não* | P | Ponto de partida das lacunas. *Dispensada no primeiro emprego. |
 | a5 | Quer registrar uma pausa na carreira? (cuidado de familiar, estudos, corte de vaga, mudança, outro) | Escolha + texto | Não | X (ao montar o perfil) | Categoria neutra, como o LinkedIn Career Break. Privada por padrão. |
-| b1 | **Profissão preferida** (`User.preferredOccupation`, CBO/ESCO + rótulo; até 4 áreas secundárias no perfil de carreira) | CBO/ESCO + "não sei" | Sim | P (ou Conta) | Define o **escopo** do guia e da IA (RF75.CA19): perguntas, tarefas, rubricas, respostas, pessoas e caminhos vêm do pacote de domínio dessa profissão. |
+| b1 | **Profissão preferida** (`User.preferredOccupation`, CBO/ESCO + rótulo; até 4 áreas secundárias no perfil de carreira) | Catálogo de ramos (`contracts/career/academic-fields.json`) + "ainda não sei" | Sim | C (opcional, D-148), P, Conta | Define o **escopo** do guia e da IA (RF75.CA19): perguntas, tarefas, rubricas, respostas, pessoas e caminhos vêm do pacote de domínio dessa profissão. |
 | b2 | Teste de interesses (30 itens, Mini-IP RIASEC) | Questionário | Não | X (se "não sei") | Sugere 3–5 famílias de ocupação com justificativa. |
 | b3 | Em quanto tempo quer estar trabalhando? | Faixas | Sim | P | Define cadência e prazo das tarefas. |
 | b4 | Regime (CLT, PJ, estágio, temporário, freela, concurso) | Múltipla | Não | P | Filtra sugestões (ex.: edital de concurso vira tarefa). |
@@ -125,8 +125,8 @@ Onde: **C** cadastro · **P** primeiro acesso (até 5 min, pode pular) · **X** 
 
 ### 4.5 Ordem
 
-- **Cadastro:** a1 + dados de conta atuais. Nada mais.
-- **Primeiro acesso (tela "Vamos montar seu guia", pulável, retomável):** b1, b3, b4, d1, e1, e2, f3, f4. Mostra o ganho de cada resposta ("com isso já posso sugerir sua primeira tarefa").
+- **Cadastro:** a1 + b1 (opcional, com "ainda não sei"; D-148) + dados de conta atuais. Nada mais.
+- **Primeiro acesso (tela "Vamos montar seu guia", pulável, retomável):** b1 (só confirma ou completa o que veio do cadastro), b3, b4, d1, e1, e2, f3, f4. Mostra o ganho de cada resposta ("com isso já posso sugerir sua primeira tarefa").
 - **Contextuais:** b2 ao responder "não sei"; b8 ao ver sugestões; c3 por competência; d6 e e6 em cada sugestão; f5/f7 na primeira publicação; c6 semanal; a5 ao montar o perfil.
 - **Configurações:** tudo revisável em Carreira, IA e Privacidade (§6).
 
@@ -143,7 +143,7 @@ Decisão de 31/10/2026: a pessoa tem **um** campo `profissão_preferida` na pró
 | Pessoas semelhantes e caminhos | por competências declaradas | por ocupação igual ou vizinha na CBO/ESCO, com a explicação da afinidade |
 | Fallback | oferece o teste de interesses (b2) e segue genérico | trocar a profissão regenera o plano e preserva as evidências |
 
-Pacotes iniciais (E4): Arquitetura e Urbanismo, Engenharia Civil, Direito, Administração, Desenvolvimento de Software, Design, Contabilidade e genérico. Cada pacote é dado (tabela `occupation_packs`, versionada), não código: adicionar uma profissão não exige nova tela. O campo não é sinal de busca de emprego (D-147): um Empregado que quer crescer na própria área também o preenche.
+Pacotes: um por ramo do catálogo de ramos acadêmicos (`contracts/career/academic-fields.json`, pesquisado em 02/11/2026 por grande área CINE Brasil: saúde, engenharias e TIC, negócios e direito, educação/humanidades/artes/comunicação, ciências/agrárias/serviços) mais o genérico; os arquivos ficam em `contracts/career/occupation-packs/` (esquema `occupation-pack.schema.json`, validador `npm run career:validate`) e são semeados em `occupation_packs` (E4). Cada pacote é dado versionado, não código: adicionar uma profissão não exige nova tela. O campo não é sinal de busca de emprego (D-147): um Empregado que quer crescer na própria área também o preenche.
 
 ## 5. Requisito funcional: RF75 Work Station Career Guidance
 

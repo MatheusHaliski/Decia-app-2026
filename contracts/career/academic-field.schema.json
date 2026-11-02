@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "contracts/career/academic-field.schema.json",
+  "title": "Catálogo de ramos acadêmicos — opções do campo profissão preferida (RF75.CA19)",
+  "description": "Dado versionado lido pelo cadastro, por Conta e pelo guia inicial (GUIA_DE_CARREIRA §4.1 b1). Cada ramo tem código estável (slug), rótulos pt-BR/en/es, área CINE Brasil (MEC/INEP), graus, aliases para o autocompletar, famílias CBO (MTE) e ISCO-08/ESCO, conselho profissional, matrículas (INEP), relevância dos editores Letters e Drawings, dados que nunca entram em portfólio e ramos vizinhos. Validado por scripts/career/validar-pacotes.mjs.",
+  "type": "object",
+  "required": ["schemaVersion", "version", "generatedAt", "fields", "sources"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "version": { "type": "string", "pattern": "^\\d{4}\\.\\d{2}\\.\\d+$", "description": "AAAA.MM.N — versão do dado, não do esquema" },
+    "generatedAt": { "$ref": "#/$defs/date" },
+    "fields": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/field" } },
+    "sources": { "type": "array", "items": { "$ref": "#/$defs/source" } },
+    "naoConferido": { "type": "array", "items": { "type": "string", "minLength": 2, "maxLength": 300 } }
+  },
+  "$defs": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "minLength": 2, "maxLength": 60 },
+    "date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "shortText": { "type": "string", "minLength": 2, "maxLength": 200 },
+    "label": {
+      "type": "object",
+      "required": ["pt-BR", "en", "es"],
+      "additionalProperties": false,
+      "properties": {
+        "pt-BR": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "en": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "es": { "type": "string", "minLength": 2, "maxLength": 80 }
+      }
+    },
+    "coded": {
+      "type": "object",
+      "required": ["code", "title"],
+      "additionalProperties": false,
+      "properties": {
+        "code": { "type": "string", "pattern": "^\\d{4}$" },
+        "title": { "$ref": "#/$defs/shortText" }
+      }
+    },
+    "esco": {
+      "type": "object",
+      "required": ["uri", "label"],
+      "additionalProperties": false,
+      "properties": {
+        "uri": { "type": "string", "pattern": "^https?://data\\.europa\\.eu/esco/(occupation|skill|isco)/[A-Za-z0-9.-]+$" },
+        "label": { "$ref": "#/$defs/shortText" }
+      }
+    },
+    "council": {
+      "type": ["object", "null"],
+      "required": ["name", "registrationRequired"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "$ref": "#/$defs/shortText" },
+        "federal": { "$ref": "#/$defs/shortText" },
+        "law": { "$ref": "#/$defs/shortText" },
+        "registrationRequired": { "type": "boolean" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": ["title", "url", "accessedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string", "minLength": 2, "maxLength": 300 },
+        "url": { "type": "string", "pattern": "^(https?://\\S+|docs/\\S+)$", "maxLength": 500 },
+        "accessedAt": { "$ref": "#/$defs/date" }
+      }
+    },
+    "field": {
+      "type": "object",
+      "required": ["code", "label", "cine", "degrees", "aliases", "cbo", "isco08", "esco", "council", "enrollment", "editors", "sensitiveData", "neighbors"],
+      "additionalProperties": false,
+      "properties": {
+        "code": { "$ref": "#/$defs/slug" },
+        "label": { "$ref": "#/$defs/label" },
+        "cine": {
+          "type": "object",
+          "required": ["broad", "broadName", "detail", "detailName"],
+          "additionalProperties": false,
+          "properties": {
+            "broad": { "type": "string", "pattern": "^\\d{2}$" },
+            "broadName": { "$ref": "#/$defs/shortText" },
+            "detail": { "type": "string", "pattern": "^(\\d{3,4})?$" },
+            "detailName": { "type": "string", "maxLength": 200 }
+          }
+        },
+        "degrees": { "type": "array", "minItems": 1, "maxItems": 3, "uniqueItems": true, "items": { "enum": ["bacharelado", "licenciatura", "tecnologo"] } },
+        "aliases": { "type": "array", "minItems": 1, "maxItems": 24, "uniqueItems": true, "items": { "type": "string", "minLength": 2, "maxLength": 80 } },
+        "cbo": { "type": "array", "maxItems": 6, "items": { "$ref": "#/$defs/coded" } },
+        "isco08": { "type": "array", "maxItems": 4, "items": { "$ref": "#/$defs/coded" } },
+        "esco": { "type": "array", "maxItems": 4, "items": { "$ref": "#/$defs/esco" } },
+        "council": { "$ref": "#/$defs/council" },
+        "enrollment": {
+          "type": "object",
+          "required": ["source", "matriculas", "rank", "year", "naoConferido"],
+          "additionalProperties": false,
+          "properties": {
+            "source": { "type": "string", "maxLength": 200 },
+            "matriculas": { "type": "integer", "minimum": 0 },
+            "rank": { "type": "integer", "minimum": 0 },
+            "year": { "type": "integer", "minimum": 2015, "maximum": 2030 },
+            "naoConferido": { "type": "boolean" }
+          }
+        },
+        "editors": {
+          "type": "object",
+          "required": ["letters", "drawings"],
+          "additionalProperties": false,
+          "properties": {
+            "letters": { "enum": ["alta", "media", "baixa"] },
+            "drawings": { "enum": ["alta", "media", "baixa"] }
+          }
+        },
+        "sensitiveData": { "type": "array", "maxItems": 10, "items": { "$ref": "#/$defs/shortText" } },
+        "neighbors": { "type": "array", "maxItems": 8, "uniqueItems": true, "items": { "$ref": "#/$defs/slug" } },
+        "group": { "type": "string", "maxLength": 80, "description": "grupo CINE da pesquisa de origem (preenchido na consolidação)" },
+        "notes": { "type": "string", "maxLength": 300 }
+      }
+    }
+  }
+}

@@ -1,0 +1,2539 @@
+{
+  "schemaVersion": 1,
+  "version": "2026.11.0",
+  "generatedAt": "2026-11-02",
+  "fields": [
+    {
+      "code": "arquitetura-e-urbanismo",
+      "label": {
+        "pt-BR": "Arquitetura e Urbanismo",
+        "en": "Architecture and Urbanism",
+        "es": "Arquitectura y Urbanismo"
+      },
+      "cine": {
+        "broad": "07",
+        "broadName": "Engenharia, produção e construção",
+        "detail": "0731",
+        "detailName": "Arquitetura e urbanismo"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Arquitetura e Urbanismo",
+        "Arquitetura",
+        "Arquiteto",
+        "Arquiteta",
+        "Arquiteto e urbanista",
+        "Arquiteta e urbanista",
+        "Urbanista",
+        "Arquiteto de interiores",
+        "Planejamento urbano",
+        "Paisagismo",
+        "Projetista de arquitetura"
+      ],
+      "cbo": [
+        {
+          "code": "2141",
+          "title": "Arquitetos e urbanistas"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2161",
+          "title": "Building architects"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CAU/UF",
+        "federal": "CAU/BR",
+        "law": "Lei 12.378/2010",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 — número não obtido (portal bloqueado, cota de busca esgotada)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "alta"
+      },
+      "sensitiveData": [
+        "projetos de clientes sob NDA",
+        "plantas residenciais com endereço e dados do morador",
+        "documentos de aprovação em prefeitura com dados pessoais",
+        "imagens do interior de residências sem autorização"
+      ],
+      "neighbors": [
+        "engenharia-civil",
+        "construcao-de-edificios",
+        "engenharia-ambiental-e-sanitaria"
+      ],
+      "notes": "Profissão própria desde a Lei 12.378/2010 (CAU). Último número oficial visto: >167 mil matrículas em 2016 (Censo/MEC, via ead.com.br).",
+      "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "biomedicina",
+      "label": {
+        "pt-BR": "Biomedicina",
+        "en": "Biomedical Science",
+        "es": "Biomedicina"
+      },
+      "cine": {
+        "broad": "09",
+        "broadName": "Saúde e bem-estar",
+        "detail": "0914",
+        "detailName": "Tecnologias de diagnóstico e tratamento médico"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Biomedicina",
+        "Biomédico",
+        "Biomédica",
+        "Ciências Biomédicas",
+        "Análises clínicas"
+      ],
+      "cbo": [
+        {
+          "code": "2212",
+          "title": "Biomédicos"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2131",
+          "title": "Biologists, botanists, zoologists and related professionals"
+        },
+        {
+          "code": "3212",
+          "title": "Medical and pathology laboratory technicians"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CRBM",
+        "federal": "CFBM",
+        "law": "Lei 6.684/1979 (e Lei 7.017/1982)",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (Resumo Técnico, Gráfico 9 – associação rótulo/número por extração textual)",
+        "matriculas": 202323,
+        "rank": 0,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "laudos e resultados de exames identificáveis (Código de Ética do Profissional Biomédico – Res. CFBM 330/2020; LGPD art. 5º, II)"
+      ],
+      "neighbors": [
+        "farmacia",
+        "medicina",
+        "enfermagem"
+      ],
+      "notes": "Área detalhada 0914 presumida (rótulo 0914B01 não verificado). Res. CFBM 330/2020 revogou a 198/2011.",
+      "group": "09-saude-e-bem-estar"
+    },
+    {
+      "code": "ciencia-de-dados",
+      "label": {
+        "pt-BR": "Ciência de Dados e Inteligência Artificial",
+        "en": "Data Science and Artificial Intelligence",
+        "es": "Ciencia de Datos e Inteligencia Artificial"
+      },
+      "cine": {
+        "broad": "06",
+        "broadName": "Computação e Tecnologias da Informação e Comunicação (TIC)",
+        "detail": "",
+        "detailName": ""
+      },
+      "degrees": [
+        "bacharelado",
+        "tecnologo"
+      ],
+      "aliases": [
+        "Ciência de Dados e Inteligência Artificial",
+        "Ciência de Dados",
+        "Cientista de dados",
+        "Inteligência Artificial",
+        "Engenheiro de machine learning",
+        "Engenheira de dados",
+        "Engenheiro de dados",
+        "Analista de dados",
+        "Big Data",
+        "Aprendizado de Máquina",
+        "Banco de Dados",
+        "Administrador de banco de dados",
+        "Business Intelligence",
+        "BI",
+        "Analista de BI"
+      ],
+      "cbo": [
+        {
+          "code": "2124",
+          "title": "Analistas de tecnologia da informação"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2511",
+          "title": "Systems analysts"
+        },
+        {
+          "code": "2521",
+          "title": "Database designers and administrators"
+        }
+      ],
+      "esco": [],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 — número não obtido (portal bloqueado, cota de busca esgotada)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "datasets com dados pessoais ou sensíveis (LGPD)",
+        "modelos e métricas internas de empregadores",
+        "chaves de acesso a bancos de dados",
+        "dados de saúde ou financeiros de terceiros"
+      ],
+      "neighbors": [
+        "engenharia-de-software",
+        "redes-de-computadores"
+      ],
+      "notes": "Ramo novo, em expansão (EAD). Área CINE incerta (0688, 0613 ou 0542); sem CBO específica confirmada para cientista de dados.",
+      "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "construcao-de-edificios",
+      "label": {
+        "pt-BR": "Construção de Edifícios",
+        "en": "Building Construction",
+        "es": "Construcción de Edificios"
+      },
+      "cine": {
+        "broad": "07",
+        "broadName": "Engenharia, produção e construção",
+        "detail": "0732",
+        "detailName": "Construção civil"
+      },
+      "degrees": [
+        "tecnologo"
+      ],
+      "aliases": [
+        "Construção de Edifícios",
+        "Tecnólogo em Construção de Edifícios",
+        "Tecnólogo em Construção Civil",
+        "Construção Civil (tecnólogo)",
+        "Edificações",
+        "Técnico em Edificações",
+        "Gestão de Obras",
+        "Mestre de obras",
+        "Tecnólogo em Estradas",
+        "Encarregado de obras"
+      ],
+      "cbo": [
+        {
+          "code": "2142",
+          "title": "Engenheiros civis e afins"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "3112",
+          "title": "Civil engineering technicians"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CREA",
+        "federal": "CONFEA",
+        "law": "Lei 5.194/1966",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 — número não obtido (portal bloqueado, cota de busca esgotada)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "alta"
+      },
+      "sensitiveData": [
+        "projetos e orçamentos de clientes sob NDA",
+        "plantas com endereço e dados de proprietários",
+        "fotos de obra que exponham terceiros ou a segurança de imóveis"
+      ],
+      "neighbors": [
+        "engenharia-civil",
+        "arquitetura-e-urbanismo",
+        "seguranca-do-trabalho",
+        "engenharia-de-producao"
+      ],
+      "notes": "Mantida separada de Engenharia Civil por ser tecnólogo com registro próprio no CREA (CBO 2142-80 tecnólogo em construção civil).",
+      "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "educacao-fisica",
+      "label": {
+        "pt-BR": "Educação Física (bacharelado)",
+        "en": "Physical Education",
+        "es": "Educación Física"
+      },
+      "cine": {
+        "broad": "09",
+        "broadName": "Saúde e bem-estar",
+        "detail": "0915",
+        "detailName": "Terapia e reabilitação"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Educação Física (bacharelado)",
+        "Educação Física",
+        "Bacharelado em Educação Física",
+        "Profissional de Educação Física",
+        "Educador Físico",
+        "Personal trainer",
+        "Preparador físico",
+        "Treinador",
+        "Treinadora"
+      ],
+      "cbo": [
+        {
+          "code": "2241",
+          "title": "Profissionais da educação física"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "3423",
+          "title": "Fitness and recreation instructors and programme leaders"
+        },
+        {
+          "code": "3422",
+          "title": "Sports coaches, instructors and officials"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CREF",
+        "federal": "CONFEF",
+        "law": "Lei 9.696/1998",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (rótulo Educação física, via Galileo; pode somar bacharelado e licenciatura); 2023: 283.958 (Quero Bolsa)",
+        "matriculas": 303939,
+        "rank": 8,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "avaliações físicas, anamneses e dados de saúde de alunos e atletas (Código de Ética – Res. CONFEF 307/2015; LGPD art. 5º, II)",
+        "imagens corporais de alunos sem consentimento"
+      ],
+      "neighbors": [
+        "fisioterapia",
+        "nutricao"
+      ],
+      "notes": "Glossário Rede Unida registra rótulo 0915E01; ISCED-F colocaria em 1014 (Esportes). Licenciatura pertence ao grupo Educação (01).",
+      "group": "09-saude-e-bem-estar"
+    },
+    {
+      "code": "enfermagem",
+      "label": {
+        "pt-BR": "Enfermagem",
+        "en": "Nursing",
+        "es": "Enfermería"
+      },
+      "cine": {
+        "broad": "09",
+        "broadName": "Saúde e bem-estar",
+        "detail": "0913",
+        "detailName": "Enfermagem e obstetrícia"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Enfermagem",
+        "Enfermeiro",
+        "Enfermeira",
+        "Enfermeira obstetra",
+        "Enfermeiro obstetra"
+      ],
+      "cbo": [
+        {
+          "code": "2235",
+          "title": "Enfermeiros e afins"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2221",
+          "title": "Nursing professionals"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "COREN",
+        "federal": "COFEN",
+        "law": "Lei 5.905/1973",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (Resumo Técnico, Gráfico 9; Agência Brasil: 478 mil, sendo 203,7 mil EaD); 2023: 472.561",
+        "matriculas": 478008,
+        "rank": 4,
+        "year": 2024,
+        "naoConferido": false
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "prontuários, evoluções e dados de pacientes (sigilo, Código de Ética dos Profissionais de Enfermagem – Res. COFEN 564/2017; LGPD art. 5º, II)",
+        "imagens de pacientes, feridas e procedimentos identificáveis"
+      ],
+      "neighbors": [
+        "medicina",
+        "fisioterapia",
+        "servico-social",
+        "biomedicina"
+      ],
+      "notes": "Rótulo CINE 0913E01 (glossário Rede Unida). Maior curso da saúde e 4º do país em 2023 e 2024.",
+      "group": "09-saude-e-bem-estar"
+    },
+    {
+      "code": "engenharia-ambiental-e-sanitaria",
+      "label": {
+        "pt-BR": "Engenharia Ambiental e Sanitária",
+        "en": "Environmental and Sanitary Engineering",
+        "es": "Ingeniería Ambiental y Sanitaria"
+      },
+      "cine": {
+        "broad": "07",
+        "broadName": "Engenharia, produção e construção",
+        "detail": "0712",
+        "detailName": "Tecnologia de proteção ambiental"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Engenharia Ambiental e Sanitária",
+        "Engenharia Ambiental",
+        "Engenharia Sanitária",
+        "Engenharia Sanitária e Ambiental",
+        "Engenheiro ambiental",
+        "Engenheira ambiental",
+        "Engenheiro sanitarista",
+        "Engenheira sanitarista",
+        "Saneamento",
+        "Saneamento Ambiental"
+      ],
+      "cbo": [],
+      "isco08": [
+        {
+          "code": "2143",
+          "title": "Environmental engineers"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CREA",
+        "federal": "CONFEA",
+        "law": "Lei 5.194/1966",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 — número não obtido (portal bloqueado, cota de busca esgotada)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "dados de licenciamento e monitoramento de clientes sob sigilo",
+        "relatórios de impacto ambiental não publicados",
+        "dados pessoais de comunidades afetadas"
+      ],
+      "neighbors": [
+        "engenharia-civil",
+        "engenharia-quimica"
+      ],
+      "notes": "CBO vazia: família 2140 (Engenheiros ambientais) não foi confirmada na fonte; engenheiro sanitarista costuma constar na 2142.",
+      "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "engenharia-civil",
+      "label": {
+        "pt-BR": "Engenharia Civil",
+        "en": "Civil Engineering",
+        "es": "Ingeniería Civil"
+      },
+      "cine": {
+        "broad": "07",
+        "broadName": "Engenharia, produção e construção",
+        "detail": "0732",
+        "detailName": "Construção civil"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Engenharia Civil",
+        "Engenheiro civil",
+        "Engenheira civil",
+        "Engenharia de Estruturas",
+        "Engenheiro calculista",
+        "Engenheiro de obras",
+        "Engenheiro orçamentista",
+        "Engenheiro de planejamento",
+        "Engenharia de Infraestrutura",
+        "Construção civil"
+      ],
+      "cbo": [
+        {
+          "code": "2142",
+          "title": "Engenheiros civis e afins"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2142",
+          "title": "Civil engineers"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CREA",
+        "federal": "CONFEA",
+        "law": "Lei 5.194/1966",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "Querobolsa, ranking de cursos do Censo da Educação Superior 2022 (INEP); possivelmente só presencial",
+        "matriculas": 140461,
+        "rank": 9,
+        "year": 2022,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "alta"
+      },
+      "sensitiveData": [
+        "projetos de clientes sob NDA",
+        "plantas e laudos com endereço e dados de proprietários",
+        "ART e documentos de obra com dados pessoais",
+        "orçamentos e propostas comerciais de terceiros"
+      ],
+      "neighbors": [
+        "arquitetura-e-urbanismo",
+        "construcao-de-edificios",
+        "engenharia-ambiental-e-sanitaria",
+        "engenharia-de-producao",
+        "seguranca-do-trabalho"
+      ],
+      "notes": "Maior engenharia do país em matrículas e concluintes (26.314 concluintes em 2023, SEESP/INEP). Número de matrículas 2023/2024 não obtido.",
+      "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "engenharia-de-computacao",
+      "label": {
+        "pt-BR": "Engenharia de Computação",
+        "en": "Computer Engineering",
+        "es": "Ingeniería en Computación"
+      },
+      "cine": {
+        "broad": "06",
+        "broadName": "Computação e Tecnologias da Informação e Comunicação (TIC)",
+        "detail": "",
+        "detailName": ""
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Engenharia de Computação",
+        "Engenharia da Computação",
+        "Engenheiro de computação",
+        "Engenheira de computação",
+        "Sistemas Embarcados",
+        "Engenheiro de hardware",
+        "Hardware",
+        "Firmware",
+        "Engenheiro de sistemas embarcados"
+      ],
+      "cbo": [
+        {
+          "code": "2122",
+          "title": "Engenheiros em computação"
+        },
+        {
+          "code": "2124",
+          "title": "Analistas de tecnologia da informação"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2152",
+          "title": "Electronics engineers"
+        },
+        {
+          "code": "2512",
+          "title": "Software developers"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/92bb3d8c-8a9f-4cd7-80ec-247bbf173004",
+          "label": "computer hardware engineer"
+        }
+      ],
+      "council": {
+        "name": "CREA",
+        "federal": "CONFEA",
+        "law": "Lei 5.194/1966",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 — número não obtido (portal bloqueado, cota de busca esgotada)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "alta"
+      },
+      "sensitiveData": [
+        "esquemáticos e firmware proprietários sob NDA",
+        "chaves criptográficas e credenciais",
+        "dados de clientes em sistemas embarcados"
+      ],
+      "neighbors": [
+        "engenharia-de-software",
+        "engenharia-eletrica",
+        "engenharia-de-controle-e-automacao",
+        "ciencia-de-dados"
+      ],
+      "notes": "Separada de Eng. de Software por ser engenharia regulamentada (CREA) voltada a hardware/embarcados. Área CINE incerta: 0714 (área 07), 0688 ou 0613.",
+      "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "engenharia-de-controle-e-automacao",
+      "label": {
+        "pt-BR": "Engenharia de Controle e Automação",
+        "en": "Control and Automation Engineering",
+        "es": "Ingeniería en Control y Automatización"
+      },
+      "cine": {
+        "broad": "07",
+        "broadName": "Engenharia, produção e construção",
+        "detail": "0714",
+        "detailName": "Eletrônica e automação"
+      },
+      "degrees": [
+        "bacharelado",
+        "tecnologo"
+      ],
+      "aliases": [
+        "Engenharia de Controle e Automação",
+        "Engenharia Mecatrônica",
+        "Mecatrônica",
+        "Automação Industrial",
+        "Tecnólogo em Automação Industrial",
+        "Engenheiro de automação",
+        "Engenheira de automação",
+        "Engenheiro mecatrônico",
+        "Engenheira mecatrônica",
+        "Robótica",
+        "Engenharia Robótica",
+        "Instrumentação",
+        "Sistemas de Controle"
+      ],
+      "cbo": [
+        {
+          "code": "2143",
+          "title": "Engenheiros eletricistas, eletrônicos e afins"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2152",
+          "title": "Electronics engineers"
+        },
+        {
+          "code": "2149",
+          "title": "Engineering professionals not elsewhere classified"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/551a6797-3ca9-41fc-9dca-9a982a8fd8a6",
+          "label": "robotics engineer"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/77abfaec-a250-4765-95fa-6091e8da1bba",
+          "label": "electromechanical engineer"
+        }
+      ],
+      "council": {
+        "name": "CREA",
+        "federal": "CONFEA",
+        "law": "Lei 5.194/1966",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 — número não obtido (portal bloqueado, cota de busca esgotada)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "alta"
+      },
+      "sensitiveData": [
+        "lógicas de CLP e diagramas de plantas de clientes",
+        "credenciais de sistemas SCADA e industriais",
+        "segredos de processo"
+      ],
+      "neighbors": [
+        "engenharia-eletrica",
+        "engenharia-mecanica",
+        "engenharia-de-computacao",
+        "engenharia-de-producao"
+      ],
+      "notes": "Inclui Mecatrônica e o tecnólogo em Automação Industrial. Vínculo do engenheiro de automação/mecatrônico à família CBO 2143 não conferido.",
+      "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "engenharia-de-producao",
+      "label": {
+        "pt-BR": "Engenharia de Produção",
+        "en": "Industrial and Production Engineering",
+        "es": "Ingeniería Industrial (de Producción)"
+      },
+      "cine": {
+        "broad": "07",
+        "broadName": "Engenharia, produção e construção",
+        "detail": "",
+        "detailName": ""
+      },
+      "degrees": [
+        "bacharelado",
+        "tecnologo"
+      ],
+      "aliases": [
+        "Engenharia de Produção",
+        "Engenheiro de produção",
+        "Engenheira de produção",
+        "Gestão da Produção Industrial",
+        "Tecnólogo em Produção Industrial",
+        "Processos Industriais",
+        "Engenharia de Qualidade",
+        "Engenheiro de processos",
+        "Engenheiro de qualidade",
+        "Lean Manufacturing",
+        "PCP"
+      ],
+      "cbo": [
+        {
+          "code": "2149",
+          "title": "Engenheiros de produção, qualidade, segurança e afins"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2141",
+          "title": "Industrial and production engineers"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CREA",
+        "federal": "CONFEA",
+        "law": "Lei 5.194/1966",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 — número não obtido (portal bloqueado, cota de busca esgotada)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "dados de produção, custos e fornecedores de empregadores",
+        "indicadores internos e planilhas de PCP",
+        "segredos industriais"
+      ],
+      "neighbors": [
+        "engenharia-mecanica",
+        "engenharia-civil",
+        "engenharia-quimica"
+      ],
+      "notes": "Segunda maior engenharia do país (conhecimento geral do Censo). Área detalhada CINE não confirmada: 0788 (interdisciplinar) ou 0719.",
+      "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "engenharia-de-software",
+      "label": {
+        "pt-BR": "Engenharia de Software",
+        "en": "Software Engineering",
+        "es": "Ingeniería de Software"
+      },
+      "cine": {
+        "broad": "06",
+        "broadName": "Computação e Tecnologias da Informação e Comunicação (TIC)",
+        "detail": "0613",
+        "detailName": "Desenvolvimento e análise de software e aplicativos"
+      },
+      "degrees": [
+        "bacharelado",
+        "tecnologo"
+      ],
+      "aliases": [
+        "Engenharia de Software",
+        "Ciência da Computação",
+        "Sistemas de Informação",
+        "Análise e Desenvolvimento de Sistemas",
+        "ADS",
+        "Sistemas para Internet",
+        "Desenvolvimento de Software",
+        "Desenvolvedor",
+        "Desenvolvedora",
+        "Programador",
+        "Programadora",
+        "Engenheiro de software",
+        "Engenheira de software",
+        "Analista de sistemas",
+        "Desenvolvedor web",
+        "Desenvolvedor mobile",
+        "Desenvolvedor full stack",
+        "Tecnologia da Informação",
+        "TI",
+        "Gestão da Tecnologia da Informação",
+        "Jogos Digitais"
+      ],
+      "cbo": [
+        {
+          "code": "2124",
+          "title": "Analistas de tecnologia da informação"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2512",
+          "title": "Software developers"
+        },
+        {
+          "code": "2511",
+          "title": "Systems analysts"
+        },
+        {
+          "code": "2514",
+          "title": "Applications programmers"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/f2b15a0e-e65a-438a-affb-29b9d50b77d1",
+          "label": "software developer"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/04ba4d6c-957d-417f-bf63-5b9e015a9f86",
+          "label": "software analyst"
+        },
+        {
+          "uri": "http://data.europa.eu/esco/occupation/c40a2919-48a9-40ea-b506-1f34f693496d",
+          "label": "web developer"
+        }
+      ],
+      "council": null,
+      "enrollment": {
+        "source": "CNN Brasil e Galileo citando INEP, Censo da Educação Superior 2024 (rótulo 'Sistemas de Informação', 5º lugar)",
+        "matriculas": 420479,
+        "rank": 5,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "código-fonte proprietário de empregadores ou clientes",
+        "chaves de API, senhas e tokens",
+        "dados pessoais de usuários em sistemas de produção",
+        "capturas de tela com dados reais de clientes"
+      ],
+      "neighbors": [
+        "ciencia-de-dados",
+        "engenharia-de-computacao",
+        "redes-de-computadores",
+        "seguranca-da-informacao"
+      ],
+      "notes": "Uma só opção para CC, SI, ADS e Eng. de Software: mesma profissão-alvo (desenvolvimento), mesma CBO 2124 e CINE 0613. Eng. de Computação ficou separada (CREA, CBO 2122).",
+      "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "engenharia-eletrica",
+      "label": {
+        "pt-BR": "Engenharia Elétrica",
+        "en": "Electrical Engineering",
+        "es": "Ingeniería Eléctrica"
+      },
+      "cine": {
+        "broad": "07",
+        "broadName": "Engenharia, produção e construção",
+        "detail": "0713",
+        "detailName": "Eletricidade e energia"
+      },
+      "degrees": [
+        "bacharelado",
+        "tecnologo"
+      ],
+      "aliases": [
+        "Engenharia Elétrica",
+        "Engenheiro eletricista",
+        "Engenheira eletricista",
+        "Engenheiro elétrico",
+        "Engenheiro eletrotécnico",
+        "Engenharia Eletrônica",
+        "Engenheiro eletrônico",
+        "Engenharia de Telecomunicações",
+        "Engenharia de Energia",
+        "Energias Renováveis",
+        "Eletrotécnica",
+        "Tecnólogo em Eletrotécnica",
+        "Sistemas Elétricos",
+        "Projetista elétrico"
+      ],
+      "cbo": [
+        {
+          "code": "2143",
+          "title": "Engenheiros eletricistas, eletrônicos e afins"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2151",
+          "title": "Electrical engineers"
+        },
+        {
+          "code": "2152",
+          "title": "Electronics engineers"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/0e99c929-364f-4b0a-8a64-2aab42420f00",
+          "label": "renewable energy engineer"
+        }
+      ],
+      "council": {
+        "name": "CREA",
+        "federal": "CONFEA",
+        "law": "Lei 5.194/1966",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 — número não obtido (portal bloqueado, cota de busca esgotada)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "alta"
+      },
+      "sensitiveData": [
+        "projetos de clientes sob NDA",
+        "diagramas unifilares de instalações de terceiros",
+        "dados de concessionárias e de infraestrutura crítica",
+        "laudos com dados pessoais"
+      ],
+      "neighbors": [
+        "engenharia-de-controle-e-automacao",
+        "engenharia-de-computacao",
+        "engenharia-mecanica"
+      ],
+      "notes": "Agrupa Eletrônica, Telecomunicações e Energia como aliases; Eletrotécnica (tecnólogo, CINE 0713) entrou como alias em vez de ramo próprio.",
+      "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "engenharia-mecanica",
+      "label": {
+        "pt-BR": "Engenharia Mecânica",
+        "en": "Mechanical Engineering",
+        "es": "Ingeniería Mecánica"
+      },
+      "cine": {
+        "broad": "07",
+        "broadName": "Engenharia, produção e construção",
+        "detail": "0715",
+        "detailName": "Mecânica e metalurgia"
+      },
+      "degrees": [
+        "bacharelado",
+        "tecnologo"
+      ],
+      "aliases": [
+        "Engenharia Mecânica",
+        "Engenheiro mecânico",
+        "Engenheira mecânica",
+        "Engenharia Automotiva",
+        "Engenharia Aeronáutica",
+        "Engenharia Naval",
+        "Fabricação Mecânica",
+        "Tecnólogo em Fabricação Mecânica",
+        "Manutenção Industrial",
+        "Projetista mecânico",
+        "Engenheiro de manutenção"
+      ],
+      "cbo": [
+        {
+          "code": "2144",
+          "title": "Engenheiros mecânicos e afins"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2144",
+          "title": "Mechanical engineers"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/579254cf-6d69-4889-9000-9c79dc568644",
+          "label": "mechanical engineer"
+        }
+      ],
+      "council": {
+        "name": "CREA",
+        "federal": "CONFEA",
+        "law": "Lei 5.194/1966",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 — número não obtido (portal bloqueado, cota de busca esgotada)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "alta"
+      },
+      "sensitiveData": [
+        "projetos e desenhos de peças sob NDA",
+        "segredos industriais e processos proprietários",
+        "dados de clientes de manutenção"
+      ],
+      "neighbors": [
+        "engenharia-de-producao",
+        "engenharia-de-controle-e-automacao",
+        "engenharia-eletrica",
+        "engenharia-civil"
+      ],
+      "notes": "Automotiva, Aeronáutica e Naval (CINE 0716) entram só como aliases de autocompletar, por baixo volume.",
+      "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "engenharia-quimica",
+      "label": {
+        "pt-BR": "Engenharia Química",
+        "en": "Chemical Engineering",
+        "es": "Ingeniería Química"
+      },
+      "cine": {
+        "broad": "07",
+        "broadName": "Engenharia, produção e construção",
+        "detail": "0711",
+        "detailName": "Engenharia química e de processos"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Engenharia Química",
+        "Engenheiro químico",
+        "Engenheira química",
+        "Engenharia de Processos Químicos",
+        "Processos Químicos",
+        "Engenheiro de processos químicos",
+        "Engenharia de Bioprocessos"
+      ],
+      "cbo": [
+        {
+          "code": "2145",
+          "title": "Engenheiros químicos e afins"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2145",
+          "title": "Chemical engineers"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CREA",
+        "federal": "CONFEA",
+        "law": "Lei 5.194/1966",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 — número não obtido (portal bloqueado, cota de busca esgotada)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "formulações e processos industriais proprietários",
+        "layouts e dados de segurança de plantas",
+        "dados de clientes sob NDA"
+      ],
+      "neighbors": [
+        "engenharia-ambiental-e-sanitaria",
+        "engenharia-de-producao",
+        "farmacia"
+      ],
+      "notes": "Engenharia de Alimentos (CINE 0721) ficou fora por baixo volume; aparece só como vizinha.",
+      "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "estetica-e-cosmetica",
+      "label": {
+        "pt-BR": "Estética e Cosmética",
+        "en": "Aesthetics and Cosmetology",
+        "es": "Estética y Cosmética"
+      },
+      "cine": {
+        "broad": "10",
+        "broadName": "Serviços",
+        "detail": "1012",
+        "detailName": "Cabeleireiro e tratamentos de beleza"
+      },
+      "degrees": [
+        "tecnologo"
+      ],
+      "aliases": [
+        "Estética e Cosmética",
+        "Estética",
+        "Esteticista",
+        "Cosmetólogo",
+        "Cosmetóloga",
+        "Cosmetologia",
+        "Tecnólogo em Estética",
+        "Tecnóloga em Estética"
+      ],
+      "cbo": [
+        {
+          "code": "3221",
+          "title": "Tecnólogos e técnicos em terapias complementares e estéticas"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "5142",
+          "title": "Beauticians and related workers"
+        }
+      ],
+      "esco": [],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 – número não localizado nesta pesquisa",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "fotos antes/depois e fichas de anamnese de clientes sem consentimento (LGPD art. 5º, II e art. 11)"
+      ],
+      "neighbors": [
+        "biomedicina",
+        "farmacia",
+        "enfermagem",
+        "fisioterapia"
+      ],
+      "notes": "Profissão regulamentada pela Lei 13.643/2018, sem conselho e sem registro obrigatório; PL 3.268/2026 em tramitação. CBO 3221-30 Esteticista inclui 'tecnólogo em estética'.",
+      "group": "09-saude-e-bem-estar"
+    },
+    {
+      "code": "farmacia",
+      "label": {
+        "pt-BR": "Farmácia",
+        "en": "Pharmacy",
+        "es": "Farmacia"
+      },
+      "cine": {
+        "broad": "09",
+        "broadName": "Saúde e bem-estar",
+        "detail": "0916",
+        "detailName": "Farmácia"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Farmácia",
+        "Farmacêutico",
+        "Farmacêutica",
+        "Farmácia-Bioquímica",
+        "Farmacêutico-bioquímico",
+        "Farmacêutica-bioquímica"
+      ],
+      "cbo": [
+        {
+          "code": "2234",
+          "title": "Farmacêuticos"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2262",
+          "title": "Pharmacists"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CRF",
+        "federal": "CFF",
+        "law": "Lei 3.820/1960",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "Semesp, Mapa do Ensino Superior 2026 (base Censo INEP 2024) – apenas rede privada; total nacional não localizado",
+        "matriculas": 104558,
+        "rank": 0,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "prescrições, dispensações e dados de pacientes (Código de Ética Farmacêutica – Res. CFF 596/2014; LGPD art. 5º, II)",
+        "fórmulas magistrais com identificação do paciente"
+      ],
+      "neighbors": [
+        "biomedicina",
+        "medicina",
+        "nutricao"
+      ],
+      "notes": "Número parcial (rede privada). Rótulo CINE presumido 0916F01, não verificado.",
+      "group": "09-saude-e-bem-estar"
+    },
+    {
+      "code": "fisioterapia",
+      "label": {
+        "pt-BR": "Fisioterapia",
+        "en": "Physiotherapy",
+        "es": "Fisioterapia"
+      },
+      "cine": {
+        "broad": "09",
+        "broadName": "Saúde e bem-estar",
+        "detail": "0915",
+        "detailName": "Terapia e reabilitação"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Fisioterapia",
+        "Fisioterapeuta",
+        "Fisio"
+      ],
+      "cbo": [
+        {
+          "code": "2236",
+          "title": "Fisioterapeutas"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2264",
+          "title": "Physiotherapists"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CREFITO",
+        "federal": "COFFITO",
+        "law": "Lei 6.316/1975",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (total, via Galileo/The University Journal); 2023 presencial: 143.847 (CNN Brasil)",
+        "matriculas": 227223,
+        "rank": 10,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "avaliações, evoluções e imagens de pacientes (Código de Ética da Fisioterapia – Res. COFFITO 424/2013; LGPD art. 5º, II)"
+      ],
+      "neighbors": [
+        "educacao-fisica",
+        "enfermagem",
+        "medicina"
+      ],
+      "notes": "Rótulo CINE 0915F01. Terapia Ocupacional (0915T01, CBO 2239, mesmo conselho) foi excluída por baixa matrícula.",
+      "group": "09-saude-e-bem-estar"
+    },
+    {
+      "code": "fonoaudiologia",
+      "label": {
+        "pt-BR": "Fonoaudiologia",
+        "en": "Speech-Language Pathology and Audiology",
+        "es": "Fonoaudiología"
+      },
+      "cine": {
+        "broad": "09",
+        "broadName": "Saúde e bem-estar",
+        "detail": "0915",
+        "detailName": "Terapia e reabilitação"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Fonoaudiologia",
+        "Fonoaudiólogo",
+        "Fonoaudióloga",
+        "Fono"
+      ],
+      "cbo": [
+        {
+          "code": "2238",
+          "title": "Fonoaudiólogos"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2266",
+          "title": "Audiologists and speech therapists"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CRFa",
+        "federal": "CFFa",
+        "law": "Lei 6.965/1981",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 – número não localizado nesta pesquisa",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "avaliações, laudos e gravações de áudio/vídeo de pacientes (Código de Ética da Fonoaudiologia – Res. CFFa 490/2016; LGPD art. 5º, II)"
+      ],
+      "neighbors": [
+        "psicologia",
+        "fisioterapia",
+        "enfermagem"
+      ],
+      "notes": "Rótulo CINE 0915F02 (glossário Rede Unida). Incluída por ser profissão regulamentada com conselho próprio.",
+      "group": "09-saude-e-bem-estar"
+    },
+    {
+      "code": "medicina",
+      "label": {
+        "pt-BR": "Medicina",
+        "en": "Medicine",
+        "es": "Medicina"
+      },
+      "cine": {
+        "broad": "09",
+        "broadName": "Saúde e bem-estar",
+        "detail": "0912",
+        "detailName": "Medicina"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Medicina",
+        "Médico",
+        "Médica",
+        "Clínico geral",
+        "Clínica geral",
+        "Doutor",
+        "Doutora"
+      ],
+      "cbo": [
+        {
+          "code": "2251",
+          "title": "Médicos clínicos"
+        },
+        {
+          "code": "2252",
+          "title": "Médicos em especialidades cirúrgicas"
+        },
+        {
+          "code": "2253",
+          "title": "Médicos em medicina diagnóstica e terapêutica"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2211",
+          "title": "Generalist medical practitioners"
+        },
+        {
+          "code": "2212",
+          "title": "Specialist medical practitioners"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/9b889f07-c39c-464d-b9d9-b2daa650f9ac",
+          "label": "specialised doctor"
+        }
+      ],
+      "council": {
+        "name": "CRM",
+        "federal": "CFM",
+        "law": "Lei 3.268/1957",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (total, via Galileo/The University Journal; 2023: 266.507 segundo Inep via Quero Bolsa e Por Dentro de Minas)",
+        "matriculas": 283594,
+        "rank": 9,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "dados de pacientes e prontuários (sigilo médico, Código de Ética Médica – Res. CFM 2.217/2018; LGPD art. 5º, II e art. 11)",
+        "imagens, exames e laudos que permitam identificar pacientes"
+      ],
+      "neighbors": [
+        "enfermagem",
+        "biomedicina",
+        "farmacia",
+        "fisioterapia"
+      ],
+      "notes": "Rótulo CINE 0912M01 (glossário Rede Unida). 9º maior curso do país em 2023 e 2024.",
+      "group": "09-saude-e-bem-estar"
+    },
+    {
+      "code": "medicina-veterinaria",
+      "label": {
+        "pt-BR": "Medicina Veterinária",
+        "en": "Veterinary Medicine",
+        "es": "Medicina Veterinaria"
+      },
+      "cine": {
+        "broad": "08",
+        "broadName": "Agricultura, silvicultura, pesca e veterinária",
+        "detail": "0841",
+        "detailName": "Veterinária"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Medicina Veterinária",
+        "Veterinária",
+        "Médico Veterinário",
+        "Médica Veterinária",
+        "Veterinário",
+        "Vet"
+      ],
+      "cbo": [
+        {
+          "code": "2233",
+          "title": "Veterinários e zootecnistas"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2250",
+          "title": "Veterinarians"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CRMV",
+        "federal": "CFMV",
+        "law": "Lei 5.517/1968",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 – apenas cursos presenciais (via CNN Brasil); 2023 presencial: 149.470",
+        "matriculas": 156602,
+        "rank": 0,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "dados de tutores e de animais atendidos (sigilo profissional, Código de Ética do Médico Veterinário – Res. CFMV 1.138/2016)",
+        "laudos, exames e receituários identificáveis"
+      ],
+      "neighbors": [
+        "biomedicina"
+      ],
+      "notes": "Na CINE Brasil fica na área geral 08 (Veterinária), não em 09; agrupado em Saúde por decisão do produto. Curso quase todo presencial.",
+      "group": "09-saude-e-bem-estar"
+    },
+    {
+      "code": "nutricao",
+      "label": {
+        "pt-BR": "Nutrição",
+        "en": "Nutrition",
+        "es": "Nutrición"
+      },
+      "cine": {
+        "broad": "09",
+        "broadName": "Saúde e bem-estar",
+        "detail": "0915",
+        "detailName": "Terapia e reabilitação"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Nutrição",
+        "Nutricionista",
+        "Nutri"
+      ],
+      "cbo": [
+        {
+          "code": "2237",
+          "title": "Nutricionistas"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2265",
+          "title": "Dieticians and nutritionists"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CRN",
+        "federal": "CFN",
+        "law": "Lei 6.583/1978",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (Resumo Técnico, Gráfico 9 – associação rótulo/número por extração textual); rede privada 2024: 102.454 (Semesp)",
+        "matriculas": 191376,
+        "rank": 0,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "anamneses, planos alimentares e dados clínicos de pacientes (Código de Ética do Nutricionista – Res. CFN 599/2018; LGPD art. 5º, II)"
+      ],
+      "neighbors": [
+        "educacao-fisica",
+        "enfermagem",
+        "farmacia"
+      ],
+      "notes": "Rótulo CINE 0915N01 (glossário Rede Unida).",
+      "group": "09-saude-e-bem-estar"
+    },
+    {
+      "code": "odontologia",
+      "label": {
+        "pt-BR": "Odontologia",
+        "en": "Dentistry",
+        "es": "Odontología"
+      },
+      "cine": {
+        "broad": "09",
+        "broadName": "Saúde e bem-estar",
+        "detail": "0911",
+        "detailName": "Odontologia"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Odontologia",
+        "Dentista",
+        "Cirurgião-dentista",
+        "Cirurgiã-dentista",
+        "Odontólogo",
+        "Odontóloga"
+      ],
+      "cbo": [
+        {
+          "code": "2232",
+          "title": "Cirurgiões-dentistas"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2261",
+          "title": "Dentists"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CRO",
+        "federal": "CFO",
+        "law": "Lei 4.324/1964",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 – apenas cursos presenciais (via CNN Brasil); 2023 presencial: 162.306",
+        "matriculas": 162750,
+        "rank": 0,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "prontuário odontológico, radiografias e fotos intraorais identificáveis (Código de Ética Odontológica – Res. CFO 118/2012; LGPD art. 5º, II)"
+      ],
+      "neighbors": [
+        "medicina",
+        "biomedicina",
+        "estetica-e-cosmetica"
+      ],
+      "notes": "Curso quase todo presencial, logo o número presencial aproxima o total. Drawings média por planejamento digital do sorriso e desenho de próteses.",
+      "group": "09-saude-e-bem-estar"
+    },
+    {
+      "code": "psicologia",
+      "label": {
+        "pt-BR": "Psicologia",
+        "en": "Psychology",
+        "es": "Psicología"
+      },
+      "cine": {
+        "broad": "03",
+        "broadName": "Ciências sociais, comunicação e informação",
+        "detail": "0313",
+        "detailName": "Psicologia"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Psicologia",
+        "Psicólogo",
+        "Psicóloga",
+        "Psicoterapeuta",
+        "Psi"
+      ],
+      "cbo": [
+        {
+          "code": "2515",
+          "title": "Psicólogos e psicanalistas"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2634",
+          "title": "Psychologists"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CRP",
+        "federal": "CFP",
+        "law": "Lei 5.766/1971",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 (Resumo Técnico, Gráfico 9; também Galileo); 2023: 343.391 (Quero Bolsa)",
+        "matriculas": 375574,
+        "rank": 6,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "registros de atendimento, laudos e qualquer dado que identifique pacientes (sigilo, Código de Ética do Psicólogo – Res. CFP 010/2005; LGPD art. 5º, II)"
+      ],
+      "neighbors": [
+        "servico-social",
+        "medicina"
+      ],
+      "notes": "Inep classifica em 0313P01 (área 03), posição contestada pelo CFP; agrupada em Saúde por decisão do produto. Maior curso presencial da saúde.",
+      "group": "09-saude-e-bem-estar"
+    },
+    {
+      "code": "radiologia",
+      "label": {
+        "pt-BR": "Radiologia (tecnólogo)",
+        "en": "Radiologic Technology",
+        "es": "Tecnología en Radiología"
+      },
+      "cine": {
+        "broad": "09",
+        "broadName": "Saúde e bem-estar",
+        "detail": "0914",
+        "detailName": "Tecnologias de diagnóstico e tratamento médico"
+      },
+      "degrees": [
+        "tecnologo"
+      ],
+      "aliases": [
+        "Radiologia (tecnólogo)",
+        "Radiologia",
+        "Tecnologia em Radiologia",
+        "Tecnólogo em Radiologia",
+        "Tecnóloga em Radiologia",
+        "Técnicas Radiológicas",
+        "Técnico em Radiologia",
+        "Imaginologia"
+      ],
+      "cbo": [
+        {
+          "code": "3241",
+          "title": "Tecnólogos e técnicos em métodos de diagnósticos e terapêutica"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "3211",
+          "title": "Medical imaging and therapeutic equipment technicians"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CRTR",
+        "federal": "CONTER",
+        "law": "Lei 7.394/1985 (Decreto 92.790/1986)",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2024 – número não localizado nesta pesquisa",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2024,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "imagens radiológicas e laudos com identificação de pacientes (Código de Ética CONTER – Res. 15/2011; LGPD art. 5º, II)"
+      ],
+      "neighbors": [
+        "biomedicina",
+        "enfermagem",
+        "medicina"
+      ],
+      "notes": "CBO 3241-20 Tecnólogo em radiologia (3241-15 é o técnico). Rótulo CINE presumido 0914R01, não verificado.",
+      "group": "09-saude-e-bem-estar"
+    },
+    {
+      "code": "redes-de-computadores",
+      "label": {
+        "pt-BR": "Redes de Computadores",
+        "en": "Computer Networks",
+        "es": "Redes de Computadoras"
+      },
+      "cine": {
+        "broad": "06",
+        "broadName": "Computação e Tecnologias da Informação e Comunicação (TIC)",
+        "detail": "0612",
+        "detailName": "Desenho e administração de bases de dados e redes"
+      },
+      "degrees": [
+        "tecnologo"
+      ],
+      "aliases": [
+        "Redes de Computadores",
+        "Tecnólogo em Redes de Computadores",
+        "Infraestrutura de TI",
+        "Administrador de redes",
+        "Analista de redes",
+        "Analista de suporte",
+        "Suporte técnico",
+        "Administrador de sistemas",
+        "Telemática",
+        "Computação em Nuvem",
+        "DevOps",
+        "Analista de infraestrutura"
+      ],
+      "cbo": [
+        {
+          "code": "2124",
+          "title": "Analistas de tecnologia da informação"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2523",
+          "title": "Computer network professionals"
+        },
+        {
+          "code": "2522",
+          "title": "Systems administrators"
+        }
+      ],
+      "esco": [
+        {
+          "uri": "http://data.europa.eu/esco/occupation/f0ca39a8-1e30-487c-95f9-ef2d5e734adc",
+          "label": "ICT operations manager"
+        }
+      ],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 — número não obtido (portal bloqueado, cota de busca esgotada)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "media",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "topologias e endereçamento de redes de clientes",
+        "senhas, chaves e configurações de equipamentos",
+        "logs com dados pessoais"
+      ],
+      "neighbors": [
+        "seguranca-da-informacao",
+        "engenharia-de-software",
+        "engenharia-de-computacao",
+        "ciencia-de-dados"
+      ],
+      "notes": "CBO 2124 inclui 2124-10 (analista de redes) e 2124-20 (suporte); família 2123 (administrador de redes) não foi confirmada.",
+      "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "seguranca-da-informacao",
+      "label": {
+        "pt-BR": "Segurança da Informação",
+        "en": "Information Security",
+        "es": "Seguridad de la Información"
+      },
+      "cine": {
+        "broad": "06",
+        "broadName": "Computação e Tecnologias da Informação e Comunicação (TIC)",
+        "detail": "",
+        "detailName": ""
+      },
+      "degrees": [
+        "tecnologo"
+      ],
+      "aliases": [
+        "Segurança da Informação",
+        "Tecnólogo em Segurança da Informação",
+        "Defesa Cibernética",
+        "Segurança Cibernética",
+        "Cibersegurança",
+        "Analista de segurança da informação",
+        "Analista de segurança cibernética",
+        "Pentester",
+        "Hacker ético",
+        "Analista de SOC"
+      ],
+      "cbo": [
+        {
+          "code": "2124",
+          "title": "Analistas de tecnologia da informação"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2529",
+          "title": "Database and network professionals not elsewhere classified"
+        }
+      ],
+      "esco": [],
+      "council": null,
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 — número não obtido (portal bloqueado, cota de busca esgotada)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "relatórios de pentest e vulnerabilidades de clientes",
+        "credenciais, chaves e evidências de incidentes",
+        "dados pessoais de vítimas ou usuários",
+        "detalhes de infraestrutura de terceiros"
+      ],
+      "neighbors": [
+        "redes-de-computadores",
+        "engenharia-de-software",
+        "ciencia-de-dados"
+      ],
+      "notes": "Área CINE incerta (0612 ou 0619). Sem conselho. ESCO tem 'ICT security administrator' e 'ethical hacker', mas as URIs não foram obtidas.",
+      "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "seguranca-do-trabalho",
+      "label": {
+        "pt-BR": "Segurança do Trabalho",
+        "en": "Occupational Health and Safety",
+        "es": "Seguridad y Salud en el Trabajo"
+      },
+      "cine": {
+        "broad": "10",
+        "broadName": "Serviços",
+        "detail": "",
+        "detailName": ""
+      },
+      "degrees": [
+        "tecnologo"
+      ],
+      "aliases": [
+        "Segurança do Trabalho",
+        "Tecnólogo em Segurança do Trabalho",
+        "Técnico em Segurança do Trabalho",
+        "Técnico de segurança do trabalho",
+        "Engenharia de Segurança do Trabalho",
+        "Engenheiro de segurança do trabalho",
+        "SST",
+        "Saúde e Segurança do Trabalho",
+        "Higiene Ocupacional",
+        "SESMT"
+      ],
+      "cbo": [
+        {
+          "code": "2149",
+          "title": "Engenheiros de produção, qualidade, segurança e afins"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "3257",
+          "title": "Environmental and occupational health inspectors and associates"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CREA",
+        "federal": "CONFEA",
+        "law": "Lei 5.194/1966; Lei 7.410/1985",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 — número não obtido (portal bloqueado, cota de busca esgotada)",
+        "matriculas": 0,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "media"
+      },
+      "sensitiveData": [
+        "laudos (PGR, PCMSO, LTCAT) com dados de trabalhadores",
+        "dados de saúde ocupacional e de acidentes identificáveis",
+        "informações de clientes sob sigilo"
+      ],
+      "neighbors": [
+        "engenharia-civil",
+        "engenharia-de-producao",
+        "enfermagem",
+        "engenharia-ambiental-e-sanitaria"
+      ],
+      "notes": "CINE a coloca em Serviços (provável 1022), não em 07; incluída aqui pela ligação com engenharia (CBO 2149-35, CREA). Técnico de nível médio registra-se no MTE.",
+      "group": "06-07-engenharia-e-tic"
+    },
+    {
+      "code": "servico-social",
+      "label": {
+        "pt-BR": "Serviço Social",
+        "en": "Social Work",
+        "es": "Trabajo Social"
+      },
+      "cine": {
+        "broad": "09",
+        "broadName": "Saúde e bem-estar",
+        "detail": "0923",
+        "detailName": "Serviço social e aconselhamento"
+      },
+      "degrees": [
+        "bacharelado"
+      ],
+      "aliases": [
+        "Serviço Social",
+        "Assistente Social",
+        "Assistência Social"
+      ],
+      "cbo": [
+        {
+          "code": "2516",
+          "title": "Assistentes sociais e economistas domésticos"
+        }
+      ],
+      "isco08": [
+        {
+          "code": "2635",
+          "title": "Social work and counselling professionals"
+        }
+      ],
+      "esco": [],
+      "council": {
+        "name": "CRESS",
+        "federal": "CFESS",
+        "law": "Lei 8.662/1993",
+        "registrationRequired": true
+      },
+      "enrollment": {
+        "source": "INEP, Censo da Educação Superior 2023 – apenas cursos a distância (via CNN Brasil); total e presencial não localizados",
+        "matriculas": 101122,
+        "rank": 0,
+        "year": 2023,
+        "naoConferido": true
+      },
+      "editors": {
+        "letters": "alta",
+        "drawings": "baixa"
+      },
+      "sensitiveData": [
+        "relatórios, pareceres e prontuários sociais de usuários (sigilo, Código de Ética do Assistente Social – Res. CFESS 273/1993; LGPD art. 5º, II)"
+      ],
+      "neighbors": [
+        "psicologia"
+      ],
+      "notes": "Área específica 092 (Bem-estar). Rótulo presumido 0923S01, não verificado. Curso majoritariamente EaD.",
+      "group": "09-saude-e-bem-estar"
+    }
+  ],
+  "sources": [
+    {
+      "title": "INEP – Resumo Técnico do Censo da Educação Superior 2024 (Gráfico 9: 20 maiores cursos)",
+      "url": "https://download.inep.gov.br/publicacoes/institucionais/avaliacoes_e_exames_da_educacao_superior/resumo_tecnico_do_censo_da_educacao_superior_2024.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "INEP – Censo da Educação Superior 2024: Notas Estatísticas (espelho ABMES)",
+      "url": "https://abmes.org.br/arquivos/documentos/notas-inep-censo2024-20102025.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "INEP – Apresentação dos resultados do Censo da Educação Superior 2023",
+      "url": "https://download.inep.gov.br/educacao_superior/censo_superior/documentos/2023/apresentacao_censo_da_educacao_superior_2023.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "MEC – Resultados do Censo Superior 2024 estão disponíveis",
+      "url": "https://www.gov.br/mec/pt-br/assuntos/noticias/2025/setembro/resultados-do-censo-superior-2024estao-disponiveis",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Quero Bolsa – 10 cursos com o maior número de matrículas, segundo o Censo da Educação Superior 2023",
+      "url": "https://querobolsa.com.br/revista/10-cursos-com-o-maior-numero-de-matriculas-segundo-o-censo-da-educacao-superior-2023",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Quero Bolsa – 10 cursos EaD com o maior número de matrículas, Censo 2023",
+      "url": "https://querobolsa.com.br/revista/10-cursos-ead-com-o-maior-numero-de-matriculas-segundo-o-censo-da-educacao-superior-2023",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Galileo – 10 cursos superiores com mais estudantes no Brasil em 2024 (base Censo 2024)",
+      "url": "https://aluno.cursogalileo.com.br/10-cursos-superiores-com-mais-estudantes-no-brasil-em-2024/",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CNN Brasil – Ranking dos 10 cursos com mais alunos matriculados (Censo 2024, presencial/EaD)",
+      "url": "https://www.cnnbrasil.com.br/educacao/pedagogia-direito-veja-ranking-dos-10-cursos-com-mais-alunos-matriculados/",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CNN Brasil – Ranking dos cursos com mais alunos matriculados (Censo 2023, presencial/EaD)",
+      "url": "https://www.cnnbrasil.com.br/educacao/pedagogia-direito-e-mais-veja-ranking-dos-cursos-com-mais-alunos-matriculados/",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Viva/Agência Brasil – Enfermagem: 478 mil estudantes, 203,7 mil em EaD (Censo 2024)",
+      "url": "https://viva.com.br/carreira-e-educacao/universidades-buscam-alternativas-para-ofertar-curso-de-enfermagem-semipresencial.html",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Por Dentro de Minas – Medicina registra desaceleração no crescimento de matrículas (266.507 em 2023)",
+      "url": "https://pordentrodeminas.com.br/noticias-corporativas/2024/10/309559-medicina-registra-desaceleracao-no-crescimento-de-matriculas",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "PEBSP – Mapa do Ensino Superior 2026 (Semesp, base Censo 2024): matrículas por curso na rede privada",
+      "url": "https://www.pebsp.com/?p=47054",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "INEP – Manual para Classificação dos Cursos de Graduação e Sequenciais CINE Brasil 2018",
+      "url": "https://download.inep.gov.br/educacao_superior/censo_superior/apresentacao/2018/Manual_Preliminar_para_a_Classificacao_dos_Cursos_Cine_Brasil_2018.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CINE Brasil 2018 – cópia do manual com tabela de rótulos (UFES)",
+      "url": "https://ps.ufes.br/sites/processosseletivos.ufes.br/files/processos_seletivos/cine_brasil_final.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Rede Unida – Cadernos FTS, glossário com códigos CINE Brasil dos cursos de saúde",
+      "url": "https://www.redeunida.org.br/media/ckeditor_files/2023/12/13/cadernos-fts-glossario-1.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Portaria MEC 1.715/2019 – institui a CINE Brasil",
+      "url": "https://abmes.org.br/public/arquivos/legislacoes/Portaria-mec-1715-2019-10-02.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Nota Técnica 11/2025 SERES/MEC – aplicação da CINE Brasil (espelho ABMES)",
+      "url": "https://abmes.org.br/arquivos/documentos/nota-tecnica-cinebrasil01102025.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CFP – Nota sobre a classificação dos cursos de Psicologia proposta pelo Inep",
+      "url": "https://site.cfp.org.br/nota-sobre-a-revisao-e-atualizacao-da-classificacao-dos-cursos-de-graduacao-e-sequenciais-proposta-pelo-inep/",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2251-25 Médico clínico (espelho da tabela CBO/MTE)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=225125",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2253-20 Médico em radiologia e diagnóstico por imagem (espelho)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=225320",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2233-05 Médico veterinário (espelho)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=223305",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2241-40 Profissional de educação física na saúde (espelho)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=224140",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2235-65 Enfermeiro da estratégia de saúde da família (espelho)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=223565",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2234-05 Farmacêutico (espelho)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=223405",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2236-05 Fisioterapeuta geral (espelho)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=223605",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2237-10 Nutricionista (espelho)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=223710",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2515-10 Psicólogo clínico (espelho)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=251510",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2212-05 Biomédico (espelho)",
+      "url": "https://buscadorncm.com.br/cbo/221205",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2516-05 Assistente social (espelho)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=251605",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2238-40 Fonoaudiólogo em saúde coletiva (espelho)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=223840",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 3221-30 Esteticista (espelho)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=322130",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 3241-20 Tecnólogo em radiologia (espelho)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=324120",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2239-05 Terapeuta ocupacional (espelho)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=223905",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 1312-25 Sanitarista e 1312-20 Gerontólogo (espelho)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=131225",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "World of Taxonomy – ESCO occupation 'specialised doctor' (espelho da base ESCO)",
+      "url": "https://worldoftaxonomy.com/codes/esco_occupations/9b889f07-c39c-464d-b9d9-b2daa650f9ac",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Bioregistry – padrão de URI das ocupações ESCO (http://data.europa.eu/esco/occupation/)",
+      "url": "https://bioregistry.io/api/registry/esco.occupation?format=n3",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Planalto – Lei 9.696/1998 (regulamenta a Educação Física e cria CONFEF/CREFs)",
+      "url": "https://planalto.gov.br/ccivil_03/LEIS/L9696.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Planalto – Lei 13.643/2018 (regulamenta esteticista, cosmetólogo e técnico em estética)",
+      "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/L13643.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 6.965/1981 – regulamenta a profissão de Fonoaudiólogo (cópia USP)",
+      "url": "https://edisciplinas.usp.br/pluginfile.php/5385845/mod_resource/content/0/Lei%20de%20cria%C3%A7%C3%A3o%20da%20Fonoaudiologia.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Resolução CFBM 330/2020 – Código de Ética do Profissional Biomédico (revoga a 198/2011)",
+      "url": "https://eticabiomedica.uff.br/wp-content/uploads/sites/766/2023/09/RESOLUCAO-CFBM-No-330-DE-05-DE-NOVEMBRO-DE-2020.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Quero Bolsa – Esteticista tem conselho profissional?",
+      "url": "https://querobolsa.com.br/revista/esteticista-tem-conselho-profissional",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Câmara dos Deputados – Enquete do PL 3268/2026 (altera regulamentação de esteticista e cosmetólogo)",
+      "url": "https://www.camara.leg.br/enquetes/2634848",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "INEP — Resumo Técnico do Censo da Educação Superior 2023 (PDF; localizado, não acessado: host bloqueado)",
+      "url": "https://download.inep.gov.br/educacao_superior/censo_superior/documentos/2023/resumo_tecnico_do_censo_da_educacao_superior_2023.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Agência Brasil — Brasil tem mais alunos em cursos a distância que em presenciais (Censo 2024)",
+      "url": "https://agenciabrasil.ebc.com.br/educacao/noticia/2025-09/brasil-tem-mais-alunos-em-cursos-distancia-que-em-presenciais",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Querobolsa — Censo da Educação Superior: 10 cursos com o maior número de matrículas em 2022",
+      "url": "https://querobolsa.com.br/revista/censo-da-educacao-superior-10-cursos-com-o-maior-numero-de-matriculas-em-2022",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "SEESP — Censo da Educação Superior 2023: Engenharias (concluintes por modalidade)",
+      "url": "https://seesp.org.br/site/images/PUBLICACOES/CensoEducacaoSuperior2023Engenharias.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CREA-SC / O Globo — Engenharia tem queda de alunos nos últimos oito anos",
+      "url": "https://portal.crea-sc.org.br/materia-de-o-globo-engenharia-tem-queda-de-alunos-nos-ultimos-oito-anos-e-faz-mec-planejar-reformulacao/",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Revista Pesquisa FAPESP — Tendências recentes na formação em engenharia",
+      "url": "https://revistapesquisa.fapesp.br/tendencias-recentes-na-formacao-em-engenharia/",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Instituto Semesp — Mapa do Ensino Superior no Brasil 2025 (dados 2023; PDF via Poder360)",
+      "url": "https://static.poder360.com.br/2025/03/mapa-ensino-superior-brasil-2025.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "SBC — Educação Superior em Computação: Estatísticas 2021 (série anual com base no INEP)",
+      "url": "https://www.sbc.org.br/wp-content/uploads/2024/07/Educa-o-Superior-em-Computa-o-Estati-sticas-2021.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ISCED-F 2013 — 0613 Software and applications development and analysis (vocabulário oficial, Argentina)",
+      "url": "https://vocabularios.educacion.gob.ar/vocabulario/iscedf/termino/77",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ISCED-F 2013 — 0612 Database and network design and administration",
+      "url": "https://vocabularios.educacion.gob.ar/vocabulario/iscedf/termino/76",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ISCED-F 2013 — 071 Engineering and engineering trades (0711, 0712; nota de exclusão para 0732)",
+      "url": "https://worldoftaxonomy.com/codes/iscedf_2013/071",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ILO — ISCO-08 Structure (códigos e títulos dos grupos de base)",
+      "url": "https://www.ilo.org/sites/default/files/wcmsp5/groups/public/@americas/@ro-lima/@sro-port_of_spain/documents/genericdocument/wcms_306837.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ILO — ISCO-08 group definitions (Title, Code, Definition, Tasks, Included occupations)",
+      "url": "https://www.ilo.org/media/42041/download",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ILO — ISCO-08 Volume I (PDF)",
+      "url": "https://webapps.ilo.org/ilostat-files/ISCO/newdocs-08-2021/ISCO-08/ISCO-08%20EN%20Vol%201.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ESCO — software developer",
+      "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http%3A%2F%2Fdata.europa.eu%2Fesco%2Foccupation%2Ff2b15a0e-e65a-438a-affb-29b9d50b77d1",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ESCO — software analyst",
+      "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http%3A%2F%2Fdata.europa.eu%2Fesco%2Foccupation%2F04ba4d6c-957d-417f-bf63-5b9e015a9f86",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ESCO — web developer",
+      "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http%3A%2F%2Fdata.europa.eu%2Fesco%2Foccupation%2Fc40a2919-48a9-40ea-b506-1f34f693496d",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ESCO — mechanical engineer",
+      "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http%3A%2F%2Fdata.europa.eu%2Fesco%2Foccupation%2F579254cf-6d69-4889-9000-9c79dc568644",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ESCO — computer hardware engineer",
+      "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http%3A%2F%2Fdata.europa.eu%2Fesco%2Foccupation%2F92bb3d8c-8a9f-4cd7-80ec-247bbf173004",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ESCO — electromechanical engineer",
+      "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http%3A%2F%2Fdata.europa.eu%2Fesco%2Foccupation%2F77abfaec-a250-4765-95fa-6091e8da1bba",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ESCO — robotics engineer",
+      "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http://data.europa.eu/esco/occupation/551a6797-3ca9-41fc-9dca-9a982a8fd8a6",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ESCO — renewable energy engineer",
+      "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http%3A%2F%2Fdata.europa.eu%2Fesco%2Foccupation%2F0e99c929-364f-4b0a-8a64-2aab42420f00",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ESCO — ICT operations manager",
+      "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http%3A%2F%2Fdata.europa.eu%2Fesco%2Foccupation%2Ff0ca39a8-1e30-487c-95f9-ef2d5e734adc",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ESCO — ISCO group 214 Engineering professionals (excluding electrotechnology)",
+      "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http://data.europa.eu/esco/isco/C214",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ESCO — ISCO group 251 Software and applications developers and analysts",
+      "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http://data.europa.eu/esco/isco/C251",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO (espelho VRI Consulting) — 2142-05 engenheiro civil, família 2142",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=214205",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO (espelho VRI Consulting) — 2141-05 arquiteto de edificações, família 2141",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=214105",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO (espelho VRI Consulting) — 2143-05 engenheiro eletricista, família 2143",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=214305",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO (espelho VRI Consulting) — 2144-05 engenheiro mecânico, família 2144",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=214405",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO (espelho VRI Consulting) — 2145-05 engenheiro químico, família 2145",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=214505",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO (espelho VRI Consulting) — 2149-05 engenheiro de produção, família 2149",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=214905",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO (espelho VRI Consulting) — 2149-35 tecnólogo em segurança do trabalho",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=214935",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO (espelho VRI Consulting) — 2142-80 tecnólogo em construção civil",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=214280",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO (espelho VRI Consulting) — 2122-05 engenheiro de aplicativos em computação, família 2122",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=212205",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO (espelho VRI Consulting) — 2124-05 analista de desenvolvimento de sistemas, família 2124",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=212405",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO (espelho VRI Consulting) — 2124-10 analista de redes e de comunicação de dados",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=212410",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO (espelho VRI Consulting) — 2221-05 engenheiro agrícola, família 2221",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=222105",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "IBGE — Anexo 7: estrutura de ocupações CBO (Censo Demográfico 2010)",
+      "url": "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2010/metodologia/anexos/anexo_7_ocupacao_cbo.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 12.378/2010 — regulamenta o exercício da Arquitetura e Urbanismo e cria o CAU/BR (texto via LegJur)",
+      "url": "https://www.legjur.com/legislacao/htm/lei_00123782010",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CONFEA — Engenheiro de produção: profissional multidisciplinar",
+      "url": "https://www.confea.org.br/node/107949",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "SBC — Resposta a manifesto sobre a Classificação dos Cursos de Graduação (INEP/CINE Brasil)",
+      "url": "https://www.sbc.org.br/wp-content/uploads/2024/07/Resposta-a-manifesto-sobre-a-Classifica-o-dos-Cursos-de-Gradua-o-INEP.pdf",
+      "accessedAt": "2026-11-02"
+    }
+  ],
+  "naoConferido": [
+    "[09-saude-e-bem-estar] Rede da sessão bloqueou acesso direto a download.inep.gov.br, cbo.mte.gov.br, ilo.org, esco.ec.europa.eu e ps.ufes.br; tudo foi confirmado por resumos de busca e espelhos. A cota de buscas esgotou antes de fechar os itens abaixo.",
+    "[09-saude-e-bem-estar] Matrículas 2024 de Medicina (283.594), Educação Física (303.939), Fisioterapia (227.223) e Psicologia (375.574): fontes secundárias (Galileo/The University Journal; extração textual do Gráfico 9 do Resumo Técnico INEP 2024). Conferir no Resumo Técnico INEP 2024, Gráfico 9.",
+    "[09-saude-e-bem-estar] Psicologia: Quero Bolsa atribui 375.574 também a 2022 (presencial) e 314.543 a 2022 em outro texto; o valor de 2024 pode estar trocado.",
+    "[09-saude-e-bem-estar] Nutrição (191.376) e Biomedicina (202.323) em 2024: associação rótulo/número inferida de extração textual do Gráfico 9 do INEP; conferir no PDF.",
+    "[09-saude-e-bem-estar] Odontologia (162.750) e Medicina Veterinária (156.602): apenas presencial 2024 (CNN Brasil); totais não localizados.",
+    "[09-saude-e-bem-estar] Farmácia: apenas rede privada 2024 (104.558, Semesp Mapa 2026); total INEP não localizado.",
+    "[09-saude-e-bem-estar] Serviço Social: apenas EaD 2023 (101.122, CNN Brasil); total e presencial não localizados.",
+    "[09-saude-e-bem-estar] Fonoaudiologia, Estética e Cosmética e Radiologia: nenhum número de matrículas localizado (matriculas = 0); incluídos por relevância qualitativa (conselho/lei própria e volume de oferta); ordem de grandeza não confirmada.",
+    "[09-saude-e-bem-estar] Rank (posição nacional) só preenchido para os cursos do top 10 do Censo 2024 (Enfermagem 4, Psicologia 6, Educação Física 8, Medicina 9, Fisioterapia 10), conforme lista secundária; demais = 0.",
+    "[09-saude-e-bem-estar] Educação Física: rótulo 0915E01 consta no glossário Rede Unida, mas a ISCED-F 2013 colocaria em 1014 (Esportes); o total do rótulo pode somar bacharelado e licenciatura. Conferir no manual CINE Brasil.",
+    "[09-saude-e-bem-estar] CINE: áreas detalhadas 0911 (Odontologia), 0914 (Biomedicina e Radiologia), 0916 (Farmácia), 0923 (Serviço Social), 0841 (Medicina Veterinária) e 1012 (Estética e Cosmética) seguem a ISCED-F 2013 e não foram confirmadas no manual INEP; rótulos 0911O01/0914B01/0914R01/0916F0...",
+    "[09-saude-e-bem-estar] CBO: famílias e títulos confirmados apenas em espelhos (vriconsulting, buscadorncm, numerando), não no portal cbo.mte.gov.br.",
+    "[09-saude-e-bem-estar] ISCO-08: códigos e títulos da estrutura oficial ILO, não reverificados online nesta sessão (ilo.org inacessível).",
+    "[09-saude-e-bem-estar] ESCO: apenas 'specialised doctor' (UUID 9b889f07-c39c-464d-b9d9-b2daa650f9ac) confirmado via espelho worldoftaxonomy; demais ramos ficaram sem URI.",
+    "[09-saude-e-bem-estar] Códigos de ética citados em sensitiveData não reconfirmados nesta sessão: CFFa 490/2016, CONFEF 307/2015, CONTER 15/2011, CFO 118/2012, CFF 596/2014, COFFITO 424/2013, CFN 599/2018, CFMV 1.138/2016, COFEN 564/2017, CFP 010/2005, CFESS 273/1993, CFM 2.217/2018. CFBM confirma...",
+    "[09-saude-e-bem-estar] CONTER/CRTR: instrumento de criação (Lei 7.394/1985 + Decreto 92.790/1986) e obrigatoriedade de registro do tecnólogo em radiologia não reconfirmados.",
+    "[09-saude-e-bem-estar] Biomedicina: lei do conselho listada como 6.684/1979 (cria conselhos de Biologia e Biomedicina) e 7.017/1982 (separa CFBM); a segunda não foi verificada nesta sessão.",
+    "[09-saude-e-bem-estar] Excluídos por baixa matrícula (números não localizados): Terapia Ocupacional (CINE 0915T01, CBO 2239, COFFITO), Saúde Coletiva (CBO 1312-25 Sanitarista, sem conselho) e Gerontologia (CBO 1312-20 Gerontólogo, sem conselho).",
+    "[06-07-engenharia-e-tic] Rede da sessão bloqueou todos os portais (download.inep.gov.br, gov.br/inep, cbo.mte.gov.br, esco.ec.europa.eu, ilo.org, confea.org.br, caubr.gov.br): tudo foi conferido só por títulos/URLs/trechos de resultados de busca; a cota de busca acabou antes de concluir.",
+    "[06-07-engenharia-e-tic] Matrículas por curso (Censo 2023/2024) não obtidas do INEP: todos os campos enrollment estão naoConferido; a seleção e a ordem dos 15 ramos vêm de conhecimento geral do Censo, não de uma tabela conferida.",
+    "[06-07-engenharia-e-tic] Engenharia Civil: 140.461 matrículas vem de ranking do Censo 2022 (Querobolsa, 9º lugar), possivelmente só presencial; UFPB/CONTECC 2024 a descreve como 5º maior curso do país.",
+    "[06-07-engenharia-e-tic] Engenharia de Software: 420.479 (5º lugar, 2024) é o rótulo 'Sistemas de Informação' em CNN Brasil/Galileo citando o INEP; provavelmente agrega SI, ADS e outros rótulos de 0613 — não conferido no Resumo Técnico 2024.",
+    "[06-07-engenharia-e-tic] CINE Brasil: nomes em português das áreas detalhadas e as atribuições curso→área não foram conferidos no manual do INEP; códigos 0612, 0613, 0711, 0712 e 0732 conferidos só na ISCED-F 2013 (mesma numeração); 0713, 0714, 0715 e 0731 não conferidos nesta sessão (0731/0732 v...",
+    "[06-07-engenharia-e-tic] CINE detail deixado vazio: Engenharia de Produção (candidatos 0788 ou 0719); Engenharia de Computação (0714 — que mudaria a área geral para 07 —, 0688 ou 0613); Ciência de Dados/IA (0688, 0613 ou 0542); Segurança da Informação (0612 ou 0619); Segurança do Trabalho (candid...",
+    "[06-07-engenharia-e-tic] CBO: famílias conferidas apenas em espelhos (VRI Consulting, Numerando, NCM Buscador), não no portal cbo.mte.gov.br; título da 2144 reportado pelo espelho como 'Engenheiros mecânicos e afins'.",
+    "[06-07-engenharia-e-tic] CBO não conferidas e deixadas fora dos campos: 2123 Administradores de tecnologia da informação (redes/segurança da informação), 3516 Técnicos em segurança no trabalho, 2140 Engenheiros ambientais (por isso engenharia-ambiental-e-sanitaria ficou com cbo vazio), 3121 Técni...",
+    "[06-07-engenharia-e-tic] ISCO-08: 2263 Environmental and occupational health and hygiene professionals (engenheiro de segurança do trabalho) e 2164 Town and traffic planners (urbanista) não conferidos e deixados fora; o título de 3257 não foi citado literalmente na fonte (só 'Environmental Health...",
+    "[06-07-engenharia-e-tic] ESCO: URIs não obtidas (campo esco vazio) para civil engineer, architect, electrical engineer, industrial engineer, chemical engineer, environmental engineer, automation engineer, ICT network engineer, ICT security consultant/administrator, data scientist, occupational he...",
+    "[06-07-engenharia-e-tic] Conselhos: Lei 5.194/1966 (CONFEA/CREA), Resolução CONFEA 313/1986 (registro de tecnólogos) e Lei 7.410/1985 (segurança do trabalho) citadas de memória; só a Lei 12.378/2010 (CAU/BR) apareceu nas fontes.",
+    "[06-07-engenharia-e-tic] Excluídos: Logística (CINE 1041, Serviços — tratar no grupo de Negócios/Serviços), Engenharia Agrícola (CBO 2221-05 conferida, mas CINE provável na área 08 Agricultura e baixo volume), Engenharia de Alimentos (0721, baixo volume); Eletrotécnica virou alias de Engenharia E..."
+  ]
+}
