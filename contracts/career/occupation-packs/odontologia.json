@@ -1,0 +1,331 @@
+{
+  "schemaVersion": 1,
+  "code": "odontologia",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Odontologia", "en": "Dentistry", "es": "Odontología" },
+  "fields": ["odontologia"],
+  "family": {
+    "cbo": [
+      { "code": "2232", "title": "Cirurgiões-dentistas" }
+    ],
+    "isco08": [
+      { "code": "2261", "title": "Dentists" }
+    ],
+    "esco": []
+  },
+  "scope": {
+    "summary": "Pacote para quem se forma ou se formou em Odontologia e quer construir evidências de carreira sem expor pacientes: casos anonimizados, planos de tratamento fictícios, protocolos clínicos e de biossegurança, fluxos de atendimento, indicadores e desenhos técnicos de prótese ou planejamento. A IA apoia a escrita e a organização; nunca orienta clinicamente terceiros nem redige prescrição, atestado ou laudo assinável.",
+    "entryRoles": ["Estagiário de clínica (estágio curricular)", "Cirurgião-dentista recém-formado em clínica geral", "Dentista da Estratégia Saúde da Família (eSB)", "Dentista em rede de clínicas ou franquia", "Residente em odontologia"],
+    "midRoles": ["Cirurgião-dentista especialista (ortodontia, endodontia, implantodontia, periodontia, prótese, odontopediatria)", "Dentista de CEO (Centro de Especialidades Odontológicas)", "Dentista de clínica própria", "Odontologia hospitalar", "Preceptor de estágio"],
+    "seniorRoles": ["Responsável técnico de clínica", "Coordenador de saúde bucal municipal", "Docente e pesquisador", "Perito odontolegal", "Auditor odontológico em operadora", "Gestor de rede de clínicas"],
+    "sectors": ["SUS (atenção primária, CEO, hospital)", "clínicas e consultórios privados", "redes de clínicas e franquias", "saúde suplementar e operadoras odontológicas", "odontologia legal e perícia", "ensino e pesquisa", "indústria odontológica e laboratórios de prótese", "forças armadas"],
+    "regulation": [
+      { "name": "Lei 4.324/1964", "issuer": "Brasil", "about": "cria o CFO e os CROs; inscrição obrigatória" },
+      { "name": "Lei 5.081/1966", "issuer": "Brasil", "about": "regula o exercício da odontologia; competências do cirurgião-dentista (diagnóstico, prescrição, atestados, perícia odontolegal)" },
+      { "name": "Res. CFO 118/2012 (Código de Ética Odontológica), alterada pela Res. CFO 271/2025", "issuer": "CFO", "about": "sigilo, prontuário, relação com pacientes, publicidade e propaganda, honorários" },
+      { "name": "Res. CFO 63/2005 (Consolidação das Normas para Procedimentos nos Conselhos de Odontologia)", "issuer": "CFO", "about": "inscrição, especialidades reconhecidas e registro de especialista" },
+      { "name": "Lei 13.787/2018", "issuer": "Brasil", "about": "digitalização e uso de sistemas informatizados para guarda de prontuário de paciente" },
+      { "name": "NR-32 (MTE)", "issuer": "Ministério do Trabalho e Emprego", "about": "segurança e saúde no trabalho em serviços de saúde" },
+      { "name": "RDC Anvisa 15/2012", "issuer": "Anvisa", "about": "processamento de produtos para saúde (esterilização e desinfecção)" },
+      { "name": "LGPD (Lei 13.709/2018), art. 5º II e art. 11", "issuer": "Brasil", "about": "dados de saúde, radiografias e fotos intraorais são dados sensíveis" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "CRO", "meaning": "inscrição no Conselho Regional de Odontologia; obrigatória para exercer" },
+      { "term": "registro de especialista", "meaning": "inscrição da especialidade no CRO, exigida para se anunciar como especialista" },
+      { "term": "prontuário odontológico", "meaning": "ficha clínica, odontograma, exames, planos e termos; sigiloso" },
+      { "term": "odontograma", "meaning": "representação gráfica dos dentes com condições e tratamentos" },
+      { "term": "anamnese", "meaning": "entrevista sobre queixa, histórico médico e odontológico, medicamentos e alergias" },
+      { "term": "plano de tratamento", "meaning": "sequência de procedimentos por fase (urgência, adequação, reabilitação, manutenção)" },
+      { "term": "TCLE", "meaning": "termo de consentimento livre e esclarecido antes de procedimentos" },
+      { "term": "CPO-D", "meaning": "índice de dentes cariados, perdidos e obturados" },
+      { "term": "periograma", "meaning": "registro de profundidade de sondagem e perda de inserção" },
+      { "term": "radiografia periapical, panorâmica e TCFC", "meaning": "exames de imagem; TCFC é tomografia de feixe cônico" },
+      { "term": "biossegurança", "meaning": "controle de infecção: EPI, esterilização, descarte (RDC 15/2012, NR-32)" },
+      { "term": "CEO", "meaning": "Centro de Especialidades Odontológicas do SUS" },
+      { "term": "eSB", "meaning": "equipe de saúde bucal na Estratégia Saúde da Família" },
+      { "term": "ASB / TSB", "meaning": "auxiliar e técnico em saúde bucal, supervisionados pelo cirurgião-dentista" },
+      { "term": "prótese fixa, removível e sobre implante", "meaning": "tipos de reabilitação protética" },
+      { "term": "DSD", "meaning": "planejamento digital do sorriso (Digital Smile Design)" },
+      { "term": "fluxo digital / CAD-CAM", "meaning": "escaneamento intraoral, desenho e fresagem ou impressão de peças" },
+      { "term": "HOF", "meaning": "harmonização orofacial, área reconhecida pelo CFO" },
+      { "term": "encaminhamento", "meaning": "referência da atenção primária ao CEO ou especialista" },
+      { "term": "protocolo clínico", "meaning": "padronização de diagnóstico e conduta de uma condição" },
+      { "term": "POP", "meaning": "procedimento operacional padrão de uma rotina clínica ou de biossegurança" },
+      { "term": "anonimização", "meaning": "remoção de todo dado que identifique o paciente, inclusive fotos e radiografias" }
+    ],
+    "tools": ["software de gestão de clínica e prontuário (Dental Office, Simples Dental, Clinicorp)", "e-SUS APS", "escâner intraoral e software CAD (exocad, 3Shape)", "planejamento digital do sorriso", "visualizadores de radiografia e tomografia", "planilha (Excel, Google Sheets)", "BVS, SciELO, PubMed", "Zotero ou Mendeley", "Letters (textos) e Drawings (fluxos, infográficos e desenhos técnicos)"],
+    "deliverables": ["estudo de caso anonimizado", "plano de tratamento de caso fictício", "protocolo clínico ou POP de biossegurança", "fluxo de atendimento (acolhimento, urgência odontológica, encaminhamento ao CEO)", "infográfico de indicadores de saúde bucal", "desenho técnico de prótese ou planejamento de sorriso em modelo fictício", "material de educação em saúde bucal", "relatório técnico de levantamento epidemiológico", "projeto de pesquisa com TCLE", "currículo direcionado e carta"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Diagnóstico e planejamento de tratamento", "esco": null, "kind": "nucleo" },
+      { "label": "Procedimentos clínicos (dentística, endodontia, periodontia, cirurgia, prótese)", "esco": null, "kind": "nucleo" },
+      { "label": "Biossegurança e controle de infecção", "esco": null, "kind": "nucleo" },
+      { "label": "Registro em prontuário odontológico e odontograma", "esco": null, "kind": "nucleo" },
+      { "label": "Interpretação de imagens (periapical, panorâmica, TCFC)", "esco": null, "kind": "nucleo" },
+      { "label": "Comunicação com pacientes, consentimento e orientação", "esco": null, "kind": "nucleo" },
+      { "label": "Ética profissional, sigilo e publicidade regulada", "esco": null, "kind": "nucleo" },
+      { "label": "Supervisão de ASB e TSB", "esco": null, "kind": "nucleo" },
+      { "label": "Fluxo digital (escaneamento, CAD-CAM, planejamento digital)", "esco": null, "kind": "apoio" },
+      { "label": "Saúde bucal coletiva e epidemiologia (CPO-D, levantamentos)", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de clínica (agenda, estoque, custos, indicadores)", "esco": null, "kind": "apoio" },
+      { "label": "Odontologia baseada em evidências", "esco": null, "kind": "apoio" },
+      { "label": "Educação em saúde bucal", "esco": null, "kind": "apoio" },
+      { "label": "Odontologia hospitalar e pacientes com necessidades especiais", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["destreza manual e atenção a detalhes", "comunicação escrita", "empatia e manejo de ansiedade", "organização e gestão do tempo", "aprendizagem contínua", "trabalho em equipe"],
+    "tracks": [
+      { "id": "casos-sem-expor-pacientes", "label": "Registrar casos sem expor pacientes", "steps": ["estudo de caso anonimizado (L3)", "plano de tratamento de caso fictício (X1)", "post sobre um aprendizado clínico (L5)", "revisão crítica de um plano de colega (L10)"] },
+      { "id": "clinica-organizada", "label": "Clínica organizada e segura", "steps": ["POP de biossegurança (L7)", "fluxo de atendimento ou de encaminhamento (D4)", "infográfico de indicadores da clínica ou do território (D7)", "redesenho antes e depois de uma rotina (D5)"] },
+      { "id": "fluxo-digital", "label": "Mostrar domínio do fluxo digital", "steps": ["desenho técnico de prótese ou planejamento em modelo fictício (D6)", "prancha com três trabalhos em modelos ou simulações (D2)", "relatório técnico comparando técnicas (L4)"] },
+      { "id": "posicionar-se", "label": "Posicionar-se para a vaga ou a especialização", "steps": ["bio de três frases (L6)", "currículo direcionado (L1)", "carta de apresentação (L2)", "plano 30-60-90 para a nova clínica ou unidade (L9)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"clínico geral\", \"dentista da ESF\", \"ortodontista\", \"estagiário de clínica\", \"dentista de rede\"",
+      "cboFamilies": ["2232"],
+      "why": "Pergunto seu último cargo ou cenário para partir do que você já fez. Se ainda está na graduação, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio curricular ou primeiro vínculo após o CRO",
+        "junior": "clínico geral até dois anos de formado",
+        "pleno": "clínico com autonomia plena ou especialista registrado",
+        "senior": "referência técnica; preceptor ou responsável técnico",
+        "gestao": "coordenação de saúde bucal, gestão de clínica ou rede"
+      },
+      "why": "Pergunto o nível para ajustar as tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem",
+      "options": ["diagnosticar e planejar tratamentos", "procedimentos restauradores", "endodontia", "cirurgia e exodontia", "periodontia", "prótese e reabilitação", "fluxo digital e CAD-CAM", "biossegurança", "atendimento de crianças ou pacientes ansiosos", "saúde bucal coletiva", "gestão de clínica", "educação em saúde bucal"],
+      "why": "Suas competências declaradas viram o ponto de partida; a prova vem com as tarefas, sem dados de paciente."
+    },
+    "c4": {
+      "certifications": ["graduação em Odontologia", "inscrição no CRO", "especialização registrada no CRO", "residência em odontologia", "cursos de atualização reconhecidos", "habilitação em sedação consciente, laserterapia ou HOF", "mestrado ou doutorado"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação e títulos mostram lacunas em relação ao cargo ou à especialidade que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["planejamento de tratamento", "fluxo digital e CAD-CAM", "biossegurança", "interpretação de imagens", "comunicação e consentimento", "gestão de clínica", "indicadores e qualidade", "saúde bucal coletiva", "odontologia baseada em evidências", "educação em saúde bucal"],
+      "why": "Com isso sugiro uma trilha curta com tarefas progressivas em vez do catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que etapa você está?", "type": "escolha", "options": ["graduação", "estágio curricular", "recém-formado", "especialização ou residência", "cirurgião-dentista em exercício", "pós-graduação stricto sensu"], "why": "A etapa define quais tarefas fazem sentido: para a primeira vaga, currículo e carta; para a clínica, POPs e indicadores.", "where": "P" },
+      { "id": "x2", "prompt": "Que cenário de prática mais interessa?", "type": "lista", "options": ["atenção primária e CEO", "consultório ou clínica privada", "rede de clínicas", "odontologia hospitalar", "perícia e odontologia legal", "ensino e pesquisa", "indústria e laboratório de prótese", "gestão e auditoria"], "why": "Direciona exemplos, vocabulário e fontes das tarefas para o cenário que você quer.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L3", "L7", "D4", "L4", "D7", "D6", "L6", "L1", "L9", "D2", "L2", "L5"],
+    "excluded": [
+      { "code": "D1", "reason": "planta 2D não é entrega da profissão; layout de consultório é exceção rara" },
+      { "code": "D3", "reason": "render fotorrealista de produto não é entrega típica; modelagem de prótese entra em D6" },
+      { "code": "D8", "reason": "vista explodida não é entrega da profissão" },
+      { "code": "D9", "reason": "wireframe de tela não é entrega da profissão" }
+    ],
+    "parameters": {
+      "L3": {
+        "title": "Estudo de caso odontológico anonimizado",
+        "brief": "Descreva um caso real ou composto, sem nenhum identificador do paciente e sem fotos ou radiografias identificáveis, no formato situação, tarefa, ação e resultado: queixa e contexto, diagnóstico, plano por fases, procedimentos realizados e resultado, com uma lição aprendida e referências.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado", "lição aprendida"], "anonymizationStatement": true, "noIdentifiableImages": true, "minReferences": 2, "maxWords": 900 },
+        "criteria": ["cinco seções nomeadas", "declaração de anonimização e ausência de dados de paciente", "nenhum nome, CPF, número de prontuário, data completa ou foto e radiografia identificáveis", "ao menos duas referências", "até 900 palavras"],
+        "evidence": "documento no Letters (modelo estudo-de-caso)",
+        "time": "60 min",
+        "level": 2
+      },
+      "L7": {
+        "title": "POP de biossegurança ou protocolo clínico",
+        "brief": "Escreva o procedimento operacional padrão de uma rotina que você domina (ex.: processamento de instrumentais, paramentação, atendimento de urgência odontológica, protocolo de exodontia simples): objetivo, campo de aplicação, responsáveis (CD, TSB, ASB), materiais, passos numerados, pontos de segurança, registro, referências e data de revisão. Documento de estudo, não institucional.",
+        "parameters": { "requiredSections": ["objetivo", "campo de aplicação", "responsáveis", "materiais", "passos", "segurança e EPI", "registro", "referências", "revisão"], "numberedSteps": true, "minReferences": 3, "disclaimer": "documento de estudo; não substitui POP institucional" },
+        "criteria": ["nove seções presentes", "passos numerados com responsável (CD, TSB ou ASB)", "critério de conclusão por passo", "ao menos três referências (CFO, Anvisa, Ministério da Saúde ou literatura)", "aviso de que é documento de estudo"],
+        "evidence": "documento no Letters (modelo pop)",
+        "time": "60 min",
+        "level": 2
+      },
+      "D4": {
+        "title": "Fluxo de atendimento odontológico",
+        "brief": "Desenhe o fluxo de uma rotina (ex.: acolhimento e urgência odontológica na UBS, encaminhamento ao CEO, primeira consulta na clínica) com raias por responsável, pontos de decisão e saídas; sem dados de paciente.",
+        "parameters": { "lanes": ["recepção", "ASB ou TSB", "cirurgião-dentista", "CEO ou especialista"], "decisionPoints": 2, "notation": "BPMN simplificado" },
+        "criteria": ["início e fim explícitos", "raias por responsável", "ao menos dois pontos de decisão", "nenhuma etapa órfã", "legenda de símbolos"],
+        "evidence": "diagrama vetorial no Drawings (modo diagrama)",
+        "time": "45 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório técnico curto",
+        "brief": "Relate um levantamento, auditoria ou melhoria (ex.: CPO-D de uma escola, redução de faltas, comparação de técnicas): objetivo, método, resultados, limitações e referências, em até quatro páginas, com dados agregados e sem identificar pacientes.",
+        "parameters": { "requiredSections": ["objetivo", "método", "resultados", "limitações", "referências"], "maxPages": 4, "aggregatedDataOnly": true },
+        "criteria": ["cinco seções nomeadas", "até quatro páginas", "dados agregados, sem identificação", "referências citadas"],
+        "evidence": "relatório no Letters (modelo relatorio-tecnico)",
+        "time": "2 h",
+        "level": 3
+      },
+      "D7": {
+        "title": "Infográfico de indicadores de saúde bucal",
+        "brief": "Monte um infográfico com até três indicadores (ex.: CPO-D, cobertura de primeira consulta programática, razão de exodontias, produtividade da clínica) com fonte, período e uma mensagem principal; dados agregados ou públicos (SB Brasil, e-SUS, SISAB).",
+        "parameters": { "maxIndicators": 3, "requiredElements": ["fonte", "período", "território ou clínica", "mensagem principal"], "aggregatedDataOnly": true },
+        "criteria": ["fonte e período citados", "eixos e unidades rotulados", "uma mensagem principal", "dados agregados ou públicos"],
+        "evidence": "imagem e PDF no Drawings (modo infográfico)",
+        "time": "60 min",
+        "level": 2
+      },
+      "D6": {
+        "title": "Desenho técnico de prótese ou planejamento em modelo fictício",
+        "brief": "Desenhe um detalhe técnico de prótese, enceramento diagnóstico ou planejamento de sorriso sobre um modelo fictício ou de estudo: vistas, proporções, materiais e sequência de confecção, sem imagem de paciente real.",
+        "parameters": { "fictionalModel": true, "views": 2, "requiredElements": ["materiais especificados", "proporções ou medidas", "sequência de confecção", "legenda"] },
+        "criteria": ["modelo fictício ou de estudo declarado", "ao menos duas vistas", "materiais especificados", "medidas ou proporções indicadas", "legenda"],
+        "evidence": "prancha no Drawings (modo 2d-tecnico ou prancha)",
+        "time": "90 min",
+        "level": 3
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Plano de tratamento para um caso fictício",
+        "competency": "Diagnóstico e planejamento de tratamento",
+        "criteria": ["caso explicitamente fictício ou composto", "anamnese e achados clínicos e radiográficos descritos", "diagnósticos por dente ou região", "plano por fases (urgência, adequação, reabilitação, manutenção) com justificativa", "alternativas e riscos que seriam explicados ao paciente", "referências"],
+        "evidence": "documento no Letters (modelo relatorio-de-caso)",
+        "time": "90 min",
+        "trigger": "Quer montar um plano de tratamento completo para um caso de treino?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas ou palavras da tarefa", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L9", "X1"], "auto": true },
+      { "id": "declaracao-de-anonimizacao", "check": "há declaração explícita de anonimização, de caso fictício ou de modelo de estudo", "appliesTo": ["L3", "L4", "L5", "L7", "L10", "D2", "D4", "D6", "D7", "X1"], "auto": true },
+      { "id": "sem-identificadores-diretos", "check": "não há CPF, número de prontuário, data de nascimento completa ou nome próprio de paciente", "appliesTo": ["L3", "L4", "L5", "D7", "X1"], "auto": true },
+      { "id": "referencias-minimas", "check": "o número mínimo de referências da tarefa está presente", "appliesTo": ["L3", "L4", "L7", "X1"], "auto": true },
+      { "id": "passos-numerados-com-responsavel", "check": "cada passo do POP tem número e responsável (CD, TSB, ASB)", "appliesTo": ["L7"], "auto": true },
+      { "id": "aviso-documento-de-estudo", "check": "o POP traz o aviso de que não substitui documento institucional", "appliesTo": ["L7"], "auto": true },
+      { "id": "fluxo-fechado", "check": "o diagrama tem início, fim, raias e nenhuma etapa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "fonte-e-periodo", "check": "o infográfico cita fonte, período e território ou clínica", "appliesTo": ["D7"], "auto": true },
+      { "id": "vistas-materiais-legenda", "check": "o desenho técnico tem ao menos duas vistas, materiais e legenda", "appliesTo": ["D6"], "auto": true },
+      { "id": "creditos-e-fontes", "check": "coautores, laboratório e fontes estão creditados", "appliesTo": ["D2", "D6", "D7", "L5", "L10", "D10"], "auto": true },
+      { "id": "imagens-de-paciente", "check": "nenhuma foto intraoral, facial ou radiografia permite reconhecer uma pessoa", "appliesTo": ["L3", "D2", "D6", "L5"], "auto": false },
+      { "id": "autoria", "check": "a pessoa declarou autoria e creditou coautores", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L9", "L10", "D2", "D4", "D5", "D6", "D7", "D10", "X1"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "raciocinio-diagnostico", "label": "Raciocínio diagnóstico e de planejamento", "levels": { "aproxima": "lista procedimentos sem ligar aos achados", "atende": "liga achados, diagnóstico e plano de forma rastreável", "supera": "discute alternativas, riscos e prognóstico" } },
+      { "id": "biosseguranca", "label": "Biossegurança no documento", "levels": { "aproxima": "cita EPI de forma genérica", "atende": "nomeia barreiras e pontos críticos em cada passo", "supera": "antecipa falhas e prevê o que fazer se ocorrerem" } },
+      { "id": "qualidade-tecnica-do-desenho", "label": "Qualidade técnica do desenho", "levels": { "aproxima": "proporções e materiais vagos", "atende": "um técnico de prótese executaria sem perguntar", "supera": "justifica escolhas de material e sequência" } },
+      { "id": "protecao-do-paciente", "label": "Proteção do paciente no texto e nas imagens", "levels": { "aproxima": "anonimiza o óbvio e deixa pistas indiretas", "atende": "remove identificadores diretos e indiretos, inclusive em imagens", "supera": "usa caso composto ou modelo de estudo e explica as escolhas" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da área de Odontologia (graduação, estágio, especialização ou exercício com CRO). Use o vocabulário da profissão: anamnese, odontograma, periograma, plano de tratamento por fases, TCLE, CPO-D, radiografia periapical e panorâmica, TCFC, biossegurança, CEO, eSB, ASB e TSB, prótese, fluxo digital, CAD-CAM, planejamento digital do sorriso, HOF, encaminhamento. Quando citar normas, prefira as primárias: Lei 4.324/1964, Lei 5.081/1966, Res. CFO 118/2012 (Código de Ética Odontológica, alterada pela Res. CFO 271/2025), RDC Anvisa 15/2012, NR-32, LGPD art. 11, e fontes como a Política Nacional de Saúde Bucal, SB Brasil, BVS e SciELO. O que você nunca faz: não dá orientação clínica, diagnóstico ou plano de tratamento para um paciente real ou para terceiros; não redige prescrição, atestado, laudo, orçamento vinculante ou qualquer documento assinável; não preenche nem interpreta prontuário, radiografia ou foto de paciente real. Quando a pessoa trouxer um caso, exija que esteja anonimizado ou seja fictício, inclusive imagens (sem rosto, sorriso identificável, nome, CPF, número de prontuário, datas completas) e, se houver pista de identificação, pare e peça a remoção antes de continuar. Respeite as regras de publicidade do Código de Ética: só anuncie especialidade registrada no CRO e não sugira promessas de resultado nem imagens de antes e depois de pacientes. Trate POPs, planos e casos produzidos aqui como documentos de estudo, nunca institucionais. Não infira especialidade, senioridade ou situação a partir dos textos: pergunte. Afirmações sobre mercado citam fonte, data e região (ex.: estatísticas do CFO, CNES, CAGED) ou dizem \"estimativa\"; nunca prometa vaga, emprego ou remuneração. Progresso é por critérios atendidos; a pré-checagem cobre só itens objetivos; a validação que gera selo é humana. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação da pessoa.",
+    "citeSources": [
+      { "title": "Res. CFO 118/2012 — Código de Ética Odontológica", "url": "https://www.legisweb.com.br/legislacao/?id=242286", "kind": "norma" },
+      { "title": "Res. CFO 271/2025 — altera o Código de Ética (descontos e cartões; decisão do CADE)", "url": "https://sistemas.cfo.org.br/visualizar/atos/RESOLU%C3%87%C3%83O/SEC/2025/271", "kind": "norma" },
+      { "title": "Lei 5.081/1966 — exercício da odontologia", "url": "https://www.planalto.gov.br/ccivil_03/leis/l5081.htm", "kind": "norma" },
+      { "title": "Atos normativos do CFO", "url": "https://sistemas.cfo.org.br/", "kind": "conselho" },
+      { "title": "Estatísticas do CFO — quantidade geral de entidades e profissionais ativos", "url": "https://website.cfo.org.br/estatisticas/quantidade-geral-de-entidades-e-profissionais-ativos/", "kind": "estatistica" },
+      { "title": "Saúde bucal — Ministério da Saúde (Política Nacional de Saúde Bucal, SB Brasil)", "url": "https://www.gov.br/saude/pt-br/composicao/saps/saude-bucal", "kind": "orgao-publico" },
+      { "title": "Biblioteca Virtual em Saúde (BVS)", "url": "https://bvsalud.org/", "kind": "referencia" },
+      { "title": "CNES — Cadastro Nacional de Estabelecimentos de Saúde (DATASUS)", "url": "https://cnes.datasus.gov.br/", "kind": "estatistica" },
+      { "title": "CBO — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências odontológicas; x1 (etapa) e x2 (cenário de prática) orientam as tarefas." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "L3 anonimizado, L7 POP, D4 fluxo, L4 relatório, D7 indicadores e D6 desenho técnico primeiro; X1 plano de tratamento quando c5 pedir; cada card lembra que não entra dado ou imagem de paciente." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir das horas (d1) e do aparelho (d4); D6 e D2 só com computador; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, referências, declaração de anonimização ou modelo fictício, ausência de identificadores diretos, vistas e legenda do desenho; imagens identificáveis e selo são revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura e linguagem de caso, POP, plano fictício e relatório com prévia; nunca redige prescrição, atestado, laudo ou orçamento assinável." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias e legenda do fluxo (D4); fonte e rótulos do infográfico (D7); vistas, materiais e legenda do desenho técnico em modelo fictício (D6); grade e créditos da prancha (D2)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese de competências declaradas e evidenciadas, lacunas para o cargo ou especialidade-alvo e incertezas; cada afirmação cita o campo de origem." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos por CBO 2232 e competências: saúde bucal coletiva e gestão pública, estética, laboratório, pesquisa; dados com fonte, data e região." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil; só anuncia especialidade registrada no CRO e sem promessa de resultado (Código de Ética, publicidade)." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai formação, especializações, cursos e experiências em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "prontuário odontológico, odontogramas e planos de pacientes reais", "radiografias, tomografias e fotos intraorais ou faciais identificáveis", "dados sensíveis (LGPD art. 5º II)", "dados de terceiros sem autorização"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca dar orientação clínica, diagnóstico ou plano para paciente real ou terceiro; redirecionar para avaliação presencial",
+      "nunca redigir prescrição, atestado, laudo, orçamento vinculante ou documento assinável",
+      "exigir anonimização ou caso fictício, inclusive em imagens; parar e pedir remoção ao detectar rosto, sorriso identificável, nome, CPF, prontuário ou data completa",
+      "respeitar a publicidade do Código de Ética: sem anúncio de especialidade não registrada, sem promessa de resultado, sem antes e depois de pacientes",
+      "tratar POPs, planos e casos produzidos como documentos de estudo, não institucionais",
+      "perguntar em vez de inferir especialidade, etapa ou situação",
+      "nunca prometer vaga, emprego ou remuneração; mercado com fonte, data e região ou \"estimativa\"",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["diagrama", "infografico", "2d-tecnico", "prancha"],
+    "lettersTemplates": ["estudo-de-caso", "pop", "relatorio-tecnico", "relatorio-de-caso", "revisao", "curriculo", "carta", "bio", "plano-30-60-90", "projeto-de-pesquisa", "artigo", "proposta"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas curtas de texto (L5, L6) e revisão (L10); L3, L7, D4 e D7 pedem computador; D6 e D2 exigem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: bio de três frases (15 min). Sem dados de paciente, só o que você sabe fazer.",
+        "Uma rotina de biossegurança que você domina pode virar POP em 60 min. Quando quiser, está aqui.",
+        "Sem pressão. Agenda cheia? A tarefa de 15 min continua disponível quando der.",
+        "Seu desenho técnico está com 3 de 5 critérios objetivos. Faltam a segunda vista e a legenda."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": { "sensitiveData": ["prontuário odontológico, radiografias e fotos intraorais identificáveis (Res. CFO 118/2012; LGPD art. 5º II)", "fotos faciais e de sorriso de pacientes", "número de inscrição no CRO só por escolha da pessoa"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Estatísticas do CFO — profissionais e entidades ativos por UF e especialidade", "url": "https://website.cfo.org.br/estatisticas/quantidade-geral-de-entidades-e-profissionais-ativos/", "geography": "Brasil e UF", "cadence": "continua", "kind": "conselho" },
+      { "title": "CNES — Cadastro Nacional de Estabelecimentos de Saúde (profissionais e vínculos)", "url": "https://cnes.datasus.gov.br/", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "Novo CAGED (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "SB Brasil — Pesquisa Nacional de Saúde Bucal (Ministério da Saúde)", "url": "https://www.gov.br/saude/pt-br/composicao/saps/saude-bucal", "geography": "Brasil, regiões e capitais", "cadence": "eventual", "kind": "pesquisa" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda, distribuição regional ou requisitos cita fonte, data e abrangência geográfica verificáveis (ex.: estatísticas do CFO, data; CNES, mês/ano; CAGED, mês/ano); sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "gestao-publica", "why": "Coordenação de saúde bucal, CEO e vigilância aproveitam a experiência na eSB e o domínio dos indicadores do SUS.", "gaps": ["planejamento e orçamento público", "indicadores e avaliação de políticas", "legislação do SUS"], "steps": ["infográfico de indicadores de saúde bucal (D7)", "relatório técnico de um levantamento (L4)", "curso de gestão em saúde (Enap ou UNA-SUS)", "plano 30-60-90 para coordenação (L9)"] },
+    { "to": "estetica-e-cosmetica", "why": "Harmonização orofacial e estética do sorriso compartilham anatomia facial, planejamento digital e fotografia clínica regulada.", "gaps": ["habilitação em HOF reconhecida pelo CFO", "fotografia clínica e planejamento digital", "regras de publicidade"], "steps": ["desenho de planejamento em modelo fictício (D6)", "curso de habilitação reconhecido", "POP de biossegurança para procedimentos faciais (L7)"] },
+    { "to": "biomedicina", "why": "Pesquisa em materiais dentários, microbiologia oral e análises laboratoriais compartilham método científico.", "gaps": ["técnicas laboratoriais e controle de qualidade", "bioestatística", "boas práticas de laboratório"], "steps": ["projeto de pesquisa com TCLE (L4)", "relatório técnico comparando materiais (L4)", "curso ou estágio em laboratório de pesquisa"] },
+    { "to": "administracao", "why": "Gestão de clínicas, redes e operadoras odontológicas valoriza dentistas que conhecem o processo clínico.", "gaps": ["finanças e custos", "marketing dentro das regras do CFO", "gestão de pessoas e processos"], "steps": ["fluxo de atendimento da clínica (D4)", "redesenho antes e depois de um processo (D5)", "curso de gestão de clínicas (Sebrae)"] }
+  ],
+  "learning": [
+    { "title": "UNA-SUS — cursos gratuitos para profissionais do SUS (saúde bucal)", "provider": "UNA-SUS / Ministério da Saúde", "url": "https://www.unasus.gov.br/", "free": true, "kind": "portal" },
+    { "title": "AVASUS — Ambiente Virtual de Aprendizagem do SUS", "provider": "UFRN / Ministério da Saúde", "url": "https://avasus.ufrn.br/", "free": true, "kind": "portal" },
+    { "title": "Atos normativos e Código de Ética do CFO", "provider": "CFO", "url": "https://sistemas.cfo.org.br/", "free": true, "kind": "norma" },
+    { "title": "Saúde bucal — Política Nacional e publicações", "provider": "Ministério da Saúde", "url": "https://www.gov.br/saude/pt-br/composicao/saps/saude-bucal", "free": true, "kind": "portal" },
+    { "title": "Segurança do paciente e processamento de produtos (Anvisa)", "provider": "Anvisa", "url": "https://www.gov.br/anvisa/pt-br/assuntos/servicosdesaude/seguranca-do-paciente", "free": true, "kind": "portal" },
+    { "title": "Cursos on-line do Sebrae — gestão de clínicas e consultórios", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "Biblioteca Virtual em Saúde (BVS) e SciELO", "provider": "BIREME/OPAS", "url": "https://bvsalud.org/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — gestão pública e saúde", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Fase 1 — dados do ramo odontologia (CBO, ISCO, conselho, sensitiveData, vizinhos)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Res. CFO 118/2012 — Código de Ética Odontológica (vigente desde 1º/1/2013; revogou a Res. CFO 42/2003)", "url": "https://www.legisweb.com.br/legislacao/?id=242286", "accessedAt": "2026-11-02" },
+    { "title": "Res. CFO 271/2025 — alterações pontuais no Código de Ética em cumprimento a decisão do CADE", "url": "https://sistemas.cfo.org.br/visualizar/atos/RESOLU%C3%87%C3%83O/SEC/2025/271", "accessedAt": "2026-11-02" },
+    { "title": "Estudo acadêmico citando a página de estatísticas do CFO (398.790 CDs em 2023)", "url": "https://revabeno.emnuvens.com.br/revabeno/article/download/399/370", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7 e §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URIs ESCO da ocupação dentist e das competências: esco.ec.europa.eu/ec.europa.eu não acessível nesta sessão",
+    "Lei 5.081/1966, Res. CFO 63/2005, RDC Anvisa 15/2012 e Lei 13.787/2018: citadas de memória, não abertas na fonte",
+    "página de estatísticas do CFO: URL vem de citação acadêmica (acesso 2023), não aberta; total de 398.790 cirurgiões-dentistas (2023) é de fonte secundária",
+    "Res. CFO 118/2012 e 271/2025 confirmadas por resultados de busca; textos integrais não abertos; alterações posteriores a junho/2025 não verificadas",
+    "URLs de saúde bucal do Ministério da Saúde, CNES, UNA-SUS, AVASUS, Anvisa e Sebrae não abertas nesta sessão",
+    "nomes de softwares (Dental Office, Simples Dental, Clinicorp, exocad, 3Shape) listados por conhecimento geral",
+    "habilitações citadas em c4 (sedação consciente, laserterapia, HOF) não conferidas na lista atual de especialidades e habilitações do CFO"
+  ]
+}

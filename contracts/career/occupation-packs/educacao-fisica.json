@@ -1,0 +1,327 @@
+{
+  "schemaVersion": 1,
+  "code": "educacao-fisica",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Educação Física", "en": "Physical Education", "es": "Educación Física" },
+  "fields": ["educacao-fisica"],
+  "family": {
+    "cbo": [{ "code": "2241", "title": "Profissionais da educação física" }, { "code": "2313", "title": "Professores de educação física no ensino fundamental" }],
+    "isco08": [{ "code": "3423", "title": "Fitness and recreation instructors and programme leaders" }, { "code": "3422", "title": "Sports coaches, instructors and officials" }, { "code": "2330", "title": "Secondary education teachers" }],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/f7177f79-63e7-4944-8896-044056b62523", "label": "personal trainer" },
+      { "uri": "http://data.europa.eu/esco/occupation/c784c2db-e636-429f-8492-3191790a58d7", "label": "fitness instructor" }
+    ]
+  },
+  "scope": {
+    "summary": "Profissão regulamentada pela Lei 9.696/1998, com registro no CREF. O bacharelado atua em treinamento, saúde, esporte e lazer (academias, clubes, saúde pública, empresas); a licenciatura atua na educação básica com planos de aula alinhados à BNCC. Em ambos, dados de avaliação física, anamnese e imagens de alunos e atletas são sigilosos.",
+    "entryRoles": ["Estagiário em academia, clube ou escola", "Instrutor de musculação ou de aulas coletivas", "Monitor de recreação e lazer", "Professor de educação física iniciante (licenciatura)", "Auxiliar técnico em categoria de base", "Profissional de educação física na atenção básica (programas municipais)"],
+    "midRoles": ["Personal trainer", "Preparador físico", "Professor de educação física da educação básica", "Coordenador de modalidade ou de musculação", "Profissional de educação física em NASF/eMulti, academia da saúde ou empresa", "Treinador de categoria de base"],
+    "seniorRoles": ["Coordenador técnico ou pedagógico", "Gestor de academia, clube ou centro esportivo", "Preparador físico de alto rendimento", "Coordenador de programa de atividade física na saúde pública", "Docente ou pesquisador", "Gestor de políticas de esporte e lazer"],
+    "sectors": ["academias e estúdios", "escolas públicas e privadas (licenciatura)", "clubes e esporte de rendimento", "saúde pública (atenção básica, programas municipais)", "empresas (ginástica laboral, bem-estar)", "lazer, turismo e eventos", "trabalho autônomo (personal, consultoria on-line)", "gestão esportiva e políticas públicas"],
+    "regulation": [
+      { "name": "Lei 9.696/1998", "issuer": "Brasil", "about": "regulamenta a profissão de Educação Física e cria o CONFEF e os CREFs" },
+      { "name": "Resolução CONFEF 307/2015", "issuer": "CONFEF", "about": "Código de Ética dos Profissionais de Educação Física (revogou a Res. 254/2013)" },
+      { "name": "Resolução CONFEF 046/2002", "issuer": "CONFEF", "about": "intervenção do profissional de Educação Física: campos e atribuições (número a confirmar)" },
+      { "name": "Resolução CNE/CES 6/2018", "issuer": "CNE / MEC", "about": "diretrizes curriculares dos cursos de Educação Física: etapa comum, bacharelado e licenciatura" },
+      { "name": "Lei 9.394/1996 (LDB), art. 26 §3º", "issuer": "Brasil", "about": "Educação Física como componente curricular obrigatório da educação básica" },
+      { "name": "BNCC — Educação Física", "issuer": "MEC / CNE", "about": "unidades temáticas, objetos de conhecimento e habilidades por ano escolar" },
+      { "name": "LGPD (Lei 13.709/2018), art. 5º II e art. 11", "issuer": "Brasil", "about": "dados de saúde em anamnese e avaliação física são dados sensíveis" },
+      { "name": "Resolução CONFEF sobre atendimento não presencial (Res. 391/2020)", "issuer": "CONFEF", "about": "prestação de serviços de forma não presencial (número a confirmar)" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "anamnese", "meaning": "entrevista inicial sobre histórico de saúde, hábitos e objetivos do aluno; dado sensível" },
+      { "term": "PAR-Q", "meaning": "questionário de prontidão para atividade física aplicado antes do treino" },
+      { "term": "avaliação física", "meaning": "medidas antropométricas, composição corporal e testes de aptidão; dado sensível" },
+      { "term": "periodização", "meaning": "organização do treino em ciclos (macro, meso, micro) com volume e intensidade planejados" },
+      { "term": "prescrição de treino", "meaning": "definição de exercícios, séries, repetições, carga e intervalo para o aluno" },
+      { "term": "FITT", "meaning": "frequência, intensidade, tempo e tipo: variáveis básicas da prescrição" },
+      { "term": "PSE", "meaning": "percepção subjetiva de esforço (escala de Borg)" },
+      { "term": "1RM", "meaning": "uma repetição máxima; referência de carga" },
+      { "term": "VO2máx", "meaning": "consumo máximo de oxigênio; indicador de aptidão cardiorrespiratória" },
+      { "term": "plano de aula", "meaning": "objetivo, conteúdo, metodologia, recursos e avaliação de uma aula (licenciatura)" },
+      { "term": "BNCC", "meaning": "Base Nacional Comum Curricular; define habilidades da Educação Física escolar" },
+      { "term": "unidade temática", "meaning": "agrupamento da BNCC: brincadeiras e jogos, esportes, ginásticas, danças, lutas, práticas corporais de aventura" },
+      { "term": "sequência didática", "meaning": "conjunto de aulas encadeadas para uma habilidade" },
+      { "term": "ginástica laboral", "meaning": "exercícios orientados no ambiente de trabalho" },
+      { "term": "NASF / eMulti", "meaning": "equipes multiprofissionais da atenção básica do SUS onde o profissional de Educação Física atua" },
+      { "term": "Academia da Saúde", "meaning": "programa do Ministério da Saúde com polos de atividade física" },
+      { "term": "CREF", "meaning": "Conselho Regional de Educação Física; registro obrigatório para o bacharel" },
+      { "term": "preparação física", "meaning": "treinamento das capacidades físicas de atletas em apoio à comissão técnica" },
+      { "term": "treinamento funcional", "meaning": "exercícios multiarticulares voltados a movimentos do cotidiano ou do esporte" },
+      { "term": "encaminhamento", "meaning": "orientar o aluno a procurar médico, nutricionista ou fisioterapeuta quando o caso sai do escopo" }
+    ],
+    "tools": ["planilha de periodização e controle de carga", "aplicativos de prescrição e acompanhamento (ex.: MFIT, Tecnofit)", "adipômetro, balança e fita métrica; bioimpedância", "frequencímetro e monitores de carga", "cronômetro e testes de campo", "editor de textos para planos de aula e relatórios", "plataformas de aula on-line e vídeo", "diário de classe e sistemas escolares"],
+    "deliverables": ["plano de treino periodizado", "plano de aula e sequência didática (BNCC)", "relatório de avaliação física anonimizado", "programa de atividade física para grupo (saúde pública, empresa)", "POP de segurança e emergência em academia ou quadra", "relato de caso de intervenção anonimizado", "projeto de ginástica laboral", "material educativo para alunos ou famílias", "relatório de evolução de atleta"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Avaliação física e interpretação de testes", "esco": null, "kind": "nucleo" },
+      { "label": "Prescrição e periodização de treino", "esco": null, "kind": "nucleo" },
+      { "label": "Planejamento de aula e sequência didática (licenciatura)", "esco": null, "kind": "nucleo" },
+      { "label": "Ensino de técnica e correção de movimento", "esco": null, "kind": "nucleo" },
+      { "label": "Segurança, primeiros socorros e prevenção de lesões", "esco": null, "kind": "nucleo" },
+      { "label": "Adaptação do treino a populações especiais (idosos, gestantes, pessoas com deficiência)", "esco": null, "kind": "nucleo" },
+      { "label": "Motivação, adesão e comunicação com alunos", "esco": null, "kind": "nucleo" },
+      { "label": "Condução de grupos e aulas coletivas", "esco": null, "kind": "nucleo" },
+      { "label": "Avaliação da aprendizagem e registro escolar", "esco": null, "kind": "apoio" },
+      { "label": "Programas de atividade física em saúde pública e empresas", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de academia, clube ou projeto esportivo", "esco": null, "kind": "apoio" },
+      { "label": "Uso de dados e tecnologia no acompanhamento do treino", "esco": null, "kind": "apoio" },
+      { "label": "Ética, sigilo e limites de atuação (encaminhamento)", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação clara e didática", "organização e pontualidade", "trabalho em equipe multiprofissional", "ética e sigilo", "aprendizagem contínua"],
+    "tracks": [
+      { "id": "treinamento-e-saude", "label": "Treinamento e saúde (bacharelado)", "steps": ["plano de treino periodizado para um perfil fictício (X1)", "relato de caso de intervenção anonimizado (L3)", "POP de segurança e emergência (L7)", "infográfico de evolução de um grupo, dados agregados (D7)"] },
+      { "id": "escola", "label": "Educação Física escolar (licenciatura)", "steps": ["plano de aula alinhado à BNCC (X2)", "sequência didática em formato de relatório (L4)", "fluxo de uma aula ou de um evento esportivo escolar (D4)", "post sobre um aprendizado em sala (L5)"] },
+      { "id": "saude-publica-e-empresas", "label": "Programas em saúde pública e empresas", "steps": ["projeto de programa de atividade física a partir de briefing (L8)", "fluxo de acolhimento e encaminhamento (D4)", "relatório técnico de resultados do programa (L4)"] },
+      { "id": "apresentar-se", "label": "Apresentar-se na área", "steps": ["bio com habilitação e público (L6)", "currículo direcionado (L1)", "carta para academia, escola ou processo seletivo (L2)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"instrutor de musculação\", \"personal trainer\", \"professor de educação física\", \"preparador físico\"",
+      "cboFamilies": ["2241", "2313", "2321"],
+      "why": "Pergunto sua última função para partir do que você já fez e sugerir tarefas da sua frente (treino, escola, saúde). Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, recém-formado ou primeiro registro no CREF",
+        "junior": "até dois anos atuando, com supervisão de coordenação",
+        "pleno": "prescreve, planeja aulas e acompanha alunos com autonomia",
+        "senior": "referência técnica; coordena modalidade, orienta colegas",
+        "gestao": "gere academia, área, escola ou programa"
+      },
+      "why": "Pergunto o nível para ajustar a dificuldade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na Educação Física",
+      "options": ["avaliar e interpretar testes físicos", "prescrever e periodizar treino", "planejar aulas e sequências didáticas", "ensinar técnica e corrigir movimento", "conduzir aulas coletivas", "adaptar treino a populações especiais", "motivar e manter adesão", "segurança e primeiros socorros", "programas em saúde pública ou empresas", "gestão de academia ou projeto", "usar dados e aplicativos de treino", "comunicação com famílias e escola"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com as tarefas."
+    },
+    "c4": {
+      "certifications": ["registro no CREF (bacharelado)", "licenciatura em Educação Física", "bacharelado em Educação Física", "curso de primeiros socorros / suporte básico de vida", "certificações de modalidade (musculação, pilates, natação, lutas)", "pós-graduação em treinamento, fisiologia ou educação", "cursos de treinador (CBF, confederações)"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação, registro e idiomas ajudam a ver lacunas em relação à função que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["periodização e controle de carga", "avaliação física e interpretação", "planejamento de aula com a BNCC", "treino para populações especiais", "programas em saúde pública e empresas", "comunicação e adesão de alunos", "gestão e empreendedorismo", "uso de dados e tecnologia no treino"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Qual é a sua habilitação?", "type": "escolha", "options": ["bacharelado", "licenciatura", "ambas", "em formação"], "why": "Bacharelado e licenciatura têm entregas diferentes (plano de treino × plano de aula). Com isso ajusto as tarefas; você pode mudar depois.", "where": "P" },
+      { "id": "x2", "prompt": "Em que frente quer atuar primeiro?", "type": "escolha", "options": ["academia e personal", "escola", "esporte de rendimento", "saúde pública", "empresas e ginástica laboral", "lazer e eventos", "ainda não sei"], "why": "A frente muda as tarefas e as pessoas sugeridas.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": true
+  },
+  "guidedTasks": {
+    "priority": ["L3", "L7", "L4", "L6", "L1", "D4", "D7", "L8", "L2", "L5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica de ambiente não é entrega da profissão" },
+      { "code": "D3", "reason": "modelagem 3D de produto não faz parte da atuação" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da profissão" },
+      { "code": "D8", "reason": "vista explodida de conjunto não se aplica" },
+      { "code": "D9", "reason": "wireframe de interface não se aplica" }
+    ],
+    "parameters": {
+      "L3": {
+        "title": "Relato de caso de intervenção anonimizado",
+        "brief": "Conte uma intervenção que você conduziu (aluno, turma ou grupo): situação (perfil sem identificar a pessoa), tarefa (objetivo e avaliação inicial), ação (programa, aulas ou ajustes) e resultado (indicador objetivo: carga, teste, frequência, participação). Declare que não há dado identificável.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "anonymized": true, "measurableResult": true, "maxWords": 900 },
+        "criteria": ["quatro seções explícitas", "objetivo e avaliação inicial descritos", "intervenção justificada (princípio de treino ou abordagem didática)", "resultado com indicador objetivo", "sem nome, foto, idade exata ou dado de saúde identificável", "declaração de autoria e de anonimização"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "L7": {
+        "title": "POP de segurança e emergência",
+        "brief": "Escreva o procedimento para uma situação que você domina (triagem antes do treino, mal súbito na academia, aula em dia de calor extremo, uso de equipamento), com passos numerados, responsável, critério de conclusão e registro.",
+        "parameters": { "numberedSteps": true, "fields": ["objetivo", "campo de aplicação", "responsável", "materiais", "passos", "critério de conclusão", "registro", "referências"], "minSteps": 6 },
+        "criteria": ["passos numerados com responsável", "critério de conclusão por etapa", "quando acionar emergência ou encaminhar a outro profissional", "referência a norma, protocolo ou resolução", "sem dado de aluno"],
+        "evidence": "modelo de POP",
+        "time": "60 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório técnico de programa ou sequência didática",
+        "brief": "Relate um programa de treino, projeto escolar ou programa de atividade física em até 4 páginas: objetivo, método (público, periodização ou sequência de aulas, instrumentos), resultados agregados, limitações e referências.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "método", "resultados", "limitações", "referências"], "aggregatedOnly": true },
+        "criteria": ["cinco seções nomeadas", "até 4 páginas", "ao menos um indicador agregado (adesão, evolução média, participação)", "referência bibliográfica ou normativa (BNCC, diretrizes)", "nenhuma pessoa identificável"],
+        "evidence": "relatório",
+        "time": "2 h",
+        "level": 3
+      },
+      "L6": {
+        "title": "Bio com habilitação e público",
+        "brief": "Escreva um resumo de até 600 caracteres com sua habilitação (bacharel, licenciado), o público com que trabalha, três competências e uma prova com link. Não cite alunos.",
+        "parameters": { "maxChars": 600, "requiredParts": ["habilitação e público", "três competências", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia habilitação e público", "cita três competências", "inclui uma prova com link"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "D4": {
+        "title": "Fluxo de acolhimento, aula ou evento",
+        "brief": "Desenhe o fluxo de um processo que você conhece (acolhimento e triagem de aluno novo, estrutura de uma aula, organização de um festival esportivo escolar) com raias por responsável e pontos de decisão (ex.: encaminhar ao médico).",
+        "parameters": { "swimlanes": true, "requiredElements": ["início", "fim", "decisões", "encaminhamentos"] },
+        "criteria": ["início e fim", "raias por responsável", "nenhuma tarefa órfã", "pontos de decisão e encaminhamento nomeados"],
+        "evidence": "diagrama vetorial",
+        "time": "45 min",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de evolução de grupo (dados agregados)",
+        "brief": "Mostre a evolução de um grupo ou turma (média de um teste, adesão, frequência) com fonte, período, eixos rotulados e uma mensagem principal. Só dados agregados e anonimizados.",
+        "parameters": { "requiredElements": ["fonte e período", "eixos rotulados", "mensagem principal"], "aggregatedOnly": true },
+        "criteria": ["fonte e período citados", "eixos rotulados", "uma mensagem principal", "dados agregados, sem identificação"],
+        "evidence": "imagem + PDF",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "letters", "title": "Plano de treino periodizado para um perfil fictício", "competency": "Prescrição e periodização de treino", "criteria": ["perfil fictício declarado (sem pessoa real)", "objetivo, duração e divisão em ciclos", "variáveis FITT e progressão de carga explícitas", "critérios de segurança e de encaminhamento", "referência a princípio de treinamento ou diretriz"], "evidence": "documento ou planilha", "time": "90 min", "trigger": "Quer mostrar como você monta um programa? Use um perfil fictício, nunca um aluno real.", "level": 2 },
+      { "id": "X2", "editor": "letters", "title": "Plano de aula alinhado à BNCC", "competency": "Planejamento de aula e sequência didática", "criteria": ["ano escolar, unidade temática e habilidade da BNCC (código) indicados", "objetivo, conteúdo, metodologia, recursos e avaliação", "adaptações para inclusão", "tempo por momento da aula", "sem dado de aluno"], "evidence": "plano de aula", "time": "60 min", "trigger": "Que aula você daria amanhã? Monte o plano com a habilidade da BNCC.", "level": 1 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L8", "L9", "X1", "X2"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas, palavras ou caracteres", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6"], "auto": true },
+      { "id": "anonimizacao-declarada", "check": "a pessoa declarou que não há aluno, atleta ou turma identificável, ou que o perfil é fictício", "appliesTo": ["L3", "L4", "D7", "X1"], "auto": true },
+      { "id": "sem-identificadores", "check": "o texto não contém nome, foto, idade exata, dado de saúde individual ou contato de aluno", "appliesTo": ["L3", "L4", "D7", "X1", "X2"], "auto": true },
+      { "id": "codigo-bncc", "check": "há código de habilidade da BNCC no formato EF..EF.. e unidade temática nomeada", "appliesTo": ["X2"], "auto": true },
+      { "id": "variaveis-fitt", "check": "frequência, intensidade, tempo e tipo aparecem no plano", "appliesTo": ["X1"], "auto": true },
+      { "id": "referencia-citada", "check": "cita ao menos uma referência bibliográfica, diretriz ou norma", "appliesTo": ["L4", "L7", "X1", "X2"], "auto": true },
+      { "id": "indicador-quantitativo", "check": "há ao menos um número ou indicador no resultado", "appliesTo": ["L3", "L4", "D7"], "auto": true },
+      { "id": "pop-estrutura", "check": "passos numerados, responsável e critério de conclusão presentes", "appliesTo": ["L7"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim, raias e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "fonte-no-grafico", "check": "fonte, período e eixos rotulados presentes", "appliesTo": ["D7"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados confidenciais", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L10", "D2", "D4", "D7", "X1", "X2"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "fundamentacao", "label": "Fundamentação técnica ou pedagógica", "levels": { "aproxima": "descreve exercícios ou atividades sem justificar", "atende": "justifica escolhas com princípio de treino ou objetivo de aprendizagem", "supera": "articula evidência, individualização e o que ajustaria" } },
+      { "id": "seguranca-e-limites", "label": "Segurança e limites de atuação", "levels": { "aproxima": "não trata de riscos nem de encaminhamento", "atende": "prevê triagem, segurança e quando encaminhar", "supera": "integra prevenção de lesão e trabalho multiprofissional" } },
+      { "id": "inclusao-e-adaptacao", "label": "Inclusão e adaptação", "levels": { "aproxima": "proposta única para todos", "atende": "prevê adaptações para diferentes níveis ou condições", "supera": "planeja participação plena com variações justificadas" } },
+      { "id": "clareza", "label": "Clareza para aluno ou turma", "levels": { "aproxima": "a instrução exige releitura", "atende": "entendida na primeira leitura", "supera": "conduz sem esforço e antecipa dúvidas" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Educação Física (Lei 9.696/1998; registro no CREF para o bacharel; Código de Ética Res. CONFEF 307/2015). A área tem duas habilitações: bacharelado (treino, saúde, esporte, lazer) e licenciatura (educação básica, planos de aula alinhados à BNCC). Pergunte a habilitação e a frente de atuação em vez de deduzir. Use o vocabulário da área: anamnese, PAR-Q, avaliação física, periodização, FITT, PSE, plano de aula, unidade temática, sequência didática, encaminhamento. O que você nunca faz: não prescreve treino, exercício, carga ou dieta para alunos ou terceiros; não interpreta avaliação física nem dado de saúde de uma pessoa real; não redige laudo ou atestado; não substitui médico, nutricionista ou fisioterapeuta e lembra o limite de atuação e o dever de encaminhar. Avaliações físicas, anamneses e imagens de alunos e atletas são dados sensíveis: peça anonimização ou perfil fictício. Ajude a estruturar planos de treino para perfis fictícios, planos de aula com código da BNCC, relatos de intervenção anonimizados, POPs de segurança, fluxos e infográficos de dados agregados; pré-cheque só critérios objetivos. Afirmações sobre mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa vaga, aprovação em concurso ou salário. Progresso é por critérios atendidos; o selo depende de revisão humana.",
+    "citeSources": [
+      { "title": "CONFEF — Conselho Federal de Educação Física (legislação, resoluções, Código de Ética)", "url": "https://www.confef.org.br/", "kind": "conselho" },
+      { "title": "Lei 9.696/1998 — regulamentação da Educação Física (Planalto)", "url": "https://planalto.gov.br/ccivil_03/LEIS/L9696.htm", "kind": "norma" },
+      { "title": "Resolução CONFEF 307/2015 — Código de Ética (Legisweb)", "url": "https://www.legisweb.com.br/legislacao/?id=306764", "kind": "norma" },
+      { "title": "BNCC — Base Nacional Comum Curricular (MEC)", "url": "http://basenacionalcomum.mec.gov.br/", "kind": "orgao-publico" },
+      { "title": "Ministério da Saúde — Guia de Atividade Física para a População Brasileira", "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_atividade_fisica_populacao_brasileira.pdf", "kind": "orgao-publico" },
+      { "title": "CBO 2241 — Profissionais da educação física (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "Novo CAGED — MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Pergunta habilitação (x1) e frente (x2) antes de sugerir; variantes de c2 e c5 com competências da área." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Bacharel: relato de intervenção (L3), plano de treino fictício (X1), POP (L7). Licenciado: plano de aula BNCC (X2), relatório de sequência didática (L4). Cada card diz por que e aceita \"não me serve\"." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Considera jornada fragmentada (manhã/noite em academia, turnos escolares): tarefas de 15–30 min no celular entre aulas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, código BNCC, variáveis FITT, referência e ausência de dados de aluno; não avalia se a prescrição é adequada a alguém." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura plano de aula, POP, relato e relatório; nunca prescreve treino ou dieta para pessoa real nem redige laudo ou atestado." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias e decisões do fluxo (D4); fonte e eixos do infográfico de dados agregados (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese por habilitação e frente, com competências declaradas e evidenciadas; cita o campo de origem." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: fisioterapia, nutrição, pedagogia, gestão (esportiva, pública); sempre com fonte, data e requisitos de formação." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por CBO 2241/2313 e competências compartilhadas; só pessoas com opt-in." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Mostra os campos usados e o botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil, sem citar alunos; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, habilitação, registro e certificações em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "avaliações físicas, anamneses e dados de saúde de alunos e atletas", "imagens corporais de alunos sem consentimento", "dados de estudantes menores de idade", "dados sensíveis (LGPD art. 5º II)", "dados de terceiros sem autorização"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca prescrever treino, exercício, carga ou dieta para aluno ou terceiro; planos só para perfis fictícios declarados",
+      "nunca interpretar avaliação física ou dado de saúde de pessoa real; não redigir laudo ou atestado",
+      "lembrar o limite de atuação e o dever de encaminhar a médico, nutricionista ou fisioterapeuta",
+      "exigir anonimização de alunos, atletas e turmas; atenção redobrada com menores de idade",
+      "perguntar habilitação e frente em vez de inferir pelos textos",
+      "afirmações de mercado com fonte, data e região ou \"estimativa\"; nunca prometer vaga, concurso ou salário",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["diagrama", "infografico", "prancha"],
+    "lettersTemplates": ["plano-de-aula", "estudo-de-caso", "pop", "relatorio-tecnico", "bio", "curriculo", "carta", "proposta", "post", "revisao", "roteiro"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só bio (L6), post (L5), revisão (L10) e rascunho de plano de aula (X2); relatório, POP, fluxo e infográfico pedem computador. Jornada fragmentada: tarefas curtas entre turmas.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: bio com habilitação e público (15 min).",
+        "Que aula você daria amanhã? Um plano com a habilidade da BNCC leva cerca de 1 h e comprova planejamento.",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui.",
+        "Montar um plano de treino para um perfil fictício (90 min) mostra como você periodiza, sem expor nenhum aluno."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": { "sensitiveData": ["avaliações físicas, anamneses e dados de saúde de alunos e atletas (Res. CONFEF 307/2015; LGPD art. 5º II)", "imagens corporais de alunos sem consentimento", "dados de estudantes menores de idade (nome, turma, desempenho)", "dados de desempenho de atletas sob contrato"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2241 e 2313", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "INEP — Censo Escolar (docentes de Educação Física na educação básica)", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-escolar", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "CNES/DataSUS — profissionais de Educação Física em estabelecimentos de saúde (CBO 2241-40)", "url": "https://cnes.datasus.gov.br/", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "CONFEF — Resolução 599/2025: levantamento de profissionais registrados e ativos até 31/12/2024 por CREF", "url": "https://www.normasbrasil.com.br/norma/resolucao-599-2025_482004.html", "geography": "Brasil e UF (por CREF)", "cadence": "anual", "kind": "conselho" },
+      { "title": "Concursos públicos para professor de Educação Física (redes estaduais e municipais) — gov.br", "url": "https://www.gov.br/pt-br/servicos/consultar-concursos-publicos", "geography": "UF e município", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "fisioterapia", "why": "Exercício terapêutico, reabilitação e prevenção de lesões são fronteiras comuns; muitas equipes de saúde e esporte integram as duas profissões.", "gaps": ["graduação em Fisioterapia e registro no CREFITO", "avaliação e diagnóstico cinesiológico-funcional"], "steps": ["relato de intervenção com foco em prevenção de lesão (L3)", "fluxo de encaminhamento entre profissionais (D4)", "verificar requisitos de nova graduação"] },
+    { "to": "nutricao", "why": "Treino e alimentação caminham juntos; quem atua em saúde e emagrecimento convive com nutricionistas e precisa saber onde termina seu escopo.", "gaps": ["graduação em Nutrição e registro no CRN", "avaliação nutricional e prescrição dietética"], "steps": ["POP de encaminhamento e trabalho conjunto (L7)", "material educativo sobre atividade física sem orientação dietética (Letters)", "verificar requisitos de nova graduação"] },
+    { "to": "pedagogia", "why": "Para a licenciatura, coordenação pedagógica, gestão escolar e educação infantil são caminhos naturais.", "gaps": ["gestão escolar e legislação educacional", "alfabetização e desenvolvimento infantil"], "steps": ["sequência didática em formato de relatório (L4)", "plano 30-60-90 para coordenação (L9)", "cursos de gestão escolar (Escola Virtual.Gov, universidades públicas)"] },
+    { "to": "administracao", "why": "Gestão de academia, clube, estúdio ou projeto esportivo exige finanças, pessoas e marketing.", "gaps": ["finanças e precificação", "gestão de pessoas e processos"], "steps": ["proposta de serviço a partir de briefing (L8)", "fluxo de operação da academia ou estúdio (D4)", "cursos do Sebrae para gestão de academias"] },
+    { "to": "gestao-publica", "why": "Programas de atividade física na atenção básica, Academia da Saúde e políticas de esporte e lazer são carreiras públicas.", "gaps": ["políticas públicas e orçamento", "indicadores de programa"], "steps": ["relatório técnico de resultados de um programa (L4)", "infográfico de indicadores agregados (D7)", "cursos da Enap"] }
+  ],
+  "learning": [
+    { "title": "CONFEF — legislação, resoluções e Código de Ética", "provider": "CONFEF", "url": "https://www.confef.org.br/", "free": true, "kind": "portal" },
+    { "title": "BNCC — Educação Física (documento e habilidades por ano)", "provider": "MEC", "url": "http://basenacionalcomum.mec.gov.br/", "free": true, "kind": "norma" },
+    { "title": "Impulsiona — cursos gratuitos de Educação Física escolar", "provider": "Instituto Península", "url": "https://impulsiona.org.br/", "free": true, "kind": "curso" },
+    { "title": "Guia de Atividade Física para a População Brasileira", "provider": "Ministério da Saúde", "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_atividade_fisica_populacao_brasileira.pdf", "free": true, "kind": "livro" },
+    { "title": "UNA-SUS — cursos em atividade física na atenção básica e promoção da saúde", "provider": "UNA-SUS / Ministério da Saúde", "url": "https://www.unasus.gov.br/", "free": true, "kind": "portal" },
+    { "title": "AVASUS — ambiente virtual de aprendizagem do SUS", "provider": "UFRN / Ministério da Saúde", "url": "https://avasus.ufrn.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — gestão pública, educação e políticas de esporte", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Sebrae — gestão de academias e estúdios", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "SciELO — periódicos de Educação Física e ciências do esporte", "provider": "SciELO", "url": "https://www.scielo.br/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Fase 1 — grupo Saúde e bem-estar (g1-saude.json): famílias CBO/ISCO, conselho, dados sensíveis, vizinhos", "url": "docs/pesquisa/fase1/g1-saude.json", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Planalto — Lei 9.696/1998", "url": "https://planalto.gov.br/ccivil_03/LEIS/L9696.htm", "accessedAt": "2026-11-02" },
+    { "title": "Legisweb — Resolução CONFEF 307/2015 (Código de Ética; revoga a 254/2013)", "url": "https://www.legisweb.com.br/legislacao/?id=306764", "accessedAt": "2026-11-02" },
+    { "title": "CREF1 — Código de Ética Profissional (PDF)", "url": "https://cref1.org.br/wp-content/uploads/2017/04/codigo-de-etica-profissional.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Normas Brasil — Resolução CONFEF 599/2025 (Fundo de Desenvolvimento 2026; levantamento de registrados até 31/12/2024)", "url": "https://www.normasbrasil.com.br/norma/resolucao-599-2025_482004.html", "accessedAt": "2026-11-02" },
+    { "title": "Por Dentro de Minas — Abril Verde: mais de 670 mil profissionais registrados nos CREFs (2025, não oficial)", "url": "https://pordentrodeminas.com.br/noticias-corporativas/2025/04/314699-abril-verde-mes-de-combate-ao-sedentarismo-alerta-para-emergencia-de-saude", "accessedAt": "2026-11-02" },
+    { "title": "World of Taxonomy — espelho ESCO 'personal trainer' (ISCO 3423)", "url": "https://worldoftaxonomy.com/codes/esco_occupations/f7177f79-63e7-4944-8896-044056b62523", "accessedAt": "2026-11-02" },
+    { "title": "World of Taxonomy — espelho ESCO 'fitness instructor' (ISCO 3423)", "url": "https://www.worldoftaxonomy.com/codes/esco_occupations/c784c2db-e636-429f-8492-3191790a58d7", "accessedAt": "2026-11-02" },
+    { "title": "CBO 2241-40 Profissional de educação física na saúde (espelho vriconsulting)", "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=224140", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Res. CONFEF 046/2002 (intervenção profissional) e Res. CONFEF 391/2020 (atendimento não presencial): números e ementas citados de memória, não confirmados.",
+    "Res. CNE/CES 6/2018 (DCN Educação Física) citada de memória; não reconfirmada nesta sessão.",
+    "CBO 2313 (professores de educação física no ensino fundamental) e 2321 (ensino médio) adicionados para a licenciatura a partir da estrutura da CBO, sem conferência no portal cbo.mte.gov.br; o catálogo da fase 1 traz só 2241.",
+    "ISCO-08 2330 (professores de ensino secundário) adicionado para a licenciatura; não está no arquivo da fase 1.",
+    "URIs ESCO 'personal trainer' e 'fitness instructor' vêm de espelho (World of Taxonomy); ESCO 'physical education teacher' e 'sports coach' não localizados. Competências sem URI ESCO (esco: null).",
+    "Total de registrados nos CREFs (>670 mil, abril de 2025) vem de notícia regional sem fonte oficial; a Res. CONFEF 599/2025 confirma a existência de levantamento, mas o total nacional não foi lido.",
+    "Rótulo do pacote 'Educação Física' cobre bacharelado e licenciatura, enquanto o catálogo da fase 1 rotula o ramo como 'Educação Física (bacharelado)' e coloca a licenciatura no grupo Educação; consolidar na fase 1.",
+    "Editores: pacote usa letters 'alta' e drawings 'media' (planos de aula/treino, infográficos); o arquivo da fase 1 traz letters 'media' e drawings 'baixa'.",
+    "URLs de aprendizagem e citação (BNCC, Guia de Atividade Física, Impulsiona, UNA-SUS, AVASUS, CNES, Censo Escolar) não abertas nesta sessão.",
+    "Vocabulário, tarefas e rubrica vêm do conhecimento da profissão; revisão por profissional de Educação Física (bacharel e licenciado) recomendada."
+  ]
+}

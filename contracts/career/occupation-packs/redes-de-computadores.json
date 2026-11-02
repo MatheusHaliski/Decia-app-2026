@@ -1,0 +1,1424 @@
+{
+  "schemaVersion": 1,
+  "code": "redes-de-computadores",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": {
+    "pt-BR": "Redes de Computadores",
+    "en": "Computer Networks",
+    "es": "Redes de Computadoras"
+  },
+  "fields": [
+    "redes-de-computadores"
+  ],
+  "family": {
+    "cbo": [
+      {
+        "code": "2124",
+        "title": "Analistas de tecnologia da informação"
+      },
+      {
+        "code": "2123",
+        "title": "Administradores de tecnologia da informação"
+      }
+    ],
+    "isco08": [
+      {
+        "code": "2523",
+        "title": "Computer network professionals"
+      },
+      {
+        "code": "2522",
+        "title": "Systems administrators"
+      },
+      {
+        "code": "3513",
+        "title": "Computer network and systems technicians"
+      }
+    ],
+    "esco": [
+      {
+        "uri": "http://data.europa.eu/esco/occupation/cf2b03cd-feb7-4f47-90f6-ff1ed6016d3d",
+        "label": "ICT network engineer"
+      },
+      {
+        "uri": "http://data.europa.eu/esco/occupation/f0ca39a8-1e30-487c-95f9-ef2d5e734adc",
+        "label": "ICT operations manager"
+      }
+    ]
+  },
+  "scope": {
+    "summary": "Pessoas que projetam, implantam, operam e dão suporte a redes, servidores, data centers e nuvem: infraestrutura de TI, administração de sistemas, telecomunicações corporativas e DevOps/SRE. Profissão sem conselho obrigatório; a evidência típica é topologia documentada, runbook, plano de endereçamento e métricas de disponibilidade.",
+    "entryRoles": [
+      "Técnico de suporte (help desk, N1)",
+      "Estagiário de infraestrutura",
+      "Técnico de redes e cabeamento",
+      "Analista de suporte júnior",
+      "Operador de NOC"
+    ],
+    "midRoles": [
+      "Analista de redes",
+      "Administrador de sistemas (Linux, Windows)",
+      "Analista de infraestrutura",
+      "Analista de suporte N2/N3",
+      "Engenheiro de nuvem júnior/pleno",
+      "Analista DevOps"
+    ],
+    "seniorRoles": [
+      "Engenheiro de redes sênior",
+      "Arquiteto de infraestrutura ou de nuvem",
+      "Engenheiro SRE",
+      "Coordenador de infraestrutura",
+      "Gerente de operações de TI"
+    ],
+    "sectors": [
+      "provedores de internet (ISPs) e telecomunicações",
+      "data centers e nuvem",
+      "bancos e fintechs",
+      "indústria",
+      "saúde (hospitais e clínicas)",
+      "educação",
+      "administração pública e empresas públicas de TI",
+      "varejo e logística",
+      "consultorias e integradores",
+      "empresas de software"
+    ],
+    "regulation": [
+      {
+        "name": "Marco Civil da Internet (Lei 12.965/2014), arts. 13 a 15",
+        "issuer": "Brasil",
+        "about": "guarda de registros de conexão (1 ano) e de acesso a aplicações (6 meses); sigilo"
+      },
+      {
+        "name": "Decreto 8.771/2016",
+        "issuer": "Brasil",
+        "about": "regulamenta o Marco Civil: padrões de segurança e sigilo dos registros; neutralidade e gerenciamento de tráfego"
+      },
+      {
+        "name": "LGPD (Lei 13.709/2018), arts. 46 a 49",
+        "issuer": "Brasil",
+        "about": "segurança e sigilo de dados pessoais em logs, backups e sistemas"
+      },
+      {
+        "name": "Lei 9.472/1997 (LGT) e Resolução Anatel 614/2013",
+        "issuer": "Brasil / Anatel",
+        "about": "Serviço de Comunicação Multimídia (SCM): outorga e obrigações de provedores"
+      },
+      {
+        "name": "Resolução Anatel 740/2020 (R-Ciber), alterada pela 767/2024",
+        "issuer": "Anatel",
+        "about": "segurança cibernética em redes de telecomunicações: política, notificação de incidentes, avaliação de fornecedores"
+      },
+      {
+        "name": "ABNT NBR 14565:2019",
+        "issuer": "ABNT",
+        "about": "cabeamento estruturado para edifícios comerciais e data centers"
+      },
+      {
+        "name": "ABNT NBR ISO/IEC 27001:2022 e 27002:2022",
+        "issuer": "ABNT",
+        "about": "sistema de gestão de segurança da informação e controles (acesso, redes, backup, logs)"
+      },
+      {
+        "name": "ABNT NBR 5410 e NR-10",
+        "issuer": "ABNT / MTE",
+        "about": "instalações elétricas de baixa tensão e segurança em eletricidade em racks e salas técnicas"
+      }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      {
+        "term": "TCP/IP",
+        "meaning": "pilha de protocolos da internet: IP, TCP, UDP, ICMP"
+      },
+      {
+        "term": "modelo OSI",
+        "meaning": "sete camadas de referência, do físico à aplicação"
+      },
+      {
+        "term": "sub-rede / CIDR",
+        "meaning": "divisão de endereços IP com máscara (ex.: 10.0.0.0/24)"
+      },
+      {
+        "term": "VLAN",
+        "meaning": "rede local virtual que segmenta tráfego em um mesmo switch"
+      },
+      {
+        "term": "roteamento (OSPF, BGP)",
+        "meaning": "protocolos que decidem o caminho dos pacotes entre redes"
+      },
+      {
+        "term": "NAT",
+        "meaning": "tradução de endereços privados para públicos"
+      },
+      {
+        "term": "DNS e DHCP",
+        "meaning": "resolução de nomes e distribuição automática de endereços"
+      },
+      {
+        "term": "firewall e ACL",
+        "meaning": "regras que permitem ou bloqueiam tráfego entre segmentos"
+      },
+      {
+        "term": "VPN",
+        "meaning": "túnel cifrado entre redes ou usuários remotos"
+      },
+      {
+        "term": "Wi-Fi (IEEE 802.11)",
+        "meaning": "rede sem fio; padrões, canais e autenticação (WPA3)"
+      },
+      {
+        "term": "QoS",
+        "meaning": "priorização de tráfego (voz, vídeo) por classes"
+      },
+      {
+        "term": "SLA",
+        "meaning": "acordo de nível de serviço: disponibilidade, tempo de resposta"
+      },
+      {
+        "term": "SNMP e monitoramento",
+        "meaning": "coleta de métricas de equipamentos e alertas"
+      },
+      {
+        "term": "cabeamento estruturado",
+        "meaning": "cabos de cobre (Cat6/6A) e fibra, patch panels e racks conforme NBR 14565"
+      },
+      {
+        "term": "as-built",
+        "meaning": "documentação do que foi de fato instalado"
+      },
+      {
+        "term": "data center / Tier",
+        "meaning": "sala de servidores; níveis de redundância (Uptime Institute)"
+      },
+      {
+        "term": "virtualização",
+        "meaning": "várias máquinas virtuais em um servidor físico (VMware, Proxmox, KVM)"
+      },
+      {
+        "term": "nuvem (IaaS, PaaS)",
+        "meaning": "infraestrutura e plataforma contratadas sob demanda"
+      },
+      {
+        "term": "infraestrutura como código (IaC)",
+        "meaning": "provisionamento por código versionado (Terraform, Ansible)"
+      },
+      {
+        "term": "contêineres e Kubernetes",
+        "meaning": "empacotamento e orquestração de aplicações"
+      },
+      {
+        "term": "backup 3-2-1",
+        "meaning": "três cópias, duas mídias, uma fora do local"
+      },
+      {
+        "term": "alta disponibilidade",
+        "meaning": "redundância para manter o serviço no ar em falhas"
+      },
+      {
+        "term": "MTTR e MTBF",
+        "meaning": "tempo médio de reparo e entre falhas"
+      },
+      {
+        "term": "incidente, problema e mudança (ITIL)",
+        "meaning": "processos de gestão de serviços de TI"
+      },
+      {
+        "term": "runbook",
+        "meaning": "procedimento operacional passo a passo para uma rotina ou incidente"
+      },
+      {
+        "term": "janela de manutenção",
+        "meaning": "período acordado para mudanças com risco de indisponibilidade"
+      },
+      {
+        "term": "latência, jitter e perda",
+        "meaning": "métricas de desempenho de rede"
+      },
+      {
+        "term": "hardening",
+        "meaning": "configuração segura de servidores e equipamentos"
+      },
+      {
+        "term": "RFC 1918",
+        "meaning": "faixas de endereços privados usadas em laboratórios e documentação"
+      }
+    ],
+    "tools": [
+      "Cisco IOS e Packet Tracer",
+      "GNS3 ou EVE-NG (laboratório)",
+      "Wireshark",
+      "Nmap",
+      "Zabbix, Prometheus e Grafana",
+      "Linux (Debian, Ubuntu, RHEL)",
+      "Windows Server e Active Directory",
+      "pfSense, MikroTik, Fortinet",
+      "VMware, Proxmox ou KVM",
+      "Ansible e Terraform",
+      "Docker e Kubernetes",
+      "AWS, Azure ou GCP",
+      "GLPI, ServiceNow ou Jira Service Management",
+      "draw.io, Visio ou Lucidchart",
+      "certificador de cabos e OTDR"
+    ],
+    "deliverables": [
+      "diagrama de topologia lógica e física",
+      "plano de endereçamento IP e VLANs",
+      "runbook ou POP de operação",
+      "relatório de incidente (pós-incidente)",
+      "plano de mudança (RFC) com reversão",
+      "projeto de cabeamento com planta e as-built",
+      "relatório de capacidade e disponibilidade",
+      "catálogo de serviços e SLA",
+      "painel de monitoramento",
+      "checklist de hardening",
+      "plano de backup e recuperação de desastres",
+      "proposta técnica em resposta a briefing"
+    ]
+  },
+  "competencies": {
+    "core": [
+      {
+        "label": "Fundamentos de redes TCP/IP e modelo OSI",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Configuração de switches, roteadores e Wi-Fi",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Endereçamento IP, VLANs e segmentação",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Administração de sistemas Linux e Windows Server",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Firewall, VPN e controle de acesso à rede",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Monitoramento, logs e resposta a incidentes de operação",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Documentação de infraestrutura (topologia, runbook, as-built)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Backup, recuperação e alta disponibilidade",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Atendimento e suporte técnico a usuários",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Cabeamento estruturado e infraestrutura física",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Virtualização, nuvem e contêineres",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Automação e infraestrutura como código",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Gestão de serviços de TI (ITIL)",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Segurança de redes e hardening",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Scripts (Bash, PowerShell, Python)",
+        "esco": null,
+        "kind": "apoio"
+      }
+    ],
+    "transversal": [
+      "comunicação clara com usuários sob pressão",
+      "registro disciplinado de mudanças",
+      "trabalho em escala e plantão",
+      "inglês técnico para documentação e CLI",
+      "raciocínio de causa raiz"
+    ],
+    "tracks": [
+      {
+        "id": "redes-corporativas",
+        "label": "Redes corporativas",
+        "steps": [
+          "diagrama de topologia de um ambiente de laboratório (D4)",
+          "plano de endereçamento e VLANs (X1)",
+          "runbook de troca de equipamento (L7)",
+          "relatório de incidente anonimizado (L4)",
+          "infográfico de disponibilidade (D7)"
+        ]
+      },
+      {
+        "id": "sistemas-e-suporte",
+        "label": "Sistemas e suporte",
+        "steps": [
+          "POP de atendimento e escalonamento (L7)",
+          "estudo de caso STAR de um chamado resolvido (L3)",
+          "checklist de hardening como relatório (L4)",
+          "revisão crítica de uma peça da rede (L10)"
+        ]
+      },
+      {
+        "id": "nuvem-devops",
+        "label": "Nuvem e DevOps",
+        "steps": [
+          "diagrama de arquitetura em nuvem (D4)",
+          "runbook de deploy e rollback (L7)",
+          "post-mortem anonimizado (L4)",
+          "infográfico de métricas de operação (D7)"
+        ]
+      },
+      {
+        "id": "infraestrutura-fisica",
+        "label": "Infraestrutura física e cabeamento",
+        "steps": [
+          "planta de um ambiente com pontos de rede e rack (D1)",
+          "detalhe de montagem de rack ou patch panel (D6)",
+          "antes e depois de uma reorganização (D5)",
+          "resposta a briefing de projeto de cabeamento (L8)"
+        ]
+      }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"analista de suporte\", \"técnico de redes\", \"administrador de sistemas\", \"analista de infraestrutura\", \"operador de NOC\"",
+      "cboFamilies": [
+        "2124",
+        "2123",
+        "3172",
+        "3133"
+      ],
+      "why": "Pergunto seu último cargo ou área para partir do que você já operou. Se for o primeiro emprego, pule e seguimos pelos laboratórios."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, help desk ou primeiro cargo técnico",
+        "junior": "executa chamados e mudanças definidas com supervisão (N1/N2)",
+        "pleno": "administra redes e servidores com autonomia (N2/N3)",
+        "senior": "projeta a infraestrutura, define padrões e orienta a equipe",
+        "gestao": "responde por operações, contratos, SLAs e equipe"
+      },
+      "why": "Pergunto o nível para calibrar as tarefas: um runbook de N1 e um projeto de topologia sênior têm critérios diferentes."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em infraestrutura",
+      "options": [
+        "configurar switches e roteadores",
+        "administrar servidores Linux",
+        "administrar Windows Server e Active Directory",
+        "montar e certificar cabeamento",
+        "operar firewall e VPN",
+        "monitorar e responder a incidentes",
+        "atender e orientar usuários",
+        "virtualizar e operar nuvem",
+        "automatizar com scripts e IaC",
+        "planejar backup e recuperação",
+        "documentar topologia e procedimentos",
+        "gerenciar chamados e SLAs"
+      ],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com topologias, runbooks e métricas."
+    },
+    "c4": {
+      "certifications": [
+        "tecnólogo em Redes de Computadores ou curso técnico",
+        "Cisco CCNA",
+        "CompTIA Network+ ou Security+",
+        "LPIC-1 ou CompTIA Linux+",
+        "Microsoft AZ-900 ou AZ-104",
+        "AWS Cloud Practitioner ou Solutions Architect Associate",
+        "ITIL 4 Foundation",
+        "MikroTik MTCNA",
+        "Fortinet NSE",
+        "Certified Kubernetes Administrator (CKA)"
+      ],
+      "languages": [
+        "inglês técnico (documentação e CLI)",
+        "inglês para conversação",
+        "espanhol"
+      ],
+      "why": "Formação, certificações e idiomas ajudam a ver lacunas em relação ao cargo que você quer; nenhuma é obrigatória para exercer a profissão."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver em redes e infraestrutura?",
+      "options": [
+        "roteamento e switching avançados",
+        "Linux e administração de sistemas",
+        "Windows Server e identidade",
+        "firewall, VPN e segurança de redes",
+        "nuvem (AWS, Azure, GCP)",
+        "automação e infraestrutura como código",
+        "contêineres e Kubernetes",
+        "monitoramento e observabilidade",
+        "cabeamento estruturado e data center",
+        "backup e recuperação de desastres",
+        "gestão de serviços (ITIL) e SLAs",
+        "documentação e runbooks"
+      ],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (topologia, runbook, métricas) em vez do catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Você tem um laboratório (físico ou virtual) onde possa montar cenários?",
+        "type": "escolha",
+        "options": [
+          "sim, físico",
+          "sim, virtual (GNS3, Packet Tracer, VMs)",
+          "ainda não"
+        ],
+        "why": "Pergunto porque topologias e runbooks do portfólio devem vir de laboratório, nunca da rede de um empregador. Você pode pular.",
+        "where": "P"
+      },
+      {
+        "id": "x2",
+        "prompt": "Com que ambientes você mais trabalha?",
+        "type": "lista",
+        "options": [
+          "Cisco",
+          "MikroTik",
+          "Fortinet/pfSense",
+          "Linux",
+          "Windows Server",
+          "VMware/Proxmox",
+          "AWS/Azure/GCP",
+          "Kubernetes",
+          "outro"
+        ],
+        "why": "Pergunto para usar exemplos e vocabulário do seu ambiente nas tarefas. Você pode pular.",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": [
+      "D4",
+      "L7",
+      "L4",
+      "D7",
+      "L6",
+      "L1",
+      "D1",
+      "L8",
+      "L3",
+      "D5",
+      "L10",
+      "D6"
+    ],
+    "excluded": [
+      {
+        "code": "D3",
+        "reason": "render 3D de produto não é entrega da profissão"
+      },
+      {
+        "code": "D8",
+        "reason": "vista explodida pertence a montagem e manufatura"
+      },
+      {
+        "code": "D9",
+        "reason": "wireframe de tela pertence a software e design"
+      }
+    ],
+    "parameters": {
+      "D4": {
+        "title": "Diagrama de topologia de rede",
+        "brief": "Desenhe a topologia lógica (e, se quiser, física) de uma rede de laboratório ou cenário fictício: equipamentos nomeados, enlaces rotulados com meio e velocidade, segmentos/VLANs, endereçamento privado e legenda.",
+        "parameters": {
+          "minDevices": 5,
+          "labeledLinks": true,
+          "addressing": "RFC 1918 ou faixas de documentação",
+          "legend": true,
+          "views": [
+            "lógica",
+            "física"
+          ]
+        },
+        "criteria": [
+          "ao menos 5 equipamentos nomeados",
+          "enlaces rotulados (meio, velocidade ou protocolo)",
+          "segmentos ou VLANs identificados",
+          "legenda da notação",
+          "só endereços privados ou de documentação; nenhum IP público real"
+        ],
+        "evidence": "diagrama vetorial (SVG ou PDF)",
+        "time": "45 min",
+        "level": 2
+      },
+      "L7": {
+        "title": "Runbook de operação ou de incidente",
+        "brief": "Descreva um procedimento que você domina (troca de switch, restauração de backup, renovação de certificado, resposta a link caído) em passos numerados com responsável, comando e critério de conclusão, com reversão.",
+        "parameters": {
+          "numberedSteps": true,
+          "perStep": [
+            "responsável",
+            "comando ou ação",
+            "critério de conclusão"
+          ],
+          "sections": [
+            "quando usar",
+            "pré-condições",
+            "passos",
+            "verificação",
+            "reversão",
+            "escalonamento"
+          ]
+        },
+        "criteria": [
+          "passos numerados",
+          "responsável e critério de conclusão em cada passo",
+          "seção de reversão e de escalonamento",
+          "comandos com hosts e endereços fictícios; sem credenciais"
+        ],
+        "evidence": "POP (modelo publicado)",
+        "time": "60 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório de incidente ou de mudança anonimizado",
+        "brief": "Escreva o relatório pós-incidente (resumo, linha do tempo, causa raiz, impacto, ações) ou o relatório de uma mudança (objetivo, plano, execução, resultado, lições), sem nomes de clientes, IPs reais ou dados pessoais, em até 4 páginas.",
+        "parameters": {
+          "formats": [
+            "pós-incidente",
+            "pós-mudança"
+          ],
+          "maxPages": 4,
+          "incidentSections": [
+            "resumo",
+            "linha do tempo",
+            "causa raiz",
+            "impacto",
+            "ações",
+            "lições"
+          ],
+          "anonymized": true
+        },
+        "criteria": [
+          "seções obrigatórias presentes e nomeadas",
+          "linha do tempo com horários relativos",
+          "causa raiz explícita",
+          "até 4 páginas",
+          "sem nome de organização, IP público, credencial ou dado pessoal"
+        ],
+        "evidence": "relatório técnico (PDF ou Letter publicada)",
+        "time": "2 h",
+        "level": 3
+      },
+      "D7": {
+        "title": "Infográfico de disponibilidade e desempenho",
+        "brief": "Monte um infográfico com métricas de um ambiente de laboratório ou de dados públicos (disponibilidade, MTTR, latência, chamados resolvidos) com fonte, período, eixos rotulados e uma mensagem principal.",
+        "parameters": {
+          "metrics": [
+            "disponibilidade",
+            "MTTR",
+            "latência",
+            "chamados"
+          ],
+          "sourceCited": true,
+          "labeledAxes": true,
+          "oneMessage": true
+        },
+        "criteria": [
+          "fonte e período citados",
+          "eixos e unidades rotulados",
+          "uma mensagem principal",
+          "dados de laboratório, públicos ou anonimizados"
+        ],
+        "evidence": "imagem + PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva um resumo de até 600 caracteres com a área que você quer (redes, sistemas, nuvem, suporte), três competências e um link para um diagrama, runbook ou laboratório.",
+        "parameters": {
+          "maxChars": 600,
+          "requiredParts": [
+            "área-alvo",
+            "três competências",
+            "uma prova com link"
+          ]
+        },
+        "criteria": [
+          "até 600 caracteres",
+          "nomeia a área-alvo",
+          "cita três competências",
+          "inclui uma prova com link"
+        ],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para a vaga que você quer mirar, com três conquistas com número (disponibilidade, chamados, tempo de resposta, equipamentos) e as tecnologias pedidas.",
+        "parameters": {
+          "maxPages": 1,
+          "achievementsWithNumbers": 3,
+          "keywordsFrom": "cargo-alvo"
+        },
+        "criteria": [
+          "uma página",
+          "três conquistas com número",
+          "palavras-chave do cargo-alvo presentes",
+          "sem idade, estado civil ou foto obrigatória"
+        ],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "D1": {
+        "title": "Planta de um ambiente com pontos de rede e rack",
+        "brief": "Desenhe a planta de um escritório ou laboratório fictício com os pontos de rede, o percurso do cabeamento, a posição do rack e a legenda, seguindo a lógica da NBR 14565.",
+        "parameters": {
+          "scale": "1:50 ou 1:100",
+          "elements": [
+            "pontos de rede",
+            "percurso de cabeamento",
+            "rack",
+            "sala técnica"
+          ],
+          "legend": true,
+          "stamp": true
+        },
+        "criteria": [
+          "escala indicada",
+          "pontos de rede numerados",
+          "percurso de cabeamento e rack posicionados",
+          "legenda e carimbo",
+          "ambiente fictício ou próprio, nunca de cliente"
+        ],
+        "evidence": "prancha PDF/SVG",
+        "time": "2 h",
+        "level": 3
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Plano de endereçamento e segmentação de uma rede fictícia",
+        "competency": "Endereçamento IP, VLANs e segmentação",
+        "criteria": [
+          "tabela de sub-redes com CIDR, gateway e uso",
+          "VLANs com nome e propósito",
+          "regras de acesso entre segmentos descritas em linguagem natural",
+          "só faixas RFC 1918 ou de documentação",
+          "justificativa das escolhas de tamanho e segmentação"
+        ],
+        "evidence": "documento publicado (Letter ou PDF)",
+        "time": "60 min",
+        "trigger": "Quer mostrar como você segmentaria a rede de uma empresa pequena?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      {
+        "id": "tamanho",
+        "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L4",
+          "L5",
+          "L6",
+          "L8"
+        ],
+        "auto": true
+      },
+      {
+        "id": "secoes-obrigatorias",
+        "check": "as seções pedidas (runbook, relatório, briefing, plano) existem e estão nomeadas",
+        "appliesTo": [
+          "L3",
+          "L4",
+          "L7",
+          "L8",
+          "L9",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "topologia-nomeada",
+        "check": "o diagrama tem ao menos 5 equipamentos nomeados, enlaces rotulados e legenda",
+        "appliesTo": [
+          "D4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "enderecos-ficticios",
+        "check": "só aparecem endereços privados (RFC 1918) ou de documentação; nenhum IP público, hostname ou domínio real de terceiros",
+        "appliesTo": [
+          "D4",
+          "L4",
+          "L7",
+          "X1",
+          "D5"
+        ],
+        "auto": true
+      },
+      {
+        "id": "escala-e-legenda",
+        "check": "a prancha tem escala, legenda e carimbo",
+        "appliesTo": [
+          "D1",
+          "D6"
+        ],
+        "auto": true
+      },
+      {
+        "id": "reversao-e-escalonamento",
+        "check": "o runbook tem seções de reversão e escalonamento",
+        "appliesTo": [
+          "L7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "fonte-das-metricas",
+        "check": "o infográfico cita fonte, período e unidades",
+        "appliesTo": [
+          "D7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "sem-segredos",
+        "check": "o conteúdo não contém senhas, chaves, SNMP communities, configurações reais de clientes ou dados pessoais de logs",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L3",
+          "L4",
+          "L5",
+          "L6",
+          "L7",
+          "L8",
+          "L9",
+          "L10",
+          "D1",
+          "D2",
+          "D4",
+          "D5",
+          "D6",
+          "D7",
+          "D10",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "autoria-e-sigilo",
+        "check": "a pessoa declarou autoria e que o cenário é de laboratório, fictício ou anonimizado",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L3",
+          "L4",
+          "L5",
+          "L6",
+          "L7",
+          "L8",
+          "L9",
+          "L10",
+          "D1",
+          "D2",
+          "D4",
+          "D5",
+          "D6",
+          "D7",
+          "D10",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "creditos-e-fontes",
+        "check": "coautores, fontes e materiais reutilizados estão creditados",
+        "appliesTo": [
+          "L5",
+          "L10",
+          "D2",
+          "D7",
+          "D10"
+        ],
+        "auto": true
+      },
+      {
+        "id": "causa-raiz-explicita",
+        "check": "o relatório de incidente nomeia a causa raiz e separa causa de sintoma",
+        "appliesTo": [
+          "L4"
+        ],
+        "auto": false
+      }
+    ],
+    "subjective": [
+      {
+        "id": "clareza-operacional",
+        "label": "Clareza operacional",
+        "levels": {
+          "aproxima": "quem lê precisa adivinhar o que fazer ou onde está cada equipamento",
+          "atende": "alguém da área executa o runbook ou entende a topologia na primeira leitura",
+          "supera": "alguém de outra equipe executa sem perguntar e sabe quando parar e escalar"
+        }
+      },
+      {
+        "id": "justificativa-de-projeto",
+        "label": "Justificativa do projeto",
+        "levels": {
+          "aproxima": "descreve a configuração sem dizer por quê",
+          "atende": "explica escolhas de segmentação, redundância ou capacidade",
+          "supera": "explicita trade-offs de custo, risco e crescimento, e quando rever"
+        }
+      },
+      {
+        "id": "analise-de-causa",
+        "label": "Análise de causa raiz",
+        "levels": {
+          "aproxima": "confunde sintoma com causa",
+          "atende": "nomeia a causa raiz e as ações preventivas",
+          "supera": "mostra evidências, descarta hipóteses e mede o efeito das ações"
+        }
+      },
+      {
+        "id": "resultado",
+        "label": "Resultado demonstrado",
+        "levels": {
+          "aproxima": "descreve atividades, sem resultado",
+          "atende": "mostra um resultado mensurável (disponibilidade, MTTR, chamados)",
+          "supera": "mostra resultado, contexto, limitações e o que faria diferente"
+        }
+      }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa da área de Redes de Computadores e infraestrutura de TI (redes, administração de sistemas, suporte, data center, nuvem, DevOps/SRE). Vocabulário: TCP/IP, VLAN, sub-rede, roteamento, firewall, VPN, DNS/DHCP, SLA, MTTR, monitoramento, cabeamento estruturado, as-built, runbook, janela de manutenção, backup 3-2-1, IaC. Normas e referências a citar quando couber: Marco Civil (Lei 12.965/2014, arts. 13 a 15) e Decreto 8.771/2016 (guarda e sigilo de registros), LGPD arts. 46 a 49, Resolução Anatel 740/2020 (R-Ciber) e 767/2024, Resolução Anatel 614/2013 (SCM), ABNT NBR 14565 (cabeamento), ABNT NBR ISO/IEC 27001/27002, NBR 5410 e NR-10, ITIL 4 como referência. A profissão não tem conselho obrigatório: nunca afirme que a pessoa precisa de registro. O que nunca fazer: pedir, aceitar ou reproduzir topologias, endereçamento, configurações, senhas, chaves, SNMP communities ou logs de redes de empregadores ou clientes; aceitar IPs públicos, hostnames ou domínios reais de terceiros em diagramas e runbooks (use RFC 1918 e faixas de documentação); gerar ou explicar técnicas de invasão, varredura ou negação de serviço contra redes alheias; analisar logs com dados pessoais reais; inferir ambiente, senioridade ou situação a partir dos textos, pergunte. Se um trecho contiver segredo, IP real ou dado pessoal, avise e proponha anonimizar antes de seguir. Pré-cheque só critérios objetivos (equipamentos nomeados, enlaces rotulados, endereços fictícios, seções de reversão e escalonamento, fonte das métricas, ausência de segredos); a validação que gera selo é humana. Toda sugestão diz competência, evidência, tempo e por quê, e aceita \"não me serve\". Afirmações de mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos, nunca por pontuação ou ranking. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      {
+        "title": "Lei 12.965/2014 — Marco Civil da Internet (Planalto)",
+        "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l12965.htm",
+        "kind": "norma"
+      },
+      {
+        "title": "Decreto 8.771/2016 — regulamenta o Marco Civil (Planalto)",
+        "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2016/decreto/d8771.htm",
+        "kind": "norma"
+      },
+      {
+        "title": "Lei 13.709/2018 — LGPD (Planalto)",
+        "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm",
+        "kind": "norma"
+      },
+      {
+        "title": "Anatel — Regulamento de Segurança Cibernética aplicada ao setor de telecomunicações (Resolução 740/2020)",
+        "url": "https://informacoes.anatel.gov.br/legislacao/resolucoes/2020/1497-resolucao-740",
+        "kind": "orgao-publico"
+      },
+      {
+        "title": "ABNT — catálogo de normas (NBR 14565, NBR ISO/IEC 27001)",
+        "url": "https://www.abntcatalogo.com.br/",
+        "kind": "norma"
+      },
+      {
+        "title": "CERT.br — documentos e boas práticas de segurança para administradores de redes",
+        "url": "https://cert.br/docs/",
+        "kind": "referencia"
+      },
+      {
+        "title": "CBO 2124-10 — analista de redes e de comunicação de dados (espelho VRI Consulting)",
+        "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=212410",
+        "kind": "orgao-publico"
+      },
+      {
+        "title": "ESCO — ICT network engineer",
+        "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http%3A%2F%2Fdata.europa.eu%2Fesco%2Foccupation%2Fcf2b03cd-feb7-4f47-90f6-ff1ed6016d3d",
+        "kind": "referencia"
+      },
+      {
+        "title": "Novo CAGED — Ministério do Trabalho e Emprego",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "kind": "estatistica"
+      }
+    ],
+    "services": [
+      {
+        "service": "PERGUNTAS_GUIA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Variantes de c2 e c5 com competências de redes e sistemas; x1 (laboratório) e x2 (ambiente) definem se a primeira tarefa é topologia ou runbook."
+      },
+      {
+        "service": "SUGESTAO_TAREFAS",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "D4 (topologia), L7 (runbook), L4 (incidente) primeiro; D1 e D6 só para quem atua com infraestrutura física; cada card diz competência, evidência e tempo."
+      },
+      {
+        "service": "PLANO_SEMANAL",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Plano a partir de horas (d1) e aparelho (d4); respeita escala de plantão informada; pausa de 7 dias após duas dispensas."
+      },
+      {
+        "service": "PRE_CHECAGEM_RUBRICA",
+        "capability": "ARTEFATO",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "Checa equipamentos nomeados, enlaces rotulados, endereços fictícios (RFC 1918), seções de reversão e escalonamento, fonte das métricas e ausência de segredos; o selo depende de revisão humana."
+      },
+      {
+        "service": "RASCUNHO_LETTERS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Esqueleto de runbook, relatório de incidente, plano de endereçamento ou proposta com prévia; nunca aplica sem revisão; recusa inserir configurações reais."
+      },
+      {
+        "service": "APOIO_DRAWINGS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Sugere ícones padronizados, legenda e rótulos de enlace no D4; escala e legenda no D1 e D6."
+      },
+      {
+        "service": "ANALISE_PERFIL",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": "ANALISE_PERFIL_IA",
+        "note": "RF50: competências declaradas e evidenciadas por topologias, runbooks e métricas; lacunas frente ao cargo-alvo; cada afirmação cita o campo."
+      },
+      {
+        "service": "CAMINHOS_DE_CARREIRA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Vizinhos por CBO 2124/2123 e ISCO 2523/2522: segurança, software/DevOps, dados, computação, elétrica, gestão de TI; com lacunas e passos."
+      },
+      {
+        "service": "PESSOAS_SEMELHANTES",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Só pessoas descobríveis por opt-in; afinidade por competências e ambientes declarados, nunca por empresa."
+      },
+      {
+        "service": "EXPLICACAO_POR_QUE",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)."
+      },
+      {
+        "service": "RESUMO_PROFISSIONAL",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": "RESUMO_PROFISSIONAL_IA",
+        "note": "Bio (L6) com área, ambientes e link de prova; só com o consentimento específico."
+      },
+      {
+        "service": "IMPORTAR_CURRICULO",
+        "capability": "PREENCHER_TAREFA",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Extrai experiências, ambientes e certificações em ficha editável; a pessoa confirma item a item (RF50.CA02)."
+      }
+    ],
+    "dataScope": {
+      "default": [
+        "perfil",
+        "currículo"
+      ],
+      "optional": [
+        "minhas Letters",
+        "meus Drawings"
+      ],
+      "never": [
+        "mensagens",
+        "itens SIGILOSO",
+        "topologias e endereçamento de redes de clientes ou empregadores",
+        "senhas, chaves e configurações de equipamentos",
+        "logs com dados pessoais",
+        "dados sensíveis (LGPD art. 5º II)"
+      ]
+    },
+    "provider": {
+      "default": "local",
+      "externalNeedsConsent": true,
+      "externalAllowedFor": [
+        "ANALISE_PERFIL",
+        "CAMINHOS_DE_CARREIRA",
+        "RESUMO_PROFISSIONAL"
+      ]
+    },
+    "guardrails": [
+      "perguntar em vez de inferir ambiente, senioridade ou situação",
+      "nunca pedir, aceitar ou reproduzir topologias, configurações, credenciais ou logs de redes de terceiros; exigir cenário de laboratório ou anonimizado",
+      "só endereços privados (RFC 1918) ou de documentação em diagramas e runbooks; avisar quando aparecer IP, hostname ou domínio real",
+      "nunca gerar ou explicar varredura, invasão ou negação de serviço contra redes alheias",
+      "não afirmar que a profissão exige registro em conselho",
+      "nunca prometer entrevista, emprego ou salário; afirmações de mercado com fonte, data e região ou \"estimativa\"",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": {
+      "letters": "media",
+      "drawings": "media"
+    },
+    "drawingsModes": [
+      "diagrama",
+      "2d-tecnico",
+      "infografico",
+      "prancha"
+    ],
+    "lettersTemplates": [
+      "pop",
+      "relatorio-tecnico",
+      "proposta",
+      "estudo-de-caso",
+      "curriculo",
+      "bio",
+      "carta",
+      "post",
+      "revisao",
+      "plano-30-60-90"
+    ],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas de texto curtas (L5, L6) e revisão (L10); D1, D4, D6 e D7 exigem computador; runbooks (L7) podem começar no celular e terminar no computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil com link para um diagrama ou laboratório (15 min).",
+        "Aquele procedimento que você repete toda semana cabe em um runbook de 60 min. Quer registrar?",
+        "Sem pressão. Quando quiser retomar, a topologia do seu laboratório está salva onde você parou.",
+        "Um incidente que você resolveu pode virar relatório anonimizado com causa raiz. Vale como evidência."
+      ]
+    },
+    "insights": {
+      "peersBy": [
+        "competencias",
+        "cbo"
+      ]
+    },
+    "privacy": {
+      "sensitiveData": [
+        "topologias e endereçamento de redes de clientes",
+        "senhas, chaves e configurações de equipamentos",
+        "logs com dados pessoais",
+        "escala de plantão e horários de trabalho"
+      ],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      {
+        "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2124 e 2123",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "geography": "Brasil, UF e município",
+        "cadence": "mensal",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "RAIS (MTE) — vínculos formais por ocupação",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais",
+        "geography": "Brasil, UF e município",
+        "cadence": "anual",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "PNAD Contínua (IBGE)",
+        "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html",
+        "geography": "Brasil e UF",
+        "cadence": "trimestral",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "Anatel — painéis de dados de acessos e prestadoras (SCM/banda larga)",
+        "url": "https://informacoes.anatel.gov.br/paineis/acessos",
+        "geography": "Brasil, UF e município",
+        "cadence": "mensal",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "Brasscom — Perspectivas do Mercado de Trabalho do Macrossetor TIC (2026)",
+        "url": "https://brasscom.org.br/wp-content/uploads/2026/07/Relatorio-Pespectivas-do-Mercado-de-Trabalho-Apresentacao-v9.pdf",
+        "geography": "Brasil",
+        "cadence": "anual",
+        "kind": "associacao"
+      },
+      {
+        "title": "Abrint — Associação Brasileira de Provedores de Internet e Telecomunicações",
+        "url": "https://abrint.com.br/",
+        "geography": "Brasil",
+        "cadence": "eventual",
+        "kind": "associacao"
+      }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Dados de provedores (Anatel) descrevem o setor, não vagas; o guia diz isso ao citá-los. Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    {
+      "to": "seguranca-da-informacao",
+      "why": "Firewall, VPN, hardening e monitoramento são a base da operação de segurança (SOC, resposta a incidentes, segurança de redes).",
+      "gaps": [
+        "gestão de riscos e normas (ISO/IEC 27001, NIST CSF)",
+        "análise de vulnerabilidades e resposta a incidentes",
+        "LGPD e ANPD",
+        "SIEM e detecção"
+      ],
+      "steps": [
+        "curso gratuito (Hackers do Bem, CERT.br, NetAcad)",
+        "post-mortem anonimizado de incidente (L4)",
+        "playbook de resposta a incidente (L7)",
+        "fluxo de resposta com raias por papel (D4)"
+      ]
+    },
+    {
+      "to": "engenharia-de-software",
+      "why": "Automação, IaC e contêineres levam a DevOps, SRE e engenharia de plataforma; Git e scripts já fazem parte da rotina.",
+      "gaps": [
+        "programação além de scripts",
+        "testes automatizados e CI/CD",
+        "arquitetura de aplicações e APIs"
+      ],
+      "steps": [
+        "README de repositório de automação com testes",
+        "diagrama do pipeline CI/CD (D4)",
+        "ADR de uma decisão de plataforma (L4)"
+      ]
+    },
+    {
+      "to": "ciencia-de-dados",
+      "why": "Quem opera bancos, armazenamento e nuvem migra para engenharia de dados e plataformas analíticas.",
+      "gaps": [
+        "SQL avançado e modelagem analítica",
+        "ferramentas de dados (Spark, dbt, Airflow)",
+        "estatística básica",
+        "LGPD aplicada a dados pessoais"
+      ],
+      "steps": [
+        "diagrama de pipeline de dados (D4)",
+        "POP de qualidade e backup de dados (L7)",
+        "infográfico de métricas de um dataset público (D7)"
+      ]
+    },
+    {
+      "to": "engenharia-de-computacao",
+      "why": "Redes industriais, IoT e equipamentos de rede aproximam do hardware e firmware; exige graduação em engenharia e registro no CREA.",
+      "gaps": [
+        "eletrônica e sistemas embarcados",
+        "graduação em engenharia e registro no CREA",
+        "protocolos industriais"
+      ],
+      "steps": [
+        "diagrama de blocos de um dispositivo conectado (D4)",
+        "POP de atualização de firmware de equipamentos (L7)",
+        "avaliar graduação em Engenharia de Computação"
+      ]
+    },
+    {
+      "to": "engenharia-eletrica",
+      "why": "Cabeamento estruturado, telecom e infraestrutura física de data center tocam telecomunicações e instalações; projeto formal exige CREA.",
+      "gaps": [
+        "eletricidade e NBR 5410",
+        "telecomunicações e fibra óptica em profundidade",
+        "graduação em engenharia e registro no CREA"
+      ],
+      "steps": [
+        "planta de ambiente com pontos de rede (D1)",
+        "detalhe de montagem de rack (D6)",
+        "relatório de certificação de cabeamento (L4)"
+      ]
+    },
+    {
+      "to": "administracao",
+      "why": "Coordenação de operações, contratos, SLAs e equipes leva à gestão de serviços e de TI.",
+      "gaps": [
+        "gestão de pessoas e orçamento",
+        "contratos e fornecedores",
+        "comunicação com áreas de negócio"
+      ],
+      "steps": [
+        "plano 30-60-90 para coordenação de infraestrutura (L9)",
+        "proposta com escopo, SLA e premissas (L8)",
+        "infográfico de resultados de operação (D7)"
+      ]
+    }
+  ],
+  "learning": [
+    {
+      "title": "Cisco Networking Academy — cursos gratuitos de redes, Linux e cibersegurança",
+      "provider": "Cisco",
+      "url": "https://www.netacad.com/",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "Bóson Treinamentos — cursos gratuitos de redes, Linux e Windows Server",
+      "provider": "Bóson Treinamentos",
+      "url": "https://www.bosontreinamentos.com.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "CERT.br — documentos e boas práticas para administradores de redes",
+      "provider": "CERT.br / NIC.br",
+      "url": "https://cert.br/docs/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Escola Virtual Fundação Bradesco — redes e infraestrutura",
+      "provider": "Fundação Bradesco",
+      "url": "https://www.ev.org.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Escola Virtual.Gov — Proteção de Dados Pessoais (LGPD)",
+      "provider": "Enap",
+      "url": "https://www.escolavirtual.gov.br/",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "Linux Foundation — cursos gratuitos (Introduction to Linux, Kubernetes)",
+      "provider": "Linux Foundation",
+      "url": "https://training.linuxfoundation.org/resources/?_sft_content_type=free-course",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "Microsoft Learn — Azure e Windows Server",
+      "provider": "Microsoft",
+      "url": "https://learn.microsoft.com/pt-br/training/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Hackers do Bem — formação gratuita em cibersegurança (nivelamento inclui redes)",
+      "provider": "RNP / Softex / SENAI-SP",
+      "url": "https://hackersdobem.org.br/",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "Escola Superior de Redes (ESR)",
+      "provider": "RNP",
+      "url": "https://esr.rnp.br/",
+      "free": false,
+      "kind": "curso"
+    },
+    {
+      "title": "ABNT NBR 14565:2019 — cabeamento estruturado",
+      "provider": "ABNT",
+      "url": "https://www.abntcatalogo.com.br/",
+      "free": false,
+      "kind": "norma"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Auditoria Guia de Carreira §4 (perguntas), §4.6 (pacote), §7 (tarefas L1–L10, D1–D10), §8 (mensagens)",
+      "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Dados do ramo (fase 1) — CBO 2124, ISCO 2523/2522, ESCO ICT operations manager",
+      "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http%3A%2F%2Fdata.europa.eu%2Fesco%2Foccupation%2Ff0ca39a8-1e30-487c-95f9-ef2d5e734adc",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2123-10 administrador de redes, família 2123 (espelho NCM Buscador)",
+      "url": "https://buscadorncm.com.br/cbo/212310",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2124-10 analista de redes e de comunicação de dados (espelho VRI Consulting)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=212410",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "World of Taxonomy — ESCO ICT network engineer (cf2b03cd…), ISCO 2523",
+      "url": "https://worldoftaxonomy.com/codes/esco_occupations/cf2b03cd-feb7-4f47-90f6-ff1ed6016d3d",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Mayer Brown — Alteração do Regulamento de Segurança Cibernética da Anatel (Resolução 767/2024)",
+      "url": "https://www.mayerbrown.com/pt/insights/publications/2024/08/amendment-to-anatels-cybersecurity-regulations-incident-notification-and-prior-evaluation-of-suppliers",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Teletime — Regulamento de segurança cibernética da Anatel (Resolução 740/2020)",
+      "url": "https://teletime.com.br/17/12/2020/regulamento-de-seguranca-cibernetica-alcanca-fornecedores-operadoras-pagarao-pelas-medidas-necessarias/",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Brasscom — Relatório Perspectivas do Mercado de Trabalho do Macrossetor TIC (2026)",
+      "url": "https://brasscom.org.br/wp-content/uploads/2026/07/Relatorio-Pespectivas-do-Mercado-de-Trabalho-Apresentacao-v9.pdf",
+      "accessedAt": "2026-11-02"
+    }
+  ],
+  "naoConferido": [
+    "Rede da sessão bloqueou esco.ec.europa.eu, worldoftaxonomy.com, planalto.gov.br e cbo.mte.gov.br: URIs, leis e CBOs conferidas só por trechos de resultados de busca.",
+    "ESCO 'ICT network engineer' (cf2b03cd) confirmado só em espelho (World of Taxonomy) com ISCO 2523; não conferido no portal ESCO.",
+    "CBO 2123 (Administradores de TI; 2123-10 administrador de redes, 2123-15 sistemas operacionais) confirmada só em espelho (NCM Buscador); CBO 3172 e 3133 em a4 citadas de memória.",
+    "ISCO-08 3513 (Computer network and systems technicians) citado de memória.",
+    "ABNT NBR 14565:2019: a busca não retornou a norma; número, ano e título citados de memória. NBR 5410/NR-10, Decreto 8.771/2016 e Resolução Anatel 614/2013 também não acessados.",
+    "URL da Resolução Anatel 740/2020 em informacoes.anatel.gov.br montada por padrão do portal; não acessada.",
+    "Hackers do Bem: programa confirmado por notícias (RNP/Softex/SENAI-SP, 25 mil vagas); o domínio hackersdobem.org.br não foi conferido.",
+    "Fontes de aprendizagem (NetAcad, Bóson, CERT.br docs, Linux Foundation, Microsoft Learn, ESR) e Anatel painéis/Abrint não acessadas nesta sessão.",
+    "Certificações em c4 (CCNA, Network+, LPIC-1, AZ-104, ITIL 4, MTCNA, NSE, CKA) de conhecimento geral; vigência não conferida."
+  ]
+}

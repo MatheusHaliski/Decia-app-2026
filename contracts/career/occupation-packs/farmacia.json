@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 1,
+  "code": "farmacia",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Farmácia", "en": "Pharmacy", "es": "Farmacia" },
+  "fields": ["farmacia"],
+  "family": {
+    "cbo": [
+      { "code": "2234", "title": "Farmacêuticos" }
+    ],
+    "isco08": [
+      { "code": "2262", "title": "Pharmacists" }
+    ],
+    "esco": []
+  },
+  "scope": {
+    "summary": "Pacote para quem se forma ou se formou em Farmácia e quer construir evidências de carreira sem expor pacientes nem segredos de empresa: casos anonimizados de farmácia clínica, POPs de dispensação e manipulação, fluxos de assistência farmacêutica, relatórios técnicos e indicadores. A IA apoia a escrita e a organização; nunca orienta terapeuticamente terceiros nem redige prescrição, laudo ou parecer assinável.",
+    "entryRoles": ["Estagiário de farmácia (estágio curricular)", "Farmacêutico de drogaria recém-formado", "Farmacêutico substituto", "Farmacêutico residente (residência multiprofissional)", "Analista júnior em indústria ou laboratório"],
+    "midRoles": ["Farmacêutico responsável técnico de drogaria", "Farmacêutico clínico hospitalar", "Farmacêutico da assistência farmacêutica municipal (SUS)", "Farmacêutico de manipulação", "Analista de controle ou garantia da qualidade", "Analista de assuntos regulatórios ou farmacovigilância", "Farmacêutico bioquímico em análises clínicas"],
+    "seniorRoles": ["Gerente de farmácia hospitalar", "Coordenador de assistência farmacêutica", "Gerente de qualidade ou regulatório na indústria", "Responsável técnico de indústria ou distribuidora", "Docente e pesquisador", "Gestor de rede de farmácias", "Auditor em saúde suplementar"],
+    "sectors": ["farmácias e drogarias", "farmácias de manipulação", "hospitais e clínicas (farmácia clínica e hospitalar)", "SUS (assistência farmacêutica, CAF, farmácia popular)", "indústria farmacêutica, cosmética e de alimentos", "distribuidoras e logística farmacêutica", "laboratórios de análises clínicas e toxicológicas", "vigilância sanitária e regulação (Anvisa, Visa)", "ensino e pesquisa"],
+    "regulation": [
+      { "name": "Lei 3.820/1960", "issuer": "Brasil", "about": "cria o CFF e os CRFs; inscrição obrigatória" },
+      { "name": "Lei 13.021/2014", "issuer": "Brasil", "about": "exercício e fiscalização das atividades farmacêuticas; farmácia como estabelecimento de saúde; presença do farmacêutico" },
+      { "name": "Lei 5.991/1973", "issuer": "Brasil", "about": "controle sanitário do comércio de drogas, medicamentos, insumos e correlatos" },
+      { "name": "Res. CFF 724/2022 (Código de Ética Farmacêutica)", "issuer": "CFF", "about": "código de ética e de processo ético; substituiu a Res. CFF 596/2014" },
+      { "name": "Res. CFF 585/2013", "issuer": "CFF", "about": "atribuições clínicas do farmacêutico" },
+      { "name": "Res. CFF 586/2013", "issuer": "CFF", "about": "prescrição farmacêutica" },
+      { "name": "Portaria SVS/MS 344/1998", "issuer": "Ministério da Saúde", "about": "substâncias e medicamentos sujeitos a controle especial (receituário, escrituração, SNGPC)" },
+      { "name": "RDC Anvisa 44/2009", "issuer": "Anvisa", "about": "boas práticas farmacêuticas em farmácias e drogarias" },
+      { "name": "RDC Anvisa 67/2007", "issuer": "Anvisa", "about": "boas práticas de manipulação de preparações magistrais e oficinais" },
+      { "name": "LGPD (Lei 13.709/2018), art. 5º II e art. 11", "issuer": "Brasil", "about": "prescrições e dados de dispensação são dados pessoais sensíveis" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "CRF", "meaning": "inscrição no Conselho Regional de Farmácia; obrigatória para exercer" },
+      { "term": "RT", "meaning": "responsável técnico pelo estabelecimento, com certidão de regularidade do CRF" },
+      { "term": "dispensação", "meaning": "ato farmacêutico de entrega do medicamento com orientação" },
+      { "term": "atenção farmacêutica / cuidado farmacêutico", "meaning": "prática clínica centrada no paciente: acompanhamento farmacoterapêutico" },
+      { "term": "anamnese farmacêutica", "meaning": "coleta de dados para a ficha farmacoterapêutica (Res. CFF 5/2025)" },
+      { "term": "PRM / RNM", "meaning": "problemas relacionados a medicamentos e resultados negativos associados" },
+      { "term": "conciliação medicamentosa", "meaning": "comparação da lista de medicamentos nas transições de cuidado" },
+      { "term": "intervenção farmacêutica", "meaning": "ação documentada para resolver ou prevenir um problema da farmacoterapia" },
+      { "term": "prescrição farmacêutica", "meaning": "prescrição de medicamentos isentos de prescrição e outros, nos limites da Res. CFF 586/2013" },
+      { "term": "MIP", "meaning": "medicamento isento de prescrição" },
+      { "term": "Portaria 344/1998", "meaning": "controle especial: notificações de receita A, B, C e escrituração no SNGPC" },
+      { "term": "SNGPC", "meaning": "Sistema Nacional de Gerenciamento de Produtos Controlados" },
+      { "term": "Rename / Remume", "meaning": "relações nacional e municipal de medicamentos essenciais" },
+      { "term": "CAF", "meaning": "Central de Abastecimento Farmacêutico" },
+      { "term": "ciclo da assistência farmacêutica", "meaning": "seleção, programação, aquisição, armazenamento, distribuição e dispensação" },
+      { "term": "manipulação magistral", "meaning": "preparação individualizada conforme prescrição (RDC 67/2007)" },
+      { "term": "BPF / BPM", "meaning": "boas práticas de fabricação e de manipulação" },
+      { "term": "controle de qualidade", "meaning": "ensaios que verificam especificações de matéria-prima e produto" },
+      { "term": "garantia da qualidade", "meaning": "sistema que assegura BPF, documentação e desvios" },
+      { "term": "farmacovigilância", "meaning": "detecção e notificação de reações adversas (VigiMed)" },
+      { "term": "assuntos regulatórios", "meaning": "registro, pós-registro e dossiês junto à Anvisa" },
+      { "term": "farmacoeconomia", "meaning": "análise de custo-efetividade de tecnologias em saúde" },
+      { "term": "Conitec", "meaning": "comissão de incorporação de tecnologias no SUS" },
+      { "term": "POP", "meaning": "procedimento operacional padrão de rotina da farmácia ou do laboratório" },
+      { "term": "anonimização", "meaning": "remoção de todo dado que identifique o paciente ou o prescritor" }
+    ],
+    "tools": ["sistemas de gestão de farmácia e PDV", "SNGPC e Hórus (assistência farmacêutica no SUS)", "prontuário eletrônico e prescrição eletrônica hospitalar", "bases de interação e informação (Micromedex, UpToDate, Bulário Anvisa)", "VigiMed e Notivisa", "planilha (Excel, Google Sheets)", "sistemas de qualidade e documentação (QMS)", "BVS, SciELO, PubMed, Cochrane", "Zotero ou Mendeley", "Letters (textos) e Drawings (fluxos e infográficos)"],
+    "deliverables": ["estudo de caso de farmácia clínica anonimizado", "avaliação farmacoterapêutica de caso fictício", "POP de dispensação, manipulação ou armazenamento", "fluxo do ciclo da assistência farmacêutica ou da dispensação", "relatório técnico (desvios, farmacovigilância, consumo)", "infográfico de indicadores (adesão, intervenções, perdas, cobertura)", "material de orientação ao paciente", "projeto de pesquisa", "currículo direcionado e carta"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Dispensação e orientação farmacêutica", "esco": null, "kind": "nucleo" },
+      { "label": "Cuidado farmacêutico e acompanhamento farmacoterapêutico", "esco": null, "kind": "nucleo" },
+      { "label": "Farmacologia e identificação de interações e PRM", "esco": null, "kind": "nucleo" },
+      { "label": "Legislação sanitária e medicamentos controlados (Portaria 344, SNGPC)", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de estoque e ciclo da assistência farmacêutica", "esco": null, "kind": "nucleo" },
+      { "label": "Boas práticas (BPF, BPM, RDC 44 e 67) e documentação", "esco": null, "kind": "nucleo" },
+      { "label": "Ética profissional, sigilo e proteção de dados", "esco": null, "kind": "nucleo" },
+      { "label": "Comunicação com pacientes, prescritores e equipe", "esco": null, "kind": "nucleo" },
+      { "label": "Manipulação magistral e controle de qualidade", "esco": null, "kind": "apoio" },
+      { "label": "Farmacovigilância e notificação", "esco": null, "kind": "apoio" },
+      { "label": "Assuntos regulatórios", "esco": null, "kind": "apoio" },
+      { "label": "Análises clínicas e toxicológicas", "esco": null, "kind": "apoio" },
+      { "label": "Farmacoeconomia e avaliação de tecnologias", "esco": null, "kind": "apoio" },
+      { "label": "Indicadores e qualidade do serviço", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de equipe e de estabelecimento", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação escrita técnica", "atenção a detalhes e rastreabilidade", "organização de processos", "trabalho em equipe", "aprendizagem contínua", "inglês para leitura técnica"],
+    "tracks": [
+      { "id": "cuidado-documentado", "label": "Documentar o cuidado farmacêutico sem expor pacientes", "steps": ["estudo de caso anonimizado (L3)", "avaliação farmacoterapêutica de caso fictício (X1)", "post sobre um aprendizado (L5)", "revisão crítica de um caso de colega (L10)"] },
+      { "id": "processos-da-farmacia", "label": "Padronizar processos da farmácia", "steps": ["POP de dispensação ou manipulação (L7)", "fluxo da dispensação ou do ciclo da assistência farmacêutica (D4)", "infográfico de indicadores (D7)", "redesenho antes e depois de um processo (D5)"] },
+      { "id": "qualidade-e-regulatorio", "label": "Qualidade, regulatório e indústria", "steps": ["relatório técnico de desvio ou investigação (L4)", "POP de controle de qualidade (L7)", "resposta a um briefing regulatório simulado (L8)"] },
+      { "id": "posicionar-se", "label": "Posicionar-se para a vaga ou a residência", "steps": ["bio de três frases (L6)", "currículo direcionado (L1)", "carta de apresentação (L2)", "plano 30-60-90 para a nova farmácia ou área (L9)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"farmacêutica de drogaria\", \"farmacêutico hospitalar\", \"analista de qualidade\", \"estagiário\", \"RT de manipulação\"",
+      "cboFamilies": ["2234"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez. Se ainda está na graduação, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio curricular ou primeiro vínculo após o CRF",
+        "junior": "farmacêutico até dois anos, com supervisão ou como substituto",
+        "pleno": "responsável técnico ou analista com autonomia",
+        "senior": "referência técnica; preceptor ou especialista",
+        "gestao": "coordenação, gerência ou direção técnica"
+      },
+      "why": "Pergunto o nível para ajustar as tarefas e as pessoas sugeridas: dispensação, clínica, indústria e gestão pedem evidências diferentes."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem",
+      "options": ["orientar pacientes na dispensação", "acompanhar a farmacoterapia", "identificar interações e PRM", "aplicar a legislação de controlados", "gerir estoque e compras", "escrever e seguir POPs", "manipular fórmulas", "controle e garantia da qualidade", "farmacovigilância", "assuntos regulatórios", "analisar indicadores", "liderar a equipe da farmácia"],
+      "why": "Suas competências declaradas viram o ponto de partida; a prova vem com as tarefas, sem dados de paciente ou de empresa."
+    },
+    "c4": {
+      "certifications": ["graduação em Farmácia", "inscrição no CRF", "residência em farmácia ou multiprofissional", "especialização (farmácia clínica, hospitalar, manipulação, indústria, análises clínicas)", "título de especialista (CFF/SBRAFH)", "cursos de BPF, BPM ou GCP", "mestrado ou doutorado"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação e títulos mostram lacunas em relação à área ou ao cargo que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["cuidado farmacêutico e acompanhamento", "legislação sanitária e controlados", "gestão de estoque e assistência farmacêutica", "boas práticas e documentação", "manipulação e controle de qualidade", "farmacovigilância", "assuntos regulatórios", "indicadores e qualidade", "comunicação com pacientes", "gestão de equipe", "farmacoeconomia"],
+      "why": "Com isso sugiro uma trilha curta com tarefas progressivas em vez do catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que etapa você está?", "type": "escolha", "options": ["graduação", "estágio curricular", "recém-formado", "residência", "farmacêutico em exercício", "pós-graduação stricto sensu"], "why": "A etapa define quais tarefas fazem sentido: para a primeira vaga, currículo e carta; para o serviço, POPs e indicadores.", "where": "P" },
+      { "id": "x2", "prompt": "Que área de atuação mais interessa?", "type": "lista", "options": ["drogaria e farmácia comunitária", "farmácia clínica e hospitalar", "assistência farmacêutica no SUS", "manipulação", "indústria (produção, qualidade, regulatório)", "análises clínicas e toxicológicas", "distribuição e logística", "ensino e pesquisa"], "why": "Direciona exemplos, vocabulário e fontes das tarefas para a área que você quer.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L3", "L7", "D4", "L4", "D7", "L6", "L1", "L9", "L8", "L2", "L5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta 2D não é entrega da profissão" },
+      { "code": "D3", "reason": "modelagem 3D de produto não é entrega da profissão" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da profissão" },
+      { "code": "D8", "reason": "vista explodida não é entrega da profissão" },
+      { "code": "D9", "reason": "wireframe de tela não é entrega típica" },
+      { "code": "D2", "reason": "prancha de portfólio não representa as entregas da profissão; evidências são textos e fluxos" }
+    ],
+    "parameters": {
+      "L3": {
+        "title": "Estudo de caso de farmácia clínica anonimizado",
+        "brief": "Descreva um caso real ou composto, sem nenhum identificador do paciente ou do prescritor, no formato situação, tarefa, ação e resultado: contexto, problema relacionado a medicamento identificado, intervenção farmacêutica, resultado e lição aprendida, com as referências que sustentaram a decisão.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado", "lição aprendida"], "anonymizationStatement": true, "minReferences": 2, "maxWords": 900 },
+        "criteria": ["cinco seções nomeadas", "declaração de anonimização e ausência de dados de paciente e prescritor", "nenhum nome, CPF, número de prontuário ou receita, data completa ou local que identifique", "problema relacionado a medicamento classificado (PRM ou RNM)", "ao menos duas referências", "até 900 palavras"],
+        "evidence": "documento no Letters (modelo estudo-de-caso)",
+        "time": "60 min",
+        "level": 2
+      },
+      "L7": {
+        "title": "POP de dispensação, manipulação ou armazenamento",
+        "brief": "Escreva o procedimento operacional padrão de uma rotina que você domina (ex.: dispensação de controlados, recebimento e armazenamento, pesagem na manipulação, conciliação medicamentosa): objetivo, campo de aplicação, responsáveis, materiais, passos numerados, registros, referências legais e data de revisão. Documento de estudo, não institucional.",
+        "parameters": { "requiredSections": ["objetivo", "campo de aplicação", "responsáveis", "materiais", "passos", "registros", "referências", "revisão"], "numberedSteps": true, "minReferences": 3, "disclaimer": "documento de estudo; não substitui POP do estabelecimento" },
+        "criteria": ["oito seções presentes", "passos numerados com responsável", "critério de conclusão por passo", "ao menos três referências (RDC, Portaria 344, resolução do CFF ou literatura)", "aviso de que é documento de estudo"],
+        "evidence": "documento no Letters (modelo pop)",
+        "time": "60 min",
+        "level": 2
+      },
+      "D4": {
+        "title": "Fluxo da dispensação ou do ciclo da assistência farmacêutica",
+        "brief": "Desenhe o fluxo de uma rotina (ex.: dispensação de medicamento controlado, atendimento de receita no SUS, recebimento e armazenamento, investigação de desvio) com raias por responsável, pontos de decisão e saídas; sem dados de paciente.",
+        "parameters": { "lanes": ["atendente ou auxiliar", "farmacêutico", "prescritor ou unidade solicitante", "sistema (SNGPC, Hórus, ERP)"], "decisionPoints": 2, "notation": "BPMN simplificado" },
+        "criteria": ["início e fim explícitos", "raias por responsável", "ao menos dois pontos de decisão", "nenhuma etapa órfã", "legenda de símbolos"],
+        "evidence": "diagrama vetorial no Drawings (modo diagrama)",
+        "time": "45 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório técnico curto",
+        "brief": "Relate um projeto, investigação ou melhoria (ex.: redução de perdas por validade, análise de intervenções farmacêuticas, investigação de desvio de qualidade): objetivo, método, resultados, limitações e referências, em até quatro páginas, com dados agregados e sem identificar pacientes ou segredos de empresa.",
+        "parameters": { "requiredSections": ["objetivo", "método", "resultados", "limitações", "referências"], "maxPages": 4, "aggregatedDataOnly": true, "noTradeSecrets": true },
+        "criteria": ["cinco seções nomeadas", "até quatro páginas", "dados agregados, sem identificação de pacientes", "sem fórmula, lote ou dado confidencial de empresa", "referências citadas"],
+        "evidence": "relatório no Letters (modelo relatorio-tecnico)",
+        "time": "2 h",
+        "level": 3
+      },
+      "D7": {
+        "title": "Infográfico de indicadores da farmácia",
+        "brief": "Monte um infográfico com até três indicadores (ex.: intervenções aceitas, perdas por validade, cobertura da Remume, tempo de dispensação, notificações de farmacovigilância) com fonte, período e uma mensagem principal; dados agregados ou públicos.",
+        "parameters": { "maxIndicators": 3, "requiredElements": ["fonte", "período", "unidade ou região", "mensagem principal"], "aggregatedDataOnly": true },
+        "criteria": ["fonte e período citados", "eixos e unidades rotulados", "uma mensagem principal", "dados agregados ou públicos"],
+        "evidence": "imagem e PDF no Drawings (modo infográfico)",
+        "time": "60 min",
+        "level": 2
+      },
+      "L8": {
+        "title": "Resposta a um briefing simulado (regulatório ou de assistência farmacêutica)",
+        "brief": "Responda a um briefing fictício (ex.: inclusão de um medicamento na Remume, adequação de uma drogaria à RDC 44, plano de ação para um desvio): escopo, prazos, premissas, o que fica fora e referências.",
+        "parameters": { "requiredSections": ["escopo", "prazos", "premissas", "fora do escopo", "referências"], "maxWords": 800 },
+        "criteria": ["cinco seções nomeadas", "prazos por etapa", "premissas explícitas", "o que fica fora do escopo", "referências legais citadas"],
+        "evidence": "proposta no Letters (modelo proposta)",
+        "time": "45 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Avaliação farmacoterapêutica de um caso fictício",
+        "competency": "Cuidado farmacêutico e acompanhamento farmacoterapêutico",
+        "criteria": ["caso explicitamente fictício ou composto", "lista de medicamentos com dose, via e frequência", "problemas relacionados a medicamentos classificados (PRM ou RNM) e priorizados", "intervenções propostas com justificativa e referência", "plano de acompanhamento e parâmetros a monitorar", "aviso de que não é documento para paciente real"],
+        "evidence": "documento no Letters (modelo relatorio-de-caso)",
+        "time": "90 min",
+        "trigger": "Quer treinar uma avaliação farmacoterapêutica completa em um caso de estudo?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas ou palavras da tarefa", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L8"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L8", "L9", "X1"], "auto": true },
+      { "id": "declaracao-de-anonimizacao", "check": "há declaração explícita de anonimização ou de caso fictício", "appliesTo": ["L3", "L4", "L5", "L7", "L10", "D4", "D7", "X1"], "auto": true },
+      { "id": "sem-identificadores-diretos", "check": "não há CPF, número de prontuário ou receita, data de nascimento completa ou nome próprio de paciente ou prescritor", "appliesTo": ["L3", "L4", "L5", "D7", "X1"], "auto": true },
+      { "id": "prm-classificado", "check": "cada problema relacionado a medicamento nomeia a classificação usada", "appliesTo": ["L3", "X1"], "auto": true },
+      { "id": "referencias-minimas", "check": "o número mínimo de referências da tarefa está presente", "appliesTo": ["L3", "L4", "L7", "L8", "X1"], "auto": true },
+      { "id": "passos-numerados-com-responsavel", "check": "cada passo do POP tem número e responsável", "appliesTo": ["L7"], "auto": true },
+      { "id": "aviso-documento-de-estudo", "check": "o POP ou a avaliação traz o aviso de que não substitui documento do estabelecimento nem serve a paciente real", "appliesTo": ["L7", "X1"], "auto": true },
+      { "id": "fluxo-fechado", "check": "o diagrama tem início, fim, raias e nenhuma etapa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "fonte-e-periodo", "check": "o infográfico cita fonte, período e unidade ou região", "appliesTo": ["D7"], "auto": true },
+      { "id": "sem-segredo-de-empresa", "check": "não há fórmula, número de lote, fornecedor ou dado confidencial de empresa", "appliesTo": ["L4", "L7", "L8", "D4", "D7"], "auto": false },
+      { "id": "reidentificacao-indireta", "check": "a combinação de dados não permite reidentificar paciente ou prescritor", "appliesTo": ["L3", "L4", "L5", "X1"], "auto": false },
+      { "id": "autoria", "check": "a pessoa declarou autoria e creditou coautores", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D4", "D5", "D7", "D10", "X1"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "raciocinio-farmacoterapeutico", "label": "Raciocínio farmacoterapêutico", "levels": { "aproxima": "lista medicamentos sem ligar aos problemas", "atende": "liga medicamento, problema, intervenção e monitoramento de forma rastreável", "supera": "prioriza problemas e discute alternativas" } },
+      { "id": "conformidade-legal", "label": "Conformidade legal e sanitária", "levels": { "aproxima": "cita a legislação de forma genérica", "atende": "aponta a norma aplicável em cada passo crítico", "supera": "antecipa não conformidades e prevê como tratá-las" } },
+      { "id": "clareza-para-a-equipe", "label": "Clareza para a equipe", "levels": { "aproxima": "exige releitura para entender o fluxo", "atende": "auxiliar ou colega seguiria o documento sem perguntar", "supera": "antecipa exceções e pontos de falha" } },
+      { "id": "protecao-de-dados", "label": "Proteção de dados de pacientes e empresas", "levels": { "aproxima": "anonimiza o óbvio e deixa pistas indiretas", "atende": "remove identificadores diretos e indiretos e dados confidenciais", "supera": "usa caso composto e explica as escolhas de anonimização" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da área de Farmácia (graduação, estágio, residência ou exercício com CRF, em drogaria, clínica, SUS, manipulação, indústria, laboratório ou regulatório). Use o vocabulário da profissão: dispensação, cuidado farmacêutico, anamnese farmacêutica, PRM e RNM, conciliação, intervenção farmacêutica, prescrição farmacêutica, MIP, Portaria 344/1998, SNGPC, Rename e Remume, CAF, ciclo da assistência farmacêutica, manipulação magistral, BPF e BPM, controle e garantia da qualidade, farmacovigilância, assuntos regulatórios, Conitec, RT. Quando citar normas, prefira as primárias: Lei 3.820/1960, Lei 13.021/2014, Res. CFF 724/2022 (Código de Ética), Res. CFF 585/2013 e 586/2013, Portaria SVS/MS 344/1998, RDC Anvisa 44/2009 e 67/2007, LGPD art. 11, e fontes como Anvisa, Rename, BVS e Cochrane. O que você nunca faz: não dá orientação sobre medicamento, dose, interação ou conduta para um paciente real ou para terceiros; não redige prescrição farmacêutica, laudo, parecer, atestado ou qualquer documento assinável; não avalia receita ou prontuário real. Quando a pessoa trouxer um caso, exija que esteja anonimizado ou seja fictício (sem nome, CPF, número de prontuário ou receita, prescritor identificável, datas completas) e, se houver pista de identificação, pare e peça a remoção antes de continuar. Também não aceite fórmulas, lotes, fornecedores ou outros dados confidenciais de empresa: peça para remover. Trate POPs, avaliações e casos produzidos aqui como documentos de estudo, nunca do estabelecimento. Não infira área, senioridade ou situação a partir dos textos: pergunte. Afirmações sobre mercado citam fonte, data e região (ex.: CFF, CNES, CAGED) ou dizem \"estimativa\"; nunca prometa vaga, emprego ou remuneração. Progresso é por critérios atendidos; a pré-checagem cobre só itens objetivos; a validação que gera selo é humana. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação da pessoa.",
+    "citeSources": [
+      { "title": "Res. CFF 724/2022 — Código de Ética Farmacêutica e Código de Processo Ético", "url": "https://site.cff.org.br/legislacao", "kind": "norma" },
+      { "title": "Res. CFF 585/2013 — atribuições clínicas do farmacêutico", "url": "https://www.cff.org.br/userfiles/file/resolucoes/585.pdf", "kind": "norma" },
+      { "title": "Res. CFF 586/2013 — prescrição farmacêutica", "url": "https://www.cff.org.br/userfiles/file/resolucoes/586.pdf", "kind": "norma" },
+      { "title": "Lei 13.021/2014 — exercício e fiscalização das atividades farmacêuticas", "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l13021.htm", "kind": "norma" },
+      { "title": "Portaria SVS/MS 344/1998 — controle especial", "url": "https://bvsms.saude.gov.br/bvs/saudelegis/svs/1998/prt0344_12_05_1998_rep.html", "kind": "norma" },
+      { "title": "Legislação e boas práticas — Anvisa (RDC 44/2009, RDC 67/2007)", "url": "https://www.gov.br/anvisa/pt-br", "kind": "orgao-publico" },
+      { "title": "Conselho Federal de Farmácia — portal", "url": "https://site.cff.org.br/", "kind": "conselho" },
+      { "title": "Rename — Relação Nacional de Medicamentos Essenciais", "url": "https://www.gov.br/saude/pt-br/composicao/sectics/daf/rename", "kind": "orgao-publico" },
+      { "title": "Biblioteca Virtual em Saúde (BVS)", "url": "https://bvsalud.org/", "kind": "referencia" },
+      { "title": "CBO — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências farmacêuticas; x1 (etapa) e x2 (área de atuação) orientam as tarefas." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "L3 anonimizado, L7 POP, D4 fluxo, L4 relatório e D7 indicadores primeiro; L8 briefing e X1 avaliação quando a área pedir; cada card lembra que não entra dado de paciente nem de empresa." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir das horas (d1) e do aparelho (d4); respeita a escala informada pela pessoa; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, classificação de PRM, referências, declaração de anonimização e ausência de identificadores diretos; segredo de empresa, reidentificação indireta e selo são revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura e linguagem de caso, POP, avaliação fictícia, relatório e briefing com prévia; nunca redige prescrição, laudo, parecer ou documento assinável." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias, pontos de decisão e legenda do fluxo (D4); fonte, período e rótulos do infográfico (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese de competências declaradas e evidenciadas, lacunas para a área ou cargo-alvo e incertezas; cada afirmação cita o campo de origem." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos por CBO 2234 e competências: biomedicina e laboratório, química e indústria, gestão, saúde pública; dados com fonte, data e região." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil; só anuncia especialidade ou título se a pessoa informar (Código de Ética, publicidade)." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai formação, especializações, áreas e experiências em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "prescrições, dispensações e fichas farmacoterapêuticas de pacientes reais", "fórmulas magistrais com identificação do paciente", "fórmulas, lotes e dados confidenciais de empresa", "dados sensíveis (LGPD art. 5º II)", "dados de terceiros sem autorização"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca orientar sobre medicamento, dose, interação ou conduta para paciente real ou terceiro; redirecionar para o farmacêutico ou prescritor presencial",
+      "nunca redigir prescrição farmacêutica, laudo, parecer, atestado ou documento assinável",
+      "exigir anonimização ou caso fictício; parar e pedir remoção ao detectar nome, CPF, prontuário, receita, prescritor identificável ou data completa",
+      "recusar fórmulas, lotes, fornecedores e dados confidenciais de empresa; pedir remoção",
+      "tratar POPs, avaliações e casos produzidos como documentos de estudo, não do estabelecimento",
+      "perguntar em vez de inferir área, etapa ou situação",
+      "nunca prometer vaga, emprego ou remuneração; mercado com fonte, data e região ou \"estimativa\"",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["diagrama", "infografico"],
+    "lettersTemplates": ["estudo-de-caso", "pop", "relatorio-tecnico", "relatorio-de-caso", "proposta", "revisao", "curriculo", "carta", "bio", "plano-30-60-90", "projeto-de-pesquisa", "artigo"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas curtas de texto (L5, L6) e revisão (L10); L3, L7, L8, D4 e D7 pedem computador. Em turnos de balcão, prefira tarefas de 15 a 30 minutos.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: bio de três frases (15 min). Sem dados de paciente, só o que você sabe fazer.",
+        "Uma rotina de dispensação que você domina pode virar POP em 60 min. Quando quiser, está aqui.",
+        "Sem pressão. Semana corrida no balcão? A tarefa de 15 min continua disponível quando der.",
+        "Seu estudo de caso está com 4 de 6 critérios objetivos. Faltam a classificação do PRM e a declaração de anonimização."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": { "sensitiveData": ["prescrições, dispensações e dados de pacientes (Res. CFF 724/2022; LGPD art. 5º II)", "fórmulas magistrais com identificação do paciente", "fórmulas, lotes e dados confidenciais de empresa", "número de inscrição no CRF só por escolha da pessoa"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Conselho Federal de Farmácia — dados da profissão (inscritos por CRF)", "url": "https://site.cff.org.br/", "geography": "Brasil e UF", "cadence": "continua", "kind": "conselho" },
+      { "title": "CNES — Cadastro Nacional de Estabelecimentos de Saúde (profissionais e vínculos)", "url": "https://cnes.datasus.gov.br/", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "Novo CAGED (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Perfil do farmacêutico no Brasil (CFF)", "url": "https://www.cff.org.br/userfiles/file/Perfil%20do%20farmac%C3%AAutico%20no%20Brasil%20_web.pdf", "geography": "Brasil e regiões", "cadence": "eventual", "kind": "pesquisa" },
+      { "title": "Editais de residência multiprofissional (ENARE/Ebserh e instituições)", "url": "https://www.gov.br/ebserh/pt-br/acesso-a-informacao/processos-seletivos/enare", "geography": "Brasil e instituições", "cadence": "anual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda, distribuição regional ou requisitos cita fonte, data e abrangência geográfica verificáveis (ex.: CFF, data; CNES, mês/ano; CAGED, mês/ano); sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "biomedicina", "why": "Análises clínicas, toxicologia e biologia molecular são áreas compartilhadas; farmacêuticos com habilitação em análises clínicas já atuam nelas.", "gaps": ["técnicas laboratoriais específicas e controle de qualidade analítico", "RDC de laboratórios clínicos", "bioestatística"], "steps": ["POP de controle de qualidade (L7)", "relatório técnico de validação ou investigação (L4)", "curso ou estágio em laboratório"] },
+    { "to": "quimica", "why": "Produção, controle de qualidade e pesquisa e desenvolvimento na indústria farmacêutica e cosmética dialogam com a química.", "gaps": ["química analítica instrumental avançada", "processos industriais e escalonamento", "estatística de processos"], "steps": ["POP de ensaio de controle de qualidade (L7)", "relatório técnico de desvio ou validação (L4)", "curso de BPF e qualificação de equipamentos"] },
+    { "to": "gestao-publica", "why": "Assistência farmacêutica municipal, CAF e regulação sanitária aproveitam o domínio do ciclo da assistência farmacêutica e da legislação.", "gaps": ["planejamento e orçamento público", "licitações e compras públicas", "avaliação de políticas"], "steps": ["fluxo do ciclo da assistência farmacêutica (D4)", "infográfico de indicadores da Remume (D7)", "curso de gestão da assistência farmacêutica (UNA-SUS ou Enap)", "plano 30-60-90 para coordenação (L9)"] },
+    { "to": "administracao", "why": "Gestão de redes de farmácias, distribuidoras e operações da indústria valoriza farmacêuticos que conhecem a regulação.", "gaps": ["finanças e custos", "gestão de pessoas e operações", "logística e cadeia de suprimentos"], "steps": ["fluxo de uma operação da farmácia (D4)", "redesenho antes e depois de um processo (D5)", "curso de gestão (Sebrae ou Enap)"] }
+  ],
+  "learning": [
+    { "title": "UNA-SUS — cursos gratuitos (assistência farmacêutica, uso racional de medicamentos)", "provider": "UNA-SUS / Ministério da Saúde", "url": "https://www.unasus.gov.br/", "free": true, "kind": "portal" },
+    { "title": "AVASUS — Ambiente Virtual de Aprendizagem do SUS", "provider": "UFRN / Ministério da Saúde", "url": "https://avasus.ufrn.br/", "free": true, "kind": "portal" },
+    { "title": "Legislação farmacêutica — Conselho Federal de Farmácia", "provider": "CFF", "url": "https://site.cff.org.br/legislacao", "free": true, "kind": "norma" },
+    { "title": "Rename e Formulário Terapêutico Nacional", "provider": "Ministério da Saúde", "url": "https://www.gov.br/saude/pt-br/composicao/sectics/daf/rename", "free": true, "kind": "norma" },
+    { "title": "Bulário e legislação sanitária da Anvisa", "provider": "Anvisa", "url": "https://www.gov.br/anvisa/pt-br", "free": true, "kind": "portal" },
+    { "title": "Campus Virtual Fiocruz", "provider": "Fiocruz", "url": "https://campusvirtual.fiocruz.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — gestão pública e compras públicas", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Biblioteca Virtual em Saúde (BVS) e SciELO", "provider": "BIREME/OPAS", "url": "https://bvsalud.org/", "free": true, "kind": "portal" },
+    { "title": "Cursos on-line do Sebrae — gestão de farmácias", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Fase 1 — dados do ramo farmacia (CBO, ISCO, conselho, sensitiveData, vizinhos)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Res. CFF 596/2014 — Código de Ética Farmacêutica (PDF no portal do CFF; substituída pela Res. CFF 724/2022)", "url": "https://admin.cff.org.br/src/uploads/publicacao/arquivo/16a8b68a066073aafccd31293a7d2c1047b1abf5.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Res. CFF 5/2025 — ficha farmacoterapêutica e anamnese farmacêutica", "url": "https://www.normasbrasil.com.br/norma/resolucao-5-2025_475066.html", "accessedAt": "2026-11-02" },
+    { "title": "CFF — lançamento de pesquisa nacional sobre o perfil do farmacêutico clínico (05/11/2025)", "url": "https://site.cff.org.br/noticia/Noticias-gerais/05/11/2025/cff-lanca-pesquisa-nacional-para-tracar-perfil-do-farmaceutico-clinico-no-brasil", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7 e §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URIs ESCO da ocupação pharmacist e das competências: esco.ec.europa.eu/ec.europa.eu não acessível nesta sessão",
+    "Res. CFF 724/2022 como Código de Ética vigente: indicada por fontes secundárias de busca (substituiu a 596/2014 citada na fase 1); texto e URL oficiais não abertos",
+    "Res. CFF 585/2013 e 586/2013 confirmadas por fonte secundária; URLs dos PDFs no portal do CFF não abertas",
+    "Lei 5.991/1973, Portaria 344/1998, RDC 44/2009 e RDC 67/2007: citadas de memória; RDC 44/2009 pode ter sido alterada ou substituída por norma mais recente da Anvisa",
+    "total de cerca de 400 mil farmacêuticos inscritos (Relatório de Gestão CFF 2024, dados até nov/2024) vem de resultado de busca, não aberto; página de dados por CRF no portal do CFF não localizada",
+    "URLs de Rename, Anvisa, CNES, ENARE, UNA-SUS, AVASUS, Campus Virtual Fiocruz e Perfil do farmacêutico no Brasil não abertas nesta sessão",
+    "nomes de sistemas (Hórus, Micromedex, VigiMed) listados por conhecimento geral"
+  ]
+}

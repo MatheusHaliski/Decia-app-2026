@@ -1,0 +1,300 @@
+{
+  "schemaVersion": 1,
+  "code": "agronomia",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Agronomia", "en": "Agronomy", "es": "Agronomía" },
+  "fields": ["agronomia"],
+  "family": {
+    "cbo": [
+      { "code": "2221", "title": "Engenheiros agrossilvipecuários" },
+      { "code": "3211", "title": "Técnicos agrícolas" }
+    ],
+    "isco08": [{ "code": "2132", "title": "Farming, forestry and fisheries advisers" }],
+    "esco": [{ "uri": "http://data.europa.eu/esco/occupation/c40ef517-d4ab-4932-b184-9c2ea5b24fe2", "label": "agronomist" }]
+  },
+  "scope": {
+    "summary": "Profissão regulamentada pela Lei 5.194/1966, com registro obrigatório no CREA e responsabilidade técnica formalizada por ART (Lei 6.496/1977). O engenheiro agrônomo planeja e acompanha sistemas de produção vegetal e o uso do solo e da água: fertilidade, fitossanidade, irrigação, mecanização, agricultura de precisão, gestão rural e adequação ambiental da propriedade. O receituário agronômico é ato privativo e pessoal do profissional habilitado.",
+    "entryRoles": ["Estagiário ou trainee de campo em cooperativa, revenda ou agroindústria", "Assistente técnico de culturas", "Consultor júnior de agricultura de precisão", "Técnico de campo em pesquisa ou multiplicação de sementes", "Extensionista rural em início de carreira", "Vendedor técnico de insumos (início de carreira)"],
+    "midRoles": ["Consultor agronômico (fitotecnia, fertilidade ou fitossanidade)", "Responsável técnico (RT) de revenda, armazém ou unidade de sementes", "Gerente de fazenda ou de unidade de produção", "Analista de agricultura de precisão e geoprocessamento", "Extensionista rural (Emater, Senar, ATER)", "Projetista de irrigação", "Fiscal agropecuário estadual"],
+    "seniorRoles": ["Gerente agrícola regional ou de operações", "Pesquisador (Embrapa, universidades, institutos estaduais)", "Auditor fiscal federal agropecuário (MAPA)", "Perito ou assistente técnico judicial em questões agrárias", "Consultor sênior e dono de empresa de consultoria", "Gestor de sustentabilidade e certificações no agronegócio"],
+    "sectors": ["produção de grãos, fibras e cana", "hortifrúti, café, fruticultura e cultivos perenes", "cooperativas e revendas de insumos", "indústria de sementes, fertilizantes e defensivos", "agricultura de precisão e agtechs", "irrigação e máquinas agrícolas", "assistência técnica e extensão rural (ATER)", "serviço público (MAPA, agências estaduais, Emater)", "pesquisa e ensino", "certificação e sustentabilidade (orgânicos, RTRS, carbono)", "trabalho autônomo e consultoria"],
+    "regulation": [
+      { "name": "Lei 5.194/1966", "issuer": "Brasil", "about": "regula o exercício das profissões de engenheiro, arquiteto e engenheiro agrônomo; cria o sistema CONFEA/CREA e o registro obrigatório" },
+      { "name": "Lei 6.496/1977 e Resolução CONFEA 1.025/2009", "issuer": "Brasil / CONFEA", "about": "Anotação de Responsabilidade Técnica (ART) e Certidão de Acervo Técnico (CAT) para todo serviço técnico" },
+      { "name": "Resolução CONFEA 1.002/2002", "issuer": "CONFEA", "about": "Código de Ética Profissional da engenharia e da agronomia: sigilo, responsabilidade e relação com o contratante" },
+      { "name": "Resolução CONFEA 218/1973, art. 5º", "issuer": "CONFEA", "about": "atribuições do engenheiro agrônomo (produção vegetal, solos, irrigação, mecanização, defesa sanitária vegetal)" },
+      { "name": "Lei 14.785/2023 (nova lei de agrotóxicos, sucede a Lei 7.802/1989)", "issuer": "Brasil", "about": "registro, comercialização e uso de agrotóxicos; receituário agronômico obrigatório emitido por profissional habilitado" },
+      { "name": "Lei 12.651/2012 (Código Florestal) e Decreto 7.830/2012", "issuer": "Brasil", "about": "APP, Reserva Legal, CAR e PRA: adequação ambiental da propriedade rural" },
+      { "name": "Lei 10.711/2003 (Sistema Nacional de Sementes e Mudas)", "issuer": "Brasil / MAPA", "about": "RENASEM e responsabilidade técnica na produção e comércio de sementes e mudas" },
+      { "name": "NR 31", "issuer": "MTE", "about": "segurança e saúde no trabalho na agricultura, pecuária e silvicultura, inclusive aplicação de agrotóxicos" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "ART", "meaning": "Anotação de Responsabilidade Técnica registrada no CREA para cada projeto, laudo ou serviço" },
+      { "term": "CAT", "meaning": "Certidão de Acervo Técnico: histórico de ARTs que comprova experiência do profissional" },
+      { "term": "receituário agronômico", "meaning": "prescrição de agrotóxico com diagnóstico, produto, dose, carência e EPI; ato pessoal do profissional habilitado" },
+      { "term": "talhão", "meaning": "unidade de manejo da lavoura, delimitada por solo, cultura ou operação" },
+      { "term": "análise de solo", "meaning": "laudo de laboratório (pH, MO, P, K, Ca, Mg, Al, CTC, V%) que embasa calagem e adubação" },
+      { "term": "calagem e adubação", "meaning": "correção da acidez e fornecimento de nutrientes conforme a exigência da cultura e a análise de solo" },
+      { "term": "MIP", "meaning": "manejo integrado de pragas: monitoramento, nível de dano econômico e combinação de métodos de controle" },
+      { "term": "SPD", "meaning": "sistema plantio direto: sem revolvimento do solo, com palhada e rotação de culturas" },
+      { "term": "ILPF", "meaning": "integração lavoura-pecuária-floresta na mesma área, em consórcio, sucessão ou rotação" },
+      { "term": "ZARC", "meaning": "zoneamento agrícola de risco climático do MAPA: janelas de plantio por cultura, solo e município" },
+      { "term": "CAR / APP / Reserva Legal", "meaning": "cadastro ambiental rural e áreas protegidas pelo Código Florestal na propriedade" },
+      { "term": "agricultura de precisão", "meaning": "manejo por zonas com GNSS, sensores, mapas de produtividade e taxa variável" },
+      { "term": "NDVI", "meaning": "índice de vegetação por imagem de satélite ou drone que indica vigor da cultura" },
+      { "term": "ETo e Kc", "meaning": "evapotranspiração de referência e coeficiente de cultura: base do manejo da irrigação" },
+      { "term": "lâmina de irrigação", "meaning": "altura de água (mm) aplicada por evento ou turno de rega" },
+      { "term": "pivô central / gotejamento", "meaning": "sistemas de irrigação por aspersão mecanizada e localizada" },
+      { "term": "carência", "meaning": "intervalo entre a última aplicação de agrotóxico e a colheita" },
+      { "term": "ATER", "meaning": "assistência técnica e extensão rural: orientação continuada a produtores" },
+      { "term": "PRAD / PRADA", "meaning": "projeto de recuperação de área degradada ou alterada" },
+      { "term": "BPA", "meaning": "boas práticas agrícolas, base de certificações e rastreabilidade" },
+      { "term": "caderno de campo", "meaning": "registro de operações, insumos e ocorrências por talhão, exigido na rastreabilidade" },
+      { "term": "PAM / LSPA", "meaning": "Produção Agrícola Municipal e Levantamento Sistemático da Produção Agrícola do IBGE" }
+    ],
+    "tools": ["QGIS ou ArcGIS (geoprocessamento)", "receptor GNSS e drone (VANT) com câmera multiespectral", "planilhas de custo e de adubação", "AutoCAD ou BricsCAD (projetos de irrigação)", "CROPWAT e planilhas de balanço hídrico", "R ou Python (estatística experimental)", "Google Earth Engine e imagens Sentinel/Landsat", "SICAR e SIGEF (cadastros rurais)", "sistema de ART do CREA", "plataformas de agricultura digital (ex.: FieldView, Agrosmart)", "estações meteorológicas e dados do INMET", "caderno de campo e apps de monitoramento de pragas"],
+    "deliverables": ["laudo ou relatório técnico agronômico", "receituário agronômico (assinado só pelo profissional)", "projeto de irrigação com memorial e planta", "plano de calagem e adubação", "plano de manejo integrado de pragas", "projeto técnico para crédito rural", "laudo de vistoria ou perícia agrária", "PRAD / PRADA", "mapa de produtividade e zonas de manejo", "relatório de ATER", "parecer agronômico", "croqui georreferenciado da propriedade", "POP de aplicação ou de biossegurança"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Fertilidade do solo e nutrição de plantas", "esco": null, "kind": "nucleo" },
+      { "label": "Fitossanidade e manejo integrado de pragas, doenças e plantas daninhas", "esco": null, "kind": "nucleo" },
+      { "label": "Fitotecnia e manejo de culturas (planejamento de safra)", "esco": null, "kind": "nucleo" },
+      { "label": "Irrigação e drenagem", "esco": null, "kind": "nucleo" },
+      { "label": "Manejo e conservação do solo e da água", "esco": null, "kind": "nucleo" },
+      { "label": "Geoprocessamento e agricultura de precisão", "esco": null, "kind": "nucleo" },
+      { "label": "Legislação agrária, ambiental e de agrotóxicos", "esco": null, "kind": "nucleo" },
+      { "label": "Redação de laudos, projetos e pareceres com ART", "esco": null, "kind": "nucleo" },
+      { "label": "Economia e gestão da propriedade rural", "esco": null, "kind": "apoio" },
+      { "label": "Experimentação agrícola e análise estatística", "esco": null, "kind": "apoio" },
+      { "label": "Mecanização e regulagem de máquinas", "esco": null, "kind": "apoio" },
+      { "label": "Extensão rural e comunicação com produtores", "esco": null, "kind": "apoio" },
+      { "label": "Certificações, rastreabilidade e sustentabilidade", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação clara com produtores e equipes de campo", "organização e registro de dados de campo", "trabalho em equipe multidisciplinar", "ética e sigilo sobre dados de propriedades", "resolução de problemas em condições de incerteza climática"],
+    "tracks": [
+      { "id": "do-campo-ao-laudo", "label": "Do diagnóstico de campo ao laudo", "steps": ["estudo de caso de um problema de lavoura (L3)", "relatório técnico de diagnóstico de talhão (L4)", "infográfico de resultados com fonte (D7)", "post sobre uma lição de campo (L5)"] },
+      { "id": "projeto-de-irrigacao", "label": "Projetar irrigação", "steps": ["croqui georreferenciado da área (D1)", "detalhe de um componente do sistema (D6)", "memorial descritivo do projeto (L4)", "POP de operação e manutenção (L7)"] },
+      { "id": "manejo-e-gestao", "label": "Manejo e gestão da propriedade", "steps": ["plano de calagem e adubação a partir de análise pública (X2)", "plano de MIP para uma cultura (X1)", "proposta para um briefing de consultoria (L8)", "plano 30-60-90 para o cargo-alvo (L9)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"técnico agrícola\", \"vendedor técnico de insumos\", \"consultor de culturas\", \"estagiário de campo\", \"extensionista\"",
+      "cboFamilies": ["2221", "3211", "1411"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez no campo, na revenda ou na pesquisa. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, trainee ou primeiro cargo técnico",
+        "junior": "atua sob supervisão de um RT; ainda sem ART própria",
+        "pleno": "responde por talhões, clientes ou projetos com ART própria",
+        "senior": "referência técnica; orienta equipe e revisa laudos e projetos",
+        "gestao": "responde por fazenda, unidade, carteira de clientes ou orçamento"
+      },
+      "why": "Pergunto o nível para calibrar a complexidade das tarefas (de croqui a projeto completo) e as pessoas que sugiro."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem",
+      "options": ["interpretar análise de solo e recomendar calagem e adubação", "identificar pragas, doenças e plantas daninhas no campo", "dimensionar e manejar irrigação", "mapear talhões com GIS, GNSS ou drone", "redigir laudo, projeto ou parecer técnico", "planejar safra e custos de produção", "conduzir experimento e analisar dados", "orientar produtores e equipes de campo", "regular e operar máquinas agrícolas", "adequar a propriedade ao CAR, APP e Reserva Legal", "vender e dar suporte técnico a insumos", "conduzir auditoria ou certificação"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com laudos, projetos e infográficos."
+    },
+    "c4": {
+      "certifications": ["registro no CREA", "curso de aplicação de agrotóxicos (NR 31)", "credenciamento RENASEM como RT", "curso de geoprocessamento (QGIS/ArcGIS)", "cadastro SISANT (ANAC) e SARPAS (DECEA) para operar drone", "auditor de certificações (orgânicos, RTRS, Rainforest, GlobalG.A.P.)", "pós-graduação (agricultura de precisão, fitossanidade, irrigação, solos)", "curso de projetista de irrigação"],
+      "languages": ["inglês", "espanhol"],
+      "why": "Registro, cursos e idiomas mostram lacunas em relação ao cargo que você quer; o CREA ativo é pré-requisito para assinar ART."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["agricultura de precisão e GIS", "projeto e manejo de irrigação", "fitossanidade e MIP", "fertilidade e nutrição de plantas", "gestão e custos da propriedade", "legislação ambiental e CAR", "experimentação e estatística", "comunicação com produtores", "redação de laudos e projetos", "certificações e sustentabilidade"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas da área em vez do catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que sistema produtivo você atua ou quer atuar?", "type": "escolha", "options": ["grãos e fibras", "cana-de-açúcar", "café e cultivos perenes", "hortifrúti e fruticultura", "pastagens e ILPF", "agroecologia e orgânicos", "sementes, mudas e insumos", "pesquisa e ensino", "ainda não sei"], "why": "Pergunto para escolher exemplos, normas e fontes do seu sistema produtivo nas tarefas. Você pode pular.", "where": "P" },
+      { "id": "x2", "prompt": "Você tem registro ativo no CREA?", "type": "escolha", "options": ["sim", "ainda não, estou me formando", "não, e quero fazer", "prefiro não dizer"], "why": "Pergunto porque tarefas que simulam laudo ou projeto lembram que a peça real exige ART; sem registro, trato tudo como treino.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L4", "D1", "D7", "L7", "L6", "L1", "L3", "D6", "L8", "L9", "D4", "L5"],
+    "excluded": [
+      { "code": "D3", "reason": "modelo 3D de produto não é entrega típica da agronomia" },
+      { "code": "D8", "reason": "vista explodida é entrega de projeto mecânico, não agronômico" },
+      { "code": "D9", "reason": "wireframe de tela pertence a UX/UI, fora da prática agronômica" }
+    ],
+    "parameters": {
+      "L4": {
+        "title": "Relatório técnico de diagnóstico de um talhão (dados fictícios)",
+        "brief": "Escreva um relatório de até 4 páginas sobre um problema de lavoura em um talhão fictício: objetivo, método (amostragem, análise de solo ou monitoramento), resultados em unidades do SI (kg/ha, mm, sc/ha), limitações e referências (Embrapa, boletins estaduais). Nada de propriedade, produtor ou coordenadas reais; não é laudo assinável.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "método", "resultados", "limitações", "referências"], "units": "SI (kg/ha, mm, sc/ha)", "fictionalData": true, "signable": false },
+        "criteria": ["até 4 páginas", "cinco seções nomeadas", "unidades e doses em kg/ha, mm ou sc/ha", "ao menos duas referências técnicas citadas", "declaração de que propriedade e dados são fictícios", "sem campos de assinatura, CREA ou ART preenchidos"],
+        "evidence": "relatório em PDF",
+        "time": "2 h",
+        "level": 3
+      },
+      "D1": {
+        "title": "Croqui georreferenciado de uma área irrigada fictícia",
+        "brief": "Desenhe em 2D técnico a planta de uma área de até 50 ha com talhões, fonte de água, adutora, setores de irrigação, APP e Reserva Legal indicadas. Escala, norte, legenda, cotas principais e carimbo com título e data. Coordenadas e nomes fictícios.",
+        "parameters": { "scale": "1:2000 a 1:5000", "requiredLayers": ["talhões", "fonte de água", "adutora e setores", "APP", "Reserva Legal"], "north": true, "legend": true, "fictionalLocation": true },
+        "criteria": ["escala declarada", "norte indicado", "legenda com todas as camadas", "cotas das dimensões principais", "carimbo com título, autor e data", "sem coordenadas ou nomes reais"],
+        "evidence": "prancha PDF ou SVG",
+        "time": "2 h",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de produtividade com fonte oficial",
+        "brief": "Monte um infográfico com uma mensagem principal sobre a produtividade de uma cultura no seu estado ou município nos últimos 5 a 10 anos, usando dados públicos (IBGE PAM, LSPA ou Conab). Eixos rotulados com unidade, fonte e ano citados.",
+        "parameters": { "dataSources": ["IBGE PAM", "IBGE LSPA", "Conab"], "yearsSpan": "5 a 10", "oneMessage": true },
+        "criteria": ["fonte, ano e região citados", "eixos rotulados com unidade (kg/ha ou t/ha)", "uma mensagem principal explícita", "sem dado de propriedade identificável"],
+        "evidence": "imagem PNG e PDF",
+        "time": "60 min",
+        "level": 1
+      },
+      "L7": {
+        "title": "POP de aplicação segura de agrotóxicos ou de biossegurança",
+        "brief": "Escreva um procedimento operacional padrão com passos numerados, responsável por passo, EPI exigido pela NR 31, critério de conclusão e descarte de embalagens (tríplice lavagem, logística reversa). Sem produto comercial recomendado nem dose: o POP descreve o processo, não substitui receituário.",
+        "parameters": { "numberedSteps": true, "ownerPerStep": true, "epi": "NR 31", "noPrescription": true },
+        "criteria": ["passos numerados com responsável", "critério de conclusão por passo", "EPI e cuidados da NR 31 citados", "descarte de embalagens descrito", "sem produto, dose ou receituário"],
+        "evidence": "modelo de POP",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "letters", "title": "Plano de manejo integrado de pragas para uma cultura", "competency": "Fitossanidade e MIP", "criteria": ["cultura e praga-alvo definidas", "método e frequência de monitoramento", "nível de controle citado com referência", "ao menos dois métodos de controle além do químico", "sem prescrição de produto e dose (não é receituário)"], "evidence": "documento", "time": "90 min", "trigger": "Que praga ou doença você mais enfrentou? Quer estruturar um plano de MIP?", "level": 2 },
+      { "id": "X2", "editor": "letters", "title": "Plano de calagem e adubação a partir de uma análise de solo pública", "competency": "Fertilidade do solo e nutrição de plantas", "criteria": ["análise de solo de exemplo (de boletim público) anexada ou transcrita", "cálculo da necessidade de calagem mostrado", "recomendação de N, P e K em kg/ha com a tabela de referência citada", "parcelamento e época indicados", "declaração de que não é recomendação para propriedade real"], "evidence": "documento com memória de cálculo", "time": "90 min", "trigger": "Quer treinar interpretação de análise de solo com um boletim público?", "level": 2 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "estrutura-relatorio", "check": "objetivo, método, resultados, limitações e referências existem e estão nomeados", "appliesTo": ["L4"], "auto": true },
+      { "id": "unidades-si", "check": "doses, lâminas e produtividades em kg/ha, mm, t/ha ou sc/ha", "appliesTo": ["L4", "X1", "X2"], "auto": true },
+      { "id": "escala-norte-legenda", "check": "escala, norte e legenda presentes na prancha", "appliesTo": ["D1", "D6"], "auto": true },
+      { "id": "carimbo", "check": "carimbo com título, autor e data", "appliesTo": ["D1", "D6"], "auto": true },
+      { "id": "fonte-oficial-citada", "check": "fonte, ano e região dos dados aparecem na peça", "appliesTo": ["D7", "X2"], "auto": true },
+      { "id": "sem-receituario", "check": "não há produto comercial com dose nem campos de assinatura, CREA ou ART preenchidos", "appliesTo": ["L4", "L7", "X1", "X2"], "auto": true },
+      { "id": "dados-ficticios-declarados", "check": "a pessoa declarou que propriedade, produtor e coordenadas são fictícios ou autorizados", "appliesTo": ["L3", "L4", "D1", "D6", "D7", "X1", "X2"], "auto": true },
+      { "id": "pop-passos", "check": "passos numerados, responsável e critério de conclusão por passo", "appliesTo": ["L7"], "auto": true },
+      { "id": "referencias-tecnicas", "check": "ao menos duas referências técnicas (Embrapa, boletim estadual, norma) citadas", "appliesTo": ["L4", "X1", "X2"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "rigor-agronomico", "label": "Rigor agronômico", "levels": { "aproxima": "recomendações genéricas, sem ligação com solo, clima ou cultura", "atende": "recomendações coerentes com a análise, a cultura e a região", "supera": "justifica cada decisão com dado, referência e alternativa descartada" } },
+      { "id": "clareza-para-o-produtor", "label": "Clareza para quem executa", "levels": { "aproxima": "texto técnico que o produtor ou operador não consegue seguir", "atende": "orientações compreensíveis por quem vai executar", "supera": "antecipa dúvidas do campo e traz checagens simples" } },
+      { "id": "aderencia-legal-e-ambiental", "label": "Aderência legal e ambiental", "levels": { "aproxima": "ignora Código Florestal, NR 31 ou lei de agrotóxicos", "atende": "cita e respeita as normas aplicáveis", "supera": "integra adequação ambiental e segurança como parte da solução" } },
+      { "id": "sustentabilidade-do-sistema", "label": "Sustentabilidade do sistema", "levels": { "aproxima": "foca só no curto prazo", "atende": "considera solo, água e rotação", "supera": "mostra trade-offs e indicadores de longo prazo" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Agronomia (engenharia agronômica, agroecologia, agronegócio). Use o vocabulário da área: talhão, análise de solo, calagem e adubação, MIP, SPD, ILPF, ZARC, CAR/APP/Reserva Legal, ETo e Kc, lâmina de irrigação, ART e CAT. Cite normas quando couber: Lei 5.194/1966 e registro no CREA, Lei 6.496/1977 (ART), Resolução CONFEA 1.002/2002 (ética), Lei 14.785/2023 (agrotóxicos), Lei 12.651/2012 (Código Florestal), NR 31; e fontes técnicas: Embrapa, boletins estaduais, IBGE PAM/LSPA, Conab. O que nunca fazer: redigir ou preencher receituário agronômico, recomendar produto comercial com dose para situação real, redigir laudo, parecer ou projeto assinável nem sugerir que a peça dispensa ART e registro no CREA; tudo que a pessoa produz aqui é treino com dados fictícios ou autorizados. Não trate nem peça dados de propriedades, produtores, CAR/ITR, coordenadas ou produtividade de talhões de terceiros. Pergunte antes de inferir sistema produtivo, senioridade ou situação. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por que foi sugerida, e aceita \"não me serve\". Afirmações de mercado citam fonte, data e região (CAGED, RAIS, PAM, editais) ou dizem \"estimativa\"; nunca prometa emprego ou salário. Progresso é por critérios atendidos; a pré-checagem cobre só critérios objetivos e o selo é humano. Em nenhum modo publique, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "Lei 5.194/1966 — exercício da engenharia e da agronomia", "url": "https://www.planalto.gov.br/ccivil_03/leis/l5194.htm", "kind": "norma" },
+      { "title": "Lei 14.785/2023 — agrotóxicos e produtos de controle ambiental", "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/l14785.htm", "kind": "norma" },
+      { "title": "Lei 12.651/2012 — Código Florestal", "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12651.htm", "kind": "norma" },
+      { "title": "CONFEA — Conselho Federal de Engenharia e Agronomia", "url": "https://www.confea.org.br/", "kind": "conselho" },
+      { "title": "Embrapa — publicações e sistemas de produção", "url": "https://www.embrapa.br/", "kind": "orgao-publico" },
+      { "title": "IBGE — Produção Agrícola Municipal (PAM)", "url": "https://www.ibge.gov.br/estatisticas/economicas/agricultura-e-pecuaria/9117-producao-agricola-municipal-culturas-temporarias-e-permanentes.html", "kind": "estatistica" },
+      { "title": "Conab — safras e levantamentos", "url": "https://www.conab.gov.br/", "kind": "orgao-publico" },
+      { "title": "NR 31 — segurança e saúde no trabalho rural", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/norma-regulamentadora-no-31-nr-31", "kind": "norma" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes c2/c5 da agronomia e as extras x1 (sistema produtivo) e x2 (registro no CREA); cada pergunta diz o ganho." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "L4 relatório, D1 croqui de irrigação e D7 infográfico primeiro; sempre com dados fictícios e aviso de que a peça real exige ART." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); respeita a sazonalidade declarada pela pessoa (safra, colheita)." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, unidades do SI, escala/norte/legenda, fonte citada e ausência de receituário ou assinatura; o selo é humano." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de relatório, POP e plano de MIP com prévia; nunca preenche receituário nem produto com dose." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Camadas, legenda, norte e carimbo do croqui; eixos e fonte do infográfico." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese com competências declaradas e evidenciadas (laudos, croquis, infográficos), lacunas e incertezas; cita o campo usado." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos na CBO 2221 e no catálogo (zootecnia, florestal, ambiental); dados de mercado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por ocupação CBO, setor e competências." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com área, sistema produtivo e uma prova com link; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, culturas e ferramentas em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados de propriedades rurais, produtores e CAR/ITR identificáveis", "receituários e laudos de clientes", "coordenadas e produtividade de talhões de terceiros", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca redigir, preencher ou sugerir receituário agronômico nem produto comercial com dose para situação real",
+      "nunca produzir laudo, parecer ou projeto apresentado como assinável; lembrar que a peça real exige ART e registro no CREA",
+      "não usar nem pedir dados de propriedades, produtores, CAR/ITR, coordenadas ou produtividade de terceiros",
+      "perguntar em vez de inferir sistema produtivo, senioridade ou situação",
+      "afirmações de mercado com fonte, data e região ou \"estimativa\"; nunca prometer emprego ou salário",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["2d-tecnico", "infografico", "diagrama", "prancha"],
+    "lettersTemplates": ["relatorio-tecnico", "laudo", "memorial", "pop", "proposta", "estudo-de-caso", "curriculo", "bio", "plano-30-60-90", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, tarefas curtas (L5, L6, L3) e revisão (L10); D1, D6 e D7 pedem computador. Em período de safra o plano reduz para uma tarefa curta por semana.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil com sua cultura e uma prova com link (15 min).",
+        "Tem um boletim de análise de solo público? Em 90 min você monta um plano de calagem e adubação de treino.",
+        "Sem pressão na safra. Quando quiser retomar, o infográfico de produtividade (60 min) está aqui.",
+        "Por que esta tarefa: o relatório técnico comprova análise agronômica, que consultorias e cooperativas pedem."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "setor", "competencias"] },
+    "privacy": { "sensitiveData": ["dados de propriedades rurais, produtores e CAR/ITR identificáveis (LGPD)", "receituário agronômico e laudos de clientes", "coordenadas e produtividade de talhões de terceiros"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2221 e 3211", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "IBGE — Produção Agrícola Municipal (PAM)", "url": "https://www.ibge.gov.br/estatisticas/economicas/agricultura-e-pecuaria/9117-producao-agricola-municipal-culturas-temporarias-e-permanentes.html", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "IBGE — Levantamento Sistemático da Produção Agrícola (LSPA)", "url": "https://www.ibge.gov.br/estatisticas/economicas/agricultura-e-pecuaria/9201-levantamento-sistematico-da-producao-agricola.html", "geography": "Brasil e UF", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "Conab — acompanhamento da safra brasileira", "url": "https://www.conab.gov.br/info-agro/safras", "geography": "Brasil e UF", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "CONFEA — estatísticas de profissionais registrados", "url": "https://www.confea.org.br/", "geography": "Brasil e UF", "cadence": "anual", "kind": "conselho" },
+      { "title": "Embrapa — Visão de futuro do agro brasileiro", "url": "https://www.embrapa.br/visao-de-futuro", "geography": "Brasil", "cadence": "eventual", "kind": "pesquisa" },
+      { "title": "Concursos MAPA (auditor fiscal federal agropecuário) e agências estaduais", "url": "https://www.gov.br/agricultura/pt-br/acesso-a-informacao/concursos", "geography": "Brasil e UF", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis (CAGED, RAIS, PAM, Conab, editais); sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147). Dados de safra e produtividade são contexto, não previsão de emprego."
+  },
+  "paths": [
+    { "to": "zootecnia", "why": "Mesmo ambiente de produção rural e de ATER; sistemas integrados (ILPF, pastagens) exigem as duas visões.", "gaps": ["nutrição e manejo animal", "índices zootécnicos", "registro no CRMV (Lei 5.550/1968)"], "steps": ["planejamento forrageiro de uma propriedade fictícia (L4)", "curso de pastagens e ILPF (Embrapa e-Campo)", "conversar com zootecnistas da rede"] },
+    { "to": "engenharia-florestal", "why": "Mesma família CBO 2221 e mesmo sistema CONFEA/CREA; Código Florestal, CAR e restauração são terreno comum.", "gaps": ["inventário florestal e dendrometria", "silvicultura e manejo florestal", "licenciamento e SINAFLOR"], "steps": ["croqui de uso do solo com APP e Reserva Legal (D1)", "curso de inventário florestal", "relatório de PRADA de treino (L4)"] },
+    { "to": "gestao-ambiental", "why": "Adequação ambiental da propriedade, CAR e certificações já fazem parte do trabalho agronômico.", "gaps": ["licenciamento ambiental", "gestão de resíduos e ISO 14001", "indicadores de sustentabilidade"], "steps": ["POP de gestão de embalagens e resíduos (L7)", "curso de licenciamento ambiental (Escola Virtual.Gov)", "estudo de caso de adequação ambiental (L3)"] },
+    { "to": "engenharia-ambiental-e-sanitaria", "why": "Irrigação, drenagem e conservação de solo e água se conectam a recursos hídricos e saneamento rural.", "gaps": ["hidrologia e outorga", "tratamento de efluentes", "normas ABNT de saneamento"], "steps": ["memorial de uso da água com outorga fictícia (L4)", "curso de recursos hídricos (ANA)", "detalhe de um sistema de captação (D6)"] },
+    { "to": "ciencias-biologicas", "why": "Fitossanidade, agroecologia e pesquisa agrícola compartilham base biológica e experimental.", "gaps": ["taxonomia e ecologia", "biotecnologia e melhoramento", "registro no CRBio"], "steps": ["relatório de experimento com análise estatística (L4)", "curso de estatística experimental (R)", "infográfico de resultados (D7)"] }
+  ],
+  "learning": [
+    { "title": "Embrapa e-Campo — cursos on-line", "provider": "Embrapa", "url": "https://www.embrapa.br/e-campo", "free": true, "kind": "portal" },
+    { "title": "Senar EaD — cursos para o campo", "provider": "Senar", "url": "https://ead.senar.org.br/", "free": true, "kind": "portal" },
+    { "title": "Agência Embrapa de Informação Tecnológica (sistemas de produção)", "provider": "Embrapa", "url": "https://www.embrapa.br/agencia-de-informacao-tecnologica", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — cursos de gestão pública e meio ambiente", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Documentação e tutoriais do QGIS em português", "provider": "QGIS", "url": "https://qgis.org/pt_BR/", "free": true, "kind": "portal" },
+    { "title": "Zoneamento Agrícola de Risco Climático (ZARC)", "provider": "MAPA", "url": "https://www.gov.br/agricultura/pt-br/assuntos/riscos-seguro/programa-nacional-de-zoneamento-agricola-de-risco-climatico", "free": true, "kind": "portal" },
+    { "title": "Cursos do Sebrae para o agronegócio", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "Legislação do sistema CONFEA/CREA (resoluções e leis)", "provider": "CONFEA", "url": "https://normativos.confea.org.br/", "free": true, "kind": "norma" }
+  ],
+  "sources": [
+    { "title": "Catálogo de ramos acadêmicos — agronomia (CBO 2221/3211, ISCO 2132, ESCO agronomist, CREA, vizinhos)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Lei 5.194/1966 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l5194.htm", "accessedAt": "2026-11-02" },
+    { "title": "Lei 14.785/2023 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/l14785.htm", "accessedAt": "2026-11-02" },
+    { "title": "Lei 12.651/2012 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12651.htm", "accessedAt": "2026-11-02" },
+    { "title": "Novo CAGED e RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho", "accessedAt": "2026-11-02" },
+    { "title": "IBGE PAM e LSPA", "url": "https://www.ibge.gov.br/estatisticas/economicas/agricultura-e-pecuaria.html", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URLs de leis, estatísticas, conselho e aprendizagem não abertas nesta sessão (cota de busca); conferir antes de ativar",
+    "Decreto regulamentador da Lei 14.785/2023 e manutenção do receituário agronômico nos termos da Lei 7.802/1989 (art. 13) não confirmados",
+    "Resolução CONFEA 218/1973 art. 5º como fonte das atribuições do agrônomo; a Resolução 1.073/2016 pode ter alterado o regime de atribuições",
+    "CBO 1411 (gerentes de produção agropecuária) em questions.a4.cboFamilies não conferido no portal da CBO",
+    "URIs ESCO das competências não pesquisadas (esco: null em todas); apenas a URI de 'agronomist' veio do catálogo",
+    "Existência e endereço da página de estatísticas de profissionais do CONFEA e da página 'Visão de futuro' da Embrapa",
+    "Matrículas INEP do curso não localizadas (catálogo também marca naoConferido)"
+  ]
+}

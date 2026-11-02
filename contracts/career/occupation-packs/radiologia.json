@@ -1,0 +1,326 @@
+{
+  "schemaVersion": 1,
+  "code": "radiologia",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Radiologia (tecnólogo)", "en": "Radiologic Technology", "es": "Tecnología en Radiología" },
+  "fields": ["radiologia"],
+  "family": {
+    "cbo": [{ "code": "3241", "title": "Tecnólogos e técnicos em métodos de diagnósticos e terapêutica" }],
+    "isco08": [{ "code": "3211", "title": "Medical imaging and therapeutic equipment technicians" }],
+    "esco": [{ "uri": "http://data.europa.eu/esco/occupation/7639a601-6db0-41ed-9fb0-813d9b8beb05", "label": "radiographer" }]
+  },
+  "scope": {
+    "summary": "Tecnólogas e tecnólogos em Radiologia (registro no CRTR, Lei 7.394/1985) realizam exames de imagem (raios X, tomografia, ressonância, mamografia, densitometria, hemodinâmica), atuam em medicina nuclear e radioterapia, aplicam proteção radiológica (CNEN, ANVISA) e controle de qualidade. O guia trabalha evidências sem imagem ou dado de paciente: POPs de posicionamento e radioproteção, fluxos do exame, relatórios de controle de qualidade e indicadores de dose.",
+    "entryRoles": ["Estagiário de radiologia", "Tecnólogo em radiologia júnior (raios X convencional)", "Técnico em radiologia", "Tecnólogo de plantão em pronto atendimento", "Residente multiprofissional em imagem"],
+    "midRoles": ["Tecnólogo em tomografia computadorizada", "Tecnólogo em ressonância magnética", "Tecnólogo em mamografia", "Tecnólogo em hemodinâmica e intervenção", "Tecnólogo em medicina nuclear", "Tecnólogo em radioterapia", "Aplicador de controle de qualidade"],
+    "seniorRoles": ["Supervisor de proteção radiológica (com certificação CNEN quando exigida)", "Coordenador do setor de imagem", "Especialista de aplicação de fabricante", "Docente de curso tecnológico", "Gestor de qualidade em diagnóstico por imagem", "Consultor em radioproteção"],
+    "sectors": ["hospitais e clínicas de diagnóstico por imagem", "SUS (UPA, hospitais públicos, rede de mamografia)", "radioterapia e medicina nuclear", "indústria de equipamentos e aplicação clínica", "radiologia industrial e segurança", "ensino e pesquisa", "vigilância sanitária e fiscalização"],
+    "regulation": [
+      { "name": "Lei 7.394/1985 e Decreto 92.790/1986", "issuer": "Brasil", "about": "regula o exercício da profissão de técnico em radiologia; jornada de 24 h semanais e adicional de insalubridade" },
+      { "name": "Resolução CONTER 15/2011 — Código de Ética", "issuer": "CONTER", "about": "deveres, sigilo profissional, execução de técnicas só mediante requisição e observância da radioproteção" },
+      { "name": "Resoluções CONTER sobre habilitação e atribuições do tecnólogo em radiologia", "issuer": "CONTER", "about": "registro, especialidades e limites de atuação de tecnólogos, técnicos e auxiliares" },
+      { "name": "RDC ANVISA 611/2022 e Instruções Normativas 90 a 97/2021", "issuer": "ANVISA", "about": "requisitos sanitários de serviços de radiologia diagnóstica e intervencionista; programa de proteção radiológica e garantia da qualidade" },
+      { "name": "Norma CNEN NN 3.01 — Requisitos básicos de radioproteção", "issuer": "CNEN", "about": "justificação, otimização e limites de dose; indivíduo ocupacionalmente exposto" },
+      { "name": "Normas CNEN NN 3.05 e NN 6.10", "issuer": "CNEN", "about": "radioproteção em medicina nuclear e em radioterapia" },
+      { "name": "NR 32 (MTE), item radiações ionizantes", "issuer": "MTE", "about": "segurança e saúde em serviços de saúde; plano de proteção radiológica e dosimetria" },
+      { "name": "LGPD (Lei 13.709/2018), art. 11", "issuer": "Brasil", "about": "imagens e laudos são dados de saúde, sensíveis" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "proteção radiológica", "meaning": "conjunto de medidas para limitar a exposição de pacientes, trabalhadores e público" },
+      { "term": "justificação, otimização e limitação", "meaning": "os três princípios da radioproteção (ALARA: tão baixo quanto razoavelmente exequível)" },
+      { "term": "IOE", "meaning": "indivíduo ocupacionalmente exposto; tem limites de dose e dosimetria obrigatória" },
+      { "term": "dosímetro individual", "meaning": "monitor pessoal (TLD ou OSL) usado no tronco, sobre o avental, lido mensalmente" },
+      { "term": "dose efetiva e limites de dose", "meaning": "grandeza de risco; limite ocupacional médio de 20 mSv/ano (CNEN NN 3.01)" },
+      { "term": "PPR", "meaning": "programa de proteção radiológica do serviço, exigido pela RDC 611/2022" },
+      { "term": "PGQ", "meaning": "programa de garantia da qualidade; inclui testes de aceitação e de constância" },
+      { "term": "teste de constância", "meaning": "verificação periódica de desempenho do equipamento com registro" },
+      { "term": "memorial descritivo", "meaning": "documento do serviço com blindagens, equipamentos e cálculo de proteção; elaborado por físico" },
+      { "term": "supervisor de proteção radiológica (SPR)", "meaning": "responsável pela radioproteção do serviço, certificado pela CNEN quando exigido" },
+      { "term": "responsável técnico (RT)", "meaning": "profissional legalmente habilitado que responde pelo serviço perante a vigilância" },
+      { "term": "incidências", "meaning": "projeções radiográficas (AP, PA, perfil, oblíquas, axiais) por região anatômica" },
+      { "term": "técnica radiográfica", "meaning": "parâmetros kV, mAs, distância foco-receptor, foco e grade" },
+      { "term": "colimação", "meaning": "restrição do feixe à área de interesse; reduz dose e melhora a imagem" },
+      { "term": "CR / DR", "meaning": "radiografia computadorizada e digital direta" },
+      { "term": "DICOM, PACS e RIS", "meaning": "padrão de imagem médica, arquivo de imagens e sistema de informação radiológica" },
+      { "term": "TC", "meaning": "tomografia computadorizada; protocolos por região, pitch, mAs modulado, CTDI e DLP" },
+      { "term": "RM", "meaning": "ressonância magnética; segurança magnética, zonas de acesso e triagem de implantes" },
+      { "term": "mamografia", "meaning": "exame de alta exigência de posicionamento e compressão; programa de qualidade específico" },
+      { "term": "meio de contraste", "meaning": "iodado ou gadolínio; administração sob prescrição e protocolo de intercorrência" },
+      { "term": "níveis de referência diagnóstica (DRL)", "meaning": "valores de dose típicos usados para otimizar protocolos" },
+      { "term": "taxa de repetição", "meaning": "indicador de exames repetidos por erro técnico; alvo de melhoria contínua" },
+      { "term": "medicina nuclear", "meaning": "diagnóstico e terapia com radiofármacos; gama-câmara, SPECT, PET" },
+      { "term": "radioterapia", "meaning": "tratamento com radiação; simulação, planejamento e execução em acelerador linear" },
+      { "term": "laudo", "meaning": "interpretação do exame; ato médico, nunca do tecnólogo nem da IA" },
+      { "term": "anamnese radiológica", "meaning": "checagem prévia: gravidez, alergias, implantes, exames anteriores" }
+    ],
+    "tools": ["equipamentos de raios X fixos e móveis (CR/DR)", "tomógrafo", "ressonância magnética", "mamógrafo e densitômetro", "arco cirúrgico e angiógrafo", "dosímetros individuais e monitores de área", "PACS, RIS e estações DICOM", "visualizadores DICOM (Horos, RadiAnt, 3D Slicer)", "phantoms e instrumentos de controle de qualidade", "EPI plumbífero (avental, protetor de tireoide, óculos)", "planilhas de indicadores", "editor de textos (Letters)", "editor de desenho (Drawings)"],
+    "deliverables": ["POP de posicionamento por incidência", "POP de proteção radiológica do setor", "protocolo de aquisição por exame (TC, RM, mamografia)", "checklist de segurança (gravidez, implantes em RM, contraste)", "relatório de testes de constância", "relatório de indicadores (taxa de repetição, doses típicas)", "fluxo do exame da recepção ao envio ao PACS", "plano de treinamento em radioproteção", "procedimento de intercorrência com meio de contraste", "manual de boas práticas do setor", "infográfico de doses comparativas para pacientes", "relato de experiência ou artigo"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Posicionamento radiográfico e incidências", "esco": null, "kind": "nucleo" },
+      { "label": "Técnica radiográfica e otimização de dose", "esco": null, "kind": "nucleo" },
+      { "label": "Proteção radiológica (CNEN e ANVISA)", "esco": null, "kind": "nucleo" },
+      { "label": "Acolhimento, triagem e segurança do paciente", "esco": null, "kind": "nucleo" },
+      { "label": "Operação de tomografia computadorizada", "esco": null, "kind": "nucleo" },
+      { "label": "Operação de ressonância magnética e segurança magnética", "esco": null, "kind": "nucleo" },
+      { "label": "Controle de qualidade e testes de constância", "esco": null, "kind": "nucleo" },
+      { "label": "Pós-processamento, DICOM e PACS", "esco": null, "kind": "nucleo" },
+      { "label": "Ética e sigilo de imagens e dados de pacientes", "esco": null, "kind": "nucleo" },
+      { "label": "Mamografia e programa de qualidade", "esco": null, "kind": "apoio" },
+      { "label": "Hemodinâmica e procedimentos intervencionistas", "esco": null, "kind": "apoio" },
+      { "label": "Medicina nuclear e radioterapia", "esco": null, "kind": "apoio" },
+      { "label": "Indicadores do setor e melhoria contínua", "esco": null, "kind": "apoio" },
+      { "label": "Biossegurança e controle de infecção", "esco": null, "kind": "apoio" },
+      { "label": "Treinamento de equipe em radioproteção", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação clara com pacientes e equipe", "trabalho em equipe multiprofissional", "atenção a procedimentos e checklists", "organização em plantão", "aprendizagem contínua de equipamentos"],
+    "tracks": [
+      { "id": "radiodiagnostico", "label": "Radiodiagnóstico convencional", "steps": ["POP de posicionamento e radioproteção de uma incidência (L7)", "fluxo do exame da recepção ao PACS (D4)", "checklist de segurança do exame (X1)", "estudo de caso fictício de redução de repetições (L3)"] },
+      { "id": "tc-rm", "label": "Tomografia e ressonância", "steps": ["protocolo de aquisição com justificativa de dose ou de segurança magnética (X2)", "checklist de triagem de implantes e contraste (X1)", "relatório técnico de controle de qualidade (L4)"] },
+      { "id": "mamografia-qualidade", "label": "Mamografia e qualidade", "steps": ["relatório de testes de constância (L4)", "infográfico de indicadores do setor (D7)", "redesenho antes e depois de um processo do setor (D5)"] },
+      { "id": "protecao-radiologica", "label": "Proteção radiológica e gestão", "steps": ["POP de radioproteção do setor (L7)", "plano de treinamento em radioproteção (L8)", "plano 30-60-90 para coordenar o setor (L9)", "infográfico de doses comparativas com fonte (D7)"] },
+      { "id": "radioterapia-mn", "label": "Radioterapia e medicina nuclear", "steps": ["POP de preparo e orientação do paciente (L7)", "fluxo do tratamento com raias (D4)", "relatório de indicadores de segurança (L4)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"tecnólogo em radiologia\", \"técnica de raios X\", \"operadora de tomografia\", \"estagiário de imagem\"",
+      "cboFamilies": ["3241", "3242", "5151"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez; se for o primeiro emprego ou estágio, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio ou primeiro cargo após o registro no CRTR",
+        "junior": "até dois anos, em raios X convencional, com supervisão",
+        "pleno": "opera duas ou mais modalidades com autonomia",
+        "senior": "referência técnica em uma modalidade; treina colegas; atua no controle de qualidade",
+        "gestao": "coordena o setor, a escala ou o programa de qualidade"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na Radiologia",
+      "options": ["posicionamento e incidências", "técnica radiográfica e redução de dose", "proteção radiológica", "acolhimento e triagem do paciente", "tomografia computadorizada", "ressonância magnética", "mamografia", "hemodinâmica e intervenção", "medicina nuclear", "radioterapia", "controle de qualidade e testes de constância", "PACS, DICOM e pós-processamento", "indicadores e melhoria do setor", "treinar colegas"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com tarefas sem imagem ou dado de paciente."
+    },
+    "c4": {
+      "certifications": ["registro ativo no CRTR", "tecnólogo em Radiologia", "técnico em Radiologia", "especialização em TC, RM, mamografia ou hemodinâmica", "certificação de supervisor de proteção radiológica (CNEN)", "treinamento em radioproteção atualizado (RDC 611/2022)", "curso de suporte básico de vida", "treinamento de aplicação do fabricante", "pós-graduação ou residência multiprofissional"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação e títulos mostram lacunas em relação ao cargo ou edital que você quer; nada aqui é exigido para começar."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["tomografia computadorizada", "ressonância magnética e segurança magnética", "mamografia", "proteção radiológica e supervisão", "controle de qualidade", "hemodinâmica", "medicina nuclear", "radioterapia", "PACS e informática em imagem", "indicadores e gestão do setor"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez do catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que modalidade você atua ou quer atuar?", "type": "escolha", "options": ["raios X convencional", "tomografia", "ressonância", "mamografia e densitometria", "hemodinâmica e intervenção", "medicina nuclear", "radioterapia", "radiologia industrial", "ainda não sei"], "why": "Pergunto a modalidade para escolher tarefas e vocabulário: um protocolo de TC e um checklist de RM são evidências diferentes.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L7", "L6", "L1", "D4", "L4", "L3", "D7", "L9", "L2", "L5", "L10", "D5"],
+    "excluded": [
+      { "code": "D1", "reason": "planta e blindagem da sala são do físico e do projeto; não é entrega do tecnólogo" },
+      { "code": "D3", "reason": "modelagem 3D não é entrega da profissão" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da profissão" },
+      { "code": "D8", "reason": "vista explodida não é entrega da profissão" },
+      { "code": "D9", "reason": "wireframe de tela não é entrega da profissão" }
+    ],
+    "parameters": {
+      "L7": {
+        "title": "POP de posicionamento e proteção radiológica",
+        "brief": "Descreva, em passos numerados, um exame que você domina: identificação e anamnese radiológica (gravidez, exames anteriores), orientação ao paciente, posicionamento e incidências, técnica e colimação, proteção de paciente e acompanhante, critérios de qualidade da imagem, envio ao PACS e critério de conclusão de cada passo. Sem imagem nem dado de paciente.",
+        "parameters": { "steps": "8 a 15", "requiredSteps": ["identificação e anamnese radiológica", "proteção radiológica de paciente e acompanhante", "posicionamento e técnica", "critérios de qualidade da imagem e envio ao PACS"], "norms": ["RDC 611/2022", "CNEN NN 3.01"] },
+        "criteria": ["passos numerados com responsável", "critério de conclusão em cada passo", "passo de anamnese radiológica (gravidez)", "passo de proteção radiológica", "critérios de qualidade da imagem listados", "cita ao menos uma norma (ANVISA ou CNEN)"],
+        "evidence": "modelo de POP",
+        "time": "60 min",
+        "level": 1
+      },
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva um resumo de até 600 caracteres com a modalidade em que quer atuar, três competências (ex.: TC, radioproteção, controle de qualidade) e uma prova com link. Sem imagem ou dado de paciente.",
+        "parameters": { "maxChars": 600, "requiredParts": ["modalidade", "três competências", "uma prova com link"], "forbidden": ["imagem ou dado de paciente"] },
+        "criteria": ["até 600 caracteres", "nomeia a modalidade", "cita três competências", "inclui uma prova com link", "nenhuma menção a paciente"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para o cargo ou edital que quer mirar (ex.: tecnólogo em TC, tecnólogo em mamografia, supervisor de radioproteção), com três resultados com número (exames por plantão, redução da taxa de repetição, testes de constância realizados, treinamentos dados) e os equipamentos e modalidades que a vaga pede.",
+        "parameters": { "maxPages": 1, "achievementsWithNumbers": 3, "keywordsFrom": "cargo-alvo ou edital", "sections": ["formação e CRTR", "experiência por modalidade", "equipamentos", "cursos e certificações"] },
+        "criteria": ["uma página", "três conquistas com número", "palavras-chave do cargo-alvo presentes", "registro no CRTR indicado", "modalidades e equipamentos listados", "sem idade, estado civil ou foto obrigatória"],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "D4": {
+        "title": "Fluxo do exame da recepção ao PACS",
+        "brief": "Desenhe o fluxo de um exame, com raias por responsável (recepção, tecnólogo, enfermagem, médico radiologista, físico), do agendamento ao envio da imagem e do laudo, incluindo a triagem de segurança (gravidez, implantes, contraste) e a conduta em intercorrência.",
+        "parameters": { "lanes": ["recepção", "tecnólogo", "enfermagem", "médico radiologista", "físico ou SPR"], "mustInclude": ["início", "fim", "triagem de segurança", "decisão de repetição ou intercorrência", "envio ao PACS"] },
+        "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "ponto de triagem de segurança", "ponto de decisão em intercorrência"],
+        "evidence": "diagrama vetorial",
+        "time": "45 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório técnico de controle de qualidade ou de indicadores",
+        "brief": "Relate um conjunto de testes de constância ou um indicador do setor (taxa de repetição, doses típicas): objetivo, método (norma, equipamento, periodicidade), resultados agregados, limitações e referências, em até 4 páginas. Sem imagem ou dado de paciente.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "método e norma de referência", "resultados", "limitações", "referências"], "aggregatedDataOnly": true },
+        "criteria": ["cinco seções nomeadas", "até 4 páginas", "norma de referência citada (RDC 611/2022, IN ou CNEN)", "resultados agregados, sem paciente identificável", "limitações declaradas"],
+        "evidence": "relatório",
+        "time": "2 h",
+        "level": 3
+      },
+      "L3": {
+        "title": "Estudo de caso fictício em formato STAR",
+        "brief": "Conte uma melhoria que conduziu (redução de repetições, ajuste de protocolo, reorganização de escala, treinamento) em situação, tarefa, ação e resultado mensurável. Se envolver paciente, construa um caso fictício e declare isso; nunca use imagem ou dado real.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true, "fictionalCaseDeclaration": true },
+        "criteria": ["quatro seções explícitas", "resultado com número ou comparação", "declaração de caso fictício ou de ausência de dado de paciente", "sem imagem, nome ou data de exame real", "princípio de radioproteção envolvido explicitado"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "letters", "title": "Checklist de segurança do exame", "competency": "Acolhimento, triagem e segurança do paciente", "criteria": ["itens de identificação do paciente e do pedido", "triagem de gravidez e exames anteriores", "triagem de implantes e objetos ferromagnéticos (quando RM)", "triagem de alergia e função renal para contraste (quando aplicável)", "conduta e acionamento em intercorrência", "modelo em branco, sem dado de paciente"], "evidence": "checklist", "time": "45 min", "trigger": "Que checagens você nunca deixa de fazer antes de um exame?", "level": 1 },
+      { "id": "X2", "editor": "letters", "title": "Protocolo de aquisição com justificativa de dose", "competency": "Técnica radiográfica e otimização de dose", "criteria": ["indicação clínica e região definidas", "parâmetros de aquisição listados (kV, mAs ou modulação, pitch, espessura; ou sequências em RM)", "justificativa dos parâmetros com base em qualidade de imagem e dose", "comparação com níveis de referência diagnóstica ou protocolo do fabricante", "proteção do paciente e critérios de repetição", "referências citadas"], "evidence": "protocolo", "time": "90 min", "trigger": "Que protocolo você otimizou ou gostaria de otimizar?", "level": 3 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L9", "X1", "X2"], "auto": true },
+      { "id": "radioprotecao-no-pop", "check": "passos de anamnese radiológica e de proteção radiológica presentes", "appliesTo": ["L7"], "auto": true },
+      { "id": "norma-citada", "check": "cita ao menos uma norma de referência (RDC 611/2022, IN ANVISA, CNEN NN 3.01, NR 32)", "appliesTo": ["L4", "L7", "X2"], "auto": true },
+      { "id": "parametros-listados", "check": "parâmetros de aquisição listados com unidade", "appliesTo": ["X2"], "auto": true },
+      { "id": "triagem-no-fluxo", "check": "o fluxo ou checklist tem ponto de triagem de segurança", "appliesTo": ["D4", "X1"], "auto": true },
+      { "id": "sem-imagem-ou-dado-de-paciente", "check": "ausência de imagens de exame, nomes, números de prontuário e datas de exame reais", "appliesTo": ["L3", "L4", "L5", "L7", "L10", "D4", "D5", "D7", "X1", "X2"], "auto": true },
+      { "id": "caso-ficticio-declarado", "check": "há declaração explícita de caso fictício ou de ausência de dado de paciente", "appliesTo": ["L3", "L4"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim, raias por responsável e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "fonte-e-eixos", "check": "o infográfico cita a fonte e rotula eixos e unidades de dose", "appliesTo": ["D7"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados confidenciais", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L9", "L10", "D4", "D5", "D7", "X1", "X2"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "seguranca-radiologica", "label": "Segurança radiológica e do paciente", "levels": { "aproxima": "cita radioproteção de forma genérica", "atende": "aplica justificação, otimização e proteção específicas ao exame", "supera": "antecipa riscos por perfil de paciente e mostra quando não realizar ou adiar" } },
+      { "id": "qualidade-da-imagem", "label": "Critérios de qualidade da imagem", "levels": { "aproxima": "não descreve critérios de aceitação", "atende": "lista critérios de posicionamento e exposição", "supera": "relaciona critérios a dose e a repetição, com indicador" } },
+      { "id": "fundamentacao-normativa", "label": "Fundamentação normativa", "levels": { "aproxima": "não cita norma", "atende": "cita norma pertinente e aplica", "supera": "compara exigências de ANVISA e CNEN e justifica a escolha" } },
+      { "id": "clareza", "label": "Clareza para paciente e equipe", "levels": { "aproxima": "linguagem técnica sem tradução", "atende": "orientações compreensíveis na primeira leitura", "supera": "orienta e informa riscos sem alarmar nem prometer" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você apoia uma tecnóloga ou tecnólogo em Radiologia (ou técnico, ou estudante) no Guia de Carreira. Use o vocabulário da área: proteção radiológica, justificação, otimização e limitação de dose, IOE, dosímetro, PPR, PGQ, teste de constância, incidências, técnica radiográfica, colimação, CR/DR, DICOM, PACS, TC, RM, mamografia, meio de contraste, níveis de referência diagnóstica, taxa de repetição. Cite as normas quando couber: Lei 7.394/1985 e Decreto 92.790/1986, Código de Ética (Res. CONTER 15/2011), RDC ANVISA 611/2022 e suas Instruções Normativas, CNEN NN 3.01, NN 3.05 e NN 6.10, NR 32. Nunca interprete imagem, sugira diagnóstico ou laudo, nem avalie exame de pessoa específica: laudar é ato médico. Nunca indique parâmetros de exposição ou protocolo para um paciente real; discuta protocolos só em termos gerais e com remissão ao físico, ao SPR e ao protocolo do serviço. Nunca oriente conduta clínica em intercorrência com contraste além de citar o fluxo do serviço e o acionamento da equipe. Recuse imagens de exames, números de prontuário, nomes e datas de exame, mesmo anonimizados, e lembre que anonimizar imagem DICOM não autoriza o uso em portfólio. Pergunte antes de inferir modalidade ou senioridade. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por quê, e aceita \"não me serve\". Afirmações sobre mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa vaga, aprovação em concurso ou remuneração. Progresso é por critérios atendidos; não há score. Não publique, siga, envie mensagem nem se candidate sem confirmação da pessoa.",
+    "citeSources": [
+      { "title": "CONTER — Conselho Nacional de Técnicos em Radiologia (legislação e resoluções)", "url": "https://conter.gov.br/", "kind": "conselho" },
+      { "title": "RDC ANVISA 611/2022 — requisitos sanitários para serviços de radiologia (cópia CBR)", "url": "https://cbr.org.br/wp-content/uploads/2023/08/RDC-ANVISA-de-2022-no-611_Requisitos-sanitarios-de-organizacao-e-funcionamento-de-servico-de-radiologia-diagnostica-ou-intervencionista.pdf", "kind": "norma" },
+      { "title": "RDC ANVISA 611/2022 — publicação (SES-SP/BVS)", "url": "https://ses.sp.bvs.br/wp-content/uploads/2022/03/U_RS-MS-ANVISA-RDC-611_090322.pdf", "kind": "norma" },
+      { "title": "CNEN — Normas (NN 3.01 e demais)", "url": "https://www.gov.br/cnen/pt-br/acesso-rapido/normas", "kind": "norma" },
+      { "title": "ANVISA — Radiologia e diagnóstico por imagem (serviços de saúde)", "url": "https://www.gov.br/anvisa/pt-br/assuntos/servicosdesaude", "kind": "orgao-publico" },
+      { "title": "Normas Regulamentadoras (MTE) — NR 32", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/seguranca-e-saude-no-trabalho/normas-regulamentadoras", "kind": "norma" },
+      { "title": "CBO 3241 — Tecnólogos e técnicos em métodos de diagnóstico (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "Novo CAGED — Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2, c5 e a extra x1 (modalidade); nunca pergunta sobre dose recebida ou saúde da própria pessoa." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza L7, L6, L1, D4, L4; cada card explica por que e lembra que nenhuma imagem de paciente entra." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano por horas (d1), plantões e aparelho (d4); D4, D5, D7 e L4 só no computador." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa passos de radioproteção, norma citada, parâmetros com unidade, triagem no fluxo e ausência de imagem ou dado de paciente; não avalia a técnica em si." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de POP, checklist, protocolo genérico e relatório de QC; recusa qualquer texto sobre exame de paciente real ou laudo." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias e pontos de triagem do fluxo (D4); fonte, eixos e unidades de dose no infográfico (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese de competências declaradas e evidenciadas por modalidade; nunca lê imagens ou dados de pacientes." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: Biomedicina, Física (física médica), Segurança do Trabalho, Enfermagem; alternativas, não previsões; graduações exigidas ditas com clareza." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas com opt-in; afinidade por CBO 3241, modalidade e competências." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Campos usados e botão \"discordo\" em cada saída (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil, por modalidade." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai modalidades, equipamentos e certificações em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["imagens de exames (DICOM ou capturas), mesmo anonimizadas", "laudos, pedidos e prontuários de pacientes", "nomes, números de prontuário e datas de exame", "dados dosimétricos individuais de colegas", "mensagens e itens SIGILOSO", "dados sensíveis da própria pessoa (incluindo dose recebida)", "dados de terceiros sem autorização"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca interpretar imagem, sugerir diagnóstico ou laudo; laudar é ato médico",
+      "nunca indicar parâmetros de exposição ou protocolo para paciente real; remeter ao físico, ao SPR e ao protocolo do serviço",
+      "nunca orientar conduta clínica em intercorrência além do fluxo do serviço e do acionamento da equipe",
+      "recusar imagens de exames e dados de pacientes, mesmo anonimizados",
+      "perguntar em vez de inferir modalidade ou senioridade",
+      "nunca prometer vaga, aprovação em concurso ou remuneração; mercado com fonte, data e região",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "não publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "media", "drawings": "baixa" },
+    "drawingsModes": ["diagrama", "infografico"],
+    "lettersTemplates": ["bio", "curriculo", "carta", "pop", "relatorio-tecnico", "estudo-de-caso", "proposta", "plano-30-60-90", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular: L5, L6, L10 e revisão de POP e checklist; D4, D5, D7 e L4 pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em três frases, por modalidade (15 min).",
+        "Que tal registrar o POP de posicionamento e radioproteção do exame que você mais faz? Leva 60 min e vale como evidência.",
+        "Sem pressão. Quando quiser retomar, o fluxo do exame está salvo onde parou.",
+        "Um checklist de segurança do exame mostra seu cuidado com o paciente sem expor ninguém. Leva cerca de 45 min."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["imagens radiológicas e laudos com identificação de pacientes (Código de Ética CONTER – Res. 15/2011; LGPD art. 5º II)", "dados dosimétricos individuais de colegas", "números de prontuário, pedidos e datas de exame", "memorial descritivo e documentos internos do serviço sem autorização"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 3241", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "CNES — profissionais e equipamentos de imagem por estabelecimento", "url": "https://cnes.datasus.gov.br/", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "CONTER e CRTRs — registros profissionais", "url": "https://conter.gov.br/", "geography": "Brasil e regiões dos CRTRs", "cadence": "continua", "kind": "conselho" },
+      { "title": "Concursos públicos federais (gov.br)", "url": "https://www.gov.br/pt-br/servicos/consultar-concursos-publicos", "geography": "Brasil", "cadence": "continua", "kind": "edital" },
+      { "title": "Colégio Brasileiro de Radiologia — publicações sobre o setor", "url": "https://cbr.org.br/", "geography": "Brasil", "cadence": "eventual", "kind": "associacao" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração, insalubridade e jornada nunca entram como promessa nem como filtro (D-147). Concursos e processos seletivos são citados pelo edital."
+  },
+  "paths": [
+    { "to": "biomedicina", "why": "A habilitação em imagenologia da Biomedicina amplia a atuação em TC, RM e medicina nuclear com outra base de formação.", "gaps": ["graduação em Biomedicina e registro no CRBM", "habilitação em imagenologia", "fisiologia e farmacologia dos contrastes"], "steps": ["protocolo de aquisição com justificativa de dose (X2)", "relatório de controle de qualidade (L4)", "avaliar a graduação se quiser as atribuições de biomédico"] },
+    { "to": "fisica", "why": "A física médica responde pelo controle de qualidade, pela dosimetria e pela supervisão de radioproteção que o tecnólogo já aplica no dia a dia.", "gaps": ["graduação em Física e pós em física médica", "cálculo de blindagem e dosimetria avançada", "certificação CNEN de supervisor"], "steps": ["relatório de testes de constância (L4)", "infográfico de doses com fonte (D7)", "cursos de radioproteção da CNEN e do IRD"] },
+    { "to": "seguranca-do-trabalho", "why": "Radioproteção ocupacional, dosimetria e NR 32 dialogam com a higiene ocupacional e a gestão de riscos.", "gaps": ["curso técnico ou graduação em Segurança do Trabalho", "demais NRs e gestão de riscos (PGR)", "legislação trabalhista de insalubridade"], "steps": ["POP de radioproteção do setor (L7)", "plano de treinamento em radioproteção (L8)", "curso técnico em Segurança do Trabalho"] },
+    { "to": "enfermagem", "why": "Acolhimento, segurança do paciente e manejo de intercorrências com contraste aproximam da enfermagem em diagnóstico por imagem.", "gaps": ["graduação em Enfermagem e registro no COREN", "farmacologia e administração de medicamentos", "sistematização da assistência"], "steps": ["checklist de segurança do exame (X1)", "fluxo do exame com raias de enfermagem (D4)", "cursos de segurança do paciente (UNA-SUS)"] }
+  ],
+  "learning": [
+    { "title": "Normas e publicações da CNEN", "provider": "CNEN", "url": "https://www.gov.br/cnen/pt-br/acesso-rapido/normas", "free": true, "kind": "norma" },
+    { "title": "Cursos do Instituto de Radioproteção e Dosimetria", "provider": "IRD/CNEN", "url": "https://www.gov.br/ird/pt-br", "free": true, "kind": "curso" },
+    { "title": "Cursos de segurança do paciente e atenção especializada", "provider": "UNA-SUS", "url": "https://www.unasus.gov.br/cursos", "free": true, "kind": "curso" },
+    { "title": "AVASUS — ambiente virtual de aprendizagem do SUS", "provider": "UFRN / Ministério da Saúde", "url": "https://avasus.ufrn.br/", "free": true, "kind": "curso" },
+    { "title": "ANVISA — orientações sobre serviços de radiologia e RDC 611/2022", "provider": "ANVISA", "url": "https://www.gov.br/anvisa/pt-br/assuntos/servicosdesaude", "free": true, "kind": "portal" },
+    { "title": "Radiation Protection of Patients (RPOP) — material gratuito em inglês", "provider": "IAEA", "url": "https://www.iaea.org/resources/rpop", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — segurança do paciente e gestão em saúde", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Radiologia Brasileira (revista do CBR, acesso aberto)", "provider": "Colégio Brasileiro de Radiologia / SciELO", "url": "https://www.scielo.br/j/rb/", "free": true, "kind": "portal" },
+    { "title": "CONTER — legislação e orientações profissionais", "provider": "CONTER", "url": "https://conter.gov.br/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Fase 1 — dados do ramo radiologia (g1-saude.json)", "url": "docs/pesquisa/fase1/g1-saude.json", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "RDC ANVISA 611/2022 (cópia CBR) — consolida e revoga RDC 330/2019 e 440/2020", "url": "https://cbr.org.br/wp-content/uploads/2023/08/RDC-ANVISA-de-2022-no-611_Requisitos-sanitarios-de-organizacao-e-funcionamento-de-servico-de-radiologia-diagnostica-ou-intervencionista.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Unicamp — edital tecnólogo em radiologia HC: bibliografia cita Res. CONTER 15/2011 (Código de Ética)", "url": "https://www.dgrh.unicamp.br/wp-content/uploads/sites/18/2025/10/Retificacao_Edital_Abertura_PROGRAMA_BIBLIOGRAFIA_Tecnologo_Radiologia_HC.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Resolução CONTER 6/2009 (texto em Normas Legais) — execução de técnicas mediante requisição e observância da radioproteção", "url": "https://www.normaslegais.com.br/legislacao/resconter6_2009.htm", "accessedAt": "2026-11-02" },
+    { "title": "ESCO occupation radiographer (espelho World of Taxonomy)", "url": "https://worldoftaxonomy.com/codes/esco_occupations/7639a601-6db0-41ed-9fb0-813d9b8beb05", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URI ESCO de radiographer obtida de espelho (World of Taxonomy); mapeamento ISCO dessa ocupação (3211 ou 2269) não confirmado; esco.ec.europa.eu não acessível nesta sessão",
+    "texto integral da Lei 7.394/1985, do Decreto 92.790/1986 e da Res. CONTER 15/2011 não acessado; conteúdo descrito de memória e de resumos de concurso",
+    "numeração das resoluções CONTER sobre habilitação e atribuições do tecnólogo não identificada; citadas genericamente",
+    "versão vigente da CNEN NN 3.01 (possível atualização por Resolução CNEN 323/2024) e numeração exata das IN ANVISA 90 a 97/2021 não conferidas",
+    "número de profissionais inscritos no CONTER/CRTRs não obtido; a fonte de mercado aponta para o portal do conselho",
+    "códigos CBO 3242 e 5151 em questions.a4.cboFamilies não conferidos no portal da CBO",
+    "URLs da CNEN (normas), do IRD, do IAEA RPOP e da revista Radiologia Brasileira não verificadas nesta sessão"
+  ]
+}

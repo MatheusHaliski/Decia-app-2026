@@ -1,0 +1,1299 @@
+{
+  "schemaVersion": 1,
+  "code": "fonoaudiologia",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": {
+    "pt-BR": "Fonoaudiologia",
+    "en": "Speech-Language Pathology and Audiology",
+    "es": "Fonoaudiología"
+  },
+  "fields": [
+    "fonoaudiologia"
+  ],
+  "family": {
+    "cbo": [
+      {
+        "code": "2238",
+        "title": "Fonoaudiólogos"
+      }
+    ],
+    "isco08": [
+      {
+        "code": "2266",
+        "title": "Audiologists and speech therapists"
+      }
+    ],
+    "esco": [
+      {
+        "uri": "http://data.europa.eu/esco/occupation/8021f3a2-e3de-43c0-b366-075da74dc5b7",
+        "label": "speech and language therapist"
+      }
+    ]
+  },
+  "scope": {
+    "summary": "Profissão regulamentada pela Lei 6.965/1981, com registro no CRFa (sistema CFFa). Avalia, diagnostica e trata a comunicação humana (linguagem, fala, voz, audição, motricidade orofacial, disfagia) em clínicas, hospitais, escolas, atenção básica, empresas e saúde auditiva. Avaliações, laudos e gravações de áudio e vídeo de pacientes são sigilosos.",
+    "entryRoles": [
+      "Fonoaudiólogo residente",
+      "Fonoaudiólogo de clínica (início de carreira)",
+      "Fonoaudiólogo de atendimento domiciliar",
+      "Fonoaudiólogo em serviço de saúde auditiva (início)",
+      "Estagiário em fonoaudiologia clínica ou educacional"
+    ],
+    "midRoles": [
+      "Fonoaudiólogo clínico (linguagem, fala, motricidade orofacial)",
+      "Fonoaudiólogo hospitalar (disfagia, UTI, neonatologia)",
+      "Audiologista (diagnóstico e adaptação de AASI)",
+      "Fonoaudiólogo educacional",
+      "Fonoaudiólogo na atenção básica (eMulti/NASF)",
+      "Fonoaudiólogo em saúde do trabalhador (PCA, voz profissional)"
+    ],
+    "seniorRoles": [
+      "Especialista com título reconhecido pelo CFFa",
+      "Coordenador de serviço de fonoaudiologia ou de saúde auditiva",
+      "Responsável técnico de clínica",
+      "Fonoaudiólogo de referência em disfagia ou implante coclear",
+      "Docente, preceptor ou pesquisador",
+      "Gestor de serviço de saúde"
+    ],
+    "sectors": [
+      "clínicas e consultórios",
+      "hospitais públicos e privados",
+      "serviços de saúde auditiva (SUS e privados)",
+      "escolas e educação inclusiva",
+      "atenção básica (SUS)",
+      "empresas (saúde do trabalhador, voz profissional)",
+      "mídia, teatro e canto (voz profissional)",
+      "ensino e pesquisa",
+      "trabalho autônomo e telefonoaudiologia"
+    ],
+    "regulation": [
+      {
+        "name": "Lei 6.965/1981 e Decreto 87.218/1982",
+        "issuer": "Brasil",
+        "about": "regulamenta a profissão de fonoaudiólogo e cria o CFFa e os CRFas; registro obrigatório"
+      },
+      {
+        "name": "Resolução CFFa 640/2021",
+        "issuer": "CFFa",
+        "about": "Código de Ética da Fonoaudiologia vigente (revogou a Res. CFFa 490/2016): sigilo, documentos, publicidade, relação com paciente"
+      },
+      {
+        "name": "Resolução CFFa 580/2020",
+        "issuer": "CFFa",
+        "about": "regulamenta a telefonoaudiologia; exige equivalência ao atendimento presencial e declaração autorreferida ao CRFa"
+      },
+      {
+        "name": "Resolução CFFa sobre documentos fonoaudiológicos (Res. 605/2021)",
+        "issuer": "CFFa",
+        "about": "prontuário, laudo, relatório, atestado e declaração fonoaudiológicos (número a confirmar)"
+      },
+      {
+        "name": "Lei 12.303/2010",
+        "issuer": "Brasil",
+        "about": "obrigatoriedade da triagem auditiva neonatal (teste da orelhinha)"
+      },
+      {
+        "name": "Lei 14.254/2021",
+        "issuer": "Brasil",
+        "about": "acompanhamento integral de educandos com dislexia, TDAH e outros transtornos de aprendizagem; atuação em equipe multiprofissional"
+      },
+      {
+        "name": "NR-7 (PCMSO) e Portaria MTE 19/1998 (anexo I)",
+        "issuer": "MTE",
+        "about": "audiometria ocupacional e programa de conservação auditiva (PCA)"
+      },
+      {
+        "name": "LGPD (Lei 13.709/2018), art. 5º II e art. 11",
+        "issuer": "Brasil",
+        "about": "dados de saúde, áudio e vídeo de pacientes são dados sensíveis"
+      }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      {
+        "term": "avaliação fonoaudiológica",
+        "meaning": "anamnese, observação, protocolos e exames que fundamentam o diagnóstico"
+      },
+      {
+        "term": "diagnóstico fonoaudiológico",
+        "meaning": "conclusão do fonoaudiólogo sobre a alteração da comunicação ou da deglutição"
+      },
+      {
+        "term": "terapia fonoaudiológica",
+        "meaning": "intervenção planejada com objetivos, frequência e critérios de alta"
+      },
+      {
+        "term": "linguagem",
+        "meaning": "área que abrange desenvolvimento, atraso, TDL, afasia e leitura e escrita"
+      },
+      {
+        "term": "fala",
+        "meaning": "área de articulação, fonologia, gagueira e apraxia"
+      },
+      {
+        "term": "voz",
+        "meaning": "área de disfonias e voz profissional (professores, cantores, locutores)"
+      },
+      {
+        "term": "motricidade orofacial",
+        "meaning": "funções de sucção, mastigação, deglutição, respiração e fala"
+      },
+      {
+        "term": "disfagia",
+        "meaning": "alteração da deglutição; avaliada e tratada em hospital e ambulatório"
+      },
+      {
+        "term": "audiologia",
+        "meaning": "avaliação e reabilitação auditiva; audiometria, imitanciometria, BERA, EOA"
+      },
+      {
+        "term": "AASI",
+        "meaning": "aparelho de amplificação sonora individual (prótese auditiva)"
+      },
+      {
+        "term": "implante coclear",
+        "meaning": "dispositivo auditivo cirúrgico com acompanhamento fonoaudiológico"
+      },
+      {
+        "term": "TAN / teste da orelhinha",
+        "meaning": "triagem auditiva neonatal obrigatória (Lei 12.303/2010)"
+      },
+      {
+        "term": "PCA",
+        "meaning": "programa de conservação auditiva em empresas (NR-7)"
+      },
+      {
+        "term": "CAA",
+        "meaning": "comunicação alternativa e ampliada"
+      },
+      {
+        "term": "TDL",
+        "meaning": "transtorno do desenvolvimento da linguagem"
+      },
+      {
+        "term": "protocolos",
+        "meaning": "instrumentos validados (ex.: ABFW, PROLEC, CAPE-V, VHI, FOIS, PARD)"
+      },
+      {
+        "term": "laudo fonoaudiológico",
+        "meaning": "documento conclusivo da avaliação, assinado pelo profissional"
+      },
+      {
+        "term": "telefonoaudiologia",
+        "meaning": "atendimento não presencial regulado pela Res. CFFa 580/2020"
+      },
+      {
+        "term": "eMulti / NASF",
+        "meaning": "equipes multiprofissionais da atenção básica do SUS"
+      },
+      {
+        "term": "equipe multiprofissional",
+        "meaning": "trabalho com professores, psicólogos, médicos e terapeutas ocupacionais"
+      },
+      {
+        "term": "RT",
+        "meaning": "responsável técnico pela clínica perante o CRFa"
+      }
+    ],
+    "tools": [
+      "prontuário eletrônico e sistemas de clínica",
+      "audiômetro, imitanciômetro e cabine acústica",
+      "equipamentos de EOA e BERA",
+      "softwares de análise acústica da voz (ex.: Praat, VoxMetria)",
+      "protocolos e testes padronizados",
+      "recursos de CAA e materiais terapêuticos",
+      "gravação de áudio e vídeo (com consentimento) para análise",
+      "editor de textos para relatórios, POPs, materiais de orientação e relatos de caso"
+    ],
+    "deliverables": [
+      "avaliação e plano terapêutico no prontuário",
+      "evolução de sessão",
+      "laudo e relatório fonoaudiológico",
+      "relato de caso clínico anonimizado",
+      "POP do serviço (ex.: triagem auditiva, avaliação de disfagia à beira do leito, higienização de equipamentos)",
+      "programa de saúde vocal para professores ou empresas",
+      "material de orientação para família e escola",
+      "relatório de triagem em escola ou empresa (dados agregados)",
+      "parecer para equipe escolar ou multiprofissional",
+      "projeto de PCA ou de promoção de saúde auditiva"
+    ]
+  },
+  "competencies": {
+    "core": [
+      {
+        "label": "Avaliação e diagnóstico fonoaudiológico",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Planejamento e condução de terapia fonoaudiológica",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Linguagem oral e escrita (infantil e adulto)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Fala, fluência e motricidade orofacial",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Voz clínica e voz profissional",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Audiologia diagnóstica e reabilitação auditiva",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Disfagia e fonoaudiologia hospitalar",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Uso de protocolos e instrumentos padronizados",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Registro em prontuário e documentos fonoaudiológicos",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Orientação a famílias, escolas e cuidadores",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Fonoaudiologia educacional e inclusão",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Saúde do trabalhador (PCA, voz ocupacional)",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Telefonoaudiologia e tecnologias assistivas (CAA)",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Prática baseada em evidências",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Gestão de serviço e indicadores",
+        "esco": null,
+        "kind": "apoio"
+      }
+    ],
+    "transversal": [
+      "ética e sigilo",
+      "comunicação empática e acessível",
+      "trabalho em equipe multiprofissional",
+      "organização e registro",
+      "aprendizagem contínua"
+    ],
+    "tracks": [
+      {
+        "id": "clinica",
+        "label": "Clínica (linguagem, fala, voz, motricidade)",
+        "steps": [
+          "relato de caso clínico anonimizado (L3)",
+          "material de orientação para família ou escola (X1)",
+          "POP de uma rotina do serviço (L7)",
+          "fluxo de acolhimento, avaliação e alta (D4)"
+        ]
+      },
+      {
+        "id": "audiologia",
+        "label": "Audiologia e saúde auditiva",
+        "steps": [
+          "POP de triagem auditiva ou de adaptação de AASI (L7)",
+          "relatório técnico de triagem ou de PCA com dados agregados (L4)",
+          "fluxo da linha de cuidado em saúde auditiva (D4)",
+          "infográfico de resultados agregados (D7)"
+        ]
+      },
+      {
+        "id": "hospitalar",
+        "label": "Fonoaudiologia hospitalar e disfagia",
+        "steps": [
+          "POP de avaliação de disfagia à beira do leito (L7)",
+          "relato de caso com escala funcional (L3)",
+          "relatório técnico de indicadores do serviço (L4)"
+        ]
+      },
+      {
+        "id": "apresentar-se",
+        "label": "Apresentar-se na área",
+        "steps": [
+          "bio com área e registro (L6)",
+          "currículo direcionado (L1)",
+          "carta para residência, concurso ou vaga (L2)"
+        ]
+      }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"fonoaudiólogo clínico\", \"audiologista\", \"fonoaudiólogo hospitalar\", \"fonoaudiólogo educacional\"",
+      "cboFamilies": [
+        "2238"
+      ],
+      "why": "Pergunto sua última função para partir do que você já fez e sugerir tarefas da sua área. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "recém-formado, residência ou primeiro registro no CRFa",
+        "junior": "até dois anos atuando, com supervisão",
+        "pleno": "avalia, trata e dá alta com autonomia",
+        "senior": "referência técnica; especialista, RT ou preceptor",
+        "gestao": "coordena serviço, equipe ou clínica"
+      },
+      "why": "Pergunto o nível para ajustar a dificuldade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na Fonoaudiologia",
+      "options": [
+        "avaliação e diagnóstico",
+        "terapia de linguagem",
+        "fala, fluência e motricidade orofacial",
+        "voz clínica e profissional",
+        "audiologia diagnóstica",
+        "adaptação de AASI e reabilitação auditiva",
+        "disfagia e atuação hospitalar",
+        "uso de protocolos padronizados",
+        "orientação a famílias e escolas",
+        "fonoaudiologia educacional",
+        "saúde do trabalhador (PCA, voz)",
+        "registro e documentação"
+      ],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com as tarefas."
+    },
+    "c4": {
+      "certifications": [
+        "registro no CRFa",
+        "residência multiprofissional",
+        "título de especialista (CFFa)",
+        "cursos de protocolos e métodos (disfagia, PROMPT, CAA, análise acústica)",
+        "pós-graduação lato sensu",
+        "mestrado ou doutorado",
+        "declaração de formação em telefonoaudiologia (Res. CFFa 580/2020)"
+      ],
+      "languages": [
+        "inglês",
+        "espanhol",
+        "Libras"
+      ],
+      "why": "Formação, registro e idiomas ajudam a ver lacunas em relação à função que você quer. Libras tem peso especial na área."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": [
+        "raciocínio clínico e relato de caso",
+        "protocolos e medidas de desfecho",
+        "disfagia e fonoaudiologia hospitalar",
+        "audiologia e saúde auditiva",
+        "fonoaudiologia educacional e inclusão",
+        "voz profissional e saúde do trabalhador",
+        "telefonoaudiologia e CAA",
+        "gestão de serviço e indicadores"
+      ],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que área da Fonoaudiologia você quer atuar primeiro?",
+        "type": "escolha",
+        "options": [
+          "linguagem e fala (clínica)",
+          "voz",
+          "audiologia e saúde auditiva",
+          "disfagia e hospitalar",
+          "educacional",
+          "saúde coletiva e atenção básica",
+          "saúde do trabalhador",
+          "ainda não sei"
+        ],
+        "why": "A área muda as tarefas sugeridas (relato de caso, POP de triagem, relatório de PCA). Você pode mudar depois.",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": true
+  },
+  "guidedTasks": {
+    "priority": [
+      "L3",
+      "L7",
+      "L4",
+      "L6",
+      "L1",
+      "D4",
+      "D7",
+      "L2",
+      "L8",
+      "L5",
+      "L10"
+    ],
+    "excluded": [
+      {
+        "code": "D1",
+        "reason": "planta técnica de ambiente não é entrega da profissão"
+      },
+      {
+        "code": "D3",
+        "reason": "modelagem 3D de produto não faz parte da atuação"
+      },
+      {
+        "code": "D6",
+        "reason": "detalhe construtivo não é entrega da profissão"
+      },
+      {
+        "code": "D8",
+        "reason": "vista explodida de conjunto não se aplica"
+      },
+      {
+        "code": "D9",
+        "reason": "wireframe de interface não se aplica"
+      }
+    ],
+    "parameters": {
+      "L3": {
+        "title": "Relato de caso clínico anonimizado",
+        "brief": "Descreva um caso que você conduziu: situação (perfil sem identificar o paciente ou a família), tarefa (avaliação, protocolos e objetivos), ação (plano terapêutico e justificativa) e resultado (reavaliação com protocolo, escala ou medida). Sem áudio, vídeo ou transcrição identificável; declare a anonimização.",
+        "parameters": {
+          "sections": [
+            "situação",
+            "tarefa",
+            "ação",
+            "resultado"
+          ],
+          "anonymized": true,
+          "measurableResult": true,
+          "outcomeMeasureRequired": true,
+          "maxWords": 900
+        },
+        "criteria": [
+          "quatro seções explícitas",
+          "diagnóstico fonoaudiológico e objetivos terapêuticos nomeados",
+          "ao menos um protocolo, escala ou medida na avaliação e na reavaliação",
+          "conduta justificada com referência",
+          "sem nome, iniciais, data completa, escola, instituição, áudio ou vídeo identificável",
+          "declaração de autoria e de anonimização"
+        ],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "L7": {
+        "title": "POP de uma rotina do serviço",
+        "brief": "Escreva o procedimento de uma rotina que você domina (triagem auditiva neonatal, avaliação de disfagia à beira do leito, higienização de moldes e equipamentos, acolhimento e triagem, tele-atendimento), com passos numerados, responsável, materiais, critério de conclusão e registro.",
+        "parameters": {
+          "numberedSteps": true,
+          "fields": [
+            "objetivo",
+            "campo de aplicação",
+            "responsável",
+            "materiais e EPI",
+            "passos",
+            "critério de conclusão",
+            "registro",
+            "referências"
+          ],
+          "minSteps": 6
+        },
+        "criteria": [
+          "passos numerados com responsável",
+          "materiais e EPI listados",
+          "critério de conclusão por etapa",
+          "referência a resolução, protocolo, lei ou evidência",
+          "sem dado de paciente"
+        ],
+        "evidence": "modelo de POP",
+        "time": "60 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório técnico curto (triagem, PCA ou indicadores do serviço)",
+        "brief": "Relate um trabalho técnico em até 4 páginas: objetivo, método (população, instrumentos, período), resultados agregados (ex.: percentual de encaminhamentos em triagem escolar, cobertura de TAN, indicadores de PCA), limitações e referências. Sem identificar pessoas, escola ou empresa.",
+        "parameters": {
+          "maxPages": 4,
+          "sections": [
+            "objetivo",
+            "método",
+            "resultados",
+            "limitações",
+            "referências"
+          ],
+          "aggregatedOnly": true
+        },
+        "criteria": [
+          "cinco seções nomeadas",
+          "até 4 páginas",
+          "ao menos um indicador quantitativo agregado",
+          "referência bibliográfica ou normativa",
+          "pessoas, escola e empresa não identificáveis"
+        ],
+        "evidence": "relatório",
+        "time": "2 h",
+        "level": 3
+      },
+      "L6": {
+        "title": "Bio com área e registro",
+        "brief": "Escreva um resumo de até 600 caracteres com sua área, três competências e uma prova com link. Pode citar o registro no CRFa; não cite pacientes nem prometa resultados.",
+        "parameters": {
+          "maxChars": 600,
+          "requiredParts": [
+            "área de atuação",
+            "três competências",
+            "uma prova com link"
+          ]
+        },
+        "criteria": [
+          "até 600 caracteres",
+          "nomeia a área",
+          "cita três competências",
+          "inclui uma prova com link",
+          "sem promessa de resultado"
+        ],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "D4": {
+        "title": "Fluxo de acolhimento, avaliação e alta ou linha de cuidado",
+        "brief": "Desenhe o fluxo de um processo do serviço (acolhimento, avaliação, terapia, reavaliação e alta; ou a linha de cuidado em saúde auditiva da triagem à adaptação de AASI) com raias por responsável e pontos de decisão e encaminhamento.",
+        "parameters": {
+          "swimlanes": true,
+          "requiredElements": [
+            "início",
+            "fim",
+            "decisões",
+            "encaminhamentos",
+            "registros gerados"
+          ]
+        },
+        "criteria": [
+          "início e fim",
+          "raias por responsável",
+          "nenhuma tarefa órfã",
+          "pontos de decisão e encaminhamento nomeados",
+          "registros ou documentos gerados indicados"
+        ],
+        "evidence": "diagrama vetorial",
+        "time": "45 min",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de resultados agregados",
+        "brief": "Mostre resultados agregados (cobertura de triagem, percentual de encaminhamentos, ganho médio em protocolo, indicadores de PCA) com fonte, período, eixos rotulados e uma mensagem principal. Sem dado individual.",
+        "parameters": {
+          "requiredElements": [
+            "fonte e período",
+            "eixos rotulados",
+            "mensagem principal"
+          ],
+          "aggregatedOnly": true
+        },
+        "criteria": [
+          "fonte e período citados",
+          "eixos rotulados",
+          "uma mensagem principal",
+          "dados agregados, sem identificação"
+        ],
+        "evidence": "imagem + PDF",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Material de orientação para família, escola ou cuidadores",
+        "competency": "Orientação a famílias, escolas e cuidadores",
+        "criteria": [
+          "público-alvo e objetivo definidos (ex.: estimulação de linguagem, saúde vocal do professor, cuidados com AASI)",
+          "linguagem acessível, sem jargão não explicado",
+          "sinais de alerta e orientação para procurar o fonoaudiólogo",
+          "aviso de que não substitui avaliação individual",
+          "fonte técnica citada"
+        ],
+        "evidence": "folheto ou texto publicável",
+        "time": "45 min",
+        "trigger": "Que orientação você repete a famílias, professores ou cuidadores e poderia transformar em material?",
+        "level": 1
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      {
+        "id": "secoes-obrigatorias",
+        "check": "as seções pedidas existem e estão nomeadas",
+        "appliesTo": [
+          "L3",
+          "L4",
+          "L7",
+          "L8",
+          "L9"
+        ],
+        "auto": true
+      },
+      {
+        "id": "tamanho",
+        "check": "respeita o limite de páginas, palavras ou caracteres",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L3",
+          "L4",
+          "L5",
+          "L6"
+        ],
+        "auto": true
+      },
+      {
+        "id": "anonimizacao-declarada",
+        "check": "a pessoa declarou que não há paciente, família, escola ou empresa identificável",
+        "appliesTo": [
+          "L3",
+          "L4",
+          "L7",
+          "D7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "sem-identificadores",
+        "check": "o texto não contém nome, iniciais, data completa, instituição, escola, áudio, vídeo ou transcrição identificável",
+        "appliesTo": [
+          "L3",
+          "L4",
+          "D7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "medida-de-desfecho",
+        "check": "há ao menos um protocolo, escala ou medida nomeada na avaliação e na reavaliação",
+        "appliesTo": [
+          "L3"
+        ],
+        "auto": true
+      },
+      {
+        "id": "sem-promessa-de-resultado",
+        "check": "não há promessa de cura ou resultado garantido",
+        "appliesTo": [
+          "L6",
+          "L5",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "referencia-citada",
+        "check": "cita ao menos uma referência bibliográfica, resolução, lei ou protocolo",
+        "appliesTo": [
+          "L3",
+          "L4",
+          "L7",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "indicador-quantitativo",
+        "check": "há ao menos um número ou indicador no resultado",
+        "appliesTo": [
+          "L3",
+          "L4",
+          "D7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "pop-estrutura",
+        "check": "passos numerados, responsável e critério de conclusão presentes",
+        "appliesTo": [
+          "L7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "diagrama-fechado",
+        "check": "o diagrama tem início e fim, raias e nenhuma tarefa órfã",
+        "appliesTo": [
+          "D4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "fonte-no-grafico",
+        "check": "fonte, período e eixos rotulados presentes",
+        "appliesTo": [
+          "D7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "autoria-e-sigilo",
+        "check": "a pessoa declarou autoria e ausência de dados confidenciais",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L3",
+          "L4",
+          "L5",
+          "L6",
+          "L7",
+          "L8",
+          "L10",
+          "D2",
+          "D4",
+          "D7",
+          "X1"
+        ],
+        "auto": true
+      }
+    ],
+    "subjective": [
+      {
+        "id": "raciocinio-clinico",
+        "label": "Raciocínio clínico",
+        "levels": {
+          "aproxima": "descreve condutas sem ligar à avaliação",
+          "atende": "liga avaliação, hipótese diagnóstica, objetivos e conduta",
+          "supera": "discute diagnósticos diferenciais, evidência e o que faria diferente"
+        }
+      },
+      {
+        "id": "uso-de-evidencia",
+        "label": "Uso de evidência e de protocolos",
+        "levels": {
+          "aproxima": "cita referência genérica",
+          "atende": "usa protocolo e evidência pertinentes",
+          "supera": "pondera qualidade da evidência e adequação ao caso e à cultura"
+        }
+      },
+      {
+        "id": "comunicacao-acessivel",
+        "label": "Comunicação acessível a família, escola ou paciente",
+        "levels": {
+          "aproxima": "usa jargão sem explicar",
+          "atende": "explica termos e dá orientação prática",
+          "supera": "antecipa dúvidas, respeita a diversidade linguística e promove autonomia"
+        }
+      },
+      {
+        "id": "trabalho-em-equipe",
+        "label": "Articulação com equipe multiprofissional",
+        "levels": {
+          "aproxima": "atua isoladamente",
+          "atende": "prevê encaminhamentos e troca com outros profissionais",
+          "supera": "integra plano conjunto com escola, família e equipe de saúde"
+        }
+      }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Fonoaudiologia (Lei 6.965/1981; registro no CRFa; Código de Ética Res. CFFa 640/2021; telefonoaudiologia pela Res. CFFa 580/2020). Use o vocabulário da área: avaliação e diagnóstico fonoaudiológico, linguagem, fala, voz, motricidade orofacial, disfagia, audiologia, AASI, TAN, PCA, CAA, protocolos padronizados, laudo, evolução, alta. O que você nunca faz: não dá orientação clínica, exercício, conduta ou prescrição para um paciente ou caso de terceiros; não interpreta avaliação, audiometria, gravação ou exame de pessoa real; não redige laudo, relatório conclusivo, atestado, parecer ou evolução assinável; não promete cura ou resultado; não substitui a decisão do fonoaudiólogo nem a responsabilidade técnica. Avaliações, laudos e gravações de áudio e vídeo de pacientes são dados sensíveis: peça anonimização (sem nome, iniciais, data completa, escola, instituição, áudio ou vídeo) ou perfil fictício, com atenção redobrada a crianças. Ajude a estruturar relatos de caso anonimizados com protocolo ou medida de desfecho, POPs, relatórios técnicos de dados agregados, fluxos de serviço ou de linha de cuidado, infográficos e materiais de orientação para família e escola; pré-cheque só critérios objetivos. Pergunte a área de atuação em vez de deduzir. Afirmações sobre mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa vaga, residência, concurso ou salário. Progresso é por critérios atendidos; o selo depende de revisão humana.",
+    "citeSources": [
+      {
+        "title": "CFFa — Conselho Federal de Fonoaudiologia (resoluções, Código de Ética, especialidades)",
+        "url": "https://fonoaudiologia.org.br/",
+        "kind": "conselho"
+      },
+      {
+        "title": "Resolução CFFa 640/2021 — Código de Ética da Fonoaudiologia (Normas Brasil)",
+        "url": "https://www.normasbrasil.com.br/norma/resolucao-640-2021_424026.html",
+        "kind": "norma"
+      },
+      {
+        "title": "Resolução CFFa 580/2020 — telefonoaudiologia (Normas Brasil)",
+        "url": "https://www.normasbrasil.com.br/norma/resolucao-580-2020_400359.html",
+        "kind": "norma"
+      },
+      {
+        "title": "CFFa — Telefonoaudiologia Descomplicada (livreto, 2025)",
+        "url": "https://fonoaudiologia.org.br/wp-content/uploads/2025/02/Livreto_CFFA_Telefonoaudiologia-Descomplicada_VF.pdf",
+        "kind": "conselho"
+      },
+      {
+        "title": "Lei 6.965/1981 — regulamentação da Fonoaudiologia (cópia USP)",
+        "url": "https://edisciplinas.usp.br/pluginfile.php/5385845/mod_resource/content/0/Lei%20de%20cria%C3%A7%C3%A3o%20da%20Fonoaudiologia.pdf",
+        "kind": "norma"
+      },
+      {
+        "title": "SBFa — Sociedade Brasileira de Fonoaudiologia",
+        "url": "https://www.sbfa.org.br/",
+        "kind": "comunidade"
+      },
+      {
+        "title": "CNES/DataSUS — profissionais por CBO em estabelecimentos de saúde",
+        "url": "https://cnes.datasus.gov.br/",
+        "kind": "estatistica"
+      },
+      {
+        "title": "CBO 2238 — Fonoaudiólogos (MTE)",
+        "url": "https://cbo.mte.gov.br/",
+        "kind": "orgao-publico"
+      }
+    ],
+    "services": [
+      {
+        "service": "PERGUNTAS_GUIA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Pergunta a área (x1) antes de sugerir; variantes de c2 e c5 com competências da Fonoaudiologia."
+      },
+      {
+        "service": "SUGESTAO_TAREFAS",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "Prioriza relato de caso com protocolo (L3), POP (L7), relatório técnico de dados agregados (L4), fluxo (D4) e material de orientação (X1); cada card diz por que e aceita \"não me serve\"."
+      },
+      {
+        "service": "PLANO_SEMANAL",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Considera agenda de atendimentos e deslocamentos (escolas, domicílio): tarefas curtas no celular, relato e relatório no computador."
+      },
+      {
+        "service": "PRE_CHECAGEM_RUBRICA",
+        "capability": "ARTEFATO",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "Checa seções, protocolo nomeado, referência, ausência de identificadores e de promessa de resultado; não avalia a conduta clínica."
+      },
+      {
+        "service": "RASCUNHO_LETTERS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Estrutura relato de caso, POP, relatório e material de orientação; nunca redige laudo, relatório conclusivo, atestado, parecer ou evolução assinável nem sugere conduta para paciente real."
+      },
+      {
+        "service": "APOIO_DRAWINGS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Raias, decisões e encaminhamentos do fluxo (D4); fonte e eixos do infográfico (D7)."
+      },
+      {
+        "service": "ANALISE_PERFIL",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": "ANALISE_PERFIL_IA",
+        "note": "Síntese por área com competências declaradas e evidenciadas; cita o campo de origem."
+      },
+      {
+        "service": "CAMINHOS_DE_CARREIRA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Vizinhos: psicologia, pedagogia, fisioterapia, enfermagem, letras, segurança do trabalho; sempre com fonte, data e requisitos de formação."
+      },
+      {
+        "service": "PESSOAS_SEMELHANTES",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Por CBO 2238 e competências compartilhadas; só pessoas com opt-in."
+      },
+      {
+        "service": "EXPLICACAO_POR_QUE",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Mostra os campos usados e o botão \"discordo\" (LGPD art. 20)."
+      },
+      {
+        "service": "RESUMO_PROFISSIONAL",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": "RESUMO_PROFISSIONAL_IA",
+        "note": "Bio (L6) a partir do perfil, sem pacientes nem promessa de resultado; só com consentimento específico."
+      },
+      {
+        "service": "IMPORTAR_CURRICULO",
+        "capability": "PREENCHER_TAREFA",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Extrai experiências, registro, residência e cursos em ficha editável; a pessoa confirma item a item."
+      }
+    ],
+    "dataScope": {
+      "default": [
+        "perfil",
+        "currículo"
+      ],
+      "optional": [
+        "minhas Letters",
+        "meus Drawings"
+      ],
+      "never": [
+        "mensagens",
+        "itens SIGILOSO",
+        "avaliações, laudos, prontuários e gravações de áudio/vídeo de pacientes",
+        "dados de crianças e estudantes atendidos (nome, escola, desempenho)",
+        "audiometrias e dados de trabalhadores em PCA",
+        "dados sensíveis (LGPD art. 5º II)",
+        "dados de terceiros sem autorização"
+      ]
+    },
+    "provider": {
+      "default": "local",
+      "externalNeedsConsent": true,
+      "externalAllowedFor": [
+        "ANALISE_PERFIL",
+        "CAMINHOS_DE_CARREIRA",
+        "RESUMO_PROFISSIONAL"
+      ]
+    },
+    "guardrails": [
+      "nunca dar orientação clínica, exercício ou conduta para paciente ou terceiro; materiais só para públicos genéricos ou perfis fictícios declarados",
+      "nunca redigir laudo, relatório conclusivo, atestado, parecer ou evolução assinável; não substituir a responsabilidade técnica",
+      "nunca interpretar audiometria, gravação de voz ou avaliação de pessoa real",
+      "exigir anonimização de pacientes, famílias, escolas e empresas; atenção redobrada com crianças; sem áudio ou vídeo identificável",
+      "nunca prometer cura ou resultado",
+      "perguntar a área de atuação em vez de inferir pelos textos",
+      "afirmações de mercado com fonte, data e região ou \"estimativa\"; nunca prometer vaga, residência, concurso ou salário",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": {
+      "letters": "alta",
+      "drawings": "baixa"
+    },
+    "drawingsModes": [
+      "diagrama",
+      "infografico",
+      "prancha"
+    ],
+    "lettersTemplates": [
+      "relatorio-de-caso",
+      "estudo-de-caso",
+      "pop",
+      "relatorio-tecnico",
+      "bio",
+      "curriculo",
+      "carta",
+      "proposta",
+      "post",
+      "revisao",
+      "artigo",
+      "projeto-de-pesquisa"
+    ],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só bio (L6), post (L5), revisão (L10) e rascunho de material de orientação (X1); relato de caso, POP, relatório e fluxo pedem computador. Tarefas de 15–30 min entre sessões.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: bio com sua área e registro (15 min).",
+        "Tem um caso com boa evolução em protocolo? Um relato anonimizado leva cerca de 1 h e comprova raciocínio clínico.",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui.",
+        "Que orientação você repete a famílias ou professores? Um material de 45 min vira evidência de comunicação acessível."
+      ]
+    },
+    "insights": {
+      "peersBy": [
+        "cbo",
+        "competencias",
+        "setor"
+      ]
+    },
+    "privacy": {
+      "sensitiveData": [
+        "avaliações, laudos e gravações de áudio/vídeo de pacientes (Res. CFFa 640/2021; LGPD art. 5º II)",
+        "dados de crianças e estudantes atendidos",
+        "audiometrias e dados de trabalhadores em PCA",
+        "gravações de telefonoaudiologia",
+        "dados de voz de profissionais atendidos (cantores, locutores) sob contrato"
+      ],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      {
+        "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2238",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "geography": "Brasil, UF e município",
+        "cadence": "mensal",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "RAIS (MTE) — vínculos formais por CBO",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais",
+        "geography": "Brasil, UF e município",
+        "cadence": "anual",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "CNES/DataSUS — fonoaudiólogos em estabelecimentos de saúde (CBO 2238)",
+        "url": "https://cnes.datasus.gov.br/",
+        "geography": "Brasil, UF e município",
+        "cadence": "mensal",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "CFFa — Quantitativo de Fonoaudiólogos no Brasil por Estado (ref. agosto/2026)",
+        "url": "https://fonoaudiologia.org.br/Anexos/202608/CFFa_Quantitativo_Fonoaudiologos_no_Brasil_por_Estado_202608.pdf",
+        "geography": "Brasil e UF",
+        "cadence": "eventual",
+        "kind": "conselho"
+      },
+      {
+        "title": "Editais de residência multiprofissional e concursos (SUS, hospitais universitários/EBSERH, redes de ensino)",
+        "url": "https://www.gov.br/ebserh/pt-br",
+        "geography": "Brasil e UF",
+        "cadence": "eventual",
+        "kind": "edital"
+      }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    {
+      "to": "psicologia",
+      "why": "Desenvolvimento infantil, linguagem, cognição e transtornos do neurodesenvolvimento são campos compartilhados em equipes multiprofissionais.",
+      "gaps": [
+        "graduação em Psicologia e registro no CRP",
+        "avaliação psicológica e psicoterapia"
+      ],
+      "steps": [
+        "relato de caso com discussão interdisciplinar (L3)",
+        "fluxo de encaminhamento entre profissionais (D4)",
+        "verificar requisitos de nova graduação"
+      ]
+    },
+    {
+      "to": "pedagogia",
+      "why": "Fonoaudiologia educacional, alfabetização, inclusão e Lei 14.254/2021 aproximam a profissão da coordenação pedagógica e do atendimento educacional especializado.",
+      "gaps": [
+        "didática, currículo e gestão escolar",
+        "formação em educação especial ou AEE"
+      ],
+      "steps": [
+        "material de orientação para professores (X1)",
+        "relatório técnico de triagem escolar com dados agregados (L4)",
+        "cursos de educação inclusiva (MEC, universidades públicas)"
+      ]
+    },
+    {
+      "to": "fisioterapia",
+      "why": "Disfagia, reabilitação neurológica e UTI são ambientes compartilhados; o raciocínio funcional (CIF) é comum.",
+      "gaps": [
+        "graduação em Fisioterapia e registro no CREFITO",
+        "cinesioterapia e fisioterapia respiratória"
+      ],
+      "steps": [
+        "POP de rotina compartilhada na UTI (L7)",
+        "relato de caso de disfagia com escala funcional (L3)",
+        "verificar requisitos de nova graduação"
+      ]
+    },
+    {
+      "to": "enfermagem",
+      "why": "Cuidado hospitalar, neonatologia (TAN) e atenção básica são compartilhados; gestão de serviços de saúde é caminho comum.",
+      "gaps": [
+        "graduação em Enfermagem e registro no COREN",
+        "procedimentos e gestão do cuidado"
+      ],
+      "steps": [
+        "POP de triagem auditiva neonatal em equipe (L7)",
+        "relatório técnico de indicadores do serviço (L4)",
+        "verificar requisitos de nova graduação"
+      ]
+    },
+    {
+      "to": "seguranca-do-trabalho",
+      "why": "Programas de conservação auditiva (NR-7) e voz ocupacional aproximam a audiologia ocupacional da segurança do trabalho.",
+      "gaps": [
+        "demais NRs e gestão de riscos ocupacionais",
+        "formação técnica ou especialização em segurança do trabalho"
+      ],
+      "steps": [
+        "relatório técnico de PCA com dados agregados (L4)",
+        "infográfico de indicadores de ruído e audiometrias agregadas (D7)",
+        "curso de NR-7 e gestão de riscos"
+      ]
+    },
+    {
+      "to": "letras",
+      "why": "Linguagem, leitura e escrita, Libras e voz profissional dialogam com Letras e com a formação de professores de línguas.",
+      "gaps": [
+        "licenciatura em Letras ou Letras-Libras",
+        "linguística e literatura"
+      ],
+      "steps": [
+        "material de orientação sobre leitura e escrita (X1)",
+        "post sobre um aprendizado em linguagem (L5)",
+        "cursos de Libras e linguística (universidades públicas)"
+      ]
+    }
+  ],
+  "learning": [
+    {
+      "title": "CFFa — resoluções, Código de Ética e especialidades",
+      "provider": "CFFa",
+      "url": "https://fonoaudiologia.org.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Telefonoaudiologia Descomplicada (livreto)",
+      "provider": "CFFa",
+      "url": "https://fonoaudiologia.org.br/wp-content/uploads/2025/02/Livreto_CFFA_Telefonoaudiologia-Descomplicada_VF.pdf",
+      "free": true,
+      "kind": "livro"
+    },
+    {
+      "title": "SBFa — Sociedade Brasileira de Fonoaudiologia (eventos, departamentos, documentos)",
+      "provider": "SBFa",
+      "url": "https://www.sbfa.org.br/",
+      "free": false,
+      "kind": "comunidade"
+    },
+    {
+      "title": "UNA-SUS — cursos abertos em saúde auditiva, desenvolvimento infantil e atenção básica",
+      "provider": "UNA-SUS / Ministério da Saúde",
+      "url": "https://www.unasus.gov.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "AVASUS — ambiente virtual de aprendizagem do SUS",
+      "provider": "UFRN / Ministério da Saúde",
+      "url": "https://avasus.ufrn.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "TelessaúdeRS — cursos e teleconsultoria para a atenção básica",
+      "provider": "UFRGS",
+      "url": "https://www.ufrgs.br/telessauders/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Campus Virtual Fiocruz — cursos livres em saúde",
+      "provider": "Fiocruz",
+      "url": "https://campusvirtual.fiocruz.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Escola Virtual.Gov — educação inclusiva, Libras e gestão pública",
+      "provider": "Enap",
+      "url": "https://www.escolavirtual.gov.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Residência multiprofissional em saúde — programas públicos (MEC/MS)",
+      "provider": "MEC / Ministério da Saúde",
+      "url": "https://www.gov.br/mec/pt-br/residencias-em-saude",
+      "free": true,
+      "kind": "certificacao"
+    },
+    {
+      "title": "SciELO — periódicos de Fonoaudiologia (CoDAS, Audiology – Communication Research)",
+      "provider": "SciELO",
+      "url": "https://www.scielo.br/",
+      "free": true,
+      "kind": "portal"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Fase 1 — grupo Saúde e bem-estar (g1-saude.json): famílias CBO/ISCO, conselho, dados sensíveis, vizinhos",
+      "url": "docs/pesquisa/fase1/g1-saude.json",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8",
+      "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Normas Brasil — Resolução CFFa 640/2021 (novo Código de Ética; revoga a Res. 490/2016)",
+      "url": "https://www.normasbrasil.com.br/norma/resolucao-640-2021_424026.html",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Normas Brasil — Resolução CFFa 580/2020 (telefonoaudiologia)",
+      "url": "https://www.normasbrasil.com.br/norma/resolucao-580-2020_400359.html",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CFFa — Livreto Telefonoaudiologia Descomplicada (2025; art. 8º §1º da Res. 580/2020)",
+      "url": "https://fonoaudiologia.org.br/wp-content/uploads/2025/02/Livreto_CFFA_Telefonoaudiologia-Descomplicada_VF.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CFFa — Quantitativo de Fonoaudiólogos no Brasil por Estado (agosto/2026)",
+      "url": "https://fonoaudiologia.org.br/Anexos/202608/CFFa_Quantitativo_Fonoaudiologos_no_Brasil_por_Estado_202608.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 6.965/1981 — regulamenta a profissão de Fonoaudiólogo (cópia USP)",
+      "url": "https://edisciplinas.usp.br/pluginfile.php/5385845/mod_resource/content/0/Lei%20de%20cria%C3%A7%C3%A3o%20da%20Fonoaudiologia.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "World of Taxonomy — espelho ESCO 'speech and language therapist' (ISCO 2266)",
+      "url": "https://worldoftaxonomy.com/crosswalks/esco_occupations/8021f3a2-e3de-43c0-b366-075da74dc5b7/isco_08",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2238-40 Fonoaudiólogo em saúde coletiva (espelho vriconsulting)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=223840",
+      "accessedAt": "2026-11-02"
+    }
+  ],
+  "naoConferido": [
+    "Código de Ética: a fase 1 citava a Res. CFFa 490/2016; a busca indicou que foi revogada pela Res. CFFa 640/2021, adotada aqui. Texto integral da 640/2021 não lido.",
+    "Res. CFFa 605/2021 (documentos fonoaudiológicos), Decreto 87.218/1982, Lei 12.303/2010, Lei 14.254/2021, NR-7 e Portaria MTE 19/1998 citados de memória; não reconfirmados nesta sessão.",
+    "Alterações posteriores da Res. CFFa 580/2020 (notícia menciona norma alterada) não lidas; conferir texto consolidado no CFFa.",
+    "URI ESCO 'speech and language therapist' vem de espelho (World of Taxonomy); não confirmada em esco.ec.europa.eu. Competências sem URI ESCO.",
+    "Quantitativo nacional de fonoaudiólogos: o PDF do CFFa (ago/2026) existe, mas só parte dos estados apareceu no resumo de busca; total não somado. Matrículas INEP seguem sem número (fase 1).",
+    "URLs de citação e aprendizagem (SBFa, CNES, UNA-SUS, AVASUS, TelessaúdeRS, Fiocruz, EBSERH, MEC residências, SciELO) não abertas nesta sessão.",
+    "Softwares citados (Praat, VoxMetria) como exemplos, sem verificação.",
+    "Vocabulário, tarefas e rubrica vêm do conhecimento da profissão; revisão por fonoaudiólogo recomendada."
+  ]
+}

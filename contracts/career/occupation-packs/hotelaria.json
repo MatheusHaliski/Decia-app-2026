@@ -1,0 +1,326 @@
+{
+  "schemaVersion": 1,
+  "code": "hotelaria",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Hotelaria", "en": "Hospitality Management", "es": "Hotelería" },
+  "fields": ["hotelaria"],
+  "family": {
+    "cbo": [
+      { "code": "1415", "title": "Gerentes de operações de serviços em empresa de turismo, de alojamento e alimentação (1415-05 gerente de hotel)" },
+      { "code": "1225", "title": "Diretores de serviços de turismo, de alojamento e de alimentação" },
+      { "code": "4222", "title": "Recepcionistas (4222-05 recepcionista de hotel)" },
+      { "code": "5133", "title": "Camareiros, roupeiros e afins" }
+    ],
+    "isco08": [
+      { "code": "1411", "title": "Hotel managers" },
+      { "code": "4224", "title": "Hotel receptionists" }
+    ],
+    "esco": []
+  },
+  "scope": {
+    "summary": "Profissional que opera e gere meios de hospedagem (hotéis, pousadas, resorts, hostels, flats): recepção e reservas, governança, alimentos e bebidas, eventos, receita e indicadores (ocupação, diária média, RevPAR, satisfação). Profissão não regulamentada; o tecnólogo em hotelaria é sinônimo na CBO 1415-05. Os meios de hospedagem devem estar no Cadastur (Lei 11.771/2008).",
+    "entryRoles": ["Recepcionista de hotel", "Auxiliar de reservas", "Camareiro(a) ou auxiliar de governança", "Mensageiro(a) ou concierge júnior", "Estagiário(a) de hotelaria", "Atendente de A&B"],
+    "midRoles": ["Supervisor(a) de recepção", "Coordenador(a) de reservas ou revenue analyst", "Governanta(e) executiva(o)", "Supervisor(a) de A&B ou eventos", "Analista de qualidade e experiência do hóspede"],
+    "seniorRoles": ["Gerente de hospedagem", "Gerente de operações", "Gerente geral de hotel", "Revenue manager", "Gerente regional de rede hoteleira", "Consultor(a) em hotelaria"],
+    "sectors": ["hotéis e redes hoteleiras", "pousadas e hospedagem independente", "resorts e hotelaria de lazer", "hostels e flats", "hotelaria hospitalar", "cruzeiros", "plataformas de hospedagem e distribuição on-line", "centros de convenções e eventos", "consultoria e ensino em hospitalidade"],
+    "regulation": [
+      { "name": "Lei 11.771/2008 (Política Nacional de Turismo), arts. 21–23", "issuer": "Brasil / Ministério do Turismo", "about": "define meios de hospedagem e torna obrigatório o cadastro no Cadastur para prestadores de serviços turísticos" },
+      { "name": "Decreto 7.381/2010", "issuer": "Brasil", "about": "regulamenta a Lei 11.771/2008: tipos de meios de hospedagem, deveres, FNRH e informações ao Ministério do Turismo" },
+      { "name": "Cadastur", "issuer": "Ministério do Turismo", "about": "cadastro obrigatório de meios de hospedagem; emite certificado e permite acesso a programas do MTur" },
+      { "name": "FNRH e BOH (SNRHos)", "issuer": "Ministério do Turismo", "about": "Ficha Nacional de Registro de Hóspedes e Boletim de Ocupação Hoteleira enviados ao Sistema Nacional de Registro de Hóspedes" },
+      { "name": "Lei 13.709/2018 (LGPD)", "issuer": "Brasil", "about": "dados de hóspedes (documentos, cartão, preferências) são dados pessoais; minimização e sigilo" },
+      { "name": "Código de Defesa do Consumidor (Lei 8.078/1990)", "issuer": "Brasil", "about": "oferta, cancelamento, overbooking e informação clara ao hóspede" },
+      { "name": "ECA (Lei 8.069/1990), art. 82", "issuer": "Brasil", "about": "proíbe hospedagem de criança ou adolescente desacompanhado sem autorização" },
+      { "name": "Lei 13.425/2017 e instruções técnicas dos Corpos de Bombeiros", "issuer": "Brasil / estados", "about": "prevenção e combate a incêndio em edificações de reunião de público e hospedagem (AVCB)" },
+      { "name": "ABNT NBR 15401", "issuer": "ABNT", "about": "sistema de gestão da sustentabilidade para meios de hospedagem" },
+      { "name": "ABNT NBR 9050", "issuer": "ABNT", "about": "acessibilidade em edificações e UHs adaptadas" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "UH", "meaning": "unidade habitacional: quarto, suíte ou apartamento vendido como unidade" },
+      { "term": "taxa de ocupação", "meaning": "UHs ocupadas divididas por UHs disponíveis no período" },
+      { "term": "diária média (ADR)", "meaning": "receita de hospedagem dividida por UHs ocupadas" },
+      { "term": "RevPAR", "meaning": "receita de hospedagem por UH disponível; ocupação vezes diária média" },
+      { "term": "revenue management", "meaning": "gestão de tarifas e disponibilidade por demanda, canal e antecedência" },
+      { "term": "PMS", "meaning": "property management system: software de front office, reservas, governança e faturamento" },
+      { "term": "channel manager", "meaning": "sistema que sincroniza tarifas e disponibilidade entre OTAs e site próprio" },
+      { "term": "OTA", "meaning": "agência de viagens on-line que distribui a hospedagem mediante comissão" },
+      { "term": "FNRH", "meaning": "Ficha Nacional de Registro de Hóspedes, preenchida no check-in e enviada ao MTur" },
+      { "term": "BOH", "meaning": "Boletim de Ocupação Hoteleira enviado ao Ministério do Turismo" },
+      { "term": "check-in e check-out", "meaning": "entrada e saída do hóspede; momentos de registro, pagamento e verificação da UH" },
+      { "term": "no-show", "meaning": "hóspede com reserva confirmada que não comparece" },
+      { "term": "overbooking", "meaning": "venda acima da capacidade para compensar cancelamentos; exige política de realocação" },
+      { "term": "governança", "meaning": "departamento responsável pela arrumação das UHs, lavanderia e áreas comuns" },
+      { "term": "rooming list", "meaning": "lista de hóspedes de um grupo com distribuição por UH" },
+      { "term": "front office", "meaning": "recepção, reservas, concierge e telefonia: a linha de frente com o hóspede" },
+      { "term": "back office", "meaning": "áreas de apoio: financeiro, compras, RH, manutenção" },
+      { "term": "A&B", "meaning": "alimentos e bebidas: restaurantes, bares, room service e banquetes" },
+      { "term": "pensão (MAP, FAP)", "meaning": "regime de refeições incluídas na diária: café, meia pensão, pensão completa" },
+      { "term": "upselling", "meaning": "oferta de categoria superior ou serviço adicional no momento da reserva ou do check-in" },
+      { "term": "NPS e satisfação", "meaning": "indicadores de satisfação do hóspede a partir de pesquisas e avaliações on-line" },
+      { "term": "recuperação de serviço", "meaning": "tratamento de reclamação para reverter uma experiência negativa" },
+      { "term": "forecast", "meaning": "previsão de ocupação e receita para dimensionar equipe e compras" },
+      { "term": "SBClass", "meaning": "sistema brasileiro de classificação de meios de hospedagem por estrelas, de adesão voluntária" },
+      { "term": "Cadastur", "meaning": "cadastro de prestadores de serviços turísticos do Ministério do Turismo" }
+    ],
+    "tools": ["PMS (sistema de gestão hoteleira)", "channel manager e extranets de OTAs", "planilha de forecast e indicadores (ocupação, ADR, RevPAR)", "sistema de reputação on-line e pesquisas de satisfação", "sistema de ponto de venda de A&B", "SNRHos (FNRH e BOH)", "editor de textos (Letters) para POPs, relatórios e propostas", "editor de desenho (Drawings) para layout de salão e infográficos", "CRM e e-mail de reservas", "checklists de governança e manutenção"],
+    "deliverables": ["POP de recepção, reservas ou governança", "relatório de indicadores (ocupação, ADR, RevPAR, satisfação)", "proposta para grupo ou evento com rooming list", "forecast semanal de ocupação", "script de atendimento e recuperação de serviço", "layout de salão de eventos ou café da manhã", "plano de ação de satisfação do hóspede", "checklist de inspeção de UH", "infográfico de resultados do período", "plano 30-60-90 para o cargo-alvo"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Atendimento e hospitalidade ao hóspede", "esco": null, "kind": "nucleo" },
+      { "label": "Operação de recepção e reservas (check-in, check-out, PMS)", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de governança e padrões de limpeza", "esco": null, "kind": "nucleo" },
+      { "label": "Indicadores hoteleiros (ocupação, ADR, RevPAR) e forecast", "esco": null, "kind": "nucleo" },
+      { "label": "Revenue management e distribuição (OTAs, channel manager)", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de A&B e banquetes", "esco": null, "kind": "nucleo" },
+      { "label": "Tratamento de reclamações e recuperação de serviço", "esco": null, "kind": "nucleo" },
+      { "label": "Padronização de processos (POPs) e qualidade", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de equipes e escalas em operação 24 h", "esco": null, "kind": "nucleo" },
+      { "label": "Conformidade: Cadastur, FNRH, LGPD e CDC", "esco": null, "kind": "apoio" },
+      { "label": "Vendas para grupos e eventos", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de reputação on-line", "esco": null, "kind": "apoio" },
+      { "label": "Sustentabilidade em meios de hospedagem (NBR 15401)", "esco": null, "kind": "apoio" },
+      { "label": "Manutenção predial e segurança do hóspede", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação cordial sob pressão", "idiomas", "atenção a detalhes", "organização e gestão do tempo", "sigilo de dados de hóspedes", "trabalho em equipe multissetorial"],
+    "tracks": [
+      { "id": "operar-com-padrao", "label": "Operar com padrão", "steps": ["POP de check-in ou de arrumação de UH (L7)", "script de recuperação de serviço (X1)", "diagrama do fluxo de reservas até o check-out (D4)", "estudo de caso STAR de uma reclamação resolvida (L3)"] },
+      { "id": "ler-os-numeros", "label": "Ler os números do hotel", "steps": ["relatório de indicadores de um período (L4)", "infográfico de ocupação e satisfação (D7)", "plano 30-60-90 com metas de ocupação e NPS (L9)"] },
+      { "id": "vender-e-receber-grupos", "label": "Vender e receber grupos", "steps": ["proposta para grupo ou evento a partir de briefing (L8)", "layout do salão para o evento (D1)", "antes e depois do café da manhã ou do lobby (D5)", "prancha de portfólio (D2)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"recepcionista de hotel\", \"camareira\", \"auxiliar de reservas\", \"supervisor de recepção\", \"gerente de hospedagem\"",
+      "cboFamilies": ["1415", "1225", "4222", "5133"],
+      "why": "Pergunto seu último cargo ou setor do hotel para partir do que você já opera. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, aprendizagem ou primeiro cargo em recepção, governança ou A&B",
+        "junior": "operação de um setor com supervisão",
+        "pleno": "atua com autonomia e cobre o setor em turnos",
+        "senior": "supervisiona o setor, treina e acompanha indicadores",
+        "gestao": "gerência de hospedagem, operações ou gerência geral"
+      },
+      "why": "Pergunto o nível para ajustar as tarefas: um POP de setor ou um relatório de indicadores do hotel inteiro."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem no hotel",
+      "options": ["atender e acolher hóspedes", "operar o PMS e reservas", "organizar a governança", "ler ocupação, diária média e RevPAR", "ajustar tarifas e canais", "resolver reclamações", "vender para grupos e eventos", "coordenar A&B e banquetes", "montar escalas e treinar equipe", "padronizar processos", "falar outro idioma com o hóspede", "cuidar da reputação on-line"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com POPs, relatórios e propostas."
+    },
+    "c4": {
+      "certifications": ["tecnólogo em Hotelaria ou Gestão de Turismo", "bacharelado em Hotelaria ou Turismo", "curso técnico em Hospedagem", "cursos de PMS e channel manager", "curso de revenue management", "curso de boas práticas em A&B", "brigada de incêndio e primeiros socorros", "cursos livres de atendimento e idiomas"],
+      "languages": ["inglês", "espanhol", "francês", "Libras"],
+      "why": "Formação, sistemas que você conhece e idiomas mostram lacunas em relação ao cargo-alvo, como redes internacionais ou revenue."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["indicadores e forecast", "revenue management e canais", "padronização de recepção e governança", "recuperação de serviço", "vendas para grupos e eventos", "gestão de A&B", "liderança de equipe em turnos", "reputação on-line e satisfação", "conformidade (Cadastur, FNRH, LGPD)", "sustentabilidade no hotel"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que setor do hotel você atua ou quer atuar?", "type": "escolha", "options": ["recepção e reservas", "governança", "A&B", "eventos e grupos", "revenue e comercial", "gerência geral", "ainda não sei"], "why": "Pergunto o setor para escolher os exemplos: o POP de governança é diferente do de recepção.", "where": "P" },
+      { "id": "x2", "prompt": "Que porte de hospedagem é o seu alvo?", "type": "escolha", "options": ["pousada ou hostel", "hotel independente", "rede hoteleira", "resort", "hotelaria hospitalar", "tanto faz"], "why": "O porte muda os indicadores e as ferramentas que fazem sentido nas tarefas.", "where": "X" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L7", "L4", "L8", "D7", "L3", "L9", "D1", "D4", "L1", "L6", "D5", "L5"],
+    "excluded": [
+      { "code": "D3", "reason": "modelagem 3D de produto não é entrega da hotelaria" },
+      { "code": "D8", "reason": "vista explodida de conjunto mecânico não se aplica" },
+      { "code": "D9", "reason": "wireframe de tela é entrega de UX; a hotelaria usa sistemas prontos" },
+      { "code": "D6", "reason": "detalhe construtivo é entrega de arquitetura e engenharia" }
+    ],
+    "parameters": {
+      "L7": {
+        "title": "POP de recepção ou governança",
+        "brief": "Escreva o procedimento operacional padrão de um processo que você domina: check-in com FNRH, check-out com conferência de consumo, arrumação de UH ocupada ou tratamento de no-show. Passos numerados, responsável, critério de conclusão e registro. Sem dados de hóspedes nem padrões sigilosos do empregador.",
+        "parameters": { "processOptions": ["check-in com FNRH", "check-out e fechamento de conta", "arrumação de UH ocupada", "tratamento de no-show e overbooking"], "requiredParts": ["objetivo", "campo de aplicação", "passos numerados", "responsável", "critério de conclusão", "registro"], "privacyNote": "nenhum dado de hóspede real" },
+        "criteria": ["passos numerados com responsável", "critério de conclusão em cada passo", "ponto de verificação da LGPD quando houver dado de hóspede (ex.: FNRH)", "tempo-padrão do processo indicado", "sem dado de hóspede real nem padrão sigiloso do empregador"],
+        "evidence": "POP em Letters (modelo pop)",
+        "time": "60 min",
+        "level": 1
+      },
+      "L4": {
+        "title": "Relatório de indicadores de ocupação e satisfação",
+        "brief": "Relatório de até 4 páginas sobre um período (dados reais anonimizados e agregados, ou simulados): objetivo, método, resultados (ocupação, diária média, RevPAR, satisfação ou NPS, principais reclamações), limitações e referências. Nunca use tarifários ou dados sob sigilo do empregador.",
+        "parameters": { "maxPages": 4, "indicators": ["taxa de ocupação", "diária média (ADR)", "RevPAR", "satisfação ou NPS"], "sections": ["objetivo", "método", "resultados", "limitações", "referências"], "dataOrigin": ["simulado", "real anonimizado e agregado"] },
+        "criteria": ["até 4 páginas", "cinco seções nomeadas", "cada indicador com fórmula, período e unidade", "origem dos dados declarada (simulado ou anonimizado)", "ao menos uma recomendação ligada a um indicador"],
+        "evidence": "relatório técnico em Letters",
+        "time": "2 h",
+        "level": 2
+      },
+      "L8": {
+        "title": "Proposta para grupo ou evento a partir de briefing",
+        "brief": "Responda a um briefing simulado (ex.: grupo corporativo de 60 pessoas, 2 noites, sala para 80, coffee break, 10 UHs acessíveis) com proposta: escopo, rooming list modelo, premissas, prazos (prazo de confirmação e de envio da lista), o que fica fora. Sem valores de tarifário real do empregador.",
+        "parameters": { "groupSize": 60, "nights": 2, "roomTypes": ["standard duplo", "superior", "acessível"], "requiredParts": ["escopo", "rooming list modelo", "premissas", "prazos", "fora do escopo"] },
+        "criteria": ["escopo com UHs, salas e A&B", "rooming list modelo com categorias e UHs acessíveis", "premissas e prazos de confirmação", "o que fica fora do escopo explícito", "sem tarifário real do empregador"],
+        "evidence": "proposta em Letters (modelo proposta)",
+        "time": "45 min",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de ocupação e satisfação do período",
+        "brief": "Transforme os indicadores do seu relatório (ou dados simulados) em um infográfico: um gráfico de ocupação por mês, um de satisfação, uma mensagem principal, eixos rotulados e fonte dos dados declarada.",
+        "parameters": { "charts": 2, "indicators": ["ocupação", "satisfação"], "requiredParts": ["mensagem principal", "eixos rotulados", "fonte"] },
+        "criteria": ["eixos rotulados com unidade e período", "fonte dos dados citada (simulado ou anonimizado)", "uma mensagem principal visível", "sem dados de hóspedes identificáveis"],
+        "evidence": "imagem PNG e PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "D1": {
+        "title": "Layout simples de salão de eventos ou café da manhã",
+        "brief": "Desenhe em escala 1:50 o layout de um salão para um formato (auditório, escolar, em U, banquete ou buffet de café da manhã): mesas, cadeiras, circulação, saídas e pontos de apoio (coffee, palco, som). Legenda e carimbo.",
+        "parameters": { "scale": "1:50", "formats": ["auditório", "escolar", "em U", "banquete", "buffet de café da manhã"], "requiredParts": ["escala", "cotas gerais", "legenda", "saídas", "carimbo"] },
+        "criteria": ["escala indicada e cotas gerais que fecham", "legenda de mobiliário e pontos de apoio", "saídas de emergência e circulação livre marcadas", "capacidade do formato indicada", "carimbo com título, autor e data"],
+        "evidence": "prancha PDF ou SVG",
+        "time": "2 h",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Script de recuperação de serviço",
+        "competency": "Tratamento de reclamações e recuperação de serviço",
+        "criteria": ["situação-gatilho descrita (ex.: UH não pronta no check-in)", "falas de acolhimento, apuração, solução e acompanhamento", "alçadas de compensação indicadas por nível", "registro da ocorrência e ponto de LGPD", "sem dado de hóspede real"],
+        "evidence": "roteiro em Letters (modelo roteiro ou pop)",
+        "time": "30 min",
+        "trigger": "Qual reclamação de hóspede você mais ouve? Vamos montar o roteiro de resposta.",
+        "level": 1
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L8", "L9", "X1"], "auto": true },
+      { "id": "indicadores-com-formula", "check": "cada indicador traz fórmula, período e unidade", "appliesTo": ["L4", "D7", "L9"], "auto": true },
+      { "id": "origem-dos-dados", "check": "a origem dos dados está declarada: simulado ou real anonimizado e agregado", "appliesTo": ["L4", "D7", "L3"], "auto": true },
+      { "id": "ponto-lgpd", "check": "processos com dado de hóspede trazem um ponto de verificação da LGPD", "appliesTo": ["L7", "X1"], "auto": true },
+      { "id": "escala-legenda-saidas", "check": "o layout tem escala, legenda e saídas de emergência marcadas", "appliesTo": ["D1"], "auto": true },
+      { "id": "eixos-e-fonte", "check": "gráficos com eixos rotulados e fonte citada", "appliesTo": ["D7"], "auto": true },
+      { "id": "creditos-e-fontes", "check": "coautores, fontes e autores remixados estão creditados", "appliesTo": ["L5", "L10", "D2", "D5", "D7", "D10"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados de hóspedes, tarifários e indicadores sigilosos do empregador", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D1", "D2", "D4", "D5", "D7", "D10", "X1"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o fluxo tem início e fim, raias por setor e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "hospitalidade", "label": "Hospitalidade na solução", "levels": { "aproxima": "resolve o problema sem considerar a experiência do hóspede", "atende": "resolve e comunica com cordialidade e prazo", "supera": "antecipa a necessidade e transforma a falha em lembrança positiva" } },
+      { "id": "leitura-de-indicadores", "label": "Leitura dos indicadores", "levels": { "aproxima": "apresenta números sem interpretação", "atende": "relaciona ocupação, diária e satisfação com causas plausíveis", "supera": "propõe ações priorizadas e como medi-las" } },
+      { "id": "viabilidade-operacional", "label": "Viabilidade operacional", "levels": { "aproxima": "proposta ou layout ignora equipe, tempo de montagem ou capacidade", "atende": "executável com os recursos do briefing", "supera": "prevê contingências (no-show, atraso de grupo, UH indisponível)" } },
+      { "id": "clareza", "label": "Clareza", "levels": { "aproxima": "a ideia principal exige releitura", "atende": "entendida na primeira leitura", "supera": "conduz quem lê sem esforço e sem excesso" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da hotelaria (recepção, reservas, governança, A&B, eventos, revenue, gerência; CBO 1415, 1225, 4222, 5133). Use o vocabulário da área: UH, taxa de ocupação, diária média (ADR), RevPAR, PMS, channel manager, OTA, FNRH, BOH, no-show, overbooking, rooming list, recuperação de serviço, forecast. Cite como referência a Lei 11.771/2008 e o Decreto 7.381/2010 (meios de hospedagem, Cadastur, FNRH), a LGPD para dados de hóspedes, o CDC para oferta e cancelamento e as instruções dos Corpos de Bombeiros para salões e eventos. Nunca: pedir, usar ou reproduzir dados de hóspedes (nome, documento, cartão, preferências, FNRH); usar tarifários, forecasts ou indicadores reais de um empregador sem anonimização e agregação; prometer que uma ação eleva ocupação ou avaliação on-line; redigir respostas públicas a avaliações em nome do hotel sem revisão humana; inferir porte, setor ou nível da pessoa a partir dos textos. Pergunte antes de inferir. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por quê, e aceita \"não me serve\". Afirmações sobre mercado citam fonte, data e região (CAGED, RAIS, Ministério do Turismo, ABIH, FOHB) ou dizem \"estimativa\"; nunca prometa emprego, vaga ou salário. Progresso é por critérios atendidos, nunca por nota ou ranking. Pré-cheque só critérios objetivos (seções, fórmulas e períodos dos indicadores, origem dos dados, ponto de LGPD, escala e saídas no layout, eixos e fonte); o selo depende de revisão humana. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "Lei 11.771/2008 — Política Nacional de Turismo (meios de hospedagem, Cadastur)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2008/lei/l11771.htm", "kind": "norma" },
+      { "title": "Decreto 7.381/2010 — regulamenta a Lei 11.771/2008", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2010/decreto/d7381.htm", "kind": "norma" },
+      { "title": "Cadastur — Ministério do Turismo", "url": "https://cadastur.turismo.gov.br/", "kind": "orgao-publico" },
+      { "title": "Dados e informações do turismo — Ministério do Turismo", "url": "https://www.gov.br/turismo/pt-br/acesso-a-informacao/acoes-e-programas/observatorio", "kind": "estatistica" },
+      { "title": "ABIH Nacional — Associação Brasileira da Indústria de Hotéis", "url": "https://abih.com.br/", "kind": "comunidade" },
+      { "title": "FOHB — Fórum de Operadores Hoteleiros do Brasil (indicadores)", "url": "https://fohb.com.br/", "kind": "comunidade" },
+      { "title": "CBO 1415 — Gerentes de operações em turismo, alojamento e alimentação (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "LGPD — Lei 13.709/2018", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm", "kind": "norma" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2/c5 com competências hoteleiras; x1 (setor) e x2 (porte) ajustam exemplos e indicadores." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "POP (L7), relatório de indicadores (L4), proposta para grupo (L8) e infográfico (D7) primeiro; cada card diz por que e aceita \"não me serve\" (d6)." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Respeita horas (d1) e escalas em turnos; tarefas curtas (X1, L6) em dias de trabalho, L4 e D1 em folga; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Pré-checa seções, fórmulas e períodos, origem dos dados, ponto de LGPD, escala e saídas, eixos e fonte; nunca julga hospitalidade." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Esqueleto de POP, relatório de indicadores e proposta para grupo com prévia; a pessoa preenche os dados; nunca aplica sem revisão." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Layout de salão por formato (D1), gráficos com eixos e fonte (D7), raias por setor no fluxo de reservas (D4)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: competências hoteleiras declaradas e evidenciadas, lacunas em relação ao cargo-alvo (ex.: revenue, idiomas); cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: turismo, eventos, gastronomia (A&B), administração; dados de mercado com fonte, data e região (MTur, ABIH, CAGED)." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por CBO 1415/4222/5133, setor do hotel e competências compartilhadas; só pessoas com opt-in." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com setor, três competências e um POP ou relatório como prova; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai hotéis, setores, sistemas (PMS) e idiomas em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters (POPs, relatórios, propostas)", "meus Drawings (layouts, infográficos)"],
+      "never": ["mensagens", "itens SIGILOSO", "dados de hóspedes, FNRH e registros de hospedagem", "tarifários, forecasts e indicadores sob sigilo do empregador", "dados de cartão e pagamento", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "perguntar em vez de inferir setor, porte, nível ou situação",
+      "nunca pedir, usar ou reproduzir dados de hóspedes (FNRH, documentos, cartão, preferências)",
+      "indicadores e tarifários de empregador só simulados ou anonimizados e agregados",
+      "não redigir respostas públicas a avaliações em nome do hotel sem revisão humana",
+      "nunca prometer emprego, vaga, salário ou melhora de ocupação e avaliação; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem nota, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "media", "drawings": "baixa" },
+    "drawingsModes": ["infografico", "2d-tecnico", "diagrama", "prancha"],
+    "lettersTemplates": ["pop", "relatorio-tecnico", "proposta", "roteiro", "estudo-de-caso", "plano-30-60-90", "bio", "curriculo", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular: script de recuperação (X1), bio (L6), post (L5) e revisão (L10); relatório de indicadores (L4), layout (D1) e infográfico (D7) pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: o roteiro de resposta à reclamação que você mais ouve (30 min).",
+        "Por que esta tarefa: o relatório de ocupação e satisfação comprova leitura de indicadores, que supervisão e gerência pedem. Leva cerca de 2 h.",
+        "Sem pressão. Quando a escala permitir, a tarefa de 15 min está aqui.",
+        "Um POP de check-in com o ponto de LGPD já mostra padrão e cuidado com dados. Quer começar por ele?"
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "setor", "competencias"] },
+    "privacy": { "sensitiveData": ["dados de hóspedes, FNRH e registros de hospedagem (LGPD)", "tarifários e indicadores de ocupação sob sigilo do empregador", "dados de cartão e pagamento de hóspedes", "reclamações com identificação do hóspede"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 1415, 4222, 5133", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Extrator de dados do SIMT — mercado de trabalho no setor turismo (IPEA), inclui alojamento", "url": "https://www.ipea.gov.br/extrator/simt.html", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Dados e informações do turismo (Ministério do Turismo) — Cadastur, BOH, fluxo de turistas", "url": "https://www.gov.br/turismo/pt-br/acesso-a-informacao/acoes-e-programas/observatorio", "geography": "Brasil, UF e município", "cadence": "continua", "kind": "estatistica-oficial" },
+      { "title": "Pesquisa de Serviços de Hospedagem (IBGE/MTur)", "url": "https://www.ibge.gov.br/estatisticas/economicas/servicos/9039-pesquisa-de-servicos-de-hospedagem.html", "geography": "Brasil e UF", "cadence": "eventual", "kind": "estatistica-oficial" },
+      { "title": "ABIH Nacional — indicadores e pesquisas da hotelaria", "url": "https://abih.com.br/", "geography": "Brasil e UF", "cadence": "eventual", "kind": "associacao" },
+      { "title": "FOHB — indicadores mensais de ocupação, diária média e RevPAR", "url": "https://fohb.com.br/", "geography": "Brasil e capitais", "cadence": "mensal", "kind": "associacao" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "turismo", "why": "Hotelaria e turismo compartilham o Cadastur, os indicadores de fluxo e a operação de destinos; agências, operadoras e gestão de destinos usam a experiência hoteleira.", "gaps": ["planejamento de roteiros e destinos", "legislação do turismo (Lei 12.591/2012, guia de turismo)", "marketing de destino"], "steps": ["proposta de pacote com hospedagem para um grupo (L8)", "relatório de fluxo e ocupação do destino (L4)", "conversar com turismólogos da rede"] },
+    { "to": "eventos", "why": "Hotéis com centros de convenções formam quem vende, monta e opera eventos; produtoras e centros de convenções contratam esse perfil.", "gaps": ["cronograma operacional de evento e fornecedores", "licenças e segurança de eventos", "orçamento de produção"], "steps": ["layout de salão por formato (D1)", "proposta para grupo com coffee e sala (L8)", "estudo de caso STAR de um evento hospedado (L3)"] },
+    { "to": "gastronomia", "why": "A área de A&B é porta de entrada para cozinha, bar e banquetes, e a gestão de A&B exige noções de ficha técnica e CMV.", "gaps": ["técnicas de cozinha e ficha técnica", "boas práticas RDC 216/2004", "controle de CMV"], "steps": ["POP de café da manhã com controle de temperatura (L7)", "relatório de CMV de um ponto de venda (L4)", "conversar com chefs da rede"] },
+    { "to": "administracao", "why": "Gerência de hotel é gestão de negócios: pessoas, finanças, comercial e processos; a graduação em Administração amplia o caminho para redes e multipropriedade.", "gaps": ["finanças e orçamento", "gestão de pessoas e legislação trabalhista", "estratégia e marketing"], "steps": ["plano 30-60-90 para gerência de hospedagem (L9)", "relatório de indicadores com DRE simplificado (L4)", "cursos de gestão (Sebrae, Enap)"] }
+  ],
+  "learning": [
+    { "title": "Programa Brasil Braços Abertos — capacitação gratuita em turismo e hospitalidade", "provider": "Ministério do Turismo", "url": "https://www.gov.br/turismo/pt-br/acesso-a-informacao/acoes-e-programas/brasil-bracos-abertos", "free": true, "kind": "curso" },
+    { "title": "Cadastur — orientações e cadastro de meios de hospedagem", "provider": "Ministério do Turismo", "url": "https://cadastur.turismo.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Cursos on-line gratuitos de atendimento, gestão e turismo", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — LGPD, atendimento e gestão", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual Fundação Bradesco — administração e atendimento", "provider": "Fundação Bradesco", "url": "https://www.ev.org.br/", "free": true, "kind": "portal" },
+    { "title": "ABNT NBR 15401 — Meios de hospedagem: sistema de gestão da sustentabilidade", "provider": "ABNT", "url": "https://www.abntcatalogo.com.br/", "free": false, "kind": "norma" },
+    { "title": "ABIH Nacional — conteúdos e eventos do setor hoteleiro", "provider": "ABIH", "url": "https://abih.com.br/", "free": true, "kind": "comunidade" }
+  ],
+  "sources": [
+    { "title": "Catálogo de ramos acadêmicos — ramo hotelaria (CBO 1415/1225, ISCO 1411, vizinhos, sensitiveData)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Lei 11.771/2008 — Política Nacional de Turismo", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2008/lei/l11771.htm", "accessedAt": "2026-11-02" },
+    { "title": "Decreto 7.381/2010 — regulamenta a Lei 11.771/2008", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2010/decreto/d7381.htm", "accessedAt": "2026-11-02" },
+    { "title": "Cadastur — Ministério do Turismo", "url": "https://cadastur.turismo.gov.br/", "accessedAt": "2026-11-02" },
+    { "title": "CBO — Classificação Brasileira de Ocupações (MTE), família 1415", "url": "https://cbo.mte.gov.br/", "accessedAt": "2026-11-02" },
+    { "title": "RF75 Work Station Career Guidance, CA19", "url": "docs/diagramas/RF75/README.md", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URLs de normas, estatísticas e recursos de aprendizagem não abertas nesta sessão (cota de busca); conferir em especial a página de dados do MTur e a Pesquisa de Serviços de Hospedagem do IBGE",
+    "Famílias CBO 4222 (recepcionistas) e 5133 (camareiros) e ISCO 4224 citadas de memória; conferir no portal da CBO",
+    "Base legal atual da FNRH e do BOH (portarias do MTur sobre o SNRHos) e situação do SBClass (Portaria MTur 100/2011, adesão voluntária)",
+    "Cadência real dos indicadores do FOHB e das pesquisas da ABIH",
+    "URIs ESCO das competências e da ocupação hotel manager não confirmadas (esco vazio)",
+    "Preço e acesso à NBR 15401 no catálogo ABNT"
+  ]
+}

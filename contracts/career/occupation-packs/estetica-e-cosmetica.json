@@ -1,0 +1,1306 @@
+{
+  "schemaVersion": 1,
+  "code": "estetica-e-cosmetica",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": {
+    "pt-BR": "Estética e Cosmética",
+    "en": "Aesthetics and Cosmetology",
+    "es": "Estética y Cosmética"
+  },
+  "fields": [
+    "estetica-e-cosmetica"
+  ],
+  "family": {
+    "cbo": [
+      {
+        "code": "3221",
+        "title": "Tecnólogos e técnicos em terapias complementares e estéticas"
+      }
+    ],
+    "isco08": [
+      {
+        "code": "5142",
+        "title": "Beauticians and related workers"
+      }
+    ],
+    "esco": [
+      {
+        "uri": "http://data.europa.eu/esco/occupation/a1e1a788-2352-4172-8fcf-1f985a6968b0",
+        "label": "aesthetician"
+      }
+    ]
+  },
+  "scope": {
+    "summary": "Tecnólogas e tecnólogos em Estética e Cosmética (Lei 13.643/2018, sem conselho próprio) avaliam pele e corpo, aplicam protocolos faciais e corporais, operam equipamentos eletroestéticos com registro na ANVISA, orientam o uso de cosméticos e respondem tecnicamente por centros de estética, dentro da biossegurança e fora da estética médica. O guia trabalha evidências sem expor clientes: POPs de biossegurança, protocolos fundamentados, fichas-modelo, fluxos e portfólio com consentimento.",
+    "entryRoles": [
+      "Estagiário de estética",
+      "Esteticista júnior em clínica ou spa",
+      "Consultor de beleza em loja de cosméticos",
+      "Auxiliar de centro de estética",
+      "Maquiador em início de carreira"
+    ],
+    "midRoles": [
+      "Esteticista facial e corporal",
+      "Esteticista com atuação em eletroestética",
+      "Cosmetólogo em desenvolvimento ou treinamento de produtos",
+      "Tricologista",
+      "Visagista e maquiador profissional",
+      "Instrutor de cursos de estética"
+    ],
+    "seniorRoles": [
+      "Responsável técnico de centro de estética",
+      "Proprietário de clínica ou spa",
+      "Gerente de operações de rede de estética",
+      "Consultor técnico da indústria cosmética",
+      "Docente de curso tecnológico",
+      "Treinador de equipes e educador de marca"
+    ],
+    "sectors": [
+      "clínicas e centros de estética",
+      "spas, hotéis e resorts",
+      "salões e barbearias",
+      "indústria e varejo de cosméticos",
+      "clínicas multiprofissionais (com dermatologia, fisioterapia, nutrição)",
+      "ensino técnico e tecnológico",
+      "trabalho por conta própria e domiciliar"
+    ],
+    "regulation": [
+      {
+        "name": "Lei 13.643/2018",
+        "issuer": "Brasil",
+        "about": "regulamenta Esteticista e Cosmetólogo e Técnico em Estética; competências (arts. 6 e 7), dever de biossegurança (art. 8); não abrange estética médica"
+      },
+      {
+        "name": "Lei 12.842/2013, art. 4º (Ato Médico)",
+        "issuer": "Brasil",
+        "about": "procedimentos invasivos e diagnóstico são privativos de médico; limite da atuação em estética"
+      },
+      {
+        "name": "RDC ANVISA 752/2022",
+        "issuer": "ANVISA",
+        "about": "regularização, rotulagem e requisitos de produtos de higiene pessoal, cosméticos e perfumes"
+      },
+      {
+        "name": "RDC ANVISA 222/2018",
+        "issuer": "ANVISA",
+        "about": "boas práticas de gerenciamento de resíduos de serviços de saúde (perfurocortantes, químicos)"
+      },
+      {
+        "name": "RDC ANVISA 15/2012",
+        "issuer": "ANVISA",
+        "about": "processamento de produtos para saúde: limpeza, desinfecção e esterilização"
+      },
+      {
+        "name": "NR 6 (MTE)",
+        "issuer": "MTE",
+        "about": "equipamentos de proteção individual (luvas, máscara, óculos, avental)"
+      },
+      {
+        "name": "Código de Defesa do Consumidor (Lei 8.078/1990), arts. 30, 31 e 37",
+        "issuer": "Brasil",
+        "about": "oferta e publicidade: vedação de promessa enganosa de resultado; informação clara sobre riscos"
+      },
+      {
+        "name": "LGPD (Lei 13.709/2018), arts. 7º, 11 e 20",
+        "issuer": "Brasil",
+        "about": "fichas de anamnese e fotos antes/depois são dados pessoais, muitas vezes sensíveis; exigem consentimento"
+      }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      {
+        "term": "anamnese estética",
+        "meaning": "ficha de avaliação inicial: queixa, histórico, hábitos, contraindicações e consentimento"
+      },
+      {
+        "term": "protocolo de tratamento",
+        "meaning": "sequência padronizada de etapas, produtos, parâmetros e número de sessões para um objetivo"
+      },
+      {
+        "term": "biossegurança",
+        "meaning": "conjunto de práticas que evitam contaminação: higienização, EPI, esterilização, descarte"
+      },
+      {
+        "term": "assepsia e antissepsia",
+        "meaning": "prevenção de contaminação de materiais e redução de microrganismos na pele"
+      },
+      {
+        "term": "esterilização em autoclave",
+        "meaning": "processo validado para instrumentais reutilizáveis, com registro de ciclos (RDC 15/2012)"
+      },
+      {
+        "term": "perfurocortante",
+        "meaning": "agulha, lâmina ou similar; descarte em coletor rígido (RDC 222/2018)"
+      },
+      {
+        "term": "EPI",
+        "meaning": "equipamento de proteção individual: luvas, máscara, óculos, avental, touca"
+      },
+      {
+        "term": "limpeza de pele",
+        "meaning": "protocolo facial com higienização, esfoliação, extração, máscara e proteção solar"
+      },
+      {
+        "term": "peeling",
+        "meaning": "renovação da pele por agente químico, físico ou mecânico, em níveis permitidos ao esteticista"
+      },
+      {
+        "term": "eletroestética",
+        "meaning": "uso de correntes, ultrassom, radiofrequência, LED e outros recursos com registro na ANVISA"
+      },
+      {
+        "term": "radiofrequência",
+        "meaning": "aquecimento controlado dos tecidos para firmeza; exige parâmetros e contraindicações"
+      },
+      {
+        "term": "drenagem linfática manual",
+        "meaning": "técnica manual que estimula o sistema linfático"
+      },
+      {
+        "term": "massagem modeladora",
+        "meaning": "manobras manuais vigorosas com objetivo estético corporal"
+      },
+      {
+        "term": "fototipo (Fitzpatrick)",
+        "meaning": "classificação da pele por resposta ao sol; orienta parâmetros e riscos"
+      },
+      {
+        "term": "cosmetologia",
+        "meaning": "estudo de ativos, veículos, pH, estabilidade e indicação de cosméticos"
+      },
+      {
+        "term": "rotulagem ANVISA",
+        "meaning": "informações obrigatórias do produto: registro ou notificação, composição, lote, validade"
+      },
+      {
+        "term": "contraindicação",
+        "meaning": "condição que impede ou restringe um procedimento; sempre listada no protocolo"
+      },
+      {
+        "term": "intercorrência",
+        "meaning": "reação inesperada durante ou após o procedimento; exige conduta e encaminhamento"
+      },
+      {
+        "term": "consentimento informado",
+        "meaning": "autorização por escrito após explicação de riscos, benefícios e cuidados"
+      },
+      {
+        "term": "foto antes/depois",
+        "meaning": "registro padronizado de evolução; só com consentimento específico e sem identificação"
+      },
+      {
+        "term": "tricologia",
+        "meaning": "cuidado estético do couro cabeludo e dos fios"
+      },
+      {
+        "term": "visagismo",
+        "meaning": "harmonização de imagem pessoal com maquiagem, cabelo e sobrancelhas"
+      },
+      {
+        "term": "responsabilidade técnica",
+        "meaning": "responder pelo funcionamento técnico do centro de estética (Lei 13.643, art. 6º, I)"
+      },
+      {
+        "term": "estética médica",
+        "meaning": "procedimentos invasivos e prescrições privativos de médico; fora da competência do esteticista"
+      }
+    ],
+    "tools": [
+      "equipamentos eletroestéticos com registro na ANVISA (radiofrequência, ultrassom, correntes, LED)",
+      "autoclave e indicadores de esterilização",
+      "lupa ou dermatoscópio",
+      "aparelho de alta frequência e vapor de ozônio",
+      "sistema de agenda e ficha eletrônica",
+      "câmera com padronização de luz e fundo para registro fotográfico",
+      "planilha de estoque e validade de produtos",
+      "coletor de perfurocortantes",
+      "redes sociais e materiais de divulgação",
+      "editor de textos (Letters)",
+      "editor de desenho (Drawings)"
+    ],
+    "deliverables": [
+      "ficha de anamnese e termo de consentimento",
+      "protocolo de tratamento facial ou corporal",
+      "POP de biossegurança e esterilização",
+      "plano de tratamento por sessões",
+      "ficha técnica de cosmético e orientação de uso",
+      "relatório de evolução anonimizado",
+      "manual de boas práticas do estabelecimento",
+      "cartaz ou infográfico de cuidados pré e pós-procedimento",
+      "fluxo de atendimento da recepção à alta",
+      "portfólio de maquiagem ou visagismo com consentimento",
+      "plano de treinamento de equipe",
+      "plano de negócios de espaço de estética"
+    ]
+  },
+  "competencies": {
+    "core": [
+      {
+        "label": "Avaliação estética e anamnese",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Protocolos faciais",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Protocolos corporais e técnicas manuais",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Operação segura de equipamentos eletroestéticos",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Cosmetologia: ativos, formulações e leitura de rótulo",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Biossegurança, esterilização e descarte",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Reconhecer limites e encaminhar (dermatologia, medicina, fisioterapia)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Atendimento, orientação e cuidados domiciliares",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Registro fotográfico e documental com consentimento",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Gestão de estabelecimento e responsabilidade técnica",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Maquiagem e visagismo",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Tricologia",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Comunicação e marketing responsável (CDC)",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Treinamento de equipe",
+        "esco": null,
+        "kind": "apoio"
+      }
+    ],
+    "transversal": [
+      "comunicação clara com clientes",
+      "organização de agenda e estoque",
+      "ética e sigilo de clientes",
+      "atualização técnica constante",
+      "trabalho em equipe multiprofissional"
+    ],
+    "tracks": [
+      {
+        "id": "facial",
+        "label": "Estética facial",
+        "steps": [
+          "POP de biossegurança do atendimento facial (L7)",
+          "protocolo facial fundamentado com contraindicações (X1)",
+          "infográfico de cuidados pós-procedimento (D7)",
+          "estudo de caso fictício de ajuste de protocolo (L3)"
+        ]
+      },
+      {
+        "id": "corporal",
+        "label": "Estética corporal e eletroestética",
+        "steps": [
+          "protocolo corporal com parâmetros do equipamento (X1)",
+          "ficha de anamnese e termo de consentimento (X2)",
+          "fluxo de atendimento com triagem de contraindicações (D4)",
+          "relatório de evolução anonimizado (L4)"
+        ]
+      },
+      {
+        "id": "cosmetologia",
+        "label": "Cosmetologia e indústria",
+        "steps": [
+          "ficha técnica de um cosmético com leitura de rótulo (L4)",
+          "post sobre um ativo e sua evidência (L5)",
+          "resposta a briefing de treinamento de marca (L8)"
+        ]
+      },
+      {
+        "id": "gestao-e-rt",
+        "label": "Gestão e responsabilidade técnica",
+        "steps": [
+          "manual de boas práticas do estabelecimento (L7)",
+          "fluxo da recepção à alta com biossegurança (D4)",
+          "plano 30-60-90 para assumir a RT (L9)",
+          "redesenho antes e depois de um processo do espaço (D5)"
+        ]
+      }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"esteticista\", \"maquiadora\", \"consultora de beleza\", \"recepcionista de clínica\", \"estagiário de estética\"",
+      "cboFamilies": [
+        "3221",
+        "5161",
+        "5211"
+      ],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez; se for o primeiro emprego ou estágio, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio ou primeiro cargo em clínica, spa ou loja",
+        "junior": "até dois anos atendendo com supervisão",
+        "pleno": "atende, monta protocolos e opera equipamentos com autonomia",
+        "senior": "referência técnica; treina colegas ou responde tecnicamente pelo espaço",
+        "gestao": "administra clínica, equipe ou rede"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na Estética",
+      "options": [
+        "avaliação e anamnese",
+        "protocolos faciais",
+        "protocolos corporais",
+        "drenagem e técnicas manuais",
+        "eletroestética (radiofrequência, ultrassom, correntes, LED)",
+        "cosmetologia e orientação de produtos",
+        "biossegurança e esterilização",
+        "maquiagem e visagismo",
+        "tricologia",
+        "depilação",
+        "atendimento e fidelização",
+        "gestão de agenda, estoque e equipe",
+        "conteúdo e divulgação responsável",
+        "treinar colegas"
+      ],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com tarefas que não expõem clientes."
+    },
+    "c4": {
+      "certifications": [
+        "tecnólogo em Estética e Cosmética",
+        "técnico em Estética",
+        "cursos de eletroestética por equipamento",
+        "curso de biossegurança",
+        "cursos de maquiagem, visagismo ou tricologia",
+        "curso de primeiros socorros",
+        "pós-graduação (estética avançada, cosmetologia, gestão)",
+        "cursos de gestão (Sebrae)"
+      ],
+      "languages": [
+        "inglês",
+        "espanhol",
+        "Libras"
+      ],
+      "why": "Formação e cursos mostram lacunas em relação ao cargo que você quer; nada aqui é exigido para começar."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": [
+        "eletroestética e parâmetros de equipamentos",
+        "cosmetologia e leitura de rótulo",
+        "biossegurança e esterilização",
+        "protocolos faciais avançados",
+        "protocolos corporais",
+        "anamnese e triagem de contraindicações",
+        "gestão e responsabilidade técnica",
+        "comunicação e marketing responsável",
+        "tricologia",
+        "treinamento de equipe"
+      ],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez do catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que ambiente você atua ou quer atuar?",
+        "type": "escolha",
+        "options": [
+          "clínica ou centro de estética",
+          "spa ou hotel",
+          "salão ou barbearia",
+          "indústria ou varejo de cosméticos",
+          "clínica multiprofissional",
+          "por conta própria ou domiciliar",
+          "ensino",
+          "ainda não sei"
+        ],
+        "why": "Pergunto o ambiente para escolher tarefas e vocabulário: um POP de spa e uma ficha técnica de produto são evidências diferentes.",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": [
+      "L7",
+      "L6",
+      "L1",
+      "D4",
+      "L8",
+      "D2",
+      "L3",
+      "D7",
+      "L5",
+      "L2",
+      "L9",
+      "L10"
+    ],
+    "excluded": [
+      {
+        "code": "D1",
+        "reason": "planta técnica não é entrega da profissão"
+      },
+      {
+        "code": "D3",
+        "reason": "modelagem 3D não é entrega da profissão"
+      },
+      {
+        "code": "D6",
+        "reason": "detalhe construtivo não é entrega da profissão"
+      },
+      {
+        "code": "D8",
+        "reason": "vista explodida não é entrega da profissão"
+      },
+      {
+        "code": "D9",
+        "reason": "wireframe de tela não é entrega da profissão"
+      }
+    ],
+    "parameters": {
+      "L7": {
+        "title": "POP de biossegurança do atendimento",
+        "brief": "Descreva, em passos numerados, a biossegurança de um atendimento do início ao fim: higiene das mãos, EPI, preparo da maca e dos materiais, uso de descartáveis, limpeza e esterilização de instrumentais (com registro do ciclo), descarte de resíduos e perfurocortantes, e critério de conclusão de cada passo.",
+        "parameters": {
+          "steps": "8 a 15",
+          "requiredSteps": [
+            "higiene das mãos e EPI",
+            "preparo e proteção da maca",
+            "limpeza e esterilização de instrumentais",
+            "descarte de resíduos e perfurocortantes"
+          ],
+          "norms": [
+            "RDC 15/2012",
+            "RDC 222/2018",
+            "NR 6"
+          ]
+        },
+        "criteria": [
+          "passos numerados com responsável",
+          "critério de conclusão em cada passo",
+          "passo de EPI e higiene das mãos",
+          "passo de esterilização com registro",
+          "passo de descarte de perfurocortantes",
+          "cita ao menos uma norma da ANVISA"
+        ],
+        "evidence": "modelo de POP",
+        "time": "60 min",
+        "level": 1
+      },
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva um resumo de até 600 caracteres com o ambiente em que quer atuar, três competências (ex.: eletroestética, biossegurança, cosmetologia) e uma prova com link. Sem promessas de resultado e sem foto ou dado de cliente.",
+        "parameters": {
+          "maxChars": 600,
+          "requiredParts": [
+            "ambiente de atuação",
+            "três competências",
+            "uma prova com link"
+          ],
+          "forbidden": [
+            "promessa de resultado",
+            "dado ou foto de cliente"
+          ]
+        },
+        "criteria": [
+          "até 600 caracteres",
+          "nomeia o ambiente de atuação",
+          "cita três competências",
+          "inclui uma prova com link",
+          "sem termos de promessa (garantido, cura, definitivo)"
+        ],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para o cargo que quer mirar (ex.: esteticista de clínica, consultor técnico de marca, responsável técnico), com três resultados com número (atendimentos por mês, protocolos implantados, taxa de retorno, treinamentos dados) e os equipamentos e cursos que a vaga pede.",
+        "parameters": {
+          "maxPages": 1,
+          "achievementsWithNumbers": 3,
+          "keywordsFrom": "cargo-alvo",
+          "sections": [
+            "formação",
+            "experiência",
+            "equipamentos e técnicas",
+            "cursos"
+          ]
+        },
+        "criteria": [
+          "uma página",
+          "três conquistas com número",
+          "palavras-chave do cargo-alvo presentes",
+          "equipamentos e técnicas que domina listados",
+          "sem idade, estado civil ou foto obrigatória",
+          "nenhum dado de cliente"
+        ],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "D4": {
+        "title": "Fluxo de atendimento da recepção à alta",
+        "brief": "Desenhe o fluxo de um cliente pelo espaço, com raias por responsável (recepção, esteticista, responsável técnico, encaminhamento externo), incluindo anamnese, triagem de contraindicações, consentimento, procedimento, orientações pós e reavaliação.",
+        "parameters": {
+          "lanes": [
+            "recepção",
+            "esteticista",
+            "responsável técnico",
+            "encaminhamento externo (dermatologia, medicina)"
+          ],
+          "mustInclude": [
+            "início",
+            "fim",
+            "triagem de contraindicações",
+            "consentimento",
+            "encaminhamento quando fora da competência"
+          ]
+        },
+        "criteria": [
+          "início e fim explícitos",
+          "raias por responsável",
+          "nenhuma tarefa órfã",
+          "ponto de triagem de contraindicações",
+          "ponto de encaminhamento para fora da competência"
+        ],
+        "evidence": "diagrama vetorial",
+        "time": "45 min",
+        "level": 2
+      },
+      "L8": {
+        "title": "Plano de tratamento para um briefing simulado",
+        "brief": "A partir de um briefing fictício (queixa, fototipo, hábitos, contraindicações), proponha um plano: objetivo, protocolo por sessão, equipamentos e produtos, cuidados domiciliares, o que fica fora da sua competência e quando encaminhar. Sem promessa de resultado.",
+        "parameters": {
+          "sections": [
+            "objetivo",
+            "protocolo por sessão",
+            "produtos e equipamentos (com registro ANVISA)",
+            "cuidados domiciliares",
+            "fora de escopo e encaminhamento"
+          ],
+          "sessions": "4 a 10"
+        },
+        "criteria": [
+          "cinco seções nomeadas",
+          "contraindicações do briefing consideradas",
+          "equipamentos e produtos com registro na ANVISA citados",
+          "seção de fora de escopo e encaminhamento",
+          "sem termos de promessa de resultado"
+        ],
+        "evidence": "proposta",
+        "time": "45 min",
+        "level": 2
+      },
+      "D2": {
+        "title": "Prancha de portfólio com três trabalhos",
+        "brief": "Reúna três trabalhos (protocolos, maquiagens, materiais educativos, organização de espaço) em uma prancha A3 com grade, legendas e créditos. Fotos de clientes só com consentimento específico por escrito e sem identificação; na dúvida, use modelo voluntário ou ilustração.",
+        "parameters": {
+          "format": "A3",
+          "works": 3,
+          "consentRequiredForClientPhotos": true
+        },
+        "criteria": [
+          "três trabalhos",
+          "grade consistente",
+          "legenda em cada trabalho",
+          "créditos de coautores e marcas",
+          "declaração de consentimento para qualquer foto de pessoa"
+        ],
+        "evidence": "prancha publicada (PDF ou PNG)",
+        "time": "90 min",
+        "level": 1
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Protocolo de tratamento fundamentado",
+        "competency": "Protocolos faciais e corporais com eletroestética",
+        "criteria": [
+          "objetivo e indicação definidos",
+          "etapas, produtos e parâmetros por sessão",
+          "contraindicações absolutas e relativas listadas",
+          "conduta em intercorrência e critério de encaminhamento",
+          "equipamentos e produtos com registro na ANVISA",
+          "referências técnicas citadas",
+          "sem promessa de resultado"
+        ],
+        "evidence": "protocolo",
+        "time": "90 min",
+        "trigger": "Que protocolo você domina a ponto de ensinar a um colega?",
+        "level": 2
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Ficha de anamnese e termo de consentimento",
+        "competency": "Avaliação estética e anamnese",
+        "criteria": [
+          "campos de queixa, histórico, hábitos e fototipo",
+          "lista de contraindicações a triar",
+          "termo com riscos, benefícios, cuidados e direito de desistir",
+          "consentimento separado para fotos antes/depois",
+          "aviso de tratamento de dados (LGPD) em linguagem simples",
+          "modelo em branco, sem dado de cliente"
+        ],
+        "evidence": "modelo de ficha e termo",
+        "time": "60 min",
+        "trigger": "Quer montar uma ficha de anamnese que proteja você e o cliente?",
+        "level": 1
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      {
+        "id": "tamanho",
+        "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L5",
+          "L6"
+        ],
+        "auto": true
+      },
+      {
+        "id": "secoes-obrigatorias",
+        "check": "as seções pedidas existem e estão nomeadas",
+        "appliesTo": [
+          "L3",
+          "L7",
+          "L8",
+          "L9",
+          "X1",
+          "X2"
+        ],
+        "auto": true
+      },
+      {
+        "id": "biosseguranca-no-pop",
+        "check": "passos de EPI, esterilização e descarte presentes",
+        "appliesTo": [
+          "L7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "contraindicacoes-listadas",
+        "check": "há seção ou lista de contraindicações",
+        "appliesTo": [
+          "L8",
+          "X1",
+          "X2"
+        ],
+        "auto": true
+      },
+      {
+        "id": "sem-promessa-de-resultado",
+        "check": "ausência de termos como garantido, cura, definitivo, sem risco, elimina",
+        "appliesTo": [
+          "L2",
+          "L5",
+          "L6",
+          "L8",
+          "D2",
+          "D7",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "registro-anvisa-citado",
+        "check": "equipamentos e produtos citados com menção a registro ou notificação na ANVISA",
+        "appliesTo": [
+          "L8",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "consentimento-para-fotos",
+        "check": "há declaração de consentimento para qualquer foto de pessoa, ou não há fotos de pessoas",
+        "appliesTo": [
+          "D2",
+          "D5",
+          "D7",
+          "L5"
+        ],
+        "auto": true
+      },
+      {
+        "id": "encaminhamento-previsto",
+        "check": "o fluxo ou plano tem ponto de encaminhamento para fora da competência",
+        "appliesTo": [
+          "D4",
+          "L8",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "diagrama-fechado",
+        "check": "o diagrama tem início e fim, raias por responsável e nenhuma tarefa órfã",
+        "appliesTo": [
+          "D4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "creditos-e-fontes",
+        "check": "coautores, marcas e fontes estão creditados",
+        "appliesTo": [
+          "L5",
+          "L10",
+          "D2",
+          "D7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "autoria-e-sigilo",
+        "check": "a pessoa declarou autoria e ausência de dados de clientes",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L3",
+          "L5",
+          "L6",
+          "L7",
+          "L8",
+          "L9",
+          "L10",
+          "D2",
+          "D4",
+          "D5",
+          "D7",
+          "X1",
+          "X2"
+        ],
+        "auto": true
+      }
+    ],
+    "subjective": [
+      {
+        "id": "seguranca-do-cliente",
+        "label": "Segurança do cliente",
+        "levels": {
+          "aproxima": "cita biossegurança ou contraindicações de forma genérica",
+          "atende": "lista contraindicações e condutas em intercorrência específicas",
+          "supera": "antecipa riscos por perfil de pele e mostra quando não realizar o procedimento"
+        }
+      },
+      {
+        "id": "fundamentacao-tecnica",
+        "label": "Fundamentação técnica",
+        "levels": {
+          "aproxima": "descreve a técnica sem justificar parâmetros ou ativos",
+          "atende": "justifica parâmetros e produtos com base técnica",
+          "supera": "compara alternativas e cita evidência ou norma"
+        }
+      },
+      {
+        "id": "limites-da-competencia",
+        "label": "Reconhecimento dos limites da competência",
+        "levels": {
+          "aproxima": "não distingue o que é estética médica",
+          "atende": "declara o que fica fora e quando encaminhar",
+          "supera": "descreve como articula com dermatologista, fisioterapeuta ou nutricionista"
+        }
+      },
+      {
+        "id": "clareza-para-o-cliente",
+        "label": "Clareza para o cliente",
+        "levels": {
+          "aproxima": "linguagem técnica sem tradução",
+          "atende": "orientações compreensíveis na primeira leitura",
+          "supera": "orienta e informa riscos sem alarmar nem prometer"
+        }
+      }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você apoia uma tecnóloga ou tecnólogo em Estética e Cosmética (ou estudante) no Guia de Carreira. Use o vocabulário da área: anamnese, protocolo, biossegurança, EPI, esterilização, perfurocortante, eletroestética, radiofrequência, fototipo, cosmetologia, rotulagem ANVISA, contraindicação, intercorrência, consentimento informado, responsabilidade técnica. Cite as normas quando couber: Lei 13.643/2018 (competências e dever de biossegurança), Lei 12.842/2013 art. 4º (limite da estética médica), RDC ANVISA 752/2022 (cosméticos), RDC 222/2018 (resíduos), RDC 15/2012 (esterilização), NR 6 (EPI), Código de Defesa do Consumidor (publicidade sem promessa enganosa) e LGPD (fichas e fotos). Nunca indique procedimento, produto ou parâmetro para uma pessoa específica, nem avalie pele, lesão ou foto de cliente: isso é ato profissional presencial, e lesões suspeitas são encaminhadas a médico. Nunca escreva textos de divulgação com promessa de resultado (garantido, cura, definitivo, elimina). Nunca sugira procedimentos invasivos, prescrição ou uso de produtos fora da competência legal do esteticista. Recuse fichas de anamnese preenchidas, fotos antes/depois e qualquer dado que identifique cliente; lembre que foto de cliente em portfólio exige consentimento específico por escrito. Pergunte antes de inferir ambiente de atuação ou senioridade. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por quê, e aceita \"não me serve\". Afirmações sobre mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa vaga, clientes ou remuneração. Progresso é por critérios atendidos; não há score. Não publique, siga, envie mensagem nem se candidate sem confirmação da pessoa.",
+    "citeSources": [
+      {
+        "title": "Lei 13.643/2018 — regulamenta Esteticista e Cosmetólogo e Técnico em Estética (Planalto)",
+        "url": "https://www.planalto.gov.br/ccivil_03/_Ato2015-2018/2018/Lei/L13643.htm",
+        "kind": "norma"
+      },
+      {
+        "title": "Lei 13.643/2018 — publicação original (Câmara dos Deputados)",
+        "url": "https://www2.camara.leg.br/legin/fed/lei/2018/lei-13643-3-abril-2018-786398-publicacaooriginal-155154-pl.html",
+        "kind": "norma"
+      },
+      {
+        "title": "ANVISA — Cosméticos (regularização, rotulagem e cosmetovigilância)",
+        "url": "https://www.gov.br/anvisa/pt-br/assuntos/cosmeticos",
+        "kind": "orgao-publico"
+      },
+      {
+        "title": "ANVISA — Serviços de saúde e segurança do paciente (resíduos, processamento de produtos)",
+        "url": "https://www.gov.br/anvisa/pt-br/assuntos/servicosdesaude",
+        "kind": "orgao-publico"
+      },
+      {
+        "title": "Normas Regulamentadoras (MTE) — NR 6",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/seguranca-e-saude-no-trabalho/normas-regulamentadoras",
+        "kind": "norma"
+      },
+      {
+        "title": "CBO 3221 — Tecnólogos e técnicos em terapias complementares e estéticas (MTE)",
+        "url": "https://cbo.mte.gov.br/",
+        "kind": "orgao-publico"
+      },
+      {
+        "title": "ABIHPEC — Panorama do setor de higiene pessoal, perfumaria e cosméticos",
+        "url": "https://abihpec.org.br/",
+        "kind": "comunidade"
+      },
+      {
+        "title": "Novo CAGED — Ministério do Trabalho e Emprego",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "kind": "estatistica"
+      }
+    ],
+    "services": [
+      {
+        "service": "PERGUNTAS_GUIA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Variantes de c2, c5 e a extra x1 (ambiente); nunca pergunta sobre pele, saúde ou aparência da própria pessoa."
+      },
+      {
+        "service": "SUGESTAO_TAREFAS",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "Prioriza L7, L6, L1, D4, L8, D2; cada card explica por que e lembra consentimento para fotos."
+      },
+      {
+        "service": "PLANO_SEMANAL",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Plano por horas (d1) e aparelho (d4); D2, D4 e D7 só no computador."
+      },
+      {
+        "service": "PRE_CHECAGEM_RUBRICA",
+        "capability": "ARTEFATO",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "Checa passos de biossegurança, contraindicações, termos de promessa, menção a registro ANVISA e declaração de consentimento; não avalia a técnica em si."
+      },
+      {
+        "service": "RASCUNHO_LETTERS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Estrutura de POP, protocolo, ficha de anamnese e termo; recusa plano para cliente real e textos com promessa de resultado."
+      },
+      {
+        "service": "APOIO_DRAWINGS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Grade, legendas e créditos da prancha (D2); raias e triagem no fluxo (D4); fonte e eixos do infográfico (D7)."
+      },
+      {
+        "service": "ANALISE_PERFIL",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": "ANALISE_PERFIL_IA",
+        "note": "Síntese de competências declaradas e evidenciadas por ambiente de atuação; nunca lê fichas de clientes."
+      },
+      {
+        "service": "CAMINHOS_DE_CARREIRA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Vizinhos: Biomedicina, Farmácia, Fisioterapia, Administração, Marketing; alternativas, não previsões; graduações exigidas são ditas com clareza."
+      },
+      {
+        "service": "PESSOAS_SEMELHANTES",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Só pessoas com opt-in; afinidade por CBO 3221, ambiente e competências."
+      },
+      {
+        "service": "EXPLICACAO_POR_QUE",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Campos usados e botão \"discordo\" em cada saída (LGPD art. 20)."
+      },
+      {
+        "service": "RESUMO_PROFISSIONAL",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": "RESUMO_PROFISSIONAL_IA",
+        "note": "Bio (L6) a partir do perfil, sem promessa de resultado."
+      },
+      {
+        "service": "IMPORTAR_CURRICULO",
+        "capability": "PREENCHER_TAREFA",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Extrai experiências, equipamentos e cursos em ficha editável; a pessoa confirma item a item."
+      }
+    ],
+    "dataScope": {
+      "default": [
+        "perfil",
+        "currículo"
+      ],
+      "optional": [
+        "minhas Letters",
+        "meus Drawings"
+      ],
+      "never": [
+        "fichas de anamnese preenchidas e dados de saúde de clientes",
+        "fotos antes/depois e imagens que identifiquem clientes",
+        "nomes e contatos de clientes",
+        "mensagens e itens SIGILOSO",
+        "dados sensíveis da própria pessoa (saúde, aparência, pele)",
+        "dados de terceiros sem autorização"
+      ]
+    },
+    "provider": {
+      "default": "local",
+      "externalNeedsConsent": true,
+      "externalAllowedFor": [
+        "ANALISE_PERFIL",
+        "CAMINHOS_DE_CARREIRA",
+        "RESUMO_PROFISSIONAL"
+      ]
+    },
+    "guardrails": [
+      "nunca indicar procedimento, produto ou parâmetro para pessoa específica nem avaliar pele, lesão ou foto",
+      "nunca escrever divulgação com promessa de resultado; respeitar o CDC",
+      "nunca sugerir procedimento invasivo, prescrição ou ato fora da competência legal do esteticista (Lei 13.643/2018; Lei 12.842/2013)",
+      "recusar fichas preenchidas, fotos e dados de clientes; foto em portfólio só com consentimento específico declarado",
+      "perguntar em vez de inferir ambiente de atuação ou senioridade",
+      "nunca prometer vaga, clientes ou remuneração; mercado com fonte, data e região",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "não publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": {
+      "letters": "media",
+      "drawings": "media"
+    },
+    "drawingsModes": [
+      "prancha",
+      "diagrama",
+      "infografico"
+    ],
+    "lettersTemplates": [
+      "bio",
+      "curriculo",
+      "carta",
+      "pop",
+      "proposta",
+      "estudo-de-caso",
+      "relatorio-tecnico",
+      "post",
+      "plano-30-60-90",
+      "revisao",
+      "roteiro"
+    ],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular: L5, L6, L10 e revisão de POP; D2, D4, D5 e D7 pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em três frases, sem promessa de resultado (15 min).",
+        "Que tal registrar o POP de biossegurança do seu atendimento? É o que todo espaço precisa mostrar à vigilância e leva 60 min.",
+        "Sem pressão. Quando quiser retomar, o protocolo que você começou está salvo.",
+        "Uma ficha de anamnese com termo de consentimento protege você e o cliente. Leva cerca de 1 h."
+      ]
+    },
+    "insights": {
+      "peersBy": [
+        "cbo",
+        "competencias",
+        "setor"
+      ]
+    },
+    "privacy": {
+      "sensitiveData": [
+        "fotos antes/depois e fichas de anamnese de clientes sem consentimento (LGPD art. 5º II e art. 11)",
+        "dados de saúde e contatos de clientes",
+        "formulações e fichas técnicas confidenciais de empregadores",
+        "dados de colegas sem autorização"
+      ],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      {
+        "title": "Novo CAGED (MTE) — CBO 3221 e 5161",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "geography": "Brasil, UF e município",
+        "cadence": "mensal",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "RAIS (MTE)",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais",
+        "geography": "Brasil, UF e município",
+        "cadence": "anual",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "PNAD Contínua (IBGE) — trabalho por conta própria em serviços pessoais",
+        "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html",
+        "geography": "Brasil e UF",
+        "cadence": "trimestral",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "ABIHPEC — Panorama do setor",
+        "url": "https://abihpec.org.br/",
+        "geography": "Brasil",
+        "cadence": "anual",
+        "kind": "associacao"
+      },
+      {
+        "title": "Sebrae — estudos sobre o mercado de beleza e estética",
+        "url": "https://sebrae.com.br/sites/PortalSebrae/segmentos/beleza",
+        "geography": "Brasil e UF",
+        "cadence": "eventual",
+        "kind": "pesquisa"
+      },
+      {
+        "title": "Portal do Empreendedor — MEI em atividades de estética",
+        "url": "https://www.gov.br/empresas-e-negocios/pt-br/empreendedor",
+        "geography": "Brasil",
+        "cadence": "continua",
+        "kind": "estatistica-oficial"
+      }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração e faturamento nunca entram como promessa nem como filtro (D-147). Dados de associações do setor são apresentados como tais, não como estatística oficial."
+  },
+  "paths": [
+    {
+      "to": "biomedicina",
+      "why": "A biomedicina estética amplia o escopo para procedimentos que exigem graduação em Biomedicina e registro no CRBM.",
+      "gaps": [
+        "graduação em Biomedicina e registro no CRBM",
+        "habilitação em biomedicina estética",
+        "fisiologia e farmacologia aprofundadas"
+      ],
+      "steps": [
+        "protocolo fundamentado com evidência (X1)",
+        "atuar em clínica multiprofissional e documentar o fluxo (D4)",
+        "avaliar a graduação se quiser os atos privativos"
+      ]
+    },
+    {
+      "to": "farmacia",
+      "why": "A cosmetologia leva ao desenvolvimento, à regulação e ao treinamento de produtos, em geral conduzidos por farmacêuticos.",
+      "gaps": [
+        "graduação em Farmácia e registro no CRF",
+        "química cosmética e estabilidade",
+        "assuntos regulatórios na ANVISA"
+      ],
+      "steps": [
+        "ficha técnica de cosmético com leitura de rótulo (L4)",
+        "resposta a briefing de treinamento de marca (L8)",
+        "cursos de cosmetologia e regulação"
+      ]
+    },
+    {
+      "to": "fisioterapia",
+      "why": "A fisioterapia dermatofuncional compartilha técnicas corporais e eletroterapia, com base em avaliação funcional.",
+      "gaps": [
+        "graduação em Fisioterapia e registro no CREFITO",
+        "avaliação funcional e cinesiologia",
+        "eletroterapia terapêutica"
+      ],
+      "steps": [
+        "protocolo corporal com parâmetros justificados (X1)",
+        "estudo de caso fictício de ajuste de protocolo (L3)",
+        "trabalho em equipe com fisioterapeutas"
+      ]
+    },
+    {
+      "to": "administracao",
+      "why": "Gerir clínica, spa ou rede exige finanças, pessoas, processos e conformidade sanitária.",
+      "gaps": [
+        "gestão financeira e precificação",
+        "gestão de pessoas e treinamento",
+        "processos e indicadores"
+      ],
+      "steps": [
+        "manual de boas práticas do estabelecimento (L7)",
+        "plano 30-60-90 para assumir a gestão (L9)",
+        "cursos de gestão do Sebrae"
+      ]
+    },
+    {
+      "to": "marketing",
+      "why": "Conteúdo, marca pessoal e educação de consumidores são parte do dia a dia e podem virar carreira em marcas de cosméticos.",
+      "gaps": [
+        "estratégia de conteúdo e métricas",
+        "publicidade dentro do CDC e das regras da ANVISA",
+        "ferramentas de design e mídia"
+      ],
+      "steps": [
+        "post sobre um ativo com fonte e sem promessa (L5)",
+        "infográfico de cuidados com fonte (D7)",
+        "curso de marketing digital (Sebrae)"
+      ]
+    }
+  ],
+  "learning": [
+    {
+      "title": "Cursos on-line para negócios de beleza e estética",
+      "provider": "Sebrae",
+      "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "ANVISA — Cosméticos: orientações, rotulagem e cosmetovigilância",
+      "provider": "ANVISA",
+      "url": "https://www.gov.br/anvisa/pt-br/assuntos/cosmeticos",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "ANVISA — Segurança do paciente e serviços de saúde (resíduos e processamento)",
+      "provider": "ANVISA",
+      "url": "https://www.gov.br/anvisa/pt-br/assuntos/servicosdesaude",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Escola Virtual.Gov — atendimento, LGPD e gestão",
+      "provider": "Enap",
+      "url": "https://www.escolavirtual.gov.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Escola Virtual Fundação Bradesco — empreendedorismo e atendimento",
+      "provider": "Fundação Bradesco",
+      "url": "https://www.ev.org.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Cursos EAD gratuitos de beleza e bem-estar",
+      "provider": "Senac EAD",
+      "url": "https://www.ead.senac.br/gratuito/",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "ABIHPEC — publicações e capacitação do setor",
+      "provider": "ABIHPEC",
+      "url": "https://abihpec.org.br/",
+      "free": true,
+      "kind": "comunidade"
+    },
+    {
+      "title": "Surgical & Cosmetic Dermatology (revista da SBD, acesso aberto)",
+      "provider": "Sociedade Brasileira de Dermatologia",
+      "url": "https://www.surgicalcosmetic.org.br/",
+      "free": true,
+      "kind": "portal"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Fase 1 — dados do ramo estetica-e-cosmetica (g1-saude.json)",
+      "url": "docs/pesquisa/fase1/g1-saude.json",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8",
+      "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 13.643/2018 — Senado Federal (norma)",
+      "url": "https://legis.senado.leg.br/norma/26520843/publicacao/26520984",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 13.643/2018 — publicação original (Câmara dos Deputados)",
+      "url": "https://www2.camara.leg.br/legin/fed/lei/2018/lei-13643-3-abril-2018-786398-publicacaooriginal-155154-pl.html",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ESCO occupation aesthetician (espelho World of Taxonomy, ISCO-08 5142)",
+      "url": "https://worldoftaxonomy.com/codes/esco_occupations/a1e1a788-2352-4172-8fcf-1f985a6968b0",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Quero Bolsa — Quais procedimentos o esteticista pode fazer (fonte secundária sobre limites da Lei 13.643)",
+      "url": "https://querobolsa.com.br/revista/quais-procedimentos-o-esteticista-pode-fazer",
+      "accessedAt": "2026-11-02"
+    }
+  ],
+  "naoConferido": [
+    "URI ESCO de aesthetician obtida de espelho (World of Taxonomy); esco.ec.europa.eu não acessível nesta sessão",
+    "texto integral da Lei 13.643/2018 não acessado (planalto.gov.br bloqueado); arts. 6, 7 e 8 descritos a partir de resumo de busca",
+    "números e vigência das RDC ANVISA 752/2022, 222/2018 e 15/2012 citados de memória; não há RDC específica de serviços de estética confirmada",
+    "lista de procedimentos permitidos ao esteticista (peeling, microagulhamento, radiofrequência) varia por interpretação e por norma estadual; não detalhada",
+    "PL 3.268/2026 (criação de conselho) em tramitação segundo a fase 1; não verificado",
+    "códigos CBO 5161 e 5211 em questions.a4.cboFamilies não conferidos no portal da CBO",
+    "URLs da ABIHPEC, do Sebrae (segmento beleza), do Senac EAD gratuito e da revista Surgical & Cosmetic Dermatology não verificadas nesta sessão"
+  ]
+}

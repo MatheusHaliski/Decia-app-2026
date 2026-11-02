@@ -1,0 +1,324 @@
+{
+  "schemaVersion": 1,
+  "code": "psicologia",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Psicologia", "en": "Psychology", "es": "Psicología" },
+  "fields": ["psicologia"],
+  "family": {
+    "cbo": [{ "code": "2515", "title": "Psicólogos e psicanalistas" }],
+    "isco08": [{ "code": "2634", "title": "Psychologists" }],
+    "esco": [{ "uri": "http://data.europa.eu/esco/occupation/52ded7d7-11df-42e3-b90a-d7f4b70fb4b9", "label": "psychologist" }]
+  },
+  "scope": {
+    "summary": "Psicólogas e psicólogos (bacharelado, registro no CRP) atuam em clínica, saúde pública (SUS/RAPS), assistência social (SUAS), escolas, organizações e trabalho, hospitais, sistema de justiça, trânsito, esporte e pesquisa. O guia trabalha evidências que podem ser mostradas sem violar o sigilo: documentos com estrutura da Res. CFP 06/2019 em casos fictícios, POPs de acolhimento, fluxos de rede, relatórios de projetos e programas.",
+    "entryRoles": ["Estagiário de psicologia", "Psicólogo júnior", "Psicólogo do CRAS/CREAS", "Analista de recrutamento e seleção", "Psicólogo clínico em início de carreira", "Residente multiprofissional em saúde"],
+    "midRoles": ["Psicólogo clínico", "Psicólogo da atenção básica (eMulti/CAPS)", "Psicólogo organizacional e do trabalho", "Psicólogo escolar e educacional", "Psicólogo hospitalar", "Neuropsicólogo", "Psicólogo jurídico"],
+    "seniorRoles": ["Especialista com título CFP", "Supervisor clínico", "Coordenador de saúde mental", "Gerente de desenvolvimento humano", "Professor e pesquisador", "Perito psicólogo"],
+    "sectors": ["clínica privada e consultórios", "saúde pública (SUS, RAPS, hospitais)", "assistência social (SUAS)", "educação", "organizações e recursos humanos", "sistema de justiça e segurança", "trânsito e esporte", "ensino e pesquisa"],
+    "regulation": [
+      { "name": "Lei 4.119/1962", "issuer": "Brasil", "about": "regulamenta a profissão de psicólogo; funções privativas (diagnóstico psicológico, orientação, seleção, psicoterapia)" },
+      { "name": "Lei 5.766/1971", "issuer": "Brasil", "about": "cria o Conselho Federal e os Conselhos Regionais de Psicologia; registro obrigatório" },
+      { "name": "Resolução CFP 010/2005 — Código de Ética Profissional do Psicólogo", "issuer": "CFP", "about": "princípios, deveres, sigilo profissional (arts. 9 a 14) e relações com a pessoa atendida" },
+      { "name": "Resolução CFP 001/2009 (alterada pela 005/2010)", "issuer": "CFP", "about": "obrigatoriedade do registro documental do atendimento; guarda e sigilo dos registros" },
+      { "name": "Resolução CFP 006/2019", "issuer": "CFP", "about": "elaboração de documentos escritos: declaração, atestado, relatório (psicológico e multiprofissional), laudo e parecer" },
+      { "name": "Resolução CFP 009/2018", "issuer": "CFP", "about": "avaliação psicológica, uso de testes e o SATEPSI (sistema de avaliação de testes)" },
+      { "name": "Resolução CFP 011/2018", "issuer": "CFP", "about": "serviços psicológicos por tecnologias da informação e comunicação; cadastro e-Psi" },
+      { "name": "LGPD (Lei 13.709/2018), art. 11", "issuer": "Brasil", "about": "dados pessoais de saúde são sensíveis; tratamento restrito" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "anamnese", "meaning": "entrevista inicial que levanta história, queixa e contexto da pessoa atendida" },
+      { "term": "avaliação psicológica", "meaning": "processo técnico-científico de coleta e interpretação de dados com métodos reconhecidos (Res. CFP 09/2018)" },
+      { "term": "SATEPSI", "meaning": "sistema do CFP que lista os testes psicológicos com parecer favorável para uso" },
+      { "term": "laudo psicológico", "meaning": "documento conclusivo de avaliação psicológica; estrutura definida pela Res. CFP 06/2019" },
+      { "term": "parecer psicológico", "meaning": "resposta fundamentada a uma questão específica, sem necessariamente avaliar a pessoa" },
+      { "term": "relatório psicológico", "meaning": "descreve procedimentos e conclusões de um processo de atendimento ou avaliação" },
+      { "term": "relatório multiprofissional", "meaning": "documento conjunto de equipe; não dispensa o registro documental do psicólogo" },
+      { "term": "registro documental", "meaning": "anotações obrigatórias de cada atendimento, guardadas em sigilo por pelo menos 5 anos (Res. 01/2009)" },
+      { "term": "psicoterapia", "meaning": "intervenção clínica em uma abordagem (TCC, psicanálise, humanista, sistêmica, entre outras)" },
+      { "term": "contrato terapêutico", "meaning": "acordo inicial sobre objetivos, frequência, sigilo e limites do atendimento" },
+      { "term": "devolutiva", "meaning": "entrevista em que se comunicam os resultados de uma avaliação à pessoa" },
+      { "term": "RAPS", "meaning": "Rede de Atenção Psicossocial do SUS (CAPS, atenção básica, urgência, leitos)" },
+      { "term": "CAPS", "meaning": "Centro de Atenção Psicossocial" },
+      { "term": "matriciamento", "meaning": "apoio especializado às equipes de atenção básica, com discussão de casos" },
+      { "term": "PTS", "meaning": "projeto terapêutico singular construído com a pessoa e a equipe" },
+      { "term": "SUAS / CRAS / CREAS", "meaning": "Sistema Único de Assistência Social e suas unidades de proteção básica e especial" },
+      { "term": "escuta qualificada", "meaning": "postura de acolhimento que orienta o atendimento sem julgamento" },
+      { "term": "encaminhamento", "meaning": "direcionar a pessoa a outro serviço da rede, com registro e acompanhamento" },
+      { "term": "POT", "meaning": "psicologia organizacional e do trabalho: seleção, treinamento, clima, saúde do trabalhador" },
+      { "term": "R&S", "meaning": "recrutamento e seleção; entrevista por competências e provas situacionais" },
+      { "term": "avaliação de desempenho", "meaning": "processo organizacional de acompanhamento de resultados e competências" },
+      { "term": "psicologia escolar", "meaning": "atuação com comunidade escolar, inclusão e processos de ensino-aprendizagem" },
+      { "term": "neuropsicologia", "meaning": "avaliação e reabilitação de funções cognitivas" },
+      { "term": "supervisão clínica", "meaning": "acompanhamento de casos por profissional mais experiente, com sigilo preservado" },
+      { "term": "e-Psi", "meaning": "cadastro do CFP para prestação de serviços psicológicos on-line" },
+      { "term": "CID-11 / DSM-5-TR", "meaning": "classificações diagnósticas de referência; diagnóstico é ato profissional, nunca da IA" },
+      { "term": "caso fictício", "meaning": "situação construída para fins didáticos, sem base em pessoa real; única forma aceitável em portfólio" }
+    ],
+    "tools": ["prontuário eletrônico com controle de acesso", "plataforma de teleatendimento (cadastro e-Psi)", "testes do SATEPSI com parecer favorável", "agenda clínica", "formulários e planilhas", "Jamovi, JASP ou R para pesquisa", "ATS e plataformas de R&S", "Zotero ou Mendeley", "editor de textos (Letters)", "editor de desenho (Drawings) para fluxos e infográficos"],
+    "deliverables": ["laudo, parecer, relatório, atestado e declaração (Res. CFP 06/2019)", "registro documental de atendimento", "projeto terapêutico singular", "plano de intervenção em grupo ou oficina", "fluxo de acolhimento e encaminhamento na rede", "POP de acolhimento ou de triagem", "perfil de cargo e roteiro de entrevista por competências", "programa de treinamento ou de saúde mental no trabalho", "relatório de pesquisa de clima", "relatório de projeto ou programa (anonimizado)", "projeto de pesquisa", "artigo ou relato de experiência"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Escuta clínica e condução de entrevista", "esco": null, "kind": "nucleo" },
+      { "label": "Avaliação psicológica com instrumentos reconhecidos", "esco": null, "kind": "nucleo" },
+      { "label": "Elaboração de documentos psicológicos (Res. CFP 06/2019)", "esco": null, "kind": "nucleo" },
+      { "label": "Intervenção psicoterapêutica em uma abordagem", "esco": null, "kind": "nucleo" },
+      { "label": "Trabalho em rede intersetorial (RAPS, SUAS, educação)", "esco": null, "kind": "nucleo" },
+      { "label": "Condução de grupos e oficinas", "esco": null, "kind": "nucleo" },
+      { "label": "Ética profissional e sigilo", "esco": null, "kind": "nucleo" },
+      { "label": "Registro documental e organização de prontuário", "esco": null, "kind": "nucleo" },
+      { "label": "Psicologia organizacional: seleção, treinamento e clima", "esco": null, "kind": "apoio" },
+      { "label": "Psicologia escolar e educacional", "esco": null, "kind": "apoio" },
+      { "label": "Manejo de situações de crise e encaminhamento", "esco": null, "kind": "apoio" },
+      { "label": "Leitura crítica de evidências e pesquisa", "esco": null, "kind": "apoio" },
+      { "label": "Avaliação de programas e indicadores de serviço", "esco": null, "kind": "apoio" },
+      { "label": "Supervisão e formação de equipes", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação escrita clara para leigos", "trabalho em equipe multiprofissional", "gestão do tempo e da agenda", "uso seguro de ferramentas digitais", "aprendizagem contínua"],
+    "tracks": [
+      { "id": "clinica", "label": "Clínica e psicoterapia", "steps": ["POP de acolhimento e contrato terapêutico (L7)", "estrutura de relatório psicológico com caso fictício (X1)", "estudo de caso fictício em formato STAR (L3)", "revisão de um documento de colega pela rubrica (L10)"] },
+      { "id": "saude-publica", "label": "Saúde pública e RAPS", "steps": ["fluxo de acolhimento e encaminhamento na rede (D4)", "relatório de um grupo ou oficina (L4)", "infográfico de resultados do serviço (D7)", "plano 30-60-90 para uma vaga no SUS ou SUAS (L9)"] },
+      { "id": "organizacional", "label": "Organizações e trabalho", "steps": ["perfil de cargo e roteiro de entrevista por competências (L8)", "POP de seleção ou de integração (L7)", "relatório de programa de treinamento ou clima (L4)", "fluxo do processo seletivo (D4)"] },
+      { "id": "escolar", "label": "Escolar e educacional", "steps": ["roteiro de oficina psicoeducativa (X2)", "fluxo de encaminhamento escola–rede (D4)", "relatório de projeto com a comunidade escolar (L4)"] },
+      { "id": "pesquisa", "label": "Pesquisa e docência", "steps": ["projeto de pesquisa com problema, método e ética (L4)", "post sobre uma leitura ou evidência (L5)", "infográfico de resultados com fonte (D7)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"psicólogo clínico\", \"psicóloga do CRAS\", \"analista de recrutamento\", \"estagiário de psicologia\"",
+      "cboFamilies": ["2515", "2524", "4110"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez; se for o primeiro emprego ou estágio, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, residência ou primeiro cargo após o registro no CRP",
+        "junior": "até dois anos de atuação, com supervisão frequente",
+        "pleno": "atende e documenta com autonomia; participa de equipe",
+        "senior": "referência técnica; supervisiona, tem título de especialista ou pós-graduação",
+        "gestao": "coordena serviço, equipe ou programa"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na Psicologia",
+      "options": ["escuta e condução de entrevista", "avaliação psicológica e testes", "redigir laudos, relatórios e pareceres", "psicoterapia em uma abordagem", "articular a rede (RAPS, SUAS, escola)", "conduzir grupos e oficinas", "recrutamento e seleção por competências", "treinamento e desenvolvimento", "pesquisa de clima e saúde do trabalhador", "psicologia escolar e inclusão", "avaliação neuropsicológica", "pesquisa e análise de dados", "manejo de crise e encaminhamento", "supervisão de equipe"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com tarefas que não expõem pessoas atendidas."
+    },
+    "c4": {
+      "certifications": ["registro ativo no CRP", "título de especialista do CFP (clínica, POT, escolar, neuropsicologia, hospitalar, jurídica e outros)", "formação em abordagem (TCC, psicanálise, sistêmica, humanista)", "cadastro e-Psi", "curso de avaliação psicológica ou de instrumentos específicos", "residência multiprofissional", "mestrado ou doutorado", "cursos de saúde mental (UNA-SUS, Fiocruz)"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação e títulos mostram lacunas em relação ao cargo que você quer; nada aqui é exigido para começar."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["documentos psicológicos (Res. CFP 06/2019)", "avaliação psicológica", "trabalho em rede e matriciamento", "grupos e oficinas", "seleção por competências", "treinamento e desenvolvimento", "escrita de projetos e relatórios", "análise de dados para pesquisa", "psicologia escolar", "gestão de serviço de saúde mental"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez do catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que contexto você atua ou quer atuar?", "type": "escolha", "options": ["clínica privada", "saúde pública (SUS/RAPS)", "assistência social (SUAS)", "escolas e educação", "organizações e RH", "hospitalar", "jurídico e segurança", "pesquisa e docência", "ainda não sei"], "why": "Pergunto o contexto para escolher as tarefas e o vocabulário certos: um relatório de CAPS e um perfil de cargo são evidências diferentes.", "where": "P" },
+      { "id": "x2", "prompt": "Tem abordagem teórica de preferência?", "type": "escolha", "options": ["TCC", "psicanálise", "humanista/existencial", "sistêmica", "análise do comportamento", "fenomenológica", "integrativa/não defino", "prefiro não responder"], "why": "Uso a abordagem só para ajustar exemplos e vocabulário dos rascunhos; você pode pular.", "where": "X" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L6", "L1", "L7", "L3", "D4", "L4", "L9", "L2", "L5", "L10", "D7"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica não é entrega da profissão" },
+      { "code": "D3", "reason": "modelagem 3D não é entrega da profissão" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da profissão" },
+      { "code": "D8", "reason": "vista explodida não é entrega da profissão" },
+      { "code": "D9", "reason": "wireframe de tela não é entrega da profissão" }
+    ],
+    "parameters": {
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva um resumo de até 600 caracteres com o contexto em que quer atuar (clínica, SUS, SUAS, escola, organizações), três competências e uma prova com link. Sem número de CRP obrigatório, sem menção a pessoas atendidas.",
+        "parameters": { "maxChars": 600, "requiredParts": ["contexto de atuação", "três competências", "uma prova com link"], "forbidden": ["nome ou dado de pessoa atendida"] },
+        "criteria": ["até 600 caracteres", "nomeia o contexto de atuação", "cita três competências", "inclui uma prova com link", "nenhuma menção a pessoa atendida"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para o cargo que quer mirar (ex.: psicólogo do CRAS, analista de R&S, psicólogo clínico em clínica-escola), com três resultados com número (grupos conduzidos, pessoas acolhidas, horas de supervisão, processos seletivos) e as palavras-chave do edital ou da vaga.",
+        "parameters": { "maxPages": 1, "achievementsWithNumbers": 3, "keywordsFrom": "cargo-alvo ou edital", "sections": ["formação e CRP", "experiência", "cursos e títulos", "abordagem ou área"] },
+        "criteria": ["uma página", "três conquistas com número", "palavras-chave do cargo-alvo presentes", "registro no CRP indicado", "sem idade, estado civil ou foto obrigatória", "nenhum dado de pessoa atendida"],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "L7": {
+        "title": "POP de acolhimento e encaminhamento",
+        "brief": "Descreva, em passos numerados, como você acolhe uma pessoa no serviço em que atua ou quer atuar: recepção, escuta inicial, contrato e sigilo, registro documental, critérios de encaminhamento à rede e critério de conclusão de cada passo. Sem caso real.",
+        "parameters": { "steps": "8 a 15", "requiredSteps": ["acolhida e escuta inicial", "contrato e informação sobre sigilo", "registro documental (Res. CFP 01/2009)", "critérios de encaminhamento"], "roles": true },
+        "criteria": ["passos numerados com responsável", "critério de conclusão em cada passo", "passo de registro documental presente", "passo de contrato e sigilo presente", "critérios de encaminhamento à rede", "declaração de ausência de caso real"],
+        "evidence": "modelo de POP",
+        "time": "60 min",
+        "level": 1
+      },
+      "L3": {
+        "title": "Estudo de caso fictício em formato STAR",
+        "brief": "Conte uma situação profissional que resolveu (um grupo que reorganizou, um fluxo que mudou, um processo seletivo que melhorou) em situação, tarefa, ação e resultado. Se envolver atendimento, construa um caso fictício e declare isso; nunca use pessoa real, mesmo com nome trocado.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true, "fictionalCaseDeclaration": true },
+        "criteria": ["quatro seções explícitas", "resultado com número ou comparação", "declaração de caso fictício ou de ausência de dado de atendimento", "sem iniciais, datas exatas ou instituição identificável", "aprendizado ético explicitado"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "D4": {
+        "title": "Fluxo de acolhimento e rede",
+        "brief": "Desenhe o fluxo de uma pessoa pelo serviço, com raias por responsável (recepção, psicólogo, equipe, rede), do primeiro contato à alta ou ao encaminhamento, incluindo o ponto em que o registro documental acontece.",
+        "parameters": { "lanes": ["recepção", "psicólogo", "equipe multiprofissional", "rede (RAPS, SUAS, escola)"], "mustInclude": ["início", "fim", "decisão de encaminhamento", "registro documental"] },
+        "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "ponto de decisão de encaminhamento", "ponto de registro documental"],
+        "evidence": "diagrama vetorial",
+        "time": "45 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório técnico de projeto, grupo ou programa",
+        "brief": "Relate um projeto, grupo, oficina ou programa que conduziu ou planejou: objetivo, método, resultados agregados, limitações e referências, em até 4 páginas. Dados só agregados; sem pessoa identificável.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "método", "resultados", "limitações", "referências"], "aggregatedDataOnly": true },
+        "criteria": ["cinco seções nomeadas", "até 4 páginas", "resultados agregados, sem pessoa identificável", "ao menos três referências", "limitações declaradas"],
+        "evidence": "relatório",
+        "time": "2 h",
+        "level": 3
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "letters", "title": "Estrutura de documento psicológico com caso fictício", "competency": "Elaboração de documentos psicológicos (Res. CFP 06/2019)", "criteria": ["identifica a modalidade (declaração, atestado, relatório, laudo ou parecer)", "traz as seções da Res. CFP 06/2019: identificação, descrição da demanda, procedimento, análise e conclusão", "caso declaradamente fictício", "linguagem sem juízo de valor e sem termos pejorativos", "referências técnicas citadas"], "evidence": "modelo de documento", "time": "90 min", "trigger": "Quer treinar a estrutura de um relatório ou parecer sem usar caso real?", "level": 2 },
+      { "id": "X2", "editor": "letters", "title": "Roteiro de oficina ou grupo psicoeducativo", "competency": "Condução de grupos e oficinas", "criteria": ["público e objetivo definidos", "sequência de atividades com tempo", "materiais e papéis da equipe", "critério de avaliação da oficina", "cuidados éticos (sigilo do grupo, encaminhamento)"], "evidence": "roteiro", "time": "60 min", "trigger": "Que tema você trabalharia em grupo com a comunidade que atende?", "level": 2 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L9", "X1", "X2"], "auto": true },
+      { "id": "estrutura-res-06-2019", "check": "identificação, descrição da demanda, procedimento, análise e conclusão presentes", "appliesTo": ["X1"], "auto": true },
+      { "id": "caso-ficticio-declarado", "check": "há declaração explícita de caso fictício ou de ausência de dado de atendimento", "appliesTo": ["L3", "L4", "L7", "X1", "X2"], "auto": true },
+      { "id": "sem-identificadores", "check": "ausência de nomes, iniciais, datas exatas de atendimento e instituição identificável", "appliesTo": ["L3", "L4", "L7", "L10", "D4", "D7", "X1", "X2"], "auto": true },
+      { "id": "registro-documental-no-fluxo", "check": "o POP ou fluxo tem passo de registro documental", "appliesTo": ["L7", "D4"], "auto": true },
+      { "id": "referencias-presentes", "check": "ao menos três referências ou normas citadas", "appliesTo": ["L4", "X1"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim, raias por responsável e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "fonte-no-infografico", "check": "o infográfico cita a fonte e rotula os eixos", "appliesTo": ["D7"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados confidenciais", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L9", "L10", "D4", "D7", "X1", "X2"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "raciocinio-etico", "label": "Raciocínio técnico e ético", "levels": { "aproxima": "descreve ações sem explicitar o fundamento técnico ou ético", "atende": "fundamenta as decisões em norma, abordagem ou evidência", "supera": "antecipa dilemas éticos e mostra como os resolveria" } },
+      { "id": "articulacao-de-rede", "label": "Articulação com a rede", "levels": { "aproxima": "cita a rede de forma genérica", "atende": "nomeia serviços e critérios de encaminhamento", "supera": "mostra referência e contrarreferência com acompanhamento" } },
+      { "id": "clareza-para-leigos", "label": "Clareza para quem não é da área", "levels": { "aproxima": "exige conhecimento prévio para ser entendido", "atende": "a ideia principal é entendida na primeira leitura", "supera": "explica termos técnicos sem perder precisão" } },
+      { "id": "resultado", "label": "Resultado demonstrado", "levels": { "aproxima": "descreve atividades, sem resultado", "atende": "mostra um resultado mensurável agregado", "supera": "mostra resultado, contexto, limitações e o que faria diferente" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você apoia uma psicóloga ou psicólogo (ou estudante de Psicologia) no Guia de Carreira. Use o vocabulário da área: anamnese, avaliação psicológica, SATEPSI, laudo, parecer, relatório, registro documental, RAPS, CAPS, SUAS, matriciamento, PTS, POT, seleção por competências. Cite as normas quando couber: Lei 4.119/1962, Código de Ética (Res. CFP 010/2005), Res. CFP 001/2009 (registro documental), Res. CFP 006/2019 (documentos escritos), Res. CFP 009/2018 (avaliação psicológica), Res. CFP 011/2018 (atendimento on-line). Nunca faça avaliação psicológica, diagnóstico, interpretação de teste ou orientação clínica sobre qualquer pessoa, inclusive a própria pessoa usuária ou terceiros descritos por ela; se pedirem, explique que isso é ato privativo do psicólogo em relação profissional e sugira supervisão ou a rede. Nunca redija laudo, parecer, atestado ou relatório para ser assinado sobre pessoa real; ajude só com estrutura, linguagem e casos declaradamente fictícios. Recuse trabalhar com registros de atendimento, prontuários, testes psicológicos (itens, crivos, normas) ou qualquer dado que identifique pessoa atendida, mesmo anonimizado, e lembre que anonimizar não autoriza o uso. Pergunte antes de inferir contexto de atuação, abordagem ou senioridade. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por quê, e aceita \"não me serve\". Afirmações sobre mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa vaga, entrevista ou remuneração. Progresso é por critérios atendidos; não há score. Não publique, siga, envie mensagem nem se candidate sem confirmação da pessoa.",
+    "citeSources": [
+      { "title": "Conselho Federal de Psicologia — legislação e resoluções", "url": "https://site.cfp.org.br/legislacao/", "kind": "conselho" },
+      { "title": "Resolução CFP 006/2019 — documentos escritos (CFP)", "url": "https://site.cfp.org.br/cfp-publica-nova-resolucao-sobre-elaboracao-de-documentos-escritos/", "kind": "norma" },
+      { "title": "SATEPSI — Sistema de Avaliação de Testes Psicológicos", "url": "https://satepsi.cfp.org.br/", "kind": "conselho" },
+      { "title": "Lei 4.119/1962 — regulamenta a profissão de psicólogo (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/1950-1969/l4119.htm", "kind": "norma" },
+      { "title": "CBO 2515 — Psicólogos e psicanalistas (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "Rede de Atenção Psicossocial — Ministério da Saúde", "url": "https://www.gov.br/saude/pt-br/composicao/saes/desmad/raps", "kind": "orgao-publico" },
+      { "title": "Novo CAGED — Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2, c5 e as extras x1 (contexto) e x2 (abordagem); nunca pergunta sobre saúde mental da própria pessoa." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza L6, L1, L7, L3, D4; cada card explica por que e lembra que casos são fictícios." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano por horas (d1) e aparelho (d4); D4 e L4 só no computador." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções da Res. 06/2019, declaração de caso fictício e ausência de identificadores; não avalia conteúdo clínico." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura e linguagem de POP, relatório de projeto e documentos com caso fictício; recusa laudo ou parecer sobre pessoa real." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias e pontos de decisão do fluxo de acolhimento (D4); fonte e eixos do infográfico (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese de competências declaradas e evidenciadas por contexto de atuação; nunca lê registros de atendimento." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos por CBO/ESCO: Serviço Social, RH, Pedagogia, gestão; alternativas, não previsões." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas com opt-in; afinidade por CBO 2515, contexto e competências." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Campos usados e botão \"discordo\" em cada saída (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil, sem menção a pessoas atendidas." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências e títulos em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["registros de atendimento e prontuários", "laudos, pareceres, relatórios e atestados sobre pessoa real", "nomes, iniciais ou dados de pessoas atendidas e familiares", "itens, crivos e normas de testes psicológicos", "mensagens e itens SIGILOSO", "dados sensíveis da própria pessoa (saúde mental inclusive)", "dados de terceiros sem autorização"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca fazer avaliação psicológica, diagnóstico, interpretação de teste ou orientação clínica sobre qualquer pessoa",
+      "nunca redigir laudo, parecer, atestado ou relatório assinável sobre pessoa real; só estrutura e casos fictícios",
+      "recusar registros de atendimento e dados de pessoas atendidas, mesmo anonimizados",
+      "perguntar em vez de inferir contexto, abordagem ou senioridade",
+      "nunca prometer vaga, entrevista ou remuneração; mercado com fonte, data e região",
+      "não inferir nem usar dados sensíveis da própria pessoa",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "não publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["diagrama", "infografico"],
+    "lettersTemplates": ["bio", "curriculo", "carta", "estudo-de-caso", "relatorio-tecnico", "pop", "parecer", "relatorio-de-caso", "roteiro", "plano-30-60-90", "projeto-de-pesquisa", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular: L5, L6, L10 e revisão de POP; D4, D7 e L4 pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em três frases, sem citar pessoas atendidas (15 min).",
+        "Que tal descrever o fluxo de acolhimento do seu serviço? Comprova articulação de rede e leva 45 min.",
+        "Sem pressão. Quando quiser retomar, o POP de acolhimento está salvo onde parou.",
+        "Um caso fictício em formato STAR mostra seu raciocínio sem expor ninguém. Leva cerca de 1 h."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["registros de atendimento, laudos e qualquer dado que identifique pessoas atendidas (Código de Ética, Res. CFP 010/2005; Res. CFP 001/2009; LGPD art. 5º II)", "conteúdo de testes psicológicos restritos", "dados de saúde mental da própria pessoa", "dados de colegas e supervisionados sem autorização"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2515", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "CFP — Quantidade de psicólogos registrados", "url": "https://site.cfp.org.br/servicos/quantidade-de-psicologos/", "geography": "Brasil e regiões dos CRPs", "cadence": "continua", "kind": "conselho" },
+      { "title": "CNES — Cadastro Nacional de Estabelecimentos de Saúde (profissionais por CBO)", "url": "https://cnes.datasus.gov.br/", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "Censo SUAS (MDS) — trabalhadores do SUAS por formação", "url": "https://aplicacoes.mds.gov.br/sagi/snas/vigilancia/index2.php", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Censo da Psicologia Brasileira (CFP)", "url": "https://site.cfp.org.br/publicacao/censo-da-psicologia-brasileira-volume-1/", "geography": "Brasil", "cadence": "eventual", "kind": "pesquisa" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147). Concursos e residências são citados pelo edital."
+  },
+  "paths": [
+    { "to": "servico-social", "why": "Compartilha a atuação no SUAS, na saúde e no sociojurídico, com trabalho em rede e documentos técnicos sob sigilo.", "gaps": ["graduação em Serviço Social e registro no CRESS", "estudo social e parecer social", "políticas sociais e LOAS"], "steps": ["atuar em equipe com assistentes sociais e documentar fluxos conjuntos (D4)", "cursar formação em políticas de assistência social", "avaliar segunda graduação se quiser as atribuições privativas"] },
+    { "to": "gestao-de-recursos-humanos", "why": "A psicologia organizacional e do trabalho é porta natural para seleção, treinamento, clima e saúde do trabalhador.", "gaps": ["gestão por indicadores de pessoas", "legislação trabalhista básica", "ferramentas de ATS e people analytics"], "steps": ["perfil de cargo e roteiro de entrevista por competências (L8)", "POP de processo seletivo (L7) e fluxo (D4)", "curso de gestão de pessoas (Sebrae, Enap)"] },
+    { "to": "pedagogia", "why": "Psicologia escolar e educacional dialoga com planejamento pedagógico, inclusão e formação de professores.", "gaps": ["didática e currículo", "legislação educacional (LDB, inclusão)", "gestão escolar"], "steps": ["roteiro de oficina psicoeducativa (X2)", "fluxo escola–rede (D4)", "formação complementar em educação inclusiva"] },
+    { "to": "administracao", "why": "Coordenar serviços, equipes e programas de saúde mental ou de pessoas exige gestão, orçamento e indicadores.", "gaps": ["gestão de projetos e orçamento", "indicadores e avaliação de programas", "gestão pública ou de saúde"], "steps": ["relatório de programa com indicadores (L4)", "plano 30-60-90 para coordenação (L9)", "curso de gestão de serviços de saúde (UNA-SUS, Enap)"] }
+  ],
+  "learning": [
+    { "title": "Resoluções e referências técnicas do CFP (CREPOP)", "provider": "Conselho Federal de Psicologia", "url": "https://site.cfp.org.br/publicacoes/", "free": true, "kind": "portal" },
+    { "title": "SATEPSI — consulta de testes com parecer favorável", "provider": "CFP", "url": "https://satepsi.cfp.org.br/", "free": true, "kind": "portal" },
+    { "title": "Cursos de saúde mental e atenção psicossocial", "provider": "UNA-SUS", "url": "https://www.unasus.gov.br/cursos", "free": true, "kind": "curso" },
+    { "title": "AVASUS — ambiente virtual de aprendizagem do SUS", "provider": "UFRN / Ministério da Saúde", "url": "https://avasus.ufrn.br/", "free": true, "kind": "curso" },
+    { "title": "Campus Virtual Fiocruz", "provider": "Fiocruz", "url": "https://campusvirtual.fiocruz.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — cursos sobre SUAS e políticas sociais", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "BVS-Psi — Biblioteca Virtual em Saúde Psicologia", "provider": "BVS / CFP", "url": "https://www.bvs-psi.org.br/", "free": true, "kind": "portal" },
+    { "title": "Psicologia: Ciência e Profissão (revista do CFP)", "provider": "CFP / SciELO", "url": "https://www.scielo.br/j/pcp/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Fase 1 — dados do ramo psicologia (g1-saude.json)", "url": "docs/pesquisa/fase1/g1-saude.json", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "CFP — Publicada nova Resolução sobre elaboração de documentos escritos (Res. 06/2019)", "url": "https://site.cfp.org.br/publicada-nova-resolucao-sobre-elaboracao-de-documentos-escritos/", "accessedAt": "2026-11-02" },
+    { "title": "CFP — versão comentada da Resolução 06/2019 (menciona Res. 01/2009 alterada pela 05/2010 e Res. 10/2005)", "url": "https://site.cfp.org.br/cfp-publica-versao-comentada-da-resolucao-sobre-a-elaboracao-de-documentos-escritos/", "accessedAt": "2026-11-02" },
+    { "title": "ESCO occupation psychologist (espelho World of Taxonomy, ISCO-08 2634)", "url": "https://worldoftaxonomy.com/codes/esco_occupations/52ded7d7-11df-42e3-b90a-d7f4b70fb4b9", "accessedAt": "2026-11-02" },
+    { "title": "CFP — Quantidade de psicólogos (página de serviços)", "url": "https://site.cfp.org.br/servicos/quantidade-de-psicologos/", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URI ESCO de psychologist obtida de espelho (World of Taxonomy); esco.ec.europa.eu não acessível nesta sessão",
+    "texto integral das Res. CFP 010/2005, 001/2009, 009/2018 e 011/2018 não acessado (site.cfp.org.br e planalto.gov.br bloqueados); conteúdo descrito de memória",
+    "possível resolução CFP mais recente sobre atendimento on-line substituindo a 011/2018 não verificada",
+    "número atual de psicólogos registrados não obtido; a fonte de mercado aponta para a página do CFP",
+    "URLs da RAPS (gov.br/saude), do Censo SUAS (SAGI) e da BVS-Psi não verificadas nesta sessão",
+    "código CBO 2524 em questions.a4.cboFamilies (profissionais de recursos humanos) não conferido no portal da CBO",
+    "guarda de registros por 5 anos citada a partir de resumo da Res. 06/2019, não do texto original da Res. 01/2009"
+  ]
+}

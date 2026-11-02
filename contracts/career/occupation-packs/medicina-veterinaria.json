@@ -1,0 +1,315 @@
+{
+  "schemaVersion": 1,
+  "code": "medicina-veterinaria",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Medicina Veterinária", "en": "Veterinary Medicine", "es": "Medicina Veterinaria" },
+  "fields": ["medicina-veterinaria"],
+  "family": {
+    "cbo": [{ "code": "2233", "title": "Veterinários e zootecnistas" }],
+    "isco08": [{ "code": "2250", "title": "Veterinarians" }],
+    "esco": [{ "uri": "http://data.europa.eu/esco/occupation/08984bec-31d8-4bb0-aa2f-d557761ff029", "label": "specialised veterinarian" }]
+  },
+  "scope": {
+    "summary": "Profissão regulamentada pela Lei 5.517/1968, com registro obrigatório no CRMV. Atua em clínica e cirurgia de animais de companhia, produção animal, saúde pública (inspeção de produtos de origem animal, vigilância sanitária e zoonoses), indústria (alimentos, medicamentos, nutrição animal), ensino e pesquisa. O sigilo cobre tutores, animais e documentos clínicos.",
+    "entryRoles": ["Médico-veterinário residente", "Clínico geral de pequenos animais (início de carreira)", "Veterinário de plantão", "Assistente técnico em indústria de nutrição animal", "Veterinário de campo em granja ou fazenda", "Trainee em laboratório de diagnóstico veterinário"],
+    "midRoles": ["Clínico ou cirurgião de pequenos animais", "Responsável técnico (RT) de clínica, pet shop ou agroindústria", "Fiscal agropecuário ou veterinário de inspeção (SIF, SIE, SIM)", "Veterinário de saúde pública (vigilância, zoonoses, CCZ)", "Consultor técnico de produção animal", "Veterinário de diagnóstico por imagem ou laboratório"],
+    "seniorRoles": ["Diretor clínico de hospital veterinário", "Especialista com título de especialista reconhecido pelo CFMV", "Gerente de qualidade ou RT em frigorífico ou indústria", "Auditor fiscal federal agropecuário (MAPA)", "Docente ou pesquisador", "Gestor de programa de saúde animal (defesa sanitária)"],
+    "sectors": ["clínicas e hospitais veterinários", "agropecuária e produção animal", "indústria de alimentos e frigoríficos", "indústria farmacêutica e de nutrição animal", "serviço público (MAPA, agências estaduais, vigilância, CCZ)", "laboratórios de diagnóstico", "ensino e pesquisa", "ONGs e bem-estar animal", "trabalho autônomo e atendimento domiciliar"],
+    "regulation": [
+      { "name": "Lei 5.517/1968 e Decreto 64.704/1969", "issuer": "Brasil", "about": "regulamenta o exercício da Medicina Veterinária e cria o CFMV e os CRMVs; define atribuições privativas" },
+      { "name": "Resolução CFMV 1.138/2016", "issuer": "CFMV", "about": "Código de Ética do Médico-Veterinário: deveres com cliente, paciente, colegas e sigilo profissional" },
+      { "name": "Resolução CFMV 1.666/2025", "issuer": "CFMV", "about": "Código de Processo Ético-Profissional (revogou a Res. 1.330/2020)" },
+      { "name": "Resolução CFMV 1.275/2019", "issuer": "CFMV", "about": "registro, funcionamento e responsabilidade técnica de estabelecimentos veterinários" },
+      { "name": "Resolução CFMV sobre documentos e prontuário (Res. 1.321/2020)", "issuer": "CFMV", "about": "prontuário, atestados, receituário e demais documentos médico-veterinários (número a confirmar)" },
+      { "name": "Decreto 9.013/2017 (RIISPOA)", "issuer": "Brasil / MAPA", "about": "inspeção industrial e sanitária de produtos de origem animal; base da atuação em inspeção" },
+      { "name": "Lei 9.605/1998, art. 32", "issuer": "Brasil", "about": "crime de maus-tratos a animais; dever de notificação e cuidado" },
+      { "name": "LGPD (Lei 13.709/2018)", "issuer": "Brasil", "about": "dados pessoais de tutores e clientes em prontuários e cadastros" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "tutor", "meaning": "pessoa responsável pelo animal atendido; titular dos dados pessoais do cadastro" },
+      { "term": "anamnese", "meaning": "entrevista com o tutor sobre histórico, sinais e manejo do animal" },
+      { "term": "prontuário veterinário", "meaning": "registro clínico do paciente animal; documento sigiloso sob guarda do estabelecimento" },
+      { "term": "RT", "meaning": "responsável técnico: profissional que responde pelo estabelecimento perante o CRMV" },
+      { "term": "ART veterinária", "meaning": "anotação de responsabilidade técnica registrada no CRMV" },
+      { "term": "zoonose", "meaning": "doença transmissível entre animais e pessoas (raiva, leptospirose, brucelose)" },
+      { "term": "SIF / SIE / SIM", "meaning": "serviços de inspeção federal, estadual e municipal de produtos de origem animal" },
+      { "term": "RIISPOA", "meaning": "Regulamento da Inspeção Industrial e Sanitária de Produtos de Origem Animal (Decreto 9.013/2017)" },
+      { "term": "APPCC / HACCP", "meaning": "análise de perigos e pontos críticos de controle em plantas de alimentos" },
+      { "term": "BPF", "meaning": "boas práticas de fabricação" },
+      { "term": "biossegurança", "meaning": "medidas que evitam a entrada e a disseminação de agentes em rebanhos e estabelecimentos" },
+      { "term": "GTA", "meaning": "Guia de Trânsito Animal, documento obrigatório para movimentar animais" },
+      { "term": "receituário de controle especial", "meaning": "receita em via dupla para medicamentos controlados, com retenção" },
+      { "term": "eutanásia", "meaning": "procedimento regulado por resolução do CFMV, com consentimento do tutor" },
+      { "term": "medicina de produção", "meaning": "atuação em rebanhos com foco em sanidade, reprodução e desempenho" },
+      { "term": "Saúde Única", "meaning": "abordagem que integra saúde humana, animal e ambiental" },
+      { "term": "CCZ / UVZ", "meaning": "centro de controle de zoonoses ou unidade de vigilância de zoonoses do município" },
+      { "term": "exame complementar", "meaning": "hemograma, bioquímica, imagem e outros exames que apoiam o diagnóstico" },
+      { "term": "termo de consentimento", "meaning": "autorização assinada pelo tutor para procedimento, internação ou risco" },
+      { "term": "residência veterinária", "meaning": "programa de treinamento em serviço após a graduação" }
+    ],
+    "tools": ["sistema de prontuário e gestão de clínica (ex.: SimplesVet, Vetus)", "ultrassom e radiografia digital", "analisadores hematológico e bioquímico", "planilha para controle de rebanho e índices zootécnicos", "SIGSIF e plataforma de gestão agropecuária (MAPA)", "e-GTA / sistemas estaduais de defesa agropecuária", "editor de textos para laudos, POPs e relatórios", "aplicativos de cálculo de dose"],
+    "deliverables": ["prontuário e evolução clínica", "laudo de exame (imagem, necropsia, laboratório)", "receita e atestado veterinário", "POP de biossegurança ou de rotina clínica", "relatório de inspeção ou de não conformidade", "plano sanitário e de vacinação de rebanho", "relato de caso clínico anonimizado", "parecer técnico para RT", "material educativo para tutores", "plano APPCC / manual de BPF"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Exame clínico e raciocínio diagnóstico em animais", "esco": null, "kind": "nucleo" },
+      { "label": "Prescrição e cálculo de dose por espécie", "esco": null, "kind": "nucleo" },
+      { "label": "Procedimentos cirúrgicos e anestesia", "esco": null, "kind": "nucleo" },
+      { "label": "Interpretação de exames laboratoriais e de imagem", "esco": null, "kind": "nucleo" },
+      { "label": "Medicina preventiva, vacinação e controle de zoonoses", "esco": null, "kind": "nucleo" },
+      { "label": "Inspeção e tecnologia de produtos de origem animal", "esco": null, "kind": "nucleo" },
+      { "label": "Sanidade e manejo de rebanhos", "esco": null, "kind": "nucleo" },
+      { "label": "Bem-estar animal e ética", "esco": null, "kind": "nucleo" },
+      { "label": "Registro clínico e documentação (prontuário, laudo, receita)", "esco": null, "kind": "nucleo" },
+      { "label": "Comunicação com tutores e produtores", "esco": null, "kind": "nucleo" },
+      { "label": "Biossegurança e gestão da qualidade (BPF, APPCC)", "esco": null, "kind": "apoio" },
+      { "label": "Responsabilidade técnica e legislação sanitária", "esco": null, "kind": "apoio" },
+      { "label": "Epidemiologia e análise de dados sanitários", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de clínica ou negócio veterinário", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["ética e sigilo profissional", "comunicação em situações difíceis (prognóstico, eutanásia)", "trabalho em equipe multiprofissional", "organização e registro", "aprendizagem contínua"],
+    "tracks": [
+      { "id": "clinica-de-companhia", "label": "Clínica de animais de companhia", "steps": ["relato de caso clínico anonimizado (L3)", "POP de atendimento ou biossegurança da clínica (L7)", "material educativo para tutores (X1)", "fluxo de triagem e internação (D4)"] },
+      { "id": "inspecao-e-saude-publica", "label": "Inspeção e saúde pública", "steps": ["relatório técnico de não conformidade ou de surto (L4)", "fluxo de um processo de inspeção (D4)", "POP de BPF ou plano APPCC resumido (L7)", "infográfico de indicadores sanitários (D7)"] },
+      { "id": "producao-animal", "label": "Produção e sanidade de rebanhos", "steps": ["relatório técnico de visita a propriedade (L4)", "plano sanitário em formato POP (L7)", "infográfico de índices do rebanho (D7)", "proposta de consultoria a partir de briefing (L8)"] },
+      { "id": "apresentar-se", "label": "Apresentar-se na área", "steps": ["bio com área de atuação e registro (L6)", "currículo direcionado (L1)", "carta para residência, concurso ou vaga (L2)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"clínico de pequenos animais\", \"veterinário de inspeção\", \"RT de pet shop\", \"veterinário de campo\"",
+      "cboFamilies": ["2233"],
+      "why": "Pergunto sua última função para partir do que você já fez na Medicina Veterinária e sugerir tarefas da sua área de atuação. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "recém-formado, residência ou primeiro registro no CRMV",
+        "junior": "até dois anos atuando, com supervisão de colegas mais experientes",
+        "pleno": "atende, prescreve e responde por casos com autonomia",
+        "senior": "referência técnica; RT, especialista ou preceptor",
+        "gestao": "dirige clínica, serviço de inspeção, equipe ou programa sanitário"
+      },
+      "why": "Pergunto o nível para ajustar a dificuldade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na Medicina Veterinária",
+      "options": ["exame clínico e diagnóstico", "cirurgia e anestesia", "interpretar exames de imagem e laboratório", "medicina preventiva e vacinação", "inspeção de produtos de origem animal", "manejo sanitário de rebanhos", "comunicação com tutores e produtores", "registro clínico e documentação", "biossegurança e qualidade (BPF, APPCC)", "epidemiologia e dados sanitários", "gestão de clínica", "bem-estar animal"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com as tarefas."
+    },
+    "c4": {
+      "certifications": ["registro no CRMV", "residência em Medicina Veterinária", "título de especialista reconhecido pelo CFMV", "curso de APPCC / BPF", "habilitação para emissão de GTA", "pós-graduação lato sensu", "mestrado ou doutorado"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação, registro e idiomas ajudam a ver lacunas em relação à função que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["raciocínio clínico e relato de caso", "inspeção e legislação sanitária", "sanidade de rebanhos e produção", "biossegurança e gestão da qualidade", "comunicação com tutores e produtores", "epidemiologia e análise de dados", "responsabilidade técnica", "gestão e empreendedorismo em clínica"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que frente da Medicina Veterinária você quer atuar primeiro?", "type": "escolha", "options": ["animais de companhia", "animais de produção", "inspeção e saúde pública", "indústria (alimentos, fármacos, nutrição)", "diagnóstico (laboratório, imagem)", "ensino e pesquisa", "ainda não sei"], "why": "A frente de atuação muda as tarefas sugeridas: relato de caso para clínica, relatório de inspeção para saúde pública. Você pode mudar depois.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": true
+  },
+  "guidedTasks": {
+    "priority": ["L3", "L7", "L4", "L6", "L1", "D4", "D7", "L2", "L8", "L5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica de ambiente não é entrega da profissão" },
+      { "code": "D3", "reason": "modelagem 3D de produto não faz parte da atuação" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da profissão" },
+      { "code": "D8", "reason": "vista explodida de conjunto não se aplica" },
+      { "code": "D9", "reason": "wireframe de interface não se aplica" }
+    ],
+    "parameters": {
+      "L3": {
+        "title": "Relato de caso clínico anonimizado",
+        "brief": "Descreva um caso que você conduziu: situação (espécie, queixa, histórico sem identificar tutor nem animal), tarefa (hipóteses e exames), ação (conduta e justificativa) e resultado (evolução com dado objetivo). Declare que não há dado identificável de tutor ou paciente.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "anonymized": true, "measurableResult": true, "maxWords": 900 },
+        "criteria": ["quatro seções explícitas", "espécie, queixa e hipóteses diagnósticas nomeadas", "conduta justificada com referência (literatura ou protocolo)", "evolução com dado objetivo (peso, exame, dias de internação)", "sem nome de tutor, animal, clínica ou data completa", "declaração de autoria e de anonimização"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "L7": {
+        "title": "POP de biossegurança ou de rotina clínica",
+        "brief": "Escreva um procedimento operacional padrão que você domina (ex.: higienização de internação, recepção de animal suspeito de zoonose, coleta e envio de amostras), com passos numerados, responsável, EPI, critério de conclusão e registro.",
+        "parameters": { "numberedSteps": true, "fields": ["objetivo", "campo de aplicação", "responsável", "materiais e EPI", "passos", "critério de conclusão", "registro", "referências"], "minSteps": 6 },
+        "criteria": ["passos numerados com responsável", "EPI e materiais listados", "critério de conclusão por passo ou etapa", "referência a norma ou resolução pertinente", "sem dado de cliente ou paciente"],
+        "evidence": "modelo de POP",
+        "time": "60 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório técnico curto (inspeção, surto ou visita a propriedade)",
+        "brief": "Relate um trabalho técnico em até 4 páginas: objetivo, método (o que foi avaliado e como), resultados (achados e indicadores), limitações e referências. Sem identificar estabelecimento, produtor ou tutor.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "método", "resultados", "limitações", "referências"], "anonymized": true },
+        "criteria": ["cinco seções nomeadas", "até 4 páginas", "ao menos um indicador quantitativo", "referência a norma ou legislação aplicável", "estabelecimento e pessoas não identificáveis"],
+        "evidence": "relatório",
+        "time": "2 h",
+        "level": 3
+      },
+      "L6": {
+        "title": "Bio profissional com área de atuação",
+        "brief": "Escreva um resumo de até 600 caracteres com sua frente de atuação, três competências e uma prova com link. Pode citar o registro no CRMV; não cite casos nem clientes.",
+        "parameters": { "maxChars": 600, "requiredParts": ["frente de atuação", "três competências", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia a frente de atuação", "cita três competências", "inclui uma prova com link"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "D4": {
+        "title": "Fluxo de um processo clínico ou de inspeção",
+        "brief": "Desenhe o fluxo de um processo que você conhece (triagem e internação, recebimento de animais no abate, atendimento a suspeita de zoonose) com raias por responsável, decisões e registros.",
+        "parameters": { "swimlanes": true, "requiredElements": ["início", "fim", "decisões", "registros gerados"] },
+        "criteria": ["início e fim", "raias por responsável", "nenhuma tarefa órfã", "pontos de decisão nomeados", "registros ou documentos gerados indicados"],
+        "evidence": "diagrama vetorial",
+        "time": "45 min",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de indicadores sanitários ou zootécnicos",
+        "brief": "Mostre números de um trabalho seu (cobertura vacinal, taxa de condenação, índices reprodutivos) com fonte, eixos rotulados e uma mensagem principal. Dados agregados, sem identificar propriedade ou cliente.",
+        "parameters": { "requiredElements": ["fonte e período", "eixos rotulados", "mensagem principal"], "aggregatedOnly": true },
+        "criteria": ["fonte e período citados", "eixos rotulados", "uma mensagem principal", "dados agregados, sem identificação"],
+        "evidence": "imagem + PDF",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "letters", "title": "Material educativo para tutores ou produtores", "competency": "Comunicação em saúde animal", "criteria": ["linguagem acessível (sem jargão não explicado)", "um tema de prevenção (vacinação, vermifugação, zoonose, manejo)", "orientação para procurar o médico-veterinário em vez de automedicar", "fonte técnica citada", "sem dado de caso real"], "evidence": "folheto ou texto publicável", "time": "45 min", "trigger": "Que orientação você repete a tutores ou produtores e poderia transformar em material?", "level": 1 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L8", "L9"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas, palavras ou caracteres", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6"], "auto": true },
+      { "id": "anonimizacao-declarada", "check": "a pessoa declarou que não há tutor, animal, estabelecimento ou produtor identificável", "appliesTo": ["L3", "L4", "L7", "D4", "D7", "X1"], "auto": true },
+      { "id": "sem-identificadores", "check": "o texto não contém nomes próprios de tutores, CPF, endereço, telefone ou data completa de atendimento", "appliesTo": ["L3", "L4", "L7", "D7"], "auto": true },
+      { "id": "referencia-normativa", "check": "cita ao menos uma norma, resolução ou referência técnica", "appliesTo": ["L4", "L7", "X1"], "auto": true },
+      { "id": "indicador-quantitativo", "check": "há ao menos um número ou indicador no resultado", "appliesTo": ["L3", "L4", "D7"], "auto": true },
+      { "id": "pop-estrutura", "check": "passos numerados, responsável e critério de conclusão presentes", "appliesTo": ["L7"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim, raias e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "fonte-no-grafico", "check": "fonte, período e eixos rotulados presentes", "appliesTo": ["D7"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados confidenciais", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L10", "D2", "D4", "D7", "X1"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "raciocinio-clinico", "label": "Raciocínio clínico ou técnico", "levels": { "aproxima": "descreve o caso sem ligar achados a hipóteses", "atende": "liga achados, hipóteses e conduta de forma coerente", "supera": "discute diagnósticos diferenciais, limitações e o que faria diferente" } },
+      { "id": "adequacao-normativa", "label": "Adequação à legislação e às boas práticas", "levels": { "aproxima": "cita norma de forma genérica", "atende": "aplica a norma correta ao processo descrito", "supera": "aponta lacunas de conformidade e propõe correção" } },
+      { "id": "comunicacao-com-leigo", "label": "Comunicação com tutor ou produtor", "levels": { "aproxima": "usa jargão sem explicar", "atende": "explica termos e dá orientação prática", "supera": "antecipa dúvidas e orienta sem substituir a consulta" } },
+      { "id": "bem-estar-animal", "label": "Consideração de bem-estar animal", "levels": { "aproxima": "não menciona bem-estar", "atende": "considera dor, estresse e manejo adequado", "supera": "integra bem-estar à decisão técnica e a justifica" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Medicina Veterinária (registro no CRMV; Lei 5.517/1968; Código de Ética Res. CFMV 1.138/2016). Use o vocabulário da área: tutor, paciente animal, prontuário, anamnese, RT, inspeção (SIF/SIE/SIM, RIISPOA), zoonoses, biossegurança, BPF e APPCC, GTA, Saúde Única. Quando citar norma, prefira lei, decreto ou resolução do CFMV/MAPA e indique o número. O que você nunca faz: não dá orientação clínica, prescrição, dose ou conduta para um animal ou caso de terceiros; não redige laudo, atestado, receita ou parecer assinável; não substitui a responsabilidade técnica nem a decisão do profissional; não aceita nem pede dados que identifiquem tutor, animal, estabelecimento ou produtor, e lembra a pessoa de anonimizar relatos de caso e relatórios. Ajude a estruturar relatos de caso anonimizados, POPs, relatórios técnicos, fluxos de processo e materiais educativos; pré-cheque só critérios objetivos (seções, limite, referência, ausência de identificadores). Pergunte a frente de atuação em vez de deduzir pelos textos. Afirmações sobre mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa vaga, aprovação em concurso ou salário. Progresso é por critérios atendidos; o selo depende de revisão humana.",
+    "citeSources": [
+      { "title": "CFMV — Conselho Federal de Medicina Veterinária (legislação e resoluções)", "url": "https://www.cfmv.gov.br/", "kind": "conselho" },
+      { "title": "Manual de Legislação do Sistema CFMV/CRMVs", "url": "https://manual.cfmv.gov.br/", "kind": "norma" },
+      { "title": "Lei 5.517/1968 — exercício da Medicina Veterinária", "url": "https://www.planalto.gov.br/ccivil_03/leis/l5517.htm", "kind": "norma" },
+      { "title": "Decreto 9.013/2017 — RIISPOA", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2017/decreto/d9013.htm", "kind": "norma" },
+      { "title": "Ministério da Agricultura e Pecuária (MAPA) — defesa agropecuária e inspeção", "url": "https://www.gov.br/agricultura/pt-br", "kind": "orgao-publico" },
+      { "title": "CBO 2233 — Veterinários e zootecnistas (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "Novo CAGED — MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências veterinárias; pergunta a frente de atuação (x1) antes de sugerir trilha." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza relato de caso anonimizado (L3), POP (L7), relatório técnico (L4) e fluxo (D4); cada card diz por que e aceita \"não me serve\"." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Considera plantões e rotina de campo: tarefas curtas no celular, relatório e POP no computador." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, limite, referência normativa e ausência de identificadores de tutor/animal/estabelecimento; não avalia a conduta clínica." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura relato de caso, POP e relatório; nunca redige laudo, receita, atestado ou parecer assinável nem sugere conduta para caso de terceiros." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias e decisões do fluxo (D4); fonte e eixos do infográfico (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese com competências declaradas e evidenciadas por frente de atuação; cita o campo de origem de cada afirmação." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: zootecnia, biomedicina, ciências biológicas, agronomia, gestão pública (inspeção, defesa sanitária); sempre com fonte e data." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por CBO 2233 e competências compartilhadas; só pessoas com opt-in." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Mostra os campos usados e o botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil, sem citar casos ou clientes; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, registro e cursos em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "prontuários, laudos, receitas e exames de pacientes animais", "dados de tutores, produtores e estabelecimentos clientes", "dados sensíveis (LGPD art. 5º II)", "dados de terceiros sem autorização"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca dar orientação clínica, prescrição ou dose para animal ou caso de terceiros; orientar a consultar o médico-veterinário",
+      "nunca redigir laudo, atestado, receita ou parecer assinável; não substituir a responsabilidade técnica",
+      "exigir anonimização de tutor, animal, estabelecimento e produtor em qualquer relato ou relatório",
+      "perguntar a frente de atuação em vez de inferir pelos textos",
+      "afirmações de mercado com fonte, data e região ou \"estimativa\"; nunca prometer vaga, concurso ou salário",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["diagrama", "infografico", "prancha"],
+    "lettersTemplates": ["estudo-de-caso", "relatorio-de-caso", "pop", "relatorio-tecnico", "bio", "curriculo", "carta", "proposta", "post", "revisao", "artigo"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só bio (L6), post (L5) e revisão (L10); relato de caso, POP, relatório e fluxo pedem computador. Plantões e campo: plano semanal com tarefas de 15–30 min.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: bio com sua frente de atuação (15 min).",
+        "Tem um caso que você conduziu bem? Um relato anonimizado leva cerca de 1 h e comprova raciocínio clínico.",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui.",
+        "Que rotina você repete na clínica ou na inspeção? Um POP de 60 min vira evidência de padronização."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": { "sensitiveData": ["dados de tutores e de animais atendidos (sigilo profissional, Res. CFMV 1.138/2016)", "laudos, exames, receituários e prontuários identificáveis", "dados de estabelecimentos e produtores clientes", "imagens de pacientes ou instalações sem autorização"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2233", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "CFMV — Sistema CFMV/CRMVs: profissionais inscritos (estimativa de cerca de 200 mil, sem data de referência oficial localizada)", "url": "https://www.cfmv.gov.br/", "geography": "Brasil e UF", "cadence": "eventual", "kind": "conselho" },
+      { "title": "CFMV — Carta Aberta em Prol da Qualidade do Ensino da Medicina Veterinária (densidade de profissionais, 2023)", "url": "https://www.cfmv.gov.br/wp-content/uploads/2023/06/Carta-Aberta-em-Prol-da-Qualidade-do-Ensino-da-Medicina-Veterinaria-no-Brasil.pdf", "geography": "Brasil", "cadence": "eventual", "kind": "conselho" },
+      { "title": "Concursos públicos (MAPA, agências estaduais de defesa agropecuária, prefeituras) — gov.br", "url": "https://www.gov.br/pt-br/servicos/consultar-concursos-publicos", "geography": "Brasil, UF e município", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "zootecnia", "why": "Mesma família CBO (2233) e mesmo conselho; produção animal, nutrição e melhoramento são campos compartilhados.", "gaps": ["formulação de dietas e índices zootécnicos", "gestão econômica da produção"], "steps": ["relatório técnico de visita a propriedade com índices (L4)", "infográfico de desempenho do rebanho (D7)", "curso de nutrição animal ou gestão rural"] },
+    { "to": "biomedicina", "why": "Diagnóstico laboratorial, microbiologia e análises clínicas são competências em comum, sobretudo para quem atua em laboratório veterinário.", "gaps": ["análises clínicas humanas e legislação do CFBM", "registro profissional distinto"], "steps": ["POP de coleta e processamento de amostras (L7)", "relato de caso com ênfase em diagnóstico laboratorial (L3)", "verificar requisitos de formação e registro"] },
+    { "to": "ciencias-biologicas", "why": "Conservação, fauna silvestre, pesquisa e licenciamento ambiental usam conhecimento de saúde animal e epidemiologia.", "gaps": ["ecologia e metodologia de campo", "legislação ambiental e CRBio"], "steps": ["relatório técnico de um trabalho com fauna ou vigilância (L4)", "projeto de pesquisa curto (Letters)", "curso de manejo de fauna"] },
+    { "to": "agronomia", "why": "Agroindústria, sanidade e cadeias produtivas integram veterinários e agrônomos; consultoria rural e defesa agropecuária são portas comuns.", "gaps": ["produção vegetal e solos", "gestão de propriedade rural"], "steps": ["proposta de consultoria a partir de briefing (L8)", "fluxo de um processo da cadeia produtiva (D4)", "cursos do MAPA e Embrapa"] },
+    { "to": "gestao-publica", "why": "Defesa sanitária, vigilância e inspeção são carreiras públicas; gestão de programas e políticas é um caminho natural para quem já está no serviço público.", "gaps": ["administração pública e orçamento", "gestão de programas e indicadores"], "steps": ["plano 30-60-90 para função de gestão (L9)", "infográfico de indicadores de programa (D7)", "cursos da Enap (Escola Virtual.Gov)"] }
+  ],
+  "learning": [
+    { "title": "Manual de Legislação do Sistema CFMV/CRMVs", "provider": "CFMV", "url": "https://manual.cfmv.gov.br/", "free": true, "kind": "norma" },
+    { "title": "Escola Virtual.Gov — cursos de defesa agropecuária, inspeção e gestão pública", "provider": "Enap / MAPA", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "UNA-SUS — cursos abertos em saúde pública e vigilância (Saúde Única, zoonoses)", "provider": "UNA-SUS / Ministério da Saúde", "url": "https://www.unasus.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Campus Virtual Fiocruz — cursos livres em vigilância e saúde", "provider": "Fiocruz", "url": "https://campusvirtual.fiocruz.br/", "free": true, "kind": "portal" },
+    { "title": "Embrapa — publicações e cursos em produção animal", "provider": "Embrapa", "url": "https://www.embrapa.br/", "free": true, "kind": "portal" },
+    { "title": "Portal de Periódicos CAPES / SciELO — literatura veterinária", "provider": "SciELO", "url": "https://www.scielo.br/", "free": true, "kind": "portal" },
+    { "title": "Sebrae — gestão de clínica e pet shop", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "Residência em Medicina Veterinária — programas credenciados (CFMV / instituições públicas)", "provider": "CFMV", "url": "https://www.cfmv.gov.br/", "free": true, "kind": "certificacao" }
+  ],
+  "sources": [
+    { "title": "Fase 1 — grupo Saúde e bem-estar (g1-saude.json): famílias CBO/ISCO, conselho, dados sensíveis, vizinhos", "url": "docs/pesquisa/fase1/g1-saude.json", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Manual de Legislação CFMV — Resolução CFMV 1.138/2016 (Código de Ética) e Res. 1.330/2020 (processo ético, revogada pela 1.666/2025)", "url": "https://manual.cfmv.gov.br/arquivos/resolucao/1330.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Manual de Legislação CFMV — Resolução CFMV 1.666/2025 (Código de Processo Ético-Profissional)", "url": "https://manual.cfmv.gov.br/arquivos/resolucao/1666.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Legisweb — Resolução CFMV 1.330/2020 (revogação pela 1.666/2025)", "url": "https://www.legisweb.com.br/legislacao/?id=482923", "accessedAt": "2026-11-02" },
+    { "title": "Forbes Brasil — número de médicos-veterinários segundo o CFMV (154,9 mil, 2021)", "url": "https://forbes.com.br/carreira/2021/09/dia-do-veterinario-5-areas-promissoras-para-os-proximos-anos-que-vao-muito-alem-dos-pets/", "accessedAt": "2026-11-02" },
+    { "title": "CFMV — Carta Aberta em Prol da Qualidade do Ensino da Medicina Veterinária (2023)", "url": "https://www.cfmv.gov.br/wp-content/uploads/2023/06/Carta-Aberta-em-Prol-da-Qualidade-do-Ensino-da-Medicina-Veterinaria-no-Brasil.pdf", "accessedAt": "2026-11-02" },
+    { "title": "World of Taxonomy — espelho ESCO 'specialised veterinarian' (ISCO 2250)", "url": "https://worldoftaxonomy.com/codes/esco_occupations/08984bec-31d8-4bb0-aa2f-d557761ff029", "accessedAt": "2026-11-02" },
+    { "title": "CBO 2233-05 Médico veterinário (espelho vriconsulting)", "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=223305", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Res. CFMV 1.321/2020 citada como norma de documentos/prontuário: número e ementa não confirmados; conferir no Manual de Legislação do CFMV.",
+    "Res. CFMV 1.275/2019 (estabelecimentos veterinários) e Decreto 64.704/1969 citados de memória; não reconfirmados nesta sessão.",
+    "URI ESCO 'specialised veterinarian' vem de espelho (World of Taxonomy); esco.ec.europa.eu e worldoftaxonomy.com inacessíveis na rede da sessão. ESCO 'veterinarian' genérico não localizado.",
+    "Total de profissionais inscritos no Sistema CFMV/CRMVs: fontes divergentes (120 mil, 154,9 mil em 2021, ~200 mil sem data); nenhuma estatística oficial com data de referência localizada.",
+    "Competências sem URI ESCO confirmada (esco: null em todas).",
+    "URLs de aprendizagem e de citação (planalto, MAPA, UNA-SUS, Fiocruz, Embrapa, SciELO, Sebrae) não abertas nesta sessão.",
+    "Vocabulário, tarefas e rubrica vêm do conhecimento da profissão, não de fonte primária; revisão por médico-veterinário recomendada.",
+    "Ferramentas comerciais citadas (SimplesVet, Vetus) como exemplos, sem verificação de mercado."
+  ]
+}

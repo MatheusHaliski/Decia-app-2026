@@ -1,0 +1,331 @@
+{
+  "schemaVersion": 1,
+  "code": "gastronomia",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Gastronomia", "en": "Gastronomy", "es": "Gastronomía" },
+  "fields": ["gastronomia"],
+  "family": {
+    "cbo": [
+      { "code": "2711", "title": "Chefes de cozinha e afins (inclui 2711-10 Tecnólogo em gastronomia)" },
+      { "code": "5132", "title": "Cozinheiros" },
+      { "code": "8483", "title": "Padeiros, confeiteiros e afins" }
+    ],
+    "isco08": [
+      { "code": "3434", "title": "Chefs" },
+      { "code": "5120", "title": "Cooks" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/1009be17-7efd-45f1-a033-566bf179c588", "label": "chef" }
+    ]
+  },
+  "scope": {
+    "summary": "Profissional que planeja, produz e gere a produção de alimentos e bebidas em restaurantes, hotéis, eventos, indústria e consultoria: cria e padroniza receitas em fichas técnicas, monta cardápios, controla custos (CMV) e desperdício, aplica boas práticas de manipulação (RDC 216/2004) e lidera brigadas de cozinha. Profissão não regulamentada; o tecnólogo em gastronomia consta na CBO 2711-10.",
+    "entryRoles": ["Auxiliar de cozinha", "Cozinheiro(a) de praça (commis)", "Confeiteiro(a) júnior", "Estagiário(a) de gastronomia", "Atendente de cafeteria com produção"],
+    "midRoles": ["Cozinheiro(a) chefe de praça (chef de partie)", "Subchefe de cozinha (sous chef)", "Confeiteiro(a) ou padeiro(a) pleno", "Supervisor(a) de produção em UAN", "Consultor(a) de cardápio"],
+    "seniorRoles": ["Chef de cozinha", "Chef executivo(a)", "Coordenador(a) de A&B", "Chef consultor(a) ou pesquisador(a) de produto", "Proprietário(a) de restaurante"],
+    "sectors": ["restaurantes e bares", "hotelaria (A&B)", "eventos e buffets", "alimentação coletiva (UAN)", "indústria de alimentos e P&D", "panificação e confeitaria", "food service e dark kitchens", "ensino de gastronomia", "mídia e conteúdo gastronômico"],
+    "regulation": [
+      { "name": "RDC ANVISA 216/2004", "issuer": "ANVISA", "about": "boas práticas para serviços de alimentação: manipuladores, higienização, controle de temperatura, armazenamento, POPs e manual de boas práticas" },
+      { "name": "RDC ANVISA 275/2002", "issuer": "ANVISA", "about": "procedimentos operacionais padronizados (POP) e lista de verificação de boas práticas em estabelecimentos de alimentos" },
+      { "name": "Portaria SVS/MS 326/1997 e Portaria MS 1.428/1993", "issuer": "Ministério da Saúde", "about": "condições higiênico-sanitárias e sistema APPCC (análise de perigos e pontos críticos de controle)" },
+      { "name": "RDC ANVISA 26/2015", "issuer": "ANVISA", "about": "rotulagem obrigatória dos principais alimentos que causam alergias alimentares (alergênicos)" },
+      { "name": "RDC ANVISA 429/2020 e IN 75/2020", "issuer": "ANVISA", "about": "rotulagem nutricional de alimentos embalados, incluindo rotulagem frontal" },
+      { "name": "Lei 14.016/2020", "issuer": "Brasil", "about": "doação de excedentes de alimentos preparados por estabelecimentos; combate ao desperdício" },
+      { "name": "NR-17 e NR-6", "issuer": "MTE", "about": "ergonomia e equipamentos de proteção individual em cozinhas profissionais" },
+      { "name": "Lei 11.771/2008, art. 21, parágrafo único", "issuer": "Brasil / Ministério do Turismo", "about": "restaurantes, bares e cafeterias podem se cadastrar no Cadastur como prestadores de serviços turísticos (opcional)" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "ficha técnica", "meaning": "padronização de uma preparação: ingredientes, quantidades, per capita, fator de correção, modo de preparo, rendimento e custo" },
+      { "term": "fator de correção (FC)", "meaning": "relação entre peso bruto e peso líquido de um ingrediente após limpeza" },
+      { "term": "índice de cocção (IC)", "meaning": "relação entre o peso do alimento cozido e o peso cru" },
+      { "term": "per capita", "meaning": "quantidade de um ingrediente ou preparação prevista por pessoa" },
+      { "term": "CMV", "meaning": "custo da mercadoria vendida; percentual do custo dos insumos sobre a receita" },
+      { "term": "mise en place", "meaning": "organização prévia de ingredientes, utensílios e preparações antes do serviço" },
+      { "term": "brigada de cozinha", "meaning": "equipe organizada por praças (garde manger, quente, confeitaria) sob o chef e o sous chef" },
+      { "term": "praça", "meaning": "setor da cozinha responsável por um tipo de preparação" },
+      { "term": "boas práticas de fabricação (BPF)", "meaning": "procedimentos de higiene e controle previstos na RDC 216/2004 e no manual de boas práticas" },
+      { "term": "POP", "meaning": "procedimento operacional padronizado exigido pela vigilância sanitária (higienização, controle de pragas, água, saúde dos manipuladores)" },
+      { "term": "APPCC/HACCP", "meaning": "sistema de análise de perigos e pontos críticos de controle na produção de alimentos" },
+      { "term": "contaminação cruzada", "meaning": "transferência de perigos de um alimento ou superfície para outro; evitada por fluxo, cores de tábuas e tempos" },
+      { "term": "binômio tempo e temperatura", "meaning": "controle das temperaturas de cocção, resfriamento e conservação para segurança do alimento" },
+      { "term": "PEPS/PVPS", "meaning": "primeiro que entra, primeiro que sai; primeiro que vence, primeiro que sai; regra de giro de estoque" },
+      { "term": "engenharia de cardápio", "meaning": "análise de pratos por popularidade e margem de contribuição (estrelas, cavalos de batalha, quebra-cabeças, cães)" },
+      { "term": "cardápio sazonal", "meaning": "cardápio que acompanha a oferta de ingredientes por estação e região" },
+      { "term": "UAN", "meaning": "unidade de alimentação e nutrição: cozinha de produção coletiva (empresas, hospitais, escolas)" },
+      { "term": "A&B", "meaning": "alimentos e bebidas; departamento de hotéis e eventos responsável por restaurantes, bares e banquetes" },
+      { "term": "banquete", "meaning": "serviço de alimentação para grupos em eventos, com cardápio e logística pré-definidos" },
+      { "term": "harmonização", "meaning": "combinação de pratos e bebidas por afinidade ou contraste" },
+      { "term": "fluxo linear", "meaning": "trajeto da matéria-prima na cozinha sem cruzamento entre área suja e área limpa" },
+      { "term": "degustação às cegas", "meaning": "prova de preparações sem identificação para avaliar sabor, textura e apresentação" },
+      { "term": "empratamento", "meaning": "disposição dos elementos no prato: proporção, cor, altura e limpeza das bordas" },
+      { "term": "rotulagem de alergênicos", "meaning": "indicação obrigatória de glúten, leite, ovos, oleaginosas e outros alergênicos (RDC 26/2015)" }
+    ],
+    "tools": ["balança de precisão e termômetro de espeto", "planilha de fichas técnicas e CMV", "sistema de PDV e gestão de restaurante", "software de cardápio e controle de estoque", "fornos combinados e equipamentos de cocção", "termômetro infravermelho e planilha de controle de temperatura", "editor de textos (Letters) para fichas, POPs e cardápios", "editor de desenho (Drawings) para layout de cozinha e portfólio", "câmera ou celular para registro de pratos", "etiquetadora de prazo de validade"],
+    "deliverables": ["ficha técnica de preparo", "cardápio com custo e precificação", "manual de boas práticas e POPs", "planilha de CMV e controle de desperdício", "proposta de cardápio para evento ou cliente", "layout de cozinha com fluxo de produção", "portfólio de pratos e preparações", "relatório de degustação e teste de receita", "plano de produção e mise en place", "treinamento de equipe de cozinha"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Técnicas de cocção e preparo (bases, cortes, métodos)", "esco": null, "kind": "nucleo" },
+      { "label": "Elaboração de fichas técnicas e padronização de receitas", "esco": null, "kind": "nucleo" },
+      { "label": "Planejamento de cardápio e engenharia de cardápio", "esco": null, "kind": "nucleo" },
+      { "label": "Boas práticas de manipulação e segurança dos alimentos (RDC 216/2004)", "esco": null, "kind": "nucleo" },
+      { "label": "Controle de custos, CMV e precificação", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de estoque e compras de insumos", "esco": null, "kind": "nucleo" },
+      { "label": "Liderança de brigada e organização de praças", "esco": null, "kind": "nucleo" },
+      { "label": "Confeitaria e panificação", "esco": null, "kind": "nucleo" },
+      { "label": "Empratamento e apresentação", "esco": null, "kind": "nucleo" },
+      { "label": "Análise sensorial e desenvolvimento de produto", "esco": null, "kind": "apoio" },
+      { "label": "Cozinha regional brasileira e internacional", "esco": null, "kind": "apoio" },
+      { "label": "Planejamento de layout e fluxo de cozinha", "esco": null, "kind": "apoio" },
+      { "label": "Atendimento a restrições alimentares e alergênicos", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de desperdício e sustentabilidade na cozinha", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["trabalho sob pressão e gestão do tempo", "comunicação com equipe e salão", "atenção a detalhes e higiene", "criatividade com método", "ética e sigilo de receitas de terceiros"],
+    "tracks": [
+      { "id": "padronizar-producao", "label": "Padronizar a produção", "steps": ["ficha técnica de uma preparação que você domina (X1)", "POP de higienização ou controle de temperatura (L7)", "diagrama do fluxo de produção da cozinha (D4)", "relatório de CMV e desperdício de um período (L4)"] },
+      { "id": "criar-cardapios", "label": "Criar e vender cardápios", "steps": ["proposta de cardápio a partir de um briefing (L8)", "prancha de portfólio com três pratos (D2)", "estudo de caso STAR de um cardápio que deu certo (L3)", "post sobre um ingrediente ou técnica (L5)"] },
+      { "id": "organizar-cozinha", "label": "Organizar a cozinha e a equipe", "steps": ["planta simples da cozinha com fluxo linear (D1)", "antes e depois de uma praça ou prato (D5)", "plano 30-60-90 para o cargo-alvo (L9)", "resumo de perfil (L6) e currículo direcionado (L1)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"auxiliar de cozinha\", \"cozinheiro\", \"confeiteira\", \"sous chef\", \"chef de cozinha\"",
+      "cboFamilies": ["2711", "5132", "8483", "5134"],
+      "why": "Pergunto seu último cargo ou praça para partir do que você já produz e não do zero. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, aprendizagem ou auxiliar de cozinha",
+        "junior": "cozinheiro(a) de praça com supervisão direta",
+        "pleno": "chefe de praça ou cozinheiro(a) com autonomia na produção",
+        "senior": "sous chef ou chef que padroniza, treina e controla custos",
+        "gestao": "chef executivo(a), coordenação de A&B ou dono(a) do negócio"
+      },
+      "why": "Pergunto o nível para calibrar as tarefas: uma ficha técnica simples ou um cardápio completo com CMV."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na cozinha",
+      "options": ["técnicas de cocção e cortes", "confeitaria e panificação", "montar e precificar cardápios", "ficha técnica e padronização", "boas práticas e controle sanitário", "controle de estoque e compras", "liderar a brigada no serviço", "empratamento e apresentação", "cozinha regional brasileira", "criar receitas e testar produtos", "atender restrições alimentares", "organizar fluxo e layout de cozinha"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com fichas, cardápios e portfólio."
+    },
+    "c4": {
+      "certifications": ["tecnólogo em Gastronomia", "bacharelado em Gastronomia", "curso técnico em Cozinha ou Confeitaria", "curso de boas práticas de manipulação (vigilância sanitária)", "curso de APPCC/HACCP", "cursos livres de panificação, confeitaria ou cozinha internacional", "curso de primeiros socorros ou brigada de incêndio"],
+      "languages": ["inglês", "espanhol", "francês", "italiano", "Libras"],
+      "why": "Formação, certificado de boas práticas e idiomas mostram lacunas em relação ao cargo-alvo, como cozinhas de hotel internacional ou cruzeiros."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["fichas técnicas e padronização", "custos, CMV e precificação", "engenharia de cardápio", "boas práticas e vigilância sanitária", "confeitaria e panificação", "liderança de brigada", "desenvolvimento de produto e análise sensorial", "layout e fluxo de cozinha", "cardápios para eventos e banquetes", "sustentabilidade e redução de desperdício"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que tipo de cozinha você atua ou quer atuar?", "type": "escolha", "options": ["restaurante à la carte", "hotel e banquetes", "alimentação coletiva (UAN)", "confeitaria e panificação", "eventos e buffet", "indústria e P&D", "negócio próprio ou delivery"], "why": "Pergunto o tipo de cozinha para ajustar os exemplos: ficha técnica de banquete é diferente da de um prato à la carte.", "where": "P" },
+      { "id": "x2", "prompt": "Quer que as tarefas incluam custos e precificação?", "type": "sim-nao", "options": ["sim", "ainda não"], "why": "Custos entram nas fichas e cardápios só se você quiser; dá para começar pela técnica e acrescentar depois.", "where": "X" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L7", "L8", "D2", "L3", "L4", "D5", "D1", "D4", "L1", "L6", "L5"],
+    "excluded": [
+      { "code": "D3", "reason": "modelagem 3D de produto com render não é entrega da gastronomia" },
+      { "code": "D8", "reason": "vista explodida de conjunto mecânico não se aplica" },
+      { "code": "D9", "reason": "wireframe de tela é entrega de UX, não da área" },
+      { "code": "D6", "reason": "detalhe construtivo é entrega de arquitetura e engenharia" }
+    ],
+    "parameters": {
+      "L7": {
+        "title": "POP de boas práticas na cozinha (RDC 216/2004)",
+        "brief": "Escreva um procedimento operacional padronizado de um processo que você domina na cozinha: higienização de superfícies, controle de temperatura de recebimento, resfriamento ou descongelamento. Passos numerados, responsável por passo, critério de conclusão e registro usado. Sem nome de empregador nem receita sigilosa.",
+        "parameters": { "processOptions": ["higienização de superfícies e utensílios", "recebimento e controle de temperatura", "resfriamento e descongelamento", "higiene dos manipuladores"], "norm": "RDC 216/2004", "requiredParts": ["objetivo", "campo de aplicação", "passos numerados", "responsável", "critério de conclusão", "registro"] },
+        "criteria": ["passos numerados com responsável", "critério de conclusão em cada passo", "limites de temperatura ou tempo quando o processo exigir", "cita o item da RDC 216/2004 que fundamenta o POP", "sem dado de empregador ou receita de terceiros"],
+        "evidence": "POP em Letters (modelo pop)",
+        "time": "60 min",
+        "level": 1
+      },
+      "L8": {
+        "title": "Proposta de cardápio a partir de um briefing",
+        "brief": "Responda a um briefing simulado (ex.: jantar para 40 pessoas, orçamento definido, duas restrições alimentares, cozinha sem forno combinado) com uma proposta: cardápio, premissas, o que fica fora, prazos de produção e, se quiser, custo estimado por pessoa. Marque alergênicos em cada prato.",
+        "parameters": { "guests": 40, "courses": 3, "restrictions": ["sem glúten", "vegetariano"], "allergenLabeling": "RDC 26/2015", "requiredParts": ["cardápio", "premissas", "fora do escopo", "cronograma de produção", "alergênicos por prato"] },
+        "criteria": ["cardápio com entrada, principal e sobremesa ou equivalente", "atende às duas restrições do briefing", "alergênicos indicados em cada prato", "premissas e o que fica fora do escopo explícitos", "cronograma de produção com mise en place"],
+        "evidence": "proposta em Letters (modelo proposta)",
+        "time": "45 min",
+        "level": 2
+      },
+      "D2": {
+        "title": "Prancha de portfólio com três preparações",
+        "brief": "Monte uma prancha A3 com três preparações suas: foto, nome, técnica principal, rendimento e seu papel na produção. Só pratos de sua autoria ou com crédito ao chef; sem fotos de clientes ou de bastidores de empregadores sem autorização.",
+        "parameters": { "format": "A3", "works": 3, "captionParts": ["nome", "técnica principal", "rendimento", "seu papel"] },
+        "criteria": ["três preparações com foto", "legenda com técnica, rendimento e papel", "grade consistente", "créditos ao chef ou equipe quando a receita não for sua", "sem pessoas identificáveis sem autorização"],
+        "evidence": "prancha publicada (PDF ou PNG)",
+        "time": "90 min",
+        "level": 1
+      },
+      "L3": {
+        "title": "Estudo de caso STAR de uma melhoria na cozinha",
+        "brief": "Conte um problema que você resolveu na produção (desperdício, atraso no serviço, não conformidade sanitária, custo alto de um prato): situação, tarefa, ação e resultado com número. Sem nome de empregador nem receita sigilosa.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true, "examples": ["redução de desperdício em %", "tempo de saída do prato", "CMV antes e depois"] },
+        "criteria": ["quatro seções explícitas", "resultado com número ou comparação", "declara ausência de dado confidencial e de receita de terceiros"],
+        "evidence": "documento em Letters (estudo de caso)",
+        "time": "60 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório curto de CMV e desperdício",
+        "brief": "Relatório de até 4 páginas sobre um período de produção (real anonimizado ou simulado): objetivo, método de apuração, resultados (CMV, perdas, itens mais vendidos), limitações e referências. Dados de empregador só agregados e sem identificação.",
+        "parameters": { "maxPages": 4, "indicators": ["CMV %", "perdas em kg ou %", "mix de vendas"], "sections": ["objetivo", "método", "resultados", "limitações", "referências"] },
+        "criteria": ["até 4 páginas", "cinco seções nomeadas", "indicadores com período e unidade", "fonte dos dados declarada (real anonimizado ou simulado)"],
+        "evidence": "relatório técnico em Letters",
+        "time": "2 h",
+        "level": 3
+      },
+      "D1": {
+        "title": "Planta simples de cozinha com fluxo linear",
+        "brief": "Desenhe a planta de uma cozinha profissional pequena (real anonimizada ou proposta) em escala 1:50, com áreas de recebimento, pré-preparo, preparo, cocção, distribuição e higienização, e setas de fluxo sem cruzamento entre área suja e limpa.",
+        "parameters": { "scale": "1:50", "areas": ["recebimento", "estoque", "pré-preparo", "cocção", "distribuição", "higienização"], "flowArrows": true },
+        "criteria": ["escala indicada e cotas gerais", "legenda com as áreas", "setas de fluxo sem cruzamento sujo-limpo", "carimbo com título, autor e data"],
+        "evidence": "prancha PDF ou SVG",
+        "time": "2 h",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Ficha técnica de preparo",
+        "competency": "Padronização de receitas e controle de custo",
+        "criteria": ["ingredientes com quantidade, unidade e fator de correção", "per capita e rendimento total", "modo de preparo em passos numerados", "alergênicos indicados", "custo por porção quando a pessoa optar por custos", "receita de sua autoria ou creditada"],
+        "evidence": "ficha técnica em Letters (modelo pop ou relatório técnico)",
+        "time": "45 min",
+        "trigger": "Qual preparação você mais domina? Vamos padronizá-la em uma ficha técnica.",
+        "level": 1
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L8", "L9", "X1"], "auto": true },
+      { "id": "quantidades-e-unidades", "check": "cada ingrediente tem quantidade e unidade; rendimento e per capita presentes", "appliesTo": ["X1", "L8"], "auto": true },
+      { "id": "alergenicos", "check": "cada prato ou preparação indica alergênicos ou declara ausência", "appliesTo": ["X1", "L8"], "auto": true },
+      { "id": "limites-de-temperatura", "check": "o POP traz limites de tempo ou temperatura quando o processo exige", "appliesTo": ["L7"], "auto": true },
+      { "id": "norma-citada", "check": "a norma sanitária de referência é citada (RDC 216/2004, RDC 275/2002)", "appliesTo": ["L7", "L4"], "auto": true },
+      { "id": "escala-e-legenda", "check": "a planta tem escala, legenda das áreas e carimbo", "appliesTo": ["D1"], "auto": true },
+      { "id": "fluxo-sem-cruzamento", "check": "o fluxo desenhado não cruza área suja com área limpa", "appliesTo": ["D1", "D4"], "auto": false },
+      { "id": "creditos-e-fontes", "check": "receitas, chefs, coautores e fontes estão creditados", "appliesTo": ["D2", "D5", "D7", "L5", "L10", "D10", "X1"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de receitas sigilosas, dados de empregador e fotos sem autorização", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D1", "D2", "D4", "D5", "D7", "D10", "X1"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "seguranca-do-alimento", "label": "Segurança do alimento", "levels": { "aproxima": "cita higiene de forma genérica", "atende": "aponta os perigos do processo e como controlá-los", "supera": "define pontos críticos, limites e ação corretiva como em APPCC" } },
+      { "id": "viabilidade", "label": "Viabilidade de produção", "levels": { "aproxima": "cardápio ou ficha difícil de executar com a equipe e o equipamento descritos", "atende": "executável no tempo e com os recursos do briefing", "supera": "antecipa gargalos de mise en place e propõe alternativas" } },
+      { "id": "coerencia-gastronomica", "label": "Coerência gastronômica", "levels": { "aproxima": "pratos sem relação entre si ou com o público", "atende": "cardápio coerente com público, estação e proposta", "supera": "narrativa clara entre pratos, ingredientes locais e técnica" } },
+      { "id": "apresentacao", "label": "Apresentação visual", "levels": { "aproxima": "fotos escuras ou pratos sem legenda", "atende": "fotos nítidas, prato identificado e técnica explicada", "supera": "composição e legenda mostram intenção e domínio técnico" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da gastronomia (cozinheiro, confeiteiro, sous chef, chef, tecnólogo em gastronomia; CBO 2711 e 5132). Use o vocabulário da área: ficha técnica, fator de correção, per capita, rendimento, CMV, mise en place, brigada, praça, POP, boas práticas, APPCC, engenharia de cardápio. Cite como referência a RDC ANVISA 216/2004 (boas práticas em serviços de alimentação), a RDC 275/2002 (POPs) e a RDC 26/2015 (alergênicos), sempre indicando que a aplicação depende da vigilância sanitária local. Nunca: redigir manual de boas práticas ou laudo para ser assinado como se fosse do responsável técnico; afirmar que uma preparação é segura para alérgicos ou pessoas com restrição de saúde; reproduzir receitas ou fichas técnicas de empregadores e chefs sem autorização; pedir ou usar fotos de clientes e bastidores sem consentimento; dar orientação nutricional ou de saúde (isso é do nutricionista). Pergunte antes de inferir tipo de cozinha, nível ou situação. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por quê, e aceita \"não me serve\". Afirmações sobre mercado citam fonte, data e região (CAGED, RAIS, ABRASEL) ou dizem \"estimativa\"; nunca prometa emprego, vaga ou salário. Progresso é por critérios atendidos, nunca por nota ou ranking. Pré-cheque só critérios objetivos (seções, quantidades e unidades, alergênicos, limites de temperatura, escala e legenda, créditos); a validação que gera selo é humana. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "RDC 216/2004 — Boas práticas para serviços de alimentação (ANVISA)", "url": "https://bvsms.saude.gov.br/bvs/saudelegis/anvisa/2004/res0216_15_09_2004.html", "kind": "norma" },
+      { "title": "RDC 275/2002 — POPs e lista de verificação de boas práticas (ANVISA)", "url": "https://bvsms.saude.gov.br/bvs/saudelegis/anvisa/2002/rdc0275_21_10_2002.html", "kind": "norma" },
+      { "title": "RDC 26/2015 — Rotulagem de alergênicos (ANVISA)", "url": "https://bvsms.saude.gov.br/bvs/saudelegis/anvisa/2015/rdc0026_02_07_2015.pdf", "kind": "norma" },
+      { "title": "CBO 2711 — Chefes de cozinha e afins (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "ABRASEL — Associação Brasileira de Bares e Restaurantes", "url": "https://abrasel.com.br/", "kind": "comunidade" },
+      { "title": "Novo CAGED — Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" },
+      { "title": "ESCO — ocupação chef", "url": "http://data.europa.eu/esco/occupation/1009be17-7efd-45f1-a033-566bf179c588", "kind": "referencia" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2/c5 com competências de cozinha; x1 (tipo de cozinha) e x2 (incluir custos) ajustam os exemplos." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Ficha técnica (X1), POP (L7), cardápio por briefing (L8) e prancha de pratos (D2) primeiro; cada card diz por que e aceita \"não me serve\" (d6)." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Respeita horas (d1) e turnos de cozinha; tarefas curtas (X1, L6) em dias de serviço, D1 e L4 em folga; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Pré-checa quantidades e unidades, alergênicos, limites de temperatura, seções, escala e créditos; nunca avalia sabor nem segurança real do alimento." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Esqueleto de ficha técnica, POP e proposta de cardápio com prévia; a pessoa preenche quantidades e técnica; nunca aplica sem revisão." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Grade da prancha de pratos (D2), áreas e setas de fluxo na planta de cozinha (D1), raias no fluxo de produção (D4)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: competências de cozinha declaradas e evidenciadas (fichas, POPs, portfólio), lacunas em relação ao cargo-alvo; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: hotelaria (A&B), eventos (banquetes), nutrição (UAN, com formação própria), turismo (gastronômico); dados de mercado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por CBO 2711/5132 e competências compartilhadas (confeitaria, cardápio, custos); só pessoas com opt-in." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com tipo de cozinha, três competências e um prato ou ficha como prova; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai casas, praças e cursos (boas práticas, técnico) em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters (fichas, POPs, cardápios)", "meus Drawings (pranchas, plantas)"],
+      "never": ["mensagens", "itens SIGILOSO", "receitas e fichas técnicas de empregadores sob sigilo", "fotos de clientes e bastidores sem autorização", "dados de saúde ou restrições alimentares de terceiros", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "perguntar em vez de inferir tipo de cozinha, nível ou situação",
+      "não afirmar que uma preparação é segura para alérgicos ou pessoas com restrição de saúde; orientação nutricional é do nutricionista",
+      "não redigir manual de boas práticas, laudo ou documento para assinatura de responsável técnico",
+      "não reproduzir receitas, fichas técnicas ou fotos de empregadores, chefs ou clientes sem autorização",
+      "nunca prometer emprego, vaga ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem nota, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "media", "drawings": "media" },
+    "drawingsModes": ["prancha", "2d-tecnico", "diagrama", "infografico"],
+    "lettersTemplates": ["pop", "proposta", "relatorio-tecnico", "estudo-de-caso", "bio", "curriculo", "post", "plano-30-60-90", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular: ficha técnica curta (X1), bio (L6), post (L5) e fotos para a prancha; planta de cozinha (D1) e relatório de CMV (L4) pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: a ficha técnica da preparação que você mais domina (45 min).",
+        "Por que esta tarefa: o POP de temperatura comprova boas práticas (RDC 216), que cozinhas de hotel e UAN pedem. Leva cerca de 1 h.",
+        "Sem pressão. Quando a semana de serviço acalmar, a tarefa de 15 min está aqui.",
+        "Três fotos de pratos seus já bastam para a prancha de portfólio. Quer começar?"
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": { "sensitiveData": ["receitas e fichas técnicas de empregadores protegidas por sigilo contratual", "fotos de clientes e de bastidores de estabelecimentos sem autorização", "restrições alimentares e dados de saúde de clientes", "custos, fornecedores e margens de empregadores"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2711 e 5132", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Extrator de dados do SIMT — Sistema de Informações sobre o Mercado de Trabalho no Setor Turismo (IPEA), inclui alimentação", "url": "https://www.ipea.gov.br/extrator/simt.html", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Pesquisa Anual de Serviços e PMS (IBGE) — serviços de alimentação", "url": "https://www.ibge.gov.br/estatisticas/economicas/servicos/9028-pesquisa-anual-de-servicos.html", "geography": "Brasil e UF", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "ABRASEL — pesquisas e indicadores do setor de bares e restaurantes", "url": "https://abrasel.com.br/", "geography": "Brasil e seccionais estaduais", "cadence": "eventual", "kind": "associacao" },
+      { "title": "ABIH Nacional — indicadores de hotelaria (A&B)", "url": "https://abih.com.br/", "geography": "Brasil e UF", "cadence": "eventual", "kind": "associacao" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "hotelaria", "why": "A área de A&B dos hotéis contrata cozinheiros e chefs e abre caminho para coordenação de alimentos e bebidas e banquetes.", "gaps": ["gestão de banquetes e eventos", "indicadores hoteleiros (ocupação, cativo de A&B)", "atendimento ao hóspede"], "steps": ["POP de banquete ou café da manhã (L7)", "relatório de CMV de um ponto de venda (L4)", "plano 30-60-90 para coordenação de A&B (L9)"] },
+    { "to": "eventos", "why": "Buffets e produtoras de eventos precisam de quem planeja cardápios, produção em volume e logística de alimentação.", "gaps": ["logística de evento e cronograma operacional", "orçamento e contratos com fornecedores", "legislação de eventos (licenças, Ecad)"], "steps": ["proposta de cardápio para evento (L8)", "diagrama do fluxo de produção e distribuição (D4)", "estudo de caso de um evento atendido (L3)"] },
+    { "to": "nutricao", "why": "Unidades de alimentação e nutrição juntam produção e nutrição; a atuação como nutricionista exige graduação e registro no CRN.", "gaps": ["graduação em Nutrição e registro no CRN", "avaliação nutricional e dietoterapia", "legislação do PAT e cardápios institucionais"], "steps": ["ficha técnica com informação nutricional estimada (X1)", "POP de UAN (L7)", "conversar com nutricionistas da rede sobre a formação"] },
+    { "to": "turismo", "why": "Turismo gastronômico, rotas de produtos locais e experiências culinárias usam o repertório regional do gastrônomo.", "gaps": ["planejamento de roteiros e experiências", "Cadastur e legislação do turismo", "marketing de destino"], "steps": ["post sobre um ingrediente regional (L5)", "proposta de experiência gastronômica para um destino (L8)", "prancha de portfólio com pratos regionais (D2)"] }
+  ],
+  "learning": [
+    { "title": "Cartilha sobre boas práticas para serviços de alimentação (RDC 216/2004)", "provider": "ANVISA", "url": "https://www.gov.br/anvisa/pt-br/centraisdeconteudo/publicacoes/alimentos/manuais-guias-e-orientacoes/cartilha-boas-praticas-para-servicos-de-alimentacao.pdf", "free": true, "kind": "norma" },
+      { "title": "Cursos on-line gratuitos para bares, restaurantes e alimentação", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+      { "title": "Escola Virtual.Gov — gestão, atendimento e segurança de alimentos", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+      { "title": "Programa Brasil Braços Abertos — capacitação gratuita em turismo e hospitalidade", "provider": "Ministério do Turismo", "url": "https://www.gov.br/turismo/pt-br/acesso-a-informacao/acoes-e-programas/brasil-bracos-abertos", "free": true, "kind": "curso" },
+      { "title": "Tecnólogo em Gastronomia nos Institutos Federais (catálogo de cursos)", "provider": "Rede Federal / MEC", "url": "https://www.gov.br/mec/pt-br/assuntos/educacao-profissional-e-tecnologica", "free": true, "kind": "portal" },
+      { "title": "Senac EAD — cursos livres de gastronomia (alguns gratuitos)", "provider": "Senac", "url": "https://www.ead.senac.br/", "free": false, "kind": "curso" },
+      { "title": "ABRASEL — conteúdos e capacitação para bares e restaurantes", "provider": "ABRASEL", "url": "https://abrasel.com.br/", "free": true, "kind": "comunidade" }
+  ],
+  "sources": [
+    { "title": "Catálogo de ramos acadêmicos — ramo gastronomia (CBO 2711/5132, ESCO chef, vizinhos, sensitiveData)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "RDC 216/2004 — Regulamento técnico de boas práticas para serviços de alimentação (ANVISA)", "url": "https://bvsms.saude.gov.br/bvs/saudelegis/anvisa/2004/res0216_15_09_2004.html", "accessedAt": "2026-11-02" },
+    { "title": "RDC 275/2002 — POPs (ANVISA)", "url": "https://bvsms.saude.gov.br/bvs/saudelegis/anvisa/2002/rdc0275_21_10_2002.html", "accessedAt": "2026-11-02" },
+    { "title": "Lei 11.771/2008 — Política Nacional de Turismo (art. 21, prestadores de serviços turísticos)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2008/lei/l11771.htm", "accessedAt": "2026-11-02" },
+    { "title": "CBO — Classificação Brasileira de Ocupações (MTE), famílias 2711 e 5132", "url": "https://cbo.mte.gov.br/", "accessedAt": "2026-11-02" },
+    { "title": "RF75 Work Station Career Guidance, CA19", "url": "docs/diagramas/RF75/README.md", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URLs de normas, estatísticas e recursos de aprendizagem não abertas nesta sessão (cota de busca); verificar especialmente a cartilha ANVISA e a página do Programa Brasil Braços Abertos",
+    "Família CBO 8483 (padeiros, confeiteiros) e 5134 (garçons) citadas de memória; conferir códigos no portal da CBO",
+    "Vigência atual das Portarias MS 1.428/1993 e SVS/MS 326/1997 e eventuais atualizações da RDC 216/2004 pela ANVISA",
+    "URIs ESCO das competências não confirmadas (esco: null); só a ocupação chef veio do catálogo",
+    "Cadência e abrangência das pesquisas da ABRASEL e da ABIH não confirmadas",
+    "Gratuidade dos cursos do Senac EAD varia por turma; marcado como não gratuito por precaução"
+  ]
+}

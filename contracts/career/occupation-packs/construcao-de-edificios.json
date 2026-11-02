@@ -1,0 +1,318 @@
+{
+  "schemaVersion": 1,
+  "code": "construcao-de-edificios",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Construção de Edifícios", "en": "Building Construction", "es": "Construcción de Edificios" },
+  "fields": ["construcao-de-edificios"],
+  "family": {
+    "cbo": [{ "code": "2142", "title": "Engenheiros civis e afins (2142-80 tecnólogo em construção civil)" }],
+    "isco08": [{ "code": "3112", "title": "Civil engineering technicians" }],
+    "esco": [{ "uri": "http://data.europa.eu/esco/occupation/0f5cc4eb-925d-4b99-be6d-b0964a253a9a", "label": "civil engineering technician" }]
+  },
+  "scope": {
+    "summary": "Tecnólogo em Construção de Edifícios (e perfis próximos: técnico em edificações, mestre e encarregado de obras) planeja, executa, controla e fiscaliza obras de edificação: canteiro, produção, qualidade, custos, prazos, segurança e documentação. Registro no CREA com atribuições de tecnólogo (Resolução CONFEA 313/1986); atua em construtoras, incorporadoras, empreiteiras, órgãos públicos e manutenção predial.",
+    "entryRoles": ["Estagiário de obras", "Auxiliar técnico de obras", "Técnico em edificações", "Apontador e auxiliar de planejamento", "Auxiliar de qualidade (PBQP-H)", "Orçamentista júnior"],
+    "midRoles": ["Tecnólogo em construção civil (gestão de frente de obra)", "Encarregado de produção", "Mestre de obras", "Técnico de planejamento e controle", "Técnico de qualidade e ensaios", "Orçamentista", "Fiscal de obras (prefeitura ou concessionária)"],
+    "seniorRoles": ["Gerente de obra ou de produção", "Coordenador de planejamento e custos", "Coordenador de qualidade", "Gestor de manutenção predial", "Supervisor de obras de uma regional", "Empreendedor em construção e reformas"],
+    "sectors": ["construtoras e incorporadoras", "empreiteiras e subempreiteiras", "habitação de interesse social (programas habitacionais)", "obras públicas e fiscalização", "manutenção predial e facilities", "reformas e retrofit (NBR 16280)", "indústria de pré-fabricados e sistemas construtivos", "varejo de materiais de construção (assistência técnica)"],
+    "regulation": [
+      { "name": "Lei 5.194/1966", "issuer": "Brasil", "about": "regula o exercício das profissões de engenharia; base do registro de tecnólogos no sistema CONFEA/CREA" },
+      { "name": "Resolução CONFEA 313/1986", "issuer": "CONFEA", "about": "atribuições dos tecnólogos: execução, fiscalização, orçamento e condução de obras na sua modalidade" },
+      { "name": "Resolução CONFEA 1.137/2023", "issuer": "CONFEA", "about": "ART e acervo técnico; o tecnólogo registra ART das atividades que executa" },
+      { "name": "NR-18 (MTE)", "issuer": "Ministério do Trabalho e Emprego", "about": "segurança e saúde na indústria da construção; PGR da obra, áreas de vivência, proteções coletivas" },
+      { "name": "ABNT NBR 15575:2021", "issuer": "ABNT", "about": "desempenho de edificações habitacionais; base do controle de qualidade e da manutenção" },
+      { "name": "ABNT NBR 14931:2023", "issuer": "ABNT", "about": "execução de estruturas de concreto: fôrmas, armação, concretagem, cura" },
+      { "name": "ABNT NBR 16280:2020 e NBR 5674:2012", "issuer": "ABNT", "about": "reformas em edificações e gestão da manutenção" },
+      { "name": "SiAC / PBQP-H", "issuer": "Ministério das Cidades", "about": "Sistema de Avaliação da Conformidade de empresas construtoras: procedimentos de execução e inspeção de serviços" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "canteiro de obras", "meaning": "área da obra com produção, almoxarifado, áreas de vivência e acessos, organizada pelo layout de canteiro" },
+      { "term": "frente de serviço", "meaning": "conjunto de atividades em andamento em um local da obra, com equipe e meta" },
+      { "term": "FVS", "meaning": "Ficha de Verificação de Serviço: checklist de inspeção de cada serviço executado (PBQP-H)" },
+      { "term": "PES", "meaning": "Procedimento de Execução de Serviço: passo a passo padronizado de um serviço (alvenaria, reboco, piso)" },
+      { "term": "diário de obra", "meaning": "registro diário de efetivo, atividades, clima, entregas e ocorrências" },
+      { "term": "medição", "meaning": "apuração dos serviços executados no período para pagamento de empreiteiros e cliente" },
+      { "term": "cronograma físico-financeiro", "meaning": "planejamento de serviços e desembolso no tempo; origem da curva S" },
+      { "term": "linha de balanço", "meaning": "técnica de planejamento de serviços repetitivos por pavimento ou unidade" },
+      { "term": "orçamento e BDI", "meaning": "custo direto por composições (SINAPI, TCPO) mais percentual de despesas indiretas e lucro" },
+      { "term": "quantitativo", "meaning": "levantamento de quantidades de serviços e materiais a partir do projeto" },
+      { "term": "slump test", "meaning": "ensaio de abatimento do concreto no recebimento (NBR 16889)" },
+      { "term": "corpo de prova", "meaning": "amostra de concreto moldada em obra para ensaio de resistência (NBR 12655)" },
+      { "term": "prumo, nível e esquadro", "meaning": "controles geométricos básicos da execução de alvenaria e estrutura" },
+      { "term": "PGR da obra", "meaning": "Programa de Gerenciamento de Riscos exigido pela NR-18 (sucessor do PCMAT)" },
+      { "term": "EPC e EPI", "meaning": "proteções coletivas (guarda-corpos, telas, bandejas) e individuais (capacete, cinto, luvas)" },
+      { "term": "as built", "meaning": "desenho conforme construído, com as alterações da execução" },
+      { "term": "não conformidade", "meaning": "serviço fora do especificado, registrado para correção e análise de causa" },
+      { "term": "retrofit e reforma", "meaning": "intervenção em edificação existente; exige plano de reforma e ART ou RRT (NBR 16280)" },
+      { "term": "ART", "meaning": "Anotação de Responsabilidade Técnica registrada no CREA pelo profissional responsável" },
+      { "term": "escala e cota", "meaning": "leitura de projeto: relação desenho/real e medidas que devem fechar com o levantamento" }
+    ],
+    "tools": ["AutoCAD", "Revit (leitura e quantitativos)", "SketchUp", "MS Project", "planilha eletrônica (Excel/Google Sheets)", "SINAPI e TCPO (bases de custo)", "Sienge, Mobuss ou similar (gestão de obras)", "trena a laser, nível e prumo", "aplicativos de diário de obra e checklist", "Letters e Drawings do Work Station"],
+    "deliverables": ["layout de canteiro de obras", "cronograma físico-financeiro e curva S", "orçamento e quantitativos", "diário de obra", "FVS e relatório de inspeção de serviços", "PES / procedimento de execução", "planilha de medição", "relatório de não conformidade", "plano de ataque da obra", "relatório fotográfico de andamento", "as built", "plano de reforma (NBR 16280)", "checklist de segurança do canteiro (NR-18)"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Leitura e interpretação de projetos", "esco": null, "kind": "nucleo" },
+      { "label": "Tecnologia construtiva e execução de serviços", "esco": null, "kind": "nucleo" },
+      { "label": "Planejamento e controle de obras (cronograma, linha de balanço)", "esco": null, "kind": "nucleo" },
+      { "label": "Orçamento, quantitativos e medições", "esco": null, "kind": "nucleo" },
+      { "label": "Controle de qualidade e inspeção de serviços (PBQP-H, NBR 15575)", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de canteiro e de equipes de produção", "esco": null, "kind": "nucleo" },
+      { "label": "Segurança do trabalho na construção (NR-18, NR-35)", "esco": null, "kind": "nucleo" },
+      { "label": "Controle tecnológico de materiais (concreto, argamassa)", "esco": null, "kind": "apoio" },
+      { "label": "Logística de suprimentos e almoxarifado", "esco": null, "kind": "apoio" },
+      { "label": "Topografia e locação de obra", "esco": null, "kind": "apoio" },
+      { "label": "Manutenção predial e reformas", "esco": null, "kind": "apoio" },
+      { "label": "Documentação e rastreabilidade (diário, fotos, ART)", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação direta com equipe de campo", "liderança de equipes de produção", "organização e disciplina de registro", "negociação com fornecedores", "ética e sigilo"],
+    "tracks": [
+      { "id": "executar-com-qualidade", "label": "Executar com qualidade", "steps": ["POP de um serviço de obra que você domina (L7)", "fluxo de inspeção e liberação de serviço (D4)", "detalhe construtivo de uma solução executada (D6)", "estudo de caso STAR de uma não conformidade resolvida (L3)"] },
+      { "id": "planejar-e-controlar", "label": "Planejar e controlar", "steps": ["infográfico de indicadores de obra: avanço, produtividade, curva S (D7)", "relatório técnico de andamento de obra (L4)", "plano 30-60-90 para o cargo-alvo (L9)"] },
+      { "id": "organizar-o-canteiro", "label": "Organizar o canteiro", "steps": ["layout de canteiro em planta 1:200 com áreas de vivência (D1)", "redesenho antes e depois de um canteiro ou processo (D5)", "prancha de portfólio com três obras (D2)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"técnico em edificações\", \"estagiário de obras\", \"encarregado\", \"mestre de obras\", \"apontador\", \"orçamentista\"",
+      "cboFamilies": ["2142", "3121", "7102"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez no canteiro ou no escritório da obra; se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, aprendizagem ou primeiro cargo em obra",
+        "junior": "até dois anos; acompanha frentes de serviço com supervisão",
+        "pleno": "responde por frentes de serviço, medições ou controle de qualidade com autonomia",
+        "senior": "referência técnica da obra; orienta encarregados e resolve não conformidades",
+        "gestao": "responde por obra inteira, equipe, prazo e custo"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (ex.: POP de um serviço ou plano de ataque da obra) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na construção de edifícios",
+      "options": ["ler projeto e tirar quantitativos", "executar e conferir alvenaria, estrutura e acabamento", "planejar e controlar o cronograma", "orçar e medir serviços", "inspecionar qualidade (FVS, ensaios)", "liderar equipe de produção", "organizar canteiro e logística", "aplicar NR-18 e NR-35 no dia a dia", "registrar diário de obra e fotos", "negociar com fornecedores e empreiteiros", "resolver não conformidades", "conduzir reformas e manutenção"],
+      "why": "Suas competências declaradas viram o ponto de partida; a prova vem com as tarefas (POP, fluxo, layout, relatório)."
+    },
+    "c4": {
+      "certifications": ["registro no CREA (tecnólogo ou técnico)", "curso técnico em edificações", "treinamento NR-18, NR-35 e NR-10 básico", "curso de PBQP-H / SiAC", "MS Project ou Lean Construction", "curso de orçamento com SINAPI", "operação de equipamentos (plataforma elevatória, grua)"],
+      "languages": ["inglês", "espanhol"],
+      "why": "Formação, registro e treinamentos mostram lacunas em relação ao cargo que você quer, sem julgar seu valor."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver na construção?",
+      "options": ["planejamento de obras (MS Project, linha de balanço)", "orçamento e medição", "controle de qualidade e ensaios", "gestão de equipe e canteiro", "segurança do trabalho (NR-18)", "leitura de projetos e BIM", "controle tecnológico de concreto", "reformas e manutenção predial", "suprimentos e logística", "fiscalização de obras públicas"],
+      "why": "Com isso monto uma trilha com tarefas progressivas em vez de mostrar o catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Onde você passa mais tempo hoje ou quer passar?", "type": "escolha", "options": ["no canteiro, com a produção", "no escritório da obra (planejamento, custos, qualidade)", "em fiscalização ou vistorias", "em reformas e manutenção"], "why": "Escolho a trilha inicial (executar, planejar ou organizar) e a primeira tarefa.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L7", "D4", "D6", "D7", "L4", "D1", "L3", "D5", "D2", "L1", "L6", "L9"],
+    "excluded": [
+      { "code": "D3", "reason": "render fotorrealista de produto não é entrega de obra" },
+      { "code": "D8", "reason": "vista explodida de conjunto mecânico não é entrega da área" },
+      { "code": "D9", "reason": "wireframe de tela não pertence à área" }
+    ],
+    "parameters": {
+      "L7": {
+        "title": "POP de um serviço de obra (PES)",
+        "brief": "Escreva o procedimento de execução de um serviço que você domina (alvenaria de vedação, contrapiso, revestimento cerâmico, impermeabilização): condições de início, materiais e ferramentas, passos numerados com responsável, critérios de aceitação por passo, itens de segurança (NR-18) e registros gerados (FVS).",
+        "parameters": { "steps": "8 a 15", "requiredColumns": ["passo", "responsável", "critério de aceitação", "registro"], "sections": ["condições de início", "materiais e ferramentas", "passos", "segurança", "registros"], "norms": ["NR-18", "NBR aplicável ao serviço"] },
+        "criteria": ["passos numerados com responsável", "critério de aceitação por passo (ex.: prumo ≤ 3 mm/m)", "itens de segurança do serviço citados", "norma ou referência técnica citada com número", "sem dados de fornecedor ou cliente real sem autorização"],
+        "evidence": "POP em PDF",
+        "time": "60 min",
+        "level": 1
+      },
+      "D4": {
+        "title": "Fluxo de inspeção e liberação de um serviço",
+        "brief": "Desenhe o fluxo de liberação de um serviço (concretagem, alvenaria, revestimento) com raias para encarregado, técnico de qualidade, engenheiro e fornecedor: início, verificações (FVS), decisão de aprovar ou corrigir, registro e fim.",
+        "parameters": { "lanes": ["encarregado", "qualidade", "engenheiro ou tecnólogo", "fornecedor ou laboratório"], "requiredElements": ["início", "fim", "decisão aprovar/corrigir", "FVS ou registro gerado", "tratamento de não conformidade"] },
+        "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "decisão de aprovação ou correção representada", "registro de saída identificado (FVS, boletim)"],
+        "evidence": "diagrama vetorial",
+        "time": "45 min",
+        "level": 2
+      },
+      "D6": {
+        "title": "Detalhe construtivo de uma solução executada",
+        "brief": "Detalhe em 1:20 ou 1:10 uma solução que você executou ou conhece (encunhamento de alvenaria, impermeabilização de baldrame, caimento de box, fixação de guarda-corpo provisório), com cotas, materiais, espessuras e a norma de referência.",
+        "parameters": { "scale": "1:20 ou 1:10", "requiredElements": ["cotas", "especificação de materiais", "espessuras", "sequência executiva numerada", "norma de referência"] },
+        "criteria": ["escala de detalhe declarada", "materiais especificados com nome e espessura", "cotas que fecham", "sequência executiva numerada", "declaração de autoria e ausência de projeto sob sigilo"],
+        "evidence": "prancha de detalhe PDF ou SVG",
+        "time": "90 min",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de indicadores de obra",
+        "brief": "Monte um infográfico com indicadores de uma obra (própria, fictícia ou autorizada): avanço físico previsto × realizado, produtividade de um serviço, não conformidades por mês ou curva S. Fonte dos dados, eixos rotulados e uma mensagem principal.",
+        "parameters": { "indicators": ["avanço previsto × realizado", "produtividade (m²/dia ou h/m²)", "não conformidades por mês", "curva S"], "requiredElements": ["fonte e período", "eixos rotulados", "mensagem principal"], "anonymizedData": true },
+        "criteria": ["fonte e período dos dados citados", "eixos e unidades rotulados", "uma mensagem principal explícita", "dados anonimizados (sem nome de obra ou cliente sem autorização)"],
+        "evidence": "imagem + PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório técnico de andamento de obra",
+        "brief": "Em até 4 páginas, relate o andamento de uma etapa de obra: objetivo, método de acompanhamento, serviços executados e indicadores, ocorrências e não conformidades, limitações e referências normativas. Inclua o aviso de exercício, sem valor de laudo ou ART.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "método", "serviços e indicadores", "ocorrências e não conformidades", "limitações", "referências"], "disclaimerRequired": true },
+        "criteria": ["seis seções nomeadas", "até 4 páginas", "ao menos um indicador com número", "norma ou NR citada com número", "aviso de exercício sem valor de laudo ou ART", "sem endereço, nome de cliente ou foto de terceiros"],
+        "evidence": "relatório PDF",
+        "time": "2 h",
+        "level": 3
+      },
+      "D1": {
+        "title": "Layout de canteiro de obras em 1:200",
+        "brief": "Desenhe a planta de um canteiro (real anonimizado ou fictício) em 1:200 com acessos, áreas de vivência (NR-18), almoxarifado, central de armação e fôrmas, baias de resíduos, circulação, grua ou guincho, cotas principais, norte, legenda e carimbo.",
+        "parameters": { "scale": "1:200", "requiredElements": ["acessos e portaria", "áreas de vivência", "almoxarifado", "centrais de produção", "baias de resíduos (CONAMA 307)", "circulação de pessoas e materiais", "cotas principais", "norte", "legenda", "carimbo"], "norm": "NR-18" },
+        "criteria": ["escala declarada no carimbo", "cotas principais que fecham com o terreno", "legenda com todas as áreas", "carimbo com título, escala, data e autoria", "áreas de vivência da NR-18 presentes"],
+        "evidence": "prancha PDF ou SVG",
+        "time": "2 h",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Ficha de verificação de serviço (FVS) com critérios de aceitação",
+        "competency": "Controle de qualidade e inspeção de serviços",
+        "criteria": ["ao menos 8 itens de verificação com tolerância numérica ou critério objetivo", "referência à norma ou ao PES de cada item", "campos de data, local, responsável e resultado (aprovado/corrigir)", "instrução de tratamento da não conformidade"],
+        "evidence": "ficha em PDF",
+        "time": "45 min",
+        "trigger": "Que serviço você inspeciona com mais frequência? Quer montar a ficha dele?",
+        "level": 1
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "passos-com-responsavel", "check": "todos os passos estão numerados e têm responsável e critério de aceitação", "appliesTo": ["L7", "X1"], "auto": true },
+      { "id": "fluxo-fechado", "check": "o fluxo tem início, fim, raias e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "escala-declarada", "check": "a escala aparece no carimbo e no título de cada desenho", "appliesTo": ["D1", "D6", "D2", "D5"], "auto": true },
+      { "id": "cotas-fecham", "check": "as cotas parciais somam a cota total em cada direção", "appliesTo": ["D1", "D6"], "auto": true },
+      { "id": "legenda-presente", "check": "há legenda com as áreas, materiais ou séries usadas", "appliesTo": ["D1", "D6", "D7"], "auto": true },
+      { "id": "carimbo-completo", "check": "o carimbo traz título, escala, data, número da prancha e autoria", "appliesTo": ["D1", "D6", "D2"], "auto": true },
+      { "id": "fonte-e-eixos", "check": "o infográfico cita fonte e período e rotula eixos e unidades", "appliesTo": ["D7"], "auto": true },
+      { "id": "secoes-do-relatorio", "check": "objetivo, método, serviços e indicadores, ocorrências, limitações e referências existem e estão nomeados", "appliesTo": ["L4"], "auto": true },
+      { "id": "norma-citada", "check": "cita ao menos uma NBR ou NR com número", "appliesTo": ["L7", "L4", "D6", "X1"], "auto": true },
+      { "id": "aviso-nao-substitui-art", "check": "o documento diz que é exercício e não substitui laudo, projeto ou ART", "appliesTo": ["L4", "D1", "D6"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L4", "L6", "L9"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e que não há projeto, orçamento ou foto de obra de cliente sem autorização", "appliesTo": ["L1", "L3", "L4", "L6", "L7", "L9", "D1", "D2", "D4", "D5", "D6", "D7", "X1"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "executabilidade", "label": "Executabilidade", "levels": { "aproxima": "o procedimento ou detalhe deixa dúvidas para quem vai executar", "atende": "um encarregado executa sem perguntar", "supera": "antecipa erros comuns e diz como evitá-los" } },
+      { "id": "controle-de-qualidade", "label": "Controle de qualidade", "levels": { "aproxima": "critérios vagos (\"bem feito\")", "atende": "tolerâncias numéricas e referência normativa", "supera": "liga cada critério ao desempenho final (NBR 15575) e ao tratamento da não conformidade" } },
+      { "id": "legibilidade-do-desenho", "label": "Legibilidade do desenho", "levels": { "aproxima": "linhas e textos se confundem", "atende": "hierarquia de linhas, textos e cotas permite leitura direta", "supera": "a prancha se lê no canteiro, impressa, sem explicação" } },
+      { "id": "resultado", "label": "Resultado demonstrado", "levels": { "aproxima": "descreve atividades, sem resultado", "atende": "mostra um resultado mensurável (prazo, retrabalho, acidente evitado)", "supera": "mostra resultado, contexto e o que faria diferente" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Construção de Edifícios (tecnólogo em construção civil, CBO 2142-80, e perfis próximos: técnico em edificações, encarregado, mestre de obras; registro no CREA, Lei 5.194/1966 e Resolução CONFEA 313/1986). Use o vocabulário do canteiro: frente de serviço, FVS, PES, diário de obra, medição, quantitativo, cronograma e curva S, linha de balanço, slump e corpo de prova, prumo, nível e esquadro, não conformidade, EPC e EPI, PGR da obra, as built. Cite normas com número: NR-18 e NR-35, ABNT NBR 15575:2021, 14931:2023, 12655, 16280:2020, 5674:2012, SiAC/PBQP-H, CONAMA 307 (resíduos). No Drawings, a rubrica objetiva é: escala declarada, cotas que fecham, legenda, carimbo completo; no fluxo, início, fim, raias e nenhuma tarefa órfã. Nunca produza laudo, projeto ou memorial assináveis nem sugira que substituem ART ou responsabilidade técnica; tudo é exercício de competência, com esse aviso no documento. Nunca valide a segurança de uma solução executiva real (escoramento, andaime, fôrma); indique a norma e um profissional habilitado. Projetos, orçamentos e fotos de obra de clientes não entram em portfólio sem autorização; fotos não podem expor terceiros nem a segurança de imóveis; nunca peça endereço de obra ou nome de proprietário. Pergunte antes de inferir área, senioridade ou situação. Afirmações sobre mercado da construção citam fonte, data e região (CAGED, RAIS, CBIC) ou dizem \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos, não por score; pré-cheque só critérios objetivos e lembre que o selo depende de revisão humana. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação da pessoa.",
+    "citeSources": [
+      { "title": "CONFEA — Conselho Federal de Engenharia e Agronomia", "url": "https://www.confea.org.br/", "kind": "conselho" },
+      { "title": "Normas Regulamentadoras vigentes (MTE) — NR-18, NR-35", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadoras/normas-regulamentadoras-vigentes", "kind": "norma" },
+      { "title": "Catálogo ABNT — NBR 15575, 14931, 12655, 16280, 5674", "url": "https://www.abntcatalogo.com.br/", "kind": "norma" },
+      { "title": "PBQP-H — Programa Brasileiro da Qualidade e Produtividade do Habitat", "url": "https://www.gov.br/cidades/pt-br/assuntos/habitacao/pbqp-h", "kind": "orgao-publico" },
+      { "title": "SINAPI — Caixa Econômica Federal", "url": "https://www.caixa.gov.br/poder-publico/modernizacao-gestao/sinapi/Paginas/default.aspx", "kind": "orgao-publico" },
+      { "title": "CBIC — Câmara Brasileira da Indústria da Construção", "url": "https://cbic.org.br/", "kind": "referencia" },
+      { "title": "Novo CAGED — Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências de canteiro e escritório de obra; x1 escolhe a trilha." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "L7, D4, D6 e D7 entram primeiro; cada card diz a competência, a evidência e que o resultado é exercício, sem ART." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano por horas (d1) e aparelho (d4): L7, X1 e L6 cabem no celular após o expediente; D1 e D6 só no computador." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Passos com responsável e critério, fluxo fechado, escala, cotas, legenda, carimbo, fonte do infográfico e aviso de não substituir ART; o selo é humano." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de POP, FVS e relatório de andamento com prévia; nunca redige laudo assinável." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias e decisões do fluxo, carimbo, legenda, conferência de cotas e áreas da NR-18 no layout; não valida soluções de segurança reais." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese das competências declaradas e evidenciadas (execução, planejamento, qualidade), lacunas e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: engenharia civil, arquitetura, segurança do trabalho, produção; dados de mercado com fonte e data." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por CBO 2142 e competências compartilhadas; só pessoas descobríveis por opt-in." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\"." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com frente de atuação, três competências e uma prova com link; só com consentimento específico." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "projetos e orçamentos de clientes sob NDA", "plantas com endereço e dados de proprietários", "fotos de obra que exponham terceiros ou a segurança de imóveis", "dados de acidentes identificáveis", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca produzir laudo, projeto ou memorial assinável nem sugerir que substitui ART ou responsabilidade técnica",
+      "nunca validar a segurança de escoramento, andaime, fôrma ou solução executiva real; indicar a norma e um profissional habilitado",
+      "projetos, orçamentos e fotos de obra de clientes não entram em portfólio sem autorização; fotos não expõem terceiros nem a segurança de imóveis",
+      "nunca pedir nem registrar endereço de obra ou nome de proprietário",
+      "perguntar em vez de inferir área, senioridade ou situação",
+      "mercado com fonte, data e região (CAGED, RAIS, CBIC) ou \"estimativa\"; sem promessa de emprego ou salário",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "media", "drawings": "alta" },
+    "drawingsModes": ["diagrama", "2d-tecnico", "infografico", "prancha"],
+    "lettersTemplates": ["pop", "relatorio-tecnico", "estudo-de-caso", "curriculo", "bio", "plano-30-60-90", "revisao", "post"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "Rotina de canteiro: L7, X1, L6 e L5 cabem no celular; D1, D6 e D7 exigem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: POP do serviço que você mais executa (60 min). Comprova padronização, que cargos de encarregado e qualidade pedem.",
+        "Falta só o critério de aceitação em dois passos para fechar os critérios objetivos do seu POP. Quando quiser.",
+        "Sem pressão. Quando quiser retomar, a ficha de verificação de serviço (45 min) está aqui.",
+        "Seu fluxo de liberação já tem raias e início. Falta a decisão \"aprovar ou corrigir\" para fechar."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": { "sensitiveData": ["projetos e orçamentos de clientes sob NDA", "plantas com endereço e dados de proprietários", "fotos de obra que exponham terceiros ou a segurança de imóveis"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — construção civil (seção F da CNAE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos por CBO 2142, 3121 e 7102", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "PNAD Contínua (IBGE) — ocupados na construção", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html", "geography": "Brasil e UF", "cadence": "trimestral", "kind": "estatistica-oficial" },
+      { "title": "CBIC — Hub de Dados e Desempenho Econômico da Construção", "url": "https://cbic.org.br/hubdedados/", "geography": "Brasil e UF", "cadence": "mensal", "kind": "associacao" },
+      { "title": "SmartLab — Observatório de Segurança e Saúde no Trabalho (acidentes na construção)", "url": "https://smartlabbr.org/sst", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Concurso Nacional Unificado e editais de fiscalização de obras (gov.br)", "url": "https://www.gov.br/gestao/pt-br/concursonacional", "geography": "Brasil", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis (CAGED, RAIS, PNAD, CBIC, SmartLab, editais); sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "engenharia-civil", "why": "Mesma família CBO 2142 e mesmo canteiro; o bacharelado amplia atribuições para projeto e cálculo.", "gaps": ["graduação em Engenharia Civil (bacharelado) e novas atribuições no CREA", "cálculo estrutural, fundações e hidráulica", "projeto executivo e memorial de cálculo"], "steps": ["detalhe construtivo com norma citada (D6)", "relatório técnico de obra (L4)", "avaliar aproveitamento de disciplinas do tecnólogo na graduação"] },
+    { "to": "arquitetura-e-urbanismo", "why": "Leitura de projeto, acompanhamento de obra e detalhamento são compartilhados; profissão própria com registro no CAU.", "gaps": ["graduação em Arquitetura e Urbanismo e registro no CAU", "concepção de projeto e representação (NBR 6492)"], "steps": ["planta baixa 1:50 com carimbo (D1 em modo arquitetura)", "prancha de portfólio com obras acompanhadas (D2)", "avaliar graduação"] },
+    { "to": "seguranca-do-trabalho", "why": "NR-18 e NR-35 já são rotina; o técnico ou tecnólogo em segurança do trabalho atua no mesmo canteiro.", "gaps": ["curso técnico ou tecnólogo em Segurança do Trabalho e registro (MTE ou CREA)", "NR-1 (GRO/PGR), higiene ocupacional e ergonomia"], "steps": ["fluxo de PGR da obra (D4)", "POP de permissão de trabalho em altura (L7)", "curso técnico em segurança do trabalho (SENAI, institutos federais)"] },
+    { "to": "engenharia-de-producao", "why": "Planejamento, produtividade e qualidade do canteiro são competências de produção; Lean Construction é ponte direta.", "gaps": ["métodos de produção, PCP e estatística", "graduação ou pós em produção"], "steps": ["infográfico de produtividade de um serviço (D7)", "redesenho antes e depois de um processo de obra (D5)", "curso de Lean Construction"] }
+  ],
+  "learning": [
+    { "title": "Normas Regulamentadoras vigentes — NR-18 e NR-35", "provider": "Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadoras/normas-regulamentadoras-vigentes", "free": true, "kind": "norma" },
+      { "title": "PBQP-H / SiAC — regimento e requisitos para construtoras", "provider": "Ministério das Cidades", "url": "https://www.gov.br/cidades/pt-br/assuntos/habitacao/pbqp-h", "free": true, "kind": "portal" },
+    { "title": "SINAPI — metodologia, cadernos técnicos e composições", "provider": "Caixa Econômica Federal", "url": "https://www.caixa.gov.br/poder-publico/modernizacao-gestao/sinapi/Paginas/default.aspx", "free": true, "kind": "portal" },
+    { "title": "Cursos a distância gratuitos do SENAI (construção civil, segurança)", "provider": "SENAI", "url": "https://www.senai.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — fiscalização de obras públicas e licitações", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Guias técnicos e cartilhas da CBIC (desempenho, qualidade, segurança)", "provider": "CBIC", "url": "https://cbic.org.br/publicacoes/", "free": true, "kind": "portal" },
+    { "title": "Fundacentro — publicações sobre segurança na construção", "provider": "Fundacentro", "url": "https://www.gov.br/fundacentro/pt-br", "free": true, "kind": "portal" },
+    { "title": "Catálogo ABNT — NBR 15575, 14931, 16280, 5674", "provider": "ABNT", "url": "https://www.abntcatalogo.com.br/", "free": false, "kind": "norma" }
+  ],
+  "sources": [
+    { "title": "Fase 1 — grupo Engenharia e TIC (dados do ramo, famílias CBO/ISCO, conselho, vizinhos; CBO 2142-80 via espelho VRI)", "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=214280", "accessedAt": "2026-11-02" },
+    { "title": "CONFEA — Confea atualiza regras de ART e acervo técnico (Resolução 1.137/2023)", "url": "https://www.confea.org.br/node/232878", "accessedAt": "2026-11-02" },
+    { "title": "World of Taxonomy — ESCO civil engineering technician (0f5cc4eb…) ↔ ISCO-08 3112 (espelho, não oficial)", "url": "https://worldoftaxonomy.com/codes/esco_occupations/0f5cc4eb-925d-4b99-be6d-b0964a253a9a", "accessedAt": "2026-11-02" },
+    { "title": "CBIC — Construção civil ultrapassa 3 milhões de empregos formais (Novo CAGED, 2025)", "url": "https://cbic.org.br/construcao-supera-3-milhoes-de-trabalhadores-formais/", "accessedAt": "2026-11-02" },
+    { "title": "Firjan — Atualização das Normas Regulamentadoras (NR-18 e NR-1, vigência 2022)", "url": "https://www.firjan.com.br/data/files/C5/42/BF/36/21EDD71090D309D7A8A809C2/Atualizacao%20das%20Normas%20Regulamentadoras.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URI ESCO de civil engineering technician obtida em espelho (World of Taxonomy), não no portal esco.ec.europa.eu (host bloqueado)",
+    "Resolução CONFEA 313/1986 (atribuições de tecnólogos) citada de memória; não apareceu nas buscas",
+    "Anos de edição das NBR (14931:2023, 16280:2020, 5674:2012, 15575:2021, 12655, 16889) não conferidos no catálogo ABNT",
+    "Famílias CBO 3121 (técnicos em construção civil) e 7102 (supervisores da construção civil) não conferidas no portal da CBO",
+    "URL do PBQP-H no gov.br/cidades, do SENAI, do SmartLab (smartlabbr.org/sst) e do CNU não abertas nesta sessão",
+    "Substituição do PCMAT pelo PGR na NR-18 vista só em fonte secundária (Firjan, redes sociais)",
+    "Número de ~3 milhões de empregos formais na construção (CBIC/CAGED 2025) visto só em resumo de busca",
+    "Nenhuma URI ESCO de competência (skill) confirmada; todas as competências com esco: null"
+  ]
+}

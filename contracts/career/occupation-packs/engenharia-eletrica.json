@@ -1,0 +1,338 @@
+{
+  "schemaVersion": 1,
+  "code": "engenharia-eletrica",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Engenharia Elétrica", "en": "Electrical Engineering", "es": "Ingeniería Eléctrica" },
+  "fields": ["engenharia-eletrica"],
+  "family": {
+    "cbo": [{ "code": "2143", "title": "Engenheiros eletricistas, eletrônicos e afins" }],
+    "isco08": [
+      { "code": "2151", "title": "Electrical engineers" },
+      { "code": "2152", "title": "Electronics engineers" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/86ca306c-ab99-420a-9e2a-aa73c5c4de22", "label": "electrical engineer" },
+      { "uri": "http://data.europa.eu/esco/occupation/0e99c929-364f-4b0a-8a64-2aab42420f00", "label": "renewable energy engineer" }
+    ]
+  },
+  "scope": {
+    "summary": "Projeta, dimensiona, executa, inspeciona e mantém instalações e sistemas elétricos, eletrônicos, de energia e de telecomunicações: geração, transmissão e distribuição, instalações prediais e industriais, máquinas elétricas, eletrônica e sistemas fotovoltaicos. Profissão regulamentada pela Lei 5.194/1966; registro no CREA e ART para cada serviço técnico.",
+    "entryRoles": ["Estagiário de engenharia elétrica", "Engenheiro eletricista júnior", "Projetista elétrico", "Engenheiro de campo (comissionamento)", "Analista de eficiência energética"],
+    "midRoles": ["Engenheiro eletricista pleno", "Engenheiro de projetos elétricos", "Engenheiro de manutenção elétrica", "Engenheiro de sistemas de potência", "Engenheiro de telecomunicações"],
+    "seniorRoles": ["Engenheiro eletricista sênior / responsável técnico", "Coordenador de engenharia elétrica", "Engenheiro consultor em energia", "Gerente de operação e manutenção", "Especialista em proteção e automação de subestações"],
+    "sectors": ["energia (geração, transmissão e distribuição)", "construção civil e instalações prediais", "indústria de transformação", "telecomunicações", "energias renováveis (solar, eólica)", "eletroeletrônica", "mineração e óleo e gás", "concessionárias e empresas públicas", "consultoria e projetos", "ensino e pesquisa"],
+    "regulation": [
+      { "name": "Lei 5.194/1966", "issuer": "Brasil (CONFEA/CREA)", "about": "regula o exercício da engenharia; registro obrigatório no CREA; responsabilidade técnica" },
+      { "name": "Lei 6.496/1977 e Resolução CONFEA 1.025/2009", "issuer": "Brasil / CONFEA", "about": "Anotação de Responsabilidade Técnica (ART) obrigatória para todo projeto, obra ou serviço de engenharia" },
+      { "name": "Resolução CONFEA 218/1973, arts. 8º e 9º; Resolução 1.073/2016", "issuer": "CONFEA", "about": "atividades e atribuições do engenheiro eletricista/eletrônico; regulamentação da atribuição de títulos e campos de atuação" },
+      { "name": "Resolução CONFEA 1.002/2002", "issuer": "CONFEA", "about": "Código de Ética Profissional da engenharia: sigilo, honestidade técnica, não assinar o que não executou" },
+      { "name": "ABNT NBR 5410:2004 (versão corrigida 2008)", "issuer": "ABNT", "about": "instalações elétricas de baixa tensão (até 1.000 V CA / 1.500 V CC); em revisão (consulta pública 2023–2024)" },
+      { "name": "ABNT NBR 14039 e NBR 5419", "issuer": "ABNT", "about": "instalações elétricas de média tensão (1 kV a 36,2 kV) e proteção contra descargas atmosféricas (SPDA)" },
+      { "name": "NR-10 (Portaria MTE 737/2026, vigência 2027; texto anterior Portaria 598/2004)", "issuer": "MTE", "about": "segurança em instalações e serviços em eletricidade; prontuário, treinamento e hierarquia de controle de riscos" },
+      { "name": "ABNT NBR 10582, NBR 10067 e NBR 8403", "issuer": "ABNT", "about": "apresentação da folha, princípios gerais de representação e linhas em desenho técnico" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "diagrama unifilar", "meaning": "representação simplificada de um sistema elétrico em que cada circuito trifásico é desenhado como uma linha" },
+      { "term": "diagrama trifilar / multifilar", "meaning": "diagrama com todos os condutores representados; usado em detalhamento de painéis e comandos" },
+      { "term": "QDC / QGBT", "meaning": "quadro de distribuição de circuitos e quadro geral de baixa tensão" },
+      { "term": "memorial descritivo", "meaning": "texto que descreve o projeto, premissas, normas aplicadas e materiais especificados" },
+      { "term": "memorial de cálculo", "meaning": "demonstração do dimensionamento: demanda, corrente, queda de tensão, curto-circuito, proteção" },
+      { "term": "ART", "meaning": "Anotação de Responsabilidade Técnica registrada no CREA para cada serviço; só o profissional habilitado assina" },
+      { "term": "demanda", "meaning": "potência máxima solicitada pela instalação num intervalo de tempo; base do dimensionamento da entrada" },
+      { "term": "queda de tensão", "meaning": "diferença de tensão ao longo do condutor; limites da NBR 5410 (ex.: 4% a partir do ponto de entrega)" },
+      { "term": "DR / DPS / disjuntor", "meaning": "dispositivo diferencial-residual, dispositivo de proteção contra surtos e dispositivo de proteção contra sobrecorrente" },
+      { "term": "seletividade e coordenação", "meaning": "ajuste das proteções para que só o dispositivo mais próximo da falta atue" },
+      { "term": "fator de potência", "meaning": "relação entre potência ativa e aparente; abaixo de 0,92 gera cobrança de reativo" },
+      { "term": "aterramento e equipotencialização", "meaning": "ligação à terra e interligação das massas; esquemas TN, TT e IT" },
+      { "term": "subestação", "meaning": "instalação de transformação e manobra entre níveis de tensão" },
+      { "term": "comissionamento", "meaning": "testes e verificação de que a instalação funciona conforme o projeto antes da entrega" },
+      { "term": "prontuário de instalações elétricas (PIE)", "meaning": "conjunto de documentos exigido pela NR-10 para instalações acima de 75 kW" },
+      { "term": "lista de materiais", "meaning": "quantitativo de cabos, eletrodutos, dispositivos e equipamentos do projeto" },
+      { "term": "as built", "meaning": "desenho atualizado com o que foi efetivamente executado na obra" },
+      { "term": "SFV (sistema fotovoltaico)", "meaning": "geração solar conectada à rede (on-grid) ou isolada; NBR 16690 e normas da concessionária" },
+      { "term": "CLP", "meaning": "controlador lógico programável, interface entre instalação elétrica e automação" },
+      { "term": "harmônicas", "meaning": "distorções na forma de onda causadas por cargas não lineares; afetam qualidade de energia" }
+    ],
+    "tools": ["AutoCAD / AutoCAD Electrical", "Revit MEP (BIM)", "QiElétrico / Lumine", "EPLAN", "DIALux (luminotécnica)", "ETAP / PowerFactory / ANAFAS", "MATLAB / Simulink", "PVsyst / PV*SOL", "multímetro, alicate amperímetro, termovisor, analisador de energia", "planilhas de dimensionamento", "software de SPDA e aterramento", "Proteus / LTspice (eletrônica)"],
+    "deliverables": ["projeto elétrico executivo (plantas, unifilar, quadros de cargas)", "diagrama unifilar", "memorial descritivo e de cálculo", "lista de materiais e orçamento", "laudo de inspeção de instalações elétricas", "projeto de SPDA e aterramento", "projeto de sistema fotovoltaico", "projeto luminotécnico", "estudo de curto-circuito e seletividade", "relatório de comissionamento / as built", "prontuário NR-10", "plano de manutenção elétrica"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Dimensionamento de instalações elétricas de baixa tensão (NBR 5410)", "esco": null, "kind": "nucleo" },
+      { "label": "Leitura e elaboração de diagramas unifilares e multifilares", "esco": null, "kind": "nucleo" },
+      { "label": "Análise de circuitos e máquinas elétricas", "esco": null, "kind": "nucleo" },
+      { "label": "Proteção, seletividade e aterramento", "esco": null, "kind": "nucleo" },
+      { "label": "Sistemas de potência (geração, transmissão, distribuição)", "esco": null, "kind": "nucleo" },
+      { "label": "Segurança em eletricidade (NR-10) e análise de risco", "esco": null, "kind": "nucleo" },
+      { "label": "Eletrônica analógica, digital e de potência", "esco": null, "kind": "nucleo" },
+      { "label": "Eficiência energética e qualidade de energia", "esco": null, "kind": "nucleo" },
+      { "label": "Projeto de sistemas fotovoltaicos e energias renováveis", "esco": null, "kind": "nucleo" },
+      { "label": "Desenho técnico e CAD elétrico", "esco": null, "kind": "apoio" },
+      { "label": "Telecomunicações e redes de dados", "esco": null, "kind": "apoio" },
+      { "label": "Automação e CLP", "esco": null, "kind": "apoio" },
+      { "label": "Orçamento e especificação de materiais", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de manutenção elétrica", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação técnica escrita", "trabalho em equipe multidisciplinar", "gestão de prazos e escopo", "ética e responsabilidade técnica", "aprendizagem de normas em atualização"],
+    "tracks": [
+      { "id": "projetista-eletrico", "label": "Projetista elétrico", "steps": ["unifilar com quadro de cargas de uma instalação (D6)", "memorial de cálculo do dimensionamento (L4)", "lista de materiais e POP de verificação (L7)", "prancha de portfólio com três projetos (D2)"] },
+      { "id": "energia-e-renovaveis", "label": "Energia e renováveis", "steps": ["estudo de caso de um projeto fotovoltaico ou de eficiência (L3)", "infográfico de consumo antes e depois (D7)", "relatório técnico de dimensionamento de SFV (L4)", "plano 30-60-90 para vaga em energia (L9)"] },
+      { "id": "manutencao-e-campo", "label": "Manutenção e campo", "steps": ["POP de intervenção com bloqueio e etiquetagem NR-10 (L7)", "diagrama do fluxo de uma manutenção que você melhorou (D4)", "redesenho antes e depois de um painel ou rotina (D5)", "post sobre uma lição de segurança (L5)"] },
+      { "id": "apresentar-se", "label": "Apresentar-se como engenheiro(a)", "steps": ["bio com área e registro (L6)", "currículo direcionado (L1)", "carta para a oportunidade (L2)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"projetista elétrico\", \"engenheiro de manutenção\", \"técnico em eletrotécnica\", \"eletricista industrial\"",
+      "cboFamilies": ["2143", "3131", "7156", "9511"],
+      "why": "Pergunto seu último cargo ou área para começar do que você já domina em elétrica (projeto, campo, manutenção, eletrônica) e não do zero. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, trainee ou primeiro cargo; ainda sem ART própria",
+        "junior": "até dois anos; projeta e executa sob supervisão de responsável técnico",
+        "pleno": "assina ART dos próprios projetos; atua com autonomia",
+        "senior": "responsável técnico de equipe; revisa projetos e laudos",
+        "gestao": "coordena engenharia, contratos ou operação e manutenção"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (de unifilar residencial a estudo de seletividade) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em elétrica",
+      "options": ["dimensionar circuitos e quadros", "ler e desenhar unifilares", "projetar em CAD / Revit MEP", "instalações industriais e motores", "proteção e seletividade", "sistemas fotovoltaicos", "manutenção e comissionamento", "eletrônica e placas", "automação e CLP", "eficiência energética", "telecomunicações e redes", "orçamento e especificação", "segurança NR-10 e análise de risco", "laudos e inspeções"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com unifilares, memoriais e relatórios."
+    },
+    "c4": {
+      "certifications": ["registro no CREA (engenheiro ou tecnólogo)", "curso NR-10 básico e SEP (complementar)", "curso NR-35 (trabalho em altura)", "certificação em Revit MEP / AutoCAD", "curso de projetista fotovoltaico", "pós-graduação em sistemas de potência, energias renováveis ou automação", "mestrado / doutorado"],
+      "languages": ["inglês técnico (manuais e normas IEC)", "espanhol"],
+      "why": "Formação, registro e cursos de segurança ajudam a ver lacunas em relação ao cargo que você quer; muitas vagas exigem NR-10 válida."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver em elétrica?",
+      "options": ["dimensionamento NBR 5410", "projeto em Revit MEP / BIM", "média tensão e subestações", "proteção e seletividade", "sistemas fotovoltaicos", "eficiência energética", "automação e CLP", "eletrônica de potência", "qualidade de energia e harmônicas", "orçamento e gestão de projetos elétricos"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (unifilar → memorial → estudo) em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Como está seu registro no CREA?", "type": "escolha", "options": ["ativo", "em andamento", "ainda não tenho", "não se aplica"], "why": "Pergunto porque assinar projeto e ART depende do registro; sem ele, as tarefas ficam como estudo e portfólio, sem simular documento assinável.", "where": "P" },
+      { "id": "x2", "prompt": "Em que frente você atua ou quer atuar?", "type": "lista", "options": ["projeto (escritório)", "campo e obra", "manutenção industrial", "energia e renováveis", "eletrônica", "telecomunicações", "ensino e pesquisa"], "why": "Pergunto para priorizar tarefas de desenho (projeto) ou de procedimento e relatório (campo e manutenção).", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["D6", "L4", "L6", "L1", "D7", "L7", "L3", "D4", "L9", "D2", "L5", "L10"],
+    "excluded": [
+      { "code": "D9", "reason": "wireframe de tela é entrega de UX, não da engenharia elétrica" },
+      { "code": "D1", "reason": "planta de ambiente é entrega de arquitetura; a planta elétrica entra como detalhe em D6" },
+      { "code": "D3", "reason": "modelo 3D de produto com render não é evidência típica; usar D6 (detalhe) ou D2 (prancha)" }
+    ],
+    "parameters": {
+      "D6": {
+        "title": "Diagrama unifilar com quadro de cargas",
+        "brief": "Desenhe o diagrama unifilar de uma instalação (residencial, comercial ou um painel industrial) com entrada, medição, proteção geral, circuitos terminais e quadro de cargas, seguindo a simbologia da NBR 5444/IEC 60617 e os limites da NBR 5410. Use dados fictícios ou anonimizados; não copie projeto de cliente.",
+        "parameters": { "minCircuits": 6, "requiredElements": ["entrada e medição", "proteção geral", "DR", "DPS", "aterramento", "quadro de cargas"], "standards": ["NBR 5410", "NBR 5444", "NBR 10582"], "sheetFormat": "A3 com carimbo e legenda" },
+        "criteria": ["ao menos 6 circuitos com seção, disjuntor e potência", "DR e DPS representados onde a NBR 5410 exige", "legenda de símbolos e carimbo preenchidos", "quadro de cargas com demanda e corrente por circuito", "declaração de que os dados são fictícios ou anonimizados"],
+        "evidence": "prancha PDF/SVG do unifilar",
+        "time": "2 h",
+        "level": 2
+      },
+      "L4": {
+        "title": "Memorial de cálculo de um circuito ou instalação",
+        "brief": "Escreva um relatório técnico curto com o dimensionamento de uma instalação: objetivo, premissas, critérios da NBR 5410 (corrente, queda de tensão, curto-circuito, proteção), resultados em tabela, limitações e referências. Até 4 páginas. É estudo para portfólio, não documento assinável.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "premissas e dados", "método e critérios normativos", "resultados", "limitações", "referências"], "checks": ["capacidade de corrente", "queda de tensão", "proteção contra sobrecorrente", "curto-circuito"] },
+        "criteria": ["seis seções nomeadas", "cita a norma e o item usado em cada critério", "tabela de resultados por circuito", "até 4 páginas", "aviso de que não substitui projeto com ART"],
+        "evidence": "relatório PDF versionado",
+        "time": "2 h",
+        "level": 3
+      },
+      "L6": {
+        "title": "Resumo de perfil em engenharia elétrica",
+        "brief": "Escreva até 600 caracteres com sua frente (projeto, energia, manutenção, eletrônica), três competências e uma prova com link (unifilar, memorial, relatório). Sem dados pessoais além do nome.",
+        "parameters": { "maxChars": 600, "requiredParts": ["frente de atuação", "três competências", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia a frente de atuação", "cita três competências", "inclui uma prova com link"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado para a vaga em elétrica",
+        "brief": "Monte um currículo de uma página para o cargo-alvo (ex.: projetista elétrico, engenheiro de manutenção), com três conquistas com número (kW instalados, redução de consumo, prazos), softwares, normas que domina e situação do registro.",
+        "parameters": { "maxPages": 1, "achievementsWithNumbers": 3, "keywordsFrom": "cargo-alvo", "mustMention": ["softwares", "normas", "registro CREA ou situação"] },
+        "criteria": ["uma página", "três conquistas com número", "palavras-chave do cargo-alvo presentes", "lista softwares e normas", "sem idade, estado civil ou foto obrigatória"],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "D7": {
+        "title": "Infográfico de consumo ou eficiência energética",
+        "brief": "Mostre o resultado de um projeto (consumo antes e depois, geração fotovoltaica mensal, fator de potência) em um infográfico com fonte dos dados, eixos rotulados e uma mensagem principal. Dados anonimizados.",
+        "parameters": { "requiredElements": ["fonte dos dados", "eixos rotulados", "unidades (kWh, kW, %)", "uma mensagem principal"] },
+        "criteria": ["fonte citada", "eixos e unidades rotulados", "uma mensagem principal explícita", "sem identificar cliente"],
+        "evidence": "imagem PNG + PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "L7": {
+        "title": "POP de intervenção elétrica segura (NR-10)",
+        "brief": "Escreva um procedimento operacional de uma intervenção que você domina (ex.: troca de disjuntor em QDC, medição em painel energizado) com passos numerados, responsável, EPI, bloqueio e etiquetagem, e critério de conclusão por passo.",
+        "parameters": { "requiredElements": ["passos numerados", "responsável por passo", "EPI/EPC", "desenergização ou bloqueio", "critério de conclusão por passo"] },
+        "criteria": ["passos numerados com responsável", "etapa de desenergização, bloqueio e teste de ausência de tensão", "EPI e EPC listados", "critério de conclusão em cada passo"],
+        "evidence": "POP em modelo",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Lista de materiais e especificação técnica",
+        "competency": "Orçamento e especificação de materiais",
+        "criteria": ["itens com descrição normativa (seção, tensão, corrente, classe)", "quantidades e unidades", "referência ao circuito ou prancha de origem", "sem preço de fornecedor identificado"],
+        "evidence": "planilha ou tabela no documento",
+        "time": "45 min",
+        "trigger": "Quer mostrar que sabe especificar e quantificar um projeto?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "carimbo-e-legenda", "check": "a prancha tem carimbo preenchido e legenda de símbolos", "appliesTo": ["D6", "D2"], "auto": true },
+      { "id": "quadro-de-cargas", "check": "existe quadro de cargas com potência, corrente, seção e proteção por circuito", "appliesTo": ["D6"], "auto": true },
+      { "id": "normas-citadas", "check": "cita ao menos uma norma (NBR 5410, NR-10 etc.) com item ou seção", "appliesTo": ["D6", "L4", "L7", "X1"], "auto": true },
+      { "id": "secoes-do-memorial", "check": "as seções objetivo, método, resultados, limitações e referências existem e estão nomeadas", "appliesTo": ["L4", "L3", "L9"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas, palavras ou caracteres", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "aviso-nao-assinavel", "check": "o documento declara que é estudo de portfólio e não substitui projeto ou laudo com ART", "appliesTo": ["D6", "L4", "X1"], "auto": true },
+      { "id": "dados-anonimizados", "check": "a pessoa declarou autoria e que os dados são fictícios ou anonimizados (sem cliente, endereço ou concessionária identificados)", "appliesTo": ["D6", "D7", "L3", "L4", "L7", "D4", "D5", "D2", "X1"], "auto": true },
+      { "id": "fonte-e-eixos", "check": "infográfico tem fonte dos dados e eixos com unidades", "appliesTo": ["D7"], "auto": true },
+      { "id": "passos-com-responsavel", "check": "cada passo do POP tem responsável e critério de conclusão", "appliesTo": ["L7"], "auto": true },
+      { "id": "dimensionamento-coerente", "check": "seções e proteções são coerentes com a corrente de projeto e a queda de tensão calculada", "appliesTo": ["D6", "L4"], "auto": false }
+    ],
+    "subjective": [
+      { "id": "rigor-tecnico", "label": "Rigor técnico", "levels": { "aproxima": "aplica critérios de forma genérica, sem citar o item normativo", "atende": "aplica os critérios corretos da norma e justifica escolhas", "supera": "discute alternativas, limites da norma e impacto na segurança e no custo" } },
+      { "id": "legibilidade-do-desenho", "label": "Legibilidade do desenho", "levels": { "aproxima": "símbolos inconsistentes ou informação faltando", "atende": "simbologia normalizada, informação completa e organizada", "supera": "quem lê encontra qualquer circuito sem esforço; hierarquia visual clara" } },
+      { "id": "seguranca", "label": "Segurança incorporada", "levels": { "aproxima": "segurança aparece como lembrete genérico", "atende": "riscos identificados e medidas de controle ligadas a cada etapa", "supera": "hierarquia de controle (eliminar → EPI) explícita e verificável" } },
+      { "id": "resultado", "label": "Resultado demonstrado", "levels": { "aproxima": "descreve atividades, sem resultado", "atende": "mostra um resultado mensurável (kWh, kW, R$ evitados, prazo)", "supera": "resultado, contexto, limitações e o que faria diferente" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa da Engenharia Elétrica (eletricista, eletrônica, energia, telecomunicações; CBO 2143). Use o vocabulário da área: diagrama unifilar, quadro de cargas, memorial descritivo e de cálculo, demanda, queda de tensão, DR, DPS, seletividade, aterramento, SPDA, comissionamento, as built, prontuário NR-10, sistema fotovoltaico. Cite normas pelo nome e item quando couber: ABNT NBR 5410:2004 (baixa tensão), NBR 14039 (média tensão), NBR 5419 (SPDA), NBR 16690 (fotovoltaica), NR-10, NBR 10582/10067 (desenho técnico), Lei 5.194/1966 e Resolução CONFEA 1.002/2002 (ética). O que nunca fazer: não produza nem apresente como pronto um projeto, laudo, memorial ou ART assináveis; tudo que a IA gera é estudo de portfólio e exercício, e a responsabilidade técnica é sempre do profissional registrado no CREA. Não dimensione instalações reais para terceiros nem dê instrução de intervenção em instalação energizada; remeta à NR-10 e ao profissional habilitado. Não use nem peça unifilares, plantas, dados de concessionária ou de infraestrutura crítica de clientes; proponha versões fictícias ou anonimizadas. Pergunte antes de inferir frente de atuação, nível ou registro. Toda sugestão de tarefa diz a competência que comprova, a evidência, o tempo e o porquê, e aceita \"não me serve\". Dados de mercado só com fonte, data e região (CAGED, RAIS, CONFEA) ou \"estimativa\"; nunca prometa emprego nem fale de salário. Progresso é por critérios atendidos; a pré-checagem cobre só critérios objetivos (carimbo, legenda, quadro de cargas, seções, norma citada, aviso de não assinável) e o selo depende de revisão humana.",
+    "citeSources": [
+      { "title": "CONFEA — Normativos (Lei 5.194/1966, Resoluções 218/1973, 1.002/2002, 1.025/2009, 1.073/2016)", "url": "https://normativos.confea.org.br/", "kind": "conselho" },
+      { "title": "MTE — Normas Regulamentadoras vigentes (NR-10, NR-12, NR-35)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadoras/normas-regulamentadoras-vigentes", "kind": "norma" },
+      { "title": "MTE — Manual de auxílio na interpretação e aplicação da NR-10", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/arquivos/normas-regulamentadoras/nr-10_manual_de_auxilio_na_interpretacao_e_aplicacao_da_nr_10.pdf", "kind": "orgao-publico" },
+      { "title": "Catálogo ABNT (NBR 5410, NBR 14039, NBR 5419, NBR 16690, NBR 10582)", "url": "https://www.abntcatalogo.com.br/", "kind": "norma" },
+      { "title": "CBO — família 2143 Engenheiros eletricistas, eletrônicos e afins (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "ESCO — electrical engineer", "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http://data.europa.eu/esco/occupation/86ca306c-ab99-420a-9e2a-aa73c5c4de22", "kind": "referencia" },
+      { "title": "Novo CAGED — MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" },
+      { "title": "ANEEL — Procedimentos de Distribuição (PRODIST)", "url": "https://www.gov.br/aneel/pt-br/centrais-de-conteudos/procedimentos-regulatorios/prodist", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2/c5 com competências de elétrica e as extras x1 (registro CREA) e x2 (frente de atuação)." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza D6 unifilar, L4 memorial e D7; respeita x2 (campo → L7/D4 primeiro); cada card diz competência, evidência, tempo e porquê." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "D6 e L4 só em semanas com 4 h ou mais e com computador (d1, d4)." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa carimbo, legenda, quadro de cargas, seções, norma citada, aviso de não assinável e anonimização; coerência do dimensionamento fica para revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de memorial, POP e relatório com seções da área; nunca gera texto apresentado como laudo ou projeto assinável." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Sugere simbologia NBR 5444/IEC 60617, legenda, carimbo e organização do quadro de cargas; não dimensiona por conta própria." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese por competências de elétrica declaradas e evidenciadas (unifilar, memorial, POP); cita o campo de cada afirmação." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: controle e automação, computação, mecânica, física, segurança do trabalho; sempre com lacunas e passos, sem previsão." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por CBO 2143 e competências compartilhadas; só pessoas com opt-in." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\"." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com frente de atuação e provas; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, softwares e normas em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "projetos e unifilares de clientes sob NDA", "dados de concessionárias e de infraestrutura crítica", "laudos com dados pessoais de terceiros", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca produzir ou apresentar projeto, laudo, memorial ou ART como documento assinável; tudo é estudo de portfólio",
+      "não dimensionar instalações reais para terceiros nem orientar intervenção em instalação energizada; remeter à NR-10 e ao profissional habilitado",
+      "não usar nem pedir dados de clientes, concessionárias ou infraestrutura crítica; propor dados fictícios",
+      "perguntar em vez de inferir frente de atuação, nível ou registro no CREA",
+      "mercado com fonte, data e região ou \"estimativa\"; sem promessa de emprego e sem salário",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "media", "drawings": "alta" },
+    "drawingsModes": ["2d-tecnico", "diagrama", "infografico", "prancha"],
+    "lettersTemplates": ["relatorio-tecnico", "memorial", "pop", "curriculo", "bio", "estudo-de-caso", "carta", "plano-30-60-90", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "D6 (unifilar), D7 e L4 pedem computador; no celular ficam L6, L5, L10 e a revisão de POP.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: o unifilar de uma instalação fictícia com quadro de cargas (2 h). Comprova dimensionamento NBR 5410.",
+        "Tem 15 min? Escreva sua bio com a frente em que atua e um link para um projeto seu.",
+        "Sem pressão. Quando quiser retomar, o POP de intervenção segura (60 min) está aqui.",
+        "Seu memorial de cálculo atendeu 5 de 6 critérios objetivos; falta o aviso de que é estudo de portfólio. O selo depende de revisão humana."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": { "sensitiveData": ["projetos de clientes sob NDA", "diagramas unifilares de instalações de terceiros", "dados de concessionárias e de infraestrutura crítica", "laudos com dados pessoais", "número da ART e documentos de obra com dados de terceiros"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2143", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "PNAD Contínua (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html", "geography": "Brasil e UF", "cadence": "trimestral", "kind": "estatistica-oficial" },
+      { "title": "CONFEA — Estatísticas do Sistema Confea/Crea (profissionais registrados por modalidade e UF)", "url": "https://www.confea.org.br/", "geography": "Brasil e UF", "cadence": "continua", "kind": "conselho" },
+      { "title": "ABINEE — Panorama econômico e desempenho setorial da indústria elétrica e eletrônica", "url": "https://www.abinee.org.br/", "geography": "Brasil", "cadence": "mensal", "kind": "associacao" },
+      { "title": "ABSOLAR — Infográfico do mercado solar fotovoltaico", "url": "https://www.absolar.org.br/mercado/infografico/", "geography": "Brasil e UF", "cadence": "mensal", "kind": "associacao" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis (CAGED, RAIS, CONFEA, associações setoriais); sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147). Dados do CONFEA por modalidade (ex.: elétrica e mecânica/metalúrgica entre as maiores) são citados com a data da consulta."
+  },
+  "paths": [
+    { "to": "engenharia-de-controle-e-automacao", "why": "Mesma família CBO 2143 e base comum de circuitos, máquinas e CLP; a passagem é frequente em indústria e energia.", "gaps": ["programação de CLP (IEC 61131-3)", "instrumentação e malhas de controle", "redes industriais e supervisório"], "steps": ["curso de CLP e redes industriais", "documentar uma lógica de controle com lista de E/S (D6)", "estudo de caso de um comissionamento (L3)"] },
+    { "to": "engenharia-de-computacao", "why": "Eletrônica digital, sistemas embarcados e telecomunicações são a ponte natural para hardware e firmware.", "gaps": ["programação embarcada (C/C++)", "arquitetura de computadores", "versionamento e testes de software"], "steps": ["projeto embarcado documentado com esquema e firmware", "relatório técnico de um protótipo (L4)", "post sobre o aprendizado (L5)"] },
+    { "to": "engenharia-mecanica", "why": "Máquinas elétricas, acionamentos e manutenção industrial compartilham o chão de fábrica com a mecânica.", "gaps": ["elementos de máquinas e desenho mecânico", "termodinâmica e fluidos aplicados", "manutenção mecânica"], "steps": ["POP de manutenção eletromecânica (L7)", "vista explodida de um conjunto motor-redutor (D8)", "curso de manutenção industrial"] },
+    { "to": "seguranca-do-trabalho", "why": "A experiência com NR-10, análise de risco e prontuário de instalações é valorizada na engenharia de segurança.", "gaps": ["especialização em Engenharia de Segurança do Trabalho (Lei 7.410/1985)", "demais NRs (NR-12, NR-33, NR-35)", "gestão de SST e PGR"], "steps": ["especialização reconhecida", "POP de intervenção com análise de risco (L7)", "relatório de inspeção anonimizado (L4)"] },
+    { "to": "fisica", "why": "Eletromagnetismo, fotônica e instrumentação científica aproximam a elétrica da pesquisa em física aplicada.", "gaps": ["formação teórica em física", "métodos de pesquisa e publicação"], "steps": ["projeto de pesquisa curto", "relatório técnico de um experimento (L4)", "mestrado ou iniciação em laboratório"] }
+  ],
+  "learning": [
+    { "title": "Manual de auxílio na interpretação e aplicação da NR-10", "provider": "MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/arquivos/normas-regulamentadoras/nr-10_manual_de_auxilio_na_interpretacao_e_aplicacao_da_nr_10.pdf", "free": true, "kind": "norma" },
+    { "title": "Cursos gratuitos a distância do SENAI (eletricidade, instalações, automação)", "provider": "SENAI", "url": "https://www.senai.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — cursos de gestão, energia e sustentabilidade", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "e-Aulas USP — Eletrotécnica e Circuitos Elétricos", "provider": "USP", "url": "https://eaulas.usp.br/", "free": true, "kind": "curso" },
+    { "title": "Procel — eficiência energética e etiquetagem", "provider": "Eletrobras / Procel", "url": "https://www.gov.br/mme/pt-br/assuntos/secretarias/sntep/procel", "free": true, "kind": "portal" },
+    { "title": "ABNT NBR 5410 — Instalações elétricas de baixa tensão (norma paga)", "provider": "ABNT", "url": "https://www.abntcatalogo.com.br/", "free": false, "kind": "norma" },
+    { "title": "Guia Técnico de Instalações Elétricas (Procobre / Instituto Brasileiro do Cobre)", "provider": "Procobre", "url": "https://www.procobre.org/pt/", "free": true, "kind": "portal" },
+    { "title": "Instalações Elétricas (Hélio Creder)", "provider": "LTC / Grupo GEN", "url": "https://www.grupogen.com.br/", "free": false, "kind": "livro" },
+    { "title": "ANEEL — PRODIST e regras de geração distribuída", "provider": "ANEEL", "url": "https://www.gov.br/aneel/pt-br", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Contratos do Guia de Carreira — README, esquema e pacote genérico", "url": "docs/../contracts/career/README.md", "accessedAt": "2026-11-02" },
+    { "title": "World of Taxonomy (espelho ESCO) — electrical engineer 86ca306c-ab99-420a-9e2a-aa73c5c4de22, ISCO 2151", "url": "https://worldoftaxonomy.com/codes/esco_occupations/86ca306c-ab99-420a-9e2a-aa73c5c4de22", "accessedAt": "2026-11-02" },
+    { "title": "World of Taxonomy — ISCO-08 2151 → ESCO occupations", "url": "https://www.worldoftaxonomy.com/crosswalks/isco_08/2151/esco_occupations", "accessedAt": "2026-11-02" },
+    { "title": "CBO (espelho VRI Consulting) — 2143-05 engenheiro eletricista, família 2143", "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=214305", "accessedAt": "2026-11-02" },
+    { "title": "Resolução CONFEA 218/1973 (cópia UFMG)", "url": "https://controle.eng.ufmg.br/wp-content/uploads/2018/10/Resolução_CONFEA_218_1973.pdf", "accessedAt": "2026-11-02" },
+    { "title": "CONFEA — Manual CEAP (resoluções por título continuam válidas; Resolução 1.073/2016)", "url": "https://confea.org.br/midias/uploads-imce/Manual_Ceap.pdf", "accessedAt": "2026-11-02" },
+    { "title": "CONFEA — Estatísticas do Sistema disponíveis (ferramenta atualizada diariamente)", "url": "https://www.confea.org.br/node/116116", "accessedAt": "2026-11-02" },
+    { "title": "CONFEA — Censo do Confea: 92% dos profissionais estão empregados", "url": "https://www.confea.org.br/node/232061", "accessedAt": "2026-11-02" },
+    { "title": "Portaria MTE 737/2026 — nova redação da NR-10 (vigência 2027)", "url": "https://www.normaslegais.com.br/legislacao/portaria-mte-737-2026.htm", "accessedAt": "2026-11-02" },
+    { "title": "MTE — NR-10 atualizada 2019 (texto consolidado anterior)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/arquivos/normas-regulamentadoras/nr-10-atualizada-2019-1.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Sienge — NBR 5410: versão 2004, corrigida 2008, revisão em consulta pública 2023–2024", "url": "https://sienge.com.br/blog/nbr-5410/", "accessedAt": "2026-11-02" },
+    { "title": "UFABC — Normas de apresentação (NBR 10582 apresentação da folha para desenho técnico)", "url": "https://www.ufabc.edu.br/images/licitacoes/rdc-02-2016/normas-de-apresentacao.pdf", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Rede da sessão bloqueia esco.ec.europa.eu, ec.europa.eu e confea.org.br: URI ESCO de electrical engineer conferida só no espelho World of Taxonomy; estatísticas do CONFEA citadas por notícias de terceiros (931.838 registrados em 2020; elétrica 169.248 por modalidade), não na ferramenta oficial.",
+    "URL da ferramenta de estatísticas do CONFEA não obtida; market.sources aponta para a raiz do portal.",
+    "Portaria MTE 737/2026 (nova NR-10) vista em fonte secundária (normaslegais, Fiergs, Findes); texto oficial no DOU não acessado; versão vigente até 2027 continua a da Portaria 598/2004.",
+    "NBR 5444 (símbolos gráficos para instalações elétricas prediais) citada de memória; há indicação de cancelamento/substituição por NBR IEC 60617 — conferir no catálogo ABNT.",
+    "NBR 14039, NBR 5419, NBR 16690, NBR 10067 e NBR 8403: números e títulos de memória, não conferidos no catálogo ABNT nesta sessão.",
+    "Resoluções CONFEA 1.002/2002 (código de ética), 1.025/2009 (ART) e Lei 6.496/1977 citadas de memória; URL normativos.confea.org.br não acessada.",
+    "Famílias CBO 3131, 7156 e 9511 em questions.a4.cboFamilies não conferidas no portal da CBO.",
+    "URLs de aprendizagem (SENAI, e-Aulas USP, Procel, Procobre, ABINEE, ABSOLAR, ANEEL/PRODIST) não verificadas nesta sessão; conteúdo gratuito do SENAI varia por departamento regional e pode exigir residência próxima ou comprovação de renda.",
+    "Vocabulário, competências, tarefas e rubrica vêm do conhecimento da profissão, não de fonte primária."
+  ]
+}

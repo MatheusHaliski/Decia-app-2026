@@ -1,0 +1,382 @@
+{
+  "schemaVersion": 1,
+  "code": "direito",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Direito", "en": "Law", "es": "Derecho" },
+  "fields": ["direito"],
+  "family": {
+    "cbo": [
+      { "code": "2410", "title": "Advogados" },
+      { "code": "2412", "title": "Procuradores e advogados públicos" },
+      { "code": "1113", "title": "Magistrados" },
+      { "code": "2413", "title": "Tabeliães e registradores" }
+    ],
+    "isco08": [
+      { "code": "2611", "title": "Lawyers" },
+      { "code": "2612", "title": "Judges" },
+      { "code": "2619", "title": "Legal professionals not elsewhere classified" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/974d4eab-fbee-4c52-b16e-73bdd8c25b53", "label": "lawyer" },
+      { "uri": "http://data.europa.eu/esco/occupation/31854d78-3615-43a4-aa3a-c597ecb20ceb", "label": "legal consultant" },
+      { "uri": "http://data.europa.eu/esco/occupation/acf462a3-9c34-46cb-952a-c612c38299f4", "label": "prosecutor" }
+    ]
+  },
+  "scope": {
+    "summary": "Formação jurídica: advocacia privada e pública (contencioso e consultivo), assessoria e consultoria jurídica, compliance e proteção de dados, carreiras públicas por concurso (magistratura, Ministério Público, defensoria, procuradorias, tribunais) e serviços notariais e registrais. A inscrição na OAB (Exame de Ordem) só é exigida para advogar; bacharéis atuam como analistas, assessores e paralegais.",
+    "entryRoles": ["Estagiário jurídico", "Assistente ou auxiliar jurídico", "Paralegal", "Analista jurídico júnior", "Advogado recém-inscrito", "Analista de compliance júnior", "Escrevente ou técnico judiciário (concurso)"],
+    "midRoles": ["Advogado pleno (contencioso ou consultivo)", "Assessor jurídico", "Analista jurídico", "Advogado correspondente", "Analista de compliance e proteção de dados (LGPD)", "Analista judiciário (concurso)", "Mediador ou conciliador"],
+    "seniorRoles": ["Advogado sênior ou sócio", "Coordenador ou gerente jurídico", "Diretor jurídico", "Procurador ou advogado público", "Magistrado, promotor ou defensor público", "Tabelião ou registrador", "Encarregado de dados (DPO)"],
+    "sectors": ["escritórios de advocacia", "departamentos jurídicos de empresas", "administração pública (procuradorias, tribunais, Ministério Público, defensoria)", "serviços notariais e registrais", "compliance e proteção de dados", "terceiro setor e assessoria popular", "lawtechs e legaltechs", "ensino jurídico e pesquisa"],
+    "regulation": [
+      { "name": "Lei 8.906/1994 (Estatuto da Advocacia e da OAB)", "issuer": "Brasil / Conselho Federal da OAB", "about": "atividades privativas, inscrição, direitos e deveres; sigilo profissional (art. 7º, II e XIX; art. 34)" },
+      { "name": "Código de Ética e Disciplina da OAB (Res. CFOAB 02/2015)", "issuer": "Conselho Federal da OAB", "about": "relação com cliente, sigilo, honorários e publicidade profissional" },
+      { "name": "Provimento CFOAB 205/2021", "issuer": "Conselho Federal da OAB", "about": "publicidade e marketing jurídico: o que pode ser mostrado em perfis, posts e portfólio" },
+      { "name": "Constituição Federal de 1988, art. 133", "issuer": "Brasil", "about": "advogado indispensável à administração da justiça; inviolabilidade por atos e manifestações" },
+      { "name": "Código de Processo Civil (Lei 13.105/2015)", "issuer": "Brasil", "about": "procedimento, prazos, peças; segredo de justiça (art. 189)" },
+      { "name": "Código de Defesa do Consumidor (Lei 8.078/1990)", "issuer": "Brasil", "about": "relações de consumo; base de grande parte do contencioso cível de massa" },
+      { "name": "LGPD (Lei 13.709/2018)", "issuer": "Brasil / ANPD", "about": "tratamento de dados pessoais; base da atuação em privacidade e do encarregado (DPO)" },
+      { "name": "Lei 12.846/2013 (Anticorrupção) e Decreto 11.129/2022", "issuer": "Brasil", "about": "programas de integridade; base da atuação em compliance" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "petição inicial", "meaning": "peça que inaugura o processo: fatos, fundamentos jurídicos, pedidos e valor da causa" },
+      { "term": "contestação", "meaning": "resposta do réu à petição inicial, com preliminares e mérito" },
+      { "term": "parecer jurídico", "meaning": "opinião fundamentada sobre uma consulta: ementa, relatório, fundamentação e conclusão" },
+      { "term": "recurso", "meaning": "meio de impugnar uma decisão (apelação, agravo, embargos, recurso especial e extraordinário)" },
+      { "term": "prazo processual", "meaning": "tempo para praticar um ato no processo; no CPC conta-se em dias úteis" },
+      { "term": "jurisprudência", "meaning": "conjunto de decisões dos tribunais sobre um tema; precedentes vinculantes do STF e STJ" },
+      { "term": "súmula", "meaning": "enunciado que resume o entendimento consolidado de um tribunal" },
+      { "term": "tutela de urgência", "meaning": "medida provisória concedida antes da decisão final quando há urgência e probabilidade do direito" },
+      { "term": "ementa", "meaning": "resumo oficial de uma decisão ou parecer, em tópicos" },
+      { "term": "due diligence", "meaning": "auditoria jurídica de contratos, passivos e riscos de uma empresa, em geral em operações societárias" },
+      { "term": "compliance", "meaning": "programa de integridade: políticas, treinamento, canal de denúncias e controles para cumprir normas" },
+      { "term": "PJe / e-SAJ / eproc / Projudi", "meaning": "sistemas de processo eletrônico dos tribunais, onde se protocolam peças e se acompanham prazos" },
+      { "term": "Exame de Ordem", "meaning": "prova da OAB (aplicada pela FGV) exigida para a inscrição como advogado" },
+      { "term": "honorários", "meaning": "remuneração do advogado: contratuais, sucumbenciais ou arbitrados" },
+      { "term": "procuração ad judicia", "meaning": "instrumento pelo qual o cliente outorga poderes ao advogado para representá-lo em juízo" },
+      { "term": "segredo de justiça", "meaning": "restrição de acesso aos autos (CPC art. 189); nada do processo pode ir a portfólio" },
+      { "term": "doutrina", "meaning": "produção acadêmica (livros, artigos) usada como fundamento interpretativo" },
+      { "term": "cláusula", "meaning": "disposição de um contrato; cláusulas típicas: objeto, prazo, preço, rescisão, foro, confidencialidade" },
+      { "term": "DPO / encarregado", "meaning": "pessoa indicada pelo controlador para o canal com titulares e com a ANPD (LGPD art. 41)" },
+      { "term": "trânsito em julgado", "meaning": "momento em que a decisão não admite mais recurso" },
+      { "term": "distinguishing", "meaning": "demonstração de que o caso concreto difere do precedente invocado" },
+      { "term": "audiência de conciliação e mediação", "meaning": "ato processual para tentativa de acordo (CPC art. 334; Res. CNJ 125/2010)" }
+    ],
+    "tools": ["PJe", "e-SAJ", "eproc", "Projudi", "software de gestão jurídica (Astrea, ProJuris, Legal One, ADVBOX)", "bases de jurisprudência (STF, STJ, tribunais, JusBrasil)", "LexML e Portal da Legislação (Planalto)", "Diário de Justiça eletrônico e publicações", "editor de textos (Word, LibreOffice, Letters)", "planilha de controle de prazos", "videoconferência de audiências", "assinatura digital (certificado ICP-Brasil, gov.br)"],
+    "deliverables": ["parecer jurídico", "petição inicial", "contestação e réplica", "recurso", "contrato e aditivo", "memoriais", "notificação extrajudicial", "relatório de due diligence", "relatório de riscos regulatórios", "política de privacidade e registro de operações de tratamento (LGPD)", "programa de integridade", "relatório de andamento processual para o cliente", "minuta de acordo", "estudo de caso para concurso (peça prático-profissional)"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Pesquisa de legislação, jurisprudência e doutrina", "esco": null, "kind": "nucleo" },
+      { "label": "Redação de peças processuais", "esco": null, "kind": "nucleo" },
+      { "label": "Redação de pareceres e opiniões legais", "esco": null, "kind": "nucleo" },
+      { "label": "Elaboração e revisão de contratos", "esco": null, "kind": "nucleo" },
+      { "label": "Argumentação jurídica e sustentação oral", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de prazos e acompanhamento processual", "esco": null, "kind": "nucleo" },
+      { "label": "Atendimento, entrevista e orientação de clientes", "esco": null, "kind": "nucleo" },
+      { "label": "Análise de risco jurídico", "esco": null, "kind": "nucleo" },
+      { "label": "Negociação, conciliação e mediação", "esco": null, "kind": "apoio" },
+      { "label": "Compliance e programas de integridade", "esco": null, "kind": "apoio" },
+      { "label": "Proteção de dados pessoais (LGPD)", "esco": null, "kind": "apoio" },
+      { "label": "Direito digital e provas eletrônicas", "esco": null, "kind": "apoio" },
+      { "label": "Uso de sistemas de processo eletrônico e gestão jurídica", "esco": null, "kind": "apoio" },
+      { "label": "Preparação para Exame de Ordem e concursos", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação escrita precisa", "ética e sigilo profissional", "organização e trabalho sob prazo", "atualização legislativa contínua", "escuta e empatia com quem está em conflito"],
+    "tracks": [
+      { "id": "contencioso", "label": "Contencioso: do caso à peça", "steps": ["estudo de caso STAR de um processo anonimizado ou público (L3)", "peça simulada sobre caso fictício (X1)", "parecer sobre consulta fictícia (L4)", "revisão de uma peça remixada com a rubrica (L10)"] },
+      { "id": "consultivo-e-compliance", "label": "Consultivo, contratos e compliance", "steps": ["minuta de contrato com cláusulas comentadas (X2)", "POP de uma rotina jurídica (L7)", "fluxo de atendimento de titular de dados (D4)", "parecer sobre consulta fictícia (L4)"] },
+      { "id": "carreiras-publicas", "label": "Concursos e carreiras públicas", "steps": ["plano de estudos 30-60-90 para o edital-alvo (L9)", "peça prático-profissional sobre caso fictício (X1)", "post sobre um tema jurídico estudado (L5)", "revisão crítica de uma peça (L10)"] },
+      { "id": "apresentar-se", "label": "Apresentar-se por escrito", "steps": ["resumo de perfil jurídico (L6)", "currículo direcionado (L1)", "carta para uma oportunidade (L2)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"estagiário jurídico\", \"assistente jurídico\", \"advogado\", \"analista de compliance\", \"escrevente\", \"técnico judiciário\"",
+      "cboFamilies": ["2410", "2412", "4110", "1113"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez (contencioso, consultivo, público) e não do zero. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, primeiro cargo (assistente jurídico, paralegal) ou recém-inscrito sem experiência",
+        "junior": "até dois anos: redige peças e pesquisa sob supervisão de um advogado",
+        "pleno": "conduz processos, pareceres e atendimento de clientes com autonomia",
+        "senior": "referência técnica: define teses, orienta a equipe e responde por carteira ou área",
+        "gestao": "coordena departamento jurídico, escritório ou equipe; responde por metas e resultados"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (de um POP de prazos a um parecer) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem no Direito",
+      "options": ["pesquisar legislação e jurisprudência", "redigir petições e recursos", "redigir pareceres e opiniões legais", "elaborar e revisar contratos", "negociar acordos e mediar conflitos", "controlar prazos e acompanhar processos", "atender e orientar clientes", "sustentação oral e audiências", "compliance, LGPD e políticas internas", "direito tributário e cálculos", "direito do trabalho e previdenciário", "direito penal e processo penal", "direito de família e sucessões", "direito público e licitações", "estudar e resolver questões de concurso"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com pareceres, peças simuladas e fluxos."
+    },
+    "c4": {
+      "certifications": ["inscrição na OAB (Exame de Ordem)", "pós-graduação lato sensu (especialização)", "mestrado ou doutorado", "certificação em proteção de dados (CIPP/E, EXIN PDPF/PDPP, DPO)", "certificação em compliance (CPC-A, LEC)", "mediador ou conciliador judicial (Res. CNJ 125/2010)", "curso de prática em processo eletrônico (PJe)", "inglês jurídico (TOLES, ILEC)"],
+      "languages": ["inglês (jurídico e contratos internacionais)", "espanhol", "Libras"],
+      "why": "Formação, inscrição e certificações ajudam a ver lacunas em relação ao cargo que você quer; a OAB é exigida só para advogar."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver no Direito?",
+      "options": ["redação de peças processuais", "pareceres e opiniões legais", "contratos e cláusulas", "compliance e LGPD", "negociação e mediação", "sustentação oral e audiências", "direito digital e provas eletrônicas", "gestão de escritório, prazos e clientes", "preparação para Exame de Ordem ou concursos", "pesquisa jurídica com bases de dados e IA"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (caso → peça simulada → parecer) em vez de um catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que frente você atua ou quer atuar?",
+        "type": "lista",
+        "options": ["contencioso cível e consumidor", "consultivo e contratos", "trabalhista", "tributário", "penal", "público e concursos", "compliance e proteção de dados", "família e sucessões", "notarial e registral"],
+        "why": "Pergunto para priorizar peças simuladas (contencioso), contratos e pareceres (consultivo), fluxos e políticas (compliance) ou plano de estudos (concursos).",
+        "where": "P"
+      },
+      {
+        "id": "x2",
+        "prompt": "Os casos que você quer citar podem ser mostrados?",
+        "type": "escolha",
+        "options": ["só casos públicos (decisões publicadas, sem segredo de justiça)", "só anonimizados, sem nomes nem número de processo", "não; vou usar um caso fictício"],
+        "why": "Pergunto porque casos de clientes estão sob sigilo profissional (Lei 8.906/1994 art. 34) e nunca entram em portfólio; com a resposta, sugiro como montar a evidência sem violar sigilo.",
+        "where": "X"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L4", "L3", "L7", "L6", "L1", "L9", "D4", "L8", "L2", "L10", "D7", "L5"],
+    "excluded": [
+      { "code": "D1", "reason": "planta de ambiente é entrega da arquitetura, não do Direito" },
+      { "code": "D2", "reason": "o portfólio jurídico é textual (pareceres e peças simuladas), não prancha visual" },
+      { "code": "D3", "reason": "modelo 3D não é evidência da área" },
+      { "code": "D5", "reason": "redesenho visual não corresponde a entrega jurídica; a melhoria de rotina entra em L7 ou D4" },
+      { "code": "D6", "reason": "detalhe construtivo é entrega da engenharia" },
+      { "code": "D8", "reason": "vista explodida é entrega da mecânica" },
+      { "code": "D9", "reason": "wireframe de tela é entrega de UX" }
+    ],
+    "parameters": {
+      "L4": {
+        "title": "Parecer jurídico sobre consulta fictícia",
+        "brief": "Responda a uma consulta inventada da sua frente de atuação em formato de parecer: ementa, relatório, fundamentação (lei, jurisprudência e doutrina citadas com identificação), conclusão e referências, em até 4 páginas. Nenhum nome de pessoa, empresa ou número de processo real; o cabeçalho traz a marca \"exercício didático — não assinável\".",
+        "parameters": { "sections": ["ementa", "relatório", "fundamentação", "conclusão", "referências"], "maxPages": 4, "minCitations": 3, "fictionalCase": true, "watermark": "exercício didático — não assinável" },
+        "criteria": ["cinco seções nomeadas", "até 4 páginas", "ao menos 3 fontes (lei, jurisprudência ou doutrina) identificadas com número e artigo ou tribunal e data", "caso declarado fictício ou público", "sem CPF, CNPJ, OAB de terceiros ou número de processo", "marca \"exercício didático — não assinável\" no cabeçalho"],
+        "evidence": "parecer em PDF",
+        "time": "2 h",
+        "level": 2
+      },
+      "L3": {
+        "title": "Estudo de caso STAR de um problema jurídico resolvido",
+        "brief": "Conte um problema jurídico que você resolveu ou acompanhou: situação (risco ou tese), tarefa, ação (estratégia, peça, negociação) e resultado (acordo, decisão, prazo cumprido, risco evitado). Use só casos públicos, anonimizados ou fictícios; declare isso no texto.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true, "anonymized": true },
+        "criteria": ["quatro seções explícitas", "resultado concreto (acordo, decisão, prazo, risco evitado)", "sem nomes, CPF, CNPJ ou número de processo", "declaração de ausência de dado sigiloso ou sob segredo de justiça"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "L7": {
+        "title": "POP de uma rotina jurídica",
+        "brief": "Escreva o procedimento de uma rotina que você domina: controle de prazos, protocolo no PJe, atendimento inicial do cliente, due diligence de contratos ou resposta a titular de dados. Passos numerados, responsável, base legal quando houver prazo e critério de conclusão por passo.",
+        "parameters": { "requiredElements": ["objetivo e escopo", "passos numerados", "responsável por passo", "base legal dos prazos", "critério de conclusão por passo"], "examples": ["controle de prazos", "protocolo eletrônico", "atendimento inicial", "due diligence", "atendimento a titular LGPD"] },
+        "criteria": ["passos numerados com responsável", "critério de conclusão em cada passo", "prazos com base legal citada", "sem dado de cliente real"],
+        "evidence": "POP em modelo",
+        "time": "60 min",
+        "level": 1
+      },
+      "L6": {
+        "title": "Resumo de perfil jurídico em três frases",
+        "brief": "Escreva até 600 caracteres com sua frente (contencioso, consultivo, público, compliance), três competências e uma prova com link (parecer, peça simulada, certificado). Sem número de OAB de terceiros nem nomes de clientes.",
+        "parameters": { "maxChars": 600, "requiredParts": ["frente de atuação", "três competências", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia a frente de atuação", "cita três competências", "inclui uma prova com link"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo jurídico de uma página",
+        "brief": "Monte um currículo de uma página para o cargo-alvo (analista jurídico, advogado pleno, assessor, analista de compliance) com três conquistas com número (prazos cumpridos, acordos, processos acompanhados, políticas implantadas) e as palavras-chave do cargo. Sem nomes de clientes.",
+        "parameters": { "maxPages": 1, "achievementsWithNumbers": 3, "keywordsFrom": "cargo-alvo" },
+        "criteria": ["uma página", "três conquistas com número", "palavras-chave do cargo-alvo presentes", "sem idade, estado civil ou foto obrigatória", "sem nome de cliente"],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "L9": {
+        "title": "Plano 30-60-90 para o cargo-alvo ou para um edital",
+        "brief": "Escreva três metas mensuráveis por fase para os primeiros 90 dias no cargo-alvo (ex.: mapear processos da carteira, padronizar controle de prazos, entregar primeiro parecer) ou, se mira concurso ou Exame de Ordem, um plano de estudos por disciplina com simulados e metas de acerto.",
+        "parameters": { "phases": ["30", "60", "90"], "goalsPerPhase": 3, "variant": ["cargo", "edital"] },
+        "criteria": ["três fases", "três metas mensuráveis por fase", "cada meta com indicador ou entrega verificável", "coerente com o cargo ou o edital nomeado"],
+        "evidence": "plano",
+        "time": "45 min",
+        "level": 2
+      },
+      "D4": {
+        "title": "Fluxo de um procedimento jurídico ou de atendimento",
+        "brief": "Desenhe o fluxo de um procedimento que você conhece (atendimento de requisição de titular de dados, cobrança extrajudicial, análise de contrato, fase de um processo) com início e fim, raias por responsável (cliente, advogado, juízo, DPO) e os prazos legais anotados nas etapas.",
+        "parameters": { "notation": "BPMN simplificado", "requiredElements": ["início e fim", "raias por responsável", "prazos legais anotados", "ao menos uma decisão"], "minActivities": 6 },
+        "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "prazos com base legal anotados", "sem dado de cliente real"],
+        "evidence": "diagrama vetorial (SVG/PDF)",
+        "time": "45 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Peça processual simulada sobre caso fictício",
+        "competency": "Redação de peças processuais",
+        "criteria": ["endereçamento, qualificação fictícia das partes, fatos, fundamentos, pedidos e valor da causa (ou estrutura equivalente do tipo de peça)", "ao menos dois dispositivos legais e um precedente citados", "caso declarado fictício; sem dados reais de pessoas ou processos", "marca \"simulação — não assinável\" no cabeçalho", "até 6 páginas"],
+        "evidence": "peça em PDF marcada como simulação",
+        "time": "2 h",
+        "trigger": "Quer treinar uma peça com um caso fictício da sua frente?",
+        "level": 2
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Minuta de contrato com cláusulas comentadas",
+        "competency": "Elaboração e revisão de contratos",
+        "criteria": ["partes fictícias, objeto, prazo, preço, obrigações, rescisão, confidencialidade e foro", "três cláusulas comentadas com o risco que mitigam", "base legal de ao menos duas cláusulas", "declaração de que não reproduz contrato de cliente", "marca \"minuta didática\" no cabeçalho"],
+        "evidence": "minuta em PDF",
+        "time": "90 min",
+        "trigger": "Quer mostrar como você estrutura e revisa um contrato?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "secoes-do-parecer", "check": "ementa, relatório, fundamentação, conclusão e referências existem e estão nomeadas", "appliesTo": ["L4"], "auto": true },
+      { "id": "fontes-citadas", "check": "ao menos as fontes mínimas (lei com artigo, precedente com tribunal e data) aparecem no texto", "appliesTo": ["L4", "X1", "X2", "L10"], "auto": true },
+      { "id": "estrutura-da-peca", "check": "a peça tem as seções fatos, fundamentos e pedidos nomeadas", "appliesTo": ["X1"], "auto": true },
+      { "id": "marca-de-exercicio", "check": "o cabeçalho traz a marcação de exercício, simulação ou minuta didática — não assinável", "appliesTo": ["L4", "X1", "X2"], "auto": true },
+      { "id": "sem-identificadores-reais", "check": "o texto não contém CPF, CNPJ, número de processo CNJ ou número de OAB de terceiros", "appliesTo": ["L3", "L4", "L7", "X1", "X2", "D4"], "auto": true },
+      { "id": "caso-ficticio-ou-publico-declarado", "check": "a pessoa declarou que o caso é fictício, público ou anonimizado e sem segredo de justiça", "appliesTo": ["L3", "L4", "X1", "X2", "D4"], "auto": true },
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6", "X1"], "auto": true },
+      { "id": "prazos-com-base-legal", "check": "cada prazo citado no POP ou no fluxo indica a base legal", "appliesTo": ["L7", "D4"], "auto": false },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim, raias e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "metas-mensuraveis", "check": "cada fase do plano tem três metas com indicador ou entrega", "appliesTo": ["L9"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados sob sigilo profissional", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D4", "D7", "X1", "X2"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "fundamentacao", "label": "Fundamentação jurídica", "levels": { "aproxima": "cita a lei sem relacioná-la aos fatos", "atende": "aplica norma e jurisprudência aos fatos do caso", "supera": "antecipa as teses contrárias e as refuta com precedentes" } },
+      { "id": "tecnica-redacional", "label": "Técnica redacional", "levels": { "aproxima": "linguagem prolixa ou imprecisa; termos técnicos mal empregados", "atende": "texto objetivo, com termos técnicos corretos e parágrafos curtos", "supera": "texto que conduz o leitor da premissa à conclusão sem redundância" } },
+      { "id": "gestao-de-risco", "label": "Leitura de risco", "levels": { "aproxima": "apresenta uma única saída sem avaliar consequências", "atende": "aponta riscos e alternativas com probabilidade aproximada", "supera": "quantifica cenários e recomenda com base em custo, prazo e precedentes" } },
+      { "id": "etica-e-sigilo", "label": "Ética e sigilo", "levels": { "aproxima": "anonimiza de forma incompleta ou expõe detalhes identificáveis", "atende": "caso fictício ou público, sem identificação de partes", "supera": "explica a escolha do caso e os cuidados com sigilo e publicidade profissional" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da área do Direito (bacharel, estudante, advogado, assessor, servidor ou candidato a concurso). Use o vocabulário da área (petição, contestação, parecer, ementa, prazo em dias úteis, precedente, súmula, due diligence, compliance, LGPD) e cite normas com número e artigo: Lei 8.906/1994 (Estatuto da OAB), Código de Ética e Disciplina da OAB, Provimento 205/2021 (publicidade), CPC (Lei 13.105/2015), CDC, LGPD, Lei 12.846/2013. O que você nunca faz nesta área: não redige peça assinável nem parecer para caso real de terceiros; toda peça ou parecer que ajuda a estruturar é sobre caso fictício ou público e leva a marca \"exercício didático — não assinável\"; não dá orientação jurídica a terceiros nem substitui o advogado; trata qualquer nome, CPF, CNPJ, número de processo ou documento de cliente como sigilo profissional (art. 34 do Estatuto) e pede que seja removido antes de qualquer tarefa; não sugere captação de clientela nem promessa de resultado em posts (Provimento 205/2021). Pergunte antes de inferir frente de atuação, inscrição na OAB ou senioridade. Cada tarefa diz que competência prova, que evidência gera, quanto tempo leva e por que foi sugerida, e aceita \"não me serve\". Afirmações sobre mercado (vagas, concursos, Exame de Ordem) citam fonte, data e região (CAGED, RAIS, OAB, FGV, editais) ou dizem \"estimativa\"; nunca prometa aprovação, entrevista, emprego ou salário. Progresso é por critérios atendidos; pré-cheque só critérios objetivos (seções, fontes, marca de exercício, ausência de identificadores); o selo é humano. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "Portal da Legislação — Planalto (leis federais, CPC, CDC, LGPD)", "url": "https://www.planalto.gov.br/ccivil_03/", "kind": "norma" },
+      { "title": "Lei 8.906/1994 — Estatuto da Advocacia e da OAB", "url": "https://www.planalto.gov.br/ccivil_03/leis/l8906.htm", "kind": "norma" },
+      { "title": "Conselho Federal da OAB — Código de Ética e Disciplina e provimentos", "url": "https://www.oab.org.br/", "kind": "conselho" },
+      { "title": "Exame de Ordem Unificado — FGV", "url": "https://oab.fgv.br/", "kind": "conselho" },
+      { "title": "Supremo Tribunal Federal — jurisprudência", "url": "https://portal.stf.jus.br/jurisprudencia/", "kind": "orgao-publico" },
+      { "title": "Superior Tribunal de Justiça — jurisprudência", "url": "https://scon.stj.jus.br/SCON/", "kind": "orgao-publico" },
+      { "title": "Conselho Nacional de Justiça — Justiça em Números", "url": "https://www.cnj.jus.br/pesquisas-judiciarias/justica-em-numeros/", "kind": "estatistica" },
+      { "title": "Autoridade Nacional de Proteção de Dados (ANPD)", "url": "https://www.gov.br/anpd/pt-br", "kind": "orgao-publico" },
+      { "title": "Novo CAGED — Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências jurídicas; x1 (frente) e x2 (casos mostráveis) orientam as tarefas." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Parecer (L4), STAR (L3), POP (L7) e peça simulada (X1) primeiro; cada card diz a competência, a evidência e o tempo." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); para concurso ou Exame de Ordem, intercala estudo e simulado." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções do parecer, fontes citadas, marca de exercício e ausência de CPF, CNPJ e número de processo; o selo é humano." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura e revisão de parecer, peça simulada e minuta sobre caso fictício; nunca redige peça assinável nem parecer para caso real de terceiros." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias, prazos e fechamento do fluxo (D4); infográfico com fonte (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: síntese de competências jurídicas declaradas e evidenciadas, lacunas para o cargo-alvo e incertezas; cita o campo usado." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos por CBO/ESCO (administração, gestão pública, contábeis, RI, compliance); dados de mercado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas com opt-in; afinidade por frente de atuação e competências compartilhadas, nunca por cliente ou processo." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil, sem promessa de resultado nem menção a clientes (Provimento 205/2021)." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências e competências em ficha editável; alerta se o currículo cita nomes de clientes ou processos." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados de clientes, partes e processos sob sigilo profissional (Lei 8.906/1994 art. 34)", "peças e documentos de processos em segredo de justiça (CPC art. 189)", "dados pessoais de terceiros em contratos, petições e procurações", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "não redigir peça assinável nem parecer para caso real de terceiros; peças e pareceres apoiados são sobre caso fictício ou público e levam a marca \"exercício didático — não assinável\"",
+      "não dar orientação jurídica a terceiros nem substituir advogado; encaminhar a um profissional inscrito na OAB ou à Defensoria",
+      "tratar nome, CPF, CNPJ, número de processo e documento de cliente como sigilo profissional e pedir remoção antes de qualquer tarefa",
+      "não sugerir captação de clientela, promessa de resultado ou divulgação de casos em posts (Provimento CFOAB 205/2021)",
+      "perguntar em vez de inferir frente de atuação, inscrição na OAB ou senioridade",
+      "citar norma com número e artigo e precedente com tribunal e data; sem fonte, dizer \"a confirmar\"",
+      "nunca prometer aprovação em concurso ou Exame de Ordem, entrevista, emprego ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["diagrama", "infografico"],
+    "lettersTemplates": ["parecer", "relatorio-tecnico", "pop", "plano-30-60-90", "proposta", "estudo-de-caso", "curriculo", "carta", "bio", "revisao", "memorial", "artigo"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas curtas (L5, L6, L10) e leitura; parecer (L4), peça simulada (X1) e fluxo (D4) pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil jurídico em três frases (15 min).",
+        "Quer treinar um parecer sobre uma consulta fictícia da sua frente? Leva cerca de 2 h e vira evidência de fundamentação.",
+        "Sem pressão. Quando quiser retomar, o POP de controle de prazos (60 min) está aqui.",
+        "Lembrete: casos de clientes não entram em portfólio. Se quiser, mostro como transformar um caso em exemplo fictício."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias"] },
+    "privacy": {
+      "sensitiveData": ["dados de clientes, partes e processos sob sigilo profissional (Lei 8.906/1994 art. 7º, II e art. 34; Código de Ética e Disciplina da OAB)", "peças, pareceres e documentos de processos em segredo de justiça (CPC art. 189)", "dados pessoais de terceiros em contratos, petições e procurações (LGPD)", "número de inscrição na OAB de terceiros"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2410/2412", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por ocupação", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Quadro de advogados inscritos — Conselho Federal da OAB", "url": "https://www.oab.org.br/institucionalconselhofederal/quadroadvogados", "geography": "Brasil e seccionais (UF)", "cadence": "continua", "kind": "conselho" },
+      { "title": "Exame de Ordem Unificado — editais e resultados (FGV)", "url": "https://oab.fgv.br/", "geography": "Brasil", "cadence": "eventual", "kind": "edital" },
+      { "title": "Justiça em Números — CNJ (estrutura e demanda do Judiciário)", "url": "https://www.cnj.jus.br/pesquisas-judiciarias/justica-em-numeros/", "geography": "Brasil e tribunais", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Censo da Educação Superior — INEP (matrículas e concluintes em Direito)", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-da-educacao-superior", "geography": "Brasil e UF", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Editais de concursos públicos (tribunais, MP, defensorias, procuradorias) — Diário Oficial da União e portais dos órgãos", "url": "https://www.gov.br/pt-br/servicos/consultar-publicacoes-do-diario-oficial-da-uniao", "geography": "Brasil, UF e município", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, concursos, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147). Índices de aprovação no Exame de Ordem ou em concursos são informados com a edição e a fonte, nunca como previsão para a pessoa."
+  },
+  "paths": [
+    { "to": "administracao", "why": "Gestão de escritórios, departamentos jurídicos e contratos aproxima o Direito da administração; compliance e governança são pontes diretas.", "gaps": ["finanças e indicadores gerenciais", "gestão de pessoas e processos", "ferramentas de gestão (ERP, BPM)"], "steps": ["POP de uma rotina jurídica (L7) e fluxo (D4)", "curso de gestão de projetos ou processos (Enap, Sebrae)", "plano 30-60-90 para coordenação jurídica (L9)"] },
+    { "to": "gestao-publica", "why": "Carreiras públicas, licitações (Lei 14.133/2021) e controle são comuns às duas áreas; servidores com formação jurídica migram para gestão.", "gaps": ["orçamento e finanças públicas", "gestão de políticas públicas", "indicadores e avaliação"], "steps": ["curso de licitações e contratos na Escola Virtual.Gov", "relatório técnico sobre um processo administrativo fictício (L4)", "plano de estudos para edital da área (L9)"] },
+    { "to": "ciencias-contabeis", "why": "Direito tributário e societário dialoga com contabilidade; perícias e due diligence exigem leitura de demonstrações.", "gaps": ["leitura de demonstrações contábeis", "apuração tributária", "SPED e obrigações acessórias"], "steps": ["curso de contabilidade básica (Fundação Bradesco)", "estudo de caso STAR sobre um tema tributário (L3)", "infográfico de um caso fictício de carga tributária (D7)"] },
+    { "to": "relacoes-internacionais", "why": "Direito internacional, contratos internacionais e comércio exterior são comuns às duas formações.", "gaps": ["inglês avançado", "comércio exterior e tratados", "análise geopolítica"], "steps": ["minuta de contrato internacional comentada (X2)", "curso de comércio exterior (Sebrae, ApexBrasil)", "post sobre um tema de direito internacional (L5)"] },
+    { "to": "seguranca-da-informacao", "why": "LGPD, compliance digital e provas eletrônicas aproximam o jurídico da segurança da informação; o encarregado (DPO) atua entre as duas áreas.", "gaps": ["fundamentos técnicos de segurança", "gestão de incidentes", "normas ISO 27001/27701"], "steps": ["fluxo de atendimento a incidente de dados (D4)", "curso de proteção de dados na Escola Virtual.Gov", "POP de resposta a titular de dados (L7)"] },
+    { "to": "servico-social", "why": "Assessoria jurídica popular, defensoria e direitos humanos compartilham campo com o Serviço Social.", "gaps": ["política de assistência social", "atendimento socioassistencial", "trabalho em rede"], "steps": ["estudo de caso STAR de atendimento em núcleo de prática jurídica (L3)", "curso sobre SUAS na Escola Virtual.Gov", "fluxo de encaminhamento de um caso (D4)"] }
+  ],
+  "learning": [
+    { "title": "Escola Nacional de Advocacia (ENA) — cursos da OAB", "provider": "Conselho Federal da OAB", "url": "https://ena.oab.org.br/", "free": true, "kind": "curso" },
+    { "title": "Escola Virtual.Gov — proteção de dados, licitações, compliance", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Portal da Legislação — Planalto", "provider": "Presidência da República", "url": "https://www.planalto.gov.br/ccivil_03/", "free": true, "kind": "norma" },
+    { "title": "Jurisprudência do STJ (SCON) e do STF", "provider": "STJ / STF", "url": "https://scon.stj.jus.br/SCON/", "free": true, "kind": "portal" },
+    { "title": "Saber Direito — aulas da TV Justiça", "provider": "Supremo Tribunal Federal", "url": "https://www.youtube.com/@TVJustica", "free": true, "kind": "curso" },
+    { "title": "Guia orientativo e cursos da ANPD sobre LGPD", "provider": "ANPD", "url": "https://www.gov.br/anpd/pt-br/documentos-e-publicacoes", "free": true, "kind": "portal" },
+    { "title": "Exame de Ordem Unificado — provas anteriores e editais", "provider": "FGV / OAB", "url": "https://oab.fgv.br/", "free": true, "kind": "certificacao" },
+    { "title": "Conjur — notícias e artigos jurídicos", "provider": "Consultor Jurídico", "url": "https://www.conjur.com.br/", "free": true, "kind": "comunidade" }
+  ],
+  "sources": [
+    { "title": "Lei 8.906/1994 — Estatuto da Advocacia e da OAB (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l8906.htm", "accessedAt": "2026-11-02" },
+    { "title": "Código de Ética e Disciplina da OAB e Provimento 205/2021 (Conselho Federal da OAB)", "url": "https://www.oab.org.br/", "accessedAt": "2026-11-02" },
+    { "title": "Código de Processo Civil — Lei 13.105/2015 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13105.htm", "accessedAt": "2026-11-02" },
+    { "title": "LGPD — Lei 13.709/2018 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos (ramo direito: CBO, ISCO, ESCO, conselho, dados sensíveis, vizinhos)", "url": "docs/../contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4 (perguntas), §4.6, §7 (tarefas L1–L10, D1–D10), §8 (mensagens)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URIs ESCO das competências não confirmadas nesta sessão (todas em null); as URIs de ocupação vieram do catálogo",
+    "Códigos CBO em questions.a4.cboFamilies (4110 para escrevente/assistente) não conferidos no portal da CBO",
+    "Número e vigência do Provimento CFOAB 205/2021 (publicidade) e da Res. CFOAB 02/2015 (Código de Ética) não conferidos na fonte primária nesta sessão",
+    "URLs de ENA/OAB, quadro de advogados da OAB, SCON/STJ, ANPD e Justiça em Números não abertas nesta sessão",
+    "Canal da TV Justiça no YouTube (Saber Direito) não conferido; pode ter mudado de endereço",
+    "Artigos específicos do CPC sobre contagem de prazos em dias úteis (art. 219) e audiência de conciliação (art. 334) citados de memória"
+  ]
+}

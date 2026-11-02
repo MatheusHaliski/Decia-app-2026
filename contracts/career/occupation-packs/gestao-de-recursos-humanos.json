@@ -1,0 +1,321 @@
+{
+  "schemaVersion": 1,
+  "code": "gestao-de-recursos-humanos",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Gestão de Recursos Humanos", "en": "Human Resources Management", "es": "Gestión de Recursos Humanos" },
+  "fields": ["gestao-de-recursos-humanos"],
+  "family": {
+    "cbo": [
+      { "code": "2524", "title": "Profissionais de recursos humanos" },
+      { "code": "1422", "title": "Gerentes de recursos humanos e de relações do trabalho" }
+    ],
+    "isco08": [
+      { "code": "2423", "title": "Personnel and careers professionals" },
+      { "code": "1212", "title": "Human resource managers" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/d3e32e5e-7f24-48e3-b939-e4f800eb62fb", "label": "human resources officer" },
+      { "uri": "http://data.europa.eu/esco/occupation/f605bcd2-90b6-45a0-a558-d05016d68a77", "label": "human resources manager" },
+      { "uri": "http://data.europa.eu/esco/occupation/068370e0-9c27-4814-87d0-44fbb3140815", "label": "recruitment consultant" }
+    ]
+  },
+  "scope": {
+    "summary": "Tecnólogo em Gestão de RH (ou Gestão de Pessoas): atrai, seleciona, integra, desenvolve e acompanha pessoas nas organizações. Cobre recrutamento e seleção, departamento pessoal (admissão, folha, eSocial, rescisão), treinamento e desenvolvimento, cargos e carreiras, avaliação de desempenho, clima, relações trabalhistas e indicadores de pessoas, sempre sob a CLT, a LGPD e a vedação a práticas discriminatórias. Sem conselho obrigatório; registro no CRA é facultativo.",
+    "entryRoles": ["Estagiário de RH", "Auxiliar de departamento pessoal", "Assistente de recursos humanos", "Assistente de recrutamento e seleção", "Auxiliar de treinamento e desenvolvimento", "Jovem aprendiz em RH"],
+    "midRoles": ["Analista de recursos humanos (generalista)", "Analista de recrutamento e seleção", "Analista de departamento pessoal", "Analista de treinamento e desenvolvimento", "Analista de cargos, carreiras e remuneração", "Analista de people analytics", "Recrutador(a) especializado(a)"],
+    "seniorRoles": ["Coordenador de RH", "Business partner de RH", "Gerente de recursos humanos", "Gerente de departamento pessoal", "Gerente de desenvolvimento organizacional", "Consultor de gestão de pessoas", "Head de pessoas e cultura"],
+    "sectors": ["indústria", "varejo e serviços", "saúde e hospitais", "consultorias de RH e recrutamento", "tecnologia e startups", "administração pública (gestão de pessoas)", "educação", "terceiro setor", "cooperativas e agronegócio"],
+    "regulation": [
+      { "name": "CLT (Decreto-Lei 5.452/1943)", "issuer": "Brasil", "about": "contrato de trabalho, jornada, férias, 13º, rescisão; art. 373-A veda exigências e anúncios discriminatórios" },
+      { "name": "Lei 9.029/1995", "issuer": "Brasil", "about": "proíbe práticas discriminatórias na admissão e na manutenção do emprego (sexo, origem, raça, cor, estado civil, situação familiar, deficiência, idade)" },
+      { "name": "LGPD (Lei 13.709/2018), arts. 5º, 7º, 11 e 20", "issuer": "Brasil / ANPD", "about": "tratamento de dados de empregados e candidatos; dados sensíveis (saúde, sindicato); decisões automatizadas em seleção" },
+      { "name": "eSocial (Decreto 8.373/2014) e Manual de Orientação do eSocial (MOS)", "issuer": "Brasil / Receita Federal, MTE, INSS", "about": "escrituração digital unificada das obrigações trabalhistas, previdenciárias e fiscais: admissão, afastamentos, SST, desligamento" },
+      { "name": "Lei 8.213/1991, art. 93 e Lei 13.146/2015 (LBI)", "issuer": "Brasil", "about": "cota de pessoas com deficiência e reabilitados em empresas com 100+ empregados; acessibilidade e adaptação razoável" },
+      { "name": "Lei 10.097/2000 e Decreto 9.579/2018", "issuer": "Brasil", "about": "aprendizagem profissional: cota de aprendizes e contrato especial" },
+      { "name": "Lei 14.611/2023", "issuer": "Brasil", "about": "igualdade salarial entre mulheres e homens; relatório de transparência para empresas com 100+ empregados" },
+      { "name": "NR-1 (GRO/PGR) e NR-7 (PCMSO)", "issuer": "MTE", "about": "gerenciamento de riscos ocupacionais, inclusive psicossociais, e exames ocupacionais (ASO) que o RH acompanha com o SESMT" },
+      { "name": "Lei 4.769/1965; Res. CFA 649/2024", "issuer": "CFA / CRA", "about": "registro facultativo do tecnólogo em área conexa à Administração" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "R&S", "meaning": "recrutamento e seleção: atração, triagem, entrevistas, testes e decisão com critérios definidos antes" },
+      { "term": "descrição de cargo", "meaning": "documento com missão, responsabilidades, requisitos e competências de uma posição" },
+      { "term": "entrevista por competências", "meaning": "roteiro de perguntas comportamentais (ex.: STAR) ligadas às competências do cargo, igual para todos os candidatos" },
+      { "term": "ATS", "meaning": "sistema de gestão de candidaturas (applicant tracking system)" },
+      { "term": "onboarding / integração", "meaning": "trilha de acolhimento e capacitação dos primeiros 30 a 90 dias do novo empregado" },
+      { "term": "DP (departamento pessoal)", "meaning": "rotinas de admissão, folha, ponto, férias, afastamentos e rescisão" },
+      { "term": "eSocial", "meaning": "sistema federal onde o empregador presta informações trabalhistas, previdenciárias e fiscais por eventos" },
+      { "term": "folha de pagamento", "meaning": "cálculo mensal de proventos, descontos e encargos (INSS, FGTS, IRRF)" },
+      { "term": "TRCT", "meaning": "termo de rescisão do contrato de trabalho" },
+      { "term": "ASO", "meaning": "atestado de saúde ocupacional (admissional, periódico, demissional)" },
+      { "term": "T&D", "meaning": "treinamento e desenvolvimento" },
+      { "term": "LNT", "meaning": "levantamento de necessidades de treinamento" },
+      { "term": "PDI", "meaning": "plano de desenvolvimento individual com metas, ações e prazos" },
+      { "term": "avaliação de desempenho", "meaning": "ciclo de metas e feedback (90°, 180°, 360°) com critérios conhecidos antes" },
+      { "term": "cargos e salários", "meaning": "estrutura de cargos, faixas e critérios de progressão; subsistema de remuneração" },
+      { "term": "turnover", "meaning": "rotatividade: desligamentos no período divididos pelo quadro médio" },
+      { "term": "absenteísmo", "meaning": "horas ou dias de ausência divididos pelas horas ou dias previstos" },
+      { "term": "headcount", "meaning": "quantidade de pessoas no quadro em uma data" },
+      { "term": "pesquisa de clima / eNPS", "meaning": "levantamento periódico e anônimo de percepção dos empregados" },
+      { "term": "people analytics", "meaning": "uso de dados agregados de pessoas para apoiar decisões, com anonimização e base legal" },
+      { "term": "business partner de RH", "meaning": "profissional de RH que atende uma área do negócio como consultor interno" },
+      { "term": "employer branding", "meaning": "reputação da empresa como empregadora" },
+      { "term": "CIPA", "meaning": "comissão interna de prevenção de acidentes e de assédio (NR-5)" },
+      { "term": "acordo e convenção coletiva", "meaning": "normas negociadas com o sindicato que se somam à CLT" },
+      { "term": "banco de horas", "meaning": "compensação de jornada prevista em acordo" },
+      { "term": "viés em seleção", "meaning": "influência de características protegidas ou proxies na decisão; deve ser prevenido por critérios e roteiro" }
+    ],
+    "tools": ["ATS (ex.: Gupy, Kenoby, Solides)", "sistemas de folha e DP (ex.: TOTVS, Senior, ADP, Domínio)", "eSocial Web e Conectividade Social", "planilhas (Excel, Google Sheets)", "Power BI ou Looker Studio", "plataformas de LMS e treinamento", "LinkedIn e portais de vagas", "formulários para pesquisa de clima", "Letters (POP, relatórios, planos)", "Drawings (fluxos e infográficos)"],
+    "deliverables": ["descrição de cargo", "roteiro de entrevista por competências", "POP de admissão ou de desligamento", "trilha de integração (onboarding)", "plano de treinamento a partir do LNT", "relatório de indicadores de pessoas (turnover, absenteísmo, tempo de contratação)", "pesquisa de clima e plano de ação", "política interna (ex.: férias, home office, conduta)", "organograma", "PDI", "fluxo do processo seletivo"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Recrutamento e seleção por competências", "esco": null, "kind": "nucleo" },
+      { "label": "Legislação trabalhista e rotinas de departamento pessoal", "esco": null, "kind": "nucleo" },
+      { "label": "eSocial e folha de pagamento", "esco": null, "kind": "nucleo" },
+      { "label": "Treinamento e desenvolvimento (LNT, trilhas, avaliação de eficácia)", "esco": null, "kind": "nucleo" },
+      { "label": "Avaliação de desempenho e PDI", "esco": null, "kind": "nucleo" },
+      { "label": "Indicadores de pessoas e people analytics", "esco": null, "kind": "nucleo" },
+      { "label": "Estrutura de cargos, carreiras e remuneração", "esco": null, "kind": "nucleo" },
+      { "label": "Clima, cultura e comunicação interna", "esco": null, "kind": "nucleo" },
+      { "label": "Integração de novos empregados (onboarding)", "esco": null, "kind": "nucleo" },
+      { "label": "LGPD aplicada a dados de empregados e candidatos", "esco": null, "kind": "nucleo" },
+      { "label": "Prevenção de discriminação e inclusão (Lei 9.029/1995, cotas)", "esco": null, "kind": "nucleo" },
+      { "label": "Relações trabalhistas e sindicais", "esco": null, "kind": "apoio" },
+      { "label": "Interface com saúde e segurança do trabalho (NR-1, NR-7, CIPA)", "esco": null, "kind": "apoio" },
+      { "label": "Mediação de conflitos e escuta", "esco": null, "kind": "apoio" },
+      { "label": "Uso de ATS, sistemas de folha e planilhas", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação escrita clara", "sigilo e ética", "organização e prazos", "empatia e escuta ativa", "raciocínio com dados"],
+    "tracks": [
+      { "id": "recrutar-com-criterio", "label": "Recrutar com critério", "steps": ["descrição de cargo sem critérios discriminatórios (X1)", "roteiro de entrevista por competências (X2)", "fluxo do processo seletivo com raias (D4)", "POP de triagem e devolutiva (L7)"] },
+      { "id": "departamento-pessoal", "label": "Dominar o departamento pessoal", "steps": ["POP de admissão com eventos do eSocial (L7)", "fluxo admissão → integração (D4)", "relatório de indicadores de DP (L4)"] },
+      { "id": "desenvolver-pessoas", "label": "Desenvolver pessoas", "steps": ["trilha de integração de 30 dias (L7)", "relatório de eficácia de um treinamento (L4)", "infográfico de resultados de T&D (D7)"] },
+      { "id": "rh-estrategico", "label": "RH parceiro do negócio", "steps": ["estudo de caso STAR de um problema de pessoas (L3)", "plano 30-60-90 para business partner (L9)", "redesenho antes e depois de um processo de RH (D5)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"assistente de RH\", \"auxiliar de departamento pessoal\", \"analista de recrutamento\", \"auxiliar administrativo\"",
+      "cboFamilies": ["2524", "1422", "4110"],
+      "why": "Pergunto seu último cargo para saber de que subsistema de RH você parte (seleção, DP, treinamento) e sugerir tarefas que continuem dali. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, aprendizagem ou auxiliar de RH/DP",
+        "junior": "assistente ou analista júnior, executa rotinas com conferência de alguém",
+        "pleno": "analista que responde por um subsistema (R&S, DP, T&D) com autonomia",
+        "senior": "analista sênior ou business partner; desenha processos e orienta colegas",
+        "gestao": "coordena ou gerencia a área de pessoas, orçamento e equipe"
+      },
+      "why": "Com o nível ajusto a dificuldade das tarefas: um POP de admissão para quem começa, um plano 30-60-90 de business partner para quem já lidera."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em RH",
+      "options": ["conduzir entrevistas com roteiro", "escrever descrições de cargo e vagas", "rotinas de admissão e rescisão", "eSocial e folha de pagamento", "planejar e aplicar treinamentos", "medir turnover, absenteísmo e tempo de contratação", "conduzir pesquisa de clima e plano de ação", "mediar conflitos entre pessoas e áreas", "comunicar políticas internas", "organizar a integração de novos empregados", "usar ATS e planilhas", "orientar gestores sobre legislação"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa de RH; a prova vem com as tarefas (POP, relatório, fluxo)."
+    },
+    "c4": {
+      "certifications": ["tecnólogo em Gestão de RH / Gestão de Pessoas", "graduação em Administração ou Psicologia", "curso de eSocial e departamento pessoal", "curso de legislação trabalhista", "curso de people analytics ou Excel/Power BI", "formação em entrevista por competências", "registro no CRA (facultativo)", "curso de LGPD para RH", "Libras"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação, cursos e idiomas mostram lacunas em relação ao cargo-alvo (ex.: DP pede eSocial; RH de multinacional pede inglês)."
+    },
+    "c5": {
+      "prompt": "Que competência de RH quer desenvolver?",
+      "options": ["recrutamento e seleção por competências", "departamento pessoal e eSocial", "treinamento e desenvolvimento", "indicadores e people analytics", "cargos, carreiras e remuneração", "clima e cultura", "LGPD aplicada ao RH", "relações trabalhistas e sindicais", "liderança de equipe de RH"],
+      "why": "Com isso monto uma trilha com tarefas progressivas da área, em vez de mostrar o catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em qual subsistema de RH você atua ou quer atuar primeiro?", "type": "escolha", "options": ["recrutamento e seleção", "departamento pessoal", "treinamento e desenvolvimento", "cargos, carreiras e remuneração", "generalista / business partner", "relações trabalhistas", "ainda não sei"], "why": "Pergunto para colocar na frente as tarefas desse subsistema (ex.: POP de admissão para DP, roteiro de entrevista para R&S).", "where": "P" },
+      { "id": "x2", "prompt": "Você trabalha (ou quer trabalhar) em RH interno ou em consultoria/recrutamento para outras empresas?", "type": "escolha", "options": ["RH interno", "consultoria ou agência de recrutamento", "os dois", "ainda não sei"], "why": "Muda a entrega típica: proposta e briefing de vaga para consultoria; políticas e indicadores para RH interno.", "where": "X" }
+    ],
+    "interestTestWhenUnknown": true
+  },
+  "guidedTasks": {
+    "priority": ["L7", "D4", "L4", "L9", "L3", "L8", "L6", "L1", "D7", "D5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta de ambiente não é entrega de RH" },
+      { "code": "D3", "reason": "modelagem 3D não é entrega da área" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da área" },
+      { "code": "D8", "reason": "vista explodida não é entrega da área" },
+      { "code": "D9", "reason": "wireframe de tela não é entrega típica de RH" }
+    ],
+    "parameters": {
+      "L7": {
+        "title": "POP de admissão (da proposta ao primeiro dia)",
+        "brief": "Escreva o procedimento operacional de admissão de um empregado CLT: passos numerados, responsável por passo (RH, DP, gestor, SST), documentos, eventos do eSocial envolvidos e critério de conclusão. Use uma empresa fictícia; nenhum dado de pessoa real.",
+        "parameters": { "process": "admissão CLT", "numberedSteps": true, "ownerPerStep": true, "mustMention": ["exame admissional (ASO)", "evento S-2200 do eSocial", "prazo de envio", "integração"], "fictionalCompany": true },
+        "criteria": ["passos numerados com responsável", "critério de conclusão em cada passo", "cita ASO e o evento S-2200 do eSocial", "indica prazos legais com a fonte", "declara empresa fictícia e ausência de dados pessoais", "não inclui critério discriminatório ou exigência vedada (art. 373-A)"],
+        "evidence": "POP em Letters (modelo pop)",
+        "time": "60 min",
+        "level": 1
+      },
+      "D4": {
+        "title": "Fluxo do processo seletivo com raias",
+        "brief": "Desenhe o fluxo de um processo seletivo da abertura da vaga à devolutiva, com raias por responsável (gestor requisitante, RH, candidato) e pontos de decisão com critérios definidos antes da triagem.",
+        "parameters": { "lanes": ["gestor requisitante", "RH", "candidato"], "mustHave": ["abertura da vaga", "triagem com critérios", "entrevista por competências", "decisão", "devolutiva a todos"], "closedFlow": true },
+        "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "ponto de decisão cita critérios definidos antes da triagem", "inclui devolutiva aos candidatos não aprovados"],
+        "evidence": "diagrama vetorial (Drawings, modo diagrama)",
+        "time": "45 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório de indicadores de pessoas",
+        "brief": "Monte um relatório curto (até 4 páginas) com três indicadores (ex.: turnover, absenteísmo, tempo de contratação): objetivo, fórmula, período, fonte dos dados, resultado, leitura e limitações. Use dados fictícios ou agregados e anonimizados.",
+        "parameters": { "maxPages": 4, "indicators": 3, "sections": ["objetivo", "método e fórmulas", "resultados", "limitações", "referências"], "anonymizedData": true },
+        "criteria": ["três indicadores com fórmula e período", "seções objetivo, método, resultados, limitações, referências", "até 4 páginas", "fonte dos dados declarada", "dados fictícios ou agregados sem identificar pessoas"],
+        "evidence": "relatório em Letters (modelo relatorio-tecnico)",
+        "time": "2 h",
+        "level": 2
+      },
+      "L9": {
+        "title": "Plano 30-60-90 para analista ou business partner de RH",
+        "brief": "Escreva três metas mensuráveis por fase para o cargo-alvo (ex.: mapear processos de DP em 30 dias; reduzir tempo de contratação em X dias até 90). Sem metas sobre características de pessoas.",
+        "parameters": { "goalsPerPhase": 3, "measurable": true, "phases": ["30 dias", "60 dias", "90 dias"] },
+        "criteria": ["três metas por fase", "cada meta tem indicador e prazo", "metas ligadas a processos e indicadores, não a pessoas", "cita o cargo-alvo"],
+        "evidence": "plano em Letters (modelo plano-30-60-90)",
+        "time": "45 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "letters", "title": "Descrição de cargo sem critérios discriminatórios", "competency": "Análise de cargos e redação de vagas", "criteria": ["missão, responsabilidades, requisitos e competências", "requisitos ligados ao trabalho, nenhum critério de idade, sexo, aparência, estado civil ou situação familiar", "linguagem acessível e inclusiva", "indica acessibilidade do processo", "cargo fictício ou genérico"], "evidence": "documento em Letters", "time": "40 min", "trigger": "Que cargo você conhece bem para descrever?", "level": 1 },
+      { "id": "X2", "editor": "letters", "title": "Roteiro de entrevista por competências", "competency": "Seleção por competências", "criteria": ["três competências do cargo com duas perguntas comportamentais cada", "escala de avaliação por competência definida antes", "mesmas perguntas para todos os candidatos", "sem perguntas sobre dados sensíveis ou vida pessoal"], "evidence": "roteiro em Letters", "time": "45 min", "trigger": "Quer treinar um roteiro de entrevista para a vaga que você mais conhece?", "level": 2 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "sem-criterios-discriminatorios", "check": "o texto não contém exigências de idade, sexo, aparência, estado civil, filhos, religião ou origem (lista de termos vedados)", "appliesTo": ["X1", "X2", "L7", "L8", "D4"], "auto": true },
+      { "id": "sem-dados-identificaveis", "check": "nenhum nome completo, CPF, matrícula ou e-mail de empregado ou candidato real; declaração de dados fictícios ou anonimizados", "appliesTo": ["L3", "L4", "L7", "D4", "D7", "X1", "X2"], "auto": true },
+      { "id": "pop-passos-e-responsaveis", "check": "passos numerados, cada um com responsável e critério de conclusão", "appliesTo": ["L7"], "auto": true },
+      { "id": "indicador-com-formula-e-periodo", "check": "cada indicador traz fórmula, período e fonte dos dados", "appliesTo": ["L4", "D7"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L8", "L9", "X1"], "auto": true },
+      { "id": "diagrama-fechado-com-raias", "check": "o diagrama tem início e fim, raias por responsável e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "metas-por-fase", "check": "três metas em cada fase, cada uma com indicador e prazo", "appliesTo": ["L9"], "auto": true },
+      { "id": "fonte-legal-citada", "check": "artigos da CLT, lei ou manual do eSocial citados quando o texto afirma prazo ou obrigação", "appliesTo": ["L7", "L4", "X1"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados confidenciais do empregador", "appliesTo": ["L1", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D4", "D5", "D7", "X1", "X2"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "aderencia-legal", "label": "Aderência à legislação trabalhista e à LGPD", "levels": { "aproxima": "cita a lei de forma genérica ou com imprecisões", "atende": "aplica corretamente CLT, eSocial e LGPD ao caso", "supera": "antecipa riscos (prazos, sensíveis, discriminação) e propõe controles" } },
+      { "id": "clareza-para-o-gestor", "label": "Clareza para gestores e empregados", "levels": { "aproxima": "exige conhecimento prévio de RH para entender", "atende": "um gestor sem formação em RH entende e aplica", "supera": "antecipa dúvidas frequentes e as responde no próprio documento" } },
+      { "id": "orientacao-a-dados", "label": "Uso de indicadores", "levels": { "aproxima": "descreve atividades sem medir", "atende": "mede com fórmula, período e leitura", "supera": "compara períodos ou áreas, explica causas prováveis e limites do dado" } },
+      { "id": "equidade", "label": "Equidade e inclusão no processo", "levels": { "aproxima": "não trata de vieses nem acessibilidade", "atende": "critérios iguais para todos e acessibilidade prevista", "supera": "mostra como o processo previne vieses e mede o efeito" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da área de Gestão de Recursos Humanos (tecnólogo em Gestão de RH/Gestão de Pessoas; CBO 2524 e 1422). Use o vocabulário da área (R&S, DP, eSocial, folha, T&D, LNT, PDI, turnover, absenteísmo, clima, business partner) e cite as normas pelo nome: CLT (inclusive art. 373-A), Lei 9.029/1995, LGPD (arts. 5º, 7º, 11 e 20), eSocial e seu Manual de Orientação, Lei 8.213/1991 art. 93, Lei 10.097/2000, Lei 14.611/2023, NR-1 e NR-7. Nunca sugira, aceite ou ajude a redigir critérios de seleção ou de desligamento baseados em idade, sexo, aparência, estado civil, filhos, religião, origem, deficiência ou qualquer proxy disso; aponte quando um texto da pessoa contiver isso. Nunca peça nem processe dados identificáveis de empregados ou candidatos (nomes, CPF, salários individuais, avaliações, atestados, afastamentos, denúncias): oriente a usar dados fictícios ou agregados e anonimizados. Não calcule folha nem rescisão reais, não substitua parecer de advogado trabalhista ou de contador e não emita opinião sobre pessoas reais; quando houver prazo ou obrigação, cite a fonte e diga que a conferência cabe à pessoa. Lembre que o registro no CRA é facultativo. Toda sugestão de tarefa diz qual competência comprova, que evidência produz e quanto tempo leva; afirmações de mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos, nunca por score. Em nenhum modo publique, envie mensagem ou se candidate sem confirmação. Pré-cheque só critérios objetivos; o selo depende de revisão humana.",
+    "citeSources": [
+      { "title": "CLT — Decreto-Lei 5.452/1943 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm", "kind": "norma" },
+      { "title": "Lei 9.029/1995 — práticas discriminatórias no trabalho", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9029.htm", "kind": "norma" },
+      { "title": "LGPD — Lei 13.709/2018", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm", "kind": "norma" },
+      { "title": "Portal eSocial — Manual de Orientação (MOS) e leiautes", "url": "https://www.gov.br/esocial/pt-br", "kind": "orgao-publico" },
+      { "title": "Normas Regulamentadoras (NR) — MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/seguranca-e-saude-no-trabalho/sst-mtp/sst-normatizacao/normas-regulamentadoras-nrs", "kind": "norma" },
+      { "title": "ANPD — guias orientativos (agentes de tratamento, legítimo interesse)", "url": "https://www.gov.br/anpd/pt-br/documentos-e-publicacoes", "kind": "orgao-publico" },
+      { "title": "CFA — Conselho Federal de Administração (registro facultativo do tecnólogo)", "url": "https://cfa.org.br/", "kind": "conselho" },
+      { "title": "CBO — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "Novo CAGED — MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências de RH; x1 (subsistema) e x2 (interno ou consultoria) ordenam as tarefas." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "L7 POP, D4 fluxo seletivo, L4 indicadores, L9 plano e as personalizadas X1/X2 na frente; cada card diz a competência, a evidência e o tempo." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir das horas (d1); com pouco tempo, X1 e L6 primeiro; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Pré-checa termos vedados (Lei 9.029), dados identificáveis, passos com responsável, fórmula e período dos indicadores, fonte legal citada; o selo é humano." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Propõe estrutura de POP, descrição de cargo, roteiro e relatório com prévia; nunca aplica sem revisão; nunca preenche dados de pessoas reais." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias por responsável e fechamento do fluxo (D4); fonte e eixos no infográfico (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: competências de RH declaradas e evidenciadas, lacunas em relação ao subsistema-alvo; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos por CBO/ESCO (administração, processos gerenciais, gestão pública, SST); psicologia organizacional exige graduação e CRP." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por CBO 2524/1422 e competências de RH compartilhadas." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com subsistema de RH, três competências e uma prova; só com o consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências e competências em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados pessoais e funcionais de empregados e candidatos (salários, avaliações, saúde ocupacional, afastamentos)", "currículos e entrevistas de terceiros identificáveis", "denúncias e processos disciplinares", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca sugerir nem aceitar critérios de seleção ou desligamento por idade, sexo, aparência, estado civil, filhos, religião, origem, deficiência ou proxies (Lei 9.029/1995; CLT art. 373-A)",
+      "nunca pedir, armazenar ou processar dados identificáveis de empregados e candidatos; orientar dados fictícios ou agregados e anonimizados",
+      "não calcular folha ou rescisão reais nem substituir parecer de advogado trabalhista ou contador; citar a fonte legal e indicar conferência",
+      "não avaliar nem rotular pessoas reais; tarefas usam casos fictícios",
+      "perguntar em vez de inferir subsistema, senioridade ou situação",
+      "nunca prometer entrevista, emprego ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["diagrama", "infografico"],
+    "lettersTemplates": ["pop", "relatorio-tecnico", "plano-30-60-90", "proposta", "estudo-de-caso", "curriculo", "bio", "carta", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, X1 (descrição de cargo), L6 e L5 funcionam bem; D4 e L4 ficam melhores no computador. Nunca fotografar documentos de empregados para anexar.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: descrição de cargo sem critérios discriminatórios (40 min). Comprova análise de cargos.",
+        "Já pensou em desenhar o fluxo do processo seletivo que você conhece? 45 min, vira evidência de análise de processos.",
+        "Sem pressão. Quando quiser retomar, o resumo de perfil de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias"] },
+    "privacy": {
+      "sensitiveData": ["dados pessoais e funcionais de colaboradores e candidatos: salários, avaliações de desempenho, saúde ocupacional, afastamentos (LGPD arts. 5º e 11)", "currículos, entrevistas e resultados de processos seletivos identificáveis", "denúncias e processos disciplinares internos", "políticas e organogramas internos não públicos do empregador"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2524/1422", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — estoque de vínculos por ocupação", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "PNAD Contínua (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html", "geography": "Brasil e UF", "cadence": "trimestral", "kind": "estatistica-oficial" },
+      { "title": "Censo da Educação Superior (INEP) — matrículas em Gestão de Pessoas/RH", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-da-educacao-superior", "geography": "Brasil e UF", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "ABRH Brasil — Associação Brasileira de Recursos Humanos (pesquisas e eventos)", "url": "https://www.abrhbrasil.org.br/", "geography": "Brasil", "cadence": "eventual", "kind": "associacao" },
+      { "title": "CFA — Pesquisa Nacional Perfil, Formação, Atuação e Oportunidades de Trabalho", "url": "https://cfa.org.br/pesquisa-nacional/", "geography": "Brasil e UF", "cadence": "eventual", "kind": "conselho" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147), mesmo sendo RH uma área que lida com estruturas de cargos."
+  },
+  "paths": [
+    { "to": "administracao", "why": "Mesma família CINE (0413) e mesmo conselho facultativo; o bacharelado amplia para finanças, operações e estratégia, e a experiência em RH conta como gestão de um subsistema.", "gaps": ["finanças e orçamento", "estratégia e operações", "bacharelado (se quiser registro pleno no CRA)"], "steps": ["relatório de indicadores com leitura financeira (L4)", "plano 30-60-90 para coordenação administrativa (L9)", "disciplinas de finanças em curso aberto"] },
+    { "to": "processos-gerenciais", "why": "Tecnólogo vizinho que usa o desenho de processos e os indicadores que o RH já pratica em POP e fluxos.", "gaps": ["mapeamento de processos além do RH", "gestão de projetos", "indicadores operacionais"], "steps": ["fluxo com raias de um processo fora do RH (D4)", "redesenho antes e depois (D5)", "POP de um processo administrativo (L7)"] },
+    { "to": "gestao-publica", "why": "Gestão de pessoas no setor público compartilha seleção, capacitação e avaliação, com regras próprias (concurso, estatuto, Lei 8.112/1990 ou estatutos locais).", "gaps": ["regime estatutário e legislação de pessoal público", "licitações e orçamento público", "concursos e editais"], "steps": ["cursos de gestão de pessoas da Enap (Escola Virtual.Gov)", "POP de um processo de capacitação adaptado ao setor público (L7)", "acompanhar editais na área"] },
+    { "to": "seguranca-do-trabalho", "why": "A interface com SST (NR-1, NR-7, CIPA, eSocial eventos de SST) já faz parte do DP; o técnico em segurança do trabalho é um caminho técnico regulamentado.", "gaps": ["curso técnico em segurança do trabalho (registro no MTE)", "NR-1, NR-5, NR-7 em profundidade", "investigação de acidentes"], "steps": ["fluxo de gerenciamento de riscos com raias RH/SST (D4)", "curso técnico reconhecido", "POP de eventos de SST no eSocial (L7)"] },
+    { "to": "psicologia", "why": "Psicologia organizacional e do trabalho aprofunda seleção, avaliação e clima, mas exige graduação em Psicologia e registro no CRP (Lei 4.119/1962).", "gaps": ["graduação em Psicologia (5 anos)", "registro no CRP", "testes psicológicos (uso privativo do psicólogo)"], "steps": ["entender o que é privativo do psicólogo (Res. CFP 09/2018)", "estudo de caso STAR de clima ou seleção (L3)", "avaliar a graduação"] }
+  ],
+  "learning": [
+    { "title": "Escola Virtual.Gov — cursos de gestão de pessoas, liderança e LGPD", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Portal eSocial — Manual de Orientação (MOS), leiautes e perguntas frequentes", "provider": "Governo Federal", "url": "https://www.gov.br/esocial/pt-br", "free": true, "kind": "portal" },
+    { "title": "Normas Regulamentadoras (NR-1, NR-5, NR-7) — texto oficial", "provider": "MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/seguranca-e-saude-no-trabalho/sst-mtp/sst-normatizacao/normas-regulamentadoras-nrs", "free": true, "kind": "norma" },
+    { "title": "Guias orientativos da ANPD (tratamento de dados, legítimo interesse, segurança)", "provider": "ANPD", "url": "https://www.gov.br/anpd/pt-br/documentos-e-publicacoes", "free": true, "kind": "portal" },
+    { "title": "Cursos on-line de gestão de pessoas do Sebrae", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual Fundação Bradesco — administração e RH", "provider": "Fundação Bradesco", "url": "https://www.ev.org.br/", "free": true, "kind": "portal" },
+    { "title": "CLT comentada e atualizada (texto consolidado)", "provider": "Planalto", "url": "https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm", "free": true, "kind": "norma" },
+    { "title": "ABRH Brasil — comunidade, eventos e conteúdos de RH", "provider": "ABRH Brasil", "url": "https://www.abrhbrasil.org.br/", "free": false, "kind": "comunidade" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4 (perguntas), §4.6 (pacote), §7 (tarefas L1–L10, D1–D10), §8 (mensagens)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "RF75 README (CA19) e catálogo contracts/career/academic-fields.json — ramo gestao-de-recursos-humanos (CBO, ISCO, ESCO, conselho, sensitiveData, vizinhos)", "url": "docs/diagramas/RF75/README.md", "accessedAt": "2026-11-02" },
+    { "title": "CLT — Decreto-Lei 5.452/1943", "url": "https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm", "accessedAt": "2026-11-02" },
+    { "title": "Lei 9.029/1995", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9029.htm", "accessedAt": "2026-11-02" },
+    { "title": "LGPD — Lei 13.709/2018", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm", "accessedAt": "2026-11-02" },
+    { "title": "Portal eSocial", "url": "https://www.gov.br/esocial/pt-br", "accessedAt": "2026-11-02" },
+    { "title": "CBO — Classificação Brasileira de Ocupações", "url": "https://cbo.mte.gov.br/", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Nenhuma busca web nesta sessão: URLs de leis, eSocial, ANPD, ABRH, CFA e aprendizagem citadas de memória, não verificadas em 2026-11-02",
+    "Código do evento S-2200 (admissão) e prazos do eSocial conforme versão atual do MOS; conferir leiaute vigente",
+    "Inclusão de riscos psicossociais na NR-1 (Portaria MTE de 2024, vigência 2025/2026) citada de memória",
+    "Res. CFA 649/2024 e RN CFA 505/2017 (registro facultativo do tecnólogo) copiadas do catálogo, não conferidas no site do CFA",
+    "Lei 14.611/2023 (igualdade salarial, relatório de transparência) e seu decreto regulamentador não conferidos",
+    "Códigos CBO 4110 em questions.a4 e títulos CBO/ISCO não conferidos no portal da CBO",
+    "URIs ESCO da família copiadas do catálogo; competências sem URI ESCO confirmada (esco: null)",
+    "Existência e URL da Pesquisa Nacional do CFA e das pesquisas da ABRH não verificadas",
+    "Res. CFP 09/2018 (testes psicológicos privativos) citada de memória nos caminhos"
+  ]
+}
