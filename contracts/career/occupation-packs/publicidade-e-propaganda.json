@@ -347,7 +347,7 @@
   ],
   "sources": [
     { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
-    { "title": "Catálogo de ramos acadêmicos — publicidade-e-propaganda (CBO, ISCO, ESCO, dados sensíveis, vizinhos)", "url": "docs/../contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos — publicidade-e-propaganda (CBO, ISCO, ESCO, dados sensíveis, vizinhos)", "url": "contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
     { "title": "Código Brasileiro de Autorregulamentação Publicitária (cópia em PDF, Fiocruz)", "url": "https://www.icict.fiocruz.br/sites/www.icict.fiocruz.br/files/Cod%20Bras%20de%20Autorregulamentacao%20Publica_Conar.pdf", "accessedAt": "2026-11-02" },
     { "title": "Novo CAGED — MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "accessedAt": "2026-11-02" }
   ],

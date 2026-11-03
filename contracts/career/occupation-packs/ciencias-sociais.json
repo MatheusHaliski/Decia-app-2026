@@ -1348,11 +1348,6 @@
   ],
   "sources": [
     {
-      "title": "Catálogo de ramos — entrada ciencias-sociais (CBO, ISCO, ESCO, conselho, sensitiveData, vizinhos)",
-      "url": "docs/pesquisa/fase1/academic-fields.json",
-      "accessedAt": "2026-11-02"
-    },
-    {
       "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8",
       "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md",
       "accessedAt": "2026-11-02"
@@ -1379,6 +1374,7 @@
     "URIs ESCO de sociologist, anthropologist e political scientist vêm do catálogo de ramos; não reconferidas em esco.ec.europa.eu",
     "códigos CBO em questions.a4.cboFamilies (2525 analistas de políticas) não conferidos no portal da CBO",
     "URLs de associações (SBS, ABA, ABCP, ABEP), do MQ UFMG, do AVAMEC e da Escola de Dados não verificadas nesta sessão",
-    "existência de séries do Censo Escolar por formação do docente de Sociologia citada de memória"
+    "existência de séries do Censo Escolar por formação do docente de Sociologia citada de memória",
+    "dados do ramo (famílias CBO/ISCO/ESCO, conselho, sensitiveData, vizinhos) copiados de contracts/career/academic-fields.json, que não cabe em sources.url (o esquema só aceita http(s) ou docs/)"
   ]
 }

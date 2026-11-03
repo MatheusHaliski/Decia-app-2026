@@ -1,0 +1,333 @@
+{
+  "schemaVersion": 1,
+  "code": "biblioteconomia",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Biblioteconomia", "en": "Library and Information Science", "es": "Bibliotecología" },
+  "fields": ["biblioteconomia"],
+  "family": {
+    "cbo": [
+      { "code": "2612", "title": "Profissionais da informação" },
+      { "code": "2613", "title": "Arquivistas e museólogos" }
+    ],
+    "isco08": [
+      { "code": "2622", "title": "Librarians and related information professionals" },
+      { "code": "2621", "title": "Archivists and curators" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/60f7eb23-a7ea-4cbe-98a5-1248291f62d5", "label": "librarian" },
+      { "uri": "http://data.europa.eu/esco/occupation/e3b08984-19fe-4d51-a1b0-990676fc7234", "label": "archivist" },
+      { "uri": "http://data.europa.eu/esco/occupation/691d30cc-6b2c-4025-89b4-3e719fe664c7", "label": "exhibition curator" }
+    ]
+  },
+  "scope": {
+    "summary": "Pacote para quem atua ou quer atuar em biblioteconomia e ciência da informação (com arquivologia e museologia como áreas próximas): gestão de bibliotecas e unidades de informação, desenvolvimento de coleções, catalogação e classificação, serviço de referência, competência informacional, repositórios e gestão documental. As tarefas produzem evidências verificáveis (política de coleções, registro catalográfico, guia de pesquisa, POP) sem expor dados de usuários nem documentos de acesso restrito.",
+    "entryRoles": ["Estagiário de biblioteca", "Bibliotecário júnior", "Bibliotecário de referência", "Catalogador", "Auxiliar de arquivo (área próxima)"],
+    "midRoles": ["Bibliotecário", "Bibliotecário escolar", "Bibliotecário universitário", "Bibliotecário de repositório institucional", "Analista de gestão documental", "Bibliotecário jurídico"],
+    "seniorRoles": ["Coordenador de biblioteca", "Diretor de sistema de bibliotecas", "Gestor de informação e conhecimento", "Bibliotecário-chefe de rede pública", "Consultor em gestão da informação"],
+    "sectors": ["bibliotecas universitárias", "bibliotecas escolares (Lei 12.244/2010)", "bibliotecas públicas e comunitárias", "órgãos públicos, tribunais e legislativos", "empresas e centros de documentação", "editoras e serviços de catalogação na fonte", "arquivos e museus", "pesquisa e repositórios científicos"],
+    "regulation": [
+      { "name": "Lei 4.084/1962 e Decreto 56.725/1965", "issuer": "Brasil", "about": "regulamentam a profissão de bibliotecário e suas atividades privativas" },
+      { "name": "Lei 9.674/1998", "issuer": "Brasil", "about": "exercício da profissão de bibliotecário e organização do sistema CFB/CRB" },
+      { "name": "Resolução CFB 207/2018", "issuer": "CFB", "about": "Código de Ética e Deontologia do Bibliotecário (sigilo sobre usuários, acesso à informação, direitos autorais)" },
+      { "name": "Lei 12.244/2010", "issuer": "Brasil", "about": "universalização das bibliotecas nas instituições de ensino" },
+      { "name": "Lei 12.527/2011 (LAI) e Lei 8.159/1991", "issuer": "Brasil", "about": "acesso à informação pública e política nacional de arquivos; restrições de acesso" },
+      { "name": "Lei 9.610/1998", "issuer": "Brasil", "about": "direitos autorais em reprodução, digitalização e empréstimo de obras" },
+      { "name": "LGPD (Lei 13.709/2018)", "issuer": "Brasil", "about": "dados de usuários, cadastros e histórico de empréstimos" },
+      { "name": "ABNT NBR 6023, 10520, 6028 e 14724", "issuer": "ABNT", "about": "referências, citações, resumo e apresentação de trabalhos acadêmicos" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "desenvolvimento de coleções", "meaning": "seleção, aquisição, avaliação e descarte do acervo segundo uma política escrita" },
+      { "term": "política de desenvolvimento de coleções", "meaning": "documento com critérios de seleção, aquisição, doação, desbaste, descarte e avaliação" },
+      { "term": "desbastamento e descarte", "meaning": "retirada planejada de itens do acervo ativo por critérios explícitos" },
+      { "term": "catalogação descritiva", "meaning": "descrição padronizada do item (título, autoria, edição, publicação)" },
+      { "term": "RDA / AACR2", "meaning": "códigos de catalogação: Resource Description and Access e Código de Catalogação Anglo-Americano" },
+      { "term": "MARC 21", "meaning": "formato de intercâmbio de registros bibliográficos legíveis por máquina" },
+      { "term": "CDD / CDU", "meaning": "Classificação Decimal de Dewey e Classificação Decimal Universal" },
+      { "term": "número de chamada (Cutter)", "meaning": "notação de classificação mais tabela de autor que localiza o item na estante" },
+      { "term": "ficha catalográfica", "meaning": "registro no verso da folha de rosto de livros e trabalhos acadêmicos, feito por bibliotecário" },
+      { "term": "indexação e vocabulário controlado", "meaning": "atribuição de descritores a partir de tesauro ou lista de cabeçalhos de assunto" },
+      { "term": "serviço de referência", "meaning": "atendimento que ajuda o usuário a formular e responder sua necessidade de informação" },
+      { "term": "competência informacional", "meaning": "capacidade de buscar, avaliar e usar informação de forma ética" },
+      { "term": "estratégia de busca", "meaning": "combinação de termos, operadores booleanos e filtros em bases de dados" },
+      { "term": "repositório institucional", "meaning": "acervo digital aberto da produção de uma instituição (ex.: DSpace)" },
+      { "term": "metadados (Dublin Core)", "meaning": "dados estruturados que descrevem recursos digitais" },
+      { "term": "acesso aberto", "meaning": "disponibilização livre e on-line de publicações científicas" },
+      { "term": "ISBN / ISSN / DOI", "meaning": "identificadores de livros, seriados e objetos digitais" },
+      { "term": "sistema integrado de gestão de bibliotecas", "meaning": "software de catalogação, circulação e aquisição (Koha, Pergamum, Sophia)" },
+      { "term": "gestão documental", "meaning": "produção, tramitação, uso, avaliação e destinação de documentos (área próxima, arquivologia)" },
+      { "term": "tabela de temporalidade", "meaning": "instrumento que define prazos de guarda e destinação de documentos" },
+      { "term": "conservação preventiva", "meaning": "ações para retardar a degradação do acervo (ambiente, manuseio, acondicionamento)" },
+      { "term": "estudo de usuários", "meaning": "pesquisa sobre necessidades e comportamentos de informação do público" },
+      { "term": "mediação de leitura", "meaning": "ações que aproximam leitores e livros (contação, clubes, oficinas)" },
+      { "term": "bibliometria", "meaning": "análise quantitativa da produção científica e de citações" }
+    ],
+    "tools": ["editor de textos (Letters)", "editor de desenho (Drawings)", "Koha", "Pergamum ou Sophia", "DSpace (repositórios)", "OJS (periódicos)", "Classificação Decimal de Dewey (WebDewey) ou CDU", "Tabela Cutter-Sanborn", "Biblioteca Virtual em Saúde / DeCS", "Portal de Periódicos CAPES", "Zotero ou Mendeley", "planilha para indicadores de acervo e circulação"],
+    "deliverables": ["política de desenvolvimento de coleções", "registro catalográfico (ficha catalográfica ou MARC)", "guia de pesquisa em bases de dados", "plano de ação ou projeto de biblioteca", "procedimento operacional (catalogação, empréstimo, descarte)", "relatório de indicadores de acervo e uso", "estudo de usuários", "programa de competência informacional", "projeto de mediação de leitura", "resenha ou estudo de caso", "plano de gestão documental (área próxima)"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Desenvolvimento e avaliação de coleções", "esco": null, "kind": "nucleo" },
+      { "label": "Catalogação descritiva (RDA/AACR2, MARC 21)", "esco": null, "kind": "nucleo" },
+      { "label": "Classificação e indexação (CDD/CDU, vocabulário controlado)", "esco": null, "kind": "nucleo" },
+      { "label": "Serviço de referência e estratégias de busca", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de unidades de informação", "esco": null, "kind": "nucleo" },
+      { "label": "Competência informacional e normalização (ABNT)", "esco": null, "kind": "nucleo" },
+      { "label": "Ética, sigilo do usuário e direitos autorais", "esco": null, "kind": "nucleo" },
+      { "label": "Repositórios, metadados e acesso aberto", "esco": null, "kind": "apoio" },
+      { "label": "Mediação de leitura e ação cultural", "esco": null, "kind": "apoio" },
+      { "label": "Estudos de usuários e indicadores", "esco": null, "kind": "apoio" },
+      { "label": "Gestão documental e arquivos", "esco": null, "kind": "apoio" },
+      { "label": "Conservação preventiva de acervos", "esco": null, "kind": "apoio" },
+      { "label": "Bibliometria e apoio à pesquisa", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["atenção a detalhes", "atendimento a pessoas", "organização", "ética e sigilo", "comunicação escrita", "aprendizagem de ferramentas digitais"],
+    "tracks": [
+      { "id": "organizar-o-acervo", "label": "Organizar o acervo", "steps": ["registro catalográfico de três obras (X1)", "POP de processamento técnico (L7)", "política de desenvolvimento de coleções (X2)"] },
+      { "id": "atender-e-ensinar", "label": "Atender e ensinar a pesquisar", "steps": ["guia de pesquisa em bases de dados (X3)", "plano de oficina de competência informacional (L4)", "post sobre um aprendizado no atendimento (L5)"] },
+      { "id": "gerir-a-unidade", "label": "Gerir a unidade de informação", "steps": ["infográfico de indicadores de uso (D7)", "diagrama do fluxo de empréstimo (D4)", "plano 30-60-90 para coordenar uma biblioteca (L9)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"bibliotecário de referência\", \"catalogador\", \"bibliotecária escolar\", \"auxiliar de biblioteca\", \"arquivista\"",
+      "cboFamilies": ["2612", "2613"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez; se for o primeiro emprego ou estágio, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio ou primeiro cargo após o registro no CRB",
+        "junior": "até dois anos em processamento técnico ou atendimento, com supervisão",
+        "pleno": "responde por setor ou serviço com autonomia",
+        "senior": "referência técnica; orienta equipe, define políticas e indicadores",
+        "gestao": "coordena biblioteca, sistema de bibliotecas ou centro de documentação"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em biblioteconomia",
+      "options": ["catalogar e classificar", "desenvolver e avaliar coleções", "atender e orientar pesquisas", "ensinar a usar bases de dados", "normalizar trabalhos (ABNT)", "gerir repositórios e metadados", "organizar mediação de leitura", "gerir a unidade e a equipe", "medir indicadores de uso", "gestão documental", "conservar acervos", "usar sistemas como Koha ou Pergamum"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com tarefas que não expõem dados de usuários."
+    },
+    "c4": {
+      "certifications": ["registro ativo no CRB", "graduação em biblioteconomia", "curso de RDA ou MARC 21", "curso de Koha, Pergamum ou DSpace", "pós-graduação (gestão da informação, arquivos, bibliotecas escolares)", "mestrado ou doutorado em ciência da informação", "cursos da Escola Virtual.Gov sobre LAI e LGPD"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação e registro mostram lacunas em relação ao cargo ou edital que você quer; nada aqui é exigido para começar."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["catalogação em RDA e MARC 21", "classificação CDD/CDU", "desenvolvimento de coleções", "serviço de referência", "competência informacional", "repositórios e acesso aberto", "gestão de bibliotecas", "indicadores e estudos de usuários", "mediação de leitura", "gestão documental"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez do catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que tipo de unidade você atua ou quer atuar?",
+        "type": "escolha",
+        "options": ["biblioteca universitária", "biblioteca escolar", "biblioteca pública ou comunitária", "biblioteca especializada (jurídica, saúde, empresa)", "repositório e editoração científica", "arquivo", "museu ou centro cultural", "ainda não sei"],
+        "why": "Pergunto o tipo de unidade para escolher tarefas e vocabulário: uma política de coleções escolar e um repositório institucional são evidências diferentes.",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L6", "L1", "L7", "D4", "L4", "D7", "L3", "L9", "L2", "L5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica não é entrega da profissão" },
+      { "code": "D3", "reason": "modelagem 3D não é entrega da profissão" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da profissão" },
+      { "code": "D8", "reason": "vista explodida não é entrega da profissão" }
+    ],
+    "parameters": {
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva até 600 caracteres com o tipo de unidade em que atua ou quer atuar, três competências e o link de um trabalho (guia de pesquisa, política, repositório). Sem dados de usuários.",
+        "parameters": { "maxChars": 600, "requiredParts": ["unidade-alvo", "três competências", "um trabalho com link"] },
+        "criteria": ["até 600 caracteres", "nomeia a unidade-alvo", "cita três competências", "inclui um trabalho com link", "sem dado de usuário"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para o cargo ou edital que você quer mirar primeiro, com três resultados com número (itens catalogados, usuários treinados, aumento de empréstimos) e as palavras-chave da vaga.",
+        "parameters": { "maxPages": 1, "achievementsWithNumbers": 3, "keywordsFrom": "vaga-alvo" },
+        "criteria": ["uma página", "três resultados com número", "palavras-chave da vaga-alvo presentes", "registro no CRB indicado, se houver", "sem idade, estado civil ou foto obrigatória"],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "L7": {
+        "title": "POP de processamento técnico ou de empréstimo",
+        "brief": "Escreva um procedimento para uma biblioteca fictícia: do recebimento do item à disponibilização na estante (registro, catalogação, classificação, preparo físico) ou do cadastro do usuário à devolução. Passos numerados, responsável e critério de conclusão em cada passo.",
+        "parameters": { "numberedSteps": true, "responsiblePerStep": true, "doneCriterionPerStep": true, "options": ["processamento técnico", "empréstimo e devolução"] },
+        "criteria": ["passos numerados", "responsável em cada passo", "critério de conclusão por passo", "cita o padrão usado (RDA, CDD/CDU, Cutter) quando for processamento", "sem dado real de usuário"],
+        "evidence": "modelo",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Registro catalográfico de três obras",
+        "competency": "Catalogação e classificação",
+        "criteria": ["três obras publicadas e de acesso público", "descrição conforme RDA ou AACR2", "classificação CDD ou CDU e número Cutter", "ao menos dois assuntos por obra de vocabulário controlado indicado", "registro em formato de ficha ou campos MARC 21"],
+        "evidence": "documento",
+        "time": "90 min",
+        "trigger": "Quer catalogar três obras e mostrar domínio de RDA e classificação?",
+        "level": 2
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Política de desenvolvimento de coleções",
+        "competency": "Desenvolvimento e avaliação de coleções",
+        "criteria": ["comunidade atendida e objetivos da biblioteca (fictícia ou pública)", "critérios de seleção e aquisição", "política de doação", "critérios de desbaste e descarte", "avaliação periódica com indicadores", "até 6 páginas"],
+        "evidence": "relatório técnico",
+        "time": "2 h",
+        "trigger": "Quer escrever a política de coleções de uma biblioteca?",
+        "level": 3
+      },
+      {
+        "id": "X3",
+        "editor": "letters",
+        "title": "Guia de pesquisa em bases de dados",
+        "competency": "Serviço de referência e competência informacional",
+        "criteria": ["tema e público definidos", "ao menos três bases indicadas com link (ex.: Portal CAPES, SciELO, BDTD)", "estratégia de busca com operadores booleanos e descritores", "critérios para avaliar fontes", "exemplo de referência em ABNT NBR 6023"],
+        "evidence": "artigo",
+        "time": "60 min",
+        "trigger": "Quer montar um guia para ensinar alguém a pesquisar um tema?",
+        "level": 1
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L5", "L6", "X2"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L9", "X2", "X3"], "auto": true },
+      { "id": "passos-com-responsavel", "check": "cada passo tem número, responsável e critério de conclusão", "appliesTo": ["L7"], "auto": true },
+      { "id": "campos-catalograficos", "check": "cada registro tem descrição, classificação, Cutter e assuntos", "appliesTo": ["X1"], "auto": true },
+      { "id": "referencias-abnt", "check": "as referências seguem a ABNT NBR 6023", "appliesTo": ["L4", "X3", "X2"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim e nenhuma etapa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "fonte-no-grafico", "check": "o infográfico cita fonte dos dados com data e eixos rotulados", "appliesTo": ["D7"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados de usuários e documentos restritos", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L9", "L10", "D4", "D7", "X1", "X2", "X3"], "auto": true },
+      { "id": "palavras-chave-do-alvo", "check": "as palavras-chave da vaga-alvo aparecem no texto", "appliesTo": ["L1", "L2"], "auto": true },
+      { "id": "correcao-catalografica", "check": "classificação e descrição estão corretas segundo o padrão citado", "appliesTo": ["X1"], "auto": false }
+    ],
+    "subjective": [
+      { "id": "adequacao-ao-publico", "label": "Adequação à comunidade atendida", "levels": { "aproxima": "critérios genéricos, sem relação com o público", "atende": "critérios ligados às necessidades da comunidade", "supera": "baseado em estudo de usuários e indicadores" } },
+      { "id": "rigor-tecnico", "label": "Rigor técnico", "levels": { "aproxima": "padrões citados de forma vaga ou inconsistente", "atende": "aplica corretamente o padrão indicado", "supera": "justifica escolhas e trata exceções do padrão" } },
+      { "id": "clareza", "label": "Clareza para o usuário", "levels": { "aproxima": "linguagem técnica sem explicação", "atende": "o usuário entende e consegue seguir", "supera": "conduz o usuário com exemplos e passos" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da área de biblioteconomia e ciência da informação (bibliotecas universitárias, escolares, públicas e especializadas, repositórios, gestão documental; arquivologia e museologia como áreas próximas). Use o vocabulário da área (desenvolvimento de coleções, desbaste, catalogação, RDA, AACR2, MARC 21, CDD, CDU, Cutter, indexação, vocabulário controlado, serviço de referência, competência informacional, repositório, Dublin Core) e cite, quando couber, a Lei 4.084/1962, a Lei 9.674/1998, a Resolução CFB 207/2018 (Código de Ética e Deontologia do Bibliotecário), a Lei 12.244/2010, a LAI, a Lei 9.610/1998, a LGPD e as normas ABNT NBR 6023 e 10520. Nunca peça nem registre dados de usuários, histórico de empréstimos ou consultas, nem documentos de acesso restrito; se a pessoa colar algo assim, oriente a remover. Não fabrique referências, ISBN, DOI ou números de classificação: toda referência que você sugerir precisa ser verificável, e quando não tiver certeza diga isso. Não assine nem substitua a ficha catalográfica de responsabilidade do bibliotecário registrado no CRB. Pergunte antes de inferir tipo de unidade ou senioridade. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por que foi sugerida. Afirmações sobre mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa vaga, aprovação em concurso ou salário. Progresso é por critérios atendidos, nunca por pontuação. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação. Pré-cheque só critérios objetivos (seções, campos catalográficos, referências ABNT, passos); a correção técnica é julgamento humano.",
+    "citeSources": [
+      { "title": "Lei 4.084/1962 — profissão de bibliotecário", "url": "https://www.planalto.gov.br/ccivil_03/leis/1950-1969/l4084.htm", "kind": "norma" },
+      { "title": "Lei 9.674/1998 — exercício da profissão de bibliotecário", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9674.htm", "kind": "norma" },
+      { "title": "Conselho Federal de Biblioteconomia — resoluções e Código de Ética (Res. CFB 207/2018)", "url": "https://cfb.org.br/", "kind": "conselho" },
+      { "title": "Lei 12.244/2010 — bibliotecas nas instituições de ensino", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2010/lei/l12244.htm", "kind": "norma" },
+      { "title": "Lei 12.527/2011 — Lei de Acesso à Informação", "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm", "kind": "norma" },
+      { "title": "LGPD — Lei 13.709/2018", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm", "kind": "norma" },
+      { "title": "IBICT — Instituto Brasileiro de Informação em Ciência e Tecnologia", "url": "https://www.gov.br/ibict/pt-br", "kind": "orgao-publico" },
+      { "title": "CBO 2612 — Profissionais da informação (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2, c5 e x1 (tipo de unidade); nunca pergunta sobre usuários ou acervos restritos." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza L6, L1, L7, X1 (catalogação), X3 (guia de pesquisa) e X2 (política de coleções); cada card diz competência, evidência e tempo." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); X1, X2 e D7 pedem computador; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, campos catalográficos presentes, referências no formato ABNT e passos com responsável; não julga a correção da classificação." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Propõe estrutura de política, POP e guia de pesquisa; não inventa referências, ISBN, DOI nem notações." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Fluxo de empréstimo ou processamento (D4) e infográfico de indicadores de uso com fonte (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: síntese com competências declaradas e evidenciadas, lacunas e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: história, letras, jornalismo, ciência de dados, pedagogia; sempre com lacunas e passos, sem previsão." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por CBO 2612/2613, tipo de unidade e competências." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil; só com o consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai unidades, sistemas usados e competências em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados de usuários e histórico de empréstimos ou consultas", "documentos de arquivo com restrição de acesso", "dados pessoais e sensíveis presentes em acervos", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca pedir, registrar ou inferir dados de usuários, empréstimos ou consultas",
+      "não fabricar referências, ISBN, DOI ou notações de classificação; marcar o que não for verificável",
+      "não assinar nem substituir a ficha catalográfica do bibliotecário registrado no CRB",
+      "respeitar restrições de acesso de documentos (LAI, Lei 8.159/1991) e direitos autorais",
+      "perguntar em vez de inferir tipo de unidade, senioridade ou situação",
+      "nunca prometer vaga, aprovação em concurso ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["diagrama", "infografico"],
+    "lettersTemplates": ["bio", "curriculo", "carta", "pop", "relatorio-tecnico", "artigo", "estudo-de-caso", "proposta", "projeto-de-pesquisa", "plano-de-aula", "plano-30-60-90", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular: L5, L6, L10 e revisão de POP; X1, X2, D4 e D7 pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em três frases, sem dados de usuários (15 min).",
+        "Que tal catalogar três obras e mostrar domínio de RDA e CDD? Leva cerca de 90 min no computador.",
+        "Sem pressão. Quando quiser retomar, a política de coleções está salva onde parou.",
+        "Um guia de pesquisa em bases de dados mostra serviço de referência. Leva cerca de 60 min."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["dados de usuários e histórico de empréstimos/consultas (sigilo)", "documentos de arquivo com restrição de acesso (Lei 12.527/2011; Lei 8.159/1991)", "dados pessoais e sensíveis presentes em acervos e fichas catalográficas"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2612 e 2613", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Sistema CFB/CRB — registros profissionais", "url": "https://cfb.org.br/", "geography": "Brasil e regiões dos CRB", "cadence": "eventual", "kind": "conselho" },
+      { "title": "Sistema Nacional de Bibliotecas Públicas — cadastro de bibliotecas", "url": "https://www.gov.br/cultura/pt-br", "geography": "Brasil, UF e município", "cadence": "eventual", "kind": "estatistica-oficial" },
+      { "title": "FEBAB — Federação Brasileira de Associações de Bibliotecários", "url": "https://febab.org/", "geography": "Brasil", "cadence": "eventual", "kind": "associacao" },
+      { "title": "Diário Oficial da União — editais de concurso para bibliotecário", "url": "https://www.in.gov.br/", "geography": "Brasil", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147). A exigência legal de bibliotecas escolares (Lei 12.244/2010) descreve uma norma, não uma garantia de vagas."
+  },
+  "paths": [
+    { "to": "historia", "why": "Arquivos, acervos históricos e museus unem organização da informação e pesquisa histórica.", "gaps": ["métodos de pesquisa histórica", "paleografia e crítica documental", "licenciatura, se o alvo for ensino"], "steps": ["estudo de caso de um acervo (L3)", "relatório técnico de diagnóstico de acervo (L4)", "curso de arquivística básica"] },
+    { "to": "letras", "why": "Mediação de leitura, editoração e revisão aproximam da área de letras.", "gaps": ["teoria literária", "revisão e preparação de originais", "mercado editorial"], "steps": ["projeto de mediação de leitura (L4)", "revisão crítica de peça (L10)", "curso de revisão de textos"] },
+    { "to": "jornalismo", "why": "Pesquisa, verificação de fontes e centros de documentação de veículos usam competências do bibliotecário.", "gaps": ["redação jornalística", "apuração com fontes", "ritmo de redação"], "steps": ["guia de pesquisa em bases (X3)", "checagem de fatos com fontes primárias", "curso de jornalismo de dados"] },
+    { "to": "ciencia-de-dados", "why": "Metadados, bibliometria e organização da informação levam à gestão e curadoria de dados.", "gaps": ["programação (Python ou R)", "estatística", "bancos de dados"], "steps": ["infográfico de indicadores (D7)", "curso de Python para dados", "projeto de bibliometria"] },
+    { "to": "pedagogia", "why": "Biblioteca escolar e competência informacional dialogam com a prática pedagógica.", "gaps": ["didática", "BNCC", "licenciatura"], "steps": ["plano de aula de competência informacional", "projeto de leitura na escola", "curso de BNCC"] }
+  ],
+  "learning": [
+    { "title": "Resoluções e Código de Ética do Bibliotecário", "provider": "Conselho Federal de Biblioteconomia", "url": "https://cfb.org.br/", "free": true, "kind": "norma" },
+    { "title": "Cursos sobre LAI, LGPD e gestão documental", "provider": "Escola Virtual.Gov (Enap)", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "curso" },
+    { "title": "Portal de Periódicos CAPES — treinamentos", "provider": "CAPES", "url": "https://www.periodicos.capes.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Biblioteca Digital Brasileira de Teses e Dissertações e acesso aberto", "provider": "IBICT", "url": "https://bdtd.ibict.br/", "free": true, "kind": "portal" },
+    { "title": "Comunidade e documentação do Koha", "provider": "Koha Community", "url": "https://koha-community.org/", "free": true, "kind": "comunidade" },
+    { "title": "MARC 21 Format for Bibliographic Data", "provider": "Library of Congress", "url": "https://www.loc.gov/marc/bibliographic/", "free": true, "kind": "norma" },
+    { "title": "Eventos e grupos de trabalho", "provider": "FEBAB", "url": "https://febab.org/", "free": false, "kind": "comunidade" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos — biblioteconomia", "url": "contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
+    { "title": "Resolução CFB 207/2018 — Código de Ética e Deontologia do Bibliotecário (DOU 09/11/2018), conforme materiais USP e anais CBBD", "url": "https://edisciplinas.usp.br/mod/resource/view.php?id=5044192", "accessedAt": "2026-11-02" },
+    { "title": "Decreto 56.725/1965 — Câmara dos Deputados", "url": "https://www2.camara.leg.br/legin/fed/decret/1960-1969/decreto-56725-16-agosto-1965-397075-publicacaooriginal-1-pe.html", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Resolução CFB 207/2018 confirmada por resumos de busca (substituiu a Res. CFB 42/2002); texto integral e artigos sobre sigilo do usuário não lidos",
+    "Não há contagem nacional atual de bibliotecários registrados; um artigo cita cerca de 32 mil registrados no contexto do Censo Bibliotecário, sem data; não usado como afirmação",
+    "Artigos da Lei 4.084/1962, Lei 9.674/1998, Lei 12.244/2010 e Lei 8.159/1991 citados de memória; planalto.gov.br não acessado",
+    "URIs ESCO de competências não confirmadas (ec.europa.eu inacessível); todas com esco: null",
+    "URLs de cfb.org.br, FEBAB, SNBP (gov.br/cultura) e Koha não verificadas nesta sessão; prazo de vigência da Lei 12.244/2010 alterado por norma posterior não conferido"
+  ]
+}

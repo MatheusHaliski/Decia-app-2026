@@ -1,0 +1,314 @@
+{
+  "schemaVersion": 1,
+  "code": "eventos",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Eventos", "en": "Event Management", "es": "Organización de Eventos" },
+  "fields": ["eventos"],
+  "family": {
+    "cbo": [
+      { "code": "3548", "title": "Técnicos em serviços de turismo e organização de eventos" },
+      { "code": "1225", "title": "Diretores de serviços de turismo, de alojamento e de alimentação" },
+      { "code": "3763", "title": "Apresentadores de espetáculos e cerimonialistas (mestre de cerimônias)" }
+    ],
+    "isco08": [
+      { "code": "3332", "title": "Conference and event planners" }
+    ],
+    "esco": []
+  },
+  "scope": {
+    "summary": "Profissional que concebe, planeja, orça, produz e avalia eventos sociais, corporativos, culturais, esportivos e técnico-científicos: briefing, proposta, cronograma, layout, fornecedores, licenças, cerimonial e pós-evento com indicadores de público e satisfação. Profissão não regulamentada; organizadoras de eventos devem se cadastrar no Cadastur (Lei 11.771/2008).",
+    "entryRoles": ["Assistente de produção de eventos", "Recepcionista ou staff de eventos", "Auxiliar de cerimonial", "Estagiário(a) em produtora ou centro de convenções", "Assistente de credenciamento"],
+    "midRoles": ["Produtor(a) de eventos", "Coordenador(a) de eventos corporativos", "Cerimonialista", "Analista de eventos em empresa ou órgão público", "Coordenador(a) de feiras e congressos"],
+    "seniorRoles": ["Gerente de eventos", "Diretor(a) de produção", "Gerente de centro de convenções", "Organizador(a) profissional de congressos (OPC)", "Sócio(a) de produtora ou empresa de cerimonial"],
+    "sectors": ["produtoras e agências de eventos", "cerimonial e eventos sociais", "eventos corporativos e endomarketing", "feiras, congressos e centros de convenções", "eventos culturais, shows e festivais", "eventos esportivos", "hotéis com área de eventos", "órgãos públicos (cerimonial e protocolo)", "eventos on-line e híbridos"],
+    "regulation": [
+      { "name": "Lei 11.771/2008, art. 21 e art. 30", "issuer": "Brasil / Ministério do Turismo", "about": "organizadoras de eventos são prestadoras de serviços turísticos e devem se cadastrar no Cadastur" },
+      { "name": "Decreto 7.381/2010", "issuer": "Brasil", "about": "regulamenta a Lei 11.771/2008, incluindo organizadoras de eventos" },
+      { "name": "Lei 13.425/2017 (Lei Kiss)", "issuer": "Brasil", "about": "prevenção e combate a incêndio em estabelecimentos e áreas de reunião de público" },
+      { "name": "Instruções técnicas dos Corpos de Bombeiros estaduais", "issuer": "estados", "about": "lotação, saídas de emergência, brigada e licença (AVCB ou alvará) para eventos temporários" },
+      { "name": "Decreto 70.274/1972", "issuer": "Brasil", "about": "normas do cerimonial público e ordem geral de precedência" },
+      { "name": "Lei 9.610/1998 e Ecad", "issuer": "Brasil", "about": "direitos autorais e recolhimento ao Ecad pela execução pública de música" },
+      { "name": "ABNT NBR 9050 e Lei 13.146/2015", "issuer": "ABNT / Brasil", "about": "acessibilidade em espaços e eventos; reserva de lugares e recursos de acessibilidade" },
+      { "name": "Lei 13.709/2018 (LGPD)", "issuer": "Brasil", "about": "listas de convidados, credenciamento e inscrições envolvem dados pessoais" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "briefing", "meaning": "documento com objetivo, público, data, local, orçamento e requisitos do cliente" },
+      { "term": "plano de evento", "meaning": "documento com objetivos, público, programação, orçamento, cronograma, riscos e avaliação" },
+      { "term": "cronograma operacional", "meaning": "sequência de ações com prazos e responsáveis da pré-produção ao pós-evento" },
+      { "term": "roteiro do evento (run of show)", "meaning": "minuto a minuto do dia do evento, com falas, entradas e deixas técnicas" },
+      { "term": "checklist", "meaning": "lista de verificação por fase e por fornecedor" },
+      { "term": "layout ou planta do evento", "meaning": "desenho do espaço com palco, mesas, estandes, circulação, saídas e serviços" },
+      { "term": "montagem e desmontagem", "meaning": "períodos de instalação e retirada de estruturas e equipamentos" },
+      { "term": "credenciamento", "meaning": "registro e identificação de participantes na entrada" },
+      { "term": "cerimonial e protocolo", "meaning": "regras de precedência, composição de mesa e condução formal" },
+      { "term": "precedência", "meaning": "ordem hierárquica de autoridades (Decreto 70.274/1972)" },
+      { "term": "MICE", "meaning": "reuniões, incentivos, conferências e exposições" },
+      { "term": "OPC", "meaning": "organizador profissional de congressos" },
+      { "term": "RSVP", "meaning": "confirmação de presença de convidados" },
+      { "term": "rider técnico", "meaning": "lista de necessidades técnicas e de camarim de artistas e palestrantes" },
+      { "term": "AVCB e alvará de evento", "meaning": "licenças de bombeiros e prefeitura para eventos com público" },
+      { "term": "lotação", "meaning": "público máximo permitido no espaço conforme bombeiros" },
+      { "term": "formato de sala", "meaning": "auditório, escolar, em U, banquete, coquetel, espinha de peixe" },
+      { "term": "evento híbrido", "meaning": "evento com público presencial e transmissão on-line integrada" },
+      { "term": "pós-evento", "meaning": "avaliação, prestação de contas, pesquisa de satisfação e relatório final" },
+      { "term": "ROI de evento", "meaning": "retorno do evento frente ao investimento, com indicadores definidos no plano" },
+      { "term": "plano de contingência", "meaning": "respostas previstas para chuva, falta de energia, atrasos e emergências" },
+      { "term": "Ecad", "meaning": "escritório central que arrecada direitos autorais de execução musical pública" }
+    ],
+    "tools": ["planilha de orçamento e cronograma", "ferramentas de gestão de projetos (quadro kanban, Gantt)", "plataformas de inscrição e credenciamento", "plataformas de transmissão para eventos híbridos", "formulários de pesquisa de satisfação", "editor de textos (Letters) para propostas, planos e roteiros", "editor de desenho (Drawings) para layouts, mapas e peças", "software de planta (CAD simples) para layout", "Cadastur e portais de licenciamento municipal"],
+    "deliverables": ["proposta comercial a partir de briefing", "plano de evento", "cronograma operacional", "roteiro do evento minuto a minuto", "layout ou planta do evento", "orçamento com fornecedores", "checklist de montagem", "plano de contingência", "relatório pós-evento com indicadores de público e satisfação", "prancha de portfólio de eventos"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Planejamento de eventos e elaboração do plano", "esco": null, "kind": "nucleo" },
+      { "label": "Leitura de briefing e elaboração de proposta", "esco": null, "kind": "nucleo" },
+      { "label": "Orçamento e gestão de fornecedores", "esco": null, "kind": "nucleo" },
+      { "label": "Cronograma operacional e roteiro do evento", "esco": null, "kind": "nucleo" },
+      { "label": "Layout de espaços e montagem", "esco": null, "kind": "nucleo" },
+      { "label": "Cerimonial e protocolo", "esco": null, "kind": "nucleo" },
+      { "label": "Licenças, segurança e acessibilidade de eventos", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de riscos e contingência", "esco": null, "kind": "nucleo" },
+      { "label": "Avaliação pós-evento e indicadores", "esco": null, "kind": "nucleo" },
+      { "label": "Credenciamento e atendimento ao participante", "esco": null, "kind": "apoio" },
+      { "label": "Eventos híbridos e on-line", "esco": null, "kind": "apoio" },
+      { "label": "Captação de patrocínio", "esco": null, "kind": "apoio" },
+      { "label": "Comunicação e divulgação de eventos", "esco": null, "kind": "apoio" },
+      { "label": "Sustentabilidade em eventos", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["negociação", "liderança de equipes temporárias", "comunicação sob pressão", "atenção a detalhes", "organização e gestão do tempo", "sigilo de dados de convidados e contratos"],
+    "tracks": [
+      { "id": "planejar-eventos", "label": "Planejar e propor eventos", "steps": ["proposta a partir de briefing (L8)", "plano de evento (L9)", "layout simples do espaço (D1)", "estudo de caso STAR de um evento (L3)"] },
+      { "id": "operar-o-dia", "label": "Operar o dia do evento", "steps": ["roteiro minuto a minuto (X1)", "POP de credenciamento ou montagem (L7)", "diagrama do fluxo do participante (D4)", "antes e depois de um layout (D5)"] },
+      { "id": "provar-resultados", "label": "Provar resultados", "steps": ["relatório pós-evento com indicadores (L4)", "infográfico de público e satisfação (D7)", "prancha de portfólio de eventos (D2)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"assistente de eventos\", \"produtor de eventos\", \"cerimonialista\", \"coordenadora de eventos corporativos\"",
+      "cboFamilies": ["3548", "1225", "3763"],
+      "why": "Pergunto seu último cargo ou área em eventos para partir do que você já produziu. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, staff ou primeiro cargo em produção de eventos",
+        "junior": "executa tarefas de produção com supervisão",
+        "pleno": "produz eventos com autonomia, do briefing ao pós-evento",
+        "senior": "coordena eventos grandes ou complexos e orienta a equipe",
+        "gestao": "responde por carteira de eventos, equipe ou orçamento da área"
+      },
+      "why": "Pergunto o nível para ajustar as tarefas: um checklist de montagem ou o plano completo de um congresso."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em eventos",
+      "options": ["entender o briefing e propor", "montar orçamento e negociar com fornecedores", "fazer cronograma e checklist", "desenhar layout do espaço", "conduzir cerimonial e protocolo", "operar o dia do evento", "credenciar e atender participantes", "cuidar de licenças e segurança", "produzir eventos híbridos", "captar patrocínio", "divulgar o evento", "medir resultados no pós-evento"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com propostas, planos e layouts."
+    },
+    "c4": {
+      "certifications": ["tecnólogo em Eventos", "bacharelado em Turismo ou Hotelaria", "curso técnico em Eventos", "curso de cerimonial e protocolo", "brigada de incêndio e primeiros socorros", "cursos de gestão de projetos", "CMP (Certified Meeting Professional)"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação, cursos de cerimonial e segurança e idiomas mostram lacunas em relação ao cargo-alvo, como congressos internacionais."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["propostas e orçamento", "plano de evento", "layout e montagem", "cerimonial e protocolo", "licenças, segurança e acessibilidade", "eventos híbridos", "captação de patrocínio", "indicadores e pós-evento", "liderança de equipe no dia", "sustentabilidade em eventos"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Que tipo de evento você faz ou quer fazer?", "type": "escolha", "options": ["social (casamentos, formaturas)", "corporativo", "feiras e congressos", "cultural e shows", "esportivo", "público e cerimonial oficial", "on-line e híbrido"], "why": "Pergunto o tipo para escolher os exemplos: o roteiro de um casamento é diferente do de um congresso.", "where": "P" },
+      { "id": "x2", "prompt": "Quer incluir orçamento com valores nas tarefas?", "type": "sim-nao", "options": ["sim", "ainda não"], "why": "Orçamento entra só se você quiser; dá para começar pelo escopo e pelo cronograma.", "where": "X" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L8", "L9", "D1", "L4", "D7", "D2", "D5", "L7", "D4", "L3", "L1", "L6"],
+    "excluded": [
+      { "code": "D3", "reason": "modelagem 3D realista de produto não é entrega típica de eventos" },
+      { "code": "D6", "reason": "detalhe construtivo é entrega de arquitetura e engenharia (cenografia com responsável técnico)" },
+      { "code": "D8", "reason": "vista explodida de conjunto mecânico não se aplica" }
+    ],
+    "parameters": {
+      "L8": {
+        "title": "Proposta de evento a partir de briefing",
+        "brief": "Responda a um briefing simulado (ex.: lançamento de produto para 150 convidados, um dia, orçamento definido, um palestrante com rider técnico, acessibilidade) com proposta: conceito, escopo, programação resumida, premissas, prazos, o que fica fora e investimento estimado se quiser.",
+        "parameters": { "guests": 150, "days": 1, "requiredParts": ["conceito", "escopo", "programação", "premissas", "prazos", "fora do escopo"], "accessibility": true },
+        "criteria": ["escopo com espaço, A&B, técnica e equipe", "programação resumida com horários", "premissas e prazos explícitos", "o que fica fora do escopo explícito", "recursos de acessibilidade previstos"],
+        "evidence": "proposta em Letters (modelo proposta)",
+        "time": "45 min",
+        "level": 1
+      },
+      "L9": {
+        "title": "Plano de evento",
+        "brief": "Escreva o plano do evento da proposta (ou de outro simulado): objetivos com indicadores, público, programação, orçamento por rubrica, cronograma operacional em três fases (pré, durante, pós) com metas e responsáveis, licenças necessárias, riscos e contingências, e como será a avaliação.",
+        "parameters": { "phases": ["pré-evento", "evento", "pós-evento"], "goalsPerPhase": 3, "requiredParts": ["objetivos e indicadores", "público", "programação", "orçamento por rubrica", "cronograma", "licenças", "riscos e contingências", "avaliação"] },
+        "criteria": ["três fases com três metas mensuráveis cada", "responsável e prazo por meta", "licenças listadas (bombeiros, prefeitura, Ecad quando houver música)", "ao menos três riscos com contingência", "indicadores de avaliação definidos antes do evento"],
+        "evidence": "plano em Letters (modelo plano-30-60-90 ou relatório técnico)",
+        "time": "2 h",
+        "level": 2
+      },
+      "D1": {
+        "title": "Planta simples do evento",
+        "brief": "Desenhe em escala 1:100 ou 1:50 a planta do espaço do evento: palco, mesas ou cadeiras no formato escolhido, estandes ou buffet, credenciamento, circulação, saídas de emergência, banheiros e área acessível. Legenda, lotação e carimbo.",
+        "parameters": { "scale": ["1:100", "1:50"], "formats": ["auditório", "banquete", "coquetel", "feira com estandes"], "requiredParts": ["escala", "legenda", "saídas de emergência", "lotação", "área acessível", "carimbo"] },
+        "criteria": ["escala indicada e cotas gerais que fecham", "legenda de mobiliário e serviços", "saídas de emergência e rotas de fuga marcadas", "lotação prevista indicada", "área acessível e circulação livre", "carimbo com título, autor e data"],
+        "evidence": "prancha PDF ou SVG",
+        "time": "2 h",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório pós-evento com indicadores",
+        "brief": "Relatório de até 4 páginas de um evento (real anonimizado ou simulado): objetivo, método de coleta (inscrições, credenciamento, pesquisa), resultados (público previsto e presente, satisfação, orçamento previsto e realizado, ocorrências), limitações e lições. Sem listas de convidados nem valores de contratos sob sigilo.",
+        "parameters": { "maxPages": 4, "indicators": ["taxa de comparecimento", "satisfação", "orçamento previsto x realizado", "ocorrências"], "sections": ["objetivo", "método", "resultados", "limitações", "lições"] },
+        "criteria": ["até 4 páginas", "cinco seções nomeadas", "indicadores com fórmula e unidade", "origem dos dados declarada (simulado ou anonimizado)", "sem lista de convidados nem contrato sigiloso"],
+        "evidence": "relatório técnico em Letters",
+        "time": "2 h",
+        "level": 3
+      },
+      "D5": {
+        "title": "Layout antes e depois",
+        "brief": "Mostre lado a lado duas versões do layout de um evento (o original e o seu redesenho) com três mudanças anotadas e justificadas: fluxo do participante, acessibilidade, segurança ou capacidade.",
+        "parameters": { "versions": 2, "annotatedChanges": 3, "focus": ["fluxo", "acessibilidade", "segurança", "capacidade"] },
+        "criteria": ["duas versões lado a lado na mesma escala", "três mudanças numeradas e justificadas", "saídas de emergência nas duas versões", "créditos do layout original"],
+        "evidence": "prancha comparativa",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Roteiro do evento minuto a minuto",
+        "competency": "Cronograma operacional e roteiro do evento",
+        "criteria": ["horário de cada bloco com duração", "responsável e deixa técnica (som, luz, vídeo) por bloco", "falas do mestre de cerimônias quando houver", "ordem de precedência em cerimônias oficiais (Decreto 70.274/1972)", "margem de tempo e plano B para atraso"],
+        "evidence": "roteiro em Letters (modelo roteiro)",
+        "time": "45 min",
+        "trigger": "Qual evento você já ajudou a fazer? Vamos montar o roteiro minuto a minuto.",
+        "level": 1
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L8", "L9", "X1"], "auto": true },
+      { "id": "metas-mensuraveis", "check": "cada fase do plano tem três metas com responsável e prazo", "appliesTo": ["L9"], "auto": true },
+      { "id": "licencas-e-riscos", "check": "o plano lista licenças e ao menos três riscos com contingência", "appliesTo": ["L9"], "auto": true },
+      { "id": "horarios-e-responsaveis", "check": "cada bloco do roteiro tem horário, duração e responsável", "appliesTo": ["X1"], "auto": true },
+      { "id": "escala-saidas-lotacao", "check": "a planta tem escala, legenda, saídas de emergência e lotação", "appliesTo": ["D1", "D5"], "auto": true },
+      { "id": "indicadores-com-fonte", "check": "indicadores trazem fórmula, unidade e origem dos dados", "appliesTo": ["L4", "D7"], "auto": true },
+      { "id": "mudancas-anotadas", "check": "o antes e depois tem três mudanças numeradas e justificadas", "appliesTo": ["D5"], "auto": true },
+      { "id": "creditos-e-fontes", "check": "fotos, fornecedores, coautores e fontes estão creditados", "appliesTo": ["L5", "L10", "D2", "D5", "D7", "D10"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de listas de convidados, contratos e cachês sob sigilo", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D1", "D2", "D4", "D5", "D7", "D9", "D10", "X1"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "aderencia-ao-briefing", "label": "Aderência ao briefing", "levels": { "aproxima": "proposta genérica, ignora requisitos do cliente", "atende": "cada requisito do briefing tem resposta", "supera": "antecipa necessidades do cliente e do público" } },
+      { "id": "viabilidade-operacional", "label": "Viabilidade operacional", "levels": { "aproxima": "prazos, montagem ou orçamento irreais", "atende": "executável com os recursos e prazos do briefing", "supera": "prevê gargalos de montagem e alternativas de fornecedores" } },
+      { "id": "seguranca-e-acessibilidade", "label": "Segurança e acessibilidade", "levels": { "aproxima": "não considera saídas, lotação ou acessibilidade", "atende": "saídas, lotação e acessibilidade tratadas", "supera": "integra segurança e acessibilidade à experiência do público" } },
+      { "id": "experiencia-do-publico", "label": "Experiência do público", "levels": { "aproxima": "foca só na logística", "atende": "fluxo, tempos e conforto do participante considerados", "supera": "a programação e o espaço contam uma história coerente com o objetivo" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da área de eventos (assistente de produção, produtor, cerimonialista, coordenador de eventos corporativos, organizador de congressos; CBO 3548 e 1225). Use o vocabulário da área: briefing, proposta, plano de evento, cronograma operacional, roteiro minuto a minuto, layout, formato de sala, montagem e desmontagem, credenciamento, RSVP, rider técnico, cerimonial e precedência, lotação, AVCB e alvará, MICE, pós-evento. Cite como referência a Lei 11.771/2008 (organizadoras de eventos no Cadastur), a Lei 13.425/2017 e as instruções técnicas dos Corpos de Bombeiros (lotação e saídas), o Decreto 70.274/1972 (precedência), a Lei 9.610/1998 (Ecad) e a NBR 9050 e a Lei 13.146/2015 (acessibilidade). Nunca: pedir, usar ou reproduzir listas de convidados, inscrições ou dados de credenciamento; usar orçamentos, contratos ou cachês sob sigilo; afirmar que um layout ou evento está aprovado pelos bombeiros ou dispensa licença; substituir projeto de estruturas ou cenografia que exige responsável técnico (ART/RRT); inferir tipo de evento, nível ou situação a partir dos textos. Pergunte antes de inferir. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por quê, e aceita \"não me serve\". Afirmações sobre mercado citam fonte, data e região (CAGED, RAIS, Ministério do Turismo, ABEOC) ou dizem \"estimativa\"; nunca prometa emprego, vaga ou salário. Progresso é por critérios atendidos, nunca por nota ou ranking. Pré-cheque só critérios objetivos (seções, metas, licenças e riscos listados, horários e responsáveis, escala, saídas e lotação, indicadores com fonte, créditos); o selo depende de revisão humana. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "Lei 11.771/2008 — Política Nacional de Turismo (organizadoras de eventos)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2008/lei/l11771.htm", "kind": "norma" },
+      { "title": "Lei 13.425/2017 — prevenção de incêndios em locais de reunião de público", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2017/lei/l13425.htm", "kind": "norma" },
+      { "title": "Decreto 70.274/1972 — cerimonial público e ordem de precedência", "url": "https://www.planalto.gov.br/ccivil_03/decreto/d70274.htm", "kind": "norma" },
+      { "title": "Cadastur — Ministério do Turismo", "url": "https://cadastur.turismo.gov.br/", "kind": "orgao-publico" },
+      { "title": "ABEOC Brasil — Associação Brasileira de Empresas de Eventos", "url": "https://abeoc.org.br/", "kind": "comunidade" },
+      { "title": "Lei 13.146/2015 — Lei Brasileira de Inclusão (acessibilidade)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm", "kind": "norma" },
+      { "title": "CBO — Classificação Brasileira de Ocupações (MTE), família 3548", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2/c5 com competências de eventos; x1 (tipo de evento) e x2 (orçamento com valores) ajustam os exemplos." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Proposta por briefing (L8), plano de evento (L9) e planta (D1) primeiro; roteiro minuto a minuto (X1) como tarefa curta; aceita \"não me serve\" (d6)." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Respeita horas (d1) e semanas de evento; tarefas curtas em semana de montagem; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Pré-checa seções, metas, licenças e riscos listados, escala, saídas e lotação, indicadores e créditos; nunca atesta conformidade com bombeiros." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Esqueleto de proposta, plano, roteiro e relatório pós-evento com prévia; a pessoa preenche dados; nunca aplica sem revisão." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Planta por formato de sala com saídas e lotação (D1), antes e depois (D5), infográfico pós-evento (D7), prancha de portfólio (D2)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: competências declaradas e evidenciadas (propostas, plantas, roteiros), lacunas em relação ao cargo-alvo; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: turismo, hotelaria, gastronomia, marketing, publicidade; dados de mercado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por CBO 3548, tipo de evento e competências compartilhadas; só pessoas com opt-in." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com tipo de evento, três competências e um plano ou planta como prova; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai eventos, funções, porte e cursos (cerimonial, brigada) em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters (propostas, planos, roteiros)", "meus Drawings (plantas, layouts, pranchas)"],
+      "never": ["mensagens", "itens SIGILOSO", "listas de convidados, inscrições e credenciamento", "orçamentos, contratos e cachês sob sigilo", "fotos de convidados identificáveis sem autorização", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "perguntar em vez de inferir tipo de evento, nível ou situação",
+      "nunca pedir, usar ou reproduzir listas de convidados, inscrições ou credenciamento",
+      "não afirmar que layout ou evento está aprovado pelos bombeiros nem que dispensa licença",
+      "não substituir projeto de estruturas ou cenografia que exige responsável técnico (ART/RRT)",
+      "orçamentos, contratos e cachês de clientes só simulados ou anonimizados",
+      "nunca prometer emprego, vaga ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem nota, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação; toda saída traz \"por que\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "media", "drawings": "alta" },
+    "drawingsModes": ["2d-tecnico", "prancha", "diagrama", "infografico"],
+    "lettersTemplates": ["proposta", "plano-30-60-90", "roteiro", "relatorio-tecnico", "pop", "estudo-de-caso", "bio", "curriculo", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular: roteiro minuto a minuto (X1), bio (L6), post (L5) e revisão (L10); planta (D1), antes e depois (D5) e plano de evento (L9) pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: o roteiro minuto a minuto de um evento que você ajudou a fazer (45 min).",
+        "Por que esta tarefa: a planta com saídas e lotação comprova planejamento seguro do espaço, que produtoras e centros de convenções pedem. Leva cerca de 2 h.",
+        "Sem pressão. Passada a semana de montagem, a tarefa de 15 min está aqui.",
+        "Uma proposta a partir de briefing já mostra como você pensa um evento. Quer começar por ela?"
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "setor", "competencias"] },
+    "privacy": { "sensitiveData": ["listas de convidados e participantes com dados pessoais (LGPD)", "orçamentos, contratos e cachês de clientes e fornecedores sob sigilo", "fotos de convidados identificáveis sem autorização", "dados de autoridades e protocolos de segurança de eventos oficiais"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 3548 e 1225", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Dados e informações do turismo (Ministério do Turismo) — eventos e Cadastur de organizadoras", "url": "https://www.gov.br/turismo/pt-br/acesso-a-informacao/acoes-e-programas/observatorio", "geography": "Brasil, UF e município", "cadence": "continua", "kind": "estatistica-oficial" },
+      { "title": "ABEOC Brasil — pesquisas do setor de eventos", "url": "https://abeoc.org.br/", "geography": "Brasil", "cadence": "eventual", "kind": "associacao" },
+      { "title": "Extrator de dados do SIMT — mercado de trabalho no setor turismo (IPEA)", "url": "https://www.ipea.gov.br/extrator/simt.html", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "turismo", "why": "Turismo de negócios e eventos (MICE) conecta organização de eventos a agenciamento, receptivo e gestão de destinos.", "gaps": ["roteiros e receptivo", "legislação do turismo e Cadastur de agências", "dados de demanda turística"], "steps": ["proposta de evento com receptivo e hospedagem (L8)", "relatório de impacto do evento no destino (L4)", "conversar com turismólogos da rede"] },
+    { "to": "hotelaria", "why": "Hotéis com centros de convenções contratam quem vende e opera eventos e grupos.", "gaps": ["operação hoteleira e PMS", "vendas para grupos e rooming list", "indicadores hoteleiros"], "steps": ["proposta para grupo com hospedagem (L8)", "layout de salão de hotel (D1)", "plano 30-60-90 para coordenação de eventos em hotel (L9)"] },
+    { "to": "gastronomia", "why": "Buffets e banquetes são parte central de muitos eventos e pedem quem integra cardápio e operação.", "gaps": ["cardápio e ficha técnica", "boas práticas em alimentação (RDC 216/2004)", "produção em volume"], "steps": ["proposta com cardápio para evento (L8)", "diagrama do fluxo de serviço de buffet (D4)", "conversar com chefs de banquete"] },
+    { "to": "marketing", "why": "Eventos corporativos e de marca são ferramentas de marketing; endomarketing e live marketing contratam produtores.", "gaps": ["planejamento de marketing e métricas", "comunicação digital", "pesquisa de público"], "steps": ["plano de divulgação do evento (L9)", "infográfico de resultados do evento (D7)", "post sobre um aprendizado de produção (L5)"] },
+    { "to": "publicidade-e-propaganda", "why": "Agências de live marketing e ativação de marca unem criação publicitária e produção de eventos.", "gaps": ["criação e conceito de campanha", "direção de arte", "atendimento de agência"], "steps": ["prancha de portfólio com peças de evento (D2)", "proposta de ativação de marca (L8)", "remix com crédito de uma peça (D10)"] }
+  ],
+  "learning": [
+    { "title": "Programa Brasil Braços Abertos — capacitação gratuita em turismo e eventos", "provider": "Ministério do Turismo", "url": "https://www.gov.br/turismo/pt-br/acesso-a-informacao/acoes-e-programas/brasil-bracos-abertos", "free": true, "kind": "curso" },
+    { "title": "Cadastur — cadastro de organizadoras de eventos", "provider": "Ministério do Turismo", "url": "https://cadastur.turismo.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Cursos on-line gratuitos de gestão, projetos e empreendedorismo", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — gestão de projetos, cerimonial e LGPD", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Decreto 70.274/1972 — texto integral sobre cerimonial público", "provider": "Planalto", "url": "https://www.planalto.gov.br/ccivil_03/decreto/d70274.htm", "free": true, "kind": "norma" },
+    { "title": "ABEOC Brasil — conteúdos e eventos do setor", "provider": "ABEOC", "url": "https://abeoc.org.br/", "free": true, "kind": "comunidade" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4, §7 e §8; dados do ramo (CBO 3548/1225, ISCO 3332, vizinhos, sensitiveData) do catálogo contracts/career/academic-fields.json", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Lei 11.771/2008 — Política Nacional de Turismo", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2008/lei/l11771.htm", "accessedAt": "2026-11-02" },
+    { "title": "Lei 13.425/2017 — prevenção de incêndios em locais de reunião de público", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2017/lei/l13425.htm", "accessedAt": "2026-11-02" },
+    { "title": "Decreto 70.274/1972 — cerimonial público", "url": "https://www.planalto.gov.br/ccivil_03/decreto/d70274.htm", "accessedAt": "2026-11-02" },
+    { "title": "CBO — Classificação Brasileira de Ocupações (MTE), família 3548", "url": "https://cbo.mte.gov.br/", "accessedAt": "2026-11-02" },
+    { "title": "RF75 Work Station Career Guidance, CA19", "url": "docs/diagramas/RF75/README.md", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URLs de leis, estatísticas e recursos de aprendizagem não abertas nesta sessão (cota de busca); conferir em especial ABEOC e a página de dados do MTur",
+    "Família CBO 3763 (cerimonialista/mestre de cerimônias) citada de memória; conferir no portal da CBO",
+    "Artigo exato da Lei 11.771/2008 que trata das organizadoras de eventos (art. 30 citado de memória)",
+    "Instruções técnicas de bombeiros variam por estado; nenhuma IT estadual específica foi conferida",
+    "Cadência e metodologia das pesquisas da ABEOC; URIs ESCO não confirmadas (esco vazio)"
+  ]
+}

@@ -311,7 +311,7 @@
   ],
   "sources": [
     { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
-    { "title": "Contratos do Guia de Carreira — README, esquema e pacote genérico", "url": "docs/../contracts/career/README.md", "accessedAt": "2026-11-02" },
+    { "title": "Contratos do Guia de Carreira — README, esquema e pacote genérico", "url": "contracts/career/README.md", "accessedAt": "2026-11-02" },
     { "title": "World of Taxonomy (espelho ESCO) — electrical engineer 86ca306c-ab99-420a-9e2a-aa73c5c4de22, ISCO 2151", "url": "https://worldoftaxonomy.com/codes/esco_occupations/86ca306c-ab99-420a-9e2a-aa73c5c4de22", "accessedAt": "2026-11-02" },
     { "title": "World of Taxonomy — ISCO-08 2151 → ESCO occupations", "url": "https://www.worldoftaxonomy.com/crosswalks/isco_08/2151/esco_occupations", "accessedAt": "2026-11-02" },
     { "title": "CBO (espelho VRI Consulting) — 2143-05 engenheiro eletricista, família 2143", "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=214305", "accessedAt": "2026-11-02" },

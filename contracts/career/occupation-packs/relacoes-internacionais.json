@@ -1,0 +1,334 @@
+{
+  "schemaVersion": 1,
+  "code": "relacoes-internacionais",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Relações Internacionais", "en": "International Relations", "es": "Relaciones Internacionales" },
+  "fields": ["relacoes-internacionais"],
+  "family": {
+    "cbo": [
+      { "code": "3543", "title": "Analistas de comércio exterior" },
+      { "code": "1114", "title": "Dirigentes do serviço público" }
+    ],
+    "isco08": [
+      { "code": "2422", "title": "Policy administration professionals" },
+      { "code": "1112", "title": "Senior government officials" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/7819669b-30c2-42e6-a1c4-0bcd6f0379ff", "label": "international relations officer" },
+      { "uri": "http://data.europa.eu/esco/occupation/f7450c1f-20b7-45dd-b3bb-25095830bf3f", "label": "foreign affairs officer" },
+      { "uri": "http://data.europa.eu/esco/occupation/caf7b8fb-b2d6-46b7-bffa-bea7f8e4aed8", "label": "policy officer" }
+    ]
+  },
+  "scope": {
+    "summary": "Analisa a política internacional, a economia política global e a inserção externa de Estados, governos subnacionais, empresas e organizações: análise de conjuntura e de risco político, assessoria internacional e cooperação, negociação, comércio exterior, organismos internacionais e terceiro setor, diplomacia (via concurso do Instituto Rio Branco). Profissão não regulamentada, sem conselho; produz notas, memorandos, relatórios e briefings.",
+    "entryRoles": ["Estagiário de assessoria internacional", "Assistente de comércio exterior", "Assistente de projetos de cooperação", "Pesquisador júnior em think tank ou observatório", "Assistente de relações institucionais", "Trainee em multinacional"],
+    "midRoles": ["Analista de relações internacionais", "Analista de risco político", "Analista de comércio exterior", "Assessor internacional de governo ou prefeitura", "Analista de projetos em organismo internacional ou ONG", "Analista de inteligência de mercado internacional", "Analista de relações governamentais"],
+    "seniorRoles": ["Coordenador de cooperação internacional", "Diplomata (Terceiro Secretário em diante, via CACD)", "Oficial de programa em organismo internacional", "Gerente de relações governamentais e institucionais", "Consultor em risco político e internacionalização", "Pesquisador sênior / professor"],
+    "sectors": ["Ministério das Relações Exteriores e órgãos federais", "assessorias internacionais de estados e municípios", "organismos internacionais (ONU, OEA, Mercosul, bancos multilaterais)", "empresas exportadoras e multinacionais", "consultorias de risco e comércio exterior", "ONGs e fundações", "think tanks e universidades", "câmaras de comércio e federações de indústria", "imprensa internacional"],
+    "regulation": [
+      { "name": "Constituição Federal, art. 4º", "issuer": "Brasil", "about": "princípios das relações internacionais do Brasil (independência nacional, prevalência dos direitos humanos, não intervenção, cooperação, integração latino-americana)" },
+      { "name": "Lei 11.440/2006 (Serviço Exterior Brasileiro)", "issuer": "Brasil", "about": "carreira de diplomata, ingresso por concurso público (CACD) e formação no Instituto Rio Branco" },
+      { "name": "Lei 12.527/2011 (LAI), arts. 23 e 24", "issuer": "Brasil", "about": "classificação de informações cuja divulgação pode prejudicar negociações ou relações internacionais" },
+      { "name": "Convenção de Viena sobre o Direito dos Tratados (1969; Decreto 7.030/2009)", "issuer": "ONU / Brasil", "about": "celebração, interpretação e vigência de tratados" },
+      { "name": "Convenção de Viena sobre Relações Diplomáticas (1961; Decreto 56.435/1965)", "issuer": "ONU / Brasil", "about": "funções e imunidades das missões diplomáticas" },
+      { "name": "Tratado de Assunção (1991) e Protocolo de Ouro Preto (1994)", "issuer": "Mercosul", "about": "constituição e estrutura institucional do Mercosul" },
+      { "name": "LGPD (Lei 13.709/2018)", "issuer": "Brasil", "about": "tratamento de dados pessoais de beneficiários e parceiros de programas de cooperação" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "análise de conjuntura", "meaning": "leitura de atores, interesses, cenários e tendências de uma situação internacional em um momento" },
+      { "term": "nota de análise / policy brief", "meaning": "texto curto que analisa um tema e propõe recomendações a um decisor" },
+      { "term": "memorando de recomendação", "meaning": "documento interno que apresenta problema, opções e recomendação para decisão" },
+      { "term": "briefing", "meaning": "resumo de preparação para reunião, viagem ou negociação" },
+      { "term": "risco político", "meaning": "probabilidade de decisões ou eventos políticos afetarem investimentos e operações" },
+      { "term": "análise de cenários", "meaning": "construção de futuros alternativos com variáveis-chave e indicadores de monitoramento" },
+      { "term": "cooperação internacional (técnica, Sul-Sul, descentralizada)", "meaning": "parcerias entre países, governos subnacionais e organismos para transferir conhecimento e recursos" },
+      { "term": "paradiplomacia", "meaning": "atuação internacional de estados e municípios" },
+      { "term": "multilateralismo", "meaning": "cooperação entre vários Estados em foros como ONU, OMC, G20, BRICS" },
+      { "term": "Mercosul, OMC e acordos comerciais", "meaning": "integração regional e regras do comércio internacional" },
+      { "term": "tratado, memorando de entendimento (MoU) e acordo-quadro", "meaning": "instrumentos jurídicos e políticos de compromisso internacional" },
+      { "term": "Agenda 2030 / ODS", "meaning": "17 Objetivos de Desenvolvimento Sustentável da ONU" },
+      { "term": "teorias de RI (realismo, liberalismo, construtivismo)", "meaning": "lentes analíticas para explicar o comportamento de Estados e atores" },
+      { "term": "política externa brasileira (PEB)", "meaning": "orientações e ações do Brasil no sistema internacional, conduzidas pelo Itamaraty" },
+      { "term": "soft power", "meaning": "capacidade de influência por atração cultural e política" },
+      { "term": "CACD", "meaning": "Concurso de Admissão à Carreira de Diplomata, do Instituto Rio Branco" },
+      { "term": "relações governamentais (RelGov)", "meaning": "interlocução institucional de empresas e organizações com o poder público" },
+      { "term": "Incoterms", "meaning": "termos de comércio internacional da ICC que definem responsabilidades entre vendedor e comprador" },
+      { "term": "edital de organismo internacional", "meaning": "chamada para projetos ou vagas (ONU, BID, União Europeia) com critérios próprios" },
+      { "term": "fontes primárias", "meaning": "declarações oficiais, tratados, votações e dados de organismos, usados antes de imprensa e opinião" }
+    ],
+    "tools": ["bases de dados (Comex Stat, UN Comtrade, Banco Mundial, FMI)", "portais oficiais (Itamaraty, ONU, Mercosul, Concórdia)", "Zotero ou Mendeley para referências", "planilhas e Power BI para dados", "ferramentas de mapas (QGIS, Datawrapper)", "Microsoft 365 / Google Workspace", "ferramentas de tradução e glossários", "monitoramento de mídia e alertas de notícias"],
+    "deliverables": ["nota de análise de conjuntura", "memorando de recomendação", "policy brief", "briefing para reunião ou missão", "relatório de risco político", "proposta de projeto de cooperação", "matriz de cenários", "relatório técnico de comércio exterior", "resumo de tratado ou acordo", "artigo de opinião ou acadêmico", "clipping analítico"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Análise de conjuntura e de política internacional", "esco": null, "kind": "nucleo" },
+      { "label": "Redação de notas, memorandos e policy briefs", "esco": null, "kind": "nucleo" },
+      { "label": "Pesquisa em fontes primárias e bases de dados internacionais", "esco": null, "kind": "nucleo" },
+      { "label": "Análise de cenários e risco político", "esco": null, "kind": "nucleo" },
+      { "label": "Negociação e mediação intercultural", "esco": null, "kind": "nucleo" },
+      { "label": "Elaboração e gestão de projetos de cooperação", "esco": null, "kind": "nucleo" },
+      { "label": "Comunicação em línguas estrangeiras (inglês, espanhol)", "esco": null, "kind": "nucleo" },
+      { "label": "Direito internacional e funcionamento de organismos", "esco": null, "kind": "apoio" },
+      { "label": "Economia internacional e comércio exterior", "esco": null, "kind": "apoio" },
+      { "label": "Análise de dados e visualização", "esco": null, "kind": "apoio" },
+      { "label": "Relações governamentais e institucionais", "esco": null, "kind": "apoio" },
+      { "label": "Protocolo e cerimonial", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["pensamento crítico", "síntese", "sensibilidade intercultural", "discrição e sigilo", "apresentação oral", "rigor com fontes"],
+    "tracks": [
+      { "id": "analise", "label": "Analisar o cenário internacional", "steps": ["nota de análise de conjuntura (L4)", "infográfico com dados de comércio ou indicadores (D7)", "matriz de cenários (X2)", "post sobre um aprendizado (L5)"] },
+      { "id": "assessoria", "label": "Assessorar decisões", "steps": ["memorando de recomendação (L8)", "briefing para uma reunião internacional (X1)", "estudo de caso STAR de uma articulação (L3)"] },
+      { "id": "cooperacao", "label": "Cooperação e projetos internacionais", "steps": ["fluxo de um projeto de cooperação (D4)", "proposta de projeto para um edital simulado (L8)", "plano 30-60-90 para assessoria internacional (L9)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"estagiário de assessoria internacional\", \"analista de comércio exterior\", \"assistente de projetos em ONG\", \"pesquisador\", \"analista de relações governamentais\"",
+      "cboFamilies": ["3543", "1114", "2511", "2524"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez (análise, comércio exterior, cooperação, pesquisa) e não do zero. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, voluntariado ou primeiro cargo",
+        "junior": "até dois anos; pesquisa, monitora e redige com supervisão",
+        "pleno": "produz análises e memorandos e conduz projetos com autonomia",
+        "senior": "referência temática; assessora diretamente decisores e orienta colegas",
+        "gestao": "responde por equipe, programa, carteira de parcerias ou representação"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (de um briefing a uma matriz de cenários) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em relações internacionais",
+      "options": ["analisar conjuntura", "escrever notas e memorandos", "pesquisar em fontes primárias", "trabalhar com dados de comércio e economia", "construir cenários", "negociar e mediar", "escrever projetos de cooperação", "falar e escrever em inglês ou espanhol", "organizar missões e eventos internacionais", "acompanhar organismos internacionais", "relações governamentais", "apresentar para públicos diversos"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com notas, memorandos e infográficos."
+    },
+    "c4": {
+      "certifications": ["bacharelado em Relações Internacionais", "pós-graduação ou mestrado em RI, ciência política ou economia", "certificados de proficiência (TOEFL, IELTS, DELE, DELF)", "cursos da FUNAG e do Instituto Rio Branco", "cursos da ONU / UNITAR / UN SDG:Learn", "comércio exterior (Habilitação Radar, cursos da Apex/Sebrae)", "participação em simulações da ONU (MUN)"],
+      "languages": ["inglês", "espanhol", "francês", "mandarim", "árabe", "alemão"],
+      "why": "Idiomas e pós-graduação pesam muito na área; o CACD e organismos internacionais exigem proficiência comprovada."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver em RI?",
+      "options": ["análise de conjuntura e cenários", "redação de policy brief e memorando", "risco político para empresas", "projetos de cooperação e captação", "comércio exterior e acordos", "dados internacionais e visualização", "negociação internacional", "preparação para o CACD", "organismos internacionais e Agenda 2030", "idiomas para trabalho"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (nota → memorando → cenários) em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que frente você atua ou quer atuar?", "type": "lista", "options": ["diplomacia (CACD)", "governo e assessoria internacional subnacional", "organismos internacionais", "empresa (comércio exterior, risco político, RelGov)", "ONG e cooperação", "pesquisa e docência", "jornalismo internacional"], "why": "Pergunto para priorizar as tarefas certas: memorando e briefing para governo, risco político para empresas, proposta de projeto para cooperação.", "where": "P" },
+      { "id": "x2", "prompt": "Que regiões ou temas você acompanha?", "type": "lista", "options": ["América do Sul e Mercosul", "Estados Unidos", "Europa", "China e Ásia", "África", "Oriente Médio", "clima e meio ambiente", "comércio e economia", "segurança e defesa", "direitos humanos"], "why": "Pergunto para sugerir temas de análise e fontes da sua área de interesse, sem presumir nada sobre você.", "where": "X" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L4", "L8", "L3", "D7", "L6", "L1", "L2", "L5", "L9", "L10", "D4"],
+    "excluded": [
+      { "code": "D1", "reason": "planta de ambiente é entrega da arquitetura" },
+      { "code": "D3", "reason": "modelo 3D de produto não é evidência de RI" },
+      { "code": "D6", "reason": "detalhe construtivo é entrega de engenharia" },
+      { "code": "D8", "reason": "vista explodida é entrega da mecânica" },
+      { "code": "D9", "reason": "wireframe de tela é entrega de UX" },
+      { "code": "L7", "reason": "POP é pouco típico; protocolos de missão entram no briefing (X1)" }
+    ],
+    "parameters": {
+      "L4": {
+        "title": "Nota de análise de conjuntura",
+        "brief": "Escreva uma nota de até 4 páginas sobre um tema internacional atual: pergunta orientadora, contexto, atores e interesses, análise com fontes primárias (declarações oficiais, dados de organismos), cenários prováveis, implicações para o Brasil ou para o cliente e referências. Use apenas fontes públicas.",
+        "parameters": { "maxPages": 4, "sections": ["pergunta orientadora", "contexto", "atores e interesses", "análise", "cenários", "implicações", "referências"], "minPrimarySources": 3 },
+        "criteria": ["até 4 páginas", "sete seções nomeadas", "ao menos três fontes primárias citadas com data", "distingue fato de interpretação", "implicações explícitas", "apenas fontes públicas"],
+        "evidence": "nota em PDF",
+        "time": "2 h",
+        "level": 2
+      },
+      "L8": {
+        "title": "Memorando de recomendação para um decisor",
+        "brief": "A partir de um briefing simulado (ex.: \"a prefeitura recebeu proposta de cidade-irmã\" ou \"a empresa avalia exportar para um novo mercado\"), escreva um memorando de até 2 páginas: problema, contexto, três opções com prós, contras e riscos, recomendação, próximos passos e o que fica fora do escopo.",
+        "parameters": { "maxPages": 2, "sections": ["problema", "contexto", "opções", "recomendação", "próximos passos", "fora de escopo"], "options": 3 },
+        "criteria": ["até 2 páginas", "seis seções nomeadas", "três opções com prós, contras e riscos", "recomendação justificada", "próximos passos com responsável e prazo"],
+        "evidence": "memorando em PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "L3": {
+        "title": "Estudo de caso STAR de uma articulação ou projeto internacional",
+        "brief": "Conte uma situação em que você contribuiu para uma articulação, evento, projeto de cooperação, negociação ou pesquisa: situação, tarefa, ação e resultado mensurável (parcerias firmadas, participantes, prazos, publicação). Sem informação confidencial de negociações ou parceiros.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true },
+        "criteria": ["quatro seções explícitas", "resultado com número ou comparação", "papel pessoal distinguido do papel da equipe", "declaração de ausência de dado confidencial"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 1
+      },
+      "D7": {
+        "title": "Infográfico com dados internacionais",
+        "brief": "Mostre um dado internacional relevante (comércio bilateral, investimento, votações na ONU, indicadores de ODS) com fonte primária (Comex Stat, UN Comtrade, Banco Mundial), período, eixos rotulados ou mapa com legenda e uma mensagem principal.",
+        "parameters": { "requiredElements": ["fonte primária", "período", "eixos rotulados ou legenda do mapa", "uma mensagem principal"] },
+        "criteria": ["fonte primária e período citados", "eixos rotulados ou legenda", "uma mensagem principal explícita", "unidade indicada"],
+        "evidence": "imagem PNG + PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "L6": {
+        "title": "Resumo de perfil em relações internacionais",
+        "brief": "Escreva até 600 caracteres com sua frente (governo, empresa, organismos, cooperação, pesquisa), regiões ou temas, três competências, idiomas de trabalho e uma prova com link (nota, memorando, infográfico). Sem dados pessoais além do nome.",
+        "parameters": { "maxChars": 600, "requiredParts": ["frente e temas", "três competências", "idiomas de trabalho", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia frente e temas", "cita três competências e idiomas", "inclui uma prova com link"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Briefing para uma reunião ou missão internacional",
+        "competency": "Assessoria e preparação de negociações",
+        "criteria": ["objetivo da reunião e resultado esperado", "perfil institucional da contraparte com fontes públicas", "histórico da relação e agenda", "pontos de interesse, posições e linhas a evitar", "até 2 páginas", "caso fictício ou só fontes públicas declarado"],
+        "evidence": "briefing em PDF",
+        "time": "60 min",
+        "trigger": "Quer mostrar como prepara alguém para uma reunião internacional?",
+        "level": 2
+      },
+      {
+        "id": "X2",
+        "editor": "drawings",
+        "title": "Matriz de cenários de uma questão internacional",
+        "competency": "Análise de cenários e risco político",
+        "criteria": ["duas incertezas críticas definidas como eixos", "quatro cenários nomeados e descritos", "indicadores de monitoramento por cenário", "implicações para o Brasil ou o cliente", "fontes citadas"],
+        "evidence": "diagrama em PDF/PNG",
+        "time": "90 min",
+        "trigger": "Quer explorar futuros possíveis de uma crise ou negociação?",
+        "level": 3
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6", "L8", "X1"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L8", "L9", "X1"], "auto": true },
+      { "id": "fontes-primarias", "check": "há ao menos três fontes primárias citadas com data", "appliesTo": ["L4", "X1", "X2"], "auto": true },
+      { "id": "tres-opcoes", "check": "o memorando apresenta três opções, cada uma com prós, contras e riscos", "appliesTo": ["L8"], "auto": true },
+      { "id": "quatro-cenarios", "check": "a matriz tem dois eixos, quatro cenários e indicadores de monitoramento", "appliesTo": ["X2"], "auto": true },
+      { "id": "fonte-e-periodo", "check": "dados trazem fonte, período e unidade", "appliesTo": ["D7"], "auto": true },
+      { "id": "palavras-chave-do-alvo", "check": "as palavras-chave do cargo ou edital alvo aparecem no texto", "appliesTo": ["L1", "L2"], "auto": true },
+      { "id": "creditos-e-fontes", "check": "coautores, fontes e autores remixados estão creditados", "appliesTo": ["L5", "L10", "D2", "D7", "D10"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de informação confidencial de negociações, parceiros ou documentos classificados", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L8", "L9", "L10", "D2", "D4", "D7", "D10", "X1", "X2"], "auto": true },
+      { "id": "fato-vs-interpretacao", "check": "fatos verificáveis estão separados de interpretações e opiniões", "appliesTo": ["L4", "L5", "X1"], "auto": false }
+    ],
+    "subjective": [
+      { "id": "rigor-analitico", "label": "Rigor analítico", "levels": { "aproxima": "descreve eventos sem explicar causas", "atende": "explica interesses e causas com base em fontes", "supera": "usa referencial teórico, pondera hipóteses concorrentes e explicita incertezas" } },
+      { "id": "utilidade-para-decisor", "label": "Utilidade para quem decide", "levels": { "aproxima": "o leitor não sabe o que fazer com o texto", "atende": "o leitor entende as opções e a recomendação", "supera": "o leitor decide e sabe o que monitorar depois" } },
+      { "id": "sintese", "label": "Síntese e clareza", "levels": { "aproxima": "excesso de contexto e pouca análise", "atende": "a mensagem principal aparece no primeiro parágrafo", "supera": "conciso, preciso e sem jargão desnecessário" } },
+      { "id": "equilibrio", "label": "Equilíbrio e neutralidade", "levels": { "aproxima": "apresenta só uma perspectiva", "atende": "apresenta as principais perspectivas dos atores", "supera": "explora perspectivas com empatia analítica e evita viés de confirmação" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa que atua ou quer atuar em relações internacionais: assessoria internacional de governos (incluindo estados e municípios), diplomacia via CACD, organismos internacionais, cooperação e ONGs, empresas (comércio exterior, risco político, relações governamentais), pesquisa e docência. Use o vocabulário da área (análise de conjuntura, policy brief, memorando de recomendação, briefing, cenários, risco político, cooperação técnica e descentralizada, paradiplomacia, multilateralismo, Mercosul, OMC, ODS, MoU) e cite referências quando útil: CF art. 4º, Lei 11.440/2006, Convenções de Viena (1961 e 1969), Tratado de Assunção, LAI arts. 23 e 24, publicações da FUNAG e do Ipea, dados do Comex Stat, UN Comtrade e Banco Mundial. Oriente a produzir evidências: notas de conjuntura com fontes primárias, memorandos com opções e recomendação, briefings, matrizes de cenários, infográficos com dados públicos. Trate temas sensíveis com equilíbrio; separe fato de interpretação; nunca invente declarações, números ou citações e indique a data das fontes. Nunca redija documento oficial assinável (nota diplomática, ofício, comunicado de governo ou empresa) como peça final: toda saída é rascunho de estudo. Nunca trate documentos classificados, informações de negociações em curso ou de parceiros sob confidencialidade, nem dados pessoais de beneficiários de cooperação. O CACD e editais de organismos viram tarefas de preparação, nunca promessa de aprovação. Pergunte antes de inferir frente, região de interesse ou senioridade. Progresso é por critérios atendidos, nunca por score. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "Ministério das Relações Exteriores (Itamaraty)", "url": "https://www.gov.br/mre/pt-br", "kind": "orgao-publico" },
+      { "title": "Instituto Rio Branco — CACD e formação diplomática", "url": "https://www.gov.br/mre/pt-br/instituto-rio-branco", "kind": "orgao-publico" },
+      { "title": "FUNAG — Fundação Alexandre de Gusmão (biblioteca digital gratuita)", "url": "https://www.gov.br/funag/pt-br", "kind": "educacao" },
+      { "title": "Concórdia — Plataforma de Atos Internacionais do Brasil", "url": "https://concordia.itamaraty.gov.br/", "kind": "orgao-publico" },
+      { "title": "Comex Stat — estatísticas de comércio exterior (MDIC)", "url": "https://comexstat.mdic.gov.br/", "kind": "estatistica" },
+      { "title": "UN Comtrade — base de dados de comércio da ONU", "url": "https://comtradeplus.un.org/", "kind": "estatistica" },
+      { "title": "Banco Mundial — World Development Indicators", "url": "https://data.worldbank.org/", "kind": "estatistica" },
+      { "title": "Agência Brasileira de Cooperação (ABC)", "url": "https://www.gov.br/abc/pt-br", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2/c5 com competências de RI; x1 (frente) e x2 (regiões e temas de interesse)." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza L4 (nota de conjuntura), L8 (memorando) e X1 (briefing); X2 (cenários) no nível 3; CACD vira tarefa de preparação, nunca promessa." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Pré-checa seções, fontes primárias com data, três opções no memorando, matriz completa e declaração de sigilo; o selo depende de revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Propõe estrutura de nota, memorando e briefing; não inventa citações nem dados; nunca documento oficial assinável; nunca aplica sem revisão." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Eixos e quadrantes da matriz de cenários (X2); fonte, legenda e mapa no infográfico (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: síntese por competências de RI e idiomas declarados, com lacunas e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Caminhos para comércio exterior, gestão pública, economia, direito, ciências sociais e jornalismo; mercado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por competências e setor (governo, empresa, organismos)." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com frente, temas, idiomas e provas; também em inglês ou espanhol se a pessoa pedir; só com o consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, idiomas e intercâmbios em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "informações diplomáticas e documentos classificados (LAI arts. 23 e 24)", "dados de negociações, contratos e parceiros internacionais sob confidencialidade", "dados pessoais de beneficiários de programas de cooperação (LGPD)", "dados sensíveis (LGPD art. 5º II), inclusive nacionalidade de origem e opinião política"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca redigir documento oficial assinável (nota diplomática, ofício, comunicado); toda peça é rascunho de estudo",
+      "não inventar declarações, números ou citações; indicar fonte e data e separar fato de interpretação",
+      "não tratar documentos classificados, negociações em curso ou dados de parceiros e beneficiários; pedir fontes públicas ou caso fictício",
+      "não inferir nem registrar opinião política, nacionalidade de origem ou outros dados sensíveis",
+      "CACD e editais de organismos são tarefas de preparação; nunca prometer aprovação ou vaga",
+      "perguntar em vez de inferir frente, região de interesse ou senioridade",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["infografico", "diagrama"],
+    "lettersTemplates": ["relatorio-tecnico", "proposta", "estudo-de-caso", "artigo", "bio", "curriculo", "carta", "post", "plano-30-60-90", "revisao", "projeto-de-pesquisa"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas de texto curtas (L5, L6) e revisão (L10); notas (L4), matriz de cenários (X2) e infográficos (D7) pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em relações internacionais (15 min).",
+        "Algum tema internacional chamou sua atenção esta semana? Uma nota de conjuntura com três fontes primárias leva cerca de 2 h.",
+        "Quer treinar assessoria? Um memorando com três opções e uma recomendação leva cerca de 60 min.",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["competencias", "setor", "esco"] },
+    "privacy": {
+      "sensitiveData": ["informações diplomáticas e documentos classificados (Lei 12.527/2011 arts. 23 e 24)", "dados de negociações, contratos e parceiros internacionais sob confidencialidade", "dados pessoais de beneficiários de programas de cooperação (LGPD)", "documentos pessoais e de viagem (passaporte, visto)"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "RAIS (MTE) — vínculos por CBO 3543, 2511 e 2524 (aproximações; RI não tem família CBO própria)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Novo CAGED (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "Edital do CACD — Instituto Rio Branco", "url": "https://www.gov.br/mre/pt-br/instituto-rio-branco", "geography": "Brasil", "cadence": "anual", "kind": "edital" },
+      { "title": "UN Careers — vagas e programas de jovens profissionais da ONU", "url": "https://careers.un.org/", "geography": "mundo", "cadence": "continua", "kind": "edital" },
+      { "title": "Comex Stat — empresas exportadoras e importadoras por UF", "url": "https://comexstat.mdic.gov.br/", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, concursos, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Como RI não tem família CBO própria, dados da RAIS e do CAGED são aproximações e devem ser apresentados assim. Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "comercio-exterior", "why": "Comércio exterior é a porta de entrada mais frequente de internacionalistas no setor privado; usa acordos, Incoterms e dados de comércio.", "gaps": ["operação aduaneira e Siscomex", "Incoterms e logística internacional", "classificação fiscal (NCM)"], "steps": ["relatório técnico de mercado-alvo com Comex Stat (L4)", "infográfico de comércio bilateral (D7)", "curso de comércio exterior (Apex/Sebrae)"] },
+    { "to": "gestao-publica", "why": "Assessorias internacionais de governos e a cooperação descentralizada operam dentro da administração pública, com orçamento, convênios e prestação de contas.", "gaps": ["orçamento e Lei 14.133/2021", "processo administrativo e redação oficial", "convênios e prestação de contas"], "steps": ["memorando de recomendação para uma prefeitura (L8)", "cursos de gestão pública na Enap"] },
+    { "to": "ciencias-economicas", "why": "Economia internacional, finanças globais e desenvolvimento são temas centrais em RI.", "gaps": ["métodos quantitativos e econometria", "macroeconomia aberta", "registro no CORECON para exercer como economista"], "steps": ["infográfico de indicadores do Banco Mundial (D7)", "nota sobre efeito de um acordo comercial (L4)"] },
+    { "to": "direito", "why": "Direito internacional público e privado, comércio e direitos humanos atraem internacionalistas; a advocacia exige bacharelado e OAB.", "gaps": ["graduação em Direito e OAB", "técnica jurídica e processo", "contratos internacionais"], "steps": ["resumo analítico de um tratado (L4)", "revisão crítica de um parecer público (L10)"] },
+    { "to": "ciencias-sociais", "why": "Ciência política e métodos de pesquisa social sustentam a análise internacional e a carreira acadêmica.", "gaps": ["métodos qualitativos e quantitativos", "pós-graduação stricto sensu", "publicação acadêmica"], "steps": ["projeto de pesquisa sobre um tema internacional", "artigo de opinião (L5)"] },
+    { "to": "jornalismo", "why": "Jornalismo internacional e de política usa análise de conjuntura e fontes primárias.", "gaps": ["técnicas de apuração e redação jornalística", "produção multimídia", "rotina de redação"], "steps": ["post analítico sobre um tema da semana (L5)", "infográfico explicativo (D7)"] }
+  ],
+  "learning": [
+    { "title": "Biblioteca digital da FUNAG — livros gratuitos sobre política externa e RI", "provider": "FUNAG", "url": "https://www.gov.br/funag/pt-br", "free": true, "kind": "livro" },
+    { "title": "Instituto Rio Branco — guia de estudos e provas anteriores do CACD", "provider": "Ministério das Relações Exteriores", "url": "https://www.gov.br/mre/pt-br/instituto-rio-branco", "free": true, "kind": "portal" },
+    { "title": "UN SDG:Learn / UNITAR — cursos gratuitos da ONU", "provider": "ONU / UNITAR", "url": "https://www.unsdglearn.org/", "free": true, "kind": "curso" },
+    { "title": "Escola Virtual.Gov — cooperação internacional, Agenda 2030 e gestão pública", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Ipea — publicações sobre inserção internacional e cooperação (COBRADI)", "provider": "Ipea", "url": "https://www.ipea.gov.br/portal/", "free": true, "kind": "portal" },
+    { "title": "Concórdia — textos de tratados e atos internacionais do Brasil", "provider": "Itamaraty", "url": "https://concordia.itamaraty.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Revista Brasileira de Política Internacional (RBPI) — acesso aberto", "provider": "IBRI / SciELO", "url": "https://www.scielo.br/j/rbpi/", "free": true, "kind": "livro" },
+    { "title": "Associação Brasileira de Relações Internacionais (ABRI)", "provider": "ABRI", "url": "https://www.abri.org.br/", "free": true, "kind": "comunidade" }
+  ],
+  "sources": [
+    { "title": "Catálogo de ramos acadêmicos — relacoes-internacionais (CBO, ISCO, ESCO, sensitiveData, vizinhos)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Itamaraty abre concurso para diplomata com 60 vagas (CACD 2026; IRBr com IADES) — O Povo, 30/01/2026", "url": "https://www.opovo.com.br/noticias/economia/2026/01/30/itamaraty-abre-concurso-para-diplomata-com-60-vagas.html", "accessedAt": "2026-11-02" },
+    { "title": "Instituto Rio Branco divulga concurso público para a carreira de Diplomata (Cebraspe)", "url": "https://www.cebraspe.org.br/instituto-rio-branco-divulga-concurso-publico-para-a-carreira-de-diplomata/", "accessedAt": "2026-11-02" },
+    { "title": "Lei 12.527/2011 — LAI (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm", "accessedAt": "2026-11-02" },
+    { "title": "CBO — Classificação Brasileira de Ocupações", "url": "https://cbo.mte.gov.br/", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URIs ESCO das competências não confirmadas nesta sessão (todas com esco: null); as URIs de ocupação vêm do catálogo",
+    "profissão sem família CBO própria: 3543 e 1114 (catálogo) e 2511/2524 (a4) são aproximações não conferidas",
+    "Lei 11.440/2006, decretos de promulgação das Convenções de Viena (7.030/2009; 56.435/1965) citados de memória",
+    "URLs de Concórdia, UN Comtrade Plus, UN SDG:Learn, ABRI, RBPI, ABC e FUNAG não abertas nesta sessão",
+    "cadência anual do CACD é a usual, mas não garantida; edital 2026 confirmado só por imprensa"
+  ]
+}

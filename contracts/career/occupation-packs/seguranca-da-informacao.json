@@ -1,0 +1,1529 @@
+{
+  "schemaVersion": 1,
+  "code": "seguranca-da-informacao",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": {
+    "pt-BR": "Segurança da Informação",
+    "en": "Information Security",
+    "es": "Seguridad de la Información"
+  },
+  "fields": [
+    "seguranca-da-informacao"
+  ],
+  "family": {
+    "cbo": [
+      {
+        "code": "2124",
+        "title": "Analistas de tecnologia da informação"
+      },
+      {
+        "code": "2123",
+        "title": "Administradores de tecnologia da informação"
+      }
+    ],
+    "isco08": [
+      {
+        "code": "2529",
+        "title": "Database and network professionals not elsewhere classified"
+      }
+    ],
+    "esco": [
+      {
+        "uri": "http://data.europa.eu/esco/occupation/276ba420-ef09-4a0e-b215-2c2e2f80ad28",
+        "label": "chief ICT security officer"
+      }
+    ]
+  },
+  "scope": {
+    "summary": "Pessoas que protegem informação e sistemas: governança, riscos e conformidade (GRC), operação de segurança (SOC), resposta a incidentes, testes de intrusão autorizados, segurança de aplicações e privacidade (LGPD). Profissão sem conselho obrigatório; a evidência típica é política, matriz de riscos, playbook e post-mortem anonimizado, nunca relatórios reais de clientes.",
+    "entryRoles": [
+      "Estagiário de segurança da informação",
+      "Analista de SOC N1",
+      "Analista de segurança júnior",
+      "Analista de suporte com foco em segurança",
+      "Assistente de GRC/privacidade"
+    ],
+    "midRoles": [
+      "Analista de segurança da informação",
+      "Analista de SOC N2/N3",
+      "Analista de resposta a incidentes",
+      "Pentester (teste de intrusão autorizado)",
+      "Analista de GRC",
+      "Engenheiro de segurança de aplicações (AppSec)"
+    ],
+    "seniorRoles": [
+      "Especialista em segurança",
+      "Arquiteto de segurança",
+      "Coordenador de SOC",
+      "Encarregado de dados (DPO)",
+      "Gerente de segurança da informação",
+      "CISO"
+    ],
+    "sectors": [
+      "bancos, fintechs e meios de pagamento",
+      "telecomunicações e provedores",
+      "saúde",
+      "varejo e e-commerce",
+      "indústria e infraestrutura crítica (energia, água)",
+      "administração pública e Forças Armadas",
+      "consultorias e empresas de segurança (MSSP)",
+      "empresas de software e nuvem",
+      "educação",
+      "seguros"
+    ],
+    "regulation": [
+      {
+        "name": "LGPD (Lei 13.709/2018), arts. 6º VII, 46 a 49 e 48",
+        "issuer": "Brasil",
+        "about": "segurança e prevenção; medidas técnicas e administrativas; comunicação de incidente à ANPD e aos titulares"
+      },
+      {
+        "name": "Resolução CD/ANPD 15/2024",
+        "issuer": "ANPD",
+        "about": "Regulamento de Comunicação de Incidente de Segurança: prazo de 3 dias úteis; registro do incidente por 5 anos"
+      },
+      {
+        "name": "Decreto 9.637/2018",
+        "issuer": "Brasil",
+        "about": "Política Nacional de Segurança da Informação (PNSI) e governança no âmbito federal"
+      },
+      {
+        "name": "Decreto 11.856/2023 e Decreto 12.573/2025",
+        "issuer": "Brasil",
+        "about": "Política Nacional de Cibersegurança (PNCiber, CNCiber) e Estratégia Nacional de Cibersegurança (E-Ciber 2025), que revogou o Decreto 10.222/2020"
+      },
+      {
+        "name": "Lei 12.737/2012 e Lei 14.155/2021 (CP art. 154-A)",
+        "issuer": "Brasil",
+        "about": "crime de invasão de dispositivo informático; testes só com autorização expressa"
+      },
+      {
+        "name": "ABNT NBR ISO/IEC 27001:2022, 27002:2022 e 27701",
+        "issuer": "ABNT",
+        "about": "sistema de gestão de segurança da informação, controles e extensão de privacidade"
+      },
+      {
+        "name": "NIST Cybersecurity Framework 2.0",
+        "issuer": "NIST (EUA)",
+        "about": "referência de funções: governar, identificar, proteger, detectar, responder, recuperar"
+      },
+      {
+        "name": "Resolução CMN 4.893/2021 e Resolução Anatel 740/2020",
+        "issuer": "Banco Central / Anatel",
+        "about": "políticas setoriais de segurança cibernética (instituições financeiras; telecomunicações)"
+      }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      {
+        "term": "confidencialidade, integridade e disponibilidade",
+        "meaning": "os três pilares (tríade CIA) que a segurança protege"
+      },
+      {
+        "term": "SGSI",
+        "meaning": "sistema de gestão de segurança da informação (ISO/IEC 27001)"
+      },
+      {
+        "term": "análise de riscos",
+        "meaning": "identificar ativos, ameaças, vulnerabilidades, probabilidade e impacto, e decidir o tratamento"
+      },
+      {
+        "term": "controle",
+        "meaning": "medida técnica ou administrativa que reduz um risco (ISO 27002, CIS Controls)"
+      },
+      {
+        "term": "declaração de aplicabilidade (SoA)",
+        "meaning": "lista de controles adotados e justificativa dos excluídos"
+      },
+      {
+        "term": "vulnerabilidade / CVE / CVSS",
+        "meaning": "falha conhecida, seu identificador público e sua pontuação de severidade"
+      },
+      {
+        "term": "ameaça e ator",
+        "meaning": "quem ou o que pode explorar uma vulnerabilidade"
+      },
+      {
+        "term": "teste de intrusão (pentest)",
+        "meaning": "ataque simulado autorizado por escrito, com escopo e regras de engajamento"
+      },
+      {
+        "term": "SOC",
+        "meaning": "centro de operações de segurança que monitora e responde a alertas"
+      },
+      {
+        "term": "SIEM",
+        "meaning": "plataforma que correlaciona logs e gera alertas"
+      },
+      {
+        "term": "EDR/XDR",
+        "meaning": "detecção e resposta em endpoints e além"
+      },
+      {
+        "term": "IAM e MFA",
+        "meaning": "gestão de identidades e acessos; autenticação multifator"
+      },
+      {
+        "term": "hardening",
+        "meaning": "configuração segura de sistemas segundo um baseline (CIS Benchmarks)"
+      },
+      {
+        "term": "phishing",
+        "meaning": "engenharia social por mensagem para roubar credenciais ou instalar malware"
+      },
+      {
+        "term": "ransomware",
+        "meaning": "malware que cifra dados e exige resgate"
+      },
+      {
+        "term": "incidente de segurança",
+        "meaning": "evento que compromete confidencialidade, integridade ou disponibilidade"
+      },
+      {
+        "term": "resposta a incidentes",
+        "meaning": "preparar, detectar, conter, erradicar, recuperar e aprender (NIST SP 800-61)"
+      },
+      {
+        "term": "playbook",
+        "meaning": "procedimento passo a passo para um tipo de incidente"
+      },
+      {
+        "term": "indicador de comprometimento (IoC)",
+        "meaning": "evidência técnica de ataque (hash, IP, domínio)"
+      },
+      {
+        "term": "MITRE ATT&CK",
+        "meaning": "catálogo de táticas e técnicas de adversários"
+      },
+      {
+        "term": "OWASP Top 10",
+        "meaning": "dez categorias de risco mais comuns em aplicações web"
+      },
+      {
+        "term": "zero trust",
+        "meaning": "nunca confiar por padrão; verificar cada acesso"
+      },
+      {
+        "term": "criptografia (TLS, hash, chaves)",
+        "meaning": "proteção de dados em trânsito e em repouso"
+      },
+      {
+        "term": "gestão de segredos",
+        "meaning": "guarda e rotação de senhas, chaves e tokens fora do código"
+      },
+      {
+        "term": "backup imutável",
+        "meaning": "cópia que não pode ser alterada ou apagada no período de retenção"
+      },
+      {
+        "term": "BIA e PCN",
+        "meaning": "análise de impacto no negócio e plano de continuidade"
+      },
+      {
+        "term": "controlador, operador, titular e encarregado (DPO)",
+        "meaning": "papéis da LGPD no tratamento de dados pessoais"
+      },
+      {
+        "term": "RIPD",
+        "meaning": "relatório de impacto à proteção de dados pessoais"
+      },
+      {
+        "term": "ANPD",
+        "meaning": "Autoridade Nacional de Proteção de Dados"
+      },
+      {
+        "term": "divulgação responsável",
+        "meaning": "reportar vulnerabilidade ao responsável antes de torná-la pública"
+      },
+      {
+        "term": "red, blue e purple team",
+        "meaning": "ataque simulado, defesa e exercício conjunto"
+      },
+      {
+        "term": "conscientização",
+        "meaning": "treinamento e campanhas para pessoas reconhecerem riscos"
+      }
+    ],
+    "tools": [
+      "SIEM (Splunk, Elastic, Wazuh, Microsoft Sentinel)",
+      "EDR (CrowdStrike, Microsoft Defender)",
+      "Nmap",
+      "Burp Suite ou OWASP ZAP",
+      "Kali Linux (laboratório)",
+      "Metasploit (laboratório autorizado)",
+      "Wireshark",
+      "OpenVAS ou Nessus",
+      "firewalls NGFW (Fortinet, Palo Alto, pfSense)",
+      "IAM (Entra ID, Okta, Keycloak)",
+      "cofres de segredos (Vault)",
+      "planilhas e ferramentas de GRC",
+      "Python, Bash e PowerShell",
+      "MITRE ATT&CK Navigator",
+      "Git",
+      "TryHackMe e Hack The Box (laboratório)"
+    ],
+    "deliverables": [
+      "política de segurança da informação",
+      "análise e matriz de riscos",
+      "declaração de aplicabilidade (SoA)",
+      "plano de resposta a incidentes e playbooks",
+      "relatório pós-incidente (post-mortem) anonimizado",
+      "relatório de pentest (confidencial; no portfólio só de laboratório)",
+      "relatório de impacto à proteção de dados (RIPD)",
+      "plano de conscientização",
+      "checklist de hardening ou baseline",
+      "plano de continuidade (BIA e PCN)",
+      "avaliação de maturidade (NIST CSF, ISO 27001)",
+      "modelo de comunicação de incidente à ANPD",
+      "proposta técnica em resposta a briefing"
+    ]
+  },
+  "competencies": {
+    "core": [
+      {
+        "label": "Gestão de riscos de segurança da informação",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Normas e frameworks (ISO/IEC 27001, NIST CSF, CIS Controls)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Resposta a incidentes e análise de logs",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Segurança de redes (firewall, VPN, segmentação)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Gestão de identidades, acessos e MFA",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Gestão de vulnerabilidades e hardening",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Privacidade e LGPD (papéis, bases legais, incidentes, RIPD)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Redação de políticas, procedimentos e relatórios",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Criptografia aplicada e gestão de segredos",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Testes de intrusão autorizados e divulgação responsável",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Segurança de aplicações (OWASP, SDLC seguro)",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Segurança em nuvem",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Continuidade de negócios (BIA, PCN, backup)",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Conscientização e comunicação com áreas de negócio",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Scripts e automação (Python, PowerShell)",
+        "esco": null,
+        "kind": "apoio"
+      }
+    ],
+    "transversal": [
+      "ética e sigilo profissional",
+      "comunicação clara sob pressão",
+      "pensamento crítico e análise de causa",
+      "inglês técnico",
+      "atualização contínua sobre ameaças"
+    ],
+    "tracks": [
+      {
+        "id": "grc",
+        "label": "Governança, riscos e conformidade",
+        "steps": [
+          "matriz de riscos de um cenário fictício (X1)",
+          "modelo de política de segurança para pequena empresa (X2)",
+          "relatório de avaliação de maturidade (L4)",
+          "resposta a briefing de adequação (L8)",
+          "infográfico de riscos tratados (D7)"
+        ]
+      },
+      {
+        "id": "soc-resposta",
+        "label": "Operação e resposta a incidentes",
+        "steps": [
+          "playbook de resposta a phishing ou ransomware (L7)",
+          "fluxo de resposta com raias por papel (D4)",
+          "post-mortem anonimizado (L4)",
+          "infográfico de MTTD e MTTR de laboratório (D7)"
+        ]
+      },
+      {
+        "id": "ofensiva-appsec",
+        "label": "Testes autorizados e segurança de aplicações",
+        "steps": [
+          "relatório de laboratório (TryHackMe, HTB) com método e correções (L4)",
+          "POP de divulgação responsável (L7)",
+          "estudo de caso STAR de uma correção (L3)",
+          "revisão crítica de uma peça da rede (L10)"
+        ]
+      },
+      {
+        "id": "privacidade",
+        "label": "Privacidade e LGPD",
+        "steps": [
+          "modelo de comunicação de incidente à ANPD (L7)",
+          "mapa de fluxo de dados pessoais de um processo fictício (D4)",
+          "relatório de impacto de um cenário fictício (L4)",
+          "post sobre LGPD aplicada (L5)"
+        ]
+      }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"analista de SOC\", \"analista de segurança da informação\", \"analista de suporte\", \"analista de redes\", \"auditor de TI\"",
+      "cboFamilies": [
+        "2124",
+        "2123",
+        "2522"
+      ],
+      "why": "Pergunto seu último cargo ou área para partir do que você já protegeu. Se for o primeiro emprego, pule e seguimos pelos laboratórios."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, programa de formação ou primeiro cargo (SOC N1)",
+        "junior": "trata alertas e tarefas definidas com supervisão",
+        "pleno": "conduz análises, incidentes e avaliações com autonomia",
+        "senior": "define arquitetura e políticas; orienta a equipe",
+        "gestao": "responde por programa de segurança, orçamento e equipe"
+      },
+      "why": "Pergunto o nível para calibrar as tarefas: um playbook de N1 e uma avaliação de maturidade sênior têm critérios diferentes."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em segurança",
+      "options": [
+        "analisar alertas e logs",
+        "responder a incidentes",
+        "avaliar riscos e controles",
+        "escrever políticas e procedimentos",
+        "configurar firewall e segmentação",
+        "gerir identidades e acessos",
+        "gerir vulnerabilidades e hardening",
+        "testar aplicações e sistemas com autorização",
+        "aplicar a LGPD e tratar incidentes de dados",
+        "treinar e conscientizar pessoas",
+        "automatizar com scripts",
+        "proteger ambientes em nuvem"
+      ],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com políticas, playbooks e post-mortems."
+    },
+    "c4": {
+      "certifications": [
+        "tecnólogo em Segurança da Informação ou curso técnico",
+        "CompTIA Security+",
+        "ISC2 Certified in Cybersecurity (CC)",
+        "CISSP",
+        "CISM ou CRISC (ISACA)",
+        "CEH ou OSCP",
+        "ISO/IEC 27001 Lead Implementer ou Lead Auditor",
+        "CIPP/E ou CDPO (privacidade)",
+        "Cisco CCNA ou CyberOps",
+        "certificações de nuvem (AWS Security, AZ-500)"
+      ],
+      "languages": [
+        "inglês técnico (documentação e relatórios)",
+        "inglês para conversação",
+        "espanhol"
+      ],
+      "why": "Formação, certificações e idiomas ajudam a ver lacunas em relação ao cargo que você quer; nenhuma é obrigatória para exercer a profissão."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver em segurança?",
+      "options": [
+        "gestão de riscos e ISO/IEC 27001",
+        "NIST CSF e maturidade",
+        "resposta a incidentes e forense",
+        "SIEM e detecção",
+        "testes de intrusão autorizados",
+        "segurança de aplicações (OWASP)",
+        "LGPD e privacidade",
+        "segurança em nuvem",
+        "identidade e acessos (zero trust)",
+        "continuidade de negócios",
+        "conscientização e comunicação",
+        "automação e scripts"
+      ],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (matriz de riscos, playbook, post-mortem) em vez do catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que frente de segurança você quer atuar primeiro?",
+        "type": "escolha",
+        "options": [
+          "governança, riscos e conformidade",
+          "operação e resposta (SOC)",
+          "testes autorizados e AppSec",
+          "privacidade e LGPD",
+          "ainda não sei"
+        ],
+        "why": "Pergunto para ordenar as tarefas pela frente que você quer; as outras continuam disponíveis. Você pode pular.",
+        "where": "P"
+      },
+      {
+        "id": "x2",
+        "prompt": "Você usa laboratórios (TryHackMe, Hack The Box, máquinas virtuais) para praticar?",
+        "type": "sim-nao",
+        "options": [],
+        "why": "Pergunto porque evidências técnicas do portfólio devem vir de laboratório ou cenário fictício, nunca de sistemas de clientes. Você pode pular.",
+        "where": "X"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": [
+      "L4",
+      "L7",
+      "D4",
+      "L8",
+      "D7",
+      "L6",
+      "L1",
+      "L3",
+      "L10",
+      "L5",
+      "D5",
+      "L9"
+    ],
+    "excluded": [
+      {
+        "code": "D1",
+        "reason": "planta de ambiente não é entrega da profissão"
+      },
+      {
+        "code": "D3",
+        "reason": "modelo 3D não é entrega da profissão"
+      },
+      {
+        "code": "D6",
+        "reason": "detalhe construtivo pertence a engenharia e arquitetura"
+      },
+      {
+        "code": "D8",
+        "reason": "vista explodida pertence a montagem e manufatura"
+      },
+      {
+        "code": "D9",
+        "reason": "wireframe de tela pertence a software e design"
+      }
+    ],
+    "parameters": {
+      "L4": {
+        "title": "Post-mortem anonimizado ou relatório de avaliação de riscos",
+        "brief": "Escreva o relatório pós-incidente de um caso anonimizado ou de laboratório (resumo, linha do tempo, causa raiz, impacto, ações, lições) ou a avaliação de riscos de um cenário fictício, citando controles ISO/IEC 27001 ou NIST CSF, em até 4 páginas.",
+        "parameters": {
+          "formats": [
+            "post-mortem",
+            "avaliação de riscos"
+          ],
+          "maxPages": 4,
+          "postMortemSections": [
+            "resumo",
+            "linha do tempo",
+            "causa raiz",
+            "impacto",
+            "ações",
+            "lições"
+          ],
+          "riskSections": [
+            "escopo",
+            "ativos",
+            "ameaças e vulnerabilidades",
+            "análise",
+            "tratamento",
+            "controles"
+          ],
+          "anonymized": true,
+          "frameworkReference": [
+            "ISO/IEC 27001",
+            "NIST CSF"
+          ]
+        },
+        "criteria": [
+          "seções obrigatórias presentes e nomeadas",
+          "controles citados por identificador (ex.: A.5.24; PR.AA)",
+          "causa raiz explícita ou riscos com probabilidade e impacto",
+          "até 4 páginas",
+          "sem nome de organização real, IP público, CVE não corrigida de terceiro ou dado pessoal"
+        ],
+        "evidence": "relatório técnico (PDF ou Letter publicada)",
+        "time": "2 h",
+        "level": 3
+      },
+      "L7": {
+        "title": "Playbook de resposta a um tipo de incidente",
+        "brief": "Escreva o playbook de phishing, ransomware, vazamento de credenciais ou acesso indevido: gatilhos, papéis, passos numerados de contenção, erradicação e recuperação, comunicação (inclusive prazo da ANPD) e critério de encerramento.",
+        "parameters": {
+          "incidentTypes": [
+            "phishing",
+            "ransomware",
+            "vazamento de credenciais",
+            "acesso indevido"
+          ],
+          "numberedSteps": true,
+          "perStep": [
+            "responsável",
+            "ação",
+            "critério de conclusão"
+          ],
+          "sections": [
+            "gatilhos",
+            "papéis",
+            "contenção",
+            "erradicação",
+            "recuperação",
+            "comunicação",
+            "lições"
+          ],
+          "anpdDeadline": "3 dias úteis"
+        },
+        "criteria": [
+          "passos numerados com responsável e critério de conclusão",
+          "seção de comunicação cita a ANPD e o prazo de 3 dias úteis quando há dados pessoais",
+          "critério de encerramento explícito",
+          "sem credenciais, IPs reais ou nomes de clientes"
+        ],
+        "evidence": "POP (modelo publicado)",
+        "time": "60 min",
+        "level": 2
+      },
+      "D4": {
+        "title": "Fluxo de resposta a incidente ou arquitetura de segurança",
+        "brief": "Desenhe o fluxo de resposta a incidente com raias por papel (detecção, triagem, contenção, comunicação, encerramento) ou a arquitetura de segurança de um ambiente fictício (zonas, controles, fluxos), com legenda.",
+        "parameters": {
+          "formats": [
+            "fluxo com raias",
+            "arquitetura de zonas"
+          ],
+          "lanesByRole": true,
+          "decisionPoints": [
+            "escalonamento",
+            "comunicação à ANPD"
+          ],
+          "legend": true,
+          "fictitiousOnly": true
+        },
+        "criteria": [
+          "início e fim explícitos",
+          "raias por papel ou zonas nomeadas",
+          "ao menos um ponto de decisão de escalonamento",
+          "legenda da notação",
+          "cenário fictício; sem endereços ou nomes reais"
+        ],
+        "evidence": "diagrama vetorial (SVG ou PDF)",
+        "time": "45 min",
+        "level": 2
+      },
+      "L8": {
+        "title": "Resposta a briefing de adequação ou avaliação de maturidade",
+        "brief": "Responda a um briefing de empresa fictícia que pede adequação à LGPD ou à ISO/IEC 27001: escopo, premissas, abordagem por fases, entregáveis, riscos, o que fica fora e perguntas em aberto.",
+        "parameters": {
+          "sections": [
+            "escopo",
+            "premissas",
+            "abordagem por fases",
+            "entregáveis",
+            "riscos",
+            "fora de escopo",
+            "perguntas em aberto"
+          ],
+          "maxWords": 900
+        },
+        "criteria": [
+          "seções obrigatórias presentes",
+          "fases com entregáveis nomeados",
+          "lista explícita do que fica fora",
+          "ao menos duas perguntas em aberto",
+          "sem promessa de certificação ou de prazo garantido"
+        ],
+        "evidence": "proposta técnica",
+        "time": "45 min",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de métricas de segurança",
+        "brief": "Monte um infográfico com métricas de laboratório ou de fontes públicas (ex.: estatísticas do CERT.br): tempo de detecção e resposta, taxa de cliques em phishing simulado, vulnerabilidades tratadas; fonte, período, eixos rotulados e uma mensagem.",
+        "parameters": {
+          "metrics": [
+            "MTTD",
+            "MTTR",
+            "phishing simulado",
+            "vulnerabilidades tratadas"
+          ],
+          "sourceCited": true,
+          "labeledAxes": true,
+          "oneMessage": true
+        },
+        "criteria": [
+          "fonte e período citados",
+          "eixos e unidades rotulados",
+          "uma mensagem principal",
+          "dados de laboratório, públicos ou anonimizados"
+        ],
+        "evidence": "imagem + PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva um resumo de até 600 caracteres com a frente de segurança que você quer (GRC, SOC, AppSec, privacidade), três competências e um link para uma política, playbook ou laboratório.",
+        "parameters": {
+          "maxChars": 600,
+          "requiredParts": [
+            "frente-alvo",
+            "três competências",
+            "uma prova com link"
+          ]
+        },
+        "criteria": [
+          "até 600 caracteres",
+          "nomeia a frente-alvo",
+          "cita três competências",
+          "inclui uma prova com link"
+        ],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para a vaga que você quer mirar, com três conquistas com número (alertas tratados, tempo de resposta, controles implantados) e os frameworks pedidos.",
+        "parameters": {
+          "maxPages": 1,
+          "achievementsWithNumbers": 3,
+          "keywordsFrom": "cargo-alvo"
+        },
+        "criteria": [
+          "uma página",
+          "três conquistas com número",
+          "palavras-chave do cargo-alvo presentes",
+          "sem idade, estado civil ou foto obrigatória",
+          "sem nomes de clientes nem detalhes de incidentes reais"
+        ],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Matriz de riscos de um cenário fictício",
+        "competency": "Gestão de riscos de segurança da informação",
+        "criteria": [
+          "ativos, ameaças e vulnerabilidades listados",
+          "probabilidade e impacto com escala declarada",
+          "tratamento por risco (mitigar, aceitar, transferir, evitar)",
+          "controle ISO/IEC 27001 ou NIST CSF associado por identificador",
+          "cenário fictício, sem dados reais"
+        ],
+        "evidence": "documento publicado (Letter ou PDF)",
+        "time": "90 min",
+        "trigger": "Quer mostrar como você avaliaria os riscos de uma empresa pequena?",
+        "level": 2
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Modelo de política de segurança para pequena empresa",
+        "competency": "Redação de políticas e governança",
+        "criteria": [
+          "seções: objetivo, escopo, papéis, regras de acesso e senhas/MFA, backup, uso aceitável, incidentes, revisão",
+          "linguagem compreensível para quem não é de TI",
+          "referência à LGPD e a um framework",
+          "prazo e responsável pela revisão da política",
+          "sem dados de organização real"
+        ],
+        "evidence": "modelo publicado (Letter ou PDF)",
+        "time": "90 min",
+        "trigger": "Quer treinar a redação de uma política que pessoas comuns entendam?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      {
+        "id": "tamanho",
+        "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L4",
+          "L5",
+          "L6",
+          "L8"
+        ],
+        "auto": true
+      },
+      {
+        "id": "secoes-obrigatorias",
+        "check": "as seções pedidas (post-mortem, playbook, briefing, matriz, política) existem e estão nomeadas",
+        "appliesTo": [
+          "L3",
+          "L4",
+          "L7",
+          "L8",
+          "L9",
+          "X1",
+          "X2"
+        ],
+        "auto": true
+      },
+      {
+        "id": "anonimizado",
+        "check": "não há nome de organização real, IP público, domínio, CVE não corrigida de terceiro ou dado pessoal",
+        "appliesTo": [
+          "L1",
+          "L3",
+          "L4",
+          "L7",
+          "L8",
+          "D4",
+          "D5",
+          "D7",
+          "X1",
+          "X2"
+        ],
+        "auto": true
+      },
+      {
+        "id": "controles-referenciados",
+        "check": "controles ou funções são citados por identificador (ISO/IEC 27001 Anexo A, NIST CSF, CIS)",
+        "appliesTo": [
+          "L4",
+          "X1",
+          "X2"
+        ],
+        "auto": true
+      },
+      {
+        "id": "prazo-anpd",
+        "check": "a comunicação de incidente cita a ANPD e o prazo de 3 dias úteis quando há dados pessoais",
+        "appliesTo": [
+          "L7",
+          "X2"
+        ],
+        "auto": true
+      },
+      {
+        "id": "fluxo-fechado",
+        "check": "o fluxo tem início, fim, raias ou zonas nomeadas e ponto de decisão de escalonamento",
+        "appliesTo": [
+          "D4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "fonte-das-metricas",
+        "check": "o infográfico cita fonte, período e unidades",
+        "appliesTo": [
+          "D7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "sem-segredos",
+        "check": "o conteúdo não contém credenciais, chaves, hashes de senhas, evidências de incidentes reais ou relatórios de pentest de clientes",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L3",
+          "L4",
+          "L5",
+          "L6",
+          "L7",
+          "L8",
+          "L9",
+          "L10",
+          "D2",
+          "D4",
+          "D5",
+          "D7",
+          "D10",
+          "X1",
+          "X2"
+        ],
+        "auto": true
+      },
+      {
+        "id": "autoria-e-sigilo",
+        "check": "a pessoa declarou autoria e que o cenário é de laboratório, fictício ou anonimizado",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L3",
+          "L4",
+          "L5",
+          "L6",
+          "L7",
+          "L8",
+          "L9",
+          "L10",
+          "D2",
+          "D4",
+          "D5",
+          "D7",
+          "D10",
+          "X1",
+          "X2"
+        ],
+        "auto": true
+      },
+      {
+        "id": "creditos-e-fontes",
+        "check": "fontes, frameworks e materiais reutilizados estão creditados",
+        "appliesTo": [
+          "L5",
+          "L10",
+          "D2",
+          "D7",
+          "D10"
+        ],
+        "auto": true
+      },
+      {
+        "id": "licoes-sem-culpa",
+        "check": "o post-mortem descreve causas sistêmicas e ações, sem atribuir culpa a pessoas",
+        "appliesTo": [
+          "L4"
+        ],
+        "auto": false
+      }
+    ],
+    "subjective": [
+      {
+        "id": "clareza",
+        "label": "Clareza para públicos diferentes",
+        "levels": {
+          "aproxima": "só quem é da área entende",
+          "atende": "alguém da área entende na primeira leitura; gestores entendem o resumo",
+          "supera": "pessoas fora de TI entendem o que fazer e por quê"
+        }
+      },
+      {
+        "id": "proporcionalidade",
+        "label": "Proporcionalidade do tratamento de riscos",
+        "levels": {
+          "aproxima": "controles genéricos sem ligação com os riscos",
+          "atende": "cada controle responde a um risco avaliado",
+          "supera": "explicita custo, risco residual e quando rever a decisão"
+        }
+      },
+      {
+        "id": "rigor-do-processo",
+        "label": "Rigor do processo",
+        "levels": {
+          "aproxima": "passos vagos ou sem responsável",
+          "atende": "passos executáveis, com responsável e critério de encerramento",
+          "supera": "inclui métricas, gatilhos de escalonamento e revisão pós-incidente"
+        }
+      },
+      {
+        "id": "etica-e-autorizacao",
+        "label": "Ética e autorização",
+        "levels": {
+          "aproxima": "não deixa claro que o teste ou cenário era autorizado ou fictício",
+          "atende": "declara autorização, escopo e anonimização",
+          "supera": "descreve divulgação responsável e cuidados com dados de terceiros"
+        }
+      },
+      {
+        "id": "resultado",
+        "label": "Resultado demonstrado",
+        "levels": {
+          "aproxima": "descreve atividades, sem resultado",
+          "atende": "mostra um resultado mensurável (tempo de resposta, riscos tratados)",
+          "supera": "mostra resultado, contexto, limitações e o que faria diferente"
+        }
+      }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa da área de Segurança da Informação (GRC, SOC, resposta a incidentes, testes autorizados, AppSec, privacidade). Vocabulário: tríade CIA, SGSI, análise de riscos, controle, SoA, CVE/CVSS, SIEM, EDR, IAM/MFA, hardening, playbook, IoC, MITRE ATT&CK, OWASP Top 10, zero trust, RIPD, controlador/operador/encarregado. Cite quando couber: LGPD (arts. 6º VII, 46 a 49), Resolução CD/ANPD 15/2024 (comunicação de incidente em 3 dias úteis), Decreto 9.637/2018 (PNSI), Decretos 11.856/2023 e 12.573/2025 (PNCiber e E-Ciber), Lei 12.737/2012 (invasão de dispositivo), ABNT NBR ISO/IEC 27001/27002/27701, NIST CSF 2.0, CIS Controls, CMN 4.893/2021, Anatel 740/2020. A profissão não tem conselho obrigatório: nunca afirme que a pessoa precisa de registro. O que nunca fazer: gerar, completar ou explicar malware, exploits, modelos de phishing ou técnicas para atacar sistemas de terceiros; orientar testes sem autorização escrita; pedir, aceitar ou analisar evidências de incidentes reais, relatórios de pentest de clientes, credenciais, chaves, logs ou dados pessoais reais; produzir texto que pareça comunicação real de incidente de uma organização existente à ANPD ou a titulares; inferir frente ou senioridade, pergunte. Todo cenário do portfólio é fictício, de laboratório ou anonimizado; se um trecho contiver segredo, dado pessoal ou nome real, avise e proponha anonimizar antes de seguir. Pré-cheque só critérios objetivos (seções, controles por identificador, prazo da ANPD, fluxo fechado, fonte das métricas, anonimização, ausência de segredos); a validação que gera selo é humana. Toda sugestão diz competência, evidência, tempo e por quê, e aceita \"não me serve\". Mercado com fonte, data e região ou \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos, nunca por pontuação ou ranking. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      {
+        "title": "Lei 13.709/2018 — LGPD (Planalto)",
+        "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm",
+        "kind": "norma"
+      },
+      {
+        "title": "Resolução CD/ANPD 15/2024 — Regulamento de Comunicação de Incidente de Segurança (Legisweb)",
+        "url": "https://www.legisweb.com.br/legislacao/?id=458235",
+        "kind": "norma"
+      },
+      {
+        "title": "ANPD — documentos e publicações (guias orientativos)",
+        "url": "https://www.gov.br/anpd/pt-br/documentos-e-publicacoes",
+        "kind": "orgao-publico"
+      },
+      {
+        "title": "Decreto 12.573/2025 — Estratégia Nacional de Cibersegurança (Planalto)",
+        "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/decreto/d12573.htm",
+        "kind": "norma"
+      },
+      {
+        "title": "GSI — Cartilha E-Ciber 2025",
+        "url": "https://www.gov.br/gsi/pt-br/centrais-de-conteudo/downloads/cartilha-e-ciber-2025-portugues",
+        "kind": "orgao-publico"
+      },
+      {
+        "title": "NIST Cybersecurity Framework 2.0",
+        "url": "https://www.nist.gov/cyberframework",
+        "kind": "norma"
+      },
+      {
+        "title": "ABNT — catálogo de normas (NBR ISO/IEC 27001, 27002, 27701)",
+        "url": "https://www.abntcatalogo.com.br/",
+        "kind": "norma"
+      },
+      {
+        "title": "CERT.br — estatísticas de incidentes notificados",
+        "url": "https://stats.cert.br/",
+        "kind": "estatistica"
+      },
+      {
+        "title": "OWASP Top 10",
+        "url": "https://owasp.org/www-project-top-ten/",
+        "kind": "referencia"
+      },
+      {
+        "title": "MITRE ATT&CK",
+        "url": "https://attack.mitre.org/",
+        "kind": "referencia"
+      },
+      {
+        "title": "ENISA — crosswalk ESCO e ECSF (perfis de cibersegurança)",
+        "url": "https://www.enisa.europa.eu/sites/default/files/2024-12/esco-ecsf-crosswalk.pdf",
+        "kind": "referencia"
+      },
+      {
+        "title": "Novo CAGED — Ministério do Trabalho e Emprego",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "kind": "estatistica"
+      }
+    ],
+    "services": [
+      {
+        "service": "PERGUNTAS_GUIA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Variantes de c2 e c5 com competências de segurança; x1 (frente) ordena as trilhas; x2 (laboratório) define a origem das evidências técnicas."
+      },
+      {
+        "service": "SUGESTAO_TAREFAS",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "L4 (post-mortem/riscos), L7 (playbook), D4 (fluxo) primeiro; X1 e X2 para GRC; cada card diz competência, evidência e tempo e lembra que o cenário deve ser fictício."
+      },
+      {
+        "service": "PLANO_SEMANAL",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Plano a partir de horas (d1) e aparelho (d4); respeita escala de plantão informada; pausa de 7 dias após duas dispensas."
+      },
+      {
+        "service": "PRE_CHECAGEM_RUBRICA",
+        "capability": "ARTEFATO",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "Checa seções, controles por identificador, prazo da ANPD, fluxo fechado, fonte das métricas, anonimização e ausência de segredos; o selo depende de revisão humana."
+      },
+      {
+        "service": "RASCUNHO_LETTERS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Esqueleto de post-mortem, playbook, matriz de riscos ou política com prévia; nunca aplica sem revisão; recusa conteúdo ofensivo ou dados reais."
+      },
+      {
+        "service": "APOIO_DRAWINGS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Sugere raias, pontos de decisão e legenda no D4; eixos e fonte no D7."
+      },
+      {
+        "service": "ANALISE_PERFIL",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": "ANALISE_PERFIL_IA",
+        "note": "RF50: competências declaradas e evidenciadas por políticas, playbooks e relatórios; lacunas frente ao cargo-alvo; cada afirmação cita o campo."
+      },
+      {
+        "service": "CAMINHOS_DE_CARREIRA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Vizinhos por CBO 2124/2123 e ISCO 2529: redes, software/AppSec, dados, direito (privacidade), gestão de riscos, segurança pública; com lacunas e passos."
+      },
+      {
+        "service": "PESSOAS_SEMELHANTES",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Só pessoas descobríveis por opt-in; afinidade por competências e frente declaradas, nunca por empresa."
+      },
+      {
+        "service": "EXPLICACAO_POR_QUE",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)."
+      },
+      {
+        "service": "RESUMO_PROFISSIONAL",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": "RESUMO_PROFISSIONAL_IA",
+        "note": "Bio (L6) com frente, frameworks e link de prova; só com o consentimento específico."
+      },
+      {
+        "service": "IMPORTAR_CURRICULO",
+        "capability": "PREENCHER_TAREFA",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Extrai experiências, frameworks e certificações em ficha editável; alerta se o currículo trouxer nomes de clientes ou detalhes de incidentes; a pessoa confirma item a item."
+      }
+    ],
+    "dataScope": {
+      "default": [
+        "perfil",
+        "currículo"
+      ],
+      "optional": [
+        "minhas Letters",
+        "meus Drawings"
+      ],
+      "never": [
+        "mensagens",
+        "itens SIGILOSO",
+        "relatórios de pentest e vulnerabilidades de clientes",
+        "credenciais, chaves e evidências de incidentes",
+        "dados pessoais de vítimas ou usuários",
+        "detalhes de infraestrutura de terceiros",
+        "dados sensíveis (LGPD art. 5º II)"
+      ]
+    },
+    "provider": {
+      "default": "local",
+      "externalNeedsConsent": true,
+      "externalAllowedFor": [
+        "ANALISE_PERFIL",
+        "CAMINHOS_DE_CARREIRA",
+        "RESUMO_PROFISSIONAL"
+      ]
+    },
+    "guardrails": [
+      "perguntar em vez de inferir frente, senioridade ou situação",
+      "nunca gerar, completar ou explicar malware, exploits, modelos de phishing ou técnicas contra sistemas de terceiros",
+      "nunca orientar testes sem autorização escrita; lembrar o CP art. 154-A",
+      "nunca pedir, aceitar ou analisar evidências de incidentes reais, relatórios de pentest de clientes, credenciais, logs ou dados pessoais reais; avisar e anonimizar",
+      "nunca produzir texto que pareça comunicação real de incidente de organização existente à ANPD ou a titulares",
+      "não afirmar que a profissão exige registro em conselho",
+      "nunca prometer entrevista, emprego, certificação ou salário; afirmações de mercado com fonte, data e região ou \"estimativa\"",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": {
+      "letters": "alta",
+      "drawings": "baixa"
+    },
+    "drawingsModes": [
+      "diagrama",
+      "infografico"
+    ],
+    "lettersTemplates": [
+      "relatorio-tecnico",
+      "pop",
+      "proposta",
+      "estudo-de-caso",
+      "curriculo",
+      "bio",
+      "carta",
+      "post",
+      "revisao",
+      "plano-30-60-90"
+    ],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas de texto curtas (L5, L6) e revisão (L10); D4 e D7 exigem computador; playbooks (L7) e matrizes (X1) ficam melhores no computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil com link para uma política ou playbook (15 min).",
+        "Um incidente que você acompanhou pode virar post-mortem anonimizado, sem culpa e sem nomes. Quer começar?",
+        "Sem pressão. Quando quiser retomar, o playbook de phishing está salvo onde você parou.",
+        "Que tal uma matriz de riscos de uma empresa fictícia? 90 min e vale como evidência de GRC."
+      ]
+    },
+    "insights": {
+      "peersBy": [
+        "competencias",
+        "setor"
+      ]
+    },
+    "privacy": {
+      "sensitiveData": [
+        "relatórios de pentest e vulnerabilidades de clientes",
+        "credenciais, chaves e evidências de incidentes",
+        "dados pessoais de vítimas ou usuários",
+        "detalhes de infraestrutura de terceiros",
+        "escala de plantão e horários de trabalho"
+      ],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      {
+        "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2124 e 2123",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "geography": "Brasil, UF e município",
+        "cadence": "mensal",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "RAIS (MTE) — vínculos formais por ocupação",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais",
+        "geography": "Brasil, UF e município",
+        "cadence": "anual",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "Brasscom — Perspectivas do Mercado de Trabalho do Macrossetor TIC (2026)",
+        "url": "https://brasscom.org.br/wp-content/uploads/2026/07/Relatorio-Pespectivas-do-Mercado-de-Trabalho-Apresentacao-v9.pdf",
+        "geography": "Brasil",
+        "cadence": "anual",
+        "kind": "associacao"
+      },
+      {
+        "title": "ISC2 Cybersecurity Workforce Study",
+        "url": "https://www.isc2.org/research",
+        "geography": "mundial, com recorte América Latina/Brasil",
+        "cadence": "anual",
+        "kind": "pesquisa"
+      },
+      {
+        "title": "Fortinet — Global Cybersecurity Skills Gap Report",
+        "url": "https://www.fortinet.com/resources/reports/cybersecurity-skills-gap",
+        "geography": "mundial, com recorte América Latina",
+        "cadence": "anual",
+        "kind": "pesquisa"
+      },
+      {
+        "title": "CERT.br — estatísticas de incidentes notificados",
+        "url": "https://stats.cert.br/",
+        "geography": "Brasil",
+        "cadence": "continua",
+        "kind": "pesquisa"
+      },
+      {
+        "title": "Hackers do Bem — programa de formação (vagas e editais)",
+        "url": "https://hackersdobem.org.br/",
+        "geography": "Brasil",
+        "cadence": "eventual",
+        "kind": "edital"
+      }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Estudos globais de déficit de profissionais (ISC2, Fortinet) são citados como pesquisas de mercado com ano e recorte regional. Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    {
+      "to": "redes-de-computadores",
+      "why": "Segurança de redes, firewall e monitoramento compartilham base com infraestrutura; a troca entre SOC e operação de redes é frequente.",
+      "gaps": [
+        "roteamento e switching em profundidade",
+        "administração de sistemas e nuvem",
+        "cabeamento e infraestrutura física"
+      ],
+      "steps": [
+        "Cisco Networking Academy (gratuito)",
+        "diagrama de topologia de laboratório (D4)",
+        "runbook de operação (L7)"
+      ]
+    },
+    {
+      "to": "engenharia-de-software",
+      "why": "Quem atua em AppSec e DevSecOps migra para desenvolvimento seguro e engenharia de plataforma.",
+      "gaps": [
+        "programação além de scripts",
+        "testes automatizados e CI/CD",
+        "arquitetura de aplicações"
+      ],
+      "steps": [
+        "README de repositório com testes e análise estática",
+        "ADR de uma decisão de segurança no SDLC (L4)",
+        "diagrama C4 com fronteiras de confiança (D4)"
+      ]
+    },
+    {
+      "to": "ciencia-de-dados",
+      "why": "Detecção de anomalias, análise de logs em escala e métricas de segurança levam à análise de dados e ao aprendizado de máquina.",
+      "gaps": [
+        "estatística e avaliação de modelos",
+        "SQL e ferramentas de dados",
+        "LGPD aplicada a dados pessoais em análises"
+      ],
+      "steps": [
+        "infográfico de métricas de um dataset público (D7)",
+        "relatório analítico de logs de laboratório (L4)",
+        "pipeline de dados documentado (D4)"
+      ]
+    },
+    {
+      "to": "direito",
+      "why": "Privacidade, LGPD e conformidade aproximam do direito digital e da função de encarregado (DPO); a advocacia exige graduação e OAB.",
+      "gaps": [
+        "formação jurídica e OAB para advogar",
+        "redação jurídica",
+        "contratos e responsabilidade civil"
+      ],
+      "steps": [
+        "relatório de impacto de cenário fictício (L4)",
+        "modelo de comunicação de incidente (L7)",
+        "curso de LGPD (Enap)"
+      ]
+    },
+    {
+      "to": "administracao",
+      "why": "GRC, gestão de riscos corporativos e continuidade de negócios abrem caminho para gestão de riscos, auditoria interna e compliance.",
+      "gaps": [
+        "gestão de pessoas e orçamento",
+        "controles internos e auditoria",
+        "comunicação com conselho e diretoria"
+      ],
+      "steps": [
+        "plano 30-60-90 para coordenação de segurança (L9)",
+        "proposta de adequação com fases e entregáveis (L8)",
+        "infográfico de riscos tratados (D7)"
+      ]
+    },
+    {
+      "to": "seguranca-publica",
+      "why": "Perícia digital, investigação de crimes cibernéticos e inteligência em órgãos públicos usam resposta a incidentes e forense; o ingresso é por concurso.",
+      "gaps": [
+        "forense computacional e cadeia de custódia",
+        "legislação penal e processual",
+        "aprovação em concurso público"
+      ],
+      "steps": [
+        "post-mortem com linha do tempo e evidências de laboratório (L4)",
+        "POP de preservação de evidências (L7)",
+        "acompanhar editais de perícia e polícia"
+      ]
+    }
+  ],
+  "learning": [
+    {
+      "title": "Hackers do Bem — formação gratuita em cibersegurança (nivelamento, básico, fundamental, especialização)",
+      "provider": "RNP / Softex / SENAI-SP",
+      "url": "https://hackersdobem.org.br/",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "Cartilha de Segurança para Internet e materiais do CERT.br",
+      "provider": "CERT.br / NIC.br",
+      "url": "https://cartilha.cert.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Escola Virtual.Gov — Proteção de Dados Pessoais (LGPD) e Segurança da Informação",
+      "provider": "Enap",
+      "url": "https://www.escolavirtual.gov.br/",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "Cisco Networking Academy — Introduction to Cybersecurity e CyberOps",
+      "provider": "Cisco",
+      "url": "https://www.netacad.com/",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "ANPD — guias orientativos (agentes de tratamento, incidentes, segurança para pequenos agentes)",
+      "provider": "ANPD",
+      "url": "https://www.gov.br/anpd/pt-br/documentos-e-publicacoes",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "NIST Cybersecurity Framework 2.0 (texto e recursos)",
+      "provider": "NIST",
+      "url": "https://www.nist.gov/cyberframework",
+      "free": true,
+      "kind": "norma"
+    },
+    {
+      "title": "OWASP — projetos, Top 10 e Cheat Sheets",
+      "provider": "OWASP",
+      "url": "https://owasp.org/",
+      "free": true,
+      "kind": "comunidade"
+    },
+    {
+      "title": "MITRE ATT&CK",
+      "provider": "MITRE",
+      "url": "https://attack.mitre.org/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "ISC2 Certified in Cybersecurity (CC) — treinamento introdutório",
+      "provider": "ISC2",
+      "url": "https://www.isc2.org/certifications/cc",
+      "free": false,
+      "kind": "certificacao"
+    },
+    {
+      "title": "TryHackMe — laboratórios guiados (plano gratuito parcial)",
+      "provider": "TryHackMe",
+      "url": "https://tryhackme.com/",
+      "free": false,
+      "kind": "curso"
+    },
+    {
+      "title": "ABNT NBR ISO/IEC 27001:2022",
+      "provider": "ABNT",
+      "url": "https://www.abntcatalogo.com.br/",
+      "free": false,
+      "kind": "norma"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Auditoria Guia de Carreira §4 (perguntas), §4.6 (pacote), §7 (tarefas L1–L10, D1–D10), §8 (mensagens)",
+      "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Dados do ramo (fase 1) — CBO 2124, ISCO 2529, sem conselho; ESCO não obtida na fase 1",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=212405",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2123-20 administrador em segurança da informação, família 2123 (espelho NCM Buscador)",
+      "url": "https://buscadorncm.com.br/cbo/212320",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "World of Taxonomy — ESCO chief ICT security officer (276ba420…), ISCO 2529",
+      "url": "https://worldoftaxonomy.com/codes/esco_occupations/276ba420-ef09-4a0e-b215-2c2e2f80ad28",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ENISA — Crosswalk ESCO e ECSF (ICT security administrator, ethical hacker, chief ICT security officer)",
+      "url": "https://www.enisa.europa.eu/sites/default/files/2024-12/esco-ecsf-crosswalk.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Mattos Filho — ANPD publica regulamento de comunicação de incidente de segurança (Resolução CD/ANPD 15/2024)",
+      "url": "https://www.mattosfilho.com.br/unico/regulamento-incidente-seguranca/",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Legisweb — Resolução CD/ANPD 15 de 24/04/2024",
+      "url": "https://www.legisweb.com.br/legislacao/?id=458235",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Mattos Filho — E-Ciber: nova Estratégia Nacional de Cibersegurança (Decreto 12.573/2025)",
+      "url": "https://www.mattosfilho.com.br/unico/ciberseguranca-estrategia-decreto/",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Câmara dos Deputados — Decreto 12.573, de 4 de agosto de 2025 (publicação original)",
+      "url": "https://www2.camara.leg.br/legin/fed/decret/2025/decreto-12573-4-agosto-2025-797813-publicacaooriginal-176048-pe.html",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Planalto — Decreto 10.222/2020 (E-Ciber 2020, revogado pelo Decreto 12.573/2025)",
+      "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/decreto/D10222impressao.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Agência Gov — Programa Hackers do Bem abre inscrições para 25 mil novas vagas em cibersegurança",
+      "url": "https://agenciagov.ebc.com.br/noticias/202510/programa-hackers-do-bem-abre-inscricoes-para-25-mil-novas-vagas-em-ciberseguranca",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Gran Cursos — ABNT NBR ISO/IEC 27001:2022 (93 controles em 4 grupos)",
+      "url": "https://blog.grancursosonline.com.br/?p=79842621",
+      "accessedAt": "2026-11-02"
+    }
+  ],
+  "naoConferido": [
+    "Rede da sessão bloqueou esco.ec.europa.eu, worldoftaxonomy.com, planalto.gov.br e gov.br: leis, decretos e URIs conferidos só por trechos de resultados de busca e resumos de escritórios de advocacia.",
+    "ESCO: só 'chief ICT security officer' (276ba420) foi confirmado em espelho; 'ICT security administrator' e 'ethical hacker' existem na ESCO (ENISA), mas as URIs não foram obtidas (UUID 76ef0a87 apareceu na busca sem rótulo confirmado).",
+    "CBO 2123-20 (administrador em segurança da informação) confirmada só em espelho (NCM Buscador); ISCO 2522 em a4.cboFamilies é código ISCO, não CBO, usado por falta de família CBO específica.",
+    "Resolução CD/ANPD 15/2024: prazo de 3 dias úteis e registro por 5 anos confirmados em resumos; texto oficial não lido. Prazos em dobro para agentes de pequeno porte (Resolução CD/ANPD 2/2022) não incluídos nas tarefas.",
+    "Decreto 11.856/2023 (PNCiber), Decreto 9.637/2018, Lei 12.737/2012, Lei 14.155/2021, Resolução CMN 4.893/2021 e NIST CSF 2.0 citados de memória; não acessados.",
+    "ABNT NBR ISO/IEC 27701: edição vigente divergente nas fontes (2019 vs. 2026); citada sem ano.",
+    "Hackers do Bem: programa confirmado por notícias oficiais (Agência Gov); o domínio hackersdobem.org.br não foi conferido.",
+    "Fontes de mercado ISC2, Fortinet e stats.cert.br e recursos de aprendizagem (cartilha.cert.br, NetAcad, OWASP, MITRE, TryHackMe, ISC2 CC) não acessados nesta sessão; gratuidade do treinamento ISC2 CC varia por campanha.",
+    "Certificações em c4 (Security+, CC, CISSP, CISM, CRISC, CEH, OSCP, Lead Implementer, CIPP/E, CDPO, AZ-500) de conhecimento geral; vigência não conferida."
+  ]
+}

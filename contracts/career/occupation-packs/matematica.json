@@ -1,0 +1,1141 @@
+{
+  "schemaVersion": 1,
+  "code": "matematica",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": {
+    "pt-BR": "Matemática",
+    "en": "Mathematics",
+    "es": "Matemáticas"
+  },
+  "fields": [
+    "matematica"
+  ],
+  "family": {
+    "cbo": [
+      {
+        "code": "2111",
+        "title": "Profissionais da matemática"
+      },
+      {
+        "code": "2034",
+        "title": "Pesquisadores das ciências naturais e exatas"
+      },
+      {
+        "code": "2341",
+        "title": "Professores de matemática, estatística e informática do ensino superior"
+      }
+    ],
+    "isco08": [
+      {
+        "code": "2120",
+        "title": "Mathematicians, actuaries and statisticians"
+      }
+    ],
+    "esco": [
+      {
+        "uri": "http://data.europa.eu/esco/occupation/72628f3a-fd49-499a-9741-870b0a1fcef2",
+        "label": "mathematician"
+      }
+    ]
+  },
+  "scope": {
+    "summary": "Bacharéis em Matemática (pura, aplicada, computacional, industrial) pesquisam e aplicam modelos matemáticos: otimização, pesquisa operacional, simulação, análise numérica, criptografia, finanças quantitativas e ciência de dados, em universidades, institutos de pesquisa, indústria, bancos, seguradoras, logística e tecnologia. A profissão não tem conselho próprio. O guia trabalha evidências de modelagem e comunicação técnica sem expor dados ou modelos de clientes.",
+    "entryRoles": [
+      "Estagiário de modelagem ou dados",
+      "Bolsista de iniciação científica ou mestrado",
+      "Analista de dados júnior",
+      "Analista de pesquisa operacional júnior",
+      "Monitor ou assistente de ensino"
+    ],
+    "midRoles": [
+      "Analista de pesquisa operacional e otimização",
+      "Analista quantitativo (quant) ou de risco",
+      "Cientista de dados",
+      "Engenheiro de algoritmos ou desenvolvedor científico",
+      "Analista de modelagem em logística ou energia",
+      "Pesquisador de laboratório de P&D"
+    ],
+    "seniorRoles": [
+      "Pesquisador (IMPA, LNCC, universidades)",
+      "Docente de ensino superior",
+      "Especialista em otimização ou criptografia",
+      "Líder de modelagem quantitativa",
+      "Consultor em pesquisa operacional"
+    ],
+    "sectors": [
+      "ensino superior e pesquisa",
+      "finanças, bancos e seguros",
+      "tecnologia e software",
+      "logística, transporte e cadeia de suprimentos",
+      "energia, óleo e gás",
+      "indústria e manufatura",
+      "administração pública (planejamento, estatística, defesa)",
+      "consultoria"
+    ],
+    "regulation": [
+      {
+        "name": "Profissão sem conselho ou lei de regulamentação específica",
+        "issuer": "Brasil",
+        "about": "exercício livre; a formação é reconhecida pelo MEC e o registro em conselho só se aplica a atividades de outras profissões (ex.: atuária, estatística)"
+      },
+      {
+        "name": "Resolução CNE/CES 3/2003 e Parecer CNE/CES 1.302/2001",
+        "issuer": "CNE",
+        "about": "Diretrizes Curriculares Nacionais dos cursos de Matemática (bacharelado e licenciatura)"
+      },
+      {
+        "name": "Lei 4.739/1965 (estatístico) e Decreto-Lei 806/1969 (atuário)",
+        "issuer": "Brasil",
+        "about": "atividades privativas de profissões vizinhas que o matemático não exerce sem o registro correspondente"
+      },
+      {
+        "name": "LGPD (Lei 13.709/2018), arts. 6º, 12 e 20",
+        "issuer": "Brasil",
+        "about": "dados pessoais em modelos, anonimização e revisão de decisões automatizadas"
+      },
+      {
+        "name": "Lei 9.610/1998 e Lei 9.609/1998",
+        "issuer": "Brasil",
+        "about": "direitos autorais e proteção de software e código desenvolvidos sob contrato"
+      },
+      {
+        "name": "Lei 10.973/2004 (Lei de Inovação)",
+        "issuer": "Brasil",
+        "about": "pesquisa em parceria universidade–empresa, sigilo e propriedade intelectual"
+      }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      {
+        "term": "modelagem matemática",
+        "meaning": "tradução de um problema real em equações, variáveis e hipóteses"
+      },
+      {
+        "term": "hipóteses do modelo",
+        "meaning": "simplificações assumidas e que limitam a validade dos resultados"
+      },
+      {
+        "term": "otimização",
+        "meaning": "busca do melhor valor de uma função objetivo sujeita a restrições"
+      },
+      {
+        "term": "programação linear e inteira",
+        "meaning": "modelos de otimização com função e restrições lineares, com ou sem variáveis inteiras"
+      },
+      {
+        "term": "pesquisa operacional",
+        "meaning": "aplicação de modelos para decisões em logística, produção e serviços"
+      },
+      {
+        "term": "heurística e meta-heurística",
+        "meaning": "métodos aproximados para problemas difíceis (busca tabu, algoritmos genéticos)"
+      },
+      {
+        "term": "análise numérica",
+        "meaning": "métodos computacionais para resolver equações e estimar o erro de aproximação"
+      },
+      {
+        "term": "equações diferenciais",
+        "meaning": "modelos de taxas de variação (EDO, EDP) em física, biologia e finanças"
+      },
+      {
+        "term": "simulação de Monte Carlo",
+        "meaning": "estimativa por amostragem aleatória repetida"
+      },
+      {
+        "term": "validação do modelo",
+        "meaning": "comparação dos resultados com dados ou casos conhecidos"
+      },
+      {
+        "term": "análise de sensibilidade",
+        "meaning": "efeito de variar parâmetros sobre os resultados"
+      },
+      {
+        "term": "convergência",
+        "meaning": "garantia de que um método iterativo se aproxima da solução"
+      },
+      {
+        "term": "complexidade computacional",
+        "meaning": "custo de tempo e memória de um algoritmo em função do tamanho do problema"
+      },
+      {
+        "term": "demonstração",
+        "meaning": "argumento lógico rigoroso que estabelece um resultado"
+      },
+      {
+        "term": "álgebra linear numérica",
+        "meaning": "decomposições e métodos para sistemas e autovalores em larga escala"
+      },
+      {
+        "term": "criptografia",
+        "meaning": "técnicas matemáticas (teoria dos números, curvas elípticas) para sigilo e autenticidade"
+      },
+      {
+        "term": "reprodutibilidade",
+        "meaning": "código, dados e parâmetros que permitem repetir o resultado"
+      },
+      {
+        "term": "relatório técnico",
+        "meaning": "documento com problema, modelo, método, resultados e limitações"
+      },
+      {
+        "term": "preprint (arXiv)",
+        "meaning": "versão de artigo divulgada antes da revisão por pares"
+      }
+    ],
+    "tools": [
+      "Python (NumPy, SciPy, pandas)",
+      "Julia",
+      "MATLAB ou GNU Octave",
+      "R (linguagem)",
+      "LaTeX (Overleaf)",
+      "Jupyter",
+      "Git e GitHub",
+      "solvers de otimização (Gurobi, CPLEX, CBC, HiGHS)",
+      "Pyomo, JuMP ou OR-Tools",
+      "SageMath",
+      "Mathematica ou Maple",
+      "SQL",
+      "GeoGebra"
+    ],
+    "deliverables": [
+      "relatório técnico de modelagem",
+      "modelo de otimização com código reprodutível",
+      "notebook de análise com resultados e gráficos",
+      "artigo, preprint ou dissertação",
+      "diagrama do modelo ou do algoritmo",
+      "infográfico de resultados",
+      "proposta técnica para um problema de cliente",
+      "nota de aula ou material de disciplina",
+      "biblioteca ou script documentado",
+      "apresentação de seminário"
+    ]
+  },
+  "competencies": {
+    "core": [
+      {
+        "label": "Modelar problemas reais matematicamente",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Raciocínio lógico e demonstração",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Otimização e pesquisa operacional",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Métodos numéricos e análise de erro",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Programação científica (Python, Julia, MATLAB)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Probabilidade e estatística aplicadas",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Redigir relatório técnico e artigo (LaTeX)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Validar modelos e analisar sensibilidade",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Equações diferenciais e sistemas dinâmicos",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Aprendizado de máquina e ciência de dados",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Matemática financeira e quantitativa",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Criptografia e teoria dos números",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Comunicar resultados a não especialistas",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Versionamento e reprodutibilidade (Git)",
+        "esco": null,
+        "kind": "apoio"
+      }
+    ],
+    "transversal": [
+      "pensamento abstrato",
+      "persistência em problemas difíceis",
+      "escrita precisa",
+      "trabalho em equipe multidisciplinar",
+      "apresentação oral",
+      "ética e sigilo de dados de clientes"
+    ],
+    "tracks": [
+      {
+        "id": "modelagem-aplicada",
+        "label": "Provar que sabe modelar",
+        "steps": [
+          "diagrama do modelo: variáveis, restrições e fluxo (D4)",
+          "relatório técnico de modelagem com código (L4)",
+          "infográfico de resultados e sensibilidade (D7)",
+          "estudo de caso STAR (L3)"
+        ]
+      },
+      {
+        "id": "pesquisa-academica",
+        "label": "Pesquisa acadêmica",
+        "steps": [
+          "projeto de pesquisa com problema e referências (X1)",
+          "relatório técnico ou preprint (L4)",
+          "post sobre um resultado (L5)",
+          "revisão crítica de um trabalho (L10)"
+        ]
+      },
+      {
+        "id": "mercado-quantitativo",
+        "label": "Mercado (dados, finanças, otimização)",
+        "steps": [
+          "currículo direcionado com projetos (L1)",
+          "proposta para um briefing de cliente (L8)",
+          "plano 30-60-90 para analista quantitativo (L9)"
+        ]
+      }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"analista de dados\", \"bolsista de mestrado\", \"analista de pesquisa operacional\", \"monitor de cálculo\"",
+      "cboFamilies": [
+        "2111",
+        "2112",
+        "2034",
+        "2341",
+        "2124"
+      ],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez; se for o primeiro emprego ou estágio, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, iniciação científica ou primeiro cargo",
+        "junior": "até dois anos: implementa modelos e análises com orientação",
+        "pleno": "formula e entrega modelos com autonomia",
+        "senior": "referência técnica; define abordagens, revisa e publica",
+        "gestao": "lidera equipe de modelagem, laboratório ou programa de pesquisa"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na Matemática",
+      "options": [
+        "modelar problemas reais",
+        "demonstrar resultados",
+        "otimização e pesquisa operacional",
+        "métodos numéricos",
+        "programar em Python, Julia ou MATLAB",
+        "probabilidade e estatística",
+        "equações diferenciais",
+        "aprendizado de máquina",
+        "escrever em LaTeX",
+        "explicar matemática para não especialistas",
+        "criptografia e teoria dos números",
+        "matemática financeira"
+      ],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com tarefas."
+    },
+    "c4": {
+      "certifications": [
+        "bacharelado em Matemática ou Matemática Aplicada",
+        "mestrado ou doutorado (IMPA, universidades públicas)",
+        "cursos de Python, SQL ou aprendizado de máquina",
+        "certificação em otimização (Gurobi, OR-Tools)",
+        "CPA, CFA ou FRM para finanças",
+        "participação em olimpíadas universitárias (OBMU)"
+      ],
+      "languages": [
+        "inglês (leitura e escrita técnica)",
+        "espanhol",
+        "francês"
+      ],
+      "why": "Formação e cursos mostram lacunas em relação ao cargo que você quer; nada aqui é exigido para começar."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": [
+        "otimização e pesquisa operacional",
+        "programação científica",
+        "aprendizado de máquina",
+        "métodos numéricos",
+        "escrita de relatório e artigo",
+        "comunicação para não especialistas",
+        "finanças quantitativas",
+        "criptografia",
+        "estatística aplicada",
+        "reprodutibilidade e Git"
+      ],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez do catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Que caminho você quer seguir primeiro?",
+        "type": "escolha",
+        "options": [
+          "pesquisa acadêmica",
+          "otimização e logística",
+          "finanças e risco",
+          "ciência de dados e tecnologia",
+          "indústria e engenharia",
+          "ainda não sei"
+        ],
+        "why": "Pergunto o caminho para escolher tarefas e vocabulário: um preprint e um modelo de roteirização são evidências diferentes.",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": [
+      "L6",
+      "L1",
+      "L4",
+      "D4",
+      "D7",
+      "L3",
+      "L8",
+      "L9",
+      "L5",
+      "L10",
+      "L2",
+      "D10"
+    ],
+    "excluded": [
+      {
+        "code": "D1",
+        "reason": "planta técnica não é entrega da profissão"
+      },
+      {
+        "code": "D3",
+        "reason": "modelagem 3D de produto não é entrega da profissão"
+      },
+      {
+        "code": "D6",
+        "reason": "detalhe construtivo não é entrega da profissão"
+      },
+      {
+        "code": "D8",
+        "reason": "vista explodida não é entrega da profissão"
+      },
+      {
+        "code": "L7",
+        "reason": "procedimento operacional é pouco usado; a reprodutibilidade entra no L4"
+      }
+    ],
+    "parameters": {
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva um resumo de até 600 caracteres com o caminho que quer seguir (pesquisa, otimização, finanças, dados), três competências (ex.: programação inteira, Python, análise numérica) e uma prova com link (repositório, relatório ou preprint).",
+        "parameters": {
+          "maxChars": 600,
+          "requiredParts": [
+            "caminho-alvo",
+            "três competências",
+            "uma prova com link"
+          ]
+        },
+        "criteria": [
+          "até 600 caracteres",
+          "nomeia o caminho-alvo",
+          "cita três competências",
+          "inclui uma prova com link"
+        ],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para o cargo que quer mirar (ex.: analista de pesquisa operacional, cientista de dados, analista quantitativo, bolsa de doutorado), com três resultados com número (redução de custo do modelo, tempo de execução, instâncias resolvidas, artigos) e as palavras-chave da vaga.",
+        "parameters": {
+          "maxPages": 1,
+          "achievementsWithNumbers": 3,
+          "keywordsFrom": "cargo-alvo",
+          "sections": [
+            "formação",
+            "projetos e pesquisa",
+            "ferramentas",
+            "publicações"
+          ]
+        },
+        "criteria": [
+          "uma página",
+          "três conquistas com número",
+          "palavras-chave do cargo-alvo presentes",
+          "link para repositório ou publicação",
+          "sem idade, estado civil ou foto obrigatória"
+        ],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "L4": {
+        "title": "Relatório técnico de modelagem",
+        "brief": "Escreva um relatório de até 4 páginas sobre um problema que você modelou (dados públicos ou fictícios): objetivo, modelo (variáveis, hipóteses, equações ou restrições), método de solução, resultados com tabela ou gráfico, validação e sensibilidade, limitações e referências, com link para o código.",
+        "parameters": {
+          "maxPages": 4,
+          "sections": [
+            "objetivo",
+            "modelo e hipóteses",
+            "método",
+            "resultados",
+            "validação",
+            "limitações",
+            "referências"
+          ],
+          "requiresCodeLink": true,
+          "publicOrFictionalData": true
+        },
+        "criteria": [
+          "seções nomeadas",
+          "até 4 páginas",
+          "hipóteses do modelo explícitas",
+          "resultados com tabela ou gráfico legendado",
+          "validação ou análise de sensibilidade",
+          "link para código reprodutível",
+          "nenhum dado ou modelo de cliente"
+        ],
+        "evidence": "relatório PDF + repositório",
+        "time": "3 h",
+        "level": 3
+      },
+      "D4": {
+        "title": "Diagrama do modelo ou do algoritmo",
+        "brief": "Desenhe o fluxo do seu modelo ou algoritmo: entradas, pré-processamento, formulação, solver ou método, pós-processamento e saídas, com pontos de decisão e critério de parada.",
+        "parameters": {
+          "requiresStartEnd": true,
+          "requiresStopCriterion": true
+        },
+        "criteria": [
+          "início e fim",
+          "entradas e saídas nomeadas",
+          "critério de parada ou decisão indicado",
+          "nenhuma etapa órfã",
+          "legenda de símbolos"
+        ],
+        "evidence": "diagrama vetorial",
+        "time": "45 min",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de resultados do modelo",
+        "brief": "Mostre um resultado do seu modelo (ex.: custo por cenário, convergência, fronteira eficiente) com uma mensagem principal, eixos rotulados com unidade, fonte dos dados e nota sobre hipóteses.",
+        "parameters": {
+          "mainMessages": 1,
+          "requiresSource": true,
+          "requiresAxisLabels": true
+        },
+        "criteria": [
+          "uma mensagem principal em título",
+          "eixos rotulados com unidade",
+          "fonte dos dados citada",
+          "hipóteses ou cenário indicados",
+          "créditos"
+        ],
+        "evidence": "imagem PNG + PDF",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Projeto de pesquisa em Matemática",
+        "competency": "Raciocínio lógico e demonstração",
+        "criteria": [
+          "problema ou conjectura enunciado com precisão",
+          "contexto na literatura (ao menos 5 referências)",
+          "objetivos",
+          "metodologia e resultados esperados",
+          "cronograma",
+          "escrito em LaTeX ou com notação consistente"
+        ],
+        "evidence": "projeto PDF (modelo projeto-de-pesquisa)",
+        "time": "3 h",
+        "trigger": "Tem um problema que gostaria de investigar no mestrado ou doutorado?",
+        "level": 3
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      {
+        "id": "tamanho",
+        "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L4",
+          "L5",
+          "L6",
+          "L8"
+        ],
+        "auto": true
+      },
+      {
+        "id": "secoes-obrigatorias",
+        "check": "as seções pedidas existem e estão nomeadas",
+        "appliesTo": [
+          "L3",
+          "L4",
+          "L8",
+          "L9",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "hipoteses-explicitas",
+        "check": "há seção ou lista de hipóteses do modelo",
+        "appliesTo": [
+          "L4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "link-para-codigo",
+        "check": "há link para repositório ou notebook com o código",
+        "appliesTo": [
+          "L4",
+          "L1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "validacao-presente",
+        "check": "há validação ou análise de sensibilidade",
+        "appliesTo": [
+          "L4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "eixos-e-fonte",
+        "check": "eixos rotulados com unidade e fonte dos dados citada",
+        "appliesTo": [
+          "D7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "diagrama-fechado",
+        "check": "o diagrama tem início e fim, critério de parada e nenhuma etapa órfã",
+        "appliesTo": [
+          "D4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "referencias",
+        "check": "referências presentes no mínimo pedido",
+        "appliesTo": [
+          "L4",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "creditos-e-fontes",
+        "check": "coautores, fontes e autores remixados estão creditados",
+        "appliesTo": [
+          "L5",
+          "L10",
+          "D7",
+          "D10"
+        ],
+        "auto": true
+      },
+      {
+        "id": "autoria-e-sigilo",
+        "check": "a pessoa declarou autoria e ausência de dados ou modelos de clientes",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L3",
+          "L4",
+          "L5",
+          "L6",
+          "L8",
+          "L9",
+          "L10",
+          "D2",
+          "D4",
+          "D5",
+          "D7",
+          "D9",
+          "D10",
+          "X1"
+        ],
+        "auto": true
+      }
+    ],
+    "subjective": [
+      {
+        "id": "rigor",
+        "label": "Rigor matemático",
+        "levels": {
+          "aproxima": "passagens sem justificativa ou notação inconsistente",
+          "atende": "argumentos corretos e notação consistente",
+          "supera": "argumentos elegantes, com casos-limite e contraexemplos discutidos"
+        }
+      },
+      {
+        "id": "adequacao-do-modelo",
+        "label": "Adequação do modelo ao problema",
+        "levels": {
+          "aproxima": "modelo desconectado do problema ou sem hipóteses",
+          "atende": "hipóteses razoáveis e resultados interpretados no contexto",
+          "supera": "compara alternativas de modelo e justifica a escolha"
+        }
+      },
+      {
+        "id": "comunicacao",
+        "label": "Comunicação para o público-alvo",
+        "levels": {
+          "aproxima": "exige conhecimento especializado para entender a conclusão",
+          "atende": "conclusão clara para quem decide",
+          "supera": "traduz o resultado em decisão, com limites e riscos explícitos"
+        }
+      }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você apoia uma pessoa formada ou em formação no bacharelado em Matemática (pura, aplicada ou computacional) no Guia de Carreira. Use o vocabulário da área: modelagem, hipóteses, otimização, programação linear e inteira, pesquisa operacional, heurística, análise numérica, convergência, equações diferenciais, Monte Carlo, validação, análise de sensibilidade, complexidade, demonstração, reprodutibilidade, LaTeX. A profissão não tem conselho; quando a tarefa envolver atividade privativa de estatístico (Lei 4.739/1965) ou atuário (Decreto-Lei 806/1969), lembre o registro exigido. Ao ajudar com demonstrações ou modelos, explique o raciocínio e aponte lacunas; não entregue soluções prontas de listas, provas ou exames em andamento. Nunca invente resultados numéricos, teoremas ou referências: resultados vêm do código da pessoa e referências precisam ser conferidas. Recuse dados, código ou modelos proprietários de clientes ou empregadores sob sigilo contratual, mesmo anonimizados; proponha dados públicos ou sintéticos. Cite LGPD quando o modelo usar dados pessoais. Pergunte antes de inferir caminho (pesquisa, otimização, finanças, dados) ou senioridade. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por quê, e aceita \"não me serve\". Afirmações sobre mercado citam fonte, data e região; nunca prometa vaga, bolsa ou remuneração. Progresso é por critérios atendidos; não há score. Não publique, siga, envie mensagem nem se candidate sem confirmação da pessoa.",
+    "citeSources": [
+      {
+        "title": "SBM — Sociedade Brasileira de Matemática",
+        "url": "https://sbm.org.br/",
+        "kind": "comunidade"
+      },
+      {
+        "title": "SBMAC — Sociedade Brasileira de Matemática Aplicada e Computacional",
+        "url": "https://www.sbmac.org.br/",
+        "kind": "comunidade"
+      },
+      {
+        "title": "SOBRAPO — Sociedade Brasileira de Pesquisa Operacional",
+        "url": "https://www.sobrapo.org.br/",
+        "kind": "comunidade"
+      },
+      {
+        "title": "IMPA — Instituto de Matemática Pura e Aplicada",
+        "url": "https://impa.br/",
+        "kind": "educacao"
+      },
+      {
+        "title": "Resolução CNE/CES 3/2003 — Diretrizes dos cursos de Matemática (MEC)",
+        "url": "http://portal.mec.gov.br/cne/arquivos/pdf/ces032003.pdf",
+        "kind": "norma"
+      },
+      {
+        "title": "CBO 2111 — Profissionais da matemática (MTE)",
+        "url": "https://cbo.mte.gov.br/",
+        "kind": "orgao-publico"
+      },
+      {
+        "title": "Novo CAGED — Ministério do Trabalho e Emprego",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "kind": "estatistica"
+      }
+    ],
+    "services": [
+      {
+        "service": "PERGUNTAS_GUIA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Variantes de c2, c5 e a extra x1 (caminho)."
+      },
+      {
+        "service": "SUGESTAO_TAREFAS",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "Prioriza L6, L1, L4, D4, D7; X1 para quem escolhe pesquisa em x1."
+      },
+      {
+        "service": "PLANO_SEMANAL",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Plano por horas (d1) e aparelho (d4); L4, D4, D7 e X1 só no computador."
+      },
+      {
+        "service": "PRE_CHECAGEM_RUBRICA",
+        "capability": "ARTEFATO",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "Checa seções, hipóteses, link para código, validação, eixos e fonte; não julga a correção das demonstrações."
+      },
+      {
+        "service": "RASCUNHO_LETTERS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Estrutura de relatório técnico e projeto; explica raciocínio sem entregar solução de avaliação em andamento; nunca inventa resultados."
+      },
+      {
+        "service": "APOIO_DRAWINGS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Fluxo do modelo com critério de parada (D4); eixos, unidade e cenário do infográfico (D7)."
+      },
+      {
+        "service": "ANALISE_PERFIL",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": "ANALISE_PERFIL_IA",
+        "note": "Síntese de competências declaradas e evidenciadas por caminho; cada afirmação cita o campo."
+      },
+      {
+        "service": "CAMINHOS_DE_CARREIRA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Vizinhos por CBO/ESCO (estatística, ciência de dados, física, engenharia de software, ciências contábeis); mercado com fonte, data e região."
+      },
+      {
+        "service": "PESSOAS_SEMELHANTES",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Só pessoas descobríveis por opt-in; afinidade por CBO, competências e setor."
+      },
+      {
+        "service": "EXPLICACAO_POR_QUE",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)."
+      },
+      {
+        "service": "RESUMO_PROFISSIONAL",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": "RESUMO_PROFISSIONAL_IA",
+        "note": "Bio (L6) a partir do perfil; só com o consentimento específico."
+      },
+      {
+        "service": "IMPORTAR_CURRICULO",
+        "capability": "PREENCHER_TAREFA",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Extrai formação, projetos, publicações (Lattes ou PDF) e ferramentas em ficha editável; a pessoa confirma item a item."
+      }
+    ],
+    "dataScope": {
+      "default": [
+        "perfil",
+        "currículo"
+      ],
+      "optional": [
+        "minhas Letters",
+        "meus Drawings"
+      ],
+      "never": [
+        "mensagens",
+        "itens SIGILOSO",
+        "modelos, código e dados proprietários de clientes ou empregadores",
+        "dados pessoais de terceiros em bases de modelagem",
+        "dados sensíveis (LGPD art. 5º II)"
+      ]
+    },
+    "provider": {
+      "default": "local",
+      "externalNeedsConsent": true,
+      "externalAllowedFor": [
+        "ANALISE_PERFIL",
+        "CAMINHOS_DE_CARREIRA",
+        "RESUMO_PROFISSIONAL"
+      ]
+    },
+    "guardrails": [
+      "nunca inventar resultados numéricos, teoremas ou referências",
+      "explicar o raciocínio em vez de entregar solução de prova, lista ou exame em andamento",
+      "recusar dados, código e modelos proprietários sob sigilo; propor dados públicos ou sintéticos",
+      "lembrar o registro exigido quando a atividade for privativa de estatístico ou atuário",
+      "perguntar em vez de inferir caminho ou senioridade",
+      "nunca prometer vaga, bolsa ou remuneração; mercado com fonte, data e região",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": {
+      "letters": "alta",
+      "drawings": "media"
+    },
+    "drawingsModes": [
+      "diagrama",
+      "infografico",
+      "prancha"
+    ],
+    "lettersTemplates": [
+      "bio",
+      "curriculo",
+      "carta",
+      "relatorio-tecnico",
+      "projeto-de-pesquisa",
+      "artigo",
+      "estudo-de-caso",
+      "proposta",
+      "post",
+      "plano-30-60-90",
+      "revisao"
+    ],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular: L5, L6 e L10; L4, D4, D7 e X1 pedem computador (código, LaTeX, gráficos).",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em três frases com link para um repositório (15 min).",
+        "Aquele modelo que você resolveu cabe num relatório de 4 páginas? Comprova modelagem; cerca de 3 h no computador.",
+        "Sem pressão. Quando quiser retomar, o diagrama do modelo está salvo onde parou.",
+        "Um gráfico de sensibilidade com eixos e fonte mostra que você valida o que modela. Leva 60 min."
+      ]
+    },
+    "insights": {
+      "peersBy": [
+        "cbo",
+        "competencias",
+        "setor"
+      ]
+    },
+    "privacy": {
+      "sensitiveData": [
+        "modelos e dados proprietários de clientes (finanças, seguros, logística) sob sigilo contratual",
+        "dados pessoais de terceiros em bases de modelagem",
+        "código sob contrato ou acordo de confidencialidade"
+      ],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      {
+        "title": "Novo CAGED (MTE) — CBO 2111",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "geography": "Brasil, UF e município",
+        "cadence": "mensal",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "RAIS (MTE) — vínculos por CBO",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais",
+        "geography": "Brasil, UF e município",
+        "cadence": "anual",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "Plataforma Sucupira (CAPES) — programas de pós-graduação em Matemática",
+        "url": "https://sucupira.capes.gov.br/",
+        "geography": "Brasil",
+        "cadence": "anual",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "Concursos públicos federais (gov.br) — docência e pesquisa",
+        "url": "https://www.gov.br/pt-br/servicos/consultar-concursos-publicos",
+        "geography": "Brasil",
+        "cadence": "continua",
+        "kind": "edital"
+      },
+      {
+        "title": "Chamadas de bolsas do CNPq",
+        "url": "https://www.gov.br/cnpq/pt-br/chamadas",
+        "geography": "Brasil",
+        "cadence": "eventual",
+        "kind": "edital"
+      }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    {
+      "to": "estatistica",
+      "why": "Probabilidade, inferência e modelagem aproximam; para atividades privativas é preciso o registro no CONRE.",
+      "gaps": [
+        "inferência e amostragem aplicadas",
+        "R e softwares estatísticos",
+        "registro no CONRE (exige formação em Estatística)"
+      ],
+      "steps": [
+        "relatório com análise estatística de dados públicos (L4)",
+        "infográfico com fonte e eixos (D7)",
+        "disciplinas ou pós em Estatística"
+      ]
+    },
+    {
+      "to": "ciencia-de-dados",
+      "why": "Modelagem, otimização e programação são a base de aprendizado de máquina e análise de dados.",
+      "gaps": [
+        "SQL e engenharia de dados",
+        "bibliotecas de aprendizado de máquina",
+        "produto e comunicação com negócio"
+      ],
+      "steps": [
+        "notebook de modelo preditivo com dados públicos (L4)",
+        "diagrama do pipeline (D4)",
+        "trilhas gratuitas (Kaggle Learn, Base dos Dados)"
+      ]
+    },
+    {
+      "to": "engenharia-de-software",
+      "why": "Algoritmos, complexidade e programação científica levam a desenvolvimento de software e algoritmos.",
+      "gaps": [
+        "engenharia de software (testes, arquitetura)",
+        "desenvolvimento web ou backend",
+        "práticas de equipe (revisão de código, CI)"
+      ],
+      "steps": [
+        "biblioteca documentada com testes no GitHub",
+        "diagrama de arquitetura (D4)",
+        "cursos abertos de engenharia de software"
+      ]
+    },
+    {
+      "to": "fisica",
+      "why": "Equações diferenciais, métodos numéricos e física-matemática são comuns às duas formações.",
+      "gaps": [
+        "física experimental e laboratório",
+        "mecânica quântica e estatística",
+        "instrumentação"
+      ],
+      "steps": [
+        "relatório de simulação de um sistema físico (L4)",
+        "disciplinas de física na pós",
+        "projeto em laboratório parceiro"
+      ]
+    },
+    {
+      "to": "ciencias-contabeis",
+      "why": "Matemática financeira, risco e modelagem quantitativa aproximam de finanças e controladoria.",
+      "gaps": [
+        "contabilidade e normas (CPC, IFRS)",
+        "registro no CRC para atividades contábeis",
+        "legislação tributária"
+      ],
+      "steps": [
+        "relatório de modelo de risco com dados públicos (L4)",
+        "certificação de mercado financeiro",
+        "disciplinas de contabilidade"
+      ]
+    }
+  ],
+  "learning": [
+    {
+      "title": "Portal da Matemática e cursos abertos do IMPA",
+      "provider": "IMPA",
+      "url": "https://impa.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Coleção de livros abertos da SBM e da SBMAC (Notas em Matemática Aplicada)",
+      "provider": "SBM / SBMAC",
+      "url": "https://www.sbmac.org.br/",
+      "free": false,
+      "kind": "livro"
+    },
+    {
+      "title": "e-Disciplinas USP — materiais abertos de cursos de Matemática",
+      "provider": "USP",
+      "url": "https://edisciplinas.usp.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "OR-Tools — guias de otimização",
+      "provider": "Google",
+      "url": "https://developers.google.com/optimization",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "Escola de Verão e cursos do LNCC",
+      "provider": "LNCC",
+      "url": "https://www.lncc.br/",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "Overleaf — documentação de LaTeX",
+      "provider": "Overleaf",
+      "url": "https://www.overleaf.com/learn",
+      "free": true,
+      "kind": "portal"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8",
+      "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Resolução CNE/CES 3/2003 — Diretrizes dos cursos de Matemática",
+      "url": "http://portal.mec.gov.br/cne/arquivos/pdf/ces032003.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO — Classificação Brasileira de Ocupações (MTE)",
+      "url": "https://cbo.mte.gov.br/",
+      "accessedAt": "2026-11-02"
+    }
+  ],
+  "naoConferido": [
+    "URI ESCO de mathematician vem do catálogo do ramo matematica-licenciatura; o catálogo deixa esco vazio para o bacharelado; não reconferida em esco.ec.europa.eu",
+    "códigos CBO 2034, 2341 e 2124 (em family e a4) não conferidos no portal da CBO",
+    "Resolução CNE/CES 3/2003 e Parecer 1.302/2001 citados de memória",
+    "URLs da SOBRAPO, SBMAC, LNCC, e-Disciplinas e chamadas do CNPq não verificadas nesta sessão",
+    "matrículas do bacharelado não localizadas (catálogo registra 0)",
+    "dados do ramo (famílias CBO/ISCO/ESCO, conselho, sensitiveData, vizinhos) copiados de contracts/career/academic-fields.json, que não cabe em sources.url (o esquema só aceita http(s) ou docs/)"
+  ]
+}

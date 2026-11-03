@@ -1,0 +1,347 @@
+{
+  "schemaVersion": 1,
+  "code": "gestao-financeira",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Gestão Financeira", "en": "Financial Management", "es": "Gestión Financiera" },
+  "fields": ["gestao-financeira"],
+  "family": {
+    "cbo": [
+      { "code": "1421", "title": "Gerentes administrativos, financeiros, de riscos e afins" },
+      { "code": "2525", "title": "Profissionais de administração econômico-financeira" },
+      { "code": "2532", "title": "Profissionais de comercialização e consultoria de serviços bancários" }
+    ],
+    "isco08": [
+      { "code": "1211", "title": "Finance managers" },
+      { "code": "2413", "title": "Financial analysts" },
+      { "code": "2412", "title": "Financial and investment advisers" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/30f3ea93-882a-4525-841c-1d5b4b64076f", "label": "financial manager" },
+      { "uri": "http://data.europa.eu/esco/occupation/8d586ee9-0ab1-4155-a3b0-2ca786c8e48c", "label": "financial analyst" },
+      { "uri": "http://data.europa.eu/esco/occupation/44e0c015-309d-4f67-98a3-1e036966ed7f", "label": "budget manager" }
+    ]
+  },
+  "scope": {
+    "summary": "Planeja, controla e analisa os recursos financeiros de empresas, órgãos públicos, cooperativas e instituições financeiras: fluxo de caixa, contas a pagar e receber, tesouraria, orçamento, análise de demonstrações (DRE, balanço), custos e formação de preço, crédito e cobrança, análise de investimentos e relacionamento bancário. Formação tecnológica ou bacharelado; registro no CRA facultativo; certificações ANBIMA exigidas para distribuir produtos de investimento.",
+    "entryRoles": ["Auxiliar financeiro", "Assistente de contas a pagar e receber", "Assistente de tesouraria", "Estagiário de finanças ou controladoria", "Escriturário bancário", "Assistente de crédito e cobrança"],
+    "midRoles": ["Analista financeiro", "Analista de FP&A (planejamento financeiro)", "Analista de crédito", "Analista de tesouraria", "Analista de custos", "Gerente de relacionamento bancário", "Analista de controladoria"],
+    "seniorRoles": ["Coordenador financeiro", "Gerente financeiro", "Controller", "Gerente de tesouraria ou de crédito", "Diretor financeiro (CFO)", "Consultor financeiro empresarial"],
+    "sectors": ["bancos e cooperativas de crédito", "indústria", "comércio e varejo", "serviços", "fintechs", "seguradoras", "setor público (orçamento e finanças)", "micro e pequenas empresas", "consultoria e auditoria", "terceiro setor"],
+    "regulation": [
+      { "name": "Lei 6.404/1976 (Lei das S.A.) e Lei 11.638/2007", "issuer": "Brasil", "about": "demonstrações financeiras obrigatórias (balanço, DRE, DFC, DMPL) e convergência às normas internacionais" },
+      { "name": "Pronunciamentos do CPC (ex.: CPC 00, CPC 03 — Demonstração dos Fluxos de Caixa, CPC 26)", "issuer": "Comitê de Pronunciamentos Contábeis / CFC", "about": "estrutura conceitual e apresentação das demonstrações que o analista financeiro lê e projeta" },
+      { "name": "Lei Complementar 105/2001", "issuer": "Brasil", "about": "sigilo das operações de instituições financeiras" },
+      { "name": "Lei 6.385/1976 e Resoluções CVM (ex.: Res. CVM 30/2021 — suitability)", "issuer": "Brasil / CVM", "about": "mercado de valores mobiliários, informação privilegiada (art. 27-D) e adequação de produtos ao perfil do investidor" },
+      { "name": "Lei 9.613/1998 e Circular BCB 3.978/2020", "issuer": "Brasil / Banco Central", "about": "prevenção à lavagem de dinheiro: conheça seu cliente, monitoramento e comunicação ao COAF" },
+      { "name": "Código ANBIMA de Certificação (CPA-10, CPA-20, CEA, CFP)", "issuer": "ANBIMA", "about": "certificações exigidas para distribuição e assessoria em produtos de investimento" },
+      { "name": "Lei 4.769/1965; Res. CFA 649/2024", "issuer": "CFA/CRA", "about": "registro facultativo do tecnólogo em área conexa à Administração" },
+      { "name": "LGPD (Lei 13.709/2018)", "issuer": "Brasil", "about": "tratamento de dados financeiros e cadastrais de clientes" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "fluxo de caixa", "meaning": "registro e projeção de entradas e saídas de dinheiro em um período" },
+      { "term": "DRE", "meaning": "demonstração do resultado do exercício: receitas, custos, despesas e lucro" },
+      { "term": "balanço patrimonial", "meaning": "ativos, passivos e patrimônio líquido em uma data" },
+      { "term": "DFC", "meaning": "demonstração dos fluxos de caixa: operacional, de investimento e de financiamento (CPC 03)" },
+      { "term": "orçamento empresarial", "meaning": "plano de receitas, custos, despesas e investimentos de um período, acompanhado por orçado × realizado" },
+      { "term": "capital de giro e ciclo financeiro", "meaning": "recursos para a operação; prazo entre pagar fornecedores e receber de clientes" },
+      { "term": "EBITDA", "meaning": "lucro antes de juros, impostos, depreciação e amortização" },
+      { "term": "margem bruta, operacional e líquida", "meaning": "lucro em cada nível dividido pela receita" },
+      { "term": "ponto de equilíbrio", "meaning": "receita que cobre custos fixos e variáveis" },
+      { "term": "VPL, TIR e payback", "meaning": "valor presente líquido, taxa interna de retorno e prazo de retorno de um investimento" },
+      { "term": "custo de capital (WACC)", "meaning": "custo médio ponderado de capital próprio e de terceiros" },
+      { "term": "índices de liquidez e endividamento", "meaning": "corrente, seca, imediata; participação de capital de terceiros" },
+      { "term": "conciliação bancária", "meaning": "conferência entre extrato e registros internos" },
+      { "term": "contas a pagar e receber", "meaning": "controle de obrigações e direitos com prazos e vencimentos" },
+      { "term": "inadimplência e PDD", "meaning": "atrasos de clientes e provisão para devedores duvidosos" },
+      { "term": "análise de crédito (5 Cs)", "meaning": "caráter, capacidade, capital, colateral e condições" },
+      { "term": "FP&A", "meaning": "planejamento e análise financeira: orçamento, forecast e análise de variações" },
+      { "term": "forecast", "meaning": "reprojeção do resultado com base no realizado" },
+      { "term": "Selic, CDI e IPCA", "meaning": "taxa básica de juros, taxa interbancária de referência e índice oficial de inflação" },
+      { "term": "suitability", "meaning": "adequação do produto de investimento ao perfil do cliente" },
+      { "term": "Open Finance e Pix", "meaning": "compartilhamento de dados financeiros com consentimento e pagamento instantâneo do Banco Central" }
+    ],
+    "tools": ["Excel / Google Sheets (fórmulas financeiras, tabela dinâmica)", "Power BI / Looker Studio", "ERP (SAP, TOTVS, Omie, Conta Azul)", "internet banking e CNAB", "calculadora HP 12C", "Bloomberg ou plataformas de mercado (quando houver)", "Python ou SQL básico para dados", "sistemas de crédito e bureaus (Serasa, SPC, Boa Vista)"],
+    "deliverables": ["fluxo de caixa projetado", "DRE gerencial", "orçamento anual com orçado × realizado", "relatório de análise de demonstrações (índices)", "análise de viabilidade (VPL, TIR, payback)", "parecer de crédito (minuta)", "conciliação bancária", "relatório mensal de desempenho financeiro", "política de crédito e cobrança", "planilha de formação de preço", "painel de indicadores financeiros", "POP de contas a pagar ou fechamento"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Gestão do fluxo de caixa e capital de giro", "esco": null, "kind": "nucleo" },
+      { "label": "Elaboração e acompanhamento de orçamento", "esco": null, "kind": "nucleo" },
+      { "label": "Análise de demonstrações financeiras (DRE, balanço, DFC)", "esco": null, "kind": "nucleo" },
+      { "label": "Análise de viabilidade de investimentos", "esco": null, "kind": "nucleo" },
+      { "label": "Custos e formação de preço", "esco": null, "kind": "nucleo" },
+      { "label": "Análise de crédito e gestão de cobrança", "esco": null, "kind": "nucleo" },
+      { "label": "Tesouraria e conciliação bancária", "esco": null, "kind": "nucleo" },
+      { "label": "Modelagem financeira em planilhas", "esco": null, "kind": "nucleo" },
+      { "label": "Relatórios e indicadores financeiros", "esco": null, "kind": "apoio" },
+      { "label": "Mercado financeiro e produtos de investimento", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de riscos financeiros", "esco": null, "kind": "apoio" },
+      { "label": "Noções de contabilidade e tributos", "esco": null, "kind": "apoio" },
+      { "label": "Prevenção à lavagem de dinheiro e compliance", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["ética e sigilo", "atenção a detalhes", "comunicação de números para não especialistas", "organização e prazos", "raciocínio analítico", "negociação"],
+    "tracks": [
+      { "id": "caixa-e-orcamento", "label": "Caixa e orçamento", "steps": ["fluxo de caixa projetado de 12 meses (X1)", "POP de fechamento ou contas a pagar (L7)", "infográfico orçado × realizado (D7)", "relatório de desempenho financeiro (L4)"] },
+      { "id": "analise-e-investimentos", "label": "Análise e investimentos", "steps": ["análise de demonstrações de uma empresa de capital aberto (L4)", "estudo de viabilidade com VPL e TIR (X2)", "infográfico de indicadores (D7)"] },
+      { "id": "credito-e-banco", "label": "Crédito e relacionamento bancário", "steps": ["fluxo do processo de concessão de crédito (D4)", "parecer de crédito simulado (L4)", "certificação CPA-10 ou CPA-20", "estudo de caso STAR de redução de inadimplência (L3)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"auxiliar financeiro\", \"analista de contas a pagar\", \"escriturário bancário\", \"analista de crédito\", \"analista de FP&A\"",
+      "cboFamilies": ["2525", "1421", "2532", "4110", "4131"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez (caixa, crédito, orçamento, banco) e não do zero. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, aprendizagem ou primeiro cargo financeiro",
+        "junior": "até dois anos; executa contas, conciliações e lançamentos com supervisão",
+        "pleno": "elabora fluxo de caixa, orçamento e análises com autonomia",
+        "senior": "referência em análise e modelagem; orienta colegas e apresenta à diretoria",
+        "gestao": "responde por equipe, orçamento da área ou resultado financeiro"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (de uma conciliação a um estudo de viabilidade) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em finanças",
+      "options": ["controlar contas a pagar e receber", "montar fluxo de caixa", "elaborar orçamento e acompanhar realizado", "analisar DRE e balanço", "calcular custos e formar preço", "analisar crédito", "conciliar contas bancárias", "modelar em Excel", "montar painéis em Power BI", "avaliar investimentos (VPL, TIR)", "atender clientes de banco ou cooperativa", "negociar com bancos e fornecedores", "explicar números para gestores"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com planilhas, relatórios e painéis."
+    },
+    "c4": {
+      "certifications": ["tecnólogo em Gestão Financeira", "bacharelado em Administração, Contábeis ou Economia", "CPA-10 / CPA-20 (ANBIMA)", "CEA ou CFP (ANBIMA / Planejar)", "registro no CRA (facultativo)", "Excel avançado ou Power BI", "CFA (CFA Institute) ou especialização em finanças", "certificação em PLD (prevenção à lavagem de dinheiro)"],
+      "languages": ["inglês (relatórios e multinacionais)", "espanhol"],
+      "why": "Certificações ANBIMA são exigidas para quem distribui investimentos; Excel e análise de demonstrações aparecem em quase todas as vagas."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver em finanças?",
+      "options": ["fluxo de caixa e capital de giro", "orçamento e FP&A", "análise de demonstrações", "valuation e viabilidade (VPL, TIR)", "Excel avançado e modelagem", "Power BI e dados", "crédito e cobrança", "mercado financeiro e certificações ANBIMA", "custos e formação de preço", "riscos e compliance"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (caixa → orçamento → análise) em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que frente você atua ou quer atuar?", "type": "lista", "options": ["financeiro de empresa (caixa, contas, tesouraria)", "planejamento e controladoria (FP&A)", "banco ou cooperativa de crédito", "investimentos e mercado de capitais", "finanças públicas", "consultoria para pequenos negócios"], "why": "Pergunto para priorizar as tarefas certas: fluxo de caixa e POP para o financeiro da empresa; parecer de crédito para bancos; viabilidade para investimentos.", "where": "P" },
+      { "id": "x2", "prompt": "Os números do seu trabalho podem ser mostrados?", "type": "escolha", "options": ["sim, uso dados públicos (empresas de capital aberto)", "só anonimizados ou em percentual", "não; vou usar um caso fictício"], "why": "Pergunto porque dados bancários, de clientes e projeções internas são sigilosos (LC 105/2001); com a resposta, sugiro dados públicos da CVM ou um caso fictício.", "where": "X" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L4", "D7", "L7", "D4", "L3", "L6", "L1", "L9", "L8", "D5", "L5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta de ambiente é entrega da arquitetura" },
+      { "code": "D3", "reason": "modelo 3D de produto não é evidência de finanças" },
+      { "code": "D6", "reason": "detalhe construtivo é entrega de engenharia" },
+      { "code": "D8", "reason": "vista explodida é entrega da mecânica" },
+      { "code": "D9", "reason": "wireframe de tela é entrega de UX" }
+    ],
+    "parameters": {
+      "L4": {
+        "title": "Relatório de análise financeira de uma empresa",
+        "brief": "Analise as demonstrações de uma empresa de capital aberto (dados públicos da CVM ou B3) ou de um caso fictício em até 4 páginas: objetivo, dados e período, índices calculados (liquidez, endividamento, margens, rentabilidade, ciclo financeiro), leitura da DRE e do fluxo de caixa, limitações e conclusão. Não é recomendação de investimento.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "dados e período", "índices", "análise da DRE e do caixa", "limitações", "conclusão"], "minIndicators": 6, "dataSource": "CVM, B3 ou caso fictício" },
+        "criteria": ["até 4 páginas", "seis seções nomeadas", "ao menos seis índices com fórmula", "fonte e período dos dados citados", "limitações declaradas", "aviso de que não é recomendação de investimento"],
+        "evidence": "relatório em PDF",
+        "time": "2 h",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico orçado × realizado ou de indicadores financeiros",
+        "brief": "Mostre orçado × realizado de um período, ou a evolução de três indicadores (margem, liquidez, inadimplência), com fonte, período, eixos rotulados, unidade (R$ mil ou %) e uma mensagem principal. Use percentual relativo ou caso fictício quando os valores forem sigilosos.",
+        "parameters": { "requiredElements": ["fonte", "período", "eixos rotulados", "unidade", "uma mensagem principal"], "maxIndicators": 3 },
+        "criteria": ["fonte e período citados", "eixos rotulados com unidade", "uma mensagem principal explícita", "variações destacadas", "sem dados sigilosos identificáveis"],
+        "evidence": "imagem PNG + PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "L7": {
+        "title": "POP de uma rotina financeira",
+        "brief": "Escreva o procedimento de uma rotina que você domina (contas a pagar, conciliação bancária, fechamento mensal, cobrança): objetivo, passos numerados com responsável, sistema usado, controle de dupla checagem ou alçada de aprovação e critério de conclusão por passo. Sem dados bancários reais.",
+        "parameters": { "requiredElements": ["objetivo", "passos numerados", "responsável por passo", "sistema por passo", "controle ou alçada de aprovação", "critério de conclusão por passo"] },
+        "criteria": ["passos numerados com responsável", "critério de conclusão em cada passo", "ao menos um controle de segregação de funções ou alçada", "sistema indicado", "sem dado bancário ou de cliente real"],
+        "evidence": "POP em modelo",
+        "time": "60 min",
+        "level": 1
+      },
+      "D4": {
+        "title": "Fluxo do processo de concessão de crédito ou de pagamento",
+        "brief": "Modele em BPMN simplificado o processo de concessão de crédito, de pagamento a fornecedor ou de cobrança: início e fim, raias por área, atividades, decisões (alçadas, aprovação) e controles anotados.",
+        "parameters": { "notation": "BPMN simplificado", "requiredElements": ["evento de início e de fim", "raias por área", "gateways de alçada ou aprovação", "controles anotados"], "minActivities": 6 },
+        "criteria": ["início e fim explícitos", "raias por área", "nenhuma atividade órfã", "ao menos um gateway de alçada", "ao menos um controle anotado"],
+        "evidence": "diagrama vetorial (SVG/PDF)",
+        "time": "45 min",
+        "level": 1
+      },
+      "L3": {
+        "title": "Estudo de caso STAR de um resultado financeiro",
+        "brief": "Conte um problema financeiro que você ajudou a resolver (inadimplência, falta de caixa, erro de conciliação, custo alto): situação com indicador inicial, tarefa, ação e resultado mensurável. Use percentual se os valores forem sigilosos.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true },
+        "criteria": ["quatro seções explícitas", "indicador inicial e final", "resultado com número ou comparação relativa", "declaração de ausência de dado confidencial"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "L6": {
+        "title": "Resumo de perfil em gestão financeira",
+        "brief": "Escreva até 600 caracteres com sua frente (caixa, FP&A, crédito, banco, investimentos), três competências e uma prova com link (relatório de análise, fluxo de caixa, painel). Sem dados pessoais além do nome.",
+        "parameters": { "maxChars": 600, "requiredParts": ["frente de atuação", "três competências", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia a frente de atuação", "cita três competências", "inclui uma prova com link"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Fluxo de caixa projetado de 12 meses com premissas",
+        "competency": "Gestão do fluxo de caixa e capital de giro",
+        "criteria": ["12 meses de entradas e saídas", "premissas explícitas (crescimento, prazos, inflação)", "saldo inicial, final e acumulado", "identifica meses de necessidade de caixa e propõe ação", "caso fictício ou dados públicos declarados"],
+        "evidence": "planilha + nota explicativa em PDF",
+        "time": "90 min",
+        "trigger": "Quer mostrar que sabe prever o caixa de um negócio?",
+        "level": 2
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Estudo de viabilidade de um investimento (VPL, TIR, payback)",
+        "competency": "Análise de viabilidade de investimentos",
+        "criteria": ["investimento inicial e fluxos projetados", "taxa de desconto justificada", "VPL, TIR e payback calculados", "análise de sensibilidade com dois cenários", "conclusão com riscos e aviso de que não é recomendação"],
+        "evidence": "relatório em PDF + planilha",
+        "time": "2 h",
+        "trigger": "Tem um projeto ou compra para avaliar se vale a pena?",
+        "level": 3
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L9", "X2"], "auto": true },
+      { "id": "indice-com-formula", "check": "cada índice ou métrica traz fórmula e valor", "appliesTo": ["L4", "X2", "D7"], "auto": true },
+      { "id": "fonte-e-periodo", "check": "dados trazem fonte e período", "appliesTo": ["L4", "D7", "X1", "X2"], "auto": true },
+      { "id": "premissas-explicitas", "check": "as premissas da projeção estão listadas", "appliesTo": ["X1", "X2"], "auto": true },
+      { "id": "aviso-nao-recomendacao", "check": "há aviso de que a análise não é recomendação de investimento", "appliesTo": ["L4", "X2"], "auto": true },
+      { "id": "fluxo-fechado", "check": "o diagrama tem início e fim, raias e nenhuma atividade órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "palavras-chave-do-alvo", "check": "as palavras-chave do cargo-alvo aparecem no texto", "appliesTo": ["L1", "L2"], "auto": true },
+      { "id": "sem-dados-sigilosos", "check": "não há dados bancários, CPF/CNPJ de cliente ou projeção interna identificável; a pessoa declarou autoria", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D2", "D4", "D5", "D7", "D10", "X1", "X2"], "auto": true },
+      { "id": "calculos-corretos", "check": "os cálculos e fórmulas da planilha estão corretos e consistentes", "appliesTo": ["X1", "X2", "L4"], "auto": false }
+    ],
+    "subjective": [
+      { "id": "rigor-analitico", "label": "Rigor analítico", "levels": { "aproxima": "apresenta números sem interpretação", "atende": "interpreta os números e liga causas a efeitos", "supera": "compara com referências do setor, testa cenários e aponta riscos" } },
+      { "id": "comunicacao-de-numeros", "label": "Comunicação de números", "levels": { "aproxima": "tabelas densas sem destaque", "atende": "destaca a mensagem principal e explica termos", "supera": "um gestor não financeiro decide a partir do material" } },
+      { "id": "resultado", "label": "Resultado demonstrado", "levels": { "aproxima": "descreve atividades, sem resultado", "atende": "mostra um resultado mensurável", "supera": "mostra resultado, contexto e o que faria diferente" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa que atua ou quer atuar em gestão financeira: financeiro de empresas, controladoria e FP&A, bancos e cooperativas de crédito, investimentos ou finanças públicas. Use o vocabulário da área (fluxo de caixa, DRE, balanço, DFC, orçado × realizado, capital de giro, ciclo financeiro, EBITDA, VPL, TIR, payback, conciliação, PDD, análise de crédito, Selic, CDI, IPCA) e cite referências quando útil: Lei 6.404/1976, pronunciamentos do CPC (CPC 03 para fluxos de caixa), LC 105/2001 (sigilo bancário), Lei 6.385/1976 e normas da CVM, Lei 9.613/1998 (PLD), Código ANBIMA de certificação. Oriente a produzir evidências: fluxo de caixa projetado com premissas, relatório de análise de demonstrações com dados públicos da CVM, estudo de viabilidade, POP de rotina financeira, painel orçado × realizado. Nunca faça recomendação de investimento personalizada, não substitua profissional certificado (CPA, CEA, CFP) nem contador, e não redija parecer de crédito, laudo ou demonstração assinável: toda saída é rascunho de estudo. Nunca trate dados bancários, de crédito ou de investimentos de clientes, demonstrações e projeções internas não publicadas, nem informação privilegiada; peça dados públicos ou caso fictício. Pergunte antes de inferir frente, cargo ou senioridade. Afirmações de mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa emprego, rentabilidade ou salário. Progresso é por critérios atendidos, nunca por score. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "Lei 6.404/1976 — Lei das Sociedades por Ações (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l6404consol.htm", "kind": "norma" },
+      { "title": "Comitê de Pronunciamentos Contábeis (CPC) — pronunciamentos técnicos", "url": "https://www.cpc.org.br/", "kind": "norma" },
+      { "title": "Lei Complementar 105/2001 — sigilo das operações financeiras (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp105.htm", "kind": "norma" },
+      { "title": "CVM — dados abertos de companhias abertas (DFP, ITR)", "url": "https://dados.cvm.gov.br/", "kind": "orgao-publico" },
+      { "title": "Banco Central do Brasil — séries temporais (SGS) e Focus", "url": "https://www.bcb.gov.br/estatisticas", "kind": "estatistica" },
+      { "title": "ANBIMA — certificações profissionais", "url": "https://www.anbima.com.br/pt_br/educar/certificacoes.htm", "kind": "referencia" },
+      { "title": "Conselho Federal de Administração (CFA)", "url": "https://cfa.org.br/", "kind": "conselho" },
+      { "title": "CBO — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2/c5 com competências financeiras; x1 (frente) e x2 (números mostráveis)." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza L4 (análise com dados da CVM), D7 (orçado × realizado), L7 (POP) e X1 (fluxo de caixa) conforme x1." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); planilhas e painéis só no computador; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Pré-checa índices com fórmula, fonte e período, premissas, aviso de não recomendação e ausência de dados sigilosos; a correção dos cálculos depende de revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Propõe estrutura de relatório de análise, nota de premissas e POP; nunca recomendação de investimento nem parecer assinável; nunca aplica sem revisão." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Eixos, unidades e fonte no infográfico (D7); alçadas e controles no fluxo (D4)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: síntese por competências financeiras com lacunas (ex.: certificação ANBIMA) e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Caminhos para contabilidade, economia, atuária, administração e comercial com lacunas e passos; mercado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por CBO 2525/1421 e por competências." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com frente e provas; só com o consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, sistemas e certificações em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados bancários, de crédito e de investimentos de clientes (LC 105/2001)", "demonstrações, fluxos de caixa e projeções internas não publicadas", "informação privilegiada sobre mercado de capitais", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca fazer recomendação de investimento personalizada nem substituir profissional certificado ou contador",
+      "não redigir parecer de crédito, laudo ou demonstração assinável; toda peça é rascunho de estudo",
+      "não tratar dados bancários ou de clientes, projeções internas ou informação privilegiada; pedir dados públicos (CVM) ou caso fictício",
+      "nunca prometer emprego, rentabilidade ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "perguntar em vez de inferir frente, cargo ou senioridade",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["infografico", "diagrama", "prancha"],
+    "lettersTemplates": ["relatorio-tecnico", "pop", "estudo-de-caso", "bio", "curriculo", "carta", "plano-30-60-90", "proposta", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas de texto curtas (L5, L6) e revisão (L10); planilhas de caixa (X1), viabilidade (X2) e infográficos (D7) pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em gestão financeira (15 min).",
+        "Quer praticar análise com dados públicos? As demonstrações de uma empresa listada estão no portal da CVM; o relatório leva cerca de 2 h.",
+        "Um POP de conciliação ou contas a pagar leva cerca de 60 min e comprova controle.",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["dados bancários, de crédito e de investimentos de clientes (sigilo bancário – LC 105/2001)", "demonstrações, fluxos de caixa e projeções internas não publicadas", "informação privilegiada sobre mercado de capitais (Lei 6.385/1976 art. 27-D)", "documentos pessoais (CPF, RG, endereço)"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2525, 1421 e 2532", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "PNAD Contínua (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html", "geography": "Brasil e UF", "cadence": "trimestral", "kind": "estatistica-oficial" },
+      { "title": "Banco Central — Relatório de Economia Bancária e dados do Sistema Financeiro Nacional", "url": "https://www.bcb.gov.br/publicacoes/relatorioeconomiabancaria", "geography": "Brasil", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "ANBIMA — estatísticas de certificação e do mercado de capitais", "url": "https://www.anbima.com.br/pt_br/informar/estatisticas.htm", "geography": "Brasil", "cadence": "mensal", "kind": "associacao" },
+      { "title": "Febraban — Pesquisa de Tecnologia Bancária e dados do setor", "url": "https://portal.febraban.org.br/", "geography": "Brasil", "cadence": "anual", "kind": "associacao" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147); rentabilidade de investimento nunca é prometida."
+  },
+  "paths": [
+    { "to": "ciencias-contabeis", "why": "Análise de demonstrações e fechamento aproximam finanças da contabilidade; o exercício contábil exige bacharelado e registro no CRC.", "gaps": ["bacharelado em Ciências Contábeis e exame de suficiência do CFC", "escrituração e normas contábeis (CPC)", "tributos e obrigações acessórias"], "steps": ["relatório de análise de demonstrações (L4)", "POP de fechamento mensal (L7)", "cursos do CFC e do CPC"] },
+    { "to": "ciencias-economicas", "why": "Macroeconomia, juros e inflação explicam o cenário das decisões financeiras; o economista registra-se no CORECON.", "gaps": ["bacharelado em Economia", "econometria e modelos macroeconômicos", "análise de conjuntura"], "steps": ["infográfico de Selic, IPCA e crédito com dados do Banco Central (D7)", "relatório sobre efeito dos juros no caixa de uma empresa (L4)"] },
+    { "to": "administracao", "why": "A gestão financeira é uma das áreas da administração; o bacharelado amplia para estratégia, pessoas e marketing.", "gaps": ["visão estratégica integrada", "gestão de pessoas e marketing", "registro pleno no CRA"], "steps": ["estudo de caso STAR com visão de negócio (L3)", "plano 30-60-90 para coordenação financeira (L9)"] },
+    { "to": "ciencias-atuariais", "why": "Para quem gosta de modelagem de risco, seguros e previdência; o atuário registra-se no IBA.", "gaps": ["bacharelado em Ciências Atuariais", "estatística e matemática atuarial", "regulação da SUSEP e PREVIC"], "steps": ["estudo de viabilidade com cenários (X2)", "curso de estatística aplicada"] },
+    { "to": "processos-gerenciais", "why": "Rotinas financeiras são processos; quem mapeia e melhora o financeiro pode migrar para análise de processos.", "gaps": ["BPMN e mapeamento de processos", "indicadores de processo", "gestão de projetos de melhoria"], "steps": ["fluxo BPMN de contas a pagar (D4)", "antes e depois de uma rotina financeira (D5)"] },
+    { "to": "gestao-comercial", "why": "Crédito, cobrança e relacionamento bancário estão próximos da área comercial de instituições financeiras.", "gaps": ["técnicas de vendas e negociação", "gestão de carteira de clientes", "marketing de serviços"], "steps": ["resposta a briefing de proposta para cliente PJ (L8)", "certificação CPA-10"] }
+  ],
+  "learning": [
+    { "title": "Cursos de finanças para pequenos negócios (fluxo de caixa, preço)", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "Portal do Investidor e cursos de educação financeira da CVM", "provider": "CVM", "url": "https://www.gov.br/investidor/pt-br", "free": true, "kind": "portal" },
+    { "title": "Cidadania Financeira e cursos do Banco Central", "provider": "Banco Central do Brasil", "url": "https://www.bcb.gov.br/cidadaniafinanceira", "free": true, "kind": "portal" },
+    { "title": "Hub de Educação da B3 (cursos gratuitos de mercado financeiro)", "provider": "B3", "url": "https://edu.b3.com.br/", "free": true, "kind": "portal" },
+    { "title": "Certificações ANBIMA (CPA-10, CPA-20, CEA)", "provider": "ANBIMA", "url": "https://www.anbima.com.br/pt_br/educar/certificacoes.htm", "free": false, "kind": "certificacao" },
+    { "title": "Pronunciamentos técnicos do CPC (CPC 00, 03, 26)", "provider": "Comitê de Pronunciamentos Contábeis", "url": "https://www.cpc.org.br/", "free": true, "kind": "norma" },
+    { "title": "Escola Virtual.Gov — orçamento, finanças públicas e Excel", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual Fundação Bradesco — matemática financeira e Excel", "provider": "Fundação Bradesco", "url": "https://www.ev.org.br/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Catálogo de ramos acadêmicos — gestao-financeira (CBO, ISCO, ESCO, conselho, sensitiveData, vizinhos)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Lei Complementar 105/2001 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp105.htm", "accessedAt": "2026-11-02" },
+    { "title": "Lei 6.404/1976 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l6404consol.htm", "accessedAt": "2026-11-02" },
+    { "title": "ANBIMA — certificações", "url": "https://www.anbima.com.br/pt_br/educar/certificacoes.htm", "accessedAt": "2026-11-02" },
+    { "title": "CBO — Classificação Brasileira de Ocupações", "url": "https://cbo.mte.gov.br/", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URIs ESCO das competências não confirmadas nesta sessão (todas com esco: null); as URIs de ocupação vêm do catálogo",
+    "Res. CVM 30/2021 (suitability) e Circular BCB 3.978/2020 citadas de memória; vigência não conferida",
+    "URLs de dados.cvm.gov.br, Relatório de Economia Bancária, estatísticas ANBIMA, Febraban, Hub B3 e Cidadania Financeira não abertas nesta sessão",
+    "família CBO 4131 (auxiliares de contabilidade/escriturários) em a4.cboFamilies não conferida no portal da CBO",
+    "exigência de certificação ANBIMA por função descrita de forma geral; regras atuais do Código de Certificação não conferidas"
+  ]
+}

@@ -313,7 +313,7 @@
       { "title": "ABRASEL — conteúdos e capacitação para bares e restaurantes", "provider": "ABRASEL", "url": "https://abrasel.com.br/", "free": true, "kind": "comunidade" }
   ],
   "sources": [
-    { "title": "Catálogo de ramos acadêmicos — ramo gastronomia (CBO 2711/5132, ESCO chef, vizinhos, sensitiveData)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §7 e §8; dados do ramo (CBO 2711/5132, ESCO chef, vizinhos, sensitiveData) do catálogo contracts/career/academic-fields.json", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
     { "title": "RDC 216/2004 — Regulamento técnico de boas práticas para serviços de alimentação (ANVISA)", "url": "https://bvsms.saude.gov.br/bvs/saudelegis/anvisa/2004/res0216_15_09_2004.html", "accessedAt": "2026-11-02" },
     { "title": "RDC 275/2002 — POPs (ANVISA)", "url": "https://bvsms.saude.gov.br/bvs/saudelegis/anvisa/2002/rdc0275_21_10_2002.html", "accessedAt": "2026-11-02" },
     { "title": "Lei 11.771/2008 — Política Nacional de Turismo (art. 21, prestadores de serviços turísticos)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2008/lei/l11771.htm", "accessedAt": "2026-11-02" },

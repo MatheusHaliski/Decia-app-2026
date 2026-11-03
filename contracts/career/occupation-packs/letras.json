@@ -1,0 +1,394 @@
+{
+  "schemaVersion": 1,
+  "code": "letras",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Letras", "en": "Languages and Literature (Letters)", "es": "Letras" },
+  "fields": ["letras"],
+  "family": {
+    "cbo": [
+      { "code": "2321", "title": "Professores do ensino médio" },
+      { "code": "2313", "title": "Professores de nível superior no ensino fundamental de quinta a oitava série" },
+      { "code": "2614", "title": "Filólogos, tradutores, intérpretes e afins" },
+      { "code": "2615", "title": "Profissionais da escrita" }
+    ],
+    "isco08": [
+      { "code": "2330", "title": "Secondary education teachers" },
+      { "code": "2643", "title": "Translators, interpreters and other linguists" },
+      { "code": "2641", "title": "Authors and related writers" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/c011a88b-95ab-46ad-ad30-539e3fc56092", "label": "literature teacher at secondary school" },
+      { "uri": "http://data.europa.eu/esco/occupation/fb0c7da2-6d0e-4a3f-be3e-344f58f0e82d", "label": "modern languages teacher secondary school" },
+      { "uri": "http://data.europa.eu/esco/occupation/1a07bd7d-2e1d-4930-a84a-1a442b8f2a44", "label": "translator" },
+      { "uri": "http://data.europa.eu/esco/occupation/9a2147aa-a72f-4f83-8653-c3f50d4e1e73", "label": "sign language interpreter" }
+    ]
+  },
+  "scope": {
+    "summary": "Licenciaturas e bacharelados em língua portuguesa, línguas estrangeiras, Libras, literatura, linguística e tradução. A licenciatura habilita para a docência nos anos finais e no ensino médio (LDB, art. 62), com planos alinhados à BNCC; o bacharelado leva a tradução, revisão, redação, edição e pesquisa. Não há conselho: tradutor público tem matrícula na Junta Comercial e intérprete de Libras segue a Lei 12.319/2010. Textos de clientes e dados de alunos são sigilosos.",
+    "entryRoles": ["Estagiário de docência em Língua Portuguesa ou língua estrangeira", "Professor de idiomas em escola livre", "Revisor de textos júnior", "Assistente editorial", "Redator júnior de conteúdo", "Tradutor ou legendador freelancer iniciante"],
+    "midRoles": ["Professor de Língua Portuguesa ou de língua estrangeira da educação básica", "Professor de redação e preparatório", "Tradutor e/ou intérprete (inclusive de Libras)", "Revisor e preparador de originais", "Redator ou UX writer", "Editor de conteúdo didático"],
+    "seniorRoles": ["Coordenador de área de linguagens", "Professor do ensino superior e pesquisador em linguística ou literatura", "Tradutor público e intérprete comercial", "Editor-chefe ou gerente editorial", "Autor de material didático (PNLD)", "Especialista em avaliação de redação (ENEM, vestibulares)"],
+    "sectors": ["redes públicas de educação básica", "escolas privadas e cursos de idiomas", "editoras e mercado do livro", "agências de tradução, localização e legendagem", "comunicação, conteúdo e marketing", "ensino superior e pesquisa", "órgãos públicos (revisão, Libras, acessibilidade)", "edtechs e plataformas de idiomas", "trabalho autônomo (freela)"],
+    "regulation": [
+      { "name": "LDB — Lei 9.394/1996, arts. 26, 62 e 64", "issuer": "Brasil", "about": "componentes curriculares (inclui língua inglesa no EF) e licenciatura para docência na educação básica" },
+      { "name": "BNCC — Res. CNE/CP 2/2017 e Res. CNE/CP 4/2018", "issuer": "CNE/MEC", "about": "área de Linguagens: Língua Portuguesa (práticas de linguagem, campos de atuação) e Língua Inglesa; habilidades codificadas" },
+      { "name": "DCN dos cursos de Letras — Parecer CNE/CES 492/2001 e Res. CNE/CES 18/2002", "issuer": "CNE/MEC", "about": "perfil do formado em Letras, licenciatura e bacharelado" },
+      { "name": "Lei 10.436/2002 e Decreto 5.626/2005", "issuer": "Brasil", "about": "reconhecem a Libras e regulam formação de professores e intérpretes" },
+      { "name": "Lei 12.319/2010 (alterada pela Lei 14.704/2023)", "issuer": "Brasil", "about": "profissão de tradutor, intérprete e guia-intérprete de Libras" },
+      { "name": "Lei 14.195/2021, arts. 22 a 34", "issuer": "Brasil", "about": "tradutor e intérprete público: matrícula na Junta Comercial e traduções juramentadas" },
+      { "name": "Lei de Direitos Autorais — Lei 9.610/1998", "issuer": "Brasil", "about": "tradução é obra derivada; crédito e autorização para uso de textos de terceiros" },
+      { "name": "ECA (Lei 8.069/1990) e LGPD, art. 14", "issuer": "Brasil", "about": "dados e produções de alunos menores só com autorização do responsável" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "BNCC — Linguagens", "meaning": "área com Língua Portuguesa, Língua Inglesa, Arte e Educação Física; habilidades como EF69LP01 ou EM13LP01" },
+      { "term": "práticas de linguagem", "meaning": "eixos da BNCC de Língua Portuguesa: leitura, produção de textos, oralidade e análise linguística/semiótica" },
+      { "term": "gêneros textuais / discursivos", "meaning": "formas relativamente estáveis de texto (notícia, artigo de opinião, conto) que organizam o ensino" },
+      { "term": "sequência didática de gênero", "meaning": "módulos com produção inicial, oficinas e produção final de um gênero (modelo de Dolz e Schneuwly)" },
+      { "term": "letramento literário", "meaning": "formação do leitor de literatura pela leitura, discussão e registro de obras" },
+      { "term": "análise linguística", "meaning": "reflexão sobre a língua em uso (gramática a serviço do texto)" },
+      { "term": "competências da redação do ENEM", "meaning": "cinco critérios de correção da redação dissertativo-argumentativa do INEP" },
+      { "term": "variação linguística", "meaning": "diferenças regionais, sociais e situacionais da língua; combate ao preconceito linguístico" },
+      { "term": "QECR (CEFR)", "meaning": "Quadro Europeu Comum de Referência para línguas: níveis A1 a C2" },
+      { "term": "abordagem comunicativa", "meaning": "ensino de língua estrangeira centrado no uso em situações reais" },
+      { "term": "tradução juramentada", "meaning": "tradução com fé pública feita por tradutor público matriculado na Junta Comercial" },
+      { "term": "localização", "meaning": "adaptação de software, jogos ou sites a uma língua e cultura" },
+      { "term": "CAT tool / memória de tradução", "meaning": "ferramenta de tradução assistida que reaproveita segmentos já traduzidos e glossários" },
+      { "term": "pós-edição", "meaning": "revisão humana de tradução automática para atingir qualidade definida" },
+      { "term": "glossário terminológico", "meaning": "lista de termos com equivalentes aprovados para um cliente ou área" },
+      { "term": "preparação de originais", "meaning": "revisão de coerência, padronização e normas antes da diagramação" },
+      { "term": "revisão de provas", "meaning": "conferência final do texto já diagramado" },
+      { "term": "Acordo Ortográfico (1990)", "meaning": "norma ortográfica vigente no Brasil desde 2009, obrigatória desde 2016" },
+      { "term": "VOLP", "meaning": "Vocabulário Ortográfico da Língua Portuguesa, da ABL" },
+      { "term": "Libras", "meaning": "Língua Brasileira de Sinais, língua oficial da comunidade surda (Lei 10.436/2002)" },
+      { "term": "legendagem / LSE", "meaning": "legenda para ouvintes e legenda para surdos e ensurdecidos, com regras de tempo e caracteres" },
+      { "term": "UX writing", "meaning": "escrita de textos de interface (botões, mensagens de erro) com foco na pessoa usuária" },
+      { "term": "linguagem simples", "meaning": "técnica de redação para que o público entenda na primeira leitura" },
+      { "term": "PNLD", "meaning": "Programa Nacional do Livro e do Material Didático" }
+    ],
+    "tools": ["editor de textos com controle de alterações", "Trados, memoQ, Smartcat, Matecat ou OmegaT (tradução assistida)", "DeepL e tradutores automáticos (para pós-edição)", "Subtitle Edit e Aegisub (legendagem)", "VOLP da ABL e dicionários (Houaiss, Aulete, Michaelis)", "corpora (Corpus do Português, Linguateca)", "Google Sala de Aula e Microsoft Teams", "Kahoot, Wordwall e Padlet", "Canva", "Antconc (análise de corpus)", "Zotero (referências)"],
+    "deliverables": ["plano de aula alinhado à BNCC", "sequência didática de gênero", "material didático (ficha de leitura, oficina de escrita)", "rubrica de correção de redação", "relatório de estágio supervisionado", "resenha crítica", "artigo acadêmico", "tradução com glossário e nota do tradutor", "revisão com controle de alterações e relatório de padronização", "legenda (arquivo SRT)", "guia de estilo ou de linguagem simples", "texto de interface (UX writing)", "projeto de pesquisa"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Planejar aulas e sequências didáticas de Língua Portuguesa ou língua estrangeira com a BNCC", "esco": null, "kind": "nucleo" },
+      { "label": "Ensinar leitura, produção de textos e oralidade a partir de gêneros", "esco": null, "kind": "nucleo" },
+      { "label": "Formar leitores de literatura", "esco": null, "kind": "nucleo" },
+      { "label": "Avaliar produção escrita com rubrica e devolutiva formativa", "esco": null, "kind": "nucleo" },
+      { "label": "Traduzir com fidelidade, adequação e terminologia consistente", "esco": null, "kind": "nucleo" },
+      { "label": "Revisar e preparar textos segundo a norma e um guia de estilo", "esco": null, "kind": "nucleo" },
+      { "label": "Redigir textos claros para públicos diversos (linguagem simples)", "esco": null, "kind": "nucleo" },
+      { "label": "Analisar textos linguística e criticamente", "esco": null, "kind": "nucleo" },
+      { "label": "Interpretar e traduzir entre Libras e português", "esco": null, "kind": "apoio" },
+      { "label": "Usar ferramentas de tradução assistida e pós-edição", "esco": null, "kind": "apoio" },
+      { "label": "Produzir material didático", "esco": null, "kind": "apoio" },
+      { "label": "Pesquisar e escrever academicamente com normas ABNT", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação oral", "escuta e mediação", "organização e prazos", "ética, sigilo e direito autoral", "sensibilidade cultural", "aprendizagem contínua"],
+    "tracks": [
+      { "id": "docencia-linguagens", "label": "Docência de Língua Portuguesa ou língua estrangeira", "steps": ["plano de aula com habilidade da BNCC (X1)", "sequência didática de um gênero (X2)", "rubrica de correção de redação (L7)", "relatório de estágio ou de prática (L4)", "post sobre uma aula que funcionou (L5)"] },
+      { "id": "traducao-e-localizacao", "label": "Tradução, legendagem e localização", "steps": ["tradução comentada de um texto livre de direitos (X3)", "glossário e guia de estilo como procedimento (L7)", "resposta a briefing de cliente fictício (L8)", "fluxo de um projeto de tradução (D4)"] },
+      { "id": "revisao-e-edicao", "label": "Revisão, edição e redação", "steps": ["revisão crítica de uma peça com rubrica (L10)", "resenha crítica de uma obra (X4)", "guia de linguagem simples (L7)", "estudo de caso de uma revisão (L3)"] },
+      { "id": "pesquisa-em-letras", "label": "Pesquisa em linguística e literatura", "steps": ["resenha crítica (X4)", "relatório de pesquisa curto (L4)", "infográfico de dados de corpus ou de leitura (D7)", "projeto de pesquisa para pós-graduação"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"professora de português\", \"professor de inglês\", \"revisor de textos\", \"tradutora\", \"intérprete de Libras\"",
+      "cboFamilies": ["2321", "2313", "2614", "2615", "2331"],
+      "why": "Pergunto sua última função para partir do que você já fez (sala de aula, tradução, revisão, redação) e sugerir tarefas dessa frente. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, monitoria ou primeiros trabalhos freela",
+        "junior": "até dois anos na função, com revisão ou coordenação acompanhando",
+        "pleno": "planeja aulas, traduz ou revisa com autonomia",
+        "senior": "referência na área; orienta colegas, define guia de estilo ou currículo",
+        "gestao": "coordena área, equipe editorial ou agência"
+      },
+      "why": "Pergunto o nível para ajustar a dificuldade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em Letras",
+      "options": ["planejar aulas e sequências didáticas", "ensinar leitura e produção de textos", "corrigir redações com devolutiva", "formar leitores de literatura", "ensinar língua estrangeira", "traduzir", "interpretar (inclusive Libras)", "revisar e padronizar textos", "redigir com clareza", "legendar", "analisar textos criticamente", "pesquisar e escrever academicamente"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com as tarefas."
+    },
+    "c4": {
+      "certifications": ["licenciatura em Letras (habilitação)", "bacharelado em Letras ou Tradução", "certificado de proficiência (Celpe-Bras, TOEFL, IELTS, Cambridge, DELE, DELF)", "Prolibras ou certificação de intérprete de Libras", "matrícula de tradutor público na Junta Comercial", "pós-graduação em tradução, revisão ou ensino de línguas", "curso de ferramentas de tradução assistida", "mestrado ou doutorado em Letras/Linguística"],
+      "languages": ["inglês", "espanhol", "francês", "italiano", "alemão", "Libras"],
+      "why": "Habilitação, proficiência e idiomas definem as funções a que você pode concorrer; com isso aponto lacunas."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["planejamento com a BNCC", "ensino de produção de textos", "correção de redação (ENEM e vestibulares)", "letramento literário", "ensino de língua estrangeira", "tradução e ferramentas CAT", "pós-edição de tradução automática", "revisão e preparação de originais", "legendagem e acessibilidade", "linguagem simples e UX writing", "escrita acadêmica"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que frente quer atuar primeiro?",
+        "type": "escolha",
+        "options": ["docência de Língua Portuguesa", "docência de língua estrangeira", "tradução, legendagem ou localização", "interpretação de Libras", "revisão e edição", "redação e conteúdo", "pesquisa acadêmica", "ainda não sei"],
+        "why": "A frente muda as tarefas (plano de aula, tradução comentada, revisão) e as pessoas sugeridas. Você pode mudar depois.",
+        "where": "P"
+      },
+      {
+        "id": "x2",
+        "prompt": "Com que línguas você trabalha?",
+        "type": "lista",
+        "options": ["português", "inglês", "espanhol", "francês", "italiano", "alemão", "Libras", "outra"],
+        "why": "Para sugerir textos, pares de tradução e materiais na língua certa.",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": true
+  },
+  "guidedTasks": {
+    "priority": ["L6", "L1", "L10", "L7", "L4", "L8", "L3", "L5", "L2", "D7", "D4", "D2"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica de ambiente não é entrega da profissão" },
+      { "code": "D3", "reason": "modelagem 3D de produto não faz parte da atuação" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da profissão" },
+      { "code": "D8", "reason": "vista explodida de conjunto não se aplica" }
+    ],
+    "parameters": {
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva um resumo de até 600 caracteres com a frente em que quer atuar (docência, tradução, revisão, redação), as línguas com que trabalha, três competências e uma prova com link.",
+        "parameters": { "maxChars": 600, "requiredParts": ["frente-alvo", "línguas de trabalho", "três competências", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia a frente-alvo e as línguas", "cita três competências", "inclui uma prova com link", "sem erro de ortografia ou concordância"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para a função que quer mirar primeiro, com habilitação, línguas e nível (QECR quando houver), três conquistas com número (turmas, palavras traduzidas, livros revisados) e as palavras-chave da vaga ou do edital.",
+        "parameters": { "maxPages": 1, "achievementsWithNumbers": 3, "keywordsFrom": "vaga ou edital-alvo", "languagesWithLevel": true },
+        "criteria": ["uma página", "três conquistas com número", "línguas com nível declarado", "palavras-chave da vaga ou do edital presentes", "sem idade, estado civil ou foto obrigatória"],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "L10": {
+        "title": "Revisão crítica de um texto com controle de alterações",
+        "brief": "Revise um texto público ou remixado com permissão (até 1 página), usando controle de alterações e comentários; feche com dois pontos fortes, duas melhorias e o crédito do autor.",
+        "parameters": { "maxPages": 1, "trackChanges": true, "strengths": 2, "improvements": 2, "creditAuthor": true },
+        "criteria": ["usa a rubrica ou um guia de estilo declarado", "dois pontos fortes e duas melhorias", "alterações justificadas (norma, clareza, coesão)", "autor creditado e licença respeitada"],
+        "evidence": "comentário estruturado e arquivo revisado",
+        "time": "30 min",
+        "level": 1
+      },
+      "L7": {
+        "title": "Rubrica de correção ou guia de estilo",
+        "brief": "Monte um procedimento que você domina: uma rubrica de correção de redação (critérios e níveis) ou um guia de estilo/glossário para um cliente fictício, com passos e critérios verificáveis.",
+        "parameters": { "options": ["rubrica de correção de redação", "guia de estilo editorial", "glossário terminológico", "guia de linguagem simples"], "numberedSteps": true },
+        "criteria": ["critérios ou passos numerados", "níveis ou exemplos para cada critério", "fonte normativa citada (BNCC, INEP, VOLP, ABNT)", "aplicável por outra pessoa sem explicação extra"],
+        "evidence": "procedimento (modelo)",
+        "time": "60 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório curto de estágio, prática ou pesquisa",
+        "brief": "Relate em até 4 páginas uma prática de ensino, um projeto de tradução ou uma pesquisa: objetivo, contexto, método, resultados, limitações e referências em ABNT. Turma, escola e clientes sem identificação.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "contexto e método", "resultados", "limitações", "referências (ABNT NBR 6023)"], "anonymized": true },
+        "criteria": ["seções nomeadas", "até 4 páginas", "referências em ABNT", "sem aluno, escola ou cliente identificável", "resultados com evidência"],
+        "evidence": "relatório em PDF",
+        "time": "2 h",
+        "level": 3
+      },
+      "L8": {
+        "title": "Resposta a briefing de tradução ou revisão",
+        "brief": "Responda a um briefing simulado de cliente (tradução, legendagem ou revisão de um material): escopo, contagem de palavras, prazo, premissas (glossário, formato, público) e o que fica fora.",
+        "parameters": { "sections": ["escopo", "volume (palavras ou minutos)", "prazo", "premissas", "fora do escopo"], "fictitiousClient": true },
+        "criteria": ["escopo e volume explícitos", "prazo com etapas (tradução, revisão, entrega)", "premissas e o que fica fora", "sem preço ou valor de mercado inventado"],
+        "evidence": "proposta",
+        "time": "45 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Plano de aula de Língua Portuguesa ou língua estrangeira com a BNCC",
+        "competency": "Planejamento de aula com a BNCC",
+        "criteria": ["ano, prática de linguagem e habilidade da BNCC com código", "gênero ou texto-base com crédito", "objetivo, metodologia, recursos, tempo e avaliação", "adaptações para inclusão", "sem dado de aluno"],
+        "evidence": "plano de aula (modelo plano-de-aula)",
+        "time": "60 min",
+        "trigger": "Que aula você daria amanhã? Monte o plano com a habilidade da BNCC.",
+        "level": 1
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Sequência didática de um gênero textual",
+        "competency": "Ensino de produção de textos por gêneros",
+        "criteria": ["gênero, ano e habilidades da BNCC com código", "produção inicial, módulos e produção final", "critérios de avaliação da produção final", "textos de referência creditados", "adaptações para inclusão"],
+        "evidence": "documento",
+        "time": "2 h",
+        "trigger": "Quer mostrar como você ensina a escrever? Uma sequência de um gênero comprova progressão.",
+        "level": 2
+      },
+      {
+        "id": "X3",
+        "editor": "letters",
+        "title": "Tradução comentada de um texto livre de direitos",
+        "competency": "Tradução e terminologia",
+        "criteria": ["texto-fonte em domínio público ou com licença aberta, citado", "par de línguas e público-alvo declarados", "glossário com ao menos 10 termos", "três notas justificando escolhas de tradução", "até 500 palavras de texto-fonte"],
+        "evidence": "documento bilíngue",
+        "time": "90 min",
+        "trigger": "Quer mostrar como você traduz? Use um texto em domínio público, nunca material de cliente.",
+        "level": 2
+      },
+      {
+        "id": "X4",
+        "editor": "letters",
+        "title": "Resenha crítica de uma obra",
+        "competency": "Análise crítica e escrita acadêmica",
+        "criteria": ["referência completa da obra (ABNT)", "síntese do conteúdo separada da avaliação", "posição crítica com argumentos", "entre 500 e 1.000 palavras", "citações com página"],
+        "evidence": "resenha",
+        "time": "90 min",
+        "trigger": "Leu algo que vale discutir? Uma resenha comprova análise e escrita.",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "habilidade-bncc", "check": "há ao menos um código de habilidade da BNCC (ex.: EF69LP01, EM13LP01, EF06LI01)", "appliesTo": ["X1", "X2"], "auto": true },
+      { "id": "secoes-do-plano", "check": "objetivo, metodologia, recursos, tempo e avaliação estão presentes e nomeados", "appliesTo": ["X1", "X2"], "auto": true },
+      { "id": "glossario-e-notas", "check": "há glossário com ao menos 10 termos e três notas de tradução", "appliesTo": ["X3"], "auto": true },
+      { "id": "texto-fonte-livre", "check": "o texto-fonte está citado com licença ou domínio público declarado", "appliesTo": ["X3", "L10"], "auto": true },
+      { "id": "referencias-abnt", "check": "há referência ou seção de referências com autor, título e ano (NBR 6023)", "appliesTo": ["L4", "X2", "X4"], "auto": true },
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6", "X3", "X4"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L8"], "auto": true },
+      { "id": "ortografia", "check": "sem erros de ortografia detectáveis pelo corretor (VOLP / Acordo de 1990)", "appliesTo": ["L1", "L2", "L5", "L6"], "auto": true },
+      { "id": "sem-dado-de-aluno-ou-cliente", "check": "a pessoa declarou ausência de dado de aluno, texto de cliente sob sigilo ou original inédito de terceiro", "appliesTo": ["L3", "L4", "L5", "L8", "L10", "X1", "X2", "X3"], "auto": true },
+      { "id": "creditos-e-fontes", "check": "autores, textos-base, imagens e autores remixados estão creditados", "appliesTo": ["L5", "L10", "D2", "D7", "D10", "X4"], "auto": true },
+      { "id": "fonte-dos-dados", "check": "fonte e ano dos dados aparecem no infográfico", "appliesTo": ["D7"], "auto": true },
+      { "id": "autoria", "check": "a pessoa declarou autoria da peça", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L10", "D2", "D4", "D7", "X1", "X2", "X3", "X4"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "adequacao-linguistica", "label": "Adequação linguística ao gênero e ao público", "levels": { "aproxima": "registro oscila ou não combina com o público", "atende": "registro, vocabulário e norma adequados ao gênero", "supera": "domina o registro e faz escolhas expressivas conscientes" } },
+      { "id": "fidelidade-e-naturalidade", "label": "Fidelidade e naturalidade da tradução", "levels": { "aproxima": "perde sentido ou soa como tradução literal", "atende": "preserva o sentido e soa natural na língua de chegada", "supera": "resolve ambiguidades e referências culturais com justificativa" } },
+      { "id": "coerencia-didatica", "label": "Coerência entre objetivo, atividade e avaliação", "levels": { "aproxima": "objetivo e atividade se relacionam de forma vaga", "atende": "a atividade leva ao objetivo e a avaliação observa a habilidade", "supera": "objetivo, atividade, avaliação e devolutiva formam um ciclo explícito" } },
+      { "id": "argumentacao-critica", "label": "Argumentação crítica", "levels": { "aproxima": "resume sem posicionar-se", "atende": "posiciona-se com argumentos e exemplos do texto", "supera": "dialoga com outras leituras e antecipa objeções" } },
+      { "id": "clareza", "label": "Clareza", "levels": { "aproxima": "a ideia principal exige releitura", "atende": "a ideia principal é entendida na primeira leitura", "supera": "conduz quem lê sem esforço e sem excesso" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa formada ou em formação em Letras: docência de Língua Portuguesa, literatura ou língua estrangeira, tradução, interpretação (inclusive Libras), revisão, edição, redação e pesquisa. Use o vocabulário da área (BNCC de Linguagens e códigos de habilidade, práticas de linguagem, gêneros, sequência didática, letramento literário, QECR, memória de tradução, pós-edição, preparação de originais, VOLP) e cite normas quando couber: LDB (Lei 9.394/1996), BNCC, DCN de Letras, Lei 10.436/2002 e Decreto 5.626/2005 (Libras), Lei 12.319/2010, Lei 14.195/2021 (tradutor público), Lei 9.610/1998 (direito autoral), ECA e LGPD art. 14. Nunca: corrigir, dar nota ou avaliar redações e provas de alunos reais; aceitar textos de alunos identificáveis, textos de clientes sob sigilo ou originais inéditos de terceiros; produzir tradução juramentada ou texto que a pessoa vá apresentar como próprio sem revisão; escrever a redação, o TCC ou a resenha por ela (proponha estrutura e revise o que ela escreveu). Tarefas de tradução usam textos em domínio público ou com licença aberta. Pergunte a frente e as línguas em vez de inferir. Pré-cheque só critérios objetivos (código da BNCC, seções, glossário, referências, tamanho); a avaliação da peça e o selo são humanos. Afirmações sobre mercado citam fonte, data e região (Censo Escolar, CAGED/RAIS, editais) ou dizem \"estimativa\"; nunca fale de salário nem de preço por palavra. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "BNCC — Base Nacional Comum Curricular (MEC)", "url": "http://basenacionalcomum.mec.gov.br/", "kind": "norma" },
+      { "title": "LDB — Lei 9.394/1996 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9394.htm", "kind": "norma" },
+      { "title": "Lei 12.319/2010 — tradutor e intérprete de Libras (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2010/lei/l12319.htm", "kind": "norma" },
+      { "title": "Decreto 5.626/2005 — regulamenta a Libras (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2005/decreto/d5626.htm", "kind": "norma" },
+      { "title": "Lei 9.610/1998 — direitos autorais (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9610.htm", "kind": "norma" },
+      { "title": "VOLP — Academia Brasileira de Letras", "url": "https://www.academia.org.br/nossa-lingua/busca-no-vocabulario", "kind": "referencia" },
+      { "title": "INEP — Redação no ENEM: cartilha do participante", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem", "kind": "orgao-publico" },
+      { "title": "ABRATES — Associação Brasileira de Tradutores e Intérpretes", "url": "https://abrates.com.br/", "kind": "comunidade" },
+      { "title": "INEP — Censo Escolar da Educação Básica", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-escolar", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 de Letras; x1 (frente) e x2 (línguas) no primeiro acesso." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Ordem muda pela frente: docência puxa X1/X2; tradução puxa X3/L8; revisão puxa L10/X4. Textos de tarefa sempre livres de direitos ou autorizados." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Respeita horas (d1), aparelho (d4) e calendário escolar ou de editais; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Só critérios objetivos: código BNCC, seções, glossário e notas, referências ABNT, tamanho, ortografia. Não avalia qualidade literária ou de tradução; o selo é humano." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de plano, sequência, resenha ou proposta com prévia; revisa o texto da pessoa, não escreve a peça por ela." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Infográfico de dados de leitura ou de corpus (D7), fluxo de projeto de tradução (D4), prancha de portfólio (D2)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: competências por frente e por língua, lacunas (habilitação, proficiência) e incertezas; cita o campo de origem." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Caminhos para jornalismo, publicidade, pedagogia, biblioteconomia e história com lacunas; mercado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Pessoas descobríveis por opt-in da mesma família CBO (2321, 2614, 2615) ou com línguas e competências em comum." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com frente, línguas e habilitação; só com o consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai habilitação, línguas, proficiências e experiências em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "redações, provas e dados de alunos (nomes, notas, fotos)", "textos de clientes sob sigilo ou NDA", "originais inéditos de terceiros", "dados sensíveis (LGPD art. 5º II)", "dados de terceiros sem autorização"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca corrigir, dar nota ou avaliar redações e provas de alunos reais",
+      "recusar textos de alunos identificáveis, de clientes sob sigilo e originais inéditos de terceiros",
+      "não escrever a peça que a pessoa apresentará como própria; propor estrutura e revisar o que ela escreveu",
+      "não produzir tradução juramentada nem substituir tradutor público",
+      "perguntar frente e línguas em vez de inferir",
+      "nunca prometer vaga, aprovação ou salário/preço por palavra; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação; toda saída traz \"por que\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["infografico", "diagrama", "prancha"],
+    "lettersTemplates": ["plano-de-aula", "artigo", "revisao", "relatorio-tecnico", "proposta", "pop", "curriculo", "bio", "carta", "post", "projeto-de-pesquisa", "estudo-de-caso"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, tarefas curtas (L5, L6) e revisão (L10); tradução comentada (X3), sequência didática (X2) e relatório (L4) pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: bio com sua frente e suas línguas (15 min).",
+        "Que aula você daria amanhã? Um plano com a habilidade da BNCC leva cerca de 1 h e comprova planejamento.",
+        "Quer mostrar como você traduz? Uma tradução comentada de um texto em domínio público leva cerca de 90 min.",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["dados de alunos menores de idade: nomes, notas, laudos e fotos (ECA; LGPD art. 14)", "textos e documentos de clientes de tradução/revisão sob sigilo ou NDA", "originais inéditos de autores terceiros (direito autoral, Lei 9.610/1998)", "redações e produções de alunos"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "INEP — Censo Escolar (docentes de Língua Portuguesa e línguas estrangeiras, adequação da formação)", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-escolar", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2321, 2313, 2614 e 2615", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Concursos públicos para o magistério e para tradutor-intérprete de Libras — gov.br", "url": "https://www.gov.br/pt-br/servicos/consultar-concursos-publicos", "geography": "UF e município", "cadence": "eventual", "kind": "edital" },
+      { "title": "ABRATES — pesquisas e informações do mercado de tradução", "url": "https://abrates.com.br/", "geography": "Brasil", "cadence": "eventual", "kind": "associacao" },
+      { "title": "CBL / Nielsen — Produção e Vendas do Setor Editorial Brasileiro", "url": "https://cbl.org.br/", "geography": "Brasil", "cadence": "anual", "kind": "pesquisa" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração e preço por palavra nunca entram como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "jornalismo", "why": "Domínio da escrita, da revisão e dos gêneros jornalísticos aproxima Letras da redação e da edição de conteúdo.", "gaps": ["apuração e checagem", "linguagem audiovisual e de redes", "ética jornalística"], "steps": ["post de 150–250 palavras sobre um tema da área (L5)", "estudo de caso de uma revisão editorial (L3)", "curso livre de apuração e checagem"] },
+    { "to": "publicidade-e-propaganda", "why": "Redação persuasiva e UX writing são portas para a área criativa e de conteúdo.", "gaps": ["redação publicitária e briefing de campanha", "noções de marketing digital", "portfólio criativo"], "steps": ["resposta a um briefing simulado (L8)", "prancha de portfólio com três textos (D2)", "curso de redação publicitária"] },
+    { "to": "pedagogia", "why": "Quem gosta de alfabetização e formação de leitores pode atuar nos anos iniciais ou na coordenação.", "gaps": ["licenciatura em Pedagogia (segunda licenciatura)", "alfabetização nos anos iniciais", "gestão e coordenação pedagógica"], "steps": ["plano de aula de alfabetização (X1)", "segunda licenciatura em Pedagogia", "fluxo de um processo escolar (D4)"] },
+    { "to": "biblioteconomia", "why": "Afinidade com leitura, curadoria de acervo e mediação de leitura.", "gaps": ["graduação em Biblioteconomia e registro no CRB", "catalogação e representação da informação", "gestão de bibliotecas"], "steps": ["infográfico sobre hábitos de leitura com fonte (D7)", "projeto de mediação de leitura (L4)", "graduação em Biblioteconomia"] },
+    { "to": "historia", "why": "Leitura crítica de fontes e análise de discurso dialogam com a pesquisa histórica e a docência de humanidades.", "gaps": ["licenciatura ou bacharelado em História", "metodologia com fontes históricas", "registro de historiador (Lei 14.038/2020) para o bacharel"], "steps": ["resenha crítica de uma obra de história (X4)", "relatório de pesquisa com fontes (L4)", "segunda graduação em História"] }
+  ],
+  "learning": [
+    { "title": "AVAMEC — cursos do MEC para professores (BNCC, leitura e escrita)", "provider": "MEC", "url": "https://avamec.mec.gov.br/", "free": true, "kind": "portal" },
+    { "title": "BNCC — Linguagens: Língua Portuguesa e Língua Inglesa", "provider": "MEC", "url": "http://basenacionalcomum.mec.gov.br/", "free": true, "kind": "norma" },
+    { "title": "Olimpíada de Língua Portuguesa — Escrevendo o Futuro (cadernos e cursos)", "provider": "Itaú Social / Cenpec", "url": "https://www.escrevendoofuturo.org.br/", "free": true, "kind": "curso" },
+    { "title": "Domínio Público — biblioteca digital do MEC (textos para tradução e análise)", "provider": "MEC", "url": "http://www.dominiopublico.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Guia de linguagem simples — Escola Virtual.Gov", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "curso" },
+    { "title": "OmegaT — ferramenta livre de tradução assistida e documentação", "provider": "Projeto OmegaT", "url": "https://omegat.org/pt_BR/", "free": true, "kind": "portal" },
+    { "title": "Cursos de Libras gratuitos — INES", "provider": "Instituto Nacional de Educação de Surdos", "url": "https://www.gov.br/ines/pt-br", "free": true, "kind": "curso" },
+    { "title": "Cartilha da redação do ENEM", "provider": "INEP", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem", "free": true, "kind": "livro" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4 (perguntas), §4.6 (pacote), §7 (tarefas L1–L10, D1–D10), §8 (mensagens)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos — ramo letras (CBO, ISCO, ESCO, sensitiveData, vizinhos, notas sobre tradutor público)", "url": "contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
+    { "title": "LDB — Lei 9.394/1996", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9394.htm", "accessedAt": "2026-11-02" },
+    { "title": "BNCC — Base Nacional Comum Curricular", "url": "http://basenacionalcomum.mec.gov.br/", "accessedAt": "2026-11-02" },
+    { "title": "Lei 12.319/2010 — tradutor e intérprete de Libras", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2010/lei/l12319.htm", "accessedAt": "2026-11-02" },
+    { "title": "Lei 14.195/2021 — tradutor e intérprete público", "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14195.htm", "accessedAt": "2026-11-02" },
+    { "title": "ESCO — occupations literature teacher, modern languages teacher, translator, sign language interpreter", "url": "https://esco.ec.europa.eu/", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Parecer CNE/CES 492/2001 e Res. CNE/CES 18/2002 (DCN de Letras): números citados de memória; não conferidos no portal do CNE.",
+    "Lei 14.704/2023 como alteração da Lei 12.319/2010 (exigência de formação superior para intérprete de Libras): número e conteúdo não confirmados.",
+    "Artigos 22 a 34 da Lei 14.195/2021 sobre tradutor público: intervalo de artigos citado de memória.",
+    "Código CBO 2331 em questions.a4.cboFamilies (professores do ensino profissional/idiomas) não conferido no portal da CBO.",
+    "URIs ESCO de competências não pesquisadas (esco: null); URIs de ocupação copiadas do catálogo de ramos.",
+    "Nenhuma URL de citeSources, market, learning e sources foi acessada nesta sessão (cota de busca indisponível); endereços citados de memória.",
+    "Pesquisa CBL/Nielsen de produção e vendas editoriais e página de pesquisas da ABRATES: existência atual e URLs não verificadas."
+  ]
+}

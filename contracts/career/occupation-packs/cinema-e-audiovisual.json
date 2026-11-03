@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 1,
+  "code": "cinema-e-audiovisual",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Cinema e Audiovisual", "en": "Film and Audiovisual Media", "es": "Cine y Audiovisual" },
+  "fields": ["cinema-e-audiovisual"],
+  "family": {
+    "cbo": [
+      { "code": "2621", "title": "Produtores artísticos e culturais" },
+      { "code": "2622", "title": "Diretores de espetáculos e afins" },
+      { "code": "2618", "title": "Fotógrafos profissionais" },
+      { "code": "3744", "title": "Técnicos em montagem, edição e finalização de filme e vídeo" }
+    ],
+    "isco08": [
+      { "code": "2654", "title": "Film, stage and related directors and producers" },
+      { "code": "3431", "title": "Photographers" },
+      { "code": "2656", "title": "Announcers on radio, television and other media" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/3b6bea7d-36f4-44fb-ac73-d1cc8a198dcb", "label": "video and motion picture producer" },
+      { "uri": "http://data.europa.eu/esco/occupation/6ba25e0f-7fb8-4879-a1f9-d4f8945966be", "label": "director of photography" },
+      { "uri": "http://data.europa.eu/esco/occupation/66542dd6-05a6-4d9e-97ff-3f4858c31ff9", "label": "photographer" }
+    ]
+  },
+  "scope": {
+    "summary": "Roteiristas, diretores, produtores, diretores de fotografia, montadores, técnicos de som, fotógrafos, videomakers e profissionais de rádio, TV e internet. Desenvolvem, produzem, filmam, editam e distribuem obras audiovisuais (curtas, longas, séries, documentários, publicidade, conteúdo digital). Trabalho por projeto e por equipe; a ANCINE regula o fomento e o registro de obras, e funções técnicas e artísticas seguem a Lei 6.533/1978. A prova de competência é o reel e os documentos de projeto.",
+    "entryRoles": ["Assistente de produção", "Assistente de câmera ou de fotografia", "Assistente de montagem", "Videomaker de conteúdo digital", "Assistente de direção (estagiário)", "Fotógrafo assistente", "Operador de câmera de TV ou eventos"],
+    "midRoles": ["Produtor executivo ou de produção", "Roteirista", "Diretor de fotografia", "Montador ou editor", "Técnico de som direto", "Primeiro assistente de direção", "Fotógrafo profissional", "Colorista ou finalizador"],
+    "seniorRoles": ["Diretor de cinema, série ou publicidade", "Produtor com empresa registrada na ANCINE", "Roteirista-chefe (showrunner)", "Diretor de fotografia de longas e séries", "Coordenador de pós-produção", "Programador ou curador de festival", "Professor de cinema no ensino superior"],
+    "sectors": ["produtoras independentes de cinema e séries", "TV aberta e por assinatura", "plataformas de streaming", "publicidade e agências", "conteúdo digital e criadores", "jornalismo e emissoras públicas", "festivais, cineclubes e distribuição", "eventos e fotografia social", "ensino e pesquisa"],
+    "regulation": [
+      { "name": "MP 2.228-1/2001", "issuer": "Brasil", "about": "cria a ANCINE e o Condecine; define obra audiovisual brasileira e registro de obras e agentes econômicos" },
+      { "name": "Lei 8.685/1993 (Lei do Audiovisual)", "issuer": "Brasil", "about": "mecanismos de incentivo fiscal à produção audiovisual brasileira independente" },
+      { "name": "Lei 12.485/2011 (Lei do SeAC)", "issuer": "Brasil / ANCINE", "about": "cotas de conteúdo brasileiro e independente na TV por assinatura; papel do FSA e da produção independente" },
+      { "name": "Lei 6.533/1978 e Decreto 82.385/1978", "issuer": "Brasil / MTE", "about": "regulamenta artistas e técnicos em espetáculos de diversões, incluindo funções de cinema e TV; registro profissional na SRTE (DRT)" },
+      { "name": "Lei 9.610/1998 (direitos autorais), arts. 81–86 (obra audiovisual)", "issuer": "Brasil", "about": "coautoria do diretor e do autor do argumento e roteiro; uso de músicas, imagens e trechos exige autorização e crédito" },
+      { "name": "Código Civil, art. 20, e LGPD", "issuer": "Brasil", "about": "uso de imagem, voz e depoimentos exige autorização (termo de cessão), com cuidado reforçado para menores e documentários" },
+      { "name": "LC 195/2022 (Lei Paulo Gustavo) e Lei 14.399/2022 (PNAB)", "issuer": "Brasil / MinC", "about": "repasses a estados e municípios para editais de produção, difusão e formação audiovisual" },
+      { "name": "Classificação Indicativa (Portaria MJSP vigente)", "issuer": "Ministério da Justiça", "about": "critérios de faixa etária para obras exibidas em TV, cinema e streaming" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "argumento e sinopse", "meaning": "resumo da história em poucas linhas (sinopse) ou em algumas páginas (argumento)" },
+      { "term": "storyline / logline", "meaning": "a história em uma ou duas frases: protagonista, objetivo e conflito" },
+      { "term": "escaleta", "meaning": "lista ordenada das cenas com o que acontece em cada uma, antes do roteiro" },
+      { "term": "roteiro", "meaning": "texto em formato padrão com cabeçalho de cena (INT./EXT., local, dia/noite), ação e diálogo" },
+      { "term": "decupagem", "meaning": "divisão do roteiro em planos, com enquadramento, movimento e lente" },
+      { "term": "storyboard", "meaning": "sequência de quadros desenhados que planeja planos e movimentos" },
+      { "term": "plano e enquadramento", "meaning": "unidade de filmagem e sua escala (geral, médio, close, detalhe)" },
+      { "term": "ordem do dia", "meaning": "documento diário com cenas, horários, equipe, elenco e locações" },
+      { "term": "plano de filmagem", "meaning": "cronograma que agrupa cenas por locação, elenco e luz" },
+      { "term": "análise técnica", "meaning": "levantamento, cena a cena, de elenco, figurino, objetos, efeitos e necessidades" },
+      { "term": "som direto", "meaning": "captação de áudio no set, simultânea à imagem" },
+      { "term": "montagem e corte final", "meaning": "edição que organiza os planos; o corte final é a versão aprovada" },
+      { "term": "color grading", "meaning": "correção e tratamento de cor na finalização" },
+      { "term": "reel / showreel", "meaning": "vídeo curto com os melhores trechos do trabalho de um profissional" },
+      { "term": "pitch", "meaning": "apresentação curta de um projeto a investidores, canais ou editais" },
+      { "term": "CPB", "meaning": "Certificado de Produto Brasileiro emitido pela ANCINE para obras audiovisuais" },
+      { "term": "FSA", "meaning": "Fundo Setorial do Audiovisual, principal fonte pública de fomento" },
+      { "term": "termo de cessão de imagem e voz", "meaning": "autorização escrita de quem aparece ou fala na obra" },
+      { "term": "cue sheet", "meaning": "lista das músicas usadas na obra com autores, tempo e licença" },
+      { "term": "produção independente", "meaning": "produtora sem vínculo com emissora ou programadora, conforme a regulação" }
+    ],
+    "tools": ["Final Draft / WriterDuet / Celtx / Fade In", "Adobe Premiere Pro", "DaVinci Resolve", "Avid Media Composer", "Adobe After Effects", "câmeras de cinema e DSLR/mirrorless", "gravadores e microfones de som direto", "StudioBinder / planilhas de produção", "Lightroom", "Drawings (prancha, storyboard, infográfico)", "Letters (roteiro, projeto, memorial)"],
+    "deliverables": ["logline, sinopse e argumento", "escaleta", "roteiro de curta ou episódio", "decupagem e storyboard", "análise técnica e plano de filmagem", "ordem do dia", "projeto para edital (ANCINE, FSA, Paulo Gustavo, PNAB)", "orçamento e cronograma de produção (em etapas)", "reel ou portfólio de vídeo", "corte final com créditos e cue sheet", "termos de cessão de imagem e de locação", "relatório de produção ou memorial de projeto"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Escrita de roteiro (estrutura, cena, diálogo, formato padrão)", "esco": null, "kind": "nucleo" },
+      { "label": "Linguagem audiovisual: plano, enquadramento, movimento e ritmo", "esco": null, "kind": "nucleo" },
+      { "label": "Direção e decupagem", "esco": null, "kind": "nucleo" },
+      { "label": "Direção de fotografia: luz, câmera e lentes", "esco": null, "kind": "nucleo" },
+      { "label": "Montagem e edição", "esco": null, "kind": "nucleo" },
+      { "label": "Captação e pós-produção de som", "esco": null, "kind": "nucleo" },
+      { "label": "Produção: análise técnica, plano de filmagem e ordem do dia", "esco": null, "kind": "nucleo" },
+      { "label": "Elaboração de projetos para editais e fomento (ANCINE, FSA, leis de incentivo)", "esco": null, "kind": "nucleo" },
+      { "label": "Finalização: cor, legendas, créditos e entrega técnica", "esco": null, "kind": "apoio" },
+      { "label": "Direitos autorais, cessões de imagem e licenciamento de música", "esco": null, "kind": "apoio" },
+      { "label": "Pitch e apresentação de projeto", "esco": null, "kind": "apoio" },
+      { "label": "Acessibilidade audiovisual: legendagem, LSE, audiodescrição e Libras", "esco": null, "kind": "apoio" },
+      { "label": "Segurança no set e gestão de equipe", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["trabalho em equipe sob pressão de prazo", "comunicação clara entre departamentos", "organização de documentos de produção", "escuta e trabalho com entrevistados e elenco", "ética com imagem de pessoas e material sob NDA"],
+    "tracks": [
+      { "id": "do-argumento-ao-roteiro", "label": "Do argumento ao roteiro", "steps": ["logline e sinopse do projeto (L6)", "roteiro de curta em formato padrão (X1)", "decupagem e storyboard de uma cena (X2)", "revisão crítica de roteiro de colega (L10)"] },
+      { "id": "producao-e-fomento", "label": "Produção e fomento", "steps": ["projeto para edital audiovisual (L8)", "diagrama do fluxo de produção (D4)", "memorial ou relatório de produção (L4)"] },
+      { "id": "imagem-e-montagem", "label": "Imagem e montagem", "steps": ["prancha de portfólio com frames e créditos (D2)", "antes e depois de cor ou de corte (D5)", "remix com crédito de material de arquivo (D10)"] },
+      { "id": "apresentar-o-trabalho", "label": "Apresentar o trabalho", "steps": ["bio com link para reel (L6)", "currículo por função com créditos (L1)", "estudo de caso de uma produção (L3)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"assistente de produção\", \"editor de vídeo\", \"roteirista\", \"diretor de fotografia\", \"fotógrafo\", \"videomaker\"",
+      "cboFamilies": ["2621", "2622", "2618", "3744", "3731"],
+      "why": "Pergunto sua última função para começar pelas tarefas do seu departamento (roteiro, produção, câmera, montagem, som). Se for o primeiro trabalho, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, curta universitário ou primeira diária",
+        "junior": "assistente no departamento, com supervisão",
+        "pleno": "responde por uma função (montagem, fotografia, produção) em projetos",
+        "senior": "chefia departamento ou dirige obras",
+        "gestao": "produtora, coordenação de conteúdo ou showrunner"
+      },
+      "why": "Pergunto o nível para ajustar o tamanho das tarefas (uma cena, um curta, um projeto de série) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem no audiovisual",
+      "options": ["escrever roteiro", "dirigir atores ou entrevistados", "decupar e fazer storyboard", "fotografar e iluminar", "operar câmera", "editar e montar", "captar e mixar som", "produzir e organizar o set", "escrever projetos para editais", "corrigir cor e finalizar", "fazer pitch", "legendar e tornar acessível"],
+      "why": "Suas competências declaradas viram o ponto de partida; a prova vem com roteiro, decupagem, reel e projeto."
+    },
+    "c4": {
+      "certifications": ["bacharelado ou tecnólogo em Cinema, Audiovisual, Rádio e TV ou Fotografia", "registro profissional de artista ou técnico (DRT, Lei 6.533/1978)", "cursos livres de roteiro, fotografia ou montagem", "certificação de software (DaVinci Resolve, Avid, Adobe)", "curso de audiodescrição ou legendagem", "pós-graduação em cinema ou comunicação"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação, registro e idiomas ajudam a ver lacunas para sets, coproduções e editais."
+    },
+    "c5": {
+      "prompt": "Que competência audiovisual quer desenvolver primeiro?",
+      "options": ["roteiro", "direção e decupagem", "direção de fotografia", "montagem", "som direto e pós de áudio", "produção e plano de filmagem", "projetos para editais", "cor e finalização", "acessibilidade audiovisual", "direitos e licenciamento"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (logline → roteiro → decupagem) em vez de um catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que departamento quer mostrar trabalho primeiro?",
+        "type": "escolha",
+        "options": ["roteiro", "direção", "produção", "fotografia e câmera", "montagem e finalização", "som", "fotografia still", "conteúdo digital"],
+        "why": "Escolho a primeira tarefa (roteiro, decupagem, projeto, prancha de frames) e os exemplos do seu departamento.",
+        "where": "P"
+      },
+      {
+        "id": "x2",
+        "prompt": "O material que você quer mostrar é de produção sob NDA ou ainda não lançada?",
+        "type": "sim-nao",
+        "options": [],
+        "why": "Se sim, as tarefas usam projetos autorais ou trechos já liberados, e eu aviso antes de qualquer peça ficar pública.",
+        "where": "X"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L8", "D2", "L4", "D10", "L6", "D5", "L1", "L3", "D4", "D7", "L5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica de ambiente não é entrega do audiovisual; a planta de luz e câmera cabe na decupagem (X2)" },
+      { "code": "D6", "reason": "detalhe construtivo é da cenotecnia e da arquitetura, não do núcleo da área" },
+      { "code": "D8", "reason": "vista explodida de conjunto mecânico não pertence à área" },
+      { "code": "D9", "reason": "wireframe de tela não pertence à área" }
+    ],
+    "parameters": {
+      "L8": {
+        "title": "Projeto para edital audiovisual",
+        "brief": "A partir de um edital simulado (curta pela Lei Paulo Gustavo, PNAB ou linha do FSA), escreva o projeto: logline, sinopse, justificativa, proposta de direção, etapas (desenvolvimento, pré, filmagem, pós, difusão) com cronograma, equipe principal, contrapartida, acessibilidade (legendas, audiodescrição, Libras) e o que fica fora. Sem valores em dinheiro.",
+        "parameters": { "template": "proposta", "sections": ["logline e sinopse", "justificativa", "proposta de direção", "etapas e cronograma", "equipe", "contrapartida", "acessibilidade", "fora do escopo"], "maxPages": 4, "noPricing": true },
+        "criteria": ["oito seções presentes", "logline em até duas frases", "cronograma pelas cinco etapas", "recursos de acessibilidade nomeados", "até quatro páginas"],
+        "evidence": "projeto (documento)",
+        "time": "60 min",
+        "level": 2
+      },
+      "D2": {
+        "title": "Prancha de portfólio com três trabalhos audiovisuais",
+        "brief": "Monte uma prancha A3 com três trabalhos: para cada um, dois frames, título, ano, formato e duração, sua função e link para o vídeo ou reel. Créditos de equipe e de músicas. Nada de material sob NDA ou não lançado.",
+        "parameters": { "format": "A3", "works": 3, "framesPerWork": 2, "captionParts": ["título", "ano", "formato e duração", "função"], "linkRequired": true, "creditsRequired": true, "ndaCheck": true },
+        "criteria": ["três trabalhos com dois frames cada", "legenda com título, ano, duração e função", "link para vídeo ou reel", "créditos de equipe e música", "declaração de ausência de material sob NDA"],
+        "evidence": "prancha publicada (PDF ou PNG)",
+        "time": "90 min",
+        "level": 1
+      },
+      "L4": {
+        "title": "Memorial ou relatório de produção",
+        "brief": "Documente uma produção em até quatro páginas: objetivo, ficha técnica, processo (pré, filmagem, pós), decisões de linguagem, problemas e soluções, resultados (exibições, festivais, público) e créditos de músicas e materiais licenciados.",
+        "parameters": { "template": "memorial", "sections": ["objetivo", "ficha técnica", "processo", "decisões de linguagem", "problemas e soluções", "resultados"], "maxPages": 4, "musicCredits": true },
+        "criteria": ["seis seções nomeadas", "ficha técnica com funções", "músicas e materiais licenciados creditados", "até quatro páginas"],
+        "evidence": "memorial (documento)",
+        "time": "2 h",
+        "level": 3
+      },
+      "D10": {
+        "title": "Remix com crédito de material de arquivo",
+        "brief": "Use imagens de arquivo em domínio público ou com licença que permita derivação (acervos públicos, Creative Commons) para uma montagem curta. Credite autor, acervo e licença e declare duas escolhas de montagem.",
+        "parameters": { "licenseAllowed": ["domínio público", "CC BY", "CC BY-SA"], "declaredChanges": 2, "creditFields": ["autor", "acervo", "licença"] },
+        "criteria": ["autor, acervo e licença creditados", "licença permite derivação", "duas escolhas de montagem declaradas"],
+        "evidence": "remix vinculado",
+        "time": "90 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Roteiro de curta em formato padrão",
+        "competency": "Escrita de roteiro",
+        "criteria": ["logline no início", "cabeçalhos de cena com INT./EXT., local e DIA/NOITE", "entre 5 e 15 páginas", "personagens apresentados em maiúsculas na primeira aparição", "sem uso de obra ou personagem de terceiros sem autorização"],
+        "evidence": "roteiro (documento, modelo roteiro)",
+        "time": "3 h",
+        "trigger": "Tem uma história curta que queira levar ao roteiro?",
+        "level": 2
+      },
+      {
+        "id": "X2",
+        "editor": "drawings",
+        "title": "Decupagem e storyboard de uma cena",
+        "competency": "Direção e linguagem audiovisual",
+        "criteria": ["cena identificada no roteiro", "ao menos seis planos numerados", "escala de plano e movimento de câmera em cada quadro", "planta baixa simples com posição de câmera e personagens", "duração estimada da cena"],
+        "evidence": "prancha (PDF ou PNG)",
+        "time": "2 h",
+        "trigger": "Quer mostrar como filmaria uma cena do seu roteiro?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "formato-de-roteiro", "check": "o roteiro usa cabeçalhos INT./EXT., local e DIA/NOITE e tem o número de páginas pedido", "appliesTo": ["X1"], "auto": true },
+      { "id": "planos-numerados", "check": "a decupagem tem o número mínimo de planos, cada um com escala e movimento", "appliesTo": ["X2"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L8", "L4", "L3"], "auto": true },
+      { "id": "creditos-e-licencas", "check": "equipe, músicas, imagens de arquivo e obras remixadas estão creditadas com licença", "appliesTo": ["D2", "D10", "L4", "D5", "L10"], "auto": true },
+      { "id": "link-para-video", "check": "há link para o vídeo ou reel de cada trabalho", "appliesTo": ["D2", "L6", "L1"], "auto": true },
+      { "id": "cessao-de-imagem", "check": "a pessoa declarou ter cessões de imagem e voz de quem aparece, e dos responsáveis para menores", "appliesTo": ["D2", "D5", "D10", "L3", "L4"], "auto": true },
+      { "id": "sem-nda", "check": "a pessoa declarou que não há material sob NDA ou não lançado", "appliesTo": ["D2", "D5", "L3", "L4"], "auto": true },
+      { "id": "acessibilidade-prevista", "check": "o projeto nomeia legendas, audiodescrição ou Libras", "appliesTo": ["L8"], "auto": true },
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas ou caracteres", "appliesTo": ["L1", "L4", "L5", "L6", "L8"], "auto": true },
+      { "id": "autoria-declarada", "check": "a pessoa declarou autoria e ausência de dados confidenciais", "appliesTo": ["L1", "L3", "L4", "L5", "L6", "L8", "L10", "D2", "D4", "D5", "D7", "D10", "X1", "X2"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "forca-narrativa", "label": "Força narrativa", "levels": { "aproxima": "conflito e objetivo do protagonista pouco claros", "atende": "protagonista, objetivo e conflito claros, com progressão", "supera": "estrutura surpreende sem perder clareza; cenas fazem a história avançar" } },
+      { "id": "linguagem-visual", "label": "Linguagem visual", "levels": { "aproxima": "planos sem relação com a intenção da cena", "atende": "escolhas de plano, luz e movimento servem à cena", "supera": "a linguagem cria sentido próprio e é consistente na obra" } },
+      { "id": "viabilidade-de-producao", "label": "Viabilidade de produção", "levels": { "aproxima": "etapas vagas, sem equipe nem cronograma", "atende": "etapas, equipe e cronograma executáveis no formato proposto", "supera": "antecipa riscos (direitos, locações, clima) e alternativas" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa de Cinema e Audiovisual (roteiro, direção, produção, fotografia, montagem, som, still, conteúdo digital, rádio e TV). Use o vocabulário da área: logline, sinopse, argumento, escaleta, roteiro, decupagem, storyboard, análise técnica, plano de filmagem, ordem do dia, som direto, montagem, color grading, reel, pitch, CPB, FSA, cue sheet, termo de cessão. Referências a citar quando couber: MP 2.228-1/2001 (ANCINE), Lei 8.685/1993 (Audiovisual), Lei 12.485/2011 (SeAC), Lei 6.533/1978 (registro de artistas e técnicos), Lei 9.610/1998 (obra audiovisual, coautoria, licenças), Código Civil art. 20 e LGPD (imagem, voz e depoimentos), Lei Paulo Gustavo e PNAB (editais), classificação indicativa. Priorize: projeto para edital (L8), prancha de portfólio com frames (D2), memorial de produção (L4), remix com crédito de arquivo (D10); roteiro em formato padrão (X1, modelo roteiro) e decupagem com storyboard (X2). Nunca: escrever o roteiro inteiro para a pessoa apresentar como seu; gerar imagem, voz ou rosto que imite pessoa, ator ou diretor identificável (deepfake); orientar uso de música, trecho de filme ou imagem sem licença; publicar material sob NDA, cortes não lançados ou imagem de pessoas sem cessão, sobretudo menores; expor dados de entrevistados de documentário. Pergunte o departamento e o nível antes de sugerir. Pré-cheque só critérios objetivos (formato, seções, planos numerados, créditos, links, declarações); qualidade narrativa e visual é avaliação humana. Mercado e editais com fonte (ANCINE/OCA, CAGED/RAIS), data e região ou \"estimativa\"; nunca fale de cachê ou salário. Progresso por critérios atendidos, sem score.",
+    "citeSources": [
+      { "title": "ANCINE — Agência Nacional do Cinema", "url": "https://www.gov.br/ancine/pt-br", "kind": "orgao-publico" },
+      { "title": "OCA — Observatório Brasileiro do Cinema e do Audiovisual (ANCINE)", "url": "https://www.gov.br/ancine/pt-br/oca", "kind": "estatistica" },
+      { "title": "MP 2.228-1/2001 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/mpv/2228-1.htm", "kind": "norma" },
+      { "title": "Lei 12.485/2011 — SeAC (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12485.htm", "kind": "norma" },
+      { "title": "Lei 6.533/1978 — artistas e técnicos em espetáculos (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l6533.htm", "kind": "norma" },
+      { "title": "Lei 9.610/1998 — direitos autorais (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9610.htm", "kind": "norma" },
+      { "title": "Ministério da Cultura — Lei Paulo Gustavo, PNAB e editais", "url": "https://www.gov.br/cultura/pt-br", "kind": "orgao-publico" },
+      { "title": "Cinemateca Brasileira — acervo e preservação", "url": "https://cinemateca.org.br/", "kind": "referencia" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 por departamento; x1 escolhe o departamento e x2 trata de material sob NDA." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "L8, D2, L4 e D10 entram primeiro; X1 (roteiro) e X2 (decupagem) para roteiro e direção; cada card lembra cessões e licenças." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano por horas (d1), respeitando diárias de set declaradas; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa formato do roteiro, planos numerados, seções do projeto, créditos e licenças, links, cessões e NDA; narrativa e imagem são revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de projeto, memorial, logline e formatação de roteiro com prévia; não escreve cenas ou diálogos no lugar da pessoa." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Grid e legendas da prancha; numeração de planos e planta de câmera da decupagem. Não gera rosto ou estilo de pessoa identificável." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese por departamento, lacunas (ex.: projetos, som) e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: jornalismo, publicidade, design (motion), artes visuais, música; com lacunas e passos, sem previsão." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por CBO, departamento e setor; só pessoas com opt-in." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com função, créditos e link de reel; só com consentimento específico." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings", "links de reel público"],
+      "never": ["mensagens", "itens SIGILOSO", "material bruto, roteiros e cortes inéditos sob NDA", "imagens e vozes de pessoas sem cessão, sobretudo menores", "dados e depoimentos de entrevistados de documentários", "contratos, orçamentos e dados de equipe de produções", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "não escrever roteiro, cena ou diálogo para a pessoa apresentar como seus; a IA estrutura, formata e checa",
+      "não gerar imagem, voz ou rosto que imite pessoa, ator ou diretor identificável",
+      "música, trechos e imagens de terceiros só com licença e crédito; sem autorização, não entram",
+      "material sob NDA, cortes não lançados e imagens sem cessão não entram em portfólio nem em prompt externo",
+      "proteger entrevistados de documentário e menores: sem dados ou imagens sem consentimento",
+      "perguntar o departamento e o nível em vez de inferir",
+      "nunca prometer seleção em edital, festival ou trabalho; mercado com fonte, data e região ou \"estimativa\"",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se inscrever sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "media", "drawings": "media" },
+    "drawingsModes": ["prancha", "diagrama", "infografico", "2d-tecnico"],
+    "lettersTemplates": ["roteiro", "proposta", "memorial", "bio", "curriculo", "estudo-de-caso", "relatorio-tecnico", "post", "revisao", "carta"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "D2, D5, D10 e X2 pedem computador ou tablet; roteiro (X1) e projeto (L8) são melhores no computador; no celular ficam L6, L5 e L10.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: projeto para um edital simulado de curta (60 min). Comprova produção e fomento, que produtoras e editais pedem.",
+        "Faltam os créditos das músicas para fechar os critérios da sua prancha. Quando quiser.",
+        "Sua decupagem já tem quatro planos. Mais dois, com escala e movimento, fecham o critério.",
+        "Sem pressão. Quando quiser retomar, a logline de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["imagens e vozes de pessoas sem autorização de uso de imagem, sobretudo menores", "material bruto, roteiros e cortes inéditos de produções sob NDA", "dados e depoimentos de entrevistados de documentários sem consentimento", "contratos, orçamentos e dados de equipe de produções"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "OCA/ANCINE — Anuário Estatístico do Audiovisual Brasileiro e estudos de emprego no setor (base RAIS)", "url": "https://www.gov.br/ancine/pt-br/oca", "geography": "Brasil, UF e municípios do RJ e SP", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Novo CAGED (MTE) — CBO 2621, 2622, 2618, 3744 e CNAE 59 (atividades cinematográficas e de vídeo)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO e CNAE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "ANCINE — chamadas públicas do FSA e editais de fomento", "url": "https://www.gov.br/ancine/pt-br", "geography": "Brasil", "cadence": "eventual", "kind": "edital" },
+      { "title": "Editais da Lei Paulo Gustavo e da Política Nacional Aldir Blanc (MinC, estados e municípios)", "url": "https://www.gov.br/cultura/pt-br", "geography": "Brasil, UF e município", "cadence": "eventual", "kind": "edital" },
+      { "title": "SIIC — Sistema de Informações e Indicadores Culturais (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/multidominio/cultura-recreacao-e-esporte/9388-indicadores-culturais.html", "geography": "Brasil e grandes regiões", "cadence": "eventual", "kind": "estatistica-oficial" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou editais cita fonte, data e abrangência verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Grande parte do trabalho é por projeto, diária ou PJ e não aparece no CAGED/RAIS; o emprego formal se concentra em RJ e SP (OCA): dizer isso ao citar dados. Cachê e remuneração nunca entram como promessa nem filtro (D-147)."
+  },
+  "paths": [
+    { "to": "jornalismo", "why": "Reportagem em vídeo, documentário e telejornalismo usam captação, edição e entrevista; emissoras e portais contratam editores e repórteres cinematográficos.", "gaps": ["apuração e ética jornalística", "texto jornalístico e checagem", "rotina de redação e fechamento"], "steps": ["roteiro de uma reportagem curta (L8)", "estudo de caso de uma pauta em vídeo (L3)", "infográfico com fonte citada (D7)"] },
+    { "to": "publicidade-e-propaganda", "why": "Filmes publicitários e conteúdo de marca absorvem direção, fotografia, montagem e produção.", "gaps": ["briefing publicitário e conceito de campanha", "métricas e formatos de mídia", "autorregulamentação (CONAR)"], "steps": ["resposta a briefing de filme de 30 s (L8)", "antes e depois de um corte para redes (D5)", "prancha com três peças de campanha (D2)"] },
+    { "to": "design", "why": "Motion design, animação e direção de arte compartilham composição, tipografia em movimento e storyboard.", "gaps": ["softwares de motion e design gráfico", "identidade visual e sistemas", "trabalho com briefing de design"], "steps": ["storyboard de uma vinheta (X2)", "prancha de identidade de um projeto audiovisual (D2)"] },
+    { "to": "artes-visuais", "why": "Videoarte, fotografia artística e instalação audiovisual circulam em museus, galerias e editais de artes visuais.", "gaps": ["texto de artista e poética", "circuitos de exposição e curadoria"], "steps": ["texto de artista sobre uma obra em vídeo (L6)", "remix com crédito de arquivo (D10)"] },
+    { "to": "musica", "why": "Trilha sonora, desenho de som e videoclipes aproximam o audiovisual da produção musical.", "gaps": ["teoria musical e produção em DAW", "direitos conexos, ECAD e licenciamento de sync"], "steps": ["memorial de som de uma produção (L4)", "projeto de videoclipe para edital (L8)"] }
+  ],
+  "learning": [
+    { "title": "OCA/ANCINE — anuários, estudos e dados abertos do audiovisual", "provider": "ANCINE", "url": "https://www.gov.br/ancine/pt-br/oca", "free": true, "kind": "portal" },
+    { "title": "ANCINE — guias de registro de obra, CPB e fomento", "provider": "ANCINE", "url": "https://www.gov.br/ancine/pt-br", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — elaboração de projetos culturais", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Mapa da Cultura — editais e cadastro de agentes culturais", "provider": "Ministério da Cultura", "url": "https://mapa.cultura.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Cinemateca Brasileira — acervo e Banco de Conteúdos Culturais", "provider": "Cinemateca Brasileira", "url": "https://cinemateca.org.br/", "free": true, "kind": "portal" },
+    { "title": "DaVinci Resolve — versão gratuita e treinamentos oficiais", "provider": "Blackmagic Design", "url": "https://www.blackmagicdesign.com/br/products/davinciresolve/training", "free": true, "kind": "curso" },
+    { "title": "Creative Commons Brasil — licenças para material de arquivo e música", "provider": "Creative Commons Brasil", "url": "https://br.creativecommons.net/", "free": true, "kind": "portal" },
+    { "title": "Cursos on-line do Sebrae — economia criativa e gestão de produtora", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Catálogo de ramos acadêmicos — ramo cinema-e-audiovisual (CBO, ISCO, ESCO, vizinhos, sensitiveData)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "ANCINE/OCA — Emprego no setor audiovisual (base RAIS)", "url": "https://www.gov.br/ancine/pt-br/oca/publicacoes/arquivos.pdf/emprego_no_setor_audiovisual.pdf", "accessedAt": "2026-11-02" },
+    { "title": "ANCINE/OCA — Anuário Estatístico do Audiovisual Brasileiro 2025 (publicado em 28/08/2026, segundo a página do OCA)", "url": "https://www.gov.br/ancine/pt-br/oca/anuario-do-audiovisual-brasileiro-arquivos", "accessedAt": "2026-11-02" },
+    { "title": "Lei 9.610/1998 — direitos autorais (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9610.htm", "accessedAt": "2026-11-02" },
+    { "title": "Lei 6.533/1978 — artistas e técnicos em espetáculos (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l6533.htm", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "OCA/ANCINE e uso da RAIS confirmados só por resumo de busca; números atuais de emprego não extraídos",
+    "MP 2.228-1/2001, Leis 8.685/1993, 12.485/2011, 6.533/1978, Decreto 82.385/1978, LC 195/2022 e 14.399/2022 citados de memória; artigos 81–86 da Lei 9.610 de memória",
+    "Alcance atual da exigência de registro DRT para técnicos de cinema (Lei 6.533/1978) não conferido diante de decisões judiciais recentes",
+    "Família CBO 3731 em questions.a4 (operadores de câmera e técnicos de TV) e CNAE 59 não conferidos nos portais da CBO e da CONCLA",
+    "Portaria vigente de classificação indicativa do MJSP não identificada",
+    "URLs de Cinemateca, treinamento DaVinci, Mapa da Cultura e ANCINE (FSA) não abertas nesta sessão",
+    "Nenhuma URI ESCO de competência (skill) confirmada; todas as competências com esco: null; URIs de ocupação vêm do catálogo"
+  ]
+}

@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 1,
+  "code": "ciencias-contabeis",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Ciências Contábeis", "en": "Accounting", "es": "Ciencias Contables" },
+  "fields": ["ciencias-contabeis"],
+  "family": {
+    "cbo": [
+      { "code": "2522", "title": "Contadores e afins" }
+    ],
+    "isco08": [
+      { "code": "2411", "title": "Accountants" },
+      { "code": "3313", "title": "Accounting associate professionals" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/eda0d957-3c3c-4139-b89a-a18bc9e18897", "label": "accountant" },
+      { "uri": "http://data.europa.eu/esco/occupation/5e5b1b61-1351-4d3b-a293-deb3661715dd", "label": "financial controller" },
+      { "uri": "http://data.europa.eu/esco/occupation/59c22779-4d89-4bc9-ba8b-d64bea236723", "label": "tax advisor" }
+    ]
+  },
+  "scope": {
+    "summary": "Contabilidade societária, fiscal e tributária, trabalhista (folha e eSocial), custos, controladoria, auditoria, perícia contábil e setor público. O exercício como contador exige bacharelado, aprovação no Exame de Suficiência e registro no CRC (Decreto-Lei 9.295/1946); escritórios contábeis atendem sobretudo micro e pequenas empresas.",
+    "entryRoles": ["Auxiliar contábil ou fiscal", "Assistente de departamento pessoal", "Estagiário de contabilidade", "Trainee de auditoria", "Analista contábil júnior"],
+    "midRoles": ["Analista contábil", "Analista fiscal ou tributário", "Analista de custos", "Auditor sênior", "Analista de controladoria", "Contador de escritório"],
+    "seniorRoles": ["Contador responsável técnico", "Controller", "Gerente de auditoria ou sócio", "Coordenador tributário", "Perito contábil", "Sócio de escritório contábil"],
+    "sectors": ["escritórios de contabilidade", "auditoria independente (big four e médias)", "indústria e comércio", "bancos e seguradoras", "setor público (contabilidade aplicada, tribunais de contas)", "terceiro setor", "perícia judicial", "startups e consultorias tributárias"],
+    "regulation": [
+      { "name": "Decreto-Lei 9.295/1946 (alterado pela Lei 12.249/2010)", "issuer": "Brasil", "about": "cria o CFC e os CRCs; exige registro e Exame de Suficiência para exercer a profissão" },
+      { "name": "NBC PG 01 — Código de Ética Profissional do Contador", "issuer": "Conselho Federal de Contabilidade", "about": "deveres, sigilo sobre informações de clientes e empregadores, publicidade e infrações" },
+      { "name": "Resolução CFC 1.486/2015 (Exame de Suficiência), com alterações", "issuer": "Conselho Federal de Contabilidade", "about": "regulamenta o Exame de Suficiência exigido para registro no CRC" },
+      { "name": "Lei 6.404/1976 (Lei das S.A.), com Leis 11.638/2007 e 11.941/2009", "issuer": "Brasil", "about": "escrituração e demonstrações financeiras; convergência às normas internacionais" },
+      { "name": "NBC TG (Pronunciamentos do CPC) e NBC TG 1000 / ITG 1000", "issuer": "CFC / Comitê de Pronunciamentos Contábeis", "about": "normas contábeis convergidas ao IFRS; versões simplificadas para PMEs e microempresas" },
+      { "name": "NBC TA (auditoria) e NBC TP / PP 01 (perícia)", "issuer": "Conselho Federal de Contabilidade", "about": "normas de auditoria independente e de perícia contábil" },
+      { "name": "Código Tributário Nacional (Lei 5.172/1966), art. 198", "issuer": "Brasil", "about": "sigilo fiscal sobre a situação econômica de contribuintes" },
+      { "name": "EC 132/2023 e LC 214/2025 (Reforma Tributária do consumo)", "issuer": "Brasil", "about": "IBS, CBS e Imposto Seletivo; transição que muda a rotina fiscal dos próximos anos" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "balanço patrimonial", "meaning": "demonstração de ativos, passivos e patrimônio líquido em uma data" },
+      { "term": "DRE", "meaning": "demonstração do resultado do exercício: receitas, custos, despesas e lucro" },
+      { "term": "DFC", "meaning": "demonstração dos fluxos de caixa (método direto ou indireto)" },
+      { "term": "notas explicativas", "meaning": "informações que acompanham as demonstrações e detalham políticas e saldos" },
+      { "term": "regime de competência", "meaning": "reconhecimento de receitas e despesas quando ocorrem, não quando são pagas" },
+      { "term": "conciliação contábil", "meaning": "conferência do saldo de uma conta com documentos e extratos" },
+      { "term": "plano de contas", "meaning": "estrutura codificada das contas usadas na escrituração" },
+      { "term": "SPED", "meaning": "Sistema Público de Escrituração Digital: ECD, ECF, EFD ICMS/IPI, EFD-Contribuições, EFD-Reinf" },
+      { "term": "eSocial", "meaning": "escrituração digital das obrigações trabalhistas, previdenciárias e fiscais" },
+      { "term": "Simples Nacional / Lucro Presumido / Lucro Real", "meaning": "regimes de tributação das empresas" },
+      { "term": "IBS e CBS", "meaning": "tributos sobre consumo criados pela Reforma Tributária (EC 132/2023)" },
+      { "term": "CPC", "meaning": "Comitê de Pronunciamentos Contábeis; seus pronunciamentos viram NBC TG pelo CFC" },
+      { "term": "IFRS", "meaning": "normas internacionais de contabilidade às quais o Brasil convergiu" },
+      { "term": "parecer / relatório do auditor", "meaning": "opinião do auditor independente sobre as demonstrações (NBC TA 700)" },
+      { "term": "laudo pericial contábil", "meaning": "documento do perito com quesitos, metodologia e conclusões (NBC TP 01)" },
+      { "term": "CRC / CFC", "meaning": "Conselho Regional e Conselho Federal de Contabilidade" },
+      { "term": "Exame de Suficiência", "meaning": "prova do CFC exigida para o registro como contador" },
+      { "term": "custeio por absorção / variável", "meaning": "métodos de apuração de custos de produtos e serviços" },
+      { "term": "certificado digital e-CNPJ", "meaning": "credencial para enviar obrigações; nunca deve ser compartilhada nem exposta" },
+      { "term": "DCTFWeb", "meaning": "declaração de débitos e créditos tributários federais previdenciários" }
+    ],
+    "tools": ["sistema contábil (Domínio, Alterdata, Questor, Fortes, Contmatic)", "ERP (SAP, TOTVS, Oracle)", "Excel e Power BI", "programas validadores do SPED (PVA)", "portal e-CAC da Receita Federal", "portal do eSocial", "portal do Simples Nacional", "editor de textos (Letters)"],
+    "deliverables": ["balanço patrimonial e DRE", "notas explicativas", "conciliações contábeis", "apuração de tributos", "obrigações acessórias (SPED, DCTFWeb)", "folha de pagamento", "relatório gerencial e de indicadores", "planejamento tributário", "relatório de custos", "papéis de trabalho de auditoria", "laudo pericial contábil", "POP de fechamento contábil"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Escrituração e fechamento contábil", "esco": null, "kind": "nucleo" },
+      { "label": "Elaboração e análise de demonstrações contábeis", "esco": null, "kind": "nucleo" },
+      { "label": "Apuração de tributos e obrigações acessórias", "esco": null, "kind": "nucleo" },
+      { "label": "Aplicação das NBC TG e pronunciamentos do CPC", "esco": null, "kind": "nucleo" },
+      { "label": "Conciliação e controles internos", "esco": null, "kind": "nucleo" },
+      { "label": "Contabilidade de custos", "esco": null, "kind": "nucleo" },
+      { "label": "Planejamento tributário", "esco": null, "kind": "nucleo" },
+      { "label": "Departamento pessoal e eSocial", "esco": null, "kind": "apoio" },
+      { "label": "Auditoria", "esco": null, "kind": "apoio" },
+      { "label": "Perícia contábil", "esco": null, "kind": "apoio" },
+      { "label": "Controladoria e análise de indicadores", "esco": null, "kind": "apoio" },
+      { "label": "Contabilidade aplicada ao setor público", "esco": null, "kind": "apoio" },
+      { "label": "Uso de sistemas contábeis, SPED e planilhas", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["atenção a detalhes", "ética e sigilo profissional", "cumprimento de prazos", "comunicação de números para não contadores", "atualização normativa contínua"],
+    "tracks": [
+      { "id": "fechamento", "label": "Rotina e fechamento contábil", "steps": ["POP de fechamento mensal (L7)", "fluxo do fechamento (D4)", "relatório de análise de demonstrações de empresa fictícia (L4)"] },
+      { "id": "tributario", "label": "Fiscal e tributário", "steps": ["fluxo de apuração de um tributo (D4)", "estudo de caso STAR de uma revisão fiscal (L3)", "comparativo de regimes tributários para empresa fictícia (X1)"] },
+      { "id": "analise-e-controladoria", "label": "Análise e controladoria", "steps": ["relatório de análise por índices (L4)", "infográfico de indicadores (D7)", "plano 30-60-90 para controladoria (L9)"] },
+      { "id": "registro", "label": "Exame de Suficiência e registro", "steps": ["plano de estudos 30-60-90 para o Exame (L9)", "resumo de perfil (L6)", "currículo direcionado (L1)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"auxiliar contábil\", \"assistente fiscal\", \"analista de DP\", \"auditor\", \"contador\"",
+      "cboFamilies": ["2522", "4131", "4110"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já faz (contábil, fiscal, DP, auditoria) e não do zero. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, auxiliar ou trainee de auditoria",
+        "junior": "até dois anos; lança, concilia e apura com supervisão",
+        "pleno": "fecha balancetes, apura tributos e entrega obrigações com autonomia",
+        "senior": "referência técnica; revisa trabalhos, aplica normas complexas e orienta a equipe",
+        "gestao": "responde por equipe, carteira de clientes, controladoria ou escritório"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (de um POP de conciliação a um relatório de análise) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em contabilidade",
+      "options": ["lançar e conciliar contas", "fechar balancetes e demonstrações", "apurar tributos (Simples, Presumido, Real)", "entregar SPED e obrigações acessórias", "folha de pagamento e eSocial", "analisar demonstrações e indicadores", "custos e formação de preço", "planejamento tributário", "auditoria e controles internos", "perícia contábil", "contabilidade pública", "Excel e Power BI", "explicar números para clientes e gestores"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com POPs, fluxos e relatórios sobre empresas fictícias."
+    },
+    "c4": {
+      "certifications": ["aprovação no Exame de Suficiência do CFC", "registro no CRC", "CNAI (Cadastro Nacional de Auditores Independentes)", "CNPC (Cadastro Nacional de Peritos Contábeis)", "especialização ou MBA em controladoria, tributário ou auditoria", "certificação IFRS (ACCA DipIFR)", "CPA-20 / CEA (Anbima)", "mestrado ou doutorado"],
+      "languages": ["inglês (IFRS e multinacionais)", "espanhol"],
+      "why": "Exame, registro e certificações definem o que você pode assinar; ajudam a ver lacunas em relação ao cargo que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver em contabilidade?",
+      "options": ["Reforma Tributária (IBS e CBS)", "IFRS e NBC TG", "análise de demonstrações", "planejamento tributário", "custos e controladoria", "auditoria", "perícia contábil", "eSocial e folha", "Excel avançado e Power BI", "preparação para o Exame de Suficiência"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (POP → fluxo → relatório) em vez de um catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que frente você atua ou quer atuar?",
+        "type": "lista",
+        "options": ["escritório contábil", "contabilidade de empresa", "fiscal e tributário", "departamento pessoal", "auditoria", "controladoria e custos", "perícia", "setor público"],
+        "why": "Pergunto para priorizar POP e fluxos (escritório, DP), comparativos tributários (fiscal), relatórios de análise (controladoria) ou plano de estudos (Exame e concursos).",
+        "where": "P"
+      },
+      {
+        "id": "x2",
+        "prompt": "Você já tem registro no CRC?",
+        "type": "escolha",
+        "options": ["sim", "estou me preparando para o Exame de Suficiência", "não pretendo me registrar agora"],
+        "why": "Pergunto porque o registro define o que você pode assinar; sem ele, sugiro tarefas de estudo para o Exame e de rotina sob supervisão.",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L7", "D4", "L4", "L3", "D7", "L9", "L6", "L1", "L2", "L10", "L8", "L5"],
+    "excluded": [
+      { "code": "D1", "reason": "planta de ambiente não é entrega contábil" },
+      { "code": "D2", "reason": "portfólio contábil é textual e de diagramas, não prancha visual" },
+      { "code": "D3", "reason": "modelo 3D não é evidência da área" },
+      { "code": "D6", "reason": "detalhe construtivo é entrega da engenharia" },
+      { "code": "D8", "reason": "vista explodida é entrega da mecânica" },
+      { "code": "D9", "reason": "wireframe de tela é entrega de UX" }
+    ],
+    "parameters": {
+      "L7": {
+        "title": "POP de uma rotina contábil ou fiscal",
+        "brief": "Escreva o procedimento de uma rotina que você domina (fechamento mensal, conciliação bancária, apuração do Simples, admissão no eSocial, entrega da EFD): passos numerados, responsável, sistema e prazo legal de cada etapa, ponto de conferência e critério de conclusão.",
+        "parameters": { "requiredElements": ["objetivo e escopo", "passos numerados", "responsável por passo", "sistema usado", "prazo legal da obrigação", "ponto de conferência", "critério de conclusão por passo"] },
+        "criteria": ["passos numerados com responsável", "critério de conclusão em cada passo", "prazo legal citado com a norma", "ao menos um ponto de conferência", "sem dado de cliente real"],
+        "evidence": "POP em modelo",
+        "time": "60 min",
+        "level": 1
+      },
+      "D4": {
+        "title": "Fluxo do fechamento ou de uma apuração",
+        "brief": "Desenhe o fluxo de um processo contábil (fechamento mensal, apuração de ICMS, folha até o eSocial) com início e fim, raias por responsável (cliente, fiscal, contábil, DP) e prazos anotados.",
+        "parameters": { "notation": "BPMN simplificado", "requiredElements": ["início e fim", "raias por responsável", "prazos anotados", "ao menos uma decisão"], "minActivities": 6 },
+        "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "prazos anotados", "sem dado de cliente real"],
+        "evidence": "diagrama vetorial (SVG/PDF)",
+        "time": "45 min",
+        "level": 1
+      },
+      "L4": {
+        "title": "Relatório de análise de demonstrações de empresa fictícia ou de capital aberto",
+        "brief": "Analise as demonstrações de uma empresa fictícia ou de capital aberto (dados públicos na CVM) em até 4 páginas: objetivo, fonte das demonstrações, índices de liquidez, endividamento, rentabilidade e ciclo, análise horizontal e vertical, conclusões e limitações. Nada de dados de clientes.",
+        "parameters": { "sections": ["objetivo", "fonte", "índices", "análise horizontal e vertical", "conclusões", "limitações"], "maxPages": 4, "minIndicators": 6, "dataSource": ["empresa fictícia", "demonstrações públicas (CVM)"] },
+        "criteria": ["seções nomeadas", "até 4 páginas", "ao menos 6 índices com fórmula", "fonte das demonstrações citada", "empresa fictícia ou com dados públicos declarada"],
+        "evidence": "relatório em PDF",
+        "time": "2 h",
+        "level": 2
+      },
+      "L3": {
+        "title": "Estudo de caso STAR de um problema contábil resolvido",
+        "brief": "Conte um problema que você resolveu (divergência de conciliação, recuperação de crédito, atraso de obrigação, reclassificação): situação, tarefa, ação (norma aplicada) e resultado mensurável, sem identificar cliente nem empregador.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true, "mustNameNorm": true },
+        "criteria": ["quatro seções explícitas", "norma ou procedimento citado", "resultado com número ou comparação", "declaração de ausência de dado sigiloso"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de indicadores financeiros",
+        "brief": "Mostre três a cinco indicadores (liquidez, margem, endividamento, prazo médio) de uma empresa fictícia ou de capital aberto, com fonte, período, eixos rotulados e uma mensagem principal.",
+        "parameters": { "requiredElements": ["indicadores com fórmula", "período", "fonte", "eixos rotulados", "mensagem principal"] },
+        "criteria": ["indicadores nomeados com fórmula", "fonte e período citados", "eixos rotulados", "uma mensagem principal", "empresa fictícia ou pública declarada"],
+        "evidence": "imagem PNG + PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "L9": {
+        "title": "Plano 30-60-90 para o cargo-alvo ou para o Exame de Suficiência",
+        "brief": "Escreva três metas mensuráveis por fase para os primeiros 90 dias no cargo-alvo (ex.: mapear carteira, padronizar conciliações, reduzir atraso de obrigações) ou um plano de estudos para o Exame de Suficiência por disciplina, com simulados e metas de acerto.",
+        "parameters": { "phases": ["30", "60", "90"], "goalsPerPhase": 3, "variant": ["cargo", "Exame de Suficiência"] },
+        "criteria": ["três fases", "três metas mensuráveis por fase", "indicador ou entrega em cada meta", "coerente com o cargo ou o edital"],
+        "evidence": "plano",
+        "time": "45 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Comparativo de regimes tributários para empresa fictícia",
+        "competency": "Planejamento tributário",
+        "criteria": ["premissas da empresa fictícia declaradas (atividade, faturamento, folha)", "cálculo comparado de Simples Nacional, Lucro Presumido e Lucro Real", "normas citadas com número e artigo", "recomendação com riscos e limitações", "marca \"exercício didático\" e nenhum dado de cliente"],
+        "evidence": "relatório com planilha anexa",
+        "time": "2 h",
+        "trigger": "Quer mostrar como você compara regimes tributários?",
+        "level": 3
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L9", "X1"], "auto": true },
+      { "id": "indices-com-formula", "check": "cada índice ou indicador tem fórmula e período", "appliesTo": ["L4", "D7"], "auto": true },
+      { "id": "normas-citadas", "check": "normas e prazos citados trazem número e artigo (NBC, CPC, lei, IN)", "appliesTo": ["L3", "L7", "X1"], "auto": true },
+      { "id": "fonte-dos-dados", "check": "a fonte das demonstrações ou dos números está citada e declarada fictícia ou pública", "appliesTo": ["L4", "D7", "X1"], "auto": true },
+      { "id": "sem-identificadores-reais", "check": "o texto não contém CNPJ, CPF, razão social de cliente ou dados bancários", "appliesTo": ["L3", "L4", "L7", "D4", "D7", "X1"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim, raias e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "calculos-conferem", "check": "os cálculos fecham (somas, alíquotas e bases) quando refeitos", "appliesTo": ["X1", "L4"], "auto": false },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados sob sigilo profissional (NBC PG 01)", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D4", "D7", "X1"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "aderencia-normativa", "label": "Aderência às normas", "levels": { "aproxima": "aplica procedimento sem citar a norma", "atende": "aplica a norma correta e a cita", "supera": "discute alternativas permitidas pela norma e seus efeitos" } },
+      { "id": "analise", "label": "Qualidade da análise", "levels": { "aproxima": "lista números sem interpretação", "atende": "interpreta os indicadores e liga-os à situação da empresa", "supera": "aponta causas, riscos e recomendações acionáveis" } },
+      { "id": "comunicacao-de-numeros", "label": "Comunicação para não contadores", "levels": { "aproxima": "texto só compreensível por especialista", "atende": "um gestor entende a conclusão", "supera": "o resumo orienta uma decisão com clareza" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Contabilidade (estudante, auxiliar, analista, auditor, perito ou contador). Use o vocabulário da área (balanço, DRE, DFC, notas explicativas, regime de competência, conciliação, SPED, eSocial, Simples, Presumido, Real, IBS e CBS, NBC TG, CPC, IFRS) e cite normas com número: Decreto-Lei 9.295/1946, NBC PG 01 (Código de Ética), Resolução CFC 1.486/2015 (Exame de Suficiência), Lei 6.404/1976, NBC TG/ITG 1000, NBC TA, NBC TP 01, CTN art. 198, EC 132/2023. O que você nunca faz: não assina nem elabora demonstrações, declarações, laudos periciais ou relatórios de auditoria para empresa real de terceiros (atos privativos do contador registrado no CRC); não calcula tributo real de cliente nem orienta como reduzir tributo de forma irregular; trata balancetes, folha, dados bancários, senhas e certificados digitais de clientes como sigilo profissional e fiscal e pede que sejam removidos; tarefas usam empresa fictícia ou demonstrações públicas da CVM. Pergunte antes de inferir frente de atuação, registro no CRC ou senioridade. Cada tarefa diz que competência prova, que evidência gera, quanto tempo leva e por que foi sugerida, e aceita \"não me serve\". Afirmações sobre mercado ou Exame de Suficiência citam fonte, data e região (CAGED, RAIS, CFC) ou dizem \"estimativa\"; nunca prometa aprovação, entrevista, emprego ou salário. Progresso é por critérios atendidos; pré-cheque só critérios objetivos (seções, índices com fórmula, normas citadas, ausência de CNPJ); o selo é humano. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "Conselho Federal de Contabilidade — Normas Brasileiras de Contabilidade", "url": "https://cfc.org.br/tecnica/normas-brasileiras-de-contabilidade/", "kind": "conselho" },
+      { "title": "Comitê de Pronunciamentos Contábeis (CPC)", "url": "https://www.cpc.org.br/", "kind": "norma" },
+      { "title": "Lei 6.404/1976 — Lei das S.A. (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l6404consol.htm", "kind": "norma" },
+      { "title": "Receita Federal — SPED", "url": "http://sped.rfb.gov.br/", "kind": "orgao-publico" },
+      { "title": "Portal do eSocial", "url": "https://www.gov.br/esocial/pt-br", "kind": "orgao-publico" },
+      { "title": "CVM — demonstrações financeiras de companhias abertas", "url": "https://www.gov.br/cvm/pt-br", "kind": "orgao-publico" },
+      { "title": "Novo CAGED — Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências contábeis; x1 (frente) e x2 (registro no CRC) orientam as tarefas." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "POP (L7), fluxo (D4) e relatório de análise (L4) primeiro, sempre com empresa fictícia ou pública." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Evita propor tarefas em semanas de fechamento quando a pessoa avisar; intercala estudo para o Exame de Suficiência." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, índices com fórmula, normas citadas e ausência de CNPJ/CPF; conferir cálculos é revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de POP, relatório e plano com prévia; não elabora demonstração, laudo ou relatório de auditoria para empresa real." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias e prazos do fluxo (D4); infográfico com fonte e fórmula (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: competências contábeis declaradas e evidenciadas, lacunas (Exame, CRC, Reforma Tributária) e incertezas." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos por CBO/ESCO (administração, economia, finanças, direito, atuária) com mercado citado." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil, sem nomes de clientes do escritório." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências e competências em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "demonstrações, balancetes e dados fiscais de clientes (NBC PG 01)", "dados bancários, folha de pagamento e obrigações tributárias de terceiros (CTN art. 198)", "senhas e certificados digitais (e-CNPJ, e-CAC) de clientes", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "não elaborar nem assinar demonstrações, declarações, laudos periciais ou relatórios de auditoria para empresa real de terceiros",
+      "não calcular tributo real de cliente nem sugerir redução irregular de tributos",
+      "tratar balancetes, folha, dados bancários, senhas e certificados digitais de clientes como sigilo e pedir remoção",
+      "tarefas usam empresa fictícia ou demonstrações públicas (CVM)",
+      "perguntar em vez de inferir frente de atuação, registro no CRC ou senioridade",
+      "nunca prometer aprovação no Exame de Suficiência, entrevista, emprego ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["diagrama", "infografico"],
+    "lettersTemplates": ["pop", "relatorio-tecnico", "estudo-de-caso", "plano-30-60-90", "proposta", "parecer", "laudo", "curriculo", "carta", "bio", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas curtas (L5, L6, L10); relatórios com índices (L4), comparativo tributário (X1) e fluxos (D4) pedem computador e planilha.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: POP de uma rotina que você domina, como a conciliação bancária (60 min).",
+        "Semana de fechamento? Tudo bem pular. A tarefa de 15 min do resumo de perfil fica aqui.",
+        "Quer praticar análise de demonstrações com uma empresa de capital aberto? Os dados são públicos na CVM.",
+        "Sem pressão. Quando quiser retomar, o fluxo do fechamento leva cerca de 45 min."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias"] },
+    "privacy": {
+      "sensitiveData": ["demonstrações contábeis, balancetes e dados fiscais de clientes sob sigilo profissional (NBC PG 01)", "dados bancários, folha de pagamento e obrigações tributárias de terceiros (sigilo fiscal, CTN art. 198)", "senhas e certificados digitais (e-CNPJ, e-CAC) de clientes"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2522 e auxiliares contábeis", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por ocupação", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "CFC — profissionais e organizações contábeis ativos por UF", "url": "https://cfc.org.br/", "geography": "Brasil e UF", "cadence": "continua", "kind": "conselho" },
+      { "title": "CFC — Exame de Suficiência: editais e estatísticas de aprovação", "url": "https://cfc.org.br/", "geography": "Brasil e UF", "cadence": "eventual", "kind": "edital" },
+      { "title": "Censo da Educação Superior — INEP", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-da-educacao-superior", "geography": "Brasil e UF", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Editais de concursos (Receita Federal, tribunais de contas, prefeituras) — DOU e portais dos órgãos", "url": "https://www.gov.br/pt-br/servicos/consultar-publicacoes-do-diario-oficial-da-uniao", "geography": "Brasil, UF e município", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda, aprovação no Exame de Suficiência ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "administracao", "why": "Controladoria, finanças e gestão de escritórios aproximam as duas áreas.", "gaps": ["gestão de pessoas e processos", "planejamento estratégico", "marketing e vendas"], "steps": ["fluxo de um processo (D4)", "plano 30-60-90 para coordenação (L9)", "curso de gestão (Sebrae)"] },
+    { "to": "ciencias-economicas", "why": "Análise de demonstrações, indicadores e custos dialoga com análise econômica.", "gaps": ["macroeconomia e conjuntura", "econometria", "valuation"], "steps": ["relatório de análise de empresa pública (L4)", "infográfico de indicadores (D7)", "curso de economia (Khan Academy)"] },
+    { "to": "gestao-financeira", "why": "Finanças corporativas usam as demonstrações como insumo.", "gaps": ["matemática financeira", "mercado financeiro", "certificações Anbima"], "steps": ["infográfico de indicadores (D7)", "relatório de análise (L4)", "curso de finanças (Fundação Bradesco)"] },
+    { "to": "direito", "why": "Tributário, societário e perícia aproximam contadores do Direito.", "gaps": ["processo tributário", "redação jurídica", "OAB para advogar"], "steps": ["estudo de caso STAR tributário (L3)", "comparativo tributário fictício (X1)", "curso de direito tributário (Escola Virtual.Gov)"] },
+    { "to": "ciencias-atuariais", "why": "Seguradoras e fundos de pensão combinam contabilidade, provisões técnicas e cálculo atuarial.", "gaps": ["probabilidade e estatística avançadas", "matemática atuarial", "regulação SUSEP e PREVIC"], "steps": ["relatório sobre demonstrações de uma seguradora aberta (L4)", "curso de estatística", "infográfico de provisões técnicas (D7)"] }
+  ],
+  "learning": [
+    { "title": "Normas Brasileiras de Contabilidade — texto integral", "provider": "CFC", "url": "https://cfc.org.br/tecnica/normas-brasileiras-de-contabilidade/", "free": true, "kind": "norma" },
+    { "title": "Pronunciamentos técnicos do CPC", "provider": "Comitê de Pronunciamentos Contábeis", "url": "https://www.cpc.org.br/", "free": true, "kind": "norma" },
+    { "title": "Escola Virtual Fundação Bradesco — contabilidade e finanças", "provider": "Fundação Bradesco", "url": "https://www.ev.org.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — contabilidade pública e Reforma Tributária", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Exame de Suficiência — editais e provas anteriores", "provider": "CFC", "url": "https://cfc.org.br/", "free": true, "kind": "certificacao" },
+    { "title": "Portal do SPED — manuais e programas validadores", "provider": "Receita Federal", "url": "http://sped.rfb.gov.br/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Conselho Federal de Contabilidade — 2º Exame de Suficiência de 2026", "url": "https://cfc.org.br/pesquisas-academicas-disponiveis/pesquisas-academicas-disponiveis-pesquisas-academicas-disponiveis/2o-exame-de-suficiencia-de-2026/", "accessedAt": "2026-11-02" },
+    { "title": "Resolução CFC 1.373/2011 e histórico do Exame de Suficiência (LegisWeb)", "url": "https://www.legisweb.com.br/legislacao/?id=114431", "accessedAt": "2026-11-02" },
+    { "title": "Lei 6.404/1976 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l6404consol.htm", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos (ramo ciencias-contabeis)", "url": "contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "O pedido citou \"Res. CFC 1.640\" para o Exame de Suficiência; a busca não a encontrou e indicou a Res. CFC 1.486/2015 (alterada pela 1.597/2020) como vigente. Usada a 1.486/2015; confirmar se há norma mais recente",
+    "Numeração exata das NBC TA, NBC TP 01 e NBC PP 01 vigentes e da NBC PG 01 citadas de memória",
+    "LC 214/2025 como lei regulamentadora da Reforma Tributária citada de memória",
+    "Código CBO 4131 (auxiliares de contabilidade) em questions.a4.cboFamilies não conferido no portal da CBO",
+    "URIs ESCO das competências não confirmadas (todas em null)",
+    "URLs da página de NBC do CFC, do CPC, do SPED e da CVM não abertas nesta sessão; estatísticas de profissionais ativos do CFC apontam para a página inicial"
+  ]
+}

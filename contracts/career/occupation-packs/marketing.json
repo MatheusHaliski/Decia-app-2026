@@ -1,0 +1,320 @@
+{
+  "schemaVersion": 1,
+  "code": "marketing",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Marketing", "en": "Marketing", "es": "Marketing" },
+  "fields": ["marketing"],
+  "family": {
+    "cbo": [
+      { "code": "1423", "title": "Gerentes de comercialização, marketing e comunicação" },
+      { "code": "2531", "title": "Profissionais de publicidade" },
+      { "code": "3541", "title": "Especialistas em promoção de produtos e vendas" }
+    ],
+    "isco08": [
+      { "code": "2431", "title": "Advertising and marketing professionals" },
+      { "code": "1221", "title": "Sales and marketing managers" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/6fcf4638-e7c7-4978-9302-9a7b63a3d57c", "label": "marketing manager" },
+      { "uri": "http://data.europa.eu/esco/occupation/dc97adbe-f807-4ad8-8f3c-c24b3416cdef", "label": "digital marketing manager" },
+      { "uri": "http://data.europa.eu/esco/occupation/de80bbf0-447d-4a6a-845a-fdba4e0dc30c", "label": "brand manager" }
+    ]
+  },
+  "scope": {
+    "summary": "Tecnólogo ou bacharel em Marketing: entende o mercado e o cliente e transforma isso em posicionamento, produto, preço, praça e comunicação. Cobre pesquisa e inteligência de mercado, branding, plano de marketing, marketing digital (conteúdo, SEO, mídia paga, e-mail, CRM), trade marketing, métricas e análise de campanhas, sempre sob o CDC, o Código do CONAR, a LGPD e a Lei de Direitos Autorais. Sem conselho obrigatório; registro no CRA é facultativo.",
+    "entryRoles": ["Estagiário de marketing", "Assistente de marketing", "Assistente de marketing digital", "Social media júnior", "Analista de conteúdo júnior", "Promotor(a) / assistente de trade marketing"],
+    "midRoles": ["Analista de marketing", "Analista de marketing digital / performance", "Gestor(a) de tráfego pago", "Analista de CRM e automação", "Analista de inteligência e pesquisa de mercado", "Analista de trade marketing", "Analista de SEO e conteúdo"],
+    "seniorRoles": ["Coordenador de marketing", "Gerente de marketing", "Gerente de produto / brand manager", "Head de growth", "Gerente de trade marketing", "Consultor de marketing", "Diretor de marketing (CMO)"],
+    "sectors": ["varejo e e-commerce", "bens de consumo (FMCG)", "agências de marketing e comunicação", "tecnologia e startups (SaaS)", "serviços financeiros", "saúde e bem-estar", "educação", "indústria (B2B)", "terceiro setor", "trabalho por conta própria"],
+    "regulation": [
+      { "name": "Código Brasileiro de Autorregulamentação Publicitária", "issuer": "CONAR", "about": "veracidade, identificação da publicidade, apelos a crianças, comparativa, anexos por setor; Guia de Publicidade por Influenciadores" },
+      { "name": "CDC (Lei 8.078/1990), arts. 30–38", "issuer": "Brasil", "about": "oferta vincula; proíbe publicidade enganosa e abusiva; ônus da prova da veracidade é de quem anuncia" },
+      { "name": "LGPD (Lei 13.709/2018), arts. 7º, 8º, 18 e 20", "issuer": "Brasil / ANPD", "about": "bases legais e consentimento para marketing, direitos do titular (oposição, eliminação), perfilamento e decisões automatizadas" },
+      { "name": "Marco Civil da Internet (Lei 12.965/2014)", "issuer": "Brasil", "about": "guarda de registros, privacidade e responsabilidade de provedores no ambiente digital" },
+      { "name": "Lei 9.610/1998 (Direitos Autorais) e Lei 9.279/1996 (Propriedade Industrial)", "issuer": "Brasil / INPI", "about": "uso de imagens, músicas e textos de terceiros; registro e uso de marcas" },
+      { "name": "Decreto 7.962/2013", "issuer": "Brasil", "about": "comércio eletrônico: informações claras, atendimento facilitado e direito de arrependimento" },
+      { "name": "Resolução Conanda 163/2014", "issuer": "Conanda", "about": "considera abusiva a comunicação mercadológica dirigida à criança" },
+      { "name": "Lei 4.769/1965; Res. CFA 649/2024", "issuer": "CFA / CRA", "about": "registro facultativo; bacharelado em Marketing listado como área conexa" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "4Ps / mix de marketing", "meaning": "produto, preço, praça (distribuição) e promoção" },
+      { "term": "persona", "meaning": "perfil semifictício do cliente-alvo baseado em pesquisa, sem dados sensíveis" },
+      { "term": "segmentação e posicionamento", "meaning": "divisão do mercado em grupos e lugar que a marca quer ocupar na mente do público" },
+      { "term": "proposta de valor", "meaning": "por que o cliente deve escolher a oferta em vez das alternativas" },
+      { "term": "branding", "meaning": "gestão da marca: identidade, promessa, tom de voz e percepção" },
+      { "term": "funil de marketing", "meaning": "etapas de descoberta, consideração, conversão e fidelização" },
+      { "term": "jornada do cliente", "meaning": "pontos de contato do cliente com a marca antes, durante e depois da compra" },
+      { "term": "briefing", "meaning": "documento com objetivo, público, mensagem, entregas, prazos, orçamento e restrições de um trabalho" },
+      { "term": "plano de marketing", "meaning": "diagnóstico, objetivos, estratégias, ações, orçamento, cronograma e indicadores" },
+      { "term": "SWOT", "meaning": "forças, fraquezas, oportunidades e ameaças" },
+      { "term": "inbound / marketing de conteúdo", "meaning": "atrair público com conteúdo útil em vez de interrupção" },
+      { "term": "SEO / SEM", "meaning": "otimização para busca orgânica / marketing em buscadores incluindo mídia paga" },
+      { "term": "mídia paga, própria e conquistada", "meaning": "anúncios, canais da marca e menções espontâneas" },
+      { "term": "CTR", "meaning": "taxa de cliques: cliques divididos por impressões" },
+      { "term": "CPC / CPM / CPA", "meaning": "custo por clique, por mil impressões e por aquisição" },
+      { "term": "taxa de conversão", "meaning": "conversões divididas por visitantes ou leads no período" },
+      { "term": "CAC", "meaning": "custo de aquisição de cliente: investimento em marketing e vendas dividido pelos novos clientes" },
+      { "term": "LTV", "meaning": "valor do tempo de vida do cliente: receita ou margem esperada ao longo da relação" },
+      { "term": "ROI / ROAS", "meaning": "retorno sobre investimento / receita gerada por real investido em anúncios" },
+      { "term": "teste A/B", "meaning": "comparação controlada de duas versões para ver qual performa melhor" },
+      { "term": "UTM", "meaning": "parâmetros na URL que identificam origem, mídia e campanha do tráfego" },
+      { "term": "lead e MQL/SQL", "meaning": "contato interessado; qualificado por marketing / por vendas" },
+      { "term": "CRM e automação", "meaning": "base de relacionamento com clientes e fluxos automáticos de e-mail ou mensagem" },
+      { "term": "opt-in / opt-out", "meaning": "consentimento para receber comunicação e o direito de sair a qualquer momento" },
+      { "term": "NPS", "meaning": "net promoter score: % promotores menos % detratores" },
+      { "term": "share of market / share of voice", "meaning": "participação nas vendas / participação nas menções e na mídia da categoria" },
+      { "term": "trade marketing", "meaning": "ações no ponto de venda e com canais: positivação, exposição, materiais e promoções" },
+      { "term": "publicidade por influenciadores", "meaning": "conteúdo de criador com relação comercial; deve ser identificado como publicidade (#publi)" },
+      { "term": "landing page", "meaning": "página de destino focada em uma conversão" },
+      { "term": "KPI e OKR", "meaning": "indicador-chave de desempenho e objetivos com resultados-chave" }
+    ],
+    "tools": ["Google Analytics 4", "Google Ads e Meta Ads (gerenciador de anúncios)", "Google Search Console", "RD Station, HubSpot ou similar (CRM e automação)", "Canva e ferramentas de design", "Looker Studio ou Power BI", "planilhas (Excel, Google Sheets)", "ferramentas de SEO (ex.: Semrush, Ubersuggest)", "ferramentas de pesquisa (Google Forms, Typeform)", "Letters (plano, briefing, relatório)", "Drawings (infográfico, wireframe, jornada)"],
+    "deliverables": ["plano de marketing", "resposta a briefing / proposta de campanha", "persona e jornada do cliente", "calendário editorial", "relatório de resultados de campanha", "dashboard de métricas", "wireframe de landing page", "análise SWOT e de concorrência", "pesquisa de mercado (questionário e relatório)", "manual de tom de voz", "plano de mídia", "post e roteiro de conteúdo", "fluxo de automação de e-mail"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Pesquisa e inteligência de mercado", "esco": null, "kind": "nucleo" },
+      { "label": "Planejamento de marketing (diagnóstico, objetivos, mix, orçamento)", "esco": null, "kind": "nucleo" },
+      { "label": "Branding e posicionamento", "esco": null, "kind": "nucleo" },
+      { "label": "Marketing digital: conteúdo, SEO e redes sociais", "esco": null, "kind": "nucleo" },
+      { "label": "Mídia paga e performance (Google Ads, Meta Ads)", "esco": null, "kind": "nucleo" },
+      { "label": "Métricas, analytics e relatórios de campanha", "esco": null, "kind": "nucleo" },
+      { "label": "CRM, automação e e-mail marketing com consentimento", "esco": null, "kind": "nucleo" },
+      { "label": "Redação publicitária e comunicação persuasiva", "esco": null, "kind": "nucleo" },
+      { "label": "Conformidade publicitária (CONAR, CDC) e LGPD aplicada a marketing", "esco": null, "kind": "nucleo" },
+      { "label": "Experiência do cliente e jornada", "esco": null, "kind": "apoio" },
+      { "label": "Trade marketing e ponto de venda", "esco": null, "kind": "apoio" },
+      { "label": "Noções de UX e landing pages", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de projetos e de fornecedores (agências, freelancers)", "esco": null, "kind": "apoio" },
+      { "label": "Precificação e noções de finanças de marketing (CAC, LTV, ROI)", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação escrita e oral", "criatividade com critério", "raciocínio analítico", "ética e veracidade", "colaboração com vendas, produto e design"],
+    "tracks": [
+      { "id": "planejar", "label": "Planejar com dados", "steps": ["resposta a briefing simulado (L8)", "plano de marketing enxuto (X1)", "plano 30-60-90 para analista de marketing (L9)"] },
+      { "id": "medir-resultados", "label": "Medir e mostrar resultados", "steps": ["relatório de campanha com métricas (L4)", "infográfico de resultados (D7)", "estudo de caso STAR de uma campanha (L3)"] },
+      { "id": "marketing-digital", "label": "Marketing digital na prática", "steps": ["wireframe de landing page com três estados (D9)", "jornada do cliente em diagrama (D4)", "redesenho antes e depois de uma peça (D5)", "post sobre um aprendizado (L5)"] },
+      { "id": "apresentar-se", "label": "Apresentar-se como profissional de marketing", "steps": ["bio com posicionamento (L6)", "prancha de portfólio com três trabalhos autorizados (D2)", "currículo direcionado (L1)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"assistente de marketing\", \"social media\", \"analista de conteúdo\", \"promotor de vendas\", \"vendedor\"",
+      "cboFamilies": ["1423", "2531", "3541", "5211"],
+      "why": "Pergunto seu último cargo para saber de que frente do marketing você parte (digital, marca, trade, pesquisa) e sugerir tarefas que continuem dali. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, assistente ou primeiro freela",
+        "junior": "analista júnior; executa campanhas e conteúdos com revisão",
+        "pleno": "analista que planeja e mede campanhas de um canal com autonomia",
+        "senior": "especialista ou analista sênior; desenha estratégia multicanal e orienta colegas",
+        "gestao": "coordena marca, equipe, agências e orçamento de marketing"
+      },
+      "why": "Com o nível ajusto as tarefas: um post e uma bio para quem começa, um plano de marketing com orçamento para quem já lidera."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em marketing",
+      "options": ["escrever textos que convertem", "planejar conteúdo e calendário editorial", "gerir anúncios no Google ou na Meta", "analisar métricas e montar relatórios", "fazer pesquisa de mercado", "construir personas e jornadas", "cuidar de marca e tom de voz", "configurar CRM e automação de e-mail", "otimizar sites para busca (SEO)", "planejar ações de trade e ponto de venda", "criar peças visuais simples", "apresentar resultados para clientes ou gestores"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa de marketing; a prova vem com as tarefas (plano, relatório, wireframe)."
+    },
+    "c4": {
+      "certifications": ["tecnólogo ou bacharelado em Marketing", "Google Ads / Google Analytics (certificações gratuitas do Google)", "Meta Blueprint", "HubSpot Academy (inbound, conteúdo)", "RD Station Academy", "curso de SEO", "curso de LGPD para marketing", "Excel ou Looker Studio", "registro no CRA (facultativo)"],
+      "languages": ["inglês", "espanhol"],
+      "why": "Certificações de plataforma e idiomas mostram lacunas em relação ao cargo-alvo (ex.: performance pede Google Ads e GA4)."
+    },
+    "c5": {
+      "prompt": "Que competência de marketing quer desenvolver?",
+      "options": ["planejamento de marketing", "pesquisa e inteligência de mercado", "branding e posicionamento", "conteúdo e SEO", "mídia paga e performance", "analytics e relatórios", "CRM e automação", "trade marketing", "UX e landing pages", "liderança de equipe e agências"],
+      "why": "Com isso monto uma trilha com tarefas progressivas da área, em vez de mostrar o catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que frente do marketing você atua ou quer atuar primeiro?", "type": "escolha", "options": ["marketing digital e performance", "conteúdo e redes sociais", "marca e produto", "pesquisa e inteligência de mercado", "CRM e relacionamento", "trade marketing", "generalista", "ainda não sei"], "why": "Pergunto para colocar na frente as tarefas dessa frente (ex.: wireframe e relatório de campanha para digital; plano e posicionamento para marca).", "where": "P" },
+      { "id": "x2", "prompt": "Os trabalhos que você quer mostrar são de clientes ou empregadores que autorizaram a divulgação?", "type": "escolha", "options": ["sim, tenho autorização", "não, vou usar marca fictícia", "alguns sim, outros não", "não sei"], "why": "Resultados e peças de clientes costumam estar sob contrato ou NDA; sem autorização, as tarefas usam marca fictícia ou números relativos.", "where": "X" }
+    ],
+    "interestTestWhenUnknown": true
+  },
+  "guidedTasks": {
+    "priority": ["L8", "L4", "D7", "D9", "L9", "L3", "D4", "D5", "L6", "D2", "L5", "L1"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica de ambiente não é entrega de marketing" },
+      { "code": "D3", "reason": "modelagem 3D com render é entrega de design de produto, não de marketing" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da área" },
+      { "code": "D8", "reason": "vista explodida não é entrega da área" }
+    ],
+    "parameters": {
+      "L8": {
+        "title": "Resposta a briefing de campanha",
+        "brief": "Responda a um briefing simulado de uma marca fictícia: objetivo SMART, público e persona, mensagem-chave, canais, cronograma, orçamento indicativo, indicadores e o que fica fora do escopo. Cite as regras do CONAR e da LGPD que se aplicam.",
+        "parameters": { "brand": "fictícia", "sections": ["objetivo", "público e persona", "mensagem-chave", "canais", "cronograma", "orçamento indicativo", "indicadores", "fora do escopo", "premissas"], "mustCite": ["CONAR", "LGPD"] },
+        "criteria": ["objetivo mensurável com prazo", "persona sem dados sensíveis", "indicadores ligados ao objetivo", "seção do que fica fora do escopo e premissas", "cita pelo menos uma regra do CONAR e uma da LGPD aplicável", "marca fictícia declarada"],
+        "evidence": "proposta em Letters (modelo proposta)",
+        "time": "45 min",
+        "level": 1
+      },
+      "L4": {
+        "title": "Relatório de resultados de campanha",
+        "brief": "Monte um relatório de até 4 páginas de uma campanha (real autorizada ou fictícia): objetivo, canais, período, métricas com fórmula (CTR, conversão, CPA ou ROAS), resultado contra meta, aprendizados, limitações e próximos passos. Sem dados pessoais de leads e sem números de clientes sob NDA.",
+        "parameters": { "maxPages": 4, "metrics": 4, "sections": ["objetivo", "método e métricas", "resultados x meta", "aprendizados", "limitações", "próximos passos"], "noPersonalData": true },
+        "criteria": ["quatro métricas com fórmula e período", "resultado comparado à meta", "seções objetivo, método, resultados, limitações e próximos passos", "até 4 páginas", "fonte dos dados declarada (ex.: GA4, gerenciador de anúncios)", "sem dados pessoais de leads e sem números sob NDA"],
+        "evidence": "relatório em Letters (modelo relatorio-tecnico)",
+        "time": "2 h",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de resultados de marketing",
+        "brief": "Transforme os números do relatório em um infográfico com uma mensagem principal (ex.: \"o e-mail converteu 2× mais que a mídia paga\"), eixos rotulados e fonte citada. Use números fictícios ou relativos quando não houver autorização.",
+        "parameters": { "oneMessage": true, "sourceCited": true, "charts": "1 a 3" },
+        "criteria": ["uma mensagem principal explícita", "eixos rotulados com unidade", "fonte dos dados citada", "números autorizados, fictícios ou relativos declarados", "sem escala enganosa (eixo truncado sem aviso)"],
+        "evidence": "imagem PNG + PDF (Drawings, modo infografico)",
+        "time": "60 min",
+        "level": 2
+      },
+      "D9": {
+        "title": "Wireframe de landing page de captação",
+        "brief": "Desenhe o wireframe de uma landing page de captação de leads para uma marca fictícia, com três estados do formulário (vazio, erro, sucesso), caixa de consentimento LGPD não pré-marcada, link para a política de privacidade e anotações de interação.",
+        "parameters": { "states": ["vazio", "erro", "sucesso"], "consentCheckbox": "não pré-marcada", "privacyLink": true, "annotations": true },
+        "criteria": ["três estados do formulário", "caixa de consentimento não pré-marcada e finalidade explícita", "link para a política de privacidade", "pede só os dados necessários (minimização)", "anotações de interação"],
+        "evidence": "prancha (Drawings, modo wireframe)",
+        "time": "90 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "letters", "title": "Plano de marketing enxuto (uma página por seção)", "competency": "Planejamento de marketing", "criteria": ["diagnóstico com SWOT e concorrência", "objetivos SMART", "segmentação, persona e posicionamento", "mix (4Ps) e canais", "orçamento indicativo e cronograma", "indicadores por objetivo"], "evidence": "plano em Letters", "time": "3 h", "trigger": "Quer montar um plano de marketing para uma marca fictícia ou um pequeno negócio que autorizou?", "level": 3 },
+      { "id": "X2", "editor": "letters", "title": "Revisão de conformidade de uma peça (CONAR, CDC, LGPD)", "competency": "Conformidade publicitária", "criteria": ["identifica a peça analisada (fictícia ou pública) e credita o autor", "checa identificação como publicidade e veracidade das alegações", "checa apelos a crianças e comparações", "checa consentimento e opt-out quando há dados", "propõe ajustes com o artigo citado"], "evidence": "revisão estruturada em Letters (modelo revisao)", "time": "40 min", "trigger": "Quer treinar o olhar de conformidade numa peça publicitária?", "level": 2 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "objetivo-smart", "check": "o objetivo tem métrica, meta e prazo", "appliesTo": ["L8", "L9", "X1"], "auto": true },
+      { "id": "metricas-com-formula", "check": "cada métrica traz fórmula, período e fonte dos dados", "appliesTo": ["L4", "D7"], "auto": true },
+      { "id": "fonte-e-eixos", "check": "fonte citada e eixos rotulados com unidade", "appliesTo": ["D7"], "auto": true },
+      { "id": "tres-estados-e-consentimento", "check": "wireframe com estados vazio, erro e sucesso, caixa de consentimento não pré-marcada e link de privacidade", "appliesTo": ["D9"], "auto": true },
+      { "id": "sem-dados-pessoais-de-leads", "check": "nenhum nome, e-mail, telefone ou print de CRM com dados de pessoas reais", "appliesTo": ["L3", "L4", "L8", "D4", "D7", "D9", "X1"], "auto": true },
+      { "id": "autorizacao-ou-marca-ficticia", "check": "peças e números de clientes têm autorização declarada ou a marca é fictícia", "appliesTo": ["L3", "L4", "D2", "D5", "D7", "X1"], "auto": true },
+      { "id": "creditos-e-licencas", "check": "imagens, fontes, músicas e peças de terceiros têm crédito e licença indicada", "appliesTo": ["D2", "D5", "D7", "D9", "L5", "L10", "X2"], "auto": true },
+      { "id": "normas-citadas", "check": "a regra do CONAR, CDC ou LGPD aplicável é citada pelo nome e artigo", "appliesTo": ["L8", "X2"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L8", "L9", "X1"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama de jornada tem início e fim e nenhuma etapa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados confidenciais de clientes e empregadores", "appliesTo": ["L1", "L3", "L4", "L5", "L6", "L8", "L9", "L10", "D2", "D4", "D5", "D7", "D9", "X1", "X2"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "clareza-estrategica", "label": "Clareza estratégica", "levels": { "aproxima": "lista ações sem ligar a objetivo e público", "atende": "cada ação responde a um objetivo e a um público definidos", "supera": "prioriza ações por impacto e custo e explica o que não fazer" } },
+      { "id": "orientacao-a-dados", "label": "Orientação a dados", "levels": { "aproxima": "cita números soltos ou métricas de vaidade", "atende": "métricas ligadas ao objetivo, com meta e leitura", "supera": "isola causa provável, compara com período ou grupo de controle e aponta limites" } },
+      { "id": "etica-e-conformidade", "label": "Ética e conformidade", "levels": { "aproxima": "não considera CONAR, CDC nem LGPD", "atende": "alegações verificáveis, publicidade identificada e consentimento previsto", "supera": "antecipa riscos (crianças, comparativa, dados) e propõe salvaguardas" } },
+      { "id": "foco-no-cliente", "label": "Foco no cliente", "levels": { "aproxima": "fala do produto, não do problema do cliente", "atende": "mensagem parte de uma dor ou necessidade da persona", "supera": "sustenta a mensagem com pesquisa e mapeia a jornada" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da área de Marketing (tecnólogo ou bacharel; CBO 1423, 2531 e 3541). Use o vocabulário da área (4Ps, persona, posicionamento, funil, jornada, briefing, SEO, mídia paga, CTR, CPC, CPA, CAC, LTV, ROAS, conversão, teste A/B, UTM, CRM, opt-in, NPS, trade marketing) e cite as normas pelo nome: Código do CONAR e o Guia de Publicidade por Influenciadores, CDC arts. 30 a 38, LGPD (bases legais, consentimento, direitos do titular, art. 20), Marco Civil da Internet, Lei 9.610/1998, Decreto 7.962/2013, Resolução Conanda 163/2014. Personas nunca usam dados sensíveis (raça, religião, saúde, orientação sexual) nem proxies para segmentar; não sugira compra de listas, disparos sem consentimento, caixas pré-marcadas, dark patterns, falsa escassez, avaliações falsas ou publicidade não identificada. Nunca peça nem processe bases de leads, prints de CRM com dados pessoais, resultados, orçamentos ou estratégias de clientes sob NDA: oriente marca fictícia, autorização expressa ou números relativos. Peças de terceiros só com crédito e licença. Não substitua parecer jurídico sobre campanhas reais; aponte o risco e indique a conferência. Registro no CRA é facultativo. Métricas sempre com fórmula, período e fonte. Toda sugestão de tarefa diz qual competência comprova, que evidência produz e quanto tempo leva; afirmações de mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos, nunca por score. Em nenhum modo publique, envie mensagem ou se candidate sem confirmação. Pré-cheque só critérios objetivos; o selo depende de revisão humana.",
+    "citeSources": [
+      { "title": "CONAR — Código Brasileiro de Autorregulamentação Publicitária e Guia de Publicidade por Influenciadores", "url": "http://www.conar.org.br/", "kind": "norma" },
+      { "title": "CDC — Lei 8.078/1990", "url": "https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm", "kind": "norma" },
+      { "title": "LGPD — Lei 13.709/2018", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm", "kind": "norma" },
+      { "title": "ANPD — guias orientativos (legítimo interesse, cookies)", "url": "https://www.gov.br/anpd/pt-br/documentos-e-publicacoes", "kind": "orgao-publico" },
+      { "title": "Lei 9.610/1998 — direitos autorais", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9610.htm", "kind": "norma" },
+      { "title": "CFA — Conselho Federal de Administração (registro facultativo)", "url": "https://cfa.org.br/", "kind": "conselho" },
+      { "title": "CBO — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "Novo CAGED — MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências de marketing; x1 (frente) ordena as tarefas e x2 (autorização) define marca fictícia ou real." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "L8 briefing, L4 relatório, D7 infográfico e D9 wireframe na frente; X1 plano para quem já é pleno; X2 conformidade como transversal." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir das horas (d1); D9 e X1 só no computador; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Pré-checa objetivo SMART, fórmula das métricas, fonte e eixos, três estados e consentimento no wireframe, créditos e licenças, dados pessoais; o selo é humano." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Propõe estrutura de briefing, plano e relatório com prévia; nunca aplica sem revisão; nunca inventa resultados apresentados como reais." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estados e anotações do wireframe (D9); mensagem única, eixos e fonte (D7); jornada fechada (D4)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: competências de marketing declaradas e evidenciadas, lacunas em relação à frente-alvo; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos por CBO/ESCO: publicidade e propaganda, gestão comercial, administração, processos gerenciais." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por CBO 1423/2531/2431 e competências compartilhadas." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com frente de marketing, três competências e uma prova autorizada; só com o consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, certificações de plataforma e competências em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados pessoais de leads e clientes em CRM e campanhas", "resultados, orçamentos e estratégias de clientes sob NDA", "peças, marcas e imagens de terceiros sem licença", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca sugerir segmentação por dados sensíveis ou proxies, compra de listas, disparos sem consentimento, caixas pré-marcadas ou dark patterns",
+      "nunca sugerir publicidade não identificada, avaliações falsas, falsa escassez ou alegações não comprováveis (CONAR, CDC)",
+      "nunca pedir nem usar bases de leads, prints de CRM ou resultados de clientes sob NDA; orientar marca fictícia, autorização ou números relativos",
+      "peças de terceiros só com crédito e licença (Lei 9.610/1998)",
+      "não apresentar números inventados como resultados reais da pessoa",
+      "perguntar em vez de inferir frente, senioridade ou situação",
+      "nunca prometer entrevista, emprego ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; em nenhum modo publicar, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "alta" },
+    "drawingsModes": ["infografico", "wireframe", "diagrama", "prancha"],
+    "lettersTemplates": ["proposta", "relatorio-tecnico", "plano-30-60-90", "estudo-de-caso", "post", "bio", "curriculo", "carta", "revisao", "roteiro"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, L5 (post), L6 (bio), X2 (revisão) e L10 funcionam bem; D9 (wireframe), D7 e X1 pedem computador. Não anexar prints de gerenciadores de anúncios ou CRM com dados de clientes.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: responder a um briefing de campanha para uma marca fictícia (45 min). Comprova planejamento.",
+        "Tem números de uma campanha que possa mostrar com autorização ou em valores relativos? Um infográfico leva 60 min.",
+        "Sem pressão. Quando quiser retomar, a bio de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias"] },
+    "privacy": {
+      "sensitiveData": ["dados pessoais de leads e clientes em bases de CRM e campanhas (LGPD)", "resultados de campanhas, orçamentos e estratégias de clientes sob NDA", "marcas, imagens e peças de terceiros sem licença de uso (Lei 9.610/1998)", "prints de painéis de anúncios e analytics com dados de contas de clientes"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 1423, 2531 e 3541", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — estoque de vínculos por ocupação", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "PNAD Contínua (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html", "geography": "Brasil e UF", "cadence": "trimestral", "kind": "estatistica-oficial" },
+      { "title": "Censo da Educação Superior (INEP) — matrículas em Marketing", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-da-educacao-superior", "geography": "Brasil e UF", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "TIC Domicílios e TIC Empresas (Cetic.br / NIC.br) — uso de internet e comércio eletrônico", "url": "https://cetic.br/", "geography": "Brasil e regiões", "cadence": "anual", "kind": "pesquisa" },
+      { "title": "IAB Brasil — estudos de investimento em publicidade digital", "url": "https://iabbrasil.com.br/", "geography": "Brasil", "cadence": "eventual", "kind": "associacao" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "publicidade-e-propaganda", "why": "Compartilha CBO 2531, briefing, criação e mídia; o foco desloca-se da estratégia de mercado para a criação e veiculação de campanhas.", "gaps": ["direção de arte e redação criativa", "produção audiovisual", "portfólio criativo"], "steps": ["redesenho antes e depois de uma peça (D5)", "roteiro de um vídeo curto (Letters, modelo roteiro)", "prancha de portfólio com três peças (D2)"] },
+    { "to": "gestao-comercial", "why": "Marketing e vendas dividem funil, CRM e metas de receita; quem domina geração de leads passa para gestão de vendas e contas.", "gaps": ["prospecção e negociação", "gestão de carteira e metas", "previsão de vendas"], "steps": ["proposta comercial para um cliente fictício (L8)", "relatório de funil com conversão MQL → SQL → venda (L4)", "estudo de caso STAR de negociação (L3)"] },
+    { "to": "administracao", "why": "Mesma área CINE (04) e mesmo conselho facultativo; o bacharelado amplia para finanças, pessoas e estratégia, base para gerência de marketing.", "gaps": ["finanças e orçamento", "gestão de pessoas", "estratégia corporativa"], "steps": ["plano de marketing com orçamento e ROI (X1)", "plano 30-60-90 para coordenação (L9)", "disciplinas de finanças em curso aberto"] },
+    { "to": "processos-gerenciais", "why": "Tecnólogo vizinho que usa indicadores, projetos e processos; útil para quem migra para operações de marketing (marketing ops).", "gaps": ["mapeamento de processos", "gestão de projetos", "indicadores operacionais"], "steps": ["fluxo de aprovação de campanha com raias (D4)", "POP de publicação de conteúdo (L7)", "redesenho antes e depois de um processo (D5)"] }
+  ],
+  "learning": [
+    { "title": "Google Skillshop — certificações gratuitas de Google Ads e Google Analytics", "provider": "Google", "url": "https://skillshop.withgoogle.com/", "free": true, "kind": "certificacao" },
+    { "title": "Meta Blueprint — cursos gratuitos de anúncios", "provider": "Meta", "url": "https://www.facebook.com/business/learn", "free": true, "kind": "curso" },
+    { "title": "HubSpot Academy — inbound, conteúdo e e-mail marketing", "provider": "HubSpot", "url": "https://academy.hubspot.com/", "free": true, "kind": "certificacao" },
+    { "title": "Cursos on-line de marketing do Sebrae", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — LGPD e comunicação", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Código do CONAR e decisões do Conselho de Ética", "provider": "CONAR", "url": "http://www.conar.org.br/", "free": true, "kind": "norma" },
+    { "title": "Guias orientativos da ANPD", "provider": "ANPD", "url": "https://www.gov.br/anpd/pt-br/documentos-e-publicacoes", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual Fundação Bradesco — marketing e administração", "provider": "Fundação Bradesco", "url": "https://www.ev.org.br/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4 (perguntas), §4.6 (pacote), §7 (tarefas L1–L10, D1–D10), §8 (mensagens)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "RF75 README (CA19) e catálogo contracts/career/academic-fields.json — ramo marketing (CBO, ISCO, ESCO, conselho, sensitiveData, vizinhos)", "url": "docs/diagramas/RF75/README.md", "accessedAt": "2026-11-02" },
+    { "title": "CONAR — Código Brasileiro de Autorregulamentação Publicitária", "url": "http://www.conar.org.br/", "accessedAt": "2026-11-02" },
+    { "title": "CDC — Lei 8.078/1990", "url": "https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm", "accessedAt": "2026-11-02" },
+    { "title": "LGPD — Lei 13.709/2018", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm", "accessedAt": "2026-11-02" },
+    { "title": "CBO — Classificação Brasileira de Ocupações", "url": "https://cbo.mte.gov.br/", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Nenhuma busca web nesta sessão: URLs do CONAR, ANPD, Cetic.br, IAB Brasil, Google Skillshop, Meta Blueprint e HubSpot citadas de memória, não verificadas em 2026-11-02",
+    "Guia de Publicidade por Influenciadores Digitais do CONAR (2021, atualizações posteriores) citado de memória",
+    "Resolução Conanda 163/2014 citada de memória; sua força vinculante é debatida",
+    "Res. CFA 649/2024 (bacharelado em Marketing como área conexa) copiada do catálogo, não conferida no site do CFA",
+    "Código CBO 5211 (vendedores) em questions.a4 e títulos CBO/ISCO não conferidos no portal da CBO",
+    "URIs ESCO da família copiadas do catálogo; competências sem URI ESCO confirmada (esco: null)",
+    "Gratuidade das certificações de plataforma (Google, Meta, HubSpot) pode mudar"
+  ]
+}

@@ -1,0 +1,283 @@
+{
+  "schemaVersion": 1,
+  "code": "seguranca-publica",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Segurança Pública", "en": "Public Safety Management", "es": "Seguridad Pública" },
+  "fields": ["seguranca-publica"],
+  "family": {
+    "cbo": [
+      { "code": "2526", "title": "Gestores em segurança" },
+      { "code": "5173", "title": "Vigilantes e guardas de segurança" }
+    ],
+    "isco08": [
+      { "code": "3355", "title": "Police inspectors and detectives" },
+      { "code": "5412", "title": "Police officers" },
+      { "code": "5414", "title": "Security guards" }
+    ],
+    "esco": []
+  },
+  "scope": {
+    "summary": "Formação (majoritariamente tecnológica) para gestão e atuação em segurança pública e privada: planejamento operacional, prevenção, policiamento comunitário, análise criminal, gestão de riscos, inteligência e políticas públicas, sempre orientados por direitos humanos e pelo uso diferenciado e proporcional da força. Não há conselho de classe; cargos policiais exigem concurso e curso de formação, e a segurança privada segue a Lei 7.102/1983 e a fiscalização da Polícia Federal.",
+    "entryRoles": ["Vigilante ou agente de segurança privada", "Guarda civil municipal (concurso)", "Soldado ou agente de polícia (concurso e curso de formação)", "Assistente de monitoramento em central de videomonitoramento", "Analista júnior de segurança corporativa", "Agente de trânsito ou de defesa civil"],
+    "midRoles": ["Supervisor de segurança patrimonial", "Analista criminal ou de estatística de segurança", "Coordenador de central de monitoramento ou de operações", "Gestor de riscos em segurança corporativa", "Técnico em políticas de prevenção à violência (município ou estado)", "Instrutor de formação em segurança"],
+    "seniorRoles": ["Gestor de segurança (CBO 2526-05) de empresa ou órgão", "Coordenador de política municipal ou estadual de segurança", "Oficial ou delegado (concurso específico e formação jurídica quando exigida)", "Consultor em segurança e gestão de riscos", "Gestor de inteligência ou de planejamento estratégico", "Docente ou pesquisador em segurança pública"],
+    "sectors": ["polícias (militar, civil, federal, penal) por concurso", "guardas municipais", "secretarias de segurança e de prevenção", "segurança privada e transporte de valores", "segurança corporativa e prevenção de perdas", "defesa civil e gestão de emergências", "sistema prisional e socioeducativo", "terceiro setor e pesquisa (prevenção da violência)", "eventos e grandes públicos", "consultoria"],
+    "regulation": [
+      { "name": "Constituição Federal, art. 144", "issuer": "Brasil", "about": "segurança pública como dever do Estado e direito de todos; órgãos policiais e guardas municipais" },
+      { "name": "Lei 13.675/2018 (SUSP)", "issuer": "Brasil", "about": "Sistema Único de Segurança Pública e Política Nacional de Segurança Pública e Defesa Social (PNSPDS)" },
+      { "name": "Lei 13.060/2014", "issuer": "Brasil", "about": "uso de instrumentos de menor potencial ofensivo; legalidade, necessidade, razoabilidade e proporcionalidade" },
+      { "name": "Portaria Interministerial 4.226/2010", "issuer": "MJ / SDH", "about": "diretrizes sobre o uso da força pelos agentes de segurança pública" },
+      { "name": "Lei 13.022/2014 (Estatuto Geral das Guardas Municipais)", "issuer": "Brasil", "about": "competências, princípios e formação das guardas municipais" },
+      { "name": "Lei 7.102/1983 e Portaria DG/PF 18.045/2023", "issuer": "Brasil / Polícia Federal", "about": "segurança privada: empresas, vigilantes, formação e fiscalização" },
+      { "name": "Lei 13.869/2019 (abuso de autoridade)", "issuer": "Brasil", "about": "crimes de abuso de autoridade por agentes públicos" },
+      { "name": "LGPD (Lei 13.709/2018), art. 4º, III", "issuer": "Brasil", "about": "tratamento de dados para segurança pública fora da LGPD geral, exigindo lei específica; cautela máxima com dados de pessoas" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "SUSP", "meaning": "Sistema Único de Segurança Pública (Lei 13.675/2018), integra órgãos federais, estaduais e municipais" },
+      { "term": "PNSPDS", "meaning": "Política Nacional de Segurança Pública e Defesa Social" },
+      { "term": "uso diferenciado da força", "meaning": "escalonamento proporcional da força conforme a conduta da pessoa abordada, com legalidade e necessidade" },
+      { "term": "IMPO", "meaning": "instrumentos de menor potencial ofensivo (Lei 13.060/2014)" },
+      { "term": "policiamento comunitário", "meaning": "filosofia de aproximação e corresponsabilidade com a comunidade na prevenção" },
+      { "term": "prevenção situacional", "meaning": "intervenções no ambiente que reduzem oportunidades de crime (iluminação, CPTED)" },
+      { "term": "CPTED", "meaning": "prevenção do crime pelo desenho ambiental" },
+      { "term": "análise criminal", "meaning": "estudo de padrões de ocorrências por tempo, lugar e modus operandi para orientar ações" },
+      { "term": "mancha criminal", "meaning": "mapa de concentração de ocorrências (hot spot)" },
+      { "term": "BO / REDS", "meaning": "boletim ou registro de ocorrência; documento sigiloso quando identifica pessoas" },
+      { "term": "POP", "meaning": "procedimento operacional padrão de abordagem, patrulhamento ou atendimento" },
+      { "term": "SICOM / CIOPS", "meaning": "centrais integradas de comunicação e operações de segurança (nomes variam por UF)" },
+      { "term": "gestão de riscos", "meaning": "identificação, análise e tratamento de riscos (ABNT NBR ISO 31000)" },
+      { "term": "plano de segurança", "meaning": "documento que define riscos, recursos, rotinas e respostas de um local ou evento" },
+      { "term": "cadeia de custódia", "meaning": "registro cronológico de vestígios desde a coleta (CPP, arts. 158-A a 158-F)" },
+      { "term": "mediação de conflitos", "meaning": "técnicas de resolução pacífica de conflitos comunitários" },
+      { "term": "SINESP", "meaning": "Sistema Nacional de Informações de Segurança Pública" },
+      { "term": "Anuário Brasileiro de Segurança Pública", "meaning": "publicação anual do Fórum Brasileiro de Segurança Pública com indicadores por UF" },
+      { "term": "Atlas da Violência", "meaning": "publicação do Ipea e do FBSP com indicadores de violência letal" },
+      { "term": "direitos humanos", "meaning": "base legal e ética da atuação: dignidade, não discriminação, legalidade" }
+    ],
+    "tools": ["QGIS (mapas de mancha criminal com dados abertos)", "planilhas e Power BI ou Looker Studio", "painéis do SINESP e dados abertos estaduais", "softwares de videomonitoramento (operação)", "rádio e protocolos de comunicação", "matriz de riscos (ISO 31000)", "editor de textos para POP e relatórios"],
+    "deliverables": ["plano de ação de prevenção para um território fictício", "relatório de ocorrência fictício (treino de redação)", "POP de abordagem, patrulhamento ou atendimento", "relatório técnico de análise criminal com dados abertos", "plano de segurança de evento fictício", "matriz de riscos", "infográfico de indicadores de segurança", "diagrama de fluxo de atendimento ou de despacho", "proposta de projeto de prevenção (município)", "parecer técnico de gestão de riscos"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Planejamento operacional e gestão de segurança", "esco": null, "kind": "nucleo" },
+      { "label": "Direitos humanos e uso diferenciado e proporcional da força", "esco": null, "kind": "nucleo" },
+      { "label": "Legislação de segurança pública e privada", "esco": null, "kind": "nucleo" },
+      { "label": "Análise criminal e de dados de segurança", "esco": null, "kind": "nucleo" },
+      { "label": "Prevenção da violência e policiamento comunitário", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de riscos e planos de segurança", "esco": null, "kind": "nucleo" },
+      { "label": "Redação de relatórios e documentos operacionais", "esco": null, "kind": "nucleo" },
+      { "label": "Mediação de conflitos e comunicação com o público", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de crises e emergências", "esco": null, "kind": "apoio" },
+      { "label": "Políticas públicas e gestão pública", "esco": null, "kind": "apoio" },
+      { "label": "Inteligência e proteção de informações", "esco": null, "kind": "apoio" },
+      { "label": "Liderança de equipes operacionais", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["ética e integridade", "comunicação clara e respeitosa", "trabalho em equipe e integração entre órgãos", "controle emocional e tomada de decisão", "sigilo e proteção de dados de pessoas"],
+    "tracks": [
+      { "id": "planejar-prevencao", "label": "Planejar prevenção com dados", "steps": ["infográfico de indicadores com dados abertos (D7)", "relatório de análise criminal (L4)", "plano de ação de prevenção para território fictício (X1)", "post sobre uma lição de prevenção (L5)"] },
+      { "id": "padronizar-operacao", "label": "Padronizar a operação", "steps": ["POP de abordagem ou atendimento com uso proporcional da força (L7)", "diagrama do fluxo de atendimento (D4)", "relatório de ocorrência fictício (X2)", "redesenho antes e depois de um processo (D5)"] },
+      { "id": "gestao-e-concurso", "label": "Gestão e concursos", "steps": ["resumo de perfil (L6)", "currículo para o cargo-alvo (L1)", "plano 30-60-90 para supervisão (L9)", "proposta para briefing de segurança de evento (L8)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"vigilante\", \"guarda municipal\", \"supervisor de segurança\", \"operador de monitoramento\", \"policial\"",
+      "cboFamilies": ["2526", "5173", "5172"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez. Se for o primeiro emprego, pule. Não pergunto sobre ocorrências que você atendeu."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estudante, em formação ou primeiro cargo",
+        "junior": "agente, vigilante ou analista com supervisão",
+        "pleno": "atua com autonomia ou coordena turno",
+        "senior": "referência técnica; forma e orienta equipes",
+        "gestao": "responde por unidade, programa, contrato ou política"
+      },
+      "why": "Pergunto o nível para ajustar as tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem",
+      "options": ["planejar operações e escalas", "aplicar procedimentos com uso proporcional da força", "analisar dados e mapas de ocorrências", "mediar conflitos", "redigir relatórios e documentos", "operar monitoramento e comunicação", "elaborar planos de segurança e matrizes de risco", "liderar equipes operacionais", "atuar com a comunidade em prevenção", "conhecer legislação de segurança", "gerir crises e emergências"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com planos, POPs e relatórios fictícios."
+    },
+    "c4": {
+      "certifications": ["curso de formação de vigilantes (escola credenciada pela PF)", "reciclagem de vigilante", "curso de formação de guarda municipal ou policial", "cursos EaD da SENASP (Rede EaD-Senasp)", "curso de gestão de riscos (ISO 31000)", "curso de mediação de conflitos", "pós-graduação em segurança pública ou gestão de riscos"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação e cursos mostram lacunas em relação ao cargo que você quer; concursos costumam pedir formações específicas."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["análise criminal e dados", "gestão de riscos e planos de segurança", "direitos humanos e uso da força", "mediação de conflitos", "liderança operacional", "políticas públicas de prevenção", "redação de documentos", "gestão de crises", "segurança corporativa", "preparação para concursos"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas da área em vez do catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que frente você atua ou quer atuar?", "type": "escolha", "options": ["polícia ou guarda municipal (concurso)", "segurança privada e patrimonial", "segurança corporativa e riscos", "análise criminal e dados", "políticas de prevenção (município ou estado)", "defesa civil e emergências", "sistema prisional ou socioeducativo", "ainda não sei"], "why": "Pergunto para escolher exemplos, normas e fontes da sua frente nas tarefas. Você pode pular.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L7", "L4", "D7", "D4", "L6", "L1", "L3", "L8", "L9", "D5", "L5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta de ambiente com rotas e câmeras é dado sensível de cliente; fora do portfólio" },
+      { "code": "D3", "reason": "modelo 3D de produto não é entrega típica da área" },
+      { "code": "D6", "reason": "detalhe construtivo pertence à engenharia" },
+      { "code": "D8", "reason": "vista explodida pertence à engenharia mecânica" },
+      { "code": "D9", "reason": "wireframe de tela pertence a UX/UI" }
+    ],
+    "parameters": {
+      "L7": {
+        "title": "POP de abordagem ou atendimento com uso proporcional da força",
+        "brief": "Escreva um procedimento operacional padrão genérico (abordagem a pessoa, atendimento a vítima, patrulha preventiva ou controle de acesso): passos numerados, responsável, critério de conclusão, níveis do uso diferenciado da força com base na Lei 13.060/2014 e na Portaria 4.226/2010, e cuidados com direitos humanos e não discriminação. Não substitui o POP oficial da corporação ou empresa.",
+        "parameters": { "numberedSteps": true, "ownerPerStep": true, "legalBasis": ["Lei 13.060/2014", "Portaria Interministerial 4.226/2010"], "humanRights": true, "notOfficialSop": true },
+        "criteria": ["passos numerados com responsável", "critério de conclusão por passo", "níveis de uso da força e princípios (legalidade, necessidade, proporcionalidade) citados", "cuidado com direitos humanos e não discriminação explícito", "aviso de que não substitui o POP oficial"],
+        "evidence": "modelo de POP",
+        "time": "60 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório de análise criminal com dados abertos",
+        "brief": "Escreva até 4 páginas sobre um indicador (ex.: roubos, mortes violentas, violência doméstica) em um estado ou município, usando dados agregados abertos (Anuário FBSP, Atlas da Violência, SINESP, secretaria estadual): objetivo, método, resultados com taxas por 100 mil habitantes, limitações (subnotificação) e referências. Sem ocorrências individuais, vítimas ou suspeitos.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "método", "resultados", "limitações", "referências"], "aggregatedOnly": true, "rates": "por 100 mil habitantes" },
+        "criteria": ["até 4 páginas", "cinco seções nomeadas", "taxa por 100 mil habitantes com ano e fonte", "limitação de subnotificação discutida", "apenas dados agregados, sem pessoas ou ocorrências individuais"],
+        "evidence": "relatório em PDF",
+        "time": "2 h",
+        "level": 3
+      },
+      "D7": {
+        "title": "Infográfico de indicadores de segurança com fonte",
+        "brief": "Monte um infográfico com uma mensagem principal sobre um indicador de segurança no seu estado em 5 a 10 anos, com dados agregados do Anuário Brasileiro de Segurança Pública, Atlas da Violência ou SINESP. Eixos rotulados, taxa por 100 mil habitantes, fonte e ano citados. Linguagem sem estigmatizar territórios ou grupos.",
+        "parameters": { "dataSources": ["Anuário Brasileiro de Segurança Pública", "Atlas da Violência", "SINESP"], "yearsSpan": "5 a 10", "oneMessage": true, "aggregatedOnly": true },
+        "criteria": ["fonte, ano e região citados", "eixos rotulados com unidade", "uma mensagem principal explícita", "apenas dados agregados", "linguagem não estigmatizante"],
+        "evidence": "imagem PNG e PDF",
+        "time": "60 min",
+        "level": 1
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "letters", "title": "Plano de ação de prevenção para um território fictício", "competency": "Prevenção da violência e planejamento", "criteria": ["diagnóstico com dados agregados citados", "objetivos e metas mensuráveis", "ações com responsável, prazo e parceiros (SUSP, município, comunidade)", "indicadores de monitoramento", "território e pessoas fictícios declarados"], "evidence": "documento", "time": "2 h", "trigger": "Quer treinar um plano de prevenção no formato 5W2H?", "level": 3 },
+      { "id": "X2", "editor": "letters", "title": "Relatório de ocorrência fictício (treino de redação)", "competency": "Redação de documentos operacionais", "criteria": ["fato, local genérico, data e hora fictícios", "narrativa cronológica, objetiva e impessoal", "providências tomadas e encaminhamentos", "sem juízo de valor nem termos discriminatórios", "declaração de que pessoas e fatos são fictícios"], "evidence": "documento", "time": "45 min", "trigger": "Quer treinar a redação de um relatório objetivo com um caso fictício?", "level": 1 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "pop-passos", "check": "passos numerados, responsável e critério de conclusão por passo", "appliesTo": ["L7"], "auto": true },
+      { "id": "base-legal-uso-da-forca", "check": "Lei 13.060/2014 ou Portaria 4.226/2010 e os princípios de uso da força citados", "appliesTo": ["L7"], "auto": true },
+      { "id": "aviso-nao-oficial", "check": "a peça declara que não substitui POP oficial da corporação ou empresa", "appliesTo": ["L7"], "auto": true },
+      { "id": "estrutura-relatorio", "check": "objetivo, método, resultados, limitações e referências existem e estão nomeados", "appliesTo": ["L4"], "auto": true },
+      { "id": "fonte-oficial-citada", "check": "fonte, ano e região dos dados aparecem na peça", "appliesTo": ["L4", "D7", "X1"], "auto": true },
+      { "id": "taxa-por-100-mil", "check": "indicadores expressos como taxa por 100 mil habitantes ou com denominador explícito", "appliesTo": ["L4", "D7"], "auto": true },
+      { "id": "ficticio-e-agregado", "check": "a pessoa declarou que pessoas, ocorrências e territórios são fictícios ou que os dados são agregados e públicos", "appliesTo": ["L3", "L4", "D4", "D5", "D7", "X1", "X2"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "direitos-humanos", "label": "Direitos humanos e proporcionalidade", "levels": { "aproxima": "não menciona direitos ou trata a força como primeira resposta", "atende": "aplica legalidade, necessidade e proporcionalidade", "supera": "prioriza prevenção e mediação e prevê controle e prestação de contas" } },
+      { "id": "uso-de-evidencias", "label": "Uso de evidências", "levels": { "aproxima": "afirmações sem dados ou com dados sem fonte", "atende": "dados agregados com fonte e limitações", "supera": "conecta dados, causas prováveis e indicadores de avaliação" } },
+      { "id": "linguagem-objetiva", "label": "Linguagem objetiva e não discriminatória", "levels": { "aproxima": "juízos de valor ou termos estigmatizantes", "atende": "objetiva, impessoal e respeitosa", "supera": "clara para gestores e comunidade, sem perder precisão técnica" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa de Segurança Pública (tecnólogo, gestão de segurança pública ou privada). Use o vocabulário da área: SUSP, PNSPDS, uso diferenciado da força, IMPO, policiamento comunitário, prevenção situacional, CPTED, análise criminal, mancha criminal, POP, gestão de riscos (ISO 31000), plano de segurança, mediação de conflitos, SINESP. Cite normas quando couber: CF art. 144, Lei 13.675/2018 (SUSP), Lei 13.060/2014 e Portaria Interministerial 4.226/2010 (uso da força), Lei 13.022/2014 (guardas municipais), Lei 7.102/1983 (segurança privada), Lei 13.869/2019; fontes: Anuário Brasileiro de Segurança Pública (FBSP), Atlas da Violência (Ipea), SINESP. Princípios: direitos humanos, legalidade, necessidade, proporcionalidade e não discriminação. O que nunca fazer: ensinar táticas de confronto, uso de armas ou técnicas que possam ferir pessoas; ajudar a vigiar, identificar ou perfilar pessoas; tratar dados de ocorrências reais, inquéritos, vítimas, suspeitos, planos de segurança, rotas, efetivo ou posição de câmeras; redigir documento oficial assinável. Toda peça usa casos fictícios ou dados agregados públicos. Linguagem sem estigmatizar territórios ou grupos. Pergunte antes de inferir frente de atuação, senioridade ou situação. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por que foi sugerida, e aceita \"não me serve\". Mercado e concursos citam fonte, data e região ou dizem \"estimativa\"; nunca prometa aprovação, emprego ou salário. O selo é humano. Em nenhum modo publique, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "Lei 13.675/2018 — SUSP e PNSPDS", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13675.htm", "kind": "norma" },
+      { "title": "Lei 13.060/2014 — instrumentos de menor potencial ofensivo", "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l13060.htm", "kind": "norma" },
+      { "title": "Lei 13.022/2014 — Estatuto Geral das Guardas Municipais", "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l13022.htm", "kind": "norma" },
+      { "title": "Ministério da Justiça e Segurança Pública — SENASP e SINESP", "url": "https://www.gov.br/mj/pt-br/assuntos/sua-seguranca", "kind": "orgao-publico" },
+      { "title": "Fórum Brasileiro de Segurança Pública — Anuário", "url": "https://forumseguranca.org.br/", "kind": "estatistica" },
+      { "title": "Atlas da Violência (Ipea e FBSP)", "url": "https://www.ipea.gov.br/atlasviolencia/", "kind": "estatistica" },
+      { "title": "Polícia Federal — segurança privada", "url": "https://www.gov.br/pf/pt-br/assuntos/seguranca-privada", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes c2/c5 da área e a extra x1 (frente de atuação); nunca pergunta sobre ocorrências atendidas ou antecedentes." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "L7 POP com uso proporcional da força, L4 análise com dados abertos e D7 infográfico primeiro; casos sempre fictícios." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); respeita turnos e plantões declarados, sem pedir a escala." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa passos do POP, base legal do uso da força, seções, fonte, taxa por 100 mil e declaração de caso fictício; o selo é humano." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de POP, plano de ação e relatório fictício com prévia; recusa táticas de confronto e dados reais de pessoas." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Infográfico com dados agregados e diagrama de fluxo de atendimento; nunca plantas com rotas ou câmeras." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese com competências declaradas e evidenciadas, lacunas e incertezas; cita o campo usado." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos do catálogo (direito, gestão pública, segurança do trabalho, administração); concursos com edital, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; nunca expõe vínculo com corporação sem consentimento." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com frente de atuação e uma prova com link; sem lotação, unidade ou operações." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências e cursos em ficha editável; omite lotação e operações; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados de ocorrências, inquéritos, vítimas e suspeitos", "planos de segurança, rotas, efetivo e posição de câmeras", "imagens de pessoas em operações", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA"] },
+    "guardrails": [
+      "nunca ensinar táticas de confronto, uso de armas ou técnicas que possam ferir pessoas",
+      "nunca ajudar a vigiar, identificar ou perfilar pessoas, nem usar dados de ocorrências, inquéritos, vítimas ou suspeitos",
+      "nunca tratar planos de segurança, rotas, efetivo ou posição de câmeras; peças só com casos fictícios ou dados agregados",
+      "direitos humanos, legalidade, necessidade, proporcionalidade e não discriminação em toda orientação",
+      "perguntar em vez de inferir frente de atuação, senioridade ou situação",
+      "concursos e mercado com fonte, data e região ou \"estimativa\"; nunca prometer aprovação, emprego ou salário",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["infografico", "diagrama"],
+    "lettersTemplates": ["pop", "relatorio-tecnico", "proposta", "estudo-de-caso", "parecer", "curriculo", "bio", "plano-30-60-90", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, tarefas curtas (L6, X2, L5) e revisão (L10), úteis entre plantões; L4 e D7 pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: relatório de ocorrência fictício para treinar redação objetiva (45 min).",
+        "Tem 60 min? O infográfico com dados do Anuário de Segurança Pública do seu estado está pronto para começar.",
+        "Sem pressão entre plantões. Quando quiser retomar, a tarefa de 15 min está aqui.",
+        "Por que esta tarefa: o POP com uso proporcional da força comprova padronização e direitos humanos, que concursos e empresas pedem."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias"] },
+    "privacy": { "sensitiveData": ["dados de ocorrências, inquéritos, vítimas e suspeitos (sigilo legal, LGPD art. 4º, III)", "planos de segurança, rotas, efetivo e posicionamento de câmeras de clientes ou órgãos", "imagens de pessoas em operações sem autorização", "lotação, unidade e vínculo com corporação"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2526 e 5173", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Anuário Brasileiro de Segurança Pública (FBSP) — efetivos e indicadores", "url": "https://forumseguranca.org.br/", "geography": "Brasil e UF", "cadence": "anual", "kind": "pesquisa" },
+      { "title": "IBGE — Pesquisa de Informações Básicas Municipais e Estaduais (MUNIC/ESTADIC), guardas municipais", "url": "https://www.ibge.gov.br/estatisticas/sociais/saude/10586-pesquisa-de-informacoes-basicas-municipais.html", "geography": "Brasil, UF e município", "cadence": "eventual", "kind": "estatistica-oficial" },
+      { "title": "Editais de concursos de polícias, guardas municipais e secretarias", "url": "https://www.gov.br/mj/pt-br/acesso-a-informacao/concursos", "geography": "Brasil, UF e município", "cadence": "eventual", "kind": "edital" },
+      { "title": "Polícia Federal — dados da segurança privada (empresas e vigilantes)", "url": "https://www.gov.br/pf/pt-br/assuntos/seguranca-privada", "geography": "Brasil e UF", "cadence": "eventual", "kind": "estatistica-oficial" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, concursos, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis (CAGED, RAIS, Anuário FBSP, editais); sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147). Concurso nunca é apresentado como aprovação provável."
+  },
+  "paths": [
+    { "to": "direito", "why": "Legislação penal, processual e de direitos humanos é base da área; vários cargos de carreira (delegado, perito em alguns estados) exigem bacharelado em Direito.", "gaps": ["graduação em Direito e OAB para advocacia", "direito penal e processual em profundidade", "redação jurídica"], "steps": ["estudo de caso sobre uso da força à luz da Lei 13.060/2014 (L3)", "curso de direitos humanos (Rede EaD-Senasp)", "conversar com profissionais do direito da rede"] },
+    { "to": "gestao-publica", "why": "Políticas de prevenção, SUSP e gestão de secretarias são gestão pública aplicada.", "gaps": ["orçamento público e licitações", "avaliação de políticas públicas", "gestão de projetos no setor público"], "steps": ["plano de ação de prevenção (X1)", "curso de políticas públicas (Escola Virtual.Gov)", "infográfico de indicadores com fonte (D7)"] },
+    { "to": "seguranca-do-trabalho", "why": "Gestão de riscos, planos de emergência e prevenção aproximam segurança patrimonial e segurança do trabalho.", "gaps": ["NRs do MTE", "PGR e higiene ocupacional", "curso técnico ou especialização em segurança do trabalho"], "steps": ["matriz de riscos de um local fictício (L4)", "curso de NR 23 e brigada", "POP de emergência (L7)"] },
+    { "to": "administracao", "why": "Supervisão e gestão de contratos de segurança privada exigem gestão de pessoas, custos e indicadores.", "gaps": ["finanças e custos", "gestão de pessoas", "indicadores e qualidade"], "steps": ["plano 30-60-90 para supervisor (L9)", "curso de gestão do Sebrae", "proposta para briefing de segurança de evento (L8)"] }
+  ],
+  "learning": [
+    { "title": "Rede EaD-Senasp — cursos para profissionais de segurança pública", "provider": "Ministério da Justiça e Segurança Pública", "url": "https://ead.senasp.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — políticas públicas e gestão", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Anuário Brasileiro de Segurança Pública", "provider": "Fórum Brasileiro de Segurança Pública", "url": "https://forumseguranca.org.br/", "free": true, "kind": "portal" },
+    { "title": "Atlas da Violência", "provider": "Ipea", "url": "https://www.ipea.gov.br/atlasviolencia/", "free": true, "kind": "portal" },
+    { "title": "Lei 13.675/2018 (SUSP) — texto compilado", "provider": "Planalto", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13675.htm", "free": true, "kind": "norma" },
+    { "title": "Cursos on-line do Sebrae (gestão)", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Catálogo de ramos acadêmicos — seguranca-publica (CBO 2526/5173, ISCO 3355/5412/5414, sem conselho, vizinhos)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Lei 13.675/2018 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13675.htm", "accessedAt": "2026-11-02" },
+    { "title": "Lei 13.060/2014 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l13060.htm", "accessedAt": "2026-11-02" },
+    { "title": "Fórum Brasileiro de Segurança Pública", "url": "https://forumseguranca.org.br/", "accessedAt": "2026-11-02" },
+    { "title": "Novo CAGED e RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URLs de leis, MJSP, PF, FBSP, Ipea, Rede EaD-Senasp e IBGE MUNIC não abertas nesta sessão (cota de busca); conferir antes de ativar",
+    "Portaria DG/PF 18.045/2023 como norma vigente da segurança privada (sucedendo a Portaria 3.233/2012) não confirmada",
+    "Vigência da Portaria Interministerial 4.226/2010 frente a normas posteriores sobre uso da força (ex.: Decreto 12.341/2024) não confirmada",
+    "CBO 5172 (policiais, guardas-civis e agentes de trânsito) em questions.a4.cboFamilies não conferido no portal da CBO",
+    "URIs ESCO (ex.: police officer, security guard) e das competências não pesquisadas (family.esco vazio; esco: null)",
+    "Matrículas INEP do curso (majoritariamente EaD) não localizadas; catálogo também marca naoConferido"
+  ]
+}

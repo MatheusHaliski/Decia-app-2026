@@ -308,7 +308,7 @@
     { "title": "ABIH Nacional — conteúdos e eventos do setor hoteleiro", "provider": "ABIH", "url": "https://abih.com.br/", "free": true, "kind": "comunidade" }
   ],
   "sources": [
-    { "title": "Catálogo de ramos acadêmicos — ramo hotelaria (CBO 1415/1225, ISCO 1411, vizinhos, sensitiveData)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §7 e §8; dados do ramo (CBO 1415/1225, ISCO 1411, vizinhos, sensitiveData) do catálogo contracts/career/academic-fields.json", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
     { "title": "Lei 11.771/2008 — Política Nacional de Turismo", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2008/lei/l11771.htm", "accessedAt": "2026-11-02" },
     { "title": "Decreto 7.381/2010 — regulamenta a Lei 11.771/2008", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2010/decreto/d7381.htm", "accessedAt": "2026-11-02" },
     { "title": "Cadastur — Ministério do Turismo", "url": "https://cadastur.turismo.gov.br/", "accessedAt": "2026-11-02" },

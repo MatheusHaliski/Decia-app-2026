@@ -1,0 +1,320 @@
+{
+  "schemaVersion": 1,
+  "code": "turismo",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Turismo", "en": "Tourism", "es": "Turismo" },
+  "fields": ["turismo"],
+  "family": {
+    "cbo": [
+      { "code": "1225", "title": "Diretores de serviços de turismo, de alojamento e de alimentação (1225-20 turismólogo)" },
+      { "code": "3548", "title": "Técnicos em serviços de turismo e organização de eventos" },
+      { "code": "5114", "title": "Guias de turismo" },
+      { "code": "4221", "title": "Agentes, assistentes e auxiliares de viagens (atendimento em agências)" }
+    ],
+    "isco08": [
+      { "code": "1439", "title": "Services managers not elsewhere classified" },
+      { "code": "4221", "title": "Travel consultants and clerks" },
+      { "code": "5113", "title": "Travel guides" }
+    ],
+    "esco": []
+  },
+  "scope": {
+    "summary": "Profissional que planeja, organiza, comercializa e gere produtos e destinos turísticos: roteiros, pacotes, agenciamento, receptivo, guiamento, planejamento público de destinos e turismo de base comunitária. O turismólogo é reconhecido pela Lei 12.591/2012, sem conselho; agências, operadoras, guias e demais prestadores se cadastram no Cadastur (Lei 11.771/2008; Lei 8.623/1993 para guias).",
+    "entryRoles": ["Agente de viagens júnior", "Assistente de receptivo", "Auxiliar de operações em operadora", "Monitor(a) ou condutor(a) de visitantes", "Estagiário(a) em secretaria de turismo", "Atendente de centro de informações turísticas"],
+    "midRoles": ["Consultor(a) de viagens", "Analista de produtos turísticos", "Guia de turismo (cadastrado)", "Coordenador(a) de receptivo ou operações", "Analista de planejamento turístico em órgão público"],
+    "seniorRoles": ["Gerente de agência ou operadora", "Gestor(a) de destino ou secretário(a) de turismo", "Consultor(a) em planejamento turístico", "Gerente de produto ou de contas corporativas (TMC)", "Docente e pesquisador(a) em turismo"],
+    "sectors": ["agências de viagens e operadoras", "receptivo e guiamento", "gestão pública de turismo (municípios, estados, MTur)", "turismo de base comunitária e rural", "ecoturismo e turismo de aventura", "turismo corporativo (TMC) e MICE", "companhias aéreas, cruzeiros e transporte turístico", "parques, atrativos e patrimônio cultural", "plataformas de viagem on-line", "consultoria e ensino"],
+    "regulation": [
+      { "name": "Lei 12.591/2012", "issuer": "Brasil", "about": "reconhece a profissão de turismólogo e lista atividades (planejar, organizar, coordenar e avaliar serviços e destinos turísticos)" },
+      { "name": "Lei 11.771/2008 (Política Nacional de Turismo)", "issuer": "Brasil / Ministério do Turismo", "about": "define prestadores de serviços turísticos e torna obrigatório o cadastro no Cadastur" },
+      { "name": "Decreto 7.381/2010", "issuer": "Brasil", "about": "regulamenta a Lei 11.771/2008: agências, transportadoras, meios de hospedagem, organizadoras de eventos" },
+      { "name": "Lei 8.623/1993 e Decreto 946/1993", "issuer": "Brasil", "about": "regulamentam a profissão de guia de turismo; exigem cadastro no Ministério do Turismo" },
+      { "name": "Lei 12.974/2014", "issuer": "Brasil", "about": "atividades das agências de turismo: intermediação e operação de viagens, responsabilidade perante o consumidor" },
+      { "name": "Código de Defesa do Consumidor (Lei 8.078/1990)", "issuer": "Brasil", "about": "oferta, informação clara, cancelamento e responsabilidade solidária na venda de pacotes" },
+      { "name": "ABNT NBR ISO 21101 e NBR 15331", "issuer": "ABNT", "about": "turismo de aventura: sistema de gestão da segurança" },
+      { "name": "Lei 13.709/2018 (LGPD)", "issuer": "Brasil", "about": "dados de passageiros, documentos e itinerários são dados pessoais; minimização e sigilo" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "roteiro turístico", "meaning": "itinerário com atrativos, tempos, deslocamentos, serviços e público definidos" },
+      { "term": "pacote turístico", "meaning": "combinação de transporte, hospedagem e serviços vendida por preço único" },
+      { "term": "receptivo", "meaning": "serviços prestados ao turista no destino: transfer, passeios, guiamento" },
+      { "term": "emissivo", "meaning": "venda de viagens para fora da localidade da agência" },
+      { "term": "operadora", "meaning": "empresa que monta e opera pacotes vendidos por agências" },
+      { "term": "GDS", "meaning": "sistema global de distribuição usado para reservas aéreas, hoteleiras e de locação" },
+      { "term": "TMC", "meaning": "travel management company: agência de viagens corporativas" },
+      { "term": "MICE", "meaning": "reuniões, incentivos, conferências e exposições; turismo de negócios e eventos" },
+      { "term": "inventário turístico", "meaning": "levantamento sistemático de atrativos, serviços e infraestrutura de um destino" },
+      { "term": "capacidade de carga", "meaning": "número máximo de visitantes que um atrativo suporta sem degradação" },
+      { "term": "Mapa do Turismo Brasileiro", "meaning": "instrumento do MTur que categoriza municípios e regiões turísticas" },
+      { "term": "regionalização", "meaning": "organização do turismo por regiões turísticas, base do Programa de Regionalização do MTur" },
+      { "term": "Cadastur", "meaning": "cadastro obrigatório de prestadores de serviços turísticos no Ministério do Turismo" },
+      { "term": "turismo de base comunitária", "meaning": "turismo planejado e gerido pela comunidade local, com benefícios repartidos" },
+      { "term": "sazonalidade", "meaning": "variação da demanda ao longo do ano (alta e baixa temporada)" },
+      { "term": "voucher", "meaning": "documento que comprova o direito a um serviço reservado" },
+      { "term": "transfer", "meaning": "traslado entre aeroporto, hotel e atrativos" },
+      { "term": "famtour", "meaning": "viagem de familiarização para agentes conhecerem um destino" },
+      { "term": "markup", "meaning": "acréscimo sobre o custo líquido para formar o preço de venda" },
+      { "term": "plano de contingência", "meaning": "ações previstas para clima, atrasos, emergências e cancelamentos" },
+      { "term": "turismo acessível", "meaning": "produtos e destinos adaptados a pessoas com deficiência ou mobilidade reduzida" },
+      { "term": "plano municipal de turismo", "meaning": "documento de planejamento do turismo do município, com diagnóstico, metas e ações" }
+    ],
+    "tools": ["GDS (Amadeus, Sabre)", "sistemas de reserva de operadoras e consolidadoras", "Google Maps e My Maps para roteiros", "planilha de custos e precificação de pacotes", "CRM e plataformas de vendas on-line", "Cadastur e Mapa do Turismo Brasileiro", "dados do Ministério do Turismo e IBGE", "editor de textos (Letters) para roteiros, propostas e planos", "editor de desenho (Drawings) para mapas, infográficos e pranchas", "QGIS para mapas de destino"],
+    "deliverables": ["roteiro turístico com tempos e custos", "proposta de pacote a partir de briefing", "inventário turístico de um atrativo ou município", "plano de ação ou plano municipal de turismo", "relatório de indicadores de fluxo e satisfação", "mapa ou infográfico de destino", "POP de receptivo ou atendimento", "plano de contingência de viagem", "material de apresentação de destino", "pesquisa de demanda com questionário"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Elaboração de roteiros turísticos", "esco": null, "kind": "nucleo" },
+      { "label": "Formatação e precificação de pacotes", "esco": null, "kind": "nucleo" },
+      { "label": "Agenciamento, reservas e uso de GDS", "esco": null, "kind": "nucleo" },
+      { "label": "Atendimento e consultoria de viagens", "esco": null, "kind": "nucleo" },
+      { "label": "Planejamento e gestão de destinos turísticos", "esco": null, "kind": "nucleo" },
+      { "label": "Inventário e diagnóstico turístico", "esco": null, "kind": "nucleo" },
+      { "label": "Análise de demanda e indicadores de turismo", "esco": null, "kind": "nucleo" },
+      { "label": "Legislação do turismo e direitos do consumidor", "esco": null, "kind": "nucleo" },
+      { "label": "Operação de receptivo e guiamento", "esco": null, "kind": "apoio" },
+      { "label": "Turismo sustentável e de base comunitária", "esco": null, "kind": "apoio" },
+      { "label": "Marketing e promoção de destinos", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de riscos e contingência em viagens", "esco": null, "kind": "apoio" },
+      { "label": "Patrimônio cultural e natural", "esco": null, "kind": "apoio" },
+      { "label": "Turismo acessível", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação em idiomas", "pesquisa e síntese de informações", "negociação com fornecedores", "organização e gestão do tempo", "sigilo de dados de passageiros", "sensibilidade cultural"],
+    "tracks": [
+      { "id": "criar-produtos", "label": "Criar e vender produtos turísticos", "steps": ["roteiro turístico de um dia (X1)", "proposta de pacote a partir de briefing (L8)", "mapa do roteiro em prancha (D2)", "estudo de caso STAR de uma venda ou viagem resolvida (L3)"] },
+      { "id": "planejar-destinos", "label": "Planejar destinos", "steps": ["inventário de um atrativo (L4)", "infográfico de fluxo e satisfação (D7)", "plano de ação para um destino (L9)", "antes e depois da sinalização ou do atrativo (D5)"] },
+      { "id": "operar-receptivo", "label": "Operar receptivo com padrão", "steps": ["POP de recepção de grupo ou transfer (L7)", "diagrama do fluxo da chegada ao embarque (D4)", "plano de contingência (L9)", "resumo de perfil (L6) e currículo (L1)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"agente de viagens\", \"guia de turismo\", \"assistente de receptivo\", \"analista de turismo\", \"turismólogo\"",
+      "cboFamilies": ["1225", "3548", "5114", "4221"],
+      "why": "Pergunto seu último cargo ou área no turismo para partir do que você já faz. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, monitoria ou primeiro cargo em agência, receptivo ou órgão público",
+        "junior": "atende e reserva com supervisão",
+        "pleno": "monta roteiros, pacotes ou projetos com autonomia",
+        "senior": "referência em produto, destino ou contas; orienta colegas",
+        "gestao": "gerência de agência ou operadora, ou gestão pública de destino"
+      },
+      "why": "Pergunto o nível para ajustar as tarefas: um roteiro de um dia ou um plano de destino."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem no turismo",
+      "options": ["montar roteiros", "formatar e precificar pacotes", "atender e vender viagens", "operar GDS e reservas", "guiar grupos", "organizar receptivo e transfers", "fazer inventário e diagnóstico de destino", "analisar dados de turismo", "promover destinos nas redes", "trabalhar com comunidades locais", "falar outros idiomas", "resolver imprevistos em viagem"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com roteiros, propostas e planos."
+    },
+    "c4": {
+      "certifications": ["bacharelado em Turismo", "tecnólogo em Gestão de Turismo", "curso técnico em Guia de Turismo (cadastro no Cadastur)", "curso de GDS (Amadeus, Sabre)", "cursos de turismo de aventura (ABNT NBR 15331)", "primeiros socorros", "cursos do Programa Brasil Braços Abertos (MTur)"],
+      "languages": ["inglês", "espanhol", "francês", "italiano", "alemão", "Libras"],
+      "why": "Formação, cadastro de guia, sistemas e idiomas mostram lacunas em relação ao cargo-alvo, como receptivo internacional ou operadora."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["roteiros e produtos", "precificação de pacotes", "GDS e reservas", "planejamento de destinos", "inventário e diagnóstico turístico", "dados e indicadores de turismo", "turismo sustentável e comunitário", "marketing de destinos", "legislação do turismo", "turismo acessível"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que frente do turismo você atua ou quer atuar?", "type": "escolha", "options": ["agência ou operadora", "receptivo e guiamento", "gestão pública de destinos", "turismo corporativo e eventos", "ecoturismo e aventura", "turismo comunitário e rural", "ainda não sei"], "why": "Pergunto a frente para escolher os exemplos: um pacote de operadora é diferente de um plano municipal.", "where": "P" },
+      { "id": "x2", "prompt": "Você tem cadastro de guia de turismo no Cadastur?", "type": "escolha", "options": ["sim", "não", "estou fazendo o curso", "não se aplica"], "why": "Guiar grupos exige o cadastro; com isso sei se sugiro tarefas de guiamento ou de planejamento.", "where": "X" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L8", "L9", "L4", "D7", "D2", "L7", "L3", "D4", "D5", "L1", "L6", "L5"],
+    "excluded": [
+      { "code": "D3", "reason": "modelagem 3D de produto não é entrega do turismo" },
+      { "code": "D6", "reason": "detalhe construtivo é entrega de arquitetura e engenharia" },
+      { "code": "D8", "reason": "vista explodida de conjunto mecânico não se aplica" },
+      { "code": "D1", "reason": "planta técnica de ambiente raramente é entrega do turismo; o mapa de roteiro entra em D2" }
+    ],
+    "parameters": {
+      "L8": {
+        "title": "Proposta de roteiro ou pacote a partir de briefing",
+        "brief": "Responda a um briefing simulado (ex.: grupo de 20 pessoas da terceira idade, 3 dias em uma cidade histórica, um participante cadeirante, orçamento definido) com uma proposta: roteiro dia a dia, serviços incluídos, premissas, prazos, o que fica fora e política de cancelamento conforme o CDC. Sem dados reais de passageiros.",
+        "parameters": { "groupSize": 20, "days": 3, "accessibility": true, "requiredParts": ["roteiro dia a dia", "serviços incluídos", "premissas", "prazos", "fora do escopo", "cancelamento"] },
+        "criteria": ["roteiro dia a dia com horários e deslocamentos", "serviços incluídos e não incluídos explícitos", "atende à necessidade de acessibilidade do briefing", "premissas, prazos e política de cancelamento", "fornecedores citados com indicação de cadastro no Cadastur"],
+        "evidence": "proposta em Letters (modelo proposta)",
+        "time": "45 min",
+        "level": 1
+      },
+      "L9": {
+        "title": "Plano de ação para um destino ou produto",
+        "brief": "Monte um plano de ação para um destino, atrativo ou produto em três fases (30, 60 e 90 dias ou curto, médio e longo prazo): diagnóstico resumido, três metas mensuráveis por fase, responsáveis, indicadores e fonte dos dados de partida (MTur, IBGE, pesquisa própria).",
+        "parameters": { "phases": 3, "goalsPerPhase": 3, "requiredParts": ["diagnóstico", "metas por fase", "responsáveis", "indicadores", "fontes"] },
+        "criteria": ["três fases com três metas mensuráveis cada", "indicador e responsável por meta", "diagnóstico com fonte e data", "considera sustentabilidade ou comunidade local"],
+        "evidence": "plano em Letters (modelo plano-30-60-90)",
+        "time": "45 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Inventário ou relatório de indicadores de um destino",
+        "brief": "Relatório de até 4 páginas sobre um atrativo ou destino: objetivo, método (visita, entrevista, dados do MTur ou IBGE), resultados (atrativos, serviços, fluxo, satisfação ou ocupação), limitações e referências. Dados de clientes só agregados e anônimos.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "método", "resultados", "limitações", "referências"], "indicators": ["fluxo de visitantes", "satisfação", "oferta de serviços cadastrados"] },
+        "criteria": ["até 4 páginas", "cinco seções nomeadas", "indicadores com fonte, período e região", "ao menos uma recomendação ligada a um dado"],
+        "evidence": "relatório técnico em Letters",
+        "time": "2 h",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de fluxo e satisfação do destino",
+        "brief": "Transforme dados públicos (MTur, IBGE, pesquisa própria) em um infográfico: sazonalidade do fluxo, satisfação ou origem dos visitantes, uma mensagem principal, eixos rotulados e fonte com data.",
+        "parameters": { "charts": 2, "requiredParts": ["mensagem principal", "eixos rotulados", "fonte com data e região"] },
+        "criteria": ["eixos rotulados com unidade e período", "fonte com data e região", "uma mensagem principal", "sem dados de clientes identificáveis"],
+        "evidence": "imagem PNG e PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "D2": {
+        "title": "Prancha de portfólio com mapa de roteiro",
+        "brief": "Monte uma prancha A3 com três trabalhos: o mapa de um roteiro seu (pontos, tempos e deslocamentos), uma peça de promoção ou inventário e um terceiro trabalho. Legendas, créditos de fotos e fontes de mapas.",
+        "parameters": { "format": "A3", "works": 3, "mustInclude": "mapa de roteiro" },
+        "criteria": ["três trabalhos", "mapa com legenda, escala ou tempos e norte", "créditos de fotos e base cartográfica", "grade consistente", "sem pessoas identificáveis sem autorização"],
+        "evidence": "prancha publicada (PDF ou PNG)",
+        "time": "90 min",
+        "level": 1
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Roteiro turístico de um dia",
+        "competency": "Elaboração de roteiros turísticos",
+        "criteria": ["público-alvo definido", "horários, tempos de visita e deslocamentos", "serviços e custos estimados por pessoa", "informações de acessibilidade e segurança", "plano B para chuva ou atraso"],
+        "evidence": "roteiro em Letters (modelo roteiro)",
+        "time": "45 min",
+        "trigger": "Que lugar você conhece bem? Vamos transformá-lo em um roteiro de um dia.",
+        "level": 1
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L8", "L9", "X1"], "auto": true },
+      { "id": "horarios-e-deslocamentos", "check": "o roteiro tem horários, tempos de visita e deslocamentos em todos os pontos", "appliesTo": ["X1", "L8"], "auto": true },
+      { "id": "incluso-e-nao-incluso", "check": "serviços incluídos, não incluídos e política de cancelamento estão explícitos", "appliesTo": ["L8"], "auto": true },
+      { "id": "metas-mensuraveis", "check": "cada fase tem três metas com indicador e responsável", "appliesTo": ["L9"], "auto": true },
+      { "id": "fonte-data-regiao", "check": "dados de turismo citam fonte, data e região", "appliesTo": ["L4", "D7", "L9"], "auto": true },
+      { "id": "mapa-legendado", "check": "o mapa tem legenda, norte e escala ou tempos de deslocamento", "appliesTo": ["D2"], "auto": true },
+      { "id": "creditos-e-fontes", "check": "fotos, bases cartográficas, coautores e fontes estão creditados", "appliesTo": ["L5", "L10", "D2", "D5", "D7", "D10"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados de passageiros, clientes e tarifas sigilosas", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D2", "D4", "D5", "D7", "D9", "D10", "X1"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o fluxo tem início e fim e nenhuma etapa órfã", "appliesTo": ["D4"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "experiencia-do-visitante", "label": "Experiência do visitante", "levels": { "aproxima": "lista atrativos sem pensar no público", "atende": "ritmo, tempos e serviços adequados ao público", "supera": "cria uma narrativa e antecipa necessidades do público" } },
+      { "id": "viabilidade", "label": "Viabilidade operacional", "levels": { "aproxima": "tempos ou custos irreais", "atende": "executável com os fornecedores e o orçamento do briefing", "supera": "prevê contingências e alternativas" } },
+      { "id": "sustentabilidade", "label": "Sustentabilidade e comunidade", "levels": { "aproxima": "não considera impactos", "atende": "considera capacidade de carga e fornecedores locais", "supera": "reparte benefícios com a comunidade e mede impactos" } },
+      { "id": "uso-de-dados", "label": "Uso de dados", "levels": { "aproxima": "afirmações sem fonte", "atende": "dados com fonte, data e região", "supera": "cruza fontes e explica limitações" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa do turismo (agente de viagens, consultor, guia de turismo, receptivo, analista ou gestor de destinos, turismólogo; CBO 1225, 3548, 5114, 4221). Use o vocabulário da área: roteiro, pacote, receptivo, emissivo, operadora, GDS, TMC, MICE, inventário turístico, capacidade de carga, regionalização, Mapa do Turismo Brasileiro, Cadastur, sazonalidade, markup. Cite como referência a Lei 12.591/2012 (turismólogo, sem conselho), a Lei 11.771/2008 e o Decreto 7.381/2010 (prestadores e Cadastur), a Lei 8.623/1993 (guia de turismo), a Lei 12.974/2014 (agências) e o CDC na venda de pacotes. Nunca: pedir, usar ou reproduzir dados de passageiros (documentos, itinerários, cartão, reservas); sugerir que alguém guie grupos sem cadastro de guia no Cadastur; afirmar requisitos de visto, vacina ou documentação como definitivos sem indicar a fonte oficial e a data; usar tarifas negociadas sob sigilo do empregador; prometer segurança em atividades de aventura. Pergunte antes de inferir frente, nível ou situação. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por quê, e aceita \"não me serve\". Afirmações sobre mercado citam fonte, data e região (CAGED, RAIS, dados do Ministério do Turismo, IBGE) ou dizem \"estimativa\"; nunca prometa emprego, vaga ou salário. Progresso é por critérios atendidos, nunca por nota ou ranking. Pré-cheque só critérios objetivos (seções, horários e deslocamentos, incluso e não incluso, metas com indicador, fonte-data-região, legenda do mapa, créditos); o selo depende de revisão humana. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "Lei 12.591/2012 — Reconhece a profissão de turismólogo", "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12591.htm", "kind": "norma" },
+      { "title": "Lei 11.771/2008 — Política Nacional de Turismo", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2008/lei/l11771.htm", "kind": "norma" },
+      { "title": "Lei 8.623/1993 — Profissão de guia de turismo", "url": "https://www.planalto.gov.br/ccivil_03/leis/l8623.htm", "kind": "norma" },
+      { "title": "Lei 12.974/2014 — Atividades das agências de turismo", "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l12974.htm", "kind": "norma" },
+      { "title": "Cadastur — Ministério do Turismo", "url": "https://cadastur.turismo.gov.br/", "kind": "orgao-publico" },
+      { "title": "Dados e informações do turismo — Ministério do Turismo", "url": "https://www.gov.br/turismo/pt-br/acesso-a-informacao/acoes-e-programas/observatorio", "kind": "estatistica" },
+      { "title": "Mapa do Turismo Brasileiro — Ministério do Turismo", "url": "https://www.mapa.turismo.gov.br/", "kind": "orgao-publico" },
+      { "title": "CBO — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2/c5 com competências do turismo; x1 (frente) e x2 (cadastro de guia) ajustam as tarefas." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Proposta por briefing (L8), plano de destino (L9), inventário (L4) e infográfico (D7) primeiro; roteiro de um dia (X1) como tarefa curta; aceita \"não me serve\" (d6)." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Respeita horas (d1) e temporadas; tarefas curtas em alta temporada; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Pré-checa seções, horários e deslocamentos, incluso e não incluso, metas, fonte-data-região, legenda do mapa e créditos; não julga a experiência proposta." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Esqueleto de roteiro, proposta e plano de destino com prévia; a pessoa preenche atrativos, tempos e custos; nunca aplica sem revisão." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Mapa de roteiro com legenda e norte (D2), gráficos com fonte (D7), fluxo de receptivo (D4)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: competências declaradas e evidenciadas, lacunas em relação ao cargo-alvo (GDS, idiomas, cadastro de guia); cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: hotelaria, eventos, gastronomia, administração, marketing; dados de mercado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por CBO 1225/3548/5114, frente do turismo e competências compartilhadas; só pessoas com opt-in." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com frente do turismo, três competências e um roteiro ou plano como prova; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai agências, destinos, sistemas (GDS), idiomas e cadastro de guia em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters (roteiros, propostas, planos)", "meus Drawings (mapas, infográficos)"],
+      "never": ["mensagens", "itens SIGILOSO", "dados de passageiros, documentos e itinerários de clientes", "dados de cartão e reservas", "tarifas negociadas sob sigilo do empregador", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "perguntar em vez de inferir frente, nível ou situação",
+      "nunca pedir, usar ou reproduzir dados de passageiros, documentos, itinerários ou cartão",
+      "não sugerir guiamento sem cadastro de guia no Cadastur (Lei 8.623/1993)",
+      "requisitos de visto, vacina e documentação sempre com fonte oficial e data, nunca como definitivos",
+      "nunca prometer emprego, vaga ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem nota, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["infografico", "prancha", "diagrama"],
+    "lettersTemplates": ["roteiro", "proposta", "plano-30-60-90", "relatorio-tecnico", "pop", "estudo-de-caso", "bio", "curriculo", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular: roteiro de um dia (X1), bio (L6), post (L5) e revisão (L10); inventário (L4), infográfico (D7) e prancha com mapa (D2) pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: o roteiro de um dia de um lugar que você conhece bem (45 min).",
+        "Por que esta tarefa: a proposta por briefing comprova formatação de produto, que agências e operadoras pedem. Leva cerca de 45 min.",
+        "Sem pressão. Passada a alta temporada, a tarefa de 15 min está aqui.",
+        "Os dados públicos do Ministério do Turismo já bastam para um infográfico do seu destino. Quer tentar?"
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "setor", "competencias"] },
+    "privacy": { "sensitiveData": ["dados de passageiros, documentos e itinerários de clientes (LGPD)", "dados de cartão e reservas de hóspedes e viajantes", "tarifas negociadas e acordos comerciais sob sigilo", "fotos de turistas identificáveis sem autorização"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 1225, 3548, 5114, 4221", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Extrator de dados do SIMT — mercado de trabalho no setor turismo (IPEA)", "url": "https://www.ipea.gov.br/extrator/simt.html", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Dados e informações do turismo (Ministério do Turismo) — chegadas internacionais, Cadastur, demanda doméstica", "url": "https://www.gov.br/turismo/pt-br/acesso-a-informacao/acoes-e-programas/observatorio", "geography": "Brasil, UF e município", "cadence": "continua", "kind": "estatistica-oficial" },
+      { "title": "PNAD Contínua — módulo Turismo (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/17270-pnad-continua.html", "geography": "Brasil e grandes regiões", "cadence": "eventual", "kind": "estatistica-oficial" },
+      { "title": "Editais de concursos de secretarias municipais e estaduais de turismo", "url": "https://www.gov.br/turismo/pt-br", "geography": "municípios e UF", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "hotelaria", "why": "Meios de hospedagem são o maior empregador do turismo; recepção, reservas e vendas para grupos aproveitam o repertório de atendimento e produto.", "gaps": ["operação de PMS e recepção", "indicadores hoteleiros (ocupação, ADR, RevPAR)", "governança e A&B"], "steps": ["POP de check-in de grupo (L7)", "relatório de indicadores de um hotel simulado (L4)", "conversar com profissionais de hotelaria da rede"] },
+    { "to": "eventos", "why": "Turismo de negócios e eventos (MICE) une agenciamento, receptivo e organização de eventos.", "gaps": ["cronograma operacional e plano de evento", "layout de salão e montagem", "licenças e segurança de eventos"], "steps": ["proposta de evento com receptivo (L8)", "plano do evento (L9)", "layout de salão (D1)"] },
+    { "to": "gastronomia", "why": "Turismo gastronômico, rotas de produtos locais e experiências culinárias combinam roteiro e gastronomia regional.", "gaps": ["técnicas e repertório gastronômico", "boas práticas em alimentação (RDC 216/2004)", "fichas técnicas"], "steps": ["roteiro gastronômico de um dia (X1)", "post sobre um prato regional (L5)", "parceria com cozinheiros locais"] },
+    { "to": "marketing", "why": "Promoção de destinos, marketing digital de agências e conteúdo de viagem pedem quem conhece o produto turístico.", "gaps": ["planejamento de marketing e métricas digitais", "produção de conteúdo e mídia paga", "pesquisa de mercado"], "steps": ["plano de comunicação de um destino (L9)", "infográfico de público do destino (D7)", "post sobre um atrativo (L5)"] },
+    { "to": "administracao", "why": "Gerência de agência, operadora ou órgão de turismo exige gestão financeira, de pessoas e de processos.", "gaps": ["finanças e orçamento", "gestão de pessoas", "processos e qualidade"], "steps": ["diagrama do processo de venda à viagem (D4)", "plano 30-60-90 para gerência (L9)", "cursos de gestão (Sebrae, Enap)"] }
+  ],
+  "learning": [
+    { "title": "Programa Brasil Braços Abertos — capacitação gratuita em turismo", "provider": "Ministério do Turismo", "url": "https://www.gov.br/turismo/pt-br/acesso-a-informacao/acoes-e-programas/brasil-bracos-abertos", "free": true, "kind": "curso" },
+    { "title": "Cadastur — cadastro e orientações para prestadores e guias", "provider": "Ministério do Turismo", "url": "https://cadastur.turismo.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Mapa do Turismo Brasileiro e Programa de Regionalização", "provider": "Ministério do Turismo", "url": "https://www.mapa.turismo.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — gestão pública, projetos e turismo", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Cursos on-line gratuitos de turismo e empreendedorismo", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "ABNT NBR 15331 / ISO 21101 — turismo de aventura: gestão da segurança", "provider": "ABNT", "url": "https://www.abntcatalogo.com.br/", "free": false, "kind": "norma" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4, §7 e §8; dados do ramo (CBO 1225/3548/5114, ISCO, Cadastur, Lei 12.591/2012, vizinhos) do catálogo contracts/career/academic-fields.json", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Lei 12.591/2012 — turismólogo", "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12591.htm", "accessedAt": "2026-11-02" },
+    { "title": "Lei 11.771/2008 — Política Nacional de Turismo", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2008/lei/l11771.htm", "accessedAt": "2026-11-02" },
+    { "title": "Lei 8.623/1993 — guia de turismo", "url": "https://www.planalto.gov.br/ccivil_03/leis/l8623.htm", "accessedAt": "2026-11-02" },
+    { "title": "Cadastur — Ministério do Turismo", "url": "https://cadastur.turismo.gov.br/", "accessedAt": "2026-11-02" },
+    { "title": "RF75 Work Station Career Guidance, CA19", "url": "docs/diagramas/RF75/README.md", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URLs de leis, estatísticas e recursos de aprendizagem não abertas nesta sessão (cota de busca); conferir em especial a página de dados do MTur e o módulo Turismo da PNAD Contínua",
+    "Família CBO 4221 como agentes de viagem e vigência do Decreto 946/1993 após mudanças na regulamentação do guia de turismo",
+    "Texto e vigência da Lei 12.974/2014 (agências de turismo) e eventual regulamentação posterior",
+    "Numeração atual das normas ABNT de turismo de aventura (NBR 15331, ISO 21101) e possíveis substituições",
+    "URIs ESCO da ocupação e das competências não confirmadas (esco vazio)"
+  ]
+}

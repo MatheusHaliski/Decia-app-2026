@@ -348,7 +348,7 @@
   ],
   "sources": [
     { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
-    { "title": "Catálogo de ramos acadêmicos — jornalismo (CBO, ISCO, ESCO, dados sensíveis, vizinhos)", "url": "docs/../contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos — jornalismo (CBO, ISCO, ESCO, dados sensíveis, vizinhos)", "url": "contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
     { "title": "Código de Ética dos Jornalistas Brasileiros, 04/08/2007 (cópia em PDF)", "url": "https://static.poder360.com.br/2023/12/Codigo-de-etica-dos-jornalistas-brasileiros-04ago2007.pdf", "accessedAt": "2026-11-02" },
     { "title": "Projeto de pesquisa Perfil do Jornalista Brasileiro 2021 (UFSC)", "url": "https://perfildojornalista.paginas.ufsc.br/files/2021/02/Projeto-de-pesquisa-Perfil-do-Jornalista-Brasileiro-2021.pdf", "accessedAt": "2026-11-02" },
     { "title": "Novo CAGED — MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "accessedAt": "2026-11-02" }

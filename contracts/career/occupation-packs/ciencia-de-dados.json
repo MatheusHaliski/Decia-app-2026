@@ -1,0 +1,1512 @@
+{
+  "schemaVersion": 1,
+  "code": "ciencia-de-dados",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": {
+    "pt-BR": "Ciência de Dados e Inteligência Artificial",
+    "en": "Data Science and Artificial Intelligence",
+    "es": "Ciencia de Datos e Inteligencia Artificial"
+  },
+  "fields": [
+    "ciencia-de-dados"
+  ],
+  "family": {
+    "cbo": [
+      {
+        "code": "2124",
+        "title": "Analistas de tecnologia da informação"
+      },
+      {
+        "code": "2123",
+        "title": "Administradores de tecnologia da informação"
+      }
+    ],
+    "isco08": [
+      {
+        "code": "2511",
+        "title": "Systems analysts"
+      },
+      {
+        "code": "2521",
+        "title": "Database designers and administrators"
+      },
+      {
+        "code": "2120",
+        "title": "Mathematicians, actuaries and statisticians"
+      }
+    ],
+    "esco": [
+      {
+        "uri": "http://data.europa.eu/esco/occupation/258e46f9-0075-4a2e-adae-1ff0477e0f30",
+        "label": "data scientist"
+      }
+    ]
+  },
+  "scope": {
+    "summary": "Pessoas que coletam, organizam, analisam e modelam dados para decisões e produtos: análise e BI, engenharia de dados, ciência de dados, aprendizado de máquina e IA aplicada, administração de bancos de dados. Profissão sem conselho obrigatório; a evidência típica é relatório analítico, dashboard, pipeline documentado e model card, sempre com dados públicos, sintéticos ou anonimizados.",
+    "entryRoles": [
+      "Estagiário de dados",
+      "Analista de dados júnior",
+      "Analista de BI júnior",
+      "Assistente de banco de dados",
+      "Analista de qualidade de dados"
+    ],
+    "midRoles": [
+      "Analista de dados",
+      "Analista de BI",
+      "Engenheiro de dados",
+      "Cientista de dados",
+      "Administrador de banco de dados (DBA)",
+      "Engenheiro de machine learning"
+    ],
+    "seniorRoles": [
+      "Cientista de dados sênior",
+      "Engenheiro de dados sênior / arquiteto de dados",
+      "Líder de dados (head)",
+      "Especialista em IA aplicada",
+      "Gerente de analytics",
+      "Pesquisador em aprendizado de máquina"
+    ],
+    "sectors": [
+      "bancos, fintechs e seguros",
+      "varejo e e-commerce",
+      "saúde",
+      "indústria e agronegócio",
+      "telecomunicações",
+      "administração pública e estatística oficial",
+      "marketing e mídia",
+      "educação e pesquisa",
+      "logística e mobilidade",
+      "empresas de software e startups de IA"
+    ],
+    "regulation": [
+      {
+        "name": "LGPD (Lei 13.709/2018), arts. 5º, 6º, 7º, 11 e 12",
+        "issuer": "Brasil",
+        "about": "dados pessoais e sensíveis, bases legais, finalidade e anonimização"
+      },
+      {
+        "name": "LGPD, art. 20",
+        "issuer": "Brasil",
+        "about": "direito a revisão de decisões automatizadas e a explicação dos critérios"
+      },
+      {
+        "name": "Resolução CD/ANPD 15/2024",
+        "issuer": "ANPD",
+        "about": "comunicação de incidente de segurança com dados pessoais (3 dias úteis)"
+      },
+      {
+        "name": "Lei 12.527/2011 (LAI) e Decreto 8.777/2016",
+        "issuer": "Brasil",
+        "about": "acesso à informação e Política de Dados Abertos: fonte legítima de dados para portfólio"
+      },
+      {
+        "name": "Lei 4.739/1965 e Decreto 62.497/1968",
+        "issuer": "Brasil / CONRE",
+        "about": "profissão de estatístico: atividades privativas e registro no CONRE; cientistas de dados não têm conselho próprio"
+      },
+      {
+        "name": "PL 2.338/2023 (marco legal da IA, em tramitação)",
+        "issuer": "Congresso Nacional",
+        "about": "classificação de risco, transparência e direitos frente a sistemas de IA"
+      },
+      {
+        "name": "ABNT NBR ISO/IEC 27001 e 27701",
+        "issuer": "ABNT",
+        "about": "segurança da informação e gestão de privacidade em plataformas de dados"
+      },
+      {
+        "name": "ISO/IEC 42001:2023 e ISO/IEC 23894:2023",
+        "issuer": "ISO/IEC",
+        "about": "sistema de gestão de IA e gestão de riscos em IA"
+      }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      {
+        "term": "dataset",
+        "meaning": "conjunto de dados com linhas (observações) e colunas (variáveis)"
+      },
+      {
+        "term": "dicionário de dados",
+        "meaning": "descrição de cada variável: nome, tipo, unidade, domínio e origem"
+      },
+      {
+        "term": "pipeline (ETL/ELT)",
+        "meaning": "sequência que extrai, transforma e carrega dados"
+      },
+      {
+        "term": "data warehouse, lake e lakehouse",
+        "meaning": "repositórios analíticos estruturados, brutos ou híbridos"
+      },
+      {
+        "term": "SQL",
+        "meaning": "linguagem de consulta a bancos relacionais"
+      },
+      {
+        "term": "qualidade de dados",
+        "meaning": "completude, consistência, unicidade, atualidade e validade"
+      },
+      {
+        "term": "governança de dados",
+        "meaning": "papéis, políticas, catálogo e linhagem dos dados"
+      },
+      {
+        "term": "feature",
+        "meaning": "variável de entrada de um modelo"
+      },
+      {
+        "term": "treino, validação e teste",
+        "meaning": "partições do dataset para ajustar e avaliar um modelo"
+      },
+      {
+        "term": "overfitting",
+        "meaning": "modelo que decora o treino e erra em dados novos"
+      },
+      {
+        "term": "validação cruzada",
+        "meaning": "avaliação repetida em partições diferentes"
+      },
+      {
+        "term": "métricas (acurácia, precisão, recall, F1, AUC, RMSE)",
+        "meaning": "medidas de desempenho de classificação e regressão"
+      },
+      {
+        "term": "baseline",
+        "meaning": "modelo simples de referência para comparar ganhos"
+      },
+      {
+        "term": "viés e fairness",
+        "meaning": "desempenho desigual entre grupos; avaliação desagregada"
+      },
+      {
+        "term": "explicabilidade",
+        "meaning": "entender por que o modelo decidiu (SHAP, importância de variáveis)"
+      },
+      {
+        "term": "model card e data card",
+        "meaning": "fichas que documentam uso pretendido, dados, métricas e limitações"
+      },
+      {
+        "term": "MLOps",
+        "meaning": "práticas para implantar, monitorar e versionar modelos"
+      },
+      {
+        "term": "drift",
+        "meaning": "mudança na distribuição dos dados que degrada o modelo"
+      },
+      {
+        "term": "reprodutibilidade",
+        "meaning": "outra pessoa obtém o mesmo resultado com código, dados e versões"
+      },
+      {
+        "term": "notebook",
+        "meaning": "documento executável com código, texto e gráficos (Jupyter)"
+      },
+      {
+        "term": "dashboard e KPI",
+        "meaning": "painel com indicadores-chave atualizados"
+      },
+      {
+        "term": "teste A/B",
+        "meaning": "experimento controlado entre duas variantes"
+      },
+      {
+        "term": "p-valor e intervalo de confiança",
+        "meaning": "medidas de incerteza estatística"
+      },
+      {
+        "term": "correlação não é causalidade",
+        "meaning": "associação entre variáveis não prova causa"
+      },
+      {
+        "term": "dado pessoal e dado sensível",
+        "meaning": "informação que identifica pessoa; categorias especiais da LGPD"
+      },
+      {
+        "term": "anonimização e pseudonimização",
+        "meaning": "remover ou substituir identificadores; risco de reidentificação"
+      },
+      {
+        "term": "LLM, prompt e RAG",
+        "meaning": "modelos de linguagem, instrução e recuperação de documentos para respostas"
+      },
+      {
+        "term": "licença de dados",
+        "meaning": "termos de uso de um dataset (CC BY, ODbL, domínio público)"
+      }
+    ],
+    "tools": [
+      "Python (pandas, NumPy, scikit-learn)",
+      "R e RStudio",
+      "SQL (PostgreSQL, MySQL, BigQuery)",
+      "Jupyter e Google Colab",
+      "Power BI, Looker Studio ou Metabase",
+      "Spark e Databricks",
+      "dbt",
+      "Airflow",
+      "Git (GitHub, GitLab)",
+      "Docker",
+      "MLflow e DVC",
+      "PyTorch ou TensorFlow",
+      "Excel e Google Sheets",
+      "nuvem (AWS, GCP, Azure)",
+      "Kaggle",
+      "Great Expectations (qualidade de dados)"
+    ],
+    "deliverables": [
+      "relatório analítico com método, resultados e limitações",
+      "dashboard com KPIs",
+      "pipeline de dados documentado",
+      "model card",
+      "data card ou dicionário de dados",
+      "notebook reprodutível",
+      "infográfico de resultados",
+      "especificação de experimento (teste A/B)",
+      "diagrama de arquitetura de dados",
+      "POP de qualidade e atualização de dados",
+      "apresentação de resultados para não técnicos",
+      "proposta de análise em resposta a briefing"
+    ]
+  },
+  "competencies": {
+    "core": [
+      {
+        "label": "SQL e modelagem de dados",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Programação para dados (Python ou R)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Estatística descritiva e inferência",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Limpeza, qualidade e preparação de dados",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Visualização de dados e dashboards",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Aprendizado de máquina supervisionado e não supervisionado",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Avaliação de modelos (métricas, validação, baseline)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Comunicação de resultados para não técnicos",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Privacidade, LGPD e anonimização",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Documentação (dicionário de dados, model card, relatório)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Engenharia de dados (pipelines, orquestração, armazenamento)",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "MLOps e monitoramento de modelos",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Experimentação e testes A/B",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Ética, viés e explicabilidade em IA",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Versionamento (Git, DVC) e reprodutibilidade",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "IA generativa aplicada (LLMs, RAG)",
+        "esco": null,
+        "kind": "apoio"
+      }
+    ],
+    "transversal": [
+      "pensamento crítico e ceticismo com números",
+      "comunicação escrita e visual",
+      "entendimento do negócio ou do domínio",
+      "inglês técnico",
+      "colaboração com engenharia e produto"
+    ],
+    "tracks": [
+      {
+        "id": "analise-bi",
+        "label": "Análise de dados e BI",
+        "steps": [
+          "infográfico de resultados de um dataset público (D7)",
+          "dicionário de dados do dataset (X2)",
+          "wireframe de dashboard (D9)",
+          "relatório analítico com método e limitações (L4)",
+          "resposta a briefing de análise (L8)"
+        ]
+      },
+      {
+        "id": "ciencia-ml",
+        "label": "Ciência de dados e aprendizado de máquina",
+        "steps": [
+          "model card de um modelo treinado em dados públicos (X1)",
+          "relatório com baseline, métricas e limitações (L4)",
+          "infográfico de métricas desagregadas (D7)",
+          "post sobre uma lição de modelagem (L5)"
+        ]
+      },
+      {
+        "id": "engenharia-de-dados",
+        "label": "Engenharia de dados",
+        "steps": [
+          "diagrama de pipeline de dados (D4)",
+          "POP de qualidade e atualização de dados (L7)",
+          "ADR de escolha de ferramenta ou armazenamento (L4)",
+          "antes e depois de um modelo de dados (D5)"
+        ]
+      },
+      {
+        "id": "governanca-privacidade",
+        "label": "Governança e privacidade",
+        "steps": [
+          "dicionário de dados com classificação de dados pessoais (X2)",
+          "POP de anonimização de um dataset (L7)",
+          "relatório de riscos de reidentificação em cenário fictício (L4)",
+          "revisão crítica de uma peça da rede (L10)"
+        ]
+      }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"analista de dados\", \"analista de BI\", \"cientista de dados júnior\", \"DBA\", \"analista de sistemas\", \"estatístico\"",
+      "cboFamilies": [
+        "2124",
+        "2123",
+        "2112"
+      ],
+      "why": "Pergunto seu último cargo ou área para partir do que você já analisou. Se for o primeiro emprego, pule e seguimos pelos projetos com dados públicos."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, bootcamp ou primeiro cargo com dados",
+        "junior": "executa análises e consultas definidas com revisão",
+        "pleno": "conduz análises e modelos ponta a ponta com autonomia",
+        "senior": "define arquitetura de dados e padrões; orienta a equipe",
+        "gestao": "lidera time de dados, roadmap e relação com áreas de negócio"
+      },
+      "why": "Pergunto o nível para calibrar as tarefas: um relatório de júnior e um model card de sênior têm critérios diferentes."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem com dados",
+      "options": [
+        "escrever SQL e modelar dados",
+        "limpar e preparar dados",
+        "analisar e explicar resultados",
+        "construir dashboards",
+        "treinar e avaliar modelos",
+        "montar pipelines de dados",
+        "aplicar estatística e testes",
+        "comunicar para não técnicos",
+        "cuidar de privacidade e LGPD",
+        "versionar código e dados",
+        "trabalhar com IA generativa",
+        "administrar bancos de dados"
+      ],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com relatórios, dashboards e model cards."
+    },
+    "c4": {
+      "certifications": [
+        "graduação ou tecnólogo em Ciência de Dados, Computação, Estatística ou Matemática",
+        "bootcamp ou curso livre com projeto final",
+        "Microsoft Power BI Data Analyst (PL-300)",
+        "Google Data Analytics ou Advanced Data Analytics",
+        "AWS Certified Data Engineer ou Machine Learning",
+        "Google Professional Data Engineer",
+        "Databricks Data Engineer Associate",
+        "dbt Analytics Engineering",
+        "TensorFlow Developer",
+        "pós-graduação em Ciência de Dados ou IA"
+      ],
+      "languages": [
+        "inglês técnico (documentação e papers)",
+        "inglês para conversação",
+        "espanhol"
+      ],
+      "why": "Formação, certificações e idiomas ajudam a ver lacunas em relação ao cargo que você quer; nenhuma é obrigatória para exercer a profissão."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver em dados?",
+      "options": [
+        "SQL avançado e modelagem",
+        "estatística e inferência",
+        "visualização e storytelling com dados",
+        "aprendizado de máquina e avaliação",
+        "engenharia de dados e pipelines",
+        "MLOps e monitoramento",
+        "privacidade, LGPD e anonimização",
+        "ética, viés e explicabilidade",
+        "IA generativa e LLMs",
+        "experimentação e testes A/B",
+        "documentação (model card, dicionário)",
+        "nuvem para dados"
+      ],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (infográfico, relatório, model card) em vez do catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que frente de dados você quer atuar primeiro?",
+        "type": "escolha",
+        "options": [
+          "análise e BI",
+          "ciência de dados e ML",
+          "engenharia de dados",
+          "governança e privacidade",
+          "IA generativa",
+          "ainda não sei"
+        ],
+        "why": "Pergunto para ordenar as tarefas pela frente que você quer; as outras continuam disponíveis. Você pode pular.",
+        "where": "P"
+      },
+      {
+        "id": "x2",
+        "prompt": "Você já trabalha com algum dataset público (IBGE, dados.gov.br, Kaggle)?",
+        "type": "sim-nao",
+        "options": [],
+        "why": "Pergunto porque as evidências do portfólio usam só dados públicos, sintéticos ou anonimizados; se já tiver um, a primeira tarefa parte dele. Você pode pular.",
+        "where": "X"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": [
+      "D7",
+      "L4",
+      "D4",
+      "L6",
+      "L1",
+      "L8",
+      "D9",
+      "L7",
+      "L3",
+      "L10",
+      "L5",
+      "D5"
+    ],
+    "excluded": [
+      {
+        "code": "D1",
+        "reason": "planta de ambiente não é entrega da profissão"
+      },
+      {
+        "code": "D3",
+        "reason": "modelo 3D não é entrega da profissão"
+      },
+      {
+        "code": "D6",
+        "reason": "detalhe construtivo pertence a engenharia e arquitetura"
+      },
+      {
+        "code": "D8",
+        "reason": "vista explodida pertence a montagem e manufatura"
+      }
+    ],
+    "parameters": {
+      "D7": {
+        "title": "Infográfico de resultados de um dataset público",
+        "brief": "Escolha um dataset público (IBGE, dados.gov.br, Kaggle) e monte um infográfico com uma mensagem principal, eixos e unidades rotulados, fonte, período e licença dos dados, e uma nota de limitações.",
+        "parameters": {
+          "dataSources": [
+            "IBGE",
+            "dados.gov.br",
+            "Kaggle",
+            "outro público"
+          ],
+          "sourceCited": true,
+          "licenseCited": true,
+          "labeledAxes": true,
+          "oneMessage": true,
+          "limitationsNote": true
+        },
+        "criteria": [
+          "fonte, período e licença dos dados citados",
+          "eixos e unidades rotulados",
+          "uma mensagem principal",
+          "nota de limitações ou incerteza",
+          "sem dados pessoais identificáveis"
+        ],
+        "evidence": "imagem + PDF",
+        "time": "60 min",
+        "level": 1
+      },
+      "L4": {
+        "title": "Relatório analítico ou model card",
+        "brief": "Escreva um relatório analítico (pergunta, dados, método, resultados, limitações, referências) ou o model card de um modelo treinado em dados públicos (uso pretendido, dados, métricas com baseline, avaliação desagregada, limitações, riscos), com link para o código, em até 4 páginas.",
+        "parameters": {
+          "formats": [
+            "relatório analítico",
+            "model card"
+          ],
+          "maxPages": 4,
+          "reportSections": [
+            "pergunta",
+            "dados e fonte",
+            "método",
+            "resultados",
+            "limitações",
+            "referências"
+          ],
+          "modelCardSections": [
+            "uso pretendido",
+            "dados de treino",
+            "métricas e baseline",
+            "avaliação desagregada",
+            "limitações e riscos",
+            "licença"
+          ],
+          "codeLink": true
+        },
+        "criteria": [
+          "seções obrigatórias presentes e nomeadas",
+          "fonte, período e licença dos dados citados",
+          "métrica comparada a um baseline ou referência",
+          "seção de limitações presente",
+          "link para código ou notebook e versão",
+          "até 4 páginas; sem dados pessoais"
+        ],
+        "evidence": "relatório técnico (PDF ou Letter publicada)",
+        "time": "2 h",
+        "level": 3
+      },
+      "D4": {
+        "title": "Diagrama de um pipeline ou arquitetura de dados",
+        "brief": "Desenhe o fluxo de dados de um projeto seu ou fictício: fontes, ingestão, transformação, armazenamento, modelo ou dashboard, com componentes nomeados, setas rotuladas (formato, frequência), ponto de controle de qualidade e legenda.",
+        "parameters": {
+          "stages": [
+            "fontes",
+            "ingestão",
+            "transformação",
+            "armazenamento",
+            "consumo"
+          ],
+          "minComponents": 4,
+          "labeledArrows": true,
+          "qualityCheckpoint": true,
+          "legend": true
+        },
+        "criteria": [
+          "ao menos 4 componentes nomeados",
+          "setas com rótulo (formato, frequência ou volume)",
+          "ao menos um ponto de controle de qualidade ou anonimização",
+          "legenda da notação",
+          "sem credenciais, endereços internos ou nomes de clientes"
+        ],
+        "evidence": "diagrama vetorial (SVG ou PDF)",
+        "time": "45 min",
+        "level": 2
+      },
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva um resumo de até 600 caracteres com a frente de dados que você quer (análise, ciência, engenharia, governança), três competências e um link para um notebook, dashboard ou relatório.",
+        "parameters": {
+          "maxChars": 600,
+          "requiredParts": [
+            "frente-alvo",
+            "três competências",
+            "uma prova com link"
+          ]
+        },
+        "criteria": [
+          "até 600 caracteres",
+          "nomeia a frente-alvo",
+          "cita três competências",
+          "inclui uma prova com link"
+        ],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para a vaga que você quer mirar, com três conquistas com número (redução de erro, tempo de processamento, adoção de dashboard) e as ferramentas pedidas.",
+        "parameters": {
+          "maxPages": 1,
+          "achievementsWithNumbers": 3,
+          "keywordsFrom": "cargo-alvo",
+          "includePortfolioLink": true
+        },
+        "criteria": [
+          "uma página",
+          "três conquistas com número",
+          "palavras-chave do cargo-alvo presentes",
+          "link para portfólio ou repositório",
+          "sem idade, estado civil ou foto obrigatória"
+        ],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "L8": {
+        "title": "Resposta a um briefing de análise",
+        "brief": "Responda a um briefing fictício de área de negócio: pergunta de negócio traduzida em pergunta analítica, dados necessários e sua disponibilidade, método proposto, premissas, riscos (inclusive LGPD), o que fica fora e perguntas em aberto.",
+        "parameters": {
+          "sections": [
+            "pergunta de negócio e pergunta analítica",
+            "dados necessários",
+            "método",
+            "premissas",
+            "riscos e LGPD",
+            "fora de escopo",
+            "perguntas em aberto"
+          ],
+          "maxWords": 800
+        },
+        "criteria": [
+          "seções obrigatórias presentes",
+          "pergunta analítica mensurável",
+          "dados pessoais identificados e tratamento proposto",
+          "lista explícita do que fica fora",
+          "ao menos duas perguntas em aberto"
+        ],
+        "evidence": "proposta de análise",
+        "time": "45 min",
+        "level": 2
+      },
+      "D9": {
+        "title": "Wireframe de um dashboard",
+        "brief": "Desenhe o wireframe de um dashboard com KPIs, filtros e gráficos, nos estados sem dados, com erro de carga e com dados, e anotações de interação e de quem é o público.",
+        "parameters": {
+          "states": [
+            "sem dados",
+            "erro de carga",
+            "com dados"
+          ],
+          "elements": [
+            "KPIs",
+            "filtros",
+            "gráficos",
+            "fonte e atualização"
+          ],
+          "annotations": true,
+          "audienceNote": true
+        },
+        "criteria": [
+          "três estados presentes e rotulados",
+          "KPIs, filtros e fonte/atualização indicados",
+          "anotações de interação",
+          "público do painel declarado",
+          "sem dados reais de pessoas"
+        ],
+        "evidence": "prancha de wireframe",
+        "time": "90 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Model card de um modelo treinado em dados públicos",
+        "competency": "Avaliação de modelos e documentação responsável",
+        "criteria": [
+          "seções: uso pretendido, dados de treino e fonte, métricas com baseline, avaliação desagregada por grupo, limitações e riscos, licença",
+          "link para código ou notebook e versão",
+          "declaração de que os dados são públicos ou sintéticos",
+          "ao menos uma limitação de uso explícita"
+        ],
+        "evidence": "model card publicado (Letter ou PDF)",
+        "time": "90 min",
+        "trigger": "Tem um modelo treinado em dados públicos que mereça uma ficha?",
+        "level": 2
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Dicionário de dados de um dataset público",
+        "competency": "Qualidade, governança e privacidade de dados",
+        "criteria": [
+          "cada variável com nome, tipo, unidade, domínio e origem",
+          "classificação de cada variável quanto a dado pessoal ou sensível",
+          "fonte, período e licença do dataset",
+          "notas de qualidade (ausentes, duplicados, inconsistências)"
+        ],
+        "evidence": "documento publicado (Letter ou PDF)",
+        "time": "60 min",
+        "trigger": "Quer documentar o dataset que você mais usa?",
+        "level": 1
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      {
+        "id": "tamanho",
+        "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L4",
+          "L5",
+          "L6",
+          "L8"
+        ],
+        "auto": true
+      },
+      {
+        "id": "secoes-obrigatorias",
+        "check": "as seções pedidas (relatório, model card, briefing, dicionário) existem e estão nomeadas",
+        "appliesTo": [
+          "L3",
+          "L4",
+          "L7",
+          "L8",
+          "L9",
+          "X1",
+          "X2"
+        ],
+        "auto": true
+      },
+      {
+        "id": "fonte-periodo-licenca",
+        "check": "fonte, período e licença dos dados estão citados",
+        "appliesTo": [
+          "D7",
+          "L4",
+          "X1",
+          "X2",
+          "D5"
+        ],
+        "auto": true
+      },
+      {
+        "id": "eixos-e-mensagem",
+        "check": "eixos e unidades rotulados e uma mensagem principal explícita",
+        "appliesTo": [
+          "D7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "baseline-declarado",
+        "check": "a métrica principal é comparada a um baseline ou referência",
+        "appliesTo": [
+          "L4",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "limitacoes-declaradas",
+        "check": "há seção ou nota de limitações e incerteza",
+        "appliesTo": [
+          "D7",
+          "L4",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "reprodutibilidade",
+        "check": "há link para código ou notebook com versão",
+        "appliesTo": [
+          "L4",
+          "X1",
+          "D4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "dados-publicos-ou-sinteticos",
+        "check": "a pessoa declarou que os dados são públicos, sintéticos ou anonimizados",
+        "appliesTo": [
+          "D7",
+          "L4",
+          "D4",
+          "D9",
+          "L8",
+          "X1",
+          "X2",
+          "D5"
+        ],
+        "auto": true
+      },
+      {
+        "id": "componentes-nomeados",
+        "check": "o diagrama tem ao menos 4 componentes nomeados, setas rotuladas e legenda",
+        "appliesTo": [
+          "D4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "estados-do-painel",
+        "check": "o wireframe mostra os estados sem dados, erro e com dados",
+        "appliesTo": [
+          "D9"
+        ],
+        "auto": true
+      },
+      {
+        "id": "sem-segredos",
+        "check": "o conteúdo não contém chaves de acesso, credenciais de banco, dados pessoais identificáveis ou métricas internas de empregadores",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L3",
+          "L4",
+          "L5",
+          "L6",
+          "L7",
+          "L8",
+          "L9",
+          "L10",
+          "D2",
+          "D4",
+          "D5",
+          "D7",
+          "D9",
+          "D10",
+          "X1",
+          "X2"
+        ],
+        "auto": true
+      },
+      {
+        "id": "autoria-e-sigilo",
+        "check": "a pessoa declarou autoria e ausência de dados confidenciais",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L3",
+          "L4",
+          "L5",
+          "L6",
+          "L7",
+          "L8",
+          "L9",
+          "L10",
+          "D2",
+          "D4",
+          "D5",
+          "D7",
+          "D9",
+          "D10",
+          "X1",
+          "X2"
+        ],
+        "auto": true
+      },
+      {
+        "id": "creditos-e-licenca",
+        "check": "fontes, bibliotecas, datasets e coautores estão creditados com licença",
+        "appliesTo": [
+          "L5",
+          "L10",
+          "D2",
+          "D7",
+          "D10",
+          "X1",
+          "X2"
+        ],
+        "auto": true
+      },
+      {
+        "id": "causalidade-sem-exagero",
+        "check": "conclusões não afirmam causa a partir de correlação sem desenho experimental",
+        "appliesTo": [
+          "L4",
+          "D7"
+        ],
+        "auto": false
+      }
+    ],
+    "subjective": [
+      {
+        "id": "clareza-para-nao-tecnicos",
+        "label": "Clareza para não técnicos",
+        "levels": {
+          "aproxima": "só quem é da área entende o resultado",
+          "atende": "a mensagem principal é entendida na primeira leitura",
+          "supera": "quem decide sabe o que fazer e qual a incerteza"
+        }
+      },
+      {
+        "id": "rigor-metodologico",
+        "label": "Rigor metodológico",
+        "levels": {
+          "aproxima": "método não descrito ou sem baseline",
+          "atende": "método, partições e baseline descritos",
+          "supera": "validação adequada, análise de erro e sensibilidade"
+        }
+      },
+      {
+        "id": "interpretacao-honesta",
+        "label": "Interpretação honesta",
+        "levels": {
+          "aproxima": "exagera conclusões ou confunde correlação com causa",
+          "atende": "conclusões proporcionais aos dados, com limitações",
+          "supera": "discute vieses, grupos afetados e usos indevidos"
+        }
+      },
+      {
+        "id": "resultado",
+        "label": "Resultado demonstrado",
+        "levels": {
+          "aproxima": "descreve atividades, sem resultado",
+          "atende": "mostra um resultado mensurável (ganho sobre baseline, tempo, adoção)",
+          "supera": "mostra resultado, contexto, limitações e o que faria diferente"
+        }
+      }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa da área de Ciência de Dados e IA (análise e BI, engenharia de dados, ciência de dados, aprendizado de máquina, bancos de dados). Vocabulário: dataset, dicionário de dados, pipeline, SQL, qualidade e governança, feature, treino/validação/teste, baseline, métricas (precisão, recall, F1, AUC, RMSE), viés e fairness, explicabilidade, model card, MLOps, drift, reprodutibilidade, anonimização, LLM/RAG. Cite quando couber: LGPD (arts. 5º, 6º, 7º, 11, 12 e 20), Resolução CD/ANPD 15/2024, LAI e Política de Dados Abertos (Decreto 8.777/2016), ISO/IEC 27001/27701, ISO/IEC 42001 e 23894, PL 2.338/2023 (IA, em tramitação), Lei 4.739/1965 (atividades privativas de estatístico). A profissão não tem conselho obrigatório: nunca afirme que a pessoa precisa de registro; lembre que atos privativos de estatístico exigem CONRE. O que nunca fazer: analisar, aceitar ou pedir dados pessoais reais, dados de saúde ou financeiros de terceiros, métricas internas ou chaves de acesso de empregadores; sugerir reidentificação ou cruzamento que identifique pessoas; afirmar causalidade a partir de correlação sem avisar; aceitar métricas sem baseline, fonte e período; inferir frente ou senioridade, pergunte. Todo portfólio usa dados públicos (IBGE, dados.gov.br, Kaggle), sintéticos ou anonimizados; se um trecho contiver dado pessoal ou segredo, avise e proponha anonimizar antes de seguir. Pré-cheque só critérios objetivos (seções, fonte/período/licença, baseline, limitações, link para código, estados do painel, ausência de dados pessoais); a validação que gera selo é humana. Toda sugestão diz competência, evidência, tempo e por quê, e aceita \"não me serve\". Mercado com fonte, data e região ou \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos, nunca por pontuação ou ranking. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      {
+        "title": "Lei 13.709/2018 — LGPD (Planalto)",
+        "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm",
+        "kind": "norma"
+      },
+      {
+        "title": "ANPD — documentos e publicações (guias orientativos)",
+        "url": "https://www.gov.br/anpd/pt-br/documentos-e-publicacoes",
+        "kind": "orgao-publico"
+      },
+      {
+        "title": "Resolução CD/ANPD 15/2024 — comunicação de incidente de segurança (Legisweb)",
+        "url": "https://www.legisweb.com.br/legislacao/?id=458235",
+        "kind": "norma"
+      },
+      {
+        "title": "Portal Brasileiro de Dados Abertos",
+        "url": "https://dados.gov.br/",
+        "kind": "orgao-publico"
+      },
+      {
+        "title": "IBGE — estatísticas e microdados",
+        "url": "https://www.ibge.gov.br/",
+        "kind": "estatistica"
+      },
+      {
+        "title": "CONRE — Conselho Regional de Estatística (atividades privativas)",
+        "url": "https://www.conre3.org.br/",
+        "kind": "conselho"
+      },
+      {
+        "title": "Associação Brasileira de Estatística (ABE)",
+        "url": "https://www.redeabe.org.br/",
+        "kind": "comunidade"
+      },
+      {
+        "title": "ESCO — data scientist",
+        "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http%3A%2F%2Fdata.europa.eu%2Fesco%2Foccupation%2F258e46f9-0075-4a2e-adae-1ff0477e0f30",
+        "kind": "referencia"
+      },
+      {
+        "title": "Data Hackers — State of Data Brazil",
+        "url": "https://www.datahackers.news/t/state-of-data",
+        "kind": "comunidade"
+      },
+      {
+        "title": "Brasscom — Perspectivas do Mercado de Trabalho do Macrossetor TIC (2026)",
+        "url": "https://brasscom.org.br/wp-content/uploads/2026/07/Relatorio-Pespectivas-do-Mercado-de-Trabalho-Apresentacao-v9.pdf",
+        "kind": "estatistica"
+      },
+      {
+        "title": "Novo CAGED — Ministério do Trabalho e Emprego",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "kind": "estatistica"
+      }
+    ],
+    "services": [
+      {
+        "service": "PERGUNTAS_GUIA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Variantes de c2 e c5 com competências de dados; x1 (frente) ordena as trilhas; x2 (dataset público) define a primeira tarefa."
+      },
+      {
+        "service": "SUGESTAO_TAREFAS",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "D7 (infográfico), L4 (relatório/model card), D4 (pipeline) primeiro; X1 e X2 documentam modelo e dataset; cada card lembra que os dados devem ser públicos ou sintéticos."
+      },
+      {
+        "service": "PLANO_SEMANAL",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Plano a partir de horas (d1) e aparelho (d4); D4, D7 e D9 só no computador; pausa de 7 dias após duas dispensas."
+      },
+      {
+        "service": "PRE_CHECAGEM_RUBRICA",
+        "capability": "ARTEFATO",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "Checa seções, fonte/período/licença, baseline, limitações, link para código, estados do painel e ausência de dados pessoais; o selo depende de revisão humana."
+      },
+      {
+        "service": "RASCUNHO_LETTERS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Esqueleto de relatório analítico, model card, dicionário de dados ou proposta com prévia; nunca aplica sem revisão; recusa dados pessoais reais."
+      },
+      {
+        "service": "APOIO_DRAWINGS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Sugere tipo de gráfico, eixos, fonte e mensagem no D7; estágios e ponto de qualidade no D4; estados e KPIs no D9."
+      },
+      {
+        "service": "ANALISE_PERFIL",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": "ANALISE_PERFIL_IA",
+        "note": "RF50: competências declaradas e evidenciadas por relatórios, dashboards e model cards; lacunas frente ao cargo-alvo; cada afirmação cita o campo."
+      },
+      {
+        "service": "CAMINHOS_DE_CARREIRA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Vizinhos por CBO 2124 e ISCO 2511/2521: estatística, matemática, software, administração, segurança, redes; com lacunas e passos."
+      },
+      {
+        "service": "PESSOAS_SEMELHANTES",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Só pessoas descobríveis por opt-in; afinidade por competências e frente declaradas, nunca por empresa."
+      },
+      {
+        "service": "EXPLICACAO_POR_QUE",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)."
+      },
+      {
+        "service": "RESUMO_PROFISSIONAL",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": "RESUMO_PROFISSIONAL_IA",
+        "note": "Bio (L6) com frente, ferramentas e link de prova; só com o consentimento específico."
+      },
+      {
+        "service": "IMPORTAR_CURRICULO",
+        "capability": "PREENCHER_TAREFA",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Extrai experiências, ferramentas e competências em ficha editável; alerta se o currículo trouxer métricas internas de empregadores; a pessoa confirma item a item."
+      }
+    ],
+    "dataScope": {
+      "default": [
+        "perfil",
+        "currículo"
+      ],
+      "optional": [
+        "minhas Letters",
+        "meus Drawings",
+        "links públicos de notebooks e dashboards"
+      ],
+      "never": [
+        "mensagens",
+        "itens SIGILOSO",
+        "datasets com dados pessoais ou sensíveis (LGPD)",
+        "modelos e métricas internas de empregadores",
+        "chaves de acesso a bancos de dados",
+        "dados de saúde ou financeiros de terceiros",
+        "dados sensíveis (LGPD art. 5º II)"
+      ]
+    },
+    "provider": {
+      "default": "local",
+      "externalNeedsConsent": true,
+      "externalAllowedFor": [
+        "ANALISE_PERFIL",
+        "CAMINHOS_DE_CARREIRA",
+        "RESUMO_PROFISSIONAL"
+      ]
+    },
+    "guardrails": [
+      "perguntar em vez de inferir frente, senioridade ou situação",
+      "nunca analisar, aceitar ou pedir dados pessoais reais, dados de saúde ou financeiros de terceiros, métricas internas ou chaves de empregadores; avisar e anonimizar",
+      "nunca sugerir reidentificação ou cruzamentos que identifiquem pessoas",
+      "não afirmar causalidade a partir de correlação; exigir baseline, fonte e período em toda métrica",
+      "não afirmar que a profissão exige registro em conselho; lembrar atividades privativas de estatístico quando couber",
+      "nunca prometer entrevista, emprego ou salário; afirmações de mercado com fonte, data e região ou \"estimativa\"",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": {
+      "letters": "alta",
+      "drawings": "media"
+    },
+    "drawingsModes": [
+      "infografico",
+      "diagrama",
+      "wireframe",
+      "prancha"
+    ],
+    "lettersTemplates": [
+      "relatorio-tecnico",
+      "estudo-de-caso",
+      "proposta",
+      "pop",
+      "artigo",
+      "curriculo",
+      "bio",
+      "carta",
+      "post",
+      "revisao",
+      "plano-30-60-90"
+    ],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas de texto curtas (L5, L6) e revisão (L10); D4, D7 e D9 exigem computador; relatórios (L4) pedem acesso ao notebook ou código.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil com link para um notebook ou dashboard (15 min).",
+        "Um dataset público que você gosta cabe em um infográfico de 60 min com fonte e limitações. Quer começar?",
+        "Sem pressão. Quando quiser retomar, o model card está salvo onde você parou.",
+        "Aquele dashboard que você montou pode virar wireframe com três estados. Vale como evidência de produto de dados."
+      ]
+    },
+    "insights": {
+      "peersBy": [
+        "competencias",
+        "setor"
+      ]
+    },
+    "privacy": {
+      "sensitiveData": [
+        "datasets com dados pessoais ou sensíveis (LGPD)",
+        "modelos e métricas internas de empregadores",
+        "chaves de acesso a bancos de dados",
+        "dados de saúde ou financeiros de terceiros"
+      ],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      {
+        "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2124 e 2123",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "geography": "Brasil, UF e município",
+        "cadence": "mensal",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "RAIS (MTE) — vínculos formais por ocupação",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais",
+        "geography": "Brasil, UF e município",
+        "cadence": "anual",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "PNAD Contínua (IBGE)",
+        "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html",
+        "geography": "Brasil e UF",
+        "cadence": "trimestral",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "Brasscom — Perspectivas do Mercado de Trabalho do Macrossetor TIC (2026)",
+        "url": "https://brasscom.org.br/wp-content/uploads/2026/07/Relatorio-Pespectivas-do-Mercado-de-Trabalho-Apresentacao-v9.pdf",
+        "geography": "Brasil",
+        "cadence": "anual",
+        "kind": "associacao"
+      },
+      {
+        "title": "State of Data Brazil (Data Hackers e Bain & Company)",
+        "url": "https://www.datahackers.news/t/state-of-data",
+        "geography": "Brasil",
+        "cadence": "anual",
+        "kind": "pesquisa"
+      },
+      {
+        "title": "Kaggle — State of Data Science and Machine Learning Survey",
+        "url": "https://www.kaggle.com/kaggle-survey-2022",
+        "geography": "mundial, com recorte por país",
+        "cadence": "eventual",
+        "kind": "pesquisa"
+      }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Pesquisas de comunidade (State of Data, Kaggle) são citadas como amostras autosselecionadas, com ano e número de respondentes. Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    {
+      "to": "estatistica",
+      "why": "Inferência, amostragem e desenho de experimentos são a base da ciência de dados; a profissão de estatístico é regulamentada (CONRE) e exige graduação específica.",
+      "gaps": [
+        "inferência e modelos estatísticos em profundidade",
+        "amostragem e desenho de experimentos",
+        "graduação em Estatística e registro no CONRE para atos privativos"
+      ],
+      "steps": [
+        "relatório analítico com intervalo de confiança e limitações (L4)",
+        "especificação de teste A/B como proposta (L8)",
+        "curso introdutório de inferência (Univesp, ENCE)"
+      ]
+    },
+    {
+      "to": "matematica",
+      "why": "Otimização, álgebra linear e probabilidade sustentam o aprendizado de máquina; quem gosta da teoria segue para matemática aplicada e pesquisa.",
+      "gaps": [
+        "álgebra linear e cálculo em profundidade",
+        "otimização e probabilidade avançada",
+        "redação matemática"
+      ],
+      "steps": [
+        "artigo curto explicando um método com rigor (L4)",
+        "infográfico de uma prova ou simulação (D7)",
+        "avaliar graduação ou pós em Matemática Aplicada"
+      ]
+    },
+    {
+      "to": "engenharia-de-software",
+      "why": "Engenharia de dados e MLOps compartilham Git, testes, CI/CD e arquitetura com o desenvolvimento de software.",
+      "gaps": [
+        "engenharia de software (testes, APIs, arquitetura)",
+        "frameworks web ou mobile",
+        "métodos ágeis"
+      ],
+      "steps": [
+        "README de repositório com testes",
+        "ADR de arquitetura de uma plataforma de dados (L4)",
+        "diagrama C4 de um serviço de modelo (D4)"
+      ]
+    },
+    {
+      "to": "administracao",
+      "why": "Analistas de BI que traduzem dados em decisões migram para analytics de negócio, produto e gestão.",
+      "gaps": [
+        "gestão de pessoas e orçamento",
+        "finanças e métricas de negócio",
+        "comunicação com diretoria"
+      ],
+      "steps": [
+        "plano 30-60-90 para liderança de dados (L9)",
+        "proposta de análise com valor de negócio (L8)",
+        "infográfico de resultados para diretoria (D7)"
+      ]
+    },
+    {
+      "to": "seguranca-da-informacao",
+      "why": "Governança de dados, privacidade e anonimização aproximam da segurança da informação e da função de privacidade.",
+      "gaps": [
+        "gestão de riscos e ISO/IEC 27001",
+        "resposta a incidentes",
+        "controles técnicos de segurança"
+      ],
+      "steps": [
+        "POP de anonimização (L7)",
+        "relatório de riscos de reidentificação (L4)",
+        "curso de LGPD (Enap)"
+      ]
+    },
+    {
+      "to": "redes-de-computadores",
+      "why": "Plataformas de dados em nuvem, armazenamento e orquestração levam a infraestrutura e engenharia de plataforma.",
+      "gaps": [
+        "redes, Linux e nuvem em profundidade",
+        "monitoramento e capacidade",
+        "IaC e contêineres"
+      ],
+      "steps": [
+        "diagrama de arquitetura de dados em nuvem (D4)",
+        "runbook de backup e restauração de banco (L7)",
+        "Linux Foundation e NetAcad (gratuitos)"
+      ]
+    }
+  ],
+  "learning": [
+    {
+      "title": "Kaggle Learn — cursos gratuitos de Python, SQL, pandas e machine learning",
+      "provider": "Kaggle",
+      "url": "https://www.kaggle.com/learn",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "Portal Brasileiro de Dados Abertos",
+      "provider": "Governo Federal",
+      "url": "https://dados.gov.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "IBGE — estatísticas, microdados e SIDRA",
+      "provider": "IBGE",
+      "url": "https://sidra.ibge.gov.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Escola Virtual.Gov — Proteção de Dados Pessoais (LGPD) e cursos de dados",
+      "provider": "Enap",
+      "url": "https://www.escolavirtual.gov.br/",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "Curso em Vídeo — Python",
+      "provider": "Curso em Vídeo",
+      "url": "https://www.cursoemvideo.com/",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "freeCodeCamp — Análise de dados com Python e aprendizado de máquina",
+      "provider": "freeCodeCamp",
+      "url": "https://www.freecodecamp.org/portuguese/",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "Microsoft Learn — Power BI e fundamentos de dados (DP-900, PL-300)",
+      "provider": "Microsoft",
+      "url": "https://learn.microsoft.com/pt-br/training/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Data Hackers — comunidade brasileira de dados (newsletter, podcast, pesquisa)",
+      "provider": "Data Hackers",
+      "url": "https://www.datahackers.news/",
+      "free": true,
+      "kind": "comunidade"
+    },
+    {
+      "title": "ENCE — Escola Nacional de Ciências Estatísticas",
+      "provider": "IBGE",
+      "url": "https://www.ence.ibge.gov.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "ANPD — guias orientativos (anonimização, agentes de tratamento)",
+      "provider": "ANPD",
+      "url": "https://www.gov.br/anpd/pt-br/documentos-e-publicacoes",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Cursos abertos de Ciência de Dados — Univesp no YouTube",
+      "provider": "Univesp",
+      "url": "https://www.youtube.com/@univesptv",
+      "free": true,
+      "kind": "curso"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Auditoria Guia de Carreira §4 (perguntas), §4.6 (pacote), §7 (tarefas L1–L10, D1–D10), §8 (mensagens)",
+      "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Dados do ramo (fase 1) — CBO 2124, ISCO 2511/2521, sem conselho; ESCO não obtida na fase 1",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=212405",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2123-05 administrador de banco de dados, família 2123 (espelho NCM Buscador)",
+      "url": "https://buscadorncm.com.br/cbo/212305",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "World of Taxonomy — ESCO data scientist (258e46f9…), ISCO 2511",
+      "url": "https://worldoftaxonomy.com/codes/esco_occupations/258e46f9-0075-4a2e-adae-1ff0477e0f30",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ESCO — Data science and ESCO (data scientist e rótulo alternativo data engineer)",
+      "url": "https://esco.ec.europa.eu/en/about-esco/data-science-and-esco",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Data Hackers — State of Data Brazil 2025/2026 está no ar (Data Hackers e Bain & Company)",
+      "url": "https://www.datahackers.news/p/state-of-data-2025-2026-esta-no-ar",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Bain & Company — State of Data 2024",
+      "url": "https://www.bain.com/pt-br/insights/state-of-data-2024/",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Legisweb — Resolução CD/ANPD 15 de 24/04/2024",
+      "url": "https://www.legisweb.com.br/legislacao/?id=458235",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Brasscom — Relatório Perspectivas do Mercado de Trabalho do Macrossetor TIC (2026)",
+      "url": "https://brasscom.org.br/wp-content/uploads/2026/07/Relatorio-Pespectivas-do-Mercado-de-Trabalho-Apresentacao-v9.pdf",
+      "accessedAt": "2026-11-02"
+    }
+  ],
+  "naoConferido": [
+    "Rede da sessão bloqueou esco.ec.europa.eu, worldoftaxonomy.com, planalto.gov.br e gov.br: URIs, leis e CBOs conferidas só por trechos de resultados de busca.",
+    "ESCO 'data scientist' (258e46f9, ISCO 2511) confirmado só em espelho (World of Taxonomy); não conferido no portal ESCO. Nenhuma URI de competência obtida.",
+    "ISCO-08 2120 (matemáticos, atuários e estatísticos) incluído por julgamento próprio como alternativa à 2511; CBO 2112 (estatísticos) em a4.cboFamilies citada de memória; nenhuma CBO específica de cientista de dados existe ou foi conferida.",
+    "Lei 4.739/1965 e Decreto 62.497/1968 (estatístico/CONRE), LAI, Decreto 8.777/2016, ISO/IEC 42001 e 23894 e PL 2.338/2023 citados de memória; situação de tramitação do PL em novembro de 2026 não conferida.",
+    "State of Data Brazil: edições e datas divergem entre páginas do Data Hackers (2024/2025 com 5,2 mil respondentes; 2025/2026 coletada out–dez 2025); números de mercado não lidos.",
+    "URL da pesquisa Kaggle (kaggle-survey-2022) é a última edição conhecida; continuidade da série não conferida.",
+    "URLs de aprendizagem (Kaggle Learn, SIDRA, ENCE, Microsoft Learn, Data Hackers, Univesp) e CONRE-3 não acessadas nesta sessão.",
+    "Certificações em c4 (PL-300, Google Data Analytics, AWS Data Engineer, GCP Data Engineer, Databricks, dbt, TensorFlow) de conhecimento geral; vigência não conferida."
+  ]
+}

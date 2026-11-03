@@ -1,0 +1,307 @@
+{
+  "schemaVersion": 1,
+  "code": "ciencias-economicas",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Ciências Econômicas", "en": "Economics", "es": "Ciencias Económicas" },
+  "fields": ["ciencias-economicas"],
+  "family": {
+    "cbo": [
+      { "code": "2512", "title": "Economistas" }
+    ],
+    "isco08": [
+      { "code": "2631", "title": "Economists" },
+      { "code": "2413", "title": "Financial analysts" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/99492920-e5a5-4dba-9e5a-93193147198c", "label": "economist" },
+      { "uri": "http://data.europa.eu/esco/occupation/12ff7f9c-c5b5-4d4a-b585-c350dd1400eb", "label": "business economics researcher" },
+      { "uri": "http://data.europa.eu/esco/occupation/8d586ee9-0ab1-4155-a3b0-2ca786c8e48c", "label": "financial analyst" }
+    ]
+  },
+  "scope": {
+    "summary": "Análise econômica aplicada a empresas, mercado financeiro, governo e pesquisa: conjuntura, projeções, avaliação de projetos e políticas, econometria e dados, regulação e defesa da concorrência, planejamento e finanças públicas. O registro no CORECON (Lei 1.411/1951) é exigido para atos privativos do economista, como laudos e pareceres econômicos e perícias.",
+    "entryRoles": ["Estagiário de economia", "Assistente de pesquisa", "Analista econômico júnior", "Analista de dados júnior", "Analista de crédito júnior"],
+    "midRoles": ["Economista ou analista econômico", "Analista de investimentos", "Analista de risco", "Analista de inteligência de mercado", "Analista de planejamento e orçamento", "Pesquisador"],
+    "seniorRoles": ["Economista-chefe", "Gerente de estudos econômicos", "Gestor de investimentos", "Consultor econômico sênior", "Perito econômico", "Professor e pesquisador"],
+    "sectors": ["bancos e gestoras de recursos", "consultorias econômicas", "indústria e varejo (inteligência de mercado)", "administração pública (planejamento, orçamento, Banco Central, IPEA, BNDES)", "agências reguladoras e defesa da concorrência", "organismos multilaterais e terceiro setor", "ensino e pesquisa", "mídia econômica"],
+    "regulation": [
+      { "name": "Lei 1.411/1951", "issuer": "Brasil", "about": "regulamenta a profissão de economista e cria o sistema COFECON/CORECONs; registro obrigatório" },
+      { "name": "Decreto 31.794/1952", "issuer": "Brasil", "about": "regulamento da Lei 1.411/1951: campo profissional e atividades do economista" },
+      { "name": "Consolidação da Regulamentação Profissional do Economista (Res. COFECON 1.726/2004 e alterações)", "issuer": "Conselho Federal de Economia", "about": "registro, atos privativos, perícia e Código de Ética Profissional do Economista" },
+      { "name": "Lei 6.385/1976, art. 27-D", "issuer": "Brasil / CVM", "about": "uso indevido de informação privilegiada no mercado de capitais" },
+      { "name": "Resolução CVM 20/2021", "issuer": "Comissão de Valores Mobiliários", "about": "atividade de analista de valores mobiliários e certificação exigida" },
+      { "name": "LGPD (Lei 13.709/2018)", "issuer": "Brasil / ANPD", "about": "bases de microdados e dados de clientes usados em análises" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "PIB", "meaning": "produto interno bruto: valor dos bens e serviços finais produzidos em um período" },
+      { "term": "IPCA", "meaning": "índice oficial de inflação ao consumidor, do IBGE" },
+      { "term": "Selic", "meaning": "taxa básica de juros definida pelo Copom do Banco Central" },
+      { "term": "conjuntura", "meaning": "análise da situação econômica corrente e de curto prazo" },
+      { "term": "série temporal", "meaning": "dados observados ao longo do tempo; base de projeções" },
+      { "term": "econometria", "meaning": "métodos estatísticos para estimar relações econômicas (regressão, painel, séries)" },
+      { "term": "elasticidade", "meaning": "sensibilidade percentual de uma variável a outra (ex.: demanda ao preço)" },
+      { "term": "VPL e TIR", "meaning": "valor presente líquido e taxa interna de retorno na avaliação de projetos" },
+      { "term": "análise custo-benefício", "meaning": "comparação monetizada de custos e benefícios de um projeto ou política" },
+      { "term": "valuation", "meaning": "avaliação do valor de uma empresa (fluxo de caixa descontado, múltiplos)" },
+      { "term": "Focus", "meaning": "boletim semanal do Banco Central com expectativas de mercado" },
+      { "term": "SGS / SIDRA / Ipeadata", "meaning": "bases públicas de séries do Banco Central, do IBGE e do IPEA" },
+      { "term": "deflacionar", "meaning": "converter valores nominais em reais de uma data-base com um índice de preços" },
+      { "term": "CORECON / COFECON", "meaning": "Conselho Regional e Conselho Federal de Economia" },
+      { "term": "CNPI", "meaning": "certificação de analista de valores mobiliários (Apimec)" },
+      { "term": "informação privilegiada", "meaning": "informação relevante não pública sobre emissor; seu uso é crime (Lei 6.385/1976)" },
+      { "term": "avaliação de impacto", "meaning": "estimativa causal do efeito de uma política (diferenças em diferenças, RCT)" },
+      { "term": "matriz insumo-produto", "meaning": "relações entre setores da economia usadas para medir encadeamentos" }
+    ],
+    "tools": ["linguagem R", "Python (pandas, statsmodels)", "Stata", "EViews", "Excel e Power BI", "bases SGS (BCB), SIDRA (IBGE), Ipeadata", "Bloomberg ou Economatica (quando disponível)", "editor de textos (Letters)"],
+    "deliverables": ["relatório de conjuntura", "nota técnica", "projeção macroeconômica", "estudo de viabilidade econômica", "avaliação de impacto de política", "relatório de análise setorial", "valuation de empresa", "parecer ou laudo econômico", "infográfico de indicadores", "artigo ou working paper"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Análise macroeconômica e de conjuntura", "esco": null, "kind": "nucleo" },
+      { "label": "Análise microeconômica e setorial", "esco": null, "kind": "nucleo" },
+      { "label": "Econometria e análise de dados", "esco": null, "kind": "nucleo" },
+      { "label": "Projeções e modelagem de cenários", "esco": null, "kind": "nucleo" },
+      { "label": "Avaliação econômica de projetos e políticas", "esco": null, "kind": "nucleo" },
+      { "label": "Redação de notas técnicas e relatórios", "esco": null, "kind": "nucleo" },
+      { "label": "Visualização de dados econômicos", "esco": null, "kind": "nucleo" },
+      { "label": "Finanças e mercado de capitais", "esco": null, "kind": "apoio" },
+      { "label": "Finanças públicas e orçamento", "esco": null, "kind": "apoio" },
+      { "label": "Programação em R ou Python", "esco": null, "kind": "apoio" },
+      { "label": "Regulação e defesa da concorrência", "esco": null, "kind": "apoio" },
+      { "label": "Pesquisa acadêmica e revisão de literatura", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["pensamento crítico", "comunicação de números para leigos", "ética no uso de informação", "rigor com fontes", "curiosidade e atualização contínua"],
+    "tracks": [
+      { "id": "conjuntura", "label": "Conjuntura e comunicação econômica", "steps": ["infográfico de um indicador com fonte (D7)", "nota técnica de conjuntura (L4)", "post explicando um indicador (L5)"] },
+      { "id": "dados-e-econometria", "label": "Dados e econometria", "steps": ["relatório com uma regressão sobre dados públicos (L4)", "infográfico de resultados (D7)", "estudo de caso STAR de uma análise (L3)"] },
+      { "id": "projetos-e-politicas", "label": "Avaliação de projetos e políticas", "steps": ["estudo de viabilidade de projeto fictício (X1)", "fluxo da cadeia de impacto de uma política (D4)", "proposta para um briefing simulado (L8)"] },
+      { "id": "apresentar-se", "label": "Apresentar-se por escrito", "steps": ["resumo de perfil (L6)", "currículo direcionado (L1)", "carta para a oportunidade (L2)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"analista econômico\", \"assistente de pesquisa\", \"analista de investimentos\", \"analista de crédito\", \"economista\"",
+      "cboFamilies": ["2512", "2525", "2531"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já faz (mercado, governo, pesquisa, empresa) e não do zero. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, iniciação científica ou primeiro cargo",
+        "junior": "até dois anos; coleta, trata e analisa dados com supervisão",
+        "pleno": "produz relatórios e modelos com autonomia",
+        "senior": "referência técnica; define metodologia e revisa análises",
+        "gestao": "responde por equipe de estudos, carteira ou área de planejamento"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (de um infográfico a um modelo econométrico) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em economia",
+      "options": ["analisar conjuntura e indicadores", "projetar séries e cenários", "econometria e estatística", "programar em R, Python ou Stata", "avaliar projetos (VPL, TIR, custo-benefício)", "avaliar políticas públicas", "analisar setores e mercados", "valuation e mercado financeiro", "finanças públicas e orçamento", "escrever notas técnicas", "visualizar dados", "explicar economia para leigos"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com notas técnicas e infográficos sobre dados públicos."
+    },
+    "c4": {
+      "certifications": ["registro no CORECON", "CPA-20 / CEA / CFP (Planejar/Anbima)", "CNPI (Apimec)", "CFA (CFA Institute)", "mestrado ou doutorado (ANPEC)", "certificados em R, Python ou ciência de dados", "especialização em finanças ou políticas públicas"],
+      "languages": ["inglês (literatura e mercado)", "espanhol"],
+      "why": "Registro, certificações e pós-graduação definem portas de entrada (mercado, academia, governo); ajudam a ver lacunas em relação ao cargo que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver em economia?",
+      "options": ["econometria aplicada", "R ou Python para dados", "projeções macroeconômicas", "valuation e finanças", "avaliação de políticas públicas", "análise setorial", "visualização de dados", "redação de notas técnicas", "preparação para ANPEC ou concursos", "certificações de mercado"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (infográfico → nota técnica → modelo) em vez de um catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que frente você atua ou quer atuar?",
+        "type": "lista",
+        "options": ["mercado financeiro", "empresa (inteligência de mercado, planejamento)", "governo e regulação", "consultoria", "pesquisa e academia", "organismos internacionais e terceiro setor"],
+        "why": "Pergunto para priorizar valuation e conjuntura (mercado), análise setorial (empresa), avaliação de política (governo) ou artigo (academia).",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["D7", "L4", "L3", "L5", "L6", "L1", "D4", "L8", "L9", "L2", "L10", "D10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta de ambiente não é entrega da economia" },
+      { "code": "D3", "reason": "modelo 3D não é evidência da área" },
+      { "code": "D6", "reason": "detalhe construtivo é entrega da engenharia" },
+      { "code": "D8", "reason": "vista explodida é entrega da mecânica" },
+      { "code": "D9", "reason": "wireframe de tela é entrega de UX" }
+    ],
+    "parameters": {
+      "D7": {
+        "title": "Infográfico de um indicador econômico com fonte",
+        "brief": "Escolha um indicador público (IPCA, PIB, desemprego, câmbio, crédito) e mostre sua evolução com fonte e código da série (SGS, SIDRA, Ipeadata), período, unidade, eixos rotulados, valores deflacionados quando cabível e uma mensagem principal.",
+        "parameters": { "requiredElements": ["fonte com código da série", "período", "unidade", "eixos rotulados", "mensagem principal"], "dataSource": ["SGS (BCB)", "SIDRA (IBGE)", "Ipeadata"] },
+        "criteria": ["fonte com código da série citada", "período e unidade explícitos", "eixos rotulados", "uma mensagem principal", "valores nominais ou reais indicados"],
+        "evidence": "imagem PNG + PDF",
+        "time": "60 min",
+        "level": 1
+      },
+      "L4": {
+        "title": "Nota técnica sobre dados públicos",
+        "brief": "Escreva uma nota técnica de até 4 páginas sobre uma pergunta econômica respondida com dados públicos: pergunta, dados e fontes, método (descritivo, regressão ou projeção), resultados com tabela ou gráfico, limitações e referências. Inclua o código ou a planilha como anexo quando possível.",
+        "parameters": { "sections": ["pergunta", "dados e fontes", "método", "resultados", "limitações", "referências"], "maxPages": 4, "publicDataOnly": true, "attachCode": "opcional" },
+        "criteria": ["seções nomeadas", "até 4 páginas", "fontes de dados com série e data de acesso", "método descrito de forma reprodutível", "limitações explícitas"],
+        "evidence": "nota técnica em PDF",
+        "time": "2 h",
+        "level": 2
+      },
+      "L3": {
+        "title": "Estudo de caso STAR de uma análise econômica",
+        "brief": "Conte uma análise que você fez: situação (pergunta de negócio ou política), tarefa, ação (dados e método) e resultado (decisão apoiada, erro de projeção reduzido). Sem dados internos de empregador ou cliente nem informação privilegiada.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true, "mustNameMethod": true },
+        "criteria": ["quatro seções explícitas", "método ou modelo nomeado", "resultado com número ou comparação", "declaração de ausência de dado confidencial ou privilegiado"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "L5": {
+        "title": "Post explicando um indicador para leigos",
+        "brief": "Em 150 a 250 palavras, explique o que mudou em um indicador recente e o que isso significa no dia a dia, com fonte e data. Sem recomendação de investimento.",
+        "parameters": { "minWords": 150, "maxWords": 250, "requiresSource": true },
+        "criteria": ["150 a 250 palavras", "fonte e data citadas", "uma lição concreta", "sem recomendação de investimento"],
+        "evidence": "post",
+        "time": "20 min",
+        "level": 1
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Estudo de viabilidade econômica de projeto fictício",
+        "competency": "Avaliação econômica de projetos e políticas",
+        "criteria": ["premissas declaradas com fonte", "fluxo de caixa projetado", "VPL e TIR calculados com taxa de desconto justificada", "análise de sensibilidade ou cenários", "até 5 páginas com planilha anexa"],
+        "evidence": "estudo em PDF com planilha",
+        "time": "3 h",
+        "trigger": "Quer mostrar como você avalia se um projeto vale a pena?",
+        "level": 3
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "X1"], "auto": true },
+      { "id": "fonte-da-serie", "check": "gráficos e tabelas citam fonte, código da série e período", "appliesTo": ["D7", "L4", "L5", "X1"], "auto": true },
+      { "id": "eixos-e-unidade", "check": "eixos rotulados com unidade e indicação de valores nominais ou reais", "appliesTo": ["D7", "L4"], "auto": true },
+      { "id": "premissas-explicitas", "check": "premissas e taxa de desconto estão declaradas", "appliesTo": ["X1"], "auto": true },
+      { "id": "limitacoes", "check": "o texto tem seção de limitações", "appliesTo": ["L4", "X1"], "auto": true },
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6", "X1"], "auto": true },
+      { "id": "sem-recomendacao-de-investimento", "check": "o texto não faz recomendação de compra ou venda de ativo", "appliesTo": ["L5", "L4"], "auto": false },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dado confidencial ou informação privilegiada", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L8", "L9", "L10", "D4", "D7", "D10", "X1"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "rigor-metodologico", "label": "Rigor metodológico", "levels": { "aproxima": "conclusão sem método claro", "atende": "método adequado à pergunta e descrito", "supera": "discute identificação, robustez e alternativas" } },
+      { "id": "interpretacao", "label": "Interpretação econômica", "levels": { "aproxima": "descreve números sem explicar mecanismos", "atende": "explica os mecanismos por trás dos números", "supera": "liga o resultado a teoria, contexto e implicações de política" } },
+      { "id": "comunicacao", "label": "Comunicação para o público-alvo", "levels": { "aproxima": "jargão sem explicação", "atende": "público-alvo entende a mensagem principal", "supera": "mensagem clara, com nuance e sem exagero" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Economia (estudante, analista, pesquisador, economista de mercado, governo ou empresa). Use o vocabulário da área (PIB, IPCA, Selic, conjuntura, série temporal, econometria, elasticidade, VPL, TIR, valuation, custo-benefício, avaliação de impacto) e cite fontes e normas: Lei 1.411/1951 e Consolidação da Regulamentação Profissional do Economista (COFECON), Lei 6.385/1976 art. 27-D, Resolução CVM 20/2021, bases SGS/BCB, SIDRA/IBGE e Ipeadata. O que você nunca faz: não redige laudo, parecer ou perícia econômica para caso real de terceiros como ato do economista registrado no CORECON; não faz recomendação de investimento a ninguém; não usa nem pede informação privilegiada, relatórios internos não publicados ou dados de clientes e carteiras; tarefas usam dados públicos com fonte e código da série, ou dados fictícios declarados. Pergunte antes de inferir frente de atuação, registro ou senioridade. Cada tarefa diz que competência prova, que evidência gera, quanto tempo leva e por que foi sugerida, e aceita \"não me serve\". Afirmações sobre mercado de trabalho citam fonte, data e região (CAGED, RAIS, COFECON, editais) ou dizem \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos; pré-cheque só critérios objetivos (seções, fonte da série, eixos, premissas, limitações); o selo é humano. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "Conselho Federal de Economia (COFECON) — legislação profissional", "url": "https://www.cofecon.org.br/", "kind": "conselho" },
+      { "title": "Lei 1.411/1951 — profissão de economista (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l1411.htm", "kind": "norma" },
+      { "title": "Banco Central — Sistema Gerenciador de Séries Temporais (SGS)", "url": "https://www3.bcb.gov.br/sgspub/", "kind": "estatistica" },
+      { "title": "IBGE — SIDRA", "url": "https://sidra.ibge.gov.br/", "kind": "estatistica" },
+      { "title": "Ipeadata", "url": "http://www.ipeadata.gov.br/", "kind": "estatistica" },
+      { "title": "CVM — Resolução 20/2021 (analistas de valores mobiliários)", "url": "https://conteudo.cvm.gov.br/legislacao/resolucoes/resol020.html", "kind": "norma" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências econômicas; x1 (frente) orienta as tarefas." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Infográfico (D7), nota técnica (L4) e STAR (L3) primeiro, sempre com dados públicos e fonte." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, fonte e código da série, eixos e unidade, premissas e limitações; o selo é humano." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de nota técnica e estudo de viabilidade com prévia; não redige laudo ou parecer econômico para caso real nem recomendação de investimento." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Eixos, unidade, fonte e mensagem do infográfico (D7); cadeia de impacto em diagrama (D4)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: competências econômicas declaradas e evidenciadas, lacunas (programação, certificações) e incertezas." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos por CBO/ESCO (ciência de dados, estatística, finanças, contábeis, RI, atuária) com mercado citado." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas com opt-in; afinidade por frente e competências compartilhadas." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil, sem citar carteiras ou clientes." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências e competências em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados confidenciais de clientes, empresas e carteiras", "informação privilegiada sobre mercado de capitais (Lei 6.385/1976 art. 27-D)", "projeções e relatórios internos não publicados de empregadores", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "não redigir laudo, parecer ou perícia econômica para caso real de terceiros como ato do economista registrado",
+      "não fazer recomendação de investimento",
+      "não usar nem pedir informação privilegiada, relatórios internos ou dados de clientes e carteiras",
+      "tarefas usam dados públicos com fonte e código da série, ou dados fictícios declarados",
+      "perguntar em vez de inferir frente de atuação, registro ou senioridade",
+      "nunca prometer entrevista, emprego ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["infografico", "diagrama"],
+    "lettersTemplates": ["relatorio-tecnico", "estudo-de-caso", "artigo", "post", "proposta", "parecer", "projeto-de-pesquisa", "plano-30-60-90", "curriculo", "carta", "bio", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas curtas (L5, L6, L10); infográficos (D7), notas técnicas (L4) e estudos com planilha (X1) pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Saiu um indicador novo esta semana. Quer transformá-lo num infográfico com fonte (60 min)?",
+        "Sua tarefa curta: explicar um indicador para leigos em até 250 palavras (20 min).",
+        "Sem pressão. Quando quiser retomar, o resumo de perfil de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["dados confidenciais de clientes, empresas e carteiras sob sigilo profissional (Código de Ética do Economista)", "informação privilegiada sobre mercado de capitais (Lei 6.385/1976 art. 27-D)", "projeções e relatórios internos não publicados de empregadores"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2512 e ocupações de análise financeira", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por ocupação", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "COFECON — economistas registrados por CORECON", "url": "https://www.cofecon.org.br/", "geography": "Brasil e regiões dos CORECONs", "cadence": "continua", "kind": "conselho" },
+      { "title": "Exame Nacional ANPEC (seleção de mestrado em economia)", "url": "https://www.anpec.org.br/", "geography": "Brasil", "cadence": "anual", "kind": "edital" },
+      { "title": "Censo da Educação Superior — INEP", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-da-educacao-superior", "geography": "Brasil e UF", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Editais de concursos (Banco Central, IPEA, BNDES, carreiras de planejamento) — DOU e portais dos órgãos", "url": "https://www.gov.br/pt-br/servicos/consultar-publicacoes-do-diario-oficial-da-uniao", "geography": "Brasil, UF e município", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "ciencia-de-dados", "why": "Econometria, programação e análise de dados são base comum; muitas vagas de dados aceitam economistas.", "gaps": ["machine learning", "engenharia de dados e SQL", "versionamento de código (Git)"], "steps": ["nota técnica com código anexo (L4)", "curso de Python ou R gratuito", "infográfico de um modelo (D7)"] },
+    { "to": "estatistica", "why": "Inferência, séries temporais e amostragem são compartilhadas.", "gaps": ["teoria de probabilidade avançada", "amostragem e planejamento de experimentos"], "steps": ["relatório com teste de hipóteses (L4)", "curso de estatística (Khan Academy)", "revisão crítica de uma análise (L10)"] },
+    { "to": "gestao-financeira", "why": "Valuation, mercado financeiro e risco aproximam as áreas.", "gaps": ["certificações Anbima e CNPI", "contabilidade financeira"], "steps": ["estudo de viabilidade (X1)", "relatório de análise de empresa aberta (L4)", "preparação para CPA-20"] },
+    { "to": "ciencias-contabeis", "why": "Análise de demonstrações e custos dialoga com análise econômica de empresas.", "gaps": ["normas contábeis (NBC TG)", "tributação", "Exame de Suficiência do CFC para atuar como contador"], "steps": ["relatório de análise de demonstrações (L4)", "curso de contabilidade básica", "infográfico de indicadores (D7)"] },
+    { "to": "relacoes-internacionais", "why": "Economia internacional, comércio e organismos multilaterais são campo comum.", "gaps": ["teoria das relações internacionais", "inglês avançado", "negociação internacional"], "steps": ["nota técnica sobre balança comercial (L4)", "post sobre um acordo comercial (L5)", "curso de comércio exterior"] },
+    { "to": "ciencias-atuariais", "why": "Modelagem de risco, probabilidade e finanças aproximam economia e atuária.", "gaps": ["matemática atuarial", "regulação SUSEP e PREVIC", "exame do IBA"], "steps": ["curso de probabilidade", "relatório sobre tábua de mortalidade pública (L4)", "infográfico de expectativa de vida (D7)"] }
+  ],
+  "learning": [
+    { "title": "Khan Academy — macroeconomia e microeconomia em português", "provider": "Khan Academy", "url": "https://pt.khanacademy.org/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — orçamento público, avaliação de políticas, dados", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Cidadania Financeira e publicações educativas do Banco Central", "provider": "Banco Central do Brasil", "url": "https://www.bcb.gov.br/cidadaniafinanceira", "free": true, "kind": "portal" },
+    { "title": "Ipeadata e publicações do IPEA", "provider": "IPEA", "url": "https://www.ipea.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Conselho Federal de Economia — Consolidação da legislação e eventos", "provider": "COFECON", "url": "https://www.cofecon.org.br/", "free": true, "kind": "norma" },
+    { "title": "Exame Nacional ANPEC — provas anteriores", "provider": "ANPEC", "url": "https://www.anpec.org.br/", "free": true, "kind": "certificacao" }
+  ],
+  "sources": [
+    { "title": "Resolução COFECON 1.726/2004 — Consolidação da Regulamentação Profissional do Economista (Normas Brasil)", "url": "https://www.normasbrasil.com.br/norma/resolucao-1726-2004_99900.html", "accessedAt": "2026-11-02" },
+    { "title": "Lei 1.411/1951 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l1411.htm", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos (ramo ciencias-economicas)", "url": "contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Número da resolução que aprova o Código de Ética Profissional do Economista não confirmado; a busca indicou que ele integra a Consolidação (Res. COFECON 1.726/2004, cap. 3.1)",
+    "Decreto 31.794/1952 e Resolução CVM 20/2021 citados de memória; URL da CVM não aberta",
+    "Códigos CBO 2525 e 2531 em questions.a4.cboFamilies não conferidos no portal da CBO",
+    "URIs ESCO das competências não confirmadas (todas em null)",
+    "URLs do SGS, SIDRA, Ipeadata, ANPEC e Cidadania Financeira do BCB não abertas nesta sessão"
+  ]
+}

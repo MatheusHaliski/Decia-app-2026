@@ -1,0 +1,301 @@
+{
+  "schemaVersion": 1,
+  "code": "ciencias-atuariais",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Ciências Atuariais", "en": "Actuarial Science", "es": "Ciencias Actuariales" },
+  "fields": ["ciencias-atuariais"],
+  "family": {
+    "cbo": [
+      { "code": "2111", "title": "Profissionais da matemática" }
+    ],
+    "isco08": [
+      { "code": "2120", "title": "Mathematicians, actuaries and statisticians" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/068c2787-58ff-468e-bbb6-c4e5dd6ee482", "label": "actuarial consultant" },
+      { "uri": "http://data.europa.eu/esco/occupation/e937449a-d9e0-4ab7-9ea5-4d3ac673be6d", "label": "insurance underwriter" }
+    ]
+  },
+  "scope": {
+    "summary": "Mensuração e gestão de riscos financeiros de longo prazo em seguros, previdência complementar e pública (RPPS), saúde suplementar, resseguro, capitalização e bancos: precificação, provisões técnicas, avaliação atuarial, solvência e modelagem de risco. A profissão é regulada pelo Decreto-Lei 806/1969; o IBA é a entidade de classe e o órgão supervisor (SUSEP, PREVIC, ANS) exige atuário responsável.",
+    "entryRoles": ["Estagiário de atuária", "Assistente atuarial", "Analista atuarial júnior", "Analista de riscos júnior", "Analista de dados em seguradora"],
+    "midRoles": ["Analista atuarial pleno", "Analista de precificação", "Analista de reservas e provisões técnicas", "Analista de riscos e solvência", "Subscritor de riscos", "Consultor atuarial"],
+    "seniorRoles": ["Atuário responsável técnico", "Atuário sênior", "Gerente atuarial", "Gestor de riscos (CRO)", "Consultor atuarial sênior ou sócio", "Diretor técnico de seguradora"],
+    "sectors": ["seguradoras e resseguradoras", "entidades fechadas e abertas de previdência complementar", "regimes próprios de previdência (RPPS) e órgãos públicos", "operadoras de planos de saúde", "consultorias atuariais", "bancos e fintechs (risco de crédito)", "órgãos reguladores (SUSEP, PREVIC, ANS)", "ensino e pesquisa"],
+    "regulation": [
+      { "name": "Decreto-Lei 806/1969", "issuer": "Brasil", "about": "dispõe sobre a profissão de atuário e suas atribuições" },
+      { "name": "Decreto 66.408/1970", "issuer": "Brasil", "about": "regulamento do Decreto-Lei 806/1969: atividades privativas e registro" },
+      { "name": "Código de Ética e Pronunciamentos Atuariais do IBA", "issuer": "Instituto Brasileiro de Atuária", "about": "conduta, confidencialidade, independência e boas práticas técnicas do atuário (MIBA)" },
+      { "name": "Normas do CNSP e da SUSEP sobre provisões técnicas, capital e atuário responsável", "issuer": "CNSP / SUSEP", "about": "seguros, capitalização, previdência aberta e resseguro" },
+      { "name": "Resoluções do CNPC e normas da PREVIC sobre premissas e avaliação atuarial", "issuer": "CNPC / PREVIC", "about": "previdência complementar fechada: tábuas, taxa de juros e parecer atuarial" },
+      { "name": "Normas do Ministério da Previdência sobre RPPS (avaliação atuarial anual)", "issuer": "Ministério da Previdência Social", "about": "regimes próprios de servidores: equilíbrio financeiro e atuarial" },
+      { "name": "Normas da ANS sobre nota técnica atuarial e reajuste", "issuer": "Agência Nacional de Saúde Suplementar", "about": "precificação e provisões de planos de saúde" },
+      { "name": "LGPD (Lei 13.709/2018), art. 11", "issuer": "Brasil / ANPD", "about": "dados sensíveis de saúde de segurados e participantes usados na modelagem" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "tábua de mortalidade", "meaning": "tabela de probabilidades de morte por idade usada em seguros e previdência (ex.: BR-EMS, AT-2000)" },
+      { "term": "provisões técnicas", "meaning": "reservas que a seguradora ou o plano constitui para honrar compromissos futuros (PPNG, IBNR, PMBAC)" },
+      { "term": "IBNR", "meaning": "sinistros ocorridos e não avisados; provisão estimada por métodos como chain ladder" },
+      { "term": "chain ladder", "meaning": "método de triângulos de desenvolvimento para estimar sinistros futuros" },
+      { "term": "prêmio puro", "meaning": "valor esperado dos sinistros por exposição, antes de carregamentos" },
+      { "term": "carregamento", "meaning": "parcela do prêmio para despesas, lucro e margem de segurança" },
+      { "term": "sinistralidade", "meaning": "razão entre sinistros e prêmios ganhos" },
+      { "term": "avaliação atuarial", "meaning": "estudo que mede compromissos, custeio e equilíbrio de um plano de previdência" },
+      { "term": "nota técnica atuarial", "meaning": "documento com bases técnicas, fórmulas e premissas de um produto ou plano" },
+      { "term": "parecer atuarial", "meaning": "opinião do atuário responsável sobre a situação de um plano ou carteira" },
+      { "term": "solvência", "meaning": "capacidade de honrar compromissos; capital mínimo requerido" },
+      { "term": "premissas atuariais", "meaning": "hipóteses de mortalidade, juros, rotatividade, crescimento salarial e morbidade" },
+      { "term": "teste de aderência", "meaning": "verificação estatística de que premissas refletem a experiência observada" },
+      { "term": "TAP", "meaning": "teste de adequação de passivos das provisões técnicas" },
+      { "term": "resseguro", "meaning": "transferência de parte do risco de uma seguradora para uma resseguradora" },
+      { "term": "MIBA", "meaning": "membro do Instituto Brasileiro de Atuária, admitido por exame" },
+      { "term": "GLM", "meaning": "modelo linear generalizado usado na precificação de seguros" },
+      { "term": "RPPS", "meaning": "regime próprio de previdência social de servidores públicos" }
+    ],
+    "tools": ["linguagem R (pacotes ChainLadder, lifecontingencies)", "Python (pandas, statsmodels)", "SAS", "SQL", "Excel avançado e VBA", "Power BI", "softwares atuariais de mercado (ex.: Prophet, ResQ)", "editor de textos (Letters)"],
+    "deliverables": ["nota técnica atuarial", "avaliação atuarial", "relatório de provisões técnicas", "estudo de precificação", "teste de aderência de premissas", "relatório de sinistralidade", "teste de adequação de passivos", "relatório de solvência e capital", "infográfico de indicadores de risco"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Matemática atuarial (vida e não vida)", "esco": null, "kind": "nucleo" },
+      { "label": "Probabilidade e estatística aplicadas a riscos", "esco": null, "kind": "nucleo" },
+      { "label": "Cálculo de provisões técnicas", "esco": null, "kind": "nucleo" },
+      { "label": "Precificação de produtos de seguro e previdência", "esco": null, "kind": "nucleo" },
+      { "label": "Avaliação atuarial de planos de previdência", "esco": null, "kind": "nucleo" },
+      { "label": "Modelagem de risco e solvência", "esco": null, "kind": "nucleo" },
+      { "label": "Programação e tratamento de bases (R, Python, SQL)", "esco": null, "kind": "nucleo" },
+      { "label": "Regulação de seguros, previdência e saúde suplementar", "esco": null, "kind": "apoio" },
+      { "label": "Matemática financeira e investimentos (ALM)", "esco": null, "kind": "apoio" },
+      { "label": "Redação de notas técnicas e relatórios atuariais", "esco": null, "kind": "apoio" },
+      { "label": "Contabilidade de seguros e IFRS 17", "esco": null, "kind": "apoio" },
+      { "label": "Comunicação de risco para gestores", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["rigor e atenção a detalhes", "ética e confidencialidade", "pensamento de longo prazo", "comunicação de números para leigos", "aprendizagem contínua"],
+    "tracks": [
+      { "id": "nao-vida", "label": "Seguros não vida e provisões", "steps": ["POP de cálculo de uma provisão com dados fictícios (L7)", "relatório de IBNR por chain ladder com triângulo fictício (L4)", "infográfico de sinistralidade (D7)"] },
+      { "id": "previdencia", "label": "Previdência e avaliação atuarial", "steps": ["fluxo de uma avaliação atuarial (D4)", "teste de aderência com tábua pública (X1)", "estudo de caso STAR de uma revisão de premissas (L3)"] },
+      { "id": "dados-e-precificacao", "label": "Dados e precificação", "steps": ["relatório de precificação com base pública ou simulada (L4)", "infográfico de fatores de risco (D7)", "revisão crítica de um modelo (L10)"] },
+      { "id": "apresentar-se", "label": "Apresentar-se e entrar na área", "steps": ["resumo de perfil (L6)", "currículo direcionado (L1)", "plano 30-60-90 ou de estudos para o exame do IBA (L9)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"assistente atuarial\", \"analista de riscos\", \"analista de precificação\", \"atuário\", \"analista de dados em seguradora\"",
+      "cboFamilies": ["2111", "2112", "2525"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já faz (seguros, previdência, saúde, riscos) e não do zero. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio ou primeiro cargo em atuária, riscos ou dados",
+        "junior": "até dois anos; trata bases e roda cálculos com supervisão",
+        "pleno": "conduz cálculos de provisões, precificação ou avaliações com autonomia",
+        "senior": "referência técnica; define metodologia e revisa trabalhos",
+        "gestao": "atuário responsável, gerente atuarial ou de riscos; responde por equipe e reguladores"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (de um POP a uma avaliação completa) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em atuária",
+      "options": ["matemática atuarial de vida", "provisões técnicas e IBNR", "precificação e GLM", "avaliação atuarial de previdência", "testes de aderência de premissas", "modelagem de solvência e capital", "programar em R, Python ou SQL", "Excel avançado e VBA", "regulação SUSEP, PREVIC ou ANS", "IFRS 17 e contabilidade de seguros", "escrever notas técnicas", "explicar risco para gestores"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com relatórios sobre dados fictícios ou públicos."
+    },
+    "c4": {
+      "certifications": ["bacharelado em Ciências Atuariais", "exame de admissão do IBA (MIBA)", "registro como atuário (conforme norma vigente)", "certificações internacionais (SOA, IFoA, CAS)", "especialização ou mestrado em atuária, estatística ou finanças", "certificados em R, Python ou ciência de dados", "CPA-20 / CEA (Anbima)"],
+      "languages": ["inglês (literatura técnica e resseguro)", "espanhol"],
+      "why": "O exame do IBA e certificações internacionais abrem portas para cargos de atuário responsável; ajudam a ver lacunas em relação ao cargo que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver em atuária?",
+      "options": ["provisões técnicas e IBNR", "precificação com GLM", "avaliação atuarial de previdência", "IFRS 17", "solvência e capital", "R ou Python para atuária", "saúde suplementar", "previdência pública (RPPS)", "preparação para o exame do IBA", "comunicação de risco"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (POP → relatório → teste de aderência) em vez de um catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que frente você atua ou quer atuar?",
+        "type": "lista",
+        "options": ["seguros não vida", "seguros de vida e previdência aberta", "previdência complementar fechada", "previdência pública (RPPS)", "saúde suplementar", "resseguro", "riscos em bancos", "consultoria"],
+        "why": "Pergunto para priorizar provisões e sinistralidade (não vida, saúde), avaliações e premissas (previdência) ou modelagem de risco (bancos).",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L4", "L7", "D7", "L3", "D4", "L6", "L1", "L9", "L2", "L10", "L5"],
+    "excluded": [
+      { "code": "D1", "reason": "planta de ambiente não é entrega atuarial" },
+      { "code": "D2", "reason": "portfólio atuarial é de relatórios e gráficos, não prancha visual" },
+      { "code": "D3", "reason": "modelo 3D não é evidência da área" },
+      { "code": "D5", "reason": "redesenho visual não corresponde a entrega atuarial; a revisão de premissas entra em L3" },
+      { "code": "D6", "reason": "detalhe construtivo é entrega da engenharia" },
+      { "code": "D8", "reason": "vista explodida é entrega da mecânica" },
+      { "code": "D9", "reason": "wireframe de tela é entrega de UX" }
+    ],
+    "parameters": {
+      "L4": {
+        "title": "Relatório técnico de provisão ou precificação com dados fictícios ou públicos",
+        "brief": "Escreva um relatório de até 4 páginas que estime uma provisão (ex.: IBNR por chain ladder com triângulo fictício) ou um prêmio puro com base pública ou simulada: objetivo, dados e premissas, método e fórmulas, resultados, análise de sensibilidade, limitações e referências. Nenhuma base real de segurados.",
+        "parameters": { "sections": ["objetivo", "dados e premissas", "método e fórmulas", "resultados", "sensibilidade", "limitações", "referências"], "maxPages": 4, "dataSource": ["triângulo fictício", "base pública", "dados simulados"], "attachCode": "opcional" },
+        "criteria": ["seções nomeadas", "até 4 páginas", "premissas explícitas", "fórmulas ou método descritos de forma reprodutível", "análise de sensibilidade presente", "dados declarados fictícios, simulados ou públicos"],
+        "evidence": "relatório em PDF com planilha ou código",
+        "time": "3 h",
+        "level": 2
+      },
+      "L7": {
+        "title": "POP de um cálculo atuarial recorrente",
+        "brief": "Escreva o procedimento de um cálculo que você conhece (provisão mensal, reajuste, extração de base, conciliação de prêmios): passos numerados, responsável, fonte dos dados, validações e critério de conclusão por passo, com a norma aplicável.",
+        "parameters": { "requiredElements": ["objetivo e escopo", "passos numerados", "responsável por passo", "fonte dos dados", "validações", "critério de conclusão por passo", "norma aplicável"] },
+        "criteria": ["passos numerados com responsável", "critério de conclusão em cada passo", "ao menos duas validações de dados", "norma aplicável citada", "sem base real de segurados"],
+        "evidence": "POP em modelo",
+        "time": "60 min",
+        "level": 1
+      },
+      "D7": {
+        "title": "Infográfico de indicador de risco",
+        "brief": "Mostre um indicador (sinistralidade, expectativa de vida por tábua, evolução de provisões) com dados fictícios ou públicos (SUSEP, IBGE), fonte, período, eixos rotulados e uma mensagem principal.",
+        "parameters": { "requiredElements": ["indicador com fórmula", "fonte", "período", "eixos rotulados", "mensagem principal"], "dataSource": ["SES/SUSEP", "Tábuas do IBGE", "dados fictícios"] },
+        "criteria": ["indicador nomeado com fórmula", "fonte e período citados", "eixos rotulados", "uma mensagem principal", "dados fictícios ou públicos declarados"],
+        "evidence": "imagem PNG + PDF",
+        "time": "60 min",
+        "level": 1
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Teste de aderência de tábua de mortalidade com dados públicos ou simulados",
+        "competency": "Avaliação atuarial de planos de previdência",
+        "criteria": ["tábuas comparadas identificadas com fonte", "massa de dados declarada simulada ou pública", "teste estatístico nomeado (qui-quadrado, Kolmogorov-Smirnov ou razão de óbitos)", "conclusão sobre aderência com nível de significância", "limitações explícitas"],
+        "evidence": "relatório com planilha ou código",
+        "time": "3 h",
+        "trigger": "Quer mostrar como você testa premissas de um plano?",
+        "level": 3
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "X1"], "auto": true },
+      { "id": "premissas-explicitas", "check": "premissas (tábua, juros, período, método) estão declaradas", "appliesTo": ["L4", "X1"], "auto": true },
+      { "id": "sensibilidade", "check": "há análise de sensibilidade ou cenários", "appliesTo": ["L4"], "auto": true },
+      { "id": "fonte-dos-dados", "check": "a fonte dos dados está citada e declarada fictícia, simulada ou pública", "appliesTo": ["L4", "D7", "X1"], "auto": true },
+      { "id": "eixos-e-fonte", "check": "gráficos com eixos rotulados, fonte e período", "appliesTo": ["D7", "L4"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim, raias e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "calculos-reprodutiveis", "check": "os cálculos podem ser refeitos a partir do anexo e conferem", "appliesTo": ["L4", "X1"], "auto": false },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de bases de segurados ou notas técnicas confidenciais", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L9", "L10", "D4", "D7", "X1"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "adequacao-tecnica", "label": "Adequação técnica", "levels": { "aproxima": "método aplicado sem justificar a escolha", "atende": "método adequado ao problema e justificado", "supera": "compara métodos e discute vieses e incerteza" } },
+      { "id": "julgamento-de-premissas", "label": "Julgamento de premissas", "levels": { "aproxima": "usa premissas sem discutir", "atende": "justifica premissas com dados ou norma", "supera": "mostra o impacto de cada premissa no resultado" } },
+      { "id": "comunicacao-de-risco", "label": "Comunicação de risco", "levels": { "aproxima": "resultado só compreensível por atuário", "atende": "um gestor entende a conclusão e a incerteza", "supera": "o resumo orienta uma decisão e explica limites" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa das Ciências Atuariais (estudante, analista, atuário ou profissional de riscos em seguros, previdência, saúde suplementar ou bancos). Use o vocabulário da área (tábua de mortalidade, provisões técnicas, IBNR, chain ladder, prêmio puro, carregamento, sinistralidade, avaliação atuarial, nota técnica, premissas, teste de aderência, solvência, GLM, IFRS 17) e cite normas e fontes: Decreto-Lei 806/1969 e Decreto 66.408/1970 (profissão), Código de Ética e Pronunciamentos do IBA, normas do CNSP/SUSEP, CNPC/PREVIC, ANS e do Ministério da Previdência para RPPS, LGPD art. 11. O que você nunca faz: não assina nem redige nota técnica, parecer ou avaliação atuarial para plano, produto ou carteira real de terceiros (atos do atuário responsável); não usa nem pede bases de segurados, participantes ou beneficiários, que contêm dados de saúde e idade (dados sensíveis); não expõe notas técnicas, reservas ou tábuas internas de empregadores; tarefas usam dados fictícios, simulados ou públicos (SUSEP, IBGE). Pergunte antes de inferir frente de atuação, admissão no IBA ou senioridade. Cada tarefa diz que competência prova, que evidência gera, quanto tempo leva e por que foi sugerida, e aceita \"não me serve\". Afirmações sobre mercado citam fonte, data e região (CAGED, RAIS, SUSEP, IBA) ou dizem \"estimativa\"; nunca prometa aprovação, entrevista, emprego ou salário. Progresso é por critérios atendidos; pré-cheque só critérios objetivos (seções, premissas, sensibilidade, fonte); o selo é humano. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "Instituto Brasileiro de Atuária (IBA) — Código de Ética, pronunciamentos e exame de admissão", "url": "https://atuarios.org.br/", "kind": "conselho" },
+      { "title": "Decreto-Lei 806/1969 — profissão de atuário (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/decreto-lei/1965-1988/del0806.htm", "kind": "norma" },
+      { "title": "SUSEP — normas e Sistema de Estatísticas (SES)", "url": "https://www.gov.br/susep/pt-br", "kind": "orgao-publico" },
+      { "title": "PREVIC — previdência complementar fechada", "url": "https://www.gov.br/previc/pt-br", "kind": "orgao-publico" },
+      { "title": "ANS — Agência Nacional de Saúde Suplementar", "url": "https://www.gov.br/ans/pt-br", "kind": "orgao-publico" },
+      { "title": "IBGE — Tábuas Completas de Mortalidade", "url": "https://www.ibge.gov.br/estatisticas/sociais/populacao/9126-tabuas-completas-de-mortalidade.html", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências atuariais; x1 (frente) orienta as tarefas." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Relatório técnico (L4), POP (L7) e infográfico (D7) primeiro, sempre com dados fictícios, simulados ou públicos." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); intercala estudo para o exame do IBA quando a pessoa pedir." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, premissas, sensibilidade e fonte; conferir cálculos é revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de relatório e POP com prévia; nunca redige nota técnica, parecer ou avaliação atuarial para plano real." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Eixos, fonte e mensagem do infográfico (D7); fluxo da avaliação atuarial (D4)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: competências atuariais declaradas e evidenciadas, lacunas (programação, IFRS 17, IBA) e incertezas." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos por CBO/ESCO (estatística, economia, ciência de dados, contábeis, finanças) com mercado citado." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil, sem citar carteiras ou planos de clientes." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências e competências em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "bases de segurados, participantes e beneficiários (saúde, idade, sinistros; LGPD art. 11)", "notas técnicas, reservas e tábuas internas de seguradoras e fundos de pensão", "dados de planos de saúde e previdência de pessoas identificáveis", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "não redigir nem assinar nota técnica, parecer ou avaliação atuarial para plano, produto ou carteira real de terceiros",
+      "não usar nem pedir bases de segurados, participantes ou beneficiários",
+      "não expor notas técnicas, reservas ou tábuas internas de empregadores",
+      "tarefas usam dados fictícios, simulados ou públicos (SUSEP, IBGE)",
+      "perguntar em vez de inferir frente de atuação, admissão no IBA ou senioridade",
+      "nunca prometer aprovação, entrevista, emprego ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["infografico", "diagrama"],
+    "lettersTemplates": ["relatorio-tecnico", "pop", "estudo-de-caso", "parecer", "plano-30-60-90", "artigo", "curriculo", "carta", "bio", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas curtas (L5, L6, L10); relatórios com cálculos (L4, X1) pedem computador com planilha ou R/Python.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: POP de um cálculo que você conhece, com dados fictícios (60 min).",
+        "Quer praticar IBNR com um triângulo fictício? O relatório leva cerca de 3 h e vira evidência técnica.",
+        "Sem pressão. Quando quiser retomar, o resumo de perfil de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias"] },
+    "privacy": {
+      "sensitiveData": ["bases de segurados, participantes e beneficiários com dados de saúde, idade e sinistros (LGPD art. 11)", "notas técnicas atuariais, reservas e tábuas internas de seguradoras e fundos de pensão sob confidencialidade", "dados de planos de saúde e previdência de pessoas identificáveis"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2111 (inclui atuários)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por ocupação", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "SUSEP — Sistema de Estatísticas (SES): mercado de seguros, previdência aberta e capitalização", "url": "https://www.gov.br/susep/pt-br", "geography": "Brasil e UF", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "IBA — exame de admissão e quadro de membros", "url": "https://atuarios.org.br/", "geography": "Brasil", "cadence": "eventual", "kind": "associacao" },
+      { "title": "Censo da Educação Superior — INEP", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-da-educacao-superior", "geography": "Brasil e UF", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Editais de concursos (SUSEP, PREVIC, ANS, institutos de previdência) — DOU e portais dos órgãos", "url": "https://www.gov.br/pt-br/servicos/consultar-publicacoes-do-diario-oficial-da-uniao", "geography": "Brasil, UF e município", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). A CBO 2111 agrega matemáticos e atuários; dados por ocupação são aproximados e assim declarados. Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "estatistica", "why": "Probabilidade, inferência e modelagem são a base comum.", "gaps": ["amostragem e planejamento de experimentos", "estatística computacional"], "steps": ["relatório com teste estatístico (X1)", "infográfico de dados públicos (D7)", "curso de estatística gratuito"] },
+    { "to": "ciencias-economicas", "why": "Modelagem de risco, finanças e previdência pública aproximam as áreas.", "gaps": ["macroeconomia e conjuntura", "econometria de séries"], "steps": ["nota técnica sobre previdência pública com dados abertos (L4)", "post explicando um indicador (L5)", "curso de economia (Khan Academy)"] },
+    { "to": "ciencia-de-dados", "why": "Precificação com GLM e tratamento de grandes bases levam atuários a vagas de dados.", "gaps": ["machine learning", "engenharia de dados", "versionamento com Git"], "steps": ["relatório de precificação com código anexo (L4)", "curso de Python", "infográfico de fatores de risco (D7)"] },
+    { "to": "ciencias-contabeis", "why": "Provisões técnicas e IFRS 17 unem atuária e contabilidade de seguros.", "gaps": ["normas contábeis (NBC TG, CPC 50)", "demonstrações de seguradoras", "Exame de Suficiência do CFC para atuar como contador"], "steps": ["relatório sobre demonstrações de seguradora aberta (L4)", "curso de contabilidade básica", "POP de conciliação de prêmios (L7)"] },
+    { "to": "gestao-financeira", "why": "ALM, investimentos e risco de crédito são campo comum.", "gaps": ["mercado financeiro", "certificações Anbima"], "steps": ["infográfico de risco (D7)", "preparação para CPA-20", "estudo de caso STAR de um modelo de risco (L3)"] },
+    { "to": "matematica", "why": "Formação matemática sólida é a base da atuária; ensino e pesquisa são alternativas.", "gaps": ["análise e álgebra avançadas", "didática (para docência)"], "steps": ["artigo curto sobre um modelo atuarial (L5)", "revisão crítica de uma peça (L10)", "projeto de pesquisa ou pós-graduação"] }
+  ],
+  "learning": [
+    { "title": "Instituto Brasileiro de Atuária — eventos, pronunciamentos e exame de admissão", "provider": "IBA", "url": "https://atuarios.org.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — previdência e gestão de riscos", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "IBGE — Tábuas Completas de Mortalidade", "provider": "IBGE", "url": "https://www.ibge.gov.br/estatisticas/sociais/populacao/9126-tabuas-completas-de-mortalidade.html", "free": true, "kind": "portal" },
+    { "title": "SUSEP — normas e dados do mercado", "provider": "SUSEP", "url": "https://www.gov.br/susep/pt-br", "free": true, "kind": "norma" },
+    { "title": "Khan Academy — estatística e probabilidade", "provider": "Khan Academy", "url": "https://pt.khanacademy.org/math/statistics-probability", "free": true, "kind": "curso" },
+    { "title": "Escola de Negócios e Seguros (ENS) — cursos de seguros", "provider": "ENS", "url": "https://www.ens.edu.br/", "free": false, "kind": "curso" }
+  ],
+  "sources": [
+    { "title": "Decreto-Lei 806/1969 (LegisWeb)", "url": "https://www.legisweb.com.br/legislacao/?id=62670", "accessedAt": "2026-11-02" },
+    { "title": "Decreto 66.408/1970 (Legismap)", "url": "https://legismap.com.br/leis-e-normas/decreto-n-66-408-de-03-04-1970", "accessedAt": "2026-11-02" },
+    { "title": "Nota do IBA sobre a MP 905/2019 (registro do atuário)", "url": "https://legismap.com.br/conteudos/artigos-e-noticias/nota-do-iba-sobre-a-mp-905-19", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos (ramo ciencias-atuariais)", "url": "contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Situação vigente do registro profissional do atuário: a MP 905/2019 extinguiu a exigência de registro no Ministério e depois perdeu vigência (MP 955/2020); não confirmado se o registro voltou a ser exigido",
+    "Números das normas CNSP/SUSEP, CNPC/PREVIC, ANS e da portaria de RPPS não citados por falta de conferência; regulação descrita de forma genérica",
+    "Códigos CBO 2112 e 2525 em questions.a4.cboFamilies não conferidos no portal da CBO",
+    "URIs ESCO das competências não confirmadas (todas em null)",
+    "URL do Decreto-Lei 806/1969 no Planalto, da página de tábuas do IBGE e da ENS não abertas nesta sessão; gratuidade da ENS não conferida"
+  ]
+}

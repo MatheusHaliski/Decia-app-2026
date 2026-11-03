@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 1,
+  "code": "administracao",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Administração", "en": "Business Administration", "es": "Administración de Empresas" },
+  "fields": ["administracao"],
+  "family": {
+    "cbo": [
+      { "code": "2521", "title": "Administradores" },
+      { "code": "1421", "title": "Gerentes administrativos, financeiros, de riscos e afins" },
+      { "code": "3513", "title": "Técnicos em administração" },
+      { "code": "4110", "title": "Agentes, assistentes e auxiliares administrativos" }
+    ],
+    "isco08": [
+      { "code": "2421", "title": "Management and organisation analysts" },
+      { "code": "1219", "title": "Business services and administration managers not elsewhere classified" },
+      { "code": "1120", "title": "Managing directors and chief executives" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/544cd9cf-e2ee-4ac0-8a02-7147af6b97d7", "label": "business manager" },
+      { "uri": "http://data.europa.eu/esco/occupation/6a29d804-f775-446c-bec7-35fc4e28ac97", "label": "business consultant" },
+      { "uri": "http://data.europa.eu/esco/occupation/6c3fd65e-2d24-47d8-bc22-9e93512bdcc2", "label": "chief executive officer" }
+    ]
+  },
+  "scope": {
+    "summary": "Gestão de organizações privadas, públicas e do terceiro setor: planejamento estratégico, processos, finanças, pessoas, marketing, logística, projetos e consultoria. O registro no CRA (Lei 4.769/1965) é exigido para atuar como Administrador em atividades privativas (pareceres, laudos, consultoria); muitos cargos de analista e gestor não exigem registro.",
+    "entryRoles": ["Assistente administrativo", "Auxiliar administrativo", "Estagiário de administração", "Trainee", "Analista administrativo júnior", "Assistente financeiro ou de RH"],
+    "midRoles": ["Analista administrativo ou de processos", "Analista financeiro", "Analista de planejamento", "Analista de projetos (PMO)", "Supervisor administrativo", "Consultor empresarial"],
+    "seniorRoles": ["Gerente administrativo ou financeiro", "Coordenador de operações", "Gerente de projetos", "Diretor ou CEO", "Consultor sênior", "Empreendedor ou sócio-gestor"],
+    "sectors": ["comércio e varejo", "serviços", "indústria", "administração pública", "bancos e serviços financeiros", "consultoria", "terceiro setor", "micro e pequenas empresas", "saúde (gestão hospitalar)", "educação (gestão escolar)", "agronegócio", "empreendedorismo"],
+    "regulation": [
+      { "name": "Lei 4.769/1965", "issuer": "Brasil", "about": "regulamenta a profissão de Administrador e cria o sistema CFA/CRAs; atividades privativas (art. 2º) e registro (art. 14)" },
+      { "name": "Decreto 61.934/1967", "issuer": "Brasil", "about": "regulamento da Lei 4.769/1965: campos de atuação e exercício profissional" },
+      { "name": "Código de Ética e Disciplina dos Profissionais de Administração (RN CFA 671/2025)", "issuer": "Conselho Federal de Administração", "about": "deveres, sigilo sobre informações de clientes e empregadores, infrações e penalidades" },
+      { "name": "Resoluções Normativas do CFA sobre registro e Acervo Técnico (RCA)", "issuer": "Conselho Federal de Administração", "about": "registro de pessoas físicas e jurídicas e comprovação de atuação técnica" },
+      { "name": "LGPD (Lei 13.709/2018)", "issuer": "Brasil / ANPD", "about": "dados pessoais de colaboradores, clientes e fornecedores tratados pela gestão" },
+      { "name": "Lei Complementar 123/2006 (Simples Nacional / Estatuto da ME e EPP)", "issuer": "Brasil", "about": "regime das micro e pequenas empresas, cliente central da gestão e consultoria" },
+      { "name": "Lei 14.133/2021 (Licitações e Contratos)", "issuer": "Brasil", "about": "compras e contratos públicos; base da gestão em órgãos e fornecedores do governo" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "planejamento estratégico", "meaning": "definição de missão, visão, objetivos e iniciativas de médio e longo prazo" },
+      { "term": "SWOT / FOFA", "meaning": "matriz de forças, fraquezas, oportunidades e ameaças" },
+      { "term": "KPI", "meaning": "indicador-chave de desempenho com fórmula, meta e periodicidade" },
+      { "term": "OKR", "meaning": "objetivos e resultados-chave mensuráveis por ciclo" },
+      { "term": "BSC", "meaning": "Balanced Scorecard: indicadores em quatro perspectivas (financeira, clientes, processos, aprendizado)" },
+      { "term": "fluxo de caixa", "meaning": "entradas e saídas de dinheiro por período; base da gestão financeira" },
+      { "term": "DRE", "meaning": "demonstração do resultado do exercício: receitas, custos, despesas e lucro" },
+      { "term": "ponto de equilíbrio", "meaning": "volume de vendas em que receitas cobrem custos fixos e variáveis" },
+      { "term": "PDCA", "meaning": "ciclo planejar, executar, checar e agir da melhoria contínua" },
+      { "term": "BPMN", "meaning": "notação para modelar processos com eventos, atividades, gateways e raias" },
+      { "term": "POP", "meaning": "procedimento operacional padrão com passos, responsáveis e critério de conclusão" },
+      { "term": "Canvas", "meaning": "quadro do modelo de negócio em nove blocos" },
+      { "term": "plano de negócios", "meaning": "documento com mercado, operação, marketing e projeção financeira de um empreendimento" },
+      { "term": "5W2H", "meaning": "plano de ação: o quê, por quê, onde, quando, quem, como e quanto custa" },
+      { "term": "ERP", "meaning": "sistema integrado de gestão (SAP, TOTVS, Omie, Bling)" },
+      { "term": "CRA / CFA", "meaning": "Conselho Regional e Conselho Federal de Administração" },
+      { "term": "RCA", "meaning": "Registro de Comprovação de Aptidão: acervo técnico do Administrador no CRA" },
+      { "term": "PMBOK / Scrum", "meaning": "referências de gestão de projetos tradicional e ágil" },
+      { "term": "S&OP", "meaning": "planejamento integrado de vendas e operações" },
+      { "term": "compliance", "meaning": "conformidade com leis, normas e políticas internas" }
+    ],
+    "tools": ["planilha (Excel, Google Sheets)", "Power BI ou outra ferramenta de BI", "ERP (SAP, TOTVS, Omie)", "CRM (Salesforce, RD Station, HubSpot)", "ferramentas de projeto (Trello, Jira, MS Project, Asana)", "modelagem de processos (Bizagi, draw.io, Drawings)", "editor de textos (Letters)", "apresentações (PowerPoint, Google Slides)"],
+    "deliverables": ["plano de negócios", "relatório gerencial", "POP", "mapa de processo (BPMN)", "plano de ação 5W2H", "painel de indicadores", "fluxo de caixa projetado", "análise de viabilidade", "proposta de consultoria", "plano 30-60-90", "parecer técnico de administração", "estudo de caso"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Planejamento estratégico", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de processos e melhoria contínua", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão financeira e orçamentária", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de pessoas e liderança", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de projetos", "esco": null, "kind": "nucleo" },
+      { "label": "Análise de indicadores e dados", "esco": null, "kind": "nucleo" },
+      { "label": "Tomada de decisão com análise de cenários", "esco": null, "kind": "nucleo" },
+      { "label": "Marketing e relacionamento com clientes", "esco": null, "kind": "apoio" },
+      { "label": "Logística e cadeia de suprimentos", "esco": null, "kind": "apoio" },
+      { "label": "Negociação com clientes e fornecedores", "esco": null, "kind": "apoio" },
+      { "label": "Empreendedorismo e modelagem de negócios", "esco": null, "kind": "apoio" },
+      { "label": "Uso de ERP, planilhas e BI", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação escrita e oral", "visão sistêmica", "ética e confidencialidade", "trabalho em equipe", "organização e gestão do tempo"],
+    "tracks": [
+      { "id": "processos", "label": "Processos e operação", "steps": ["fluxo de um processo que você conhece (D4)", "POP desse processo (L7)", "estudo de caso STAR de uma melhoria (L3)", "infográfico de indicadores antes e depois (D7)"] },
+      { "id": "planejamento-e-financas", "label": "Planejamento e finanças", "steps": ["relatório gerencial com indicadores (L4)", "infográfico de resultados (D7)", "proposta de consultoria para um caso fictício (L8)"] },
+      { "id": "lideranca", "label": "Liderança e entrada em cargo", "steps": ["plano 30-60-90 para o cargo-alvo (L9)", "currículo direcionado (L1)", "carta para a oportunidade (L2)"] },
+      { "id": "empreender", "label": "Empreender", "steps": ["Canvas e plano de negócios enxuto de um negócio fictício (X1)", "proposta comercial (L8)", "post sobre um aprendizado (L5)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"assistente administrativo\", \"analista financeiro\", \"supervisor de loja\", \"analista de processos\", \"gerente\"",
+      "cboFamilies": ["2521", "1421", "3513", "4110"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já faz (administrativo, finanças, operações, pessoas) e não do zero. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, trainee, aprendiz ou primeiro cargo administrativo",
+        "junior": "até dois anos; executa rotinas e análises com supervisão",
+        "pleno": "conduz processos, relatórios e projetos com autonomia",
+        "senior": "referência técnica; desenha processos e orienta colegas",
+        "gestao": "responde por equipe, metas, orçamento ou unidade de negócio"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (de um POP a um relatório gerencial) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em gestão",
+      "options": ["organizar rotinas e processos", "planilhas e controles financeiros", "montar indicadores e relatórios", "planejar e acompanhar projetos", "liderar e desenvolver equipes", "atender clientes e fornecedores", "negociar e comprar", "vender e fazer marketing", "controlar estoques e logística", "recrutar e gerir pessoas", "usar ERP e sistemas de gestão", "elaborar planos de negócio", "melhorar processos (Lean, PDCA)", "apresentar resultados"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com fluxos, POPs e relatórios."
+    },
+    "c4": {
+      "certifications": ["registro no CRA", "bacharelado ou tecnólogo em gestão", "MBA ou especialização", "PMP / CAPM ou Scrum", "Lean Seis Sigma", "CPA-10 / CPA-20 (Anbima)", "Power BI / análise de dados", "certificação em ERP (SAP, TOTVS)"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação, registro e certificações ajudam a ver lacunas em relação ao cargo que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver em gestão?",
+      "options": ["planilhas e Power BI", "gestão de projetos", "finanças e fluxo de caixa", "processos e Lean", "liderança de equipe", "planejamento estratégico e OKR", "marketing e vendas", "logística e suprimentos", "empreendedorismo", "negociação"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (fluxo → POP → relatório) em vez de um catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que frente você atua ou quer atuar?",
+        "type": "lista",
+        "options": ["administrativo e operações", "finanças e controladoria", "pessoas e RH", "marketing e vendas", "logística e compras", "projetos e PMO", "consultoria", "gestão pública", "empreender o próprio negócio"],
+        "why": "Pergunto para priorizar fluxos e POPs (operações), relatórios e infográficos (finanças), propostas (consultoria) ou plano de negócios (empreender).",
+        "where": "P"
+      },
+      {
+        "id": "x2",
+        "prompt": "Os dados dos seus trabalhos podem ser mostrados?",
+        "type": "escolha",
+        "options": ["sim, são públicos ou meus", "só anonimizados ou em percentual", "não; vou usar um caso fictício"],
+        "why": "Pergunto porque números, contratos e planos de empregadores e clientes costumam ser confidenciais; com a resposta, sugiro como anonimizar sem perder a evidência.",
+        "where": "X"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["D4", "L7", "L4", "L3", "L9", "D7", "L8", "L6", "L1", "L2", "D5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta de ambiente é da arquitetura; layout de operação entra como antes e depois em D5" },
+      { "code": "D3", "reason": "modelo 3D de produto não é evidência típica da gestão" },
+      { "code": "D6", "reason": "detalhe construtivo é entrega da engenharia" },
+      { "code": "D8", "reason": "vista explodida é entrega da mecânica" },
+      { "code": "D9", "reason": "wireframe de tela é entrega de UX" }
+    ],
+    "parameters": {
+      "D4": {
+        "title": "Fluxo de um processo administrativo (BPMN)",
+        "brief": "Modele em BPMN simplificado um processo que você conhece (compras, contas a pagar, admissão, atendimento, faturamento): início e fim, raias por área, decisões e pontos de controle. Nomes genéricos de áreas; nada de dados da empresa.",
+        "parameters": { "notation": "BPMN simplificado", "requiredElements": ["início e fim", "raias por área", "ao menos um gateway", "ponto de controle ou indicador"], "minActivities": 6 },
+        "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma atividade órfã", "ao menos um gateway de decisão", "sem nome de empresa ou dado confidencial"],
+        "evidence": "diagrama vetorial (SVG/PDF)",
+        "time": "45 min",
+        "level": 1
+      },
+      "L7": {
+        "title": "POP de uma rotina administrativa",
+        "brief": "Escreva o procedimento de uma rotina que você domina: objetivo, escopo, passos numerados com responsável, documentos e sistemas usados, critério de conclusão por passo e indicador de controle.",
+        "parameters": { "requiredElements": ["objetivo e escopo", "passos numerados", "responsável por passo", "sistemas e documentos", "critério de conclusão por passo", "indicador de controle"] },
+        "criteria": ["passos numerados com responsável", "critério de conclusão em cada passo", "indicador de controle definido", "cabeçalho com código e revisão", "sem dado confidencial"],
+        "evidence": "POP em modelo",
+        "time": "60 min",
+        "level": 1
+      },
+      "L4": {
+        "title": "Relatório gerencial com indicadores",
+        "brief": "Escreva um relatório de até 4 páginas sobre uma área ou projeto (real anonimizado ou fictício): objetivo, método e fontes de dados, três a cinco indicadores com fórmula e meta, análise, recomendações com plano de ação 5W2H e limitações.",
+        "parameters": { "sections": ["objetivo", "método e fontes", "indicadores", "análise", "recomendações", "limitações"], "maxPages": 4, "indicators": "3 a 5 com fórmula e meta", "actionPlan": "5W2H" },
+        "criteria": ["seções nomeadas", "até 4 páginas", "indicadores com fórmula, meta e período", "recomendações com responsável e prazo", "dados anonimizados ou fictícios declarados"],
+        "evidence": "relatório em PDF",
+        "time": "2 h",
+        "level": 2
+      },
+      "L3": {
+        "title": "Estudo de caso STAR de uma melhoria de gestão",
+        "brief": "Conte um problema de gestão que você resolveu: situação (indicador inicial), tarefa, ação (ferramenta: PDCA, 5W2H, Pareto, renegociação) e resultado mensurável. Use percentuais ou dados fictícios se a empresa for confidencial.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true, "mustNameTool": true },
+        "criteria": ["quatro seções explícitas", "ferramenta de gestão nomeada", "resultado com número ou comparação", "declaração de ausência de dado confidencial"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "L9": {
+        "title": "Plano 30-60-90 para o cargo-alvo",
+        "brief": "Escreva três metas mensuráveis por fase para os primeiros 90 dias no cargo-alvo: diagnóstico (30), primeiras melhorias (60) e resultados (90), com indicador de cada meta.",
+        "parameters": { "phases": ["30", "60", "90"], "goalsPerPhase": 3 },
+        "criteria": ["três fases", "três metas mensuráveis por fase", "indicador em cada meta", "coerente com o cargo-alvo"],
+        "evidence": "plano",
+        "time": "45 min",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de resultados de gestão",
+        "brief": "Mostre um resultado (custo, prazo, satisfação, giro de estoque, faturamento) antes e depois com fonte dos dados, período, eixos rotulados e uma mensagem principal. Percentual relativo quando o valor absoluto for confidencial.",
+        "parameters": { "requiredElements": ["indicador com fórmula", "período", "fonte", "eixos rotulados", "mensagem principal"] },
+        "criteria": ["indicador nomeado", "fonte e período citados", "eixos rotulados", "uma mensagem principal", "sem identificar empresa quando confidencial"],
+        "evidence": "imagem PNG + PDF",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Plano de negócios enxuto de um negócio fictício",
+        "competency": "Empreendedorismo e modelagem de negócios",
+        "criteria": ["Canvas com os nove blocos", "análise de mercado com fonte citada", "projeção de fluxo de caixa de 12 meses", "ponto de equilíbrio calculado", "até 5 páginas"],
+        "evidence": "plano em PDF",
+        "time": "3 h",
+        "trigger": "Quer mostrar como você estrutura um negócio do zero?",
+        "level": 3
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L9", "X1"], "auto": true },
+      { "id": "indicadores-com-formula", "check": "cada indicador tem fórmula, meta e período", "appliesTo": ["L4", "D7", "L9"], "auto": true },
+      { "id": "plano-de-acao", "check": "as recomendações têm responsável e prazo (5W2H)", "appliesTo": ["L4"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim, raias e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6", "X1"], "auto": true },
+      { "id": "fonte-nos-graficos", "check": "gráficos e infográficos citam fonte, período e eixos rotulados", "appliesTo": ["D7", "L4", "X1"], "auto": true },
+      { "id": "palavras-chave-do-alvo", "check": "as palavras-chave do cargo-alvo aparecem no texto", "appliesTo": ["L1", "L2"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados confidenciais de empregadores e clientes", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D4", "D5", "D7", "X1"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "visao-sistemica", "label": "Visão sistêmica", "levels": { "aproxima": "olha a tarefa isolada da área", "atende": "relaciona processo, pessoas e resultado financeiro", "supera": "antecipa efeitos em outras áreas e propõe mitigação" } },
+      { "id": "decisao-com-dados", "label": "Decisão com dados", "levels": { "aproxima": "recomenda sem número", "atende": "recomenda com indicador e fonte", "supera": "compara cenários e explica premissas e riscos" } },
+      { "id": "clareza", "label": "Clareza para a gestão", "levels": { "aproxima": "a recomendação exige releitura", "atende": "a recomendação é entendida na primeira leitura", "supera": "um gestor decide só com o resumo executivo" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Administração (estudante, assistente, analista, gestor, consultor ou empreendedor). Use o vocabulário da área (planejamento estratégico, KPI, OKR, BSC, DRE, fluxo de caixa, ponto de equilíbrio, PDCA, BPMN, POP, 5W2H, Canvas, ERP) e cite normas quando pertinente: Lei 4.769/1965 e Decreto 61.934/1967 (profissão e CRA), Código de Ética e Disciplina dos Profissionais de Administração (CFA), LGPD, LC 123/2006, Lei 14.133/2021. O que você nunca faz: não assina nem redige parecer técnico, laudo ou relatório de consultoria para empresa real de terceiros como se fosse do profissional (são atos do Administrador registrado no CRA); trata números, contratos, planos e dados de colaboradores, clientes e fornecedores de empregadores como confidenciais e pede anonimização ou caso fictício antes de qualquer tarefa; não sugere expor nomes de empresas clientes no portfólio sem autorização. Pergunte antes de inferir frente de atuação, registro no CRA ou senioridade. Cada tarefa diz que competência prova, que evidência gera, quanto tempo leva e por que foi sugerida, e aceita \"não me serve\". Afirmações sobre mercado citam fonte, data e região (CAGED, RAIS, CFA, editais) ou dizem \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos; pré-cheque só critérios objetivos (seções, indicadores com fórmula, plano de ação, diagrama fechado); o selo é humano. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "Conselho Federal de Administração (CFA) — legislação e Código de Ética", "url": "https://cfa.org.br/", "kind": "conselho" },
+      { "title": "Lei 4.769/1965 — profissão de Administrador (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l4769.htm", "kind": "norma" },
+      { "title": "Sebrae — gestão de pequenos negócios", "url": "https://sebrae.com.br/", "kind": "educacao" },
+      { "title": "CBO — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "Novo CAGED — Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" },
+      { "title": "IBGE — Demografia das Empresas e Cadastro Central de Empresas", "url": "https://www.ibge.gov.br/estatisticas/economicas/outras-estatisticas-economicas/9016-cadastro-central-de-empresas.html", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências de gestão; x1 (frente) e x2 (dados mostráveis) orientam as tarefas." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Fluxo (D4), POP (L7), relatório gerencial (L4) e STAR (L3) primeiro; cada card diz a competência, a evidência e o tempo." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, indicadores com fórmula e meta, plano 5W2H e diagrama fechado; o selo é humano." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de relatório, POP, proposta e plano 30-60-90 com prévia; não redige parecer ou laudo de Administrador para empresa real." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias e fechamento do fluxo (D4), antes e depois (D5) e infográfico com fonte (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: competências de gestão declaradas e evidenciadas, lacunas para o cargo-alvo e incertezas; cita o campo usado." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos por CBO/ESCO (processos, RH, marketing, logística, finanças, contábeis, gestão pública) com mercado citado." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas com opt-in; afinidade por frente de atuação e competências, nunca por empregador." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil, sem nomes de clientes de consultoria sem autorização." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências e competências em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "informações estratégicas, financeiras e comerciais de empregadores e clientes", "dados pessoais de colaboradores, clientes e fornecedores", "planos de negócio e contratos de clientes sob NDA", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "não redigir parecer técnico, laudo ou relatório de consultoria para empresa real de terceiros como ato do Administrador registrado",
+      "tratar números, contratos e planos de empregadores e clientes como confidenciais; pedir anonimização ou caso fictício",
+      "não expor nome de empresa cliente no portfólio sem autorização",
+      "perguntar em vez de inferir frente de atuação, registro no CRA ou senioridade",
+      "nunca prometer entrevista, emprego ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["diagrama", "infografico", "prancha"],
+    "lettersTemplates": ["relatorio-tecnico", "pop", "plano-30-60-90", "proposta", "estudo-de-caso", "parecer", "curriculo", "carta", "bio", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas curtas (L5, L6, L10); fluxo (D4), relatório (L4) e infográfico (D7) pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: desenhar o fluxo de um processo que você conhece (45 min).",
+        "Com o fluxo pronto, o POP desse processo leva cerca de 60 min e vira evidência de padronização.",
+        "Sem pressão. Quando quiser retomar, o resumo de perfil de 15 min está aqui.",
+        "Dica: números da empresa podem virar percentuais. Assim a evidência fica de pé sem expor ninguém."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["informações estratégicas, financeiras e comerciais de empregadores e clientes sob confidencialidade (Código de Ética do CFA)", "dados pessoais de colaboradores, clientes e fornecedores (LGPD)", "planos de negócio e contratos de clientes de consultoria sob NDA"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2521, 1421, 3513, 4110", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por ocupação", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "PNAD Contínua (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html", "geography": "Brasil e UF", "cadence": "trimestral", "kind": "estatistica-oficial" },
+      { "title": "Pesquisa Nacional Perfil, Formação, Atuação e Oportunidades de Trabalho do Profissional de Administração — CFA", "url": "https://cfa.org.br/", "geography": "Brasil", "cadence": "eventual", "kind": "conselho" },
+      { "title": "Censo da Educação Superior — INEP", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-da-educacao-superior", "geography": "Brasil e UF", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Editais de concursos para Administrador (DOU e portais dos órgãos)", "url": "https://www.gov.br/pt-br/servicos/consultar-publicacoes-do-diario-oficial-da-uniao", "geography": "Brasil, UF e município", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "processos-gerenciais", "why": "Mesma base de processos e gestão operacional, com foco aplicado e de curta duração.", "gaps": ["modelagem BPMN avançada", "ferramentas de melhoria contínua"], "steps": ["fluxo de processo (D4)", "POP (L7)", "antes e depois (D5)"] },
+    { "to": "gestao-de-recursos-humanos", "why": "Gestão de pessoas é uma das áreas clássicas da Administração.", "gaps": ["legislação trabalhista e eSocial", "recrutamento e seleção", "avaliação de desempenho"], "steps": ["POP de admissão (L7)", "curso de legislação trabalhista (Enap)", "plano 30-60-90 para analista de RH (L9)"] },
+    { "to": "gestao-financeira", "why": "Fluxo de caixa, orçamento e análise de investimentos são núcleo comum.", "gaps": ["matemática financeira", "análise de demonstrações", "certificações Anbima"], "steps": ["relatório gerencial financeiro (L4)", "infográfico de resultado (D7)", "curso de finanças (Fundação Bradesco)"] },
+    { "to": "logistica", "why": "Operações, estoques e suprimentos são campo de atuação do Administrador.", "gaps": ["gestão de estoques e armazenagem", "transporte e roteirização", "indicadores logísticos"], "steps": ["fluxo de compras e recebimento (D4)", "estudo de caso STAR de estoque (L3)", "curso de logística (SENAI ou Sebrae)"] },
+    { "to": "marketing", "why": "Marketing e vendas fazem parte da formação e da gestão comercial.", "gaps": ["marketing digital e métricas", "pesquisa de mercado", "branding"], "steps": ["post sobre um aprendizado (L5)", "proposta para um briefing simulado (L8)", "infográfico de funil (D7)"] },
+    { "to": "ciencias-contabeis", "why": "Controladoria e finanças aproximam as duas áreas; a leitura de demonstrações é comum.", "gaps": ["normas contábeis (NBC TG)", "tributação", "exame de suficiência do CFC para atuar como contador"], "steps": ["curso de contabilidade básica", "relatório com DRE simplificada (L4)", "infográfico de indicadores financeiros (D7)"] },
+    { "to": "gestao-publica", "why": "Administradores atuam em órgãos públicos e em concursos de analista.", "gaps": ["orçamento público", "licitações (Lei 14.133/2021)", "políticas públicas"], "steps": ["curso de licitações (Escola Virtual.Gov)", "plano de estudos para edital (L9)", "fluxo de um processo de compra pública (D4)"] }
+  ],
+  "learning": [
+    { "title": "Cursos on-line do Sebrae", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — gestão, projetos, licitações", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual Fundação Bradesco — finanças, gestão, Excel", "provider": "Fundação Bradesco", "url": "https://www.ev.org.br/", "free": true, "kind": "portal" },
+    { "title": "Conselho Federal de Administração — publicações e eventos", "provider": "CFA", "url": "https://cfa.org.br/", "free": true, "kind": "portal" },
+    { "title": "Microsoft Learn — Power BI", "provider": "Microsoft", "url": "https://learn.microsoft.com/pt-br/training/powerplatform/power-bi", "free": true, "kind": "curso" },
+    { "title": "Lei 4.769/1965 — texto integral", "provider": "Presidência da República", "url": "https://www.planalto.gov.br/ccivil_03/leis/l4769.htm", "free": true, "kind": "norma" }
+  ],
+  "sources": [
+    { "title": "Lei 4.769/1965 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l4769.htm", "accessedAt": "2026-11-02" },
+    { "title": "Resolução Normativa CFA nº 671, de 09/07/2025 — Código de Ética e Disciplina dos Profissionais de Administração (LegisWeb)", "url": "https://www.legisweb.com.br/legislacao/?id=481167", "accessedAt": "2026-11-02" },
+    { "title": "Conselho Federal de Administração", "url": "https://cfa.org.br/", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos (ramo administracao)", "url": "contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Vigência da RN CFA 671/2025 como Código de Ética atual (a busca mostrou RN 640/2024 e RN 537/2018 anteriores; o catálogo cita 537/2018); artigo de sigilo não conferido",
+    "Decreto 61.934/1967 e resoluções do CFA sobre RCA citados de memória",
+    "Existência e periodicidade da pesquisa nacional de perfil do Administrador do CFA não conferidas; URL aponta para a página inicial",
+    "URIs ESCO das competências não confirmadas (todas em null)",
+    "URL do curso de Power BI no Microsoft Learn e da página do Cadastro Central de Empresas (IBGE) não abertas nesta sessão"
+  ]
+}

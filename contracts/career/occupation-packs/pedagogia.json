@@ -1,0 +1,411 @@
+{
+  "schemaVersion": 1,
+  "code": "pedagogia",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Pedagogia", "en": "Pedagogy (Education)", "es": "Pedagogía" },
+  "fields": ["pedagogia"],
+  "family": {
+    "cbo": [
+      { "code": "2312", "title": "Professores de nível superior do ensino fundamental (primeira a quarta séries)" },
+      { "code": "2311", "title": "Professores de nível superior na educação infantil" },
+      { "code": "2394", "title": "Programadores, avaliadores e orientadores de ensino" },
+      { "code": "2392", "title": "Professores de educação especial" }
+    ],
+    "isco08": [
+      { "code": "2341", "title": "Primary school teachers" },
+      { "code": "2342", "title": "Early childhood educators" },
+      { "code": "2351", "title": "Education methods specialists" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/03d79393-7b30-4159-945b-01963eddd302", "label": "primary school teacher" },
+      { "uri": "http://data.europa.eu/esco/occupation/55d60ead-0343-4008-b9e4-fb4b5a179c83", "label": "early years teacher" },
+      { "uri": "http://data.europa.eu/esco/occupation/2412bbb1-29ca-4e17-a2b8-70694f0cb14f", "label": "educational counsellor" }
+    ]
+  },
+  "scope": {
+    "summary": "Licenciatura que habilita para a docência na educação infantil e nos anos iniciais do ensino fundamental e para coordenação pedagógica, orientação educacional, supervisão e gestão escolar (LDB, arts. 62 e 64; DCN de Pedagogia). Não há conselho profissional: a habilitação é o diploma. Atua em redes públicas (concurso), escolas privadas, AEE, educação não escolar e cursos a distância. Dados de alunos menores são sigilosos e nunca entram em portfólio.",
+    "entryRoles": ["Estagiário em escola de educação infantil ou anos iniciais", "Auxiliar ou assistente de sala", "Professor de educação infantil iniciante", "Professor dos anos iniciais iniciante (contrato temporário ou concurso)", "Monitor de AEE ou de apoio à inclusão", "Assistente de design educacional em EAD"],
+    "midRoles": ["Professor alfabetizador ou dos anos iniciais efetivo", "Professor de educação especial (AEE)", "Coordenador pedagógico", "Orientador educacional", "Pedagogo em empresa, hospital ou ONG", "Designer educacional / instrucional"],
+    "seniorRoles": ["Diretor ou vice-diretor escolar", "Supervisor de ensino", "Formador de professores da rede", "Técnico pedagógico de secretaria de educação", "Coordenador de currículo ou de avaliação", "Pesquisador em educação (mestrado/doutorado)"],
+    "sectors": ["redes públicas de educação básica (municipal e estadual)", "escolas privadas", "educação especial e inclusiva", "educação infantil (creches e pré-escolas)", "educação a distância e edtechs", "pedagogia empresarial e hospitalar", "terceiro setor e projetos sociais", "secretarias de educação e órgãos de gestão", "editoras e produção de material didático"],
+    "regulation": [
+      { "name": "LDB — Lei 9.394/1996, arts. 61 a 67", "issuer": "Brasil", "about": "formação e habilitação dos profissionais da educação; licenciatura em Pedagogia para educação infantil e anos iniciais (arts. 62 e 64)" },
+      { "name": "DCN do curso de Pedagogia — Resolução CNE/CP 1/2006", "issuer": "CNE/MEC", "about": "perfil do pedagogo: docência, gestão, coordenação e produção de conhecimento educacional" },
+      { "name": "DCN para a formação inicial de professores — Resolução CNE/CP 4/2024", "issuer": "CNE/MEC", "about": "nova base da formação docente (substitui a Res. CNE/CP 2/2019, BNC-Formação); estágio e prática" },
+      { "name": "BNCC — Resolução CNE/CP 2/2017", "issuer": "CNE/MEC", "about": "campos de experiência (educação infantil) e habilidades por ano (anos iniciais); referência obrigatória dos planos" },
+      { "name": "ECA — Lei 8.069/1990 e LGPD — Lei 13.709/2018, art. 14", "issuer": "Brasil", "about": "proteção integral e tratamento de dados de crianças e adolescentes só com consentimento do responsável e no melhor interesse" },
+      { "name": "Lei Brasileira de Inclusão — Lei 13.146/2015; Decreto 7.611/2011 (AEE)", "issuer": "Brasil", "about": "educação inclusiva, AEE e adaptações razoáveis; plano educacional individualizado" },
+      { "name": "Compromisso Nacional Criança Alfabetizada — Decreto 11.556/2023", "issuer": "MEC", "about": "política de alfabetização na idade certa; formação e avaliação nos anos iniciais" },
+      { "name": "PNE — Lei 13.005/2014 (metas 1, 5, 15 e 16)", "issuer": "Brasil", "about": "metas de educação infantil, alfabetização e formação de professores" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "BNCC", "meaning": "Base Nacional Comum Curricular: competências, campos de experiência (EI) e habilidades por ano (EF) que todo plano cita" },
+      { "term": "habilidade (código BNCC)", "meaning": "objetivo de aprendizagem codificado, ex.: EF01LP01 (1º ano, Língua Portuguesa) ou EI03EO01 (crianças pequenas)" },
+      { "term": "campos de experiência", "meaning": "organização curricular da educação infantil: eu, o outro e o nós; corpo, gestos e movimentos; escuta, fala; espaços, tempos; traços, sons" },
+      { "term": "LDB", "meaning": "Lei de Diretrizes e Bases da Educação (Lei 9.394/1996), que define etapas, formação docente e habilitações" },
+      { "term": "DCN", "meaning": "Diretrizes Curriculares Nacionais do CNE para cursos e etapas de ensino" },
+      { "term": "PPP", "meaning": "projeto político-pedagógico: documento de identidade e planejamento da escola" },
+      { "term": "plano de aula", "meaning": "objetivo, habilidade BNCC, conteúdo, metodologia, recursos, tempo e avaliação de uma aula" },
+      { "term": "sequência didática", "meaning": "conjunto encadeado de aulas sobre um tema ou gênero, com produção inicial e final" },
+      { "term": "planejamento anual/bimestral", "meaning": "distribuição das habilidades e conteúdos ao longo do ano letivo" },
+      { "term": "alfabetização e letramento", "meaning": "aprendizagem do sistema de escrita alfabética e dos usos sociais da leitura e da escrita" },
+      { "term": "avaliação diagnóstica/formativa", "meaning": "avaliação para conhecer o ponto de partida e acompanhar o processo, não só para classificar" },
+      { "term": "relatório descritivo", "meaning": "registro qualitativo da aprendizagem da criança (educação infantil e anos iniciais), documento sigiloso" },
+      { "term": "AEE", "meaning": "atendimento educacional especializado, em sala de recursos multifuncional, complementar à classe comum" },
+      { "term": "PEI", "meaning": "plano educacional individualizado para estudante com deficiência ou necessidade específica; sigiloso" },
+      { "term": "adaptação curricular", "meaning": "ajuste de objetivos, atividades, recursos e avaliação para garantir participação de todos" },
+      { "term": "conselho de classe", "meaning": "reunião colegiada que analisa o percurso das turmas e decide encaminhamentos" },
+      { "term": "coordenação pedagógica", "meaning": "função que acompanha o planejamento docente, forma professores em serviço e articula o PPP" },
+      { "term": "formação continuada / HTPC", "meaning": "horário de trabalho pedagógico coletivo em que a equipe estuda e planeja" },
+      { "term": "estágio supervisionado", "meaning": "prática obrigatória da licenciatura, com relatório e plano de regência" },
+      { "term": "Censo Escolar", "meaning": "levantamento anual do INEP sobre matrículas, docentes e escolas" },
+      { "term": "SAEB / IDEB", "meaning": "avaliação nacional e índice de qualidade da educação básica; dados agregados por escola e rede" },
+      { "term": "PNLD", "meaning": "Programa Nacional do Livro e do Material Didático: escolha e uso do livro didático" },
+      { "term": "metodologias ativas", "meaning": "estratégias em que o estudante produz e resolve problemas (projetos, rotação por estações, sala invertida)" },
+      { "term": "rotina pedagógica", "meaning": "organização do tempo e dos momentos da turma (acolhida, roda, atividades, parque, alimentação)" },
+      { "term": "design educacional", "meaning": "desenho de cursos e materiais (storyboard, roteiro, objetos de aprendizagem), presencial ou a distância" },
+      { "term": "gestão democrática", "meaning": "princípio da LDB (art. 14): participação da comunidade e conselho escolar nas decisões" }
+    ],
+    "tools": ["Google Sala de Aula (Classroom) e Google Workspace for Education", "Microsoft Teams / Office", "diário de classe digital da rede (ex.: SED, SIGE, i-Educar)", "Canva", "apresentações (PowerPoint, Slides)", "planilhas para planejamento e registro", "Kahoot, Wordwall e Padlet", "Moodle e plataformas de EAD", "H5P e Articulate (design educacional)", "Plataforma MEC RED e portal da BNCC", "Nova Escola (planos de aula)", "aplicativos de leitura e alfabetização (ex.: Graphogame, Ler e Escrever)"],
+    "deliverables": ["plano de aula alinhado à BNCC", "sequência didática", "planejamento anual ou bimestral", "relatório de estágio supervisionado", "projeto pedagógico ou interdisciplinar", "material didático (jogo, ficha, livro de imagens)", "rubrica ou instrumento de avaliação", "roteiro de formação de professores (HTPC)", "plano de ação da coordenação pedagógica", "relatório descritivo de aprendizagem (modelo, aluno fictício)", "parecer pedagógico (modelo, caso fictício)", "artigo ou TCC em educação", "storyboard e roteiro de curso a distância", "projeto de educação não escolar (empresa, hospital, ONG)"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Planejar aulas e sequências didáticas alinhadas à BNCC", "esco": null, "kind": "nucleo" },
+      { "label": "Alfabetizar e desenvolver o letramento nos anos iniciais", "esco": null, "kind": "nucleo" },
+      { "label": "Organizar o trabalho pedagógico na educação infantil por campos de experiência", "esco": null, "kind": "nucleo" },
+      { "label": "Avaliar de forma diagnóstica e formativa e registrar aprendizagens", "esco": null, "kind": "nucleo" },
+      { "label": "Gerir a sala de aula e mediar conflitos com respeito à infância", "esco": null, "kind": "nucleo" },
+      { "label": "Praticar educação inclusiva: adaptação curricular, AEE e PEI", "esco": null, "kind": "nucleo" },
+      { "label": "Coordenar o trabalho pedagógico e formar professores em serviço", "esco": null, "kind": "nucleo" },
+      { "label": "Dialogar com famílias e comunidade escolar", "esco": null, "kind": "nucleo" },
+      { "label": "Produzir e adaptar material didático", "esco": null, "kind": "nucleo" },
+      { "label": "Usar tecnologias digitais com intenção pedagógica", "esco": null, "kind": "nucleo" },
+      { "label": "Gerir a escola: PPP, regimento, documentação e gestão democrática", "esco": null, "kind": "apoio" },
+      { "label": "Ler e usar dados educacionais (Censo Escolar, SAEB, IDEB)", "esco": null, "kind": "apoio" },
+      { "label": "Desenhar cursos e materiais para EAD (design educacional)", "esco": null, "kind": "apoio" },
+      { "label": "Pesquisar em educação e escrever com normas ABNT", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação escrita e oral", "escuta e empatia", "organização e gestão do tempo", "trabalho colaborativo", "ética e sigilo com dados de crianças", "aprendizagem contínua"],
+    "tracks": [
+      { "id": "docencia-anos-iniciais", "label": "Docência nos anos iniciais", "steps": ["plano de aula com habilidade da BNCC (X1)", "sequência didática de alfabetização (X2)", "material didático em prancha (X3)", "relatório de prática ou estágio (L4)", "post sobre um aprendizado em sala (L5)"] },
+      { "id": "educacao-infantil", "label": "Educação infantil", "steps": ["plano de experiência por campo da BNCC (X1)", "rotina da turma como procedimento (L7)", "relatório descritivo modelo com criança fictícia (X4)", "prancha de materiais e brincadeiras (X3)"] },
+      { "id": "coordenacao-e-gestao", "label": "Coordenação pedagógica e gestão escolar", "steps": ["fluxo de um processo escolar, ex.: conselho de classe (D4)", "roteiro de formação de professores (L7)", "plano 30-60-90 para a coordenação (L9)", "infográfico com dados agregados da escola (D7)", "estudo de caso de uma melhoria (L3)"] },
+      { "id": "design-educacional", "label": "Design educacional e EAD", "steps": ["storyboard de um módulo (L8 como resposta a briefing)", "wireframe de uma tela de curso (D9)", "rubrica de avaliação de um curso (L7)", "prancha de portfólio com três materiais (D2)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"professora de educação infantil\", \"auxiliar de sala\", \"coordenador pedagógico\", \"professor dos anos iniciais\"",
+      "cboFamilies": ["2312", "2311", "2394", "2392", "3311", "3312"],
+      "why": "Pergunto sua última função para partir do que você já fez (sala, coordenação, apoio) e sugerir tarefas dessa frente. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, auxiliar de sala ou primeira turma",
+        "junior": "até dois anos regendo turma, com acompanhamento da coordenação",
+        "pleno": "planeja, avalia e conduz a turma com autonomia",
+        "senior": "referência pedagógica; forma colegas, coordena ciclo ou área",
+        "gestao": "coordena a escola, dirige unidade ou atua na secretaria"
+      },
+      "why": "Pergunto o nível para ajustar a dificuldade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na Pedagogia",
+      "options": ["planejar aulas e sequências didáticas", "alfabetizar", "organizar a rotina da educação infantil", "avaliar e registrar aprendizagens", "mediar conflitos e gerir a sala", "incluir estudantes com deficiência", "formar e acompanhar professores", "dialogar com famílias", "criar material didático", "usar tecnologia em sala", "organizar documentos e processos da escola", "ler dados educacionais", "desenhar cursos a distância"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com as tarefas."
+    },
+    "c4": {
+      "certifications": ["licenciatura em Pedagogia", "magistério (nível médio)", "pós-graduação em alfabetização e letramento", "pós-graduação em educação especial e inclusiva", "pós-graduação em gestão ou coordenação pedagógica", "pós-graduação em psicopedagogia", "curso de Libras", "curso de Braille ou de comunicação alternativa", "cursos do AVAMEC/MEC", "formação em design educacional", "mestrado ou doutorado em Educação"],
+      "languages": ["Libras", "inglês", "espanhol"],
+      "why": "Formação e idiomas ajudam a ver lacunas em relação à função que você quer; Libras conta como língua."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["planejamento com a BNCC", "alfabetização", "avaliação formativa e registro", "educação inclusiva e PEI", "gestão de sala e mediação de conflitos", "coordenação e formação de professores", "tecnologias digitais em sala", "produção de material didático", "gestão escolar e documentos", "design educacional e EAD", "leitura de dados educacionais", "escrita acadêmica"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que frente quer atuar primeiro?",
+        "type": "escolha",
+        "options": ["educação infantil", "anos iniciais / alfabetização", "educação especial e AEE", "coordenação ou gestão escolar", "design educacional e EAD", "pedagogia empresarial, hospitalar ou social", "ainda não sei"],
+        "why": "A frente muda as tarefas (plano de experiência, plano de aula, plano de ação, storyboard) e as pessoas sugeridas. Você pode mudar depois.",
+        "where": "P"
+      },
+      {
+        "id": "x2",
+        "prompt": "Pretende prestar concurso para o magistério?",
+        "type": "sim-nao",
+        "options": [],
+        "why": "Se sim, editais abertos podem virar tarefas (estudo do edital, prova de títulos) e o plano respeita o calendário. Não é obrigatório.",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": true
+  },
+  "guidedTasks": {
+    "priority": ["L6", "L1", "L3", "L7", "L4", "D4", "D7", "L9", "L2", "L5", "L10", "D2"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica de ambiente não é entrega da profissão" },
+      { "code": "D3", "reason": "modelagem 3D de produto não faz parte da atuação" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da profissão" },
+      { "code": "D8", "reason": "vista explodida de conjunto não se aplica" }
+    ],
+    "parameters": {
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva um resumo de até 600 caracteres com a etapa ou frente em que quer atuar (educação infantil, anos iniciais, coordenação, EAD), três competências e uma prova com link (plano de aula, material, relatório). Sem dado de aluno nem de escola identificável.",
+        "parameters": { "maxChars": 600, "requiredParts": ["etapa ou frente-alvo", "três competências", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia a etapa ou frente-alvo", "cita três competências", "inclui uma prova com link", "sem nome de aluno ou de escola identificável"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página para a vaga ou o concurso",
+        "brief": "Monte um currículo de uma página para a função que quer mirar primeiro (professor de educação infantil, anos iniciais, coordenador, designer educacional), com três conquistas com número (ex.: turmas, projetos, formações) e as palavras-chave do edital ou da vaga.",
+        "parameters": { "maxPages": 1, "achievementsWithNumbers": 3, "keywordsFrom": "edital ou vaga-alvo", "sections": ["formação e habilitação", "experiência docente ou pedagógica", "formação continuada", "competências"] },
+        "criteria": ["uma página", "três conquistas com número", "habilitação e etapa de atuação explícitas", "palavras-chave do edital ou da vaga presentes", "sem idade, estado civil ou foto obrigatória"],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "L3": {
+        "title": "Estudo de caso STAR de uma situação pedagógica",
+        "brief": "Conte uma situação que você resolveu em sala, na coordenação ou em um projeto: situação, tarefa, ação e resultado observável (ex.: avanço de hipóteses de escrita da turma, adesão das famílias). Turma, escola e crianças sem identificação; declare isso.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true, "anonymized": true },
+        "criteria": ["quatro seções explícitas", "resultado com número ou comparação (ex.: % da turma, antes/depois)", "nenhuma criança, família ou escola identificável", "declaração de ausência de dado confidencial"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "L7": {
+        "title": "Rotina da turma ou roteiro de formação como procedimento",
+        "brief": "Descreva, em passos numerados, uma rotina que você domina (acolhida e roda de conversa, conselho de classe, HTPC, acolhimento de criança com deficiência) com responsável, tempo e critério de conclusão por passo.",
+        "parameters": { "numberedSteps": true, "ownerPerStep": true, "completionCriterionPerStep": true, "examples": ["rotina da educação infantil", "roteiro de HTPC", "conselho de classe", "acolhimento no AEE"] },
+        "criteria": ["passos numerados", "responsável por passo", "critério de conclusão por passo", "tempo estimado por passo", "sem dado de aluno"],
+        "evidence": "procedimento (modelo)",
+        "time": "60 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório curto de estágio, prática ou projeto pedagógico",
+        "brief": "Relate uma prática de até 4 páginas: objetivo, contexto (etapa, ano, sem identificar a escola ou as crianças), metodologia, resultados observados, limitações e referências em ABNT. Pode ser o recorte de um relatório de estágio.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "contexto e metodologia", "resultados", "limitações", "referências (ABNT NBR 6023)"], "anonymized": true },
+        "criteria": ["seções nomeadas", "até 4 páginas", "referências em ABNT", "contexto sem identificar escola, turma ou crianças", "resultados descritos com evidência observável"],
+        "evidence": "relatório em PDF",
+        "time": "2 h",
+        "level": 3
+      },
+      "D4": {
+        "title": "Fluxo de um processo escolar",
+        "brief": "Desenhe o fluxo de um processo que você conhece ou melhorou (conselho de classe, encaminhamento ao AEE, acolhida das famílias, recuperação paralela) com raias por responsável (professor, coordenação, família, gestão), início e fim.",
+        "parameters": { "notation": "BPMN simplificado", "lanes": ["professor", "coordenação", "família", "gestão"], "examples": ["conselho de classe", "encaminhamento ao AEE", "planejamento bimestral"] },
+        "criteria": ["início e fim", "raias por responsável", "nenhuma tarefa órfã", "decisões com os dois caminhos", "sem dado de aluno"],
+        "evidence": "diagrama vetorial",
+        "time": "45 min",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico com dados educacionais agregados",
+        "brief": "Mostre um dado educacional com fonte pública e agregada (INEP, SAEB, IDEB, Censo Escolar da sua rede ou dados da turma sem identificação): uma mensagem principal, eixos rotulados, fonte e ano.",
+        "parameters": { "sourceRequired": true, "aggregatedOnly": true, "oneMainMessage": true, "suggestedSources": ["INEP Censo Escolar", "SAEB/IDEB", "QEdu"] },
+        "criteria": ["fonte e ano citados", "eixos rotulados", "uma mensagem principal", "dados agregados, sem aluno identificável", "créditos de imagens e ícones"],
+        "evidence": "imagem e PDF",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Plano de aula ou de experiência alinhado à BNCC",
+        "competency": "Planejamento de aula com a BNCC",
+        "criteria": ["etapa, ano ou faixa etária e habilidade ou objetivo da BNCC com código", "objetivo, conteúdo, metodologia, recursos e avaliação", "tempo por momento da aula", "adaptações para inclusão", "sem dado de aluno ou escola identificável"],
+        "evidence": "plano de aula (modelo plano-de-aula)",
+        "time": "60 min",
+        "trigger": "Que aula ou experiência você proporia amanhã? Monte o plano com a habilidade da BNCC.",
+        "level": 1
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Sequência didática de três a cinco aulas",
+        "competency": "Planejamento de sequência didática e progressão",
+        "criteria": ["tema ou gênero, ano e habilidades da BNCC com código", "produção inicial e produção final", "três a cinco aulas encadeadas com objetivo cada", "avaliação formativa ao longo da sequência", "adaptações para inclusão", "referências dos materiais usados"],
+        "evidence": "documento",
+        "time": "2 h",
+        "trigger": "Quer mostrar como você encadeia aulas? Uma sequência de 3 a 5 aulas comprova progressão.",
+        "level": 2
+      },
+      {
+        "id": "X3",
+        "editor": "drawings",
+        "title": "Material didático em prancha (jogo, cartaz ou ficha)",
+        "competency": "Produção de material didático",
+        "criteria": ["habilidade ou campo de experiência indicado", "instruções de uso para o professor", "legibilidade para a faixa etária (tamanho de fonte, contraste)", "créditos de imagens e licenças", "sem foto de criança real"],
+        "evidence": "prancha publicada (PDF ou PNG)",
+        "time": "90 min",
+        "trigger": "Que material você já criou ou criaria para a turma? Monte a prancha com instruções de uso.",
+        "level": 2
+      },
+      {
+        "id": "X4",
+        "editor": "letters",
+        "title": "Relatório descritivo de aprendizagem (modelo com criança fictícia)",
+        "competency": "Avaliação formativa e registro de aprendizagens",
+        "criteria": ["criança fictícia declarada no início", "campos ou áreas de aprendizagem observados", "descrição de avanços, não de rótulos", "próximos passos para a turma e para a família", "linguagem acolhedora e sem diagnóstico"],
+        "evidence": "documento",
+        "time": "45 min",
+        "trigger": "Quer treinar o registro descritivo? Use uma criança fictícia, nunca um aluno real.",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "habilidade-bncc", "check": "há ao menos um código de habilidade ou objetivo da BNCC (ex.: EF01LP01, EI03EO01)", "appliesTo": ["X1", "X2", "X3"], "auto": true },
+      { "id": "secoes-do-plano", "check": "objetivo, conteúdo, metodologia, recursos, tempo e avaliação estão presentes e nomeados", "appliesTo": ["X1", "X2"], "auto": true },
+      { "id": "adaptacoes-inclusao", "check": "há uma seção ou item de adaptações para inclusão", "appliesTo": ["X1", "X2"], "auto": true },
+      { "id": "sem-dado-de-aluno", "check": "a pessoa declarou que não há nome, nota, laudo, foto ou escola identificável de criança real", "appliesTo": ["L3", "L4", "L5", "L7", "D4", "D7", "X1", "X2", "X3", "X4"], "auto": true },
+      { "id": "crianca-ficticia-declarada", "check": "o documento começa declarando que a criança é fictícia", "appliesTo": ["X4"], "auto": true },
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L9"], "auto": true },
+      { "id": "referencias-abnt", "check": "há seção de referências com autor, título, ano (NBR 6023)", "appliesTo": ["L4", "X2"], "auto": true },
+      { "id": "fonte-dos-dados", "check": "fonte e ano dos dados aparecem no infográfico", "appliesTo": ["D7"], "auto": true },
+      { "id": "creditos-e-fontes", "check": "coautores, imagens, licenças e autores remixados estão creditados", "appliesTo": ["L5", "L10", "D2", "D7", "D10", "X3"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o fluxo tem início e fim, raias por responsável e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "autoria", "check": "a pessoa declarou autoria da peça", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L9", "L10", "D2", "D4", "D7", "D10", "X1", "X2", "X3", "X4"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "coerencia-didatica", "label": "Coerência entre objetivo, atividade e avaliação", "levels": { "aproxima": "objetivo e atividade se relacionam de forma vaga; avaliação ausente ou genérica", "atende": "a atividade leva ao objetivo e a avaliação observa a habilidade", "supera": "objetivo, atividade, avaliação e próximos passos formam um ciclo explícito" } },
+      { "id": "adequacao-a-etapa", "label": "Adequação à faixa etária e à etapa", "levels": { "aproxima": "linguagem, tempo ou recurso não combinam com a idade", "atende": "tempo, linguagem e recursos adequados à etapa", "supera": "antecipa reações das crianças e prevê alternativas" } },
+      { "id": "inclusao", "label": "Inclusão e equidade", "levels": { "aproxima": "adaptações genéricas ou só citadas", "atende": "adaptações concretas para ao menos um perfil de estudante", "supera": "desenho universal: a atividade já nasce acessível a todos" } },
+      { "id": "reflexao-sobre-a-pratica", "label": "Reflexão sobre a prática", "levels": { "aproxima": "descreve o que fez, sem analisar", "atende": "analisa o que funcionou e por quê", "supera": "relaciona a prática com referências e diz o que faria diferente" } },
+      { "id": "clareza", "label": "Clareza", "levels": { "aproxima": "a ideia principal exige releitura", "atende": "a ideia principal é entendida na primeira leitura", "supera": "conduz quem lê sem esforço e sem excesso" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa formada ou em formação em Pedagogia: docência na educação infantil e nos anos iniciais, coordenação pedagógica, orientação, gestão escolar, educação especial e design educacional. Use o vocabulário da área (BNCC e códigos de habilidade, campos de experiência, sequência didática, PPP, AEE, PEI, avaliação formativa, HTPC, conselho de classe) e cite as normas quando couber: LDB (Lei 9.394/1996), BNCC (Res. CNE/CP 2/2017), DCN de Pedagogia (Res. CNE/CP 1/2006), DCN de formação docente (Res. CNE/CP 4/2024), ECA e LGPD art. 14. Nunca: avaliar, classificar ou diagnosticar alunos reais; redigir relatório descritivo, parecer ou PEI de criança real; aceitar ou pedir nomes, notas, laudos ou fotos de crianças; sugerir diagnóstico de transtorno ou encaminhamento clínico (isso é da equipe multiprofissional); prometer aprovação em concurso ou vaga. Planos, relatórios e materiais do portfólio usam turma genérica ou criança fictícia, declarada. Pergunte a frente de atuação (educação infantil, anos iniciais, coordenação, EAD) em vez de inferir. Pré-cheque só critérios objetivos (código da BNCC, seções, declaração de ausência de dado de aluno); a avaliação pedagógica da peça e o selo são humanos. Afirmações sobre mercado citam fonte, data e região (Censo Escolar do INEP, CAGED/RAIS, editais) ou dizem \"estimativa\"; nunca fale de salário. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "BNCC — Base Nacional Comum Curricular (MEC)", "url": "http://basenacionalcomum.mec.gov.br/", "kind": "norma" },
+      { "title": "LDB — Lei 9.394/1996 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9394.htm", "kind": "norma" },
+      { "title": "Resolução CNE/CP 1/2006 — DCN do curso de Pedagogia", "url": "http://portal.mec.gov.br/cne/arquivos/pdf/rcp01_06.pdf", "kind": "norma" },
+      { "title": "Conselho Nacional de Educação — resoluções e pareceres", "url": "http://portal.mec.gov.br/conselho-nacional-de-educacao", "kind": "orgao-publico" },
+      { "title": "INEP — Censo Escolar da Educação Básica", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-escolar", "kind": "estatistica" },
+      { "title": "ECA — Lei 8.069/1990 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l8069.htm", "kind": "norma" },
+      { "title": "LGPD — Lei 13.709/2018, art. 14 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm", "kind": "norma" },
+      { "title": "AVAMEC — Ambiente Virtual de Aprendizagem do MEC", "url": "https://avamec.mec.gov.br/", "kind": "educacao" },
+      { "title": "CBO — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 da Pedagogia; x1 (frente) e x2 (concurso) no primeiro acesso; oferece o teste de interesses quando a pessoa não sabe a frente." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Plano de aula (X1) e sequência didática (X2) entram cedo; cada card diz qual competência comprova e lembra que turma e crianças são genéricas ou fictícias." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Respeita horas (d1), aparelho (d4) e calendário escolar/edital (x2); pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Só critérios objetivos: código da BNCC, seções do plano, adaptações presentes, declaração sem dado de aluno, fonte do infográfico. Não avalia qualidade pedagógica; o selo é humano." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Esqueleto de plano de aula, sequência, relatório de estágio ou roteiro de HTPC com prévia; nunca preenche com dados de crianças reais." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Grade, legibilidade e créditos da prancha de material didático (X3); raias do fluxo escolar (D4); fonte e eixos do infográfico (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: competências declaradas e evidenciadas por etapa/frente, lacunas e incertezas; cita o campo de origem de cada afirmação." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Caminhos para psicopedagogia, letras, história, serviço social e psicologia com lacunas de formação; dados de mercado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Pessoas descobríveis por opt-in da mesma família CBO (2311, 2312, 2394, 2392) ou com competências compartilhadas; afinidade explicada." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com etapa/frente e habilitação; só com o consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai formação, habilitação, redes e etapas em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados de alunos (nomes, notas, laudos, fotos, frequência)", "relatórios descritivos, PEI e pareceres de alunos reais", "dados de famílias e responsáveis", "dados sensíveis (LGPD art. 5º II)", "dados de terceiros sem autorização"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca avaliar, classificar ou diagnosticar alunos reais, nem redigir relatório, parecer ou PEI de criança real",
+      "recusar e não armazenar nomes, notas, laudos ou fotos de crianças; portfólio usa turma genérica ou criança fictícia declarada",
+      "não sugerir diagnóstico de transtorno nem encaminhamento clínico; indicar que isso cabe à equipe multiprofissional",
+      "perguntar a frente de atuação (educação infantil, anos iniciais, coordenação, EAD) em vez de inferir",
+      "nunca prometer aprovação em concurso, vaga ou salário; afirmações de mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["prancha", "diagrama", "infografico", "wireframe"],
+    "lettersTemplates": ["plano-de-aula", "relatorio-tecnico", "estudo-de-caso", "pop", "curriculo", "bio", "carta", "plano-30-60-90", "artigo", "projeto-de-pesquisa", "revisao", "post"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas curtas de texto (L5, L6) e revisão (L10); plano de aula (X1) é possível no celular, mas sequência didática (X2), prancha (X3) e fluxo (D4) pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil com a etapa em que quer atuar (15 min).",
+        "Que aula você daria amanhã? Um plano com a habilidade da BNCC leva cerca de 1 h e comprova planejamento.",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui.",
+        "Um relatório descritivo com criança fictícia (45 min) mostra como você registra aprendizagens, sem expor nenhum aluno.",
+        "Tem um edital aberto? Posso transformar os requisitos em um checklist do currículo (45 min)."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["dados de alunos menores de idade: nomes, notas, laudos e fotos (ECA; LGPD art. 14)", "relatórios de acompanhamento, pareceres e planos individualizados (PEI/AEE) de alunos", "fotos e vídeos de crianças em sala sem autorização dos responsáveis", "dados de famílias e responsáveis (contato, situação socioeconômica)"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "INEP — Censo Escolar da Educação Básica (docentes por etapa, formação e rede)", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-escolar", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2311, 2312, 2392 e 2394", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "INEP — Censo da Educação Superior (matrículas e concluintes em Pedagogia)", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-da-educacao-superior", "geography": "Brasil e UF", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Concursos públicos para o magistério (redes municipais e estaduais) — gov.br", "url": "https://www.gov.br/pt-br/servicos/consultar-concursos-publicos", "geography": "UF e município", "cadence": "eventual", "kind": "edital" },
+      { "title": "Todos Pela Educação — Anuário Brasileiro da Educação Básica", "url": "https://todospelaeducacao.org.br/", "geography": "Brasil e UF", "cadence": "anual", "kind": "pesquisa" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "psicopedagogia", "why": "Aprofunda a leitura das dificuldades de aprendizagem que o pedagogo já observa em sala e na coordenação.", "gaps": ["pós-graduação em Psicopedagogia", "avaliação psicopedagógica e intervenção", "ética do atendimento individual"], "steps": ["estudo de caso de uma intervenção de aprendizagem (L3)", "relatório de prática com referências (L4)", "pós lato sensu em Psicopedagogia"] },
+    { "to": "letras", "why": "A alfabetização e o letramento abrem caminho para o ensino de Língua Portuguesa nos anos finais e no ensino médio.", "gaps": ["licenciatura em Letras (segunda licenciatura)", "análise linguística e literatura", "gêneros textuais dos anos finais"], "steps": ["sequência didática de um gênero textual (X2)", "segunda licenciatura em Letras", "plano de aula para os anos finais (X1)"] },
+    { "to": "historia", "why": "Quem gosta de projetos interdisciplinares e de ensinar ciências humanas pode seguir para a docência de História.", "gaps": ["licenciatura em História", "trabalho com fontes históricas", "ensino de relações étnico-raciais (Leis 10.639 e 11.645)"], "steps": ["plano de aula interdisciplinar de ciências humanas (X1)", "segunda licenciatura em História", "material didático com fontes (X3)"] },
+    { "to": "servico-social", "why": "Pedagogos que atuam na rede de proteção, em projetos sociais e na relação com famílias dialogam com o Serviço Social.", "gaps": ["graduação em Serviço Social e registro no CRESS", "política de assistência social (SUAS)", "instrumentais técnicos do assistente social"], "steps": ["fluxo de encaminhamento da rede de proteção (D4)", "estudo de caso de articulação com famílias (L3)", "graduação em Serviço Social"] },
+    { "to": "psicologia", "why": "Interesse em desenvolvimento infantil e aprendizagem pode levar à Psicologia Escolar, com nova graduação.", "gaps": ["graduação em Psicologia e registro no CRP", "avaliação psicológica", "atuação clínica e institucional"], "steps": ["relatório de observação do desenvolvimento com criança fictícia (X4)", "graduação em Psicologia", "estágio em psicologia escolar"] }
+  ],
+  "learning": [
+    { "title": "AVAMEC — cursos gratuitos do MEC para professores (BNCC, alfabetização, inclusão)", "provider": "MEC", "url": "https://avamec.mec.gov.br/", "free": true, "kind": "portal" },
+    { "title": "BNCC — documento, campos de experiência e habilidades por ano", "provider": "MEC", "url": "http://basenacionalcomum.mec.gov.br/", "free": true, "kind": "norma" },
+    { "title": "Escola Virtual.Gov — cursos de gestão pública e educação", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Nova Escola — planos de aula e cursos para professores", "provider": "Associação Nova Escola", "url": "https://novaescola.org.br/", "free": true, "kind": "portal" },
+    { "title": "Plataforma MEC RED — recursos educacionais digitais", "provider": "MEC", "url": "https://plataformaintegrada.mec.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Univesp — videoaulas de Pedagogia e formação de professores", "provider": "Univesp", "url": "https://www.youtube.com/@univesp", "free": true, "kind": "curso" },
+    { "title": "CIEB — Competências digitais de professores e cursos", "provider": "CIEB", "url": "https://cieb.net.br/", "free": true, "kind": "portal" },
+    { "title": "Instituto Rodrigo Mendes — DIVERSA: educação inclusiva na prática", "provider": "Instituto Rodrigo Mendes", "url": "https://diversa.org.br/", "free": true, "kind": "portal" },
+    { "title": "QEdu — dados educacionais por escola e rede (IDEB, SAEB, Censo Escolar)", "provider": "Fundação Lemann / Meritt", "url": "https://qedu.org.br/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4 (perguntas), §4.6 (pacote), §7 (tarefas L1–L10, D1–D10), §8 (mensagens)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos — ramo pedagogia (CBO, ISCO, ESCO, sensitiveData, vizinhos)", "url": "contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
+    { "title": "LDB — Lei 9.394/1996, arts. 61–67", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9394.htm", "accessedAt": "2026-11-02" },
+    { "title": "Resolução CNE/CP 1/2006 — DCN do curso de Pedagogia", "url": "http://portal.mec.gov.br/cne/arquivos/pdf/rcp01_06.pdf", "accessedAt": "2026-11-02" },
+    { "title": "BNCC — Base Nacional Comum Curricular", "url": "http://basenacionalcomum.mec.gov.br/", "accessedAt": "2026-11-02" },
+    { "title": "ECA — Lei 8.069/1990", "url": "https://www.planalto.gov.br/ccivil_03/leis/l8069.htm", "accessedAt": "2026-11-02" },
+    { "title": "LGPD — Lei 13.709/2018", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm", "accessedAt": "2026-11-02" },
+    { "title": "INEP — Censo Escolar", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-escolar", "accessedAt": "2026-11-02" },
+    { "title": "ESCO — occupations primary school teacher, early years teacher, educational counsellor", "url": "https://esco.ec.europa.eu/", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Resolução CNE/CP 4/2024 (novas DCN da formação inicial de professores, substituindo a Res. CNE/CP 2/2019): número, data e vigência citados de memória, não confirmados no portal do CNE.",
+    "Decreto 11.556/2023 (Compromisso Nacional Criança Alfabetizada): número e ementa não confirmados.",
+    "Situação do Decreto 10.502/2020 (revogado pelo Decreto 11.370/2023) e vigência do Decreto 7.611/2011 sobre AEE: citados de memória.",
+    "Códigos CBO 3311 e 3312 em questions.a4.cboFamilies (professores de nível médio na educação infantil e nos anos iniciais) não conferidos no portal da CBO.",
+    "URIs ESCO de competências não pesquisadas nesta sessão (esco: null em todas); URIs de ocupação copiadas do catálogo de ramos.",
+    "Nenhuma URL de citeSources, market, learning e sources foi acessada nesta sessão (cota de busca indisponível); endereços citados de memória.",
+    "Fonte Todos Pela Educação (Anuário) e QEdu: existência atual dos produtos e URLs não verificadas.",
+    "Contagens do Censo Escolar e do CAGED não foram consultadas; o pacote não afirma números de mercado."
+  ]
+}

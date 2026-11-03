@@ -368,7 +368,7 @@
     { "title": "Código de Ética e Disciplina da OAB e Provimento 205/2021 (Conselho Federal da OAB)", "url": "https://www.oab.org.br/", "accessedAt": "2026-11-02" },
     { "title": "Código de Processo Civil — Lei 13.105/2015 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13105.htm", "accessedAt": "2026-11-02" },
     { "title": "LGPD — Lei 13.709/2018 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm", "accessedAt": "2026-11-02" },
-    { "title": "Catálogo de ramos acadêmicos (ramo direito: CBO, ISCO, ESCO, conselho, dados sensíveis, vizinhos)", "url": "docs/../contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos (ramo direito: CBO, ISCO, ESCO, conselho, dados sensíveis, vizinhos)", "url": "contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
     { "title": "Auditoria Guia de Carreira §4 (perguntas), §4.6, §7 (tarefas L1–L10, D1–D10), §8 (mensagens)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" }
   ],
   "naoConferido": [

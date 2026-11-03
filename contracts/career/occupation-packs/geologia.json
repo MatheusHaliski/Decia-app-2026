@@ -1,0 +1,286 @@
+{
+  "schemaVersion": 1,
+  "code": "geologia",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Geologia (geólogo, engenheiro geólogo)", "en": "Geology (geologist)", "es": "Geología (geólogo)" },
+  "fields": ["geologia"],
+  "family": {
+    "cbo": [{ "code": "2134", "title": "Geólogos, oceanógrafos, geofísicos e afins" }],
+    "isco08": [{ "code": "2114", "title": "Geologists and geophysicists" }],
+    "esco": []
+  },
+  "scope": {
+    "summary": "Investiga a composição, a estrutura e os processos da Terra para pesquisa e lavra mineral, petróleo e gás, hidrogeologia, geotecnia, riscos geológicos, áreas contaminadas e licenciamento ambiental. Registro no CREA (Lei 4.076/1962; Lei 5.194/1966); relatórios à ANM, laudos e projetos exigem ART. Atua em mineração, energia, consultoria, construção, órgãos públicos (SGB, ANM, defesa civil) e pesquisa.",
+    "entryRoles": ["Estagiário de geologia (campo ou escritório)", "Geólogo júnior de exploração mineral", "Auxiliar de mapeamento e amostragem", "Técnico de sondagem e descrição de testemunhos", "Analista de geoprocessamento júnior", "Trainee em mineração ou energia"],
+    "midRoles": ["Geólogo de exploração mineral (pleno)", "Geólogo de mina (controle de teores)", "Hidrogeólogo", "Geólogo de geotecnia e riscos", "Geólogo de áreas contaminadas", "Geólogo de petróleo ou de reservatórios", "Pesquisador em geociências do serviço geológico"],
+    "seniorRoles": ["Coordenador de exploração ou de modelagem de recursos", "Pessoa competente / responsável técnico por relatórios de recursos e reservas", "Gerente de geologia de mina", "Consultor sênior em hidrogeologia ou geotecnia", "Perito geólogo", "Pesquisador titular ou docente"],
+    "sectors": ["mineração (exploração, lavra, beneficiamento)", "petróleo e gás", "consultoria ambiental e geotécnica", "construção e infraestrutura (barragens, túneis, estradas)", "recursos hídricos e poços", "órgãos públicos (SGB/CPRM, ANM, ANP, defesa civil, OEMAs)", "áreas contaminadas e remediação", "pesquisa e ensino", "energia (geotermia, minerais estratégicos, armazenamento de carbono)"],
+    "regulation": [
+      { "name": "Lei 4.076/1962", "issuer": "Brasil", "about": "regula a profissão de geólogo ou engenheiro geólogo; exercício permitido só após registro no CREA" },
+      { "name": "Lei 5.194/1966 e Lei 6.496/1977", "issuer": "Brasil / CONFEA", "about": "sistema CONFEA/CREA e Anotação de Responsabilidade Técnica (ART) obrigatória" },
+      { "name": "Decreto-Lei 227/1967 (Código de Mineração) e Decreto 9.406/2018", "issuer": "Brasil / ANM", "about": "regime de autorização de pesquisa, relatório final de pesquisa e concessão de lavra" },
+      { "name": "Lei 12.334/2010 (Política Nacional de Segurança de Barragens) e Lei 14.066/2020", "issuer": "Brasil / ANM", "about": "segurança de barragens de rejeito; planos de segurança e de ação de emergência" },
+      { "name": "Resolução CONAMA 420/2009", "issuer": "CONAMA", "about": "valores orientadores de qualidade do solo e gerenciamento de áreas contaminadas" },
+      { "name": "Resolução CONAMA 396/2008 e Lei 9.433/1997", "issuer": "CONAMA / Brasil", "about": "classificação das águas subterrâneas; outorga de uso de recursos hídricos" },
+      { "name": "ABNT NBR 6484 e NBR 15492", "issuer": "ABNT", "about": "sondagem de simples reconhecimento (SPT) e sondagem para fins de qualidade ambiental" },
+      { "name": "Lei 9.605/1998 e Resolução CONAMA 237/1997", "issuer": "Brasil / CONAMA", "about": "crimes ambientais e licenciamento de atividades minerárias" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "ART (CREA)", "meaning": "Anotação de Responsabilidade Técnica obrigatória para relatórios, laudos, projetos e direção de trabalhos" },
+      { "term": "mapeamento geológico", "meaning": "levantamento de campo de unidades, contatos e estruturas, representado em mapa e seções" },
+      { "term": "mapa geológico", "meaning": "representação das unidades litológicas e estruturas em escala, com legenda estratigráfica" },
+      { "term": "seção geológica / perfil", "meaning": "corte vertical interpretado mostrando a disposição das camadas em profundidade" },
+      { "term": "testemunho de sondagem", "meaning": "amostra cilíndrica de rocha obtida por sondagem rotativa, descrita em log" },
+      { "term": "log de sondagem", "meaning": "descrição padronizada de litologia, estruturas e alteração ao longo do furo" },
+      { "term": "atitude (direção e mergulho)", "meaning": "orientação de planos geológicos medida com bússola" },
+      { "term": "estratigrafia", "meaning": "estudo da sucessão e correlação das camadas de rocha" },
+      { "term": "recurso e reserva mineral", "meaning": "estimativas de quantidade e teor classificadas por grau de confiança (padrões CRIRSCO, NI 43-101, JORC)" },
+      { "term": "modelagem geológica 3D", "meaning": "construção de sólidos e blocos com teores a partir de furos e mapeamento" },
+      { "term": "relatório final de pesquisa (RFP)", "meaning": "relatório entregue à ANM ao fim da autorização de pesquisa, com responsável técnico" },
+      { "term": "hidrogeologia", "meaning": "estudo das águas subterrâneas: aquíferos, fluxo, poços e qualidade" },
+      { "term": "teste de bombeamento", "meaning": "ensaio em poço para estimar parâmetros hidráulicos do aquífero" },
+      { "term": "área contaminada", "meaning": "área com concentração de substâncias acima dos valores de intervenção (CONAMA 420/2009)" },
+      { "term": "investigação confirmatória/detalhada", "meaning": "etapas do gerenciamento de áreas contaminadas, com amostragem de solo e água subterrânea" },
+      { "term": "risco geológico", "meaning": "possibilidade de deslizamentos, erosão, subsidência ou inundações afetarem pessoas e bens" },
+      { "term": "carta geotécnica", "meaning": "mapa de aptidão do terreno à ocupação, usado em planejamento urbano" },
+      { "term": "SPT", "meaning": "ensaio de penetração padrão em sondagem de simples reconhecimento (NBR 6484)" },
+      { "term": "SIGMINE / GeoSGB", "meaning": "bases públicas de processos minerários (ANM) e de dados geológicos (Serviço Geológico do Brasil)" }
+    ],
+    "tools": ["bússola de geólogo, martelo, lupa e GPS", "QGIS ou ArcGIS", "Leapfrog, Micromine, Datamine ou equivalente (modelagem 3D)", "Strater, Surfer ou planilhas para logs e mapas", "software de hidrogeologia (MODFLOW, AquiferTest)", "estereonet para dados estruturais", "drones e sensoriamento remoto", "microscópio petrográfico", "bases SIGMINE (ANM) e GeoSGB (SGB)", "LaTeX ou editor de textos para relatórios"],
+    "deliverables": ["mapa geológico com legenda e seções", "perfil ou seção geológica interpretada", "log de sondagem padronizado", "relatório técnico de mapeamento ou de campanha", "relatório final de pesquisa (exercício, sem dados reais de processo ANM)", "laudo geológico-geotécnico com ART (só o profissional registrado assina)", "estudo hidrogeológico e de outorga", "relatório de investigação de área contaminada", "carta de risco ou geotécnica", "POP de amostragem ou de descrição de testemunhos", "infográfico de dados de sondagem ou de qualidade da água"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Mapeamento geológico e geologia estrutural", "esco": null, "kind": "nucleo" },
+      { "label": "Descrição de rochas, testemunhos e petrografia", "esco": null, "kind": "nucleo" },
+      { "label": "Elaboração de mapas, seções e perfis geológicos", "esco": null, "kind": "nucleo" },
+      { "label": "Geoprocessamento e sensoriamento remoto", "esco": null, "kind": "nucleo" },
+      { "label": "Modelagem geológica 3D e estimativa de recursos", "esco": null, "kind": "nucleo" },
+      { "label": "Redação de relatórios técnicos e laudos", "esco": null, "kind": "nucleo" },
+      { "label": "Legislação mineral e ambiental (ANM, CONAMA, licenciamento)", "esco": null, "kind": "nucleo" },
+      { "label": "Hidrogeologia e testes em poços", "esco": null, "kind": "apoio" },
+      { "label": "Investigação de áreas contaminadas (CONAMA 420)", "esco": null, "kind": "apoio" },
+      { "label": "Geotecnia, sondagens e riscos geológicos", "esco": null, "kind": "apoio" },
+      { "label": "Segurança em campo e em mina", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de campanhas de campo e de sondagem", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["visão espacial e tridimensional", "autonomia e segurança em campo", "trabalho em equipe multidisciplinar", "sigilo sobre dados de clientes e jazidas", "leitura técnica em inglês"],
+    "tracks": [
+      { "id": "mapeamento-e-exploracao", "label": "Mapeamento e exploração", "steps": ["mapa geológico com seção (X1)", "relatório técnico de mapeamento (L4)", "infográfico de dados de sondagem (D7)", "fluxo da autorização de pesquisa à lavra (D4)"] },
+      { "id": "hidro-e-ambiental", "label": "Hidrogeologia e ambiental", "steps": ["POP de amostragem de água subterrânea (L7)", "relatório de investigação de área contaminada fictícia (L4)", "fluxo do gerenciamento de áreas contaminadas (D4)", "resposta a briefing de consultoria (L8)"] },
+      { "id": "apresentar-se", "label": "Apresentar-se para o cargo", "steps": ["resumo de perfil com especialidade (L6)", "currículo direcionado (L1)", "prancha com três trabalhos de mapeamento (D2)", "post sobre um aprendizado de campo (L5)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"geólogo de exploração\", \"hidrogeólogo\", \"estagiário de mineração\", \"geólogo de geotecnia\"",
+      "cboFamilies": ["2134", "2147", "3171", "2140"],
+      "why": "Pergunto seu último cargo ou área para partir da sua experiência em campo, mina, consultoria ou pesquisa. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, iniciação científica ou primeiro cargo",
+        "junior": "mapeia, descreve testemunhos e amostra com supervisão",
+        "pleno": "conduz campanhas e relatórios com autonomia e assina ART da sua parte",
+        "senior": "referência técnica; responde por modelos de recurso, estudos ou laudos",
+        "gestao": "responde por equipe, programa de exploração, mina ou orçamento"
+      },
+      "why": "Pergunto o nível para ajustar a dificuldade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem",
+      "options": ["mapeamento geológico de campo", "geologia estrutural", "descrição de testemunhos e logs", "petrografia", "geoprocessamento (QGIS, ArcGIS)", "modelagem 3D e recursos", "hidrogeologia", "áreas contaminadas", "geotecnia e riscos", "redação de relatórios", "legislação mineral e ambiental", "coordenação de sondagens"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com as tarefas."
+    },
+    "c4": {
+      "certifications": ["bacharelado em Geologia ou Engenharia Geológica", "registro no CREA", "especialização ou mestrado", "curso de modelagem geológica 3D", "curso de QGIS ou ArcGIS", "NR-22 (segurança em mineração) ou integração de mina", "CNH (campo)", "primeiros socorros em campo"],
+      "languages": ["inglês (técnico)", "espanhol", "Libras"],
+      "why": "Formação, registro e cursos ajudam a ver lacunas em relação ao cargo que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["modelagem 3D e estimativa de recursos", "geoprocessamento e sensoriamento remoto", "hidrogeologia", "áreas contaminadas", "geotecnia e segurança de barragens", "legislação mineral (ANM)", "redação técnica", "programação (Python) para geociências", "preparação para concursos (SGB, ANM, defesa civil)"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Você já tem registro no CREA?", "type": "escolha", "options": ["sim, ativo", "em andamento", "ainda não"], "why": "Sem registro, laudos e relatórios ficam como exercício; com ele, sugiro tarefas de responsabilidade técnica.", "where": "P" },
+      { "id": "x2", "prompt": "Em que frente você quer atuar primeiro?", "type": "escolha", "options": ["exploração mineral", "geologia de mina", "petróleo e gás", "hidrogeologia", "ambiental e áreas contaminadas", "geotecnia e riscos", "pesquisa ou concurso"], "why": "A frente define quais tarefas e normas entram primeiro no seu plano.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L4", "D7", "D4", "D2", "L7", "L8", "L3", "L1", "L6", "D5", "L9", "L5"],
+    "excluded": [
+      { "code": "D1", "reason": "planta de ambiente não é entrega do geólogo; mapas e seções estão em X1" },
+      { "code": "D6", "reason": "detalhe construtivo não pertence à área" },
+      { "code": "D8", "reason": "vista explodida de conjunto mecânico não pertence à área" },
+      { "code": "D9", "reason": "wireframe de tela não pertence à área" }
+    ],
+    "parameters": {
+      "L4": {
+        "title": "Relatório técnico de mapeamento, sondagem ou investigação",
+        "brief": "Em até 4 páginas, relate um mapeamento, uma campanha de sondagem ou uma investigação ambiental com dados públicos (GeoSGB, SIGMINE), de trabalho de campo acadêmico ou fictícios: objetivo, área (generalizada), método, resultados com mapa ou seção, limitações e referências. Inclua o aviso de exercício: sem valor de laudo, relatório à ANM ou ART.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "área e contexto geológico", "método", "resultados", "limitações", "referências"], "disclaimerRequired": true, "coordinatesGeneralized": true, "publicOrFictionalData": true },
+        "criteria": ["seis seções nomeadas", "até 4 páginas", "ao menos um mapa ou seção com escala e legenda", "método descreve amostragem ou ensaios com norma", "aviso de exercício: sem valor de laudo, relatório oficial ou ART", "sem coordenadas de jazidas, processos ANM não públicos ou dados de cliente"],
+        "evidence": "relatório PDF",
+        "time": "2 h",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de dados geológicos",
+        "brief": "Monte um infográfico com dois ou três indicadores (teor por profundidade em um furo, nível d'água por estação, concentração de contaminante versus valor de intervenção, frequência de atitudes em estereograma) com fonte e período, eixos e unidades rotulados e uma mensagem principal.",
+        "parameters": { "indicators": "2 a 3", "examples": ["teor versus profundidade", "nível estático por poço", "concentração versus valor de intervenção (CONAMA 420)", "estereograma de fraturas"], "requiredElements": ["fonte e período", "eixos e unidades", "mensagem principal", "referência ou padrão comparado"] },
+        "criteria": ["fonte e período citados", "eixos e unidades rotulados", "uma mensagem principal explícita", "comparação com padrão, referência ou série", "dados públicos ou fictícios"],
+        "evidence": "imagem + PDF",
+        "time": "60 min",
+        "level": 1
+      },
+      "D4": {
+        "title": "Fluxograma de processo minerário, ambiental ou de sondagem",
+        "brief": "Desenhe o fluxo de um processo: do requerimento de pesquisa à concessão de lavra na ANM, do gerenciamento de uma área contaminada (avaliação preliminar a reabilitação) ou de uma campanha de sondagem (planejamento, execução, descrição, laboratório, modelo), com raias por ator, início, fim e decisões.",
+        "parameters": { "options": ["regime de autorização de pesquisa e lavra", "gerenciamento de áreas contaminadas", "campanha de sondagem"], "lanes": ["empresa ou cliente", "geologia", "laboratório ou sondagem", "órgão (ANM, órgão ambiental)"], "requiredElements": ["início", "fim", "decisões", "documentos gerados"] },
+        "criteria": ["início e fim explícitos", "raias por ator", "nenhuma tarefa órfã", "documentos ou relatórios gerados marcados", "legenda de símbolos"],
+        "evidence": "diagrama vetorial",
+        "time": "45 min",
+        "level": 2
+      },
+      "D2": {
+        "title": "Prancha de portfólio A3 com três trabalhos de geologia",
+        "brief": "Reúna três trabalhos (mapa, seção, log, fotomosaico de afloramento, modelo 3D) em uma prancha A3 com grade, legendas, escalas e créditos. Use apenas dados públicos, acadêmicos ou fictícios.",
+        "parameters": { "format": "A3", "works": 3, "requiredElements": ["escala gráfica", "norte em mapas", "legenda", "créditos e fonte de dados"] },
+        "criteria": ["três trabalhos", "grade consistente", "escala e legenda em cada trabalho", "créditos de coautores e fontes de dados"],
+        "evidence": "prancha publicada (PDF ou PNG)",
+        "time": "90 min",
+        "level": 1
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "drawings", "title": "Mapa geológico simplificado com seção", "competency": "Elaboração de mapas, seções e perfis geológicos", "criteria": ["escala gráfica e numérica", "norte e sistema de coordenadas declarado", "legenda estratigráfica ordenada da unidade mais nova à mais antiga", "seção com exagero vertical declarado e traço no mapa", "fonte da base cartográfica e dados públicos ou fictícios"], "evidence": "prancha PDF", "time": "3 h", "trigger": "Você mapeia em campo? Monte um mapa simplificado com seção a partir de dados públicos ou de um trabalho de campo acadêmico.", "level": 3 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L8", "L9"], "auto": true },
+      { "id": "escala-norte-legenda", "check": "mapas e seções têm escala, norte (mapas), legenda e sistema de coordenadas", "appliesTo": ["X1", "D2", "L4"], "auto": true },
+      { "id": "fonte-e-periodo", "check": "fonte e período dos dados estão citados", "appliesTo": ["D7", "L4", "X1"], "auto": true },
+      { "id": "eixos-e-unidades", "check": "eixos e unidades rotulados", "appliesTo": ["D7"], "auto": true },
+      { "id": "aviso-sem-laudo-art", "check": "o documento traz o aviso de exercício, sem valor de laudo, relatório oficial ou ART", "appliesTo": ["L4", "L8"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "creditos-e-fontes", "check": "coautores e bases de dados (GeoSGB, SIGMINE) estão creditados", "appliesTo": ["L5", "L10", "D2", "D7", "D10", "X1"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de coordenadas de jazidas, dados de prospecção sob sigilo e dados de cliente", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D2", "D4", "D5", "D7", "D10", "X1"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "interpretacao-geologica", "label": "Interpretação geológica", "levels": { "aproxima": "descreve sem interpretar", "atende": "interpretação coerente com os dados e o contexto regional", "supera": "discute hipóteses alternativas e incertezas da interpretação" } },
+      { "id": "representacao", "label": "Qualidade da representação gráfica", "levels": { "aproxima": "mapa ou seção difícil de ler", "atende": "leitura clara com convenções geológicas usuais", "supera": "comunica a estrutura em 3D com economia de elementos" } },
+      { "id": "clareza", "label": "Clareza para quem decide", "levels": { "aproxima": "a conclusão exige releitura", "atende": "a conclusão é entendida na primeira leitura", "supera": "quem não é geólogo entende o risco ou a oportunidade" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Geologia (geólogo ou engenheiro geólogo; inclui geofísica e oceanografia como afins). Use o vocabulário da área: mapeamento, atitude, estratigrafia, mapa e seção geológica, log de sondagem, testemunho, modelagem 3D, recurso e reserva, relatório final de pesquisa, hidrogeologia, área contaminada, risco geológico, carta geotécnica, SPT, ART do CREA. Cite, quando couber, a Lei 4.076/1962, a Lei 5.194/1966 e a Lei 6.496/1977 (ART), o Código de Mineração (Decreto-Lei 227/1967) e o Decreto 9.406/2018, a Lei 12.334/2010 (barragens), as Resoluções CONAMA 420/2009, 396/2008 e 237/1997, e as NBR 6484 e 15492. Nunca redija laudo, relatório final de pesquisa, declaração de recursos ou parecer para assinatura ou protocolo: o que você propõe é exercício com dados públicos ou fictícios, sem valor de laudo, e não substitui a ART nem a responsabilidade técnica do profissional registrado no CREA. Não opine sobre estabilidade de barragens, encostas ou edificações reais nem dê orientação de segurança a terceiros. Trate como sigilosos: dados de prospecção, reservas e poços (ANM/ANP), coordenadas de jazidas e áreas requeridas antes da publicação oficial, dados de clientes de mineração e petróleo. Pergunte antes de inferir frente, senioridade ou registro. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por que foi sugerida, e aceita \"não me serve\". Afirmações sobre mercado (CAGED/RAIS para a CBO 2134, concursos SGB, ANM, defesa civil) citam fonte, data e região ou dizem \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação. O selo é humano.",
+    "citeSources": [
+      { "title": "Lei 4.076/1962 — regula a profissão de geólogo", "url": "https://www.planalto.gov.br/ccivil_03/leis/1950-1969/L4076.htm", "kind": "norma" },
+      { "title": "CONFEA — sistema CONFEA/CREA e ART", "url": "https://www.confea.org.br/", "kind": "conselho" },
+      { "title": "ANM — Agência Nacional de Mineração (SIGMINE, normas)", "url": "https://www.gov.br/anm/pt-br", "kind": "orgao-publico" },
+      { "title": "Serviço Geológico do Brasil — GeoSGB", "url": "https://geosgb.sgb.gov.br/", "kind": "orgao-publico" },
+      { "title": "Resolução CONAMA 420/2009 — áreas contaminadas", "url": "https://conama.mma.gov.br/", "kind": "norma" },
+      { "title": "Sociedade Brasileira de Geologia (SBGeo)", "url": "https://sbgeo.org.br/", "kind": "comunidade" },
+      { "title": "CBO 2134 — Geólogos, oceanógrafos, geofísicos e afins (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências da geologia; perguntas extras sobre registro no CREA e frente de atuação." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "L4, D7, D4 e D2 entram primeiro; X1 (mapa com seção) para quem mapeia; cada card diz competência, evidência e tempo." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); regime de embarque ou campo pode concentrar tarefas em folgas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, escala, norte, legenda, fonte, aviso sem laudo/ART e ausência de coordenadas sigilosas; o selo depende de revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Rascunha estrutura de relatório, POP ou proposta com prévia; nunca produz laudo ou relatório para protocolo na ANM." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Escala, norte, legenda e seção do mapa (X1); eixos do infográfico (D7); fechamento do fluxograma (D4); grade da prancha (D2)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese com competências declaradas e evidenciadas, lacunas para a frente escolhida e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: engenharia civil, engenharia ambiental e sanitária, gestão ambiental, física, geografia; mercado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por CBO 2134, competências e setor." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil, com especialidade e registro no CREA só se informados; só com consentimento específico." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados sensíveis (LGPD art. 5º II)", "dados de prospecção, reservas e poços sob sigilo (ANM/ANP)", "coordenadas de jazidas e áreas requeridas antes da publicação oficial", "dados de clientes de mineração e petróleo"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca redigir laudo, relatório final de pesquisa, declaração de recursos ou parecer para assinatura ou protocolo; todo texto é exercício e não substitui ART ou registro no CREA",
+      "não opinar sobre estabilidade de barragens, encostas ou obras reais nem dar orientação de segurança a terceiros",
+      "não pedir nem armazenar coordenadas de jazidas, dados de prospecção sob sigilo ou dados de clientes",
+      "perguntar em vez de inferir frente de atuação, senioridade ou registro",
+      "nunca prometer entrevista, emprego ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "alta" },
+    "drawingsModes": ["prancha", "infografico", "diagrama", "2d-tecnico", "3d"],
+    "lettersTemplates": ["relatorio-tecnico", "pop", "proposta", "estudo-de-caso", "laudo", "curriculo", "bio", "plano-30-60-90", "post", "revisao", "artigo"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas curtas de texto (L5, L6) e revisão (L10); mapa com seção (X1), prancha (D2) e modelos 3D exigem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em três frases com sua especialidade (15 min).",
+        "Voltou do campo? Um mapa ou uma seção de trabalho acadêmico pode virar a prancha de portfólio (D2) em cerca de 1 h 30.",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["dados de prospecção, reservas e poços sob sigilo (ANM/ANP) e de clientes de mineração e petróleo", "coordenadas de jazidas e áreas requeridas antes da publicação oficial", "dados de áreas contaminadas identificando proprietários"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2134", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Anuário Mineral Brasileiro (ANM)", "url": "https://www.gov.br/anm/pt-br", "geography": "Brasil e UF", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "IBRAM — Instituto Brasileiro de Mineração (dados do setor)", "url": "https://ibram.org.br/", "geography": "Brasil", "cadence": "trimestral", "kind": "associacao" },
+      { "title": "Concursos do Serviço Geológico do Brasil e da ANM", "url": "https://www.sgb.gov.br/", "geography": "Brasil", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda, concursos ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "engenharia-ambiental-e-sanitaria", "why": "Hidrogeologia, áreas contaminadas e licenciamento são campos compartilhados; o geólogo já atua em investigação ambiental.", "gaps": ["tratamento de água e efluentes", "projeto de sistemas de saneamento"], "steps": ["relatório de investigação de área contaminada fictícia (L4)", "curso de gerenciamento de áreas contaminadas"] },
+    { "to": "gestao-ambiental", "why": "Licenciamento de mineração, PRAD e monitoramento aproximam o geólogo da gestão ambiental corporativa.", "gaps": ["sistemas de gestão ambiental (ISO 14001)", "indicadores e relatórios de sustentabilidade"], "steps": ["fluxo de licenciamento (D4)", "curso de ISO 14001"] },
+    { "to": "engenharia-civil", "why": "Geotecnia, sondagens e fundações são interface direta com a engenharia civil; projeto estrutural exige graduação própria.", "gaps": ["mecânica dos solos aplicada a projeto", "fundações e obras de terra", "atribuições de projeto no CREA"], "steps": ["relatório de sondagem SPT fictícia (L4)", "curso de mecânica dos solos"] },
+    { "to": "geografia", "why": "Geoprocessamento, cartografia e geomorfologia são comuns; leva a planejamento territorial e análise de riscos.", "gaps": ["planejamento urbano e regional", "análise socioespacial"], "steps": ["carta de risco simplificada (X1)", "curso de planejamento territorial"] },
+    { "to": "fisica", "why": "Geofísica aplicada (sísmica, gravimetria, magnetometria) aproxima da física e da modelagem numérica.", "gaps": ["física matemática e processamento de sinais", "programação científica"], "steps": ["infográfico de dados geofísicos públicos (D7)", "curso de Python para geociências"] }
+  ],
+  "learning": [
+    { "title": "GeoSGB — mapas, dados e publicações do Serviço Geológico do Brasil", "provider": "SGB", "url": "https://geosgb.sgb.gov.br/", "free": true, "kind": "portal" },
+    { "title": "SIGMINE — processos minerários", "provider": "ANM", "url": "https://www.gov.br/anm/pt-br", "free": true, "kind": "portal" },
+    { "title": "Sociedade Brasileira de Geologia — eventos e núcleos", "provider": "SBGeo", "url": "https://sbgeo.org.br/", "free": true, "kind": "comunidade" },
+    { "title": "Manual de treinamento do QGIS em português", "provider": "QGIS", "url": "https://docs.qgis.org/latest/pt_BR/docs/training_manual/", "free": true, "kind": "curso" },
+    { "title": "Manual de Gerenciamento de Áreas Contaminadas", "provider": "CETESB", "url": "https://cetesb.sp.gov.br/areas-contaminadas/", "free": true, "kind": "norma" },
+    { "title": "Escola Virtual.Gov — gestão ambiental e geoprocessamento", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Portal de Periódicos CAPES", "provider": "CAPES", "url": "https://www.periodicos.capes.gov.br/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos (contracts/career/academic-fields.json) — geologia: CBO 2134, ISCO 2114, CREA/CONFEA, Lei 4.076/1962; via RF75 README", "url": "docs/diagramas/RF75/README.md", "accessedAt": "2026-11-02" },
+    { "title": "Lei 4.076/1962 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/1950-1969/L4076.htm", "accessedAt": "2026-11-02" },
+    { "title": "Legislação profissional em geologia — UFES (material de disciplina)", "url": "https://geologia.ufes.br/sites/geologia.alegre.ufes.br/files/field/anexo/legislacao_profissional_em_geologia_dge06120_2020-2_ge1.pdf", "accessedAt": "2026-11-02" },
+    { "title": "CONFEA — Proposta CCEGEM 7/2021 (acordo ANM–Confea)", "url": "https://www.confea.org.br/midias/2023-05/Proposta%207%202021%20CCEGEM%20ACT%20ANM%20Confea.pdf", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Exigência formal de ART para o relatório final de pesquisa na ANM e conteúdo mínimo do relatório não conferidos (só prática vista em decisões de CREA)",
+    "Decreto 9.406/2018, Lei 14.066/2020, CONAMA 396/2008 e NBR 15492 citados de memória",
+    "Códigos CBO em questions.a4.cboFamilies (2147, 3171, 2140) não conferidos no portal da CBO",
+    "URIs ESCO não confirmadas: todas as competências estão com esco: null",
+    "URLs de mercado e aprendizagem (IBRAM, SBGeo, SGB concursos, CETESB) não abertas nesta sessão",
+    "Situação de oceanografia (Lei 11.760/2008, sem conselho) absorvida como afim, conforme o catálogo, não revisada",
+    "Matrículas INEP do bacharelado em Geologia não localizadas"
+  ]
+}

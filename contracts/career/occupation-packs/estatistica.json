@@ -1,0 +1,1248 @@
+{
+  "schemaVersion": 1,
+  "code": "estatistica",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": {
+    "pt-BR": "Estatística",
+    "en": "Statistics",
+    "es": "Estadística"
+  },
+  "fields": [
+    "estatistica"
+  ],
+  "family": {
+    "cbo": [
+      {
+        "code": "2112",
+        "title": "Profissionais de estatística"
+      },
+      {
+        "code": "2341",
+        "title": "Professores de matemática, estatística e informática do ensino superior"
+      }
+    ],
+    "isco08": [
+      {
+        "code": "2120",
+        "title": "Mathematicians, actuaries and statisticians"
+      }
+    ],
+    "esco": [
+      {
+        "uri": "http://data.europa.eu/esco/occupation/ac8b3cd1-a127-4e6a-8208-5cfcf7111955",
+        "label": "statistician"
+      }
+    ]
+  },
+  "scope": {
+    "summary": "Estatísticos (bacharelado em Estatística, registro no CONRE, Lei 4.739/1965) planejam pesquisas e experimentos, definem amostras, analisam dados e interpretam resultados com métodos estatísticos, em institutos de estatística (IBGE), saúde e bioestatística, mercado financeiro e seguros, indústria (controle de qualidade), pesquisa de mercado e opinião, tecnologia e governo. O guia trabalha relatórios com metodologia e visualizações com fonte, sem microdados identificáveis.",
+    "entryRoles": [
+      "Estagiário de estatística ou dados",
+      "Assistente de pesquisa estatística",
+      "Analista estatístico júnior",
+      "Analista de dados júnior",
+      "Bolsista de iniciação científica"
+    ],
+    "midRoles": [
+      "Estatístico (instituto de pesquisa, governo)",
+      "Bioestatístico (pesquisa clínica, epidemiologia)",
+      "Analista de risco e crédito",
+      "Cientista de dados",
+      "Analista de controle estatístico de qualidade",
+      "Analista de pesquisa de mercado e opinião"
+    ],
+    "seniorRoles": [
+      "Estatístico responsável técnico por pesquisas registradas",
+      "Coordenador de metodologia e amostragem",
+      "Pesquisador ou tecnologista (IBGE, Fiocruz, IPEA)",
+      "Líder de modelagem estatística",
+      "Docente de ensino superior",
+      "Consultor estatístico"
+    ],
+    "sectors": [
+      "institutos oficiais de estatística (IBGE, fundações estaduais)",
+      "saúde e pesquisa clínica",
+      "bancos, seguros e crédito",
+      "pesquisa de mercado, opinião e eleitoral",
+      "indústria e qualidade",
+      "tecnologia e ciência de dados",
+      "administração pública e avaliação de políticas",
+      "ensino superior e pesquisa"
+    ],
+    "regulation": [
+      {
+        "name": "Lei 4.739/1965",
+        "issuer": "Brasil",
+        "about": "exercício da profissão de estatístico; atividades privativas e exigência de registro no CONRE"
+      },
+      {
+        "name": "Decreto 62.497/1968",
+        "issuer": "Brasil",
+        "about": "regulamento da Lei 4.739/1965: atribuições, sistema CONFE/CONRE e competência do CONFE para o Código de Ética"
+      },
+      {
+        "name": "Código de Ética Profissional do Estatístico (CONFE)",
+        "issuer": "CONFE",
+        "about": "deveres, sigilo e responsabilidade técnica; número da resolução vigente a conferir"
+      },
+      {
+        "name": "Lei 5.534/1968 e Decreto-Lei 161/1967 (sigilo estatístico)",
+        "issuer": "Brasil",
+        "about": "obrigatoriedade de prestar informações ao IBGE e sigilo das informações individuais"
+      },
+      {
+        "name": "LGPD (Lei 13.709/2018), arts. 5º III e XI, 7º IV, 12 e 13",
+        "issuer": "Brasil",
+        "about": "dado anonimizado, anonimização, pesquisa por órgão de pesquisa e tratamento de dados em estudos de saúde pública"
+      },
+      {
+        "name": "Lei 9.504/1997, arts. 33–35, e Resolução TSE 23.600/2019",
+        "issuer": "Brasil / TSE",
+        "about": "registro de pesquisas eleitorais com plano amostral e estatístico responsável registrado no CONRE"
+      },
+      {
+        "name": "Resolução CNS 466/2012",
+        "issuer": "Conselho Nacional de Saúde",
+        "about": "pesquisa com seres humanos; bioestatística em protocolos aprovados por CEP/CONEP"
+      }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      {
+        "term": "população e amostra",
+        "meaning": "conjunto de interesse e subconjunto observado para inferir sobre ele"
+      },
+      {
+        "term": "plano amostral",
+        "meaning": "desenho de seleção (aleatória simples, estratificada, por conglomerados) e tamanho da amostra"
+      },
+      {
+        "term": "margem de erro",
+        "meaning": "amplitude do intervalo de confiança de uma estimativa"
+      },
+      {
+        "term": "intervalo de confiança",
+        "meaning": "faixa que contém o parâmetro com nível de confiança declarado"
+      },
+      {
+        "term": "teste de hipóteses",
+        "meaning": "procedimento para decidir entre hipóteses com controle do erro tipo I"
+      },
+      {
+        "term": "valor-p",
+        "meaning": "probabilidade de obter resultado tão extremo quanto o observado sob a hipótese nula"
+      },
+      {
+        "term": "regressão",
+        "meaning": "modelo da relação entre uma variável resposta e explicativas (linear, logística, Poisson)"
+      },
+      {
+        "term": "planejamento de experimentos (DOE)",
+        "meaning": "desenho de ensaios com fatores, níveis, aleatorização e réplicas"
+      },
+      {
+        "term": "controle estatístico de processo (CEP)",
+        "meaning": "gráficos de controle para monitorar estabilidade de processos"
+      },
+      {
+        "term": "séries temporais",
+        "meaning": "dados ordenados no tempo; tendência, sazonalidade, previsão (ARIMA)"
+      },
+      {
+        "term": "inferência bayesiana",
+        "meaning": "atualização de crenças a priori com os dados para obter a posteriori"
+      },
+      {
+        "term": "análise de sobrevivência",
+        "meaning": "modelos de tempo até um evento (Kaplan-Meier, Cox)"
+      },
+      {
+        "term": "ponderação e expansão",
+        "meaning": "pesos que fazem a amostra representar a população"
+      },
+      {
+        "term": "microdados",
+        "meaning": "registros individuais de pesquisas e cadastros"
+      },
+      {
+        "term": "anonimização",
+        "meaning": "remoção ou generalização de identificadores para impedir reidentificação"
+      },
+      {
+        "term": "sigilo estatístico",
+        "meaning": "proibição de divulgar informação que identifique informante (Lei 5.534/1968)"
+      },
+      {
+        "term": "supressão de células",
+        "meaning": "omitir tabelas com poucos casos para evitar reidentificação"
+      },
+      {
+        "term": "validação cruzada",
+        "meaning": "avaliar desempenho preditivo em dados não usados no ajuste"
+      },
+      {
+        "term": "viés e confundimento",
+        "meaning": "distorções sistemáticas e variáveis que explicam parte da associação"
+      },
+      {
+        "term": "reprodutibilidade",
+        "meaning": "código, dados e versões que permitem repetir a análise"
+      },
+      {
+        "term": "CONRE / CONFE",
+        "meaning": "conselhos regionais e federal de estatística"
+      }
+    ],
+    "tools": [
+      "R (linguagem)",
+      "RStudio e Quarto",
+      "Python (pandas, statsmodels, scikit-learn)",
+      "SAS",
+      "SPSS",
+      "Stata",
+      "SQL",
+      "Minitab",
+      "Power BI ou Tableau",
+      "ggplot2",
+      "Git e GitHub",
+      "pacotes de amostragem (survey, srvyr)",
+      "Excel"
+    ],
+    "deliverables": [
+      "relatório estatístico com metodologia",
+      "plano amostral e cálculo do tamanho da amostra",
+      "plano de análise estatística (SAP)",
+      "infográfico ou painel de indicadores",
+      "modelo preditivo documentado",
+      "questionário e manual de crítica",
+      "tabelas com supressão de células",
+      "nota técnica de pesquisa eleitoral registrada",
+      "gráficos de controle de processo",
+      "artigo ou relatório de pesquisa clínica"
+    ]
+  },
+  "competencies": {
+    "core": [
+      {
+        "label": "Planejar amostragem e calcular tamanho da amostra",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Inferência estatística (estimação, intervalos, testes)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Modelos de regressão e modelos lineares generalizados",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Programar em R ou Python para análise",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Visualizar dados com fonte e escala corretas",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Redigir relatório estatístico com metodologia e limitações",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Planejamento de experimentos (DOE)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Proteger dados e anonimizar microdados (LGPD, sigilo estatístico)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Séries temporais e previsão",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Bioestatística e análise de sobrevivência",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Controle estatístico de processo e qualidade",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Aprendizado de máquina e validação de modelos",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Inferência bayesiana",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "SQL e manipulação de bases",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Comunicar incerteza a não especialistas",
+        "esco": null,
+        "kind": "apoio"
+      }
+    ],
+    "transversal": [
+      "pensamento crítico",
+      "escrita técnica clara",
+      "trabalho com equipes de outras áreas",
+      "ética e sigilo",
+      "organização e reprodutibilidade",
+      "apresentação oral"
+    ],
+    "tracks": [
+      {
+        "id": "analise-e-relatorio",
+        "label": "Analisar e relatar",
+        "steps": [
+          "relatório estatístico com metodologia (L4)",
+          "infográfico com fonte e eixos (D7)",
+          "estudo de caso STAR de uma análise (L3)"
+        ]
+      },
+      {
+        "id": "planejar-pesquisa",
+        "label": "Planejar pesquisas e experimentos",
+        "steps": [
+          "plano amostral documentado (X1)",
+          "fluxo da pesquisa: coleta, crítica, expansão (D4)",
+          "proposta para um briefing de cliente (L8)"
+        ]
+      },
+      {
+        "id": "dados-protegidos",
+        "label": "Dados com proteção",
+        "steps": [
+          "procedimento de anonimização de microdados (L7)",
+          "tabelas com supressão de células (L4)",
+          "post sobre sigilo estatístico (L5)"
+        ]
+      },
+      {
+        "id": "mercado",
+        "label": "Apresentar-se ao mercado",
+        "steps": [
+          "resumo de perfil (L6)",
+          "currículo direcionado (L1)",
+          "plano 30-60-90 para estatístico (L9)"
+        ]
+      }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"analista estatístico\", \"bioestatística\", \"analista de risco\", \"estagiário de dados\"",
+      "cboFamilies": [
+        "2112",
+        "2111",
+        "2124",
+        "2341"
+      ],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez; se for o primeiro emprego ou estágio, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, iniciação científica ou primeiro cargo",
+        "junior": "até dois anos: análises e tabelas com revisão",
+        "pleno": "planeja e conduz análises com autonomia",
+        "senior": "referência metodológica; responde tecnicamente por pesquisas",
+        "gestao": "coordena equipe, área de metodologia ou programa de pesquisa"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na Estatística",
+      "options": [
+        "planejar amostras",
+        "testes e intervalos de confiança",
+        "modelos de regressão",
+        "programar em R",
+        "programar em Python",
+        "visualizar dados",
+        "escrever relatórios",
+        "planejamento de experimentos",
+        "séries temporais",
+        "bioestatística",
+        "controle de qualidade",
+        "aprendizado de máquina",
+        "SQL e bases de dados",
+        "explicar resultados a não especialistas"
+      ],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com tarefas."
+    },
+    "c4": {
+      "certifications": [
+        "bacharelado em Estatística",
+        "registro ativo no CONRE",
+        "mestrado ou doutorado em Estatística ou Bioestatística",
+        "cursos de R, Python ou SAS",
+        "certificação SAS ou similar",
+        "Six Sigma (Green ou Black Belt)",
+        "pós em Ciência de Dados"
+      ],
+      "languages": [
+        "inglês (leitura técnica)",
+        "espanhol"
+      ],
+      "why": "Formação, registro e cursos mostram lacunas em relação ao cargo que você quer; nada aqui é exigido para começar."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": [
+        "amostragem e pesquisas",
+        "modelos de regressão",
+        "R ou Python",
+        "visualização de dados",
+        "séries temporais",
+        "bioestatística",
+        "aprendizado de máquina",
+        "inferência bayesiana",
+        "anonimização e proteção de dados",
+        "comunicação de resultados"
+      ],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez do catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que área você atua ou quer atuar?",
+        "type": "escolha",
+        "options": [
+          "estatística oficial e governo",
+          "saúde e bioestatística",
+          "finanças, crédito e seguros",
+          "pesquisa de mercado e opinião",
+          "indústria e qualidade",
+          "tecnologia e ciência de dados",
+          "pesquisa acadêmica",
+          "ainda não sei"
+        ],
+        "why": "Pergunto a área para escolher tarefas e vocabulário: um plano de análise clínica e um modelo de crédito são evidências diferentes.",
+        "where": "P"
+      },
+      {
+        "id": "x2",
+        "prompt": "Você já tem registro no CONRE?",
+        "type": "escolha",
+        "options": [
+          "sim",
+          "em andamento",
+          "ainda não",
+          "não se aplica (outra formação)"
+        ],
+        "why": "Algumas atividades, como assinar pesquisa eleitoral registrada, exigem o registro; isso muda as tarefas e caminhos sugeridos. A resposta fica privada.",
+        "where": "X"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": [
+      "L6",
+      "L1",
+      "L4",
+      "D7",
+      "L3",
+      "D4",
+      "L8",
+      "L7",
+      "L9",
+      "L5",
+      "L10",
+      "D10"
+    ],
+    "excluded": [
+      {
+        "code": "D1",
+        "reason": "planta técnica não é entrega da profissão"
+      },
+      {
+        "code": "D3",
+        "reason": "modelagem 3D não é entrega da profissão"
+      },
+      {
+        "code": "D6",
+        "reason": "detalhe construtivo não é entrega da profissão"
+      },
+      {
+        "code": "D8",
+        "reason": "vista explodida não é entrega da profissão"
+      }
+    ],
+    "parameters": {
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva um resumo de até 600 caracteres com a área em que quer atuar (saúde, finanças, estatística oficial, dados), três competências (ex.: amostragem, regressão, R) e uma prova com link (relatório, repositório ou infográfico).",
+        "parameters": {
+          "maxChars": 600,
+          "requiredParts": [
+            "área de atuação",
+            "três competências",
+            "uma prova com link"
+          ]
+        },
+        "criteria": [
+          "até 600 caracteres",
+          "nomeia a área de atuação",
+          "cita três competências",
+          "inclui uma prova com link"
+        ],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para o cargo ou edital que quer mirar (ex.: estatístico do IBGE, bioestatístico, analista de risco, cientista de dados), com três resultados com número (tamanho de amostras planejadas, modelos em produção, ganho de acurácia, relatórios entregues) e as palavras-chave da vaga ou edital.",
+        "parameters": {
+          "maxPages": 1,
+          "achievementsWithNumbers": 3,
+          "keywordsFrom": "cargo-alvo ou edital",
+          "sections": [
+            "formação e CONRE",
+            "experiência",
+            "métodos e ferramentas",
+            "projetos"
+          ]
+        },
+        "criteria": [
+          "uma página",
+          "três conquistas com número",
+          "palavras-chave do cargo-alvo presentes",
+          "métodos e ferramentas nomeados",
+          "sem idade, estado civil ou foto obrigatória"
+        ],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "L4": {
+        "title": "Relatório estatístico com metodologia",
+        "brief": "Escreva um relatório de até 4 páginas com dados públicos (IBGE, Datasus, Inep) ou sintéticos: objetivo, dados (fonte, período, abrangência, plano amostral e pesos), metodologia (modelos, testes, software e versão), resultados com estimativas e intervalos, limitações e referências, com link para o código. Nenhum microdado identificável; tabelas com poucos casos suprimidas.",
+        "parameters": {
+          "maxPages": 4,
+          "sections": [
+            "objetivo",
+            "dados",
+            "metodologia",
+            "resultados",
+            "limitações",
+            "referências"
+          ],
+          "requiresUncertainty": true,
+          "requiresCodeLink": true,
+          "minCellSize": 5
+        },
+        "criteria": [
+          "seis seções nomeadas",
+          "até 4 páginas",
+          "fonte com período e abrangência",
+          "estimativas com intervalo de confiança ou erro-padrão",
+          "software e versão citados",
+          "link para código",
+          "nenhum dado identificável; células pequenas suprimidas"
+        ],
+        "evidence": "relatório PDF + repositório",
+        "time": "3 h",
+        "level": 3
+      },
+      "D7": {
+        "title": "Infográfico estatístico com fonte e eixos",
+        "brief": "Transforme um resultado em infográfico com uma mensagem principal, eixos rotulados com unidade, escala honesta (zero ou quebra indicada), incerteza representada (intervalos ou margem), fonte com ano e abrangência e nota metodológica.",
+        "parameters": {
+          "mainMessages": 1,
+          "requiresSource": true,
+          "requiresAxisLabels": true,
+          "requiresUncertainty": true
+        },
+        "criteria": [
+          "uma mensagem principal em título",
+          "eixos rotulados com unidade",
+          "fonte citada com ano e abrangência",
+          "incerteza representada",
+          "escala começa em zero ou indica a quebra",
+          "créditos"
+        ],
+        "evidence": "imagem PNG + PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "L3": {
+        "title": "Estudo de caso STAR de uma análise",
+        "brief": "Conte uma análise que você conduziu: situação, tarefa, ação (método escolhido e por quê) e resultado mensurável (decisão tomada, erro reduzido, amostra economizada). Sem dados de clientes ou informantes.",
+        "parameters": {
+          "sections": [
+            "situação",
+            "tarefa",
+            "ação",
+            "resultado"
+          ],
+          "measurableResult": true
+        },
+        "criteria": [
+          "quatro seções explícitas",
+          "método nomeado e justificado",
+          "resultado com número ou comparação",
+          "declaração de ausência de dado sigiloso"
+        ],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "L7": {
+        "title": "Procedimento de anonimização de microdados",
+        "brief": "Descreva em passos numerados como você prepara microdados para divulgação: inventário de identificadores diretos e indiretos, remoção ou generalização, supressão de células pequenas, teste de risco de reidentificação, documentação e aprovação, com critério de conclusão por passo.",
+        "parameters": {
+          "numberedSteps": true,
+          "requiresRiskCheck": true,
+          "minCellSize": 5
+        },
+        "criteria": [
+          "passos numerados",
+          "identificadores diretos e indiretos listados",
+          "regra de supressão de células",
+          "verificação de risco de reidentificação",
+          "critério de conclusão por passo"
+        ],
+        "evidence": "documento (modelo pop)",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Plano amostral documentado",
+        "competency": "Planejar amostragem e calcular tamanho da amostra",
+        "criteria": [
+          "população-alvo e cadastro definidos",
+          "desenho (estratos, conglomerados, estágios) justificado",
+          "cálculo do tamanho com margem de erro e confiança",
+          "efeito do desenho e taxa de resposta considerados",
+          "pesos e expansão descritos",
+          "limitações e riscos de viés"
+        ],
+        "evidence": "plano PDF (modelo relatorio-tecnico)",
+        "time": "2 h",
+        "trigger": "Quer mostrar como você planeja uma amostra para uma pesquisa?",
+        "level": 3
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      {
+        "id": "tamanho",
+        "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L4",
+          "L5",
+          "L6",
+          "L8"
+        ],
+        "auto": true
+      },
+      {
+        "id": "secoes-obrigatorias",
+        "check": "as seções pedidas existem e estão nomeadas",
+        "appliesTo": [
+          "L3",
+          "L4",
+          "L7",
+          "L8",
+          "L9",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "fonte-periodo-abrangencia",
+        "check": "a fonte dos dados cita período e abrangência geográfica",
+        "appliesTo": [
+          "L4",
+          "D7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "incerteza-reportada",
+        "check": "estimativas acompanhadas de intervalo de confiança, erro-padrão ou margem",
+        "appliesTo": [
+          "L4",
+          "D7",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "software-e-versao",
+        "check": "software e versão citados",
+        "appliesTo": [
+          "L4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "link-para-codigo",
+        "check": "há link para código reprodutível",
+        "appliesTo": [
+          "L4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "eixos-rotulados",
+        "check": "eixos rotulados com unidade e escala começa em zero ou indica quebra",
+        "appliesTo": [
+          "D7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "supressao-de-celulas",
+        "check": "nenhuma célula de tabela com menos casos que o mínimo definido",
+        "appliesTo": [
+          "L4",
+          "L7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "calculo-de-amostra",
+        "check": "o tamanho da amostra mostra fórmula, margem de erro e confiança",
+        "appliesTo": [
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "diagrama-fechado",
+        "check": "o diagrama tem início e fim e nenhuma etapa órfã",
+        "appliesTo": [
+          "D4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "creditos-e-fontes",
+        "check": "coautores, fontes e autores remixados estão creditados",
+        "appliesTo": [
+          "L5",
+          "L10",
+          "D7",
+          "D10"
+        ],
+        "auto": true
+      },
+      {
+        "id": "autoria-e-sigilo",
+        "check": "a pessoa declarou autoria e ausência de microdados identificáveis ou dados de clientes",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L3",
+          "L4",
+          "L5",
+          "L6",
+          "L7",
+          "L8",
+          "L9",
+          "L10",
+          "D4",
+          "D7",
+          "D10",
+          "X1"
+        ],
+        "auto": true
+      }
+    ],
+    "subjective": [
+      {
+        "id": "adequacao-metodologica",
+        "label": "Adequação do método à pergunta",
+        "levels": {
+          "aproxima": "método escolhido sem justificativa ou inadequado aos dados",
+          "atende": "método adequado e pressupostos verificados",
+          "supera": "compara alternativas e discute robustez"
+        }
+      },
+      {
+        "id": "interpretacao",
+        "label": "Interpretação dos resultados",
+        "levels": {
+          "aproxima": "confunde associação com causalidade ou ignora incerteza",
+          "atende": "interpreta com incerteza e limites corretos",
+          "supera": "traduz em decisão, com riscos e efeito prático"
+        }
+      },
+      {
+        "id": "visualizacao-honesta",
+        "label": "Visualização honesta e legível",
+        "levels": {
+          "aproxima": "escala distorce ou gráfico exige legenda longa",
+          "atende": "uma mensagem clara, escala honesta",
+          "supera": "mostra incerteza e contexto sem poluir"
+        }
+      },
+      {
+        "id": "protecao-de-dados",
+        "label": "Cuidado com dados e sigilo",
+        "levels": {
+          "aproxima": "deixa brechas para reidentificação",
+          "atende": "aplica anonimização e supressão adequadas",
+          "supera": "documenta risco residual e decisões de divulgação"
+        }
+      }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você apoia uma pessoa formada ou em formação em Estatística no Guia de Carreira. Use o vocabulário da área: população, amostra, plano amostral, margem de erro, intervalo de confiança, teste de hipóteses, valor-p, regressão, MLG, DOE, CEP, séries temporais, inferência bayesiana, sobrevivência, ponderação, microdados, anonimização, sigilo estatístico, supressão de células, validação cruzada, viés e confundimento. Cite quando couber: Lei 4.739/1965 e Decreto 62.497/1968 (profissão, sistema CONFE/CONRE), Código de Ética do CONFE, Lei 5.534/1968 (sigilo estatístico), LGPD (anonimização, pesquisa), Lei 9.504/1997 e resoluções do TSE (pesquisa eleitoral com estatístico registrado), Res. CNS 466/2012. Não substitua o estatístico responsável: não assine nem redija para registro nota técnica de pesquisa eleitoral ou laudo estatístico. Nunca invente estimativas, valores-p ou fontes: números vêm do código da pessoa, e todo gráfico pede fonte, eixos rotulados e incerteza. Aponte confusão entre correlação e causalidade e escalas enganosas. Recuse microdados identificáveis, bases de clientes e resultados de modelos sob confidencialidade, mesmo pseudonimizados; proponha dados públicos ou sintéticos. Pergunte antes de inferir área, registro no CONRE ou senioridade. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por quê, e aceita \"não me serve\". Afirmações sobre mercado citam fonte, data e região; nunca prometa vaga, aprovação em concurso ou remuneração. Progresso é por critérios atendidos; não há score. Não publique, siga, envie mensagem nem se candidate sem confirmação da pessoa.",
+    "citeSources": [
+      {
+        "title": "Lei 4.739/1965 — exercício da profissão de estatístico (Câmara, norma atualizada)",
+        "url": "https://www2.camara.leg.br/legin/fed/lei/1960-1969/lei-4739-15-julho-1965-368287-norma-pl.html",
+        "kind": "norma"
+      },
+      {
+        "title": "Decreto 62.497/1968 — regulamento da profissão de estatístico (Planalto)",
+        "url": "https://planalto.gov.br/ccivil_03/decreto/1950-1969/D62497.htm",
+        "kind": "norma"
+      },
+      {
+        "title": "CONFE — Conselho Federal de Estatística",
+        "url": "https://www.confe.org.br/",
+        "kind": "conselho"
+      },
+      {
+        "title": "IBGE — estatísticas e microdados",
+        "url": "https://www.ibge.gov.br/",
+        "kind": "estatistica"
+      },
+      {
+        "title": "ABE — Associação Brasileira de Estatística",
+        "url": "https://www.redeabe.org.br/",
+        "kind": "comunidade"
+      },
+      {
+        "title": "ANPD — Guia de anonimização e LGPD",
+        "url": "https://www.gov.br/anpd/pt-br",
+        "kind": "orgao-publico"
+      },
+      {
+        "title": "CBO 2112 — Profissionais de estatística (MTE)",
+        "url": "https://cbo.mte.gov.br/",
+        "kind": "orgao-publico"
+      },
+      {
+        "title": "Novo CAGED — Ministério do Trabalho e Emprego",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "kind": "estatistica"
+      }
+    ],
+    "services": [
+      {
+        "service": "PERGUNTAS_GUIA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Variantes de c2, c5 e as extras x1 (área) e x2 (registro no CONRE, privado)."
+      },
+      {
+        "service": "SUGESTAO_TAREFAS",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "Prioriza L6, L1, L4, D7, L3; X1 (plano amostral) e L7 (anonimização) conforme a área."
+      },
+      {
+        "service": "PLANO_SEMANAL",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Plano por horas (d1) e aparelho (d4); L4, D7, D4 e X1 só no computador."
+      },
+      {
+        "service": "PRE_CHECAGEM_RUBRICA",
+        "capability": "ARTEFATO",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "Checa seções, fonte com período e abrangência, incerteza, eixos, software, código e supressão de células; não julga o mérito do modelo."
+      },
+      {
+        "service": "RASCUNHO_LETTERS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Estrutura de relatório, plano amostral e procedimento de anonimização; nunca inventa números nem redige nota técnica para registro."
+      },
+      {
+        "service": "APOIO_DRAWINGS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Eixos, escala, incerteza e fonte do infográfico (D7); fluxo coleta–crítica–expansão (D4)."
+      },
+      {
+        "service": "ANALISE_PERFIL",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": "ANALISE_PERFIL_IA",
+        "note": "Síntese de competências declaradas e evidenciadas por área; nunca lê bases de dados da pessoa."
+      },
+      {
+        "service": "CAMINHOS_DE_CARREIRA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Vizinhos por CBO/ESCO (ciência de dados, matemática, economia, atuária, administração); mercado com fonte, data e região."
+      },
+      {
+        "service": "PESSOAS_SEMELHANTES",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Só pessoas descobríveis por opt-in; afinidade por CBO, competências e setor."
+      },
+      {
+        "service": "EXPLICACAO_POR_QUE",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)."
+      },
+      {
+        "service": "RESUMO_PROFISSIONAL",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": "RESUMO_PROFISSIONAL_IA",
+        "note": "Bio (L6) a partir do perfil; só com o consentimento específico."
+      },
+      {
+        "service": "IMPORTAR_CURRICULO",
+        "capability": "PREENCHER_TAREFA",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Extrai formação, registro, projetos e ferramentas em ficha editável; a pessoa confirma item a item."
+      }
+    ],
+    "dataScope": {
+      "default": [
+        "perfil",
+        "currículo"
+      ],
+      "optional": [
+        "minhas Letters",
+        "meus Drawings"
+      ],
+      "never": [
+        "mensagens",
+        "itens SIGILOSO",
+        "microdados identificáveis de pesquisas e cadastros",
+        "bases de clientes e resultados de modelos sob confidencialidade",
+        "dados de saúde de participantes de estudos",
+        "dados sensíveis (LGPD art. 5º II)"
+      ]
+    },
+    "provider": {
+      "default": "local",
+      "externalNeedsConsent": true,
+      "externalAllowedFor": [
+        "ANALISE_PERFIL",
+        "CAMINHOS_DE_CARREIRA",
+        "RESUMO_PROFISSIONAL"
+      ]
+    },
+    "guardrails": [
+      "nunca inventar estimativas, valores-p, fontes ou referências",
+      "não assinar nem redigir para registro nota técnica de pesquisa eleitoral ou laudo estatístico",
+      "recusar microdados identificáveis e dados de clientes, mesmo pseudonimizados; propor dados públicos ou sintéticos",
+      "todo gráfico com fonte, eixos rotulados, escala honesta e incerteza",
+      "apontar confusão entre correlação e causalidade",
+      "perguntar em vez de inferir área, registro ou senioridade",
+      "nunca prometer vaga, aprovação em concurso ou remuneração",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": {
+      "letters": "alta",
+      "drawings": "alta"
+    },
+    "drawingsModes": [
+      "infografico",
+      "diagrama",
+      "prancha"
+    ],
+    "lettersTemplates": [
+      "bio",
+      "curriculo",
+      "carta",
+      "relatorio-tecnico",
+      "estudo-de-caso",
+      "pop",
+      "proposta",
+      "projeto-de-pesquisa",
+      "artigo",
+      "post",
+      "plano-30-60-90",
+      "revisao"
+    ],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular: L5, L6 e L10; L4, D7, D4, L7 e X1 pedem computador (R, Python, planilha).",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em três frases com link para um relatório (15 min).",
+        "Tem um resultado com dados do IBGE? Um infográfico com fonte, eixos e intervalo comprova visualização e leva 60 min.",
+        "Sem pressão. Quando quiser retomar, o relatório estatístico está salvo onde parou.",
+        "Um plano amostral documentado mostra como você desenha pesquisas. Cerca de 2 h no computador."
+      ]
+    },
+    "insights": {
+      "peersBy": [
+        "cbo",
+        "competencias",
+        "setor"
+      ]
+    },
+    "privacy": {
+      "sensitiveData": [
+        "microdados identificáveis de pesquisas e cadastros (LGPD; sigilo estatístico, Lei 5.534/1968)",
+        "bases de clientes e resultados de modelos sob contrato de confidencialidade",
+        "dados de saúde de participantes de estudos clínicos",
+        "resultados de pesquisas eleitorais antes da divulgação registrada"
+      ],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      {
+        "title": "Novo CAGED (MTE) — CBO 2112",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "geography": "Brasil, UF e município",
+        "cadence": "mensal",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "RAIS (MTE) — vínculos por CBO",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais",
+        "geography": "Brasil, UF e município",
+        "cadence": "anual",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "Concursos do IBGE (analista e tecnologista)",
+        "url": "https://www.ibge.gov.br/acesso-informacao/institucional/concursos.html",
+        "geography": "Brasil",
+        "cadence": "eventual",
+        "kind": "edital"
+      },
+      {
+        "title": "CONFE/CONRE — profissionais registrados",
+        "url": "https://www.confe.org.br/",
+        "geography": "Brasil e regiões dos CONRE",
+        "cadence": "eventual",
+        "kind": "conselho"
+      },
+      {
+        "title": "Concursos públicos federais (gov.br) — estatístico, analista de dados",
+        "url": "https://www.gov.br/pt-br/servicos/consultar-concursos-publicos",
+        "geography": "Brasil",
+        "cadence": "continua",
+        "kind": "edital"
+      }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Editais do IBGE e de outros órgãos viram tarefas quando a pessoa marca concurso em b4. Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    {
+      "to": "ciencia-de-dados",
+      "why": "Modelagem, programação e inferência são a base da ciência de dados; o estatístico traz rigor na incerteza.",
+      "gaps": [
+        "engenharia de dados e SQL avançado",
+        "aprendizado de máquina em produção (MLOps)",
+        "comunicação com produto e negócio"
+      ],
+      "steps": [
+        "modelo preditivo com validação cruzada documentado (L4)",
+        "diagrama do pipeline (D4)",
+        "trilhas gratuitas (Kaggle Learn, Base dos Dados)"
+      ]
+    },
+    {
+      "to": "ciencias-atuariais",
+      "why": "Probabilidade, sobrevivência e modelos de risco aproximam; atividades atuariais exigem registro no IBA.",
+      "gaps": [
+        "matemática atuarial e previdência",
+        "regulação da SUSEP e da Previc",
+        "formação em Ciências Atuariais e registro no IBA"
+      ],
+      "steps": [
+        "relatório de análise de sobrevivência com dados públicos (L4)",
+        "cursos de matemática atuarial",
+        "avaliar pós ou segunda graduação"
+      ]
+    },
+    {
+      "to": "ciencias-economicas",
+      "why": "Econometria, séries temporais e avaliação de políticas usam a mesma base estatística.",
+      "gaps": [
+        "teoria econômica (micro e macro)",
+        "econometria causal (diferenças em diferenças, IV)",
+        "contas nacionais"
+      ],
+      "steps": [
+        "relatório de série temporal com dados do IBGE ou BCB (L4)",
+        "infográfico de indicador econômico (D7)",
+        "cursos de econometria aplicada"
+      ]
+    },
+    {
+      "to": "matematica",
+      "why": "Probabilidade, otimização e métodos numéricos aproximam do bacharelado em Matemática e da pesquisa.",
+      "gaps": [
+        "análise e álgebra em nível de pós",
+        "otimização e pesquisa operacional",
+        "demonstrações formais"
+      ],
+      "steps": [
+        "projeto de pesquisa em probabilidade (L4)",
+        "disciplinas de mestrado em Matemática",
+        "seminários do IMPA"
+      ]
+    },
+    {
+      "to": "administracao",
+      "why": "Indicadores, qualidade e apoio à decisão levam a cargos de gestão e planejamento.",
+      "gaps": [
+        "gestão de pessoas e processos",
+        "finanças corporativas",
+        "negociação e liderança"
+      ],
+      "steps": [
+        "painel de indicadores para gestores (D7)",
+        "plano 30-60-90 para coordenação (L9)",
+        "cursos de gestão (Escola Virtual.Gov, Sebrae)"
+      ]
+    }
+  ],
+  "learning": [
+    {
+      "title": "IBGE — microdados, documentação e metodologias",
+      "provider": "IBGE",
+      "url": "https://www.ibge.gov.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Base dos Dados — dados públicos tratados e tutoriais",
+      "provider": "Base dos Dados",
+      "url": "https://basedosdados.org/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Livro Ciência de Dados em R",
+      "provider": "Curso-R",
+      "url": "https://livro.curso-r.com/",
+      "free": true,
+      "kind": "livro"
+    },
+    {
+      "title": "ABE — SINAPE e eventos da Associação Brasileira de Estatística",
+      "provider": "ABE",
+      "url": "https://www.redeabe.org.br/",
+      "free": false,
+      "kind": "comunidade"
+    },
+    {
+      "title": "Escola Virtual.Gov — análise de dados e LGPD",
+      "provider": "Enap",
+      "url": "https://www.escolavirtual.gov.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "ANPD — guias orientativos (anonimização, tratamento para pesquisa)",
+      "provider": "ANPD",
+      "url": "https://www.gov.br/anpd/pt-br",
+      "free": true,
+      "kind": "norma"
+    },
+    {
+      "title": "Lei 4.739/1965 — texto atualizado",
+      "provider": "Câmara dos Deputados",
+      "url": "https://www2.camara.leg.br/legin/fed/lei/1960-1969/lei-4739-15-julho-1965-368287-norma-pl.html",
+      "free": true,
+      "kind": "norma"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8",
+      "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 4.739/1965 — Câmara dos Deputados (dados da norma)",
+      "url": "https://www2.camara.leg.br/legin/fed/lei/1960-1969/lei-4739-15-julho-1965-368287-norma-pl.html",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Decreto 62.497/1968 — Planalto (CONFE elabora o Código de Ética; CONRE fiscaliza)",
+      "url": "https://planalto.gov.br/ccivil_03/decreto/1950-1969/D62497.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ESCO statistician (espelho World of Taxonomy, ISCO-08 2120)",
+      "url": "https://worldoftaxonomy.com/codes/esco_occupations/ac8b3cd1-a127-4e6a-8208-5cfcf7111955",
+      "accessedAt": "2026-11-02"
+    }
+  ],
+  "naoConferido": [
+    "número da resolução do CONFE que aprova o Código de Ética vigente não localizado",
+    "URI ESCO de statistician obtida de espelho (World of Taxonomy); esco.ec.europa.eu não consultado",
+    "Lei 5.534/1968, Decreto-Lei 161/1967, Lei 9.504/1997 arts. 33–35 e Resolução TSE 23.600/2019 citados de memória; número da resolução do TSE vigente para 2026 a conferir",
+    "URLs do CONFE, da ABE (redeabe.org.br), da ANPD e da página de concursos do IBGE não verificadas nesta sessão",
+    "código CBO 2341 e 2124 (em family e a4) não conferidos no portal da CBO",
+    "número de CONRE (7 regionais) vem de site de terceiros; não citado no pacote por isso",
+    "dados do ramo (famílias CBO/ISCO/ESCO, conselho, sensitiveData, vizinhos) copiados de contracts/career/academic-fields.json, que não cabe em sources.url (o esquema só aceita http(s) ou docs/)"
+  ]
+}
