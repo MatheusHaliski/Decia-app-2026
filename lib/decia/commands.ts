@@ -169,6 +169,11 @@ export const DECISION_TEMPLATES: Record<string, { kind: DecisionKind; criteria: 
   fornecedor: { kind: "CONTRATACAO", criteria: ["Custo", "Qualidade do serviço", "Prazo", "Risco de transição"] },
   priorizacao: { kind: "PRODUTO", criteria: ["Valor para o usuário", "Esforço", "Risco técnico", "Alinhamento com a meta"] },
   arquitetura: { kind: "TECNICA", criteria: ["Segurança", "Custo", "Escalabilidade", "Tempo de implantação", "Manutenção"] },
+  // Mesa de Trabalho (RF22) → governança no DECIA: portão de fase, mudança no comitê (CCB/CAB) e seleção de projetos (aulas de
+  // Gestão de Projetos de TI e de Governança de TI). Critérios = o que a banca/comitê avalia; os pesos podem vir do AHP.
+  portao: { kind: "ESTRATEGICA", criteria: ["Critérios de saída atendidos", "Riscos residuais aceitáveis", "Alinhamento estratégico", "Recursos disponíveis", "Valor esperado"] },
+  mudanca: { kind: "OPERACIONAL", criteria: ["Impacto no escopo", "Impacto no prazo", "Impacto no custo", "Impacto na qualidade", "Impacto nos recursos", "Impacto nos riscos"] },
+  selecao: { kind: "ESTRATEGICA", criteria: ["Retorno financeiro (VPL)", "Alinhamento estratégico", "Baixo risco técnico", "Rapidez de entrega"] },
 };
 
 export function createDecision(input: NewDecisionInput, now: Date, id = nextId("d-nova")): DecisionAggregate {
