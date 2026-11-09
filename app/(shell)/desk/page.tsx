@@ -5,6 +5,7 @@ import { BackgroundArt, Button, Tag } from "@/components/ui";
 import { RfPage } from "@/components/shell/RfPage";
 import { useI18n } from "@/lib/i18n/useI18n";
 import { pageByRoute } from "@/lib/pages/registry";
+import { DEMO_PROJECT_ID } from "@/lib/projects/fixtures";
 import { usePreferences } from "@/lib/preferences/PreferencesProvider";
 
 const PAGE = pageByRoute("/desk")!;
@@ -21,7 +22,10 @@ export default function DeskPage() {
             <Tag tone="accent">{t(`background.${prefs.backgroundId}`)}</Tag>
           </div>
           <p className="max-w-prose text-[length:var(--ws-text-body-sm)] font-medium">{t("desk.preview")}</p>
-          <div><Button size="sm" href="/settings?tab=aparencia">{t("desk.changeInSettings")}</Button></div>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="primary" icon="mesa" href={`/projects/${DEMO_PROJECT_ID}/edit`}>{t("pm.ws.openDemo")}</Button>
+            <Button size="sm" href="/settings?tab=aparencia">{t("desk.changeInSettings")}</Button>
+          </div>
         </div>
       </BackgroundArt>
     </RfPage>

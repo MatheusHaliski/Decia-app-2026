@@ -22,6 +22,12 @@ export const CHANGE_ALTERNATIVES: readonly { title: string; status: "APROVADA" |
   { title: "Rejeitar a mudança", status: "REJEITADA" },
   { title: "Adiar para nova análise de impacto", status: "EM_ANALISE" },
 ];
+/** Seleção e priorização no portfólio (aula de Governança: business case, GUT, AHP/scoring) — decisão da governança (EDM). */
+export const SELECTION_ALTERNATIVES: readonly { title: string }[] = [
+  { title: "Priorizar agora no portfólio de TI" },
+  { title: "Priorizar no próximo ciclo de planejamento (PDTIC)" },
+  { title: "Não priorizar: devolver a demanda com parecer" },
+];
 const LABELS = ["A", "B", "C", "D", "E", "F"];
 const DECIDED = new Set(["DECIDIDA", "EM_EXECUCAO", "RESOLVIDA", "REVISADA"]);
 
@@ -58,6 +64,18 @@ export function openChangeDecision(repo: DecisionRepository, project: ProjectMod
   const cmds: ProjectCommand[] = [{ type: "LINK_DECISION", decisionId: agg.decision.id }];
   if (change.status === "SOLICITADA") cmds.unshift({ type: "CHANGE_SET_STATUS", id: change.id, status: "EM_ANALISE", decisionId: agg.decision.id });
   return { decisionId: agg.decision.id, commands: cmds };
+}
+
+/** Leva a seleção/priorização do projeto ao DECIA (critérios do modelo "selecao": VPL, alinhamento, risco, rapidez). */
+export function openSelectionDecision(repo: DecisionRepository, project: ProjectModel, actorId: string, now = new Date()): { decisionId: string; commands: ProjectCommand[] } {
+  const owner = project.charter.sponsorId ?? actorId;
+  let agg = createDecision({
+    question: `Priorizar o projeto "${project.title}" no portfólio de TI?`, complexity: "PADRAO", impact: "ALTO", kind: "ESTRATEGICA", templateKey: "selecao", ownerUserId: owner,
+  }, now);
+  for (const alt of SELECTION_ALTERNATIVES) agg = addAlternative(agg, { title: alt.title }, owner, now);
+  agg = linkToProject(agg, project, actorId, now);
+  repo.save(agg);
+  return { decisionId: agg.decision.id, commands: [{ type: "LINK_DECISION", decisionId: agg.decision.id }] };
 }
 
 const selectedLabel = (agg: DecisionAggregate) => agg.alternatives.find((a) => a.id === agg.decision.selectedAlternativeId)?.label;

@@ -72,11 +72,14 @@ export function DecisionWorkspace({ aggregate, now, currentUserId, people, onSav
   const sectionProps: SectionProps = { aggregate, now, currentUserId, people, onSave, isOwner, onDecide: () => setDeciding(true), defaultFlipped: flipped };
   const deadline = d.targetDate ? formatDay(d.targetDate, intl) : t("decia.card.noDeadline");
 
+  // decisão de governança de um projeto (portão, mudança, seleção — RF22): volta para a Mesa de Trabalho
+  const projectLink = aggregate.workLinks.find((w) => w.targetType === "PROJETO");
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-[var(--ws-space-4)]" data-testid="workspace">
       <header className="grid gap-[var(--ws-space-3)] rounded-[var(--ws-radius-lg)] border border-ws-border bg-ws-surface-1 p-[var(--ws-space-4)] shadow-ws-1">
         <div className="flex flex-wrap items-center gap-2">
           {backHref ? <Button size="sm" variant="ghost" href={backHref}>← {t("decia.ws.back")}</Button> : null}
+          {projectLink ? <Button size="sm" variant="ghost" icon="mesa" href={`/projects/${projectLink.targetId}/edit`}>{t("decia.ws.openProject", { project: projectLink.label })}</Button> : null}
           <DecisionStatusBadge status={d.status} />
           <Badge tone="neutral">{t(`decia.complexity.${d.complexity}`)}</Badge>
           <Badge tone="neutral" title={t("decia.demoHint")}>{t("decia.demo")}</Badge>

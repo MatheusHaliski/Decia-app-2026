@@ -8,7 +8,7 @@ import type { DecisionAggregate } from "@/lib/decia/types";
 import { ITEM_SIZE, makeRef, phaseZones, pmcZones } from "./canvas";
 import { applyCommand, type ProjectCommand } from "./commands";
 import { canvasZones } from "./derive";
-import { gateOutcomeOf, openChangeDecision, openGateDecision, syncFromDecia } from "./decia";
+import { gateOutcomeOf, openChangeDecision, openGateDecision, openSelectionDecision, syncFromDecia } from "./decia";
 import { buildDemoProject } from "./fixtures";
 import { computeMetrics, evaluateGate } from "./metrics";
 import type { ProjectModel } from "./types";
@@ -187,5 +187,18 @@ describe("governança, mudanças e portões", () => {
     q = run(q, ...syncFromDecia(q, [{ ...cAgg, decision: { ...cAgg.decision, status: "DECIDIDA", selectedAlternativeId: cAgg.alternatives[0]!.id } }]));
     expect(q.changes[0]!.status).toBe("APROVADA");
     expect(computeMetrics(q).governance.find((x) => x.id === "G_DECISOES_PORTAO")!.value).toBe("1/3");
+  });
+
+  it("seleção/priorização vira decisão estratégica no DECIA, ligada ao projeto, com os critérios do modelo de seleção", () => {
+    const repo = createMemoryRepository([]);
+    const p = buildDemoProject();
+    const sel = openSelectionDecision(repo, p, "u-pessoa", ctx.now);
+    const q = run(p, ...sel.commands);
+    const agg = repo.get(sel.decisionId)!;
+    expect(agg.decision).toMatchObject({ projectId: p.id, ownerUserId: "u-ana" });
+    expect(agg.criteria.map((c) => c.name)).toContain("Retorno financeiro (VPL)");
+    expect(agg.alternatives.length).toBe(3);
+    expect(agg.workLinks.some((w) => w.targetType === "PROJETO" && w.targetId === p.id)).toBe(true);
+    expect(q.decisionIds).toEqual([sel.decisionId]);
   });
 });
