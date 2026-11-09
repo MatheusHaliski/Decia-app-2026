@@ -12,6 +12,8 @@ import { useI18n } from "@/lib/i18n/useI18n";
 import { toTaskCardViewModelFromApi } from "@/lib/tasks/card";
 import { criteriaProgress, requestFromView, tasksApi, type Criterion, type TaskStateName, type TaskView } from "@/lib/tasks/client";
 import { canTransitionTask, nextActionOf, publicationOf, TASK_TRANSITIONS, WORK_STATUSES, workStatusOf, type WorkStatus } from "@/lib/tasks/status";
+import { baseLocale } from "@/lib/i18n/state";
+import { fieldByCode, STUDY_FIELD_KEY } from "@/lib/tasks/areas";
 
 const STATUS_TONE: Record<WorkStatus, "neutral" | "accent" | "info" | "danger" | "success"> = {
   A_REALIZAR: "accent", EM_ANDAMENTO: "info", BLOQUEADO: "danger", CONCLUIDO: "success", ARQUIVADO: "neutral",
@@ -117,7 +119,7 @@ const ACTION_TARGET: Record<"INICIAR" | "CONCLUIR" | "DESBLOQUEAR" | "REVISAR", 
 };
 
 export function PersistedTaskDetail({ id }: { id: string }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { toast } = useToast();
   const [task, setTask] = useState<TaskView | null>(null);
   const [error, setError] = useState<{ title: string; text: string } | null>(null);
@@ -189,7 +191,7 @@ export function PersistedTaskDetail({ id }: { id: string }) {
         </Card>
         {task.extensions && Object.keys(task.extensions).length ? (
           <Card title={t("tasks.form.areaFields", { area: t(`tasks.area.${task.area ?? "OUTRA"}`) })}>
-            <dl className="grid gap-1 sm:grid-cols-[auto_1fr] sm:gap-x-4">{Object.entries(task.extensions).map(([k, v]) => <div key={k} className="contents"><dt className="font-semibold">{t(`tasks.ext.${k}`)}</dt><dd className="[overflow-wrap:anywhere]">{v}</dd></div>)}</dl>
+            <dl className="grid gap-1 sm:grid-cols-[auto_1fr] sm:gap-x-4">{Object.entries(task.extensions).map(([k, v]) => <div key={k} className="contents"><dt className="font-semibold">{t(`tasks.ext.${k}`)}</dt><dd className="[overflow-wrap:anywhere]">{k === STUDY_FIELD_KEY ? (fieldByCode(v)?.label[baseLocale(locale) as "pt-BR" | "en" | "es"] ?? v) : v}</dd></div>)}</dl>
           </Card>
         ) : null}
       </div>

@@ -10,6 +10,19 @@
 
 **Regras herdadas:** a profissão preferida é privada por padrão e **não é sinal de busca de emprego** (D-147); dados sensíveis não são perguntados nem inferidos (RF75.CA12); a IA só pré-checa critérios objetivos e nunca produz peça assinável (RF75.CA06, pacotes `ai.guardrails`).
 
+## Estado da implementação (frontend · novembro de 2026)
+
+Já existe no criador de tarefas (`/tasks/new`, `components/tasks/TaskAssist.tsx`) a parte do RF81 que não depende do cadastro:
+o **campo de estudo como lente da tarefa** (os 79 ramos, cada um com a área de trabalho padrão e o pacote de domínio carregado sob
+demanda — `lib/tasks/fieldIndex.gen.ts`, gerado por `npm run career:index`), os **modelos iniciais** da área (51 modelos para as 9
+`WorkArea`, `lib/tasks/areaTemplates.ts`) e do campo (tarefas-guia e próprias do pacote, `packTemplates`), abertos também por
+`/tasks/new?modelo=<id>`, e o **feedback de qualidade** determinístico (`lib/tasks/quality.ts`): essencial (objetivo tangível,
+entregas como substantivos, critérios verificáveis, prazo, privacidade), regras da área (ex.: Jurídico — número CNJ, base legal e
+prazo; Pesquisa — pergunta, método, amostra e consentimento; Engenharia — norma e ART) e do campo (rubrica, entregas típicas, fontes
+e dados sensíveis do pacote), cada achado com a correção aplicável em um clique. A tarefa grava o campo usado em
+`extensions.studyField`. Ainda planejado: a pergunta no cadastro e em Conta (`User.preferredOccupation`), a origem `PROFISSAO`
+(CA05) e os modelos no criador de projetos.
+
 ## Critérios de aceite
 
 | CA | Dado / quando / então |

@@ -4,7 +4,7 @@
  * nenhuma obrigatória. Erros do servidor por campo (422) ficam junto do campo; conflito de versão (409) preserva o que foi digitado
  * e oferece recarregar. Sair com alterações não salvas pede confirmação (nada é gravado em armazenamento local: pode ser sigiloso).
  */
-import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { Button, Card, Checkbox, Field, Input, Select, Textarea, useToast } from "@/components/ui";
 import { api, ApiError, describeError } from "@/lib/api/client";
 import { useI18n } from "@/lib/i18n/useI18n";
@@ -13,6 +13,10 @@ import {
   type AccessClassName, type Criterion, type Deliverable, type PriorityName, type Reference, type TaskRequest, type TaskTypeName, type TaskView,
   type VisibilityName, type WorkArea,
 } from "@/lib/tasks/client";
+import { AREA_DEFAULT_ACCESS, AREA_DEFAULT_TYPE, fieldByCode, STUDY_FIELD_KEY } from "@/lib/tasks/areas";
+import type { QuickFix } from "@/lib/tasks/quality";
+import { applyTemplate, type TaskDraft, type TaskTemplate } from "@/lib/tasks/templates";
+import { TaskAssist } from "./TaskAssist";
 
 interface FormState {
   title: string;
@@ -46,13 +50,27 @@ function fromView(v: TaskView): FormState {
   };
 }
 
+const FIELD_MEMORY = "ws.tasks.studyField";
+const toDraft = (f: FormState): TaskDraft => ({
+  title: f.title, type: f.type, area: f.area, objective: f.objective, descriptionMd: f.descriptionMd, priority: f.priority, dueAt: f.dueAt,
+  accessClass: f.accessClass, visibility: f.visibility, deliverables: f.deliverables.map((d) => d.text), criteria: f.criteria.map((c) => c.text),
+  references: f.references, extensions: f.extensions,
+});
+const fromDraft = (d: TaskDraft, f: FormState): FormState => ({
+  ...f, title: d.title, type: d.type, area: d.area, objective: d.objective, descriptionMd: d.descriptionMd, priority: d.priority, dueAt: d.dueAt,
+  accessClass: d.accessClass, visibility: d.visibility, deliverables: d.deliverables.map((text) => ({ text })),
+  criteria: d.criteria.map((text) => ({ text, done: f.criteria.find((c) => c.text === text)?.done ?? false })), references: d.references, extensions: d.extensions,
+});
+
 export interface TaskFormProps {
   mode: "create" | "edit";
   initial?: TaskView;
   onSaved: (task: TaskView) => void;
+  /** modelo pedido pela URL (`/tasks/new?modelo=<id>`) */
+  templateId?: string | null;
 }
 
-export function TaskForm({ mode, initial, onSaved }: TaskFormProps) {
+export function TaskForm({ mode, initial, onSaved, templateId }: TaskFormProps) {
   const { t } = useI18n();
   const { toast } = useToast();
   const [me, setMe] = useState<string | null>(null);
@@ -62,7 +80,17 @@ export function TaskForm({ mode, initial, onSaved }: TaskFormProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [conflict, setConflict] = useState(false);
+  const [studyField, setStudyField] = useState<string | null>(() => initial?.extensions?.[STUDY_FIELD_KEY] ?? null);
   const dirty = JSON.stringify(form) !== baseline;
+
+  // campo de estudo lembrado neste navegador (conveniência por pessoa; a tarefa grava o que foi usado)
+  useEffect(() => {
+    if (studyField || initial) return;
+    try {
+      const saved = window.localStorage.getItem(FIELD_MEMORY);
+      if (saved && fieldByCode(saved)) setStudyField(saved);
+    } catch { /* armazenamento indisponível */ }
+  }, []); // só na montagem
 
   useEffect(() => {
     let alive = true;
@@ -87,9 +115,40 @@ export function TaskForm({ mode, initial, onSaved }: TaskFormProps) {
 
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) => setForm((f) => ({ ...f, [k]: v }));
   const extensionKeys = useMemo(() => (form.area ? AREA_EXTENSIONS[form.area] : []), [form.area]);
+  const draft = useMemo(() => toDraft(form), [form]);
+  /** área escolhida configura o formulário: tipo mais comum da área (se ainda vazio) e acesso recomendado */
+  const chooseArea = useCallback((area: WorkArea | "") => setForm((f) => ({
+    ...f, area,
+    type: f.type || (area ? AREA_DEFAULT_TYPE[area] : ""),
+    accessClass: area && AREA_DEFAULT_ACCESS[area] && f.accessClass === "INTERNO" ? AREA_DEFAULT_ACCESS[area]! : f.accessClass,
+  })), []);
+  const chooseField = useCallback((code: string | null) => {
+    setStudyField(code);
+    try {
+      if (code) window.localStorage.setItem(FIELD_MEMORY, code);
+      else window.localStorage.removeItem(FIELD_MEMORY);
+    } catch { /* armazenamento indisponível */ }
+    const area = fieldByCode(code)?.area;
+    if (area) setForm((f) => (f.area ? f : { ...f, area, type: f.type || AREA_DEFAULT_TYPE[area] }));
+  }, []);
+  const useTemplate = useCallback((tpl: TaskTemplate) => {
+    setForm((f) => fromDraft(applyTemplate(toDraft(f), tpl), f));
+    setErrors({});
+  }, []);
+  const fix = useCallback((q: QuickFix) => setForm((f) => {
+    switch (q.kind) {
+      case "ADD_CRITERION": return f.criteria.some((c) => c.text === q.text) ? f : { ...f, criteria: [...f.criteria, { text: q.text, done: false }] };
+      case "ADD_DELIVERABLE": return f.deliverables.some((d) => d.text === q.text) ? f : { ...f, deliverables: [...f.deliverables, { text: q.text }] };
+      case "ADD_REFERENCE": return f.references.some((r) => r.url === q.url) ? f : { ...f, references: [...f.references, { label: q.label, url: q.url }] };
+      case "SET_EXTENSION": return { ...f, extensions: { ...f.extensions, [q.key]: q.value } };
+      case "SET_ACCESS": return { ...f, accessClass: q.accessClass, visibility: f.visibility === "EMPRESA" || f.visibility === "PUBLICA" ? "DEPARTAMENTO" : f.visibility };
+    }
+  }), []);
+  const hasContent = Boolean(form.title.trim() || form.objective.trim() || form.descriptionMd.trim() || form.deliverables.length || form.criteria.length);
 
   function body(draft?: boolean): TaskRequest {
     const extensions = Object.fromEntries(extensionKeys.map((k) => [k, form.extensions[k] ?? ""]).filter(([, v]) => (v ?? "").trim()));
+    if (studyField) extensions[STUDY_FIELD_KEY] = studyField;
     return {
       title: form.title, type: form.type || undefined, area: form.area || undefined, objective: form.objective || undefined,
       descriptionMd: form.descriptionMd || undefined, priority: form.priority, dueAt: form.dueAt || undefined,
@@ -135,7 +194,11 @@ export function TaskForm({ mode, initial, onSaved }: TaskFormProps) {
 
   const err = (k: string) => errors[k];
   return (
-    <form className="grid gap-[var(--ws-space-4)]" onSubmit={(e) => submit(e)} noValidate data-testid="task-form" aria-busy={busy}>
+    <div className="grid items-start gap-[var(--ws-space-4)] lg:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)]">
+    <div className="lg:sticky lg:top-[var(--ws-space-4)] lg:order-2 lg:max-h-[calc(100dvh-var(--ws-space-8))] lg:overflow-auto">
+      <TaskAssist draft={draft} fieldCode={studyField} onFieldChange={chooseField} onAreaChange={chooseArea} onApplyTemplate={useTemplate} onFix={fix} hasContent={hasContent} templateId={mode === "create" ? templateId : null} />
+    </div>
+    <form className="grid min-w-0 gap-[var(--ws-space-4)]" onSubmit={(e) => submit(e)} noValidate data-testid="task-form" aria-busy={busy}>
       {conflict ? (
         <div role="alert" className="grid gap-2 rounded-[var(--ws-radius-md)] border border-ws-danger bg-ws-danger-soft p-3 text-[length:var(--ws-text-body-sm)]" data-testid="task-conflict">
           <p>{t("tasks.form.conflict")}</p>
@@ -155,7 +218,7 @@ export function TaskForm({ mode, initial, onSaved }: TaskFormProps) {
           </Field>
           <Field label={t("tasks.form.area")} hint={t("tasks.form.areaHint")}>
             {({ id, describedBy }) => (
-              <Select id={id} aria-describedby={describedBy} value={form.area} onChange={(e) => set("area", e.target.value as WorkArea)}
+              <Select id={id} aria-describedby={describedBy} value={form.area} onChange={(e) => chooseArea(e.target.value as WorkArea | "")}
                 options={[{ value: "", label: t("tasks.form.noArea") }, ...WORK_AREAS.map((v) => ({ value: v, label: t(`tasks.area.${v}`) }))]} />
             )}
           </Field>
@@ -243,6 +306,7 @@ export function TaskForm({ mode, initial, onSaved }: TaskFormProps) {
         </span>
       </div>
     </form>
+    </div>
   );
 }
 
