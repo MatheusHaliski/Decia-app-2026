@@ -531,8 +531,11 @@ function reduce(model: ProjectModel, cmd: ProjectCommand, ctx: CommandContext): 
     }
 
     // ---------------- iniciação: TAP, business case, orçamento ----------------
-    case "CHARTER_UPDATE":
-      return ok({ ...model, charter: { ...model.charter, ...cmd.patch } }, true, "charterUpdated");
+    case "CHARTER_UPDATE": {
+      // aprovar registra quem aprovou; desfazer a aprovação apaga o registro
+      const approval = "approvedBySponsorAt" in cmd.patch ? { approvedBy: cmd.patch.approvedBySponsorAt ? ctx.actorId : undefined } : {};
+      return ok({ ...model, charter: { ...model.charter, ...cmd.patch, ...approval } }, true, "charterUpdated");
+    }
     case "CHARTER_LIST_ADD": {
       const text = clean(cmd.text);
       if (!text) return fail("TEXTO_VAZIO");

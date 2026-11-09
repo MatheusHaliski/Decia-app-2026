@@ -3858,5 +3858,6 @@
   "pm.agile.noTimebox": "Sprint sin fechas: define el timebox (un mes o menos, Scrum Guide).",
   "pm.agile.theory": "La velocidad es lo que el equipo entrega por sprint (base empírica para planificar, no meta de productividad); el burndown muestra el trabajo restante frente a la línea ideal; en el CFD, franjas que se ensanchan indican cuello de botella; por la Ley de Little, lead time medio ≈ WIP ÷ rendimiento — limitar el WIP acorta la entrega.",
   "pm.ref.SCRUM_METRICAS": "Curso de proyectos · 4.3: Scrum, Kanban y métricas de flujo",
-  "pm.v.sprintSet": "Sprint {n}: meta y timebox actualizados"
+  "pm.v.sprintSet": "Sprint {n}: meta y timebox actualizados",
+  "pm.ini.tap.registeredBy": "registrada por {name}"
 }

@@ -3858,5 +3858,6 @@
   "pm.agile.noTimebox": "Sprint without dates: set the timebox (one month or less, Scrum Guide).",
   "pm.agile.theory": "Velocity is what the team delivers per sprint (an empirical planning basis, not a productivity target); the burndown shows remaining work against the ideal line; in the CFD, widening bands signal a bottleneck; by Little's Law, average lead time ≈ WIP ÷ throughput — limiting WIP shortens delivery.",
   "pm.ref.SCRUM_METRICAS": "Project course · 4.3: Scrum, Kanban and flow metrics",
-  "pm.v.sprintSet": "Sprint {n}: goal and timebox updated"
+  "pm.v.sprintSet": "Sprint {n}: goal and timebox updated",
+  "pm.ini.tap.registeredBy": "recorded by {name}"
 }

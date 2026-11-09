@@ -210,4 +210,14 @@ describe("governança, mudanças e portões", () => {
     expect(approved.tasks.find((t) => t.id === "tX")!.changeId).toBe("c1");
     expect(computeMetrics(approved).quality.find((m) => m.id === "Q_SCOPE_CREEP")!.status).toBe("OK");
   });
+
+  it("a aprovação do TAP registra quem a lançou (auditoria) e desfazer apaga o registro", () => {
+    const p = buildDemoProject();
+    const approved = run(p, { type: "CHARTER_UPDATE", patch: { approvedBySponsorAt: "2026-11-10T12:00:00Z" } });
+    expect(approved.charter.approvedBy).toBe("u-pessoa");
+    expect(evaluateGate(approved, "DEMANDA").find((c) => c.id === "TAP_APROVADO")!.ok).toBe(true);
+    const undone = run(approved, { type: "CHARTER_UPDATE", patch: { approvedBySponsorAt: undefined } });
+    expect(undone.charter.approvedBy).toBeUndefined();
+    expect(run(undone, { type: "CHARTER_UPDATE", patch: { product: "Outro produto" } }).charter.approvedBy).toBeUndefined();
+  });
 });

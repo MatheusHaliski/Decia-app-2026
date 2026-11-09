@@ -53,6 +53,7 @@ export function buildDemoProject(): ProjectModel {
       managerId: "u-pessoa",
       sponsorId: "u-ana",
       approvedBySponsorAt: "2026-11-02T14:00:00Z",
+      approvedBy: "u-ana",
     },
     businessCase: { rate: 0.1, cashflows: [-50_000, 15_000, 25_000, 30_000], benefits: ["Menos retrabalho na redação de atas", "Rastro auditável para o controle interno"] },
     stakeholders: [

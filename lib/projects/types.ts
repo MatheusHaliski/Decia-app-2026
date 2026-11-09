@@ -157,6 +157,8 @@ export interface Charter {
   managerId?: string;
   sponsorId?: string;
   approvedBySponsorAt?: IsoDate;
+  /** quem registrou a aprovação na Mesa (auditoria: o GP pode lançar a aprovação que o patrocinador assinou) */
+  approvedBy?: string;
 }
 
 export interface BusinessCase { rate: number; cashflows: number[]; benefits: string[] }

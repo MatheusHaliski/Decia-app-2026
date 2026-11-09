@@ -288,6 +288,7 @@ function CharterSection({ ctx }: { ctx: Ctx }) {
             <p className="font-semibold text-ws-text">{t("pm.ini.tap.approval")}</p>
             <p className={BODY_SM}>
               {c.approvedBySponsorAt ? t("pm.ini.tap.approvedAt", { date: fmt.date(intl, c.approvedBySponsorAt) }) : t("pm.ini.tap.notApproved")}
+              {c.approvedBySponsorAt && c.approvedBy ? ` · ${t("pm.ini.tap.registeredBy", { name: nameOf(people, c.approvedBy) })}` : null}
             </p>
             {!readOnly ? (
               <div className="flex flex-wrap gap-2">
