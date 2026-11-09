@@ -72,6 +72,7 @@ export type ProjectCommand =
   | { type: "SET_APPROACH"; approach: Approach }
   | { type: "SET_BOARD_MODEL"; model: BoardModel }
   | { type: "SET_CURRENT_SPRINT"; sprint: number }
+  | { type: "SPRINT_SET"; number: number; start: string; end: string; goal?: string }
   | { type: "SET_STATUS_DATE"; date: string }
   | { type: "LINK_DECISION"; decisionId: string };
 
@@ -164,7 +165,8 @@ function reduce(model: ProjectModel, cmd: ProjectCommand, ctx: CommandContext): 
       const task: Task = {
         id: newId("t"), code: nextCode("T", model.tasks.map((t) => t.code)), title, phase: cmd.phase, status: cmd.status ?? "A_FAZER",
         durationDays: Math.max(0, cmd.durationDays ?? 1), percentComplete: 0, budget: 0, actualCost: 0, createdBy: ctx.actorId,
-        sprint: cmd.sprint, changeId: cmd.changeId, addedAfterBaseline: model.baseline ? true : undefined,
+        sprint: cmd.sprint, changeId: cmd.changeId, addedAfterBaseline: model.baseline ? true : undefined, createdAt: nowIso,
+        startedAt: cmd.status && cmd.status !== "A_FAZER" ? nowIso : undefined,
       };
       const ref = makeRef("TASK", task.id);
       const next = setPosition({ ...model, tasks: [...model.tasks, task] }, ref, cmd.at);
@@ -190,8 +192,10 @@ function reduce(model: ProjectModel, cmd: ProjectCommand, ctx: CommandContext): 
         if (ch.status !== "APROVADA" && ch.status !== "IMPLEMENTADA") return fail("MUDANCA_NAO_APROVADA", ch.code);
       }
       const done = patch.status === "CONCLUIDA" && t.status !== "CONCLUIDA";
+      const started = patch.status && patch.status !== "A_FAZER" && !t.startedAt;
       const next: Task = {
         ...t, ...patch,
+        ...(started ? { startedAt: nowIso } : {}),
         ...(done ? { doneAt: nowIso, percentComplete: 100 } : {}),
         ...(patch.status && patch.status !== "CONCLUIDA" && t.status === "CONCLUIDA" ? { doneAt: undefined } : {}),
       };
@@ -590,6 +594,13 @@ function reduce(model: ProjectModel, cmd: ProjectCommand, ctx: CommandContext): 
     case "SET_CURRENT_SPRINT":
       if (!(cmd.sprint >= 1)) return fail("VALOR_INVALIDO", "sprint");
       return ok({ ...model, currentSprint: Math.round(cmd.sprint) }, false);
+    case "SPRINT_SET": {
+      const n = Math.round(cmd.number);
+      if (!(n >= 1) || !/^\d{4}-\d{2}-\d{2}/.test(cmd.start) || !/^\d{4}-\d{2}-\d{2}/.test(cmd.end) || cmd.end.slice(0, 10) < cmd.start.slice(0, 10)) return fail("VALOR_INVALIDO", "sprint");
+      const sprint = { number: n, start: cmd.start.slice(0, 10), end: cmd.end.slice(0, 10), goal: cmd.goal ? clean(cmd.goal) : undefined };
+      const sprints = [...(model.sprints ?? []).filter((x) => x.number !== n), sprint].sort((a, b) => a.number - b.number);
+      return ok({ ...model, sprints }, true, "sprintSet", { n });
+    }
     case "SET_STATUS_DATE":
       if (!/^\d{4}-\d{2}-\d{2}/.test(cmd.date)) return fail("VALOR_INVALIDO", "date");
       return ok({ ...model, statusDate: cmd.date.slice(0, 10) }, false);

@@ -83,6 +83,23 @@ describe("Quadro por fases", () => {
   });
 });
 
+describe("Métricas ágeis no quadro Scrum", () => {
+  it("meta da sprint, velocidade, burndown e fluxo cumulativo; editar a meta grava a sprint", () => {
+    const h = renderPanel(PhaseBoard);
+    fireEvent.click(screen.getByRole("tab", { name: /Scrum/ }));
+    const agile = document.querySelector<HTMLElement>("[data-agile]")!;
+    expect(within(agile).getByDisplayValue(/Protótipo navegável da matriz de critérios/)).toBeTruthy();
+    expect(agile.querySelectorAll("[data-velocity]").length).toBe(2);
+    expect(agile.querySelector("[data-burndown]")).toBeTruthy();
+    expect(agile.querySelector("[data-cfd]")).toBeTruthy();
+    const goal = within(agile).getByLabelText("Meta da sprint");
+    fireEvent.change(goal, { target: { value: "Matriz de critérios aprovada pelo comitê" } });
+    fireEvent.blur(goal);
+    expect(h.state.model.sprints!.find((s) => s.number === 1)!.goal).toBe("Matriz de critérios aprovada pelo comitê");
+    expect(h.state.model.versions.at(-1)!.key).toBe("sprintSet");
+  });
+});
+
 describe("Linha do tempo além do Gantt", () => {
   it("Gantt, rede (atividade no nó), CPM, PERT e curva S a partir do mesmo modelo", () => {
     renderPanel(Timeline);

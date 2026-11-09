@@ -17,6 +17,7 @@ import { PHASE_META, SCRUM, type KnowledgeArea } from "@/lib/projects/lifecycle"
 import { evaluateGate } from "@/lib/projects/metrics";
 import { BOARD_MODELS, FLOW_STATUSES, type BoardModel, type FlowStatus, type GateOutcome, type ProjectPhase } from "@/lib/projects/types";
 import { boardView, evmView, riskRows, type BoardCard, type BoardColumn } from "@/lib/projects/views";
+import { AgileMetrics } from "./AgileMetrics";
 import { GateChecklist } from "./common";
 import { TaskInspector } from "./TaskInspector";
 import { fmt, nameOf, type PanelProps } from "./shared";
@@ -129,6 +130,7 @@ export function PhaseBoard(props: PanelProps) {
           );
         })}
       </div>
+      {view.model === "SCRUM" ? <AgileMetrics {...props} /> : null}
       <MonitoringLane {...props} />
       <TaskInspector {...props} taskId={openTask} onClose={() => setOpenTask(null)} />
     </div>

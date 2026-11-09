@@ -60,8 +60,15 @@ export interface Task {
   /** criada depois da linha de base — sem `changeId` é trabalho fora do escopo aprovado (scope creep) */
   addedAfterBaseline?: boolean;
   createdBy: string;
+  /** quando entrou no projeto (lead time) */
+  createdAt?: IsoDate;
+  /** quando o trabalho começou (cycle time; preenchido ao sair de "A fazer") */
+  startedAt?: IsoDate;
   doneAt?: IsoDate;
 }
+
+/** Sprint do Scrum: timebox com início, fim e a META DA SPRINT (compromisso do backlog da sprint, Scrum Guide). */
+export interface Sprint { number: number; start: IsoDate; end: IsoDate; goal?: string }
 
 export interface Dependency { id: string; from: string; to: string; type: DependencyType; lagDays: number }
 
@@ -198,6 +205,8 @@ export interface ProjectModel {
   boardModel: BoardModel;
   currentPhase: ProjectPhase;
   currentSprint?: number;
+  /** calendário das sprints (abordagens ágil, iterativa e híbrida) */
+  sprints?: Sprint[];
   team: TeamMember[];
   charter: Charter;
   businessCase: BusinessCase;
