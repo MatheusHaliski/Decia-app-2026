@@ -1,0 +1,337 @@
+{
+  "schemaVersion": 1,
+  "code": "engenharia-quimica",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Engenharia Química", "en": "Chemical Engineering", "es": "Ingeniería Química" },
+  "fields": ["engenharia-quimica"],
+  "family": {
+    "cbo": [{ "code": "2145", "title": "Engenheiros químicos e afins" }],
+    "isco08": [{ "code": "2145", "title": "Chemical engineers" }],
+    "esco": [{ "uri": "http://data.europa.eu/esco/occupation/ec21ce88-ce14-49b6-be0a-cc53cf5a3a67", "label": "chemical engineer" }]
+  },
+  "scope": {
+    "summary": "Projeta, opera, otimiza e controla processos de transformação de matéria e energia em escala industrial: balanços de massa e energia, operações unitárias, reatores, separação, utilidades, segurança de processo, meio ambiente e qualidade, em química, petroquímica, alimentos, farmacêutica, papel e celulose, bioprocessos e saneamento. Profissão regulamentada pela Lei 5.194/1966; registro no CREA e ART para serviços técnicos.",
+    "entryRoles": ["Estagiário de engenharia química", "Engenheiro químico júnior", "Engenheiro de processos júnior", "Analista de processos / laboratório industrial", "Engenheiro de qualidade júnior", "Trainee de operações industriais"],
+    "midRoles": ["Engenheiro de processos pleno", "Engenheiro de produção industrial (planta)", "Engenheiro de segurança de processo", "Engenheiro de meio ambiente / efluentes", "Engenheiro de P&D e desenvolvimento de produto", "Engenheiro de utilidades"],
+    "seniorRoles": ["Engenheiro de processos sênior / responsável técnico", "Coordenador de produção ou de processos", "Gerente de planta industrial", "Especialista em simulação e otimização de processos", "Consultor em segurança de processo e licenciamento", "Gerente de P&D"],
+    "sectors": ["química e petroquímica", "óleo e gás e refino", "alimentos e bebidas", "farmacêutica e cosméticos", "papel e celulose", "biocombustíveis e bioprocessos", "mineração e metalurgia", "saneamento e tratamento de água e efluentes", "fertilizantes e agroindústria", "consultoria e engenharia de projetos", "ensino e pesquisa"],
+    "regulation": [
+      { "name": "Lei 5.194/1966", "issuer": "Brasil (CONFEA/CREA)", "about": "regula o exercício da engenharia; registro obrigatório no CREA; responsabilidade técnica" },
+      { "name": "Resolução CONFEA 218/1973, art. 17; Resolução 1.073/2016", "issuer": "CONFEA", "about": "atividades do engenheiro químico (indústria química, petroquímica, alimentos, tratamento de água e efluentes); atribuição de títulos" },
+      { "name": "Lei 6.496/1977 e Resolução CONFEA 1.025/2009", "issuer": "Brasil / CONFEA", "about": "Anotação de Responsabilidade Técnica (ART) para projeto, operação, laudo e consultoria" },
+      { "name": "Resolução CONFEA 1.002/2002", "issuer": "CONFEA", "about": "Código de Ética Profissional: sigilo de formulações e processos, honestidade técnica" },
+      { "name": "NR-20", "issuer": "MTE", "about": "segurança e saúde no trabalho com inflamáveis e combustíveis: classificação da instalação, prontuário e análise de riscos" },
+      { "name": "NR-13 e NR-26", "issuer": "MTE", "about": "caldeiras, vasos de pressão, tubulações e tanques; sinalização e rotulagem de produtos químicos (GHS)" },
+      { "name": "ABNT NBR 14725 (GHS) e Decreto 10.088/2019 (Convenção 170 OIT)", "issuer": "ABNT / Brasil", "about": "classificação, rotulagem e ficha com dados de segurança (FDS) de produtos químicos" },
+      { "name": "ISA-5.1 (ANSI/ISA-5.1-2024) e ABNT NBR ISO 10628", "issuer": "ISA / ABNT", "about": "simbologia e identificação de instrumentos em P&ID; fluxogramas de processo para plantas" },
+      { "name": "CONAMA 430/2011 e Lei 6.938/1981", "issuer": "CONAMA / Brasil", "about": "padrões de lançamento de efluentes; Política Nacional do Meio Ambiente e licenciamento" },
+      { "name": "ABNT NBR ISO 9001:2015 e NBR ISO 14001:2015", "issuer": "ABNT / ISO", "about": "gestão da qualidade e ambiental em plantas industriais" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "balanço de massa e de energia", "meaning": "contabilidade de entradas, saídas, geração e acúmulo de massa e energia em um sistema ou equipamento" },
+      { "term": "operações unitárias", "meaning": "etapas físicas de um processo: destilação, absorção, extração, filtração, secagem, evaporação, trocadores" },
+      { "term": "PFD (fluxograma de processo)", "meaning": "diagrama com equipamentos principais, correntes numeradas e tabela de correntes (vazão, T, P, composição)" },
+      { "term": "P&ID", "meaning": "diagrama de tubulação e instrumentação: todos os equipamentos, linhas, válvulas e instrumentos com tags ISA-5.1" },
+      { "term": "tag de instrumento", "meaning": "identificação como FIC-101 (vazão, indicação, controle, malha 101) segundo ISA-5.1" },
+      { "term": "reator e cinética", "meaning": "equipamento onde ocorre a reação; cinética define velocidade, conversão, seletividade e rendimento" },
+      { "term": "conversão, seletividade e rendimento", "meaning": "indicadores de desempenho de uma reação" },
+      { "term": "trocador de calor", "meaning": "equipamento de transferência térmica; dimensionado por área, coeficiente global U e LMTD" },
+      { "term": "utilidades", "meaning": "vapor, água de resfriamento, ar comprimido, nitrogênio e energia que servem ao processo" },
+      { "term": "HAZOP", "meaning": "estudo de perigos e operabilidade: desvios (mais, menos, nenhum, inverso) por nó do P&ID" },
+      { "term": "APR / análise preliminar de riscos", "meaning": "identificação de cenários de acidente e medidas de controle" },
+      { "term": "FDS (ficha com dados de segurança)", "meaning": "documento GHS com perigos, manuseio, EPI e resposta a emergência de um produto químico" },
+      { "term": "scale-up", "meaning": "passagem de bancada para piloto e para escala industrial mantendo desempenho" },
+      { "term": "controle de processo (PID)", "meaning": "malhas de controle que mantêm variáveis (T, P, nível, vazão) no setpoint" },
+      { "term": "simulação de processos", "meaning": "modelagem em Aspen Plus/HYSYS, DWSIM ou CHEMCAD para balanços e dimensionamento" },
+      { "term": "especificação de equipamento (folha de dados)", "meaning": "documento com condições de operação, material e dimensões para compra ou fabricação" },
+      { "term": "DBO / DQO", "meaning": "demanda bioquímica e química de oxigênio; indicadores de carga orgânica de efluentes" },
+      { "term": "boas práticas de fabricação (BPF/GMP)", "meaning": "requisitos sanitários de produção em alimentos, fármacos e cosméticos (ANVISA)" },
+      { "term": "ART", "meaning": "Anotação de Responsabilidade Técnica no CREA; só o profissional habilitado assina" },
+      { "term": "camadas de proteção (LOPA) e SIS", "meaning": "análise de camadas independentes de proteção e sistema instrumentado de segurança (IEC 61511)" }
+    ],
+    "tools": ["Aspen Plus / Aspen HYSYS", "DWSIM (código aberto)", "CHEMCAD / ProSim", "Excel e Python (balanços, regressão)", "MATLAB / Scilab", "AutoCAD / AutoCAD Plant 3D (P&ID)", "Visio / Draw.io (PFD)", "Minitab / R (estatística)", "LIMS e sistemas de laboratório", "SAP PP/QM", "softwares de HAZOP (PHA-Pro)", "instrumentação de laboratório (cromatógrafo, espectrofotômetro, titulador)"],
+    "deliverables": ["fluxograma de processo (PFD) com tabela de correntes", "P&ID com tags ISA-5.1", "memorial de balanço de massa e energia", "relatório de dimensionamento de equipamento (trocador, coluna, reator, bomba)", "procedimento operacional de partida, parada e emergência", "relatório de HAZOP ou APR", "ficha com dados de segurança (FDS) e rotulagem GHS", "relatório de otimização de processo", "estudo de tratamento de efluentes", "especificação técnica / folha de dados", "relatório de scale-up ou de ensaio piloto", "laudo técnico ambiental ou de processo"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Balanços de massa e energia", "esco": null, "kind": "nucleo" },
+      { "label": "Operações unitárias e fenômenos de transporte", "esco": null, "kind": "nucleo" },
+      { "label": "Termodinâmica e cinética aplicadas a reatores", "esco": null, "kind": "nucleo" },
+      { "label": "Leitura e elaboração de PFD e P&ID (ISA-5.1)", "esco": null, "kind": "nucleo" },
+      { "label": "Simulação e otimização de processos", "esco": null, "kind": "nucleo" },
+      { "label": "Segurança de processo (HAZOP, APR, NR-20, NR-13)", "esco": null, "kind": "nucleo" },
+      { "label": "Controle e instrumentação de processos", "esco": null, "kind": "nucleo" },
+      { "label": "Tratamento de água e efluentes e gestão ambiental", "esco": null, "kind": "nucleo" },
+      { "label": "Qualidade, análise laboratorial e BPF", "esco": null, "kind": "nucleo" },
+      { "label": "Especificação e dimensionamento de equipamentos", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de projetos e custos industriais", "esco": null, "kind": "apoio" },
+      { "label": "Scale-up e desenvolvimento de produto", "esco": null, "kind": "apoio" },
+      { "label": "Bioprocessos e fermentação", "esco": null, "kind": "apoio" },
+      { "label": "Programação e análise de dados (Python, Excel)", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação técnica escrita", "trabalho em equipe multidisciplinar e com operação", "gestão de prazos e escopo", "ética, sigilo de processo e responsabilidade técnica", "cultura de segurança"],
+    "tracks": [
+      { "id": "engenharia-de-processos", "label": "Engenharia de processos", "steps": ["PFD de um processo didático com tabela de correntes (X1)", "memorial de balanço de massa e energia (L4)", "P&ID de um trecho com tags ISA-5.1 (D6)", "infográfico de rendimento ou consumo específico (D7)"] },
+      { "id": "operacao-e-seguranca", "label": "Operação e segurança de processo", "steps": ["POP de partida, parada ou emergência (L7)", "estudo de caso de um desvio de processo resolvido (L3)", "relatório técnico de HAZOP de um nó didático (L4)", "antes e depois de uma malha ou rotina (D5)"] },
+      { "id": "meio-ambiente-e-qualidade", "label": "Meio ambiente e qualidade", "steps": ["fluxo de uma ETE ou ETA com pontos de controle (D4)", "relatório técnico de redução de efluente ou perda (L4)", "infográfico de DQO/DBO antes e depois (D7)"] },
+      { "id": "apresentar-se", "label": "Apresentar-se como engenheiro(a) química(o)", "steps": ["bio com frente e softwares (L6)", "currículo direcionado (L1)", "prancha com três projetos (D2)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"engenheiro de processos\", \"analista de laboratório\", \"técnico em química\", \"operador de processos\"",
+      "cboFamilies": ["2145", "2111", "3111", "8111"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já faz (processo, laboratório, operação, meio ambiente) e não do zero. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, trainee ou primeiro cargo; ainda sem ART própria",
+        "junior": "até dois anos; acompanha processo e análises sob supervisão",
+        "pleno": "responde por processo ou unidade; assina ART dos próprios estudos",
+        "senior": "responsável técnico; lidera HAZOP, scale-up e otimização",
+        "gestao": "coordena produção, processos, P&D ou planta"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (de PFD didático a HAZOP) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em engenharia química",
+      "options": ["balanços de massa e energia", "ler e desenhar PFD e P&ID", "simular processos (Aspen, DWSIM)", "dimensionar trocadores, colunas e bombas", "segurança de processo (HAZOP, APR)", "controle de processo", "tratamento de água e efluentes", "análises de laboratório e qualidade", "operação de planta e partida/parada", "scale-up e P&D", "bioprocessos e fermentação", "BPF e regulatório (ANVISA)", "custos e viabilidade de processo", "Python e análise de dados de processo"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com PFD, memoriais e procedimentos."
+    },
+    "c4": {
+      "certifications": ["registro no CREA ou no CRQ (conforme formação)", "curso NR-20 (inflamáveis) e NR-13", "curso NR-33 e NR-35", "Aspen HYSYS / Plus certificado", "Lean Seis Sigma (Green/Black Belt)", "auditor interno ISO 9001/14001", "pós-graduação em processos, segurança de processo ou meio ambiente", "mestrado / doutorado"],
+      "languages": ["inglês técnico (literatura, normas API/ASME, softwares)", "espanhol"],
+      "why": "Formação, registro e cursos de segurança ajudam a ver lacunas em relação ao cargo que você quer; NR-20 e simulação aparecem em muitas vagas."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver em engenharia química?",
+      "options": ["simulação de processos (Aspen, DWSIM)", "P&ID e instrumentação (ISA-5.1)", "segurança de processo e HAZOP", "controle de processo", "tratamento de efluentes", "dimensionamento de equipamentos", "scale-up e P&D", "bioprocessos", "regulatório e BPF", "Python para dados de processo"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (PFD → balanço → P&ID) em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Como está seu registro profissional?", "type": "escolha", "options": ["CREA ativo", "CRQ ativo", "em andamento", "ainda não tenho", "não se aplica"], "why": "Pergunto porque assinar projeto, laudo e ART depende do registro; sem ele, as tarefas ficam como estudo e portfólio, sem simular documento assinável.", "where": "P" },
+      { "id": "x2", "prompt": "Em que frente você atua ou quer atuar?", "type": "lista", "options": ["engenharia de processos e projeto", "operação de planta", "segurança de processo", "meio ambiente e efluentes", "laboratório e qualidade", "P&D e scale-up", "ensino e pesquisa"], "why": "Pergunto para priorizar PFD e P&ID (processo), POP e HAZOP (operação e segurança) ou fluxos de ETE (meio ambiente).", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["D6", "L4", "L7", "D4", "L6", "L1", "D7", "L3", "D5", "L9", "D2", "L10"],
+    "excluded": [
+      { "code": "D3", "reason": "modelo 3D de produto com render não é evidência típica; equipamentos entram em PFD/P&ID" },
+      { "code": "D8", "reason": "vista explodida é entrega da mecânica" },
+      { "code": "D9", "reason": "wireframe de tela é entrega de UX" },
+      { "code": "D1", "reason": "planta de ambiente é da arquitetura; o arranjo de planta industrial é projeto multidisciplinar sob ART" }
+    ],
+    "parameters": {
+      "D6": {
+        "title": "P&ID de um trecho de processo com tags ISA-5.1",
+        "brief": "Desenhe o diagrama de tubulação e instrumentação de um trecho didático (ex.: tanque com controle de nível e bomba, trocador com controle de temperatura): equipamentos, linhas com identificação, válvulas, instrumentos com tags ISA-5.1 e malhas de controle. Processo didático ou anonimizado; nada de P&ID de empregador.",
+        "parameters": { "minLoops": 2, "requiredElements": ["equipamentos identificados", "linhas com identificação", "válvulas", "instrumentos com tag ISA-5.1", "legenda de símbolos", "carimbo"], "standards": ["ISA-5.1", "NBR ISO 10628", "NBR 10582"] },
+        "criteria": ["ao menos duas malhas de controle completas (sensor, controlador, elemento final)", "tags no padrão ISA-5.1", "linhas identificadas (fluido, diâmetro ou classe)", "legenda e carimbo preenchidos", "declaração de que o processo é didático ou anonimizado"],
+        "evidence": "prancha PDF/SVG do P&ID",
+        "time": "2 h",
+        "level": 3
+      },
+      "L4": {
+        "title": "Memorial de balanço de massa e energia",
+        "brief": "Escreva um relatório técnico curto com o balanço de massa e energia de um processo ou equipamento (misturador, evaporador, reator, trocador): objetivo, premissas, base de cálculo, equações, resultados em tabela de correntes, limitações e referências. Até 4 páginas. Estudo de portfólio, não documento assinável.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "premissas e base de cálculo", "método e equações", "resultados (tabela de correntes)", "limitações", "referências"], "mustReport": ["base de cálculo", "fechamento do balanço (%)", "propriedades usadas com fonte"] },
+        "criteria": ["seis seções nomeadas", "base de cálculo explícita", "tabela de correntes com vazão, composição e temperatura", "fechamento do balanço informado", "até 4 páginas", "aviso de que não substitui projeto com ART"],
+        "evidence": "relatório PDF versionado",
+        "time": "2 h",
+        "level": 3
+      },
+      "L7": {
+        "title": "POP de partida, parada ou emergência de um equipamento",
+        "brief": "Escreva um procedimento operacional de uma operação que você domina (partida de bomba, troca de filtro, parada de emergência de reator) com passos numerados, responsável, EPI, verificações de segurança (bloqueio, despressurização, inertização), valores de referência e critério de conclusão por passo.",
+        "parameters": { "requiredElements": ["passos numerados", "responsável por passo", "EPI/EPC", "verificações de segurança", "valores de referência (P, T, nível)", "critério de conclusão por passo"] },
+        "criteria": ["passos numerados com responsável", "verificação de segurança antes de cada etapa crítica", "valores de referência informados", "critério de conclusão em cada passo", "sem dado sigiloso da empresa"],
+        "evidence": "POP em modelo",
+        "time": "60 min",
+        "level": 2
+      },
+      "D4": {
+        "title": "Fluxo de um processo com pontos de controle",
+        "brief": "Modele o fluxo de um processo (ETE, linha de produção, controle de qualidade de lote) com início e fim, raias por área (operação, laboratório, manutenção) e pontos de controle (amostragem, liberação, registro). Processo genérico ou anonimizado.",
+        "parameters": { "notation": "BPMN simplificado", "requiredElements": ["início e fim", "raias por área", "pontos de controle de qualidade ou segurança"], "minActivities": 6 },
+        "criteria": ["início e fim explícitos", "raias por área", "nenhuma atividade órfã", "ao menos dois pontos de controle anotados", "sem nome de empresa ou dado sigiloso"],
+        "evidence": "diagrama vetorial (SVG/PDF)",
+        "time": "45 min",
+        "level": 1
+      },
+      "L6": {
+        "title": "Resumo de perfil em engenharia química",
+        "brief": "Escreva até 600 caracteres com sua frente (processos, operação, segurança, meio ambiente, P&D), três competências e uma prova com link (PFD, memorial, POP). Sem dados pessoais além do nome.",
+        "parameters": { "maxChars": 600, "requiredParts": ["frente de atuação", "três competências", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia a frente de atuação", "cita três competências", "inclui uma prova com link"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "drawings",
+        "title": "Fluxograma de processo (PFD) com tabela de correntes",
+        "competency": "Balanços de massa e energia",
+        "criteria": ["equipamentos principais identificados", "correntes numeradas", "tabela de correntes com vazão, temperatura, pressão e composição", "utilidades indicadas", "processo didático ou anonimizado declarado"],
+        "evidence": "prancha PDF/SVG do PFD",
+        "time": "90 min",
+        "trigger": "Quer mostrar um processo inteiro numa folha, com os números das correntes?",
+        "level": 2
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "HAZOP de um nó didático",
+        "competency": "Segurança de processo (HAZOP, APR, NR-20, NR-13)",
+        "criteria": ["nó e intenção de projeto definidos", "ao menos 4 desvios com palavra-guia", "causa, consequência e salvaguardas por desvio", "recomendações com responsável", "processo didático ou anonimizado declarado"],
+        "evidence": "planilha HAZOP em documento",
+        "time": "90 min",
+        "trigger": "Quer mostrar como pensa os desvios de um processo antes que aconteçam?",
+        "level": 3
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tags-isa", "check": "os instrumentos têm tags no padrão ISA-5.1 e há legenda de símbolos", "appliesTo": ["D6"], "auto": true },
+      { "id": "malhas-completas", "check": "cada malha de controle tem sensor, controlador e elemento final", "appliesTo": ["D6"], "auto": true },
+      { "id": "tabela-de-correntes", "check": "há tabela de correntes com vazão, temperatura, pressão e composição", "appliesTo": ["X1", "L4"], "auto": true },
+      { "id": "fechamento-do-balanco", "check": "o fechamento do balanço (%) e a base de cálculo estão informados", "appliesTo": ["L4"], "auto": true },
+      { "id": "carimbo-e-legenda", "check": "a prancha tem carimbo preenchido e legenda", "appliesTo": ["D6", "X1", "D2"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L9", "X2"], "auto": true },
+      { "id": "passos-com-responsavel", "check": "cada passo do POP tem responsável e critério de conclusão", "appliesTo": ["L7"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas, palavras ou caracteres", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "aviso-nao-assinavel", "check": "o documento declara que é estudo de portfólio e não substitui projeto, laudo ou HAZOP oficial com ART", "appliesTo": ["D6", "L4", "X1", "X2"], "auto": true },
+      { "id": "sigilo-de-processo", "check": "a pessoa declarou autoria e que formulações, processos e dados de planta são didáticos ou anonimizados", "appliesTo": ["D6", "D4", "D5", "D7", "L3", "L4", "L7", "D2", "X1", "X2"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim e nenhuma atividade órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "coerencia-fisica", "check": "balanços fecham dentro da tolerância declarada e as condições de operação são fisicamente plausíveis", "appliesTo": ["L4", "X1", "D6"], "auto": false }
+    ],
+    "subjective": [
+      { "id": "rigor-tecnico", "label": "Rigor técnico", "levels": { "aproxima": "hipóteses implícitas; propriedades sem fonte", "atende": "hipóteses, base de cálculo e propriedades com fonte; método coerente", "supera": "analisa sensibilidade, compara alternativas e discute limites do modelo" } },
+      { "id": "seguranca-de-processo", "label": "Segurança de processo incorporada", "levels": { "aproxima": "segurança aparece como lembrete genérico", "atende": "perigos identificados e salvaguardas ligadas a cada etapa ou nó", "supera": "camadas de proteção explícitas; recomendações priorizadas por risco" } },
+      { "id": "legibilidade-do-diagrama", "label": "Legibilidade do diagrama", "levels": { "aproxima": "símbolos inconsistentes ou correntes sem identificação", "atende": "simbologia normalizada, correntes e tags completas", "supera": "quem lê acompanha o processo sem esforço; hierarquia visual clara" } },
+      { "id": "resultado", "label": "Resultado demonstrado", "levels": { "aproxima": "descreve atividades, sem resultado", "atende": "mostra um resultado mensurável (rendimento, consumo específico, DQO, perda)", "supera": "resultado, contexto, limitações e o que faria diferente" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa da Engenharia Química (processos, operação de planta, segurança de processo, meio ambiente, laboratório, P&D; CBO 2145). Use o vocabulário da área: balanço de massa e energia, operações unitárias, PFD, P&ID, tag ISA-5.1, reator, conversão e rendimento, trocador de calor, utilidades, HAZOP, APR, FDS/GHS, scale-up, controle PID, simulação (Aspen, DWSIM), DBO/DQO, BPF. Cite referências pelo nome quando couber: ISA-5.1, NBR ISO 10628, NR-20, NR-13, NR-26, NBR 14725 (GHS), CONAMA 430/2011, NBR ISO 9001/14001, Lei 5.194/1966 e Resolução CONFEA 1.002/2002 (ética). O que nunca fazer: não produza nem apresente como pronto projeto, laudo, HAZOP oficial, FDS, memorial ou ART assináveis; tudo que a IA gera é estudo de portfólio e exercício, e a responsabilidade técnica é do profissional registrado no CREA (ou CRQ). Não dê instruções de operação, manuseio, mistura ou descarte de produtos químicos reais para terceiros, nem oriente intervenção em planta; remeta à FDS, às NRs e ao responsável técnico. Não use nem peça formulações, P&IDs, layouts, dados de segurança de plantas ou processos proprietários de empregadores e clientes; proponha processos didáticos ou anonimizados. Pergunte antes de inferir frente de atuação, nível ou registro. Toda sugestão de tarefa diz a competência que comprova, a evidência, o tempo e o porquê, e aceita \"não me serve\". Dados de mercado só com fonte, data e região (CAGED, RAIS, CONFEA, ABIQUIM) ou \"estimativa\"; nunca prometa emprego nem fale de salário. Progresso é por critérios atendidos; a pré-checagem cobre só critérios objetivos (tags, malhas, tabela de correntes, fechamento, seções, aviso de não assinável, sigilo declarado) e o selo depende de revisão humana.",
+    "citeSources": [
+      { "title": "CONFEA — Normativos (Lei 5.194/1966, Resoluções 218/1973, 1.002/2002, 1.025/2009, 1.073/2016)", "url": "https://normativos.confea.org.br/", "kind": "conselho" },
+      { "title": "MTE — Normas Regulamentadoras vigentes (NR-13, NR-20, NR-26)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadoras/normas-regulamentadoras-vigentes", "kind": "norma" },
+      { "title": "ISA — ANSI/ISA-5.1 Instrumentation and Control — Symbols and Identification", "url": "https://www.isa.org/products/ansi-isa-5-1-2022-instrumentation-symbols-and-iden", "kind": "norma" },
+      { "title": "Catálogo ABNT (NBR ISO 10628, NBR 14725, NBR ISO 9001/14001, NBR 10582)", "url": "https://www.abntcatalogo.com.br/", "kind": "norma" },
+      { "title": "CONAMA — Resolução 430/2011 (lançamento de efluentes)", "url": "https://conama.mma.gov.br/", "kind": "orgao-publico" },
+      { "title": "CBO — família 2145 Engenheiros químicos e afins (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "ESCO — chemical engineer", "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http://data.europa.eu/esco/occupation/ec21ce88-ce14-49b6-be0a-cc53cf5a3a67", "kind": "referencia" },
+      { "title": "Novo CAGED — MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" },
+      { "title": "ANVISA — Boas Práticas de Fabricação (RDC 658/2022 e RDC 275/2002)", "url": "https://www.gov.br/anvisa/pt-br", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2/c5 com competências de engenharia química e as extras x1 (registro CREA/CRQ) e x2 (frente)." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza D6 P&ID, L4 balanço e L7 POP; x2 operação/segurança → L7, X2 primeiro; meio ambiente → D4, D7; cada card diz competência, evidência, tempo e porquê." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "D6, X1 e L4 só com computador e em semanas com 4 h ou mais (d1, d4)." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa tags ISA, malhas completas, tabela de correntes, fechamento informado, seções, aviso de não assinável e sigilo; coerência física fica para revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de memorial, POP e planilha HAZOP com seções da área; nunca gera FDS, laudo ou HAZOP apresentado como oficial, nem instruções de manuseio de produto real." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Sugere simbologia ISA-5.1/ISO 10628, legenda, numeração de correntes e organização da tabela; não dimensiona equipamento." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese por competências declaradas e evidenciadas (PFD, P&ID, memorial, POP); cita o campo de cada afirmação." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: ambiental e sanitária, química, produção, farmácia, controle e automação; sempre com lacunas e passos, sem previsão." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por CBO 2145, setor e competências compartilhadas; só pessoas com opt-in." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\"." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com frente, softwares e provas; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, softwares e cursos de segurança em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "formulações e processos industriais proprietários", "P&IDs, layouts e dados de segurança de plantas", "dados de clientes sob NDA", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca produzir ou apresentar projeto, laudo, HAZOP, FDS, memorial ou ART como documento assinável ou oficial; tudo é estudo de portfólio",
+      "não dar instruções de operação, manuseio, mistura ou descarte de produtos químicos reais nem orientar intervenção em planta; remeter à FDS, às NRs e ao responsável técnico",
+      "não usar nem pedir formulações, P&IDs, layouts ou dados de segurança de plantas de empregadores e clientes; propor processos didáticos",
+      "perguntar em vez de inferir frente de atuação, nível ou registro (CREA/CRQ)",
+      "mercado com fonte, data e região ou \"estimativa\"; sem promessa de emprego e sem salário",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["diagrama", "2d-tecnico", "infografico", "prancha"],
+    "lettersTemplates": ["relatorio-tecnico", "memorial", "pop", "curriculo", "bio", "estudo-de-caso", "carta", "plano-30-60-90", "post", "revisao", "projeto-de-pesquisa"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "D6 (P&ID), X1 (PFD) e L4 pedem computador; no celular ficam L6, L5, L10 e a revisão de POP.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: o P&ID de um tanque com controle de nível e bomba, com tags ISA-5.1 (2 h). Comprova leitura e elaboração de P&ID.",
+        "Tem 15 min? Escreva sua bio com a frente em que atua e um link para um PFD ou memorial seu.",
+        "Sem pressão. Quando quiser retomar, o POP de partida de equipamento (60 min) está aqui.",
+        "Seu memorial de balanço atendeu 5 de 6 critérios objetivos; falta informar o fechamento do balanço. O selo depende de revisão humana."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "setor", "competencias"] },
+    "privacy": { "sensitiveData": ["formulações e processos industriais proprietários", "layouts e dados de segurança de plantas", "dados de clientes sob NDA", "resultados de análises de lotes e dados de fornecedores"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2145", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "PNAD Contínua (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html", "geography": "Brasil e UF", "cadence": "trimestral", "kind": "estatistica-oficial" },
+      { "title": "CONFEA — Estatísticas do Sistema Confea/Crea (profissionais registrados por modalidade e UF)", "url": "https://www.confea.org.br/", "geography": "Brasil e UF", "cadence": "continua", "kind": "conselho" },
+      { "title": "ABIQUIM — O Desempenho da Indústria Química Brasileira (anuário) e RAC mensal", "url": "https://www.abiquim.org.br/", "geography": "Brasil", "cadence": "anual", "kind": "associacao" },
+      { "title": "PIM-PF — Pesquisa Industrial Mensal (IBGE), seções de química e derivados", "url": "https://www.ibge.gov.br/estatisticas/economicas/industria/9294-pesquisa-industrial-mensal-producao-fisica-brasil.html", "geography": "Brasil e UF", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "Concursos públicos para engenheiro(a) químico(a) (Petrobras, companhias de saneamento, universidades)", "url": "https://www.gov.br/pt-br/servicos", "geography": "Brasil, conforme edital", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis (CAGED, RAIS, CONFEA, ABIQUIM, IBGE, editais); sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147). A concentração regional da indústria química (SP, BA, RJ, RS) é citada só com fonte e data."
+  },
+  "paths": [
+    { "to": "engenharia-ambiental-e-sanitaria", "why": "Tratamento de água e efluentes, licenciamento e gestão de resíduos já fazem parte da engenharia química.", "gaps": ["hidrologia e saneamento urbano", "licenciamento ambiental e legislação (CONAMA, estaduais)", "avaliação de impacto ambiental"], "steps": ["fluxo de uma ETE com pontos de controle (D4)", "relatório técnico de redução de efluente (L4)", "curso de licenciamento ambiental"] },
+    { "to": "quimica", "why": "Laboratório, análise e desenvolvimento de produto aproximam da química (bacharelado/CRQ) e da pesquisa.", "gaps": ["química analítica avançada e validação de métodos", "síntese e caracterização", "registro no CRQ conforme formação"], "steps": ["relatório técnico de validação de um método (L4)", "projeto de pesquisa curto", "POP de análise laboratorial (L7)"] },
+    { "to": "engenharia-de-producao", "why": "Otimização, qualidade e PCP em plantas de processo usam as mesmas ferramentas de melhoria contínua.", "gaps": ["Lean e Seis Sigma", "PCP e custos industriais", "gestão de projetos"], "steps": ["antes e depois de uma rotina de planta (D5)", "infográfico de OEE ou consumo específico (D7)", "curso de Lean / Green Belt"] },
+    { "to": "farmacia", "why": "Produção farmacêutica e cosmética pede BPF, validação e controle de qualidade que a engenharia química já pratica.", "gaps": ["regulatório ANVISA e farmacotécnica", "validação de processos e limpeza", "registro no CRF exige graduação em Farmácia"], "steps": ["POP com BPF de um processo de produção (L7)", "relatório técnico de validação (L4)", "curso de BPF e regulatório"] },
+    { "to": "engenharia-de-controle-e-automacao", "why": "Controle de processo, instrumentação e P&ID são a ponte natural para automação de plantas.", "gaps": ["programação de CLP/SDCD", "redes industriais e supervisório", "sintonia de malhas e segurança funcional (IEC 61511)"], "steps": ["curso de CLP e instrumentação", "P&ID com malhas e lista de instrumentos (D6)", "estudo de caso de sintonia de malha (L3)"] }
+  ],
+  "learning": [
+    { "title": "DWSIM — simulador de processos de código aberto (documentação e tutoriais)", "provider": "DWSIM", "url": "https://dwsim.org/", "free": true, "kind": "portal" },
+    { "title": "e-Aulas USP — Operações Unitárias, Fenômenos de Transporte, Reatores", "provider": "USP", "url": "https://eaulas.usp.br/", "free": true, "kind": "curso" },
+    { "title": "Escola Virtual.Gov — gestão ambiental, qualidade e projetos", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Cursos gratuitos a distância do SENAI (processos industriais, química, segurança)", "provider": "SENAI", "url": "https://www.senai.br/", "free": true, "kind": "portal" },
+    { "title": "NR-20 — Segurança e saúde no trabalho com inflamáveis e combustíveis (texto oficial)", "provider": "MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadoras/normas-regulamentadoras-vigentes", "free": true, "kind": "norma" },
+    { "title": "ABIQUIM — Programa Atuação Responsável e publicações", "provider": "ABIQUIM", "url": "https://www.abiquim.org.br/", "free": true, "kind": "comunidade" },
+    { "title": "Princípios Elementares dos Processos Químicos (Felder, Rousseau, Bullard)", "provider": "LTC / Grupo GEN", "url": "https://www.grupogen.com.br/", "free": false, "kind": "livro" },
+    { "title": "ANSI/ISA-5.1 — Instrumentation and Control: Symbols and Identification (norma paga)", "provider": "ISA", "url": "https://www.isa.org/products/ansi-isa-5-1-2022-instrumentation-symbols-and-iden", "free": false, "kind": "norma" },
+    { "title": "ANVISA — Boas Práticas de Fabricação e regulatório", "provider": "ANVISA", "url": "https://www.gov.br/anvisa/pt-br", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "World of Taxonomy (espelho ESCO) — chemical engineer ec21ce88-ce14-49b6-be0a-cc53cf5a3a67, ISCO 2145", "url": "https://worldoftaxonomy.com/codes/esco_occupations/ec21ce88-ce14-49b6-be0a-cc53cf5a3a67", "accessedAt": "2026-11-02" },
+    { "title": "World of Taxonomy — ISCO-08 2145 → ESCO occupations", "url": "https://www.worldoftaxonomy.com/crosswalks/isco_08/2145/esco_occupations", "accessedAt": "2026-11-02" },
+    { "title": "CBO (espelho VRI Consulting) — 2145-05 engenheiro químico, família 2145", "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=214505", "accessedAt": "2026-11-02" },
+    { "title": "Resolução CONFEA 218/1973 (cópia UFMG)", "url": "https://controle.eng.ufmg.br/wp-content/uploads/2018/10/Resolução_CONFEA_218_1973.pdf", "accessedAt": "2026-11-02" },
+    { "title": "CONFEA — Manual CEAP (resoluções por título continuam válidas; Resolução 1.073/2016)", "url": "https://confea.org.br/midias/uploads-imce/Manual_Ceap.pdf", "accessedAt": "2026-11-02" },
+    { "title": "CONFEA — Estatísticas do Sistema disponíveis", "url": "https://www.confea.org.br/node/116116", "accessedAt": "2026-11-02" },
+    { "title": "ISA — ANSI/ISA-5.1-2022 (superseded por ANSI/ISA-5.1-2024, 23-11-2024)", "url": "https://www.isa.org/products/ansi-isa-5-1-2022-instrumentation-symbols-and-iden", "accessedAt": "2026-11-02" },
+    { "title": "ANSI Webstore — ANSI/ISA-5.1 (status e edições)", "url": "https://webstore.ansi.org/standards/isa/ansiisa2022", "accessedAt": "2026-11-02" },
+    { "title": "MTE — Normas Regulamentadoras vigentes", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadoras/normas-regulamentadoras-vigentes", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Rede da sessão bloqueia esco.ec.europa.eu e confea.org.br: URI ESCO de chemical engineer conferida só no espelho World of Taxonomy; estatísticas do CONFEA (química 32.491 registrados em 2020) vistas em notícia de terceiros.",
+    "Resolução CONFEA 218/1973 art. 17 (engenheiro químico) citado de memória; texto não lido. Resoluções 1.002/2002 e 1.025/2009 e Lei 6.496/1977 de memória.",
+    "ISA-5.1: edição 2024 confirmada em loja de normas; conteúdo das mudanças 2022→2024 não verificado. NBR ISO 10628, NBR 14725, NR-20, NR-26, CONAMA 430/2011, Decreto 10.088/2019, RDC 658/2022 e IEC 61511: números e vigência de memória.",
+    "Registro no CRQ para engenheiro químico: regra varia por formação e conselho; mencionado como opção na pergunta x1 sem conferir a Lei 2.800/1956.",
+    "Famílias CBO 2111, 3111 e 8111 em questions.a4.cboFamilies não conferidas no portal da CBO.",
+    "URLs de aprendizagem e associações (DWSIM, e-Aulas USP, SENAI, ABIQUIM, Grupo GEN, ANVISA, CONAMA) não verificadas nesta sessão; fonte 'edital' aponta para portal genérico gov.br.",
+    "Caminho 'quimica' aponta para slug previsto para outro grupo, ainda ausente do catálogo (aviso do validador esperado).",
+    "Vocabulário, competências, tarefas e rubrica vêm do conhecimento da profissão, não de fonte primária."
+  ]
+}

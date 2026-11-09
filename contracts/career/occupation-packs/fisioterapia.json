@@ -1,0 +1,316 @@
+{
+  "schemaVersion": 1,
+  "code": "fisioterapia",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Fisioterapia", "en": "Physiotherapy", "es": "Fisioterapia" },
+  "fields": ["fisioterapia"],
+  "family": {
+    "cbo": [{ "code": "2236", "title": "Fisioterapeutas" }],
+    "isco08": [{ "code": "2264", "title": "Physiotherapists" }],
+    "esco": []
+  },
+  "scope": {
+    "summary": "Profissão de nível superior criada pelo Decreto-Lei 938/1969 e regulada pelo COFFITO e pelos CREFITOs (Lei 6.316/1975). Avalia, diagnostica (cinesiológico-funcional), trata e previne disfunções do movimento em hospitais, clínicas, atenção básica, esporte, empresas e domicílio. Avaliações, evoluções e imagens de pacientes são sigilosas.",
+    "entryRoles": ["Fisioterapeuta residente", "Fisioterapeuta de clínica (início de carreira)", "Fisioterapeuta de atendimento domiciliar", "Fisioterapeuta de plantão hospitalar", "Estagiário em reabilitação"],
+    "midRoles": ["Fisioterapeuta hospitalar (UTI, enfermaria)", "Fisioterapeuta ortopédico ou esportivo", "Fisioterapeuta neurofuncional", "Fisioterapeuta na atenção básica (eMulti/NASF)", "Fisioterapeuta do trabalho (ergonomia)", "Fisioterapeuta pélvico, respiratório ou pediátrico"],
+    "seniorRoles": ["Especialista com título reconhecido pelo COFFITO", "Coordenador de serviço de fisioterapia ou reabilitação", "Responsável técnico de clínica", "Fisioterapeuta de equipe de alto rendimento", "Docente, preceptor ou pesquisador", "Gestor de serviço de saúde"],
+    "sectors": ["hospitais públicos e privados", "clínicas e consultórios", "atenção básica (SUS)", "esporte e clubes", "empresas (saúde do trabalhador, ergonomia)", "atendimento domiciliar (home care)", "instituições de longa permanência", "ensino e pesquisa", "trabalho autônomo"],
+    "regulation": [
+      { "name": "Decreto-Lei 938/1969", "issuer": "Brasil", "about": "cria as profissões de fisioterapeuta e terapeuta ocupacional como de nível superior; atividade privativa de executar métodos e técnicas fisioterápicos" },
+      { "name": "Lei 6.316/1975", "issuer": "Brasil", "about": "cria o COFFITO e os CREFITOs; registro obrigatório" },
+      { "name": "Resolução COFFITO 424/2013", "issuer": "COFFITO", "about": "Código de Ética e Deontologia da Fisioterapia: sigilo, documentos, relação com paciente e colegas" },
+      { "name": "Resolução COFFITO 516/2020", "issuer": "COFFITO", "about": "teleconsulta, teleconsultoria e telemonitoramento; mantém deveres éticos e de sigilo no atendimento não presencial" },
+      { "name": "Resolução COFFITO 80/1987", "issuer": "COFFITO", "about": "competências do fisioterapeuta: avaliação, diagnóstico cinesiológico-funcional, prescrição e alta (número a confirmar)" },
+      { "name": "Resolução COFFITO 414/2012", "issuer": "COFFITO", "about": "registro em prontuário e documentos fisioterapêuticos (número a confirmar)" },
+      { "name": "LGPD (Lei 13.709/2018), art. 5º II e art. 11", "issuer": "Brasil", "about": "dados de saúde de pacientes são dados sensíveis" },
+      { "name": "NR-17 (MTE)", "issuer": "MTE", "about": "ergonomia; base da atuação em saúde do trabalhador" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "diagnóstico cinesiológico-funcional", "meaning": "diagnóstico privativo do fisioterapeuta sobre a função e o movimento" },
+      { "term": "avaliação fisioterapêutica", "meaning": "anamnese, exame físico, testes e escalas que fundamentam o plano de tratamento" },
+      { "term": "evolução", "meaning": "registro de cada atendimento no prontuário com resposta ao tratamento" },
+      { "term": "plano de tratamento", "meaning": "objetivos funcionais, condutas, frequência e critérios de alta" },
+      { "term": "CIF", "meaning": "Classificação Internacional de Funcionalidade, Incapacidade e Saúde (OMS)" },
+      { "term": "ADM", "meaning": "amplitude de movimento, medida com goniômetro" },
+      { "term": "AVD", "meaning": "atividades de vida diária" },
+      { "term": "cinesioterapia", "meaning": "tratamento por meio de exercício terapêutico" },
+      { "term": "eletrotermofototerapia", "meaning": "recursos físicos (corrente, calor, laser, ultrassom) usados na fisioterapia" },
+      { "term": "terapia manual", "meaning": "técnicas de mobilização e manipulação" },
+      { "term": "escalas funcionais", "meaning": "instrumentos como EVA, Berg, TUG, Barthel, MRC, Oswestry" },
+      { "term": "alta fisioterapêutica", "meaning": "encerramento do tratamento com base em critérios definidos" },
+      { "term": "prática baseada em evidências", "meaning": "uso de pesquisa clínica (PEDro, Cochrane) na decisão terapêutica" },
+      { "term": "telefisioterapia", "meaning": "teleconsulta, teleconsultoria e telemonitoramento (Res. COFFITO 516/2020)" },
+      { "term": "eMulti / NASF", "meaning": "equipes multiprofissionais da atenção básica do SUS" },
+      { "term": "ergonomia", "meaning": "adequação do trabalho ao trabalhador (NR-17); AET = análise ergonômica do trabalho" },
+      { "term": "ventilação mecânica", "meaning": "suporte ventilatório manejado pelo fisioterapeuta em UTI" },
+      { "term": "residência multiprofissional", "meaning": "programa de treinamento em serviço no SUS após a graduação" },
+      { "term": "RT", "meaning": "responsável técnico pela clínica perante o CREFITO" },
+      { "term": "termo de consentimento", "meaning": "autorização do paciente para condutas, imagens e tele-atendimento" }
+    ],
+    "tools": ["prontuário eletrônico e sistemas de clínica", "goniômetro, dinamômetro e fita métrica", "escalas e questionários validados (EVA, Berg, TUG, Oswestry, DASH)", "aparelhos de eletrotermofototerapia", "ventilador mecânico e oximetria (hospitalar)", "bases de evidência (PEDro, PubMed, Cochrane, BVS)", "editor de textos para relatórios, POPs e relatos de caso", "planilhas de indicadores do serviço"],
+    "deliverables": ["avaliação e plano de tratamento no prontuário", "evolução diária", "relatório de alta ou de acompanhamento", "relato de caso clínico anonimizado", "POP do serviço (ex.: aspiração, mobilização precoce, biossegurança)", "protocolo assistencial baseado em evidências", "análise ergonômica do trabalho (AET)", "programa de exercícios domiciliares", "material educativo para pacientes", "relatório técnico de indicadores do serviço"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Avaliação fisioterapêutica e diagnóstico cinesiológico-funcional", "esco": null, "kind": "nucleo" },
+      { "label": "Raciocínio clínico e definição de objetivos funcionais", "esco": null, "kind": "nucleo" },
+      { "label": "Cinesioterapia e exercício terapêutico", "esco": null, "kind": "nucleo" },
+      { "label": "Terapia manual", "esco": null, "kind": "nucleo" },
+      { "label": "Recursos eletrotermofototerapêuticos", "esco": null, "kind": "nucleo" },
+      { "label": "Fisioterapia respiratória e cardiovascular", "esco": null, "kind": "nucleo" },
+      { "label": "Fisioterapia neurofuncional", "esco": null, "kind": "nucleo" },
+      { "label": "Uso de escalas e medidas de desfecho (CIF)", "esco": null, "kind": "nucleo" },
+      { "label": "Registro em prontuário e documentos fisioterapêuticos", "esco": null, "kind": "nucleo" },
+      { "label": "Educação em saúde e orientação ao paciente", "esco": null, "kind": "nucleo" },
+      { "label": "Prática baseada em evidências", "esco": null, "kind": "apoio" },
+      { "label": "Ergonomia e saúde do trabalhador", "esco": null, "kind": "apoio" },
+      { "label": "Telefisioterapia e tecnologias", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de serviço de reabilitação e indicadores", "esco": null, "kind": "apoio" },
+      { "label": "Trabalho em equipe multiprofissional", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["ética e sigilo", "comunicação empática", "organização e registro", "aprendizagem contínua", "resolução de problemas"],
+    "tracks": [
+      { "id": "clinica-e-reabilitacao", "label": "Clínica e reabilitação", "steps": ["relato de caso clínico anonimizado (L3)", "POP de uma rotina do serviço (L7)", "material de exercícios domiciliares para um perfil fictício (X1)", "fluxo de admissão, tratamento e alta (D4)"] },
+      { "id": "hospitalar", "label": "Fisioterapia hospitalar", "steps": ["POP de mobilização precoce ou aspiração (L7)", "relatório técnico de indicadores do serviço (L4)", "fluxo de atendimento na UTI ou enfermaria (D4)", "infográfico de indicadores agregados (D7)"] },
+      { "id": "saude-do-trabalhador", "label": "Ergonomia e saúde do trabalhador", "steps": ["relatório técnico no formato de AET resumida (L4)", "redesenho de posto de trabalho antes e depois (D5)", "proposta a partir de briefing de empresa (L8)"] },
+      { "id": "apresentar-se", "label": "Apresentar-se na área", "steps": ["bio com área e registro (L6)", "currículo direcionado (L1)", "carta para residência, concurso ou vaga (L2)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"fisioterapeuta hospitalar\", \"fisioterapeuta ortopédico\", \"fisioterapeuta domiciliar\", \"fisioterapeuta do trabalho\"",
+      "cboFamilies": ["2236"],
+      "why": "Pergunto sua última função para partir do que você já fez e sugerir tarefas da sua área. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "recém-formado, residência ou primeiro registro no CREFITO",
+        "junior": "até dois anos atuando, com supervisão",
+        "pleno": "avalia, trata e dá alta com autonomia",
+        "senior": "referência técnica; especialista, RT ou preceptor",
+        "gestao": "coordena serviço, equipe ou clínica"
+      },
+      "why": "Pergunto o nível para ajustar a dificuldade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na Fisioterapia",
+      "options": ["avaliação e diagnóstico funcional", "exercício terapêutico", "terapia manual", "recursos eletrotermofototerapêuticos", "fisioterapia respiratória e UTI", "fisioterapia neurofuncional", "escalas e medidas de desfecho", "registro e documentação", "educação do paciente", "prática baseada em evidências", "ergonomia e saúde do trabalhador", "gestão de serviço e indicadores"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com as tarefas."
+    },
+    "c4": {
+      "certifications": ["registro no CREFITO", "residência multiprofissional ou uniprofissional", "título de especialista (COFFITO)", "cursos de métodos e técnicas (terapia manual, pilates, dry needling, ventilação mecânica)", "pós-graduação lato sensu", "mestrado ou doutorado", "curso de suporte básico de vida"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação, registro e idiomas ajudam a ver lacunas em relação à função que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["raciocínio clínico e relato de caso", "medidas de desfecho e CIF", "prática baseada em evidências", "fisioterapia hospitalar e UTI", "ergonomia e saúde do trabalhador", "telefisioterapia", "educação em saúde", "gestão de serviço e indicadores"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que área da Fisioterapia você quer atuar primeiro?", "type": "escolha", "options": ["ortopédica e esportiva", "hospitalar e respiratória", "neurofuncional", "atenção básica e saúde coletiva", "saúde do trabalhador", "pélvica, pediátrica ou gerontologia", "ainda não sei"], "why": "A área muda as tarefas sugeridas (relato de caso, POP hospitalar, AET). Você pode mudar depois.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": true
+  },
+  "guidedTasks": {
+    "priority": ["L3", "L7", "L4", "L6", "L1", "D4", "D7", "L2", "D5", "L8", "L5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica de ambiente não é entrega da profissão" },
+      { "code": "D3", "reason": "modelagem 3D de produto não faz parte da atuação" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da profissão" },
+      { "code": "D8", "reason": "vista explodida de conjunto não se aplica" },
+      { "code": "D9", "reason": "wireframe de interface não se aplica" }
+    ],
+    "parameters": {
+      "L3": {
+        "title": "Relato de caso clínico anonimizado",
+        "brief": "Descreva um caso que você conduziu: situação (perfil funcional sem identificar o paciente), tarefa (avaliação, escalas e objetivos funcionais), ação (plano de tratamento e justificativa) e resultado (reavaliação com escala ou medida). Declare que não há dado identificável.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "anonymized": true, "measurableResult": true, "outcomeMeasureRequired": true, "maxWords": 900 },
+        "criteria": ["quatro seções explícitas", "diagnóstico cinesiológico-funcional e objetivos funcionais nomeados", "ao menos uma escala ou medida de desfecho na avaliação e na reavaliação", "conduta justificada com referência", "sem nome, iniciais, data completa, instituição ou imagem identificável", "declaração de autoria e de anonimização"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "L7": {
+        "title": "POP de uma rotina do serviço",
+        "brief": "Escreva o procedimento de uma rotina que você domina (mobilização precoce, aspiração, higienização de equipamentos, acolhimento e triagem, tele-atendimento), com passos numerados, responsável, materiais, critério de conclusão e registro.",
+        "parameters": { "numberedSteps": true, "fields": ["objetivo", "campo de aplicação", "responsável", "materiais e EPI", "passos", "critério de conclusão", "registro", "referências"], "minSteps": 6 },
+        "criteria": ["passos numerados com responsável", "materiais e EPI listados", "critério de conclusão por etapa", "referência a resolução, protocolo ou evidência", "sem dado de paciente"],
+        "evidence": "modelo de POP",
+        "time": "60 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório técnico curto (indicadores do serviço ou AET)",
+        "brief": "Relate um trabalho técnico em até 4 páginas: objetivo, método (população, instrumentos, período), resultados agregados, limitações e referências. Serve para indicadores de serviço, protocolo implantado ou análise ergonômica resumida.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "método", "resultados", "limitações", "referências"], "aggregatedOnly": true },
+        "criteria": ["cinco seções nomeadas", "até 4 páginas", "ao menos um indicador quantitativo agregado", "referência bibliográfica ou normativa", "pacientes, trabalhadores e instituição não identificáveis"],
+        "evidence": "relatório",
+        "time": "2 h",
+        "level": 3
+      },
+      "L6": {
+        "title": "Bio com área e registro",
+        "brief": "Escreva um resumo de até 600 caracteres com sua área, três competências e uma prova com link. Pode citar o registro no CREFITO; não cite pacientes.",
+        "parameters": { "maxChars": 600, "requiredParts": ["área de atuação", "três competências", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia a área", "cita três competências", "inclui uma prova com link"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "D4": {
+        "title": "Fluxo de admissão, tratamento e alta",
+        "brief": "Desenhe o fluxo de um processo do serviço (admissão e avaliação, reavaliação periódica, critérios de alta, encaminhamento) com raias por responsável e pontos de decisão.",
+        "parameters": { "swimlanes": true, "requiredElements": ["início", "fim", "decisões", "registros gerados"] },
+        "criteria": ["início e fim", "raias por responsável", "nenhuma tarefa órfã", "pontos de decisão nomeados", "registros ou documentos gerados indicados"],
+        "evidence": "diagrama vetorial",
+        "time": "45 min",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de indicadores do serviço",
+        "brief": "Mostre indicadores agregados (tempo médio de tratamento, ganho médio em escala, taxa de alta, absenteísmo) com fonte, período, eixos rotulados e uma mensagem principal. Sem dado individual.",
+        "parameters": { "requiredElements": ["fonte e período", "eixos rotulados", "mensagem principal"], "aggregatedOnly": true },
+        "criteria": ["fonte e período citados", "eixos rotulados", "uma mensagem principal", "dados agregados, sem identificação"],
+        "evidence": "imagem + PDF",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "letters", "title": "Material de orientação ou exercícios domiciliares para um perfil fictício", "competency": "Educação em saúde e orientação ao paciente", "criteria": ["perfil fictício declarado (sem paciente real)", "linguagem acessível, sem jargão não explicado", "orientações de segurança e sinais para interromper e procurar o fisioterapeuta", "aviso de que não substitui avaliação individual", "fonte técnica citada"], "evidence": "folheto ou texto publicável", "time": "45 min", "trigger": "Que orientação você repete a pacientes e poderia transformar em material educativo?", "level": 1 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L8", "L9"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas, palavras ou caracteres", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6"], "auto": true },
+      { "id": "anonimizacao-declarada", "check": "a pessoa declarou que não há paciente, trabalhador ou instituição identificável, ou que o perfil é fictício", "appliesTo": ["L3", "L4", "D7", "X1"], "auto": true },
+      { "id": "sem-identificadores", "check": "o texto não contém nome, iniciais, data completa, número de prontuário, instituição ou imagem identificável", "appliesTo": ["L3", "L4", "L7", "D7"], "auto": true },
+      { "id": "medida-de-desfecho", "check": "há ao menos uma escala ou medida nomeada na avaliação e na reavaliação", "appliesTo": ["L3"], "auto": true },
+      { "id": "referencia-citada", "check": "cita ao menos uma referência bibliográfica, resolução ou protocolo", "appliesTo": ["L3", "L4", "L7", "X1"], "auto": true },
+      { "id": "indicador-quantitativo", "check": "há ao menos um número ou indicador no resultado", "appliesTo": ["L3", "L4", "D7"], "auto": true },
+      { "id": "pop-estrutura", "check": "passos numerados, responsável e critério de conclusão presentes", "appliesTo": ["L7"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim, raias e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "fonte-no-grafico", "check": "fonte, período e eixos rotulados presentes", "appliesTo": ["D7"], "auto": true },
+      { "id": "antes-e-depois", "check": "duas versões lado a lado com três mudanças anotadas", "appliesTo": ["D5"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados confidenciais", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L10", "D2", "D4", "D5", "D7", "X1"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "raciocinio-clinico", "label": "Raciocínio clínico", "levels": { "aproxima": "descreve condutas sem ligar à avaliação", "atende": "liga avaliação, objetivos funcionais e conduta", "supera": "discute alternativas, evidência e o que faria diferente" } },
+      { "id": "uso-de-evidencia", "label": "Uso de evidência", "levels": { "aproxima": "cita referência genérica", "atende": "usa evidência pertinente à conduta", "supera": "pondera qualidade da evidência e aplicabilidade ao caso" } },
+      { "id": "comunicacao-com-paciente", "label": "Comunicação com paciente", "levels": { "aproxima": "usa jargão sem explicar", "atende": "explica termos e dá orientação prática", "supera": "antecipa dúvidas e promove autonomia sem substituir a avaliação" } },
+      { "id": "funcionalidade", "label": "Foco em funcionalidade (CIF)", "levels": { "aproxima": "foca só em sinais e sintomas", "atende": "define objetivos em atividade e participação", "supera": "integra fatores contextuais e metas do paciente" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Fisioterapia (Decreto-Lei 938/1969; Lei 6.316/1975; registro no CREFITO; Código de Ética Res. COFFITO 424/2013; telefisioterapia pela Res. COFFITO 516/2020). Use o vocabulário da área: avaliação fisioterapêutica, diagnóstico cinesiológico-funcional, objetivos funcionais, CIF, escalas de desfecho, evolução, plano de tratamento, alta, POP, AET. O que você nunca faz: não dá orientação clínica, conduta, exercício ou prescrição para um paciente ou caso de terceiros; não interpreta avaliação ou exame de pessoa real; não redige laudo, atestado, parecer ou evolução assinável; não substitui a decisão do fisioterapeuta nem a responsabilidade técnica. Avaliações, evoluções e imagens de pacientes são dados sensíveis: peça anonimização (sem nome, iniciais, data completa, instituição, imagem) ou perfil fictício. Ajude a estruturar relatos de caso anonimizados com medidas de desfecho, POPs, relatórios técnicos, fluxos do serviço, infográficos de indicadores agregados e materiais educativos para perfis fictícios; pré-cheque só critérios objetivos. Pergunte a área de atuação em vez de deduzir. Afirmações sobre mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa vaga, residência, concurso ou salário. Progresso é por critérios atendidos; o selo depende de revisão humana.",
+    "citeSources": [
+      { "title": "COFFITO — Conselho Federal de Fisioterapia e Terapia Ocupacional (resoluções e Código de Ética)", "url": "https://www.coffito.gov.br/", "kind": "conselho" },
+      { "title": "Decreto-Lei 938/1969 — criação das profissões de fisioterapeuta e terapeuta ocupacional", "url": "https://www.planalto.gov.br/ccivil_03/decreto-lei/1965-1988/del0938.htm", "kind": "norma" },
+      { "title": "Lei 6.316/1975 — criação do COFFITO e dos CREFITOs", "url": "https://www.planalto.gov.br/ccivil_03/leis/1970-1979/l6316.htm", "kind": "norma" },
+      { "title": "PEDro — Physiotherapy Evidence Database", "url": "https://pedro.org.au/portuguese/", "kind": "referencia" },
+      { "title": "BVS — Biblioteca Virtual em Saúde", "url": "https://bvsalud.org/", "kind": "referencia" },
+      { "title": "CNES/DataSUS — profissionais por CBO em estabelecimentos de saúde", "url": "https://cnes.datasus.gov.br/", "kind": "estatistica" },
+      { "title": "CBO 2236 — Fisioterapeutas (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Pergunta a área (x1) antes de sugerir; variantes de c2 e c5 com competências da Fisioterapia." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza relato de caso com medida de desfecho (L3), POP (L7), relatório técnico (L4) e fluxo (D4); cada card diz por que e aceita \"não me serve\"." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Considera plantões e atendimentos domiciliares: tarefas curtas no celular, relato e relatório no computador." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, medida de desfecho nomeada, referência e ausência de identificadores de paciente; não avalia a conduta clínica." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura relato de caso, POP e relatório; nunca redige evolução, laudo, atestado ou parecer assinável nem sugere conduta para paciente real." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias e decisões do fluxo (D4); fonte e eixos do infográfico (D7); anotações do antes e depois ergonômico (D5)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese por área com competências declaradas e evidenciadas; cita o campo de origem." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: educação física, enfermagem, medicina, segurança do trabalho, gestão pública; sempre com fonte, data e requisitos de formação." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por CBO 2236 e competências compartilhadas; só pessoas com opt-in." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Mostra os campos usados e o botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil, sem citar pacientes; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, registro, residência e cursos em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "avaliações, evoluções, prontuários e imagens de pacientes", "dados de trabalhadores avaliados em AET", "dados sensíveis (LGPD art. 5º II)", "dados de terceiros sem autorização"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca dar orientação clínica, conduta ou exercício para paciente ou terceiro; materiais só para perfis fictícios declarados",
+      "nunca redigir evolução, laudo, atestado ou parecer assinável; não substituir a responsabilidade técnica",
+      "exigir anonimização de pacientes, trabalhadores e instituições em relatos e relatórios",
+      "perguntar a área de atuação em vez de inferir pelos textos",
+      "afirmações de mercado com fonte, data e região ou \"estimativa\"; nunca prometer vaga, residência, concurso ou salário",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["diagrama", "infografico", "prancha"],
+    "lettersTemplates": ["relatorio-de-caso", "estudo-de-caso", "pop", "relatorio-tecnico", "bio", "curriculo", "carta", "proposta", "post", "revisao", "artigo", "projeto-de-pesquisa"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só bio (L6), post (L5) e revisão (L10); relato de caso, POP, relatório e fluxo pedem computador. Plantões: plano semanal com tarefas de 15–30 min.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: bio com sua área e registro (15 min).",
+        "Tem um caso com boa evolução em escala? Um relato anonimizado leva cerca de 1 h e comprova raciocínio clínico.",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui.",
+        "Que rotina do serviço você poderia padronizar? Um POP de 60 min vira evidência de organização."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": { "sensitiveData": ["avaliações, evoluções e imagens de pacientes (Res. COFFITO 424/2013; LGPD art. 5º II)", "gravações de tele-atendimento", "dados de trabalhadores avaliados em ergonomia", "dados de atletas sob contrato"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2236", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "CNES/DataSUS — fisioterapeutas em estabelecimentos de saúde (CBO 2236)", "url": "https://cnes.datasus.gov.br/", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "COFFITO / CREFITOs — profissionais inscritos (sem total nacional com data localizado)", "url": "https://www.coffito.gov.br/", "geography": "Brasil e regiões (por CREFITO)", "cadence": "eventual", "kind": "conselho" },
+      { "title": "SciELO — Geographical distribution of physiotherapists in Brazil (Fisioterapia e Pesquisa)", "url": "https://new.scielo.br/j/fp/a/7bcR4d7BCBZ6F8tbZRFsPQB/?lang=en", "geography": "Brasil e UF", "cadence": "eventual", "kind": "pesquisa" },
+      { "title": "Editais de residência multiprofissional e concursos (SUS, hospitais universitários/EBSERH)", "url": "https://www.gov.br/ebserh/pt-br", "geography": "Brasil e UF", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "educacao-fisica", "why": "Exercício, prevenção de lesão e condicionamento são fronteiras comuns; equipes de esporte e saúde integram as duas profissões.", "gaps": ["graduação em Educação Física e registro no CREF", "periodização e treinamento esportivo"], "steps": ["relato de caso com foco em retorno ao esporte (L3)", "fluxo de encaminhamento entre profissionais (D4)", "verificar requisitos de nova graduação"] },
+    { "to": "enfermagem", "why": "Cuidado hospitalar, UTI e atenção básica são ambientes compartilhados; gestão de serviços de saúde é caminho comum.", "gaps": ["graduação em Enfermagem e registro no COREN", "procedimentos de enfermagem e gestão do cuidado"], "steps": ["POP de rotina compartilhada na UTI (L7)", "relatório técnico de indicadores do serviço (L4)", "verificar requisitos de nova graduação"] },
+    { "to": "seguranca-do-trabalho", "why": "Ergonomia (NR-17) e saúde do trabalhador aproximam a fisioterapia do trabalho da segurança do trabalho.", "gaps": ["demais NRs e gestão de riscos ocupacionais", "formação técnica ou especialização em segurança do trabalho"], "steps": ["relatório no formato de AET resumida (L4)", "redesenho de posto de trabalho antes e depois (D5)", "curso de NR-17 e gestão de riscos"] },
+    { "to": "gestao-publica", "why": "Coordenação de serviços de reabilitação no SUS e políticas de saúde são carreiras públicas acessíveis a fisioterapeutas.", "gaps": ["administração pública e orçamento", "indicadores e planejamento em saúde"], "steps": ["plano 30-60-90 para coordenação (L9)", "infográfico de indicadores agregados (D7)", "cursos da Enap e UNA-SUS em gestão em saúde"] },
+    { "to": "medicina", "why": "Mesmo ambiente clínico e raciocínio diagnóstico; caminho longo que exige nova graduação.", "gaps": ["graduação em Medicina e registro no CRM", "diagnóstico nosológico e prescrição medicamentosa"], "steps": ["relato de caso com discussão de diagnósticos diferenciais (L3)", "verificar requisitos de ingresso"] }
+  ],
+  "learning": [
+    { "title": "COFFITO — resoluções, Código de Ética e especialidades", "provider": "COFFITO", "url": "https://www.coffito.gov.br/", "free": true, "kind": "portal" },
+    { "title": "PEDro — base de evidências em fisioterapia (em português)", "provider": "PEDro", "url": "https://pedro.org.au/portuguese/", "free": true, "kind": "portal" },
+    { "title": "UNA-SUS — cursos abertos em reabilitação, atenção básica e saúde do trabalhador", "provider": "UNA-SUS / Ministério da Saúde", "url": "https://www.unasus.gov.br/", "free": true, "kind": "portal" },
+    { "title": "AVASUS — ambiente virtual de aprendizagem do SUS", "provider": "UFRN / Ministério da Saúde", "url": "https://avasus.ufrn.br/", "free": true, "kind": "portal" },
+    { "title": "TelessaúdeRS — cursos e teleconsultoria para a atenção básica", "provider": "UFRGS", "url": "https://www.ufrgs.br/telessauders/", "free": true, "kind": "portal" },
+    { "title": "CIF — Classificação Internacional de Funcionalidade (OMS/OPAS)", "provider": "OPAS / OMS", "url": "https://www.paho.org/pt/topicos/classificacao-internacional-de-funcionalidade-incapacidade-e-saude", "free": true, "kind": "norma" },
+    { "title": "Campus Virtual Fiocruz — cursos livres em saúde", "provider": "Fiocruz", "url": "https://campusvirtual.fiocruz.br/", "free": true, "kind": "portal" },
+    { "title": "Residência multiprofissional em saúde — programas públicos (MEC/MS)", "provider": "MEC / Ministério da Saúde", "url": "https://www.gov.br/mec/pt-br/residencias-em-saude", "free": true, "kind": "certificacao" },
+    { "title": "Sebrae — gestão de clínicas e consultórios", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Fase 1 — grupo Saúde e bem-estar (g1-saude.json): famílias CBO/ISCO, conselho, dados sensíveis, vizinhos", "url": "docs/pesquisa/fase1/g1-saude.json", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Teleconsulta voltada para a área da Fisioterapia (UNISEPE) — Res. COFFITO 424/2013 art. 15 II e Res. 516/2020", "url": "https://portal.unisepe.com.br/fpbe/wp-content/uploads/sites/10008/2024/01/TELECONSULTA-VOLTADA-PARA-A-%C3%81REA-DA-FISIOTERAPIA.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Revista Interfaces (UNILEÃO) — telefisioterapia e Res. COFFITO 516/2020", "url": "https://interfaces.unileao.edu.br/index.php/revista-interfaces/article/download/1486/1103/5846", "accessedAt": "2026-11-02" },
+    { "title": "SciELO — Geographical distribution of physiotherapists in Brazil", "url": "https://new.scielo.br/j/fp/a/7bcR4d7BCBZ6F8tbZRFsPQB/?lang=en", "accessedAt": "2026-11-02" },
+    { "title": "Quero Bolsa — Conselho de Fisioterapia: entenda a importância do CREFITO", "url": "https://querobolsa.com.br/revista/conselho-de-fisioterapia-entenda-a-importancia-do-crefito", "accessedAt": "2026-11-02" },
+    { "title": "CBO 2236-05 Fisioterapeuta geral (espelho vriconsulting)", "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=223605", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Res. COFFITO 80/1987 (competências) e Res. COFFITO 414/2012 (prontuário): números e ementas citados de memória, não confirmados.",
+    "Res. COFFITO 516/2020: fontes divergem se suspendeu temporariamente ou revogou o art. 15 II da Res. 424/2013 e se segue vigente; conferir no site do COFFITO.",
+    "ESCO 'physiotherapist': dois UUIDs apareceram em espelho (006cc1f9-2841-41c3-991a-dc3f2f3bd533 e a317e9c2-62d5-4a24-8ad4-5cb7b9db3f3b) sem confirmação de qual é 'physiotherapist' e qual é 'advanced physiotherapist'; family.esco ficou vazio. Competências sem URI ESCO.",
+    "Total de fisioterapeutas inscritos no COFFITO: nenhuma estatística oficial com data localizada (estimativas de 190 mil a 300 mil em fontes não primárias).",
+    "URLs de citação e aprendizagem (planalto, PEDro, BVS, CNES, UNA-SUS, AVASUS, TelessaúdeRS, OPAS, EBSERH, MEC residências) não abertas nesta sessão.",
+    "Vocabulário, tarefas e rubrica vêm do conhecimento da profissão; revisão por fisioterapeuta recomendada."
+  ]
+}

@@ -1,0 +1,354 @@
+{
+  "schemaVersion": 1,
+  "code": "processos-gerenciais",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Processos Gerenciais", "en": "Business Management (Technology Degree)", "es": "Procesos Gerenciales" },
+  "fields": ["processos-gerenciais"],
+  "family": {
+    "cbo": [
+      { "code": "3513", "title": "Técnicos em administração" },
+      { "code": "2521", "title": "Administradores" },
+      { "code": "1421", "title": "Gerentes administrativos, financeiros, de riscos e afins" },
+      { "code": "4110", "title": "Agentes, assistentes e auxiliares administrativos" }
+    ],
+    "isco08": [
+      { "code": "2421", "title": "Management and organisation analysts" },
+      { "code": "3341", "title": "Office supervisors" },
+      { "code": "1219", "title": "Business services and administration managers not elsewhere classified" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/544cd9cf-e2ee-4ac0-8a02-7147af6b97d7", "label": "business manager" },
+      { "uri": "http://data.europa.eu/esco/occupation/60082a99-d8ef-4e84-9290-78902681b6ed", "label": "business analyst" }
+    ]
+  },
+  "scope": {
+    "summary": "Planeja, organiza e melhora processos de negócio em empresas de todos os portes, cooperativas e organizações públicas: mapeamento e redesenho de processos (BPMN), indicadores e metas, planejamento estratégico (SWOT, Canvas, OKR), gestão de pequenos negócios e empreendedorismo, rotinas administrativas, financeiras e comerciais. Formação tecnológica (CST em Processos Gerenciais / Gestão de Negócios) com registro facultativo no CRA.",
+    "entryRoles": ["Auxiliar ou assistente administrativo", "Assistente de processos", "Estagiário de gestão", "Assistente de planejamento", "Aprendiz administrativo", "Microempreendedor individual (MEI)"],
+    "midRoles": ["Analista de processos", "Analista de negócios", "Analista administrativo", "Analista de planejamento e controle", "Supervisor administrativo", "Gestor de pequeno negócio", "Consultor Sebrae / agente de desenvolvimento"],
+    "seniorRoles": ["Coordenador administrativo", "Gerente de processos ou de operações", "Gerente de negócios", "Gerente administrativo-financeiro", "Consultor em gestão empresarial", "Empreendedor à frente da própria empresa"],
+    "sectors": ["comércio e serviços", "indústria (áreas administrativas)", "micro e pequenas empresas", "cooperativas", "startups", "setor público e autarquias", "terceiro setor", "consultoria", "franquias", "agronegócio (gestão)"],
+    "regulation": [
+      { "name": "Lei 4.769/1965; Res. CFA 649/2024", "issuer": "CFA/CRA", "about": "profissão de administrador; registro facultativo do tecnólogo em área conexa; atividades privativas do administrador" },
+      { "name": "Código de Ética dos Profissionais de Administração (RN CFA 537/2018)", "issuer": "CFA", "about": "sigilo de informações do cliente ou empregador, honestidade, responsabilidade técnica" },
+      { "name": "Lei Complementar 123/2006 (Estatuto da Microempresa e EPP) e MEI", "issuer": "Brasil", "about": "Simples Nacional, enquadramento, obrigações e benefícios de ME, EPP e MEI" },
+      { "name": "Código Civil (Lei 10.406/2002), Livro II — Direito de Empresa", "issuer": "Brasil", "about": "empresário, sociedades, contratos, nome empresarial, registro" },
+      { "name": "Lei 5.764/1971 (cooperativas) e Lei 14.030/2020", "issuer": "Brasil", "about": "constituição, assembleias e gestão de sociedades cooperativas" },
+      { "name": "Código de Defesa do Consumidor (Lei 8.078/1990)", "issuer": "Brasil", "about": "relações de consumo, atendimento, trocas e garantias em processos comerciais" },
+      { "name": "LGPD (Lei 13.709/2018)", "issuer": "Brasil", "about": "tratamento de dados de clientes e colaboradores nos processos da empresa" },
+      { "name": "ABNT NBR ISO 9001:2015 e ABNT NBR ISO 31000:2018", "issuer": "ABNT / ISO", "about": "abordagem por processos, indicadores e melhoria; gestão de riscos" },
+      { "name": "Lei 14.195/2021 e Redesim", "issuer": "Brasil", "about": "facilitação de abertura de empresas e desburocratização" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "processo de negócio", "meaning": "conjunto de atividades com entradas, saídas, responsáveis e cliente (interno ou externo)" },
+      { "term": "BPMN", "meaning": "notação padrão para modelar processos: eventos, atividades, gateways, raias" },
+      { "term": "AS-IS / TO-BE", "meaning": "processo como está hoje e processo redesenhado" },
+      { "term": "SIPOC", "meaning": "fornecedores, entradas, processo, saídas e clientes: visão macro de um processo" },
+      { "term": "cadeia de valor", "meaning": "processos primários e de apoio que entregam valor ao cliente (Porter)" },
+      { "term": "indicador (KPI)", "meaning": "medida com fórmula, meta, fonte, periodicidade e responsável" },
+      { "term": "PDCA", "meaning": "planejar, executar, checar e agir: ciclo de melhoria contínua" },
+      { "term": "5W2H", "meaning": "plano de ação: o quê, por quê, onde, quando, quem, como e quanto custa" },
+      { "term": "SWOT (FOFA)", "meaning": "forças, fraquezas, oportunidades e ameaças" },
+      { "term": "Business Model Canvas", "meaning": "quadro de nove blocos do modelo de negócio (proposta de valor, segmentos, canais, receitas, custos...)" },
+      { "term": "OKR", "meaning": "objetivos e resultados-chave: metas trimestrais mensuráveis" },
+      { "term": "BSC", "meaning": "balanced scorecard: perspectivas financeira, cliente, processos e aprendizado" },
+      { "term": "plano de negócios", "meaning": "documento com mercado, operação, marketing, finanças e viabilidade de um negócio" },
+      { "term": "fluxo de caixa e ponto de equilíbrio", "meaning": "entradas e saídas no tempo; faturamento que cobre custos e despesas" },
+      { "term": "margem de contribuição e markup", "meaning": "preço menos custos variáveis; índice aplicado sobre o custo para formar preço" },
+      { "term": "ERP / CRM", "meaning": "sistema integrado de gestão (TOTVS, Omie, Bling) e gestão de relacionamento com clientes (RD Station, Pipedrive)" },
+      { "term": "gestão à vista e reunião de rotina", "meaning": "painéis visíveis e rituais curtos para acompanhar indicadores" },
+      { "term": "lead time e SLA", "meaning": "tempo total de atendimento; acordo de nível de serviço" },
+      { "term": "Lean Office e 5S", "meaning": "eliminação de desperdícios e organização aplicadas a processos administrativos" },
+      { "term": "governança e compliance", "meaning": "regras de decisão, controles internos e conformidade legal" },
+      { "term": "MEI, ME e EPP", "meaning": "portes de empresa do Simples Nacional (LC 123/2006)" },
+      { "term": "stakeholders", "meaning": "partes interessadas no processo ou no negócio" }
+    ],
+    "tools": ["modelador BPMN (Bizagi Modeler, Camunda, draw.io)", "Excel / Google Sheets", "Power BI / Looker Studio", "Trello, Asana ou Notion", "ERP (TOTVS, Omie, Bling, Conta Azul)", "CRM (RD Station, Pipedrive, HubSpot)", "Microsoft 365 / Google Workspace", "Canvas e SWOT (Miro, Canva)", "ferramentas Sebrae (Canvas, plano de negócios on-line)", "Microsoft Project ou Planner"],
+    "deliverables": ["mapa de processo AS-IS e TO-BE (BPMN)", "procedimento operacional padrão (POP)", "plano de ação 5W2H", "painel de indicadores (dashboard)", "análise SWOT", "Business Model Canvas", "plano de negócios", "relatório gerencial mensal", "proposta de melhoria de processo", "fluxo de caixa projetado", "planejamento estratégico (missão, visão, objetivos, metas)", "manual de rotinas administrativas", "relatório A3 de melhoria"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Mapeamento e modelagem de processos (BPMN)", "esco": null, "kind": "nucleo" },
+      { "label": "Redesenho e melhoria contínua (PDCA, Lean Office)", "esco": null, "kind": "nucleo" },
+      { "label": "Definição e acompanhamento de indicadores", "esco": null, "kind": "nucleo" },
+      { "label": "Planejamento estratégico (SWOT, Canvas, OKR)", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de rotinas administrativas e financeiras", "esco": null, "kind": "nucleo" },
+      { "label": "Elaboração de planos de ação e de negócios", "esco": null, "kind": "nucleo" },
+      { "label": "Análise de dados gerenciais em planilhas e BI", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de pequenos negócios e empreendedorismo", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de projetos", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de pessoas e liderança de equipes administrativas", "esco": null, "kind": "apoio" },
+      { "label": "Atendimento e relacionamento com clientes (CRM)", "esco": null, "kind": "apoio" },
+      { "label": "Formação de preço e custos", "esco": null, "kind": "apoio" },
+      { "label": "Uso de ERP e sistemas de gestão", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de riscos e conformidade", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação escrita e oral", "organização e cumprimento de prazos", "negociação", "trabalho em equipe", "visão sistêmica", "aprendizagem contínua"],
+    "tracks": [
+      { "id": "melhoria-de-processos", "label": "Melhorar um processo de ponta a ponta", "steps": ["mapa AS-IS em BPMN (D4)", "antes e depois com três mudanças (D5)", "POP do processo redesenhado (L7)", "painel de indicadores do processo (D7)"] },
+      { "id": "gestao-de-negocio", "label": "Estruturar um negócio", "steps": ["Business Model Canvas (X1)", "análise SWOT e plano de ação 5W2H (X2)", "fluxo de caixa projetado em relatório (L4)", "estudo de caso STAR de um resultado (L3)"] },
+      { "id": "apresentar-se", "label": "Apresentar-se como gestor de processos", "steps": ["resumo de perfil (L6)", "currículo direcionado (L1)", "plano 30-60-90 para analista de processos (L9)", "post sobre um aprendizado (L5)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"assistente administrativo\", \"analista de processos\", \"supervisor de loja\", \"dono de pequeno negócio\", \"analista de planejamento\"",
+      "cboFamilies": ["3513", "2521", "1421", "4110"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez (rotinas, processos, gestão de um negócio) e não do zero. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, aprendizagem ou primeiro cargo administrativo",
+        "junior": "até dois anos; executa rotinas e apoia mapeamentos com supervisão",
+        "pleno": "mapeia e melhora processos e acompanha indicadores com autonomia",
+        "senior": "referência em processos; conduz projetos de melhoria e orienta colegas",
+        "gestao": "responde por equipe, metas, orçamento ou pelo próprio negócio"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (de um POP a um redesenho com indicadores) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em gestão",
+      "options": ["mapear e desenhar processos", "organizar rotinas e prazos", "montar planilhas e indicadores", "planejar (SWOT, metas, OKR)", "atender e negociar com clientes e fornecedores", "controlar caixa, contas e custos", "liderar e treinar equipe", "usar ERP ou CRM", "gerir projetos", "formar preço e analisar margem", "montar plano de negócios", "melhorar processos (PDCA, Lean)", "apresentar resultados para gestores", "empreender e gerir o próprio negócio"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com mapas de processo, POPs e painéis."
+    },
+    "c4": {
+      "certifications": ["tecnólogo em Processos Gerenciais ou Gestão de Negócios", "registro no CRA (facultativo)", "cursos Sebrae (gestão, finanças, Canvas)", "Lean Six Sigma (White ou Yellow Belt)", "BPMN / CBPP (ABPMP)", "Scrum ou PMP/CAPM", "Excel avançado ou Power BI", "pós-graduação em gestão empresarial, processos ou projetos"],
+      "languages": ["inglês (ferramentas e multinacionais)", "espanhol (Mercosul)"],
+      "why": "Formação e cursos ajudam a ver lacunas em relação ao cargo que você quer; BPMN, Excel e indicadores aparecem em muitas vagas."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver em gestão?",
+      "options": ["BPMN e mapeamento de processos", "indicadores e Power BI", "planejamento estratégico e OKR", "finanças do negócio (caixa, preço, margem)", "gestão de projetos", "Lean Office e melhoria contínua", "ERP e automação de rotinas", "liderança de equipe", "plano de negócios e Canvas", "atendimento e CRM"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (mapa → POP → indicadores) em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que contexto você atua ou quer atuar?", "type": "lista", "options": ["empresa de médio ou grande porte", "micro ou pequena empresa", "meu próprio negócio ou MEI", "cooperativa", "setor público", "terceiro setor", "consultoria"], "why": "Pergunto porque o contexto muda as tarefas: Canvas e fluxo de caixa para quem empreende; BPMN e indicadores para quem atua em processos de uma empresa.", "where": "P" },
+      { "id": "x2", "prompt": "Os dados do seu trabalho ou negócio podem ser mostrados?", "type": "escolha", "options": ["sim, são meus ou públicos", "só anonimizados ou em percentual", "não; vou usar um caso fictício"], "why": "Pergunto porque processos, indicadores e números de empresas atendidas costumam ser confidenciais; com a resposta, sugiro como anonimizar sem perder a evidência.", "where": "X" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["D4", "L7", "D5", "D7", "L3", "L8", "L6", "L1", "L9", "L4", "L5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta de ambiente é da arquitetura; o layout de uma loja ou escritório entra como antes e depois em D5" },
+      { "code": "D3", "reason": "modelo 3D de produto não é evidência de gestão" },
+      { "code": "D6", "reason": "detalhe construtivo é entrega de engenharia" },
+      { "code": "D8", "reason": "vista explodida é entrega da mecânica" },
+      { "code": "D9", "reason": "wireframe de tela é entrega de UX" }
+    ],
+    "parameters": {
+      "D4": {
+        "title": "Mapa AS-IS de um processo que você conhece (BPMN)",
+        "brief": "Modele em BPMN simplificado um processo administrativo, comercial ou de atendimento (pedido ao faturamento, compras, admissão, atendimento a reclamação): início e fim, raias por responsável, atividades, decisões e pontos de medição (tempo, fila, retrabalho). Use nomes genéricos de áreas; nada de dados de empresa sob sigilo.",
+        "parameters": { "notation": "BPMN simplificado", "requiredElements": ["evento de início e de fim", "raias por responsável", "ao menos um gateway", "pontos de medição"], "minActivities": 6 },
+        "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma atividade órfã", "ao menos um gateway de decisão", "ao menos um ponto de medição anotado", "sem nome de empresa ou dado sigiloso"],
+        "evidence": "diagrama vetorial (SVG/PDF)",
+        "time": "45 min",
+        "level": 1
+      },
+      "L7": {
+        "title": "POP de uma rotina administrativa ou comercial",
+        "brief": "Escreva o procedimento operacional padrão de uma rotina que você domina (fechamento de caixa, emissão de nota, onboarding de cliente, compras): objetivo, escopo, passos numerados com responsável, sistema ou formulário usado, indicador de controle e critério de conclusão por passo. Sem dados sigilosos.",
+        "parameters": { "requiredElements": ["objetivo e escopo", "passos numerados", "responsável por passo", "sistema ou formulário por passo", "indicador de controle", "critério de conclusão por passo"] },
+        "criteria": ["passos numerados com responsável", "critério de conclusão em cada passo", "ao menos um indicador de controle", "cabeçalho com código, versão e data", "sem dado sigiloso da empresa"],
+        "evidence": "POP em modelo",
+        "time": "60 min",
+        "level": 1
+      },
+      "D5": {
+        "title": "Antes e depois de um processo redesenhado",
+        "brief": "Mostre lado a lado o processo atual e o redesenhado (ou o layout de uma loja, escritório ou formulário) com três mudanças anotadas e a justificativa de cada uma em tempo, custo, retrabalho ou satisfação do cliente. Dados em percentual ou fictícios se a empresa for sigilosa.",
+        "parameters": { "versions": 2, "annotatedChanges": 3, "justifyBy": ["tempo ou etapas eliminadas", "custo ou retrabalho", "satisfação do cliente"] },
+        "criteria": ["duas versões lado a lado", "três mudanças anotadas", "cada mudança com justificativa mensurável", "legenda", "dados anonimizados ou fictícios declarados"],
+        "evidence": "prancha comparativa PDF/PNG",
+        "time": "60 min",
+        "level": 2
+      },
+      "D7": {
+        "title": "Painel de indicadores de um processo ou negócio",
+        "brief": "Monte um infográfico com até quatro indicadores de um processo ou negócio (lead time, taxa de retrabalho, ticket médio, inadimplência, NPS): cada um com fórmula, meta, período e fonte; eixos rotulados e uma mensagem principal. Use percentual relativo quando o valor absoluto for sigiloso.",
+        "parameters": { "maxIndicators": 4, "requiredElements": ["fórmula", "meta", "período", "fonte", "eixos rotulados", "mensagem principal"] },
+        "criteria": ["cada indicador com fórmula e meta", "fonte e período citados", "eixos rotulados", "uma mensagem principal explícita", "sem identificar empresa quando sigiloso"],
+        "evidence": "imagem PNG + PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "L3": {
+        "title": "Estudo de caso STAR de uma melhoria de gestão",
+        "brief": "Conte um problema de processo, atendimento ou resultado que você resolveu: situação com indicador inicial, tarefa, ação (ferramenta usada: 5W2H, PDCA, SWOT, novo fluxo) e resultado mensurável. Dados em percentual ou fictícios se a empresa for sigilosa.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true, "mustNameTool": true },
+        "criteria": ["quatro seções explícitas", "ferramenta de gestão nomeada", "resultado com número ou comparação relativa", "declaração de ausência de dado confidencial"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "L6": {
+        "title": "Resumo de perfil em processos gerenciais",
+        "brief": "Escreva até 600 caracteres com sua frente (processos, planejamento, pequenos negócios, rotinas administrativas), três competências e uma prova com link (mapa BPMN, POP, painel). Sem dados pessoais além do nome.",
+        "parameters": { "maxChars": 600, "requiredParts": ["frente de atuação", "três competências", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia a frente de atuação", "cita três competências", "inclui uma prova com link"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "drawings",
+        "title": "Business Model Canvas de um negócio real ou fictício",
+        "competency": "Modelagem de negócios e empreendedorismo",
+        "criteria": ["nove blocos preenchidos", "proposta de valor ligada a um segmento de clientes", "fontes de receita e estrutura de custos coerentes", "hipóteses marcadas como tal", "créditos ao modelo (Osterwalder) e dados fictícios declarados quando for o caso"],
+        "evidence": "prancha do Canvas (PDF/PNG)",
+        "time": "60 min",
+        "trigger": "Quer desenhar o modelo de um negócio em uma página?",
+        "level": 1
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Análise SWOT com plano de ação 5W2H",
+        "competency": "Planejamento e plano de ação",
+        "criteria": ["quatro quadrantes com ao menos três itens cada", "três ações derivadas da análise", "cada ação com o quê, por quê, onde, quando, quem, como e quanto", "indicador para acompanhar cada ação", "sem dado sigiloso da organização"],
+        "evidence": "documento",
+        "time": "60 min",
+        "trigger": "Quer transformar um diagnóstico em ações com dono e prazo?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L8", "L9", "X2"], "auto": true },
+      { "id": "fluxo-fechado", "check": "o diagrama tem início e fim, raias e nenhuma atividade órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "indicador-completo", "check": "cada indicador traz fórmula, meta, período e fonte", "appliesTo": ["D7", "L4", "X2"], "auto": true },
+      { "id": "canvas-nove-blocos", "check": "os nove blocos do Canvas estão presentes e preenchidos", "appliesTo": ["X1"], "auto": true },
+      { "id": "acao-5w2h-completa", "check": "cada ação responde às sete perguntas do 5W2H", "appliesTo": ["X2"], "auto": true },
+      { "id": "pop-passos", "check": "passos numerados, cada um com responsável e critério de conclusão", "appliesTo": ["L7"], "auto": true },
+      { "id": "palavras-chave-do-alvo", "check": "as palavras-chave do cargo-alvo aparecem no texto", "appliesTo": ["L1", "L2"], "auto": true },
+      { "id": "creditos-e-fontes", "check": "coautores, fontes, modelos e autores remixados estão creditados", "appliesTo": ["L5", "L10", "D2", "D7", "D10", "X1"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados confidenciais da empresa ou de clientes", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D2", "D4", "D5", "D7", "D10", "X1", "X2"], "auto": true },
+      { "id": "coerencia-do-modelo", "check": "proposta de valor, segmentos, receitas e custos são coerentes entre si", "appliesTo": ["X1"], "auto": false }
+    ],
+    "subjective": [
+      { "id": "visao-sistemica", "label": "Visão sistêmica do processo", "levels": { "aproxima": "descreve atividades isoladas", "atende": "mostra entradas, saídas, responsáveis e cliente do processo", "supera": "liga o processo à estratégia e aos indicadores da organização" } },
+      { "id": "clareza", "label": "Clareza", "levels": { "aproxima": "a ideia principal exige releitura", "atende": "a ideia principal é entendida na primeira leitura", "supera": "conduz quem lê sem esforço e sem excesso" } },
+      { "id": "resultado", "label": "Resultado demonstrado", "levels": { "aproxima": "descreve atividades, sem resultado", "atende": "mostra um resultado mensurável", "supera": "mostra resultado, contexto, custo e o que faria diferente" } },
+      { "id": "viabilidade", "label": "Viabilidade da proposta", "levels": { "aproxima": "proposta sem responsável, prazo ou custo", "atende": "ações com dono, prazo e estimativa de custo", "supera": "ações priorizadas por impacto e esforço, com riscos tratados" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa formada ou em formação em Processos Gerenciais (gestão de negócios), que atua em rotinas administrativas, processos, planejamento ou no próprio negócio, em empresas de qualquer porte, cooperativas ou setor público. Use o vocabulário da área (processo AS-IS/TO-BE, BPMN, SIPOC, indicador com fórmula e meta, PDCA, 5W2H, SWOT, Canvas, OKR, fluxo de caixa, margem de contribuição, ERP, CRM) e cite referências quando útil: ABNT NBR ISO 9001:2015 (abordagem por processos), BPMN 2.0 (OMG), LC 123/2006 (ME, EPP e MEI), Código de Ética do CFA, LGPD, materiais do Sebrae. Oriente a produzir evidências: mapas de processo, POPs, antes e depois, painéis de indicadores, Canvas, SWOT com plano de ação. Nunca produza documento final para a empresa da pessoa (contrato, proposta comercial a cliente, demonstração financeira, parecer) como peça assinável: toda saída é rascunho para revisão. Não trate dados confidenciais de empresas atendidas, clientes ou colaboradores: quando aparecerem nomes, valores reais ou planos de negócio de terceiros, peça anonimização ou caso fictício. Não dê aconselhamento tributário, contábil ou jurídico vinculante; indique o contador, o advogado ou o Sebrae. Pergunte antes de inferir porte, cargo ou senioridade. Afirmações de mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa emprego, cliente ou faturamento. Progresso é por critérios atendidos, nunca por score. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "ABNT NBR ISO 9001:2015 — Sistemas de gestão da qualidade — Requisitos (catálogo ABNT)", "url": "https://www.abntcatalogo.com.br/", "kind": "norma" },
+      { "title": "BPMN 2.0 — Business Process Model and Notation (OMG)", "url": "https://www.omg.org/spec/BPMN/2.0/", "kind": "norma" },
+      { "title": "Lei Complementar 123/2006 — Estatuto da Microempresa e Empresa de Pequeno Porte (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp123.htm", "kind": "norma" },
+      { "title": "Conselho Federal de Administração (CFA) — legislação e código de ética", "url": "https://cfa.org.br/", "kind": "conselho" },
+      { "title": "Sebrae — cursos, Canvas e ferramentas para pequenos negócios", "url": "https://sebrae.com.br/", "kind": "educacao" },
+      { "title": "CBO — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "Novo CAGED — Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" },
+      { "title": "ABPMP Brasil — BPM CBOK e certificação CBPP", "url": "https://www.abpmp-br.org/", "kind": "comunidade" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2/c5 com competências de processos e gestão; x1 (contexto: empresa, próprio negócio, cooperativa) e x2 (dados mostráveis)." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza D4 (mapa), L7 (POP), D5 e D7 para quem atua em processos; X1 (Canvas) e X2 (SWOT + 5W2H) para quem empreende." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); diagramas e painéis só no computador; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Pré-checa fluxo fechado, indicador com fórmula/meta/fonte, nove blocos do Canvas, 5W2H completo e declaração de sigilo; o selo depende de revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Propõe estrutura de POP, plano 5W2H, relatório gerencial e estudo de caso; sempre rascunho com prévia; nunca aplica sem revisão." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias, gateways e pontos de medição no BPMN (D4); blocos do Canvas (X1); eixos e fonte nos painéis (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: síntese por competências de processos, planejamento e gestão de negócios, com lacunas e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Caminhos para administração, qualidade, logística, RH, finanças e comercial com lacunas e passos; mercado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por competências e por setor." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com frente de atuação e provas; só com o consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, sistemas e competências em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "informações financeiras, operacionais e de clientes de empresas atendidas sob confidencialidade", "dados pessoais de colaboradores e clientes (LGPD)", "planos de negócio e segredos comerciais de terceiros", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca produzir documento final assinável para a empresa (contrato, proposta a cliente, demonstração financeira); toda peça é rascunho para revisão",
+      "não tratar dados confidenciais de empresas atendidas, clientes ou colaboradores; pedir anonimização ou caso fictício",
+      "não dar aconselhamento tributário, contábil ou jurídico vinculante; indicar contador, advogado ou Sebrae",
+      "perguntar em vez de inferir porte da empresa, cargo ou senioridade",
+      "nunca prometer emprego, cliente ou faturamento; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "alta" },
+    "drawingsModes": ["diagrama", "infografico", "prancha"],
+    "lettersTemplates": ["pop", "estudo-de-caso", "relatorio-tecnico", "proposta", "plano-30-60-90", "bio", "curriculo", "carta", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas de texto curtas (L5, L6) e revisão (L10); mapas BPMN (D4), antes e depois (D5), painéis (D7) e Canvas (X1) pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em processos gerenciais (15 min).",
+        "Que processo você conhece de ponta a ponta? Um mapa BPMN leva cerca de 45 min e comprova análise de processos.",
+        "Tem um número de melhoria para mostrar? Um painel com fórmula, meta e fonte vira evidência (60 min).",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["competencias", "cbo", "setor"] },
+    "privacy": {
+      "sensitiveData": ["informações financeiras, operacionais e de clientes de empresas atendidas sob confidencialidade", "dados pessoais de colaboradores e clientes (LGPD)", "planos de negócio e segredos comerciais de terceiros", "documentos pessoais (CPF, RG, endereço)"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 3513, 2521 e 4110", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "PNAD Contínua (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html", "geography": "Brasil e UF", "cadence": "trimestral", "kind": "estatistica-oficial" },
+      { "title": "Mapa de Empresas (Ministério do Desenvolvimento, Indústria, Comércio e Serviços)", "url": "https://www.gov.br/empresas-e-negocios/pt-br/mapa-de-empresas", "geography": "Brasil e UF", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "Sebrae — Data Sebrae / Pequenos Negócios em Números", "url": "https://datasebrae.com.br/", "geography": "Brasil e UF", "cadence": "continua", "kind": "pesquisa" },
+      { "title": "Pesquisa Nacional dos Administradores (CFA)", "url": "https://cfa.org.br/", "geography": "Brasil", "cadence": "eventual", "kind": "conselho" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147); faturamento de um negócio nunca é prometido."
+  },
+  "paths": [
+    { "to": "administracao", "why": "O bacharelado em Administração amplia a mesma base (processos, pessoas, finanças, marketing) e dá acesso pleno ao registro no CRA.", "gaps": ["graduação plena em Administração", "teoria das organizações e estratégia aprofundada", "finanças corporativas"], "steps": ["estudo de caso STAR com visão estratégica (L3)", "plano 30-60-90 para analista administrativo (L9)", "complementação de estudos ou segunda graduação"] },
+    { "to": "gestao-da-qualidade", "why": "Mapeamento de processos, POPs, indicadores e PDCA são a base de um sistema de gestão da qualidade ISO 9001.", "gaps": ["requisitos da ISO 9001 e auditoria interna (ISO 19011)", "ferramentas da qualidade (Ishikawa, Pareto, CEP)", "tratamento de não conformidades"], "steps": ["POP no padrão de controle de documentos (L7)", "antes e depois com indicador de qualidade (D5)", "curso de auditor interno ISO 9001"] },
+    { "to": "logistica", "why": "Processos de compras, estoque e distribuição são processos de negócio com forte demanda por analistas.", "gaps": ["gestão de estoques e curva ABC", "transporte e armazenagem", "sistemas WMS/TMS"], "steps": ["mapa BPMN de um processo de compras ou expedição (D4)", "painel de indicadores logísticos (D7)", "curso de logística (SENAI, Sebrae)"] },
+    { "to": "gestao-de-recursos-humanos", "why": "Rotinas de admissão, folha, treinamento e indicadores de pessoas são processos administrativos que o tecnólogo já conhece.", "gaps": ["legislação trabalhista (CLT, eSocial)", "recrutamento e seleção", "gestão por competências"], "steps": ["POP de uma rotina de pessoal (L7)", "fluxo de admissão em BPMN (D4)", "curso de departamento pessoal"] },
+    { "to": "gestao-financeira", "why": "Fluxo de caixa, formação de preço e indicadores financeiros já fazem parte da gestão de negócios.", "gaps": ["análise de demonstrações (DRE, balanço)", "orçamento empresarial e projeções", "crédito e tesouraria"], "steps": ["relatório gerencial com fluxo de caixa projetado (L4)", "painel de indicadores financeiros (D7)", "curso de finanças para pequenos negócios (Sebrae)"] },
+    { "to": "gestao-comercial", "why": "Processos comerciais, CRM e atendimento são campo vizinho para quem gosta de clientes e metas.", "gaps": ["técnicas de vendas e negociação", "marketing digital", "gestão de canais"], "steps": ["mapa do funil de vendas em BPMN (D4)", "painel de indicadores comerciais (D7)", "curso de vendas (Sebrae)"] }
+  ],
+  "learning": [
+    { "title": "Cursos on-line gratuitos do Sebrae (gestão, finanças, Canvas, plano de negócios)", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — gestão de processos, indicadores e planejamento", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual Fundação Bradesco — administração, Excel e gestão", "provider": "Fundação Bradesco", "url": "https://www.ev.org.br/", "free": true, "kind": "portal" },
+    { "title": "BPMN 2.0 — especificação oficial (OMG)", "provider": "Object Management Group", "url": "https://www.omg.org/spec/BPMN/2.0/", "free": true, "kind": "norma" },
+    { "title": "BPM CBOK e certificação CBPP", "provider": "ABPMP Brasil", "url": "https://www.abpmp-br.org/", "free": false, "kind": "certificacao" },
+    { "title": "Bizagi Modeler — modelador BPMN gratuito", "provider": "Bizagi", "url": "https://www.bizagi.com/pt/plataforma/modeler", "free": true, "kind": "portal" },
+    { "title": "Escola de Gestão do Paraná — cursos gratuitos abertos à comunidade", "provider": "Governo do Paraná (SEAP)", "url": "https://www.administracao.pr.gov.br/EscoladeGestao", "free": true, "kind": "portal" },
+    { "title": "Cursos abertos do SENAI (gestão, Lean, Excel)", "provider": "SENAI", "url": "https://www.senai.br/cursos", "free": true, "kind": "portal" },
+    { "title": "Conselho Federal de Administração — publicações e webinars", "provider": "CFA", "url": "https://cfa.org.br/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Catálogo de ramos acadêmicos — processos-gerenciais (CBO, ISCO, ESCO, conselho, sensitiveData, vizinhos)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4 (perguntas), §4.6 (pacote), §7 (tarefas L1–L10, D1–D10), §8 (mensagens)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Lei Complementar 123/2006 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp123.htm", "accessedAt": "2026-11-02" },
+    { "title": "ABNT NBR ISO 9001:2015 com Emenda 1:2024 — edição vigente (busca web, revendedores de normas)", "url": "https://www.abntcatalogo.com.br/", "accessedAt": "2026-11-02" },
+    { "title": "BPMN 2.0 (OMG)", "url": "https://www.omg.org/spec/BPMN/2.0/", "accessedAt": "2026-11-02" },
+    { "title": "CBO — Classificação Brasileira de Ocupações", "url": "https://cbo.mte.gov.br/", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URIs ESCO das competências não confirmadas nesta sessão (todas com esco: null); as URIs de ocupação vêm do catálogo",
+    "número da Resolução Normativa do Código de Ética do CFA (537/2018) citado de memória; não conferido no site do CFA",
+    "URLs de Mapa de Empresas, Data Sebrae, Pesquisa Nacional dos Administradores, Bizagi Modeler, SENAI cursos e Escola de Gestão do Paraná não abertas nesta sessão",
+    "Lei 14.030/2020 (assembleias de cooperativas) e Lei 14.195/2021 citadas de memória; alcance não conferido",
+    "famílias CBO 3513 e 4110 em a4.cboFamilies não conferidas no portal da CBO",
+    "ABPMP Brasil e certificação CBPP: URL e condições não conferidas"
+  ]
+}

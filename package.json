@@ -15,6 +15,7 @@
     "prebuild": "node scripts/i18n/check.js --fail",
     "e2e": "playwright test",
     "rf:catalog": "node scripts/rf/gerar-catalogo.mjs",
+    "career:validate": "node scripts/career/validar-pacotes.mjs",
     "glyphs:sprite": "node scripts/glyphs/gerar-sprite.mjs",
     "brand:fundos": "node scripts/brand/gerar-fundos.mjs",
     "shell:capturas": "node scripts/shell/capturas.mjs",

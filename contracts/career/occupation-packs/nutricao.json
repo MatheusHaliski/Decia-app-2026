@@ -1,0 +1,329 @@
+{
+  "schemaVersion": 1,
+  "code": "nutricao",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Nutrição", "en": "Nutrition", "es": "Nutrición" },
+  "fields": ["nutricao"],
+  "family": {
+    "cbo": [{ "code": "2237", "title": "Nutricionistas" }],
+    "isco08": [{ "code": "2265", "title": "Dieticians and nutritionists" }],
+    "esco": [{ "uri": "http://data.europa.eu/esco/occupation/8a53f8d3-d995-4c7b-a70d-d79f76bdcb3f", "label": "dietitian" }]
+  },
+  "scope": {
+    "summary": "Profissão regulamentada pela Lei 8.234/1991, com registro no CRN (Lei 6.583/1978). Atua em nutrição clínica, alimentação coletiva (UANs, restaurantes, PNAE), saúde coletiva, indústria de alimentos, esporte, ensino e pesquisa; a Res. CFN 600/2018 define áreas e atribuições. Anamneses, planos alimentares e dados clínicos de pacientes são sigilosos.",
+    "entryRoles": ["Nutricionista residente", "Nutricionista de UAN ou restaurante (início de carreira)", "Nutricionista de atendimento clínico iniciante", "Estagiário em nutrição clínica ou coletiva", "Assistente técnico em indústria de alimentos", "Nutricionista do PNAE em município (início)"],
+    "midRoles": ["Nutricionista clínico (ambulatório, hospital)", "Responsável técnico (RT) de UAN ou restaurante", "Nutricionista do PNAE (alimentação escolar)", "Nutricionista na atenção básica (eMulti/NASF)", "Nutricionista esportivo", "Nutricionista de qualidade ou desenvolvimento de produto na indústria"],
+    "seniorRoles": ["Coordenador de serviço de nutrição e dietética", "Especialista com título reconhecido pelo CFN/ASBRAN", "Gestor de alimentação coletiva (concessionárias)", "Nutricionista de vigilância sanitária ou gestor do PNAE", "Docente ou pesquisador", "Consultor em segurança dos alimentos"],
+    "sectors": ["hospitais e clínicas", "alimentação coletiva (UANs, concessionárias, restaurantes)", "alimentação escolar (PNAE) e programas públicos", "atenção básica e saúde coletiva (SUS)", "indústria de alimentos", "esporte e academias", "consultório e atendimento on-line", "vigilância sanitária", "ensino e pesquisa"],
+    "regulation": [
+      { "name": "Lei 8.234/1991", "issuer": "Brasil", "about": "regulamenta a profissão de nutricionista; prescrição dietética é atividade privativa" },
+      { "name": "Lei 6.583/1978 e Decreto 84.444/1980", "issuer": "Brasil", "about": "cria o CFN e os CRNs; registro obrigatório" },
+      { "name": "Resolução CFN 599/2018", "issuer": "CFN", "about": "Código de Ética e de Conduta do Nutricionista: sigilo, publicidade, relação com paciente (art. 36 sobre atendimento não presencial alterado nas Res. 646, 660 e 684)" },
+      { "name": "Resolução CFN 600/2018 (retificada)", "issuer": "CFN", "about": "áreas de atuação, atribuições e parâmetros numéricos de referência; em revisão pela CET-600 (2025)" },
+      { "name": "Resolução CFN 666/2020", "issuer": "CFN", "about": "teleconsulta em nutrição" },
+      { "name": "Resolução CFN 304/2003", "issuer": "CFN", "about": "critérios para a prescrição dietética (número a confirmar)" },
+      { "name": "RDC ANVISA 216/2004", "issuer": "ANVISA", "about": "boas práticas para serviços de alimentação; base do manual de BPF e dos POPs de UAN" },
+      { "name": "Lei 11.947/2009 e Resolução FNDE 6/2020", "issuer": "Brasil / FNDE", "about": "PNAE: nutricionista como responsável técnico; cardápios e compras da agricultura familiar" },
+      { "name": "LGPD (Lei 13.709/2018), art. 5º II e art. 11", "issuer": "Brasil", "about": "dados de saúde de pacientes são dados sensíveis" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "anamnese alimentar", "meaning": "entrevista sobre histórico de saúde, hábitos e consumo alimentar; dado sensível" },
+      { "term": "avaliação nutricional", "meaning": "antropometria, exames, consumo e exame físico que fundamentam o diagnóstico nutricional" },
+      { "term": "diagnóstico nutricional", "meaning": "conclusão do nutricionista sobre o estado nutricional" },
+      { "term": "prescrição dietética", "meaning": "plano alimentar individualizado; atividade privativa do nutricionista (Lei 8.234/1991)" },
+      { "term": "plano alimentar", "meaning": "distribuição de refeições, porções e orientações para o paciente" },
+      { "term": "UAN", "meaning": "unidade de alimentação e nutrição (cozinha industrial, restaurante, hospital)" },
+      { "term": "RT", "meaning": "responsável técnico perante o CRN por UAN, indústria ou serviço" },
+      { "term": "cardápio", "meaning": "planejamento de preparações por período, com adequação nutricional e custo" },
+      { "term": "FTP", "meaning": "ficha técnica de preparação: ingredientes, per capita, modo de preparo, rendimento e valor nutricional" },
+      { "term": "per capita", "meaning": "quantidade de alimento por pessoa em uma preparação" },
+      { "term": "fator de correção", "meaning": "relação entre peso bruto e peso líquido do alimento" },
+      { "term": "BPF / manual de boas práticas", "meaning": "procedimentos de higiene e segurança dos alimentos (RDC 216/2004)" },
+      { "term": "POP de UAN", "meaning": "procedimentos obrigatórios: higienização, controle de pragas, água, saúde dos manipuladores" },
+      { "term": "APPCC", "meaning": "análise de perigos e pontos críticos de controle" },
+      { "term": "PNAE", "meaning": "Programa Nacional de Alimentação Escolar (FNDE)" },
+      { "term": "Guia Alimentar", "meaning": "Guia Alimentar para a População Brasileira (MS), base da orientação alimentar" },
+      { "term": "TACO / TBCA", "meaning": "tabelas brasileiras de composição de alimentos" },
+      { "term": "terapia nutricional", "meaning": "nutrição enteral e parenteral, com EMTN no hospital" },
+      { "term": "SISVAN", "meaning": "Sistema de Vigilância Alimentar e Nutricional do SUS" },
+      { "term": "rotulagem nutricional", "meaning": "informação nutricional em rótulos (RDC 429/2020 e IN 75/2020)" },
+      { "term": "teleconsulta", "meaning": "consulta de nutrição por tecnologia (Res. CFN 666/2020)" }
+    ],
+    "tools": ["softwares de avaliação e prescrição (ex.: Dietbox, Avanutri, DietSmart)", "tabelas de composição (TACO, TBCA)", "balança, estadiômetro, adipômetro e bioimpedância", "planilhas de cardápio, custo e per capita", "sistemas de gestão de UAN e de estoque", "termômetro e checklists de BPF", "SISVAN e e-SUS (atenção básica)", "editor de textos para POPs, manuais, relatórios e materiais educativos"],
+    "deliverables": ["avaliação e plano alimentar no prontuário", "cardápio periódico com análise nutricional e custo", "ficha técnica de preparação (FTP)", "manual de boas práticas e POPs da UAN", "relatório de visita técnica ou de não conformidade", "relato de caso clínico anonimizado", "material de educação alimentar e nutricional (EAN)", "parecer técnico para RT ou PNAE", "relatório de indicadores (SISVAN, UAN, programa)", "projeto de EAN para escola ou comunidade"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Avaliação nutricional e diagnóstico", "esco": null, "kind": "nucleo" },
+      { "label": "Prescrição dietética e plano alimentar", "esco": null, "kind": "nucleo" },
+      { "label": "Planejamento de cardápios e fichas técnicas", "esco": null, "kind": "nucleo" },
+      { "label": "Segurança dos alimentos (BPF, POPs, APPCC)", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de UAN (custos, estoque, equipe)", "esco": null, "kind": "nucleo" },
+      { "label": "Educação alimentar e nutricional", "esco": null, "kind": "nucleo" },
+      { "label": "Terapia nutricional hospitalar", "esco": null, "kind": "nucleo" },
+      { "label": "Nutrição em saúde coletiva e políticas públicas (PNAE, SISVAN)", "esco": null, "kind": "nucleo" },
+      { "label": "Registro e documentação (prontuário, parecer, relatório)", "esco": null, "kind": "nucleo" },
+      { "label": "Comunicação e aconselhamento nutricional", "esco": null, "kind": "nucleo" },
+      { "label": "Rotulagem e legislação de alimentos", "esco": null, "kind": "apoio" },
+      { "label": "Nutrição esportiva", "esco": null, "kind": "apoio" },
+      { "label": "Prática baseada em evidências", "esco": null, "kind": "apoio" },
+      { "label": "Responsabilidade técnica e legislação profissional", "esco": null, "kind": "apoio" },
+      { "label": "Empreendedorismo em consultório e atendimento on-line", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["ética e sigilo", "comunicação acolhedora e sem julgamento", "organização e registro", "trabalho em equipe multiprofissional", "aprendizagem contínua"],
+    "tracks": [
+      { "id": "nutricao-clinica", "label": "Nutrição clínica", "steps": ["relato de caso anonimizado (L3)", "material de EAN para um público (X1)", "POP de atendimento ou de triagem nutricional (L7)", "fluxo de atendimento, acompanhamento e alta (D4)"] },
+      { "id": "alimentacao-coletiva", "label": "Alimentação coletiva e UAN", "steps": ["ficha técnica de preparação (X2)", "POP da UAN conforme RDC 216 (L7)", "relatório técnico de visita ou de indicadores (L4)", "fluxo de produção de refeições (D4)"] },
+      { "id": "saude-coletiva", "label": "Saúde coletiva e PNAE", "steps": ["projeto de EAN a partir de briefing (L8)", "infográfico de indicadores do SISVAN ou do programa (D7)", "relatório técnico de programa (L4)", "post sobre um aprendizado em campo (L5)"] },
+      { "id": "apresentar-se", "label": "Apresentar-se na área", "steps": ["bio com área e registro (L6)", "currículo direcionado (L1)", "carta para residência, concurso ou vaga (L2)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"nutricionista clínico\", \"RT de UAN\", \"nutricionista do PNAE\", \"nutricionista de indústria\"",
+      "cboFamilies": ["2237"],
+      "why": "Pergunto sua última função para partir do que você já fez e sugerir tarefas da sua área. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "recém-formado, residência ou primeiro registro no CRN",
+        "junior": "até dois anos atuando, com supervisão",
+        "pleno": "atende, prescreve e responde por UAN ou serviço com autonomia",
+        "senior": "referência técnica; RT, especialista ou preceptor",
+        "gestao": "coordena serviço, unidade, equipe ou programa"
+      },
+      "why": "Pergunto o nível para ajustar a dificuldade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na Nutrição",
+      "options": ["avaliação nutricional e diagnóstico", "prescrição dietética", "cardápios e fichas técnicas", "segurança dos alimentos (BPF, POPs)", "gestão de UAN e custos", "educação alimentar e nutricional", "terapia nutricional hospitalar", "saúde coletiva e PNAE", "rotulagem e legislação", "nutrição esportiva", "aconselhamento e comunicação", "registro e documentação"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com as tarefas."
+    },
+    "c4": {
+      "certifications": ["registro no CRN", "residência em nutrição clínica ou multiprofissional", "título de especialista (CFN/ASBRAN)", "curso de BPF / APPCC / manipulação de alimentos", "pós-graduação lato sensu", "mestrado ou doutorado", "curso de terapia nutricional enteral e parenteral"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação, registro e idiomas ajudam a ver lacunas em relação à função que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["raciocínio clínico e relato de caso", "cardápios, FTP e custos", "segurança dos alimentos e legislação sanitária", "educação alimentar e nutricional", "saúde coletiva e PNAE", "terapia nutricional hospitalar", "gestão de UAN e pessoas", "consultório e atendimento on-line"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que área da Nutrição você quer atuar primeiro?", "type": "escolha", "options": ["clínica (consultório, ambulatório, hospital)", "alimentação coletiva (UAN, restaurantes)", "saúde coletiva e PNAE", "indústria de alimentos", "esporte", "ensino e pesquisa", "ainda não sei"], "why": "A área muda as tarefas sugeridas (relato de caso, FTP, POP de UAN). Você pode mudar depois.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": true
+  },
+  "guidedTasks": {
+    "priority": ["L3", "L7", "L4", "L6", "L1", "D4", "D7", "L8", "L2", "L5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica de ambiente não é entrega do nutricionista (leiaute de UAN é do projeto de arquitetura)" },
+      { "code": "D3", "reason": "modelagem 3D de produto não faz parte da atuação" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da profissão" },
+      { "code": "D8", "reason": "vista explodida de conjunto não se aplica" },
+      { "code": "D9", "reason": "wireframe de interface não se aplica" }
+    ],
+    "parameters": {
+      "L3": {
+        "title": "Relato de caso clínico anonimizado",
+        "brief": "Descreva um caso que você conduziu: situação (perfil sem identificar o paciente), tarefa (avaliação e diagnóstico nutricional), ação (conduta e justificativa) e resultado (reavaliação com indicador: antropometria, exame, adesão). Não transcreva o plano alimentar completo; declare que não há dado identificável.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "anonymized": true, "measurableResult": true, "noFullPrescription": true, "maxWords": 900 },
+        "criteria": ["quatro seções explícitas", "diagnóstico nutricional nomeado", "conduta justificada com referência (diretriz, consenso, Guia Alimentar)", "reavaliação com indicador objetivo", "sem nome, iniciais, data completa, instituição ou plano alimentar completo", "declaração de autoria e de anonimização"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "L7": {
+        "title": "POP de UAN ou de atendimento",
+        "brief": "Escreva um procedimento operacional padrão que você domina (higienização de hortifrúti, controle de temperatura, recebimento de mercadorias, triagem nutricional), com passos numerados, responsável, materiais, critério de conclusão e registro. Em UAN, siga a estrutura da RDC 216/2004.",
+        "parameters": { "numberedSteps": true, "fields": ["objetivo", "campo de aplicação", "responsável", "materiais", "passos", "critério de conclusão", "registro e monitoramento", "referências"], "minSteps": 6 },
+        "criteria": ["passos numerados com responsável", "materiais listados", "critério de conclusão e forma de monitoramento por etapa", "referência a RDC, resolução ou protocolo", "sem dado de paciente ou de empresa cliente"],
+        "evidence": "modelo de POP",
+        "time": "60 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório técnico curto (visita, indicadores ou programa)",
+        "brief": "Relate um trabalho técnico em até 4 páginas: objetivo, método (o que foi avaliado, instrumentos, período), resultados (achados e indicadores agregados), limitações e referências. Sem identificar estabelecimento, escola ou pacientes.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "método", "resultados", "limitações", "referências"], "aggregatedOnly": true },
+        "criteria": ["cinco seções nomeadas", "até 4 páginas", "ao menos um indicador quantitativo agregado", "referência a norma ou literatura", "estabelecimento e pessoas não identificáveis"],
+        "evidence": "relatório",
+        "time": "2 h",
+        "level": 3
+      },
+      "L6": {
+        "title": "Bio com área e registro",
+        "brief": "Escreva um resumo de até 600 caracteres com sua área, três competências e uma prova com link. Pode citar o registro no CRN; não cite pacientes nem prometa resultados.",
+        "parameters": { "maxChars": 600, "requiredParts": ["área de atuação", "três competências", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia a área", "cita três competências", "inclui uma prova com link", "sem promessa de resultado (emagrecimento, cura)"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "D4": {
+        "title": "Fluxo de produção de refeições ou de atendimento",
+        "brief": "Desenhe o fluxo de um processo que você conhece (recebimento, armazenamento, pré-preparo, cocção e distribuição; ou acolhimento, avaliação, acompanhamento e alta) com raias por responsável e pontos de controle.",
+        "parameters": { "swimlanes": true, "requiredElements": ["início", "fim", "decisões", "pontos de controle ou registros"] },
+        "criteria": ["início e fim", "raias por responsável", "nenhuma tarefa órfã", "pontos de decisão ou controle nomeados", "registros gerados indicados"],
+        "evidence": "diagrama vetorial",
+        "time": "45 min",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de indicadores nutricionais ou da UAN",
+        "brief": "Mostre indicadores agregados (estado nutricional de um grupo pelo SISVAN, resto-ingestão, adequação de cardápio, custo per capita) com fonte, período, eixos rotulados e uma mensagem principal. Sem dado individual.",
+        "parameters": { "requiredElements": ["fonte e período", "eixos rotulados", "mensagem principal"], "aggregatedOnly": true },
+        "criteria": ["fonte e período citados", "eixos rotulados", "uma mensagem principal", "dados agregados, sem identificação"],
+        "evidence": "imagem + PDF",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "letters", "title": "Material de educação alimentar e nutricional para um público", "competency": "Educação alimentar e nutricional", "criteria": ["público-alvo e objetivo definidos", "linguagem acessível, sem jargão não explicado", "coerente com o Guia Alimentar para a População Brasileira", "sem prescrição individual nem promessa de resultado", "fonte citada"], "evidence": "folheto ou texto publicável", "time": "45 min", "trigger": "Que orientação você repete a pacientes ou comunidades e poderia transformar em material educativo?", "level": 1 },
+      { "id": "X2", "editor": "letters", "title": "Ficha técnica de preparação (FTP)", "competency": "Planejamento de cardápios e fichas técnicas", "criteria": ["ingredientes com peso bruto, fator de correção e peso líquido", "per capita e rendimento", "modo de preparo numerado", "valor nutricional por porção com fonte (TACO/TBCA) e custo estimado", "sem dado de empresa cliente"], "evidence": "ficha técnica", "time": "45 min", "trigger": "Que preparação você padronizaria em uma ficha técnica?", "level": 1 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L8", "L9", "X2"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas, palavras ou caracteres", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6"], "auto": true },
+      { "id": "anonimizacao-declarada", "check": "a pessoa declarou que não há paciente, estabelecimento ou escola identificável", "appliesTo": ["L3", "L4", "L7", "D7"], "auto": true },
+      { "id": "sem-identificadores", "check": "o texto não contém nome, iniciais, data completa, instituição ou contato de paciente", "appliesTo": ["L3", "L4", "D7"], "auto": true },
+      { "id": "sem-prescricao-individual", "check": "o material não contém plano alimentar individual nem quantidades prescritas a uma pessoa", "appliesTo": ["X1", "L5"], "auto": true },
+      { "id": "sem-promessa-de-resultado", "check": "não há promessa de emagrecimento, cura ou resultado garantido", "appliesTo": ["L6", "L5", "X1"], "auto": true },
+      { "id": "ftp-campos", "check": "peso bruto, fator de correção, per capita, rendimento, modo de preparo e fonte da composição presentes", "appliesTo": ["X2"], "auto": true },
+      { "id": "referencia-citada", "check": "cita ao menos uma referência bibliográfica, RDC, resolução ou o Guia Alimentar", "appliesTo": ["L3", "L4", "L7", "X1", "X2"], "auto": true },
+      { "id": "indicador-quantitativo", "check": "há ao menos um número ou indicador no resultado", "appliesTo": ["L3", "L4", "D7"], "auto": true },
+      { "id": "pop-estrutura", "check": "passos numerados, responsável e critério de conclusão presentes", "appliesTo": ["L7"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim, raias e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "fonte-no-grafico", "check": "fonte, período e eixos rotulados presentes", "appliesTo": ["D7"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados confidenciais", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L10", "D2", "D4", "D7", "X1", "X2"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "raciocinio-nutricional", "label": "Raciocínio clínico ou técnico", "levels": { "aproxima": "descreve conduta sem ligar à avaliação", "atende": "liga avaliação, diagnóstico e conduta de forma coerente", "supera": "discute alternativas, evidência e o que faria diferente" } },
+      { "id": "adequacao-normativa", "label": "Adequação à legislação sanitária e profissional", "levels": { "aproxima": "cita norma de forma genérica", "atende": "aplica a norma correta ao processo", "supera": "aponta não conformidades e propõe correção" } },
+      { "id": "comunicacao-sem-julgamento", "label": "Comunicação acolhedora e sem julgamento", "levels": { "aproxima": "tom prescritivo ou culpabilizante", "atende": "orienta com linguagem acessível e respeitosa", "supera": "considera contexto, cultura alimentar e autonomia da pessoa" } },
+      { "id": "viabilidade", "label": "Viabilidade prática", "levels": { "aproxima": "proposta ideal sem considerar recursos", "atende": "considera custo, equipe e estrutura", "supera": "propõe indicadores para acompanhar a implantação" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Nutrição (Lei 8.234/1991; registro no CRN; Código de Ética Res. CFN 599/2018; áreas de atuação Res. CFN 600/2018; teleconsulta Res. CFN 666/2020). Use o vocabulário da área: anamnese alimentar, avaliação e diagnóstico nutricional, prescrição dietética, plano alimentar, UAN, RT, cardápio, FTP, per capita, BPF e POPs (RDC 216/2004), APPCC, PNAE, SISVAN, Guia Alimentar, TACO/TBCA. O que você nunca faz: não prescreve dieta, plano alimentar, suplemento ou quantidade para uma pessoa (prescrição dietética é privativa do nutricionista e individual); não interpreta avaliação ou exame de paciente real; não redige laudo, parecer, atestado ou prescrição assinável; não promete emagrecimento, cura ou resultado; não substitui a responsabilidade técnica. Anamneses, planos alimentares e dados clínicos são dados sensíveis: peça anonimização (sem nome, iniciais, data completa, instituição) e que o relato não transcreva o plano completo. Ajude a estruturar relatos de caso anonimizados, POPs de UAN, fichas técnicas, relatórios técnicos, materiais de EAN coerentes com o Guia Alimentar, fluxos e infográficos de dados agregados; pré-cheque só critérios objetivos. Pergunte a área de atuação em vez de deduzir. Afirmações sobre mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa vaga, concurso ou salário. Progresso é por critérios atendidos; o selo depende de revisão humana.",
+    "citeSources": [
+      { "title": "CFN — Conselho Federal de Nutricionistas (resoluções, Código de Ética, áreas de atuação)", "url": "https://www.cfn.org.br/", "kind": "conselho" },
+      { "title": "Resolução CFN 599/2018 — Código de Ética e de Conduta do Nutricionista", "url": "https://cfn.org.br/wp-content/uploads/resolucoes/Res_599_2018.html", "kind": "norma" },
+      { "title": "Resolução CFN 600/2018 — áreas de atuação e parâmetros numéricos", "url": "https://cfn.org.br/wp-content/uploads/resolucoes/Res_600_2018.htm", "kind": "norma" },
+      { "title": "Guia Alimentar para a População Brasileira (Ministério da Saúde, 2ª ed.)", "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf", "kind": "orgao-publico" },
+      { "title": "RDC ANVISA 216/2004 — boas práticas para serviços de alimentação", "url": "https://www.gov.br/anvisa/pt-br", "kind": "norma" },
+      { "title": "FNDE — PNAE (legislação, cardápios e atuação do nutricionista)", "url": "https://www.gov.br/fnde/pt-br/acesso-a-informacao/acoes-e-programas/programas/pnae", "kind": "orgao-publico" },
+      { "title": "TBCA — Tabela Brasileira de Composição de Alimentos (USP)", "url": "https://www.tbca.net.br/", "kind": "referencia" },
+      { "title": "CBO 2237 — Nutricionistas (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Pergunta a área (x1) antes de sugerir; variantes de c2 e c5 com competências da Nutrição." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Clínica: relato de caso (L3) e material de EAN (X1). Coletiva: FTP (X2), POP (L7), relatório (L4), fluxo (D4). Cada card diz por que e aceita \"não me serve\"." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Considera rotina de UAN em turnos cedo e atendimentos: tarefas curtas no celular, relatório e POP no computador." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, campos da FTP, referência, ausência de identificadores, de prescrição individual e de promessa de resultado; não avalia a conduta." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura relato de caso, POP, FTP, relatório e material de EAN; nunca prescreve dieta ou suplemento a alguém nem redige laudo, parecer ou prescrição assinável." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias e pontos de controle do fluxo (D4); fonte e eixos do infográfico (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese por área com competências declaradas e evidenciadas; cita o campo de origem." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: gastronomia, educação física, enfermagem, farmácia, engenharia química/alimentos, gestão pública; sempre com fonte, data e requisitos." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por CBO 2237 e competências compartilhadas; só pessoas com opt-in." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Mostra os campos usados e o botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil, sem pacientes nem promessa de resultado; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, registro, residência e cursos em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "anamneses, planos alimentares, exames e prontuários de pacientes", "dados de empresas e escolas clientes (cardápios contratuais, custos, não conformidades)", "dados sensíveis (LGPD art. 5º II)", "dados de terceiros sem autorização"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca prescrever dieta, plano alimentar, suplemento ou quantidade para uma pessoa; a prescrição dietética é individual e privativa do nutricionista",
+      "nunca redigir laudo, parecer, atestado ou prescrição assinável; não substituir a responsabilidade técnica",
+      "nunca prometer emagrecimento, cura ou resultado; materiais de EAN coerentes com o Guia Alimentar",
+      "exigir anonimização de pacientes, estabelecimentos e escolas; relatos sem plano alimentar completo",
+      "perguntar a área de atuação em vez de inferir pelos textos",
+      "afirmações de mercado com fonte, data e região ou \"estimativa\"; nunca prometer vaga, concurso ou salário",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["diagrama", "infografico", "prancha"],
+    "lettersTemplates": ["relatorio-de-caso", "estudo-de-caso", "pop", "relatorio-tecnico", "bio", "curriculo", "carta", "proposta", "post", "revisao", "artigo", "roteiro"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só bio (L6), post (L5), revisão (L10) e rascunho de material de EAN (X1); POP, FTP, relatório e fluxo pedem computador. UAN com turno cedo: tarefas curtas à tarde.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: bio com sua área e registro (15 min).",
+        "Que preparação você padronizaria? Uma ficha técnica leva cerca de 45 min e comprova planejamento de cardápio.",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui.",
+        "Tem um caso com boa evolução? Um relato anonimizado (1 h) comprova raciocínio clínico sem expor ninguém."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": { "sensitiveData": ["anamneses, planos alimentares e dados clínicos de pacientes (Res. CFN 599/2018; LGPD art. 5º II)", "imagens corporais de pacientes", "cardápios, custos e não conformidades de empresas e escolas clientes", "gravações de teleconsulta"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2237", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "CNES/DataSUS — nutricionistas em estabelecimentos de saúde (CBO 2237)", "url": "https://cnes.datasus.gov.br/", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "CFN — Inserção Profissional dos Nutricionistas no Brasil (pesquisa do conselho)", "url": "https://cfn.org.br/insercao-profissional-dos-nutricionistas-no-brasil/", "geography": "Brasil e regiões", "cadence": "eventual", "kind": "pesquisa" },
+      { "title": "CFN — Revista Digital 2018: 129.193 profissionais inscritos nos CRNs (dado de 2018; total atual não localizado)", "url": "https://www.cfn.org.br/wp-content/uploads/2018/09/RevistaDigital_Ed_1%20de%202018_V04_2_2.pdf", "geography": "Brasil", "cadence": "eventual", "kind": "conselho" },
+      { "title": "Concursos e processos seletivos para nutricionista (PNAE, SUS, hospitais universitários) — gov.br", "url": "https://www.gov.br/pt-br/servicos/consultar-concursos-publicos", "geography": "Brasil, UF e município", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "gastronomia", "why": "Cardápios, fichas técnicas, produção e segurança dos alimentos são competências compartilhadas com a gastronomia e a gestão de restaurantes.", "gaps": ["técnicas culinárias e criação de cardápios autorais", "gestão de restaurante e experiência do cliente"], "steps": ["ficha técnica de preparação (X2)", "fluxo de produção de refeições (D4)", "cursos de gastronomia e gestão (Senac, Sebrae, IFs)"] },
+    { "to": "educacao-fisica", "why": "Nutrição esportiva e emagrecimento aproximam as duas profissões, que trabalham juntas em academias e no esporte.", "gaps": ["graduação em Educação Física e registro no CREF", "prescrição e periodização de treino"], "steps": ["POP de trabalho conjunto e encaminhamento (L7)", "material de EAN para praticantes de atividade física (X1)", "verificar requisitos de nova graduação"] },
+    { "to": "enfermagem", "why": "Terapia nutricional hospitalar e atenção básica são ambientes compartilhados; gestão do cuidado e de serviços de saúde é caminho comum.", "gaps": ["graduação em Enfermagem e registro no COREN", "procedimentos e gestão do cuidado"], "steps": ["POP de rotina compartilhada (triagem nutricional) (L7)", "relatório técnico de indicadores do serviço (L4)", "verificar requisitos de nova graduação"] },
+    { "to": "engenharia-quimica", "why": "Indústria de alimentos, desenvolvimento de produto, rotulagem e qualidade aproximam a nutrição da engenharia química e de alimentos.", "gaps": ["processos industriais e controle de qualidade", "formação em engenharia ou tecnologia de alimentos"], "steps": ["relatório técnico de controle de qualidade ou rotulagem (L4)", "fluxo de processo produtivo (D4)", "cursos de tecnologia de alimentos (IFs, SENAI)"] },
+    { "to": "gestao-publica", "why": "PNAE, SISVAN, vigilância sanitária e políticas de segurança alimentar e nutricional são carreiras públicas.", "gaps": ["administração pública, licitações e orçamento", "indicadores e avaliação de programas"], "steps": ["relatório técnico de programa (L4)", "infográfico de indicadores agregados (D7)", "cursos da Enap e do FNDE"] },
+    { "to": "farmacia", "why": "Suplementação, interação fármaco-nutriente e terapia nutricional parenteral aproximam as duas profissões no hospital.", "gaps": ["graduação em Farmácia e registro no CRF", "farmacologia e manipulação"], "steps": ["relato de caso com discussão de interação fármaco-nutriente (L3)", "verificar requisitos de nova graduação"] }
+  ],
+  "learning": [
+    { "title": "CFN — resoluções, Código de Ética e cartilhas", "provider": "CFN", "url": "https://www.cfn.org.br/", "free": true, "kind": "portal" },
+    { "title": "Guia Alimentar para a População Brasileira (2ª ed.)", "provider": "Ministério da Saúde", "url": "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf", "free": true, "kind": "livro" },
+    { "title": "UNA-SUS — cursos em alimentação e nutrição na atenção básica", "provider": "UNA-SUS / Ministério da Saúde", "url": "https://www.unasus.gov.br/", "free": true, "kind": "portal" },
+    { "title": "AVASUS — ambiente virtual de aprendizagem do SUS", "provider": "UFRN / Ministério da Saúde", "url": "https://avasus.ufrn.br/", "free": true, "kind": "portal" },
+    { "title": "FNDE — formação para nutricionistas do PNAE", "provider": "FNDE", "url": "https://www.gov.br/fnde/pt-br/acesso-a-informacao/acoes-e-programas/programas/pnae", "free": true, "kind": "portal" },
+    { "title": "TBCA — Tabela Brasileira de Composição de Alimentos", "provider": "USP / FoRC", "url": "https://www.tbca.net.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — gestão pública e segurança alimentar", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Sebrae — gestão de consultório e serviços de alimentação", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "Campus Virtual Fiocruz — cursos livres em saúde", "provider": "Fiocruz", "url": "https://campusvirtual.fiocruz.br/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Fase 1 — grupo Saúde e bem-estar (g1-saude.json): famílias CBO/ISCO, conselho, dados sensíveis, vizinhos", "url": "docs/pesquisa/fase1/g1-saude.json", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "CFN — Resolução CFN 599/2018 (Código de Ética)", "url": "https://cfn.org.br/wp-content/uploads/resolucoes/Res_599_2018.html", "accessedAt": "2026-11-02" },
+    { "title": "CFN — Resolução CFN 600/2018 (áreas de atuação)", "url": "https://cfn.org.br/wp-content/uploads/resolucoes/Res_600_2018.htm", "accessedAt": "2026-11-02" },
+    { "title": "CFN — Resolução 600 é retificada", "url": "https://cfn.org.br/resolucao-600-e-retificada/", "accessedAt": "2026-11-02" },
+    { "title": "CFN — Portaria 600/2025: Comissão Especial e Transitória para revisão da Res. 600/2018 (CET-600)", "url": "https://transparencia.cfn.org.br/wp-content/uploads/2025/04/Portaria-CFN-600_2025_CET-600.pdf", "accessedAt": "2026-11-02" },
+    { "title": "CFN — Resolução CFN 684/2021 (suspensão do art. 36 da Res. 599; teleconsulta pela Res. 666/2020)", "url": "https://www.cfn.org.br/wp-content/uploads/resolucoes/Res_684_2021.html", "accessedAt": "2026-11-02" },
+    { "title": "CFN — Inserção Profissional dos Nutricionistas no Brasil", "url": "https://cfn.org.br/insercao-profissional-dos-nutricionistas-no-brasil/", "accessedAt": "2026-11-02" },
+    { "title": "CFN — Revista Digital ed. 1/2018 (129.193 inscritos)", "url": "https://www.cfn.org.br/wp-content/uploads/2018/09/RevistaDigital_Ed_1%20de%202018_V04_2_2.pdf", "accessedAt": "2026-11-02" },
+    { "title": "World of Taxonomy — espelho ESCO 'dietitian' (ISCO 2265)", "url": "https://worldoftaxonomy.com/codes/esco_occupations/8a53f8d3-d995-4c7b-a70d-d79f76bdcb3f", "accessedAt": "2026-11-02" },
+    { "title": "CBO 2237-10 Nutricionista (espelho vriconsulting)", "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=223710", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Res. CFN 304/2003 (prescrição dietética), Decreto 84.444/1980, Resolução FNDE 6/2020, RDC 429/2020 e IN 75/2020 citados de memória; não reconfirmados nesta sessão.",
+    "Status atual do art. 36 da Res. CFN 599/2018 (atendimento não presencial) após o fim da emergência sanitária: a Res. 684/2021 suspendia o artigo até a declaração do fim da pandemia pela OMS; conferir norma posterior.",
+    "Revisão da Res. CFN 600/2018 (CET-600) em andamento em 2025; texto final não localizado.",
+    "URI ESCO 'dietitian' vem de espelho (World of Taxonomy); não confirmada em esco.ec.europa.eu. Competências sem URI ESCO.",
+    "Total de nutricionistas inscritos nos CRNs: só dados de 2018 (129.193; 'mais de 140 mil'); nenhum total atual localizado.",
+    "URLs de citação e aprendizagem (Guia Alimentar, ANVISA, FNDE, TBCA, CNES, UNA-SUS, AVASUS, Fiocruz) não abertas nesta sessão.",
+    "Softwares comerciais citados (Dietbox, Avanutri, DietSmart) como exemplos, sem verificação de mercado.",
+    "Vocabulário, tarefas e rubrica vêm do conhecimento da profissão; revisão por nutricionista recomendada."
+  ]
+}

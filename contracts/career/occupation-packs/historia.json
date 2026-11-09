@@ -1,0 +1,386 @@
+{
+  "schemaVersion": 1,
+  "code": "historia",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "História", "en": "History", "es": "Historia" },
+  "fields": ["historia"],
+  "family": {
+    "cbo": [
+      { "code": "2321", "title": "Professores do ensino médio" },
+      { "code": "2313", "title": "Professores de nível superior no ensino fundamental de quinta a oitava série" },
+      { "code": "2035", "title": "Pesquisadores das ciências sociais e humanas" }
+    ],
+    "isco08": [
+      { "code": "2330", "title": "Secondary education teachers" },
+      { "code": "2633", "title": "Philosophers, historians and political scientists" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/0cd729a6-ed11-4338-ac4b-d4b924390128", "label": "historian" },
+      { "uri": "http://data.europa.eu/esco/occupation/27e16eef-c7a6-4577-bc3f-727d01ec1958", "label": "history teacher secondary school" }
+    ]
+  },
+  "scope": {
+    "summary": "A licenciatura habilita para a docência de História nos anos finais e no ensino médio (LDB, art. 62), com planos alinhados à BNCC; o bacharelado leva a pesquisa, arquivos, museus, patrimônio e memória institucional. A profissão de historiador é regulamentada pela Lei 14.038/2020, com registro no Ministério do Trabalho, sem conselho. Dados de alunos, documentos de acesso restrito e entrevistas de história oral sem consentimento nunca entram em portfólio.",
+    "entryRoles": ["Estagiário de docência em História", "Professor de História iniciante (contrato temporário ou escola privada)", "Assistente de pesquisa ou bolsista de iniciação científica", "Auxiliar de arquivo ou de acervo", "Educador de museu ou mediador cultural", "Monitor de patrimônio e turismo histórico"],
+    "midRoles": ["Professor de História da educação básica efetivo", "Historiador em arquivo público, museu ou centro de memória", "Pesquisador em projeto de memória institucional", "Técnico de patrimônio cultural (órgãos de preservação)", "Autor ou editor de material didático", "Consultor em pesquisa histórica para audiovisual ou editoras"],
+    "seniorRoles": ["Coordenador de área de ciências humanas", "Professor do ensino superior e pesquisador (mestrado/doutorado)", "Diretor de arquivo, museu ou centro de memória", "Coordenador de inventário ou de processo de tombamento", "Curador de exposição histórica", "Gestor de política de patrimônio ou de educação"],
+    "sectors": ["redes públicas de educação básica", "escolas privadas e cursos preparatórios", "arquivos públicos e privados", "museus, centros culturais e memoriais", "órgãos de patrimônio (IPHAN, institutos estaduais e municipais)", "ensino superior e pesquisa", "editoras e produção de material didático", "audiovisual, jornalismo e consultoria histórica", "memória empresarial e institucional"],
+    "regulation": [
+      { "name": "Lei 14.038/2020", "issuer": "Brasil", "about": "regulamenta a profissão de historiador; atribuições (art. 4º) e registro prévio no órgão do Ministério do Trabalho (art. 7º)" },
+      { "name": "LDB — Lei 9.394/1996, arts. 26, 26-A e 62", "issuer": "Brasil", "about": "currículo, ensino de história e cultura afro-brasileira e indígena (art. 26-A) e licenciatura para a docência" },
+      { "name": "Leis 10.639/2003 e 11.645/2008", "issuer": "Brasil", "about": "obrigatoriedade do ensino de história e cultura afro-brasileira e indígena" },
+      { "name": "BNCC — Res. CNE/CP 2/2017 e Res. CNE/CP 4/2018", "issuer": "CNE/MEC", "about": "componente História (EF) e área de Ciências Humanas e Sociais Aplicadas (EM); habilidades codificadas" },
+      { "name": "DCN dos cursos de História — Parecer CNE/CES 492/2001 e Res. CNE/CES 13/2002", "issuer": "CNE/MEC", "about": "perfil do formado em História, licenciatura e bacharelado" },
+      { "name": "Lei de Arquivos (Lei 8.159/1991) e LAI (Lei 12.527/2011)", "issuer": "Brasil", "about": "acesso a documentos públicos, sigilo e informações pessoais (art. 31 da LAI)" },
+      { "name": "Decreto-Lei 25/1937 e Constituição, art. 216", "issuer": "Brasil", "about": "patrimônio cultural, tombamento e proteção de bens históricos" },
+      { "name": "ECA (Lei 8.069/1990) e LGPD (Lei 13.709/2018), art. 14", "issuer": "Brasil", "about": "dados de alunos menores e de depoentes: consentimento e finalidade" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "fonte histórica", "meaning": "vestígio do passado (documento escrito, imagem, objeto, depoimento) usado como evidência" },
+      { "term": "fonte primária / secundária", "meaning": "documento produzido na época estudada / obra que interpreta essas fontes" },
+      { "term": "crítica documental", "meaning": "análise de autoria, data, contexto, intenção e confiabilidade de uma fonte" },
+      { "term": "historiografia", "meaning": "produção dos historiadores sobre um tema e o debate entre interpretações" },
+      { "term": "temporalidades", "meaning": "duração, permanência, ruptura e simultaneidade dos processos históricos" },
+      { "term": "anacronismo", "meaning": "atribuir valores ou conceitos de uma época a outra" },
+      { "term": "história oral", "meaning": "método de pesquisa com entrevistas gravadas, com termo de cessão de direitos do depoente" },
+      { "term": "termo de cessão", "meaning": "autorização do depoente para uso e guarda da entrevista" },
+      { "term": "BNCC — Ciências Humanas", "meaning": "habilidades de História codificadas (ex.: EF08HI01, EM13CHS101)" },
+      { "term": "Leis 10.639 e 11.645", "meaning": "ensino obrigatório de história e cultura afro-brasileira e indígena" },
+      { "term": "plano de aula", "meaning": "objetivo, habilidade BNCC, fontes, metodologia, tempo e avaliação de uma aula" },
+      { "term": "sequência didática", "meaning": "aulas encadeadas sobre um tema, com problematização, análise de fontes e produção final" },
+      { "term": "linha do tempo", "meaning": "representação gráfica de eventos e processos em escala temporal" },
+      { "term": "patrimônio material e imaterial", "meaning": "bens (edificações, objetos) e práticas (saberes, celebrações) reconhecidos como herança cultural" },
+      { "term": "tombamento", "meaning": "ato administrativo de proteção de bem cultural (Decreto-Lei 25/1937)" },
+      { "term": "inventário", "meaning": "levantamento e descrição sistemática de bens culturais ou de um acervo" },
+      { "term": "arranjo e descrição arquivística", "meaning": "organização de fundos documentais e produção de instrumentos de pesquisa (NOBRADE)" },
+      { "term": "NOBRADE", "meaning": "Norma Brasileira de Descrição Arquivística, do Conarq" },
+      { "term": "educação patrimonial", "meaning": "ações educativas que partem do patrimônio local" },
+      { "term": "curadoria", "meaning": "seleção, pesquisa e organização de acervo para exposição" },
+      { "term": "memória institucional", "meaning": "pesquisa e organização da história de uma empresa ou instituição" },
+      { "term": "registro de historiador", "meaning": "registro profissional no Ministério do Trabalho exigido pela Lei 14.038/2020" }
+    ],
+    "tools": ["Hemeroteca Digital Brasileira (Biblioteca Nacional)", "SIAN — Sistema de Informações do Arquivo Nacional", "Brasiliana e acervos digitais de universidades", "Zotero (referências)", "AtoM / ICA-AtoM (descrição arquivística)", "Tainacan (acervos museológicos)", "TimelineJS ou ferramentas de linha do tempo", "gravador e transcrição de entrevistas (história oral)", "Google Sala de Aula e Microsoft Teams", "Canva e editores de apresentação", "QGIS ou mapas históricos digitais"],
+    "deliverables": ["plano de aula alinhado à BNCC", "sequência didática com análise de fontes", "material didático (ficha de análise de fonte, linha do tempo)", "relatório de estágio supervisionado", "relatório de pesquisa histórica", "resenha crítica", "artigo acadêmico", "projeto de pesquisa", "roteiro e termo de cessão de entrevista de história oral", "inventário ou instrumento de pesquisa de acervo", "texto curatorial e roteiro de exposição", "parecer histórico para patrimônio (modelo)"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Planejar aulas e sequências didáticas de História com a BNCC", "esco": null, "kind": "nucleo" },
+      { "label": "Ensinar com fontes históricas e problematização", "esco": null, "kind": "nucleo" },
+      { "label": "Ensinar história e cultura afro-brasileira e indígena (Leis 10.639 e 11.645)", "esco": null, "kind": "nucleo" },
+      { "label": "Avaliar aprendizagens com instrumentos diversos e devolutiva", "esco": null, "kind": "nucleo" },
+      { "label": "Pesquisar em arquivos e fazer crítica documental", "esco": null, "kind": "nucleo" },
+      { "label": "Ler e situar a historiografia de um tema", "esco": null, "kind": "nucleo" },
+      { "label": "Escrever textos históricos com referências (ABNT)", "esco": null, "kind": "nucleo" },
+      { "label": "Conduzir entrevistas de história oral com consentimento", "esco": null, "kind": "nucleo" },
+      { "label": "Organizar e descrever acervos (arquivo e museu)", "esco": null, "kind": "apoio" },
+      { "label": "Realizar educação patrimonial e mediação cultural", "esco": null, "kind": "apoio" },
+      { "label": "Representar processos no tempo e no espaço (linhas do tempo, mapas)", "esco": null, "kind": "apoio" },
+      { "label": "Produzir material didático", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação oral", "leitura crítica", "organização e prazos", "ética e sigilo com fontes e depoentes", "respeito à diversidade", "aprendizagem contínua"],
+    "tracks": [
+      { "id": "docencia-historia", "label": "Docência de História", "steps": ["plano de aula com habilidade da BNCC (X1)", "sequência didática com análise de fontes (X2)", "linha do tempo ilustrada em prancha (X3)", "relatório de estágio ou prática (L4)", "post sobre uma aula que funcionou (L5)"] },
+      { "id": "pesquisa-historica", "label": "Pesquisa histórica", "steps": ["resenha crítica de uma obra (X4)", "relatório de pesquisa com fontes (L4)", "infográfico com dados históricos (D7)", "projeto de pesquisa para pós-graduação"] },
+      { "id": "arquivo-museu-patrimonio", "label": "Arquivos, museus e patrimônio", "steps": ["fluxo de tratamento de um acervo (D4)", "procedimento de descrição de documento (L7)", "estudo de caso de uma ação de educação patrimonial (L3)", "prancha de exposição com três peças (D2)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"professor de história\", \"auxiliar de arquivo\", \"educadora de museu\", \"pesquisador bolsista\"",
+      "cboFamilies": ["2321", "2313", "2035", "2613"],
+      "why": "Pergunto sua última função para partir do que você já fez (sala de aula, pesquisa, acervo) e sugerir tarefas dessa frente. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, iniciação científica ou primeira turma",
+        "junior": "até dois anos na função, com supervisão",
+        "pleno": "planeja aulas ou conduz pesquisa e acervo com autonomia",
+        "senior": "referência na área; coordena projeto, orienta colegas",
+        "gestao": "dirige área, arquivo, museu ou equipe"
+      },
+      "why": "Pergunto o nível para ajustar a dificuldade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em História",
+      "options": ["planejar aulas e sequências didáticas", "ensinar com fontes históricas", "trabalhar história afro-brasileira e indígena", "explicar processos e contextos", "avaliar e dar devolutiva", "pesquisar em arquivos", "ler e discutir historiografia", "escrever textos acadêmicos", "fazer entrevistas de história oral", "organizar acervos", "mediar visitas e educação patrimonial", "criar linhas do tempo e mapas"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com as tarefas."
+    },
+    "c4": {
+      "certifications": ["licenciatura em História", "bacharelado em História", "registro de historiador (Lei 14.038/2020)", "pós-graduação em ensino de História", "pós-graduação em patrimônio, arquivologia ou museologia", "curso de história oral", "cursos do AVAMEC/MEC", "mestrado ou doutorado em História"],
+      "languages": ["inglês", "espanhol", "francês", "latim (leitura)", "Libras"],
+      "why": "Habilitação, registro e idiomas de leitura de fontes ajudam a ver lacunas em relação à função que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["planejamento com a BNCC", "ensino com fontes", "história afro-brasileira e indígena", "avaliação e devolutiva", "pesquisa em arquivos", "história oral", "escrita acadêmica", "educação patrimonial", "organização de acervos", "curadoria de exposições", "tecnologias digitais em história"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que frente quer atuar primeiro?",
+        "type": "escolha",
+        "options": ["docência na educação básica", "pesquisa acadêmica", "arquivos", "museus e exposições", "patrimônio cultural", "material didático e editoras", "ainda não sei"],
+        "why": "A frente muda as tarefas (plano de aula, relatório de pesquisa, inventário) e as pessoas sugeridas. Você pode mudar depois.",
+        "where": "P"
+      },
+      {
+        "id": "x2",
+        "prompt": "Pretende prestar concurso (magistério, arquivo ou patrimônio)?",
+        "type": "sim-nao",
+        "options": [],
+        "why": "Se sim, editais abertos podem virar tarefas e o plano respeita o calendário. Não é obrigatório.",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": true
+  },
+  "guidedTasks": {
+    "priority": ["L6", "L1", "L4", "L10", "L3", "D7", "L7", "D4", "L5", "L2", "D2", "D10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica de ambiente não é entrega da profissão" },
+      { "code": "D3", "reason": "modelagem 3D de produto não faz parte da atuação" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da profissão" },
+      { "code": "D8", "reason": "vista explodida de conjunto não se aplica" },
+      { "code": "D9", "reason": "wireframe de interface não se aplica à atuação típica" }
+    ],
+    "parameters": {
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva um resumo de até 600 caracteres com a frente em que quer atuar (docência, pesquisa, arquivo, museu, patrimônio), seu tema ou período de interesse, três competências e uma prova com link.",
+        "parameters": { "maxChars": 600, "requiredParts": ["frente-alvo", "tema ou período", "três competências", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia a frente-alvo", "cita três competências", "inclui uma prova com link"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para a função que quer mirar primeiro, com habilitação (e registro de historiador, se tiver), três conquistas com número (turmas, projetos, documentos descritos, publicações) e as palavras-chave da vaga ou do edital.",
+        "parameters": { "maxPages": 1, "achievementsWithNumbers": 3, "keywordsFrom": "vaga ou edital-alvo" },
+        "criteria": ["uma página", "três conquistas com número", "habilitação e registro declarados", "palavras-chave da vaga ou do edital presentes", "sem idade, estado civil ou foto obrigatória"],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "L4": {
+        "title": "Relatório curto de pesquisa ou de estágio",
+        "brief": "Em até 4 páginas, relate uma pesquisa com fontes ou uma prática de estágio: problema, fontes e método, resultados, limitações e referências em ABNT. Documentos de acesso restrito e alunos não são identificados.",
+        "parameters": { "maxPages": 4, "sections": ["problema", "fontes e método", "resultados", "limitações", "referências (ABNT NBR 6023)"], "sourcesCited": true },
+        "criteria": ["seções nomeadas", "até 4 páginas", "ao menos duas fontes primárias citadas com localização (acervo, fundo)", "referências em ABNT", "sem aluno, depoente ou documento restrito identificável"],
+        "evidence": "relatório em PDF",
+        "time": "2 h",
+        "level": 2
+      },
+      "L10": {
+        "title": "Revisão crítica de um material didático ou texto público",
+        "brief": "Analise com a rubrica um material didático, texto de divulgação ou peça remixada: dois pontos fortes, duas melhorias (ex.: anacronismo, ausência de fontes, apagamento de sujeitos) e crédito ao autor.",
+        "parameters": { "strengths": 2, "improvements": 2, "creditAuthor": true },
+        "criteria": ["usa a rubrica", "dois pontos fortes e duas melhorias", "cada melhoria com justificativa historiográfica", "autor creditado"],
+        "evidence": "comentário estruturado",
+        "time": "30 min",
+        "level": 1
+      },
+      "L3": {
+        "title": "Estudo de caso STAR de uma situação de ensino, pesquisa ou acervo",
+        "brief": "Conte uma situação que você resolveu: situação, tarefa, ação e resultado observável (ex.: engajamento da turma com fontes locais, documentos descritos). Sem aluno, depoente ou instituição identificável.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true, "anonymized": true },
+        "criteria": ["quatro seções explícitas", "resultado com número ou comparação", "nenhuma pessoa identificável", "declaração de ausência de dado confidencial"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico histórico com fonte",
+        "brief": "Mostre um dado histórico com fonte citada (ex.: série do IBGE, censo de 1872, dados de acervo): uma mensagem principal, eixos rotulados, período e fonte.",
+        "parameters": { "sourceRequired": true, "oneMainMessage": true, "periodLabeled": true },
+        "criteria": ["fonte e período citados", "eixos rotulados", "uma mensagem principal", "créditos de imagens"],
+        "evidence": "imagem e PDF",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Plano de aula de História alinhado à BNCC",
+        "competency": "Planejamento de aula com a BNCC",
+        "criteria": ["ano e habilidade da BNCC com código", "ao menos uma fonte histórica analisada em aula, creditada", "objetivo, metodologia, recursos, tempo e avaliação", "adaptações para inclusão", "sem dado de aluno"],
+        "evidence": "plano de aula (modelo plano-de-aula)",
+        "time": "60 min",
+        "trigger": "Que aula você daria amanhã? Monte o plano com uma fonte e a habilidade da BNCC.",
+        "level": 1
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Sequência didática com análise de fontes",
+        "competency": "Ensino de História com fontes",
+        "criteria": ["tema, ano e habilidades da BNCC com código", "problematização inicial", "três a cinco aulas com fontes de tipos diferentes", "produção final e critérios de avaliação", "fontes creditadas com acervo de origem"],
+        "evidence": "documento",
+        "time": "2 h",
+        "trigger": "Quer mostrar como você ensina com fontes? Uma sequência de 3 a 5 aulas comprova progressão.",
+        "level": 2
+      },
+      {
+        "id": "X3",
+        "editor": "drawings",
+        "title": "Linha do tempo ou mapa histórico em prancha",
+        "competency": "Representação de processos no tempo e no espaço",
+        "criteria": ["escala temporal proporcional ou mapa com legenda e fonte", "ao menos oito marcos datados", "distinção entre evento e processo (pontos e faixas)", "fontes e créditos das imagens", "título e público-alvo indicados"],
+        "evidence": "prancha publicada (PDF ou PNG)",
+        "time": "90 min",
+        "trigger": "Que processo você explicaria numa linha do tempo ou num mapa?",
+        "level": 2
+      },
+      {
+        "id": "X4",
+        "editor": "letters",
+        "title": "Resenha crítica de uma obra de história",
+        "competency": "Leitura historiográfica e escrita acadêmica",
+        "criteria": ["referência completa da obra (ABNT)", "síntese do argumento e das fontes usadas pelo autor", "situa a obra no debate historiográfico", "entre 500 e 1.000 palavras", "citações com página"],
+        "evidence": "resenha",
+        "time": "90 min",
+        "trigger": "Leu um livro de história que vale discutir? Uma resenha comprova leitura crítica.",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "habilidade-bncc", "check": "há ao menos um código de habilidade da BNCC (ex.: EF08HI01, EM13CHS101)", "appliesTo": ["X1", "X2"], "auto": true },
+      { "id": "secoes-do-plano", "check": "objetivo, metodologia, recursos, tempo e avaliação estão presentes e nomeados", "appliesTo": ["X1", "X2"], "auto": true },
+      { "id": "fontes-creditadas", "check": "cada fonte histórica traz autoria (quando houver), data e acervo de origem", "appliesTo": ["L4", "X1", "X2", "X3"], "auto": true },
+      { "id": "marcos-da-linha-do-tempo", "check": "a linha do tempo tem ao menos oito marcos datados, título e legenda", "appliesTo": ["X3"], "auto": true },
+      { "id": "referencias-abnt", "check": "há referência ou seção de referências com autor, título e ano (NBR 6023)", "appliesTo": ["L4", "X2", "X4"], "auto": true },
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6", "X4"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7"], "auto": true },
+      { "id": "sem-dado-pessoal", "check": "a pessoa declarou ausência de dado de aluno, de depoente sem cessão ou de documento de acesso restrito", "appliesTo": ["L3", "L4", "L5", "L7", "D4", "X1", "X2"], "auto": true },
+      { "id": "fonte-dos-dados", "check": "fonte e período dos dados aparecem no infográfico", "appliesTo": ["D7"], "auto": true },
+      { "id": "creditos-e-fontes", "check": "imagens, coautores e autores remixados estão creditados", "appliesTo": ["L5", "L10", "D2", "D7", "D10", "X3"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o fluxo tem início e fim, raias por responsável e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "autoria", "check": "a pessoa declarou autoria da peça", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L10", "D2", "D4", "D7", "D10", "X1", "X2", "X3", "X4"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "uso-de-fontes", "label": "Uso crítico de fontes", "levels": { "aproxima": "a fonte ilustra, sem análise de autoria e contexto", "atende": "a fonte é analisada quanto a autoria, contexto e intenção", "supera": "confronta fontes diferentes e discute seus limites" } },
+      { "id": "contextualizacao", "label": "Contextualização e temporalidade", "levels": { "aproxima": "há anacronismos ou eventos soltos", "atende": "situa eventos em processos e evita anacronismo", "supera": "articula durações, permanências e rupturas" } },
+      { "id": "diversidade-de-sujeitos", "label": "Diversidade de sujeitos históricos", "levels": { "aproxima": "narrativa centrada em um só grupo", "atende": "inclui sujeitos diversos, como pedem as Leis 10.639 e 11.645", "supera": "dá voz a sujeitos diversos por meio das próprias fontes" } },
+      { "id": "coerencia-didatica", "label": "Coerência entre objetivo, atividade e avaliação", "levels": { "aproxima": "objetivo e atividade se relacionam de forma vaga", "atende": "a atividade leva ao objetivo e a avaliação observa a habilidade", "supera": "objetivo, atividade, avaliação e devolutiva formam um ciclo explícito" } },
+      { "id": "clareza", "label": "Clareza", "levels": { "aproxima": "a ideia principal exige releitura", "atende": "a ideia principal é entendida na primeira leitura", "supera": "conduz quem lê sem esforço e sem excesso" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa formada ou em formação em História: docência nos anos finais e no ensino médio, pesquisa, arquivos, museus, patrimônio e memória institucional. Use o vocabulário da área (fonte primária e secundária, crítica documental, historiografia, temporalidades, anacronismo, história oral e termo de cessão, BNCC de Ciências Humanas e códigos de habilidade, educação patrimonial, NOBRADE, inventário, tombamento) e cite normas quando couber: Lei 14.038/2020 (historiador), LDB (Lei 9.394/1996) e art. 26-A, Leis 10.639/2003 e 11.645/2008, BNCC, Lei 8.159/1991 e LAI (Lei 12.527/2011), ECA e LGPD art. 14. Nunca: avaliar, dar nota ou classificar alunos reais; aceitar nomes, notas ou fotos de alunos; usar entrevistas de história oral sem termo de cessão ou expor dados pessoais de depoentes; reproduzir documentos de acesso restrito; inventar fontes, datas ou citações (se não souber, diga e indique onde procurar); emitir parecer histórico assinável para tombamento ou processo; escrever o TCC ou a resenha pela pessoa. Pergunte a frente de atuação em vez de inferir. Pré-cheque só critérios objetivos (código da BNCC, seções, fontes creditadas, referências, marcos da linha do tempo); a avaliação da peça e o selo são humanos. Mercado cita fonte, data e região (Censo Escolar, CAGED/RAIS, editais) ou diz \"estimativa\"; nunca fale de salário. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "Lei 14.038/2020 — regulamenta a profissão de historiador (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l14038.htm", "kind": "norma" },
+      { "title": "BNCC — Base Nacional Comum Curricular (MEC)", "url": "http://basenacionalcomum.mec.gov.br/", "kind": "norma" },
+      { "title": "LDB — Lei 9.394/1996 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9394.htm", "kind": "norma" },
+      { "title": "ANPUH-Brasil — Associação Nacional de História", "url": "https://anpuh.org.br/", "kind": "comunidade" },
+      { "title": "Arquivo Nacional — SIAN e orientações de acesso", "url": "https://www.gov.br/arquivonacional/pt-br", "kind": "orgao-publico" },
+      { "title": "IPHAN — Instituto do Patrimônio Histórico e Artístico Nacional", "url": "https://www.gov.br/iphan/pt-br", "kind": "orgao-publico" },
+      { "title": "Hemeroteca Digital Brasileira — Biblioteca Nacional", "url": "https://bndigital.bn.gov.br/hemeroteca-digital/", "kind": "referencia" },
+      { "title": "INEP — Censo Escolar da Educação Básica", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-escolar", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 de História; x1 (frente) e x2 (concurso) no primeiro acesso." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Docência puxa X1/X2/X3; pesquisa puxa L4/X4; acervo e patrimônio puxam D4/L7/L3. Cada card lembra de creditar fontes e não expor pessoas." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Respeita horas (d1), aparelho (d4) e calendário escolar ou de editais; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Só critérios objetivos: código BNCC, seções, fontes com acervo, referências ABNT, marcos da linha do tempo. Não julga a interpretação histórica; o selo é humano." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de plano, sequência, relatório ou roteiro de entrevista com prévia; nunca inventa fonte ou citação." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Escala da linha do tempo, legenda do mapa e créditos (X3); fonte e eixos do infográfico (D7); fluxo de acervo (D4)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: competências por frente, lacunas (habilitação, registro de historiador) e incertezas; cita o campo de origem." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Caminhos para geografia, ciências sociais, biblioteconomia, pedagogia e turismo com lacunas; mercado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Pessoas descobríveis por opt-in da mesma família CBO (2321, 2313, 2035) ou com competências em comum." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com frente, tema e habilitação; só com o consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai formação, registro, publicações e experiências em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados de alunos (nomes, notas, fotos)", "entrevistas de história oral e dados de depoentes sem termo de cessão", "documentos de arquivos privados ou de acesso restrito", "dados sensíveis (LGPD art. 5º II)", "dados de terceiros sem autorização"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca avaliar, dar nota ou classificar alunos reais; recusar nomes, notas ou fotos de alunos",
+      "não usar entrevistas sem termo de cessão nem expor dados pessoais de depoentes ou documentos de acesso restrito",
+      "nunca inventar fontes, datas ou citações; quando não souber, dizer e indicar onde procurar",
+      "não emitir parecer histórico assinável nem escrever a peça que a pessoa apresentará como própria",
+      "perguntar a frente de atuação em vez de inferir",
+      "nunca prometer vaga, aprovação ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação; toda saída traz \"por que\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["prancha", "infografico", "diagrama"],
+    "lettersTemplates": ["plano-de-aula", "artigo", "relatorio-tecnico", "projeto-de-pesquisa", "revisao", "estudo-de-caso", "pop", "curriculo", "bio", "carta", "post", "parecer"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, tarefas curtas (L5, L6) e revisão (L10); linha do tempo (X3), sequência didática (X2) e relatório (L4) pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: bio com sua frente e seu tema de interesse (15 min).",
+        "Que aula você daria amanhã? Um plano com uma fonte e a habilidade da BNCC leva cerca de 1 h.",
+        "Uma linha do tempo em prancha (90 min) mostra como você organiza processos, e fica ótima no portfólio.",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["dados de alunos menores de idade: nomes, notas, laudos e fotos (ECA; LGPD art. 14)", "documentos de arquivos privados ou com restrição de acesso (Lei 12.527/2011; Lei 8.159/1991)", "entrevistas de história oral e dados pessoais de depoentes sem consentimento"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "INEP — Censo Escolar (docentes de História e adequação da formação)", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-escolar", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2321, 2313 e 2035", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Concursos públicos para o magistério, arquivos e patrimônio — gov.br", "url": "https://www.gov.br/pt-br/servicos/consultar-concursos-publicos", "geography": "UF e município", "cadence": "eventual", "kind": "edital" },
+      { "title": "IBRAM — Cadastro Nacional de Museus", "url": "https://www.gov.br/museus/pt-br", "geography": "Brasil, UF e município", "cadence": "continua", "kind": "estatistica-oficial" },
+      { "title": "ANPUH-Brasil — informações sobre a profissão e o registro de historiador", "url": "https://anpuh.org.br/", "geography": "Brasil", "cadence": "eventual", "kind": "associacao" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "geografia", "why": "Ciências humanas próximas: docência integrada, mapas históricos e estudos do território.", "gaps": ["licenciatura em Geografia", "cartografia e geoprocessamento", "geografia física"], "steps": ["mapa histórico em prancha (X3)", "plano de aula interdisciplinar (X1)", "segunda licenciatura em Geografia"] },
+    { "to": "ciencias-sociais", "why": "Pesquisa com fontes e entrevistas aproxima a História da sociologia e da antropologia.", "gaps": ["métodos quantitativos e qualitativos das ciências sociais", "teoria sociológica e antropológica", "licenciatura em Sociologia para docência"], "steps": ["relatório de pesquisa com entrevistas (L4)", "infográfico com dados do IBGE (D7)", "disciplinas ou pós em ciências sociais"] },
+    { "to": "biblioteconomia", "why": "Trabalho com acervos e descrição documental se aproxima de bibliotecas e centros de documentação.", "gaps": ["graduação em Biblioteconomia e registro no CRB", "catalogação e representação da informação", "gestão de unidades de informação"], "steps": ["procedimento de descrição de documento (L7)", "fluxo de tratamento de acervo (D4)", "graduação em Biblioteconomia"] },
+    { "to": "pedagogia", "why": "Docentes de História que gostam de coordenação e formação de professores podem migrar para a gestão pedagógica.", "gaps": ["licenciatura em Pedagogia ou pós em gestão escolar", "coordenação pedagógica", "educação infantil e anos iniciais"], "steps": ["fluxo de um processo escolar (D4)", "plano 30-60-90 para coordenação (L9)", "pós em gestão ou segunda licenciatura"] },
+    { "to": "turismo", "why": "Patrimônio, roteiros históricos e educação patrimonial dialogam com o turismo cultural.", "gaps": ["planejamento e gestão de roteiros turísticos", "cadastro no Cadastur para guias", "atendimento ao visitante e idiomas"], "steps": ["roteiro de visita histórica como procedimento (L7)", "prancha de roteiro com três pontos (D2)", "curso de guia de turismo"] }
+  ],
+  "learning": [
+    { "title": "AVAMEC — cursos do MEC para professores (BNCC, relações étnico-raciais)", "provider": "MEC", "url": "https://avamec.mec.gov.br/", "free": true, "kind": "portal" },
+    { "title": "BNCC — Ciências Humanas: História", "provider": "MEC", "url": "http://basenacionalcomum.mec.gov.br/", "free": true, "kind": "norma" },
+    { "title": "Hemeroteca Digital Brasileira", "provider": "Fundação Biblioteca Nacional", "url": "https://bndigital.bn.gov.br/hemeroteca-digital/", "free": true, "kind": "portal" },
+    { "title": "Arquivo Nacional — SIAN e cursos", "provider": "Arquivo Nacional", "url": "https://www.gov.br/arquivonacional/pt-br", "free": true, "kind": "portal" },
+    { "title": "Educação patrimonial — publicações e cursos do IPHAN", "provider": "IPHAN", "url": "https://www.gov.br/iphan/pt-br", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — cursos de patrimônio, gestão documental e LAI", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "ANPUH-Brasil — GTs, eventos e Revista Brasileira de História", "provider": "ANPUH", "url": "https://anpuh.org.br/", "free": true, "kind": "comunidade" },
+    { "title": "CPDOC/FGV — acervo e programa de história oral", "provider": "FGV", "url": "https://cpdoc.fgv.br/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4 (perguntas), §4.6 (pacote), §7 (tarefas L1–L10, D1–D10), §8 (mensagens)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos — ramo historia (CBO, ISCO, ESCO, sensitiveData, vizinhos, registro no MTE)", "url": "contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
+    { "title": "Lei 14.038/2020 — profissão de historiador", "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l14038.htm", "accessedAt": "2026-11-02" },
+    { "title": "LDB — Lei 9.394/1996", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9394.htm", "accessedAt": "2026-11-02" },
+    { "title": "BNCC — Base Nacional Comum Curricular", "url": "http://basenacionalcomum.mec.gov.br/", "accessedAt": "2026-11-02" },
+    { "title": "Lei 12.527/2011 — Lei de Acesso à Informação", "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm", "accessedAt": "2026-11-02" },
+    { "title": "ESCO — occupations historian, history teacher secondary school", "url": "https://esco.ec.europa.eu/", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Lei 14.038/2020: art. 4º (atribuições) e art. 7º (registro) citados a partir do catálogo e de memória; procedimento atual de registro no MTE não verificado.",
+    "Parecer CNE/CES 492/2001 e Res. CNE/CES 13/2002 (DCN de História): números citados de memória.",
+    "Código CBO 2613 em questions.a4.cboFamilies (arquivistas e museólogos) não conferido no portal da CBO.",
+    "IBRAM/Cadastro Nacional de Museus como fonte de mercado: URL e cadência não verificadas.",
+    "URIs ESCO de competências não pesquisadas (esco: null); URIs de ocupação copiadas do catálogo de ramos.",
+    "Nenhuma URL de citeSources, market, learning e sources foi acessada nesta sessão (cota de busca indisponível); endereços citados de memória."
+  ]
+}

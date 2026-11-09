@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "code": "generico",
+  "version": "2026.11.0",
+  "status": "revisado",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Genérico (sem profissão definida)", "en": "Generic (no occupation set)", "es": "Genérico (sin profesión definida)" },
+  "fields": [],
+  "family": { "cbo": [], "isco08": [], "esco": [] },
+  "scope": {
+    "summary": "Pacote usado quando a pessoa não informou a profissão preferida ou respondeu \"não sei\". Trabalha competências transversais e as evidências do Letters e do Drawings, e oferece o teste de interesses para chegar a uma família de ocupação.",
+    "entryRoles": ["Assistente administrativo", "Auxiliar de atendimento", "Estagiário", "Aprendiz"],
+    "midRoles": ["Analista", "Supervisor de equipe", "Coordenador de projetos"],
+    "seniorRoles": ["Gerente", "Especialista", "Consultor"],
+    "sectors": ["serviços", "comércio", "administração pública", "indústria", "terceiro setor", "trabalho por conta própria"],
+    "regulation": [
+      { "name": "CLT, art. 373-A", "issuer": "Brasil", "about": "veda anúncios e exigências discriminatórias (sexo, idade, cor, situação familiar)" },
+      { "name": "Lei 9.029/1995", "issuer": "Brasil", "about": "proíbe práticas discriminatórias no acesso ao trabalho" },
+      { "name": "LGPD (Lei 13.709/2018), art. 5º II e art. 20", "issuer": "Brasil", "about": "dados sensíveis; revisão de decisões automatizadas sobre perfil profissional" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "competência", "meaning": "conhecimento, habilidade e atitude que a pessoa demonstra com evidência" },
+      { "term": "evidência", "meaning": "peça verificável (Letter, Drawing, certificado, link) que comprova uma competência" },
+      { "term": "tarefa-guia", "meaning": "tarefa sugerida pelo guia com competência, critério de aceite, evidência e tempo" },
+      { "term": "critério de aceite", "meaning": "condição observável que diz se a tarefa foi concluída" },
+      { "term": "rubrica", "meaning": "conjunto de critérios com níveis aproxima, atende e supera" },
+      { "term": "portfólio", "meaning": "conjunto de evidências que a pessoa escolhe mostrar" },
+      { "term": "currículo direcionado", "meaning": "currículo de uma página ajustado a um cargo-alvo" },
+      { "term": "STAR", "meaning": "situação, tarefa, ação e resultado — estrutura de estudo de caso" },
+      { "term": "plano 30-60-90", "meaning": "metas para os três primeiros meses em um cargo" },
+      { "term": "POP", "meaning": "procedimento operacional padrão: passos numerados com responsável e critério de conclusão" },
+      { "term": "CBO", "meaning": "Classificação Brasileira de Ocupações, do Ministério do Trabalho e Emprego" },
+      { "term": "ESCO", "meaning": "classificação europeia de competências e ocupações usada como vocabulário de competências" }
+    ],
+    "tools": ["editor de textos (Letters)", "editor de desenho (Drawings)", "planilha", "e-mail", "videochamada"],
+    "deliverables": ["currículo de uma página", "carta de apresentação", "estudo de caso STAR", "resumo de perfil", "procedimento operacional", "prancha de portfólio"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Comunicação escrita", "esco": null, "kind": "nucleo" },
+      { "label": "Organização e planejamento", "esco": null, "kind": "nucleo" },
+      { "label": "Resolução de problemas", "esco": null, "kind": "nucleo" },
+      { "label": "Trabalho em equipe", "esco": null, "kind": "nucleo" },
+      { "label": "Atendimento a pessoas", "esco": null, "kind": "nucleo" },
+      { "label": "Uso de ferramentas digitais", "esco": null, "kind": "nucleo" },
+      { "label": "Análise de informações e números", "esco": null, "kind": "apoio" },
+      { "label": "Aprendizagem contínua", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação oral", "gestão do tempo", "ética e sigilo", "adaptabilidade"],
+    "tracks": [
+      { "id": "apresentar-se", "label": "Apresentar-se por escrito", "steps": ["resumo de perfil em três frases (L6)", "currículo direcionado de uma página (L1)", "carta para uma oportunidade (L2)"] },
+      { "id": "provar-resultados", "label": "Provar resultados", "steps": ["estudo de caso STAR (L3)", "prancha de portfólio com três trabalhos (D2)", "post sobre um aprendizado (L5)"] },
+      { "id": "organizar-processos", "label": "Organizar processos", "steps": ["diagrama de um fluxo que você melhorou (D4)", "procedimento operacional de algo que domina (L7)", "redesenho antes e depois (D5)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"auxiliar administrativo\", \"vendedor\", \"recepcionista\", \"técnico de informática\"",
+      "cboFamilies": ["4110", "5211", "4221"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez, e não do zero. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, aprendizagem ou primeiro cargo",
+        "junior": "até dois anos na função, com supervisão",
+        "pleno": "atua com autonomia na função",
+        "senior": "referência técnica; orienta colegas",
+        "gestao": "responde por equipe, metas ou orçamento"
+      },
+      "why": "Pergunto o nível para ajustar a dificuldade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem",
+      "options": ["escrever com clareza", "organizar rotinas e prazos", "atender pessoas", "resolver problemas do dia a dia", "trabalhar com números e planilhas", "aprender ferramentas novas", "liderar ou treinar colegas", "vender ou negociar", "desenhar, criar ou montar coisas", "cuidar de processos e qualidade"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com as tarefas."
+    },
+    "c4": {
+      "certifications": ["ensino médio completo", "curso técnico", "graduação", "cursos livres com certificado"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação e idiomas ajudam a ver lacunas em relação ao cargo que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["comunicação escrita", "apresentação oral", "planilhas e análise de dados", "gestão de projetos", "atendimento e negociação", "liderança de equipe", "ferramentas digitais do seu setor", "organização de processos"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [],
+    "interestTestWhenUnknown": true
+  },
+  "guidedTasks": {
+    "priority": ["L6", "L1", "D2", "L3", "L2", "D4", "L5", "L10", "L9", "D10"],
+    "excluded": [],
+    "parameters": {
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva um resumo de até 600 caracteres com a área que você quer, três competências e uma prova com link. Sem dados pessoais além do nome.",
+        "parameters": { "maxChars": 600, "requiredParts": ["área-alvo", "três competências", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia a área-alvo", "cita três competências", "inclui uma prova com link"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para o cargo que você quer mirar primeiro, com três conquistas com número e as palavras-chave do cargo.",
+        "parameters": { "maxPages": 1, "achievementsWithNumbers": 3, "keywordsFrom": "cargo-alvo" },
+        "criteria": ["uma página", "três conquistas com número", "palavras-chave do cargo-alvo presentes", "sem idade, estado civil ou foto obrigatória"],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "D2": {
+        "title": "Prancha de portfólio A3 com três trabalhos",
+        "brief": "Reúna três trabalhos que representam você em uma prancha A3 com grade consistente, legendas e créditos.",
+        "parameters": { "format": "A3", "works": 3 },
+        "criteria": ["três trabalhos", "grade consistente", "legenda em cada trabalho", "créditos de coautores e fontes"],
+        "evidence": "prancha publicada (PDF ou PNG)",
+        "time": "90 min",
+        "level": 1
+      },
+      "L3": {
+        "title": "Estudo de caso STAR",
+        "brief": "Conte um problema que você resolveu: situação, tarefa, ação e resultado mensurável, sem dado confidencial.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true },
+        "criteria": ["quatro seções explícitas", "resultado com número ou comparação", "declaração de ausência de dado confidencial"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": []
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L9"], "auto": true },
+      { "id": "palavras-chave-do-alvo", "check": "as palavras-chave do cargo-alvo aparecem no texto", "appliesTo": ["L1", "L2"], "auto": true },
+      { "id": "creditos-e-fontes", "check": "coautores, fontes e autores remixados estão creditados", "appliesTo": ["L5", "L10", "D2", "D7", "D10"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados confidenciais", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "clareza", "label": "Clareza", "levels": { "aproxima": "a ideia principal exige releitura", "atende": "a ideia principal é entendida na primeira leitura", "supera": "conduz quem lê sem esforço e sem excesso" } },
+      { "id": "relevancia", "label": "Relevância para o objetivo", "levels": { "aproxima": "liga-se ao cargo-alvo de forma vaga", "atende": "cada parte responde a um requisito do cargo-alvo", "supera": "antecipa o que o cargo-alvo pede e prova com evidência" } },
+      { "id": "resultado", "label": "Resultado demonstrado", "levels": { "aproxima": "descreve atividades, sem resultado", "atende": "mostra um resultado mensurável", "supera": "mostra resultado, contexto e o que faria diferente" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa que ainda não indicou uma profissão preferida. Trabalhe com competências transversais (comunicação escrita, organização, resolução de problemas, atendimento, colaboração) e com as evidências que ela produz no Letters e no Drawings. Pergunte antes de inferir: não deduza área, senioridade ou situação a partir de textos, desenhos ou do histórico; quando a pessoa não souber a área, ofereça o teste de interesses e siga com o catálogo genérico. Use linguagem simples, sem jargão interno do sistema. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por que foi sugerida, e aceita \"não me serve\". Afirmações sobre mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa entrevista, emprego ou salário. Não trate nem infira dados sensíveis (saúde, religião, orientação sexual, origem, idade, situação familiar). Progresso é por critérios atendidos, nunca por pontuação ou ranking. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação da pessoa. Pré-cheque só critérios objetivos; a validação que gera selo é humana.",
+    "citeSources": [
+      { "title": "CBO — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "ESCO — European Skills, Competences, Qualifications and Occupations", "url": "https://esco.ec.europa.eu/", "kind": "referencia" },
+      { "title": "Novo CAGED — Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" },
+      { "title": "PNAD Contínua — IBGE", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes genéricas de c2 e c5; oferece o teste de interesses (b2) quando a pessoa não sabe a área." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Catálogo L1–L10/D1–D10 na ordem de prioridade; cada card traz \"por que esta tarefa\" e \"serve para você?\" (d6)." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Só critérios objetivos (tamanho, seções, créditos, declaração de autoria); o selo depende de revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Proposta com prévia; nunca aplica sem revisão." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Grade, legendas e créditos da prancha; diagrama fechado (D4)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: síntese com competências declaradas e evidenciadas, lacunas e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Sem profissão, parte do teste de interesses (famílias RIASEC) e das competências declaradas." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade explicada por competências compartilhadas." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil; só com o consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências e competências em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados sensíveis (LGPD art. 5º II)", "dados de terceiros sem autorização"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "perguntar em vez de inferir área, senioridade ou situação",
+      "nunca prometer entrevista, emprego ou salário; afirmações de mercado com fonte, data e região ou \"estimativa\"",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["prancha", "diagrama", "infografico"],
+    "lettersTemplates": ["bio", "curriculo", "carta", "estudo-de-caso", "post", "pop", "plano-30-60-90", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas de texto curtas (L5, L6) e revisão (L10); D3 e D8 exigem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em três frases (15 min).",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["competencias"] },
+    "privacy": { "sensitiveData": ["dados de terceiros (clientes, colegas) sem autorização", "documentos pessoais (CPF, RG, endereço)"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "PNAD Contínua (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html", "geography": "Brasil e UF", "cadence": "trimestral", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [],
+  "learning": [
+    { "title": "Escola Virtual.Gov", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual Fundação Bradesco", "provider": "Fundação Bradesco", "url": "https://www.ev.org.br/", "free": true, "kind": "portal" },
+    { "title": "Cursos on-line do Sebrae", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "Khan Academy em português", "provider": "Khan Academy", "url": "https://pt.khanacademy.org/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §3 (princípios), §4 (perguntas), §7 (tarefas L1–L10, D1–D10), §8 (mensagens)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "RF75 Work Station Career Guidance, CA05–CA09, CA19", "url": "docs/diagramas/RF75/README.md", "accessedAt": "2026-11-02" },
+    { "title": "RF50 Análise de Perfil, CA02, CA07, CA11, CA12, CA16–CA17", "url": "docs/diagramas/RF50/README.md", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URLs de fontes de mercado, de citação e de aprendizagem não verificadas nesta sessão",
+    "códigos CBO em questions.a4.cboFamilies não conferidos no portal da CBO"
+  ]
+}

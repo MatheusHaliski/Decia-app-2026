@@ -1,0 +1,365 @@
+{
+  "schemaVersion": 1,
+  "code": "jornalismo",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Jornalismo", "en": "Journalism", "es": "Periodismo" },
+  "fields": ["jornalismo"],
+  "family": {
+    "cbo": [
+      { "code": "2611", "title": "Profissionais do jornalismo" },
+      { "code": "2617", "title": "Locutores, comentaristas e repórteres de rádio e televisão" },
+      { "code": "2616", "title": "Editores" }
+    ],
+    "isco08": [
+      { "code": "2642", "title": "Journalists" },
+      { "code": "2656", "title": "Announcers on radio, television and other media" },
+      { "code": "2641", "title": "Authors and related writers" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/a47f82d3-4cf7-4abf-bb36-2c8cbad28234", "label": "journalist" },
+      { "uri": "http://data.europa.eu/esco/occupation/b65530b8-0b50-49da-8e9e-331b161374a5", "label": "broadcast news editor" },
+      { "uri": "http://data.europa.eu/esco/occupation/cbdb80db-c760-4b68-b074-88c397650ef5", "label": "editor-in-chief" }
+    ]
+  },
+  "scope": {
+    "summary": "Pacote para quem atua ou quer atuar em jornalismo: apuração com fontes, redação, edição, produção para rádio, TV, impresso e digital, fotojornalismo, checagem de fatos e assessoria de imprensa. As tarefas produzem evidências verificáveis (reportagem com fontes citadas, infográfico com fonte, roteiro, portfólio) sem expor fontes sigilosas, material não publicado nem dados de entrevistados.",
+    "entryRoles": ["Estagiário de jornalismo", "Repórter júnior", "Produtor de pauta", "Redator de conteúdo", "Assistente de edição", "Repórter fotográfico júnior"],
+    "midRoles": ["Repórter", "Editor-assistente", "Produtor de rádio/TV", "Assessor de imprensa", "Checador de fatos", "Editor de redes e audiência"],
+    "seniorRoles": ["Editor", "Editor-chefe", "Repórter especial", "Chefe de reportagem", "Coordenador de assessoria de imprensa", "Diretor de redação"],
+    "sectors": ["veículos de imprensa (jornal, rádio, TV, portais)", "assessoria de imprensa e comunicação corporativa", "administração pública (comunicação institucional, EBC)", "agências de notícias e de checagem", "mídia independente e newsletters", "produção de conteúdo e podcasts", "terceiro setor", "ensino e pesquisa"],
+    "regulation": [
+      { "name": "Decreto-Lei 972/1969", "issuer": "Brasil", "about": "regulamenta a profissão de jornalista; registro profissional no Ministério do Trabalho" },
+      { "name": "STF, RE 511.961/2009", "issuer": "Supremo Tribunal Federal", "about": "diploma de jornalismo não é exigível para o exercício da profissão" },
+      { "name": "Constituição Federal, art. 5º IV, IX e XIV; art. 220", "issuer": "Brasil", "about": "liberdade de expressão e de imprensa; sigilo da fonte quando necessário ao exercício profissional" },
+      { "name": "Código de Ética dos Jornalistas Brasileiros (2007)", "issuer": "FENAJ", "about": "compromisso com a verdade e a apuração, direito de resposta, não divulgar o que não foi apurado, ouvir o maior número de pessoas envolvidas" },
+      { "name": "Lei 13.188/2015", "issuer": "Brasil", "about": "direito de resposta ou retificação do ofendido em matéria divulgada por veículo de comunicação" },
+      { "name": "Lei 9.610/1998", "issuer": "Brasil", "about": "direitos autorais sobre textos, fotos e vídeos; crédito e licença de material de terceiros" },
+      { "name": "Código Civil, arts. 20 e 21", "issuer": "Brasil", "about": "direito à imagem e à vida privada; uso de imagem de pessoas" },
+      { "name": "LGPD (Lei 13.709/2018), art. 4º II a e art. 5º II", "issuer": "Brasil", "about": "tratamento para fins exclusivamente jornalísticos; dados sensíveis de entrevistados" },
+      { "name": "ECA (Lei 8.069/1990), arts. 17, 143 e 247", "issuer": "Brasil", "about": "vedação de identificar criança ou adolescente a quem se atribua ato infracional" },
+      { "name": "Lei 12.527/2011 (LAI)", "issuer": "Brasil", "about": "acesso a informações públicas como instrumento de apuração" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "pauta", "meaning": "proposta de reportagem: tema, ângulo, fontes previstas, formato e prazo" },
+      { "term": "apuração", "meaning": "levantamento e verificação dos fatos com fontes, documentos e dados antes de publicar" },
+      { "term": "fonte", "meaning": "pessoa, documento ou base de dados que fornece informação; pode ser identificada, em off ou sigilosa" },
+      { "term": "off", "meaning": "informação dada sem atribuição ao nome da fonte, por acordo prévio" },
+      { "term": "lide (lead)", "meaning": "primeiro parágrafo: responde o quê, quem, quando, onde, como e por quê" },
+      { "term": "pirâmide invertida", "meaning": "estrutura do texto noticioso: o mais importante primeiro" },
+      { "term": "sublide", "meaning": "segundo parágrafo, que complementa o lide" },
+      { "term": "título, linha fina e olho", "meaning": "elementos de edição que resumem e destacam a matéria" },
+      { "term": "suíte", "meaning": "desdobramento de uma notícia já publicada" },
+      { "term": "furo", "meaning": "notícia publicada com exclusividade antes dos concorrentes" },
+      { "term": "deadline (fechamento)", "meaning": "hora-limite de entrega do material para edição e publicação" },
+      { "term": "embargo", "meaning": "acordo de não publicar uma informação antes de data e hora combinadas" },
+      { "term": "release", "meaning": "texto enviado por assessoria de imprensa a jornalistas com informação de interesse noticioso" },
+      { "term": "checagem de fatos (fact-checking)", "meaning": "verificação de uma afirmação pública com fontes primárias e método explícito" },
+      { "term": "contraditório", "meaning": "ouvir todas as partes citadas e registrar a tentativa de contato" },
+      { "term": "direito de resposta", "meaning": "direito de quem foi ofendido em matéria de obter espaço para resposta ou retificação (Lei 13.188/2015)" },
+      { "term": "sonora", "meaning": "trecho de áudio ou vídeo com fala de entrevistado usado em rádio e TV" },
+      { "term": "passagem", "meaning": "trecho em que o repórter aparece ou fala no local da reportagem" },
+      { "term": "off (TV)", "meaning": "narração do repórter coberta por imagens" },
+      { "term": "pauta de dados", "meaning": "reportagem baseada em análise de bases de dados públicas" },
+      { "term": "newsletter", "meaning": "edição periódica enviada por e-mail a assinantes" },
+      { "term": "SEO jornalístico", "meaning": "técnicas de título e texto para a matéria ser encontrada em buscadores sem perder precisão" },
+      { "term": "manual de redação", "meaning": "conjunto de normas de estilo e conduta de um veículo" },
+      { "term": "legenda e crédito", "meaning": "texto que descreve a imagem e identifica autor e licença" }
+    ],
+    "tools": ["editor de textos (Letters)", "editor de desenho (Drawings)", "gravador e transcrição de áudio", "planilha para análise de dados", "CMS do veículo (WordPress e similares)", "editores de áudio e vídeo (Audacity, DaVinci Resolve, Premiere)", "editor de imagens (GIMP, Photoshop)", "ferramentas de newsletter", "Portal da Transparência e e-SIC (LAI)", "bases públicas (IBGE, DataSUS, TSE)", "ferramentas de verificação de imagem (busca reversa, metadados)", "câmera e celular com microfone externo"],
+    "deliverables": ["reportagem apurada com fontes citadas", "nota ou notícia curta", "entrevista pingue-pongue", "perfil", "reportagem especial multimídia", "release e nota à imprensa", "roteiro de vídeo, rádio ou podcast", "checagem de fatos com método", "infográfico com fonte", "newsletter", "ensaio fotográfico com legendas e créditos", "portfólio de matérias publicadas"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Apuração com fontes e documentos", "esco": null, "kind": "nucleo" },
+      { "label": "Redação jornalística (lide, pirâmide invertida, títulos)", "esco": null, "kind": "nucleo" },
+      { "label": "Entrevista e escuta", "esco": null, "kind": "nucleo" },
+      { "label": "Checagem de fatos e verificação de imagens", "esco": null, "kind": "nucleo" },
+      { "label": "Edição de texto e hierarquia da informação", "esco": null, "kind": "nucleo" },
+      { "label": "Ética jornalística, contraditório e direito de resposta", "esco": null, "kind": "nucleo" },
+      { "label": "Produção para rádio, TV e podcast (roteiro, sonora, passagem)", "esco": null, "kind": "nucleo" },
+      { "label": "Jornalismo de dados e uso da LAI", "esco": null, "kind": "apoio" },
+      { "label": "Fotojornalismo e vídeo com celular", "esco": null, "kind": "apoio" },
+      { "label": "Visualização de dados e infografia", "esco": null, "kind": "apoio" },
+      { "label": "Assessoria de imprensa e relacionamento com redações", "esco": null, "kind": "apoio" },
+      { "label": "Publicação digital, SEO e métricas de audiência", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de pauta e prazos de fechamento", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["curiosidade e pesquisa", "clareza na escrita", "trabalho sob prazo", "ética e sigilo", "comunicação oral", "colaboração em equipe multimídia"],
+    "tracks": [
+      { "id": "apurar-e-escrever", "label": "Apurar e escrever com fontes", "steps": ["resumo de perfil com área e uma matéria linkada (L6)", "reportagem curta com três fontes citadas (X1)", "checagem de fatos com método explícito (X3)", "estudo de caso de uma apuração difícil (L3)"] },
+      { "id": "contar-com-dados", "label": "Contar histórias com dados", "steps": ["infográfico de uma base pública com fonte (D7)", "reportagem de dados com metodologia (L4)", "post sobre o que aprendeu analisando dados (L5)"] },
+      { "id": "audio-e-video", "label": "Rádio, TV e podcast", "steps": ["roteiro de 2 minutos com sonora e passagem (X2)", "prancha de portfólio com três trabalhos (D2)", "revisão crítica de um roteiro de colega (L10)"] },
+      { "id": "assessoria", "label": "Assessoria de imprensa", "steps": ["release sobre fato fictício ou público (L8)", "plano 30-60-90 para uma assessoria (L9)", "POP de atendimento a demandas de imprensa (L7)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"repórter\", \"produtor de TV\", \"assessor de imprensa\", \"redator de portal\", \"estagiário de redação\"",
+      "cboFamilies": ["2611", "2617", "2616"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez; se for o primeiro emprego ou estágio, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, laboratório de curso ou primeira vaga em redação ou assessoria",
+        "junior": "até dois anos apurando e escrevendo com edição frequente",
+        "pleno": "repórter ou produtor com pauta própria e autonomia de apuração",
+        "senior": "repórter especial ou editor; orienta colegas e responde por editoria",
+        "gestao": "chefe de reportagem, editor-chefe ou coordenador de assessoria"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem no jornalismo",
+      "options": ["apurar com fontes e documentos", "escrever notícia e reportagem", "entrevistar", "editar textos de outras pessoas", "checar fatos e imagens", "produzir para rádio, TV ou podcast", "fotografar e filmar", "analisar bases de dados", "fazer infográficos", "escrever release e atender imprensa", "publicar e medir audiência digital", "coordenar pauta e equipe"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com tarefas que não expõem fontes nem material não publicado."
+    },
+    "c4": {
+      "certifications": ["registro profissional de jornalista (MTE)", "graduação em jornalismo ou comunicação social", "cursos de jornalismo de dados (Escola de Dados, Knight Center)", "curso de checagem de fatos", "pós-graduação (jornalismo digital, assessoria, documentário)", "curso de edição de áudio e vídeo", "mestrado ou doutorado"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação e cursos mostram lacunas em relação ao cargo ou edital que você quer; nada aqui é exigido para começar."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["apuração e fontes", "redação e edição", "checagem de fatos", "jornalismo de dados e LAI", "infografia e visualização", "roteiro para vídeo e podcast", "fotojornalismo", "assessoria de imprensa", "SEO e audiência", "gestão de pauta"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez do catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que formato você mais trabalha ou quer trabalhar?",
+        "type": "escolha",
+        "options": ["texto para impresso ou portal", "rádio e podcast", "TV e vídeo", "fotografia", "dados e infografia", "assessoria de imprensa", "redes sociais e newsletter", "ainda não sei"],
+        "why": "Pergunto o formato para escolher tarefas e vocabulário: um roteiro de TV e uma reportagem de dados são evidências diferentes.",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L6", "L1", "D7", "L3", "L2", "L5", "L8", "L10", "L4", "D2", "L9", "D9"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica não é entrega da profissão" },
+      { "code": "D3", "reason": "modelagem 3D não é entrega da profissão" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da profissão" },
+      { "code": "D8", "reason": "vista explodida não é entrega da profissão" }
+    ],
+    "parameters": {
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva até 600 caracteres com o formato e a editoria em que atua ou quer atuar, três competências e o link de uma matéria ou trabalho publicado. Sem citar fontes, veículo em que ainda negocia ou material não publicado.",
+        "parameters": { "maxChars": 600, "requiredParts": ["formato ou editoria-alvo", "três competências", "um trabalho publicado com link"] },
+        "criteria": ["até 600 caracteres", "nomeia formato ou editoria-alvo", "cita três competências", "inclui um trabalho publicado com link", "sem fonte, pauta ou material não publicado"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para a vaga ou editoria que você quer mirar primeiro, com três resultados com número (matérias publicadas, audiência, prêmios, furos reconhecidos) e as palavras-chave da vaga.",
+        "parameters": { "maxPages": 1, "achievementsWithNumbers": 3, "keywordsFrom": "vaga-alvo", "portfolioLinks": true },
+        "criteria": ["uma página", "três resultados com número", "palavras-chave da vaga-alvo presentes", "link para portfólio ou matérias", "sem idade, estado civil ou foto obrigatória"],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "D7": {
+        "title": "Infográfico de uma base de dados pública",
+        "brief": "Escolha uma base pública (IBGE, DataSUS, TSE, Portal da Transparência) e produza um infográfico com uma mensagem principal, eixos rotulados, fonte com data e nota de método (o que foi filtrado ou calculado).",
+        "parameters": { "publicSource": true, "mainMessage": 1, "requiredParts": ["título-afirmação", "eixos rotulados", "fonte com data", "nota de método"] },
+        "criteria": ["fonte pública citada com data", "eixos e unidades rotulados", "uma mensagem principal no título", "nota de método presente", "sem dado pessoal identificável"],
+        "evidence": "imagem + PDF",
+        "time": "60 min",
+        "level": 1
+      },
+      "L3": {
+        "title": "Estudo de caso de uma apuração",
+        "brief": "Conte uma apuração que você conduziu: contexto, o que precisava confirmar, como fez (fontes, documentos, contraditório) e o resultado publicado. Nada de identificar fonte em off nem citar material não publicado.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true, "noConfidentialSources": true },
+        "criteria": ["quatro seções explícitas", "resultado com número ou link da publicação", "declaração de ausência de fonte sigilosa e de material não publicado", "registra como buscou o contraditório"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "L8": {
+        "title": "Release a partir de um briefing simulado",
+        "brief": "A partir de um briefing fictício (lançamento, evento ou balanço de uma organização inventada), escreva um release de até 400 palavras com título, lide, aspas atribuídas a porta-voz fictício, serviço e contato de assessoria.",
+        "parameters": { "maxWords": 400, "fictionalOrganization": true, "requiredParts": ["título", "lide", "aspas atribuídas", "serviço", "contato"] },
+        "criteria": ["até 400 palavras", "título e lide respondem o quê, quem, quando e onde", "aspas atribuídas a porta-voz fictício", "organização declaradamente fictícia ou informação pública", "sem promessa que a imprensa não possa checar"],
+        "evidence": "proposta",
+        "time": "45 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Reportagem curta com três fontes citadas",
+        "competency": "Apuração com fontes e redação jornalística",
+        "criteria": ["entre 400 e 800 palavras", "lide responde o quê, quem, quando, onde e por quê", "ao menos três fontes identificadas (pessoas, documentos ou bases), com data de consulta", "contraditório ouvido ou tentativa de contato registrada", "nenhuma afirmação sem fonte", "sem dado de menor identificável nem imagem sem autorização"],
+        "evidence": "artigo publicado ou em rascunho privado",
+        "time": "2 h",
+        "trigger": "Quer apurar e escrever uma reportagem curta sobre um tema público da sua cidade?",
+        "level": 2
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Roteiro de 2 minutos para vídeo ou podcast",
+        "competency": "Produção para rádio, TV e podcast",
+        "criteria": ["duas colunas ou blocos: áudio/texto e imagem/indicação técnica", "cabeça, off, ao menos uma sonora e encerramento", "duração estimada de até 2 minutos", "fontes das informações indicadas no roteiro", "créditos de imagens e músicas com licença"],
+        "evidence": "roteiro",
+        "time": "60 min",
+        "trigger": "Que tal transformar uma pauta em um roteiro de 2 minutos?",
+        "level": 2
+      },
+      {
+        "id": "X3",
+        "editor": "letters",
+        "title": "Checagem de fatos com método explícito",
+        "competency": "Checagem de fatos e verificação",
+        "criteria": ["afirmação pública transcrita com autor, data e link", "ao menos duas fontes primárias consultadas com link e data", "método descrito passo a passo", "classificação final justificada (verdadeiro, impreciso, falso ou não verificável)", "sem opinião sobre a pessoa que fez a afirmação"],
+        "evidence": "artigo",
+        "time": "90 min",
+        "trigger": "Quer checar uma afirmação pública usando fontes primárias?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L5", "L6", "L8", "X1", "X2"], "auto": true },
+      { "id": "fontes-citadas", "check": "toda informação factual tem fonte identificada (pessoa, documento ou base) com data", "appliesTo": ["X1", "X3", "L4", "D7", "L8"], "auto": true },
+      { "id": "lide-completo", "check": "o primeiro parágrafo responde o quê, quem, quando e onde", "appliesTo": ["X1", "L8"], "auto": true },
+      { "id": "contraditorio-registrado", "check": "há registro de que as partes citadas foram ouvidas ou procuradas", "appliesTo": ["X1"], "auto": true },
+      { "id": "fonte-e-metodo-no-grafico", "check": "o infográfico traz fonte com data, eixos rotulados e nota de método", "appliesTo": ["D7"], "auto": true },
+      { "id": "estrutura-de-roteiro", "check": "o roteiro tem cabeça, off, sonora e encerramento, com indicação técnica", "appliesTo": ["X2"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L9", "X3"], "auto": true },
+      { "id": "creditos-e-licencas", "check": "fotos, vídeos, músicas e textos de terceiros têm crédito e licença", "appliesTo": ["D2", "D7", "D10", "X2", "L5"], "auto": true },
+      { "id": "sem-fonte-sigilosa", "check": "a pessoa declarou que não há fonte sigilosa, material não publicado nem dado de menor identificável", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L8", "L9", "L10", "D2", "D7", "D9", "D10", "X1", "X2", "X3"], "auto": true },
+      { "id": "palavras-chave-do-alvo", "check": "as palavras-chave da vaga-alvo aparecem no texto", "appliesTo": ["L1", "L2"], "auto": true },
+      { "id": "precisao-factual", "check": "os fatos conferem com as fontes citadas", "appliesTo": ["X1", "X3", "L4"], "auto": false }
+    ],
+    "subjective": [
+      { "id": "clareza", "label": "Clareza e precisão", "levels": { "aproxima": "a ideia principal exige releitura ou há ambiguidade", "atende": "a informação principal é entendida na primeira leitura", "supera": "texto preciso, sem adjetivação, que conduz quem lê sem esforço" } },
+      { "id": "apuracao", "label": "Qualidade da apuração", "levels": { "aproxima": "depende de uma fonte ou de fontes secundárias", "atende": "cruza fontes primárias e ouve as partes", "supera": "cruza fontes, documentos e dados, e explicita limites do que apurou" } },
+      { "id": "angulo", "label": "Ângulo e relevância pública", "levels": { "aproxima": "repete o óbvio ou o release", "atende": "escolhe um ângulo claro de interesse público", "supera": "traz ângulo original com contexto e consequências para o público" } },
+      { "id": "etica", "label": "Cuidado ético", "levels": { "aproxima": "há afirmação sem fonte ou pessoa citada sem ser ouvida", "atende": "respeita contraditório, imagem e sigilo", "supera": "explicita decisões éticas tomadas e o que ficou de fora e por quê" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da área de jornalismo (repórter, editor, produtor, fotojornalista, checador ou assessor de imprensa). Use o vocabulário da redação (pauta, apuração, lide, sublide, suíte, off, embargo, sonora, passagem, release, contraditório, direito de resposta) e cite, quando couber, o Código de Ética dos Jornalistas Brasileiros (FENAJ, 2007), a Constituição (art. 5º XIV, sigilo da fonte; art. 220), a Lei 13.188/2015, a Lei 9.610/1998 e a LGPD. Nunca invente fatos, números, aspas ou fontes: toda afirmação factual que você propuser deve vir com a fonte e a data, e quando não tiver fonte diga isso e sugira onde apurar (LAI, bases públicas, assessorias). Não redija matéria para publicação como se fosse apurada pela pessoa; proponha estrutura, perguntas para as fontes e checagens pendentes. Nunca peça nem registre a identidade de fontes em off ou sigilosas, pautas em andamento, embargos ou material não publicado do veículo; se a pessoa colar algo assim, oriente a remover. Não identifique crianças e adolescentes em situação de ato infracional nem use imagem de pessoas sem autorização. Pergunte antes de inferir formato, editoria ou senioridade. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por que foi sugerida. Afirmações sobre mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa vaga, entrevista ou salário. Progresso é por critérios atendidos, nunca por pontuação. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação. Pré-cheque só critérios objetivos (tamanho, fontes citadas, lide, créditos, seções); a avaliação de apuração e ética é humana.",
+    "citeSources": [
+      { "title": "Código de Ética dos Jornalistas Brasileiros (FENAJ, 2007)", "url": "https://fenaj.org.br/wp-content/uploads/2014/06/04-codigo_de_etica_dos_jornalistas_brasileiros.pdf", "kind": "comunidade" },
+      { "title": "Decreto-Lei 972/1969 — exercício da profissão de jornalista", "url": "https://www.planalto.gov.br/ccivil_03/decreto-lei/del0972.htm", "kind": "norma" },
+      { "title": "Lei 13.188/2015 — direito de resposta", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13188.htm", "kind": "norma" },
+      { "title": "Lei 9.610/1998 — direitos autorais", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9610.htm", "kind": "norma" },
+      { "title": "Lei 12.527/2011 — Lei de Acesso à Informação", "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm", "kind": "norma" },
+      { "title": "LGPD — Lei 13.709/2018", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm", "kind": "norma" },
+      { "title": "CBO 2611 — Profissionais do jornalismo (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "Perfil do Jornalista Brasileiro 2021 (UFSC)", "url": "https://perfildojornalista.ufsc.br/", "kind": "estatistica" },
+      { "title": "Novo CAGED — Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2, c5 e x1 (formato) com vocabulário de redação; nunca pergunta sobre fontes sigilosas ou pautas em andamento." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza L6, L1, D7, X1 (reportagem com fontes) e X3 (checagem); cada card diz a competência, a evidência e o tempo." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); X1 e L4 pedem computador; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa tamanho, lide completo, fontes com data, contraditório registrado, créditos e declaração de ausência de fonte sigilosa; não julga apuração." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Propõe estrutura, perguntas e lista de checagens; não escreve fatos, aspas nem números sem fonte fornecida pela pessoa." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Infográfico (D7): sugere tipo de gráfico, rótulos, fonte e nota de método; prancha (D2): grade, legendas e créditos." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: síntese com competências declaradas e evidenciadas (matérias, infográficos, roteiros), lacunas e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: relações públicas, publicidade, audiovisual, letras, ciências sociais; sempre com lacunas e passos, sem previsão." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por CBO 2611/2617/2616, formato e competências." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil, com link de matéria publicada; só com o consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai veículos, editorias, formatos e competências em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings", "links de matérias publicadas"],
+      "never": ["mensagens", "itens SIGILOSO", "identidade de fontes em off ou sigilosas", "pautas, embargos e material não publicado do veículo", "dados pessoais de entrevistados e de menores", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca fabricar fatos, números, aspas ou fontes; toda afirmação factual com fonte e data ou marcada como pendente de apuração",
+      "não redigir matéria como se apurada; propor estrutura, perguntas e checagens",
+      "nunca pedir, registrar ou inferir identidade de fontes sigilosas, pautas em andamento ou material não publicado",
+      "não identificar crianças e adolescentes em ato infracional; não usar imagem de pessoas sem autorização",
+      "perguntar em vez de inferir formato, editoria ou senioridade",
+      "nunca prometer vaga, entrevista ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["infografico", "prancha", "wireframe", "diagrama"],
+    "lettersTemplates": ["bio", "curriculo", "carta", "artigo", "roteiro", "estudo-de-caso", "post", "proposta", "relatorio-tecnico", "pop", "plano-30-60-90", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular: L5, L6, L10 e rascunho de pauta; X1, X3, L4, D7 e D9 pedem computador para cruzar fontes e montar o gráfico.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em três frases com o link de uma matéria publicada (15 min).",
+        "Que tal um infográfico a partir de uma base do IBGE? Comprova visualização de dados e leva cerca de 60 min.",
+        "Sem pressão. Quando quiser retomar, a reportagem curta com três fontes está salva onde parou.",
+        "Uma checagem de fatos com método explícito mostra rigor de apuração. Leva cerca de 90 min no computador."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["identidade de fontes sigilosas (CF art. 5º XIV)", "material apurado e não publicado, pautas e embargos do veículo", "dados pessoais de entrevistados e de menores; imagens sem autorização", "gravações de entrevistas sem consentimento para divulgação"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2611, 2616 e 2617", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Perfil do Jornalista Brasileiro 2021 (UFSC, coord. Jacques Mick)", "url": "https://perfildojornalista.ufsc.br/", "geography": "Brasil", "cadence": "eventual", "kind": "pesquisa" },
+      { "title": "FENAJ — Federação Nacional dos Jornalistas (relatórios e pesquisas)", "url": "https://fenaj.org.br/", "geography": "Brasil", "cadence": "eventual", "kind": "associacao" },
+      { "title": "ABERT — Associação Brasileira de Emissoras de Rádio e Televisão", "url": "https://www.abert.org.br/", "geography": "Brasil", "cadence": "eventual", "kind": "associacao" },
+      { "title": "Atlas da Notícia (Projor) — veículos jornalísticos por município", "url": "https://www.atlas.jor.br/", "geography": "Brasil e município", "cadence": "anual", "kind": "pesquisa" },
+      { "title": "Diário Oficial da União — editais de concurso para jornalista", "url": "https://www.in.gov.br/", "geography": "Brasil", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147). Dados do Perfil do Jornalista são de amostra autodeclarada e são apresentados como tal."
+  },
+  "paths": [
+    { "to": "relacoes-publicas", "why": "Assessoria de imprensa e comunicação organizacional usam apuração, redação e relacionamento com redações; a passagem é frequente.", "gaps": ["planejamento de comunicação e gestão de crise", "registro no CONRERP para atividades privativas", "métricas de reputação e stakeholders"], "steps": ["plano de comunicação a partir de briefing (L8)", "POP de atendimento à imprensa (L7)", "conhecer a Lei 5.377/1967 e a RN CONFERP 136/2026"] },
+    { "to": "publicidade-e-propaganda", "why": "Redação, roteiro e storytelling migram para redação publicitária e conteúdo de marca.", "gaps": ["conceito criativo e briefing publicitário", "CONAR e CDC", "mídia e métricas de campanha"], "steps": ["resposta a briefing publicitário (L8)", "prancha com três peças (D2)", "curso introdutório de redação publicitária"] },
+    { "to": "cinema-e-audiovisual", "why": "Produção de vídeo, roteiro e edição aproximam o jornalista de TV e podcast do audiovisual.", "gaps": ["linguagem narrativa de ficção e documentário", "produção executiva e editais de fomento", "pós-produção avançada"], "steps": ["roteiro de 2 minutos (X2)", "prancha de portfólio com vídeos (D2)", "curso de documentário"] },
+    { "to": "letras", "why": "Edição, revisão e produção editorial valorizam domínio da língua e de texto.", "gaps": ["revisão normativa e preparação de originais", "mercado editorial", "ensino de língua, se licenciatura"], "steps": ["revisão crítica de peça (L10)", "artigo ou ensaio (L4)", "curso de revisão de textos"] },
+    { "to": "ciencias-sociais", "why": "Jornalismo de dados e pesquisa aproximam da análise social e da pesquisa de opinião.", "gaps": ["métodos quantitativos e qualitativos", "estatística aplicada", "pós-graduação"], "steps": ["relatório de dados com metodologia (L4)", "infográfico com fonte (D7)", "curso de estatística básica"] }
+  ],
+  "learning": [
+    { "title": "Código de Ética dos Jornalistas Brasileiros", "provider": "FENAJ", "url": "https://fenaj.org.br/", "free": true, "kind": "norma" },
+    { "title": "Cursos gratuitos de jornalismo de dados e digital", "provider": "Knight Center for Journalism in the Americas (UT Austin)", "url": "https://journalismcourses.org/pt-br/", "free": true, "kind": "curso" },
+    { "title": "Escola de Dados — materiais e cursos", "provider": "Open Knowledge Brasil", "url": "https://escoladedados.org/", "free": true, "kind": "portal" },
+    { "title": "Manual de checagem e materiais de formação", "provider": "Agência Lupa / Aos Fatos (iniciativas de fact-checking)", "url": "https://lupa.uol.com.br/", "free": true, "kind": "portal" },
+    { "title": "Acesso à Informação — guia do cidadão e e-SIC", "provider": "Controladoria-Geral da União", "url": "https://www.gov.br/acessoainformacao/pt-br", "free": true, "kind": "portal" },
+    { "title": "Cursos de comunicação pública e acesso à informação", "provider": "Escola Virtual.Gov (Enap)", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "curso" },
+    { "title": "Abraji — cursos e congresso de jornalismo investigativo", "provider": "Associação Brasileira de Jornalismo Investigativo", "url": "https://www.abraji.org.br/", "free": false, "kind": "comunidade" },
+    { "title": "Manual da Redação", "provider": "Folha de S.Paulo (Publifolha)", "url": "https://www1.folha.uol.com.br/folha/circulo/manual_introducao.htm", "free": false, "kind": "livro" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos — jornalismo (CBO, ISCO, ESCO, dados sensíveis, vizinhos)", "url": "contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
+    { "title": "Código de Ética dos Jornalistas Brasileiros, 04/08/2007 (cópia em PDF)", "url": "https://static.poder360.com.br/2023/12/Codigo-de-etica-dos-jornalistas-brasileiros-04ago2007.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Projeto de pesquisa Perfil do Jornalista Brasileiro 2021 (UFSC)", "url": "https://perfildojornalista.paginas.ufsc.br/files/2021/02/Projeto-de-pesquisa-Perfil-do-Jornalista-Brasileiro-2021.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Novo CAGED — MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Texto integral do Código de Ética dos Jornalistas Brasileiros não lido na fonte primária; busca indica aprovação em Vitória (ES), 04/08/2007, e revisão em curso com nova versão prevista para 2027",
+    "URL do PDF do Código de Ética no site da FENAJ não verificada; a cópia citada em sources está em espelho (Poder360)",
+    "Artigos citados do Decreto-Lei 972/1969, Lei 13.188/2015, Código Civil, ECA e LGPD (art. 4º II a) referidos de memória; planalto.gov.br não acessado",
+    "Número de cerca de 142 mil registros profissionais de jornalista (referência do projeto Perfil do Jornalista 2021) é contagem de registros no MTE, não de ativos; não usado como afirmação no pacote",
+    "URIs ESCO de competências não confirmadas (esco.ec.europa.eu e ec.europa.eu inacessíveis nesta sessão); todas com esco: null",
+    "URLs de ABERT, Atlas da Notícia, Knight Center, Escola de Dados, Lupa, Abraji e Manual da Redação não verificadas nesta sessão",
+    "Obrigatoriedade do registro profissional após o RE 511.961/2009 é controversa; o pacote o trata como item de formação opcional em c4"
+  ]
+}

@@ -1,0 +1,336 @@
+{
+  "schemaVersion": 1,
+  "code": "enfermagem",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Enfermagem", "en": "Nursing", "es": "Enfermería" },
+  "fields": ["enfermagem"],
+  "family": {
+    "cbo": [
+      { "code": "2235", "title": "Enfermeiros e afins" }
+    ],
+    "isco08": [
+      { "code": "2221", "title": "Nursing professionals" }
+    ],
+    "esco": []
+  },
+  "scope": {
+    "summary": "Pacote para quem se forma ou se formou em Enfermagem (bacharelado) e quer construir evidências de carreira sem expor pacientes: casos anonimizados, planos de cuidados fictícios, POPs, fluxos de atendimento, relatórios de indicadores e materiais de educação em saúde. A IA apoia a escrita e a organização; nunca orienta clinicamente terceiros nem redige prescrição ou evolução assinável.",
+    "entryRoles": ["Estagiário de enfermagem (estágio curricular)", "Enfermeiro assistencial recém-formado", "Enfermeiro residente (residência multiprofissional ou uniprofissional)", "Enfermeiro da Estratégia Saúde da Família", "Enfermeiro de clínica ou home care"],
+    "midRoles": ["Enfermeiro assistencial pleno (UTI, centro cirúrgico, urgência, oncologia)", "Enfermeiro especialista (obstetrícia, estomaterapia, saúde mental)", "Enfermeiro do trabalho", "Enfermeiro de educação permanente", "Enfermeiro de controle de infecção (SCIH)"],
+    "seniorRoles": ["Enfermeiro coordenador de unidade", "Responsável técnico (RT) de enfermagem", "Gerente de enfermagem ou diretor de enfermagem", "Docente e pesquisador", "Auditor de enfermagem", "Gestor em saúde pública"],
+    "sectors": ["SUS (atenção primária, hospitais, urgência, vigilância)", "hospitais e clínicas privadas", "home care e cuidados prolongados", "saúde do trabalhador e empresas", "saúde suplementar e auditoria", "ensino técnico e superior", "indústria farmacêutica e pesquisa clínica", "forças armadas e segurança pública"],
+    "regulation": [
+      { "name": "Lei 7.498/1986 e Decreto 94.406/1987", "issuer": "Brasil", "about": "regulamentam o exercício da enfermagem; atividades privativas do enfermeiro (consulta de enfermagem, prescrição de cuidados, cuidados de maior complexidade)" },
+      { "name": "Lei 5.905/1973", "issuer": "Brasil", "about": "cria o COFEN e os CORENs; inscrição obrigatória" },
+      { "name": "Res. COFEN 564/2017 (Código de Ética dos Profissionais de Enfermagem)", "issuer": "COFEN", "about": "sigilo profissional, registros, relação com pessoa, família e coletividade, publicidade" },
+      { "name": "Res. COFEN 736/2024", "issuer": "COFEN", "about": "implementação do Processo de Enfermagem em todo contexto de cuidado; revogou a Res. 358/2009" },
+      { "name": "Res. COFEN 769/2024", "issuer": "COFEN", "about": "normas administrativas de inscrição e registro (quadros I, II e III)" },
+      { "name": "NR-32 (MTE)", "issuer": "Ministério do Trabalho e Emprego", "about": "segurança e saúde no trabalho em serviços de saúde" },
+      { "name": "LGPD (Lei 13.709/2018), art. 5º II e art. 11", "issuer": "Brasil", "about": "dados de saúde são dados pessoais sensíveis" },
+      { "name": "RDC Anvisa 36/2013", "issuer": "Anvisa", "about": "ações para a segurança do paciente em serviços de saúde (núcleos de segurança, notificação de eventos adversos)" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "COREN", "meaning": "inscrição no Conselho Regional de Enfermagem; obrigatória para exercer" },
+      { "term": "Processo de Enfermagem (PE)", "meaning": "método de cinco etapas: avaliação, diagnóstico, planejamento, implementação e evolução (Res. COFEN 736/2024)" },
+      { "term": "SAE", "meaning": "Sistematização da Assistência de Enfermagem; organização do trabalho que dá suporte ao PE" },
+      { "term": "diagnóstico de enfermagem", "meaning": "julgamento clínico sobre respostas humanas; taxonomias NANDA-I, CIPE" },
+      { "term": "NIC / NOC", "meaning": "classificações de intervenções e de resultados de enfermagem" },
+      { "term": "CIPE", "meaning": "Classificação Internacional para a Prática de Enfermagem" },
+      { "term": "consulta de enfermagem", "meaning": "atividade privativa do enfermeiro (Lei 7.498/1986)" },
+      { "term": "prescrição de enfermagem", "meaning": "cuidados prescritos pelo enfermeiro à equipe; privativa" },
+      { "term": "evolução de enfermagem", "meaning": "registro periódico do estado da pessoa e das respostas ao cuidado" },
+      { "term": "anotação de enfermagem", "meaning": "registro pontual de técnicos e auxiliares sobre cuidados executados" },
+      { "term": "SBAR", "meaning": "situação, background, avaliação e recomendação: passagem de plantão estruturada" },
+      { "term": "dimensionamento de pessoal", "meaning": "cálculo da equipe por carga de trabalho (Res. COFEN 543/2017)" },
+      { "term": "POP", "meaning": "procedimento operacional padrão de um cuidado ou rotina" },
+      { "term": "protocolo assistencial", "meaning": "documento institucional que padroniza avaliação e cuidado de uma condição" },
+      { "term": "SCIH / CCIH", "meaning": "serviço e comissão de controle de infecção hospitalar" },
+      { "term": "evento adverso", "meaning": "incidente que resulta em dano à pessoa; notificado ao NSP e ao Notivisa" },
+      { "term": "NSP", "meaning": "Núcleo de Segurança do Paciente (RDC 36/2013)" },
+      { "term": "metas internacionais de segurança", "meaning": "identificação, comunicação, medicamentos, cirurgia segura, higiene das mãos, quedas" },
+      { "term": "classificação de risco", "meaning": "triagem por prioridade (Manchester ou protocolo local) na urgência" },
+      { "term": "educação em saúde", "meaning": "ações educativas com pessoas, famílias e grupos" },
+      { "term": "educação permanente", "meaning": "formação em serviço a partir dos problemas do trabalho" },
+      { "term": "RT", "meaning": "responsável técnico de enfermagem registrado no COREN" },
+      { "term": "ESF / UBS", "meaning": "Estratégia Saúde da Família e Unidade Básica de Saúde" },
+      { "term": "anonimização", "meaning": "remoção de todo dado que identifique a pessoa cuidada, direta ou indiretamente" }
+    ],
+    "tools": ["prontuário eletrônico (e-SUS APS, Tasy, MV)", "e-SUS e SISREG", "taxonomias NANDA-I, NIC, NOC e CIPE", "escalas (Braden, Morse, Glasgow, NEWS)", "planilha (Excel, Google Sheets)", "BVS, SciELO, PubMed", "Zotero ou Mendeley", "plataforma de educação permanente (AVASUS, UNA-SUS)", "Letters (textos) e Drawings (fluxos, infográficos e cartazes)"],
+    "deliverables": ["estudo de caso anonimizado", "plano de cuidados de enfermagem (caso fictício)", "POP de procedimento", "protocolo assistencial", "fluxo de atendimento ou de classificação de risco", "relatório de indicadores (quedas, lesão por pressão, infecção)", "material de educação em saúde (cartaz, folder, roteiro)", "plano de aula de educação permanente", "relatório técnico de melhoria", "currículo direcionado e carta"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Processo de Enfermagem (avaliação, diagnóstico, planejamento, implementação, evolução)", "esco": null, "kind": "nucleo" },
+      { "label": "Cuidado direto seguro (procedimentos, medicação, feridas)", "esco": null, "kind": "nucleo" },
+      { "label": "Registro de enfermagem claro e completo", "esco": null, "kind": "nucleo" },
+      { "label": "Liderança e supervisão da equipe de enfermagem", "esco": null, "kind": "nucleo" },
+      { "label": "Segurança do paciente e controle de infecção", "esco": null, "kind": "nucleo" },
+      { "label": "Comunicação com pessoa, família e equipe (SBAR)", "esco": null, "kind": "nucleo" },
+      { "label": "Educação em saúde e educação permanente", "esco": null, "kind": "nucleo" },
+      { "label": "Ética profissional, sigilo e proteção de dados", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de unidade e dimensionamento de pessoal", "esco": null, "kind": "apoio" },
+      { "label": "Indicadores assistenciais e qualidade", "esco": null, "kind": "apoio" },
+      { "label": "Urgência e emergência (classificação de risco, suporte de vida)", "esco": null, "kind": "apoio" },
+      { "label": "Atenção primária e vigilância em saúde", "esco": null, "kind": "apoio" },
+      { "label": "Prática baseada em evidências", "esco": null, "kind": "apoio" },
+      { "label": "Auditoria e faturamento em saúde", "esco": null, "kind": "apoio" },
+      { "label": "Saúde digital e prontuário eletrônico", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação escrita", "escuta e empatia", "organização em turnos", "trabalho em equipe", "resolução de conflitos", "aprendizagem contínua"],
+    "tracks": [
+      { "id": "cuidado-documentado", "label": "Documentar o cuidado sem expor pacientes", "steps": ["estudo de caso anonimizado (L3)", "plano de cuidados de caso fictício (X1)", "post sobre um aprendizado do cuidado (L5)", "revisão crítica de um plano de colega (L10)"] },
+      { "id": "padronizar-a-unidade", "label": "Padronizar a unidade", "steps": ["POP de um procedimento (L7)", "fluxo de atendimento ou classificação de risco (D4)", "infográfico de indicadores da unidade (D7)", "redesenho antes e depois de uma rotina (D5)"] },
+      { "id": "educar-em-saude", "label": "Educar em saúde", "steps": ["material educativo para a comunidade (X2)", "plano de aula de educação permanente (L7)", "relatório técnico de uma ação educativa (L4)"] },
+      { "id": "posicionar-se", "label": "Posicionar-se para a vaga ou a residência", "steps": ["bio de três frases (L6)", "currículo direcionado (L1)", "carta de apresentação (L2)", "plano 30-60-90 para a nova unidade (L9)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"enfermeira de UTI\", \"enfermeiro da ESF\", \"técnico de enfermagem\", \"estagiário\", \"coordenadora de unidade\"",
+      "cboFamilies": ["2235", "3222"],
+      "why": "Pergunto seu último cargo ou setor para partir do que você já fez; técnicos que concluíram a graduação também contam. Se for o primeiro vínculo, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio curricular ou primeiro vínculo após o COREN",
+        "junior": "enfermeiro assistencial até dois anos, com supervisão",
+        "pleno": "enfermeiro com autonomia na unidade ou especialista",
+        "senior": "referência técnica; preceptor ou RT",
+        "gestao": "coordenação, gerência ou direção de enfermagem"
+      },
+      "why": "Pergunto o nível para ajustar as tarefas e as pessoas sugeridas: assistência e gestão pedem evidências diferentes."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem",
+      "options": ["avaliar e planejar o cuidado (PE)", "registrar com clareza", "executar procedimentos com segurança", "liderar a equipe do turno", "passar plantão (SBAR)", "educar pacientes e famílias", "prevenir infecção e eventos adversos", "classificar risco na urgência", "organizar rotinas e POPs", "analisar indicadores", "ensinar colegas", "atuar na atenção primária"],
+      "why": "Suas competências declaradas viram o ponto de partida; a prova vem com as tarefas, sem dados de paciente."
+    },
+    "c4": {
+      "certifications": ["graduação em Enfermagem", "inscrição no COREN", "curso técnico em enfermagem", "residência em enfermagem ou multiprofissional", "especialização (UTI, obstetrícia, saúde da família, estomaterapia, saúde do trabalhador)", "BLS, ACLS ou PALS", "mestrado ou doutorado"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação e cursos mostram lacunas em relação ao setor ou ao cargo que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["Processo de Enfermagem e taxonomias", "registro de enfermagem", "liderança de equipe", "segurança do paciente", "indicadores e qualidade", "educação em saúde", "educação permanente", "gestão de unidade e dimensionamento", "urgência e classificação de risco", "prática baseada em evidências", "auditoria"],
+      "why": "Com isso sugiro uma trilha curta com tarefas progressivas em vez do catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que etapa você está?", "type": "escolha", "options": ["graduação", "estágio curricular", "recém-formado", "residência", "enfermeiro em exercício", "pós-graduação stricto sensu"], "why": "A etapa define quais tarefas fazem sentido: para a primeira vaga, currículo e carta; para a unidade, POPs e indicadores.", "where": "P" },
+      { "id": "x2", "prompt": "Que cenário de prática mais interessa?", "type": "lista", "options": ["atenção primária e ESF", "hospital (enfermaria, UTI, centro cirúrgico)", "urgência e emergência", "saúde do trabalhador", "home care", "ensino", "gestão e auditoria", "pesquisa"], "why": "Direciona exemplos, vocabulário e fontes das tarefas para o cenário que você quer.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L3", "L7", "D4", "L4", "D7", "L6", "L1", "L9", "L2", "L5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta 2D não é entrega da profissão" },
+      { "code": "D3", "reason": "modelagem 3D de produto não é entrega da profissão" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da profissão" },
+      { "code": "D8", "reason": "vista explodida não é entrega da profissão" },
+      { "code": "D9", "reason": "wireframe de tela não é entrega típica; só em saúde digital" },
+      { "code": "D2", "reason": "prancha de portfólio exigiria imagens de pacientes ou feridas; risco de identificação" }
+    ],
+    "parameters": {
+      "L3": {
+        "title": "Estudo de caso de enfermagem anonimizado",
+        "brief": "Descreva um caso real ou composto, sem nenhum identificador da pessoa cuidada, no formato situação, tarefa, ação e resultado: contexto da unidade, avaliação, diagnósticos de enfermagem priorizados, intervenções e resultado, com uma lição aprendida e as referências que sustentaram as decisões.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado", "lição aprendida"], "anonymizationStatement": true, "taxonomies": ["NANDA-I", "NIC", "NOC", "CIPE"], "minReferences": 2, "maxWords": 900 },
+        "criteria": ["cinco seções nomeadas", "declaração de anonimização e ausência de dados da pessoa cuidada", "nenhum nome, CPF, número de prontuário, data completa ou local que identifique", "ao menos dois diagnósticos de enfermagem com taxonomia", "ao menos duas referências", "até 900 palavras"],
+        "evidence": "documento no Letters (modelo estudo-de-caso)",
+        "time": "60 min",
+        "level": 2
+      },
+      "L7": {
+        "title": "POP de um procedimento de enfermagem",
+        "brief": "Escreva o procedimento operacional padrão de um cuidado que você domina (ex.: curativo, sondagem, administração de medicamento, passagem de plantão): objetivo, campo de aplicação, responsáveis por categoria, materiais, passos numerados, cuidados de segurança, registro, referências e data de revisão. Documento de estudo, não institucional.",
+        "parameters": { "requiredSections": ["objetivo", "campo de aplicação", "responsáveis", "materiais", "passos", "segurança e EPI", "registro", "referências", "revisão"], "numberedSteps": true, "minReferences": 3, "disclaimer": "documento de estudo; não substitui POP institucional" },
+        "criteria": ["nove seções presentes", "passos numerados com responsável por categoria (enfermeiro, técnico)", "critério de conclusão por passo", "ao menos três referências (COFEN, Anvisa, diretriz ou literatura)", "aviso de que é documento de estudo"],
+        "evidence": "documento no Letters (modelo pop)",
+        "time": "60 min",
+        "level": 2
+      },
+      "D4": {
+        "title": "Fluxo de atendimento ou de classificação de risco",
+        "brief": "Desenhe o fluxo de uma rotina da unidade (ex.: acolhimento com classificação de risco, admissão na enfermaria, alta hospitalar) com raias por categoria profissional, pontos de decisão e saídas; sem dados de paciente.",
+        "parameters": { "lanes": ["recepção", "técnico de enfermagem", "enfermeiro", "médico", "apoio"], "decisionPoints": 2, "notation": "BPMN simplificado" },
+        "criteria": ["início e fim explícitos", "raias por responsável", "ao menos dois pontos de decisão", "nenhuma etapa órfã", "legenda de símbolos"],
+        "evidence": "diagrama vetorial no Drawings (modo diagrama)",
+        "time": "45 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório técnico curto",
+        "brief": "Relate um projeto, auditoria ou melhoria da unidade (ex.: redução de quedas, adesão à higiene das mãos): objetivo, método, resultados, limitações e referências, em até quatro páginas, com dados agregados e sem identificar pessoas.",
+        "parameters": { "requiredSections": ["objetivo", "método", "resultados", "limitações", "referências"], "maxPages": 4, "aggregatedDataOnly": true },
+        "criteria": ["cinco seções nomeadas", "até quatro páginas", "dados agregados, sem identificação", "referências citadas"],
+        "evidence": "relatório no Letters (modelo relatorio-tecnico)",
+        "time": "2 h",
+        "level": 3
+      },
+      "D7": {
+        "title": "Infográfico de indicadores da unidade",
+        "brief": "Monte um infográfico com até três indicadores de enfermagem (ex.: incidência de lesão por pressão, quedas, adesão à higiene das mãos, cobertura vacinal) com fonte, período e uma mensagem principal; dados agregados ou públicos.",
+        "parameters": { "maxIndicators": 3, "requiredElements": ["fonte", "período", "unidade ou região", "mensagem principal"], "aggregatedDataOnly": true },
+        "criteria": ["fonte e período citados", "eixos e unidades rotulados", "uma mensagem principal", "dados agregados ou públicos"],
+        "evidence": "imagem e PDF no Drawings (modo infográfico)",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Plano de cuidados de enfermagem para um caso fictício",
+        "competency": "Processo de Enfermagem",
+        "criteria": ["caso explicitamente fictício ou composto", "avaliação com dados subjetivos e objetivos", "ao menos três diagnósticos de enfermagem com taxonomia (NANDA-I ou CIPE)", "intervenções e resultados esperados por diagnóstico (NIC/NOC ou equivalente)", "critérios e prazo de reavaliação", "referências"],
+        "evidence": "documento no Letters (modelo relatorio-de-caso)",
+        "time": "90 min",
+        "trigger": "Quer montar um plano de cuidados completo para um caso de treino da sua área?",
+        "level": 2
+      },
+      {
+        "id": "X2",
+        "editor": "drawings",
+        "title": "Material de educação em saúde (cartaz ou folder)",
+        "competency": "Educação em saúde",
+        "criteria": ["público e objetivo definidos", "linguagem simples (frases curtas, sem jargão)", "uma mensagem principal e até três orientações", "fonte das orientações citada (Ministério da Saúde, OMS, diretriz)", "sem imagem de pessoa identificável"],
+        "evidence": "prancha no Drawings (modo infográfico ou prancha)",
+        "time": "60 min",
+        "trigger": "Que orientação você mais repete para pacientes ou famílias?",
+        "level": 1
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas ou palavras da tarefa", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L9", "X1"], "auto": true },
+      { "id": "declaracao-de-anonimizacao", "check": "há declaração explícita de anonimização ou de caso fictício", "appliesTo": ["L3", "L4", "L5", "L7", "L10", "D4", "D7", "X1", "X2"], "auto": true },
+      { "id": "sem-identificadores-diretos", "check": "não há CPF, número de prontuário, data de nascimento completa ou nome próprio da pessoa cuidada", "appliesTo": ["L3", "L4", "L5", "D7", "X1"], "auto": true },
+      { "id": "diagnosticos-com-taxonomia", "check": "cada diagnóstico de enfermagem nomeia a taxonomia usada", "appliesTo": ["L3", "X1"], "auto": true },
+      { "id": "referencias-minimas", "check": "o número mínimo de referências da tarefa está presente", "appliesTo": ["L3", "L4", "L7", "X1", "X2"], "auto": true },
+      { "id": "passos-numerados-com-responsavel", "check": "cada passo do POP tem número e responsável por categoria", "appliesTo": ["L7"], "auto": true },
+      { "id": "aviso-documento-de-estudo", "check": "o POP traz o aviso de que não substitui documento institucional", "appliesTo": ["L7"], "auto": true },
+      { "id": "fluxo-fechado", "check": "o diagrama tem início, fim, raias e nenhuma etapa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "fonte-e-periodo", "check": "o infográfico ou material cita fonte e período", "appliesTo": ["D7", "X2"], "auto": true },
+      { "id": "reidentificacao-indireta", "check": "a combinação de dados (condição rara, unidade, datas) não permite reidentificar a pessoa", "appliesTo": ["L3", "L4", "L5", "X1"], "auto": false },
+      { "id": "autoria", "check": "a pessoa declarou autoria e creditou coautores", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L9", "L10", "D4", "D5", "D7", "D10", "X1", "X2"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "raciocinio-clinico-de-enfermagem", "label": "Raciocínio clínico de enfermagem", "levels": { "aproxima": "lista diagnósticos sem ligar aos dados da avaliação", "atende": "liga dados, diagnóstico, intervenção e resultado de forma rastreável", "supera": "prioriza diagnósticos e justifica a prioridade" } },
+      { "id": "seguranca", "label": "Segurança do paciente no documento", "levels": { "aproxima": "cita segurança de forma genérica", "atende": "nomeia riscos e barreiras em cada passo crítico", "supera": "antecipa falhas e prevê o que fazer se ocorrerem" } },
+      { "id": "clareza-para-a-equipe", "label": "Clareza para a equipe", "levels": { "aproxima": "exige releitura para entender o fluxo", "atende": "técnico ou colega seguiria o documento sem perguntar", "supera": "antecipa exceções e pontos de dúvida" } },
+      { "id": "protecao-da-pessoa", "label": "Proteção da pessoa cuidada no texto", "levels": { "aproxima": "anonimiza o óbvio e deixa pistas indiretas", "atende": "remove identificadores diretos e indiretos", "supera": "usa caso composto e explica as escolhas de anonimização" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da área de Enfermagem (graduação, estágio, residência ou exercício com COREN). Use o vocabulário da profissão: Processo de Enfermagem e suas cinco etapas, SAE, diagnóstico de enfermagem, NANDA-I, NIC, NOC, CIPE, consulta e prescrição de enfermagem, evolução e anotação, SBAR, POP, protocolo assistencial, dimensionamento, SCIH, NSP, evento adverso, classificação de risco, educação permanente, RT. Quando citar normas, prefira as primárias: Lei 7.498/1986 e Decreto 94.406/1987, Lei 5.905/1973, Res. COFEN 564/2017 (Código de Ética), Res. COFEN 736/2024 (Processo de Enfermagem), NR-32, RDC Anvisa 36/2013, LGPD art. 11, e fontes como protocolos do Ministério da Saúde, Anvisa, BVS e SciELO. O que você nunca faz: não dá orientação de cuidado, medicação ou conduta para um paciente real ou para terceiros; não redige prescrição de enfermagem, evolução, anotação, atestado ou qualquer registro assinável de paciente real; não preenche nem interpreta prontuário real. Quando a pessoa trouxer um caso, exija que esteja anonimizado ou seja fictício (sem nome, CPF, número de prontuário, datas completas, unidade ou combinação rara que identifique) e, se houver pista de identificação, pare e peça a remoção antes de continuar. Trate POPs, planos e casos produzidos aqui como documentos de estudo, nunca institucionais. Não infira categoria (técnico ou enfermeiro), especialidade, senioridade ou situação a partir dos textos: pergunte. Afirmações sobre mercado citam fonte, data e região (ex.: CNES, COFEN, CAGED) ou dizem \"estimativa\"; nunca prometa vaga, emprego ou remuneração. Progresso é por critérios atendidos; a pré-checagem cobre só itens objetivos (seções, taxonomia nomeada, referências, declaração de anonimização, ausência de identificadores diretos); a validação que gera selo é humana. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação da pessoa.",
+    "citeSources": [
+      { "title": "Res. COFEN 564/2017 — Código de Ética dos Profissionais de Enfermagem", "url": "https://www.cofen.gov.br/resolucao-cofen-no-5642017_59145.html", "kind": "norma" },
+      { "title": "Res. COFEN 736/2024 — Processo de Enfermagem", "url": "https://www.cofen.gov.br/resolucao-cofen-no-736-de-17-de-janeiro-de-2024", "kind": "norma" },
+      { "title": "Lei 7.498/1986 — exercício da enfermagem", "url": "https://www.planalto.gov.br/ccivil_03/leis/l7498.htm", "kind": "norma" },
+      { "title": "Legislação e resoluções do COFEN", "url": "https://www.cofen.gov.br/categoria/legislacao/resolucoes/", "kind": "conselho" },
+      { "title": "Programa Nacional de Segurança do Paciente e RDC 36/2013 (Anvisa)", "url": "https://www.gov.br/anvisa/pt-br/assuntos/servicosdesaude/seguranca-do-paciente", "kind": "orgao-publico" },
+      { "title": "Biblioteca Virtual em Saúde (BVS)", "url": "https://bvsalud.org/", "kind": "referencia" },
+      { "title": "CNES — Cadastro Nacional de Estabelecimentos de Saúde (DATASUS)", "url": "https://cnes.datasus.gov.br/", "kind": "estatistica" },
+      { "title": "CBO — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências de enfermagem; x1 (etapa) e x2 (cenário de prática) orientam as tarefas." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "L3 anonimizado, L7 POP, D4 fluxo, L4 relatório e D7 indicadores primeiro; X1 plano de cuidados e X2 material educativo quando c5 pedir; cada card lembra que não entra dado de paciente." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir das horas (d1) e do aparelho (d4); respeita a escala de turnos informada pela pessoa; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, taxonomia nomeada, referências, declaração de anonimização e ausência de identificadores diretos; reidentificação indireta e selo são revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura e linguagem de caso, POP, plano de cuidados e relatório com prévia; nunca redige prescrição, evolução ou registro assinável de paciente real." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias, pontos de decisão e legenda do fluxo (D4); fonte, período e rótulos do infográfico (D7); linguagem simples e fonte no material educativo (X2)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese de competências declaradas e evidenciadas, lacunas para o setor ou cargo-alvo e incertezas; cada afirmação cita o campo de origem." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos por CBO 2235 e competências: gestão em saúde, auditoria, educação, segurança do trabalho; dados com fonte, data e região." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil; só anuncia especialidade registrada se a pessoa informar (Código de Ética, publicidade)." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai formação, especializações, setores e experiências em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "prontuários, evoluções e anotações de pacientes", "imagens de pacientes, feridas e procedimentos identificáveis", "dados sensíveis (LGPD art. 5º II)", "dados de terceiros sem autorização"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca dar orientação de cuidado, medicação ou conduta para paciente real ou terceiro; redirecionar para avaliação presencial",
+      "nunca redigir prescrição de enfermagem, evolução, anotação ou registro assinável de paciente real",
+      "exigir anonimização ou caso fictício; parar e pedir remoção ao detectar nome, CPF, prontuário, data completa ou combinação identificadora",
+      "tratar POPs, planos e casos produzidos como documentos de estudo, não institucionais",
+      "perguntar em vez de inferir categoria, especialidade, etapa ou situação",
+      "nunca prometer vaga, emprego ou remuneração; mercado com fonte, data e região ou \"estimativa\"",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["diagrama", "infografico", "prancha"],
+    "lettersTemplates": ["estudo-de-caso", "pop", "relatorio-tecnico", "relatorio-de-caso", "plano-de-aula", "revisao", "curriculo", "carta", "bio", "plano-30-60-90", "projeto-de-pesquisa", "artigo"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas curtas de texto (L5, L6) e revisão (L10); L3, L7, D4, D7 e X2 pedem computador. Entre turnos, prefira tarefas de 15 a 30 minutos.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: bio de três frases (15 min). Sem dados de paciente, só o que você sabe fazer.",
+        "Um cuidado que você domina pode virar POP em 60 min. Quando quiser, está aqui.",
+        "Sem pressão. Semana de plantões? A tarefa de 15 min continua disponível quando der.",
+        "Seu estudo de caso está com 4 de 6 critérios objetivos. Faltam a taxonomia dos diagnósticos e a declaração de anonimização."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": { "sensitiveData": ["prontuários, evoluções e dados de pacientes (sigilo, Res. COFEN 564/2017; LGPD art. 5º II)", "imagens de pacientes, feridas e procedimentos identificáveis", "número de inscrição no COREN só por escolha da pessoa"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "COFEN — Enfermagem em Números (profissionais inscritos por categoria e UF)", "url": "https://www.cofen.gov.br/enfermagem-em-numeros/", "geography": "Brasil e UF", "cadence": "continua", "kind": "conselho" },
+      { "title": "CNES — Cadastro Nacional de Estabelecimentos de Saúde (profissionais e vínculos)", "url": "https://cnes.datasus.gov.br/", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "Novo CAGED (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Perfil da Enfermagem no Brasil (Fiocruz/COFEN)", "url": "http://www.cofen.gov.br/perfilenfermagem/", "geography": "Brasil, regiões e UF", "cadence": "eventual", "kind": "pesquisa" },
+      { "title": "Editais de residência multiprofissional e em enfermagem (ENARE/Ebserh e instituições)", "url": "https://www.gov.br/ebserh/pt-br/acesso-a-informacao/processos-seletivos/enare", "geography": "Brasil e instituições", "cadence": "anual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda, distribuição regional ou requisitos cita fonte, data e abrangência geográfica verificáveis (ex.: COFEN Enfermagem em Números, data; CNES, mês/ano; CAGED, mês/ano); sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração e piso salarial nunca entram como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "gestao-publica", "why": "Gestão de unidades, vigilância e políticas de saúde aproveitam o domínio do SUS e a experiência de coordenação de equipe.", "gaps": ["planejamento e orçamento público", "indicadores e avaliação de políticas", "legislação do SUS"], "steps": ["infográfico de indicadores da unidade (D7)", "relatório técnico de uma melhoria (L4)", "curso de gestão em saúde (Enap ou UNA-SUS)", "plano 30-60-90 para coordenação (L9)"] },
+    { "to": "administracao", "why": "Gestão hospitalar, qualidade e auditoria em saúde valorizam enfermeiros que conhecem processos assistenciais.", "gaps": ["gestão de processos e custos", "acreditação (ONA) e qualidade", "faturamento e auditoria de contas"], "steps": ["fluxo de uma rotina da unidade (D4)", "redesenho antes e depois de um processo (D5)", "curso de gestão da qualidade em saúde"] },
+    { "to": "seguranca-do-trabalho", "why": "Enfermagem do trabalho e SESMT compartilham vigilância em saúde, NR-32 e prevenção de agravos.", "gaps": ["normas regulamentadoras além da NR-32", "PCMSO e PGR", "ergonomia e higiene ocupacional"], "steps": ["POP de uma rotina de saúde ocupacional (L7)", "especialização em enfermagem do trabalho", "relatório técnico de um programa de prevenção (L4)"] },
+    { "to": "servico-social", "why": "Atenção primária, saúde mental e cuidados prolongados exigem trabalho conjunto com o serviço social; a transição é mais comum em gestão de programas e redes de cuidado.", "gaps": ["política de assistência social (SUAS)", "abordagem familiar e territorial", "legislação de direitos"], "steps": ["material de educação em saúde para a comunidade (X2)", "estudo de caso anonimizado com foco em rede de cuidado (L3)", "curso sobre SUAS e intersetorialidade"] }
+  ],
+  "learning": [
+    { "title": "UNA-SUS — cursos gratuitos para profissionais do SUS", "provider": "UNA-SUS / Ministério da Saúde", "url": "https://www.unasus.gov.br/", "free": true, "kind": "portal" },
+    { "title": "AVASUS — Ambiente Virtual de Aprendizagem do SUS", "provider": "UFRN / Ministério da Saúde", "url": "https://avasus.ufrn.br/", "free": true, "kind": "portal" },
+    { "title": "Campus Virtual Fiocruz", "provider": "Fiocruz", "url": "https://campusvirtual.fiocruz.br/", "free": true, "kind": "portal" },
+    { "title": "Resoluções e legislação do COFEN", "provider": "COFEN", "url": "https://www.cofen.gov.br/categoria/legislacao/resolucoes/", "free": true, "kind": "norma" },
+    { "title": "Segurança do paciente — protocolos e cursos (Anvisa)", "provider": "Anvisa", "url": "https://www.gov.br/anvisa/pt-br/assuntos/servicosdesaude/seguranca-do-paciente", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — gestão pública e saúde", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Biblioteca Virtual em Saúde (BVS) e SciELO", "provider": "BIREME/OPAS", "url": "https://bvsalud.org/", "free": true, "kind": "portal" },
+    { "title": "Campus Virtual de Saúde Pública (OPAS)", "provider": "OPAS/OMS", "url": "https://www.campusvirtualsp.org/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Fase 1 — dados do ramo enfermagem (CBO, ISCO, conselho, sensitiveData, vizinhos)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Res. COFEN 736/2024 — Processo de Enfermagem (página oficial; revoga a Res. 358/2009)", "url": "https://www.cofen.gov.br/resolucao-cofen-no-736-de-17-de-janeiro-de-2024", "accessedAt": "2026-11-02" },
+    { "title": "Res. COFEN 769/2024 — normas de inscrição e registro (quadros I, II, III)", "url": "https://www.cofen.gov.br/resolucao-cofen-no-769-de-26-de-novembro-de-2024", "accessedAt": "2026-11-02" },
+    { "title": "COFEN — Sistema Cofen/Conselhos Regionais reúne mais de 3 milhões de inscritos (notícia)", "url": "https://www.cofen.gov.br/?p=150136", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7 e §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URIs ESCO da ocupação nurse responsible for general care e das competências: esco.ec.europa.eu/ec.europa.eu não acessível nesta sessão",
+    "Res. COFEN 564/2017 (URL da página), Res. COFEN 543/2017 (dimensionamento) e RDC Anvisa 36/2013: citadas de memória, não abertas na fonte",
+    "URL e existência atual da página COFEN Enfermagem em Números e do Perfil da Enfermagem no Brasil (Fiocruz/COFEN, 2015) não verificadas; total de mais de 3 milhões de inscritos vem de notícia do COFEN sem data",
+    "Res. COFEN 736/2024: confirmada por resultados de busca (página oficial), texto integral não aberto",
+    "URLs de CNES, ENARE, UNA-SUS, AVASUS, Campus Virtual Fiocruz, Anvisa e OPAS não abertas nesta sessão",
+    "CBO 3222 (técnicos e auxiliares de enfermagem) em a4.cboFamilies não conferida no portal da CBO",
+    "nomes de softwares de prontuário (Tasy, MV) e escalas listados por conhecimento geral"
+  ]
+}

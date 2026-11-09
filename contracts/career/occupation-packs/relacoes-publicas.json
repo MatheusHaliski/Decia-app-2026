@@ -1,0 +1,338 @@
+{
+  "schemaVersion": 1,
+  "code": "relacoes-publicas",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Relações Públicas", "en": "Public Relations", "es": "Relaciones Públicas" },
+  "fields": ["relacoes-publicas"],
+  "family": {
+    "cbo": [
+      { "code": "1423", "title": "Gerentes de comercialização, marketing e comunicação" },
+      { "code": "2531", "title": "Profissionais de publicidade" }
+    ],
+    "isco08": [
+      { "code": "2432", "title": "Public relations professionals" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/c0489e22-6a1b-4e52-974a-eb71bbb42134", "label": "public relations officer" }
+    ]
+  },
+  "scope": {
+    "summary": "Pacote para quem atua ou quer atuar em relações públicas: comunicação organizacional, institucional e interna, relacionamento com públicos e imprensa, gestão de reputação e de crise, eventos, cerimonial e protocolo, pesquisa de opinião e comunicação pública. As tarefas produzem evidências verificáveis (plano de comunicação, release, mapa de públicos, plano de crise) com organizações fictícias ou informação pública, sem expor estratégia, crises ou dados de stakeholders de clientes.",
+    "entryRoles": ["Estagiário de comunicação", "Assistente de comunicação", "Analista de comunicação júnior", "Assistente de eventos e cerimonial", "Analista de comunicação interna júnior"],
+    "midRoles": ["Relações-públicas", "Analista de comunicação corporativa", "Assessor de comunicação", "Analista de comunicação interna", "Cerimonialista", "Analista de reputação e relacionamento"],
+    "seniorRoles": ["Coordenador de comunicação", "Gerente de comunicação corporativa", "Gerente de relações institucionais", "Diretor de agência de comunicação", "Consultor de gestão de crise"],
+    "sectors": ["empresas privadas (comunicação corporativa)", "agências de comunicação e relações públicas", "administração pública (comunicação institucional e cerimonial)", "terceiro setor e fundações", "universidades e hospitais", "eventos e turismo de negócios", "consultoria de reputação e ESG"],
+    "regulation": [
+      { "name": "Lei 5.377/1967", "issuer": "Brasil", "about": "disciplina a profissão de relações públicas; exercício condicionado a registro" },
+      { "name": "Decreto 63.283/1968", "issuer": "Brasil", "about": "regulamenta a Lei 5.377/1967 (atividades e registro)" },
+      { "name": "Decreto-Lei 860/1969", "issuer": "Brasil", "about": "cria o Conselho Federal (CONFERP) e os Conselhos Regionais (CONRERP)" },
+      { "name": "Resolução Normativa CONFERP 136/2026", "issuer": "CONFERP", "about": "prerrogativas e atividades privativas e compartilhadas de relações públicas (revoga a RN 43/2002)" },
+      { "name": "Código de Ética dos Profissionais de Relações Públicas", "issuer": "CONFERP", "about": "deveres com públicos, clientes, colegas e imprensa; vedação de informação falsa e de influência indevida; sigilo profissional" },
+      { "name": "Lei 12.846/2013 (Lei Anticorrupção) e Lei 12.813/2013", "issuer": "Brasil", "about": "integridade na relação com agentes públicos; conflito de interesses" },
+      { "name": "LGPD (Lei 13.709/2018)", "issuer": "Brasil", "about": "bases legais para mailings, cadastros de stakeholders e comunicação interna com dados de empregados" },
+      { "name": "Decreto 70.274/1972", "issuer": "Brasil", "about": "normas do cerimonial público e ordem geral de precedência" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "públicos (stakeholders)", "meaning": "grupos que afetam ou são afetados pela organização: internos, externos e mistos" },
+      { "term": "mapa de públicos", "meaning": "levantamento dos públicos com interesse, influência e canais de relacionamento" },
+      { "term": "plano de comunicação", "meaning": "diagnóstico, objetivos, públicos, mensagens-chave, ações, cronograma, orçamento e indicadores" },
+      { "term": "diagnóstico / auditoria de comunicação", "meaning": "análise do que a organização comunica, por quais canais e com que percepção" },
+      { "term": "mensagem-chave", "meaning": "afirmação central que a organização quer que cada público entenda" },
+      { "term": "reputação e imagem", "meaning": "percepção acumulada dos públicos sobre a organização e o que ela projeta" },
+      { "term": "gestão de crise", "meaning": "prevenção, resposta e recuperação diante de fato que ameaça a reputação" },
+      { "term": "comitê de crise", "meaning": "grupo que decide e aprova a comunicação durante uma crise" },
+      { "term": "porta-voz", "meaning": "pessoa autorizada a falar em nome da organização" },
+      { "term": "media training", "meaning": "treinamento de porta-vozes para entrevistas" },
+      { "term": "Q&A (perguntas e respostas)", "meaning": "documento com perguntas prováveis e respostas aprovadas" },
+      { "term": "release e nota oficial", "meaning": "textos enviados à imprensa: informativo e posicionamento institucional" },
+      { "term": "mailing", "meaning": "lista de contatos de jornalistas e influenciadores (dado pessoal, LGPD)" },
+      { "term": "clipping e análise de mídia", "meaning": "coleta e avaliação do que foi publicado sobre a organização" },
+      { "term": "comunicação interna / endomarketing", "meaning": "comunicação com empregados e colaboradores" },
+      { "term": "cerimonial e protocolo", "meaning": "regras de organização de solenidades, precedência e tratamento de autoridades" },
+      { "term": "ordem de precedência", "meaning": "sequência hierárquica de autoridades em eventos oficiais (Decreto 70.274/1972)" },
+      { "term": "pesquisa de opinião / clima", "meaning": "levantamento estruturado de percepções de públicos" },
+      { "term": "relações governamentais", "meaning": "relacionamento institucional e transparente com o poder público" },
+      { "term": "relatório de sustentabilidade (GRI)", "meaning": "relato de desempenho ambiental, social e de governança segundo padrão GRI" },
+      { "term": "indicadores de comunicação", "meaning": "métricas de alcance, engajamento, sentimento e percepção" },
+      { "term": "embargo", "meaning": "acordo de não publicar antes de data e hora combinadas" }
+    ],
+    "tools": ["editor de textos (Letters)", "editor de desenho (Drawings)", "planilhas de mapa de públicos e cronograma", "ferramentas de clipping e monitoramento de mídia", "ferramentas de pesquisa (Google Forms, SurveyMonkey)", "intranet e ferramentas de comunicação interna", "Canva e Figma", "ferramentas de gestão de redes sociais", "plataformas de eventos e inscrição", "ferramentas de newsletter"],
+    "deliverables": ["plano de comunicação", "mapa de públicos", "release e nota oficial", "plano de gestão de crise e Q&A", "relatório de clipping e análise de mídia", "plano de comunicação interna", "roteiro de cerimonial e nominata", "projeto de evento", "pesquisa de opinião ou clima com relatório", "relatório de sustentabilidade (seções de comunicação)", "manual de porta-voz", "portfólio de cases"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Diagnóstico e planejamento de comunicação", "esco": null, "kind": "nucleo" },
+      { "label": "Mapeamento e relacionamento com públicos", "esco": null, "kind": "nucleo" },
+      { "label": "Redação institucional (release, nota, discurso)", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de reputação e de crise", "esco": null, "kind": "nucleo" },
+      { "label": "Relacionamento com a imprensa", "esco": null, "kind": "nucleo" },
+      { "label": "Comunicação interna", "esco": null, "kind": "nucleo" },
+      { "label": "Ética, sigilo e transparência na comunicação", "esco": null, "kind": "nucleo" },
+      { "label": "Eventos, cerimonial e protocolo", "esco": null, "kind": "apoio" },
+      { "label": "Pesquisa de opinião e análise de indicadores", "esco": null, "kind": "apoio" },
+      { "label": "Comunicação digital e redes sociais", "esco": null, "kind": "apoio" },
+      { "label": "Relações governamentais e institucionais", "esco": null, "kind": "apoio" },
+      { "label": "Comunicação de sustentabilidade (ESG)", "esco": null, "kind": "apoio" },
+      { "label": "Orçamento e gestão de projetos de comunicação", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["escuta e negociação", "clareza na escrita", "calma sob pressão", "ética e sigilo", "comunicação oral", "organização de prazos e equipes"],
+    "tracks": [
+      { "id": "planejar-comunicacao", "label": "Planejar comunicação", "steps": ["mapa de públicos de uma organização fictícia (X1)", "plano de comunicação a partir de briefing (L8)", "infográfico de indicadores com fonte (D7)", "plano 30-60-90 para um cargo de comunicação (L9)"] },
+      { "id": "imprensa-e-crise", "label": "Imprensa e crise", "steps": ["release sobre fato fictício (X2)", "plano de crise com Q&A (X3)", "POP de atendimento a demandas de imprensa (L7)"] },
+      { "id": "comunicacao-interna-e-eventos", "label": "Comunicação interna e eventos", "steps": ["diagrama do fluxo de aprovação de comunicados (D4)", "estudo de caso de um evento ou campanha interna (L3)", "post sobre um aprendizado (L5)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"analista de comunicação\", \"assessor de comunicação\", \"cerimonialista\", \"comunicação interna\", \"estagiário de RP\"",
+      "cboFamilies": ["1423", "2531"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez; se for o primeiro emprego ou estágio, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, agência experimental ou primeiro cargo de assistente de comunicação",
+        "junior": "até dois anos executando ações e textos com supervisão",
+        "pleno": "conduz planos, eventos e relacionamento com imprensa com autonomia",
+        "senior": "referência em reputação ou crise; orienta a equipe e apresenta à diretoria",
+        "gestao": "coordena ou gerencia a comunicação da organização ou da agência"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em relações públicas",
+      "options": ["planejar comunicação", "mapear e relacionar-se com públicos", "escrever release, nota e discurso", "atender a imprensa", "gerir crises", "comunicação interna", "organizar eventos e cerimonial", "conduzir pesquisas de opinião", "analisar mídia e indicadores", "gerir redes sociais institucionais", "relações governamentais", "comunicação de sustentabilidade"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com tarefas sobre organizações fictícias ou informação pública."
+    },
+    "c4": {
+      "certifications": ["registro ativo no CONRERP", "graduação ou tecnólogo em relações públicas", "pós-graduação (comunicação organizacional, gestão de crise, ESG)", "curso de cerimonial e protocolo", "curso de media training", "curso de pesquisa de opinião", "mestrado ou doutorado"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação e registro mostram lacunas em relação ao cargo ou edital que você quer; nada aqui é exigido para começar."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["planejamento de comunicação", "gestão de crise", "relacionamento com imprensa", "comunicação interna", "cerimonial e eventos", "pesquisa de opinião", "indicadores e análise de mídia", "comunicação digital", "relações governamentais", "comunicação ESG"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez do catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que frente da comunicação você atua ou quer atuar?",
+        "type": "escolha",
+        "options": ["comunicação corporativa", "assessoria de imprensa", "comunicação interna", "eventos e cerimonial", "gestão de crise e reputação", "comunicação pública", "relações governamentais", "digital e redes", "ainda não sei"],
+        "why": "Pergunto a frente para escolher tarefas e vocabulário: um plano de crise e um roteiro de cerimonial são evidências diferentes.",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L8", "L6", "L1", "L7", "D4", "L3", "D7", "L9", "L2", "L5", "L10", "D2"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica não é entrega da profissão" },
+      { "code": "D3", "reason": "modelagem 3D não é entrega da profissão" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da profissão" },
+      { "code": "D8", "reason": "vista explodida não é entrega da profissão" }
+    ],
+    "parameters": {
+      "L8": {
+        "title": "Plano de comunicação a partir de um briefing simulado",
+        "brief": "A partir de um briefing fictício (organização inventada com um desafio de comunicação), escreva um plano de até 4 páginas: diagnóstico, objetivos mensuráveis, públicos prioritários, mensagens-chave, ações por público, cronograma, orçamento estimado e indicadores.",
+        "parameters": { "maxPages": 4, "fictionalOrganization": true, "sections": ["diagnóstico", "objetivos", "públicos", "mensagens-chave", "ações", "cronograma", "orçamento", "indicadores"] },
+        "criteria": ["oito seções nomeadas", "ao menos dois objetivos mensuráveis", "ações ligadas a públicos específicos", "indicadores para cada objetivo", "organização declaradamente fictícia ou informação pública"],
+        "evidence": "proposta",
+        "time": "2 h",
+        "level": 2
+      },
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva até 600 caracteres com a frente de comunicação em que atua ou quer atuar, três competências e o link de um case ou trabalho publicado. Sem citar estratégias, crises ou dados de clientes.",
+        "parameters": { "maxChars": 600, "requiredParts": ["frente-alvo", "três competências", "um case com link"] },
+        "criteria": ["até 600 caracteres", "nomeia a frente-alvo", "cita três competências", "inclui um case com link", "sem informação estratégica de cliente"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para a vaga que você quer mirar primeiro, com três resultados com número (eventos realizados, crescimento de mídia espontânea, adesão a campanha interna) e as palavras-chave da vaga.",
+        "parameters": { "maxPages": 1, "achievementsWithNumbers": 3, "keywordsFrom": "vaga-alvo" },
+        "criteria": ["uma página", "três resultados com número", "palavras-chave da vaga-alvo presentes", "registro no CONRERP indicado, se houver", "sem idade, estado civil ou foto obrigatória"],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "L7": {
+        "title": "Procedimento de atendimento a demandas de imprensa",
+        "brief": "Escreva um POP para uma organização fictícia: recebimento da demanda, triagem, consulta à área técnica, aprovação, resposta ou entrevista, registro e acompanhamento da publicação, com responsáveis e prazos por passo.",
+        "parameters": { "numberedSteps": true, "responsiblePerStep": true, "doneCriterionPerStep": true, "fictionalOrganization": true },
+        "criteria": ["passos numerados", "responsável em cada passo", "prazo ou critério de conclusão por passo", "passo de aprovação explícito", "sem nomes ou contatos reais de jornalistas"],
+        "evidence": "modelo",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "drawings",
+        "title": "Mapa de públicos de uma organização fictícia",
+        "competency": "Mapeamento e relacionamento com públicos",
+        "criteria": ["ao menos oito públicos identificados", "classificação por influência e interesse (matriz)", "canal de relacionamento para cada público", "legenda e premissas", "organização fictícia, sem nomes de pessoas reais"],
+        "evidence": "diagrama ou infográfico publicado",
+        "time": "60 min",
+        "trigger": "Quer desenhar o mapa de públicos de uma organização?",
+        "level": 1
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Release sobre fato fictício",
+        "competency": "Redação institucional e relacionamento com a imprensa",
+        "criteria": ["até 400 palavras", "título e lide respondem o quê, quem, quando e onde", "aspas atribuídas a porta-voz fictício", "informações verificáveis, sem exagero promocional", "contato de assessoria fictício"],
+        "evidence": "documento",
+        "time": "45 min",
+        "trigger": "Quer escrever um release para um fato de uma organização fictícia?",
+        "level": 1
+      },
+      {
+        "id": "X3",
+        "editor": "letters",
+        "title": "Plano de gestão de crise com Q&A",
+        "competency": "Gestão de reputação e de crise",
+        "criteria": ["cenário fictício descrito", "comitê de crise e porta-voz definidos", "fluxo de aprovação e prazos da primeira resposta", "nota oficial de até 150 palavras", "Q&A com ao menos seis perguntas", "nenhuma informação falsa ou omissão que engane o público"],
+        "evidence": "relatório técnico",
+        "time": "2 h",
+        "trigger": "Quer treinar a resposta a uma crise em cenário fictício?",
+        "level": 3
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L5", "L6", "L8", "X2"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L8", "L3", "L9", "X3"], "auto": true },
+      { "id": "objetivos-mensuraveis", "check": "cada objetivo tem indicador e meta", "appliesTo": ["L8", "L9"], "auto": true },
+      { "id": "passos-com-responsavel", "check": "cada passo tem número, responsável e critério de conclusão", "appliesTo": ["L7"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim e nenhuma etapa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "mapa-completo", "check": "o mapa tem ao menos oito públicos, matriz e canal por público", "appliesTo": ["X1"], "auto": true },
+      { "id": "lide-completo", "check": "o primeiro parágrafo responde o quê, quem, quando e onde", "appliesTo": ["X2"], "auto": true },
+      { "id": "fonte-no-grafico", "check": "o infográfico cita fonte dos dados com data e rótulos", "appliesTo": ["D7"], "auto": true },
+      { "id": "organizacao-ficticia", "check": "a pessoa declarou organização fictícia ou informação pública", "appliesTo": ["L8", "L7", "X1", "X2", "X3"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de informação estratégica, crise ou mailing de clientes", "appliesTo": ["L1", "L2", "L3", "L5", "L6", "L7", "L8", "L9", "L10", "D2", "D4", "D7", "X1", "X2", "X3"], "auto": true },
+      { "id": "palavras-chave-do-alvo", "check": "as palavras-chave da vaga-alvo aparecem no texto", "appliesTo": ["L1", "L2"], "auto": true },
+      { "id": "transparencia", "check": "as mensagens não omitem nem distorcem fatos relevantes para o público", "appliesTo": ["X2", "X3"], "auto": false }
+    ],
+    "subjective": [
+      { "id": "estrategia", "label": "Coerência estratégica", "levels": { "aproxima": "ações soltas, sem ligação com objetivos", "atende": "ações ligadas a objetivos e públicos", "supera": "diagnóstico sustenta cada escolha e prevê riscos" } },
+      { "id": "clareza", "label": "Clareza da mensagem", "levels": { "aproxima": "mensagens vagas ou burocráticas", "atende": "mensagens claras e adequadas a cada público", "supera": "mensagens precisas, empáticas e consistentes entre canais" } },
+      { "id": "etica-e-transparencia", "label": "Ética e transparência", "levels": { "aproxima": "há omissão ou exagero que pode enganar", "atende": "comunica com transparência e respeita o sigilo", "supera": "explicita dilemas éticos e como foram resolvidos" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da área de relações públicas (comunicação corporativa, interna, institucional, assessoria de imprensa, crise e reputação, eventos e cerimonial, comunicação pública). Use o vocabulário da área (públicos e stakeholders, mapa de públicos, plano de comunicação, mensagem-chave, porta-voz, Q&A, comitê de crise, release, nota oficial, clipping, ordem de precedência) e cite, quando couber, a Lei 5.377/1967, o Decreto-Lei 860/1969, a Resolução Normativa CONFERP 136/2026, o Código de Ética dos Profissionais de Relações Públicas (CONFERP), o Decreto 70.274/1972 e a LGPD. Toda tarefa usa organização fictícia ou informação pública: nunca peça nem registre planos de crise, resultados não divulgados, comunicados sob embargo, mailings ou dados de stakeholders de clientes e empregadores; se a pessoa colar algo assim, oriente a remover. Não invente fatos, números ou declarações; não proponha mensagens que omitam ou distorçam fatos relevantes para o público, nem práticas de influência indevida sobre jornalistas ou agentes públicos. Não substitua o profissional registrado no CONRERP nas atividades privativas. Pergunte antes de inferir frente de atuação ou senioridade. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por que foi sugerida. Afirmações sobre mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa vaga, entrevista ou salário. Progresso é por critérios atendidos, nunca por pontuação. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação. Pré-cheque só critérios objetivos; estratégia e transparência são julgamento humano.",
+    "citeSources": [
+      { "title": "Lei 5.377/1967 — profissão de relações públicas", "url": "https://www.planalto.gov.br/ccivil_03/leis/l5377.htm", "kind": "norma" },
+      { "title": "Decreto-Lei 860/1969 — CONFERP e CONRERP", "url": "https://www.planalto.gov.br/ccivil_03/decreto-lei/1965-1988/del0860.htm", "kind": "norma" },
+      { "title": "Resolução Normativa CONFERP 136/2026 (cópia ABMES)", "url": "https://abmes.org.br/arquivos/legislacoes/Resolucao-normativa-conferp-0136-2026-05-14.pdf", "kind": "conselho" },
+      { "title": "Sistema CONFERP — código de ética e resoluções", "url": "https://conferp.org.br/", "kind": "conselho" },
+      { "title": "Decreto 70.274/1972 — cerimonial público e precedência", "url": "https://www.planalto.gov.br/ccivil_03/decreto/d70274.htm", "kind": "norma" },
+      { "title": "LGPD — Lei 13.709/2018", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm", "kind": "norma" },
+      { "title": "CBO 1423-25 — Relações públicas (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "Aberje — Associação Brasileira de Comunicação Empresarial", "url": "https://www.aberje.com.br/", "kind": "comunidade" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2, c5 e x1 (frente de atuação); nunca pergunta sobre crises ou estratégias de clientes." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza L8 (plano de comunicação), X1 (mapa de públicos), X2 (release), L7 e X3 (crise); cada card diz competência, evidência e tempo." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); L8, X3 e X1 pedem computador; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa tamanho, seções, objetivos com indicador, passos com responsável, mapa completo e declaração de organização fictícia; não julga estratégia." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Gera briefings e cenários fictícios; propõe estrutura de plano, release e Q&A, sem inventar fatos nem números." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Mapa de públicos (X1) com matriz influência-interesse; fluxo de aprovação (D4); infográfico de indicadores (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: síntese com competências declaradas e evidenciadas, lacunas e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: jornalismo, publicidade, marketing, administração, eventos; sempre com lacunas e passos, sem previsão." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por CBO 1423, frente de atuação e competências." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil; só com o consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai organizações, frentes e competências em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "planos de crise, estratégia e resultados não divulgados de clientes ou empregadores", "mailings e dados pessoais de stakeholders e jornalistas", "comunicados sob embargo", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "toda tarefa usa organização fictícia ou informação pública; nunca pedir nem registrar estratégia, crise ou mailing de clientes",
+      "não inventar fatos, números ou declarações; não propor mensagens que omitam ou distorçam fatos relevantes",
+      "não sugerir influência indevida sobre jornalistas ou agentes públicos",
+      "não substituir o profissional registrado no CONRERP em atividades privativas",
+      "perguntar em vez de inferir frente, senioridade ou situação",
+      "nunca prometer vaga, entrevista ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["diagrama", "infografico", "prancha"],
+    "lettersTemplates": ["bio", "curriculo", "carta", "proposta", "pop", "relatorio-tecnico", "estudo-de-caso", "post", "roteiro", "plano-30-60-90", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular: L5, L6, L10 e release curto (X2); L8, X3, X1 e D4 pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em três frases com um case (15 min).",
+        "Que tal desenhar o mapa de públicos de uma organização fictícia? Comprova planejamento e leva cerca de 60 min.",
+        "Sem pressão. Quando quiser retomar, o plano de comunicação está salvo onde parou.",
+        "Um plano de crise com Q&A em cenário fictício mostra preparo. Leva cerca de 2 h no computador."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["informações estratégicas, planos de crise e resultados não divulgados de clientes/empregadores", "mailings e dados pessoais de stakeholders, jornalistas e públicos", "comunicados sob embargo", "resultados de pesquisas de clima com empregados identificáveis"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 1423", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Sistema CONFERP — profissionais registrados", "url": "https://conferp.org.br/", "geography": "Brasil e regiões dos CONRERP", "cadence": "eventual", "kind": "conselho" },
+      { "title": "Aberje — pesquisas de comunicação organizacional", "url": "https://www.aberje.com.br/", "geography": "Brasil", "cadence": "eventual", "kind": "associacao" },
+      { "title": "Abracom — Associação Brasileira das Agências de Comunicação (anuário)", "url": "https://www.abracom.org.br/", "geography": "Brasil", "cadence": "anual", "kind": "associacao" },
+      { "title": "Diário Oficial da União — editais de concurso para relações públicas", "url": "https://www.in.gov.br/", "geography": "Brasil", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "jornalismo", "why": "Assessoria de imprensa e redação institucional usam apuração e escrita jornalística.", "gaps": ["apuração com fontes e contraditório", "formatos noticiosos", "ética jornalística (FENAJ)"], "steps": ["reportagem curta com fontes", "checagem de fatos", "curso de jornalismo de dados"] },
+    { "to": "publicidade-e-propaganda", "why": "Planejamento e campanhas institucionais aproximam da publicidade.", "gaps": ["conceito criativo e direção de arte", "plano de mídia", "CONAR e CDC"], "steps": ["resposta a briefing publicitário (L8)", "prancha de campanha (D2)", "curso de redação publicitária"] },
+    { "to": "marketing", "why": "Gestão de marca, reputação e relacionamento com clientes sobrepõem-se ao marketing.", "gaps": ["funil e CRM", "métricas de negócio", "precificação e canais"], "steps": ["infográfico de indicadores (D7)", "plano 30-60-90 (L9)", "curso de marketing do Sebrae"] },
+    { "to": "eventos", "why": "Cerimonial, protocolo e eventos institucionais são atividades da área.", "gaps": ["produção e logística de eventos", "orçamento e fornecedores", "segurança e acessibilidade"], "steps": ["POP de cerimonial", "diagrama do fluxo do evento (D4)", "curso de cerimonial e protocolo"] },
+    { "to": "administracao", "why": "Coordenação de comunicação leva a gestão de pessoas, orçamento e governança.", "gaps": ["finanças", "gestão de pessoas", "governança e compliance"], "steps": ["estudo de caso STAR (L3)", "plano 30-60-90 de gestão (L9)", "curso de gestão da Enap"] }
+  ],
+  "learning": [
+    { "title": "Legislação e código de ética do Sistema CONFERP", "provider": "CONFERP", "url": "https://conferp.org.br/", "free": true, "kind": "norma" },
+    { "title": "Cursos de comunicação pública e cerimonial", "provider": "Escola Virtual.Gov (Enap)", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "curso" },
+    { "title": "Conteúdos e cursos de comunicação organizacional", "provider": "Aberje", "url": "https://www.aberje.com.br/", "free": false, "kind": "comunidade" },
+    { "title": "Cursos de comunicação e marketing", "provider": "Escola Virtual Fundação Bradesco", "url": "https://www.ev.org.br/", "free": true, "kind": "curso" },
+    { "title": "Padrões GRI para relato de sustentabilidade", "provider": "Global Reporting Initiative", "url": "https://www.globalreporting.org/", "free": true, "kind": "norma" },
+    { "title": "Guias de proteção de dados", "provider": "ANPD", "url": "https://www.gov.br/anpd/pt-br", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos — relacoes-publicas", "url": "contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
+    { "title": "Resolução Normativa CONFERP 136, de 14/05/2026 (ABMES)", "url": "https://abmes.org.br/legislacoes/detalhe/5543/resolucao-normativa-conferp-n-136", "accessedAt": "2026-11-02" },
+    { "title": "Resolução Normativa CONFERP 43/2002 (LegisWeb, revogada)", "url": "https://www.legisweb.com.br/legislacao/?id=97892", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "RN CONFERP 136/2026 confirmada por resumo de busca (ABMES): revoga a RN 43/2002 e exige registro no Sistema CONFERP; texto integral não lido; data de publicação no DOU diverge (20 ou 21/05/2026)",
+    "Código de Ética dos Profissionais de Relações Públicas: estudos citam a versão CONFERP de 2001; número da resolução e vigência não confirmados",
+    "Decreto 63.283/1968, Decreto 70.274/1972, Lei 12.813/2013 e Lei 12.846/2013 citados de memória; planalto.gov.br não acessado",
+    "URIs ESCO de competências não confirmadas (ec.europa.eu inacessível); todas com esco: null",
+    "URLs de conferp.org.br, Aberje, Abracom e GRI não verificadas nesta sessão; não há estatística nacional de registrados localizada"
+  ]
+}

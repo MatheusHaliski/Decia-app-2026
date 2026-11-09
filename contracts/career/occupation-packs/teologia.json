@@ -1,0 +1,325 @@
+{
+  "schemaVersion": 1,
+  "code": "teologia",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Teologia", "en": "Theology", "es": "Teología" },
+  "fields": ["teologia"],
+  "family": {
+    "cbo": [
+      { "code": "2631", "title": "Ministros de culto, missionários, teólogos e profissionais assemelhados" },
+      { "code": "2321", "title": "Professores do ensino médio" }
+    ],
+    "isco08": [
+      { "code": "2636", "title": "Religious professionals" },
+      { "code": "2330", "title": "Secondary education teachers" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/ed256ed0-0432-4969-8544-3e5e01a517a9", "label": "minister of religion" },
+      { "uri": "http://data.europa.eu/esco/occupation/35e42c87-faf7-465f-abe4-f26717996dd1", "label": "religious education teacher at secondary school" },
+      { "uri": "http://data.europa.eu/esco/occupation/c90a6ebe-adcc-4395-9f5b-ff3e96e93cef", "label": "religious studies lecturer" }
+    ]
+  },
+  "scope": {
+    "summary": "Pacote para quem estudou ou quer atuar em teologia e ciências da religião, em qualquer tradição: pesquisa e ensino, ensino religioso, capelania, ministério, gestão de organizações religiosas e do terceiro setor, editoração e diálogo inter-religioso. As tarefas produzem evidências acadêmicas e de gestão (resenha, estudo, projeto social, plano de aula) sem expor fiéis, aconselhamento pastoral nem convicção religiosa de terceiros.",
+    "entryRoles": ["Estagiário de pesquisa ou docência", "Auxiliar de ministério ou capelania", "Assistente de projetos sociais", "Professor de ensino religioso em formação", "Revisor ou assistente editorial"],
+    "midRoles": ["Teólogo pesquisador", "Professor de ensino religioso", "Capelão hospitalar, escolar ou prisional", "Ministro de culto", "Coordenador de projetos sociais", "Editor de conteúdo religioso"],
+    "seniorRoles": ["Docente de ensino superior", "Coordenador de curso de teologia", "Coordenador de capelania", "Gestor de organização religiosa ou filantrópica", "Consultor em diálogo inter-religioso"],
+    "sectors": ["organizações religiosas", "instituições de ensino superior e seminários", "escolas (ensino religioso)", "hospitais, prisões e Forças Armadas (capelania)", "terceiro setor e assistência social", "editoras e mídia religiosa", "pesquisa acadêmica"],
+    "regulation": [
+      { "name": "Constituição Federal, art. 5º VI a VIII, art. 19 I e art. 210 §1º", "issuer": "Brasil", "about": "liberdade de crença e culto; Estado laico; ensino religioso facultativo nas escolas públicas" },
+      { "name": "LDB (Lei 9.394/1996), art. 33", "issuer": "Brasil", "about": "ensino religioso de matrícula facultativa, vedado o proselitismo" },
+      { "name": "Resolução CNE/CES 4/2016", "issuer": "Conselho Nacional de Educação", "about": "Diretrizes Curriculares Nacionais do bacharelado em Teologia" },
+      { "name": "Resolução CNE/CP 5/2018", "issuer": "Conselho Nacional de Educação", "about": "Diretrizes Curriculares da licenciatura em Ciências da Religião (ensino religioso)" },
+      { "name": "LGPD (Lei 13.709/2018), art. 5º II e art. 11", "issuer": "Brasil", "about": "convicção religiosa e filiação a organização religiosa são dados pessoais sensíveis" },
+      { "name": "Lei 9.982/2000", "issuer": "Brasil", "about": "assistência religiosa em hospitais e estabelecimentos prisionais" },
+      { "name": "Lei 7.716/1989 e Lei 14.532/2023", "issuer": "Brasil", "about": "crimes de discriminação e intolerância religiosa" },
+      { "name": "Código Penal, art. 154 e CPP, art. 207", "issuer": "Brasil", "about": "segredo profissional; dispensa de depor sobre o que se soube em razão de ministério" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "exegese", "meaning": "interpretação crítica de um texto sagrado a partir de sua língua, contexto e forma" },
+      { "term": "hermenêutica", "meaning": "teoria e método da interpretação dos textos e da tradição" },
+      { "term": "teologia sistemática", "meaning": "exposição organizada das doutrinas de uma tradição" },
+      { "term": "teologia prática / pastoral", "meaning": "reflexão sobre a ação das comunidades: cuidado, liturgia, ensino, gestão" },
+      { "term": "patrística", "meaning": "estudo dos autores cristãos dos primeiros séculos" },
+      { "term": "ciências da religião", "meaning": "estudo não confessional das religiões com métodos das ciências humanas" },
+      { "term": "ensino religioso não confessional", "meaning": "componente escolar que estuda o fenômeno religioso sem proselitismo (BNCC)" },
+      { "term": "diálogo inter-religioso", "meaning": "encontro e cooperação entre tradições religiosas diferentes" },
+      { "term": "capelania", "meaning": "assistência espiritual em instituições (hospital, escola, prisão, Forças Armadas)" },
+      { "term": "aconselhamento pastoral", "meaning": "escuta e orientação espiritual; protegido por sigilo" },
+      { "term": "homilética", "meaning": "arte e técnica de preparar e proferir pregações" },
+      { "term": "liturgia", "meaning": "ordem e forma das celebrações" },
+      { "term": "línguas bíblicas", "meaning": "hebraico, aramaico e grego koiné, usados na exegese" },
+      { "term": "aparato crítico", "meaning": "notas que registram variantes textuais nos manuscritos" },
+      { "term": "resenha crítica", "meaning": "apresentação e avaliação fundamentada de uma obra" },
+      { "term": "laicidade", "meaning": "separação entre Estado e organizações religiosas (CF art. 19)" },
+      { "term": "proselitismo", "meaning": "esforço de converter; vedado no ensino religioso escolar (LDB art. 33)" },
+      { "term": "organização religiosa", "meaning": "pessoa jurídica de direito privado (Código Civil, art. 44 IV)" },
+      { "term": "projeto social", "meaning": "intervenção planejada com público, objetivos, atividades, orçamento e indicadores" },
+      { "term": "TCC / monografia", "meaning": "trabalho de conclusão com problema, método e referências" }
+    ],
+    "tools": ["editor de textos (Letters)", "editor de desenho (Drawings)", "Zotero ou Mendeley", "edições críticas e léxicos das línguas bíblicas", "softwares bíblicos (Logos, Accordance, BibleWorks)", "Portal de Periódicos CAPES e SciELO", "ATLA Religion Database (via instituição)", "planilhas para orçamento de projetos", "ferramentas de videoaula e apresentação"],
+    "deliverables": ["resenha crítica", "artigo ou ensaio acadêmico", "estudo exegético de um texto", "projeto de pesquisa", "plano de aula de ensino religioso não confessional", "projeto social com orçamento e indicadores", "relatório de atividades de capelania (sem identificação)", "roteiro de palestra, formação ou podcast", "procedimento de acolhimento ou voluntariado", "material didático"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Leitura, exegese e hermenêutica de textos", "esco": null, "kind": "nucleo" },
+      { "label": "Pesquisa acadêmica e redação científica (ABNT)", "esco": null, "kind": "nucleo" },
+      { "label": "Conhecimento de tradições religiosas e história das religiões", "esco": null, "kind": "nucleo" },
+      { "label": "Ensino e mediação de conteúdos (docência, formação)", "esco": null, "kind": "nucleo" },
+      { "label": "Escuta e cuidado com sigilo (capelania e aconselhamento)", "esco": null, "kind": "nucleo" },
+      { "label": "Ética, laicidade e respeito à diversidade religiosa", "esco": null, "kind": "nucleo" },
+      { "label": "Comunicação oral (palestra, homilética, aula)", "esco": null, "kind": "apoio" },
+      { "label": "Elaboração e gestão de projetos sociais", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de organizações do terceiro setor", "esco": null, "kind": "apoio" },
+      { "label": "Línguas antigas e modernas", "esco": null, "kind": "apoio" },
+      { "label": "Diálogo inter-religioso e mediação de conflitos", "esco": null, "kind": "apoio" },
+      { "label": "Produção de conteúdo e editoração", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["escuta ativa", "clareza na escrita", "pensamento crítico", "ética e sigilo", "comunicação oral", "trabalho com grupos"],
+    "tracks": [
+      { "id": "pesquisar-e-escrever", "label": "Pesquisar e escrever", "steps": ["resenha crítica de uma obra (X1)", "estudo ou artigo curto com referências (L4)", "projeto de pesquisa (X2)"] },
+      { "id": "ensinar", "label": "Ensinar sem proselitismo", "steps": ["plano de aula de ensino religioso não confessional (X3)", "roteiro de formação de 20 minutos (L5)", "revisão crítica de material didático (L10)"] },
+      { "id": "cuidar-e-gerir", "label": "Cuidar e gerir projetos", "steps": ["POP de acolhimento ou voluntariado (L7)", "diagrama do fluxo de atendimento de capelania (D4)", "projeto social com indicadores (L8)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"professor de ensino religioso\", \"capelão\", \"coordenador de projeto social\", \"pesquisador\", \"auxiliar de ministério\"",
+      "cboFamilies": ["2631", "2321"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez; não preciso saber sua religião nem sua comunidade. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, iniciação científica ou primeiro trabalho na área",
+        "junior": "até dois anos de atuação, com supervisão",
+        "pleno": "conduz aulas, projetos ou atendimento com autonomia",
+        "senior": "referência na área; orienta pessoas ou pesquisas",
+        "gestao": "coordena curso, capelania, organização ou projeto"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na teologia",
+      "options": ["interpretar textos (exegese e hermenêutica)", "pesquisar e escrever academicamente", "ensinar e dar aulas", "falar em público", "escutar e acolher pessoas", "elaborar projetos sociais", "gerir organizações e equipes de voluntários", "ler línguas antigas", "promover diálogo entre tradições", "produzir conteúdo e revisar textos"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; não pergunto sua fé nem a de ninguém, e as tarefas nunca expõem fiéis."
+    },
+    "c4": {
+      "certifications": ["bacharelado em teologia (reconhecido pelo MEC)", "licenciatura em ciências da religião", "curso livre de teologia", "pós-graduação (ciências da religião, capelania, gestão do terceiro setor)", "curso de capelania hospitalar", "mestrado ou doutorado", "curso de elaboração de projetos sociais"],
+      "languages": ["grego", "hebraico", "latim", "inglês", "espanhol", "Libras"],
+      "why": "Formação e idiomas mostram lacunas em relação ao cargo ou edital que você quer; nada aqui é exigido para começar."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["pesquisa e redação acadêmica", "exegese e línguas antigas", "docência e ensino religioso", "comunicação oral", "capelania e escuta", "projetos sociais e captação", "gestão de organizações", "diálogo inter-religioso", "produção de conteúdo"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez do catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que frente você atua ou quer atuar?",
+        "type": "escolha",
+        "options": ["pesquisa e ensino superior", "ensino religioso na escola", "capelania", "ministério em comunidade", "projetos sociais e terceiro setor", "editoração e conteúdo", "ainda não sei"],
+        "why": "Pergunto a frente, e não sua religião, para escolher tarefas e vocabulário: um projeto de pesquisa e um plano de aula são evidências diferentes.",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": true
+  },
+  "guidedTasks": {
+    "priority": ["L6", "L1", "L4", "L3", "L8", "L7", "D4", "L5", "L2", "L10", "L9"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica não é entrega da profissão" },
+      { "code": "D3", "reason": "modelagem 3D não é entrega da profissão" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da profissão" },
+      { "code": "D8", "reason": "vista explodida não é entrega da profissão" },
+      { "code": "D9", "reason": "wireframe de tela não é entrega da profissão" }
+    ],
+    "parameters": {
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva até 600 caracteres com a frente em que atua ou quer atuar, três competências e o link de um trabalho (artigo, resenha, projeto). Sem citar comunidade, fiéis ou pessoas atendidas; declarar a própria tradição é escolha sua e não é pedida.",
+        "parameters": { "maxChars": 600, "requiredParts": ["frente-alvo", "três competências", "um trabalho com link"] },
+        "criteria": ["até 600 caracteres", "nomeia a frente-alvo", "cita três competências", "inclui um trabalho com link", "sem dado de fiéis, comunidade ou pessoas atendidas"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para o cargo ou edital que você quer mirar primeiro, com três resultados com número (turmas, pessoas formadas, projetos entregues, publicações) e as palavras-chave da vaga.",
+        "parameters": { "maxPages": 1, "achievementsWithNumbers": 3, "keywordsFrom": "vaga-alvo" },
+        "criteria": ["uma página", "três resultados com número", "palavras-chave da vaga-alvo presentes", "sem idade, estado civil, foto obrigatória nem dado de fiéis"],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "L4": {
+        "title": "Estudo acadêmico curto com referências",
+        "brief": "Escreva um estudo de até 4 páginas sobre um texto, autor ou tema (exegese de uma passagem, conceito de um autor, fenômeno religioso): objetivo, método, desenvolvimento, limitações e referências em ABNT. Toda citação com fonte verificável.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "método", "desenvolvimento", "limitações", "referências"], "citationStyle": "ABNT NBR 6023 e 10520" },
+        "criteria": ["cinco seções nomeadas", "ao menos cinco referências verificáveis em ABNT", "citações diretas com página", "até 4 páginas", "sem dado de pessoas ou comunidades identificáveis"],
+        "evidence": "relatório",
+        "time": "2 h",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Resenha crítica de uma obra",
+        "competency": "Leitura crítica e redação acadêmica",
+        "criteria": ["referência completa da obra em ABNT", "síntese das teses principais", "avaliação fundamentada com ao menos duas outras referências", "entre 800 e 1.500 palavras", "citações com página"],
+        "evidence": "artigo",
+        "time": "90 min",
+        "trigger": "Quer resenhar uma obra que marcou sua formação?",
+        "level": 1
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Projeto de pesquisa",
+        "competency": "Pesquisa acadêmica",
+        "criteria": ["tema, problema e justificativa", "objetivos geral e específicos", "referencial teórico com fontes verificáveis", "método e cronograma", "cuidados éticos: pesquisa com pessoas prevê comitê de ética e anonimização"],
+        "evidence": "projeto de pesquisa",
+        "time": "3 h",
+        "trigger": "Tem uma pergunta de pesquisa que gostaria de estruturar?",
+        "level": 3
+      },
+      {
+        "id": "X3",
+        "editor": "letters",
+        "title": "Plano de aula de ensino religioso não confessional",
+        "competency": "Docência sem proselitismo",
+        "criteria": ["habilidade da BNCC de Ensino Religioso indicada", "objetivos e duração", "ao menos duas tradições religiosas ou visões não religiosas abordadas com respeito", "atividade e avaliação", "sem proselitismo nem juízo sobre crenças (LDB art. 33)"],
+        "evidence": "plano de aula",
+        "time": "60 min",
+        "trigger": "Quer montar uma aula de ensino religioso que respeite todas as crenças?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6", "X1"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L8", "L9", "X2", "X3"], "auto": true },
+      { "id": "referencias-abnt", "check": "as referências seguem ABNT e as citações diretas têm página", "appliesTo": ["L4", "X1", "X2"], "auto": true },
+      { "id": "passos-com-responsavel", "check": "cada passo tem número, responsável e critério de conclusão", "appliesTo": ["L7"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim e nenhuma etapa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "habilidade-bncc", "check": "o plano indica a habilidade da BNCC de Ensino Religioso", "appliesTo": ["X3"], "auto": true },
+      { "id": "sem-dado-religioso-de-terceiros", "check": "a pessoa declarou que não há dado de fiéis, aconselhamento ou convicção religiosa de terceiros identificável", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D4", "X1", "X2", "X3"], "auto": true },
+      { "id": "palavras-chave-do-alvo", "check": "as palavras-chave da vaga-alvo aparecem no texto", "appliesTo": ["L1", "L2"], "auto": true },
+      { "id": "fontes-verificaveis", "check": "as citações e referências existem e conferem com a obra", "appliesTo": ["L4", "X1", "X2"], "auto": false }
+    ],
+    "subjective": [
+      { "id": "rigor-argumentativo", "label": "Rigor argumentativo", "levels": { "aproxima": "afirmações sem fundamentação", "atende": "argumentos apoiados em fontes e método", "supera": "dialoga com posições contrárias e explicita limites" } },
+      { "id": "respeito-a-diversidade", "label": "Respeito à diversidade religiosa", "levels": { "aproxima": "linguagem que desqualifica outras crenças", "atende": "trata as tradições com precisão e respeito", "supera": "promove compreensão mútua com fontes de cada tradição" } },
+      { "id": "clareza", "label": "Clareza para o público", "levels": { "aproxima": "jargão sem explicação", "atende": "o público-alvo entende a ideia principal", "supera": "traduz conceitos complexos com exemplos adequados" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa formada ou em formação em teologia ou ciências da religião, de qualquer tradição ou de nenhuma. Atue com neutralidade confessional: não promova nem critique crenças, não pergunte nem infira a religião da pessoa ou de terceiros, e trate todas as tradições com precisão e respeito. Use o vocabulário acadêmico e profissional (exegese, hermenêutica, teologia sistemática e prática, ciências da religião, capelania, homilética, ensino religioso não confessional, projeto social) e cite, quando couber, a Constituição (art. 5º VI, art. 19, art. 210), a LDB (art. 33), a Resolução CNE/CES 4/2016, a BNCC de Ensino Religioso, a Lei 9.982/2000 e a LGPD. Convicção religiosa e filiação a organização religiosa são dados sensíveis (LGPD art. 5º II): nunca peça, registre ou coloque em portfólio dados de fiéis, comunidades identificáveis, conteúdo de aconselhamento pastoral ou confissões; se a pessoa colar algo assim, oriente a remover ou anonimizar. Não invente citações de textos sagrados, autores ou documentos: toda citação deve ter fonte verificável (obra, edição, página ou referência do texto) e, se não tiver certeza, diga. Não dê orientação espiritual, psicológica ou clínica a terceiros. Pergunte antes de inferir frente de atuação ou senioridade. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por que foi sugerida. Afirmações sobre mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa vaga, ordenação ou salário. Progresso é por critérios atendidos, nunca por pontuação. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "Resolução CNE/CES 4/2016 — DCN do curso de Teologia (ABMES)", "url": "https://abmes.org.br/legislacoes/detalhe/1980/resolucao-cne-ces-n-4", "kind": "norma" },
+      { "title": "LDB — Lei 9.394/1996 (art. 33, ensino religioso)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9394.htm", "kind": "norma" },
+      { "title": "BNCC — Ensino Religioso", "url": "https://basenacionalcomum.mec.gov.br/", "kind": "orgao-publico" },
+      { "title": "Lei 9.982/2000 — assistência religiosa em hospitais e prisões", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9982.htm", "kind": "norma" },
+      { "title": "LGPD — Lei 13.709/2018", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm", "kind": "norma" },
+      { "title": "CBO 2631 — Ministros de culto, missionários, teólogos (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "SOTER — Sociedade de Teologia e Ciências da Religião", "url": "https://www.soter.org.br/", "kind": "comunidade" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2, c5 e x1 (frente de atuação); nunca pergunta religião, comunidade ou filiação." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza L6, L1, L4 (estudo), X1 (resenha), X3 (aula não confessional) e L8 (projeto social); cada card diz competência, evidência e tempo." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); L4 e X2 pedem computador; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa tamanho, seções, formato ABNT, habilidade BNCC e declaração de ausência de dado religioso de terceiros; não julga a argumentação." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Propõe estrutura de resenha, estudo e projeto; não escreve citações sem fonte verificável nem conteúdo proselitista." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Fluxo de atendimento de capelania ou voluntariado (D4), sem nomes de pessoas atendidas." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: síntese com competências declaradas e evidenciadas; nunca infere nem cita a religião da pessoa." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: filosofia, história, pedagogia, serviço social, ciências sociais; sempre com lacunas e passos, sem previsão." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só por opt-in; afinidade por frente de atuação e competências, nunca por tradição religiosa." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil; não acrescenta tradição religiosa que a pessoa não tenha escrito." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai formação e experiências em ficha editável; avisa quando um item revela filiação religiosa e deixa a pessoa decidir se mantém (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "convicção religiosa e dados de fiéis identificáveis", "conteúdo de aconselhamento pastoral e confissões", "dados de alunos menores de idade", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "neutralidade confessional: não promover nem criticar crenças; não perguntar nem inferir religião",
+      "nunca pedir, registrar ou expor em portfólio dados de fiéis, comunidades identificáveis ou aconselhamento",
+      "não inventar citações de textos sagrados, autores ou documentos; toda citação com fonte verificável",
+      "não dar orientação espiritual, psicológica ou clínica a terceiros",
+      "ensino religioso sem proselitismo (LDB art. 33)",
+      "nunca prometer vaga, ordenação ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["diagrama", "infografico"],
+    "lettersTemplates": ["bio", "curriculo", "carta", "artigo", "projeto-de-pesquisa", "plano-de-aula", "relatorio-tecnico", "estudo-de-caso", "proposta", "roteiro", "pop", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular: L5, L6, L10 e resenha em rascunho; L4, X2 e D4 pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em três frases (15 min).",
+        "Que tal resenhar uma obra que marcou sua formação? Comprova leitura crítica e leva cerca de 90 min.",
+        "Sem pressão. Quando quiser retomar, o estudo está salvo onde parou.",
+        "Um plano de aula que respeite todas as crenças mostra preparo para o ensino religioso. Leva cerca de 60 min."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["conteúdo de aconselhamento pastoral e confissões (sigilo)", "convicção religiosa e dados de fiéis identificáveis (LGPD art. 5º, II)", "dados de alunos menores de idade: nomes, notas, laudos e fotos (ECA; LGPD art. 14)", "filiação religiosa da própria pessoa, salvo se ela escolher declarar"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "RAIS (MTE) — vínculos formais por CBO 2631 e 2321", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Novo CAGED (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "Censo da Educação Superior (INEP) — cursos de teologia e ciências da religião", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-da-educacao-superior", "geography": "Brasil e UF", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Mapa das Organizações da Sociedade Civil (Ipea)", "url": "https://mapaosc.ipea.gov.br/", "geography": "Brasil e município", "cadence": "eventual", "kind": "pesquisa" },
+      { "title": "Diários oficiais — editais para professor de ensino religioso e capelão", "url": "https://www.in.gov.br/", "geography": "Brasil, UF e município", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147). Ministério em organização religiosa não é tratado como mercado de trabalho com estatística oficial completa."
+  },
+  "paths": [
+    { "to": "filosofia", "why": "Hermenêutica, ética e metafísica são áreas comuns às duas formações.", "gaps": ["história da filosofia", "lógica", "licenciatura, se o alvo for ensino"], "steps": ["resenha de obra filosófica (X1)", "estudo curto com referências (L4)", "curso de filosofia de universidade pública"] },
+    { "to": "historia", "why": "História das religiões e crítica de fontes aproximam da pesquisa histórica.", "gaps": ["métodos historiográficos", "arquivos e fontes primárias", "licenciatura"], "steps": ["estudo de fonte histórica (L4)", "projeto de pesquisa (X2)", "curso de metodologia histórica"] },
+    { "to": "pedagogia", "why": "Ensino religioso, formação e catequese usam competências docentes.", "gaps": ["didática e avaliação", "BNCC", "licenciatura ou complementação pedagógica"], "steps": ["plano de aula não confessional (X3)", "revisão crítica de material didático (L10)", "curso de BNCC"] },
+    { "to": "servico-social", "why": "Projetos sociais e acolhimento aproximam do serviço social, que exige graduação e registro no CRESS.", "gaps": ["graduação em serviço social e registro no CRESS", "políticas públicas (SUAS)", "instrumentos técnicos"], "steps": ["projeto social com indicadores (L8)", "POP de acolhimento (L7)", "cursos CapacitaSUAS"] },
+    { "to": "ciencias-sociais", "why": "Sociologia e antropologia da religião usam métodos das ciências sociais.", "gaps": ["métodos quantitativos e qualitativos", "teoria social", "ética em pesquisa com pessoas"], "steps": ["projeto de pesquisa com anonimização (X2)", "estudo curto (L4)", "curso de metodologia de pesquisa"] }
+  ],
+  "learning": [
+    { "title": "BNCC — Ensino Religioso", "provider": "MEC", "url": "https://basenacionalcomum.mec.gov.br/", "free": true, "kind": "norma" },
+    { "title": "Cursos de gestão de projetos e terceiro setor", "provider": "Escola Virtual.Gov (Enap)", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "curso" },
+    { "title": "Portal de Periódicos CAPES", "provider": "CAPES", "url": "https://www.periodicos.capes.gov.br/", "free": true, "kind": "portal" },
+    { "title": "SciELO — revistas de teologia e ciências da religião", "provider": "SciELO", "url": "https://www.scielo.br/", "free": true, "kind": "portal" },
+    { "title": "Congressos e publicações da SOTER", "provider": "SOTER", "url": "https://www.soter.org.br/", "free": false, "kind": "comunidade" },
+    { "title": "Cursos de elaboração de projetos sociais", "provider": "Escola Virtual Fundação Bradesco", "url": "https://www.ev.org.br/", "free": true, "kind": "curso" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos — teologia", "url": "contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
+    { "title": "Resolução CNE/CES 4, de 16/09/2016 — DCN de Teologia (PDF ABMES)", "url": "https://abmes.org.br/public/arquivos/legislacoes/Res-CES-CNE-004-2016-09-16.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Parecer CNE/CES 60/2014 — fundamento das DCN de Teologia", "url": "https://www.gov.br/mec/pt-br/cne/pdf/pareceres-do-cne/ces/2014/pces060_14.pdf", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Resolução CNE/CES 4/2016 confirmada por busca (DOU 19/09/2016, não revogada segundo ABMES); conteúdo das diretrizes não lido; há menção a projeto de lei em debate (IHU, 2024) não verificado",
+    "Resolução CNE/CP 5/2018 (licenciatura em Ciências da Religião), Lei 9.982/2000, Lei 14.532/2023, CP art. 154 e CPP art. 207 citados de memória",
+    "Profissão não regulamentada e sem conselho; não há estatística oficial de ministros de culto além da CBO 2631 na RAIS, que cobre só vínculos formais",
+    "URIs ESCO de competências não confirmadas (ec.europa.eu inacessível); todas com esco: null",
+    "URLs de SOTER, BNCC e Mapa das OSC não verificadas nesta sessão"
+  ]
+}

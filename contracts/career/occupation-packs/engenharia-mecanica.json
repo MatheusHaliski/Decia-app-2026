@@ -1,0 +1,327 @@
+{
+  "schemaVersion": 1,
+  "code": "engenharia-mecanica",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Engenharia Mecânica", "en": "Mechanical Engineering", "es": "Ingeniería Mecánica" },
+  "fields": ["engenharia-mecanica"],
+  "family": {
+    "cbo": [{ "code": "2144", "title": "Engenheiros mecânicos e afins" }],
+    "isco08": [{ "code": "2144", "title": "Mechanical engineers" }],
+    "esco": [{ "uri": "http://data.europa.eu/esco/occupation/579254cf-6d69-4889-9000-9c79dc568644", "label": "mechanical engineer" }]
+  },
+  "scope": {
+    "summary": "Projeta, fabrica, monta, opera e mantém máquinas, equipamentos, sistemas térmicos e de fluidos, veículos e estruturas mecânicas: desenho e modelagem 3D, seleção de materiais, cálculo estrutural e térmico, processos de fabricação, manutenção industrial e segurança de máquinas. Profissão regulamentada pela Lei 5.194/1966; registro no CREA e ART para cada serviço técnico.",
+    "entryRoles": ["Estagiário de engenharia mecânica", "Engenheiro mecânico júnior", "Projetista mecânico (CAD)", "Engenheiro de manutenção júnior", "Engenheiro de processos de fabricação júnior"],
+    "midRoles": ["Engenheiro mecânico pleno", "Engenheiro de projetos mecânicos", "Engenheiro de manutenção", "Engenheiro de desenvolvimento de produto", "Engenheiro de processos (usinagem, soldagem, conformação)", "Engenheiro de HVAC / sistemas térmicos"],
+    "seniorRoles": ["Engenheiro mecânico sênior / responsável técnico", "Coordenador de engenharia de produto", "Gerente de manutenção", "Especialista em análise estrutural (CAE)", "Consultor em confiabilidade e integridade de equipamentos"],
+    "sectors": ["indústria metalmecânica e bens de capital", "automotiva e autopeças", "óleo e gás e petroquímica", "aeronáutica e naval", "energia e geração", "mineração e siderurgia", "HVAC e refrigeração", "manutenção industrial e serviços", "consultoria e projetos", "ensino e pesquisa"],
+    "regulation": [
+      { "name": "Lei 5.194/1966", "issuer": "Brasil (CONFEA/CREA)", "about": "regula o exercício da engenharia; registro obrigatório no CREA; responsabilidade técnica" },
+      { "name": "Lei 6.496/1977 e Resolução CONFEA 1.025/2009", "issuer": "Brasil / CONFEA", "about": "Anotação de Responsabilidade Técnica (ART) obrigatória para projeto, fabricação, montagem, inspeção e manutenção" },
+      { "name": "Resolução CONFEA 218/1973, art. 12; Resolução 1.073/2016", "issuer": "CONFEA", "about": "atividades do engenheiro mecânico (processos mecânicos, máquinas, veículos, sistemas térmicos); atribuição de títulos" },
+      { "name": "Resolução CONFEA 1.002/2002", "issuer": "CONFEA", "about": "Código de Ética Profissional: sigilo de projetos e processos, honestidade técnica" },
+      { "name": "NR-12", "issuer": "MTE", "about": "segurança no trabalho em máquinas e equipamentos: proteções, dispositivos de segurança, inventário e manuais" },
+      { "name": "NR-13", "issuer": "MTE", "about": "caldeiras, vasos de pressão, tubulações e tanques metálicos: inspeções, prontuário e profissional habilitado" },
+      { "name": "ABNT NBR 10582, NBR 10067, NBR 8403, NBR ISO 128 e NBR ISO 1101", "issuer": "ABNT", "about": "desenho técnico: folha, representação, linhas, cotagem e tolerâncias geométricas (GD&T)" },
+      { "name": "ABNT NBR ISO 9001:2015", "issuer": "ABNT / ISO", "about": "sistema de gestão da qualidade; base de procedimentos, controle de documentos e não conformidades na indústria" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "desenho de conjunto e de detalhe", "meaning": "desenho que mostra a montagem completa com lista de peças e desenhos individuais de cada componente" },
+      { "term": "vista explodida", "meaning": "representação do conjunto com as peças afastadas ao longo dos eixos de montagem, numeradas" },
+      { "term": "lista de peças (BOM)", "meaning": "bill of materials: item, quantidade, denominação, material e norma de cada componente" },
+      { "term": "tolerância dimensional e geométrica (GD&T)", "meaning": "limites admissíveis de dimensão, forma, orientação e posição; NBR ISO 1101 / ASME Y14.5" },
+      { "term": "ajuste (eixo-furo)", "meaning": "relação entre dimensões de peças acopladas: com folga, incerto ou com interferência; sistema ISO (NBR 6158)" },
+      { "term": "memorial de cálculo", "meaning": "demonstração do dimensionamento: esforços, tensões, fator de segurança, fadiga, seleção de componentes" },
+      { "term": "fator de segurança", "meaning": "razão entre a resistência do material e a tensão de trabalho" },
+      { "term": "fadiga", "meaning": "falha por carregamento cíclico abaixo do limite de escoamento; curvas S-N" },
+      { "term": "elementos de máquinas", "meaning": "parafusos, eixos, mancais, engrenagens, correias, molas, acoplamentos" },
+      { "term": "CAD / CAE / CAM", "meaning": "projeto assistido, análise por elementos finitos (FEA/CFD) e manufatura assistida por computador" },
+      { "term": "processos de fabricação", "meaning": "usinagem, soldagem, fundição, conformação, manufatura aditiva" },
+      { "term": "especificação de procedimento de soldagem (EPS)", "meaning": "documento que define parâmetros de soldagem qualificados" },
+      { "term": "manutenção preventiva, preditiva e corretiva", "meaning": "estratégias de manutenção; preditiva usa vibração, termografia e análise de óleo" },
+      { "term": "MTBF / MTTR", "meaning": "tempo médio entre falhas e tempo médio para reparo; indicadores de confiabilidade e manutenibilidade" },
+      { "term": "FMEA", "meaning": "análise de modos de falha e efeitos: severidade, ocorrência, detecção" },
+      { "term": "apreciação de riscos (NR-12)", "meaning": "identificação de perigos de uma máquina e definição de proteções e dispositivos de segurança" },
+      { "term": "HVAC", "meaning": "aquecimento, ventilação e ar-condicionado; carga térmica e seleção de equipamentos" },
+      { "term": "ART", "meaning": "Anotação de Responsabilidade Técnica no CREA; só o profissional habilitado assina" },
+      { "term": "datasheet / folha de dados", "meaning": "ficha técnica de equipamento com condições de operação e materiais" },
+      { "term": "trem de laminação, redutor, bomba, compressor", "meaning": "equipamentos típicos de projeto e manutenção industrial" }
+    ],
+    "tools": ["SolidWorks", "Autodesk Inventor / Fusion 360", "CATIA / NX / Creo", "AutoCAD", "ANSYS / Abaqus (FEA)", "Simulink / MATLAB", "SAP PM / sistemas de manutenção (CMMS)", "Excel e planilhas de cálculo", "paquímetro, micrômetro, relógio comparador", "analisador de vibração e termovisor", "software de carga térmica (HVAC)", "impressora 3D / CNC"],
+    "deliverables": ["desenho de conjunto com lista de peças", "desenho de detalhe de peça com cotas e tolerâncias", "modelo 3D paramétrico", "vista explodida e manual de montagem", "memorial de cálculo estrutural ou térmico", "relatório de análise por elementos finitos", "plano de manutenção preventiva", "FMEA de equipamento", "apreciação de riscos e adequação à NR-12", "especificação técnica de equipamento", "relatório de inspeção / laudo de integridade", "projeto de HVAC"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Desenho técnico mecânico e modelagem 3D (CAD)", "esco": null, "kind": "nucleo" },
+      { "label": "Resistência dos materiais e dimensionamento de componentes", "esco": null, "kind": "nucleo" },
+      { "label": "Elementos de máquinas e projeto de conjuntos", "esco": null, "kind": "nucleo" },
+      { "label": "Termodinâmica, transferência de calor e mecânica dos fluidos", "esco": null, "kind": "nucleo" },
+      { "label": "Processos de fabricação e seleção de materiais", "esco": null, "kind": "nucleo" },
+      { "label": "Manutenção industrial e confiabilidade", "esco": null, "kind": "nucleo" },
+      { "label": "Segurança de máquinas (NR-12) e vasos de pressão (NR-13)", "esco": null, "kind": "nucleo" },
+      { "label": "Análise por elementos finitos (CAE)", "esco": null, "kind": "nucleo" },
+      { "label": "Tolerâncias dimensionais e geométricas (GD&T) e metrologia", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de projetos de engenharia e custos", "esco": null, "kind": "apoio" },
+      { "label": "Automação e acionamentos (hidráulica, pneumática, elétrica)", "esco": null, "kind": "apoio" },
+      { "label": "Sistemas de gestão da qualidade (ISO 9001)", "esco": null, "kind": "apoio" },
+      { "label": "Manufatura aditiva e prototipagem", "esco": null, "kind": "apoio" },
+      { "label": "HVAC e refrigeração", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação técnica escrita", "trabalho em equipe multidisciplinar", "gestão de prazos e escopo", "ética e responsabilidade técnica", "raciocínio espacial e atenção a detalhes"],
+    "tracks": [
+      { "id": "projeto-de-produto", "label": "Projeto de produto e máquinas", "steps": ["modelo 3D de uma peça com dimensões reais (D3)", "vista explodida de um conjunto com lista de peças (D8)", "detalhe de peça com cotas e tolerâncias (D6)", "memorial de cálculo do componente crítico (L4)"] },
+      { "id": "manutencao-e-confiabilidade", "label": "Manutenção e confiabilidade", "steps": ["POP de manutenção preventiva (L7)", "redesenho antes e depois de uma rotina ou dispositivo (D5)", "infográfico de MTBF/MTTR ou disponibilidade (D7)", "estudo de caso de uma falha resolvida (L3)"] },
+      { "id": "fabricacao-e-processos", "label": "Fabricação e processos", "steps": ["diagrama do fluxo de um processo de fabricação (D4)", "relatório técnico de melhoria de processo (L4)", "POP de setup ou inspeção (L7)"] },
+      { "id": "apresentar-se", "label": "Apresentar-se como engenheiro(a)", "steps": ["bio com frente e softwares (L6)", "currículo direcionado (L1)", "prancha de portfólio com três projetos (D2)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"projetista mecânico\", \"engenheiro de manutenção\", \"técnico em mecânica\", \"inspetor de equipamentos\"",
+      "cboFamilies": ["2144", "3141", "7212", "9113"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já faz em mecânica (projeto, manutenção, fabricação, térmica) e não do zero. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, trainee ou primeiro cargo; ainda sem ART própria",
+        "junior": "até dois anos; projeta e executa sob supervisão de responsável técnico",
+        "pleno": "assina ART dos próprios projetos; atua com autonomia",
+        "senior": "responsável técnico de equipe; revisa projetos, laudos e FMEAs",
+        "gestao": "coordena engenharia de produto, manutenção ou fábrica"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (de peça isolada a conjunto com memorial) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em mecânica",
+      "options": ["modelar peças e conjuntos em 3D", "detalhar desenhos com cotas e tolerâncias", "dimensionar componentes e estruturas", "simular por elementos finitos", "processos de usinagem e soldagem", "manutenção e confiabilidade", "adequação de máquinas à NR-12", "sistemas térmicos e HVAC", "hidráulica e pneumática", "metrologia e inspeção", "gestão de projetos e custos", "prototipagem e impressão 3D", "veículos e powertrain", "vasos de pressão e caldeiras (NR-13)"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com modelos, vistas explodidas e memoriais."
+    },
+    "c4": {
+      "certifications": ["registro no CREA (engenheiro ou tecnólogo)", "certificação CSWA/CSWP (SolidWorks) ou equivalente", "curso NR-12 e NR-13", "inspetor de soldagem (FBTS) ou de equipamentos", "curso de análise de vibração / termografia", "pós-graduação em manutenção, projeto mecânico ou engenharia automotiva", "Green/Black Belt Lean Seis Sigma", "mestrado / doutorado"],
+      "languages": ["inglês técnico (manuais, normas ASME/ISO)", "espanhol", "alemão (indústria automotiva)"],
+      "why": "Formação, registro e certificações de software e inspeção ajudam a ver lacunas em relação ao cargo que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver em mecânica?",
+      "options": ["modelagem 3D avançada e GD&T", "análise por elementos finitos", "projeto de elementos de máquinas", "manutenção preditiva e confiabilidade", "segurança de máquinas (NR-12)", "processos de fabricação e CNC", "HVAC e sistemas térmicos", "manufatura aditiva", "gestão de projetos de engenharia", "inspeção e integridade de equipamentos (NR-13)"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (peça → conjunto → memorial) em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Como está seu registro no CREA?", "type": "escolha", "options": ["ativo", "em andamento", "ainda não tenho", "não se aplica"], "why": "Pergunto porque assinar projeto e ART depende do registro; sem ele, as tarefas ficam como estudo e portfólio, sem simular documento assinável.", "where": "P" },
+      { "id": "x2", "prompt": "Em que frente você atua ou quer atuar?", "type": "lista", "options": ["projeto de produto e máquinas", "manutenção industrial", "fabricação e processos", "térmica, fluidos e HVAC", "automotiva, aeronáutica ou naval", "inspeção e integridade", "ensino e pesquisa"], "why": "Pergunto para priorizar tarefas de modelagem 3D (projeto) ou de procedimento e indicadores (manutenção e processos).", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["D8", "D3", "D6", "L4", "L6", "L1", "L7", "D5", "L3", "D7", "D2", "L9"],
+    "excluded": [
+      { "code": "D9", "reason": "wireframe de tela é entrega de UX, não da engenharia mecânica" },
+      { "code": "D1", "reason": "planta de ambiente é entrega de arquitetura; layout de fábrica entra em D5 ou D4" }
+    ],
+    "parameters": {
+      "D8": {
+        "title": "Vista explodida de um conjunto mecânico com lista de peças",
+        "brief": "Modele ou desenhe a vista explodida de um conjunto com pelo menos 5 componentes (ex.: redutor, bomba, válvula, suporte com mancais), com numeração, linhas de montagem e lista de peças (item, quantidade, denominação, material, norma). Peça própria, didática ou anonimizada; nada de produto de empregador sob sigilo.",
+        "parameters": { "minComponents": 5, "requiredElements": ["numeração dos itens", "linhas de explosão", "lista de peças com material", "carimbo", "escala ou indicação 'sem escala'"], "standards": ["NBR 10582", "NBR 10067", "NBR ISO 128"] },
+        "criteria": ["ao menos 5 componentes numerados", "lista de peças com quantidade, denominação e material", "linhas de explosão coerentes com a montagem", "carimbo preenchido", "declaração de autoria e de que o conjunto não é sigiloso"],
+        "evidence": "modelo GLB + prancha PDF",
+        "time": "2 h",
+        "level": 3
+      },
+      "D3": {
+        "title": "Modelo 3D de uma peça com dimensões reais",
+        "brief": "Modele uma peça (flange, suporte, eixo, carcaça) com dimensões reais, material aplicado e três vistas renderizadas; anexe o desenho 2D com as cotas principais. Serve para mostrar domínio de CAD e leitura de desenho.",
+        "parameters": { "renderedViews": 3, "requiredElements": ["dimensões reais", "material aplicado", "desenho 2D com cotas principais"], "renderMode": "Fotorrealista" },
+        "criteria": ["três vistas renderizadas", "material e acabamento aplicados", "desenho 2D anexo com cotas e unidade", "dimensões coerentes com a função da peça"],
+        "evidence": "modelo GLB + renders PNG + PDF",
+        "time": "3 h",
+        "level": 3
+      },
+      "D6": {
+        "title": "Detalhe de peça com cotas e tolerâncias",
+        "brief": "Desenhe o detalhe de fabricação de uma peça: vistas necessárias, cortes, cotas que fecham, tolerâncias dimensionais e geométricas (NBR ISO 1101), acabamento superficial, material e tratamento. Formato A3 ou A4 com carimbo.",
+        "parameters": { "requiredElements": ["vistas e cortes suficientes", "cotas completas", "tolerâncias dimensionais", "ao menos uma tolerância geométrica", "rugosidade", "material e tratamento", "carimbo"], "standards": ["NBR ISO 1101", "NBR 8403", "NBR 10582"] },
+        "criteria": ["cotas suficientes para fabricar (nenhuma dimensão faltante)", "tolerâncias dimensionais e ao menos uma geométrica", "material, tratamento e rugosidade indicados", "carimbo com escala e unidade", "simbologia de linhas e cortes normalizada"],
+        "evidence": "prancha PDF/SVG de detalhe",
+        "time": "90 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Memorial de cálculo de um componente",
+        "brief": "Escreva um relatório técnico curto com o dimensionamento de um componente (eixo, parafuso, viga, mola, trocador): objetivo, premissas e cargas, método e normas, resultados (tensões, fator de segurança, vida em fadiga), limitações e referências. Até 4 páginas. É estudo para portfólio, não documento assinável.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "premissas e cargas", "método e critérios", "resultados", "limitações", "referências"], "mustReport": ["tensão de trabalho", "fator de segurança", "material e propriedade usada"] },
+        "criteria": ["seis seções nomeadas", "cargas e hipóteses explícitas", "fator de segurança e material informados", "até 4 páginas", "aviso de que não substitui projeto com ART"],
+        "evidence": "relatório PDF versionado",
+        "time": "2 h",
+        "level": 3
+      },
+      "L6": {
+        "title": "Resumo de perfil em engenharia mecânica",
+        "brief": "Escreva até 600 caracteres com sua frente (projeto, manutenção, fabricação, térmica), três competências e uma prova com link (modelo 3D, vista explodida, memorial). Sem dados pessoais além do nome.",
+        "parameters": { "maxChars": 600, "requiredParts": ["frente de atuação", "três competências", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia a frente de atuação", "cita três competências", "inclui uma prova com link"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L7": {
+        "title": "POP de manutenção preventiva ou setup",
+        "brief": "Escreva um procedimento de uma intervenção que você domina (ex.: inspeção de redutor, troca de rolamento, setup de máquina) com passos numerados, responsável, ferramentas, bloqueio de energias (NR-12), torque ou folga especificados e critério de conclusão por passo.",
+        "parameters": { "requiredElements": ["passos numerados", "responsável por passo", "ferramentas e EPI", "bloqueio de energias", "valores de referência (torque, folga, nível)", "critério de conclusão por passo"] },
+        "criteria": ["passos numerados com responsável", "bloqueio e etiquetagem de energias antes da intervenção", "valores de referência informados", "critério de conclusão em cada passo"],
+        "evidence": "POP em modelo",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "FMEA de um equipamento ou componente",
+        "competency": "Manutenção industrial e confiabilidade",
+        "criteria": ["ao menos 5 modos de falha com efeito e causa", "severidade, ocorrência e detecção pontuadas com escala declarada", "ação recomendada e responsável por item crítico", "equipamento didático ou anonimizado"],
+        "evidence": "tabela FMEA em documento",
+        "time": "90 min",
+        "trigger": "Quer mostrar como analisa falhas antes que aconteçam?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "carimbo-e-escala", "check": "a prancha tem carimbo preenchido com escala (ou 'sem escala') e unidade", "appliesTo": ["D3", "D6", "D8", "D2"], "auto": true },
+      { "id": "lista-de-pecas", "check": "existe lista de peças com item, quantidade, denominação e material", "appliesTo": ["D8"], "auto": true },
+      { "id": "componentes-numerados", "check": "a vista explodida tem ao menos 5 componentes numerados", "appliesTo": ["D8"], "auto": true },
+      { "id": "tolerancias-presentes", "check": "o detalhe traz tolerâncias dimensionais e ao menos uma geométrica", "appliesTo": ["D6"], "auto": true },
+      { "id": "tres-vistas-renderizadas", "check": "há três vistas renderizadas e um desenho 2D anexo", "appliesTo": ["D3"], "auto": true },
+      { "id": "secoes-do-memorial", "check": "as seções objetivo, método, resultados, limitações e referências existem e estão nomeadas", "appliesTo": ["L4", "L3", "L9"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas, palavras ou caracteres", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "aviso-nao-assinavel", "check": "o documento declara que é estudo de portfólio e não substitui projeto ou laudo com ART", "appliesTo": ["L4", "D6", "D8", "X1"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e que a peça ou o processo não é segredo industrial nem dado de cliente", "appliesTo": ["D3", "D6", "D8", "D5", "D7", "L3", "L4", "L7", "D4", "D2", "X1"], "auto": true },
+      { "id": "passos-com-responsavel", "check": "cada passo do POP tem responsável e critério de conclusão", "appliesTo": ["L7"], "auto": true },
+      { "id": "cotas-que-fecham", "check": "as cotas permitem fabricar a peça sem dimensão faltante e sem redundância contraditória", "appliesTo": ["D6"], "auto": false }
+    ],
+    "subjective": [
+      { "id": "rigor-tecnico", "label": "Rigor técnico", "levels": { "aproxima": "hipóteses implícitas, fator de segurança sem justificativa", "atende": "hipóteses, cargas e critérios explícitos e coerentes com a norma", "supera": "discute alternativas de material e geometria e o efeito na segurança e no custo" } },
+      { "id": "fabricabilidade", "label": "Fabricabilidade e montagem", "levels": { "aproxima": "peça ou conjunto difícil de fabricar ou montar como desenhado", "atende": "processo de fabricação e sequência de montagem viáveis", "supera": "projeto simplifica fabricação, montagem e manutenção de forma explícita" } },
+      { "id": "legibilidade-do-desenho", "label": "Legibilidade do desenho", "levels": { "aproxima": "vistas insuficientes ou cotas confusas", "atende": "vistas, cortes e cotas organizados segundo a norma", "supera": "quem lê entende função e fabricação sem perguntar" } },
+      { "id": "resultado", "label": "Resultado demonstrado", "levels": { "aproxima": "descreve atividades, sem resultado", "atende": "mostra um resultado mensurável (disponibilidade, custo, massa, prazo)", "supera": "resultado, contexto, limitações e o que faria diferente" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa da Engenharia Mecânica (projeto de máquinas e produto, manutenção, fabricação, térmica e fluidos, automotiva, naval, aeronáutica; CBO 2144). Use o vocabulário da área: desenho de conjunto e de detalhe, vista explodida, lista de peças (BOM), tolerâncias dimensionais e geométricas (GD&T), ajuste, memorial de cálculo, fator de segurança, fadiga, elementos de máquinas, CAD/CAE/CAM, FMEA, MTBF/MTTR, apreciação de riscos. Cite normas pelo nome quando couber: NBR 10582/10067/8403 e NBR ISO 128 (desenho técnico), NBR ISO 1101 (GD&T), NBR 6158 (ajustes), NR-12 (máquinas), NR-13 (vasos de pressão e caldeiras), NBR ISO 9001, Lei 5.194/1966 e Resolução CONFEA 1.002/2002 (ética). O que nunca fazer: não produza nem apresente como pronto um projeto, memorial, laudo de integridade, apreciação de riscos NR-12 ou ART assináveis; tudo que a IA gera é estudo de portfólio e exercício, e a responsabilidade técnica é sempre do profissional registrado no CREA. Não valide dimensionamento de equipamento real para terceiros nem oriente intervenção em máquina sem bloqueio de energias; remeta à NR-12 e ao profissional habilitado. Não use nem peça desenhos de peças, processos ou dados de clientes e empregadores sob sigilo (segredo industrial); proponha peças didáticas, próprias ou anonimizadas. Pergunte antes de inferir frente de atuação, nível ou registro. Toda sugestão de tarefa diz a competência que comprova, a evidência, o tempo e o porquê, e aceita \"não me serve\". Dados de mercado só com fonte, data e região (CAGED, RAIS, CONFEA, ABIMAQ) ou \"estimativa\"; nunca prometa emprego nem fale de salário. Progresso é por critérios atendidos; a pré-checagem cobre só critérios objetivos (carimbo, lista de peças, numeração, tolerâncias, seções, aviso de não assinável) e o selo depende de revisão humana.",
+    "citeSources": [
+      { "title": "CONFEA — Normativos (Lei 5.194/1966, Resoluções 218/1973, 1.002/2002, 1.025/2009, 1.073/2016)", "url": "https://normativos.confea.org.br/", "kind": "conselho" },
+      { "title": "MTE — Normas Regulamentadoras vigentes (NR-12, NR-13)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadoras/normas-regulamentadoras-vigentes", "kind": "norma" },
+      { "title": "MTE — NR-12 atualizada 2023 (texto consolidado)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/NR12atualizada2023.pdf", "kind": "norma" },
+      { "title": "Catálogo ABNT (NBR 10582, NBR 10067, NBR 8403, NBR ISO 1101, NBR 6158, NBR ISO 9001)", "url": "https://www.abntcatalogo.com.br/", "kind": "norma" },
+      { "title": "CBO — família 2144 Engenheiros mecânicos e afins (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "ESCO — mechanical engineer", "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http%3A%2F%2Fdata.europa.eu%2Fesco%2Foccupation%2F579254cf-6d69-4889-9000-9c79dc568644", "kind": "referencia" },
+      { "title": "Novo CAGED — MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" },
+      { "title": "ABIMAQ — Manual de instruções NR-12 e indicadores da indústria de máquinas", "url": "https://abimaq.org.br/", "kind": "comunidade" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2/c5 com competências de mecânica e as extras x1 (registro CREA) e x2 (frente de atuação)." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza D8 vista explodida, D3 modelo 3D e D6 detalhe; x2 manutenção → L7, D5, D7 primeiro; cada card diz competência, evidência, tempo e porquê." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "D3 e D8 só com computador e em semanas com 4 h ou mais (d1, d4)." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa carimbo, lista de peças, numeração, tolerâncias presentes, vistas renderizadas, seções e aviso de não assinável; cotas que fecham e fabricabilidade ficam para revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de memorial, POP e FMEA com seções da área; nunca gera texto apresentado como laudo ou projeto assinável." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Sugere vistas, cortes, organização da lista de peças e simbologia de tolerância; não dimensiona nem valida a peça." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese por competências de mecânica declaradas e evidenciadas (modelo, explodida, memorial, POP); cita o campo de cada afirmação." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: produção, controle e automação, elétrica, civil, segurança do trabalho; sempre com lacunas e passos, sem previsão." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por CBO 2144, ESCO mechanical engineer e competências compartilhadas; só pessoas com opt-in." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\"." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com frente de atuação, softwares e provas; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, softwares CAD/CAE e certificações em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "desenhos e projetos de peças sob NDA", "segredos industriais e processos proprietários", "dados de clientes de manutenção", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca produzir ou apresentar projeto, memorial, laudo, apreciação de riscos ou ART como documento assinável; tudo é estudo de portfólio",
+      "não validar dimensionamento de equipamento real para terceiros nem orientar intervenção em máquina sem bloqueio de energias; remeter à NR-12 e ao profissional habilitado",
+      "não usar nem pedir desenhos, processos ou dados de empregadores e clientes sob sigilo; propor peças didáticas ou anonimizadas",
+      "perguntar em vez de inferir frente de atuação, nível ou registro no CREA",
+      "mercado com fonte, data e região ou \"estimativa\"; sem promessa de emprego e sem salário",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "media", "drawings": "alta" },
+    "drawingsModes": ["3d", "2d-tecnico", "prancha", "diagrama", "infografico"],
+    "lettersTemplates": ["relatorio-tecnico", "memorial", "pop", "curriculo", "bio", "estudo-de-caso", "carta", "plano-30-60-90", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "D3 e D8 (modelagem 3D) exigem computador; D6 e L4 pedem computador; no celular ficam L6, L5, L10 e a revisão de POP.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: a vista explodida de um conjunto com 5 peças e lista de materiais (2 h). Comprova projeto de conjuntos.",
+        "Tem 15 min? Escreva sua bio com a frente em que atua e um link para um modelo seu.",
+        "Sem pressão. Quando quiser retomar, o POP de manutenção preventiva (60 min) está aqui.",
+        "Seu detalhe de peça atendeu 4 de 5 critérios objetivos; falta uma tolerância geométrica. O selo depende de revisão humana."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "esco", "competencias", "setor"] },
+    "privacy": { "sensitiveData": ["projetos e desenhos de peças sob NDA", "segredos industriais e processos proprietários", "dados de clientes de manutenção", "número da ART e laudos com dados de terceiros"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2144", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "PNAD Contínua (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html", "geography": "Brasil e UF", "cadence": "trimestral", "kind": "estatistica-oficial" },
+      { "title": "CONFEA — Estatísticas do Sistema Confea/Crea (profissionais registrados por modalidade e UF)", "url": "https://www.confea.org.br/", "geography": "Brasil e UF", "cadence": "continua", "kind": "conselho" },
+      { "title": "ABIMAQ — indicadores conjunturais da indústria de máquinas e equipamentos", "url": "https://abimaq.org.br/", "geography": "Brasil", "cadence": "mensal", "kind": "associacao" },
+      { "title": "ANFAVEA — Anuário e estatísticas da indústria automotiva", "url": "https://anfavea.com.br/", "geography": "Brasil", "cadence": "mensal", "kind": "associacao" },
+      { "title": "PIM-PF — Pesquisa Industrial Mensal (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/economicas/industria/9294-pesquisa-industrial-mensal-producao-fisica-brasil.html", "geography": "Brasil e UF", "cadence": "mensal", "kind": "estatistica-oficial" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis (CAGED, RAIS, CONFEA, ABIMAQ, ANFAVEA, IBGE); sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "engenharia-de-producao", "why": "Processos de fabricação, manutenção e layout já são metade da produção; faltam ferramentas de gestão e qualidade.", "gaps": ["PCP e gestão de operações", "Lean e Seis Sigma", "custos industriais e indicadores (OEE)"], "steps": ["diagrama de um fluxo de fabricação que você melhorou (D4)", "antes e depois de uma célula ou rotina (D5)", "curso de Lean ou Green Belt"] },
+    { "to": "engenharia-de-controle-e-automacao", "why": "Hidráulica, pneumática e acionamentos abrem caminho para mecatrônica e automação de máquinas.", "gaps": ["programação de CLP e IHM", "sensores e instrumentação", "segurança funcional de máquinas (ISO 13849)"], "steps": ["curso de CLP e pneumática industrial", "esquema de controle de uma máquina com lista de E/S (D6)", "estudo de caso de uma automação (L3)"] },
+    { "to": "engenharia-eletrica", "why": "Manutenção eletromecânica e motores elétricos compartilham chão de fábrica e normas de segurança.", "gaps": ["circuitos e máquinas elétricas", "NBR 5410 e NR-10", "comandos elétricos e inversores"], "steps": ["curso NR-10 e comandos elétricos", "POP de intervenção eletromecânica (L7)", "unifilar de um painel de máquina (D6)"] },
+    { "to": "engenharia-civil", "why": "Estruturas metálicas, instalações mecânicas prediais (HVAC, elevadores) e obras industriais cruzam as duas áreas.", "gaps": ["estruturas de concreto e aço (NBR 8800, NBR 6118)", "orçamento e planejamento de obra", "projeto predial e compatibilização"], "steps": ["detalhe de ligação metálica (D6)", "relatório técnico de um projeto de HVAC (L4)", "curso de estruturas metálicas"] },
+    { "to": "seguranca-do-trabalho", "why": "A experiência com NR-12, NR-13 e apreciação de riscos é valorizada na engenharia de segurança.", "gaps": ["especialização em Engenharia de Segurança do Trabalho (Lei 7.410/1985)", "demais NRs e gestão de SST (PGR)", "higiene ocupacional"], "steps": ["especialização reconhecida", "POP com análise de risco (L7)", "relatório de adequação NR-12 anonimizado (L4)"] }
+  ],
+  "learning": [
+    { "title": "Cursos gratuitos a distância do SENAI (mecânica, manutenção, metrologia, desenho)", "provider": "SENAI", "url": "https://www.senai.br/", "free": true, "kind": "portal" },
+    { "title": "ABIMAQ — Manual de instruções para aplicação da NR-12", "provider": "ABIMAQ", "url": "https://abimaq.org.br//wp-content/uploads/2024/02/2024020617245001707510565.pdf", "free": true, "kind": "norma" },
+    { "title": "NR-12 — Segurança no trabalho em máquinas e equipamentos (texto oficial)", "provider": "MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/NR12atualizada2023.pdf", "free": true, "kind": "norma" },
+    { "title": "e-Aulas USP — Resistência dos Materiais, Elementos de Máquinas, Termodinâmica", "provider": "USP", "url": "https://eaulas.usp.br/", "free": true, "kind": "curso" },
+    { "title": "Escola Virtual.Gov — gestão de projetos e qualidade", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Fusion 360 e Onshape — licenças gratuitas para uso pessoal/educacional", "provider": "Autodesk / PTC", "url": "https://www.autodesk.com/br/products/fusion-360/personal", "free": true, "kind": "portal" },
+    { "title": "Projeto de Engenharia Mecânica (Shigley)", "provider": "Bookman / Grupo A", "url": "https://www.grupoa.com.br/", "free": false, "kind": "livro" },
+    { "title": "ABNT NBR ISO 1101 — Tolerâncias geométricas (norma paga)", "provider": "ABNT", "url": "https://www.abntcatalogo.com.br/", "free": false, "kind": "norma" },
+    { "title": "ABRAMAN — Associação Brasileira de Manutenção e Gestão de Ativos", "provider": "ABRAMAN", "url": "https://www.abraman.org.br/", "free": false, "kind": "comunidade" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "ESCO — mechanical engineer 579254cf-6d69-4889-9000-9c79dc568644 (URI herdada da fase 1)", "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http%3A%2F%2Fdata.europa.eu%2Fesco%2Foccupation%2F579254cf-6d69-4889-9000-9c79dc568644", "accessedAt": "2026-11-02" },
+    { "title": "CBO (espelho VRI Consulting) — 2144-05 engenheiro mecânico, família 2144", "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=214405", "accessedAt": "2026-11-02" },
+    { "title": "Resolução CONFEA 218/1973 (cópia UFMG)", "url": "https://controle.eng.ufmg.br/wp-content/uploads/2018/10/Resolução_CONFEA_218_1973.pdf", "accessedAt": "2026-11-02" },
+    { "title": "CONFEA — Manual CEAP (resoluções por título continuam válidas; Resolução 1.073/2016)", "url": "https://confea.org.br/midias/uploads-imce/Manual_Ceap.pdf", "accessedAt": "2026-11-02" },
+    { "title": "CONFEA — Estatísticas do Sistema disponíveis", "url": "https://www.confea.org.br/node/116116", "accessedAt": "2026-11-02" },
+    { "title": "MTE — NR-12 atualizada 2023 (PDF)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/NR12atualizada2023.pdf", "accessedAt": "2026-11-02" },
+    { "title": "COAD — Portaria MTE 224/2024 adia disposições da NR-12 para 2-1-2025", "url": "https://www.coad.com.br/home/noticias-detalhe/124456/mte-altera-portaria-para-estabelecer-novo-prazo-de-vigencia-das-disposicoes-da-nr-12", "accessedAt": "2026-11-02" },
+    { "title": "ABIMAQ — Manual NR-12 (2024)", "url": "https://abimaq.org.br//wp-content/uploads/2024/02/2024020617245001707510565.pdf", "accessedAt": "2026-11-02" },
+    { "title": "UFABC — Normas de apresentação (NBR 10582)", "url": "https://www.ufabc.edu.br/images/licitacoes/rdc-02-2016/normas-de-apresentacao.pdf", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Rede da sessão bloqueia esco.ec.europa.eu e confea.org.br: URI ESCO de mechanical engineer herdada da fase 1 (conferida só em resultado de busca); estatísticas do CONFEA (mecânica/metalúrgica 169.928 registrados em 2020) vistas em notícia de terceiros.",
+    "Resolução CONFEA 218/1973 art. 12 (engenheiro mecânico) citado de memória; texto não lido nesta sessão. Resoluções 1.002/2002 e 1.025/2009 e Lei 6.496/1977 também de memória.",
+    "NR-13, NBR ISO 128, NBR ISO 1101, NBR 6158, NBR 10067 e NBR 8403: números e títulos de memória, não conferidos no catálogo ABNT/MTE nesta sessão.",
+    "Famílias CBO 3141, 7212 e 9113 em questions.a4.cboFamilies não conferidas no portal da CBO.",
+    "URLs de aprendizagem e associações (SENAI, e-Aulas USP, Autodesk Fusion pessoal, Grupo A, ABRAMAN, ANFAVEA, PIM-PF) não verificadas nesta sessão; gratuidade do Fusion 360 pessoal depende de termos vigentes da Autodesk.",
+    "Vocabulário, competências, tarefas e rubrica vêm do conhecimento da profissão, não de fonte primária."
+  ]
+}

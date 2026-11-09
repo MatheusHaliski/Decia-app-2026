@@ -48,6 +48,7 @@ Mapa de equivalência FAI → Work Station (card "Mapa de equivalência"): Taref
 | role | `Role` | USER · ADMIN |
 | status | `AccountStatus` | PENDING_EMAIL_VERIFICATION · PENDING_VALIDATION (EMPRESA/CHEFE aguardam ADMIN, RF28.CA01) · ACTIVE · SUSPENDED · DELETION_SCHEDULED |
 | jobTitle (cargo) | String(120) | RF19 cabeçalho |
+| preferredOccupationCode / preferredOccupationLabel / preferredOccupationVisible | String(20) · String(120) · boolean | **(proposta, RF75.CA19)** profissão preferida (CBO/ESCO) que dá escopo ao Guia de Carreira e à Análise de Perfil (RF50); opcional; privada por padrão (`Visible` falso); não é sinal de busca de emprego (D-147) |
 | companyId | UUID → Company | empresa atual |
 | departmentId | UUID → Department | lotação atual (1 por vez, RF28.CA02) |
 | avatarUrl, coverUrl, bio | String | |

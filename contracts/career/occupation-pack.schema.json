@@ -1,0 +1,477 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "contracts/career/occupation-pack.schema.json",
+  "title": "OccupationPack — pacote de domínio por família de ocupação (RF75.CA19)",
+  "description": "O que a profissão preferida (User.preferredOccupation) carrega para o Guia de Carreira (RF75) e a Análise de Perfil (RF50): escopo, vocabulário, competências, variantes das perguntas do guia (GUIA_DE_CARREIRA §4), tarefas-guia L1–L10/D1–D10 parametrizadas (§7), rubrica e pré-checagem, contexto e serviços da IA (RF43 capabilities, RF51 modos), configurações do Work Station, fontes de mercado (RF50.CA07), caminhos vizinhos e recursos de aprendizagem. Um pacote por família; `fields` lista os ramos do catálogo que ele serve; `generico` é o fallback. Dado versionado, não código.",
+  "type": "object",
+  "required": ["schemaVersion", "code", "version", "status", "generatedAt", "label", "fields", "family", "scope", "vocabulary", "competencies", "questions", "guidedTasks", "rubric", "ai", "system", "market", "paths", "learning", "sources", "naoConferido"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "code": { "$ref": "#/$defs/slug" },
+    "version": { "type": "string", "pattern": "^\\d{4}\\.\\d{2}\\.\\d+$" },
+    "status": { "enum": ["pesquisa", "revisado", "ativo"] },
+    "generatedAt": { "$ref": "#/$defs/date" },
+    "label": { "$ref": "#/$defs/label" },
+    "fields": { "type": "array", "maxItems": 12, "uniqueItems": true, "items": { "$ref": "#/$defs/slug" }, "description": "códigos do catálogo de ramos servidos por este pacote; vazio só no genérico" },
+    "family": {
+      "type": "object",
+      "required": ["cbo", "isco08", "esco"],
+      "additionalProperties": false,
+      "properties": {
+        "cbo": { "type": "array", "maxItems": 8, "items": { "$ref": "#/$defs/coded" } },
+        "isco08": { "type": "array", "maxItems": 6, "items": { "$ref": "#/$defs/coded" } },
+        "esco": { "type": "array", "maxItems": 6, "items": { "$ref": "#/$defs/esco" } }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "required": ["summary", "entryRoles", "midRoles", "seniorRoles", "sectors", "regulation"],
+      "additionalProperties": false,
+      "properties": {
+        "summary": { "type": "string", "minLength": 40, "maxLength": 500 },
+        "entryRoles": { "type": "array", "minItems": 1, "maxItems": 8, "items": { "$ref": "#/$defs/shortText" } },
+        "midRoles": { "type": "array", "minItems": 1, "maxItems": 8, "items": { "$ref": "#/$defs/shortText" } },
+        "seniorRoles": { "type": "array", "minItems": 1, "maxItems": 8, "items": { "$ref": "#/$defs/shortText" } },
+        "sectors": { "type": "array", "minItems": 2, "maxItems": 12, "items": { "$ref": "#/$defs/shortText" } },
+        "regulation": { "type": "array", "maxItems": 12, "items": { "$ref": "#/$defs/regulation" } }
+      }
+    },
+    "vocabulary": {
+      "type": "object",
+      "required": ["terms", "tools", "deliverables"],
+      "additionalProperties": false,
+      "properties": {
+        "terms": { "type": "array", "minItems": 8, "maxItems": 40, "items": { "$ref": "#/$defs/term" } },
+        "tools": { "type": "array", "minItems": 2, "maxItems": 30, "items": { "$ref": "#/$defs/shortText" } },
+        "deliverables": { "type": "array", "minItems": 3, "maxItems": 25, "items": { "$ref": "#/$defs/shortText" } }
+      }
+    },
+    "competencies": {
+      "type": "object",
+      "required": ["core", "transversal", "tracks"],
+      "additionalProperties": false,
+      "properties": {
+        "core": { "type": "array", "minItems": 6, "maxItems": 20, "items": { "$ref": "#/$defs/competency" } },
+        "transversal": { "type": "array", "minItems": 3, "maxItems": 10, "items": { "$ref": "#/$defs/shortText" } },
+        "tracks": { "type": "array", "minItems": 2, "maxItems": 8, "items": { "$ref": "#/$defs/track" } }
+      }
+    },
+    "questions": {
+      "type": "object",
+      "required": ["c2", "c5", "extra", "interestTestWhenUnknown"],
+      "additionalProperties": false,
+      "properties": {
+        "a4": { "$ref": "#/$defs/a4Question" },
+        "b9": { "$ref": "#/$defs/b9Question" },
+        "c2": { "$ref": "#/$defs/optionsQuestion" },
+        "c4": { "$ref": "#/$defs/c4Question" },
+        "c5": { "$ref": "#/$defs/optionsQuestion" },
+        "extra": { "type": "array", "maxItems": 4, "items": { "$ref": "#/$defs/extraQuestion" } },
+        "interestTestWhenUnknown": { "type": "boolean", "description": "oferece o teste de interesses (b2) quando a pessoa não sabe a área" }
+      }
+    },
+    "guidedTasks": {
+      "type": "object",
+      "required": ["priority", "excluded", "parameters", "custom"],
+      "additionalProperties": false,
+      "properties": {
+        "priority": { "type": "array", "minItems": 5, "maxItems": 12, "uniqueItems": true, "items": { "$ref": "#/$defs/taskCode" } },
+        "excluded": { "type": "array", "maxItems": 10, "items": { "$ref": "#/$defs/excludedTask" } },
+        "parameters": {
+          "type": "object",
+          "minProperties": 3,
+          "additionalProperties": false,
+          "patternProperties": { "^(L|D)(10|[1-9])$": { "$ref": "#/$defs/taskParams" } }
+        },
+        "custom": { "type": "array", "maxItems": 4, "items": { "$ref": "#/$defs/customTask" } }
+      }
+    },
+    "rubric": {
+      "type": "object",
+      "required": ["objective", "subjective"],
+      "additionalProperties": false,
+      "properties": {
+        "objective": { "type": "array", "minItems": 4, "maxItems": 14, "items": { "$ref": "#/$defs/objectiveCriterion" } },
+        "subjective": { "type": "array", "minItems": 2, "maxItems": 6, "items": { "$ref": "#/$defs/subjectiveCriterion" } }
+      }
+    },
+    "ai": {
+      "type": "object",
+      "required": ["contextSnippet", "citeSources", "services", "dataScope", "provider", "guardrails"],
+      "additionalProperties": false,
+      "properties": {
+        "contextSnippet": { "type": "string", "minLength": 400, "maxLength": 2000, "description": "trecho em pt-BR acrescentado ao prompt base (composição = base + pacote)" },
+        "citeSources": { "type": "array", "minItems": 3, "maxItems": 12, "items": { "$ref": "#/$defs/citeSource" } },
+        "services": { "type": "array", "minItems": 4, "maxItems": 12, "items": { "$ref": "#/$defs/service" } },
+        "dataScope": {
+          "type": "object",
+          "required": ["default", "optional", "never"],
+          "additionalProperties": false,
+          "properties": {
+            "default": { "type": "array", "minItems": 1, "maxItems": 6, "items": { "$ref": "#/$defs/shortText" } },
+            "optional": { "type": "array", "maxItems": 6, "items": { "$ref": "#/$defs/shortText" } },
+            "never": { "type": "array", "minItems": 1, "maxItems": 8, "items": { "$ref": "#/$defs/shortText" } }
+          }
+        },
+        "provider": {
+          "type": "object",
+          "required": ["default", "externalNeedsConsent", "externalAllowedFor"],
+          "additionalProperties": false,
+          "properties": {
+            "default": { "enum": ["local", "externo"] },
+            "externalNeedsConsent": { "const": true },
+            "externalAllowedFor": { "type": "array", "maxItems": 12, "uniqueItems": true, "items": { "$ref": "#/$defs/serviceId" } }
+          }
+        },
+        "guardrails": { "type": "array", "minItems": 4, "maxItems": 10, "items": { "$ref": "#/$defs/text" } }
+      }
+    },
+    "system": {
+      "type": "object",
+      "required": ["editors", "drawingsModes", "lettersTemplates", "defaultAutonomy", "deviceNotes", "nudges", "insights", "privacy"],
+      "additionalProperties": false,
+      "properties": {
+        "editors": {
+          "type": "object",
+          "required": ["letters", "drawings"],
+          "additionalProperties": false,
+          "properties": {
+            "letters": { "$ref": "#/$defs/relevance" },
+            "drawings": { "$ref": "#/$defs/relevance" }
+          }
+        },
+        "drawingsModes": { "type": "array", "minItems": 1, "maxItems": 6, "uniqueItems": true, "items": { "$ref": "#/$defs/drawingsMode" } },
+        "lettersTemplates": { "type": "array", "minItems": 1, "maxItems": 12, "uniqueItems": true, "items": { "$ref": "#/$defs/lettersTemplate" } },
+        "defaultAutonomy": { "$ref": "#/$defs/autonomyMode" },
+        "deviceNotes": { "$ref": "#/$defs/shortText" },
+        "nudges": {
+          "type": "object",
+          "required": ["cadence", "examples"],
+          "additionalProperties": false,
+          "properties": {
+            "cadence": { "enum": ["diaria", "semanal"] },
+            "examples": { "type": "array", "minItems": 2, "maxItems": 6, "items": { "$ref": "#/$defs/text" } }
+          }
+        },
+        "insights": {
+          "type": "object",
+          "required": ["peersBy"],
+          "additionalProperties": false,
+          "properties": {
+            "peersBy": { "type": "array", "minItems": 1, "maxItems": 4, "uniqueItems": true, "items": { "enum": ["cbo", "esco", "competencias", "setor"] } }
+          }
+        },
+        "privacy": {
+          "type": "object",
+          "required": ["sensitiveData", "publicByDefault"],
+          "additionalProperties": false,
+          "properties": {
+            "sensitiveData": { "type": "array", "maxItems": 10, "items": { "$ref": "#/$defs/shortText" } },
+            "publicByDefault": { "const": false }
+          }
+        }
+      }
+    },
+    "market": {
+      "type": "object",
+      "required": ["sources", "claimsPolicy"],
+      "additionalProperties": false,
+      "properties": {
+        "sources": { "type": "array", "minItems": 2, "maxItems": 8, "items": { "$ref": "#/$defs/marketSource" } },
+        "claimsPolicy": { "type": "string", "minLength": 40, "maxLength": 600 }
+      }
+    },
+    "paths": { "type": "array", "maxItems": 8, "items": { "$ref": "#/$defs/path" } },
+    "learning": { "type": "array", "minItems": 3, "maxItems": 12, "items": { "$ref": "#/$defs/learning" } },
+    "sources": { "type": "array", "minItems": 3, "items": { "$ref": "#/$defs/source" } },
+    "naoConferido": { "type": "array", "items": { "type": "string", "minLength": 2, "maxLength": 300 } }
+  },
+  "$defs": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "minLength": 2, "maxLength": 60 },
+    "date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "url": { "type": "string", "pattern": "^(https?://\\S+|(docs|contracts)/\\S+)$", "maxLength": 500 },
+    "shortText": { "type": "string", "minLength": 2, "maxLength": 200 },
+    "text": { "type": "string", "minLength": 2, "maxLength": 600 },
+    "relevance": { "enum": ["alta", "media", "baixa"] },
+    "taskCode": { "type": "string", "pattern": "^(L|D)(10|[1-9])$" },
+    "anyTaskCode": { "type": "string", "pattern": "^((L|D)(10|[1-9])|X[1-9])$" },
+    "serviceId": { "enum": ["PERGUNTAS_GUIA", "SUGESTAO_TAREFAS", "PLANO_SEMANAL", "PRE_CHECAGEM_RUBRICA", "RASCUNHO_LETTERS", "APOIO_DRAWINGS", "ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "PESSOAS_SEMELHANTES", "EXPLICACAO_POR_QUE", "RESUMO_PROFISSIONAL", "IMPORTAR_CURRICULO"] },
+    "capability": { "enum": ["ARTEFATO", "INSIGHT", "PREENCHER_TAREFA", "MEMORIA_BUSCA", "AUTOPILOT_PROJETO", "CAPA_IA"] },
+    "autonomyMode": { "enum": ["MANUAL", "SOB_SOLICITACAO", "SUGESTOES", "ASSISTIDO", "AGENTE"] },
+    "aiAction": { "enum": ["SUGESTAO_ESPONTANEA", "RESPONDER", "PROPOR_ALTERACAO", "APLICAR_ALTERACAO", "EXECUTAR_PASSO"] },
+    "consent": { "enum": ["RESUMO_PROFISSIONAL_IA", "GUIA_DE_CARREIRA", "ANALISE_PERFIL_IA", null] },
+    "drawingsMode": { "enum": ["2d-tecnico", "3d", "diagrama", "infografico", "prancha", "wireframe"] },
+    "lettersTemplate": { "enum": ["curriculo", "carta", "estudo-de-caso", "relatorio-tecnico", "post", "bio", "pop", "proposta", "plano-30-60-90", "revisao", "parecer", "memorial", "laudo", "artigo", "plano-de-aula", "roteiro", "relatorio-de-caso", "projeto-de-pesquisa"] },
+    "label": {
+      "type": "object",
+      "required": ["pt-BR", "en", "es"],
+      "additionalProperties": false,
+      "properties": {
+        "pt-BR": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "en": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "es": { "type": "string", "minLength": 2, "maxLength": 80 }
+      }
+    },
+    "coded": {
+      "type": "object",
+      "required": ["code", "title"],
+      "additionalProperties": false,
+      "properties": {
+        "code": { "type": "string", "pattern": "^\\d{4}$" },
+        "title": { "$ref": "#/$defs/shortText" }
+      }
+    },
+    "esco": {
+      "type": "object",
+      "required": ["uri", "label"],
+      "additionalProperties": false,
+      "properties": {
+        "uri": { "type": "string", "pattern": "^https?://data\\.europa\\.eu/esco/(occupation|skill|isco)/[A-Za-z0-9.-]+$" },
+        "label": { "$ref": "#/$defs/shortText" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": ["title", "url", "accessedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string", "minLength": 2, "maxLength": 300 },
+        "url": { "$ref": "#/$defs/url" },
+        "accessedAt": { "$ref": "#/$defs/date" }
+      }
+    },
+    "regulation": {
+      "type": "object",
+      "required": ["name", "issuer", "about"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "$ref": "#/$defs/shortText" },
+        "issuer": { "$ref": "#/$defs/shortText" },
+        "about": { "$ref": "#/$defs/shortText" }
+      }
+    },
+    "term": {
+      "type": "object",
+      "required": ["term", "meaning"],
+      "additionalProperties": false,
+      "properties": {
+        "term": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "meaning": { "$ref": "#/$defs/shortText" }
+      }
+    },
+    "competency": {
+      "type": "object",
+      "required": ["label", "esco", "kind"],
+      "additionalProperties": false,
+      "properties": {
+        "label": { "$ref": "#/$defs/shortText" },
+        "esco": { "anyOf": [{ "$ref": "#/$defs/esco" }, { "type": "null" }] },
+        "kind": { "enum": ["nucleo", "apoio"] }
+      }
+    },
+    "track": {
+      "type": "object",
+      "required": ["id", "label", "steps"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "label": { "$ref": "#/$defs/shortText" },
+        "steps": { "type": "array", "minItems": 3, "maxItems": 6, "items": { "$ref": "#/$defs/shortText" } }
+      }
+    },
+    "optionsQuestion": {
+      "type": "object",
+      "required": ["prompt", "options", "why"],
+      "additionalProperties": false,
+      "properties": {
+        "prompt": { "$ref": "#/$defs/shortText" },
+        "options": { "type": "array", "minItems": 6, "maxItems": 16, "uniqueItems": true, "items": { "$ref": "#/$defs/shortText" } },
+        "why": { "$ref": "#/$defs/text" }
+      }
+    },
+    "a4Question": {
+      "type": "object",
+      "required": ["hint", "cboFamilies", "why"],
+      "additionalProperties": false,
+      "properties": {
+        "hint": { "$ref": "#/$defs/shortText" },
+        "cboFamilies": { "type": "array", "minItems": 1, "maxItems": 8, "uniqueItems": true, "items": { "type": "string", "pattern": "^\\d{4}$" } },
+        "why": { "$ref": "#/$defs/text" }
+      }
+    },
+    "b9Question": {
+      "type": "object",
+      "required": ["levels", "why"],
+      "additionalProperties": false,
+      "properties": {
+        "levels": {
+          "type": "object",
+          "required": ["primeiro-emprego", "junior", "pleno", "senior", "gestao"],
+          "additionalProperties": false,
+          "properties": {
+            "primeiro-emprego": { "$ref": "#/$defs/shortText" },
+            "junior": { "$ref": "#/$defs/shortText" },
+            "pleno": { "$ref": "#/$defs/shortText" },
+            "senior": { "$ref": "#/$defs/shortText" },
+            "gestao": { "$ref": "#/$defs/shortText" }
+          }
+        },
+        "why": { "$ref": "#/$defs/text" }
+      }
+    },
+    "c4Question": {
+      "type": "object",
+      "required": ["certifications", "languages", "why"],
+      "additionalProperties": false,
+      "properties": {
+        "certifications": { "type": "array", "maxItems": 12, "items": { "$ref": "#/$defs/shortText" } },
+        "languages": { "type": "array", "maxItems": 6, "items": { "$ref": "#/$defs/shortText" } },
+        "why": { "$ref": "#/$defs/text" }
+      }
+    },
+    "extraQuestion": {
+      "type": "object",
+      "required": ["id", "prompt", "type", "options", "why", "where"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^x[1-9]$" },
+        "prompt": { "$ref": "#/$defs/shortText" },
+        "type": { "enum": ["sim-nao", "escolha", "texto", "lista"] },
+        "options": { "type": "array", "maxItems": 10, "items": { "$ref": "#/$defs/shortText" } },
+        "why": { "$ref": "#/$defs/text" },
+        "where": { "enum": ["P", "X", "S"] }
+      }
+    },
+    "excludedTask": {
+      "type": "object",
+      "required": ["code", "reason"],
+      "additionalProperties": false,
+      "properties": {
+        "code": { "$ref": "#/$defs/taskCode" },
+        "reason": { "$ref": "#/$defs/shortText" }
+      }
+    },
+    "taskParams": {
+      "type": "object",
+      "required": ["title", "brief", "parameters", "criteria", "evidence", "time", "level"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "$ref": "#/$defs/shortText" },
+        "brief": { "$ref": "#/$defs/text" },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": { "type": ["string", "number", "boolean", "array"], "items": { "type": "string", "maxLength": 200 } }
+        },
+        "criteria": { "type": "array", "minItems": 3, "maxItems": 7, "items": { "$ref": "#/$defs/shortText" } },
+        "evidence": { "$ref": "#/$defs/shortText" },
+        "time": { "type": "string", "pattern": "^\\d+ (min|h)$" },
+        "level": { "enum": [1, 2, 3] }
+      }
+    },
+    "customTask": {
+      "type": "object",
+      "required": ["id", "editor", "title", "competency", "criteria", "evidence", "time", "trigger", "level"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^X[1-9]$" },
+        "editor": { "enum": ["letters", "drawings"] },
+        "title": { "$ref": "#/$defs/shortText" },
+        "competency": { "$ref": "#/$defs/shortText" },
+        "criteria": { "type": "array", "minItems": 3, "maxItems": 7, "items": { "$ref": "#/$defs/shortText" } },
+        "evidence": { "$ref": "#/$defs/shortText" },
+        "time": { "type": "string", "pattern": "^\\d+ (min|h)$" },
+        "trigger": { "$ref": "#/$defs/shortText" },
+        "level": { "enum": [1, 2, 3] }
+      }
+    },
+    "objectiveCriterion": {
+      "type": "object",
+      "required": ["id", "check", "appliesTo", "auto"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "check": { "$ref": "#/$defs/shortText" },
+        "appliesTo": { "type": "array", "minItems": 1, "maxItems": 24, "uniqueItems": true, "items": { "$ref": "#/$defs/anyTaskCode" } },
+        "auto": { "type": "boolean", "description": "true = a IA pré-checa; false = só revisão humana" }
+      }
+    },
+    "subjectiveCriterion": {
+      "type": "object",
+      "required": ["id", "label", "levels"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "label": { "$ref": "#/$defs/shortText" },
+        "levels": {
+          "type": "object",
+          "required": ["aproxima", "atende", "supera"],
+          "additionalProperties": false,
+          "properties": {
+            "aproxima": { "$ref": "#/$defs/shortText" },
+            "atende": { "$ref": "#/$defs/shortText" },
+            "supera": { "$ref": "#/$defs/shortText" }
+          }
+        }
+      }
+    },
+    "citeSource": {
+      "type": "object",
+      "required": ["title", "url", "kind"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string", "minLength": 2, "maxLength": 300 },
+        "url": { "$ref": "#/$defs/url" },
+        "kind": { "enum": ["norma", "conselho", "orgao-publico", "estatistica", "educacao", "comunidade", "referencia"] }
+      }
+    },
+    "service": {
+      "type": "object",
+      "required": ["service", "capability", "defaultMode", "action", "consent", "note"],
+      "additionalProperties": false,
+      "properties": {
+        "service": { "$ref": "#/$defs/serviceId" },
+        "capability": { "$ref": "#/$defs/capability" },
+        "defaultMode": { "$ref": "#/$defs/autonomyMode" },
+        "action": { "$ref": "#/$defs/aiAction" },
+        "consent": { "$ref": "#/$defs/consent" },
+        "note": { "type": "string", "maxLength": 300 }
+      }
+    },
+    "marketSource": {
+      "type": "object",
+      "required": ["title", "url", "geography", "cadence", "kind"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string", "minLength": 2, "maxLength": 300 },
+        "url": { "$ref": "#/$defs/url" },
+        "geography": { "$ref": "#/$defs/shortText" },
+        "cadence": { "enum": ["mensal", "trimestral", "anual", "continua", "eventual"] },
+        "kind": { "enum": ["estatistica-oficial", "conselho", "associacao", "pesquisa", "edital"] }
+      }
+    },
+    "path": {
+      "type": "object",
+      "required": ["to", "why", "gaps", "steps"],
+      "additionalProperties": false,
+      "properties": {
+        "to": { "$ref": "#/$defs/slug" },
+        "why": { "$ref": "#/$defs/text" },
+        "gaps": { "type": "array", "minItems": 1, "maxItems": 6, "items": { "$ref": "#/$defs/shortText" } },
+        "steps": { "type": "array", "minItems": 1, "maxItems": 6, "items": { "$ref": "#/$defs/shortText" } }
+      }
+    },
+    "learning": {
+      "type": "object",
+      "required": ["title", "provider", "url", "free", "kind"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string", "minLength": 2, "maxLength": 300 },
+        "provider": { "$ref": "#/$defs/shortText" },
+        "url": { "$ref": "#/$defs/url" },
+        "free": { "type": "boolean" },
+        "kind": { "enum": ["curso", "norma", "livro", "comunidade", "certificacao", "portal"] }
+      }
+    }
+  }
+}

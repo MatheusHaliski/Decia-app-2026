@@ -4719,5 +4719,700 @@ export const RF_CATALOG: readonly RfEntry[] = [
         "kind": "enunciado"
       }
     ]
+  },
+  {
+    "id": "RF75",
+    "n": 75,
+    "title": "Work Station Career Guidance: guiar a pessoa em transição de carreira com perguntas, tarefas-guia e evidências",
+    "hu": null,
+    "summary": "Trello: RF75 Work Station Career Guidance (Guia de Carreira do Work Station) (card 241, criado em 31/10/2026).",
+    "route": "Guia de Carreira (/profile?tab=carreira; guia inicial em /welcome; Tarefa do Dia em /profile?tab=tarefa-do-dia; caminhos em /insights?tab=perfil; controles em /settings?tab=carreira, ia e privacidade; painel Guia dentro de /letters e /drawings)",
+    "coverage": "RF75.CA01 … RF75.CA19 — requisito novo pedido pelo usuário em 31/10/2026 (\"Work Station Career Guidance — Guia de Carreira do Work Station\"), derivado da auditoria GUIA_DE_CARREIRA.md; todos planejados. No código existem só as bases: tipos de conta e perfil (RF1, RF3), especialidades e visibilidade (lib/account/publication.ts), modos de autonomia (RF51, lib/ai/autonomy.ts), consentimentos (ConsentPurpose.RESUMO_PROFISSIONAL_IA), tarefas reais (RF4), seguir (RF16), editores Letters (esqueleto) e Drawings (3D real).",
+    "cas": [
+      {
+        "id": "RF75.CA01",
+        "text": "Dado o cadastro, quando a pessoa escolhe o tipo de conta, então além de Empregado, Empresa e Chefe existe Em transição (ProfileType.EM_TRANSICAO, sem validação, ativa ao confirmar o e-mail) e a pergunta \"O que descreve seu momento?\" (trabalho e quero mudar · estou sem emprego · primeiro emprego · volto depois de uma pausa · mudo de área · por conta própria · só explorando), seguida da pergunta opcional \"Qual profissão você quer desenvolver?\" (profissão preferida, CA19; autocompletar sobre o catálogo de ramos, com \"ainda não sei\"; D-148). Uma conta Em transição vira Empregado (vínculo a empresa) sem perder dados; a terceiros ela aparece como pessoa comum, sem selo de tipo nem de momento (D-147); a dica de Empregado deixa de ser a única opção para pessoa física.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA02",
+        "text": "Dado o primeiro acesso de uma conta com o guia ativado, quando a confirmação de e-mail ou o login termina, então a pessoa vai para /welcome com até oito perguntas (cargo ou área alvo, prazo, regime e modelo, horas por semana, quanto a IA faz sozinha, que dados a IA lê, quem pode enviar mensagem, aparecer em buscas e em pessoas semelhantes), cada uma com \"por que pergunto\" e \"pular\"; o guia é retomável e um aviso \"Seu guia está n/8\" aparece até concluir ou ser dispensado duas vezes; nada bloqueia o uso do sistema.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA03",
+        "text": "Dado o guia iniciado, quando uma resposta só faz diferença num momento (teste de interesses ao responder \"não sei\", lista \"não quero\" ao ver sugestões, \"tem prova disso?\" por competência, público padrão na primeira publicação, check-in semanal de prontidão), então a pergunta aparece nesse momento, uma vez, e nunca repete o que já foi respondido.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA04",
+        "text": "Dado o perfil de carreira (momento, objetivo, competências, evidências, pausa, lista \"não quero\", check-ins), quando armazenado ou consultado, então é privado por padrão: chefe, empresa, administrador e curador não têm acesso automático; aparece a terceiros só o que a pessoa marcar campo a campo; 404 NAO_ENCONTRADO para quem não pode ver.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA05",
+        "text": "Dado o perfil de carreira confirmado, quando o plano é gerado, então a pessoa recebe um plano semanal e uma Tarefa do Dia do catálogo de tarefas-guia, cada uma com competência comprovada, critério de aceite verificável, evidência esperada, tempo estimado e \"por que esta tarefa\"; o plano respeita horas por semana e aparelho (tarefas 3D só com computador); \"serve para você?\" (sim · agora não · nunca este tipo) alimenta o plano e duas dispensas seguidas pausam sugestões por sete dias.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA06",
+        "text": "Dado uma tarefa-guia aceita, quando a pessoa a abre, então o Letters ou o Drawings abre com um painel lateral Guia (enunciado, critérios, rubrica, \"concluir e gerar evidência\"); a IA pré-checa só os critérios objetivos (tamanho, campos presentes, cotas que fecham, vistas renderizadas) e nunca os subjetivos; a peça fica na pasta da tarefa e vinculada a ela (RF71).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA07",
+        "text": "Dado uma tarefa concluída, quando a pessoa confirma, então nasce uma Evidence com URL da peça, versão, critérios atendidos, declaração de autoria e de ausência de dado confidencial; o selo de competência só é emitido com validação humana (par, mentor ou curador) e pode ser exportado como Open Badge 3.0; todo rótulo que a IA inferiu mostra \"como foi calculado\" e \"contestar\".",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA08",
+        "text": "Dado o progresso da pessoa, quando exibido, então é por evidências e critérios (\"3 de 5\"), sem score, percentual de empregabilidade, ranking entre pessoas, contagem regressiva ou perda de progresso; sequência, se existir, é semanal e tem pausa sem custo; Hype Score, pontos e popularidade não entram em nenhuma sugestão.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA09",
+        "text": "Dado qualquer pergunta ou sugestão da IA, quando apresentada, então a IA pergunta em vez de inferir área, senioridade ou situação; explica por que pergunta; cada sugestão traz \"por que recebi isto\" com os campos usados e \"discordo\", que corrige o perfil ou descarta a sugestão; inferências ficam marcadas e corrigíveis.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA10",
+        "text": "Dado o controle \"quanto o guia pode fazer sozinho\" (só sugerir · rascunhar para eu aprovar · executar rotinas avisando), quando escolhido, então mapeia para SUGESTOES, ASSISTIDO ou AGENTE do RF51 (Manual e Sob solicitação ficam em \"mais opções\"); em nenhum modo a IA publica, segue, envia mensagem, compartilha ou se candidata sem confirmação explícita; o agente para antes dessas ações.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA11",
+        "text": "Dado o controle \"que dados o guia pode ler\" (perfil · currículo · minhas Letters · meus Drawings · mensagens) e \"onde a IA roda\" (padrão do WS · provedor externo · desligada), quando a IA é chamada, então lê só o escopo marcado; o provedor externo exige consentimento contextual que lista as categorias enviadas e o custo; mensagens e itens RESTRITO/SIGILOSO nunca vão ao provedor externo; \"Economia/Avançado\" passa a dizer o que sai e o que custa.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA12",
+        "text": "Dado o perfil de carreira e o material da pessoa, quando coletados ou analisados, então o sistema não pergunta nem infere idade, gênero, estado civil, filhos, gravidez, religião, opinião política, sindicato, raça ou cor, saúde ou deficiência, endereço completo, motivo da demissão ou foto obrigatória; acessibilidade entra como \"o que deixa o WS mais fácil para você\", gravada como preferência de interface, fora do perfil e da descoberta.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA13",
+        "text": "Dado uma afirmação sobre vagas, demanda, remuneração ou requisito de mercado, quando exibida, então cita fonte, data e região; sem fonte, diz \"estimativa sem fonte atual\"; caminhos de carreira são alternativas para explorar e nunca prometem emprego, salário ou prazo.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA14",
+        "text": "Dado qualquer tela, busca, recomendação ou notificação, quando a pessoa tem uma conta Em transição ou respondeu que está sem emprego, então nenhum sinal de \"procurando emprego\", disponibilidade, pretensão salarial ou momento de carreira é armazenado fora de career_profiles, exibido a terceiros (inclusive Empresa validada, chefe e administrador), usado em ranking, ordenação ou sugestão de pessoas, nem enviado à empresa à qual a conta se vincular depois; o perfil público e o resultado da busca de pessoas são idênticos aos de uma conta Empregado sem empresa (D-147).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA15",
+        "text": "Dado os controles de rede (quem pode enviar mensagem, aparecer em buscas e em pessoas semelhantes, mostrar atividade, público padrão das produções, comentários e remix por item), quando exibidos, então cada opção responde \"quem verá?\", \"o que muda?\" e \"vale para itens antigos?\"; mudar o padrão não republica o acervo; a pessoa só é sugerida a outras se marcou participar (RF50.CA16).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA16",
+        "text": "Dado as mensagens do guia, quando enviadas, então a primeira interação diz \"Sou uma IA; minhas sugestões não garantem entrevista, emprego nem salário\"; há no máximo um lembrete proativo por dia, dentro do horário escolhido, com pausa de sete dias após duas dispensas; nenhuma mensagem culpa a pessoa, usa contagem regressiva falsa ou \"confirmshaming\"; os modos Manual e Sob solicitação não geram lembretes.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA17",
+        "text": "Dado o histórico do guia (respostas, análises, sugestões, evidências), quando a pessoa pede, então exporta tudo e exclui análises e respostas dentro das regras de retenção; revogar um consentimento invalida sugestões pendentes no servidor; conta trocada no mesmo aparelho não vê nada da anterior; eventos guardam autoria e referência de inferência sem copiar currículo ou texto sensível.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA18",
+        "text": "Dado qualquer tela da jornada, quando renderizada, então não mostra identificadores internos (selos \"RFnn\", \"Q-30\", \"Bloco 3\", \"Esqueleto da etapa\"), nem jargão técnico (\"tokens\", \"ponto de restauração\", \"ferramentas determinísticas\") fora de \"mais opções\"; funciona por teclado, com estrutura semântica, e distingue informação confirmada, inferência e proposta (RF50.CA15).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF75.CA19",
+        "text": "Dado o campo profissão preferida (User.preferredOccupation: código do ramo no catálogo contracts/career/academic-fields.json, que carrega famílias CBO/ESCO, + rótulo; opcional; privado por padrão; perguntado no cadastro (D-148) e editável em Conta e no guia), quando preenchido, então o guia e a Análise de Perfil (RF50) passam a operar no escopo dessa profissão: as perguntas ganham variantes específicas (competências, ferramentas e entregas típicas da ocupação, vindas do pacote de domínio), as tarefas-guia são filtradas e parametrizadas pelo pacote (ex.: Arquitetura → planta, detalhe e prancha; Direito → parecer, POP e estudo de caso; Desenvolvimento → relatório técnico, diagrama e wireframe), a pré-checagem e a rubrica usam critérios da profissão (normas, estrutura, vocabulário), as respostas do Copilot recebem o contexto do domínio e citam fontes do campo, pessoas semelhantes e caminhos partem de ocupações iguais ou vizinhas na CBO/ESCO. Sem o campo, vale o pacote genérico e o guia oferece o teste de interesses; trocar a profissão regenera o plano e preserva evidências; o campo nunca aparece a terceiros sem opt-in e nunca é tratado como sinal de busca de emprego (D-147).",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF76",
+    "n": 76,
+    "title": "Treino e Simulados por Profissão",
+    "hu": null,
+    "summary": "História de usuário: COMO pessoa que escolheu uma profissão preferida (ex.: engenharia de software) QUERO responder perguntas atualizadas e de nível acadêmico sobre a minha área, fazer simulados completos com tempo no formato da prova de referência e exercícios práticos corrigidos por rubrica, recebendo na hora a explicação e a fonte de cada resposta e um mapa do que domino e do que preciso rever, PARA saber se sou bom na minha profissão para mim, sem que isso vire nota pública, ranking ou sinal para empregadores.",
+    "route": "sub-aba Treino da aba \"Sou um bom <profissão>\" (/profile?tab=profissao&sec=treino); card \"Pergunta do dia\" ao lado da Tarefa do Dia (/profile?tab=tarefa-do-dia); painel Guia › \"Modo prova\" no /letters e no /drawings",
+    "coverage": "RF76.CA01 … RF76.CA14 — requisito novo pedido pelo dono do produto em 02/11/2026 (\"Sou um bom engenheiro de software\"), numerado pela decisão D-149 (09/11/2026); derivado da pesquisa avaliacao-e-provas.md §5 e do resumo ABAS_POR_PROFISSAO.md §3–§4; todos planejados. Já existem no repositório as bases: profissão preferida (RF75.CA19, RF81), catálogo de ramos e pacotes de domínio (contracts/career/), validador (npm run career:validate), helpers lib/career/, AiGateway (RF43), tarefas reais (RF4) e o Drawings 3D.",
+    "cas": [
+      {
+        "id": "RF76.CA01",
+        "text": "Dado User.preferredOccupation preenchido e um ItemBank ativo para o pacote (packCode, mesma linha de version), quando a pessoa abre a sub-aba Treino, então vê a Pergunta do dia, \"Simulado completo\", \"Exercício prático\" e \"Revisar erros\", com o aviso fixo \"Isto não é certificação nem nota oficial; é seu treino, só seu\"; sem profissão ou sem banco, vê o banco genérico (competências transversais) e o convite para escolher a profissão.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF76.CA02",
+        "text": "Dado a Pergunta do dia, quando a pessoa responde, então recebe na hora certo/errado, a justificativa da alternativa escolhida, a explicação da correta, ao menos uma fonte com título, URL e data (e versão da norma quando houver), os botões \"acertei chutando\", \"discordo do gabarito\" e \"reportar problema\", e o item errado ou chutado entra na fila de revisão espaçada; há no máximo um lembrete por dia e nenhuma sequência punitiva (RF75.CA16, CA08).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF76.CA03",
+        "text": "Dado \"Simulado completo\", quando iniciado, então o sistema monta a prova pelo blueprint do banco no formato da referência do pacote (quantidade de itens, tipos, tempo), sorteia e embaralha itens e alternativas por pessoa, inclui itens de pré-teste não pontuados sem identificá-los, permite pausar e retomar, e aplica o tempo escolhido pela pessoa (padrão, +25 %, +50 %, sem tempo) sem pedir justificativa.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF76.CA04",
+        "text": "Dado o simulado entregue, quando o resultado é exibido, então mostra acertos por eixo e por competência no formato \"x de n\", o nível nomeado (Iniciando · Praticando · Consistente) com \"como foi calculado\", a revisão item a item com explicação e fonte, e a comparação apenas com simulados anteriores da própria pessoa; não exibe percentual global destacado, percentil, ranking, \"chance de aprovação\" ou \"empregabilidade\".",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF76.CA05",
+        "text": "Dado \"Exercício prático\", quando aceito, então abre uma tarefa-guia L1–L10/D1–D10 parametrizada pelo pacote em modo prova (enunciado, tempo, rubrica visível), a IA pré-checa só os critérios objetivos da rubrica ao concluir, o parecer da IA sobre critérios subjetivos aparece como \"proposta da IA — não pontua\", a peça fica na pasta da tarefa (RF71) e a pessoa pode pedir validação humana que, se concedida, gera CompetencyEvidence (RF75.CA06, CA07).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF76.CA06",
+        "text": "Dado qualquer item exibido, quando foi gerado com apoio de IA, então só chegou à pessoa após review.reviewedBy humano, com sources não vazias, rationale em todas as alternativas e validity.normRefs vigentes; item com reviewBy vencido ou norma marcada como revogada sai da rotação e, se já estava numa prova em curso, é anulado sem prejuízo para a pessoa.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF76.CA07",
+        "text": "Dado respostas acumuladas, quando um item atinge 30 respostas, então o sistema calcula p-valor, correlação item-total e, com ≥ 50, dificuldade Rasch e ajuste; item fora das faixas (p < 0,15 ou > 0,95, rpb < 0,15, infit/outfit fora de 0,7–1,3) vai à fila do curador e deixa de pontuar; as estatísticas são anonimizadas (sem userId) e a dificuldade exibida à pessoa diz \"estimada\" até a calibração.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF76.CA08",
+        "text": "Dado \"Revisar erros\", quando aberto, então lista os itens errados ou chutados cujo intervalo venceu (1 → 3 → 7 → 14 → 30 dias, voltando a 1 ao errar), mostra a explicação já lida e um item paramétrico irmão quando existir, e nunca exibe previsões de esquecimento com falsa precisão.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF76.CA09",
+        "text": "Dado um eixo com desempenho baixo em dois simulados ou na Pergunta do dia da semana, quando o plano semanal é gerado, então o guia propõe uma trilha de reforço (itens guiados, leitura do learning do pacote, uma tarefa L/D que prove a competência) com \"por que recebi isto\" e \"não me serve\" (RF75.CA05, CA09).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF76.CA10",
+        "text": "Dado Attempt, Score e níveis, quando armazenados ou consultados, então são privados por padrão, não alimentam Hype Score, ranking, busca, pessoas semelhantes, Insight de Equipe, Análise de Perfil visível a terceiros nem qualquer tela de Empresa, chefe, administrador ou curador; GET de outra pessoa retorna 404 NAO_ENCONTRADO; fazer simulados não grava sinal de busca de emprego nem é enviado à empresa a que a conta se vincular depois (RF75.CA04, CA08, CA14; RF50.CA06, CA12; D-147).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF76.CA11",
+        "text": "Dado um nível por competência, quando exibido, então há \"como foi calculado\" (itens contados, pesos, regra, data, versão do banco) e \"contestar\", que abre revisão humana com resposta registrada em AiInferenceLog e prazo informado; a pessoa pode apagar níveis e tentativas, e exportar tudo em JSON/PDF (LGPD art. 20; RF75.CA17).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF76.CA12",
+        "text": "Dado a geração de itens e explicações pela IA, quando chamada, então passa pelo AiGateway com capability = TREINO_HABILIDADES, recebe só o contextSnippet do pacote e os trechos das fontes (nunca currículo, Letters, Drawings ou mensagens da pessoa), respeita \"onde a IA roda\" e consentimento GUIA_DE_CARREIRA, e a pontuação objetiva é calculada por regra determinística, não pela IA (RF43 D-12; RF75.CA11).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF76.CA13",
+        "text": "Dado itens e telas de prova, quando renderizados, então funcionam por teclado e leitor de tela (grupos de alternativas rotulados, imagens e desenhos com descrição textual equivalente, sem dependência de cor, sem \"todas as anteriores\"), o validador do banco rejeita item sem texto alternativo ou com termo de dado sensível, e nenhuma tela mostra identificadores internos ou jargão (RF75.CA12, CA18).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF76.CA14",
+        "text": "Dado \"discordo do gabarito\" ou \"reportar problema\", quando enviado, então o item é marcado para o curador com a justificativa, a pessoa recebe o desfecho (mantido, corrigido, anulado) e, se anulado, suas tentativas são recalculadas; itens com ≥ 3 reportes abertos saem da rotação até a revisão.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF77",
+    "n": 77,
+    "title": "Ranking da temporada, níveis e \"Em alta na profissão\"",
+    "hu": null,
+    "summary": "História de usuário: COMO pessoa que escolheu uma profissão preferida (RF75.CA19, RF81) POSSO abrir a aba \"Minha profissão\" e, se eu quiser, entrar no ranking da temporada com nome ou pseudônimo, ver quem são as pessoas mais bem avaliadas por evidências validadas na minha profissão, acompanhar meu nível e meus selos e descobrir que tarefas, modelos e peças estão em alta na minha área PARA me orientar pelo que a comunidade da profissão está produzindo e validando, sem que minha empresa, meu chefe ou recrutadores vejam, e sem que isso vire nota de empregabilidade.",
+    "route": "Minha profissão (/profile?tab=profissao, sub-abas Em alta",
+    "coverage": "RF77.CA01 … RF77.CA15 — requisito novo (numeração D-149), derivado da pesquisa ranking-hype-trending.md §2.3, §3, §4 e §5 (lá os CAs aparecem como RF76.CA01–15, numeração anterior à D-149) e do resumo em ABAS_POR_PROFISSAO.md §5; todos planejados.",
+    "cas": [
+      {
+        "id": "RF77.CA01",
+        "text": "Dado uma pessoa sem profissão preferida, quando abre a aba, então vê só o convite do RF75 (\"escolha sua profissão ou faça o teste de interesses\") e nenhum ranking, trending ou nível; com profissão preferida, a aba carrega o pacote correspondente (OccupationPack ativo); sem pacote ativo, mostra \"em alta\" genérico e explica que o ranking abre quando o pacote estiver ativo.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF77.CA02",
+        "text": "Dado a sub-aba Ranking, quando a pessoa ainda não participa, então o quadro aparece anonimizado (posições e PET sem nomes) com o diálogo de opt-in que responde \"quem verá?\", \"o que muda?\" e \"vale para itens antigos?\", afirma que empresa, chefe e recrutadores não veem e que não mede empregabilidade; só após confirmar nasce LeaderboardParticipation(seasonId, userId, displayMode, allowSameCompany=false, linkPieces=false); rankingOptOut=false não é interpretado como opt-in.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF77.CA03",
+        "text": "Dado uma participação, quando a pessoa escolhe displayMode PSEUDONIMO, então o quadro mostra o pseudônimo (único na temporada, sem avatar real), nenhum link para o perfil e, se linkPieces=false, só os nomes dos critérios validados; trocar para NOME exige nova confirmação; SO_EU mostra a posição só para a própria pessoa (\"você estaria em 12º de 48\"). Padrão do primeiro opt-in (NOME ou PSEUDONIMO) proposto, em aberto na Q-247.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF77.CA04",
+        "text": "Dado um espectador, quando a API monta o quadro, então omite as entradas de pessoas com vínculo vigente na mesma empresa do espectador (salvo allowSameCompany=true da entrada — opção proposta, Q-247), responde 403 ACESSO_NEGADO/omissão a contas EMPRESA e não existe endpoint nominal para dashboards (só histograma anonimizado por profissão, RF45.CA10); a omissão não deixa lacunas numeradas (\"você vê 46 de 48 participantes\").",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF77.CA05",
+        "text": "Dado a temporada vigente (ProfessionSeason de 12 semanas, D-152, datas públicas), quando o ProfessionRankingService.compute roda (job diário + AFTER_COMMIT de validação), então a PET de cada participante é a soma ponderada (RankingWeights escopo PROFISSAO, vigência, criteriaPublicText) apenas de: selos de competência validados (rubrica aproxima 1 · atende 2 · supera 3), revisões L10 recebidas e aceitas (1), remixes com crédito validados pelo autor original (1), chancela de peça pública (1, proposto — Q-247); nunca DP, Hype, HSE, curtidas, seguidores, mensagens ou visualizações; teto de 3 evidências/semana; < 3 evidências na temporada ⇒ provisional=true (\"?\") e fora do top 10; grava RankingEntry(scope=PROFISSAO, dimension=EVIDENCIAS_VALIDADAS, explanationJson).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF77.CA06",
+        "text": "Dado uma evidência, quando o validador tem vínculo vigente na mesma empresa da pessoa, é a própria pessoa, ou está em par recíproco suspeito (reciprocidade ≥ 60 % em 90 d e ≥ 5 validações), então a evidência não conta para PET nem para trending e nasce SUSPENSO para o CURADOR (AntiFraudService, escada ignorar → suspenso → estorno de PET → perda do direito de validar), auditada com correlationId; o selo em si segue a regra do RF75.CA07 (validador sem vínculo).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF77.CA07",
+        "text": "Dado \"Explique minha posição\", quando acionado, então a tela lista cada evidência contada (critério, data, validador anonimizado, peso), as ignoradas com motivo, a versão dos pesos e o botão Contestar que abre revisão humana (LGPD art. 20) com prazo exibido; a IA (AiCapability RANKING_PROFISSAO) só redige a explicação a partir desses números (D-12).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF77.CA08",
+        "text": "Dado a sub-aba Em alta, quando carregada, então mostra tarefas-guia, modelos do Balcão e peças públicas do pacote ordenados por hot (janela 7/30 d, gravidade 1,5/1,2, amortecimento log2(1+n), f_autor, limite inferior de Wilson para conclusão), com ≥ 3 eventos de ≥ 3 pessoas, no máximo 2 itens por autor no top 10, bônus de novato e uma vaga por competência; cada card traz \"N aceites · M conclusões · K validações · R remixes com crédito\" e \"por que está em alta ✦\"; curtidas (zero, proposto — Q-247), salvos, visualizações e DP não entram; rodapé fixo \"Isto não mede empregabilidade\" + \"Como calculamos\".",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF77.CA09",
+        "text": "Dado um item em alta, quando a pessoa clica \"aceitar para minha semana\", então a tarefa-guia entra no plano do RF75/Tarefa do Dia (RF44) com os parâmetros do pacote; para modelo do Balcão, segue RF40.CA03/CA04 (preço em DP, licença, crédito); a aceitação gera evento de trending (peso 1) uma única vez por pessoa e item (idempotente).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF77.CA10",
+        "text": "Dado as evidências validadas da pessoa, quando recalculadas, então ProfessionLevel (Iniciante · Praticante · Consolidado · Referência · Mentor — nomes propostos, Q-247) é derivado só de selos (quantidade, competências distintas, \"supera\", revisões dadas, validações feitas), nunca de DP/Hype/posição; não cai por inatividade, só por revogação (com notificação e \"contestar\"); cada selo exibe raridade (\"X % das pessoas desta profissão\"); visibilidade do nível SO_EU por padrão.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF77.CA11",
+        "text": "Dado um selo ou nível, quando a pessoa pede exportar, então recebe um AchievementCredential Open Badges 3.0 (JSON-LD assinado + imagem com metadados) com criteria da rubrica, alignment ESCO/CBO da competência, evidence com URL só se autorizar e credentialStatus para revogação; nada é publicado em rede externa automaticamente.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF77.CA12",
+        "text": "Dado o fim da temporada, quando o job fecha a coorte (≤ 30 pessoas da mesma profissão e nível), então emite Recognition fonte TEMPORADA (TOP_COORTE 1º–3º; PARTICIPOU para ≥ 3 evidências), privados por padrão, sem DP; a PET zera para a nova temporada; o histórico de posições fica visível só para a própria pessoa; não há rebaixamento.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF77.CA13",
+        "text": "Dado \"Pessoas em destaque\", quando o algoritmo propõe candidatos (PET, diversidade, sem suspensões), então um CURADOR com escopo PROFISSAO seleciona e cada pessoa consente antes da publicação (nome/pseudônimo, nível, até 3 peças escolhidas por ela); sem consentimento não publica; exibido só a participantes, salvo opt-in \"também no Mural › Descobrir\"; nunca para contas EMPRESA da mesma empresa.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF77.CA14",
+        "text": "Dado a pessoa, quando aciona \"Sair do ranking\" ou \"Apagar\", então as LeaderboardEntry/LeaderboardParticipation dela (temporada atual e histórico) são excluídas em ≤ 24 h, a coorte é recomposta sem buracos numerados, os selos permanecem no perfil privado (exclusão separada), e DataSubjectRequest target RANKING_PROFISSAO cobre exportação/exclusão (RF3); a aba continua utilizável em modo anonimizado.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF77.CA15",
+        "text": "Dado a Análise de Perfil (RF50), o guia (RF75), pessoas semelhantes, chancelas (RF39), DP (RF42) e dashboards de empresa, quando executados, então nenhum lê posição, PET, coorte ou nível da profissão como entrada (teste automatizado de contrato); métricas de saúde ficam em MetricDefinition domínio PROFISSAO com histograma anonimizado para ADMIN (minSamples 20 participantes por profissão).",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF78",
+    "n": 78,
+    "title": "Memória da Profissão: história, grandes projetos e vitrine da profissão preferida",
+    "hu": null,
+    "summary": "História de usuário: COMO pessoa que escolheu uma profissão preferida (ou está decidindo qual) QUERO uma aba que conte, com fontes, a história dessa profissão no mundo e no Brasil, mostre os projetos de referência e as peças públicas que pessoas da mesma profissão fizeram no Work Station PARA entender onde estou entrando, me inspirar em trabalhos reais e remixá-los com crédito — sem que isso me compare, ranqueie ou exponha a mim ou a outras pessoas.",
+    "route": "Minha profissão › Memória (/profile?tab=profissao&sec=memoria, sub-abas História · Grandes projetos · No Work Station); atalhos no Guia de Carreira (RF75) e em Conta ao lado da profissão preferida (RF81); laboratório do curador em /lab/memoria-profissao",
+    "coverage": "RF78.CA01 … RF78.CA12 — requisito proposto na pesquisa historia-e-grandes-projetos.md §5 (lá numerado RF76) e resumido em ABAS_POR_PROFISSAO.md §6; numerado RF78 pela D-149 (09/11/2026); todos planejados. Depende do OccupationPack do RF75.CA19 e da profissão preferida do RF81 (D-148). Já existem no repositório: o esquema e os pacotes (contracts/career/occupation-pack.schema.json, contracts/career/occupation-packs/), o validador (npm run career:validate) e a Vitrine do Mural (RF27, MuralEntry.kind = DESTAQUE).",
+    "cas": [
+      {
+        "id": "RF78.CA01",
+        "text": "Dado User.preferredOccupation preenchido com um ramo servido por pacote ativo, quando a pessoa abre /profile?tab=profissao&sec=memoria, então vê as sub-abas História, Grandes projetos e No Work Station com o conteúdo de history e landmarkProjects desse pacote, no idioma da interface (pt-BR sempre; en/es quando existirem no pacote, senão pt-BR com aviso discreto).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF78.CA02",
+        "text": "Dado que a pessoa não tem profissão preferida ou o pacote não está ativo, quando abre a aba, então vê um convite para escolher a profissão (ou o teste de interesses do RF75) e uma prévia do pacote genérico; nenhum erro técnico nem identificador interno aparece (RF75.CA18).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF78.CA03",
+        "text": "Dado qualquer marco, pessoa de referência, projeto ou número exibido, quando renderizado, então mostra \"fonte\" com título, publicador, data de acesso e licença, abre em nova aba, e itens verification = divergente exibem \"fontes divergem\" com a nota; nenhum item nao-conferido chega à tela de produção.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF78.CA04",
+        "text": "Dado o texto da aba, quando lido, então é autoral do Work Station (gerado por IA e revisado), não reproduz trechos de fontes sob CC BY-SA ou \"todos os direitos reservados\", e imagens só aparecem com license permitida e credit visível.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF78.CA05",
+        "text": "Dado o pacote da profissão, quando review.nextReviewDue passa, então o pacote deixa de ser semeado como ativo, a aba mostra \"conteúdo em revisão (última revisão em DD/MM/AAAA)\" e um item entra na fila do curador; nada é editado automaticamente em produção.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF78.CA06",
+        "text": "Dado o curador no laboratório, quando pede \"propor atualização\", então a IA (RF43, serviço MEMORIA_PROFISSAO) devolve um diff com fontes por item e marcação conferido/nao-conferido; o curador aceita item a item; a versão do pacote incrementa e o changelog registra; sem aceite humano nada muda.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF78.CA07",
+        "text": "Dado uma peça, tarefa ou projeto da pessoa, quando ela publica ou edita a publicação, então existe a opção \"destacar na vitrine da minha profissão\" (padrão desligado), com \"quem verá?\", \"o que muda?\" e \"vale para itens antigos?\"; a opção só fica ativa se o item é PUBLICA, tem versão publicada e créditos preenchidos; coautores precisam concordar.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF78.CA08",
+        "text": "Dado a sub-aba No Work Station, quando carregada, então lista só itens elegíveis por canView no servidor, ordenados por \"validados\" e depois por data, sem curtidas, visualizações, posição, Hype Score ou pontos; contadores só contam itens elegíveis; nenhum card mostra momento de carreira, tipo de conta, cidade ou campo do CareerProfile (D-147).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF78.CA09",
+        "text": "Dado um item na vitrine, quando o curador o avalia com a rubrica do pacote, então ele recebe DESTAQUE com motivo curto visível ou permanece sem destaque sem notificação pública; o destaque nunca é calculado por popularidade e pode ser contestado pelo autor.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF78.CA10",
+        "text": "Dado um item em destaque que permite remix, quando a pessoa clica \"remixar\", então nasce um rascunho derivado com autor e versão de origem (D10) e crédito automático; \"revisar\" abre L10 com a rubrica; itens que não permitem remix não mostram o botão nem são copiados pela IA ou pela exportação.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF78.CA11",
+        "text": "Dado que a pessoa desliga o opt-in, despublica, troca de profissão ou bloqueia alguém, quando a vitrine é lida de novo, então o item sai (ou deixa de aparecer para a pessoa bloqueada); a troca de profissão não move itens antigos sem confirmação; não se promete remoção de cópias já exportadas.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF78.CA12",
+        "text": "Dado qualquer tela do RF78, quando renderizada, então funciona por teclado e leitor de tela, a linha do tempo tem alternativa em lista, imagens têm alt, e a interface distingue fato conferido, divergência e conteúdo do próprio Work Station; nenhuma sugestão da IA publica, destaca, segue ou envia mensagem sem confirmação (RF75.CA10).",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF79",
+    "n": 79,
+    "title": "Desafios de Empresa com selo específico em níveis bronze, prata e ouro",
+    "hu": null,
+    "summary": "História de usuário (pessoa): COMO pessoa que quer testar o que sei fazer na minha profissão QUERO participar de desafios públicos propostos por empresas validadas, fazendo a peça no Letters ou no Drawings com critérios e rubrica conhecidos de antemão, e ao concluir receber um selo que diga exatamente o que entreguei, com nível bronze, prata ou ouro, chancelado por pessoas identificadas, que eu decido se mostro no perfil PARA comprovar uma entrega concreta — sem que a empresa saiba quem participou, sem ranking e sem que isso vire processo seletivo.",
+    "route": "Desafios na aba da profissão (/profile?tab=profissao&sec=desafios, inclui a sub-aba \"Desafios concluídos\" do dono), vitrine pública de desafios (/challenges), sub-aba pública condicional do perfil de terceiros (/u/[username]?tab=desafios, RF16)",
+    "coverage": "RF79.CA01 … RF79.CA17 — requisito novo; todos planejados. Fonte aprovada pelo dono do produto: desafios-de-empresas.md (§2.3 regras R1–R12, §3 mecânica e ciclo, §4 selo e nível, §5 HUs, CAs, entidades, API, integrações, etapas e exemplos; lá numerado como RF76) e o resumo em ABAS_POR_PROFISSAO.md §7. Numeração RF79 pela D-149; profissão preferida e escopo por OccupationPack pela D-148; sem sinal de busca de emprego pela D-147; matriz do nível do selo confirmada pela D-151. Em aberto (escrito aqui como proposta): destaques do júri (Q-248, parte restante), emissor do Open Badge (Q-249), teto de pontos e curadores (Q-250), revisão jurídica dos termos fixos (Q-252).",
+    "cas": [
+      {
+        "id": "RF79.CA01",
+        "text": "Dado uma conta EMPRESA com verified = true (RF28) e canPromoteChallenges ativo, quando cria um desafio, então informa profissão (OccupationPack), nível (iniciante/pleno/avançado), enunciado, entregáveis (Letter e/ou Drawing), ChallengeRubric com critérios marcados como objetivos (pré-checáveis) ou subjetivos e obrigatórios/opcionais, ao menos 2 JuryMembers identificados por nome e papel, prazo de submissão (14–90 dias), prêmio em DECIA Points dentro do teto da regra global (valores do teto em aberto, Q-250) e o título do selo a ser emitido; os termos fixos do produto (\"não é processo seletivo\", \"a PI permanece com a pessoa; licença de exibição apenas\", \"a empresa não recebe dados individuais\"; texto sujeito à revisão jurídica, Q-252) são exibidos e não editáveis; conta EMPREGADO/CHEFE recebe 403 ACESSO_NEGADO; empresa com 3 desafios publicados ou 12 no ano recebe 409 LIMITE_DESAFIOS.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF79.CA02",
+        "text": "Dado um desafio em EM_REVISAO, quando o curador (CuratorAppointment escopo DESAFIOS; quem são os curadores está em aberto, Q-250) ou o ADMIN revisa, então vê o checklist versionado (ChallengeReviewPolicy: enunciado sem dado sensível nem linguagem de vaga, rubrica com critérios verificáveis, júri nomeado, prazo, prêmio no teto, nível coerente, selo específico — sem adjetivo de pessoa, nível ou percentual) e decide APROVAR, AJUSTES ou RECUSAR; AJUSTES/RECUSAR exigem ao menos um motivo padronizado (ex. SELO_GENERICO, LINGUAGEM_DE_VAGA, PEDE_DADO_PESSOAL, CESSAO_PI, NIVEL_INCOERENTE), senão 422 VALIDACAO; APROVAR com item obrigatório pendente → 409 CRITERIOS_PENDENTES; a empresa tem até 3 reenvios e 30 dias para ajustar.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF79.CA03",
+        "text": "Dado um desafio PUBLICADO, quando qualquer pessoa autenticada abre /profile?tab=profissao&sec=desafios ou /challenges, então vê enunciado, rubrica completa, nomes e papéis do júri, prazo, prêmio, termos e o título do selo, antes de participar; a lista é filtrada pela profissão preferida (D-148) com explicação \"por que vejo isto\" visível só à própria pessoa, e pode ser ampliada para outras profissões; não há convite, elegibilidade por vínculo nem lista de convidados.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF79.CA04",
+        "text": "Dado \"Participar\", quando confirmado, então nasce um GuidedTask (templateCode = CHALLENGE:<id>) com TaskItem.origin = DESAFIO em pasta própria e a peça abre no Letters/Drawings com o painel Guia (RF75.CA06) mostrando enunciado, critérios, rubrica e prazo; a participação é privada: não aparece no mural, na página da empresa, em sugestões de pessoas (RF50.CA16) nem em qualquer notificação à empresa promotora ou à empresa empregadora (D-147); desistir apaga a tarefa e a peça se a pessoa quiser.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF79.CA05",
+        "text": "Dado \"Enviar para avaliação\", quando acionado, então a versão da peça é congelada (artifactVersion), a IA executa só as checagens objetivas da rubrica (tamanho, campos, cotas, vistas, testes/formatos declarados) via AiGateway (AiCapability.PRECHECK_DESAFIO, com PersonalDataMasker) e exibe cada verificação com \"como foi calculado\"; a pessoa declara autoria e ausência de dado confidencial ou pessoal de terceiros; a pré-checagem reprovada não bloqueia o envio; IA indisponível (503 IA_INDISPONIVEL) permite enviar sem pré-checagem; reenviar dentro do prazo substitui a submissão (uma por pessoa por desafio).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF79.CA06",
+        "text": "Dado uma Submission, quando persistida, então recebe um pseudonym único no desafio e a cópia para o júri remove nome, username, avatar, empresa, metadados de arquivo e assinaturas; qualquer rota do júri que tente acessar dados do autor responde 404 NAO_ENCONTRADO; os JuryReviews referenciam só submissionId; a empresa promotora não tem rota para listar participantes nem submissões fora do júri.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF79.CA07",
+        "text": "Dado o período EM_JULGAMENTO, quando um jurado avalia, então marca cada critério subjetivo como APROXIMA/ATENDE/SUPERA conforme os descritores publicados na rubrica (objetivos: atendido/não atendido), com justificativa obrigatória (≥ 140 caracteres quando \"aproxima\" e quando \"supera\"), vê o relatório de pré-checagem como informação, pode marcar \"destaque\" sem ordem (proposta: até 5 por desafio, opt-in do autor — em aberto, Q-248) e declara \"reconheci a peça/autor\" para se abster; a decisão por critério é por maioria de ao menos 2 jurados; empate → curador; não existe campo de nota, pontuação total, posição ou ranking em nenhuma entidade ou tela.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF79.CA08",
+        "text": "Dado o resultado consolidado, quando publicado, então a pessoa recebe privadamente os critérios atendidos/não atendidos, justificativas, nomes dos jurados, versão da rubrica e \"como foi avaliado\"; o desafio é concluído quando todos os critérios obrigatórios estão atendidos; a empresa recebe apenas agregados com minSamples ≥ 10 (submissões, conclusões, taxa por critério, destaques em número se mantidos, Q-248); abaixo do mínimo recebe \"amostra insuficiente\".",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF79.CA09",
+        "text": "Dado um desafio concluído por uma pessoa, quando confirmado, então nascem Evidence + CompetencyEvidence (RF75.CA07: URL, versão, critérios atendidos, autoria, validatedBy = jurados/curador) e um ChallengeBadge com título específico de entrega (verbo + objeto + condição), competência ESCO/CBO, entregável, critérios atendidos e não atendidos, rubricVersion, challengeVersion, nível do desafio, nível do selo (bronze/prata/ouro, RF79.CA17), endorsedBy (nomes, papéis, organização), data e precheckSummary; o selo nunca é emitido só pela IA nem sem ao menos dois humanos identificados (ou um jurado + curador) registrados em JuryReview; um SealBond com basis = DESAFIO liga a peça ao Seal da empresa (RF39), exibido só com consentimento do dono (RF39 UC5).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF79.CA10",
+        "text": "Dado um ChallengeBadge, quando criado, então visibility = SO_EU; a pessoa altera por item para EMPRESA ou PUBLICA, independentemente do público da peça (controles separados: mostrar selo ≠ publicar peça); a sub-aba \"Desafios concluídos\" em /u/[username]?tab=desafios só existe se há ao menos um selo visível ao viewer e GET /api/people/{id}/tabs/desafios responde 404 caso contrário; contadores do cabeçalho contam só o visível.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF79.CA11",
+        "text": "Dado um selo, quando a pessoa pede exportação, então recebe um AchievementCredential Open Badges 3.0 assinado (emissor proposto: Work Station com endosso da empresa — em aberto, Q-249) com achievement (id = URL do desafio arquivado, name = título específico, criteria = rubrica, alignment = ESCO/CBO e norma citada), evidence[] (URL da peça se pública, senão URL opaca de verificação), result[] por critério com resultDescription (aproxima/atende/supera ou atendido/não atendido) e o \"Nível do selo\" como achievedLevel, endorsement da empresa e do curador e credentialStatus para revogação; o mesmo JSON fica em CompetencyEvidence.badgeJson.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF79.CA12",
+        "text": "Dado um resultado, quando a pessoa contesta em até 10 dias, então indica critérios e razão; um curador que não integrou o júri decide MANTIDO/REVISTO/ANULADO em 10 dias úteis com motivo; REVISTO atualiza critérios, selo (inclusive o nível) e credential; ANULADO invalida o critério para todos; a trilha fica em ChallengeAppeal e em \"como foi avaliado\".",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF79.CA13",
+        "text": "Dado uma submissão ou selo, quando a pessoa apaga, então a submissão, a Evidence, o CompetencyEvidence, o ChallengeBadge, o SealBond e qualquer SubmissionShare são removidos nas regras de retenção, o credential é revogado via credentialStatus, o júri perde acesso e só o agregado numérico permanece; a exportação do histórico do guia (RF75.CA17) inclui submissões, resultados e selos.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF79.CA14",
+        "text": "Dado o prêmio, quando o desafio é concluído pela pessoa, então o ledger recebe um DeciaPointsLedgerEntry (PointsEvent DESAFIO_CONCLUIDO, idempotencyKey = desafio + usuário, ruleVersionId da DeciaPointsRule do desafio) com valor igual para todos os concluintes (teto por nível proposto 30/60/120, em aberto, Q-250); bônus de destaque, se mantido (Q-248), é igual para todos os destacados; itens patrocinados (StoreItem.companyId) são entregues como BENEFICIO_BONUS; a conta EMPRESA não ganha pontos; nenhum campo de moeda real, vaga, entrevista ou contratação existe no desafio (RF40.CA08, RF42.CA10, R9).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF79.CA15",
+        "text": "Dado \"Compartilhar com a empresa promotora\", quando a pessoa aciona após o resultado, então vê o aviso \"a empresa passará a saber que você participou e verá sua peça e seu resultado\" e confirma; cria SubmissionShare revogável, que dá à empresa leitura dessa submissão e identidade — e nada mais (não amplia acesso ao perfil, à análise de carreira ou a outras peças, RF50.CA09); revogar remove a leitura; a empresa não pode solicitar o compartilhamento nem contatar a pessoa pelo desafio.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF79.CA16",
+        "text": "Dado uma denúncia de uso do desafio como etapa de seleção, pedido de dado pessoal ou cessão de PI, quando o ADMIN a julga procedente, então o desafio passa a SUSPENSO, os selos já emitidos permanecem com a pessoa (o mérito é dela), a empresa perde canPromoteChallenges por 180 dias e o fato entra no AuditLog; os termos do desafio incluem o canal de denúncia.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF79.CA17",
+        "text": "Dado um desafio com level validado pelo curador (item NIVEL_COERENTE; motivo NIVEL_INCOERENTE em AJUSTES) e uma rubrica cujos critérios subjetivos têm descritores publicados de \"aproxima\", \"atende\" e \"supera\", quando o júri consolida o resultado, então cada critério subjetivo recebe o grau da maioria, a submissão é CONCLUIDO_ATENDE (todos os obrigatórios ≥ atende), CONCLUIDO_SUPERA (idem e ≥ 2/3 dos subjetivos obrigatórios = supera) ou NAO_CONCLUIDO, e o tier do selo sai da matriz pública versionada (TierMatrix, D-151: iniciante→bronze/prata, pleno→prata/ouro, avançado→ouro/ouro; tierPolicy = FIXO dá a todos o metal da dificuldade); o nível descreve a entrega e não a pessoa: não existe campo, contagem, soma, filtro, ordenação, busca ou sugestão de pessoas por metal (/api/people, RF50.CA16), a aba lista itens sem totais por metal, a pessoa pode exibir o selo sem o nível (showTier = false) ou ocultar o item, a empresa só recebe contagem por metal com minSamples ≥ 10 e sem identidade, e o texto \"como foi avaliado\" explica a matriz e diz que o metal não compara pessoas; o metal nunca decai nem expira por inatividade.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF80",
+    "n": 80,
+    "title": "Feed da rede Work Station: projetos e tarefas publicados por todas as pessoas, com filtros por todos os campos públicos",
+    "hu": null,
+    "summary": "História de usuário: COMO pessoa autenticada no Work Station QUERO explorar, na aba \"Rede\" do Mural, um feed de todos os projetos e tarefas que outras pessoas publicaram como públicos (ou para a minha empresa), filtrando por categoria, área profissional, editor de origem, selo, remixável, idioma, região e os demais campos públicos do item, ordenando por recente, em alta (\"hype\"), mais curtidos, mais remixados, mais validados ou mais úteis, salvando filtros e seguindo categorias ou áreas PARA descobrir trabalhos úteis, aprender com produções publicadas e reutilizá-las com crédito — sem que nenhum dado privado de perfil, carreira ou Hype de terceiros seja exposto.",
+    "route": "Mural, sub-aba Rede (/mural?tab=rede, ao lado de Mural da empresa · Vitrine · Seguindo; filtros e ordenação na URL, ex.: /mural?tab=rede&sort=trending&category=ETP&area=ENGENHARIA&cursor=…), filtros salvos (/mural/filtros), preferências do feed (/settings?tab=privacidade)",
+    "coverage": "RF80.CA01 … RF80.CA16 — requisito da auditoria de 02/11/2026 (ABAS_POR_PROFISSAO.md §8 e fontes/feed-global.md §2–§5, onde os CAs aparecem com o número provisório RF76); numeração confirmada pela D-149; \"hype\" no feed = item em alta (D-150); visitante anônimo e itens EMPRESA na mesma lista seguem como propostos, em aberto na Q-246. Todos planejados. Já existem no código: Visibility, TaskCategory, TaskType, NatureTag, ProcessTag, WorkArea, os contadores em TaskItem/ProjectScheme, Reaction com ignoredReason, Remix, Follow, Seal*, CuratorAppointment, as regras puras de lib/social/rules.ts (canView, countersOf, remixPermission, muralFeed só DEMO) e a flag ws.opensearch.enabled com fallback MySQL.",
+    "cas": [
+      {
+        "id": "RF80.CA01",
+        "text": "Dado um item (tarefa ou projeto), quando o autor o publica por ação explícita com visibilidade PUBLICA e classificação PUBLICO/INTERNO, em estado elegível (tarefa DISPONIVEL/CONCLUIDA/MODELO_PUBLICO; projeto PUBLICADO/EM_DECISAO/APROVADO/EM_EXECUCAO/CONCLUIDO), então em até 30 s ele aparece no feed \"Rede\" para qualquer pessoa autenticada, com a versão publicada (não o rascunho), e um item EMPRESA aparece só para pessoas da mesma empresa com o rótulo \"sua empresa\" (lista única proposta; Q-246).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF80.CA02",
+        "text": "Dado um item presente no feed, quando sua visibilidade muda para PRIVADA/DEPARTAMENTO, sua classificação para RESTRITO/SIGILOSO, seu estado para RASCUNHO/ARQUIVADO/BLOQUEADA/DEVOLVIDO, ou ele é despublicado ou excluído, então ele some do feed, das contagens de faceta e do cache em até 5 s para quem perdeu acesso; a leitura reconfirma canView por id antes de responder; abrir o item por URL responde 404 NAO_ENCONTRADO (D-141). Teste automatizado \"mudança de visibilidade remove do índice\".",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF80.CA03",
+        "text": "Dado o feed, quando a pessoa aplica filtros, então estão disponíveis as facetas públicas do item: tipo (tarefa/projeto), categoria documental e subcategoria, tipo da tarefa, natureza, processo, área profissional/família de ocupação do item, editor de origem (Letters/Drawings/outro), autor, empresa/órgão (só em publicação institucional), identidade de publicação, intervalo de datas, exercício, estado/fase, competências declaradas, selo validado (emissor, nível, excelência), validado no DECIA, remixável, é remix, gerado com IA, idioma do conteúdo, região (UF/município), formato, classificação, contadores mínimos e em alta (\"hype\" do item: trendingScore na janela escolhida, D-150); filtros combinam por AND entre facetas e OR dentro da faceta; cada faceta mostra a contagem de itens elegíveis para o viewer.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF80.CA04",
+        "text": "Dado qualquer filtro ou ordenação, quando calculado, então usa somente atributos do item publicado ou campos descobríveis do autor (nome profissional, verified, vínculo institucional se a publicação é institucional); nunca usa perfil de carreira, preferredOccupation sem opt-in, HSE, DECIA Points, Hype do autor, sinal de emprego ou pretensão salarial (RF75.CA14, D-147, D-150); um teste de contrato falha se o DTO FeedItemView contiver qualquer desses campos.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF80.CA05",
+        "text": "Dado o feed, quando a pessoa escolhe a ordenação, então existem: recente (padrão, publishedAt desc), em alta — o filtro/ordenação \"hype\" do feed (D-150): trendingScore do item com decaimento temporal sobre reações válidas, salvos, remixes, comentários e visualizações; janelas 24 h / 7 d / 30 d; recalculado por job; o Hype do autor (RF45) nunca é filtro nem ordenação —, mais curtidos, mais remixados (atores distintos), mais validados (selo/decisão validada, nível, excelência) e mais úteis (ÚTIL + BEM_FUNDAMENTADO + CONFORME), todas com período (7 d / 30 d / 1 ano / sempre) e desempate por id.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF80.CA06",
+        "text": "Dado o cálculo de \"em alta\", curtidas e úteis, quando há reações com ignoredReason (AUTO_INTERACAO, NAO_VERIFICADO, ANTIFRAUDE) ou repetidas da mesma pessoa, então elas não pontuam; uma página de \"em alta\" tem no máximo 2 itens do mesmo autor; o Hype do autor nunca entra no cálculo.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF80.CA07",
+        "text": "Dado o card de um item no feed, quando exibido, então mostra título, resumo, capa/miniatura, tipo e categoria, autor (com verified; \"autor não disponível\" se o perfil não é visível ao viewer), empresa/órgão quando institucional, data de publicação, estado, área, editor de origem, idioma, região, selos, \"remix de…\" com crédito à origem, badge remixável, gerado com IA, contadores (curtidas, úteis, comentários, salvos, remixes) e o Hype do autor apenas se hypeVisibility = PUBLICO (D-150); as ações do RF26 (curtir, reagir, salvar, compartilhar, remixar, comentar) respeitam canInteract.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF80.CA08",
+        "text": "Dado a busca textual, quando a pessoa digita de 2 a 200 caracteres, então o servidor busca em título, resumo, descrição, tags, subcategoria e competências, com analisador pt-BR e sinônimos; fora da faixa responde 422 VALIDACAO; o trecho destacado nunca vem de item inelegível.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF80.CA09",
+        "text": "Dado o feed, quando a pessoa salva o conjunto atual de filtros e ordenação, então cria um SavedFilter (≤ 20 por pessoa, nome obrigatório, privado) acessível em /mural/filtros, com opção de digest por e-mail ou notificação, diário ou semanal; filtros salvos não são visíveis a terceiros.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF80.CA10",
+        "text": "Dado uma categoria, área profissional ou família de ocupação, quando a pessoa escolhe \"seguir\", então novos itens dessa faceta passam a alimentar a aba \"Seguindo\" e o filtro rápido \"o que eu sigo\"; seguir tópico não notifica por item (só digest), não concede acesso e é reversível.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF80.CA11",
+        "text": "Dado um item ou autor no feed, quando a pessoa escolhe \"ver menos disto\", \"ocultar item\", \"ocultar autor no feed\" ou define palavras silenciadas, então o ajuste vale só para ela, é persistido no servidor, não altera ACL, não notifica o autor e é reversível em /settings?tab=privacidade.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF80.CA12",
+        "text": "Dado um item no feed, quando a pessoa denuncia (motivos: impróprio, dados pessoais, direito autoral, spam, outro; texto ≤ 500), então um ContentReport é criado (uma denúncia por pessoa e item; repetida responde 409 JA_DENUNCIADO), o curador ou o chefe do departamento do item decide com trilha (AuditLog); com ≥ 3 denúncias de pessoas distintas o item sai de \"em alta\" até a análise; denúncia procedente remove o item do índice e notifica o autor com o motivo; improcedente restaura.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF80.CA13",
+        "text": "Dado o feed, quando a pessoa rola ou aciona \"Carregar mais\", então a paginação é por cursor opaco e assinado (sem offset), páginas de 20 (máx. 50), cursor válido por 5 min, profundidade máxima de 50 páginas; a URL reflete filtros e ordenação e o botão voltar restaura o estado; estados de carregamento, vazio e erro são reais.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF80.CA14",
+        "text": "Dado ws.opensearch.enabled = true, quando o feed consulta, então usa o índice ws-feed com PIT + search_after, aggs por faceta e o filtro (PUBLICA) OR (EMPRESA AND companyId = viewer); com a flag desligada usa feed_items materializada no MySQL com keyset pagination e FULLTEXT, mantendo as facetas principais; falha do índice mostra o estado vazio \"índice indisponível\", nunca 500, e nunca bloqueia publicar.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF80.CA15",
+        "text": "Dado o GET /api/feed, quando chamado, então exige autenticação (401 NAO_AUTENTICADO; o visitante anônimo vê só o convite para entrar — proposta, Q-246), aplica rate limit de 60 req/min por pessoa (429 com Retry-After), viewsCount incrementa no máximo 1× por pessoa e dia, as respostas têm Cache-Control: private e o feed não é indexável por buscadores.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF80.CA16",
+        "text": "Dado a aba \"Rede\", quando avaliada por acessibilidade, então tem lista semântica com aria-label, filtros em fieldset/legend, chips removíveis nomeados, aria-live ao carregar, foco preservado após a paginação, operação completa por teclado, contraste ≥ 4,5:1 e respeito a prefers-reduced-motion; teste axe sem violações críticas.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
+  },
+  {
+    "id": "RF81",
+    "n": 81,
+    "title": "Cadastrar-se com a profissão preferida para criar tarefas e projetos únicos da própria área",
+    "hu": null,
+    "summary": "Trello: card a criar no board Work Station (esta sessão não tem acesso ao Trello; o texto do card está em TRELLO_CARD.md).",
+    "route": "Cadastro (/register), Conta (/settings?tab=conta), criador de tarefas e projetos com modelos da profissão (/tasks/new?modelo=, /projects/new?modelo=)",
+    "coverage": "RF81.CA01 … RF81.CA10 — requisito novo pedido pelo usuário em 09/11/2026; todos planejados. Concretiza a decisão D-148 (profissão preferida já no cadastro) e o campo User.preferredOccupation do RF75.CA19. Já existem no repositório: o catálogo de 79 ramos (contracts/career/academic-fields.json), um pacote de domínio por ramo mais o genérico (contracts/career/occupation-packs/), o validador (npm run career:validate) e os helpers de busca e de pacote (lib/career/).",
+    "cas": [
+      {
+        "id": "RF81.CA01",
+        "text": "Dado o formulário de cadastro, quando a pessoa chega ao passo de perfil, então vê a pergunta opcional \"Qual profissão você quer desenvolver?\" com \"por que pergunto\" (\"para sugerir tarefas e projetos da sua área\"), autocompletar a partir de 2 caracteres sobre rótulo e aliases do catálogo (sem caixa nem acento, até 8 sugestões, ordem: rótulo igual, rótulo começa, alias igual, alias começa, contém) e a opção \"ainda não sei\"; pular não bloqueia o cadastro.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF81.CA02",
+        "text": "Dado o envio do cadastro com preferredOccupationCode, quando o servidor valida, então o código precisa existir no catálogo versionado; o rótulo gravado vem do catálogo (nunca do cliente); código desconhecido responde 422 VALIDACAO com details.fields.preferredOccupationCode e nada é criado; a conta nasce com preferredOccupationVisibility = SO_EU.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF81.CA03",
+        "text": "Dado a profissão preferida gravada, quando terceiros (outra pessoa, chefe, empresa, administrador, curador) consultam perfil, busca, pessoas semelhantes ou painéis, então o campo não aparece enquanto a pessoa não marcar \"mostrar no meu perfil\" em Conta; mesmo visível, nunca é filtro de busca de pessoas nem sinal de disponibilidade para emprego (D-147).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF81.CA04",
+        "text": "Dado o primeiro acesso com profissão preferida, quando a pessoa abre \"Nova tarefa\" ou \"Novo projeto\", então o criador mostra a seção \"Modelos da sua área\" com as tarefas-guia do OccupationPack do ramo na ordem de guidedTasks.priority, sem as excluídas e, no celular, sem as que exigem computador (D3, D8); cada modelo diz competência, entregável, tempo, critérios e \"por que este modelo\".",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF81.CA05",
+        "text": "Dado um modelo escolhido, quando a pessoa confirma \"Criar a partir do modelo\", então nasce uma TaskItem real (RF4) com origem PROFISSAO, título, categoria, critérios e parâmetros do pacote, e o caso, os dados e o contexto do enunciado são gerados para essa pessoa (variação paramétrica com semente própria; a IA via AiGateway só quando o modo de autonomia permitir, senão a variação determinística do pacote), de modo que duas pessoas não recebam o mesmo enunciado; a tarefa abre no Letters ou no Drawings com o painel Guia; a mesma confirmação repetida com a mesma Idempotency-Key não duplica (200 com a tarefa existente).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF81.CA06",
+        "text": "Dado um projeto criado a partir de modelos da área, quando a pessoa agrupa duas ou mais tarefas da profissão, então o projeto (RF21) recebe fases sugeridas pelo pacote (ex.: levantamento → projeto → detalhamento → apresentação) que a pessoa pode editar; nada é publicado sem ação explícita (REDE_PROFISSIONAL_VISIBILIDADE.md).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF81.CA07",
+        "text": "Dado \"ainda não sei\" ou cadastro sem profissão, quando a pessoa entra, então vale o pacote genérico (competências transversais), o criador mostra \"Modelos para começar\" e o guia oferece o teste de interesses (RF75.CA03); a qualquer momento a pessoa escolhe a profissão em Conta.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF81.CA08",
+        "text": "Dado a troca da profissão preferida em Conta, quando salva, então os modelos e sugestões passam a vir do novo pacote, tarefas, projetos e evidências já criados permanecem e ficam rotulados com o pacote de origem, e o AuditLog PROFILE_UPDATED registra só o nome do campo (sem valores).",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF81.CA09",
+        "text": "Dado uma tarefa da profissão concluída, quando a pessoa declara autoria e ausência de dado confidencial, então a pré-checagem objetiva do pacote roda (rubric.objective com auto = true), a tarefa gera Evidence e, com validação humana, CompetencyEvidence exportável (Open Badges 3.0) — o registro que \"agrega à formação\"; a IA nunca dá a validação.",
+        "note": "",
+        "kind": "enunciado"
+      },
+      {
+        "id": "RF81.CA10",
+        "text": "Dado o campo e as telas do RF, quando renderizados ou exportados, então funcionam por teclado e leitor de tela (combobox com aria-activedescendant), têm textos pt-BR/en/es sem identificadores internos, entram na exportação de dados da conta (LGPD art. 18) e a anonimização da conta zera código, rótulo e visibilidade.",
+        "note": "",
+        "kind": "enunciado"
+      }
+    ]
   }
 ];

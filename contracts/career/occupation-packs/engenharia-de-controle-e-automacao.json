@@ -1,0 +1,346 @@
+{
+  "schemaVersion": 1,
+  "code": "engenharia-de-controle-e-automacao",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Engenharia de Controle e Automação", "en": "Control and Automation Engineering", "es": "Ingeniería en Control y Automatización" },
+  "fields": ["engenharia-de-controle-e-automacao"],
+  "family": {
+    "cbo": [{ "code": "2143", "title": "Engenheiros eletricistas, eletrônicos e afins" }],
+    "isco08": [
+      { "code": "2152", "title": "Electronics engineers" },
+      { "code": "2149", "title": "Engineering professionals not elsewhere classified" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/bb609566-3ab6-44dd-8f48-cf0b15b96827", "label": "automation engineer" },
+      { "uri": "http://data.europa.eu/esco/occupation/551a6797-3ca9-41fc-9dca-9a982a8fd8a6", "label": "robotics engineer" },
+      { "uri": "http://data.europa.eu/esco/occupation/77abfaec-a250-4765-95fa-6091e8da1bba", "label": "electromechanical engineer" }
+    ]
+  },
+  "scope": {
+    "summary": "Projeta, programa, integra, comissiona e mantém sistemas de automação e controle de processos e máquinas: instrumentação, CLP, IHM e supervisório (SCADA), redes industriais, malhas de controle, robótica, mecatrônica e segurança funcional, em indústria, energia, saneamento e edificações. Inclui Mecatrônica e o tecnólogo em Automação Industrial. Profissão regulamentada pela Lei 5.194/1966; registro no CREA e ART para serviços técnicos.",
+    "entryRoles": ["Estagiário de automação", "Engenheiro de automação júnior", "Programador de CLP / IHM júnior", "Técnico ou tecnólogo em automação industrial", "Engenheiro de comissionamento júnior", "Analista de instrumentação"],
+    "midRoles": ["Engenheiro de automação pleno", "Engenheiro de controle de processos", "Engenheiro de instrumentação", "Engenheiro de robótica / integração de células", "Engenheiro de sistemas supervisórios (SCADA/MES)", "Engenheiro de manutenção de automação"],
+    "seniorRoles": ["Engenheiro de automação sênior / responsável técnico", "Arquiteto de automação e redes industriais", "Especialista em segurança funcional (SIS)", "Coordenador de projetos de automação", "Gerente de engenharia de automação / Indústria 4.0", "Consultor em integração OT/TI"],
+    "sectors": ["indústria de transformação (automotiva, alimentos, papel, metalurgia)", "óleo e gás e petroquímica", "energia (geração, subestações, renováveis)", "saneamento (ETA/ETE)", "mineração e siderurgia", "integradores de automação e máquinas", "fabricantes de equipamentos e robótica", "automação predial e edificações", "agroindústria", "ensino e pesquisa"],
+    "regulation": [
+      { "name": "Lei 5.194/1966", "issuer": "Brasil (CONFEA/CREA)", "about": "regula o exercício da engenharia; registro obrigatório no CREA; responsabilidade técnica" },
+      { "name": "Resolução CONFEA 427/1999 e Resolução 1.073/2016", "issuer": "CONFEA", "about": "atribuições do engenheiro de controle e automação (e, por análise curricular, do mecatrônico); atribuição de títulos" },
+      { "name": "Lei 6.496/1977 e Resolução CONFEA 1.025/2009", "issuer": "Brasil / CONFEA", "about": "Anotação de Responsabilidade Técnica (ART) para projeto, integração, comissionamento e manutenção" },
+      { "name": "Resolução CONFEA 1.002/2002", "issuer": "CONFEA", "about": "Código de Ética Profissional: sigilo de lógicas, credenciais e processos de clientes" },
+      { "name": "NR-12", "issuer": "MTE", "about": "segurança em máquinas: circuitos de comando e segurança, categorias e dispositivos de parada" },
+      { "name": "NR-10", "issuer": "MTE", "about": "segurança em instalações e serviços em eletricidade (painéis, comandos, comissionamento)" },
+      { "name": "ISA-5.1 (ANSI/ISA-5.1-2024)", "issuer": "ISA", "about": "simbologia e identificação de instrumentos e funções em P&ID e diagramas de malha" },
+      { "name": "IEC 61131-3 e IEC 61511 / IEC 61508", "issuer": "IEC", "about": "linguagens de programação de CLP; segurança funcional de sistemas instrumentados de segurança" },
+      { "name": "ABNT NBR ISO 13849-1 e NBR IEC 62443", "issuer": "ABNT / ISO / IEC", "about": "partes de sistemas de comando relacionadas à segurança; segurança cibernética de sistemas industriais" },
+      { "name": "ABNT NBR 10582 e NBR 5410", "issuer": "ABNT", "about": "folha de desenho técnico; instalações elétricas de baixa tensão dos painéis" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "CLP (PLC)", "meaning": "controlador lógico programável que executa a lógica de controle de máquinas e processos" },
+      { "term": "IHM / supervisório (SCADA)", "meaning": "interface homem-máquina local e sistema de supervisão e aquisição de dados da planta" },
+      { "term": "SDCD (DCS)", "meaning": "sistema digital de controle distribuído, típico de processos contínuos" },
+      { "term": "ladder, FBD, ST, SFC", "meaning": "linguagens de programação de CLP da IEC 61131-3 (contatos, blocos, texto estruturado, sequenciamento)" },
+      { "term": "lista de E/S (I/O list)", "meaning": "tabela de entradas e saídas: tag, descrição, tipo de sinal, cartão e borne" },
+      { "term": "malha de controle", "meaning": "sensor, controlador e elemento final que mantêm uma variável no setpoint" },
+      { "term": "PID", "meaning": "controlador proporcional-integral-derivativo; sintonia define desempenho da malha" },
+      { "term": "P&ID e diagrama de malha", "meaning": "diagrama de tubulação e instrumentação e detalhamento de cada malha com tags ISA-5.1" },
+      { "term": "tag ISA", "meaning": "identificação como TIC-201 (temperatura, indicação, controle, malha 201)" },
+      { "term": "redes industriais", "meaning": "PROFIBUS, PROFINET, Modbus, EtherNet/IP, OPC UA, IO-Link" },
+      { "term": "inversor de frequência e servoacionamento", "meaning": "acionamentos de motores com controle de velocidade e posição" },
+      { "term": "sensores e transmissores", "meaning": "indutivos, capacitivos, fotoelétricos, encoders; transmissores de pressão, nível, vazão, temperatura" },
+      { "term": "intertravamento", "meaning": "condição lógica que impede ou força uma ação por segurança ou sequência" },
+      { "term": "categoria / PL / SIL", "meaning": "níveis de desempenho e de integridade de segurança de circuitos de comando (ISO 13849, IEC 61508/61511)" },
+      { "term": "comissionamento e FAT/SAT", "meaning": "testes de aceitação em fábrica e em campo antes da partida" },
+      { "term": "descritivo funcional", "meaning": "documento que descreve como a automação deve operar: modos, sequências, alarmes, intertravamentos" },
+      { "term": "célula robotizada", "meaning": "robô industrial com periféricos, segurança e integração ao CLP" },
+      { "term": "GRAFCET / SFC", "meaning": "representação gráfica de sequência de etapas e transições" },
+      { "term": "MES / Indústria 4.0", "meaning": "sistemas de execução da manufatura e integração OT/TI, IIoT, dados de processo" },
+      { "term": "ART", "meaning": "Anotação de Responsabilidade Técnica no CREA; só o profissional habilitado assina" }
+    ],
+    "tools": ["TIA Portal / Step 7 (Siemens)", "Studio 5000 / RSLogix (Rockwell)", "CODESYS", "Elipse E3 / Ignition / WinCC / FactoryTalk (supervisórios)", "EPLAN / AutoCAD Electrical", "MATLAB / Simulink", "Python e Node-RED", "RoboStudio / RoboDK / KUKA.Sim", "Factory I/O (simulação)", "osciloscópio, multímetro, calibradores", "OPC UA e ferramentas de rede industrial", "Arduino / ESP32 / Raspberry Pi (prototipagem)"],
+    "deliverables": ["descritivo funcional de automação", "lista de E/S", "programa de CLP documentado (ladder/FBD/ST)", "telas de IHM e supervisório", "diagrama de malha e P&ID (ISA-5.1)", "esquema elétrico de painel de comando", "arquitetura de rede e de controle", "relatório de comissionamento (FAT/SAT)", "análise de risco e categoria de segurança (NR-12 / ISO 13849)", "procedimento de operação e de parada de emergência", "relatório de sintonia de malha", "projeto de célula robotizada"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Programação de CLP (IEC 61131-3)", "esco": null, "kind": "nucleo" },
+      { "label": "Instrumentação e malhas de controle (PID)", "esco": null, "kind": "nucleo" },
+      { "label": "Leitura e elaboração de P&ID, diagrama de malha e lista de E/S", "esco": null, "kind": "nucleo" },
+      { "label": "IHM e sistemas supervisórios (SCADA)", "esco": null, "kind": "nucleo" },
+      { "label": "Redes industriais e integração OT/TI", "esco": null, "kind": "nucleo" },
+      { "label": "Teoria de controle e modelagem de sistemas", "esco": null, "kind": "nucleo" },
+      { "label": "Esquemas elétricos de comando e painéis", "esco": null, "kind": "nucleo" },
+      { "label": "Segurança de máquinas e segurança funcional (NR-12, ISO 13849, IEC 61511)", "esco": null, "kind": "nucleo" },
+      { "label": "Acionamentos (inversores, servos) e eletrônica", "esco": null, "kind": "nucleo" },
+      { "label": "Robótica industrial e integração de células", "esco": null, "kind": "nucleo" },
+      { "label": "Comissionamento e testes (FAT/SAT)", "esco": null, "kind": "nucleo" },
+      { "label": "Sistemas embarcados e prototipagem", "esco": null, "kind": "apoio" },
+      { "label": "Programação (Python, C) e análise de dados de processo", "esco": null, "kind": "apoio" },
+      { "label": "Segurança cibernética industrial (IEC 62443)", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de projetos de automação", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação técnica escrita", "trabalho com operação e manutenção", "gestão de prazos e escopo", "ética, sigilo de cliente e responsabilidade técnica", "aprendizagem contínua de plataformas"],
+    "tracks": [
+      { "id": "programacao-e-controle", "label": "Programação e controle", "steps": ["esquema de controle de uma máquina com lista de E/S (D6)", "lógica de CLP documentada (X1)", "relatório técnico de sintonia de malha ou de simulação (L4)", "post sobre uma lição de programação (L5)"] },
+      { "id": "supervisorio-e-dados", "label": "Supervisório e dados", "steps": ["wireframe de tela de IHM com três estados (D9)", "infográfico de dados de processo (D7)", "descritivo funcional curto (L4)"] },
+      { "id": "comissionamento-e-campo", "label": "Comissionamento e campo", "steps": ["POP de comissionamento ou de parada de emergência (L7)", "estudo de caso de uma partida resolvida (L3)", "antes e depois de uma lógica ou painel (D5)", "fluxo de uma sequência de partida (D4)"] },
+      { "id": "apresentar-se", "label": "Apresentar-se como engenheiro(a) de automação", "steps": ["bio com plataformas e provas (L6)", "currículo direcionado (L1)", "prancha com três projetos (D2)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"programador de CLP\", \"técnico em automação\", \"engenheiro de instrumentação\", \"eletromecânico\"",
+      "cboFamilies": ["2143", "3001", "3131", "9513"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já faz (CLP, instrumentação, supervisório, robótica, campo) e não do zero. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, trainee ou primeiro cargo; ainda sem ART própria",
+        "junior": "até dois anos; programa e comissiona sob supervisão",
+        "pleno": "responde por projetos de automação; assina ART dos próprios serviços",
+        "senior": "responsável técnico; define arquitetura e segurança funcional",
+        "gestao": "coordena equipe ou área de engenharia de automação"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (de lógica simples a arquitetura com segurança funcional) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em automação",
+      "options": ["programar CLP (ladder, FBD, ST)", "desenvolver telas de IHM e supervisório", "instrumentação e calibração", "sintonizar malhas PID", "redes industriais (PROFINET, Modbus, OPC UA)", "esquemas elétricos de painel", "robótica e integração de células", "segurança de máquinas (NR-12, ISO 13849)", "comissionamento e partida", "inversores e servos", "sistemas embarcados e IoT", "Python e dados de processo", "modelagem e simulação de sistemas", "manutenção de automação"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com esquemas, lógicas e relatórios."
+    },
+    "c4": {
+      "certifications": ["registro no CREA (engenheiro ou tecnólogo)", "curso NR-10 e NR-12", "certificação Siemens (TIA Portal) ou Rockwell", "certificação ISA (CAP/CCST) ou curso ISA-5.1", "TÜV Functional Safety Engineer", "certificação em redes industriais (PROFIBUS/PROFINET)", "pós-graduação em automação, robótica ou Indústria 4.0", "mestrado / doutorado"],
+      "languages": ["inglês técnico (manuais e normas IEC/ISA)", "espanhol", "alemão (fabricantes)"],
+      "why": "Formação, registro e certificações de plataforma ajudam a ver lacunas em relação ao cargo que você quer; NR-10 e NR-12 aparecem em muitas vagas."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver em automação?",
+      "options": ["programação de CLP avançada", "supervisório e MES", "sintonia e controle avançado", "redes industriais e OPC UA", "segurança funcional (SIL/PL)", "robótica industrial", "segurança cibernética industrial", "Python e IIoT", "esquemas elétricos e painéis", "gestão de projetos de automação"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (esquema → lógica → relatório) em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Como está seu registro no CREA?", "type": "escolha", "options": ["ativo", "em andamento", "ainda não tenho", "não se aplica"], "why": "Pergunto porque assinar projeto e ART depende do registro; sem ele, as tarefas ficam como estudo e portfólio, sem simular documento assinável.", "where": "P" },
+      { "id": "x2", "prompt": "Em que frente você atua ou quer atuar?", "type": "lista", "options": ["programação de CLP e IHM", "instrumentação e controle de processo", "robótica e máquinas", "comissionamento e campo", "manutenção de automação", "redes, dados e Indústria 4.0", "ensino e pesquisa"], "why": "Pergunto para priorizar esquema e lógica (programação), P&ID e sintonia (processo) ou POP e comissionamento (campo).", "where": "P" },
+      { "id": "x3", "prompt": "Que plataformas você usa?", "type": "lista", "options": ["Siemens", "Rockwell", "Schneider", "CODESYS", "Elipse / Ignition / WinCC", "ABB / KUKA / FANUC", "outra"], "why": "Pergunto para sugerir tarefas e pessoas com a mesma plataforma; a lógica fica no portfólio em linguagem IEC 61131-3, sem copiar programa de cliente.", "where": "X" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["D6", "L4", "D9", "L7", "L6", "L1", "D4", "L3", "D7", "D5", "D2", "L9"],
+    "excluded": [
+      { "code": "D1", "reason": "planta de ambiente é entrega de arquitetura; o layout de painel entra em D6" },
+      { "code": "D3", "reason": "modelo 3D de produto com render não é evidência típica; célula robotizada entra em D6 ou D2" }
+    ],
+    "parameters": {
+      "D6": {
+        "title": "Esquema de controle de uma máquina ou malha com lista de E/S",
+        "brief": "Desenhe o esquema de controle de uma máquina ou de um trecho de processo didático: diagrama de malha ou P&ID com tags ISA-5.1, arquitetura CLP–IHM–rede, e lista de E/S (tag, descrição, tipo de sinal, cartão). Inclua o circuito de parada de emergência com a categoria pretendida. Sem lógica ou P&ID de cliente.",
+        "parameters": { "minIO": 8, "requiredElements": ["tags ISA-5.1", "arquitetura CLP–IHM–rede", "lista de E/S", "parada de emergência com categoria/PL", "legenda", "carimbo"], "standards": ["ISA-5.1", "NR-12", "ISO 13849-1", "NBR 10582"] },
+        "criteria": ["ao menos 8 pontos de E/S na lista com tag, tipo de sinal e descrição", "tags no padrão ISA-5.1", "arquitetura com CLP, IHM e rede identificados", "circuito de parada de emergência com categoria ou PL indicados", "legenda e carimbo preenchidos", "declaração de que a máquina/processo é didática ou anonimizada"],
+        "evidence": "prancha PDF/SVG + lista de E/S",
+        "time": "90 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório técnico de sintonia de malha ou de simulação de controle",
+        "brief": "Escreva um relatório técnico curto sobre uma malha que você sintonizou ou simulou (nível, temperatura, velocidade): objetivo, modelo ou identificação do processo, método de sintonia (Ziegler-Nichols, IMC, ajuste manual), resultados (sobressinal, tempo de acomodação, erro), limitações e referências. Até 4 páginas. Estudo de portfólio, não documento assinável.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "processo e modelo", "método", "resultados", "limitações", "referências"], "mustReport": ["parâmetros PID finais", "ao menos dois índices de desempenho", "gráfico da resposta"] },
+        "criteria": ["seis seções nomeadas", "parâmetros PID e método de sintonia informados", "ao menos dois índices de desempenho com gráfico", "até 4 páginas", "aviso de que não substitui projeto com ART", "dados didáticos ou anonimizados"],
+        "evidence": "relatório PDF versionado",
+        "time": "2 h",
+        "level": 3
+      },
+      "D9": {
+        "title": "Tela de IHM ou supervisório com três estados",
+        "brief": "Desenhe o wireframe de uma tela de operação (sinótico de uma máquina ou processo) em três estados: operação normal, alarme/falha e parada ou manutenção, com anotações de interação (comandos, confirmações, níveis de acesso) e padrão de cores de alarme (ISA-101 como referência).",
+        "parameters": { "states": ["normal", "alarme/falha", "parado/manutenção"], "requiredElements": ["sinótico com tags", "área de alarmes", "comandos com confirmação", "nível de acesso anotado", "legenda de cores"] },
+        "criteria": ["três estados desenhados", "tags visíveis no sinótico", "comandos críticos com confirmação anotada", "legenda de cores de alarme", "sem tela ou processo de cliente"],
+        "evidence": "prancha PDF/PNG",
+        "time": "90 min",
+        "level": 2
+      },
+      "L7": {
+        "title": "POP de comissionamento ou de parada de emergência",
+        "brief": "Escreva um procedimento que você domina (teste de E/S em comissionamento, verificação de parada de emergência, troca de cartão de CLP) com passos numerados, responsável, EPI, bloqueio de energias (NR-10/NR-12), valores esperados e critério de conclusão por passo.",
+        "parameters": { "requiredElements": ["passos numerados", "responsável por passo", "EPI/EPC", "bloqueio de energias", "valores esperados", "critério de conclusão por passo"] },
+        "criteria": ["passos numerados com responsável", "bloqueio e etiquetagem antes da intervenção", "valores esperados em cada verificação", "critério de conclusão em cada passo", "sem dado sigiloso do cliente"],
+        "evidence": "POP em modelo",
+        "time": "60 min",
+        "level": 2
+      },
+      "L6": {
+        "title": "Resumo de perfil em automação",
+        "brief": "Escreva até 600 caracteres com sua frente (CLP, processo, robótica, campo), plataformas, três competências e uma prova com link (esquema, lógica, relatório). Sem dados pessoais além do nome.",
+        "parameters": { "maxChars": 600, "requiredParts": ["frente de atuação", "três competências", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia a frente de atuação", "cita três competências", "inclui uma prova com link"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "drawings",
+        "title": "Lógica de CLP documentada (ladder/FBD/SFC) de uma sequência",
+        "competency": "Programação de CLP (IEC 61131-3)",
+        "criteria": ["sequência em GRAFCET/SFC ou fluxograma com etapas e transições", "trecho da lógica em ladder ou FBD com comentários", "tabela de variáveis ligada à lista de E/S", "intertravamentos e parada de emergência representados", "lógica didática, não de cliente"],
+        "evidence": "prancha PDF/SVG com lógica e tabela",
+        "time": "2 h",
+        "trigger": "Quer mostrar como pensa uma sequência antes de programar?",
+        "level": 2
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Descritivo funcional curto de uma automação",
+        "competency": "Leitura e elaboração de P&ID, diagrama de malha e lista de E/S",
+        "criteria": ["seções: escopo, modos de operação, sequência, intertravamentos, alarmes, falhas e recuperação", "cada intertravamento com causa e ação", "alarmes com prioridade", "até 3 páginas", "processo didático ou anonimizado declarado"],
+        "evidence": "documento PDF",
+        "time": "90 min",
+        "trigger": "Quer treinar o documento que todo integrador pede antes de programar?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tags-isa", "check": "instrumentos e pontos têm tags no padrão ISA-5.1 e há legenda", "appliesTo": ["D6", "X1", "D9"], "auto": true },
+      { "id": "lista-de-es", "check": "a lista de E/S tem tag, descrição e tipo de sinal em cada ponto (mínimo 8)", "appliesTo": ["D6", "X1"], "auto": true },
+      { "id": "parada-de-emergencia", "check": "o circuito ou a lógica representam a parada de emergência com categoria/PL indicados", "appliesTo": ["D6", "X1"], "auto": true },
+      { "id": "tres-estados", "check": "a tela tem três estados e legenda de cores de alarme", "appliesTo": ["D9"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L9", "X2"], "auto": true },
+      { "id": "indices-de-desempenho", "check": "o relatório informa parâmetros PID, método e ao menos dois índices de desempenho com gráfico", "appliesTo": ["L4"], "auto": true },
+      { "id": "passos-com-responsavel", "check": "cada passo do POP tem responsável e critério de conclusão", "appliesTo": ["L7"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas, palavras ou caracteres", "appliesTo": ["L1", "L2", "L4", "L5", "L6", "X2"], "auto": true },
+      { "id": "aviso-nao-assinavel", "check": "o documento declara que é estudo de portfólio e não substitui projeto, laudo ou análise de risco com ART", "appliesTo": ["D6", "L4", "X1", "X2"], "auto": true },
+      { "id": "sigilo-de-cliente", "check": "a pessoa declarou autoria e que lógicas, telas, P&IDs e credenciais não são de cliente (didáticos ou anonimizados)", "appliesTo": ["D6", "D9", "D4", "D5", "D7", "L3", "L4", "L7", "D2", "X1", "X2"], "auto": true },
+      { "id": "diagrama-fechado", "check": "sequência ou fluxo tem início e fim e nenhuma etapa órfã", "appliesTo": ["D4", "X1"], "auto": true },
+      { "id": "coerencia-da-logica", "check": "intertravamentos e sequência são coerentes com o descritivo e com a segurança pretendida", "appliesTo": ["X1", "X2", "D6"], "auto": false }
+    ],
+    "subjective": [
+      { "id": "rigor-tecnico", "label": "Rigor técnico", "levels": { "aproxima": "lógica ou sintonia sem justificativa", "atende": "escolhas justificadas, normas citadas e resultados medidos", "supera": "compara alternativas, discute robustez e falhas e seus limites" } },
+      { "id": "seguranca-funcional", "label": "Segurança incorporada", "levels": { "aproxima": "segurança como lembrete genérico", "atende": "riscos identificados e circuito/lógica de segurança ligados a cada um", "supera": "categoria/PL justificada, falha segura e teste de validação descritos" } },
+      { "id": "operabilidade", "label": "Operabilidade", "levels": { "aproxima": "operador não saberia o que fazer em falha", "atende": "estados, alarmes e comandos claros para quem opera", "supera": "tela e lógica antecipam erro humano e facilitam diagnóstico" } },
+      { "id": "resultado", "label": "Resultado demonstrado", "levels": { "aproxima": "descreve atividades, sem resultado", "atende": "mostra um resultado mensurável (tempo de ciclo, estabilidade, paradas evitadas)", "supera": "resultado, contexto, limitações e o que faria diferente" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa da Engenharia de Controle e Automação (inclui Mecatrônica e Automação Industrial; CBO 2143, ISCO 2152/2149). Use o vocabulário da área: CLP, IHM, supervisório/SCADA, SDCD, ladder/FBD/ST/SFC, lista de E/S, malha de controle, PID, P&ID e diagrama de malha, tag ISA, redes industriais (PROFINET, Modbus, OPC UA), inversor, servo, intertravamento, categoria/PL/SIL, FAT/SAT, descritivo funcional, célula robotizada, GRAFCET, MES. Cite referências pelo nome quando couber: ISA-5.1, ISA-101 (IHM), IEC 61131-3, IEC 61511/61508, ISO 13849-1, IEC 62443, NR-12, NR-10, NBR 5410, Lei 5.194/1966 e Resolução CONFEA 1.002/2002 (ética). O que nunca fazer: não produza nem apresente como pronto projeto, análise de risco NR-12, laudo, programa para planta real ou ART assináveis; tudo que a IA gera é estudo de portfólio e exercício, e a responsabilidade técnica é do profissional registrado no CREA. Não oriente intervenção em máquina ou painel energizado nem alteração de lógica de segurança em operação; remeta à NR-10/NR-12 e ao responsável técnico. Não use nem peça lógicas de CLP, telas, P&IDs, endereços de rede ou credenciais de sistemas SCADA e industriais de clientes; proponha versões didáticas ou anonimizadas. Pergunte antes de inferir frente de atuação, plataforma, nível ou registro. Toda sugestão de tarefa diz a competência que comprova, a evidência, o tempo e o porquê, e aceita \"não me serve\". Dados de mercado só com fonte, data e região (CAGED, RAIS, CONFEA, ABIMAQ, ABINEE) ou \"estimativa\"; nunca prometa emprego nem fale de salário. Progresso é por critérios atendidos; a pré-checagem cobre só critérios objetivos (tags, lista de E/S, parada de emergência representada, três estados, seções, índices, aviso de não assinável, sigilo declarado) e o selo depende de revisão humana.",
+    "citeSources": [
+      { "title": "CONFEA — Normativos (Lei 5.194/1966, Resoluções 427/1999, 1.002/2002, 1.025/2009, 1.073/2016)", "url": "https://normativos.confea.org.br/", "kind": "conselho" },
+      { "title": "MTE — Normas Regulamentadoras vigentes (NR-10, NR-12)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadoras/normas-regulamentadoras-vigentes", "kind": "norma" },
+      { "title": "ISA — ANSI/ISA-5.1 Instrumentation and Control — Symbols and Identification", "url": "https://www.isa.org/products/ansi-isa-5-1-2022-instrumentation-symbols-and-iden", "kind": "norma" },
+      { "title": "IEC — IEC 61131-3 (linguagens de CLP) e IEC 61511 (segurança funcional)", "url": "https://webstore.iec.ch/", "kind": "norma" },
+      { "title": "Catálogo ABNT (NBR ISO 13849-1, NBR IEC 62443, NBR 5410, NBR 10582)", "url": "https://www.abntcatalogo.com.br/", "kind": "norma" },
+      { "title": "ABIMAQ — Manual de instruções NR-12", "url": "https://abimaq.org.br//wp-content/uploads/2024/02/2024020617245001707510565.pdf", "kind": "comunidade" },
+      { "title": "CBO — família 2143 Engenheiros eletricistas, eletrônicos e afins (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "ESCO — automation engineer", "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http://data.europa.eu/esco/occupation/bb609566-3ab6-44dd-8f48-cf0b15b96827", "kind": "referencia" },
+      { "title": "Novo CAGED — MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2/c5 com competências de automação e as extras x1 (registro CREA), x2 (frente) e x3 (plataformas)." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza D6 esquema com E/S, L4 sintonia e D9 tela de IHM; x2 campo → L7, D4 primeiro; processo → D6 como P&ID; cada card diz competência, evidência, tempo e porquê." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "D6, D9, X1 e L4 só com computador e em semanas com 4 h ou mais (d1, d4)." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa tags ISA, lista de E/S, parada de emergência representada, três estados, seções, índices com gráfico, aviso de não assinável e sigilo; coerência da lógica fica para revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de relatório de sintonia, POP e descritivo funcional; nunca gera programa para planta real nem análise de risco apresentada como oficial." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Sugere simbologia ISA-5.1, organização da lista de E/S, estados da tela e cores de alarme (ISA-101); não define categoria de segurança por conta própria." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese por competências declaradas e evidenciadas (esquema, lógica, tela, relatório); cita o campo de cada afirmação." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: elétrica, mecânica, computação, produção, química, segurança da informação; sempre com lacunas e passos, sem previsão." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por ESCO automation/robotics engineer, CBO 2143 e competências (plataformas) compartilhadas; só pessoas com opt-in." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\"." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com frente, plataformas e provas; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, plataformas, redes e certificações em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "lógicas de CLP e diagramas de plantas de clientes", "credenciais, endereços e topologias de sistemas SCADA e industriais", "segredos de processo", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca produzir ou apresentar projeto, análise de risco, laudo, programa para planta real ou ART como documento assinável; tudo é estudo de portfólio",
+      "não orientar intervenção em máquina ou painel energizado nem alteração de lógica de segurança em operação; remeter à NR-10/NR-12 e ao responsável técnico",
+      "não usar nem pedir lógicas, telas, P&IDs, endereços de rede ou credenciais de sistemas de clientes; propor versões didáticas",
+      "perguntar em vez de inferir frente de atuação, plataforma, nível ou registro no CREA",
+      "mercado com fonte, data e região ou \"estimativa\"; sem promessa de emprego e sem salário",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "media", "drawings": "alta" },
+    "drawingsModes": ["diagrama", "2d-tecnico", "wireframe", "infografico", "prancha"],
+    "lettersTemplates": ["relatorio-tecnico", "pop", "memorial", "curriculo", "bio", "estudo-de-caso", "carta", "plano-30-60-90", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "D6, D9, X1 e L4 pedem computador; no celular ficam L6, L5, L10 e a revisão de POP.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: o esquema de controle de uma máquina didática com lista de E/S e parada de emergência (90 min). Comprova projeto de automação.",
+        "Tem 15 min? Escreva sua bio com as plataformas que usa e um link para uma lógica ou esquema seu.",
+        "Sem pressão. Quando quiser retomar, o POP de comissionamento (60 min) está aqui.",
+        "Sua tela de IHM atendeu 4 de 5 critérios objetivos; falta a legenda de cores de alarme. O selo depende de revisão humana."
+      ]
+    },
+    "insights": { "peersBy": ["esco", "cbo", "competencias", "setor"] },
+    "privacy": { "sensitiveData": ["lógicas de CLP e diagramas de plantas de clientes", "credenciais de sistemas SCADA e industriais", "segredos de processo", "endereços de rede e topologias OT"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2143 e 3001", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "PNAD Contínua (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html", "geography": "Brasil e UF", "cadence": "trimestral", "kind": "estatistica-oficial" },
+      { "title": "CONFEA — Estatísticas do Sistema Confea/Crea (profissionais registrados por modalidade e UF)", "url": "https://www.confea.org.br/", "geography": "Brasil e UF", "cadence": "continua", "kind": "conselho" },
+      { "title": "ABIMAQ — indicadores da indústria de máquinas e automação", "url": "https://abimaq.org.br/", "geography": "Brasil", "cadence": "mensal", "kind": "associacao" },
+      { "title": "ABINEE — desempenho da indústria elétrica e eletrônica (automação industrial)", "url": "https://www.abinee.org.br/", "geography": "Brasil", "cadence": "mensal", "kind": "associacao" },
+      { "title": "CNI — Sondagem Especial Indústria 4.0", "url": "https://www.portaldaindustria.com.br/estatisticas/", "geography": "Brasil", "cadence": "eventual", "kind": "pesquisa" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis (CAGED, RAIS, CONFEA, ABIMAQ, ABINEE, CNI); sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147). A automação não tem CBO própria: dados por CBO 2143 agregam a elétrica e são citados com esse aviso."
+  },
+  "paths": [
+    { "to": "engenharia-eletrica", "why": "Mesma família CBO 2143; painéis, acionamentos e instalações já fazem parte do trabalho de automação.", "gaps": ["dimensionamento NBR 5410 e média tensão", "sistemas de potência e proteção", "projeto elétrico completo com ART"], "steps": ["unifilar de um painel de máquina com quadro de cargas (D6)", "memorial de dimensionamento (L4)", "curso NR-10 SEP e proteção"] },
+    { "to": "engenharia-mecanica", "why": "Mecatrônica e integração de máquinas pedem entendimento de mecanismos, acionamentos e manutenção.", "gaps": ["elementos de máquinas e desenho mecânico", "hidráulica e pneumática avançadas", "manutenção mecânica"], "steps": ["vista explodida de um conjunto atuador (D8)", "POP de manutenção eletromecânica (L7)", "curso de CAD 3D"] },
+    { "to": "engenharia-de-computacao", "why": "Sistemas embarcados, IIoT, OPC UA e integração OT/TI são a ponte para software e hardware.", "gaps": ["programação estruturada e versionamento", "redes TCP/IP e segurança", "arquitetura de software"], "steps": ["protótipo embarcado documentado (L4)", "fluxo de dados de uma integração MES (D4)", "curso de Python e Git"] },
+    { "to": "engenharia-de-producao", "why": "Automação de linhas e dados de processo alimentam OEE, PCP e melhoria contínua.", "gaps": ["Lean e indicadores de produção", "custos e viabilidade", "gestão de projetos"], "steps": ["infográfico de OEE a partir de dados de automação (D7)", "antes e depois de uma célula automatizada (D5)", "curso de Lean"] },
+    { "to": "engenharia-quimica", "why": "Controle de processo contínuo (SDCD, malhas, SIS) é o núcleo da automação em plantas químicas.", "gaps": ["operações unitárias e balanços", "segurança de processo (HAZOP, NR-20)", "dinâmica de processos"], "steps": ["P&ID com malhas de um processo didático (D6)", "relatório de sintonia de malha de processo (L4)", "curso de introdução a processos"] },
+    { "to": "seguranca-da-informacao", "why": "Segurança cibernética de sistemas industriais (IEC 62443) é demanda crescente e parte do conhecimento OT.", "gaps": ["fundamentos de segurança de redes e TI", "normas e frameworks (ISO 27001, NIST)", "resposta a incidentes"], "steps": ["arquitetura de rede OT com zonas e condutos (D6)", "relatório técnico de avaliação de riscos OT didática (L4)", "curso de segurança de redes"] }
+  ],
+  "learning": [
+    { "title": "Cursos gratuitos a distância do SENAI (automação industrial, CLP, instrumentação)", "provider": "SENAI", "url": "https://www.senai.br/", "free": true, "kind": "portal" },
+    { "title": "CODESYS — ambiente de programação IEC 61131-3 gratuito e tutoriais", "provider": "CODESYS", "url": "https://www.codesys.com/", "free": true, "kind": "portal" },
+    { "title": "Siemens SITRAIN e Learning (cursos abertos e pagos sobre TIA Portal)", "provider": "Siemens", "url": "https://www.siemens.com/br/pt/produtos/servicos/sitrain.html", "free": false, "kind": "curso" },
+    { "title": "ISA Distrito 4 (Brasil) — seções, eventos e cursos ISA", "provider": "ISA", "url": "https://www.isa.org/", "free": false, "kind": "comunidade" },
+    { "title": "ABIMAQ — Manual de instruções para aplicação da NR-12", "provider": "ABIMAQ", "url": "https://abimaq.org.br//wp-content/uploads/2024/02/2024020617245001707510565.pdf", "free": true, "kind": "norma" },
+    { "title": "e-Aulas USP — Controle de Sistemas, Automação e Robótica", "provider": "USP", "url": "https://eaulas.usp.br/", "free": true, "kind": "curso" },
+    { "title": "Escola Virtual.Gov — Indústria 4.0, dados e gestão de projetos", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Engenharia de Controle Moderno (Ogata)", "provider": "Pearson", "url": "https://br.pearson.com/", "free": false, "kind": "livro" },
+    { "title": "ANSI/ISA-5.1 e ISA-101 (normas pagas)", "provider": "ISA", "url": "https://www.isa.org/products/ansi-isa-5-1-2022-instrumentation-symbols-and-iden", "free": false, "kind": "norma" },
+    { "title": "OPC Foundation — especificação OPC UA e material introdutório", "provider": "OPC Foundation", "url": "https://opcfoundation.org/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "World of Taxonomy (espelho ESCO) — automation engineer bb609566-3ab6-44dd-8f48-cf0b15b96827, ISCO 2141", "url": "https://worldoftaxonomy.com/codes/esco_occupations/bb609566-3ab6-44dd-8f48-cf0b15b96827", "accessedAt": "2026-11-02" },
+    { "title": "ESCO — robotics engineer 551a6797-3ca9-41fc-9dca-9a982a8fd8a6 (URI herdada da fase 1)", "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http://data.europa.eu/esco/occupation/551a6797-3ca9-41fc-9dca-9a982a8fd8a6", "accessedAt": "2026-11-02" },
+    { "title": "ESCO — electromechanical engineer 77abfaec-a250-4765-95fa-6091e8da1bba (URI herdada da fase 1)", "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http%3A%2F%2Fdata.europa.eu%2Fesco%2Foccupation%2F77abfaec-a250-4765-95fa-6091e8da1bba", "accessedAt": "2026-11-02" },
+    { "title": "CBO (espelho VRI Consulting) — 2143-05 engenheiro eletricista, família 2143", "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=214305", "accessedAt": "2026-11-02" },
+    { "title": "CONFEA — Manual CEAP (resoluções por título; Resolução 1.073/2016)", "url": "https://confea.org.br/midias/uploads-imce/Manual_Ceap.pdf", "accessedAt": "2026-11-02" },
+    { "title": "CONFEA — Estatísticas do Sistema disponíveis", "url": "https://www.confea.org.br/node/116116", "accessedAt": "2026-11-02" },
+    { "title": "ISA — ANSI/ISA-5.1-2022 (superseded por ANSI/ISA-5.1-2024)", "url": "https://www.isa.org/products/ansi-isa-5-1-2022-instrumentation-symbols-and-iden", "accessedAt": "2026-11-02" },
+    { "title": "Automation.com — ISA symbols standard ISA-5.1 updated (2022)", "url": "https://www.automation.com/en-us/articles/august-2022/isa-symbols-standard-isa-5-1-updated", "accessedAt": "2026-11-02" },
+    { "title": "MTE — NR-12 atualizada 2023 (PDF)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/NR12atualizada2023.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Portaria MTE 737/2026 — nova redação da NR-10 (vigência 2027)", "url": "https://www.normaslegais.com.br/legislacao/portaria-mte-737-2026.htm", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Rede da sessão bloqueia esco.ec.europa.eu e confea.org.br: URI ESCO de automation engineer conferida só no espelho World of Taxonomy (que a mapeia em ISCO 2141, não 2152); robotics e electromechanical engineer herdadas da fase 1.",
+    "Resolução CONFEA 427/1999 (atribuições do engenheiro de controle e automação) citada de memória; pertencimento do engenheiro de automação/mecatrônico à família CBO 2143 não conferido (herdado da fase 1). Resoluções 1.002/2002 e 1.025/2009 e Lei 6.496/1977 de memória.",
+    "IEC 61131-3, IEC 61511/61508, ISO 13849-1, IEC 62443, ISA-101 e NBR 5410: números e vigência de memória; ISA-5.1 edição 2024 confirmada só em loja de normas.",
+    "Famílias CBO 3001, 3131 e 9513 em questions.a4.cboFamilies não conferidas no portal da CBO.",
+    "Estatísticas do CONFEA não têm recorte conferido para controle e automação; a modalidade elétrica agrega esses profissionais.",
+    "URLs de aprendizagem e associações (SENAI, CODESYS, Siemens SITRAIN, ISA, e-Aulas USP, Pearson, OPC Foundation, ABINEE, CNI) não verificadas nesta sessão.",
+    "Vocabulário, competências, tarefas e rubrica vêm do conhecimento da profissão, não de fonte primária."
+  ]
+}

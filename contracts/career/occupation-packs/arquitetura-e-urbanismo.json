@@ -1,0 +1,1275 @@
+{
+  "schemaVersion": 1,
+  "code": "arquitetura-e-urbanismo",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": {
+    "pt-BR": "Arquitetura e Urbanismo",
+    "en": "Architecture and Urbanism",
+    "es": "Arquitectura y Urbanismo"
+  },
+  "fields": [
+    "arquitetura-e-urbanismo"
+  ],
+  "family": {
+    "cbo": [
+      {
+        "code": "2141",
+        "title": "Arquitetos e urbanistas"
+      }
+    ],
+    "isco08": [
+      {
+        "code": "2161",
+        "title": "Building architects"
+      }
+    ],
+    "esco": [
+      {
+        "uri": "http://data.europa.eu/esco/occupation/8c3f536e-ba66-4321-ba40-363dc39f129b",
+        "label": "architect"
+      }
+    ]
+  },
+  "scope": {
+    "summary": "Concebe, projeta e coordena edificações, interiores, paisagismo e espaços urbanos, da proposta ao projeto executivo e ao acompanhamento de obra, com responsabilidade técnica registrada no CAU (RRT, Lei 12.378/2010). Atua em escritórios, construtoras e incorporadoras, prefeituras e órgãos de planejamento, patrimônio e assistência técnica para habitação de interesse social.",
+    "entryRoles": [
+      "Estagiário de arquitetura",
+      "Arquiteto júnior",
+      "Projetista (desenho técnico e BIM)",
+      "Assistente de aprovação de projetos",
+      "Arquiteto trainee em construtora"
+    ],
+    "midRoles": [
+      "Arquiteto de projetos (pleno)",
+      "Arquiteto de interiores",
+      "Coordenador de compatibilização e BIM",
+      "Arquiteto de aprovações e legalização",
+      "Arquiteto de obra",
+      "Analista de planejamento urbano (prefeitura)",
+      "Arquiteto paisagista"
+    ],
+    "seniorRoles": [
+      "Arquiteto sênior e líder de projeto",
+      "Sócio de escritório",
+      "Coordenador de projetos de empreendimentos",
+      "Gerente de projetos de incorporadora",
+      "Arquiteto de patrimônio e restauro",
+      "Urbanista responsável por plano diretor",
+      "Perito e avaliador (CAU)"
+    ],
+    "sectors": [
+      "escritórios de arquitetura e urbanismo",
+      "construção civil e incorporação",
+      "interiores e varejo (lojas, corporativo)",
+      "administração pública (planejamento urbano, habitação, patrimônio)",
+      "assistência técnica para habitação de interesse social (ATHIS, Lei 11.888/2008)",
+      "paisagismo",
+      "patrimônio histórico (IPHAN)",
+      "indústria de materiais e mobiliário (especificação)",
+      "ensino e pesquisa"
+    ],
+    "regulation": [
+      {
+        "name": "Lei 12.378/2010",
+        "issuer": "Brasil",
+        "about": "regulamenta o exercício da Arquitetura e Urbanismo e cria o CAU/BR e os CAU/UF"
+      },
+      {
+        "name": "Resolução CAU/BR 21/2012",
+        "issuer": "CAU/BR",
+        "about": "atividades e atribuições profissionais do arquiteto e urbanista; base de classificação do RRT"
+      },
+      {
+        "name": "Resolução CAU/BR 51/2013",
+        "issuer": "CAU/BR",
+        "about": "áreas de atuação privativas dos arquitetos e urbanistas"
+      },
+      {
+        "name": "Resolução CAU/BR 52/2013",
+        "issuer": "CAU/BR",
+        "about": "Código de Ética e Disciplina: sigilo, autoria, relações com clientes e colegas"
+      },
+      {
+        "name": "Resolução CAU/BR 91/2014 (alterada por 177/2019 e 184/2019)",
+        "issuer": "CAU/BR",
+        "about": "Registro de Responsabilidade Técnica (RRT): tipos, prazos e formas de registro"
+      },
+      {
+        "name": "ABNT NBR 6492:2021",
+        "issuer": "ABNT",
+        "about": "documentação técnica para projetos arquitetônicos e urbanísticos: pranchas, escalas, cotas, carimbo"
+      },
+      {
+        "name": "ABNT NBR 9050:2020",
+        "issuer": "ABNT",
+        "about": "acessibilidade a edificações, mobiliário, espaços e equipamentos urbanos"
+      },
+      {
+        "name": "ABNT NBR 16636 (partes 1 a 3) e NBR 15575:2021",
+        "issuer": "ABNT",
+        "about": "etapas de projeto arquitetônico e urbanístico (sucessora das NBR 13531/13532) e desempenho de edificações"
+      },
+      {
+        "name": "Lei 10.257/2001 (Estatuto da Cidade) e Lei 13.146/2015 (LBI)",
+        "issuer": "Brasil",
+        "about": "instrumentos de política urbana e plano diretor; acessibilidade como direito"
+      }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      {
+        "term": "RRT",
+        "meaning": "Registro de Responsabilidade Técnica no CAU; equivalente da ART para arquitetos e urbanistas"
+      },
+      {
+        "term": "CAU",
+        "meaning": "Conselho de Arquitetura e Urbanismo (CAU/BR e CAU/UF); registro obrigatório para exercer"
+      },
+      {
+        "term": "estudo preliminar",
+        "meaning": "primeira etapa de projeto: partido, implantação, volumetria e áreas"
+      },
+      {
+        "term": "anteprojeto",
+        "meaning": "etapa que define dimensões, materiais e sistemas para aprovação do cliente"
+      },
+      {
+        "term": "projeto legal",
+        "meaning": "documentação para aprovação na prefeitura e demais órgãos (bombeiros, patrimônio)"
+      },
+      {
+        "term": "projeto executivo",
+        "meaning": "pranchas e detalhes completos para a execução da obra"
+      },
+      {
+        "term": "programa de necessidades",
+        "meaning": "lista de ambientes, usos, áreas e requisitos do cliente que orienta o projeto"
+      },
+      {
+        "term": "briefing",
+        "meaning": "conversa e documento inicial com objetivos, orçamento, prazo e restrições do cliente"
+      },
+      {
+        "term": "partido arquitetônico",
+        "meaning": "ideia geradora do projeto: implantação, forma, orientação e circulação"
+      },
+      {
+        "term": "planta baixa",
+        "meaning": "corte horizontal da edificação a 1,50 m, com cotas, níveis, esquadrias e nomes de ambientes"
+      },
+      {
+        "term": "corte e fachada",
+        "meaning": "vistas verticais que mostram pés-direitos, níveis, coberturas e aberturas"
+      },
+      {
+        "term": "implantação",
+        "meaning": "planta do lote com a edificação, recuos, norte, acessos e cotas de nível"
+      },
+      {
+        "term": "escala",
+        "meaning": "relação desenho/real: 1:100 ou 1:50 para plantas, 1:20 a 1:5 para detalhes, declarada na prancha"
+      },
+      {
+        "term": "cota",
+        "meaning": "medida indicada no desenho; cotas parciais devem fechar com a total"
+      },
+      {
+        "term": "carimbo",
+        "meaning": "quadro da prancha com título, conteúdo, escala, data, número e autoria (NBR 6492)"
+      },
+      {
+        "term": "taxa de ocupação e coeficiente de aproveitamento",
+        "meaning": "índices urbanísticos do zoneamento que limitam a construção no lote"
+      },
+      {
+        "term": "recuos e gabarito",
+        "meaning": "afastamentos obrigatórios e altura máxima definidos pelo código de obras e zoneamento"
+      },
+      {
+        "term": "rota acessível",
+        "meaning": "percurso contínuo e sem barreiras exigido pela NBR 9050"
+      },
+      {
+        "term": "memorial descritivo",
+        "meaning": "texto que descreve materiais, acabamentos e sistemas do projeto"
+      },
+      {
+        "term": "compatibilização",
+        "meaning": "verificação de interferências entre arquitetura, estrutura e instalações"
+      },
+      {
+        "term": "BIM",
+        "meaning": "modelagem da informação da construção; Revit e ArchiCAD são as ferramentas comuns"
+      },
+      {
+        "term": "ATHIS",
+        "meaning": "assistência técnica pública e gratuita para habitação de interesse social (Lei 11.888/2008)"
+      },
+      {
+        "term": "plano diretor",
+        "meaning": "instrumento básico da política urbana municipal (Estatuto da Cidade)"
+      },
+      {
+        "term": "conforto ambiental",
+        "meaning": "desempenho térmico, lumínico e acústico do projeto; orientação solar e ventilação"
+      }
+    ],
+    "tools": [
+      "AutoCAD",
+      "Revit",
+      "ArchiCAD",
+      "SketchUp",
+      "Rhino",
+      "Lumion, Enscape ou V-Ray (render)",
+      "Adobe Photoshop, Illustrator e InDesign",
+      "QGIS",
+      "Ladybug/Climate Studio (conforto)",
+      "planilha eletrônica",
+      "maquete física",
+      "Letters e Drawings do Work Station"
+    ],
+    "deliverables": [
+      "estudo preliminar",
+      "anteprojeto",
+      "projeto legal para aprovação",
+      "projeto executivo (plantas, cortes, fachadas, detalhes)",
+      "detalhamento de interiores e marcenaria",
+      "memorial descritivo e justificativo",
+      "programa de necessidades",
+      "maquete eletrônica e renders",
+      "prancha de concurso ou portfólio",
+      "laudo de vistoria e acessibilidade (com RRT)",
+      "projeto de paisagismo",
+      "diretrizes urbanísticas e plano diretor",
+      "relatório de visita de obra",
+      "proposta de honorários e escopo"
+    ]
+  },
+  "competencies": {
+    "core": [
+      {
+        "label": "Concepção e partido arquitetônico",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Representação gráfica e documentação técnica (NBR 6492)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Detalhamento construtivo e especificação de materiais",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Acessibilidade e desenho universal (NBR 9050)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Legislação urbanística e aprovação de projetos",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Modelagem 3D, BIM e visualização",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Conforto ambiental e sustentabilidade",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Coordenação e compatibilização de projetos",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Acompanhamento de obra e relação com fornecedores",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Orçamento preliminar e viabilidade",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Planejamento urbano e desenho da cidade",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Patrimônio e restauro",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Atendimento ao cliente, briefing e proposta de escopo",
+        "esco": null,
+        "kind": "apoio"
+      }
+    ],
+    "transversal": [
+      "comunicação visual e oral de ideias",
+      "escuta do cliente e das pessoas que usam o espaço",
+      "ética, autoria e sigilo",
+      "gestão de prazos de projeto",
+      "trabalho interdisciplinar"
+    ],
+    "tracks": [
+      {
+        "id": "projetar-e-representar",
+        "label": "Projetar e representar",
+        "steps": [
+          "planta baixa 1:50 com cotas, legenda e carimbo (D1)",
+          "detalhe construtivo ou de marcenaria 1:10 (D6)",
+          "modelo 3D com três vistas e materiais (D3)",
+          "prancha de portfólio com três projetos (D2)"
+        ]
+      },
+      {
+        "id": "atender-e-propor",
+        "label": "Atender e propor",
+        "steps": [
+          "resposta a um briefing residencial ou comercial (L8)",
+          "memorial justificativo curto (L4)",
+          "estudo de caso STAR de um projeto (L3)",
+          "plano 30-60-90 para o cargo-alvo (L9)"
+        ]
+      },
+      {
+        "id": "cidade-e-acessibilidade",
+        "label": "Cidade e acessibilidade",
+        "steps": [
+          "redesenho antes e depois de um espaço com rota acessível (D5)",
+          "infográfico de dados urbanos ou de conforto (D7)",
+          "post sobre um aprendizado de projeto (L5)"
+        ]
+      }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"estagiário de arquitetura\", \"projetista\", \"arquiteto de interiores\", \"analista de aprovação\", \"desenhista cadista\"",
+      "cboFamilies": [
+        "2141",
+        "3185"
+      ],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez em projeto, obra ou aprovação; se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio ou primeiro cargo em escritório, construtora ou órgão público",
+        "junior": "até dois anos; desenha e detalha sob coordenação de um arquiteto responsável",
+        "pleno": "conduz projetos e aprovações com autonomia e RRT própria",
+        "senior": "lidera equipe de projeto, revisa pranchas e responde pelo escritório ou pelo empreendimento",
+        "gestao": "responde por carteira de projetos, equipe, honorários e prazos"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (ex.: planta simples ou detalhamento executivo) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na arquitetura e urbanismo",
+      "options": [
+        "conceber o partido e a implantação",
+        "desenhar plantas, cortes e fachadas",
+        "detalhar interiores e marcenaria",
+        "modelar em Revit ou ArchiCAD",
+        "renderizar e apresentar",
+        "aprovar projetos na prefeitura",
+        "aplicar a NBR 9050 e o desenho universal",
+        "compatibilizar projetos",
+        "acompanhar obra",
+        "atender clientes e montar briefing",
+        "estudar conforto térmico e lumínico",
+        "planejar espaços urbanos e paisagismo"
+      ],
+      "why": "Suas competências declaradas viram o ponto de partida; a prova vem com as tarefas (planta, detalhe, modelo 3D, prancha)."
+    },
+    "c4": {
+      "certifications": [
+        "registro no CAU",
+        "certificação Autodesk (Revit)",
+        "curso de BIM Manager",
+        "pós em interiores, patrimônio, urbanismo ou iluminação",
+        "LEED Green Associate ou AQUA",
+        "curso de acessibilidade (NBR 9050)",
+        "treinamento NR-18 (obra)"
+      ],
+      "languages": [
+        "inglês",
+        "espanhol",
+        "italiano"
+      ],
+      "why": "Formação, registro e certificações mostram lacunas em relação ao cargo que você quer, sem julgar seu valor."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver na arquitetura?",
+      "options": [
+        "Revit e BIM",
+        "aprovação de projetos e legislação urbana",
+        "detalhamento executivo",
+        "orçamento e viabilidade",
+        "acessibilidade (NBR 9050)",
+        "conforto ambiental e certificações",
+        "render e apresentação",
+        "coordenação de projetos",
+        "paisagismo",
+        "planejamento urbano",
+        "patrimônio e restauro"
+      ],
+      "why": "Com isso monto uma trilha com tarefas progressivas em vez de mostrar o catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que escala quer mostrar seu trabalho primeiro?",
+        "type": "escolha",
+        "options": [
+          "interiores e mobiliário",
+          "edificação residencial ou comercial",
+          "espaço urbano e paisagismo",
+          "aprovação e legalização"
+        ],
+        "why": "Escolho a primeira tarefa de Drawings (detalhe 1:10, planta 1:50 ou implantação) e os exemplos do briefing.",
+        "where": "P"
+      },
+      {
+        "id": "x2",
+        "prompt": "Você tem registro ativo no CAU?",
+        "type": "sim-nao",
+        "options": [],
+        "why": "Sem registro, as tarefas são exercícios de competência; com registro, incluo documentação técnica simulada, sempre sem RRT real.",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": [
+      "D1",
+      "D6",
+      "D2",
+      "D3",
+      "L8",
+      "L4",
+      "L3",
+      "D5",
+      "D7",
+      "L6",
+      "L1",
+      "L9"
+    ],
+    "excluded": [
+      {
+        "code": "D8",
+        "reason": "vista explodida de conjunto mecânico não é entrega da arquitetura; montagem de mobiliário cabe em D6"
+      },
+      {
+        "code": "D9",
+        "reason": "wireframe de tela não pertence à área"
+      }
+    ],
+    "parameters": {
+      "D1": {
+        "title": "Planta baixa residencial em 1:50 conforme NBR 6492",
+        "brief": "Desenhe a planta baixa de uma unidade ou ambiente (própria, fictícia ou autorizada; nunca projeto de cliente sob sigilo) em 1:50, com cotas que fecham, níveis, esquadrias, nomes e áreas dos ambientes, norte, marcação de cortes, legenda e carimbo com escala, data e autoria.",
+        "parameters": {
+          "scale": "1:50",
+          "standard": "ABNT NBR 6492:2021",
+          "requiredElements": [
+            "cotas externas e internas",
+            "níveis",
+            "esquadrias com dimensão",
+            "nome e área dos ambientes",
+            "indicação de norte",
+            "marcação de cortes",
+            "legenda",
+            "carimbo"
+          ],
+          "accessibilityCheck": "ABNT NBR 9050:2020 (porta mínima 0,80 m, giro 1,50 m)",
+          "paper": "A3 ou A2"
+        },
+        "criteria": [
+          "escala declarada no carimbo e no título do desenho",
+          "cotas parciais somam a cota total em cada direção",
+          "legenda e carimbo completos (título, escala, data, número, autoria)",
+          "cortes marcados e nomeados em planta",
+          "nomes e áreas dos ambientes presentes",
+          "ao menos um item da NBR 9050 verificado e anotado",
+          "declaração de que não é projeto de cliente sob sigilo"
+        ],
+        "evidence": "prancha PDF ou SVG",
+        "time": "2 h",
+        "level": 2
+      },
+      "D6": {
+        "title": "Detalhe construtivo ou de marcenaria em 1:10",
+        "brief": "Detalhe um elemento (bancada, esquadria, guarda-corpo, escada acessível, encontro piso-parede) em 1:10 ou 1:5 com cotas, materiais, acabamentos, espessuras e a norma de referência quando houver (NBR 9050 para corrimão e guarda-corpo).",
+        "parameters": {
+          "scale": "1:10 ou 1:5",
+          "requiredElements": [
+            "cotas",
+            "materiais e acabamentos",
+            "espessuras",
+            "chamada em planta ou corte",
+            "norma de referência quando aplicável"
+          ],
+          "examples": [
+            "guarda-corpo e corrimão (NBR 9050)",
+            "bancada de cozinha com marcenaria",
+            "esquadria com peitoril e verga"
+          ]
+        },
+        "criteria": [
+          "escala de detalhe declarada",
+          "cada material especificado com nome e espessura",
+          "cotas que fecham",
+          "chamada do detalhe referenciada em planta ou corte",
+          "declaração de autoria e ausência de projeto sob sigilo"
+        ],
+        "evidence": "prancha de detalhe PDF ou SVG",
+        "time": "90 min",
+        "level": 3
+      },
+      "D2": {
+        "title": "Prancha de portfólio A3 com três projetos",
+        "brief": "Reúna três projetos (acadêmicos, próprios ou autorizados) em uma prancha A3 com grade consistente, legenda por projeto (nome, ano, escala, seu papel), créditos de coautores e escritório. Nada de projeto de cliente sob sigilo nem foto de interior sem autorização.",
+        "parameters": {
+          "format": "A3",
+          "works": 3,
+          "perWork": [
+            "título",
+            "ano",
+            "seu papel",
+            "escala ou área"
+          ],
+          "authorizationRequired": true
+        },
+        "criteria": [
+          "três projetos",
+          "grade consistente",
+          "legenda com seu papel em cada projeto",
+          "créditos de coautores e escritório",
+          "declaração de autorização ou de trabalho próprio"
+        ],
+        "evidence": "prancha publicada (PDF ou PNG)",
+        "time": "90 min",
+        "level": 1
+      },
+      "D3": {
+        "title": "Modelo 3D de um ambiente com três vistas renderizadas",
+        "brief": "Modele um ambiente ou pequeno volume com dimensões reais, materiais aplicados e três vistas renderizadas (uma em nível de olho a 1,60 m). Indique a orientação solar usada.",
+        "parameters": {
+          "realDimensions": true,
+          "materials": true,
+          "views": 3,
+          "eyeLevelView": "1,60 m",
+          "sunOrientation": true,
+          "output": [
+            "GLB",
+            "PNG"
+          ]
+        },
+        "criteria": [
+          "dimensões reais declaradas",
+          "materiais aplicados nas superfícies principais",
+          "três vistas renderizadas, uma em nível de olho",
+          "norte ou orientação solar indicada",
+          "declaração de autoria"
+        ],
+        "evidence": "modelo GLB + renders PNG",
+        "time": "3 h",
+        "level": 3
+      },
+      "L8": {
+        "title": "Resposta a um briefing residencial ou comercial",
+        "brief": "A partir de um briefing simulado (família, loja ou escritório), escreva o programa de necessidades, premissas, escopo por etapa (estudo preliminar ao executivo), prazos, o que fica fora e a forma de aprovação. Sem valores de honorários.",
+        "parameters": {
+          "sections": [
+            "programa de necessidades",
+            "premissas e restrições",
+            "escopo por etapa",
+            "prazos",
+            "fora do escopo",
+            "forma de aprovação"
+          ],
+          "feesAllowed": false
+        },
+        "criteria": [
+          "seis seções nomeadas",
+          "programa com ambientes e áreas estimadas",
+          "etapas conforme NBR 16636 ou prática do escritório",
+          "lista explícita do que fica fora",
+          "sem valores de honorários ou dados de cliente real"
+        ],
+        "evidence": "proposta em PDF",
+        "time": "45 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Memorial justificativo curto de um projeto",
+        "brief": "Em até 4 páginas, justifique um projeto seu: objetivo e programa, partido e implantação, normas e legislação consideradas (zoneamento, NBR 9050, 15575), resultados (áreas, índices), limitações e referências. Inclua o aviso de exercício, sem valor de projeto legal ou RRT.",
+        "parameters": {
+          "maxPages": 4,
+          "sections": [
+            "objetivo e programa",
+            "partido e implantação",
+            "normas e legislação",
+            "resultados e índices",
+            "limitações",
+            "referências"
+          ],
+          "disclaimerRequired": true
+        },
+        "criteria": [
+          "seis seções nomeadas",
+          "até 4 páginas",
+          "cita ao menos uma NBR ou lei com número",
+          "índices urbanísticos ou áreas apresentados",
+          "aviso de exercício sem valor de projeto legal ou RRT",
+          "sem endereço ou dado de cliente"
+        ],
+        "evidence": "memorial em PDF",
+        "time": "2 h",
+        "level": 3
+      }
+    },
+    "custom": []
+  },
+  "rubric": {
+    "objective": [
+      {
+        "id": "escala-declarada",
+        "check": "a escala aparece no carimbo e no título de cada desenho",
+        "appliesTo": [
+          "D1",
+          "D6",
+          "D2",
+          "D5"
+        ],
+        "auto": true
+      },
+      {
+        "id": "cotas-fecham",
+        "check": "as cotas parciais somam a cota total em cada direção",
+        "appliesTo": [
+          "D1",
+          "D6"
+        ],
+        "auto": true
+      },
+      {
+        "id": "legenda-presente",
+        "check": "há legenda com simbologia, materiais ou séries usadas",
+        "appliesTo": [
+          "D1",
+          "D6",
+          "D7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "carimbo-completo",
+        "check": "o carimbo traz título, escala, data, número da prancha e autoria",
+        "appliesTo": [
+          "D1",
+          "D6",
+          "D2"
+        ],
+        "auto": true
+      },
+      {
+        "id": "vistas-referenciadas",
+        "check": "cortes e detalhes marcados em planta têm nome e prancha de destino",
+        "appliesTo": [
+          "D1",
+          "D6"
+        ],
+        "auto": true
+      },
+      {
+        "id": "tres-vistas-3d",
+        "check": "o modelo tem três vistas renderizadas e dimensões reais declaradas",
+        "appliesTo": [
+          "D3"
+        ],
+        "auto": true
+      },
+      {
+        "id": "nbr-9050-anotada",
+        "check": "ao menos um requisito de acessibilidade está anotado com referência à NBR 9050",
+        "appliesTo": [
+          "D1",
+          "D5",
+          "D6"
+        ],
+        "auto": true
+      },
+      {
+        "id": "secoes-obrigatorias",
+        "check": "as seções pedidas existem e estão nomeadas",
+        "appliesTo": [
+          "L4",
+          "L8",
+          "L3"
+        ],
+        "auto": true
+      },
+      {
+        "id": "norma-ou-lei-citada",
+        "check": "cita ao menos uma NBR, lei ou código de obras com número",
+        "appliesTo": [
+          "L4",
+          "L8",
+          "D6"
+        ],
+        "auto": true
+      },
+      {
+        "id": "sem-honorarios",
+        "check": "a proposta não traz valores de honorários nem dados de cliente real",
+        "appliesTo": [
+          "L8"
+        ],
+        "auto": true
+      },
+      {
+        "id": "aviso-nao-substitui-rrt",
+        "check": "o documento diz que é exercício e não substitui projeto legal, laudo ou RRT",
+        "appliesTo": [
+          "L4",
+          "D1",
+          "D6"
+        ],
+        "auto": true
+      },
+      {
+        "id": "tamanho",
+        "check": "respeita o limite de páginas, palavras ou caracteres da tarefa",
+        "appliesTo": [
+          "L1",
+          "L4",
+          "L6",
+          "L8",
+          "L9"
+        ],
+        "auto": true
+      },
+      {
+        "id": "autoria-e-sigilo",
+        "check": "a pessoa declarou autoria, créditos e que não há projeto ou imagem de cliente sob sigilo",
+        "appliesTo": [
+          "L1",
+          "L3",
+          "L4",
+          "L6",
+          "L8",
+          "L9",
+          "D1",
+          "D2",
+          "D3",
+          "D5",
+          "D6",
+          "D7"
+        ],
+        "auto": true
+      }
+    ],
+    "subjective": [
+      {
+        "id": "qualidade-do-partido",
+        "label": "Qualidade do partido",
+        "levels": {
+          "aproxima": "a implantação e o programa não dialogam com o lote ou o uso",
+          "atende": "o partido responde ao programa, à orientação e ao contexto",
+          "supera": "o partido resolve programa, conforto e cidade com economia de meios"
+        }
+      },
+      {
+        "id": "legibilidade-da-prancha",
+        "label": "Legibilidade da prancha",
+        "levels": {
+          "aproxima": "hierarquia de linhas e textos confusa; exige explicação",
+          "atende": "a prancha se lê sem explicação e segue a NBR 6492",
+          "supera": "a sequência de pranchas conduz quem lê do geral ao detalhe"
+        }
+      },
+      {
+        "id": "coerencia-tecnica",
+        "label": "Coerência técnica e normativa",
+        "levels": {
+          "aproxima": "há conflitos com acessibilidade, zoneamento ou construtibilidade",
+          "atende": "atende à NBR 9050 e à legislação citada; é executável",
+          "supera": "antecipa compatibilização e desempenho (NBR 15575)"
+        }
+      },
+      {
+        "id": "comunicacao-com-cliente",
+        "label": "Comunicação com o cliente",
+        "levels": {
+          "aproxima": "proposta vaga sobre escopo e etapas",
+          "atende": "escopo, etapas e exclusões claros para quem não é da área",
+          "supera": "antecipa dúvidas e riscos do cliente com alternativas"
+        }
+      }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Arquitetura e Urbanismo (CBO 2141; CAU, Lei 12.378/2010). Use o vocabulário da área: RRT, estudo preliminar, anteprojeto, projeto legal e executivo, programa de necessidades, briefing, partido, implantação, planta, corte, fachada, detalhe, memorial, compatibilização, BIM, índices urbanísticos, rota acessível. Cite normas com número e ano quando couber: ABNT NBR 6492:2021 (documentação técnica), 9050:2020 (acessibilidade), 16636 (etapas de projeto), 15575:2021 (desempenho), Estatuto da Cidade (Lei 10.257/2001), LBI (Lei 13.146/2015), Resoluções CAU/BR 21/2012, 51/2013, 52/2013 e 91/2014. No Drawings, a rubrica objetiva é: escala declarada, cotas que fecham, legenda, carimbo completo e vistas referenciadas; no 3D, três vistas e dimensões reais. Nunca produza projeto legal, laudo, memorial ou prancha assináveis nem sugira que substituem RRT ou responsabilidade técnica: tudo é exercício de competência, com esse aviso no documento. Nunca valide conformidade urbanística ou de acessibilidade para uso real; aponte a norma e recomende profissional habilitado. Projetos de clientes sob sigilo e imagens de interiores de residências não entram em portfólio sem autorização escrita; nunca peça endereço nem dados de moradores. Pergunte antes de inferir área, senioridade ou situação. Afirmações sobre mercado citam fonte, data e região (CAU/BR, CAGED, RAIS, CBIC) ou dizem \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos, não por score; pré-cheque só critérios objetivos e lembre que o selo depende de revisão humana. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação da pessoa.",
+    "citeSources": [
+      {
+        "title": "CAU/BR — Conselho de Arquitetura e Urbanismo do Brasil",
+        "url": "https://www.caubr.gov.br/",
+        "kind": "conselho"
+      },
+      {
+        "title": "Lei 12.378/2010 (Planalto)",
+        "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2010/lei/l12378.htm",
+        "kind": "norma"
+      },
+      {
+        "title": "Catálogo ABNT — NBR 6492, 9050, 16636, 15575",
+        "url": "https://www.abntcatalogo.com.br/",
+        "kind": "norma"
+      },
+      {
+        "title": "Estatuto da Cidade — Lei 10.257/2001 (Planalto)",
+        "url": "https://www.planalto.gov.br/ccivil_03/leis/leis_2001/l10257.htm",
+        "kind": "norma"
+      },
+      {
+        "title": "Novo CAGED — Ministério do Trabalho e Emprego",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "kind": "estatistica"
+      },
+      {
+        "title": "CBO — Classificação Brasileira de Ocupações (MTE)",
+        "url": "https://cbo.mte.gov.br/",
+        "kind": "orgao-publico"
+      },
+      {
+        "title": "ArchDaily Brasil — notícias e referências de projeto",
+        "url": "https://www.archdaily.com.br/",
+        "kind": "referencia"
+      }
+    ],
+    "services": [
+      {
+        "service": "PERGUNTAS_GUIA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Variantes de c2 e c5 com competências da arquitetura (Revit/BIM, aprovação, detalhamento); x1 escolhe a escala de atuação."
+      },
+      {
+        "service": "SUGESTAO_TAREFAS",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "D1, D6, D2 e D3 entram primeiro; cada card diz a competência, a evidência e que o resultado é exercício, sem RRT."
+      },
+      {
+        "service": "PLANO_SEMANAL",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Plano por horas (d1) e aparelho (d4); D1, D3 e D6 só no computador; pausa de 7 dias após duas dispensas."
+      },
+      {
+        "service": "PRE_CHECAGEM_RUBRICA",
+        "capability": "ARTEFATO",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "Escala, cotas que fecham, legenda, carimbo, vistas, três vistas 3D, item NBR 9050 anotado e aviso de não substituir RRT; o selo é humano."
+      },
+      {
+        "service": "RASCUNHO_LETTERS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Estrutura de briefing, programa de necessidades, memorial e proposta de escopo com prévia; nunca redige projeto legal ou laudo assinável."
+      },
+      {
+        "service": "APOIO_DRAWINGS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Carimbo, legenda, conferência de cotas, marcação de cortes e checklist NBR 9050; não valida conformidade legal."
+      },
+      {
+        "service": "ANALISE_PERFIL",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": "ANALISE_PERFIL_IA",
+        "note": "Síntese das competências declaradas e evidenciadas (projeto, 3D, aprovação, interiores), lacunas e incertezas; cada afirmação cita o campo."
+      },
+      {
+        "service": "CAMINHOS_DE_CARREIRA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Vizinhos: engenharia civil, construção de edifícios, design, ambiental e sanitária, geografia; dados de mercado com fonte e data."
+      },
+      {
+        "service": "PESSOAS_SEMELHANTES",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Por CBO 2141 e competências compartilhadas; só pessoas descobríveis por opt-in."
+      },
+      {
+        "service": "EXPLICACAO_POR_QUE",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\"."
+      },
+      {
+        "service": "RESUMO_PROFISSIONAL",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": "RESUMO_PROFISSIONAL_IA",
+        "note": "Bio (L6) com escala de atuação, três competências e uma prova com link; só com consentimento específico."
+      }
+    ],
+    "dataScope": {
+      "default": [
+        "perfil",
+        "currículo"
+      ],
+      "optional": [
+        "minhas Letters",
+        "meus Drawings"
+      ],
+      "never": [
+        "mensagens",
+        "itens SIGILOSO",
+        "projetos de clientes sob NDA",
+        "plantas residenciais com endereço e dados do morador",
+        "documentos de aprovação com dados pessoais",
+        "imagens do interior de residências sem autorização",
+        "dados sensíveis (LGPD art. 5º II)"
+      ]
+    },
+    "provider": {
+      "default": "local",
+      "externalNeedsConsent": true,
+      "externalAllowedFor": [
+        "ANALISE_PERFIL",
+        "CAMINHOS_DE_CARREIRA",
+        "RESUMO_PROFISSIONAL"
+      ]
+    },
+    "guardrails": [
+      "nunca produzir projeto legal, laudo, memorial ou prancha assinável nem sugerir que substitui RRT ou responsabilidade técnica",
+      "nunca validar conformidade urbanística ou de acessibilidade para uso real; indicar a norma e um profissional habilitado",
+      "projetos de clientes sob sigilo e imagens de interiores não entram em portfólio sem autorização escrita",
+      "nunca pedir nem registrar endereço ou dados de moradores e proprietários",
+      "respeitar autoria e créditos de coautores e escritórios (Código de Ética CAU/BR)",
+      "perguntar em vez de inferir área, senioridade ou situação",
+      "mercado com fonte, data e região (CAU/BR, CAGED, RAIS, CBIC) ou \"estimativa\"; sem promessa de emprego ou salário",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": {
+      "letters": "media",
+      "drawings": "alta"
+    },
+    "drawingsModes": [
+      "2d-tecnico",
+      "3d",
+      "prancha",
+      "infografico",
+      "diagrama"
+    ],
+    "lettersTemplates": [
+      "proposta",
+      "memorial",
+      "relatorio-tecnico",
+      "estudo-de-caso",
+      "curriculo",
+      "bio",
+      "post",
+      "plano-30-60-90",
+      "revisao"
+    ],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "D1, D3, D6 e D2 exigem computador; no celular ficam L6, L5, L10 e a revisão de critérios.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: planta baixa 1:50 de um ambiente que você conhece (2 h). Comprova representação técnica, que cargos de projetista pedem.",
+        "Faltam só a legenda e o norte para fechar os critérios objetivos da sua planta. Quando quiser.",
+        "Sem pressão. Quando quiser retomar, a resposta ao briefing (45 min) está aqui.",
+        "Seu modelo 3D já tem duas vistas. A terceira, em nível de olho (1,60 m), fecha o critério."
+      ]
+    },
+    "insights": {
+      "peersBy": [
+        "cbo",
+        "competencias",
+        "setor"
+      ]
+    },
+    "privacy": {
+      "sensitiveData": [
+        "projetos de clientes sob NDA",
+        "plantas residenciais com endereço e dados do morador",
+        "documentos de aprovação em prefeitura com dados pessoais",
+        "imagens do interior de residências sem autorização"
+      ],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      {
+        "title": "CAU/BR — dados de profissionais e empresas registradas (iGEO e censos)",
+        "url": "https://www.caubr.gov.br/",
+        "geography": "Brasil e UF",
+        "cadence": "anual",
+        "kind": "conselho"
+      },
+      {
+        "title": "Novo CAGED (MTE) — CBO 2141 e serviços de arquitetura (CNAE 7111)",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "geography": "Brasil, UF e município",
+        "cadence": "mensal",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "RAIS (MTE) — vínculos por CBO 2141",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais",
+        "geography": "Brasil, UF e município",
+        "cadence": "anual",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "PNAD Contínua (IBGE)",
+        "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html",
+        "geography": "Brasil e UF",
+        "cadence": "trimestral",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "CBIC — Hub de Dados da construção",
+        "url": "https://cbic.org.br/hubdedados/",
+        "geography": "Brasil e UF",
+        "cadence": "mensal",
+        "kind": "associacao"
+      },
+      {
+        "title": "Concurso Nacional Unificado e editais de prefeituras (gov.br)",
+        "url": "https://www.gov.br/gestao/pt-br/concursonacional",
+        "geography": "Brasil",
+        "cadence": "eventual",
+        "kind": "edital"
+      }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis (CAU/BR, CAGED, RAIS, PNAD, CBIC, editais); sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    {
+      "to": "engenharia-civil",
+      "why": "Compartilha projeto, obra e compatibilização; profissão própria com registro no CREA e graduação específica.",
+      "gaps": [
+        "graduação em Engenharia Civil e registro no CREA",
+        "cálculo estrutural, fundações e instalações",
+        "orçamento analítico e planejamento de obra"
+      ],
+      "steps": [
+        "detalhe construtivo com especificação de materiais (D6)",
+        "fluxo de um processo de obra que você acompanha (D4)",
+        "avaliar segunda graduação ou atuação em coordenação de projetos"
+      ]
+    },
+    {
+      "to": "construcao-de-edificios",
+      "why": "Acompanhamento de obra e gestão de execução são a ponte; o tecnólogo atua no canteiro com registro no CREA.",
+      "gaps": [
+        "tecnologia construtiva e gestão de canteiro",
+        "controle de qualidade e NR-18"
+      ],
+      "steps": [
+        "POP de uma etapa de obra (L7)",
+        "relatório de visita de obra (L4)",
+        "treinamento NR-18"
+      ]
+    },
+    {
+      "to": "design",
+      "why": "Interiores, mobiliário, sinalização e comunicação visual compartilham repertório, ferramentas e clientes.",
+      "gaps": [
+        "metodologia de design de produto ou gráfico",
+        "prototipagem e produção seriada"
+      ],
+      "steps": [
+        "modelo 3D de uma peça de mobiliário (D3)",
+        "prancha de portfólio com foco em interiores (D2)",
+        "redesenho antes e depois de um espaço (D5)"
+      ]
+    },
+    {
+      "to": "engenharia-ambiental-e-sanitaria",
+      "why": "Conforto ambiental, drenagem urbana e sustentabilidade são comuns; certificações ambientais de edifícios são ponte.",
+      "gaps": [
+        "licenciamento e normas CONAMA",
+        "tratamento de água, efluentes e resíduos"
+      ],
+      "steps": [
+        "infográfico de desempenho ambiental de um projeto (D7)",
+        "memorial justificativo com foco em sustentabilidade (L4)",
+        "curso de certificação ambiental (LEED, AQUA)"
+      ]
+    },
+    {
+      "to": "geografia",
+      "why": "Planejamento urbano, geoprocessamento e análise territorial são compartilhados com a geografia aplicada.",
+      "gaps": [
+        "SIG avançado e análise espacial",
+        "métodos de pesquisa socioespacial"
+      ],
+      "steps": [
+        "infográfico com dados urbanos georreferenciados (D7)",
+        "relatório técnico de diagnóstico de um bairro (L4)",
+        "curso de QGIS"
+      ]
+    }
+  ],
+  "learning": [
+    {
+      "title": "Portal do CAU/BR — legislação, resoluções e cartilhas (RRT, ética, ATHIS)",
+      "provider": "CAU/BR",
+      "url": "https://www.caubr.gov.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Escola Virtual.Gov — cursos de planejamento urbano, acessibilidade e licitações",
+      "provider": "Enap",
+      "url": "https://www.escolavirtual.gov.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Catálogo ABNT — NBR 6492, 9050, 16636, 15575",
+      "provider": "ABNT",
+      "url": "https://www.abntcatalogo.com.br/",
+      "free": false,
+      "kind": "norma"
+    },
+    {
+      "title": "Capacidades — Ministério das Cidades (cursos de planejamento urbano e habitação)",
+      "provider": "Ministério das Cidades",
+      "url": "https://www.gov.br/cidades/pt-br",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "e-Aulas USP — videoaulas da FAU e de engenharia",
+      "provider": "Universidade de São Paulo",
+      "url": "https://eaulas.usp.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Publicações da CBIC sobre BIM e desempenho (NBR 15575)",
+      "provider": "CBIC",
+      "url": "https://cbic.org.br/publicacoes/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "IPHAN — publicações sobre patrimônio e restauro",
+      "provider": "IPHAN",
+      "url": "https://www.gov.br/iphan/pt-br",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "ArchDaily Brasil — referências e concursos",
+      "provider": "ArchDaily",
+      "url": "https://www.archdaily.com.br/",
+      "free": true,
+      "kind": "comunidade"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Fase 1 — grupo Engenharia e TIC (dados do ramo, famílias CBO/ISCO, conselho, vizinhos)",
+      "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 12.378/2010 — regulamenta a Arquitetura e Urbanismo e cria o CAU/BR (texto via LegJur)",
+      "url": "https://www.legjur.com/legislacao/htm/lei_00123782010",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Resolução CAU/BR 91/2014 — RRT (NormasBrasil)",
+      "url": "https://www.normasbrasil.com.br/norma/resolucao-91-2014_276004.html",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Resolução CAU/BR 21/2012 — atividades e atribuições (cópia CEHOP/SE)",
+      "url": "https://cehop.se.gov.br/wp-content/uploads/2021/02/Anexo-06-Resolucao-21-05-04-2012-CAU.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Resolução CAU/BR 184/2019 — altera 91/2014 e 93/2014 (COAD)",
+      "url": "https://www.coad.com.br/imagensMat/em42003.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "World of Taxonomy — ESCO architect (8c3f536e…) ↔ ISCO-08 2161 (espelho, não oficial)",
+      "url": "https://worldoftaxonomy.com/codes/esco_occupations/8c3f536e-ba66-4321-ba40-363dc39f129b",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBIC — Boletim de normas técnicas: NBR 6492:2021 publicada em 16/06/2021",
+      "url": "https://cbic.org.br/inovacao/2021/07/15/66606-2/",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "ArchDaily — tag CAU/BR (167.060 arquitetos e urbanistas ativos, data incerta)",
+      "url": "https://www.archdaily.com/pt/tag/cau-br",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8",
+      "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md",
+      "accessedAt": "2026-11-02"
+    }
+  ],
+  "naoConferido": [
+    "URI ESCO de architect obtida em espelho (World of Taxonomy), não no portal esco.ec.europa.eu (host bloqueado na sessão)",
+    "Resolução CAU/BR 51/2013 (atribuições privativas) citada de memória; 52/2013, 21/2012 e 91/2014 confirmadas só por resumo de busca",
+    "Relação de sucessão NBR 16636 → NBR 13531/13532 não confirmada no catálogo ABNT; status das partes 4 e 5 da 16636 incerto",
+    "Anos de edição das NBR (6492:2021 confirmado por CBIC; 9050:2020 e 15575:2021 de memória) não conferidos no catálogo ABNT",
+    "Família CBO 3185 (desenhistas projetistas de construção civil e arquitetura) em questions.a4 não conferida no portal da CBO",
+    "Número de arquitetos registrados (167 mil, ArchDaily/CAU) sem data confirmada; CAU/BR e iGEO não acessados",
+    "URLs de CAU/BR, Planalto, Ministério das Cidades, IPHAN, e-Aulas USP e CNU não abertas nesta sessão",
+    "Nenhuma URI ESCO de competência (skill) confirmada; todas as competências com esco: null",
+    "paths.to \"design\" e \"geografia\" ainda não existem no catálogo interino (só grupos Saúde e Engenharia/TIC); constam na lista prevista do brief para os outros grupos"
+  ]
+}

@@ -1,0 +1,353 @@
+{
+  "schemaVersion": 1,
+  "code": "gestao-da-qualidade",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Gestão da Qualidade", "en": "Quality Management", "es": "Gestión de la Calidad" },
+  "fields": ["gestao-da-qualidade"],
+  "family": {
+    "cbo": [
+      { "code": "3912", "title": "Técnicos de controle da produção" },
+      { "code": "2149", "title": "Engenheiros de produção, qualidade, segurança e afins" },
+      { "code": "3523", "title": "Agentes fiscais metrológicos e de qualidade" }
+    ],
+    "isco08": [
+      { "code": "1219", "title": "Business services and administration managers not elsewhere classified" },
+      { "code": "3119", "title": "Physical and engineering science technicians not elsewhere classified" },
+      { "code": "2141", "title": "Industrial and production engineers" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/109e0a5d-203d-4af6-8f70-692111335ec3", "label": "quality services manager" },
+      { "uri": "http://data.europa.eu/esco/occupation/30c0943c-caa1-411d-b273-26f475971273", "label": "quality engineer" }
+    ]
+  },
+  "scope": {
+    "summary": "Implanta, mantém e melhora sistemas de gestão da qualidade em indústrias, serviços, saúde e setor público: requisitos da ISO 9001, controle de documentos e registros, indicadores, auditorias internas (ISO 19011), tratamento de não conformidades e ações corretivas, ferramentas da qualidade (PDCA, Ishikawa, Pareto, 5 porquês, CEP, FMEA), gestão de fornecedores e satisfação do cliente. Formação tecnológica; sem conselho próprio.",
+    "entryRoles": ["Inspetor de qualidade", "Auxiliar ou assistente da qualidade", "Estagiário da qualidade", "Técnico de controle de qualidade", "Assistente de documentação (SGQ)"],
+    "midRoles": ["Analista da qualidade", "Auditor interno", "Analista de garantia da qualidade", "Analista de melhoria contínua", "Analista de SGI (qualidade, meio ambiente, segurança)", "Analista de qualidade de fornecedores"],
+    "seniorRoles": ["Coordenador da qualidade", "Gerente da qualidade", "Auditor líder de certificação", "Especialista Lean Seis Sigma (Black Belt)", "Consultor em sistemas de gestão", "Representante da direção para o SGQ"],
+    "sectors": ["indústria de transformação", "alimentos e bebidas", "automotivo", "saúde e laboratórios", "construção civil (PBQP-H)", "serviços e varejo", "setor público", "organismos de certificação", "consultoria", "logística"],
+    "regulation": [
+      { "name": "ABNT NBR ISO 9001:2015 (com Emenda 1:2024)", "issuer": "ABNT / ISO", "about": "requisitos de sistema de gestão da qualidade: contexto, liderança, riscos, operação, avaliação de desempenho e melhoria" },
+      { "name": "ABNT NBR ISO 9000:2015", "issuer": "ABNT / ISO", "about": "fundamentos e vocabulário da gestão da qualidade (não conformidade, ação corretiva, informação documentada)" },
+      { "name": "ABNT NBR ISO 19011:2018", "issuer": "ABNT / ISO", "about": "diretrizes para auditoria de sistemas de gestão: programa, planejamento, evidências e relatório" },
+      { "name": "ABNT NBR ISO 31000:2018", "issuer": "ABNT / ISO", "about": "gestão de riscos: princípios e diretrizes, base da mentalidade de risco da ISO 9001" },
+      { "name": "ABNT NBR ISO 14001:2015 e ISO 45001:2018", "issuer": "ABNT / ISO", "about": "sistemas de gestão ambiental e de saúde e segurança ocupacional, integrados ao SGQ" },
+      { "name": "Inmetro — avaliação da conformidade e Lei 9.933/1999", "issuer": "Inmetro / Brasil", "about": "regulamentos técnicos, certificação compulsória de produtos e metrologia legal" },
+      { "name": "IATF 16949, ISO 22000/FSSC e RDC Anvisa de boas práticas", "issuer": "IATF / ISO / Anvisa", "about": "requisitos setoriais (automotivo, segurança de alimentos, boas práticas de fabricação)" },
+      { "name": "Código de Defesa do Consumidor (Lei 8.078/1990)", "issuer": "Brasil", "about": "responsabilidade por vício e defeito de produto e serviço, recall" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "SGQ", "meaning": "sistema de gestão da qualidade: políticas, processos e registros para atender requisitos e melhorar" },
+      { "term": "PDCA", "meaning": "planejar, executar, checar e agir: ciclo de melhoria contínua" },
+      { "term": "não conformidade (NC)", "meaning": "não atendimento a um requisito" },
+      { "term": "ação corretiva e correção", "meaning": "eliminar a causa de uma NC para que não se repita; correção trata só o efeito imediato" },
+      { "term": "RNC / RAC", "meaning": "relatório de não conformidade e registro de ação corretiva" },
+      { "term": "análise de causa raiz", "meaning": "investigação da causa fundamental com 5 porquês, Ishikawa ou árvore de falhas" },
+      { "term": "diagrama de Ishikawa (6M)", "meaning": "espinha de peixe: método, máquina, material, mão de obra, meio ambiente, medição" },
+      { "term": "Pareto", "meaning": "gráfico que ordena causas por frequência; poucas causas respondem pela maioria dos efeitos" },
+      { "term": "CEP", "meaning": "controle estatístico do processo: cartas de controle e capacidade (Cp, Cpk)" },
+      { "term": "FMEA", "meaning": "análise de modos de falha e efeitos, com severidade, ocorrência e detecção" },
+      { "term": "MASP / 8D", "meaning": "método de análise e solução de problemas; relatório de oito disciplinas" },
+      { "term": "informação documentada", "meaning": "documentos e registros que o SGQ mantém e retém (ISO 9001, 7.5)" },
+      { "term": "lista mestra", "meaning": "controle das versões vigentes de procedimentos e formulários" },
+      { "term": "POP / instrução de trabalho", "meaning": "procedimento padronizado com passos, responsáveis e critérios" },
+      { "term": "auditoria interna, de 2ª e 3ª parte", "meaning": "auditoria pela própria organização, por cliente sobre fornecedor e por organismo certificador" },
+      { "term": "evidência objetiva", "meaning": "dado que comprova a existência ou veracidade de algo, coletado na auditoria" },
+      { "term": "análise crítica pela direção", "meaning": "reunião periódica em que a alta direção avalia o desempenho do SGQ" },
+      { "term": "indicador da qualidade", "meaning": "medida como PPM, índice de refugo, reclamações, satisfação, com meta e frequência" },
+      { "term": "matriz de riscos e oportunidades", "meaning": "avaliação de riscos do SGQ por probabilidade e impacto (ISO 9001, 6.1)" },
+      { "term": "5S e kaizen", "meaning": "organização do ambiente e melhoria contínua em pequenos ciclos" },
+      { "term": "Seis Sigma / DMAIC", "meaning": "redução de variabilidade: definir, medir, analisar, melhorar, controlar" },
+      { "term": "calibração e rastreabilidade metrológica", "meaning": "comparação de instrumentos com padrões rastreáveis à RBC/Inmetro" },
+      { "term": "SIPOC e mapa de processo", "meaning": "visão de fornecedores, entradas, processo, saídas e clientes" }
+    ],
+    "tools": ["planilhas (Excel, Google Sheets) para indicadores e CEP", "Minitab ou Action Stat", "Power BI / Looker Studio", "software de SGQ (SoftExpert, Qualiex, Interact)", "modelador BPMN (Bizagi, draw.io)", "formulários digitais de inspeção e checklist", "Microsoft 365 / Google Workspace", "instrumentos de medição (paquímetro, micrômetro)"],
+    "deliverables": ["procedimento operacional padrão (POP) e instrução de trabalho", "mapa de processo / SIPOC", "plano e relatório de auditoria interna", "RNC com análise de causa e plano de ação", "relatório 8D ou A3", "painel de indicadores da qualidade", "diagrama de Ishikawa e Pareto", "FMEA de processo", "matriz de riscos e oportunidades", "pesquisa de satisfação do cliente", "manual ou política da qualidade", "plano de controle", "ata de análise crítica pela direção"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Interpretação e implantação da ISO 9001", "esco": null, "kind": "nucleo" },
+      { "label": "Auditoria interna de sistemas de gestão (ISO 19011)", "esco": null, "kind": "nucleo" },
+      { "label": "Tratamento de não conformidades e ação corretiva", "esco": null, "kind": "nucleo" },
+      { "label": "Ferramentas da qualidade (PDCA, Ishikawa, Pareto, 5 porquês)", "esco": null, "kind": "nucleo" },
+      { "label": "Controle de documentos e registros", "esco": null, "kind": "nucleo" },
+      { "label": "Indicadores da qualidade e análise de dados", "esco": null, "kind": "nucleo" },
+      { "label": "Mapeamento e padronização de processos (BPMN, POP)", "esco": null, "kind": "nucleo" },
+      { "label": "Controle estatístico do processo (CEP)", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de riscos (ISO 31000, FMEA)", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de fornecedores", "esco": null, "kind": "apoio" },
+      { "label": "Lean Seis Sigma", "esco": null, "kind": "apoio" },
+      { "label": "Sistemas integrados (ISO 14001, ISO 45001)", "esco": null, "kind": "apoio" },
+      { "label": "Treinamento e conscientização de equipes", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação escrita objetiva", "imparcialidade e ética", "atenção a detalhes", "negociação com áreas", "pensamento analítico", "organização e prazos"],
+    "tracks": [
+      { "id": "padronizar", "label": "Padronizar processos", "steps": ["mapa de processo em BPMN (D4)", "POP com controle de versão (L7)", "antes e depois de uma padronização (D5)"] },
+      { "id": "resolver-problemas", "label": "Resolver problemas de qualidade", "steps": ["Ishikawa e Pareto de um problema (X1)", "RNC com causa raiz e plano de ação (X2)", "estudo de caso STAR (L3)", "infográfico de indicador antes e depois (D7)"] },
+      { "id": "auditar", "label": "Auditar sistemas de gestão", "steps": ["checklist e relatório de auditoria interna simulada (L4)", "curso de auditor interno ISO 9001", "revisão crítica de um procedimento público (L10)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"inspetor de qualidade\", \"analista da qualidade\", \"auditor interno\", \"técnico de laboratório\", \"analista de melhoria contínua\"",
+      "cboFamilies": ["3912", "2149", "3523", "3911"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez (inspeção, documentação, auditoria, melhoria) e não do zero. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio ou primeiro cargo de inspeção ou documentação",
+        "junior": "até dois anos; executa inspeções, registros e controle de documentos com supervisão",
+        "pleno": "trata não conformidades, conduz auditorias internas e acompanha indicadores com autonomia",
+        "senior": "referência em SGQ; prepara certificações, lidera projetos de melhoria e forma auditores",
+        "gestao": "responde pela área da qualidade, pela certificação ou por um sistema integrado"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (de um POP a um relatório de auditoria) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em qualidade",
+      "options": ["escrever POPs e instruções", "controlar documentos e registros", "inspecionar e medir", "tratar não conformidades", "analisar causa raiz (Ishikawa, 5 porquês)", "auditar processos", "montar indicadores e Pareto", "CEP e estatística", "FMEA e gestão de riscos", "mapear processos", "treinar equipes", "atender auditorias de certificação", "avaliar fornecedores", "conduzir kaizen e 5S"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com POPs, RNCs, Ishikawa e indicadores."
+    },
+    "c4": {
+      "certifications": ["tecnólogo em Gestão da Qualidade", "auditor interno ISO 9001 (ISO 19011)", "auditor líder ISO 9001 (curso reconhecido)", "Lean Seis Sigma (Yellow, Green ou Black Belt)", "ISO 14001 / ISO 45001 (SGI)", "IATF 16949 ou ISO 22000/FSSC (setorial)", "metrologia e calibração (SENAI/Inmetro)", "pós-graduação em gestão da qualidade ou engenharia da qualidade"],
+      "languages": ["inglês (normas e multinacionais)", "espanhol"],
+      "why": "Auditor interno e Lean Seis Sigma aparecem em muitas vagas; normas setoriais abrem portas em automotivo e alimentos."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver em qualidade?",
+      "options": ["ISO 9001 e documentação do SGQ", "auditoria interna (ISO 19011)", "análise de causa raiz e 8D", "CEP e estatística (Minitab)", "FMEA e riscos", "Lean Seis Sigma", "indicadores e Power BI", "sistema integrado (14001, 45001)", "normas setoriais (IATF, ISO 22000)", "gestão de fornecedores"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (POP → RNC → auditoria) em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que setor você atua ou quer atuar?", "type": "lista", "options": ["indústria (geral)", "automotivo", "alimentos e bebidas", "saúde e laboratórios", "construção civil", "serviços", "setor público", "certificação e consultoria"], "why": "Pergunto porque as normas e os exemplos mudam por setor (IATF no automotivo, ISO 22000 em alimentos, ISO 9001 em serviços e no setor público).", "where": "P" },
+      { "id": "x2", "prompt": "Os registros do seu trabalho podem ser mostrados?", "type": "escolha", "options": ["sim, são públicos ou meus", "só anonimizados ou em percentual", "não; vou usar um caso fictício"], "why": "Pergunto porque RNCs, auditorias e dados de fornecedores costumam ser confidenciais; com a resposta, sugiro como anonimizar sem perder a evidência.", "where": "X" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L7", "D4", "D5", "D7", "L3", "L4", "L6", "L1", "L9", "L10", "D2", "L5"],
+    "excluded": [
+      { "code": "D1", "reason": "planta de ambiente é entrega da arquitetura" },
+      { "code": "D3", "reason": "modelo 3D de produto não é evidência típica da qualidade" },
+      { "code": "D8", "reason": "vista explodida é entrega da mecânica; a qualidade documenta a montagem em L7" },
+      { "code": "D9", "reason": "wireframe de tela é entrega de UX" }
+    ],
+    "parameters": {
+      "L7": {
+        "title": "POP no padrão de um sistema de gestão da qualidade",
+        "brief": "Escreva um procedimento operacional padrão de um processo que você domina: cabeçalho com código, revisão, data, elaborador e aprovador; objetivo, escopo, referências normativas, definições, passos numerados com responsável, ponto de controle e critério de conclusão por passo, registros gerados e histórico de revisões. Sem dados sigilosos.",
+        "parameters": { "requiredElements": ["cabeçalho com código e revisão", "objetivo e escopo", "referências normativas", "passos numerados com responsável", "ponto de controle", "critério de conclusão por passo", "registros gerados", "histórico de revisões"] },
+        "criteria": ["cabeçalho com código, revisão e aprovação", "passos numerados com responsável", "critério de conclusão em cada passo", "ao menos um ponto de controle", "registros gerados listados", "sem dado sigiloso da empresa"],
+        "evidence": "POP em modelo",
+        "time": "60 min",
+        "level": 1
+      },
+      "D4": {
+        "title": "Mapa de processo com pontos de controle (BPMN)",
+        "brief": "Modele em BPMN simplificado um processo que você conhece (recebimento de matéria-prima, tratamento de reclamação, inspeção final): início e fim, raias por responsável, atividades, decisões de aprovação/reprovação e pontos de controle da qualidade anotados.",
+        "parameters": { "notation": "BPMN simplificado", "requiredElements": ["evento de início e de fim", "raias por responsável", "gateway de aprovação ou reprovação", "pontos de controle anotados"], "minActivities": 6 },
+        "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma atividade órfã", "ao menos um gateway de aprovação", "ao menos um ponto de controle anotado", "sem nome de empresa ou dado sigiloso"],
+        "evidence": "diagrama vetorial (SVG/PDF)",
+        "time": "45 min",
+        "level": 1
+      },
+      "D5": {
+        "title": "Antes e depois de uma melhoria da qualidade",
+        "brief": "Mostre lado a lado a situação anterior e a melhorada (fluxo, posto, formulário de inspeção, layout 5S) com três mudanças anotadas e a justificativa de cada uma em defeitos, retrabalho, tempo ou segurança. Dados em percentual ou fictícios se a empresa for sigilosa.",
+        "parameters": { "versions": 2, "annotatedChanges": 3, "justifyBy": ["defeitos ou refugo", "retrabalho ou tempo", "segurança ou conformidade"] },
+        "criteria": ["duas versões lado a lado", "três mudanças anotadas", "cada mudança com justificativa mensurável", "legenda", "dados anonimizados ou fictícios declarados"],
+        "evidence": "prancha comparativa PDF/PNG",
+        "time": "60 min",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de indicador da qualidade (Pareto ou antes e depois)",
+        "brief": "Mostre um indicador da qualidade (PPM, refugo, reclamações, satisfação) em Pareto ou em série antes e depois de uma ação, com fórmula, meta, fonte, período, eixos rotulados e uma mensagem principal. Use percentual quando o absoluto for sigiloso.",
+        "parameters": { "requiredElements": ["indicador com fórmula", "meta", "período", "fonte", "eixos rotulados", "uma mensagem principal"] },
+        "criteria": ["indicador nomeado com fórmula e meta", "fonte e período citados", "eixos rotulados", "uma mensagem principal explícita", "sem identificar empresa quando sigiloso"],
+        "evidence": "imagem PNG + PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "L3": {
+        "title": "Estudo de caso STAR de uma não conformidade resolvida",
+        "brief": "Conte um problema de qualidade que você ajudou a resolver: situação com indicador inicial, tarefa, ação (ferramenta usada: 5 porquês, Ishikawa, 8D, DMAIC) e resultado mensurável com verificação de eficácia. Dados em percentual ou fictícios se sigilosos.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true, "mustNameTool": true, "effectivenessCheck": true },
+        "criteria": ["quatro seções explícitas", "ferramenta de análise nomeada", "resultado com número ou comparação relativa", "verificação de eficácia descrita", "declaração de ausência de dado confidencial"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório de auditoria interna simulada",
+        "brief": "A partir de um processo fictício ou público, escreva um relatório de auditoria interna de até 4 páginas no estilo da ISO 19011: escopo, critérios (cláusulas da ISO 9001), método e amostra, constatações com evidência objetiva, classificação (conformidade, oportunidade de melhoria, NC), conclusão e limitações.",
+        "parameters": { "maxPages": 4, "sections": ["escopo", "critérios", "método e amostra", "constatações", "classificação", "conclusão e limitações"], "mustCiteClauses": true },
+        "criteria": ["até 4 páginas", "seis seções nomeadas", "cada constatação cita a cláusula da norma", "cada constatação tem evidência objetiva", "caso fictício ou público declarado"],
+        "evidence": "relatório em PDF",
+        "time": "2 h",
+        "level": 3
+      },
+      "L6": {
+        "title": "Resumo de perfil em gestão da qualidade",
+        "brief": "Escreva até 600 caracteres com seu setor e frente (SGQ, auditoria, melhoria, inspeção), três competências e uma prova com link (POP, RNC, Ishikawa, indicador). Sem dados pessoais além do nome.",
+        "parameters": { "maxChars": 600, "requiredParts": ["setor e frente", "três competências", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia setor e frente", "cita três competências", "inclui uma prova com link"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "drawings",
+        "title": "Diagrama de Ishikawa com Pareto de um problema",
+        "competency": "Análise de causa raiz",
+        "criteria": ["efeito definido de forma mensurável", "as seis categorias (6M) consideradas", "ao menos duas causas por categoria relevante", "Pareto das causas com dados e fonte", "causa priorizada destacada", "dados fictícios ou anonimizados declarados"],
+        "evidence": "diagrama vetorial (SVG/PDF)",
+        "time": "60 min",
+        "trigger": "Tem um problema recorrente para investigar a causa?",
+        "level": 2
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Relatório de não conformidade com plano de ação",
+        "competency": "Tratamento de não conformidades e ação corretiva",
+        "criteria": ["descrição da NC com requisito não atendido", "correção imediata", "análise de causa raiz com ferramenta nomeada", "ações corretivas com responsável e prazo (5W2H)", "critério de verificação de eficácia", "caso fictício ou anonimizado declarado"],
+        "evidence": "RNC em PDF",
+        "time": "60 min",
+        "trigger": "Quer mostrar como trata uma não conformidade do começo ao fim?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L9", "X2"], "auto": true },
+      { "id": "cabecalho-documento", "check": "o documento traz código, revisão, data e aprovação", "appliesTo": ["L7", "X2"], "auto": true },
+      { "id": "clausula-citada", "check": "constatações citam a cláusula da norma e a evidência objetiva", "appliesTo": ["L4"], "auto": true },
+      { "id": "fluxo-fechado", "check": "o diagrama tem início e fim, raias e nenhuma atividade órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "ishikawa-6m", "check": "o Ishikawa considera as seis categorias e tem efeito mensurável", "appliesTo": ["X1"], "auto": true },
+      { "id": "indicador-completo", "check": "o indicador traz fórmula, meta, fonte e período", "appliesTo": ["D7", "X1"], "auto": true },
+      { "id": "acao-com-dono-e-prazo", "check": "cada ação tem responsável, prazo e critério de eficácia", "appliesTo": ["X2", "L3"], "auto": true },
+      { "id": "palavras-chave-do-alvo", "check": "as palavras-chave do cargo-alvo aparecem no texto", "appliesTo": ["L1", "L2"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados confidenciais (RNCs, auditorias, fornecedores)", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L9", "L10", "D2", "D4", "D5", "D6", "D7", "D10", "X1", "X2"], "auto": true },
+      { "id": "causa-raiz-plausivel", "check": "a causa raiz identificada explica o efeito e não é só um sintoma", "appliesTo": ["X1", "X2", "L3"], "auto": false }
+    ],
+    "subjective": [
+      { "id": "pensamento-baseado-em-evidencia", "label": "Decisão baseada em evidência", "levels": { "aproxima": "conclusões sem dados", "atende": "cada conclusão se apoia em dado ou evidência objetiva", "supera": "trata a variação dos dados e verifica a eficácia" } },
+      { "id": "clareza-do-padrao", "label": "Clareza do padrão", "levels": { "aproxima": "o procedimento exige explicação adicional", "atende": "uma pessoa nova executa seguindo o texto", "supera": "previne erros com pontos de controle e exemplos" } },
+      { "id": "resultado", "label": "Resultado demonstrado", "levels": { "aproxima": "descreve atividades, sem resultado", "atende": "mostra um resultado mensurável", "supera": "mostra resultado sustentado no tempo e aprendizados" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa que atua ou quer atuar em gestão da qualidade: inspeção, documentação, auditoria interna, melhoria contínua e sistemas de gestão, em indústria, serviços, saúde, construção ou setor público. Use o vocabulário da área (SGQ, PDCA, não conformidade, correção e ação corretiva, causa raiz, Ishikawa 6M, Pareto, 5 porquês, 8D, CEP, Cp/Cpk, FMEA, informação documentada, lista mestra, evidência objetiva, análise crítica pela direção) e cite as normas pelo número: ABNT NBR ISO 9001:2015, ISO 9000:2015, ISO 19011:2018, ISO 31000:2018, ISO 14001 e ISO 45001; normas setoriais (IATF 16949, ISO 22000) quando a pessoa indicar o setor. Oriente a produzir evidências: POPs com controle de versão, mapas de processo com pontos de controle, RNC com plano de ação, Ishikawa com Pareto, relatório de auditoria simulada, indicadores com fórmula e meta. Não reproduza texto integral de normas ABNT/ISO (protegidas por direito autoral); resuma e indique a cláusula. Não emita certificado, laudo, parecer de conformidade ou relatório de auditoria assinável: toda saída é rascunho de estudo. Nunca trate RNCs, auditorias, reclamações ou dados de fornecedores reais e identificáveis, nem know-how protegido; peça anonimização ou caso fictício. Pergunte antes de inferir setor, cargo ou senioridade. Afirmações de mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa emprego ou certificação. Progresso é por critérios atendidos, nunca por score. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "ABNT — catálogo de normas (NBR ISO 9001, 9000, 19011, 31000)", "url": "https://www.abntcatalogo.com.br/", "kind": "norma" },
+      { "title": "ISO 9001 — Quality management systems (ISO)", "url": "https://www.iso.org/standard/62085.html", "kind": "norma" },
+      { "title": "Inmetro — avaliação da conformidade e certificados de SGQ", "url": "https://www.gov.br/inmetro/pt-br", "kind": "orgao-publico" },
+      { "title": "Fundação Nacional da Qualidade (FNQ) — Modelo de Excelência da Gestão", "url": "https://fnq.org.br/", "kind": "comunidade" },
+      { "title": "CBO — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "Novo CAGED — Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2/c5 com competências da qualidade; x1 (setor e normas) e x2 (registros mostráveis)." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza L7 (POP), D4 (mapa), D5, D7 e X1/X2 (Ishikawa e RNC); auditoria simulada (L4) no nível 3." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); diagramas e indicadores só no computador; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Pré-checa cabeçalho do documento, cláusula citada, 6M, indicador completo, ação com dono e prazo e declaração de sigilo; plausibilidade da causa raiz é revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Propõe estrutura de POP, RNC e relatório de auditoria; sem reproduzir texto de normas; nunca relatório assinável; nunca aplica sem revisão." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Pontos de controle no BPMN (D4), categorias 6M no Ishikawa (X1), Pareto e eixos nos indicadores (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: síntese por competências da qualidade com lacunas (ex.: auditor interno) e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Caminhos para engenharia de produção, processos gerenciais, logística, segurança do trabalho e gestão ambiental; mercado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por CBO e por setor." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com setor, frente e provas; só com o consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, normas e certificações em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "relatórios de não conformidade, auditorias internas e dados de fornecedores confidenciais", "registros de produção, reclamações de clientes e recalls identificáveis", "procedimentos e know-how protegidos como segredo industrial", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "não emitir certificado, laudo, parecer de conformidade ou relatório de auditoria assinável; toda peça é rascunho de estudo",
+      "não reproduzir texto integral de normas ABNT/ISO; resumir e indicar a cláusula",
+      "não tratar RNCs, auditorias, reclamações ou fornecedores reais identificáveis nem know-how protegido; pedir anonimização ou caso fictício",
+      "nunca prometer emprego ou certificação; mercado com fonte, data e região ou \"estimativa\"",
+      "perguntar em vez de inferir setor, cargo ou senioridade",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "alta" },
+    "drawingsModes": ["diagrama", "infografico", "prancha"],
+    "lettersTemplates": ["pop", "relatorio-tecnico", "estudo-de-caso", "revisao", "bio", "curriculo", "carta", "plano-30-60-90", "post"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas de texto curtas (L5, L6) e revisão (L10); mapas (D4), Ishikawa (X1), antes e depois (D5) e indicadores (D7) pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em gestão da qualidade (15 min).",
+        "Que processo você conhece bem? Um POP com cabeçalho e controle de versão leva cerca de 60 min.",
+        "Tem um problema recorrente em mente? Ishikawa com Pareto leva cerca de 60 min e comprova análise de causa.",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "setor", "competencias"] },
+    "privacy": {
+      "sensitiveData": ["relatórios de não conformidade, auditorias internas e dados de fornecedores confidenciais", "registros de produção, reclamações de clientes e recalls identificáveis", "procedimentos e know-how de processo protegidos como segredo industrial", "documentos pessoais (CPF, RG, endereço)"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 3912, 2149 e 3523", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "ISO Survey of Management System Standard Certifications", "url": "https://www.iso.org/the-iso-survey.html", "geography": "mundo, por país (inclui Brasil)", "cadence": "anual", "kind": "pesquisa" },
+      { "title": "Inmetro — consulta de certificados de sistemas de gestão acreditados", "url": "https://www.gov.br/inmetro/pt-br", "geography": "Brasil", "cadence": "continua", "kind": "estatistica-oficial" },
+      { "title": "PNAD Contínua (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html", "geography": "Brasil e UF", "cadence": "trimestral", "kind": "estatistica-oficial" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "engenharia-de-producao", "why": "Qualidade é uma das áreas da engenharia de produção; a graduação amplia para PCP, logística e pesquisa operacional e dá registro no CREA.", "gaps": ["graduação em Engenharia de Produção", "estatística e pesquisa operacional", "PCP e custos industriais"], "steps": ["infográfico de CEP com capacidade (D7)", "estudo de caso STAR com DMAIC (L3)", "curso Green Belt"] },
+    { "to": "processos-gerenciais", "why": "Mapeamento, POP e indicadores são a base comum; processos gerenciais leva essa base para áreas administrativas e de negócio.", "gaps": ["planejamento estratégico e Canvas", "finanças do negócio", "gestão comercial"], "steps": ["mapa de um processo administrativo (D4)", "SWOT com plano de ação"] },
+    { "to": "administracao", "why": "Coordenação da qualidade envolve pessoas, orçamento e estratégia; a administração amplia esse escopo.", "gaps": ["finanças e orçamento", "gestão de pessoas", "estratégia"], "steps": ["plano 30-60-90 para coordenação da qualidade (L9)", "relatório gerencial de indicadores (L4)"] },
+    { "to": "logistica", "why": "Qualidade de fornecedores, recebimento e inspeção conectam-se a compras e cadeia de suprimentos.", "gaps": ["gestão de estoques e transporte", "sistemas WMS/TMS", "indicadores logísticos"], "steps": ["mapa do processo de recebimento com inspeção (D4)", "curso de logística (SENAI)"] },
+    { "to": "seguranca-do-trabalho", "why": "Sistemas integrados (ISO 45001) unem qualidade e saúde e segurança ocupacional; o técnico de segurança exige curso técnico e registro.", "gaps": ["curso técnico ou especialização em segurança do trabalho", "NRs do MTE", "análise de riscos ocupacionais"], "steps": ["POP com riscos de segurança (L7)", "curso de ISO 45001"] },
+    { "to": "gestao-ambiental", "why": "ISO 14001 usa a mesma estrutura de alto nível da ISO 9001; auditores de SGI atuam nas duas.", "gaps": ["legislação ambiental e licenciamento", "aspectos e impactos ambientais", "gestão de resíduos"], "steps": ["matriz de aspectos e impactos simulada (L4)", "curso de ISO 14001"] }
+  ],
+  "learning": [
+    { "title": "Cursos do SENAI em qualidade, metrologia e Lean (gratuitos e pagos)", "provider": "SENAI", "url": "https://www.senai.br/cursos", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — gestão da qualidade, processos e indicadores", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Cursos do Sebrae sobre qualidade e boas práticas", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "ABNT NBR ISO 9001:2015 (norma; compra ou consulta em bibliotecas universitárias)", "provider": "ABNT", "url": "https://www.abntcatalogo.com.br/", "free": false, "kind": "norma" },
+    { "title": "ISO 9001 — página oficial e materiais introdutórios", "provider": "ISO", "url": "https://www.iso.org/iso-9001-quality-management.html", "free": true, "kind": "portal" },
+    { "title": "Fundação Nacional da Qualidade — conteúdos sobre excelência da gestão", "provider": "FNQ", "url": "https://fnq.org.br/", "free": true, "kind": "comunidade" },
+    { "title": "Escola Virtual Fundação Bradesco — qualidade e Excel", "provider": "Fundação Bradesco", "url": "https://www.ev.org.br/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Catálogo de ramos acadêmicos — gestao-da-qualidade (CBO, ISCO, ESCO, sensitiveData, vizinhos)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "ABNT NBR ISO 9001:2015 Emenda 1:2024 e ABNT NBR ISO 19011:2018 — edições vigentes (busca web: normas.com.br, standards.ie)", "url": "https://www.normas.com.br/visualizar/abnt-nbr-nm/22408/abnt-nbriso19011-diretrizes-para-auditoria-de-sistemas-de-gestao", "accessedAt": "2026-11-02" },
+    { "title": "ISO 9001 — página oficial", "url": "https://www.iso.org/standard/62085.html", "accessedAt": "2026-11-02" },
+    { "title": "CBO — Classificação Brasileira de Ocupações", "url": "https://cbo.mte.gov.br/", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URIs ESCO das competências não confirmadas nesta sessão (todas com esco: null); as URIs de ocupação vêm do catálogo",
+    "registro no CRA para o tecnólogo em Gestão da Qualidade não confirmado (catálogo diz council: null)",
+    "Emenda 1:2024 da ISO 9001 (mudanças climáticas) confirmada só por revendedor; texto não aberto",
+    "URLs ISO Survey, FNQ, página ISO 9001 e consulta de certificados do Inmetro não abertas nesta sessão",
+    "família CBO 3911 em a4.cboFamilies não conferida no portal da CBO",
+    "início de transição para uma revisão da ISO 9001 (prevista para 2026) não verificado"
+  ]
+}

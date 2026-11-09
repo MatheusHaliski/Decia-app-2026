@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 1,
+  "code": "logistica",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Logística", "en": "Logistics", "es": "Logística" },
+  "fields": ["logistica"],
+  "family": {
+    "cbo": [
+      { "code": "3421", "title": "Especialistas em logística de transportes" },
+      { "code": "1424", "title": "Gerentes de suprimentos e afins" },
+      { "code": "1416", "title": "Gerentes de operações de serviços em empresa de transporte, de comunicação e de logística (armazenagem e distribuição)" }
+    ],
+    "isco08": [
+      { "code": "1324", "title": "Supply, distribution and related managers" },
+      { "code": "3331", "title": "Clearing and forwarding agents" },
+      { "code": "4323", "title": "Transport clerks" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/823db06f-25e1-4658-b063-d6ef956b41f5", "label": "logistics and distribution manager" },
+      { "uri": "http://data.europa.eu/esco/occupation/aacc3918-b5d3-484b-9480-5d29aa550d74", "label": "supply chain manager" },
+      { "uri": "http://data.europa.eu/esco/occupation/51cd3a7a-eae6-4dc6-9f24-179d7ec6d230", "label": "logistics analyst" }
+    ]
+  },
+  "scope": {
+    "summary": "Tecnólogo ou bacharel em Logística: planeja e opera o fluxo de materiais, informações e pedidos do fornecedor ao cliente. Cobre compras e suprimentos, armazenagem e estoques, transporte e distribuição, planejamento de demanda (S&OP), documentos fiscais de transporte, indicadores (OTIF, acuracidade, custo por entrega), logística reversa e segurança na movimentação (NR-11). Sem conselho obrigatório; registro no CRA é facultativo.",
+    "entryRoles": ["Estagiário de logística", "Auxiliar de logística ou de expedição", "Assistente de logística", "Conferente / assistente de almoxarifado", "Assistente de compras", "Assistente de transportes (roteirização e CT-e)"],
+    "midRoles": ["Analista de logística", "Analista de estoques e inventário", "Analista de transportes", "Analista de planejamento (PCP / S&OP)", "Comprador(a)", "Analista de supply chain", "Supervisor(a) de armazém ou expedição"],
+    "seniorRoles": ["Coordenador de logística", "Gerente de armazém / centro de distribuição", "Gerente de transportes e distribuição", "Gerente de suprimentos", "Gerente de supply chain", "Consultor em logística e operações", "Gerente de operações em operador logístico (3PL)"],
+    "sectors": ["indústria de transformação", "varejo e e-commerce", "operadores logísticos (3PL) e transportadoras", "agronegócio e alimentos", "farmacêutico e saúde", "portos, aeroportos e terminais", "atacado e distribuição", "setor público (almoxarifado, compras)", "construção civil", "mineração e energia"],
+    "regulation": [
+      { "name": "NR-11", "issuer": "MTE", "about": "transporte, movimentação, armazenagem e manuseio de materiais: empilhadeiras, operador habilitado, empilhamento e sinalização" },
+      { "name": "NR-12 e NR-17", "issuer": "MTE", "about": "segurança em máquinas e equipamentos de movimentação; ergonomia no levantamento e transporte manual de cargas" },
+      { "name": "Lei 11.442/2007 e RNTRC (ANTT)", "issuer": "Brasil / ANTT", "about": "transporte rodoviário de cargas: transportador autônomo e empresa; registro obrigatório no RNTRC; contrato de frete e responsabilidade" },
+      { "name": "Lei 13.103/2015", "issuer": "Brasil", "about": "motorista profissional: jornada, descanso e tempo de espera; impacta planejamento de rotas" },
+      { "name": "CT-e e MDF-e (Ajustes SINIEF 09/2007 e 21/2010) e NF-e", "issuer": "CONFAZ / SEFAZ", "about": "documentos fiscais eletrônicos obrigatórios no transporte e na circulação de mercadorias" },
+      { "name": "Lei 12.305/2010 (PNRS)", "issuer": "Brasil", "about": "logística reversa de embalagens, eletroeletrônicos, pneus, pilhas e outros; responsabilidade compartilhada" },
+      { "name": "Incoterms 2020", "issuer": "ICC — Câmara de Comércio Internacional", "about": "regras de divisão de custos, riscos e responsabilidades entre comprador e vendedor (EXW, FCA, FOB, CIF, DAP, DDP)" },
+      { "name": "ABNT NBR ISO 9001:2015", "issuer": "ABNT / ISO", "about": "gestão da qualidade: processos, indicadores, não conformidade e melhoria, base dos POPs logísticos" },
+      { "name": "Resolução ANTT 5.998/2022 e Lei 14.599/2023 (produtos perigosos)", "issuer": "ANTT / Brasil", "about": "transporte rodoviário de produtos perigosos: classificação, embalagem, documentação e treinamento (MOPP)" },
+      { "name": "Lei 4.769/1965; Res. CFA 649/2024", "issuer": "CFA / CRA", "about": "registro facultativo do tecnólogo em área conexa à Administração" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "WMS", "meaning": "sistema de gestão de armazém: endereçamento, recebimento, picking, inventário" },
+      { "term": "TMS", "meaning": "sistema de gestão de transportes: cotação de frete, roteirização, rastreamento, auditoria de frete" },
+      { "term": "ERP", "meaning": "sistema integrado de gestão (compras, estoque, fiscal, financeiro); ex.: SAP, TOTVS" },
+      { "term": "SKU", "meaning": "unidade de manutenção de estoque: cada item distinto controlado" },
+      { "term": "FIFO / FEFO", "meaning": "primeiro que entra, primeiro que sai / primeiro que vence, primeiro que sai" },
+      { "term": "curva ABC", "meaning": "classificação de itens por valor ou giro (A: poucos itens, alto valor) para priorizar controle" },
+      { "term": "acuracidade de estoque", "meaning": "percentual de itens cujo saldo físico confere com o saldo no sistema" },
+      { "term": "inventário cíclico", "meaning": "contagem periódica de parte dos itens em vez de contagem geral anual" },
+      { "term": "lead time", "meaning": "tempo entre o pedido e a disponibilidade do item ou a entrega" },
+      { "term": "OTIF", "meaning": "on time in full: pedidos entregues no prazo e completos, dividido pelo total" },
+      { "term": "nível de serviço", "meaning": "percentual de demanda atendida no prazo e sem falta" },
+      { "term": "estoque de segurança e ponto de pedido", "meaning": "reserva contra variação de demanda e lead time; nível que dispara a reposição" },
+      { "term": "giro de estoque", "meaning": "quantas vezes o estoque médio é vendido ou consumido no período" },
+      { "term": "picking / packing", "meaning": "separação de itens do pedido e embalagem para expedição" },
+      { "term": "cross-docking", "meaning": "transferência direta do recebimento para a expedição sem armazenar" },
+      { "term": "milk run", "meaning": "roteiro de coleta programada em vários fornecedores com um só veículo" },
+      { "term": "roteirização", "meaning": "definição de sequência de entregas por veículo minimizando distância, tempo e custo" },
+      { "term": "cubagem", "meaning": "cálculo de volume da carga para ocupar o veículo e precificar o frete (peso cubado)" },
+      { "term": "pallet PBR", "meaning": "palete padrão brasileiro 1,00 × 1,20 m" },
+      { "term": "endereçamento", "meaning": "código de posição no armazém (rua, prédio, nível, apartamento)" },
+      { "term": "NF-e, CT-e, MDF-e", "meaning": "nota fiscal eletrônica, conhecimento de transporte eletrônico e manifesto eletrônico de documentos fiscais" },
+      { "term": "frete CIF / FOB (uso doméstico)", "meaning": "frete por conta do remetente (CIF) ou do destinatário (FOB), como usado no Brasil; não confundir com os Incoterms" },
+      { "term": "Incoterms 2020", "meaning": "regras da ICC que definem custos e riscos entre vendedor e comprador no comércio internacional" },
+      { "term": "last mile", "meaning": "última etapa da entrega até o destinatário final" },
+      { "term": "S&OP", "meaning": "planejamento de vendas e operações: reunião mensal que alinha demanda, produção, estoque e capacidade" },
+      { "term": "MRP", "meaning": "planejamento de necessidades de materiais a partir do plano mestre e da lista de materiais" },
+      { "term": "3PL / 4PL", "meaning": "operador logístico terceirizado / integrador que gerencia vários operadores" },
+      { "term": "embarcador e transportador", "meaning": "quem contrata o transporte (dono da carga) e quem o executa" },
+      { "term": "avaria e sinistro", "meaning": "dano à carga e ocorrência coberta por seguro (RCTR-C, roubo)" },
+      { "term": "logística reversa", "meaning": "retorno de produtos, embalagens e devoluções para reuso, reciclagem ou descarte" },
+      { "term": "layout de armazém", "meaning": "arranjo físico de docas, áreas de recebimento, estocagem, separação e expedição" },
+      { "term": "KPI logístico", "meaning": "indicador-chave: OTIF, acuracidade, custo por entrega, ocupação, avarias, lead time" }
+    ],
+    "tools": ["WMS (ex.: SAP EWM, TOTVS WMS, Senior)", "TMS (ex.: módulos de cotação, roteirização e rastreamento)", "ERP (SAP, TOTVS, Oracle)", "planilhas (Excel, Google Sheets)", "Power BI ou Looker Studio", "coletores de dados e leitores de código de barras / RFID", "emissores de NF-e, CT-e e MDF-e", "roteirizadores e mapas (Google Maps, roteirizadores comerciais)", "Drawings (fluxos, layout de armazém, infográficos)", "Letters (POP, relatórios, propostas)"],
+    "deliverables": ["fluxograma de recebimento, armazenagem e expedição", "layout de armazém ou centro de distribuição", "POP de inventário cíclico, picking ou conferência", "relatório de indicadores (OTIF, acuracidade, custo por entrega)", "análise de curva ABC", "plano de roteirização e janela de entregas", "cotação comparativa de frete", "plano S&OP ou de reposição", "checklist de conferência e avarias", "mapa de riscos de movimentação (NR-11)", "plano de logística reversa", "redesenho de processo (antes e depois)"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Gestão de estoques e inventário (curva ABC, acuracidade, reposição)", "esco": null, "kind": "nucleo" },
+      { "label": "Armazenagem e layout de armazém", "esco": null, "kind": "nucleo" },
+      { "label": "Transporte e distribuição (roteirização, frete, last mile)", "esco": null, "kind": "nucleo" },
+      { "label": "Compras, suprimentos e negociação com fornecedores", "esco": null, "kind": "nucleo" },
+      { "label": "Planejamento de demanda, MRP e S&OP", "esco": null, "kind": "nucleo" },
+      { "label": "Indicadores logísticos e análise de custos", "esco": null, "kind": "nucleo" },
+      { "label": "Documentos fiscais de transporte (NF-e, CT-e, MDF-e)", "esco": null, "kind": "nucleo" },
+      { "label": "Operação de WMS, TMS e ERP", "esco": null, "kind": "nucleo" },
+      { "label": "Segurança na movimentação e armazenagem (NR-11, NR-12, NR-17)", "esco": null, "kind": "nucleo" },
+      { "label": "Logística reversa e sustentabilidade (PNRS)", "esco": null, "kind": "apoio" },
+      { "label": "Logística internacional e Incoterms 2020", "esco": null, "kind": "apoio" },
+      { "label": "Melhoria contínua (Lean, 5S, mapeamento de processos)", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de equipes operacionais e turnos", "esco": null, "kind": "apoio" },
+      { "label": "Planilhas e análise de dados", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["organização e atenção a detalhes", "comunicação com operação e clientes", "raciocínio numérico", "trabalho sob prazo", "ética e sigilo de dados de clientes e fornecedores"],
+    "tracks": [
+      { "id": "operar-o-armazem", "label": "Operar o armazém", "steps": ["fluxo recebimento → armazenagem → expedição com raias (D4)", "POP de inventário cíclico (L7)", "layout de armazém em planta 2D (D1)"] },
+      { "id": "medir-e-melhorar", "label": "Medir e melhorar", "steps": ["relatório de indicadores logísticos (L4)", "infográfico de OTIF e acuracidade (D7)", "redesenho antes e depois do picking (D5)", "análise de curva ABC (X1)"] },
+      { "id": "distribuir", "label": "Transportar e distribuir", "steps": ["cotação comparativa de frete (X2)", "resposta a briefing de roteirização (L8)", "fluxo de expedição com emissão de CT-e e MDF-e (D4)"] },
+      { "id": "crescer-na-operacao", "label": "Crescer na operação", "steps": ["estudo de caso STAR de um problema logístico (L3)", "plano 30-60-90 para analista ou supervisor (L9)", "currículo direcionado (L1)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"auxiliar de logística\", \"conferente\", \"almoxarife\", \"analista de transportes\", \"comprador\"",
+      "cboFamilies": ["3421", "1424", "1416", "4141"],
+      "why": "Pergunto seu último cargo para saber de que parte da cadeia você parte (armazém, transporte, compras, planejamento) e sugerir tarefas que continuem dali. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, aprendizagem, auxiliar ou conferente",
+        "junior": "assistente ou analista júnior; executa rotinas no WMS/ERP com conferência",
+        "pleno": "analista que responde por estoques, transportes ou compras com autonomia",
+        "senior": "analista sênior ou supervisor; desenha processos e indicadores e orienta a equipe",
+        "gestao": "coordena ou gerencia armazém, transportes, suprimentos ou a cadeia inteira"
+      },
+      "why": "Com o nível ajusto as tarefas: um POP de conferência para quem começa, um plano S&OP ou 30-60-90 de coordenação para quem já lidera."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em logística",
+      "options": ["controlar estoque e fazer inventário", "organizar o armazém e o endereçamento", "separar e conferir pedidos sem erro", "roteirizar entregas", "cotar e negociar frete", "emitir e conferir NF-e, CT-e e MDF-e", "operar WMS, TMS ou ERP", "negociar com fornecedores", "planejar demanda e reposição", "montar indicadores em planilha", "coordenar equipe operacional", "cuidar da segurança na movimentação (NR-11)"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa logístico; a prova vem com as tarefas (fluxo, POP, relatório, layout)."
+    },
+    "c4": {
+      "certifications": ["tecnólogo ou bacharelado em Logística", "curso técnico em Logística (SENAI/SENAC/ETEC)", "operador de empilhadeira (NR-11)", "MOPP (produtos perigosos)", "curso de Excel avançado ou Power BI", "formação em WMS/TMS/ERP (SAP, TOTVS)", "Lean / Green Belt", "curso de comércio exterior e Incoterms", "registro no CRA (facultativo)"],
+      "languages": ["inglês", "espanhol"],
+      "why": "Cursos e idiomas mostram lacunas em relação ao cargo-alvo (ex.: 3PL pede WMS e inglês; transporte pede CT-e e roteirização)."
+    },
+    "c5": {
+      "prompt": "Que competência logística quer desenvolver?",
+      "options": ["gestão de estoques e inventário", "armazenagem e layout", "transporte, frete e roteirização", "compras e negociação com fornecedores", "planejamento de demanda e S&OP", "indicadores e análise de dados", "documentos fiscais de transporte", "WMS, TMS e ERP", "logística internacional e Incoterms", "liderança de equipe operacional"],
+      "why": "Com isso monto uma trilha com tarefas progressivas da área, em vez de mostrar o catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que elo da cadeia você atua ou quer atuar primeiro?", "type": "escolha", "options": ["armazém e estoques", "transporte e distribuição", "compras e suprimentos", "planejamento (PCP / S&OP)", "logística internacional", "operador logístico (3PL)", "ainda não sei"], "why": "Pergunto para colocar na frente as tarefas desse elo (ex.: layout e POP de inventário para armazém; cotação de frete para transporte).", "where": "P" },
+      { "id": "x2", "prompt": "Você usa (ou quer aprender) algum sistema de gestão logística?", "type": "lista", "options": ["WMS", "TMS", "ERP (SAP, TOTVS, outro)", "roteirizador", "emissor de CT-e/MDF-e", "só planilhas", "nenhum ainda"], "why": "Os sistemas que você domina mudam o vocabulário dos POPs e o que vale como evidência; não é critério de exclusão.", "where": "X" }
+    ],
+    "interestTestWhenUnknown": true
+  },
+  "guidedTasks": {
+    "priority": ["D4", "L7", "L4", "D1", "D7", "D5", "L9", "L8", "L3", "L1", "L6", "L10"],
+    "excluded": [
+      { "code": "D3", "reason": "modelo 3D de produto não é entrega de logística" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da área" },
+      { "code": "D8", "reason": "vista explodida não é entrega da área" },
+      { "code": "D9", "reason": "wireframe de tela não é entrega típica de logística" }
+    ],
+    "parameters": {
+      "D4": {
+        "title": "Fluxo de recebimento, armazenagem e expedição com raias",
+        "brief": "Desenhe o fluxo de um pedido do recebimento à expedição em um armazém fictício, com raias por responsável (recebimento, estoque, separação, expedição, fiscal) e pontos de decisão (divergência de NF, avaria, falta). Nenhum dado real de cliente ou fornecedor.",
+        "parameters": { "lanes": ["recebimento", "estoque", "separação", "expedição", "fiscal"], "mustHave": ["conferência da NF-e", "endereçamento", "picking", "emissão de CT-e/MDF-e", "tratamento de divergência"], "closedFlow": true, "fictionalData": true },
+        "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "pelo menos dois pontos de decisão (divergência, avaria ou falta)", "inclui a emissão dos documentos fiscais", "declara dados fictícios"],
+        "evidence": "diagrama vetorial (Drawings, modo diagrama)",
+        "time": "45 min",
+        "level": 1
+      },
+      "L7": {
+        "title": "POP de inventário cíclico",
+        "brief": "Escreva o procedimento de inventário cíclico de um armazém fictício: passos numerados, responsável por passo, frequência por classe ABC, tolerância de divergência, ajuste no WMS/ERP e critério de conclusão. Cite a NR-11 onde houver movimentação.",
+        "parameters": { "process": "inventário cíclico", "numberedSteps": true, "ownerPerStep": true, "mustMention": ["frequência por classe ABC", "tolerância de divergência", "ajuste no sistema", "NR-11 na movimentação"], "fictionalCompany": true },
+        "criteria": ["passos numerados com responsável", "critério de conclusão em cada passo", "frequência de contagem por classe ABC", "regra de tratamento de divergência", "cita NR-11 quando há movimentação de carga", "declara empresa fictícia"],
+        "evidence": "POP em Letters (modelo pop)",
+        "time": "60 min",
+        "level": 1
+      },
+      "L4": {
+        "title": "Relatório de indicadores logísticos",
+        "brief": "Monte um relatório de até 4 páginas com três indicadores (ex.: OTIF, acuracidade de estoque, custo por entrega): objetivo, fórmula, período, fonte dos dados, resultado, leitura e limitações. Use dados fictícios ou agregados sem identificar clientes, fornecedores ou tabelas de frete reais.",
+        "parameters": { "maxPages": 4, "indicators": 3, "sections": ["objetivo", "método e fórmulas", "resultados", "limitações", "referências"], "fictionalData": true },
+        "criteria": ["três indicadores com fórmula e período", "seções objetivo, método, resultados, limitações, referências", "até 4 páginas", "fonte dos dados declarada", "dados fictícios ou agregados, sem clientes ou fretes reais"],
+        "evidence": "relatório em Letters (modelo relatorio-tecnico)",
+        "time": "2 h",
+        "level": 2
+      },
+      "D1": {
+        "title": "Layout de armazém em planta 2D",
+        "brief": "Desenhe em escala o layout de um armazém fictício: docas, recebimento, estocagem (ruas e porta-paletes), separação, expedição e circulação de empilhadeiras, com cotas, legenda e indicação do fluxo. Respeite larguras de corredor compatíveis com a NR-11.",
+        "parameters": { "scale": "1:100 ou 1:200", "areas": ["docas", "recebimento", "estocagem", "separação", "expedição", "circulação"], "legend": true, "flowArrows": true },
+        "criteria": ["escala indicada", "cotas das áreas e corredores", "legenda das áreas", "setas de fluxo do recebimento à expedição", "corredores compatíveis com o equipamento de movimentação"],
+        "evidence": "prancha PDF/SVG (Drawings, modo 2d-tecnico)",
+        "time": "2 h",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de OTIF e acuracidade",
+        "brief": "Crie um infográfico com uma mensagem principal sobre a evolução de dois indicadores (ex.: OTIF e acuracidade) em seis meses, com eixos rotulados, fonte dos dados (fictícios ou agregados) e a ação que explicou a mudança.",
+        "parameters": { "indicators": 2, "months": 6, "oneMessage": true, "sourceCited": true },
+        "criteria": ["uma mensagem principal explícita", "eixos rotulados com unidade", "fonte dos dados citada", "ação ou causa da mudança anotada", "dados fictícios ou agregados declarados"],
+        "evidence": "imagem PNG + PDF (Drawings, modo infografico)",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "letters", "title": "Análise de curva ABC de um estoque fictício", "competency": "Gestão de estoques", "criteria": ["lista de itens com valor ou giro fictícios", "classes A, B e C com corte justificado (ex.: 80/15/5)", "política de controle proposta por classe", "declaração de dados fictícios"], "evidence": "relatório curto em Letters com tabela", "time": "60 min", "trigger": "Quer mostrar como você priorizaria o controle de um estoque?", "level": 1 },
+      { "id": "X2", "editor": "letters", "title": "Cotação comparativa de frete", "competency": "Transporte e custos", "criteria": ["três transportadoras fictícias comparadas", "critérios além do preço (prazo, rastreamento, seguro, avarias)", "cubagem e peso cubado calculados", "condição de frete declarada (CIF/FOB ou Incoterm com versão)", "recomendação justificada"], "evidence": "proposta em Letters (modelo proposta)", "time": "45 min", "trigger": "Quer treinar uma cotação de frete com critérios além do preço?", "level": 2 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "diagrama-fechado-com-raias", "check": "o diagrama tem início e fim, raias por responsável e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "pop-passos-e-responsaveis", "check": "passos numerados, cada um com responsável e critério de conclusão", "appliesTo": ["L7"], "auto": true },
+      { "id": "indicador-com-formula-e-periodo", "check": "cada indicador traz fórmula, período e fonte dos dados", "appliesTo": ["L4", "D7"], "auto": true },
+      { "id": "escala-cotas-legenda", "check": "escala indicada, cotas presentes e legenda das áreas", "appliesTo": ["D1"], "auto": true },
+      { "id": "fonte-e-eixos", "check": "fonte citada e eixos rotulados com unidade", "appliesTo": ["D7"], "auto": true },
+      { "id": "dados-ficticios-declarados", "check": "declaração de dados fictícios ou agregados; nenhum nome de cliente, endereço, placa ou tabela de frete real", "appliesTo": ["D4", "L7", "L4", "D7", "D5", "L3", "L8", "X1", "X2"], "auto": true },
+      { "id": "tres-mudancas-anotadas", "check": "duas versões lado a lado e três mudanças anotadas com justificativa", "appliesTo": ["D5"], "auto": true },
+      { "id": "metas-por-fase", "check": "três metas em cada fase, cada uma com indicador e prazo", "appliesTo": ["L9"], "auto": true },
+      { "id": "condicao-de-frete-declarada", "check": "a condição de frete está escrita (CIF/FOB doméstico ou Incoterm com a versão 2020)", "appliesTo": ["X2", "L8"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L8", "L9", "X1"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados confidenciais do empregador, de clientes e de fornecedores", "appliesTo": ["L1", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D1", "D4", "D5", "D7", "X1", "X2"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "fluxo-realista", "label": "Realismo operacional", "levels": { "aproxima": "o fluxo ou o POP ignora exceções comuns (divergência, avaria, falta)", "atende": "trata as exceções comuns e os responsáveis são plausíveis", "supera": "antecipa gargalos e propõe controle com indicador" } },
+      { "id": "orientacao-a-indicadores", "label": "Uso de indicadores", "levels": { "aproxima": "descreve atividades sem medir", "atende": "mede com fórmula, período e leitura", "supera": "relaciona indicadores entre si (custo × nível de serviço) e explica limites do dado" } },
+      { "id": "seguranca-e-conformidade", "label": "Segurança e conformidade", "levels": { "aproxima": "não menciona NR-11 nem documentos fiscais", "atende": "cita NR-11 e os documentos fiscais no ponto certo", "supera": "integra segurança, fiscal e ambiental (PNRS) ao processo com responsáveis" } },
+      { "id": "custo-e-nivel-de-servico", "label": "Equilíbrio custo × nível de serviço", "levels": { "aproxima": "olha só preço ou só prazo", "atende": "compara custo e nível de serviço com critérios explícitos", "supera": "quantifica o trade-off e recomenda com cenário alternativo" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da área de Logística (tecnólogo ou bacharel; CBO 3421, 1424 e 1416). Use o vocabulário da área (WMS, TMS, ERP, SKU, curva ABC, acuracidade, inventário cíclico, OTIF, lead time, picking, cross-docking, roteirização, cubagem, S&OP, MRP, NF-e, CT-e, MDF-e, logística reversa) e cite as normas pelo nome: NR-11, NR-12, NR-17, Lei 11.442/2007 e RNTRC, Lei 13.103/2015, Ajustes SINIEF do CT-e e MDF-e, PNRS (Lei 12.305/2010), Incoterms 2020 da ICC. Ao falar de frete CIF/FOB, distinga o uso doméstico brasileiro dos Incoterms e sempre cite a versão 2020. Nunca peça nem use rotas, endereços, placas, dados de clientes e destinatários, tabelas de frete, contratos de fornecedores ou níveis de estoque reais do empregador: oriente a trabalhar com empresa e dados fictícios ou agregados. Não emita nem valide documentos fiscais reais, não substitua contador, despachante ou engenheiro responsável (layout com ART é do engenheiro) e não dê orientação de segurança como se fosse laudo: cite a NR e indique a conferência. Lembre que o registro no CRA é facultativo e que operar empilhadeira exige habilitação pela NR-11. Toda sugestão de tarefa diz qual competência comprova, que evidência produz e quanto tempo leva; afirmações de mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos, nunca por score. Em nenhum modo publique, envie mensagem ou se candidate sem confirmação. Pré-cheque só critérios objetivos; o selo depende de revisão humana.",
+    "citeSources": [
+      { "title": "Normas Regulamentadoras (NR-11, NR-12, NR-17) — MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/seguranca-e-saude-no-trabalho/sst-mtp/sst-normatizacao/normas-regulamentadoras-nrs", "kind": "norma" },
+      { "title": "Lei 11.442/2007 — transporte rodoviário de cargas", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2007/lei/l11442.htm", "kind": "norma" },
+      { "title": "ANTT — RNTRC e transporte de cargas", "url": "https://www.gov.br/antt/pt-br", "kind": "orgao-publico" },
+      { "title": "Portal do CT-e (SEFAZ / CONFAZ)", "url": "https://www.cte.fazenda.gov.br/", "kind": "orgao-publico" },
+      { "title": "Lei 12.305/2010 — Política Nacional de Resíduos Sólidos (logística reversa)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2010/lei/l12305.htm", "kind": "norma" },
+      { "title": "Incoterms 2020 — ICC Brasil", "url": "https://www.iccbrasil.org/", "kind": "referencia" },
+      { "title": "CFA — Conselho Federal de Administração (registro facultativo do tecnólogo)", "url": "https://cfa.org.br/", "kind": "conselho" },
+      { "title": "CBO — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "Novo CAGED — MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências logísticas; x1 (elo da cadeia) e x2 (sistemas) ordenam as tarefas." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "D4 fluxo, L7 POP, L4 indicadores, D1 layout e D7 infográfico na frente; X1 curva ABC e X2 cotação de frete quando o elo for estoque ou transporte." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir das horas (d1) e do aparelho (d4): D1 só no computador; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Pré-checa fluxo fechado com raias, passos com responsável, fórmula e período dos indicadores, escala e legenda, condição de frete declarada, dados fictícios; o selo é humano." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Propõe estrutura de POP, relatório de indicadores e cotação com prévia; nunca aplica sem revisão; nunca preenche dados reais de clientes ou fretes." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias e fechamento do fluxo (D4); escala, cotas e legenda do layout (D1); fonte e eixos do infográfico (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: competências logísticas declaradas e evidenciadas, lacunas em relação ao elo-alvo; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos por CBO/ESCO (comércio exterior, gestão comercial, processos gerenciais, qualidade); engenharia de produção exige graduação e CREA." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por CBO 3421/1424/1416, setor e competências compartilhadas." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com elo da cadeia, três competências e uma prova; só com o consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, sistemas e certificações (NR-11, MOPP) em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "contratos, tabelas de frete e dados de fornecedores sob confidencialidade", "rotas, endereços, placas e dados de clientes e destinatários", "níveis de estoque e planos operacionais internos do empregador", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca pedir nem usar rotas, endereços, placas, dados de clientes, tabelas de frete, contratos ou estoques reais; orientar dados fictícios ou agregados",
+      "não emitir nem validar documentos fiscais reais; não substituir contador, despachante ou engenheiro responsável",
+      "citar NR-11 e demais normas pelo nome e indicar conferência; não emitir laudo de segurança",
+      "distinguir frete CIF/FOB doméstico dos Incoterms e citar sempre a versão 2020",
+      "perguntar em vez de inferir elo da cadeia, senioridade ou situação",
+      "nunca prometer entrevista, emprego ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "media", "drawings": "alta" },
+    "drawingsModes": ["diagrama", "2d-tecnico", "infografico", "prancha"],
+    "lettersTemplates": ["pop", "relatorio-tecnico", "proposta", "plano-30-60-90", "estudo-de-caso", "curriculo", "bio", "carta", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, L6, L5, X1 e a revisão (L10) funcionam bem; D1 (layout) e D4 (fluxo com raias) pedem computador. Nunca fotografar painéis de WMS, notas fiscais ou etiquetas de clientes para anexar.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: fluxo de recebimento à expedição com raias (45 min). Comprova análise de processos.",
+        "Tem números de OTIF ou acuracidade que possa mostrar com dados fictícios? Um infográfico leva 60 min.",
+        "Sem pressão. Quando quiser retomar, a análise de curva ABC de 60 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "setor", "competencias"] },
+    "privacy": {
+      "sensitiveData": ["contratos, tabelas de frete e dados de fornecedores sob confidencialidade", "rotas, endereços e dados de clientes e destinatários (LGPD)", "níveis de estoque e planos operacionais internos de empregadores", "fotos de documentos fiscais, etiquetas e painéis de sistemas com dados reais"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 3421/1424/1416 e 4141", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — estoque de vínculos por ocupação e setor (CNAE transporte e armazenagem)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "PNAD Contínua (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html", "geography": "Brasil e UF", "cadence": "trimestral", "kind": "estatistica-oficial" },
+      { "title": "Censo da Educação Superior (INEP) — matrículas em Logística", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-da-educacao-superior", "geography": "Brasil e UF", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "ANTT — dados abertos do RNTRC (transportadores e frota)", "url": "https://dados.antt.gov.br/", "geography": "Brasil e UF", "cadence": "continua", "kind": "estatistica-oficial" },
+      { "title": "CNT — Pesquisa CNT de Rodovias e boletins do transporte", "url": "https://www.cnt.org.br/", "geography": "Brasil", "cadence": "anual", "kind": "associacao" },
+      { "title": "ABRALOG — Associação Brasileira de Logística", "url": "https://www.abralog.com.br/", "geography": "Brasil", "cadence": "eventual", "kind": "associacao" },
+      { "title": "ILOS — Panorama de custos logísticos no Brasil", "url": "https://www.ilos.com.br/", "geography": "Brasil", "cadence": "eventual", "kind": "pesquisa" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "comercio-exterior", "why": "Logística internacional compartilha Incoterms, agentes de carga, documentos de embarque e custos; é a extensão natural de quem já opera transporte e armazenagem.", "gaps": ["despacho aduaneiro e Siscomex", "classificação fiscal (NCM)", "câmbio e meios de pagamento internacionais", "inglês comercial"], "steps": ["fluxo de um despacho de importação com raias (D4)", "cotação de frete internacional com Incoterm 2020 (X2)", "cursos gratuitos do Portal Único Siscomex e da Receita Federal"] },
+    { "to": "gestao-comercial", "why": "Vendas B2B e atendimento ao cliente dependem de prazo, disponibilidade e custo logístico; quem conhece a operação negocia melhor nível de serviço.", "gaps": ["prospecção e negociação comercial", "CRM e funil de vendas", "política comercial e precificação"], "steps": ["proposta comercial com condição de frete e prazo (L8)", "relatório de indicadores de nível de serviço para clientes (L4)", "estudo de caso STAR de um cliente recuperado (L3)"] },
+    { "to": "processos-gerenciais", "why": "Tecnólogo vizinho que generaliza o mapeamento de processos, indicadores e melhoria contínua que a logística já pratica.", "gaps": ["processos administrativos e financeiros", "gestão de projetos", "estratégia organizacional"], "steps": ["fluxo com raias de um processo fora da logística (D4)", "redesenho antes e depois (D5)", "POP de um processo administrativo (L7)"] },
+    { "to": "gestao-da-qualidade", "why": "ISO 9001, auditoria, não conformidade e indicadores são comuns aos dois ramos; o armazém é um dos processos mais auditados.", "gaps": ["requisitos da ISO 9001 em profundidade", "auditoria interna", "ferramentas da qualidade (Ishikawa, PDCA, CEP)"], "steps": ["POP de tratamento de não conformidade (L7)", "relatório de indicadores de qualidade (L4)", "curso de auditor interno ISO 9001"] },
+    { "to": "engenharia-de-producao", "why": "Compartilha PCP, Lean, layout e pesquisa operacional, mas é profissão regulamentada: exige graduação em engenharia e registro no CREA (Lei 5.194/1966).", "gaps": ["graduação em Engenharia de Produção (5 anos)", "cálculo, estatística e pesquisa operacional", "registro no CREA e ART"], "steps": ["entender o que é privativo do engenheiro (layout com ART, laudos)", "mapa de fluxo de valor de um processo logístico (D4/D5)", "avaliar a graduação"] },
+    { "to": "administracao", "why": "Mesma família CINE (0413) e mesmo conselho facultativo; o bacharelado amplia para finanças, pessoas e estratégia.", "gaps": ["finanças e orçamento", "gestão de pessoas", "bacharelado (se quiser registro pleno no CRA)"], "steps": ["relatório de indicadores com leitura de custo total (L4)", "plano 30-60-90 para coordenação de operações (L9)", "disciplinas de finanças em curso aberto"] }
+  ],
+  "learning": [
+    { "title": "Escola Virtual.Gov — logística, compras públicas e gestão de estoques", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Normas Regulamentadoras (NR-11, NR-12, NR-17) — texto oficial", "provider": "MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/seguranca-e-saude-no-trabalho/sst-mtp/sst-normatizacao/normas-regulamentadoras-nrs", "free": true, "kind": "norma" },
+    { "title": "Portal do CT-e — manuais, notas técnicas e perguntas frequentes", "provider": "SEFAZ / CONFAZ", "url": "https://www.cte.fazenda.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Cursos gratuitos de logística do Mundo SENAI", "provider": "SENAI", "url": "https://www.senai.br/", "free": true, "kind": "portal" },
+    { "title": "Cursos on-line de logística e gestão de estoques do Sebrae", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual Fundação Bradesco — logística e administração", "provider": "Fundação Bradesco", "url": "https://www.ev.org.br/", "free": true, "kind": "portal" },
+    { "title": "Incoterms 2020 — publicação oficial e cursos", "provider": "ICC Brasil", "url": "https://www.iccbrasil.org/", "free": false, "kind": "norma" },
+    { "title": "ANTT — transporte rodoviário de cargas (RNTRC, produtos perigosos)", "provider": "ANTT", "url": "https://www.gov.br/antt/pt-br", "free": true, "kind": "portal" },
+    { "title": "ABRALOG — comunidade e conteúdos de logística", "provider": "ABRALOG", "url": "https://www.abralog.com.br/", "free": false, "kind": "comunidade" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4 (perguntas), §4.6 (pacote), §7 (tarefas L1–L10, D1–D10), §8 (mensagens)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "RF75 README (CA19) e catálogo contracts/career/academic-fields.json — ramo logistica (CBO, ISCO, ESCO, conselho, sensitiveData, vizinhos)", "url": "docs/diagramas/RF75/README.md", "accessedAt": "2026-11-02" },
+    { "title": "Normas Regulamentadoras — MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/seguranca-e-saude-no-trabalho/sst-mtp/sst-normatizacao/normas-regulamentadoras-nrs", "accessedAt": "2026-11-02" },
+    { "title": "Lei 11.442/2007", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2007/lei/l11442.htm", "accessedAt": "2026-11-02" },
+    { "title": "Lei 12.305/2010 (PNRS)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2010/lei/l12305.htm", "accessedAt": "2026-11-02" },
+    { "title": "Portal do CT-e", "url": "https://www.cte.fazenda.gov.br/", "accessedAt": "2026-11-02" },
+    { "title": "CBO — Classificação Brasileira de Ocupações", "url": "https://cbo.mte.gov.br/", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Nenhuma busca web nesta sessão: URLs de leis, ANTT, CT-e, ICC Brasil, CNT, ABRALOG, ILOS e aprendizagem citadas de memória, não verificadas em 2026-11-02",
+    "Número da Resolução ANTT sobre produtos perigosos (5.998/2022) e a Lei 14.599/2023 citados de memória; conferir vigência",
+    "Ajustes SINIEF 09/2007 (CT-e) e 21/2010 (MDF-e) citados de memória",
+    "Res. CFA 649/2024 e RN CFA 505/2017 (registro facultativo do tecnólogo) copiadas do catálogo, não conferidas no site do CFA",
+    "Código CBO 4141 (almoxarifes e armazenistas) em questions.a4 e títulos CBO/ISCO não conferidos no portal da CBO",
+    "URIs ESCO da família copiadas do catálogo; competências sem URI ESCO confirmada (esco: null)",
+    "Dimensão do palete PBR (1,00 × 1,20 m) e larguras de corredor da NR-11 citadas de memória",
+    "Existência de cursos gratuitos de logística no Mundo SENAI e na Enap não verificada nesta sessão"
+  ]
+}

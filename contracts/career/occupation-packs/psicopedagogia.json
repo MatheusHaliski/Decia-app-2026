@@ -1,0 +1,1168 @@
+{
+  "schemaVersion": 1,
+  "code": "psicopedagogia",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": {
+    "pt-BR": "Psicopedagogia",
+    "en": "Educational Psychology (Psychopedagogy)",
+    "es": "Psicopedagogía"
+  },
+  "fields": [
+    "psicopedagogia"
+  ],
+  "family": {
+    "cbo": [
+      {
+        "code": "2394",
+        "title": "Programadores, avaliadores e orientadores de ensino (inclui 2394-25 Psicopedagogo)"
+      }
+    ],
+    "isco08": [
+      {
+        "code": "2359",
+        "title": "Teaching professionals not elsewhere classified"
+      },
+      {
+        "code": "2351",
+        "title": "Education methods specialists"
+      }
+    ],
+    "esco": [
+      {
+        "uri": "http://data.europa.eu/esco/occupation/2412bbb1-29ca-4e17-a2b8-70694f0cb14f",
+        "label": "educational counsellor"
+      },
+      {
+        "uri": "http://data.europa.eu/esco/occupation/114c5a6c-1869-4a67-8ec0-660ec303f8cc",
+        "label": "learning support teacher"
+      }
+    ]
+  },
+  "scope": {
+    "summary": "Psicopedagogos (bacharelado ou pós-graduação em Psicopedagogia) estudam e acompanham processos de aprendizagem e suas dificuldades, na instituição (escolas, empresas, ONGs) e na clínica, em parceria com professores, famílias e outros profissionais. Fazem avaliação psicopedagógica, planos de intervenção, orientação a professores e famílias e formação docente. O guia trabalha evidências com casos fictícios: nada de dados de alunos ou pacientes.",
+    "entryRoles": [
+      "Estagiário de Psicopedagogia",
+      "Auxiliar ou mediador de inclusão escolar",
+      "Psicopedagogo institucional júnior",
+      "Professor de apoio ou reforço com foco em aprendizagem",
+      "Tutor de aprendizagem"
+    ],
+    "midRoles": [
+      "Psicopedagogo institucional (escola, rede de ensino)",
+      "Psicopedagogo clínico (consultório próprio ou multiprofissional)",
+      "Psicopedagogo de núcleo de apoio ao estudante (ensino superior)",
+      "Orientador de aprendizagem em edtech ou ONG",
+      "Formador de professores em inclusão e aprendizagem"
+    ],
+    "seniorRoles": [
+      "Coordenador de núcleo de apoio psicopedagógico",
+      "Supervisor de psicopedagogos",
+      "Docente de pós-graduação em Psicopedagogia",
+      "Consultor de redes de ensino em aprendizagem e inclusão",
+      "Gestor de clínica multiprofissional"
+    ],
+    "sectors": [
+      "educação básica pública e privada",
+      "ensino superior (núcleos de apoio)",
+      "clínicas multiprofissionais",
+      "terceiro setor e projetos sociais",
+      "empresas (treinamento e desenvolvimento)",
+      "edtechs e produção de materiais",
+      "secretarias de educação (educação especial e inclusão)"
+    ],
+    "regulation": [
+      {
+        "name": "PL 1.675/2023 (regulamentação da Psicopedagogia)",
+        "issuer": "Congresso Nacional",
+        "about": "aprovado na Câmara em ago/2026 e enviado à sanção em 02/09/2026; exige diploma; publicação da lei não conferida"
+      },
+      {
+        "name": "Código de Ética do Psicopedagogo (ABPp, revisão 2019)",
+        "issuer": "Associação Brasileira de Psicopedagogia",
+        "about": "princípios, sigilo, relação com outros profissionais e limites de atuação; referência enquanto não há conselho"
+      },
+      {
+        "name": "CBO 2394-25 — Psicopedagogo",
+        "issuer": "MTE",
+        "about": "descrição da ocupação na família dos programadores, avaliadores e orientadores de ensino"
+      },
+      {
+        "name": "Lei 13.146/2015 (Lei Brasileira de Inclusão)",
+        "issuer": "Brasil",
+        "about": "educação inclusiva, adaptações razoáveis e vedação de discriminação da pessoa com deficiência"
+      },
+      {
+        "name": "Lei 14.254/2021",
+        "issuer": "Brasil",
+        "about": "acompanhamento integral de educandos com dislexia, TDAH ou outro transtorno de aprendizagem"
+      },
+      {
+        "name": "Lei 8.069/1990 (ECA)",
+        "issuer": "Brasil",
+        "about": "proteção integral, sigilo e direito à imagem de crianças e adolescentes"
+      },
+      {
+        "name": "LGPD (Lei 13.709/2018), arts. 11 e 14",
+        "issuer": "Brasil",
+        "about": "dados de saúde e de crianças e adolescentes: consentimento específico dos responsáveis e melhor interesse"
+      },
+      {
+        "name": "Política Nacional de Educação Especial na Perspectiva da Educação Inclusiva (MEC, 2008)",
+        "issuer": "MEC",
+        "about": "AEE, sala de recursos e inclusão em classe comum"
+      }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      {
+        "term": "avaliação psicopedagógica",
+        "meaning": "processo de investigação de como a pessoa aprende: entrevistas, provas, observação e devolutiva; não é diagnóstico médico"
+      },
+      {
+        "term": "anamnese",
+        "meaning": "entrevista com responsáveis sobre a história de desenvolvimento e escolar"
+      },
+      {
+        "term": "EOCA",
+        "meaning": "Entrevista Operativa Centrada na Aprendizagem (Visca), início da avaliação clínica"
+      },
+      {
+        "term": "provas operatórias",
+        "meaning": "provas piagetianas que investigam o nível de pensamento (conservação, classificação, seriação)"
+      },
+      {
+        "term": "técnicas projetivas psicopedagógicas",
+        "meaning": "desenhos e relatos que exploram o vínculo com a aprendizagem (par educativo, família educativa)"
+      },
+      {
+        "term": "hipótese diagnóstica psicopedagógica",
+        "meaning": "leitura provisória das causas da dificuldade de aprendizagem, a confirmar e revisar"
+      },
+      {
+        "term": "devolutiva",
+        "meaning": "retorno da avaliação à família, à escola ou à própria pessoa"
+      },
+      {
+        "term": "plano de intervenção",
+        "meaning": "objetivos, estratégias, recursos, frequência e critérios de acompanhamento"
+      },
+      {
+        "term": "informe psicopedagógico",
+        "meaning": "relatório da avaliação ou do acompanhamento, sob sigilo"
+      },
+      {
+        "term": "dificuldade de aprendizagem",
+        "meaning": "obstáculo no aprender ligado a fatores pedagógicos, emocionais ou sociais; distinta de transtorno"
+      },
+      {
+        "term": "transtorno de aprendizagem",
+        "meaning": "condição diagnosticada por profissional habilitado (dislexia, discalculia); o psicopedagogo não emite esse diagnóstico"
+      },
+      {
+        "term": "PEI / PDI",
+        "meaning": "Plano Educacional Individualizado ou de Desenvolvimento Individual do estudante"
+      },
+      {
+        "term": "AEE",
+        "meaning": "Atendimento Educacional Especializado, em sala de recursos"
+      },
+      {
+        "term": "adaptação curricular",
+        "meaning": "ajuste de objetivos, materiais, tempos ou avaliações para o estudante"
+      },
+      {
+        "term": "psicopedagogia institucional",
+        "meaning": "atuação preventiva na escola ou organização: formação, mediação, projetos"
+      },
+      {
+        "term": "psicopedagogia clínica",
+        "meaning": "avaliação e intervenção individual ou em pequeno grupo"
+      },
+      {
+        "term": "modalidade de aprendizagem",
+        "meaning": "modo próprio de cada pessoa se relacionar com o conhecimento (Alicia Fernández)"
+      },
+      {
+        "term": "funções executivas",
+        "meaning": "atenção, memória de trabalho, planejamento e autorregulação implicados no aprender"
+      },
+      {
+        "term": "consciência fonológica",
+        "meaning": "capacidade de refletir sobre os sons da fala, base da alfabetização"
+      },
+      {
+        "term": "encaminhamento",
+        "meaning": "indicação a outro profissional (fonoaudiólogo, psicólogo, neuropediatra) quando foge ao escopo"
+      },
+      {
+        "term": "rede de apoio",
+        "meaning": "escola, família e profissionais que acompanham o estudante em conjunto"
+      }
+    ],
+    "tools": [
+      "provas operatórias e materiais de avaliação",
+      "jogos pedagógicos e de regras",
+      "materiais de alfabetização (consciência fonológica)",
+      "editor de textos e planilha para registros",
+      "Google Sala de Aula ou ambiente virtual",
+      "recursos de tecnologia assistiva (leitores de tela, pranchas de comunicação)",
+      "softwares educativos (GCompris, Khan Academy)",
+      "agenda e prontuário digital com controle de acesso"
+    ],
+    "deliverables": [
+      "plano de intervenção psicopedagógica (caso fictício)",
+      "relatório ou informe psicopedagógico anonimizado (caso fictício)",
+      "roteiro de anamnese e entrevista",
+      "projeto institucional de prevenção",
+      "oficina ou formação para professores",
+      "orientação escrita a famílias e professores",
+      "proposta de adaptação curricular ou PEI (modelo)",
+      "estudo de caso para supervisão (fictício)",
+      "material de intervenção (jogo, atividade)",
+      "fluxo de encaminhamento à rede"
+    ]
+  },
+  "competencies": {
+    "core": [
+      {
+        "label": "Conduzir avaliação psicopedagógica (entrevistas, provas, observação)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Elaborar plano de intervenção com objetivos e critérios",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Redigir informe e devolutiva com sigilo",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Teorias da aprendizagem e do desenvolvimento (Piaget, Vygotsky, Wallon, Fernández, Visca)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Intervir em alfabetização, leitura, escrita e matemática",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Orientar professores e famílias",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Educação inclusiva e adaptação curricular (LBI, PEI)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Trabalhar em rede e encaminhar a outros profissionais",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Ética, sigilo e proteção de dados de crianças e adolescentes",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Atuação institucional preventiva (projetos e formação)",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Usar jogos e recursos lúdicos na intervenção",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Tecnologia assistiva e recursos digitais",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Gestão de consultório ou núcleo (agenda, registros, contratos)",
+        "esco": null,
+        "kind": "apoio"
+      }
+    ],
+    "transversal": [
+      "escuta e comunicação empática",
+      "escrita técnica clara",
+      "trabalho interdisciplinar",
+      "ética e sigilo",
+      "organização de registros",
+      "aprendizagem contínua e supervisão"
+    ],
+    "tracks": [
+      {
+        "id": "avaliar-e-intervir",
+        "label": "Avaliar e intervir (caso fictício)",
+        "steps": [
+          "roteiro de anamnese e entrevista (L7)",
+          "plano de intervenção com objetivos e critérios (X1)",
+          "relatório psicopedagógico anonimizado de caso fictício (L4)",
+          "estudo de caso para supervisão (L3)"
+        ]
+      },
+      {
+        "id": "institucional",
+        "label": "Psicopedagogia institucional",
+        "steps": [
+          "fluxo de encaminhamento da escola à rede (D4)",
+          "projeto de prevenção ou formação docente (L8)",
+          "plano 30-60-90 para núcleo de apoio (L9)"
+        ]
+      },
+      {
+        "id": "apresentar-se",
+        "label": "Apresentar-se e abrir espaço",
+        "steps": [
+          "resumo de perfil (L6)",
+          "currículo para escola, clínica ou edital (L1)",
+          "post sobre uma estratégia de aprendizagem (L5)",
+          "revisão de um plano remixado (L10)"
+        ]
+      }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"psicopedagoga institucional\", \"mediadora de inclusão\", \"professora de reforço\", \"estagiário de Psicopedagogia\"",
+      "cboFamilies": [
+        "2394",
+        "2312",
+        "2311",
+        "3311"
+      ],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez; se for o primeiro emprego ou estágio, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio supervisionado ou primeiro cargo",
+        "junior": "até dois anos, com supervisão de casos",
+        "pleno": "avalia, planeja e acompanha com autonomia",
+        "senior": "referência técnica; supervisiona colegas e forma professores",
+        "gestao": "coordena núcleo, clínica ou programa de uma rede"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na Psicopedagogia",
+      "options": [
+        "entrevistar famílias e professores",
+        "aplicar provas e observar",
+        "elaborar planos de intervenção",
+        "redigir relatórios com sigilo",
+        "intervir em alfabetização",
+        "intervir em matemática",
+        "orientar professores",
+        "orientar famílias",
+        "adaptar atividades e avaliações",
+        "usar jogos na intervenção",
+        "conduzir formação docente",
+        "trabalhar em rede com outros profissionais"
+      ],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com tarefas que usam só casos fictícios."
+    },
+    "c4": {
+      "certifications": [
+        "bacharelado em Psicopedagogia",
+        "pós-graduação em Psicopedagogia institucional ou clínica",
+        "graduação em Pedagogia, Psicologia, Letras ou outra licenciatura",
+        "formação em educação especial ou AEE",
+        "associação à ABPp",
+        "cursos de alfabetização e consciência fonológica",
+        "mestrado em Educação"
+      ],
+      "languages": [
+        "Libras",
+        "espanhol",
+        "inglês"
+      ],
+      "why": "Formação e cursos mostram lacunas em relação ao cargo que você quer; com a regulamentação em curso, a exigência de diploma pode mudar, e eu aviso quando houver fonte."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": [
+        "avaliação psicopedagógica",
+        "planos de intervenção",
+        "escrita de relatórios",
+        "intervenção em alfabetização",
+        "intervenção em matemática",
+        "educação inclusiva e PEI",
+        "orientação a famílias",
+        "formação de professores",
+        "tecnologia assistiva",
+        "gestão de consultório ou núcleo"
+      ],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez do catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que contexto você atua ou quer atuar?",
+        "type": "escolha",
+        "options": [
+          "institucional (escola ou rede)",
+          "clínico (consultório ou clínica)",
+          "ensino superior",
+          "empresa ou terceiro setor",
+          "os dois: institucional e clínico",
+          "ainda não sei"
+        ],
+        "why": "Pergunto o contexto para escolher tarefas e vocabulário: um projeto institucional e um plano de intervenção clínica são evidências diferentes.",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": [
+      "L6",
+      "L1",
+      "L4",
+      "L7",
+      "L3",
+      "D4",
+      "L8",
+      "L9",
+      "L2",
+      "L5",
+      "L10"
+    ],
+    "excluded": [
+      {
+        "code": "D1",
+        "reason": "planta técnica não é entrega da profissão"
+      },
+      {
+        "code": "D3",
+        "reason": "modelagem 3D não é entrega da profissão"
+      },
+      {
+        "code": "D6",
+        "reason": "detalhe construtivo não é entrega da profissão"
+      },
+      {
+        "code": "D8",
+        "reason": "vista explodida não é entrega da profissão"
+      },
+      {
+        "code": "D9",
+        "reason": "wireframe de tela não é entrega da profissão"
+      },
+      {
+        "code": "D10",
+        "reason": "remix público de peças pode expor casos; feedback entra por L10 com caso fictício"
+      }
+    ],
+    "parameters": {
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva um resumo de até 600 caracteres com o contexto em que quer atuar (institucional, clínico, ensino superior), três competências e uma prova com link (plano de intervenção ou projeto com caso fictício). Sem nenhuma menção a alunos, pacientes ou famílias atendidas.",
+        "parameters": {
+          "maxChars": 600,
+          "requiredParts": [
+            "contexto de atuação",
+            "três competências",
+            "uma prova com link"
+          ],
+          "forbidden": [
+            "dado de aluno ou paciente"
+          ]
+        },
+        "criteria": [
+          "até 600 caracteres",
+          "nomeia o contexto de atuação",
+          "cita três competências",
+          "inclui uma prova com link",
+          "nenhuma menção a aluno ou paciente"
+        ],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para o cargo que quer mirar (ex.: psicopedagogo institucional, psicopedagogo de núcleo de apoio, mediador de inclusão), com três resultados com número (formações conduzidas, professores orientados, projetos implantados, horas de estágio supervisionado) e as palavras-chave da vaga ou edital. Nada sobre casos atendidos.",
+        "parameters": {
+          "maxPages": 1,
+          "achievementsWithNumbers": 3,
+          "keywordsFrom": "cargo-alvo ou edital",
+          "sections": [
+            "formação",
+            "experiência",
+            "supervisão e estágio",
+            "cursos"
+          ]
+        },
+        "criteria": [
+          "uma página",
+          "três conquistas com número",
+          "palavras-chave do cargo-alvo presentes",
+          "nenhum caso atendido descrito",
+          "sem idade, estado civil ou foto obrigatória"
+        ],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "L4": {
+        "title": "Relatório psicopedagógico de caso fictício",
+        "brief": "Redija um relatório de até 4 páginas sobre um caso declaradamente fictício: motivo do encaminhamento, procedimentos (entrevistas, provas, observação), análise com hipótese psicopedagógica, orientações à escola e à família, encaminhamentos e limitações. Não use nenhum dado de pessoa real, nem anonimizado, e não formule diagnóstico de transtorno.",
+        "parameters": {
+          "maxPages": 4,
+          "fictionalCase": true,
+          "sections": [
+            "motivo do encaminhamento",
+            "procedimentos",
+            "análise",
+            "orientações",
+            "encaminhamentos",
+            "limitações"
+          ],
+          "forbidden": [
+            "diagnóstico de transtorno",
+            "dado de pessoa real"
+          ]
+        },
+        "criteria": [
+          "declaração de caso fictício no início",
+          "seis seções nomeadas",
+          "até 4 páginas",
+          "hipótese psicopedagógica sem diagnóstico de transtorno",
+          "encaminhamentos a profissionais habilitados quando cabíveis",
+          "nenhum identificador de pessoa real"
+        ],
+        "evidence": "relatório PDF (modelo relatorio-de-caso)",
+        "time": "2 h",
+        "level": 3
+      },
+      "L7": {
+        "title": "Roteiro de anamnese e entrevista inicial",
+        "brief": "Monte, em passos numerados, o procedimento da entrevista inicial com responsáveis e com a escola: consentimento e sigilo, eixos da anamnese (desenvolvimento, escolaridade, rotina, vínculos com a aprendizagem), registro seguro e critério de conclusão de cada passo. Sem perguntas sobre religião, renda ou estado civil que não sirvam ao caso.",
+        "parameters": {
+          "numberedSteps": true,
+          "requiresConsentStep": true,
+          "requiresSecureRecord": true
+        },
+        "criteria": [
+          "passos numerados",
+          "passo de consentimento e explicação do sigilo",
+          "eixos da anamnese listados",
+          "forma de registro e guarda segura",
+          "critério de conclusão por passo"
+        ],
+        "evidence": "documento (modelo pop)",
+        "time": "60 min",
+        "level": 2
+      },
+      "L3": {
+        "title": "Estudo de caso STAR para supervisão (fictício)",
+        "brief": "Conte uma situação de trabalho reconstruída como caso fictício: situação, tarefa, ação (estratégias e recursos) e resultado observável (ex.: avanço em leitura medido por instrumento). Declare que o caso é fictício ou composto e não identificável.",
+        "parameters": {
+          "sections": [
+            "situação",
+            "tarefa",
+            "ação",
+            "resultado"
+          ],
+          "fictionalCase": true
+        },
+        "criteria": [
+          "quatro seções explícitas",
+          "declaração de caso fictício ou composto",
+          "resultado com indicador observável",
+          "nenhum identificador de pessoa real"
+        ],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Plano de intervenção psicopedagógica (caso fictício)",
+        "competency": "Elaborar plano de intervenção com objetivos e critérios",
+        "criteria": [
+          "declaração de caso fictício",
+          "objetivos mensuráveis (ao menos três)",
+          "estratégias e recursos por objetivo",
+          "frequência e duração das sessões",
+          "critérios e instrumentos de acompanhamento",
+          "papel da escola e da família",
+          "quando reavaliar ou encaminhar"
+        ],
+        "evidence": "plano PDF (modelo relatorio-de-caso)",
+        "time": "90 min",
+        "trigger": "Quer mostrar como você planeja uma intervenção, com um caso fictício?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      {
+        "id": "tamanho",
+        "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L4",
+          "L5",
+          "L6",
+          "L8"
+        ],
+        "auto": true
+      },
+      {
+        "id": "secoes-obrigatorias",
+        "check": "as seções pedidas existem e estão nomeadas",
+        "appliesTo": [
+          "L3",
+          "L4",
+          "L7",
+          "L9",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "caso-ficticio-declarado",
+        "check": "o texto declara que o caso é fictício ou composto",
+        "appliesTo": [
+          "L3",
+          "L4",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "sem-identificadores",
+        "check": "não há nomes, datas de nascimento, escolas, cidades pequenas ou fotos que identifiquem alguém",
+        "appliesTo": [
+          "L1",
+          "L3",
+          "L4",
+          "L5",
+          "L6",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "sem-diagnostico-de-transtorno",
+        "check": "não afirma diagnóstico de transtorno (TDAH, dislexia, TEA); usa hipótese psicopedagógica e encaminhamento",
+        "appliesTo": [
+          "L4",
+          "X1",
+          "L3"
+        ],
+        "auto": true
+      },
+      {
+        "id": "objetivos-mensuraveis",
+        "check": "objetivos com verbo observável e critério de acompanhamento",
+        "appliesTo": [
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "consentimento-e-sigilo",
+        "check": "o procedimento inclui passo de consentimento e de guarda segura",
+        "appliesTo": [
+          "L7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "diagrama-fechado",
+        "check": "o fluxo tem início e fim e nenhuma etapa órfã",
+        "appliesTo": [
+          "D4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "creditos-e-fontes",
+        "check": "autores, materiais e fontes estão creditados",
+        "appliesTo": [
+          "L4",
+          "L5",
+          "L10",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "autoria-e-sigilo",
+        "check": "a pessoa declarou autoria e ausência de dados de alunos, pacientes ou famílias",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L3",
+          "L4",
+          "L5",
+          "L6",
+          "L7",
+          "L8",
+          "L9",
+          "L10",
+          "D4",
+          "X1"
+        ],
+        "auto": true
+      }
+    ],
+    "subjective": [
+      {
+        "id": "fundamentacao",
+        "label": "Fundamentação teórica",
+        "levels": {
+          "aproxima": "estratégias sem relação com teoria da aprendizagem",
+          "atende": "estratégias justificadas por referenciais pertinentes",
+          "supera": "integra referenciais e explica por que escolheu cada um"
+        }
+      },
+      {
+        "id": "coerencia-do-plano",
+        "label": "Coerência entre hipótese, objetivos e estratégias",
+        "levels": {
+          "aproxima": "objetivos e estratégias não decorrem da hipótese",
+          "atende": "cada objetivo responde à hipótese e tem estratégia",
+          "supera": "prevê reavaliação e ajustes com critérios claros"
+        }
+      },
+      {
+        "id": "etica-e-limites",
+        "label": "Ética e limites de atuação",
+        "levels": {
+          "aproxima": "invade atribuições de outras profissões ou expõe a pessoa",
+          "atende": "respeita sigilo e encaminha o que foge ao escopo",
+          "supera": "articula a rede e explica limites à família e à escola com clareza"
+        }
+      },
+      {
+        "id": "linguagem-acessivel",
+        "label": "Linguagem para famílias e professores",
+        "levels": {
+          "aproxima": "jargão técnico ou rótulos que estigmatizam",
+          "atende": "linguagem clara e respeitosa",
+          "supera": "orientações concretas, viáveis e sem rótulos"
+        }
+      }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você apoia uma pessoa formada ou em formação em Psicopedagogia (institucional ou clínica) no Guia de Carreira. Use o vocabulário da área: avaliação psicopedagógica, anamnese, EOCA, provas operatórias, técnicas projetivas psicopedagógicas, hipótese psicopedagógica, devolutiva, plano de intervenção, informe, modalidade de aprendizagem, funções executivas, consciência fonológica, PEI, AEE, adaptação curricular, encaminhamento, rede de apoio. Cite quando couber: Código de Ética da ABPp, CBO 2394-25, Lei 13.146/2015 (LBI), Lei 14.254/2021 (dislexia e TDAH na escola), ECA e LGPD arts. 11 e 14; a regulamentação (PL 1.675/2023) foi enviada à sanção em set/2026 e o texto final deve ser conferido. Você não faz avaliação diagnóstica nem sugere diagnóstico de transtorno (TDAH, dislexia, discalculia, TEA) para ninguém, nem interpreta provas, desenhos ou relatos de pessoa real: quando a pessoa descrever um aluno ou paciente, diga que não pode opinar sobre o caso e sugira supervisão, equipe e encaminhamento. Trabalhe só com casos declaradamente fictícios. Recuse laudos, relatórios, anamneses, fotos, cadernos ou qualquer dado de aluno, paciente ou família, mesmo anonimizado; dados de crianças e de saúde nunca entram em portfólio. Não redija informe ou relatório para ser entregue sobre pessoa real. Evite rótulos estigmatizantes. Pergunte antes de inferir contexto de atuação ou senioridade. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por quê, e aceita \"não me serve\". Afirmações sobre mercado citam fonte, data e região; nunca prometa vaga, clientes ou remuneração. Progresso é por critérios atendidos; não há score. Não publique, siga, envie mensagem nem se candidate sem confirmação da pessoa.",
+    "citeSources": [
+      {
+        "title": "ABPp — Associação Brasileira de Psicopedagogia (Código de Ética)",
+        "url": "https://www.abpp.com.br/",
+        "kind": "comunidade"
+      },
+      {
+        "title": "PL 1.675/2023 — regulamenta a Psicopedagogia (Congresso Nacional)",
+        "url": "https://www.congressonacional.leg.br/materias/materias-bicamerais/-/ver/pl-1675-2023",
+        "kind": "norma"
+      },
+      {
+        "title": "Lei 13.146/2015 — Lei Brasileira de Inclusão (Planalto)",
+        "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm",
+        "kind": "norma"
+      },
+      {
+        "title": "Lei 14.254/2021 — acompanhamento de educandos com dislexia, TDAH ou outro transtorno de aprendizagem (Planalto)",
+        "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14254.htm",
+        "kind": "norma"
+      },
+      {
+        "title": "CBO 2394 — Programadores, avaliadores e orientadores de ensino (MTE)",
+        "url": "https://cbo.mte.gov.br/",
+        "kind": "orgao-publico"
+      },
+      {
+        "title": "Lei 8.069/1990 — ECA (Planalto)",
+        "url": "https://www.planalto.gov.br/ccivil_03/leis/l8069.htm",
+        "kind": "norma"
+      },
+      {
+        "title": "Revista Psicopedagogia (ABPp) — artigos",
+        "url": "https://www.revistapsicopedagogia.com.br/",
+        "kind": "educacao"
+      }
+    ],
+    "services": [
+      {
+        "service": "PERGUNTAS_GUIA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Variantes de c2, c5 e a extra x1 (contexto); nunca pergunta sobre saúde ou diagnósticos da própria pessoa."
+      },
+      {
+        "service": "SUGESTAO_TAREFAS",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "Prioriza L6, L1, L4, L7, L3 e X1; cada card lembra que o caso é fictício e que nenhum dado de aluno entra."
+      },
+      {
+        "service": "PLANO_SEMANAL",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Plano por horas (d1) e aparelho (d4); L4, X1 e D4 pedem computador."
+      },
+      {
+        "service": "PRE_CHECAGEM_RUBRICA",
+        "capability": "ARTEFATO",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "Checa seções, declaração de caso fictício, ausência de identificadores e de diagnóstico de transtorno; não julga o mérito clínico."
+      },
+      {
+        "service": "RASCUNHO_LETTERS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Estrutura de plano de intervenção, roteiro e relatório com caso fictício; recusa texto sobre aluno ou paciente real."
+      },
+      {
+        "service": "APOIO_DRAWINGS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Raias e pontos de decisão do fluxo de encaminhamento escola–família–rede (D4)."
+      },
+      {
+        "service": "ANALISE_PERFIL",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": "ANALISE_PERFIL_IA",
+        "note": "Síntese de competências declaradas e evidenciadas por contexto; nunca lê registros de atendimento."
+      },
+      {
+        "service": "CAMINHOS_DE_CARREIRA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Vizinhos por CBO/ESCO (pedagogia, psicologia, fonoaudiologia, letras); dados de mercado com fonte, data e região."
+      },
+      {
+        "service": "PESSOAS_SEMELHANTES",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Só pessoas descobríveis por opt-in; afinidade por CBO, competências e setor."
+      },
+      {
+        "service": "EXPLICACAO_POR_QUE",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)."
+      },
+      {
+        "service": "RESUMO_PROFISSIONAL",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": "RESUMO_PROFISSIONAL_IA",
+        "note": "Bio (L6) a partir do perfil, sem citar casos; só com o consentimento específico."
+      },
+      {
+        "service": "IMPORTAR_CURRICULO",
+        "capability": "PREENCHER_TAREFA",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Extrai formação, estágios e experiências em ficha editável; descarta qualquer menção a caso atendido; a pessoa confirma item a item."
+      }
+    ],
+    "dataScope": {
+      "default": [
+        "perfil",
+        "currículo"
+      ],
+      "optional": [
+        "minhas Letters",
+        "meus Drawings"
+      ],
+      "never": [
+        "mensagens",
+        "itens SIGILOSO",
+        "laudos, avaliações e relatórios psicopedagógicos de pessoas reais",
+        "dados de alunos e pacientes menores de idade (nomes, notas, fotos, cadernos)",
+        "diagnósticos de transtornos de pessoas identificáveis",
+        "dados de saúde (LGPD art. 11)"
+      ]
+    },
+    "provider": {
+      "default": "local",
+      "externalNeedsConsent": true,
+      "externalAllowedFor": [
+        "ANALISE_PERFIL",
+        "CAMINHOS_DE_CARREIRA",
+        "RESUMO_PROFISSIONAL"
+      ]
+    },
+    "guardrails": [
+      "a IA não faz avaliação diagnóstica nem sugere diagnóstico de transtorno para ninguém",
+      "não opinar sobre aluno, paciente ou familiar real descrito pela pessoa; sugerir supervisão, equipe e encaminhamento",
+      "trabalhar só com casos declaradamente fictícios; recusar laudos, relatórios e dados reais, mesmo anonimizados",
+      "dados de crianças, adolescentes e de saúde nunca entram em portfólio",
+      "não redigir informe ou relatório para entrega sobre pessoa real",
+      "evitar rótulos estigmatizantes",
+      "nunca prometer vaga, clientes ou remuneração; mercado com fonte, data e região",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": {
+      "letters": "alta",
+      "drawings": "baixa"
+    },
+    "drawingsModes": [
+      "diagrama",
+      "infografico"
+    ],
+    "lettersTemplates": [
+      "bio",
+      "curriculo",
+      "carta",
+      "relatorio-de-caso",
+      "estudo-de-caso",
+      "pop",
+      "proposta",
+      "plano-de-aula",
+      "roteiro",
+      "post",
+      "plano-30-60-90",
+      "revisao"
+    ],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular: L5, L6 e L10; L4, X1 e D4 pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em três frases, sem citar casos atendidos (15 min).",
+        "Que tal montar um plano de intervenção com um caso fictício? Comprova planejamento e leva cerca de 90 min.",
+        "Sem pressão. Quando quiser retomar, o roteiro de anamnese está salvo onde parou.",
+        "Um fluxo de encaminhamento escola–família–rede mostra como você trabalha em equipe. Leva 45 min no computador."
+      ]
+    },
+    "insights": {
+      "peersBy": [
+        "cbo",
+        "competencias",
+        "setor"
+      ]
+    },
+    "privacy": {
+      "sensitiveData": [
+        "laudos, avaliações e relatórios psicopedagógicos de alunos (dados de saúde, LGPD art. 11)",
+        "dados de alunos menores de idade: nomes, notas, laudos e fotos (ECA; LGPD art. 14)",
+        "diagnósticos de transtornos de aprendizagem (TDAH, dislexia, TEA) de pessoas identificáveis",
+        "produções de alunos (cadernos, desenhos, provas)",
+        "dados de famílias e colegas sem autorização"
+      ],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      {
+        "title": "Novo CAGED (MTE) — CBO 2394-25 Psicopedagogo",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "geography": "Brasil, UF e município",
+        "cadence": "mensal",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "RAIS (MTE) — vínculos por CBO",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais",
+        "geography": "Brasil, UF e município",
+        "cadence": "anual",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "Censo Escolar (Inep) — matrículas da educação especial e AEE",
+        "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-escolar",
+        "geography": "Brasil, UF e município",
+        "cadence": "anual",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "Concursos públicos (secretarias de educação; cargo de psicopedagogo em redes municipais)",
+        "url": "https://www.gov.br/pt-br/servicos/consultar-concursos-publicos",
+        "geography": "UF e município",
+        "cadence": "continua",
+        "kind": "edital"
+      },
+      {
+        "title": "ABPp — Associação Brasileira de Psicopedagogia (seções estaduais)",
+        "url": "https://www.abpp.com.br/",
+        "geography": "Brasil e UF",
+        "cadence": "eventual",
+        "kind": "associacao"
+      }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Mudanças trazidas pela regulamentação só são citadas com o número da lei publicada. Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    {
+      "to": "pedagogia",
+      "why": "Coordenação pedagógica, AEE e formação docente compartilham a base de aprendizagem e inclusão.",
+      "gaps": [
+        "licenciatura em Pedagogia para a docência",
+        "gestão escolar e currículo",
+        "alfabetização nos anos iniciais"
+      ],
+      "steps": [
+        "projeto institucional de prevenção (L8)",
+        "plano 30-60-90 para coordenação (L9)",
+        "cursos do AVAMEC sobre inclusão e alfabetização"
+      ]
+    },
+    {
+      "to": "psicologia",
+      "why": "Avaliação, escuta e trabalho com famílias aproximam; atos privativos (avaliação psicológica, psicoterapia) exigem a graduação e o CRP.",
+      "gaps": [
+        "graduação em Psicologia e registro no CRP",
+        "avaliação psicológica (testes restritos)",
+        "psicologia escolar e do desenvolvimento"
+      ],
+      "steps": [
+        "estudo de caso fictício para supervisão (L3)",
+        "fluxo de encaminhamento com psicólogo (D4)",
+        "avaliar segunda graduação se quiser atos privativos"
+      ]
+    },
+    {
+      "to": "fonoaudiologia",
+      "why": "Linguagem oral e escrita, consciência fonológica e alfabetização são áreas de trabalho conjunto.",
+      "gaps": [
+        "graduação em Fonoaudiologia e CRFa",
+        "avaliação de linguagem e fala",
+        "audição e motricidade orofacial"
+      ],
+      "steps": [
+        "plano de intervenção em leitura com caso fictício (X1)",
+        "fluxo de encaminhamento à fonoaudiologia (D4)",
+        "cursos de consciência fonológica"
+      ]
+    },
+    {
+      "to": "letras",
+      "why": "Leitura, escrita e produção de materiais de alfabetização e letramento aproximam as duas áreas.",
+      "gaps": [
+        "licenciatura em Letras para docência de Língua Portuguesa",
+        "linguística e gramática",
+        "literatura e mediação de leitura"
+      ],
+      "steps": [
+        "material de intervenção em leitura (L7)",
+        "post sobre uma estratégia de leitura (L5)",
+        "cursos de letramento e mediação de leitura"
+      ]
+    }
+  ],
+  "learning": [
+    {
+      "title": "ABPp — eventos, Código de Ética e Revista Psicopedagogia",
+      "provider": "ABPp",
+      "url": "https://www.abpp.com.br/",
+      "free": false,
+      "kind": "comunidade"
+    },
+    {
+      "title": "AVAMEC — cursos de educação inclusiva e alfabetização",
+      "provider": "MEC",
+      "url": "https://avamec.mec.gov.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Escola Virtual.Gov — inclusão, acessibilidade e LGPD",
+      "provider": "Enap",
+      "url": "https://www.escolavirtual.gov.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Lei 14.254/2021 — texto integral",
+      "provider": "Planalto",
+      "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14254.htm",
+      "free": true,
+      "kind": "norma"
+    },
+    {
+      "title": "Lei Brasileira de Inclusão — texto integral",
+      "provider": "Planalto",
+      "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm",
+      "free": true,
+      "kind": "norma"
+    },
+    {
+      "title": "SciELO — artigos de Psicopedagogia e Educação",
+      "provider": "SciELO",
+      "url": "https://www.scielo.br/",
+      "free": true,
+      "kind": "portal"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8",
+      "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "PL 1.675/2023 — tramitação no Senado",
+      "url": "https://www25.senado.leg.br/web/atividade/materias/-/materia/156730",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CFP — riscos do PL 1.675/2023 (informa envio à sanção em 02/09/2026)",
+      "url": "https://site.cfp.org.br/alerta-na-saude-e-na-educacao-entenda-os-riscos-do-pl-1-675-2023-para-a-psicologia-e-a-fonoaudiologia/",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Soubrasília — Câmara aprova exigência de diploma e texto vai à sanção",
+      "url": "https://soubrasilia.com/?p=12427",
+      "accessedAt": "2026-11-02"
+    }
+  ],
+  "naoConferido": [
+    "sanção, veto ou número da lei resultante do PL 1.675/2023 não confirmados; o prazo constitucional já passou, então o desfecho deve existir, mas não foi localizado",
+    "Código de Ética da ABPp (revisão 2019) citado de memória; ano da revisão e artigos de sigilo a conferir",
+    "textos da Lei 14.254/2021, da LBI e da Política de Educação Especial de 2008 não acessados nesta sessão",
+    "URIs ESCO de educational counsellor e learning support teacher vêm do catálogo; não reconferidas em esco.ec.europa.eu",
+    "códigos CBO em questions.a4.cboFamilies (2312, 2311, 3311) não conferidos no portal da CBO",
+    "URLs da ABPp, da Revista Psicopedagogia e do AVAMEC não verificadas nesta sessão",
+    "dados do ramo (famílias CBO/ISCO/ESCO, conselho, sensitiveData, vizinhos) copiados de contracts/career/academic-fields.json, que não cabe em sources.url (o esquema só aceita http(s) ou docs/)"
+  ]
+}

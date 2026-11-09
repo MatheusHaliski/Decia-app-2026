@@ -1,0 +1,362 @@
+{
+  "schemaVersion": 1,
+  "code": "publicidade-e-propaganda",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Publicidade e Propaganda", "en": "Advertising", "es": "Publicidad y Propaganda" },
+  "fields": ["publicidade-e-propaganda"],
+  "family": {
+    "cbo": [
+      { "code": "2531", "title": "Profissionais de publicidade" },
+      { "code": "1423", "title": "Gerentes de comercialização, marketing e comunicação" }
+    ],
+    "isco08": [
+      { "code": "2431", "title": "Advertising and marketing professionals" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/e01719f4-d7dd-42fe-b504-93128520f84a", "label": "advertising specialist" },
+      { "uri": "http://data.europa.eu/esco/occupation/b1ab3572-fa2f-4624-8eac-3c3d986d237b", "label": "advertising copywriter" },
+      { "uri": "http://data.europa.eu/esco/occupation/cb93fd23-1f51-4495-867a-936c1967066b", "label": "art director" }
+    ]
+  },
+  "scope": {
+    "summary": "Pacote para quem atua ou quer atuar em publicidade e propaganda: atendimento, planejamento, criação (redação e direção de arte), mídia, produção e social media, em agências, anunciantes, veículos e produtoras. As tarefas produzem evidências verificáveis (resposta a briefing, prancha de campanha, redação publicitária, plano de mídia, wireframe de landing page) com briefings fictícios ou públicos, sem expor campanhas e dados de clientes sob sigilo.",
+    "entryRoles": ["Estagiário de agência", "Assistente de atendimento", "Assistente de mídia", "Redator júnior", "Assistente de arte", "Analista de social media júnior"],
+    "midRoles": ["Redator publicitário", "Diretor de arte", "Planejador (planner)", "Analista de mídia", "Atendimento (executivo de contas)", "Produtor gráfico ou de RTVC", "Analista de marketing digital"],
+    "seniorRoles": ["Diretor de criação", "Diretor de planejamento", "Diretor de mídia", "Gerente de contas", "Head de conteúdo", "Gerente de marketing e comunicação"],
+    "sectors": ["agências de publicidade e propaganda", "agências digitais e de performance", "departamentos de marketing de anunciantes", "veículos de comunicação (comercial e mídia)", "produtoras de áudio, vídeo e gráficas", "comunicação pública (licitações, Lei 12.232/2010)", "startups e e-commerce", "trabalho por conta própria (freelancer)"],
+    "regulation": [
+      { "name": "Lei 4.680/1965 e Decreto 57.690/1966", "issuer": "Brasil", "about": "disciplinam a profissão de publicitário e as agências de propaganda; sem conselho nem registro obrigatório" },
+      { "name": "Código Brasileiro de Autorregulamentação Publicitária (1978/1980) e anexos", "issuer": "CONAR", "about": "princípios de honestidade, identificação publicitária, respeito à concorrência; anexos por categoria (bebidas, crianças, apostas, sustentabilidade)" },
+      { "name": "Código de Defesa do Consumidor (Lei 8.078/1990), arts. 36 a 38", "issuer": "Brasil", "about": "identificação da publicidade; proibição de publicidade enganosa e abusiva; ônus da prova do anunciante" },
+      { "name": "Normas-Padrão da Atividade Publicitária (1998)", "issuer": "CENP", "about": "relações entre anunciantes, agências e veículos; remuneração e certificação de agências" },
+      { "name": "Lei 12.232/2010", "issuer": "Brasil", "about": "licitação e contratação de serviços de publicidade pela administração pública" },
+      { "name": "Resolução CONANDA 163/2014", "issuer": "CONANDA", "about": "abusividade do direcionamento de publicidade e comunicação mercadológica à criança" },
+      { "name": "Lei 9.294/1996", "issuer": "Brasil", "about": "restrições à propaganda de tabaco, bebidas alcoólicas, medicamentos e agrotóxicos" },
+      { "name": "Lei 9.610/1998", "issuer": "Brasil", "about": "direitos autorais de textos, imagens, músicas e peças; licenças de banco de imagens e fontes" },
+      { "name": "Código Civil, art. 20", "issuer": "Brasil", "about": "uso de imagem de pessoas exige autorização (cessão de imagem)" },
+      { "name": "LGPD (Lei 13.709/2018) e Guia ANPD sobre cookies (2022)", "issuer": "Brasil / ANPD", "about": "bases legais para marketing, bases de CRM e rastreamento; consentimento e legítimo interesse" },
+      { "name": "Lei 9.504/1997, arts. 36 a 57", "issuer": "Brasil", "about": "regras de propaganda eleitoral, quando a pessoa atua em campanhas políticas" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "briefing", "meaning": "documento do cliente com objetivo, público, mensagem, verba, prazo e obrigatoriedades da campanha" },
+      { "term": "conceito criativo", "meaning": "ideia central que organiza todas as peças da campanha" },
+      { "term": "big idea", "meaning": "conceito forte o bastante para desdobrar em vários meios e períodos" },
+      { "term": "título (headline) e body copy", "meaning": "frase de impacto e texto de apoio de uma peça" },
+      { "term": "slogan / assinatura", "meaning": "frase curta que acompanha a marca em todas as peças" },
+      { "term": "direção de arte", "meaning": "concepção visual da peça: layout, tipografia, cor, imagem" },
+      { "term": "key visual (KV)", "meaning": "peça-mãe visual da campanha, da qual as demais derivam" },
+      { "term": "layout, rough e boneco", "meaning": "estágios de rascunho da peça, do esboço ao modelo final" },
+      { "term": "plano de mídia", "meaning": "escolha de meios, veículos, formatos, período, frequência e verba para atingir o público" },
+      { "term": "GRP / alcance / frequência", "meaning": "métricas de mídia: pontos brutos de audiência, pessoas atingidas e vezes expostas" },
+      { "term": "CPM / CPC / CPA / ROAS", "meaning": "custo por mil, por clique, por aquisição e retorno sobre investimento em mídia digital" },
+      { "term": "público-alvo e persona", "meaning": "segmento que a campanha quer atingir e sua representação detalhada" },
+      { "term": "planejamento (planning)", "meaning": "pesquisa e estratégia que define insight, posicionamento e caminho criativo" },
+      { "term": "posicionamento", "meaning": "lugar que a marca quer ocupar na mente do público frente à concorrência" },
+      { "term": "branding", "meaning": "gestão de marca: identidade, propósito, voz e experiência" },
+      { "term": "job / PI (pedido de inserção)", "meaning": "ordem de trabalho da agência e autorização de veiculação ao veículo" },
+      { "term": "produção (RTVC)", "meaning": "área que produz filmes, spots e peças com produtoras e gráficas" },
+      { "term": "social media e calendário editorial", "meaning": "planejamento de conteúdo por rede, formato e data" },
+      { "term": "landing page", "meaning": "página de destino de uma campanha com um objetivo de conversão" },
+      { "term": "teste A/B", "meaning": "comparação de duas versões de peça ou página para medir desempenho" },
+      { "term": "cessão de imagem", "meaning": "autorização escrita para uso da imagem de uma pessoa em peça publicitária" },
+      { "term": "identificação publicitária", "meaning": "obrigação de a publicidade ser reconhecível como tal (CDC art. 36; CONAR art. 28)" },
+      { "term": "publicidade enganosa ou abusiva", "meaning": "afirmação falsa ou que explore medo, criança ou discriminação (CDC art. 37)" },
+      { "term": "disclaimer", "meaning": "texto legal obrigatório em peça (ex.: 'beba com moderação', condições da promoção)" }
+    ],
+    "tools": ["editor de textos (Letters)", "editor de desenho (Drawings)", "Figma", "Adobe Photoshop, Illustrator e InDesign", "Canva", "Meta Ads, Google Ads e TikTok Ads", "Google Analytics", "planilhas de mídia e orçamento", "ferramentas de gestão de redes (Meta Business Suite, mLabs)", "Kantar IBOPE Media e Comscore (dados de audiência)", "editores de vídeo (Premiere, DaVinci Resolve, CapCut)", "ferramentas de gestão de jobs (Trello, Operand, Studio)"],
+    "deliverables": ["resposta a briefing (defesa de campanha)", "conceito criativo com racional", "redação publicitária: títulos, textos e roteiros", "key visual e desdobramentos", "prancha de campanha", "plano de mídia", "calendário editorial de redes", "wireframe de landing page", "relatório de resultados de campanha", "roteiro de filme ou spot de 30 segundos", "proposta comercial e orçamento", "portfólio criativo"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Leitura de briefing e definição de problema de comunicação", "esco": null, "kind": "nucleo" },
+      { "label": "Conceito criativo e desdobramento em peças", "esco": null, "kind": "nucleo" },
+      { "label": "Redação publicitária (títulos, textos, roteiros)", "esco": null, "kind": "nucleo" },
+      { "label": "Direção de arte e composição visual", "esco": null, "kind": "nucleo" },
+      { "label": "Planejamento estratégico e pesquisa de público", "esco": null, "kind": "nucleo" },
+      { "label": "Planejamento e compra de mídia (on e off)", "esco": null, "kind": "nucleo" },
+      { "label": "Marketing digital, tráfego pago e métricas", "esco": null, "kind": "nucleo" },
+      { "label": "Ética publicitária: CONAR, CDC, imagem e direitos autorais", "esco": null, "kind": "nucleo" },
+      { "label": "Atendimento e relacionamento com cliente", "esco": null, "kind": "apoio" },
+      { "label": "Produção gráfica, áudio e vídeo", "esco": null, "kind": "apoio" },
+      { "label": "Social media e gestão de conteúdo", "esco": null, "kind": "apoio" },
+      { "label": "Branding e identidade de marca", "esco": null, "kind": "apoio" },
+      { "label": "Apresentação e defesa de ideias", "esco": null, "kind": "apoio" },
+      { "label": "Análise de resultados e otimização de campanha", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["criatividade aplicada", "trabalho sob prazo", "colaboração em dupla de criação e equipe", "comunicação oral e apresentação", "organização de jobs", "ética e sigilo de cliente"],
+    "tracks": [
+      { "id": "criar-a-partir-do-briefing", "label": "Criar a partir do briefing", "steps": ["resposta a um briefing fictício (L8)", "redação publicitária: conceito, três títulos e texto (X1)", "prancha de campanha com três peças (D2)", "roteiro de 30 segundos (X3)"] },
+      { "id": "planejar-e-medir", "label": "Planejar mídia e medir resultados", "steps": ["plano de mídia simplificado (X2)", "infográfico de resultados de campanha com fonte (D7)", "estudo de caso STAR de uma campanha (L3)"] },
+      { "id": "digital-e-conversao", "label": "Digital e conversão", "steps": ["wireframe de landing page com três estados (D9)", "redesenho antes e depois de uma peça ou página (D5)", "post sobre um aprendizado de teste A/B (L5)"] },
+      { "id": "apresentar-se", "label": "Apresentar-se ao mercado", "steps": ["resumo de perfil com link de portfólio (L6)", "currículo direcionado (L1)", "carta para uma agência ou anunciante (L2)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"redator publicitário\", \"diretor de arte\", \"analista de mídia\", \"atendimento\", \"social media\", \"estagiário de agência\"",
+      "cboFamilies": ["2531", "1423"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez; se for o primeiro emprego ou estágio, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, agência experimental ou primeiro cargo de assistente",
+        "junior": "até dois anos executando peças, planos ou atendimento com supervisão",
+        "pleno": "conduz jobs e campanhas com autonomia na sua função",
+        "senior": "referência da área; orienta a dupla ou a equipe e apresenta ao cliente",
+        "gestao": "diretor de criação, mídia, planejamento ou gerente de contas/marketing"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em publicidade",
+      "options": ["entender e traduzir um briefing", "criar conceitos de campanha", "escrever títulos e textos", "direção de arte e layout", "planejar mídia", "gerir tráfego pago", "analisar métricas e resultados", "atender e apresentar ao cliente", "produzir vídeo e áudio", "social media e conteúdo", "branding e identidade visual", "pesquisa de público e planejamento"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com tarefas feitas sobre briefings fictícios ou públicos."
+    },
+    "c4": {
+      "certifications": ["graduação ou tecnólogo em publicidade e propaganda", "certificações Google Ads e Google Analytics", "Meta Blueprint", "cursos de Figma, Photoshop ou Illustrator", "pós-graduação (branding, marketing digital, direção de arte, planejamento)", "curso de redação publicitária", "certificação CENP ou curso sobre Normas-Padrão", "mestrado ou doutorado"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação e certificações mostram lacunas em relação à vaga que você quer; nada aqui é exigido para começar."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["conceito criativo", "redação publicitária", "direção de arte", "planejamento e pesquisa", "plano de mídia", "tráfego pago e métricas", "social media", "produção de vídeo", "branding", "apresentação de campanha", "ética e regulação (CONAR, CDC, LGPD)"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez do catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que área da agência ou do marketing você atua ou quer atuar?",
+        "type": "escolha",
+        "options": ["criação – redação", "criação – direção de arte", "planejamento", "mídia", "atendimento", "produção", "digital e performance", "social media e conteúdo", "ainda não sei"],
+        "why": "Pergunto a área para escolher tarefas e vocabulário: um plano de mídia e uma prancha de campanha são evidências diferentes.",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L8", "D2", "L6", "L1", "D9", "D7", "L3", "D5", "L5", "L2", "L10", "D10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica não é entrega da profissão" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da profissão" },
+      { "code": "D8", "reason": "vista explodida não é entrega da profissão" }
+    ],
+    "parameters": {
+      "L8": {
+        "title": "Resposta a um briefing publicitário simulado",
+        "brief": "A partir de um briefing fictício fornecido pelo guia (marca inventada, objetivo, público, verba e prazo), escreva a resposta: problema de comunicação, insight, conceito, desdobramento em três meios, cronograma, premissas e o que fica fora do escopo.",
+        "parameters": { "fictionalBrand": true, "sections": ["problema de comunicação", "insight e público", "conceito criativo", "desdobramento em três meios", "cronograma e verba por meio", "premissas e fora de escopo"], "maxPages": 3 },
+        "criteria": ["seis seções nomeadas", "conceito em uma frase e racional", "três meios com justificativa ligada ao público", "cronograma e distribuição de verba", "premissas e fora de escopo explícitos", "marca declaradamente fictícia ou briefing público"],
+        "evidence": "proposta",
+        "time": "90 min",
+        "level": 2
+      },
+      "D2": {
+        "title": "Prancha de campanha com três peças",
+        "brief": "Monte uma prancha A3 com key visual e dois desdobramentos (ex.: post, anúncio impresso, banner) de uma campanha para marca fictícia ou de um trabalho seu já publicado. Grade consistente, título e texto legíveis, identificação publicitária e créditos de imagens e fontes.",
+        "parameters": { "format": "A3", "pieces": 3, "requiredParts": ["key visual", "dois desdobramentos", "assinatura da marca", "créditos e licenças"] },
+        "criteria": ["três peças com o mesmo conceito", "grade consistente", "assinatura e identificação publicitária presentes", "créditos de imagens, fontes e coautores", "sem marca ou pessoa real sem autorização"],
+        "evidence": "prancha publicada (PDF ou PNG)",
+        "time": "2 h",
+        "level": 1
+      },
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva até 600 caracteres com a área da agência em que atua ou quer atuar, três competências e o link do seu portfólio ou de uma peça publicada. Sem citar clientes ou campanhas sob sigilo.",
+        "parameters": { "maxChars": 600, "requiredParts": ["área-alvo", "três competências", "link de portfólio ou peça"] },
+        "criteria": ["até 600 caracteres", "nomeia a área-alvo", "cita três competências", "inclui link de portfólio ou peça", "sem cliente ou campanha sob sigilo"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para a vaga que você quer mirar primeiro, com três resultados com número (campanhas entregues, crescimento de métricas, prêmios, contas atendidas) e as palavras-chave da vaga, além do link do portfólio.",
+        "parameters": { "maxPages": 1, "achievementsWithNumbers": 3, "keywordsFrom": "vaga-alvo", "portfolioLink": true },
+        "criteria": ["uma página", "três resultados com número", "palavras-chave da vaga-alvo presentes", "link de portfólio", "sem idade, estado civil ou foto obrigatória"],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "D9": {
+        "title": "Wireframe de landing page de campanha",
+        "brief": "Desenhe o wireframe de uma landing page para a campanha do briefing fictício: dobra principal com título e chamada para ação, prova social, formulário e rodapé com aviso de privacidade; mostre os estados vazio, erro e sucesso do formulário e anote as interações.",
+        "parameters": { "states": ["vazio", "erro", "sucesso"], "requiredBlocks": ["título e CTA", "benefícios", "prova social", "formulário", "aviso de privacidade"], "annotations": true },
+        "criteria": ["três estados do formulário", "um objetivo de conversão claro", "anotações de interação", "aviso de privacidade e consentimento no formulário (LGPD)", "sem marca real sem autorização"],
+        "evidence": "prancha",
+        "time": "90 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Redação publicitária: conceito, três títulos e texto",
+        "competency": "Redação publicitária",
+        "criteria": ["conceito em uma frase com racional de até 100 palavras", "três títulos alternativos para a mesma peça", "texto de apoio de até 120 palavras com chamada para ação", "assinatura ou slogan", "nenhuma afirmação de superioridade ou benefício sem base comprovável (CDC art. 37; CONAR)", "marca fictícia ou briefing público"],
+        "evidence": "documento",
+        "time": "60 min",
+        "trigger": "Quer treinar redação publicitária a partir de um briefing fictício?",
+        "level": 1
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Plano de mídia simplificado",
+        "competency": "Planejamento de mídia",
+        "criteria": ["objetivo de mídia e público definidos", "ao menos três meios ou veículos com justificativa", "período, frequência e distribuição percentual da verba", "métricas de acompanhamento por meio (alcance, CPM, CPC ou CPA)", "fonte dos dados de audiência citada com data", "verba e marca fictícias ou públicas"],
+        "evidence": "proposta",
+        "time": "90 min",
+        "trigger": "Quer montar um plano de mídia para a campanha do briefing?",
+        "level": 2
+      },
+      {
+        "id": "X3",
+        "editor": "letters",
+        "title": "Roteiro de filme ou spot de 30 segundos",
+        "competency": "Criação para vídeo e áudio",
+        "criteria": ["duas colunas: vídeo/indicação e áudio/locução", "duração estimada de até 30 segundos", "conceito da campanha reconhecível", "assinatura da marca e disclaimer quando obrigatório", "créditos e licenças de músicas e imagens de referência"],
+        "evidence": "roteiro",
+        "time": "60 min",
+        "trigger": "Que tal transformar o conceito em um roteiro de 30 segundos?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L5", "L6", "L8", "X1", "X3"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L8", "L3", "L9", "X2"], "auto": true },
+      { "id": "conceito-unico", "check": "as peças da prancha compartilham o mesmo conceito e assinatura", "appliesTo": ["D2"], "auto": false },
+      { "id": "identificacao-publicitaria", "check": "a peça é reconhecível como publicidade e traz assinatura da marca", "appliesTo": ["D2", "X1", "X3", "D9"], "auto": true },
+      { "id": "creditos-e-licencas", "check": "imagens, fontes, músicas e coautores têm crédito e licença", "appliesTo": ["D2", "D5", "D7", "D9", "D10", "X3", "L5"], "auto": true },
+      { "id": "marca-ficticia-ou-publica", "check": "a pessoa declarou que a marca é fictícia ou o trabalho é público e autorizado", "appliesTo": ["L8", "D2", "D9", "X1", "X2", "X3", "D5", "D7"], "auto": true },
+      { "id": "tres-estados", "check": "o wireframe mostra os estados vazio, erro e sucesso", "appliesTo": ["D9"], "auto": true },
+      { "id": "fonte-no-grafico", "check": "o infográfico ou plano de mídia cita fonte dos dados com data", "appliesTo": ["D7", "X2"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados de clientes sob sigilo", "appliesTo": ["L1", "L2", "L3", "L5", "L6", "L8", "L10", "D2", "D5", "D7", "D9", "D10", "X1", "X2", "X3"], "auto": true },
+      { "id": "palavras-chave-do-alvo", "check": "as palavras-chave da vaga-alvo aparecem no texto", "appliesTo": ["L1", "L2"], "auto": true },
+      { "id": "sem-alegacao-sem-base", "check": "não há alegação de superioridade, saúde ou resultado sem base comprovável", "appliesTo": ["X1", "X3", "D2"], "auto": false }
+    ],
+    "subjective": [
+      { "id": "aderencia-ao-briefing", "label": "Aderência ao briefing", "levels": { "aproxima": "responde parcialmente ao objetivo ou ignora o público", "atende": "responde ao objetivo, ao público e às obrigatoriedades", "supera": "reformula o problema com insight e justifica cada escolha pelo briefing" } },
+      { "id": "forca-do-conceito", "label": "Força do conceito criativo", "levels": { "aproxima": "ideia genérica ou descritiva do produto", "atende": "conceito claro, memorável e desdobrável", "supera": "conceito original que se sustenta em vários meios e no tempo" } },
+      { "id": "execucao", "label": "Execução de texto e arte", "levels": { "aproxima": "hierarquia visual ou texto confusos", "atende": "título, texto e arte legíveis e coerentes", "supera": "execução precisa, com ritmo de leitura e identidade consistente" } },
+      { "id": "etica-publicitaria", "label": "Ética e conformidade", "levels": { "aproxima": "há alegação sem base ou uso de imagem sem licença", "atende": "respeita CONAR, CDC, imagem e direitos autorais", "supera": "antecipa riscos regulatórios e documenta as decisões tomadas" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da área de publicidade e propaganda (criação, planejamento, mídia, atendimento, produção, digital ou social media). Use o vocabulário do mercado (briefing, conceito, key visual, título e body copy, plano de mídia, GRP, CPM, CPA, job, PI, landing page, teste A/B) e cite, quando couber, o Código Brasileiro de Autorregulamentação Publicitária do CONAR, o CDC (arts. 36 a 38), as Normas-Padrão do CENP, a Lei 4.680/1965, a Lei 9.610/1998, o Código Civil (art. 20, imagem) e a LGPD. Toda tarefa usa marca fictícia ou trabalho já público e autorizado: nunca peça nem registre briefings, lançamentos, verbas ou resultados de clientes sob NDA ou embargo, e oriente a remover se a pessoa colar algo assim. Não invente dados de audiência, métricas ou resultados de campanha: toda métrica que você propuser vem com fonte e data ou é marcada como exemplo hipotético. Não crie alegações de superioridade, saúde ou desempenho sem base comprovável, nem peças dirigidas a crianças (Res. CONANDA 163/2014), nem use marcas, pessoas ou imagens reais sem licença. Pergunte antes de inferir área da agência ou senioridade. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por que foi sugerida. Afirmações sobre mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa vaga, entrevista ou salário. Progresso é por critérios atendidos, nunca por pontuação. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação. Pré-cheque só critérios objetivos (tamanho, seções, assinatura, créditos, três estados, declaração de marca fictícia); força do conceito e ética são julgamento humano.",
+    "citeSources": [
+      { "title": "Código Brasileiro de Autorregulamentação Publicitária — CONAR", "url": "http://www.conar.org.br/", "kind": "comunidade" },
+      { "title": "Código de Defesa do Consumidor — Lei 8.078/1990 (arts. 36–38)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm", "kind": "norma" },
+      { "title": "Lei 4.680/1965 — profissão de publicitário e agências", "url": "https://www.planalto.gov.br/ccivil_03/leis/l4680.htm", "kind": "norma" },
+      { "title": "Normas-Padrão da Atividade Publicitária — CENP", "url": "https://cenp.com.br/", "kind": "comunidade" },
+      { "title": "Lei 12.232/2010 — licitações de publicidade", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2010/lei/l12232.htm", "kind": "norma" },
+      { "title": "Lei 9.610/1998 — direitos autorais", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9610.htm", "kind": "norma" },
+      { "title": "LGPD — Lei 13.709/2018 e Guia ANPD sobre cookies", "url": "https://www.gov.br/anpd/pt-br", "kind": "orgao-publico" },
+      { "title": "CBO 2531 — Profissionais de publicidade (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "Novo CAGED — Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2, c5 e x1 (área da agência) com vocabulário de mercado; nunca pergunta sobre clientes ou campanhas sob sigilo." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza L8 (briefing), D2 (prancha de campanha), X1 (redação), D9 (landing page) e X2 (mídia); cada card diz competência, evidência e tempo." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); D2, D9 e D5 pedem computador; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa tamanho, seções, assinatura e identificação publicitária, créditos e licenças, três estados do wireframe e declaração de marca fictícia; não julga o conceito." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Gera briefings fictícios e propõe estrutura de resposta, títulos alternativos e roteiro; métricas só como exemplo hipotético marcado." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Prancha (D2): grade, hierarquia e créditos; wireframe (D9): blocos, estados e aviso de privacidade; infográfico (D7): fonte e rótulos." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: síntese com competências declaradas e evidenciadas (pranchas, respostas a briefing, planos), lacunas e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: marketing, design, relações públicas, jornalismo, audiovisual, administração; sempre com lacunas e passos, sem previsão." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por CBO 2531/1423, área da agência e competências." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil, com link de portfólio; só com o consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai agências, áreas, contas públicas e competências em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings", "link de portfólio"],
+      "never": ["mensagens", "itens SIGILOSO", "briefings, verbas e lançamentos de clientes sob NDA ou embargo", "resultados de campanha não divulgados", "dados pessoais de consumidores em bases de mídia e CRM", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "toda tarefa usa marca fictícia ou trabalho público e autorizado; nunca pedir nem registrar campanhas, verbas ou resultados sob sigilo",
+      "não inventar métricas, audiências ou resultados; dados com fonte e data ou marcados como exemplo hipotético",
+      "não criar alegações sem base comprovável, publicidade dirigida a crianças ou peças que violem CONAR e CDC",
+      "não usar marcas, pessoas ou imagens reais sem licença; créditos e cessão de imagem sempre",
+      "perguntar em vez de inferir área, senioridade ou situação",
+      "nunca prometer vaga, entrevista ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "alta" },
+    "drawingsModes": ["prancha", "wireframe", "infografico", "diagrama"],
+    "lettersTemplates": ["bio", "curriculo", "carta", "proposta", "roteiro", "estudo-de-caso", "post", "revisao", "plano-30-60-90", "relatorio-tecnico", "pop"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular: L5, L6, L10 e títulos de X1; D2, D5, D9 e X2 pedem computador para layout e planilha de mídia.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em três frases com o link do portfólio (15 min).",
+        "Tem um briefing fictício pronto para você responder. Comprova planejamento e criação e leva cerca de 90 min.",
+        "Sem pressão. Quando quiser retomar, a prancha de campanha está salva onde parou.",
+        "Três títulos para a mesma peça mostram repertório de redação. Leva cerca de 60 min, dá para fazer no celular."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["campanhas, briefings e lançamentos de clientes sob NDA ou embargo", "dados pessoais de consumidores em bases de mídia/CRM", "imagens de pessoas e marcas de terceiros sem licença", "verbas e resultados de campanha não divulgados"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2531 e 1423", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "CENP-Meios — investimento publicitário por meio", "url": "https://cenp.com.br/", "geography": "Brasil", "cadence": "trimestral", "kind": "associacao" },
+      { "title": "IAB Brasil — Digital AdSpend", "url": "https://iabbrasil.com.br/", "geography": "Brasil", "cadence": "anual", "kind": "pesquisa" },
+      { "title": "Fenapro — Censo das Agências", "url": "https://fenapro.org.br/", "geography": "Brasil e UF", "cadence": "eventual", "kind": "associacao" },
+      { "title": "ABAP — Associação Brasileira de Agências de Publicidade", "url": "https://www.abap.com.br/", "geography": "Brasil", "cadence": "eventual", "kind": "associacao" },
+      { "title": "Diário Oficial da União — licitações e editais de publicidade (Lei 12.232/2010)", "url": "https://www.in.gov.br/", "geography": "Brasil", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147). Dados de investimento publicitário descrevem o setor, não vagas."
+  },
+  "paths": [
+    { "to": "marketing", "why": "Planejamento, mídia e digital já fazem parte do marketing; muitos publicitários migram para marketing do anunciante.", "gaps": ["gestão de produto, preço e canais", "CRM e funil de vendas", "orçamento e indicadores de negócio"], "steps": ["plano 30-60-90 para um cargo de marketing (L9)", "infográfico de resultados de campanha (D7)", "curso de marketing digital do Sebrae"] },
+    { "to": "design", "why": "Direção de arte compartilha tipografia, composição e identidade visual com o design gráfico e digital.", "gaps": ["sistemas de design e UI", "produção gráfica avançada", "pesquisa com usuários"], "steps": ["wireframe com três estados (D9)", "redesenho antes e depois (D5)", "curso de Figma"] },
+    { "to": "relacoes-publicas", "why": "Atendimento e planejamento de comunicação aproximam da comunicação organizacional e da gestão de reputação.", "gaps": ["gestão de crise e stakeholders", "registro no CONRERP para atividades privativas", "comunicação interna"], "steps": ["plano de comunicação a partir de briefing (L8)", "POP de gestão de crise (L7)", "conhecer a Lei 5.377/1967"] },
+    { "to": "jornalismo", "why": "Redação e conteúdo de marca dialogam com produção de conteúdo e assessoria de imprensa.", "gaps": ["apuração com fontes", "ética jornalística e contraditório", "formatos noticiosos"], "steps": ["reportagem curta com fontes", "post sobre aprendizado (L5)", "curso de jornalismo de dados"] },
+    { "to": "cinema-e-audiovisual", "why": "Roteiro, produção e direção de filmes publicitários aproximam da produção audiovisual.", "gaps": ["narrativa longa e documentário", "produção executiva e editais", "pós-produção"], "steps": ["roteiro de 30 segundos (X3)", "prancha com vídeos (D2)", "curso de roteiro"] },
+    { "to": "administracao", "why": "Atendimento e gestão de contas levam à gestão de equipes, orçamento e negócios.", "gaps": ["finanças e contratos", "gestão de pessoas", "processos e indicadores"], "steps": ["estudo de caso STAR de gestão de conta (L3)", "diagrama de fluxo de job (D4)", "curso de gestão do Sebrae"] }
+  ],
+  "learning": [
+    { "title": "Código Brasileiro de Autorregulamentação Publicitária e decisões", "provider": "CONAR", "url": "http://www.conar.org.br/", "free": true, "kind": "norma" },
+    { "title": "Google Skillshop — certificações Google Ads e Analytics", "provider": "Google", "url": "https://skillshop.withgoogle.com/", "free": true, "kind": "certificacao" },
+    { "title": "Meta Blueprint — cursos de mídia e anúncios", "provider": "Meta", "url": "https://www.facebook.com/business/learn", "free": true, "kind": "curso" },
+    { "title": "Cursos de marketing digital e vendas", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "curso" },
+    { "title": "Normas-Padrão da Atividade Publicitária e cursos", "provider": "CENP", "url": "https://cenp.com.br/", "free": true, "kind": "norma" },
+    { "title": "Guia orientativo sobre cookies e proteção de dados", "provider": "ANPD", "url": "https://www.gov.br/anpd/pt-br", "free": true, "kind": "portal" },
+    { "title": "Cursos de comunicação e marketing", "provider": "Escola Virtual Fundação Bradesco", "url": "https://www.ev.org.br/", "free": true, "kind": "curso" },
+    { "title": "Festival e conteúdo do Clube de Criação", "provider": "Clube de Criação", "url": "https://www.clubedecriacao.com.br/", "free": false, "kind": "comunidade" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos — publicidade-e-propaganda (CBO, ISCO, ESCO, dados sensíveis, vizinhos)", "url": "contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
+    { "title": "Código Brasileiro de Autorregulamentação Publicitária (cópia em PDF, Fiocruz)", "url": "https://www.icict.fiocruz.br/sites/www.icict.fiocruz.br/files/Cod%20Bras%20de%20Autorregulamentacao%20Publica_Conar.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Novo CAGED — MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Código do CONAR: busca indica aprovação em 1978 e versão assinada em 05/05/1980 com criação do CONAR em 1980; fontes divergem sobre o número de anexos (22 ou 23) e a reforma mais recente citada é de outubro de 2025 (art. 36 e Anexo U); texto oficial não lido",
+    "Artigos citados do CDC (36–38), do Decreto 57.690/1966, da Lei 9.294/1996 e da Lei 9.504/1997 referidos de memória; planalto.gov.br não acessado",
+    "Normas-Padrão do CENP (1998) e existência de certificação de agências citadas de memória; cenp.com.br não acessado",
+    "Guia da ANPD sobre cookies (2022) citado de memória; URL da ANPD não verificada",
+    "URIs ESCO de competências não confirmadas (ec.europa.eu inacessível nesta sessão); todas com esco: null",
+    "URLs de CENP-Meios, IAB Brasil, Fenapro, ABAP, Skillshop, Meta Blueprint e Clube de Criação não verificadas; cadências de publicação são estimativas"
+  ]
+}

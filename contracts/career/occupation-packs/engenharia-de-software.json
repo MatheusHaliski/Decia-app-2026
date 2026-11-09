@@ -1,0 +1,1447 @@
+{
+  "schemaVersion": 1,
+  "code": "engenharia-de-software",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": {
+    "pt-BR": "Engenharia de Software",
+    "en": "Software Engineering",
+    "es": "Ingeniería de Software"
+  },
+  "fields": [
+    "engenharia-de-software"
+  ],
+  "family": {
+    "cbo": [
+      {
+        "code": "2124",
+        "title": "Analistas de tecnologia da informação"
+      },
+      {
+        "code": "3171",
+        "title": "Técnicos de desenvolvimento de sistemas e aplicações"
+      }
+    ],
+    "isco08": [
+      {
+        "code": "2512",
+        "title": "Software developers"
+      },
+      {
+        "code": "2511",
+        "title": "Systems analysts"
+      },
+      {
+        "code": "2513",
+        "title": "Web and multimedia developers"
+      },
+      {
+        "code": "2514",
+        "title": "Applications programmers"
+      },
+      {
+        "code": "2519",
+        "title": "Software and applications developers and analysts not elsewhere classified"
+      }
+    ],
+    "esco": [
+      {
+        "uri": "http://data.europa.eu/esco/occupation/f2b15a0e-e65a-438a-affb-29b9d50b77d1",
+        "label": "software developer"
+      },
+      {
+        "uri": "http://data.europa.eu/esco/occupation/04ba4d6c-957d-417f-bf63-5b9e015a9f86",
+        "label": "software analyst"
+      },
+      {
+        "uri": "http://data.europa.eu/esco/occupation/c40a2919-48a9-40ea-b506-1f34f693496d",
+        "label": "web developer"
+      }
+    ]
+  },
+  "scope": {
+    "summary": "Pessoas que projetam, constroem, testam e mantêm software: aplicações web e móveis, APIs, sistemas corporativos e jogos. Reúne Engenharia de Software, Ciência da Computação, Sistemas de Informação e ADS. Profissão sem conselho obrigatório; a evidência típica é código versionado com testes, documentação e decisões registradas.",
+    "entryRoles": [
+      "Estagiário de desenvolvimento",
+      "Desenvolvedor júnior",
+      "Analista de testes júnior",
+      "Analista de suporte a sistemas",
+      "Desenvolvedor front-end júnior"
+    ],
+    "midRoles": [
+      "Desenvolvedor pleno (back-end, front-end, mobile ou full stack)",
+      "Analista de sistemas",
+      "Engenheiro de qualidade (QA)",
+      "Engenheiro DevOps",
+      "Product owner técnico"
+    ],
+    "seniorRoles": [
+      "Desenvolvedor sênior",
+      "Tech lead",
+      "Arquiteto de software",
+      "Engenheiro de software staff/principal",
+      "Gerente de engenharia"
+    ],
+    "sectors": [
+      "empresas de software e startups",
+      "bancos e fintechs",
+      "varejo e e-commerce",
+      "consultorias e fábricas de software",
+      "administração pública e empresas públicas de TI",
+      "saúde digital",
+      "educação (edtechs)",
+      "indústria e agronegócio digital",
+      "jogos digitais",
+      "trabalho autônomo e freelance"
+    ],
+    "regulation": [
+      {
+        "name": "Lei 9.609/1998 (Lei do Software)",
+        "issuer": "Brasil",
+        "about": "proteção da propriedade intelectual de programas de computador; licenças e contratos"
+      },
+      {
+        "name": "Lei 9.610/1998 (Direitos Autorais)",
+        "issuer": "Brasil",
+        "about": "autoria e uso de código, textos e imagens; base das licenças de software livre"
+      },
+      {
+        "name": "LGPD (Lei 13.709/2018), arts. 6º, 46 e 49",
+        "issuer": "Brasil",
+        "about": "privacidade desde a concepção; segurança e boas práticas em sistemas que tratam dados pessoais"
+      },
+      {
+        "name": "Marco Civil da Internet (Lei 12.965/2014)",
+        "issuer": "Brasil",
+        "about": "guarda de registros, responsabilidade de provedores de aplicação e neutralidade"
+      },
+      {
+        "name": "Lei 13.146/2015 (LBI) e ABNT NBR 17060:2022",
+        "issuer": "Brasil / ABNT",
+        "about": "acessibilidade digital obrigatória em sites e aplicativos; requisitos de conteúdo web"
+      },
+      {
+        "name": "ABNT NBR ISO/IEC/IEEE 12207",
+        "issuer": "ABNT",
+        "about": "processos do ciclo de vida de software (requisitos, projeto, implementação, testes, manutenção)"
+      },
+      {
+        "name": "ABNT NBR ISO/IEC 25010",
+        "issuer": "ABNT",
+        "about": "modelo de qualidade de produto de software (funcionalidade, confiabilidade, usabilidade, segurança, manutenibilidade)"
+      },
+      {
+        "name": "Resolução CONFEA 380/1993",
+        "issuer": "CONFEA",
+        "about": "só engenheiros de computação registram no CREA; desenvolvedores e analistas não têm conselho obrigatório"
+      }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      {
+        "term": "repositório",
+        "meaning": "pasta versionada (Git) com código, histórico de commits, README e testes"
+      },
+      {
+        "term": "pull request (PR)",
+        "meaning": "proposta de mudança revisada por colegas antes de entrar na linha principal"
+      },
+      {
+        "term": "code review",
+        "meaning": "revisão de código por pares com comentários e aprovação"
+      },
+      {
+        "term": "CI/CD",
+        "meaning": "integração e entrega contínuas: testes e implantação automatizados a cada mudança"
+      },
+      {
+        "term": "teste unitário",
+        "meaning": "teste automatizado de uma função ou classe isolada"
+      },
+      {
+        "term": "cobertura de testes",
+        "meaning": "percentual do código exercitado pelos testes automatizados"
+      },
+      {
+        "term": "TDD",
+        "meaning": "desenvolvimento guiado por testes: escreve-se o teste antes do código"
+      },
+      {
+        "term": "refatoração",
+        "meaning": "melhorar a estrutura do código sem mudar o comportamento"
+      },
+      {
+        "term": "dívida técnica",
+        "meaning": "atalhos no código que cobram manutenção depois"
+      },
+      {
+        "term": "ADR",
+        "meaning": "registro de decisão de arquitetura: contexto, decisão, alternativas e consequências"
+      },
+      {
+        "term": "post-mortem",
+        "meaning": "análise sem culpa de um incidente: linha do tempo, causa raiz e ações"
+      },
+      {
+        "term": "API REST",
+        "meaning": "interface HTTP com recursos, verbos e códigos de status padronizados"
+      },
+      {
+        "term": "OpenAPI",
+        "meaning": "especificação legível por máquina de uma API HTTP"
+      },
+      {
+        "term": "microsserviços",
+        "meaning": "arquitetura com serviços pequenos e independentes que se comunicam por rede"
+      },
+      {
+        "term": "monólito",
+        "meaning": "aplicação única implantada como um só bloco"
+      },
+      {
+        "term": "modelo C4",
+        "meaning": "diagramas em quatro níveis: contexto, contêineres, componentes e código"
+      },
+      {
+        "term": "backlog",
+        "meaning": "lista priorizada de histórias e tarefas do produto"
+      },
+      {
+        "term": "sprint",
+        "meaning": "ciclo curto de entrega (1 a 4 semanas) em Scrum"
+      },
+      {
+        "term": "história de usuário",
+        "meaning": "requisito curto: como <papel>, quero <ação> para <benefício>"
+      },
+      {
+        "term": "definição de pronto (DoD)",
+        "meaning": "lista de condições para considerar uma entrega concluída"
+      },
+      {
+        "term": "SemVer",
+        "meaning": "versionamento semântico MAJOR.MINOR.PATCH"
+      },
+      {
+        "term": "feature flag",
+        "meaning": "chave que liga ou desliga uma funcionalidade sem novo deploy"
+      },
+      {
+        "term": "rollback",
+        "meaning": "voltar à versão anterior após uma implantação com problema"
+      },
+      {
+        "term": "observabilidade",
+        "meaning": "logs, métricas e rastreamento para entender o sistema em produção"
+      },
+      {
+        "term": "SOLID",
+        "meaning": "cinco princípios de projeto orientado a objetos"
+      },
+      {
+        "term": "contêiner",
+        "meaning": "pacote isolado da aplicação com suas dependências (ex.: Docker)"
+      },
+      {
+        "term": "OWASP Top 10",
+        "meaning": "lista das dez categorias de risco mais comuns em aplicações web"
+      },
+      {
+        "term": "licença de software livre",
+        "meaning": "termos de uso e redistribuição do código (MIT, Apache 2.0, GPL)"
+      }
+    ],
+    "tools": [
+      "Git (GitHub, GitLab, Bitbucket)",
+      "VS Code ou IDE da linguagem",
+      "terminal Linux e shell",
+      "Docker",
+      "GitHub Actions, GitLab CI ou Jenkins",
+      "frameworks de teste (Jest, pytest, JUnit, Cypress)",
+      "Postman ou Insomnia",
+      "bancos SQL (PostgreSQL, MySQL) e NoSQL (MongoDB, Redis)",
+      "Jira, Trello ou Azure Boards",
+      "SonarQube ou linters",
+      "Figma (leitura de protótipos)",
+      "nuvem (AWS, Azure, GCP)",
+      "diagramas (draw.io, Mermaid, PlantUML)"
+    ],
+    "deliverables": [
+      "repositório público com README, testes e licença",
+      "ADR (registro de decisão de arquitetura)",
+      "post-mortem anonimizado de incidente",
+      "diagrama de arquitetura (C4 ou componentes)",
+      "API documentada em OpenAPI",
+      "plano de testes e relatório de cobertura",
+      "especificação de requisitos ou histórias de usuário",
+      "runbook de deploy e rollback",
+      "changelog e notas de versão",
+      "protótipo ou wireframe de tela",
+      "revisão de código estruturada",
+      "proposta técnica em resposta a briefing"
+    ]
+  },
+  "competencies": {
+    "core": [
+      {
+        "label": "Programação em ao menos uma linguagem de uso geral",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Estruturas de dados e algoritmos",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Versionamento com Git e fluxo de pull requests",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Testes automatizados (unitários, integração, ponta a ponta)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Projeto e consumo de APIs HTTP",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Modelagem de dados e SQL",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Arquitetura de software e registro de decisões",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Depuração e leitura de logs",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Levantamento e escrita de requisitos",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Documentação técnica (README, ADR, OpenAPI)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Segurança de aplicações (OWASP, segredos fora do código)",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "CI/CD, contêineres e implantação",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Métodos ágeis (Scrum, Kanban)",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Acessibilidade e usabilidade de interfaces",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Privacidade desde a concepção (LGPD)",
+        "esco": null,
+        "kind": "apoio"
+      }
+    ],
+    "transversal": [
+      "comunicação escrita técnica",
+      "revisão por pares e feedback",
+      "aprendizagem contínua de linguagens e ferramentas",
+      "inglês técnico para leitura de documentação",
+      "gestão do tempo em ciclos curtos"
+    ],
+    "tracks": [
+      {
+        "id": "back-end",
+        "label": "Back-end e APIs",
+        "steps": [
+          "ADR de uma decisão de projeto (L4)",
+          "diagrama de arquitetura com componentes nomeados (D4)",
+          "README de repositório com testes (X1)",
+          "runbook de deploy e rollback (L7)",
+          "resposta a briefing de integração (L8)"
+        ]
+      },
+      {
+        "id": "front-end-mobile",
+        "label": "Front-end e mobile",
+        "steps": [
+          "wireframe de tela com três estados (D9)",
+          "README de repositório com testes (X1)",
+          "post sobre acessibilidade aplicada (L5)",
+          "estudo de caso STAR de uma entrega (L3)"
+        ]
+      },
+      {
+        "id": "qualidade-testes",
+        "label": "Qualidade e testes",
+        "steps": [
+          "POP de testes de regressão (L7)",
+          "relatório técnico de cobertura e defeitos (L4)",
+          "infográfico de métricas de qualidade (D7)",
+          "revisão crítica de uma peça da rede (L10)"
+        ]
+      },
+      {
+        "id": "devops-entrega",
+        "label": "Entrega e operação",
+        "steps": [
+          "diagrama do pipeline CI/CD (D4)",
+          "runbook de incidente (L7)",
+          "post-mortem anonimizado (L4)",
+          "infográfico de métricas DORA (D7)"
+        ]
+      }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"desenvolvedor júnior\", \"analista de sistemas\", \"estagiário de TI\", \"analista de testes\", \"suporte técnico\"",
+      "cboFamilies": [
+        "2124",
+        "3171",
+        "2122"
+      ],
+      "why": "Pergunto seu último cargo ou área para partir do que você já construiu. Se for o primeiro emprego, pule e seguimos pelos projetos de estudo."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, bootcamp ou primeiro cargo em desenvolvimento",
+        "junior": "entrega tarefas definidas com revisão de código de colegas",
+        "pleno": "projeta e entrega funcionalidades inteiras com autonomia",
+        "senior": "define arquitetura, revisa código e orienta a equipe",
+        "gestao": "lidera time técnico, planejamento e pessoas (tech lead, gerente)"
+      },
+      "why": "Pergunto o nível para calibrar a profundidade das tarefas: um ADR de júnior e um de sênior têm critérios diferentes."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em desenvolvimento",
+      "options": [
+        "programar back-end e APIs",
+        "programar front-end web",
+        "desenvolver aplicativos móveis",
+        "modelar bancos de dados e escrever SQL",
+        "escrever testes automatizados",
+        "montar pipelines CI/CD e contêineres",
+        "projetar arquitetura e registrar decisões",
+        "levantar requisitos com usuários",
+        "documentar código e APIs",
+        "revisar código de colegas",
+        "depurar problemas em produção",
+        "trabalhar com segurança de aplicações"
+      ],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com repositórios, ADRs e diagramas."
+    },
+    "c4": {
+      "certifications": [
+        "graduação ou tecnólogo em computação",
+        "curso técnico em informática",
+        "bootcamp ou curso livre com projeto final",
+        "AWS Certified Cloud Practitioner",
+        "Microsoft Azure Fundamentals (AZ-900)",
+        "Oracle Certified Java Programmer",
+        "Professional Scrum Master (PSM I)",
+        "ISTQB Certified Tester Foundation Level",
+        "Certified Kubernetes Application Developer (CKAD)",
+        "LPIC-1 ou CompTIA Linux+"
+      ],
+      "languages": [
+        "inglês técnico (leitura de documentação)",
+        "inglês para conversação",
+        "espanhol"
+      ],
+      "why": "Formação, certificações e idiomas ajudam a ver lacunas em relação ao cargo que você quer; nenhum é obrigatório para exercer a profissão."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver em software?",
+      "options": [
+        "testes automatizados e TDD",
+        "arquitetura e registro de decisões (ADR)",
+        "projeto de APIs e integração",
+        "CI/CD, Docker e nuvem",
+        "bancos de dados e modelagem",
+        "front-end e acessibilidade",
+        "desenvolvimento mobile",
+        "segurança de aplicações (OWASP)",
+        "documentação técnica",
+        "métodos ágeis e refinamento de backlog",
+        "observabilidade e operação",
+        "revisão de código e mentoria"
+      ],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (ADR, diagrama, runbook) em vez do catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Com que linguagens e plataformas você mais trabalha?",
+        "type": "lista",
+        "options": [
+          "JavaScript/TypeScript",
+          "Python",
+          "Java",
+          "C#/.NET",
+          "PHP",
+          "Go",
+          "Kotlin ou Swift (mobile)",
+          "C/C++",
+          "SQL",
+          "outra"
+        ],
+        "why": "Pergunto para usar exemplos e vocabulário da sua stack nas tarefas e no currículo. Você pode pular.",
+        "where": "P"
+      },
+      {
+        "id": "x2",
+        "prompt": "Tem código público (GitHub, GitLab) ou projeto que possa mostrar?",
+        "type": "sim-nao",
+        "options": [],
+        "why": "Se tiver, a primeira tarefa pode ser documentar um repositório que já existe; se não, começamos por um projeto pequeno.",
+        "where": "X"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": [
+      "L4",
+      "D4",
+      "L6",
+      "L1",
+      "L7",
+      "D9",
+      "L3",
+      "L8",
+      "D7",
+      "L10",
+      "L5",
+      "L2"
+    ],
+    "excluded": [
+      {
+        "code": "D1",
+        "reason": "planta de ambiente não é entrega da profissão"
+      },
+      {
+        "code": "D3",
+        "reason": "modelo 3D de produto não é entrega da profissão"
+      },
+      {
+        "code": "D6",
+        "reason": "detalhe construtivo pertence a engenharia e arquitetura"
+      },
+      {
+        "code": "D8",
+        "reason": "vista explodida pertence a montagem e manufatura"
+      }
+    ],
+    "parameters": {
+      "L4": {
+        "title": "ADR ou post-mortem anonimizado",
+        "brief": "Escreva um registro de decisão de arquitetura (contexto, decisão, alternativas, consequências) ou o post-mortem de um incidente, sem culpa e sem dados de clientes, com no máximo 4 páginas.",
+        "parameters": {
+          "formats": [
+            "ADR",
+            "post-mortem"
+          ],
+          "maxPages": 4,
+          "adrSections": [
+            "contexto",
+            "decisão",
+            "alternativas consideradas",
+            "consequências"
+          ],
+          "postMortemSections": [
+            "resumo",
+            "linha do tempo",
+            "causa raiz",
+            "ações",
+            "lições"
+          ],
+          "anonymized": true
+        },
+        "criteria": [
+          "seções obrigatórias presentes e nomeadas",
+          "ao menos duas alternativas comparadas ou uma causa raiz explícita",
+          "até 4 páginas",
+          "sem nome de cliente, chave, senha ou dado pessoal",
+          "referências ou links para código, issue ou documentação"
+        ],
+        "evidence": "relatório técnico (PDF ou Letter publicada)",
+        "time": "2 h",
+        "level": 3
+      },
+      "D4": {
+        "title": "Diagrama de arquitetura ou fluxo de um sistema",
+        "brief": "Desenhe a arquitetura de um sistema seu (modelo C4 nível contêineres) ou o fluxo de uma funcionalidade ponta a ponta, com componentes nomeados, setas rotuladas e legenda da notação.",
+        "parameters": {
+          "notation": [
+            "C4",
+            "fluxograma",
+            "BPMN simplificado",
+            "sequência"
+          ],
+          "minComponents": 4,
+          "labeledArrows": true,
+          "legend": true
+        },
+        "criteria": [
+          "ao menos 4 componentes nomeados",
+          "setas com rótulo (protocolo, dado ou evento)",
+          "legenda da notação",
+          "início e fim ou fronteira do sistema explícitos",
+          "sem endereços internos, IPs ou credenciais"
+        ],
+        "evidence": "diagrama vetorial (SVG ou PDF)",
+        "time": "45 min",
+        "level": 2
+      },
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva um resumo de até 600 caracteres com a área de desenvolvimento que você quer, três competências e um link para um repositório ou projeto.",
+        "parameters": {
+          "maxChars": 600,
+          "requiredParts": [
+            "área-alvo (ex.: back-end, mobile)",
+            "três competências",
+            "um link para repositório ou projeto"
+          ]
+        },
+        "criteria": [
+          "até 600 caracteres",
+          "nomeia a área-alvo",
+          "cita três competências",
+          "inclui um link para repositório ou projeto"
+        ],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para a vaga de desenvolvimento que você quer mirar, com três conquistas com número (ex.: tempo de resposta, cobertura, usuários) e a stack pedida.",
+        "parameters": {
+          "maxPages": 1,
+          "achievementsWithNumbers": 3,
+          "keywordsFrom": "cargo-alvo",
+          "includeRepoLink": true
+        },
+        "criteria": [
+          "uma página",
+          "três conquistas com número",
+          "palavras-chave da stack do cargo-alvo presentes",
+          "link para repositório ou portfólio",
+          "sem idade, estado civil ou foto obrigatória"
+        ],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "L7": {
+        "title": "Runbook de deploy, rollback ou rotina de operação",
+        "brief": "Descreva um procedimento que você domina (deploy, rollback, rotação de chave, restauração de backup) em passos numerados, com responsável, pré-condições e critério de conclusão por passo.",
+        "parameters": {
+          "numberedSteps": true,
+          "perStep": [
+            "responsável",
+            "comando ou ação",
+            "critério de conclusão"
+          ],
+          "sections": [
+            "quando usar",
+            "pré-condições",
+            "passos",
+            "verificação",
+            "reversão"
+          ]
+        },
+        "criteria": [
+          "passos numerados",
+          "responsável e critério de conclusão em cada passo",
+          "seção de reversão ou contingência",
+          "comandos sem credenciais ou endereços internos reais"
+        ],
+        "evidence": "POP (modelo publicado)",
+        "time": "60 min",
+        "level": 2
+      },
+      "D9": {
+        "title": "Wireframe de uma tela com três estados",
+        "brief": "Desenhe o wireframe de uma tela de um produto seu com os estados vazio, erro e sucesso, anotações de interação e observações de acessibilidade (foco, contraste, rótulos).",
+        "parameters": {
+          "states": [
+            "vazio",
+            "erro",
+            "sucesso"
+          ],
+          "annotations": true,
+          "accessibilityNotes": true
+        },
+        "criteria": [
+          "três estados presentes e rotulados",
+          "anotações de interação",
+          "ao menos uma observação de acessibilidade",
+          "sem dados reais de usuários nas telas"
+        ],
+        "evidence": "prancha de wireframe",
+        "time": "90 min",
+        "level": 2
+      },
+      "L8": {
+        "title": "Resposta a um briefing técnico simulado",
+        "brief": "Responda a um briefing de integração ou funcionalidade: escopo, premissas, riscos, estimativa em faixas, o que fica fora e perguntas em aberto.",
+        "parameters": {
+          "sections": [
+            "escopo",
+            "premissas",
+            "riscos",
+            "estimativa em faixas",
+            "fora de escopo",
+            "perguntas em aberto"
+          ],
+          "maxWords": 800
+        },
+        "criteria": [
+          "seções obrigatórias presentes",
+          "estimativa em faixas, não em número único",
+          "lista explícita do que fica fora",
+          "ao menos duas perguntas em aberto"
+        ],
+        "evidence": "proposta técnica",
+        "time": "45 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "README de um repositório público com testes",
+        "competency": "Documentação técnica e qualidade de código",
+        "criteria": [
+          "seções: o que é, instalação, uso com exemplo, como testar, licença",
+          "link para o repositório público",
+          "badge ou relatório de testes passando",
+          "cobertura de testes declarada",
+          "sem segredos, chaves ou dados pessoais"
+        ],
+        "evidence": "README publicado + link do repositório",
+        "time": "60 min",
+        "trigger": "Tem um repositório que outras pessoas poderiam rodar em 10 minutos?",
+        "level": 1
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      {
+        "id": "tamanho",
+        "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L4",
+          "L5",
+          "L6",
+          "L8"
+        ],
+        "auto": true
+      },
+      {
+        "id": "secoes-obrigatorias",
+        "check": "as seções pedidas (ADR, post-mortem, runbook, briefing) existem e estão nomeadas",
+        "appliesTo": [
+          "L3",
+          "L4",
+          "L7",
+          "L8",
+          "L9",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "componentes-nomeados",
+        "check": "o diagrama tem ao menos 4 componentes com nome e setas rotuladas",
+        "appliesTo": [
+          "D4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "legenda-notacao",
+        "check": "o diagrama ou infográfico tem legenda da notação ou dos eixos",
+        "appliesTo": [
+          "D4",
+          "D7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "estados-da-tela",
+        "check": "o wireframe mostra os estados vazio, erro e sucesso rotulados",
+        "appliesTo": [
+          "D9"
+        ],
+        "auto": true
+      },
+      {
+        "id": "link-repositorio",
+        "check": "há link para repositório ou projeto acessível",
+        "appliesTo": [
+          "L1",
+          "L6",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "cobertura-declarada",
+        "check": "o percentual de cobertura de testes e a forma de medir estão declarados",
+        "appliesTo": [
+          "X1",
+          "L4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "sem-segredos",
+        "check": "o conteúdo não contém chaves de API, tokens, senhas, IPs internos ou dados pessoais",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L3",
+          "L4",
+          "L5",
+          "L6",
+          "L7",
+          "L8",
+          "L9",
+          "L10",
+          "D2",
+          "D4",
+          "D5",
+          "D7",
+          "D9",
+          "D10",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "fonte-das-metricas",
+        "check": "o infográfico cita a fonte e o período das métricas",
+        "appliesTo": [
+          "D7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "creditos-e-licenca",
+        "check": "coautores, bibliotecas e licença estão creditados",
+        "appliesTo": [
+          "L5",
+          "L10",
+          "D2",
+          "D10",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "autoria-e-sigilo",
+        "check": "a pessoa declarou autoria e ausência de código proprietário ou dado confidencial",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L3",
+          "L4",
+          "L5",
+          "L6",
+          "L7",
+          "L8",
+          "L9",
+          "L10",
+          "D2",
+          "D4",
+          "D5",
+          "D7",
+          "D9",
+          "D10",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "alternativas-comparadas",
+        "check": "o ADR compara ao menos duas alternativas com prós e contras",
+        "appliesTo": [
+          "L4"
+        ],
+        "auto": false
+      }
+    ],
+    "subjective": [
+      {
+        "id": "clareza-tecnica",
+        "label": "Clareza técnica",
+        "levels": {
+          "aproxima": "quem lê precisa adivinhar o que o sistema faz",
+          "atende": "alguém da área entende o problema e a solução na primeira leitura",
+          "supera": "alguém de fora da equipe consegue reproduzir ou revisar a solução"
+        }
+      },
+      {
+        "id": "justificativa-de-decisao",
+        "label": "Justificativa de decisões (trade-offs)",
+        "levels": {
+          "aproxima": "descreve a escolha sem dizer por quê",
+          "atende": "explica a escolha e o que foi descartado",
+          "supera": "explicita trade-offs, riscos e quando a decisão deve ser revista"
+        }
+      },
+      {
+        "id": "qualidade-do-codigo",
+        "label": "Qualidade do código e dos testes",
+        "levels": {
+          "aproxima": "código roda, mas sem testes ou com nomes obscuros",
+          "atende": "testes cobrem o fluxo principal; nomes e estrutura legíveis",
+          "supera": "testes cobrem casos de borda; código fácil de estender"
+        }
+      },
+      {
+        "id": "resultado",
+        "label": "Resultado demonstrado",
+        "levels": {
+          "aproxima": "descreve atividades, sem resultado",
+          "atende": "mostra um resultado mensurável (latência, defeitos, usuários)",
+          "supera": "mostra resultado, contexto, limitações e o que faria diferente"
+        }
+      }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa da área de Engenharia de Software (desenvolvimento, análise de sistemas, testes, DevOps). Use o vocabulário da profissão: repositório, pull request, code review, CI/CD, cobertura de testes, ADR, post-mortem, API REST/OpenAPI, modelo C4, backlog, história de usuário, dívida técnica. Normas e referências a citar quando couber: Lei 9.609/1998 (software), Lei 9.610/1998 (direitos autorais e licenças), LGPD arts. 6º, 46 e 49 (privacidade desde a concepção), Marco Civil, LBI e ABNT NBR 17060 (acessibilidade digital), ABNT NBR ISO/IEC/IEEE 12207 e ISO/IEC 25010, OWASP Top 10. A profissão não tem conselho obrigatório: nunca afirme que a pessoa precisa de registro, e esclareça que o CREA se aplica só a engenheiros de computação. A evidência típica é código versionado: ajude a documentar (README, ADR, runbook, diagrama) e a medir (cobertura, latência, defeitos). O que nunca fazer: gerar ou explicar código malicioso, exploits ou contorno de proteções; pedir, aceitar ou reproduzir código-fonte proprietário de empregadores ou clientes, chaves de API, tokens, senhas ou dados de usuários reais; aplicar mudanças em código ou documentos sem revisão da pessoa; inferir senioridade ou stack a partir dos textos, pergunte. Se um trecho contiver segredo ou dado pessoal, avise e proponha anonimizar antes de seguir. Pré-cheque só critérios objetivos (seções, componentes nomeados, link, ausência de segredos, cobertura declarada); a validação que gera selo é humana. Toda sugestão diz qual competência comprova, que evidência produz, quanto tempo leva e por quê, e aceita \"não me serve\". Afirmações de mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos, nunca por pontuação ou ranking. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      {
+        "title": "Lei 9.609/1998 — proteção da propriedade intelectual de programa de computador",
+        "url": "https://www.planalto.gov.br/ccivil_03/leis/l9609.htm",
+        "kind": "norma"
+      },
+      {
+        "title": "Lei 13.709/2018 — LGPD",
+        "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm",
+        "kind": "norma"
+      },
+      {
+        "title": "Lei 12.965/2014 — Marco Civil da Internet",
+        "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l12965.htm",
+        "kind": "norma"
+      },
+      {
+        "title": "OWASP Top 10",
+        "url": "https://owasp.org/www-project-top-ten/",
+        "kind": "referencia"
+      },
+      {
+        "title": "ABNT — catálogo de normas (NBR ISO/IEC/IEEE 12207, NBR ISO/IEC 25010, NBR 17060)",
+        "url": "https://www.abntcatalogo.com.br/",
+        "kind": "norma"
+      },
+      {
+        "title": "Sociedade Brasileira de Computação (SBC)",
+        "url": "https://www.sbc.org.br/",
+        "kind": "comunidade"
+      },
+      {
+        "title": "CBO 2124 — Analistas de tecnologia da informação (MTE)",
+        "url": "https://cbo.mte.gov.br/",
+        "kind": "orgao-publico"
+      },
+      {
+        "title": "ESCO — software developer",
+        "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http%3A%2F%2Fdata.europa.eu%2Fesco%2Foccupation%2Ff2b15a0e-e65a-438a-affb-29b9d50b77d1",
+        "kind": "referencia"
+      },
+      {
+        "title": "Brasscom — Perspectivas do Mercado de Trabalho do Macrossetor TIC",
+        "url": "https://brasscom.org.br/wp-content/uploads/2026/07/Relatorio-Pespectivas-do-Mercado-de-Trabalho-Apresentacao-v9.pdf",
+        "kind": "estatistica"
+      },
+      {
+        "title": "Novo CAGED — Ministério do Trabalho e Emprego",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "kind": "estatistica"
+      }
+    ],
+    "services": [
+      {
+        "service": "PERGUNTAS_GUIA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Variantes de c2 e c5 com competências de desenvolvimento; x1 (stack) e x2 (código público) ajustam exemplos e a primeira tarefa."
+      },
+      {
+        "service": "SUGESTAO_TAREFAS",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "L4 (ADR/post-mortem), D4 (arquitetura), X1 (README) primeiro; cada card diz a competência, a evidência e o tempo."
+      },
+      {
+        "service": "PLANO_SEMANAL",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Plano a partir de horas (d1) e aparelho (d4); D4 e D9 só no computador; pausa de 7 dias após duas dispensas."
+      },
+      {
+        "service": "PRE_CHECAGEM_RUBRICA",
+        "capability": "ARTEFATO",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "Checa seções do ADR, componentes nomeados, link de repositório, cobertura declarada e ausência de segredos; o selo depende de revisão humana."
+      },
+      {
+        "service": "RASCUNHO_LETTERS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Esqueleto de ADR, post-mortem, runbook ou README com prévia; nunca aplica sem revisão; recusa inserir código proprietário."
+      },
+      {
+        "service": "APOIO_DRAWINGS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Sugere notação (C4, fluxo), legenda e rótulos de setas no D4; estados e anotações no D9."
+      },
+      {
+        "service": "ANALISE_PERFIL",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": "ANALISE_PERFIL_IA",
+        "note": "RF50: competências declaradas e evidenciadas por repositório, ADR e diagrama; lacunas frente ao cargo-alvo; cada afirmação cita o campo."
+      },
+      {
+        "service": "CAMINHOS_DE_CARREIRA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Vizinhos por CBO 2124/ISCO 251x: dados, segurança, redes, computação, design; sempre com lacunas e passos."
+      },
+      {
+        "service": "PESSOAS_SEMELHANTES",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Só pessoas descobríveis por opt-in; afinidade por competências e stack declaradas, nunca por empresa."
+      },
+      {
+        "service": "EXPLICACAO_POR_QUE",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)."
+      },
+      {
+        "service": "RESUMO_PROFISSIONAL",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": "RESUMO_PROFISSIONAL_IA",
+        "note": "Bio (L6) com área, stack e link de repositório; só com o consentimento específico."
+      },
+      {
+        "service": "IMPORTAR_CURRICULO",
+        "capability": "PREENCHER_TAREFA",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Extrai experiências, stack e competências em ficha editável; a pessoa confirma item a item (RF50.CA02)."
+      }
+    ],
+    "dataScope": {
+      "default": [
+        "perfil",
+        "currículo"
+      ],
+      "optional": [
+        "minhas Letters",
+        "meus Drawings",
+        "links públicos de repositórios"
+      ],
+      "never": [
+        "mensagens",
+        "itens SIGILOSO",
+        "código-fonte proprietário de empregadores ou clientes",
+        "chaves de API, tokens e senhas",
+        "dados pessoais de usuários de sistemas em produção",
+        "capturas de tela com dados reais de clientes",
+        "dados sensíveis (LGPD art. 5º II)"
+      ]
+    },
+    "provider": {
+      "default": "local",
+      "externalNeedsConsent": true,
+      "externalAllowedFor": [
+        "ANALISE_PERFIL",
+        "CAMINHOS_DE_CARREIRA",
+        "RESUMO_PROFISSIONAL"
+      ]
+    },
+    "guardrails": [
+      "perguntar em vez de inferir stack, senioridade ou situação",
+      "nunca gerar, completar ou explicar código malicioso, exploits ou contorno de proteções",
+      "nunca pedir, aceitar ou reproduzir código proprietário, segredos (chaves, tokens, senhas) ou dados de usuários reais; avisar e anonimizar",
+      "não afirmar que a profissão exige registro em conselho",
+      "nunca prometer entrevista, emprego ou salário; afirmações de mercado com fonte, data e região ou \"estimativa\"",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem, abrir PR externo ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": {
+      "letters": "alta",
+      "drawings": "media"
+    },
+    "drawingsModes": [
+      "diagrama",
+      "wireframe",
+      "infografico",
+      "prancha"
+    ],
+    "lettersTemplates": [
+      "relatorio-tecnico",
+      "pop",
+      "estudo-de-caso",
+      "proposta",
+      "curriculo",
+      "bio",
+      "carta",
+      "post",
+      "plano-30-60-90",
+      "revisao"
+    ],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas de texto curtas (L5, L6) e revisão (L10); D4, D7 e D9 exigem computador; X1 pede acesso ao repositório.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil com link para um repositório (15 min).",
+        "Uma decisão técnica que você já tomou pode virar um ADR de duas páginas. Quer começar por ela?",
+        "Sem pressão. Quando quiser retomar, o README do seu projeto está esperando (60 min).",
+        "Que tal desenhar a arquitetura de algo que você já construiu? Um diagrama de 45 min vale como evidência."
+      ]
+    },
+    "insights": {
+      "peersBy": [
+        "competencias",
+        "esco"
+      ]
+    },
+    "privacy": {
+      "sensitiveData": [
+        "código-fonte proprietário de empregadores ou clientes",
+        "chaves de API, senhas e tokens",
+        "dados pessoais de usuários em sistemas de produção",
+        "capturas de tela com dados reais de clientes"
+      ],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      {
+        "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2124",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "geography": "Brasil, UF e município",
+        "cadence": "mensal",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "RAIS (MTE) — vínculos formais por ocupação",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais",
+        "geography": "Brasil, UF e município",
+        "cadence": "anual",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "PNAD Contínua (IBGE) — ocupação por grupamento",
+        "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html",
+        "geography": "Brasil e UF",
+        "cadence": "trimestral",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "Brasscom — Perspectivas do Mercado de Trabalho do Macrossetor TIC (2026)",
+        "url": "https://brasscom.org.br/wp-content/uploads/2026/07/Relatorio-Pespectivas-do-Mercado-de-Trabalho-Apresentacao-v9.pdf",
+        "geography": "Brasil",
+        "cadence": "anual",
+        "kind": "associacao"
+      },
+      {
+        "title": "Stack Overflow Developer Survey (recorte Brasil)",
+        "url": "https://survey.stackoverflow.co/",
+        "geography": "mundial, com recorte por país",
+        "cadence": "anual",
+        "kind": "pesquisa"
+      },
+      {
+        "title": "INEP — Censo da Educação Superior (concluintes em Computação)",
+        "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-da-educacao-superior",
+        "geography": "Brasil e UF",
+        "cadence": "anual",
+        "kind": "estatistica-oficial"
+      }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Projeções de déficit de talentos (ex.: Brasscom) são citadas como projeção da associação, com ano-base. Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    {
+      "to": "ciencia-de-dados",
+      "why": "Programação, SQL e versionamento são comuns às duas áreas; engenharia de dados e MLOps são a ponte natural.",
+      "gaps": [
+        "estatística e probabilidade",
+        "modelagem analítica e avaliação de modelos",
+        "ferramentas de dados (pandas, Spark, dbt)",
+        "LGPD aplicada a dados pessoais"
+      ],
+      "steps": [
+        "curso introdutório de estatística",
+        "pipeline de dados documentado em repositório (X1)",
+        "infográfico de métricas de um dataset público (D7)",
+        "ADR sobre escolha de ferramenta de dados (L4)"
+      ]
+    },
+    {
+      "to": "seguranca-da-informacao",
+      "why": "Quem já pratica segurança de aplicações (OWASP, gestão de segredos) migra para AppSec, DevSecOps ou resposta a incidentes.",
+      "gaps": [
+        "gestão de riscos e normas (ISO/IEC 27001, NIST CSF)",
+        "redes e protocolos",
+        "resposta a incidentes",
+        "LGPD e ANPD"
+      ],
+      "steps": [
+        "curso gratuito (Hackers do Bem, CERT.br)",
+        "post-mortem anonimizado de incidente (L4)",
+        "POP de rotação de segredos (L7)",
+        "revisão crítica de uma peça de segurança (L10)"
+      ]
+    },
+    {
+      "to": "redes-de-computadores",
+      "why": "Deploy, contêineres e nuvem aproximam do trabalho de infraestrutura, SRE e DevOps.",
+      "gaps": [
+        "TCP/IP, DNS e roteamento",
+        "administração de sistemas Linux",
+        "monitoramento e capacidade",
+        "cabeamento e equipamentos de rede"
+      ],
+      "steps": [
+        "Cisco Networking Academy (gratuito)",
+        "diagrama de topologia de um ambiente de laboratório (D4)",
+        "runbook de recuperação de serviço (L7)"
+      ]
+    },
+    {
+      "to": "engenharia-de-computacao",
+      "why": "Quem gosta de C/C++, sistemas embarcados e hardware encontra continuidade na engenharia de computação; exige graduação em engenharia e registro no CREA.",
+      "gaps": [
+        "eletrônica digital e analógica",
+        "sistemas embarcados e tempo real",
+        "graduação em engenharia e registro no CREA (Lei 5.194/1966)"
+      ],
+      "steps": [
+        "projeto com microcontrolador documentado (X1)",
+        "diagrama de blocos de hardware e firmware (D4)",
+        "avaliar graduação em Engenharia de Computação"
+      ]
+    },
+    {
+      "to": "design",
+      "why": "Desenvolvedores front-end com interesse em interface e experiência migram para UX/UI e design de produto.",
+      "gaps": [
+        "pesquisa com usuários",
+        "tipografia, cor e layout",
+        "prototipação em Figma",
+        "acessibilidade além do código"
+      ],
+      "steps": [
+        "wireframe com três estados (D9)",
+        "prancha de portfólio com três telas (D2)",
+        "estudo de caso de uma melhoria de interface (L3)"
+      ]
+    },
+    {
+      "to": "administracao",
+      "why": "Tech leads e product owners que preferem planejamento, pessoas e produto seguem para gestão de projetos e produtos.",
+      "gaps": [
+        "gestão de pessoas e orçamento",
+        "métricas de negócio",
+        "comunicação com stakeholders não técnicos"
+      ],
+      "steps": [
+        "plano 30-60-90 para liderança técnica (L9)",
+        "resposta a briefing com escopo e premissas (L8)",
+        "infográfico de resultados de um produto (D7)"
+      ]
+    }
+  ],
+  "learning": [
+    {
+      "title": "Curso em Vídeo — Programação (Python, JavaScript, Java, Git)",
+      "provider": "Curso em Vídeo",
+      "url": "https://www.cursoemvideo.com/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "freeCodeCamp em português",
+      "provider": "freeCodeCamp",
+      "url": "https://www.freecodecamp.org/portuguese/",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "Escola Virtual Fundação Bradesco — trilhas de programação e banco de dados",
+      "provider": "Fundação Bradesco",
+      "url": "https://www.ev.org.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Escola Virtual.Gov — Proteção de Dados Pessoais (LGPD)",
+      "provider": "Enap",
+      "url": "https://www.escolavirtual.gov.br/",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "GitHub Skills — Git, GitHub Actions e colaboração",
+      "provider": "GitHub",
+      "url": "https://skills.github.com/",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "Microsoft Learn — trilhas gratuitas (Azure, .NET, GitHub)",
+      "provider": "Microsoft",
+      "url": "https://learn.microsoft.com/pt-br/training/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "roadmap.sh — trilhas de estudo por papel (back-end, front-end, DevOps)",
+      "provider": "roadmap.sh",
+      "url": "https://roadmap.sh/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "OWASP Cheat Sheet Series — segurança de aplicações",
+      "provider": "OWASP",
+      "url": "https://cheatsheetseries.owasp.org/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Sociedade Brasileira de Computação — eventos e comunidades",
+      "provider": "SBC",
+      "url": "https://www.sbc.org.br/",
+      "free": false,
+      "kind": "comunidade"
+    },
+    {
+      "title": "Cursos abertos de Computação — Univesp no YouTube",
+      "provider": "Univesp",
+      "url": "https://www.youtube.com/@univesptv",
+      "free": true,
+      "kind": "curso"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Auditoria Guia de Carreira §4 (perguntas), §4.6 (pacote), §7 (tarefas L1–L10, D1–D10), §8 (mensagens)",
+      "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Dados do ramo (fase 1) — grupo Engenharia e TIC: CBO 2124, ISCO 2511/2512/2514, ESCO software developer/analyst/web developer",
+      "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http%3A%2F%2Fdata.europa.eu%2Fesco%2Foccupation%2Ff2b15a0e-e65a-438a-affb-29b9d50b77d1",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2124-05 analista de desenvolvimento de sistemas, família 2124 (espelho VRI Consulting)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=212405",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Resolução CONFEA 380/1993 — atribuições provisórias do engenheiro de computação (via Resolução 418/1998, Normas Brasil)",
+      "url": "https://www.normasbrasil.com.br/norma/resolucao-418-1998_95623.html",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Brasscom — Relatório Perspectivas do Mercado de Trabalho do Macrossetor TIC (2026)",
+      "url": "https://brasscom.org.br/wp-content/uploads/2026/07/Relatorio-Pespectivas-do-Mercado-de-Trabalho-Apresentacao-v9.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Convergência Digital — Brasil tem um déficit anual de 106 mil talentos em TI (Brasscom, 2021)",
+      "url": "https://convergenciadigital.com.br/carreira/brasil-tem-um-dficit-anual-de-106-mil-talentos-em-ti",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 9.609/1998 — Lei do Software (Planalto)",
+      "url": "https://www.planalto.gov.br/ccivil_03/leis/l9609.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 13.709/2018 — LGPD (Planalto)",
+      "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm",
+      "accessedAt": "2026-11-02"
+    }
+  ],
+  "naoConferido": [
+    "Rede da sessão bloqueou esco.ec.europa.eu, ec.europa.eu/esco/api, planalto.gov.br e cbo.mte.gov.br: URIs ESCO, textos legais e famílias CBO foram conferidos só por resultados de busca e espelhos de terceiros.",
+    "ESCO 'software developer' (f2b15a0e) trouxe aviso 'This concept is obsolete' na fase 1; confirmar o sucessor na ESCO v1.2 antes de ativar o pacote.",
+    "CBO 3171 (Técnicos de desenvolvimento de sistemas e aplicações) incluída na família por conhecimento geral; não conferida no portal da CBO.",
+    "ISCO-08 2513, 2514 e 2519 citados de memória da estrutura ISCO-08; títulos não conferidos nesta sessão.",
+    "Normas ABNT (NBR ISO/IEC/IEEE 12207, NBR ISO/IEC 25010, NBR 17060:2022) citadas de memória; edições e vigência não conferidas no catálogo ABNT.",
+    "Competências sem URI ESCO de skill: nenhuma URI de competência foi obtida (API bloqueada).",
+    "Relatório Brasscom 2026: URL localizado por busca, conteúdo (111 mil formados em 2024, +59,1%) visto só em trecho de resultado; não lido.",
+    "URLs de aprendizagem (Curso em Vídeo, freeCodeCamp, Fundação Bradesco, GitHub Skills, Microsoft Learn, roadmap.sh, OWASP, Univesp) não acessadas nesta sessão.",
+    "Certificações listadas em c4 (AWS CCP, AZ-900, PSM I, ISTQB CTFL, CKAD, LPIC-1) são de conhecimento geral; nomes e vigência não conferidos."
+  ]
+}

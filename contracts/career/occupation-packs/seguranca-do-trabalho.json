@@ -1,0 +1,1297 @@
+{
+  "schemaVersion": 1,
+  "code": "seguranca-do-trabalho",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": {
+    "pt-BR": "Segurança do Trabalho",
+    "en": "Occupational Health and Safety",
+    "es": "Seguridad y Salud en el Trabajo"
+  },
+  "fields": [
+    "seguranca-do-trabalho"
+  ],
+  "family": {
+    "cbo": [
+      {
+        "code": "2149",
+        "title": "Engenheiros de produção, qualidade, segurança e afins (2149-35 tecnólogo em segurança do trabalho)"
+      }
+    ],
+    "isco08": [
+      {
+        "code": "3257",
+        "title": "Environmental and occupational health inspectors and associates"
+      }
+    ],
+    "esco": [
+      {
+        "uri": "http://data.europa.eu/esco/occupation/673f3266-ab1a-447d-9b28-fc5838dc07e3",
+        "label": "occupational health and safety inspector"
+      },
+      {
+        "uri": "http://data.europa.eu/esco/occupation/2b31f745-f04f-4d2c-9692-4715e1448f80",
+        "label": "health and safety inspector"
+      }
+    ]
+  },
+  "scope": {
+    "summary": "Identifica perigos, avalia e controla riscos ocupacionais e organiza a gestão de segurança e saúde no trabalho: GRO/PGR (NR-1), inventário de riscos, ordens de serviço, treinamentos, inspeções, investigação de acidentes, CIPA, EPI/EPC e integração com PCMSO e eSocial. Tecnólogo e engenheiro de segurança (pós) registram-se no CREA (Lei 7.410/1985); o técnico registra-se no MTE. Atua em indústria, construção, serviços, saúde e consultoria.",
+    "entryRoles": [
+      "Estagiário de segurança do trabalho",
+      "Técnico de segurança do trabalho júnior",
+      "Auxiliar de SESMT",
+      "Assistente de SST em consultoria",
+      "Tecnólogo em segurança do trabalho (início de carreira)"
+    ],
+    "midRoles": [
+      "Técnico de segurança do trabalho (pleno)",
+      "Tecnólogo em segurança do trabalho",
+      "Analista de SST",
+      "Supervisor de segurança de obra ou planta",
+      "Instrutor de treinamentos NR",
+      "Analista de higiene ocupacional"
+    ],
+    "seniorRoles": [
+      "Engenheiro de segurança do trabalho (pós-graduação)",
+      "Coordenador ou gerente de SSMA/EHS",
+      "Higienista ocupacional sênior",
+      "Perito em segurança do trabalho (insalubridade e periculosidade)",
+      "Consultor em sistemas de gestão (ISO 45001)",
+      "Auditor fiscal do trabalho (concurso)"
+    ],
+    "sectors": [
+      "indústria de transformação",
+      "construção civil (NR-18)",
+      "mineração (NR-22) e óleo e gás",
+      "logística, transporte e portos (NR-29)",
+      "saúde e hospitais (NR-32)",
+      "agronegócio (NR-31)",
+      "serviços, varejo e escritórios (NR-17)",
+      "consultorias e clínicas de medicina e segurança do trabalho",
+      "administração pública e fiscalização do trabalho",
+      "energia e eletricidade (NR-10)"
+    ],
+    "regulation": [
+      {
+        "name": "Lei 7.410/1985 e Decreto 92.530/1986",
+        "issuer": "Brasil",
+        "about": "especialização em Engenharia de Segurança do Trabalho e profissão de Técnico de Segurança do Trabalho"
+      },
+      {
+        "name": "Lei 5.194/1966 e Resolução CONFEA 359/1991",
+        "issuer": "Brasil / CONFEA",
+        "about": "registro e atribuições do engenheiro de segurança do trabalho no sistema CONFEA/CREA; tecnólogo registra-se no CREA"
+      },
+      {
+        "name": "CLT, arts. 154 a 201, e Portaria MTb 3.214/1978",
+        "issuer": "Brasil / MTE",
+        "about": "base legal da segurança e medicina do trabalho; aprova as Normas Regulamentadoras"
+      },
+      {
+        "name": "NR-1 (GRO e PGR, inclusive riscos psicossociais)",
+        "issuer": "Ministério do Trabalho e Emprego",
+        "about": "disposições gerais, gerenciamento de riscos ocupacionais, inventário de riscos, plano de ação, ordens de serviço, treinamentos"
+      },
+      {
+        "name": "NR-4, NR-5, NR-6, NR-7",
+        "issuer": "Ministério do Trabalho e Emprego",
+        "about": "SESMT, CIPA, EPI e PCMSO: estrutura de SST na empresa"
+      },
+      {
+        "name": "NR-9, NR-15, NR-16, NR-17",
+        "issuer": "Ministério do Trabalho e Emprego",
+        "about": "agentes físicos, químicos e biológicos; insalubridade; periculosidade; ergonomia"
+      },
+      {
+        "name": "NR-10, NR-12, NR-18, NR-33, NR-35",
+        "issuer": "Ministério do Trabalho e Emprego",
+        "about": "eletricidade, máquinas, construção, espaços confinados e trabalho em altura"
+      },
+      {
+        "name": "Decreto 3.048/1999 (art. 68, LTCAT) e eSocial (S-2210, S-2220, S-2240)",
+        "issuer": "Brasil",
+        "about": "laudo de condições ambientais do trabalho e eventos de SST enviados ao eSocial (CAT, ASO, agentes nocivos)"
+      }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      {
+        "term": "GRO",
+        "meaning": "Gerenciamento de Riscos Ocupacionais: processo contínuo da NR-1, materializado no PGR"
+      },
+      {
+        "term": "PGR",
+        "meaning": "Programa de Gerenciamento de Riscos: inventário de riscos e plano de ação (NR-1); substituiu o PPRA"
+      },
+      {
+        "term": "inventário de riscos",
+        "meaning": "levantamento de perigos, fontes, trabalhadores expostos, avaliação e classificação de riscos por GHE ou função"
+      },
+      {
+        "term": "perigo × risco",
+        "meaning": "perigo é a fonte com potencial de dano; risco combina probabilidade e severidade do dano"
+      },
+      {
+        "term": "GHE",
+        "meaning": "Grupo Homogêneo de Exposição: trabalhadores com exposição semelhante aos mesmos agentes"
+      },
+      {
+        "term": "mapa de risco",
+        "meaning": "representação gráfica dos riscos por setor em planta, com círculos por tipo e intensidade (elaborado com a CIPA)"
+      },
+      {
+        "term": "hierarquia de controles",
+        "meaning": "eliminar, substituir, controle de engenharia, administrativo e EPI, nessa ordem"
+      },
+      {
+        "term": "EPI e EPC",
+        "meaning": "equipamento de proteção individual (com CA) e coletiva"
+      },
+      {
+        "term": "CA",
+        "meaning": "Certificado de Aprovação do EPI emitido pelo MTE"
+      },
+      {
+        "term": "ordem de serviço",
+        "meaning": "documento da NR-1 que informa ao trabalhador riscos, medidas de prevenção e procedimentos"
+      },
+      {
+        "term": "DDS",
+        "meaning": "Diálogo Diário de Segurança: conversa curta com a equipe antes do turno"
+      },
+      {
+        "term": "PT / APR",
+        "meaning": "Permissão de Trabalho e Análise Preliminar de Riscos para atividades críticas (altura, confinado, quente)"
+      },
+      {
+        "term": "CIPA",
+        "meaning": "Comissão Interna de Prevenção de Acidentes e de Assédio (NR-5)"
+      },
+      {
+        "term": "SESMT",
+        "meaning": "Serviço Especializado em Engenharia de Segurança e em Medicina do Trabalho (NR-4)"
+      },
+      {
+        "term": "PCMSO e ASO",
+        "meaning": "Programa de Controle Médico de Saúde Ocupacional e Atestado de Saúde Ocupacional (NR-7), de responsabilidade médica"
+      },
+      {
+        "term": "LTCAT",
+        "meaning": "Laudo Técnico das Condições Ambientais do Trabalho, para fins previdenciários (aposentadoria especial)"
+      },
+      {
+        "term": "insalubridade e periculosidade",
+        "meaning": "adicionais por exposição a agentes nocivos (NR-15) ou atividades perigosas (NR-16), caracterizados por laudo"
+      },
+      {
+        "term": "CAT",
+        "meaning": "Comunicação de Acidente de Trabalho, emitida ao INSS e ao eSocial"
+      },
+      {
+        "term": "taxa de frequência e gravidade",
+        "meaning": "indicadores de acidentes por milhão de horas trabalhadas (NBR 14280)"
+      },
+      {
+        "term": "investigação de acidente",
+        "meaning": "análise de causas (árvore de causas, 5 porquês) com plano de ação"
+      },
+      {
+        "term": "eSocial SST",
+        "meaning": "eventos S-2210 (CAT), S-2220 (ASO) e S-2240 (agentes nocivos) enviados pela empresa"
+      },
+      {
+        "term": "ISO 45001",
+        "meaning": "norma internacional de sistema de gestão de saúde e segurança ocupacional"
+      },
+      {
+        "term": "higiene ocupacional",
+        "meaning": "antecipação, reconhecimento, avaliação e controle de agentes ambientais (ruído, calor, químicos)"
+      },
+      {
+        "term": "riscos psicossociais",
+        "meaning": "fatores da organização do trabalho (carga, assédio, jornada) incluídos no GRO pela atualização da NR-1"
+      }
+    ],
+    "tools": [
+      "planilha eletrônica (inventário de riscos, indicadores)",
+      "softwares de SST (SOC, RSData ou similares)",
+      "dosímetro de ruído e decibelímetro",
+      "medidor de estresse térmico (IBUTG)",
+      "bombas de amostragem e detectores de gases",
+      "AutoCAD ou editor vetorial (mapa de risco, layout)",
+      "eSocial e Portal do SST",
+      "formulários digitais de inspeção e checklist",
+      "apresentações para treinamentos e DDS",
+      "Letters e Drawings do Work Station"
+    ],
+    "deliverables": [
+      "PGR: inventário de riscos e plano de ação",
+      "mapa de risco",
+      "ordem de serviço (NR-1)",
+      "APR e permissão de trabalho",
+      "procedimento de segurança (POP) e instrução de trabalho",
+      "relatório de inspeção de segurança",
+      "relatório de investigação de acidente",
+      "plano de treinamentos e lista de presença",
+      "roteiro de DDS",
+      "laudo de insalubridade e periculosidade (engenheiro ou médico do trabalho)",
+      "LTCAT (engenheiro ou médico do trabalho)",
+      "ata e cronograma da CIPA",
+      "painel de indicadores de SST",
+      "ficha de EPI"
+    ]
+  },
+  "competencies": {
+    "core": [
+      {
+        "label": "Identificação de perigos e avaliação de riscos (GRO/PGR, NR-1)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Interpretação e aplicação das Normas Regulamentadoras",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Inspeções de segurança e tratamento de desvios",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Investigação e análise de acidentes e incidentes",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Treinamentos, DDS e integração de trabalhadores",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Gestão de EPI e EPC (CA, ficha, hierarquia de controles)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Higiene ocupacional: medições de agentes físicos, químicos e biológicos",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Ergonomia e análise ergonômica do trabalho (NR-17)",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Indicadores de SST e gestão por dados",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Sistemas de gestão (ISO 45001) e auditoria",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Atividades críticas: altura, espaço confinado, eletricidade, máquinas",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Prevenção e combate a incêndio e planos de emergência",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "eSocial SST e documentação legal",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Riscos psicossociais e organização do trabalho",
+        "esco": null,
+        "kind": "apoio"
+      }
+    ],
+    "transversal": [
+      "comunicação com trabalhadores e liderança",
+      "firmeza respeitosa para interromper atividades inseguras",
+      "ética e sigilo com dados de saúde e acidentes",
+      "organização documental",
+      "didática"
+    ],
+    "tracks": [
+      {
+        "id": "gerenciar-riscos",
+        "label": "Gerenciar riscos",
+        "steps": [
+          "fluxo de GRO/PGR ou mapa de risco de um setor (D4)",
+          "inventário de riscos simplificado de uma função (X1)",
+          "ordem de serviço de uma função (X2)",
+          "relatório de inspeção de segurança (L4)"
+        ]
+      },
+      {
+        "id": "padronizar-e-treinar",
+        "label": "Padronizar e treinar",
+        "steps": [
+          "POP de permissão de trabalho em altura ou espaço confinado (L7)",
+          "roteiro de DDS de 10 minutos (L5 ou roteiro)",
+          "redesenho antes e depois de um posto de trabalho (D5)",
+          "estudo de caso STAR de um desvio resolvido (L3)"
+        ]
+      },
+      {
+        "id": "medir-e-mostrar",
+        "label": "Medir e mostrar",
+        "steps": [
+          "infográfico de indicadores de SST com fonte (D7)",
+          "resposta a um briefing de consultoria (L8)",
+          "plano 30-60-90 para o cargo-alvo (L9)"
+        ]
+      }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"técnico de segurança do trabalho\", \"estagiário de SST\", \"auxiliar de SESMT\", \"cipeiro\", \"bombeiro civil\", \"supervisor de produção\"",
+      "cboFamilies": [
+        "3516",
+        "2149",
+        "2263"
+      ],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez em prevenção, produção ou saúde; se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio ou primeiro cargo em SST, ou migração de produção, CIPA ou brigada",
+        "junior": "até dois anos; inspeções, DDS e documentos com supervisão",
+        "pleno": "responde por PGR, treinamentos e inspeções de uma unidade com autonomia",
+        "senior": "referência técnica; investigação de acidentes graves, higiene ocupacional, interlocução com fiscalização",
+        "gestao": "responde por SSMA/EHS de uma ou mais unidades, equipe e indicadores"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (ex.: ordem de serviço ou inventário completo) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em segurança do trabalho",
+      "options": [
+        "identificar perigos e avaliar riscos",
+        "interpretar e aplicar as NRs",
+        "fazer inspeções e tratar desvios",
+        "investigar acidentes e incidentes",
+        "dar treinamentos e DDS",
+        "gerir EPI e EPC",
+        "medir ruído, calor e agentes químicos",
+        "analisar ergonomia de postos",
+        "montar indicadores e painéis",
+        "conduzir CIPA e brigada",
+        "liberar atividades críticas (PT, APR)",
+        "organizar documentação e eSocial"
+      ],
+      "why": "Suas competências declaradas viram o ponto de partida; a prova vem com as tarefas (fluxo, inventário, POP, relatório)."
+    },
+    "c4": {
+      "certifications": [
+        "registro de técnico de segurança do trabalho no MTE",
+        "registro no CREA (tecnólogo ou engenheiro de segurança)",
+        "pós-graduação em Engenharia de Segurança do Trabalho",
+        "treinamentos NR-10, NR-33, NR-35 (inclusive supervisor)",
+        "auditor interno ISO 45001",
+        "curso de higiene ocupacional (ABHO)",
+        "brigada de incêndio e primeiros socorros",
+        "instrutor de treinamentos NR"
+      ],
+      "languages": [
+        "inglês",
+        "espanhol",
+        "Libras"
+      ],
+      "why": "Formação, registros e treinamentos mostram lacunas em relação ao cargo que você quer, sem julgar seu valor."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver em segurança do trabalho?",
+      "options": [
+        "GRO/PGR e inventário de riscos (NR-1)",
+        "higiene ocupacional e medições",
+        "ergonomia (NR-17)",
+        "investigação de acidentes",
+        "treinamentos e didática",
+        "indicadores e análise de dados",
+        "ISO 45001 e auditoria",
+        "riscos psicossociais",
+        "atividades críticas (NR-10, NR-33, NR-35)",
+        "eSocial SST",
+        "segurança na construção (NR-18)",
+        "liderança e cultura de segurança"
+      ],
+      "why": "Com isso monto uma trilha com tarefas progressivas em vez de mostrar o catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que setor você atua ou quer atuar?",
+        "type": "escolha",
+        "options": [
+          "indústria",
+          "construção civil",
+          "saúde",
+          "logística e transporte",
+          "serviços e escritórios",
+          "agronegócio",
+          "mineração, óleo e gás",
+          "consultoria"
+        ],
+        "why": "Escolho as NRs e os exemplos das tarefas (NR-18 para obra, NR-32 para saúde, NR-17 para escritórios).",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": [
+      "D4",
+      "L7",
+      "L4",
+      "D7",
+      "L8",
+      "D5",
+      "L3",
+      "D1",
+      "L1",
+      "L6",
+      "L9",
+      "L5"
+    ],
+    "excluded": [
+      {
+        "code": "D3",
+        "reason": "render fotorrealista de produto não é entrega da área"
+      },
+      {
+        "code": "D8",
+        "reason": "vista explodida de conjunto mecânico não é entrega da área"
+      },
+      {
+        "code": "D9",
+        "reason": "wireframe de tela não pertence à área"
+      },
+      {
+        "code": "D6",
+        "reason": "detalhe construtivo é entrega de projeto; proteções coletivas entram no fluxo (D4) e no antes e depois (D5)"
+      }
+    ],
+    "parameters": {
+      "D4": {
+        "title": "Fluxo do GRO/PGR ou mapa de risco de um setor",
+        "brief": "Escolha uma das opções: (a) fluxo do gerenciamento de riscos da NR-1 (identificar perigos, avaliar, classificar, plano de ação, monitorar, revisar) com raias para SST, liderança, trabalhadores/CIPA e SESMT; ou (b) mapa de risco de um setor sobre a planta, com círculos por tipo (físico, químico, biológico, ergonômico, de acidente) e intensidade, legenda e data. Dados anonimizados.",
+        "parameters": {
+          "options": [
+            "fluxo GRO/PGR (NR-1)",
+            "mapa de risco de setor"
+          ],
+          "lanes": [
+            "SST",
+            "liderança",
+            "trabalhadores/CIPA",
+            "SESMT"
+          ],
+          "requiredElements": [
+            "início e fim ou planta base",
+            "legenda por tipo e intensidade de risco",
+            "data e revisão",
+            "fonte das informações"
+          ],
+          "anonymizedData": true,
+          "norm": "NR-1; NR-5 (mapa de risco)"
+        },
+        "criteria": [
+          "início e fim explícitos (fluxo) ou planta base com setores nomeados (mapa)",
+          "raias por responsável (fluxo) ou legenda por tipo e intensidade (mapa)",
+          "nenhuma etapa órfã",
+          "data e número de revisão",
+          "sem nome de empresa ou trabalhador identificável"
+        ],
+        "evidence": "diagrama vetorial ou prancha",
+        "time": "45 min",
+        "level": 1
+      },
+      "L7": {
+        "title": "POP de permissão de trabalho em altura ou espaço confinado",
+        "brief": "Escreva o procedimento de liberação de uma atividade crítica (trabalho em altura NR-35 ou espaço confinado NR-33): pré-requisitos (treinamento, ASO, EPI com CA), APR, emissão da PT, supervisão, encerramento; passos numerados, responsáveis, critério de conclusão e registros.",
+        "parameters": {
+          "steps": "10 a 20",
+          "requiredColumns": [
+            "passo",
+            "responsável",
+            "critério de conclusão",
+            "registro"
+          ],
+          "norms": [
+            "NR-35",
+            "NR-33",
+            "NR-1"
+          ],
+          "requiredElements": [
+            "pré-requisitos",
+            "APR",
+            "PT",
+            "supervisão",
+            "encerramento e resgate"
+          ]
+        },
+        "criteria": [
+          "passos numerados com responsável",
+          "critério de conclusão por passo",
+          "NR citada com número e item",
+          "plano de resgate ou emergência mencionado",
+          "sem dados de empresa ou trabalhador real"
+        ],
+        "evidence": "POP em PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório de inspeção de segurança",
+        "brief": "Em até 4 páginas, relate uma inspeção (real anonimizada ou simulada): objetivo e escopo, método (roteiro, NRs de referência), desvios encontrados com classificação de risco e foto ou croqui anonimizados, plano de ação (o quê, quem, quando), limitações e referências. Inclua o aviso de exercício, sem valor de laudo.",
+        "parameters": {
+          "maxPages": 4,
+          "sections": [
+            "objetivo e escopo",
+            "método e NRs de referência",
+            "desvios e classificação",
+            "plano de ação",
+            "limitações",
+            "referências"
+          ],
+          "disclaimerRequired": true,
+          "anonymizedData": true
+        },
+        "criteria": [
+          "seis seções nomeadas",
+          "até 4 páginas",
+          "cada desvio com NR ou item de referência e classificação de risco",
+          "plano de ação com responsável e prazo",
+          "aviso de exercício sem valor de laudo",
+          "sem nome de empresa, trabalhador ou imagem identificável"
+        ],
+        "evidence": "relatório PDF",
+        "time": "2 h",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de indicadores de SST",
+        "brief": "Monte um infográfico com dois ou três indicadores (taxa de frequência, taxa de gravidade, desvios tratados no prazo, horas de treinamento por trabalhador) de dados públicos (SmartLab, AEAT) ou anonimizados, com fonte, período, eixos e unidades rotulados e uma mensagem principal.",
+        "parameters": {
+          "indicators": "2 a 3",
+          "examples": [
+            "taxa de frequência (NBR 14280)",
+            "taxa de gravidade",
+            "% de desvios tratados no prazo",
+            "horas de treinamento por trabalhador"
+          ],
+          "requiredElements": [
+            "fonte e período",
+            "eixos e unidades",
+            "mensagem principal",
+            "comparação com meta ou série histórica"
+          ],
+          "anonymizedData": true
+        },
+        "criteria": [
+          "fonte e período citados",
+          "eixos e unidades rotulados",
+          "uma mensagem principal explícita",
+          "comparação com meta ou série histórica",
+          "dados públicos ou anonimizados"
+        ],
+        "evidence": "imagem + PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "L8": {
+        "title": "Resposta a um briefing de consultoria em SST",
+        "brief": "A partir de um briefing simulado (empresa de 80 pessoas sem PGR, obra que vai iniciar, clínica que precisa de NR-32), escreva entendimento, escopo e entregas, premissas, etapas e prazos, o que fica fora e dados necessários da empresa. Sem valores de honorários.",
+        "parameters": {
+          "sections": [
+            "entendimento",
+            "escopo e entregas",
+            "premissas",
+            "etapas e prazos",
+            "fora do escopo",
+            "dados necessários"
+          ],
+          "feesAllowed": false
+        },
+        "criteria": [
+          "seis seções nomeadas",
+          "NRs aplicáveis citadas",
+          "lista explícita do que fica fora (ex.: PCMSO e laudos médicos)",
+          "sem valores de honorários ou dados de empresa real"
+        ],
+        "evidence": "proposta em PDF",
+        "time": "45 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Inventário de riscos simplificado de uma função (NR-1)",
+        "competency": "Identificação de perigos e avaliação de riscos",
+        "criteria": [
+          "ao menos 6 perigos com fonte ou circunstância",
+          "lesões ou agravos possíveis por perigo",
+          "avaliação com critério declarado (probabilidade × severidade) e classificação",
+          "medidas de controle existentes e propostas seguindo a hierarquia de controles",
+          "referência à NR aplicável por perigo",
+          "sem nome de empresa ou trabalhador"
+        ],
+        "evidence": "tabela em PDF",
+        "time": "90 min",
+        "trigger": "Que função você conhece bem? Quer levantar os perigos dela como manda a NR-1?",
+        "level": 2
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Ordem de serviço de uma função (NR-1)",
+        "competency": "Interpretação e aplicação das Normas Regulamentadoras",
+        "criteria": [
+          "riscos da função e medidas de prevenção listados",
+          "EPI com CA e procedimentos em caso de acidente",
+          "direito de recusa e resultados de avaliações citados conforme a NR-1",
+          "campo de ciência do trabalhador e data",
+          "sem dados de trabalhador real"
+        ],
+        "evidence": "documento em PDF",
+        "time": "45 min",
+        "trigger": "Quer treinar a ordem de serviço de uma função que você conhece?",
+        "level": 1
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      {
+        "id": "fluxo-ou-mapa-fechado",
+        "check": "o fluxo tem início, fim, raias e nenhuma etapa órfã, ou o mapa tem planta, legenda por tipo e intensidade e data",
+        "appliesTo": [
+          "D4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "passos-com-responsavel",
+        "check": "todos os passos estão numerados e têm responsável e critério de conclusão",
+        "appliesTo": [
+          "L7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "nr-citada",
+        "check": "cita ao menos uma NR com número (e item quando possível)",
+        "appliesTo": [
+          "L4",
+          "L7",
+          "L8",
+          "X1",
+          "X2",
+          "D4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "secoes-do-relatorio",
+        "check": "as seções pedidas existem e estão nomeadas",
+        "appliesTo": [
+          "L4",
+          "L8",
+          "L3"
+        ],
+        "auto": true
+      },
+      {
+        "id": "plano-de-acao-completo",
+        "check": "cada desvio ou risco significativo tem ação, responsável e prazo",
+        "appliesTo": [
+          "L4",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "hierarquia-de-controles",
+        "check": "as medidas propostas indicam o nível da hierarquia (eliminação, substituição, engenharia, administrativo, EPI)",
+        "appliesTo": [
+          "X1",
+          "D5"
+        ],
+        "auto": true
+      },
+      {
+        "id": "fonte-e-eixos",
+        "check": "o infográfico cita fonte e período e rotula eixos e unidades",
+        "appliesTo": [
+          "D7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "ordem-de-servico-completa",
+        "check": "a ordem de serviço traz riscos, medidas, EPI, procedimentos de emergência e campo de ciência",
+        "appliesTo": [
+          "X2"
+        ],
+        "auto": true
+      },
+      {
+        "id": "aviso-nao-substitui-laudo",
+        "check": "o documento diz que é exercício e não substitui PGR, laudo ou documento legal assinado por responsável habilitado",
+        "appliesTo": [
+          "L4",
+          "L7",
+          "X1",
+          "X2",
+          "D4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "tamanho",
+        "check": "respeita o limite de páginas, palavras ou caracteres da tarefa",
+        "appliesTo": [
+          "L1",
+          "L4",
+          "L5",
+          "L6",
+          "L8",
+          "L9"
+        ],
+        "auto": true
+      },
+      {
+        "id": "anonimizacao",
+        "check": "não há nome de empresa, trabalhador, dado de saúde ou imagem identificável",
+        "appliesTo": [
+          "L3",
+          "L4",
+          "L7",
+          "L8",
+          "D1",
+          "D4",
+          "D5",
+          "D7",
+          "X1",
+          "X2"
+        ],
+        "auto": true
+      },
+      {
+        "id": "autoria-e-sigilo",
+        "check": "a pessoa declarou autoria e ausência de dados sigilosos de clientes e trabalhadores",
+        "appliesTo": [
+          "L1",
+          "L3",
+          "L4",
+          "L5",
+          "L6",
+          "L7",
+          "L8",
+          "L9",
+          "D1",
+          "D4",
+          "D5",
+          "D7",
+          "X1",
+          "X2"
+        ],
+        "auto": true
+      }
+    ],
+    "subjective": [
+      {
+        "id": "qualidade-da-avaliacao",
+        "label": "Qualidade da avaliação de riscos",
+        "levels": {
+          "aproxima": "perigos genéricos, sem fonte nem exposição",
+          "atende": "perigos ligados a tarefas reais, com avaliação justificada",
+          "supera": "prioriza pelo risco e propõe controles acima do EPI"
+        }
+      },
+      {
+        "id": "aplicacao-da-norma",
+        "label": "Aplicação da norma ao caso",
+        "levels": {
+          "aproxima": "cita a NR sem aplicar ao contexto",
+          "atende": "aplica o item correto ao desvio ou à atividade",
+          "supera": "integra NR-1 com as NRs específicas e com a gestão (PCMSO, eSocial)"
+        }
+      },
+      {
+        "id": "comunicacao-com-trabalhadores",
+        "label": "Comunicação com trabalhadores",
+        "levels": {
+          "aproxima": "linguagem técnica que o trabalhador não entende",
+          "atende": "instruções claras e acionáveis para quem executa",
+          "supera": "convence sem culpar; antecipa dúvidas e resistências"
+        }
+      },
+      {
+        "id": "resultado",
+        "label": "Resultado demonstrado",
+        "levels": {
+          "aproxima": "descreve atividades, sem resultado",
+          "atende": "mostra um resultado mensurável (desvios tratados, redução de exposição)",
+          "supera": "mostra resultado, contexto e o que faria diferente"
+        }
+      }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Segurança do Trabalho (técnico, tecnólogo CBO 2149-35 ou engenheiro de segurança; ISCO 3257; Lei 7.410/1985; CREA para tecnólogo e engenheiro, MTE para técnico). Use o vocabulário da área: GRO, PGR, inventário de riscos, GHE, mapa de risco, hierarquia de controles, EPI com CA, EPC, ordem de serviço, DDS, APR, PT, CIPA, SESMT, PCMSO/ASO, LTCAT, CAT, taxas de frequência e gravidade, eSocial S-2210/S-2220/S-2240, ISO 45001, higiene ocupacional, riscos psicossociais. Cite as NRs com número e item (NR-1 GRO/PGR; 4 a 7; 9, 10, 12, 15 a 18; 32, 33, 35) e a NBR 14280. A rubrica objetiva é: fluxo ou mapa fechado com legenda e data, passos com responsável, NR citada, plano de ação com responsável e prazo, hierarquia de controles indicada, fonte e eixos no infográfico, anonimização. Nunca produza PGR, laudo de insalubridade ou periculosidade, LTCAT, ordem de serviço ou qualquer documento legal assinável para uso real, nem sugira que substitui a responsabilidade do profissional habilitado (técnico, engenheiro ou médico do trabalho); tudo é exercício de competência, com esse aviso. Nunca caracterize insalubridade, periculosidade ou nexo de acidente para um caso real, nem dê orientação de saúde: PCMSO, ASO e nexo causal são do médico do trabalho. Dados de saúde ocupacional, acidentes identificáveis, laudos com dados de trabalhadores e informações de clientes sob sigilo nunca entram em portfólio; use dados públicos (SmartLab, AEAT) ou anonimizados. Pergunte antes de inferir área, senioridade ou situação; nunca pergunte nem infira dados de saúde da própria pessoa. Mercado só com fonte, data e região (CAGED, RAIS, SmartLab) ou \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos, não por score; pré-cheque só critérios objetivos e lembre que o selo depende de revisão humana. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação da pessoa.",
+    "citeSources": [
+      {
+        "title": "Normas Regulamentadoras vigentes (MTE)",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadoras/normas-regulamentadoras-vigentes",
+        "kind": "norma"
+      },
+      {
+        "title": "Lei 7.410/1985 (Planalto)",
+        "url": "https://www.planalto.gov.br/ccivil_03/leis/l7410.htm",
+        "kind": "norma"
+      },
+      {
+        "title": "CONFEA — Conselho Federal de Engenharia e Agronomia",
+        "url": "https://www.confea.org.br/",
+        "kind": "conselho"
+      },
+      {
+        "title": "Fundacentro — pesquisa e publicações em SST",
+        "url": "https://www.gov.br/fundacentro/pt-br",
+        "kind": "orgao-publico"
+      },
+      {
+        "title": "SmartLab — Observatório de Segurança e Saúde no Trabalho (MPT/OIT)",
+        "url": "https://smartlabbr.org/sst",
+        "kind": "estatistica"
+      },
+      {
+        "title": "eSocial — Saúde e Segurança do Trabalho (gov.br)",
+        "url": "https://www.gov.br/esocial/pt-br",
+        "kind": "orgao-publico"
+      },
+      {
+        "title": "Catálogo ABNT — NBR 14280 e normas de EPI",
+        "url": "https://www.abntcatalogo.com.br/",
+        "kind": "norma"
+      },
+      {
+        "title": "Novo CAGED — Ministério do Trabalho e Emprego",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "kind": "estatistica"
+      }
+    ],
+    "services": [
+      {
+        "service": "PERGUNTAS_GUIA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Variantes de c2 e c5 com competências de SST; x1 escolhe o setor e as NRs dos exemplos. Nunca pergunta dados de saúde da pessoa."
+      },
+      {
+        "service": "SUGESTAO_TAREFAS",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "D4, L7, L4 e D7 entram primeiro; cada card diz a competência, a evidência e que o resultado é exercício, sem valor legal."
+      },
+      {
+        "service": "PLANO_SEMANAL",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Plano por horas (d1) e aparelho (d4); X2, L7 e L6 cabem no celular; D4, D5 e D7 no computador; pausa de 7 dias após duas dispensas."
+      },
+      {
+        "service": "PRE_CHECAGEM_RUBRICA",
+        "capability": "ARTEFATO",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "Fluxo ou mapa fechado, passos com responsável, NR citada, plano de ação, hierarquia de controles, fonte e eixos, anonimização e aviso de não substituir laudo; o selo é humano."
+      },
+      {
+        "service": "RASCUNHO_LETTERS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Estrutura de POP, relatório de inspeção, inventário, ordem de serviço e proposta com prévia; nunca redige PGR, laudo ou LTCAT para uso real."
+      },
+      {
+        "service": "APOIO_DRAWINGS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Raias e etapas do fluxo GRO, legenda do mapa de risco (cores e tamanhos por tipo e intensidade), fonte e eixos do infográfico."
+      },
+      {
+        "service": "ANALISE_PERFIL",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": "ANALISE_PERFIL_IA",
+        "note": "Síntese das competências declaradas e evidenciadas (riscos, treinamentos, inspeções), lacunas e incertezas; cada afirmação cita o campo."
+      },
+      {
+        "service": "CAMINHOS_DE_CARREIRA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Vizinhos: engenharia civil, produção, enfermagem (do trabalho), ambiental e sanitária, administração; dados de mercado com fonte e data."
+      },
+      {
+        "service": "PESSOAS_SEMELHANTES",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Por CBO 2149/3516 e competências compartilhadas; só pessoas descobríveis por opt-in."
+      },
+      {
+        "service": "EXPLICACAO_POR_QUE",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\"."
+      },
+      {
+        "service": "RESUMO_PROFISSIONAL",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": "RESUMO_PROFISSIONAL_IA",
+        "note": "Bio (L6) com setor, três competências e uma prova com link; só com consentimento específico."
+      }
+    ],
+    "dataScope": {
+      "default": [
+        "perfil",
+        "currículo"
+      ],
+      "optional": [
+        "minhas Letters",
+        "meus Drawings"
+      ],
+      "never": [
+        "mensagens",
+        "itens SIGILOSO",
+        "laudos (PGR, PCMSO, LTCAT) com dados de trabalhadores",
+        "dados de saúde ocupacional e de acidentes identificáveis",
+        "informações de clientes sob sigilo",
+        "dados de saúde da própria pessoa",
+        "dados sensíveis (LGPD art. 5º II)"
+      ]
+    },
+    "provider": {
+      "default": "local",
+      "externalNeedsConsent": true,
+      "externalAllowedFor": [
+        "ANALISE_PERFIL",
+        "CAMINHOS_DE_CARREIRA",
+        "RESUMO_PROFISSIONAL"
+      ]
+    },
+    "guardrails": [
+      "nunca produzir PGR, laudo de insalubridade ou periculosidade, LTCAT ou ordem de serviço para uso real nem sugerir que substitui o profissional habilitado",
+      "nunca caracterizar insalubridade, periculosidade ou nexo de acidente em caso real, nem dar orientação de saúde; PCMSO, ASO e nexo são do médico do trabalho",
+      "dados de saúde ocupacional, acidentes identificáveis e laudos de clientes nunca entram em portfólio; só dados públicos ou anonimizados",
+      "nunca perguntar nem inferir dados de saúde da própria pessoa",
+      "perguntar em vez de inferir área, senioridade ou situação",
+      "mercado com fonte, data e região (CAGED, RAIS, SmartLab) ou \"estimativa\"; sem promessa de emprego ou salário",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": {
+      "letters": "alta",
+      "drawings": "media"
+    },
+    "drawingsModes": [
+      "diagrama",
+      "infografico",
+      "2d-tecnico",
+      "prancha"
+    ],
+    "lettersTemplates": [
+      "pop",
+      "relatorio-tecnico",
+      "proposta",
+      "roteiro",
+      "estudo-de-caso",
+      "curriculo",
+      "bio",
+      "post",
+      "plano-30-60-90",
+      "revisao"
+    ],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "X2, L7, L6, L5 e a revisão de critérios cabem no celular (inclusive em campo); D4, D5, D7 e D1 exigem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: fluxo do GRO/PGR da NR-1 com raias (45 min). Comprova gestão de riscos, que cargos de técnico e analista pedem.",
+        "Falta só o critério de conclusão em dois passos para fechar os critérios objetivos do seu POP de trabalho em altura. Quando quiser.",
+        "Sem pressão. Quando quiser retomar, a ordem de serviço de uma função (45 min) está aqui.",
+        "Seu inventário já tem 5 perigos. Mais um, com a NR de referência, fecha a tarefa."
+      ]
+    },
+    "insights": {
+      "peersBy": [
+        "cbo",
+        "competencias",
+        "setor"
+      ]
+    },
+    "privacy": {
+      "sensitiveData": [
+        "laudos (PGR, PCMSO, LTCAT) com dados de trabalhadores",
+        "dados de saúde ocupacional e de acidentes identificáveis",
+        "informações de clientes sob sigilo"
+      ],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      {
+        "title": "Novo CAGED (MTE) — CBO 3516 e 2149",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "geography": "Brasil, UF e município",
+        "cadence": "mensal",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "RAIS (MTE) — vínculos por CBO 3516 e 2149",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais",
+        "geography": "Brasil, UF e município",
+        "cadence": "anual",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "SmartLab — Observatório de Segurança e Saúde no Trabalho (acidentes, CAT, afastamentos)",
+        "url": "https://smartlabbr.org/sst",
+        "geography": "Brasil, UF e município",
+        "cadence": "anual",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "AEAT — Anuário Estatístico de Acidentes do Trabalho (MPS/MTE)",
+        "url": "https://www.gov.br/previdencia/pt-br/assuntos/previdencia-social/saude-e-seguranca-do-trabalhador/dados-de-acidentes-do-trabalho",
+        "geography": "Brasil e UF",
+        "cadence": "anual",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "ANIMASEG / ABHO — publicações do setor de EPI e higiene ocupacional",
+        "url": "https://www.abho.org.br/",
+        "geography": "Brasil",
+        "cadence": "eventual",
+        "kind": "associacao"
+      },
+      {
+        "title": "Editais de concurso para auditor-fiscal do trabalho e técnicos de SST (gov.br)",
+        "url": "https://www.gov.br/gestao/pt-br/concursonacional",
+        "geography": "Brasil",
+        "cadence": "eventual",
+        "kind": "edital"
+      }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis (CAGED, RAIS, SmartLab, AEAT, editais); sem fonte atual, diz \"estimativa\" (RF50.CA07). Estatísticas de acidentes são contexto, não previsão de emprego. Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    {
+      "to": "engenharia-civil",
+      "why": "A construção é um dos maiores empregadores de SST (NR-18); conhecer a obra por dentro abre fiscalização e coordenação de segurança em canteiros.",
+      "gaps": [
+        "graduação em Engenharia Civil e registro no CREA",
+        "tecnologia construtiva, planejamento e orçamento"
+      ],
+      "steps": [
+        "fluxo de liberação de atividade crítica em obra (D4)",
+        "POP de montagem de proteção coletiva (L7)",
+        "avaliar graduação ou tecnólogo em construção"
+      ]
+    },
+    {
+      "to": "engenharia-de-producao",
+      "why": "Processos, qualidade, ergonomia e indicadores são comuns; a engenharia de segurança é pós-graduação para engenheiros.",
+      "gaps": [
+        "graduação em engenharia (pré-requisito da especialização em segurança)",
+        "métodos de produção, PCP e estatística"
+      ],
+      "steps": [
+        "infográfico de indicadores de SST e produtividade (D7)",
+        "redesenho antes e depois de um posto de trabalho (D5)",
+        "graduação em produção ou outra engenharia e pós em segurança"
+      ]
+    },
+    {
+      "to": "enfermagem",
+      "why": "Enfermagem do trabalho integra o SESMT e compartilha PCMSO, CIPA e campanhas de saúde.",
+      "gaps": [
+        "graduação em Enfermagem e registro no COREN",
+        "especialização em enfermagem do trabalho"
+      ],
+      "steps": [
+        "estudo de caso STAR de integração SST e saúde ocupacional (L3)",
+        "roteiro de DDS sobre saúde no trabalho (L5)",
+        "avaliar graduação"
+      ]
+    },
+    {
+      "to": "engenharia-ambiental-e-sanitaria",
+      "why": "Higiene ocupacional, agentes químicos e gestão de riscos dialogam com meio ambiente; áreas SSMA/EHS costumam unir as duas.",
+      "gaps": [
+        "licenciamento ambiental e normas CONAMA",
+        "tratamento de efluentes e resíduos"
+      ],
+      "steps": [
+        "matriz de aspectos e impactos de uma atividade (L4 ou custom ambiental)",
+        "POP de armazenamento de produtos químicos (L7)",
+        "curso de licenciamento ambiental (Enap, ANA)"
+      ]
+    },
+    {
+      "to": "administracao",
+      "why": "Gestão de pessoas, treinamentos, indicadores e conformidade (eSocial) são compartilhados com RH e gestão.",
+      "gaps": [
+        "gestão financeira e estratégica",
+        "legislação trabalhista ampla"
+      ],
+      "steps": [
+        "plano 30-60-90 para coordenação de SSMA (L9)",
+        "infográfico de indicadores com custo de afastamentos (D7)",
+        "cursos de gestão (Sebrae, Enap)"
+      ]
+    }
+  ],
+  "learning": [
+    {
+      "title": "Normas Regulamentadoras vigentes — texto oficial de todas as NRs",
+      "provider": "Ministério do Trabalho e Emprego",
+      "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadoras/normas-regulamentadoras-vigentes",
+      "free": true,
+      "kind": "norma"
+    },
+    {
+      "title": "Fundacentro — cursos, publicações e NHOs (Normas de Higiene Ocupacional)",
+      "provider": "Fundacentro",
+      "url": "https://www.gov.br/fundacentro/pt-br",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Escola Virtual.Gov — segurança e saúde no trabalho no serviço público, eSocial",
+      "provider": "Enap",
+      "url": "https://www.escolavirtual.gov.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Curso técnico em Segurança do Trabalho (SENAI e institutos federais)",
+      "provider": "SENAI",
+      "url": "https://www.senai.br/",
+      "free": false,
+      "kind": "curso"
+    },
+    {
+      "title": "SmartLab — Observatório de SST (dados para infográficos)",
+      "provider": "MPT / OIT",
+      "url": "https://smartlabbr.org/sst",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Manual de orientação do eSocial — eventos de SST",
+      "provider": "gov.br / eSocial",
+      "url": "https://www.gov.br/esocial/pt-br",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "ABHO — Associação Brasileira de Higienistas Ocupacionais (cursos e comunidade)",
+      "provider": "ABHO",
+      "url": "https://www.abho.org.br/",
+      "free": false,
+      "kind": "comunidade"
+    },
+    {
+      "title": "Catálogo ABNT — NBR 14280 (cadastro de acidentes) e normas de EPI",
+      "provider": "ABNT",
+      "url": "https://www.abntcatalogo.com.br/",
+      "free": false,
+      "kind": "norma"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Fase 1 — grupo Engenharia e TIC (dados do ramo, CBO 2149-35 via espelho VRI, ISCO 3257, conselho, vizinhos)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=214935",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "World of Taxonomy — ISCO-08 3257 ↔ ESCO (occupational health and safety inspector 673f3266…, health and safety inspector 2b31f745…; espelho, não oficial)",
+      "url": "https://worldoftaxonomy.com/crosswalks/isco_08/3257/esco_occupations",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Firjan — Atualização das Normas Regulamentadoras (NR-1, NR-18; vigência 2022)",
+      "url": "https://www.firjan.com.br/data/files/C5/42/BF/36/21EDD71090D309D7A8A809C2/Atualizacao%20das%20Normas%20Regulamentadoras.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "RSData — Normas Regulamentadoras em 2025: NR-1 como base do GRO/PGR (fonte secundária)",
+      "url": "https://www.rsdata.com.br/?p=35707",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Empório do Direito — MPT e OIT lançam Observatório Digital de Saúde e Segurança do Trabalho (SmartLab)",
+      "url": "https://emporiododireito.com.br/leitura/ministerio-publico-do-trabalho-e-oit-lancam-observatorio-digital-de-saude-e-seguranca-do-trabalho",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Bahia Notícias — Observatório do MPT: 25,5 mil mortes por acidentes de trabalho em 11 anos (2012–2022)",
+      "url": "https://www.bahianoticias.com.br/justica/noticia/67111-observatorio-do-mpt-revela-que-255-mil-mortes-por-acidentes-de-trabalho-foram-registradas-nos-ultimos-11-anos",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8",
+      "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md",
+      "accessedAt": "2026-11-02"
+    }
+  ],
+  "naoConferido": [
+    "URIs ESCO (occupational health and safety inspector, health and safety inspector) obtidas em espelho (World of Taxonomy), não no portal esco.ec.europa.eu (host bloqueado)",
+    "Lei 7.410/1985, Decreto 92.530/1986, Resolução CONFEA 359/1991, Portaria 3.214/1978 e Decreto 3.048/1999 art. 68 citados de memória; só a estrutura NR-1/GRO/PGR apareceu em fontes (secundárias)",
+    "Data e conteúdo da atualização da NR-1 sobre riscos psicossociais (prazo 26/05/2025 visto em agregador) não conferidos no DOU",
+    "Famílias CBO 3516 (técnicos em segurança no trabalho) e ISCO 2263 (engenheiro de segurança) não conferidas; usadas em questions.a4 e nas fontes de mercado",
+    "Eventos do eSocial (S-2210, S-2220, S-2240) e NBR 14280 citados de memória",
+    "URLs de smartlabbr.org/sst, AEAT (gov.br/previdencia), ABHO, Fundacentro, eSocial, SENAI, Planalto e CNU não abertas nesta sessão",
+    "Nenhuma URI ESCO de competência (skill) confirmada; todas as competências com esco: null"
+  ]
+}

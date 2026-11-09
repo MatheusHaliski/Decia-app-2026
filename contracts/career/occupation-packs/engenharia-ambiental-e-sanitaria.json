@@ -1,0 +1,314 @@
+{
+  "schemaVersion": 1,
+  "code": "engenharia-ambiental-e-sanitaria",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Engenharia Ambiental e Sanitária", "en": "Environmental and Sanitary Engineering", "es": "Ingeniería Ambiental y Sanitaria" },
+  "fields": ["engenharia-ambiental-e-sanitaria"],
+  "family": {
+    "cbo": [{ "code": "2140", "title": "Engenheiros ambientais e afins (não confirmada na CBO; sanitarista costuma constar na 2142)" }],
+    "isco08": [{ "code": "2143", "title": "Environmental engineers" }],
+    "esco": [{ "uri": "http://data.europa.eu/esco/occupation/ac1fc6a9-70d2-475c-8fa0-82ef83830968", "label": "environmental engineer" }]
+  },
+  "scope": {
+    "summary": "Projeta, opera e avalia sistemas de saneamento (água, esgoto, drenagem, resíduos), conduz licenciamento e monitoramento ambiental, estudos de impacto, gestão de recursos hídricos e de resíduos, e programas de controle de poluição. Registro no CREA (Lei 5.194/1966). Atua em concessionárias e autarquias de saneamento, órgãos ambientais, consultorias, indústria e construção.",
+    "entryRoles": ["Estagiário de engenharia ambiental", "Analista ambiental júnior", "Engenheiro júnior de saneamento", "Auxiliar de licenciamento ambiental", "Técnico de monitoramento e amostragem", "Trainee em concessionária de saneamento"],
+    "midRoles": ["Engenheiro ambiental (pleno)", "Engenheiro sanitarista de operação (ETA/ETE)", "Analista de licenciamento e conformidade", "Projetista de redes de água, esgoto e drenagem", "Gestor de resíduos sólidos", "Analista ambiental de órgão público (IBAMA, OEMA)", "Consultor em estudos de impacto"],
+    "seniorRoles": ["Coordenador de meio ambiente (indústria ou construção)", "Gerente de operação de saneamento", "Coordenador de licenciamento e estudos (EIA/RIMA)", "Especialista em recursos hídricos", "Gerente de sustentabilidade e ESG", "Perito ambiental", "Consultor sênior em remediação de áreas contaminadas"],
+    "sectors": ["saneamento básico (concessionárias, autarquias, SAAEs)", "órgãos ambientais (IBAMA, ICMBio, OEMAs, prefeituras)", "consultoria ambiental e licenciamento", "indústria (meio ambiente, efluentes, resíduos)", "construção e infraestrutura (gestão ambiental de obras)", "mineração e energia", "agências reguladoras e de bacia (ANA, comitês)", "gestão de resíduos e reciclagem", "ESG e sustentabilidade corporativa", "ensino e pesquisa"],
+    "regulation": [
+      { "name": "Lei 5.194/1966 e Resolução CONFEA 218/1973 (art. 18) e 447/2000", "issuer": "Brasil / CONFEA", "about": "exercício da engenharia; atribuições do engenheiro sanitarista (art. 18) e do engenheiro ambiental (Res. 447/2000)" },
+      { "name": "Lei 6.938/1981 (Política Nacional do Meio Ambiente)", "issuer": "Brasil", "about": "SISNAMA, licenciamento ambiental e instrumentos da política ambiental" },
+      { "name": "Resolução CONAMA 237/1997 e 01/1986", "issuer": "CONAMA", "about": "procedimentos do licenciamento ambiental; EIA/RIMA" },
+      { "name": "Resolução CONAMA 357/2005 e 430/2011", "issuer": "CONAMA", "about": "classificação de corpos d'água e padrões de lançamento de efluentes" },
+      { "name": "Lei 11.445/2007 e Lei 14.026/2020 (Marco do Saneamento)", "issuer": "Brasil", "about": "diretrizes do saneamento básico, metas de universalização e regulação pela ANA" },
+      { "name": "Lei 12.305/2010 (Política Nacional de Resíduos Sólidos)", "issuer": "Brasil", "about": "planos de resíduos, logística reversa e responsabilidade compartilhada" },
+      { "name": "Portaria GM/MS 888/2021 (Anexo XX da Portaria de Consolidação 5/2017)", "issuer": "Ministério da Saúde", "about": "padrão de potabilidade da água para consumo humano" },
+      { "name": "Lei 9.605/1998 (Crimes Ambientais) e NR-15 (MTE)", "issuer": "Brasil / MTE", "about": "responsabilidade por infrações ambientais; atividades insalubres e exposição a agentes químicos e biológicos" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "licenciamento ambiental", "meaning": "processo com licenças prévia (LP), de instalação (LI) e de operação (LO) junto ao órgão ambiental" },
+      { "term": "EIA/RIMA", "meaning": "Estudo de Impacto Ambiental e seu Relatório, exigidos para empreendimentos de significativo impacto" },
+      { "term": "condicionante", "meaning": "obrigação imposta na licença ambiental, com prazo e evidência de cumprimento" },
+      { "term": "ETA / ETE", "meaning": "estação de tratamento de água / de esgoto; unidades, parâmetros e eficiência de remoção" },
+      { "term": "DBO, DQO, SST", "meaning": "demanda bioquímica e química de oxigênio e sólidos suspensos totais: parâmetros de efluentes e corpos d'água" },
+      { "term": "padrão de lançamento", "meaning": "limites de concentração para efluentes (CONAMA 430) e de qualidade para corpos receptores (CONAMA 357)" },
+      { "term": "outorga", "meaning": "autorização de uso de recursos hídricos emitida pela ANA ou órgão estadual" },
+      { "term": "bacia hidrográfica", "meaning": "unidade territorial de planejamento dos recursos hídricos; comitês e planos de bacia" },
+      { "term": "PGRS", "meaning": "Plano de Gerenciamento de Resíduos Sólidos exigido pela PNRS para geradores" },
+      { "term": "logística reversa", "meaning": "retorno de produtos e embalagens ao ciclo produtivo (PNRS)" },
+      { "term": "aterro sanitário", "meaning": "disposição final de resíduos com impermeabilização, drenagem de chorume e gases" },
+      { "term": "drenagem urbana", "meaning": "manejo de águas pluviais: microdrenagem, macrodrenagem e medidas compensatórias" },
+      { "term": "monitoramento ambiental", "meaning": "amostragem e análise periódica de água, ar, solo, ruído ou efluentes com cadeia de custódia" },
+      { "term": "cadeia de custódia", "meaning": "registro que garante rastreabilidade da amostra do ponto de coleta ao laboratório" },
+      { "term": "aspectos e impactos", "meaning": "matriz que liga atividades a efeitos ambientais, base da ISO 14001 e dos estudos" },
+      { "term": "PRAD", "meaning": "Plano de Recuperação de Áreas Degradadas" },
+      { "term": "área contaminada", "meaning": "área com concentrações acima dos valores de investigação (CONAMA 420); exige investigação e remediação" },
+      { "term": "indicador ambiental", "meaning": "medida acompanhada no tempo (consumo de água, geração de resíduos, emissões) com fonte e unidade" },
+      { "term": "ART", "meaning": "Anotação de Responsabilidade Técnica registrada no CREA para projetos, estudos e laudos" },
+      { "term": "SNIS / SINISA", "meaning": "Sistema Nacional de Informações sobre Saneamento, fonte de indicadores municipais" },
+      { "term": "inventário de emissões", "meaning": "levantamento de emissões de gases de efeito estufa por escopo (GHG Protocol)" }
+    ],
+    "tools": ["QGIS e ArcGIS", "AutoCAD e Civil 3D", "EPANET (redes de água)", "SWMM e HEC-RAS (drenagem e hidráulica)", "planilha eletrônica (balanços de massa, indicadores)", "R ou Python (dados ambientais)", "Google Earth Engine", "sondas multiparâmetro e amostradores", "softwares de modelagem de dispersão (AERMOD)", "Letters e Drawings do Work Station"],
+    "deliverables": ["relatório de monitoramento ambiental", "estudo ambiental (RCA, PCA, EIA/RIMA, RAS)", "plano de gerenciamento de resíduos sólidos (PGRS)", "projeto de rede de água, esgoto ou drenagem", "projeto e memorial de ETE ou ETA", "relatório de cumprimento de condicionantes", "inventário de emissões", "laudo ambiental com ART", "matriz de aspectos e impactos", "procedimento de amostragem", "parecer técnico de licenciamento", "plano de recuperação de áreas degradadas (PRAD)", "infográfico de indicadores ambientais"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Tratamento de água e efluentes (processos e dimensionamento)", "esco": null, "kind": "nucleo" },
+      { "label": "Licenciamento ambiental e conformidade legal", "esco": null, "kind": "nucleo" },
+      { "label": "Monitoramento e amostragem ambiental", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de resíduos sólidos (PNRS, PGRS)", "esco": null, "kind": "nucleo" },
+      { "label": "Hidrologia, hidráulica e drenagem urbana", "esco": null, "kind": "nucleo" },
+      { "label": "Avaliação de impactos ambientais (EIA/RIMA, matriz de aspectos)", "esco": null, "kind": "nucleo" },
+      { "label": "Geoprocessamento e análise espacial", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de recursos hídricos e outorga", "esco": null, "kind": "apoio" },
+      { "label": "Sistemas de gestão ambiental (ISO 14001) e auditoria", "esco": null, "kind": "apoio" },
+      { "label": "Análise de dados ambientais e indicadores", "esco": null, "kind": "apoio" },
+      { "label": "Remediação de áreas contaminadas", "esco": null, "kind": "apoio" },
+      { "label": "Inventário de emissões e mudanças climáticas", "esco": null, "kind": "apoio" },
+      { "label": "Educação ambiental e relação com comunidades", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["redação técnica clara para órgãos e público", "trabalho em campo e em equipe multidisciplinar", "ética e sigilo com dados de clientes e comunidades", "pensamento sistêmico", "comunicação de risco sem alarmismo"],
+    "tracks": [
+      { "id": "monitorar-e-relatar", "label": "Monitorar e relatar", "steps": ["relatório técnico de monitoramento com método e limitações (L4)", "infográfico de indicadores ambientais com fonte (D7)", "POP de amostragem com cadeia de custódia (L7)"] },
+      { "id": "licenciar-e-avaliar", "label": "Licenciar e avaliar", "steps": ["matriz de aspectos e impactos de uma atividade (X1)", "fluxo de licenciamento ou de tratamento de condicionantes (D4)", "resposta a um briefing de consultoria ambiental (L8)", "estudo de caso STAR de um problema resolvido (L3)"] },
+      { "id": "projetar-saneamento", "label": "Projetar saneamento", "steps": ["fluxograma de processo de uma ETE ou ETA (D4)", "planta ou corte esquemático de uma unidade de tratamento (D1)", "detalhe de um dispositivo (caixa de inspeção, poço de visita, boca de lobo) (D6)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"estagiário de meio ambiente\", \"analista ambiental\", \"operador de ETE\", \"técnico em saneamento\", \"consultor de licenciamento\"",
+      "cboFamilies": ["2140", "2142", "3115"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez em saneamento, licenciamento ou monitoramento; se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio ou primeiro cargo em consultoria, concessionária ou órgão ambiental",
+        "junior": "até dois anos; coleta dados, redige partes de relatórios e estudos com supervisão",
+        "pleno": "responde por relatórios, processos de licenciamento ou operação de unidades com autonomia e ART própria",
+        "senior": "coordena estudos e equipes multidisciplinares; interlocução com órgãos ambientais",
+        "gestao": "responde por área de meio ambiente, contratos ou operação de um sistema"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (ex.: POP de amostragem ou matriz de impactos completa) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na engenharia ambiental e sanitária",
+      "options": ["operar ou dimensionar tratamento de água e efluentes", "conduzir licenciamento e condicionantes", "coletar e analisar amostras", "montar planos de resíduos (PGRS)", "projetar redes e drenagem", "avaliar impactos (EIA, matriz de aspectos)", "trabalhar com SIG e mapas", "analisar dados e indicadores", "redigir relatórios para órgãos", "auditar sistemas de gestão (ISO 14001)", "dialogar com comunidades", "calcular outorga e balanço hídrico"],
+      "why": "Suas competências declaradas viram o ponto de partida; a prova vem com as tarefas (relatório, infográfico, matriz, fluxograma)."
+    },
+    "c4": {
+      "certifications": ["registro no CREA", "auditor interno ISO 14001", "pós em saneamento, recursos hídricos ou licenciamento", "curso de QGIS ou ArcGIS", "curso de EPANET/SWMM", "treinamento NR-33 e NR-35 (campo)", "GHG Protocol / inventário de emissões", "amostragem e cadeia de custódia (ABNT NBR 9898)"],
+      "languages": ["inglês", "espanhol"],
+      "why": "Formação, registro e certificações mostram lacunas em relação ao cargo que você quer, sem julgar seu valor."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver na área ambiental?",
+      "options": ["licenciamento e legislação", "tratamento de efluentes", "geoprocessamento (QGIS)", "gestão de resíduos", "drenagem e hidrologia", "análise de dados ambientais (R, Python)", "ISO 14001 e auditoria", "inventário de emissões e ESG", "remediação de áreas contaminadas", "recursos hídricos e outorga", "redação de relatórios técnicos"],
+      "why": "Com isso monto uma trilha com tarefas progressivas em vez de mostrar o catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que frente quer se posicionar primeiro?", "type": "escolha", "options": ["saneamento (água, esgoto, drenagem)", "licenciamento e estudos ambientais", "meio ambiente na indústria ou obra", "resíduos e economia circular", "dados ambientais e ESG"], "why": "Escolho a trilha inicial (monitorar, licenciar ou projetar) e os exemplos das tarefas.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L4", "D7", "D4", "L7", "L8", "L3", "D1", "D6", "L1", "L6", "L9", "L5"],
+    "excluded": [
+      { "code": "D3", "reason": "render fotorrealista de produto não é entrega da área" },
+      { "code": "D8", "reason": "vista explodida de conjunto mecânico não é entrega da área" },
+      { "code": "D9", "reason": "wireframe de tela não pertence à área" }
+    ],
+    "parameters": {
+      "L4": {
+        "title": "Relatório técnico de monitoramento ambiental",
+        "brief": "Em até 4 páginas, relate um monitoramento (qualidade de água, efluente, ruído, resíduos) real anonimizado ou fictício: objetivo, método (pontos, frequência, parâmetros, norma de amostragem), resultados comparados ao padrão legal (CONAMA 357/430 ou Portaria 888), limitações e referências. Inclua o aviso de exercício, sem valor de laudo ou ART.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "método", "resultados × padrão legal", "limitações", "referências"], "legalStandard": "CONAMA 357/2005, 430/2011 ou Portaria GM/MS 888/2021", "disclaimerRequired": true, "anonymizedData": true },
+        "criteria": ["cinco seções nomeadas", "até 4 páginas", "cada resultado comparado a um limite legal citado com número", "método com pontos, frequência e norma de amostragem", "aviso de exercício sem valor de laudo ou ART", "sem nome de cliente, coordenadas de empreendimento ou dado de comunidade identificável"],
+        "evidence": "relatório PDF",
+        "time": "2 h",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de indicadores ambientais",
+        "brief": "Monte um infográfico com dois ou três indicadores ambientais (consumo de água, geração de resíduos por tipo, eficiência de remoção de DBO, índice de perdas, cobertura de esgoto do SNIS) com fonte, período, eixos e unidades rotulados e uma mensagem principal.",
+        "parameters": { "indicators": "2 a 3", "examples": ["eficiência de remoção de DBO (%)", "geração de resíduos por classe (t/mês)", "índice de perdas na distribuição (%)", "cobertura de coleta de esgoto (SNIS)"], "requiredElements": ["fonte e período", "eixos e unidades", "mensagem principal", "comparação com meta ou padrão"], "anonymizedData": true },
+        "criteria": ["fonte e período citados", "eixos e unidades rotulados", "uma mensagem principal explícita", "comparação com meta, padrão legal ou série histórica", "dados públicos ou anonimizados"],
+        "evidence": "imagem + PDF",
+        "time": "60 min",
+        "level": 1
+      },
+      "D4": {
+        "title": "Fluxograma de processo de ETE ou de licenciamento",
+        "brief": "Desenhe o fluxograma de uma estação de tratamento (unidades, fluxos de líquido, lodo e gases, pontos de amostragem) ou o fluxo de um licenciamento (LP, LI, LO, estudos, condicionantes) com raias por ator, início, fim e decisões.",
+        "parameters": { "options": ["processo de ETE/ETA", "fluxo de licenciamento ambiental", "tratamento de condicionantes"], "lanes": ["empreendedor", "consultoria", "órgão ambiental", "laboratório"], "requiredElements": ["início", "fim", "decisões", "pontos de amostragem ou documentos gerados"] },
+        "criteria": ["início e fim explícitos", "raias ou unidades identificadas", "nenhuma tarefa ou fluxo órfão", "pontos de amostragem ou documentos gerados marcados", "legenda de símbolos"],
+        "evidence": "diagrama vetorial",
+        "time": "45 min",
+        "level": 2
+      },
+      "L7": {
+        "title": "POP de amostragem com cadeia de custódia",
+        "brief": "Escreva o procedimento de coleta de amostras de água ou efluente: preparo de frascos, EPI, coleta, preservação, identificação, cadeia de custódia e transporte, com passos numerados, responsáveis, critério de conclusão e referência à NBR 9898 ou ao Guia da CETESB/ANA.",
+        "parameters": { "steps": "8 a 15", "requiredColumns": ["passo", "responsável", "critério de conclusão", "registro"], "norm": "ABNT NBR 9898 ou Guia Nacional de Coleta (ANA/CETESB)" },
+        "criteria": ["passos numerados com responsável", "critério de conclusão por passo", "cadeia de custódia descrita", "norma ou guia citado", "itens de segurança (EPI) presentes"],
+        "evidence": "POP em PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "L8": {
+        "title": "Resposta a um briefing de consultoria ambiental",
+        "brief": "A partir de um briefing simulado (indústria que precisa renovar a LO, obra que gera resíduos, município que quer reduzir perdas), escreva escopo, premissas, etapas e prazos, entregas, o que fica fora e dados que o cliente precisa fornecer. Sem valores de honorários.",
+        "parameters": { "sections": ["entendimento do problema", "escopo e entregas", "premissas", "etapas e prazos", "fora do escopo", "dados necessários do cliente"], "feesAllowed": false },
+        "criteria": ["seis seções nomeadas", "lista explícita do que fica fora", "legislação aplicável citada", "sem valores de honorários ou dados de cliente real"],
+        "evidence": "proposta em PDF",
+        "time": "45 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Matriz de aspectos e impactos ambientais de uma atividade",
+        "competency": "Avaliação de impactos ambientais",
+        "criteria": ["ao menos 8 aspectos ligados a atividades específicas", "impacto, meio afetado e fase (instalação/operação) por linha", "critério de significância declarado (ex.: severidade × frequência)", "medida de controle ou mitigação por impacto significativo", "legislação ou norma aplicável citada por impacto significativo"],
+        "evidence": "tabela em PDF",
+        "time": "90 min",
+        "trigger": "Que atividade você conhece bem (obra, oficina, ETE, laticínio)? Quer mapear seus aspectos e impactos?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "secoes-do-relatorio", "check": "as seções pedidas (objetivo, método, resultados, limitações, referências) existem e estão nomeadas", "appliesTo": ["L4", "L8", "L3"], "auto": true },
+      { "id": "resultado-vs-padrao-legal", "check": "cada resultado é comparado a um limite legal citado com número da norma", "appliesTo": ["L4"], "auto": true },
+      { "id": "fonte-e-eixos", "check": "o infográfico cita fonte e período e rotula eixos e unidades", "appliesTo": ["D7"], "auto": true },
+      { "id": "fluxo-fechado", "check": "o fluxograma tem início, fim e nenhuma unidade ou tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "passos-com-responsavel", "check": "todos os passos estão numerados e têm responsável e critério de conclusão", "appliesTo": ["L7"], "auto": true },
+      { "id": "legislacao-citada", "check": "cita ao menos uma lei, resolução CONAMA, portaria ou NBR com número", "appliesTo": ["L4", "L7", "L8", "X1", "D6"], "auto": true },
+      { "id": "matriz-completa", "check": "cada linha da matriz tem aspecto, impacto, meio, fase e significância", "appliesTo": ["X1"], "auto": true },
+      { "id": "escala-cotas-legenda", "check": "planta ou detalhe com escala declarada, cotas que fecham, legenda e carimbo", "appliesTo": ["D1", "D6"], "auto": true },
+      { "id": "aviso-nao-substitui-art", "check": "o documento diz que é exercício e não substitui laudo, estudo ou projeto com ART", "appliesTo": ["L4", "X1", "D1", "D6"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L4", "L5", "L6", "L8", "L9"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e que não há dado de cliente, empreendimento ou comunidade identificável", "appliesTo": ["L1", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "D1", "D4", "D6", "D7", "X1"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "rigor-do-metodo", "label": "Rigor do método", "levels": { "aproxima": "pontos, frequência ou parâmetros não justificados", "atende": "método reproduzível e coerente com a norma de amostragem", "supera": "discute incertezas, representatividade e limites do método" } },
+      { "id": "leitura-legal", "label": "Leitura da legislação", "levels": { "aproxima": "cita a norma sem aplicar ao caso", "atende": "aplica o limite ou exigência certa ao caso", "supera": "antecipa exigências do órgão e condicionantes prováveis" } },
+      { "id": "clareza-para-nao-especialistas", "label": "Clareza para quem não é da área", "levels": { "aproxima": "exige conhecimento prévio para entender a conclusão", "atende": "a mensagem principal é entendida por gestor ou comunidade", "supera": "comunica risco e incerteza sem alarmismo nem minimização" } },
+      { "id": "resultado", "label": "Resultado demonstrado", "levels": { "aproxima": "descreve atividades, sem resultado", "atende": "mostra um resultado mensurável (redução, conformidade, licença obtida)", "supera": "mostra resultado, contexto e o que faria diferente" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Engenharia Ambiental e Sanitária (ISCO 2143; CREA, Lei 5.194/1966). Use o vocabulário da área: licenciamento (LP, LI, LO), condicionantes, EIA/RIMA, ETA/ETE, DBO/DQO/SST, padrão de lançamento, outorga, bacia hidrográfica, PGRS, logística reversa, drenagem urbana, monitoramento e cadeia de custódia, matriz de aspectos e impactos, PRAD, indicadores do SNIS/SINISA, inventário de emissões. Cite a legislação com número: Lei 6.938/1981, CONAMA 237/1997, 01/1986, 357/2005, 430/2011, 420/2009; Lei 11.445/2007 e 14.026/2020; Lei 12.305/2010; Portaria GM/MS 888/2021; Lei 9.605/1998; ABNT NBR 9898 (amostragem), 10004 (resíduos), 12209 e 12216 (ETE e ETA). A rubrica objetiva do Letters é: seções do relatório, resultado comparado ao padrão legal, legislação citada, passos com responsável; a do Drawings é: fonte e eixos no infográfico, fluxo fechado, escala, cotas e legenda. Nunca produza laudo, estudo ambiental, parecer ou projeto assináveis nem sugira que substituem ART ou responsabilidade técnica; tudo é exercício de competência, com esse aviso no documento. Nunca ateste conformidade legal ou potabilidade real, nem dimensione unidades de tratamento para uso real; indique a norma e um profissional habilitado. Dados de licenciamento e monitoramento de clientes sob sigilo, relatórios de impacto não publicados e dados pessoais de comunidades afetadas não entram em portfólio; use dados públicos (SNIS, ANA, IBGE) ou anonimizados. Pergunte antes de inferir área, senioridade ou situação. Afirmações sobre mercado citam fonte, data e região (CAGED, RAIS, SNIS, ANA) ou dizem \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos, não por score; pré-cheque só critérios objetivos e lembre que o selo depende de revisão humana. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação da pessoa.",
+    "citeSources": [
+      { "title": "CONFEA — Conselho Federal de Engenharia e Agronomia", "url": "https://www.confea.org.br/", "kind": "conselho" },
+      { "title": "CONAMA — resoluções (237/1997, 357/2005, 430/2011, 420/2009)", "url": "https://conama.mma.gov.br/", "kind": "norma" },
+      { "title": "Lei 6.938/1981 — Política Nacional do Meio Ambiente (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l6938.htm", "kind": "norma" },
+      { "title": "Lei 12.305/2010 — Política Nacional de Resíduos Sólidos (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2010/lei/l12305.htm", "kind": "norma" },
+      { "title": "ANA — Agência Nacional de Águas e Saneamento Básico", "url": "https://www.gov.br/ana/pt-br", "kind": "orgao-publico" },
+      { "title": "SNIS / SINISA — Sistema Nacional de Informações sobre Saneamento", "url": "https://www.gov.br/cidades/pt-br/acesso-a-informacao/acoes-e-programas/saneamento/snis", "kind": "estatistica" },
+      { "title": "IBAMA — licenciamento ambiental federal", "url": "https://www.gov.br/ibama/pt-br", "kind": "orgao-publico" },
+      { "title": "Catálogo ABNT — NBR 9898, 10004, 12209, 12216", "url": "https://www.abntcatalogo.com.br/", "kind": "norma" },
+      { "title": "Novo CAGED — Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências ambientais e sanitárias; x1 escolhe a frente (saneamento, licenciamento, indústria, resíduos, dados)." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "L4, D7, D4 e L7 entram primeiro; cada card diz a competência, a evidência e que o resultado é exercício, sem ART." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano por horas (d1) e aparelho (d4); D4, D7 e D1 só no computador; L7 e L6 cabem no celular." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Seções, resultado × padrão legal, legislação citada, fonte e eixos, fluxo fechado, matriz completa e aviso de não substituir ART; o selo é humano." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de relatório, POP, matriz e proposta com prévia; nunca redige laudo, estudo ou parecer assinável nem atesta conformidade." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Fonte, eixos e mensagem do infográfico; símbolos e legenda do fluxograma; não dimensiona unidades de tratamento." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese das competências declaradas e evidenciadas (monitoramento, licenciamento, saneamento), lacunas e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: engenharia civil, química, ciências biológicas, geografia, agronomia, segurança do trabalho; dados de mercado com fonte e data." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por ISCO 2143/CBO 2140 e competências compartilhadas; só pessoas descobríveis por opt-in." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\"." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com frente de atuação, três competências e uma prova com link; só com consentimento específico." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados de licenciamento e monitoramento de clientes sob sigilo", "relatórios de impacto ambiental não publicados", "dados pessoais de comunidades afetadas", "coordenadas e identificação de empreendimentos de terceiros", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca produzir laudo, estudo ambiental, parecer ou projeto assinável nem sugerir que substitui ART ou responsabilidade técnica",
+      "nunca atestar conformidade legal, potabilidade ou eficiência real de tratamento; indicar a norma e um profissional habilitado",
+      "dados de licenciamento e monitoramento de clientes, estudos não publicados e dados de comunidades não entram em portfólio; usar dados públicos ou anonimizados",
+      "comunicar risco ambiental sem alarmismo nem minimização; sempre com fonte",
+      "perguntar em vez de inferir área, senioridade ou situação",
+      "mercado com fonte, data e região (CAGED, RAIS, SNIS, ANA) ou \"estimativa\"; sem promessa de emprego ou salário",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["infografico", "diagrama", "2d-tecnico", "prancha"],
+    "lettersTemplates": ["relatorio-tecnico", "pop", "proposta", "estudo-de-caso", "memorial", "curriculo", "bio", "post", "plano-30-60-90", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "L7, L6, L5 e a revisão de critérios cabem no celular (inclusive em campo); D7, D4, D1 e D6 exigem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: infográfico com dois indicadores do SNIS do seu município (60 min). Comprova análise de dados ambientais, que analistas e consultorias pedem.",
+        "Falta só comparar os resultados ao limite da CONAMA 430 para fechar os critérios objetivos do seu relatório. Quando quiser.",
+        "Sem pressão. Quando quiser retomar, o POP de amostragem (60 min) está aqui.",
+        "Sua matriz já tem 6 aspectos. Mais 2 e o critério de significância fecham a tarefa."
+      ]
+    },
+    "insights": { "peersBy": ["esco", "competencias", "setor"] },
+    "privacy": { "sensitiveData": ["dados de licenciamento e monitoramento de clientes sob sigilo", "relatórios de impacto ambiental não publicados", "dados pessoais de comunidades afetadas"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — saneamento (CNAE 36 e 37) e serviços de engenharia", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos por CBO 2140 e 2142", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "SNIS / SINISA — diagnósticos de água, esgoto, resíduos e drenagem", "url": "https://www.gov.br/cidades/pt-br/acesso-a-informacao/acoes-e-programas/saneamento/snis", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "ANA — Conjuntura dos Recursos Hídricos e painéis de saneamento", "url": "https://www.gov.br/ana/pt-br", "geography": "Brasil e bacias", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "ABES — Associação Brasileira de Engenharia Sanitária e Ambiental", "url": "https://abes-dn.org.br/", "geography": "Brasil e seções estaduais", "cadence": "eventual", "kind": "associacao" },
+      { "title": "Concurso Nacional Unificado e editais de órgãos ambientais e companhias de saneamento (gov.br)", "url": "https://www.gov.br/gestao/pt-br/concursonacional", "geography": "Brasil", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis (CAGED, RAIS, SNIS, ANA, ABES, editais); sem fonte atual, diz \"estimativa\" (RF50.CA07). Metas do Marco do Saneamento são contexto, não previsão de emprego. Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "engenharia-civil", "why": "Saneamento, drenagem e hidráulica são comuns; redes e unidades de tratamento são obras civis; mesmo conselho (CREA).", "gaps": ["estruturas, fundações e execução de obra", "orçamento e planejamento de obras"], "steps": ["detalhe de um dispositivo hidráulico (D6)", "fluxo de um processo de obra de saneamento (D4)", "curso de orçamento com SINAPI"] },
+    { "to": "engenharia-quimica", "why": "Processos de tratamento, balanços de massa e controle de emissões industriais são compartilhados.", "gaps": ["operações unitárias e reatores em profundidade", "processos industriais e segurança de processo"], "steps": ["fluxograma de processo com balanço de massa (D4)", "relatório técnico de eficiência de uma unidade (L4)", "disciplinas de operações unitárias"] },
+    { "to": "ciencias-biologicas", "why": "Monitoramento de biota, licenciamento e unidades de conservação usam a mesma legislação e campo.", "gaps": ["taxonomia, ecologia e métodos biológicos de campo", "registro no CRBio para atividades privativas"], "steps": ["infográfico de dados de biodiversidade públicos (D7)", "estudo de caso STAR de um programa de monitoramento (L3)", "cursos de ecologia aplicada"] },
+    { "to": "geografia", "why": "Geoprocessamento, bacias hidrográficas e planejamento territorial são compartilhados com a geografia aplicada.", "gaps": ["análise socioespacial e métodos de pesquisa", "cartografia temática avançada"], "steps": ["mapa temático de uma bacia com fonte (D7)", "relatório técnico de diagnóstico territorial (L4)", "curso de QGIS"] },
+    { "to": "seguranca-do-trabalho", "why": "Higiene ocupacional, agentes químicos e biológicos (NR-15) e gestão de riscos dialogam com a engenharia ambiental; a especialização é pós para engenheiros.", "gaps": ["pós-graduação em Engenharia de Segurança do Trabalho", "NR-1 (GRO/PGR), ergonomia e legislação trabalhista"], "steps": ["fluxo de GRO/PGR de uma unidade (D4)", "POP de uso de EPI em amostragem (L7)", "especialização reconhecida pelo CONFEA"] },
+    { "to": "agronomia", "why": "Recursos hídricos, irrigação, solos e recuperação de áreas degradadas são comuns ao campo.", "gaps": ["produção vegetal e animal", "registro no CREA na modalidade agronomia"], "steps": ["relatório técnico de um PRAD (L4)", "infográfico de uso da água por setor (D7)", "cursos da Embrapa"] }
+  ],
+  "learning": [
+    { "title": "Capacitação da ANA — cursos EaD gratuitos em recursos hídricos e saneamento", "provider": "Agência Nacional de Águas e Saneamento Básico", "url": "https://capacitacao.ana.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — licenciamento ambiental, gestão de resíduos, saneamento", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Resoluções do CONAMA", "provider": "CONAMA / MMA", "url": "https://conama.mma.gov.br/", "free": true, "kind": "norma" },
+    { "title": "SNIS / SINISA — diagnósticos e indicadores de saneamento", "provider": "Ministério das Cidades", "url": "https://www.gov.br/cidades/pt-br/acesso-a-informacao/acoes-e-programas/saneamento/snis", "free": true, "kind": "portal" },
+    { "title": "Guia Nacional de Coleta e Preservação de Amostras", "provider": "ANA / CETESB", "url": "https://www.gov.br/ana/pt-br", "free": true, "kind": "livro" },
+    { "title": "Catálogo ABNT — NBR 9898, 10004, 12209, 12216", "provider": "ABNT", "url": "https://www.abntcatalogo.com.br/", "free": false, "kind": "norma" },
+    { "title": "ABES — eventos, publicações e comunidade de saneamento", "provider": "ABES", "url": "https://abes-dn.org.br/", "free": true, "kind": "comunidade" },
+    { "title": "e-Aulas USP — videoaulas de saneamento e meio ambiente", "provider": "Universidade de São Paulo", "url": "https://eaulas.usp.br/", "free": true, "kind": "portal" },
+    { "title": "QGIS — documentação e tutoriais em português", "provider": "QGIS.org", "url": "https://qgis.org/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Fase 1 — grupo Engenharia e TIC (dados do ramo, ISCO 2143, conselho, vizinhos; CBO 2140 não confirmada)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "World of Taxonomy — ESCO environmental engineer (ac1fc6a9…) ↔ ISCO-08 2143 (espelho, não oficial)", "url": "https://www.worldoftaxonomy.com/crosswalks/isco_08/2143/esco_occupations", "accessedAt": "2026-11-02" },
+    { "title": "CONFEA — Confea atualiza regras de ART e acervo técnico (Resolução 1.137/2023)", "url": "https://www.confea.org.br/node/232878", "accessedAt": "2026-11-02" },
+    { "title": "CONFEA — Regulamentação das profissões", "url": "https://www.confea.org.br/node/233543", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Família CBO 2140 (engenheiros ambientais) não confirmada na CBO; mantida em family.cbo com ressalva no título porque o validador exige CBO ou ISCO e a ISCO 2143 já cobre; conferir no portal cbo.mte.gov.br",
+    "URI ESCO de environmental engineer obtida em espelho (World of Taxonomy), não no portal esco.ec.europa.eu (host bloqueado)",
+    "Resoluções CONFEA 218/1973 (art. 18, sanitarista) e 447/2000 (engenheiro ambiental) citadas de memória",
+    "Números e anos de CONAMA 237/1997, 01/1986, 357/2005, 430/2011, 420/2009, Portaria GM/MS 888/2021 e NBR 9898, 10004, 12209, 12216 citados de memória, não conferidos nos textos oficiais",
+    "Família CBO 3115 (técnicos em controle ambiental e saneamento) em questions.a4 não conferida",
+    "URLs de capacitacao.ana.gov.br, conama.mma.gov.br, SNIS, ABES, Planalto e CNU não abertas nesta sessão",
+    "paths.to \"ciencias-biologicas\", \"geografia\" e \"agronomia\" ainda não existem no catálogo interino; constam na lista prevista do brief para os outros grupos",
+    "Nenhuma URI ESCO de competência (skill) confirmada; todas as competências com esco: null"
+  ]
+}

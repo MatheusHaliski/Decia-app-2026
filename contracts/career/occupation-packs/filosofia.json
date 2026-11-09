@@ -1,0 +1,364 @@
+{
+  "schemaVersion": 1,
+  "code": "filosofia",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Filosofia", "en": "Philosophy", "es": "Filosofía" },
+  "fields": ["filosofia"],
+  "family": {
+    "cbo": [
+      { "code": "2321", "title": "Professores do ensino médio" },
+      { "code": "2514", "title": "Filósofos" },
+      { "code": "2347", "title": "Professores de ciências humanas do ensino superior" }
+    ],
+    "isco08": [
+      { "code": "2330", "title": "Secondary education teachers" },
+      { "code": "2633", "title": "Philosophers, historians and political scientists" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/bfc92738-128b-44f5-92d4-51b10df17961", "label": "philosopher" },
+      { "uri": "http://data.europa.eu/esco/occupation/e8b93ce7-e39b-4261-a25a-9b84764eb724", "label": "philosophy teacher secondary school" }
+    ]
+  },
+  "scope": {
+    "summary": "A licenciatura habilita para a docência de Filosofia no ensino médio (LDB, art. 62; área de Ciências Humanas e Sociais Aplicadas na BNCC); o bacharelado leva a pesquisa, ensino superior, ética aplicada (comitês, compliance), edição e escrita. Profissão não regulamentada e sem conselho. Dados de alunos menores e de participantes de pesquisa nunca entram em portfólio.",
+    "entryRoles": ["Estagiário de docência em Filosofia", "Professor de Filosofia iniciante (contrato temporário ou escola privada)", "Bolsista de iniciação científica ou monitor", "Revisor ou assistente editorial em humanidades", "Educador em projeto social ou de filosofia com crianças", "Redator de conteúdo em humanidades"],
+    "midRoles": ["Professor de Filosofia do ensino médio efetivo", "Professor de ética ou de ciências humanas em cursos técnicos", "Pesquisador em projeto acadêmico (mestrado)", "Analista de ética e integridade (compliance, comitês)", "Editor ou tradutor de textos filosóficos", "Autor de material didático de Filosofia"],
+    "seniorRoles": ["Coordenador de área de ciências humanas", "Professor do ensino superior e pesquisador (doutorado)", "Membro de comitê de ética em pesquisa ou de bioética", "Consultor em ética aplicada e políticas públicas", "Editor de coleção ou de periódico", "Gestor de programa educacional"],
+    "sectors": ["redes públicas de educação básica (ensino médio)", "escolas privadas e cursos preparatórios", "ensino superior e pesquisa", "editoras e tradução", "comitês de ética, hospitais e organizações (ética aplicada)", "terceiro setor e projetos educativos", "comunicação e conteúdo", "órgãos públicos e políticas educacionais"],
+    "regulation": [
+      { "name": "LDB — Lei 9.394/1996, arts. 35-A e 62", "issuer": "Brasil", "about": "estudos e práticas de filosofia no ensino médio (art. 35-A, §2º) e licenciatura para a docência" },
+      { "name": "Lei 13.415/2017 e Lei 14.945/2024", "issuer": "Brasil", "about": "reforma e reestruturação do ensino médio; lugar da Filosofia na formação geral básica" },
+      { "name": "BNCC do Ensino Médio — Res. CNE/CP 4/2018", "issuer": "CNE/MEC", "about": "área de Ciências Humanas e Sociais Aplicadas; competências e habilidades EM13CHS" },
+      { "name": "DCN dos cursos de Filosofia — Parecer CNE/CES 492/2001 e Res. CNE/CES 12/2002", "issuer": "CNE/MEC", "about": "perfil do formado em Filosofia, licenciatura e bacharelado" },
+      { "name": "Resolução CNS 510/2016", "issuer": "Conselho Nacional de Saúde", "about": "ética em pesquisa com seres humanos nas ciências humanas e sociais; consentimento" },
+      { "name": "ECA (Lei 8.069/1990) e LGPD (Lei 13.709/2018), art. 14", "issuer": "Brasil", "about": "dados e produções de alunos menores só com autorização do responsável" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "problematização", "meaning": "transformar uma questão do cotidiano em problema filosófico, primeiro momento da aula" },
+      { "term": "conceituação", "meaning": "construção e análise de conceitos a partir de textos e argumentos" },
+      { "term": "argumento", "meaning": "conjunto de premissas que sustentam uma conclusão" },
+      { "term": "validade e solidez", "meaning": "conclusão decorre das premissas / argumento válido com premissas verdadeiras" },
+      { "term": "falácia", "meaning": "erro de raciocínio que parece convincente (ad hominem, espantalho, falso dilema)" },
+      { "term": "lógica formal", "meaning": "estudo das formas válidas de inferência (proposicional, de predicados)" },
+      { "term": "análise de texto filosófico", "meaning": "leitura estrutural: tese, argumentos, conceitos, objeções" },
+      { "term": "comentário de texto", "meaning": "exercício escrito que explica e discute um trecho de um autor" },
+      { "term": "fichamento", "meaning": "registro organizado de citações e ideias de uma leitura, com referência" },
+      { "term": "dissertação filosófica", "meaning": "texto argumentativo que defende uma tese e responde a objeções" },
+      { "term": "ética, epistemologia, metafísica", "meaning": "grandes áreas da Filosofia: ação e valores, conhecimento, ser e realidade" },
+      { "term": "ética aplicada / bioética", "meaning": "análise de dilemas concretos em saúde, tecnologia, ambiente e negócios" },
+      { "term": "filosofia política", "meaning": "estudo de poder, justiça, Estado, direitos e democracia" },
+      { "term": "estética", "meaning": "reflexão sobre o belo, a arte e a experiência sensível" },
+      { "term": "comunidade de investigação", "meaning": "metodologia de diálogo da filosofia para crianças (Lipman)" },
+      { "term": "BNCC — CHSA", "meaning": "Ciências Humanas e Sociais Aplicadas no ensino médio, com habilidades como EM13CHS501" },
+      { "term": "itinerário formativo", "meaning": "parte flexível do novo ensino médio onde cabem eletivas de Filosofia" },
+      { "term": "plano de aula", "meaning": "objetivo, habilidade BNCC, texto-base, metodologia, tempo e avaliação" },
+      { "term": "comitê de ética em pesquisa (CEP)", "meaning": "colegiado que avalia projetos com seres humanos (Sistema CEP/Conep)" },
+      { "term": "Plataforma Brasil", "meaning": "sistema de submissão de projetos de pesquisa aos CEPs" },
+      { "term": "Qualis / Lattes", "meaning": "classificação de periódicos da CAPES / currículo acadêmico do CNPq" }
+    ],
+    "tools": ["editor de textos com estilos e referências", "Zotero ou Mendeley (referências)", "PhilPapers e Stanford Encyclopedia of Philosophy", "Portal de Periódicos CAPES e SciELO", "Plataforma Lattes", "mapas de argumento (Argdown, Rationale ou diagramas)", "Google Sala de Aula e Microsoft Teams", "Padlet e Mentimeter (debates)", "Canva e editores de apresentação"],
+    "deliverables": ["plano de aula alinhado à BNCC", "sequência didática com texto filosófico", "material didático (roteiro de debate, ficha de leitura)", "relatório de estágio supervisionado", "fichamento e comentário de texto", "resenha crítica", "dissertação filosófica", "artigo acadêmico", "projeto de pesquisa", "mapa de argumento", "análise de dilema ético (caso fictício)", "tradução comentada de texto filosófico"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Planejar aulas e sequências didáticas de Filosofia com a BNCC", "esco": null, "kind": "nucleo" },
+      { "label": "Conduzir problematização e debate filosófico em sala", "esco": null, "kind": "nucleo" },
+      { "label": "Ler e analisar textos filosóficos (tese, argumentos, conceitos)", "esco": null, "kind": "nucleo" },
+      { "label": "Construir e avaliar argumentos; identificar falácias", "esco": null, "kind": "nucleo" },
+      { "label": "Escrever dissertações, resenhas e artigos com rigor e referências", "esco": null, "kind": "nucleo" },
+      { "label": "Avaliar aprendizagens com rubrica e devolutiva", "esco": null, "kind": "nucleo" },
+      { "label": "Analisar dilemas de ética aplicada", "esco": null, "kind": "nucleo" },
+      { "label": "Pesquisar em filosofia: estado da arte e projeto", "esco": null, "kind": "nucleo" },
+      { "label": "Mediar diálogos em comunidade de investigação", "esco": null, "kind": "apoio" },
+      { "label": "Representar argumentos em mapas e diagramas", "esco": null, "kind": "apoio" },
+      { "label": "Traduzir e editar textos filosóficos", "esco": null, "kind": "apoio" },
+      { "label": "Produzir material didático", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação oral e escuta", "pensamento crítico", "escrita clara", "ética e respeito à divergência", "organização e prazos", "aprendizagem contínua"],
+    "tracks": [
+      { "id": "docencia-filosofia", "label": "Docência de Filosofia no ensino médio", "steps": ["plano de aula com habilidade da BNCC (X1)", "roteiro de debate com texto-base (X2)", "mapa de argumento em diagrama (X3)", "relatório de estágio ou prática (L4)", "post sobre uma aula que funcionou (L5)"] },
+      { "id": "pesquisa-filosofica", "label": "Pesquisa e escrita acadêmica", "steps": ["resenha crítica de uma obra (X4)", "relatório de pesquisa ou estado da arte (L4)", "revisão crítica de um texto com rubrica (L10)", "projeto de pesquisa para pós-graduação"] },
+      { "id": "etica-aplicada", "label": "Ética aplicada e integridade", "steps": ["análise de dilema ético em caso fictício (L3)", "procedimento de deliberação ética (L7)", "fluxo de submissão a um comitê de ética (D4)", "infográfico de um debate público com fonte (D7)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"professor de filosofia\", \"bolsista de pesquisa\", \"revisor\", \"educador social\"",
+      "cboFamilies": ["2321", "2514", "2347"],
+      "why": "Pergunto sua última função para partir do que você já fez (sala de aula, pesquisa, escrita) e sugerir tarefas dessa frente. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, monitoria, iniciação científica ou primeira turma",
+        "junior": "até dois anos na função, com supervisão",
+        "pleno": "planeja aulas ou conduz pesquisa com autonomia",
+        "senior": "referência na área; orienta colegas ou pesquisas",
+        "gestao": "coordena área, programa ou equipe"
+      },
+      "why": "Pergunto o nível para ajustar a dificuldade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em Filosofia",
+      "options": ["planejar aulas e sequências didáticas", "conduzir debates em sala", "ler e explicar textos difíceis", "construir e avaliar argumentos", "escrever textos acadêmicos", "dar devolutiva em textos de estudantes", "analisar dilemas éticos", "pesquisar e montar estado da arte", "trabalhar filosofia com crianças", "traduzir ou editar textos", "lógica", "criar material didático"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com as tarefas."
+    },
+    "c4": {
+      "certifications": ["licenciatura em Filosofia", "bacharelado em Filosofia", "pós-graduação em ensino de Filosofia (ex.: PROF-FILO)", "pós-graduação em ética ou bioética", "curso de filosofia para crianças", "cursos do AVAMEC/MEC", "mestrado ou doutorado em Filosofia"],
+      "languages": ["inglês", "francês", "alemão", "grego antigo (leitura)", "latim (leitura)", "espanhol"],
+      "why": "Habilitação e idiomas de leitura de textos originais ajudam a ver lacunas em relação à função que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["planejamento com a BNCC", "condução de debates", "leitura e análise de textos", "lógica e argumentação", "escrita acadêmica", "avaliação e devolutiva", "ética aplicada e bioética", "projeto de pesquisa", "filosofia com crianças", "tradução filosófica"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que frente quer atuar primeiro?",
+        "type": "escolha",
+        "options": ["docência no ensino médio", "pesquisa e ensino superior", "ética aplicada e integridade", "edição, tradução e escrita", "projetos educativos e filosofia com crianças", "ainda não sei"],
+        "why": "A frente muda as tarefas (plano de aula, resenha, análise de dilema) e as pessoas sugeridas. Você pode mudar depois.",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": true
+  },
+  "guidedTasks": {
+    "priority": ["L6", "L1", "L10", "L4", "L3", "L5", "L7", "D4", "L2", "D7", "L9"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica de ambiente não é entrega da profissão" },
+      { "code": "D3", "reason": "modelagem 3D de produto não faz parte da atuação" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da profissão" },
+      { "code": "D8", "reason": "vista explodida de conjunto não se aplica" },
+      { "code": "D9", "reason": "wireframe de interface não se aplica à atuação típica" },
+      { "code": "D5", "reason": "redesenho visual antes e depois tem pouco uso na área" }
+    ],
+    "parameters": {
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva um resumo de até 600 caracteres com a frente em que quer atuar (docência, pesquisa, ética aplicada, edição), sua área ou autor de interesse, três competências e uma prova com link.",
+        "parameters": { "maxChars": 600, "requiredParts": ["frente-alvo", "área de interesse", "três competências", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia a frente-alvo", "cita três competências", "inclui uma prova com link"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para a função que quer mirar primeiro, com habilitação, três conquistas com número (turmas, publicações, eventos, projetos) e as palavras-chave da vaga ou do edital. Para a carreira acadêmica, mantenha o Lattes à parte.",
+        "parameters": { "maxPages": 1, "achievementsWithNumbers": 3, "keywordsFrom": "vaga ou edital-alvo" },
+        "criteria": ["uma página", "três conquistas com número", "habilitação declarada", "palavras-chave da vaga ou do edital presentes", "sem idade, estado civil ou foto obrigatória"],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "L10": {
+        "title": "Revisão crítica de um argumento publicado",
+        "brief": "Escolha um texto público (artigo de opinião, ensaio curto ou peça remixada) e analise o argumento: reconstrua tese e premissas, aponte dois pontos fortes e duas fragilidades (falácias, premissas ocultas) e credite o autor.",
+        "parameters": { "reconstructArgument": true, "strengths": 2, "weaknesses": 2, "creditAuthor": true },
+        "criteria": ["tese e premissas reconstruídas em lista", "dois pontos fortes e duas fragilidades", "cada fragilidade nomeada (ex.: falácia, premissa oculta)", "autor e fonte creditados"],
+        "evidence": "comentário estruturado",
+        "time": "30 min",
+        "level": 1
+      },
+      "L4": {
+        "title": "Relatório curto de estágio ou de pesquisa",
+        "brief": "Em até 4 páginas, relate uma prática de estágio ou uma pesquisa: problema, textos e método, resultados, limitações e referências em ABNT. Turma, escola e participantes sem identificação.",
+        "parameters": { "maxPages": 4, "sections": ["problema", "textos e método", "resultados", "limitações", "referências (ABNT NBR 6023)"], "anonymized": true },
+        "criteria": ["seções nomeadas", "até 4 páginas", "referências em ABNT", "sem aluno, escola ou participante identificável", "resultados ligados ao problema"],
+        "evidence": "relatório em PDF",
+        "time": "2 h",
+        "level": 2
+      },
+      "L3": {
+        "title": "Análise de dilema ético (caso fictício)",
+        "brief": "Analise um dilema de ética aplicada em caso fictício (saúde, tecnologia, trabalho): situação, questão ética, duas ou mais posições com fundamento teórico e sua conclusão justificada.",
+        "parameters": { "sections": ["situação", "questão ética", "posições e fundamentos", "conclusão justificada"], "fictitiousCase": true },
+        "criteria": ["caso fictício declarado", "ao menos duas posições com autor ou teoria de referência", "conclusão que responde às objeções", "sem pessoa ou organização real identificável"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Plano de aula de Filosofia alinhado à BNCC",
+        "competency": "Planejamento de aula com a BNCC",
+        "criteria": ["série e habilidade da BNCC com código (EM13CHS)", "problematização inicial e texto-base creditado", "objetivo, metodologia, recursos, tempo e avaliação", "adaptações para inclusão", "sem dado de aluno"],
+        "evidence": "plano de aula (modelo plano-de-aula)",
+        "time": "60 min",
+        "trigger": "Que pergunta filosófica você levaria para a turma amanhã? Monte o plano com a habilidade da BNCC.",
+        "level": 1
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Sequência didática ou roteiro de debate com texto-base",
+        "competency": "Condução de problematização e debate",
+        "criteria": ["questão norteadora e texto-base creditado", "três a cinco momentos (problematização, leitura, conceituação, debate, produção)", "regras de debate respeitoso", "produção escrita final com critérios", "habilidades da BNCC com código"],
+        "evidence": "documento",
+        "time": "90 min",
+        "trigger": "Quer mostrar como você conduz um debate? Monte o roteiro com um texto-base.",
+        "level": 2
+      },
+      {
+        "id": "X3",
+        "editor": "drawings",
+        "title": "Mapa de argumento de um texto clássico",
+        "competency": "Análise e representação de argumentos",
+        "criteria": ["tese central destacada", "premissas e subargumentos ligados por setas", "ao menos uma objeção e uma resposta", "referência do texto com página", "legenda dos tipos de nó"],
+        "evidence": "diagrama vetorial",
+        "time": "60 min",
+        "trigger": "Que argumento de um autor você conseguiria desenhar passo a passo?",
+        "level": 2
+      },
+      {
+        "id": "X4",
+        "editor": "letters",
+        "title": "Resenha crítica de uma obra de filosofia",
+        "competency": "Leitura filosófica e escrita acadêmica",
+        "criteria": ["referência completa da obra (ABNT)", "reconstrução da tese e dos argumentos principais", "avaliação crítica com objeções", "entre 500 e 1.000 palavras", "citações com página"],
+        "evidence": "resenha",
+        "time": "90 min",
+        "trigger": "Leu um livro de filosofia que vale discutir? Uma resenha comprova leitura crítica.",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "habilidade-bncc", "check": "há ao menos um código de habilidade da BNCC (ex.: EM13CHS501)", "appliesTo": ["X1", "X2"], "auto": true },
+      { "id": "secoes-do-plano", "check": "objetivo, metodologia, recursos, tempo e avaliação estão presentes e nomeados", "appliesTo": ["X1", "X2"], "auto": true },
+      { "id": "texto-base-creditado", "check": "o texto-base traz autor, obra e página", "appliesTo": ["X1", "X2", "X3"], "auto": true },
+      { "id": "argumento-reconstruido", "check": "tese e premissas aparecem em lista ou diagrama explícito", "appliesTo": ["L10", "X3"], "auto": true },
+      { "id": "caso-ficticio-declarado", "check": "o caso analisado é declarado fictício", "appliesTo": ["L3"], "auto": true },
+      { "id": "referencias-abnt", "check": "há referência ou seção de referências com autor, título e ano (NBR 6023)", "appliesTo": ["L4", "X2", "X4"], "auto": true },
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6", "X4"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7"], "auto": true },
+      { "id": "sem-dado-pessoal", "check": "a pessoa declarou ausência de dado de aluno ou de participante de pesquisa", "appliesTo": ["L3", "L4", "L5", "X1", "X2"], "auto": true },
+      { "id": "creditos-e-fontes", "check": "autores, fontes e autores remixados estão creditados", "appliesTo": ["L5", "L10", "D2", "D7", "D10", "X4"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim e nenhum nó solto", "appliesTo": ["D4", "X3"], "auto": true },
+      { "id": "autoria", "check": "a pessoa declarou autoria da peça", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L9", "L10", "D2", "D4", "D7", "D10", "X1", "X2", "X3", "X4"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "rigor-argumentativo", "label": "Rigor argumentativo", "levels": { "aproxima": "opiniões sem premissas explícitas", "atende": "tese sustentada por premissas claras e coerentes", "supera": "antecipa objeções fortes e responde a elas" } },
+      { "id": "fidelidade-ao-texto", "label": "Fidelidade ao texto e ao autor", "levels": { "aproxima": "atribui ao autor ideias que o texto não sustenta", "atende": "reconstrói o pensamento do autor com citações pertinentes", "supera": "situa o texto na obra e no debate da época" } },
+      { "id": "problematizacao", "label": "Problematização", "levels": { "aproxima": "a pergunta é factual ou já respondida", "atende": "a pergunta é genuinamente filosófica e aberta", "supera": "liga a pergunta à experiência do público e a textos da tradição" } },
+      { "id": "coerencia-didatica", "label": "Coerência entre objetivo, atividade e avaliação", "levels": { "aproxima": "objetivo e atividade se relacionam de forma vaga", "atende": "a atividade leva ao objetivo e a avaliação observa a habilidade", "supera": "objetivo, atividade, avaliação e devolutiva formam um ciclo explícito" } },
+      { "id": "clareza", "label": "Clareza", "levels": { "aproxima": "a ideia principal exige releitura", "atende": "a ideia principal é entendida na primeira leitura", "supera": "conduz quem lê sem esforço e sem excesso" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa formada ou em formação em Filosofia: docência no ensino médio, pesquisa e ensino superior, ética aplicada, edição, tradução e escrita. Use o vocabulário da área (problematização, conceituação, argumento, validade e solidez, falácia, comentário de texto, fichamento, dissertação filosófica, ética aplicada, comunidade de investigação, BNCC de Ciências Humanas e Sociais Aplicadas e códigos EM13CHS) e cite normas quando couber: LDB (Lei 9.394/1996, art. 35-A), BNCC do Ensino Médio (Res. CNE/CP 4/2018), DCN de Filosofia, Res. CNS 510/2016 (ética em pesquisa em humanas), ECA e LGPD art. 14. A profissão não é regulamentada: não invente registro ou conselho. Nunca: avaliar, dar nota ou classificar alunos reais; aceitar nomes, notas ou textos de alunos identificáveis; atribuir a um autor ideias ou citações que você não pode localizar (diga quando não tiver certeza e indique a obra a conferir); escrever a dissertação, a resenha ou o TCC pela pessoa (proponha estrutura e discuta o argumento dela); emitir parecer de comitê de ética como se fosse do colegiado; tomar partido em questões religiosas ou político-partidárias da pessoa. Pergunte a frente de atuação em vez de inferir. Pré-cheque só critérios objetivos (código da BNCC, seções, texto-base creditado, argumento reconstruído, referências); a avaliação filosófica da peça e o selo são humanos. Mercado cita fonte, data e região (Censo Escolar, CAGED/RAIS, editais) ou diz \"estimativa\"; nunca fale de salário. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "BNCC — Base Nacional Comum Curricular, Ensino Médio (MEC)", "url": "http://basenacionalcomum.mec.gov.br/", "kind": "norma" },
+      { "title": "LDB — Lei 9.394/1996 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9394.htm", "kind": "norma" },
+      { "title": "Resolução CNS 510/2016 — ética em pesquisa em ciências humanas e sociais", "url": "https://conselho.saude.gov.br/resolucoes/2016/Reso510.pdf", "kind": "norma" },
+      { "title": "ANPOF — Associação Nacional de Pós-Graduação em Filosofia", "url": "https://anpof.org/", "kind": "comunidade" },
+      { "title": "Stanford Encyclopedia of Philosophy", "url": "https://plato.stanford.edu/", "kind": "referencia" },
+      { "title": "Portal de Periódicos CAPES", "url": "https://www.periodicos.capes.gov.br/", "kind": "educacao" },
+      { "title": "INEP — Censo Escolar da Educação Básica", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-escolar", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 de Filosofia; x1 (frente) no primeiro acesso." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Docência puxa X1/X2/X3; pesquisa puxa X4/L4/L10; ética aplicada puxa L3/L7/D4." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Respeita horas (d1), aparelho (d4) e calendário escolar ou de editais; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Só critérios objetivos: código BNCC, seções, texto-base com página, argumento reconstruído, referências. Não julga a qualidade filosófica; o selo é humano." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de plano, roteiro de debate ou resenha com prévia; discute o argumento da pessoa, não escreve por ela; nunca inventa citação." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura do mapa de argumento (X3) e do fluxo de deliberação ética (D4)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: competências por frente, lacunas e incertezas; cita o campo de origem de cada afirmação." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Caminhos para história, ciências sociais, direito, letras e pedagogia com lacunas; mercado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Pessoas descobríveis por opt-in da mesma família CBO (2321, 2514, 2347) ou com competências em comum." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com frente e área de interesse; só com o consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai formação, publicações e experiências em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados e textos de alunos (nomes, notas, fotos)", "dados de participantes de pesquisa", "convicções religiosas, filosóficas ou políticas da pessoa (LGPD art. 5º II)", "dados de terceiros sem autorização"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca avaliar, dar nota ou classificar alunos reais; recusar nomes, notas ou textos de alunos identificáveis",
+      "nunca inventar citações ou atribuir ideias a autores sem poder localizá-las; dizer quando não houver certeza",
+      "não escrever a peça que a pessoa apresentará como própria; propor estrutura e discutir o argumento dela",
+      "não inferir nem registrar convicções religiosas, filosóficas ou políticas da pessoa a partir de seus textos",
+      "perguntar a frente de atuação em vez de inferir; não inventar registro ou conselho profissional",
+      "nunca prometer vaga, aprovação ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação; toda saída traz \"por que\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["diagrama", "infografico", "prancha"],
+    "lettersTemplates": ["plano-de-aula", "artigo", "revisao", "projeto-de-pesquisa", "relatorio-tecnico", "estudo-de-caso", "pop", "curriculo", "bio", "carta", "post"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, tarefas curtas (L5, L6) e revisão de argumento (L10); resenha (X4), relatório (L4) e mapa de argumento (X3) pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: bio com sua frente e sua área de interesse (15 min).",
+        "Que pergunta filosófica você levaria para a turma amanhã? Um plano com a habilidade da BNCC leva cerca de 1 h.",
+        "Desenhar o argumento de um clássico num mapa (60 min) mostra como você lê, e ajuda quem estuda com você.",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias"] },
+    "privacy": {
+      "sensitiveData": ["dados de alunos menores de idade: nomes, notas, laudos e fotos (ECA; LGPD art. 14)", "textos e redações de alunos", "dados de participantes de pesquisa (Res. CNS 510/2016)", "convicções religiosas, filosóficas ou políticas declaradas em textos pessoais"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "INEP — Censo Escolar (docentes de Filosofia no ensino médio e adequação da formação)", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-escolar", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2321, 2514 e 2347", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Concursos públicos para o magistério (redes estaduais) e para o ensino superior — gov.br", "url": "https://www.gov.br/pt-br/servicos/consultar-concursos-publicos", "geography": "Brasil, UF e município", "cadence": "eventual", "kind": "edital" },
+      { "title": "CAPES — GeoCAPES (pós-graduação em Filosofia: programas, discentes, titulados)", "url": "https://geocapes.capes.gov.br/", "geography": "Brasil e UF", "cadence": "anual", "kind": "estatistica-oficial" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "historia", "why": "Leitura de textos clássicos e história das ideias aproximam a Filosofia da docência e pesquisa em História.", "gaps": ["licenciatura em História", "trabalho com fontes históricas", "historiografia"], "steps": ["resenha de uma obra de história das ideias (X4)", "plano de aula interdisciplinar (X1)", "segunda licenciatura em História"] },
+    { "to": "ciencias-sociais", "why": "Filosofia política e teoria social são vizinhas; a docência no ensino médio costuma combinar as duas áreas.", "gaps": ["métodos de pesquisa social", "teoria sociológica e antropológica", "licenciatura em Sociologia"], "steps": ["relatório de pesquisa com dados sociais (L4)", "infográfico de um debate público com fonte (D7)", "segunda licenciatura em Ciências Sociais"] },
+    { "to": "direito", "why": "Argumentação, lógica, ética e filosofia do direito preparam bem para a graduação em Direito.", "gaps": ["graduação em Direito e exame da OAB", "dogmática jurídica e processo", "redação jurídica"], "steps": ["análise de dilema ético com fundamentos (L3)", "revisão crítica de uma argumentação pública (L10)", "graduação em Direito"] },
+    { "to": "letras", "why": "Escrita, tradução e edição de textos de humanidades aproximam a Filosofia de Letras.", "gaps": ["técnicas de revisão e preparação de originais", "ferramentas de tradução assistida", "licenciatura em Letras para docência"], "steps": ["tradução comentada de um trecho filosófico em domínio público", "revisão crítica com controle de alterações (L10)", "curso de revisão ou tradução"] },
+    { "to": "pedagogia", "why": "Filosofia da educação e filosofia com crianças levam à coordenação pedagógica e à formação de professores.", "gaps": ["licenciatura em Pedagogia ou pós em gestão escolar", "educação infantil e anos iniciais", "coordenação pedagógica"], "steps": ["roteiro de comunidade de investigação com crianças (X2)", "fluxo de um processo escolar (D4)", "segunda licenciatura em Pedagogia"] },
+    { "to": "teologia", "why": "Metafísica, ética e história da filosofia medieval dialogam com a Teologia.", "gaps": ["graduação em Teologia", "exegese e línguas bíblicas", "história das religiões"], "steps": ["resenha de uma obra de filosofia da religião (X4)", "relatório de pesquisa sobre um tema de fronteira (L4)", "graduação em Teologia"] }
+  ],
+  "learning": [
+    { "title": "AVAMEC — cursos do MEC para professores (BNCC, novo ensino médio)", "provider": "MEC", "url": "https://avamec.mec.gov.br/", "free": true, "kind": "portal" },
+    { "title": "BNCC — Ensino Médio: Ciências Humanas e Sociais Aplicadas", "provider": "MEC", "url": "http://basenacionalcomum.mec.gov.br/", "free": true, "kind": "norma" },
+    { "title": "Domínio Público — biblioteca digital do MEC (clássicos da filosofia)", "provider": "MEC", "url": "http://www.dominiopublico.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Stanford Encyclopedia of Philosophy", "provider": "Universidade Stanford", "url": "https://plato.stanford.edu/", "free": true, "kind": "portal" },
+    { "title": "ANPOF — grupos de trabalho, eventos e Revista", "provider": "ANPOF", "url": "https://anpof.org/", "free": true, "kind": "comunidade" },
+    { "title": "PROF-FILO — Mestrado Profissional em Filosofia (rede nacional)", "provider": "UFPR e instituições associadas", "url": "https://www.proffilo.ufpr.br/", "free": true, "kind": "curso" },
+    { "title": "Univesp — videoaulas de Filosofia e ética", "provider": "Univesp", "url": "https://www.youtube.com/@univesp", "free": true, "kind": "curso" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4 (perguntas), §4.6 (pacote), §7 (tarefas L1–L10, D1–D10), §8 (mensagens)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos — ramo filosofia (CBO, ISCO, ESCO, sensitiveData, vizinhos, profissão não regulamentada)", "url": "contracts/career/academic-fields.json", "accessedAt": "2026-11-02" },
+    { "title": "LDB — Lei 9.394/1996", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9394.htm", "accessedAt": "2026-11-02" },
+    { "title": "BNCC — Base Nacional Comum Curricular", "url": "http://basenacionalcomum.mec.gov.br/", "accessedAt": "2026-11-02" },
+    { "title": "Resolução CNS 510/2016", "url": "https://conselho.saude.gov.br/resolucoes/2016/Reso510.pdf", "accessedAt": "2026-11-02" },
+    { "title": "ESCO — occupations philosopher, philosophy teacher secondary school", "url": "https://esco.ec.europa.eu/", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Lei 14.945/2024 (reestruturação do ensino médio) e situação atual da Filosofia na formação geral básica após a reforma: citadas de memória, não confirmadas.",
+    "LDB art. 35-A, §2º (estudos e práticas de filosofia no ensino médio): redação vigente não conferida.",
+    "Parecer CNE/CES 492/2001 e Res. CNE/CES 12/2002 (DCN de Filosofia): números citados de memória.",
+    "URL do PROF-FILO (proffilo.ufpr.br) e cobertura do GeoCAPES por área: não verificadas.",
+    "URIs ESCO de competências não pesquisadas (esco: null); URIs de ocupação copiadas do catálogo de ramos.",
+    "Nenhuma URL de citeSources, market, learning e sources foi acessada nesta sessão (cota de busca indisponível); endereços citados de memória."
+  ]
+}

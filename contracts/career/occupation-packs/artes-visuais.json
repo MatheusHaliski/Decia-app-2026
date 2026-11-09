@@ -1,0 +1,351 @@
+{
+  "schemaVersion": 1,
+  "code": "artes-visuais",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Artes Visuais", "en": "Visual Arts", "es": "Artes Visuales" },
+  "fields": ["artes-visuais"],
+  "family": {
+    "cbo": [
+      { "code": "2624", "title": "Artistas visuais, desenhistas industriais e conservadores-restauradores de bens culturais" },
+      { "code": "2321", "title": "Professores do ensino médio" },
+      { "code": "2313", "title": "Professores de nível superior no ensino fundamental de quinta a oitava série" },
+      { "code": "2349", "title": "Professores de artes do ensino superior" }
+    ],
+    "isco08": [
+      { "code": "2651", "title": "Visual artists" },
+      { "code": "2330", "title": "Secondary education teachers" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/374d925a-107b-4c99-bc8b-75483441f062", "label": "artistic painter" },
+      { "uri": "http://data.europa.eu/esco/occupation/94d94bd0-9ac3-4bd8-81c0-c3fdf551aa16", "label": "sculptor" },
+      { "uri": "http://data.europa.eu/esco/occupation/80ec8f3e-2cda-4ea6-a382-ece99589ccdd", "label": "art teacher secondary school" },
+      { "uri": "http://data.europa.eu/esco/occupation/1b949bae-882f-40ff-9fe7-3c8ede5e38b5", "label": "illustrator" }
+    ]
+  },
+  "scope": {
+    "summary": "Artistas visuais (pintura, desenho, gravura, escultura, fotografia artística, instalação, arte digital, ilustração), arte-educadores e professores de Arte, mediadores culturais e assistentes de curadoria e de acervo. Produzem obra autoral, ensinam, medeiam e participam de editais e exposições. Profissão sem regulamentação nem conselho; a docência na educação básica exige licenciatura. A prova de competência é o portfólio com série, texto de artista e registro de processo.",
+    "entryRoles": ["Assistente de artista ou de ateliê", "Arte-educador em projeto social ou ONG", "Mediador cultural (educativo de museu)", "Ilustrador júnior", "Professor de Arte em início de carreira", "Monitor de oficinas culturais"],
+    "midRoles": ["Artista visual com produção autoral", "Professor de Arte na educação básica", "Ilustrador editorial ou freelance", "Produtor de exposições", "Assistente de curadoria", "Coordenador de educativo", "Técnico de acervo e montagem"],
+    "seniorRoles": ["Artista com circulação nacional ou internacional", "Curador", "Coordenador pedagógico de Arte", "Professor de artes no ensino superior", "Diretor de museu ou centro cultural", "Gestor de projetos culturais com leis de incentivo"],
+    "sectors": ["produção artística autoral", "educação básica pública e privada", "museus, galerias e centros culturais", "editoras e ilustração", "terceiro setor e projetos sociais", "gestão pública de cultura (secretarias, pontos de cultura)", "economia criativa e mercado de arte", "ensino superior e pesquisa"],
+    "regulation": [
+      { "name": "Lei 9.610/1998 (direitos autorais), incl. art. 38 (direito de sequência)", "issuer": "Brasil", "about": "protege obras visuais; direitos morais irrenunciáveis; crédito obrigatório; uso de obra de terceiros só com autorização; participação na revenda" },
+      { "name": "LDB (Lei 9.394/1996), art. 26 §2º e §6º, com Lei 13.278/2016", "issuer": "Brasil", "about": "ensino da arte obrigatório na educação básica, com artes visuais, dança, música e teatro como linguagens" },
+      { "name": "BNCC — componente Arte (Resolução CNE/CP 2/2017)", "issuer": "MEC / CNE", "about": "competências e habilidades de Arte (EF e EM) que orientam planos de aula e avaliação" },
+      { "name": "Lei 8.313/1991 (Lei Rouanet) e Instruções Normativas do MinC", "issuer": "Brasil / MinC", "about": "incentivo fiscal a projetos culturais via Salic; proposta, orçamento, contrapartidas e prestação de contas" },
+      { "name": "Lei 14.399/2022 (Política Nacional Aldir Blanc) e LC 195/2022 (Lei Paulo Gustavo)", "issuer": "Brasil / MinC", "about": "repasses a estados e municípios para editais, prêmios e bolsas de arte e cultura" },
+      { "name": "Lei 11.904/2009 (Estatuto de Museus)", "issuer": "Brasil / Ibram", "about": "princípios de preservação, acesso e documentação de acervos museológicos" },
+      { "name": "ECA (Lei 8.069/1990) e LGPD art. 14", "issuer": "Brasil", "about": "trabalhos, fotos e dados de alunos menores só com autorização dos responsáveis e no melhor interesse da criança" },
+      { "name": "Código Civil, art. 20 (direito de imagem)", "issuer": "Brasil", "about": "retratos e fotos de pessoas identificáveis exigem autorização de uso de imagem" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "poética", "meaning": "conjunto de questões, procedimentos e escolhas que caracteriza a produção de um artista" },
+      { "term": "série", "meaning": "conjunto de obras ligadas por tema, técnica ou procedimento, apresentado como unidade" },
+      { "term": "texto de artista (statement)", "meaning": "texto curto em que o artista apresenta a pesquisa, os procedimentos e o contexto da obra" },
+      { "term": "portfólio artístico", "meaning": "documento com obras, ficha técnica, texto de artista, currículo artístico e registro de exposições" },
+      { "term": "ficha técnica da obra", "meaning": "título, ano, técnica, suporte, dimensões (altura × largura × profundidade) e créditos de foto" },
+      { "term": "técnica e suporte", "meaning": "procedimento (óleo, xilogravura, fotografia) e material sobre o qual a obra é feita (tela, papel, parede)" },
+      { "term": "gravura e tiragem", "meaning": "obra multiplicável por matriz; tiragem numerada (ex.: 3/20), prova de artista (P.A.)" },
+      { "term": "curadoria", "meaning": "seleção, articulação e apresentação de obras em torno de um conceito expositivo" },
+      { "term": "expografia", "meaning": "projeto do espaço expositivo: percurso, disposição das obras, iluminação, textos e acessibilidade" },
+      { "term": "mediação cultural", "meaning": "ação educativa que aproxima públicos das obras por conversa, atividade ou material de apoio" },
+      { "term": "edital", "meaning": "chamada pública de seleção de projetos, prêmios, bolsas ou exposições com regras, prazos e critérios" },
+      { "term": "contrapartida", "meaning": "ação de acesso ou formação oferecida ao público em troca de recurso público ou incentivo" },
+      { "term": "prestação de contas", "meaning": "comprovação do uso do recurso e da execução do projeto cultural" },
+      { "term": "abordagem triangular", "meaning": "proposta de ensino de arte (Ana Mae Barbosa) que articula fazer, ler e contextualizar" },
+      { "term": "plano de aula", "meaning": "documento com objetivos, habilidades da BNCC, materiais, etapas e avaliação de uma aula" },
+      { "term": "conservação preventiva", "meaning": "cuidados de ambiente, manuseio e embalagem que retardam a degradação da obra" },
+      { "term": "direito moral de autor", "meaning": "direito de ter o nome ligado à obra e de se opor a alterações; não se transfere" },
+      { "term": "licença Creative Commons", "meaning": "licença pública que define crédito (BY), uso comercial (NC), derivações (ND) e compartilhamento igual (SA)" },
+      { "term": "apropriação e remix", "meaning": "uso de imagem preexistente em nova obra; exige crédito e atenção à licença e ao direito moral" },
+      { "term": "residência artística", "meaning": "período de criação em instituição ou espaço, geralmente com bolsa e contrapartida" }
+    ],
+    "tools": ["tintas, papéis e materiais de ateliê", "prensa e matrizes de gravura", "câmera e iluminação para registro de obra", "Adobe Photoshop / Lightroom", "Procreate / Krita", "Blender (escultura digital)", "Mapa Cultural / Mapas Culturais (inscrição em editais)", "Salic (Lei Rouanet)", "Drawings (prancha, 3D, antes e depois)", "Letters (texto de artista, projeto, plano de aula)"],
+    "deliverables": ["série de obras com ficha técnica", "portfólio artístico em PDF", "texto de artista", "currículo artístico (exposições, prêmios, residências)", "projeto para edital ou lei de incentivo", "projeto expográfico ou de curadoria", "material educativo de mediação", "plano de aula de Arte alinhado à BNCC", "relato ou memorial de processo criativo", "ilustração editorial com briefing", "registro fotográfico profissional das obras"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Produção artística em uma ou mais linguagens (desenho, pintura, gravura, escultura, fotografia, digital)", "esco": null, "kind": "nucleo" },
+      { "label": "Desenvolvimento de poética e de série coerente", "esco": null, "kind": "nucleo" },
+      { "label": "Composição, cor e materialidade", "esco": null, "kind": "nucleo" },
+      { "label": "Escrita sobre a própria obra (texto de artista, memorial)", "esco": null, "kind": "nucleo" },
+      { "label": "Organização de portfólio e registro fotográfico de obras", "esco": null, "kind": "nucleo" },
+      { "label": "Elaboração de projetos culturais para editais e leis de incentivo", "esco": null, "kind": "nucleo" },
+      { "label": "História e teoria da arte, com repertório de arte brasileira e afro-indígena", "esco": null, "kind": "nucleo" },
+      { "label": "Planejamento de aulas de Arte alinhadas à BNCC", "esco": null, "kind": "nucleo" },
+      { "label": "Mediação cultural e trabalho com públicos diversos", "esco": null, "kind": "apoio" },
+      { "label": "Curadoria e expografia", "esco": null, "kind": "apoio" },
+      { "label": "Conservação preventiva, embalagem e montagem de obras", "esco": null, "kind": "apoio" },
+      { "label": "Direitos autorais, licenças e direito de imagem", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de carreira artística: orçamento, cronograma e prestação de contas", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["recepção de crítica e feedback", "comunicação oral em mediação e sala de aula", "organização de prazos de editais", "trabalho em rede com instituições e coletivos", "ética com alunos, modelos e obras de terceiros"],
+    "tracks": [
+      { "id": "portfolio-artistico", "label": "Portfólio artístico", "steps": ["prancha com três obras de uma série e fichas técnicas (D2)", "texto de artista de até 1.500 caracteres (L6)", "memorial de processo de uma obra (L4)", "currículo artístico de uma página (L1)"] },
+      { "id": "editais-e-projetos", "label": "Editais e projetos culturais", "steps": ["resposta a um edital simulado (L8)", "cronograma e orçamento em etapas sem valores (L9)", "prancha do projeto expográfico (X2)"] },
+      { "id": "arte-educacao", "label": "Arte-educação", "steps": ["plano de aula de Arte com habilidades da BNCC (X1)", "material de mediação para uma obra pública (D7)", "relato de uma aula aplicada sem dados de alunos (L3)"] },
+      { "id": "dialogo-com-obras", "label": "Diálogo com obras", "steps": ["remix com crédito de obra em domínio público ou CC (D10)", "antes e depois de uma obra com três decisões (D5)", "revisão crítica de uma peça remixada (L10)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"artista visual\", \"professor de Arte\", \"ilustrador\", \"mediador cultural\", \"arte-educador\"",
+      "cboFamilies": ["2624", "2321", "2313", "2349"],
+      "why": "Pergunto seu último cargo ou atuação para começar pelo que você já faz (ateliê, sala de aula, museu, ilustração). Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, monitoria ou primeira exposição coletiva",
+        "junior": "produz e expõe com orientação; dá aulas ou oficinas com apoio",
+        "pleno": "tem série consolidada, participa de editais e conduz turmas com autonomia",
+        "senior": "circula em instituições, orienta outros artistas ou professores",
+        "gestao": "coordena educativo, curadoria, equipe pedagógica ou espaço cultural"
+      },
+      "why": "Pergunto o nível para ajustar o tamanho das tarefas (uma obra, uma série, um projeto expositivo) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem nas artes visuais",
+      "options": ["desenhar", "pintar", "gravura", "escultura ou objeto", "fotografia artística", "arte digital e ilustração", "desenvolver uma série com coerência", "escrever sobre a própria obra", "montar portfólio", "escrever projetos para editais", "planejar aulas de Arte", "mediar obras com públicos", "curadoria e montagem de exposições", "conservar e embalar obras"],
+      "why": "Suas competências declaradas viram o ponto de partida; a prova vem com a prancha da série, o texto de artista e o projeto."
+    },
+    "c4": {
+      "certifications": ["licenciatura em Artes Visuais (docência na educação básica)", "bacharelado em Artes Visuais ou Artes Plásticas", "cursos livres de ateliê com certificado", "formação em mediação cultural", "curso de elaboração de projetos culturais", "pós-graduação em arte, educação ou curadoria"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação e idiomas ajudam a ver lacunas para editais, residências e docência; para dar aula na rede pública a licenciatura é exigida."
+    },
+    "c5": {
+      "prompt": "Que competência das artes visuais quer desenvolver primeiro?",
+      "options": ["escrever texto de artista", "montar portfólio e registrar obras", "escrever projeto para edital", "desenvolver uma série", "planejar aulas com a BNCC", "mediação cultural", "curadoria e expografia", "ilustração editorial", "direitos autorais e licenças"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (série → texto → edital) em vez de um catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Onde você quer atuar primeiro?",
+        "type": "escolha",
+        "options": ["produção autoral e exposições", "docência de Arte na educação básica", "museus e educativos", "ilustração e mercado editorial", "projetos culturais com editais"],
+        "why": "Escolho se a primeira tarefa é a prancha da série, o plano de aula, o material de mediação ou a resposta a edital.",
+        "where": "P"
+      },
+      {
+        "id": "x2",
+        "prompt": "Suas obras retratam pessoas identificáveis ou trabalhos de alunos?",
+        "type": "sim-nao",
+        "options": [],
+        "why": "Se sim, lembro de ter autorização de uso de imagem (e dos responsáveis, no caso de menores) antes de qualquer peça ficar pública.",
+        "where": "X"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["D2", "L6", "L8", "D10", "L4", "D5", "L1", "D3", "L3", "D7", "L5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica de ambiente não é entrega das artes visuais; a expografia entra como tarefa personalizada (X2)" },
+      { "code": "D8", "reason": "vista explodida de conjunto mecânico não pertence à área" },
+      { "code": "D9", "reason": "wireframe de tela não pertence à área" },
+      { "code": "L7", "reason": "procedimento operacional não é entrega típica; o processo criativo cabe no memorial (L4)" }
+    ],
+    "parameters": {
+      "D2": {
+        "title": "Prancha de portfólio com três obras de uma série",
+        "brief": "Monte uma prancha A3 com três obras da mesma série ou pesquisa. Cada obra com ficha técnica (título, ano, técnica, suporte, dimensões A × L × P) e crédito de foto. Inclua o título da série. Obras com pessoas identificáveis só com autorização de uso de imagem.",
+        "parameters": { "format": "A3", "works": 3, "sameSeries": true, "technicalSheet": ["título", "ano", "técnica", "suporte", "dimensões"], "photoCredit": true, "imageRightsDeclared": true },
+        "criteria": ["três obras da mesma série", "ficha técnica completa em cada obra", "título da série presente", "crédito de foto", "declaração de autorização de imagem quando houver pessoas"],
+        "evidence": "prancha publicada (PDF ou PNG)",
+        "time": "90 min",
+        "level": 1
+      },
+      "L6": {
+        "title": "Texto de artista",
+        "brief": "Escreva um texto de até 1.500 caracteres, em primeira pessoa, sobre sua pesquisa: questão central, procedimentos e materiais, e uma referência artística que dialoga com o trabalho. Termine com link para a prancha.",
+        "parameters": { "maxChars": 1500, "person": "primeira", "requiredParts": ["questão central", "procedimentos e materiais", "uma referência artística", "link para a prancha"] },
+        "criteria": ["até 1.500 caracteres", "questão central nomeada", "procedimentos e materiais descritos", "uma referência artística citada", "link para evidência"],
+        "evidence": "bio no perfil ou documento",
+        "time": "30 min",
+        "level": 1
+      },
+      "L8": {
+        "title": "Resposta a um edital de artes visuais",
+        "brief": "A partir de um edital simulado (exposição, prêmio, residência ou Política Nacional Aldir Blanc), escreva o projeto: apresentação, justificativa, objetivos, etapas e cronograma, contrapartida de acesso, acessibilidade, equipe e o que fica fora. Sem valores em dinheiro.",
+        "parameters": { "template": "proposta", "sections": ["apresentação", "justificativa", "objetivos", "etapas e cronograma", "contrapartida", "acessibilidade", "equipe", "fora do escopo"], "maxPages": 3, "noPricing": true },
+        "criteria": ["oito seções presentes", "objetivos verificáveis", "cronograma por etapa", "contrapartida e acessibilidade descritas", "até três páginas"],
+        "evidence": "projeto (documento)",
+        "time": "60 min",
+        "level": 2
+      },
+      "D10": {
+        "title": "Remix com crédito de uma obra em domínio público ou Creative Commons",
+        "brief": "Escolha uma obra em domínio público ou com licença que permita derivação e crie uma nova versão. Credite autor, fonte e licença, declare duas transformações e explique o diálogo. Não imite estilo de artista vivo identificável.",
+        "parameters": { "licenseAllowed": ["domínio público", "CC BY", "CC BY-SA"], "declaredChanges": 2, "creditFields": ["autor", "título", "fonte", "licença"] },
+        "criteria": ["autor, título, fonte e licença creditados", "licença permite derivação", "duas transformações declaradas", "texto curto sobre o diálogo com a obra"],
+        "evidence": "remix vinculado",
+        "time": "60 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Memorial de processo criativo",
+        "brief": "Documente uma obra ou série em até quatro páginas: ponto de partida, referências, procedimentos e materiais, etapas (com imagens de processo), decisões e descartes, e referências bibliográficas.",
+        "parameters": { "template": "memorial", "sections": ["ponto de partida", "referências", "procedimentos e materiais", "etapas", "decisões e descartes", "referências bibliográficas"], "maxPages": 4, "processImages": true },
+        "criteria": ["seis seções nomeadas", "ao menos duas imagens de processo", "referências citadas", "até quatro páginas"],
+        "evidence": "memorial (documento)",
+        "time": "2 h",
+        "level": 3
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Plano de aula de Arte alinhado à BNCC",
+        "competency": "Planejamento pedagógico em Arte (fazer, ler, contextualizar)",
+        "criteria": ["ano ou etapa e duração definidos", "ao menos uma habilidade da BNCC com código", "etapas fazer, ler e contextualizar", "materiais acessíveis listados", "avaliação descrita", "nenhum dado de aluno"],
+        "evidence": "plano de aula (documento)",
+        "time": "45 min",
+        "trigger": "Você dá ou quer dar aulas de Arte? Quer planejar uma aula com a BNCC?",
+        "level": 1
+      },
+      {
+        "id": "X2",
+        "editor": "drawings",
+        "title": "Projeto expográfico de uma pequena exposição",
+        "competency": "Curadoria e expografia",
+        "criteria": ["conceito curatorial em uma frase", "planta esquemática com percurso e posição de ao menos cinco obras", "altura de centro das obras indicada", "texto de parede de até 600 caracteres", "nota de acessibilidade (circulação, legenda ampliada ou audiodescrição)"],
+        "evidence": "prancha publicada (PDF ou PNG)",
+        "time": "2 h",
+        "trigger": "Quer mostrar como montaria uma exposição com suas obras ou de um coletivo?",
+        "level": 3
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "ficha-tecnica", "check": "cada obra traz título, ano, técnica, suporte e dimensões", "appliesTo": ["D2", "D5", "X2"], "auto": true },
+      { "id": "quantidade-de-obras", "check": "a prancha traz o número pedido de obras da mesma série", "appliesTo": ["D2", "X2"], "auto": true },
+      { "id": "creditos-e-licenca", "check": "autor, fonte e licença da obra remixada ou citada estão creditados, e a licença permite o uso", "appliesTo": ["D10", "D2", "L10", "L5"], "auto": true },
+      { "id": "autorizacao-de-imagem", "check": "a pessoa declarou autorização de uso de imagem para pessoas retratadas e de responsáveis para menores", "appliesTo": ["D2", "D5", "D10", "L3", "X1"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L8", "L4", "L3", "X1"], "auto": true },
+      { "id": "habilidade-bncc", "check": "o plano cita ao menos uma habilidade da BNCC com código (ex.: EF69AR01)", "appliesTo": ["X1"], "auto": true },
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas ou caracteres", "appliesTo": ["L1", "L4", "L5", "L6", "L8"], "auto": true },
+      { "id": "fonte-dos-dados", "check": "o infográfico cita fonte, data e abrangência", "appliesTo": ["D7"], "auto": true },
+      { "id": "autoria-declarada", "check": "a pessoa declarou autoria e ausência de dados confidenciais", "appliesTo": ["L1", "L3", "L4", "L5", "L6", "L8", "L10", "D2", "D3", "D5", "D7", "D10", "X1", "X2"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "coerencia-da-serie", "label": "Coerência da série", "levels": { "aproxima": "as obras parecem soltas, sem questão comum", "atende": "uma questão ou procedimento comum liga as obras", "supera": "a série desdobra a questão e cada obra acrescenta algo" } },
+      { "id": "articulacao-do-texto", "label": "Articulação entre texto e obra", "levels": { "aproxima": "texto genérico, que serviria a qualquer artista", "atende": "o texto descreve com precisão a pesquisa e os procedimentos", "supera": "o texto abre leituras e situa a obra em um contexto artístico" } },
+      { "id": "viabilidade-do-projeto", "label": "Viabilidade do projeto cultural", "levels": { "aproxima": "objetivos vagos e etapas sem prazo", "atende": "objetivos, etapas, contrapartida e acessibilidade executáveis", "supera": "projeto dialoga com o território e com os critérios do edital" } },
+      { "id": "proposta-pedagogica", "label": "Proposta pedagógica", "levels": { "aproxima": "atividade sem objetivo de aprendizagem claro", "atende": "fazer, ler e contextualizar articulados à habilidade da BNCC", "supera": "inclui repertório diverso, adaptação para diferentes alunos e avaliação formativa" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa das Artes Visuais (artista visual, ilustrador, arte-educador, professor de Arte, mediador, assistente de curadoria). Use o vocabulário da área: poética, série, texto de artista, portfólio, ficha técnica (título, ano, técnica, suporte, dimensões), tiragem, curadoria, expografia, mediação, edital, contrapartida, prestação de contas, abordagem triangular, BNCC. Referências a citar quando couber: Lei 9.610/1998 (direitos morais, crédito, direito de sequência), licenças Creative Commons, Código Civil art. 20 (imagem), ECA e LGPD art. 14 (alunos), LDB art. 26 e Lei 13.278/2016, BNCC-Arte, Lei Rouanet (8.313/1991), Política Nacional Aldir Blanc (14.399/2022) e Lei Paulo Gustavo, Estatuto de Museus. Priorize: prancha de série com fichas técnicas (D2), texto de artista (L6), resposta a edital (L8), remix com crédito (D10), memorial de processo (L4), antes e depois (D5); plano de aula BNCC (X1) e expografia (X2) quando couber. Nunca: gerar ou sugerir imagem que imite o estilo de artista identificável, vivo ou com obra protegida; criar obra para a pessoa apresentar como sua; reproduzir obra de terceiros sem licença e crédito; publicar retratos sem autorização ou trabalhos e dados de alunos; julgar valor artístico com nota. A IA ajuda a estruturar textos, fichas, projetos e cronogramas e a checar critérios objetivos; a avaliação poética é humana. Pergunte onde a pessoa quer atuar antes de sugerir; não deduza pela obra. Editais e mercado com fonte, data e região ou \"estimativa\"; nunca fale de salário ou preço de obra como promessa. Progresso por critérios atendidos, sem score.",
+    "citeSources": [
+      { "title": "Lei 9.610/1998 — direitos autorais (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9610.htm", "kind": "norma" },
+      { "title": "BNCC — Base Nacional Comum Curricular (MEC)", "url": "https://basenacionalcomum.mec.gov.br/", "kind": "orgao-publico" },
+      { "title": "Lei 13.278/2016 — linguagens do ensino da arte (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2016/lei/l13278.htm", "kind": "norma" },
+      { "title": "Ministério da Cultura — Lei Rouanet, Política Nacional Aldir Blanc e editais", "url": "https://www.gov.br/cultura/pt-br", "kind": "orgao-publico" },
+      { "title": "Mapas Culturais / Mapa da Cultura — inscrição em editais", "url": "https://mapa.cultura.gov.br/", "kind": "orgao-publico" },
+      { "title": "Ibram — Instituto Brasileiro de Museus", "url": "https://www.gov.br/museus/pt-br", "kind": "orgao-publico" },
+      { "title": "Creative Commons Brasil — licenças", "url": "https://br.creativecommons.net/", "kind": "comunidade" },
+      { "title": "Funarte — Fundação Nacional de Artes", "url": "https://www.gov.br/funarte/pt-br", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com linguagens e frentes das artes visuais; x1 escolhe ateliê, docência, museu, ilustração ou editais; x2 trata de imagem de pessoas e alunos." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "D2, L6, L8 e D10 entram primeiro; X1 para quem dá aula; cada card lembra créditos e licenças." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano por horas (d1) e aparelho (d4), e prazos de editais informados pela pessoa; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa fichas técnicas, número de obras, créditos e licença, autorização de imagem, seções do projeto e código BNCC; valor artístico é revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de texto de artista, projeto de edital, memorial e plano de aula com prévia; não escreve a poética pela pessoa nem inventa exposições." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Grid, fichas e créditos da prancha; planta esquemática da expografia. Não gera imagem que imite artista identificável." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese de competências declaradas e evidenciadas por frente (ateliê, docência, mediação, projetos), lacunas e incertezas; cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: design, pedagogia, cinema e audiovisual, música, arquitetura; com lacunas e passos, sem previsão." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por CBO, linguagem e setor; só pessoas com opt-in; afinidade explicada." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio a partir do perfil e do texto de artista aprovado; só com consentimento específico." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings", "links de portfólio público"],
+      "never": ["mensagens", "itens SIGILOSO", "dados, notas, laudos e fotos de alunos", "imagens de pessoas retratadas sem autorização", "obras de terceiros sem licença", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "não gerar nem sugerir imagem, traço ou estilo que imite artista identificável",
+      "não criar obra para a pessoa apresentar como autoral; a IA estrutura, organiza e checa",
+      "crédito e licença obrigatórios em remix (D10) e em qualquer obra de terceiros; sem autorização, a obra não entra",
+      "retratos só com autorização de uso de imagem; trabalhos e dados de alunos menores nunca entram sem autorização dos responsáveis",
+      "não atribuir nota ou valor de mercado a obra; avaliação poética é humana",
+      "perguntar a frente de atuação e o nível em vez de inferir pela obra",
+      "nunca prometer aprovação em edital, venda ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se inscrever em edital sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "media", "drawings": "alta" },
+    "drawingsModes": ["prancha", "3d", "infografico", "diagrama"],
+    "lettersTemplates": ["bio", "proposta", "memorial", "plano-de-aula", "curriculo", "estudo-de-caso", "post", "revisao", "projeto-de-pesquisa", "artigo"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "D2, D3, D10 e X2 pedem computador ou tablet; no celular ficam L6, L5, L10 e a conferência das fichas técnicas.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: prancha com três obras da mesma série e fichas técnicas (90 min). É o primeiro item que editais e galerias pedem.",
+        "Faltam as dimensões de uma obra para fechar a ficha técnica. Quando quiser.",
+        "Sem pressão. Quando quiser retomar, o texto de artista (30 min) está aqui.",
+        "Encontrei uma obra em domínio público ligada à sua pesquisa. Quer fazer um remix com crédito?"
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["dados de alunos menores de idade: nomes, notas, laudos e fotos (ECA; LGPD art. 14)", "imagem de modelos e pessoas retratadas sem autorização de uso de imagem (CC art. 20)", "obras de terceiros reproduzidas sem licença (Lei 9.610/1998)", "dados de colecionadores e preços de venda negociados"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2624 e famílias de professores (2313, 2321)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "SIIC — Sistema de Informações e Indicadores Culturais (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/multidominio/cultura-recreacao-e-esporte/9388-indicadores-culturais.html", "geography": "Brasil e grandes regiões", "cadence": "eventual", "kind": "estatistica-oficial" },
+      { "title": "Censo Escolar (INEP) — docentes de Arte por formação e rede", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-escolar", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Editais do Ministério da Cultura, Funarte, Política Nacional Aldir Blanc e Lei Rouanet (Salic)", "url": "https://www.gov.br/cultura/pt-br", "geography": "Brasil, UF e município", "cadence": "eventual", "kind": "edital" },
+      { "title": "Concursos públicos para professor de Arte (editais estaduais e municipais)", "url": "https://www.gov.br/pt-br/servicos", "geography": "UF e município", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre editais, vagas ou demanda cita fonte, data e abrangência verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Grande parte da produção artística é autônoma e não aparece no CAGED/RAIS: dizer isso ao citar vínculos formais. Remuneração, cachê ou preço de obra nunca entram como promessa nem filtro (D-147)."
+  },
+  "paths": [
+    { "to": "design", "why": "Composição, cor e ilustração são comuns; o design trabalha com briefing, cliente e produção, e abre vagas formais em agências e empresas.", "gaps": ["trabalho com briefing e cliente", "softwares de design e fechamento de arquivo", "UX, identidade visual ou produto"], "steps": ["resposta a um briefing de ilustração (L8)", "redesenho antes e depois de uma peça (D5)", "prancha com três trabalhos aplicados (D2)"] },
+    { "to": "pedagogia", "why": "Arte-educadores já planejam aulas e mediações; a pedagogia amplia para a gestão escolar e os anos iniciais.", "gaps": ["didática geral e alfabetização", "gestão escolar e currículo", "educação inclusiva"], "steps": ["plano de aula interdisciplinar com BNCC (X1)", "relato de prática sem dados de alunos (L3)", "plano 30-60-90 para coordenação (L9)"] },
+    { "to": "cinema-e-audiovisual", "why": "Fotografia artística, videoarte e direção de arte aproximam das funções de fotografia, arte e edição no audiovisual.", "gaps": ["linguagem audiovisual e decupagem", "produção e equipe de set", "edição e finalização"], "steps": ["storyboard de uma sequência (D2)", "roteiro curto de videoarte (L8)", "remix com crédito de material de arquivo em domínio público (D10)"] },
+    { "to": "arquitetura-e-urbanismo", "why": "Escultura, instalação e expografia lidam com espaço e materialidade; a arquitetura exige graduação própria e registro no CAU.", "gaps": ["graduação em Arquitetura e registro no CAU", "desenho técnico e normas de representação", "estrutura e conforto ambiental"], "steps": ["projeto expográfico com planta esquemática (X2)", "modelo 3D de uma instalação (D3)"] },
+    { "to": "musica", "why": "Arte-educação e produção cultural compartilham editais, leis de incentivo e mediação com públicos; projetos interdisciplinares são comuns.", "gaps": ["formação musical (teoria e prática)", "direitos conexos e ECAD", "produção de espetáculos"], "steps": ["projeto interdisciplinar para edital (L8)", "plano de aula de Arte com música (X1)"] }
+  ],
+  "learning": [
+    { "title": "BNCC — componente Arte", "provider": "MEC", "url": "https://basenacionalcomum.mec.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Mapa da Cultura — editais e cadastro de agentes culturais", "provider": "Ministério da Cultura", "url": "https://mapa.cultura.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — elaboração de projetos culturais e gestão cultural", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Ibram — publicações sobre museus, educação museal e acervos", "provider": "Ibram", "url": "https://www.gov.br/museus/pt-br", "free": true, "kind": "portal" },
+    { "title": "Enciclopédia Itaú Cultural de Arte e Cultura Brasileira", "provider": "Itaú Cultural", "url": "https://enciclopedia.itaucultural.org.br/", "free": true, "kind": "portal" },
+    { "title": "Brasiliana Museus e acervos digitais em domínio público", "provider": "Ibram", "url": "https://brasiliana.museus.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Creative Commons Brasil — como licenciar e creditar", "provider": "Creative Commons Brasil", "url": "https://br.creativecommons.net/", "free": true, "kind": "portal" },
+    { "title": "Cursos on-line do Sebrae — economia criativa e gestão de carreira artística", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "AVAMEC — formação de professores (MEC)", "provider": "MEC", "url": "https://avamec.mec.gov.br/", "free": true, "kind": "curso" }
+  ],
+  "sources": [
+    { "title": "Catálogo de ramos acadêmicos — ramo artes-visuais (CBO, ISCO, ESCO, vizinhos, sensitiveData)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Lei 9.610/1998 — direitos autorais (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9610.htm", "accessedAt": "2026-11-02" },
+    { "title": "Lei 13.278/2016 — ensino da arte (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2016/lei/l13278.htm", "accessedAt": "2026-11-02" },
+    { "title": "BNCC (MEC)", "url": "https://basenacionalcomum.mec.gov.br/", "accessedAt": "2026-11-02" },
+    { "title": "Câmara dos Deputados — PL 1183/2019 (regulamentação do conservador-restaurador, em tramitação)", "url": "https://www.camara.leg.br/noticias/902050-projeto-regulamenta-profissao-de-restaurador", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Nenhuma URL deste pacote foi aberta nesta sessão; leis (9.610, 13.278, 8.313, 14.399, 11.904, LC 195) citadas de memória",
+    "Regulamentação do conservador-restaurador: busca indica PL 1183/2019 ainda em tramitação (set/2025); situação em nov/2026 não conferida",
+    "Código de habilidade BNCC de exemplo (EF69AR01) citado de memória",
+    "URLs de Mapa da Cultura, Brasiliana Museus, AVAMEC e Enciclopédia Itaú Cultural não abertas",
+    "Nenhuma URI ESCO de competência (skill) confirmada; todas as competências com esco: null; URIs de ocupação vêm do catálogo",
+    "Página de concursos em market.sources é genérica (gov.br/serviços); editais de professor de Arte variam por ente e não há agregador oficial único"
+  ]
+}

@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 1,
+  "code": "design-de-interiores",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Design de Interiores", "en": "Interior Design", "es": "Diseño de Interiores" },
+  "fields": ["design-de-interiores"],
+  "family": {
+    "cbo": [
+      { "code": "2629", "title": "Designer de interiores de nível superior" }
+    ],
+    "isco08": [
+      { "code": "3432", "title": "Interior designers and decorators" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/73e776fb-4d99-4031-bad4-7716f121155d", "label": "interior designer" },
+      { "uri": "http://data.europa.eu/esco/occupation/773e5ea3-235b-4e72-afc5-290dd841eed8", "label": "interior planner" },
+      { "uri": "http://data.europa.eu/esco/occupation/35eb0aa6-b40d-449d-9390-719be8912277", "label": "visual merchandiser" }
+    ]
+  },
+  "scope": {
+    "summary": "Designers de interiores e ambientes planejam e projetam espaços internos existentes ou pré-configurados (residenciais, comerciais, corporativos, de saúde e varejo) visando conforto, estética, saúde e segurança de quem usa: layout, mobiliário, iluminação, materiais, cores e detalhamento de marcenaria. Profissão reconhecida pela Lei 13.369/2016, sem registro obrigatório em conselho; alterações em elementos estruturais ficam com arquitetos e engenheiros.",
+    "entryRoles": ["Estagiário de design de interiores", "Assistente de projeto de interiores", "Designer de interiores júnior", "Assistente de visual merchandising", "Projetista de móveis planejados (loja)"],
+    "midRoles": ["Designer de interiores pleno", "Projetista de interiores (escritório de arquitetura)", "Visual merchandiser", "Especificador de materiais e acabamentos", "Designer de ambientes corporativos", "Consultor de iluminação residencial"],
+    "seniorRoles": ["Designer de interiores sênior", "Coordenador de projetos de interiores", "Titular de escritório de interiores", "Gerente de projetos de varejo (lojas e vitrines)", "Consultor em ambientes de saúde ou hospitalidade", "Professor de design de interiores"],
+    "sectors": ["escritórios de design de interiores e arquitetura", "lojas de móveis planejados e decoração", "varejo (visual merchandising e vitrines)", "construtoras e incorporadoras (decorados e áreas comuns)", "hotelaria e gastronomia", "corporativo (escritórios e coworkings)", "saúde (clínicas e consultórios)", "cenografia e eventos", "trabalho por conta própria"],
+    "regulation": [
+      { "name": "Lei 13.369/2016", "issuer": "Brasil", "about": "reconhece a profissão de designer de interiores e ambientes; art. 4º lista as atribuições; parágrafo único veda alterar elementos estruturais sem profissional habilitado" },
+      { "name": "Lei 13.639/2018 e Resolução CFT 096/2020", "issuer": "Brasil / CFT", "about": "cria o Sistema CFT/CRTs; a resolução trata das prerrogativas de técnicos em design de interiores (parte revogada pela Res. 182/2022); registro em conselho segue facultativo" },
+      { "name": "ABNT NBR 9050:2020", "issuer": "ABNT", "about": "acessibilidade a edificações, mobiliário, espaços e equipamentos urbanos: módulo de referência, giro de 1,50 m, alcance, sinalização, banheiros acessíveis" },
+      { "name": "ABNT NBR 6492:2021", "issuer": "ABNT", "about": "representação de projetos de arquitetura (aplicada a interiores): plantas, cortes, elevações, cotas, carimbo, escalas" },
+      { "name": "ABNT NBR ISO/CIE 8995-1:2013", "issuer": "ABNT", "about": "iluminação de ambientes de trabalho: iluminâncias recomendadas por atividade, ofuscamento e reprodução de cor" },
+      { "name": "ABNT NBR 13962 e NBR 13966", "issuer": "ABNT", "about": "móveis para escritório: cadeiras e mesas, requisitos dimensionais e ergonômicos" },
+      { "name": "Decreto 5.296/2004 e Lei 13.146/2015 (LBI)", "issuer": "Brasil", "about": "acessibilidade obrigatória em edificações de uso coletivo e privadas abertas ao público; desenho universal como diretriz" },
+      { "name": "ABNT NBR 9077 e instruções técnicas do Corpo de Bombeiros", "issuer": "ABNT / CBM estaduais", "about": "saídas de emergência e rotas de fuga: larguras mínimas, portas e sinalização que o layout comercial precisa respeitar" },
+      { "name": "Lei 9.610/1998 (direitos autorais)", "issuer": "Brasil", "about": "projeto de interiores, plantas e imagens são obras protegidas; reprodução de projeto ou foto de terceiros exige autorização e crédito" },
+      { "name": "Código Civil, arts. 20 e 21, e LGPD", "issuer": "Brasil", "about": "imagens do interior de residências, endereços e dados de moradores só com autorização do cliente; privacidade da casa" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "briefing", "meaning": "levantamento de necessidades, rotina, gostos, restrições e orçamento do cliente que inicia o projeto" },
+      { "term": "programa de necessidades", "meaning": "lista de ambientes, usos, pessoas e equipamentos que o espaço precisa comportar" },
+      { "term": "levantamento (as built)", "meaning": "medição e registro do espaço existente: paredes, aberturas, pontos elétricos e hidráulicos, pé-direito" },
+      { "term": "layout", "meaning": "planta com a distribuição do mobiliário e dos equipamentos no ambiente" },
+      { "term": "planta baixa", "meaning": "corte horizontal do ambiente a 1,50 m, com paredes, aberturas, cotas e mobiliário" },
+      { "term": "corte e elevação", "meaning": "vistas verticais do ambiente ou de uma parede, com alturas, revestimentos e marcenaria" },
+      { "term": "escala", "meaning": "relação entre o desenho e o real (1:50 para plantas, 1:25 para ambientes, 1:10 para detalhes)" },
+      { "term": "cota", "meaning": "medida escrita no desenho; cotas parciais devem somar a total" },
+      { "term": "moodboard / painel conceitual", "meaning": "painel de referências de cores, materiais, texturas e atmosfera que apresenta o conceito ao cliente" },
+      { "term": "estudo preliminar", "meaning": "primeira proposta de layout e conceito para aprovação do cliente" },
+      { "term": "anteprojeto", "meaning": "proposta desenvolvida com plantas, cortes, imagens e pré-especificação de materiais" },
+      { "term": "projeto executivo", "meaning": "conjunto completo de desenhos e especificações para execução e orçamento (marcenaria, elétrica, iluminação, forro, piso)" },
+      { "term": "detalhamento de marcenaria", "meaning": "desenhos de móveis sob medida com vistas, cortes, cotas, materiais e ferragens" },
+      { "term": "especificação", "meaning": "definição de materiais, acabamentos, mobiliário e luminárias com fabricante, modelo e quantidade" },
+      { "term": "memorial descritivo", "meaning": "texto que descreve o projeto, os materiais e os critérios adotados, acompanhando os desenhos" },
+      { "term": "planta de iluminação (luminotécnico)", "meaning": "planta com pontos de luz, circuitos, tipos de luminária e temperatura de cor" },
+      { "term": "planta de pontos (elétrica e hidráulica)", "meaning": "localização de tomadas, interruptores, pontos de água e esgoto para a obra" },
+      { "term": "paginação de piso ou revestimento", "meaning": "desenho do assentamento das peças, com início, recortes e rejuntes" },
+      { "term": "ergonomia", "meaning": "adequação de alturas, alcances e circulações ao corpo e à atividade das pessoas" },
+      { "term": "acessibilidade (NBR 9050)", "meaning": "requisitos para que pessoas com deficiência ou mobilidade reduzida usem o espaço: giro de 1,50 m, alcances, barras, sinalização" },
+      { "term": "circulação", "meaning": "espaço livre para passagem entre móveis; mínimos usuais de 60 a 90 cm e 1,20 m em áreas acessíveis" },
+      { "term": "visual merchandising", "meaning": "planejamento de exposição de produtos, vitrines e ambientação de lojas para orientar a experiência de compra" },
+      { "term": "apartamento decorado", "meaning": "unidade-modelo mobiliada por construtora para vendas" },
+      { "term": "render", "meaning": "imagem realista gerada do modelo 3D do ambiente, com materiais e iluminação" },
+      { "term": "elementos estruturais", "meaning": "vigas, pilares, lajes e paredes portantes: qualquer alteração exige arquiteto ou engenheiro habilitado (Lei 13.369/2016, art. 4º)" }
+    ],
+    "tools": ["AutoCAD", "SketchUp", "Revit", "Promob", "Enscape / V-Ray / Lumion", "Blender", "Adobe Photoshop", "Canva", "trena a laser", "planilha de orçamento e quantitativos", "Drawings (2D técnico, 3D, prancha)", "Letters (memorial, proposta, relatório)"],
+    "deliverables": ["levantamento do espaço existente", "painel conceitual (moodboard)", "estudo preliminar de layout", "planta de layout cotada em escala", "cortes e elevações", "planta de iluminação", "planta de pontos elétricos e hidráulicos", "paginação de pisos e revestimentos", "detalhamento de marcenaria", "modelo 3D e imagens renderizadas", "especificação de materiais e mobiliário com quantitativos", "memorial descritivo", "proposta de projeto em resposta a briefing", "projeto de vitrine ou de exposição de produtos"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Levantamento e medição de espaços existentes", "esco": null, "kind": "nucleo" },
+      { "label": "Interpretação de briefing e programa de necessidades", "esco": null, "kind": "nucleo" },
+      { "label": "Planejamento de layout, circulação e ergonomia", "esco": null, "kind": "nucleo" },
+      { "label": "Acessibilidade e desenho universal (NBR 9050)", "esco": null, "kind": "nucleo" },
+      { "label": "Representação técnica: plantas, cortes, elevações e cotas (NBR 6492)", "esco": null, "kind": "nucleo" },
+      { "label": "Especificação de materiais, revestimentos e mobiliário", "esco": null, "kind": "nucleo" },
+      { "label": "Projeto de iluminação de interiores", "esco": null, "kind": "nucleo" },
+      { "label": "Cor, textura e composição de ambientes", "esco": null, "kind": "nucleo" },
+      { "label": "Detalhamento de marcenaria e mobiliário sob medida", "esco": null, "kind": "nucleo" },
+      { "label": "Modelagem 3D e renderização de ambientes", "esco": null, "kind": "nucleo" },
+      { "label": "Compatibilização com elétrica, hidráulica e estrutura (limites legais)", "esco": null, "kind": "apoio" },
+      { "label": "Orçamento, quantitativos e relação com fornecedores", "esco": null, "kind": "apoio" },
+      { "label": "Acompanhamento de execução e montagem", "esco": null, "kind": "apoio" },
+      { "label": "Visual merchandising e projeto de vitrines", "esco": null, "kind": "apoio" },
+      { "label": "Apresentação de projeto ao cliente e memorial descritivo", "esco": null, "kind": "nucleo" }
+    ],
+    "transversal": ["escuta e atendimento ao cliente", "negociação com fornecedores e marceneiros", "gestão de prazos de obra e entrega", "comunicação visual de ideias", "ética: limites de atribuição e sigilo do cliente"],
+    "tracks": [
+      { "id": "representar-um-ambiente", "label": "Representar um ambiente", "steps": ["planta de layout 1:50 de um ambiente que você conhece (D1)", "modelo 3D do mesmo ambiente com três vistas (D3)", "detalhe de um móvel sob medida 1:10 (D6)", "prancha de portfólio com os três desenhos (D2)"] },
+      { "id": "do-briefing-ao-memorial", "label": "Do briefing ao memorial", "steps": ["resposta a um briefing residencial ou comercial (L8)", "painel conceitual com paleta e materiais (X1)", "memorial descritivo do projeto (L4)", "estudo de caso de um projeto entregue (L3)"] },
+      { "id": "melhorar-um-espaco", "label": "Melhorar um espaço", "steps": ["antes e depois de um layout com três mudanças justificadas (D5)", "checklist de acessibilidade NBR 9050 do ambiente (L7)", "post sobre um aprendizado de obra (L5)"] },
+      { "id": "varejo-e-vitrines", "label": "Varejo e vitrines", "steps": ["elevação de uma vitrine com cotas e iluminação (D1)", "antes e depois da exposição de produtos (D5)", "proposta para uma loja em resposta a briefing (L8)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"designer de interiores\", \"projetista de móveis planejados\", \"visual merchandiser\", \"assistente de arquitetura\"",
+      "cboFamilies": ["2629", "3751", "2141"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já projeta (residencial, comercial, planejados, vitrines). Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio ou primeiro cargo em escritório ou loja de planejados",
+        "junior": "desenha e especifica sob orientação; levanta espaços e monta pranchas",
+        "pleno": "conduz projetos de interiores do briefing ao executivo com autonomia",
+        "senior": "responde por clientes e equipe; define conceito e compatibiliza com outras disciplinas",
+        "gestao": "coordena escritório, equipe de projeto ou área de varejo"
+      },
+      "why": "Pergunto o nível para ajustar a escala das tarefas (um ambiente, um apartamento, uma loja) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em interiores",
+      "options": ["levantar e medir espaços", "entender o briefing do cliente", "resolver layout e circulação", "aplicar acessibilidade (NBR 9050)", "desenhar plantas e cortes cotados", "especificar materiais e acabamentos", "projetar iluminação", "compor cores e texturas", "detalhar marcenaria", "modelar e renderizar em 3D", "orçar e negociar com fornecedores", "acompanhar obra e montagem", "montar vitrines e exposição de produtos", "apresentar projeto ao cliente"],
+      "why": "Suas competências declaradas viram o ponto de partida; a prova vem com a planta, o modelo 3D e o memorial."
+    },
+    "c4": {
+      "certifications": ["tecnólogo em Design de Interiores", "bacharelado em Design de Interiores ou Design de Ambientes", "curso técnico em design de interiores (registro facultativo no CRT)", "cursos de software (AutoCAD, SketchUp, Revit, Promob) com certificado", "curso de iluminação ou luminotécnica", "curso de acessibilidade (NBR 9050)", "pós-graduação em interiores, iluminação ou varejo"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação e cursos ajudam a ver lacunas em relação ao cargo que você quer; a Lei 13.369/2016 não exige registro em conselho para exercer a profissão."
+    },
+    "c5": {
+      "prompt": "Que competência de interiores quer desenvolver primeiro?",
+      "options": ["representação técnica (plantas, cortes, cotas)", "acessibilidade e ergonomia (NBR 9050)", "projeto de iluminação", "detalhamento de marcenaria", "modelagem 3D e render", "especificação e orçamento", "visual merchandising e vitrines", "apresentação de projeto e memorial", "compatibilização com elétrica e hidráulica"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (planta → 3D → detalhe) em vez de um catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Que tipo de espaço quer mostrar primeiro?",
+        "type": "escolha",
+        "options": ["residencial", "comercial e varejo (lojas, vitrines)", "corporativo (escritórios)", "saúde e hospitalidade", "apartamento decorado para construtora"],
+        "why": "Escolho os parâmetros da primeira planta (escala, normas aplicáveis, mínimos de circulação) e os exemplos de briefing.",
+        "where": "P"
+      },
+      {
+        "id": "x2",
+        "prompt": "Os projetos que você quer mostrar são de clientes reais?",
+        "type": "sim-nao",
+        "options": [],
+        "where": "X",
+        "why": "Se sim, peço que remova endereço, nome do morador e fotos não autorizadas antes de publicar, ou use um ambiente seu ou fictício."
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["D1", "D3", "D2", "L8", "D6", "D5", "L4", "L3", "L6", "L1", "D10", "L5"],
+    "excluded": [
+      { "code": "D9", "reason": "wireframe de tela não pertence à área" },
+      { "code": "D8", "reason": "vista explodida de conjunto mecânico não é entrega de interiores; montagem de móvel cabe no detalhe de marcenaria (D6)" },
+      { "code": "D4", "reason": "diagrama de processo BPMN não é entrega da profissão; o fluxo de obra cabe no memorial (L4)" }
+    ],
+    "parameters": {
+      "D1": {
+        "title": "Planta de layout cotada de um ambiente (1:50)",
+        "brief": "No modo 2D técnico, desenhe a planta de layout de um ambiente que você conhece (sala, quarto, consultório, loja pequena): paredes e aberturas, mobiliário em escala, cotas que fecham, circulações mínimas, um giro de 1,50 m onde couber (NBR 9050), legenda e carimbo com escala, título e autoria. Sem endereço nem nome de morador.",
+        "parameters": { "scale": "1:50", "format": "A3", "dimensionsClose": true, "minCirculationCm": 60, "accessibleTurningCircleM": 1.5, "legend": true, "titleBlock": ["título", "escala", "data", "autoria"], "noAddress": true },
+        "criteria": ["escala 1:50 declarada no carimbo", "cotas parciais fecham com a total", "mobiliário em escala com circulações anotadas", "giro de 1,50 m representado onde a NBR 9050 se aplica", "legenda e carimbo completos", "sem endereço ou dados do morador"],
+        "evidence": "prancha PDF/SVG",
+        "time": "2 h",
+        "level": 2
+      },
+      "D3": {
+        "title": "Modelo 3D de um ambiente com três vistas renderizadas",
+        "brief": "Modele o ambiente da sua planta com dimensões reais, materiais e luminárias aplicados, e renderize três vistas (uma em nível de olho a 1,60 m, uma geral e um detalhe de material). Indique na legenda os materiais principais e a temperatura de cor da iluminação.",
+        "parameters": { "realDimensions": true, "materials": true, "renders": 3, "eyeLevelViewM": 1.6, "lightingNote": true },
+        "criteria": ["dimensões reais coerentes com a planta", "materiais e luminárias aplicados", "três renders, um em nível de olho", "legenda com materiais e temperatura de cor"],
+        "evidence": "modelo GLB + renders PNG",
+        "time": "3 h",
+        "level": 3
+      },
+      "D2": {
+        "title": "Prancha de portfólio A3 com três ambientes",
+        "brief": "Monte uma prancha A3 com três projetos ou exercícios (planta, render, detalhe ou vitrine). Cada um com legenda (tipo de espaço, área aproximada, o que foi resolvido) e créditos de coautores, fotógrafos e fabricantes citados. Projetos de clientes só com autorização e sem endereço.",
+        "parameters": { "format": "A3", "works": 3, "captionParts": ["tipo de espaço", "área aproximada", "o que foi resolvido"], "creditsRequired": true, "clientAuthorizationDeclared": true },
+        "criteria": ["três trabalhos", "grid consistente", "legenda com tipo de espaço, área e solução", "créditos de coautores e fotógrafos", "declaração de autorização do cliente ou uso de projeto autoral"],
+        "evidence": "prancha publicada (PDF ou PNG)",
+        "time": "90 min",
+        "level": 1
+      },
+      "L8": {
+        "title": "Resposta a um briefing de interiores",
+        "brief": "A partir de um briefing simulado (apartamento, consultório, loja), escreva uma proposta com entendimento do programa de necessidades, etapas (levantamento, estudo preliminar, anteprojeto, executivo), entregas por etapa, prazos, premissas, o que fica fora (projetos complementares, estrutura, execução) e número de revisões. Sem valores em dinheiro.",
+        "parameters": { "template": "proposta", "sections": ["programa de necessidades", "etapas e entregas", "prazos", "premissas", "fora do escopo", "revisões e aprovação"], "maxPages": 2, "noPricing": true, "structuralDisclaimer": true },
+        "criteria": ["seis seções presentes", "entregas listadas por etapa", "fora do escopo cita estrutura e complementares", "prazos por etapa", "até duas páginas"],
+        "evidence": "proposta (documento)",
+        "time": "45 min",
+        "level": 2
+      },
+      "D6": {
+        "title": "Detalhe de marcenaria 1:10",
+        "brief": "Detalhe um móvel sob medida (bancada, armário, painel) com vista frontal, corte e planta em 1:10, cotas, materiais (chapa, acabamento, ferragens) e notas de montagem.",
+        "parameters": { "scale": "1:10", "views": ["frontal", "corte", "planta"], "materialsSpecified": true, "hardwareListed": true },
+        "criteria": ["escala de detalhe declarada", "três vistas", "materiais e ferragens especificados", "cotas completas"],
+        "evidence": "prancha de detalhe",
+        "time": "90 min",
+        "level": 3
+      },
+      "D5": {
+        "title": "Antes e depois de um layout",
+        "brief": "Mostre um ambiente antes e depois da sua intervenção, lado a lado, com três mudanças anotadas e justificadas por circulação, ergonomia, iluminação ou acessibilidade.",
+        "parameters": { "sideBySide": true, "annotatedChanges": 3, "justificationCategories": ["circulação", "ergonomia", "iluminação", "acessibilidade"] },
+        "criteria": ["duas versões lado a lado na mesma escala", "três mudanças anotadas", "justificativa por mudança", "ao menos uma mudança de acessibilidade ou circulação"],
+        "evidence": "prancha comparativa",
+        "time": "60 min",
+        "level": 1
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "drawings",
+        "title": "Painel conceitual (moodboard) com paleta e materiais",
+        "competency": "Conceito, cor e especificação preliminar de materiais",
+        "criteria": ["conceito nomeado em uma frase", "paleta com até cinco cores identificadas", "ao menos quatro materiais ou acabamentos nomeados", "referências de imagem com crédito e licença", "ligação explícita com o programa de necessidades"],
+        "evidence": "prancha publicada (PDF ou PNG)",
+        "time": "60 min",
+        "trigger": "Quer apresentar o conceito de um ambiente antes de desenhar a planta?",
+        "level": 1
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "escala-declarada", "check": "a escala aparece no carimbo e no título de cada desenho", "appliesTo": ["D1", "D6", "D2", "D5"], "auto": true },
+      { "id": "cotas-fecham", "check": "as cotas parciais somam a cota total em cada direção", "appliesTo": ["D1", "D6"], "auto": true },
+      { "id": "legenda-e-carimbo", "check": "há legenda e carimbo com título, escala, data e autoria", "appliesTo": ["D1", "D6", "D2"], "auto": true },
+      { "id": "giro-acessivel", "check": "um círculo de 1,50 m de diâmetro aparece na planta onde a NBR 9050 se aplica", "appliesTo": ["D1", "D5"], "auto": true },
+      { "id": "quantidade-de-vistas", "check": "o número pedido de vistas, renders ou trabalhos está presente", "appliesTo": ["D3", "D6", "D2"], "auto": true },
+      { "id": "materiais-especificados", "check": "materiais, acabamentos ou ferragens estão nomeados na legenda ou nas notas", "appliesTo": ["D3", "D6", "X1"], "auto": true },
+      { "id": "creditos-e-autorizacao", "check": "coautores, fotógrafos, fabricantes e obras remixadas estão creditados e a autorização do cliente está declarada", "appliesTo": ["D2", "D5", "D10", "X1", "L5", "L10"], "auto": true },
+      { "id": "sem-endereco", "check": "a pessoa declarou que não há endereço, nome de morador nem foto não autorizada", "appliesTo": ["D1", "D2", "D3", "D5", "L3", "L4"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L8", "L4", "L3", "L7"], "auto": true },
+      { "id": "fora-do-escopo-estrutural", "check": "a proposta ou o memorial declara que alterações estruturais ficam com profissional habilitado", "appliesTo": ["L8", "L4"], "auto": true },
+      { "id": "tamanho", "check": "o documento respeita o limite de páginas ou caracteres", "appliesTo": ["L1", "L2", "L4", "L5", "L6", "L8"], "auto": true },
+      { "id": "autoria-declarada", "check": "a pessoa declarou autoria e ausência de dados confidenciais", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D1", "D2", "D3", "D5", "D6", "D7", "D10", "X1"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "qualidade-do-layout", "label": "Qualidade do layout", "levels": { "aproxima": "circulações apertadas ou móveis fora de escala; o uso não é claro", "atende": "circulações, ergonomia e usos resolvidos para o programa", "supera": "o layout resolve programa, luz natural, acessibilidade e flexibilidade com economia" } },
+      { "id": "legibilidade-tecnica", "label": "Legibilidade técnica da prancha", "levels": { "aproxima": "hierarquia de linhas e textos confusa; exige explicação", "atende": "a prancha se lê sem explicação e segue a NBR 6492", "supera": "o conjunto planta, corte e detalhe conduz do geral ao executável" } },
+      { "id": "coerencia-do-conceito", "label": "Coerência entre conceito, materiais e cliente", "levels": { "aproxima": "materiais e cores não dialogam com o conceito ou o briefing", "atende": "paleta, materiais e iluminação sustentam o conceito e o uso", "supera": "as escolhas se justificam por conforto, manutenção, custo e identidade do cliente" } },
+      { "id": "viabilidade", "label": "Viabilidade de execução", "levels": { "aproxima": "detalhes não executáveis ou sem material definido", "atende": "detalhes executáveis por marceneiro com os materiais indicados", "supera": "antecipa interfaces com elétrica, hidráulica e obra, dentro dos limites legais" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da área de Design de Interiores e Ambientes. Use o vocabulário da profissão: briefing, programa de necessidades, levantamento, layout, planta baixa, corte, elevação, escala, cotas, moodboard, estudo preliminar, anteprojeto, executivo, detalhamento de marcenaria, especificação, memorial descritivo, luminotécnico, paginação, visual merchandising. Normas a citar quando couber: Lei 13.369/2016 (atribuições; alteração de elementos estruturais só por profissional habilitado), NBR 9050:2020 (acessibilidade: giro de 1,50 m, alcances), NBR 6492 (representação), NBR ISO/CIE 8995-1 (iluminação), NBR 13962/13966 (móveis de escritório), Decreto 5.296/2004 e LBI, NBR 9077 (saídas), Lei 9.610/1998 (autoria de projeto e imagens), Código Civil art. 20 e LGPD (imagem e dados do morador). Priorize o Drawings: planta de layout cotada (D1), modelo 3D com três vistas (D3), prancha de portfólio (D2), detalhe de marcenaria (D6), antes e depois (D5), remix com crédito (D10); no Letters, resposta a briefing (L8) e memorial descritivo (L4). Nunca: redigir ou sugerir alteração em viga, pilar, laje ou parede estrutural, nem dimensionar instalações; apresentar o exercício como projeto executivo assinável; incluir endereço, nome de morador, fotos do interior de residências ou orçamentos de clientes sem autorização; gerar imagem que imite escritório, designer ou marca identificável; reproduzir projeto ou foto de terceiros sem licença e crédito. Pergunte o tipo de espaço e o nível antes de sugerir; não deduza pela planta. Pré-cheque só critérios objetivos (escala, cotas que fecham, legenda, carimbo, giro de 1,50 m, número de vistas, créditos, seções); layout, conceito e viabilidade são avaliação humana. Mercado com fonte, data e região ou \"estimativa\"; nunca fale de salário. Progresso por critérios atendidos, sem score.",
+    "citeSources": [
+      { "title": "Lei 13.369/2016 — profissão de designer de interiores e ambientes (Planalto)", "url": "https://www.planalto.gov.br/cCivil_03/_Ato2015-2018/2016/Lei/L13369.htm", "kind": "norma" },
+      { "title": "CFT — Conselho Federal dos Técnicos Industriais: Resolução 096/2020 (técnicos em design de interiores)", "url": "https://cft.org.br/wp-content/uploads/2025/07/RESOLUCAO-no-096.2020-Tecnico-em-Design-de-Interiores.pdf", "kind": "conselho" },
+      { "title": "Confea — registro facultativo de designers de interiores e PLs 2.375/2022 e 1.271/2023", "url": "https://www.confea.org.br/node/232038", "kind": "conselho" },
+      { "title": "Catálogo ABNT — NBR 9050, NBR 6492, NBR ISO/CIE 8995-1, NBR 13962/13966, NBR 9077", "url": "https://www.abntcatalogo.com.br/", "kind": "norma" },
+      { "title": "Decreto 5.296/2004 — acessibilidade (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/decreto/d5296.htm", "kind": "norma" },
+      { "title": "Lei 9.610/1998 — direitos autorais (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9610.htm", "kind": "norma" },
+      { "title": "ABD — Associação Brasileira de Designers de Interiores", "url": "https://www.abd.org.br/", "kind": "comunidade" },
+      { "title": "Novo CAGED — Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" },
+      { "title": "CBO 2629 — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências de interiores; x1 escolhe o tipo de espaço e x2 trata de projetos de clientes reais." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "D1, D3, D2 e L8 entram primeiro; cada card diz a competência, a evidência e que o resultado é exercício, não projeto executivo." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano por horas (d1) e aparelho (d4); D1, D3 e D6 só no computador; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa escala, cotas que fecham, legenda, carimbo, giro de 1,50 m, número de vistas, materiais nomeados, créditos e seções; layout e conceito ficam para revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de proposta (L8) e memorial (L4) com prévia; sempre inclui a ressalva sobre elementos estruturais; nunca inventa clientes." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Carimbo, legenda, conferência de cotas e círculo de giro; grid da prancha. Não altera paredes estruturais nem gera imagem que imite escritório identificável." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese de competências declaradas e evidenciadas (representação, 3D, especificação, iluminação), lacunas e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: arquitetura e urbanismo (graduação e CAU), design, construção de edifícios, eventos; com lacunas e passos, sem previsão." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por CBO 2629, competências e setor (residencial, varejo, corporativo); só pessoas com opt-in." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com tipo de espaço, três competências e link de portfólio; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, softwares e tipos de projeto em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings", "links de portfólio público"],
+      "never": ["mensagens", "itens SIGILOSO", "plantas e fotos do interior de residências de clientes sem autorização", "endereços e dados de moradores", "orçamentos, contratos e dados de fornecedores de clientes", "projetos sob NDA antes da entrega", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca sugerir alteração de viga, pilar, laje ou parede estrutural nem dimensionar instalações; isso é de arquiteto ou engenheiro habilitado (Lei 13.369/2016, art. 4º)",
+      "exercícios não são projeto executivo assinável; cada card diz isso",
+      "endereço, nome de morador, fotos do interior de residências e orçamentos de clientes não entram sem autorização declarada",
+      "crédito e licença obrigatórios em remix (D10) e em imagens de referência; sem autorização, a peça não entra",
+      "não gerar imagem que imite escritório, designer ou marca identificável",
+      "perguntar o tipo de espaço e o nível em vez de inferir pela planta",
+      "nunca prometer cliente, vaga ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "baixa", "drawings": "alta" },
+    "drawingsModes": ["2d-tecnico", "3d", "prancha", "infografico"],
+    "lettersTemplates": ["proposta", "memorial", "estudo-de-caso", "relatorio-tecnico", "pop", "bio", "curriculo", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "D1, D3, D6, D5 e D2 exigem computador; no celular ficam L6, L5, L10 e a conferência de critérios (cotas, legenda, giro).",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: planta de layout 1:50 de um ambiente que você conhece (2 h). Comprova representação técnica e ergonomia, que escritórios e lojas de planejados pedem.",
+        "Falta o círculo de giro de 1,50 m e o carimbo para fechar os critérios objetivos da sua planta. Quando quiser.",
+        "Seu modelo 3D já tem duas vistas. A terceira, em nível de olho (1,60 m), fecha o critério.",
+        "Sem pressão. Quando quiser retomar, a resposta ao briefing (45 min) está aqui.",
+        "Quer mostrar uma melhoria? O antes e depois de um layout leva cerca de 1 h."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["plantas, endereços e fotos do interior de residências de clientes sem autorização", "orçamentos, contratos e dados de fornecedores de clientes", "projetos sob NDA antes da entrega", "dados de moradores (rotina, saúde, família) colhidos no briefing"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2629 e 3751; CNAE 7410-2 (design e decoração de interiores)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO e CNAE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "PNAD Contínua (IBGE) — ocupação, inclusive trabalho por conta própria", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html", "geography": "Brasil e UF", "cadence": "trimestral", "kind": "estatistica-oficial" },
+      { "title": "CFT — estatísticas de técnicos registrados por modalidade (design de interiores)", "url": "https://cft.org.br/", "geography": "Brasil e UF", "cadence": "anual", "kind": "conselho" },
+      { "title": "ABD — Associação Brasileira de Designers de Interiores (pesquisas e eventos do setor)", "url": "https://www.abd.org.br/", "geography": "Brasil", "cadence": "eventual", "kind": "associacao" },
+      { "title": "Abimóvel / IEMI — panorama do setor moveleiro e de móveis planejados", "url": "https://www.abimovel.com/", "geography": "Brasil e polos moveleiros", "cadence": "anual", "kind": "associacao" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Boa parte do trabalho em interiores é autônomo ou em lojas de planejados sob outros códigos CBO, o que subestima o CAGED/RAIS: dizer isso ao citar vínculos formais. Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "arquitetura-e-urbanismo", "why": "Compartilha representação, conforto, acessibilidade e cliente; a arquitetura amplia a atuação para a edificação e os elementos estruturais, com graduação própria e registro no CAU.", "gaps": ["graduação em Arquitetura e Urbanismo e registro no CAU (Lei 12.378/2010)", "projeto de edificação, estrutura e implantação", "legislação urbana e aprovação em prefeitura"], "steps": ["planta e corte de uma edificação pequena (D1)", "memorial justificativo de um partido (L4)", "resposta a briefing de reforma com aprovação (L8)"] },
+    { "to": "design", "why": "Cor, materiais, modelagem 3D e apresentação são comuns; o design de produto e mobiliário é continuação natural do detalhamento de marcenaria.", "gaps": ["desenho de produto para produção seriada", "ergonomia de produto e processos de fabricação", "identidade visual e design gráfico"], "steps": ["modelo 3D de um móvel com três renders (D3)", "vista explodida com lista de peças (D8)", "prancha de portfólio de produto (D2)"] },
+    { "to": "construcao-de-edificios", "why": "Acompanhamento de obra, quantitativos e fornecedores aproximam do planejamento e da execução de reformas.", "gaps": ["orçamento analítico e cronograma de obra", "sistemas construtivos e instalações", "segurança do trabalho em obra (NRs)"], "steps": ["procedimento de montagem e acabamento de um ambiente (L7)", "diagrama do fluxo de uma reforma (D4)", "relatório de acompanhamento de obra (L4)"] },
+    { "to": "eventos", "why": "Cenografia, ambientação de estandes e vitrines usam layout, iluminação e materiais em prazos curtos.", "gaps": ["logística de montagem e desmontagem", "normas de segurança em locais de evento", "orçamento e fornecedores de eventos"], "steps": ["planta de um estande 1:50 com circulação (D1)", "antes e depois de uma vitrine (D5)", "proposta para um evento em resposta a briefing (L8)"] }
+  ],
+  "learning": [
+    { "title": "Lei 13.369/2016 — texto integral", "provider": "Planalto", "url": "https://www.planalto.gov.br/cCivil_03/_Ato2015-2018/2016/Lei/L13369.htm", "free": true, "kind": "norma" },
+    { "title": "Catálogo ABNT — NBR 9050, NBR 6492, NBR ISO/CIE 8995-1, NBR 13962/13966", "provider": "ABNT", "url": "https://www.abntcatalogo.com.br/", "free": false, "kind": "norma" },
+    { "title": "Escola Virtual.Gov — cursos de acessibilidade e desenho universal", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Cursos on-line gratuitos do SENAI (desenho técnico, AutoCAD, SketchUp, marcenaria)", "provider": "SENAI", "url": "https://www.senai.br/cursos", "free": true, "kind": "portal" },
+    { "title": "Cursos on-line do Sebrae — precificação, proposta e gestão de escritório", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "ABD — Associação Brasileira de Designers de Interiores: código de ética, eventos e conteúdo", "provider": "ABD", "url": "https://www.abd.org.br/", "free": true, "kind": "comunidade" },
+    { "title": "CFT — legislação e resoluções sobre técnicos em design de interiores", "provider": "CFT", "url": "https://cft.org.br/", "free": true, "kind": "portal" },
+    { "title": "e-Aulas USP — cursos abertos de desenho, ergonomia e iluminação", "provider": "USP", "url": "https://eaulas.usp.br/", "free": true, "kind": "portal" },
+    { "title": "Creative Commons Brasil — licenças para imagens de referência", "provider": "Creative Commons Brasil", "url": "https://br.creativecommons.net/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Catálogo de ramos acadêmicos — ramo design-de-interiores (CBO 2629, ISCO 3432, ESCO, vizinhos, sensitiveData, nota sobre Lei 13.369/2016 e PLs)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Lei 13.369/2016 — profissão de designer de interiores e ambientes (Planalto)", "url": "https://www.planalto.gov.br/cCivil_03/_Ato2015-2018/2016/Lei/L13369.htm", "accessedAt": "2026-11-02" },
+    { "title": "Resolução CFT 096/2020 — técnicos em design de interiores (CFT)", "url": "https://cft.org.br/wp-content/uploads/2025/07/RESOLUCAO-no-096.2020-Tecnico-em-Design-de-Interiores.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Confea — \"Designers de interiores querem estar no Sistema Confea/Crea\" (registro facultativo; PLs 2.375/2022 e 1.271/2023)", "url": "https://www.confea.org.br/node/232038", "accessedAt": "2026-11-02" },
+    { "title": "Confea — parecer técnico do Anteprojeto 002/2020 (ausência de registro obrigatório na Lei 13.369/2016)", "url": "https://consultapublica.confea.org.br/anexos/Anteprojeto002-2020/ParecerTecnico.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo ABNT — normas citadas", "url": "https://www.abntcatalogo.com.br/", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Lei 13.369/2016, Resolução CFT 096/2020 e PLs 2.375/2022 e 1.271/2023 confirmados só por resumo de busca; texto integral e situação atual dos PLs não abertos",
+    "Revogação parcial da Resolução CFT 096/2020 pela Resolução CFT 182/2022 vista em resumo de busca; alcance da revogação não conferido",
+    "Conflito entre CFT (fiscalização de designers pela Lei 13.369) e Confea (registro facultativo) registrado; a interpretação adotada aqui é registro facultativo",
+    "Edições e vigência das NBR (9050:2020, 6492:2021, ISO/CIE 8995-1:2013, 13962, 13966, 9077) citadas de memória, não conferidas no catálogo ABNT",
+    "Famílias CBO 3751 (designers de interiores e vitrinistas de nível médio) e 2141 em questions.a4 e CNAE 7410-2 não conferidas nos portais da CBO e da CONCLA",
+    "Nenhuma URI ESCO de competência (skill) confirmada; todas as competências com esco: null; URIs de ocupação vêm do catálogo",
+    "URLs de ABD, Abimóvel, CFT (estatísticas), e-Aulas USP, SENAI e Sebrae não abertas nesta sessão; existência de estatísticas de registro do CFT por modalidade não confirmada"
+  ]
+}

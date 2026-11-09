@@ -1,0 +1,327 @@
+{
+  "schemaVersion": 1,
+  "code": "biomedicina",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Biomedicina", "en": "Biomedical Science", "es": "Biomedicina" },
+  "fields": ["biomedicina"],
+  "family": {
+    "cbo": [
+      { "code": "2212", "title": "Biomédicos" }
+    ],
+    "isco08": [
+      { "code": "2131", "title": "Biologists, botanists, zoologists and related professionals" },
+      { "code": "3212", "title": "Medical and pathology laboratory technicians" }
+    ],
+    "esco": []
+  },
+  "scope": {
+    "summary": "Pacote para quem se forma ou se formou em Biomedicina e quer construir evidências de carreira sem expor pacientes nem dados confidenciais de laboratório: casos anonimizados, POPs de bancada, relatórios de validação e de controle de qualidade, fluxos da fase pré-analítica à liberação e infográficos de indicadores. A IA apoia a escrita e a organização; nunca interpreta exame de pessoa real nem redige laudo assinável.",
+    "entryRoles": ["Estagiário de laboratório (estágio curricular)", "Biomédico recém-formado em análises clínicas", "Biomédico residente (residência multiprofissional)", "Analista júnior em laboratório de pesquisa ou indústria", "Biomédico em banco de sangue ou coleta"],
+    "midRoles": ["Biomédico analista clínico (bioquímica, hematologia, microbiologia, imunologia)", "Biomédico em biologia molecular ou genética", "Biomédico em imagenologia", "Biomédico em reprodução humana assistida", "Biomédico em citopatologia ou histotecnologia", "Analista de controle de qualidade na indústria", "Biomédico esteta (habilitação reconhecida pelo CFBM)"],
+    "seniorRoles": ["Responsável técnico de laboratório", "Supervisor ou gerente de setor analítico", "Coordenador de qualidade e acreditação (PALC, ONA, ISO 15189)", "Docente e pesquisador", "Gestor de laboratório ou rede", "Perito criminal (concurso)"],
+    "sectors": ["laboratórios de análises clínicas (públicos e privados)", "hospitais (laboratório, banco de sangue, biologia molecular)", "hemocentros e hemoterapia", "laboratórios de pesquisa e universidades", "indústria farmacêutica, de diagnóstico e de biotecnologia", "clínicas de reprodução humana e imagem", "vigilância laboratorial (Lacen) e saúde pública", "perícia criminal e genética forense", "estética e saúde"],
+    "regulation": [
+      { "name": "Lei 6.684/1979 e Lei 7.017/1982", "issuer": "Brasil", "about": "regulamentam a profissão de biomédico e criam o CFBM e os CRBMs" },
+      { "name": "Decreto 88.439/1983", "issuer": "Brasil", "about": "regulamenta o exercício da profissão de biomédico" },
+      { "name": "Res. CFBM 78/2002 (Ato Profissional Biomédico)", "issuer": "CFBM", "about": "campo de atuação, habilitações e responsabilidade técnica; alterada pelas Res. 83/2002 e 227/2013" },
+      { "name": "Res. CFBM 330/2020 (Código de Ética do Profissional Biomédico)", "issuer": "CFBM", "about": "sigilo, relação com pacientes e equipe, publicidade; revogou a Res. 198/2011" },
+      { "name": "Res. CFBM 391/2025", "issuer": "CFBM", "about": "atribuições do biomédico habilitado em citopatologia, histotecnologia e análises moleculares" },
+      { "name": "RDC Anvisa 786/2023", "issuer": "Anvisa", "about": "requisitos técnicos para o funcionamento de laboratórios clínicos e postos de coleta (fases pré-analítica, analítica e pós-analítica)" },
+      { "name": "NR-32 (MTE)", "issuer": "Ministério do Trabalho e Emprego", "about": "segurança e saúde no trabalho em serviços de saúde; biossegurança" },
+      { "name": "LGPD (Lei 13.709/2018), art. 5º II e art. 11", "issuer": "Brasil", "about": "resultados de exames e dados genéticos são dados pessoais sensíveis" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "CRBM", "meaning": "inscrição no Conselho Regional de Biomedicina; obrigatória para exercer" },
+      { "term": "habilitação", "meaning": "área de atuação registrada no CRBM (análises clínicas, imagenologia, biologia molecular, estética etc.)" },
+      { "term": "RT", "meaning": "responsável técnico pelo laboratório ou setor" },
+      { "term": "fase pré-analítica", "meaning": "pedido, preparo, coleta, identificação, transporte e armazenamento da amostra" },
+      { "term": "fase analítica", "meaning": "execução do ensaio com controle de qualidade" },
+      { "term": "fase pós-analítica", "meaning": "validação, liberação, laudo e valores críticos" },
+      { "term": "controle interno da qualidade (CIQ)", "meaning": "controles conhecidos processados a cada corrida" },
+      { "term": "avaliação externa da qualidade (AEQ)", "meaning": "proficiência com amostras de provedor externo (PNCQ, Controllab)" },
+      { "term": "gráfico de Levey-Jennings", "meaning": "gráfico de controle com média e desvios-padrão por corrida" },
+      { "term": "regras de Westgard", "meaning": "regras de rejeição ou alerta de corrida analítica" },
+      { "term": "validação / verificação de método", "meaning": "demonstração de precisão, exatidão, linearidade e limites de um ensaio" },
+      { "term": "incerteza de medição", "meaning": "intervalo de dúvida associado ao resultado" },
+      { "term": "valores de referência", "meaning": "intervalos esperados para a população; valores críticos exigem comunicação imediata" },
+      { "term": "rastreabilidade", "meaning": "registro que liga amostra, lote, equipamento, operador e resultado" },
+      { "term": "não conformidade", "meaning": "desvio registrado e tratado com ação corretiva" },
+      { "term": "LIS", "meaning": "sistema de informação laboratorial" },
+      { "term": "PCR / qPCR / NGS", "meaning": "técnicas de biologia molecular: amplificação, quantificação e sequenciamento" },
+      { "term": "hemocomponentes", "meaning": "produtos do sangue em hemoterapia (concentrado de hemácias, plasma, plaquetas)" },
+      { "term": "biossegurança", "meaning": "níveis de contenção, EPI, descarte (RDC 222/2018, NR-32)" },
+      { "term": "acreditação", "meaning": "reconhecimento de qualidade (PALC/SBPC, ONA, ISO 15189)" },
+      { "term": "POP", "meaning": "procedimento operacional padrão de uma rotina do laboratório" },
+      { "term": "laudo", "meaning": "documento de resultado assinado pelo profissional habilitado; sigiloso" },
+      { "term": "anonimização", "meaning": "remoção de todo dado que identifique o paciente, inclusive número de amostra ligado a cadastro" }
+    ],
+    "tools": ["sistema de informação laboratorial (LIS)", "analisadores automatizados (bioquímica, hematologia, imunoensaio)", "software de controle de qualidade (Levey-Jennings, Westgard)", "termocicladores e equipamentos de qPCR", "microscopia e citologia digital", "planilha (Excel, Google Sheets)", "R, Python ou GraphPad para análise de dados", "BVS, SciELO, PubMed", "Zotero ou Mendeley", "Letters (textos) e Drawings (fluxos e infográficos)"],
+    "deliverables": ["estudo de caso laboratorial anonimizado", "POP de bancada ou de fase pré-analítica", "relatório de validação ou verificação de método (dados simulados ou agregados)", "relatório de controle de qualidade e tratamento de não conformidade", "fluxo da amostra (pré-analítico a liberação)", "infográfico de indicadores do laboratório", "projeto de pesquisa", "artigo ou resumo científico", "currículo direcionado e carta"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Técnicas de análises clínicas (bioquímica, hematologia, microbiologia, imunologia, parasitologia)", "esco": null, "kind": "nucleo" },
+      { "label": "Controle interno e externo da qualidade", "esco": null, "kind": "nucleo" },
+      { "label": "Fase pré-analítica: coleta, identificação e transporte", "esco": null, "kind": "nucleo" },
+      { "label": "Validação e liberação de resultados; valores críticos", "esco": null, "kind": "nucleo" },
+      { "label": "Biossegurança e descarte de resíduos", "esco": null, "kind": "nucleo" },
+      { "label": "Documentação, rastreabilidade e POPs", "esco": null, "kind": "nucleo" },
+      { "label": "Ética profissional, sigilo e proteção de dados", "esco": null, "kind": "nucleo" },
+      { "label": "Método científico e leitura crítica de artigos", "esco": null, "kind": "nucleo" },
+      { "label": "Biologia molecular (PCR, qPCR, sequenciamento)", "esco": null, "kind": "apoio" },
+      { "label": "Hemoterapia e banco de sangue", "esco": null, "kind": "apoio" },
+      { "label": "Validação e verificação de métodos", "esco": null, "kind": "apoio" },
+      { "label": "Bioestatística e análise de dados", "esco": null, "kind": "apoio" },
+      { "label": "Gestão da qualidade e acreditação", "esco": null, "kind": "apoio" },
+      { "label": "Imagenologia ou reprodução humana (habilitações)", "esco": null, "kind": "apoio" },
+      { "label": "Indicadores do laboratório", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["atenção a detalhes e rastreabilidade", "comunicação escrita técnica", "organização de rotinas", "trabalho em equipe", "aprendizagem contínua", "inglês para leitura científica"],
+    "tracks": [
+      { "id": "qualidade-na-bancada", "label": "Mostrar qualidade na bancada", "steps": ["POP de uma rotina do laboratório (L7)", "relatório de controle de qualidade ou validação com dados simulados (X1)", "infográfico de indicadores do laboratório (D7)", "revisão crítica de um POP de colega (L10)"] },
+      { "id": "fluxo-da-amostra", "label": "Organizar o fluxo da amostra", "steps": ["fluxo do pré-analítico à liberação (D4)", "redesenho antes e depois de um processo (D5)", "relatório técnico de redução de não conformidades (L4)"] },
+      { "id": "casos-e-ciencia", "label": "Casos e ciência sem expor pacientes", "steps": ["estudo de caso laboratorial anonimizado (L3)", "projeto de pesquisa (L4)", "post sobre um aprendizado técnico (L5)"] },
+      { "id": "posicionar-se", "label": "Posicionar-se para a vaga ou a residência", "steps": ["bio de três frases (L6)", "currículo direcionado (L1)", "carta de apresentação (L2)", "plano 30-60-90 para o novo setor (L9)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"biomédica de hematologia\", \"analista de biologia molecular\", \"estagiário de laboratório\", \"RT de laboratório\", \"técnico de laboratório\"",
+      "cboFamilies": ["2212", "3242"],
+      "why": "Pergunto seu último cargo ou setor para partir do que você já fez; técnicos que concluíram a graduação também contam. Se for o primeiro vínculo, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio curricular ou primeiro vínculo após o CRBM",
+        "junior": "analista até dois anos, com supervisão",
+        "pleno": "analista com autonomia para validar e liberar resultados",
+        "senior": "referência técnica do setor; responsável técnico",
+        "gestao": "supervisão, gerência ou coordenação de qualidade"
+      },
+      "why": "Pergunto o nível para ajustar as tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem",
+      "options": ["executar ensaios com precisão", "controlar a qualidade da corrida", "coletar e preparar amostras", "validar e liberar resultados", "biologia molecular", "microbiologia", "hematologia e hemoterapia", "escrever e seguir POPs", "investigar não conformidades", "analisar dados e estatística", "ensinar colegas", "organizar o fluxo do laboratório"],
+      "why": "Suas competências declaradas viram o ponto de partida; a prova vem com as tarefas, sem dados de paciente ou do laboratório."
+    },
+    "c4": {
+      "certifications": ["graduação em Biomedicina", "inscrição no CRBM", "habilitação registrada (análises clínicas, imagenologia, biologia molecular, estética, reprodução humana)", "residência multiprofissional", "especialização lato sensu", "cursos de boas práticas de laboratório e biossegurança", "mestrado ou doutorado"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Formação, habilitações e idiomas mostram lacunas em relação ao setor ou ao cargo que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["controle de qualidade e Westgard", "validação de métodos", "biologia molecular", "bioestatística e análise de dados", "gestão da qualidade e acreditação", "fase pré-analítica", "biossegurança", "indicadores do laboratório", "escrita científica", "hemoterapia", "imagenologia"],
+      "why": "Com isso sugiro uma trilha curta com tarefas progressivas em vez do catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que etapa você está?", "type": "escolha", "options": ["graduação", "estágio curricular", "recém-formado", "residência", "biomédico em exercício", "pós-graduação stricto sensu"], "why": "A etapa define quais tarefas fazem sentido: para a primeira vaga, currículo e carta; para o laboratório, POPs e indicadores.", "where": "P" },
+      { "id": "x2", "prompt": "Que área de atuação mais interessa?", "type": "lista", "options": ["análises clínicas", "biologia molecular e genética", "hemoterapia", "imagenologia", "reprodução humana", "pesquisa e indústria", "vigilância laboratorial e saúde pública", "perícia", "estética"], "why": "Direciona exemplos, vocabulário e fontes das tarefas para a área que você quer.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L7", "D4", "L4", "D7", "L3", "L6", "L1", "L9", "L2", "L5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta 2D não é entrega da profissão; layout de laboratório é exceção rara" },
+      { "code": "D3", "reason": "modelagem 3D de produto não é entrega da profissão" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da profissão" },
+      { "code": "D8", "reason": "vista explodida não é entrega da profissão" },
+      { "code": "D9", "reason": "wireframe de tela não é entrega típica" },
+      { "code": "D2", "reason": "prancha de portfólio não representa as entregas da profissão; imagens de lâminas podem conter identificação" }
+    ],
+    "parameters": {
+      "L7": {
+        "title": "POP de uma rotina do laboratório",
+        "brief": "Escreva o procedimento operacional padrão de uma rotina que você domina (ex.: coleta e identificação de amostra, processamento de controle interno, extração de DNA, descarte de resíduos): objetivo, campo de aplicação, responsáveis, materiais e equipamentos, passos numerados, controle de qualidade, registros, referências e data de revisão. Documento de estudo, não institucional.",
+        "parameters": { "requiredSections": ["objetivo", "campo de aplicação", "responsáveis", "materiais e equipamentos", "passos", "controle de qualidade", "registros", "referências", "revisão"], "numberedSteps": true, "minReferences": 3, "disclaimer": "documento de estudo; não substitui POP do laboratório" },
+        "criteria": ["nove seções presentes", "passos numerados com responsável", "critério de aceitação do controle de qualidade", "ao menos três referências (RDC 786/2023, bula ou manual do fabricante, literatura)", "aviso de que é documento de estudo"],
+        "evidence": "documento no Letters (modelo pop)",
+        "time": "60 min",
+        "level": 2
+      },
+      "D4": {
+        "title": "Fluxo da amostra: do pré-analítico à liberação",
+        "brief": "Desenhe o fluxo de um exame ou setor (ex.: hemograma, cultura, qPCR) da solicitação à liberação do laudo, com raias por responsável, pontos de decisão (controle fora, amostra inadequada, valor crítico) e saídas; sem dados de paciente.",
+        "parameters": { "lanes": ["recepção e coleta", "triagem e preparo", "analista", "responsável técnico", "LIS"], "decisionPoints": 3, "notation": "BPMN simplificado" },
+        "criteria": ["início e fim explícitos", "raias por responsável", "ao menos três pontos de decisão (amostra, controle, valor crítico)", "nenhuma etapa órfã", "legenda de símbolos"],
+        "evidence": "diagrama vetorial no Drawings (modo diagrama)",
+        "time": "45 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório técnico curto",
+        "brief": "Relate um projeto, investigação ou melhoria (ex.: redução de recoletas, tratamento de não conformidade, comparação de métodos): objetivo, método, resultados, limitações e referências, em até quatro páginas, com dados agregados ou simulados e sem identificar pacientes ou dados confidenciais do laboratório.",
+        "parameters": { "requiredSections": ["objetivo", "método", "resultados", "limitações", "referências"], "maxPages": 4, "aggregatedDataOnly": true, "noConfidentialLabData": true },
+        "criteria": ["cinco seções nomeadas", "até quatro páginas", "dados agregados ou simulados, sem identificação", "sem lote, fornecedor ou dado confidencial do laboratório", "referências citadas"],
+        "evidence": "relatório no Letters (modelo relatorio-tecnico)",
+        "time": "2 h",
+        "level": 3
+      },
+      "D7": {
+        "title": "Infográfico de indicadores do laboratório",
+        "brief": "Monte um infográfico com até três indicadores (ex.: taxa de recoleta, tempo de liberação, rejeição de amostras, desempenho em proficiência) com fonte, período e uma mensagem principal; dados agregados, simulados ou públicos.",
+        "parameters": { "maxIndicators": 3, "requiredElements": ["fonte", "período", "setor ou unidade", "mensagem principal"], "aggregatedDataOnly": true },
+        "criteria": ["fonte e período citados", "eixos e unidades rotulados", "uma mensagem principal", "dados agregados, simulados ou públicos"],
+        "evidence": "imagem e PDF no Drawings (modo infográfico)",
+        "time": "60 min",
+        "level": 2
+      },
+      "L3": {
+        "title": "Estudo de caso laboratorial anonimizado",
+        "brief": "Descreva um caso real ou composto, sem nenhum identificador do paciente, no formato situação, tarefa, ação e resultado: contexto, achado ou interferência analítica, investigação realizada, resultado e lição aprendida, com referências.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado", "lição aprendida"], "anonymizationStatement": true, "minReferences": 2, "maxWords": 900 },
+        "criteria": ["cinco seções nomeadas", "declaração de anonimização e ausência de dados de paciente", "nenhum nome, CPF, número de amostra ligado a cadastro, data completa ou local que identifique", "ao menos duas referências", "até 900 palavras"],
+        "evidence": "documento no Letters (modelo estudo-de-caso)",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Relatório de controle de qualidade ou validação com dados simulados",
+        "competency": "Controle interno e externo da qualidade",
+        "criteria": ["dados explicitamente simulados ou agregados", "gráfico de Levey-Jennings ou tabela de precisão e exatidão", "regras de Westgard ou critérios de aceitação aplicados e nomeados", "conclusão sobre aceitação ou rejeição com justificativa", "ação corretiva proposta", "referências"],
+        "evidence": "documento no Letters (modelo relatorio-tecnico)",
+        "time": "90 min",
+        "trigger": "Quer mostrar como você avalia uma corrida analítica ou valida um método?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas ou palavras da tarefa", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L9", "X1"], "auto": true },
+      { "id": "declaracao-de-anonimizacao", "check": "há declaração explícita de anonimização, de dados simulados ou agregados", "appliesTo": ["L3", "L4", "L5", "L7", "L10", "D4", "D7", "X1"], "auto": true },
+      { "id": "sem-identificadores-diretos", "check": "não há CPF, nome próprio, data de nascimento completa ou número de amostra ligado a cadastro", "appliesTo": ["L3", "L4", "L5", "D7", "X1"], "auto": true },
+      { "id": "referencias-minimas", "check": "o número mínimo de referências da tarefa está presente", "appliesTo": ["L3", "L4", "L7", "X1"], "auto": true },
+      { "id": "passos-numerados-com-responsavel", "check": "cada passo do POP tem número e responsável", "appliesTo": ["L7"], "auto": true },
+      { "id": "criterio-de-aceitacao-nomeado", "check": "o critério de aceitação do controle de qualidade (regra ou limite) está nomeado", "appliesTo": ["L7", "X1"], "auto": true },
+      { "id": "aviso-documento-de-estudo", "check": "o POP traz o aviso de que não substitui documento do laboratório", "appliesTo": ["L7"], "auto": true },
+      { "id": "fluxo-fechado", "check": "o diagrama tem início, fim, raias e nenhuma etapa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "fonte-e-periodo", "check": "o infográfico cita fonte, período e setor ou unidade", "appliesTo": ["D7"], "auto": true },
+      { "id": "sem-dado-confidencial-do-laboratorio", "check": "não há lote, fornecedor, preço ou dado confidencial do laboratório ou da empresa", "appliesTo": ["L4", "L7", "D4", "D7", "X1"], "auto": false },
+      { "id": "reidentificacao-indireta", "check": "a combinação de dados (achado raro, setor, datas) não permite reidentificar o paciente", "appliesTo": ["L3", "L4", "L5"], "auto": false },
+      { "id": "autoria", "check": "a pessoa declarou autoria e creditou coautores", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L9", "L10", "D4", "D5", "D7", "D10", "X1"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "rigor-analitico", "label": "Rigor analítico", "levels": { "aproxima": "descreve o procedimento sem critérios de aceitação", "atende": "aplica critérios de qualidade e justifica a decisão", "supera": "discute fontes de erro, incerteza e alternativas" } },
+      { "id": "rastreabilidade", "label": "Rastreabilidade e documentação", "levels": { "aproxima": "registros genéricos, sem ligação entre etapas", "atende": "cada etapa tem registro e responsável identificáveis", "supera": "permite reconstruir o processo e auditar desvios" } },
+      { "id": "clareza-para-a-equipe", "label": "Clareza para a equipe", "levels": { "aproxima": "exige releitura para entender o fluxo", "atende": "colega ou técnico seguiria o documento sem perguntar", "supera": "antecipa exceções e pontos de falha" } },
+      { "id": "protecao-de-dados", "label": "Proteção de dados de pacientes e do laboratório", "levels": { "aproxima": "anonimiza o óbvio e deixa pistas indiretas", "atende": "remove identificadores diretos e indiretos e dados confidenciais", "supera": "usa dados simulados ou caso composto e explica as escolhas" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da área de Biomedicina (graduação, estágio, residência ou exercício com CRBM, em qualquer habilitação). Use o vocabulário da profissão: fases pré-analítica, analítica e pós-analítica, controle interno e externo da qualidade, Levey-Jennings, regras de Westgard, validação de método, incerteza de medição, valores críticos, rastreabilidade, não conformidade, LIS, PCR e qPCR, hemocomponentes, biossegurança, acreditação, habilitação, RT. Quando citar normas, prefira as primárias: Lei 6.684/1979, Res. CFBM 78/2002 (Ato Profissional Biomédico), Res. CFBM 330/2020 (Código de Ética), RDC Anvisa 786/2023, NR-32, LGPD art. 11, e fontes como manuais do fabricante, programas de proficiência, BVS e SciELO. O que você nunca faz: não interpreta exame, resultado ou imagem de uma pessoa real nem orienta terceiros sobre diagnóstico ou conduta; não redige laudo, parecer ou qualquer documento assinável; não valida nem libera resultado. Quando a pessoa trouxer um caso ou dados, exija que estejam anonimizados, simulados ou agregados (sem nome, CPF, número de amostra ligado a cadastro, datas completas ou combinação rara que identifique) e, se houver pista de identificação, pare e peça a remoção antes de continuar. Também não aceite lotes, fornecedores, preços ou outros dados confidenciais do laboratório: peça para remover. Trate POPs, relatórios e casos produzidos aqui como documentos de estudo, nunca do laboratório. Não infira habilitação, senioridade ou situação a partir dos textos: pergunte. Afirmações sobre mercado citam fonte, data e região (ex.: CFBM, CNES, CAGED) ou dizem \"estimativa\"; nunca prometa vaga, emprego ou remuneração. Progresso é por critérios atendidos; a pré-checagem cobre só itens objetivos; a validação que gera selo é humana. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação da pessoa.",
+    "citeSources": [
+      { "title": "Res. CFBM 330/2020 — Código de Ética do Profissional Biomédico", "url": "https://crbm1.gov.br/site2019/wp-content/uploads/2020/11/RES-330-CODIGO-DE-ETICA-CFBM.pdf", "kind": "norma" },
+      { "title": "Res. CFBM 78/2002 — Ato Profissional Biomédico e habilitações", "url": "https://cfbm.gov.br/wp-content/uploads/2021/12/RESOLUCAO-CFBM-No-78-DE-29-DE-ABRIL-DE-2002.pdf", "kind": "norma" },
+      { "title": "Res. CFBM 391/2025 — citopatologia, histotecnologia e análises moleculares", "url": "https://crbm1.gov.br/site2019/wp-content/uploads/2025/03/RESOLUCAO-No-391-DE-10-DE-MARCO-DE-2025.pdf", "kind": "norma" },
+      { "title": "Conselho Federal de Biomedicina — portal e resoluções", "url": "https://cfbm.gov.br/", "kind": "conselho" },
+      { "title": "Lei 6.684/1979 — regulamenta as profissões de biólogo e biomédico", "url": "https://www.planalto.gov.br/ccivil_03/leis/1970-1979/l6684.htm", "kind": "norma" },
+      { "title": "Anvisa — laboratórios clínicos (RDC 786/2023)", "url": "https://www.gov.br/anvisa/pt-br", "kind": "orgao-publico" },
+      { "title": "Biblioteca Virtual em Saúde (BVS)", "url": "https://bvsalud.org/", "kind": "referencia" },
+      { "title": "CNES — Cadastro Nacional de Estabelecimentos de Saúde (DATASUS)", "url": "https://cnes.datasus.gov.br/", "kind": "estatistica" },
+      { "title": "CBO — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências biomédicas; x1 (etapa) e x2 (área de atuação) orientam as tarefas." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "L7 POP, D4 fluxo da amostra, L4 relatório, D7 indicadores e L3 caso anonimizado primeiro; X1 relatório de qualidade quando c5 pedir; cada card lembra que não entra dado de paciente nem do laboratório." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir das horas (d1) e do aparelho (d4); respeita a escala informada pela pessoa; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, referências, critério de aceitação nomeado, declaração de anonimização e ausência de identificadores diretos; dado confidencial, reidentificação indireta e selo são revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura e linguagem de POP, relatório, caso e projeto com prévia; nunca redige laudo, parecer ou documento assinável nem interpreta exame real." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias, pontos de decisão e legenda do fluxo (D4); fonte, período e rótulos do infográfico (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese de competências declaradas e evidenciadas, lacunas para a área ou cargo-alvo e incertezas; cada afirmação cita o campo de origem." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos por CBO 2212 e competências: farmácia e indústria, ciências biológicas e pesquisa, dados e bioinformática, saúde pública; dados com fonte, data e região." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil; só anuncia habilitação registrada no CRBM se a pessoa informar (Código de Ética, publicidade)." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai formação, habilitações, setores e experiências (inclusive do Lattes em PDF) em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "laudos, resultados e imagens de exames identificáveis", "dados genéticos de pessoas", "lotes, fornecedores e dados confidenciais do laboratório", "dados sensíveis (LGPD art. 5º II)", "dados de terceiros sem autorização"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca interpretar exame, resultado ou imagem de pessoa real nem orientar terceiros sobre diagnóstico ou conduta; redirecionar ao profissional responsável",
+      "nunca redigir laudo, parecer ou documento assinável, nem validar ou liberar resultado",
+      "exigir dados anonimizados, simulados ou agregados; parar e pedir remoção ao detectar nome, CPF, número de amostra ligado a cadastro ou data completa",
+      "recusar lotes, fornecedores, preços e dados confidenciais do laboratório; pedir remoção",
+      "tratar POPs, relatórios e casos produzidos como documentos de estudo, não do laboratório",
+      "perguntar em vez de inferir habilitação, etapa ou situação",
+      "nunca prometer vaga, emprego ou remuneração; mercado com fonte, data e região ou \"estimativa\"",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["diagrama", "infografico"],
+    "lettersTemplates": ["pop", "relatorio-tecnico", "estudo-de-caso", "projeto-de-pesquisa", "artigo", "revisao", "curriculo", "carta", "bio", "plano-30-60-90", "relatorio-de-caso"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas curtas de texto (L5, L6) e revisão (L10); L7, L4, D4 e D7 pedem computador. Em escalas de bancada, prefira tarefas de 15 a 30 minutos.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: bio de três frases (15 min). Sem dados de paciente, só o que você sabe fazer.",
+        "Uma rotina de bancada que você domina pode virar POP em 60 min. Quando quiser, está aqui.",
+        "Sem pressão. Semana puxada no laboratório? A tarefa de 15 min continua disponível quando der.",
+        "Seu POP está com 4 de 5 critérios objetivos. Falta nomear o critério de aceitação do controle."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": { "sensitiveData": ["laudos e resultados de exames identificáveis (Res. CFBM 330/2020; LGPD art. 5º II)", "dados genéticos de pessoas", "lotes, fornecedores e dados confidenciais do laboratório", "número de inscrição no CRBM só por escolha da pessoa"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Conselho Federal de Biomedicina — portal e dados dos regionais", "url": "https://cfbm.gov.br/", "geography": "Brasil e regionais (CRBM 1 a 6)", "cadence": "continua", "kind": "conselho" },
+      { "title": "CNES — Cadastro Nacional de Estabelecimentos de Saúde (profissionais e vínculos)", "url": "https://cnes.datasus.gov.br/", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "Novo CAGED (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Editais de residência multiprofissional (ENARE/Ebserh e instituições)", "url": "https://www.gov.br/ebserh/pt-br/acesso-a-informacao/processos-seletivos/enare", "geography": "Brasil e instituições", "cadence": "anual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda, distribuição regional ou requisitos cita fonte, data e abrangência geográfica verificáveis (ex.: CFBM, data; CNES, mês/ano; CAGED, mês/ano); sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "farmacia", "why": "Análises clínicas, toxicologia e controle de qualidade na indústria são áreas compartilhadas entre biomédicos e farmacêuticos.", "gaps": ["farmacologia e legislação sanitária de medicamentos", "boas práticas de fabricação", "registro profissional próprio exige nova graduação para atos privativos"], "steps": ["POP de controle de qualidade (L7)", "relatório de validação com dados simulados (X1)", "curso de BPF"] },
+    { "to": "ciencia-de-dados", "why": "Bioinformática, análise de dados de laboratório e epidemiologia molecular pedem rigor analítico e estatística.", "gaps": ["programação (R ou Python)", "estatística inferencial e modelagem", "bancos de dados e pipelines"], "steps": ["infográfico de indicadores do laboratório (D7)", "relatório técnico com análise de uma base pública (L4)", "curso de introdução a R ou Python"] },
+    { "to": "gestao-publica", "why": "Vigilância laboratorial (Lacen), hemocentros públicos e regulação sanitária aproveitam a experiência em qualidade e biossegurança.", "gaps": ["planejamento e orçamento público", "legislação do SUS", "avaliação de políticas"], "steps": ["fluxo da amostra em rede pública (D4)", "relatório técnico de melhoria (L4)", "curso de gestão em saúde (Enap ou UNA-SUS)"] },
+    { "to": "medicina", "why": "Vizinho de catálogo: pesquisa clínica, laboratório hospitalar e diagnóstico compartilham vocabulário; a transição plena exige nova graduação.", "gaps": ["graduação em Medicina e CRM", "raciocínio clínico e semiologia", "atos privativos do médico (Lei 12.842/2013)"], "steps": ["estudo de caso laboratorial anonimizado (L3)", "projeto de pesquisa (L4)", "avaliar vestibular ou transferência com orientação da instituição"] }
+  ],
+  "learning": [
+    { "title": "Resoluções e Código de Ética do CFBM", "provider": "CFBM", "url": "https://cfbm.gov.br/", "free": true, "kind": "norma" },
+    { "title": "UNA-SUS — cursos gratuitos (vigilância, biossegurança, qualidade)", "provider": "UNA-SUS / Ministério da Saúde", "url": "https://www.unasus.gov.br/", "free": true, "kind": "portal" },
+    { "title": "AVASUS — Ambiente Virtual de Aprendizagem do SUS", "provider": "UFRN / Ministério da Saúde", "url": "https://avasus.ufrn.br/", "free": true, "kind": "portal" },
+    { "title": "Campus Virtual Fiocruz — cursos de laboratório, biossegurança e pesquisa", "provider": "Fiocruz", "url": "https://campusvirtual.fiocruz.br/", "free": true, "kind": "portal" },
+    { "title": "Anvisa — legislação de laboratórios clínicos e biossegurança", "provider": "Anvisa", "url": "https://www.gov.br/anvisa/pt-br", "free": true, "kind": "portal" },
+    { "title": "Biblioteca Virtual em Saúde (BVS) e SciELO", "provider": "BIREME/OPAS", "url": "https://bvsalud.org/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — gestão pública e saúde", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Sociedade Brasileira de Patologia Clínica / Medicina Laboratorial (PALC e educação)", "provider": "SBPC/ML", "url": "https://www.sbpc.org.br/", "free": false, "kind": "comunidade" }
+  ],
+  "sources": [
+    { "title": "Fase 1 — dados do ramo biomedicina (CBO, ISCO, conselho, sensitiveData, vizinhos)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Res. CFBM 330/2020 — Código de Ética do Profissional Biomédico (PDF no CRBM-1; revoga a Res. 198/2011)", "url": "https://crbm1.gov.br/site2019/wp-content/uploads/2020/11/RES-330-CODIGO-DE-ETICA-CFBM.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Res. CFBM 78/2002 — Ato Profissional Biomédico (PDF no CFBM)", "url": "https://cfbm.gov.br/wp-content/uploads/2021/12/RESOLUCAO-CFBM-No-78-DE-29-DE-ABRIL-DE-2002.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Res. CFBM 391/2025 — citopatologia, histotecnologia e análises moleculares (PDF no CRBM-1)", "url": "https://crbm1.gov.br/site2019/wp-content/uploads/2025/03/RESOLUCAO-No-391-DE-10-DE-MARCO-DE-2025.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7 e §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URIs ESCO da ocupação biomedical scientist e das competências: esco.ec.europa.eu/ec.europa.eu não acessível nesta sessão",
+    "Decreto 88.439/1983, RDC Anvisa 786/2023 e RDC 222/2018: citadas de memória, não localizadas nem abertas na fonte",
+    "Res. CFBM 78/2002, 330/2020 e 391/2025 confirmadas por resultados de busca (PDFs oficiais listados); textos integrais não abertos; lista atual de habilitações não conferida",
+    "número de biomédicos inscritos não localizado em fonte do CFBM; nenhuma estatística do conselho citada nos pacotes",
+    "URLs de CNES, ENARE, UNA-SUS, AVASUS, Campus Virtual Fiocruz, Anvisa e SBPC/ML não abertas nesta sessão",
+    "CBO 3242 (técnicos de laboratório) em a4.cboFamilies não conferida no portal da CBO",
+    "nomes de provedores de proficiência (PNCQ, Controllab) e programas de acreditação (PALC) listados por conhecimento geral"
+  ]
+}

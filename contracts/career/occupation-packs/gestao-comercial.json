@@ -1,0 +1,305 @@
+{
+  "schemaVersion": 1,
+  "code": "gestao-comercial",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Gestão Comercial", "en": "Sales Management", "es": "Gestión Comercial" },
+  "fields": ["gestao-comercial"],
+  "family": {
+    "cbo": [
+      { "code": "1423", "title": "Gerentes de comercialização, marketing e comunicação" },
+      { "code": "3541", "title": "Especialistas em promoção de produtos e vendas" },
+      { "code": "5201", "title": "Supervisores de vendas e de prestação de serviços" },
+      { "code": "1414", "title": "Gerentes de operações comerciais e de assistência técnica" }
+    ],
+    "isco08": [
+      { "code": "1221", "title": "Sales and marketing managers" },
+      { "code": "3322", "title": "Commercial sales representatives" },
+      { "code": "1420", "title": "Retail and wholesale trade managers" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/a7594892-ff23-4e2a-aedf-2f967ebca15c", "label": "sales manager" },
+      { "uri": "http://data.europa.eu/esco/occupation/2d3d7188-47ab-49b9-9045-e452d9db06f1", "label": "commercial director" },
+      { "uri": "http://data.europa.eu/esco/occupation/2eac08c2-a81a-46fc-8d75-eb0e0f3e0f6d", "label": "sales account manager" }
+    ]
+  },
+  "scope": {
+    "summary": "Tecnólogo em Gestão Comercial: planeja, executa e acompanha vendas e relacionamento com clientes no varejo, atacado, B2B e serviços. Cobre prospecção, negociação, funil e CRM, gestão de carteira, metas e previsão de vendas, precificação e política comercial, gestão de equipes de vendas e de loja, atendimento e pós-venda, sempre sob o CDC e a LGPD. Sem conselho próprio; representante comercial autônomo registra-se no CORE e corretor de imóveis no CRECI.",
+    "entryRoles": ["Vendedor(a) / consultor(a) de vendas", "Assistente comercial", "Representante de desenvolvimento de vendas (SDR/BDR)", "Operador(a) de televendas ou inside sales", "Atendente de pós-venda", "Estagiário comercial"],
+    "midRoles": ["Executivo(a) de contas", "Analista comercial / de vendas", "Supervisor(a) de vendas", "Gerente de loja", "Consultor(a) comercial B2B", "Representante comercial", "Analista de inteligência comercial", "Customer success"],
+    "seniorRoles": ["Coordenador comercial", "Gerente comercial / de vendas", "Gerente regional", "Gerente de contas-chave (key account)", "Diretor comercial", "Consultor em gestão comercial", "Empreendedor(a) no varejo"],
+    "sectors": ["varejo físico e e-commerce", "atacado e distribuição", "indústria (vendas B2B)", "serviços e tecnologia (SaaS)", "serviços financeiros e seguros", "imobiliário", "automotivo", "farmacêutico e saúde", "agronegócio", "trabalho por conta própria"],
+    "regulation": [
+      { "name": "CDC (Lei 8.078/1990)", "issuer": "Brasil", "about": "oferta vincula, informação clara, práticas abusivas, venda casada, direito de arrependimento fora do estabelecimento (art. 49)" },
+      { "name": "LGPD (Lei 13.709/2018), arts. 7º, 18 e 20", "issuer": "Brasil / ANPD", "about": "bases legais para prospecção e CRM, direitos do titular, decisões automatizadas (ex.: score de crédito)" },
+      { "name": "Decreto 7.962/2013", "issuer": "Brasil", "about": "comércio eletrônico: informações, atendimento e arrependimento" },
+      { "name": "Lei 4.886/1965 (alterada pela Lei 8.420/1992)", "issuer": "Brasil / CONFERE-CORE", "about": "representação comercial autônoma: registro no CORE, contrato, comissões e indenização" },
+      { "name": "Lei 6.530/1978 e Res. COFECI", "issuer": "Brasil / COFECI-CRECI", "about": "corretagem de imóveis: inscrição obrigatória no CRECI" },
+      { "name": "Lei 12.529/2011 (defesa da concorrência)", "issuer": "Brasil / CADE", "about": "veda cartel, combinação de preços e condutas anticoncorrenciais entre concorrentes" },
+      { "name": "Lei 12.846/2013 (Anticorrupção)", "issuer": "Brasil / CGU", "about": "responsabiliza empresas por atos contra a administração pública, inclusive em vendas ao governo" },
+      { "name": "Lei 14.133/2021", "issuer": "Brasil", "about": "licitações e contratos públicos: regras para vender ao setor público" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "funil de vendas / pipeline", "meaning": "etapas da oportunidade: prospecção, qualificação, proposta, negociação, fechamento" },
+      { "term": "CRM", "meaning": "sistema de gestão do relacionamento com clientes: contatos, oportunidades, histórico" },
+      { "term": "prospecção ativa e passiva", "meaning": "buscar o cliente (outbound) ou receber o interessado (inbound)" },
+      { "term": "qualificação (BANT, SPIN)", "meaning": "métodos para entender orçamento, autoridade, necessidade e prazo; perguntas de situação, problema, implicação e necessidade" },
+      { "term": "SDR / BDR / closer", "meaning": "papéis de pré-venda (qualificação) e de fechamento em vendas B2B" },
+      { "term": "ticket médio", "meaning": "faturamento dividido pelo número de vendas" },
+      { "term": "taxa de conversão", "meaning": "vendas fechadas divididas por oportunidades ou visitas no período" },
+      { "term": "ciclo de vendas", "meaning": "tempo médio entre o primeiro contato e o fechamento" },
+      { "term": "forecast", "meaning": "previsão de vendas por período, ponderada pela probabilidade de cada etapa" },
+      { "term": "meta e cota", "meaning": "objetivo de vendas por período, equipe ou vendedor" },
+      { "term": "carteira de clientes", "meaning": "conjunto de clientes atendidos por um vendedor ou equipe" },
+      { "term": "key account", "meaning": "cliente estratégico com plano de conta dedicado" },
+      { "term": "churn e retenção", "meaning": "perda de clientes no período e capacidade de mantê-los" },
+      { "term": "upsell / cross-sell", "meaning": "vender versão superior / produto complementar ao mesmo cliente" },
+      { "term": "markup e margem", "meaning": "fator aplicado ao custo para formar preço; lucro sobre o preço de venda" },
+      { "term": "política comercial", "meaning": "regras de preço, desconto, prazo, crédito e alçada de aprovação" },
+      { "term": "proposta comercial", "meaning": "documento com escopo, preço, condições, prazos e validade da oferta" },
+      { "term": "BATNA / MAPAN", "meaning": "melhor alternativa a um acordo negociado: referência para não aceitar qualquer acordo" },
+      { "term": "objeção", "meaning": "dúvida ou resistência do cliente a ser entendida e respondida" },
+      { "term": "positivação", "meaning": "número de clientes que compraram no período em uma carteira ou região" },
+      { "term": "mix de produtos e sell-out", "meaning": "variedade ofertada; vendas do varejo ao consumidor final" },
+      { "term": "PDV", "meaning": "ponto de venda: loja, gôndola ou sistema de caixa" },
+      { "term": "NPS e CSAT", "meaning": "indicadores de recomendação e satisfação do cliente" },
+      { "term": "pós-venda", "meaning": "atendimento após a compra: entrega, instalação, troca, suporte e fidelização" },
+      { "term": "comissão", "meaning": "remuneração variável por vendas; tema de política interna, nunca exposto no portfólio" }
+    ],
+    "tools": ["CRM (ex.: Salesforce, HubSpot, Pipedrive, RD Station CRM)", "ERP e sistemas de pedido (TOTVS, SAP)", "PDV e frente de caixa", "planilhas (Excel, Google Sheets)", "Power BI ou Looker Studio", "LinkedIn e ferramentas de prospecção", "videochamada e telefonia (VoIP)", "WhatsApp Business (com opt-in)", "Letters (proposta, POP, plano, relatório)", "Drawings (funil, fluxo, infográfico)"],
+    "deliverables": ["proposta comercial", "roteiro de abordagem e qualificação", "playbook / POP de vendas", "relatório de desempenho comercial (funil, conversão, ticket médio)", "forecast mensal", "plano de conta (key account)", "política comercial e alçadas de desconto", "plano de ação de loja ou região", "mapa do funil e do processo de vendas", "pesquisa de satisfação e plano de pós-venda", "plano 30-60-90 para supervisor ou gerente"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Prospecção e qualificação de clientes", "esco": null, "kind": "nucleo" },
+      { "label": "Negociação e tratamento de objeções", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de funil e CRM", "esco": null, "kind": "nucleo" },
+      { "label": "Elaboração de propostas comerciais", "esco": null, "kind": "nucleo" },
+      { "label": "Indicadores comerciais e previsão de vendas", "esco": null, "kind": "nucleo" },
+      { "label": "Formação de preço, margem e política comercial", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de carteira e contas-chave", "esco": null, "kind": "nucleo" },
+      { "label": "Liderança e treinamento de equipes de vendas", "esco": null, "kind": "nucleo" },
+      { "label": "Atendimento, pós-venda e retenção", "esco": null, "kind": "nucleo" },
+      { "label": "Direito do consumidor e LGPD aplicados a vendas", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de loja e varejo (mix, exposição, estoque)", "esco": null, "kind": "apoio" },
+      { "label": "Noções de marketing e geração de demanda", "esco": null, "kind": "apoio" },
+      { "label": "Vendas ao setor público e licitações", "esco": null, "kind": "apoio" },
+      { "label": "Planilhas e análise de dados", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação oral e escuta ativa", "resiliência", "organização e disciplina de rotina", "ética e transparência com o cliente", "trabalho em equipe com marketing e operações"],
+    "tracks": [
+      { "id": "vender-com-metodo", "label": "Vender com método", "steps": ["roteiro de abordagem e qualificação (X1)", "proposta comercial a partir de briefing (L8)", "POP / playbook de uma etapa do funil (L7)"] },
+      { "id": "gerir-resultados", "label": "Gerir resultados", "steps": ["relatório de desempenho comercial (L4)", "infográfico de funil e conversão (D7)", "forecast ponderado (X2)"] },
+      { "id": "liderar-equipe", "label": "Liderar equipe comercial", "steps": ["plano 30-60-90 para supervisor (L9)", "processo de vendas com raias (D4)", "redesenho antes e depois de um processo comercial (D5)"] },
+      { "id": "provar-resultados", "label": "Provar resultados", "steps": ["estudo de caso STAR de uma negociação (L3)", "bio com posicionamento comercial (L6)", "currículo direcionado com conquistas em números relativos (L1)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"vendedor\", \"consultor de vendas\", \"assistente comercial\", \"gerente de loja\", \"representante comercial\"",
+      "cboFamilies": ["5211", "3541", "5201", "1423", "1414"],
+      "why": "Pergunto seu último cargo para saber se você parte do varejo, do B2B ou da liderança e sugerir tarefas que continuem dali. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, aprendiz, vendedor ou atendente iniciante",
+        "junior": "vendedor ou SDR; segue o roteiro e o funil com acompanhamento",
+        "pleno": "executivo de contas ou vendedor que gere a própria carteira com autonomia",
+        "senior": "key account, supervisor ou consultor; desenha abordagens e orienta colegas",
+        "gestao": "coordena ou gerencia equipe, região, loja, metas e política comercial"
+      },
+      "why": "Com o nível ajusto as tarefas: roteiro de abordagem para quem começa, forecast e plano 30-60-90 de gestão para quem lidera."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em vendas",
+      "options": ["abordar e prospectar clientes", "entender a necessidade do cliente", "negociar preço e condições", "contornar objeções", "montar propostas comerciais", "usar CRM e manter o funil atualizado", "acompanhar metas e indicadores", "fidelizar e fazer pós-venda", "liderar e treinar vendedores", "organizar loja e exposição", "vender por telefone ou on-line", "calcular preço e margem"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa comercial; a prova vem com as tarefas (proposta, relatório, roteiro)."
+    },
+    "c4": {
+      "certifications": ["tecnólogo em Gestão Comercial", "graduação em Administração ou Marketing", "curso de negociação", "curso de CRM (ex.: HubSpot, Salesforce Trailhead)", "curso de Excel ou Power BI", "registro no CORE (representante comercial)", "registro no CRECI (corretor de imóveis)", "certificações do mercado financeiro (ex.: CPA-10, CPA-20)", "curso de direito do consumidor"],
+      "languages": ["inglês", "espanhol", "Libras"],
+      "why": "Registros e cursos mostram lacunas em relação ao cargo-alvo (ex.: representação autônoma exige CORE; vendas de investimentos exigem certificação ANBIMA)."
+    },
+    "c5": {
+      "prompt": "Que competência comercial quer desenvolver?",
+      "options": ["prospecção e qualificação", "negociação", "propostas comerciais", "CRM e gestão de funil", "indicadores e forecast", "preço, margem e política comercial", "gestão de contas-chave", "liderança de equipe de vendas", "pós-venda e retenção", "gestão de loja"],
+      "why": "Com isso monto uma trilha com tarefas progressivas da área, em vez de mostrar o catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que tipo de venda você atua ou quer atuar primeiro?", "type": "escolha", "options": ["varejo / loja", "B2B (empresa para empresa)", "inside sales / on-line", "representação comercial", "imobiliário", "serviços financeiros", "liderança de equipe", "ainda não sei"], "why": "Pergunto para ajustar o vocabulário e as tarefas (ex.: plano de ação de loja no varejo; proposta e plano de conta no B2B).", "where": "P" }
+    ],
+    "interestTestWhenUnknown": true
+  },
+  "guidedTasks": {
+    "priority": ["L8", "L4", "L3", "L9", "L7", "D7", "D4", "L6", "L1", "L2", "D5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica não é entrega comercial; layout de loja fica com design de interiores" },
+      { "code": "D3", "reason": "modelagem 3D não é entrega da área" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da área" },
+      { "code": "D8", "reason": "vista explodida não é entrega da área" },
+      { "code": "D9", "reason": "wireframe de tela não é entrega típica de vendas" }
+    ],
+    "parameters": {
+      "L8": {
+        "title": "Proposta comercial a partir de um briefing",
+        "brief": "Responda a um briefing simulado de um cliente fictício com uma proposta: entendimento da necessidade, solução, escopo, preço e condições, prazos, validade, premissas e o que fica fora. Nenhum preço, cliente ou condição real do empregador.",
+        "parameters": { "client": "fictício", "sections": ["necessidade do cliente", "solução proposta", "escopo", "preço e condições", "prazos", "validade", "premissas", "fora do escopo"], "fictionalPrices": true },
+        "criteria": ["seções necessidade, solução, escopo, preço e condições, prazos e validade", "premissas e o que fica fora explícitos", "liga cada item da solução a uma necessidade do cliente", "condições claras conforme o CDC (preço total, forma de pagamento)", "cliente e preços fictícios declarados"],
+        "evidence": "proposta em Letters (modelo proposta)",
+        "time": "45 min",
+        "level": 1
+      },
+      "L4": {
+        "title": "Relatório de desempenho comercial",
+        "brief": "Monte um relatório de até 4 páginas com quatro indicadores (ex.: conversão por etapa do funil, ticket médio, ciclo de vendas, churn): objetivo, fórmula, período, fonte, resultado contra meta, leitura, limitações e plano de ação. Use dados fictícios ou relativos; nunca metas, comissões ou carteiras reais.",
+        "parameters": { "maxPages": 4, "indicators": 4, "sections": ["objetivo", "método e fórmulas", "resultados x meta", "limitações", "plano de ação"], "fictionalData": true },
+        "criteria": ["quatro indicadores com fórmula e período", "resultado comparado à meta", "seções objetivo, método, resultados, limitações e plano de ação", "até 4 páginas", "dados fictícios ou relativos, sem carteira, metas ou comissões reais"],
+        "evidence": "relatório em Letters (modelo relatorio-tecnico)",
+        "time": "2 h",
+        "level": 2
+      },
+      "L3": {
+        "title": "Estudo de caso STAR de uma negociação",
+        "brief": "Conte uma negociação ou recuperação de cliente: situação, tarefa, ação (como entendeu a necessidade e tratou objeções) e resultado mensurável em número relativo. Sem nome de cliente, preço ou condição confidencial.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true, "relativeNumbers": true },
+        "criteria": ["quatro seções explícitas", "resultado com número relativo ou comparação", "descreve como a necessidade foi entendida", "declara ausência de nome de cliente, preço ou condição confidencial"],
+        "evidence": "documento em Letters (modelo estudo-de-caso)",
+        "time": "60 min",
+        "level": 1
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "letters", "title": "Roteiro de abordagem e qualificação", "competency": "Prospecção e qualificação", "criteria": ["abertura com motivo do contato", "cinco perguntas de qualificação (ex.: SPIN ou BANT)", "três objeções comuns com resposta", "próximo passo combinado", "respeita opt-out e base legal da LGPD na prospecção"], "evidence": "roteiro em Letters", "time": "40 min", "trigger": "Quer treinar um roteiro de abordagem para o tipo de venda que você conhece?", "level": 1 },
+      { "id": "X2", "editor": "letters", "title": "Forecast ponderado de um funil fictício", "competency": "Previsão de vendas", "criteria": ["oportunidades fictícias por etapa", "probabilidade por etapa justificada", "previsão ponderada calculada", "cenários pessimista e otimista", "ações para fechar a lacuna até a meta"], "evidence": "relatório curto em Letters com tabela", "time": "60 min", "trigger": "Quer mostrar como você preveria o resultado do mês?", "level": 2 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "secoes-da-proposta", "check": "a proposta tem necessidade, solução, escopo, preço e condições, prazos, validade, premissas e fora do escopo", "appliesTo": ["L8"], "auto": true },
+      { "id": "indicador-com-formula-e-periodo", "check": "cada indicador traz fórmula, período e fonte dos dados", "appliesTo": ["L4", "D7", "X2"], "auto": true },
+      { "id": "star-quatro-secoes", "check": "situação, tarefa, ação e resultado explícitos, com resultado mensurável", "appliesTo": ["L3"], "auto": true },
+      { "id": "metas-por-fase", "check": "três metas em cada fase, cada uma com indicador e prazo", "appliesTo": ["L9"], "auto": true },
+      { "id": "pop-passos-e-responsaveis", "check": "passos numerados, cada um com responsável e critério de conclusão", "appliesTo": ["L7"], "auto": true },
+      { "id": "sem-dados-de-clientes", "check": "nenhum nome de cliente, contato, preço, condição, meta ou comissão real; declaração de dados fictícios ou relativos", "appliesTo": ["L3", "L4", "L7", "L8", "D4", "D7", "X1", "X2"], "auto": true },
+      { "id": "fonte-e-eixos", "check": "fonte citada e eixos rotulados com unidade", "appliesTo": ["D7"], "auto": true },
+      { "id": "diagrama-fechado-com-raias", "check": "o diagrama tem início e fim, raias por responsável e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados confidenciais do empregador e de clientes", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D4", "D5", "D7", "X1", "X2"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "foco-no-cliente", "label": "Foco na necessidade do cliente", "levels": { "aproxima": "fala do produto sem relacionar à necessidade", "atende": "cada item da oferta responde a uma necessidade declarada", "supera": "quantifica o valor para o cliente e antecipa objeções" } },
+      { "id": "orientacao-a-resultado", "label": "Orientação a resultado", "levels": { "aproxima": "descreve atividades sem número", "atende": "mostra resultado com indicador e meta", "supera": "explica o que gerou o resultado e o que replicaria" } },
+      { "id": "etica-comercial", "label": "Ética e transparência", "levels": { "aproxima": "não considera CDC nem LGPD", "atende": "condições claras, sem venda casada nem pressão indevida; prospecção com base legal", "supera": "propõe controles (alçadas, registros, opt-out) que protegem cliente e empresa" } },
+      { "id": "clareza-da-proposta", "label": "Clareza", "levels": { "aproxima": "o cliente precisa perguntar o preço total ou o escopo", "atende": "escopo, preço e condições entendidos na primeira leitura", "supera": "comparável entre opções e pronta para decisão" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da área de Gestão Comercial (tecnólogo; CBO 1423, 3541, 5201 e 1414). Use o vocabulário da área (funil, pipeline, CRM, prospecção, qualificação SPIN/BANT, SDR, closer, ticket médio, conversão, ciclo de vendas, forecast, carteira, key account, churn, upsell, cross-sell, markup, margem, política comercial, positivação, PDV, NPS) e cite as normas pelo nome: CDC (oferta, informação, práticas abusivas, venda casada, art. 49), LGPD (bases legais na prospecção, opt-out, art. 20), Decreto 7.962/2013, Lei 4.886/1965 (CORE), Lei 6.530/1978 (CRECI), Lei 12.529/2011 (concorrência), Lei 12.846/2013 (anticorrupção), Lei 14.133/2021. Nunca sugira venda casada, pressão abusiva, informação enganosa, combinação de preços com concorrentes, vantagem indevida a agente público ou prospecção sem base legal; nunca sugira bloquear ou recusar clientes por características protegidas. Nunca peça nem use carteiras, contatos, tabelas de preço, condições, metas, comissões ou resultados reais do empregador ou de clientes: oriente dados fictícios ou relativos. Não substitua advogado em contratos reais nem defina política de crédito real. Lembre que representação autônoma exige CORE e corretagem de imóveis exige CRECI. Toda sugestão de tarefa diz qual competência comprova, que evidência produz e quanto tempo leva; afirmações de mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa entrevista, emprego ou salário, nem comissão. Progresso é por critérios atendidos, nunca por score. Em nenhum modo publique, envie mensagem ou se candidate sem confirmação. Pré-cheque só critérios objetivos; o selo depende de revisão humana.",
+    "citeSources": [
+      { "title": "CDC — Lei 8.078/1990", "url": "https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm", "kind": "norma" },
+      { "title": "LGPD — Lei 13.709/2018", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm", "kind": "norma" },
+      { "title": "Lei 4.886/1965 — representação comercial autônoma", "url": "https://www.planalto.gov.br/ccivil_03/leis/l4886.htm", "kind": "norma" },
+      { "title": "CONFERE — Conselho Federal dos Representantes Comerciais", "url": "https://www.confere.org.br/", "kind": "conselho" },
+      { "title": "Senacon / consumidor.gov.br — defesa do consumidor", "url": "https://www.consumidor.gov.br/", "kind": "orgao-publico" },
+      { "title": "CBO — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "Novo CAGED — MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" },
+      { "title": "IBGE — Pesquisa Mensal de Comércio (PMC)", "url": "https://www.ibge.gov.br/estatisticas/economicas/comercio/9227-pesquisa-mensal-de-comercio.html", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências comerciais; x1 (tipo de venda) ajusta vocabulário e tarefas." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "L8 proposta, L4 relatório, L3 STAR e L9 plano na frente; X1 roteiro para quem começa; X2 forecast para quem lidera." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir das horas (d1); textos curtos (X1, L6) cabem no celular; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Pré-checa seções da proposta, fórmula dos indicadores, STAR, metas por fase e ausência de dados de clientes; o selo é humano." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Propõe estrutura de proposta, roteiro e relatório com prévia; nunca aplica sem revisão; nunca envia proposta a cliente." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Funil e conversão no infográfico (D7); processo de vendas com raias (D4)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: competências comerciais declaradas e evidenciadas, lacunas em relação ao tipo de venda-alvo; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos por CBO/ESCO: marketing, administração, processos gerenciais, logística, gestão financeira." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por CBO, setor e competências compartilhadas." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com tipo de venda, três competências e uma prova; só com o consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências e conquistas em ficha editável; sugere trocar números absolutos de vendas por relativos; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "carteiras de clientes, contatos, tabelas de preço e condições comerciais confidenciais", "dados pessoais e de pagamento de clientes", "metas, comissões e resultados internos de equipes de vendas", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca sugerir venda casada, pressão abusiva, informação enganosa ou prospecção sem base legal (CDC, LGPD)",
+      "nunca sugerir combinação de preços com concorrentes nem vantagem indevida a agente público (Leis 12.529/2011 e 12.846/2013)",
+      "nunca pedir nem usar carteiras, contatos, preços, condições, metas ou comissões reais; orientar dados fictícios ou relativos",
+      "nunca sugerir recusar ou priorizar clientes por características protegidas",
+      "perguntar em vez de inferir tipo de venda, senioridade ou situação",
+      "nunca prometer entrevista, emprego, salário ou comissão; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score ou ranking de vendedores",
+      "em nenhum modo publicar, enviar mensagem ou proposta, ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["infografico", "diagrama", "prancha"],
+    "lettersTemplates": ["proposta", "relatorio-tecnico", "estudo-de-caso", "plano-30-60-90", "pop", "curriculo", "carta", "bio", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, X1 (roteiro), L6, L5 e L3 funcionam bem; L4, X2 e D7 ficam melhores no computador. Não anexar prints de CRM ou de pedidos com dados de clientes.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: proposta comercial para um cliente fictício (45 min). Comprova negociação e escopo.",
+        "Conte uma negociação que deu certo em formato STAR, com números relativos. Leva cerca de 60 min.",
+        "Sem pressão. Quando quiser retomar, o roteiro de abordagem de 40 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "setor", "competencias"] },
+    "privacy": {
+      "sensitiveData": ["carteiras de clientes, tabelas de preço e condições comerciais confidenciais", "dados pessoais e de pagamento de clientes (LGPD)", "metas, comissões e resultados internos de equipes de vendas", "prints de CRM, pedidos e propostas reais"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 5211, 3541, 5201 e 1423", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — estoque de vínculos por ocupação e setor (CNAE comércio)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Pesquisa Mensal de Comércio (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/economicas/comercio/9227-pesquisa-mensal-de-comercio.html", "geography": "Brasil e UF", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "PNAD Contínua (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html", "geography": "Brasil e UF", "cadence": "trimestral", "kind": "estatistica-oficial" },
+      { "title": "Censo da Educação Superior (INEP) — matrículas em Gestão Comercial", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-da-educacao-superior", "geography": "Brasil e UF", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "CNC — Confederação Nacional do Comércio (pesquisas de comércio e emprego)", "url": "https://www.portaldocomercio.org.br/", "geography": "Brasil e UF", "cadence": "mensal", "kind": "associacao" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração e comissão nunca entram como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "marketing", "why": "Vendas e marketing compartilham funil, CRM e metas de receita (mesmas famílias CBO 1423 e 3541); quem conhece o cliente na ponta contribui para posicionamento e geração de demanda.", "gaps": ["pesquisa de mercado", "marketing digital e mídia paga", "analytics de campanha"], "steps": ["resposta a briefing de campanha (L8)", "relatório de funil MQL → SQL → venda (L4)", "certificações gratuitas de Google Ads e HubSpot"] },
+    { "to": "administracao", "why": "Mesma área CINE (04); o bacharelado amplia para finanças, pessoas e estratégia, base para gerência e diretoria comercial.", "gaps": ["finanças e orçamento", "gestão de pessoas", "estratégia"], "steps": ["relatório de desempenho com leitura de margem (L4)", "plano 30-60-90 para gerente comercial (L9)", "disciplinas de finanças em curso aberto"] },
+    { "to": "processos-gerenciais", "why": "Tecnólogo vizinho que generaliza processos, indicadores e projetos; útil para operações comerciais (sales ops).", "gaps": ["mapeamento de processos", "gestão de projetos", "indicadores operacionais"], "steps": ["processo de vendas com raias (D4)", "POP de uma etapa do funil (L7)", "redesenho antes e depois (D5)"] },
+    { "to": "logistica", "why": "Prazo, disponibilidade e custo de entrega definem a promessa comercial; quem negocia nível de serviço migra para operações e supply chain.", "gaps": ["gestão de estoques", "transporte e frete", "WMS/TMS e documentos fiscais"], "steps": ["fluxo do pedido à entrega (D4)", "relatório de OTIF e nível de serviço (L4)", "cursos de logística do SENAI ou Sebrae"] },
+    { "to": "gestao-financeira", "why": "Preço, margem, crédito e cobrança aproximam vendas de finanças; útil para análise comercial e de crédito.", "gaps": ["análise de crédito", "fluxo de caixa e DRE", "matemática financeira"], "steps": ["formação de preço com margem e markup (L4)", "estudo de caso de inadimplência com dados fictícios (L3)", "curso de matemática financeira"] }
+  ],
+  "learning": [
+    { "title": "Cursos on-line de vendas, atendimento e varejo do Sebrae", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — negociação, atendimento e LGPD", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual Fundação Bradesco — vendas e administração", "provider": "Fundação Bradesco", "url": "https://www.ev.org.br/", "free": true, "kind": "portal" },
+    { "title": "HubSpot Academy — vendas inbound e CRM", "provider": "HubSpot", "url": "https://academy.hubspot.com/", "free": true, "kind": "certificacao" },
+    { "title": "Salesforce Trailhead — CRM e vendas", "provider": "Salesforce", "url": "https://trailhead.salesforce.com/", "free": true, "kind": "curso" },
+    { "title": "Cursos gratuitos do SENAC (EAD) em comércio e vendas", "provider": "SENAC", "url": "https://www.ead.senac.br/", "free": false, "kind": "curso" },
+    { "title": "Código de Defesa do Consumidor (texto oficial)", "provider": "Planalto", "url": "https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm", "free": true, "kind": "norma" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4 (perguntas), §4.6 (pacote), §7 (tarefas L1–L10, D1–D10), §8 (mensagens)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "RF75 README (CA19) e catálogo contracts/career/academic-fields.json — ramo gestao-comercial (CBO, ISCO, ESCO, conselho, sensitiveData, vizinhos)", "url": "docs/diagramas/RF75/README.md", "accessedAt": "2026-11-02" },
+    { "title": "CDC — Lei 8.078/1990", "url": "https://www.planalto.gov.br/ccivil_03/leis/l8078compilado.htm", "accessedAt": "2026-11-02" },
+    { "title": "Lei 4.886/1965", "url": "https://www.planalto.gov.br/ccivil_03/leis/l4886.htm", "accessedAt": "2026-11-02" },
+    { "title": "LGPD — Lei 13.709/2018", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm", "accessedAt": "2026-11-02" },
+    { "title": "CBO — Classificação Brasileira de Ocupações", "url": "https://cbo.mte.gov.br/", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Nenhuma busca web nesta sessão: URLs de CONFERE, consumidor.gov.br, CNC, IBGE PMC, Trailhead, HubSpot e SENAC citadas de memória, não verificadas em 2026-11-02",
+    "Gratuidade dos cursos EAD do SENAC varia; marcado como não gratuito por cautela",
+    "Lei 4.886/1965 (CORE) e Lei 6.530/1978 (CRECI) copiadas das notas do catálogo; resoluções vigentes do COFECI não conferidas",
+    "Código CBO 5211 (vendedores) em questions.a4 e títulos CBO/ISCO não conferidos no portal da CBO",
+    "URIs ESCO da família copiadas do catálogo; competências sem URI ESCO confirmada (esco: null)",
+    "Exigência de certificações ANBIMA (CPA-10, CPA-20) para vendas de investimentos citada de memória"
+  ]
+}

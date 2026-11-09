@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "code": "ciencias-biologicas",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Ciências Biológicas (biólogo)", "en": "Biological Sciences (biologist)", "es": "Ciencias Biológicas (biólogo)" },
+  "fields": ["ciencias-biologicas"],
+  "family": {
+    "cbo": [{ "code": "2211", "title": "Biólogos e afins" }],
+    "isco08": [{ "code": "2131", "title": "Biologists, botanists, zoologists and related professionals" }],
+    "esco": []
+  },
+  "scope": {
+    "summary": "Estuda, monitora e maneja seres vivos e ecossistemas: levantamentos de fauna e flora, análises laboratoriais (microbiologia, genética, bioquímica), bioensaios, monitoramento ambiental, educação ambiental e consultoria para licenciamento. Registro no CRBio (Lei 6.684/1979); laudos, pareceres e responsabilidade técnica exigem ART do CRBio. Atua em consultorias, laboratórios, órgãos ambientais, indústria, saúde, pesquisa e ensino.",
+    "entryRoles": ["Estagiário em laboratório ou consultoria ambiental", "Auxiliar de laboratório", "Biólogo júnior de campo (levantamento de fauna e flora)", "Analista de laboratório júnior (microbiologia, biologia molecular)", "Monitor de educação ambiental", "Bolsista de iniciação científica ou apoio técnico"],
+    "midRoles": ["Biólogo de consultoria ambiental (pleno)", "Analista ambiental de órgão público (IBAMA, ICMBio, OEMA)", "Analista de controle de qualidade microbiológico", "Biólogo de laboratório clínico ou de pesquisa", "Responsável técnico por biotério, viveiro ou coleção", "Biólogo de manejo em unidade de conservação", "Analista de biossegurança"],
+    "seniorRoles": ["Coordenador de estudos de fauna e flora (EIA/RIMA)", "Coordenador de laboratório (microbiologia, biologia molecular)", "Gestor de unidade de conservação", "Perito ambiental ou assistente técnico", "Pesquisador ou docente em instituição pública", "Gerente de meio ambiente e biodiversidade em indústria", "Consultor sênior em biodiversidade e licenciamento"],
+    "sectors": ["consultoria ambiental e licenciamento", "órgãos ambientais (IBAMA, ICMBio, OEMAs, prefeituras)", "laboratórios de análises clínicas, microbiológicas e ambientais", "indústria (alimentos, farmacêutica, cosméticos, saneamento)", "unidades de conservação, zoológicos, jardins botânicos e aquários", "agronegócio e biotecnologia", "saúde pública (vigilância, controle de vetores)", "ensino e pesquisa (universidades, institutos)", "ONGs e terceiro setor", "biotérios e bancos de germoplasma"],
+    "regulation": [
+      { "name": "Lei 6.684/1979 e Decreto 88.438/1983", "issuer": "Brasil", "about": "regulamentam a profissão de biólogo e criam o CFBio e os CRBios; registro obrigatório para exercer a profissão" },
+      { "name": "Resolução CFBio 227/2010", "issuer": "CFBio", "about": "define as áreas de atuação do biólogo (meio ambiente e biodiversidade, saúde, biotecnologia e produção)" },
+      { "name": "Resolução CFBio 300/2012", "issuer": "CFBio", "about": "requisitos mínimos de formação para o biólogo atuar em pesquisa, perícias, laudos e pareceres em cada área" },
+      { "name": "Resolução CFBio 02/2002 (Código de Ética do Profissional Biólogo)", "issuer": "CFBio", "about": "deveres éticos, sigilo profissional e responsabilidade por laudos e pareceres" },
+      { "name": "Lei 13.123/2015 e SisGen", "issuer": "Brasil / CGen", "about": "acesso ao patrimônio genético e ao conhecimento tradicional associado; cadastro de pesquisas" },
+      { "name": "Instrução Normativa ICMBio 03/2014 (SISBIO)", "issuer": "ICMBio", "about": "autorização para coleta e captura de material biológico e pesquisa em unidades de conservação" },
+      { "name": "Lei 11.105/2005 (Lei de Biossegurança) e Resoluções CTNBio", "issuer": "Brasil / CTNBio", "about": "organismos geneticamente modificados, CIBio e níveis de biossegurança" },
+      { "name": "RDC ANVISA 222/2018 e NR-32 (MTE)", "issuer": "ANVISA / MTE", "about": "plano de gerenciamento de resíduos de serviços de saúde; segurança em serviços de saúde e laboratórios" },
+      { "name": "Lei 9.605/1998 e Resolução CONAMA 237/1997", "issuer": "Brasil / CONAMA", "about": "crimes ambientais e procedimentos do licenciamento ambiental em que o biólogo elabora estudos" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "ART (CRBio)", "meaning": "Anotação de Responsabilidade Técnica: registra quem responde tecnicamente por laudo, parecer, projeto ou estudo" },
+      { "term": "laudo técnico", "meaning": "documento conclusivo de uma análise, perícia ou vistoria, assinado por profissional habilitado com ART" },
+      { "term": "parecer técnico", "meaning": "opinião fundamentada sobre uma questão específica, com metodologia e referências" },
+      { "term": "EIA/RIMA", "meaning": "Estudo de Impacto Ambiental e seu Relatório; o biólogo elabora o diagnóstico de fauna e flora e os programas de mitigação" },
+      { "term": "levantamento de fauna/flora", "meaning": "inventário de espécies por métodos padronizados (transectos, armadilhas, parcelas) com esforço amostral declarado" },
+      { "term": "esforço amostral", "meaning": "quantidade de tempo, área ou armadilhas usada na coleta; sem ele o resultado não é comparável" },
+      { "term": "curva de acumulação de espécies", "meaning": "gráfico de espécies registradas por esforço; mostra se o inventário está perto da suficiência amostral" },
+      { "term": "SISBIO", "meaning": "sistema do ICMBio que autoriza coleta, captura e transporte de material biológico" },
+      { "term": "SisGen", "meaning": "cadastro do acesso ao patrimônio genético e conhecimento tradicional (Lei 13.123/2015)" },
+      { "term": "POP", "meaning": "procedimento operacional padrão de laboratório ou de campo, com passos numerados e critérios de aceitação" },
+      { "term": "cadeia de custódia", "meaning": "registro de quem coletou, transportou e recebeu a amostra, com data, hora e condições de preservação" },
+      { "term": "biossegurança (NB-1 a NB-4)", "meaning": "níveis de contenção de laboratório segundo o risco dos agentes biológicos manipulados" },
+      { "term": "CIBio", "meaning": "Comissão Interna de Biossegurança exigida em instituições que trabalham com OGM" },
+      { "term": "PGRSS", "meaning": "Plano de Gerenciamento de Resíduos de Serviços de Saúde (RDC ANVISA 222/2018)" },
+      { "term": "bioindicador", "meaning": "espécie ou grupo cuja presença ou abundância indica a qualidade do ambiente" },
+      { "term": "espécie exótica invasora", "meaning": "espécie fora de sua área natural que se estabelece e causa impacto" },
+      { "term": "lista vermelha (MMA/IUCN)", "meaning": "lista oficial de espécies ameaçadas usada para avaliar sensibilidade de áreas" },
+      { "term": "monitoramento", "meaning": "medição repetida de parâmetros biológicos ou ambientais ao longo do tempo com método fixo" },
+      { "term": "controle de qualidade microbiológico", "meaning": "ensaios de contagem e identificação de microrganismos em água, alimentos e produtos" },
+      { "term": "PCR / qPCR", "meaning": "técnicas de amplificação de DNA usadas em diagnóstico, identificação e rastreabilidade" },
+      { "term": "ISO/IEC 17025", "meaning": "norma de competência de laboratórios de ensaio e calibração" },
+      { "term": "programa de mitigação/compensação", "meaning": "ações exigidas no licenciamento para reduzir ou compensar impactos sobre a biota" }
+    ],
+    "tools": ["QGIS e GPS de campo", "planilhas e R ou Python para análise de dados", "chaves de identificação e coleções de referência", "microscópio e estereomicroscópio", "armadilhas, redes, transectos e parcelas", "câmeras-trap e gravadores bioacústicos", "cabine de segurança biológica e autoclave", "termociclador (PCR), espectrofotômetro", "LIMS (sistema de gestão de laboratório)", "SISBIO, SisGen e sistemas de licenciamento dos órgãos", "bases GBIF, SpeciesLink e Flora e Funga do Brasil", "Mendeley ou Zotero para referências"],
+    "deliverables": ["relatório técnico de monitoramento de fauna ou flora", "laudo técnico com ART (só o profissional registrado assina)", "parecer técnico", "diagnóstico de biota para EIA/RIMA ou RAS", "POP de laboratório ou de campo", "plano de gerenciamento de resíduos (PGRSS)", "relatório de ensaio microbiológico", "plano de monitoramento ou de manejo", "ficha de campo e banco de dados de ocorrências", "material de educação ambiental", "artigo científico ou resumo de congresso", "proposta técnica para consultoria"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Delineamento amostral e métodos de levantamento de fauna e flora", "esco": null, "kind": "nucleo" },
+      { "label": "Identificação taxonômica e uso de chaves e coleções", "esco": null, "kind": "nucleo" },
+      { "label": "Técnicas de laboratório (microbiologia, biologia molecular, bioquímica)", "esco": null, "kind": "nucleo" },
+      { "label": "Análise estatística de dados biológicos e ecológicos", "esco": null, "kind": "nucleo" },
+      { "label": "Redação de relatórios, laudos e pareceres técnicos", "esco": null, "kind": "nucleo" },
+      { "label": "Legislação ambiental e licenciamento (CONAMA, SISBIO, SisGen)", "esco": null, "kind": "nucleo" },
+      { "label": "Biossegurança e boas práticas de laboratório", "esco": null, "kind": "nucleo" },
+      { "label": "Geoprocessamento aplicado (QGIS, GPS, mapas temáticos)", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de resíduos de laboratório e de serviços de saúde", "esco": null, "kind": "apoio" },
+      { "label": "Educação ambiental e comunicação científica", "esco": null, "kind": "apoio" },
+      { "label": "Controle e garantia da qualidade (ISO/IEC 17025)", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de projetos e de equipes de campo", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["observação e registro sistemático", "trabalho em equipe multidisciplinar", "ética e sigilo sobre dados de clientes e localidades sensíveis", "leitura de literatura científica em inglês", "comunicação com comunidades e públicos leigos"],
+    "tracks": [
+      { "id": "campo-e-licenciamento", "label": "Campo e licenciamento", "steps": ["relatório técnico de monitoramento de fauna ou flora (L4)", "fluxo do licenciamento ou da campanha de campo (D4)", "infográfico de riqueza e abundância por campanha (D7)", "resposta a briefing de consultoria (L8)"] },
+      { "id": "laboratorio", "label": "Laboratório e qualidade", "steps": ["POP de uma técnica de laboratório (L7)", "plano de gerenciamento de resíduos do laboratório (X1)", "relatório técnico de um ensaio (L4)", "estudo de caso de não conformidade resolvida (L3)"] },
+      { "id": "carreira-publica", "label": "Carreira pública e pesquisa", "steps": ["currículo direcionado ao edital ou à bolsa (L1)", "plano 30-60-90 para o cargo de analista ambiental (L9)", "post sobre um aprendizado de campo (L5)", "prancha com três trabalhos (D2)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"biólogo de campo\", \"analista de laboratório\", \"analista ambiental\", \"estagiário de microbiologia\"",
+      "cboFamilies": ["2211", "2140", "3242", "2344"],
+      "why": "Pergunto seu último cargo ou área para partir da sua experiência em campo, laboratório ou gestão, e não do zero. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, iniciação científica ou primeiro cargo",
+        "junior": "executa coletas e análises com supervisão; ainda não assina ART",
+        "pleno": "conduz campanhas ou ensaios com autonomia e assina ART da sua parte",
+        "senior": "coordena estudos ou laboratório; referência técnica em um grupo ou técnica",
+        "gestao": "responde por equipe, orçamento, contratos ou unidade de conservação"
+      },
+      "why": "Pergunto o nível para ajustar a dificuldade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem",
+      "options": ["levantamento de fauna ou flora em campo", "identificação de espécies", "técnicas de microbiologia", "biologia molecular (PCR, sequenciamento)", "análise estatística e R", "geoprocessamento e mapas", "redação de relatórios e laudos", "legislação ambiental e licenciamento", "biossegurança e qualidade de laboratório", "educação ambiental", "manejo de fauna ou flora", "gestão de projetos de campo"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com as tarefas."
+    },
+    "c4": {
+      "certifications": ["bacharelado em Ciências Biológicas", "registro no CRBio", "especialização ou mestrado na área", "curso de biossegurança", "curso de ISO/IEC 17025 ou boas práticas de laboratório", "curso de QGIS ou geoprocessamento", "curso de manejo de fauna ou primeiros socorros em campo", "CNH (campo)", "curso de mergulho (biologia marinha)"],
+      "languages": ["inglês (leitura científica)", "espanhol", "Libras"],
+      "why": "Formação, registro e cursos ajudam a ver lacunas em relação ao cargo ou edital que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["análise estatística em R ou Python", "geoprocessamento (QGIS)", "redação de relatórios e laudos", "licenciamento ambiental e legislação", "biologia molecular", "microbiologia e controle de qualidade", "biossegurança e gestão de resíduos", "coordenação de equipes de campo", "comunicação científica", "preparação para concursos (IBAMA, ICMBio, OEMAs)"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Você já tem registro no CRBio?", "type": "escolha", "options": ["sim, ativo", "em andamento", "ainda não", "não se aplica (licenciatura ou outra área)"], "why": "Sem registro, tarefas de laudo e parecer ficam como exercício; com ele, sugiro tarefas de responsabilidade técnica.", "where": "P" },
+      { "id": "x2", "prompt": "Em que frente você quer atuar primeiro?", "type": "escolha", "options": ["campo e consultoria ambiental", "laboratório e qualidade", "órgão público ou concurso", "pesquisa e pós-graduação", "indústria e biotecnologia", "educação e divulgação"], "why": "A frente define quais tarefas e normas entram primeiro no seu plano.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L4", "L7", "D7", "D4", "L8", "L3", "L1", "L6", "D2", "L9", "L5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta de ambiente não é entrega do biólogo" },
+      { "code": "D3", "reason": "render fotorrealista de produto não é entrega da área" },
+      { "code": "D6", "reason": "detalhe construtivo não pertence à área" },
+      { "code": "D8", "reason": "vista explodida de conjunto mecânico não pertence à área" },
+      { "code": "D9", "reason": "wireframe de tela não pertence à área" }
+    ],
+    "parameters": {
+      "L4": {
+        "title": "Relatório técnico de monitoramento de fauna, flora ou ensaio",
+        "brief": "Em até 4 páginas, relate um monitoramento de campo (riqueza, abundância, esforço amostral) ou um ensaio de laboratório (microbiológico, molecular) real anonimizado ou fictício: objetivo, método com esforço amostral ou protocolo e norma, resultados com tabela ou gráfico, limitações e referências. Inclua o aviso de exercício: não é laudo, não substitui ART.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "método (esforço amostral ou protocolo)", "resultados", "limitações", "referências"], "disclaimerRequired": true, "anonymizedData": true, "coordinatesGeneralized": true },
+        "criteria": ["cinco seções nomeadas", "até 4 páginas", "esforço amostral ou protocolo descrito com unidades", "ao menos uma tabela ou gráfico com legenda", "aviso de exercício: sem valor de laudo ou ART", "sem nome de cliente nem coordenada exata de espécie ameaçada ou sítio de coleta"],
+        "evidence": "relatório PDF",
+        "time": "2 h",
+        "level": 2
+      },
+      "L7": {
+        "title": "POP de uma técnica de laboratório ou de campo",
+        "brief": "Escreva o procedimento de uma técnica que você domina (coloração de Gram, extração de DNA, coleta com armadilha, triagem de amostras): finalidade, EPI e nível de biossegurança, materiais, passos numerados com responsável e critério de conclusão, registros, descarte de resíduos e referência a norma ou manual.",
+        "parameters": { "steps": "8 a 15", "requiredColumns": ["passo", "responsável", "critério de conclusão", "registro"], "requiredSections": ["finalidade", "biossegurança e EPI", "materiais", "procedimento", "descarte de resíduos", "referências"] },
+        "criteria": ["passos numerados com responsável", "critério de conclusão por passo", "seção de biossegurança e EPI presente", "descarte de resíduos descrito", "norma, manual ou referência citada"],
+        "evidence": "POP em PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de dados biológicos",
+        "brief": "Monte um infográfico com dois ou três indicadores de um estudo (riqueza por campanha, curva de acumulação de espécies, abundância por grupo, contagem de colônias por lote) com fonte e período, eixos e unidades rotulados e uma mensagem principal. Use dados públicos (GBIF, SpeciesLink, relatórios públicos) ou anonimizados.",
+        "parameters": { "indicators": "2 a 3", "examples": ["riqueza de espécies por campanha", "curva de acumulação de espécies", "abundância relativa por grupo taxonômico", "UFC/mL por lote analisado"], "requiredElements": ["fonte e período", "eixos e unidades", "mensagem principal", "esforço amostral indicado"], "anonymizedData": true },
+        "criteria": ["fonte e período citados", "eixos e unidades rotulados", "uma mensagem principal explícita", "esforço amostral ou n indicado", "dados públicos ou anonimizados"],
+        "evidence": "imagem + PDF",
+        "time": "60 min",
+        "level": 1
+      },
+      "D4": {
+        "title": "Fluxograma de campanha de campo ou de licenciamento",
+        "brief": "Desenhe o fluxo de uma campanha de levantamento (autorização SISBIO, planejamento, coleta, triagem, identificação, tombamento, relatório) ou do licenciamento em que a biota entra (termo de referência, diagnóstico, EIA/RIMA, condicionantes), com raias por ator, início, fim e decisões.",
+        "parameters": { "options": ["campanha de levantamento de fauna/flora", "fluxo de licenciamento com diagnóstico de biota", "fluxo de amostra no laboratório (recepção ao laudo)"], "lanes": ["coordenação", "equipe de campo", "laboratório ou coleção", "órgão ambiental"], "requiredElements": ["início", "fim", "decisões", "documentos ou autorizações gerados"] },
+        "criteria": ["início e fim explícitos", "raias por ator identificadas", "nenhuma tarefa órfã", "autorizações ou documentos gerados marcados", "legenda de símbolos"],
+        "evidence": "diagrama vetorial",
+        "time": "45 min",
+        "level": 2
+      },
+      "L8": {
+        "title": "Resposta a um briefing de consultoria em biodiversidade",
+        "brief": "A partir de um briefing simulado (empreendimento que precisa de diagnóstico de fauna, indústria que quer monitorar efluente com bioindicadores, laboratório que quer implantar um ensaio), escreva entendimento, escopo e entregas, premissas, etapas e prazos, o que fica fora e dados que o cliente fornece. Sem valores de honorários.",
+        "parameters": { "sections": ["entendimento do problema", "escopo e entregas", "premissas", "etapas e prazos", "fora do escopo", "dados necessários do cliente"], "feesAllowed": false },
+        "criteria": ["seis seções nomeadas", "lista explícita do que fica fora", "autorizações e legislação aplicáveis citadas (SISBIO, CONAMA, SisGen)", "sem valores de honorários ou dados de cliente real"],
+        "evidence": "proposta em PDF",
+        "time": "45 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "letters", "title": "Plano de gerenciamento de resíduos de laboratório (PGRSS simplificado)", "competency": "Biossegurança e gestão de resíduos", "criteria": ["classifica os resíduos gerados (grupos A a E da RDC 222/2018)", "descreve segregação, acondicionamento e identificação por grupo", "indica tratamento e destinação final por grupo", "responsáveis e frequência de revisão definidos", "sem nome de instituição real nem dados de pacientes"], "evidence": "plano em PDF", "time": "90 min", "trigger": "Você trabalha ou quer trabalhar em laboratório? Monte o plano de resíduos de um laboratório fictício.", "level": 2 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L8", "L9", "X1"], "auto": true },
+      { "id": "esforco-amostral-ou-protocolo", "check": "o método declara esforço amostral (tempo, área, armadilhas) ou protocolo com norma", "appliesTo": ["L4", "D7"], "auto": true },
+      { "id": "fonte-e-periodo", "check": "fonte e período dos dados estão citados", "appliesTo": ["D7", "L4"], "auto": true },
+      { "id": "eixos-e-unidades", "check": "eixos, unidades e legendas estão rotulados", "appliesTo": ["D7"], "auto": true },
+      { "id": "aviso-sem-laudo-art", "check": "o documento traz o aviso de exercício, sem valor de laudo e sem substituir ART", "appliesTo": ["L4", "L8", "X1"], "auto": true },
+      { "id": "biosseguranca-presente", "check": "há seção de biossegurança, EPI e descarte de resíduos", "appliesTo": ["L7", "X1"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "creditos-e-fontes", "check": "coautores, fontes e bases de dados estão creditados", "appliesTo": ["L5", "L10", "D2", "D7", "D10"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados confidenciais, coordenadas exatas de espécies ameaçadas e dados de pacientes", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D2", "D4", "D5", "D7", "D10", "X1"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "rigor-metodologico", "label": "Rigor metodológico", "levels": { "aproxima": "método descrito de forma genérica, sem permitir repetição", "atende": "método permite repetir a coleta ou o ensaio", "supera": "discute vieses, suficiência amostral e alternativas" } },
+      { "id": "interpretacao", "label": "Interpretação dos resultados", "levels": { "aproxima": "apresenta números sem interpretação", "atende": "interpreta à luz da literatura ou de um padrão", "supera": "relaciona com o contexto do projeto e aponta decisões possíveis" } },
+      { "id": "clareza", "label": "Clareza para quem decide", "levels": { "aproxima": "a conclusão exige releitura", "atende": "a conclusão é entendida na primeira leitura", "supera": "quem não é biólogo entende o que fazer com o resultado" } },
+      { "id": "conformidade-legal", "label": "Conformidade legal e ética", "levels": { "aproxima": "cita a legislação de forma vaga", "atende": "cita autorizações e normas aplicáveis corretamente", "supera": "antecipa exigências do órgão e trata dados sensíveis com cuidado" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa das Ciências Biológicas (bacharelado; biólogo). Use o vocabulário da área: levantamento de fauna e flora, esforço amostral, curva de acumulação, bioindicador, POP, cadeia de custódia, biossegurança (NB-1 a NB-4), PGRSS, SISBIO, SisGen, EIA/RIMA, ART do CRBio. Cite, quando couber, a Lei 6.684/1979, as Resoluções CFBio 227/2010 e 300/2012, o Código de Ética (Res. CFBio 02/2002), a Lei 13.123/2015, a IN ICMBio 03/2014, a Lei 11.105/2005, a RDC ANVISA 222/2018 e a NR-32. Nunca redija laudo, parecer ou relatório para assinatura: o que você propõe é exercício ou rascunho, sem valor de laudo, e não substitui a ART nem a responsabilidade técnica do profissional registrado no CRBio. Não dê orientação clínica, diagnóstica ou de manejo a terceiros. Trate como sigilosos: coordenadas exatas de espécies ameaçadas e sítios de coleta, dados genéticos e amostras humanas identificáveis, dados de pacientes, nomes de clientes e áreas em licenciamento. Pergunte antes de inferir área de atuação, senioridade ou registro no conselho. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por que foi sugerida, e aceita \"não me serve\". Afirmações sobre mercado (concursos IBAMA, ICMBio, OEMAs; CAGED/RAIS para a CBO 2211) citam fonte, data e região ou dizem \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos, nunca por pontuação ou ranking. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação. Pré-cheque só critérios objetivos; a validação que gera selo é humana.",
+    "citeSources": [
+      { "title": "Conselho Federal de Biologia (CFBio) — legislação e resoluções", "url": "https://cfbio.gov.br/", "kind": "conselho" },
+      { "title": "Lei 6.684/1979 — regulamenta a profissão de biólogo", "url": "https://www.planalto.gov.br/ccivil_03/leis/1970-1979/L6684.htm", "kind": "norma" },
+      { "title": "Resolução CFBio 300/2012 — requisitos mínimos para atuação do biólogo", "url": "https://www.legisweb.com.br/legislacao/?id=248998", "kind": "conselho" },
+      { "title": "Lei 13.123/2015 — patrimônio genético (SisGen)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13123.htm", "kind": "norma" },
+      { "title": "SISBIO — ICMBio", "url": "https://www.gov.br/icmbio/pt-br/servicos/sisbio", "kind": "orgao-publico" },
+      { "title": "Lei 11.105/2005 — Lei de Biossegurança", "url": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2005/lei/l11105.htm", "kind": "norma" },
+      { "title": "RDC ANVISA 222/2018 — gerenciamento de resíduos de serviços de saúde", "url": "https://www.gov.br/anvisa/pt-br", "kind": "norma" },
+      { "title": "CBO 2211 — Biólogos e afins (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "Novo CAGED — Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências da biologia; perguntas extras sobre registro no CRBio e frente de atuação (campo, laboratório, órgão público, pesquisa)." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "L4, L7, D7 e D4 entram primeiro; cada card diz a competência comprovada, a evidência e que o resultado é exercício, sem valor de laudo." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); campanhas de campo e concursos (editais IBAMA/ICMBio) podem reorganizar a semana." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, esforço amostral, fonte e período, biossegurança, aviso sem laudo/ART e ausência de coordenadas sensíveis; o selo depende de revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Rascunha estrutura de relatório, POP ou proposta com prévia; nunca produz laudo ou parecer assinável nem aplica sem revisão." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Eixos, unidades e fonte do infográfico (D7); raias e fechamento do fluxograma (D4); grade e créditos da prancha (D2)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese com competências declaradas e evidenciadas, lacunas em relação à frente escolhida e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: biomedicina, gestão ambiental, química, agronomia, medicina veterinária; mercado citado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por CBO 2211, competências e setor (campo, laboratório, órgão público)." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil, com frente de atuação e registro no CRBio só se a pessoa informou; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, técnicas de laboratório e campanhas em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados sensíveis (LGPD art. 5º II)", "dados genéticos e amostras biológicas humanas identificáveis", "coordenadas exatas de espécies ameaçadas e de sítios de coleta", "dados de pacientes em análises clínicas", "nomes de clientes e áreas em licenciamento não publicadas"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca redigir laudo, parecer ou relatório para assinatura; todo texto é exercício ou rascunho, sem valor de laudo e sem substituir ART ou registro no CRBio",
+      "não dar orientação clínica, diagnóstica, de manejo de fauna ou de uso de produtos a terceiros",
+      "não pedir nem armazenar coordenadas exatas de espécies ameaçadas, sítios de coleta protegidos, dados genéticos humanos ou de pacientes",
+      "perguntar em vez de inferir área de atuação, senioridade ou registro no conselho",
+      "nunca prometer entrevista, emprego, bolsa ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["infografico", "diagrama", "prancha"],
+    "lettersTemplates": ["relatorio-tecnico", "pop", "proposta", "estudo-de-caso", "curriculo", "bio", "plano-30-60-90", "post", "revisao", "artigo", "projeto-de-pesquisa"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas curtas de texto (L5, L6) e revisão (L10); relatório (L4), POP (L7) e Drawings (D4, D7) rendem mais no computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em três frases com sua frente de atuação (15 min).",
+        "Tem dados de uma campanha ou de um ensaio que possa mostrar anonimizados? O infográfico (D7) leva cerca de 1 h.",
+        "Saiu um edital na sua área? Posso montar com você o currículo direcionado a ele (45 min).",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["dados genéticos e amostras biológicas humanas identificáveis (LGPD art. 5º II e art. 11)", "localização exata de espécies ameaçadas e de sítios de coleta protegidos (SisGen/SISBIO)", "dados de pacientes em análises clínicas", "nomes de clientes e dados de áreas em licenciamento antes da publicação"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2211", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Concurso IBAMA 2025 — Analista Ambiental (Cebraspe)", "url": "https://www.cebraspe.org.br/concursos/ibama_25", "geography": "Brasil (lotação em todas as UFs)", "cadence": "eventual", "kind": "edital" },
+      { "title": "Concurso ICMBio 2024 — Analista Ambiental (Cebraspe)", "url": "https://www.cebraspe.org.br/concursos/icmbio_24", "geography": "Brasil", "cadence": "eventual", "kind": "edital" },
+      { "title": "CFBio — Conselho Federal de Biologia (registros e notícias da profissão)", "url": "https://cfbio.gov.br/", "geography": "Brasil (por CRBio regional)", "cadence": "continua", "kind": "conselho" },
+      { "title": "Censo da Educação Superior (INEP) — concluintes em Ciências Biológicas", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-da-educacao-superior", "geography": "Brasil e UF", "cadence": "anual", "kind": "estatistica-oficial" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda, concursos ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "gestao-ambiental", "why": "O biólogo já domina diagnóstico de biota e legislação ambiental; a gestão ambiental acrescenta licenciamento, ISO 14001 e indicadores corporativos.", "gaps": ["gestão de licenças e condicionantes", "sistemas de gestão ambiental (ISO 14001)", "indicadores e relatórios corporativos"], "steps": ["fluxo de licenciamento (D4)", "plano de gestão de resíduos (PNRS) como exercício", "curso de ISO 14001 ou de licenciamento"] },
+    { "to": "biomedicina", "why": "Técnicas de laboratório, microbiologia e biologia molecular são compartilhadas; a biomedicina direciona para análises clínicas e diagnóstico.", "gaps": ["formação específica e registro no CRBM", "rotina de análises clínicas e controle de qualidade", "legislação sanitária (ANVISA)"], "steps": ["POP de uma técnica de laboratório (L7)", "curso de controle de qualidade em laboratório clínico", "verificar requisitos de formação e registro"] },
+    { "to": "quimica", "why": "Bioquímica, análises instrumentais e gestão de resíduos aproximam o biólogo de laboratório do químico analítico.", "gaps": ["química analítica instrumental", "FISPQ/FDS e NR-26", "registro no CRQ depende da formação"], "steps": ["relatório técnico de um ensaio (L4)", "curso de química analítica ou GHS", "verificar atribuições e registro no CRQ"] },
+    { "to": "agronomia", "why": "Botânica, ecologia e manejo de pragas aproximam da agronomia; o caminho exige formação em engenharia agronômica.", "gaps": ["produção vegetal e solos", "registro no CREA", "manejo integrado de pragas"], "steps": ["infográfico de dados agrícolas ou ecológicos (D7)", "curso de solos ou manejo de pragas", "verificar formação exigida"] },
+    { "to": "medicina-veterinaria", "why": "Zoologia, manejo de fauna e biotério são comuns; a veterinária exige graduação própria e registro no CRMV.", "gaps": ["graduação em medicina veterinária", "clínica e sanidade animal", "registro no CRMV"], "steps": ["estudo de caso de manejo de fauna (L3)", "curso de bem-estar animal", "verificar formação exigida"] }
+  ],
+  "learning": [
+    { "title": "Legislação e resoluções do CFBio", "provider": "CFBio", "url": "https://cfbio.gov.br/", "free": true, "kind": "portal" },
+    { "title": "AVA ICMBio — cursos abertos sobre biodiversidade e unidades de conservação", "provider": "ICMBio", "url": "https://ava.icmbio.gov.br/", "free": true, "kind": "curso" },
+    { "title": "AVA Ibama — cursos de educação ambiental e licenciamento", "provider": "IBAMA", "url": "https://ava.ibama.gov.br/", "free": true, "kind": "curso" },
+    { "title": "Escola Virtual.Gov — gestão ambiental, dados e redação oficial", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Flora e Funga do Brasil (JBRJ)", "provider": "Jardim Botânico do Rio de Janeiro", "url": "https://floradobrasil.jbrj.gov.br/", "free": true, "kind": "portal" },
+    { "title": "SpeciesLink — dados de coleções biológicas", "provider": "CRIA", "url": "https://specieslink.net/", "free": true, "kind": "portal" },
+    { "title": "GBIF — Global Biodiversity Information Facility", "provider": "GBIF", "url": "https://www.gbif.org/", "free": true, "kind": "portal" },
+    { "title": "Curso de introdução ao QGIS", "provider": "QGIS (documentação oficial em português)", "url": "https://docs.qgis.org/latest/pt_BR/docs/training_manual/", "free": true, "kind": "curso" },
+    { "title": "Portal de Periódicos CAPES", "provider": "CAPES", "url": "https://www.periodicos.capes.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Sociedade Brasileira para o Progresso da Ciência (SBPC)", "provider": "SBPC", "url": "https://portal.sbpcnet.org.br/", "free": true, "kind": "comunidade" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos — ciencias-biologicas (CBO 2211, ISCO 2131, CRBio/CFBio, Lei 6.684/1979)", "url": "docs/diagramas/RF75/README.md", "accessedAt": "2026-11-02" },
+    { "title": "Resolução CFBio 300/2012 (requisitos mínimos; texto via UFSCar)", "url": "https://www.biosc.ufscar.br/arquivos/cfbio-resolucao-300-2012.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Resolução CFBio 374/2015 (gestão ambiental como área do biólogo; cita Res. 227/2010 e Res. 02/2002)", "url": "https://crbio01.gov.br/media/view/2016/04/resolu_o_cfbio_n_2015-374_-_atua_o_em_gest_o_ambiental_159.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Portaria CRBio-01 179/2022 (grupo de revisão das Res. 227/2010 e 300/2012)", "url": "https://crbio01.gov.br/media/view/2022/09/portaria_crbio-01_n_179_2738.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Edital IBAMA 2025 — Cebraspe (460 vagas, 330 de Analista Ambiental)", "url": "https://www.cebraspe.org.br/concursos/ibama_25", "accessedAt": "2026-11-02" },
+    { "title": "Edital ICMBio 2024 — Cebraspe", "url": "https://www.cebraspe.org.br/concursos/icmbio_24", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Texto integral das Resoluções CFBio 227/2010, 300/2012 e 02/2002 não lido; há grupo de revisão (Portaria CRBio-01 179/2022) e as resoluções podem ter sido alteradas ou substituídas",
+    "Decreto 88.438/1983 citado de memória como regulamento da Lei 6.684/1979",
+    "Número e vigência da IN ICMBio 03/2014 (SISBIO) e da RDC ANVISA 222/2018 citados de memória",
+    "Códigos CBO em questions.a4.cboFamilies (2140, 3242, 2344) não conferidos no portal da CBO",
+    "URIs ESCO não confirmadas nesta sessão: todas as competências estão com esco: null",
+    "URLs de aprendizagem (AVA ICMBio, AVA Ibama, SpeciesLink, docs QGIS) e das páginas Cebraspe (ibama_25, icmbio_24) não abertas nesta sessão",
+    "Estatísticas de registros ativos no CFBio/CRBios não localizadas; fonte de mercado do conselho aponta só para o portal",
+    "Matrículas INEP do bacharelado em Ciências Biológicas não localizadas (catálogo também marca naoConferido)"
+  ]
+}

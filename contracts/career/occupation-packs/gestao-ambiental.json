@@ -1,0 +1,291 @@
+{
+  "schemaVersion": 1,
+  "code": "gestao-ambiental",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Gestão Ambiental (tecnólogo, gestor ambiental)", "en": "Environmental Management", "es": "Gestión Ambiental" },
+  "fields": ["gestao-ambiental"],
+  "family": {
+    "cbo": [{ "code": "2140", "title": "Engenheiros ambientais e afins (inclui 2140-10 Tecnólogo em meio ambiente)" }],
+    "isco08": [{ "code": "2133", "title": "Environmental protection professionals" }],
+    "esco": []
+  },
+  "scope": {
+    "summary": "Planeja e acompanha a gestão ambiental de organizações e territórios: licenças e condicionantes, sistemas de gestão (ISO 14001), gerenciamento de resíduos (PNRS), monitoramento e indicadores, educação ambiental, ESG e apoio a estudos de impacto. Não há conselho próprio; o registro no CREA de tecnólogos é possível conforme o currículo (Res. CONFEA 313/1986) e não alcança o bacharelado. Atua em indústria, consultoria, órgãos públicos, prefeituras, saneamento e terceiro setor.",
+    "entryRoles": ["Estagiário de meio ambiente", "Assistente ou auxiliar de meio ambiente", "Analista ambiental júnior", "Auxiliar de licenciamento", "Monitor de educação ambiental", "Assistente de gestão de resíduos"],
+    "midRoles": ["Analista ambiental (pleno) em indústria", "Analista de licenciamento e condicionantes", "Gestor de resíduos sólidos", "Analista de sistema de gestão ambiental (ISO 14001)", "Analista de sustentabilidade e ESG", "Técnico ou analista ambiental de prefeitura ou OEMA", "Consultor ambiental"],
+    "seniorRoles": ["Coordenador de meio ambiente", "Gerente de sustentabilidade e ESG", "Coordenador de licenciamento", "Auditor líder de sistemas de gestão ambiental", "Secretário ou diretor municipal de meio ambiente", "Consultor sênior em gestão ambiental"],
+    "sectors": ["indústria (meio ambiente e SGA)", "consultoria ambiental e licenciamento", "órgãos ambientais (IBAMA, ICMBio, OEMAs, secretarias municipais)", "gestão de resíduos, reciclagem e logística reversa", "saneamento", "agronegócio e cadeias florestais", "construção e infraestrutura", "mineração e energia", "ESG e finanças sustentáveis", "ONGs e terceiro setor"],
+    "regulation": [
+      { "name": "Lei 6.938/1981 (Política Nacional do Meio Ambiente)", "issuer": "Brasil", "about": "SISNAMA, licenciamento, avaliação de impacto e demais instrumentos da política ambiental" },
+      { "name": "Resoluções CONAMA 01/1986 e 237/1997 e LC 140/2011", "issuer": "CONAMA / Brasil", "about": "EIA/RIMA, procedimentos do licenciamento e repartição de competências entre União, estados e municípios" },
+      { "name": "Lei 12.305/2010 (PNRS) e Decreto 10.936/2022", "issuer": "Brasil", "about": "planos de gerenciamento de resíduos sólidos, logística reversa e responsabilidade compartilhada" },
+      { "name": "Lei 9.605/1998 (Crimes Ambientais) e Decreto 6.514/2008", "issuer": "Brasil", "about": "responsabilidade penal e administrativa por infrações ambientais" },
+      { "name": "Lei 12.651/2012 (Código Florestal) e CAR", "issuer": "Brasil", "about": "APP, reserva legal e Cadastro Ambiental Rural" },
+      { "name": "Resolução CONFEA 313/1986 e Resolução CONFEA 473/2002", "issuer": "CONFEA", "about": "atribuições de tecnólogos no sistema CONFEA/CREA, definidas pelo currículo; tabela de títulos profissionais" },
+      { "name": "ABNT NBR ISO 14001:2015 e NBR 10004", "issuer": "ABNT", "about": "requisitos do sistema de gestão ambiental; classificação de resíduos sólidos" },
+      { "name": "NR-26 e ABNT NBR 14725 (GHS e FDS)", "issuer": "MTE / ABNT", "about": "classificação, rotulagem e fichas de segurança de produtos químicos no gerenciamento de resíduos" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "licenciamento ambiental", "meaning": "procedimento do órgão ambiental que autoriza localização, instalação e operação de atividades" },
+      { "term": "LP, LI, LO", "meaning": "licença prévia, de instalação e de operação, nas fases do licenciamento trifásico" },
+      { "term": "condicionante", "meaning": "obrigação fixada na licença que o empreendedor deve cumprir e comprovar" },
+      { "term": "EIA/RIMA", "meaning": "Estudo de Impacto Ambiental e seu Relatório, exigido para atividades de significativo impacto" },
+      { "term": "RAS / RCA / PCA", "meaning": "estudos simplificados (relatório ambiental simplificado, de controle ambiental, plano de controle)" },
+      { "term": "matriz de aspectos e impactos", "meaning": "tabela que liga atividades a aspectos ambientais, impactos, significância e controles" },
+      { "term": "SGA (ISO 14001)", "meaning": "sistema de gestão ambiental com política, objetivos, controle operacional e melhoria contínua" },
+      { "term": "PGRS", "meaning": "Plano de Gerenciamento de Resíduos Sólidos exigido pela PNRS para geradores" },
+      { "term": "MTR / CDF", "meaning": "Manifesto de Transporte de Resíduos e Certificado de Destinação Final (SINIR)" },
+      { "term": "logística reversa", "meaning": "retorno de produtos e embalagens pós-consumo ao setor empresarial" },
+      { "term": "classe I e II (NBR 10004)", "meaning": "resíduos perigosos e não perigosos" },
+      { "term": "FDS / FISPQ", "meaning": "ficha com dados de segurança de produto químico (NBR 14725) usada na classificação de resíduos" },
+      { "term": "indicador ambiental", "meaning": "medida periódica de desempenho (consumo de água e energia, resíduos, emissões)" },
+      { "term": "inventário de GEE", "meaning": "contabilização de emissões de gases de efeito estufa (Programa Brasileiro GHG Protocol)" },
+      { "term": "ESG", "meaning": "critérios ambientais, sociais e de governança usados por empresas e investidores" },
+      { "term": "PRAD", "meaning": "Plano de Recuperação de Áreas Degradadas" },
+      { "term": "CAR", "meaning": "Cadastro Ambiental Rural do Código Florestal" },
+      { "term": "auditoria ambiental", "meaning": "verificação sistemática de conformidade legal ou com a ISO 14001" },
+      { "term": "CTF/APP (IBAMA)", "meaning": "Cadastro Técnico Federal de atividades potencialmente poluidoras" }
+    ],
+    "tools": ["QGIS e Google Earth Pro", "planilhas e painéis de indicadores (Power BI ou equivalente)", "SINIR e MTR (manifesto de resíduos)", "sistemas de licenciamento dos órgãos estaduais", "CTF do IBAMA e SICAR (CAR)", "ferramentas do Programa Brasileiro GHG Protocol", "softwares de gestão de condicionantes e de SGA", "editor de textos e de diagramas"],
+    "deliverables": ["plano de gerenciamento de resíduos sólidos (PGRS)", "matriz de aspectos e impactos", "quadro de licenças e condicionantes", "relatório técnico de monitoramento ou de desempenho ambiental", "EIA/RIMA ou RAS simplificado (exercício)", "POP de controle operacional ambiental", "relatório de auditoria interna (ISO 14001)", "infográfico de indicadores ambientais", "fluxograma do licenciamento", "programa de educação ambiental", "relatório de sustentabilidade ou ESG (seção ambiental)", "PRAD simplificado"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Licenciamento ambiental e gestão de condicionantes", "esco": null, "kind": "nucleo" },
+      { "label": "Legislação ambiental (PNMA, CONAMA, PNRS, Código Florestal)", "esco": null, "kind": "nucleo" },
+      { "label": "Gerenciamento de resíduos sólidos e logística reversa", "esco": null, "kind": "nucleo" },
+      { "label": "Sistemas de gestão ambiental (ISO 14001) e auditoria", "esco": null, "kind": "nucleo" },
+      { "label": "Avaliação de aspectos e impactos ambientais", "esco": null, "kind": "nucleo" },
+      { "label": "Indicadores e relatórios de desempenho ambiental", "esco": null, "kind": "nucleo" },
+      { "label": "Redação de relatórios, planos e procedimentos", "esco": null, "kind": "nucleo" },
+      { "label": "Geoprocessamento aplicado (QGIS, CAR)", "esco": null, "kind": "apoio" },
+      { "label": "Educação ambiental e comunicação com comunidades", "esco": null, "kind": "apoio" },
+      { "label": "Inventário de emissões e ESG", "esco": null, "kind": "apoio" },
+      { "label": "Recuperação de áreas degradadas", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de projetos e de fornecedores ambientais", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["organização e controle de prazos", "negociação com órgãos e áreas internas", "ética e sigilo sobre dados de empresas e fiscalização", "comunicação escrita e oral", "visão sistêmica"],
+    "tracks": [
+      { "id": "licenciamento", "label": "Licenciamento e conformidade", "steps": ["fluxograma do licenciamento (D4)", "quadro de condicionantes como POP de acompanhamento (L7)", "EIA/RIMA simplificado de empreendimento fictício (X2)", "resposta a briefing de consultoria (L8)"] },
+      { "id": "residuos-e-sga", "label": "Resíduos e sistema de gestão", "steps": ["PGRS de um gerador fictício (X1)", "infográfico de indicadores de resíduos (D7)", "relatório técnico de desempenho ambiental (L4)", "estudo de caso de melhoria ambiental (L3)"] },
+      { "id": "apresentar-se", "label": "Apresentar-se para o cargo ou concurso", "steps": ["resumo de perfil (L6)", "currículo direcionado (L1)", "plano 30-60-90 para analista ambiental (L9)", "post sobre um aprendizado (L5)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"assistente de meio ambiente\", \"analista ambiental\", \"técnico de licenciamento\", \"estagiário de sustentabilidade\"",
+      "cboFamilies": ["2140", "3115", "2211", "3522"],
+      "why": "Pergunto seu último cargo ou área para partir da sua experiência em indústria, consultoria ou órgão público. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, aprendizagem ou primeiro cargo",
+        "junior": "acompanha licenças, resíduos e indicadores com supervisão",
+        "pleno": "conduz licenciamento, PGRS ou SGA com autonomia",
+        "senior": "referência técnica; coordena estudos ou auditorias",
+        "gestao": "responde por área de meio ambiente, equipe ou orçamento"
+      },
+      "why": "Pergunto o nível para ajustar a dificuldade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem",
+      "options": ["licenciamento e condicionantes", "legislação ambiental", "gestão de resíduos e PGRS", "ISO 14001 e auditoria", "matriz de aspectos e impactos", "indicadores e planilhas", "geoprocessamento e CAR", "educação ambiental", "relatórios técnicos", "ESG e inventário de emissões", "recuperação de áreas degradadas"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com as tarefas."
+    },
+    "c4": {
+      "certifications": ["tecnólogo ou bacharel em Gestão Ambiental", "registro no CREA (quando o currículo permitir)", "formação de auditor interno ou líder ISO 14001", "curso de licenciamento ambiental", "curso de QGIS", "curso de inventário de GEE (GHG Protocol)", "especialização em gestão ambiental ou ESG"],
+      "languages": ["inglês (técnico)", "espanhol", "Libras"],
+      "why": "Formação, registro e cursos ajudam a ver lacunas em relação ao cargo ou edital que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["licenciamento ambiental", "gestão de resíduos e logística reversa", "ISO 14001 e auditoria", "geoprocessamento (QGIS)", "indicadores e painéis", "ESG e inventário de emissões", "redação técnica", "preparação para concursos (IBAMA, ICMBio, OEMAs, prefeituras)"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Sua formação é tecnólogo ou bacharelado, e você tem registro no CREA?", "type": "escolha", "options": ["tecnólogo com registro no CREA", "tecnólogo sem registro", "bacharel", "outra formação"], "why": "O registro e as atribuições mudam o que você pode assinar; sem eles, tarefas técnicas ficam como exercício.", "where": "P" },
+      { "id": "x2", "prompt": "Em que frente você quer atuar primeiro?", "type": "escolha", "options": ["indústria e SGA", "consultoria e licenciamento", "órgão público ou concurso", "resíduos e reciclagem", "ESG e sustentabilidade", "educação ambiental e terceiro setor"], "why": "A frente define quais tarefas e normas entram primeiro no seu plano.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["D4", "L4", "D7", "L7", "L8", "L3", "L1", "L6", "L9", "D5", "L5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta de ambiente não é entrega da gestão ambiental" },
+      { "code": "D3", "reason": "render fotorrealista de produto não é entrega da área" },
+      { "code": "D6", "reason": "detalhe construtivo não pertence à área" },
+      { "code": "D8", "reason": "vista explodida de conjunto mecânico não pertence à área" },
+      { "code": "D9", "reason": "wireframe de tela não pertence à área" }
+    ],
+    "parameters": {
+      "D4": {
+        "title": "Fluxograma do licenciamento ambiental",
+        "brief": "Desenhe o fluxo de um licenciamento (enquadramento, termo de referência, estudos, audiência pública, LP, LI, LO, condicionantes, renovação) ou da gestão de resíduos de um gerador (geração, segregação, armazenamento, MTR, transporte, destinação, CDF), com raias por ator, início, fim e decisões.",
+        "parameters": { "options": ["licenciamento trifásico (LP, LI, LO)", "gestão de resíduos com MTR e CDF", "tratamento de condicionantes"], "lanes": ["empreendedor", "consultoria", "órgão ambiental", "transportador ou destinador"], "requiredElements": ["início", "fim", "decisões", "documentos gerados (licenças, estudos, MTR)"] },
+        "criteria": ["início e fim explícitos", "raias por ator", "nenhuma tarefa órfã", "documentos gerados marcados", "norma de referência citada (CONAMA 237/1997 ou PNRS)"],
+        "evidence": "diagrama vetorial",
+        "time": "45 min",
+        "level": 1
+      },
+      "L4": {
+        "title": "Relatório técnico de desempenho ou monitoramento ambiental",
+        "brief": "Em até 4 páginas, relate o desempenho ambiental de uma organização fictícia ou com dados públicos (consumo de água e energia, resíduos por classe, atendimento de condicionantes): objetivo, método e fontes, resultados comparados a metas ou padrões legais, limitações e referências. Inclua o aviso de exercício, sem valor de laudo ou ART.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "método e fontes", "resultados × metas ou padrão legal", "limitações", "referências"], "disclaimerRequired": true, "anonymizedData": true },
+        "criteria": ["cinco seções nomeadas", "até 4 páginas", "cada resultado comparado a meta ou padrão citado", "fontes dos dados declaradas", "aviso de exercício sem valor de laudo ou ART", "sem nome de empresa, autuação ou dado de fiscalização identificável"],
+        "evidence": "relatório PDF",
+        "time": "2 h",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de indicadores ambientais",
+        "brief": "Monte um infográfico com dois ou três indicadores (resíduos por classe e destinação, consumo de água por unidade produzida, emissões de GEE por escopo, taxa de reciclagem municipal do SNIS/SINIR) com fonte e período, eixos e unidades rotulados e uma mensagem principal.",
+        "parameters": { "indicators": "2 a 3", "examples": ["resíduos por classe e destinação (t/mês)", "consumo de água por unidade produzida", "emissões de GEE por escopo (tCO2e)", "taxa de recuperação de recicláveis (SNIS/SINIR)"], "requiredElements": ["fonte e período", "eixos e unidades", "mensagem principal", "comparação com meta ou série"] },
+        "criteria": ["fonte e período citados", "eixos e unidades rotulados", "uma mensagem principal explícita", "comparação com meta, padrão ou série histórica", "dados públicos ou anonimizados"],
+        "evidence": "imagem + PDF",
+        "time": "60 min",
+        "level": 1
+      },
+      "L7": {
+        "title": "POP de controle operacional ambiental",
+        "brief": "Escreva o procedimento de uma rotina ambiental (segregação e armazenamento de resíduos, emissão de MTR, acompanhamento de condicionantes, resposta a derramamento): finalidade, responsáveis, passos numerados com critério de conclusão, registros, EPI e referência à norma (PNRS, NBR 10004, NBR 12235, FDS dos produtos).",
+        "parameters": { "steps": "8 a 15", "requiredColumns": ["passo", "responsável", "critério de conclusão", "registro"] },
+        "criteria": ["passos numerados com responsável", "critério de conclusão por passo", "registros definidos", "norma ou requisito legal citado", "itens de segurança presentes quando aplicável"],
+        "evidence": "POP em PDF",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "letters", "title": "Plano de gerenciamento de resíduos sólidos (PGRS) de gerador fictício", "competency": "Gerenciamento de resíduos sólidos e logística reversa", "criteria": ["diagnóstico com resíduos gerados, classe (NBR 10004) e quantidade estimada", "segregação, acondicionamento e armazenamento por tipo", "transporte e destinação com MTR e CDF", "metas de redução e responsáveis", "conteúdo mínimo do art. 21 da Lei 12.305/2010 citado", "empresa fictícia e aviso de exercício"], "evidence": "plano em PDF", "time": "2 h", "trigger": "Você trabalha com resíduos? Monte o PGRS de um gerador fictício.", "level": 2 },
+      { "id": "X2", "editor": "letters", "title": "EIA/RIMA simplificado de empreendimento fictício", "competency": "Avaliação de aspectos e impactos ambientais", "criteria": ["caracterização do empreendimento e da área (fictícios)", "diagnóstico dos meios físico, biótico e socioeconômico em resumo", "matriz de impactos com significância", "medidas mitigadoras e programas de monitoramento", "RIMA em linguagem acessível com até 2 páginas", "aviso de exercício sem valor de estudo oficial"], "evidence": "documento em PDF", "time": "3 h", "trigger": "Quer treinar avaliação de impacto? Faça um EIA/RIMA simplificado de um empreendimento fictício.", "level": 3 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6", "X2"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L8", "L9", "X1", "X2"], "auto": true },
+      { "id": "norma-citada", "check": "a norma ou requisito legal aplicável está citado (CONAMA, PNRS, NBR)", "appliesTo": ["D4", "L4", "L7", "X1", "X2"], "auto": true },
+      { "id": "fonte-e-periodo", "check": "fonte e período dos dados estão citados", "appliesTo": ["D7", "L4"], "auto": true },
+      { "id": "eixos-e-unidades", "check": "eixos e unidades rotulados", "appliesTo": ["D7"], "auto": true },
+      { "id": "aviso-sem-laudo-art", "check": "o documento traz o aviso de exercício, sem valor de laudo, estudo oficial ou ART", "appliesTo": ["L4", "L8", "X1", "X2"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "creditos-e-fontes", "check": "coautores e fontes de dados estão creditados", "appliesTo": ["L5", "L10", "D2", "D7", "D10"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados de licenciamento não publicados, autuações e empresas identificáveis", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D2", "D4", "D5", "D7", "D10", "X1", "X2"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "aderencia-legal", "label": "Aderência legal", "levels": { "aproxima": "cita a legislação de forma genérica", "atende": "aplica as normas corretas ao caso", "supera": "antecipa exigências do órgão e riscos de não conformidade" } },
+      { "id": "visao-sistemica", "label": "Visão sistêmica", "levels": { "aproxima": "trata o problema isolado", "atende": "liga aspecto, impacto, controle e responsável", "supera": "propõe melhoria contínua com indicador e meta" } },
+      { "id": "clareza", "label": "Clareza para quem decide", "levels": { "aproxima": "a conclusão exige releitura", "atende": "a conclusão é entendida na primeira leitura", "supera": "gestores e comunidade entendem o que fazer" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Gestão Ambiental (tecnólogo ou bacharel; gestor ambiental). Use o vocabulário da área: licenciamento (LP, LI, LO), condicionantes, EIA/RIMA, RAS, matriz de aspectos e impactos, SGA e ISO 14001, PGRS, MTR e CDF, logística reversa, classes de resíduos (NBR 10004), FDS, indicadores, inventário de GEE, ESG, PRAD, CAR. Cite, quando couber, a Lei 6.938/1981, as Resoluções CONAMA 01/1986 e 237/1997, a LC 140/2011, a Lei 12.305/2010, a Lei 9.605/1998, o Código Florestal e a ISO 14001. A profissão não tem conselho próprio; o registro no CREA de tecnólogos depende do currículo (Res. CONFEA 313/1986) e não deve ser presumido: pergunte. Nunca redija estudo ambiental, laudo, PGRS ou relatório para protocolo ou assinatura: o que você propõe é exercício com empresa ou empreendimento fictício e não substitui a ART nem o responsável técnico habilitado. Não oriente terceiros a contornar exigências legais nem opine sobre autuações reais. Trate como sigilosos: estudos de impacto e dados de licenciamento de clientes antes da publicação, autuações, passivos e dados de fiscalização que identifiquem empresas ou pessoas. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por que foi sugerida, e aceita \"não me serve\". Afirmações sobre mercado (CAGED/RAIS para a CBO 2140, concursos IBAMA, ICMBio, OEMAs e prefeituras) citam fonte, data e região ou dizem \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos, nunca por pontuação. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação. Pré-cheque só critérios objetivos; o selo é humano.",
+    "citeSources": [
+      { "title": "Lei 6.938/1981 — Política Nacional do Meio Ambiente", "url": "https://www.planalto.gov.br/ccivil_03/leis/l6938.htm", "kind": "norma" },
+      { "title": "CONAMA — resoluções", "url": "https://conama.mma.gov.br/", "kind": "norma" },
+      { "title": "Lei 12.305/2010 — Política Nacional de Resíduos Sólidos", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2010/lei/l12305.htm", "kind": "norma" },
+      { "title": "SINIR — Sistema Nacional de Informações sobre a Gestão dos Resíduos Sólidos", "url": "https://sinir.gov.br/", "kind": "orgao-publico" },
+      { "title": "Resolução CONFEA 313/1986 — atribuições de tecnólogos (CREA-RS)", "url": "https://www.crea-rs.org.br/site/documentos/0313-86%20Tecnologo.pdf", "kind": "conselho" },
+      { "title": "IBAMA — licenciamento federal e CTF", "url": "https://www.gov.br/ibama/pt-br", "kind": "orgao-publico" },
+      { "title": "CBO 2140 — Engenheiros ambientais e afins (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências da gestão ambiental; perguntas extras sobre formação, registro no CREA e frente de atuação." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "D4, L4, D7 e L7 entram primeiro; PGRS (X1) e EIA/RIMA simplificado (X2) como personalizadas; cada card diz competência, evidência e tempo." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); editais de concursos ambientais podem reorganizar a semana." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, norma citada, fonte e período, aviso sem laudo/ART e ausência de empresas identificáveis; o selo depende de revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Rascunha estrutura de PGRS, POP ou relatório com prévia; nunca produz estudo ou plano para protocolo." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias e fechamento do fluxograma do licenciamento (D4); eixos e fonte do infográfico (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese com competências declaradas e evidenciadas, lacunas para a frente escolhida e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: engenharia ambiental e sanitária, ciências biológicas, engenharia florestal, geologia, agronomia; mercado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por CBO 2140, competências e setor." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil, com frente de atuação e registro só se informados; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, licenças acompanhadas e normas em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados sensíveis (LGPD art. 5º II)", "estudos de impacto e dados de licenciamento de clientes antes da publicação", "autuações, passivos ambientais e dados de fiscalização identificando empresas ou pessoas"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca redigir estudo ambiental, laudo, PGRS ou relatório para protocolo ou assinatura; todo texto é exercício e não substitui ART ou responsável técnico habilitado",
+      "não presumir registro no CREA nem atribuições; perguntar",
+      "não orientar a contornar exigências legais nem opinar sobre autuações reais",
+      "não pedir nem armazenar dados de licenciamento não publicados, autuações ou passivos identificáveis",
+      "nunca prometer entrevista, emprego ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["diagrama", "infografico", "prancha"],
+    "lettersTemplates": ["relatorio-tecnico", "pop", "proposta", "estudo-de-caso", "curriculo", "bio", "plano-30-60-90", "post", "revisao", "parecer"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas curtas de texto (L5, L6) e revisão (L10); PGRS (X1), EIA/RIMA simplificado (X2) e Drawings rendem mais no computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em três frases com sua frente de atuação (15 min).",
+        "Conhece bem o caminho de uma licença? O fluxograma do licenciamento (D4) leva cerca de 45 min.",
+        "Saiu edital de órgão ambiental na sua região? Posso montar com você o currículo direcionado (45 min).",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["estudos de impacto e dados de licenciamento de clientes antes da publicação", "autuações, passivos ambientais e dados de fiscalização identificando empresas ou pessoas"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2140", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Concurso IBAMA 2025 — Analista Ambiental (Cebraspe)", "url": "https://www.cebraspe.org.br/concursos/ibama_25", "geography": "Brasil", "cadence": "eventual", "kind": "edital" },
+      { "title": "Concurso ICMBio 2024 — Analista Ambiental (Cebraspe)", "url": "https://www.cebraspe.org.br/concursos/icmbio_24", "geography": "Brasil", "cadence": "eventual", "kind": "edital" },
+      { "title": "MUNIC (IBGE) — estrutura de meio ambiente nos municípios", "url": "https://www.ibge.gov.br/estatisticas/sociais/saude/10586-pesquisa-de-informacoes-basicas-municipais.html", "geography": "Brasil e município", "cadence": "eventual", "kind": "estatistica-oficial" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda, concursos ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "engenharia-ambiental-e-sanitaria", "why": "Licenciamento, resíduos e monitoramento são comuns; a engenharia acrescenta projeto de sistemas e atribuições plenas no CREA.", "gaps": ["projeto de sistemas de saneamento", "cálculo e hidráulica", "graduação em engenharia"], "steps": ["relatório técnico de monitoramento (L4)", "curso de hidráulica ou saneamento", "verificar formação exigida"] },
+    { "to": "ciencias-biologicas", "why": "Diagnóstico de biota, educação ambiental e unidades de conservação aproximam da biologia.", "gaps": ["métodos de levantamento de fauna e flora", "registro no CRBio exige graduação em biologia"], "steps": ["infográfico de biodiversidade com dados públicos (D7)", "curso de biodiversidade (AVA ICMBio)"] },
+    { "to": "engenharia-florestal", "why": "Código Florestal, CAR, PRAD e manejo florestal são interface direta.", "gaps": ["inventário e manejo florestal", "graduação em engenharia florestal e CREA"], "steps": ["PRAD simplificado de área fictícia (L4)", "curso de CAR e Código Florestal"] },
+    { "to": "geologia", "why": "Licenciamento de mineração, áreas contaminadas e recursos hídricos aproximam da geologia.", "gaps": ["geologia e hidrogeologia", "graduação em geologia e CREA"], "steps": ["fluxo do gerenciamento de áreas contaminadas (D4)", "curso de áreas contaminadas (CETESB)"] },
+    { "to": "agronomia", "why": "Gestão ambiental no agronegócio, CAR e boas práticas agrícolas aproximam da agronomia.", "gaps": ["solos e produção vegetal", "graduação em agronomia e CREA"], "steps": ["infográfico de indicadores agroambientais (D7)", "curso de boas práticas agrícolas"] }
+  ],
+  "learning": [
+    { "title": "AVA Ibama — cursos de licenciamento e educação ambiental", "provider": "IBAMA", "url": "https://ava.ibama.gov.br/", "free": true, "kind": "curso" },
+    { "title": "AVA ICMBio — unidades de conservação e biodiversidade", "provider": "ICMBio", "url": "https://ava.icmbio.gov.br/", "free": true, "kind": "curso" },
+    { "title": "Escola Virtual.Gov — gestão ambiental, resíduos e licenciamento", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "SINIR — guias e dados da PNRS", "provider": "Ministério do Meio Ambiente", "url": "https://sinir.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Programa Brasileiro GHG Protocol — ferramentas e guias", "provider": "FGV EAESP", "url": "https://eaesp.fgv.br/centros/centro-estudos-sustentabilidade/projetos/programa-brasileiro-ghg-protocol", "free": true, "kind": "portal" },
+    { "title": "ABNT NBR ISO 14001:2015", "provider": "ABNT", "url": "https://www.abntcatalogo.com.br/", "free": false, "kind": "norma" },
+    { "title": "Cursos on-line do Sebrae (sustentabilidade)", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "curso" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos (contracts/career/academic-fields.json) — gestao-ambiental: CBO 2140 (2140-10), ISCO 2133, sem conselho próprio; via RF75 README", "url": "docs/diagramas/RF75/README.md", "accessedAt": "2026-11-02" },
+    { "title": "Resolução CONFEA 313/1986 (CREA-RS)", "url": "https://www.crea-rs.org.br/site/documentos/0313-86%20Tecnologo.pdf", "accessedAt": "2026-11-02" },
+    { "title": "CREA-PB Deliberação 31/2024 CEAP — atribuições de tecnólogo em gestão ambiental com base na Res. 313/1986 e 1.073/2016", "url": "https://creapb.org.br/transparencia/wp-content/uploads/2024/09/20240930-deliberacao-no-31-ceap-2024-atribuicao-profissional-indef.pdf", "accessedAt": "2026-11-02" },
+    { "title": "CREA-MS Decisão PL 210/2022 — bacharelado em gestão ambiental sem título equivalente na Res. 473/2002", "url": "https://transparencia.creams.org.br/wp-content/uploads/2022/09/Dec.-PL-210-2022-Cadastramento-do-Curso-de-Gestao-Ambiental-Bacharelado-UEMS-1.pdf", "accessedAt": "2026-11-02" },
+    { "title": "CONFEA Proposta CP 006/2020 — nova resolução de tecnólogos (substituição da 313/1986)", "url": "https://www.confea.org.br/midias/2022-05/Proposta%20CP%20006%202020%20-%20Res.%20Tecnologos.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Edital IBAMA 2025 — Cebraspe", "url": "https://www.cebraspe.org.br/concursos/ibama_25", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Registro de tecnólogo em gestão ambiental no CREA: é facultativo/possível conforme currículo e CREA regional (decisões CREA-PB, CREA-MS); não há regra nacional única conferida; proposta de nova resolução de tecnólogos pode ter sido aprovada",
+    "Decreto 10.936/2022 (regulamento da PNRS), LC 140/2011 e Decreto 6.514/2008 citados de memória",
+    "Códigos CBO em questions.a4.cboFamilies (3115, 2211, 3522) não conferidos no portal da CBO",
+    "URIs ESCO não confirmadas: todas as competências estão com esco: null",
+    "URLs de aprendizagem e mercado (AVA Ibama/ICMBio, GHG Protocol FGV, MUNIC, Cebraspe icmbio_24) não abertas nesta sessão",
+    "Matrículas INEP de Gestão Ambiental (tecnólogo e bacharelado) não localizadas"
+  ]
+}

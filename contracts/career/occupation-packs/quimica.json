@@ -1,0 +1,311 @@
+{
+  "schemaVersion": 1,
+  "code": "quimica",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Química (químico, químico industrial, tecnólogo)", "en": "Chemistry (chemist, industrial chemist)", "es": "Química (químico, químico industrial)" },
+  "fields": ["quimica"],
+  "family": {
+    "cbo": [{ "code": "2132", "title": "Químicos" }],
+    "isco08": [{ "code": "2113", "title": "Chemists" }],
+    "esco": []
+  },
+  "scope": {
+    "summary": "Analisa, desenvolve e controla substâncias, formulações e processos químicos: análises laboratoriais, controle e garantia da qualidade, pesquisa e desenvolvimento de produtos, operação e otimização de processos, segurança química e gestão de resíduos. Registro no CRQ (Lei 2.800/1956); laudos, responsabilidade técnica e ART dependem das atribuições concedidas pelo conselho (RN CFQ 36/1974). Atua em indústria, laboratórios, saneamento, ensino e órgãos públicos.",
+    "entryRoles": ["Estagiário de laboratório ou de processo", "Auxiliar ou técnico de laboratório", "Analista de controle de qualidade júnior", "Químico júnior de P&D", "Assistente de processos químicos", "Bolsista de iniciação científica"],
+    "midRoles": ["Químico analista (pleno)", "Químico de controle e garantia da qualidade", "Químico de desenvolvimento de produtos ou formulações", "Químico de processo em planta industrial", "Responsável técnico por laboratório ou empresa (com atribuição do CRQ)", "Analista de meio ambiente e resíduos químicos", "Químico de laboratório de saneamento ou vigilância"],
+    "seniorRoles": ["Coordenador de laboratório ou de controle de qualidade", "Gerente de P&D ou de aplicação técnica", "Especialista em química analítica instrumental", "Perito químico ou assistente técnico", "Pesquisador ou docente em instituição pública", "Gerente de segurança de processos e produtos químicos", "Consultor em regulatório de produtos químicos"],
+    "sectors": ["indústria química e petroquímica", "farmacêutica, cosméticos e higiene", "alimentos e bebidas", "laboratórios de ensaio e calibração", "saneamento e tratamento de água e efluentes", "mineração, metalurgia e siderurgia", "papel e celulose, tintas, polímeros", "agroquímicos e fertilizantes", "órgãos públicos (vigilância sanitária, perícia, ambiental)", "ensino e pesquisa", "combustíveis e biocombustíveis"],
+    "regulation": [
+      { "name": "Lei 2.800/1956 e Decreto 85.877/1981", "issuer": "Brasil", "about": "criam o CFQ e os CRQs e regulamentam o exercício da profissão de químico; registro obrigatório" },
+      { "name": "Resolução Normativa CFQ 36/1974", "issuer": "CFQ", "about": "atribuições dos profissionais da química e critérios para sua concessão por análise curricular" },
+      { "name": "Resolução Normativa CFQ 311/2023 (Código de Ética dos Profissionais da Química)", "issuer": "CFQ", "about": "deveres éticos, sigilo profissional e responsabilidade técnica; substitui o código de 1970" },
+      { "name": "NR-26 (MTE) e ABNT NBR 14725", "issuer": "MTE / ABNT", "about": "sinalização e classificação GHS de produtos químicos; rotulagem e Ficha com Dados de Segurança (FDS, antiga FISPQ)" },
+      { "name": "Lei 10.357/2001 e Portaria MJSP 240/2019 (Polícia Federal)", "issuer": "Brasil / PF", "about": "controle de produtos químicos que podem ser desviados para drogas ilícitas; cadastro e mapas de controle" },
+      { "name": "Decreto 10.030/2019 (Regulamento de Produtos Controlados pelo Exército)", "issuer": "Brasil / Exército", "about": "produtos químicos controlados pelo Exército; certificado de registro" },
+      { "name": "Lei 12.305/2010 (PNRS) e Resolução CONAMA 430/2011", "issuer": "Brasil / CONAMA", "about": "gerenciamento de resíduos químicos e padrões de lançamento de efluentes" },
+      { "name": "ABNT NBR ISO/IEC 17025", "issuer": "ABNT / Inmetro (Cgcre)", "about": "requisitos de competência de laboratórios de ensaio e calibração; validação de métodos e incerteza" },
+      { "name": "NR-15 (MTE) e ABNT NBR 10004", "issuer": "MTE / ABNT", "about": "atividades insalubres por agentes químicos; classificação de resíduos sólidos" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "ART (CRQ)", "meaning": "Anotação de Responsabilidade Técnica registrada no CRQ para serviços, laudos e responsabilidade por empresa" },
+      { "term": "atribuições profissionais", "meaning": "atividades que o CRQ autoriza cada profissional a exercer, definidas por análise curricular (RN CFQ 36/1974)" },
+      { "term": "laudo analítico", "meaning": "documento conclusivo com resultados de ensaio, método, incerteza e responsável técnico" },
+      { "term": "certificado de análise (CoA)", "meaning": "documento que atesta a conformidade de um lote às especificações" },
+      { "term": "FDS / FISPQ", "meaning": "Ficha com Dados de Segurança de produto químico (NBR 14725), com 16 seções padronizadas" },
+      { "term": "GHS", "meaning": "sistema globalmente harmonizado de classificação e rotulagem de produtos químicos" },
+      { "term": "POP", "meaning": "procedimento operacional padrão de laboratório ou planta, com passos, critérios de aceitação e registros" },
+      { "term": "validação de método", "meaning": "demonstração de que um método analítico é adequado (seletividade, linearidade, precisão, exatidão, LD e LQ)" },
+      { "term": "incerteza de medição", "meaning": "parâmetro que caracteriza a dispersão dos valores atribuídos ao mensurando" },
+      { "term": "rastreabilidade metrológica", "meaning": "ligação do resultado a padrões de referência por cadeia de calibrações" },
+      { "term": "carta de controle", "meaning": "gráfico que acompanha a estabilidade de um processo ou ensaio ao longo do tempo" },
+      { "term": "não conformidade", "meaning": "desvio de especificação ou procedimento, registrado com causa raiz e ação corretiva" },
+      { "term": "cadeia de custódia", "meaning": "registro de coleta, transporte e recebimento de amostras com data, hora e condições" },
+      { "term": "balanço de massa", "meaning": "contabilidade de entradas e saídas de matéria em um processo" },
+      { "term": "HPLC / GC / AAS / ICP", "meaning": "técnicas instrumentais: cromatografia líquida e gasosa, absorção atômica, plasma acoplado" },
+      { "term": "espectroscopia (UV-Vis, IV, RMN)", "meaning": "técnicas de identificação e quantificação por interação da radiação com a matéria" },
+      { "term": "produto controlado", "meaning": "substância sujeita a controle da Polícia Federal ou do Exército, com cadastro e mapas" },
+      { "term": "resíduo classe I e II (NBR 10004)", "meaning": "classificação de resíduos em perigosos e não perigosos para destinação" },
+      { "term": "PGRS", "meaning": "plano de gerenciamento de resíduos sólidos exigido pela PNRS para geradores" },
+      { "term": "scale-up", "meaning": "transposição de um processo do laboratório para a escala piloto ou industrial" },
+      { "term": "BPF/BPL", "meaning": "boas práticas de fabricação e de laboratório exigidas em setores regulados" },
+      { "term": "ficha de emergência (NBR 7503)", "meaning": "documento para transporte de produtos perigosos com instruções em caso de acidente" }
+    ],
+    "tools": ["HPLC, GC, espectrofotômetro UV-Vis, IV, AAS/ICP", "balança analítica, pHmetro, titulador", "LIMS e sistemas da qualidade", "planilhas, Minitab ou R para estatística", "ChemDraw ou equivalente", "softwares de FDS e classificação GHS", "bancos de dados (PubChem, SciFinder, Reaxys)", "cabine de exaustão, EPIs e chuveiro de emergência", "Aspen ou simuladores de processo (processos químicos)", "sistemas de controle de produtos controlados (PF, Exército)", "Mendeley ou Zotero"],
+    "deliverables": ["relatório técnico de análise ou de desenvolvimento", "laudo analítico com ART (só o profissional com atribuição assina)", "certificado de análise", "POP de ensaio ou de operação", "relatório de validação de método", "FDS/FISPQ de um produto (NBR 14725)", "plano de gerenciamento de resíduos químicos", "relatório de não conformidade com causa raiz", "ficha técnica de produto ou formulação", "carta de controle e relatório de tendência", "fluxograma de processo com balanço de massa", "proposta técnica de serviço analítico"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Química analítica clássica e instrumental", "esco": null, "kind": "nucleo" },
+      { "label": "Controle e garantia da qualidade (ISO/IEC 17025, BPF/BPL)", "esco": null, "kind": "nucleo" },
+      { "label": "Validação de métodos e estimativa de incerteza", "esco": null, "kind": "nucleo" },
+      { "label": "Segurança química, GHS e FDS (NR-26, NBR 14725)", "esco": null, "kind": "nucleo" },
+      { "label": "Desenvolvimento de produtos e formulações", "esco": null, "kind": "nucleo" },
+      { "label": "Processos químicos, balanço de massa e scale-up", "esco": null, "kind": "nucleo" },
+      { "label": "Redação de relatórios, laudos e POPs", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de resíduos químicos e legislação ambiental", "esco": null, "kind": "apoio" },
+      { "label": "Produtos controlados (PF e Exército) e regulatório", "esco": null, "kind": "apoio" },
+      { "label": "Estatística aplicada e cartas de controle", "esco": null, "kind": "apoio" },
+      { "label": "Tratamento de não conformidades e análise de causa raiz", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de laboratório e de equipes", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["atenção a detalhes e registro rastreável", "trabalho em equipe multidisciplinar", "ética e sigilo industrial", "leitura técnica em inglês", "comunicação com produção e clientes"],
+    "tracks": [
+      { "id": "laboratorio-e-qualidade", "label": "Laboratório e qualidade", "steps": ["POP de um ensaio que você domina (L7)", "relatório técnico de análise ou validação (L4)", "carta de controle em infográfico (D7)", "estudo de caso de não conformidade resolvida (L3)"] },
+      { "id": "processo-e-industria", "label": "Processo e indústria", "steps": ["fluxograma de processo com balanço de massa (D4)", "FDS de um produto fictício (X1)", "redesenho antes e depois de uma etapa do processo (D5)", "plano 30-60-90 para químico de processo (L9)"] },
+      { "id": "apresentar-se", "label": "Apresentar-se para o cargo", "steps": ["resumo de perfil com técnicas dominadas (L6)", "currículo direcionado com atribuições do CRQ (L1)", "prancha com três trabalhos (D2)", "post sobre um aprendizado de laboratório (L5)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"analista de controle de qualidade\", \"químico de processo\", \"técnico de laboratório\", \"estagiário de P&D\"",
+      "cboFamilies": ["2132", "3111", "2145", "8111"],
+      "why": "Pergunto seu último cargo ou área para partir da sua experiência em laboratório, processo ou qualidade. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, iniciação científica ou primeiro cargo",
+        "junior": "executa ensaios e rotinas com supervisão; ainda não responde tecnicamente",
+        "pleno": "conduz análises, validações ou processos com autonomia; pode assinar ART da sua atribuição",
+        "senior": "referência técnica em uma técnica ou produto; orienta analistas",
+        "gestao": "responde por laboratório, planta, equipe ou orçamento"
+      },
+      "why": "Pergunto o nível para ajustar a dificuldade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem",
+      "options": ["análise instrumental (HPLC, GC, espectroscopia)", "análises clássicas (titulação, gravimetria)", "controle de qualidade e especificações", "validação de métodos e incerteza", "desenvolvimento de formulações", "operação e otimização de processos", "segurança química e FDS/GHS", "gestão de resíduos químicos", "estatística e cartas de controle", "redação de relatórios e POPs", "regulatório e produtos controlados", "gestão de laboratório"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com as tarefas."
+    },
+    "c4": {
+      "certifications": ["bacharelado em Química ou Química Industrial", "tecnólogo em Processos Químicos", "registro no CRQ com atribuições definidas", "curso de ISO/IEC 17025", "curso de GHS e FDS (NBR 14725)", "curso de BPF/BPL", "curso de validação de métodos e incerteza", "especialização ou mestrado na área", "NR-33 ou NR-35 quando atua em planta"],
+      "languages": ["inglês (leitura técnica)", "espanhol", "Libras"],
+      "why": "Formação, registro e cursos ajudam a ver lacunas em relação ao cargo que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["cromatografia e análise instrumental", "validação de métodos e incerteza", "ISO/IEC 17025 e gestão da qualidade", "GHS, FDS e segurança química", "processos e scale-up", "estatística e cartas de controle", "gestão de resíduos e legislação ambiental", "regulatório e produtos controlados", "redação técnica", "preparação para concursos (perícia, vigilância, universidades)"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Você já tem registro no CRQ?", "type": "escolha", "options": ["sim, com atribuições definidas", "em andamento", "ainda não", "não se aplica"], "why": "Sem registro, tarefas de laudo ficam como exercício; com ele, sugiro tarefas de responsabilidade técnica dentro das suas atribuições.", "where": "P" },
+      { "id": "x2", "prompt": "Em que frente você quer atuar primeiro?", "type": "escolha", "options": ["laboratório e controle de qualidade", "P&D e formulações", "processo industrial", "meio ambiente e resíduos", "regulatório e segurança química", "ensino, pesquisa ou concurso"], "why": "A frente define quais tarefas e normas entram primeiro no seu plano.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L7", "L4", "D7", "D4", "L3", "L1", "L6", "D5", "L8", "L9", "L5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta de ambiente não é entrega do químico" },
+      { "code": "D3", "reason": "render fotorrealista de produto não é entrega da área" },
+      { "code": "D6", "reason": "detalhe construtivo não pertence à área" },
+      { "code": "D8", "reason": "vista explodida de conjunto mecânico não pertence à área" },
+      { "code": "D9", "reason": "wireframe de tela não pertence à área" }
+    ],
+    "parameters": {
+      "L7": {
+        "title": "POP de um ensaio ou operação de laboratório",
+        "brief": "Escreva o procedimento de um ensaio ou operação que você domina (titulação, preparo de solução padrão, determinação de pH, análise por HPLC, calibração de balança): finalidade, segurança (EPI, FDS dos reagentes, exaustão), materiais e reagentes, passos numerados com responsável e critério de aceitação, registros, descarte de resíduos e referência a norma ou método oficial.",
+        "parameters": { "steps": "8 a 15", "requiredColumns": ["passo", "responsável", "critério de aceitação", "registro"], "requiredSections": ["finalidade", "segurança e EPI", "materiais e reagentes", "procedimento", "controle de qualidade", "descarte de resíduos", "referências"] },
+        "criteria": ["passos numerados com responsável", "critério de aceitação por passo ou por ensaio", "seção de segurança com EPI e referência à FDS", "descarte de resíduos descrito", "norma ou método oficial citado"],
+        "evidence": "POP em PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório técnico de análise, validação ou desenvolvimento",
+        "brief": "Em até 4 páginas, relate uma análise, uma validação de método ou um desenvolvimento de formulação real anonimizado ou fictício: objetivo, método (técnica, equipamento, norma), resultados com tabela e incerteza ou critérios de aceitação, limitações e referências. Inclua o aviso de exercício: não é laudo nem certificado de análise, não substitui ART.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "método", "resultados com incerteza ou critérios", "limitações", "referências"], "disclaimerRequired": true, "anonymizedData": true, "noTradeSecrets": true },
+        "criteria": ["cinco seções nomeadas", "até 4 páginas", "resultados com unidades e incerteza ou critério de aceitação", "método com técnica, equipamento e norma", "aviso de exercício: sem valor de laudo ou ART", "sem formulação proprietária, nome de cliente ou lote real"],
+        "evidence": "relatório PDF",
+        "time": "2 h",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de dados analíticos ou de processo",
+        "brief": "Monte um infográfico com dois ou três indicadores (carta de controle de um parâmetro, rendimento por batelada, curva de calibração, consumo de reagente) com fonte e período, eixos e unidades rotulados, limites de especificação ou controle e uma mensagem principal. Dados públicos ou fictícios.",
+        "parameters": { "indicators": "2 a 3", "examples": ["carta de controle de um parâmetro de qualidade", "rendimento por batelada (%)", "curva de calibração com R²", "geração de resíduos por classe (kg/mês)"], "requiredElements": ["fonte e período", "eixos e unidades", "limites de especificação ou controle", "mensagem principal"], "anonymizedData": true },
+        "criteria": ["fonte e período citados", "eixos e unidades rotulados", "limites de especificação ou controle marcados", "uma mensagem principal explícita", "dados públicos ou fictícios"],
+        "evidence": "imagem + PDF",
+        "time": "60 min",
+        "level": 1
+      },
+      "D4": {
+        "title": "Fluxograma de processo ou de fluxo de amostra",
+        "brief": "Desenhe o fluxograma de um processo químico (etapas, correntes, balanço de massa simplificado, pontos de controle) ou do fluxo de uma amostra no laboratório (recepção, registro, preparo, ensaio, revisão, emissão do resultado), com raias por responsável, início, fim e decisões.",
+        "parameters": { "options": ["processo químico com balanço de massa", "fluxo de amostra no laboratório", "tratamento de não conformidade"], "lanes": ["produção ou cliente", "laboratório", "qualidade", "segurança"], "requiredElements": ["início", "fim", "decisões", "pontos de controle ou registros gerados"] },
+        "criteria": ["início e fim explícitos", "raias por responsável identificadas", "nenhuma tarefa órfã", "pontos de controle ou registros marcados", "legenda de símbolos"],
+        "evidence": "diagrama vetorial",
+        "time": "45 min",
+        "level": 2
+      },
+      "L3": {
+        "title": "Estudo de caso de não conformidade resolvida",
+        "brief": "Conte uma não conformidade analítica ou de processo que você ajudou a resolver: situação, tarefa, ação (investigação, causa raiz, ação corretiva) e resultado mensurável, sem dado confidencial, lote ou cliente identificável.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true, "rootCauseTool": "5 porquês, Ishikawa ou equivalente" },
+        "criteria": ["quatro seções explícitas", "ferramenta de causa raiz nomeada", "resultado com número ou comparação", "declaração de ausência de dado confidencial"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "letters", "title": "FDS (FISPQ) de um produto fictício conforme NBR 14725", "competency": "Segurança química, GHS e FDS", "criteria": ["16 seções na ordem da NBR 14725", "classificação GHS com pictogramas, palavra de advertência e frases H e P coerentes", "medidas de primeiros socorros, combate a incêndio e derramamento preenchidas", "informações de transporte e regulamentação citadas", "produto fictício, sem formulação proprietária"], "evidence": "FDS em PDF", "time": "90 min", "trigger": "Você trabalha com produtos químicos? Monte a FDS de um produto fictício como exercício.", "level": 2 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L8", "L9", "X1"], "auto": true },
+      { "id": "dezesseis-secoes-fds", "check": "a FDS tem as 16 seções na ordem da NBR 14725", "appliesTo": ["X1"], "auto": true },
+      { "id": "unidades-e-incerteza", "check": "resultados trazem unidades e incerteza ou critério de aceitação", "appliesTo": ["L4", "D7"], "auto": true },
+      { "id": "fonte-e-periodo", "check": "fonte e período dos dados estão citados", "appliesTo": ["D7", "L4"], "auto": true },
+      { "id": "eixos-e-limites", "check": "eixos e unidades rotulados e limites de especificação ou controle marcados", "appliesTo": ["D7"], "auto": true },
+      { "id": "seguranca-presente", "check": "há seção de segurança com EPI, referência à FDS e descarte de resíduos", "appliesTo": ["L7"], "auto": true },
+      { "id": "aviso-sem-laudo-art", "check": "o documento traz o aviso de exercício, sem valor de laudo, certificado ou ART", "appliesTo": ["L4", "L8", "X1"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "creditos-e-fontes", "check": "coautores, fontes e métodos oficiais estão creditados", "appliesTo": ["L5", "L10", "D2", "D7", "D10"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de formulação proprietária, lote, cliente ou dado sob NDA", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D2", "D4", "D5", "D7", "D10", "X1"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "rigor-analitico", "label": "Rigor analítico", "levels": { "aproxima": "método descrito sem permitir repetição", "atende": "método permite repetir o ensaio e avaliar o resultado", "supera": "discute interferentes, incerteza e alternativas de método" } },
+      { "id": "seguranca-e-conformidade", "label": "Segurança e conformidade", "levels": { "aproxima": "cita segurança de forma genérica", "atende": "identifica perigos, EPI e descarte corretos para os reagentes", "supera": "antecipa cenários de emergência e exigências regulatórias" } },
+      { "id": "interpretacao", "label": "Interpretação e decisão", "levels": { "aproxima": "apresenta números sem conclusão", "atende": "conclui conforme a especificação ou o critério", "supera": "liga o resultado a uma decisão de processo ou de produto" } },
+      { "id": "clareza", "label": "Clareza para quem decide", "levels": { "aproxima": "a conclusão exige releitura", "atende": "a conclusão é entendida na primeira leitura", "supera": "quem não é químico entende o que fazer com o resultado" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Química (bacharelado, química industrial ou tecnologia em processos químicos). Use o vocabulário da área: análise instrumental (HPLC, GC, UV-Vis, AAS/ICP), validação de método, incerteza, rastreabilidade, carta de controle, não conformidade e causa raiz, POP, FDS/FISPQ, GHS, balanço de massa, scale-up, resíduos classe I e II, produtos controlados, ART do CRQ. Cite, quando couber, a Lei 2.800/1956, a RN CFQ 36/1974 (atribuições), a RN CFQ 311/2023 (Código de Ética), a NR-26 e a NBR 14725 (GHS e FDS), a NBR ISO/IEC 17025, a Lei 10.357/2001 e o Decreto 10.030/2019 (produtos controlados), a Lei 12.305/2010 e a CONAMA 430/2011. Nunca redija laudo analítico, certificado de análise ou parecer para assinatura: o que você propõe é exercício ou rascunho, sem valor de laudo, e não substitui a ART nem a responsabilidade técnica de quem tem atribuição no CRQ. Não forneça rotas de síntese, formulações ou instruções de manuseio de substâncias perigosas ou controladas fora do contexto de um exercício didático com produto fictício; não dê orientação de segurança a terceiros em substituição à FDS e ao responsável técnico. Trate como sigilosos: formulações, rotas de síntese e laudos sob segredo industrial ou NDA, dados de controle de qualidade identificando clientes ou lotes. Pergunte antes de inferir área, senioridade ou registro no conselho. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por que foi sugerida, e aceita \"não me serve\". Afirmações sobre mercado (CAGED/RAIS para a CBO 2132, concursos de perícia e vigilância) citam fonte, data e região ou dizem \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos, nunca por pontuação. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação. Pré-cheque só critérios objetivos; o selo é humano.",
+    "citeSources": [
+      { "title": "Conselho Federal de Química (CFQ) — legislação e resoluções", "url": "https://cfq.org.br/", "kind": "conselho" },
+      { "title": "Lei 2.800/1956 — cria o CFQ e os CRQs", "url": "https://www.planalto.gov.br/ccivil_03/leis/L2800.htm", "kind": "norma" },
+      { "title": "Resolução Normativa CFQ 36/1974 — atribuições dos profissionais da química", "url": "https://cfq.org.br/wp-content/uploads/2018/12/RESOLU%C3%87%C3%83O-NORMATIVA-N%C2%BA-36-DE-25-DE-ABRIL-DE-1974_.pdf", "kind": "conselho" },
+      { "title": "Resolução Normativa CFQ 311/2023 — Código de Ética dos Profissionais da Química", "url": "https://cfq.org.br/wp-content/uploads/2023/11/Resolucao-Normativa-no-311-de-21-de-setembro-de-2023.-1.pdf", "kind": "conselho" },
+      { "title": "NR-26 — Sinalização de segurança (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes", "kind": "norma" },
+      { "title": "Lei 12.305/2010 — Política Nacional de Resíduos Sólidos", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2010/lei/l12305.htm", "kind": "norma" },
+      { "title": "Produtos químicos controlados — Polícia Federal", "url": "https://www.gov.br/pf/pt-br/assuntos/produtos-quimicos", "kind": "orgao-publico" },
+      { "title": "CBO 2132 — Químicos (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "Novo CAGED — Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências da química; perguntas extras sobre registro no CRQ e frente de atuação (laboratório, P&D, processo, regulatório)." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "L7, L4, D7 e D4 entram primeiro; cada card diz a competência comprovada, a evidência e que o resultado é exercício, sem valor de laudo ou certificado." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); turnos de planta ou laboratório podem reorganizar a semana." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, unidades e incerteza, 16 seções da FDS, segurança e descarte, aviso sem laudo/ART e ausência de formulação proprietária; o selo depende de revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Rascunha estrutura de POP, relatório ou FDS fictícia com prévia; nunca produz laudo ou certificado assinável nem aplica sem revisão." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Eixos, unidades e limites do infográfico (D7); raias e fechamento do fluxograma (D4); comparação antes e depois (D5)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese com competências declaradas e evidenciadas, lacunas em relação à frente escolhida e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: engenharia química, farmácia, ciências biológicas, física, biomedicina; mercado citado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por CBO 2132, competências e setor." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil, com técnicas dominadas e registro no CRQ só se a pessoa informou; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, técnicas analíticas e normas em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados sensíveis (LGPD art. 5º II)", "formulações, rotas de síntese e laudos sob segredo industrial ou NDA", "dados de controle de qualidade identificando clientes ou lotes", "informações de produtos controlados de empresa real"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca redigir laudo analítico, certificado de análise ou parecer para assinatura; todo texto é exercício, sem valor de laudo e sem substituir ART ou atribuição do CRQ",
+      "não fornecer rotas de síntese, formulações ou instruções de manuseio de substâncias perigosas ou controladas fora de exercício didático com produto fictício",
+      "não dar orientação de segurança química a terceiros em substituição à FDS e ao responsável técnico",
+      "não pedir nem armazenar formulações proprietárias, dados sob NDA, lotes ou clientes identificáveis",
+      "perguntar em vez de inferir área, senioridade ou registro no conselho",
+      "nunca prometer entrevista, emprego ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["infografico", "diagrama", "prancha"],
+    "lettersTemplates": ["pop", "relatorio-tecnico", "estudo-de-caso", "proposta", "curriculo", "bio", "plano-30-60-90", "post", "revisao", "artigo", "projeto-de-pesquisa"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas curtas de texto (L5, L6) e revisão (L10); POP (L7), relatório (L4), FDS (X1) e Drawings (D4, D7) rendem mais no computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em três frases com as técnicas que você domina (15 min).",
+        "Que ensaio você faria de olhos fechados? O POP dele (L7) leva cerca de 1 h e prova padronização.",
+        "Tem uma carta de controle ou uma curva de calibração que possa mostrar com dados fictícios? O infográfico (D7) leva 1 h.",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["formulações, rotas de síntese e laudos sob segredo industrial ou NDA", "dados de controle de qualidade e não conformidades identificando clientes ou lotes", "cadastros e mapas de produtos controlados de empresa real"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2132", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "CFQ — Conselho Federal de Química (registros e notícias da profissão)", "url": "https://cfq.org.br/", "geography": "Brasil (por CRQ regional)", "cadence": "continua", "kind": "conselho" },
+      { "title": "Associação Brasileira de Química (ABQ)", "url": "https://www.abq.org.br/", "geography": "Brasil", "cadence": "continua", "kind": "associacao" },
+      { "title": "Abiquim — Associação Brasileira da Indústria Química (indicadores do setor)", "url": "https://www.abiquim.org.br/", "geography": "Brasil", "cadence": "anual", "kind": "associacao" },
+      { "title": "Censo da Educação Superior (INEP) — concluintes em Química", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-da-educacao-superior", "geography": "Brasil e UF", "cadence": "anual", "kind": "estatistica-oficial" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda, concursos ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "engenharia-quimica", "why": "Processos, balanço de massa e scale-up são compartilhados; a engenharia química acrescenta projeto de equipamentos e operações unitárias, e exige graduação própria e CREA.", "gaps": ["operações unitárias e projeto de equipamentos", "fenômenos de transporte", "registro no CREA"], "steps": ["fluxograma de processo com balanço de massa (D4)", "curso de operações unitárias ou simulação de processos", "verificar formação exigida"] },
+    { "to": "farmacia", "why": "Controle de qualidade, BPF e análise instrumental aproximam da indústria farmacêutica; a profissão de farmacêutico exige graduação própria e CRF.", "gaps": ["legislação sanitária (ANVISA) e BPF farmacêutica", "farmacotécnica", "registro no CRF"], "steps": ["POP de ensaio sob BPF (L7)", "curso de BPF e qualificação de equipamentos", "verificar formação exigida"] },
+    { "to": "ciencias-biologicas", "why": "Bioquímica, microbiologia e análises de amostras ambientais são comuns; o caminho pede biologia e registro no CRBio.", "gaps": ["biologia e microbiologia aplicadas", "legislação ambiental de biota", "registro no CRBio depende da formação"], "steps": ["relatório técnico de ensaio ambiental (L4)", "curso de microbiologia ou biossegurança", "verificar atribuições"] },
+    { "to": "fisica", "why": "Espectroscopia, metrologia e instrumentação são pontos de contato com a física experimental e a metrologia.", "gaps": ["física experimental e instrumentação", "estatística avançada", "formação em física"], "steps": ["relatório de validação com incerteza (L4)", "curso de metrologia (Inmetro) ou de instrumentação", "verificar formação exigida"] },
+    { "to": "biomedicina", "why": "Análises clínicas e controle de qualidade laboratorial compartilham técnicas; a biomedicina exige graduação própria e CRBM.", "gaps": ["análises clínicas e legislação sanitária", "registro no CRBM"], "steps": ["POP de técnica laboratorial (L7)", "curso de controle de qualidade em laboratório clínico", "verificar formação exigida"] }
+  ],
+  "learning": [
+    { "title": "Legislação, resoluções e atribuições — CFQ", "provider": "CFQ", "url": "https://cfq.org.br/", "free": true, "kind": "portal" },
+    { "title": "Sociedade Brasileira de Química (SBQ) — divisões e eventos", "provider": "SBQ", "url": "https://www.sbq.org.br/", "free": true, "kind": "comunidade" },
+    { "title": "Química Nova e Química Nova na Escola (acesso aberto)", "provider": "SBQ", "url": "https://quimicanova.sbq.org.br/", "free": true, "kind": "portal" },
+    { "title": "Cursos a distância de metrologia e qualidade", "provider": "Inmetro", "url": "https://www.gov.br/inmetro/pt-br", "free": true, "kind": "curso" },
+    { "title": "Cursos gratuitos SENAI (segurança química, processos industriais)", "provider": "SENAI", "url": "https://www.senai.br/cursos", "free": true, "kind": "curso" },
+    { "title": "Escola Virtual.Gov — qualidade, dados e redação oficial", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "PubChem — base de dados de substâncias", "provider": "NIH/NCBI", "url": "https://pubchem.ncbi.nlm.nih.gov/", "free": true, "kind": "portal" },
+    { "title": "ABNT NBR 14725 — produtos químicos: informações sobre segurança, saúde e meio ambiente (FDS)", "provider": "ABNT", "url": "https://www.abntcatalogo.com.br/", "free": false, "kind": "norma" },
+    { "title": "Portal de Periódicos CAPES", "provider": "CAPES", "url": "https://www.periodicos.capes.gov.br/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos (contracts/career/academic-fields.json) — quimica: CBO 2132, ISCO 2113, CRQ/CFQ, Lei 2.800/1956; via RF75 README", "url": "docs/diagramas/RF75/README.md", "accessedAt": "2026-11-02" },
+    { "title": "Resolução Normativa CFQ 36/1974 (texto oficial no site do CFQ)", "url": "https://cfq.org.br/wp-content/uploads/2018/12/RESOLU%C3%87%C3%83O-NORMATIVA-N%C2%BA-36-DE-25-DE-ABRIL-DE-1974_.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Resolução Normativa CFQ 311/2023 — Código de Ética (site do CFQ)", "url": "https://cfq.org.br/wp-content/uploads/2023/11/Resolucao-Normativa-no-311-de-21-de-setembro-de-2023.-1.pdf", "accessedAt": "2026-11-02" },
+    { "title": "Exercício da profissão — UFJF Química (síntese da legislação do CFQ)", "url": "https://www2.ufjf.br/quimicadiurno/exercicio-da-profissao/", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Texto integral da RN CFQ 36/1974 e da RN CFQ 311/2023 não lido; vigência do Código de Ética desde 2024 vista só em fonte secundária; fontes divergem se a RN 36 lista 13 ou 16 atribuições",
+    "Decreto 85.877/1981 e Portaria MJSP 240/2019 citados de memória; Decreto 10.030/2019 (produtos controlados pelo Exército) não conferido",
+    "Edição vigente da NBR 14725 (FDS) e da NR-26 não conferidas; o termo FDS substitui FISPQ nas revisões recentes",
+    "Códigos CBO em questions.a4.cboFamilies (3111, 2145, 8111) não conferidos no portal da CBO",
+    "URIs ESCO não confirmadas nesta sessão: todas as competências estão com esco: null",
+    "URLs de aprendizagem e de mercado (ABQ, Abiquim, SBQ, Inmetro, SENAI, PF produtos químicos) não abertas nesta sessão",
+    "Estatísticas de registros ativos no CFQ/CRQs e matrículas INEP do bacharelado em Química não localizadas"
+  ]
+}

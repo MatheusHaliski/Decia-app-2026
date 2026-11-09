@@ -1,0 +1,338 @@
+{
+  "schemaVersion": 1,
+  "code": "musica",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Música", "en": "Music", "es": "Música" },
+  "fields": ["musica"],
+  "family": {
+    "cbo": [
+      { "code": "2626", "title": "Músicos compositores, arranjadores, regentes e musicólogos" },
+      { "code": "2627", "title": "Músicos intérpretes" },
+      { "code": "2321", "title": "Professores do ensino médio" }
+    ],
+    "isco08": [
+      { "code": "2652", "title": "Musicians, singers and composers" },
+      { "code": "2330", "title": "Secondary education teachers" },
+      { "code": "2354", "title": "Other music teachers" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/f6803a58-91d9-4251-9a07-09fc387cec16", "label": "musician" },
+      { "uri": "http://data.europa.eu/esco/occupation/7dc05fcc-b079-45ed-b5d4-74c75f99976c", "label": "composer" },
+      { "uri": "http://data.europa.eu/esco/occupation/f235bc5a-dbf6-4f9e-bbdb-cf313d32b75b", "label": "music teacher" }
+    ]
+  },
+  "scope": {
+    "summary": "Instrumentistas, cantores, compositores, arranjadores, regentes, produtores musicais, musicólogos e professores de música (educação básica, escolas livres, conservatórios, projetos sociais). Trabalham com performance, criação, ensino e produção, muitas vezes de forma autônoma e por projetos. A inscrição na OMB não é exigível (STF, Tema 738); a docência na educação básica pede licenciatura. A prova de competência combina gravações, partituras, repertório e projetos.",
+    "entryRoles": ["Músico em grupos, bandas e eventos", "Professor de instrumento ou canto em escola livre", "Monitor de projeto social de música", "Assistente de produção musical ou de estúdio", "Corista", "Professor de música em início de carreira"],
+    "midRoles": ["Músico de orquestra, banda ou grupo profissional", "Professor de Arte/Música na educação básica", "Arranjador", "Produtor musical", "Regente de coro ou banda", "Compositor para audiovisual e publicidade", "Educador musical em conservatório"],
+    "seniorRoles": ["Spalla, chefe de naipe ou solista", "Regente titular", "Diretor musical", "Professor de música no ensino superior", "Coordenador de escola de música ou de programa social", "Produtor executivo de projetos musicais"],
+    "sectors": ["orquestras, bandas e corpos estáveis", "educação básica e escolas de música", "conservatórios e ensino superior", "estúdios e produção fonográfica", "eventos, shows e entretenimento", "audiovisual, games e publicidade (trilhas)", "igrejas e coros", "terceiro setor e projetos sociais", "gestão pública de cultura"],
+    "regulation": [
+      { "name": "Lei 3.857/1960 e STF RE 795.467 (Tema 738)", "issuer": "Brasil / STF", "about": "cria a OMB; o STF fixou que é incompatível com a Constituição exigir inscrição na OMB e anuidade para exercer a profissão" },
+      { "name": "Lei 9.610/1998 (direitos autorais e conexos), arts. 89–100", "issuer": "Brasil", "about": "direitos de autor de composições e direitos conexos de intérpretes e produtores fonográficos; gestão coletiva pelo ECAD" },
+      { "name": "Lei 12.853/2013", "issuer": "Brasil", "about": "regras de transparência e fiscalização da gestão coletiva de direitos autorais (ECAD e associações)" },
+      { "name": "LDB art. 26 §6º, com Lei 13.278/2016", "issuer": "Brasil", "about": "música é linguagem obrigatória do componente Arte na educação básica" },
+      { "name": "BNCC — componente Arte, unidade temática Música", "issuer": "MEC / CNE", "about": "habilidades de música para planos de aula e avaliação no ensino fundamental e médio" },
+      { "name": "Lei 8.313/1991 (Rouanet), Lei 14.399/2022 (PNAB) e LC 195/2022", "issuer": "Brasil / MinC", "about": "incentivo fiscal, editais e prêmios para gravação, circulação e formação musical" },
+      { "name": "NR-15 Anexo 1 e NR-17 (MTE)", "issuer": "MTE", "about": "limites de exposição a ruído e ergonomia; relevante para músicos de orquestra, banda e estúdio" },
+      { "name": "ECA (Lei 8.069/1990) e LGPD art. 14", "issuer": "Brasil", "about": "gravações, imagens e dados de alunos menores só com autorização dos responsáveis" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "repertório", "meaning": "conjunto de obras que o músico domina e apresenta" },
+      { "term": "partitura e grade", "meaning": "notação da música; a grade reúne todas as partes de um conjunto" },
+      { "term": "cifra", "meaning": "notação de acordes por letras e símbolos usada na música popular" },
+      { "term": "arranjo", "meaning": "adaptação de uma composição para uma formação, com instrumentação, harmonia e forma definidas" },
+      { "term": "orquestração", "meaning": "distribuição das ideias musicais entre os instrumentos de uma orquestra ou grupo" },
+      { "term": "harmonia, contraponto e forma", "meaning": "disciplinas que estudam acordes, condução de vozes e estrutura de uma obra" },
+      { "term": "percepção musical", "meaning": "capacidade de reconhecer e transcrever alturas, ritmos e acordes de ouvido" },
+      { "term": "naipe", "meaning": "grupo de instrumentos da mesma família em um conjunto (cordas, madeiras, metais)" },
+      { "term": "rider técnico", "meaning": "documento com equipamentos, microfonação, retornos e necessidades de palco de um show" },
+      { "term": "mapa de palco (stage plot)", "meaning": "desenho da posição dos músicos, instrumentos, monitores e pontos de energia no palco" },
+      { "term": "press kit / release", "meaning": "material de divulgação com bio, fotos, links e ficha técnica do artista ou projeto" },
+      { "term": "DAW", "meaning": "estação de trabalho de áudio digital usada para gravar, editar e mixar" },
+      { "term": "mixagem e masterização", "meaning": "equilíbrio das faixas e acabamento final do áudio para distribuição" },
+      { "term": "fonograma", "meaning": "fixação de sons de uma interpretação; gera direitos conexos para intérpretes e produtor" },
+      { "term": "ISRC", "meaning": "código internacional que identifica cada fonograma para arrecadação e distribuição" },
+      { "term": "ECAD", "meaning": "escritório central que arrecada e distribui direitos de execução pública musical no Brasil" },
+      { "term": "edição musical", "meaning": "administração dos direitos de uma composição por uma editora, por contrato" },
+      { "term": "sync (sincronização)", "meaning": "licença para usar música em filme, série, publicidade ou jogo" },
+      { "term": "musicalização", "meaning": "ensino de música centrado na vivência sonora, sobretudo com crianças" },
+      { "term": "recital", "meaning": "apresentação de repertório solo ou de câmara, comum em avaliações e carreiras de concerto" }
+    ],
+    "tools": ["instrumento principal", "MuseScore / Sibelius / Finale / Dorico", "Reaper / Pro Tools / Logic / Ableton Live", "interface de áudio e microfones", "metrônomo e afinador", "ECAD / associações (UBC, Abramus) — portal do titular", "distribuidoras digitais", "Mapa da Cultura (editais)", "Letters (bio, projeto, plano de aula, memorial)", "Drawings (mapa de palco, prancha, infográfico)"],
+    "deliverables": ["gravação ou vídeo de performance", "partitura ou arranjo editado", "composição registrada com ficha técnica", "repertório comentado", "press kit e release", "rider técnico e mapa de palco", "projeto para edital ou lei de incentivo", "plano de aula de música alinhado à BNCC", "programa de concerto com notas de programa", "memorial de produção de um disco ou espetáculo", "relatório de projeto de formação musical"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Performance instrumental ou vocal", "esco": null, "kind": "nucleo" },
+      { "label": "Leitura e escrita musical (partitura e cifra)", "esco": null, "kind": "nucleo" },
+      { "label": "Percepção musical e transcrição", "esco": null, "kind": "nucleo" },
+      { "label": "Harmonia, arranjo e orquestração", "esco": null, "kind": "nucleo" },
+      { "label": "Composição", "esco": null, "kind": "nucleo" },
+      { "label": "Prática de conjunto e regência", "esco": null, "kind": "nucleo" },
+      { "label": "Planejamento de aulas de música e musicalização (BNCC)", "esco": null, "kind": "nucleo" },
+      { "label": "Gravação, edição e produção musical em DAW", "esco": null, "kind": "apoio" },
+      { "label": "História da música e repertório brasileiro", "esco": null, "kind": "nucleo" },
+      { "label": "Direitos autorais e conexos, ECAD e registro de obra", "esco": null, "kind": "apoio" },
+      { "label": "Elaboração de projetos culturais e prestação de contas", "esco": null, "kind": "apoio" },
+      { "label": "Produção de shows: rider, mapa de palco e logística", "esco": null, "kind": "apoio" },
+      { "label": "Saúde do músico: técnica, ergonomia e proteção auditiva", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["disciplina de estudo e prática", "trabalho em grupo e escuta", "comunicação com público e alunos", "organização de agenda e prazos de editais", "ética com obras de terceiros e alunos"],
+    "tracks": [
+      { "id": "apresentar-o-trabalho", "label": "Apresentar o trabalho", "steps": ["bio de até 600 caracteres com link de gravação (L6)", "prancha de press kit (D2)", "currículo artístico de uma página (L1)", "rider técnico e mapa de palco (X2)"] },
+      { "id": "projetos-e-editais", "label": "Projetos e editais", "steps": ["resposta a edital de gravação ou circulação (L8)", "cronograma de etapas sem valores (L9)", "memorial de produção de um projeto (L4)"] },
+      { "id": "educacao-musical", "label": "Educação musical", "steps": ["plano de aula de música com BNCC (X1)", "relato de uma aula aplicada sem dados de alunos (L3)", "infográfico com resultados de um projeto de formação (D7)"] },
+      { "id": "criacao-e-direitos", "label": "Criação e direitos", "steps": ["notas de programa ou repertório comentado (L5)", "arranjo com crédito de obra em domínio público (D10)", "revisão crítica de uma peça de colega (L10)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"músico instrumentista\", \"cantor\", \"professor de música\", \"produtor musical\", \"regente\", \"arranjador\"",
+      "cboFamilies": ["2626", "2627", "2321", "2313"],
+      "why": "Pergunto seu último trabalho ou atuação para começar pelo que você já faz (palco, sala de aula, estúdio, criação). Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "primeiros trabalhos, recitais de curso ou monitoria",
+        "junior": "toca, canta ou ensina com repertório em formação e orientação",
+        "pleno": "atua com autonomia em grupos, turmas ou produções",
+        "senior": "solista, chefe de naipe, regente ou referência para colegas",
+        "gestao": "dirige corpo estável, escola, programa ou produtora"
+      },
+      "why": "Pergunto o nível para ajustar o tamanho das tarefas (uma faixa, um repertório, um projeto) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na música",
+      "options": ["tocar ou cantar com técnica", "ler partitura", "tirar música de ouvido", "fazer arranjos", "compor", "reger ou ensaiar grupos", "dar aulas de instrumento ou canto", "musicalizar crianças", "gravar e mixar", "produzir shows", "escrever projetos para editais", "pesquisar história da música"],
+      "why": "Suas competências declaradas viram o ponto de partida; a prova vem com gravações, arranjos, projetos e planos de aula."
+    },
+    "c4": {
+      "certifications": ["licenciatura em Música (docência na educação básica)", "bacharelado em Música (instrumento, canto, composição, regência)", "curso técnico em instrumento musical", "conservatório ou escola livre com certificado", "curso de produção musical ou áudio", "pós-graduação em música ou educação musical"],
+      "languages": ["inglês", "italiano (repertório vocal)", "alemão", "espanhol", "Libras"],
+      "why": "Formação e idiomas ajudam a ver lacunas para docência, concursos de orquestra e editais; a inscrição na OMB não é exigível."
+    },
+    "c5": {
+      "prompt": "Que competência musical quer desenvolver primeiro?",
+      "options": ["leitura e escrita musical", "arranjo e orquestração", "composição", "regência", "produção musical em DAW", "planejamento de aulas de música", "escrita de projetos para editais", "direitos autorais e ECAD", "produção de shows e rider técnico"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Onde você quer atuar primeiro?",
+        "type": "escolha",
+        "options": ["palco e performance", "docência na educação básica", "escolas livres e aulas particulares", "criação e arranjo", "estúdio e produção musical", "projetos sociais e editais"],
+        "why": "Escolho se a primeira tarefa é o press kit, o plano de aula, o arranjo, o memorial de produção ou o projeto para edital.",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L6", "L8", "D2", "L4", "L1", "L3", "D10", "L5", "D7", "L10", "L9"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica de ambiente não é entrega da música; o mapa de palco entra como tarefa personalizada (X2)" },
+      { "code": "D3", "reason": "modelagem 3D de produto não pertence à área" },
+      { "code": "D6", "reason": "detalhe construtivo não pertence à área" },
+      { "code": "D8", "reason": "vista explodida de conjunto mecânico não pertence à área" },
+      { "code": "D9", "reason": "wireframe de tela não pertence à área" }
+    ],
+    "parameters": {
+      "L6": {
+        "title": "Bio de músico com link de gravação",
+        "brief": "Escreva uma bio de até 600 caracteres: instrumento ou função, formação ou trajetória, três competências e um link para gravação, partitura ou vídeo seu. Sem dados pessoais além do nome artístico.",
+        "parameters": { "maxChars": 600, "requiredParts": ["instrumento ou função", "trajetória", "três competências", "link para gravação ou partitura"] },
+        "criteria": ["até 600 caracteres", "instrumento ou função nomeados", "três competências citadas", "link para evidência própria"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L8": {
+        "title": "Projeto para edital de música",
+        "brief": "A partir de um edital simulado (gravação de EP, circulação, formação ou Política Nacional Aldir Blanc), escreva o projeto: apresentação, justificativa, objetivos, repertório ou conteúdo, etapas e cronograma, contrapartida, acessibilidade, ficha técnica da equipe e o que fica fora. Sem valores em dinheiro.",
+        "parameters": { "template": "proposta", "sections": ["apresentação", "justificativa", "objetivos", "repertório ou conteúdo", "etapas e cronograma", "contrapartida", "acessibilidade", "ficha técnica"], "maxPages": 3, "noPricing": true },
+        "criteria": ["oito seções presentes", "repertório com autoria de cada obra", "cronograma por etapa", "contrapartida e acessibilidade descritas", "até três páginas"],
+        "evidence": "projeto (documento)",
+        "time": "60 min",
+        "level": 2
+      },
+      "D2": {
+        "title": "Prancha de press kit",
+        "brief": "Monte uma prancha A3 (modo prancha) com nome artístico, foto com crédito, bio curta, três trabalhos (faixas, vídeos ou concertos com link ou QR), formação e contato profissional. Fotos de outras pessoas só com autorização.",
+        "parameters": { "format": "A3", "works": 3, "photoCredit": true, "linksOrQr": true, "imageRightsDeclared": true },
+        "criteria": ["três trabalhos com link ou QR", "foto com crédito", "bio curta presente", "grid consistente", "declaração de autorização de imagem"],
+        "evidence": "prancha publicada (PDF ou PNG)",
+        "time": "60 min",
+        "level": 1
+      },
+      "L4": {
+        "title": "Memorial de produção ou relatório de projeto musical",
+        "brief": "Documente uma produção (gravação, espetáculo, projeto de formação) em até quatro páginas: objetivo, repertório com autores, equipe e funções, processo (ensaios, gravação, mixagem), resultados, limitações e créditos.",
+        "parameters": { "template": "memorial", "sections": ["objetivo", "repertório e autoria", "equipe", "processo", "resultados", "limitações"], "maxPages": 4 },
+        "criteria": ["seis seções nomeadas", "autoria de cada obra informada", "resultados com número ou comparação", "até quatro páginas"],
+        "evidence": "memorial (documento)",
+        "time": "2 h",
+        "level": 3
+      },
+      "D10": {
+        "title": "Arranjo ou releitura com crédito de obra em domínio público",
+        "brief": "Escolha uma obra em domínio público (autor falecido há mais de 70 anos, Lei 9.610/1998 art. 41) ou com licença que permita derivação e faça um arranjo ou releitura. Credite compositor, fonte da partitura e licença; declare duas transformações.",
+        "parameters": { "licenseAllowed": ["domínio público", "CC BY", "CC BY-SA"], "declaredChanges": 2, "creditFields": ["compositor", "título", "fonte", "licença"] },
+        "criteria": ["compositor, fonte e licença creditados", "obra em domínio público ou licença que permite derivação", "duas transformações declaradas"],
+        "evidence": "remix vinculado (partitura ou áudio)",
+        "time": "90 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Plano de aula de música alinhado à BNCC",
+        "competency": "Planejamento em educação musical",
+        "criteria": ["ano ou etapa e duração definidos", "ao menos uma habilidade da BNCC com código", "atividades de escuta, criação e execução", "materiais e instrumentos acessíveis listados", "avaliação descrita", "nenhum dado de aluno"],
+        "evidence": "plano de aula (documento)",
+        "time": "45 min",
+        "trigger": "Você dá ou quer dar aulas de música? Quer planejar uma aula com a BNCC?",
+        "level": 1
+      },
+      {
+        "id": "X2",
+        "editor": "drawings",
+        "title": "Rider técnico e mapa de palco",
+        "competency": "Produção de shows e comunicação com a técnica",
+        "criteria": ["posição de cada músico e instrumento no palco", "lista de canais (input list) numerada", "monitores e pontos de energia indicados", "frente do palco e público marcados", "contato técnico (sem telefone pessoal público)"],
+        "evidence": "prancha (PDF ou PNG)",
+        "time": "60 min",
+        "trigger": "Você toca em shows? Quer montar o rider e o mapa de palco do seu grupo?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas ou caracteres", "appliesTo": ["L1", "L4", "L5", "L6", "L8"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L8", "L4", "L3", "X1"], "auto": true },
+      { "id": "autoria-das-obras", "check": "cada obra de repertório ou arranjo informa compositor e, quando houver, arranjador e letrista", "appliesTo": ["L8", "L4", "D10", "L5"], "auto": true },
+      { "id": "licenca-de-derivacao", "check": "a obra arranjada está em domínio público ou sob licença que permite derivação, com fonte citada", "appliesTo": ["D10"], "auto": true },
+      { "id": "link-de-evidencia", "check": "há link ou QR para gravação, vídeo ou partitura da própria pessoa", "appliesTo": ["L6", "D2", "L1"], "auto": true },
+      { "id": "habilidade-bncc", "check": "o plano cita ao menos uma habilidade da BNCC com código", "appliesTo": ["X1"], "auto": true },
+      { "id": "mapa-de-palco-completo", "check": "o mapa traz posições, lista de canais numerada, monitores e energia", "appliesTo": ["X2"], "auto": true },
+      { "id": "autorizacao-de-imagem", "check": "a pessoa declarou autorização de imagem de terceiros e de responsáveis para alunos menores", "appliesTo": ["D2", "L3", "X1", "D7"], "auto": true },
+      { "id": "autoria-declarada", "check": "a pessoa declarou autoria e ausência de dados confidenciais", "appliesTo": ["L1", "L3", "L4", "L5", "L6", "L8", "L9", "L10", "D2", "D7", "D10", "X1", "X2"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "coerencia-artistica", "label": "Coerência artística do projeto", "levels": { "aproxima": "repertório e objetivos sem relação clara", "atende": "repertório, formação e objetivos formam um projeto reconhecível", "supera": "o projeto tem identidade própria e dialoga com território e público" } },
+      { "id": "viabilidade", "label": "Viabilidade de execução", "levels": { "aproxima": "etapas vagas, sem prazo nem equipe", "atende": "etapas, prazos, equipe e contrapartida executáveis", "supera": "antecipa riscos (direitos, técnica, logística) e alternativas" } },
+      { "id": "proposta-pedagogica", "label": "Proposta pedagógica", "levels": { "aproxima": "atividade sem objetivo de aprendizagem", "atende": "escuta, criação e execução ligadas à habilidade da BNCC", "supera": "inclui repertório diverso, adaptação para diferentes alunos e avaliação formativa" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Música (instrumentista, cantor, compositor, arranjador, regente, produtor musical, professor de música). Use o vocabulário da área: repertório, partitura, grade, cifra, arranjo, orquestração, naipe, percepção, rider técnico, mapa de palco, press kit, DAW, mixagem, fonograma, ISRC, ECAD, edição musical, sync, musicalização. Referências a citar quando couber: Lei 9.610/1998 (direitos de autor e conexos; domínio público após 70 anos da morte do autor), Lei 12.853/2013 (gestão coletiva), Lei 3.857/1960 e STF Tema 738 (inscrição na OMB não é exigível), LDB e Lei 13.278/2016, BNCC-Arte (Música), Lei Rouanet, Política Nacional Aldir Blanc e Lei Paulo Gustavo, NR-15 (ruído). Priorize o Letters: bio com link de gravação (L6), projeto para edital (L8), memorial de produção (L4), plano de aula (X1); no Drawings, press kit (D2), mapa de palco (X2), arranjo com crédito (D10). Nunca: gerar música, letra ou voz que imite artista identificável; produzir composição para a pessoa apresentar como sua; orientar uso de gravação, sample ou partitura de terceiros sem licença; publicar gravações ou dados de alunos menores; dar orientação clínica sobre voz ou audição (indicar fonoaudiólogo ou médico). Crédito de compositor, letrista e arranjador é obrigatório. Pergunte onde a pessoa quer atuar antes de sugerir; não deduza pelo que ela publica. Pré-cheque só critérios objetivos; a avaliação musical é humana. Editais e mercado com fonte, data e região ou \"estimativa\"; nunca fale de cachê ou salário. Progresso por critérios atendidos, sem score.",
+    "citeSources": [
+      { "title": "Lei 9.610/1998 — direitos autorais e conexos (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9610.htm", "kind": "norma" },
+      { "title": "Lei 12.853/2013 — gestão coletiva de direitos autorais (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2013/lei/l12853.htm", "kind": "norma" },
+      { "title": "ECAD — Escritório Central de Arrecadação e Distribuição", "url": "https://www4.ecad.org.br/", "kind": "referencia" },
+      { "title": "STF — Tema 738 (RE 795.467): inscrição na OMB", "url": "https://portal.stf.jus.br/jurisprudenciaRepercussao/tema.asp?num=738", "kind": "orgao-publico" },
+      { "title": "BNCC — Base Nacional Comum Curricular (MEC)", "url": "https://basenacionalcomum.mec.gov.br/", "kind": "orgao-publico" },
+      { "title": "Ministério da Cultura — Lei Rouanet, Política Nacional Aldir Blanc e editais", "url": "https://www.gov.br/cultura/pt-br", "kind": "orgao-publico" },
+      { "title": "Funarte — Fundação Nacional de Artes (música)", "url": "https://www.gov.br/funarte/pt-br", "kind": "orgao-publico" },
+      { "title": "ABEM — Associação Brasileira de Educação Musical", "url": "https://abemeducacaomusical.com.br/", "kind": "comunidade" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências musicais; x1 escolhe palco, docência, criação, estúdio ou projetos." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "L6, L8, D2 e L4 entram primeiro; X1 para quem ensina e X2 para quem faz shows; cada card lembra a autoria das obras." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano por horas (d1) respeitando a rotina de estudo e ensaios declarada; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa tamanho, seções, autoria das obras, licença de derivação, link de evidência, código BNCC e completude do mapa de palco; a avaliação musical é humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de bio, projeto, memorial, release e plano de aula com prévia; não escreve letras nem inventa trajetória." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Grid e créditos do press kit; numeração da lista de canais e legenda do mapa de palco." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese por frente (performance, ensino, criação, produção), lacunas e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: pedagogia, cinema e audiovisual (trilha e som), artes visuais, eventos; com lacunas e passos, sem previsão." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por CBO, instrumento ou função e setor; só pessoas com opt-in." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil; só com consentimento específico." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings", "links de gravações públicas"],
+      "never": ["mensagens", "itens SIGILOSO", "dados, gravações e fotos de alunos menores", "gravações, partituras e arranjos de terceiros sem licença", "gravações inéditas de contratantes sob sigilo", "contratos de edição e de cachê", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "não gerar música, letra ou voz que imite artista identificável",
+      "não compor para a pessoa apresentar como sua; a IA estrutura textos, projetos e checagens",
+      "crédito de compositor, letrista e arranjador obrigatório; samples, gravações e partituras de terceiros só com licença",
+      "gravações, imagens e dados de alunos menores nunca entram sem autorização dos responsáveis",
+      "não dar orientação clínica sobre voz, audição ou lesões; indicar profissional de saúde",
+      "perguntar a frente de atuação e o nível em vez de inferir",
+      "nunca prometer aprovação em edital, contrato ou cachê; mercado com fonte, data e região ou \"estimativa\"",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se inscrever sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "media", "drawings": "baixa" },
+    "drawingsModes": ["prancha", "diagrama", "infografico"],
+    "lettersTemplates": ["bio", "proposta", "memorial", "plano-de-aula", "curriculo", "post", "carta", "estudo-de-caso", "revisao", "projeto-de-pesquisa", "artigo"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "Quase todas as tarefas funcionam no celular (L6, L8, L5, X1); D2, D10 e X2 ficam melhores no computador ou tablet.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: bio de músico com link para uma gravação sua (15 min). É o primeiro item que contratantes e editais pedem.",
+        "Falta informar o compositor de uma obra do repertório para fechar os critérios do projeto. Quando quiser.",
+        "Sem pressão. Quando quiser retomar, o projeto para edital (60 min) está aqui.",
+        "Toca em shows? O mapa de palco do seu grupo leva cerca de 1 h e facilita a vida da técnica."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["dados de alunos menores de idade: nomes, notas, laudos e fotos (ECA; LGPD art. 14)", "gravações, partituras e arranjos de terceiros sem licença (Lei 9.610/1998)", "gravações inéditas de contratantes sob sigilo", "contratos de edição, cachês e repasses de direitos"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2626, 2627 e professores", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "SIIC — Sistema de Informações e Indicadores Culturais (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/multidominio/cultura-recreacao-e-esporte/9388-indicadores-culturais.html", "geography": "Brasil e grandes regiões", "cadence": "eventual", "kind": "estatistica-oficial" },
+      { "title": "ECAD — relatórios de arrecadação e distribuição", "url": "https://www4.ecad.org.br/", "geography": "Brasil", "cadence": "anual", "kind": "associacao" },
+      { "title": "Pró-Música Brasil — mercado fonográfico", "url": "https://pro-musicabr.org.br/", "geography": "Brasil", "cadence": "anual", "kind": "associacao" },
+      { "title": "Editais do Ministério da Cultura, Funarte, PNAB e Lei Rouanet (Salic); concursos de orquestras e de professores", "url": "https://www.gov.br/cultura/pt-br", "geography": "Brasil, UF e município", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre editais, vagas ou demanda cita fonte, data e abrangência verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). A maior parte do trabalho musical é autônoma ou por cachê e não aparece no CAGED/RAIS: dizer isso ao citar vínculos formais. Cachê e remuneração nunca entram como promessa nem filtro (D-147)."
+  },
+  "paths": [
+    { "to": "pedagogia", "why": "Educadores musicais já planejam aulas e trabalham com crianças; a pedagogia amplia para os anos iniciais e a gestão escolar.", "gaps": ["didática geral e alfabetização", "gestão escolar e currículo", "educação inclusiva"], "steps": ["plano de aula interdisciplinar com BNCC (X1)", "relato de prática sem dados de alunos (L3)", "plano 30-60-90 para coordenação (L9)"] },
+    { "to": "cinema-e-audiovisual", "why": "Trilha sonora, desenho de som e mixagem para vídeo aproveitam composição e produção em DAW.", "gaps": ["linguagem audiovisual e sincronização com imagem", "captação de som direto e pós-produção de áudio", "licenciamento de sync"], "steps": ["memorial de uma trilha para curta (L4)", "remix com crédito de material em domínio público (D10)", "resposta a briefing de trilha (L8)"] },
+    { "to": "artes-visuais", "why": "Arte-educação, editais e projetos interdisciplinares são comuns às duas áreas.", "gaps": ["linguagens visuais e história da arte", "portfólio visual e expografia"], "steps": ["projeto interdisciplinar para edital (L8)", "prancha de um projeto multimídia (D2)"] },
+    { "to": "eventos", "why": "Músicos que produzem shows dominam rider, logística e equipe; a produção de eventos amplia para outros formatos.", "gaps": ["planejamento e orçamento de eventos", "normas de segurança de público", "contratação de fornecedores"], "steps": ["rider técnico e mapa de palco (X2)", "diagrama do fluxo de montagem de um show (D4)", "estudo de caso de um evento produzido (L3)"] }
+  ],
+  "learning": [
+    { "title": "BNCC — componente Arte (Música)", "provider": "MEC", "url": "https://basenacionalcomum.mec.gov.br/", "free": true, "kind": "portal" },
+    { "title": "ECAD — guia do titular e cadastro de obras e fonogramas", "provider": "ECAD", "url": "https://www4.ecad.org.br/", "free": true, "kind": "portal" },
+    { "title": "Mapa da Cultura — editais e cadastro de agentes culturais", "provider": "Ministério da Cultura", "url": "https://mapa.cultura.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — elaboração de projetos culturais", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "MuseScore — editor de partituras gratuito e manual", "provider": "MuseScore", "url": "https://musescore.org/pt-br", "free": true, "kind": "portal" },
+    { "title": "IMSLP — biblioteca de partituras em domínio público", "provider": "IMSLP", "url": "https://imslp.org/", "free": true, "kind": "portal" },
+    { "title": "ABEM — revista e encontros de educação musical", "provider": "ABEM", "url": "https://abemeducacaomusical.com.br/", "free": true, "kind": "comunidade" },
+    { "title": "Cursos on-line do Sebrae — economia criativa e carreira artística", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Catálogo de ramos acadêmicos — ramo musica (CBO, ISCO, ESCO, conselho OMB, vizinhos, sensitiveData)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Tema 738 STF — inscrição na OMB (resumo Trilhante)", "url": "https://informativos.trilhante.com.br/temas-stf/tema-738-stf", "accessedAt": "2026-11-02" },
+    { "title": "Lei 9.610/1998 — direitos autorais (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9610.htm", "accessedAt": "2026-11-02" },
+    { "title": "BNCC (MEC)", "url": "https://basenacionalcomum.mec.gov.br/", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Tema 738 (RE 795.467, 2014) confirmado só por agregadores; acórdão e página do STF não abertos",
+    "Leis 12.853/2013, 13.278/2016, 8.313/1991, 14.399/2022 e LC 195/2022 citadas de memória; artigos 89–100 e 41 da Lei 9.610 de memória",
+    "Família CBO 2313 em questions.a4 (professor de Arte no fundamental) não conferida para música no portal da CBO",
+    "URLs de ECAD, Pró-Música Brasil, ABEM, IMSLP, MuseScore, Mapa da Cultura e STF não abertas nesta sessão",
+    "Nenhuma URI ESCO de competência (skill) confirmada; todas as competências com esco: null; URIs de ocupação vêm do catálogo"
+  ]
+}

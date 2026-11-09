@@ -1,0 +1,321 @@
+{
+  "schemaVersion": 1,
+  "code": "servico-social",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Serviço Social", "en": "Social Work", "es": "Trabajo Social" },
+  "fields": ["servico-social"],
+  "family": {
+    "cbo": [{ "code": "2516", "title": "Assistentes sociais e economistas domésticos" }],
+    "isco08": [{ "code": "2635", "title": "Social work and counselling professionals" }],
+    "esco": [{ "uri": "http://data.europa.eu/esco/occupation/4b05bef2-ded4-4b09-ab94-f4c6a555a775", "label": "social worker" }]
+  },
+  "scope": {
+    "summary": "Assistentes sociais (bacharelado, registro no CRESS, Lei 8.662/1993) atuam na assistência social (SUAS), saúde, previdência, educação, sociojurídico, habitação, empresas e movimentos sociais, com estudo social, parecer, visita domiciliar, articulação de rede e gestão de políticas. O guia trabalha evidências sem quebra de sigilo: estruturas de parecer com caso fictício, POPs de acolhida, fluxos de rede, diagnósticos socioterritoriais e relatórios de projeto.",
+    "entryRoles": ["Estagiário de Serviço Social", "Assistente social júnior", "Técnico de referência do CRAS ou CREAS", "Assistente social de hospital ou UBS em início de carreira", "Residente multiprofissional"],
+    "midRoles": ["Assistente social do SUAS (PAIF, PAEFI, acolhimento)", "Assistente social da saúde", "Assistente social do INSS ou da previdência", "Assistente social escolar (Lei 13.935/2019)", "Assistente social do sociojurídico (TJ, MP, sistema prisional)", "Assistente social de empresa ou RH"],
+    "seniorRoles": ["Coordenador de CRAS, CREAS ou serviço de acolhimento", "Gestor de política social (secretaria municipal ou estadual)", "Perito social", "Assessor técnico de conselhos e movimentos", "Supervisor de estágio e docente", "Pesquisador"],
+    "sectors": ["assistência social (SUAS)", "saúde (SUS e hospitais)", "previdência social", "educação", "sistema de justiça e segurança", "habitação e políticas urbanas", "empresas e terceiro setor", "ensino e pesquisa"],
+    "regulation": [
+      { "name": "Lei 8.662/1993", "issuer": "Brasil", "about": "regulamenta a profissão; competências (art. 4) e atribuições privativas (art. 5), entre elas o parecer e a perícia social" },
+      { "name": "Resolução CFESS 273/1993 — Código de Ética do Assistente Social", "issuer": "CFESS", "about": "princípios, direitos e deveres, sigilo profissional (arts. 15 a 18) e relações com usuários e instituições" },
+      { "name": "Resolução CFESS 1.114/2025", "issuer": "CFESS", "about": "condições éticas e técnicas do exercício profissional; revogou a Res. 493/2006" },
+      { "name": "Resolução CFESS 556/2009", "issuer": "CFESS", "about": "lacração de material técnico e técnico-sigiloso do assistente social" },
+      { "name": "Resolução CFESS 557/2009", "issuer": "CFESS", "about": "emissão de pareceres, laudos e opiniões técnicas conjuntas com outros profissionais" },
+      { "name": "LOAS — Lei 8.742/1993 e NOB-SUAS 2012", "issuer": "Brasil / CNAS", "about": "organização da assistência social, níveis de proteção, serviços e benefícios (BPC)" },
+      { "name": "NOB-RH/SUAS 2006", "issuer": "CNAS", "about": "equipes de referência e perfil dos trabalhadores do SUAS" },
+      { "name": "Lei 13.935/2019", "issuer": "Brasil", "about": "serviços de psicologia e serviço social nas redes públicas de educação básica" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "estudo social", "meaning": "análise técnica de uma situação social que fundamenta parecer ou encaminhamento" },
+      { "term": "parecer social", "meaning": "opinião técnica fundamentada, atribuição privativa do assistente social (Lei 8.662, art. 5)" },
+      { "term": "laudo social", "meaning": "documento conclusivo de perícia social, geralmente no sociojurídico ou na previdência" },
+      { "term": "relatório social", "meaning": "registra procedimentos, análise e encaminhamentos de um acompanhamento" },
+      { "term": "visita domiciliar", "meaning": "instrumento técnico para conhecer o contexto da família, com consentimento e sigilo" },
+      { "term": "acolhida", "meaning": "primeiro atendimento que escuta a demanda e orienta sobre direitos e serviços" },
+      { "term": "SUAS", "meaning": "Sistema Único de Assistência Social: proteção básica (CRAS) e especial (CREAS, acolhimento)" },
+      { "term": "PAIF / PAEFI", "meaning": "serviços de proteção e atendimento integral à família (CRAS) e especializado (CREAS)" },
+      { "term": "SCFV", "meaning": "serviço de convivência e fortalecimento de vínculos" },
+      { "term": "BPC", "meaning": "benefício de prestação continuada da LOAS" },
+      { "term": "Cadastro Único", "meaning": "base de famílias de baixa renda usada para programas sociais" },
+      { "term": "PIA", "meaning": "plano individual de atendimento, em acolhimento e medidas socioeducativas" },
+      { "term": "referência e contrarreferência", "meaning": "encaminhar a outro serviço e receber o retorno, com registro" },
+      { "term": "rede socioassistencial", "meaning": "conjunto de serviços públicos e entidades que atendem o território" },
+      { "term": "território", "meaning": "espaço de vida das famílias; base do diagnóstico e do planejamento" },
+      { "term": "vigilância socioassistencial", "meaning": "produção e análise de dados sobre vulnerabilidades e oferta de serviços" },
+      { "term": "Prontuário SUAS", "meaning": "instrumento de registro dos atendimentos às famílias" },
+      { "term": "RMA", "meaning": "Registro Mensal de Atendimentos dos CRAS e CREAS" },
+      { "term": "projeto ético-político", "meaning": "direção social da profissão: defesa de direitos, democracia e justiça social" },
+      { "term": "questão social", "meaning": "objeto de trabalho do Serviço Social: desigualdades e suas expressões" },
+      { "term": "instrumentalidade", "meaning": "capacidade de articular instrumentos e técnicas com fins e teoria" },
+      { "term": "dimensões da competência", "meaning": "teórico-metodológica, ético-política e técnico-operativa" },
+      { "term": "controle social", "meaning": "participação da sociedade nos conselhos de políticas e de direitos" },
+      { "term": "material técnico-sigiloso", "meaning": "documentos do atendimento guardados e lacrados conforme Res. CFESS 556/2009" },
+      { "term": "caso fictício", "meaning": "situação construída para fins didáticos, sem base em usuário real; única forma aceitável em portfólio" }
+    ],
+    "tools": ["Prontuário SUAS eletrônico", "Cadastro Único / CECAD", "RMA e Censo SUAS", "planilhas e formulários", "mapas do território (QGIS, Google My Maps)", "sistemas institucionais (PJe, SEI, prontuário hospitalar)", "Zotero ou Mendeley", "editor de textos (Letters)", "editor de desenho (Drawings) para fluxos e mapas de rede"],
+    "deliverables": ["estudo social e parecer social", "relatório social e informativo", "laudo de perícia social", "plano individual de atendimento (PIA)", "plano de trabalho ou projeto de intervenção", "diagnóstico socioterritorial", "mapa da rede socioassistencial", "fluxo de acolhida e encaminhamento", "POP de acolhida", "relatório de gestão ou de serviço", "parecer técnico sobre política pública", "roteiro de oficina socioeducativa", "ata e relatório de conselho", "artigo ou relato de experiência"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Estudo social e parecer social", "esco": null, "kind": "nucleo" },
+      { "label": "Entrevista social e acolhida", "esco": null, "kind": "nucleo" },
+      { "label": "Visita domiciliar com ética e consentimento", "esco": null, "kind": "nucleo" },
+      { "label": "Orientação sobre direitos, benefícios e serviços", "esco": null, "kind": "nucleo" },
+      { "label": "Articulação de rede intersetorial", "esco": null, "kind": "nucleo" },
+      { "label": "Trabalho com famílias e grupos (PAIF, PAEFI)", "esco": null, "kind": "nucleo" },
+      { "label": "Registro técnico e sistemas (Prontuário SUAS, CadÚnico)", "esco": null, "kind": "nucleo" },
+      { "label": "Ética profissional e sigilo", "esco": null, "kind": "nucleo" },
+      { "label": "Diagnóstico socioterritorial", "esco": null, "kind": "apoio" },
+      { "label": "Planejamento, gestão e avaliação de políticas sociais", "esco": null, "kind": "apoio" },
+      { "label": "Elaboração de projetos e captação de recursos", "esco": null, "kind": "apoio" },
+      { "label": "Assessoria a conselhos e movimentos sociais", "esco": null, "kind": "apoio" },
+      { "label": "Perícia social", "esco": null, "kind": "apoio" },
+      { "label": "Pesquisa social e análise de dados", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação escrita clara para usuários e gestores", "trabalho em equipe multiprofissional", "mediação de conflitos", "gestão do tempo em alta demanda", "uso de ferramentas digitais"],
+    "tracks": [
+      { "id": "suas", "label": "Assistência social (SUAS)", "steps": ["POP de acolhida e encaminhamento (L7)", "fluxo de atendimento do CRAS ou CREAS com raias (D4)", "mapa da rede socioassistencial do território (X2)", "estrutura de parecer social com caso fictício (X1)"] },
+      { "id": "saude", "label": "Saúde", "steps": ["fluxo de alta responsável e articulação com a rede (D4)", "relatório de projeto ou grupo (L4)", "estudo de caso fictício em formato STAR (L3)"] },
+      { "id": "sociojuridico", "label": "Sociojurídico e perícia", "steps": ["estrutura de parecer social com caso fictício (X1)", "POP de estudo social para determinação judicial (L7)", "revisão de documento de colega pela rubrica (L10)"] },
+      { "id": "gestao", "label": "Gestão de políticas sociais", "steps": ["diagnóstico socioterritorial com fontes (L4)", "infográfico de indicadores do serviço (D7)", "plano 30-60-90 para coordenação (L9)", "projeto de intervenção (L8)"] },
+      { "id": "educacao", "label": "Educação (Lei 13.935/2019)", "steps": ["fluxo escola–rede de proteção (D4)", "roteiro de oficina socioeducativa (L8)", "relatório de projeto com a comunidade escolar (L4)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"assistente social do CRAS\", \"técnica de referência\", \"assistente social hospitalar\", \"estagiária de Serviço Social\"",
+      "cboFamilies": ["2516", "4110"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez; se for o primeiro emprego ou estágio, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, residência ou primeiro cargo após o registro no CRESS",
+        "junior": "até dois anos de atuação, com supervisão frequente",
+        "pleno": "atende, documenta e articula a rede com autonomia",
+        "senior": "referência técnica; supervisiona estágio ou equipe, pós-graduação",
+        "gestao": "coordena unidade, serviço ou política"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem no Serviço Social",
+      "options": ["acolhida e entrevista social", "estudo social e parecer", "visita domiciliar", "orientar sobre direitos e benefícios", "articular a rede intersetorial", "trabalho com famílias e grupos", "registro em Prontuário SUAS e CadÚnico", "diagnóstico socioterritorial", "planejamento e gestão de serviços", "elaborar projetos", "assessorar conselhos e movimentos", "perícia social", "pesquisa e análise de dados", "formação e supervisão de estágio"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com tarefas que não expõem usuários."
+    },
+    "c4": {
+      "certifications": ["registro ativo no CRESS", "pós-graduação (gestão de políticas sociais, saúde, sociojurídico, família)", "residência multiprofissional", "cursos do SUAS (CapacitaSUAS, Escola Virtual.Gov)", "curso de Cadastro Único ou Prontuário SUAS", "mestrado ou doutorado", "formação em mediação ou justiça restaurativa"],
+      "languages": ["espanhol", "inglês", "Libras"],
+      "why": "Formação e cursos mostram lacunas em relação ao cargo ou edital que você quer; nada aqui é exigido para começar."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["estudo social e parecer", "diagnóstico socioterritorial com dados", "elaboração de projetos", "gestão de serviços e indicadores", "articulação de rede", "trabalho com grupos", "escrita de relatórios técnicos", "perícia social", "assessoria a conselhos", "pesquisa e análise de dados"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez do catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que política ou espaço você atua ou quer atuar?", "type": "escolha", "options": ["assistência social (SUAS)", "saúde", "previdência", "educação", "sociojurídico", "habitação e cidade", "empresa ou terceiro setor", "gestão de políticas", "ainda não sei"], "why": "Pergunto o espaço para escolher tarefas e vocabulário: um fluxo de CREAS e um parecer previdenciário são evidências diferentes.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L6", "L1", "L7", "D4", "L3", "L4", "L9", "L2", "L5", "L10", "D7"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica não é entrega da profissão" },
+      { "code": "D3", "reason": "modelagem 3D não é entrega da profissão" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da profissão" },
+      { "code": "D8", "reason": "vista explodida não é entrega da profissão" },
+      { "code": "D9", "reason": "wireframe de tela não é entrega da profissão" }
+    ],
+    "parameters": {
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva um resumo de até 600 caracteres com a política ou espaço em que quer atuar (SUAS, saúde, sociojurídico, gestão), três competências e uma prova com link. Sem menção a usuários ou famílias atendidas.",
+        "parameters": { "maxChars": 600, "requiredParts": ["política ou espaço de atuação", "três competências", "uma prova com link"], "forbidden": ["dado de usuário atendido"] },
+        "criteria": ["até 600 caracteres", "nomeia a política ou espaço de atuação", "cita três competências", "inclui uma prova com link", "nenhuma menção a usuário atendido"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para o cargo ou edital que quer mirar (ex.: técnico de referência do CRAS, assistente social hospitalar, analista de políticas sociais), com três resultados com número (famílias acompanhadas, oficinas, encaminhamentos efetivados, projetos aprovados) e as palavras-chave do edital.",
+        "parameters": { "maxPages": 1, "achievementsWithNumbers": 3, "keywordsFrom": "cargo-alvo ou edital", "sections": ["formação e CRESS", "experiência", "cursos", "política de atuação"] },
+        "criteria": ["uma página", "três conquistas com número", "palavras-chave do cargo-alvo presentes", "registro no CRESS indicado", "sem idade, estado civil ou foto obrigatória", "nenhum dado de usuário atendido"],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      },
+      "L7": {
+        "title": "POP de acolhida e encaminhamento",
+        "brief": "Descreva, em passos numerados, como você acolhe uma pessoa ou família no serviço em que atua ou quer atuar: escuta da demanda, orientação sobre direitos, registro (Prontuário SUAS ou equivalente), critérios de encaminhamento e retorno da rede, e critério de conclusão de cada passo. Sem caso real.",
+        "parameters": { "steps": "8 a 15", "requiredSteps": ["acolhida e escuta da demanda", "orientação sobre direitos e serviços", "registro técnico", "critérios de encaminhamento e contrarreferência"], "roles": true },
+        "criteria": ["passos numerados com responsável", "critério de conclusão em cada passo", "passo de registro técnico presente", "passo de orientação sobre direitos presente", "critérios de encaminhamento e contrarreferência", "declaração de ausência de caso real"],
+        "evidence": "modelo de POP",
+        "time": "60 min",
+        "level": 1
+      },
+      "D4": {
+        "title": "Fluxo de atendimento e rede",
+        "brief": "Desenhe o fluxo de uma família ou pessoa pelo serviço, com raias por responsável (recepção, assistente social, equipe, rede socioassistencial e intersetorial), do primeiro contato ao desligamento ou encaminhamento, incluindo o registro e a contrarreferência.",
+        "parameters": { "lanes": ["recepção", "assistente social", "equipe técnica", "rede socioassistencial e intersetorial"], "mustInclude": ["início", "fim", "decisão de encaminhamento", "registro técnico", "contrarreferência"] },
+        "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "ponto de decisão de encaminhamento", "ponto de registro técnico e de contrarreferência"],
+        "evidence": "diagrama vetorial",
+        "time": "45 min",
+        "level": 2
+      },
+      "L3": {
+        "title": "Estudo de caso fictício em formato STAR",
+        "brief": "Conte uma situação profissional que resolveu (um fluxo que reorganizou, uma articulação de rede que destravou, um projeto aprovado) em situação, tarefa, ação e resultado. Se envolver atendimento, construa um caso fictício e declare isso; nunca use usuário real, mesmo com nome trocado.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true, "fictionalCaseDeclaration": true },
+        "criteria": ["quatro seções explícitas", "resultado com número ou comparação", "declaração de caso fictício ou de ausência de dado de atendimento", "sem iniciais, datas exatas, endereço ou instituição identificável", "fundamento ético-político explicitado"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Diagnóstico socioterritorial ou relatório de projeto",
+        "brief": "Faça um diagnóstico de um território (fontes: Cadastro Único, Censo SUAS, IBGE, RMA) ou relate um projeto que conduziu: objetivo, método, resultados agregados, limitações e referências, em até 4 páginas. Dados só agregados; sem família identificável.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "método e fontes", "resultados", "limitações", "referências"], "aggregatedDataOnly": true },
+        "criteria": ["cinco seções nomeadas", "até 4 páginas", "fontes de dados citadas com data", "resultados agregados, sem família identificável", "limitações declaradas"],
+        "evidence": "relatório",
+        "time": "2 h",
+        "level": 3
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "letters", "title": "Estrutura de parecer social com caso fictício", "competency": "Estudo social e parecer social", "criteria": ["identificação do solicitante e objetivo do parecer", "metodologia e instrumentos usados (entrevista, visita, documentos)", "análise fundamentada em teoria e legislação", "parecer conclusivo com encaminhamentos", "caso declaradamente fictício, sem dado identificável", "linguagem sem juízo moral sobre a família"], "evidence": "modelo de parecer", "time": "90 min", "trigger": "Quer treinar a estrutura de um parecer social sem usar caso real?", "level": 2 },
+      { "id": "X2", "editor": "drawings", "title": "Mapa da rede socioassistencial do território", "competency": "Articulação de rede intersetorial", "criteria": ["ao menos oito serviços ou equipamentos públicos mapeados", "agrupados por política (assistência, saúde, educação, justiça, trabalho)", "legenda e fonte dos dados", "indicação dos fluxos de referência entre serviços", "sem endereço de pessoa ou família"], "evidence": "infográfico ou diagrama publicado", "time": "90 min", "trigger": "Que serviços do seu território você aciona com mais frequência?", "level": 2 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L9", "X1"], "auto": true },
+      { "id": "estrutura-do-parecer", "check": "identificação, metodologia, análise e parecer conclusivo presentes", "appliesTo": ["X1"], "auto": true },
+      { "id": "caso-ficticio-declarado", "check": "há declaração explícita de caso fictício ou de ausência de dado de atendimento", "appliesTo": ["L3", "L4", "L7", "X1"], "auto": true },
+      { "id": "sem-identificadores", "check": "ausência de nomes, iniciais, endereços, datas exatas e instituição identificável de usuários", "appliesTo": ["L3", "L4", "L7", "L10", "D4", "D7", "X1", "X2"], "auto": true },
+      { "id": "registro-e-contrarreferencia", "check": "o POP ou fluxo tem passo de registro técnico e de contrarreferência", "appliesTo": ["L7", "D4"], "auto": true },
+      { "id": "fontes-com-data", "check": "fontes de dados citadas com data e abrangência", "appliesTo": ["L4", "D7", "X2"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim, raias por responsável e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "legenda-no-mapa", "check": "o mapa ou infográfico tem legenda e fonte", "appliesTo": ["D7", "X2"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados confidenciais", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L9", "L10", "D4", "D7", "X1", "X2"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "fundamentacao", "label": "Fundamentação teórica, ética e legal", "levels": { "aproxima": "descreve ações sem fundamento explícito", "atende": "fundamenta em legislação, política ou teoria", "supera": "articula as três dimensões da competência e antecipa dilemas éticos" } },
+      { "id": "articulacao-de-rede", "label": "Articulação com a rede", "levels": { "aproxima": "cita a rede de forma genérica", "atende": "nomeia serviços, critérios e fluxos de encaminhamento", "supera": "mostra referência, contrarreferência e acompanhamento do resultado" } },
+      { "id": "leitura-do-territorio", "label": "Leitura do território", "levels": { "aproxima": "não relaciona a situação ao contexto", "atende": "relaciona a situação a dados ou características do território", "supera": "usa dados com fonte para propor prioridades" } },
+      { "id": "clareza", "label": "Clareza para usuários e gestores", "levels": { "aproxima": "exige conhecimento prévio para ser entendido", "atende": "a ideia principal é entendida na primeira leitura", "supera": "explica termos técnicos sem perder precisão" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você apoia uma ou um assistente social (ou estudante de Serviço Social) no Guia de Carreira. Use o vocabulário da área: acolhida, estudo social, parecer social, visita domiciliar, SUAS, CRAS, CREAS, PAIF, PAEFI, BPC, Cadastro Único, PIA, referência e contrarreferência, território, vigilância socioassistencial, projeto ético-político. Cite as normas quando couber: Lei 8.662/1993 (competências e atribuições privativas), Código de Ética (Res. CFESS 273/1993), Res. CFESS 1.114/2025 (condições éticas e técnicas), Res. CFESS 556/2009 (material técnico-sigiloso), Res. CFESS 557/2009 (pareceres conjuntos), LOAS e NOB-SUAS. Nunca redija parecer social, laudo, relatório ou estudo social para ser assinado sobre pessoa ou família real: o parecer é atribuição privativa e o sigilo é dever ético; ajude só com estrutura, linguagem, fundamentação e casos declaradamente fictícios. Nunca oriente sobre o caso de um usuário ou familiar descrito pela pessoa; sugira supervisão, equipe e rede. Recuse prontuários, registros de atendimento, dados do Cadastro Único e qualquer informação que identifique família, mesmo anonimizada, e lembre que anonimizar não autoriza o uso. Não emita julgamento moral sobre famílias nem reproduza termos estigmatizantes. Pergunte antes de inferir política de atuação ou senioridade. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por quê, e aceita \"não me serve\". Afirmações sobre mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa vaga, aprovação em concurso ou remuneração. Progresso é por critérios atendidos; não há score. Não publique, siga, envie mensagem nem se candidate sem confirmação da pessoa.",
+    "citeSources": [
+      { "title": "CFESS — legislação e resoluções", "url": "https://www.cfess.org.br/visualizar/legislacao", "kind": "conselho" },
+      { "title": "Lei 8.662/1993 — regulamenta a profissão de assistente social (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l8662.htm", "kind": "norma" },
+      { "title": "Resolução CFESS 1.114/2025 — condições éticas e técnicas (LegisWeb)", "url": "https://www.legisweb.com.br/legislacao/?id=483130", "kind": "norma" },
+      { "title": "Ministério do Desenvolvimento e Assistência Social — SUAS", "url": "https://www.gov.br/mds/pt-br/acoes-e-programas/suas", "kind": "orgao-publico" },
+      { "title": "CBO 2516 — Assistentes sociais (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "Censo SUAS — SAGI/MDS", "url": "https://aplicacoes.mds.gov.br/sagi/snas/vigilancia/index2.php", "kind": "estatistica" },
+      { "title": "Novo CAGED — Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2, c5 e a extra x1 (política de atuação); nunca pergunta sobre renda ou situação familiar da própria pessoa." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza L6, L1, L7, D4, L3; cada card explica por que e lembra que casos são fictícios." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano por horas (d1) e aparelho (d4); D4, X2 e L4 só no computador." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa estrutura do parecer, declaração de caso fictício, ausência de identificadores e fontes com data; não avalia o mérito do caso." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura e linguagem de POP, diagnóstico socioterritorial e parecer com caso fictício; recusa documento sobre família real." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias e pontos de decisão do fluxo (D4); legenda, agrupamento por política e fonte no mapa da rede (X2)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese de competências declaradas e evidenciadas por política de atuação; nunca lê registros de atendimento." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos por CBO/ESCO: Psicologia, Gestão Pública, Direito, Pedagogia, Ciências Sociais; alternativas, não previsões." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas com opt-in; afinidade por CBO 2516, política e competências." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Campos usados e botão \"discordo\" em cada saída (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil, sem menção a usuários atendidos." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências e cursos em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["prontuários, relatórios e pareceres sociais sobre pessoa ou família real", "dados do Cadastro Único e de benefícios de usuários", "nomes, iniciais, endereços e dados de usuários e familiares", "material técnico-sigiloso (Res. CFESS 556/2009)", "mensagens e itens SIGILOSO", "dados sensíveis da própria pessoa", "dados de terceiros sem autorização"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca redigir parecer, laudo, estudo ou relatório social assinável sobre pessoa ou família real; só estrutura e casos fictícios",
+      "nunca orientar sobre o caso de um usuário ou familiar; sugerir supervisão, equipe e rede",
+      "recusar prontuários, dados do Cadastro Único e informações de famílias, mesmo anonimizadas",
+      "não emitir julgamento moral sobre famílias nem reproduzir termos estigmatizantes",
+      "perguntar em vez de inferir política de atuação ou senioridade",
+      "nunca prometer vaga, aprovação em concurso ou remuneração; mercado com fonte, data e região",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "não publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["diagrama", "infografico"],
+    "lettersTemplates": ["bio", "curriculo", "carta", "estudo-de-caso", "relatorio-tecnico", "pop", "parecer", "relatorio-de-caso", "proposta", "roteiro", "plano-30-60-90", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular: L5, L6, L10 e revisão de POP; D4, X2 e L4 pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em três frases, sem citar famílias atendidas (15 min).",
+        "Que tal desenhar o fluxo de acolhida do seu serviço? Comprova articulação de rede e leva 45 min.",
+        "Sem pressão. Quando quiser retomar, o POP de acolhida está salvo onde parou.",
+        "Um mapa da rede do seu território mostra o que você aciona todo dia. Leva cerca de 90 min no computador."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["relatórios, pareceres e prontuários sociais de usuários (sigilo, Código de Ética do Assistente Social – Res. CFESS 273/1993; LGPD art. 5º II)", "dados do Cadastro Único e de benefícios", "material técnico-sigiloso lacrado (Res. CFESS 556/2009)", "dados de colegas e supervisionados sem autorização"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2516", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Censo SUAS (MDS/SAGI) — trabalhadores por formação e unidade", "url": "https://aplicacoes.mds.gov.br/sagi/snas/vigilancia/index2.php", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "CNES — profissionais de saúde por CBO (inclui assistentes sociais)", "url": "https://cnes.datasus.gov.br/", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "CFESS — Perfil de Assistentes Sociais no Brasil (pesquisa 2024)", "url": "https://www.cfess.org.br/", "geography": "Brasil e regiões dos CRESS", "cadence": "eventual", "kind": "conselho" },
+      { "title": "Concursos públicos federais (gov.br)", "url": "https://www.gov.br/pt-br/servicos/consultar-concursos-publicos", "geography": "Brasil", "cadence": "continua", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147). Concursos e processos seletivos do SUAS são citados pelo edital."
+  },
+  "paths": [
+    { "to": "psicologia", "why": "Compartilha equipes do SUAS, da saúde e do sociojurídico, com acolhida, trabalho em rede e documentos técnicos sob sigilo.", "gaps": ["graduação em Psicologia e registro no CRP", "avaliação psicológica e psicoterapia", "documentos da Res. CFP 06/2019"], "steps": ["documentar fluxos conjuntos com psicólogos (D4)", "cursar formação em saúde mental (UNA-SUS)", "avaliar segunda graduação se quiser atos privativos da Psicologia"] },
+    { "to": "gestao-publica", "why": "Coordenar unidades, programas e secretarias de assistência social é continuidade natural da atuação no SUAS.", "gaps": ["orçamento público e planejamento (PPA, LOA)", "licitações, convênios e prestação de contas", "indicadores e avaliação de políticas"], "steps": ["diagnóstico socioterritorial com fontes (L4)", "plano 30-60-90 para coordenação (L9)", "cursos de gestão pública na Escola Virtual.Gov"] },
+    { "to": "direito", "why": "O sociojurídico, a perícia social e a defesa de direitos aproximam do Direito, em especial família, infância e previdenciário.", "gaps": ["graduação em Direito e OAB para advogar", "processo civil e legislação específica", "redação jurídica"], "steps": ["estrutura de parecer social para processo judicial (X1)", "POP de estudo social por determinação judicial (L7)", "formação em mediação ou justiça restaurativa"] },
+    { "to": "pedagogia", "why": "A Lei 13.935/2019 leva o Serviço Social à escola; o trabalho com famílias e rede de proteção dialoga com a gestão escolar.", "gaps": ["didática e currículo", "legislação educacional (LDB, ECA na escola)", "gestão escolar"], "steps": ["fluxo escola–rede de proteção (D4)", "roteiro de oficina socioeducativa (L8)", "formação em educação e direitos humanos"] },
+    { "to": "ciencias-sociais", "why": "Pesquisa social, diagnóstico de território e análise de políticas usam métodos e teoria das Ciências Sociais.", "gaps": ["métodos quantitativos e qualitativos avançados", "análise de dados (R, SPSS)", "teoria social aprofundada"], "steps": ["diagnóstico socioterritorial com fontes (L4)", "infográfico de indicadores com fonte (D7)", "curso de análise de dados sociais"] }
+  ],
+  "learning": [
+    { "title": "Legislação, resoluções e publicações do CFESS", "provider": "CFESS", "url": "https://www.cfess.org.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — cursos sobre SUAS, Cadastro Único e políticas sociais", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Capacitação do SUAS — Portal EaD do MDS", "provider": "Ministério do Desenvolvimento e Assistência Social", "url": "https://www.gov.br/mds/pt-br/acoes-e-programas/suas/gestao-do-suas/capacitacao", "free": true, "kind": "curso" },
+    { "title": "Cursos de saúde e atenção básica", "provider": "UNA-SUS", "url": "https://www.unasus.gov.br/cursos", "free": true, "kind": "curso" },
+    { "title": "Campus Virtual Fiocruz", "provider": "Fiocruz", "url": "https://campusvirtual.fiocruz.br/", "free": true, "kind": "portal" },
+    { "title": "ABEPSS — diretrizes curriculares e publicações", "provider": "ABEPSS", "url": "https://www.abepss.org.br/", "free": true, "kind": "comunidade" },
+    { "title": "Revista Serviço Social & Sociedade", "provider": "Cortez / SciELO", "url": "https://www.scielo.br/j/sssoc/", "free": true, "kind": "portal" },
+    { "title": "Dados do Cadastro Único e do SUAS (SAGI)", "provider": "MDS", "url": "https://aplicacoes.mds.gov.br/sagi/portal/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Fase 1 — dados do ramo servico-social (g1-saude.json)", "url": "docs/pesquisa/fase1/g1-saude.json", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Resolução CFESS 1.114/2025 — condições éticas e técnicas; revoga a Res. 493/2006 (LegisWeb)", "url": "https://www.legisweb.com.br/legislacao/?id=483130", "accessedAt": "2026-11-02" },
+    { "title": "Resolução CFESS 493/2006 (texto no site do CFESS, revogada)", "url": "https://www.cfess.org.br/pdf/resolucao_4932006.pdf", "accessedAt": "2026-11-02" },
+    { "title": "ESCO occupation social worker (espelho World of Taxonomy, ISCO-08 2635)", "url": "https://worldoftaxonomy.com/codes/esco_occupations/4b05bef2-ded4-4b09-ab94-f4c6a555a775", "accessedAt": "2026-11-02" },
+    { "title": "TJES — Fórum de Assistentes Sociais e Psicólogos (cita 240 mil inscrições ativas, pesquisa Perfil 2024)", "url": "https://www.tjes.jus.br/?p=181421", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URI ESCO de social worker obtida de espelho (World of Taxonomy); esco.ec.europa.eu não acessível nesta sessão",
+    "texto integral da Lei 8.662/1993 e da Res. CFESS 273/1993 não acessado (planalto.gov.br bloqueado); artigos de sigilo (15–18) e atribuições (4 e 5) citados de memória",
+    "conteúdo das Res. CFESS 556/2009 e 557/2009 descrito de memória; a 1.114/2025 cita a 556/2009 segundo resumo de terceiros",
+    "número de 240 mil assistentes sociais com inscrição ativa (2024) vem de comunicado do TJES citando pesquisa do CFESS, não da fonte primária",
+    "URLs do portal SUAS, da capacitação do MDS, do SAGI e da ABEPSS não verificadas nesta sessão",
+    "o rótulo 'sociologia' listado como vizinho na fase 1 não existe na lista prevista; substituído por ciencias-sociais em paths"
+  ]
+}

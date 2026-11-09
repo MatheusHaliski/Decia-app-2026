@@ -1,0 +1,1439 @@
+{
+  "schemaVersion": 1,
+  "code": "engenharia-de-computacao",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": {
+    "pt-BR": "Engenharia de Computação",
+    "en": "Computer Engineering",
+    "es": "Ingeniería en Computación"
+  },
+  "fields": [
+    "engenharia-de-computacao"
+  ],
+  "family": {
+    "cbo": [
+      {
+        "code": "2122",
+        "title": "Engenheiros em computação"
+      },
+      {
+        "code": "2124",
+        "title": "Analistas de tecnologia da informação"
+      }
+    ],
+    "isco08": [
+      {
+        "code": "2152",
+        "title": "Electronics engineers"
+      },
+      {
+        "code": "2512",
+        "title": "Software developers"
+      },
+      {
+        "code": "2511",
+        "title": "Systems analysts"
+      }
+    ],
+    "esco": [
+      {
+        "uri": "http://data.europa.eu/esco/occupation/92bb3d8c-8a9f-4cd7-80ec-247bbf173004",
+        "label": "computer hardware engineer"
+      }
+    ]
+  },
+  "scope": {
+    "summary": "Engenharia regulamentada (CREA) que une hardware e software: sistemas embarcados, firmware, IoT, eletrônica digital, FPGA, robótica e computação de alto desempenho. A evidência típica é projeto documentado (esquemático, diagrama de blocos, firmware versionado, relatório de bancada) e, quando registrado, memorial e ART.",
+    "entryRoles": [
+      "Estagiário de engenharia",
+      "Engenheiro de computação júnior",
+      "Desenvolvedor de firmware júnior",
+      "Técnico de testes de hardware",
+      "Desenvolvedor de software júnior"
+    ],
+    "midRoles": [
+      "Engenheiro de sistemas embarcados",
+      "Engenheiro de firmware",
+      "Engenheiro de hardware",
+      "Engenheiro de software",
+      "Engenheiro de FPGA",
+      "Engenheiro de IoT"
+    ],
+    "seniorRoles": [
+      "Engenheiro sênior de sistemas embarcados",
+      "Arquiteto de hardware/software",
+      "Líder técnico de P&D",
+      "Gerente de engenharia",
+      "Pesquisador em computação"
+    ],
+    "sectors": [
+      "indústria eletrônica e de equipamentos",
+      "automotivo e mobilidade",
+      "telecomunicações",
+      "aeroespacial e defesa",
+      "agronegócio e IoT",
+      "energia e automação industrial",
+      "saúde (equipamentos médicos)",
+      "empresas de software e startups de hardware",
+      "institutos de pesquisa e universidades",
+      "administração pública"
+    ],
+    "regulation": [
+      {
+        "name": "Lei 5.194/1966",
+        "issuer": "Brasil",
+        "about": "regula o exercício das profissões de engenheiro; cria o sistema CONFEA/CREA; registro obrigatório para atos privativos"
+      },
+      {
+        "name": "Resolução CONFEA 380/1993",
+        "issuer": "CONFEA",
+        "about": "atribuições (provisórias) do engenheiro de computação: art. 9º da Resolução 218/1973 mais análise de sistemas computacionais"
+      },
+      {
+        "name": "Resolução CONFEA 218/1973, art. 9º",
+        "issuer": "CONFEA",
+        "about": "atividades do engenheiro eletrônico e de computação: materiais e equipamentos eletrônicos, sistemas de comunicação, computação"
+      },
+      {
+        "name": "Resolução CONFEA 1.073/2016",
+        "issuer": "CONFEA",
+        "about": "regulamenta a atribuição de títulos, atividades e competências no sistema CONFEA/CREA"
+      },
+      {
+        "name": "Lei 6.496/1977 e Resolução CONFEA 1.025/2009",
+        "issuer": "Brasil / CONFEA",
+        "about": "Anotação de Responsabilidade Técnica (ART) para projetos e serviços de engenharia"
+      },
+      {
+        "name": "Resolução CONFEA 1.002/2002",
+        "issuer": "CONFEA",
+        "about": "Código de Ética Profissional da engenharia: sigilo, responsabilidade e conduta"
+      },
+      {
+        "name": "ABNT NBR IEC 61508",
+        "issuer": "ABNT / IEC",
+        "about": "segurança funcional de sistemas eletrônicos programáveis"
+      },
+      {
+        "name": "Resolução Anatel 715/2019 e Lei 9.609/1998",
+        "issuer": "Anatel / Brasil",
+        "about": "homologação de produtos de telecomunicações com rádio; proteção do software embarcado"
+      }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      {
+        "term": "microcontrolador (MCU)",
+        "meaning": "chip com processador, memória e periféricos que roda o firmware"
+      },
+      {
+        "term": "firmware",
+        "meaning": "software gravado no dispositivo, próximo ao hardware"
+      },
+      {
+        "term": "RTOS",
+        "meaning": "sistema operacional de tempo real com tarefas e prazos"
+      },
+      {
+        "term": "FPGA",
+        "meaning": "circuito reconfigurável descrito em VHDL ou Verilog"
+      },
+      {
+        "term": "esquemático",
+        "meaning": "desenho do circuito com componentes, ligações e referências"
+      },
+      {
+        "term": "PCB",
+        "meaning": "placa de circuito impresso: layout com camadas, trilhas e footprints"
+      },
+      {
+        "term": "BOM",
+        "meaning": "lista de materiais com part number, quantidade e fornecedor"
+      },
+      {
+        "term": "datasheet",
+        "meaning": "folha de dados do fabricante com limites elétricos e temporais"
+      },
+      {
+        "term": "I2C, SPI, UART, CAN",
+        "meaning": "barramentos e protocolos de comunicação entre chips e módulos"
+      },
+      {
+        "term": "interrupção",
+        "meaning": "sinal que interrompe o processador para tratar um evento"
+      },
+      {
+        "term": "DMA",
+        "meaning": "transferência de dados sem passar pelo processador"
+      },
+      {
+        "term": "bootloader",
+        "meaning": "programa que carrega e valida o firmware na inicialização"
+      },
+      {
+        "term": "OTA",
+        "meaning": "atualização de firmware pela rede (over the air)"
+      },
+      {
+        "term": "HAL",
+        "meaning": "camada de abstração de hardware que isola o firmware do chip"
+      },
+      {
+        "term": "cross-compilação",
+        "meaning": "compilar no computador para rodar no dispositivo-alvo"
+      },
+      {
+        "term": "JTAG/SWD",
+        "meaning": "interfaces de depuração e gravação do chip"
+      },
+      {
+        "term": "osciloscópio e analisador lógico",
+        "meaning": "instrumentos para medir sinais analógicos e digitais na bancada"
+      },
+      {
+        "term": "watchdog",
+        "meaning": "temporizador que reinicia o sistema se o firmware travar"
+      },
+      {
+        "term": "consumo e modos de baixa energia",
+        "meaning": "corrente média e estados de sono do dispositivo"
+      },
+      {
+        "term": "EMC/EMI",
+        "meaning": "compatibilidade e interferência eletromagnética"
+      },
+      {
+        "term": "Linux embarcado",
+        "meaning": "distribuição mínima (Yocto, Buildroot) para placas como Raspberry Pi"
+      },
+      {
+        "term": "diagrama de blocos",
+        "meaning": "visão de alto nível com blocos de hardware e software e suas interfaces"
+      },
+      {
+        "term": "teste de bancada",
+        "meaning": "ensaio com instrumentos e condições declaradas"
+      },
+      {
+        "term": "memorial descritivo",
+        "meaning": "documento que descreve o projeto, premissas, normas e cálculos"
+      },
+      {
+        "term": "ART",
+        "meaning": "Anotação de Responsabilidade Técnica registrada no CREA pelo profissional habilitado"
+      },
+      {
+        "term": "NDA",
+        "meaning": "acordo de confidencialidade que cobre esquemáticos e firmware de clientes"
+      }
+    ],
+    "tools": [
+      "KiCad, Altium ou Eagle",
+      "Arduino, ESP32, STM32 e Raspberry Pi",
+      "PlatformIO, Keil, STM32CubeIDE",
+      "GCC ARM, GDB e OpenOCD",
+      "FreeRTOS ou Zephyr",
+      "Quartus ou Vivado (VHDL/Verilog)",
+      "LTspice ou Proteus",
+      "MATLAB/Simulink",
+      "osciloscópio, multímetro e analisador lógico",
+      "Git (GitHub, GitLab)",
+      "Linux embarcado (Yocto, Buildroot)",
+      "Python e C/C++",
+      "Docker e CI",
+      "diagramas (draw.io, PlantUML)",
+      "impressora 3D e CAD (FreeCAD, Fusion)"
+    ],
+    "deliverables": [
+      "esquemático e layout de PCB",
+      "firmware versionado com testes",
+      "diagrama de blocos de hardware e software",
+      "relatório de testes de bancada",
+      "memorial descritivo de projeto",
+      "manual ou datasheet do produto",
+      "protocolo de comunicação documentado",
+      "lista de materiais (BOM)",
+      "vista explodida ou desenho de montagem do dispositivo",
+      "modelo 3D do gabinete",
+      "plano de validação e verificação",
+      "ADR de arquitetura hardware/software",
+      "proposta técnica em resposta a briefing"
+    ]
+  },
+  "competencies": {
+    "core": [
+      {
+        "label": "Programação em C/C++ para sistemas embarcados",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Arquitetura de computadores e microcontroladores",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Eletrônica digital e analógica aplicada",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Projeto de esquemático e layout de PCB",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Protocolos de comunicação (I2C, SPI, UART, CAN, TCP/IP)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Sistemas operacionais de tempo real e Linux embarcado",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Testes de bancada e instrumentação",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Documentação de projeto (diagrama de blocos, memorial, relatório)",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Versionamento com Git e integração contínua",
+        "esco": null,
+        "kind": "nucleo"
+      },
+      {
+        "label": "Lógica reconfigurável (FPGA, VHDL/Verilog)",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Segurança de dispositivos (boot seguro, criptografia, OTA)",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Redes e IoT (Wi-Fi, BLE, LoRa, MQTT)",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Gestão de energia e baixo consumo",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Normas, homologação e responsabilidade técnica (CREA, Anatel)",
+        "esco": null,
+        "kind": "apoio"
+      },
+      {
+        "label": "Desenvolvimento de software de aplicação",
+        "esco": null,
+        "kind": "apoio"
+      }
+    ],
+    "transversal": [
+      "raciocínio sistêmico hardware-software",
+      "comunicação escrita técnica",
+      "método experimental e registro de ensaios",
+      "inglês técnico para datasheets",
+      "trabalho em equipe multidisciplinar"
+    ],
+    "tracks": [
+      {
+        "id": "embarcados",
+        "label": "Sistemas embarcados e firmware",
+        "steps": [
+          "diagrama de blocos de um dispositivo seu (D4)",
+          "relatório de teste de bancada (L4)",
+          "POP de gravação e teste de firmware (L7)",
+          "memorial descritivo do projeto (X1)",
+          "infográfico de consumo e latência (D7)"
+        ]
+      },
+      {
+        "id": "hardware",
+        "label": "Hardware e PCB",
+        "steps": [
+          "detalhe de montagem ou esquemático anotado (D6)",
+          "vista explodida do dispositivo com BOM (D8)",
+          "modelo 3D do gabinete (D3)",
+          "relatório de ensaio de EMC ou térmico (L4)"
+        ]
+      },
+      {
+        "id": "iot-conectividade",
+        "label": "IoT e conectividade",
+        "steps": [
+          "diagrama de arquitetura ponta a ponta: dispositivo, gateway, nuvem (D4)",
+          "protocolo de comunicação documentado (X1)",
+          "POP de atualização OTA (L7)",
+          "resposta a briefing de produto IoT (L8)"
+        ]
+      },
+      {
+        "id": "software-aplicacao",
+        "label": "Software de aplicação",
+        "steps": [
+          "resumo de perfil com link de repositório (L6)",
+          "estudo de caso STAR de uma entrega (L3)",
+          "ADR de arquitetura (L4)",
+          "revisão crítica de uma peça da rede (L10)"
+        ]
+      }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"engenheiro de computação júnior\", \"desenvolvedor de firmware\", \"estagiário de P&D\", \"técnico em eletrônica\"",
+      "cboFamilies": [
+        "2122",
+        "2124",
+        "2143",
+        "3132"
+      ],
+      "why": "Pergunto seu último cargo ou área para partir do que você já projetou. Se for o primeiro emprego, pule e seguimos pelos projetos de curso."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, iniciação científica ou primeiro cargo",
+        "junior": "executa partes de projeto com revisão de engenheiro responsável",
+        "pleno": "projeta módulos de hardware ou firmware com autonomia",
+        "senior": "responde tecnicamente por projetos; assina ART quando registrado",
+        "gestao": "lidera equipe de P&D, orçamento e fornecedores"
+      },
+      "why": "Pergunto o nível para calibrar as tarefas e saber se a responsabilidade técnica (ART) já faz parte da sua rotina."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em engenharia de computação",
+      "options": [
+        "programar firmware em C/C++",
+        "projetar esquemático e PCB",
+        "trabalhar com Linux embarcado",
+        "descrever hardware em VHDL/Verilog",
+        "integrar sensores e protocolos (I2C, SPI, CAN)",
+        "montar e medir na bancada",
+        "projetar soluções IoT ponta a ponta",
+        "desenvolver software de aplicação",
+        "documentar projeto (memorial, relatório, diagrama)",
+        "otimizar consumo de energia",
+        "depurar com JTAG e analisador lógico",
+        "conduzir homologação e normas"
+      ],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com diagramas, relatórios e firmware versionado."
+    },
+    "c4": {
+      "certifications": [
+        "graduação em Engenharia de Computação",
+        "registro no CREA",
+        "curso técnico em eletrônica ou informática",
+        "Certified LabVIEW Associate Developer",
+        "ARM Accredited Engineer",
+        "Cisco CCNA",
+        "AWS IoT ou Azure IoT (cursos)",
+        "cursos de FPGA (Intel, AMD/Xilinx)",
+        "mestrado ou doutorado"
+      ],
+      "languages": [
+        "inglês técnico (datasheets e documentação)",
+        "inglês para conversação",
+        "espanhol"
+      ],
+      "why": "Formação e registro no CREA definem o que você pode assinar; certificações e idiomas mostram lacunas frente ao cargo-alvo."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver em engenharia de computação?",
+      "options": [
+        "firmware e RTOS",
+        "projeto de PCB e esquemático",
+        "Linux embarcado",
+        "FPGA e lógica digital",
+        "IoT e protocolos sem fio",
+        "segurança de dispositivos e OTA",
+        "testes de bancada e instrumentação",
+        "documentação e memorial técnico",
+        "software de aplicação e APIs",
+        "normas, homologação e ART",
+        "robótica e controle",
+        "gestão de projetos de P&D"
+      ],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (diagrama, relatório, POP) em vez do catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Você tem registro no CREA?",
+        "type": "escolha",
+        "options": [
+          "sim",
+          "ainda não, mas pretendo",
+          "não se aplica"
+        ],
+        "why": "Pergunto porque tarefas com memorial e ART só fazem sentido para quem pode assinar; sem registro, trabalhamos com projeto e documentação. Você pode pular.",
+        "where": "P"
+      },
+      {
+        "id": "x2",
+        "prompt": "Com que plataformas você mais trabalha?",
+        "type": "lista",
+        "options": [
+          "STM32/ARM Cortex-M",
+          "ESP32/ESP8266",
+          "Arduino/AVR",
+          "Raspberry Pi/Linux embarcado",
+          "FPGA",
+          "PIC",
+          "microprocessadores x86/ARM-A",
+          "outra"
+        ],
+        "why": "Pergunto para usar exemplos e vocabulário da sua plataforma nas tarefas. Você pode pular.",
+        "where": "P"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": [
+      "D4",
+      "L4",
+      "D6",
+      "L7",
+      "D8",
+      "L6",
+      "L1",
+      "D7",
+      "L8",
+      "L3",
+      "D3",
+      "L10"
+    ],
+    "excluded": [
+      {
+        "code": "D1",
+        "reason": "planta de ambiente não é entrega da profissão"
+      },
+      {
+        "code": "D9",
+        "reason": "wireframe de tela pertence a software e design; interface de dispositivo entra no D4"
+      }
+    ],
+    "parameters": {
+      "D4": {
+        "title": "Diagrama de blocos de hardware e software",
+        "brief": "Desenhe o diagrama de blocos de um dispositivo ou sistema seu: blocos de hardware (MCU, sensores, alimentação, rádio) e de software (drivers, tarefas, aplicação) com interfaces rotuladas e legenda.",
+        "parameters": {
+          "minBlocks": 5,
+          "labeledInterfaces": true,
+          "legend": true,
+          "layers": [
+            "hardware",
+            "firmware",
+            "comunicação"
+          ]
+        },
+        "criteria": [
+          "ao menos 5 blocos nomeados",
+          "interfaces rotuladas (barramento, protocolo ou sinal)",
+          "legenda da notação",
+          "fronteira do sistema explícita",
+          "sem part numbers ou esquemáticos sob NDA"
+        ],
+        "evidence": "diagrama vetorial (SVG ou PDF)",
+        "time": "45 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório de teste de bancada ou ADR de arquitetura",
+        "brief": "Escreva um relatório de ensaio (objetivo, montagem, instrumentos, condições, resultados, limitações) ou um ADR de uma decisão hardware/software, com no máximo 4 páginas e sem dados sob NDA.",
+        "parameters": {
+          "formats": [
+            "relatório de ensaio",
+            "ADR"
+          ],
+          "maxPages": 4,
+          "testSections": [
+            "objetivo",
+            "montagem e instrumentos",
+            "condições",
+            "resultados",
+            "limitações",
+            "referências"
+          ],
+          "adrSections": [
+            "contexto",
+            "decisão",
+            "alternativas",
+            "consequências"
+          ]
+        },
+        "criteria": [
+          "seções obrigatórias presentes e nomeadas",
+          "instrumentos e condições de ensaio declarados ou alternativas comparadas",
+          "resultados com unidade de medida",
+          "até 4 páginas",
+          "sem esquemático, firmware ou dado de cliente sob NDA"
+        ],
+        "evidence": "relatório técnico (PDF ou Letter publicada)",
+        "time": "2 h",
+        "level": 3
+      },
+      "D6": {
+        "title": "Detalhe de montagem ou esquemático anotado",
+        "brief": "Desenhe o detalhe de montagem de um módulo (fixação, conectores, dissipação) ou um esquemático anotado de um circuito seu, com escala ou referências, componentes especificados e cotas ou valores.",
+        "parameters": {
+          "formats": [
+            "detalhe de montagem",
+            "esquemático anotado"
+          ],
+          "scaleOrReferences": true,
+          "specifiedComponents": true
+        },
+        "criteria": [
+          "escala ou referências de componentes",
+          "componentes especificados (valor, encapsulamento)",
+          "cotas ou valores elétricos presentes",
+          "legenda e título",
+          "circuito próprio ou de código aberto, com licença"
+        ],
+        "evidence": "prancha de detalhe (PDF ou SVG)",
+        "time": "90 min",
+        "level": 3
+      },
+      "L7": {
+        "title": "POP de gravação, teste ou atualização de firmware",
+        "brief": "Descreva um procedimento que você domina (gravação via JTAG, teste funcional de placa, atualização OTA, calibração) em passos numerados com responsável, ferramenta e critério de conclusão.",
+        "parameters": {
+          "numberedSteps": true,
+          "perStep": [
+            "responsável",
+            "ferramenta ou comando",
+            "critério de conclusão"
+          ],
+          "sections": [
+            "quando usar",
+            "pré-condições e segurança",
+            "passos",
+            "verificação",
+            "reversão"
+          ]
+        },
+        "criteria": [
+          "passos numerados",
+          "responsável e critério de conclusão em cada passo",
+          "seção de segurança (ESD, alimentação) e reversão",
+          "sem chaves criptográficas ou credenciais reais"
+        ],
+        "evidence": "POP (modelo publicado)",
+        "time": "60 min",
+        "level": 2
+      },
+      "D8": {
+        "title": "Vista explodida de um dispositivo com lista de peças",
+        "brief": "Monte a vista explodida de um dispositivo seu (gabinete, placa, bateria, conectores, fixações) com ao menos 5 componentes numerados e a lista de peças correspondente.",
+        "parameters": {
+          "minComponents": 5,
+          "numbered": true,
+          "partsList": true
+        },
+        "criteria": [
+          "ao menos 5 componentes numerados",
+          "lista de peças com número, nome e quantidade",
+          "ordem de montagem legível",
+          "sem part numbers proprietários sob NDA"
+        ],
+        "evidence": "modelo + prancha (PDF ou PNG)",
+        "time": "2 h",
+        "level": 3
+      },
+      "L6": {
+        "title": "Resumo de perfil em três frases",
+        "brief": "Escreva um resumo de até 600 caracteres com a área que você quer (embarcados, hardware, IoT, software), três competências e um link para projeto ou repositório.",
+        "parameters": {
+          "maxChars": 600,
+          "requiredParts": [
+            "área-alvo",
+            "três competências",
+            "um link para projeto ou repositório"
+          ]
+        },
+        "criteria": [
+          "até 600 caracteres",
+          "nomeia a área-alvo",
+          "cita três competências",
+          "inclui um link para projeto ou repositório"
+        ],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      },
+      "L1": {
+        "title": "Currículo direcionado de uma página",
+        "brief": "Monte um currículo de uma página para a vaga que você quer mirar, com três conquistas com número (consumo reduzido, tempo de boot, placas entregues) e as plataformas pedidas.",
+        "parameters": {
+          "maxPages": 1,
+          "achievementsWithNumbers": 3,
+          "keywordsFrom": "cargo-alvo",
+          "mentionCreaIfRegistered": true
+        },
+        "criteria": [
+          "uma página",
+          "três conquistas com número",
+          "palavras-chave do cargo-alvo presentes",
+          "registro no CREA citado só se existir",
+          "sem idade, estado civil ou foto obrigatória"
+        ],
+        "evidence": "PDF versionado",
+        "time": "45 min",
+        "level": 1
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Memorial descritivo de um projeto de hardware e firmware",
+        "competency": "Documentação de projeto e responsabilidade técnica",
+        "criteria": [
+          "seções: objetivo, requisitos, arquitetura, lista de materiais, testes, normas aplicáveis",
+          "normas citadas por número (ABNT, Anatel, IEC)",
+          "limitações e riscos declarados",
+          "aviso de que o documento não substitui memorial com ART",
+          "sem dados sob NDA"
+        ],
+        "evidence": "memorial publicado (PDF ou Letter)",
+        "time": "2 h",
+        "trigger": "Há um projeto seu que mereça um memorial completo?",
+        "level": 3
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      {
+        "id": "tamanho",
+        "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L4",
+          "L5",
+          "L6",
+          "L8"
+        ],
+        "auto": true
+      },
+      {
+        "id": "secoes-obrigatorias",
+        "check": "as seções pedidas (relatório, ADR, POP, memorial) existem e estão nomeadas",
+        "appliesTo": [
+          "L3",
+          "L4",
+          "L7",
+          "L8",
+          "L9",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "blocos-e-interfaces",
+        "check": "o diagrama tem ao menos 5 blocos nomeados e interfaces rotuladas",
+        "appliesTo": [
+          "D4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "legenda",
+        "check": "o desenho tem legenda, título e notação explicada",
+        "appliesTo": [
+          "D4",
+          "D6",
+          "D7",
+          "D8"
+        ],
+        "auto": true
+      },
+      {
+        "id": "escala-cotas-ou-valores",
+        "check": "o detalhe tem escala ou referências e cotas ou valores especificados",
+        "appliesTo": [
+          "D6"
+        ],
+        "auto": true
+      },
+      {
+        "id": "lista-de-pecas",
+        "check": "a vista explodida tem ao menos 5 componentes numerados e lista de peças",
+        "appliesTo": [
+          "D8"
+        ],
+        "auto": true
+      },
+      {
+        "id": "unidades-e-condicoes",
+        "check": "resultados trazem unidade de medida e condições de ensaio declaradas",
+        "appliesTo": [
+          "L4",
+          "D7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "normas-citadas",
+        "check": "normas aplicáveis estão citadas por número",
+        "appliesTo": [
+          "X1",
+          "L4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "fonte-das-metricas",
+        "check": "o infográfico cita a fonte, o período e as condições das métricas",
+        "appliesTo": [
+          "D7"
+        ],
+        "auto": true
+      },
+      {
+        "id": "sem-segredos",
+        "check": "o conteúdo não contém chaves criptográficas, credenciais, esquemáticos ou firmware sob NDA",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L3",
+          "L4",
+          "L5",
+          "L6",
+          "L7",
+          "L8",
+          "L9",
+          "L10",
+          "D2",
+          "D3",
+          "D4",
+          "D5",
+          "D6",
+          "D7",
+          "D8",
+          "D10",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "aviso-art",
+        "check": "memorial e relatório avisam que não substituem documento com ART de profissional registrado",
+        "appliesTo": [
+          "X1",
+          "L4"
+        ],
+        "auto": true
+      },
+      {
+        "id": "autoria-e-sigilo",
+        "check": "a pessoa declarou autoria e ausência de dados confidenciais ou sob NDA",
+        "appliesTo": [
+          "L1",
+          "L2",
+          "L3",
+          "L4",
+          "L5",
+          "L6",
+          "L7",
+          "L8",
+          "L9",
+          "L10",
+          "D2",
+          "D3",
+          "D4",
+          "D5",
+          "D6",
+          "D7",
+          "D8",
+          "D10",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "creditos-e-licenca",
+        "check": "coautores, bibliotecas, projetos abertos reutilizados e licença estão creditados",
+        "appliesTo": [
+          "L5",
+          "L10",
+          "D2",
+          "D6",
+          "D10",
+          "X1"
+        ],
+        "auto": true
+      },
+      {
+        "id": "alternativas-comparadas",
+        "check": "o ADR compara ao menos duas alternativas com prós e contras",
+        "appliesTo": [
+          "L4"
+        ],
+        "auto": false
+      }
+    ],
+    "subjective": [
+      {
+        "id": "clareza-tecnica",
+        "label": "Clareza técnica",
+        "levels": {
+          "aproxima": "quem lê precisa adivinhar como o sistema funciona",
+          "atende": "alguém da área entende blocos, interfaces e resultados na primeira leitura",
+          "supera": "alguém de fora da equipe consegue reproduzir a montagem ou o ensaio"
+        }
+      },
+      {
+        "id": "justificativa-hw-sw",
+        "label": "Justificativa das decisões hardware/software",
+        "levels": {
+          "aproxima": "descreve a escolha de componente ou arquitetura sem dizer por quê",
+          "atende": "explica a escolha e o que foi descartado",
+          "supera": "explicita trade-offs de custo, consumo, prazo e risco, e quando rever"
+        }
+      },
+      {
+        "id": "rigor-experimental",
+        "label": "Rigor experimental",
+        "levels": {
+          "aproxima": "resultados sem condições ou instrumentos",
+          "atende": "condições, instrumentos e incertezas declarados",
+          "supera": "ensaio repetível, com análise de erro e comparação com datasheet"
+        }
+      },
+      {
+        "id": "resultado",
+        "label": "Resultado demonstrado",
+        "levels": {
+          "aproxima": "descreve atividades, sem resultado",
+          "atende": "mostra um resultado mensurável (consumo, latência, taxa de falha)",
+          "supera": "mostra resultado, contexto, limitações e o que faria diferente"
+        }
+      }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa da área de Engenharia de Computação (sistemas embarcados, firmware, hardware, IoT, FPGA, software). Vocabulário: microcontrolador, firmware, RTOS, esquemático, PCB, BOM, datasheet, barramentos (I2C, SPI, UART, CAN), bootloader, OTA, JTAG, teste de bancada, diagrama de blocos, memorial, ART. Normas e referências a citar quando couber: Lei 5.194/1966 e sistema CONFEA/CREA, Resoluções CONFEA 218/1973 (art. 9º), 380/1993 e 1.073/2016 (atribuições), 1.002/2002 (ética), Lei 6.496/1977 (ART), ABNT NBR IEC 61508, homologação Anatel (Resolução 715/2019), Lei 9.609/1998. É engenharia regulamentada: pergunte se a pessoa tem registro no CREA em vez de supor; sem registro, as tarefas são de projeto e documentação, não de responsabilidade técnica. O que nunca fazer: redigir memorial, laudo ou parecer assinável nem sugerir que um texto substitui ART ou profissional habilitado; validar circuitos de segurança crítica como se fosse engenheiro responsável; pedir, aceitar ou reproduzir esquemáticos, firmware ou part numbers sob NDA, chaves criptográficas ou dados de clientes em dispositivos; gerar firmware ou código que burle proteções, clone chaves, desbloqueie dispositivos ou viole homologação; inferir plataforma, senioridade ou registro a partir de textos ou desenhos, pergunte. Se um trecho contiver segredo ou dado sob NDA, avise e proponha anonimizar antes de seguir. Pré-cheque só critérios objetivos (blocos e interfaces nomeados, legenda, unidades, normas citadas, aviso sobre ART, ausência de segredos); a validação que gera selo é humana. Toda sugestão diz competência, evidência, tempo e por quê, e aceita \"não me serve\". Afirmações de mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos, nunca por pontuação ou ranking. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      {
+        "title": "Lei 5.194/1966 — exercício das profissões de engenheiro (Planalto)",
+        "url": "https://www.planalto.gov.br/ccivil_03/leis/l5194.htm",
+        "kind": "norma"
+      },
+      {
+        "title": "CONFEA — Conselho Federal de Engenharia e Agronomia (legislação e resoluções)",
+        "url": "https://www.confea.org.br/",
+        "kind": "conselho"
+      },
+      {
+        "title": "Resolução CONFEA 418/1998 — cita as atribuições provisórias da Resolução 380/1993 (Normas Brasil)",
+        "url": "https://www.normasbrasil.com.br/norma/resolucao-418-1998_95623.html",
+        "kind": "conselho"
+      },
+      {
+        "title": "Lei 6.496/1977 — ART (Planalto)",
+        "url": "https://www.planalto.gov.br/ccivil_03/leis/l6496.htm",
+        "kind": "norma"
+      },
+      {
+        "title": "Anatel — certificação e homologação de produtos para telecomunicações",
+        "url": "https://www.gov.br/anatel/pt-br/regulado/certificacao",
+        "kind": "orgao-publico"
+      },
+      {
+        "title": "ABNT — catálogo de normas (NBR IEC 61508)",
+        "url": "https://www.abntcatalogo.com.br/",
+        "kind": "norma"
+      },
+      {
+        "title": "ESCO — computer hardware engineer",
+        "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http%3A%2F%2Fdata.europa.eu%2Fesco%2Foccupation%2F92bb3d8c-8a9f-4cd7-80ec-247bbf173004",
+        "kind": "referencia"
+      },
+      {
+        "title": "CBO 2122 — Engenheiros em computação (MTE)",
+        "url": "https://cbo.mte.gov.br/",
+        "kind": "orgao-publico"
+      },
+      {
+        "title": "Sociedade Brasileira de Computação (SBC)",
+        "url": "https://www.sbc.org.br/",
+        "kind": "comunidade"
+      },
+      {
+        "title": "Novo CAGED — Ministério do Trabalho e Emprego",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "kind": "estatistica"
+      }
+    ],
+    "services": [
+      {
+        "service": "PERGUNTAS_GUIA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Variantes de c2 e c5 com competências de embarcados e hardware; x1 (registro no CREA) e x2 (plataforma) ajustam tarefas e exemplos."
+      },
+      {
+        "service": "SUGESTAO_TAREFAS",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "D4 (blocos), L4 (bancada/ADR), D6 (detalhe) primeiro; X1 (memorial) só para quem tem ou pretende registro; cada card diz competência, evidência e tempo."
+      },
+      {
+        "service": "PLANO_SEMANAL",
+        "capability": "INSIGHT",
+        "defaultMode": "SUGESTOES",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Plano a partir de horas (d1) e aparelho (d4); D3, D6 e D8 só no computador; pausa de 7 dias após duas dispensas."
+      },
+      {
+        "service": "PRE_CHECAGEM_RUBRICA",
+        "capability": "ARTEFATO",
+        "defaultMode": "SUGESTOES",
+        "action": "SUGESTAO_ESPONTANEA",
+        "consent": null,
+        "note": "Checa blocos e interfaces nomeados, legenda, unidades e condições, normas citadas, aviso sobre ART e ausência de segredos; o selo depende de revisão humana."
+      },
+      {
+        "service": "RASCUNHO_LETTERS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Esqueleto de relatório de ensaio, ADR, POP ou memorial com prévia e aviso de que não substitui ART; nunca aplica sem revisão."
+      },
+      {
+        "service": "APOIO_DRAWINGS",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Sugere notação, legenda e rótulos de interface no D4; escala e especificação no D6; numeração e lista de peças no D8."
+      },
+      {
+        "service": "ANALISE_PERFIL",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": "ANALISE_PERFIL_IA",
+        "note": "RF50: competências declaradas e evidenciadas por diagramas, relatórios e firmware; lacunas frente ao cargo-alvo; cada afirmação cita o campo."
+      },
+      {
+        "service": "CAMINHOS_DE_CARREIRA",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Vizinhos por CBO 2122/2124 e ISCO 2152/2512: software, elétrica, automação, dados, redes; com lacunas e passos."
+      },
+      {
+        "service": "PESSOAS_SEMELHANTES",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "Só pessoas descobríveis por opt-in; afinidade por competências e plataformas declaradas, nunca por empresa."
+      },
+      {
+        "service": "EXPLICACAO_POR_QUE",
+        "capability": "INSIGHT",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "RESPONDER",
+        "consent": null,
+        "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)."
+      },
+      {
+        "service": "RESUMO_PROFISSIONAL",
+        "capability": "ARTEFATO",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": "RESUMO_PROFISSIONAL_IA",
+        "note": "Bio (L6) com área, plataformas e link de projeto; cita registro no CREA só se a pessoa informou; só com o consentimento específico."
+      },
+      {
+        "service": "IMPORTAR_CURRICULO",
+        "capability": "PREENCHER_TAREFA",
+        "defaultMode": "SOB_SOLICITACAO",
+        "action": "PROPOR_ALTERACAO",
+        "consent": null,
+        "note": "Extrai experiências, plataformas e competências em ficha editável; a pessoa confirma item a item (RF50.CA02)."
+      }
+    ],
+    "dataScope": {
+      "default": [
+        "perfil",
+        "currículo"
+      ],
+      "optional": [
+        "minhas Letters",
+        "meus Drawings",
+        "links públicos de repositórios e projetos"
+      ],
+      "never": [
+        "mensagens",
+        "itens SIGILOSO",
+        "esquemáticos e firmware proprietários sob NDA",
+        "chaves criptográficas e credenciais",
+        "dados de clientes em sistemas embarcados",
+        "dados sensíveis (LGPD art. 5º II)"
+      ]
+    },
+    "provider": {
+      "default": "local",
+      "externalNeedsConsent": true,
+      "externalAllowedFor": [
+        "ANALISE_PERFIL",
+        "CAMINHOS_DE_CARREIRA",
+        "RESUMO_PROFISSIONAL"
+      ]
+    },
+    "guardrails": [
+      "perguntar em vez de inferir plataforma, senioridade ou registro no CREA",
+      "nunca redigir memorial, laudo ou parecer assinável nem sugerir que substitui ART ou profissional habilitado",
+      "nunca gerar firmware ou código que burle proteções, clone chaves, desbloqueie dispositivos ou viole homologação",
+      "nunca pedir, aceitar ou reproduzir esquemáticos, firmware ou part numbers sob NDA, chaves ou dados de clientes; avisar e anonimizar",
+      "não validar projetos de segurança crítica como se fosse engenheiro responsável",
+      "nunca prometer entrevista, emprego ou salário; afirmações de mercado com fonte, data e região ou \"estimativa\"",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": {
+      "letters": "media",
+      "drawings": "alta"
+    },
+    "drawingsModes": [
+      "diagrama",
+      "2d-tecnico",
+      "3d",
+      "infografico",
+      "prancha"
+    ],
+    "lettersTemplates": [
+      "relatorio-tecnico",
+      "memorial",
+      "pop",
+      "proposta",
+      "estudo-de-caso",
+      "curriculo",
+      "bio",
+      "carta",
+      "post",
+      "revisao",
+      "plano-30-60-90"
+    ],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas de texto curtas (L5, L6) e revisão (L10); D3, D6 e D8 exigem computador; D4 funciona em tablet com caneta.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil com link para um projeto (15 min).",
+        "Aquele dispositivo que você montou cabe em um diagrama de blocos de 45 min. Quer desenhar?",
+        "Sem pressão. Quando quiser retomar, o relatório de bancada está salvo onde você parou.",
+        "Um ensaio que você já fez pode virar relatório com unidades e condições. Vale como evidência."
+      ]
+    },
+    "insights": {
+      "peersBy": [
+        "cbo",
+        "competencias"
+      ]
+    },
+    "privacy": {
+      "sensitiveData": [
+        "esquemáticos e firmware proprietários sob NDA",
+        "chaves criptográficas e credenciais",
+        "dados de clientes em sistemas embarcados",
+        "número de registro no CREA (só se a pessoa quiser exibir)"
+      ],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      {
+        "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2122 e 2124",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged",
+        "geography": "Brasil, UF e município",
+        "cadence": "mensal",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "RAIS (MTE) — vínculos formais por ocupação",
+        "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais",
+        "geography": "Brasil, UF e município",
+        "cadence": "anual",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "PNAD Contínua (IBGE)",
+        "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html",
+        "geography": "Brasil e UF",
+        "cadence": "trimestral",
+        "kind": "estatistica-oficial"
+      },
+      {
+        "title": "CONFEA — estatísticas de profissionais registrados por título",
+        "url": "https://www.confea.org.br/",
+        "geography": "Brasil e UF (CREAs)",
+        "cadence": "anual",
+        "kind": "conselho"
+      },
+      {
+        "title": "ABINEE — desempenho setorial da indústria elétrica e eletrônica",
+        "url": "https://www.abinee.org.br/",
+        "geography": "Brasil",
+        "cadence": "mensal",
+        "kind": "associacao"
+      },
+      {
+        "title": "Brasscom — Perspectivas do Mercado de Trabalho do Macrossetor TIC (2026)",
+        "url": "https://brasscom.org.br/wp-content/uploads/2026/07/Relatorio-Pespectivas-do-Mercado-de-Trabalho-Apresentacao-v9.pdf",
+        "geography": "Brasil",
+        "cadence": "anual",
+        "kind": "associacao"
+      }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Exigência de registro no CREA é afirmada só quando o cargo envolve atos privativos de engenharia. Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    {
+      "to": "engenharia-de-software",
+      "why": "Quem programa firmware e software de aplicação já domina C/C++, Git e testes; a migração para desenvolvimento de software é a mais comum e não exige registro em conselho.",
+      "gaps": [
+        "linguagens e frameworks web ou mobile",
+        "bancos de dados e APIs",
+        "métodos ágeis e CI/CD"
+      ],
+      "steps": [
+        "README de repositório com testes (X1 do pacote de software)",
+        "ADR de arquitetura (L4)",
+        "diagrama C4 de um sistema (D4)"
+      ]
+    },
+    {
+      "to": "engenharia-eletrica",
+      "why": "Eletrônica, instrumentação e potência são a continuidade natural para quem prefere hardware; mesmo sistema CONFEA/CREA.",
+      "gaps": [
+        "eletrônica de potência e máquinas",
+        "instalações e NBR 5410",
+        "atribuições específicas no CREA"
+      ],
+      "steps": [
+        "detalhe de montagem ou esquemático anotado (D6)",
+        "relatório de ensaio elétrico (L4)",
+        "verificar atribuições no CREA"
+      ]
+    },
+    {
+      "to": "engenharia-de-controle-e-automacao",
+      "why": "Controle embarcado, PLCs e robótica aproveitam firmware, sensores e redes industriais.",
+      "gaps": [
+        "teoria de controle aplicada",
+        "PLC e redes industriais (Modbus, Profinet)",
+        "segurança de máquinas (NR-12)"
+      ],
+      "steps": [
+        "diagrama de arquitetura de automação (D4)",
+        "POP de comissionamento (L7)",
+        "infográfico de desempenho de malha (D7)"
+      ]
+    },
+    {
+      "to": "ciencia-de-dados",
+      "why": "Telemetria de dispositivos e IoT gera dados; quem já coleta e processa sinais migra para análise e aprendizado de máquina embarcado.",
+      "gaps": [
+        "estatística e avaliação de modelos",
+        "ferramentas de dados (pandas, SQL)",
+        "LGPD aplicada a dados de dispositivos"
+      ],
+      "steps": [
+        "infográfico de telemetria de um dispositivo (D7)",
+        "relatório analítico com método e limitações (L4)",
+        "pipeline de dados documentado (D4)"
+      ]
+    },
+    {
+      "to": "redes-de-computadores",
+      "why": "Conectividade de dispositivos (Wi-Fi, BLE, MQTT, TCP/IP) leva a infraestrutura, redes industriais e nuvem.",
+      "gaps": [
+        "roteamento, VLAN e firewall",
+        "administração de sistemas Linux em servidores",
+        "monitoramento e capacidade"
+      ],
+      "steps": [
+        "Cisco Networking Academy (gratuito)",
+        "diagrama de topologia (D4)",
+        "runbook de recuperação de serviço (L7)"
+      ]
+    },
+    {
+      "to": "seguranca-da-informacao",
+      "why": "Boot seguro, criptografia e OTA são porta de entrada para segurança de dispositivos e de produto.",
+      "gaps": [
+        "gestão de riscos e normas (ISO/IEC 27001, NIST CSF)",
+        "resposta a incidentes",
+        "LGPD e ANPD"
+      ],
+      "steps": [
+        "curso gratuito (Hackers do Bem, CERT.br)",
+        "post-mortem anonimizado (L4)",
+        "POP de rotação de chaves de dispositivos (L7)"
+      ]
+    }
+  ],
+  "learning": [
+    {
+      "title": "Embarcados — portal e comunidade brasileira de sistemas embarcados",
+      "provider": "Embarcados",
+      "url": "https://embarcados.com.br/",
+      "free": true,
+      "kind": "comunidade"
+    },
+    {
+      "title": "STM32 Education — cursos gratuitos de microcontroladores ARM",
+      "provider": "STMicroelectronics",
+      "url": "https://www.st.com/content/st_com/en/support/learning/stm32-education.html",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "Documentação e tutoriais do Arduino",
+      "provider": "Arduino",
+      "url": "https://docs.arduino.cc/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Documentação do Zephyr RTOS",
+      "provider": "Zephyr Project",
+      "url": "https://docs.zephyrproject.org/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Documentação do KiCad (esquemático e PCB)",
+      "provider": "KiCad",
+      "url": "https://docs.kicad.org/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Curso em Vídeo — Lógica de programação, C e Python",
+      "provider": "Curso em Vídeo",
+      "url": "https://www.cursoemvideo.com/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Cursos abertos de Engenharia de Computação — Univesp no YouTube",
+      "provider": "Univesp",
+      "url": "https://www.youtube.com/@univesptv",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "Cisco Networking Academy — redes e IoT",
+      "provider": "Cisco",
+      "url": "https://www.netacad.com/",
+      "free": true,
+      "kind": "curso"
+    },
+    {
+      "title": "CONFEA — registro profissional e legislação",
+      "provider": "CONFEA",
+      "url": "https://www.confea.org.br/",
+      "free": true,
+      "kind": "portal"
+    },
+    {
+      "title": "Sociedade Brasileira de Microeletrônica (SBMicro)",
+      "provider": "SBMicro",
+      "url": "https://www.sbmicro.org.br/",
+      "free": false,
+      "kind": "comunidade"
+    },
+    {
+      "title": "Escola Virtual.Gov — Proteção de Dados Pessoais (LGPD)",
+      "provider": "Enap",
+      "url": "https://www.escolavirtual.gov.br/",
+      "free": true,
+      "kind": "curso"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Auditoria Guia de Carreira §4 (perguntas), §4.6 (pacote), §7 (tarefas L1–L10, D1–D10), §8 (mensagens)",
+      "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Dados do ramo (fase 1) — CBO 2122/2124, ISCO 2152/2512, ESCO computer hardware engineer, conselho CREA",
+      "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http%3A%2F%2Fdata.europa.eu%2Fesco%2Foccupation%2F92bb3d8c-8a9f-4cd7-80ec-247bbf173004",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CBO 2122-05 engenheiro de aplicativos em computação, família 2122 (espelho VRI Consulting)",
+      "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=212205",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Resolução CONFEA 418/1998 — refere a Resolução 380/1993 como atribuições provisórias dos engenheiros de computação (Normas Brasil)",
+      "url": "https://www.normasbrasil.com.br/norma/resolucao-418-1998_95623.html",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "UTFPR — plano de ensino Ética, Profissão e Cidadania (Eng. de Computação): Resolução 380/93 e art. 9º da Resolução 218/73",
+      "url": "https://antigo.utfpr.edu.br/cursos/coordenacoes/graduacao/pato-branco/pb-engenharia-de-computacao/documentos/plano-de-ensino/9o-periodo/ep29cp-etica-profissao-e-cidadania",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "CREA-MT — Atribuições das engenharias (PDF)",
+      "url": "https://www.crea-mt.org.br/portal/wp-content/uploads/2017/08/Atribuições-das-engenharias.pdf",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Lei 5.194/1966 (Planalto)",
+      "url": "https://www.planalto.gov.br/ccivil_03/leis/l5194.htm",
+      "accessedAt": "2026-11-02"
+    },
+    {
+      "title": "Brasscom — Relatório Perspectivas do Mercado de Trabalho do Macrossetor TIC (2026)",
+      "url": "https://brasscom.org.br/wp-content/uploads/2026/07/Relatorio-Pespectivas-do-Mercado-de-Trabalho-Apresentacao-v9.pdf",
+      "accessedAt": "2026-11-02"
+    }
+  ],
+  "naoConferido": [
+    "Rede da sessão bloqueou esco.ec.europa.eu, planalto.gov.br, confea.org.br e cbo.mte.gov.br: resoluções, leis e URIs foram conferidas só por resultados de busca e espelhos.",
+    "Resolução CONFEA 380/1993: confirmada por busca como atribuições provisórias (via Resolução 418/1998); vigência atual e eventual substituição por resolução posterior não conferidas.",
+    "Resoluções CONFEA 1.073/2016, 1.002/2002 e 1.025/2009, Lei 6.496/1977, ABNT NBR IEC 61508 e Resolução Anatel 715/2019 citadas de memória; não acessadas.",
+    "ISCO-08 2152 e 2511 e CBO 2143/3132 em a4.cboFamilies citados de memória; títulos não conferidos nesta sessão.",
+    "Nenhuma URI ESCO de competência (skill) obtida; ESCO 'embedded systems software developer' não localizado por busca.",
+    "Fontes de mercado CONFEA (estatísticas de registro) e ABINEE: páginas iniciais citadas; a existência de série por título profissional não foi conferida.",
+    "URLs de aprendizagem (Embarcados, STM32 Education, Arduino, Zephyr, KiCad, Univesp, NetAcad, SBMicro) não acessadas nesta sessão.",
+    "Certificações em c4 (CLAD, ARM AAE, CCNA) de conhecimento geral; vigência não conferida."
+  ]
+}

@@ -1,0 +1,328 @@
+{
+  "schemaVersion": 1,
+  "code": "engenharia-civil",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Engenharia Civil", "en": "Civil Engineering", "es": "Ingeniería Civil" },
+  "fields": ["engenharia-civil"],
+  "family": {
+    "cbo": [{ "code": "2142", "title": "Engenheiros civis e afins" }],
+    "isco08": [{ "code": "2142", "title": "Civil engineers" }],
+    "esco": [{ "uri": "http://data.europa.eu/esco/occupation/d7d986e1-7333-431b-9719-0c5c6939e360", "label": "civil engineer" }]
+  },
+  "scope": {
+    "summary": "Projeta, calcula, orça, planeja e acompanha a execução de edificações e obras de infraestrutura (estruturas, fundações, instalações hidrossanitárias, pavimentação, saneamento). Responde tecnicamente por projetos e obras mediante registro no CREA e ART. Atua em construtoras, incorporadoras, escritórios de projeto, órgãos públicos, concessionárias e consultoria.",
+    "entryRoles": ["Estagiário de engenharia civil", "Engenheiro júnior de obras", "Auxiliar de orçamento", "Auxiliar de planejamento e controle", "Projetista júnior (estruturas ou instalações)", "Engenheiro trainee"],
+    "midRoles": ["Engenheiro de obras (pleno)", "Engenheiro calculista", "Engenheiro orçamentista", "Engenheiro de planejamento e controle", "Projetista de instalações hidrossanitárias", "Fiscal de obras públicas", "Engenheiro de qualidade (PBQP-H)"],
+    "seniorRoles": ["Coordenador de obras", "Gerente de contratos", "Engenheiro sênior de estruturas", "Coordenador de projetos e BIM", "Perito e avaliador de engenharia", "Consultor em patologias das construções", "Diretor técnico"],
+    "sectors": ["construção civil (edificações)", "infraestrutura e transportes", "saneamento e recursos hídricos", "incorporação imobiliária", "administração pública (prefeituras, DER, DNIT)", "consultoria e escritórios de projeto", "indústria (manutenção, utilidades, obras industriais)", "perícias e avaliações", "energia (barragens, usinas, linhas)"],
+    "regulation": [
+      { "name": "Lei 5.194/1966", "issuer": "Brasil", "about": "regula o exercício das profissões de engenheiro, arquiteto e engenheiro-agrônomo e cria o sistema CONFEA/CREA" },
+      { "name": "Lei 6.496/1977", "issuer": "Brasil", "about": "institui a ART (Anotação de Responsabilidade Técnica) para todo contrato de obra ou serviço de engenharia" },
+      { "name": "Resolução CONFEA 218/1973", "issuer": "CONFEA", "about": "discrimina as atividades das modalidades profissionais; o art. 7º define as atribuições do engenheiro civil" },
+      { "name": "Resolução CONFEA 1.002/2002", "issuer": "CONFEA", "about": "Código de Ética Profissional: sigilo, responsabilidade, honestidade nas informações técnicas" },
+      { "name": "Resolução CONFEA 1.137/2023", "issuer": "CONFEA", "about": "regras atuais de ART e acervo técnico (sucedeu a Resolução 1.025/2009)" },
+      { "name": "ABNT NBR 6118:2023", "issuer": "ABNT", "about": "projeto de estruturas de concreto: estados-limite, durabilidade, detalhamento de armaduras" },
+      { "name": "ABNT NBR 15575:2021", "issuer": "ABNT", "about": "desempenho de edificações habitacionais: requisitos de segurança, habitabilidade e sustentabilidade" },
+      { "name": "NR-18 (MTE)", "issuer": "Ministério do Trabalho e Emprego", "about": "segurança e saúde na indústria da construção; PGR da obra" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "ART", "meaning": "Anotação de Responsabilidade Técnica: registro no CREA que vincula o profissional à obra ou serviço" },
+      { "term": "CREA", "meaning": "Conselho Regional de Engenharia e Agronomia; registro obrigatório para exercer a profissão" },
+      { "term": "CAT / acervo técnico", "meaning": "Certidão de Acervo Técnico: histórico de ARTs concluídas que comprova experiência" },
+      { "term": "projeto executivo", "meaning": "conjunto de pranchas, memoriais e especificações suficiente para executar a obra" },
+      { "term": "memorial descritivo", "meaning": "texto que descreve materiais, métodos e especificações do projeto" },
+      { "term": "memorial de cálculo", "meaning": "registro das hipóteses, cargas, modelos e verificações do dimensionamento" },
+      { "term": "orçamento analítico", "meaning": "planilha de serviços com quantidade, composição unitária, preço e BDI" },
+      { "term": "BDI", "meaning": "Bonificação e Despesas Indiretas: percentual sobre o custo direto que compõe o preço de venda" },
+      { "term": "SINAPI", "meaning": "Sistema Nacional de Pesquisa de Custos e Índices da Construção Civil (Caixa/IBGE), referência de preços" },
+      { "term": "cronograma físico-financeiro", "meaning": "distribuição no tempo dos serviços e do desembolso; base da curva S" },
+      { "term": "diário de obra", "meaning": "registro diário de atividades, efetivo, clima e ocorrências no canteiro" },
+      { "term": "medição", "meaning": "apuração periódica dos serviços executados para pagamento" },
+      { "term": "as built", "meaning": "desenho conforme construído, com as alterações feitas durante a execução" },
+      { "term": "ELU / ELS", "meaning": "estados-limite último e de serviço, verificações exigidas pela NBR 6118" },
+      { "term": "compatibilização", "meaning": "verificação de interferências entre projetos (arquitetura, estrutura, instalações)" },
+      { "term": "BIM", "meaning": "modelagem da informação da construção: modelo 3D com dados de materiais, custos e prazos" },
+      { "term": "patologia das construções", "meaning": "estudo de fissuras, infiltrações e outras manifestações de falha e suas causas" },
+      { "term": "laudo técnico", "meaning": "documento conclusivo de vistoria ou perícia, assinado por profissional habilitado com ART" },
+      { "term": "cota", "meaning": "medida indicada no desenho; cotas parciais devem somar a cota total" },
+      { "term": "carimbo", "meaning": "quadro da prancha com título, escala, data, número, autoria e responsável técnico" },
+      { "term": "escala", "meaning": "relação entre o desenho e o real (ex.: 1:50 planta, 1:20 detalhe), declarada na prancha" },
+      { "term": "PGR da obra", "meaning": "Programa de Gerenciamento de Riscos exigido pela NR-18 para canteiros" }
+    ],
+    "tools": ["AutoCAD", "Revit (BIM)", "Navisworks", "SketchUp", "TQS", "Eberick", "Ftool", "Civil 3D", "MS Project", "planilha eletrônica (Excel/Google Sheets)", "SINAPI e TCPO (bases de custo)", "Sienge ou similar (gestão de obras)", "QGIS", "estação total e nível (topografia)", "Letters e Drawings do Work Station"],
+    "deliverables": ["projeto executivo (pranchas)", "memorial descritivo", "memorial de cálculo", "orçamento analítico com BDI", "cronograma físico-financeiro e curva S", "relatório de vistoria técnica", "laudo técnico com ART", "diário de obra", "planilha de medição", "as built", "parecer técnico", "relatório de compatibilização de projetos", "plano de ataque da obra", "especificação técnica de materiais"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Dimensionamento e detalhamento de estruturas (concreto, aço, madeira)", "esco": null, "kind": "nucleo" },
+      { "label": "Desenho técnico e leitura de projetos (NBR 6492, NBR 8196)", "esco": null, "kind": "nucleo" },
+      { "label": "Orçamento e composição de custos (SINAPI, BDI)", "esco": null, "kind": "nucleo" },
+      { "label": "Planejamento e controle de obras (cronograma, curva S)", "esco": null, "kind": "nucleo" },
+      { "label": "Tecnologia dos materiais e execução de obras", "esco": null, "kind": "nucleo" },
+      { "label": "Projeto de instalações hidrossanitárias e drenagem", "esco": null, "kind": "nucleo" },
+      { "label": "Geotecnia e fundações", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de contratos, medições e aditivos", "esco": null, "kind": "apoio" },
+      { "label": "Modelagem BIM e compatibilização", "esco": null, "kind": "apoio" },
+      { "label": "Segurança do trabalho no canteiro (NR-18)", "esco": null, "kind": "apoio" },
+      { "label": "Patologias, vistorias e avaliações", "esco": null, "kind": "apoio" },
+      { "label": "Gestão da qualidade (PBQP-H, NBR 15575)", "esco": null, "kind": "apoio" },
+      { "label": "Topografia e locação de obra", "esco": null, "kind": "apoio" },
+      { "label": "Licitações e obras públicas (Lei 14.133/2021)", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação clara com equipe de campo e cliente", "negociação com fornecedores e empreiteiros", "ética e sigilo profissional", "decisão sob prazo e orçamento", "documentação rastreável"],
+    "tracks": [
+      { "id": "projetar-e-detalhar", "label": "Projetar e detalhar", "steps": ["planta baixa em 1:50 com cotas e carimbo (D1)", "detalhe construtivo em 1:20 com materiais (D6)", "memorial técnico curto da solução (L4)", "prancha de portfólio com três projetos (D2)"] },
+      { "id": "orcar-e-planejar", "label": "Orçar e planejar", "steps": ["orçamento analítico resumido com BDI (X1)", "infográfico de indicadores de obra ou curva S (D7)", "resposta a um briefing de orçamento (L8)", "plano 30-60-90 para o cargo-alvo (L9)"] },
+      { "id": "gerir-a-obra", "label": "Gerir a obra", "steps": ["fluxo de liberação de concretagem ou medição (D4)", "POP de recebimento de materiais (L7)", "estudo de caso STAR de um problema de obra (L3)", "redesenho antes e depois de um canteiro ou processo (D5)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"estagiário de obras\", \"engenheiro orçamentista\", \"projetista estrutural\", \"fiscal de obras\", \"técnico em edificações\"",
+      "cboFamilies": ["2142", "3121", "7102"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez na construção; se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio ou primeiro cargo em obra ou escritório de projeto",
+        "junior": "até dois anos; acompanha obra ou projeto com supervisão de um responsável técnico",
+        "pleno": "responde por frentes de obra, projetos ou orçamentos com autonomia e ART própria",
+        "senior": "referência técnica; revisa projetos, coordena disciplinas e orienta colegas",
+        "gestao": "responde por contratos, equipe, prazo e orçamento de uma ou mais obras"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (ex.: planta simples ou detalhamento estrutural) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na engenharia civil",
+      "options": ["ler e compatibilizar projetos", "dimensionar estruturas", "orçar com SINAPI ou TCPO", "planejar e controlar prazos", "coordenar equipe de campo", "executar e fiscalizar obras", "projetar instalações hidrossanitárias", "modelar em BIM", "fazer vistorias e laudos", "negociar com fornecedores e clientes", "aplicar normas de segurança no canteiro", "gerir contratos e medições"],
+      "why": "Suas competências declaradas viram o ponto de partida; a prova vem com as tarefas (planta, detalhe, memorial, orçamento)."
+    },
+    "c4": {
+      "certifications": ["registro no CREA", "pós-graduação em estruturas, geotecnia ou gestão de obras", "certificação Autodesk (Revit/AutoCAD)", "MS Project ou Primavera", "treinamento NR-18 e NR-35", "Lean Construction", "PMP ou CAPM", "curso de avaliações e perícias (IBAPE)"],
+      "languages": ["inglês", "espanhol"],
+      "why": "Formação, registro e certificações mostram lacunas em relação ao cargo que você quer, sem julgar seu valor."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver na engenharia civil?",
+      "options": ["cálculo estrutural", "BIM (Revit, Navisworks)", "orçamento e BDI", "planejamento de obras (MS Project, Lean)", "gestão de contratos e medições", "patologias e perícias", "projetos hidrossanitários", "fundações e geotecnia", "licitações e obras públicas", "desempenho e sustentabilidade (NBR 15575)"],
+      "why": "Com isso monto uma trilha com tarefas progressivas em vez de mostrar o catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Que frente quer mostrar primeiro no portfólio?", "type": "escolha", "options": ["projeto e cálculo", "orçamento e planejamento", "execução e gestão de obra", "vistorias, laudos e perícias"], "why": "Escolho a trilha inicial (projetar, orçar ou gerir) e a primeira tarefa de Drawings ou Letters.", "where": "P" },
+      { "id": "x2", "prompt": "Você tem registro ativo no CREA?", "type": "sim-nao", "options": [], "why": "Sem registro, as tarefas ficam como exercícios de competência; com registro, incluo tarefas de documentação técnica (sempre simuladas, sem ART real).", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["D1", "D6", "L4", "D2", "L3", "D4", "L7", "D7", "L8", "L1", "L6", "L9"],
+    "excluded": [
+      { "code": "D3", "reason": "render fotorrealista de produto não é entrega da engenharia civil; modelos 3D da área são BIM, fora do escopo do editor" },
+      { "code": "D8", "reason": "vista explodida de conjunto é entrega de projeto mecânico, não de obra" },
+      { "code": "D9", "reason": "wireframe de tela não pertence à área" }
+    ],
+    "parameters": {
+      "D1": {
+        "title": "Planta baixa em escala 1:50 conforme NBR 6492",
+        "brief": "Desenhe a planta baixa de um ambiente ou pavimento (seu, fictício ou autorizado; nunca projeto de cliente sob sigilo) em 1:50, com cotas internas e externas que fecham, níveis, indicação de norte, legenda e carimbo com título, escala, data e autoria.",
+        "parameters": { "scale": "1:50", "standard": "ABNT NBR 6492:2021", "requiredElements": ["cotas externas e internas", "níveis de piso", "indicação de norte", "legenda", "carimbo", "marcação de cortes"], "paper": "A3 ou A2", "clientProjectAllowed": false },
+        "criteria": ["escala declarada no carimbo e no título do desenho", "cotas parciais somam a cota total em cada direção", "legenda com a simbologia usada", "carimbo com título, escala, data, número e autoria", "cortes marcados e nomeados em planta", "declaração de que não é projeto de cliente sob sigilo"],
+        "evidence": "prancha PDF ou SVG",
+        "time": "2 h",
+        "level": 2
+      },
+      "D6": {
+        "title": "Detalhe construtivo em 1:20 com materiais especificados",
+        "brief": "Detalhe uma solução construtiva (armadura de viga, sapata, impermeabilização de baldrame, encontro laje-alvenaria) em escala 1:20 ou 1:10, com cotas, materiais, espessuras e a norma de referência.",
+        "parameters": { "scale": "1:20 ou 1:10", "requiredElements": ["cotas", "especificação de materiais", "espessuras e cobrimentos", "chamada em planta ou corte", "norma de referência"], "examples": ["armadura de viga (NBR 6118)", "sapata isolada (NBR 6122)", "impermeabilização de baldrame (NBR 9575)"] },
+        "criteria": ["escala de detalhe declarada", "cada material especificado com nome e espessura ou bitola", "cotas que fecham", "referência à norma aplicável com número e ano", "declaração de autoria e ausência de projeto sob sigilo"],
+        "evidence": "prancha de detalhe PDF ou SVG",
+        "time": "90 min",
+        "level": 3
+      },
+      "L4": {
+        "title": "Relatório técnico curto ou memorial descritivo",
+        "brief": "Escreva, em até 4 páginas, um relatório de vistoria ou um memorial descritivo de uma solução sua: objetivo, método, normas aplicadas, resultados, limitações e referências. Inclua o aviso de que é exercício e não substitui laudo ou ART.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "método", "normas aplicadas", "resultados", "limitações", "referências"], "disclaimerRequired": true },
+        "criteria": ["seis seções nomeadas", "até 4 páginas", "cita ao menos uma NBR ou NR com número e ano", "aviso de exercício sem valor de laudo ou ART", "sem endereço, nome de proprietário ou dado de cliente"],
+        "evidence": "relatório PDF",
+        "time": "2 h",
+        "level": 3
+      },
+      "D2": {
+        "title": "Prancha de portfólio A3 com três projetos ou obras",
+        "brief": "Reúna três trabalhos (projeto, obra, orçamento ou estudo) em uma prancha A3 com grade consistente, legenda por trabalho, seu papel em cada um e créditos de coautores. Só trabalhos próprios, acadêmicos ou com autorização do cliente.",
+        "parameters": { "format": "A3", "works": 3, "perWork": ["título", "ano", "seu papel", "escala ou dado principal"], "authorizationRequired": true },
+        "criteria": ["três trabalhos", "grade consistente", "legenda com seu papel em cada trabalho", "créditos de coautores e escritório", "declaração de autorização ou de trabalho próprio"],
+        "evidence": "prancha publicada (PDF ou PNG)",
+        "time": "90 min",
+        "level": 1
+      },
+      "D4": {
+        "title": "Fluxo de liberação de concretagem ou de medição",
+        "brief": "Desenhe o fluxo de um processo de obra que você conhece (liberação de concretagem, medição mensal, recebimento de materiais) com raias por responsável, início, fim e pontos de verificação.",
+        "parameters": { "lanes": ["engenheiro", "mestre", "laboratório ou fornecedor", "fiscal ou cliente"], "requiredElements": ["início", "fim", "decisões", "documentos gerados"] },
+        "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "documentos de saída identificados (ex.: ficha de slump, boletim de medição)"],
+        "evidence": "diagrama vetorial",
+        "time": "45 min",
+        "level": 2
+      },
+      "L7": {
+        "title": "POP de recebimento e controle de concreto",
+        "brief": "Escreva o procedimento de recebimento de concreto usinado (conferência da nota, slump, moldagem de corpos de prova, rastreabilidade) com passos numerados, responsáveis e critério de conclusão por passo, citando a NBR 12655.",
+        "parameters": { "steps": "8 a 15", "requiredColumns": ["passo", "responsável", "critério de conclusão", "registro"], "norm": "ABNT NBR 12655" },
+        "criteria": ["passos numerados", "responsável em cada passo", "critério de conclusão por passo", "norma citada com número", "sem dados de fornecedor real sem autorização"],
+        "evidence": "POP em PDF",
+        "time": "60 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Orçamento analítico resumido com BDI",
+        "competency": "Orçamento e composição de custos",
+        "criteria": ["ao menos 10 itens com unidade e quantidade", "referência de preço e data-base citadas (ex.: SINAPI mês/UF)", "BDI declarado com fórmula ou percentual justificado", "totais que fecham (quantidade × unitário)", "sem preços de propostas de terceiros"],
+        "evidence": "planilha ou tabela em PDF",
+        "time": "90 min",
+        "trigger": "Quer treinar um orçamento com base SINAPI de um serviço que você conhece?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "escala-declarada", "check": "a escala aparece no carimbo e no título de cada desenho", "appliesTo": ["D1", "D6", "D2"], "auto": true },
+      { "id": "cotas-fecham", "check": "as cotas parciais somam a cota total em cada direção", "appliesTo": ["D1", "D6"], "auto": true },
+      { "id": "legenda-presente", "check": "há legenda com a simbologia ou as séries usadas", "appliesTo": ["D1", "D6", "D7"], "auto": true },
+      { "id": "carimbo-completo", "check": "o carimbo traz título, escala, data, número da prancha e autoria", "appliesTo": ["D1", "D6", "D2"], "auto": true },
+      { "id": "vistas-referenciadas", "check": "cortes e detalhes marcados em planta têm nome e prancha de destino", "appliesTo": ["D1", "D6"], "auto": true },
+      { "id": "secoes-do-relatorio", "check": "objetivo, método, normas, resultados, limitações e referências existem e estão nomeados", "appliesTo": ["L4"], "auto": true },
+      { "id": "norma-citada", "check": "cita ao menos uma NBR ou NR com número e ano", "appliesTo": ["L4", "D6", "L7", "X1"], "auto": true },
+      { "id": "orcamento-fecha", "check": "quantidade × preço unitário = total em cada item e BDI declarado", "appliesTo": ["X1"], "auto": true },
+      { "id": "fluxo-fechado", "check": "o fluxo tem início, fim, raias e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "aviso-nao-substitui-art", "check": "o documento diz que é exercício e não substitui laudo, projeto assinado ou ART", "appliesTo": ["L4", "D1", "D6", "X1"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L4", "L6", "L8", "L9"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e que não há projeto, planta ou orçamento de cliente sob sigilo", "appliesTo": ["L1", "L3", "L4", "L6", "L7", "L8", "L9", "D1", "D2", "D4", "D5", "D6", "D7", "X1"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "coerencia-tecnica", "label": "Coerência técnica", "levels": { "aproxima": "a solução tem lacunas em relação à norma ou ao contexto", "atende": "a solução é compatível com a norma citada e com o uso previsto", "supera": "justifica escolhas, compara alternativas e aponta limites" } },
+      { "id": "legibilidade-do-desenho", "label": "Legibilidade do desenho", "levels": { "aproxima": "linhas e textos se confundem; exige esforço para ler", "atende": "hierarquia de linhas, textos e cotas permite leitura direta", "supera": "a prancha se lê sem explicação e segue a convenção da NBR 6492" } },
+      { "id": "rastreabilidade", "label": "Rastreabilidade de premissas e fontes", "levels": { "aproxima": "premissas implícitas, fontes ausentes", "atende": "cargas, preços e normas têm origem declarada", "supera": "cada número pode ser refeito a partir do que está escrito" } },
+      { "id": "resultado", "label": "Resultado demonstrado", "levels": { "aproxima": "descreve atividades, sem resultado", "atende": "mostra um resultado mensurável (prazo, custo, não conformidade evitada)", "supera": "mostra resultado, contexto e o que faria diferente" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Engenharia Civil (CBO 2142; CREA, Lei 5.194/1966). Use o vocabulário da área: ART, acervo técnico, projeto executivo, memorial descritivo e de cálculo, orçamento analítico com BDI e base SINAPI, cronograma físico-financeiro, medição, as built, compatibilização, BIM. Cite normas com número e ano quando couber: ABNT NBR 6118:2023 (concreto), 6122:2022 (fundações), 6120:2019 (cargas), 15575:2021 (desempenho), 6492:2021 (representação), 12655 (concreto), NR-18 (canteiro), Lei 14.133/2021 (obras públicas). No Drawings, a rubrica objetiva é: escala declarada, cotas que fecham, legenda, carimbo completo e vistas referenciadas. Nunca produza projeto, laudo, parecer ou memorial assináveis nem sugira que substituem ART ou responsabilidade técnica: tudo é exercício de competência, e todo documento leva esse aviso. Nunca dimensione ou valide estruturas, fundações ou instalações para uso real; aponte a norma e recomende um profissional habilitado. Projetos, plantas, orçamentos e laudos de clientes sob sigilo ou NDA não entram em portfólio sem autorização escrita; nunca peça endereço, nome de proprietário ou dado de obra identificável. Pergunte antes de inferir área, senioridade ou situação. Afirmações sobre mercado da construção citam fonte, data e região (CAGED, RAIS, CBIC) ou dizem \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos, não por score; pré-cheque só critérios objetivos e lembre que o selo depende de revisão humana. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação da pessoa.",
+    "citeSources": [
+      { "title": "CONFEA — Conselho Federal de Engenharia e Agronomia", "url": "https://www.confea.org.br/", "kind": "conselho" },
+      { "title": "Catálogo ABNT — normas NBR", "url": "https://www.abntcatalogo.com.br/", "kind": "norma" },
+      { "title": "Normas Regulamentadoras vigentes (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadoras/normas-regulamentadoras-vigentes", "kind": "norma" },
+      { "title": "SINAPI — Caixa Econômica Federal", "url": "https://www.caixa.gov.br/poder-publico/modernizacao-gestao/sinapi/Paginas/default.aspx", "kind": "orgao-publico" },
+      { "title": "Lei 5.194/1966 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l5194.htm", "kind": "norma" },
+      { "title": "CBIC — Câmara Brasileira da Indústria da Construção", "url": "https://cbic.org.br/", "kind": "referencia" },
+      { "title": "Novo CAGED — Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" },
+      { "title": "CBO — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências da engenharia civil; x1 escolhe a trilha (projetar, orçar ou gerir)." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "D1, D6, L4 e D2 entram primeiro; cada card diz a competência, a evidência e que o resultado é exercício, sem ART." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano por horas (d1) e aparelho (d4); D1 e D6 só no computador; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Escala declarada, cotas que fecham, legenda, carimbo, seções do relatório, norma citada e aviso de não substituir ART; o selo é humano." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de memorial, relatório, POP e orçamento com prévia; nunca redige laudo ou parecer assinável." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Carimbo, legenda, conferência de cotas e marcação de cortes; não dimensiona nem valida elementos estruturais." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese das competências declaradas e evidenciadas (projeto, orçamento, obra), lacunas e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: arquitetura, construção de edifícios, ambiental e sanitária, segurança do trabalho, produção; dados de mercado com fonte e data." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por CBO 2142 e competências compartilhadas; só pessoas descobríveis por opt-in." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\"." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com área (estruturas, obras, orçamento), três competências e uma prova com link; só com consentimento específico." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "projetos e plantas de clientes sob NDA", "laudos e ARTs com dados pessoais", "orçamentos e propostas comerciais de terceiros", "endereços e dados de proprietários", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca produzir projeto, laudo, parecer ou memorial assinável nem sugerir que substitui ART ou responsabilidade técnica",
+      "nunca dimensionar ou validar estrutura, fundação ou instalação para uso real; indicar a norma e um profissional habilitado",
+      "projetos, plantas, orçamentos e laudos de clientes sob sigilo não entram em portfólio sem autorização escrita",
+      "nunca pedir nem registrar endereço, nome de proprietário ou dado identificável de obra",
+      "perguntar em vez de inferir área, senioridade ou situação",
+      "mercado com fonte, data e região (CAGED, RAIS, CBIC) ou \"estimativa\"; sem promessa de emprego ou salário",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "media", "drawings": "alta" },
+    "drawingsModes": ["2d-tecnico", "prancha", "diagrama", "infografico"],
+    "lettersTemplates": ["relatorio-tecnico", "memorial", "pop", "proposta", "estudo-de-caso", "curriculo", "bio", "plano-30-60-90", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "D1, D6 e D2 exigem computador; no celular ficam L6, L5, L10 e a revisão de critérios.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: planta baixa 1:50 de um ambiente que você conhece (2 h). Comprova desenho técnico, que cargos de projetista pedem.",
+        "Faltam só a legenda e o carimbo para fechar os critérios objetivos da sua planta. Quando quiser.",
+        "Sem pressão. Quando quiser retomar, o POP de recebimento de concreto (60 min) está aqui.",
+        "Seu memorial técnico já tem 5 de 6 seções. Falta \"limitações\": o que você não verificou?"
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": { "sensitiveData": ["projetos de clientes sob NDA", "plantas e laudos com endereço e dados de proprietários", "ART e documentos de obra com dados pessoais", "orçamentos e propostas comerciais de terceiros"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — construção civil (seção F da CNAE) e CBO 2142", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos por CBO 2142", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "PNAD Contínua (IBGE) — ocupados na construção", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html", "geography": "Brasil e UF", "cadence": "trimestral", "kind": "estatistica-oficial" },
+      { "title": "CBIC — Hub de Dados e Desempenho Econômico da Construção", "url": "https://cbic.org.br/hubdedados/", "geography": "Brasil e UF", "cadence": "mensal", "kind": "associacao" },
+      { "title": "CONFEA — informações sobre profissionais registrados no sistema CONFEA/CREA", "url": "https://www.confea.org.br/", "geography": "Brasil e UF", "cadence": "eventual", "kind": "conselho" },
+      { "title": "Concurso Nacional Unificado e editais de órgãos de obras (gov.br)", "url": "https://www.gov.br/gestao/pt-br/concursonacional", "geography": "Brasil", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis (CAGED, RAIS, PNAD, CBIC, CONFEA, editais); sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "arquitetura-e-urbanismo", "why": "Compartilha desenho técnico, compatibilização e obra; profissão própria com registro no CAU e graduação específica.", "gaps": ["graduação em Arquitetura e Urbanismo e registro no CAU", "projeto de arquitetura, conforto e urbanismo", "representação conforme NBR 6492 e acessibilidade NBR 9050"], "steps": ["aproveitar competências de projeto e obra em escritórios de arquitetura (coordenação de projetos)", "planta e detalhe no Drawings (D1, D6) com foco em arquitetura", "avaliar segunda graduação ou pós em projeto"] },
+    { "to": "construcao-de-edificios", "why": "Mesma família CBO 2142 e mesmo canteiro; foco em execução, gestão de obra e tecnologia construtiva.", "gaps": ["rotina de canteiro e gestão de equipes de produção", "controle de qualidade e PBQP-H na execução"], "steps": ["POP e fluxo de processo de obra (L7, D4)", "estudo de caso STAR de uma frente de obra (L3)", "treinamento NR-18"] },
+    { "to": "engenharia-ambiental-e-sanitaria", "why": "Saneamento, drenagem e hidráulica são comuns às duas áreas; o CREA registra ambas.", "gaps": ["licenciamento ambiental e normas CONAMA", "tratamento de água e efluentes", "gestão de resíduos da construção (CONAMA 307)"], "steps": ["relatório técnico de um tema ambiental da obra (L4)", "infográfico de indicadores ambientais (D7)", "curso de licenciamento ambiental (ANA, Enap)"] },
+    { "to": "seguranca-do-trabalho", "why": "A NR-18 já faz parte da rotina de obra; a especialização em engenharia de segurança (Lei 7.410/1985) é pós-graduação para engenheiros.", "gaps": ["pós-graduação em Engenharia de Segurança do Trabalho", "NR-1 (GRO/PGR), NR-35 e higiene ocupacional"], "steps": ["fluxo de PGR da obra (D4)", "POP de permissão de trabalho em altura (L7)", "especialização reconhecida pelo CONFEA"] },
+    { "to": "engenharia-de-producao", "why": "Planejamento, custos e processos da obra são competências de produção; Lean Construction é ponte direta.", "gaps": ["métodos de produção, PCP e qualidade industrial", "estatística e otimização"], "steps": ["infográfico de indicadores de produtividade (D7)", "redesenho antes e depois de um processo (D5)", "curso de Lean Construction"] }
+  ],
+  "learning": [
+    { "title": "Escola Virtual.Gov — cursos de obras públicas, licitações e fiscalização", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "SINAPI — metodologia, cadernos técnicos e composições", "provider": "Caixa Econômica Federal", "url": "https://www.caixa.gov.br/poder-publico/modernizacao-gestao/sinapi/Paginas/default.aspx", "free": true, "kind": "portal" },
+    { "title": "Normas Regulamentadoras vigentes (NR-18, NR-35)", "provider": "Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadoras/normas-regulamentadoras-vigentes", "free": true, "kind": "norma" },
+    { "title": "Catálogo ABNT — NBR 6118, 6122, 15575, 6492", "provider": "ABNT", "url": "https://www.abntcatalogo.com.br/", "free": false, "kind": "norma" },
+    { "title": "Publicações e guias técnicos da CBIC (desempenho, BIM, qualidade)", "provider": "CBIC", "url": "https://cbic.org.br/publicacoes/", "free": true, "kind": "portal" },
+    { "title": "e-Aulas USP — videoaulas de engenharia", "provider": "Universidade de São Paulo", "url": "https://eaulas.usp.br/", "free": true, "kind": "portal" },
+    { "title": "Fundacentro — publicações sobre segurança na construção", "provider": "Fundacentro", "url": "https://www.gov.br/fundacentro/pt-br", "free": true, "kind": "portal" },
+    { "title": "Portal do CONFEA — legislação profissional e ética", "provider": "CONFEA", "url": "https://www.confea.org.br/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Fase 1 — grupo Engenharia e TIC (dados do ramo, famílias CBO/ISCO, conselho, vizinhos)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "CONFEA — Confea atualiza regras de ART e acervo técnico (Resolução 1.137/2023)", "url": "https://www.confea.org.br/node/232878", "accessedAt": "2026-11-02" },
+    { "title": "CONFEA — Resolução 1.025 traz alterações na ART e Atestado Técnico", "url": "https://www.confea.org.br/node/112061", "accessedAt": "2026-11-02" },
+    { "title": "CREA-MT — Perguntas frequentes sobre ART", "url": "https://www.crea-mt.org.br/portal/?p=10141", "accessedAt": "2026-11-02" },
+    { "title": "World of Taxonomy — ESCO civil engineer (d7d986e1…) ↔ ISCO-08 2142 (espelho, não oficial)", "url": "https://worldoftaxonomy.com/codes/esco_occupations/d7d986e1-7333-431b-9719-0c5c6939e360", "accessedAt": "2026-11-02" },
+    { "title": "CBIC — Construção civil ultrapassa 3 milhões de empregos formais (Novo CAGED, 2025)", "url": "https://cbic.org.br/construcao-supera-3-milhoes-de-trabalhadores-formais/", "accessedAt": "2026-11-02" },
+    { "title": "CBIC — Boletim de normas técnicas do setor da construção (NBR 6492:2021 e outras)", "url": "https://cbic.org.br/inovacao/2021/07/15/66606-2/", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URI ESCO de civil engineer obtida em espelho (World of Taxonomy), não no portal esco.ec.europa.eu (host bloqueado na sessão)",
+    "Resolução CONFEA 218/1973 (art. 7º) e Resolução 1.002/2002 (Código de Ética) citadas de memória; não apareceram nas buscas",
+    "Vigência e eventuais prorrogações da Resolução CONFEA 1.137/2023 não confirmadas no texto oficial",
+    "Anos de edição das NBR (6118:2023, 6122:2022, 6120:2019, 15575:2021, 6492:2021, 9575, 12655) não conferidos no catálogo ABNT",
+    "Famílias CBO 3121 (técnicos em construção civil) e 7102 (supervisores da construção civil) em questions.a4 não conferidas no portal da CBO",
+    "URLs de SINAPI, Normas Regulamentadoras, CBIC publicações, e-Aulas USP, Fundacentro e CNU não abertas nesta sessão",
+    "CONFEA não tem página de estatísticas de profissionais localizada; fonte de mercado 'conselho' aponta para o portal geral",
+    "Número de ~3 milhões de empregos formais na construção (CBIC/CAGED 2025) visto só em resumo de busca",
+    "Nenhuma URI ESCO de competência (skill) confirmada; todas as competências com esco: null"
+  ]
+}

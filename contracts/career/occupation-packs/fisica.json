@@ -1,0 +1,281 @@
+{
+  "schemaVersion": 1,
+  "code": "fisica",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Física (físico, física médica)", "en": "Physics (physicist, medical physics)", "es": "Física (físico, física médica)" },
+  "fields": ["fisica"],
+  "family": {
+    "cbo": [{ "code": "2131", "title": "Físicos" }],
+    "isco08": [{ "code": "2111", "title": "Physicists and astronomers" }],
+    "esco": []
+  },
+  "scope": {
+    "summary": "Modela, mede e explica fenômenos físicos: pesquisa experimental e teórica, instrumentação, metrologia, física computacional e modelagem de dados, física médica (radioterapia, medicina nuclear, radiodiagnóstico) e proteção radiológica. Profissão sem conselho próprio; atividades com radiação ionizante exigem certificação da CNEN (supervisor de proteção radiológica) e seguem normas CNEN e ANVISA. Atua em pesquisa, hospitais, indústria, tecnologia, finanças e dados, e ensino.",
+    "entryRoles": ["Bolsista de iniciação científica ou técnico de laboratório", "Estagiário em física médica ou metrologia", "Analista de dados ou modelagem júnior", "Assistente de instrumentação e ensaios", "Residente em física médica"],
+    "midRoles": ["Físico médico (radioterapia, medicina nuclear, radiodiagnóstico)", "Supervisor de proteção radiológica (certificado CNEN)", "Pesquisador em laboratório ou instituto", "Engenheiro de aplicação ou de instrumentação", "Cientista de dados ou analista quantitativo", "Metrologista em laboratório de calibração", "Físico de P&D em indústria (óptica, semicondutores, materiais)"],
+    "seniorRoles": ["Coordenador de física médica de serviço hospitalar", "Pesquisador titular ou docente em instituição pública", "Especialista em dosimetria ou metrologia de radiações", "Gerente de P&D ou de inovação", "Consultor em proteção radiológica", "Líder técnico em modelagem ou ciência de dados"],
+    "sectors": ["pesquisa e ensino superior (universidades, institutos, CNPEM, CBPF, INPE)", "saúde (radioterapia, medicina nuclear, radiodiagnóstico)", "setor nuclear e instalações radiativas (CNEN, INB, indústria com fontes)", "metrologia e calibração (Inmetro, laboratórios acreditados)", "indústria de alta tecnologia (óptica, semicondutores, materiais, energia)", "tecnologia, dados e finanças quantitativas", "petróleo, mineração e geofísica", "aeroespacial e meteorologia", "startups de deep tech"],
+    "regulation": [
+      { "name": "Lei 6.189/1974 e Lei 14.222/2021", "issuer": "Brasil", "about": "competências da CNEN e criação da ANSN (Autoridade Nacional de Segurança Nuclear) para regular e fiscalizar o uso de radiação" },
+      { "name": "Norma CNEN NN 3.01 (Diretrizes Básicas de Proteção Radiológica)", "issuer": "CNEN", "about": "princípios de justificação, otimização e limitação de dose; limites para trabalhadores e público" },
+      { "name": "Norma CNEN NN 7.01", "issuer": "CNEN", "about": "certificação da qualificação de supervisores de proteção radiológica (SPR)" },
+      { "name": "Normas CNEN NN 6.10 e NN 3.05", "issuer": "CNEN", "about": "segurança e proteção radiológica em radioterapia e em medicina nuclear" },
+      { "name": "RDC ANVISA 611/2022 e Instruções Normativas associadas", "issuer": "ANVISA", "about": "requisitos sanitários para radiologia diagnóstica e intervencionista, com programa de garantia da qualidade" },
+      { "name": "NR-32 (MTE) e NR-15 Anexo 5", "issuer": "MTE", "about": "segurança em serviços de saúde com radiação ionizante; insalubridade por radiação" },
+      { "name": "ABNT NBR ISO/IEC 17025 e VIM (Inmetro)", "issuer": "ABNT / Inmetro", "about": "competência de laboratórios de ensaio e calibração; vocabulário internacional de metrologia e incerteza" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "incerteza de medição (GUM)", "meaning": "quantificação da dúvida sobre o resultado, segundo o Guia para a Expressão da Incerteza de Medição" },
+      { "term": "calibração", "meaning": "comparação de um instrumento com um padrão rastreável para corrigir ou caracterizar sua resposta" },
+      { "term": "modelo físico", "meaning": "representação matemática de um fenômeno, com hipóteses e domínio de validade declarados" },
+      { "term": "simulação Monte Carlo", "meaning": "método estatístico de simulação usado em transporte de radiação, materiais e finanças" },
+      { "term": "ajuste de curvas e resíduos", "meaning": "estimação de parâmetros de um modelo a partir de dados, com análise dos desvios" },
+      { "term": "SPR", "meaning": "supervisor de proteção radiológica, certificado pela CNEN, responsável pelo plano de proteção da instalação" },
+      { "term": "plano de proteção radiológica", "meaning": "documento exigido pela CNEN com classificação de áreas, monitoração, dosimetria e procedimentos de emergência" },
+      { "term": "ALARA / otimização", "meaning": "manter as doses tão baixas quanto razoavelmente exequível" },
+      { "term": "dosimetria", "meaning": "medição e cálculo da dose absorvida por pacientes, trabalhadores ou objetos" },
+      { "term": "controle de qualidade de equipamentos", "meaning": "testes periódicos de aceitação e constância em aceleradores, tomógrafos e câmaras" },
+      { "term": "planejamento de radioterapia", "meaning": "cálculo da distribuição de dose no paciente, feito sob responsabilidade do físico médico e do radioterapeuta" },
+      { "term": "relatório técnico", "meaning": "documento com objetivo, método, resultados, incerteza, limitações e referências" },
+      { "term": "artigo científico", "meaning": "publicação revisada por pares com introdução, método, resultados e discussão" },
+      { "term": "arXiv", "meaning": "repositório aberto de preprints muito usado em física" },
+      { "term": "instrumentação", "meaning": "projeto, montagem e caracterização de sistemas de medição e aquisição de dados" },
+      { "term": "análise de dados", "meaning": "tratamento estatístico, visualização e inferência a partir de medições ou simulações" }
+    ],
+    "tools": ["Python (NumPy, SciPy, Matplotlib), Julia ou MATLAB", "ROOT, Geant4 ou outros pacotes de simulação", "LaTeX e Overleaf", "LabVIEW, Arduino e sistemas de aquisição de dados", "osciloscópio, multímetro, detectores de radiação", "câmaras de ionização e eletrômetros (física médica)", "sistemas de planejamento de radioterapia (TPS)", "Git e computação em cluster", "Origin ou planilhas para ajuste de dados"],
+    "deliverables": ["relatório técnico de experimento ou simulação", "artigo científico ou preprint", "POP de controle de qualidade ou de medição", "relatório de calibração com incerteza", "plano de proteção radiológica (instalação fictícia, exercício)", "notebook de análise de dados reprodutível", "infográfico de resultados", "projeto de pesquisa para bolsa ou pós-graduação", "pôster ou apresentação de congresso", "material didático e divulgação científica"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Modelagem matemática de fenômenos físicos", "esco": null, "kind": "nucleo" },
+      { "label": "Física experimental e instrumentação", "esco": null, "kind": "nucleo" },
+      { "label": "Análise de dados, estatística e incerteza (GUM)", "esco": null, "kind": "nucleo" },
+      { "label": "Programação científica e simulação numérica", "esco": null, "kind": "nucleo" },
+      { "label": "Redação científica e técnica (relatórios, artigos)", "esco": null, "kind": "nucleo" },
+      { "label": "Proteção radiológica e dosimetria", "esco": null, "kind": "nucleo" },
+      { "label": "Metrologia e calibração (ISO/IEC 17025)", "esco": null, "kind": "apoio" },
+      { "label": "Controle de qualidade de equipamentos médicos ou industriais", "esco": null, "kind": "apoio" },
+      { "label": "Elaboração de projetos de pesquisa e captação de bolsas", "esco": null, "kind": "apoio" },
+      { "label": "Divulgação científica e ensino", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["raciocínio abstrato e resolução de problemas", "leitura e escrita técnica em inglês", "trabalho em equipe multidisciplinar", "reprodutibilidade e honestidade científica", "comunicação para públicos não especialistas"],
+    "tracks": [
+      { "id": "pesquisa-e-dados", "label": "Pesquisa, modelagem e dados", "steps": ["relatório técnico de um experimento ou simulação (L4)", "infográfico de resultados com incerteza (D7)", "projeto de pesquisa curto (X2)", "revisão crítica de um artigo ou peça da área (L10)"] },
+      { "id": "fisica-medica", "label": "Física médica e proteção radiológica", "steps": ["POP de controle de qualidade de um equipamento (L7)", "plano de proteção radiológica de instalação fictícia (X1)", "fluxograma do processo de radioterapia ou do controle de qualidade (D4)", "plano 30-60-90 para residência ou serviço (L9)"] },
+      { "id": "industria-e-tecnologia", "label": "Indústria, metrologia e tecnologia", "steps": ["relatório de calibração com incerteza (L4)", "estudo de caso de um problema técnico resolvido (L3)", "currículo direcionado a P&D ou dados (L1)", "resumo de perfil com três competências (L6)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"físico médico\", \"bolsista de pesquisa\", \"analista de dados\", \"metrologista\"",
+      "cboFamilies": ["2131", "2111", "2112", "3241"],
+      "why": "Pergunto seu último cargo ou área para partir da sua experiência em pesquisa, saúde, indústria ou dados. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "iniciação científica, estágio ou primeiro cargo",
+        "junior": "executa medições, simulações ou análises com supervisão",
+        "pleno": "conduz projetos ou rotinas de controle de qualidade com autonomia",
+        "senior": "referência técnica; orienta estudantes ou colegas",
+        "gestao": "responde por laboratório, serviço, grupo de pesquisa ou orçamento"
+      },
+      "why": "Pergunto o nível para ajustar a dificuldade das tarefas e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem",
+      "options": ["modelagem matemática", "montagem de experimentos e instrumentação", "programação científica (Python, C++, Julia)", "simulação numérica e Monte Carlo", "análise estatística e incerteza", "dosimetria e proteção radiológica", "controle de qualidade de equipamentos", "metrologia e calibração", "redação científica", "ensino e divulgação científica", "aprendizado de máquina e dados"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com as tarefas."
+    },
+    "c4": {
+      "certifications": ["bacharelado em Física ou Física Médica", "mestrado ou doutorado", "residência em física médica", "certificação de SPR pela CNEN", "título de especialista da ABFM", "curso de metrologia ou ISO/IEC 17025", "cursos de Python, ciência de dados ou HPC"],
+      "languages": ["inglês (leitura e escrita científica)", "espanhol", "Libras"],
+      "why": "Formação, certificações e idiomas ajudam a ver lacunas em relação ao cargo, à bolsa ou à residência que você quer."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["programação e simulação", "ciência de dados e aprendizado de máquina", "instrumentação e eletrônica", "dosimetria e proteção radiológica", "metrologia e incerteza", "redação de artigos e projetos", "divulgação científica", "gestão de projetos de P&D"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que frente você quer atuar primeiro?", "type": "escolha", "options": ["pesquisa acadêmica", "física médica", "proteção radiológica e setor nuclear", "metrologia e indústria", "dados, tecnologia ou finanças", "ensino e divulgação"], "why": "A frente define quais tarefas e normas entram primeiro no seu plano.", "where": "P" },
+      { "id": "x2", "prompt": "Você trabalha ou pretende trabalhar com radiação ionizante?", "type": "sim-nao", "options": [], "why": "Se sim, incluo tarefas de proteção radiológica e as normas CNEN e ANVISA no seu plano.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L4", "D7", "L7", "D4", "L3", "L1", "L6", "L10", "L9", "L5", "D2"],
+    "excluded": [
+      { "code": "D1", "reason": "planta de ambiente não é entrega do físico" },
+      { "code": "D6", "reason": "detalhe construtivo não pertence à área" },
+      { "code": "D8", "reason": "vista explodida de conjunto mecânico raramente é entrega do físico" },
+      { "code": "D9", "reason": "wireframe de tela não pertence à área" }
+    ],
+    "parameters": {
+      "L4": {
+        "title": "Relatório técnico de experimento, simulação ou calibração",
+        "brief": "Em até 4 páginas, relate um experimento, uma simulação ou uma calibração: objetivo, modelo e método (montagem, instrumentos ou código), resultados com incerteza expandida e unidades do SI, limitações e referências. Dados de pesquisa não publicados ou sob acordo ficam fora; use dados próprios publicáveis, públicos ou fictícios.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "modelo e método", "resultados com incerteza", "limitações", "referências"], "uncertaintyGuide": "GUM (JCGM 100)", "siUnits": true },
+        "criteria": ["cinco seções nomeadas", "até 4 páginas", "resultados com incerteza e unidades do SI", "modelo com hipóteses declaradas", "código ou montagem descritos de modo reprodutível", "sem dados não publicados de terceiros ou de pacientes"],
+        "evidence": "relatório PDF",
+        "time": "2 h",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de resultados com incerteza",
+        "brief": "Monte um infográfico com um ou dois gráficos de resultados (medição versus modelo, curva de calibração, distribuição simulada) com barras de incerteza, eixos e unidades rotulados, fonte e uma mensagem principal.",
+        "parameters": { "charts": "1 a 2", "requiredElements": ["barras de incerteza", "eixos e unidades do SI", "fonte dos dados", "mensagem principal", "modelo ou referência comparada"] },
+        "criteria": ["fonte citada", "eixos e unidades rotulados", "barras de incerteza presentes", "comparação com modelo ou referência", "uma mensagem principal explícita"],
+        "evidence": "imagem + PDF",
+        "time": "60 min",
+        "level": 1
+      },
+      "L7": {
+        "title": "POP de controle de qualidade ou de medição",
+        "brief": "Escreva o procedimento de um teste de controle de qualidade (constância de um equipamento, verificação de um detector) ou de uma medição de laboratório: finalidade, segurança e proteção radiológica quando houver, instrumentos, passos numerados com responsável e critério de aceitação (tolerância), registros e referência a norma ou protocolo.",
+        "parameters": { "steps": "8 a 15", "requiredColumns": ["passo", "responsável", "tolerância ou critério", "registro"], "requiredSections": ["finalidade", "segurança", "instrumentos", "procedimento", "registros", "referências"] },
+        "criteria": ["passos numerados com responsável", "tolerância ou critério de aceitação por passo", "seção de segurança presente", "norma ou protocolo citado", "registro de resultado definido"],
+        "evidence": "POP em PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "D4": {
+        "title": "Fluxograma de processo experimental ou clínico",
+        "brief": "Desenhe o fluxo de um processo: da proposta de experimento à publicação, do pedido de tratamento à entrega da dose em radioterapia, ou do controle de qualidade de um equipamento, com raias por responsável, início, fim e decisões.",
+        "parameters": { "options": ["fluxo de experimento ou simulação", "processo de radioterapia (fictício)", "controle de qualidade de equipamento"], "requiredElements": ["início", "fim", "decisões", "pontos de verificação"] },
+        "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "pontos de verificação marcados"],
+        "evidence": "diagrama vetorial",
+        "time": "45 min",
+        "level": 2
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "letters", "title": "Plano de proteção radiológica de instalação fictícia (exercício)", "competency": "Proteção radiológica e dosimetria", "criteria": ["classificação de áreas (controlada, supervisionada, livre)", "monitoração individual e de área descritas", "limites de dose citados conforme CNEN NN 3.01", "procedimentos de emergência e responsáveis definidos", "instalação fictícia e aviso de que não substitui plano aprovado nem SPR certificado"], "evidence": "plano em PDF", "time": "2 h", "trigger": "Você trabalha ou quer trabalhar com radiação ionizante? Monte um plano de proteção para uma instalação fictícia.", "level": 3 },
+      { "id": "X2", "editor": "letters", "title": "Projeto de pesquisa curto", "competency": "Elaboração de projetos de pesquisa", "criteria": ["pergunta de pesquisa e hipótese explícitas", "método e recursos necessários", "cronograma", "resultados esperados e riscos", "referências"], "evidence": "projeto em PDF", "time": "2 h", "trigger": "Quer se candidatar a bolsa ou pós? Comece por um projeto de 3 páginas.", "level": 2 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L9", "X1", "X2"], "auto": true },
+      { "id": "incerteza-e-unidades", "check": "resultados trazem incerteza e unidades do SI", "appliesTo": ["L4", "D7"], "auto": true },
+      { "id": "eixos-e-fonte", "check": "eixos e unidades rotulados, fonte citada e barras de incerteza presentes", "appliesTo": ["D7"], "auto": true },
+      { "id": "tolerancias", "check": "cada passo do POP tem tolerância ou critério de aceitação", "appliesTo": ["L7"], "auto": true },
+      { "id": "aviso-exercicio", "check": "o plano declara ser exercício com instalação fictícia, sem substituir SPR ou plano aprovado", "appliesTo": ["X1"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "creditos-e-fontes", "check": "coautores, dados e códigos de terceiros estão creditados", "appliesTo": ["L4", "L5", "L10", "D2", "D7", "D10"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados de pacientes e de pesquisa não publicada de terceiros", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L9", "L10", "D2", "D4", "D7", "X1", "X2"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "rigor", "label": "Rigor físico e metodológico", "levels": { "aproxima": "hipóteses ou método implícitos", "atende": "hipóteses, método e incerteza explícitos e coerentes", "supera": "discute validade do modelo, fontes de erro e alternativas" } },
+      { "id": "reprodutibilidade", "label": "Reprodutibilidade", "levels": { "aproxima": "outra pessoa não conseguiria repetir", "atende": "outra pessoa repetiria com o que está descrito", "supera": "dados e código disponíveis e documentados" } },
+      { "id": "clareza", "label": "Clareza para o público-alvo", "levels": { "aproxima": "a conclusão exige releitura", "atende": "a conclusão é entendida na primeira leitura", "supera": "quem não é físico entende o resultado e sua importância" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Física (bacharelado; pesquisa, física médica, metrologia, indústria ou dados). Use o vocabulário da área: modelo físico, incerteza (GUM), calibração e rastreabilidade, simulação Monte Carlo, ajuste e resíduos, instrumentação, dosimetria, ALARA, SPR, plano de proteção radiológica, controle de qualidade de equipamentos. Cite, quando couber, as normas CNEN NN 3.01 (proteção radiológica) e NN 7.01 (certificação de SPR), a RDC ANVISA 611/2022, a NR-32, a ISO/IEC 17025 e o VIM. A profissão não tem conselho próprio, mas atividades com radiação ionizante exigem certificação e autorização da CNEN: nunca redija plano de proteção, relatório de dosimetria ou de controle de qualidade para uso real ou assinatura; o que você propõe é exercício com instalação fictícia e não substitui o SPR, o físico médico responsável nem a aprovação da CNEN. Não dê orientação clínica nem sobre doses a pacientes ou terceiros. Trate como sigilosos: dados de pacientes em física médica e dosimetria, resultados de pesquisa não publicados ou sob acordo de confidencialidade. Pergunte antes de inferir frente de atuação, senioridade ou certificações. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por que foi sugerida, e aceita \"não me serve\". Afirmações sobre mercado (CAGED/RAIS para a CBO 2131, editais de institutos, residências e bolsas) citam fonte, data e região ou dizem \"estimativa\"; nunca prometa entrevista, emprego, bolsa ou salário. Progresso é por critérios atendidos, nunca por pontuação. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação. Pré-cheque só critérios objetivos; o selo é humano.",
+    "citeSources": [
+      { "title": "CNEN — normas de proteção radiológica e certificação", "url": "https://www.gov.br/cnen/pt-br", "kind": "orgao-publico" },
+      { "title": "Norma CNEN NN 3.01 — Diretrizes Básicas de Proteção Radiológica", "url": "https://www.gov.br/participamaisbrasil/norma-cnen-nn-301", "kind": "norma" },
+      { "title": "RDC ANVISA 611/2022 — radiologia diagnóstica e intervencionista", "url": "https://www.gov.br/anvisa/pt-br", "kind": "norma" },
+      { "title": "Sociedade Brasileira de Física (SBF)", "url": "https://www.sbfisica.org.br/", "kind": "comunidade" },
+      { "title": "Associação Brasileira de Física Médica (ABFM)", "url": "https://abfm.org.br/", "kind": "comunidade" },
+      { "title": "Inmetro — VIM e GUM em português", "url": "https://www.gov.br/inmetro/pt-br", "kind": "referencia" },
+      { "title": "CBO 2131 — Físicos (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências da física; perguntas extras sobre frente de atuação e trabalho com radiação ionizante." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "L4, D7, L7 e D4 entram primeiro; X1 só para quem trabalha com radiação; cada card diz competência, evidência e tempo." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); prazos de editais de bolsa e residência podem reorganizar a semana." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, incerteza e unidades do SI, barras de incerteza, tolerâncias e aviso de exercício; o selo depende de revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Rascunha estrutura de relatório, POP ou projeto com prévia; nunca produz plano ou relatório de proteção radiológica para uso real." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Eixos, unidades e barras de incerteza do infográfico (D7); fechamento do fluxograma (D4)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese com competências declaradas e evidenciadas, lacunas para a frente escolhida e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: matemática, ciência de dados, engenharia elétrica, química, engenharia mecânica; mercado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por CBO 2131, competências e setor." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) a partir do perfil; certificações (SPR, ABFM) só se a pessoa informou; só com consentimento específico." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados sensíveis (LGPD art. 5º II)", "dados de pacientes em física médica e dosimetria", "resultados de pesquisa não publicados ou sob acordo de confidencialidade", "dados de instalações radiativas reais (inventário de fontes, segurança física)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca redigir plano de proteção radiológica, relatório de dosimetria ou de controle de qualidade para uso real; todo texto é exercício e não substitui SPR, físico médico responsável ou aprovação da CNEN",
+      "não dar orientação clínica nem sobre doses a pacientes ou terceiros",
+      "não pedir nem armazenar dados de pacientes, de instalações radiativas reais ou pesquisa não publicada de terceiros",
+      "perguntar em vez de inferir frente de atuação, senioridade ou certificações",
+      "nunca prometer entrevista, emprego, bolsa ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou popularidade",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["infografico", "diagrama", "prancha"],
+    "lettersTemplates": ["relatorio-tecnico", "artigo", "projeto-de-pesquisa", "pop", "estudo-de-caso", "curriculo", "bio", "plano-30-60-90", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas curtas de texto (L5, L6) e revisão (L10); relatório (L4), projeto (X2) e infográfico (D7) rendem mais no computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em três frases com sua frente de atuação (15 min).",
+        "Tem um gráfico de um experimento ou simulação? Com barras de incerteza e uma mensagem, vira o infográfico (D7) em 1 h.",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["dados de pacientes em física médica e dosimetria (LGPD art. 11)", "resultados de pesquisa não publicados ou sob acordo de confidencialidade", "dados de segurança de instalações radiativas reais"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2131", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "CNPq — chamadas de bolsas e Painel de Fomento", "url": "https://www.gov.br/cnpq/pt-br", "geography": "Brasil", "cadence": "continua", "kind": "edital" },
+      { "title": "CNEN — certificação de supervisores de proteção radiológica (exames e certificados)", "url": "https://www.gov.br/cnen/pt-br", "geography": "Brasil", "cadence": "anual", "kind": "edital" },
+      { "title": "Sociedade Brasileira de Física (SBF) — oportunidades e eventos", "url": "https://www.sbfisica.org.br/", "geography": "Brasil", "cadence": "continua", "kind": "associacao" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, bolsas, residências, concursos ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "ciencia-de-dados", "why": "Modelagem, estatística e programação científica são a base da ciência de dados; muitos físicos migram para dados e finanças quantitativas.", "gaps": ["engenharia de dados e SQL", "aprendizado de máquina aplicado a negócios", "comunicação com áreas de negócio"], "steps": ["notebook de análise de dados público publicado (L4)", "infográfico de resultados (D7)", "curso de SQL e aprendizado de máquina"] },
+    { "to": "matematica", "why": "Física teórica e computacional compartilha métodos matemáticos; o caminho leva a modelagem e matemática aplicada.", "gaps": ["rigor de demonstrações", "análise numérica avançada"], "steps": ["relatório de modelagem (L4)", "curso de análise numérica"] },
+    { "to": "engenharia-eletrica", "why": "Instrumentação, eletrônica e eletromagnetismo aproximam da engenharia elétrica; atuação como engenheiro exige graduação própria e CREA.", "gaps": ["projeto de circuitos e sistemas de potência", "normas técnicas de engenharia", "registro no CREA"], "steps": ["relatório de um sistema de aquisição de dados (L4)", "curso de eletrônica embarcada", "verificar formação exigida"] },
+    { "to": "quimica", "why": "Espectroscopia, materiais e físico-química são pontos de contato com a química analítica e de materiais.", "gaps": ["química analítica e segurança química", "registro no CRQ depende da formação"], "steps": ["relatório de caracterização de materiais (L4)", "verificar atribuições no CRQ"] },
+    { "to": "engenharia-mecanica", "why": "Mecânica, termodinâmica e simulação (elementos finitos, CFD) aproximam da engenharia mecânica.", "gaps": ["projeto mecânico e desenho técnico", "registro no CREA"], "steps": ["relatório de simulação (L4)", "curso de CAD ou elementos finitos", "verificar formação exigida"] }
+  ],
+  "learning": [
+    { "title": "Sociedade Brasileira de Física — Revista Brasileira de Ensino de Física e eventos", "provider": "SBF", "url": "https://www.sbfisica.org.br/", "free": true, "kind": "comunidade" },
+    { "title": "Associação Brasileira de Física Médica — título de especialista e residências", "provider": "ABFM", "url": "https://abfm.org.br/", "free": true, "kind": "certificacao" },
+    { "title": "CNEN — normas e certificação de SPR", "provider": "CNEN", "url": "https://www.gov.br/cnen/pt-br", "free": true, "kind": "norma" },
+    { "title": "e-Aulas USP e cursos abertos de física", "provider": "USP", "url": "https://eaulas.usp.br/", "free": true, "kind": "curso" },
+    { "title": "VIM e GUM (versões em português)", "provider": "Inmetro", "url": "https://www.gov.br/inmetro/pt-br", "free": true, "kind": "norma" },
+    { "title": "arXiv — preprints de física", "provider": "Cornell University", "url": "https://arxiv.org/", "free": true, "kind": "portal" },
+    { "title": "Portal de Periódicos CAPES", "provider": "CAPES", "url": "https://www.periodicos.capes.gov.br/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Catálogo de ramos acadêmicos (contracts/career/academic-fields.json) — fisica: CBO 2131, ISCO 2111, sem conselho; via RF75 README", "url": "docs/diagramas/RF75/README.md", "accessedAt": "2026-11-02" },
+    { "title": "Norma CNEN NN 3.01 — consulta pública (Participa + Brasil)", "url": "https://www.gov.br/participamaisbrasil/norma-cnen-nn-301", "accessedAt": "2026-11-02" },
+    { "title": "Revista Brasileira de Física Médica — papel do SPR e do físico médico em medicina nuclear", "url": "https://rbfm.emnuvens.com.br/rbfm/article/download/640/587/3126", "accessedAt": "2026-11-02" },
+    { "title": "Edital FGV 2025 (área assistencial) — cita CNEN NN 7.01 para certificação de SPR", "url": "https://conhecimento.fgv.br/sites/default/files/concursos/2a-retificacao-edital-3-area-assistencial-14.01.2025.pdf", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Revisão vigente da CNEN NN 3.01 (fontes citam atualização em 2024, Resolução CNEN 323/2024) não conferida no texto oficial",
+    "Transição de competências regulatórias da CNEN para a ANSN (Lei 14.222/2021) e numeração das normas NN 6.10 e NN 3.05 citadas de memória",
+    "RDC ANVISA 611/2022 confirmada só em fonte secundária; Instruções Normativas associadas não conferidas",
+    "Requisitos do título de especialista da ABFM e sua relação com a certificação de SPR não conferidos",
+    "Códigos CBO em questions.a4.cboFamilies (2111, 2112, 3241) não conferidos no portal da CBO",
+    "URIs ESCO não confirmadas: todas as competências estão com esco: null",
+    "URLs de aprendizagem (e-Aulas USP, ABFM) e matrículas INEP do bacharelado em Física não conferidas"
+  ]
+}

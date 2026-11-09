@@ -1,0 +1,320 @@
+{
+  "schemaVersion": 1,
+  "code": "comercio-exterior",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Comércio Exterior", "en": "International Trade", "es": "Comercio Exterior" },
+  "fields": ["comercio-exterior"],
+  "family": {
+    "cbo": [
+      { "code": "3543", "title": "Analistas de comércio exterior" },
+      { "code": "3422", "title": "Despachantes aduaneiros" },
+      { "code": "3421", "title": "Especialistas em logística de transportes" }
+    ],
+    "isco08": [
+      { "code": "3331", "title": "Clearing and forwarding agents" },
+      { "code": "1324", "title": "Supply, distribution and related managers" },
+      { "code": "3339", "title": "Business services agents not elsewhere classified" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/61b859ed-24d8-48cf-9c1b-67d7a6c62bb5", "label": "import export specialist" },
+      { "uri": "http://data.europa.eu/esco/occupation/b87a7a27-ee74-4e5e-b274-84a3cab27bf4", "label": "import export manager" },
+      { "uri": "http://data.europa.eu/esco/occupation/56fa783a-cca4-42ef-8862-1fb6e43f215c", "label": "international forwarding operations coordinator" }
+    ]
+  },
+  "scope": {
+    "summary": "Tecnólogo ou bacharel em Comércio Exterior: planeja e executa operações de importação e exportação. Cobre classificação fiscal (NCM), tratamento administrativo e licenciamento, Incoterms 2020, câmbio e meios de pagamento internacionais, logística internacional, despacho aduaneiro no Portal Único Siscomex (DU-E, DUIMP), tributos na importação, regimes aduaneiros especiais e prospecção de mercados. Sem conselho; despachante aduaneiro depende de habilitação na Receita Federal.",
+    "entryRoles": ["Estagiário de comércio exterior", "Assistente de importação", "Assistente de exportação", "Auxiliar de despachante aduaneiro", "Assistente de logística internacional / agente de carga", "Assistente de câmbio"],
+    "midRoles": ["Analista de comércio exterior", "Analista de importação", "Analista de exportação", "Analista de classificação fiscal (NCM)", "Analista de logística internacional", "Ajudante de despachante aduaneiro", "Comprador(a) internacional"],
+    "seniorRoles": ["Coordenador de comércio exterior", "Gerente de importação e exportação", "Despachante aduaneiro", "Gerente de negócios internacionais", "Consultor em comércio exterior e regimes aduaneiros", "Trade compliance manager"],
+    "sectors": ["indústria importadora e exportadora", "agronegócio e commodities", "trading companies", "comissárias de despacho aduaneiro", "agentes de carga e operadores logísticos", "portos, aeroportos e recintos alfandegados", "bancos e corretoras de câmbio", "consultorias de comex", "e-commerce internacional", "órgãos de promoção comercial"],
+    "regulation": [
+      { "name": "Regulamento Aduaneiro (Decreto 6.759/2009)", "issuer": "Brasil / Receita Federal", "about": "administração das atividades aduaneiras, tributação, controle e regimes; art. 808 trata do despachante e do ajudante" },
+      { "name": "Portal Único Siscomex (DU-E e DUIMP)", "issuer": "Receita Federal / SECEX", "about": "registro eletrônico de exportações (DU-E) e importações (DUIMP), licenças (LPCO) e tratamento administrativo" },
+      { "name": "Portaria SECEX 249/2023 (consolidação)", "issuer": "SECEX / MDIC", "about": "normas de operações de comércio exterior: licenciamento, drawback, cotas e procedimentos" },
+      { "name": "Nomenclatura Comum do Mercosul (NCM) e Regras Gerais de Interpretação do SH", "issuer": "Mercosul / OMA / Receita Federal", "about": "classificação fiscal de mercadorias que define tributos e tratamento administrativo" },
+      { "name": "Incoterms 2020", "issuer": "ICC — Câmara de Comércio Internacional", "about": "onze regras de divisão de custos, riscos e responsabilidades entre vendedor e comprador" },
+      { "name": "Resolução BCB 277/2022 e Lei 14.286/2021 (marco cambial)", "issuer": "Banco Central do Brasil", "about": "mercado de câmbio e capitais internacionais; contratação e registro de operações" },
+      { "name": "Instrução Normativa RFB 1.984/2020 e regras do OEA", "issuer": "Receita Federal", "about": "habilitação de importadores e exportadores (Radar) e programa Operador Econômico Autorizado" },
+      { "name": "CTN (Lei 5.172/1966), art. 198", "issuer": "Brasil", "about": "sigilo fiscal: informações de contribuintes obtidas em razão do ofício não podem ser divulgadas" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "Siscomex / Portal Único", "meaning": "sistema integrado de comércio exterior onde se registram as operações e as licenças" },
+      { "term": "DU-E", "meaning": "declaração única de exportação, integrada à nota fiscal eletrônica" },
+      { "term": "DUIMP", "meaning": "declaração única de importação, que substitui gradualmente DI e LI" },
+      { "term": "DI / LI", "meaning": "declaração de importação e licença de importação (modelo anterior, ainda em transição)" },
+      { "term": "LPCO", "meaning": "licenças, permissões, certificados e outros documentos exigidos por órgãos anuentes" },
+      { "term": "órgãos anuentes", "meaning": "órgãos que controlam certas mercadorias (ex.: Anvisa, MAPA, Inmetro, Exército, Ibama)" },
+      { "term": "Radar", "meaning": "habilitação na Receita Federal para operar no Siscomex (modalidades expressa, limitada, ilimitada)" },
+      { "term": "NCM", "meaning": "código de oito dígitos da Nomenclatura Comum do Mercosul, base para tributos e tratamento administrativo" },
+      { "term": "SH", "meaning": "Sistema Harmonizado de designação e codificação de mercadorias da OMA (seis primeiros dígitos)" },
+      { "term": "TEC", "meaning": "Tarifa Externa Comum do Mercosul: alíquota do imposto de importação por NCM" },
+      { "term": "II, IPI, PIS/COFINS-importação, ICMS", "meaning": "tributos incidentes na importação" },
+      { "term": "valor aduaneiro", "meaning": "base de cálculo do imposto de importação conforme o Acordo de Valoração Aduaneira (GATT)" },
+      { "term": "Incoterms 2020", "meaning": "regras ICC: EXW, FCA, CPT, CIP, DAP, DPU, DDP (qualquer modal); FAS, FOB, CFR, CIF (aquaviário)" },
+      { "term": "fatura comercial (commercial invoice)", "meaning": "documento do exportador com mercadoria, valor, Incoterm e condições" },
+      { "term": "packing list", "meaning": "romaneio de carga: volumes, pesos e conteúdo de cada embalagem" },
+      { "term": "conhecimento de embarque (BL, AWB, CRT)", "meaning": "documento de transporte marítimo, aéreo e rodoviário internacional" },
+      { "term": "certificado de origem", "meaning": "comprova a origem da mercadoria para obter preferência tarifária em acordos" },
+      { "term": "canais de parametrização", "meaning": "verde, amarelo, vermelho e cinza: nível de conferência aduaneira" },
+      { "term": "despacho aduaneiro", "meaning": "procedimento de verificação e liberação da mercadoria importada ou exportada" },
+      { "term": "drawback", "meaning": "regime especial de suspensão ou isenção de tributos sobre insumos usados em produtos exportados" },
+      { "term": "entreposto, admissão temporária, Recof", "meaning": "outros regimes aduaneiros especiais" },
+      { "term": "contrato de câmbio", "meaning": "operação de compra ou venda de moeda estrangeira com instituição autorizada pelo BCB" },
+      { "term": "carta de crédito, cobrança, pagamento antecipado", "meaning": "meios de pagamento internacionais com níveis diferentes de risco" },
+      { "term": "frete internacional e seguro", "meaning": "custos de transporte e cobertura de riscos, definidos pelo Incoterm" },
+      { "term": "agente de carga (freight forwarder)", "meaning": "intermediário que contrata e consolida o transporte internacional" },
+      { "term": "demurrage", "meaning": "sobre-estadia do contêiner além do prazo livre, cobrada pelo armador" },
+      { "term": "OEA", "meaning": "Operador Econômico Autorizado: certificação de conformidade e segurança da cadeia" },
+      { "term": "acordos comerciais", "meaning": "Mercosul, ALADI e outros acordos que reduzem tarifas mediante regras de origem" },
+      { "term": "preço de exportação e formação de preço", "meaning": "cálculo do preço a partir de custos, tributos não incidentes, despesas e Incoterm" },
+      { "term": "Comex Stat", "meaning": "base oficial de estatísticas de comércio exterior do MDIC" }
+    ],
+    "tools": ["Portal Único Siscomex (DU-E, DUIMP, LPCO)", "Comex Stat (MDIC)", "Classif (consulta NCM) e TEC", "Simulador de tratamento administrativo e tributos", "sistemas de comex e ERP (ex.: módulos de importação SAP, TOTVS)", "planilhas (Excel, Google Sheets)", "plataformas de rastreamento de carga", "Invest & Export Brasil (ApexBrasil)", "Letters (proposta, POP, relatório)", "Drawings (fluxos, infográficos)"],
+    "deliverables": ["fluxo de importação ou exportação com raias", "POP de despacho de exportação ou de importação", "parecer interno de classificação fiscal (NCM) com fundamentação", "planilha de custo de importação / formação de preço de exportação", "quadro comparativo de Incoterms para uma operação", "checklist de documentos de embarque", "relatório de inteligência de mercado (Comex Stat)", "proposta comercial internacional (cotação com Incoterm)", "plano de exportação para pequena empresa", "infográfico de fluxo de comércio de um produto"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Classificação fiscal de mercadorias (NCM, SH, RGI)", "esco": null, "kind": "nucleo" },
+      { "label": "Operação do Portal Único Siscomex (DU-E, DUIMP, LPCO)", "esco": null, "kind": "nucleo" },
+      { "label": "Aplicação dos Incoterms 2020", "esco": null, "kind": "nucleo" },
+      { "label": "Tributação na importação e formação de preço de exportação", "esco": null, "kind": "nucleo" },
+      { "label": "Documentação internacional (fatura, packing list, BL/AWB, certificado de origem)", "esco": null, "kind": "nucleo" },
+      { "label": "Câmbio e meios de pagamento internacionais", "esco": null, "kind": "nucleo" },
+      { "label": "Logística internacional e contratação de frete e seguro", "esco": null, "kind": "nucleo" },
+      { "label": "Regimes aduaneiros especiais (drawback, admissão temporária, entreposto)", "esco": null, "kind": "nucleo" },
+      { "label": "Tratamento administrativo e órgãos anuentes", "esco": null, "kind": "nucleo" },
+      { "label": "Inteligência de mercado e prospecção internacional (Comex Stat)", "esco": null, "kind": "apoio" },
+      { "label": "Negociação intercultural e comunicação em inglês ou espanhol", "esco": null, "kind": "apoio" },
+      { "label": "Acordos comerciais e regras de origem", "esco": null, "kind": "apoio" },
+      { "label": "Compliance aduaneiro e OEA", "esco": null, "kind": "apoio" },
+      { "label": "Planilhas e análise de custos", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["atenção a detalhes e prazos", "comunicação escrita em mais de um idioma", "raciocínio numérico", "ética e sigilo fiscal", "trabalho com vários interlocutores (armador, banco, Receita, cliente)"],
+    "tracks": [
+      { "id": "operar-exportacao", "label": "Operar uma exportação", "steps": ["fluxo de exportação com raias (D4)", "POP de exportação com DU-E (L7)", "cotação internacional com Incoterm 2020 (L8)"] },
+      { "id": "operar-importacao", "label": "Operar uma importação", "steps": ["custo de importação de um produto fictício (X1)", "parecer de classificação NCM fundamentado (X2)", "fluxo de importação com DUIMP e anuentes (D4)"] },
+      { "id": "inteligencia-de-mercado", "label": "Inteligência de mercado", "steps": ["relatório de mercado com dados do Comex Stat (L4)", "infográfico de fluxo de comércio de um produto (D7)", "post sobre um aprendizado em comex (L5)"] },
+      { "id": "crescer-na-area", "label": "Crescer em comex", "steps": ["estudo de caso STAR de uma operação (L3)", "plano 30-60-90 para analista de comex (L9)", "currículo direcionado (L1)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"assistente de importação\", \"auxiliar de despachante\", \"assistente de exportação\", \"agente de carga\", \"assistente de logística\"",
+      "cboFamilies": ["3543", "3422", "3421"],
+      "why": "Pergunto seu último cargo para saber se você parte da importação, da exportação, do despacho ou da logística internacional e sugerir tarefas que continuem dali. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio ou assistente em comex, agente de carga ou comissária",
+        "junior": "assistente ou analista júnior; prepara documentos e registros com conferência",
+        "pleno": "analista que conduz operações de importação ou exportação com autonomia",
+        "senior": "analista sênior, ajudante ou despachante; responde por classificação, regimes e compliance",
+        "gestao": "coordena ou gerencia a área de comex, fornecedores logísticos e orçamento"
+      },
+      "why": "Com o nível ajusto as tarefas: checklist de documentos para quem começa, parecer de NCM e regimes especiais para quem já conduz operações."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em comércio exterior",
+      "options": ["classificar mercadorias na NCM", "operar o Portal Único Siscomex", "aplicar os Incoterms 2020", "calcular custo de importação e tributos", "formar preço de exportação", "conferir documentos de embarque", "acompanhar câmbio e pagamentos", "cotar frete e seguro internacional", "lidar com órgãos anuentes e licenças", "pesquisar mercados no Comex Stat", "negociar em inglês ou espanhol", "conhecer regimes como drawback"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa de comex; a prova vem com as tarefas (fluxo, POP, custo de importação, parecer de NCM)."
+    },
+    "c4": {
+      "certifications": ["tecnólogo ou bacharelado em Comércio Exterior", "curso de classificação fiscal (NCM)", "curso do Portal Único Siscomex", "curso de Incoterms 2020", "curso de câmbio e meios de pagamento", "habilitação de ajudante ou despachante aduaneiro (Receita Federal)", "capacitações da ApexBrasil (PEIEX)", "Excel avançado"],
+      "languages": ["inglês", "espanhol", "mandarim"],
+      "why": "Cursos e idiomas mostram lacunas em relação ao cargo-alvo; inglês é exigido em quase toda operação internacional."
+    },
+    "c5": {
+      "prompt": "Que competência de comex quer desenvolver?",
+      "options": ["classificação fiscal (NCM)", "Portal Único Siscomex", "Incoterms 2020", "tributação e custo de importação", "formação de preço de exportação", "câmbio e meios de pagamento", "logística internacional", "regimes aduaneiros especiais", "inteligência de mercado", "inglês para negócios"],
+      "why": "Com isso monto uma trilha com tarefas progressivas da área, em vez de mostrar o catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Você atua ou quer atuar mais em importação, exportação ou nos dois?", "type": "escolha", "options": ["importação", "exportação", "as duas", "despacho aduaneiro", "logística internacional / agente de carga", "câmbio", "ainda não sei"], "why": "Pergunto para colocar na frente as tarefas desse lado da operação (ex.: custo de importação e NCM; ou DU-E e preço de exportação).", "where": "P" }
+    ],
+    "interestTestWhenUnknown": true
+  },
+  "guidedTasks": {
+    "priority": ["D4", "L7", "L8", "L4", "D7", "L3", "L9", "L6", "L1", "L2", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta técnica não é entrega de comércio exterior" },
+      { "code": "D3", "reason": "modelagem 3D não é entrega da área" },
+      { "code": "D6", "reason": "detalhe construtivo não é entrega da área" },
+      { "code": "D8", "reason": "vista explodida não é entrega da área" },
+      { "code": "D9", "reason": "wireframe de tela não é entrega típica de comex" }
+    ],
+    "parameters": {
+      "D4": {
+        "title": "Fluxo de uma exportação com raias",
+        "brief": "Desenhe o fluxo de uma exportação fictícia do pedido ao embarque, com raias por responsável (exportador, despachante, agente de carga, Receita Federal, banco) e pontos de decisão (anuência exigida, canal de parametrização, Incoterm).",
+        "parameters": { "lanes": ["exportador", "despachante", "agente de carga", "Receita Federal", "banco"], "mustHave": ["NF-e e DU-E", "LPCO quando exigido", "parametrização", "embarque e averbação", "contrato de câmbio"], "incoterm": "versão 2020 declarada", "closedFlow": true },
+        "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma tarefa órfã", "inclui DU-E, parametrização e câmbio", "Incoterm 2020 declarado e coerente com quem contrata frete e seguro", "operação fictícia declarada"],
+        "evidence": "diagrama vetorial (Drawings, modo diagrama)",
+        "time": "45 min",
+        "level": 1
+      },
+      "L7": {
+        "title": "POP de despacho de exportação",
+        "brief": "Escreva o procedimento de despacho de exportação de uma empresa fictícia: passos numerados, responsável, documentos (fatura, packing list, NF-e, DU-E, conhecimento de embarque, certificado de origem), prazos e critério de conclusão. Cite a norma de cada exigência.",
+        "parameters": { "process": "despacho de exportação", "numberedSteps": true, "ownerPerStep": true, "documents": ["fatura comercial", "packing list", "NF-e", "DU-E", "conhecimento de embarque", "certificado de origem"], "fictionalCompany": true },
+        "criteria": ["passos numerados com responsável", "critério de conclusão em cada passo", "lista os documentos e quando cada um é emitido", "cita a norma ou o manual do Portal Único em cada exigência", "declara empresa fictícia"],
+        "evidence": "POP em Letters (modelo pop)",
+        "time": "60 min",
+        "level": 1
+      },
+      "L8": {
+        "title": "Cotação internacional a partir de um briefing",
+        "brief": "Responda ao pedido de cotação de um comprador estrangeiro fictício: produto, NCM, quantidade, Incoterm 2020 escolhido e por quê, preço e o que ele inclui, prazo, meio de pagamento, validade e o que fica fora. Sem preços ou clientes reais.",
+        "parameters": { "buyer": "fictício", "sections": ["produto e NCM", "quantidade", "Incoterm 2020 e justificativa", "preço e composição", "prazo de embarque", "meio de pagamento", "validade", "fora do escopo"], "fictionalPrices": true },
+        "criteria": ["Incoterm com a versão 2020 e local nomeado", "composição do preço coerente com o Incoterm", "meio de pagamento com o risco explicado", "validade e o que fica fora explícitos", "comprador e preços fictícios declarados"],
+        "evidence": "proposta em Letters (modelo proposta)",
+        "time": "45 min",
+        "level": 2
+      },
+      "L4": {
+        "title": "Relatório de inteligência de mercado (Comex Stat)",
+        "brief": "Escolha um produto por NCM e monte um relatório de até 4 páginas com dados públicos do Comex Stat: evolução das exportações ou importações brasileiras, principais destinos ou origens, preço médio, oportunidades e limitações. Cite período e consulta.",
+        "parameters": { "maxPages": 4, "dataSource": "Comex Stat (MDIC)", "sections": ["objetivo", "método e consulta", "resultados", "oportunidades", "limitações", "referências"] },
+        "criteria": ["NCM do produto informada", "dados com fonte, período e data de consulta", "seções objetivo, método, resultados, limitações e referências", "até 4 páginas", "só dados públicos agregados"],
+        "evidence": "relatório em Letters (modelo relatorio-tecnico)",
+        "time": "2 h",
+        "level": 2
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "letters", "title": "Custo de importação de um produto fictício", "competency": "Tributação e custos na importação", "criteria": ["NCM e alíquotas com fonte (TEC, TIPI)", "valor aduaneiro conforme o Incoterm", "II, IPI, PIS/COFINS-importação e ICMS calculados em ordem", "despesas (frete, seguro, armazenagem, despachante) listadas", "custo final unitário e premissas declaradas"], "evidence": "planilha ou relatório em Letters", "time": "90 min", "trigger": "Quer mostrar que sabe calcular quanto custa trazer um produto?", "level": 2 },
+      { "id": "X2", "editor": "letters", "title": "Parecer interno de classificação NCM", "competency": "Classificação fiscal", "criteria": ["descrição técnica da mercadoria", "aplicação das Regras Gerais de Interpretação na ordem", "notas de seção e capítulo citadas", "código NCM proposto e alternativas descartadas com motivo", "aviso de que não substitui solução de consulta da Receita Federal"], "evidence": "parecer em Letters (modelo parecer)", "time": "60 min", "trigger": "Quer treinar a classificação de um produto do dia a dia?", "level": 3 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "incoterm-versao-e-local", "check": "o Incoterm aparece com a versão 2020 e o local nomeado", "appliesTo": ["D4", "L8", "X1"], "auto": true },
+      { "id": "diagrama-fechado-com-raias", "check": "o diagrama tem início e fim, raias por responsável e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "pop-passos-e-responsaveis", "check": "passos numerados, cada um com responsável e critério de conclusão", "appliesTo": ["L7"], "auto": true },
+      { "id": "ncm-informada", "check": "a NCM de oito dígitos é informada com a fonte", "appliesTo": ["L4", "L8", "X1", "X2"], "auto": true },
+      { "id": "fonte-periodo-consulta", "check": "dados citam fonte, período e data de consulta", "appliesTo": ["L4", "D7"], "auto": true },
+      { "id": "fonte-e-eixos", "check": "fonte citada e eixos rotulados com unidade", "appliesTo": ["D7"], "auto": true },
+      { "id": "rgi-na-ordem", "check": "o parecer aplica as Regras Gerais de Interpretação e cita notas de seção e capítulo", "appliesTo": ["X2"], "auto": true },
+      { "id": "sem-documentos-de-clientes", "check": "nenhuma DU-E, DUIMP, fatura, nome de cliente, preço ou dado de acesso real; declaração de operação fictícia", "appliesTo": ["D4", "L3", "L7", "L8", "X1", "X2"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L8", "L9"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true },
+      { "id": "autoria-e-sigilo", "check": "a pessoa declarou autoria e ausência de dados confidenciais e de sigilo fiscal", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D4", "D7", "X1", "X2"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "precisao-normativa", "label": "Precisão normativa", "levels": { "aproxima": "cita normas de forma genérica ou desatualizada (ex.: Incoterms 2010)", "atende": "aplica corretamente Regulamento Aduaneiro, Portal Único e Incoterms 2020", "supera": "antecipa exigências de anuentes e riscos de reclassificação ou multa" } },
+      { "id": "coerencia-custo-risco", "label": "Coerência entre custo, risco e Incoterm", "levels": { "aproxima": "custos e riscos não batem com o Incoterm escolhido", "atende": "custos, seguro e transferência de risco coerentes com o Incoterm", "supera": "compara Incoterms alternativos e recomenda com justificativa" } },
+      { "id": "clareza-operacional", "label": "Clareza operacional", "levels": { "aproxima": "outra pessoa não conseguiria executar a operação", "atende": "um colega executa a operação seguindo o documento", "supera": "inclui exceções (canal vermelho, divergência documental) e como tratá-las" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da área de Comércio Exterior (tecnólogo ou bacharel; CBO 3543, 3422 e 3421). Use o vocabulário da área (Portal Único Siscomex, DU-E, DUIMP, LPCO, Radar, NCM, SH, TEC, valor aduaneiro, órgãos anuentes, parametrização, drawback, fatura comercial, packing list, BL/AWB, certificado de origem, contrato de câmbio, carta de crédito, agente de carga, demurrage, OEA, Comex Stat) e cite as normas pelo nome: Regulamento Aduaneiro (Decreto 6.759/2009), normas da Receita Federal e da SECEX, Regras Gerais de Interpretação do SH, Incoterms 2020 da ICC (sempre com a versão e o local nomeado), marco cambial (Lei 14.286/2021) e regras do Banco Central, CTN art. 198. Nunca peça nem use declarações, faturas, documentos aduaneiros, preços, contratos ou dados de acesso ao Siscomex de clientes ou empregadores (sigilo fiscal e comercial): oriente operações fictícias e dados públicos agregados do Comex Stat. Não emita classificação fiscal definitiva, não substitua solução de consulta da Receita Federal, despachante habilitado ou advogado aduaneiro, e nunca sugira subfaturamento, classificação para pagar menos tributo, interposição fraudulenta ou contorno de anuência. Lembre que despachante e ajudante dependem de habilitação na Receita Federal e que não há conselho profissional. Toda sugestão de tarefa diz qual competência comprova, que evidência produz e quanto tempo leva; afirmações de mercado citam fonte, data e região ou dizem \"estimativa\"; nunca prometa entrevista, emprego ou salário. Progresso é por critérios atendidos, nunca por score. Em nenhum modo publique, envie mensagem ou se candidate sem confirmação. Pré-cheque só critérios objetivos; o selo depende de revisão humana.",
+    "citeSources": [
+      { "title": "Portal Único Siscomex", "url": "https://portalunico.siscomex.gov.br/", "kind": "orgao-publico" },
+      { "title": "Receita Federal — Aduana e Comércio Exterior", "url": "https://www.gov.br/receitafederal/pt-br/assuntos/aduana-e-comercio-exterior", "kind": "orgao-publico" },
+      { "title": "Regulamento Aduaneiro — Decreto 6.759/2009", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2009/decreto/d6759.htm", "kind": "norma" },
+      { "title": "Comex Stat — estatísticas de comércio exterior (MDIC)", "url": "https://comexstat.mdic.gov.br/", "kind": "estatistica" },
+      { "title": "Incoterms 2020 — ICC Brasil", "url": "https://www.iccbrasil.org/", "kind": "referencia" },
+      { "title": "Banco Central do Brasil — câmbio e capitais internacionais", "url": "https://www.bcb.gov.br/estabilidadefinanceira/cambiocapitaisinternacionais", "kind": "orgao-publico" },
+      { "title": "CBO — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "Novo CAGED — MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências de comex; x1 (importação, exportação, despacho) ordena as tarefas." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "D4 fluxo, L7 POP, L8 cotação e L4 Comex Stat na frente; X1 custo de importação e X2 parecer NCM para quem atua em importação." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir das horas (d1); X1 e L4 pedem computador; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Pré-checa Incoterm com versão e local, NCM informada, fluxo fechado com raias, RGI na ordem, fonte e período, ausência de documentos de clientes; o selo é humano." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Propõe estrutura de POP, cotação e parecer com prévia; nunca aplica sem revisão; nunca dá classificação NCM como definitiva." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias e fechamento do fluxo de exportação ou importação (D4); fonte e eixos no infográfico (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: competências de comex declaradas e evidenciadas, lacunas em relação ao lado da operação; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos por CBO/ESCO: logística, relações internacionais, administração, economia; direito aduaneiro exige graduação e OAB." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por CBO 3543/3422 e competências compartilhadas." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com lado da operação, três competências, idiomas e uma prova; só com o consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, idiomas e habilitações em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "declarações de importação/exportação, faturas e documentos aduaneiros de clientes (sigilo fiscal, CTN art. 198)", "contratos, preços e condições de negociação internacional confidenciais", "dados de acesso a sistemas da Receita Federal (Siscomex) de terceiros", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca pedir nem usar declarações, faturas, documentos aduaneiros, preços, contratos ou credenciais do Siscomex de clientes ou empregadores",
+      "não emitir classificação fiscal definitiva nem substituir solução de consulta da Receita, despachante habilitado ou advogado aduaneiro",
+      "nunca sugerir subfaturamento, classificação para reduzir tributo, interposição fraudulenta ou contorno de anuência",
+      "citar Incoterms sempre com a versão 2020 e o local nomeado; normas pelo nome e número",
+      "perguntar em vez de inferir lado da operação, senioridade ou situação",
+      "nunca prometer entrevista, emprego ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["diagrama", "infografico"],
+    "lettersTemplates": ["pop", "proposta", "relatorio-tecnico", "parecer", "estudo-de-caso", "plano-30-60-90", "curriculo", "carta", "bio", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, L6, L5, L3 e a revisão (L10) funcionam bem; X1 (custo de importação), L4 e D4 pedem computador. Nunca fotografar DU-E, DUIMP, faturas ou telas do Siscomex para anexar.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: fluxo de uma exportação com raias (45 min). Comprova domínio do processo e do Incoterm.",
+        "Já pensou em classificar um produto do dia a dia na NCM? O parecer leva 60 min e mostra raciocínio fiscal.",
+        "Sem pressão. Quando quiser retomar, o resumo de perfil de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias"] },
+    "privacy": {
+      "sensitiveData": ["declarações de importação/exportação, faturas e documentos aduaneiros de clientes (sigilo fiscal, CTN art. 198)", "contratos, preços e condições de negociação internacional confidenciais", "dados de acesso a sistemas da Receita Federal (Siscomex) de terceiros", "dados de empresas importadoras e exportadoras não públicos"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 3543 e 3422", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — estoque de vínculos por ocupação", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Comex Stat (MDIC) — exportações e importações por NCM, país e UF", "url": "https://comexstat.mdic.gov.br/", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "Empresas brasileiras exportadoras e importadoras (MDIC)", "url": "https://www.gov.br/mdic/pt-br/assuntos/comercio-exterior/estatisticas/empresas-brasileiras-exportadoras-e-importadoras", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Censo da Educação Superior (INEP) — matrículas em Comércio Exterior", "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-da-educacao-superior", "geography": "Brasil e UF", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "AEB — Associação de Comércio Exterior do Brasil (estudos e projeções)", "url": "https://www.aeb.org.br/", "geography": "Brasil", "cadence": "anual", "kind": "associacao" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Volume de comércio do Comex Stat não é demanda de emprego e é apresentado como contexto. Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "logistica", "why": "Compartilha CBO 3421, transporte, armazenagem e Incoterms; quem domina a parte documental migra para operações e supply chain.", "gaps": ["gestão de armazém e estoques", "transporte rodoviário doméstico e CT-e", "WMS/TMS"], "steps": ["fluxo de recebimento à expedição (D4)", "relatório de indicadores logísticos (L4)", "cursos de logística do SENAI ou Sebrae"] },
+    { "to": "relacoes-internacionais", "why": "Negociações comerciais, acordos e promoção de exportações aproximam os dois ramos; RI amplia para política externa e organismos internacionais.", "gaps": ["teoria e história das relações internacionais", "direito internacional", "análise de política comercial"], "steps": ["relatório sobre um acordo comercial e suas regras de origem (L4)", "post analisando uma medida de defesa comercial (L5)", "cursos da Funag ou da Enap"] },
+    { "to": "administracao", "why": "Mesma família CINE (0413); o bacharelado amplia para finanças, pessoas e estratégia, base para gerência de negócios internacionais.", "gaps": ["finanças e orçamento", "gestão de pessoas", "estratégia"], "steps": ["plano de exportação para pequena empresa (L4)", "plano 30-60-90 para coordenação de comex (L9)", "disciplinas de finanças em curso aberto"] },
+    { "to": "ciencias-economicas", "why": "Câmbio, balança comercial e política tarifária são temas centrais da economia internacional; caminho para análise e pesquisa.", "gaps": ["macroeconomia e economia internacional", "econometria e estatística", "graduação e registro no CORECON para atuar como economista"], "steps": ["infográfico da balança comercial de um setor (D7)", "relatório com séries do Comex Stat (L4)", "curso aberto de economia internacional"] },
+    { "to": "direito", "why": "Direito aduaneiro e tributário cuida de autuações, classificação e regimes; exige graduação em Direito e inscrição na OAB para advogar.", "gaps": ["graduação em Direito (5 anos)", "exame da OAB", "processo administrativo fiscal"], "steps": ["parecer interno de NCM bem fundamentado (X2)", "estudar o Regulamento Aduaneiro e o processo administrativo fiscal", "avaliar a graduação"] }
+  ],
+  "learning": [
+    { "title": "Portal Único Siscomex — manuais, simuladores e treinamentos", "provider": "Receita Federal / SECEX", "url": "https://portalunico.siscomex.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — comércio exterior, Incoterms e Portal Único", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Comex Stat — consultas e tutoriais", "provider": "MDIC", "url": "https://comexstat.mdic.gov.br/", "free": true, "kind": "portal" },
+    { "title": "ApexBrasil — Invest & Export Brasil e PEIEX (qualificação para exportar)", "provider": "ApexBrasil", "url": "https://apexbrasil.com.br/", "free": true, "kind": "curso" },
+    { "title": "Cursos on-line de exportação e importação do Sebrae", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "Regulamento Aduaneiro (texto oficial)", "provider": "Planalto", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2009/decreto/d6759.htm", "free": true, "kind": "norma" },
+    { "title": "Incoterms 2020 — publicação oficial", "provider": "ICC Brasil", "url": "https://www.iccbrasil.org/", "free": false, "kind": "norma" },
+    { "title": "Aprendendo a Exportar (MDIC)", "provider": "MDIC", "url": "https://www.gov.br/mdic/pt-br/assuntos/comercio-exterior", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4 (perguntas), §4.6 (pacote), §7 (tarefas L1–L10, D1–D10), §8 (mensagens)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "RF75 README (CA19) e catálogo contracts/career/academic-fields.json — ramo comercio-exterior (CBO, ISCO, ESCO, conselho, sensitiveData, vizinhos)", "url": "docs/diagramas/RF75/README.md", "accessedAt": "2026-11-02" },
+    { "title": "Portal Único Siscomex", "url": "https://portalunico.siscomex.gov.br/", "accessedAt": "2026-11-02" },
+    { "title": "Regulamento Aduaneiro — Decreto 6.759/2009", "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2009/decreto/d6759.htm", "accessedAt": "2026-11-02" },
+    { "title": "Comex Stat (MDIC)", "url": "https://comexstat.mdic.gov.br/", "accessedAt": "2026-11-02" },
+    { "title": "CBO — Classificação Brasileira de Ocupações", "url": "https://cbo.mte.gov.br/", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Nenhuma busca web nesta sessão: URLs do Portal Único, Receita, Comex Stat, BCB, ICC Brasil, ApexBrasil, AEB e MDIC citadas de memória, não verificadas em 2026-11-02",
+    "Portaria SECEX 249/2023 (consolidação) e IN RFB 1.984/2020 (Radar) citadas de memória; conferir vigência e números",
+    "Resolução BCB 277/2022 e Lei 14.286/2021 (marco cambial) citadas de memória",
+    "Cronograma de substituição da DI/LI pela DUIMP em 2026 não conferido",
+    "Art. 808 do Decreto 6.759/2009 (despachante) copiado das notas do catálogo, não conferido no texto",
+    "Títulos CBO/ISCO e URIs ESCO copiados do catálogo; competências sem URI ESCO confirmada (esco: null)",
+    "Existência e URL do portal Aprendendo a Exportar e da página de empresas exportadoras do MDIC não verificadas"
+  ]
+}

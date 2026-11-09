@@ -1,0 +1,379 @@
+{
+  "schemaVersion": 1,
+  "code": "gestao-publica",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Gestão Pública", "en": "Public Administration", "es": "Gestión Pública" },
+  "fields": ["gestao-publica"],
+  "family": {
+    "cbo": [
+      { "code": "1115", "title": "Gestores públicos" },
+      { "code": "1114", "title": "Dirigentes do serviço público" },
+      { "code": "2521", "title": "Administradores" },
+      { "code": "4110", "title": "Agentes, assistentes e auxiliares administrativos" }
+    ],
+    "isco08": [
+      { "code": "1112", "title": "Senior government officials" },
+      { "code": "2422", "title": "Policy administration professionals" },
+      { "code": "1213", "title": "Policy and planning managers" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/0752ed49-03e7-4d75-8314-a051b3771a1d", "label": "public administration manager" },
+      { "uri": "http://data.europa.eu/esco/occupation/ffade2f4-2528-4dfd-b36a-6e4092be08ed", "label": "civil service administrative officer" },
+      { "uri": "http://data.europa.eu/esco/occupation/caf7b8fb-b2d6-46b7-bffa-bea7f8e4aed8", "label": "policy officer" }
+    ]
+  },
+  "scope": {
+    "summary": "Planeja, executa, monitora e avalia políticas, programas e serviços públicos em órgãos e entidades das três esferas, estatais e organizações da sociedade civil: planejamento e orçamento (PPA, LDO, LOA), licitações e contratos (Lei 14.133/2021), gestão de pessoas, processos administrativos, transparência e controle (LRF, LAI), atendimento ao cidadão e governança. Cobre o tecnólogo em Gestão Pública e o bacharel em Administração Pública (registro no CRA facultativo).",
+    "entryRoles": ["Estagiário em órgão público ou OSC", "Assistente administrativo (setor público)", "Agente administrativo", "Auxiliar de licitações e contratos", "Residente técnico (Paraná)", "Analista júnior de políticas públicas"],
+    "midRoles": ["Analista administrativo", "Agente de contratação / pregoeiro", "Analista de planejamento e orçamento", "Fiscal ou gestor de contratos", "Técnico de gestão pública", "Assessor técnico de secretaria", "Analista de projetos em OSC"],
+    "seniorRoles": ["Coordenador de área ou de programa", "Diretor de departamento", "Chefe de gabinete", "Secretário municipal ou diretor-geral", "Especialista em políticas públicas e gestão governamental (EPPGG)", "Controlador interno", "Consultor em gestão pública"],
+    "sectors": ["administração direta municipal, estadual e federal", "autarquias e fundações", "empresas estatais", "Poder Legislativo e Tribunais de Contas", "Poder Judiciário e Ministério Público (área administrativa)", "organizações da sociedade civil e fundações", "consultoria e organismos internacionais", "ensino e pesquisa em políticas públicas"],
+    "regulation": [
+      { "name": "Constituição Federal, art. 37 e arts. 165–169", "issuer": "Brasil", "about": "princípios da administração pública (legalidade, impessoalidade, moralidade, publicidade, eficiência); PPA, LDO e LOA" },
+      { "name": "Lei 14.133/2021 (Lei de Licitações e Contratos Administrativos)", "issuer": "Brasil", "about": "planejamento da contratação (ETP, termo de referência), modalidades, agente de contratação, gestão e fiscalização de contratos, PNCP" },
+      { "name": "Lei Complementar 101/2000 (Lei de Responsabilidade Fiscal)", "issuer": "Brasil", "about": "metas fiscais, limites de despesa com pessoal, RREO e RGF, transparência da gestão fiscal" },
+      { "name": "Lei 12.527/2011 (Lei de Acesso à Informação) e Decreto 7.724/2012", "issuer": "Brasil", "about": "transparência ativa e passiva, e-SIC/Fala.BR, prazos de resposta (20 + 10 dias), classificação e sigilo (arts. 23, 24 e 31)" },
+      { "name": "Lei 4.320/1964 e MCASP (Tesouro Nacional)", "issuer": "Brasil / STN", "about": "normas de direito financeiro, orçamento e contabilidade aplicada ao setor público" },
+      { "name": "Lei 9.784/1999", "issuer": "Brasil", "about": "processo administrativo na administração federal: prazos, motivação, recursos; referência para estatutos estaduais e municipais" },
+      { "name": "Lei 8.429/1992 (improbidade administrativa, alterada pela Lei 14.230/2021)", "issuer": "Brasil", "about": "atos de improbidade, dolo específico e sanções a agentes públicos" },
+      { "name": "Lei 13.709/2018 (LGPD) e Lei 13.460/2017 (Código de Defesa do Usuário do Serviço Público)", "issuer": "Brasil", "about": "tratamento de dados pessoais pelo poder público; carta de serviços, ouvidoria e avaliação pelo usuário" },
+      { "name": "Lei 13.019/2014 (Marco Regulatório das Organizações da Sociedade Civil)", "issuer": "Brasil", "about": "termos de fomento e colaboração, chamamento público e prestação de contas de parcerias com OSC" },
+      { "name": "Lei 4.769/1965; Res. CFA 649/2024", "issuer": "CFA/CRA", "about": "profissão de administrador; registro do bacharel em Administração Pública e, de forma facultativa, do tecnólogo em Gestão Pública" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "PPA / LDO / LOA", "meaning": "plano plurianual (4 anos), lei de diretrizes orçamentárias e lei orçamentária anual: o ciclo orçamentário" },
+      { "term": "LRF", "meaning": "Lei de Responsabilidade Fiscal (LC 101/2000): limites, metas e relatórios fiscais (RREO, RGF)" },
+      { "term": "LAI / e-SIC / Fala.BR", "meaning": "Lei de Acesso à Informação e os canais de pedido de informação e ouvidoria" },
+      { "term": "ETP", "meaning": "estudo técnico preliminar: documento que fundamenta a necessidade e a solução de uma contratação (Lei 14.133, art. 18)" },
+      { "term": "termo de referência (TR)", "meaning": "documento que define objeto, requisitos, modelo de execução e de gestão, critérios de medição e pagamento da contratação" },
+      { "term": "pregão / concorrência / dispensa / inexigibilidade", "meaning": "modalidades e hipóteses de contratação direta da Lei 14.133/2021" },
+      { "term": "agente de contratação e pregoeiro", "meaning": "servidores designados para conduzir a fase externa da licitação" },
+      { "term": "gestor e fiscal de contrato", "meaning": "quem acompanha a execução contratual e atesta a entrega antes do pagamento" },
+      { "term": "PNCP", "meaning": "Portal Nacional de Contratações Públicas: publicidade obrigatória de editais, contratos e atas" },
+      { "term": "empenho, liquidação e pagamento", "meaning": "os três estágios da despesa pública (Lei 4.320/1964)" },
+      { "term": "restos a pagar", "meaning": "despesas empenhadas e não pagas até 31 de dezembro" },
+      { "term": "convênio, termo de fomento e termo de colaboração", "meaning": "instrumentos de transferência de recursos a entes públicos e a OSC" },
+      { "term": "processo administrativo (SEI, e-Protocolo)", "meaning": "autos eletrônicos onde tramitam despachos, notas técnicas e decisões" },
+      { "term": "nota técnica", "meaning": "documento que analisa um assunto e subsidia uma decisão, com fundamentação legal e conclusão" },
+      { "term": "despacho / ofício / memorando", "meaning": "expedientes oficiais padronizados pelo Manual de Redação da Presidência da República" },
+      { "term": "portaria / decreto / instrução normativa", "meaning": "atos normativos internos e regulamentares, por hierarquia" },
+      { "term": "indicador de política pública", "meaning": "medida de insumo, processo, produto, resultado ou impacto, com fonte, periodicidade e meta" },
+      { "term": "avaliação de políticas públicas (ex ante / ex post)", "meaning": "análise de desenho, implementação e resultados de um programa (Guias Ipea/Casa Civil)" },
+      { "term": "controle interno e externo", "meaning": "controladoria do próprio ente e Tribunal de Contas / Legislativo" },
+      { "term": "carta de serviços ao usuário", "meaning": "documento que informa serviços, prazos e canais de atendimento (Lei 13.460/2017)" },
+      { "term": "governo digital / gov.br", "meaning": "transformação digital de serviços públicos, identidade única e interoperabilidade" },
+      { "term": "concurso público e estágio probatório", "meaning": "forma de ingresso em cargo efetivo e período de avaliação inicial" },
+      { "term": "regime jurídico / estatuto do servidor", "meaning": "normas de direitos e deveres (Lei 8.112/1990 na União; estatutos estaduais e municipais)" },
+      { "term": "MROSC", "meaning": "Marco Regulatório das Organizações da Sociedade Civil (Lei 13.019/2014)" }
+    ],
+    "tools": ["SEI (Sistema Eletrônico de Informações)", "e-Protocolo e GMS (Paraná)", "Compras.gov.br e PNCP", "SIAFI / SIOP / Siconfi", "Portal da Transparência", "Fala.BR (e-SIC e ouvidoria)", "Tesouro Gerencial", "planilhas (Excel, Google Sheets)", "Power BI / Looker Studio", "modelador BPMN (Bizagi, draw.io)", "Microsoft 365 / Google Workspace", "Manual de Redação da Presidência da República"],
+    "deliverables": ["nota técnica", "estudo técnico preliminar (ETP)", "termo de referência", "minuta de edital ou de portaria (para revisão)", "parecer técnico administrativo", "relatório de gestão ou de atividades", "plano de trabalho de convênio ou parceria", "relatório de fiscalização de contrato", "mapa de processo administrativo", "painel de indicadores de programa", "resposta a pedido de acesso à informação", "projeto básico", "carta de serviços", "plano de ação (5W2H)"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Licitações e contratos (Lei 14.133/2021)", "esco": null, "kind": "nucleo" },
+      { "label": "Planejamento e orçamento público (PPA, LDO, LOA)", "esco": null, "kind": "nucleo" },
+      { "label": "Execução orçamentária e financeira (empenho, liquidação, pagamento)", "esco": null, "kind": "nucleo" },
+      { "label": "Redação oficial e instrução de processos administrativos", "esco": null, "kind": "nucleo" },
+      { "label": "Análise e formulação de políticas públicas", "esco": null, "kind": "nucleo" },
+      { "label": "Monitoramento e avaliação com indicadores", "esco": null, "kind": "nucleo" },
+      { "label": "Transparência, LAI e proteção de dados", "esco": null, "kind": "nucleo" },
+      { "label": "Mapeamento e melhoria de processos administrativos", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão e fiscalização de contratos e parcerias", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão de pessoas no setor público", "esco": null, "kind": "apoio" },
+      { "label": "Controle interno, riscos e integridade", "esco": null, "kind": "apoio" },
+      { "label": "Atendimento ao cidadão e ouvidoria", "esco": null, "kind": "apoio" },
+      { "label": "Governo digital e dados abertos", "esco": null, "kind": "apoio" },
+      { "label": "Captação de recursos e convênios", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação clara com o cidadão (linguagem simples)", "ética pública e impessoalidade", "organização e cumprimento de prazos legais", "trabalho em equipe multidisciplinar", "análise de dados", "negociação e articulação institucional"],
+    "tracks": [
+      { "id": "contratacoes-publicas", "label": "Contratações públicas", "steps": ["mapa do fluxo de uma contratação (D4)", "estudo técnico preliminar simulado (X1)", "POP de fiscalização de contrato (L7)", "relatório técnico de uma contratação (L4)"] },
+      { "id": "planejamento-e-orcamento", "label": "Planejamento e orçamento", "steps": ["infográfico de execução orçamentária de um programa (D7)", "nota técnica sobre uma ação do PPA (L4)", "plano 30-60-90 para a área de orçamento (L9)"] },
+      { "id": "transparencia-e-cidadao", "label": "Transparência e atendimento ao cidadão", "steps": ["resposta simulada a pedido LAI (X2)", "antes e depois de um serviço ao cidadão (D5)", "POP de atendimento ou protocolo (L7)"] },
+      { "id": "politicas-publicas", "label": "Análise de políticas públicas", "steps": ["estudo de caso STAR de um programa (L3)", "nota técnica com diagnóstico e alternativas (L4)", "painel de indicadores do programa (D7)", "post sobre um aprendizado (L5)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"assistente administrativo em prefeitura\", \"pregoeiro\", \"analista de orçamento\", \"fiscal de contrato\", \"estagiário em secretaria estadual\"",
+      "cboFamilies": ["1115", "1114", "2521", "4110", "3513"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez no setor público ou em OSC (licitações, orçamento, atendimento) e não do zero. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, residência técnica ou primeiro cargo",
+        "junior": "até dois anos; instrui processos e rotinas com supervisão",
+        "pleno": "conduz processos de contratação, orçamento ou programas com autonomia",
+        "senior": "referência técnica; elabora notas técnicas e orienta colegas",
+        "gestao": "responde por equipe, programa, unidade ou orçamento"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (de um POP a um estudo técnico preliminar) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem na gestão pública",
+      "options": ["instruir processos administrativos", "conduzir licitações e contratações", "fiscalizar contratos", "planejar e executar orçamento", "redigir notas técnicas e ofícios", "mapear e melhorar processos", "montar indicadores e painéis", "atender o cidadão e responder pedidos LAI", "gerir convênios e parcerias com OSC", "gestão de pessoas e folha", "controle interno e riscos", "analisar e avaliar políticas públicas", "usar SEI, e-Protocolo ou SIAFI", "coordenar equipes e projetos"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com notas técnicas, fluxos e painéis."
+    },
+    "c4": {
+      "certifications": ["tecnólogo em Gestão Pública", "bacharel em Administração Pública ou Administração", "registro no CRA (facultativo)", "cursos da Enap / Escola Virtual.Gov (Lei 14.133, orçamento, LAI)", "Escola de Gestão do Paraná", "curso de pregoeiro ou agente de contratação", "especialização em gestão pública ou políticas públicas", "mestrado profissional (PROFIAP, MPA)"],
+      "languages": ["inglês (cooperação e organismos internacionais)", "espanhol (Mercosul)", "Libras (atendimento ao cidadão)"],
+      "why": "Formação e cursos ajudam a ver lacunas em relação ao cargo ou concurso que você quer; Lei 14.133 e orçamento aparecem em muitos editais."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver na gestão pública?",
+      "options": ["Lei 14.133/2021: ETP, termo de referência e pregão", "orçamento público e LRF", "redação oficial e notas técnicas", "indicadores e avaliação de políticas públicas", "LAI, LGPD e transparência", "mapeamento de processos (BPMN)", "gestão e fiscalização de contratos", "convênios e parcerias (MROSC)", "Power BI e dados abertos", "controle interno e integridade"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (fluxo → POP → nota técnica) em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que esfera você atua ou quer atuar?", "type": "lista", "options": ["municipal", "estadual", "federal", "empresa estatal", "Legislativo ou Tribunal de Contas", "organização da sociedade civil", "ainda não sei"], "why": "Pergunto porque a legislação e os sistemas mudam por esfera (ex.: e-Protocolo no Paraná, SEI na União) e isso muda os exemplos das tarefas.", "where": "P" },
+      { "id": "x2", "prompt": "Em que área finalística você quer provar competência?", "type": "lista", "options": ["licitações e contratos", "orçamento e finanças", "gestão de pessoas", "planejamento e políticas públicas", "atendimento, ouvidoria e transparência", "controle interno", "convênios e parcerias", "saúde, educação ou assistência social (gestão)"], "why": "Pergunto para priorizar as tarefas certas: ETP e fluxo de contratação, infográfico orçamentário ou resposta a pedido LAI.", "where": "P" },
+      { "id": "x3", "prompt": "Os documentos do seu trabalho podem ser mostrados?", "type": "escolha", "options": ["sim, são públicos (transparência ativa)", "só com dados pessoais e trechos sigilosos removidos", "não; vou usar um caso fictício"], "why": "Pergunto porque processos administrativos podem conter dados pessoais de cidadãos e servidores ou informação de licitação em andamento; com a resposta, sugiro como anonimizar sem perder a evidência.", "where": "X" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L4", "D4", "L7", "L3", "L8", "D7", "L6", "L1", "L9", "D5", "L5", "L10"],
+    "excluded": [
+      { "code": "D1", "reason": "planta de ambiente é entrega da arquitetura e da engenharia" },
+      { "code": "D3", "reason": "modelo 3D de produto não é evidência da gestão pública" },
+      { "code": "D6", "reason": "detalhe construtivo é entrega de engenharia" },
+      { "code": "D8", "reason": "vista explodida é entrega da mecânica" },
+      { "code": "D9", "reason": "wireframe de tela é entrega de UX; a melhoria de um serviço entra como antes e depois em D5" }
+    ],
+    "parameters": {
+      "L4": {
+        "title": "Nota técnica sobre um problema de gestão pública",
+        "brief": "Escreva uma nota técnica de até 4 páginas sobre um problema real ou simulado (ex.: atraso em contratações, baixa execução de um programa, fila de atendimento): assunto, contexto, fundamentação legal com dispositivos citados, análise com dados e fonte, alternativas e conclusão/encaminhamento. Marque como minuta para revisão; sem dados pessoais nem trechos sigilosos.",
+        "parameters": { "maxPages": 4, "sections": ["assunto", "contexto", "fundamentação legal", "análise", "alternativas", "conclusão e encaminhamento"], "mustCiteLegalProvision": true, "draftLabel": "minuta para revisão" },
+        "criteria": ["até 4 páginas", "seis seções nomeadas", "cita ao menos um dispositivo legal com número de lei e artigo", "dados com fonte e data", "conclusão com encaminhamento claro", "marcada como minuta; sem dados pessoais ou sigilosos"],
+        "evidence": "nota técnica em PDF",
+        "time": "2 h",
+        "level": 2
+      },
+      "D4": {
+        "title": "Fluxo de um processo administrativo (BPMN)",
+        "brief": "Modele em BPMN simplificado um processo administrativo que você conhece (contratação por dispensa, concessão de diária, resposta a pedido LAI, protocolo): início e fim, raias por unidade ou papel, atividades, decisões e os prazos legais anotados em cada etapa. Nomes genéricos de unidades; nada de dados de processos reais.",
+        "parameters": { "notation": "BPMN simplificado", "requiredElements": ["evento de início e de fim", "raias por unidade ou papel", "ao menos um gateway", "prazos legais anotados"], "minActivities": 6 },
+        "criteria": ["início e fim explícitos", "raias por unidade ou papel", "nenhuma atividade órfã", "ao menos um gateway de decisão", "prazo legal anotado em pelo menos uma etapa, com a norma", "sem número de processo ou nome de pessoa"],
+        "evidence": "diagrama vetorial (SVG/PDF)",
+        "time": "45 min",
+        "level": 1
+      },
+      "L7": {
+        "title": "POP de uma rotina administrativa",
+        "brief": "Escreva o procedimento operacional padrão de uma rotina que você domina (fiscalização de contrato, atesto de nota fiscal, instrução de processo, atendimento no protocolo): objetivo, base legal, passos numerados com responsável, documentos e sistema usados, prazo e critério de conclusão por passo. Sem dados de processos reais.",
+        "parameters": { "requiredElements": ["objetivo e base legal", "passos numerados", "responsável por passo", "documento ou sistema por passo", "prazo quando houver", "critério de conclusão por passo"] },
+        "criteria": ["base legal citada", "passos numerados com responsável", "critério de conclusão em cada passo", "documento ou sistema indicado por passo", "sem dado pessoal ou sigiloso"],
+        "evidence": "POP em modelo",
+        "time": "60 min",
+        "level": 1
+      },
+      "L3": {
+        "title": "Estudo de caso STAR de um resultado no serviço público",
+        "brief": "Conte um problema de gestão que você ajudou a resolver (fila, retrabalho, prazo de contratação, prestação de contas): situação com indicador inicial, tarefa, ação (instrumento usado: fluxo, portaria, sistema, capacitação) e resultado mensurável. Sem dados pessoais nem informação sigilosa; use percentuais se os números forem reservados.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true, "mustNameInstrument": true },
+        "criteria": ["quatro seções explícitas", "instrumento de gestão nomeado", "resultado com número ou comparação relativa", "declaração de ausência de dado pessoal ou sigiloso"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "L8": {
+        "title": "Resposta a um briefing simulado de contratação ou programa",
+        "brief": "A partir de uma demanda simulada (ex.: \"a secretaria precisa contratar serviço de limpeza\" ou \"implantar atendimento digital\"), escreva a resposta com escopo, premissas, etapas e prazos estimados, riscos, o que fica fora e a base legal aplicável. Marque como minuta.",
+        "parameters": { "sections": ["escopo", "premissas", "etapas e prazos", "riscos", "fora de escopo", "base legal"], "maxPages": 2 },
+        "criteria": ["seis seções nomeadas", "até 2 páginas", "ao menos uma norma citada", "ao menos dois riscos com tratamento", "marcada como minuta"],
+        "evidence": "proposta em PDF",
+        "time": "45 min",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de execução ou resultados de um programa",
+        "brief": "Mostre um indicador de programa ou de execução orçamentária (dotação × empenhado × pago, pessoas atendidas, prazo médio de contratação) com fonte pública citada (Portal da Transparência, Siconfi, relatório de gestão), período, eixos rotulados e uma mensagem principal.",
+        "parameters": { "requiredElements": ["indicador com definição", "período", "fonte pública", "eixos rotulados", "uma mensagem principal"] },
+        "criteria": ["indicador nomeado com definição", "fonte e período citados", "eixos rotulados", "uma mensagem principal explícita", "sem dado pessoal"],
+        "evidence": "imagem PNG + PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "L6": {
+        "title": "Resumo de perfil em gestão pública",
+        "brief": "Escreva até 600 caracteres com sua área (licitações, orçamento, políticas públicas, atendimento), a esfera em que atua ou quer atuar, três competências e uma prova com link (nota técnica, fluxo, painel). Sem dados pessoais além do nome.",
+        "parameters": { "maxChars": 600, "requiredParts": ["área e esfera", "três competências", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia área e esfera", "cita três competências", "inclui uma prova com link"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "letters",
+        "title": "Estudo técnico preliminar (ETP) simulado",
+        "competency": "Planejamento da contratação (Lei 14.133/2021, art. 18)",
+        "criteria": ["descrição da necessidade e alinhamento ao planejamento", "requisitos da contratação", "levantamento de soluções de mercado com fontes", "estimativa de quantidades e de valor com metodologia", "justificativa da solução escolhida e do parcelamento ou não", "declaração de viabilidade", "caso fictício ou dados públicos declarados"],
+        "evidence": "ETP em PDF (minuta)",
+        "time": "2 h",
+        "trigger": "Quer treinar o planejamento de uma contratação pública?",
+        "level": 3
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Resposta simulada a um pedido de acesso à informação (LAI)",
+        "competency": "Transparência passiva e proteção de dados",
+        "criteria": ["identifica o pedido e a data de recebimento", "indica o prazo legal de resposta (20 dias, prorrogáveis por 10)", "responde o que é público ou fundamenta a negativa com o artigo da LAI", "protege dados pessoais (art. 31) com justificativa", "informa o caminho de recurso", "caso fictício declarado"],
+        "evidence": "resposta em PDF (minuta)",
+        "time": "45 min",
+        "trigger": "Quer mostrar como responde a um pedido de informação dentro da lei?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "tamanho", "check": "o texto respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6", "L8"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L8", "L9", "X1", "X2"], "auto": true },
+      { "id": "base-legal-citada", "check": "há ao menos uma norma citada com número de lei ou decreto e artigo", "appliesTo": ["L4", "L7", "L8", "X1", "X2"], "auto": true },
+      { "id": "prazo-lai", "check": "a resposta menciona o prazo legal de 20 dias prorrogáveis por 10", "appliesTo": ["X2"], "auto": true },
+      { "id": "fluxo-fechado", "check": "o diagrama tem início e fim, raias e nenhuma atividade órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "fonte-e-periodo", "check": "indicadores e números trazem fonte pública e período", "appliesTo": ["D7", "L4", "L3"], "auto": true },
+      { "id": "minuta-marcada", "check": "documentos oficiais simulados trazem a marca 'minuta para revisão' e não têm assinatura", "appliesTo": ["L4", "L8", "X1", "X2"], "auto": true },
+      { "id": "palavras-chave-do-alvo", "check": "as palavras-chave do cargo ou edital alvo aparecem no texto", "appliesTo": ["L1", "L2"], "auto": true },
+      { "id": "sem-dados-pessoais", "check": "não há CPF, nome de cidadão ou servidor, número de processo real ou proposta de licitação em andamento", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "D2", "D4", "D5", "D7", "D10", "X1", "X2"], "auto": true },
+      { "id": "creditos-e-fontes", "check": "coautores, fontes e autores remixados estão creditados", "appliesTo": ["L5", "L10", "D2", "D7", "D10"], "auto": true },
+      { "id": "fundamentacao-correta", "check": "a norma citada se aplica ao caso e está vigente", "appliesTo": ["L4", "L8", "X1", "X2"], "auto": false }
+    ],
+    "subjective": [
+      { "id": "fundamentacao", "label": "Fundamentação legal e técnica", "levels": { "aproxima": "cita normas sem ligá-las à análise", "atende": "cada conclusão se apoia em norma ou dado identificado", "supera": "pondera alternativas, riscos jurídicos e precedentes de controle (TCU/TCE)" } },
+      { "id": "linguagem-simples", "label": "Clareza e linguagem simples", "levels": { "aproxima": "texto burocrático que exige releitura", "atende": "ideia principal entendida na primeira leitura, com termos técnicos explicados", "supera": "conduz o leitor leigo e o técnico sem perder precisão" } },
+      { "id": "orientacao-a-resultados", "label": "Orientação a resultados para o cidadão", "levels": { "aproxima": "descreve atividades e trâmites", "atende": "mostra o efeito mensurável para o serviço ou o cidadão", "supera": "mostra resultado, custo, contexto e o que faria diferente" } },
+      { "id": "impessoalidade", "label": "Impessoalidade e integridade", "levels": { "aproxima": "mistura opinião pessoal ou juízo sobre pessoas", "atende": "trata o caso de forma impessoal e motivada", "supera": "antecipa conflitos de interesse e riscos de integridade e indica salvaguardas" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa que atua ou quer atuar em gestão pública: servidores, estagiários, residentes técnicos, profissionais de estatais e de organizações da sociedade civil, nas esferas municipal, estadual (Paraná inclusive) e federal. Use o vocabulário da área (PPA/LDO/LOA, empenho e liquidação, ETP e termo de referência, pregão e dispensa, gestor e fiscal de contrato, nota técnica, despacho, transparência ativa e passiva) e cite as normas certas pelo número: Lei 14.133/2021, LC 101/2000 (LRF), Lei 12.527/2011 (LAI), Lei 4.320/1964, Lei 9.784/1999, Lei 8.429/1992, LGPD, CF art. 37, Manual de Redação da Presidência da República. Oriente a produzir evidências: fluxos de processo, POPs, notas técnicas, ETPs simulados, painéis de indicadores com fonte pública. Nunca redija documento oficial assinável (despacho, parecer, portaria, edital, resposta a cidadão) como peça final: toda saída é minuta para revisão da pessoa e da autoridade competente, sem assinatura. Não dê orientação jurídica vinculante nem sugira como contornar prazos, limites ou vedações legais. Nunca trate dados pessoais de cidadãos ou servidores, números de processos reais, documentos classificados ou propostas de licitação em andamento; quando a pessoa trouxer esses dados, peça para anonimizar ou usar caso fictício. Editais de concurso são tarefas de preparação, nunca promessa de aprovação; afirmações de mercado citam fonte, data e região ou dizem \"estimativa\". Pergunte antes de inferir esfera, cargo ou senioridade. Progresso é por critérios atendidos, nunca por score. Em nenhum modo publique, siga, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "Lei 14.133/2021 — Lei de Licitações e Contratos Administrativos (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14133.htm", "kind": "norma" },
+      { "title": "Lei Complementar 101/2000 — Lei de Responsabilidade Fiscal (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp101.htm", "kind": "norma" },
+      { "title": "Lei 12.527/2011 — Lei de Acesso à Informação (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm", "kind": "norma" },
+      { "title": "Manual de Redação da Presidência da República, 3ª ed. (2018)", "url": "https://www.gov.br/pt-br/servicos/consultar-o-manual-de-redacao-da-presidencia-da-republica", "kind": "orgao-publico" },
+      { "title": "Portal Nacional de Contratações Públicas (PNCP)", "url": "https://pncp.gov.br/", "kind": "orgao-publico" },
+      { "title": "Portal da Transparência do Governo Federal (CGU)", "url": "https://portaldatransparencia.gov.br/", "kind": "orgao-publico" },
+      { "title": "Portal da Transparência do Estado do Paraná", "url": "https://www.transparencia.pr.gov.br/", "kind": "orgao-publico" },
+      { "title": "MCASP — Manual de Contabilidade Aplicada ao Setor Público (STN)", "url": "https://www.gov.br/tesouronacional/pt-br/contabilidade-e-custos/manuais/manual-de-contabilidade-aplicada-ao-setor-publico-mcasp", "kind": "norma" },
+      { "title": "Enap — Escola Virtual.Gov", "url": "https://www.escolavirtual.gov.br/", "kind": "educacao" },
+      { "title": "CBO — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "Conselho Federal de Administração (CFA)", "url": "https://cfa.org.br/", "kind": "conselho" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2/c5 com competências da gestão pública; x1 (esfera), x2 (área finalística) e x3 (documentos mostráveis)." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza L4 (nota técnica), D4 (fluxo), L7 (POP) e X1 (ETP) conforme x2; edital de concurso vira tarefa de preparação, nunca promessa." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); fluxos e painéis só no computador; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Pré-checa seções, norma citada com artigo, prazo LAI, fonte e período, marca de minuta e ausência de dados pessoais; o selo depende de revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Propõe estrutura de nota técnica, POP, ETP e resposta LAI no padrão do Manual de Redação; sempre como minuta sem assinatura; nunca aplica sem revisão." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Raias, gateways e prazos legais no fluxo BPMN (D4); fonte e eixos no infográfico (D7)." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "RF50: síntese por competências da gestão pública (contratações, orçamento, transparência) com lacunas e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Caminhos para administração, direito, economia, RH e RI com lacunas e passos; dados de mercado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por CBO 1115/2521 e por setor (esfera)." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com área, esfera e provas; só com o consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai cargos, órgãos e competências em ficha editável; a pessoa confirma item a item (RF50.CA02)." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados pessoais de cidadãos e servidores em processos administrativos", "documentos classificados ou sigilosos (LAI arts. 23 e 24)", "propostas e informações de licitações em andamento", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca produzir documento oficial assinável; toda peça é minuta para revisão, sem assinatura ou numeração de processo",
+      "não dar orientação jurídica vinculante nem sugerir como contornar prazos, limites ou vedações legais",
+      "não tratar dados pessoais de cidadãos ou servidores, documentos classificados ou informação de licitação em andamento; pedir anonimização ou caso fictício",
+      "editais de concurso são tarefas de preparação; nunca prometer aprovação, nomeação ou remuneração",
+      "afirmações de mercado com fonte, data e região ou \"estimativa\"",
+      "perguntar em vez de inferir esfera, cargo, senioridade ou situação",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["diagrama", "infografico", "prancha"],
+    "lettersTemplates": ["relatorio-tecnico", "pop", "proposta", "estudo-de-caso", "bio", "curriculo", "carta", "plano-30-60-90", "revisao", "post", "parecer"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, só tarefas de texto curtas (L5, L6) e revisão (L10); fluxos BPMN (D4), infográficos (D7) e ETP (X1) pedem computador.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil em gestão pública (15 min).",
+        "Que rotina administrativa você domina? Um POP com base legal leva cerca de 60 min e comprova padronização.",
+        "Saiu um edital na sua esfera? Posso transformar os requisitos em tarefas de preparação; sem promessa de aprovação.",
+        "Sem pressão. Quando quiser retomar, a tarefa de 15 min está aqui."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "setor", "competencias"] },
+    "privacy": {
+      "sensitiveData": ["dados pessoais de cidadãos e servidores em processos administrativos (LGPD; LAI art. 31)", "documentos classificados ou sigilosos da administração pública (LAI arts. 23 e 24)", "informações de licitações em andamento e propostas antes da abertura (Lei 14.133/2021)", "documentos pessoais (CPF, RG, endereço)"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "RAIS (MTE) — vínculos por CBO 1115, 2521 e 4110 e natureza jurídica pública", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Novo CAGED (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "Atlas do Estado Brasileiro (Ipea) — vínculos públicos por esfera e carreira", "url": "https://www.ipea.gov.br/atlasestado/", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Painel Estatístico de Pessoal (Ministério da Gestão e da Inovação)", "url": "https://www.gov.br/gestao/pt-br/assuntos/gestao-de-pessoas/painel-estatistico-de-pessoal", "geography": "Poder Executivo federal", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "IBGE — Pesquisa de Informações Básicas Municipais (Munic) e Estaduais (Estadic)", "url": "https://www.ibge.gov.br/estatisticas/sociais/educacao/10586-pesquisa-de-informacoes-basicas-municipais.html", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "Concurso Público Nacional Unificado (CPNU)", "url": "https://www.gov.br/gestao/pt-br/concursonacional", "geography": "Brasil", "cadence": "eventual", "kind": "edital" },
+      { "title": "Concursos e processos seletivos do Governo do Paraná (SEAP)", "url": "https://www.administracao.pr.gov.br/Concursos", "geography": "Paraná", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, concursos, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis (RAIS, Atlas do Estado, edital publicado); sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147); aprovação em concurso nunca é prometida."
+  },
+  "paths": [
+    { "to": "administracao", "why": "Mesma base de gestão (processos, pessoas, finanças) aplicada a organizações privadas; o registro no CRA é comum às duas.", "gaps": ["gestão comercial e marketing", "finanças empresariais e tributos", "cultura de metas de mercado"], "steps": ["estudo de caso STAR traduzido para resultado de negócio (L3)", "plano 30-60-90 para um cargo de analista administrativo (L9)", "curso de gestão empresarial (Sebrae)"] },
+    { "to": "direito", "why": "A gestão pública vive de normas; quem domina Lei 14.133, LAI e processo administrativo tem base para a área jurídica administrativa.", "gaps": ["graduação em Direito e OAB para advocacia", "técnica de redação de pareceres jurídicos", "processo judicial"], "steps": ["nota técnica com fundamentação aprofundada (L4)", "revisão crítica de um parecer público (L10)", "cursos de direito administrativo na Enap"] },
+    { "to": "ciencias-economicas", "why": "Orçamento, LRF e avaliação de políticas usam economia do setor público e análise de dados.", "gaps": ["métodos quantitativos e econometria", "avaliação de impacto", "modelagem fiscal"], "steps": ["infográfico de execução orçamentária com análise (D7)", "relatório técnico de avaliação de um programa (L4)", "curso de avaliação de políticas públicas (Enap/Ipea)"] },
+    { "to": "gestao-de-recursos-humanos", "why": "Gestão de pessoas no setor público (concursos, estágio probatório, capacitação, folha) é uma das maiores áreas de lotação.", "gaps": ["legislação de pessoal do ente", "gestão por competências", "sistemas de folha e SIAPE"], "steps": ["POP de uma rotina de pessoal (L7)", "fluxo de um processo de pessoal (D4)", "curso de gestão de pessoas na Escola de Gestão do Paraná ou Enap"] },
+    { "to": "relacoes-internacionais", "why": "Cooperação internacional, captação com organismos multilaterais e assessoria internacional de governos usam a mesma lógica de projeto e prestação de contas.", "gaps": ["inglês e espanhol de trabalho", "análise de conjuntura internacional", "regras de organismos (BID, Banco Mundial, PNUD)"], "steps": ["memorando de recomendação sobre um tema internacional (L8)", "relatório técnico sobre uma cooperação (L4)", "publicações gratuitas da FUNAG"] },
+    { "to": "servico-social", "why": "Gestão de políticas sociais (SUAS, saúde, educação) é campo compartilhado com assistentes sociais, mas o exercício do Serviço Social exige graduação e CRESS.", "gaps": ["graduação em Serviço Social e registro no CRESS", "atendimento direto a famílias", "legislação social específica (LOAS, ECA)"], "steps": ["painel de indicadores de um programa social (D7)", "nota técnica sobre um serviço socioassistencial (L4)"] }
+  ],
+  "learning": [
+    { "title": "Escola Virtual.Gov — catálogo de cursos gratuitos com certificado", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Visão Geral da Nova Lei de Licitações (Lei 14.133/2021)", "provider": "Enap / Escola Virtual.Gov", "url": "https://www.escolavirtual.gov.br/curso/486", "free": true, "kind": "curso" },
+    { "title": "Escola de Gestão do Paraná — cursos gratuitos para servidores e cidadãos", "provider": "Governo do Paraná (SEAP)", "url": "https://www.administracao.pr.gov.br/EscoladeGestao", "free": true, "kind": "portal" },
+    { "title": "Manual de Redação da Presidência da República, 3ª edição", "provider": "Presidência da República / Casa Civil", "url": "https://www.gov.br/pt-br/servicos/consultar-o-manual-de-redacao-da-presidencia-da-republica", "free": true, "kind": "norma" },
+    { "title": "MCASP — Manual de Contabilidade Aplicada ao Setor Público", "provider": "Secretaria do Tesouro Nacional", "url": "https://www.gov.br/tesouronacional/pt-br/contabilidade-e-custos/manuais/manual-de-contabilidade-aplicada-ao-setor-publico-mcasp", "free": true, "kind": "norma" },
+    { "title": "Portal Nacional de Contratações Públicas — editais, contratos e atas", "provider": "Ministério da Gestão e da Inovação", "url": "https://pncp.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Guia Prático de Avaliação de Políticas Públicas (ex ante e ex post)", "provider": "Casa Civil / Ipea", "url": "https://www.ipea.gov.br/portal/categorias/45-todas-as-noticias/noticias/13220-avaliacao-de-politicas-publicas-guia-pratico-de-analise-ex-ante-e-ex-post", "free": true, "kind": "livro" },
+    { "title": "Acesso à Informação — guias e capacitação da CGU", "provider": "Controladoria-Geral da União", "url": "https://www.gov.br/acessoainformacao/pt-br", "free": true, "kind": "portal" },
+    { "title": "Instituto Serzedello Corrêa — educação corporativa do TCU (cursos abertos)", "provider": "Tribunal de Contas da União", "url": "https://portal.tcu.gov.br/isc/", "free": true, "kind": "portal" },
+    { "title": "Repositório Institucional da Enap (publicações e cadernos)", "provider": "Enap", "url": "https://repositorio.enap.gov.br/", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Catálogo de ramos acadêmicos — gestao-publica (CBO, ISCO, ESCO, conselho, sensitiveData, vizinhos)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Auditoria Guia de Carreira §4 (perguntas), §4.6 (pacote), §7 (tarefas L1–L10, D1–D10), §8 (mensagens)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Lei 14.133/2021 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14133.htm", "accessedAt": "2026-11-02" },
+    { "title": "Lei 12.527/2011 — LAI (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm", "accessedAt": "2026-11-02" },
+    { "title": "Portaria 1.369/2018 — aprova a 3ª edição do Manual de Redação da Presidência da República (busca web)", "url": "https://www.gov.br/pt-br/servicos/consultar-o-manual-de-redacao-da-presidencia-da-republica", "accessedAt": "2026-11-02" },
+    { "title": "Enap — curso 486 Visão Geral da Nova Lei de Licitações (busca web, guias de cursos)", "url": "https://www.escolavirtual.gov.br/curso/486", "accessedAt": "2026-11-02" },
+    { "title": "Escola de Gestão do Paraná oferece mais de 200 cursos gratuitos (AEN, Governo do Paraná)", "url": "https://www.parana.pr.gov.br/aen/Noticia/Escola-de-Gestao-oferece-mais-de-200-cursos-gratuitos-para-servidores-e-populacao", "accessedAt": "2026-11-02" },
+    { "title": "CBO — Classificação Brasileira de Ocupações", "url": "https://cbo.mte.gov.br/", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URIs ESCO das competências não confirmadas nesta sessão (todas com esco: null); as URIs de ocupação vêm do catálogo",
+    "URL do Painel Estatístico de Pessoal, do Atlas do Estado Brasileiro, da página de concursos da SEAP-PR, da Escola de Gestão do Paraná e do Guia de Avaliação Ipea não abertas nesta sessão",
+    "código do curso Enap 486 (Visão Geral da NLL) vem de guias de terceiros; os códigos divergem entre fontes",
+    "texto literal dos artigos citados (Lei 14.133 art. 18; LAI arts. 23, 24, 31; prazos 20 + 10 dias) não aberto no Planalto nesta sessão",
+    "família CBO 4110 e 3513 em a4.cboFamilies não conferidas no portal da CBO",
+    "sistemas do Paraná (e-Protocolo, GMS) citados de memória; nomes e abrangência não conferidos",
+    "Res. CFA 649/2024 e registro facultativo do tecnólogo reproduzidos do catálogo, sem conferência no CFA",
+    "existência de residência técnica no Governo do Paraná como porta de entrada não conferida nesta sessão"
+  ]
+}

@@ -1,0 +1,366 @@
+{
+  "schemaVersion": 1,
+  "code": "design",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Design", "en": "Design", "es": "Diseño" },
+  "fields": ["design"],
+  "family": {
+    "cbo": [
+      { "code": "2624", "title": "Artistas visuais, desenhistas industriais e conservadores-restauradores de bens culturais" }
+    ],
+    "isco08": [
+      { "code": "2166", "title": "Graphic and multimedia designers" },
+      { "code": "2163", "title": "Product and garment designers" }
+    ],
+    "esco": [
+      { "uri": "http://data.europa.eu/esco/occupation/69bcbb0a-8d80-4ecd-b0a4-9adea2a40de2", "label": "graphic designer" },
+      { "uri": "http://data.europa.eu/esco/occupation/ab7bccb2-6f81-4a3d-a0c0-fca5d47d2775", "label": "industrial designer" },
+      { "uri": "http://data.europa.eu/esco/occupation/77bfd6e7-5598-4818-84cb-31e2651eb046", "label": "fashion designer" },
+      { "uri": "http://data.europa.eu/esco/occupation/48c8eccb-4bd0-487e-a187-4953cbbe956e", "label": "animator" }
+    ]
+  },
+  "scope": {
+    "summary": "Designers gráficos, de produto, de moda, digitais (UX/UI), de animação e motion resolvem problemas de comunicação, uso e forma a partir de um briefing: pesquisam, conceituam, prototipam, testam e entregam artefatos documentados. Profissão sem conselho nem registro obrigatório no Brasil; a prova de competência é o portfólio com processo, e não só o resultado final.",
+    "entryRoles": ["Estagiário de design", "Designer júnior", "Assistente de criação", "Designer gráfico júnior", "Designer de produto digital júnior", "Assistente de estilo (moda)", "Ilustrador ou animador júnior"],
+    "midRoles": ["Designer pleno", "Designer de produto (UX/UI) pleno", "Designer gráfico pleno", "Designer de produto físico", "Motion designer", "Estilista ou designer de moda", "Designer de embalagem"],
+    "seniorRoles": ["Designer sênior", "Diretor de arte", "Líder de design (design lead)", "Head de design", "Designer independente com estúdio próprio", "Gestor de design system", "Pesquisador de design (UX research)"],
+    "sectors": ["agências e estúdios de design", "indústria (produto, embalagem, mobiliário)", "moda e vestuário", "tecnologia e produtos digitais", "editoras e comunicação", "varejo e e-commerce", "setor público (comunicação institucional, serviços digitais)", "audiovisual e jogos", "trabalho por conta própria (freelance)"],
+    "regulation": [
+      { "name": "Lei 9.610/1998 (direitos autorais)", "issuer": "Brasil", "about": "protege desenhos, ilustrações, projetos gráficos e obras visuais; exige autorização e crédito para uso de obra de terceiros; direitos morais são irrenunciáveis" },
+      { "name": "Lei 9.279/1996 (Propriedade Industrial), arts. 94–121 e 122–175", "issuer": "Brasil / INPI", "about": "registro de desenho industrial (forma de produto) e de marca; o que é registrável e por quanto tempo" },
+      { "name": "Lei 13.146/2015 (Lei Brasileira de Inclusão), art. 63", "issuer": "Brasil", "about": "acessibilidade obrigatória de sites e aplicativos de empresas e órgãos públicos; base para exigir contraste, leitor de tela e navegação por teclado" },
+      { "name": "WCAG 2.2 (W3C) e eMAG (gov.br)", "issuer": "W3C / Governo Federal", "about": "critérios técnicos de acessibilidade digital (contraste 4,5:1, foco visível, textos alternativos) usados em interfaces e materiais gráficos" },
+      { "name": "ABNT NBR ISO 9241-210", "issuer": "ABNT", "about": "processo de design centrado no ser humano para sistemas interativos: entender contexto, especificar requisitos, prototipar, avaliar com pessoas" },
+      { "name": "Lei 8.078/1990 (CDC), arts. 36–37, e Código do CONAR", "issuer": "Brasil / CONAR", "about": "peças publicitárias e embalagens não podem enganar nem omitir informação essencial; identificação clara de publicidade" },
+      { "name": "LGPD (Lei 13.709/2018)", "issuer": "Brasil", "about": "protótipos, telas e pesquisas com pessoas usam dados fictícios ou com consentimento; dados reais de usuários nunca entram em portfólio" },
+      { "name": "Licenças Creative Commons e licenças de fontes e imagens de banco", "issuer": "Creative Commons / fornecedores", "about": "condições de uso, crédito (BY), uso comercial (NC) e obras derivadas (ND/SA); fontes e fotos licenciadas não são redistribuíveis" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "briefing", "meaning": "documento com objetivo, público, restrições, prazo e entregas que inicia um projeto de design" },
+      { "term": "conceito", "meaning": "ideia central que orienta todas as decisões visuais e funcionais do projeto" },
+      { "term": "moodboard", "meaning": "painel de referências visuais (cores, texturas, imagens) que comunica a direção estética" },
+      { "term": "identidade visual", "meaning": "conjunto de marca, paleta, tipografia, grafismos e regras de aplicação" },
+      { "term": "grid (grade)", "meaning": "estrutura de colunas, margens e módulos que organiza a página ou a tela" },
+      { "term": "tipografia", "meaning": "escolha e composição de fontes: hierarquia, corpo, entrelinha e pareamento" },
+      { "term": "wireframe", "meaning": "esquema de baixa fidelidade de uma tela com estrutura e conteúdo, sem acabamento visual" },
+      { "term": "protótipo", "meaning": "versão navegável ou física que permite testar uso antes de produzir" },
+      { "term": "teste de usabilidade", "meaning": "sessão em que pessoas tentam cumprir tarefas na interface e se observa onde travam" },
+      { "term": "design system", "meaning": "biblioteca de componentes, tokens e regras reutilizáveis que mantém consistência entre telas e equipes" },
+      { "term": "persona", "meaning": "retrato sintético de um tipo de usuário baseado em pesquisa, não em suposição" },
+      { "term": "jornada do usuário", "meaning": "mapa das etapas, pontos de contato e dores de uma pessoa ao usar um serviço" },
+      { "term": "fechamento de arquivo", "meaning": "preparar o arquivo para impressão: sangria, marcas de corte, CMYK, fontes convertidas ou incorporadas" },
+      { "term": "sangria", "meaning": "margem extra (geralmente 3–5 mm) além do corte para evitar filetes brancos na impressão" },
+      { "term": "CMYK / RGB", "meaning": "modos de cor para impressão (ciano, magenta, amarelo, preto) e para tela (vermelho, verde, azul)" },
+      { "term": "mockup", "meaning": "simulação realista da peça aplicada (embalagem, camiseta, tela) para apresentação" },
+      { "term": "ficha técnica (moda)", "meaning": "documento com desenho técnico, medidas, materiais, aviamentos e instruções de costura de uma peça" },
+      { "term": "modelagem", "meaning": "na moda, construção dos moldes da peça; no produto, construção do modelo 3D" },
+      { "term": "render", "meaning": "imagem gerada do modelo 3D com materiais, luz e câmera definidos" },
+      { "term": "storyboard / animatic", "meaning": "sequência de quadros (e sua versão temporizada) que planeja uma animação ou vídeo" },
+      { "term": "keyframe", "meaning": "quadro-chave que define posição ou estado em um instante da animação" },
+      { "term": "acessibilidade (WCAG)", "meaning": "critérios para que pessoas com deficiência usem a interface ou leiam a peça: contraste, alternativas textuais, foco" },
+      { "term": "desenho industrial (registro)", "meaning": "proteção da forma ornamental de um produto no INPI (Lei 9.279/1996)" },
+      { "term": "licença de uso", "meaning": "autorização que define como fonte, foto, ilustração ou obra podem ser usadas; Creative Commons é uma família de licenças" },
+      { "term": "direção de arte", "meaning": "definição e coordenação da linguagem visual de uma campanha, produto ou publicação" },
+      { "term": "handoff", "meaning": "entrega do design para desenvolvimento com especificações, medidas e componentes" }
+    ],
+    "tools": ["Figma", "Adobe Illustrator", "Adobe Photoshop", "Adobe InDesign", "Adobe After Effects", "Blender", "Rhinoceros / SolidWorks / Fusion 360", "KeyShot", "Procreate", "CLO 3D / Audaces (moda)", "Canva", "Miro / FigJam", "Notion / Trello", "Drawings (prancha, wireframe, 3D)", "Letters (proposta, memorial, estudo de caso)"],
+    "deliverables": ["identidade visual com manual de marca", "peça gráfica fechada para impressão (PDF/X)", "wireframes e protótipo navegável", "design system ou biblioteca de componentes", "relatório de pesquisa com usuários ou teste de usabilidade", "modelo 3D e renders de produto", "ficha técnica e desenho técnico de peça de moda", "storyboard e animação curta", "embalagem com arte-final e faca", "apresentação de conceito para cliente", "memorial descritivo de projeto", "estudo de caso de portfólio (problema, processo, resultado)", "proposta comercial em resposta a briefing"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Interpretação de briefing e definição de problema", "esco": null, "kind": "nucleo" },
+      { "label": "Pesquisa visual e de usuário (desk research, entrevistas, testes)", "esco": null, "kind": "nucleo" },
+      { "label": "Geração de conceito e alternativas (ideação)", "esco": null, "kind": "nucleo" },
+      { "label": "Composição: grid, hierarquia e tipografia", "esco": null, "kind": "nucleo" },
+      { "label": "Teoria e aplicação de cor (impresso e tela)", "esco": null, "kind": "nucleo" },
+      { "label": "Prototipagem e iteração (baixa e alta fidelidade)", "esco": null, "kind": "nucleo" },
+      { "label": "Design de interação e arquitetura de informação", "esco": null, "kind": "nucleo" },
+      { "label": "Acessibilidade digital e gráfica (WCAG, eMAG)", "esco": null, "kind": "nucleo" },
+      { "label": "Produção gráfica e fechamento de arquivo", "esco": null, "kind": "nucleo" },
+      { "label": "Modelagem 3D e renderização de produto", "esco": null, "kind": "nucleo" },
+      { "label": "Desenho técnico de produto ou de moda (vistas, cotas, ficha técnica)", "esco": null, "kind": "nucleo" },
+      { "label": "Animação e motion design (timing, keyframes, storyboard)", "esco": null, "kind": "apoio" },
+      { "label": "Documentação de projeto e handoff para produção ou desenvolvimento", "esco": null, "kind": "nucleo" },
+      { "label": "Direitos autorais, licenças e registro de desenho industrial", "esco": null, "kind": "apoio" },
+      { "label": "Apresentação e defesa de projeto ao cliente", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de projeto e orçamento de design", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["recepção e uso de feedback", "trabalho com desenvolvedores, engenheiros e marketing", "gestão do tempo em projetos com prazos curtos", "comunicação escrita de decisões de projeto", "curiosidade e repertório cultural", "ética e sigilo de projetos de clientes"],
+    "tracks": [
+      { "id": "portfolio-com-processo", "label": "Portfólio que mostra processo", "steps": ["prancha de portfólio com três trabalhos e créditos (D2)", "estudo de caso de um projeto: problema, processo, resultado (L3)", "redesenho antes e depois com justificativas (D5)", "bio de perfil com área e prova (L6)"] },
+      { "id": "produto-digital", "label": "Produto digital (UX/UI)", "steps": ["wireframe de uma tela com três estados (D9)", "relatório de um teste de usabilidade (L4)", "prancha de componentes com regras de acessibilidade (X1)", "resposta a um briefing de app ou site (L8)"] },
+      { "id": "produto-fisico-e-moda", "label": "Produto físico e moda", "steps": ["modelo 3D de produto com três renders (D3)", "detalhe de montagem ou ficha técnica (D6)", "vista explodida com lista de peças (D8)", "memorial descritivo do produto (L4)"] },
+      { "id": "marca-e-grafico", "label": "Marca e design gráfico", "steps": ["prancha de identidade visual: marca, paleta, tipografia (X1)", "infográfico com fonte citada (D7)", "resposta a briefing de identidade visual (L8)", "revisão crítica de uma peça remixada (L10)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"designer gráfico\", \"designer de produto\", \"estilista\", \"designer UX/UI\", \"animador\", \"diretor de arte\"",
+      "cboFamilies": ["2624", "2531"],
+      "why": "Pergunto seu último cargo ou especialidade do design para começar pelas tarefas que provam o que você já faz, e não pelo catálogo inteiro. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio ou primeiro cargo em estúdio, agência ou empresa",
+        "junior": "executa peças a partir de direção definida, com revisão",
+        "pleno": "conduz projetos do briefing à entrega com autonomia",
+        "senior": "define direção visual e orienta a equipe; responde pelo cliente",
+        "gestao": "lidera equipe de design, design system ou área de criação"
+      },
+      "why": "Pergunto o nível para calibrar a complexidade das tarefas (uma peça, um projeto completo ou uma direção) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem no design",
+      "options": ["interpretar briefing e definir o problema", "pesquisar com usuários e testar", "criar conceito e alternativas", "compor com grid e tipografia", "trabalhar cor para impresso e tela", "prototipar e iterar no Figma", "desenhar interfaces acessíveis", "fechar arquivo para gráfica", "modelar e renderizar em 3D", "desenho técnico e ficha técnica", "animar e fazer motion", "apresentar e defender projeto", "documentar e fazer handoff", "ilustrar"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem com as tarefas, como a prancha de portfólio e o estudo de caso."
+    },
+    "c4": {
+      "certifications": ["bacharelado ou tecnólogo em Design", "curso técnico em design gráfico, moda ou multimídia", "cursos livres de UX/UI com certificado", "certificação em acessibilidade digital (ex.: IAAP CPACC)", "cursos de software (Adobe, Figma, Blender) com certificado", "pós-graduação em design, UX ou branding"],
+      "languages": ["inglês (documentação e ferramentas)", "espanhol", "Libras"],
+      "why": "Formação, cursos e idiomas ajudam a ver lacunas em relação ao cargo que você quer; nada disso é obrigatório para exercer design no Brasil."
+    },
+    "c5": {
+      "prompt": "Que competência do design quer desenvolver primeiro?",
+      "options": ["pesquisa com usuários e testes de usabilidade", "design system e componentes", "acessibilidade digital (WCAG/eMAG)", "tipografia e composição editorial", "identidade visual e branding", "modelagem 3D e render de produto", "motion design e animação", "produção gráfica e fechamento de arquivo", "apresentação e defesa de projeto", "escrita de estudo de caso de portfólio"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (por exemplo, wireframe → teste → relatório) em vez de um catálogo inteiro."
+    },
+    "extra": [
+      {
+        "id": "x1",
+        "prompt": "Em que frente do design quer mostrar trabalho primeiro?",
+        "type": "escolha",
+        "options": ["gráfico e identidade visual", "produto digital (UX/UI)", "produto físico e embalagem", "moda", "animação e motion", "ilustração"],
+        "why": "Escolho a primeira tarefa de Drawings (prancha de marca, wireframe, modelo 3D ou storyboard) e os exemplos de briefing da sua frente.",
+        "where": "P"
+      },
+      {
+        "id": "x2",
+        "prompt": "Seus trabalhos recentes são de clientes sob sigilo (NDA)?",
+        "type": "sim-nao",
+        "options": [],
+        "why": "Se sim, as tarefas de portfólio usam projetos autorais, exercícios ou versões anonimizadas, e eu aviso antes de qualquer peça virar pública.",
+        "where": "X"
+      }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["D2", "D9", "L8", "D5", "D3", "L4", "D10", "L3", "L6", "L1", "D7", "L5"],
+    "excluded": [
+      { "code": "D1", "reason": "planta de ambiente é entrega de design de interiores e arquitetura, não do design gráfico, digital ou de produto" },
+      { "code": "L7", "reason": "procedimento operacional não é entrega típica do design; a documentação de regras cabe no memorial (L4) ou na prancha de componentes (X1)" }
+    ],
+    "parameters": {
+      "D2": {
+        "title": "Prancha de portfólio com três projetos e processo",
+        "brief": "Monte uma prancha A3 (modo prancha) com três projetos que representam sua frente do design. Para cada um: imagem final, um quadro do processo (esboço, wireframe ou alternativa descartada), legenda com problema e resultado, e créditos de coautores, fontes e imagens licenciadas. Nada de cliente sob NDA sem autorização.",
+        "parameters": { "format": "A3", "works": 3, "processFramePerWork": true, "captionParts": ["problema", "solução", "resultado"], "creditsRequired": true, "ndaCheck": true },
+        "criteria": ["três projetos", "um quadro de processo por projeto", "legenda com problema, solução e resultado", "grid consistente e hierarquia tipográfica", "créditos de coautores, fontes e imagens", "declaração de ausência de material sob NDA"],
+        "evidence": "prancha publicada (PDF ou PNG)",
+        "time": "90 min",
+        "level": 1
+      },
+      "D9": {
+        "title": "Wireframe de uma tela em três estados com anotações",
+        "brief": "No modo wireframe, desenhe uma tela de um fluxo real ou simulado (ex.: cadastro, carrinho, busca) nos estados vazio, erro e sucesso. Anote interações, hierarquia de conteúdo e um critério de acessibilidade por estado (foco, contraste, texto alternativo). Use dados fictícios.",
+        "parameters": { "states": ["vazio", "erro", "sucesso"], "annotations": true, "accessibilityNotePerState": true, "fictionalData": true, "fidelity": "baixa" },
+        "criteria": ["três estados nomeados", "anotações de interação em cada estado", "uma nota de acessibilidade por estado", "hierarquia de conteúdo legível sem cor", "só dados fictícios"],
+        "evidence": "prancha de wireframes (PDF ou PNG)",
+        "time": "90 min",
+        "level": 2
+      },
+      "L8": {
+        "title": "Resposta a um briefing de design",
+        "brief": "A partir de um briefing simulado (identidade visual, embalagem, app ou coleção), escreva uma proposta com entendimento do problema, escopo e entregas, etapas e prazos, premissas, o que fica fora, número de rodadas de ajuste e forma de aprovação. Sem valores em dinheiro.",
+        "parameters": { "template": "proposta", "sections": ["entendimento do problema", "escopo e entregas", "etapas e prazos", "premissas", "fora do escopo", "rodadas de ajuste e aprovação"], "maxPages": 2, "noPricing": true },
+        "criteria": ["seis seções presentes", "entregas listadas com formato de arquivo", "prazos por etapa", "o que fica fora declarado", "até duas páginas"],
+        "evidence": "proposta (documento)",
+        "time": "45 min",
+        "level": 2
+      },
+      "D5": {
+        "title": "Redesenho antes e depois de uma peça ou tela",
+        "brief": "Escolha uma peça gráfica, embalagem ou tela existente (sua ou pública, com crédito) e mostre antes e depois lado a lado com três mudanças anotadas: o que mudou, por que (legibilidade, hierarquia, acessibilidade, consistência) e que critério objetivo melhorou.",
+        "parameters": { "sideBySide": true, "annotatedChanges": 3, "justificationPerChange": true, "creditOriginal": true },
+        "criteria": ["duas versões lado a lado", "três mudanças anotadas com justificativa", "ao menos uma mudança de acessibilidade ou legibilidade", "crédito da peça original"],
+        "evidence": "prancha comparativa",
+        "time": "60 min",
+        "level": 1
+      },
+      "D3": {
+        "title": "Modelo 3D de produto com três renders",
+        "brief": "Modele um produto simples (luminária, embalagem, cadeira, acessório) com dimensões reais, materiais aplicados e três vistas renderizadas no modo fotorrealista; inclua uma vista com escala humana ou objeto de referência.",
+        "parameters": { "realDimensions": true, "materials": true, "renders": 3, "scaleReference": true },
+        "criteria": ["dimensões reais declaradas", "materiais aplicados", "três renders", "uma vista com referência de escala"],
+        "evidence": "modelo GLB + renders PNG",
+        "time": "3 h",
+        "level": 3
+      },
+      "L4": {
+        "title": "Memorial descritivo ou relatório de teste de usabilidade",
+        "brief": "Documente um projeto em até quatro páginas: objetivo, método (pesquisa, teste com N pessoas ou processo de projeto), resultados, limitações e referências. Em teste de usabilidade, inclua tarefas, taxa de conclusão e principais problemas; sem dados pessoais dos participantes.",
+        "parameters": { "template": "memorial", "sections": ["objetivo", "método", "resultados", "limitações", "referências"], "maxPages": 4, "noParticipantPersonalData": true },
+        "criteria": ["cinco seções nomeadas", "até quatro páginas", "resultados com número ou comparação", "referências citadas", "sem dados pessoais de participantes"],
+        "evidence": "relatório (documento)",
+        "time": "2 h",
+        "level": 3
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "drawings",
+        "title": "Prancha de identidade visual ou de componentes",
+        "competency": "Sistematização visual: marca, paleta, tipografia e regras de aplicação (ou componentes de interface e tokens)",
+        "criteria": ["marca ou componente principal em versões positiva, negativa e reduzida", "paleta com códigos (HEX/CMYK) e contraste verificado (≥ 4,5:1 em texto)", "hierarquia tipográfica com três níveis", "ao menos duas aplicações ou dois estados", "créditos de fontes e licenças"],
+        "evidence": "prancha publicada (PDF ou PNG)",
+        "time": "2 h",
+        "trigger": "Você já criou uma marca ou uma biblioteca de componentes? Quer sistematizá-la em uma prancha?",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "creditos-e-licencas", "check": "coautores, fontes tipográficas, imagens e obras remixadas estão creditados com a licença indicada", "appliesTo": ["D2", "D5", "D10", "X1", "L5", "L10"], "auto": true },
+      { "id": "quantidade-de-trabalhos", "check": "a prancha traz o número pedido de projetos, estados ou renders", "appliesTo": ["D2", "D9", "D3", "D5"], "auto": true },
+      { "id": "legenda-presente", "check": "cada projeto, tela ou mudança tem legenda ou anotação", "appliesTo": ["D2", "D9", "D5", "D7"], "auto": true },
+      { "id": "contraste-de-texto", "check": "textos sobre fundo atingem contraste mínimo 4,5:1 (3:1 para texto grande)", "appliesTo": ["D9", "X1", "D7"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L8", "L4", "L3"], "auto": true },
+      { "id": "tamanho", "check": "o documento respeita o limite de páginas, palavras ou caracteres", "appliesTo": ["L1", "L2", "L4", "L5", "L6", "L8"], "auto": true },
+      { "id": "dados-ficticios", "check": "a pessoa declarou que telas e protótipos usam dados fictícios e que não há material de cliente sob NDA", "appliesTo": ["D9", "D2", "D5", "L4", "L3"], "auto": true },
+      { "id": "escala-ou-dimensoes", "check": "o modelo 3D ou o desenho técnico declara dimensões reais e referência de escala", "appliesTo": ["D3", "D6", "D8"], "auto": true },
+      { "id": "fonte-dos-dados", "check": "o infográfico cita fonte, data e abrangência dos números", "appliesTo": ["D7"], "auto": true },
+      { "id": "autoria-declarada", "check": "a pessoa declarou autoria e ausência de dados confidenciais", "appliesTo": ["L1", "L2", "L3", "L4", "L5", "L6", "L8", "L9", "L10", "D2", "D3", "D5", "D6", "D7", "D8", "D9", "D10", "X1"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "clareza-do-conceito", "label": "Clareza do conceito", "levels": { "aproxima": "as decisões visuais não se ligam a uma ideia central", "atende": "um conceito reconhecível orienta cor, forma e tipografia", "supera": "o conceito responde ao briefing e se sustenta em todas as aplicações" } },
+      { "id": "hierarquia-e-composicao", "label": "Hierarquia e composição", "levels": { "aproxima": "o olhar não sabe por onde começar; grid inconsistente", "atende": "hierarquia clara, grid consistente, alinhamentos respeitados", "supera": "a composição conduz a leitura e resiste a mudanças de formato" } },
+      { "id": "adequacao-ao-publico", "label": "Adequação ao público e ao uso", "levels": { "aproxima": "solução genérica, sem relação com o público descrito", "atende": "escolhas justificadas pelo público, contexto de uso e acessibilidade", "supera": "evidência de pesquisa ou teste sustenta as escolhas" } },
+      { "id": "processo-visivel", "label": "Processo visível", "levels": { "aproxima": "só o resultado final aparece", "atende": "alternativas, iterações e critérios de escolha aparecem", "supera": "o processo mostra o que foi descartado e por quê, com aprendizado declarado" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da área de Design (gráfico, produto, moda, digital/UX-UI, animação e motion). Use o vocabulário da profissão: briefing, conceito, moodboard, grid, hierarquia tipográfica, wireframe, protótipo, teste de usabilidade, design system, fechamento de arquivo, ficha técnica, render, storyboard, handoff. Normas e referências a citar quando couber: Lei 9.610/1998 (direitos autorais), Lei 9.279/1996 (desenho industrial e marca, INPI), Lei 13.146/2015 art. 63, WCAG 2.2 e eMAG (acessibilidade), ABNT NBR ISO 9241-210 (design centrado no ser humano), CDC e CONAR (publicidade), LGPD (dados em protótipos) e licenças Creative Commons. Priorize o Drawings: prancha de portfólio com processo (D2), wireframe em três estados (D9), antes e depois (D5), modelo 3D (D3), remix com crédito (D10); no Letters, resposta a briefing (L8) e memorial ou relatório de teste (L4). Nunca: gerar ou sugerir imagem, estilo ou traço que imite artista, estúdio ou marca identificável; reproduzir obra, fonte ou foto de terceiros sem licença e crédito; incluir no portfólio trabalhos de clientes sob NDA ou dados pessoais reais em telas; apresentar peça gerada por IA como autoral da pessoa; prometer que o portfólio garante vaga. Crédito é obrigatório em remix e em uso de material licenciado. Pergunte a frente do design e o nível antes de sugerir; não deduza especialidade pelos desenhos. Pré-cheque só critérios objetivos (contagem, legendas, contraste, créditos, seções, declaração de NDA); a avaliação de conceito e composição é humana. Afirmações sobre mercado citam fonte, data e região ou dizem \"estimativa\"; nunca fale de salário. Progresso é por critérios atendidos, sem score nem ranking.",
+    "citeSources": [
+      { "title": "Lei 9.610/1998 — direitos autorais (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9610.htm", "kind": "norma" },
+      { "title": "Lei 9.279/1996 — propriedade industrial: desenho industrial e marcas (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9279.htm", "kind": "norma" },
+      { "title": "INPI — Instituto Nacional da Propriedade Industrial (desenho industrial e marcas)", "url": "https://www.gov.br/inpi/pt-br", "kind": "orgao-publico" },
+      { "title": "WCAG 2.2 — Diretrizes de Acessibilidade para Conteúdo Web (W3C)", "url": "https://www.w3.org/TR/WCAG22/", "kind": "norma" },
+      { "title": "eMAG — Modelo de Acessibilidade em Governo Eletrônico", "url": "https://emag.governoeletronico.gov.br/", "kind": "orgao-publico" },
+      { "title": "Design System do Governo Federal (gov.br)", "url": "https://www.gov.br/ds/", "kind": "referencia" },
+      { "title": "Creative Commons Brasil — licenças", "url": "https://br.creativecommons.net/", "kind": "comunidade" },
+      { "title": "CONAR — Código Brasileiro de Autorregulamentação Publicitária", "url": "http://www.conar.org.br/", "kind": "referencia" },
+      { "title": "Novo CAGED — Ministério do Trabalho e Emprego", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" },
+      { "title": "CBO 2624 — Classificação Brasileira de Ocupações (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2 e c5 com competências do design; x1 escolhe a frente (gráfico, UX/UI, produto, moda, motion) e x2 avisa sobre NDA." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "D2, D9, L8 e D5 entram primeiro; cada card diz a competência, a evidência e lembra de créditos e licenças." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano por horas (d1) e aparelho (d4); D3 e X1 só no computador; pausa de 7 dias após duas dispensas." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa contagem de trabalhos e estados, legendas, contraste 4,5:1, créditos e licenças, seções da proposta e declaração de NDA; conceito e composição ficam para revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de proposta (L8), memorial (L4) e estudo de caso (L3) com prévia; nunca inventa resultados nem clientes." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Grid, legendas, créditos e checagem de contraste da prancha; estados do wireframe. Não gera imagem que imite artista ou marca identificável." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese de competências declaradas e evidenciadas por frente do design, lacunas (ex.: acessibilidade, pesquisa) e incertezas; cada afirmação cita o campo." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: publicidade, artes visuais, interiores, engenharia de software (front-end), audiovisual; sempre com lacunas e passos, sem previsão." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por CBO 2624, competências e setor; só pessoas com opt-in; afinidade explicada." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com frente do design, três competências e link de portfólio; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, softwares e projetos em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings", "links de portfólio público"],
+      "never": ["mensagens", "itens SIGILOSO", "projetos de clientes sob NDA", "identidades visuais, produtos e coleções não lançados", "arquivos-fonte de fontes, fotos e ilustrações licenciadas", "dados pessoais reais de usuários em protótipos e pesquisas", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "não gerar nem sugerir imagem, traço ou estilo que imite artista, ilustrador, estúdio ou marca identificável",
+      "crédito e licença obrigatórios em remix (D10) e em qualquer uso de fonte, foto ou ilustração de terceiros; sem autorização, a peça não entra",
+      "trabalhos de clientes sob NDA e produtos não lançados não entram em portfólio nem em prompt externo",
+      "telas e protótipos só com dados fictícios; nunca dados reais de usuários",
+      "peça gerada por IA não é apresentada como autoral; a IA ajuda em estrutura, checagem e organização",
+      "perguntar a frente do design e o nível em vez de inferir pelos desenhos",
+      "nunca prometer vaga, cliente ou salário; mercado com fonte, data e região ou \"estimativa\"",
+      "progresso por critérios atendidos; sem score, ranking ou comparação pública",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "media", "drawings": "alta" },
+    "drawingsModes": ["prancha", "wireframe", "3d", "infografico", "2d-tecnico", "diagrama"],
+    "lettersTemplates": ["proposta", "memorial", "estudo-de-caso", "relatorio-tecnico", "bio", "curriculo", "post", "revisao", "carta", "plano-30-60-90"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "D2, D9, D3, D5 e X1 exigem computador; no celular ficam L6, L5, L10 e a conferência de critérios da prancha.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: prancha de portfólio com três projetos e um quadro de processo cada (90 min). Comprova curadoria visual, que vagas de designer pedem.",
+        "Falta só o crédito das fontes para fechar os critérios objetivos da sua prancha. Quando quiser.",
+        "Seu wireframe já tem os estados vazio e sucesso. O estado de erro, com a nota de acessibilidade, fecha o critério.",
+        "Sem pressão. Quando quiser retomar, a resposta ao briefing (45 min) está aqui.",
+        "Quer treinar com um briefing de identidade visual ou de app? Eu monto o enunciado; você decide o escopo."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "competencias", "setor"] },
+    "privacy": {
+      "sensitiveData": ["identidades visuais, produtos e coleções de clientes antes do lançamento (NDA)", "fontes, fotos e ilustrações licenciadas de terceiros sem direito de redistribuição", "dados pessoais reais em mockups e protótipos de interfaces", "gravações e transcrições de testes com usuários", "orçamentos e contratos de clientes"],
+      "publicByDefault": false
+    }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2624 (designers) e CNAE 7410 (design e decoração de interiores)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO e CNAE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "PNAD Contínua (IBGE) — ocupação, inclusive trabalho por conta própria", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html", "geography": "Brasil e UF", "cadence": "trimestral", "kind": "estatistica-oficial" },
+      { "title": "SIIC — Sistema de Informações e Indicadores Culturais (IBGE): ocupação no setor cultural e criativo", "url": "https://www.ibge.gov.br/estatisticas/multidominio/cultura-recreacao-e-esporte/9388-indicadores-culturais.html", "geography": "Brasil e grandes regiões", "cadence": "eventual", "kind": "estatistica-oficial" },
+      { "title": "Diagnóstico do Design Brasileiro (Centro Brasil Design / Apex-Brasil / MDIC)", "url": "https://www.cbd.org.br/", "geography": "Brasil", "cadence": "eventual", "kind": "pesquisa" },
+      { "title": "Abedesign — Associação Brasileira de Empresas de Design", "url": "https://abedesign.org.br/", "geography": "Brasil", "cadence": "eventual", "kind": "associacao" },
+      { "title": "Editais da Política Nacional Aldir Blanc (Lei 14.399/2022) e da Lei Rouanet (Salic) — Ministério da Cultura", "url": "https://www.gov.br/cultura/pt-br", "geography": "Brasil, UF e município", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis; sem fonte atual, diz \"estimativa\" (RF50.CA07). Grande parte do trabalho em design é por conta própria ou PJ e não aparece no CAGED/RAIS: dizer isso ao citar dados de vínculo formal. Remuneração nunca entra como promessa nem como filtro (D-147)."
+  },
+  "paths": [
+    { "to": "publicidade-e-propaganda", "why": "Direção de arte, campanhas e peças de comunicação compartilham composição, tipografia e trabalho com briefing; agências contratam designers como diretores de arte.", "gaps": ["redação e conceito de campanha", "planejamento de mídia e métricas", "autorregulamentação publicitária (CONAR, CDC)"], "steps": ["resposta a briefing de campanha (L8)", "prancha com desdobramento de uma campanha em três peças (D2)", "estudo de caso com resultado de uma peça (L3)"] },
+    { "to": "artes-visuais", "why": "Ilustração, gravura e artes visuais usam o mesmo repertório de composição e cor; a diferença está na autoria sem briefing e nos circuitos de exposição e editais.", "gaps": ["produção autoral contínua e pesquisa poética", "circuitos de exposição, editais e leis de incentivo", "texto de artista e portfólio curatorial"], "steps": ["prancha de uma série autoral (D2)", "texto de apresentação da série (L6)", "inscrição simulada em edital (L8)"] },
+    { "to": "design-de-interiores", "why": "Planejamento de espaços, mobiliário e visual merchandising aproveitam modelagem 3D, cor e materiais; é profissão reconhecida pela Lei 13.369/2016.", "gaps": ["planta e layout com cotas (NBR 6492) e acessibilidade (NBR 9050)", "especificação de materiais, iluminação e fornecedores", "detalhamento de marcenaria"], "steps": ["planta de layout 1:50 de um ambiente (D1)", "modelo 3D de um ambiente com três vistas (D3)", "detalhe de um móvel (D6)"] },
+    { "to": "engenharia-de-software", "why": "Designers de produto digital que dominam componentes e handoff migram para front-end ou design engineering; o vocabulário de design system é comum.", "gaps": ["HTML, CSS e JavaScript", "versionamento e fluxo de desenvolvimento", "testes automatizados e acessibilidade programática (ARIA)"], "steps": ["prancha de componentes com tokens (X1)", "implementar um componente acessível e documentar (L4)", "revisão crítica de uma interface pública (L10)"] },
+    { "to": "cinema-e-audiovisual", "why": "Motion design, animação e direção de arte para vídeo compartilham storyboard, tipografia em movimento e composição de quadro.", "gaps": ["linguagem audiovisual: decupagem, ritmo, som", "produção e equipe de set", "edição e finalização"], "steps": ["storyboard de uma sequência curta (D2 em modo prancha)", "animação de 15 segundos a partir do storyboard (D10 ou projeto autoral)", "roteiro de um vídeo explicativo (L8)"] },
+    { "to": "marketing", "why": "Designers que entendem público, jornada e métricas atuam em marketing de conteúdo, branding e growth.", "gaps": ["métricas e análise de campanhas", "planejamento de conteúdo e canais", "posicionamento e pesquisa de mercado"], "steps": ["infográfico com resultado de uma campanha (D7)", "plano 30-60-90 para um cargo de marketing (L9)", "post sobre um aprendizado de branding (L5)"] }
+  ],
+  "learning": [
+    { "title": "eMAG — Modelo de Acessibilidade em Governo Eletrônico (guia e checklist)", "provider": "Governo Federal", "url": "https://emag.governoeletronico.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Design System do Governo Federal — componentes, tokens e padrões", "provider": "gov.br", "url": "https://www.gov.br/ds/", "free": true, "kind": "portal" },
+    { "title": "Cartilhas de acessibilidade na web (W3C Brasil / Ceweb.br)", "provider": "NIC.br", "url": "https://ceweb.br/publicacoes/", "free": true, "kind": "portal" },
+    { "title": "Movimento Web para Todos — guias de acessibilidade digital", "provider": "Movimento Web para Todos", "url": "https://mwpt.com.br/", "free": true, "kind": "comunidade" },
+    { "title": "Academia do INPI — cursos gratuitos de propriedade intelectual (desenho industrial, marcas)", "provider": "INPI", "url": "https://www.gov.br/inpi/pt-br/servicos/academia", "free": true, "kind": "curso" },
+    { "title": "Creative Commons Brasil — como escolher e aplicar uma licença", "provider": "Creative Commons Brasil", "url": "https://br.creativecommons.net/", "free": true, "kind": "portal" },
+    { "title": "Cursos on-line gratuitos do SENAI (design, modelagem, Adobe)", "provider": "SENAI", "url": "https://www.senai.br/cursos", "free": true, "kind": "portal" },
+    { "title": "Cursos on-line do Sebrae — economia criativa, precificação e proposta", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "Escola Virtual.Gov — acessibilidade digital e comunicação pública", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "WCAG 2.2 (W3C) — texto normativo", "provider": "W3C", "url": "https://www.w3.org/TR/WCAG22/", "free": true, "kind": "norma" },
+    { "title": "Catálogo ABNT — NBR ISO 9241-210 e normas de ergonomia", "provider": "ABNT", "url": "https://www.abntcatalogo.com.br/", "free": false, "kind": "norma" }
+  ],
+  "sources": [
+    { "title": "Catálogo de ramos acadêmicos — ramo design (CBO 2624, ISCO 2166/2163, ESCO, vizinhos, sensitiveData)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Lei 9.610/1998 — direitos autorais (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9610.htm", "accessedAt": "2026-11-02" },
+    { "title": "Lei 9.279/1996 — propriedade industrial (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l9279.htm", "accessedAt": "2026-11-02" },
+    { "title": "Lei 13.146/2015 — Lei Brasileira de Inclusão, art. 63 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm", "accessedAt": "2026-11-02" },
+    { "title": "WCAG 2.2 (W3C)", "url": "https://www.w3.org/TR/WCAG22/", "accessedAt": "2026-11-02" },
+    { "title": "Confea — nota sobre registro facultativo de designers (contexto da não regulamentação do design)", "url": "https://www.confea.org.br/node/232038", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Nenhuma URL deste pacote foi aberta nesta sessão; leis citadas de memória (Lei 9.610/1998, 9.279/1996, 13.146/2015, LGPD, CDC) com artigos aproximados",
+    "Profissão de designer sem regulamentação federal: PL 1.391/2011 e outros projetos de regulamentação citados de memória; situação atual não conferida na Câmara",
+    "NBR ISO 9241-210 (edição brasileira) e sua vigência não conferidas no catálogo ABNT",
+    "Família CBO 2531 em questions.a4.cboFamilies (diretor de arte em publicidade) não conferida no portal da CBO",
+    "Nenhuma URI ESCO de competência (skill) confirmada; todas as competências com esco: null; URIs de ocupação vêm do catálogo",
+    "Diagnóstico do Design Brasileiro (CBD/Apex/MDIC) é de 2014; não conferida edição posterior; URL do CBD e da Abedesign não abertas",
+    "Página do SIIC/IBGE e cadência de publicação citadas de memória",
+    "URLs de eMAG, Design System gov.br, Ceweb.br, MWPT, Academia INPI e SENAI não abertas nesta sessão"
+  ]
+}

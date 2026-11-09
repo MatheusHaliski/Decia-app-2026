@@ -1,0 +1,283 @@
+{
+  "schemaVersion": 1,
+  "code": "zootecnia",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Zootecnia", "en": "Animal Science", "es": "Zootecnia" },
+  "fields": ["zootecnia"],
+  "family": {
+    "cbo": [{ "code": "2233", "title": "Veterinários e zootecnistas" }],
+    "isco08": [
+      { "code": "2132", "title": "Farming, forestry and fisheries advisers" },
+      { "code": "2131", "title": "Biologists, botanists, zoologists and related professionals" }
+    ],
+    "esco": []
+  },
+  "scope": {
+    "summary": "Profissão regulamentada pela Lei 5.550/1968, com inscrição obrigatória no CRMV (sistema CFMV). O zootecnista planeja e conduz a produção animal: nutrição e formulação de dietas, manejo de pastagens e forragens, melhoramento genético, reprodução, bem-estar animal, biosseguridade, instalações e gestão econômica de rebanhos, granjas e criatórios. Não realiza atos clínicos ou cirúrgicos, privativos do médico-veterinário.",
+    "entryRoles": ["Estagiário ou trainee em granja, fazenda ou confinamento", "Assistente técnico de nutrição animal", "Técnico de campo em cooperativa ou integradora", "Analista júnior de melhoramento genético", "Vendedor técnico de nutrição e sanidade animal (início de carreira)", "Extensionista rural em início de carreira"],
+    "midRoles": ["Consultor em nutrição de ruminantes, aves, suínos ou peixes", "Responsável técnico (RT) de fábrica de ração ou estabelecimento de produção", "Gerente de produção de granja, confinamento ou fazenda", "Formulador de rações e suplementos", "Analista de dados zootécnicos", "Extensionista rural (Emater, Senar)", "Fiscal agropecuário estadual (defesa animal)"],
+    "seniorRoles": ["Gerente técnico regional de integradora ou indústria de nutrição", "Pesquisador (Embrapa, universidades, institutos)", "Coordenador de programa de melhoramento genético", "Consultor sênior e dono de empresa de consultoria", "Auditor de bem-estar animal e certificações", "Docente"],
+    "sectors": ["bovinocultura de corte e de leite", "avicultura e suinocultura (integração)", "aquicultura e piscicultura", "indústria de nutrição animal e rações", "melhoramento genético e reprodução", "cooperativas e revendas", "assistência técnica e extensão rural", "serviço público (MAPA, agências estaduais)", "pesquisa e ensino", "equinocultura, ovinocaprinocultura e pet food", "trabalho autônomo e consultoria"],
+    "regulation": [
+      { "name": "Lei 5.550/1968", "issuer": "Brasil", "about": "regulamenta o exercício da profissão de zootecnista; inscrição no CRMV para exercer a profissão" },
+      { "name": "Lei 5.517/1968 e Decreto 64.704/1969", "issuer": "Brasil", "about": "criam o sistema CFMV/CRMVs, ao qual o zootecnista se inscreve; delimitam os atos privativos do médico-veterinário" },
+      { "name": "Resolução CFMV 1.071/2014", "issuer": "CFMV", "about": "Código de Ética do Zootecnista: deveres com cliente, animais, colegas e sigilo profissional" },
+      { "name": "Resolução CFMV 619/1994", "issuer": "CFMV", "about": "campo de atividades do zootecnista (produção, nutrição, melhoramento, manejo, planejamento)" },
+      { "name": "Resolução CFMV 1.275/2019", "issuer": "CFMV", "about": "registro e responsabilidade técnica de estabelecimentos, inclusive fábricas de ração e criatórios" },
+      { "name": "Lei 6.198/1974 e Decreto 6.296/2007", "issuer": "Brasil / MAPA", "about": "inspeção e fiscalização de produtos destinados à alimentação animal (rações, suplementos, aditivos)" },
+      { "name": "Lei 9.605/1998, art. 32", "issuer": "Brasil", "about": "crime de maus-tratos a animais; bem-estar como dever profissional" },
+      { "name": "NR 31", "issuer": "MTE", "about": "segurança e saúde no trabalho na agropecuária, incluindo manejo de animais e instalações" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "índices zootécnicos", "meaning": "indicadores de desempenho do rebanho: GMD, conversão alimentar, natalidade, desmama, mortalidade" },
+      { "term": "GMD", "meaning": "ganho médio diário de peso (kg/animal/dia)" },
+      { "term": "conversão alimentar", "meaning": "kg de alimento consumido por kg de ganho de peso ou de produto" },
+      { "term": "UA e taxa de lotação", "meaning": "unidade animal (450 kg) e número de UA por hectare de pastagem" },
+      { "term": "formulação de dieta", "meaning": "combinação de ingredientes que atende às exigências nutricionais ao menor custo" },
+      { "term": "PB, NDT, FDN, EM", "meaning": "proteína bruta, nutrientes digestíveis totais, fibra em detergente neutro, energia metabolizável" },
+      { "term": "exigências nutricionais", "meaning": "tabelas de referência (BR-Corte, NRC, Tabelas Brasileiras para Aves e Suínos) por categoria animal" },
+      { "term": "ECC", "meaning": "escore de condição corporal: avaliação visual e tátil da reserva corporal" },
+      { "term": "IEP", "meaning": "intervalo entre partos, indicador reprodutivo de fêmeas" },
+      { "term": "DEP", "meaning": "diferença esperada na progênie: valor genético estimado usado na seleção" },
+      { "term": "escrituração zootécnica", "meaning": "registro sistemático de nascimentos, pesagens, coberturas, consumo e sanidade" },
+      { "term": "pastejo rotacionado", "meaning": "manejo de pastagem em piquetes com alturas de entrada e saída definidas" },
+      { "term": "planejamento forrageiro", "meaning": "balanço entre oferta de forragem e demanda do rebanho ao longo do ano" },
+      { "term": "silagem e feno", "meaning": "forragens conservadas para o período seco" },
+      { "term": "biosseguridade", "meaning": "medidas que impedem a entrada e a disseminação de agentes em granjas e rebanhos" },
+      { "term": "vazio sanitário", "meaning": "período sem animais entre lotes, com limpeza e desinfecção das instalações" },
+      { "term": "bem-estar animal", "meaning": "cinco liberdades ou cinco domínios; base de protocolos e certificações" },
+      { "term": "GTA", "meaning": "Guia de Trânsito Animal, obrigatória para movimentar animais" },
+      { "term": "integração", "meaning": "sistema em que a agroindústria fornece pintos, leitões, ração e assistência ao produtor integrado" },
+      { "term": "ILPF", "meaning": "integração lavoura-pecuária-floresta" },
+      { "term": "PPM", "meaning": "Pesquisa da Pecuária Municipal do IBGE: efetivos e produção por município" },
+      { "term": "RT", "meaning": "responsável técnico que responde pelo estabelecimento perante o CRMV" }
+    ],
+    "tools": ["software de formulação de rações (RLM, SuperCrac, Optimal)", "software de gestão de rebanho (ex.: Prodap, BovControl, Agriness)", "planilhas de índices e custos", "balança, brincos e leitores RFID", "régua ou app de altura de pasto", "R ou Python (análise de experimentos)", "QGIS (mapa de piquetes)", "tabelas de exigências (BR-Corte, Tabelas Brasileiras)", "estação meteorológica e dados do INMET", "AutoCAD (croqui de instalações)"],
+    "deliverables": ["relatório técnico de diagnóstico zootécnico", "formulação de dieta por categoria animal", "planejamento forrageiro anual", "plano de manejo de pastagem", "POP de biosseguridade ou de manejo", "planilha e relatório de índices zootécnicos", "croqui de instalações ou de piquetes", "programa de melhoramento ou de acasalamento", "relatório de ATER", "protocolo de bem-estar animal", "parecer técnico"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Nutrição animal e formulação de dietas", "esco": null, "kind": "nucleo" },
+      { "label": "Forragicultura e manejo de pastagens", "esco": null, "kind": "nucleo" },
+      { "label": "Melhoramento genético e reprodução", "esco": null, "kind": "nucleo" },
+      { "label": "Manejo e bem-estar animal", "esco": null, "kind": "nucleo" },
+      { "label": "Biosseguridade e sanidade de rebanhos (sem ato clínico)", "esco": null, "kind": "nucleo" },
+      { "label": "Escrituração e análise de índices zootécnicos", "esco": null, "kind": "nucleo" },
+      { "label": "Planejamento e gestão econômica da produção animal", "esco": null, "kind": "nucleo" },
+      { "label": "Redação de relatórios, planos e pareceres técnicos", "esco": null, "kind": "nucleo" },
+      { "label": "Instalações e ambiência", "esco": null, "kind": "apoio" },
+      { "label": "Experimentação e estatística", "esco": null, "kind": "apoio" },
+      { "label": "Extensão rural e comunicação com produtores", "esco": null, "kind": "apoio" },
+      { "label": "Legislação de alimentação animal e responsabilidade técnica", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação com produtores e equipes", "organização de registros", "trabalho em equipe com veterinários e agrônomos", "ética e sigilo sobre dados de rebanhos e formulações", "tomada de decisão com dados"],
+    "tracks": [
+      { "id": "indices-ao-relatorio", "label": "Dos índices ao relatório", "steps": ["estudo de caso de um problema de desempenho (L3)", "relatório de diagnóstico zootécnico com índices fictícios (L4)", "infográfico de índices com fonte (D7)", "post sobre uma lição de campo (L5)"] },
+      { "id": "nutricao-e-forragem", "label": "Nutrição e forragem", "steps": ["formulação de dieta para uma categoria (X1)", "planejamento forrageiro anual (X2)", "diagrama do fluxo de arraçoamento (D4)", "POP de preparo e fornecimento de dieta (L7)"] },
+      { "id": "gestao-e-consultoria", "label": "Gestão e consultoria", "steps": ["proposta para um briefing de consultoria (L8)", "plano 30-60-90 para o cargo-alvo (L9)", "croqui de instalações ou piquetes (D1)", "redesenho antes e depois de um manejo (D5)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"técnico de granja\", \"vendedor técnico de nutrição\", \"gerente de confinamento\", \"estagiário de fazenda\"",
+      "cboFamilies": ["2233", "3211", "1411"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já fez com animais, rações ou produtores. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, trainee ou primeiro cargo técnico",
+        "junior": "atua sob supervisão; ainda não assina como RT",
+        "pleno": "responde por lotes, clientes ou formulações",
+        "senior": "referência técnica; orienta equipe e revisa planos",
+        "gestao": "responde por granja, fazenda, carteira de clientes ou orçamento"
+      },
+      "why": "Pergunto o nível para calibrar a complexidade das tarefas e as pessoas que sugiro."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem",
+      "options": ["formular dietas e suplementos", "manejar pastagens e planejar forragem", "avaliar e selecionar animais (genética e reprodução)", "organizar escrituração e analisar índices", "conduzir manejo com bem-estar animal", "implantar biosseguridade em granja", "planejar custos e gestão da produção", "redigir relatório ou plano técnico", "orientar produtores e equipes", "conduzir experimentos e analisar dados", "projetar instalações e ambiência", "vender e dar suporte técnico a produtos"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com relatórios, formulações e infográficos."
+    },
+    "c4": {
+      "certifications": ["inscrição no CRMV", "curso de bem-estar animal (ex.: Embrapa, WAP, STEPS)", "curso de formulação de rações", "curso de manejo de pastagens", "curso de biosseguridade avícola ou suína", "pós-graduação (nutrição, forragicultura, melhoramento, aquicultura)", "auditor de certificações (bem-estar, orgânicos, GlobalG.A.P.)"],
+      "languages": ["inglês", "espanhol"],
+      "why": "Inscrição, cursos e idiomas mostram lacunas em relação ao cargo que você quer; o CRMV ativo é pré-requisito para ser RT."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver?",
+      "options": ["formulação de dietas", "manejo de pastagens e planejamento forrageiro", "melhoramento genético e dados", "bem-estar animal e protocolos", "biosseguridade", "análise de índices e planilhas", "gestão e custos", "comunicação com produtores", "redação técnica", "aquicultura"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas da área em vez do catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Com que espécie ou sistema você atua ou quer atuar?", "type": "escolha", "options": ["bovinos de corte", "bovinos de leite", "aves", "suínos", "peixes e camarões", "ovinos e caprinos", "equinos", "pet food e animais de companhia", "ainda não sei"], "why": "Pergunto para escolher tabelas de exigências, exemplos e fontes da sua espécie nas tarefas. Você pode pular.", "where": "P" },
+      { "id": "x2", "prompt": "Você tem inscrição ativa no CRMV?", "type": "escolha", "options": ["sim", "ainda não, estou me formando", "não, e quero fazer", "prefiro não dizer"], "why": "Pergunto porque tarefas que simulam parecer ou RT lembram que a peça real exige inscrição; sem ela, trato tudo como treino.", "where": "P" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["L4", "L7", "D7", "L3", "L6", "L1", "D4", "L8", "L9", "D1", "L5", "D5"],
+    "excluded": [
+      { "code": "D3", "reason": "modelo 3D de produto não é entrega típica da zootecnia" },
+      { "code": "D8", "reason": "vista explodida é entrega de projeto mecânico" },
+      { "code": "D9", "reason": "wireframe de tela pertence a UX/UI" }
+    ],
+    "parameters": {
+      "L4": {
+        "title": "Relatório de diagnóstico zootécnico com índices fictícios",
+        "brief": "Escreva um relatório de até 4 páginas sobre um rebanho ou lote fictício: objetivo, método (escrituração, pesagens, ECC), resultados com índices (GMD, conversão, lotação, natalidade) e comparação com referências (Embrapa, BR-Corte, Tabelas Brasileiras), limitações e referências. Sem produtor, propriedade ou dados reais de clientes; não é parecer assinável.",
+        "parameters": { "maxPages": 4, "sections": ["objetivo", "método", "resultados", "limitações", "referências"], "indices": ["GMD", "conversão alimentar", "taxa de lotação", "natalidade ou mortalidade"], "fictionalData": true, "signable": false },
+        "criteria": ["até 4 páginas", "cinco seções nomeadas", "ao menos três índices zootécnicos com unidade", "comparação com referência citada", "declaração de que rebanho e dados são fictícios", "sem campos de assinatura, CRMV ou RT preenchidos"],
+        "evidence": "relatório em PDF",
+        "time": "2 h",
+        "level": 3
+      },
+      "L7": {
+        "title": "POP de biosseguridade de uma granja ou criatório",
+        "brief": "Escreva um procedimento operacional padrão de entrada de pessoas, veículos e insumos em uma granja fictícia: passos numerados, responsável por passo, critério de conclusão, EPI (NR 31) e registro. Sem prescrição de medicamento ou vacina, que é ato veterinário.",
+        "parameters": { "numberedSteps": true, "ownerPerStep": true, "scope": "entrada de pessoas, veículos e insumos", "noVeterinaryPrescription": true },
+        "criteria": ["passos numerados com responsável", "critério de conclusão por passo", "EPI e registro de entrada descritos", "vazio sanitário ou desinfecção contemplados", "sem medicamento, vacina ou dose"],
+        "evidence": "modelo de POP",
+        "time": "60 min",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de efetivo ou produção animal com fonte oficial",
+        "brief": "Monte um infográfico com uma mensagem principal sobre o efetivo ou a produção (leite, ovos, carne) de uma espécie no seu estado ou município em 5 a 10 anos, com dados públicos (IBGE PPM, Pesquisa Trimestral do Abate, Embrapa). Eixos rotulados com unidade; fonte, ano e região citados.",
+        "parameters": { "dataSources": ["IBGE PPM", "IBGE Pesquisa Trimestral do Abate", "Embrapa"], "yearsSpan": "5 a 10", "oneMessage": true },
+        "criteria": ["fonte, ano e região citados", "eixos rotulados com unidade (cabeças, mil litros, t)", "uma mensagem principal explícita", "sem dado de propriedade identificável"],
+        "evidence": "imagem PNG e PDF",
+        "time": "60 min",
+        "level": 1
+      }
+    },
+    "custom": [
+      { "id": "X1", "editor": "letters", "title": "Formulação de dieta para uma categoria animal", "competency": "Nutrição animal e formulação de dietas", "criteria": ["categoria, peso e meta de desempenho definidos", "exigências citadas com a tabela de referência", "ingredientes com inclusão (%) e composição (PB, NDT ou EM)", "atendimento das exigências demonstrado em tabela", "declaração de que é exercício, não recomendação a produtor real"], "evidence": "documento com tabela de formulação", "time": "90 min", "trigger": "Quer treinar formulação para a espécie que você escolheu?", "level": 2 },
+      { "id": "X2", "editor": "letters", "title": "Planejamento forrageiro anual de uma propriedade fictícia", "competency": "Forragicultura e manejo de pastagens", "criteria": ["rebanho em UA por mês", "oferta de forragem por área e estação", "balanço oferta-demanda com déficit ou sobra identificado", "estratégia para o período seco (silagem, feno, suplementação)", "fontes de produtividade de forrageiras citadas"], "evidence": "documento com tabela de balanço", "time": "2 h", "trigger": "Quer montar o balanço forrageiro de uma fazenda fictícia?", "level": 3 }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "estrutura-relatorio", "check": "objetivo, método, resultados, limitações e referências existem e estão nomeados", "appliesTo": ["L4"], "auto": true },
+      { "id": "indices-com-unidade", "check": "índices zootécnicos apresentados com unidade (kg/dia, kg/kg, UA/ha, %)", "appliesTo": ["L4", "D7", "X1", "X2"], "auto": true },
+      { "id": "referencia-citada", "check": "tabela de exigências ou fonte técnica citada", "appliesTo": ["L4", "X1", "X2"], "auto": true },
+      { "id": "fonte-oficial-citada", "check": "fonte, ano e região dos dados aparecem na peça", "appliesTo": ["D7"], "auto": true },
+      { "id": "sem-ato-veterinario", "check": "não há prescrição de medicamento, vacina ou dose nem campos de assinatura, CRMV ou RT preenchidos", "appliesTo": ["L4", "L7", "X1"], "auto": true },
+      { "id": "dados-ficticios-declarados", "check": "a pessoa declarou que rebanho, produtor e dados são fictícios ou autorizados", "appliesTo": ["L3", "L4", "D1", "D7", "X1", "X2"], "auto": true },
+      { "id": "pop-passos", "check": "passos numerados, responsável e critério de conclusão por passo", "appliesTo": ["L7"], "auto": true },
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim e nenhuma tarefa órfã", "appliesTo": ["D4"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas, palavras ou caracteres da tarefa", "appliesTo": ["L1", "L2", "L4", "L5", "L6"], "auto": true }
+    ],
+    "subjective": [
+      { "id": "rigor-zootecnico", "label": "Rigor zootécnico", "levels": { "aproxima": "recomendações sem ligação com categoria, sistema ou exigências", "atende": "coerentes com a categoria animal, o sistema e as tabelas de referência", "supera": "justifica cada decisão com dado, referência e alternativa descartada" } },
+      { "id": "bem-estar-e-biosseguridade", "label": "Bem-estar animal e biosseguridade", "levels": { "aproxima": "ignora bem-estar ou biosseguridade", "atende": "incorpora protocolos e cuidados básicos", "supera": "trata bem-estar e biosseguridade como parte do desempenho e do resultado" } },
+      { "id": "clareza-para-o-produtor", "label": "Clareza para quem executa", "levels": { "aproxima": "texto técnico que o produtor ou tratador não consegue seguir", "atende": "orientações compreensíveis por quem vai executar", "supera": "antecipa dúvidas do campo e traz checagens simples" } },
+      { "id": "viabilidade-economica", "label": "Viabilidade econômica", "levels": { "aproxima": "não considera custo", "atende": "mostra custo da dieta ou do manejo", "supera": "compara cenários e indica o ponto de equilíbrio" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station para uma pessoa da Zootecnia (produção animal). Use o vocabulário da área: índices zootécnicos (GMD, conversão alimentar, taxa de lotação, natalidade, IEP), formulação de dieta (PB, NDT, FDN, EM), exigências nutricionais (BR-Corte, Tabelas Brasileiras, NRC), ECC, DEP, pastejo rotacionado, planejamento forrageiro, biosseguridade, vazio sanitário, bem-estar animal, GTA, RT. Cite normas quando couber: Lei 5.550/1968 e inscrição no CRMV, Resolução CFMV 1.071/2014 (ética), Resolução CFMV 619/1994 (campo de atividades), Lei 6.198/1974 e Decreto 6.296/2007 (alimentação animal), Lei 9.605/1998 art. 32, NR 31; fontes técnicas: Embrapa, IBGE PPM, tabelas de exigências. O que nunca fazer: prescrever medicamento, vacina ou tratamento (ato privativo do médico-veterinário), redigir parecer ou plano apresentado como assinável por RT, nem sugerir que a peça dispensa inscrição no CRMV; tudo aqui é treino com dados fictícios ou autorizados. Não trate nem peça dados de rebanhos, produtores e propriedades identificáveis, formulações de ração ou índices de clientes sob sigilo. Pergunte antes de inferir espécie, sistema, senioridade ou situação. Toda sugestão de tarefa diz qual competência comprova, que evidência produz, quanto tempo leva e por que foi sugerida, e aceita \"não me serve\". Afirmações de mercado citam fonte, data e região (CAGED, RAIS, PPM, editais) ou dizem \"estimativa\"; nunca prometa emprego ou salário. Progresso é por critérios atendidos; a pré-checagem cobre só critérios objetivos e o selo é humano. Em nenhum modo publique, envie mensagem ou se candidate sem confirmação.",
+    "citeSources": [
+      { "title": "Lei 5.550/1968 — exercício da profissão de zootecnista", "url": "https://www.planalto.gov.br/ccivil_03/leis/l5550.htm", "kind": "norma" },
+      { "title": "CFMV — Conselho Federal de Medicina Veterinária (zootecnia)", "url": "https://www.cfmv.gov.br/", "kind": "conselho" },
+      { "title": "Resolução CFMV 1.071/2014 — Código de Ética do Zootecnista", "url": "https://www.cfmv.gov.br/", "kind": "conselho" },
+      { "title": "Embrapa Gado de Corte, Gado de Leite, Suínos e Aves, Pesca e Aquicultura", "url": "https://www.embrapa.br/", "kind": "orgao-publico" },
+      { "title": "IBGE — Pesquisa da Pecuária Municipal (PPM)", "url": "https://www.ibge.gov.br/estatisticas/economicas/agricultura-e-pecuaria/9107-producao-da-pecuaria-municipal.html", "kind": "estatistica" },
+      { "title": "BR-Corte — exigências nutricionais de zebuínos (UFV)", "url": "https://www.brcorte.com.br/", "kind": "referencia" },
+      { "title": "MAPA — alimentação animal (legislação e registro)", "url": "https://www.gov.br/agricultura/pt-br/assuntos/insumos-agropecuarios/insumos-pecuarios/alimentacao-animal", "kind": "orgao-publico" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes c2/c5 da zootecnia e as extras x1 (espécie ou sistema) e x2 (inscrição no CRMV); cada pergunta diz o ganho." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "L4 relatório, L7 POP de biosseguridade e D7 infográfico primeiro; sempre com dados fictícios e aviso sobre ato veterinário e RT." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Plano a partir de horas (d1) e aparelho (d4); respeita períodos de pico declarados (alojamento, parição, seca)." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa seções, índices com unidade, referência citada, fonte do infográfico e ausência de prescrição ou assinatura; o selo é humano." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de relatório, POP, formulação e balanço forrageiro com prévia; nunca prescreve medicamento ou vacina." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Eixos e fonte do infográfico; raias e fechamento do diagrama de arraçoamento; legenda do croqui." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese com competências declaradas e evidenciadas, lacunas e incertezas; cita o campo usado." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos do catálogo (veterinária, agronomia, biologia); dados de mercado com fonte, data e região." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Só pessoas descobríveis por opt-in; afinidade por ocupação CBO, setor e competências." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\" (LGPD art. 20)." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com área, espécie e uma prova com link; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, espécies e ferramentas em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados de rebanhos, produtores e propriedades identificáveis", "formulações de ração e índices de clientes sob sigilo", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca prescrever medicamento, vacina, dose ou tratamento: ato privativo do médico-veterinário",
+      "nunca produzir parecer ou plano apresentado como assinável por RT; lembrar que a peça real exige inscrição no CRMV",
+      "não usar nem pedir dados de rebanhos, produtores, propriedades, formulações ou índices de clientes",
+      "perguntar em vez de inferir espécie, sistema, senioridade ou situação",
+      "afirmações de mercado com fonte, data e região ou \"estimativa\"; nunca prometer emprego ou salário",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação",
+      "toda saída traz \"por que esta sugestão\" e \"discordo\""
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "baixa" },
+    "drawingsModes": ["infografico", "diagrama", "2d-tecnico"],
+    "lettersTemplates": ["relatorio-tecnico", "pop", "parecer", "proposta", "estudo-de-caso", "curriculo", "bio", "plano-30-60-90", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "No celular, tarefas curtas (L5, L6, L3) e revisão (L10); D7, D4 e D1 pedem computador. Formulação (X1) e balanço forrageiro (X2) pedem planilha.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa curta desta semana: resumo de perfil com sua espécie e uma prova com link (15 min).",
+        "Quer treinar formulação? Em 90 min você monta uma dieta de exercício para a categoria que escolher.",
+        "Sem pressão no alojamento ou na parição. Quando quiser retomar, o infográfico da PPM (60 min) está aqui.",
+        "Por que esta tarefa: o POP de biosseguridade comprova padronização, que integradoras e granjas pedem."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "setor", "competencias"] },
+    "privacy": { "sensitiveData": ["dados de rebanhos, produtores e propriedades identificáveis (LGPD)", "formulações de ração e índices zootécnicos de clientes sob sigilo"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — CBO 2233", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "IBGE — Pesquisa da Pecuária Municipal (PPM)", "url": "https://www.ibge.gov.br/estatisticas/economicas/agricultura-e-pecuaria/9107-producao-da-pecuaria-municipal.html", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "IBGE — Pesquisas Trimestrais do Abate, do Leite e de Ovos", "url": "https://www.ibge.gov.br/estatisticas/economicas/agricultura-e-pecuaria.html", "geography": "Brasil e UF", "cadence": "trimestral", "kind": "estatistica-oficial" },
+      { "title": "CFMV — estatísticas de inscritos (zootecnistas) por CRMV", "url": "https://www.cfmv.gov.br/", "geography": "Brasil e UF", "cadence": "anual", "kind": "conselho" },
+      { "title": "ABPA — Relatório Anual (aves e suínos)", "url": "https://abpa-br.org/", "geography": "Brasil e UF", "cadence": "anual", "kind": "associacao" },
+      { "title": "Concursos MAPA e agências estaduais de defesa agropecuária", "url": "https://www.gov.br/agricultura/pt-br/acesso-a-informacao/concursos", "geography": "Brasil e UF", "cadence": "eventual", "kind": "edital" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis (CAGED, RAIS, PPM, relatórios setoriais, editais); sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147). Efetivos e produção são contexto, não previsão de emprego."
+  },
+  "paths": [
+    { "to": "medicina-veterinaria", "why": "Mesmo sistema CFMV/CRMV e mesma família CBO 2233; produção animal e sanidade de rebanhos se complementam.", "gaps": ["clínica, cirurgia e atos privativos exigem a graduação em Medicina Veterinária", "inspeção de produtos de origem animal", "farmacologia"], "steps": ["estudo de caso de sanidade de rebanho com veterinário parceiro (L3)", "curso de biosseguridade e defesa sanitária", "conversar com veterinários de produção da rede"] },
+    { "to": "agronomia", "why": "Pastagens, forragicultura e ILPF são a interface direta com a produção vegetal; mesmo ambiente rural e de ATER.", "gaps": ["fertilidade do solo e adubação de pastagens", "fitossanidade", "registro no CREA (Lei 5.194/1966)"], "steps": ["plano de adubação de pastagem a partir de análise pública (X2 da agronomia)", "curso de manejo de solo (Embrapa e-Campo)", "croqui de piquetes com APP e Reserva Legal (D1)"] },
+    { "to": "ciencias-biologicas", "why": "Genética, fisiologia e experimentação animal compartilham base científica com a biologia.", "gaps": ["ecologia e taxonomia", "biotecnologia molecular", "registro no CRBio"], "steps": ["relatório de experimento com análise estatística (L4)", "curso de genética quantitativa", "infográfico de resultados (D7)"] }
+  ],
+  "learning": [
+    { "title": "Embrapa e-Campo — cursos on-line (pecuária, pastagens, bem-estar)", "provider": "Embrapa", "url": "https://www.embrapa.br/e-campo", "free": true, "kind": "portal" },
+    { "title": "Senar EaD — cursos para o campo", "provider": "Senar", "url": "https://ead.senar.org.br/", "free": true, "kind": "portal" },
+    { "title": "BR-Corte — exigências nutricionais e ferramentas de cálculo", "provider": "UFV", "url": "https://www.brcorte.com.br/", "free": true, "kind": "portal" },
+    { "title": "Tabelas Brasileiras para Aves e Suínos", "provider": "UFV", "url": "https://www.lisina.com.br/", "free": false, "kind": "livro" },
+    { "title": "Escola Virtual.Gov", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "CFMV — legislação e resoluções (zootecnia)", "provider": "CFMV", "url": "https://www.cfmv.gov.br/", "free": true, "kind": "norma" },
+    { "title": "Cursos do Sebrae para o agronegócio", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" }
+  ],
+  "sources": [
+    { "title": "Catálogo de ramos acadêmicos — zootecnia (CBO 2233, ISCO 2132/2131, CRMV/CFMV, vizinhos)", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "Lei 5.550/1968 (Planalto)", "url": "https://www.planalto.gov.br/ccivil_03/leis/l5550.htm", "accessedAt": "2026-11-02" },
+    { "title": "CFMV — legislação (Resoluções 619/1994, 1.071/2014, 1.275/2019)", "url": "https://www.cfmv.gov.br/", "accessedAt": "2026-11-02" },
+    { "title": "IBGE — Pesquisa da Pecuária Municipal", "url": "https://www.ibge.gov.br/estatisticas/economicas/agricultura-e-pecuaria/9107-producao-da-pecuaria-municipal.html", "accessedAt": "2026-11-02" },
+    { "title": "Novo CAGED e RAIS (MTE)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "URLs de leis, conselho, estatísticas e aprendizagem não abertas nesta sessão (cota de busca); conferir antes de ativar",
+    "Números das Resoluções CFMV 1.071/2014 (Código de Ética do Zootecnista) e 619/1994 (campo de atividades) citados de memória",
+    "Decreto 6.296/2007 como regulamento vigente da Lei 6.198/1974 (alimentação animal) não confirmado",
+    "CBO 1411 e 3211 em questions.a4.cboFamilies não conferidos no portal da CBO",
+    "URIs ESCO da ocupação e das competências não pesquisadas (family.esco vazio; esco: null em todas)",
+    "Endereços dos sites BR-Corte, Tabelas Brasileiras (lisina.com.br) e ABPA, e existência de estatística de inscritos do CFMV por profissão",
+    "Matrículas INEP do curso não localizadas (catálogo também marca naoConferido)"
+  ]
+}

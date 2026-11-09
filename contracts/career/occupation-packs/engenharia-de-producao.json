@@ -1,0 +1,344 @@
+{
+  "schemaVersion": 1,
+  "code": "engenharia-de-producao",
+  "version": "2026.11.0",
+  "status": "pesquisa",
+  "generatedAt": "2026-11-02",
+  "label": { "pt-BR": "Engenharia de Produção", "en": "Industrial and Production Engineering", "es": "Ingeniería Industrial (de Producción)" },
+  "fields": ["engenharia-de-producao"],
+  "family": {
+    "cbo": [{ "code": "2149", "title": "Engenheiros de produção, qualidade, segurança e afins" }],
+    "isco08": [{ "code": "2141", "title": "Industrial and production engineers" }],
+    "esco": [{ "uri": "http://data.europa.eu/esco/occupation/53d2052f-edc0-4f44-8be1-164526412bfe", "label": "industrial engineer" }]
+  },
+  "scope": {
+    "summary": "Projeta, implanta, opera e melhora sistemas produtivos de bens e serviços integrando pessoas, materiais, equipamentos, informação e capital: planejamento e controle da produção, qualidade, logística, custos, ergonomia e segurança, pesquisa operacional, gestão de projetos e melhoria contínua (Lean, Seis Sigma). Profissão regulamentada pela Lei 5.194/1966 (Resolução CONFEA 235/1975); registro no CREA.",
+    "entryRoles": ["Estagiário de engenharia de produção", "Analista de PCP júnior", "Analista de processos / melhoria contínua", "Analista de qualidade", "Engenheiro de produção júnior", "Trainee industrial"],
+    "midRoles": ["Engenheiro de produção pleno", "Engenheiro de processos", "Engenheiro de qualidade", "Analista de PCP sênior / planejador", "Especialista Lean / Black Belt", "Analista de logística e supply chain"],
+    "seniorRoles": ["Coordenador de produção ou PCP", "Gerente de operações", "Gerente de qualidade", "Gerente de melhoria contínua / excelência operacional", "Consultor em operações e processos", "Gerente de projetos industriais"],
+    "sectors": ["indústria de transformação", "logística e supply chain", "serviços (bancos, saúde, varejo)", "construção civil", "agroindústria e alimentos", "consultoria", "tecnologia e startups (operações)", "setor público", "ensino e pesquisa"],
+    "regulation": [
+      { "name": "Lei 5.194/1966", "issuer": "Brasil (CONFEA/CREA)", "about": "regula o exercício da engenharia; registro obrigatório no CREA; responsabilidade técnica" },
+      { "name": "Resolução CONFEA 235/1975; Resolução 1.073/2016", "issuer": "CONFEA", "about": "discrimina as atividades profissionais do engenheiro de produção; regulamenta a atribuição de títulos e campos de atuação" },
+      { "name": "Lei 6.496/1977 e Resolução CONFEA 1.025/2009", "issuer": "Brasil / CONFEA", "about": "Anotação de Responsabilidade Técnica (ART) para serviços técnicos de engenharia (ex.: laudos, projetos de layout, planejamento)" },
+      { "name": "Resolução CONFEA 1.002/2002", "issuer": "CONFEA", "about": "Código de Ética Profissional: sigilo de dados de empresas, honestidade técnica" },
+      { "name": "ABNT NBR ISO 9001:2015", "issuer": "ABNT / ISO", "about": "requisitos de sistema de gestão da qualidade: processos, riscos, indicadores, não conformidade e melhoria" },
+      { "name": "ABNT NBR ISO 14001:2015 e ISO 45001:2018", "issuer": "ABNT / ISO", "about": "gestão ambiental e de saúde e segurança ocupacional, frequentemente integradas à ISO 9001" },
+      { "name": "NR-17 e NR-12", "issuer": "MTE", "about": "ergonomia (análise ergonômica do trabalho) e segurança de máquinas no projeto de postos e linhas" },
+      { "name": "ABNT NBR ISO 31000:2018", "issuer": "ABNT / ISO", "about": "gestão de riscos: princípios e diretrizes" }
+    ]
+  },
+  "vocabulary": {
+    "terms": [
+      { "term": "PCP", "meaning": "planejamento e controle da produção: previsão, plano mestre, MRP, sequenciamento e controle" },
+      { "term": "MRP / ERP", "meaning": "planejamento de necessidades de materiais e sistema integrado de gestão (SAP, TOTVS, Oracle)" },
+      { "term": "takt time", "meaning": "ritmo de produção necessário para atender a demanda: tempo disponível dividido pela demanda" },
+      { "term": "tempo de ciclo e lead time", "meaning": "tempo para produzir uma unidade em um posto e tempo total do pedido à entrega" },
+      { "term": "OEE", "meaning": "eficiência global do equipamento: disponibilidade × desempenho × qualidade" },
+      { "term": "mapa de fluxo de valor (VSM)", "meaning": "diagrama Lean do fluxo de material e informação, com tempos de processo e de espera, estado atual e futuro" },
+      { "term": "Lean Manufacturing", "meaning": "sistema de produção focado em eliminar desperdícios (os 7+1 desperdícios), fluxo contínuo e puxado" },
+      { "term": "kaizen", "meaning": "melhoria contínua em pequenos ciclos; evento kaizen é uma semana focada em um problema" },
+      { "term": "5S", "meaning": "organização do posto de trabalho: utilização, ordenação, limpeza, padronização e disciplina" },
+      { "term": "Seis Sigma / DMAIC", "meaning": "método de redução de variabilidade: definir, medir, analisar, melhorar, controlar" },
+      { "term": "relatório A3", "meaning": "uma folha A3 com problema, situação atual, meta, análise de causa, contramedidas e acompanhamento" },
+      { "term": "diagrama de Ishikawa e 5 porquês", "meaning": "ferramentas de análise de causa raiz" },
+      { "term": "CEP", "meaning": "controle estatístico do processo: cartas de controle e capacidade (Cp, Cpk)" },
+      { "term": "FMEA", "meaning": "análise de modos de falha e efeitos de produto ou processo" },
+      { "term": "layout (arranjo físico)", "meaning": "disposição de máquinas, postos e fluxos: por processo, por produto, celular ou posicional" },
+      { "term": "cronoanálise", "meaning": "medição de tempos e métodos para definir tempo padrão" },
+      { "term": "curva ABC", "meaning": "classificação de itens por importância (valor ou volume) para estoque e compras" },
+      { "term": "pesquisa operacional", "meaning": "modelagem matemática (programação linear, simulação, filas) para decidir alocação, sequência e capacidade" },
+      { "term": "custeio e margem de contribuição", "meaning": "apropriação de custos (absorção, ABC, variável) e análise de ponto de equilíbrio" },
+      { "term": "KPI / indicador", "meaning": "medida de desempenho com meta, fórmula, fonte de dados e frequência" },
+      { "term": "BPMN", "meaning": "notação de modelagem de processos de negócio: eventos, atividades, gateways e raias" },
+      { "term": "S&OP", "meaning": "planejamento de vendas e operações: alinhamento mensal entre demanda, capacidade e finanças" }
+    ],
+    "tools": ["Excel avançado e Power BI", "SAP / TOTVS / Oracle (ERP, PP e MM)", "Minitab / R / Python (estatística)", "Bizagi / Draw.io / Visio (BPMN)", "Arena / FlexSim / AnyLogic (simulação)", "MS Project / Trello / Jira", "AutoCAD (layout)", "Power Automate / SQL", "cronômetro e planilhas de cronoanálise", "LINGO / Solver (otimização)"],
+    "deliverables": ["mapa de fluxo de valor (estado atual e futuro)", "relatório A3 de solução de problema", "procedimento operacional padrão (POP) e instrução de trabalho", "plano mestre de produção e sequenciamento", "estudo de layout (antes e depois)", "painel de indicadores (OEE, lead time, qualidade)", "plano de ação 5W2H", "FMEA de processo e plano de controle", "análise de capacidade e gargalos", "estudo de tempos e métodos", "proposta de melhoria com análise de custo-benefício", "modelo de simulação ou otimização"]
+  },
+  "competencies": {
+    "core": [
+      { "label": "Planejamento e controle da produção (PCP)", "esco": null, "kind": "nucleo" },
+      { "label": "Mapeamento e melhoria de processos (BPMN, VSM)", "esco": null, "kind": "nucleo" },
+      { "label": "Lean Manufacturing e melhoria contínua", "esco": null, "kind": "nucleo" },
+      { "label": "Gestão da qualidade e controle estatístico (ISO 9001, CEP, Seis Sigma)", "esco": null, "kind": "nucleo" },
+      { "label": "Análise de dados e indicadores de desempenho", "esco": null, "kind": "nucleo" },
+      { "label": "Engenharia econômica e custos industriais", "esco": null, "kind": "nucleo" },
+      { "label": "Logística e gestão da cadeia de suprimentos", "esco": null, "kind": "nucleo" },
+      { "label": "Projeto de layout e arranjo físico", "esco": null, "kind": "nucleo" },
+      { "label": "Pesquisa operacional e simulação", "esco": null, "kind": "nucleo" },
+      { "label": "Ergonomia e segurança do trabalho no projeto do posto", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de projetos", "esco": null, "kind": "apoio" },
+      { "label": "Sistemas ERP e automação de rotinas", "esco": null, "kind": "apoio" },
+      { "label": "Engenharia do produto e desenvolvimento", "esco": null, "kind": "apoio" },
+      { "label": "Gestão de pessoas e liderança de times operacionais", "esco": null, "kind": "apoio" }
+    ],
+    "transversal": ["comunicação com chão de fábrica e diretoria", "facilitação de grupos e eventos kaizen", "pensamento sistêmico", "ética e sigilo de dados da empresa", "negociação com fornecedores e áreas"],
+    "tracks": [
+      { "id": "melhoria-continua", "label": "Melhoria contínua", "steps": ["diagrama do fluxo de um processo que você melhorou (D4)", "redesenho antes e depois com três mudanças justificadas (D5)", "relatório A3 do problema resolvido (X2)", "infográfico de indicadores antes e depois (D7)"] },
+      { "id": "pcp-e-operacoes", "label": "PCP e operações", "steps": ["estudo de caso STAR de um gargalo resolvido (L3)", "POP de um processo de planejamento ou apontamento (L7)", "relatório técnico de análise de capacidade (L4)", "plano 30-60-90 para o cargo de PCP (L9)"] },
+      { "id": "qualidade", "label": "Qualidade", "steps": ["POP ou instrução de trabalho com critério de aceite (L7)", "infográfico de CEP ou Pareto de não conformidades (D7)", "relatório técnico de FMEA de processo (L4)"] },
+      { "id": "apresentar-se", "label": "Apresentar-se como engenheiro(a) de produção", "steps": ["bio com frente e ferramentas (L6)", "currículo direcionado com resultados em número (L1)", "prancha com três projetos de melhoria (D2)"] }
+    ]
+  },
+  "questions": {
+    "a4": {
+      "hint": "ex.: \"analista de PCP\", \"analista de qualidade\", \"engenheiro de processos\", \"supervisor de produção\", \"analista de logística\"",
+      "cboFamilies": ["2149", "3911", "3912", "1421"],
+      "why": "Pergunto seu último cargo ou área para partir do que você já faz (PCP, qualidade, processos, logística) e não do zero. Se for o primeiro emprego, pule."
+    },
+    "b9": {
+      "levels": {
+        "primeiro-emprego": "estágio, trainee ou primeiro cargo",
+        "junior": "até dois anos; executa análises e rotinas com supervisão",
+        "pleno": "conduz projetos de melhoria e responde por indicadores com autonomia",
+        "senior": "referência técnica; lidera eventos kaizen e projetos multiárea",
+        "gestao": "responde por equipe, metas de produção, qualidade ou custos"
+      },
+      "why": "Pergunto o nível para ajustar a complexidade das tarefas (de um POP a uma análise de capacidade) e as pessoas sugeridas."
+    },
+    "c2": {
+      "prompt": "Três coisas que você faz bem em produção",
+      "options": ["mapear e redesenhar processos", "planejar e sequenciar produção", "analisar dados e montar indicadores", "conduzir kaizen e 5S", "controle estatístico e qualidade", "custos e análise de viabilidade", "logística e estoques", "projetar layout", "simulação e otimização", "gerir projetos", "ergonomia e segurança no posto", "ERP (SAP, TOTVS)", "treinar e liderar times operacionais", "atendimento a auditorias ISO"],
+      "why": "Suas competências declaradas viram o ponto de partida do mapa; a prova vem depois, com diagramas, A3 e indicadores."
+    },
+    "c4": {
+      "certifications": ["registro no CREA (engenheiro ou tecnólogo)", "Lean Seis Sigma (White, Green ou Black Belt)", "auditor interno ISO 9001", "PMP / CAPM ou Scrum", "certificação SAP PP/MM ou TOTVS", "Power BI / análise de dados", "pós-graduação em gestão da produção, logística ou qualidade", "mestrado / doutorado"],
+      "languages": ["inglês (relatórios e multinacionais)", "espanhol"],
+      "why": "Formação, registro e certificações ajudam a ver lacunas em relação ao cargo que você quer; Lean e ISO aparecem em muitas vagas."
+    },
+    "c5": {
+      "prompt": "Que competência quer desenvolver em produção?",
+      "options": ["Lean e mapa de fluxo de valor", "Seis Sigma e estatística", "PCP e S&OP", "Power BI e análise de dados", "gestão de projetos", "logística e supply chain", "custos industriais", "simulação e pesquisa operacional", "ERP (SAP, TOTVS)", "liderança de times operacionais"],
+      "why": "Com isso sugiro uma trilha com tarefas progressivas (diagrama → A3 → indicadores) em vez de um catálogo inteiro."
+    },
+    "extra": [
+      { "id": "x1", "prompt": "Em que frente você atua ou quer atuar?", "type": "lista", "options": ["PCP e operações", "qualidade", "melhoria contínua / Lean", "logística e supply chain", "custos e projetos", "serviços (saúde, bancos, varejo)", "ensino e pesquisa"], "why": "Pergunto para priorizar diagramas de processo e A3 (melhoria), POP e indicadores (qualidade) ou análises de capacidade (PCP).", "where": "P" },
+      { "id": "x2", "prompt": "Os dados dos seus projetos podem ser mostrados?", "type": "escolha", "options": ["sim, são públicos ou meus", "só anonimizados ou em percentual", "não; vou usar um caso fictício"], "why": "Pergunto porque indicadores, custos e planilhas de PCP de empregadores costumam ser sigilosos; com a resposta, sugiro como anonimizar sem perder a evidência.", "where": "X" }
+    ],
+    "interestTestWhenUnknown": false
+  },
+  "guidedTasks": {
+    "priority": ["D4", "D5", "D7", "L7", "L3", "L4", "L6", "L1", "L9", "L8", "D2", "L10"],
+    "excluded": [
+      { "code": "D3", "reason": "modelo 3D de produto com render não é evidência típica da produção" },
+      { "code": "D8", "reason": "vista explodida é entrega da mecânica; a produção documenta o processo de montagem em D4 ou L7" },
+      { "code": "D9", "reason": "wireframe de tela é entrega de UX" },
+      { "code": "D1", "reason": "planta de ambiente é da arquitetura; o layout industrial entra como antes e depois em D5" }
+    ],
+    "parameters": {
+      "D4": {
+        "title": "Diagrama de um processo que você melhorou (BPMN)",
+        "brief": "Modele em BPMN simplificado um processo produtivo ou administrativo que você conhece: início e fim, raias por responsável, atividades, decisões (gateways) e pontos de medição (tempo, fila, retrabalho). Use nomes genéricos de áreas; nada de dados de empresa sob sigilo.",
+        "parameters": { "notation": "BPMN simplificado", "requiredElements": ["evento de início e de fim", "raias por responsável", "ao menos um gateway", "pontos de medição (tempo ou fila)"], "minActivities": 6 },
+        "criteria": ["início e fim explícitos", "raias por responsável", "nenhuma atividade órfã", "ao menos um gateway de decisão", "pelo menos um ponto de medição anotado", "sem nome de empresa ou dado sigiloso"],
+        "evidence": "diagrama vetorial (SVG/PDF)",
+        "time": "45 min",
+        "level": 1
+      },
+      "D5": {
+        "title": "Antes e depois de um processo ou layout",
+        "brief": "Mostre lado a lado a situação anterior e a proposta (fluxo, layout de célula ou posto, formulário) com três mudanças anotadas e a justificativa de cada uma em termos de desperdício eliminado, tempo, distância ou qualidade. Dados em percentual ou fictícios se a empresa for sigilosa.",
+        "parameters": { "versions": 2, "annotatedChanges": 3, "justifyBy": ["desperdício eliminado", "tempo ou distância", "qualidade ou segurança"] },
+        "criteria": ["duas versões lado a lado", "três mudanças anotadas", "cada mudança com justificativa mensurável", "legenda e escala ou indicação 'esquemático'", "dados anonimizados ou fictícios declarados"],
+        "evidence": "prancha comparativa PDF/PNG",
+        "time": "60 min",
+        "level": 2
+      },
+      "D7": {
+        "title": "Infográfico de indicadores (OEE, lead time, qualidade)",
+        "brief": "Mostre o resultado de um projeto em um infográfico com um indicador principal antes e depois (OEE, lead time, PPM, custo unitário), fonte dos dados, período, eixos rotulados e uma mensagem. Use percentual relativo quando o valor absoluto for sigiloso.",
+        "parameters": { "requiredElements": ["indicador com fórmula", "período", "fonte dos dados", "eixos rotulados", "uma mensagem principal"] },
+        "criteria": ["indicador nomeado com fórmula", "fonte e período citados", "eixos rotulados", "uma mensagem principal explícita", "sem identificar empresa quando sigiloso"],
+        "evidence": "imagem PNG + PDF",
+        "time": "60 min",
+        "level": 2
+      },
+      "L7": {
+        "title": "POP ou instrução de trabalho com critério de aceite",
+        "brief": "Escreva um procedimento operacional padrão de um processo que você domina: objetivo, escopo, passos numerados com responsável, tempo padrão quando houver, ponto de controle de qualidade e critério de conclusão por passo, no formato de um sistema ISO 9001 (código, revisão, aprovação).",
+        "parameters": { "requiredElements": ["objetivo e escopo", "passos numerados", "responsável por passo", "ponto de controle de qualidade", "critério de conclusão por passo", "cabeçalho com código e revisão"] },
+        "criteria": ["passos numerados com responsável", "critério de conclusão em cada passo", "ao menos um ponto de controle de qualidade", "cabeçalho com código e revisão", "sem dado sigiloso da empresa"],
+        "evidence": "POP em modelo",
+        "time": "60 min",
+        "level": 1
+      },
+      "L3": {
+        "title": "Estudo de caso STAR de um gargalo ou problema de qualidade",
+        "brief": "Conte um problema de produção que você resolveu: situação (indicador inicial), tarefa, ação (ferramenta usada: Pareto, Ishikawa, kaizen, DMAIC) e resultado mensurável. Dados em percentual ou fictícios se a empresa for sigilosa.",
+        "parameters": { "sections": ["situação", "tarefa", "ação", "resultado"], "measurableResult": true, "mustNameTool": true },
+        "criteria": ["quatro seções explícitas", "ferramenta de análise nomeada", "resultado com número ou comparação relativa", "declaração de ausência de dado confidencial"],
+        "evidence": "documento",
+        "time": "60 min",
+        "level": 2
+      },
+      "L6": {
+        "title": "Resumo de perfil em engenharia de produção",
+        "brief": "Escreva até 600 caracteres com sua frente (PCP, qualidade, melhoria, logística), três competências e uma prova com link (diagrama, A3, infográfico). Sem dados pessoais além do nome.",
+        "parameters": { "maxChars": 600, "requiredParts": ["frente de atuação", "três competências", "uma prova com link"] },
+        "criteria": ["até 600 caracteres", "nomeia a frente de atuação", "cita três competências", "inclui uma prova com link"],
+        "evidence": "bio no perfil",
+        "time": "15 min",
+        "level": 1
+      }
+    },
+    "custom": [
+      {
+        "id": "X1",
+        "editor": "drawings",
+        "title": "Mapa de fluxo de valor (estado atual)",
+        "competency": "Lean Manufacturing e melhoria contínua",
+        "criteria": ["fluxo de material e de informação representados", "tempos de processo e de espera por etapa", "linha do tempo com lead time total e tempo de agregação de valor", "cliente e fornecedor nas extremidades", "dados anonimizados ou fictícios declarados"],
+        "evidence": "diagrama vetorial (SVG/PDF)",
+        "time": "90 min",
+        "trigger": "Quer mostrar um fluxo inteiro com seus desperdícios?",
+        "level": 2
+      },
+      {
+        "id": "X2",
+        "editor": "letters",
+        "title": "Relatório A3 de solução de problema",
+        "competency": "Mapeamento e melhoria de processos",
+        "criteria": ["seções: contexto, situação atual, meta, análise de causa, contramedidas, plano e acompanhamento", "meta com indicador e prazo", "causa raiz com ferramenta nomeada (5 porquês, Ishikawa)", "cabe em uma folha A3 ou duas páginas", "sem dado sigiloso da empresa"],
+        "evidence": "documento A3 em PDF",
+        "time": "90 min",
+        "trigger": "Tem um problema que resolveu do começo ao fim? Conte em uma folha.",
+        "level": 2
+      }
+    ]
+  },
+  "rubric": {
+    "objective": [
+      { "id": "diagrama-fechado", "check": "o diagrama tem início e fim, raias e nenhuma atividade órfã", "appliesTo": ["D4", "X1"], "auto": true },
+      { "id": "tres-mudancas-anotadas", "check": "a prancha antes e depois tem duas versões e três mudanças anotadas com justificativa", "appliesTo": ["D5"], "auto": true },
+      { "id": "indicador-com-fonte", "check": "indicador tem fórmula, fonte, período e eixos rotulados", "appliesTo": ["D7"], "auto": true },
+      { "id": "secoes-obrigatorias", "check": "as seções pedidas existem e estão nomeadas", "appliesTo": ["L3", "L4", "L7", "L9", "X2"], "auto": true },
+      { "id": "passos-com-responsavel", "check": "cada passo do POP tem responsável e critério de conclusão", "appliesTo": ["L7"], "auto": true },
+      { "id": "tamanho", "check": "respeita o limite de páginas, palavras ou caracteres", "appliesTo": ["L1", "L2", "L4", "L5", "L6", "X2"], "auto": true },
+      { "id": "ferramenta-nomeada", "check": "a ferramenta de análise (Pareto, Ishikawa, 5 porquês, DMAIC, VSM) está nomeada", "appliesTo": ["L3", "X2", "D5"], "auto": true },
+      { "id": "sigilo-de-empresa", "check": "a pessoa declarou autoria e que indicadores, custos e nomes de empresa são anonimizados, públicos ou fictícios", "appliesTo": ["D4", "D5", "D7", "L3", "L4", "L7", "L8", "D2", "X1", "X2"], "auto": true },
+      { "id": "creditos-e-fontes", "check": "coautores, fontes e autores remixados estão creditados", "appliesTo": ["L5", "L10", "D2", "D7"], "auto": true },
+      { "id": "causa-raiz-coerente", "check": "as contramedidas atacam a causa raiz identificada, não só o sintoma", "appliesTo": ["X2", "L3", "D5"], "auto": false }
+    ],
+    "subjective": [
+      { "id": "rigor-analitico", "label": "Rigor analítico", "levels": { "aproxima": "afirma melhoria sem dado ou método", "atende": "usa dado, ferramenta adequada e mostra a lógica da análise", "supera": "quantifica incerteza, compara alternativas e discute limites" } },
+      { "id": "clareza-do-processo", "label": "Clareza do processo", "levels": { "aproxima": "quem lê não entende quem faz o quê", "atende": "responsáveis, sequência e decisões claras", "supera": "qualquer pessoa da operação executaria pelo documento" } },
+      { "id": "resultado", "label": "Resultado demonstrado", "levels": { "aproxima": "descreve atividades, sem resultado", "atende": "mostra um indicador antes e depois", "supera": "resultado sustentado no tempo, contexto, limitações e próximos passos" } },
+      { "id": "pessoas-e-seguranca", "label": "Pessoas e segurança consideradas", "levels": { "aproxima": "melhoria ignora quem opera", "atende": "envolve operadores e considera ergonomia e segurança", "supera": "operadores coautores da solução; risco e carga de trabalho reduzidos de forma explícita" } }
+    ]
+  },
+  "ai": {
+    "contextSnippet": "Você é o guia de carreira do Work Station e apoia uma pessoa da Engenharia de Produção (PCP, qualidade, processos, melhoria contínua, logística, custos; CBO 2149, ISCO 2141). Use o vocabulário da área: PCP, MRP/ERP, takt time, lead time, OEE, mapa de fluxo de valor, Lean, kaizen, 5S, DMAIC, relatório A3, Ishikawa, CEP, FMEA, layout, cronoanálise, curva ABC, BPMN, S&OP, KPI. Cite referências pelo nome quando couber: ABNT NBR ISO 9001:2015, ISO 14001, ISO 45001, NBR ISO 31000, NR-17 (ergonomia), NR-12, Lei 5.194/1966, Resolução CONFEA 235/1975 e Resolução 1.002/2002 (ética). O que nunca fazer: não produza nem apresente como pronto laudo, parecer, projeto de layout ou ART assináveis; tudo que a IA gera é estudo de portfólio e exercício, e a responsabilidade técnica é do profissional registrado no CREA. Não use nem peça indicadores, custos, planilhas de PCP, dados de fornecedores ou segredos industriais de empregadores; proponha percentuais relativos, dados fictícios ou casos públicos. Não calcule nem sugira redução de quadro ou metas individuais de pessoas; melhoria de processo não é avaliação de desempenho de terceiros. Pergunte antes de inferir frente de atuação, nível ou setor. Toda sugestão de tarefa diz a competência que comprova, a evidência, o tempo e o porquê, e aceita \"não me serve\". Dados de mercado só com fonte, data e região (CAGED, RAIS, CONFEA, CNI, ABEPRO) ou \"estimativa\"; nunca prometa emprego nem fale de salário. Progresso é por critérios atendidos; a pré-checagem cobre só critérios objetivos (diagrama fechado, mudanças anotadas, indicador com fonte, seções, ferramenta nomeada, sigilo declarado) e o selo depende de revisão humana.",
+    "citeSources": [
+      { "title": "CONFEA — Normativos (Lei 5.194/1966, Resoluções 235/1975, 1.002/2002, 1.025/2009, 1.073/2016)", "url": "https://normativos.confea.org.br/", "kind": "conselho" },
+      { "title": "CONFEA — Engenheiro de produção: profissional multidisciplinar", "url": "https://www.confea.org.br/node/107949", "kind": "conselho" },
+      { "title": "ABEPRO — Associação Brasileira de Engenharia de Produção (áreas e subáreas)", "url": "https://portal.abepro.org.br/", "kind": "comunidade" },
+      { "title": "Catálogo ABNT (NBR ISO 9001, 14001, 45001, 31000)", "url": "https://www.abntcatalogo.com.br/", "kind": "norma" },
+      { "title": "MTE — Normas Regulamentadoras vigentes (NR-17, NR-12)", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadoras/normas-regulamentadoras-vigentes", "kind": "norma" },
+      { "title": "CBO — família 2149 Engenheiros de produção, qualidade, segurança e afins (MTE)", "url": "https://cbo.mte.gov.br/", "kind": "orgao-publico" },
+      { "title": "ESCO — industrial engineer", "url": "https://esco.ec.europa.eu/en/classification/occupation?uri=http://data.europa.eu/esco/occupation/53d2052f-edc0-4f44-8be1-164526412bfe", "kind": "referencia" },
+      { "title": "Novo CAGED — MTE", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "kind": "estatistica" },
+      { "title": "Lean Institute Brasil — artigos e glossário Lean", "url": "https://www.lean.org.br/", "kind": "comunidade" }
+    ],
+    "services": [
+      { "service": "PERGUNTAS_GUIA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Variantes de c2/c5 com competências de produção e as extras x1 (frente) e x2 (dados mostráveis)." },
+      { "service": "SUGESTAO_TAREFAS", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Prioriza D4 processo, D5 antes e depois, D7 indicadores e L7 POP; x2 'não' → sugere caso fictício; cada card diz competência, evidência, tempo e porquê." },
+      { "service": "PLANO_SEMANAL", "capability": "INSIGHT", "defaultMode": "SUGESTOES", "action": "PROPOR_ALTERACAO", "consent": null, "note": "X1 VSM e D5 em semanas com 3 h ou mais; L6, L5 e L10 cabem no celular (d1, d4)." },
+      { "service": "PRE_CHECAGEM_RUBRICA", "capability": "ARTEFATO", "defaultMode": "SUGESTOES", "action": "SUGESTAO_ESPONTANEA", "consent": null, "note": "Checa diagrama fechado, três mudanças anotadas, indicador com fonte, seções do A3/POP, ferramenta nomeada e sigilo declarado; coerência causa raiz ↔ contramedida fica para revisão humana." },
+      { "service": "RASCUNHO_LETTERS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Estrutura de A3, POP ISO 9001, estudo de caso e relatório de capacidade; nunca gera laudo ou parecer assinável nem inventa números da empresa." },
+      { "service": "APOIO_DRAWINGS", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Sugere raias, gateways e fechamento do BPMN, símbolos de VSM e anotações do antes e depois." },
+      { "service": "ANALISE_PERFIL", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": "ANALISE_PERFIL_IA", "note": "Síntese por competências de produção declaradas e evidenciadas (BPMN, A3, indicadores, POP); cita o campo de cada afirmação." },
+      { "service": "CAMINHOS_DE_CARREIRA", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Vizinhos: administração, logística, mecânica, civil, química, segurança do trabalho; sempre com lacunas e passos, sem previsão." },
+      { "service": "PESSOAS_SEMELHANTES", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "Por CBO 2149, setor e competências compartilhadas; só pessoas com opt-in." },
+      { "service": "EXPLICACAO_POR_QUE", "capability": "INSIGHT", "defaultMode": "SOB_SOLICITACAO", "action": "RESPONDER", "consent": null, "note": "\"Por que recebi esta sugestão?\" com os campos usados e botão \"discordo\"." },
+      { "service": "RESUMO_PROFISSIONAL", "capability": "ARTEFATO", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": "RESUMO_PROFISSIONAL_IA", "note": "Bio (L6) com frente, ferramentas e provas; só com consentimento específico." },
+      { "service": "IMPORTAR_CURRICULO", "capability": "PREENCHER_TAREFA", "defaultMode": "SOB_SOLICITACAO", "action": "PROPOR_ALTERACAO", "consent": null, "note": "Extrai experiências, ferramentas (ERP, BI, Lean) e certificações em ficha editável; a pessoa confirma item a item." }
+    ],
+    "dataScope": {
+      "default": ["perfil", "currículo"],
+      "optional": ["minhas Letters", "meus Drawings"],
+      "never": ["mensagens", "itens SIGILOSO", "dados de produção, custos e fornecedores de empregadores", "indicadores internos e planilhas de PCP", "segredos industriais", "dados de desempenho individual de colegas", "dados sensíveis (LGPD art. 5º II)"]
+    },
+    "provider": { "default": "local", "externalNeedsConsent": true, "externalAllowedFor": ["ANALISE_PERFIL", "CAMINHOS_DE_CARREIRA", "RESUMO_PROFISSIONAL"] },
+    "guardrails": [
+      "nunca produzir ou apresentar laudo, parecer, projeto ou ART como documento assinável; tudo é estudo de portfólio",
+      "não usar nem pedir indicadores, custos, planilhas de PCP ou dados de fornecedores de empregadores; propor percentuais relativos ou casos fictícios",
+      "não transformar melhoria de processo em avaliação de desempenho de pessoas nem sugerir corte de quadro",
+      "perguntar em vez de inferir frente de atuação, nível ou setor",
+      "mercado com fonte, data e região ou \"estimativa\"; sem promessa de emprego e sem salário",
+      "não inferir nem usar dados sensíveis e características protegidas",
+      "progresso por critérios atendidos; sem score ou ranking",
+      "em nenhum modo publicar, seguir, enviar mensagem ou se candidatar sem confirmação"
+    ]
+  },
+  "system": {
+    "editors": { "letters": "alta", "drawings": "media" },
+    "drawingsModes": ["diagrama", "infografico", "prancha", "2d-tecnico"],
+    "lettersTemplates": ["pop", "relatorio-tecnico", "estudo-de-caso", "curriculo", "bio", "plano-30-60-90", "proposta", "carta", "post", "revisao"],
+    "defaultAutonomy": "SUGESTOES",
+    "deviceNotes": "D4, D5, D7 e X1 pedem computador; no celular ficam L6, L5, L10 e a revisão de POP e A3.",
+    "nudges": {
+      "cadence": "semanal",
+      "examples": [
+        "Sua tarefa desta semana: o diagrama de um processo que você melhorou, com raias e pontos de medição (45 min). Comprova análise de processos.",
+        "Tem 15 min? Escreva sua bio com a frente em que atua e um link para um A3 ou diagrama seu.",
+        "Sem pressão. Quando quiser retomar, o POP com critério de aceite (60 min) está aqui.",
+        "Seu antes e depois atendeu 4 de 5 critérios objetivos; falta a justificativa de uma mudança. O selo depende de revisão humana."
+      ]
+    },
+    "insights": { "peersBy": ["cbo", "setor", "competencias"] },
+    "privacy": { "sensitiveData": ["dados de produção, custos e fornecedores de empregadores", "indicadores internos e planilhas de PCP", "segredos industriais", "dados de desempenho de colegas e operadores"], "publicByDefault": false }
+  },
+  "market": {
+    "sources": [
+      { "title": "Novo CAGED (MTE) — admissões e desligamentos por CBO 2149 e 3911", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/novo-caged", "geography": "Brasil, UF e município", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "RAIS (MTE) — vínculos formais por CBO", "url": "https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais", "geography": "Brasil, UF e município", "cadence": "anual", "kind": "estatistica-oficial" },
+      { "title": "PNAD Contínua (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/9173-pesquisa-nacional-por-amostra-de-domicilios-continua-trimestral.html", "geography": "Brasil e UF", "cadence": "trimestral", "kind": "estatistica-oficial" },
+      { "title": "CONFEA — Estatísticas do Sistema Confea/Crea (profissionais registrados por modalidade e UF)", "url": "https://www.confea.org.br/", "geography": "Brasil e UF", "cadence": "continua", "kind": "conselho" },
+      { "title": "CNI — Sondagem Industrial e indicadores da indústria", "url": "https://www.portaldaindustria.com.br/estatisticas/", "geography": "Brasil e UF", "cadence": "mensal", "kind": "associacao" },
+      { "title": "PIM-PF — Pesquisa Industrial Mensal (IBGE)", "url": "https://www.ibge.gov.br/estatisticas/economicas/industria/9294-pesquisa-industrial-mensal-producao-fisica-brasil.html", "geography": "Brasil e UF", "cadence": "mensal", "kind": "estatistica-oficial" },
+      { "title": "ABEPRO — publicações e encontros (ENEGEP) sobre a profissão", "url": "https://portal.abepro.org.br/", "geography": "Brasil", "cadence": "anual", "kind": "associacao" }
+    ],
+    "claimsPolicy": "Toda afirmação sobre vagas, demanda ou requisitos cita fonte, data e abrangência geográfica verificáveis (CAGED, RAIS, CONFEA, CNI, IBGE, ABEPRO); sem fonte atual, diz \"estimativa\" (RF50.CA07). Remuneração nunca entra como promessa nem como filtro (D-147). A produção atua em muitos setores: o guia pergunta o setor antes de citar dados."
+  },
+  "paths": [
+    { "to": "administracao", "why": "Gestão de operações, custos e projetos já são parte da produção; a passagem para gestão geral é comum.", "gaps": ["finanças corporativas e contabilidade gerencial", "marketing e estratégia", "gestão de pessoas formal"], "steps": ["plano 30-60-90 para um cargo de gestão (L9)", "estudo de caso de decisão com custo-benefício (L3)", "curso de finanças para não financeiros"] },
+    { "to": "logistica", "why": "Supply chain, estoques e distribuição são subárea da produção com mercado próprio.", "gaps": ["transporte e roteirização", "comércio exterior e tributos", "WMS/TMS"], "steps": ["diagrama do fluxo logístico de um pedido (D4)", "infográfico de nível de serviço e giro de estoque (D7)", "curso de supply chain"] },
+    { "to": "engenharia-mecanica", "why": "Quem atua em processos de fabricação e manutenção pode aprofundar o lado técnico das máquinas.", "gaps": ["desenho mecânico e CAD 3D", "resistência dos materiais e elementos de máquinas", "NR-12 em projeto"], "steps": ["curso de CAD 3D", "detalhe de um dispositivo poka-yoke (D6)", "POP de manutenção autônoma (L7)"] },
+    { "to": "engenharia-quimica", "why": "Indústrias de processo (química, alimentos, papel) pedem produção com entendimento de operações unitárias e balanços.", "gaps": ["operações unitárias e balanços de massa e energia", "segurança de processo (NR-20, NR-13)", "controle de processo"], "steps": ["fluxo de um processo contínuo com pontos de medição (D4)", "relatório técnico de perdas de processo (L4)", "curso de introdução a processos químicos"] },
+    { "to": "engenharia-civil", "why": "Planejamento e controle de obras, orçamento e Lean Construction usam as mesmas ferramentas.", "gaps": ["tecnologia das construções e orçamento de obra", "normas de projeto estrutural", "gestão de canteiro"], "steps": ["linha de balanço ou cronograma de obra documentado (D4/L4)", "antes e depois de um canteiro (D5)", "curso de planejamento de obras"] },
+    { "to": "seguranca-do-trabalho", "why": "Ergonomia, NR-12 e gestão de riscos no projeto de postos aproximam a produção da segurança.", "gaps": ["especialização em Engenharia de Segurança do Trabalho (Lei 7.410/1985)", "higiene ocupacional e PGR", "demais NRs"], "steps": ["especialização reconhecida", "análise ergonômica simplificada de um posto (L4)", "POP com análise de risco (L7)"] }
+  ],
+  "learning": [
+    { "title": "Escola Virtual.Gov — gestão de processos, projetos, indicadores e qualidade", "provider": "Enap", "url": "https://www.escolavirtual.gov.br/", "free": true, "kind": "portal" },
+    { "title": "Cursos gratuitos a distância do SENAI (Lean, logística, qualidade, PCP)", "provider": "SENAI", "url": "https://www.senai.br/", "free": true, "kind": "portal" },
+    { "title": "Sebrae — gestão da produção, processos e custos para pequenos negócios", "provider": "Sebrae", "url": "https://sebrae.com.br/sites/PortalSebrae/cursosonline", "free": true, "kind": "portal" },
+    { "title": "Lean Institute Brasil — artigos, glossário e webinars", "provider": "Lean Institute Brasil", "url": "https://www.lean.org.br/", "free": true, "kind": "comunidade" },
+    { "title": "ABEPRO — portal, ENEGEP e revista Produção", "provider": "ABEPRO", "url": "https://portal.abepro.org.br/", "free": true, "kind": "comunidade" },
+    { "title": "e-Aulas USP — Engenharia de Produção (PCP, qualidade, pesquisa operacional)", "provider": "USP", "url": "https://eaulas.usp.br/", "free": true, "kind": "curso" },
+    { "title": "Fundação Nacional da Qualidade — Modelo de Excelência da Gestão", "provider": "FNQ", "url": "https://fnq.org.br/", "free": true, "kind": "portal" },
+    { "title": "Administração da Produção (Slack, Brandon-Jones, Johnston)", "provider": "Atlas / Grupo GEN", "url": "https://www.grupogen.com.br/", "free": false, "kind": "livro" },
+    { "title": "ABNT NBR ISO 9001:2015 (norma paga)", "provider": "ABNT", "url": "https://www.abntcatalogo.com.br/", "free": false, "kind": "norma" }
+  ],
+  "sources": [
+    { "title": "Auditoria Guia de Carreira §4, §4.6, §7, §8", "url": "docs/auditoria/2026-10-31/GUIA_DE_CARREIRA.md", "accessedAt": "2026-11-02" },
+    { "title": "World of Taxonomy (espelho ESCO) — industrial engineer 53d2052f-edc0-4f44-8be1-164526412bfe, ISCO 2141", "url": "https://www.worldoftaxonomy.com/codes/esco_occupations/53d2052f-edc0-4f44-8be1-164526412bfe", "accessedAt": "2026-11-02" },
+    { "title": "World of Taxonomy — ISCO-08 2141 → ESCO occupations", "url": "https://worldoftaxonomy.com/crosswalks/isco_08/2141/esco_occupations", "accessedAt": "2026-11-02" },
+    { "title": "CBO (espelho VRI Consulting) — 2149-05 engenheiro de produção, família 2149", "url": "https://www.vriconsulting.com.br/trabalhista/ocupacao.php?cbo=214905", "accessedAt": "2026-11-02" },
+    { "title": "CONFEA — Engenheiro de produção: profissional multidisciplinar", "url": "https://www.confea.org.br/node/107949", "accessedAt": "2026-11-02" },
+    { "title": "Engenharia 360 — resoluções e leis que definem as atividades do engenheiro de produção (Resolução CONFEA 235/1975)", "url": "https://engenharia360.com/conheca-as-resolucoes-e-leis-que-definem-as-atividades-de-um-engenheiro-de-producao/", "accessedAt": "2026-11-02" },
+    { "title": "CREA-PB — Decisão PL 48/2018 UFPB (Resolução 235/1975 combinada com Resolução 1.073/2016)", "url": "https://creapb.org.br/transparencia/wp-content/uploads/2018/06/Decisão-PL-48-2018-UFPB.pdf", "accessedAt": "2026-11-02" },
+    { "title": "CONFEA — Manual CEAP (resoluções por título continuam válidas)", "url": "https://confea.org.br/midias/uploads-imce/Manual_Ceap.pdf", "accessedAt": "2026-11-02" },
+    { "title": "CONFEA — Estatísticas do Sistema disponíveis", "url": "https://www.confea.org.br/node/116116", "accessedAt": "2026-11-02" }
+  ],
+  "naoConferido": [
+    "Rede da sessão bloqueia esco.ec.europa.eu e confea.org.br: URI ESCO de industrial engineer conferida só no espelho World of Taxonomy; estatísticas do CONFEA não acessadas (não há recorte por 'produção' nas notícias encontradas).",
+    "Resolução CONFEA 235/1975 confirmada por fontes secundárias (Engenharia 360, CREA-PB, CREA-SC); texto integral não lido. Resoluções 1.002/2002 e 1.025/2009 e Lei 6.496/1977 de memória.",
+    "ISO 45001:2018, NBR ISO 31000:2018 e NR-17: números e vigência de memória, não conferidos nesta sessão.",
+    "Famílias CBO 3911, 3912 e 1421 em questions.a4.cboFamilies não conferidas no portal da CBO.",
+    "Área detalhada CINE da Engenharia de Produção segue indefinida (0788 ou 0719), herdada da fase 1.",
+    "URLs de aprendizagem e associações (SENAI, Sebrae, Lean Institute Brasil, ABEPRO, FNQ, e-Aulas USP, CNI estatísticas, PIM-PF) não verificadas nesta sessão.",
+    "Caminhos 'administracao' e 'logistica' apontam para slugs previstos para outros grupos, ainda ausentes do catálogo (aviso do validador esperado).",
+    "Vocabulário, competências, tarefas e rubrica vêm do conhecimento da profissão, não de fonte primária."
+  ]
+}
