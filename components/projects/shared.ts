@@ -4,7 +4,7 @@
  * outra metade da janela segmentada).
  */
 import type { CommandResult, ProjectCommand } from "@/lib/projects/commands";
-import type { WorkspaceTab } from "@/lib/projects/metrics";
+import type { LinkedDecision, WorkspaceTab } from "@/lib/projects/metrics";
 import type { CanvasRef, ProjectModel } from "@/lib/projects/types";
 
 export type PeopleDirectory = Readonly<Record<string, { name: string }>>;
@@ -34,6 +34,8 @@ export interface PanelProps {
   onSelect?: (ref: CanvasRef | null) => void;
   /** decisões de governança no DECIA (portões, mudanças, seleção) */
   decia?: DeciaActions;
+  /** decisões do DECIA (para os indicadores de participação nas decisões ligadas ao projeto) */
+  decisions?: readonly LinkedDecision[];
 }
 
 export const nameOf = (people: PeopleDirectory, id?: string) => (id ? (people[id]?.name ?? id) : "—");

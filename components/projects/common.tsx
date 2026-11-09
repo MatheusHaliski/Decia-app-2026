@@ -30,7 +30,9 @@ export function metricVars(t: T, intl: string, vars: Record<string, string | num
 
 /** Título e detalhe de um indicador (mesmos textos do "Feedback da IA"). */
 export function metricText(t: T, intl: string, m: { id: string; vars: Record<string, string | number> }): { title: string; detail: string; advice: string } {
-  return { title: t(`pm.metric.${m.id}.title`), detail: t(`pm.metric.${m.id}.detail`, metricVars(t, intl, m.vars)), advice: t(`pm.metric.${m.id}.advice`) };
+  const detail = t(`pm.metric.${m.id}.detail`, metricVars(t, intl, m.vars));
+  // indicador sem dados chega sem variáveis: em vez de "{score}" cru, diz que ainda não há dados
+  return { title: t(`pm.metric.${m.id}.title`), detail: /\{\s*[A-Za-z0-9_]+\s*\}/.test(detail) ? t("pm.fb.noData") : detail, advice: t(`pm.metric.${m.id}.advice`) };
 }
 
 /** Resumo legível de uma versão (RF22.CA02): `pm.v.<key>` com os valores de enum traduzidos. */

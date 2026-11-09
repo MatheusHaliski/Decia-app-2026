@@ -201,4 +201,13 @@ describe("governança, mudanças e portões", () => {
     expect(agg.workLinks.some((w) => w.targetType === "PROJETO" && w.targetId === p.id)).toBe(true);
     expect(q.decisionIds).toEqual([sel.decisionId]);
   });
+
+  it("atividade fora da linha de base só se liga a mudança aprovada; ligada, deixa de ser scope creep", () => {
+    const p = buildDemoProject();
+    const pending = applyCommand(p, { type: "TASK_UPDATE", id: "tX", patch: { changeId: "c1" } }, ctx);
+    expect(pending).toMatchObject({ ok: false, error: "MUDANCA_NAO_APROVADA" });
+    const approved = run(p, { type: "CHANGE_SET_STATUS", id: "c1", status: "EM_ANALISE" }, { type: "CHANGE_SET_STATUS", id: "c1", status: "APROVADA" }, { type: "TASK_UPDATE", id: "tX", patch: { changeId: "c1" } });
+    expect(approved.tasks.find((t) => t.id === "tX")!.changeId).toBe("c1");
+    expect(computeMetrics(approved).quality.find((m) => m.id === "Q_SCOPE_CREEP")!.status).toBe("OK");
+  });
 });

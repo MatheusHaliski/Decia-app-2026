@@ -21,7 +21,7 @@ import type {
 
 type TaskPatch = Partial<Pick<Task,
   "title" | "status" | "durationDays" | "pert" | "percentComplete" | "budget" | "actualCost" | "responsibleId" | "reviewerId" | "moscow"
-  | "sprint" | "wbsId" | "milestone">>;
+  | "sprint" | "wbsId" | "milestone" | "changeId">>;
 type CharterList = "justification" | "highLevelRequirements" | "premises" | "constraints" | "highLevelRisks" | "teamRoles" | "objectives" | "milestones";
 
 export type ProjectCommand =
@@ -183,6 +183,12 @@ function reduce(model: ProjectModel, cmd: ProjectCommand, ctx: CommandContext): 
       if (patch.budget !== undefined && !(patch.budget >= 0)) return fail("VALOR_INVALIDO", "budget");
       if (patch.actualCost !== undefined && !(patch.actualCost >= 0)) return fail("VALOR_INVALIDO", "actualCost");
       if (patch.wbsId && !model.wbs.some((n) => n.id === patch.wbsId)) return fail("NAO_ENCONTRADO", patch.wbsId);
+      if (patch.changeId) {
+        // ligar a atividade a uma mudança só vale com a mudança aprovada pelo comitê (regulariza o scope creep)
+        const ch = model.changes.find((c) => c.id === patch.changeId);
+        if (!ch) return fail("NAO_ENCONTRADO", patch.changeId);
+        if (ch.status !== "APROVADA" && ch.status !== "IMPLEMENTADA") return fail("MUDANCA_NAO_APROVADA", ch.code);
+      }
       const done = patch.status === "CONCLUIDA" && t.status !== "CONCLUIDA";
       const next: Task = {
         ...t, ...patch,
