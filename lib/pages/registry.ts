@@ -80,7 +80,7 @@ const ISSUER = access({ EMPRESA: "E", CHEFE: "E", ADMIN: "V" });
 
 export const PAGES: readonly PageEntry[] = [
   // Descobrir (Matriz A §2.1)
-  p("/mural", "app/(shell)/mural/page.tsx", "nav.mural", ["RF27", "RF18", "RF19"], everyone("V"), "mural", "A", { tabs: MURAL_TABS }),
+  p("/mural", "app/(shell)/mural/page.tsx", "nav.mural", ["RF27", "RF18", "RF19", "RF80"], everyone("V"), "mural", "A", { tabs: MURAL_TABS }),
   p("/search", "app/(shell)/search/page.tsx", "nav.search", ["RF27", "RF17"], everyone("V"), "buscar", "A", { tabs: SEARCH_TABS }),
   p("/memory", "app/(shell)/memory/page.tsx", "nav.memory", ["RF33"], everyone("V"), "acervo", "A"),
   p("/companies", "app/(shell)/companies/page.tsx", "nav.companies", ["RF28"], everyone("V"), "perfil", "A"),
@@ -91,7 +91,7 @@ export const PAGES: readonly PageEntry[] = [
   p("/messages/[conversationId]", "app/(shell)/messages/[conversationId]/page.tsx", "page.conversation", ["RF46", "RF13"], logged("E"), "sessao-decia", "A", { note: "proposal" }),
   p("/find", "app/(shell)/find/page.tsx", "nav.find", ["RF47", "RF48", "RF27", "RF33", "RF20"], logged("E"), "buscar", "A", { tabs: FIND_TABS }),
   // Meu trabalho (§2.2)
-  p("/profile", "app/(shell)/profile/page.tsx", "nav.profile", ["RF6", "RF19", "RF12", "RF25", "RF44", "RF45", "RF40", "RF75"], logged("E"), "perfil", "B", { tabs: PROFILE_TABS }),
+  p("/profile", "app/(shell)/profile/page.tsx", "nav.profile", ["RF6", "RF19", "RF12", "RF25", "RF44", "RF45", "RF40", "RF75", "RF76", "RF77", "RF78", "RF79"], logged("E"), "perfil", "B", { tabs: PROFILE_TABS }),
   p("/u/[username]", "app/(shell)/u/[username]/page.tsx", "page.userProfile", ["RF16", "RF6", "RF18", "RF19"], everyone("V"), "perfil", "B", { tabs: PROFILE_TABS }),
   p("/tasks", "app/(shell)/tasks/page.tsx", "nav.tasks", ["RF41", "RF44", "RF18", "RF13"], logged("E"), "acervo", "A"),
   // visitante lê só tarefas PUBLICA (perfis públicos, Mural, Buscar — RF16/RF17.CA04/RF27); o resto 403 no TaskDetail (D-93)
@@ -105,7 +105,7 @@ export const PAGES: readonly PageEntry[] = [
   p("/projects/[id]/mirror", "app/(shell)/projects/[id]/mirror/page.tsx", "nav.mirror", ["RF32"], logged("E"), "insights-ia", "A"),
   p("/agents", "app/(shell)/agents/page.tsx", "page.agents", ["RF48", "RF47", "RF29", "RF43"], AGENTS_ACCESS, "chancela", "A", { tabs: AGENTS_TABS }),
   // Criar (§2.3)
-  p("/tasks/new", "app/(shell)/tasks/new/page.tsx", "nav.tasksNew", ["RF4", "RF23", "RF34"], logged("E"), "criar-tarefa", "A"),
+  p("/tasks/new", "app/(shell)/tasks/new/page.tsx", "nav.tasksNew", ["RF4", "RF23", "RF34", "RF81"], logged("E"), "criar-tarefa", "A"),
   p("/projects/new", "app/(shell)/projects/new/page.tsx", "nav.projectsNew", ["RF5", "RF20"], logged("E"), "criar-projeto", "A"),
   p("/plans", "app/(shell)/plans/page.tsx", "nav.plans", ["RF24"], logged("E"), "tarefa-do-dia", "A"),
   p("/autopilot", "app/(shell)/autopilot/page.tsx", "nav.autopilot", ["RF30", "RF26", "RF43"], logged("E"), "insights-ia", "A"),
@@ -134,13 +134,13 @@ export const PAGES: readonly PageEntry[] = [
   p("/curation", "app/(shell)/curation/page.tsx", "nav.curation", ["RF28", "RF39", "RF35"], access({ CURADOR: "E" }), "chancela", "A", { note: "proposal" }),
   p("/admin", "app/(shell)/admin/page.tsx", "nav.admin", ["RF18", "RF28", "RF43"], access({ ADMIN: "E" }), "configuracoes", "E", { tabs: ADMIN_TABS }),
   // Globais
-  p("/settings", "app/(shell)/settings/page.tsx", "nav.settings", ["RF3", "RF38"], logged("E"), "configuracoes", "global", { tabs: SETTINGS_TABS }),
+  p("/settings", "app/(shell)/settings/page.tsx", "nav.settings", ["RF3", "RF38", "RF81"], logged("E"), "configuracoes", "global", { tabs: SETTINGS_TABS }),
   p("/notifications", "app/(shell)/notifications/page.tsx", "nav.notifications", [], logged("V"), "notificacoes", "global"),
   // Auth (fora do shell)
   p("/login", "app/(auth)/login/page.tsx", "auth.login.title", ["RF2"], everyone("V"), "perfil", "auth"),
-  p("/register", "app/(auth)/register/page.tsx", "auth.register.title", ["RF1"], everyone("V"), "perfil", "auth"),
+  p("/register", "app/(auth)/register/page.tsx", "auth.register.title", ["RF1", "RF81"], everyone("V"), "perfil", "auth"),
   p("/password-reset", "app/(auth)/password-reset/page.tsx", "auth.reset.title", ["RF2"], everyone("V"), "perfil", "auth"),
-  p("/verify-email", "app/(auth)/verify-email/page.tsx", "auth.verify.title", ["RF1"], everyone("V"), "perfil", "auth"),
+  p("/verify-email", "app/(auth)/verify-email/page.tsx", "auth.verify.title", ["RF1", "RF81"], everyone("V"), "perfil", "auth"),
   // Textos legais públicos da Velion (D-143): sem login, lidos de docs/legal
   p("/termos", "app/(legal)/termos/page.tsx", "legal.terms", ["RF1"], everyone("V"), "configuracoes", "auth"),
   p("/privacidade", "app/(legal)/privacidade/page.tsx", "legal.privacy", ["RF1"], everyone("V"), "configuracoes", "auth"),

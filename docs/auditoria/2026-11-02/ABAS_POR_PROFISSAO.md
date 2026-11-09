@@ -142,7 +142,7 @@ Cada etapa fecha com contrato OpenAPI regenerado, catálogo de RFs (`node script
 
 ## 11. Decisões para o dono do produto
 
-Registradas como dúvidas Q-244 a Q-252 em [`docs/DECISOES.md`](../../DECISOES.md); resumo:
+Registradas como dúvidas Q-244 a Q-252 em [`docs/DECISOES.md`](../../DECISOES.md). **Respondidas em 09/11/2026:** numeração RF76–RF80 (D-149), "hype" = item em alta (D-150), matriz do selo (D-151) e temporada de 12 semanas (D-152). Resumo original:
 
 1. **Numeração:** RF76–RF80 como acima, ou incorporar como CAs novos no RF75/RF43?
 2. **"Hype" no feed** = item em alta (proposto) ou Hype do autor como filtro (conflita com RF45.CA08 e o guia §3)?
