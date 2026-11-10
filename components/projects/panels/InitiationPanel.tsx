@@ -16,7 +16,7 @@ import type { ProjectCommand } from "@/lib/projects/commands";
 import { businessCase, npv } from "@/lib/projects/engine/finance";
 import type { GateCriterionId } from "@/lib/projects/lifecycle";
 import { computeMetrics, evaluateGate, type WorkspaceTab } from "@/lib/projects/metrics";
-import { APPROACHES, type Approach, type ProjectModel } from "@/lib/projects/types";
+import { APPROACHES, PROJECT_AREAS, type Approach, type ProjectArea, type ProjectModel } from "@/lib/projects/types";
 
 type T = (key: string, vars?: Record<string, string | number>) => string;
 
@@ -190,6 +190,13 @@ function ApproachSection({ ctx }: { ctx: Ctx }) {
   return (
     <Card as="section" aria-labelledby={id} className="grid gap-[var(--ws-space-3)]">
       <SectionTitle id={id}>{t("pm.ini.approach.title")}</SectionTitle>
+      <Field label={t("pm.ws.area.label")} hint={t((model.area ?? "SOFTWARE") === "SOFTWARE" ? "pm.ws.area.hintIt" : "pm.ws.area.hintOther")}>
+        {({ id: fid, describedBy }) => (
+          <Select id={fid} aria-describedby={describedBy} value={model.area ?? "SOFTWARE"} disabled={readOnly}
+            onChange={(e) => run({ type: "SET_PROJECT_AREA", area: e.target.value as ProjectArea }, "approach")}
+            options={PROJECT_AREAS.map((a) => ({ value: a, label: t(`tasks.area.${a}`) }))} />
+        )}
+      </Field>
       <RadioCards
         label={t("pm.ini.approach.label")}
         value={model.approach}

@@ -26,6 +26,12 @@ export type Moscow = (typeof MOSCOW)[number];
 export const APPROACHES = ["PREDITIVO", "ITERATIVO", "AGIL", "HIBRIDO"] as const;
 export type Approach = (typeof APPROACHES)[number];
 
+/** Área do projeto — os mesmos valores de `WorkArea` do Acervo. A Mesa nasceu da disciplina de Gestão de Projetos de TI; a governança
+ *  ESPECÍFICA de TI (ISO/IEC 38500, ITIL SLA/OLA/UC, Run/Grow/Transform) só se aplica a projetos de TI (SOFTWARE). */
+export const PROJECT_AREAS = ["SOFTWARE", "ADMINISTRACAO", "DESIGN", "PESQUISA", "MARKETING", "PLANEJAMENTO", "ENGENHARIA", "JURIDICO", "OUTRA"] as const;
+export type ProjectArea = (typeof PROJECT_AREAS)[number];
+export const isItProject = (m: { area?: ProjectArea }) => (m.area ?? "SOFTWARE") === "SOFTWARE";
+
 /** Modelo de quadro: as 7 fases institucionais, as fases clássicas do PMBOK ou o fluxo do Scrum. */
 export const BOARD_MODELS = ["INSTITUCIONAL", "PMBOK", "SCRUM"] as const;
 export type BoardModel = (typeof BOARD_MODELS)[number];
@@ -211,6 +217,8 @@ export interface ProjectModel {
   /** data de status para o valor agregado */
   statusDate: IsoDate;
   approach: Approach;
+  /** área do projeto (padrão: SOFTWARE, isto é, TI) — escolhida para o projeto, nunca deduzida da profissão da pessoa (D-147) */
+  area?: ProjectArea;
   boardModel: BoardModel;
   currentPhase: ProjectPhase;
   currentSprint?: number;

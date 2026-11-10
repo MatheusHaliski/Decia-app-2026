@@ -4166,5 +4166,9 @@
   "pm.v.commAdded": "Comunicação planejada: {info}",
   "pm.v.commUpdated": "Comunicação alterada: {info}",
   "pm.v.commRemoved": "Comunicação removida: {info}",
-  "tasks.ext.guidedTask": "Tarefa-guia do campo"
+  "tasks.ext.guidedTask": "Tarefa-guia do campo",
+  "pm.ws.area.label": "Área do projeto",
+  "pm.ws.area.hintIt": "Projeto de TI: além da gestão de projetos, valem a governança de TI (ISO/IEC 38500), o Run/Grow/Transform e a transição de serviço do ITIL (SLA, OLA e contrato).",
+  "pm.ws.area.hintOther": "Fora de TI, a Mesa não cobra ISO/IEC 38500, Run/Grow/Transform nem SLA/OLA/UC; a gestão de projetos (escopo, prazo, custo, riscos, portões) vale igual. A área é do projeto, não da sua profissão.",
+  "pm.v.areaSet": "Área do projeto: {area}"
 }

@@ -220,4 +220,18 @@ describe("governança, mudanças e portões", () => {
     expect(undone.charter.approvedBy).toBeUndefined();
     expect(run(undone, { type: "CHARTER_UPDATE", patch: { product: "Outro produto" } }).charter.approvedBy).toBeUndefined();
   });
+
+  it("fora de TI a Mesa não cobra a governança específica de TI (ISO 38500, Run/Grow/Transform, SLA/OLA/UC)", () => {
+    const it = buildDemoProject();
+    const ids = (m: ProjectModel) => computeMetrics(m).governance.map((x) => x.id);
+    expect(ids(it)).toEqual(expect.arrayContaining(["G_ISO38500", "G_RUN_GROW_TRANSFORM", "G_ACORDOS_SERVICO"]));
+    const law = run(it, { type: "SET_PROJECT_AREA", area: "JURIDICO" });
+    expect(law.area).toBe("JURIDICO");
+    expect(law.versions.at(-1)).toMatchObject({ key: "areaSet", vars: { area: "JURIDICO" } });
+    expect(ids(law)).not.toEqual(expect.arrayContaining(["G_ISO38500"]));
+    expect(ids(law).some((id) => id === "G_RUN_GROW_TRANSFORM" || id === "G_ACORDOS_SERVICO")).toBe(false);
+    expect(evaluateGate(law, "ENCERRAMENTO").map((c) => c.id)).not.toContain("TRANSICAO_OPERACAO");
+    expect(evaluateGate(it, "ENCERRAMENTO").map((c) => c.id)).toContain("TRANSICAO_OPERACAO");
+    expect(applyCommand(it, { type: "SET_PROJECT_AREA", area: "XYZ" as never }, ctx)).toMatchObject({ ok: false, error: "VALOR_INVALIDO" });
+  });
 });

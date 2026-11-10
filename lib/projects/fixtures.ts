@@ -21,6 +21,7 @@ export function buildDemoProject(): ProjectModel {
     startDate: start,
     statusDate: "2026-11-10",
     approach: "HIBRIDO",
+    area: "SOFTWARE",
     boardModel: "INSTITUCIONAL",
     currentPhase: "ELABORACAO",
     currentSprint: 1,

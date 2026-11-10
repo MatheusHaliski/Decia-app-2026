@@ -128,6 +128,7 @@ export function ProjectWorkspace({ model, dispatch, people, readOnly, canEdit = 
         <div className="flex flex-wrap items-center gap-2 text-[length:var(--ws-text-body-sm)]">
           <Tag tone="accent" filled>{t("pm.ws.phase", { phase: t(`pm.phase.${model.currentPhase}`) })}</Tag>
           <Tag>{t(`pm.approach.${model.approach}`)}</Tag>
+          <Tag tone="blue">{t(`tasks.area.${model.area ?? "SOFTWARE"}`)}</Tag>
           <Tag>{t("pm.ws.version", { n: model.version })}</Tag>
           {last ? <span className="min-w-0 max-w-full truncate text-ws-text-muted" aria-live="polite">{t("pm.ws.lastChange", { what: versionSummary(t, last), who: nameOf(people, last.actorId) })}</span> : null}
         </div>

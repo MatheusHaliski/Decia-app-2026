@@ -45,6 +45,7 @@ export function versionSummary(t: T, v: Pick<ProjectVersion, "key" | "vars">): s
   tr("status", "pm.changeStatus");
   tr("outcome", "pm.gateOutcome");
   tr("approach", "pm.approach");
+  tr("area", "tasks.area");
   if (typeof vars.target === "string") vars.target = t(`${(PROJECT_PHASES as readonly string[]).includes(vars.target) ? "pm.phase" : "pm.pmcBlock"}.${vars.target}`);
   return t(`pm.v.${v.key}`, vars);
 }

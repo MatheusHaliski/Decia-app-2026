@@ -35,6 +35,9 @@ export type GateCriterionId =
   | "MUDANCAS_PELO_CCB" | "DESEMPENHO_IDC_IDP" | "ENTREGAS_REVISADAS"
   | "ACEITE_FORMAL" | "LICOES_AO_LONGO" | "CONTRATOS_ENCERRADOS" | "RECURSOS_LIBERADOS" | "ARQUIVAMENTO" | "TRANSICAO_OPERACAO";
 
+/** Critérios de saída que são governança de serviços de TI (ITIL): fora de TI não entram no portão. */
+export const IT_ONLY_CRITERIA: ReadonlySet<GateCriterionId> = new Set<GateCriterionId>(["TRANSICAO_OPERACAO"]);
+
 export interface PhaseMeta {
   phase: ProjectPhase;
   /** grupo de processos dominante nesta fase (os outros também ocorrem) */

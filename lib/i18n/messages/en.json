@@ -4166,5 +4166,9 @@
   "pm.v.commAdded": "Communication planned: {info}",
   "pm.v.commUpdated": "Communication changed: {info}",
   "pm.v.commRemoved": "Communication removed: {info}",
-  "tasks.ext.guidedTask": "Field guided task"
+  "tasks.ext.guidedTask": "Field guided task",
+  "pm.ws.area.label": "Project area",
+  "pm.ws.area.hintIt": "IT project: besides project management, IT governance (ISO/IEC 38500), Run/Grow/Transform and ITIL service transition (SLA, OLA and contract) apply.",
+  "pm.ws.area.hintOther": "Outside IT, the workspace does not require ISO/IEC 38500, Run/Grow/Transform or SLA/OLA/UC; project management (scope, schedule, cost, risks, gates) applies the same. The area belongs to the project, not to your profession.",
+  "pm.v.areaSet": "Project area: {area}"
 }

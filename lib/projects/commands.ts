@@ -12,10 +12,10 @@ import { ITEM_SIZE, makeRef, refId, refKind, zoneAt } from "./canvas";
 import { canvasZones, effectiveDuration, scheduleOf, wbsRoot } from "./derive";
 import { wouldCreateCycle } from "./engine/schedule";
 import { PMC_TARGET, type PmcBlock } from "./lifecycle";
-import { PROJECT_PHASES } from "./types";
+import { PROJECT_AREAS, PROJECT_PHASES } from "./types";
 import type {
   Approach, BoardModel, BudgetLine, BusinessCase, CanvasNote, CanvasRef, ChangeImpact, ChangeRequest, ChangeStatus, ChangeType,
-  Charter, Closure, CommItem, Dependency, DependencyType, FlowStatus, GateOutcome, Governance, Lesson, ProjectModel, ProjectPhase, RaciLetter,
+  Charter, Closure, CommItem, Dependency, ProjectArea, DependencyType, FlowStatus, GateOutcome, Governance, Lesson, ProjectModel, ProjectPhase, RaciLetter,
   Requirement, Risk, RiskKind, SevenRs, Stakeholder, Task, WbsNode,
 } from "./types";
 
@@ -73,6 +73,7 @@ export type ProjectCommand =
   | { type: "CLOSURE_UPDATE"; patch: Partial<Closure> }
   | { type: "BASELINE_SET" }
   | { type: "SET_APPROACH"; approach: Approach }
+  | { type: "SET_PROJECT_AREA"; area: ProjectArea }
   | { type: "SET_BOARD_MODEL"; model: BoardModel }
   | { type: "SET_CURRENT_SPRINT"; sprint: number }
   | { type: "SPRINT_SET"; number: number; start: string; end: string; goal?: string }
@@ -623,6 +624,10 @@ function reduce(model: ProjectModel, cmd: ProjectCommand, ctx: CommandContext): 
       if (!baseline) return fail("CICLO");
       return ok({ ...model, baseline, tasks: model.tasks.map((t) => ({ ...t, addedAfterBaseline: undefined })) }, true, "baselineSet", { finish: baseline.finish });
     }
+    case "SET_PROJECT_AREA":
+      if (!PROJECT_AREAS.includes(cmd.area)) return fail("VALOR_INVALIDO", "area");
+      if ((model.area ?? "SOFTWARE") === cmd.area) return ok(model, false);
+      return ok({ ...model, area: cmd.area }, true, "areaSet", { area: cmd.area });
     case "SET_APPROACH":
       return ok({ ...model, approach: cmd.approach }, true, "approachSet", { approach: cmd.approach });
     case "SET_BOARD_MODEL":
