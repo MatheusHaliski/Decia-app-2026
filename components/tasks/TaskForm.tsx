@@ -13,9 +13,10 @@ import {
   type AccessClassName, type Criterion, type Deliverable, type PriorityName, type Reference, type TaskRequest, type TaskTypeName, type TaskView,
   type VisibilityName, type WorkArea,
 } from "@/lib/tasks/client";
-import { AREA_DEFAULT_ACCESS, AREA_DEFAULT_TYPE, fieldByCode, STUDY_FIELD_KEY } from "@/lib/tasks/areas";
+import { AREA_DEFAULT_ACCESS, AREA_DEFAULT_TYPE, fieldByCode, GUIDED_TASK_KEY, STUDY_FIELD_KEY } from "@/lib/tasks/areas";
 import type { QuickFix } from "@/lib/tasks/quality";
 import { applyTemplate, type TaskDraft, type TaskTemplate } from "@/lib/tasks/templates";
+import { ImportFrom } from "@/components/connectors/ImportFrom";
 import { TaskAssist } from "./TaskAssist";
 
 interface FormState {
@@ -83,14 +84,17 @@ export function TaskForm({ mode, initial, onSaved, templateId }: TaskFormProps) 
   const [studyField, setStudyField] = useState<string | null>(() => initial?.extensions?.[STUDY_FIELD_KEY] ?? null);
   const dirty = JSON.stringify(form) !== baseline;
 
-  // campo de estudo lembrado neste navegador (conveniência por pessoa; a tarefa grava o que foi usado)
+  // campo de estudo lembrado neste navegador POR CONTA (chave com o id de quem está logado: nunca passa para a próxima pessoa
+  // que usar o mesmo navegador); a tarefa grava o que foi usado
+  const fieldMemoryKey = me ? `${FIELD_MEMORY}:${me}` : null;
   useEffect(() => {
-    if (studyField || initial) return;
+    if (!fieldMemoryKey || studyField || initial) return;
     try {
-      const saved = window.localStorage.getItem(FIELD_MEMORY);
+      window.localStorage.removeItem(FIELD_MEMORY); // chave antiga, sem dono: apaga
+      const saved = window.localStorage.getItem(fieldMemoryKey);
       if (saved && fieldByCode(saved)) setStudyField(saved);
     } catch { /* armazenamento indisponível */ }
-  }, []); // só na montagem
+  }, [fieldMemoryKey]); // quando a conta é conhecida
 
   useEffect(() => {
     let alive = true;
@@ -125,12 +129,12 @@ export function TaskForm({ mode, initial, onSaved, templateId }: TaskFormProps) 
   const chooseField = useCallback((code: string | null) => {
     setStudyField(code);
     try {
-      if (code) window.localStorage.setItem(FIELD_MEMORY, code);
-      else window.localStorage.removeItem(FIELD_MEMORY);
+      if (fieldMemoryKey && code) window.localStorage.setItem(fieldMemoryKey, code);
+      else if (fieldMemoryKey) window.localStorage.removeItem(fieldMemoryKey);
     } catch { /* armazenamento indisponível */ }
     const area = fieldByCode(code)?.area;
     if (area) setForm((f) => (f.area ? f : { ...f, area, type: f.type || AREA_DEFAULT_TYPE[area] }));
-  }, []);
+  }, [fieldMemoryKey]);
   const useTemplate = useCallback((tpl: TaskTemplate) => {
     setForm((f) => fromDraft(applyTemplate(toDraft(f), tpl), f));
     setErrors({});
@@ -149,6 +153,7 @@ export function TaskForm({ mode, initial, onSaved, templateId }: TaskFormProps) 
   function body(draft?: boolean): TaskRequest {
     const extensions = Object.fromEntries(extensionKeys.map((k) => [k, form.extensions[k] ?? ""]).filter(([, v]) => (v ?? "").trim()));
     if (studyField) extensions[STUDY_FIELD_KEY] = studyField;
+    if (studyField && form.extensions[GUIDED_TASK_KEY]) extensions[GUIDED_TASK_KEY] = form.extensions[GUIDED_TASK_KEY];
     return {
       title: form.title, type: form.type || undefined, area: form.area || undefined, objective: form.objective || undefined,
       descriptionMd: form.descriptionMd || undefined, priority: form.priority, dueAt: form.dueAt || undefined,
@@ -171,6 +176,9 @@ export function TaskForm({ mode, initial, onSaved, templateId }: TaskFormProps) 
       const saved = mode === "create" ? await tasksApi.create(body(draft)) : await tasksApi.update(initial!.id!, body());
       setBaseline(JSON.stringify(form));
       setVersion(saved.version);
+      try {
+        if (fieldMemoryKey && studyField) window.localStorage.setItem(fieldMemoryKey, studyField);
+      } catch { /* armazenamento indisponível */ }
       toast({ title: t(mode === "create" ? "tasks.form.created" : "tasks.form.saved"), tone: "sucesso" });
       onSaved(saved);
     } catch (err) {
@@ -199,6 +207,8 @@ export function TaskForm({ mode, initial, onSaved, templateId }: TaskFormProps) 
       <TaskAssist draft={draft} fieldCode={studyField} onFieldChange={chooseField} onAreaChange={chooseArea} onApplyTemplate={useTemplate} onFix={fix} hasContent={hasContent} templateId={mode === "create" ? templateId : null} />
     </div>
     <form className="grid min-w-0 gap-[var(--ws-space-4)]" onSubmit={(e) => submit(e)} noValidate data-testid="task-form" aria-busy={busy}>
+      {/* RF20.CA07/RF34: trazer de uma conta conectada (Google, Microsoft) ou de um link (inclusive iCloud) em vez de digitar */}
+      {mode === "create" ? <ImportFrom hasDraft={hasContent} /> : null}
       {conflict ? (
         <div role="alert" className="grid gap-2 rounded-[var(--ws-radius-md)] border border-ws-danger bg-ws-danger-soft p-3 text-[length:var(--ws-text-body-sm)]" data-testid="task-conflict">
           <p>{t("tasks.form.conflict")}</p>

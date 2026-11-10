@@ -1,0 +1,3247 @@
+{
+  "schemaVersion": 1,
+  "version": "2026-11-09",
+  "about": "Fontes externas por ecossistema (RF4, RF20.CA07, RF23, RF34): o que cada aplicativo produz, como ler ou exportar, escopo mínimo de leitura, se dá para manter vínculo e o que vira no Work Station (sourceKind × taskType). Consolidação da pesquisa em fontes primárias de 09/11/2026 (Google 26, Microsoft 27 e Apple 16 itens), sem os 3 itens de contatos (contato não vira tarefa). Guarda: lib/connectors/catalog.test.ts.",
+  "fields": {
+    "sourceKind": "Valor do enum SourceKind (MAIÚSCULAS, ≤ 20 caracteres): um por aplicativo; um aplicativo pode ter vários itens (artefatos).",
+    "taskType": "Valor do enum TaskType que o artefato vira; taskTypeIsNew marca os 16 valores acrescentados pelos conectores.",
+    "linkable": "SIM | PARCIAL | NAO — dá para manter vínculo com atualização (watch, webhook ou delta); linkableHow traz o texto da pesquisa.",
+    "via": "CONTA = alcançável pelos escopos mínimos do conector (Google drive.readonly; Microsoft Files.Read); LINK = a importação por link infere este sourceKind; vazio = só por arquivo exportado ou planejado (escopo ou API extra).",
+    "formats": "Códigos curtos derivados de exportFormats (ORIGINAL = o binário como está).",
+    "sourceKinds": "Tabela de sourceKind: aplicativo canônico e taskType padrão (usado quando só o sourceKind é conhecido, como na importação por link).",
+    "linkImport": "Regras do contrato para POST /api/connectors/link-import: https; host exato (ou *.sharepoint.com); pathPrefix ou pathContains; a primeira regra que casa vence; o resto é recusado com VALIDACAO."
+  },
+  "linkImport": {
+    "linkMode": "VINCULADO",
+    "protocol": "https:",
+    "rules": [
+      {
+        "host": "docs.google.com",
+        "pathPrefix": "/document",
+        "sourceKind": "GOOGLE_DOCS",
+        "example": "https://docs.google.com/document/d/…/edit"
+      },
+      {
+        "host": "docs.google.com",
+        "pathPrefix": "/spreadsheets",
+        "sourceKind": "GOOGLE_SHEETS",
+        "example": "https://docs.google.com/spreadsheets/d/…/edit"
+      },
+      {
+        "host": "docs.google.com",
+        "pathPrefix": "/presentation",
+        "sourceKind": "GOOGLE_SLIDES",
+        "example": "https://docs.google.com/presentation/d/…/edit"
+      },
+      {
+        "host": "docs.google.com",
+        "pathPrefix": "/forms",
+        "sourceKind": "GOOGLE_FORMS",
+        "example": "https://docs.google.com/forms/d/…/edit"
+      },
+      {
+        "host": "docs.google.com",
+        "pathPrefix": "/drawings",
+        "sourceKind": "GOOGLE_DRAWINGS",
+        "example": "https://docs.google.com/drawings/d/…/edit"
+      },
+      {
+        "host": "drive.google.com",
+        "sourceKind": "GOOGLE_DRIVE",
+        "example": "https://drive.google.com/file/d/…/view"
+      },
+      {
+        "host": "sites.google.com",
+        "sourceKind": "GOOGLE_SITES",
+        "example": "https://sites.google.com/view/…"
+      },
+      {
+        "host": "onedrive.live.com",
+        "sourceKind": "MS_ONEDRIVE",
+        "example": "https://onedrive.live.com/?…"
+      },
+      {
+        "host": "1drv.ms",
+        "sourceKind": "MS_ONEDRIVE",
+        "example": "https://1drv.ms/w/…"
+      },
+      {
+        "host": "*.sharepoint.com",
+        "pathContains": "/SitePages/",
+        "sourceKind": "MS_SHAREPOINT_PAGE",
+        "example": "https://contoso.sharepoint.com/sites/…/SitePages/….aspx"
+      },
+      {
+        "host": "*.sharepoint.com",
+        "sourceKind": "MS_ONEDRIVE",
+        "example": "https://contoso.sharepoint.com/:w:/s/…"
+      },
+      {
+        "host": "www.icloud.com",
+        "pathPrefix": "/pages/",
+        "sourceKind": "APPLE_PAGES",
+        "example": "https://www.icloud.com/pages/…"
+      },
+      {
+        "host": "www.icloud.com",
+        "pathPrefix": "/numbers/",
+        "sourceKind": "APPLE_NUMBERS",
+        "example": "https://www.icloud.com/numbers/…"
+      },
+      {
+        "host": "www.icloud.com",
+        "pathPrefix": "/keynote/",
+        "sourceKind": "APPLE_KEYNOTE",
+        "example": "https://www.icloud.com/keynote/…"
+      },
+      {
+        "host": "www.icloud.com",
+        "pathPrefix": "/iclouddrive/",
+        "sourceKind": "APPLE_ICLOUD_DRIVE",
+        "example": "https://www.icloud.com/iclouddrive/…"
+      },
+      {
+        "host": "www.icloud.com",
+        "pathPrefix": "/freeform/",
+        "sourceKind": "APPLE_FREEFORM",
+        "example": "https://www.icloud.com/freeform/…"
+      },
+      {
+        "host": "www.icloud.com",
+        "pathPrefix": "/notes/",
+        "sourceKind": "APPLE_NOTES",
+        "example": "https://www.icloud.com/notes/…"
+      }
+    ]
+  },
+  "ecosystems": [
+    {
+      "id": "google",
+      "provider": "GOOGLE",
+      "label": "Google",
+      "generatedAt": "2026-11-09",
+      "researchItems": 26,
+      "items": 25,
+      "sources": [
+        {
+          "title": "Discovery document Google Drive API v3 (revision 20260916; cópia local do google-api-python-client 2.201.0)",
+          "url": "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Discovery document Google Docs API v1 (revision 20260921)",
+          "url": "https://docs.googleapis.com/$discovery/rest?version=v1",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Discovery document Google Sheets API v4 (revision 20260921)",
+          "url": "https://sheets.googleapis.com/$discovery/rest?version=v4",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Discovery document Google Slides API v1 (revision 20260921)",
+          "url": "https://slides.googleapis.com/$discovery/rest?version=v1",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Discovery document Google Forms API v1 (revision 20250422)",
+          "url": "https://forms.googleapis.com/$discovery/rest?version=v1",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Discovery document Gmail API v1 (revision 20260727)",
+          "url": "https://gmail.googleapis.com/$discovery/rest?version=v1",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Discovery document Google Calendar API v3 (revision 20260708)",
+          "url": "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Discovery document Google Tasks API v1 (revision 20251102)",
+          "url": "https://tasks.googleapis.com/$discovery/rest?version=v1",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Discovery document Google Keep API v1 (revision 20250318)",
+          "url": "https://keep.googleapis.com/$discovery/rest?version=v1",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Discovery document Google Meet API v2 (revision 20260915)",
+          "url": "https://meet.googleapis.com/$discovery/rest?version=v2",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Discovery document Google Chat API v1 (revision 20260920)",
+          "url": "https://chat.googleapis.com/$discovery/rest?version=v1",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Discovery document Google Classroom API v1 (revision 20260825)",
+          "url": "https://classroom.googleapis.com/$discovery/rest?version=v1",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Discovery document YouTube Data API v3 (revision 20260924)",
+          "url": "https://youtube.googleapis.com/$discovery/rest?version=v3",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Discovery document Apps Script API v1 (revision 20250824)",
+          "url": "https://script.googleapis.com/$discovery/rest?version=v1",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Discovery document Google Workspace Events API v1 (revision 20260818)",
+          "url": "https://workspaceevents.googleapis.com/$discovery/rest?version=v1",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Discovery document Discovery Engine API v1alpha — NotebookLM Enterprise (revision 20260924)",
+          "url": "https://discoveryengine.googleapis.com/$discovery/rest?version=v1alpha",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Discovery document Data Portability API v1 (revision 20260719)",
+          "url": "https://dataportability.googleapis.com/$discovery/rest?version=v1",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Export MIME types for Google Workspace documents (só resumo de busca; página bloqueada na sessão)",
+          "url": "https://developers.google.com/workspace/drive/api/guides/ref-export-formats",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Google Workspace and Google Drive supported MIME types (só resumo de busca)",
+          "url": "https://developers.google.com/workspace/drive/api/guides/mime-types",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Google Jamboard is winding down (Ajuda do Jamboard)",
+          "url": "https://support.google.com/jamboard/answer/14084927",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Updates to the Google Photos APIs (Picker API e mudanças da Library API)",
+          "url": "https://developers.google.com/photos/support/updates",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Google Photos Picker API — List and retrieve media items",
+          "url": "https://developers.google.com/photos/picker/guides/media-items",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Looker Studio API (Data Studio API) — visão geral e autorização",
+          "url": "https://developers.google.com/looker-studio/integrate/api",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Looker Studio API — Assets: search",
+          "url": "https://developers.google.com/looker-studio/integrate/api/reference/assets/search",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Google Keep API — referência REST",
+          "url": "https://developers.google.com/workspace/keep/api/reference/rest",
+          "accessedAt": "2026-11-09"
+        }
+      ],
+      "naoConferido": [
+        "developers.google.com e developers.google.cn não resolvem na rede desta sessão (WebFetch bloqueado); as tabelas de formatos de exportação e de MIME foram conferidas só por resumo de busca + conhecimento. Para confirmar, liberar developers.google.com nas configurações de rede da sessão.",
+        "Lista exata de exportação: Docs (DOCX, ODT, RTF, PDF, TXT, HTML zip, EPUB, MD), Sheets (XLSX, ODS, PDF, HTML zip, CSV/TSV 1ª aba), Slides (PPTX, ODP, PDF, TXT, JPEG/PNG/SVG do 1º slide), Drawings (PDF, JPEG, PNG, SVG), Apps Script (JSON), Vids (MP4).",
+        "Google Vids: se files.download → MP4 já tem suporte geral ou continua parcial ('trusted testers'); edições e planos que incluem Vids.",
+        "Expiração máxima dos canais de push (Drive files.watch ≈ 1 dia, changes.watch ≈ 1 semana; Calendar) e das assinaturas da Workspace Events API (Chat com recurso incluído ≈ 4 h; sem ≈ 7 dias); nomes exatos dos eventos de Meet (gravação/transcrição gerada).",
+        "Classificação de escopos (restritos: drive.readonly, gmail.readonly; sensíveis: calendar, forms, tasks, chat, classroom) e exigência de avaliação de segurança anual para app externo.",
+        "drive.file + Google Picker ao escolher uma PASTA: se dá acesso aos arquivos dentro dela (assumido que não; por isso a pasta usa drive.readonly).",
+        "Edições do Workspace que têm gravação, transcrição e 'Anotações com o Gemini' no Meet.",
+        "Chat API: indisponível para contas pessoais (assumido).",
+        "Classroom: duração do registro de push (expiryTime, ~7 dias).",
+        "Google Sites novo sem API de conteúdo e a API do Sites clássico extinta (conhecimento consolidado, não reconferido).",
+        "NotebookLM: 'exportar para Docs/Sheets' e formato do download do Resumo em Áudio (pela interface).",
+        "My Maps: KML com network link sempre atual; Data Portability API — regiões em que está disponível.",
+        "YouTube: notificações WebSub do canal e cota padrão de 10 mil unidades/dia (conhecimento, não reconferido).",
+        "Extensões .gdoc/.gsheet/.gslides/.gdraw/.gform/.gsite/.gjam dos atalhos do Drive para computador (lista exata).",
+        "Keep: Takeout gera HTML + JSON; Keep API usável com OAuth de usuário Workspace sem delegação (fontes divergem — assumido que exige conta de serviço com delegação)."
+      ]
+    },
+    {
+      "id": "microsoft",
+      "provider": "MICROSOFT",
+      "label": "Microsoft",
+      "generatedAt": "2026-11-09",
+      "researchItems": 27,
+      "items": 26,
+      "sources": [
+        {
+          "title": "Microsoft Graph — Download a file in another format (driveitem-get-content-format; cópia local do repositório microsoftgraph/microsoft-graph-docs, commit bb35043 de 31/10/2026)",
+          "url": "https://learn.microsoft.com/graph/api/driveitem-get-content-format",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — Download driveItem contents",
+          "url": "https://learn.microsoft.com/graph/api/driveitem-get-content",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — driveItem: delta",
+          "url": "https://learn.microsoft.com/graph/api/driveitem-delta",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — driveItem: preview",
+          "url": "https://learn.microsoft.com/graph/api/driveitem-preview",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — Access shared items (shares-get)",
+          "url": "https://learn.microsoft.com/graph/api/shares-get",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — Change notifications overview (recursos suportados e tempo de vida das assinaturas)",
+          "url": "https://learn.microsoft.com/graph/change-notifications-overview",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — subscription resource type",
+          "url": "https://learn.microsoft.com/graph/api/resources/subscription",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph permissions reference",
+          "url": "https://learn.microsoft.com/graph/permissions-reference",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — Get message ($value / MIME)",
+          "url": "https://learn.microsoft.com/graph/api/message-get",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — message: delta",
+          "url": "https://learn.microsoft.com/graph/api/message-delta",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — Get event",
+          "url": "https://learn.microsoft.com/graph/api/event-get",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — event: delta",
+          "url": "https://learn.microsoft.com/graph/api/event-delta",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — Get page (OneNote)",
+          "url": "https://learn.microsoft.com/graph/api/page-get",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — Integrate with OneNote (fim do app-only em 31/03/2025)",
+          "url": "https://learn.microsoft.com/graph/integrate-with-onenote",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — Get OneNote content and structure",
+          "url": "https://learn.microsoft.com/graph/onenote-get-content",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — Get todoTask / todoTask: delta",
+          "url": "https://learn.microsoft.com/graph/api/todotask-get",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — Get plannerTask / plannerPlan",
+          "url": "https://learn.microsoft.com/graph/api/plannertask-get",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — Get chatMessage",
+          "url": "https://learn.microsoft.com/graph/api/chatmessage-get",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — List channel messages",
+          "url": "https://learn.microsoft.com/graph/api/channel-list-messages",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — Get callRecording",
+          "url": "https://learn.microsoft.com/graph/api/callrecording-get",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — Get callTranscript (formatos e controles do administrador)",
+          "url": "https://learn.microsoft.com/graph/api/calltranscript-get",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — Get sitePage",
+          "url": "https://learn.microsoft.com/graph/api/sitepage-get",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — Get listItem / list",
+          "url": "https://learn.microsoft.com/graph/api/listitem-get",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — worksheet usedRange e Excel API (sem OneDrive consumidor)",
+          "url": "https://learn.microsoft.com/graph/api/worksheet-usedrange",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — note resource type (ShortNotes)",
+          "url": "https://learn.microsoft.com/graph/api/resources/note",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — Get educationAssignment / assignments delta",
+          "url": "https://learn.microsoft.com/graph/api/educationassignment-get",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — Teams API implementation differences in national clouds (meeting AI insights)",
+          "url": "https://learn.microsoft.com/graph/teamwork-national-cloud-differences",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Forms connector (Power Automate)",
+          "url": "https://learn.microsoft.com/connectors/microsoftforms/",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Tech Community — Is there an API to read Microsoft Forms data?",
+          "url": "https://techcommunity.microsoft.com/discussions/microsoftforms/is-there-an-api-to-read-microsoft-forms-data/292045",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Power BI — Export Power BI report to file",
+          "url": "https://learn.microsoft.com/power-bi/developer/embedded/export-to",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Project for the web service description (dados no Dataverse)",
+          "url": "https://learn.microsoft.com/office365/servicedescriptions/project-online-service-description/project-web-service-description",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Planner — Allow data flow to Dataverse (planos premium)",
+          "url": "https://learn.microsoft.com/planner/allow-data-flow-to-dataverse",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Message Center MC1068905 — Project for the web e Project in Teams redirecionados ao Planner (espelho de terceiros)",
+          "url": "https://mc.merill.net/message/MC1068905",
+          "accessedAt": "2026-11-09"
+        }
+      ],
+      "naoConferido": [
+        "Limite de 2 MB para a conversão ?format= do Graph (está na doc atual, mas é bem menor do que se esperava; testar antes de basear o fluxo nele).",
+        "Significado das extensões form, note, task, pulse e page na tabela de conversão do Graph (ex.: se Microsoft Forms guarda o formulário como arquivo .form no OneDrive).",
+        "Loop: acesso de terceiros aos contêineres SharePoint Embedded dos workspaces; exportação PDF/Markdown pela interface; licença exigida.",
+        "Whiteboard: armazenamento .whiteboard em conta pessoal e exportação PNG/SVG pela interface.",
+        "Visio: licença 'Visio no Microsoft 365' e formatos de exportação pela interface.",
+        "Power BI: escopo exato exigido pelo ExportTo e pelo Export (.pbix); exclusão do PPU (o resumo da doc diz que não é suportado).",
+        "Project: datas da aposentadoria (MC1068905 revisado em 30/09/2025), escrita só pelas APIs de agendamento e licenças; vigência de Project Online.",
+        "Clipchamp: onde ficam projeto e exportação na conta corporativa e as resoluções por plano (sem API — conhecimento consolidado).",
+        "Stream: ausência de API para a transcrição do arquivo de vídeo (download só pela interface).",
+        "Recapitulação do Copilot (aiInsights): versão do endpoint (v1.0 ou beta) e licença — a doc fica na referência do Microsoft 365 Copilot, fora do repositório local do Graph.",
+        "Relação exata entre o app Sticky Notes e o recurso note do Outlook (doc v1.0 de ago/2026).",
+        "Delta do To Do: a tabela cita Tasks.ReadWrite como menor privilégio; testar com Tasks.Read.",
+        "Teams: eventuais APIs com cobrança/licença extra para permissões de aplicativo (não verificado; aqui só permissões delegadas).",
+        "Delta do Planner existe só no beta; checar se chegou ao v1.0.",
+        "Excel REST API pede Files.ReadWrite até para leitura (doc) — testar."
+      ]
+    },
+    {
+      "id": "apple",
+      "provider": "APPLE_ICLOUD",
+      "label": "Apple iCloud",
+      "generatedAt": "2026-11-09",
+      "researchItems": 16,
+      "items": 15,
+      "sources": [
+        {
+          "title": "Convert Pages, Numbers, or Keynote files to Microsoft Word, Excel, PowerPoint, PDF, and more (Apple Support 105050)",
+          "url": "https://support.apple.com/105050",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Pages User Guide for Mac — Export to Word, PDF, or another file format",
+          "url": "https://support.apple.com/guide/pages/tance1161f26/mac",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Import or share notes and files to the Notes app (Apple Support 102223 — Markdown no iOS/macOS 26)",
+          "url": "https://support.apple.com/102223",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "MacRumors — How to import and export Markdown in Apple Notes (secundária)",
+          "url": "https://www.macrumors.com/how-to/ios-import-export-markdown-apple-notes/",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "iCloud Mail server settings for other email client apps (Apple Support 102525)",
+          "url": "https://support.apple.com/102525",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "BusyMac — Reminders, in iOS 13 and macOS Catalina, drops support for CalDAV (secundária)",
+          "url": "https://support.busymac.com/blog/112990",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Freeform User Guide (Apple Support)",
+          "url": "https://support.apple.com/guide/freeform/toc",
+          "accessedAt": "2026-11-09"
+        },
+        {
+          "title": "Microsoft Graph — Download a file in another format (mostra que .pages/.numbers/.key só convertem para JPG)",
+          "url": "https://learn.microsoft.com/graph/api/driveitem-get-content-format",
+          "accessedAt": "2026-11-09"
+        }
+      ],
+      "naoConferido": [
+        "Nenhuma página de support.apple.com ou developer.apple.com pôde ser aberta nesta sessão (WebFetch bloqueado por DNS); só resumos de busca. Para confirmar, liberar support.apple.com e developer.apple.com nas configurações de rede.",
+        "Listas completas de exportação de Numbers (TSV) e Keynote (filme, GIF, imagens, HTML): o resumo da busca não listou tudo — conhecimento consolidado.",
+        "MIME application/vnd.apple.pages|numbers|keynote (registro IANA) e aliases application/x-iwork-*-sff*: conhecimento, não reconferido.",
+        "Notas: exportação em Markdown confirmada por fonte secundária (a fonte oficial confirma a conversão de Markdown no iOS/macOS 26).",
+        "Lembretes: as fontes sobre a saída do CalDAV são de 2019–2020; situação atual não reconferida.",
+        "Calendário: link de agenda pública (webcal) e suporte a sync-token no CalDAV do iCloud.",
+        "Freeform: extensão/formato do arquivo do board e exportação como imagem.",
+        "Fotos: 'Copiar link do iCloud' expira em 30 dias; site público de álbum compartilhado.",
+        "iCloud Drive: comportamento do link 'Qualquer pessoa com o link' e falta de URL de download direto.",
+        "Gravador: transcrição no iOS 18 ou posterior.",
+        "GarageBand/Logic/iMovie/Final Cut: formatos de exportação (conhecimento consolidado).",
+        "Contas Apple Gerenciadas (Apple Business Manager) com iCloud Drive/iWork para uso institucional.",
+        "CardDAV em contacts.icloud.com e CalDAV em caldav.icloud.com (conhecimento consolidado; só o IMAP foi confirmado na busca)."
+      ]
+    }
+  ],
+  "sourceKinds": [
+    {
+      "sourceKind": "GOOGLE_DOCS",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Docs",
+      "defaultTaskType": "DOCUMENTO"
+    },
+    {
+      "sourceKind": "GOOGLE_SHEETS",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Sheets",
+      "defaultTaskType": "PLANILHA"
+    },
+    {
+      "sourceKind": "GOOGLE_SLIDES",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Slides",
+      "defaultTaskType": "APRESENTACAO"
+    },
+    {
+      "sourceKind": "GOOGLE_FORMS",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Forms",
+      "defaultTaskType": "FORMULARIO"
+    },
+    {
+      "sourceKind": "GOOGLE_DRAWINGS",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Drawings (Desenhos)",
+      "defaultTaskType": "DIAGRAMA"
+    },
+    {
+      "sourceKind": "GOOGLE_SITES",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Sites",
+      "defaultTaskType": "PAGINA_WEB"
+    },
+    {
+      "sourceKind": "GOOGLE_DRIVE",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Drive",
+      "defaultTaskType": "DOCUMENTO"
+    },
+    {
+      "sourceKind": "GOOGLE_KEEP",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Keep",
+      "defaultTaskType": "NOTA"
+    },
+    {
+      "sourceKind": "GOOGLE_GMAIL",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Gmail",
+      "defaultTaskType": "EMAIL"
+    },
+    {
+      "sourceKind": "GOOGLE_CALENDAR",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Calendar (Agenda)",
+      "defaultTaskType": "EVENTO_AGENDA"
+    },
+    {
+      "sourceKind": "GOOGLE_TASKS",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Tasks (Tarefas)",
+      "defaultTaskType": "LISTA_TAREFAS"
+    },
+    {
+      "sourceKind": "GOOGLE_MEET",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Meet",
+      "defaultTaskType": "GRAVACAO_REUNIAO"
+    },
+    {
+      "sourceKind": "GOOGLE_CHAT",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Chat",
+      "defaultTaskType": "MENSAGEM_CHAT"
+    },
+    {
+      "sourceKind": "GOOGLE_CLASSROOM",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Classroom (atividades)",
+      "defaultTaskType": "ATIVIDADE_CURSO"
+    },
+    {
+      "sourceKind": "GOOGLE_APPS_SCRIPT",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Apps Script",
+      "defaultTaskType": "CODIGO"
+    },
+    {
+      "sourceKind": "GOOGLE_LOOKER_STUDIO",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Looker Studio",
+      "defaultTaskType": "PAINEL_DADOS"
+    },
+    {
+      "sourceKind": "GOOGLE_YOUTUBE",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "YouTube",
+      "defaultTaskType": "VIDEO"
+    },
+    {
+      "sourceKind": "GOOGLE_PHOTOS",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Photos (Fotos)",
+      "defaultTaskType": "IMAGEM_EDITADA"
+    },
+    {
+      "sourceKind": "GOOGLE_VIDS",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Vids",
+      "defaultTaskType": "VIDEO"
+    },
+    {
+      "sourceKind": "GOOGLE_NOTEBOOKLM",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "NotebookLM",
+      "defaultTaskType": "DOCUMENTO"
+    },
+    {
+      "sourceKind": "GOOGLE_MY_MAPS",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google My Maps (Meus Mapas)",
+      "defaultTaskType": "MAPA"
+    },
+    {
+      "sourceKind": "MS_WORD",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Word",
+      "defaultTaskType": "DOCUMENTO"
+    },
+    {
+      "sourceKind": "MS_EXCEL",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Excel",
+      "defaultTaskType": "PLANILHA"
+    },
+    {
+      "sourceKind": "MS_POWERPOINT",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft PowerPoint",
+      "defaultTaskType": "APRESENTACAO"
+    },
+    {
+      "sourceKind": "MS_ONENOTE",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft OneNote",
+      "defaultTaskType": "NOTA"
+    },
+    {
+      "sourceKind": "MS_OUTLOOK_MAIL",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Outlook (e-mail)",
+      "defaultTaskType": "EMAIL"
+    },
+    {
+      "sourceKind": "MS_OUTLOOK_CALENDAR",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Outlook (calendário)",
+      "defaultTaskType": "EVENTO_AGENDA"
+    },
+    {
+      "sourceKind": "MS_TODO",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft To Do",
+      "defaultTaskType": "LISTA_TAREFAS"
+    },
+    {
+      "sourceKind": "MS_PLANNER",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Planner",
+      "defaultTaskType": "LISTA_TAREFAS"
+    },
+    {
+      "sourceKind": "MS_TEAMS",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Teams",
+      "defaultTaskType": "MENSAGEM_CHAT"
+    },
+    {
+      "sourceKind": "MS_FORMS",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Forms",
+      "defaultTaskType": "FORMULARIO"
+    },
+    {
+      "sourceKind": "MS_VISIO",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Visio",
+      "defaultTaskType": "DIAGRAMA"
+    },
+    {
+      "sourceKind": "MS_WHITEBOARD",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Whiteboard",
+      "defaultTaskType": "QUADRO_BRANCO"
+    },
+    {
+      "sourceKind": "MS_LOOP",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Loop",
+      "defaultTaskType": "DOCUMENTO"
+    },
+    {
+      "sourceKind": "MS_SHAREPOINT_PAGE",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "SharePoint (páginas de site)",
+      "defaultTaskType": "PAGINA_WEB"
+    },
+    {
+      "sourceKind": "MS_LISTS",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Lists / listas do SharePoint",
+      "defaultTaskType": "PLANILHA"
+    },
+    {
+      "sourceKind": "MS_ONEDRIVE",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "OneDrive / SharePoint",
+      "defaultTaskType": "DOCUMENTO"
+    },
+    {
+      "sourceKind": "MS_STREAM",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Stream (no SharePoint)",
+      "defaultTaskType": "VIDEO"
+    },
+    {
+      "sourceKind": "MS_POWER_BI",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Power BI",
+      "defaultTaskType": "PAINEL_DADOS"
+    },
+    {
+      "sourceKind": "MS_CLIPCHAMP",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Clipchamp",
+      "defaultTaskType": "VIDEO"
+    },
+    {
+      "sourceKind": "MS_PROJECT",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Project for the web (planos premium do Planner)",
+      "defaultTaskType": "CRONOGRAMA"
+    },
+    {
+      "sourceKind": "MS_STICKY_NOTES",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Sticky Notes / notas do Outlook",
+      "defaultTaskType": "NOTA"
+    },
+    {
+      "sourceKind": "MS_ASSIGNMENTS",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Teams Assignments (Education)",
+      "defaultTaskType": "ATIVIDADE_CURSO"
+    },
+    {
+      "sourceKind": "APPLE_PAGES",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Pages",
+      "defaultTaskType": "DOCUMENTO"
+    },
+    {
+      "sourceKind": "APPLE_NUMBERS",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Numbers",
+      "defaultTaskType": "PLANILHA"
+    },
+    {
+      "sourceKind": "APPLE_KEYNOTE",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Keynote",
+      "defaultTaskType": "APRESENTACAO"
+    },
+    {
+      "sourceKind": "APPLE_NOTES",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Notas (Notes)",
+      "defaultTaskType": "NOTA"
+    },
+    {
+      "sourceKind": "APPLE_REMINDERS",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Lembretes (Reminders)",
+      "defaultTaskType": "LISTA_TAREFAS"
+    },
+    {
+      "sourceKind": "APPLE_CALENDAR",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Calendário (iCloud)",
+      "defaultTaskType": "EVENTO_AGENDA"
+    },
+    {
+      "sourceKind": "APPLE_MAIL",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Mail / iCloud Mail",
+      "defaultTaskType": "EMAIL"
+    },
+    {
+      "sourceKind": "APPLE_FREEFORM",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Freeform",
+      "defaultTaskType": "QUADRO_BRANCO"
+    },
+    {
+      "sourceKind": "APPLE_IMOVIE",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple iMovie",
+      "defaultTaskType": "VIDEO"
+    },
+    {
+      "sourceKind": "APPLE_FINAL_CUT",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Final Cut Pro",
+      "defaultTaskType": "VIDEO"
+    },
+    {
+      "sourceKind": "APPLE_ICLOUD_DRIVE",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Arquivos / iCloud Drive",
+      "defaultTaskType": "DOCUMENTO"
+    },
+    {
+      "sourceKind": "APPLE_PHOTOS",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Fotos (Fotos do iCloud)",
+      "defaultTaskType": "IMAGEM_EDITADA"
+    },
+    {
+      "sourceKind": "APPLE_GARAGEBAND",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple GarageBand",
+      "defaultTaskType": "AUDIO"
+    },
+    {
+      "sourceKind": "APPLE_LOGIC_PRO",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Logic Pro",
+      "defaultTaskType": "AUDIO"
+    },
+    {
+      "sourceKind": "APPLE_VOICE_MEMOS",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Gravador (Voice Memos)",
+      "defaultTaskType": "AUDIO"
+    }
+  ],
+  "items": [
+    {
+      "id": "GOOGLE_DOCS.DOCUMENTO",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Docs",
+      "artifact": "documento de texto",
+      "sourceKind": "GOOGLE_DOCS",
+      "taskType": "DOCUMENTO",
+      "taskTypeIsNew": false,
+      "nativeMime": [
+        "application/vnd.google-apps.document"
+      ],
+      "extensions": [
+        ".gdoc"
+      ],
+      "exportFormats": [
+        "DOCX",
+        "ODT",
+        "RTF",
+        "PDF",
+        "TXT",
+        "HTML (ZIP)",
+        "EPUB",
+        "MD"
+      ],
+      "formats": [
+        "DOCX",
+        "ODT",
+        "RTF",
+        "PDF",
+        "TXT",
+        "HTML",
+        "ZIP",
+        "EPUB",
+        "MD"
+      ],
+      "api": "Drive API v3 files.export (GET https://www.googleapis.com/drive/v3/files/{fileId}/export?mimeType=...; até 10 MB) ou files.download (POST /drive/v3/files/{fileId}/download: operação de longa duração, válida 24 h, aceita revisionId); estrutura do documento: Docs API v1 documents.get (GET https://docs.googleapis.com/v1/documents/{documentId}?includeTabsContent=true)",
+      "scopes": [
+        "https://www.googleapis.com/auth/drive.file",
+        "https://www.googleapis.com/auth/documents.readonly",
+        "https://www.googleapis.com/auth/drive.readonly"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — Drive API files.watch (canal webhook HTTPS por arquivo, renovar antes de expirar) ou changes.watch + changes.list com pageToken (conta/unidade compartilhada); a Workspace Events API (Pub/Sub) também cobre Drive; detectar mudança por version/modifiedTime/headRevisionId e reexportar",
+      "via": [
+        "CONTA",
+        "LINK"
+      ],
+      "notes": "Mínimo: drive.file + Google Picker (o usuário escolhe o arquivo; escopo não sensível). drive.readonly é escopo restrito (app externo precisa de verificação OAuth e avaliação de segurança; app interno do Workspace fica isento). documents.readonly só serve à Docs API (files.export não o aceita). Abas (tabs) só vêm com includeTabsContent=true. Acima de 10 MB usar files.download ou exportLinks. .gdoc é o atalho do Drive para computador (JSON com o ID, sem conteúdo). Conta pessoal e Workspace. format da tarefa: gdoc."
+    },
+    {
+      "id": "GOOGLE_SHEETS.PLANILHA",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Sheets",
+      "artifact": "planilha",
+      "sourceKind": "GOOGLE_SHEETS",
+      "taskType": "PLANILHA",
+      "taskTypeIsNew": false,
+      "nativeMime": [
+        "application/vnd.google-apps.spreadsheet"
+      ],
+      "extensions": [
+        ".gsheet"
+      ],
+      "exportFormats": [
+        "XLSX",
+        "ODS",
+        "PDF",
+        "HTML (ZIP)",
+        "CSV (só a 1ª aba)",
+        "TSV (só a 1ª aba)"
+      ],
+      "formats": [
+        "XLSX",
+        "ODS",
+        "PDF",
+        "HTML",
+        "ZIP",
+        "CSV",
+        "TSV"
+      ],
+      "api": "Drive API v3 files.export / files.download (aceita revisionId); valores: Sheets API v4 spreadsheets.values.get (GET https://sheets.googleapis.com/v4/spreadsheets/{spreadsheetId}/values/{range}) e spreadsheets.get",
+      "scopes": [
+        "https://www.googleapis.com/auth/drive.file",
+        "https://www.googleapis.com/auth/spreadsheets.readonly",
+        "https://www.googleapis.com/auth/drive.readonly"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — pelo Drive (files.watch/changes.watch; Workspace Events API); a Sheets API não tem watch próprio",
+      "via": [
+        "CONTA",
+        "LINK"
+      ],
+      "notes": "Mínimo: drive.file + Google Picker (o usuário escolhe o arquivo; escopo não sensível). drive.readonly é escopo restrito (app externo precisa de verificação OAuth e avaliação de segurança; app interno do Workspace fica isento). CSV/TSV pelo files.export trazem só a primeira aba; para as outras, ler por intervalo (values.get) ou exportLinks com gid. Respostas de Google Forms costumam cair numa planilha vinculada. format: gsheet."
+    },
+    {
+      "id": "GOOGLE_SLIDES.APRESENTACAO",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Slides",
+      "artifact": "apresentação",
+      "sourceKind": "GOOGLE_SLIDES",
+      "taskType": "APRESENTACAO",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "application/vnd.google-apps.presentation"
+      ],
+      "extensions": [
+        ".gslides"
+      ],
+      "exportFormats": [
+        "PPTX",
+        "ODP",
+        "PDF",
+        "TXT",
+        "JPEG (só o 1º slide)",
+        "PNG (só o 1º slide)",
+        "SVG (só o 1º slide)"
+      ],
+      "formats": [
+        "PPTX",
+        "ODP",
+        "PDF",
+        "TXT",
+        "JPEG",
+        "PNG",
+        "SVG"
+      ],
+      "api": "Drive API v3 files.export; estrutura e miniatura de cada slide: Slides API v1 presentations.get e presentations.pages.getThumbnail (GET https://slides.googleapis.com/v1/presentations/{presentationId}/pages/{pageObjectId}/thumbnail)",
+      "scopes": [
+        "https://www.googleapis.com/auth/drive.file",
+        "https://www.googleapis.com/auth/presentations.readonly",
+        "https://www.googleapis.com/auth/drive.readonly"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — pelo Drive (files.watch/changes.watch)",
+      "via": [
+        "CONTA",
+        "LINK"
+      ],
+      "notes": "Hoje .pptx cai em DOCUMENTO pela tabela do RF4; APRESENTACAO unifica Slides, PowerPoint e Keynote. Exportação em imagem cobre só o 1º slide — para todos, getThumbnail por página. Limite de 10 MB no files.export."
+    },
+    {
+      "id": "GOOGLE_FORMS.FORMULARIO",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Forms",
+      "artifact": "formulário (perguntas) e respostas",
+      "sourceKind": "GOOGLE_FORMS",
+      "taskType": "FORMULARIO",
+      "taskTypeIsNew": false,
+      "nativeMime": [
+        "application/vnd.google-apps.form"
+      ],
+      "extensions": [
+        ".gform"
+      ],
+      "exportFormats": [
+        "JSON (Forms API)",
+        "CSV das respostas (pela interface)",
+        "planilha de respostas vinculada (Google Sheets)",
+        "PDF (imprimir, pela interface)"
+      ],
+      "formats": [
+        "JSON",
+        "CSV",
+        "PDF"
+      ],
+      "api": "Forms API v1 forms.get (GET https://forms.googleapis.com/v1/forms/{formId}) e forms.responses.list/get; o Drive não exporta formulários (files.export não se aplica)",
+      "scopes": [
+        "https://www.googleapis.com/auth/forms.body.readonly",
+        "https://www.googleapis.com/auth/forms.responses.readonly"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — forms.watches.create com eventType SCHEMA (mudou o formulário) ou RESPONSES (nova resposta), entregue em tópico Cloud Pub/Sub; um watch por tipo por projeto; expira em 7 dias (watches.renew)",
+      "via": [
+        "LINK"
+      ],
+      "notes": "O vínculo exige projeto Google Cloud com Pub/Sub (a conta de serviço forms-notifications precisa publicar no tópico). Respostas têm dados pessoais de respondentes (LGPD: base legal e minimização). Conta pessoal e Workspace."
+    },
+    {
+      "id": "GOOGLE_DRAWINGS.DIAGRAMA",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Drawings (Desenhos)",
+      "artifact": "desenho/diagrama vetorial",
+      "sourceKind": "GOOGLE_DRAWINGS",
+      "taskType": "DIAGRAMA",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "application/vnd.google-apps.drawing"
+      ],
+      "extensions": [
+        ".gdraw"
+      ],
+      "exportFormats": [
+        "PDF",
+        "JPEG",
+        "PNG",
+        "SVG"
+      ],
+      "formats": [
+        "PDF",
+        "JPEG",
+        "PNG",
+        "SVG"
+      ],
+      "api": "Drive API v3 files.export (não há API própria do Drawings)",
+      "scopes": [
+        "https://www.googleapis.com/auth/drive.file",
+        "https://www.googleapis.com/auth/drive.readonly"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — pelo Drive (files.watch/changes.watch)",
+      "via": [
+        "CONTA",
+        "LINK"
+      ],
+      "notes": "Fluxogramas, organogramas e croquis simples; não confundir com DESENHO_TECNICO (CAD .dwg/.dxf/.ifc). Limite de 10 MB no files.export."
+    },
+    {
+      "id": "GOOGLE_SITES.PAGINA_WEB",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Sites",
+      "artifact": "site/página web (intranet)",
+      "sourceKind": "GOOGLE_SITES",
+      "taskType": "PAGINA_WEB",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "application/vnd.google-apps.site"
+      ],
+      "extensions": [
+        ".gsite"
+      ],
+      "exportFormats": [],
+      "formats": [],
+      "api": "Sem API de conteúdo para o novo Google Sites. O Drive lista o arquivo do site (files.get de metadados, webViewLink), mas files.export não se aplica; o conteúdo publicado só pela URL (LinkPreviewAdapter)",
+      "scopes": [
+        "https://www.googleapis.com/auth/drive.metadata.readonly"
+      ],
+      "linkable": "PARCIAL",
+      "linkableHow": "parcial — files.watch/changes.watch avisam mudança nos metadados do arquivo do site; o conteúdo publicado não tem API (reler a URL pública)",
+      "via": [
+        "CONTA",
+        "LINK"
+      ],
+      "notes": "Site restrito ao domínio exige login no navegador, então o servidor não captura o conteúdo. Alternativa sem tipo novo: LINK."
+    },
+    {
+      "id": "GOOGLE_DRIVE.QUADRO_BRANCO",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Jamboard (descontinuado)",
+      "artifact": "quadro branco (jam) — legado",
+      "sourceKind": "GOOGLE_DRIVE",
+      "taskType": "QUADRO_BRANCO",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "application/vnd.google-apps.jam"
+      ],
+      "extensions": [
+        ".gjam"
+      ],
+      "exportFormats": [
+        "PDF (conversão automática feita pelo Google)",
+        "PNG (exportação manual, enquanto o app existia)"
+      ],
+      "formats": [
+        "PDF",
+        "PNG"
+      ],
+      "api": "Nenhuma: app somente leitura desde 01/10/2024 e encerrado em 31/12/2024; o Google converteu os jams em PDF salvos no mesmo lugar do Drive (melhor esforço, 1º tri/2025) e depois apagou os originais. O que sobra entra como PDF pelo Drive API files.get?alt=media",
+      "scopes": [
+        "https://www.googleapis.com/auth/drive.file",
+        "https://www.googleapis.com/auth/drive.readonly"
+      ],
+      "linkable": "NAO",
+      "linkableHow": "não — artefato congelado (PDF estático)",
+      "via": [
+        "CONTA",
+        "LINK"
+      ],
+      "notes": "Não criar SourceKind próprio (GOOGLE_JAMBOARD): o resto do Jamboard é PDF no Drive, então entra como GOOGLE_DRIVE. Jam corrompido pode ter virado PDF em branco. Sucessores indicados pelo Google: FigJam, Lucidspark, Miro."
+    },
+    {
+      "id": "GOOGLE_KEEP.NOTA",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Keep",
+      "artifact": "nota (texto, checklist, anexos)",
+      "sourceKind": "GOOGLE_KEEP",
+      "taskType": "NOTA",
+      "taskTypeIsNew": true,
+      "nativeMime": [],
+      "extensions": [],
+      "exportFormats": [
+        "JSON (Keep API)",
+        "HTML + JSON (Google Takeout)",
+        "Google Docs (copiar para o Documentos, pela interface)"
+      ],
+      "formats": [
+        "JSON",
+        "HTML"
+      ],
+      "api": "Keep API v1 notes.list (GET https://keep.googleapis.com/v1/notes), notes.get e media.download (anexo: GET /v1/notes/{noteId}/attachments/{attachmentId}?mimeType=...)",
+      "scopes": [
+        "https://www.googleapis.com/auth/keep.readonly"
+      ],
+      "linkable": "NAO",
+      "linkableHow": "não — a Keep API não tem watch/push; só reconsulta periódica (updateTime)",
+      "via": [],
+      "notes": "A API é corporativa: o discovery a descreve como uso enterprise e as integrações usam conta de serviço com delegação em todo o domínio, aprovada pelo superadministrador do Workspace. Conta pessoal: sem API (Takeout ou 'Copiar para o Google Docs', que entra como GOOGLE_DOCS)."
+    },
+    {
+      "id": "GOOGLE_GMAIL.EMAIL",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Gmail",
+      "artifact": "e-mail (mensagem/conversa e anexos)",
+      "sourceKind": "GOOGLE_GMAIL",
+      "taskType": "EMAIL",
+      "taskTypeIsNew": false,
+      "nativeMime": [
+        "message/rfc822"
+      ],
+      "extensions": [
+        ".eml"
+      ],
+      "exportFormats": [
+        "EML (RFC 822)",
+        "JSON (MIME decomposto)",
+        "PDF (imprimir, pela interface)"
+      ],
+      "formats": [
+        "EML",
+        "JSON",
+        "PDF"
+      ],
+      "api": "Gmail API v1 users.messages.get (GET https://gmail.googleapis.com/gmail/v1/users/me/messages/{id}?format=raw, que devolve RFC 2822 em base64url, ou seja, o .eml; format=full devolve JSON), users.threads.get e users.messages.attachments.get",
+      "scopes": [
+        "https://www.googleapis.com/auth/gmail.readonly"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim (na caixa) — users.watch publica em tópico Cloud Pub/Sub (chamar watch de novo antes da expiração) + users.history.list a partir do historyId. A mensagem em si não muda; o vínculo serve à conversa e aos rótulos",
+      "via": [],
+      "notes": "gmail.readonly é escopo restrito (app externo: verificação + avaliação de segurança; app interno do Workspace: isento). gmail.metadata lê só cabeçalhos/rótulos e não permite format=raw/full. LGPD: corpo e anexos têm dados de terceiros. Sem OAuth: encaminhar para tarefas+<usuário>@ (EmailInboundAdapter) ou enviar o .eml."
+    },
+    {
+      "id": "GOOGLE_CALENDAR.EVENTO_AGENDA",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Calendar (Agenda)",
+      "artifact": "evento de agenda (participantes, anexos do Drive, link do Meet)",
+      "sourceKind": "GOOGLE_CALENDAR",
+      "taskType": "EVENTO_AGENDA",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "text/calendar"
+      ],
+      "extensions": [
+        ".ics"
+      ],
+      "exportFormats": [
+        "JSON (Calendar API)",
+        "ICS (exportação da agenda inteira em ZIP, pela interface)",
+        "URL iCal secreta/pública (.ics)"
+      ],
+      "formats": [
+        "JSON",
+        "ICS",
+        "ZIP"
+      ],
+      "api": "Calendar API v3 events.get / events.list (GET https://www.googleapis.com/calendar/v3/calendars/{calendarId}/events/{eventId}); a API não devolve ICS por evento — gerar a partir do JSON (iCalUID segue a RFC 5545)",
+      "scopes": [
+        "https://www.googleapis.com/auth/calendar.events.readonly",
+        "https://www.googleapis.com/auth/calendar.events.owned.readonly"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — events.watch (canal webhook HTTPS) + sincronização incremental com syncToken no events.list",
+      "via": [],
+      "notes": "calendar.events.owned.readonly limita às agendas de que o usuário é dono; calendar.events.readonly cobre todas as que ele vê. Até 25 anexos por evento (arquivos do Drive). Convidados e descrição são dados pessoais (LGPD). Conta pessoal e Workspace."
+    },
+    {
+      "id": "GOOGLE_TASKS.LISTA_TAREFAS",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Tasks (Tarefas)",
+      "artifact": "tarefa/lista de tarefas (to-do)",
+      "sourceKind": "GOOGLE_TASKS",
+      "taskType": "LISTA_TAREFAS",
+      "taskTypeIsNew": true,
+      "nativeMime": [],
+      "extensions": [],
+      "exportFormats": [
+        "JSON (Tasks API)",
+        "JSON (Google Takeout)"
+      ],
+      "formats": [
+        "JSON"
+      ],
+      "api": "Tasks API v1 tasklists.list e tasks.list/get (GET https://tasks.googleapis.com/tasks/v1/lists/{tasklist}/tasks/{task}); a tarefa traz webViewLink, links e assignmentInfo (tarefa atribuída a partir do Docs ou de espaços do Chat)",
+      "scopes": [
+        "https://www.googleapis.com/auth/tasks.readonly"
+      ],
+      "linkable": "PARCIAL",
+      "linkableHow": "parcial — sem push/watch; reconsultar tasks.list com updatedMin (showCompleted/showDeleted)",
+      "via": [],
+      "notes": "Importar a lista inteira ou cada to-do como tarefa. Conta pessoal e Workspace."
+    },
+    {
+      "id": "GOOGLE_MEET.GRAVACAO_REUNIAO",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Meet (gravação)",
+      "artifact": "gravação de reunião (vídeo)",
+      "sourceKind": "GOOGLE_MEET",
+      "taskType": "GRAVACAO_REUNIAO",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "video/mp4"
+      ],
+      "extensions": [
+        ".mp4"
+      ],
+      "exportFormats": [
+        "MP4"
+      ],
+      "formats": [
+        "MP4"
+      ],
+      "api": "Meet REST API v2 conferenceRecords.list e conferenceRecords.recordings.list/get (driveDestination.file = fileId do MP4 no Drive do organizador); baixar com Drive API files.get?alt=media",
+      "scopes": [
+        "https://www.googleapis.com/auth/meetings.space.readonly",
+        "https://www.googleapis.com/auth/drive.meet.readonly"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — Workspace Events API (assinatura entregue em Cloud Pub/Sub) avisa quando o arquivo da gravação é gerado; depois o MP4 segue o vínculo normal do Drive",
+      "via": [
+        "CONTA"
+      ],
+      "notes": "drive.meet.readonly só enxerga arquivos criados/editados pelo Meet (melhor que drive.readonly). O conferenceRecord é apagado 30 dias após o fim da reunião (expireTime); o MP4 fica no Drive. Gravação só em edições pagas do Workspace. LGPD: imagem e voz de participantes — aviso/consentimento e prazo de guarda."
+    },
+    {
+      "id": "GOOGLE_MEET.TRANSCRICAO",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Meet (transcrição)",
+      "artifact": "transcrição de reunião",
+      "sourceKind": "GOOGLE_MEET",
+      "taskType": "TRANSCRICAO",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "application/vnd.google-apps.document"
+      ],
+      "extensions": [
+        ".gdoc"
+      ],
+      "exportFormats": [
+        "DOCX",
+        "PDF",
+        "TXT",
+        "MD",
+        "VTT/SRT (gerado a partir de transcripts.entries)"
+      ],
+      "formats": [
+        "DOCX",
+        "PDF",
+        "TXT",
+        "MD",
+        "VTT",
+        "SRT"
+      ],
+      "api": "Meet REST API v2 conferenceRecords.transcripts.list/get (docsDestination.document = ID do Google Doc) e transcripts.entries.list (fala por participante com início, fim e idioma); arquivo: Drive files.export",
+      "scopes": [
+        "https://www.googleapis.com/auth/meetings.space.readonly",
+        "https://www.googleapis.com/auth/drive.meet.readonly"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — Workspace Events API (transcrição gerada) + vínculo do Doc pelo Drive",
+      "via": [
+        "CONTA"
+      ],
+      "notes": "Cada entrada tem até ~10 mil palavras (limite pode mudar). Transcrição depende da edição do Workspace. Falas nominadas são dados pessoais (LGPD)."
+    },
+    {
+      "id": "GOOGLE_MEET.ATA_REGISTRO",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Meet (Anotações com o Gemini)",
+      "artifact": "ata/resumo automático da reunião",
+      "sourceKind": "GOOGLE_MEET",
+      "taskType": "ATA_REGISTRO",
+      "taskTypeIsNew": false,
+      "nativeMime": [
+        "application/vnd.google-apps.document"
+      ],
+      "extensions": [
+        ".gdoc"
+      ],
+      "exportFormats": [
+        "DOCX",
+        "PDF",
+        "TXT",
+        "MD"
+      ],
+      "formats": [
+        "DOCX",
+        "PDF",
+        "TXT",
+        "MD"
+      ],
+      "api": "Meet REST API v2 conferenceRecords.smartNotes.list/get (docsDestination.document) + Drive files.export",
+      "scopes": [
+        "https://www.googleapis.com/auth/meetings.space.readonly",
+        "https://www.googleapis.com/auth/drive.meet.readonly"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — pelo Drive (o Doc pode ser editado depois da reunião)",
+      "via": [
+        "CONTA"
+      ],
+      "notes": "Gerado pelo recurso 'Anotações com o Gemini' (Take notes for me), que exige licença com Gemini. É texto de IA: revisar antes de usar como ata oficial."
+    },
+    {
+      "id": "GOOGLE_CHAT.MENSAGEM_CHAT",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Chat",
+      "artifact": "mensagem de espaço/conversa (com anexos)",
+      "sourceKind": "GOOGLE_CHAT",
+      "taskType": "MENSAGEM_CHAT",
+      "taskTypeIsNew": true,
+      "nativeMime": [],
+      "extensions": [],
+      "exportFormats": [
+        "JSON (Chat API)",
+        "JSON (Google Takeout / Vault)"
+      ],
+      "formats": [
+        "JSON"
+      ],
+      "api": "Chat API v1 spaces.messages.list/get (GET https://chat.googleapis.com/v1/spaces/{space}/messages/{message}); anexo enviado: media.download (GET /v1/media/{resourceName}?alt=media); anexo do Drive vem como driveDataRef",
+      "scopes": [
+        "https://www.googleapis.com/auth/chat.messages.readonly"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — Workspace Events API: assinatura no espaço (mensagem criada/atualizada/excluída) entregue em Cloud Pub/Sub; a assinatura expira e precisa ser renovada",
+      "via": [],
+      "notes": "Uso com contas Workspace. Conteúdo de terceiros (LGPD): importar a mensagem escolhida (link da mensagem), não o espaço inteiro."
+    },
+    {
+      "id": "GOOGLE_CLASSROOM.ATIVIDADE_CURSO",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Classroom (atividades)",
+      "artifact": "atividade/trabalho de turma (instruções, prazo, materiais, entregas)",
+      "sourceKind": "GOOGLE_CLASSROOM",
+      "taskType": "ATIVIDADE_CURSO",
+      "taskTypeIsNew": true,
+      "nativeMime": [],
+      "extensions": [],
+      "exportFormats": [
+        "JSON (Classroom API)",
+        "notas em CSV/Google Sheets (pela interface)"
+      ],
+      "formats": [
+        "JSON",
+        "CSV"
+      ],
+      "api": "Classroom API v1 courses.courseWork.list/get (workType ASSIGNMENT, SHORT_ANSWER_QUESTION, MULTIPLE_CHOICE_QUESTION; materials: driveFile, form, link, youtubeVideo, notebook do NotebookLM, gem do Gemini), courses.courseWork.studentSubmissions.list/get e courseWorkMaterials.list",
+      "scopes": [
+        "https://www.googleapis.com/auth/classroom.coursework.me.readonly",
+        "https://www.googleapis.com/auth/classroom.courses.readonly"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — registrations.create com feed COURSE_WORK_CHANGES entregue em Cloud Pub/Sub (escopo classroom.push-notifications; o registro tem expiryTime e precisa ser renovado)",
+      "via": [],
+      "notes": "Professor que lê as entregas da turma precisa de classroom.coursework.students.readonly. Anexos são arquivos do Drive (seguir pelo Drive). Dados de estudantes, muitas vezes menores (LGPD art. 14). Uso provável no Work Station: capacitação/escola de governo. Tipo novo opcional (alternativa: DOCUMENTO)."
+    },
+    {
+      "id": "GOOGLE_DRIVE.DOCUMENTO",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Drive (arquivo genérico)",
+      "artifact": "arquivo binário (PDF, Office, imagem, vídeo, áudio, CAD, ZIP)",
+      "sourceKind": "GOOGLE_DRIVE",
+      "taskType": "DOCUMENTO",
+      "taskTypeIsNew": false,
+      "nativeMime": [
+        "(MIME real do arquivo: application/pdf, image/jpeg, video/mp4...)",
+        "application/vnd.google-apps.shortcut"
+      ],
+      "extensions": [
+        ".pdf",
+        ".docx",
+        ".xlsx",
+        ".pptx",
+        ".jpg",
+        ".png",
+        ".mp4",
+        ".dwg",
+        ".zip"
+      ],
+      "exportFormats": [
+        "original (download do binário)"
+      ],
+      "formats": [
+        "ORIGINAL"
+      ],
+      "api": "Drive API v3 files.get?alt=media (download), files.list (busca), revisions.list/get (versões); atalho: shortcutDetails.targetId; arquivo compartilhado por link pode exigir resourceKey",
+      "scopes": [
+        "https://www.googleapis.com/auth/drive.file",
+        "https://www.googleapis.com/auth/drive.readonly"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — files.watch por arquivo ou changes.watch com webhook HTTPS; changes.list com pageToken; md5Checksum/headRevisionId/version indicam mudança de conteúdo",
+      "via": [
+        "CONTA",
+        "LINK"
+      ],
+      "notes": "taskType pelo MIME real: PDF/texto → DOCUMENTO; planilha → PLANILHA; image/* → IMAGEM_EDITADA; video/* → VIDEO; audio/* → AUDIO; .dwg/.dxf/.ifc → DESENHO_TECNICO; .zip → PASTA. Mínimo: drive.file + Google Picker (o usuário escolhe o arquivo; escopo não sensível). drive.readonly é escopo restrito (app externo precisa de verificação OAuth e avaliação de segurança; app interno do Workspace fica isento). Unidades compartilhadas: supportsAllDrives=true. Inclui os PDFs que sobraram do Jamboard."
+    },
+    {
+      "id": "GOOGLE_DRIVE.PASTA",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Drive (pasta)",
+      "artifact": "pasta (conjunto de arquivos)",
+      "sourceKind": "GOOGLE_DRIVE",
+      "taskType": "PASTA",
+      "taskTypeIsNew": false,
+      "nativeMime": [
+        "application/vnd.google-apps.folder"
+      ],
+      "extensions": [],
+      "exportFormats": [
+        "ZIP (download pela interface)",
+        "lista de filhos via API"
+      ],
+      "formats": [
+        "ZIP"
+      ],
+      "api": "Drive API v3 files.list com q='{folderId}' in parents (recursão feita pelo app)",
+      "scopes": [
+        "https://www.googleapis.com/auth/drive.readonly",
+        "https://www.googleapis.com/auth/drive.metadata.readonly"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — Workspace Events API com assinatura na pasta incluindo os arquivos filhos (obrigatório em unidade compartilhada), ou changes.watch filtrando por parents",
+      "via": [
+        "CONTA",
+        "LINK"
+      ],
+      "notes": "Bom candidato a VINCULADO (pasta do projeto). Em COPIADO, gerar ZIP e respeitar o limite de 200 MB do zip (RF4)."
+    },
+    {
+      "id": "GOOGLE_APPS_SCRIPT.CODIGO",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Apps Script",
+      "artifact": "script/código de automação",
+      "sourceKind": "GOOGLE_APPS_SCRIPT",
+      "taskType": "CODIGO",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "application/vnd.google-apps.script",
+        "application/vnd.google-apps.script+json"
+      ],
+      "extensions": [
+        ".gs",
+        ".html",
+        ".json"
+      ],
+      "exportFormats": [
+        "JSON (application/vnd.google-apps.script+json via Drive)",
+        "arquivos .gs/.html/appsscript.json (Apps Script API)"
+      ],
+      "formats": [
+        "JSON"
+      ],
+      "api": "Apps Script API v1 projects.getContent (GET https://script.googleapis.com/v1/projects/{scriptId}/content: arquivos SERVER_JS, HTML, JSON) e projects.versions.list; projeto avulso também por Drive files.export (mimeType application/vnd.google-apps.script+json)",
+      "scopes": [
+        "https://www.googleapis.com/auth/script.projects.readonly"
+      ],
+      "linkable": "PARCIAL",
+      "linkableHow": "parcial — projeto avulso: vínculo pelo Drive; script vinculado a contêiner (Docs/Sheets) não é arquivo do Drive: reconsultar versions.list/getContent",
+      "via": [],
+      "notes": "O usuário precisa ativar a 'Google Apps Script API' em script.google.com/home/usersettings. Código pode conter credenciais: classificar como RESTRITO e não enviar a IA externa sem revisão."
+    },
+    {
+      "id": "GOOGLE_LOOKER_STUDIO.PAINEL_DADOS",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Looker Studio",
+      "artifact": "relatório/painel de dados (BI)",
+      "sourceKind": "GOOGLE_LOOKER_STUDIO",
+      "taskType": "PAINEL_DADOS",
+      "taskTypeIsNew": true,
+      "nativeMime": [],
+      "extensions": [],
+      "exportFormats": [
+        "PDF (pela interface: baixar relatório ou envio agendado por e-mail)",
+        "CSV/Google Sheets/Excel por gráfico (pela interface)"
+      ],
+      "formats": [
+        "PDF",
+        "CSV"
+      ],
+      "api": "Looker Studio API: assets:search (GET https://datastudio.googleapis.com/v1/assets:search?assetTypes=REPORT) e permissões; não há método que exporte o conteúdo — guardar a URL do relatório (link/incorporação)",
+      "scopes": [
+        "https://www.googleapis.com/auth/datastudio.readonly"
+      ],
+      "linkable": "PARCIAL",
+      "linkableHow": "parcial — sem webhook; reconsultar assets:search e manter o link vivo",
+      "via": [],
+      "notes": "A API só funciona para organizações com Google Workspace ou Cloud Identity e o administrador precisa autorizar o app (delegação em todo o domínio); sem isso dá invalid_scope. Conta pessoal: só link. Não confundir com Looker (Google Cloud), que tem API própria."
+    },
+    {
+      "id": "GOOGLE_YOUTUBE.VIDEO",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "YouTube",
+      "artifact": "vídeo publicado (link) e legendas",
+      "sourceKind": "GOOGLE_YOUTUBE",
+      "taskType": "VIDEO",
+      "taskTypeIsNew": true,
+      "nativeMime": [],
+      "extensions": [],
+      "exportFormats": [
+        "link/incorporação (embed)",
+        "legendas SBV, SRT, VTT (só de vídeo próprio)"
+      ],
+      "formats": [
+        "SBV",
+        "SRT",
+        "VTT"
+      ],
+      "api": "YouTube Data API v3 videos.list (metadados; vídeo público aceita só chave de API) e captions.list/download (tfmt=sbv|srt|vtt); a API não baixa o arquivo de vídeo",
+      "scopes": [
+        "https://www.googleapis.com/auth/youtube.readonly",
+        "https://www.googleapis.com/auth/youtube.force-ssl"
+      ],
+      "linkable": "PARCIAL",
+      "linkableHow": "parcial — notificações push (PubSubHubbub/WebSub) do feed do canal avisam vídeo novo ou alterado; para um vídeo, reconsultar videos.list (etag)",
+      "via": [],
+      "notes": "Os termos do YouTube proíbem baixar o vídeo: guardar link + metadados + legenda. captions.download exige youtube.force-ssl e ser dono do vídeo. Cota diária padrão de 10 mil unidades da Data API."
+    },
+    {
+      "id": "GOOGLE_PHOTOS.IMAGEM_EDITADA",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Photos (Fotos)",
+      "artifact": "foto ou vídeo da biblioteca",
+      "sourceKind": "GOOGLE_PHOTOS",
+      "taskType": "IMAGEM_EDITADA",
+      "taskTypeIsNew": false,
+      "nativeMime": [
+        "image/jpeg",
+        "image/heic",
+        "image/png",
+        "video/mp4",
+        "video/quicktime"
+      ],
+      "extensions": [
+        ".jpg",
+        ".heic",
+        ".png",
+        ".mp4",
+        ".mov"
+      ],
+      "exportFormats": [
+        "original pela baseUrl (=d para imagem, =dv para vídeo)"
+      ],
+      "formats": [
+        "ORIGINAL"
+      ],
+      "api": "Google Photos Picker API: POST https://photospicker.googleapis.com/v1/sessions; o usuário escolhe no Google Fotos (pickerUri); GET /v1/mediaItems?sessionId=...; baixar pela baseUrl (válida 60 min). A Library API só acessa itens criados pelo próprio app desde 31/03/2025",
+      "scopes": [
+        "https://www.googleapis.com/auth/photospicker.mediaitems.readonly"
+      ],
+      "linkable": "NAO",
+      "linkableHow": "não — seleção pontual, sem notificação (só COPIADO)",
+      "via": [],
+      "notes": "Os escopos photoslibrary.readonly, photoslibrary e photoslibrary.sharing foram removidos em 31/03/2025 (403). drive.photos.readonly do Drive é legado. Vídeo → VIDEO. EXIF pode trazer localização (LGPD): remover se não for necessária. IMAGEM_EDITADA segue a tabela do RF4 para fotos."
+    },
+    {
+      "id": "GOOGLE_VIDS.VIDEO",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google Vids",
+      "artifact": "vídeo (montagem/apresentação em vídeo)",
+      "sourceKind": "GOOGLE_VIDS",
+      "taskType": "VIDEO",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "application/vnd.google-apps.vid"
+      ],
+      "extensions": [],
+      "exportFormats": [
+        "MP4"
+      ],
+      "formats": [
+        "MP4"
+      ],
+      "api": "Drive API v3 files.download (POST https://www.googleapis.com/drive/v3/files/{fileId}/download: operação de longa duração; o resultado traz o link do MP4, válido por 24 h)",
+      "scopes": [
+        "https://www.googleapis.com/auth/drive.file",
+        "https://www.googleapis.com/auth/drive.readonly"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — pelo Drive (files.watch/changes.watch); gerar o MP4 de novo quando mudar",
+      "via": [
+        "CONTA"
+      ],
+      "notes": "A página de formatos de exportação lista Vids → MP4 com aviso de suporte parcial nos métodos do Drive API. Disponível em edições do Workspace com Gemini e em planos de IA para conta pessoal."
+    },
+    {
+      "id": "GOOGLE_NOTEBOOKLM.DOCUMENTO",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "NotebookLM",
+      "artifact": "caderno de pesquisa (fontes, notas, relatórios, resumo em áudio)",
+      "sourceKind": "GOOGLE_NOTEBOOKLM",
+      "taskType": "DOCUMENTO",
+      "taskTypeIsNew": false,
+      "nativeMime": [],
+      "extensions": [],
+      "exportFormats": [
+        "Google Docs (nota/relatório exportado)",
+        "Google Sheets (tabela de dados)",
+        "áudio do Resumo em Áudio (download)",
+        "link de compartilhamento"
+      ],
+      "formats": [],
+      "api": "NotebookLM (pessoal/Workspace): sem API pública — o conteúdo chega exportado para Docs/Sheets (aí entra como GOOGLE_DOCS/GOOGLE_SHEETS) ou por download. NotebookLM Enterprise (Google Cloud): Discovery Engine API v1alpha projects.locations.notebooks.get/listRecentlyViewed, notebooks.sources.get e notebooks.audioOverviews",
+      "scopes": [
+        "https://www.googleapis.com/auth/discoveryengine.readwrite",
+        "https://www.googleapis.com/auth/cloud-platform"
+      ],
+      "linkable": "NAO",
+      "linkableHow": "não (pessoal/Workspace); Enterprise: só reconsulta, sem watch",
+      "via": [],
+      "notes": "A API Enterprise está em v1alpha, não tem escopo só leitura e exige projeto Google Cloud com licença NotebookLM Enterprise/Gemini Enterprise. O Classroom já aceita caderno do NotebookLM como material (id, título, url). Resumo em áudio → AUDIO; o caderno em si → LINK. As fontes do caderno podem ser restritas: respeitar accessClass."
+    },
+    {
+      "id": "GOOGLE_MY_MAPS.MAPA",
+      "ecosystem": "google",
+      "provider": "GOOGLE",
+      "app": "Google My Maps (Meus Mapas)",
+      "artifact": "mapa personalizado (camadas, pontos, linhas, polígonos)",
+      "sourceKind": "GOOGLE_MY_MAPS",
+      "taskType": "MAPA",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "application/vnd.google-apps.map"
+      ],
+      "extensions": [
+        ".kml",
+        ".kmz"
+      ],
+      "exportFormats": [
+        "KML",
+        "KMZ (pela interface; opção de KML com network link que busca sempre a versão atual)"
+      ],
+      "formats": [
+        "KML",
+        "KMZ"
+      ],
+      "api": "Sem API pública de leitura do My Maps; o Drive só lista o arquivo (metadados/webViewLink, sem files.export). Conta pessoal: Data Portability API (escopo dataportability.mymaps.maps) exporta uma cópia",
+      "scopes": [
+        "https://www.googleapis.com/auth/drive.metadata.readonly",
+        "https://www.googleapis.com/auth/dataportability.mymaps.maps"
+      ],
+      "linkable": "PARCIAL",
+      "linkableHow": "parcial — o KML com network link aponta para a versão viva do mapa (se compartilhado por link); senão, reimportar o KML/KMZ",
+      "via": [
+        "CONTA"
+      ],
+      "notes": "Casa com a categoria MAPA_GEORREFERENCIA. KML/KMZ hoje entram como ARQUIVO; o tipo MAPA permitiria prévia em mapa. A Data Portability API é só para conta pessoal e tem restrição regional."
+    },
+    {
+      "id": "MS_WORD.DOCUMENTO",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Word",
+      "artifact": "documento de texto",
+      "sourceKind": "MS_WORD",
+      "taskType": "DOCUMENTO",
+      "taskTypeIsNew": false,
+      "nativeMime": [
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/msword"
+      ],
+      "extensions": [
+        ".docx",
+        ".doc",
+        ".docm",
+        ".dotx"
+      ],
+      "exportFormats": [
+        "DOCX (original)",
+        "PDF (conversão do Graph)",
+        "PDF/ODT (pela interface do Word)"
+      ],
+      "formats": [
+        "DOCX",
+        "PDF",
+        "ODT"
+      ],
+      "api": "Microsoft Graph GET /me/drive/items/{item-id}/content (original; 302 para URL pré-autenticada válida por poucos minutos) e GET /me/drive/items/{item-id}/content?format=pdf; bibliotecas do SharePoint/Teams: /drives/{drive-id}/items/{item-id}/content",
+      "scopes": [
+        "Files.Read",
+        "Files.Read.All"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — subscription em driveItem (no OneDrive corporativo/SharePoint só na raiz: /me/drive/root ou /drives/{id}/root; até 42.300 min, ~29 dias) + delta (GET /drives/{drive-id}/root/delta) filtrando o item; eTag/cTag mudam quando o conteúdo muda",
+      "via": [
+        "CONTA"
+      ],
+      "notes": "Files.Read lê só os arquivos do próprio usuário; Files.Read.All lê tudo o que ele acessa (compartilhados, bibliotecas do SharePoint/Teams). Nenhum dos dois exige consentimento de administrador, mas tenants de governo costumam bloquear o consentimento do usuário. A doc do Graph limita a conversão de formato (?format=) a arquivos de até 2 MB — acima disso, baixar o original e converter no servidor. Conta pessoal (OneDrive) e corporativa."
+    },
+    {
+      "id": "MS_EXCEL.PLANILHA",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Excel",
+      "artifact": "planilha",
+      "sourceKind": "MS_EXCEL",
+      "taskType": "PLANILHA",
+      "taskTypeIsNew": false,
+      "nativeMime": [
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/vnd.ms-excel",
+        "application/vnd.ms-excel.sheet.macroEnabled.12",
+        "application/vnd.ms-excel.sheet.binary.macroEnabled.12"
+      ],
+      "extensions": [
+        ".xlsx",
+        ".xls",
+        ".xlsm",
+        ".xlsb",
+        ".csv"
+      ],
+      "exportFormats": [
+        "XLSX (original)",
+        "PDF (conversão do Graph)",
+        "CSV/ODS/PDF (pela interface do Excel)"
+      ],
+      "formats": [
+        "XLSX",
+        "PDF",
+        "CSV",
+        "ODS"
+      ],
+      "api": "Graph /drive/items/{id}/content (e ?format=pdf); células e tabelas: Excel REST API GET /me/drive/items/{id}/workbook/worksheets/{sheet}/usedRange",
+      "scopes": [
+        "Files.Read",
+        "Files.Read.All"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — igual ao Word (subscription na raiz + delta)",
+      "via": [
+        "CONTA"
+      ],
+      "notes": "A Excel REST API (workbook) só aceita arquivos corporativos (OneDrive for Business/SharePoint) e pede Files.ReadWrite até para ler; com Files.Read, baixar o .xlsx e ler no servidor (ex.: Apache POI). A doc do Graph limita a conversão de formato (?format=) a arquivos de até 2 MB — acima disso, baixar o original e converter no servidor. .xlsm tem macro: passar no antivírus."
+    },
+    {
+      "id": "MS_POWERPOINT.APRESENTACAO",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft PowerPoint",
+      "artifact": "apresentação",
+      "sourceKind": "MS_POWERPOINT",
+      "taskType": "APRESENTACAO",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "application/vnd.ms-powerpoint"
+      ],
+      "extensions": [
+        ".pptx",
+        ".ppt",
+        ".ppsx",
+        ".potx"
+      ],
+      "exportFormats": [
+        "PPTX (original)",
+        "PDF (conversão do Graph)",
+        "JPG (conversão do Graph, com width/height)",
+        "PDF/ODP/MP4 (pela interface do PowerPoint)"
+      ],
+      "formats": [
+        "PPTX",
+        "PDF",
+        "JPG",
+        "ODP",
+        "MP4"
+      ],
+      "api": "Graph /drive/items/{id}/content, ?format=pdf ou ?format=jpg&width=..&height=..; miniaturas: /drive/items/{id}/thumbnails",
+      "scopes": [
+        "Files.Read",
+        "Files.Read.All"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — igual ao Word (subscription na raiz + delta)",
+      "via": [
+        "CONTA"
+      ],
+      "notes": "Hoje .pptx cai em DOCUMENTO pela tabela do RF4. A doc do Graph limita a conversão de formato (?format=) a arquivos de até 2 MB — acima disso, baixar o original e converter no servidor."
+    },
+    {
+      "id": "MS_ONENOTE.NOTA",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft OneNote",
+      "artifact": "nota/caderno (seções e páginas)",
+      "sourceKind": "MS_ONENOTE",
+      "taskType": "NOTA",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "application/onenote",
+        "text/html (conteúdo da página pela API)"
+      ],
+      "extensions": [
+        ".one",
+        ".onetoc2",
+        ".onepkg"
+      ],
+      "exportFormats": [
+        "HTML (conteúdo da página via Graph)",
+        "PDF/DOCX/.one/.onepkg (pela interface do OneNote para desktop)"
+      ],
+      "formats": [
+        "HTML",
+        "PDF",
+        "DOCX"
+      ],
+      "api": "Graph OneNote API GET /me/onenote/pages/{id}/content (HTML da página), /me/onenote/notebooks|sections|pages; imagens e arquivos: /me/onenote/resources/{id}/$value; cadernos de grupo/site: /groups/{id}/onenote, /sites/{id}/onenote",
+      "scopes": [
+        "Notes.Read",
+        "Notes.Read.All"
+      ],
+      "linkable": "PARCIAL",
+      "linkableHow": "parcial — OneNote não tem subscription nem delta; reconsultar lastModifiedDateTime de páginas/seções",
+      "via": [],
+      "notes": "Notes.Read = cadernos do usuário; Notes.Read.All = cadernos que ele acessa na organização. Autenticação só de aplicativo deixou de funcionar em 31/03/2025 — usar delegada. A Microsoft desaconselha a API do OneNote para backup em massa. Conta pessoal e corporativa."
+    },
+    {
+      "id": "MS_OUTLOOK_MAIL.EMAIL",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Outlook (e-mail)",
+      "artifact": "e-mail (mensagem e anexos)",
+      "sourceKind": "MS_OUTLOOK_MAIL",
+      "taskType": "EMAIL",
+      "taskTypeIsNew": false,
+      "nativeMime": [
+        "message/rfc822",
+        "application/vnd.ms-outlook"
+      ],
+      "extensions": [
+        ".eml",
+        ".msg"
+      ],
+      "exportFormats": [
+        "EML/MIME (Graph $value)",
+        "JSON (Graph)",
+        "MSG (só pelo Outlook para desktop)",
+        "PDF (imprimir)"
+      ],
+      "formats": [
+        "EML",
+        "JSON",
+        "MSG",
+        "PDF"
+      ],
+      "api": "Graph GET /me/messages/{id}/$value (MIME, ou seja, o .eml), GET /me/messages/{id} (JSON) e /me/messages/{id}/attachments/{id}/$value",
+      "scopes": [
+        "Mail.Read",
+        "Mail.ReadBasic"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim (na caixa) — subscription em /me/messages ou /me/mailFolders('inbox')/messages (até 10.080 min; com dados do recurso, 1.440 min) + delta por pasta (/me/mailFolders/{id}/messages/delta)",
+      "via": [],
+      "notes": "Mail.ReadBasic não lê corpo nem anexos (serve para listar e escolher); Mail.Read para importar. Até 1.000 assinaturas ativas por caixa somando todos os apps. O Graph não gera .msg. LGPD: dados de terceiros. Conta pessoal (outlook.com) e corporativa."
+    },
+    {
+      "id": "MS_OUTLOOK_CALENDAR.EVENTO_AGENDA",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Outlook (calendário)",
+      "artifact": "evento de agenda/reunião",
+      "sourceKind": "MS_OUTLOOK_CALENDAR",
+      "taskType": "EVENTO_AGENDA",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "text/calendar"
+      ],
+      "extensions": [
+        ".ics"
+      ],
+      "exportFormats": [
+        "JSON (Graph)",
+        "ICS (publicar agenda ou salvar evento pela interface; o Graph não devolve ICS)"
+      ],
+      "formats": [
+        "JSON",
+        "ICS"
+      ],
+      "api": "Graph GET /me/events/{id} e GET /me/calendarView?startDateTime=..&endDateTime=..; reunião do Teams: onlineMeeting.joinUrl e GET /me/onlineMeetings?$filter=JoinWebUrl eq '{url}'",
+      "scopes": [
+        "Calendars.ReadBasic",
+        "Calendars.Read"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — subscription em /me/events (até 10.080 min) + delta (/me/calendarView/delta)",
+      "via": [],
+      "notes": "Calendars.ReadBasic exclui corpo e anexos; Calendars.Read inclui. Gerar o ICS no servidor (iCalUId). Participantes = dados pessoais (LGPD). Conta pessoal e corporativa."
+    },
+    {
+      "id": "MS_TODO.LISTA_TAREFAS",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft To Do",
+      "artifact": "tarefa/lista de tarefas (to-do)",
+      "sourceKind": "MS_TODO",
+      "taskType": "LISTA_TAREFAS",
+      "taskTypeIsNew": true,
+      "nativeMime": [],
+      "extensions": [],
+      "exportFormats": [
+        "JSON (Graph)"
+      ],
+      "formats": [
+        "JSON"
+      ],
+      "api": "Graph GET /me/todo/lists e /me/todo/lists/{listId}/tasks/{taskId} (com checklistItems, linkedResources e anexos em /attachments/{id}/$value)",
+      "scopes": [
+        "Tasks.Read"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — subscription em /me/todo/lists/{listId}/tasks (até 4.230 min; só no endpoint global) + delta (/me/todo/lists/{listId}/tasks/delta)",
+      "via": [],
+      "notes": "Conta pessoal e corporativa. E-mail sinalizado vira tarefa com linkedResource. A tabela de permissões do delta cita Tasks.ReadWrite como menor privilégio (parece erro da doc) — testar com Tasks.Read."
+    },
+    {
+      "id": "MS_PLANNER.LISTA_TAREFAS",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Planner",
+      "artifact": "plano/quadro de tarefas (buckets, responsáveis, prazos, checklist)",
+      "sourceKind": "MS_PLANNER",
+      "taskType": "LISTA_TAREFAS",
+      "taskTypeIsNew": true,
+      "nativeMime": [],
+      "extensions": [],
+      "exportFormats": [
+        "JSON (Graph)",
+        "XLSX (exportar plano para o Excel, pela interface)"
+      ],
+      "formats": [
+        "JSON",
+        "XLSX"
+      ],
+      "api": "Graph GET /planner/plans/{id}, /planner/plans/{id}/tasks e /planner/tasks/{id}/details (descrição, checklist, referências)",
+      "scopes": [
+        "Tasks.Read",
+        "Group.Read.All"
+      ],
+      "linkable": "PARCIAL",
+      "linkableHow": "parcial — sem change notifications no v1.0; delta só no beta (plannerPlan/plannerTask delta); reconsultar com ETag (If-None-Match)",
+      "via": [],
+      "notes": "Só conta corporativa. Group.Read.All exige consentimento de administrador; Tasks.Read não. Planos premium (antigo Project for the web) não saem pela API do Planner: ficam no Dataverse (ver MS_PROJECT). Importar o plano como lista ou cada tarefa como tarefa."
+    },
+    {
+      "id": "MS_TEAMS.MENSAGEM_CHAT",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Teams (mensagens de canal e chat)",
+      "artifact": "mensagem de canal/chat (HTML, menções, anexos)",
+      "sourceKind": "MS_TEAMS",
+      "taskType": "MENSAGEM_CHAT",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "text/html (corpo da mensagem)"
+      ],
+      "extensions": [],
+      "exportFormats": [
+        "JSON/HTML (Graph)"
+      ],
+      "formats": [
+        "JSON",
+        "HTML"
+      ],
+      "api": "Graph GET /teams/{team-id}/channels/{channel-id}/messages/{message-id} (e /replies); chats: /chats/{chat-id}/messages/{message-id}; imagem embutida: .../hostedContents/{id}/$value; anexos apontam para arquivos do SharePoint/OneDrive (driveItem)",
+      "scopes": [
+        "ChannelMessage.Read.All",
+        "Chat.Read"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — subscription em /teams/{id}/channels/{id}/messages ou /chats/{id}/messages (até 4.320 min; acima de 1 h exige lifecycleNotificationUrl; notificação com conteúdo exige certificado de criptografia); teto de 10.000 assinaturas de Teams por organização",
+      "via": [],
+      "notes": "ChannelMessage.Read.All delegada exige consentimento de administrador; Chat.Read não. Só conta corporativa. LGPD: falas de terceiros — importar a mensagem escolhida, não o canal inteiro."
+    },
+    {
+      "id": "MS_TEAMS.GRAVACAO_REUNIAO",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Teams (gravação de reunião)",
+      "artifact": "gravação de reunião (vídeo)",
+      "sourceKind": "MS_TEAMS",
+      "taskType": "GRAVACAO_REUNIAO",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "video/mp4"
+      ],
+      "extensions": [
+        ".mp4"
+      ],
+      "exportFormats": [
+        "MP4"
+      ],
+      "formats": [
+        "MP4"
+      ],
+      "api": "Graph GET /me/onlineMeetings/{meetingId}/recordings e /recordings/{recordingId}/content (MP4); o arquivo também fica no OneDrive do organizador (reunião privada) ou no SharePoint do canal e abre no Stream",
+      "scopes": [
+        "OnlineMeetingRecording.Read.All",
+        "OnlineMeetings.Read"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — subscription em users/{id}/onlineMeetings/getAllRecordings ou communications/onlineMeetings/{id}/recordings (até 4.320 min) + delta de gravações por organizador",
+      "via": [],
+      "notes": "Consentimento de administrador obrigatório. Na permissão delegada só o organizador baixa o conteúdo (o admin pode liberar participantes). Não vale para reunião criada pela API sem evento na agenda nem para evento ao vivo. A gravação expira pela política do tenant. LGPD: imagem e voz."
+    },
+    {
+      "id": "MS_TEAMS.TRANSCRICAO",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Teams (transcrição de reunião)",
+      "artifact": "transcrição de reunião",
+      "sourceKind": "MS_TEAMS",
+      "taskType": "TRANSCRICAO",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "text/vtt",
+        "application/vnd.microsoft.graph.transcript+text"
+      ],
+      "extensions": [
+        ".vtt"
+      ],
+      "exportFormats": [
+        "VTT (com locutor)",
+        "texto sem locutor (application/vnd.microsoft.graph.transcript+text)",
+        "DOCX (descontinuado desde 31/05/2023)"
+      ],
+      "formats": [
+        "VTT",
+        "DOCX"
+      ],
+      "api": "Graph GET /me/onlineMeetings/{meetingId}/transcripts e /transcripts/{transcriptId}/content (Accept: text/vtt ou $format=text/vtt)",
+      "scopes": [
+        "OnlineMeetingTranscript.Read.All"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — subscription em users/{id}/onlineMeetings/getAllTranscripts (até 4.320 min) + delta de transcrições",
+      "via": [],
+      "notes": "Consentimento de administrador obrigatório; só conta corporativa. Desde o fim de jul/2026 o admin controla 'acesso do Graph às transcrições' (403 GraphAccessToTranscriptsDisabled) e 'atribuição de locutor' (403 SpeakerAttributionNotAllowed no VTT: pedir o formato sem locutor)."
+    },
+    {
+      "id": "MS_TEAMS.ATA_REGISTRO",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Teams (recapitulação do Copilot)",
+      "artifact": "resumo/ata automática (anotações, itens de ação, menções)",
+      "sourceKind": "MS_TEAMS",
+      "taskType": "ATA_REGISTRO",
+      "taskTypeIsNew": false,
+      "nativeMime": [
+        "application/json"
+      ],
+      "extensions": [],
+      "exportFormats": [
+        "JSON (API)"
+      ],
+      "formats": [
+        "JSON"
+      ],
+      "api": "Microsoft 365 Copilot API: GET /copilot/users/{userId}/onlineMeetings/{onlineMeetingId}/aiInsights e /aiInsights/{aiInsightId}",
+      "scopes": [
+        "OnlineMeetingAiInsight.Read.All"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — subscription em /copilot/users/{userId}/onlineMeetings/{onlineMeetingId}/aiInsights ou .../onlineMeetings/getAllAiInsights",
+      "via": [],
+      "notes": "Exige licença Microsoft 365 Copilot e consentimento de administrador; disponível depois que a reunião termina. Texto de IA: revisar antes de virar ata oficial. Endpoint documentado na referência do Copilot, fora do Graph principal."
+    },
+    {
+      "id": "MS_FORMS.FORMULARIO",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Forms",
+      "artifact": "formulário/questionário e respostas",
+      "sourceKind": "MS_FORMS",
+      "taskType": "FORMULARIO",
+      "taskTypeIsNew": false,
+      "nativeMime": [],
+      "extensions": [],
+      "exportFormats": [
+        "XLSX (respostas no Excel, pela interface)",
+        "PDF (imprimir)"
+      ],
+      "formats": [
+        "XLSX",
+        "PDF"
+      ],
+      "api": "Sem API pública oficial no Microsoft Graph para formulários/respostas. Caminhos: (1) planilha de respostas sincronizada no OneDrive/SharePoint, lida pelo Graph; (2) conector Microsoft Forms do Power Automate (gatilho 'When a new response is submitted' + ação 'Get response details')",
+      "scopes": [
+        "Files.Read",
+        "Files.Read.All"
+      ],
+      "linkable": "PARCIAL",
+      "linkableHow": "parcial — pela planilha de respostas no OneDrive (delta/subscription) ou por fluxo do Power Automate; sem webhook nativo",
+      "via": [
+        "CONTA"
+      ],
+      "notes": "A API não documentada forms.office.com/formapi é instável — não usar. Conector do Power Automate: 300 chamadas por conexão a cada 60 s; em formulários de grupo a ação 'Get response details' falha com frequência. A tabela de conversão do Graph cita a extensão .form (para PDF) — indício de formulário guardado como arquivo, não confirmado. LGPD: respostas."
+    },
+    {
+      "id": "MS_VISIO.DIAGRAMA",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Visio",
+      "artifact": "diagrama (fluxograma, organograma, layout)",
+      "sourceKind": "MS_VISIO",
+      "taskType": "DIAGRAMA",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "application/vnd.ms-visio.drawing.main+xml",
+        "application/vnd.visio"
+      ],
+      "extensions": [
+        ".vsdx",
+        ".vsd",
+        ".vssx"
+      ],
+      "exportFormats": [
+        "VSDX (original)",
+        "PDF/PNG/SVG (pela interface do Visio)"
+      ],
+      "formats": [
+        "VSDX",
+        "PDF",
+        "PNG",
+        "SVG"
+      ],
+      "api": "Graph /drive/items/{id}/content (original) e /thumbnails (miniatura); o ?format=pdf do Graph não aceita .vsdx",
+      "scopes": [
+        "Files.Read",
+        "Files.Read.All"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — pelo OneDrive/SharePoint (delta + subscription na raiz)",
+      "via": [
+        "CONTA"
+      ],
+      "notes": "Converter .vsdx para PDF/PNG no servidor exige ferramenta própria (ex.: LibreOffice Draw abre .vsdx). Licença: Visio Plan 1/2 ou o Visio web das licenças comerciais do M365. Não confundir com DESENHO_TECNICO (CAD)."
+    },
+    {
+      "id": "MS_WHITEBOARD.QUADRO_BRANCO",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Whiteboard",
+      "artifact": "quadro branco",
+      "sourceKind": "MS_WHITEBOARD",
+      "taskType": "QUADRO_BRANCO",
+      "taskTypeIsNew": true,
+      "nativeMime": [],
+      "extensions": [
+        ".whiteboard"
+      ],
+      "exportFormats": [
+        "PDF (conversão do Graph)",
+        "HTML (conversão do Graph)",
+        "PNG (pela interface)"
+      ],
+      "formats": [
+        "PDF",
+        "HTML",
+        "PNG"
+      ],
+      "api": "Graph /drive/items/{id}/content?format=pdf ou ?format=html (a tabela de conversão aceita whiteboard e wbtx); os quadros ficam como arquivos .whiteboard no OneDrive de quem criou (inclusive os de reuniões do Teams)",
+      "scopes": [
+        "Files.Read",
+        "Files.Read.All"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — pelo OneDrive (delta + subscription na raiz)",
+      "via": [
+        "CONTA"
+      ],
+      "notes": "Não há API própria do Whiteboard. A doc do Graph limita a conversão de formato (?format=) a arquivos de até 2 MB — acima disso, baixar o original e converter no servidor."
+    },
+    {
+      "id": "MS_LOOP.DOCUMENTO",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Loop",
+      "artifact": "página/componente colaborativo (Loop, Copilot Pages)",
+      "sourceKind": "MS_LOOP",
+      "taskType": "DOCUMENTO",
+      "taskTypeIsNew": false,
+      "nativeMime": [],
+      "extensions": [
+        ".loop",
+        ".page",
+        ".fluid"
+      ],
+      "exportFormats": [
+        "HTML (conversão do Graph: loop, fluid)",
+        "PDF (conversão do Graph: loop, fluid, page)",
+        "PDF/Markdown (pela interface do Loop)"
+      ],
+      "formats": [
+        "HTML",
+        "PDF",
+        "MD"
+      ],
+      "api": "Componente Loop criado no Teams/Outlook é arquivo .loop no OneDrive: Graph /drive/items/{id}/content?format=html|pdf. Páginas de workspaces do Loop ficam em contêineres do SharePoint Embedded (fileStorageContainer), fora do alcance de app de terceiros",
+      "scopes": [
+        "Files.Read",
+        "Files.Read.All"
+      ],
+      "linkable": "PARCIAL",
+      "linkableHow": "parcial — .loop no OneDrive: delta/subscription; workspaces do Loop: não",
+      "via": [
+        "CONTA"
+      ],
+      "notes": "FileStorageContainer.Selected só vale para tipos de contêiner do próprio app — os do Loop são da Microsoft. Alternativa: o usuário exporta para PDF e envia como ARQUIVO. A doc do Graph limita a conversão de formato (?format=) a arquivos de até 2 MB — acima disso, baixar o original e converter no servidor."
+    },
+    {
+      "id": "MS_SHAREPOINT_PAGE.PAGINA_WEB",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "SharePoint (páginas de site)",
+      "artifact": "página web da intranet (notícia, página de site)",
+      "sourceKind": "MS_SHAREPOINT_PAGE",
+      "taskType": "PAGINA_WEB",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "text/html"
+      ],
+      "extensions": [
+        ".aspx"
+      ],
+      "exportFormats": [
+        "JSON com HTML das web parts (canvasLayout do Graph)",
+        "PDF (imprimir no navegador)"
+      ],
+      "formats": [
+        "JSON",
+        "HTML",
+        "PDF"
+      ],
+      "api": "Graph GET /sites/{site-id}/pages/{page-id}/microsoft.graph.sitePage?$expand=canvasLayout; listar: GET /sites/{site-id}/pages",
+      "scopes": [
+        "Sites.Read.All",
+        "Sites.Selected"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — subscription na lista 'Páginas do Site' (/sites/{site-id}/lists/{list-id}; até 42.300 min) + delta de listItem",
+      "via": [
+        "LINK"
+      ],
+      "notes": "Sites.Selected (acesso por site, configurado pelo administrador) é o menor privilégio se o órgão liberar só sites específicos. Só conta corporativa. Alternativa sem tipo novo: LINK."
+    },
+    {
+      "id": "MS_LISTS.PLANILHA",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Lists / listas do SharePoint",
+      "artifact": "lista (tabela de itens com colunas)",
+      "sourceKind": "MS_LISTS",
+      "taskType": "PLANILHA",
+      "taskTypeIsNew": false,
+      "nativeMime": [],
+      "extensions": [],
+      "exportFormats": [
+        "JSON (Graph)",
+        "CSV/XLSX (pela interface)"
+      ],
+      "formats": [
+        "JSON",
+        "CSV",
+        "XLSX"
+      ],
+      "api": "Graph GET /sites/{site-id}/lists/{list-id}/items?$expand=fields (anexos de item só pela API REST do SharePoint)",
+      "scopes": [
+        "Sites.Read.All",
+        "Sites.Selected"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — subscription na lista (até 42.300 min) + delta (/sites/{site-id}/lists/{list-id}/items/delta)",
+      "via": [],
+      "notes": "Se a lista for um controle de pendências, considerar LISTA_TAREFAS. 'Minhas listas' ficam no site pessoal (OneDrive) do usuário. Só conta corporativa."
+    },
+    {
+      "id": "MS_ONEDRIVE.DOCUMENTO",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "OneDrive / bibliotecas do SharePoint e Teams (arquivo genérico)",
+      "artifact": "arquivo binário (PDF, imagem, vídeo, áudio, CAD, ZIP, e-mail)",
+      "sourceKind": "MS_ONEDRIVE",
+      "taskType": "DOCUMENTO",
+      "taskTypeIsNew": false,
+      "nativeMime": [
+        "(MIME real do arquivo)"
+      ],
+      "extensions": [
+        ".pdf",
+        ".jpg",
+        ".png",
+        ".mp4",
+        ".dwg",
+        ".zip",
+        ".msg",
+        ".eml",
+        ".md"
+      ],
+      "exportFormats": [
+        "original",
+        "PDF (conversão do Graph para doc/docx/xls/xlsx/ppt/pptx/rtf/odt/ods/odp/eml/msg/md/html/epub/dwg/tif)",
+        "JPG (conversão do Graph para imagens, vídeos, PDF e outros)"
+      ],
+      "formats": [
+        "ORIGINAL",
+        "PDF",
+        "JPG"
+      ],
+      "api": "Graph GET /drives/{drive-id}/items/{item-id}/content (302 para URL pré-autenticada), ?format=pdf|jpg, /thumbnails, /versions; link colado pelo usuário: GET /shares/{shareIdOrEncodedSharingUrl}/driveItem",
+      "scopes": [
+        "Files.Read",
+        "Files.Read.All"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — subscription em driveItem (no OneDrive corporativo/SharePoint só na raiz: /me/drive/root ou /drives/{id}/root; até 42.300 min, ~29 dias) + delta (GET /drives/{drive-id}/root/delta) filtrando o item; eTag/cTag mudam quando o conteúdo muda",
+      "via": [
+        "CONTA",
+        "LINK"
+      ],
+      "notes": "taskType pelo MIME real (mesma regra do Google Drive). Files.Read lê só os arquivos do próprio usuário; Files.Read.All lê tudo o que ele acessa (compartilhados, bibliotecas do SharePoint/Teams). Nenhum dos dois exige consentimento de administrador, mas tenants de governo costumam bloquear o consentimento do usuário. /shares lista Files.ReadWrite como menor privilégio na doc v1.0. A doc do Graph limita a conversão de formato (?format=) a arquivos de até 2 MB — acima disso, baixar o original e converter no servidor. Prévia incorporável (POST /preview) só no corporativo. Seletor: OneDrive File Picker. Conta pessoal e corporativa."
+    },
+    {
+      "id": "MS_ONEDRIVE.PASTA",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "OneDrive / SharePoint (pasta ou biblioteca)",
+      "artifact": "pasta",
+      "sourceKind": "MS_ONEDRIVE",
+      "taskType": "PASTA",
+      "taskTypeIsNew": false,
+      "nativeMime": [],
+      "extensions": [],
+      "exportFormats": [
+        "ZIP (download pela interface)",
+        "lista de filhos via API"
+      ],
+      "formats": [
+        "ZIP"
+      ],
+      "api": "Graph GET /drives/{drive-id}/items/{folder-id}/children (recursão feita pelo app)",
+      "scopes": [
+        "Files.Read",
+        "Files.Read.All"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — delta da raiz filtrando por parentReference; no OneDrive pessoal a subscription pode ser em qualquer pasta",
+      "via": [
+        "CONTA",
+        "LINK"
+      ],
+      "notes": "Bom candidato a VINCULADO (pasta do projeto ou do canal do Teams). Em COPIADO, respeitar o limite de 200 MB do zip (RF4)."
+    },
+    {
+      "id": "MS_STREAM.VIDEO",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Stream (no SharePoint)",
+      "artifact": "vídeo (inclui gravações do Teams)",
+      "sourceKind": "MS_STREAM",
+      "taskType": "VIDEO",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "video/mp4"
+      ],
+      "extensions": [
+        ".mp4",
+        ".mov",
+        ".wmv"
+      ],
+      "exportFormats": [
+        "MP4 (original)",
+        "VTT da transcrição (pela interface do Stream)"
+      ],
+      "formats": [
+        "MP4",
+        "VTT"
+      ],
+      "api": "Vídeo do Stream é arquivo do OneDrive/SharePoint: Graph /drives/{drive-id}/items/{item-id}/content; metadados em driveItem.video (e media no beta); a transcrição do arquivo não tem API (para reunião, usar a transcrição do Teams)",
+      "scopes": [
+        "Files.Read",
+        "Files.Read.All"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim — pelo OneDrive/SharePoint (delta + subscription na raiz)",
+      "via": [
+        "CONTA"
+      ],
+      "notes": "O Stream clássico foi aposentado; o atual é o player do OneDrive/SharePoint. Vídeo grande: baixar em streaming. LGPD se houver pessoas."
+    },
+    {
+      "id": "MS_POWER_BI.PAINEL_DADOS",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Power BI",
+      "artifact": "relatório/painel de BI",
+      "sourceKind": "MS_POWER_BI",
+      "taskType": "PAINEL_DADOS",
+      "taskTypeIsNew": true,
+      "nativeMime": [],
+      "extensions": [
+        ".pbix",
+        ".pbip"
+      ],
+      "exportFormats": [
+        "PDF",
+        "PPTX",
+        "PNG (ExportTo)",
+        "PBIX (download do relatório)"
+      ],
+      "formats": [
+        "PDF",
+        "PPTX",
+        "PNG",
+        "PBIX"
+      ],
+      "api": "Power BI REST API: GET https://api.powerbi.com/v1.0/myorg/reports/{reportId}; POST .../reports/{reportId}/ExportTo (assíncrono: pedir, consultar status, baixar; arquivo disponível por 24 h); GET .../reports/{reportId}/Export (.pbix)",
+      "scopes": [
+        "https://analysis.windows.net/powerbi/api/Report.Read.All"
+      ],
+      "linkable": "PARCIAL",
+      "linkableHow": "parcial — sem webhook de alteração; reconsultar o relatório e o histórico de atualização do conjunto de dados, mantendo link/incorporação",
+      "via": [],
+      "notes": "ExportTo só para relatórios em capacidade Premium/Embedded/Fabric (a doc diz que PPU não é suportado); PNG exige a configuração de tenant 'Exportar relatórios como arquivos de imagem'. Relatório com rótulo de confidencialidade não sai em PDF/PPTX por service principal. Ler exige licença Pro/PPU. Só conta corporativa."
+    },
+    {
+      "id": "MS_CLIPCHAMP.VIDEO",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Clipchamp",
+      "artifact": "vídeo editado",
+      "sourceKind": "MS_CLIPCHAMP",
+      "taskType": "VIDEO",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "video/mp4",
+        "image/gif"
+      ],
+      "extensions": [
+        ".mp4",
+        ".gif"
+      ],
+      "exportFormats": [
+        "MP4 (480p a 1080p; 4K conforme o plano)",
+        "GIF (clipes curtos)"
+      ],
+      "formats": [
+        "MP4",
+        "GIF"
+      ],
+      "api": "Sem API pública. Na conta corporativa, projeto e vídeo exportado ficam no OneDrive/SharePoint: importar o MP4 pelo Graph (/drive/items/{id}/content); conta pessoal: upload do MP4",
+      "scopes": [
+        "Files.Read",
+        "Files.Read.All"
+      ],
+      "linkable": "PARCIAL",
+      "linkableHow": "parcial — só o MP4 exportado no OneDrive (delta/subscription); o projeto de edição não",
+      "via": [
+        "CONTA"
+      ],
+      "notes": "Respeitar o limite de upload do RF4 (50 MB) ou importar direto do OneDrive. Vídeo com pessoas → LGPD."
+    },
+    {
+      "id": "MS_PROJECT.CRONOGRAMA",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Project for the web (planos premium do Planner)",
+      "artifact": "cronograma de projeto (tarefas, dependências, linha do tempo/Gantt)",
+      "sourceKind": "MS_PROJECT",
+      "taskType": "CRONOGRAMA",
+      "taskTypeIsNew": false,
+      "nativeMime": [
+        "application/vnd.ms-project"
+      ],
+      "extensions": [
+        ".mpp"
+      ],
+      "exportFormats": [
+        "XLSX (exportar para Excel, pela interface)",
+        "MPP (Project para desktop)"
+      ],
+      "formats": [
+        "XLSX",
+        "MPP"
+      ],
+      "api": "Dados no Microsoft Dataverse: Dataverse Web API GET https://{org}.crm.dynamics.com/api/data/v9.2/msdyn_projects e msdyn_projecttasks (leitura); escrita só pelas APIs de agendamento do Project (msdyn_PssCreateV1 etc.); .mpp do desktop entra como arquivo (MS_ONEDRIVE/ARQUIVO)",
+      "scopes": [
+        "https://{org}.crm.dynamics.com/user_impersonation"
+      ],
+      "linkable": "PARCIAL",
+      "linkableHow": "parcial — controle de alterações do Dataverse (Prefer: odata.track-changes, se habilitado na tabela) ou webhook registrado no Dataverse; nada pelo Graph",
+      "via": [],
+      "notes": "Project for the web e Project in Teams estão sendo aposentados e redirecionados ao Planner (aviso MC1068905, cronograma revisado em 30/09/2025); os planos premium seguem no Planner com dados no Dataverse. Licença Planner Plan 1 ou Planner and Project Plan 3/5. Só conta corporativa."
+    },
+    {
+      "id": "MS_STICKY_NOTES.NOTA",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Sticky Notes / notas do Outlook",
+      "artifact": "nota rápida (texto e imagens)",
+      "sourceKind": "MS_STICKY_NOTES",
+      "taskType": "NOTA",
+      "taskTypeIsNew": true,
+      "nativeMime": [],
+      "extensions": [],
+      "exportFormats": [
+        "JSON (Graph)"
+      ],
+      "formats": [
+        "JSON"
+      ],
+      "api": "Graph v1.0 GET /me/notes, GET /me/notes/{note-id}?$expand=attachments (imagens) e GET /me/notes/delta",
+      "scopes": [
+        "ShortNotes.Read"
+      ],
+      "linkable": "SIM",
+      "linkableHow": "sim (por consulta) — delta de notas; não há subscription para esse recurso",
+      "via": [],
+      "notes": "Recurso note (pasta Notas da caixa do Outlook), documentado no v1.0 em ago/2026; sem permissão de aplicativo. Conta pessoal e corporativa."
+    },
+    {
+      "id": "MS_ASSIGNMENTS.ATIVIDADE_CURSO",
+      "ecosystem": "microsoft",
+      "provider": "MICROSOFT",
+      "app": "Microsoft Teams Assignments (Education)",
+      "artifact": "atividade de turma (instruções, prazo, recursos, entregas)",
+      "sourceKind": "MS_ASSIGNMENTS",
+      "taskType": "ATIVIDADE_CURSO",
+      "taskTypeIsNew": true,
+      "nativeMime": [],
+      "extensions": [],
+      "exportFormats": [
+        "JSON (Graph)",
+        "notas em CSV (pela interface)"
+      ],
+      "formats": [
+        "JSON",
+        "CSV"
+      ],
+      "api": "Graph GET /education/classes/{classId}/assignments/{id}, /assignments/{id}/resources e /submissions; delta: /education/classes/{classId}/assignments/delta",
+      "scopes": [
+        "EduAssignments.ReadBasic",
+        "EduAssignments.Read"
+      ],
+      "linkable": "PARCIAL",
+      "linkableHow": "parcial — delta das atividades; sem subscription",
+      "via": [],
+      "notes": "Só tenants Education; EduAssignments.ReadBasic exige consentimento de administrador. Dados de estudantes (LGPD). Item opcional, por simetria com o Google Classroom."
+    },
+    {
+      "id": "APPLE_PAGES.DOCUMENTO",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Pages",
+      "artifact": "documento de texto/leiaute de página",
+      "sourceKind": "APPLE_PAGES",
+      "taskType": "DOCUMENTO",
+      "taskTypeIsNew": false,
+      "nativeMime": [
+        "application/vnd.apple.pages",
+        "application/x-iwork-pages-sffpages"
+      ],
+      "extensions": [
+        ".pages"
+      ],
+      "exportFormats": [
+        "PDF",
+        "DOCX (e DOC)",
+        "EPUB",
+        "TXT",
+        "RTF/RTFD",
+        "imagens (JPEG/PNG/TIFF)",
+        "Pages '09"
+      ],
+      "formats": [
+        "PDF",
+        "DOCX",
+        "DOC",
+        "EPUB",
+        "TXT",
+        "RTF",
+        "RTFD",
+        "JPEG",
+        "PNG",
+        "TIFF"
+      ],
+      "api": "Sem API pública: o CloudKit Web Services só acessa contêineres do próprio app, não iWork/iCloud Drive/Notas. Chega por: (1) upload do arquivo exportado; (2) upload do original (pacote ZIP proprietário com formato .iwa: dá para extrair a miniatura, não o conteúdo com fidelidade); (3) link de colaboração do iCloud guardado como LINK; (4) Share Sheet do iPhone/iPad/Mac para o Work Station. Link: www.icloud.com/pages/...",
+      "scopes": [],
+      "linkable": "NAO",
+      "linkableHow": "não — sem notificação nem download programático documentado; vínculo só como link do iCloud (o usuário reenvia a versão nova)",
+      "via": [
+        "LINK"
+      ],
+      "notes": "Exportar: Arquivo > Exportar para > Word/PDF (Mac), Compartilhar > Exportar (iPhone/iPad) ou iCloud.com no navegador (Mac ou PC). Documento de leiaute de página não sai em RTF/TXT. O Graph só gera prévia JPG de .pages no OneDrive. Pedir DOCX ou PDF no upload. Conta Apple pessoal; Contas Apple Gerenciadas (Apple Business Manager) são a única via institucional."
+    },
+    {
+      "id": "APPLE_NUMBERS.PLANILHA",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Numbers",
+      "artifact": "planilha",
+      "sourceKind": "APPLE_NUMBERS",
+      "taskType": "PLANILHA",
+      "taskTypeIsNew": false,
+      "nativeMime": [
+        "application/vnd.apple.numbers",
+        "application/x-iwork-numbers-sffnumbers"
+      ],
+      "extensions": [
+        ".numbers"
+      ],
+      "exportFormats": [
+        "PDF",
+        "XLSX (e XLS)",
+        "CSV",
+        "TSV",
+        "Numbers '09"
+      ],
+      "formats": [
+        "PDF",
+        "XLSX",
+        "XLS",
+        "CSV",
+        "TSV"
+      ],
+      "api": "Sem API pública: o CloudKit Web Services só acessa contêineres do próprio app, não iWork/iCloud Drive/Notas. Chega por: (1) upload do arquivo exportado; (2) upload do original (pacote ZIP proprietário com formato .iwa: dá para extrair a miniatura, não o conteúdo com fidelidade); (3) link de colaboração do iCloud guardado como LINK; (4) Share Sheet do iPhone/iPad/Mac para o Work Station. Link: www.icloud.com/numbers/...",
+      "scopes": [],
+      "linkable": "NAO",
+      "linkableHow": "não — idem Pages",
+      "via": [
+        "LINK"
+      ],
+      "notes": "Com várias tabelas, o CSV sai como um arquivo por tabela. Pedir XLSX no upload. O Graph só gera prévia JPG de .numbers."
+    },
+    {
+      "id": "APPLE_KEYNOTE.APRESENTACAO",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Keynote",
+      "artifact": "apresentação",
+      "sourceKind": "APPLE_KEYNOTE",
+      "taskType": "APRESENTACAO",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "application/vnd.apple.keynote",
+        "application/x-iwork-keynote-sffkey"
+      ],
+      "extensions": [
+        ".key"
+      ],
+      "exportFormats": [
+        "PDF",
+        "PPTX",
+        "filme (M4V/MOV)",
+        "GIF animado",
+        "imagens (JPEG/PNG/TIFF)",
+        "HTML",
+        "Keynote '09"
+      ],
+      "formats": [
+        "PDF",
+        "PPTX",
+        "M4V",
+        "MOV",
+        "GIF",
+        "JPEG",
+        "PNG",
+        "TIFF",
+        "HTML"
+      ],
+      "api": "Sem API pública: o CloudKit Web Services só acessa contêineres do próprio app, não iWork/iCloud Drive/Notas. Chega por: (1) upload do arquivo exportado; (2) upload do original (pacote ZIP proprietário com formato .iwa: dá para extrair a miniatura, não o conteúdo com fidelidade); (3) link de colaboração do iCloud guardado como LINK; (4) Share Sheet do iPhone/iPad/Mac para o Work Station. Link: www.icloud.com/keynote/...",
+      "scopes": [],
+      "linkable": "NAO",
+      "linkableHow": "não — idem Pages",
+      "via": [
+        "LINK"
+      ],
+      "notes": "Exportado como filme vira VIDEO. Pedir PPTX ou PDF no upload. O Graph só gera prévia JPG de .key."
+    },
+    {
+      "id": "APPLE_NOTES.NOTA",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Notas (Notes)",
+      "artifact": "nota (texto, checklist, tabela, anexos, gravação de áudio com transcrição)",
+      "sourceKind": "APPLE_NOTES",
+      "taskType": "NOTA",
+      "taskTypeIsNew": true,
+      "nativeMime": [],
+      "extensions": [],
+      "exportFormats": [
+        "PDF (Mac: Arquivo > Exportar como PDF)",
+        "Markdown (iOS/iPadOS/macOS 26 ou posterior)",
+        "texto copiado",
+        "link de colaboração do iCloud"
+      ],
+      "formats": [
+        "PDF",
+        "MD"
+      ],
+      "api": "Sem API pública (o iCloud não expõe Notas por CloudKit Web Services nem por IMAP). Chega por Share Sheet para o Work Station, upload do PDF/MD exportado ou colar (COLAR)",
+      "scopes": [],
+      "linkable": "NAO",
+      "linkableHow": "não",
+      "via": [
+        "LINK"
+      ],
+      "notes": "Notas guardadas numa conta IMAP (Gmail/Exchange) ficam na pasta Notes do servidor e podem ser lidas por IMAP; as do iCloud não. Nota trancada não exporta. A colaboração por link exige Conta Apple para abrir."
+    },
+    {
+      "id": "APPLE_REMINDERS.LISTA_TAREFAS",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Lembretes (Reminders)",
+      "artifact": "lembrete/lista de tarefas",
+      "sourceKind": "APPLE_REMINDERS",
+      "taskType": "LISTA_TAREFAS",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "text/calendar (VTODO — só listas antigas não atualizadas)"
+      ],
+      "extensions": [],
+      "exportFormats": [
+        "imprimir/PDF (Mac)",
+        "texto copiado"
+      ],
+      "formats": [
+        "PDF"
+      ],
+      "api": "Sem API web: desde o iOS 13/macOS 10.15 as listas atualizadas saíram do CalDAV do iCloud; terceiros só leem pelo EventKit em app nativo iOS/macOS. CalDAV (https://caldav.icloud.com, VTODO) só para listas antigas não atualizadas",
+      "scopes": [],
+      "linkable": "NAO",
+      "linkableHow": "não pela web; só com app nativo (EventKit) rodando no aparelho do usuário",
+      "via": [],
+      "notes": "No Work Station web, o caminho realista é o usuário compartilhar/copiar o lembrete (Share Sheet) ou digitá-lo. Um app iOS do Work Station poderia ler via EventKit com permissão do usuário."
+    },
+    {
+      "id": "APPLE_CALENDAR.EVENTO_AGENDA",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Calendário (iCloud)",
+      "artifact": "evento de agenda",
+      "sourceKind": "APPLE_CALENDAR",
+      "taskType": "EVENTO_AGENDA",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "text/calendar"
+      ],
+      "extensions": [
+        ".ics"
+      ],
+      "exportFormats": [
+        "ICS (Mac: Arquivo > Exportar; ou compartilhar o evento)",
+        "URL webcal:// de agenda pública (somente leitura)"
+      ],
+      "formats": [
+        "ICS"
+      ],
+      "api": "CalDAV (RFC 4791) em https://caldav.icloud.com com Apple ID + senha específica de app; ou assinatura do link de agenda pública (webcal/ICS) quando o usuário publica a agenda",
+      "scopes": [],
+      "linkable": "SIM",
+      "linkableHow": "sim (por consulta) — CalDAV: comparar ctag/etag (ou sync-token) periodicamente; agenda pública: reler o ICS; sem push para terceiros",
+      "via": [],
+      "notes": "Senha específica de app (appleid.apple.com > Início de sessão e segurança; exige autenticação de dois fatores) não tem escopo: dá acesso amplo à conta — guardar cifrada ou evitar. Preferir o .ics pontual ou o link público. Agenda pública fica visível a quem tiver o link (LGPD)."
+    },
+    {
+      "id": "APPLE_MAIL.EMAIL",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Mail / iCloud Mail",
+      "artifact": "e-mail",
+      "sourceKind": "APPLE_MAIL",
+      "taskType": "EMAIL",
+      "taskTypeIsNew": false,
+      "nativeMime": [
+        "message/rfc822"
+      ],
+      "extensions": [
+        ".eml",
+        ".mbox"
+      ],
+      "exportFormats": [
+        "EML (Mac: Arquivo > Salvar como > Fonte bruta da mensagem)",
+        "PDF (Exportar como PDF)",
+        "MBOX (Exportar caixa de correio)"
+      ],
+      "formats": [
+        "EML",
+        "PDF",
+        "MBOX"
+      ],
+      "api": "IMAP imap.mail.me.com porta 993 (SSL) com o e-mail do iCloud + senha específica de app (SMTP smtp.mail.me.com:587); não há API REST/OAuth para terceiros. Mais simples: encaminhar para tarefas+<usuário>@ (EmailInboundAdapter) ou enviar o .eml",
+      "scopes": [],
+      "linkable": "PARCIAL",
+      "linkableHow": "parcial — IMAP IDLE ou consulta periódica da caixa; a mensagem em si não muda",
+      "via": [],
+      "notes": "Senha específica de app (appleid.apple.com > Início de sessão e segurança; exige autenticação de dois fatores) não tem escopo: dá acesso amplo à conta — guardar cifrada ou evitar. Preferir encaminhamento. LGPD: dados de terceiros. Se o Mail estiver lendo conta Gmail/Exchange, a fonte certa é GOOGLE_GMAIL/MS_OUTLOOK_MAIL."
+    },
+    {
+      "id": "APPLE_FREEFORM.QUADRO_BRANCO",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Freeform",
+      "artifact": "quadro branco (board)",
+      "sourceKind": "APPLE_FREEFORM",
+      "taskType": "QUADRO_BRANCO",
+      "taskTypeIsNew": true,
+      "nativeMime": [],
+      "extensions": [],
+      "exportFormats": [
+        "PDF (iPhone/iPad: menu > Exportar como PDF; Mac: Arquivo > Exportar como PDF)",
+        "link de colaboração do iCloud"
+      ],
+      "formats": [
+        "PDF"
+      ],
+      "api": "Sem API pública; chega como PDF exportado (upload/Share Sheet) ou link de colaboração do iCloud (quem abre precisa de Conta Apple)",
+      "scopes": [],
+      "linkable": "NAO",
+      "linkableHow": "não — o link colaborativo só abre com Conta Apple e não tem download programático",
+      "via": [
+        "LINK"
+      ],
+      "notes": "Dá para mandar cópia estática ou link colaborativo. Exportação como imagem e extensão do arquivo do board não confirmadas."
+    },
+    {
+      "id": "APPLE_IMOVIE.VIDEO",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple iMovie",
+      "artifact": "vídeo editado",
+      "sourceKind": "APPLE_IMOVIE",
+      "taskType": "VIDEO",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "video/mp4",
+        "video/quicktime"
+      ],
+      "extensions": [
+        ".mp4",
+        ".mov"
+      ],
+      "exportFormats": [
+        "MP4/MOV (Compartilhar > Exportar arquivo)"
+      ],
+      "formats": [
+        "MP4",
+        "MOV"
+      ],
+      "api": "Sem API; upload do arquivo exportado ou Share Sheet. A biblioteca .imovielibrary não serve ao Work Station",
+      "scopes": [],
+      "linkable": "NAO",
+      "linkableHow": "não",
+      "via": [],
+      "notes": "Respeitar o limite de upload do RF4 (50 MB) ou receber por link do iCloud Drive. HEVC pode exigir transcodificação para a prévia. LGPD se houver pessoas."
+    },
+    {
+      "id": "APPLE_FINAL_CUT.VIDEO",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Final Cut Pro",
+      "artifact": "vídeo editado (profissional)",
+      "sourceKind": "APPLE_FINAL_CUT",
+      "taskType": "VIDEO",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "video/quicktime",
+        "video/mp4"
+      ],
+      "extensions": [
+        ".mov",
+        ".mp4",
+        ".fcpxml"
+      ],
+      "exportFormats": [
+        "MOV (ProRes, arquivo mestre)",
+        "MP4 (H.264/HEVC)",
+        "FCPXML (intercâmbio do projeto)"
+      ],
+      "formats": [
+        "MOV",
+        "MP4",
+        "FCPXML"
+      ],
+      "api": "Sem API; upload ou Share Sheet do arquivo exportado",
+      "scopes": [],
+      "linkable": "NAO",
+      "linkableHow": "não",
+      "via": [],
+      "notes": "ProRes gera arquivos enormes: pedir H.264/HEVC. FCPXML é só metadado de edição."
+    },
+    {
+      "id": "APPLE_ICLOUD_DRIVE.DOCUMENTO",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Arquivos / iCloud Drive",
+      "artifact": "arquivo ou pasta compartilhada",
+      "sourceKind": "APPLE_ICLOUD_DRIVE",
+      "taskType": "DOCUMENTO",
+      "taskTypeIsNew": false,
+      "nativeMime": [
+        "(MIME real do arquivo)"
+      ],
+      "extensions": [],
+      "exportFormats": [
+        "original (download pelo link)"
+      ],
+      "formats": [
+        "ORIGINAL"
+      ],
+      "api": "Sem API pública: o CloudKit Web Services só acessa contêineres do próprio app, não iWork/iCloud Drive/Notas. Chega por link de compartilhamento do iCloud (www.icloud.com/iclouddrive/..., opção 'Qualquer pessoa com o link'), Share Sheet ou upload",
+      "scopes": [],
+      "linkable": "NAO",
+      "linkableHow": "não — o link mostra a versão atual, mas não há aviso de mudança nem URL de download documentada; reimportar manualmente",
+      "via": [
+        "LINK"
+      ],
+      "notes": "taskType pelo MIME real; pasta compartilhada → PASTA. A página do link é montada em JavaScript, então o servidor não captura o arquivo de forma suportada: tratar como LINK + upload."
+    },
+    {
+      "id": "APPLE_PHOTOS.IMAGEM_EDITADA",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Fotos (Fotos do iCloud)",
+      "artifact": "foto ou vídeo",
+      "sourceKind": "APPLE_PHOTOS",
+      "taskType": "IMAGEM_EDITADA",
+      "taskTypeIsNew": false,
+      "nativeMime": [
+        "image/heic",
+        "image/jpeg",
+        "image/png",
+        "video/quicktime",
+        "image/x-adobe-dng"
+      ],
+      "extensions": [
+        ".heic",
+        ".jpg",
+        ".png",
+        ".mov",
+        ".dng"
+      ],
+      "exportFormats": [
+        "JPEG/HEIC ou original não modificado",
+        "MOV/MP4",
+        "link do iCloud (expira em 30 dias)",
+        "site público de álbum compartilhado"
+      ],
+      "formats": [
+        "JPEG",
+        "HEIC",
+        "MOV",
+        "MP4"
+      ],
+      "api": "Sem API web (PhotoKit só em app nativo). Chega por Share Sheet/upload, 'Copiar link do iCloud' ou site público de álbum compartilhado",
+      "scopes": [],
+      "linkable": "NAO",
+      "linkableHow": "não — o álbum compartilhado público pode ser reaberto, mas sem API oficial",
+      "via": [],
+      "notes": "Converter HEIC para JPEG na prévia; Live Photo = HEIC + MOV. Vídeo → VIDEO. EXIF com localização (LGPD). IMAGEM_EDITADA segue a tabela do RF4 para fotos."
+    },
+    {
+      "id": "APPLE_GARAGEBAND.AUDIO",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple GarageBand",
+      "artifact": "áudio (música, locução, podcast)",
+      "sourceKind": "APPLE_GARAGEBAND",
+      "taskType": "AUDIO",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "audio/mp4",
+        "audio/mpeg",
+        "audio/aiff",
+        "audio/wav"
+      ],
+      "extensions": [
+        ".m4a",
+        ".mp3",
+        ".aiff",
+        ".wav"
+      ],
+      "exportFormats": [
+        "AAC (M4A)",
+        "MP3",
+        "AIFF",
+        "WAVE"
+      ],
+      "formats": [
+        "AAC",
+        "M4A",
+        "MP3",
+        "AIFF",
+        "WAV"
+      ],
+      "api": "Sem API; Compartilhar > Exportar música para o disco (Mac) ou Compartilhar música (iOS) e upload",
+      "scopes": [],
+      "linkable": "NAO",
+      "linkableHow": "não",
+      "via": [],
+      "notes": "O projeto .band não serve; só o áudio exportado."
+    },
+    {
+      "id": "APPLE_LOGIC_PRO.AUDIO",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Logic Pro",
+      "artifact": "áudio (mixagem/bounce)",
+      "sourceKind": "APPLE_LOGIC_PRO",
+      "taskType": "AUDIO",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "audio/wav",
+        "audio/aiff",
+        "audio/x-caf",
+        "audio/mpeg",
+        "audio/mp4"
+      ],
+      "extensions": [
+        ".wav",
+        ".aif",
+        ".caf",
+        ".mp3",
+        ".m4a"
+      ],
+      "exportFormats": [
+        "WAV",
+        "AIFF",
+        "CAF",
+        "MP3",
+        "M4A (AAC ou Apple Lossless)"
+      ],
+      "formats": [
+        "WAV",
+        "AIFF",
+        "CAF",
+        "MP3",
+        "M4A",
+        "AAC"
+      ],
+      "api": "Sem API; bounce/exportação e upload",
+      "scopes": [],
+      "linkable": "NAO",
+      "linkableHow": "não",
+      "via": [],
+      "notes": "O projeto .logicx não serve; só o bounce."
+    },
+    {
+      "id": "APPLE_VOICE_MEMOS.AUDIO",
+      "ecosystem": "apple",
+      "provider": "APPLE_ICLOUD",
+      "app": "Apple Gravador (Voice Memos)",
+      "artifact": "gravação de áudio (reunião presencial, entrevista, ditado)",
+      "sourceKind": "APPLE_VOICE_MEMOS",
+      "taskType": "AUDIO",
+      "taskTypeIsNew": true,
+      "nativeMime": [
+        "audio/mp4"
+      ],
+      "extensions": [
+        ".m4a"
+      ],
+      "exportFormats": [
+        "M4A (AAC ou sem perdas)",
+        "transcrição copiada (iOS 18 ou posterior)"
+      ],
+      "formats": [
+        "M4A",
+        "AAC"
+      ],
+      "api": "Sem API; Share Sheet ou upload do .m4a",
+      "scopes": [],
+      "linkable": "NAO",
+      "linkableHow": "não",
+      "via": [],
+      "notes": "Se for reunião, pode virar GRAVACAO_REUNIAO + TRANSCRICAO (transcrição pelo próprio Work Station). LGPD: voz de terceiros — exigir ciência dos gravados."
+    }
+  ]
+}

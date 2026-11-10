@@ -2,9 +2,11 @@
 // Preferências (RF3.CA03): tema, idioma, densidade, tamanho da fonte, reduzir movimento, skin da Mesa, arte de fundo,
 // notificações, fuso, WIP e modo de IA — aplicadas imediatamente e persistidas (local agora; API no Bloco 3).
 // Sessões (RF2.CA05) já fala com a API (Bloco 4, D-62); Conta (perfil + 2FA, D-144), Dados (excluir com 30 dias para reativar,
-// D-145) e Termos (Velion, D-143) também. Privacidade segue como esqueleto (LGPD C, RF3.CA07–CA24).
+// D-145) e Termos (Velion, D-143) também. Privacidade segue como esqueleto (LGPD C, RF3.CA07–CA24). Conectores (RF4, RF20.CA07, RF23,
+// RF34) liga contas do Google e da Microsoft e mostra o catálogo de fontes — carregado só quando a aba abre (o catálogo é grande).
+import dynamic from "next/dynamic";
 import { useState } from "react";
-import { BackgroundArt, Badge, Button, Card, Checkbox, EmptyState, Field, Input, RadioCards, Select, Switch, WS_BACKGROUNDS, useToast } from "@/components/ui";
+import { BackgroundArt, Badge, Button, Card, Checkbox, EmptyState, Field, Input, LoadingState, RadioCards, Select, Switch, WS_BACKGROUNDS, useToast } from "@/components/ui";
 import { RfPage } from "@/components/shell/RfPage";
 import { SessionsPanel } from "@/components/settings/SessionsPanel";
 import { AccountPanel } from "@/components/account/AccountPanel";
@@ -20,6 +22,7 @@ import { AI_MODES, DENSITIES, DESK_SKINS, FONT_SCALES, THEMES, type AiMode, type
 const PAGE = pageByRoute("/settings")!;
 const TIMEZONES = ["America/Sao_Paulo", "America/Manaus", "America/Rio_Branco", "America/Noronha", "America/Belem", "America/Fortaleza", "America/Recife", "America/Bahia", "America/Cuiaba", "America/Campo_Grande", "America/Boa_Vista", "UTC"];
 const SKELETON_TABS = new Set(["privacidade"]);
+const ConnectorsPanel = dynamic(() => import("@/components/connectors/ConnectorsPanel").then((m) => m.ConnectorsPanel), { loading: () => <LoadingState /> });
 
 function Appearance() {
   const { t, locales } = useI18n();
@@ -145,6 +148,7 @@ export default function SettingsPage() {
         if (tab === "trabalho") return <Work />;
         if (tab === "sessoes") return <SessionsPanel />;
         if (tab === "conta") return <AccountPanel />;
+        if (tab === "conectores") return <ConnectorsPanel />;
         if (tab === "dados") return <DataPanel />;
         if (tab === "termos") return <TermsPanel />;
         if (SKELETON_TABS.has(tab)) {

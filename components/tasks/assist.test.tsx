@@ -84,19 +84,22 @@ describe("assistente da área no criador de tarefas", () => {
     expect(check("pqEtica")!.getAttribute("data-status")).toBe("OK");
   });
 
-  it("campo de estudo carrega o pacote: modelos do campo, rubrica do campo e o campo vai junto na tarefa", async () => {
+  it("campo de estudo carrega o pacote: modelos do campo, rubrica do campo e o campo vai junto na tarefa", { timeout: 20_000 }, async () => {
     const onSaved = vi.fn();
     renderWithProviders(<TaskForm mode="create" onSaved={onSaved} />);
     fireEvent.change(within(assist()).getByLabelText(/Campo de estudo/), { target: { value: "direito" } });
     expect((screen.getByLabelText(/Área profissional/) as HTMLSelectElement).value).toBe("JURIDICO");
-    expect(await within(assist()).findByText(/Do campo · Direito/)).toBeTruthy();
-    await waitFor(() => expect(check("campoRubrica")).not.toBeNull());
+    // o pacote do campo chega por import dinâmico: com a suíte inteira em paralelo pode passar de 1 s
+    expect(await within(assist()).findByText(/Do campo · Direito/, {}, { timeout: 8000 })).toBeTruthy();
+    await waitFor(() => expect(check("campoRubrica")).not.toBeNull(), { timeout: 8000 });
     const first = within(assist()).getAllByRole("button", { name: /^Usar o modelo / })[0]!;
     fireEvent.click(first);
     fireEvent.click(screen.getByTestId("task-submit"));
-    await waitFor(() => expect(bodies.length).toBe(1));
+    await waitFor(() => expect(bodies.length).toBe(1), { timeout: 8000 });
     expect((bodies[0]!.extensions as Record<string, string>).studyField).toBe("direito");
-    expect(window.localStorage.getItem("ws.tasks.studyField")).toBe("direito");
+    // lembrado por conta, nunca numa chave que a próxima pessoa do mesmo navegador leria
+    expect(window.localStorage.getItem(`ws.tasks.studyField:${ME}`)).toBe("direito");
+    expect(window.localStorage.getItem("ws.tasks.studyField")).toBeNull();
   });
 
   it("?modelo= abre o criador já com o modelo aplicado", () => {

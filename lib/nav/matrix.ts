@@ -104,6 +104,8 @@ export const SETTINGS_TABS: readonly SubTab[] = [
   { slug: "notificacoes", labelKey: "tabs.settings.notificacoes" },
   { slug: "trabalho", labelKey: "tabs.settings.trabalho" },
   { slug: "conta", labelKey: "tabs.settings.conta" },
+  // RF4/RF20.CA07/RF23/RF34: contas do Google e da Microsoft, Apple iCloud por link, catálogo de fontes (contrato de 09/11/2026)
+  { slug: "conectores", labelKey: "tabs.settings.conectores" },
   { slug: "privacidade", labelKey: "tabs.settings.privacidade" },
   { slug: "dados", labelKey: "tabs.settings.dados" },
   { slug: "sessoes", labelKey: "tabs.settings.sessoes" },
