@@ -115,6 +115,10 @@ export function applyTemplate(draft: TaskDraft, tpl: TaskTemplate): TaskDraft {
   const allowed = new Set(AREA_EXTENSIONS[tpl.area]);
   const extensions: Record<string, string> = {};
   for (const [k, v] of Object.entries(tpl.extensions)) if (allowed.has(k) && v) extensions[k] = v;
+  // modelo do campo: guarda a tarefa-guia de origem (a rubrica do campo só confere os critérios dela); da área: limpa
+  const guided = tpl.origin === "CAMPO" ? tpl.tags?.[0] : undefined;
+  const keep = { ...draft.extensions };
+  delete keep.guidedTask;
   return {
     ...draft,
     title: tpl.title,
@@ -126,6 +130,6 @@ export function applyTemplate(draft: TaskDraft, tpl: TaskTemplate): TaskDraft {
     deliverables: [...tpl.deliverables],
     criteria: [...tpl.criteria],
     references: tpl.references.map((r) => ({ ...r })),
-    extensions: { ...draft.extensions, ...extensions },
+    extensions: { ...keep, ...extensions, ...(guided ? { guidedTask: guided } : {}) },
   };
 }

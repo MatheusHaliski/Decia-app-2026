@@ -91,4 +91,25 @@ describe("checagem de qualidade da tarefa", () => {
     expect(applied).toMatchObject({ title: tpls[0]!.title, area: "JURIDICO", dueAt: "2026-12-10", accessClass: "SIGILOSO" });
     expect(applied.criteria).toEqual(tpls[0]!.criteria);
   });
+
+  it("rubrica do campo só confere os critérios da tarefa-guia de origem ou do mesmo tipo de peça", () => {
+    const p = pack("engenharia-de-software");
+    const diagram = assessTask({ ...GOOD, area: "SOFTWARE", type: "DESENHO_TECNICO", extensions: { guidedTask: "D4" } }, p);
+    const onlyD4 = p.rubric.objective.filter((r) => r.auto && r.appliesTo.includes("D4"));
+    expect(byId(diagram.checks, "campoRubrica")!.vars).toMatchObject({ total: Math.min(6, onlyD4.length) });
+    // sem tarefa-guia, um documento usa só critérios de tarefas de texto (Letters), nunca os de desenho
+    const doc = assessTask({ ...GOOD, area: "SOFTWARE" }, p);
+    const fixes = (byId(doc.checks, "campoRubrica")!.fixes ?? []).map((f) => (f as { text: string }).text.toLowerCase());
+    const drawingOnly = p.rubric.objective.filter((r) => r.auto && r.appliesTo.every((a) => a.startsWith("D"))).map((r) => r.check.toLowerCase());
+    expect(fixes.some((f) => drawingOnly.includes(f))).toBe(false);
+  });
+
+  it("aplicar modelo do campo registra a tarefa-guia; modelo da área limpa o registro", () => {
+    const p = pack("direito");
+    const tpl = packTemplates(p, "JURIDICO")[0]!;
+    const fromField = applyTemplate(EMPTY, tpl);
+    expect(fromField.extensions.guidedTask).toBe(tpl.tags![0]);
+    const areaTpl = { ...tpl, origin: "AREA" as const, id: "area.juridico.x", tags: [] };
+    expect(applyTemplate(fromField, areaTpl).extensions.guidedTask).toBeUndefined();
+  });
 });

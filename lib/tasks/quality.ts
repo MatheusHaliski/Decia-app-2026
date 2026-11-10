@@ -188,8 +188,16 @@ function areaChecks(area: WorkArea, d: TaskDraft, criteria: string[], refs: Task
 function fieldChecks(pack: OccupationPack, d: TaskDraft, criteria: string[], deliverables: string[], refs: TaskDraft["references"]): QualityCheck[] {
   const out: QualityCheck[] = [];
   const crit = criteria.map(stems);
-  // rubrica objetiva do campo: critérios automáticos cobertos pelos critérios de aceite da tarefa
-  const rubric = pack.rubric.objective.filter((r) => r.auto).slice(0, 6);
+  // rubrica objetiva do campo: só os critérios automáticos que valem para ESTA tarefa — os da tarefa-guia de onde o modelo veio
+  // ou, sem ela, os das tarefas do mesmo tipo de peça (texto no Letters × desenho no Drawings); nunca os de outra tarefa
+  const guided = (d.extensions.guidedTask ?? "").trim();
+  const drawingTypes = new Set(["DESENHO_TECNICO", "IMAGEM_EDITADA", "IMAGEM_WEB"]);
+  const customEditor = new Map(pack.guidedTasks.custom.map((c) => [c.id, c.editor]));
+  const editorOf = (code: string) => (code.startsWith("D") ? "drawings" : code.startsWith("L") ? "letters" : customEditor.get(code));
+  const wanted = drawingTypes.has(d.type) ? "drawings" : "letters";
+  const rubric = pack.rubric.objective
+    .filter((r) => r.auto && (guided ? r.appliesTo.includes(guided) : r.appliesTo.some((a) => editorOf(a) === wanted)))
+    .slice(0, 6);
   if (rubric.length) {
     const covered = rubric.filter((r) => crit.some((c) => overlap(stems(r.check), c) >= 2));
     const missing = rubric.filter((r) => !covered.includes(r));

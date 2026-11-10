@@ -4165,5 +4165,6 @@
   "pm.ref.PLANO_COMUNICACAO": "Aula de projetos · 2.3 e 3: partes interessadas e plano de comunicação",
   "pm.v.commAdded": "Comunicação planejada: {info}",
   "pm.v.commUpdated": "Comunicação alterada: {info}",
-  "pm.v.commRemoved": "Comunicação removida: {info}"
+  "pm.v.commRemoved": "Comunicação removida: {info}",
+  "tasks.ext.guidedTask": "Tarefa-guia do campo"
 }

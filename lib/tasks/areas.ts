@@ -22,6 +22,8 @@ export const AREA_DEFAULT_ACCESS: Partial<Record<WorkArea, AccessClassName>> = {
 
 /** Extensão que registra o campo de estudo escolhido como lente da tarefa (código do ramo; regra de chave do servidor). */
 export const STUDY_FIELD_KEY = "studyField";
+/** Extensão que registra a tarefa-guia do pacote (L1–L10, D1–D10 ou própria do campo) de onde o modelo veio. */
+export const GUIDED_TASK_KEY = "guidedTask";
 
 export const fieldByCode = (code: string | null | undefined): FieldEntry | undefined => (code ? FIELD_INDEX.find((f) => f.code === code) : undefined);
 export const fieldsOfArea = (area: WorkArea): FieldEntry[] => FIELD_INDEX.filter((f) => f.area === area);

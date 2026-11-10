@@ -4165,5 +4165,6 @@
   "pm.ref.PLANO_COMUNICACAO": "Project course · 2.3 and 3: stakeholders and communication plan",
   "pm.v.commAdded": "Communication planned: {info}",
   "pm.v.commUpdated": "Communication changed: {info}",
-  "pm.v.commRemoved": "Communication removed: {info}"
+  "pm.v.commRemoved": "Communication removed: {info}",
+  "tasks.ext.guidedTask": "Field guided task"
 }
