@@ -63,6 +63,10 @@ export function buildDemoProject(): ProjectModel {
       { id: "s4", name: "Controle interno", role: "Auditoria", power: 4, interest: 2 },
       { id: "s5", name: "Fornecedor de nuvem", role: "Fornecedor", power: 2, interest: 2 },
     ],
+    communications: [
+      { id: "cm1", info: "Status do projeto: valor agregado, riscos e mudanças", audienceIds: ["s2"], channel: "REUNIAO", frequency: "SEMANAL", ownerId: "u-pessoa" },
+      { id: "cm2", info: "Novidades da plataforma para quem vai usar", audienceIds: ["s3"], channel: "EMAIL", frequency: "MENSAL", ownerId: "u-bruno" },
+    ],
     requirements: [
       { id: "r1", code: "RF-01", text: "Registrar decisão com critérios e alternativas", origin: "Transparência das decisões", originStakeholderId: "s2", deliverableIds: ["w11"], test: "CT-01" },
       { id: "r2", code: "RF-02", text: "Exportar ata com snapshot imutável", origin: "Prestação de contas (IBGC)", deliverableIds: ["w12"] },

@@ -15,7 +15,7 @@ import { PMC_TARGET, type PmcBlock } from "./lifecycle";
 import { PROJECT_PHASES } from "./types";
 import type {
   Approach, BoardModel, BudgetLine, BusinessCase, CanvasNote, CanvasRef, ChangeImpact, ChangeRequest, ChangeStatus, ChangeType,
-  Charter, Closure, Dependency, DependencyType, FlowStatus, GateOutcome, Governance, Lesson, ProjectModel, ProjectPhase, RaciLetter,
+  Charter, Closure, CommItem, Dependency, DependencyType, FlowStatus, GateOutcome, Governance, Lesson, ProjectModel, ProjectPhase, RaciLetter,
   Requirement, Risk, RiskKind, SevenRs, Stakeholder, Task, WbsNode,
 } from "./types";
 
@@ -48,6 +48,9 @@ export type ProjectCommand =
   | { type: "STK_ADD"; name: string; power?: number; interest?: number; role?: string }
   | { type: "STK_UPDATE"; id: string; patch: Partial<Pick<Stakeholder, "name" | "role" | "power" | "interest">> }
   | { type: "STK_REMOVE"; id: string }
+  | { type: "COMM_ADD"; info: string; audienceIds: string[]; channel: CommItem["channel"]; frequency: CommItem["frequency"]; ownerId?: string }
+  | { type: "COMM_UPDATE"; id: string; patch: Partial<Omit<CommItem, "id">> }
+  | { type: "COMM_REMOVE"; id: string }
   | { type: "RISK_ADD"; title: string; kind?: RiskKind; probability?: number; impact?: number; impactLevel?: number }
   | { type: "RISK_UPDATE"; id: string; patch: Partial<Pick<Risk, "title" | "kind" | "probability" | "impact" | "impactLevel" | "response" | "ownerId" | "status" | "taskIds">> }
   | { type: "RISK_REMOVE"; id: string }
@@ -432,7 +435,37 @@ function reduce(model: ProjectModel, cmd: ProjectCommand, ctx: CommandContext): 
         ...model,
         stakeholders: model.stakeholders.filter((x) => x.id !== s.id),
         requirements: model.requirements.map((r) => (r.originStakeholderId === s.id ? { ...r, originStakeholderId: undefined } : r)),
+        communications: (model.communications ?? []).map((c) => ({ ...c, audienceIds: c.audienceIds.filter((id) => id !== s.id) })).filter((c) => c.audienceIds.length),
       }, makeRef("STK", s.id)), true, "stkRemoved", { name: s.name });
+    }
+
+    // ---------------- plano de comunicação ----------------
+    case "COMM_ADD": {
+      const info = clean(cmd.info);
+      if (!info) return fail("TEXTO_VAZIO");
+      const audienceIds = [...new Set(cmd.audienceIds)].filter((id) => model.stakeholders.some((s) => s.id === id));
+      if (!audienceIds.length) return fail("VALOR_INVALIDO", "audience");
+      const item: CommItem = { id: newId("cm"), info, audienceIds, channel: cmd.channel, frequency: cmd.frequency, ownerId: cmd.ownerId };
+      return ok({ ...model, communications: [...(model.communications ?? []), item] }, true, "commAdded", { info: info.slice(0, 60) });
+    }
+    case "COMM_UPDATE": {
+      const c = (model.communications ?? []).find((x) => x.id === cmd.id);
+      if (!c) return fail("NAO_ENCONTRADO", cmd.id);
+      const patch = { ...cmd.patch };
+      if (patch.info !== undefined) {
+        patch.info = clean(patch.info);
+        if (!patch.info) return fail("TEXTO_VAZIO");
+      }
+      if (patch.audienceIds) {
+        patch.audienceIds = [...new Set(patch.audienceIds)].filter((id) => model.stakeholders.some((s) => s.id === id));
+        if (!patch.audienceIds.length) return fail("VALOR_INVALIDO", "audience");
+      }
+      return ok({ ...model, communications: (model.communications ?? []).map((x) => (x.id === c.id ? { ...x, ...patch } : x)) }, true, "commUpdated", { info: (patch.info ?? c.info).slice(0, 60) });
+    }
+    case "COMM_REMOVE": {
+      const c = (model.communications ?? []).find((x) => x.id === cmd.id);
+      if (!c) return fail("NAO_ENCONTRADO", cmd.id);
+      return ok({ ...model, communications: (model.communications ?? []).filter((x) => x.id !== c.id) }, true, "commRemoved", { info: c.info.slice(0, 60) });
     }
 
     // ---------------- riscos e RACI ----------------

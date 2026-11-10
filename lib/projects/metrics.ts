@@ -8,7 +8,7 @@
  */
 import { scheduleOf } from "./derive";
 import { businessCase } from "./engine/finance";
-import { agreementProblems, gut, PM_AUTHORITY, riskExposure } from "./engine/methods";
+import { agreementProblems, gut, mendelow, PM_AUTHORITY, riskExposure } from "./engine/methods";
 import { PHASE_META, type GateCriterionId } from "./lifecycle";
 import type { ProjectModel, ProjectPhase } from "./types";
 import { PROJECT_PHASES } from "./types";
@@ -21,7 +21,7 @@ export type WorkspaceTab = "quadro" | "canvas" | "cronograma" | "iniciacao" | "e
 
 export type MetricId =
   | "Q_PORTAO" | "Q_EAP_100" | "Q_EAP_SUBSTANTIVOS" | "Q_RACI" | "Q_RASTREABILIDADE" | "Q_GOLD_PLATING" | "Q_CRONOGRAMA" | "Q_PERT"
-  | "Q_IDC" | "Q_IDP" | "Q_RESERVA" | "Q_RISCOS_RESPOSTA" | "Q_SCOPE_CREEP" | "Q_MUDANCAS_ANALISE" | "Q_LICOES"
+  | "Q_IDC" | "Q_IDP" | "Q_RESERVA" | "Q_RISCOS_RESPOSTA" | "Q_SCOPE_CREEP" | "Q_MUDANCAS_ANALISE" | "Q_LICOES" | "Q_COMUNICACAO"
   | "G_ALINHAMENTO" | "G_SMART" | "G_TAP_PATROCINADOR" | "G_GUT" | "G_DECISOES_PORTAO" | "G_DECISOES_MUDANCA" | "G_ISO38500"
   | "G_RUN_GROW_TRANSFORM" | "G_ACORDOS_SERVICO" | "G_AUTORIDADE_GP"
   | "W_CARGA" | "W_CRITICO_CONCENTRADO" | "W_QUATRO_OLHOS" | "W_SEM_RESPONSAVEL" | "W_PARTICIPACAO_EDICOES" | "W_PARTICIPACAO_DECISOES";
@@ -177,6 +177,20 @@ export function computeMetrics(model: ProjectModel, decisions: readonly LinkedDe
   const phasesWithLessons = new Set(model.lessons.map((l) => l.phase)).size;
   quality.push(m("Q_LICOES", "QUALIDADE", elapsed <= 1 ? (phasesWithLessons ? "OK" : "SEM_DADOS") : band(pct(phasesWithLessons, elapsed), 50, 20), `${phasesWithLessons}/${elapsed}`,
     { phases: phasesWithLessons, elapsed, total: model.lessons.length }, "encerramento", "LICOES_AO_LONGO"));
+
+  // plano de comunicação × mapa poder × interesse: quem se gerencia de perto precisa de comunicação frequente; quem se mantém
+  // satisfeito, ao menos periódica
+  const comms = model.communications ?? [];
+  const needs = model.stakeholders.filter((st) => { const k = mendelow(st.power, st.interest); return k === "GERENCIAR_DE_PERTO" || k === "MANTER_SATISFEITO"; });
+  const frequentEnough = (st: (typeof model.stakeholders)[number]) => {
+    const own = comms.filter((c) => c.audienceIds.includes(st.id));
+    if (!own.length) return false;
+    if (mendelow(st.power, st.interest) !== "GERENCIAR_DE_PERTO") return true;
+    return own.some((c) => c.frequency === "DIARIA" || c.frequency === "SEMANAL" || c.frequency === "QUINZENAL");
+  };
+  const uncovered = needs.filter((st) => !frequentEnough(st));
+  quality.push(m("Q_COMUNICACAO", "QUALIDADE", !model.stakeholders.length ? "SEM_DADOS" : uncovered.length ? (uncovered.length > 1 ? "CRITICO" : "ATENCAO") : "OK", `${needs.length - uncovered.length}/${needs.length}`,
+    { covered: needs.length - uncovered.length, total: needs.length, names: uncovered.map((st) => st.name).join(", ") || "—" }, "riscos", "PLANO_COMUNICACAO"));
 
   // --- governança
   const objs = model.charter.objectives;

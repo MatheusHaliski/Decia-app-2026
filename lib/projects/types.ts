@@ -98,6 +98,13 @@ export interface Requirement {
 
 export interface Stakeholder { id: string; name: string; role?: string; power: number; interest: number }
 
+/** Plano de comunicação (PMBOK, gerenciamento das comunicações): o quê, para quem, por qual canal, com que frequência, quem envia. */
+export const COMM_CHANNELS = ["REUNIAO", "EMAIL", "RELATORIO", "PAINEL", "MENSAGEM", "APRESENTACAO"] as const;
+export type CommChannel = (typeof COMM_CHANNELS)[number];
+export const COMM_FREQUENCIES = ["DIARIA", "SEMANAL", "QUINZENAL", "MENSAL", "POR_MARCO", "SOB_DEMANDA"] as const;
+export type CommFrequency = (typeof COMM_FREQUENCIES)[number];
+export interface CommItem { id: string; info: string; audienceIds: string[]; channel: CommChannel; frequency: CommFrequency; ownerId?: string }
+
 export interface Risk {
   id: string;
   title: string;
@@ -213,6 +220,8 @@ export interface ProjectModel {
   charter: Charter;
   businessCase: BusinessCase;
   stakeholders: Stakeholder[];
+  /** plano de comunicação ligado às partes interessadas */
+  communications?: CommItem[];
   requirements: Requirement[];
   wbs: WbsNode[];
   tasks: Task[];

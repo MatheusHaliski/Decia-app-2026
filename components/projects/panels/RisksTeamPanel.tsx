@@ -20,6 +20,7 @@ import { workload } from "@/lib/projects/feedback";
 import { computeMetrics, evaluateGate, type Metric, type ProjectMetrics } from "@/lib/projects/metrics";
 import type { ProjectModel, Risk } from "@/lib/projects/types";
 import { evmView, raciMatrix, riskRows, stakeholderMap, type RiskRow } from "@/lib/projects/views";
+import { CommunicationPlan } from "@/components/projects/CommunicationPlan";
 import {
   AddForm, CAPTION, CommandNotice, LEAD, MONO, MUTED, PhaseGates, RemoveButton, STATUS_BAR, TabMetrics, personOptions, useCommand,
   type SectionProps,
@@ -111,6 +112,7 @@ export function RisksTeamPanel(props: PanelProps) {
       <RiskSection {...section} />
       <ReserveSection {...section} metrics={metrics} />
       <StakeholderSection {...section} />
+      <CommunicationPlan {...props} dispatch={run} />
       <RaciSection {...section} />
       <AssignmentSection {...section} metrics={metrics} />
       <PhaseGates model={model} phases={["PLANEJAMENTO", "ANALISE"]} title={t("pm.rt.gates.title")} hint={t("pm.rt.gates.hint")} />
