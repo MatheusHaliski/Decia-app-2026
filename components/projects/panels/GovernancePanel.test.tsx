@@ -263,4 +263,12 @@ describe("GovernancePanel — DECIA, AHP e leitura", () => {
     expect(h.state.model.version).toBe(4);
     expect(norm(screen.getByTestId("lines-total").textContent)).toBe("R$ 50.000");
   });
+
+  it("fora de TI a seção vira só a conformidade com a regulação da área (sem os princípios da ISO/IEC 38500)", () => {
+    const base = buildDemoProject();
+    renderPanel(GovernancePanel, { model: { ...base, area: "JURIDICO", governance: { ...base.governance, iso38500: {} } } });
+    expect(screen.queryByTestId("iso")).toBeNull();
+    const box = screen.getByTestId("compliance");
+    expect(within(box).getByText(/leis, normas e regulamentos da área/)).toBeTruthy();
+  });
 });

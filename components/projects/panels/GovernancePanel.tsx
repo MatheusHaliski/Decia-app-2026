@@ -17,7 +17,7 @@ import { newId, type ProjectCommand } from "@/lib/projects/commands";
 import { RANDOM_INDEX, ahp, pairwiseMatrix } from "@/lib/projects/engine/ahp";
 import { ORG_STRUCTURES, PM_AUTHORITY, gut } from "@/lib/projects/engine/methods";
 import { computeMetrics, type Metric, type MetricId, type WorkspaceTab } from "@/lib/projects/metrics";
-import type { BudgetLine, Governance, OrgStructure, ProjectModel } from "@/lib/projects/types";
+import { isItProject, type BudgetLine, type Governance, type OrgStructure, type ProjectModel } from "@/lib/projects/types";
 
 type T = (key: string, vars?: Record<string, string | number>) => string;
 type Spend = BudgetLine["spend"];
@@ -720,6 +720,17 @@ function IsoSection({ ctx }: { ctx: Ctx }) {
     next[k] = v;
     run({ type: "GOVERNANCE_UPDATE", patch: { iso38500: next } }, "iso");
   };
+  // fora de TI, a ISO/IEC 38500 (governança corporativa de TI) não se aplica; o portão da Análise pede só a conformidade com as
+  // leis, normas e regulamentos da área (o mesmo critério CONFORMIDADE_AVALIADA)
+  if (!isItProject(model)) {
+    return (
+      <Card as="section" aria-labelledby={id} className="grid content-start gap-[var(--ws-space-3)]" data-testid="compliance">
+        <SectionTitle id={id}>{t("pm.ws.compliance.title")}</SectionTitle>
+        <Checkbox checked={iso.CONFORMIDADE === true} disabled={readOnly} onCheckedChange={(v) => toggle("CONFORMIDADE", v)} label={t("pm.ws.compliance.label")} hint={t("pm.ws.compliance.hint")} />
+        {alertAt("iso")}
+      </Card>
+    );
+  }
   return (
     <Card as="section" aria-labelledby={id} className="grid content-start gap-[var(--ws-space-3)]">
       <SectionTitle id={id} actions={<Tag tone={n === 6 ? "success" : "warning"} className="tabular-nums">{t("pm.gov.iso.count", { n })}</Tag>}>
