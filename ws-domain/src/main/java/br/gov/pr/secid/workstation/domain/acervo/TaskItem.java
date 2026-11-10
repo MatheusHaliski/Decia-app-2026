@@ -44,7 +44,7 @@ public record TaskItem(
         @Attr(value = "horas estimadas", opt = true, sql = "DECIMAL(8,2)") BigDecimal estimatedHours,
         @Attr(value = "valor envolvido em R$ (0 se não se aplica)", sql = "DECIMAL(16,2)", def = "0") BigDecimal amountInvolved,
         @Attr(value = "origem institucional", def = "'INTERNA'") TaskOrigin origin,
-        @Attr("como entrou no acervo") SourceKind sourceKind,
+        @Attr(value = "como entrou no acervo", len = 20) SourceKind sourceKind,
         @Attr(value = "id Drive/OneDrive, URL, protocolo, messageId", opt = true, len = 500) String sourceRef,
         @Attr(value = "vinculado ou copiado (RF20.CA07)", opt = true) LinkMode linkMode,
         @Attr(value = "órgão/fornecedor", opt = true, ref = "org_entities", onDelete = OnDelete.RESTRICT) UUID orgEntityId,
@@ -90,6 +90,9 @@ public record TaskItem(
         @Attr(value = "chancelas aprovadas (cache)", opt = true) String sealIdsJson) {
 
     public static final int MAX_TAGS_PER_KIND = 2;
+    /** Tamanho de {@code tasks.source_ref} e de {@code tasks.format}. */
+    public static final int MAX_SOURCE_REF = 500;
+    public static final int MAX_FORMAT = 20;
 
     public TaskItem {
         if (processTags != null && processTags.size() > MAX_TAGS_PER_KIND) {
@@ -143,6 +146,32 @@ public record TaskItem(
         return new TaskItem(null, ownerId, departmentId, title, null, descriptionMd, type, category, null, Set.of(), Set.of(), accessClass, null,
                 null, null, BigDecimal.ZERO, TaskOrigin.INTERNA, SourceKind.MANUAL, null, null, null, responsibleId, dueAt, null, null, null, null,
                 priority, TaskState.RASCUNHO, null, null, null, null, null, null, null, null, visibility, false, false, false, null, null, null,
+                null, CoverMode.AUTO, null, Set.of(), null, null, null, null, 0, 0, 0, 0, 0, 0, 0, 0, null);
+    }
+
+    /**
+     * Tarefa trazida de uma fonte externa (RF20.CA07 — conectores e importação por link): mesmos padrões de {@link #create}, mas com a
+     * fonte ({@code sourceKind} ≠ MANUAL), o formato, a referência externa ({@code sourceRef}: URL web) e o modo (VINCULADO guarda só a
+     * referência para sincronizar; COPIADO também guarda o conteúdo como anexo).
+     */
+    public static TaskItem fromSource(UUID ownerId, UUID departmentId, String title, String descriptionMd, TaskType type, String format,
+                                      SourceKind sourceKind, String sourceRef, LinkMode linkMode, AccessClassification accessClass,
+                                      Visibility visibility) {
+        if (sourceKind == null || sourceKind == SourceKind.MANUAL) {
+            throw new IllegalArgumentException("VALIDACAO: tarefa importada exige sourceKind de fonte externa");
+        }
+        if (linkMode == null) {
+            throw new IllegalArgumentException("VALIDACAO: tarefa importada exige linkMode (VINCULADO ou COPIADO)");
+        }
+        if (sourceRef != null && sourceRef.length() > MAX_SOURCE_REF) {
+            throw new IllegalArgumentException("VALIDACAO: sourceRef ≤ " + MAX_SOURCE_REF);
+        }
+        if (format != null && format.length() > MAX_FORMAT) {
+            throw new IllegalArgumentException("VALIDACAO: format ≤ " + MAX_FORMAT);
+        }
+        return new TaskItem(null, ownerId, departmentId, title, null, descriptionMd, type, null, null, Set.of(), Set.of(), accessClass, format,
+                null, null, BigDecimal.ZERO, TaskOrigin.INTERNA, sourceKind, sourceRef, linkMode, null, null, null, null, null, null, null,
+                Priority.MEDIA, TaskState.RASCUNHO, null, null, null, null, null, null, null, null, visibility, false, false, false, null, null, null,
                 null, CoverMode.AUTO, null, Set.of(), null, null, null, null, 0, 0, 0, 0, 0, 0, 0, 0, null);
     }
 

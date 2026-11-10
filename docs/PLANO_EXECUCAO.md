@@ -125,6 +125,10 @@ teste que falharia sem ele, segredos só pelo nome, nunca editar migration aplic
 | RF47 Encontrar | D-127–D-129 | Q-227–Q-229 | V44 |
 | RF48 Agentes (Copilot de testes) | D-130–D-134 | Q-230–Q-234 | V45 |
 | Identidade: 2FA, exclusão em 30 dias e termos da Velion (RF1–RF3, 17/10/2026) | D-143–D-146 | Q-241–Q-243 | V46 |
+| RF3 especialidades e publicação do perfil (onda 1 da auditoria, 31/10/2026) | — | — | V47 |
+| RF46 mensagens diretas (31/10/2026) | — | — | V59 |
+| Conectores de fontes externas (RF4, RF20, RF23; 09/11/2026): tipos e `SourceKind` por aplicativo, contas e pedidos OAuth | — | Q-267 | V60–V61 |
+| Profissão de interesse (RF75 E1–E5, RF78 M1–M3, RF81) — planejada, renumerada depois dos conectores (Q-255) | D-147–D-152 | Q-244–Q-267 | V62–V68 |
 
 Faixa não usada fica livre (o `MigrationVersionsTest` só proíbe versão repetida e aceita lacunas; se um trabalho precisar
 de mais de uma migration, pede uma faixa nova neste quadro antes de criar).

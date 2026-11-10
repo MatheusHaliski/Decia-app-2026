@@ -4173,5 +4173,8 @@
   "pm.v.areaSet": "Área del proyecto: {area}",
   "pm.ws.compliance.title": "Conformidad",
   "pm.ws.compliance.label": "Conformidad evaluada con las leyes, normas y reglamentos del área",
-  "pm.ws.compliance.hint": "Criterio de salida de la puerta de Análisis. En proyectos de TI forma parte de los seis principios de la ISO/IEC 38500; en las demás áreas vale la regulación del área (consejo profesional, normas técnicas, protección de datos)."
+  "pm.ws.compliance.hint": "Criterio de salida de la puerta de Análisis. En proyectos de TI forma parte de los seis principios de la ISO/IEC 38500; en las demás áreas vale la regulación del área (consejo profesional, normas técnicas, protección de datos).",
+  "connectors.return.reason.ESTADO_INVALIDO": "La respuesta del proveedor no coincidió (solicitud caducada, ya usada o de otra sesión). Empieza la conexión de nuevo.",
+  "connectors.return.reason.ESCOPO_INSUFICIENTE": "En la página del proveedor quedó sin marcar el permiso para leer los archivos. Conecta de nuevo y mantén marcados los permisos solicitados.",
+  "connectors.return.reason.ERRO_INTERNO": "Algo salió mal de nuestro lado al completar la conexión. Inténtalo de nuevo; si continúa, avisa al soporte."
 }

@@ -19,6 +19,9 @@ import br.gov.pr.secid.workstation.domain.chancelas.Seal;
 import br.gov.pr.secid.workstation.domain.chancelas.SealBond;
 import br.gov.pr.secid.workstation.domain.chancelas.SealPolicy;
 import br.gov.pr.secid.workstation.domain.chancelas.SealProposal;
+import br.gov.pr.secid.workstation.domain.connectors.ConnectorAccount;
+import br.gov.pr.secid.workstation.domain.connectors.ConnectorOAuthState;
+import br.gov.pr.secid.workstation.domain.connectors.TaskExternalLink;
 import br.gov.pr.secid.workstation.domain.decia.AiQuestion;
 import br.gov.pr.secid.workstation.domain.decia.AnalyticalSummary;
 import br.gov.pr.secid.workstation.domain.decia.DeciaSession;
@@ -181,7 +184,8 @@ public final class DomainCatalog {
             Map.entry(22, "rf29_decisao_estruturada"),
             Map.entry(24, "seg_bloco5_quarentena_midia"),
             Map.entry(36, "acervo_briefing_tarefas"),
-            Map.entry(59, "rf46_mensagens_diretas"));
+            Map.entry(59, "rf46_mensagens_diretas"),
+            Map.entry(61, "rf20_conectores_fontes_externas"));
 
     /**
      * FKs de tabelas que NÃO são geradas pelo catálogo (V2/Bloco 3) e que passam a existir quando a tabela-pai nasce:
@@ -241,6 +245,9 @@ public final class DomainCatalog {
             TaskBrief.class,
             // V59 — Onda 7: mensagens diretas em MySQL (fallback do Cassandra) e o par único da conversa 1:1 (RF46). V38–V45 reservadas.
             DirectMessageRecord.class, DirectConversationPair.class,
+            // V61 — conectores de fontes externas (RF4, RF20.CA07, RF23, RF34): contas OAuth, estado OAuth e origem externa da tarefa.
+            // V60 (escrita à mão, como a V37) só amplia os CHECKs de TaskType/SourceKind.
+            ConnectorAccount.class, ConnectorOAuthState.class, TaskExternalLink.class,
             // V2 — já existem (só domínio + catálogo)
             AiInferenceLog.class, DomainEventOutbox.class, FeatureFlag.class, MediaObject.class);
 

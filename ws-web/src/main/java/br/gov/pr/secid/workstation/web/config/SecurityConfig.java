@@ -29,8 +29,8 @@ import java.util.List;
 /**
  * Segurança da API (ARQUITETURA §3.3): stateless, JWT RS256 próprio (OAuth2 Resource Server), papel vindo do claim
  * {@code role}. Público: {@code GET /actuator/health}, OpenAPI (desligável em prod) e as rotas de entrada da
- * autenticação (login, refresh, cadastro, verificação de e-mail, redefinição de senha, OIDC, consulta de username) —
- * todas limitadas por IP pelo {@code AuthRateLimitFilter}, que roda ANTES desta cadeia. O resto do Actuator exige
+ * autenticação (login, refresh, cadastro, verificação de e-mail, redefinição de senha, OIDC, consulta de username) e o retorno do
+ * OAuth dos conectores — todas limitadas por IP pelo {@code AuthRateLimitFilter}, que roda ANTES desta cadeia. O resto do Actuator exige
  * ADMIN; qualquer outra rota exige um papel conhecido ({@code USER} ou {@code ADMIN}) — claim desconhecido é 403.
  * Depois do Bearer, o {@link SessionActiveFilter} recusa {@code sid} revogado. 401/403 saem em JSON ({@code ApiError}).
  */
@@ -43,7 +43,11 @@ public class SecurityConfig {
             "/api/auth/login", "/api/auth/refresh", "/api/auth/register",
             "/api/auth/email-verification/confirm", "/api/auth/email-verification/resend",
             "/api/auth/password-reset/request", "/api/auth/password-reset/confirm", "/api/auth/oidc/login"};
-    static final String[] PUBLIC_GET = {"/api/usernames/*/availability", "/api/auth/username-suggestions"};
+    /**
+     * O callback do OAuth dos conectores é navegação vinda do Google/Microsoft (sem o Bearer da API): a pessoa é identificada pelo
+     * {@code state} de uso único gravado no authorize (ConnectorService), e a rota também é limitada por IP.
+     */
+    static final String[] PUBLIC_GET = {"/api/usernames/*/availability", "/api/auth/username-suggestions", "/api/connectors/oauth/callback"};
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http,

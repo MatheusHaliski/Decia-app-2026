@@ -37,6 +37,14 @@ public final class AuditActions {
     public static final String TASK_CREATED = "TASK_CREATED";
     public static final String TASK_UPDATED = "TASK_UPDATED";
     public static final String TASK_STATE_CHANGED = "TASK_STATE_CHANGED";
+    /**
+     * Conectores de fontes externas (RF20.CA07): conta conectada (ou falha no retorno do provedor), desconectada (com ou sem revogação no
+     * provedor) e item importado (por conta conectada ou por link). Metadados só com provedor, modo e fonte — nunca token nem e-mail.
+     */
+    public static final String CONNECTOR_CONNECTED = "CONNECTOR_CONNECTED";
+    public static final String CONNECTOR_CONNECT_FAILED = "CONNECTOR_CONNECT_FAILED";
+    public static final String CONNECTOR_DISCONNECTED = "CONNECTOR_DISCONNECTED";
+    public static final String CONNECTOR_IMPORTED = "CONNECTOR_IMPORTED";
 
     private AuditActions() {
     }

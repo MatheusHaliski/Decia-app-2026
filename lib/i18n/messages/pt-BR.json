@@ -4173,5 +4173,8 @@
   "pm.v.areaSet": "Área do projeto: {area}",
   "pm.ws.compliance.title": "Conformidade",
   "pm.ws.compliance.label": "Conformidade avaliada com as leis, normas e regulamentos da área",
-  "pm.ws.compliance.hint": "Critério de saída do portão da Análise. Em projetos de TI ele faz parte dos seis princípios da ISO/IEC 38500; nas outras áreas vale a regulação da própria área (conselho de classe, normas técnicas, LGPD)."
+  "pm.ws.compliance.hint": "Critério de saída do portão da Análise. Em projetos de TI ele faz parte dos seis princípios da ISO/IEC 38500; nas outras áreas vale a regulação da própria área (conselho de classe, normas técnicas, LGPD).",
+  "connectors.return.reason.ESTADO_INVALIDO": "O retorno do provedor não conferiu (pedido vencido, já usado ou de outra sessão). Comece a conexão de novo.",
+  "connectors.return.reason.ESCOPO_INSUFICIENTE": "Na tela do provedor, a permissão de ler os arquivos ficou desmarcada. Conecte de novo e mantenha marcadas as permissões pedidas.",
+  "connectors.return.reason.ERRO_INTERNO": "Algo deu errado do nosso lado ao concluir a conexão. Tente de novo; se continuar, avise o suporte."
 }

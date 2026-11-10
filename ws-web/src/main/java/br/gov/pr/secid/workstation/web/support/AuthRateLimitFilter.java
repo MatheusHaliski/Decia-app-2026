@@ -92,7 +92,9 @@ public class AuthRateLimitFilter extends OncePerRequestFilter {
             new Rule("POST", "/api/auth/email-verification/confirm", 20, Duration.ofHours(1), false),
             // OIDC institucional (RF2.CA03/CA12) e 2FA (contrato reservado, Q-83)
             new Rule("POST", "/api/auth/oidc/login", 30, Duration.ofMinutes(10), false),
-            new Rule("POST", "/api/auth/two-factor/verify", 20, Duration.ofMinutes(10), false));
+            new Rule("POST", "/api/auth/two-factor/verify", 20, Duration.ofMinutes(10), false),
+            // retorno do OAuth dos conectores (rota pública: o state de uso único identifica a pessoa)
+            new Rule("GET", "/api/connectors/oauth/callback", 60, Duration.ofMinutes(10), false));
 
     private final RateLimitPort rateLimit;
     private final ClientIpResolver clientIp;

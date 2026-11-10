@@ -155,6 +155,100 @@
         "required" : [ "code", "email" ],
         "type" : "object"
       },
+      "ConnectorAccountView" : {
+        "properties" : {
+          "accountEmail" : {
+            "type" : "string"
+          },
+          "connectedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "lastError" : {
+            "type" : "string"
+          },
+          "lastUsedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "provider" : {
+            "enum" : [ "GOOGLE", "MICROSOFT", "APPLE_ICLOUD" ],
+            "type" : "string"
+          },
+          "scopes" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "status" : {
+            "enum" : [ "ATIVO", "EXPIRADO", "REVOGADO", "ERRO" ],
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "ConnectorAuthorizeRequest" : {
+        "properties" : {
+          "returnTo" : {
+            "example" : "/tasks/new",
+            "maxLength" : 200,
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "ConnectorAuthorizeView" : {
+        "properties" : {
+          "url" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "ConnectorImportRequest" : {
+        "properties" : {
+          "externalId" : {
+            "maxLength" : 300,
+            "type" : "string"
+          },
+          "linkMode" : {
+            "enum" : [ "COPIADO", "VINCULADO" ],
+            "type" : "string"
+          },
+          "title" : {
+            "maxLength" : 200,
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "ConnectorProviderView" : {
+        "properties" : {
+          "enabled" : {
+            "type" : "boolean"
+          },
+          "mode" : {
+            "enum" : [ "OAUTH", "LINK" ],
+            "type" : "string"
+          },
+          "provider" : {
+            "enum" : [ "GOOGLE", "MICROSOFT", "APPLE_ICLOUD" ],
+            "type" : "string"
+          },
+          "scopes" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          }
+        },
+        "type" : "object"
+      },
       "ConversationView" : {
         "properties" : {
           "canSend" : {
@@ -334,6 +428,62 @@
         "required" : [ "email" ],
         "type" : "object"
       },
+      "ExternalItemView" : {
+        "properties" : {
+          "exportFormats" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "externalId" : {
+            "type" : "string"
+          },
+          "linkable" : {
+            "type" : "boolean"
+          },
+          "mimeType" : {
+            "type" : "string"
+          },
+          "modifiedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "sizeBytes" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "sourceKind" : {
+            "enum" : [ "MANUAL", "ARQUIVO", "COLAR", "GOOGLE", "MICROSOFT", "EMAIL", "LINK", "PROTOCOLO", "FOTO", "TEXTO_IA", "EXTRAIDA_DE_PROJETO", "REMIX", "DECIA", "AUTOPILOT", "ATA_VIVA", "DOSSIE", "EXTRACAO", "GOOGLE_DOCS", "GOOGLE_SHEETS", "GOOGLE_SLIDES", "GOOGLE_FORMS", "GOOGLE_DRAWINGS", "GOOGLE_SITES", "GOOGLE_DRIVE", "GOOGLE_KEEP", "GOOGLE_GMAIL", "GOOGLE_CALENDAR", "GOOGLE_TASKS", "GOOGLE_MEET", "GOOGLE_CHAT", "GOOGLE_CLASSROOM", "GOOGLE_APPS_SCRIPT", "GOOGLE_LOOKER_STUDIO", "GOOGLE_YOUTUBE", "GOOGLE_PHOTOS", "GOOGLE_VIDS", "GOOGLE_NOTEBOOKLM", "GOOGLE_MY_MAPS", "MS_WORD", "MS_EXCEL", "MS_POWERPOINT", "MS_ONENOTE", "MS_OUTLOOK_MAIL", "MS_OUTLOOK_CALENDAR", "MS_TODO", "MS_PLANNER", "MS_TEAMS", "MS_FORMS", "MS_VISIO", "MS_WHITEBOARD", "MS_LOOP", "MS_SHAREPOINT_PAGE", "MS_LISTS", "MS_ONEDRIVE", "MS_STREAM", "MS_POWER_BI", "MS_CLIPCHAMP", "MS_PROJECT", "MS_STICKY_NOTES", "MS_ASSIGNMENTS", "APPLE_PAGES", "APPLE_NUMBERS", "APPLE_KEYNOTE", "APPLE_NOTES", "APPLE_REMINDERS", "APPLE_CALENDAR", "APPLE_MAIL", "APPLE_FREEFORM", "APPLE_IMOVIE", "APPLE_FINAL_CUT", "APPLE_ICLOUD_DRIVE", "APPLE_PHOTOS", "APPLE_GARAGEBAND", "APPLE_LOGIC_PRO", "APPLE_VOICE_MEMOS" ],
+            "type" : "string"
+          },
+          "taskType" : {
+            "enum" : [ "TEXTO_MANUAL", "TEXTO_IA", "IMAGEM_WEB", "IMAGEM_EDITADA", "PLANILHA", "DOCUMENTO", "PASTA", "LINK", "DESENHO_TECNICO", "FORMULARIO", "ATA_REGISTRO", "EMAIL", "PROTOCOLO", "CRONOGRAMA", "ESTUDO_TECNICO_PRELIMINAR", "APRESENTACAO", "DIAGRAMA", "QUADRO_BRANCO", "NOTA", "EVENTO_AGENDA", "LISTA_TAREFAS", "GRAVACAO_REUNIAO", "TRANSCRICAO", "MENSAGEM_CHAT", "PAGINA_WEB", "VIDEO", "AUDIO", "PAINEL_DADOS", "CODIGO", "MAPA", "ATIVIDADE_CURSO" ],
+            "type" : "string"
+          },
+          "webUrl" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "ExternalItemsPage" : {
+        "properties" : {
+          "items" : {
+            "items" : {
+              "$ref" : "#/components/schemas/ExternalItemView"
+            },
+            "type" : "array"
+          },
+          "nextPageToken" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
       "FollowView" : {
         "properties" : {
           "followers" : {
@@ -371,6 +521,20 @@
           },
           "sentAt" : {
             "format" : "date-time",
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "LinkImportRequest" : {
+        "properties" : {
+          "title" : {
+            "maxLength" : 200,
+            "type" : "string"
+          },
+          "url" : {
+            "example" : "https://docs.google.com/document/d/ID/edit",
+            "maxLength" : 500,
             "type" : "string"
           }
         },
@@ -1187,7 +1351,7 @@
             "type" : "string"
           },
           "type" : {
-            "enum" : [ "TEXTO_MANUAL", "TEXTO_IA", "IMAGEM_WEB", "IMAGEM_EDITADA", "PLANILHA", "DOCUMENTO", "PASTA", "LINK", "DESENHO_TECNICO", "FORMULARIO", "ATA_REGISTRO", "EMAIL", "PROTOCOLO", "CRONOGRAMA", "ESTUDO_TECNICO_PRELIMINAR" ],
+            "enum" : [ "TEXTO_MANUAL", "TEXTO_IA", "IMAGEM_WEB", "IMAGEM_EDITADA", "PLANILHA", "DOCUMENTO", "PASTA", "LINK", "DESENHO_TECNICO", "FORMULARIO", "ATA_REGISTRO", "EMAIL", "PROTOCOLO", "CRONOGRAMA", "ESTUDO_TECNICO_PRELIMINAR", "APRESENTACAO", "DIAGRAMA", "QUADRO_BRANCO", "NOTA", "EVENTO_AGENDA", "LISTA_TAREFAS", "GRAVACAO_REUNIAO", "TRANSCRICAO", "MENSAGEM_CHAT", "PAGINA_WEB", "VIDEO", "AUDIO", "PAINEL_DADOS", "CODIGO", "MAPA", "ATIVIDADE_CURSO" ],
             "type" : "string"
           },
           "version" : {
@@ -1266,6 +1430,10 @@
             "format" : "uuid",
             "type" : "string"
           },
+          "linkMode" : {
+            "enum" : [ "VINCULADO", "COPIADO" ],
+            "type" : "string"
+          },
           "objective" : {
             "type" : "string"
           },
@@ -1287,6 +1455,13 @@
             "format" : "uuid",
             "type" : "string"
           },
+          "sourceKind" : {
+            "enum" : [ "MANUAL", "ARQUIVO", "COLAR", "GOOGLE", "MICROSOFT", "EMAIL", "LINK", "PROTOCOLO", "FOTO", "TEXTO_IA", "EXTRAIDA_DE_PROJETO", "REMIX", "DECIA", "AUTOPILOT", "ATA_VIVA", "DOSSIE", "EXTRACAO", "GOOGLE_DOCS", "GOOGLE_SHEETS", "GOOGLE_SLIDES", "GOOGLE_FORMS", "GOOGLE_DRAWINGS", "GOOGLE_SITES", "GOOGLE_DRIVE", "GOOGLE_KEEP", "GOOGLE_GMAIL", "GOOGLE_CALENDAR", "GOOGLE_TASKS", "GOOGLE_MEET", "GOOGLE_CHAT", "GOOGLE_CLASSROOM", "GOOGLE_APPS_SCRIPT", "GOOGLE_LOOKER_STUDIO", "GOOGLE_YOUTUBE", "GOOGLE_PHOTOS", "GOOGLE_VIDS", "GOOGLE_NOTEBOOKLM", "GOOGLE_MY_MAPS", "MS_WORD", "MS_EXCEL", "MS_POWERPOINT", "MS_ONENOTE", "MS_OUTLOOK_MAIL", "MS_OUTLOOK_CALENDAR", "MS_TODO", "MS_PLANNER", "MS_TEAMS", "MS_FORMS", "MS_VISIO", "MS_WHITEBOARD", "MS_LOOP", "MS_SHAREPOINT_PAGE", "MS_LISTS", "MS_ONEDRIVE", "MS_STREAM", "MS_POWER_BI", "MS_CLIPCHAMP", "MS_PROJECT", "MS_STICKY_NOTES", "MS_ASSIGNMENTS", "APPLE_PAGES", "APPLE_NUMBERS", "APPLE_KEYNOTE", "APPLE_NOTES", "APPLE_REMINDERS", "APPLE_CALENDAR", "APPLE_MAIL", "APPLE_FREEFORM", "APPLE_IMOVIE", "APPLE_FINAL_CUT", "APPLE_ICLOUD_DRIVE", "APPLE_PHOTOS", "APPLE_GARAGEBAND", "APPLE_LOGIC_PRO", "APPLE_VOICE_MEMOS" ],
+            "type" : "string"
+          },
+          "sourceRef" : {
+            "type" : "string"
+          },
           "state" : {
             "enum" : [ "RASCUNHO", "DISPONIVEL", "EM_USO", "BLOQUEADA", "CONCLUIDA", "ARQUIVADA", "MODELO_PUBLICO", "OFERECIDA" ],
             "type" : "string"
@@ -1295,7 +1470,7 @@
             "type" : "string"
           },
           "type" : {
-            "enum" : [ "TEXTO_MANUAL", "TEXTO_IA", "IMAGEM_WEB", "IMAGEM_EDITADA", "PLANILHA", "DOCUMENTO", "PASTA", "LINK", "DESENHO_TECNICO", "FORMULARIO", "ATA_REGISTRO", "EMAIL", "PROTOCOLO", "CRONOGRAMA", "ESTUDO_TECNICO_PRELIMINAR" ],
+            "enum" : [ "TEXTO_MANUAL", "TEXTO_IA", "IMAGEM_WEB", "IMAGEM_EDITADA", "PLANILHA", "DOCUMENTO", "PASTA", "LINK", "DESENHO_TECNICO", "FORMULARIO", "ATA_REGISTRO", "EMAIL", "PROTOCOLO", "CRONOGRAMA", "ESTUDO_TECNICO_PRELIMINAR", "APRESENTACAO", "DIAGRAMA", "QUADRO_BRANCO", "NOTA", "EVENTO_AGENDA", "LISTA_TAREFAS", "GRAVACAO_REUNIAO", "TRANSCRICAO", "MENSAGEM_CHAT", "PAGINA_WEB", "VIDEO", "AUDIO", "PAINEL_DADOS", "CODIGO", "MAPA", "ATIVIDADE_CURSO" ],
             "type" : "string"
           },
           "updatedAt" : {
@@ -2000,6 +2175,258 @@
         },
         "summary" : "RF15.CA05 Seguir a empresa (idempotente)",
         "tags" : [ "RF14/RF15 Institucional" ]
+      }
+    },
+    "/api/connectors" : {
+      "get" : {
+        "operationId" : "accounts",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/ConnectorAccountView"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Conectores: minhas contas conectadas (nunca devolve token)",
+        "tags" : [ "RF20 Conectores" ]
+      }
+    },
+    "/api/connectors/link-import" : {
+      "post" : {
+        "operationId" : "linkImport",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LinkImportRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TaskView"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "summary" : "Conectores: importa colando um link (Google Docs/Drive/Sites, OneDrive/SharePoint, iCloud) como tarefa VINCULADA",
+        "tags" : [ "RF20 Conectores" ]
+      }
+    },
+    "/api/connectors/oauth/callback" : {
+      "get" : {
+        "operationId" : "callback",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "state",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "code",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "error",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "302" : {
+            "description" : "Redireciona para {frontendBaseUrl}{returnTo} com o resultado da conexão"
+          }
+        },
+        "summary" : "Conectores: retorno do provedor (rota pública; state de uso único). Sempre 302 para o front com conector=ok ou conector=erro&motivo=ESTADO_INVALIDO|ACESSO_NEGADO|ESCOPO_INSUFICIENTE|CONECTOR_DESABILITADO|PROVEDOR_INDISPONIVEL|ERRO_INTERNO",
+        "tags" : [ "RF20 Conectores" ]
+      }
+    },
+    "/api/connectors/providers" : {
+      "get" : {
+        "operationId" : "providers",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/ConnectorProviderView"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Conectores: provedores, se estão habilitados neste ambiente, o modo (OAUTH ou LINK) e os escopos pedidos",
+        "tags" : [ "RF20 Conectores" ]
+      }
+    },
+    "/api/connectors/{id}" : {
+      "delete" : {
+        "operationId" : "disconnect",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "summary" : "Conectores: desconecta (revoga no Google; a Microsoft não revoga por API) e apaga a conta e os tokens",
+        "tags" : [ "RF20 Conectores" ]
+      }
+    },
+    "/api/connectors/{id}/import" : {
+      "post" : {
+        "operationId" : "importItem",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ConnectorImportRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TaskView"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "summary" : "Conectores: importa um item como tarefa (COPIADO guarda cópia; VINCULADO guarda a referência; 409 CONECTOR_EXPIRADO)",
+        "tags" : [ "RF20 Conectores" ]
+      }
+    },
+    "/api/connectors/{id}/items" : {
+      "get" : {
+        "operationId" : "items",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "q",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pageToken",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "pageSize",
+          "required" : false,
+          "schema" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ExternalItemsPage"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Conectores: busca itens da conta conectada (q no nome; pageSize ≤ 50; pageToken da página anterior)",
+        "tags" : [ "RF20 Conectores" ]
+      }
+    },
+    "/api/connectors/{provider}/authorize" : {
+      "post" : {
+        "operationId" : "authorize",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "provider",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ConnectorAuthorizeRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ConnectorAuthorizeView"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "summary" : "Conectores: começa a conexão OAuth 2.0 + PKCE e devolve a URL de autorização do provedor (400 provedor sem OAuth; 503 CONECTOR_DESABILITADO)",
+        "tags" : [ "RF20 Conectores" ]
       }
     },
     "/api/conversations" : {

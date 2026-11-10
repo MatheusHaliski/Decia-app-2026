@@ -18,9 +18,12 @@ export interface Deliverable { text: string }
 export interface Reference { label: string; url: string }
 
 export const WORK_AREAS: readonly WorkArea[] = ["SOFTWARE", "ADMINISTRACAO", "DESIGN", "PESQUISA", "MARKETING", "PLANEJAMENTO", "ENGENHARIA", "JURIDICO", "OUTRA"];
+/** Tipos oferecidos no criador (todos os do enum Java TaskType; os 16 de "APRESENTACAO" em diante chegaram com os conectores, V60). */
 export const TASK_TYPE_NAMES: readonly TaskTypeName[] = [
   "DOCUMENTO", "TEXTO_MANUAL", "PLANILHA", "IMAGEM_EDITADA", "DESENHO_TECNICO", "CRONOGRAMA", "FORMULARIO", "ATA_REGISTRO", "EMAIL", "LINK",
-  "PASTA", "PROTOCOLO", "ESTUDO_TECNICO_PRELIMINAR", "IMAGEM_WEB", "TEXTO_IA",
+  "PASTA", "PROTOCOLO", "ESTUDO_TECNICO_PRELIMINAR", "APRESENTACAO", "DIAGRAMA", "QUADRO_BRANCO", "NOTA", "EVENTO_AGENDA", "LISTA_TAREFAS",
+  "GRAVACAO_REUNIAO", "TRANSCRICAO", "MENSAGEM_CHAT", "PAGINA_WEB", "VIDEO", "AUDIO", "PAINEL_DADOS", "CODIGO", "MAPA", "ATIVIDADE_CURSO",
+  "IMAGEM_WEB", "TEXTO_IA",
 ];
 export const PRIORITIES: readonly PriorityName[] = ["BAIXA", "MEDIA", "ALTA", "CRITICA"];
 export const ACCESS_CLASSES: readonly AccessClassName[] = ["PUBLICO", "INTERNO", "RESTRITO", "SIGILOSO"];

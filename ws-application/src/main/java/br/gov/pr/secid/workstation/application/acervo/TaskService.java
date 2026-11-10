@@ -13,6 +13,8 @@ import br.gov.pr.secid.workstation.application.identity.RequestContext;
 import br.gov.pr.secid.workstation.application.identity.UserRepositoryPort;
 import br.gov.pr.secid.workstation.application.notifications.NotificationService;
 import br.gov.pr.secid.workstation.application.security.ResourceAuthorizer;
+import br.gov.pr.secid.workstation.domain.acervo.LinkMode;
+import br.gov.pr.secid.workstation.domain.acervo.SourceKind;
 import br.gov.pr.secid.workstation.domain.acervo.TaskBrief;
 import br.gov.pr.secid.workstation.domain.acervo.TaskCategory;
 import br.gov.pr.secid.workstation.domain.acervo.TaskItem;
@@ -86,12 +88,25 @@ public class TaskService {
     public record TransitionInput(TaskState to, String reason, UUID blockedByTaskId, UUID blockedByUserId, long version) {
     }
 
-    /** Projeção da tarefa para a API; {@code editable} diz se o viewer pode editar agora (estado e permissão). */
+    /**
+     * Projeção da tarefa para a API; {@code editable} diz se o viewer pode editar agora (estado e permissão). {@code sourceKind}, {@code linkMode}
+     * e {@code sourceRef} dizem de onde a tarefa veio (conectores: a URL web do item externo; nulos/MANUAL na tarefa digitada).
+     */
     public record TaskView(UUID id, long version, UUID ownerId, UUID departmentId, String title, String descriptionMd, TaskType type,
                            TaskCategory category, Priority priority, TaskState state, LocalDate dueAt, UUID responsibleId,
-                           AccessClassification accessClass, Visibility visibility, UUID blockedByTaskId, UUID blockedByUserId, String blockReason,
+                           AccessClassification accessClass, Visibility visibility, SourceKind sourceKind, LinkMode linkMode, String sourceRef,
+                           UUID blockedByTaskId, UUID blockedByUserId, String blockReason,
                            String objective, WorkArea area, List<Deliverable> deliverables, List<Criterion> acceptanceCriteria,
                            List<Reference> references, Map<String, String> extensions, boolean editable, Instant createdAt, Instant updatedAt) {
+    }
+
+    /**
+     * Tarefa trazida de uma fonte externa (conectores, RF20.CA07): título, tipo e formato já decididos pela classificação da fonte; a
+     * referência ({@code sourceRef}, URL web) e as referências do briefing (o link aparece na ficha) vêm do item. Sempre PRIVADA e
+     * INTERNO — quem importou decide depois se compartilha.
+     */
+    public record SourcedTaskInput(String title, TaskType type, String format, SourceKind sourceKind, String sourceRef, LinkMode linkMode,
+                                   String descriptionMd, List<Reference> references) {
     }
 
     @Transactional
@@ -112,6 +127,49 @@ public class TaskService {
         audit.record(AuditEvent.of(actor.id(), AuditActions.TASK_CREATED, "task", id.toString(), AuditEvent.OK, ctx.ip(), ctx.userAgent(),
                 Map.of("state", stored.task().state().name(), "area", in.area() == null ? "-" : in.area().name())));
         notifications.taskResponsibleSet(actor.id(), scoped(stored.task()), stored.task(), null);
+        return view(viewer, stored);
+    }
+
+    /**
+     * Cria a tarefa de uma fonte externa como o criador faria (RASCUNHO → DISPONIVEL, trilha de estado, audit_log TASK_CREATED), com a
+     * origem preenchida. Junta-se à transação de quem chama (o import grava anexo e vínculo externo na mesma transação). Validação de campo
+     * junta tudo num único {@code 400 VALIDACAO} (contrato dos conectores).
+     */
+    @Transactional
+    public TaskView createFromSource(CurrentUser actor, SourcedTaskInput in, RequestContext ctx) {
+        Viewer viewer = authorizer.viewer(actor);
+        Map<String, Object> errors = new LinkedHashMap<>();
+        String title = in.title() == null ? "" : in.title().strip();
+        if (title.isEmpty() || title.length() > MAX_TITLE) {
+            errors.put("title", "Informe um título com até " + MAX_TITLE + " caracteres.");
+        }
+        if (in.type() == null || in.sourceKind() == null || in.sourceKind() == SourceKind.MANUAL || in.linkMode() == null) {
+            errors.put("source", "Fonte externa sem tipo, origem ou modo.");
+        }
+        if (in.sourceRef() != null && in.sourceRef().length() > TaskItem.MAX_SOURCE_REF) {
+            errors.put("sourceRef", "Referência externa com até " + TaskItem.MAX_SOURCE_REF + " caracteres.");
+        }
+        String description = in.descriptionMd() == null || in.descriptionMd().isBlank() ? null : in.descriptionMd().strip();
+        if (description != null && description.length() > MAX_DESCRIPTION) {
+            errors.put("descriptionMd", "Descrição com até " + MAX_DESCRIPTION + " caracteres.");
+        }
+        String references = TaskBriefJson.references(in.references(), errors);
+        if (!errors.isEmpty()) {
+            throw ApiException.badRequest(ApiException.VALIDACAO, "Revise os campos destacados.", Map.of("fields", errors));
+        }
+        String format = in.format() == null || in.format().length() > TaskItem.MAX_FORMAT ? null : in.format();
+        TaskItem draft = TaskItem.fromSource(actor.id(), viewer.departmentId(), title, description, in.type(), format, in.sourceKind(),
+                in.sourceRef(), in.linkMode(), AccessClassification.INTERNO, Visibility.PRIVADA);
+        StoredTask stored = tasks.insert(draft, new TaskBrief(null, null, null, null, null, references, null));
+        UUID id = stored.task().id();
+        Instant now = clock.instant();
+        tasks.appendStateLog(new TaskStateLog(UUID.randomUUID(), id, null, TaskState.RASCUNHO, actor.id(),
+                "importada (" + in.sourceKind().name() + ", " + in.linkMode().name() + ")", null, null, now));
+        TaskItem available = stored.task().transition(TaskState.DISPONIVEL);
+        stored = tasks.update(available, stored.brief(), stored.version());
+        tasks.appendStateLog(new TaskStateLog(UUID.randomUUID(), id, TaskState.RASCUNHO, TaskState.DISPONIVEL, actor.id(), null, null, null, now));
+        audit.record(AuditEvent.of(actor.id(), AuditActions.TASK_CREATED, "task", id.toString(), AuditEvent.OK, ctx.ip(), ctx.userAgent(),
+                Map.of("state", stored.task().state().name(), "source", in.sourceKind().name(), "linkMode", in.linkMode().name())));
         return view(viewer, stored);
     }
 
@@ -232,7 +290,8 @@ public class TaskService {
         boolean canEdit = !t.state().isReadOnly()
                 && AccessPolicy.decide(viewer, scoped(t), ResourceAction.EDIT).allowed();
         return new TaskView(t.id(), s.version(), t.ownerId(), t.departmentId(), t.title(), t.descriptionMd(), t.type(), t.category(), t.priority(),
-                t.state(), t.dueAt(), t.responsibleId(), t.accessClass(), t.visibility(), t.blockedByTaskId(), t.blockedByUserId(), t.blockReason(),
+                t.state(), t.dueAt(), t.responsibleId(), t.accessClass(), t.visibility(), t.sourceKind(), t.linkMode(), t.sourceRef(),
+                t.blockedByTaskId(), t.blockedByUserId(), t.blockReason(),
                 b.objective(), b.area(), TaskBriefJson.readDeliverables(b.deliverablesJson()), TaskBriefJson.readCriteria(b.acceptanceCriteriaJson()),
                 TaskBriefJson.readReferences(b.referencesJson()), TaskBriefJson.readExtensions(b.extensionsJson()), canEdit, s.createdAt(),
                 s.updatedAt());

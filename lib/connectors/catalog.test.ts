@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { MESSAGES } from "@/lib/i18n/core";
 import { TASK_TYPE_NAMES } from "@/lib/tasks/client";
@@ -97,6 +99,18 @@ describe("catálogo de fontes externas (contracts/connectors/sources.json)", () 
       const cat = MESSAGES[locale];
       for (const kind of ALL_SOURCE_KINDS) expect(cat[`sourceKind.${kind}`], `${locale}: sourceKind.${kind}`).toBeTruthy();
       for (const v of ALL_TASK_TYPES) expect(cat[`social.taskType.${v}`], `${locale}: social.taskType.${v}`).toBeTruthy();
+    }
+  });
+
+  it("todo motivo que o callback do backend devolve (contrato OpenAPI) tem explicação em pt-BR, en e es", () => {
+    const spec = JSON.parse(readFileSync(fileURLToPath(new URL("../../contracts/openapi/openapi.json", import.meta.url)), "utf8")) as {
+      paths: Record<string, { get?: { summary?: string } }>;
+    };
+    const summary = spec.paths["/api/connectors/oauth/callback"]?.get?.summary ?? "";
+    const reasons = /motivo=([A-Z_|]+)/.exec(summary)?.[1]?.split("|") ?? [];
+    expect(reasons, "o resumo do callback lista os motivos (motivo=A|B|…)").toEqual(expect.arrayContaining(["ESTADO_INVALIDO", "ACESSO_NEGADO", "ERRO_INTERNO"]));
+    for (const locale of ["pt-BR", "en", "es"] as const) {
+      for (const code of reasons) expect(MESSAGES[locale][`connectors.return.reason.${code}`], `${locale}: connectors.return.reason.${code}`).toBeTruthy();
     }
   });
 

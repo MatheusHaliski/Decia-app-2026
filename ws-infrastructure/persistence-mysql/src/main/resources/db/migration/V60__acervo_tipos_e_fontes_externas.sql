@@ -1,0 +1,29 @@
+-- V60 — acervo_tipos_e_fontes_externas (2 Acervo de Tarefas · 3 Criador de Projetos). MySQL 8.4, InnoDB.
+-- Conectores de fontes externas (RF4, RF20.CA07, RF23, RF34; pesquisa de 09/11/2026 em contracts/connectors/sources.json):
+--   * TaskType ganha 16 valores (APRESENTACAO … ATIVIDADE_CURSO) — tasks.type e compliance_items.expected_type;
+--   * SourceKind ganha um valor por aplicativo (GOOGLE_*, MS_*, APPLE_*; contatos ficam de fora). GOOGLE e MICROSOFT continuam
+--     (legado genérico). Todos cabem em VARCHAR(20)/VARCHAR(30), então nenhuma coluna muda.
+-- Escrita à mão como a V37 (V11/V12 já aplicadas nunca são regeneradas — D-40). Só os CHECKs mudam: nenhum valor existente sai,
+-- então nenhuma linha gravada fica inválida. As tabelas novas dos conectores vêm na V61 (gerada pelo catálogo).
+ALTER TABLE tasks DROP CHECK ck_tasks_type;
+ALTER TABLE tasks ADD CONSTRAINT ck_tasks_type CHECK (type IN ('TEXTO_MANUAL', 'TEXTO_IA', 'IMAGEM_WEB', 'IMAGEM_EDITADA', 'PLANILHA',
+    'DOCUMENTO', 'PASTA', 'LINK', 'DESENHO_TECNICO', 'FORMULARIO', 'ATA_REGISTRO', 'EMAIL', 'PROTOCOLO', 'CRONOGRAMA',
+    'ESTUDO_TECNICO_PRELIMINAR', 'APRESENTACAO', 'DIAGRAMA', 'QUADRO_BRANCO', 'NOTA', 'EVENTO_AGENDA', 'LISTA_TAREFAS', 'GRAVACAO_REUNIAO',
+    'TRANSCRICAO', 'MENSAGEM_CHAT', 'PAGINA_WEB', 'VIDEO', 'AUDIO', 'PAINEL_DADOS', 'CODIGO', 'MAPA', 'ATIVIDADE_CURSO'));
+ALTER TABLE tasks DROP CHECK ck_tasks_source_kind;
+ALTER TABLE tasks ADD CONSTRAINT ck_tasks_source_kind CHECK (source_kind IN ('MANUAL', 'ARQUIVO', 'COLAR', 'GOOGLE', 'MICROSOFT', 'EMAIL',
+    'LINK', 'PROTOCOLO', 'FOTO', 'TEXTO_IA', 'EXTRAIDA_DE_PROJETO', 'REMIX', 'DECIA', 'AUTOPILOT', 'ATA_VIVA', 'DOSSIE', 'EXTRACAO',
+    'GOOGLE_DOCS', 'GOOGLE_SHEETS', 'GOOGLE_SLIDES', 'GOOGLE_FORMS', 'GOOGLE_DRAWINGS', 'GOOGLE_SITES', 'GOOGLE_DRIVE', 'GOOGLE_KEEP',
+    'GOOGLE_GMAIL', 'GOOGLE_CALENDAR', 'GOOGLE_TASKS', 'GOOGLE_MEET', 'GOOGLE_CHAT', 'GOOGLE_CLASSROOM', 'GOOGLE_APPS_SCRIPT',
+    'GOOGLE_LOOKER_STUDIO', 'GOOGLE_YOUTUBE', 'GOOGLE_PHOTOS', 'GOOGLE_VIDS', 'GOOGLE_NOTEBOOKLM', 'GOOGLE_MY_MAPS', 'MS_WORD', 'MS_EXCEL',
+    'MS_POWERPOINT', 'MS_ONENOTE', 'MS_OUTLOOK_MAIL', 'MS_OUTLOOK_CALENDAR', 'MS_TODO', 'MS_PLANNER', 'MS_TEAMS', 'MS_FORMS', 'MS_VISIO',
+    'MS_WHITEBOARD', 'MS_LOOP', 'MS_SHAREPOINT_PAGE', 'MS_LISTS', 'MS_ONEDRIVE', 'MS_STREAM', 'MS_POWER_BI', 'MS_CLIPCHAMP', 'MS_PROJECT',
+    'MS_STICKY_NOTES', 'MS_ASSIGNMENTS', 'APPLE_PAGES', 'APPLE_NUMBERS', 'APPLE_KEYNOTE', 'APPLE_NOTES', 'APPLE_REMINDERS',
+    'APPLE_CALENDAR', 'APPLE_MAIL', 'APPLE_FREEFORM', 'APPLE_IMOVIE', 'APPLE_FINAL_CUT', 'APPLE_ICLOUD_DRIVE', 'APPLE_PHOTOS',
+    'APPLE_GARAGEBAND', 'APPLE_LOGIC_PRO', 'APPLE_VOICE_MEMOS'));
+ALTER TABLE compliance_items DROP CHECK ck_compliance_items_expected_type;
+ALTER TABLE compliance_items ADD CONSTRAINT ck_compliance_items_expected_type CHECK (expected_type IS NULL OR expected_type IN (
+    'TEXTO_MANUAL', 'TEXTO_IA', 'IMAGEM_WEB', 'IMAGEM_EDITADA', 'PLANILHA', 'DOCUMENTO', 'PASTA', 'LINK', 'DESENHO_TECNICO', 'FORMULARIO',
+    'ATA_REGISTRO', 'EMAIL', 'PROTOCOLO', 'CRONOGRAMA', 'ESTUDO_TECNICO_PRELIMINAR', 'APRESENTACAO', 'DIAGRAMA', 'QUADRO_BRANCO', 'NOTA',
+    'EVENTO_AGENDA', 'LISTA_TAREFAS', 'GRAVACAO_REUNIAO', 'TRANSCRICAO', 'MENSAGEM_CHAT', 'PAGINA_WEB', 'VIDEO', 'AUDIO', 'PAINEL_DADOS',
+    'CODIGO', 'MAPA', 'ATIVIDADE_CURSO'));

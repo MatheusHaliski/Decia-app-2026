@@ -105,6 +105,27 @@ class ApplicationYmlSecurityTest {
     }
 
     @Test
+    void conectoresDesligadosPorPadraoESemSegredoPadrao() throws Exception {
+        StandardEnvironment e = env(null, "WS_DB_PASSWORD", "x");
+        assertThat(e.getProperty("ws.connectors.enabled", Boolean.class)).isFalse();
+        assertThat(e.getProperty("ws.connectors.token-key")).isEmpty();
+        assertThat(e.getProperty("ws.connectors.google.client-secret")).isEmpty();
+        assertThat(e.getProperty("ws.connectors.microsoft.client-secret")).isEmpty();
+        assertThat(e.getProperty("ws.connectors.google.redirect-uri")).isEqualTo("http://localhost:8080/api/connectors/oauth/callback");
+        assertThat(e.getProperty("ws.connectors.frontend-base-url")).isEqualTo("http://localhost:3000");
+        assertThat(e.getProperty("ws.connectors.microsoft.tenant")).isEqualTo("common");
+        StandardEnvironment configured = env(null, "WS_DB_PASSWORD", "x", "WS_APP_BASE_URL", "https://api.exemplo.gov.br", "WS_FRONTEND_URL",
+                "https://app.exemplo.gov.br", "WS_CONNECTORS_TOKEN_KEY", "k");
+        assertThat(configured.getProperty("ws.connectors.microsoft.redirect-uri"))
+                .isEqualTo("https://api.exemplo.gov.br/api/connectors/oauth/callback");
+        assertThat(configured.getProperty("ws.connectors.frontend-base-url")).isEqualTo("https://app.exemplo.gov.br");
+        assertThat(configured.getProperty("ws.connectors.token-key")).isEqualTo("k");
+        // prod não exige a chave dos conectores: sem ela eles só ficam desabilitados
+        assertThat(env("application-prod.yml", "WS_DB_PASSWORD", "x", "WS_DB_HOST", "db", "WS_DB_NAME", "ws")
+                .getProperty("ws.secrets.required[WS_CONNECTORS_TOKEN_KEY]")).isNull();
+    }
+
+    @Test
     void jacksonEErrosComOContratoDoBoot4() throws Exception {
         StandardEnvironment e = env(null, "WS_DB_PASSWORD", "x");
         assertThat(e.getProperty("spring.jackson.deserialization.fail-on-null-for-primitives", Boolean.class)).isFalse();

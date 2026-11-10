@@ -1,15 +1,19 @@
 package br.gov.pr.secid.workstation.infrastructure.mysql.acervo;
 
+import br.gov.pr.secid.workstation.application.acervo.TaskAttachmentRepositoryPort;
 import br.gov.pr.secid.workstation.application.acervo.TaskRepositoryPort;
 import br.gov.pr.secid.workstation.application.acervo.TaskRepositoryPort.StoredTask;
 import br.gov.pr.secid.workstation.domain.acervo.NatureTag;
 import br.gov.pr.secid.workstation.domain.acervo.ProcessTag;
+import br.gov.pr.secid.workstation.domain.acervo.TaskAttachment;
 import br.gov.pr.secid.workstation.domain.acervo.TaskBrief;
 import br.gov.pr.secid.workstation.domain.acervo.TaskItem;
 import br.gov.pr.secid.workstation.domain.acervo.TaskStateLog;
+import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.entity.TaskAttachmentEntity;
 import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.entity.TaskBriefEntity;
 import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.entity.TaskItemEntity;
 import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.entity.TaskStateLogEntity;
+import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.repository.TaskAttachmentRepository;
 import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.repository.TaskBriefRepository;
 import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.repository.TaskItemRepository;
 import br.gov.pr.secid.workstation.infrastructure.mysql.acervo.repository.TaskStateLogRepository;
@@ -113,6 +117,41 @@ public class JpaAcervoAdapters {
                 logs.save(e);
             }
         };
+    }
+
+    /** Anexos da tarefa (V11): o binário já está em media_objects; aqui só o vínculo, na ordem de exibição. */
+    @Bean
+    TaskAttachmentRepositoryPort taskAttachmentRepositoryPort(TaskAttachmentRepository repo, EntityManager em) {
+        return new TaskAttachmentRepositoryPort() {
+            @Override
+            @Transactional
+            public TaskAttachment insert(TaskAttachment a) {
+                TaskAttachmentEntity e = new TaskAttachmentEntity();
+                e.setTaskId(a.taskId());
+                e.setMediaObjectId(a.mediaObjectId());
+                e.setFileName(a.fileName());
+                e.setMimeType(a.mimeType());
+                e.setSizeBytes(a.sizeBytes());
+                e.setSha256(a.sha256());
+                e.setAntivirusStatus(a.antivirusStatus());
+                e.setOcrStatus(a.ocrStatus());
+                e.setOcrTextRef(a.ocrTextRef());
+                e.setIsPrimary(a.isPrimary());
+                e.setSortOrder(a.sortOrder());
+                return toDomain(repo.saveAndFlush(e));
+            }
+
+            @Override
+            public List<TaskAttachment> findByTask(UUID taskId) {
+                return em.createQuery("select a from TaskAttachmentEntity a where a.taskId = :task order by a.sortOrder, a.createdAt",
+                        TaskAttachmentEntity.class).setParameter("task", taskId).getResultList().stream().map(JpaAcervoAdapters::toDomain).toList();
+            }
+        };
+    }
+
+    static TaskAttachment toDomain(TaskAttachmentEntity e) {
+        return new TaskAttachment(e.getId(), e.getTaskId(), e.getMediaObjectId(), e.getFileName(), e.getMimeType(), e.getSizeBytes(), e.getSha256(),
+                e.getAntivirusStatus(), e.getOcrStatus(), e.getOcrTextRef(), e.isIsPrimary(), e.getSortOrder());
     }
 
     private static StoredTask stored(TaskItemEntity e, TaskBriefEntity b) {

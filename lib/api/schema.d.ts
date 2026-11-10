@@ -279,6 +279,142 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/connectors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Conectores: minhas contas conectadas (nunca devolve token) */
+        get: operations["accounts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/connectors/link-import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Conectores: importa colando um link (Google Docs/Drive/Sites, OneDrive/SharePoint, iCloud) como tarefa VINCULADA */
+        post: operations["linkImport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/connectors/oauth/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Conectores: retorno do provedor (rota pública; state de uso único). Sempre 302 para o front com conector=ok ou conector=erro&motivo=ESTADO_INVALIDO|ACESSO_NEGADO|ESCOPO_INSUFICIENTE|CONECTOR_DESABILITADO|PROVEDOR_INDISPONIVEL|ERRO_INTERNO */
+        get: operations["callback"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/connectors/providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Conectores: provedores, se estão habilitados neste ambiente, o modo (OAUTH ou LINK) e os escopos pedidos */
+        get: operations["providers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/connectors/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Conectores: desconecta (revoga no Google; a Microsoft não revoga por API) e apaga a conta e os tokens */
+        delete: operations["disconnect"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/connectors/{id}/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Conectores: importa um item como tarefa (COPIADO guarda cópia; VINCULADO guarda a referência; 409 CONECTOR_EXPIRADO) */
+        post: operations["importItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/connectors/{id}/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Conectores: busca itens da conta conectada (q no nome; pageSize ≤ 50; pageToken da página anterior) */
+        get: operations["items"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/connectors/{provider}/authorize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Conectores: começa a conexão OAuth 2.0 + PKCE e devolve a URL de autorização do provedor (400 provedor sem OAuth; 503 CONECTOR_DESABILITADO) */
+        post: operations["authorize"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/conversations": {
         parameters: {
             query?: never;
@@ -974,6 +1110,42 @@ export interface components {
             deviceName?: string;
             email: string;
         };
+        ConnectorAccountView: {
+            accountEmail?: string;
+            /** Format: date-time */
+            connectedAt?: string;
+            /** Format: uuid */
+            id?: string;
+            lastError?: string;
+            /** Format: date-time */
+            lastUsedAt?: string;
+            /** @enum {string} */
+            provider?: "GOOGLE" | "MICROSOFT" | "APPLE_ICLOUD";
+            scopes?: string[];
+            /** @enum {string} */
+            status?: "ATIVO" | "EXPIRADO" | "REVOGADO" | "ERRO";
+        };
+        ConnectorAuthorizeRequest: {
+            /** @example /tasks/new */
+            returnTo?: string;
+        };
+        ConnectorAuthorizeView: {
+            url?: string;
+        };
+        ConnectorImportRequest: {
+            externalId?: string;
+            /** @enum {string} */
+            linkMode?: "COPIADO" | "VINCULADO";
+            title?: string;
+        };
+        ConnectorProviderView: {
+            enabled?: boolean;
+            /** @enum {string} */
+            mode?: "OAUTH" | "LINK";
+            /** @enum {string} */
+            provider?: "GOOGLE" | "MICROSOFT" | "APPLE_ICLOUD";
+            scopes?: string[];
+        };
         ConversationView: {
             canSend?: boolean;
             /** Format: uuid */
@@ -1040,6 +1212,26 @@ export interface components {
         EmailRequest: {
             email: string;
         };
+        ExternalItemView: {
+            exportFormats?: string[];
+            externalId?: string;
+            linkable?: boolean;
+            mimeType?: string;
+            /** Format: date-time */
+            modifiedAt?: string;
+            name?: string;
+            /** Format: int64 */
+            sizeBytes?: number;
+            /** @enum {string} */
+            sourceKind?: "MANUAL" | "ARQUIVO" | "COLAR" | "GOOGLE" | "MICROSOFT" | "EMAIL" | "LINK" | "PROTOCOLO" | "FOTO" | "TEXTO_IA" | "EXTRAIDA_DE_PROJETO" | "REMIX" | "DECIA" | "AUTOPILOT" | "ATA_VIVA" | "DOSSIE" | "EXTRACAO" | "GOOGLE_DOCS" | "GOOGLE_SHEETS" | "GOOGLE_SLIDES" | "GOOGLE_FORMS" | "GOOGLE_DRAWINGS" | "GOOGLE_SITES" | "GOOGLE_DRIVE" | "GOOGLE_KEEP" | "GOOGLE_GMAIL" | "GOOGLE_CALENDAR" | "GOOGLE_TASKS" | "GOOGLE_MEET" | "GOOGLE_CHAT" | "GOOGLE_CLASSROOM" | "GOOGLE_APPS_SCRIPT" | "GOOGLE_LOOKER_STUDIO" | "GOOGLE_YOUTUBE" | "GOOGLE_PHOTOS" | "GOOGLE_VIDS" | "GOOGLE_NOTEBOOKLM" | "GOOGLE_MY_MAPS" | "MS_WORD" | "MS_EXCEL" | "MS_POWERPOINT" | "MS_ONENOTE" | "MS_OUTLOOK_MAIL" | "MS_OUTLOOK_CALENDAR" | "MS_TODO" | "MS_PLANNER" | "MS_TEAMS" | "MS_FORMS" | "MS_VISIO" | "MS_WHITEBOARD" | "MS_LOOP" | "MS_SHAREPOINT_PAGE" | "MS_LISTS" | "MS_ONEDRIVE" | "MS_STREAM" | "MS_POWER_BI" | "MS_CLIPCHAMP" | "MS_PROJECT" | "MS_STICKY_NOTES" | "MS_ASSIGNMENTS" | "APPLE_PAGES" | "APPLE_NUMBERS" | "APPLE_KEYNOTE" | "APPLE_NOTES" | "APPLE_REMINDERS" | "APPLE_CALENDAR" | "APPLE_MAIL" | "APPLE_FREEFORM" | "APPLE_IMOVIE" | "APPLE_FINAL_CUT" | "APPLE_ICLOUD_DRIVE" | "APPLE_PHOTOS" | "APPLE_GARAGEBAND" | "APPLE_LOGIC_PRO" | "APPLE_VOICE_MEMOS";
+            /** @enum {string} */
+            taskType?: "TEXTO_MANUAL" | "TEXTO_IA" | "IMAGEM_WEB" | "IMAGEM_EDITADA" | "PLANILHA" | "DOCUMENTO" | "PASTA" | "LINK" | "DESENHO_TECNICO" | "FORMULARIO" | "ATA_REGISTRO" | "EMAIL" | "PROTOCOLO" | "CRONOGRAMA" | "ESTUDO_TECNICO_PRELIMINAR" | "APRESENTACAO" | "DIAGRAMA" | "QUADRO_BRANCO" | "NOTA" | "EVENTO_AGENDA" | "LISTA_TAREFAS" | "GRAVACAO_REUNIAO" | "TRANSCRICAO" | "MENSAGEM_CHAT" | "PAGINA_WEB" | "VIDEO" | "AUDIO" | "PAINEL_DADOS" | "CODIGO" | "MAPA" | "ATIVIDADE_CURSO";
+            webUrl?: string;
+        };
+        ExternalItemsPage: {
+            items?: components["schemas"]["ExternalItemView"][];
+            nextPageToken?: string;
+        };
         FollowView: {
             /** Format: int64 */
             followers?: number;
@@ -1057,6 +1249,11 @@ export interface components {
             preview?: string;
             /** Format: date-time */
             sentAt?: string;
+        };
+        LinkImportRequest: {
+            title?: string;
+            /** @example https://docs.google.com/document/d/ID/edit */
+            url?: string;
         };
         LoginRequest: {
             deviceName?: string;
@@ -1329,7 +1526,7 @@ export interface components {
             responsibleId?: string;
             title?: string;
             /** @enum {string} */
-            type?: "TEXTO_MANUAL" | "TEXTO_IA" | "IMAGEM_WEB" | "IMAGEM_EDITADA" | "PLANILHA" | "DOCUMENTO" | "PASTA" | "LINK" | "DESENHO_TECNICO" | "FORMULARIO" | "ATA_REGISTRO" | "EMAIL" | "PROTOCOLO" | "CRONOGRAMA" | "ESTUDO_TECNICO_PRELIMINAR";
+            type?: "TEXTO_MANUAL" | "TEXTO_IA" | "IMAGEM_WEB" | "IMAGEM_EDITADA" | "PLANILHA" | "DOCUMENTO" | "PASTA" | "LINK" | "DESENHO_TECNICO" | "FORMULARIO" | "ATA_REGISTRO" | "EMAIL" | "PROTOCOLO" | "CRONOGRAMA" | "ESTUDO_TECNICO_PRELIMINAR" | "APRESENTACAO" | "DIAGRAMA" | "QUADRO_BRANCO" | "NOTA" | "EVENTO_AGENDA" | "LISTA_TAREFAS" | "GRAVACAO_REUNIAO" | "TRANSCRICAO" | "MENSAGEM_CHAT" | "PAGINA_WEB" | "VIDEO" | "AUDIO" | "PAINEL_DADOS" | "CODIGO" | "MAPA" | "ATIVIDADE_CURSO";
             /** Format: int64 */
             version?: number;
             /** @enum {string} */
@@ -1362,6 +1559,8 @@ export interface components {
             };
             /** Format: uuid */
             id?: string;
+            /** @enum {string} */
+            linkMode?: "VINCULADO" | "COPIADO";
             objective?: string;
             /** Format: uuid */
             ownerId?: string;
@@ -1371,10 +1570,13 @@ export interface components {
             /** Format: uuid */
             responsibleId?: string;
             /** @enum {string} */
+            sourceKind?: "MANUAL" | "ARQUIVO" | "COLAR" | "GOOGLE" | "MICROSOFT" | "EMAIL" | "LINK" | "PROTOCOLO" | "FOTO" | "TEXTO_IA" | "EXTRAIDA_DE_PROJETO" | "REMIX" | "DECIA" | "AUTOPILOT" | "ATA_VIVA" | "DOSSIE" | "EXTRACAO" | "GOOGLE_DOCS" | "GOOGLE_SHEETS" | "GOOGLE_SLIDES" | "GOOGLE_FORMS" | "GOOGLE_DRAWINGS" | "GOOGLE_SITES" | "GOOGLE_DRIVE" | "GOOGLE_KEEP" | "GOOGLE_GMAIL" | "GOOGLE_CALENDAR" | "GOOGLE_TASKS" | "GOOGLE_MEET" | "GOOGLE_CHAT" | "GOOGLE_CLASSROOM" | "GOOGLE_APPS_SCRIPT" | "GOOGLE_LOOKER_STUDIO" | "GOOGLE_YOUTUBE" | "GOOGLE_PHOTOS" | "GOOGLE_VIDS" | "GOOGLE_NOTEBOOKLM" | "GOOGLE_MY_MAPS" | "MS_WORD" | "MS_EXCEL" | "MS_POWERPOINT" | "MS_ONENOTE" | "MS_OUTLOOK_MAIL" | "MS_OUTLOOK_CALENDAR" | "MS_TODO" | "MS_PLANNER" | "MS_TEAMS" | "MS_FORMS" | "MS_VISIO" | "MS_WHITEBOARD" | "MS_LOOP" | "MS_SHAREPOINT_PAGE" | "MS_LISTS" | "MS_ONEDRIVE" | "MS_STREAM" | "MS_POWER_BI" | "MS_CLIPCHAMP" | "MS_PROJECT" | "MS_STICKY_NOTES" | "MS_ASSIGNMENTS" | "APPLE_PAGES" | "APPLE_NUMBERS" | "APPLE_KEYNOTE" | "APPLE_NOTES" | "APPLE_REMINDERS" | "APPLE_CALENDAR" | "APPLE_MAIL" | "APPLE_FREEFORM" | "APPLE_IMOVIE" | "APPLE_FINAL_CUT" | "APPLE_ICLOUD_DRIVE" | "APPLE_PHOTOS" | "APPLE_GARAGEBAND" | "APPLE_LOGIC_PRO" | "APPLE_VOICE_MEMOS";
+            sourceRef?: string;
+            /** @enum {string} */
             state?: "RASCUNHO" | "DISPONIVEL" | "EM_USO" | "BLOQUEADA" | "CONCLUIDA" | "ARQUIVADA" | "MODELO_PUBLICO" | "OFERECIDA";
             title?: string;
             /** @enum {string} */
-            type?: "TEXTO_MANUAL" | "TEXTO_IA" | "IMAGEM_WEB" | "IMAGEM_EDITADA" | "PLANILHA" | "DOCUMENTO" | "PASTA" | "LINK" | "DESENHO_TECNICO" | "FORMULARIO" | "ATA_REGISTRO" | "EMAIL" | "PROTOCOLO" | "CRONOGRAMA" | "ESTUDO_TECNICO_PRELIMINAR";
+            type?: "TEXTO_MANUAL" | "TEXTO_IA" | "IMAGEM_WEB" | "IMAGEM_EDITADA" | "PLANILHA" | "DOCUMENTO" | "PASTA" | "LINK" | "DESENHO_TECNICO" | "FORMULARIO" | "ATA_REGISTRO" | "EMAIL" | "PROTOCOLO" | "CRONOGRAMA" | "ESTUDO_TECNICO_PRELIMINAR" | "APRESENTACAO" | "DIAGRAMA" | "QUADRO_BRANCO" | "NOTA" | "EVENTO_AGENDA" | "LISTA_TAREFAS" | "GRAVACAO_REUNIAO" | "TRANSCRICAO" | "MENSAGEM_CHAT" | "PAGINA_WEB" | "VIDEO" | "AUDIO" | "PAINEL_DADOS" | "CODIGO" | "MAPA" | "ATIVIDADE_CURSO";
             /** Format: date-time */
             updatedAt?: string;
             /** Format: int64 */
@@ -1890,6 +2092,190 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["FollowView"];
+                };
+            };
+        };
+    };
+    accounts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConnectorAccountView"][];
+                };
+            };
+        };
+    };
+    linkImport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LinkImportRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TaskView"];
+                };
+            };
+        };
+    };
+    callback: {
+        parameters: {
+            query?: {
+                state?: string;
+                code?: string;
+                error?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Redireciona para {frontendBaseUrl}{returnTo} com o resultado da conexão */
+            302: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    providers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConnectorProviderView"][];
+                };
+            };
+        };
+    };
+    disconnect: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    importItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConnectorImportRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TaskView"];
+                };
+            };
+        };
+    };
+    items: {
+        parameters: {
+            query?: {
+                q?: string;
+                pageToken?: string;
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ExternalItemsPage"];
+                };
+            };
+        };
+    };
+    authorize: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ConnectorAuthorizeRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConnectorAuthorizeView"];
                 };
             };
         };

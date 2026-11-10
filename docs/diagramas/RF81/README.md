@@ -340,7 +340,7 @@ flowchart LR
     T["TaskItem + TaskOrigin.PROFISSAO"]
   end
   subgraph INFRA["ws-infrastructure"]
-    MYSQL["persistence-mysql (V60 colunas em users, V63 occupation_packs)"]
+    MYSQL["persistence-mysql (V62 colunas em users, V65 occupation_packs)"]
     AIG["AiGateway (RF43): vary, explain"]
   end
   CAT --> LIB

@@ -4173,5 +4173,8 @@
   "pm.v.areaSet": "Project area: {area}",
   "pm.ws.compliance.title": "Compliance",
   "pm.ws.compliance.label": "Compliance assessed against the area's laws, standards and regulations",
-  "pm.ws.compliance.hint": "Exit criterion of the Analysis gate. In IT projects it is part of the six ISO/IEC 38500 principles; in other areas the area's own regulation applies (professional council, technical standards, data protection law)."
+  "pm.ws.compliance.hint": "Exit criterion of the Analysis gate. In IT projects it is part of the six ISO/IEC 38500 principles; in other areas the area's own regulation applies (professional council, technical standards, data protection law).",
+  "connectors.return.reason.ESTADO_INVALIDO": "The provider's response didn't check out (request expired, already used or from another session). Start the connection again.",
+  "connectors.return.reason.ESCOPO_INSUFICIENTE": "On the provider's page, the permission to read files was left unchecked. Connect again and keep the requested permissions checked.",
+  "connectors.return.reason.ERRO_INTERNO": "Something went wrong on our side while finishing the connection. Try again; if it persists, contact support."
 }

@@ -8,6 +8,7 @@ import br.gov.pr.secid.workstation.application.identity.InMemoryRateLimit;
 import br.gov.pr.secid.workstation.application.identity.InMemorySessionStore;
 import br.gov.pr.secid.workstation.application.identity.RefreshRecord;
 import br.gov.pr.secid.workstation.application.security.AuthorizationTrail;
+import br.gov.pr.secid.workstation.domain.acervo.SourceKind;
 import br.gov.pr.secid.workstation.domain.acervo.TaskState;
 import br.gov.pr.secid.workstation.domain.acervo.TaskType;
 import br.gov.pr.secid.workstation.domain.acervo.WorkArea;
@@ -91,7 +92,8 @@ class TaskControllerWebTest {
 
     private TaskView view(long version) {
         return new TaskView(taskId, version, userId, null, "Relatório", null, TaskType.DOCUMENTO, null, Priority.MEDIA, TaskState.DISPONIVEL,
-                LocalDate.of(2026, 11, 1), null, AccessClassification.INTERNO, Visibility.PRIVADA, null, null, null, "Objetivo", WorkArea.PESQUISA,
+                LocalDate.of(2026, 11, 1), null, AccessClassification.INTERNO, Visibility.PRIVADA, SourceKind.MANUAL, null, null, null, null, null,
+                "Objetivo", WorkArea.PESQUISA,
                 List.of(), List.of(), List.of(), Map.of(), true, Instant.now(), Instant.now());
     }
 
@@ -120,7 +122,9 @@ class TaskControllerWebTest {
                 "deliverables", List.of(Map.of("text", "PDF")), "acceptanceCriteria", List.of(Map.of("text", "Revisado", "done", false)),
                 "references", List.of(Map.of("label", "W3C", "url", "https://www.w3.org/")), "extensions", Map.of("method", "Survey")));
         mvc.perform(authed(post("/api/tasks"), "USER").contentType(MediaType.APPLICATION_JSON).content(body))
-                .andExpect(status().isCreated()).andExpect(jsonPath("$.id").value(taskId.toString())).andExpect(jsonPath("$.area").value("PESQUISA"));
+                .andExpect(status().isCreated()).andExpect(jsonPath("$.id").value(taskId.toString())).andExpect(jsonPath("$.area").value("PESQUISA"))
+                .andExpect(jsonPath("$.sourceKind").value("MANUAL")).andExpect(jsonPath("$.linkMode").doesNotExist())
+                .andExpect(jsonPath("$.sourceRef").doesNotExist());
         when(tasks.listMine(any(), anyInt())).thenReturn(List.of(view(1)));
         mvc.perform(authed(get("/api/tasks?limit=10"), "USER")).andExpect(status().isOk()).andExpect(jsonPath("$[0].title").value("Relatório"));
     }

@@ -49,8 +49,8 @@ produto (pergunta 3).
   encerramento. Isso entra no desenho do RF79 E1: corrigir depois, com dados já expostos, é tarde.
 - **Já resolvido depois das pesquisas.** A checagem do Acervo confere só a rubrica da tarefa-guia de origem
   (`extensions.guidedTask`, commit 377acc4); o ramo lembrado no navegador passou a ser por conta, o que fecha o vazamento entre
-  contas apontado pelo grupo C; a Mesa ganhou a área do projeto. Os conectores de fontes externas, em implementação, ocuparam as
-  migrações V60 e V61 que o RF75 e o RF81 planejavam: é preciso renumerar (§7).
+  contas apontado pelo grupo C; a Mesa ganhou a área do projeto. Os conectores de fontes externas ocuparam as migrações V60 e V61
+  que o RF75 e o RF81 planejavam; os planos foram renumerados para V62–V68, com a faixa reservada no `PLANO_EXECUCAO` §6 (§7).
 - **Sequência (§6).** Onda 1: esquema, curadoria com Lab e barreira de privacidade. Onda 2: a lente nas telas que já existem
   (cadastro, Acervo, Mesa, DECIA), com o assembler de IA e as guardas. Onda 3: estúdios, painel Guia e evidência. Onda 4: desafios,
   carteira de selos e feed.
@@ -310,7 +310,7 @@ estúdios e a evidência; onda 4 abre desafios, selos e rede. Dentro de cada ond
 | # | Inconsistência | Onde | Proposta |
 |---|---|---|---|
 | 1 | Numeração RF77 × RF80 | o brief da pesquisa trocou RF77 e RF80 e chamou os selos de RF80; também apontou `docs/produto/ABAS_POR_PROFISSAO.md`, que está em `docs/auditoria/2026-11-02/` | vale a D-149: RF77 Ranking, níveis e Em alta; RF80 Feed da rede; selo bronze/prata/ouro no RF79 (D-151), exibido em "Meu nível e selos" do RF77. Corrigido aqui. |
-| 2 | Migrações V60–V66 | RF75 planeja V60 (Em transição e colunas da profissão), V61 (`career_profiles`), V62 (consentimento), V63 (`occupation_packs`) e V64 (`CompetencyEvidence`); o RF81 repete V60 e V63; o RF78 usa V63, V65 (`pack_reviews`) e V66 (`showcase_entries`). Os conectores já criaram `V60__acervo_tipos_e_fontes_externas.sql` e `V61__rf20_conectores_fontes_externas.sql` | renumerar RF75, RF78 e RF81 a partir da primeira versão livre depois da V61 e registrar a reserva na tabela do `PLANO_EXECUCAO` (D-138), antes do RF81 E1; o `out-of-order` não resolve número repetido, que o `MigrationVersionsTest` recusa (pergunta 3) |
+| 2 | Migrações V60–V66 | RF75 planeja V60 (Em transição e colunas da profissão), V61 (`career_profiles`), V62 (consentimento), V63 (`occupation_packs`) e V64 (`CompetencyEvidence`); o RF81 repete V60 e V63; o RF78 usa V63, V65 (`pack_reviews`) e V66 (`showcase_entries`). Os conectores já criaram `V60__acervo_tipos_e_fontes_externas.sql` e `V61__rf20_conectores_fontes_externas.sql` | **Feito:** RF75 E1–E5 em V62–V66 (V62 Em transição e colunas da profissão, V63 `career_profiles`, V64 consentimento, V65 `occupation_packs`, V66 `CompetencyEvidence`); RF81 em V62 e V65; RF78 em V65, V67 (`pack_reviews`) e V68 (`showcase_entries`). A faixa V62–V68 está reservada no `PLANO_EXECUCAO` §6 (D-138). O `out-of-order` não resolveria número repetido, que o `MigrationVersionsTest` recusa |
 | 3 | Autonomia padrão | `system.defaultAutonomy = SUGESTOES` nos 80 pacotes × D-136 (padrão pessoal `SOB_SOLICITACAO`); B propõe o mais restritivo, E propõe que a pessoa sempre vença, D propõe teto por tipo de peça | o pacote vira teto e nunca eleva; corrigir os 80 pacotes; o validador recusa padrão acima de `SOB_SOLICITACAO` (pergunta 4) |
 | 4 | `Evidence` com dois sentidos | `ws-domain/.../acervo/Evidence.java` é a foto ou anexo do RF41.CA06; o RF75 e o RF81.CA09 chamam de `Evidence` a evidência de competência, com `artifactVersion` inteiro | `CompetencyEvidence` em tabela própria, que referencia uma `PieceEvidence` (revisão, hash, `PrecheckReport`); `Evidence` fica só para mídia |
 | 5 | Origem da tarefa da profissão com três nomes | `GUIA_DE_CARREIRA` (RF75), `TaskOrigin.DESAFIO` (RF79), `TaskOrigin.PROFISSAO` (RF81.CA05); `TaskOrigin` é origem institucional (INTERNA, ORGAO_EXTERNO, FORNECEDOR, CIDADAO); o grupo A propôs `SourceKind.PACOTE`, que acaba de ganhar um valor por aplicativo na V60 | campo de procedência próprio (`provenance`: pacote e versão, tarefa-guia, desafio, semente), porque uma tarefa pode vir de um conector e ser tarefa-guia ao mesmo tempo; `SourceKind` segue dizendo como a tarefa entrou; `extensions.guidedTask` (377acc4) é a ponte até lá |
@@ -341,7 +341,8 @@ a Q-267, na mesma ordem.
    responsabilidade? Recomendação: papel de plataforma nomeado pelo ADMIN; `ativo` com duas pessoas, uma da área e uma de IA e
    privacidade; ninguém aprova o que editou.
 3. **(Q-255) Numeração.** Os requisitos `RFP-*` viram CAs dos RFs existentes (RF22, RF29, RF33, RF40, RF41, RF52, RF58, RF71…) ou
-   RFs novos a partir do RF82? E confirmar a renumeração das migrações do RF75, RF78 e RF81 depois das V60 e V61 dos conectores.
+   RFs novos a partir do RF82? (A renumeração das migrações já foi aplicada nos planos: V62–V68, reservadas no `PLANO_EXECUCAO`;
+   se preferir outra faixa, basta trocar a reserva.)
 
 **IA e profissões reguladas**
 

@@ -39,6 +39,23 @@ export const TASK_TYPE_META: Record<TaskType, { symbol: string; tone: Tone; fami
   PROTOCOLO: { symbol: "№", tone: "yellow", family: "protocolo" },
   CRONOGRAMA: { symbol: "▥", tone: "accent", family: "protocolo" },
   ESTUDO_TECNICO_PRELIMINAR: { symbol: "⌕", tone: "warning", family: "protocolo" },
+  // conectores de fontes externas (V60)
+  APRESENTACAO: { symbol: "▭", tone: "orange", family: "protocolo" },
+  DIAGRAMA: { symbol: "◇", tone: "accent", family: "blueprint" },
+  QUADRO_BRANCO: { symbol: "▢", tone: "neutral", family: "blueprint" },
+  NOTA: { symbol: "✐", tone: "yellow", family: "monograma" },
+  EVENTO_AGENDA: { symbol: "◷", tone: "blue", family: "protocolo" },
+  LISTA_TAREFAS: { symbol: "☰", tone: "success", family: "protocolo" },
+  GRAVACAO_REUNIAO: { symbol: "◎", tone: "red", family: "carimbo" },
+  TRANSCRICAO: { symbol: "❝", tone: "neutral", family: "carimbo" },
+  MENSAGEM_CHAT: { symbol: "❏", tone: "info", family: "monograma" },
+  PAGINA_WEB: { symbol: "◰", tone: "blue", family: "protocolo" },
+  VIDEO: { symbol: "▶", tone: "red", family: "protocolo" },
+  AUDIO: { symbol: "♪", tone: "spark", family: "protocolo" },
+  PAINEL_DADOS: { symbol: "▧", tone: "green", family: "protocolo" },
+  CODIGO: { symbol: "⌘", tone: "neutral", family: "monograma" },
+  MAPA: { symbol: "⊕", tone: "orange", family: "blueprint" },
+  ATIVIDADE_CURSO: { symbol: "✓", tone: "accent", family: "carimbo" },
 };
 
 export const TASK_STATE_TONE: Record<TaskState, Tone> = {
