@@ -2,18 +2,19 @@
 /**
  * Configurações › Conectores (RF4, RF20.CA07, RF23, RF34; contrato de 09/11/2026). Contas do Google e da Microsoft ligadas por
  * OAuth 2.0 (PKCE e `state` de uso único no servidor; tokens cifrados que nunca chegam ao navegador) com estado, conta, escopos e
- * finalidade (LGPD); conectar leva à tela do provedor e o callback volta com `conector=ok|erro&motivo=`; desconectar pede
+ * finalidade (LGPD); conectar leva à tela do provedor e o callback volta com `conector=confirmar&pedido=` (a conexão termina NA
+ * SESSÃO de quem está logado) ou `conector=erro&motivo=`; desconectar pede
  * confirmação (Google: revoga; Microsoft: apaga aqui e orienta a remover o consentimento). Apple iCloud não tem API pública: entra
  * por link de compartilhamento e por arquivo exportado. Abaixo, o catálogo de fontes (o que cada aplicativo vira).
  */
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Badge, Button, Card, Dialog, ErrorState, Link, LoadingState, useToast, type Tone } from "@/components/ui";
 import { ApiError, describeError } from "@/lib/api/client";
 import { linkRulesByEcosystem } from "@/lib/connectors/catalog";
 import {
-  CONNECTORS_HOME, connectorErrorKind, connectorsApi, describeConnectorError, readConnectorReturn, startAuthorization,
-  type ConnectorAccount, type ConnectorProvider, type ConnectorProviderInfo,
+  CONNECTORS_HOME, SIGNAL_PARAMS, confirmConnection, connectorErrorKind, connectorsApi, describeConnectorError, readConnectorReturn,
+  startAuthorization, type ConnectorAccount, type ConnectorProvider, type ConnectorProviderInfo, type ConnectorReturn,
 } from "@/lib/connectors/client";
 import { useConnectorLabels } from "./labels";
 import { LinkRulesHint } from "./LinkRulesHint";
@@ -103,7 +104,7 @@ export function ConnectorsPanel() {
 
   return (
     <div className="grid grid-cols-1 gap-[var(--ws-space-4)]" data-testid="connectors-panel">
-      <ReturnBanner />
+      <ReturnBanner onConnected={() => void load()} />
       <Card title={t("connectors.title")} eyebrow="RF4 · RF20.CA07 · RF23 · RF34">
         <div className={`grid grid-cols-1 gap-2 ${BODY_SM}`}>
           <p className="text-ws-text-muted">{t("connectors.intro")}</p>
@@ -164,25 +165,46 @@ export function ConnectorsPanel() {
   );
 }
 
-/** Retorno do callback (`?conector=ok|erro&motivo=`): mostra e, ao dispensar, tira os dois parâmetros da URL. */
-function ReturnBanner() {
+/**
+ * Volta do provedor (`?conector=confirmar&pedido=` ou `?conector=erro&motivo=`): os parâmetros saem da URL assim que lidos (o segredo é
+ * de uso único: recarregar não repete); `confirmar` conclui na sessão e, conectando, recarrega a lista de contas.
+ */
+function ReturnBanner({ onConnected }: { onConnected: () => void }) {
   const { t } = useConnectorLabels();
   const search = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const ret = readConnectorReturn(search);
-  if (!ret) return null;
-  const dismiss = () => {
-    const next = new URLSearchParams(search.toString());
-    next.delete("conector");
-    next.delete("motivo");
-    const q = next.toString();
-    router.replace(q ? `${pathname}?${q}` : pathname, { scroll: false });
-  };
+  const [shown, setShown] = useState<ConnectorReturn | null>(null);
+  const handled = useRef<string | null>(null);
+  const connected = useRef(onConnected);
+  useEffect(() => { connected.current = onConnected; }, [onConnected]);
+  const query = search.toString();
+
+  useEffect(() => {
+    if (handled.current === query) return;
+    handled.current = query;
+    const params = new URLSearchParams(query);
+    const signal = readConnectorReturn(params);
+    if (!signal) return;
+    SIGNAL_PARAMS.forEach((k) => params.delete(k));
+    const rest = params.toString();
+    router.replace(rest ? `${pathname}?${rest}` : pathname, { scroll: false });
+    if (signal.status !== "confirmar") {
+      setShown(signal);
+      return;
+    }
+    setShown({ status: "confirmando", reason: null });
+    void confirmConnection(signal.request).then((ret) => {
+      setShown(ret);
+      if (ret.status === "ok") connected.current();
+    });
+  }, [query, router, pathname]);
+
+  if (!shown) return null;
   return (
     <ConnectorReturnNotice
-      ret={ret}
-      onDismiss={dismiss}
+      ret={shown}
+      onDismiss={shown.status === "confirmando" ? undefined : () => setShown(null)}
       okHint={<>{t("connectors.return.okHint")} <Link href="/tasks/new?importar=conta">{t("connectors.return.goImport")}</Link></>}
     />
   );

@@ -36,6 +36,9 @@ public class ConnectorOAuthStateEntity {
     @Column(name = "code_verifier_sealed", nullable = false)
     private String codeVerifierSealed;
 
+    @Column(name = "code_sealed", columnDefinition = "TEXT")
+    private String codeSealed;
+
     @Column(name = "return_to", nullable = false)
     private String returnTo;
 
@@ -83,6 +86,14 @@ public class ConnectorOAuthStateEntity {
 
     public void setCodeVerifierSealed(String codeVerifierSealed) {
         this.codeVerifierSealed = codeVerifierSealed;
+    }
+
+    public String getCodeSealed() {
+        return codeSealed;
+    }
+
+    public void setCodeSealed(String codeSealed) {
+        this.codeSealed = codeSealed;
     }
 
     public String getReturnTo() {

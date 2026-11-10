@@ -4,6 +4,7 @@ import br.gov.pr.secid.workstation.application.acervo.TaskService.TaskView;
 import br.gov.pr.secid.workstation.application.connectors.ConnectorService;
 import br.gov.pr.secid.workstation.application.connectors.ConnectorService.ConnectorAccountView;
 import br.gov.pr.secid.workstation.application.connectors.ConnectorService.ConnectorAuthorizeView;
+import br.gov.pr.secid.workstation.application.connectors.ConnectorService.ConnectorConfirmView;
 import br.gov.pr.secid.workstation.application.connectors.ConnectorService.ConnectorProviderView;
 import br.gov.pr.secid.workstation.application.connectors.ConnectorService.ExternalItemsPage;
 import br.gov.pr.secid.workstation.application.connectors.ConnectorService.ImportInput;
@@ -34,9 +35,9 @@ import java.util.UUID;
 /**
  * Conectores de fontes externas (RF4, RF20.CA07, RF23, RF34) — contrato do {@code docs/arquitetura/CONECTORES.md}. Toda regra (escopo,
  * PKCE, state de uso único, cifra dos tokens, dono da conta) fica no {@link ConnectorService}; aqui só o HTTP. O callback do OAuth é a
- * única rota pública (a navegação vinda do provedor não leva o token da API: quem conecta é o dono do {@code state}) e responde sempre
- * {@code 302} para o front. Erros: {@code VALIDACAO} 400, {@code NAO_ENCONTRADO} 404, {@code CONECTOR_EXPIRADO} 409,
- * {@code CONECTOR_DESABILITADO} 503, {@code PROVEDOR_INDISPONIVEL} 502.
+ * única rota pública (a navegação vinda do provedor não leva o token da API) e responde sempre {@code 302} para o front, que conclui a
+ * conexão na sessão de quem iniciou ({@code POST /api/connectors/oauth/confirm}). Erros: {@code VALIDACAO} 400, {@code NAO_ENCONTRADO}
+ * 404, {@code CONECTOR_EXPIRADO} 409, {@code CONECTOR_DESABILITADO} 503, {@code PROVEDOR_INDISPONIVEL} 502.
  */
 @RestController
 @Tag(name = "RF20 Conectores")
@@ -49,6 +50,10 @@ public class ConnectorController {
 
     /** Começo da conexão: caminho interno para onde o callback devolve a pessoa (padrão {@code /settings?tab=conectores}). */
     public record ConnectorAuthorizeRequest(@Schema(maxLength = 200, example = "/tasks/new") String returnTo) {
+    }
+
+    /** Conclusão da conexão: o segredo que o callback pôs na URL do front ({@code pedido}). */
+    public record ConnectorConfirmRequest(@Schema(maxLength = 64, description = "valor do parâmetro pedido da URL de retorno") String confirmation) {
     }
 
     /** Importar um item da conta conectada: {@code COPIADO} guarda uma cópia (anexo); {@code VINCULADO}, a referência para sincronizar. */
@@ -89,14 +94,25 @@ public class ConnectorController {
         return connectors.authorize(user, provider, body == null ? null : body.returnTo());
     }
 
-    @Operation(summary = "Conectores: retorno do provedor (rota pública; state de uso único). Sempre 302 para o front com conector=ok ou "
-            + "conector=erro&motivo=ESTADO_INVALIDO|ACESSO_NEGADO|ESCOPO_INSUFICIENTE|CONECTOR_DESABILITADO|PROVEDOR_INDISPONIVEL|ERRO_INTERNO")
+    @Operation(summary = "Conectores: retorno do provedor (rota pública; state de uso único; não troca o code). Sempre 302 para o front com "
+            + "conector=confirmar&pedido=<segredo de uso único, 5 min> ou "
+            + "conector=erro&motivo=ESTADO_INVALIDO|ACESSO_NEGADO|CONECTOR_DESABILITADO|PROVEDOR_INDISPONIVEL|ERRO_INTERNO")
     @ApiResponse(responseCode = "302", description = "Redireciona para {frontendBaseUrl}{returnTo} com o resultado da conexão")
     @GetMapping("/api/connectors/oauth/callback")
     public ResponseEntity<Void> callback(@RequestParam(required = false) String state, @RequestParam(required = false) String code,
                                          @RequestParam(required = false) String error, RequestContext ctx) {
         String target = connectors.callback(state, code, error, ctx);
-        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(target)).header("Cache-Control", "no-store").build();
+        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(target)).header("Cache-Control", "no-store")
+                .header("Referrer-Policy", "no-referrer").build();
+    }
+
+    @Operation(summary = "Conectores: conclui a conexão na sessão de quem a iniciou (troca o code com PKCE e grava a conta). Sempre 200 com "
+            + "status=ok ou status=erro e "
+            + "reason=ESTADO_INVALIDO|OUTRA_CONTA|ESCOPO_INSUFICIENTE|CONECTOR_DESABILITADO|PROVEDOR_INDISPONIVEL|ERRO_INTERNO "
+            + "(OUTRA_CONTA: o pedido foi iniciado por outra conta e foi descartado sem tocar no provedor)")
+    @PostMapping("/api/connectors/oauth/confirm")
+    public ConnectorConfirmView confirm(CurrentUser user, @RequestBody(required = false) ConnectorConfirmRequest body, RequestContext ctx) {
+        return connectors.confirm(user, body == null ? null : body.confirmation(), ctx);
     }
 
     @Operation(summary = "Conectores: desconecta (revoga no Google; a Microsoft não revoga por API) e apaga a conta e os tokens")

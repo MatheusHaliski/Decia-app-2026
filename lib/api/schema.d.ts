@@ -14,7 +14,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** RF1.CA04/CA05/CA11 Confirma o código do e-mail (≤ 5 tentativas por código, 10/h por pessoa → 429 MUITAS_TENTATIVAS); EMPREGADO → ACTIVE, EMPRESA/CHEFE → PENDING_VALIDATION; devolve a sessão */
-        post: operations["confirm_1"];
+        post: operations["confirm_2"];
         delete?: never;
         options?: never;
         head?: never;
@@ -116,7 +116,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** RF2.CA08 Confirma com o token (hash, 1 uso, 30 min): troca a senha, tira a conta do bloqueio e encerra as sessões; 422 LINK_INVALIDO */
-        post: operations["confirm"];
+        post: operations["confirm_1"];
         delete?: never;
         options?: never;
         head?: never;
@@ -320,10 +320,27 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Conectores: retorno do provedor (rota pública; state de uso único). Sempre 302 para o front com conector=ok ou conector=erro&motivo=ESTADO_INVALIDO|ACESSO_NEGADO|ESCOPO_INSUFICIENTE|CONECTOR_DESABILITADO|PROVEDOR_INDISPONIVEL|ERRO_INTERNO */
+        /** Conectores: retorno do provedor (rota pública; state de uso único; não troca o code). Sempre 302 para o front com conector=confirmar&pedido=<segredo de uso único, 5 min> ou conector=erro&motivo=ESTADO_INVALIDO|ACESSO_NEGADO|CONECTOR_DESABILITADO|PROVEDOR_INDISPONIVEL|ERRO_INTERNO */
         get: operations["callback"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/connectors/oauth/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Conectores: conclui a conexão na sessão de quem a iniciou (troca o code com PKCE e grava a conta). Sempre 200 com status=ok ou status=erro e reason=ESTADO_INVALIDO|OUTRA_CONTA|ESCOPO_INSUFICIENTE|CONECTOR_DESABILITADO|PROVEDOR_INDISPONIVEL|ERRO_INTERNO (OUTRA_CONTA: o pedido foi iniciado por outra conta e foi descartado sem tocar no provedor) */
+        post: operations["confirm"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1132,6 +1149,16 @@ export interface components {
         ConnectorAuthorizeView: {
             url?: string;
         };
+        ConnectorConfirmRequest: {
+            /** @description valor do parâmetro pedido da URL de retorno */
+            confirmation?: string;
+        };
+        ConnectorConfirmView: {
+            /** @enum {string} */
+            provider?: "GOOGLE" | "MICROSOFT" | "APPLE_ICLOUD";
+            reason?: string;
+            status?: string;
+        };
         ConnectorImportRequest: {
             externalId?: string;
             /** @enum {string} */
@@ -1662,7 +1689,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    confirm_1: {
+    confirm_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -1804,7 +1831,7 @@ export interface operations {
             };
         };
     };
-    confirm: {
+    confirm_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -2159,6 +2186,30 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    confirm: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ConnectorConfirmRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConnectorConfirmView"];
+                };
             };
         };
     };

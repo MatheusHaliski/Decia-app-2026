@@ -3788,15 +3788,16 @@
       "store": "mysql",
       "migration": "V61",
       "pk": "id",
-      "doc": "Autorização OAuth em andamento: hash do state (uso único, 10 min), verificador PKCE selado e caminho interno de volta. Some com quem iniciou.",
+      "doc": "Autorização OAuth em andamento: hash do segredo da fase (state do pedido, 10 min; confirmação do retorno, 5 min — uso único), verificador PKCE e code selados e caminho interno de volta. Some com quem iniciou.",
       "indexes": ["owner_id", "expires_at"],
       "uniques": [],
       "attributes": [
         {"name": "id", "type": "UUID", "column": "id", "sqlType": "BINARY(16)", "nullable": false, "pk": true, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "identificador"},
-        {"name": "stateHash", "type": "String", "column": "state_hash", "sqlType": "CHAR(64)", "nullable": false, "pk": false, "constraint": "UNIQUE", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "SHA-256 do state (hex; o valor só viaja na URL)"},
+        {"name": "stateHash", "type": "String", "column": "state_hash", "sqlType": "CHAR(64)", "nullable": false, "pk": false, "constraint": "UNIQUE", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "SHA-256 do segredo da fase: state do pedido ou confirmação do retorno (hex; o valor só viaja na URL)"},
         {"name": "ownerId", "type": "UUID", "column": "owner_id", "sqlType": "BINARY(16)", "nullable": false, "pk": false, "constraint": "FK users.id ON DELETE CASCADE", "enumValues": [], "ref": "users.id", "onDelete": "CASCADE", "default": "", "encrypted": false, "description": "quem iniciou"},
         {"name": "provider", "type": "ConnectorProvider", "column": "provider", "sqlType": "VARCHAR(20)", "nullable": false, "pk": false, "constraint": "GOOGLE · MICROSOFT · APPLE_ICLOUD", "enumValues": ["GOOGLE", "MICROSOFT", "APPLE_ICLOUD"], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "provedor"},
         {"name": "codeVerifierSealed", "type": "String", "column": "code_verifier_sealed", "sqlType": "VARCHAR(512)", "nullable": false, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "code_verifier do PKCE selado (AES-256-GCM, WS_CONNECTORS_TOKEN_KEY)"},
+        {"name": "codeSealed", "type": "String", "column": "code_sealed", "sqlType": "TEXT", "nullable": true, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "code do provedor selado, à espera da confirmação de quem iniciou (só na fase de retorno)"},
         {"name": "returnTo", "type": "String", "column": "return_to", "sqlType": "VARCHAR(200)", "nullable": false, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "caminho interno de volta (ex.: /tasks/new)"},
         {"name": "expiresAt", "type": "Instant", "column": "expires_at", "sqlType": "TIMESTAMP(6)", "nullable": false, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "", "encrypted": false, "description": "expira em"},
         {"name": "createdAt", "type": "Instant", "column": "created_at", "sqlType": "TIMESTAMP(6)", "nullable": false, "pk": false, "constraint": "", "enumValues": [], "ref": "", "onDelete": "", "default": "CURRENT_TIMESTAMP(6)", "encrypted": false, "description": "criação (UTC)"}

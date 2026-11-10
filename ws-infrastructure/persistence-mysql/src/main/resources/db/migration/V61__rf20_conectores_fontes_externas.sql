@@ -36,8 +36,8 @@ CREATE TABLE connector_accounts (
 
 -- ---------------------------------------------------------------------------------------------------------------
 -- connector_oauth_states (ConnectorOAuthState — 2 Acervo de Tarefas; RF20, RF4)
--- Autorização OAuth em andamento: hash do state (uso único, 10 min), verificador PKCE selado e caminho interno
--- de volta. Some com quem iniciou.
+-- Autorização OAuth em andamento: hash do segredo da fase (state do pedido, 10 min; confirmação do retorno, 5
+-- min — uso único), verificador PKCE e code selados e caminho interno de volta. Some com quem iniciou.
 -- ---------------------------------------------------------------------------------------------------------------
 CREATE TABLE connector_oauth_states (
     id                      BINARY(16)      NOT NULL,
@@ -45,6 +45,7 @@ CREATE TABLE connector_oauth_states (
     owner_id                BINARY(16)      NOT NULL,
     provider                VARCHAR(20)     NOT NULL,
     code_verifier_sealed    VARCHAR(512)    NOT NULL,
+    code_sealed             TEXT            NULL,
     return_to               VARCHAR(200)    NOT NULL,
     expires_at              TIMESTAMP(6)    NOT NULL,
     created_at              TIMESTAMP(6)    NOT NULL DEFAULT CURRENT_TIMESTAMP(6),

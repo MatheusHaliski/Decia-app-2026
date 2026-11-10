@@ -8,7 +8,7 @@ import java.util.Map;
  * Códigos de erro dos conectores (contrato REST, campo {@code code}): {@code VALIDACAO} (400), {@code ACESSO_NEGADO} (403),
  * {@code NAO_ENCONTRADO} (404), {@code CONECTOR_EXPIRADO} (409 — a renovação falhou: reconectar), {@code CONECTOR_DESABILITADO} (503 — sem
  * client id/segredo ou sem chave de cifra) e {@code PROVEDOR_INDISPONIVEL} (502). E os motivos do retorno do OAuth
- * ({@code conector=erro&motivo=<CODIGO>} no 302 do callback).
+ * ({@code conector=erro&motivo=<CODIGO>} no 302 do callback e {@code reason} na resposta da confirmação).
  */
 public final class ConnectorErrors {
     public static final String CONECTOR_EXPIRADO = "CONECTOR_EXPIRADO";
@@ -24,6 +24,11 @@ public final class ConnectorErrors {
     public static final String MOTIVO_DESABILITADO = CONECTOR_DESABILITADO;
     public static final String MOTIVO_PROVEDOR = PROVEDOR_INDISPONIVEL;
     public static final String MOTIVO_ERRO_INTERNO = ApiException.ERRO_INTERNO;
+    /**
+     * Só na confirmação: o retorno pertence a um pedido iniciado por OUTRA conta (a URL de consentimento foi repassada). Nada foi trocado
+     * com o provedor e o retorno foi descartado.
+     */
+    public static final String MOTIVO_OUTRA_CONTA = "OUTRA_CONTA";
 
     private ConnectorErrors() {
     }

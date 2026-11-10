@@ -190,6 +190,17 @@ class ConnectorPersistenceIT {
         assertThat(states.purgeExpired(now)).isEqualTo(1);
         assertThat(states.consume(old)).isEmpty();
         assertThat(states.consume(fresh)).isPresent();
+
+        // fase de retorno: o code (longo como os da Microsoft) vai selado e volta igual; também é de uso único
+        String confirm = "d".repeat(64);
+        String sealedCode = "ctk:v1:" + "x".repeat(3000);
+        states.insert(once.returned(confirm, "ctk:v1:verif2", sealedCode, now));
+        ConnectorOAuthState back = states.consume(confirm).orElseThrow();
+        assertThat(back.awaitingConfirmation()).isTrue();
+        assertThat(back.codeSealed()).isEqualTo(sealedCode);
+        assertThat(back.codeVerifierSealed()).isEqualTo("ctk:v1:verif2");
+        assertThat(back.ownerId()).isEqualTo(u.getId());
+        assertThat(states.consume(confirm)).isEmpty();
     }
 
     @Test

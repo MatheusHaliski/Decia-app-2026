@@ -22,7 +22,7 @@ import { ConnectorErrorNotice, ConnectorReturnNotice } from "./Notices";
 export type ImportTab = "conta" | "link";
 export interface ImportPanelProps {
   initialTab?: ImportTab;
-  /** volta do provedor (`conector=ok|erro&motivo=`) */
+  /** volta do provedor: concluindo, conectou ou o motivo do erro */
   returned?: ConnectorReturn | null;
   /** o formulário já tem conteúdo: avisa que a importação cria outra tarefa */
   hasDraft?: boolean;
@@ -90,8 +90,9 @@ function AccountImport({ returned, onImported, onUseLink }: { returned: Connecto
   const [connecting, setConnecting] = useState<ConnectorProvider | null>(null);
   const seq = useRef(0);
 
-  const reload = useCallback(async () => {
-    setLoad({ kind: "loading" });
+  /** `soft`: atualiza a lista sem trocar a tela por "carregando" (a conta que acabou de entrar). */
+  const reload = useCallback(async (soft = false) => {
+    if (!soft) setLoad({ kind: "loading" });
     const [providers, accounts] = await Promise.allSettled([connectorsApi.providers(), connectorsApi.accounts()]);
     if (accounts.status === "rejected") {
       setLoad({ kind: "error", error: accounts.reason });
@@ -102,6 +103,9 @@ function AccountImport({ returned, onImported, onUseLink }: { returned: Connecto
     setAccountId((cur) => (usable.some((a) => a.id === cur) ? cur : (usable.find((a) => a.status === "ATIVO") ?? usable[0])?.id ?? ""));
   }, []);
   useEffect(() => { void reload(); }, [reload]);
+  // a conexão que acabou de ser concluída na sessão entra na lista assim que a confirmação responde
+  const justConnected = returned?.status === "ok";
+  useEffect(() => { if (justConnected) void reload(true); }, [justConnected, reload]);
 
   const account = load.kind === "ready" ? load.accounts.find((a) => a.id === accountId) : undefined;
   const usable = !!account && account.status === "ATIVO" && !expired.has(account.id);
@@ -174,9 +178,16 @@ function AccountImport({ returned, onImported, onUseLink }: { returned: Connecto
     }
   };
 
-  if (load.kind === "loading") return <LoadingState label={t("connectors.loading")} />;
-  if (load.kind === "error") {
-    return <ConnectorErrorNotice error={load.error} action={<Button size="sm" variant="ghost" onClick={() => void reload()}>{t("common.retry")}</Button>} />;
+  const notice = returned ? <ConnectorReturnNotice ret={returned} okHint={t("connectors.import.returnedOk")} /> : null;
+  if (load.kind !== "ready") {
+    return (
+      <div className="grid grid-cols-1 gap-[var(--ws-space-3)]" data-testid="import-account">
+        {notice}
+        {load.kind === "loading" ? <LoadingState label={t("connectors.loading")} /> : (
+          <ConnectorErrorNotice error={load.error} action={<Button size="sm" variant="ghost" onClick={() => void reload()}>{t("common.retry")}</Button>} />
+        )}
+      </div>
+    );
   }
 
   const providerInfo = (p: ConnectorProvider) => load.providers?.find((x) => x.provider === p);
@@ -185,7 +196,7 @@ function AccountImport({ returned, onImported, onUseLink }: { returned: Connecto
 
   return (
     <div className="grid grid-cols-1 gap-[var(--ws-space-3)]" data-testid="import-account">
-      {returned ? <ConnectorReturnNotice ret={returned} okHint={t("connectors.import.returnedOk")} /> : null}
+      {notice}
 
       {load.accounts.length === 0 ? (
         <div className="grid grid-cols-1 gap-3 rounded-[var(--ws-radius-md)] border border-dashed border-ws-border p-3" data-testid="import-no-account">

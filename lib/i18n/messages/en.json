@@ -4176,5 +4176,9 @@
   "pm.ws.compliance.hint": "Exit criterion of the Analysis gate. In IT projects it is part of the six ISO/IEC 38500 principles; in other areas the area's own regulation applies (professional council, technical standards, data protection law).",
   "connectors.return.reason.ESTADO_INVALIDO": "The provider's response didn't check out (request expired, already used or from another session). Start the connection again.",
   "connectors.return.reason.ESCOPO_INSUFICIENTE": "On the provider's page, the permission to read files was left unchecked. Connect again and keep the requested permissions checked.",
-  "connectors.return.reason.ERRO_INTERNO": "Something went wrong on our side while finishing the connection. Try again; if it persists, contact support."
+  "connectors.return.reason.ERRO_INTERNO": "Something went wrong on our side while finishing the connection. Try again; if it persists, contact support.",
+  "connectors.return.reason.OUTRA_CONTA": "This connection request was started by another Work Station account and was cancelled: no access to your files was granted. If you didn't ask for this connection, tell the security team.",
+  "connectors.return.reason.NAO_AUTENTICADO": "Your session ended before the connection finished. Sign in again and connect once more.",
+  "connectors.return.confirming": "Finishing the connection…",
+  "connectors.return.confirmingHint": "Checking that you started it and getting access from the provider."
 }

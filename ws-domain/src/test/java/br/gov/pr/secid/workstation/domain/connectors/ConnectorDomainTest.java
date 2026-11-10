@@ -110,8 +110,35 @@ class ConnectorDomainTest {
                 .hasMessageContaining("provedor OAuth");
         assertThatThrownBy(() -> ConnectorOAuthState.issue(owner, ConnectorProvider.GOOGLE, hash, " ", null, NOW))
                 .hasMessageContaining("PKCE");
-        assertThatThrownBy(() -> new ConnectorOAuthState(UUID.randomUUID(), hash, owner, ConnectorProvider.GOOGLE, "v", "/", null))
+        assertThatThrownBy(() -> new ConnectorOAuthState(UUID.randomUUID(), hash, owner, ConnectorProvider.GOOGLE, "v", null, "/", null))
                 .hasMessageContaining("expiresAt");
+        assertThatThrownBy(() -> new ConnectorOAuthState(UUID.randomUUID(), hash, owner, ConnectorProvider.GOOGLE, "v", " ", "/", NOW))
+                .hasMessageContaining("code selado");
+    }
+
+    @Test
+    void retornoDoProvedorViraOutraLinhaComSegredoNovoEValidadeCurta() {
+        UUID owner = UUID.randomUUID();
+        String state = "a".repeat(64);
+        String confirm = "b".repeat(64);
+        ConnectorOAuthState pedido = ConnectorOAuthState.issue(owner, ConnectorProvider.MICROSOFT, state, "v1", "/tasks/new?importar=conta", NOW);
+        assertThat(pedido.awaitingConfirmation()).isFalse();
+        assertThat(pedido.codeSealed()).isNull();
+
+        Instant later = NOW.plusSeconds(90);
+        ConnectorOAuthState retorno = pedido.returned(confirm, "v2", "code-selado", later);
+        assertThat(retorno.awaitingConfirmation()).isTrue();
+        assertThat(retorno.id()).isNotEqualTo(pedido.id());
+        assertThat(retorno.stateHash()).isEqualTo(confirm);
+        assertThat(retorno.ownerId()).isEqualTo(owner);
+        assertThat(retorno.provider()).isEqualTo(ConnectorProvider.MICROSOFT);
+        assertThat(retorno.returnTo()).isEqualTo("/tasks/new?importar=conta");
+        assertThat(retorno.codeVerifierSealed()).isEqualTo("v2");
+        assertThat(retorno.codeSealed()).isEqualTo("code-selado");
+        assertThat(retorno.expiresAt()).isEqualTo(later.plus(ConnectorOAuthState.CONFIRM_TTL));
+        assertThat(ConnectorOAuthState.CONFIRM_TTL).isLessThan(ConnectorOAuthState.TTL);
+        assertThatThrownBy(() -> pedido.returned(confirm, "v2", " ", later)).hasMessageContaining("code selado");
+        assertThatThrownBy(() -> pedido.returned("curto", "v2", "c", later)).hasMessageContaining("stateHash");
     }
 
     @Test

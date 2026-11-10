@@ -25,7 +25,13 @@ const ANA = { id: "acc-g", provider: "GOOGLE", accountEmail: "ana@secid.pr.gov.b
 const BRUNO = { id: "acc-m", provider: "MICROSOFT", accountEmail: "bruno@secid.pr.gov.br", status: "EXPIRADO", scopes: MS_SCOPES, connectedAt: "2026-10-20T08:00:00Z", lastError: "invalid_grant" };
 
 type Call = { path: string; method: string; body: unknown };
-function server(routes: { providers?: () => Response; accounts?: () => Response; authorize?: (provider: string) => Response; remove?: (id: string) => Response }) {
+function server(routes: {
+  providers?: () => Response;
+  accounts?: () => Response;
+  authorize?: (provider: string) => Response;
+  remove?: (id: string) => Response;
+  confirm?: (body: Record<string, unknown>) => Response | Promise<Response>;
+}) {
   const calls: Call[] = [];
   fetchMock.mockImplementation(async (input, init) => {
     const u = new URL(String(input));
@@ -35,6 +41,9 @@ function server(routes: { providers?: () => Response; accounts?: () => Response;
     if (u.pathname === "/api/connectors" && method === "GET") return routes.accounts?.() ?? json(200, []);
     const auth = /^\/api\/connectors\/([A-Z_]+)\/authorize$/.exec(u.pathname);
     if (auth && method === "POST") return routes.authorize?.(auth[1]!) ?? json(404, { code: "NAO_ENCONTRADO" });
+    if (u.pathname === "/api/connectors/oauth/confirm" && method === "POST") {
+      return routes.confirm?.(JSON.parse(String(init!.body)) as Record<string, unknown>) ?? json(200, { status: "ok", provider: "GOOGLE" });
+    }
     const del = /^\/api\/connectors\/([^/]+)$/.exec(u.pathname);
     if (del && method === "DELETE") return routes.remove?.(del[1]!) ?? json(404, { code: "NAO_ENCONTRADO" });
     return json(404, { code: "NAO_ENCONTRADO" });
@@ -160,24 +169,64 @@ describe("Configurações › Conectores", () => {
     expect((await screen.findByRole("dialog", { name: "Desconectar ana@secid.pr.gov.br?" })).textContent).toContain("Revogamos o acesso no Google");
   });
 
-  it("volta do provedor: conector=ok confirma; conector=erro explica o motivo e dispensar limpa a URL", async () => {
-    server({ accounts: () => json(200, [ANA]) });
-    nav.search = "tab=conectores&conector=ok";
-    const { unmount } = renderWithProviders(<ConnectorsPanel />);
-    const ok = await screen.findByTestId("connector-return");
-    expect(ok.getAttribute("role")).toBe("status");
-    expect(ok.textContent).toContain("Conta conectada");
-    expect(within(ok).getByRole("link", { name: "Importar agora" }).getAttribute("href")).toBe("/tasks/new?importar=conta");
-    unmount();
+  it("volta do provedor: conector=confirmar conclui NA SESSÃO, tira o segredo da URL na hora e recarrega as contas", async () => {
+    const pedido = "a".repeat(43);
+    let connected = false;
+    const calls = server({
+      accounts: () => json(200, connected ? [ANA] : []),
+      confirm: () => {
+        connected = true;
+        return json(200, { status: "ok", provider: "GOOGLE" });
+      },
+    });
+    nav.search = `tab=conectores&conector=confirmar&pedido=${pedido}`;
+    renderWithProviders(<ConnectorsPanel />);
+    expect(nav.replace).toHaveBeenCalledWith("/settings?tab=conectores", { scroll: false });
+    const ok = await screen.findByText("Conta conectada");
+    const notice = screen.getByTestId("connector-return");
+    expect(notice.contains(ok)).toBe(true);
+    expect(notice.getAttribute("role")).toBe("status");
+    expect(within(notice).getByRole("link", { name: "Importar agora" }).getAttribute("href")).toBe("/tasks/new?importar=conta");
+    expect(calls.filter((c) => c.path === "/api/connectors/oauth/confirm")).toEqual([{ path: "/api/connectors/oauth/confirm", method: "POST", body: { confirmation: pedido } }]);
+    // a conta nova aparece sem recarregar a página
+    expect(within(await screen.findByTestId("provider-GOOGLE")).findByTestId("connector-account")).toBeTruthy();
+    await waitFor(() => expect(within(screen.getByTestId("provider-GOOGLE")).queryByTestId("connector-account")).not.toBeNull());
+    fireEvent.click(within(notice).getByRole("button", { name: "Dispensar" }));
+    expect(screen.queryByTestId("connector-return")).toBeNull();
+  });
+
+  it("volta do provedor: pedido de outra conta é recusado com explicação; erro do callback mostra o motivo; conector=ok forjado é ignorado", async () => {
+    const calls = server({ confirm: () => json(200, { status: "erro", reason: "OUTRA_CONTA", provider: "GOOGLE" }) });
+    nav.search = `tab=conectores&conector=confirmar&pedido=${"b".repeat(43)}`;
+    const first = renderWithProviders(<ConnectorsPanel />);
+    await waitFor(() => expect(screen.getByTestId("connector-return").getAttribute("data-status")).toBe("erro"));
+    const other = screen.getByTestId("connector-return");
+    expect(other.getAttribute("role")).toBe("alert");
+    expect(other.textContent).toContain("foi iniciado por outra conta do Work Station e foi cancelado: nenhum acesso aos seus arquivos foi dado");
+    first.unmount();
 
     nav.search = "tab=conectores&conector=erro&motivo=ACESSO_NEGADO";
-    renderWithProviders(<ConnectorsPanel />);
+    const second = renderWithProviders(<ConnectorsPanel />);
     const err = await screen.findByTestId("connector-return");
     expect(err.getAttribute("role")).toBe("alert");
     expect(err.textContent).toContain("A conexão não foi concluída");
     expect(err.textContent).toContain("Você não autorizou o acesso, ou a organização bloqueou o aplicativo.");
+    expect(nav.replace).toHaveBeenLastCalledWith("/settings?tab=conectores", { scroll: false });
     fireEvent.click(within(err).getByRole("button", { name: "Dispensar" }));
-    expect(nav.replace).toHaveBeenCalledWith("/settings?tab=conectores", { scroll: false });
+    expect(screen.queryByTestId("connector-return")).toBeNull();
+    second.unmount();
+
+    // segredo fora do formato: nem chama o servidor
+    nav.search = "tab=conectores&conector=confirmar&pedido=curto";
+    const third = renderWithProviders(<ConnectorsPanel />);
+    expect((await screen.findByTestId("connector-return")).textContent).toContain("O retorno do provedor não conferiu");
+    third.unmount();
+
+    nav.search = "tab=conectores&conector=ok";
+    renderWithProviders(<ConnectorsPanel />);
+    await screen.findByTestId("provider-GOOGLE");
+    expect(screen.queryByTestId("connector-return")).toBeNull();
+    expect(calls.filter((c) => c.path === "/api/connectors/oauth/confirm")).toHaveLength(1);
   });
 
   it("motivo que não é código não é refletido na tela", async () => {

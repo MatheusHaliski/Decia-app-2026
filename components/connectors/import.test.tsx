@@ -38,6 +38,7 @@ interface Routes {
   importItem?: (body: Record<string, unknown>) => Response;
   linkImport?: (body: Record<string, unknown>) => Response;
   authorize?: () => Response;
+  confirm?: (body: Record<string, unknown>) => Response;
 }
 const fetchMock = vi.fn<typeof fetch>();
 function server(r: Routes) {
@@ -54,6 +55,7 @@ function server(r: Routes) {
     if (u.pathname === "/api/connectors/acc-g/import" && method === "POST") return r.importItem?.(body!) ?? json(201, { id: TASK, title: DOC.name, linkMode: body!.linkMode });
     if (u.pathname === "/api/connectors/link-import" && method === "POST") return r.linkImport?.(body!) ?? json(201, { id: TASK, linkMode: "VINCULADO" });
     if (/^\/api\/connectors\/[A-Z_]+\/authorize$/.test(u.pathname) && method === "POST") return r.authorize?.() ?? json(200, { url: "https://accounts.google.com/o/oauth2/v2/auth?state=s" });
+    if (u.pathname === "/api/connectors/oauth/confirm" && method === "POST") return r.confirm?.(body!) ?? json(200, { status: "ok", provider: "GOOGLE" });
     return json(404, { code: "NAO_ENCONTRADO" });
   });
   return calls;
@@ -220,15 +222,46 @@ describe("criador de tarefas: Importar de…", () => {
     expect(nav.push).not.toHaveBeenCalled();
   });
 
-  it("volta do provedor (?importar=conta&conector=ok) abre o diálogo com a confirmação e limpa a URL", async () => {
-    server({});
-    nav.search = "modelo=area.software.bug&importar=conta&conector=ok";
+  it("volta do provedor (?importar=conta&conector=confirmar&pedido=) conclui na sessão, limpa a URL e recarrega as contas", async () => {
+    const pedido = "i".repeat(43);
+    let release: (r: Response) => void = () => {};
+    const calls = server({ confirm: () => new Promise<Response>((res) => { release = res; }) as unknown as Response });
+    nav.search = `modelo=area.software.bug&importar=conta&conector=confirmar&pedido=${pedido}`;
     renderWithProviders(<ImportFrom />);
     const dialog = await screen.findByRole("dialog", { name: "Importar de…" });
-    const ret = await within(dialog).findByTestId("connector-return");
+    // o segredo sai da URL já, antes da resposta (uso único: recarregar a página não repete)
+    expect(nav.replace).toHaveBeenCalledWith("/tasks/new?modelo=area.software.bug", { scroll: false });
+    const pending = await within(dialog).findByTestId("connector-return");
+    expect(pending.getAttribute("data-status")).toBe("confirmando");
+    expect(pending.textContent).toContain("Concluindo a conexão…");
+    await waitFor(() => expect(calls.filter((c) => c.path === "/api/connectors/oauth/confirm")).toHaveLength(1));
+    expect(calls.find((c) => c.path === "/api/connectors/oauth/confirm")?.body).toEqual({ confirmation: pedido });
+    const before = calls.filter((c) => c.path === "/api/connectors" && c.method === "GET").length;
+
+    release(json(200, { status: "ok", provider: "GOOGLE" }));
+    await waitFor(() => expect(within(dialog).getByTestId("connector-return").getAttribute("data-status")).toBe("ok"));
+    const ret = within(dialog).getByTestId("connector-return");
     expect(ret.textContent).toContain("Conta conectada");
     expect(ret.textContent).toContain("Escolha a conta e busque o arquivo.");
-    expect(nav.replace).toHaveBeenCalledWith("/tasks/new?modelo=area.software.bug", { scroll: false });
+    await waitFor(() => expect(calls.filter((c) => c.path === "/api/connectors" && c.method === "GET").length).toBeGreaterThan(before));
+  });
+
+  it("volta do provedor com pedido de outra conta: explica, não conecta; conector=ok forjado na URL é ignorado", async () => {
+    server({ confirm: () => json(200, { status: "erro", reason: "OUTRA_CONTA", provider: "GOOGLE" }) });
+    nav.search = `importar=conta&conector=confirmar&pedido=${"j".repeat(43)}`;
+    const { unmount } = renderWithProviders(<ImportFrom />);
+    const dialog = await screen.findByRole("dialog", { name: "Importar de…" });
+    await waitFor(() => expect(within(dialog).getByTestId("connector-return").getAttribute("data-status")).toBe("erro"));
+    const err = within(dialog).getByTestId("connector-return");
+    expect(err.getAttribute("role")).toBe("alert");
+    expect(err.textContent).toContain("foi iniciado por outra conta do Work Station e foi cancelado");
+    unmount();
+
+    nav.search = "importar=conta&conector=ok";
+    renderWithProviders(<ImportFrom />);
+    const again = await screen.findByRole("dialog", { name: "Importar de…" });
+    await within(again).findByRole("combobox", { name: "Conta" });
+    expect(within(again).queryByTestId("connector-return")).toBeNull();
   });
 
   it("atalho ?importar=link abre direto em Colar link", async () => {

@@ -15,7 +15,7 @@
 | Serviço e portas | `ws-application/…/application/connectors/` | `ConnectorService` (casos de uso), `ConnectorImportWriter` (gravação transacional da tarefa importada), portas `OAuthClientPort`, `ExternalDocPort`, `TokenCipherPort`, `ConnectorAccountRepositoryPort`, `ConnectorOAuthStateRepositoryPort`, `TaskExternalLinkRepositoryPort`; `TaskService.createFromSource` e `TaskAttachmentRepositoryPort` no acervo. |
 | Adaptadores HTTP | `ws-infrastructure/platform/…/platform/connectors/` | `GoogleOAuthAdapter`, `GoogleDriveAdapter` (Drive API v3), `MicrosoftOAuthAdapter` (identity platform v2.0), `MicrosoftGraphAdapter` (Graph v1.0), `ConnectorHttp` (JDK `HttpClient`), `AesGcmTokenCipher`, `ConnectorsAdaptersConfig` (só com `ws.connectors.enabled=true`). URLs configuráveis (testes usam servidor HTTP local). |
 | Persistência | `ws-infrastructure/persistence-mysql/…/mysql/connectors/` | `JpaConnectorAdapters` (contas, estado OAuth com consumo atômico, origem externa) e o adaptador de anexos em `JpaAcervoAdapters`. |
-| API | `ws-web/…/web/connectors/ConnectorController.java` | Contrato da §3. O callback é a única rota pública (`SecurityConfig.PUBLIC_GET`) e é limitado por IP (`AuthRateLimitFilter`, 60/10 min). |
+| API | `ws-web/…/web/connectors/ConnectorController.java` | Contrato da §3. O callback é a única rota pública (`SecurityConfig.PUBLIC_GET`) e é limitado por IP (`AuthRateLimitFilter`, 60/10 min); a conexão termina na rota autenticada de confirmação. |
 | Front | `lib/connectors/**`, `contracts/connectors/sources.json`, aba Configurações › Conectores, "Importar de…" no criador | Agente FRONTEND (tipos TS próprios que espelham este contrato). |
 
 ```mermaid
@@ -61,7 +61,8 @@ JSON camelCase; erros no formato da API (`{status, code, message, details, path,
 | `GET /api/connectors/providers` | — | `[{provider, enabled, mode: OAUTH\|LINK, scopes[]}]` (APPLE_ICLOUD: `LINK`, sempre `enabled`) |
 | `GET /api/connectors` | — | `[{id, provider, accountEmail, status: ATIVO\|EXPIRADO\|REVOGADO\|ERRO, scopes[], connectedAt, lastUsedAt?, lastError?}]` — só as do usuário; nunca token |
 | `POST /api/connectors/{provider}/authorize` | `{returnTo?}` (caminho interno, ex.: `/tasks/new?importar=conta`) | `{url}` |
-| `GET /api/connectors/oauth/callback` | `state`, `code` ou `error` | **302** para `{frontendBaseUrl}{returnTo ou /settings?tab=conectores}` + `conector=ok` ou `conector=erro&motivo=<CODIGO>` (`&` quando o `returnTo` já tem `?`) |
+| `GET /api/connectors/oauth/callback` | `state`, `code` ou `error` | **302** para `{frontendBaseUrl}{returnTo ou /settings?tab=conectores}` + `conector=confirmar&pedido=<segredo>` ou `conector=erro&motivo=<CODIGO>` (`&` quando o `returnTo` já tem `?`). Não troca o `code`. |
+| `POST /api/connectors/oauth/confirm` | `{confirmation}` (o valor de `pedido`) | **200** `{status: ok\|erro, reason?, provider?}` — conclui a conexão na sessão de quem iniciou (§4) |
 | `DELETE /api/connectors/{id}` | — | 204 |
 | `GET /api/connectors/{id}/items` | `q?`, `pageToken?`, `pageSize?` (1–50; padrão 25; fora disso é ajustado) | `{items: [{externalId, name, mimeType, sourceKind, taskType, webUrl, modifiedAt, sizeBytes?, exportFormats[], linkable}], nextPageToken?}` |
 | `POST /api/connectors/{id}/import` | `{externalId, linkMode: COPIADO\|VINCULADO, title?}` | `TaskView` (201) |
@@ -82,11 +83,13 @@ JSON camelCase; erros no formato da API (`{status, code, message, details, path,
 
 Observação: o resto da API usa 422 para `VALIDACAO` de campo; os conectores seguem o contrato combinado (400). O `code` é o mesmo.
 
-### 3.2 Motivos do callback (`conector=erro&motivo=`)
+### 3.2 Motivos do callback (`conector=erro&motivo=`) e da confirmação (`reason`)
 
-`ESTADO_INVALIDO` (state ausente, desconhecido, vencido, já usado, ou código recusado na troca) · `ACESSO_NEGADO` (a pessoa recusou o
-consentimento) · `ESCOPO_INSUFICIENTE` (o consentimento veio sem o escopo de arquivos — o Google deixa desmarcar; o token obtido é
-revogado) · `CONECTOR_DESABILITADO` · `PROVEDOR_INDISPONIVEL` · `ERRO_INTERNO`. Nunca o texto do provedor.
+`ESTADO_INVALIDO` (segredo ausente, desconhecido, vencido, já usado ou da fase errada, ou código recusado na troca) · `ACESSO_NEGADO`
+(a pessoa recusou o consentimento) · `ESCOPO_INSUFICIENTE` (só na confirmação: o consentimento veio sem o escopo de arquivos — o Google
+deixa desmarcar; o token obtido é revogado) · `OUTRA_CONTA` (só na confirmação: o pedido foi iniciado por outra conta; nada foi trocado
+com o provedor) · `CONECTOR_DESABILITADO` · `PROVEDOR_INDISPONIVEL` · `ERRO_INTERNO`. Nunca o texto do provedor. O front confere no
+contrato OpenAPI que todos têm texto em pt-BR, en e es (`lib/connectors/catalog.test.ts`).
 
 ### 3.3 Importação por link — hosts aceitos (só `https`, porta padrão, sem usuário/senha na URL)
 
@@ -117,16 +120,28 @@ sequenceDiagram
   F->>P: navegação para a url (consentimento)
   P->>A: 302 → GET /api/connectors/oauth/callback?state&code (sem Bearer: rota pública, limitada por IP)
   A->>DB: consome o state (SELECT … FOR UPDATE + DELETE: uso único entre instâncias)
+  A->>DB: retorno à espera: SHA-256 de um segredo NOVO, mesmo dono, verifier e code SELADOS no contexto dele, expira em 5 min
+  A-->>F: 302 {frontendBaseUrl}{returnTo}?conector=confirmar&pedido=<segredo> (Referrer-Policy: no-referrer)
+  F->>F: tira conector/pedido da URL na hora (uso único)
+  F->>A: POST /api/connectors/oauth/confirm {confirmation} (Bearer da sessão de quem está logado)
+  A->>DB: consome o retorno (uso único) · dono do pedido ≠ quem confirma → OUTRA_CONTA, nada é trocado
   A->>P: POST token (code + code_verifier + client_secret)
   P-->>A: access_token, refresh_token, scope
   A->>A: confere o escopo de arquivos · lê o perfil (userinfo / Graph /me)
   A->>DB: connector_accounts (tokens SELADOS com AES-256-GCM; e-mail cifrado) · audit CONNECTOR_CONNECTED
-  A-->>F: 302 {frontendBaseUrl}{returnTo}?conector=ok
+  A-->>F: 200 {status: ok, provider}
 ```
 
-A conta é ligada ao **dono do state** (quem chamou o authorize), não a quem abre o callback: um atacante que force a vítima a abrir o
-callback com o state dele só conecta a conta Google/Microsoft **dele** ao Work Station **dele**. Conta inativa entre a ida e a volta é
-recusada. Reconectar a mesma conta externa reaproveita a linha (volta a ATIVO).
+**Por que duas fases.** O `state` prende o pedido à CONTA de quem chamou o authorize, mas não ao navegador: a URL de consentimento
+pode ser copiada e mandada a outra pessoa. Se o callback trocasse o `code` direto, quem gerou a URL e a repassou ("conecte seu Drive
+aqui") ficaria com o Drive de quem consentiu, ligado à conta **dele** (RFC 9700 §4.7, OAuth 2.0 Security BCP: o `state` precisa estar
+preso ao agente de quem iniciou). Como a API usa Bearer (sem cookie de sessão no callback), a amarração é a confirmação autenticada: o
+segredo novo só vai para o navegador que voltou do provedor, e só a sessão do dono do pedido conclui. Na sessão de outra pessoa, o
+retorno é descartado sem tocar no provedor (`OUTRA_CONTA`, auditado com quem iniciou); vazado, o segredo também não serve a quem
+gerou a URL (já foi consumido, e a sessão dele não é a do navegador que voltou). Usar o `state` como confirmação, ou o segredo da
+confirmação como `state`, é recusado (fase errada) e os contextos de cifra são distintos (`oauth-state:` × `oauth-confirm:`).
+
+Conta inativa entre a ida e a volta é recusada. Reconectar a mesma conta externa reaproveita a linha (volta a ATIVO).
 
 Renovação: o access token é renovado 60 s antes de vencer; numa recusa 401 renova uma vez e repete; renovação recusada → EXPIRADO + 409.
 A Microsoft gira o refresh token a cada renovação (o novo é guardado).
@@ -135,12 +150,15 @@ A Microsoft gira o refresh token a cada renovação (o novo é guardado).
 
 - **Tokens nunca em texto puro**: AES-256-GCM com chave própria (`WS_CONNECTORS_TOKEN_KEY`, separada de `WS_DATA_ENCRYPTION_KEY`), IV
   aleatório de 96 bits, contexto (dono + provedor + tipo) como AAD — um token copiado de uma linha para outra no banco não abre. Sem chave
-  válida: conectores OAuth desabilitados (503). O verificador PKCE também vai selado. Formato `ctk:v1:<iv>:<ct>` (rotação futura pelo
+  válida: conectores OAuth desabilitados (503). O verificador PKCE e o `code` à espera da confirmação também vão selados. Formato `ctk:v1:<iv>:<ct>` (rotação futura pelo
   prefixo).
 - **Nunca no front nem no log**: nenhuma visão expõe token; `toString()` de conta, concessão e propriedades mascara segredos; mensagens de
   erro dos adaptadores não levam corpo, token nem código; o `AuditEvent` ainda descarta chaves suspeitas.
 - **BOLA**: toda conta tem dono; `ResourceAuthorizer.requireOwnConnector` em todas as rotas com id (404 igual ao inexistente); o
   `AuthorizationEnforcementAdvice` bloqueia resposta sem a verificação.
+- **Retorno preso à sessão de quem iniciou** (§4): o callback público não troca o `code`; a conexão só termina no
+  `POST /api/connectors/oauth/confirm` da sessão do dono do pedido. URL de consentimento repassada → `OUTRA_CONTA`, sem chamada ao
+  provedor. Segredos de uso único nas duas fases (10 min e 5 min), só o hash no banco.
 - **Redirecionamento aberto**: `returnTo` só caminho interno (`/…`, sem `//`, `\`, esquema, fragmento, `..` nem `%` no caminho, ≤ 200;
   a consulta aceita os escapes do `URLSearchParams`); a origem do destino é sempre `WS_CONNECTORS_FRONTEND_BASE_URL`.
 - **SSRF**: o link colado nunca é buscado; a página seguinte do Graph (`@odata.nextLink`) só é aceita de volta se começar pela base

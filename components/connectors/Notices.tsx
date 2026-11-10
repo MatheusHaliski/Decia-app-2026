@@ -8,9 +8,20 @@ import { useI18n } from "@/lib/i18n/useI18n";
 
 const BOX = "grid grid-cols-1 gap-2 rounded-[var(--ws-radius-md)] border px-3 py-2 text-[length:var(--ws-text-body-sm)] text-ws-text";
 
-/** Retorno do provedor (`conector=ok` ou `conector=erro&motivo=<CODIGO>`): sucesso em `status`, erro em `alert`, com o motivo traduzido. */
+/**
+ * Volta do provedor: concluindo (a confirmação na sessão ainda não respondeu) e sucesso em `status`; erro em `alert`, com o motivo
+ * traduzido (código fixo do servidor, nunca texto livre da URL).
+ */
 export function ConnectorReturnNotice({ ret, okHint, onDismiss }: { ret: ConnectorReturn; okHint?: ReactNode; onDismiss?: () => void }) {
   const { t } = useI18n();
+  if (ret.status === "confirmando") {
+    return (
+      <div role="status" aria-busy="true" data-testid="connector-return" data-status="confirmando" className={cn(BOX, "border-ws-border bg-ws-surface-1")}>
+        <p className="font-semibold">{t("connectors.return.confirming")}</p>
+        <p className="text-ws-text-muted">{t("connectors.return.confirmingHint")}</p>
+      </div>
+    );
+  }
   const ok = ret.status === "ok";
   const reason = !ret.reason
     ? t("connectors.return.reasonNone")

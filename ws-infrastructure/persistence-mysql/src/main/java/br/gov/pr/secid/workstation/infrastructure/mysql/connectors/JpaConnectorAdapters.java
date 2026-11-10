@@ -90,6 +90,7 @@ public class JpaConnectorAdapters {
                 e.setOwnerId(state.ownerId());
                 e.setProvider(state.provider());
                 e.setCodeVerifierSealed(state.codeVerifierSealed());
+                e.setCodeSealed(state.codeSealed());
                 e.setReturnTo(state.returnTo());
                 e.setExpiresAt(state.expiresAt());
                 e.setCreatedAt(clock.instant());
@@ -99,7 +100,7 @@ public class JpaConnectorAdapters {
             @Override
             @Transactional
             public Optional<ConnectorOAuthState> consume(String stateHash) {
-                // SELECT … FOR UPDATE: um segundo callback com o mesmo state espera e, depois do DELETE, não acha nada (uso único)
+                // SELECT … FOR UPDATE: um segundo callback (ou confirmação) com o mesmo segredo espera e, depois do DELETE, não acha nada
                 List<ConnectorOAuthStateEntity> found = em.createQuery("select s from ConnectorOAuthStateEntity s where s.stateHash = :hash",
                                 ConnectorOAuthStateEntity.class).setParameter("hash", stateHash)
                         .setLockMode(LockModeType.PESSIMISTIC_WRITE).getResultList();
@@ -108,7 +109,7 @@ public class JpaConnectorAdapters {
                 }
                 ConnectorOAuthStateEntity e = found.get(0);
                 ConnectorOAuthState state = new ConnectorOAuthState(e.getId(), e.getStateHash(), e.getOwnerId(), e.getProvider(),
-                        e.getCodeVerifierSealed(), e.getReturnTo(), e.getExpiresAt());
+                        e.getCodeVerifierSealed(), e.getCodeSealed(), e.getReturnTo(), e.getExpiresAt());
                 em.remove(e);
                 em.flush();
                 return Optional.of(state);

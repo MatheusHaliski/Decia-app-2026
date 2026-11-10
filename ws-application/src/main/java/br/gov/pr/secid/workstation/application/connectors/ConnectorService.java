@@ -61,6 +61,9 @@ import java.util.regex.Pattern;
  * <ul>
  *   <li>{@code state} aleatório de uso único, 10 min, ligado ao usuário e guardado só como hash, em tabela; {@code code_verifier} selado;
  *       {@code redirect_uri} fixo por configuração; {@code returnTo} só caminho interno;</li>
+ *   <li>o retorno do provedor fica preso à SESSÃO de quem iniciou (RFC 9700 §4.7): o callback público não troca o {@code code}; guarda-o
+ *       selado sob um segredo novo de uso único (5 min) que só o navegador que voltou recebe, e a troca acontece na confirmação autenticada
+ *       ({@link #confirm}) — de outra pessoa, o retorno é descartado sem tocar no provedor ({@code OUTRA_CONTA});</li>
  *   <li>tokens selados com AES-256-GCM ({@link TokenCipherPort}, contexto = dono + provedor); nunca vão ao front nem ao log; sem chave os
  *       provedores OAuth ficam desabilitados ({@code 503 CONECTOR_DESABILITADO});</li>
  *   <li>BOLA: toda conta tem dono e só ele a vê/usa — a de outra pessoa responde o mesmo 404 de um id inexistente
@@ -129,6 +132,20 @@ public class ConnectorService {
     }
 
     /**
+     * Resultado da confirmação ({@code POST /api/connectors/oauth/confirm}): {@code status} {@code ok} ou {@code erro}; no erro,
+     * {@code reason} é um código fixo (os mesmos motivos do callback, mais {@code OUTRA_CONTA}); {@code provider} quando o pedido existia.
+     */
+    public record ConnectorConfirmView(String status, String reason, ConnectorProvider provider) {
+        static ConnectorConfirmView ok(ConnectorProvider provider) {
+            return new ConnectorConfirmView("ok", null, provider);
+        }
+
+        static ConnectorConfirmView erro(String reason, ConnectorProvider provider) {
+            return new ConnectorConfirmView("erro", reason, provider);
+        }
+    }
+
+    /**
      * Item do provedor: {@code exportFormats} são os formatos em que ESTE servidor consegue copiar o item (o primeiro é o usado no modo
      * COPIADO; vazio = só VINCULADO); {@code linkable} diz se dá para vincular (sempre, nos provedores OAuth).
      */
@@ -194,8 +211,9 @@ public class ConnectorService {
 
     /**
      * Retorno do provedor ({@code GET /api/connectors/oauth/callback}, rota pública: a navegação vinda do Google/Microsoft não leva o token
-     * da API; quem conecta é o dono do {@code state}). Nunca lança: devolve sempre o endereço do 302 para o front, com {@code conector=ok}
-     * ou {@code conector=erro&motivo=<CODIGO>}.
+     * da API). Nunca lança e NÃO troca o {@code code}: confere o pedido e o devolve como retorno à espera da confirmação, com um segredo
+     * novo que vai só para este navegador ({@code conector=confirmar&pedido=<segredo>}); a troca acontece em {@link #confirm}, na sessão
+     * de quem iniciou. Erros voltam como {@code conector=erro&motivo=<CODIGO>}.
      */
     public String callback(String state, String code, String error, RequestContext ctx) {
         if (!Pkce.wellFormed(state)) {
@@ -213,16 +231,18 @@ public class ConnectorService {
         }
         ConnectorOAuthState s = found.get();
         try {
-            return complete(s, code, error, ctx);
+            return stash(s, code, error, ctx);
         } catch (RuntimeException e) {
-            log.error("Conectores: falha inesperada ao concluir a conexão {} ({})", s.provider(), e.getClass().getSimpleName());
+            log.error("Conectores: falha inesperada no retorno do provedor {} ({})", s.provider(), e.getClass().getSimpleName());
             return fail(s, ConnectorErrors.MOTIVO_ERRO_INTERNO, ctx);
         }
     }
 
-    private String complete(ConnectorOAuthState s, String code, String error, RequestContext ctx) {
+    /** Confere o retorno e guarda o {@code code} selado sob um segredo novo, à espera da confirmação de quem iniciou. */
+    private String stash(ConnectorOAuthState s, String code, String error, RequestContext ctx) {
         Instant now = clock.instant();
-        if (s.expired(now) || authorizer.viewerOf(s.ownerId()).isEmpty()) {
+        // um segredo de confirmação usado como state (fase errada) também é descartado: o consume já o apagou
+        if (s.awaitingConfirmation() || s.expired(now) || authorizer.viewerOf(s.ownerId()).isEmpty()) {
             return fail(s, ConnectorErrors.MOTIVO_ESTADO_INVALIDO, ctx);
         }
         if (error != null && !error.isBlank()) {
@@ -242,22 +262,93 @@ public class ConnectorService {
         } catch (IllegalStateException e) {
             return fail(s, ConnectorErrors.MOTIVO_ESTADO_INVALIDO, ctx);
         }
+        String confirmation = Pkce.randomToken();
+        String hash = Pkce.sha256Hex(confirmation);
+        states.insert(s.returned(hash, g.cipher().seal(verifier, confirmVerifierContext(hash)), g.cipher().seal(code.strip(), confirmCodeContext(hash)),
+                now));
+        return redirectToConfirm(s.returnTo(), confirmation);
+    }
+
+    /**
+     * {@code POST /api/connectors/oauth/confirm}: conclui a conexão na sessão de quem a iniciou. Consome o retorno (uso único) e só então
+     * troca o {@code code} pelo acesso (PKCE), confere o escopo de arquivos, lê o perfil e grava a conta com os tokens selados. Retorno
+     * de OUTRA pessoa (a URL de consentimento foi repassada a quem está logado aqui) é descartado sem chamar o provedor e responde
+     * {@code OUTRA_CONTA}. Nunca lança por falha do fluxo: o resultado vem no corpo, com os mesmos motivos do callback.
+     */
+    public ConnectorConfirmView confirm(CurrentUser actor, String confirmation, RequestContext ctx) {
+        authorizer.viewer(actor);
+        String token = confirmation == null ? null : confirmation.strip();
+        if (!Pkce.wellFormed(token)) {
+            return ConnectorConfirmView.erro(ConnectorErrors.MOTIVO_ESTADO_INVALIDO, null);
+        }
+        Optional<ConnectorOAuthState> found;
+        try {
+            found = states.consume(Pkce.sha256Hex(token));
+        } catch (RuntimeException e) {
+            log.error("Conectores: falha ao ler o retorno OAuth ({})", e.getClass().getSimpleName());
+            return ConnectorConfirmView.erro(ConnectorErrors.MOTIVO_ERRO_INTERNO, null);
+        }
+        if (found.isEmpty()) {
+            return ConnectorConfirmView.erro(ConnectorErrors.MOTIVO_ESTADO_INVALIDO, null);
+        }
+        ConnectorOAuthState s = found.get();
+        if (!s.ownerId().equals(actor.id())) {
+            // a pessoa logada aqui consentiu num pedido gerado por outra conta: nada é trocado e o retorno some (nem quem gerou o usa)
+            audit.record(AuditEvent.of(actor.id(), AuditActions.CONNECTOR_CONNECT_FAILED, "connector", null, AuditEvent.FALHA, ctx.ip(),
+                    ctx.userAgent(), Map.of("provider", s.provider().name(), "motivo", ConnectorErrors.MOTIVO_OUTRA_CONTA,
+                            "iniciadoPor", s.ownerId().toString())));
+            log.warn("Conectores: retorno OAuth {} confirmado por outra conta; descartado sem trocar o code", s.provider());
+            return ConnectorConfirmView.erro(ConnectorErrors.MOTIVO_OUTRA_CONTA, s.provider());
+        }
+        String motivo;
+        try {
+            motivo = complete(s, ctx);
+        } catch (RuntimeException e) {
+            log.error("Conectores: falha inesperada ao concluir a conexão {} ({})", s.provider(), e.getClass().getSimpleName());
+            motivo = ConnectorErrors.MOTIVO_ERRO_INTERNO;
+        }
+        if (motivo == null) {
+            return ConnectorConfirmView.ok(s.provider());
+        }
+        recordFailure(s, motivo, ctx);
+        return ConnectorConfirmView.erro(motivo, s.provider());
+    }
+
+    /** Troca o {@code code} do retorno e grava a conta; devolve o motivo da falha ou {@code null} quando conectou. */
+    private String complete(ConnectorOAuthState s, RequestContext ctx) {
+        Instant now = clock.instant();
+        if (!s.awaitingConfirmation() || s.expired(now) || authorizer.viewerOf(s.ownerId()).isEmpty()) {
+            return ConnectorErrors.MOTIVO_ESTADO_INVALIDO;
+        }
+        Optional<Gateway> maybe = gateway(s.provider());
+        if (maybe.isEmpty()) {
+            return ConnectorErrors.MOTIVO_DESABILITADO;
+        }
+        Gateway g = maybe.get();
+        String verifier;
+        String code;
+        try {
+            verifier = g.cipher().open(s.codeVerifierSealed(), confirmVerifierContext(s.stateHash()));
+            code = g.cipher().open(s.codeSealed(), confirmCodeContext(s.stateHash()));
+        } catch (IllegalStateException e) {
+            return ConnectorErrors.MOTIVO_ESTADO_INVALIDO;
+        }
         TokenGrant grant;
         ExternalProfile profile;
         try {
-            grant = g.oauth().exchange(code.strip(), verifier);
+            grant = g.oauth().exchange(code, verifier);
             if (!ConnectorScopes.satisfied(s.provider(), grant.scopes())) {
                 revokeQuietly(g, grant.refreshToken() != null ? grant.refreshToken() : grant.accessToken());
-                return fail(s, ConnectorErrors.MOTIVO_ESCOPO_INSUFICIENTE, ctx);
+                return ConnectorErrors.MOTIVO_ESCOPO_INSUFICIENTE;
             }
             profile = g.oauth().profile(grant.accessToken());
         } catch (ProviderException e) {
             boolean refused = e.kind() == ProviderException.Kind.INVALID_GRANT || e.kind() == ProviderException.Kind.REJECTED;
             log.warn("Conectores: retorno do OAuth {} recusado ({}, HTTP {})", s.provider(), e.kind(), e.status());
-            return fail(s, refused ? ConnectorErrors.MOTIVO_ESTADO_INVALIDO : ConnectorErrors.MOTIVO_PROVEDOR, ctx);
+            return refused ? ConnectorErrors.MOTIVO_ESTADO_INVALIDO : ConnectorErrors.MOTIVO_PROVEDOR;
         }
         if (profile.subject() == null || profile.subject().isBlank() || profile.subject().length() > ConnectorAccount.MAX_SUBJECT) {
-            return fail(s, ConnectorErrors.MOTIVO_PROVEDOR, ctx);
+            return ConnectorErrors.MOTIVO_PROVEDOR;
         }
         String sealedAccess = g.cipher().seal(grant.accessToken(), tokenContext(s.ownerId(), s.provider(), "access"));
         String sealedRefresh = grant.refreshToken() == null ? null : g.cipher().seal(grant.refreshToken(),
@@ -270,19 +361,31 @@ public class ConnectorService {
                         sealedRefresh, expiresAt, now)));
         audit.record(AuditEvent.of(s.ownerId(), AuditActions.CONNECTOR_CONNECTED, "connector", String.valueOf(saved.id()), AuditEvent.OK,
                 ctx.ip(), ctx.userAgent(), Map.of("provider", s.provider().name(), "offline", sealedRefresh != null)));
-        return redirect(s.returnTo(), null);
+        return null;
     }
 
     private String fail(ConnectorOAuthState s, String motivo, RequestContext ctx) {
-        audit.record(AuditEvent.of(s.ownerId(), AuditActions.CONNECTOR_CONNECT_FAILED, "connector", null, AuditEvent.FALHA, ctx.ip(),
-                ctx.userAgent(), Map.of("provider", s.provider().name(), "motivo", motivo)));
+        recordFailure(s, motivo, ctx);
         return redirect(s.returnTo(), motivo);
     }
 
-    /** {@code {frontendBaseUrl}{returnTo}} com {@code conector=ok} ou {@code conector=erro&motivo=<CODIGO>} (códigos fixos, nunca o texto do provedor). */
+    private void recordFailure(ConnectorOAuthState s, String motivo, RequestContext ctx) {
+        audit.record(AuditEvent.of(s.ownerId(), AuditActions.CONNECTOR_CONNECT_FAILED, "connector", null, AuditEvent.FALHA, ctx.ip(),
+                ctx.userAgent(), Map.of("provider", s.provider().name(), "motivo", motivo)));
+    }
+
+    /** {@code {frontendBaseUrl}{returnTo}} com {@code conector=erro&motivo=<CODIGO>} (códigos fixos, nunca o texto do provedor). */
     String redirect(String returnTo, String motivo) {
+        return frontend(returnTo, "conector=erro&motivo=" + motivo);
+    }
+
+    /** {@code {frontendBaseUrl}{returnTo}} com {@code conector=confirmar&pedido=<segredo>} (base64url: nada a escapar). */
+    String redirectToConfirm(String returnTo, String confirmation) {
+        return frontend(returnTo, "conector=confirmar&pedido=" + confirmation);
+    }
+
+    private String frontend(String returnTo, String outcome) {
         String path = ConnectorOAuthState.safeReturnTo(returnTo).orElse(ConnectorOAuthState.DEFAULT_RETURN_TO);
-        String outcome = motivo == null ? "conector=ok" : "conector=erro&motivo=" + motivo;
         return props.frontendBaseUrl() + path + (path.contains("?") ? "&" : "?") + outcome;
     }
 
@@ -553,6 +656,15 @@ public class ConnectorService {
 
     static String verifierContext(String stateHash) {
         return "oauth-state:" + stateHash;
+    }
+
+    /** Contextos da fase de retorno: presos ao segredo da confirmação (um selo do pedido não abre aqui, e vice-versa). */
+    static String confirmVerifierContext(String confirmHash) {
+        return "oauth-confirm:" + confirmHash + ":verifier";
+    }
+
+    static String confirmCodeContext(String confirmHash) {
+        return "oauth-confirm:" + confirmHash + ":code";
     }
 
     // ------------------------------------------------------------------------------------------------ apoio

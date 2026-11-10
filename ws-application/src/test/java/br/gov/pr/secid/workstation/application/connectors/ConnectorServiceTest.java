@@ -6,6 +6,7 @@ import br.gov.pr.secid.workstation.application.audit.AuditActions;
 import br.gov.pr.secid.workstation.application.audit.AuditEvent;
 import br.gov.pr.secid.workstation.application.common.ApiException;
 import br.gov.pr.secid.workstation.application.connectors.ConnectorService.ConnectorAccountView;
+import br.gov.pr.secid.workstation.application.connectors.ConnectorService.ConnectorConfirmView;
 import br.gov.pr.secid.workstation.application.connectors.ConnectorService.ConnectorProviderView;
 import br.gov.pr.secid.workstation.application.connectors.ConnectorService.ExternalItemView;
 import br.gov.pr.secid.workstation.application.connectors.ConnectorService.ExternalItemsPage;
@@ -190,10 +191,19 @@ class ConnectorServiceTest {
         return out;
     }
 
-    /** Fluxo completo: authorize → (provedor) → callback; devolve o destino do 302. */
-    String connect(ConnectorService s, User u, ConnectorProvider p, String returnTo, String code) {
+    /** Fluxo completo: authorize → (provedor) → callback → confirmação na sessão de quem iniciou; devolve o resultado da confirmação. */
+    ConnectorConfirmView connect(ConnectorService s, User u, ConnectorProvider p, String returnTo, String code) {
         String url = s.authorize(cu(u), p.name(), returnTo).url();
-        return s.callback(query(url).get("state"), code, null, CTX);
+        String back = s.callback(query(url).get("state"), code, null, CTX);
+        return s.confirm(cu(u), pedido(back), CTX);
+    }
+
+    /** O segredo que o callback pôs na URL do front ({@code conector=confirmar&pedido=}). */
+    static String pedido(String back) {
+        Map<String, String> q = query(back);
+        assertThat(q.get("conector")).as(back).isEqualTo("confirmar");
+        assertThat(q.get("pedido")).matches("[A-Za-z0-9_-]{43}");
+        return q.get("pedido");
     }
 
     ConnectorAccount onlyAccount(User u, ConnectorProvider p) {
@@ -267,14 +277,32 @@ class ConnectorServiceTest {
     // ------------------------------------------------------------------------------------------------ callback
 
     @Test
-    void callbackTrocaOCodigoComPkceSelaOsTokensEVoltaAoFront() {
+    void callbackNaoTrocaOCodigoEAConfirmacaoDeQuemIniciouConecta() {
         ConnectorService s = service();
         String url = s.authorize(cu(me), "GOOGLE", "/tasks/new?importar=conta").url();
         String state = query(url).get("state");
         String challenge = query(url).get("code_challenge");
 
         String back = s.callback(state, "codigo-1", null, CTX);
-        assertThat(back).isEqualTo("https://app.example/tasks/new?importar=conta&conector=ok");
+        assertThat(back).startsWith("https://app.example/tasks/new?importar=conta&conector=confirmar&pedido=");
+        String pedido = pedido(back);
+        assertThat(pedido).isNotEqualTo(state);
+        assertThat(google.calls).as("o callback público não troca o code").isEmpty();
+        assertThat(accounts.rows).isEmpty();
+        // o retorno guardado: segredo novo (só o hash), code e verificador selados no contexto dele
+        ConnectorOAuthState waiting = states.rows.values().iterator().next();
+        assertThat(waiting.awaitingConfirmation()).isTrue();
+        assertThat(waiting.stateHash()).isEqualTo(Pkce.sha256Hex(pedido));
+        assertThat(waiting.codeSealed()).doesNotContain("codigo-1");
+        assertThat(cipher.open(waiting.codeSealed(), ConnectorService.confirmCodeContext(waiting.stateHash()))).isEqualTo("codigo-1");
+        assertThat(waiting.expiresAt()).isEqualTo(NOW.plus(ConnectorOAuthState.CONFIRM_TTL));
+
+        // uso único do state: o mesmo retorno de novo não gera outro pedido
+        assertThat(s.callback(state, "codigo-1", null, CTX)).isEqualTo("https://app.example/settings?tab=conectores&conector=erro&motivo=ESTADO_INVALIDO");
+
+        ConnectorConfirmView done = s.confirm(cu(me), pedido, CTX);
+        assertThat(done).isEqualTo(new ConnectorConfirmView("ok", null, ConnectorProvider.GOOGLE));
+        assertThat(states.rows).isEmpty();
         String exchange = google.calls.get(0);
         assertThat(exchange).startsWith("exchange:codigo-1:");
         assertThat(Pkce.challenge(exchange.substring("exchange:codigo-1:".length()))).isEqualTo(challenge);
@@ -292,8 +320,9 @@ class ConnectorServiceTest {
         assertThat(ok.actorId()).isEqualTo(me.getId());
         assertThat(ok.metadata().toString()).doesNotContain("access-codigo-1").doesNotContain("pessoa@");
 
-        // uso único: o mesmo state de novo não conecta nada
-        assertThat(s.callback(state, "codigo-1", null, CTX)).isEqualTo("https://app.example/settings?tab=conectores&conector=erro&motivo=ESTADO_INVALIDO");
+        // uso único da confirmação
+        assertThat(s.confirm(cu(me), pedido, CTX)).isEqualTo(new ConnectorConfirmView("erro", "ESTADO_INVALIDO", null));
+        assertThat(google.calls).hasSize(2);   // exchange + perfil, uma vez só
 
         List<ConnectorAccountView> mine = s.accounts(cu(me));
         assertThat(mine).singleElement().satisfies(v -> {
@@ -302,6 +331,38 @@ class ConnectorServiceTest {
             assertThat(v.status()).isEqualTo(ConnectionStatus.ATIVO);
         });
         assertThat(s.accounts(cu(other))).isEmpty();
+    }
+
+    @Test
+    void urlDeConsentimentoRepassadaNaoLigaAContaDeQuemAbriuAQuemGerou() {
+        ConnectorService s = service();
+        // quem gera a URL de consentimento (other) e a manda para outra pessoa (me), que consente com a conta Google dela
+        String state = query(s.authorize(cu(other), "GOOGLE", "/tasks/new").url()).get("state");
+        String back = s.callback(state, "codigo-da-vitima", null, CTX);
+        String pedido = pedido(back);
+
+        // o navegador que voltou é o da vítima: a confirmação roda na sessão dela e é recusada sem tocar no provedor
+        ConnectorConfirmView refused = s.confirm(cu(me), pedido, CTX);
+        assertThat(refused).isEqualTo(new ConnectorConfirmView("erro", ConnectorErrors.MOTIVO_OUTRA_CONTA, ConnectorProvider.GOOGLE));
+        assertThat(google.calls).as("o code da vítima nunca é trocado").isEmpty();
+        assertThat(accounts.rows).isEmpty();
+        assertThat(states.rows).as("o retorno é descartado").isEmpty();
+        AuditEvent alert = audits.stream().filter(e -> e.action().equals(AuditActions.CONNECTOR_CONNECT_FAILED)).reduce((a, b) -> b).orElseThrow();
+        assertThat(alert.actorId()).isEqualTo(me.getId());
+        assertThat(alert.metadata()).containsEntry("motivo", "OUTRA_CONTA").containsEntry("iniciadoPor", other.getId().toString());
+
+        // e quem gerou também não aproveita o segredo depois (vazado, por exemplo): já foi consumido
+        assertThat(s.confirm(cu(other), pedido, CTX).reason()).isEqualTo("ESTADO_INVALIDO");
+        // nem o próprio state, que é da fase de pedido: confirmar com ele é recusado (e o pedido some)
+        String own = query(s.authorize(cu(other), "GOOGLE", null).url()).get("state");
+        assertThat(s.confirm(cu(other), own, CTX).reason()).isEqualTo("ESTADO_INVALIDO");
+        assertThat(s.callback(own, "c", null, CTX)).endsWith("motivo=ESTADO_INVALIDO");
+        // e o segredo da confirmação não serve de state no callback (fase errada): descarta o retorno
+        String second = pedido(s.callback(query(s.authorize(cu(other), "GOOGLE", null).url()).get("state"), "c2", null, CTX));
+        assertThat(s.callback(second, "c3", null, CTX)).endsWith("motivo=ESTADO_INVALIDO");
+        assertThat(s.confirm(cu(other), second, CTX).reason()).isEqualTo("ESTADO_INVALIDO");
+        assertThat(google.calls).isEmpty();
+        assertThat(accounts.rows).isEmpty();
     }
 
     @Test
@@ -323,27 +384,6 @@ class ConnectorServiceTest {
         assertThat(s.callback(late, "c", null, CTX)).as("vencido em 10 min").endsWith("motivo=ESTADO_INVALIDO");
         clock.now = NOW;
 
-        google.onExchange = code -> new TokenGrant("acc", "ref", 3600, Set.of("openid", "email"));
-        String noDrive = query(s.authorize(cu(me), "google", null).url()).get("state");
-        assertThat(s.callback(noDrive, "c", null, CTX)).endsWith("motivo=ESCOPO_INSUFICIENTE");
-        assertThat(google.revoked).containsExactly("ref");
-
-        google.onExchange = code -> {
-            throw new ProviderException(ProviderException.Kind.INVALID_GRANT, 400, "invalid_grant");
-        };
-        String reused = query(s.authorize(cu(me), "google", null).url()).get("state");
-        assertThat(s.callback(reused, "c", null, CTX)).endsWith("motivo=ESTADO_INVALIDO");
-        google.onExchange = code -> {
-            throw new ProviderException(ProviderException.Kind.UNAVAILABLE, 503, "fora");
-        };
-        String down = query(s.authorize(cu(me), "google", null).url()).get("state");
-        assertThat(s.callback(down, "c", null, CTX)).endsWith("motivo=PROVEDOR_INDISPONIVEL");
-        google.onExchange = code -> {
-            throw new IllegalStateException("bug");
-        };
-        String bug = query(s.authorize(cu(me), "google", null).url()).get("state");
-        assertThat(s.callback(bug, "c", null, CTX)).endsWith("motivo=ERRO_INTERNO");
-
         String suspended = query(s.authorize(cu(other), "google", null).url()).get("state");
         other.setStatus(AccountStatus.SUSPENDED);
         assertThat(s.callback(suspended, "c", null, CTX)).endsWith("motivo=ESTADO_INVALIDO");
@@ -351,6 +391,55 @@ class ConnectorServiceTest {
         String offLater = query(s.authorize(cu(me), "microsoft", "/tasks/new").url()).get("state");
         props = new ConnectorsProperties(false, "chave", "https://app.example", null, 0, null, null);   // desligado entre ida e volta
         assertThat(service().callback(offLater, "c", null, CTX)).isEqualTo("https://app.example/tasks/new?conector=erro&motivo=CONECTOR_DESABILITADO");
+        assertThat(accounts.rows).isEmpty();
+        assertThat(google.calls).isEmpty();
+    }
+
+    @Test
+    void confirmacaoRecusadaDevolveOMotivoSemConectar() {
+        ConnectorService s = service();
+        assertThat(s.confirm(cu(me), null, CTX)).isEqualTo(new ConnectorConfirmView("erro", "ESTADO_INVALIDO", null));
+        assertThat(s.confirm(cu(me), "curto", CTX).reason()).isEqualTo("ESTADO_INVALIDO");
+        assertThat(s.confirm(cu(me), "A".repeat(43), CTX).reason()).as("desconhecido").isEqualTo("ESTADO_INVALIDO");
+
+        google.onExchange = code -> new TokenGrant("acc", "ref", 3600, Set.of("openid", "email"));
+        String noDrive = pedido(s.callback(query(s.authorize(cu(me), "google", null).url()).get("state"), "c", null, CTX));
+        assertThat(s.confirm(cu(me), noDrive, CTX)).isEqualTo(new ConnectorConfirmView("erro", "ESCOPO_INSUFICIENTE", ConnectorProvider.GOOGLE));
+        assertThat(google.revoked).containsExactly("ref");
+
+        google.onExchange = code -> {
+            throw new ProviderException(ProviderException.Kind.INVALID_GRANT, 400, "invalid_grant");
+        };
+        String reused = pedido(s.callback(query(s.authorize(cu(me), "google", null).url()).get("state"), "c", null, CTX));
+        assertThat(s.confirm(cu(me), reused, CTX).reason()).isEqualTo("ESTADO_INVALIDO");
+        google.onExchange = code -> {
+            throw new ProviderException(ProviderException.Kind.UNAVAILABLE, 503, "fora");
+        };
+        String down = pedido(s.callback(query(s.authorize(cu(me), "google", null).url()).get("state"), "c", null, CTX));
+        assertThat(s.confirm(cu(me), down, CTX).reason()).isEqualTo("PROVEDOR_INDISPONIVEL");
+        google.onExchange = code -> {
+            throw new IllegalStateException("bug");
+        };
+        String bug = pedido(s.callback(query(s.authorize(cu(me), "google", null).url()).get("state"), "c", null, CTX));
+        assertThat(s.confirm(cu(me), bug, CTX).reason()).isEqualTo("ERRO_INTERNO");
+        assertThat(audits.stream().filter(e -> e.action().equals(AuditActions.CONNECTOR_CONNECT_FAILED)).map(e -> e.metadata().get("motivo")))
+                .contains("ESCOPO_INSUFICIENTE", "ESTADO_INVALIDO", "PROVEDOR_INDISPONIVEL", "ERRO_INTERNO");
+
+        // a confirmação vence em 5 min (o code do provedor vence logo depois)
+        String slow = pedido(s.callback(query(s.authorize(cu(me), "google", null).url()).get("state"), "c", null, CTX));
+        clock.now = NOW.plus(ConnectorOAuthState.CONFIRM_TTL);
+        assertThat(s.confirm(cu(me), slow, CTX).reason()).isEqualTo("ESTADO_INVALIDO");
+        clock.now = NOW;
+
+        // conta suspensa entre o retorno e a confirmação; conector desligado entre o retorno e a confirmação
+        String suspended = pedido(s.callback(query(s.authorize(cu(other), "google", null).url()).get("state"), "c", null, CTX));
+        other.setStatus(AccountStatus.SUSPENDED);
+        assertThat(s.confirm(cu(other), suspended, CTX).reason()).as("conta suspensa não conclui").isEqualTo("ESTADO_INVALIDO");
+        other.setStatus(AccountStatus.ACTIVE);
+        String offLater = pedido(s.callback(query(s.authorize(cu(me), "microsoft", null).url()).get("state"), "c", null, CTX));
+        props = new ConnectorsProperties(false, "chave", "https://app.example", null, 0, null, null);
+        assertThat(service().confirm(cu(me), offLater, CTX)).isEqualTo(new ConnectorConfirmView("erro", "CONECTOR_DESABILITADO",
+                ConnectorProvider.MICROSOFT));
         assertThat(accounts.rows).isEmpty();
     }
 
@@ -361,7 +450,7 @@ class ConnectorServiceTest {
         ConnectorAccount first = onlyAccount(me, ConnectorProvider.MICROSOFT);
         accounts.save(first.expired("RENOVACAO_RECUSADA"));
         clock.now = NOW.plusSeconds(60);
-        assertThat(connect(s, me, ConnectorProvider.MICROSOFT, null, "c2")).endsWith("conector=ok");
+        assertThat(connect(s, me, ConnectorProvider.MICROSOFT, null, "c2").status()).isEqualTo("ok");
         assertThat(accounts.rows).hasSize(1);
         ConnectorAccount again = onlyAccount(me, ConnectorProvider.MICROSOFT);
         assertThat(again.id()).isEqualTo(first.id());

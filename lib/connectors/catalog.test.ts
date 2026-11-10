@@ -102,15 +102,21 @@ describe("catálogo de fontes externas (contracts/connectors/sources.json)", () 
     }
   });
 
-  it("todo motivo que o callback do backend devolve (contrato OpenAPI) tem explicação em pt-BR, en e es", () => {
+  it("todo motivo que o callback e a confirmação do backend devolvem (contrato OpenAPI) tem explicação em pt-BR, en e es", () => {
     const spec = JSON.parse(readFileSync(fileURLToPath(new URL("../../contracts/openapi/openapi.json", import.meta.url)), "utf8")) as {
-      paths: Record<string, { get?: { summary?: string } }>;
+      paths: Record<string, { get?: { summary?: string }; post?: { summary?: string } }>;
     };
-    const summary = spec.paths["/api/connectors/oauth/callback"]?.get?.summary ?? "";
-    const reasons = /motivo=([A-Z_|]+)/.exec(summary)?.[1]?.split("|") ?? [];
-    expect(reasons, "o resumo do callback lista os motivos (motivo=A|B|…)").toEqual(expect.arrayContaining(["ESTADO_INVALIDO", "ACESSO_NEGADO", "ERRO_INTERNO"]));
+    const callback = spec.paths["/api/connectors/oauth/callback"]?.get?.summary ?? "";
+    const confirm = spec.paths["/api/connectors/oauth/confirm"]?.post?.summary ?? "";
+    const fromCallback = /motivo=([A-Z_|]+)/.exec(callback)?.[1]?.split("|") ?? [];
+    const fromConfirm = /reason=([A-Z_|]+)/.exec(confirm)?.[1]?.split("|") ?? [];
+    expect(callback, "o callback devolve o segredo para concluir na sessão").toContain("conector=confirmar&pedido=");
+    expect(fromCallback, "o resumo do callback lista os motivos (motivo=A|B|…)").toEqual(expect.arrayContaining(["ESTADO_INVALIDO", "ACESSO_NEGADO", "ERRO_INTERNO"]));
+    expect(fromConfirm, "o resumo da confirmação lista os motivos (reason=A|B|…)").toEqual(expect.arrayContaining(["OUTRA_CONTA", "ESCOPO_INSUFICIENTE"]));
     for (const locale of ["pt-BR", "en", "es"] as const) {
-      for (const code of reasons) expect(MESSAGES[locale][`connectors.return.reason.${code}`], `${locale}: connectors.return.reason.${code}`).toBeTruthy();
+      for (const code of new Set([...fromCallback, ...fromConfirm])) {
+        expect(MESSAGES[locale][`connectors.return.reason.${code}`], `${locale}: connectors.return.reason.${code}`).toBeTruthy();
+      }
     }
   });
 

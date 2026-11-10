@@ -2,7 +2,9 @@
  * Conectores de fontes externas (RF4, RF20.CA07, RF23, RF34): cliente de `/api/connectors` com tipos PRÓPRIOS que espelham o
  * contrato REST combinado com o backend em 09/11/2026 — não dependem de `lib/api/schema.d.ts`. Tokens nunca chegam aqui: o
  * navegador só vê o e-mail da conta, o estado e os escopos. Conectar = `POST authorize` → o navegador vai à tela do provedor
- * (PKCE e `state` ficam no servidor) → o callback do backend volta com `conector=ok` ou `conector=erro&motivo=<CODIGO>`.
+ * (PKCE e `state` ficam no servidor) → o callback do backend volta com `conector=confirmar&pedido=<segredo>` (ou
+ * `conector=erro&motivo=<CODIGO>`) → a tela conclui NA SESSÃO de quem está logado (`POST /api/connectors/oauth/confirm`). Assim uma
+ * URL de consentimento repassada por outra pessoa não liga a sua conta Google/Microsoft à conta dela.
  */
 import { api, ApiError, describeError, qs } from "@/lib/api/client";
 import { safeNext } from "@/lib/auth/next";
@@ -65,7 +67,8 @@ export const DEFAULT_PAGE_SIZE = 20;
 export const MAX_PAGE_SIZE = 50;
 
 const clampPageSize = (n?: number) => Math.min(MAX_PAGE_SIZE, Math.max(1, Math.trunc(n ?? DEFAULT_PAGE_SIZE)));
-const SIGNAL_PARAMS = ["conector", "motivo"];
+/** Parâmetros da volta do provedor na URL (saem da URL assim que lidos). */
+export const SIGNAL_PARAMS = ["conector", "motivo", "pedido"] as const;
 
 /** `returnTo` só pode ser caminho interno (sem open redirect) e não leva adiante um `conector=`/`motivo=` antigo. */
 export function safeReturnTo(path: string | null | undefined): string {
@@ -88,6 +91,7 @@ export const connectorsApi = {
     api.get<ExternalItemPage>(`/api/connectors/${enc(id)}/items${qs({ q: params.q?.trim(), pageToken: params.pageToken ?? undefined, pageSize: clampPageSize(params.pageSize) })}`),
   importItem: (id: string, body: ImportItemRequest) => api.post<ImportedTask>(`/api/connectors/${enc(id)}/import`, body),
   linkImport: (body: LinkImportRequest) => api.post<ImportedTask>("/api/connectors/link-import", body),
+  confirm: (confirmation: string) => api.post<ConnectorConfirmResult>("/api/connectors/oauth/confirm", { confirmation }),
 };
 
 /** Navegação para fora do app (tela de consentimento do provedor). Isolada para os testes trocarem. */
@@ -160,11 +164,46 @@ export function describeConnectorError(e: unknown, vars: Vars = {}): string {
   return tr(`connectors.error.${kind}`, vars);
 }
 
-/** Retorno do callback na URL (`conector=ok|erro&motivo=`): o motivo só passa se for um código (letras e _), nunca texto livre. */
-export interface ConnectorReturn { status: "ok" | "erro"; reason: string | null }
-export function readConnectorReturn(params: URLSearchParams | null | undefined): ConnectorReturn | null {
+/** Resultado da volta do provedor na tela: conectou (`ok`), não conectou (`erro`, com o motivo) ou ainda concluindo (`confirmando`). */
+export interface ConnectorReturn { status: "ok" | "erro" | "confirmando"; reason: string | null }
+/** O que a URL de volta traz: um erro do callback já pronto, ou o segredo de uso único para concluir na sessão (`confirmar`). */
+export type ConnectorSignal = ConnectorReturn | { status: "confirmar"; request: string };
+/** `POST /api/connectors/oauth/confirm`: sempre 200; o motivo vem no corpo, com os mesmos códigos do callback (e `OUTRA_CONTA`). */
+export interface ConnectorConfirmResult { status: "ok" | "erro"; reason?: string | null; provider?: ConnectorProvider | null }
+
+const REASON = /^[A-Za-z_]{1,40}$/;
+/** Segredo da confirmação: 32 bytes em base64url (43 caracteres), como o `state`. */
+const CONFIRMATION = /^[A-Za-z0-9_-]{43}$/;
+const reasonCode = (raw: string | null | undefined) => (raw && REASON.test(raw) ? raw.toUpperCase() : null);
+
+/**
+ * Volta do callback na URL: `conector=confirmar&pedido=<segredo>` (falta concluir na sessão) ou `conector=erro&motivo=<CODIGO>`. O
+ * motivo só passa se for um código (letras e _), nunca texto livre; `conector=ok` não vem mais do servidor e é ignorado (ninguém
+ * consegue fazer a tela dizer "Conta conectada" com um link).
+ */
+export function readConnectorReturn(params: URLSearchParams | null | undefined): ConnectorSignal | null {
   const status = params?.get("conector");
-  if (status !== "ok" && status !== "erro") return null;
-  const raw = params?.get("motivo") ?? "";
-  return { status, reason: /^[A-Za-z_]{1,40}$/.test(raw) ? raw.toUpperCase() : null };
+  if (status === "confirmar") {
+    const request = params?.get("pedido") ?? "";
+    return CONFIRMATION.test(request) ? { status: "confirmar", request } : { status: "erro", reason: "ESTADO_INVALIDO" };
+  }
+  if (status !== "erro") return null;
+  return { status: "erro", reason: reasonCode(params?.get("motivo")) };
+}
+
+const confirmations = new Map<string, Promise<ConnectorReturn>>();
+/**
+ * Conclui a conexão na sessão de quem está logado. O segredo é de uso único: chamadas repetidas com o mesmo segredo (efeito que roda
+ * duas vezes, duas telas) compartilham a MESMA requisição. Falha de rede ou de sessão vira `erro` com o código, quando houver.
+ */
+export function confirmConnection(request: string): Promise<ConnectorReturn> {
+  let pending = confirmations.get(request);
+  if (!pending) {
+    pending = connectorsApi.confirm(request).then(
+      (r): ConnectorReturn => (r?.status === "ok" ? { status: "ok", reason: null } : { status: "erro", reason: reasonCode(r?.reason) }),
+      (e: unknown): ConnectorReturn => ({ status: "erro", reason: e instanceof ApiError ? reasonCode(e.code) : null }),
+    );
+    confirmations.set(request, pending);
+  }
+  return pending;
 }

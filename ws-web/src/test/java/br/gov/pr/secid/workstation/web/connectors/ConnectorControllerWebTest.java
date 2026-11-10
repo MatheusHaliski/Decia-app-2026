@@ -6,6 +6,7 @@ import br.gov.pr.secid.workstation.application.connectors.ConnectorErrors;
 import br.gov.pr.secid.workstation.application.connectors.ConnectorService;
 import br.gov.pr.secid.workstation.application.connectors.ConnectorService.ConnectorAccountView;
 import br.gov.pr.secid.workstation.application.connectors.ConnectorService.ConnectorAuthorizeView;
+import br.gov.pr.secid.workstation.application.connectors.ConnectorService.ConnectorConfirmView;
 import br.gov.pr.secid.workstation.application.connectors.ConnectorService.ConnectorProviderView;
 import br.gov.pr.secid.workstation.application.connectors.ConnectorService.ExternalItemView;
 import br.gov.pr.secid.workstation.application.connectors.ConnectorService.ExternalItemsPage;
@@ -55,6 +56,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doAnswer;
@@ -123,7 +125,8 @@ class ConnectorControllerWebTest {
                 get("/api/connectors/" + accountId + "/items"),
                 post("/api/connectors/" + accountId + "/import").contentType(MediaType.APPLICATION_JSON)
                         .content(json(Map.of("externalId", "1", "linkMode", "VINCULADO"))),
-                post("/api/connectors/link-import").contentType(MediaType.APPLICATION_JSON).content(json(Map.of("url", "https://drive.google.com/x"))));
+                post("/api/connectors/link-import").contentType(MediaType.APPLICATION_JSON).content(json(Map.of("url", "https://drive.google.com/x"))),
+                post("/api/connectors/oauth/confirm").contentType(MediaType.APPLICATION_JSON).content(json(Map.of("confirmation", "x"))));
     }
 
     @Test
@@ -136,16 +139,35 @@ class ConnectorControllerWebTest {
 
     @Test
     void callbackEPublicoERespondeSempre302() throws Exception {
-        when(connectors.callback(eq("st"), eq("cd"), isNull(), any()))
-                .thenReturn("http://localhost:3000/tasks/new?importar=conta&conector=ok");
+        String back = "http://localhost:3000/tasks/new?importar=conta&conector=confirmar&pedido=" + "p".repeat(43);
+        when(connectors.callback(eq("st"), eq("cd"), isNull(), any())).thenReturn(back);
         mvc.perform(get("/api/connectors/oauth/callback").param("state", "st").param("code", "cd"))
                 .andExpect(status().isFound())
-                .andExpect(header().string("Location", "http://localhost:3000/tasks/new?importar=conta&conector=ok"))
-                .andExpect(header().string("Cache-Control", "no-store"));
+                .andExpect(header().string("Location", back))
+                .andExpect(header().string("Cache-Control", "no-store"))
+                .andExpect(header().string("Referrer-Policy", "no-referrer"));
         when(connectors.callback(isNull(), isNull(), eq("access_denied"), any()))
                 .thenReturn("http://localhost:3000/settings?tab=conectores&conector=erro&motivo=ACESSO_NEGADO");
         mvc.perform(get("/api/connectors/oauth/callback").param("error", "access_denied")).andExpect(status().isFound())
                 .andExpect(header().string("Location", "http://localhost:3000/settings?tab=conectores&conector=erro&motivo=ACESSO_NEGADO"));
+    }
+
+    @Test
+    void confirmacaoRodaNaSessaoDeQuemEstaLogadoEDevolveOResultadoNoCorpo() throws Exception {
+        when(connectors.confirm(any(), eq("segredo"), any())).thenReturn(new ConnectorConfirmView("ok", null, ConnectorProvider.GOOGLE));
+        mvc.perform(authed(post("/api/connectors/oauth/confirm"), "USER").contentType(MediaType.APPLICATION_JSON)
+                        .content(json(Map.of("confirmation", "segredo"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("ok"))
+                .andExpect(jsonPath("$.provider").value("GOOGLE"));
+        verify(connectors).confirm(argThat(u -> u != null && u.id().equals(userId)), eq("segredo"), any());
+
+        when(connectors.confirm(any(), eq("alheio"), any())).thenReturn(new ConnectorConfirmView("erro", "OUTRA_CONTA", ConnectorProvider.GOOGLE));
+        mvc.perform(authed(post("/api/connectors/oauth/confirm"), "USER").contentType(MediaType.APPLICATION_JSON)
+                        .content(json(Map.of("confirmation", "alheio"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("erro"))
+                .andExpect(jsonPath("$.reason").value("OUTRA_CONTA"));
     }
 
     @Test
