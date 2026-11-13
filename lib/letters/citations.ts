@@ -183,7 +183,9 @@ export function parseReference(blockId: string, line: string, start: number): Re
   const accessIdx = body.search(/acesso em\s*:/i);
   const availableIdx = body.search(/dispon[ií]vel em\s*:/i);
   const cutoff = availableIdx >= 0 ? availableIdx : accessIdx >= 0 ? accessIdx : body.length;
-  const years = [...body.slice(0, cutoff).matchAll(YEAR_RE)].map((m) => m[1]!);
+  // DOI e URL têm dígitos que parecem ano ("10.1590/…"): ficam fora da busca do ano
+  const yearZone = body.slice(0, cutoff).replace(/\b10\.\d{4,9}\/\S+/g, " ").replace(/https?:\/\/\S+|www\.\S+/gi, " ");
+  const years = [...yearZone.matchAll(YEAR_RE)].map((m) => m[1]!);
   const urlMatch = body.match(/https?:\/\/\S+|www\.\S+/i);
   const doiLabel = body.match(/\bdoi\s*:?\s*(\S+)|https?:\/\/(?:dx\.)?doi\.org\/(\S+)/i);
   const doi = doiLabel ? (doiLabel[1] ?? doiLabel[2] ?? "").replace(/[.,;)\]]+$/, "") : body.match(/\b10\.\d{1,9}\/\S+/)?.[0]?.replace(/[.,;)\]]+$/, "") ?? null;

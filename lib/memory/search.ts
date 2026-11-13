@@ -62,3 +62,8 @@ export function registerMemorySearch(search: MemorySearch): void {
 
 /** Busca na Memória Institucional com trechos exatos para citação. */
 export const searchMemory: MemorySearch = (query, options) => impl(query, options);
+
+// Quem importa só o contrato (a sessão do DECIA, a Transição) também recebe a busca real: no navegador, o índice DEMO
+// (`lib/memory/index.ts`) é carregado em segundo plano e se registra ao chegar. Até lá a busca devolve lista vazia, como diz o
+// contrato. No servidor e nos testes de ambiente node nada é carregado; para registrar na hora, importe de "@/lib/memory".
+if (typeof window !== "undefined") void import("./index");

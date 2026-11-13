@@ -8,6 +8,7 @@ import { dedupe, type BlockCtx, type RawFinding } from "./findings";
 import { PLURAL_ARTICLES, PLURAL_DETERMINERS, SINGULAR_ARTICLES, SUBJECT_PRONOUNS } from "./lexicon";
 import { fold, insideSpans, isCapitalized, lightStem, matchCase, pluralize } from "./text";
 import type { TaggedToken } from "./types";
+import { isParticiple } from "./verbal";
 import { generate, swapThirdPersonNumber, verbReadings } from "./verbs";
 
 /* ── Utilidades ──────────────────────────────────────────────────────────────────────────────────────────── */
@@ -100,7 +101,7 @@ function crase(ctx: BlockCtx): RawFinding[] {
         out.push({ ruleId: "CRASE_PRONOME", start: t.start, end: t.end, replacement: plainA, vars: { word: n.text }, confidence: 0.9, certainty: "DEMONSTRAVEL" });
       } else if (!n.capitalized && MASC_FIXED.has(n.lower)) {
         out.push({ ruleId: "CRASE_MASCULINO", start: t.start, end: t.end, replacement: plainA, vars: { word: n.text }, confidence: 0.9, certainty: "DEMONSTRAVEL" });
-      } else if (!n.capitalized && nominalCandidate(n) && /(o|os)$/.test(n.lower) && !FEM_IN_O.has(n.lower)) {
+      } else if (!n.capitalized && nominalCandidate(n) && /[^ã]os?$/.test(n.lower) && !FEM_IN_O.has(n.lower)) {
         out.push({ ruleId: "CRASE_MASCULINO", start: t.start, end: t.end, replacement: null, suggestions: [plainA, matchCase(t.text, t.lower === "à" ? "ao" : "aos")], vars: { word: n.text }, confidence: 0.75, certainty: "HIPOTESE" });
       } else if (t.lower === "à" && !n.capitalized && nominalCandidate(n) && /[aeo]s$/.test(n.lower) && !INVARIABLE_S.has(n.lower)) {
         out.push({ ruleId: "CRASE_PLURAL", start: t.start, end: t.end, replacement: null, suggestions: [matchCase(t.text, "às"), plainA], vars: { word: n.text }, confidence: 0.7 });
@@ -305,7 +306,7 @@ function impersonalVerbs(ctx: BlockCtx): RawFinding[] {
     const n = next(ctx, t.i);
     const readings = verbReadings(t.lower);
     const haver3pl = readings.some((r) => r.lemma === "haver" && r.pessoa === 3 && r.numero === "PL" && !r.forma);
-    if (haver3pl && n && n.lower !== "de" && n.lower !== "que" && !(n.pos === "VERBO" && n.verb?.forma === "PARTICIPIO") && !/(ado|ido|ada|ida|ados|idos|adas|idas|to|ta|tos|tas)$/.test(n.lower)) {
+    if (haver3pl && n && n.lower !== "de" && n.lower !== "que" && !isParticiple(n)) {
       const p = prev(ctx, t.i);
       if (p && (p.pos === "SUBSTANTIVO" || SUBJECT_PRONOUNS[p.lower])) continue; // "eles haviam de", "os servidores haviam saído"
       const fixed = swapThirdPersonNumber(t.lower);
@@ -370,8 +371,8 @@ function regency(ctx: BlockCtx): RawFinding[] {
       const sent = ctx.sentences[t.sentence];
       if (!sent) continue;
       for (const u of sent.tokens) {
-        if (u.i <= t.i + 1 || !isWordTok(u)) continue;
         const ut = toks[u.i]!;
+        if (u.i <= t.i + 1 || !isWordTok(ut)) continue;
         if (ut.lower === "do" && next(ctx, u.i)?.lower === "que") {
           const q = next(ctx, u.i)!;
           out.push({ ruleId: "REGENCIA_PREFERIR", start: ut.start, end: q.end, replacement: matchCase(ut.text, "a"), vars: { verb: t.text, word: "do que", kind: "comparacao" }, confidence: 0.8, certainty: "DEMONSTRAVEL" });
@@ -509,7 +510,7 @@ function repetition(ctx: BlockCtx): RawFinding[] {
     if (!isWordTok(t)) continue;
     wordIndex++;
     if (t.kind === "SIGLA" || t.capitalized && t.sub === "próprio" || t.key.length < 5 || !t.pos || !CONTENT_POS.has(t.pos) || quotedTok(ctx, t)) continue;
-    if (t.pos === "VERBO" && t.verb && AUX_STEMS.has(t.verb.lemma)) continue;
+    if (t.pos === "VERBO" && t.verb && t.verb.lemma.split("|").some((l) => AUX_STEMS.has(l))) continue;
     if (t.pos === "ADVERBIO" && !t.lower.endsWith("mente")) continue;
     const stem = lightStem(t.text);
     const first = seen.get(stem);

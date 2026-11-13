@@ -91,7 +91,7 @@ export function LegalDeadlinePanel({ task, onSaved, onConflict }: { task: TaskVi
 
   useEffect(() => {
     let alive = true;
-    legalDeadlinesApi.rules().then((r) => { if (alive) setRules(r); }).catch(() => { if (alive) setRulesError(true); });
+    legalDeadlinesApi.rules().then((r) => { if (alive) setRules(Array.isArray(r) ? r : []); }).catch(() => { if (alive) setRulesError(true); });
     return () => { alive = false; };
   }, []);
 

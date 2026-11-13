@@ -7,7 +7,7 @@
 import { AUX_LEMMAS, CLOSED_CLASS, CLITICS, NOUN_HOMOGRAPHS, SUBJECT_PRONOUNS, lexicon, type Reading } from "./lexicon";
 import { fold } from "./text";
 import { tokenize } from "./tokenize";
-import { ASSERT_THRESHOLD, type PartOfSpeech, type Sentence, type TagReason, type TaggedToken, type Token, type VerbReading } from "./types";
+import { ASSERT_THRESHOLD, type PartOfSpeech, type Sentence, type TagReason, type TaggedSentence, type TaggedToken, type Token, type VerbReading } from "./types";
 import { verbFeatures, verbReadings } from "./verbs";
 
 interface Work {
@@ -165,7 +165,7 @@ const isNominal = (pos: PartOfSpeech) => pos === "SUBSTANTIVO" || pos === "ADJET
 
 function verbPrior(form: string, verbs: readonly VerbReading[]): Reading[] {
   const formas = new Set(verbs.map((v) => v.forma ?? "FINITA"));
-  const homograph = NOUN_HOMOGRAPHS.has(form);
+  const homograph = NOUN_HOMOGRAPHS.has(form) || NOUN_HOMOGRAPHS.has(form.replace(/s$/, ""));
   if (formas.size === 1 && formas.has("GERUNDIO")) return [R("VERBO", 0.95)];
   if (formas.has("INFINITIVO")) return [R("VERBO", 0.85), R("SUBSTANTIVO", 0.15)];
   if (formas.size === 1 && formas.has("PARTICIPIO")) return homograph ? [R("SUBSTANTIVO", 0.45), R("ADJETIVO", 0.3), R("VERBO", 0.25)] : [R("VERBO", 0.4), R("ADJETIVO", 0.35), R("SUBSTANTIVO", 0.25)];
@@ -507,9 +507,10 @@ function finalize(w: Work): TaggedToken {
 }
 
 /** Atalho: tokeniza e etiqueta um texto. */
-export function analyzeMorphology(text: string, opts: { inTitle?: boolean } = {}) {
+export function analyzeMorphology(text: string, opts: { inTitle?: boolean } = {}): { tokens: TaggedToken[]; sentences: TaggedSentence[] } {
   const { tokens, sentences } = tokenize(text);
-  return { tokens: tagTokens(tokens, sentences, opts), sentences };
+  const tagged = tagTokens(tokens, sentences, opts);
+  return { tokens: tagged, sentences: sentences.map((s) => ({ ...s, tokens: s.tokens.map((t) => tagged[t.i]!) })) };
 }
 
 export const isClosedClass = (pos: PartOfSpeech | null) => !!pos && CLOSED_CLASS.has(pos);

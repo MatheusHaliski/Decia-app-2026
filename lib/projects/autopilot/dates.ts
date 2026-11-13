@@ -152,6 +152,14 @@ const RELATIVE = new RegExp(
   "g",
 );
 
+/** Data de um prazo relativo ("60 dias úteis", "3 meses") contado de `from` — refeita quando a pessoa corrige a data do documento. */
+export function relativeDeadline(kind: Exclude<DeadlineKind, "DATA" | "MES">, amount: number, from: IsoDate): IsoDate {
+  if (kind === "DIAS_UTEIS") return addBusinessDays(from, amount);
+  if (kind === "DIAS_CORRIDOS") return addDays(from, amount);
+  if (kind === "SEMANAS") return addDays(from, amount * 7);
+  return addMonths(from, amount);
+}
+
 /** Prazos (com deixa) do texto: datas absolutas e prazos relativos contados de `reference` (data do documento ou hoje). */
 export function findDeadlines(text: string, reference: IsoDate): DeadlineMention[] {
   const f = fold(text);
@@ -166,19 +174,8 @@ export function findDeadlines(text: string, reference: IsoDate): DeadlineMention
     const amount = /^\d+$/.test(m[1]!) ? Number(m[1]) : parseNumberWords(m[1]!);
     if (!amount || amount > 3650) continue;
     const unit = m[2]!;
-    const business = m[3] === "uteis";
-    let date: IsoDate;
-    let kind: DeadlineKind;
-    if (unit.startsWith("dia")) {
-      kind = business ? "DIAS_UTEIS" : "DIAS_CORRIDOS";
-      date = business ? addBusinessDays(reference, amount) : addDays(reference, amount);
-    } else if (unit.startsWith("semana")) {
-      kind = "SEMANAS";
-      date = addDays(reference, amount * 7);
-    } else {
-      kind = "MESES";
-      date = addMonths(reference, amount);
-    }
+    const kind = unit.startsWith("dia") ? (m[3] === "uteis" ? "DIAS_UTEIS" : "DIAS_CORRIDOS") : unit.startsWith("semana") ? "SEMANAS" : "MESES";
+    const date = relativeDeadline(kind, amount, reference);
     const start = m.index + m[0].search(/\S/);
     if (out.some((o) => start < o.end && o.start < m.index + m[0].length)) continue;
     out.push({ start, end: m.index + m[0].length, date, kind, amount, from: reference });

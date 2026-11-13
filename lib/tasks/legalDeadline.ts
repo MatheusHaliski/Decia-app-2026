@@ -131,6 +131,10 @@ export function deadlineStatus(due: string, today: string): DeadlineStatus {
 /** Marca textual do estado (sempre acompanha o texto; nunca só cor). */
 export const DEADLINE_MARK: Record<DeadlineKind, string> = { VENCIDA: "⊘", HOJE: "◉", PROXIMA: "◷", EM_DIA: "✓" };
 
-/** Data por extenso curta no idioma da tela (dia civil, sem deslocar pelo fuso). */
-export const formatIsoDate = (iso: string, intl: string) =>
-  new Intl.DateTimeFormat(intl, { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "UTC" }).format(new Date(`${iso}T12:00:00Z`));
+/** Data curta no idioma da tela (dia civil, sem deslocar pelo fuso); texto que não é data ISO volta como veio. */
+export const formatIsoDate = (iso: string, intl: string) => {
+  const day = iso.slice(0, 10);
+  return isIsoDate(day)
+    ? new Intl.DateTimeFormat(intl, { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "UTC" }).format(new Date(`${day}T12:00:00Z`))
+    : iso;
+};

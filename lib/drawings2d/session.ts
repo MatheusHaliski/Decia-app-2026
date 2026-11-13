@@ -387,61 +387,61 @@ export class CollabSession {
 
   /** Facade de outra pessoa hospedada nesta aba (colaboradora simulada): mesmas transações, sem histórico local. */
   actor(id: string, view: ViewState): SessionActor {
-    const self = this;
     let base: PresencePayload = { name: id, color: "green", kind: "SIMULADA", cursor: null, selection: [], activity: null };
+    // funções-seta: `this` é a sessão (sem apelido)
     return {
       id,
-      state: () => self.state,
-      now: () => self.clock(),
-      async join(name, color) {
-        const p = await self.tx((s) => {
-          const j = join(s, { id, name, kind: "SIMULADA", color }, self.clock());
+      state: () => this.state,
+      now: () => this.clock(),
+      join: async (name, color) => {
+        const p = await this.tx((s) => {
+          const j = join(s, { id, name, kind: "SIMULADA", color }, this.clock());
           return { state: j.state, result: j.participant };
         });
         base = { ...base, name: p.name, color: p.color };
-        self.hosted.set(id, base);
-        self.botHostedHere = true;
-        self.emit();
+        this.hosted.set(id, base);
+        this.botHostedHere = true;
+        this.emit();
       },
-      async reserve(layerId, regionIds, ttl) {
-        const r = await self.tx((s) => {
-          const out = reserveTx(s, { actorId: id, layerId, regionIds, ttl }, self.clock());
+      reserve: async (layerId, regionIds, ttl) => {
+        const r = await this.tx((s) => {
+          const out = reserveTx(s, { actorId: id, layerId, regionIds, ttl }, this.clock());
           return { state: out.state, result: out };
         });
-        self.emit();
+        this.emit();
         return r.ok ? { ok: true, lock: r.lock } : { ok: false, denial: r.denial };
       },
-      async release(lock) {
+      release: async (lock) => {
         if (!lock.id) return false;
-        const r = await self.tx((s) => {
-          const out = releaseTx(s, { actorId: id, lockId: lock.id!, token: lock.token }, self.clock());
+        const r = await this.tx((s) => {
+          const out = releaseTx(s, { actorId: id, lockId: lock.id!, token: lock.token }, this.clock());
           return { state: out.state, result: out.ok };
         });
-        self.emit();
+        this.emit();
         return r;
       },
-      async commit(patch) {
-        const r = await self.tx((s) => {
-          const out = commit(s, patch, { now: self.clock(), view, autoReserve: false });
+      commit: async (patch) => {
+        const r = await this.tx((s) => {
+          const out = commit(s, patch, { now: this.clock(), view, autoReserve: false });
           return { state: out.state, result: out.ok };
         });
-        self.emit();
+        this.emit();
         return r;
       },
-      presence(p) {
+      presence: (p) => {
         base = { ...base, ...p };
-        self.hosted.set(id, base);
-        self.peers.set(id, { ...base, id, at: self.clock() });
-        self.env.channel?.post({ t: "presence", from: id, p: base });
-        self.emit();
+        this.hosted.set(id, base);
+        this.peers.set(id, { ...base, id, at: this.clock() });
+        this.env.channel?.post({ t: "presence", from: id, p: base });
+        this.emit();
       },
-      async leave() {
-        await self.tx((s) => ({ state: leave(s, id, self.clock()), result: null }));
-        self.hosted.delete(id);
-        self.peers.delete(id);
-        self.botHostedHere = self.hosted.size > 0;
-        self.env.channel?.post({ t: "bye", from: id });
-        self.emit();
+      leave: async () => {
+        await this.tx((s) => ({ state: leave(s, id, this.clock()), result: null }));
+        this.hosted.delete(id);
+        this.peers.delete(id);
+        this.botHostedHere = this.hosted.size > 0;
+        this.env.channel?.post({ t: "bye", from: id });
+        this.emit();
       },
     };
   }

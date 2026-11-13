@@ -4,7 +4,7 @@
  */
 import { ruleInfo } from "./rules";
 import { fold, shortHash } from "./text";
-import type { Anchor, Certainty, Finding, LetterBlock, Sentence, Severity, TaggedToken, TextGenre } from "./types";
+import type { Anchor, Certainty, Finding, LetterBlock, Severity, TaggedSentence, TaggedToken, TextGenre } from "./types";
 
 export interface Span {
   start: number;
@@ -29,7 +29,7 @@ export interface BlockCtx {
   block: LetterBlock;
   text: string;
   tokens: TaggedToken[];
-  sentences: Sentence[];
+  sentences: TaggedSentence[];
   /** trechos entre aspas (falas e citações literais) */
   quoted: Span[];
   genre: TextGenre;

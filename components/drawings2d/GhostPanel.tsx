@@ -23,8 +23,8 @@ export function GhostPanel({ m }: { m: EditorModel }) {
 
   const status = (item: GhostItem) => {
     if (item.status === "PENDENTE") return t("drw2d.ghost.status.PENDENTE");
-    const reason = item.reason ? ` ${explainRefusal(item.reason, explain)}` : "";
-    return `${t(`drw2d.ghost.status.${item.status}`)}${item.status === "RECUSADA" ? reason : ""}`;
+    const reason = item.status === "RECUSADA" && item.reason ? `: ${explainRefusal(item.reason, explain)}` : "";
+    return `${t(`drw2d.ghost.status.${item.status}`)}${reason}`;
   };
   const onItemKey = (e: KeyboardEvent<HTMLLIElement>, item: GhostItem) => {
     if (e.target !== e.currentTarget || item.status !== "PENDENTE") return;

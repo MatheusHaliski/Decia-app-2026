@@ -6,7 +6,7 @@
  * folha "+ Criar"); ADMIN só lê. Dados DEMO desta aba.
  */
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { AiText, DemoBadge, DemoNote, formatDate, formatNumber, useMounted } from "@/components/points/shared";
 import { RfPage } from "@/components/shell/RfPage";
 import { Badge, Button, Card, EmptyState, Field, LoadingState, RadioCards, Select, Tag, useToast } from "@/components/ui";
@@ -70,7 +70,8 @@ function MySeals({ actor, repo }: { actor: SealActor; repo: SealsRepository }) {
 function GrantPanel({ actor, repo }: { actor: SealActor; repo: SealsRepository }) {
   const { t } = useI18n();
   const { toast } = useToast();
-  const targets = currentSealTargets();
+  // fatos calculados uma vez por abertura da aba (inclui as reutilizações do Balcão de agora)
+  const targets = useMemo(() => currentSealTargets(), []);
   const [targetId, setTargetId] = useState(targets[0]?.id ?? "");
   const [mode, setMode] = useState<GrantMode>("SUGESTAO");
   const target = targets.find((x) => x.id === targetId);

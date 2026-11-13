@@ -2,7 +2,9 @@
 /**
  * Tarefas persistidas (RF41, RF12; auditoria 17/10/2026): lista "Minhas tarefas" com card de reconhecimento rápido e detalhe com
  * estados padronizados (A realizar · Em andamento · Bloqueado · Concluído), próxima ação e progresso explícito pelos critérios.
- * Dados da API real (`/api/tasks`); sem sessão, o erro diz o motivo e o caminho.
+ * Dados da API real (`/api/tasks`); sem sessão, o erro diz o motivo e o caminho. O detalhe traz também o prazo legal (RF41.CA04), os
+ * anexos e evidências (RF41.CA06) e, para desenho técnico e documento, o atalho para extrair quantitativos (RF34). A lista com sub-filtros
+ * na URL é o `TaskAcervo` (Acervo.tsx); `MyTasks` continua servindo a aba Acervo do perfil.
  */
 import { useCallback, useEffect, useState } from "react";
 import { CardGrid, TaskSchemeCard } from "@/components/social/TaskSchemeCard";
@@ -13,7 +15,11 @@ import { toTaskCardViewModelFromApi } from "@/lib/tasks/card";
 import { criteriaProgress, requestFromView, tasksApi, type Criterion, type TaskStateName, type TaskView } from "@/lib/tasks/client";
 import { canTransitionTask, nextActionOf, publicationOf, TASK_TRANSITIONS, WORK_STATUSES, workStatusOf, type WorkStatus } from "@/lib/tasks/status";
 import { baseLocale } from "@/lib/i18n/state";
+import { isOpenState } from "@/lib/tasks/acervo";
 import { fieldByCode, STUDY_FIELD_KEY } from "@/lib/tasks/areas";
+import { formatIsoDate, localTodayIso } from "@/lib/tasks/legalDeadline";
+import { TaskAttachments } from "./Attachments";
+import { DeadlineStatusTag, LegalDeadlinePanel } from "./LegalDeadline";
 
 const STATUS_TONE: Record<WorkStatus, "neutral" | "accent" | "info" | "danger" | "success"> = {
   A_REALIZAR: "accent", EM_ANDAMENTO: "info", BLOQUEADO: "danger", CONCLUIDO: "success", ARQUIVADO: "neutral",
@@ -118,9 +124,13 @@ const ACTION_TARGET: Record<"INICIAR" | "CONCLUIR" | "DESBLOQUEAR" | "REVISAR", 
   INICIAR: "EM_USO", CONCLUIR: "CONCLUIDA", DESBLOQUEAR: "EM_USO", REVISAR: "DISPONIVEL",
 };
 
+/** Tipos que a extração de quantitativos (RF34) lê: desenho técnico e documento. */
+const EXTRACTABLE: ReadonlySet<string> = new Set(["DESENHO_TECNICO", "DOCUMENTO"]);
+
 export function PersistedTaskDetail({ id }: { id: string }) {
-  const { t, locale } = useI18n();
+  const { t, locale, intl } = useI18n();
   const { toast } = useToast();
+  const [today] = useState(() => localTodayIso());
   const [task, setTask] = useState<TaskView | null>(null);
   const [error, setError] = useState<{ title: string; text: string } | null>(null);
   const [blocking, setBlocking] = useState(false);
@@ -165,12 +175,13 @@ export function PersistedTaskDetail({ id }: { id: string }) {
     <div className="grid gap-[var(--ws-space-4)] lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]" data-testid="persisted-task-detail">
       <div className="grid content-start gap-[var(--ws-space-4)]">
         <Card>
-          <div className="flex flex-wrap items-center gap-2"><WorkStatusTag state={state} /><Badge tone="neutral">{t(`social.taskType.${task.type}`)}</Badge>{task.area ? <Badge tone="neutral">{t(`tasks.area.${task.area}`)}</Badge> : null}</div>
+          <div className="flex flex-wrap items-center gap-2"><WorkStatusTag state={state} /><Badge tone="neutral">{t(`social.taskType.${task.type}`)}</Badge>{task.area ? <Badge tone="neutral">{t(`tasks.area.${task.area}`)}</Badge> : null}{task.legalDueAt && isOpenState(state) ? <DeadlineStatusTag due={task.legalDueAt} today={today} /> : null}</div>
           <h2 className="mt-2 text-[length:var(--ws-text-h3)] font-semibold">{task.title}</h2>
           <p className="mt-1 text-ws-text-muted"><span className="font-semibold text-ws-text">{t("tasks.form.objective")}:</span> {task.objective || t("tasks.card.noObjective")}</p>
           {task.descriptionMd ? <p className="mt-3 whitespace-pre-wrap text-[length:var(--ws-text-body-sm)]">{task.descriptionMd}</p> : null}
           {state === "BLOQUEADA" && task.blockReason ? <p className="mt-3 text-ws-danger-ink" role="status">⊘ {task.blockReason}</p> : null}
         </Card>
+        <LegalDeadlinePanel task={task} onSaved={setTask} onConflict={load} />
         <Card title={t("tasks.form.criteria")}>
           <Progress criteria={criteria} />
           {criteria.length ? (
@@ -194,6 +205,7 @@ export function PersistedTaskDetail({ id }: { id: string }) {
             <dl className="grid gap-1 sm:grid-cols-[auto_1fr] sm:gap-x-4">{Object.entries(task.extensions).map(([k, v]) => <div key={k} className="contents"><dt className="font-semibold">{t(`tasks.ext.${k}`)}</dt><dd className="[overflow-wrap:anywhere]">{k === STUDY_FIELD_KEY ? (fieldByCode(v)?.label[baseLocale(locale) as "pt-BR" | "en" | "es"] ?? v) : v}</dd></div>)}</dl>
           </Card>
         ) : null}
+        <TaskAttachments task={task} />
       </div>
       <aside className="grid content-start gap-[var(--ws-space-4)]">
         <Card title={t("tasks.detail.actions")}>
@@ -217,12 +229,19 @@ export function PersistedTaskDetail({ id }: { id: string }) {
               <Button href={`/tasks/${task.id}/edit`} variant="ghost">{t("tasks.detail.edit")}</Button>
             </div>
           ) : <p className="text-[length:var(--ws-text-body-sm)] text-ws-text-muted">{t(state === "CONCLUIDA" || state === "ARQUIVADA" ? "tasks.detail.readOnlyClosed" : "tasks.detail.readOnly")}</p>}
+          {task.type && EXTRACTABLE.has(task.type) ? (
+            <div className="mt-3 grid gap-1 border-t border-ws-border pt-3">
+              <Button href={`/tasks/${task.id}/extrair`} variant="secondary" data-testid="extract-quantities">{t("tasks.attach.extract")}</Button>
+              <p className="text-[length:var(--ws-text-caption)] text-ws-text-muted">{t("tasks.attach.extractHint")}</p>
+            </div>
+          ) : null}
           {!task.editable && (state === "CONCLUIDA" || state === "ARQUIVADA") && TASK_TRANSITIONS[state].includes("EM_USO") ? null : null}
         </Card>
         <Card title={t("tasks.detail.facts")}>
           <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-[length:var(--ws-text-body-sm)]">
             <dt className="text-ws-text-muted">{t("tasks.form.priority")}</dt><dd>{t(`tasks.priority.${task.priority ?? "MEDIA"}`)}</dd>
-            <dt className="text-ws-text-muted">{t("tasks.form.dueAt")}</dt><dd>{task.dueAt ?? "—"}</dd>
+            <dt className="text-ws-text-muted">{t("tasks.form.dueAt")}</dt><dd>{task.dueAt ? formatIsoDate(task.dueAt, intl) : "—"}</dd>
+            <dt className="text-ws-text-muted">{t("tasks.deadline.title")}</dt><dd>{task.legalDueAt ? <><span aria-hidden>⚖ </span>{formatIsoDate(task.legalDueAt, intl)}</> : "—"}</dd>
             <dt className="text-ws-text-muted">{t("tasks.form.accessClass")}</dt><dd>{t(`social.access.${task.accessClass}`)}</dd>
             <dt className="text-ws-text-muted">{t("tasks.form.visibility")}</dt><dd>{t(`social.visibility.${task.visibility}`)}</dd>
             <dt className="text-ws-text-muted">{t("tasks.detail.version")}</dt><dd>{task.version}</dd>

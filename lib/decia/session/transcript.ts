@@ -23,7 +23,7 @@ export function checkTranscriptFile(name: string, size: number, text: string): F
   if (!(ACCEPTED_EXTENSIONS as readonly string[]).includes(ext)) return "EXTENSAO_NAO_ACEITA";
   if (size > MAX_TRANSCRIPT_BYTES) return "ARQUIVO_GRANDE";
   if (!text.trim()) return "ARQUIVO_VAZIO";
-  // eslint-disable-next-line no-control-regex -- byte nulo e controles C0 denunciam arquivo binário renomeado
+  // byte nulo e controles C0 denunciam arquivo binário renomeado (.pdf/.png com extensão .txt)
   if (/[\u0000-\u0008\u000E-\u001F]/.test(text.slice(0, 4096))) return "ARQUIVO_BINARIO";
   if (ext === ".vtt" && !/^﻿?WEBVTT/.test(text.trimStart())) return "VTT_SEM_CABECALHO";
   if (ext === ".srt" && !TIMING.test(text)) return "SRT_INVALIDO";

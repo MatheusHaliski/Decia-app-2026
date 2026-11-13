@@ -26,7 +26,7 @@ import { OfferDialog } from "./OfferDialog";
 const SHELF_OF: Record<string, Shelf> = { chancelados: "CHANCELADO", comunidade: "COMUNIDADE" };
 
 function ModelCard({ offer, onOpen }: { offer: ModelOffer; onOpen: (id: string) => void }) {
-  const { t, intl } = useI18n();
+  const { t } = useI18n();
   return (
     <Card as="li" padding="sm" className="grid content-between gap-3" data-testid={`model-card-${offer.id}`}>
       <div className="grid gap-1.5">

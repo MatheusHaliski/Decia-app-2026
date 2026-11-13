@@ -110,6 +110,11 @@ export interface TaggedToken extends Token {
   locution?: string;
 }
 
+/** Frase com os tokens já etiquetados. */
+export interface TaggedSentence extends Sentence {
+  tokens: TaggedToken[];
+}
+
 /** Limiar para afirmar uma classe; abaixo dele o token é marcado "ambíguo". */
 export const ASSERT_THRESHOLD = 0.6;
 

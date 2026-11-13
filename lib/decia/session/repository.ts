@@ -12,6 +12,8 @@ import { createAuditLog, type AuditLog } from "@/lib/decia/audit/log";
 import type { AuditInput } from "@/lib/decia/audit/types";
 import { DEMO_PEOPLE } from "@/lib/decia/fixtures";
 import { deciaPoints, type PointsLedger } from "@/lib/points/ledger";
+// importar a Memória daqui garante que a busca real fique ligada ao contrato `searchMemory` (lib/memory/index.ts)
+import { searchMemory as memorySearch } from "@/lib/memory";
 import type { MemorySearch } from "@/lib/memory/search";
 import type { ViewerProfile } from "@/lib/viewer/profiles";
 import { askAi as askAiFn, spontaneousAnswer } from "./assistant";
@@ -273,7 +275,7 @@ let demo: SessionRepository | null = null;
 export function demoSessionRepository(): SessionRepository {
   if (!demo) {
     const now = new Date();
-    demo = createMemorySessionRepository(buildDemoSessions(now), buildDemoOrgPolicy(now), { audit: createAuditLog(buildDemoAudit(now)) });
+    demo = createMemorySessionRepository(buildDemoSessions(now), buildDemoOrgPolicy(now), { audit: createAuditLog(buildDemoAudit(now)), search: memorySearch });
   }
   return demo;
 }

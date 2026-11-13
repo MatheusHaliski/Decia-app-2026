@@ -11,7 +11,8 @@ const isWord = (t: TaggedToken) => t.kind === "PALAVRA" || t.kind === "SIGLA";
 const IRREGULAR_PARTICIPLES = new Set(["feito", "feita", "feitos", "feitas", "dito", "dita", "visto", "vista", "vistos", "vistas", "posto", "posta", "escrito", "escrita", "aberto", "aberta", "coberto", "descoberto", "entregue", "entregues", "aceito", "aceita", "eleito", "eleita", "expresso", "impresso", "morto", "morta", "preso", "presa", "pago", "paga", "gasto", "ganho", "revisto", "revista", "previsto", "prevista", "proposto", "proposta", "imposto", "disposto", "exposto", "composto", "suspenso", "suspensa", "concluso", "descrito", "descrita"]);
 const ADVERBS_BETWEEN = new Set(["não", "também", "já", "sempre", "ainda", "nunca", "devidamente", "efetivamente", "previamente", "posteriormente", "inicialmente", "amplamente", "rapidamente", "integralmente", "parcialmente"]);
 
-function isParticiple(t: TaggedToken | undefined): boolean {
+/** Particípio: forma conhecida do analisador, irregular comum ou terminação -ado/-ido sem acento antes. */
+export function isParticiple(t: TaggedToken | undefined): boolean {
   if (!t || !isWord(t)) return false;
   if (IRREGULAR_PARTICIPLES.has(t.lower)) return true;
   if (t.verb?.forma === "PARTICIPIO") return true;

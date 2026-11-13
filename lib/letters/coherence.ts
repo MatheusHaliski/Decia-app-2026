@@ -75,7 +75,7 @@ const CONNECTIVES: readonly [string, Relation, boolean?][] = [
   ["em conclusão", "CONCLUSAO"], ["em síntese", "CONCLUSAO"], ["finalmente", "CONCLUSAO"], ["em resumo", "CONCLUSAO"], ["conclui-se", "CONCLUSAO"],
   ["para que", "FINALIDADE"], ["a fim de que", "FINALIDADE"], ["a fim de", "FINALIDADE"], ["com o objetivo de", "FINALIDADE"], ["com a finalidade de", "FINALIDADE"],
   ["com o intuito de", "FINALIDADE"],
-  ["caso", "CONDICAO", true], ["desde que", "CONDICAO"], ["contanto que", "CONDICAO"], ["a menos que", "CONDICAO"], ["salvo se", "CONDICAO"], ["exceto se", "CONDICAO"],
+  ["caso", "CONDICAO"], ["desde que", "CONDICAO"], ["contanto que", "CONDICAO"], ["a menos que", "CONDICAO"], ["salvo se", "CONDICAO"], ["exceto se", "CONDICAO"],
   ["quando", "TEMPO"], ["enquanto", "TEMPO"], ["depois que", "TEMPO"], ["antes que", "TEMPO"], ["logo que", "TEMPO"], ["assim que", "TEMPO"], ["sempre que", "TEMPO"],
   ["em seguida", "TEMPO"], ["posteriormente", "TEMPO"], ["anteriormente", "TEMPO"], ["inicialmente", "TEMPO"], ["primeiramente", "TEMPO"],
   ["simultaneamente", "TEMPO"], ["ao mesmo tempo", "TEMPO"], ["depois", "TEMPO", true], ["então", "TEMPO", true], ["atualmente", "TEMPO"],
@@ -83,7 +83,7 @@ const CONNECTIVES: readonly [string, Relation, boolean?][] = [
   ["em outras palavras", "EXPLICACAO"], ["vale dizer", "EXPLICACAO"], ["de fato", "EXPLICACAO"], ["com efeito", "EXPLICACAO"],
   ["assim como", "COMPARACAO"], ["tal como", "COMPARACAO"], ["da mesma forma", "COMPARACAO"], ["do mesmo modo", "COMPARACAO"], ["igualmente", "COMPARACAO"],
   ["analogamente", "COMPARACAO"],
-  ["conforme", "CONFORMIDADE"], ["de acordo com", "CONFORMIDADE"], ["consoante", "CONFORMIDADE"], ["em conformidade com", "CONFORMIDADE"],
+  ["conforme", "CONFORMIDADE"], ["segundo", "CONFORMIDADE"], ["de acordo com", "CONFORMIDADE"], ["consoante", "CONFORMIDADE"], ["em conformidade com", "CONFORMIDADE"],
 ];
 
 const CONN_KEYS = CONNECTIVES.map(([text, relation, initialOnly]) => ({ text, relation, initialOnly: !!initialOnly, keys: text.split(" ").map(fold) })).sort(
@@ -94,6 +94,7 @@ const CONN_KEYS = CONNECTIVES.map(([text, relation, initialOnly]) => ({ text, re
 export const connectivesOf = (relation: Relation) => CONNECTIVES.filter(([, r, initial]) => r === relation && !initial).map(([t]) => t);
 
 const isWord = (t: TaggedToken) => t.kind === "PALAVRA" || t.kind === "SIGLA";
+const POS_CHECKED = new Set(["conforme", "segundo", "caso", "quando", "enquanto"]);
 
 export function findConnectives(ctx: BlockCtx): ConnectiveHit[] {
   const out: ConnectiveHit[] = [];
@@ -115,7 +116,8 @@ export function findConnectives(ctx: BlockCtx): ConnectiveHit[] {
         const initial = !before || before.sentence !== t.sentence || [",", ";", ":"].includes(before.text);
         if (!initial || after?.text !== ",") continue;
       }
-      if (c.text === "conforme" && t.pos === null) continue;
+      // palavras de várias classes só contam quando o etiquetador as viu como conjunção/preposição
+      if (POS_CHECKED.has(c.text) && t.pos !== "CONJUNCAO" && t.pos !== "PREPOSICAO") continue;
       const last = toks[i + n - 1]!;
       out.push({ blockId: ctx.block.id, start: t.start, end: last.end, text: ctx.text.slice(t.start, last.end), canonical: c.text, relation: c.relation });
       i += n - 1;
@@ -141,15 +143,18 @@ function contentStems(tokens: readonly TaggedToken[], quoted: BlockCtx["quoted"]
   return out;
 }
 
+/** a ruptura de progressão só é apontada em parágrafos com 4+ frases, uma vez por parágrafo */
+export const PROGRESSION_MIN_SENTENCES = 4;
+
 const intersect = (a: readonly string[], b: ReadonlySet<string>) => [...new Set(a.filter((x) => b.has(x)))];
 
 function progression(ctx: BlockCtx, hits: readonly ConnectiveHit[]): { stat: ProgressionStat; findings: RawFinding[] } {
   const stat: ProgressionStat = { blockId: ctx.block.id, sentences: ctx.sentences.length, constante: 0, linear: 0, anafora: 0, conectivo: 0, ruptura: 0 };
   const findings: RawFinding[] = [];
-  const stems = ctx.sentences.map((s) => contentStems(s.tokens as TaggedToken[], ctx.quoted));
+  const stems = ctx.sentences.map((s) => contentStems(s.tokens, ctx.quoted));
   for (let k = 1; k < ctx.sentences.length; k++) {
     const s = ctx.sentences[k]!;
-    const words = (s.tokens as TaggedToken[]).filter(isWord);
+    const words = s.tokens.filter(isWord);
     const theme = stems[k]!.slice(0, 3);
     const prevTheme = new Set(stems[k - 1]!.slice(0, 3));
     const prevAll = new Set([...stems[k - 1]!, ...(stems[k - 2] ?? [])]);
@@ -160,7 +165,7 @@ function progression(ctx: BlockCtx, hits: readonly ConnectiveHit[]): { stat: Pro
     else if (intersect(stems[k]!, prevAll).length) stat.linear++;
     else {
       stat.ruptura++;
-      if (ctx.sentences.length >= 3 && sentenceWordCount(s) >= 5 && findings.length < 2 && !insideSpans(ctx.quoted, s.start, s.end)) {
+      if (ctx.sentences.length >= PROGRESSION_MIN_SENTENCES && sentenceWordCount(s) >= 8 && !findings.length && !insideSpans(ctx.quoted, s.start, s.end)) {
         const prev = ctx.sentences[k - 1]!;
         findings.push({ ruleId: "PROGRESSAO_RUPTURA", start: s.start, end: s.end, vars: { sentence: k + 1 }, confidence: 0.5, certainty: "HIPOTESE", related: [{ blockId: ctx.block.id, start: prev.start, end: prev.end, excerpt: prev.text }] });
       }
@@ -314,7 +319,7 @@ function continuity(ctxs: readonly BlockCtx[]): { blockId: string; raw: RawFindi
   for (const c of ctxs) {
     if (c.block.kind !== "PARAGRAFO" && c.block.kind !== "CITACAO") continue;
     for (const s of c.sentences) {
-      const toks = s.tokens as TaggedToken[];
+      const toks = s.tokens;
       const present = toks.filter((t) => names.has(t.text));
       if (!present.length) continue;
       const deathMatch = s.text.match(DEATH);
