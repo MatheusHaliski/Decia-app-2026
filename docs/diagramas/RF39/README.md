@@ -726,3 +726,22 @@ flowchart LR
 | RF39.CA10 | `BenefitService.redeem` (transacional, `idempotencyKey`), `BenefitRedemption`, 409 CHANCELA_INVALIDA, `AiCreditLedgerEntry`, DP `BENEFICIO_BONUS` | A10 → F7 → P24 (409) → P25 | 49–61 | `APROVADA → self (habilita resgates)` | `BS`, `DPS`, `RD`, `PLAT (PDF+QR)` |
 | RF39.CA11 | `TaskItem/ProjectScheme/AnnualPlan.sealIdsJson`, `TaskState MODELO_PUBLICO`, Vitrine/Balcão "chancelado" (RF27/RF40), métricas do emissor (RF28.CA06) | P19 → F6 | 43–45 | nota de APROVADA | `Seal (lacre)`, `R2 variants CHANCELADA/CHANCELADO` |
 | RF39.CA12 | `Notification CHANCELA_ESTADO/INDICACAO`, i18n das mensagens | P27 | 18, 29, 46, 60 | toda transição | `CASA`, `DE` |
+
+## Estado da implementação (12/11/2026)
+
+Front DEMO, sem API (repositório em memória com o contrato `SealsRepository`, selo DEMO). Critérios calculados por funções puras a partir dos dados do projeto de exemplo; a "IA" só sugere e justifica (✦) com esses números.
+
+| CA | Situação | Onde |
+|---|---|---|
+| RF39.CA01 | DEMO: criador só para EMPRESA e CHEFE (403 para os demais); cada emissor concede e revisa as próprias chancelas | `lib/seals/permissions.ts`, `components/seals/SealCreator.tsx` |
+| RF39.CA02 | DEMO: nome, tier, Excelência, ciclo (PERIODO_INVALIDO), limite de uso, política AUTO/REVISAO com critérios e mínimos; arte do lacre não feita | `lib/seals/repository.ts` |
+| RF39.CA03 | DEMO: até 3 chancelas sugeridas ✦ por item, determinísticas (fração de critérios atendidos + base do vínculo), concedidas para a fila; sub-aba Recusadas. Resposta do autor (aceitar/editar/recusar) não feita | `lib/seals/criteria.ts`, `components/seals/SealsPage.tsx` |
+| RF39.CA04 | DEMO: concessão por política (AUTO aprova com critérios atendidos, REVISAO vai à fila, critério faltando não concede); fila com relatório de critérios para CHEFE, EMPRESA e CURADOR do departamento; reavaliação por evento não feita | `components/seals/ReviewQueue.tsx` |
+| RF39.CA05 | DEMO: premiação aprova na hora dentro do ciclo e do limite (LIMITE_ESGOTADO), pelo emissor ou curador do departamento (pela tela, só EMPRESA/CHEFE) | `lib/seals/repository.ts` |
+| RF39.CA06 | Parcial: base INDICACAO no exemplo da fila; indicar e propor chancela pela tela não feitos | — |
+| RF39.CA07 | Parcial: aprovar ou recusar com motivo obrigatório, conflito de interesse do curador; consentimento do autor (APROVADA_PRIVADA) não feito | — |
+| RF39.CA08 | Parcial: um vínculo ativo por item e emissor (CHANCELA_DUPLICADA); revogação e recertificação não feitas | — |
+| RF39.CA09 | DEMO: benefícios no criador e "Publicar benefício" do emissor, com cota, limite por pessoa e prazo | `components/seals/BenefitsPage.tsx` |
+| RF39.CA10 | DEMO: resgate confirmado e idempotente para os colaboradores do item com chancela APROVADA (senão CHANCELA_INVALIDA), cota (LIMITE_ESGOTADO) e prazo; bônus via `award` BENEFICIO_BONUS, créditos de IA no saldo da Loja, código para os demais | `lib/seals/repository.ts` |
+| RF39.CA11 | Parcial: projeto chancelado e oferecido no Balcão passa à prateleira Chancelados; lacre nos cards e MODELO_PUBLICO não feitos | — |
+| RF39.CA12 | Parcial: textos em pt-BR, en e es; notificações não feitas | — |

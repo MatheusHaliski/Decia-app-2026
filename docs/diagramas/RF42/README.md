@@ -647,3 +647,20 @@ flowchart LR
 | RF42.CA08 | extrato por tipo de evento e por sessão no perfil deliberativo (RF19/RF43), pontos por departamento e custo de IA no dashboard (RF18/RF28) | F6 | 26–28 | — | `R1 profile`, `admin/issuer dashboard` |
 | RF42.CA09 | `DeciaPointsLedgerEntry.expiresAt`, `DeciaPointsService.expire/donate`, `PointsDonation` (monthKey, limite), `Company.pointsPolicyJson`, lançamento EXPIRACAO | P15 · A12 → P16 (409) → P17 | 60–67 | `CONFIRMADO → self (EXPIRACAO)` | `SCH`, `DPS` |
 | RF42.CA10 | invariante sem moeda real/gateway; `AuditLog` com `correlationId` e `metadataJson` sanitizado em todo lançamento | P18 | 20, 46, 58 | append-only (estorno e expiração são lançamentos) | `AUD`, `MY` |
+
+## Estado da implementação (12/11/2026)
+
+Front DEMO, sem API (os dados vivem na aba do navegador, selo DEMO nas telas). Razão compartilhado `deciaPoints` (`lib/points/ledger.ts`), estendido sem mudar o contrato.
+
+| CA | Situação | Onde |
+|---|---|---|
+| RF42.CA01 | DEMO: ganho idempotente por evento (o razão); a sessão do DECIA credita os ganhos de participação (outra frente). Histórico DEMO dos perfis do laboratório semeado só com eventos de participação e fechando no saldo da ficha | `lib/points/ledger.ts`, `lib/points/demo.ts` |
+| RF42.CA02 | Parcial: regras e tetos do card exibidos em linguagem simples; edição versionada pela EMPRESA/ADMIN fica para a API | `/points?tab=regras` |
+| RF42.CA03 | DEMO: saldo, resumo, extrato com filtro por evento e período, gráfico mensal (colunas ganhos/gastos em SVG com tabela equivalente), ficha DP da barra ligada ao razão | `components/points/PointsPage.tsx`, `MonthlyChart.tsx`, `lib/points/statement.ts`, `components/shell/TopBar.tsx` |
+| RF42.CA04 | DEMO: Loja com skins da Mesa, créditos de IA, impulso no Mural, modelos e kits do Balcão; estoque, janela de venda e limite por pessoa (ITEM_INDISPONIVEL), compra confirmada e idempotente via `spend` (SALDO_INSUFICIENTE explicado com atalho ao DECIA), entrega e histórico. Skin comprada aparece desbloqueada no seletor de Configurações › Aparência (Blueprint e Papel timbrado viraram skins da Loja; Papel e Cortiça seguem livres) | `lib/store/*`, `components/store/*` |
+| RF42.CA05 | DEMO: licença de modelo paga uma vez por pessoa — COMPRA_MODELO de quem usa + CREDITO_AUTOR_MODELO ao autor, mesma referência (idempotente) | `lib/models/repository.ts` |
+| RF42.CA06 | Parcial: créditos de IA comprados ou vindos de benefício num saldo próprio; o consumo antes da cota mensal depende do motor de IA (RF43) | `lib/store/repository.ts` |
+| RF42.CA07 | Não feito: o razão DEMO não tem estado SUSPENSO nem fila de suspensos | — |
+| RF42.CA08 | Parcial: pontos por departamento (EMPRESA, CHEFE, ADMIN) com k ≥ 5 por departamento e k ≥ 10 na empresa, números DEMO; extrato por sessão no perfil e custo de IA no dashboard não feitos | `lib/points/departments.ts`, `/points?tab=departamentos` |
+| RF42.CA09 | Parcial: doação a colega com limite de 50 DP/mês (LIMITE_ESGOTADO, sem ganho ao doador); expiração em aberto (Q-11), só informada | `lib/points/donations.ts` |
+| RF42.CA10 | DEMO: nenhum campo monetário nem gateway; todo movimento é lançamento do razão | — |
